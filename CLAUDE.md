@@ -43,6 +43,7 @@ Default: symlink into `.claude/skills/`. Use `--copy` for file copies.
     implement-issue/         ← Issue implementation
     implement-review/        ← Code review
     implement-review-pr/     ← PR review
+    update-docs/             ← CLAUDE.md update
 skills/
   <library-name>/
     SKILL.md                 ← Entry point with YAML frontmatter (name, description, user-invocable)
@@ -91,6 +92,6 @@ Use the `reference-researcher` agent (`.claude/agents/reference-researcher.md`).
 - The `tsdoc` skill is a guideline/template skill rather than an API reference — it has no `references/` subdirectory and embeds all content directly in `SKILL.md`
 - When editing `.claude/` files, use the `_/dotclaude/` staging pattern (write there first, then `mv` to `.claude/`)
 
-## Current Skills (25)
+## Current Skills (26)
 
-better-auth, biome, bullmq, chakra-ui, commitlint, dayjs, editorconfig, feature-sliced-design, github-docs, knip, kubb, lefthook, nuqs, pino, react-flow, react-hook-form, react-router-v7, storybook, supabase, syncpack, tsdoc, turborepo, typedoc, vitest, zod
+better-auth, biome, bullmq, chakra-ui, commitlint, dayjs, editorconfig, feature-sliced-design, github-docs, knip, kubb, lefthook, nuqs, pino, playwright, react-flow, react-hook-form, react-router-v7, storybook, supabase, syncpack, tsdoc, turborepo, typedoc, vitest, zod
