@@ -49,6 +49,7 @@ npx skills add <owner>/<repo> --skill react-router-v7 -g
     implement-issue/         ← Issue 実装
     implement-review/        ← コードレビュー
     implement-review-pr/     ← PR レビュー
+    update-docs/             ← CLAUDE.md 更新
 skills/
   <library-name>/
     SKILL.md                 ← エントリーポイント（YAML frontmatter + 探索手順）
@@ -78,6 +79,7 @@ skills/
 
 | スキル | 説明 |
 | -------- | ------ |
+| [playwright](skills/playwright/) | Playwright — E2E テスト, page, locator, fixtures, trace, auth |
 | [vitest](skills/vitest/) | Vitest — test, expect, vi.fn, vi.mock, coverage, snapshot |
 | [biome](skills/biome/) | Biome — formatter/linter, ルール設定, ESLint/Prettier 移行 |
 | [turborepo](skills/turborepo/) | Turborepo — turbo.json, キャッシュ, タスク依存, workspaces |
