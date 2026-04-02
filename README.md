@@ -73,6 +73,7 @@ skills/
 | [storybook](skills/storybook/) | Storybook — CSF, args, decorators, play function, autodocs |
 | [better-auth](skills/better-auth/) | Better Auth — 認証, OAuth, passkey, twoFactor, プラグイン |
 | [supabase](skills/supabase/) | Supabase — database, auth, storage, edge-functions, realtime, RLS |
+| [driverjs](skills/driverjs/) | Driver.js — プロダクトツアー, 要素ハイライト, ポップオーバー |
 | [nuqs](skills/nuqs/) | nuqs — URL search params state manager |
 
 ### ビルド / テスト / 品質
