@@ -3,7 +3,8 @@ name: chakra-ui
 description: >
   Chakra UI v3 API リファレンス。
   コンポーネント, レイアウト, フォーム, オーバーレイ, チャート,
-  テーマ, レシピ, スタイルプロップ, レスポンシブ, ダークモード
+  テーマ, レシピ, スタイルプロップ, レスポンシブ, ダークモード,
+  ブロック (Chakra UI Pro テンプレート)
 user-invocable: false
 ---
 
@@ -22,7 +23,8 @@ Chakra UI v3 公式ドキュメントを網羅したスキル。
     ├── components/README.md             ← 全コンポーネント（117ページ）
     ├── charts/README.md                 ← チャート（14ページ）
     ├── styling/README.md                ← スタイリング（29ページ）
-    └── theming/README.md               ← テーマ設定（29ページ）
+    ├── theming/README.md               ← テーマ設定（29ページ）
+    └── blocks/README.md                ← ブロックテンプレート（49カテゴリ, 要 CHAKRA_PRO_API_KEY）
 ```
 
 ## 探索手順
@@ -41,3 +43,6 @@ Chakra UI v3 公式ドキュメントを網羅したスキル。
 | チャートの表示、useChart、データ可視化 | charts | [references/charts/README.md](./references/charts/README.md) |
 | スタイルプロップ、レスポンシブ、ダークモード、CSS 変数 | styling | [references/styling/README.md](./references/styling/README.md) |
 | トークン、レシピ、カスタマイズ、デザイントークン | theming | [references/theming/README.md](./references/theming/README.md) |
+| ブロックテンプレート（UI パーツ、ページセクション） | blocks | [references/blocks/README.md](./references/blocks/README.md) |
+
+> **blocks カテゴリの注意:** `CHAKRA_PRO_API_KEY` 環境変数が未設定の場合、blocks は利用できません。その場合はこのカテゴリを無視してください。
