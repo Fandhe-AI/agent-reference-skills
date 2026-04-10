@@ -25,11 +25,11 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `category-grid-00` | Category Grid 00 | paid |
-| `category-grid-01` | Category Grid 01 | paid |
-| `category-grid-02` | Category Grid 02 | paid |
-| `category-grid-03` | Category Grid 03 | paid |
-| `category-grid-04` | Category Grid 04 | paid |
-| `category-grid-05` | Category Grid 05 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `category-grid-00` | Category Grid 00 | paid | シンプルな画像+テキストの均等グリッドレイアウト |
+| `category-grid-01` | Category Grid 01 | paid | カード形式のカテゴリグリッド。丸角画像+カテゴリ名 |
+| `category-grid-02` | Category Grid 02 | paid | オーバーレイテキスト付きの画像グリッド |
+| `category-grid-03` | Category Grid 03 | paid | 不均等サイズのカテゴリグリッド（メイン+サブ構成） |
+| `category-grid-04` | Category Grid 04 | paid | 横長バナー形式のカテゴリ一覧レイアウト |
+| `category-grid-05` | Category Grid 05 | paid | フルワイド画像とテキストオーバーレイのグリッド |

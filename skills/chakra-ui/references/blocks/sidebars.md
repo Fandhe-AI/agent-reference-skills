@@ -26,8 +26,8 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `sidebar-with-collapsible` | Sidebar With Collapsible | paid |
-| `sidebar-with-groups` | Sidebar With Groups | paid |
-| `sidebar-with-side-navbar` | Sidebar With Side Navbar | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `sidebar-with-collapsible` | Sidebar With Collapsible | paid | 検索フィールド＋Collapsible で折りたたみ可能なサブメニュー＋ヘルプ/設定リンク＋ユーザープロフィール |
+| `sidebar-with-groups` | Sidebar With Groups | paid | タイトル付きグループ（Dashboard/Content 等）でリンクを分類。検索フィールド＋ユーザープロフィール付き |
+| `sidebar-with-side-navbar` | Sidebar With Side Navbar | paid | アイコンのみのナビバー（左）＋詳細リンクのサイドバー（右）の2カラム構成。Tooltip でラベル表示 |

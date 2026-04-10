@@ -26,7 +26,7 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `feed-with-comments-01` | Feed With Comments 01 | paid |
-| `feed-with-upvote-01` | Feed With Upvote 01 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `feed-with-comments-01` | Feed With Comments 01 | paid | コメントスレッド形式。アバター＋吹き出しテキスト＋ネスト返信＋Author バッジ。SNS 風の Like/Reply リンク付き |
+| `feed-with-upvote-01` | Feed With Upvote 01 | paid | カード形式のフィード一覧。右側にアップボート数表示、ステータスバッジ＋コメント数＋タグ付き |

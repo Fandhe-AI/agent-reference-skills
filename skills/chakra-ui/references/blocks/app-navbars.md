@@ -26,8 +26,8 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `navbar-multi-level` | Navbar Multi Level | paid |
-| `navbar-with-centered-search` | Navbar With Centered Search | paid |
-| `navbar-with-search` | Navbar With Search | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `navbar-multi-level` | Navbar Multi Level | paid | ハンバーガーメニュー＋ロゴ＋セカンダリナビ（タブ切り替え）の2段階ナビ。検索・通知・ユーザーメニュー付き |
+| `navbar-with-centered-search` | Navbar With Centered Search | paid | ロゴ（左）＋中央配置の検索フィールド＋通知・ユーザーメニュー（右）のシンプルな構成 |
+| `navbar-with-search` | Navbar With Search | paid | ロゴ＋ナビリンク（左）＋検索フィールド＋通知・ユーザーメニュー（右）。モバイルではポップオーバーメニュー |

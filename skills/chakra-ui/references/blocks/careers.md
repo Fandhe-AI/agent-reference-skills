@@ -25,7 +25,7 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `career-two-columns-card` | Career Two Columns Card | paid |
-| `career-with-accordion` | Career With Accordion | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `career-two-columns-card` | Career Two Columns Card | paid | 2カラムCard形式の求人情報一覧 |
+| `career-with-accordion` | Career With Accordion | paid | 部門別アコーディオン形式の求人リスト |

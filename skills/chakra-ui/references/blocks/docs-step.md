@@ -25,7 +25,7 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `step-001` | Step 001 | paid |
-| `step-002` | Step 002 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `step-001` | Step 001 | paid | 左側縦線＋番号バッジのステップ一覧。タイトル＋説明文付き |
+| `step-002` | Step 002 | paid | ドット＋グラデーション縦線のステップ。最終ステップでフェードアウト |

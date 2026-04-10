@@ -27,19 +27,19 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `onboarding-simple-01` | Onboarding Simple 01 | paid |
-| `onboarding-simple-02` | Onboarding Simple 02 | paid |
-| `onboarding-simple-03` | Onboarding Simple 03 | paid |
-| `onboarding-with-checklist` | Onboarding With Checklist | paid |
-| `onboarding-with-image-01` | Onboarding With Image 01 | paid |
-| `onboarding-with-image-02` | Onboarding With Image 02 | paid |
-| `onboarding-with-image-03` | Onboarding With Image 03 | paid |
-| `onboarding-with-image-04` | Onboarding With Image 04 | paid |
-| `onboarding-with-video` | Onboarding With Video | paid |
-| `onboarding-workspace-01` | Onboarding Workspace 01 | paid |
-| `onboarding-workspace-02` | Onboarding Workspace 02 | paid |
-| `onboarding-workspace-03` | Onboarding Workspace 03 | paid |
-| `onboarding-workspace-04` | Onboarding Workspace 04 | paid |
-| `onboarding-workspace-05` | Onboarding Workspace 05 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `onboarding-simple-01` | Onboarding Simple 01 | paid | シンプルなウェルカムメッセージ＋開始ボタンの1ステップ構成 |
+| `onboarding-simple-02` | Onboarding Simple 02 | paid | ステップインジケーター付きのシンプルなオンボーディングフロー |
+| `onboarding-simple-03` | Onboarding Simple 03 | paid | プログレスバー＋入力フォームのステップ式オンボーディング |
+| `onboarding-with-checklist` | Onboarding With Checklist | paid | チェックリスト形式のセットアップガイド＋進捗表示 |
+| `onboarding-with-image-01` | Onboarding With Image 01 | paid | 2カラム（説明テキスト+画像）のオンボーディング画面 |
+| `onboarding-with-image-02` | Onboarding With Image 02 | paid | 画像付きのステップ案内＋ナビゲーションボタン構成 |
+| `onboarding-with-image-03` | Onboarding With Image 03 | paid | フルワイド画像背景＋中央揃えテキストのウェルカム画面 |
+| `onboarding-with-image-04` | Onboarding With Image 04 | paid | カード内画像＋ステッパー付きのオンボーディングフロー |
+| `onboarding-with-video` | Onboarding With Video | paid | 動画プレーヤー埋め込みのオンボーディング画面 |
+| `onboarding-workspace-01` | Onboarding Workspace 01 | paid | ワークスペース名入力＋ロゴアップロードの初期設定画面 |
+| `onboarding-workspace-02` | Onboarding Workspace 02 | paid | チームメンバー招待フォーム付きワークスペースセットアップ |
+| `onboarding-workspace-03` | Onboarding Workspace 03 | paid | ロール選択＋利用目的のワークスペース設定ステップ |
+| `onboarding-workspace-04` | Onboarding Workspace 04 | paid | プラン選択付きワークスペースオンボーディング画面 |
+| `onboarding-workspace-05` | Onboarding Workspace 05 | paid | 連携サービス選択＋完了画面付きワークスペースセットアップ |

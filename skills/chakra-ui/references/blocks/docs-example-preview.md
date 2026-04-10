@@ -25,8 +25,8 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `example-preview-001` | Example Preview 001 | paid |
-| `example-preview-002` | Example Preview 002 | paid |
-| `example-preview-003` | Example Preview 003 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `example-preview-001` | Example Preview 001 | paid | プレビュー/コード切替タブ。ライブデモ＋コード表示 |
+| `example-preview-002` | Example Preview 002 | paid | プレビュー上部＋コード下部の分割パネル構成 |
+| `example-preview-003` | Example Preview 003 | paid | 左右2カラム（プレビュー＋コード）の横並び構成 |

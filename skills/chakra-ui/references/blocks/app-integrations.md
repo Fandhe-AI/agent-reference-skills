@@ -26,18 +26,18 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `setting-integrations-01` | Setting Integrations 01 | paid |
-| `setting-integrations-02` | Setting Integrations 02 | paid |
-| `setting-integrations-03` | Setting Integrations 03 | paid |
-| `setting-integrations-04` | Setting Integrations 04 | paid |
-| `setting-integrations-05` | Setting Integrations 05 | paid |
-| `setting-integrations-06` | Setting Integrations 06 | paid |
-| `setting-integrations-07` | Setting Integrations 07 | paid |
-| `setting-integrations-08` | Setting Integrations 08 | paid |
-| `setting-integrations-09` | Setting Integrations 09 | paid |
-| `setting-integrations-10` | Setting Integrations 10 | paid |
-| `setting-integrations-11` | Setting Integrations 11 | paid |
-| `setting-integrations-12` | Setting Integrations 12 | paid |
-| `setting-integrations-13` | Setting Integrations 13 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `setting-integrations-01` | Setting Integrations 01 | paid | カード形式の連携アプリ一覧＋接続/切断トグル付き |
+| `setting-integrations-02` | Setting Integrations 02 | paid | アイコン＋説明付きの連携サービスリスト＋接続ボタン |
+| `setting-integrations-03` | Setting Integrations 03 | paid | グリッド配置の連携アプリカード＋ステータスBadge |
+| `setting-integrations-04` | Setting Integrations 04 | paid | カテゴリ分類付きの連携サービス一覧レイアウト |
+| `setting-integrations-05` | Setting Integrations 05 | paid | Switch付きの連携アプリ管理リスト構成 |
+| `setting-integrations-06` | Setting Integrations 06 | paid | 詳細設定パネル付きの連携サービス管理画面 |
+| `setting-integrations-07` | Setting Integrations 07 | paid | 検索フィルター付きの連携アプリ一覧レイアウト |
+| `setting-integrations-08` | Setting Integrations 08 | paid | タブ切替（All/Active/Available）の連携管理画面 |
+| `setting-integrations-09` | Setting Integrations 09 | paid | テーブル形式の連携サービス一覧＋アクションメニュー |
+| `setting-integrations-10` | Setting Integrations 10 | paid | カード＋モーダルの連携詳細設定レイアウト |
+| `setting-integrations-11` | Setting Integrations 11 | paid | コンパクトリスト形式の連携アプリ管理画面 |
+| `setting-integrations-12` | Setting Integrations 12 | paid | 2カラム（カテゴリ+連携リスト）のレイアウト |
+| `setting-integrations-13` | Setting Integrations 13 | paid | 大きめカード＋説明文付きの連携アプリグリッド |

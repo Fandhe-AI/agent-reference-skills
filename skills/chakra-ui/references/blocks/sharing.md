@@ -25,11 +25,11 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `sharing-00` | Sharing 00 | paid |
-| `sharing-01` | Sharing 01 | paid |
-| `sharing-02` | Sharing 02 | paid |
-| `sharing-03` | Sharing 03 | paid |
-| `sharing-04` | Sharing 04 | paid |
-| `sharing-05` | Sharing 05 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `sharing-00` | Sharing 00 | paid | SNSアイコンボタン横並びのシンプルな共有UI |
+| `sharing-01` | Sharing 01 | paid | リンクコピー＋SNSシェアボタン付き共有パネル |
+| `sharing-02` | Sharing 02 | paid | ダイアログ形式のリンク共有＋権限設定UI |
+| `sharing-03` | Sharing 03 | paid | ユーザー招待＋リンク共有の複合共有パネル |
+| `sharing-04` | Sharing 04 | paid | カード形式の共有UI＋アクセス権限ドロップダウン |
+| `sharing-05` | Sharing 05 | paid | コンパクトなポップオーバー形式の共有メニュー |

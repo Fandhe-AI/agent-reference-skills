@@ -28,15 +28,15 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `login-with-email-and-password-01` | Login With Email And Password 01 | paid |
-| `login-with-email-and-password-02` | Login With Email And Password 02 | paid |
-| `login-with-email-and-password-03` | Login With Email And Password 03 | paid |
-| `login-with-otp-01` | Login With Otp 01 | paid |
-| `social-login-with-email-01` | Social Login With Email 01 | paid |
-| `social-login-with-email-02` | Social Login With Email 02 | paid |
-| `social-login-with-email-03` | Social Login With Email 03 | paid |
-| `social-login-with-email-04` | Social Login With Email 04 | paid |
-| `web3-login-with-email-01` | Web3 Login With Email 01 | paid |
-| `workspace-login-01` | Workspace Login 01 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `login-with-email-and-password-01` | Login With Email And Password 01 | paid | 中央揃え1カラム。メール＋パスワード＋Checkbox＋Googleボタン |
+| `login-with-email-and-password-02` | Login With Email And Password 02 | paid | 2カラム（左:画像、右:フォーム）。ソーシャルログイン4種＋Separator付き |
+| `login-with-email-and-password-03` | Login With Email And Password 03 | paid | 2カラム（左:フォーム、右:画像）。Avatar＋アイコン付きField＋中央揃え |
+| `login-with-otp-01` | Login With Otp 01 | paid | 中央揃え1カラム。PinInput（6桁）によるOTP確認画面 |
+| `social-login-with-email-01` | Social Login With Email 01 | paid | 中央揃え1カラム。Google/GitHub＋Separator＋メール入力のみ |
+| `social-login-with-email-02` | Social Login With Email 02 | paid | 中央揃え1カラム。Google/GitHub/Apple＋メール入力＋利用規約リンク |
+| `social-login-with-email-03` | Social Login With Email 03 | paid | 中央揃え1カラム。GitHub/GitLab/Bitbucket＋SSO＋大きめロゴ |
+| `social-login-with-email-04` | Social Login With Email 04 | paid | 2カラム（左:フォーム、右:画像）。ヘッダーバー＋ソーシャル3種＋メール入力 |
+| `web3-login-with-email-01` | Web3 Login With Email 01 | paid | 中央揃え1カラム。MetaMask/Coinbase/WalletConnect＋メール入力 |
+| `workspace-login-01` | Workspace Login 01 | paid | 中央揃え1カラム。ワークスペースURL入力（.chakra.com）＋Separator＋リンク |

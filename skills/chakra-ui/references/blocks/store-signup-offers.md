@@ -25,9 +25,9 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `store-signup-offer-01` | Store Signup Offer 01 | paid |
-| `store-signup-offer-02` | Store Signup Offer 02 | paid |
-| `store-signup-offer-03` | Store Signup Offer 03 | paid |
-| `store-signup-offer-04` | Store Signup Offer 04 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `store-signup-offer-01` | Store Signup Offer 01 | paid | 2カラム（画像+フォーム）。RadioGroup付きの詳細登録 |
+| `store-signup-offer-02` | Store Signup Offer 02 | paid | 2カラム（画像+フォーム）。ロゴ＋$100懸賞風テキスト |
+| `store-signup-offer-03` | Store Signup Offer 03 | paid | 1カラム中央揃え。ロゴ＋割引見出し＋メール/SMS入力 |
+| `store-signup-offer-04` | Store Signup Offer 04 | paid | 2カラム（画像+フォーム）。シンプルなメール登録構成 |

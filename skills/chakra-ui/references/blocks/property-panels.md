@@ -26,9 +26,9 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `property-panel-00` | Property Panel 00 | paid |
-| `property-panel-01` | Property Panel 01 | paid |
-| `property-panel-02` | Property Panel 02 | paid |
-| `property-panel-03` | Property Panel 03 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `property-panel-00` | Property Panel 00 | paid | ラベル＋値の縦並びリストによるシンプルなプロパティパネル |
+| `property-panel-01` | Property Panel 01 | paid | インライン編集可能なフィールド付きプロパティパネル |
+| `property-panel-02` | Property Panel 02 | paid | セクション分割＋ドロップダウン/タグ付きプロパティ編集パネル |
+| `property-panel-03` | Property Panel 03 | paid | サイドパネル形式の詳細プロパティ＋アクションボタン付き |

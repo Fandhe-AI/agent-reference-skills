@@ -25,8 +25,8 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `api-header` | Api Header | paid |
-| `header-with-actions` | Header With Actions | paid |
-| `simple-header` | Simple Header | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `api-header` | Api Header | paid | HTTPメソッド＋エンドポイントURL表示のAPIリファレンス用ヘッダー |
+| `header-with-actions` | Header With Actions | paid | パンくずリスト＋タイトル＋アクションボタン群のヘッダー |
+| `simple-header` | Simple Header | paid | パンくずリスト＋タイトル＋説明文のシンプルヘッダー |

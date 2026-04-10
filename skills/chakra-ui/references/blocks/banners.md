@@ -27,13 +27,13 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `banner-centered` | Banner Centered | paid |
-| `banner-for-cookies` | Banner For Cookies | paid |
-| `banner-for-promo` | Banner For Promo | paid |
-| `banner-with-contact` | Banner With Contact | paid |
-| `banner-with-link` | Banner With Link | free |
-| `banner-with-sign-up` | Banner With Sign Up | paid |
-| `banner-with-text` | Banner With Text | free |
-| `banner-with-two-buttons` | Banner With Two Buttons | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `banner-centered` | Banner Centered | paid | 中央揃えテキストの告知バナー |
+| `banner-for-cookies` | Banner For Cookies | paid | Cookie同意確認用のバナー |
+| `banner-for-promo` | Banner For Promo | paid | キャンペーン・セール告知用プロモバナー |
+| `banner-with-contact` | Banner With Contact | paid | 問い合わせリンク付きの告知バナー |
+| `banner-with-link` | Banner With Link | free | リンク付きのシンプルなバナー |
+| `banner-with-sign-up` | Banner With Sign Up | paid | メール入力・サインアップ付きバナー |
+| `banner-with-text` | Banner With Text | free | テキストのみのシンプルな告知バナー |
+| `banner-with-two-buttons` | Banner With Two Buttons | paid | 2つのアクションボタン付きバナー |

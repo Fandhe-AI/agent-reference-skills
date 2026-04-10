@@ -25,9 +25,9 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `product-reviews-01` | Product Reviews 01 | paid |
-| `product-reviews-02` | Product Reviews 02 | paid |
-| `product-reviews-03` | Product Reviews 03 | paid |
-| `product-reviews-04` | Product Reviews 04 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `product-reviews-01` | Product Reviews 01 | paid | 星評価＋テキストレビューのリスト形式。アバター付き |
+| `product-reviews-02` | Product Reviews 02 | paid | 評価分布バー＋レビュー一覧の2カラム構成 |
+| `product-reviews-03` | Product Reviews 03 | paid | カード形式のレビュー。いいねボタン＋日付表示付き |
+| `product-reviews-04` | Product Reviews 04 | paid | レビュー投稿フォーム付き。星評価入力＋テキストエリア |

@@ -27,15 +27,15 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `pricing-simple` | Pricing Simple | free |
-| `pricing-upgrade` | Pricing Upgrade | paid |
-| `pricing-upgrade-02` | Pricing Upgrade 02 | paid |
-| `pricing-with-compare` | Pricing With Compare | paid |
-| `pricing-with-feature-info` | Pricing With Feature Info | paid |
-| `pricing-with-icon` | Pricing With Icon | paid |
-| `pricing-with-seats` | Pricing With Seats | paid |
-| `pricing-with-shared-features` | Pricing With Shared Features | paid |
-| `pricing-with-slider` | Pricing With Slider | paid |
-| `pricing-with-switch-toggle` | Pricing With Switch Toggle | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `pricing-simple` | Pricing Simple | free | シンプルなプランカード並列の料金表 |
+| `pricing-upgrade` | Pricing Upgrade | paid | 現在プランからのアップグレード促進UI |
+| `pricing-upgrade-02` | Pricing Upgrade 02 | paid | 機能比較付きアップグレード促進レイアウト |
+| `pricing-with-compare` | Pricing With Compare | paid | プラン間の機能比較テーブル付き料金表 |
+| `pricing-with-feature-info` | Pricing With Feature Info | paid | 各プランに詳細な機能情報を表示する料金表 |
+| `pricing-with-icon` | Pricing With Icon | paid | アイコン付き機能リストを含む料金カード |
+| `pricing-with-seats` | Pricing With Seats | paid | シート数選択スライダー付きの料金計算UI |
+| `pricing-with-shared-features` | Pricing With Shared Features | paid | 共通機能セクション付きのプラン比較レイアウト |
+| `pricing-with-slider` | Pricing With Slider | paid | スライダーで価格帯を調整できる料金表 |
+| `pricing-with-switch-toggle` | Pricing With Switch Toggle | paid | 月額/年額切替トグル付きの料金表 |

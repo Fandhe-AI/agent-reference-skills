@@ -26,10 +26,10 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `footer-with-address` | Footer With Address | paid |
-| `footer-with-four-columns` | Footer With Four Columns | paid |
-| `footer-with-links-centered` | Footer With Links Centered | paid |
-| `footer-with-logo-below` | Footer With Logo Below | paid |
-| `footer-with-social` | Footer With Social | free |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `footer-with-address` | Footer With Address | paid | 住所・連絡先情報付きのフッター |
+| `footer-with-four-columns` | Footer With Four Columns | paid | 4カラムリンクグループ付きのフッター |
+| `footer-with-links-centered` | Footer With Links Centered | paid | 中央揃えリンク一覧のフッター |
+| `footer-with-logo-below` | Footer With Logo Below | paid | 下部にロゴを配置したフッター |
+| `footer-with-social` | Footer With Social | free | SNSアイコンリンク付きのフッター |

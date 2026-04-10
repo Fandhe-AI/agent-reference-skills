@@ -26,10 +26,10 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `ai-code-and-preview` | Ai Code And Preview | paid |
-| `ai-prompt-with-action-01` | Ai Prompt With Action 01 | paid |
-| `ai-prompt-with-action-02` | Ai Prompt With Action 02 | paid |
-| `ai-prompt-with-action-centered` | Ai Prompt With Action Centered | paid |
-| `ai-studio-playground` | Ai Studio Playground | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `ai-code-and-preview` | Ai Code And Preview | paid | コードエディタとプレビューの2ペイン並列表示レイアウト |
+| `ai-prompt-with-action-01` | Ai Prompt With Action 01 | paid | プロンプト入力＋アクションボタン付きのAIインターフェース |
+| `ai-prompt-with-action-02` | Ai Prompt With Action 02 | paid | プロンプト入力＋アクションボタンの別レイアウトバリエーション |
+| `ai-prompt-with-action-centered` | Ai Prompt With Action Centered | paid | 中央揃えのプロンプト入力＋アクションボタン構成 |
+| `ai-studio-playground` | Ai Studio Playground | paid | モデル/プリセット選択＋Textarea＋パラメータPopover付きPlayground |

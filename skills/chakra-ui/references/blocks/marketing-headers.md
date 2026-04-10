@@ -26,12 +26,12 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `page-header` | Page Header | paid |
-| `page-header-centered` | Page Header Centered | paid |
-| `page-header-with-call-to-action` | Page Header With Call To Action | paid |
-| `page-header-with-form` | Page Header With Form | paid |
-| `page-header-with-search` | Page Header With Search | paid |
-| `section-header` | Section Header | paid |
-| `section-header-with-call-to-action` | Section Header With Call To Action | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `page-header` | Page Header | paid | タグライン・見出し・説明文の左揃えヘッダー |
+| `page-header-centered` | Page Header Centered | paid | 中央揃えのページヘッダー |
+| `page-header-with-call-to-action` | Page Header With Call To Action | paid | CTAボタン付きのページヘッダー |
+| `page-header-with-form` | Page Header With Form | paid | インラインフォーム付きのページヘッダー |
+| `page-header-with-search` | Page Header With Search | paid | 検索入力フィールド付きのページヘッダー |
+| `section-header` | Section Header | paid | セクション用の小型見出しコンポーネント |
+| `section-header-with-call-to-action` | Section Header With Call To Action | paid | CTAリンク付きのセクション見出し |

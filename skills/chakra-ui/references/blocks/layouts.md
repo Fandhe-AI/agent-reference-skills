@@ -27,11 +27,11 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `layout-app-multi-level-navbar` | Layout App Multi Level Navbar | paid |
-| `layout-app-sidebar-column-content` | Layout App Sidebar Column Content | paid |
-| `layout-app-two-columns` | Layout App Two Columns | paid |
-| `layout-app-width-sidebar` | Layout App Width Sidebar | paid |
-| `layout-with-sticky-navbar` | Layout With Sticky Navbar | paid |
-| `layout-with-sticky-sidebar` | Layout With Sticky Sidebar | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `layout-app-multi-level-navbar` | Layout App Multi Level Navbar | paid | 多段ナビバー（メイン+サブ）＋コンテンツ領域のアプリレイアウト |
+| `layout-app-sidebar-column-content` | Layout App Sidebar Column Content | paid | サイドバー＋中間カラム＋メインコンテンツの3カラム構成 |
+| `layout-app-two-columns` | Layout App Two Columns | paid | サイドバー＋メインコンテンツの基本2カラムレイアウト |
+| `layout-app-width-sidebar` | Layout App Width Sidebar | paid | 幅広サイドバー＋コンテンツ領域のアプリシェル |
+| `layout-with-sticky-navbar` | Layout With Sticky Navbar | paid | スクロール時に固定されるナビバー＋コンテンツ領域 |
+| `layout-with-sticky-sidebar` | Layout With Sticky Sidebar | paid | スクロール時に固定されるサイドバー＋コンテンツ領域 |

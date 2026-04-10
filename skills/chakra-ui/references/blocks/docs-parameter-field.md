@@ -25,9 +25,9 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `parameter-field-001` | Parameter Field 001 | paid |
-| `parameter-field-002` | Parameter Field 002 | paid |
-| `parameter-field-003` | Parameter Field 003 | paid |
-| `parameter-field-004` | Parameter Field 004 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `parameter-field-001` | Parameter Field 001 | paid | アンカーリンク付きフィールド一覧。名前＋型＋必須Badge＋説明 |
+| `parameter-field-002` | Parameter Field 002 | paid | モノスペース名＋型＋必須Badge＋enum値表示の一覧 |
+| `parameter-field-003` | Parameter Field 003 | paid | テーブル形式。Prop/Default/Type列のTable.Root構成 |
+| `parameter-field-004` | Parameter Field 004 | paid | Accordion折りたたみ式。Prop＋Type列ヘッダー付きパネル |

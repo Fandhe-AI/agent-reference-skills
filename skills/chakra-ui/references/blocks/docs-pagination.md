@@ -24,8 +24,8 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `pagination-001` | Pagination 001 | paid |
-| `pagination-002` | Pagination 002 | paid |
-| `pagination-003` | Pagination 003 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `pagination-001` | Pagination 001 | paid | 前へ/次へボタンのシンプルなページ送りナビゲーション |
+| `pagination-002` | Pagination 002 | paid | カード形式の前後ナビ。ページタイトル＋矢印アイコン付き |
+| `pagination-003` | Pagination 003 | paid | フルワイド左右分割の前後ナビ。説明テキスト付き |

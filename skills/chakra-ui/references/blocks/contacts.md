@@ -25,8 +25,8 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `contact-dialog-simple-form` | Contact Dialog Simple Form | paid |
-| `contact-form-with-image` | Contact Form With Image | paid |
-| `contact-simple-form` | Contact Simple Form | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `contact-dialog-simple-form` | Contact Dialog Simple Form | paid | ダイアログ（モーダル）内のお問い合わせフォーム |
+| `contact-form-with-image` | Contact Form With Image | paid | 画像付き2カラムのお問い合わせフォーム |
+| `contact-simple-form` | Contact Simple Form | paid | シンプルな1カラムのお問い合わせフォーム |

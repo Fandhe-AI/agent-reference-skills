@@ -25,7 +25,7 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `with-actions` | With Actions | paid |
-| `with-project` | With Project | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `with-actions` | With Actions | paid | 組織切り替えドロップダウン＋招待/管理/設定/サインアウトのアクションメニュー。メンバー数＋プランバッジ表示 |
+| `with-project` | With Project | paid | 組織セレクター＋プロジェクトセレクターの2段階切り替え（「/」区切り）。プロジェクト作成・管理アクション付き |

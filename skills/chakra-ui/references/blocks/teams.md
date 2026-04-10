@@ -26,10 +26,10 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `team-with-avatar` | Team With Avatar | paid |
-| `team-with-card` | Team With Card | paid |
-| `team-with-inline-headline` | Team With Inline Headline | paid |
-| `team-with-large-image` | Team With Large Image | paid |
-| `team-with-square-photo` | Team With Square Photo | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `team-with-avatar` | Team With Avatar | paid | Avatar丸型アイコンの中央揃えメンバーグリッド |
+| `team-with-card` | Team With Card | paid | SNSリンク付きCard形式のメンバー一覧 |
+| `team-with-inline-headline` | Team With Inline Headline | paid | 左に見出し・右にメンバーグリッドの2カラム構成 |
+| `team-with-large-image` | Team With Large Image | paid | 大きな写真とSNSリンク付きのメンバー一覧 |
+| `team-with-square-photo` | Team With Square Photo | paid | 正方形写真とSNSリンク付きのメンバーグリッド |

@@ -25,12 +25,12 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `sidebar-001` | Sidebar 001 | paid |
-| `sidebar-002` | Sidebar 002 | paid |
-| `sidebar-003` | Sidebar 003 | paid |
-| `sidebar-004` | Sidebar 004 | paid |
-| `sidebar-005` | Sidebar 005 | paid |
-| `sidebar-006` | Sidebar 006 | paid |
-| `sidebar-007` | Sidebar 007 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `sidebar-001` | Sidebar 001 | paid | シンプルなリンク一覧のフラットサイドバー |
+| `sidebar-002` | Sidebar 002 | paid | 折りたたみ可能なグループ付き階層サイドバー |
+| `sidebar-003` | Sidebar 003 | paid | アクティブリンクハイライト付きのセクション分割構成 |
+| `sidebar-004` | Sidebar 004 | paid | ネストされたツリー構造のサイドバーナビゲーション |
+| `sidebar-005` | Sidebar 005 | paid | バッジ・カウンター付きのサイドバーリンク一覧 |
+| `sidebar-006` | Sidebar 006 | paid | アイコン＋ラベルのコンパクトサイドバー |
+| `sidebar-007` | Sidebar 007 | paid | 検索フィールド付きのフィルタリング可能サイドバー |

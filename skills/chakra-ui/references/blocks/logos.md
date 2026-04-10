@@ -26,11 +26,11 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `logo-aligned-right` | Logo Aligned Right | paid |
-| `logo-centered` | Logo Centered | paid |
-| `logo-marquee` | Logo Marquee | paid |
-| `logo-marquee-in-card` | Logo Marquee In Card | paid |
-| `logo-with-grid` | Logo With Grid | paid |
-| `logo-within-card` | Logo Within Card | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `logo-aligned-right` | Logo Aligned Right | paid | 左に見出し・右にロゴグリッドの2カラム構成 |
+| `logo-centered` | Logo Centered | paid | テキスト+横並びロゴの中央揃えレイアウト |
+| `logo-marquee` | Logo Marquee | paid | 自動スクロール（マーキー）するロゴ表示 |
+| `logo-marquee-in-card` | Logo Marquee In Card | paid | カード内ロゴが2段マーキーで流れるレイアウト |
+| `logo-with-grid` | Logo With Grid | paid | ボーダー付きグリッドセルにロゴを配置する構成 |
+| `logo-within-card` | Logo Within Card | paid | 個別カード内にロゴを配置するグリッド |

@@ -25,9 +25,9 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `toc-line` | Toc Line | paid |
-| `toc-minimal` | Toc Minimal | paid |
-| `toc-mobile` | Toc Mobile | paid |
-| `toc-numbers` | Toc Numbers | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `toc-line` | Toc Line | paid | 左側縦線インジケーター付きの目次。アクティブ項目をハイライト |
+| `toc-minimal` | Toc Minimal | paid | テキストリンクのみのミニマル目次 |
+| `toc-mobile` | Toc Mobile | paid | モバイル向け折りたたみ式の目次ナビゲーション |
+| `toc-numbers` | Toc Numbers | paid | 番号付きの目次リスト。セクション番号を自動表示 |

@@ -25,8 +25,8 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `navbar-island` | Navbar Island | paid |
-| `navbar-with-call-to-action` | Navbar With Call To Action | paid |
-| `navbar-with-call-to-actions` | Navbar With Call To Actions | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `navbar-island` | Navbar Island | paid | 浮遊型アイランドスタイルのナビバー |
+| `navbar-with-call-to-action` | Navbar With Call To Action | paid | 単一CTAボタン付きのナビゲーションバー |
+| `navbar-with-call-to-actions` | Navbar With Call To Actions | paid | 複数CTAボタン付きのナビゲーションバー |

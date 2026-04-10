@@ -25,8 +25,8 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `faq-centered` | Faq Centered | paid |
-| `faq-wall-of-text` | Faq Wall Of Text | paid |
-| `faq-with-inline-headline` | Faq With Inline Headline | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `faq-centered` | Faq Centered | paid | 中央揃えアコーディオン形式のFAQ |
+| `faq-wall-of-text` | Faq Wall Of Text | paid | テキスト一覧形式のQ&A表示 |
+| `faq-with-inline-headline` | Faq With Inline Headline | paid | 左に見出し・右にアコーディオンの2カラムFAQ |

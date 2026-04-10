@@ -25,9 +25,9 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `shopping-cart-01` | Shopping Cart 01 | paid |
-| `shopping-cart-02` | Shopping Cart 02 | paid |
-| `shopping-cart-mini-01` | Shopping Cart Mini 01 | paid |
-| `shopping-cart-mini-02` | Shopping Cart Mini 02 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `shopping-cart-01` | Shopping Cart 01 | paid | フルページカート。商品一覧＋数量変更＋注文サマリー |
+| `shopping-cart-02` | Shopping Cart 02 | paid | 2カラムカート。左に商品リスト、右に合計・決済ボタン |
+| `shopping-cart-mini-01` | Shopping Cart Mini 01 | paid | ドロップダウン型ミニカート。コンパクトな商品一覧 |
+| `shopping-cart-mini-02` | Shopping Cart Mini 02 | paid | スライドイン型ミニカート。サイドパネル表示 |

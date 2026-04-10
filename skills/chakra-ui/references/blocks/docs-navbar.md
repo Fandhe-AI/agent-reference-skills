@@ -24,11 +24,11 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `navbar-001` | Navbar 001 | paid |
-| `navbar-002` | Navbar 002 | paid |
-| `navbar-003` | Navbar 003 | paid |
-| `navbar-004` | Navbar 004 | paid |
-| `navbar-005` | Navbar 005 | paid |
-| `navbar-006` | Navbar 006 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `navbar-001` | Navbar 001 | paid | ロゴ＋ナビリンク＋検索＋バージョン切替の標準構成 |
+| `navbar-002` | Navbar 002 | paid | ロゴ＋中央検索バー＋テーマ切替ボタンの構成 |
+| `navbar-003` | Navbar 003 | paid | ドロップダウンメニュー付きの多階層ナビバー |
+| `navbar-004` | Navbar 004 | paid | コンパクトなロゴ＋ナビリンク＋検索アイコン構成 |
+| `navbar-005` | Navbar 005 | paid | 左右分割のナビバー。アクションボタン群を右側に配置 |
+| `navbar-006` | Navbar 006 | paid | モバイル対応ハンバーガーメニュー付きナビバー |

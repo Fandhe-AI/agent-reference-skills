@@ -25,10 +25,10 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `product-grid-00` | Product Grid 00 | paid |
-| `product-grid-01` | Product Grid 01 | paid |
-| `product-grid-02` | Product Grid 02 | paid |
-| `product-grid-03` | Product Grid 03 | paid |
-| `product-grid-04` | Product Grid 04 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `product-grid-00` | Product Grid 00 | paid | 2-4カラムSimpleGrid。シンプルな商品カード構成 |
+| `product-grid-01` | Product Grid 01 | paid | 隙間なし(gap=0.5)の密集グリッド。カラーピッカー付き |
+| `product-grid-02` | Product Grid 02 | paid | 商品画像＋カラーピッカー＋商品情報の詳細カード |
+| `product-grid-03` | Product Grid 03 | paid | 全商品表示の2-4カラムグリッド。gap=2の標準間隔 |
+| `product-grid-04` | Product Grid 04 | paid | 1-3カラムの大きめカードレイアウト |

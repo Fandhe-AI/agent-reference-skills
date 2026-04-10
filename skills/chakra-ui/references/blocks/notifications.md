@@ -26,12 +26,12 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `notification-tray-default-empty-state` | Notification Tray Default Empty State | paid |
-| `notification-tray-default-filled` | Notification Tray Default Filled | paid |
-| `notification-tray-with-filter-empty-state` | Notification Tray With Filter Empty State | paid |
-| `notification-tray-with-filter-filled` | Notification Tray With Filter Filled | paid |
-| `notification-tray-with-loading` | Notification Tray With Loading | paid |
-| `notification-tray-with-tabs-empty-state` | Notification Tray With Tabs Empty State | paid |
-| `notification-tray-with-tabs-filled` | Notification Tray With Tabs Filled | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `notification-tray-default-empty-state` | Notification Tray Default Empty State | paid | 通知なし時のデフォルト空状態表示（アイコン＋メッセージ） |
+| `notification-tray-default-filled` | Notification Tray Default Filled | paid | 通知リスト付きのデフォルト通知トレイ表示 |
+| `notification-tray-with-filter-empty-state` | Notification Tray With Filter Empty State | paid | フィルター機能付き通知トレイの空状態表示 |
+| `notification-tray-with-filter-filled` | Notification Tray With Filter Filled | paid | フィルター（種別/未読等）付き通知トレイ＋通知リスト |
+| `notification-tray-with-loading` | Notification Tray With Loading | paid | スケルトン/スピナーによる読み込み中の通知トレイ |
+| `notification-tray-with-tabs-empty-state` | Notification Tray With Tabs Empty State | paid | タブ切替（All/Unread等）付き通知トレイの空状態 |
+| `notification-tray-with-tabs-filled` | Notification Tray With Tabs Filled | paid | タブ切替付き通知トレイ＋通知アイテムリスト |

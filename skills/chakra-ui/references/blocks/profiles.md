@@ -26,13 +26,13 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `profile-01` | Profile 01 | paid |
-| `profile-02` | Profile 02 | paid |
-| `profile-03` | Profile 03 | paid |
-| `profile-04` | Profile 04 | paid |
-| `profile-05` | Profile 05 | paid |
-| `profile-06` | Profile 06 | paid |
-| `profile-07` | Profile 07 | paid |
-| `profile-08` | Profile 08 | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `profile-01` | Profile 01 | paid | Avatar＋名前＋経歴のシンプルなプロフィールカード |
+| `profile-02` | Profile 02 | paid | カバー画像＋Avatar＋ステータス情報付きプロフィール |
+| `profile-03` | Profile 03 | paid | サイドバー形式のプロフィール＋統計情報（フォロワー等） |
+| `profile-04` | Profile 04 | paid | 横並びレイアウトのプロフィール＋アクションボタン |
+| `profile-05` | Profile 05 | paid | カード内にAvatar＋詳細情報＋SNSリンク付きプロフィール |
+| `profile-06` | Profile 06 | paid | フルワイドカバー＋中央揃えAvatar＋タブナビ付きプロフィール |
+| `profile-07` | Profile 07 | paid | コンパクトな情報表示＋Badge付きプロフィールカード |
+| `profile-08` | Profile 08 | paid | リスト形式の詳細プロフィール＋連絡先情報 |

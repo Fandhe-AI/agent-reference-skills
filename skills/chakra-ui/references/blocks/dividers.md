@@ -26,9 +26,9 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `divider-with-button` | Divider With Button | paid |
-| `divider-with-button-group` | Divider With Button Group | paid |
-| `divider-with-icon-button` | Divider With Icon Button | paid |
-| `divider-with-text` | Divider With Text | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `divider-with-button` | Divider With Button | paid | 区切り線の中央にoutlineボタン（+Create）を配置 |
+| `divider-with-button-group` | Divider With Button Group | paid | 区切り線の中央にattached IconButtonグループ（左右矢印+追加）を配置 |
+| `divider-with-icon-button` | Divider With Icon Button | paid | 区切り線の中央にghost IconButton（+アイコン）を配置 |
+| `divider-with-text` | Divider With Text | paid | 区切り線の中央にテキストラベルを配置 |

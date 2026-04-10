@@ -27,15 +27,15 @@ Tool: `get_component_templates`
 
 ## Variants
 
-| ID | Name | Access |
-|----|------|--------|
-| `testimonial-centered` | Testimonial Centered | paid |
-| `testimonial-grid-with-logo` | Testimonial Grid With Logo | paid |
-| `testimonial-prominent` | Testimonial Prominent | paid |
-| `testimonial-prominent-v2` | Testimonial Prominent V2 | paid |
-| `testimonial-simple` | Testimonial Simple | paid |
-| `testimonial-simple-text` | Testimonial Simple Text | free |
-| `testimonial-with-card` | Testimonial With Card | paid |
-| `testimonial-with-mixed-grid` | Testimonial With Mixed Grid | paid |
-| `testimonial-with-rating` | Testimonial With Rating | paid |
-| `testimonial-with-stat` | Testimonial With Stat | paid |
+| ID | Name | Access | Description |
+|----|------|--------|-------------|
+| `testimonial-centered` | Testimonial Centered | paid | 中央揃えの引用文とアバター付き推薦文 |
+| `testimonial-grid-with-logo` | Testimonial Grid With Logo | paid | 企業ロゴ付きのグリッド形式テスティモニアル |
+| `testimonial-prominent` | Testimonial Prominent | paid | 大きなアバターと引用文の目立つレイアウト |
+| `testimonial-prominent-v2` | Testimonial Prominent V2 | paid | 画像付きの大型テスティモニアルレイアウト |
+| `testimonial-simple` | Testimonial Simple | paid | アバターと引用文のシンプルな1件表示 |
+| `testimonial-simple-text` | Testimonial Simple Text | free | テキストのみのミニマルな推薦文表示 |
+| `testimonial-with-card` | Testimonial With Card | paid | カード形式で複数の推薦文を並べるレイアウト |
+| `testimonial-with-mixed-grid` | Testimonial With Mixed Grid | paid | サイズの異なるカードを混合配置したグリッド |
+| `testimonial-with-rating` | Testimonial With Rating | paid | 星評価（レーティング）付きテスティモニアル |
+| `testimonial-with-stat` | Testimonial With Stat | paid | 統計データ付きのテスティモニアルセクション |
