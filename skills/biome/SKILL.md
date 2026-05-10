@@ -1,9 +1,9 @@
 ---
 name: biome
 description: >
-  Biome (formatter/linter) API リファレンス。
-  biome.json, biome check, biome lint, biome format,
-  ルール設定, eslint/prettier 移行, suppressions
+  Biome (Rust 製の高速 JavaScript / TypeScript フォーマッター・リンター) リファレンス。
+  biome.json 設定、biome check / lint / format コマンド、ルール、suppressions、
+  ESLint / Prettier からの移行、import 整理、CI 連携、monorepo 対応。
 user-invocable: false
 model: sonnet
 ---

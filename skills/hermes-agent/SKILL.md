@@ -2,12 +2,10 @@
 name: hermes-agent
 description: >
   Hermes Agent CLI リファレンス。
-  インストール、CLI コマンド (chat, model, gateway, config, skills, cron, webhook, mcp, profile 等)、
-  Configuration (Terminal Backends 6種, Memory, TTS/STT, Compression, Display, Auxiliary Models 等)、
+  インストール、CLI コマンド (chat, model, gateway, config, skills, cron, webhook, mcp, profile)、
+  Configuration (Terminal Backends, Memory, TTS / STT, Compression, Display, Auxiliary Models)、
   Features (Tools, Skills, MCP, Memory, Voice Mode, Personality, Context Files)、
-  Messaging Gateway (14+ プラットフォーム)、
-  Security (5層防御モデル, Container Isolation, Tirith, SSRF Protection)、
-  Architecture
+  Messaging Gateway (14+ プラットフォーム)、Security、Architecture。
 user-invocable: false
 model: sonnet
 ---

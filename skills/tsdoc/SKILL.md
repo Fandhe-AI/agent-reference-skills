@@ -1,6 +1,10 @@
 ---
 name: tsdoc
-description: TSDoc コメントの記述ガイドライン。コード作成・レビュー・リファクタリング時に自動で参照される。TypeDoc 互換の TSDoc タグのみ使用する
+description: >
+  TSDoc (TypeScript ドキュメンテーションコメント) ガイドライン。
+  @param, @returns, @example, @remarks, @public / @internal / @beta、
+  @deprecated, @see, @throws、TypeDoc 互換タグのみ使用。
+  コード作成・レビュー・リファクタリング時に自動参照。
 user-invocable: false
 model: sonnet
 ---

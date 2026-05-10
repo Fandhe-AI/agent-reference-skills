@@ -1,9 +1,10 @@
 ---
 name: react-flow
 description: >
-  React Flow API リファレンス。
-  reactflow, ノード, エッジ, ハンドル, ビューポート,
-  カスタムノード, レイアウト, dagre, elkjs
+  React Flow (ノードベース UI / フロー図ライブラリ for React) リファレンス。
+  ReactFlow コンポーネント、Node, Edge, Handle, Viewport、
+  カスタムノード / エッジ、Controls / MiniMap / Background、
+  レイアウトアルゴリズム (dagre, elkjs)、ドラッグ&ドロップ、エッジ接続。
 user-invocable: false
 model: sonnet
 ---

@@ -1,8 +1,10 @@
 ---
 name: zod
 description: >
-  Zod (TypeScript スキーマバリデーション) リファレンス。
-  parse, safeParse, infer, refine, transform, pipe
+  Zod (TypeScript-first スキーマバリデーションライブラリ) リファレンス。
+  z.object / z.string / z.number / z.array / z.union / z.enum 等のスキーマ定義、
+  parse, safeParse, z.infer (型推論)、refine, transform, pipe、
+  default, optional, nullable、エラー処理、Zod 4 移行。
 user-invocable: false
 model: sonnet
 ---

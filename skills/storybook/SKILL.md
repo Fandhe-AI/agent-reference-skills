@@ -1,9 +1,10 @@
 ---
 name: storybook
 description: >
-  Storybook API リファレンス。
-  story, CSF, args, decorators, play function,
-  テスト, autodocs, main.ts, preview.ts, アドオン
+  Storybook (UI コンポーネントカタログ・テストツール) リファレンス。
+  story, CSF (Component Story Format)、args, argTypes, decorators、
+  play function、interaction tests、autodocs、
+  main.ts / preview.ts 設定、アドオン (a11y, controls, viewport, themes)。
 user-invocable: false
 model: sonnet
 ---

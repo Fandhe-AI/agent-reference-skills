@@ -2,10 +2,10 @@
 name: rust
 description: >
   Rust 言語リファレンス。
-  TRPL (The Rust Programming Language), Rust by Example, Reference,
-  Cargo Book, rustc Book, rustdoc Book, Rustonomicon (Unsafe Rust),
-  Edition Guide, Command Line Book, Embedded Book,
-  Standard Library / Error Index / Unstable Book 概要
+  TRPL (The Rust Programming Language)、Rust by Example、Reference、
+  Cargo Book、rustc Book、rustdoc Book、Rustonomicon (Unsafe Rust)、
+  Edition Guide、Standard Library、Error Index。
+  所有権、ライフタイム、トレイト、async / await、エラーハンドリング、マクロ。
 user-invocable: false
 model: sonnet
 ---

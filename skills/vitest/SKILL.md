@@ -1,9 +1,10 @@
 ---
 name: vitest
 description: >
-  Vitest テストフレームワーク API リファレンス。
-  test, describe, expect, vi.fn, vi.mock, vi.spyOn,
-  coverage, snapshot, vitest.config.ts
+  Vitest (Vite ネイティブテストフレームワーク) リファレンス。
+  test, describe, it, expect, vi.fn, vi.mock, vi.spyOn、
+  beforeEach / afterEach / beforeAll / afterAll、coverage (v8 / istanbul)、snapshot、
+  vitest.config.ts、ワークスペース、ブラウザモード、UI モード、bench。
 user-invocable: false
 model: sonnet
 ---

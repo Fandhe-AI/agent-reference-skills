@@ -1,9 +1,10 @@
 ---
 name: playwright
 description: >
-  Playwright (E2E テストフレームワーク) リファレンス。
-  test, expect, page, locator, getByRole, toBeVisible,
-  click, fill, route, mock, fixtures, config, auth, trace
+  Playwright (E2E / コンポーネントテストフレームワーク) リファレンス。
+  test, expect, page, locator, getByRole / getByText / getByLabel / getByTestId、
+  toBeVisible, click, fill, route, mock, fixtures、
+  playwright.config.ts、auth 永続化、trace viewer、codegen、UI モード。
 user-invocable: false
 model: sonnet
 ---

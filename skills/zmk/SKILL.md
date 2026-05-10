@@ -1,18 +1,12 @@
 ---
 name: zmk
 description: >
-  ZMK Firmware リファレンス。
-  Getting Started (hardware, user-setup, customization, zmk-cli),
-  Troubleshooting (building/connection/flashing/hardware issues),
-  Features (bluetooth, split-keyboards, encoders, displays, lighting, pointing, studio, low-power-states 等 12 種),
-  Keymaps (overview, keymap-example, list-of-keycodes, modifiers, combos, conditional-layers),
-  Behaviors (key-press, hold-tap, layers, macros, tap-dance, sticky-key, mod-morph, mouse-emulation, outputs, bluetooth, backlight, underglow, power, reset, soft-off, studio-unlock, sensor-rotate 等 22 種),
-  Input Processors (code-mapper, scaler, temp-layer, transformer, behaviors),
-  Configuration (Kconfig + Devicetree settings 19 種),
-  Development (devicetree, events, module-creation, new-behavior, studio-rpc-protocol, usb-logging),
-  Contributing (clean-room, documentation, pull-requests),
-  Hardware Integration (new-board, new-shield, physical-layouts, pinctrl, dongle, bootloader, lighting),
-  Local Toolchain (setup container/native, build-flash, ide-integration, tests, pre-commit)
+  ZMK Firmware (オープンソースキーボードファームウェア) リファレンス。
+  Getting Started (hardware, user-setup, customization, zmk-cli)、
+  Features (bluetooth, split keyboards, encoders, displays, lighting, pointing, studio, low-power)、
+  Keymaps (keycodes, modifiers, combos, conditional layers)、
+  Behaviors (タップ・ホールド、レイヤー、マクロ、tap-dance, sticky-key)、
+  Input Processors、Hardware Integration、Troubleshooting。
 user-invocable: false
 model: sonnet
 ---

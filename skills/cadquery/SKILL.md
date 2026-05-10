@@ -1,16 +1,11 @@
 ---
 name: cadquery
 description: >
-  CadQuery API リファレンス。
-  Workplane API（2D/3D 操作, lineTo/extrude/revolve/sweep/loft/fillet/chamfer/shell）,
-  Sketch API（face/edge based, 制約ベース solver）, Assemblies（Constraint solver, 9 種制約, glTF/STEP 出力）,
-  Free Function API, Visualization（VTK, Jupyter）, Selectors（文字列構文, クラス階層, Nth 系）,
-  Class hierarchy（Shape/Vertex/Edge/Wire/Face/Shell/Solid/Compound, Vector/Plane/Location）,
-  Import/Export（STEP, DXF, STL, glTF, SVG, AMF/3MF, TJS, VRML）,
-  CQGI（CadQuery Gateway Interface, スクリプト実行環境）,
-  Plugin extension（OpenCascade 直接呼び出し, monkey-patching, 関数型 API）,
-  公式 32+1 examples（Plate, Bottle, Lego, Bearing, Enclosure, Cycloidal Gear 等）,
-  API Cheatsheet。
+  CadQuery (Python 製 3D CAD スクリプティングライブラリ) リファレンス。
+  Workplane API (lineTo / extrude / revolve / sweep / loft / fillet / chamfer / shell)、
+  Sketch API、Assemblies (Constraint solver, 9 種制約)、Free Function API、
+  Selectors、Class hierarchy (Shape / Vertex / Edge / Wire / Face / Shell / Solid)、
+  Import / Export (STEP / DXF / STL / glTF / SVG)、Visualization (VTK, Jupyter)、CQGI。
 user-invocable: false
 model: sonnet
 ---

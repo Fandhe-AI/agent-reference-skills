@@ -1,9 +1,10 @@
 ---
 name: better-auth
 description: >
-  Better Auth (TypeScript 認証フレームワーク) API リファレンス。
-  betterAuth, createAuthClient, signUp, signIn, session,
-  OAuth, passkey, twoFactor, プラグイン, 認証, 認可
+  Better Auth (TypeScript 認証フレームワーク) リファレンス。
+  認証・認可、サインアップ・サインイン、セッション管理、OAuth、パスキー、
+  二要素認証 (TOTP)、プラグイン (organization, admin, magic-link, anonymous 等)。
+  betterAuth, createAuthClient, signUp, signIn, getSession。
 user-invocable: false
 model: sonnet
 ---
