@@ -1,6 +1,6 @@
 ---
 name: implement-issue
-description: GitHub Issue を読み込み、`_/local-plans/<issue-number>-<slug>.md` に詳細計画を作成して**ユーザー承認後**にコードを実装する。実装後はセキュリティレビュー (OWASP Top 10) → テスト実行 → Conventional Commits でコミット。Issue 番号や URL を渡された実装依頼、「Issue #N を実装して」「この Issue を着手」などで使用。
+description: 'GitHub Issue を読み込み、`_/local-plans/<issue-number>-<slug>.md` に詳細計画を作成して**ユーザー承認後**にコードを実装する。実装後はセキュリティレビュー (OWASP Top 10) → テスト実行 → Conventional Commits でコミット。Issue 番号や URL を渡された実装依頼、「Issue #N を実装して」「この Issue を着手」などで使用。'
 model: opus
 ---
 

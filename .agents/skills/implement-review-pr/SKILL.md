@@ -1,6 +1,6 @@
 ---
 name: implement-review-pr
-description: GitHub PR の CI ステータス (`gh pr checks`)・コード品質・セキュリティ (OWASP Top 10)・Conventional Commits 準拠をレビューする。`gh pr review --approve/--request-changes/--comment` でレビュー投稿も可能。「PR #N をレビュー」「PR レビューして」などで使用。ローカル diff のレビューには implement-review を使用。
+description: 'GitHub PR の CI ステータス (`gh pr checks`)・コード品質・セキュリティ (OWASP Top 10)・Conventional Commits 準拠をレビューする。`gh pr review --approve/--request-changes/--comment` でレビュー投稿も可能。「PR #N をレビュー」「PR レビューして」などで使用。ローカル diff のレビューには implement-review を使用。'
 model: sonnet
 ---
 
