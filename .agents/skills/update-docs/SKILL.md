@@ -1,6 +1,7 @@
 ---
 name: update-docs
-description: コード変更に基づいて CLAUDE.md やスキル一覧を更新する。
+description: 前回更新コミット (`_/.last-update-docs` で追跡) からの差分をもとに CLAUDE.md のスキル一覧・リポジトリ構造ツリーを更新する。新スキル追加時、`.claude/agents/` や `.claude/rules/` の変更時、「ドキュメント更新して」「CLAUDE.md を更新して」などで使用。
+model: haiku
 ---
 
 # update-docs

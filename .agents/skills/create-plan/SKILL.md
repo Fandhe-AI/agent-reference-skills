@@ -1,8 +1,10 @@
 ---
 name: create-plan
 description: |
-  実装タスクの計画を _/local-plans/<plan-name>.md で作成する。
+  実装タスクの計画を `_/local-plans/<plan-name>.md` に作成する。
+  Explore Agent でコードベースを先に調査してから検証可能な粒度・並列実行可能な単位で記述し、plan-verifier Agent で検証可能な標準フォーマット (背景・現状・設計・ファイル構成ツリー・実装ステップ・検証方法) に従う。「計画立てて」「設計して」「タスク分解」「実装方針を考えて」などで使用。
   plan, 計画, 設計, 実装計画, タスク分解, create-plan
+model: opus
 ---
 
 # 実装計画の作成

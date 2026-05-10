@@ -1,6 +1,7 @@
 ---
 name: create-issue
-description: GitHub Issue を親子構造 (sub-issues) で作成する。
+description: GitHub Issue を親子構造 (sub-issues) で作成する。`gh issue create` で親・子 Issue を生成し、`gh api .../sub_issues` で親子関係を紐付ける。タイトルは Conventional Commits 形式 (`feat:`, `fix:` 等) を推奨。「Issue 作って」「タスクを分解して Issue 化」などで使用。
+model: sonnet
 ---
 
 # create-issue
@@ -77,3 +78,8 @@ gh api \
 - Issue タイトルは Conventional Commits 形式を推奨
 - 子 Issue は独立して完了できる粒度にする
 - ラベル・マイルストーンが必要な場合はユーザーに確認する
+- **sandbox 環境での `GIT_SSL_NO_VERIFY=1` 併用**：詳細は後述の「sandbox 環境での実行」節を参照
+
+## sandbox 環境での実行
+
+sandbox で本スキルを実行する場合、ネットワーク越しの GitHub 操作には `GIT_SSL_NO_VERIFY=1` の併用を検討してください。本スキルの主なリモート操作は `gh issue create` / `gh api` で、「リモート書き込み」判定は **要（本スキルは主に API 経由）** です。コマンド分類の詳細と TLS 検証無効化の注意事項は [`docs/sandbox-tls.md`](../../docs/sandbox-tls.md) を参照してください。
