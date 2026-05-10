@@ -4,6 +4,7 @@ description: >
   Knip (未使用コード検出) リファレンス。
   dead code, unused deps/exports, auto-fix, monorepo
 user-invocable: false
+model: sonnet
 ---
 
 # Knip リファレンス

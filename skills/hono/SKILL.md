@@ -7,6 +7,7 @@ description: >
   Helpers (Cookie, Streaming, WebSocket, Factory, RPC),
   マルチランタイム対応 (Cloudflare Workers, Deno, Bun, Node.js)
 user-invocable: false
+model: sonnet
 ---
 
 # Hono API リファレンス

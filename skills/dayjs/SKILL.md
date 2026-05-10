@@ -4,6 +4,7 @@ description: >
   Day.js 軽量日付ライブラリ API リファレンス。
   parse, format, manipulate, query, duration, timezone, plugin
 user-invocable: false
+model: sonnet
 ---
 
 # Day.js API リファレンス

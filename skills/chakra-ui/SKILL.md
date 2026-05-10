@@ -6,6 +6,7 @@ description: >
   テーマ, レシピ, スタイルプロップ, レスポンシブ, ダークモード,
   ブロック (Chakra UI Pro テンプレート)
 user-invocable: false
+model: sonnet
 ---
 
 # Chakra UI v3 リファレンス

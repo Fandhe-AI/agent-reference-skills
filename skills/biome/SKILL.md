@@ -5,6 +5,7 @@ description: >
   biome.json, biome check, biome lint, biome format,
   ルール設定, eslint/prettier 移行, suppressions
 user-invocable: false
+model: sonnet
 ---
 
 # Biome リファレンス

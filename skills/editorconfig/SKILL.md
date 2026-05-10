@@ -3,6 +3,7 @@ name: editorconfig
 description: >
   EditorConfig リファレンス。.editorconfig プロパティと glob パターン
 user-invocable: false
+model: sonnet
 ---
 
 # EditorConfig リファレンス

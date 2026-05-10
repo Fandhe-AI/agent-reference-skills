@@ -4,6 +4,7 @@ description: >
   Pino (JSON ロガー) リファレンス。
   logger, transport, child, redaction, serializers
 user-invocable: false
+model: sonnet
 ---
 
 # Pino — Super Fast JSON Logger リファレンス

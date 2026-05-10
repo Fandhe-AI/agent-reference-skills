@@ -4,6 +4,7 @@ description: >
   Zod (TypeScript スキーマバリデーション) リファレンス。
   parse, safeParse, infer, refine, transform, pipe
 user-invocable: false
+model: sonnet
 ---
 
 # Zod リファレンス

@@ -5,6 +5,7 @@ description: >
   turbo.json, turbo run, キャッシュ, タスク依存,
   workspaces, --filter, remote caching
 user-invocable: false
+model: sonnet
 ---
 
 # Turborepo リファレンス

@@ -5,6 +5,7 @@ description: >
   reactflow, ノード, エッジ, ハンドル, ビューポート,
   カスタムノード, レイアウト, dagre, elkjs
 user-invocable: false
+model: sonnet
 ---
 
 # React Flow リファレンス

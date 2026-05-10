@@ -5,6 +5,7 @@ description: >
   REST API, GraphQL, Actions, Webhooks, GitHub Apps, gh CLI,
   認証, workflow, pull requests, GITHUB_TOKEN
 user-invocable: false
+model: sonnet
 ---
 
 # GitHub Docs リファレンス

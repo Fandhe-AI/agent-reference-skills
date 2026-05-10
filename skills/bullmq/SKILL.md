@@ -5,6 +5,7 @@ description: >
   Queue, Worker, Job, FlowProducer, イベント,
   rate-limiting, cron, delayed, repeatable
 user-invocable: false
+model: sonnet
 ---
 
 # BullMQ リファレンス

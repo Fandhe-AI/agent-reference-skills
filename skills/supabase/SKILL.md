@@ -5,6 +5,7 @@ description: >
   database, postgres, auth, storage, edge-functions, realtime,
   supabase-js, supabase-cli, RLS, vectors, migrations
 user-invocable: false
+model: sonnet
 ---
 
 # Supabase リファレンス

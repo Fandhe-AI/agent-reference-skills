@@ -5,6 +5,7 @@ description: >
   loader, action, middleware, hooks, コンポーネント,
   routes.ts, SSR, SPA, ErrorBoundary, session
 user-invocable: false
+model: sonnet
 ---
 
 # React Router v7 Framework Mode リファレンス

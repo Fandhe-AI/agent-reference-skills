@@ -7,6 +7,7 @@ description: >
   Edition Guide, Command Line Book, Embedded Book,
   Standard Library / Error Index / Unstable Book 概要
 user-invocable: false
+model: sonnet
 ---
 
 # Rust リファレンス
