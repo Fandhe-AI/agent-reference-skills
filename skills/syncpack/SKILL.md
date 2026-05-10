@@ -5,6 +5,7 @@ description: >
   .syncpackrc, lint, fix, update, format,
   versionGroups, semverGroups, customTypes, source
 user-invocable: false
+model: sonnet
 ---
 
 # Syncpack リファレンス

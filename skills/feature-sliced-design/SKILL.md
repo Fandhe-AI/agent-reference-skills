@@ -5,6 +5,7 @@ description: >
   コード作成・レビュー・リファクタリング時に FSD のルールを自動で参照する。
   レイヤー構成、依存方向、Public API パターンを提供する。
 user-invocable: false
+model: sonnet
 ---
 
 # Feature-Sliced Design ガイドライン

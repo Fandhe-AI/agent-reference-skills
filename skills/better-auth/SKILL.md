@@ -5,6 +5,7 @@ description: >
   betterAuth, createAuthClient, signUp, signIn, session,
   OAuth, passkey, twoFactor, プラグイン, 認証, 認可
 user-invocable: false
+model: sonnet
 ---
 
 # Better Auth API リファレンス

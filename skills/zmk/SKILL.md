@@ -14,6 +14,7 @@ description: >
   Hardware Integration (new-board, new-shield, physical-layouts, pinctrl, dongle, bootloader, lighting),
   Local Toolchain (setup container/native, build-flash, ide-integration, tests, pre-commit)
 user-invocable: false
+model: sonnet
 ---
 
 # ZMK Firmware リファレンス

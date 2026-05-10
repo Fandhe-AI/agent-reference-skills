@@ -4,6 +4,7 @@ description: >
   TypeDoc (TypeScript ドキュメントジェネレーター) リファレンス。
   typedoc.json, TSDoc タグ, オプション, テーマ, プラグイン開発
 user-invocable: false
+model: sonnet
 ---
 
 # TypeDoc リファレンス

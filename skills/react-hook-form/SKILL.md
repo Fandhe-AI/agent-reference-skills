@@ -4,6 +4,7 @@ description: >
   React Hook Form v7 API リファレンス。
   useForm, Controller, useFieldArray, バリデーション, resolver
 user-invocable: false
+model: sonnet
 ---
 
 # React Hook Form v7 リファレンス

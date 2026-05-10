@@ -4,6 +4,7 @@ description: >
   Driver.js プロダクトツアー・要素ハイライトライブラリ API リファレンス。
   driver, highlight, tour steps, popover, overlay, theming, configuration
 user-invocable: false
+model: sonnet
 ---
 
 # Driver.js API リファレンス

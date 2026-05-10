@@ -5,6 +5,7 @@ description: >
   story, CSF, args, decorators, play function,
   テスト, autodocs, main.ts, preview.ts, アドオン
 user-invocable: false
+model: sonnet
 ---
 
 # Storybook リファレンス

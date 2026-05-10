@@ -7,6 +7,7 @@ description: >
   Drawing Sheet Editor (pl_editor), Calculator Tools (pcb_calculator),
   Command-Line Interface (kicad-cli) の各マニュアル
 user-invocable: false
+model: sonnet
 ---
 
 # KiCad 10.0 リファレンス

@@ -5,6 +5,7 @@ description: >
   test, expect, page, locator, getByRole, toBeVisible,
   click, fill, route, mock, fixtures, config, auth, trace
 user-invocable: false
+model: sonnet
 ---
 
 # Playwright E2E テストフレームワーク リファレンス

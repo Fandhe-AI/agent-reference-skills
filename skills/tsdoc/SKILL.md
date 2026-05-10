@@ -2,6 +2,7 @@
 name: tsdoc
 description: TSDoc コメントの記述ガイドライン。コード作成・レビュー・リファクタリング時に自動で参照される。TypeDoc 互換の TSDoc タグのみ使用する
 user-invocable: false
+model: sonnet
 ---
 
 # TSDoc コメント ガイドライン

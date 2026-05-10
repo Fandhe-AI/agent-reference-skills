@@ -6,6 +6,7 @@ description: >
   SVG / DXF / JSCAD / KiCad を出力。
   Anchors, Zones, Adjustments, Preprocessing, Footprints, Traces 等。
 user-invocable: false
+model: sonnet
 ---
 
 # Ergogen リファレンス

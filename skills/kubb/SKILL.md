@@ -4,6 +4,7 @@ description: >
   Kubb (OpenAPI コードジェネレーター) リファレンス。
   kubb.config.ts, Swagger, TanStack Query, Zod, MSW
 user-invocable: false
+model: sonnet
 ---
 
 # Kubb リファレンス

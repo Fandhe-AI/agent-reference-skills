@@ -5,6 +5,7 @@ description: >
   test, describe, expect, vi.fn, vi.mock, vi.spyOn,
   coverage, snapshot, vitest.config.ts
 user-invocable: false
+model: sonnet
 ---
 
 # Vitest API リファレンス

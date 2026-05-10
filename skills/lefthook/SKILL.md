@@ -4,6 +4,7 @@ description: >
   Lefthook (Git hooks マネージャー) リファレンス。
   lefthook.yml, pre-commit, pre-push, parallel, piped
 user-invocable: false
+model: sonnet
 ---
 
 # Lefthook リファレンス

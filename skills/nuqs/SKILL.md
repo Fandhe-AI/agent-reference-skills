@@ -4,6 +4,7 @@ description: >
   nuqs (URL search params state manager) リファレンス。
   useQueryState, useQueryStates, parsers
 user-invocable: false
+model: sonnet
 ---
 
 # nuqs API リファレンス

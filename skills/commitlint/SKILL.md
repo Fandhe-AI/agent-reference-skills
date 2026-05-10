@@ -4,6 +4,7 @@ description: >
   commitlint (コミットメッセージ検証) リファレンス。
   rules, plugins, shareable-config, Husky, CI
 user-invocable: false
+model: sonnet
 ---
 
 # commitlint リファレンス

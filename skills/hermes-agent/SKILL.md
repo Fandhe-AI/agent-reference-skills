@@ -9,6 +9,7 @@ description: >
   Security (5層防御モデル, Container Isolation, Tirith, SSRF Protection)、
   Architecture
 user-invocable: false
+model: sonnet
 ---
 
 # Hermes Agent リファレンス

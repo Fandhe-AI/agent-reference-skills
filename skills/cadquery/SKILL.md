@@ -12,6 +12,7 @@ description: >
   公式 32+1 examples（Plate, Bottle, Lego, Bearing, Enclosure, Cycloidal Gear 等）,
   API Cheatsheet。
 user-invocable: false
+model: sonnet
 ---
 
 # CadQuery リファレンス
