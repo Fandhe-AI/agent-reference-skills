@@ -1,6 +1,7 @@
 ---
 name: create-pr
-description: Conventional Commits 形式で GitHub PR を作成する。
+description: Conventional Commits 形式で GitHub PR を作成する。OWASP Top 10 のセキュリティチェック必須で、問題があれば PR 作成を中止。Summary/Test plan/Design を含む body を生成。「PR 作って」「プルリク」「`gh pr create`」などで使用。別リポジトリ (upstream) への貢献は contribute-skill。
+model: sonnet
 ---
 
 # create-pr
@@ -85,3 +86,8 @@ EOF
 - ベースブランチはリポジトリの規約に従う
 - セキュリティ問題が未解決の場合は PR 作成を中止する
 - Draft PR を作成する場合は `--draft` フラグを追加する（ユーザーに確認）
+- **sandbox 環境での `GIT_SSL_NO_VERIFY=1` 併用**：詳細は後述の「sandbox 環境での実行」節を参照
+
+## sandbox 環境での実行
+
+sandbox で本スキルを実行する場合、ネットワーク越しの GitHub 操作には `GIT_SSL_NO_VERIFY=1` の併用を検討してください。本スキルの主なリモート操作は `git push` / `gh pr create` で、「リモート書き込み」判定は **要** です。コマンド分類の詳細と TLS 検証無効化の注意事項は [`docs/sandbox-tls.md`](../../docs/sandbox-tls.md) を参照してください。
