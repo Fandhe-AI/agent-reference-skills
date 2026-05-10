@@ -1,7 +1,8 @@
 ---
 name: feature-sliced-design
 description: >
-  Feature-Sliced Design (フロントエンドアーキテクチャ手法) リファレンスとルール。
+  Feature-Sliced Design (FSD、フロントエンドアーキテクチャ手法) リファレンスとルール。
+  別名: fsd, feature sliced design, feature-sliced。
   レイヤー (app / pages / widgets / features / entities / shared)、
   依存方向、Public API パターン、スライス、セグメント (ui / model / api / lib / config)。
   コードレビュー・リファクタリング時に自動参照。
