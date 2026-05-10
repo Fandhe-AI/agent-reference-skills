@@ -1,8 +1,9 @@
 ---
 name: commitlint
 description: >
-  commitlint (コミットメッセージ検証) リファレンス。
-  rules, plugins, shareable-config, Husky, CI
+  commitlint (Conventional Commits メッセージ検証ツール) リファレンス。
+  rules 設定、plugins、shareable-config、@commitlint/config-conventional、
+  Husky / lefthook / simple-git-hooks 連携、CI 統合、custom rules。
 user-invocable: false
 model: sonnet
 ---

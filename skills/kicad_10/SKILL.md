@@ -1,11 +1,11 @@
 ---
 name: kicad_10
 description: >
-  KiCad 10.0 EDA リファレンス。
-  Introduction, Getting Started, Project Manager, Schematic Editor (Eeschema),
-  PCB Editor (PCBnew), Gerber Viewer (GerbView),
-  Drawing Sheet Editor (pl_editor), Calculator Tools (pcb_calculator),
-  Command-Line Interface (kicad-cli) の各マニュアル
+  KiCad 10.0 (オープンソース EDA スイート) リファレンス。
+  Project Manager、Schematic Editor (Eeschema)、PCB Editor (PCBnew)、
+  Gerber Viewer (GerbView)、Drawing Sheet Editor (pl_editor)、
+  PCB Calculator、Command-Line Interface (kicad-cli)。
+  回路図設計、基板設計、ガーバー出力、フットプリント、シンボル、3D ビューア。
 user-invocable: false
 model: sonnet
 ---

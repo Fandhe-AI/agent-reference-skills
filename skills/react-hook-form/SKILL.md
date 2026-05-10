@@ -1,8 +1,10 @@
 ---
 name: react-hook-form
 description: >
-  React Hook Form v7 API リファレンス。
-  useForm, Controller, useFieldArray, バリデーション, resolver
+  React Hook Form v7 (非制御フォームライブラリ) リファレンス。
+  useForm, register, handleSubmit, watch, setValue, getValues, reset、
+  Controller (制御コンポーネント連携)、useFieldArray (動的フィールド)、
+  バリデーション、resolver (Zod / Yup / Joi 連携)、エラーメッセージ、formState。
 user-invocable: false
 model: sonnet
 ---

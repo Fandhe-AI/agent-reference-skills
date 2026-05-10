@@ -1,9 +1,10 @@
 ---
 name: feature-sliced-design
 description: >
-  Feature-Sliced Design アーキテクチャのガイドライン。
-  コード作成・レビュー・リファクタリング時に FSD のルールを自動で参照する。
-  レイヤー構成、依存方向、Public API パターンを提供する。
+  Feature-Sliced Design (フロントエンドアーキテクチャ手法) リファレンスとルール。
+  レイヤー (app / pages / widgets / features / entities / shared)、
+  依存方向、Public API パターン、スライス、セグメント (ui / model / api / lib / config)。
+  コードレビュー・リファクタリング時に自動参照。
 user-invocable: false
 model: sonnet
 ---

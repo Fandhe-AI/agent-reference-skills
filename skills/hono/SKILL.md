@@ -1,11 +1,11 @@
 ---
 name: hono
 description: >
-  Hono Web フレームワーク API リファレンス。
-  Hono App, Context, HonoRequest, Routing, HTTPException,
-  Built-in Middleware (JWT, CORS, CSRF, Cache, Logger 等),
-  Helpers (Cookie, Streaming, WebSocket, Factory, RPC),
-  マルチランタイム対応 (Cloudflare Workers, Deno, Bun, Node.js)
+  Hono (軽量・マルチランタイム対応 Web フレームワーク) リファレンス。
+  Hono App, Context (c.req / c.json / c.text / c.html), HonoRequest, Routing, HTTPException、
+  Built-in Middleware (JWT, CORS, CSRF, Cache, Logger, Compress, Basic / Bearer Auth)、
+  Helpers (Cookie, Streaming, WebSocket, Factory, RPC)、
+  Cloudflare Workers / Deno / Bun / Node.js / AWS Lambda 対応。
 user-invocable: false
 model: sonnet
 ---

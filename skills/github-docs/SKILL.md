@@ -2,8 +2,9 @@
 name: github-docs
 description: >
   GitHub 公式ドキュメント リファレンス。
-  REST API, GraphQL, Actions, Webhooks, GitHub Apps, gh CLI,
-  認証, workflow, pull requests, GITHUB_TOKEN
+  REST API、GraphQL API、GitHub Actions (workflow, jobs, steps, expressions)、
+  Webhooks、GitHub Apps、gh CLI、認証 (PAT / GITHUB_TOKEN / OAuth Apps)、
+  pull requests, issues, projects, releases, Codespaces, Packages。
 user-invocable: false
 model: sonnet
 ---

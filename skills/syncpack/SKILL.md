@@ -1,9 +1,10 @@
 ---
 name: syncpack
 description: >
-  Syncpack (モノレポ依存関係管理) API リファレンス。
-  .syncpackrc, lint, fix, update, format,
-  versionGroups, semverGroups, customTypes, source
+  Syncpack (モノレポ依存バージョン同期ツール) リファレンス。
+  .syncpackrc 設定、lint / fix / update / format コマンド、
+  versionGroups, semverGroups, customTypes, source、
+  package.json 整列、依存バージョン揃え、CI 連携。
 user-invocable: false
 model: sonnet
 ---

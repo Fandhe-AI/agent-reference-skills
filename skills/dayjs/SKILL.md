@@ -1,8 +1,10 @@
 ---
 name: dayjs
 description: >
-  Day.js 軽量日付ライブラリ API リファレンス。
-  parse, format, manipulate, query, duration, timezone, plugin
+  Day.js (軽量日付・時刻ライブラリ、Moment.js 互換 API) リファレンス。
+  parse, format, manipulate (add / subtract / startOf / endOf)、
+  query (isBefore / isAfter / isSame)、duration, relativeTime、
+  timezone, utc, plugin システム、locale、i18n。
 user-invocable: false
 model: sonnet
 ---

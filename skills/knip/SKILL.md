@@ -1,8 +1,10 @@
 ---
 name: knip
 description: >
-  Knip (未使用コード検出) リファレンス。
-  dead code, unused deps/exports, auto-fix, monorepo
+  Knip (TypeScript / JavaScript 未使用コード検出ツール) リファレンス。
+  未使用ファイル・export・依存関係・型・列挙メンバーの検出、
+  auto-fix、monorepo (workspaces) 対応、
+  knip.json / knip.config.ts 設定、プラグイン、ignore 設定。
 user-invocable: false
 model: sonnet
 ---

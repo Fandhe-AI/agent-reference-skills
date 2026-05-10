@@ -1,9 +1,10 @@
 ---
 name: react-router-v7
 description: >
-  React Router v7 Framework Mode API リファレンス。
-  loader, action, middleware, hooks, コンポーネント,
-  routes.ts, SSR, SPA, ErrorBoundary, session
+  React Router v7 (Framework Mode、旧 Remix) リファレンス。
+  loader, action, middleware, hooks (useLoaderData / useNavigate / useFetcher / useNavigation 等)、
+  コンポーネント (Link, NavLink, Form, Outlet)、routes.ts、SSR / SPA / Static、
+  ErrorBoundary, session, redirect, defer, type-safe routing。
 user-invocable: false
 model: sonnet
 ---

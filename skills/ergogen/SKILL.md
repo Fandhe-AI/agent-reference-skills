@@ -1,10 +1,11 @@
 ---
 name: ergogen
 description: >
-  Ergogen エルゴノミックキーボード設計ツールリファレンス。
-  YAML/JSON 設定で points, outlines, cases, pcbs を宣言し
+  Ergogen (エルゴノミック自作キーボード設計ツール) リファレンス。
+  YAML / JSON 設定で points, outlines, cases, pcbs を宣言し
   SVG / DXF / JSCAD / KiCad を出力。
-  Anchors, Zones, Adjustments, Preprocessing, Footprints, Traces 等。
+  Anchors, Zones, Adjustments, Preprocessing, Footprints, Traces。
+  キーレイアウト、ケース設計、PCB 生成。
 user-invocable: false
 model: sonnet
 ---

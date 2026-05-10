@@ -1,7 +1,10 @@
 ---
 name: editorconfig
 description: >
-  EditorConfig リファレンス。.editorconfig プロパティと glob パターン
+  EditorConfig (エディタ設定統一フォーマット) リファレンス。
+  .editorconfig ファイル、glob パターン、root、
+  indent_style / indent_size / tab_width、end_of_line, charset、
+  trim_trailing_whitespace, insert_final_newline, max_line_length。
 user-invocable: false
 model: sonnet
 ---

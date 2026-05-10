@@ -1,8 +1,10 @@
 ---
 name: lefthook
 description: >
-  Lefthook (Git hooks マネージャー) リファレンス。
-  lefthook.yml, pre-commit, pre-push, parallel, piped
+  Lefthook (高速並列 Git hooks マネージャー) リファレンス。
+  lefthook.yml 設定、pre-commit / pre-push / commit-msg 等のフック、
+  parallel / piped 実行、glob / run / tags フィルタ、
+  CI スキップ、staged_files、Husky からの移行。
 user-invocable: false
 model: sonnet
 ---

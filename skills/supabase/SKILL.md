@@ -1,9 +1,10 @@
 ---
 name: supabase
 description: >
-  Supabase API リファレンス。
-  database, postgres, auth, storage, edge-functions, realtime,
-  supabase-js, supabase-cli, RLS, vectors, migrations
+  Supabase (オープンソース Firebase 代替・BaaS) リファレンス。
+  PostgreSQL データベース、Auth (Email / OAuth / Magic Link / Phone)、Storage、
+  Edge Functions (Deno)、Realtime (subscriptions / presence / broadcast)、Vector embeddings、
+  supabase-js、supabase CLI、RLS (Row Level Security)、migrations。
 user-invocable: false
 model: sonnet
 ---

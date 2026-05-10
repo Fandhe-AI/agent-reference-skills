@@ -1,10 +1,10 @@
 ---
 name: chakra-ui
 description: >
-  Chakra UI v3 API リファレンス。
-  コンポーネント, レイアウト, フォーム, オーバーレイ, チャート,
-  テーマ, レシピ, スタイルプロップ, レスポンシブ, ダークモード,
-  ブロック (Chakra UI Pro テンプレート)
+  Chakra UI v3 (React コンポーネントライブラリ) リファレンス。
+  コンポーネント (Button, Input, Modal, Drawer, Toast, Menu, Tabs, Tooltip 等)、
+  レイアウト、フォーム、オーバーレイ、チャート、テーマ、レシピ、
+  スタイルプロップ、レスポンシブ、ダークモード、Chakra UI Pro ブロック。
 user-invocable: false
 model: sonnet
 ---

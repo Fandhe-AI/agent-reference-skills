@@ -1,8 +1,10 @@
 ---
 name: typedoc
 description: >
-  TypeDoc (TypeScript ドキュメントジェネレーター) リファレンス。
-  typedoc.json, TSDoc タグ, オプション, テーマ, プラグイン開発
+  TypeDoc (TypeScript API ドキュメントジェネレーター) リファレンス。
+  typedoc.json、TSDoc タグ、CLI オプション、entryPoints、
+  テーマ (default / markdown)、プラグイン開発、
+  TSDoc / JSDoc コメントから HTML / Markdown ドキュメント生成。
 user-invocable: false
 model: sonnet
 ---

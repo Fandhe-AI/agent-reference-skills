@@ -1,9 +1,10 @@
 ---
 name: turborepo
 description: >
-  Turborepo モノレポビルドシステム リファレンス。
-  turbo.json, turbo run, キャッシュ, タスク依存,
-  workspaces, --filter, remote caching
+  Turborepo (高速モノレポビルドシステム) リファレンス。
+  turbo.json、turbo run、タスク依存 (dependsOn)、キャッシュ (local / remote)、
+  workspaces (pnpm / npm / yarn / bun)、--filter、Remote Cache (Vercel)、
+  parallel 実行、turbo gen (コード生成)、watch モード。
 user-invocable: false
 model: sonnet
 ---

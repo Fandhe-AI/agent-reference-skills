@@ -1,9 +1,9 @@
 ---
 name: bullmq
 description: >
-  BullMQ (Redis ジョブキュー) API リファレンス。
-  Queue, Worker, Job, FlowProducer, イベント,
-  rate-limiting, cron, delayed, repeatable
+  BullMQ (Redis ベースの Node.js ジョブキュー) リファレンス。
+  Queue, Worker, Job, FlowProducer, QueueEvents、レート制限、cron、
+  delayed / repeatable / priority ジョブ、再試行、デッドレター、フロー、メトリクス。
 user-invocable: false
 model: sonnet
 ---

@@ -1,8 +1,9 @@
 ---
 name: driverjs
 description: >
-  Driver.js プロダクトツアー・要素ハイライトライブラリ API リファレンス。
-  driver, highlight, tour steps, popover, overlay, theming, configuration
+  Driver.js (JavaScript プロダクトツアー・要素ハイライト・オンボーディングライブラリ) リファレンス。
+  driver(), highlight, tour steps, popover, overlay, theming、
+  configuration、ホットキー、コールバック、アニメーション、ステップナビゲーション。
 user-invocable: false
 model: sonnet
 ---
