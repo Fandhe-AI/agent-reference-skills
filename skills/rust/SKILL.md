@@ -2,6 +2,7 @@
 name: rust
 description: >
   Rust 言語リファレンス。
+  別名: rustlang, rs (拡張子)、Rust-lang。
   TRPL (The Rust Programming Language)、Rust by Example、Reference、
   Cargo Book、rustc Book、rustdoc Book、Rustonomicon (Unsafe Rust)、
   Edition Guide、Standard Library、Error Index。

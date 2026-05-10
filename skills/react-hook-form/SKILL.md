@@ -1,7 +1,8 @@
 ---
 name: react-hook-form
 description: >
-  React Hook Form v7 (非制御フォームライブラリ) リファレンス。
+  React Hook Form v7 (RHF、非制御フォームライブラリ) リファレンス。
+  別名: rhf, React-Hook-Form。
   useForm, register, handleSubmit, watch, setValue, getValues, reset、
   Controller (制御コンポーネント連携)、useFieldArray (動的フィールド)、
   バリデーション、resolver (Zod / Yup / Joi 連携)、エラーメッセージ、formState。

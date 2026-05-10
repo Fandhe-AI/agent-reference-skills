@@ -2,6 +2,7 @@
 name: chakra-ui
 description: >
   Chakra UI v3 (React コンポーネントライブラリ) リファレンス。
+  別名: Chakra, chakra, chakra-ui。
   コンポーネント (Button, Input, Modal, Drawer, Toast, Menu, Tabs, Tooltip 等)、
   レイアウト、フォーム、オーバーレイ、チャート、テーマ、レシピ、
   スタイルプロップ、レスポンシブ、ダークモード、Chakra UI Pro ブロック。
