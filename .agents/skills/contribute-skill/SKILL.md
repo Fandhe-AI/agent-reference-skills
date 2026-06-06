@@ -167,25 +167,29 @@ echo "デフォルトブランチ: ${DEFAULT_BRANCH:-main}"
 
 ### Step 7: 変更を反映する
 
-upstream 側でスキルがどのパス構造に置かれているか確認します。
+upstream 側でスキルがどのパス構造に置かれているか確認します。`UPSTREAM_SKILL_PATH` の決定は以下の優先順位で行います（`cd "$WORKDIR/upstream"` 済みの前提）。
 
-- 典型パターン 1: `skills/<SKILL_NAME>/`
-- 典型パターン 2: `.agents/skills/<SKILL_NAME>/`
-
-対応するパスへローカルの `${LOCAL_SKILL_DIR}/` 配下をコピーします。
-
-まず upstream 側のパス構造を判定して `UPSTREAM_SKILL_PATH` を設定します（`cd "$WORKDIR/upstream"` 済みの前提）。
+1. ローカルリポジトリの `skills-lock.json`（`${ORIG_DIR}/skills-lock.json`）に当該スキルの `skillPath` があれば、その dirname を `UPSTREAM_SKILL_PATH` に採用する（authoritative）。`skillPath` は upstream での SKILL.md へのパスであることが前提。
+2. `skillPath` が無い（lockfile 未登録の新規スキル等）場合のみ、クローン内のディレクトリ存在で判定する。
 
 ```bash
-# upstream 側のスキル配置を判定（skills/<name>/ か .agents/skills/<name>/ か）
-if [[ -d "skills/${SKILL_NAME}" ]]; then
-  UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
-elif [[ -d ".agents/skills/${SKILL_NAME}" ]]; then
-  UPSTREAM_SKILL_PATH=".agents/skills/${SKILL_NAME}"
-else
-  # upstream に未登録なら新規追加扱い
-  UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
+# upstream のスキル配置を決定する（skills-lock.json の skillPath を優先）
+SKILL_PATH=$(jq -r ".skills[\"${SKILL_NAME}\"].skillPath // empty" "${ORIG_DIR}/skills-lock.json" 2>/dev/null)
+if [[ -n "${SKILL_PATH}" ]]; then
+  # skillPath は upstream での SKILL.md へのパス。その dirname がスキルディレクトリ
+  UPSTREAM_SKILL_PATH="$(dirname "${SKILL_PATH}")"
   mkdir -p "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
+else
+  # lockfile 未登録（新規スキル等）はクローン内のディレクトリ存在で判定
+  if [[ -d "skills/${SKILL_NAME}" ]]; then
+    UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
+  elif [[ -d ".agents/skills/${SKILL_NAME}" ]]; then
+    UPSTREAM_SKILL_PATH=".agents/skills/${SKILL_NAME}"
+  else
+    echo "警告: upstream に ${SKILL_NAME} のパスが見つかりません。新規追加として扱います。"
+    UPSTREAM_SKILL_PATH=".agents/skills/${SKILL_NAME}"
+    mkdir -p "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
+  fi
 fi
 ```
 
@@ -194,7 +198,7 @@ fi
 ```bash
 # LOCAL_SKILL_DIR は Step 1 で解決済み（skills/<name>/ または .agents/skills/<name>/）
 # ORIG_DIR は Step 6 で cd する前に捕捉済み（cd - は stdout 汚染のため使用しない）
-cp -R "${ORIG_DIR}/${LOCAL_SKILL_DIR}/." "$WORKDIR/upstream/${UPSTREAM_SKILL_PATH}/"
+cp -R "${ORIG_DIR}/${LOCAL_SKILL_DIR}/." "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}/"
 ```
 
 ### Step 8: 差分を確認する
@@ -272,7 +276,7 @@ Draft PR を作成する場合は `--draft` を付けます（デフォルトは
 - **source が Fandhe-AI org 以外の場合は中止**：`Fandhe-AI/`（短縮形）と `https://github.com/Fandhe-AI/`（URL 形式）のみを許可し、それ以外は意図しない外部リポジトリへの push を防ぐため中止する
 - **セキュリティ問題が見つかった場合は中止**：修正後に再実行
 - **sandbox 環境での `GIT_SSL_NO_VERIFY=1` 併用**：詳細は後述の「sandbox 環境での実行」節を参照
-- **upstream のパス構造は事前確認**：`skills/<name>/` か `.agents/skills/<name>/` かは upstream によって異なる
+- **upstream の配置は lockfile の skillPath を正とする**：ローカルの `skills-lock.json` に `skillPath` が登録されている場合はその dirname を `UPSTREAM_SKILL_PATH` に採用し、クローン内のディレクトリ存在判定より優先する。`skillPath` は `SKILL.md` へのパスである前提であり、それ以外の形式の場合は dirname の結果が不正になりうるため注意する。未登録スキルの場合のみクローン内ディレクトリ存在でフォールバックする
 - **既に同名の branch がある場合**：秒単位スラッグで通常は衝突しないが、万一の場合はユーザーに確認
 
 ## sandbox 環境での実行

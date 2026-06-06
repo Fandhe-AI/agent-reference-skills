@@ -88,7 +88,8 @@ npx skills add "${SOURCE_REPO}" --skill "${SKILL_NAME}" --yes
 
 echo ""
 echo "==> 更新完了。変更内容:"
-git diff skills-lock.json
+# install ツリーの上書きも確認するため、skills-lock.json と当該スキルの install ツリー両方を diff する
+git diff skills-lock.json ".agents/skills/${SKILL_NAME}/"
 
 echo ""
 echo "コミットするには:"

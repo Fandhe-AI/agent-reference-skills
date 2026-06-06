@@ -100,17 +100,26 @@ echo "    デフォルトブランチ: ${DEFAULT_BRANCH:-main}"
 REPO_SLUG="${UPSTREAM_REPO#https://github.com/}"
 REPO_SLUG="${REPO_SLUG%.git}"
 
-# Step 7: upstream のパス構造を確認してコピーする
-# upstream 側のパスは skills/<name>/ か .agents/skills/<name>/ かを確認する
+# Step 7: upstream のスキル配置を決定する（skills-lock.json の skillPath を優先）
+# skillPath は upstream での SKILL.md へのパス。その dirname がスキルディレクトリ。
+# ORIG_DIR は cd 前に捕捉済み（クローン側ではなくローカルリポジトリの lockfile を読む）
 UPSTREAM_SKILL_PATH=""
-if [[ -d "skills/${SKILL_NAME}" ]]; then
-  UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
-elif [[ -d ".agents/skills/${SKILL_NAME}" ]]; then
-  UPSTREAM_SKILL_PATH=".agents/skills/${SKILL_NAME}"
-else
-  echo "警告: upstream に ${SKILL_NAME} のパスが見つかりません。新規追加として扱います。"
-  UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
+SKILL_PATH=$(jq -r ".skills[\"${SKILL_NAME}\"].skillPath // empty" "${ORIG_DIR}/skills-lock.json" 2>/dev/null)
+if [[ -n "${SKILL_PATH}" ]]; then
+  # skillPath が登録されている場合はその dirname を採用（authoritative）
+  UPSTREAM_SKILL_PATH="$(dirname "${SKILL_PATH}")"
   mkdir -p "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
+else
+  # lockfile 未登録（新規スキル等）はクローン内のディレクトリ存在で判定
+  if [[ -d "skills/${SKILL_NAME}" ]]; then
+    UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
+  elif [[ -d ".agents/skills/${SKILL_NAME}" ]]; then
+    UPSTREAM_SKILL_PATH=".agents/skills/${SKILL_NAME}"
+  else
+    echo "警告: upstream に ${SKILL_NAME} のパスが見つかりません。新規追加として扱います。"
+    UPSTREAM_SKILL_PATH=".agents/skills/${SKILL_NAME}"
+    mkdir -p "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
+  fi
 fi
 
 echo "==> upstream パス: ${UPSTREAM_SKILL_PATH}"
