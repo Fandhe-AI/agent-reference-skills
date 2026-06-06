@@ -73,6 +73,10 @@ cd "${WORKDIR}/upstream"
 DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||')
 echo "    デフォルトブランチ: ${DEFAULT_BRANCH:-main}"
 
+# UPSTREAM_REPO を OWNER/REPO 形式へ正規化する（URL 形式の場合に gh pr create が失敗するのを防ぐ）
+REPO_SLUG="${UPSTREAM_REPO#https://github.com/}"
+REPO_SLUG="${REPO_SLUG%.git}"
+
 # Step 7: upstream のパス構造を確認してコピーする
 # upstream 側のパスは skills/<name>/ か .agents/skills/<name>/ かを確認する
 UPSTREAM_SKILL_PATH=""
@@ -106,6 +110,6 @@ echo "  git switch -c '${BRANCH}'"
 echo "  git add ${UPSTREAM_SKILL_PATH}/"
 echo "  git commit -m '<type>(<scope>): <subject>'"
 echo "  git push -u origin '${BRANCH}'"
-echo "  gh pr create --repo ${UPSTREAM_REPO} --base ${DEFAULT_BRANCH:-main} --title '<title>' --body '...'"
+echo "  gh pr create --repo ${REPO_SLUG} --base ${DEFAULT_BRANCH:-main} --title '<title>' --body '...'"
 echo ""
 echo "作業ディレクトリ: ${WORKDIR}/upstream"

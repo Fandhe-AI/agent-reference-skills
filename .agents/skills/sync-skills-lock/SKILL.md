@@ -59,16 +59,17 @@ case "$SOURCE" in
 esac
 ```
 
-### Step 4: npx skills add で computedHash を更新する
+### Step 4–7: 対象スキルを1つずつ処理する（ループ）
+
+対象スキルそれぞれについて、次の 4→5→6→7 を順に実行し、**1スキル完了後に次スキルへ進む**。全スキル sync であっても同時に複数スキルを処理せず、1スキルずつ完結させること。
+
+#### Step 4: npx skills add で computedHash を更新する
 
 `sha256sum` などで手動計算するのではなく、`npx skills add` に計算を任せる。これにより CLI の内部アルゴリズムと完全に一致する。
 
 ```bash
 # CLI に computedHash を更新させる（--yes で確認プロンプトをスキップ）
 npx skills add "${SOURCE}" --skill "${SKILL_NAME}" --yes
-
-# 変更確認
-git diff skills-lock.json
 ```
 
 `npx skills add` は以下を行う:
@@ -81,41 +82,40 @@ git diff skills-lock.json
 
 **注意**: このコマンドは即座に `skills-lock.json` と `.agents/skills/<name>/` を書き換える。ユーザー承認（Step 6）の前に変更が確定するため、承認しない場合は Step 6 の案内に従いリバートが必要。
 
-### Step 5: 差分を表示する
+#### Step 5: 当該スキルの差分を表示する
 
 ```bash
-git diff skills-lock.json
+# 当該スキルにスコープした差分のみ表示する
+git diff skills-lock.json ".agents/skills/${SKILL_NAME}/"
 ```
 
 変更点を確認し、更新された `computedHash` の内容をユーザーに提示する。
 
-### Step 6: ユーザーに承認を求める
+#### Step 6: ユーザーに当該スキルの承認を求める
 
 差分がある場合のみ、ユーザーに「この更新を適用してよいか」を確認する。
 
-承認がなければ以下のコマンドで変更を元に戻してから中止する（`<name>` は対象スキル名に置換）:
+**却下された場合**は当該スキルのみ即座にリバートして**次スキルへ continue**する（全体を中止しない）:
 
 ```bash
-# skills-lock.json をリバート
-git checkout skills-lock.json
-
-# インストール済みスキルファイルをリバート（<name> を置換）
-git checkout -- .agents/skills/<name>/
+# 当該スキルの変更のみをリバート
+git checkout -- skills-lock.json ".agents/skills/${SKILL_NAME}/"
 ```
 
-変更を元に戻した後、作業を中止する。
+このリバートは「次スキルの `npx skills add` 実行前」に行うため、`skills-lock.json` から戻るのは当該スキル分のみである。承認済みの他スキルはすでに stage 済みのため影響を受けない。
 
-### Step 7: git add する
-
-`npx skills add` がすでに `skills-lock.json` と `.agents/skills/<name>/` を更新済みのため、ファイル更新は不要。ステージングのみ行う。
+#### Step 7: 承認されたスキルを stage する（ループ内で積み上げる）
 
 ```bash
-# skills-lock.json と対象スキルのファイルのみをステージング（他スキルの変更を混入させない）
-git add skills-lock.json
-git add ".agents/skills/${SKILL_NAME}/"
+# 当該スキルのファイルのみをステージング（他スキル・無関係なローカル変更を混入させない）
+git add skills-lock.json ".agents/skills/${SKILL_NAME}/"
 ```
 
-### Step 8: コミット提案
+このコマンドをループ内で実行することで、複数スキルの全スキル sync でも処理した全スキルが過不足なく stage に積み上がる。
+
+### Step 8: コミット提案（ループ後に1回だけ実行）
+
+ループ完了後、stage 済みの全承認スキルをまとめて1コミットにする。
 
 ```bash
 git commit -m "$(cat <<'EOF'
@@ -126,10 +126,11 @@ EOF
 )"
 ```
 
-ユーザーにコミットしてよいか確認する。差分がなかった場合はコミットせずその旨を伝える。
+ユーザーにコミットしてよいか確認する。承認済みスキルが1つもなかった場合（全却下・差分なし）はコミットせずその旨を伝える。
 
 ## 注意事項
 
+- **全スキル sync での途中却下**: 1スキルずつ承認・stage を行うため、途中で却下しても承認済みスキルの stage は保持される。全スキル処理後に一括コミットする
 - **ルートの `skills-lock.json` のみを編集**: submodule 配下は手を付けない
 - **source prefix 検証（必須）**: `source` が `Fandhe-AI/` または `https://github.com/Fandhe-AI/` で始まらないエントリは skip する（`contribute-skill` と同じ安全弁）。`skills-lock.json` の改ざんや誤設定から防御するため
 - **`npx skills add --yes` は上書き確認をスキップする**: upstream に破壊的変更がある場合は `git diff` で内容を必ず確認すること
