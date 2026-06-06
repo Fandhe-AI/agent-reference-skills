@@ -31,6 +31,34 @@ The right toolbar contains primary editing tools. Tools stay active until you pr
 
 Configure grid via right-click menu or **Preferences** → **Grids** pane. Grid overrides per object type are toggled via the left toolbar button.
 
+## Editing Object Properties
+
+### Properties Dialog
+
+All schematic objects have editable properties accessible via:
+- Press **E** — opens the Properties dialog for the selected object
+- Right-click → **Properties** — same as above
+
+Only one object type can be edited at a time via the Properties dialog. Symbol properties additionally restrict editing to a single instance.
+
+### Properties Manager
+
+A docked panel for real-time editing of multiple selected items (including mixed types). Access via **View → Panels → Properties** or the properties button on the left toolbar.
+
+- When multiple object types are selected, only shared properties appear
+- Changes apply immediately and individually (e.g., rotating multiple objects rotates each around its own center)
+
+### Math Expressions in Numeric Fields
+
+Numeric fields in all dialogs accept basic mathematical expressions:
+
+```
+2 * 2mm     → 4mm
+1in + 1mm   → 26.4mm
+```
+
+Supports `+`, `-`, `*`, `/`, parentheses, and unit suffixes with automatic conversion.
+
 ## Working with Symbols
 
 ### Placing Symbols

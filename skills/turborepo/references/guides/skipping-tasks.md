@@ -27,12 +27,20 @@ turbo query affected --packages web --exit-code
 ```bash
 #!/bin/bash
 AFFECTED=$(turbo query affected --packages web)
-COUNT=$(echo "$AFFECTED" | jq '.affectedPackages | length')
+COUNT=$(echo "$AFFECTED" | jq '.data.affectedPackages.length')
 if [ "$COUNT" -eq 0 ]; then
   echo "No affected packages, skipping tasks"
   exit 0
 fi
 turbo run test --filter=web
+```
+
+## Git 履歴の注意点
+
+シャロークローンでは全パッケージが変更済みとして扱われる場合がある。適切な履歴取得には以下を推奨:
+
+```bash
+git fetch --filter=blob:none --depth=0
 ```
 
 ## 重要

@@ -1,26 +1,10 @@
-# GitHub リポジトリ管理 (Repository Management)
+# repositories
 
-GitHub リポジトリの作成、設定、管理に関するリファレンスです。
-
-## 目次
-
-| ファイル | 説明 | 主な内容 |
-|---------|------|---------|
-| [creating-managing.md](./creating-managing.md) | リポジトリの作成・管理 | 作成、可視性、アーカイブ、転送、削除 |
-| [branches.md](./branches.md) | ブランチ管理・保護ルール | デフォルトブランチ、保護ルール、Rulesets |
-| [files.md](./files.md) | ファイル操作 | ファイルの作成・編集、サイズ制限、Git LFS |
-| [releases-tags.md](./releases-tags.md) | リリースとタグ | リリースの作成、自動生成ノート、セマンティックバージョニング |
-| [templates.md](./templates.md) | テンプレートリポジトリ | テンプレートの作成と利用、フォークとの違い |
-| [settings.md](./settings.md) | リポジトリ設定 | CODEOWNERS、機能設定、マージ設定 |
-
-## リポジトリの種類
-
-| 種類 | 説明 | アクセス範囲 |
-|------|------|------------|
-| Public | 公開リポジトリ | インターネット上の全員 |
-| Private | プライベートリポジトリ | 明示的にアクセス権を付与されたユーザー |
-| Internal | 内部リポジトリ（Enterprise のみ） | 同一 Enterprise 内のメンバー |
-
-## 参考リンク
-
-- [GitHub リポジトリドキュメント](https://docs.github.com/en/repositories)
+| Name | Description | Path |
+|------|-------------|------|
+| ブランチ管理・保護ルール (Branches & Protection) | GitHub リポジトリにおけるブランチの管理、保護ルール、および Rulesets に関するリファレンスです。 | [branches.md](./branches.md) |
+| リポジトリの作成・管理 | GitHub リポジトリの作成、設定変更、および管理操作に関するリファレンスです。 | [creating-managing.md](./creating-managing.md) |
+| ファイル操作 (Working with Files) | GitHub リポジトリ内のファイルの作成、編集、削除、およびサイズ制限に関するリファレンスです。 | [files.md](./files.md) |
+| リリースとタグ (Releases & Tags) | GitHub リリースは、特定のバージョンのソフトウェアをパッケージ化して配布するための機能です。 | [releases-tags.md](./releases-tags.md) |
+| リポジトリ設定 (Repository Settings) | GitHub リポジトリの各種設定項目に関するリファレンスです。 | [settings.md](./settings.md) |
+| テンプレートリポジトリ (Template Repositories) | テンプレートリポジトリは、同じディレクトリ構造とファイルを持つ新しいリポジトリを素早く作成するための雛形です。 | [templates.md](./templates.md) |

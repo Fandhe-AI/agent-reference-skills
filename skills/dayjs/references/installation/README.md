@@ -1,5 +1,5 @@
-# Day.js — Installation
+# installation
 
 | Name | Description | Path |
 |------|-------------|------|
-| Installation | Installation overview for Node.js, browser, TypeScript, and download options | [./installation.md](./installation.md) |
+| Installation | Day.js is a lightweight JavaScript library for date/time manipulation… | [installation.md](./installation.md) |

@@ -15,8 +15,8 @@ A progressively enhanced `<a href>` wrapper that enables client-side navigation.
 | `viewTransition` | `boolean` | Enables View Transition API for the navigation. |
 | `prefetch` | `"none" \| "intent" \| "render" \| "viewport"` | Prefetching strategy. Default: `"none"`. Framework mode only. |
 | `discover` | `"render" \| "none"` | Lazy route discovery behavior. Default: `"render"`. Framework mode only. |
-| `unstable_mask` | `string` | Masked URL path for contextual SPA/SSR navigations. |
-| `unstable_defaultShouldRevalidate` | `boolean` | Default revalidation behavior for the navigation. |
+| `mask` | `string` | Masked URL path for contextual SPA/SSR navigations. Framework mode only. |
+| `defaultShouldRevalidate` | `boolean` | Default revalidation behavior for the navigation. |
 
 ## 使用例
 
@@ -41,7 +41,7 @@ import { Link } from "react-router";
 - `prefetch` inserts `<link rel="prefetch">` tags after the anchor element. If using `nav :last-child` CSS selectors, switch to `nav :last-of-type` to avoid broken styles.
 - `preventScrollReset` only suppresses scroll reset for new navigations; back/forward navigation still restores scroll normally.
 - `state` is client-side only (stored in `history.state`) and is not accessible on the server.
-- `unstable_mask` only works in SPA mode and SSR renders; sharing a masked URL loads only the masked location without context.
+- `mask` only works in SPA mode and SSR renders; sharing a masked URL loads only the masked location without context.
 
 ## 関連
 

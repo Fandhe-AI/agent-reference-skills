@@ -2,7 +2,7 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Assembly Tutorial | Step-by-step guide: Assembly constructor, add(), constrain(), solve(), and export() | [tutorial.md](./tutorial.md) |
-| Object Locations | Using `cq.Location` to set initial part positions and how solve() interacts with them | [locations.md](./locations.md) |
-| Constraints | All constraint types (Point, Axis, Plane, PointInPlane, PointOnLine, Fixed, FixedPoint, FixedRotation, FixedAxis) with parameters | [constraints.md](./constraints.md) |
-| Assembly Colors | `cq.Color` with RGBA tuples and 700+ named color strings | [colors.md](./colors.md) |
+| Assembly Colors | `cq.Color` assigns display colors to assembly parts. Accepts RGBA tuples or named color strings. | [colors.md](./colors.md) |
+| Constraints | Constraint types available for `Assembly.constrain()`. Each defines a cost function that `solve()` minimizes. | [constraints.md](./constraints.md) |
+| Object Locations | `cq.Location` specifies translation and rotation when adding parts to an assembly. | [locations.md](./locations.md) |
+| Assembly Tutorial | Step-by-step guide to building a multi-part assembly using `cq.Assembly`, constraints, and `solve()`. | [tutorial.md](./tutorial.md) |

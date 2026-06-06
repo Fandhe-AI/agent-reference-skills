@@ -1,12 +1,9 @@
-# API Reference
+# API
 
-Playwright 主要クラスの API リファレンス。
-全メソッドの詳細は公式ドキュメント (https://playwright.dev/docs/api/class-*) を参照。
-
-| ファイル | 説明 | パス |
-|---------|------|------|
-| page | Page クラス主要 API（goto, locator, evaluate, screenshot, route 等） | [./page.md](./page.md) |
-| locator | Locator クラス主要 API（click, fill, getByRole, filter, nth 等） | [./locator.md](./locator.md) |
-| browser-context | BrowserContext クラス主要 API（newPage, route, storageState, cookies 等） | [./browser-context.md](./browser-context.md) |
-| request | APIRequestContext / Request / Response / Route | [./request.md](./request.md) |
-| assertions | LocatorAssertions / PageAssertions / GenericAssertions / SnapshotAssertions | [./assertions.md](./assertions.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| Assertions | Playwright uses `expect` from `@playwright/test` which extends Jest-like assertions with auto-retrying, web-first matchers. | [assertions.md](./assertions.md) |
+| APIRequestContext, Request, Response, and Route | `APIRequestContext` allows sending HTTP requests directly without a browser page. | [request.md](./request.md) |
+| BrowserContext, Browser, and BrowserType | A `BrowserContext` is an isolated browser session. | [browser-context.md](./browser-context.md) |
+| Locator | The `Locator` class represents a way to find elements on a page at any moment. | [locator.md](./locator.md) |
+| Page | The `Page` class represents a single tab or popup window in a browser. | [page.md](./page.md) |

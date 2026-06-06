@@ -1,11 +1,11 @@
-# Edition Guide
+# edition-guide
 
 | Name | Description | Path |
 |------|-------------|------|
-| What are Editions? | How Rust editions work, ecosystem compatibility, and automated migration | [./what-is-edition.md](./what-is-edition.md) |
-| Creating a new project | `cargo new --edition` usage and valid edition values | [./creating-new-project.md](./creating-new-project.md) |
-| Transitioning an existing project | Step-by-step migration workflow using `cargo fix --edition` | [./transitioning-existing-project.md](./transitioning-existing-project.md) |
-| Rust 2015 | Original edition; stability baseline, default when no edition is specified | [./rust-2015.md](./rust-2015.md) |
-| Rust 2018 | Module system overhaul, `extern crate` removal, `dyn Trait`, `async`/`await` keywords | [./rust-2018.md](./rust-2018.md) |
-| Rust 2021 | Prelude additions, disjoint closure capture, `IntoIterator` for arrays, `panic!` consistency | [./rust-2021.md](./rust-2021.md) |
-| Rust 2024 | RPIT lifetime capture, tail-expr temp scope, `unsafe extern`, `gen` keyword, never-type fallback | [./rust-2024.md](./rust-2024.md) |
+| Creating a New Project | `cargo new` defaults to the latest stable edition. Use `--edition` to target a specific edition. | [creating-new-project.md](./creating-new-project.md) |
+| Rust 2015 | **Theme: Stability** — The original edition, released with Rust 1.0 (May 2015). | [rust-2015.md](./rust-2015.md) |
+| Rust 2018 | **Theme: Productivity** — Released with Rust 1.31.0 (December 6, 2018). | [rust-2018.md](./rust-2018.md) |
+| Rust 2021 | **Theme: Consistency & capability** — Released with Rust 1.56.0 (October 21, 2021). | [rust-2021.md](./rust-2021.md) |
+| Rust 2024 | **Released with Rust 1.85.0 (February 20, 2025). | [rust-2024.md](./rust-2024.md) |
+| Transitioning an Existing Project to a New Edition | Rust provides `cargo fix --edition` to automate most of the work. Follow the steps below in… | [transitioning-existing-project.md](./transitioning-existing-project.md) |
+| What are Editions? | Editions are Rust's mechanism for introducing backwards-incompatible changes while preserving… | [what-is-edition.md](./what-is-edition.md) |

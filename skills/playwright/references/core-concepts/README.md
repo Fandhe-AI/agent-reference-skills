@@ -1,14 +1,12 @@
 # Core Concepts
 
-Playwright のコア概念リファレンス。
-
-| ファイル | 説明 | パス |
-|---------|------|------|
-| locators | ロケーター（getByRole, getByText, getByTestId, フィルタ, チェーン, CSS/XPath） | [./locators.md](./locators.md) |
-| assertions | アサーション（Locator / Page / API / Generic / Snapshot） | [./assertions.md](./assertions.md) |
-| actions | アクション・入力操作（click, fill, check, hover, press, upload, drag） | [./actions.md](./actions.md) |
-| auto-waiting | 自動待機・アクショナビリティチェック（visible, stable, enabled, editable） | [./auto-waiting.md](./auto-waiting.md) |
-| isolation | テスト分離・BrowserContext | [./isolation.md](./isolation.md) |
-| pages | ページ操作・マルチページ・ポップアップ・ナビゲーション | [./pages.md](./pages.md) |
-| frames | フレーム・iframe（frameLocator, page.frame()） | [./frames.md](./frames.md) |
-| emulation | デバイスエミュレーション（viewport, locale, timezone, geolocation, colorScheme） | [./emulation.md](./emulation.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| Actions | Playwright provides methods to interact with page elements. All… | [actions.md](./actions.md) |
+| Assertions | Playwright uses `expect` with auto-retrying assertions that wait… | [assertions.md](./assertions.md) |
+| Auto-Waiting | Playwright automatically waits for elements to pass actionability… | [auto-waiting.md](./auto-waiting.md) |
+| Emulation | Playwright can emulate real devices by simulating browser behavior… | [emulation.md](./emulation.md) |
+| Frames | A Page can have one or more Frame objects attached to it. Each… | [frames.md](./frames.md) |
+| Locators | Locators are the central mechanism for finding elements on a page… | [locators.md](./locators.md) |
+| Pages | A Page represents a single tab or popup window within a… | [pages.md](./pages.md) |
+| Test Isolation | Playwright achieves test isolation through **BrowserContext** -- a… | [isolation.md](./isolation.md) |

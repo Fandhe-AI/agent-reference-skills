@@ -37,6 +37,7 @@ app.use('*', ipRestriction(getConnInfo, {
 
 - Use the `getConnInfo` helper matching your runtime: `hono/bun`, `hono/deno`, `hono/node-server`, etc.
 - `allowList` takes precedence over `denyList` when an IP matches both.
+- IPv6 addresses are compared in canonical compressed form. Addresses passed in expanded form (e.g. `0000:0000::1`) are automatically normalized. This canonicalization was added in v4.12.21 to prevent bypass via non-canonical representations.
 
 ## Related
 

@@ -105,21 +105,25 @@ root = true
 
 | 項目 | 値 |
 |------|-----|
-| 値 | 正の整数、または `off` |
+| 値 | 正の整数、または `unset` |
 | 説明 | 指定文字数での強制改行 |
 | サポート | Emacs, Vim, Neovim, Atom, ReSharper, Rider, IntelliJ IDEA, PhpStorm, PyCharm, RubyMine, WebStorm, Kakoune, Prettier |
+
+このプロパティは正式仕様（spec.editorconfig.org）には含まれず、wiki で定義された limited support プロパティ。
 
 ### spelling_language
 
 | 項目 | 値 |
 |------|-----|
 | 値 | `ss` または `ss-TT` 形式 |
+| 長さ | 2文字または5文字のみ有効 |
 | 説明 | スペルチェック言語 |
 
 - `ss`: ISO 639 の2文字言語コード（例: `en`）
 - `TT`: ISO 3166 の2文字地域コード（例: `US`）
 - 例: `en`, `en-US`, `ja`
 - 1つの言語のみ指定可能。デフォルト値なし
+- charset とは独立したプロパティ（文字エンコーディングは `charset` で設定する）
 
 ## 共通ルール
 

@@ -1,14 +1,12 @@
-# TypeDoc — Programmatic API
-
-TypeDoc をプログラマティックに使用するための主要クラス・インターフェース。
+# API
 
 | Name | Description | Path |
 |------|-------------|------|
-| `Application` | メインクラス（convert, generateDocs, generateJson, bootstrap） | [./application.md](./application.md) |
-| `Converter` | TypeScript → Reflection 変換（イベント, シンボル解決） | [./converter.md](./converter.md) |
-| `Renderer` | Reflection → HTML 出力（テーマ, ルーター, hooks） | [./renderer.md](./renderer.md) |
-| `Reflections` | Reflection 階層（Project, Declaration, Signature, Parameter, TypeParameter） | [./reflections.md](./reflections.md) |
-| `Types` | Type 階層（18種: Reference, Union, Intersection, Literal 等） | [./types.md](./types.md) |
-| `Options API` | Options クラス・プログラマティックなオプション操作 | [./options-api.md](./options-api.md) |
-| `Events` | Event システム（EventDispatcher, Converter/Renderer/Serializer イベント） | [./events.md](./events.md) |
-| `Serialization` | Serializer / Deserializer / JSONOutput インターフェース | [./serialization.md](./serialization.md) |
+| Application | TypeDoc のメインエントリーポイント。TypeScript ソースファイルのドキュメント変換を… | [application.md](./application.md) |
+| Converter | TypeScript ソースコードを Reflection モデルに変換するクラス。Application のサブコ… | [converter.md](./converter.md) |
+| Events | TypeDoc のイベントシステム。Converter と Renderer のライフサイクル全体にわたるイ… | [events.md](./events.md) |
+| Options | TypeDoc と TypeScript のオプション宣言を管理するクラス。型安全なオプションの取得・… | [options-api.md](./options-api.md) |
+| Reflections | TypeDoc の内部モデル。ソースコード中のすべてのドキュメント対象要素（クラス、関数… | [reflections.md](./reflections.md) |
+| Renderer | ProjectReflection を Theme インスタンスで処理し、HTML ドキュメントを出力ディレクトリ… | [renderer.md](./renderer.md) |
+| Serialization | TypeDoc のシリアライゼーションシステム。Reflection モデルと JSON 間の変換を行う Seria… | [serialization.md](./serialization.md) |
+| Types | TypeDoc の型システム。TypeScript の型を表現する 18 の Type サブクラス。 | [types.md](./types.md) |

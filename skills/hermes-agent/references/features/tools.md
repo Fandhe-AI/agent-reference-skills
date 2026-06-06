@@ -7,6 +7,7 @@ Hermes organizes its capabilities into eight tool categories and exposes them th
 | Category | Description | Key Tools |
 |----------|-------------|-----------|
 | Web | Search and page extraction | `web_search`, `web_extract` |
+| X Search | Twitter/X post search | `x_search` (requires xAI credentials) |
 | Terminal & Files | Command execution and file operations | `terminal`, `process`, `read_file`, `patch` |
 | Browser | Interactive browser automation | `browser_navigate`, `browser_snapshot`, `browser_vision` |
 | Media | Multimodal generation and analysis | `vision_analyze`, `image_generate`, `text_to_speech` |
@@ -14,6 +15,8 @@ Hermes organizes its capabilities into eight tool categories and exposes them th
 | Memory & Recall | Persistent storage and retrieval | `memory`, `session_search` |
 | Automation & Delivery | Scheduled tasks and messaging | `cronjob`, `send_message` |
 | Integrations | Home Assistant, MCP servers, RL training | — |
+
+The central registry (`tools/registry.py`) contains 70+ registered tools across ~28 toolsets.
 
 ## Available Toolsets
 

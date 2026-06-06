@@ -17,8 +17,9 @@ Define custom package.json properties to manage beyond standard dependency types
 
 | Strategy | Description | Example Value |
 |----------|-------------|---------------|
-| `name@version` | Name and version combined in a single string | `"pnpm@7.27.0"` |
-| `name~version` | Name and version stored in separate sibling properties | `{ "name": "pkg", "version": "1.0.0" }` |
+| `name@version` | Name and version combined in a single string separated by `@` | `"pnpm@7.27.0"` |
+| `name~version` | Name and version stored at separate paths (each pointing to a string value) | `devEngines.runtime.name` + `devEngines.runtime.version` |
+| `version` | Bare version string; the custom type's key is used as the dependency name | `"engines": { "node": "22.11.0" }` |
 | `versionsByName` | Standard dependency object with package names as keys | `{ "pnpm": "10.10.0" }` |
 
 ## Default Configuration

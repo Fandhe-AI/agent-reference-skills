@@ -20,13 +20,24 @@ typedoc --plugin typedoc-plugin-markdown
 
 ### v0.28 対応プラグイン
 
+#### AI・スキル生成
+
+| パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
+|---|---|---|---|---|
+| **typedoc-plugin-skillit** | pmouli | 1.4.0 | AI エージェントスキル（SKILL.md）と llms.txt を生成 | MIT |
+| **@skillit/typedoc** | pmouli | 1.1.0 | TypeScript API ドキュメントから AI エージェントスキル（SKILL.md）を生成 | MIT |
+| **typedoc-ai-md-link** | whatyoubendoing | 0.0.1 | 生成ドキュメントに AI 向け代替 Markdown リンクを追加 | MIT |
+| **typedoc-ai-actions** | whatyoubendoing | 0.0.1 | 生成ドキュメントに GitHub・Markdown・AI アクションを追加 | MIT |
+| **typedoc-plugin-llms-txt** | boneskull | 0.1.2 | LLM 消費用の `llms.txt` ファイルを生成 | BlueOak-1.0.0 |
+
 #### 出力形式・Markdown
 
 | パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
 |---|---|---|---|---|
-| **typedoc-plugin-markdown** | tgreyuk | 4.11.0 | TypeScript APIドキュメントをMarkdown形式で生成 | MIT |
-| **typedoc-plugin-md** | ocavue | 0.7.1 | Markdownドキュメント生成 | MIT |
+| **typedoc-plugin-markdown** | tgreyuk | 4.12.0 | TypeScript API ドキュメントを Markdown 形式で生成 | MIT |
+| **typedoc-plugin-md** | ocavue | 0.7.1 | Markdown ドキュメント生成 | MIT |
 | **typedoc-plugin-inline-sources** | tgreyuk | 1.3.0 | ソースコードをドキュメントにインライン表示 | MIT |
+| **typedoc-plugin-file-overview** | prachwal_org | 0.2.0 | 構造化されたファイルレベルのメタデータブロックを Markdown 出力にレンダリング | MIT |
 
 #### 型情報・表示改善
 
@@ -34,16 +45,17 @@ typedoc --plugin typedoc-plugin-markdown
 |---|---|---|---|---|
 | **typedoc-plugin-zod** | gerrit0 | 1.4.3 | `z.infer<typeof x>` を推論された型に置換 | MIT |
 | **typedoc-plugin-valibot** | mkljczk | 1.0.2 | `v.InferOutput<typeof x>` を推論された型に置換 | MIT |
-| **typedoc-plugin-vue** | gerrit0 | 1.5.1 | Vue `defineComponent` とPiniaの表示を改善 | MIT |
-| **typedoc-plugin-missing-exports** | gerrit0 | 4.1.2 | エクスポートされていない型もドキュメントに含める | MIT |
+| **typedoc-plugin-vue** | gerrit0 | 1.5.1 | Vue `defineComponent` と Pinia の表示を改善 | MIT |
+| **typedoc-plugin-missing-exports** | gerrit0 | 4.1.3 | エクスポートされていない型もドキュメントに含める | MIT |
 | **typedoc-plugin-rename-defaults** | felipecrs | 0.7.3 | `default` エクスポートを元の名前にリネーム | MIT |
+| **typedoc-color-chip** | whatyoubendoing | 0.0.2 | カラーリテラルをカラーチップとしてレンダリング | MIT |
 
 #### リンク・参照
 
 | パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
 |---|---|---|---|---|
-| **typedoc-plugin-mdn-links** | gerrit0 | 5.1.1 | グローバル型をMDNドキュメントにリンク | MIT |
-| **typedoc-plugin-dt-links** | gerrit0 | 2.0.46 | `@types` パッケージのGitHubソースコードリンクを追加 | MIT |
+| **typedoc-plugin-mdn-links** | gerrit0 | 5.1.1 | グローバル型を MDN ドキュメントにリンク | MIT |
+| **typedoc-plugin-dt-links** | gerrit0 | 2.0.57 | `@types` パッケージの GitHub ソースコードリンクを追加 | MIT |
 | **typedoc-plugin-redirect** | gerrit0 | 1.3.0 | 生成サイトにリダイレクトページを追加 | MIT |
 
 #### ドキュメント構造・組織化
@@ -72,8 +84,8 @@ typedoc --plugin typedoc-plugin-markdown
 
 | パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
 |---|---|---|---|---|
-| **typedoc-umlclass** | krisztianb | 0.10.2 | UMLクラスダイアグラムを生成 | ISC |
-| **@boneskull/typedoc-plugin-mermaid** | boneskull | 0.2.1 | Mermaidダイアグラムのレンダリング | BlueOak-1.0.0 |
+| **typedoc-umlclass** | krisztianb | 0.10.2 | UML クラスダイアグラムを生成 | ISC |
+| **@boneskull/typedoc-plugin-mermaid** | boneskull | 0.2.1 | Mermaid ダイアグラムのレンダリング | BlueOak-1.0.0 |
 
 #### バージョン管理
 
@@ -95,16 +107,15 @@ typedoc --plugin typedoc-plugin-markdown
 | パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
 |---|---|---|---|---|
 | **typedoc-plugin-extras** | drarig29 | 4.0.1 | favicon、description、生成日時等の追加情報 | MIT |
-| **typedoc-plugin-coverage** | gerrit0 | 4.0.2 | ドキュメントカバレッジバッジを生成 | MIT |
-| **typedoc-plugin-llms-txt** | boneskull | 0.1.2 | LLM消費用の `llms.txt` ファイルを生成 | BlueOak-1.0.0 |
-| **@typhonjs-typedoc/typedoc-pkg** | typhonrt | 0.4.1 | package.jsonからのゼロコンフィグAPIドキュメント生成CLI | MPL-2.0 |
+| **typedoc-plugin-coverage** | gerrit0 | 4.0.3 | ドキュメントカバレッジバッジを生成 | MIT |
+| **@typhonjs-typedoc/typedoc-pkg** | typhonrt | 0.4.2 | package.json からのゼロコンフィグ API ドキュメント生成 CLI | MPL-2.0 |
 
 #### アナリティクス
 
 | パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
 |---|---|---|---|---|
-| **typedoc-plugin-umami-analytics** | lordofbacon | 1.0.1 | Umami Analyticsトラッキングを統合 | Apache-2.0 |
-| **@8hobbies/typedoc-plugin-plausible** | hong-xu | 2.2.0 | Plausible Analyticsトラッキングを追加 | Apache-2.0 |
+| **typedoc-plugin-umami-analytics** | lordofbacon | 1.0.1 | Umami Analytics トラッキングを統合 | Apache-2.0 |
+| **@8hobbies/typedoc-plugin-plausible** | hong-xu | 2.2.0 | Plausible Analytics トラッキングを追加 | Apache-2.0 |
 
 ### v0.27 追加対応プラグイン
 

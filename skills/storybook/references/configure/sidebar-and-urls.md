@@ -1,5 +1,7 @@
 # Sidebar and URLs
 
+> **Note:** This page has moved to `/docs/configure/user-interface/sidebar-and-urls` in the current documentation.
+
 Organize Storybook's sidebar hierarchy and manage story permalinks.
 
 ## Overview

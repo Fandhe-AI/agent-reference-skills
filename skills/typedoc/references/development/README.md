@@ -1,10 +1,8 @@
-# TypeDoc — Development
-
-TypeDoc の拡張開発（カスタムテーマ・プラグイン・i18n）のガイド。
+# Development
 
 | Name | Description | Path |
 |------|-------------|------|
-| `Overview` | TypeDoc アーキテクチャ概要・処理フロー | [./overview.md](./overview.md) |
-| `Custom Themes` | カスタムテーマ開発（defineTheme, DefaultTheme 拡張, hooks, JSX） | [./custom-themes.md](./custom-themes.md) |
-| `Plugin Development` | プラグイン開発（load 関数, イベントリスナー, オプション追加） | [./plugin-development.md](./plugin-development.md) |
-| `Internationalization` | i18n 対応（--lang, 翻訳追加, ロケール設定） | [./internationalization.md](./internationalization.md) |
+| TypeDoc カスタムテーマ | TypeDoc のテーマシステムを拡張し、カスタム HTML 出力を作成する方法。 | [custom-themes.md](./custom-themes.md) |
+| TypeDoc 国際化 (Internationalization) | TypeDoc v0.26 で導入された国際化機能。コンソール出力と生成される HTML/JSON の言語を制御する。 | [internationalization.md](./internationalization.md) |
+| TypeDoc アーキテクチャ概要 | TypeDoc の高レベルアーキテクチャと処理フローの解説。 | [overview.md](./overview.md) |
+| TypeDoc プラグイン開発 | TypeDoc プラグインの作成方法、イベントシステム、カスタムオプションの追加方法。 | [plugin-development.md](./plugin-development.md) |

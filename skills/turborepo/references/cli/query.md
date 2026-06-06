@@ -20,6 +20,19 @@ turbo query query.gql                    # ファイルから
 |---|---|
 | `--schema` | GraphQL スキーマを出力 |
 | `--variables` / `-V` | クエリ変数の JSON ファイルパス |
+| `--filter` / `-F` | pnpm スタイルのセレクターでパッケージを絞り込む |
+| `--output` | 出力形式（`json` または `pretty`） |
+
+## turbo query ls
+
+パッケージ一覧表示のショートハンド。
+
+```bash
+turbo query ls              # 全パッケージ
+turbo query ls web          # 特定パッケージの詳細
+turbo query ls --affected   # 変更のあるパッケージのみ
+turbo query ls --filter=web... --output json
+```
 
 ## turbo query affected
 

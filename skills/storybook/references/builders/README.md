@@ -1,9 +1,7 @@
-# Storybook — Builders
-
-Storybook builders power the platform by spinning up a development environment, compiling JavaScript, CSS, and MDX into an executable bundle, and updating the browser in real-time.
+# builders
 
 | Name | Description | Path |
 |------|-------------|------|
-| `Vite` | Bundles stories using Vite with near-instantaneous HMR; ideal for Vite-based projects | [./vite.md](./vite.md) |
-| `Webpack` | Default Storybook bundler using Webpack 5 with zero-config support and extensive customization | [./webpack.md](./webpack.md) |
-| `Builder API` | Interface for creating custom builders that compile components and stories into browser-runnable bundles | [./builder-api.md](./builder-api.md) |
+| Builder API | Interface for implementing custom Storybook builders that compile components and stories into browser-runnable JavaScript bundles. | [builder-api.md](./builder-api.md) |
+| Vite Builder | Bundles Storybook components and stories using Vite, offering faster startup and hot module replacement compared to Webpack. | [vite.md](./vite.md) |
+| Webpack Builder | Storybook's default bundler using Webpack 5, with zero-config support and extensive customization options. | [webpack.md](./webpack.md) |

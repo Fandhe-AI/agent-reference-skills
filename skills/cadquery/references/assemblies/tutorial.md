@@ -32,9 +32,12 @@ assy.export("result.xml")   # OCCT XML format
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
+| `obj` | `Shape \| Workplane \| None` | `None` | Root geometry of the assembly |
 | `name` | `str` | `None` | Optional name for the root assembly |
 | `loc` | `Location` | identity | Initial location of the root assembly |
 | `color` | `Color` | `None` | Default color for the assembly |
+| `material` | `Material \| None` | `None` | Material properties |
+| `metadata` | `Dict[str, Any] \| None` | `None` | Custom key/value data |
 
 ### `.add(obj, ...)`
 

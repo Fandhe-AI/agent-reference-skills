@@ -34,6 +34,13 @@ assy.export(
 )
 ```
 
+**With unit control:**
+
+```python
+assy.export("/path/to/assy.step", unit="UM")
+assy.export("/path/to/assy.step", unit="UM", outputUnit="MM")
+```
+
 **With per-face metadata via `addSubshape()`:**
 
 ```python
@@ -62,6 +69,8 @@ assy.export("out.step")
 | `mode` | `str \| ExportModes` | `"default"` | Export mode: `"default"`, `"fused"` |
 | `glue` | `bool` | `False` | Fuse with glue (faster, non-manifold); only with `mode="fused"` |
 | `write_pcurves` | `bool` | `True` | Write parametric curves on surfaces |
+| `unit` | `str` | `"MM"` | Internal geometry unit written into the file |
+| `outputUnit` | `str` | same as `unit` | Unit written into the STEP header (display unit) |
 
 ## Export Modes
 

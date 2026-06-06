@@ -159,6 +159,17 @@ See [Modifiers](./modifiers.md) for modifier functions like `LS(x)`, `LC(x)`, et
 | `C_AC_BOOKMARKS` | |
 | `C_AC_SEARCH` | |
 
+### Input Assist
+
+| Keycode | Description |
+|---------|-------------|
+| `C_KEYBOARD_INPUT_ASSIST_NEXT` | Next input suggestion |
+| `C_KEYBOARD_INPUT_ASSIST_PREVIOUS` | Previous input suggestion |
+| `C_KEYBOARD_INPUT_ASSIST_NEXT_GROUP` | Next suggestion group |
+| `C_KEYBOARD_INPUT_ASSIST_PREVIOUS_GROUP` | Previous suggestion group |
+| `C_KEYBOARD_INPUT_ASSIST_ACCEPT` | Accept current input suggestion |
+| `C_KEYBOARD_INPUT_ASSIST_CANCEL` | Cancel input suggestion |
+
 ### Power & Lock
 
 | Keycode | Aliases |

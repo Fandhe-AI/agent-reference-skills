@@ -2,4 +2,4 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Configuration | Complete configuration reference: directory structure, all backends, memory, security, TTS, STT, voice, streaming, approvals, and more | [./configuration.md](./configuration.md) |
+| Configuration | Hermes agent configuration reference. Settings are stored in `~/.hermes/`… | [configuration.md](./configuration.md) |

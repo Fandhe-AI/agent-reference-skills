@@ -1,5 +1,7 @@
 # Features and Behavior
 
+> **Note:** This page has moved to `/docs/configure/user-interface/features-and-behavior` in the current documentation.
+
 Configure Storybook's UI layout and behavioral features via the `addons.setConfig()` API.
 
 ## Overview

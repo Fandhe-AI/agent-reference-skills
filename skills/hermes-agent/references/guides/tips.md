@@ -14,7 +14,7 @@ Practical guidance for getting the most out of Hermes Agent across prompting, CL
 
 | Action | Method |
 |--------|--------|
-| Multi-line input | `Alt+Enter` or `Ctrl+J` to add lines without sending |
+| Multi-line input | `Alt+Enter`, `Ctrl+J`, or `Shift+Enter` to add lines without sending |
 | Paste code/text | CLI auto-buffers multi-line pastes as a single message |
 | Stop and redirect | `Ctrl+C` once to interrupt and redirect execution |
 | Force exit | Double-press `Ctrl+C` within 2 seconds |
@@ -62,6 +62,8 @@ Practical guidance for getting the most out of Hermes Agent across prompting, CL
 - **Container security exception**: Dangerous command checks are skipped in container backends (Docker, Singularity, Modal) since the container provides the security boundary.
 - **Messaging bot allowlists**: Never enable `GATEWAY_ALLOW_ALL_USERS=true` for bots with terminal access. Use `TELEGRAM_ALLOWED_USERS`, `DISCORD_ALLOWED_USERS`, or DM pairing instead.
 - **Windows UTF-8**: Explicitly open files with UTF-8 encoding to avoid `UnicodeEncodeError` on Windows systems using default encodings.
+- **Supply-chain scanning**: Run `hermes security audit` periodically to detect vulnerable packages in venv, plugins, and MCP server dependencies.
+- **Secret manager**: Use `hermes secrets setup` to pull API keys from Bitwarden at startup instead of storing them in `.env` files.
 
 ## Related
 

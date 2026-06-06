@@ -1,5 +1,7 @@
 # Images and Assets
 
+> **Note:** This page has moved to `/docs/configure/integration/images-and-assets` in the current documentation.
+
 Three approaches for loading images, fonts, and other static assets in Storybook stories.
 
 ## Overview

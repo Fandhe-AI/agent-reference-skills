@@ -27,6 +27,69 @@ outlines:
 
 ---
 
+## Filtering
+
+The `where` attribute accepts filters that select which points receive a shape.
+
+| Filter Type | Behavior |
+|-------------|----------|
+| undefined | Returns default origin `[0, 0, 0°]` |
+| `true` | All points |
+| `false` | No points |
+| string | Exact name or tag match; prefix with `/` and suffix with `/` for regex |
+| `-name` | Negation — excludes matching points |
+| object / anchor | Treated as an anchor; returns a single point |
+| array (no objects) | Logical combination (see below) |
+
+### Tags
+
+Points can be labelled with the `tags` key-level attribute for use in `where` filters:
+
+```yaml
+# array form
+key:
+  tags: [alpha, home]
+
+# object form
+key:
+  tags:
+    alpha: true
+    home: true
+```
+
+### Logical Filter Combinations
+
+Array nesting controls logical operators:
+
+| Nesting | Logic |
+|---------|-------|
+| `[a, b]` (odd) | a OR b |
+| `[[a, b]]` (even) | a AND b |
+
+Example: `[alpha, [home, -/pinky/]]` = `alpha OR (home AND NOT pinky)`.
+
+---
+
+## Binding
+
+Binding controls how shapes grow to meet neighboring keys, forming a contiguous outline.
+
+### Explicit Binding (`bind`)
+
+Set on key-level attributes using CSS-like syntax:
+
+| Form | Description |
+|------|-------------|
+| single number | Applies to all four directions |
+| `[num_x, num_y]` | Horizontal / vertical |
+| `[num_t, num_r, num_b, num_l]` | Top / right / bottom / left |
+
+### Automatic Binding (`autobind`)
+
+`autobind` (default: `10`) calculates binding reach by examining column bounding boxes. Set `bound: true` on a part to activate it.
+
+---
+
 ## Shape Primitives
 
 ### rectangle
@@ -85,6 +148,33 @@ Parts are applied sequentially to build a cumulative shape:
 | `subtract` | Difference — remove shape from cumulative result. |
 | `intersect` | Intersection — keep only overlap with cumulative result. |
 | `stack` | Overlay shape without merging geometry. |
+
+---
+
+## Syntactic Sugar
+
+### String Shorthands
+
+Parts can be declared as strings using operation prefixes:
+
+| Shorthand | Equivalent operation |
+|-----------|---------------------|
+| `+name` or `name` | `add` |
+| `-name` | `subtract` |
+| `~name` | `intersect` |
+| `^name` | `stack` |
+
+### Expand Shorthand
+
+The joint type can be appended to the `expand` value:
+
+| Suffix | Joint style |
+|--------|-------------|
+| `)` | round |
+| `>` | pointy |
+| `]` | beveled |
+
+Example: `expand: 3]` equals `expand: 3` with `joints: beveled`.
 
 ---
 

@@ -1,22 +1,20 @@
-# Plugins
+# plugins
 
-Kubb のプラグインシステム。OpenAPI パーサーからコードジェネレーターまで全プラグインのリファレンス。
-
-| ファイル | 説明 | パス |
-|---------|------|------|
-| overview | プラグイン一覧と概要、プラグインの組み合わせ方 | [./overview.md](./overview.md) |
-| core | @kubb/core — build() API、基盤ライブラリ | [./core.md](./core.md) |
-| plugin-oas | @kubb/plugin-oas — OpenAPI パーサー・バリデーター | [./plugin-oas.md](./plugin-oas.md) |
-| plugin-ts | @kubb/plugin-ts — TypeScript 型生成（enum, interface, date 等） | [./plugin-ts.md](./plugin-ts.md) |
-| plugin-client | @kubb/plugin-client — API クライアント生成（Axios/Fetch/Class） | [./plugin-client.md](./plugin-client.md) |
-| plugin-zod | @kubb/plugin-zod — Zod バリデーションスキーマ生成（v3/v4 対応） | [./plugin-zod.md](./plugin-zod.md) |
-| plugin-react-query | @kubb/plugin-react-query — React Query hooks 生成 | [./plugin-react-query.md](./plugin-react-query.md) |
-| plugin-vue-query | @kubb/plugin-vue-query — Vue Query hooks 生成 | [./plugin-vue-query.md](./plugin-vue-query.md) |
-| plugin-solid-query | @kubb/plugin-solid-query — Solid Query hooks 生成 | [./plugin-solid-query.md](./plugin-solid-query.md) |
-| plugin-svelte-query | @kubb/plugin-svelte-query — Svelte Query hooks 生成 | [./plugin-svelte-query.md](./plugin-svelte-query.md) |
-| plugin-swr | @kubb/plugin-swr — SWR hooks 生成 | [./plugin-swr.md](./plugin-swr.md) |
-| plugin-faker | @kubb/plugin-faker — Faker モックデータ生成 | [./plugin-faker.md](./plugin-faker.md) |
-| plugin-msw | @kubb/plugin-msw — MSW ハンドラー生成 | [./plugin-msw.md](./plugin-msw.md) |
-| plugin-cypress | @kubb/plugin-cypress — Cypress リクエスト定義生成 | [./plugin-cypress.md](./plugin-cypress.md) |
-| plugin-mcp | @kubb/plugin-mcp — MCP サーバー生成 | [./plugin-mcp.md](./plugin-mcp.md) |
-| plugin-redoc | @kubb/plugin-redoc — Redoc HTML ドキュメント生成 | [./plugin-redoc.md](./plugin-redoc.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| @kubb/core | 全 Kubb プラグインの基盤となるコアモジュール。`build()` API を提供する。 | [core.md](./core.md) |
+| プラグイン概要 | Kubb はプラグインベースのアーキテクチャで、OpenAPI 仕様から様々なコード成果物を生成する。 | [overview.md](./overview.md) |
+| @kubb/plugin-client | OpenAPI 仕様から API クライアントコード（Axios/Fetch）を生成するプラグイン。 | [plugin-client.md](./plugin-client.md) |
+| @kubb/plugin-cypress | OpenAPI 仕様から Cypress リクエスト定義を生成するプラグイン。v3.7.0 で追加。 | [plugin-cypress.md](./plugin-cypress.md) |
+| @kubb/plugin-faker | OpenAPI スキーマから Faker.js モックデータジェネレーターを生成するプラグイン。 | [plugin-faker.md](./plugin-faker.md) |
+| @kubb/plugin-mcp | OpenAPI 仕様から MCP（Model Context Protocol）サーバーを生成するプラグイン。v3.9.0 で追加。 | [plugin-mcp.md](./plugin-mcp.md) |
+| @kubb/plugin-msw | OpenAPI 仕様から MSW（Mock Service Worker）ハンドラーを生成するプラグイン。 | [plugin-msw.md](./plugin-msw.md) |
+| @kubb/plugin-oas | OpenAPI 仕様のパース・バリデーションを行う Kubb の基盤プラグイン。ほとんどの他プラグインがこのプラグインに依存する。 | [plugin-oas.md](./plugin-oas.md) |
+| @kubb/plugin-react-query | OpenAPI 仕様から React Query（TanStack Query）hooks を生成するプラグイン。 | [plugin-react-query.md](./plugin-react-query.md) |
+| @kubb/plugin-redoc | OpenAPI 仕様から Redoc HTML ドキュメントを生成するプラグイン。Redocly を使用。 | [plugin-redoc.md](./plugin-redoc.md) |
+| @kubb/plugin-solid-query | OpenAPI 仕様から Solid Query（TanStack Query）hooks を生成するプラグイン。 | [plugin-solid-query.md](./plugin-solid-query.md) |
+| @kubb/plugin-svelte-query | OpenAPI 仕様から Svelte Query（TanStack Query）hooks を生成するプラグイン。 | [plugin-svelte-query.md](./plugin-svelte-query.md) |
+| @kubb/plugin-swr | OpenAPI 仕様から SWR hooks を生成するプラグイン。 | [plugin-swr.md](./plugin-swr.md) |
+| @kubb/plugin-ts | OpenAPI スキーマから TypeScript の型・インターフェースを生成するプラグイン。 | [plugin-ts.md](./plugin-ts.md) |
+| @kubb/plugin-vue-query | OpenAPI 仕様から Vue Query（TanStack Query）hooks を生成するプラグイン。 | [plugin-vue-query.md](./plugin-vue-query.md) |
+| @kubb/plugin-zod | OpenAPI スキーマから Zod バリデーションスキーマを生成するプラグイン。Zod v3/v4 対応。 | [plugin-zod.md](./plugin-zod.md) |

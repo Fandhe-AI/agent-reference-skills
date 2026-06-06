@@ -42,8 +42,17 @@ Supported on Linux, macOS, and Windows with Python 3.9+.
 # Upgrade pip first
 pip install --upgrade pip
 
-# Install CadQuery
+# Standard install
 pip install cadquery
+
+# With Jupyter support
+pip install cadquery[ipython]
+
+# From GitHub (latest dev)
+pip install git+https://github.com/CadQuery/cadquery.git
+
+# Developer setup
+pip install cadquery[dev]
 ```
 
 Virtual environments are strongly recommended to avoid system conflicts.

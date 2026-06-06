@@ -28,6 +28,8 @@ class Application extends AbstractComponent<Application, ApplicationEvents> {
   validate(project: Models.ProjectReflection): void;
   getEntryPoints(): DocumentationEntryPoint[] | undefined;
   getDefinedEntryPoints(): DocumentationEntryPoint[] | undefined;
+  getTypeScriptPath(): string;
+  getTypeScriptVersion(): string;
   setOptions(options: Configuration.TypeDocOptions, reportErrors?: boolean): boolean;
   watchFile(path: string, shouldRestart?: boolean): void;
   toString(): string;
@@ -56,7 +58,8 @@ class Application extends AbstractComponent<Application, ApplicationEvents> {
   options: Configuration.Options;
   logger: Logger;
   internationalization: Internationalization;
-  files: Models.FileRegistry;  // 非推奨
+  /** @deprecated 0.29 で削除予定。ProjectReflection 上の参照を使用すること */
+  files: Models.FileRegistry;
   componentName: string;
 
   // 静的プロパティ
@@ -66,6 +69,8 @@ class Application extends AbstractComponent<Application, ApplicationEvents> {
   static readonly EVENT_BOOTSTRAP_END: string;
   static readonly EVENT_PROJECT_REVIVE: string;
   static readonly EVENT_VALIDATE_PROJECT: string;
+  static readonly EVENT_GENERATE_OUTPUTS_BEGIN: string;
+  static readonly EVENT_GENERATE_OUTPUTS_END: string;
 }
 ```
 
@@ -170,6 +175,22 @@ setOptions(
 
 アプリケーションオプションを更新する。
 
+### getTypeScriptPath()
+
+```typescript
+getTypeScriptPath(): string
+```
+
+TypeScript コンパイラへのパスを返す。
+
+### getTypeScriptVersion()
+
+```typescript
+getTypeScriptVersion(): string
+```
+
+TypeScript バージョン文字列を返す。
+
 ### watchFile()
 
 ```typescript
@@ -257,6 +278,14 @@ JSON デシリアライゼーション後に発火する。
 ### EVENT_VALIDATE_PROJECT
 
 バリデーション中に発火する。
+
+### EVENT_GENERATE_OUTPUTS_BEGIN
+
+出力生成の直前に発火する。バリデーション警告があり `treatWarningsAsErrors` が有効な場合に補助ファイルの生成をスキップするプラグインで使用する。
+
+### EVENT_GENERATE_OUTPUTS_END
+
+出力生成の直後に発火する。バリデーション警告があり `treatWarningsAsErrors` が有効な場合に補助ファイルの生成をスキップするプラグインで使用する。
 
 ## アクセサ
 

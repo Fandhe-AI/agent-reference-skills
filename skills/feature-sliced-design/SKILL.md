@@ -12,6 +12,67 @@ model: sonnet
 
 # Feature-Sliced Design ガイドライン
 
+## ディレクトリ構成
+
+```text
+skills/feature-sliced-design/
+  SKILL.md
+  references/
+    README.md
+    import-rules.md
+    layers.md
+    public-api.md
+    slices-segments.md
+  samples/
+    README.md
+    project-structure.md
+    slice-public-api.md
+    layer-imports.md
+    cross-entity-import.md
+    slice-groups.md
+    composition-in-pages.md
+    nextjs-app-router.md
+    react-query-integration.md
+  scripts/
+    README.md
+    install.md
+    generate.md
+    lint.md
+  rules/
+    README.md
+    layer-dependency.md
+    public-api-enforcement.md
+    slice-isolation.md
+    segment-naming.md
+```
+
+## 探索手順
+
+タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
+
+1. 下記マッピング表でタスクに対応するカテゴリを探す
+2. そのカテゴリの `README.md` を参照して目的のページを特定する
+3. 該当ページの `.md` を Read して詳細を確認する
+
+## タスク → カテゴリ マッピング
+
+| タスク | カテゴリ | 参照 README |
+|--------|---------|------------|
+| レイヤー構成・責務を知りたい | references | [references/README.md](references/README.md) |
+| インポートルール・依存方向を確認したい | references | [references/README.md](references/README.md) |
+| Public API パターンを理解したい | references | [references/README.md](references/README.md) |
+| スライス・セグメントの定義を知りたい | references | [references/README.md](references/README.md) |
+| 典型的な FSD プロジェクト構成の例を見たい | samples | [samples/README.md](samples/README.md) |
+| Next.js / React Query との組み合わせ例を見たい | samples | [samples/README.md](samples/README.md) |
+| @x 記法・クロスエンティティ依存の実例を見たい | samples | [samples/README.md](samples/README.md) |
+| pages / widgets での合成パターンを知りたい | samples | [samples/README.md](samples/README.md) |
+| ツールチェーンのインストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
+| steiger でアーキテクチャ準拠チェックを実行したい | scripts | [scripts/README.md](scripts/README.md) |
+| @feature-sliced/cli でコード生成したい | scripts | [scripts/README.md](scripts/README.md) |
+| レイヤー依存方向のルールを自動適用したい | rules | [rules/README.md](rules/README.md) |
+| Public API 経由のみ許可するルールを確認したい | rules | [rules/README.md](rules/README.md) |
+| スライス分離・セグメント命名規約を確認したい | rules | [rules/README.md](rules/README.md) |
+
 コア概念の詳細は `references/<topic>.md`、チェックルールは `rules/<rule>.md` を参照。
 
 ## 必須ルール

@@ -1,16 +1,14 @@
 # Test Runner
 
-Playwright Test ランナーの設定リファレンス。
-
-| ファイル | 説明 | パス |
-|---------|------|------|
-| configuration | playwright.config.ts 全体設定 + use オプション | [./configuration.md](./configuration.md) |
-| fixtures | フィクスチャ（ビルトイン・カスタム・スコープ・オプション） | [./fixtures.md](./fixtures.md) |
-| annotations | skip, fail, fixme, slow, tags, custom annotations | [./annotations.md](./annotations.md) |
-| parallelism | 並列実行・シャーディング・ワーカー | [./parallelism.md](./parallelism.md) |
-| retries | リトライ設定・フレーキーテスト | [./retries.md](./retries.md) |
-| reporters | list, dot, line, html, json, junit, blob, custom | [./reporters.md](./reporters.md) |
-| projects | マルチブラウザ・環境分離・依存関係 | [./projects.md](./projects.md) |
-| timeouts | test / expect / action / navigation / global / fixture timeout | [./timeouts.md](./timeouts.md) |
-| global-setup | グローバルセットアップ（project dependencies, globalSetup/Teardown） | [./global-setup.md](./global-setup.md) |
-| web-server | webServer 設定（command, url, reuseExistingServer） | [./web-server.md](./web-server.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| Annotations | Test annotations for skip, fail, fixme, and slow marking… | [annotations.md](./annotations.md) |
+| Configuration | Test configuration via `playwright.config.ts` and `defineConfig`… | [configuration.md](./configuration.md) |
+| Fixtures | Test environment setup/teardown with composable custom fixtures… | [fixtures.md](./fixtures.md) |
+| Global Setup & Teardown | Setup/teardown via project dependencies or `globalSetup`… | [global-setup.md](./global-setup.md) |
+| Parallelism & Sharding | Worker processes and test sharding across multiple machines… | [parallelism.md](./parallelism.md) |
+| Projects | Logical test groups with shared configuration for multi-browser… | [projects.md](./projects.md) |
+| Reporters | Built-in and custom test result reporters with multiple outputs… | [reporters.md](./reporters.md) |
+| Retries | Automatic test retry with flaky/passed/failed categorization… | [retries.md](./retries.md) |
+| Timeouts | Test timeout configuration at multiple layers (test, expect,…) | [timeouts.md](./timeouts.md) |
+| Web Server | Local dev server auto-launch and readiness polling for tests… | [web-server.md](./web-server.md) |

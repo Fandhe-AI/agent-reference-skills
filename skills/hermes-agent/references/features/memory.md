@@ -44,17 +44,18 @@ The `session_search` tool queries a SQLite database at `~/.hermes/state.db` usin
 
 ## External Memory Providers
 
-Seven plugins extend (never replace) the built-in memory system:
+Eight plugins extend (never replace) the built-in memory system. Only one external provider can be active at a time.
 
 | Plugin | Capability |
 |--------|-----------|
-| Honcho | User modeling |
-| OpenViking | Knowledge graphs |
-| Mem0 | Semantic search |
-| Hindsight | Automatic capture |
-| Holographic | Associative recall |
-| RetainDB | Structured storage |
-| ByteRover | Cross-session modeling |
+| Honcho | Dialectic user behavioral modeling |
+| OpenViking | Knowledge graph with `viking://` URI browsing |
+| Mem0 | Fast semantic search; automatic capture |
+| Hindsight | Knowledge graph, entity resolution, multi-strategy retrieval |
+| Holographic | Local SQLite FTS5, trust scoring, HRR algebraic queries |
+| RetainDB | Cloud hybrid search (Vector + BM25 + Reranking), 7 memory types |
+| ByteRover | Structured markdown context tree, LLM-powered curation |
+| Supermemory | Semantic search, automatic fact extraction, cross-session modeling |
 
 ## Configuration
 

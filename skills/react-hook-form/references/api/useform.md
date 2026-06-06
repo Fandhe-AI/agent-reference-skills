@@ -43,11 +43,13 @@ useForm<TFieldValues extends FieldValues = FieldValues>(
 | `resetField` | `Function` | 個別フィールドをリセットする |
 | `setError` | `Function` | エラーを手動で設定する |
 | `clearErrors` | `Function` | エラーをクリアする |
-| `setValue` | `Function` | フィールド値をプログラム的に設定する |
+| `setValue` | `Function` | 単一フィールドの値をプログラム的に設定する |
+| `setValues` | `Function` | 複数フィールドの値を一括で更新する（v7.74+） |
 | `setFocus` | `Function` | 特定フィールドにフォーカスする |
 | `getValues` | `Function` | フォーム値を取得する（再レンダリングなし） |
 | `getFieldState` | `Function` | 個別フィールドの状態を取得する |
 | `trigger` | `Function` | バリデーションを手動で実行する |
+| `resetDefaultValues` | `Function` | デフォルト値を更新し dirty/valid 状態を再計算する（v7.77+） |
 | `control` | `Object` | Controller や useWatch に渡す制御オブジェクト |
 | `Form` | `Component` | フォーム送信を管理するコンポーネント（Beta） |
 | `subscribe` | `Function` | 再レンダリングなしでフォーム状態を購読する |

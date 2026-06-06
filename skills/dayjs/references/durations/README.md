@@ -1,5 +1,5 @@
-# Day.js — Durations
+# Durations
 
 | Name | Description | Path |
 |------|-------------|------|
-| Durations | Duration API 全体（creating, clone, humanize, format, ms/s/m/h/d/w/M/y, add, subtract, diff, as, get, toJSON, isDuration, toISOString, locale） | [./durations.md](./durations.md) |
+| Day.js — Durations | Duration objects represent a length of time (not a specific point in time). They are contextless — "2 hours" rather than "between 2 and 4 pm… | [durations.md](./durations.md) |

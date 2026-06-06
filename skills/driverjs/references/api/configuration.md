@@ -23,16 +23,16 @@ const driverObj = driver({
 | overlayColor | string | `'black'` | Backdrop overlay color |
 | smoothScroll | boolean | false | Smooth scroll to highlighted element |
 | allowClose | boolean | true | Allow closing via backdrop click |
-| overlayOpacity | number | 0.5 | Opacity of backdrop |
-| overlayClickBehavior | `'close'` \| `'nextStep'` \| ((e: Event) => void) | `'close'` | Action on backdrop click |
+| overlayOpacity | number | 0.7 | Opacity of backdrop |
+| overlayClickBehavior | `'close'` \| `'nextStep'` \| DriverHook | `'close'` | Action on backdrop click |
 | stagePadding | number | 10 | Distance between element and cutout (px) |
 | stageRadius | number | 5 | Border radius of cutout (px) |
-| allowKeyboardControl | boolean | true | Enable keyboard navigation |
+| allowKeyboardControl | boolean | undefined | Enable keyboard navigation |
 | disableActiveInteraction | boolean | false | Prevent interaction with highlighted element |
 | popoverClass | string | undefined | Custom CSS class for popover |
 | popoverOffset | number | 10 | Distance between popover and element (px) |
 | showButtons | AllowedButtons[] | `['next','previous','close']` (tours); `[]` (highlight) | Buttons to show |
-| disableButtons | AllowedButtons[] | undefined | Buttons to disable |
+| disableButtons | AllowedButtons[] | `[]` | Buttons to disable |
 | showProgress | boolean | false | Show progress text |
 | progressText | string | `'{{current}} of {{total}}'` | Progress text template |
 | nextBtnText | string | undefined | Custom next button text |
@@ -43,23 +43,29 @@ const driverObj = driver({
 
 Hooks can be set at the driver level (apply to all steps) or at the step level (override driver-level).
 
+All hooks (except `onPopoverRender`) follow the `DriverHook` signature:
+
+```typescript
+type DriverHook = (element: Element | undefined, step: DriveStep, options: { config: Config; state: State; driver: Driver }) => void;
+```
+
 | Hook | Parameters | Description |
 |------|------------|-------------|
-| onPopoverRender | (popover: PopoverDOM, options: { config, state }) | Called after popover is rendered |
-| onHighlightStarted | (element, step, options: { config, state }) | Called before element is highlighted |
-| onHighlighted | (element, step, options: { config, state }) | Called after element is highlighted |
-| onDeselected | (element, step, options: { config, state }) | Called when element is deselected |
-| onDestroyStarted | (element, step, options: { config, state }) | Called before driver is destroyed |
-| onDestroyed | (element, step, options: { config, state }) | Called after driver is destroyed |
-| onNextClick | (element, step, options: { config, state }) | Called on next button click |
-| onPrevClick | (element, step, options: { config, state }) | Called on previous button click |
-| onCloseClick | (element, step, options: { config, state }) | Called on close button click |
+| onPopoverRender | (popover: PopoverDOM, options: { config, state, driver }) | Called after popover is rendered |
+| onHighlightStarted | (element, step, options: { config, state, driver }) | Called before element is highlighted |
+| onHighlighted | (element, step, options: { config, state, driver }) | Called after element is highlighted |
+| onDeselected | (element, step, options: { config, state, driver }) | Called when element is deselected |
+| onDestroyStarted | (element, step, options: { config, state, driver }) | Called before driver is destroyed |
+| onDestroyed | (element, step, options: { config, state, driver }) | Called after driver is destroyed |
+| onNextClick | (element, step, options: { config, state, driver }) | Called on next button click |
+| onPrevClick | (element, step, options: { config, state, driver }) | Called on previous button click |
+| onCloseClick | (element, step, options: { config, state, driver }) | Called on close button click |
 
 When overriding `onNextClick` or `onPrevClick`, automatic navigation is disabled. You must manually call `driverObj.moveNext()` or `driverObj.movePrevious()` to advance:
 
 ```javascript
 const driverObj = driver({
-  onNextClick: (element, step, { config, state }) => {
+  onNextClick: (element, step, { config, state, driver }) => {
     // Custom logic before advancing
     driverObj.moveNext();
   },
@@ -74,7 +80,7 @@ Each step's `popover` property accepts these options, overriding the driver-leve
 |--------|------|---------|-------------|
 | title | string | undefined | Popover title (supports HTML) |
 | description | string | undefined | Popover description (supports HTML) |
-| side | `'top'` \| `'right'` \| `'bottom'` \| `'left'` | auto | Preferred side relative to element |
+| side | `'top'` \| `'right'` \| `'bottom'` \| `'left'` \| `'over'` | auto | Preferred side relative to element (`'over'` centers the popover on the element) |
 | align | `'start'` \| `'center'` \| `'end'` | auto | Alignment relative to element |
 | showButtons | AllowedButtons[] | inherited | Buttons to show |
 | disableButtons | AllowedButtons[] | inherited | Buttons to disable |
@@ -84,7 +90,7 @@ Each step's `popover` property accepts these options, overriding the driver-leve
 | showProgress | boolean | inherited | Show progress |
 | progressText | string | inherited | Progress text template |
 | popoverClass | string | inherited | Custom CSS class |
-| onPopoverRender | function | inherited | Render callback |
+| onPopoverRender | (popover: PopoverDOM, opts: { config, state, driver }) => void | inherited | Render callback |
 | onNextClick | function | inherited | Next click callback |
 | onPrevClick | function | inherited | Previous click callback |
 | onCloseClick | function | inherited | Close click callback |
@@ -98,9 +104,9 @@ Each entry in the `steps` array has the following shape:
 | element | Element \| string \| (() => Element) | Target element — DOM element, CSS selector, or function returning element |
 | popover | Popover | Step popover configuration |
 | disableActiveInteraction | boolean | Disable interaction with highlighted element |
-| onDeselected | function | Callback when step is deselected |
-| onHighlightStarted | function | Callback before highlighting |
-| onHighlighted | function | Callback after highlighting |
+| onHighlightStarted | DriverHook | Callback before highlighting |
+| onHighlighted | DriverHook | Callback after highlighting |
+| onDeselected | DriverHook | Callback when step is deselected |
 
 ```javascript
 const steps = [
@@ -116,7 +122,7 @@ const steps = [
   {
     element: () => document.querySelector('.dynamic-el'),
     popover: { title: 'Dynamic', description: 'Resolved at runtime.' },
-    onHighlighted: (element, step, options) => {
+    onHighlighted: (element, step, { config, state, driver }) => {
       console.log('Highlighted:', element);
     },
   },

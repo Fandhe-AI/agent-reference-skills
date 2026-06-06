@@ -19,7 +19,7 @@ A progressively enhanced HTML `<form>` that submits data to route actions via `f
 | `viewTransition` | `boolean` | Enables View Transition API for this navigation. |
 | `discover` | `"render" \| "none"` | Lazy route discovery behavior. Default: `"render"`. |
 | `onSubmit` | `(e: React.FormEvent) => void` | Callback on form submission. Call `e.preventDefault()` to cancel. |
-| `unstable_defaultShouldRevalidate` | `boolean` | Specifies default revalidation behavior after submission. |
+| `defaultShouldRevalidate` | `boolean` | Specifies default revalidation behavior after submission. |
 
 ## 使用例
 

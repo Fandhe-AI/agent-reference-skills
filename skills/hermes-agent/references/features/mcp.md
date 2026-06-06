@@ -7,7 +7,19 @@ MCP lets Hermes connect to external tool servers — GitHub, databases, file sys
 | Type | Transport | When to Use |
 |------|-----------|-------------|
 | Stdio | stdin/stdout subprocess | Locally installed servers, low-latency needs |
-| HTTP | Remote endpoint | Externally hosted or organisation-internal servers |
+| HTTP | Remote endpoint with static headers or OAuth 2.1 | Externally hosted or organisation-internal servers |
+
+## Curated Catalog
+
+Hermes ships a reviewed catalog of MCP servers (disabled by default). Install selectively:
+
+```bash
+hermes mcp              # interactive picker
+hermes mcp install n8n  # install by name
+hermes mcp configure linear  # reconfigure existing
+```
+
+Entries are stored in `optional-mcps/` in the hermes-agent repository and require Nous staff review via PR.
 
 ## Configuration
 
@@ -17,10 +29,12 @@ MCP servers are defined in `~/.hermes/config.yaml` under `mcp_servers`.
 |-----------|-----------|-------------|
 | `command` / `args` | stdio | Executable and arguments |
 | `url` / `headers` | HTTP | Endpoint URL and auth headers |
+| `auth: oauth` | HTTP | OAuth 2.1 authentication; tokens cached at `~/.hermes/mcp-tokens/<server>.json` |
 | `env` | stdio only | Environment variables (filtered for security) |
 | `enabled` | both | Toggle connectivity |
 | `timeout` / `connect_timeout` | both | Timing controls |
 | `tools` | both | Per-server filtering rules |
+| `supports_parallel_tool_calls` | both | Enable concurrent tool execution |
 
 ## Tool Registration & Naming
 
@@ -53,6 +67,14 @@ The `include` list takes precedence when both `include` and `exclude` are specif
 ## Dynamic Tool Discovery
 
 Servers can notify Hermes of runtime capability changes via `notifications/tools/list_changed`. Hermes automatically re-fetches and updates the tool registry without manual intervention.
+
+## Parallel Tool Calls
+
+```yaml
+mcp_servers:
+  my_server:
+    supports_parallel_tool_calls: true  # Enable concurrent execution
+```
 
 ## Sampling
 

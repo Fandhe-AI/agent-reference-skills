@@ -21,9 +21,18 @@ Each option accepts `true` (enable default), `false` (suppress header), or a cus
 | `strictTransportSecurity` | `"max-age=15552000; includeSubDomains"` | `Strict-Transport-Security` header |
 | `xContentTypeOptions` | `"nosniff"` | `X-Content-Type-Options` header |
 | `xDnsPrefetchControl` | `"off"` | `X-DNS-Prefetch-Control` header |
+| `xDownloadOptions` | `"noopen"` | `X-Download-Options` header |
+| `xPermittedCrossDomainPolicies` | `"none"` | `X-Permitted-Cross-Domain-Policies` header |
 | `crossOriginResourcePolicy` | `"same-origin"` | `Cross-Origin-Resource-Policy` header |
+| `crossOriginOpenerPolicy` | `"same-origin"` | `Cross-Origin-Opener-Policy` header |
+| `crossOriginEmbedderPolicy` | `false` | `Cross-Origin-Embedder-Policy` header (disabled by default) |
+| `originAgentCluster` | `"?1"` | `Origin-Agent-Cluster` header |
 | `referrerPolicy` | `"no-referrer"` | `Referrer-Policy` header |
 | `contentSecurityPolicy` | — | Object with CSP directives (`defaultSrc`, `scriptSrc`, `styleSrc`, etc.) |
+| `contentSecurityPolicyReportOnly` | — | Report-only variant of CSP |
+| `trustedTypes` | — | `Trusted-Types` policy name configuration |
+| `requireTrustedTypesFor` | — | `Require-Trusted-Types-For` enforcement scope |
+| `reportingEndpoints` | — | `Reporting-Endpoints` configuration |
 | `permissionsPolicy` | — | Object mapping feature names to arrays of origins or booleans |
 
 ## Notes

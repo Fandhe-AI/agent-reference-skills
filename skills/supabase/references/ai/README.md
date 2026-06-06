@@ -1,13 +1,13 @@
-# Supabase — AI & Vectors
+# ai
 
 | Name | Description | Path |
 |------|-------------|------|
-| `overview` | AI & Vectors 概要・pgvector 基礎 | [./overview.md](./overview.md) |
-| `vector-columns` | ベクトルカラムの定義と操作 | [./vector-columns.md](./vector-columns.md) |
-| `vector-indexes` | ベクトルインデックス（HNSW、IVFFlat） | [./vector-indexes.md](./vector-indexes.md) |
-| `embeddings` | 埋め込み生成・自動埋め込み | [./embeddings.md](./embeddings.md) |
-| `semantic-search` | セマンティック検索の実装 | [./semantic-search.md](./semantic-search.md) |
-| `hybrid-search` | ハイブリッド検索（ベクトル + 全文検索） | [./hybrid-search.md](./hybrid-search.md) |
-| `rag` | RAG（Retrieval-Augmented Generation）パイプライン | [./rag.md](./rag.md) |
-| `python-clients` | Python クライアント（vecs 等）によるベクトル操作 | [./python-clients.md](./python-clients.md) |
-| `integrations` | 外部連携（LangChain, LlamaIndex, Amazon Bedrock） | [./integrations.md](./integrations.md) |
+| 埋め込み生成 | テキストや画像をベクトル表現に変換するための各種埋め込みモデルと Supabase での… | [embeddings.md](./embeddings.md) |
+| ハイブリッド検索 | ベクトル検索（セマンティック検索）と全文検索（キーワード検索）を組み合わ… | [hybrid-search.md](./hybrid-search.md) |
+| 外部連携 | LangChain、LlamaIndex、Amazon Bedrock など主要 AI フレームワークとの… | [integrations.md](./integrations.md) |
+| AI & Vectors 概要 | Supabase における AI・ベクトル検索機能の全体像。pgvector Extension を… | [overview.md](./overview.md) |
+| Python クライアント | vecs ライブラリを使った Python からのベクトル操作。コレクション管理、… | [python-clients.md](./python-clients.md) |
+| RAG パイプライン | Retrieval-Augmented Generation。ドキュメントの分割・埋め込み・検索・… | [rag.md](./rag.md) |
+| セマンティック検索 | ベクトル類似度に基づく意味的な検索。match_documents パターンによるク… | [semantic-search.md](./semantic-search.md) |
+| ベクトルカラム | pgvector の `vector(n)` 型カラムの定義・操作方法と距離演算子の使い方。 | [vector-columns.md](./vector-columns.md) |
+| ベクトルインデックス | HNSW と IVFFlat の 2 種類のベクトルインデックスによる近似最近傍検索… | [vector-indexes.md](./vector-indexes.md) |

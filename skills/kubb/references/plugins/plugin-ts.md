@@ -27,6 +27,7 @@ npm install --save-dev @kubb/plugin-ts
 | `syntaxType` | `'type' \| 'interface'` | `'type'` | type alias か interface か |
 | `enumType` | `'enum' \| 'asConst' \| 'asPascalConst' \| 'constEnum' \| 'literal' \| 'inlineLiteral'` | `'asConst'` | enum の表現形式（v5 で `inlineLiteral` がデフォルト化） |
 | `enumSuffix` | `string` | `'enum'` | enum 名のサフィックス |
+| `enumTypeSuffix` | `string` | — | `enumType: asConst \| asPascalConst` 使用時の型名サフィックス（v4.37.0+） |
 | `enumKeyCasing` | `'screamingSnakeCase' \| 'snakeCase' \| 'pascalCase' \| 'camelCase' \| 'none'` | `'none'` | enum キーのケーシング |
 
 ### データ型オプション

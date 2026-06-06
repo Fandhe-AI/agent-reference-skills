@@ -6,3 +6,4 @@ BullMQ Pro の NestJS 統合モジュール。Pro 版のキュー、ワーカー
 |------|-------------|------|
 | Producers | NestJS Pro でのキュープロデューサー | [./producers.md](./producers.md) |
 | Queue Events Listeners | NestJS Pro でのイベントリスナー | [./queue-events-listeners.md](./queue-events-listeners.md) |
+| Changelog | nestjs-bullmq-pro パッケージの変更履歴 | [./changelog.md](./changelog.md) |

@@ -22,7 +22,7 @@ app.use('/api/*', cors({
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `origin` | `string \| string[] \| (origin, c) => string` | `'*'` | `Access-Control-Allow-Origin` value |
-| `allowMethods` | `string[] \| (origin, c) => string[]` | `['GET','HEAD','PUT','POST','DELETE','PATCH']` | `Access-Control-Allow-Methods` value |
+| `allowMethods` | `string[] \| ((origin: string, c: Context) => string[])` | `['GET','HEAD','PUT','POST','DELETE','PATCH']` | `Access-Control-Allow-Methods` value |
 | `allowHeaders` | `string[]` | `[]` | `Access-Control-Allow-Headers` value |
 | `maxAge` | `number` | — | `Access-Control-Max-Age` value in seconds |
 | `credentials` | `boolean` | — | `Access-Control-Allow-Credentials` value |

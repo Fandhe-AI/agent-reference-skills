@@ -12,6 +12,10 @@ Hermes works with any OpenAI-compatible API, including OpenRouter, Nous Portal, 
 
 Hermes requires a Unix-like environment. Install WSL2 and run Hermes from within it using the standard installation script.
 
+### Android / Termux
+
+Hermes runs on Android via Termux. Use the standard installation script within the Termux environment.
+
 ### Data Privacy
 
 API calls go only to the LLM provider you configure. Hermes Agent does not collect telemetry, usage data, or analytics. Conversations, memory, and skills are stored locally.

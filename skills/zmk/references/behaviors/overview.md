@@ -37,7 +37,7 @@ Behaviors are referenced in keymap `bindings` using an ampersand prefix:
 | Power | `&ext_power`, `&soft_off` | External power and soft-off |
 | Reset | `&sys_reset`, `&bootloader` | Firmware reset and bootloader |
 | Misc | `&trans`, `&none` | Transparent passthrough and block |
-| Sensor | `&inc_dec_kp` | Encoder rotation handling |
+| Sensor | `zmk,behavior-sensor-rotate` | Encoder rotation handling (standard and variable variants) |
 
 ## Notes
 

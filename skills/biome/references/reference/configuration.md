@@ -20,6 +20,7 @@ biome.json / biome.jsonc の全オプション。
 | `graphql` | GraphQL 設定 |
 | `html` | HTML 設定 |
 | `overrides` | ファイルパターン別の上書き設定 |
+| `grit` | GritQL (.grit) ファイルの formatter / linter / assist 設定 |
 | `plugins` | GritQL プラグインパス配列 |
 
 ## files セクション
@@ -93,6 +94,21 @@ biome.json / biome.jsonc の全オプション。
 - `html.experimentalFullSupportEnabled`: Vue/Svelte/Astro 対応
 - `html.parser.interpolation`: `{{ }}` 式サポート
 - `html.formatter.whitespaceSensitivity`: 空白処理方式
+
+## grit セクション
+
+GritQL (.grit) ファイルに対する設定:
+
+| オプション | デフォルト | 説明 |
+|-----------|-----------|------|
+| `grit.formatter.enabled` | false | GritQL ファイルのフォーマット有効化 |
+| `grit.formatter.indentStyle` | tab | インデント方式 |
+| `grit.formatter.indentWidth` | 2 | インデント幅 |
+| `grit.formatter.lineWidth` | 80 | 最大行幅 |
+| `grit.formatter.quoteStyle` | double | クォートスタイル（single / double） |
+| `grit.formatter.trailingNewline` | true | ファイル末尾改行 |
+| `grit.linter.enabled` | true | GritQL ファイルのリント有効化 |
+| `grit.assist.enabled` | true | GritQL ファイルのアシスト有効化 |
 
 ## overrides セクション
 

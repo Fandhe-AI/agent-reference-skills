@@ -1,7 +1,5 @@
 # Server
 
-サーバーサイドでの URL クエリパラメータ解析。
-
 | Name | Description | Path |
 |------|-------------|------|
-| Server-side Usage | createLoader, createSearchParamsCache, strict mode | [server-side.md](./server-side.md) |
+| Server-side Usage | サーバーサイドで URL クエリパラメータを型安全に解析する API。 | [server-side.md](./server-side.md) |

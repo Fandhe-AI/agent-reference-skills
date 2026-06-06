@@ -26,6 +26,7 @@ npm install --save-dev @kubb/plugin-swr
 | `client.importPath` | `string` | — | カスタムクライアントパス |
 | `client.dataReturnType` | `'data' \| 'full'` | `'data'` | レスポンス形式 |
 | `client.baseURL` | `string` | — | ベース URL |
+| `client.clientType` | `'function' \| 'class'` | `'function'` | クライアント形式（function のみ対応） |
 | `client.bundle` | `boolean` | `false` | ランタイムバンドル |
 
 ### query / mutation

@@ -2,66 +2,32 @@
 
 ## 概要
 
-ログドレインは Supabase のログを外部サービスにリアルタイムで転送する機能。ログの長期保存、高度な分析、アラート設定が可能になる。Team プラン以上で利用可能。
+ログドレインは Supabase のログを外部サービスにリアルタイムで転送する機能。ログの長期保存、高度な分析、アラート設定が可能になる。Pro プラン以上で利用可能。
+
+設定場所: **Project Settings → Log Drains → Add Drain**
 
 ## 対応する外部サービス
 
-- Datadog
-- Logflare（Supabase ネイティブ）
-- カスタム Webhook（任意のサービスへ転送）
+| 送信先 | 形式 | 認証 |
+|--------|------|------|
+| Generic HTTP Endpoint | JSON (POST) | HTTP Headers で任意指定 |
+| Datadog | JSON | API Key + Region |
+| Loki | HTTP API 形式 (最大 250 件/バッチ) | HTTP Headers |
+| Sentry | Sentry Logging Product 形式 | DSN |
+| Axiom | JSON | API Token |
+| Amazon S3 | JSON (バッチ書き込み) | Access Key / Secret Key |
 
-## Datadog 連携
+HTTP 系の送信先はすべて最大 250 件または 1 秒間隔でバッチ送信され、Gzip 圧縮をサポートする。
+
+## Generic HTTP Endpoint
+
+任意の HTTP エンドポイントにログを POST 送信する。
 
 ### セットアップ
 
-1. **ダッシュボード**: **Project Settings → Log Drains → Add Drain**
-2. **Datadog** を選択
+1. **Project Settings → Log Drains → Add Drain**
+2. **Generic HTTP Endpoint** を選択
 3. 以下を入力:
-   - **API Key**: Datadog の API キー
-   - **Region**: Datadog のリージョン（US1, US3, US5, EU1, AP1）
-
-### Datadog での確認
-
-ログは Datadog の **Logs** セクションに `source:supabase` として表示される。
-
-### フィルタリング
-
-```
-# Datadog のログ検索
-source:supabase service:auth status:error
-source:supabase service:postgrest @http.status_code:>=500
-source:supabase service:edge-functions
-```
-
-### ダッシュボードの作成
-
-Datadog でカスタムダッシュボードを作成し、以下を可視化:
-- エラー率のトレンド
-- レスポンスタイムの分布
-- サービスごとのログボリューム
-- 認証イベントの統計
-
-## Logflare 連携
-
-### 概要
-
-Logflare は Supabase が開発した BigQuery ベースのログ管理サービス。Supabase のデフォルトログバックエンド。
-
-### セットアップ
-
-1. Logflare アカウントを作成
-2. ソースを作成
-3. **Project Settings → Log Drains → Add Drain → Logflare**
-4. Logflare のソース ID と API キーを入力
-
-## Webhook 形式
-
-任意の HTTP エンドポイントにログを送信できる。
-
-### セットアップ
-
-1. **Project Settings → Log Drains → Add Drain → Webhook**
-2. 以下を入力:
    - **URL**: ログの送信先 URL
    - **HTTP Headers**: 認証ヘッダー等（オプション）
 
@@ -90,13 +56,10 @@ Logflare は Supabase が開発した BigQuery ベースのログ管理サービ
 export async function POST(request: Request) {
   const logs = await request.json()
 
-  // ログの処理（保存、フィルタリング、アラート等）
   for (const log of logs) {
     if (log.metadata?.status >= 500) {
-      // エラーアラートを送信
       await sendSlackAlert(log)
     }
-    // ログを独自のストレージに保存
     await saveLog(log)
   }
 
@@ -104,66 +67,79 @@ export async function POST(request: Request) {
 }
 ```
 
-### カスタム連携の例
+## Datadog 連携
 
-#### Slack への通知
+### セットアップ
 
-```typescript
-async function sendSlackAlert(log: any) {
-  await fetch(process.env.SLACK_WEBHOOK_URL!, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      text: `[${log.service}] Error: ${log.event_message}`,
-      blocks: [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: `*Service:* ${log.service}\n*Message:* ${log.event_message}\n*Time:* ${log.timestamp}`,
-          },
-        },
-      ],
-    }),
-  })
-}
+1. **Datadog** を選択
+2. 以下を入力:
+   - **API Key**: Datadog の API キー
+   - **Region**: US1, US3, US5, EU1, AP1
+
+### Datadog での確認
+
+ログは `source:supabase` タグで Datadog の **Logs** セクションに表示される。
+
+```
+source:supabase service:auth status:error
+source:supabase service:postgrest @http.status_code:>=500
 ```
 
-#### Elasticsearch への転送
+## Loki 連携
 
-```bash
-# Logstash の設定例
-input {
-  http {
-    port => 8080
-    codec => json
-  }
-}
+Grafana Loki の HTTP API 形式でログを送信する。
 
-output {
-  elasticsearch {
-    hosts => ["http://elasticsearch:9200"]
-    index => "supabase-logs-%{+YYYY.MM.dd}"
-  }
-}
-```
+### セットアップ
+
+1. **Loki** を選択
+2. 以下を入力:
+   - **URL**: Loki エンドポイント URL
+   - **HTTP Headers**: 認証ヘッダー（BasicAuth または Bearer）
+
+最大 250 件/バッチでログを送信する。
+
+## Sentry 連携
+
+Sentry の Logging Product にログを統合する。
+
+### セットアップ
+
+1. **Sentry** を選択
+2. **DSN**: Sentry プロジェクトの DSN（Project Settings → Client Keys）を入力
+
+## Axiom 連携
+
+### セットアップ
+
+1. **Axiom** を選択
+2. 以下を入力:
+   - **Dataset**: Axiom のデータセット名
+   - **API Token**: Ingestion 権限付きの API Token
+
+## Amazon S3 連携
+
+既存の S3 バケットにログを JSON 形式で書き込む。
+
+### セットアップ
+
+1. **Amazon S3** を選択
+2. 以下を入力:
+   - **Bucket**: S3 バケット名
+   - **Region**: バケットのリージョン
+   - **Access Key ID / Secret Access Key**: S3 への書き込み権限を持つ IAM 認証情報
+   - **Batch Timeout**: バッチ送信の間隔（秒）
 
 ## ログドレインの管理
 
 ### 確認
 
 ```bash
-# CLI で確認
 supabase projects log-drains list --project-ref <project-ref>
 ```
 
-### 削除
-
-ダッシュボードの **Project Settings → Log Drains** から削除可能。
-
 ### 複数ドレインの設定
 
-複数のログドレインを同時に設定可能。同じログが全てのドレインに送信される。
+複数のログドレインを同時に設定可能。同じログがすべてのドレインに送信される。
 
 ## ベストプラクティス
 

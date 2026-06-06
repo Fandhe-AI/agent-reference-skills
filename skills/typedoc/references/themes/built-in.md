@@ -62,6 +62,30 @@ typedoc --customFooterHtml "<p>Copyright 2024</p>"
 }
 ```
 
+#### customFooterHtmlDisableWrapper
+
+`customFooterHtml` で追加するフッター HTML の自動 `<p>` ラッパーを無効化する。
+
+```json
+{
+  "customFooterHtmlDisableWrapper": true
+}
+```
+
+### ルーター（出力フォルダー構造）
+
+`--router` オプションで出力フォルダーの構造を変更できる（v0.28 以降）。デフォルトは `kind`。プラグインによる拡張も可能。
+
+```json
+{
+  "router": "kind"
+}
+```
+
+### CSS レイヤー
+
+v0.28 以降、デフォルトテーマの CSS は `@layer typedoc` でラップされる。`customCss` で CSS を上書きする際、カスケードの制御に `@layer` を活用できる。
+
 ### ナビゲーション / サイドバーのカスタマイズ
 
 デフォルトテーマはサイドバーナビゲーションを提供し、以下のような設定が可能：
@@ -87,6 +111,7 @@ typedoc --customFooterHtml "<p>Copyright 2024</p>"
 - 追加テーマはプラグインとして提供される（[コミュニティテーマ](./community-themes.md)を参照）
 - `customCss` でデフォルトテーマの内部CSSクラスやCSS変数を上書きできるが、テーマのアップデートで内部構造が変更される可能性がある
 - `customJs` は全ページに読み込まれるため、パフォーマンスへの影響に注意
+- v0.28 以降、組み込みCSSは `@layer typedoc` でラップされる。`customCss` で上書きする際はカスケード優先順位に注意
 
 ## 関連
 

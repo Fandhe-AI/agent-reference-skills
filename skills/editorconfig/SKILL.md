@@ -14,30 +14,51 @@ model: sonnet
 EditorConfig ファイルフォーマットの全ドキュメントを網羅したスキル。
 ユーザーのタスクに応じて適切なリファレンスファイルを読むこと。
 
-## ディレクトリ構造
+## ディレクトリ構成
 
-```
-.claude/skills/editorconfig/
-├── SKILL.md                              ← このファイル（エントリーポイント）
-└── references/
-    ├── README.md                         ← リファレンス概要・ファイル一覧
-    ├── specification.md                  ← 正式仕様（ファイル発見、パース、優先順位）
-    ├── properties.md                     ← 全プロパティ詳細（値、説明、適用タイミング）
-    ├── glob-patterns.md                  ← グロブパターン仕様
-    └── best-practices.md                 ← 設定例、FAQ、よくあるパターン
+```text
+skills/editorconfig/
+  SKILL.md
+  references/
+    README.md
+    specification.md
+    properties.md
+    glob-patterns.md
+    best-practices.md
+  samples/
+    README.md
+    basic-setup.md
+    web-project.md
+    python-project.md
+    go-project.md
+    multi-language-project.md
+    nested-editorconfig.md
+    unset-override.md
+    glob-patterns.md
+  scripts/
+    README.md
+    install.md
+    cli.md
+    validate.md
+    generate.md
+    editor-plugins.md
 ```
 
 ## 探索手順
 
-1. ユーザーのタスクに最も関連するリファレンスを特定する
-2. そのリファレンスファイルを読む
-3. 必要に応じて関連ファイルのリンクを辿る
+タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-## タスク → リファレンスマッピング
+1. 下記マッピング表でタスクに対応するカテゴリを探す
+2. そのカテゴリの `README.md` を参照して目的のページを特定する
+3. 該当ページの `.md` を Read して詳細を確認する
 
-| タスク例 | リファレンス | パス |
-|---------|------------|------|
-| `.editorconfig` の新規作成、設定例 | best-practices | [references/best-practices.md](./references/best-practices.md) |
-| プロパティの意味、値、設定方法 | properties | [references/properties.md](./references/properties.md) |
-| ファイルマッチングパターン、ワイルドカード | glob-patterns | [references/glob-patterns.md](./references/glob-patterns.md) |
-| ファイル検索順、優先順位、パース仕様 | specification | [references/specification.md](./references/specification.md) |
+## タスク → カテゴリ マッピング
+
+| タスク | カテゴリ | 参照 README |
+|--------|---------|------------|
+| プロパティの意味・値・設定方法を知りたい | references | [references/README.md](references/README.md) |
+| ファイルマッチングパターン・ワイルドカードを知りたい | references | [references/README.md](references/README.md) |
+| ファイル検索順・優先順位・パース仕様を知りたい | references | [references/README.md](references/README.md) |
+| よくある設定例・FAQ・ベストプラクティスを知りたい | references | [references/README.md](references/README.md) |
+| 典型的な .editorconfig の使い方・プロジェクト別設定例を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンド・バリデーション方法を知りたい | scripts | [scripts/README.md](scripts/README.md) |

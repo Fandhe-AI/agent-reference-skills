@@ -73,6 +73,15 @@ result = (
 | `rotateAboutCenter` | `rotateAboutCenter(axisEndPoint, angleDegrees)` | Rotate around object's center |
 | `translate` | `translate(vec)` | Translate all stack objects by a vector |
 | `mirror` | `mirror(mirrorPlane='XY', basePointVector=(0,0,0), union=False)` | Mirror a solid about a plane |
+| `transformed` | `transformed(rotate=(0,0,0), offset=(0,0,0))` | Apply rotation then translation to current workplane, creating a new workplane |
+| `section` | `section(height=0.0)` | Return a cross-section of the current solid at the given height on the current workplane |
+
+### Utility Operations
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `cutEach` | `cutEach(fcn, useLocalCoords=False, clean=True)` | Cut a solid from the context solid at each stack point using a callback |
+| `interpPlate` | `interpPlate(surf_edges, surf_pts, thickness, combine=True, clean=True, degree=3, nbPtsOnCur=15, nbIter=2, anisotropy=False, tol2d=1e-05, tol3d=1e-04, tolAng=1e-01, tolCurv=1e-01, maxDeg=8, maxSegments=9)` | Create a surface (plate) interpolating through edges and/or points |
 
 ## Notes
 

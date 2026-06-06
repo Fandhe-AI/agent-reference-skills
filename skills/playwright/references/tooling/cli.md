@@ -296,6 +296,23 @@ npx playwright merge-reports --reporter junit blob-report
 npx playwright merge-reports --config merge.config.ts blob-report
 ```
 
+## Initialize Agents
+
+Sets up Playwright Test Agents for AI-powered test generation and maintenance.
+
+```bash
+# Initialize for VS Code Copilot
+npx playwright init-agents --loop=vscode
+
+# Initialize for Claude Code
+npx playwright init-agents --loop=claude
+
+# Initialize for OpenCode
+npx playwright init-agents --loop=opencode
+```
+
+Creates agent definitions in `.github/` and generates a project structure with `specs/` and `tests/` directories. Re-run after updating Playwright to get the latest agent capabilities.
+
 ## Clear Cache
 
 Removes cached browser binaries and other Playwright artifacts.

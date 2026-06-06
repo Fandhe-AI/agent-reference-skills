@@ -10,15 +10,17 @@ Supabase は PostgreSQL を中心としたオープンソースの BaaS（Backen
 
 | サービス | 技術 | 役割 |
 |---------|------|------|
-| Database | PostgreSQL | リレーショナルデータベース |
-| Auth | GoTrue | 認証・認可（JWT ベース） |
-| REST API | PostgREST | PostgreSQL → REST API 自動生成 |
+| Database | PostgreSQL (C) | リレーショナルデータベース |
+| Auth | GoTrue (Go) | 認証・認可（JWT ベース） |
+| REST API | PostgREST (Haskell) | PostgreSQL → REST API 自動生成 |
 | GraphQL | pg_graphql | PostgreSQL → GraphQL API |
 | Realtime | Realtime Server (Elixir) | WebSocket によるリアルタイム配信 |
-| Storage | Storage API (S3互換) | ファイルストレージ |
-| Edge Functions | Deno Runtime | サーバーレス関数 |
-| API Gateway | Kong | API ゲートウェイ・ルーティング |
-| Studio | React App | ダッシュボード UI |
+| Storage | Storage API (Node.js / S3互換) | ファイルストレージ |
+| Edge Functions | Deno (TypeScript / Rust) | サーバーレス関数 |
+| Connection Pooler | Supavisor (Elixir) | PostgreSQL 接続プーラー |
+| API Gateway | Kong (Lua / NGINX) | API ゲートウェイ・ルーティング |
+| DB Management | postgres-meta (Node.js) | DB スキーマ管理 REST API |
+| Studio | TypeScript App | ダッシュボード UI |
 | CLI | Go | ローカル開発・管理 |
 
 ## アーキテクチャの特徴

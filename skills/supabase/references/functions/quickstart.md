@@ -8,8 +8,8 @@ Supabase CLI を使って Edge Functions を新規作成し、ローカルで開
 
 ### 前提条件
 
-- Supabase CLI（v1.50.0 以上）がインストール済み
-- Deno がインストール済み（ローカル開発用）
+- Supabase CLI（最新版）がインストール済み
+- Docker がインストール済み（ローカル開発用。Deno ランタイムは CLI に内包）
 - Supabase プロジェクトが作成済み
 
 ### 手順
@@ -103,6 +103,8 @@ console.log(data) // { message: 'Hello World!' }
 - `supabase functions serve --env-file .env.local` で env ファイルを明示的に指定可能
 - 関数名はディレクトリ名がそのまま使われる（ケバブケース推奨）
 - `index.ts` が関数のエントリポイントとなる
+- 本番環境の呼び出しには、新形式の publishable key（`sb_publishable_xxx`）の使用が推奨される（旧 anon key は 2026 年末に非推奨予定）
+- テンプレートには publishable / secret キー両対応のハンドラが含まれる
 
 ## 関連
 

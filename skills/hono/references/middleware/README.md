@@ -1,27 +1,27 @@
-# Middleware (Builtin)
+# Middleware
 
 | Name | Description | Path |
 |------|-------------|------|
-| Basic Auth | HTTP Basic Authentication | [./basic-auth.md](./basic-auth.md) |
-| Bearer Auth | Bearer token validation in `Authorization` header | [./bearer-auth.md](./bearer-auth.md) |
-| JWT | JSON Web Token verification; stores payload in context | [./jwt.md](./jwt.md) |
-| JWK | JWT validation using JSON Web Keys (JWKS endpoint) | [./jwk.md](./jwk.md) |
-| CSRF | Cross-Site Request Forgery protection via Origin header | [./csrf.md](./csrf.md) |
-| Secure Headers | Sets security-related HTTP response headers | [./secure-headers.md](./secure-headers.md) |
-| CORS | Cross-Origin Resource Sharing headers | [./cors.md](./cors.md) |
-| ETag | Generates and validates ETag headers for HTTP caching | [./etag.md](./etag.md) |
-| Body Limit | Enforces maximum request body size | [./body-limit.md](./body-limit.md) |
-| Cache | Caches responses using the Cache API | [./cache.md](./cache.md) |
-| Compress | Compresses responses with gzip or deflate | [./compress.md](./compress.md) |
-| Pretty JSON | Formats JSON responses with indentation | [./pretty-json.md](./pretty-json.md) |
-| Method Override | Overrides HTTP method via form field, header, or query | [./method-override.md](./method-override.md) |
-| Request ID | Assigns a unique ID to each request | [./request-id.md](./request-id.md) |
-| Timeout | Rejects requests that exceed a specified duration | [./timeout.md](./timeout.md) |
-| Timing | Adds `Server-Timing` headers for performance measurement | [./timing.md](./timing.md) |
-| Logger | Logs requests and responses to the console | [./logger.md](./logger.md) |
-| Language | Detects user's preferred language from request | [./language.md](./language.md) |
-| Trailing Slash | Normalizes trailing slashes via redirect | [./trailing-slash.md](./trailing-slash.md) |
-| Context Storage | Stores Hono Context in AsyncLocalStorage | [./context-storage.md](./context-storage.md) |
-| JSX Renderer | Layout system for JSX-based HTML rendering | [./jsx-renderer.md](./jsx-renderer.md) |
-| Combine | Compose middleware with `some`/`every`/`except` logic | [./combine.md](./combine.md) |
-| IP Restriction | Restricts access by client IP address or CIDR range | [./ip-restriction.md](./ip-restriction.md) |
+| Basic Auth Middleware | Adds HTTP Basic Authentication to routes. | [basic-auth.md](./basic-auth.md) |
+| Bearer Auth Middleware | Validates Bearer tokens in the `Authorization` header. | [bearer-auth.md](./bearer-auth.md) |
+| Body Limit Middleware | Enforces a maximum request body size. | [body-limit.md](./body-limit.md) |
+| Cache Middleware | Caches responses using the Cache API. | [cache.md](./cache.md) |
+| Combine Middleware | Utility functions for composing multiple middleware. | [combine.md](./combine.md) |
+| Compress Middleware | Compresses response bodies using gzip or deflate. | [compress.md](./compress.md) |
+| Context Storage Middleware | Stores the Hono `Context` in `AsyncLocalStorage`. | [context-storage.md](./context-storage.md) |
+| CORS Middleware | Handles Cross-Origin Resource Sharing (CORS) headers. | [cors.md](./cors.md) |
+| CSRF Protection Middleware | Protects against Cross-Site Request Forgery. | [csrf.md](./csrf.md) |
+| ETag Middleware | Generates and validates `ETag` headers. | [etag.md](./etag.md) |
+| IP Restriction Middleware | Restricts access based on client IP addresses. | [ip-restriction.md](./ip-restriction.md) |
+| JSX Renderer Middleware | Provides a layout system for JSX-based HTML rendering. | [jsx-renderer.md](./jsx-renderer.md) |
+| JWT Middleware | Validates JSON Web Tokens from the `Authorization` header. | [jwt.md](./jwt.md) |
+| JWK Middleware | Validates JWTs using JSON Web Keys (JWK). | [jwk.md](./jwk.md) |
+| Language Middleware | Detects the user's preferred language. | [language.md](./language.md) |
+| Logger Middleware | Logs incoming requests and outgoing responses. | [logger.md](./logger.md) |
+| Method Override Middleware | Allows overriding the HTTP method of a request. | [method-override.md](./method-override.md) |
+| Pretty JSON Middleware | Enables formatted (indented) JSON responses. | [pretty-json.md](./pretty-json.md) |
+| Request ID Middleware | Assigns a unique ID to each request. | [request-id.md](./request-id.md) |
+| Secure Headers Middleware | Sets security-related HTTP response headers. | [secure-headers.md](./secure-headers.md) |
+| Timeout Middleware | Rejects requests that exceed a specified duration. | [timeout.md](./timeout.md) |
+| Timing Middleware (Server-Timing) | Adds `Server-Timing` headers to responses. | [timing.md](./timing.md) |
+| Trailing Slash Middleware | Redirects requests to normalize trailing slashes. | [trailing-slash.md](./trailing-slash.md) |

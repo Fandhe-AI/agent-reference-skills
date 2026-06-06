@@ -37,7 +37,8 @@ Browse all: <https://doc.rust-lang.org/nightly/unstable-book/language-features.h
 
 | Feature | Tracking Issue | Description |
 |---------|---------------|-------------|
-| `coroutines` | [#43122](https://github.com/rust-lang/rust/issues/43122) | Resumable functions that `yield` values; compile to state machines. Used as the implementation primitive for `async`/`await` and `gen` syntax. |
+| `coroutines` | [#43122](https://github.com/rust-lang/rust/issues/43122) | Resumable functions that `yield` values; compile to state machines. Extra-unstable. Used as the implementation primitive for `async`/`await` and `gen` syntax. Requires `coroutines`, `coroutine_trait`, and `stmt_expr_attributes` feature flags. |
+| `gen_blocks` | [#117078](https://github.com/rust-lang/rust/issues/117078) | `gen` blocks and `gen fn` — synchronous iterator generators using `yield`. Distinct from coroutines; produces `impl Iterator`. |
 | `generic_const_exprs` | [#76560](https://github.com/rust-lang/rust/issues/76560) | Non-trivial expressions in const-generic positions (e.g., `[i32; N + 1]`). Requires manual well-formedness bounds at call sites. |
 | `generic_const_items` | [#113521](https://github.com/rust-lang/rust/issues/113521) | Generic parameters and `where` clauses on free and associated `const` items. |
 | `specialization` | [#31844](https://github.com/rust-lang/rust/issues/31844) | More-specific trait impls override more-general ones. Blanket impls can be marked `default` to allow downstream specialization. |
@@ -58,6 +59,28 @@ fn main() {
     };
     assert_eq!(Pin::new(&mut gen).resume(()), CoroutineState::Yielded(1));
     assert_eq!(Pin::new(&mut gen).resume(()), CoroutineState::Complete("done"));
+}
+```
+
+### gen_blocks example
+
+```rust
+#![feature(gen_blocks)]
+
+fn fibonacci() -> impl Iterator<Item = u64> {
+    gen {
+        let (mut a, mut b) = (0u64, 1u64);
+        loop {
+            yield a;
+            (a, b) = (b, a + b);
+        }
+    }
+}
+
+fn main() {
+    for n in fibonacci().take(8) {
+        print!("{n} "); // 0 1 1 2 3 5 8 13
+    }
 }
 ```
 

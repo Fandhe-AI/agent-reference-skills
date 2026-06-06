@@ -77,10 +77,12 @@ const supabase = createClient<Database>(
 | `auth.flowType` | string | `'implicit'` | OAuth フロータイプ（`'implicit'` / `'pkce'`） |
 | `auth.detectSessionInUrl` | boolean | `true` | URL からセッション検出 |
 | `auth.storageKey` | string | `'sb-<project>-auth-token'` | ストレージキー名 |
+| `auth.experimental.passkey` | boolean | `false` | Passkey (WebAuthn) サポートを有効化（実験的） |
 | `db.schema` | string | `'public'` | 使用するデータベーススキーマ |
 | `global.headers` | Record<string, string> | `{}` | 全リクエストに付与するヘッダ |
 | `global.fetch` | Fetch | `globalThis.fetch` | カスタム fetch 関数 |
 | `realtime.params.eventsPerSecond` | number | `10` | 秒あたりのイベント数制限 |
+| `tracePropagation` | boolean | `false` | OpenTelemetry トレースコンテキストの伝搬を有効化 |
 
 **Returns:** `SupabaseClient<Database>` — Supabase クライアントインスタンス
 

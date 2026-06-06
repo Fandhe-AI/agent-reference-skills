@@ -157,6 +157,16 @@ gh repo fork OWNER/REPO
 gh repo fork OWNER/REPO --clone
 ```
 
+## リポジトリのアクティビティ
+
+**Insights** > **Activity** から、リポジトリのアクティビティ（コミット、PR、Issue、レビュー等）を期間・アクター単位で確認できます。REST API でも取得可能です:
+
+```bash
+# アクティビティの取得（直近30日）
+curl -H "Authorization: Bearer TOKEN" \
+  "https://api.github.com/repos/OWNER/REPO/activity?time_period=month&activity_type=push_force_pushes"
+```
+
 ## 参考リンク
 
 - [Creating a new repository - GitHub Docs](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository)

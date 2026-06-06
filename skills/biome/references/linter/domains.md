@@ -25,8 +25,10 @@
 | ドメイン | 対象 | 説明 |
 |---------|------|------|
 | react | react >= 16.0.0 | React 固有の問題検出（フック、コンポーネント構造） |
+| reactNative | react-native >= 0.60.0 | React Native 向け（`<Text>` 外テキストレンダリング等ランタイム問題検出） |
 | next | next >= 14.0.0 | Next.js 向け（非同期クライアントコンポーネント、スクリプト最適化） |
 | vue | vue >= 3.0.0 | Vue 3 テンプレート構文・コンポーネント検証 |
+| svelte | svelte >= 3.0.0 | Svelte フレームワーク固有ルール |
 | solid | solid >= 1.0.0 | Solid フレームワーク固有ルール（React ドメインと競合あり） |
 | qwik | @builder.io/qwik >= 1.0.0 | Qwik 最適化パターン |
 

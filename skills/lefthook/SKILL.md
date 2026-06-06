@@ -14,42 +14,95 @@ model: sonnet
 Lefthook（lefthook.dev）の全ドキュメントを網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-## ディレクトリ構造
+## ディレクトリ構成
 
-```
-.claude/skills/lefthook/
-├── SKILL.md                              ← このファイル（エントリーポイント）
-└── references/
-    ├── installation/README.md            ← インストール方法（17ページ）
-    ├── configuration/README.md           ← 設定リファレンス（6ページ）
-    ├── usage/README.md                   ← CLI コマンド・環境変数（2ページ）
-    └── examples/README.md               ← 実用的な設定例（7ページ）
+```text
+skills/lefthook/
+  SKILL.md
+  references/
+    installation/
+      README.md
+      overview.md
+      node.md
+      ruby.md
+      go.md
+      python.md
+      swift.md
+      homebrew.md
+      winget.md
+      scoop.md
+      deb.md
+      rpm.md
+      alpine.md
+      arch.md
+      snap.md
+      devbox.md
+      mise.md
+      manual.md
+    configuration/
+      README.md
+      global-settings.md
+      hook-settings.md
+      command-settings.md
+      script-settings.md
+      source-dir.md
+      remotes.md
+    usage/
+      README.md
+      commands.md
+      environment-variables.md
+    examples/
+      README.md
+      commitlint.md
+      filters.md
+      lefthook-local.md
+      remotes.md
+      skip.md
+      stage-fixed.md
+      wrap-commands.md
+  samples/
+    README.md
+    basic-setup.md
+    parallel-execution.md
+    auto-fix-and-stage.md
+    commitlint-integration.md
+    local-override.md
+    conditional-skip.md
+    monorepo-setup.md
+    shared-config-via-remotes.md
+  scripts/
+    README.md
+    cli.md
+    install.md
+    run-with-env.md
 ```
 
 ## 探索手順
 
-1. ユーザーのタスクに最も関連するカテゴリを特定する
-2. そのカテゴリの `README.md` を読む
-3. README.md 内の一覧から必要な個別ファイルを選んで読む
-4. 必要に応じて関連ページのリンクを辿る
+タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-## カテゴリ → README.md マッピング
+1. 下記マッピング表でタスクに対応するカテゴリを探す
+2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
+3. 該当ページの `.md` を Read して詳細を確認する
 
-| タスク例 | カテゴリ | README パス |
-|---------|---------|------------|
-| Lefthook のインストール、セットアップ | installation | [references/installation/README.md](./references/installation/README.md) |
-| npm / yarn / pnpm でのインストール | installation | [references/installation/README.md](./references/installation/README.md) |
-| Homebrew / Go / Ruby でのインストール | installation | [references/installation/README.md](./references/installation/README.md) |
-| lefthook.yml の設定、グローバル設定 | configuration | [references/configuration/README.md](./references/configuration/README.md) |
-| extends, output, rc, templates | configuration | [references/configuration/README.md](./references/configuration/README.md) |
-| remotes, リモート設定の共有 | configuration | [references/configuration/README.md](./references/configuration/README.md) |
-| Hook 設定（parallel, piped, follow, skip） | configuration | [references/configuration/README.md](./references/configuration/README.md) |
-| Command 設定（run, glob, files, stage_fixed） | configuration | [references/configuration/README.md](./references/configuration/README.md) |
-| Script 設定（script, runner） | configuration | [references/configuration/README.md](./references/configuration/README.md) |
-| lefthook install / uninstall / run | usage | [references/usage/README.md](./references/usage/README.md) |
-| lefthook add / validate / dump | usage | [references/usage/README.md](./references/usage/README.md) |
-| 環境変数（LEFTHOOK, LEFTHOOK_VERBOSE 等） | usage | [references/usage/README.md](./references/usage/README.md) |
-| lefthook-local.yml、ローカル設定 | examples | [references/examples/README.md](./references/examples/README.md) |
-| コマンドラッピング、フィルタリング | examples | [references/examples/README.md](./references/examples/README.md) |
-| commitlint 統合、stage_fixed 例 | examples | [references/examples/README.md](./references/examples/README.md) |
-| skip / only 条件設定 | examples | [references/examples/README.md](./references/examples/README.md) |
+## タスク → カテゴリ マッピング
+
+| タスク | カテゴリ | 参照 README |
+|--------|---------|------------|
+| Lefthook のインストール・セットアップ | installation | [references/installation/README.md](references/installation/README.md) |
+| npm / yarn / pnpm / pip / gem でのインストール | installation | [references/installation/README.md](references/installation/README.md) |
+| Homebrew / Scoop / Winget / APK / AUR でのインストール | installation | [references/installation/README.md](references/installation/README.md) |
+| バイナリ手動インストール・mise / devbox 対応 | installation | [references/installation/README.md](references/installation/README.md) |
+| lefthook.yml のグローバル設定 | configuration | [references/configuration/README.md](references/configuration/README.md) |
+| Hook 設定（parallel, piped, follow, skip） | configuration | [references/configuration/README.md](references/configuration/README.md) |
+| Command 設定（run, glob, files, stage_fixed） | configuration | [references/configuration/README.md](references/configuration/README.md) |
+| Script 設定・source_dir の変更 | configuration | [references/configuration/README.md](references/configuration/README.md) |
+| remotes による設定共有 | configuration | [references/configuration/README.md](references/configuration/README.md) |
+| lefthook install / run / add / validate / dump | usage | [references/usage/README.md](references/usage/README.md) |
+| 環境変数（LEFTHOOK, LEFTHOOK_VERBOSE 等）による制御 | usage | [references/usage/README.md](references/usage/README.md) |
+| commitlint / Commitizen 統合 | examples | [references/examples/README.md](references/examples/README.md) |
+| ファイルフィルタリング（glob / staged_files / tags） | examples | [references/examples/README.md](references/examples/README.md) |
+| lefthook-local.yml でのローカルオーバーライド | examples | [references/examples/README.md](references/examples/README.md) |
+| 条件付きスキップ・ブランチ制限 | examples | [references/examples/README.md](references/examples/README.md) |
+| 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

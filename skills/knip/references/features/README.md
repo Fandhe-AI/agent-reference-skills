@@ -1,15 +1,15 @@
 # Features
 
-Knip の各機能の詳細ドキュメント。
-
-| ページ名 | 内容 | パス |
-|---------|------|------|
-| Production Mode | 本番コードのみの分析、strict モード | [./production-mode.md](./production-mode.md) |
-| Monorepos & Workspaces | ワークスペース設定、検出、フィルタリング | [./monorepos-and-workspaces.md](./monorepos-and-workspaces.md) |
-| Integrated Monorepos | 単一 package.json の統合モノレポ対応 | [./integrated-monorepos.md](./integrated-monorepos.md) |
-| Source Mapping | dist → src のマッピング、tsconfig.json ベース | [./source-mapping.md](./source-mapping.md) |
-| Rules & Filters | issue タイプの include/exclude、ルール設定 | [./rules-and-filters.md](./rules-and-filters.md) |
-| Auto-fix | --fix による自動修正、--format、制限事項 | [./auto-fix.md](./auto-fix.md) |
-| Compilers | 非 JS/TS ファイルのコンパイラ、カスタムコンパイラ | [./compilers.md](./compilers.md) |
-| Reporters | 組み込み/カスタムレポーター、プリプロセッサ | [./reporters.md](./reporters.md) |
-| Script Parser | シェルスクリプト解析、package.json scripts 解析 | [./script-parser.md](./script-parser.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| Auto-fix | Automatically removes unused code | [auto-fix.md](./auto-fix.md) |
+| Catalogs | Define dependency version ranges once and reference them across workspaces in a monorepo | [catalogs.md](./catalogs.md) |
+| Compilers | Projects may have non-JS/TS source files requiring compilation | [compilers.md](./compilers.md) |
+| Custom Elements | Automatically recognizes custom element class registrations under tag names | [custom-elements.md](./custom-elements.md) |
+| Integrated Monorepos | Multiple projects within a single `package.json`, with configuration files distributed throughout | [integrated-monorepos.md](./integrated-monorepos.md) |
+| Monorepos & Workspaces | Workspaces are directories with a `package.json` | [monorepos-and-workspaces.md](./monorepos-and-workspaces.md) |
+| Production Mode | Focuses exclusively on shipped code, excluding config, test, and Storybook files | [production-mode.md](./production-mode.md) |
+| Reporters & Preprocessors | Built-in reporters for various output formats | [reporters.md](./reporters.md) |
+| Rules & Filters | Fine-grained control to include or exclude reported issue types | [rules-and-filters.md](./rules-and-filters.md) |
+| Script Parser | Analyzes shell commands and scripts to identify dependencies and entry files | [script-parser.md](./script-parser.md) |
+| Source Mapping | Resolves mapping based on `tsconfig.json` settings | [source-mapping.md](./source-mapping.md) |

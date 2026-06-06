@@ -137,6 +137,26 @@ docs/*  @docs-team
 | Archive this repository | リポジトリのアーカイブ（読み取り専用化） |
 | Delete this repository | リポジトリの完全削除 |
 
+### Custom Properties
+
+**Settings** > **Custom properties** から、組織が定義したカスタムプロパティをリポジトリに設定できます。
+
+- カスタムプロパティはキーと値のペアで、組織レベルで定義される
+- REST API からも `custom_properties` パラメータ経由で設定・取得が可能（`POST /orgs/{org}/repos`、`PATCH /repos/{owner}/{repo}`）
+
+### Security & Analysis
+
+**Settings** > **Security & analysis** から、コードセキュリティ機能を管理できます。
+
+| 機能 | 説明 |
+|------|------|
+| Advanced Security | GitHub Advanced Security の有効化 |
+| Code scanning | コードの脆弱性と品質問題を検出 |
+| Secret scanning | シークレット検出の有効化 |
+| Secret scanning push protection | プッシュ時のシークレット検出ブロック |
+| Dependabot alerts | 依存関係の脆弱性通知 |
+| Private vulnerability reporting | セキュリティ脆弱性の非公開報告を許可 |
+
 ### Webhooks
 
 **Settings** > **Webhooks** から、リポジトリのイベントに応じた HTTP コールバックを設定できます。

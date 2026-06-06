@@ -143,10 +143,12 @@
 
 ### その他
 
+> `discussion` および `discussion_comment` イベントは現在パブリックプレビュー中であり、変更される可能性がある。
+
 | イベント | 説明 |
 |---------|------|
-| `discussion` | リポジトリディスカッションのアクティビティ |
-| `discussion_comment` | ディスカッションへのコメント |
+| `discussion` | リポジトリディスカッションのアクティビティ（パブリックプレビュー） |
+| `discussion_comment` | ディスカッションへのコメント（パブリックプレビュー） |
 | `gollum` | Wiki ページの作成・更新 |
 | `page_build` | GitHub Pages ビルドの試行 |
 | `package` | GitHub Packages の公開・更新 |

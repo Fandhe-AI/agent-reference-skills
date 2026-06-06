@@ -38,6 +38,17 @@ PostgreSQL のスケジュールジョブ管理 Extension。cron 式による SQ
 
 **重要**: pg_cron のスケジュールは **UTC** で実行される。
 
+サブ分スケジュール（Postgres 15.1.1.61+）:
+
+```sql
+-- 30 秒ごとに実行
+select cron.schedule(
+  'run-every-30-seconds',
+  '30 seconds',
+  $$select public.process_jobs()$$
+);
+```
+
 ## コード例
 
 ```sql
@@ -185,8 +196,9 @@ select cron.schedule(
 - pg_cron のスケジュールは **UTC タイムゾーン** で実行される。JST の場合は -9 時間で計算する（JST 9:00 = UTC 0:00）
 - pg_cron は PostgreSQL のプロセスとして実行されるため、長時間かかるジョブはデータベースのパフォーマンスに影響する
 - `cron.job_run_details` テーブルは自動的にはクリーンアップされない。定期的に古い履歴を削除するジョブを設定する
-- 1 分未満の間隔（秒単位）でのスケジューリングは不可。最小間隔は 1 分
-- ジョブ名はユニークである必要がある。同名のジョブを `schedule` すると、既存のジョブが更新される（pg_cron 1.5 以降）
+- Postgres 15.1.1.61 以上では秒単位のサブ分間隔が利用可能（例: `'30 seconds'`）。それ未満では最小間隔は 1 分
+- ジョブ名は大文字小文字を区別する。一度作成したジョブ名は変更不可（削除して再作成が必要）
+- 同名のジョブを `schedule` すると、既存のジョブが更新される（upsert）
 - ダッシュボードの「Database > Extensions > pg_cron」から GUI でジョブを管理できる
 - Edge Functions を呼び出す場合は `pg_net` Extension と組み合わせて HTTP リクエストを送信する
 - ジョブの SQL は `cron` データベースユーザーとして実行される。RLS が有効なテーブルへのアクセスには注意

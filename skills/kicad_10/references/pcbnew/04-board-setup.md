@@ -4,12 +4,37 @@ Configuration dialog (**File → Board Setup**) for stackup, text/graphics defau
 
 ## Board Stackup
 
-Accessed via the Physical Stackup page:
+### Board Editor Layers
+
+Configure layer usage, naming, and types:
+- Rename layers and disable unused non-copper layers
+- Create custom user-defined layers
+- Required layers (copper, courtyard, `Edge.Cuts`) cannot be disabled
+- Copper layer types: Signal, Power Plane, Mixed, Jumper
+
+### Physical Stackup
 
 - Set number of copper layers (even numbers only)
 - Configure per-layer thickness and dielectric properties
 - Board total thickness is calculated from stackup parameters; adjust dielectric layers to hit a target thickness
-- Thickness values affect 3D model exports and via net length calculations
+- Layer thicknesses affect 3D model exports and via net length calculations
+
+### Board Finish
+
+Defines copper finish type and special features (castellations, edge plating). These settings currently affect only Gerber job file outputs.
+
+### Solder Mask / Paste
+
+| Setting | Description |
+|---------|-------------|
+| Solder mask expansion | Clearance between mask and pad copper |
+| Minimum web width | Minimum distance between adjacent mask openings |
+| Paste clearance | Absolute offset from pad edge (negative = smaller than pad) |
+| Paste clearance ratio | Relative scaling factor applied in addition to absolute clearance |
+
+### Zone Hatch Offsets
+
+Configure per-layer default offsets for zone hatch patterns. Enables forcing hatch grids to offset between layers for specific applications.
 
 ## Text and Graphics Defaults
 
@@ -27,6 +52,14 @@ Absolute minimum values for clearances, track widths, via sizes, and other param
 
 ### Pre-defined Sizes
 A list of track widths and via dimensions available for quick switching during interactive routing.
+
+### Teardrops
+
+Board-wide defaults for teardrop geometry applied to pad and via connections. Individual teardrop settings can override these defaults.
+
+### Length-Tuning Patterns
+
+Defines serpentine meander styles (amplitude, spacing) for length tuning operations. **Tuning profiles** link specific geometry presets to net classes for consistent impedance-controlled routing.
 
 ### Net Classes
 Group nets and assign routing parameters (clearance, track width, via size). Net classes also support **tuning profiles** for controlled impedance — specifying per-layer track geometry for matched-impedance routing.

@@ -35,11 +35,11 @@ export default {
   },
 } satisfies Config;
 
-// Experimental parallel pre-rendering
+// Parallel pre-rendering with concurrency control
 export default {
   prerender: {
     paths: ["/", "/blog"],
-    unstable_concurrency: 4,
+    concurrency: 4,
   },
 } satisfies Config;
 ```

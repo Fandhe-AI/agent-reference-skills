@@ -1,5 +1,5 @@
-# Security
+# security
 
 | Name | Description | Path |
 |------|-------------|------|
-| Security | Defense-in-depth model, approval modes, user authorization, container isolation, credential handling, MCP security, SSRF/blocklist, Tirith scanning, prompt injection protection, and production best practices | [./security.md](./security.md) |
+| Security | Hermes Agent implements a defense-in-depth architecture across five distinct security boundaries, covering everything from user authorization through container isolation to prompt injection prevention. | [security.md](./security.md) |

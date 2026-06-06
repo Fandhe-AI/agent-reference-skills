@@ -23,6 +23,16 @@ KiCad 10.0 introduces the following enhancements:
 - Barcode generation
 - Point objects for precise positioning
 
+## Further Reading
+
+| Resource | URL |
+|----------|-----|
+| Documentation portal | https://docs.kicad.org — latest manuals in multiple languages and previous versions |
+| Community resources | https://www.kicad.org (Community section) — endorsed forums and chat platforms |
+| Developer documentation | https://dev-docs.kicad.org — build instructions, contribution policies, and technical information |
+| Forum | https://forum.kicad.info/ |
+| GitLab repository | https://gitlab.com/kicad |
+
 ## Related
 
 - [Installing and Upgrading KiCad](./installing-and-upgrading-kicad.md)

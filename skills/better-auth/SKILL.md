@@ -14,36 +14,214 @@ model: sonnet
 Better Auth — TypeScript 向けフレームワーク非依存の認証・認可フレームワーク。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-## ディレクトリ構造
+## ディレクトリ構成
 
-```
-.claude/skills/better-auth/
-├── SKILL.md                                ← このファイル（エントリーポイント）
-└── references/
-    ├── getting-started/README.md           ← インストール・基本設定（2ページ）
-    ├── concepts/README.md                  ← コア概念（14ページ）
-    ├── adapters/README.md                  ← DB アダプター（8ページ）
-    ├── authentication/README.md            ← 認証方式（39ページ）
-    ├── plugins/README.md                   ← プラグイン（32ページ）
-    ├── reference/README.md                 ← 設定・セキュリティ・エラー（17ページ）
-    └── guides/README.md                    ← ガイド（4ページ）
+```text
+skills/better-auth/
+  SKILL.md
+  references/
+    getting-started/
+      README.md
+      installation.md
+      basic-usage.md
+    concepts/
+      README.md
+      api.md
+      cli.md
+      client.md
+      cookies.md
+      database.md
+      dynamic-base-url.md
+      email.md
+      hooks.md
+      oauth.md
+      plugins.md
+      rate-limit.md
+      session-management.md
+      typescript.md
+      users-accounts.md
+    adapters/
+      README.md
+      community-adapters.md
+      drizzle.md
+      mongodb.md
+      mssql.md
+      mysql.md
+      other-relational.md
+      postgresql.md
+      prisma.md
+      sqlite.md
+    authentication/
+      README.md
+      email-password.md
+      social-providers-common.md
+      other-social-providers.md
+      social-apple.md
+      social-atlassian.md
+      social-cognito.md
+      social-discord.md
+      social-dropbox.md
+      social-facebook.md
+      social-figma.md
+      social-github.md
+      social-gitlab.md
+      social-google.md
+      social-huggingface.md
+      social-kakao.md
+      social-kick.md
+      social-line.md
+      social-linear.md
+      social-linkedin.md
+      social-microsoft.md
+      social-naver.md
+      social-notion.md
+      social-paybin.md
+      social-paypal.md
+      social-polar.md
+      social-railway.md
+      social-reddit.md
+      social-roblox.md
+      social-salesforce.md
+      social-slack.md
+      social-spotify.md
+      social-tiktok.md
+      social-twitch.md
+      social-twitter.md
+      social-vercel.md
+      social-vk.md
+      social-wechat.md
+      social-zoom.md
+    plugins/
+      README.md
+      admin.md
+      agent-auth.md
+      anonymous.md
+      api-key.md
+      api-key-advanced.md
+      api-key-reference.md
+      autumn.md
+      bearer.md
+      captcha.md
+      chargebee.md
+      commet.md
+      creem.md
+      device-authorization.md
+      dodopayments.md
+      dub.md
+      email-otp.md
+      generic-oauth.md
+      have-i-been-pwned.md
+      i18n.md
+      jwt.md
+      last-login-method.md
+      magic-link.md
+      mcp.md
+      multi-session.md
+      oauth-provider.md
+      oauth-proxy.md
+      oidc-provider.md
+      one-tap.md
+      one-time-token.md
+      open-api.md
+      organization.md
+      passkey.md
+      phone-number.md
+      polar.md
+      scim.md
+      siwe.md
+      sso.md
+      stripe.md
+      test-utils.md
+      two-factor.md
+      username.md
+    reference/
+      README.md
+      options.md
+      security.md
+      faq.md
+      instrumentation.md
+      telemetry.md
+      errors.md
+      error-account-already-linked.md
+      error-account-not-linked.md
+      error-email-doesnt-match.md
+      error-email-not-found.md
+      error-internal-server-error.md
+      error-invalid-callback-request.md
+      error-invalid-code.md
+      error-no-callback-url.md
+      error-no-code.md
+      error-oauth-provider-not-found.md
+      error-signup-disabled.md
+      error-state-invalid.md
+      error-state-mismatch.md
+      error-state-not-found.md
+      error-unable-to-create-session.md
+      error-unable-to-create-user.md
+      error-unable-to-get-user-info.md
+      error-unable-to-link-account.md
+      error-unknown.md
+    guides/
+      README.md
+      auth0-migration.md
+      browser-extension.md
+      clerk-migration.md
+      create-a-db-adapter.md
+      dynamic-base-url.md
+      next-auth-migration.md
+      optimizing-for-performance.md
+      saml-sso-with-okta.md
+      supabase-migration.md
+      workos-migration.md
+      your-first-plugin.md
+  samples/
+    README.md
+    client-setup.md
+    email-password-auth.md
+    email-verification.md
+    hooks.md
+    password-reset.md
+    server-setup.md
+    session-management.md
+    sign-out.md
+    social-sign-in.md
+    two-factor-auth.md
+    user-management.md
+  scripts/
+    README.md
+    cli.md
+    generate.md
+    install.md
 ```
 
 ## 探索手順
 
-1. ユーザーのタスクに最も関連するカテゴリを特定する
-2. そのカテゴリの `README.md` を読む
-3. README.md 内の一覧から必要な個別ファイルを選んで読む
-4. 必要に応じて関連ページのリンクを辿る
+タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-## カテゴリ → README.md マッピング
+1. 下記マッピング表でタスクに対応するカテゴリを探す
+2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
+3. 該当ページの `.md` を Read して詳細を確認する
 
-| タスク例 | カテゴリ | README パス |
-|---------|---------|------------|
-| インストール、環境変数、auth インスタンス作成 | getting-started | [references/getting-started/README.md](./references/getting-started/README.md) |
-| auth.api、クライアント、セッション、Cookie、DB、フック、OAuth、レートリミット、型安全性 | concepts | [references/concepts/README.md](./references/concepts/README.md) |
-| Prisma、Drizzle、MongoDB、SQLite、PostgreSQL、MySQL 等 | adapters | [references/adapters/README.md](./references/adapters/README.md) |
-| Email/Password、Google、GitHub、Apple 等のソーシャルログイン | authentication | [references/authentication/README.md](./references/authentication/README.md) |
-| 2FA、Organization、Admin、Passkey、Magic Link、API Key 等 | plugins | [references/plugins/README.md](./references/plugins/README.md) |
-| 設定オプション一覧、セキュリティ、FAQ、エラーコード | reference | [references/reference/README.md](./references/reference/README.md) |
-| プラグイン作成、パフォーマンス最適化、DB アダプター作成 | guides | [references/guides/README.md](./references/guides/README.md) |
+## タスク → カテゴリ マッピング
+
+| タスク | カテゴリ | 参照 README |
+|--------|---------|------------|
+| インストール・初期設定・auth インスタンス作成 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| 基本的な認証パターン・メール/パスワード・セッション取得の概要 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| auth.api・クライアント・セッション管理・Cookie・DB・フック・レートリミット | concepts | [references/concepts/README.md](references/concepts/README.md) |
+| OAuth フロー・型安全性・プラグイン概念・動的ベース URL | concepts | [references/concepts/README.md](references/concepts/README.md) |
+| Prisma / Drizzle / MongoDB / SQLite / PostgreSQL / MySQL 等の DB アダプター | adapters | [references/adapters/README.md](references/adapters/README.md) |
+| コミュニティ製サードパーティ DB アダプター | adapters | [references/adapters/README.md](references/adapters/README.md) |
+| Email/Password 認証・ソーシャルログイン (GitHub, Google, Apple 等) | authentication | [references/authentication/README.md](references/authentication/README.md) |
+| 特定ソーシャルプロバイダー (Discord, Microsoft, LINE, Twitter 等) の設定 | authentication | [references/authentication/README.md](references/authentication/README.md) |
+| 2FA (TOTP)・パスキー・マジックリンク・SMS OTP・匿名認証 | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| Organization・Admin・SSO・SCIM・API Key・JWT・Bearer トークン | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| Stripe / Chargebee / Polar / Autumn 等の課金・サブスクリプション統合 | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| MCP 認証・エージェント認証・SIWE・キャプチャ・パスワード漏洩チェック | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| 設定オプション一覧・セキュリティガイド・FAQ | reference | [references/reference/README.md](references/reference/README.md) |
+| エラーコード調査・OpenTelemetry・テレメトリー | reference | [references/reference/README.md](references/reference/README.md) |
+| Auth.js (NextAuth) / Auth0 / Clerk / Supabase / WorkOS からの移行 | guides | [references/guides/README.md](references/guides/README.md) |
+| カスタムプラグイン作成・カスタム DB アダプター作成・パフォーマンス最適化 | guides | [references/guides/README.md](references/guides/README.md) |
+| SAML SSO (Okta)・ブラウザ拡張機能統合・動的ベース URL 詳細 | guides | [references/guides/README.md](references/guides/README.md) |
+| 典型的な使い方・動作するコード例を確認したい | samples | [samples/README.md](samples/README.md) |
+| インストールコマンド・CLI コマンド・スキーマ生成を知りたい | scripts | [scripts/README.md](scripts/README.md) |

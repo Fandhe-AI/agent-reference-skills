@@ -1,6 +1,6 @@
 # Messaging Gateway
 
-A single background process that connects to all configured platforms, handles sessions, runs cron jobs, and delivers voice messages.
+A single background process that connects to all configured platforms (25+), handles sessions, runs cron jobs, delivers voice messages, and includes circuit breakers that automatically pause adapters during sustained platform outages.
 
 ## Signature / Usage
 
@@ -14,7 +14,7 @@ hermes gateway start/stop/status       # Manage running service
 
 ## Supported Platforms
 
-Telegram, Discord, Slack, WhatsApp, Signal, SMS (Twilio), Email, Home Assistant, Mattermost, Matrix, DingTalk, Feishu/Lark, WeCom (Enterprise WeChat), Open WebUI.
+25+ platforms: Telegram, Discord, Slack, WhatsApp, Signal, SMS (Twilio), Email, Home Assistant, Mattermost, Matrix, DingTalk, Feishu/Lark, WeCom (Enterprise WeChat), Weixin, QQ, Yuanbao, Microsoft Teams, Google Chat, LINE, SimpleX Chat, BlueBubbles (iMessage), ntfy, Open WebUI, API Server (OpenAI-compatible), Webhooks.
 
 ## Platform Feature Comparison
 
@@ -27,12 +27,21 @@ Telegram, Discord, Slack, WhatsApp, Signal, SMS (Twilio), Email, Home Assistant,
 | Mattermost | ✅ | ✅ | ✅ | ✅ | — | ✅ | ✅ |
 | Matrix | ✅ | ✅ | ✅ | ✅ | — | ✅ | ✅ |
 | WeCom | ✅ | ✅ | ✅ | — | — | ✅ | ✅ |
+| Weixin | ✅ | ✅ | ✅ | — | — | ✅ | ✅ |
+| Yuanbao | — | ✅ | ✅ | — | — | ✅ | ✅ |
 | WhatsApp | — | ✅ | ✅ | — | — | ✅ | ✅ |
 | Signal | — | ✅ | ✅ | — | — | ✅ | ✅ |
+| Microsoft Teams | — | ✅ | ✅ | ✅ | — | ✅ | ✅ |
+| Google Chat | — | ✅ | ✅ | ✅ | — | ✅ | ✅ |
+| LINE | — | ✅ | ✅ | — | — | ✅ | ✅ |
+| SimpleX Chat | — | ✅ | ✅ | — | — | — | — |
+| BlueBubbles (iMessage) | — | ✅ | ✅ | — | — | — | — |
+| QQ | — | ✅ | ✅ | — | — | — | — |
 | Email | — | ✅ | ✅ | ✅ | — | — | — |
 | SMS | — | — | — | — | — | — | — |
 | Home Assistant | — | — | — | — | — | — | — |
 | DingTalk | — | — | — | — | — | ✅ | ✅ |
+| ntfy | — | — | — | — | — | — | — |
 
 ## Chat Commands
 
@@ -164,6 +173,7 @@ The plist is written to `~/Library/LaunchAgents/ai.hermes.gateway.plist` and inc
 - Pairing codes expire after one hour; approve them promptly.
 - Background tasks inherit the model/provider of the session that spawned them but run in fully isolated storage.
 - On macOS, `hermes gateway install` writes a launchd plist; on Linux without `--system` it installs a systemd user unit.
+- Circuit breakers automatically pause platform adapters during sustained outages and resume when the platform recovers.
 
 ## Related
 
