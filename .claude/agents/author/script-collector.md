@@ -82,7 +82,7 @@ tools:
 
 ### Step 3: scripts/README.md に索引を生成
 
-`{skill_dir}scripts/README.md` を Write（既存がある場合は Read してから Edit）する。
+`{skill_dir}scripts/README.md` を Write で全体を置き換える（既存があっても Edit による部分更新はしない。削除・リネームで古い行が残らないよう、現存する全コマンドファイルから索引を作り直す）。
 
 フォーマット:
 
