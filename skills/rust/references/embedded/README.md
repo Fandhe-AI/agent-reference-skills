@@ -1,20 +1,18 @@
-# Embedded Rust (The Embedded Rust Book)
-
-Reference for bare-metal embedded development with Rust. Source: https://doc.rust-lang.org/embedded-book/
+# embedded
 
 | Name | Description | Path |
 |------|-------------|------|
-| Introduction | Book overview, target audience, prerequisites, related resources | [./intro.md](./intro.md) |
-| Installation | Rust targets, cargo-binutils, cargo-generate, OS-specific setup | [./installation.md](./installation.md) |
-| no_std Environment | bare-metal vs hosted, libcore vs libstd, constraints and capabilities | [./no-std.md](./no-std.md) |
-| Memory-Mapped Registers | PAC read/write/modify, micro-architecture crate, HAL crate abstraction layers | [./memory-mapped-registers.md](./memory-mapped-registers.md) |
-| Peripherals | Memory-mapped peripheral model, aliasing problem, singleton pattern | [./peripherals.md](./peripherals.md) |
-| Static Guarantees | Typestate programming, design contracts, zero-cost compile-time safety | [./static-guarantees.md](./static-guarantees.md) |
-| Portability | embedded-hal traits, M+N complexity reduction, HAL/driver/application roles | [./portability.md](./portability.md) |
-| Concurrency | Interrupts, static mut races, critical sections, atomics, mutexes, RTIC | [./concurrency.md](./concurrency.md) |
-| Collections | alloc crate (heap) vs heapless (fixed-capacity), trade-offs for real-time | [./collections.md](./collections.md) |
-| Design Patterns | HAL design checklist, typestate/builder, pin erasure, C-FREE destructor | [./design-patterns.md](./design-patterns.md) |
-| Tips for Embedded C Developers | Cargo features vs #ifdef, iterators, volatile, repr(C/packed), inline | [./tips-for-embedded-c-devs.md](./tips-for-embedded-c-devs.md) |
-| Interoperability | FFI with C, bindgen, cc crate, #[no_mangle] extern "C", cbindgen | [./interoperability.md](./interoperability.md) |
-| Unsorted Topics | Speed vs size optimization, opt-level profiles, inline threshold tuning | [./unsorted.md](./unsorted.md) |
-| Appendix | Glossary, target triple reference, key crates, further reading | [./appendix.md](./appendix.md) |
+| Appendix | Reference material, glossary, and links to further resources for embedded Rust development. | [appendix.md](./appendix.md) |
+| Collections | In `no_std` embedded environments, the standard collections (`Vec`, `HashMap`, etc.) from `std` are… | [collections.md](./collections.md) |
+| Concurrency | Embedded concurrency arises from interrupt handlers, which run asynchronously alongside the main loop. | [concurrency.md](./concurrency.md) |
+| Design Patterns | This chapter collects patterns recommended for embedded Rust, with a focus on HAL (Hardware… | [design-patterns.md](./design-patterns.md) |
+| Installation | Setting up the embedded Rust toolchain requires: a Rust cross-compilation target, cargo utilities,… | [installation.md](./installation.md) |
+| Interoperability (FFI with C) | Embedded Rust projects often need to call existing C libraries (vendor SDKs, RTOSes) or expose… | [interoperability.md](./interoperability.md) |
+| Introduction | The Embedded Rust Book is an introductory guide to using Rust on bare-metal embedded systems,… | [intro.md](./intro.md) |
+| Memory-Mapped Registers | Peripherals on microcontrollers are accessed by reading/writing specific memory addresses. | [memory-mapped-registers.md](./memory-mapped-registers.md) |
+| no_std Environment | `#![no_std]` is a crate-level attribute that links against `core` instead of `std`. | [no-std.md](./no-std.md) |
+| Peripherals | Peripherals are hardware blocks on a microcontroller that handle external interactions (sensors,… | [peripherals.md](./peripherals.md) |
+| Portability | Embedded hardware varies greatly across vendors. `embedded-hal` provides a trait-based Hardware… | [portability.md](./portability.md) |
+| Static Guarantees | Rust's type system can encode hardware state, enforcing correct peripheral usage at compile time… | [static-guarantees.md](./static-guarantees.md) |
+| Tips for Embedded C Developers | Key Rust idioms and their C equivalents for developers migrating from C-based embedded… | [tips-for-embedded-c-devs.md](./tips-for-embedded-c-devs.md) |
+| Unsorted Topics | Miscellaneous topics that don't fit cleanly into other chapters, including optimization… | [unsorted.md](./unsorted.md) |

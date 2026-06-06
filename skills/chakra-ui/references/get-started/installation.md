@@ -49,6 +49,7 @@ Wrap your application root with the `Provider` component from `components/ui/pro
 - [Next.js (Pages Router)](./framework-next-pages.md)
 - [Remix](./framework-remix.md)
 - [Storybook](./framework-storybook.md)
+- [TanStack Router](./framework-tanstack-router.md)
 - [Vite](./framework-vite.md)
 
 ## Notes

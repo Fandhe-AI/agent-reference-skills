@@ -4,6 +4,18 @@
 
 シードデータを使用して、開発・テスト用のデータをデータベースに投入する。Supabase では `supabase/seed.sql` ファイルでシードデータを管理する。
 
+## シードファイルの設定
+
+`config.toml` で複数のシードファイルを指定できる（glob パターン対応）。ファイルは宣言した順に実行され、重複は自動的に排除される。
+
+```toml
+# supabase/config.toml
+[db.seed]
+sql_paths = ['./seed.sql', './seeds/*.sql']
+```
+
+シードファイルにはデータの挿入のみを記載し、スキーマ変更は含めないこと。
+
 ## seed.sql ファイル
 
 ### 基本的な使い方
@@ -114,6 +126,38 @@ VALUES
   (1, 'Technology'),
   (2, 'Science')
 ON CONFLICT (id) DO NOTHING;
+```
+
+## Snaplet によるシードデータ生成
+
+Snaplet を使用してデータベース構造を分析し、TypeScript でシードデータを定義できる。
+
+```bash
+# Snaplet のセットアップ
+npx @snaplet/seed init
+
+# スキーマと同期
+npx @snaplet/seed sync
+```
+
+```typescript
+// seed.mts
+import { createSeedClient } from '@snaplet/seed'
+
+const seed = await createSeedClient()
+await seed.users([{ email: 'user@example.com' }])
+await seed.$resetDatabase()
+```
+
+### LLM を使った現実的なデータ生成
+
+OpenAI または Groq API を使用してより現実的なシードデータを生成できる。
+
+```bash
+# 環境変数を設定
+export OPENAI_API_KEY=your-openai-key
+# または
+export GROQ_API_KEY=your-groq-key
 ```
 
 ## 関連

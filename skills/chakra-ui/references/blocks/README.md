@@ -1,83 +1,55 @@
-# Blocks (Chakra UI Pro)
-
-Chakra UI Pro が提供するデザイン済みブロックテンプレートのリファレンス。
-`get_component_templates` MCP ツールで取得可能。
-
-> **前提:** 環境変数 `CHAKRA_PRO_API_KEY` が設定されている必要があります。未設定の場合、blocks 機能は利用できないため無視してください。
-
-## 使い方
-
-```
-get_component_templates({ category: "<category>", id: "<variant-id>" })
-```
-
-## Application ブロック
+# Blocks
 
 | Name | Description | Path |
 |------|-------------|------|
-| App Headers | ページヘッダー（アクション・パンくず付き） | [app-headers.md](./app-headers.md) |
-| App Navbars | アプリナビゲーションバー（検索・ユーザーメニュー） | [app-navbars.md](./app-navbars.md) |
-| Sidebars | サイドバーナビゲーション（折りたたみ・グループ） | [sidebars.md](./sidebars.md) |
-| Authentication | 認証フロー（メール・OTP・ソーシャル・Web3） | [authentication.md](./authentication.md) |
-| Settings | ユーザー設定（プロフィール・課金・通知・チームなど） | [settings.md](./settings.md) |
-| Integrations | サードパーティ連携管理 | [app-integrations.md](./app-integrations.md) |
-| Profiles | ユーザープロフィール表示 | [profiles.md](./profiles.md) |
-| Onboarding | 新規ユーザーオンボーディング | [onboarding.md](./onboarding.md) |
-| Notifications | 通知トレイ・アラート | [notifications.md](./notifications.md) |
-| Charts | データ可視化チャート | [charts.md](./charts.md) |
-| AI | AI プロンプト・プレイグラウンド | [ai.md](./ai.md) |
-| Feeds | アクティビティフィード・コメント | [feeds.md](./feeds.md) |
-| Cards | 汎用カードコンテナ | [cards.md](./cards.md) |
-| Layouts | ページレイアウト構造 | [layouts.md](./layouts.md) |
-| Dividers | セクション区切り線 | [dividers.md](./dividers.md) |
-| Sharing | SNS 共有 UI | [sharing.md](./sharing.md) |
-| Org Switcher | 組織・プロジェクト切り替え | [org-switcher.md](./org-switcher.md) |
-| Property Panels | エンティティプロパティ編集 | [property-panels.md](./property-panels.md) |
-| Webhooks | Webhook 管理（一覧・フォーム・ログ・テスト） | [webhooks.md](./webhooks.md) |
-
-## Marketing ブロック
-
-| Name | Description | Path |
-|------|-------------|------|
-| Heroes | ランディングページヒーローセクション | [heroes.md](./heroes.md) |
-| Marketing Headers | マーケティングページ・セクションヘッダー | [marketing-headers.md](./marketing-headers.md) |
-| Marketing Navbars | CTA 付きマーケティングナビバー | [marketing-navbars.md](./marketing-navbars.md) |
-| Features | 機能紹介セクション | [features.md](./features.md) |
-| Pricing | 料金プラン比較 | [pricing.md](./pricing.md) |
-| Testimonials | 顧客の声・レビュー | [testimonials.md](./testimonials.md) |
-| CTA | 行動喚起セクション | [cta.md](./cta.md) |
-| Stats | 統計・メトリクス表示 | [stats.md](./stats.md) |
-| Logos | 企業ロゴ一覧 | [logos.md](./logos.md) |
-| Teams | チーム紹介 | [teams.md](./teams.md) |
-| Blog | ブログ記事レイアウト | [blogs.md](./blogs.md) |
-| FAQs | よくある質問 | [faqs.md](./faqs.md) |
-| Careers | 採用情報・求人 | [careers.md](./careers.md) |
-| Contact | お問い合わせフォーム | [contacts.md](./contacts.md) |
-| Banners | プロモーション・告知バナー | [banners.md](./banners.md) |
-| Footers | サイトフッター | [footers.md](./footers.md) |
-| Help Center | ヘルプ・サポートセンター | [help-center.md](./help-center.md) |
-
-## E-commerce ブロック
-
-| Name | Description | Path |
-|------|-------------|------|
-| Product Categories | 商品カテゴリグリッド | [product-categories.md](./product-categories.md) |
-| Product Grid | 商品一覧グリッド | [product-grid.md](./product-grid.md) |
-| Shopping Carts | ショッピングカート | [shopping-carts.md](./shopping-carts.md) |
-| Product Reviews | 商品レビュー | [product-reviews.md](./product-reviews.md) |
-| Store Signup Offers | 新規会員割引オファー | [store-signup-offers.md](./store-signup-offers.md) |
-
-## Documentation ブロック
-
-| Name | Description | Path |
-|------|-------------|------|
-| Docs Navbar | ドキュメントナビバー | [docs-navbar.md](./docs-navbar.md) |
-| Docs Sidebar | ドキュメントサイドバー | [docs-sidebar.md](./docs-sidebar.md) |
-| Docs Header | ドキュメントヘッダー | [docs-header.md](./docs-header.md) |
-| Docs Code Block | コードブロック表示 | [docs-code-block.md](./docs-code-block.md) |
-| Docs Example Preview | ライブプレビュー + コード表示 | [docs-example-preview.md](./docs-example-preview.md) |
-| Docs TOC | 目次（Table of Contents） | [docs-toc.md](./docs-toc.md) |
-| Docs Parameter Field | API パラメータ表示 | [docs-parameter-field.md](./docs-parameter-field.md) |
-| Docs Step | ステップガイド | [docs-step.md](./docs-step.md) |
-| Docs Pagination | ページネーション | [docs-pagination.md](./docs-pagination.md) |
-| Docs Changelog | 変更履歴 | [docs-changelog.md](./docs-changelog.md) |
+| AI | Modern interfaces for AI-powered features and interactive experiences. | [ai.md](./ai.md) |
+| App Headers | Page headers for application interfaces with actions, breadcrumbs, search, and forms. | [app-headers.md](./app-headers.md) |
+| App Navbars | Application navigation bars with user menus, notifications, search, and dashboard navigation. | [app-navbars.md](./app-navbars.md) |
+| Authentication | Secure and seamless user authentication flows supporting multiple sign-in methods. | [authentication.md](./authentication.md) |
+| Banners | Strategic message displays that capture attention through prominent placement at key page locations. | [banners.md](./banners.md) |
+| Blog | Engaging blog layouts to share articles, news, and stories with your audience. | [blogs.md](./blogs.md) |
+| Cards | Elegant containers that organize and display content in a clean, structured format. | [cards.md](./cards.md) |
+| Careers | Components for showcasing job openings and career opportunities. | [careers.md](./careers.md) |
+| Charts | Components for visualizing data through charts and graphs. | [charts.md](./charts.md) |
+| Contact | User-friendly contact forms and sections to help users reach out to you. | [contacts.md](./contacts.md) |
+| CTA | Components for driving user action and engagement. | [cta.md](./cta.md) |
+| Dividers | Components for separating sections and content on your website. | [dividers.md](./dividers.md) |
+| Docs Changelog | Components for displaying a changelog with version history and updates. | [docs-changelog.md](./docs-changelog.md) |
+| Docs Code Block | Components for displaying code snippets with syntax highlighting. | [docs-code-block.md](./docs-code-block.md) |
+| Docs Example Preview | Interactive components that showcase code examples with live preview and code view toggle. | [docs-example-preview.md](./docs-example-preview.md) |
+| Docs Header | Documentation page headers with breadcrumbs, titles, and API endpoint displays. | [docs-header.md](./docs-header.md) |
+| Docs Navbar | Components for navigating through documentation pages. | [docs-navbar.md](./docs-navbar.md) |
+| Docs Pagination | Components for navigating through paginated documentation content with previous/next controls and page indicators. | [docs-pagination.md](./docs-pagination.md) |
+| Docs Parameter Field | Components for displaying and editing parameters in API requests. | [docs-parameter-field.md](./docs-parameter-field.md) |
+| Docs Sidebar | Components for organizing and navigating documentation with hierarchical sections, collapsible groups, and active link states. | [docs-sidebar.md](./docs-sidebar.md) |
+| Docs Step | Documentation page step blocks for guiding users through processes with numbered steps and descriptions. | [docs-step.md](./docs-step.md) |
+| Docs Table of Contents | Components for displaying a table of contents. | [docs-toc.md](./docs-toc.md) |
+| FAQs | Components for displaying frequently asked questions and answers. | [faqs.md](./faqs.md) |
+| Features | Components for showcasing your platform's key features. | [features.md](./features.md) |
+| Feeds | Dynamic components for real-time chat interfaces and activity stream presentations. | [feeds.md](./feeds.md) |
+| Footers | Essential bottom sections featuring navigation, contact details, and vital site-wide information. | [footers.md](./footers.md) |
+| Help Center | Components for building a help and support center. | [help-center.md](./help-center.md) |
+| Heroes | Bold, engaging hero sections designed to showcase your most compelling content. | [heroes.md](./heroes.md) |
+| Integrations | Components for managing third-party app integrations and connected services. | [app-integrations.md](./app-integrations.md) |
+| Layouts | Components for building complex page layouts and structures. | [layouts.md](./layouts.md) |
+| Logos | Displays a grid of your customers' or sponsors' logos. | [logos.md](./logos.md) |
+| Marketing Headers | Beautiful section headers for marketing pages with taglines, headlines, and descriptions. | [marketing-headers.md](./marketing-headers.md) |
+| Marketing Navbars | Marketing navigation bars with call-to-action buttons and promotional links. | [marketing-navbars.md](./marketing-navbars.md) |
+| Notifications | Components for displaying notifications and alerts. | [notifications.md](./notifications.md) |
+| Onboarding | Components for onboarding new users to your platform. | [onboarding.md](./onboarding.md) |
+| Org Switcher | Components for switching between organizations and projects. | [org-switcher.md](./org-switcher.md) |
+| Pricing | Components for showcasing and comparing your pricing plans effectively. | [pricing.md](./pricing.md) |
+| Product Categories | Components for showcasing e-commerce product categories. | [product-categories.md](./product-categories.md) |
+| Product Grid | Components for showcasing products in a grid format. | [product-grid.md](./product-grid.md) |
+| Product Reviews | Components for displaying reviews of products. | [product-reviews.md](./product-reviews.md) |
+| Profiles | Components for showcasing user profiles and profiles. | [profiles.md](./profiles.md) |
+| Property Panels | Components for editing entity properties. | [property-panels.md](./property-panels.md) |
+| Settings | Components for managing user account settings and preferences. | [settings.md](./settings.md) |
+| Sharing | Components for sharing content with social media platforms. | [sharing.md](./sharing.md) |
+| Shopping Carts | Components for managing shopping cart functionality and displaying cart items. | [shopping-carts.md](./shopping-carts.md) |
+| Sidebars | Versatile lateral components that enhance navigation and provide contextual information. | [sidebars.md](./sidebars.md) |
+| Stats | Components for showcasing statistical data and metrics. | [stats.md](./stats.md) |
+| Store Signup Offers | Components for offering discounts to users on signup. | [store-signup-offers.md](./store-signup-offers.md) |
+| Teams | Professional layouts to highlight your team members and build authentic connections with users. | [teams.md](./teams.md) |
+| Testimonials | Components for showcasing customer testimonials and feedback. | [testimonials.md](./testimonials.md) |
+| Webhooks | Components for managing webhooks and real-time event integrations. | [webhooks.md](./webhooks.md) |

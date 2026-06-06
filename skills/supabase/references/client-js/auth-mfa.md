@@ -1,6 +1,6 @@
 # Auth MFA
 
-多要素認証 (MFA) のクライアントサイドメソッド群。TOTP ベースの認証をサポート。
+多要素認証 (MFA) のクライアントサイドメソッド群。TOTP・Phone ベースの MFA と Passkey (WebAuthn) をサポート。
 
 ## メソッド一覧
 
@@ -30,7 +30,7 @@ if (data) {
 ```
 
 **Parameters:**
-- `factorType` (string) — ファクタータイプ（`'totp'`）
+- `factorType` (string) — ファクタータイプ（`'totp'` / `'phone'`）
 - `issuer` (string) — TOTP 発行者名。認証アプリに表示される（省略可）
 - `friendlyName` (string) — ファクターのフレンドリー名（省略可）
 
@@ -222,13 +222,77 @@ if (aalData.currentLevel !== aalData.nextLevel) {
 
 ---
 
+## Passkey (WebAuthn)
+
+`auth.experimental.passkey: true` を `createClient` に指定した場合にのみ利用可能。パスキーによるパスワードレス認証を実現する。
+
+### `supabase.auth.passkey.startRegistration()`
+
+パスキー登録セレモニーを開始する。サーバーから登録チャレンジを取得し、呼び出し元が `navigator.credentials.create()` を自身で処理する 2 ステップフローの第 1 ステップ。
+
+```typescript
+const { data, error } = await supabase.auth.passkey.startRegistration()
+```
+
+### `supabase.auth.passkey.verifyRegistration()`
+
+パスキー登録を完了・確定する。
+
+```typescript
+const { data, error } = await supabase.auth.passkey.verifyRegistration(credential)
+```
+
+### `supabase.auth.passkey.startAuthentication()`
+
+パスキー認証フローを開始する。
+
+```typescript
+const { data, error } = await supabase.auth.passkey.startAuthentication()
+```
+
+### `supabase.auth.passkey.verifyAuthentication()`
+
+パスキー認証を完了・確認する。
+
+```typescript
+const { data, error } = await supabase.auth.passkey.verifyAuthentication(credential)
+```
+
+### `supabase.auth.passkey.list()`
+
+ユーザーに登録されている全パスキーを取得する。
+
+```typescript
+const { data, error } = await supabase.auth.passkey.list()
+```
+
+### `supabase.auth.passkey.update()`
+
+パスキーの詳細を更新する。
+
+```typescript
+const { data, error } = await supabase.auth.passkey.update(passkeyId, { friendlyName: 'My Key' })
+```
+
+### `supabase.auth.passkey.delete()`
+
+パスキーを削除する。
+
+```typescript
+const { data, error } = await supabase.auth.passkey.delete(passkeyId)
+```
+
+---
+
 ## 注意点
 - MFA は Dashboard で有効化する必要がある
 - `enroll()` 後、`verify()` で初回検証を行わないとファクターは `unverified` 状態のまま
 - `aal1` はパスワード認証のみ、`aal2` は MFA 検証済みを意味する
 - RLS ポリシーで `auth.jwt() ->> 'aal'` を使って AAL レベルに基づくアクセス制御が可能
 - TOTP コードは 30 秒ごとに更新される
+- Passkey は実験的機能。`createClient` の `auth.experimental.passkey: true` で有効化が必要
 
 ## 関連
 - [Auth](./auth.md)
 - [Auth Admin](./auth-admin.md)
+- [Initialization](./initialization.md)

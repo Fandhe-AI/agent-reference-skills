@@ -1,5 +1,7 @@
 # Theming
 
+> **Note:** This page has moved to `/docs/configure/user-interface/theming` in the current documentation.
+
 Customize Storybook's UI appearance using the built-in theming API.
 
 ## Overview

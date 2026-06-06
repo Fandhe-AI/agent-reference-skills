@@ -1,5 +1,5 @@
-# Day.js — Time Zone
+# timezone
 
 | Name | Description | Path |
 |------|-------------|------|
-| Time Zone | タイムゾーン操作全体（Parsing in Zone, Converting to Zone, Guessing User Timezone, Set Default Timezone） | [./timezone.md](./timezone.md) |
+| Time Zone | Day.js provides time zone support through the Internationalization API in supported environments. This approach eliminates the need to bundle extra timezone data. | [timezone.md](./timezone.md) |

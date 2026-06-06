@@ -2,8 +2,8 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Supported Hardware | Microcontroller platforms, boards, and shields supported by ZMK | [./hardware.md](./hardware.md) |
-| FAQ | Frequently asked questions covering licensing, hardware, features, and community | [./faq.md](./faq.md) |
-| Installing ZMK | Cloud-based firmware build setup using GitHub Actions and ZMK CLI | [./user-setup.md](./user-setup.md) |
-| Customizing ZMK | Editing keymap and configuration files in a zmk-config repository | [./customization.md](./customization.md) |
-| ZMK CLI | Command-line tool for managing ZMK config repos, keyboards, and modules | [./zmk-cli.md](./zmk-cli.md) |
+| Customizing ZMK | ZMK configuration lives in a personal `zmk-config` repository, keeping user… | [customization.md](./customization.md) |
+| FAQ | Frequently asked questions about ZMK Firmware. | [faq.md](./faq.md) |
+| Supported Hardware | ZMK supports a wide range of microcontroller platforms built on Zephyr RTO… | [hardware.md](./hardware.md) |
+| Installing ZMK | ZMK uses GitHub Actions to build firmware in the cloud, eliminating the… | [user-setup.md](./user-setup.md) |
+| ZMK CLI | The ZMK CLI is a command-line utility that streamlines creation and manag… | [zmk-cli.md](./zmk-cli.md) |

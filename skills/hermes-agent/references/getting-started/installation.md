@@ -1,16 +1,28 @@
 # Installation
 
-Install Hermes Agent via a one-line script (Linux, macOS, WSL2) or manually in 10 steps. The automated installer handles all dependencies and has you running in under two minutes.
+Install Hermes Agent via the Desktop installer or a one-line script (Linux, macOS, WSL2, Android, Windows). The automated installer handles all dependencies and has you running in under two minutes.
 
 ## Signature / Usage
 
 ```bash
-# Quick install (Linux, macOS, WSL2)
-curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+# Quick install (Linux, macOS, WSL2, Android/Termux)
+curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+
+# Windows (PowerShell)
+iex (irm https://hermes-agent.nousresearch.com/install.ps1)
 
 # After installation
 hermes
 ```
+
+## Install Methods
+
+| Method | Platforms | Notes |
+|--------|-----------|-------|
+| Desktop installer | macOS, Windows, Linux | Recommended; one-click, in-app self-update |
+| CLI script (bash) | Linux, macOS, WSL2, Android | Handles all dependencies automatically |
+| CLI script (PowerShell) | Windows native | No admin rights required |
+| Nix flake / NixOS module | NixOS | Dedicated Nix setup path |
 
 ## Options / Props
 
@@ -47,6 +59,7 @@ uv pip install -e ".[messaging,voice]"
 | Command | Description |
 |---------|-------------|
 | `hermes model` | Select / change LLM provider |
+| `hermes setup --portal` | Quick Nous Portal configuration (300+ models) |
 | `hermes tools` | Enable or disable tools |
 | `hermes doctor` | Diagnose configuration issues |
 | `hermes chat -q "prompt"` | Test functionality non-interactively |
@@ -54,10 +67,12 @@ uv pip install -e ".[messaging,voice]"
 
 ## Notes
 
-- Native Windows is **not** supported; use WSL2.
-- Only **Git** is required before running the quick installer — all other dependencies (Python 3.11 via `uv`, Node.js v22, ripgrep, ffmpeg) are detected and installed automatically.
+- Windows native is supported (no WSL2 required). The PowerShell installer bundles a portable MinGit and all dependencies under `%LOCALAPPDATA%\hermes`.
+- Only **Git** is required before running the quick installer on Linux/macOS — all other dependencies (Python 3.11 via `uv`, Node.js v22, ripgrep, ffmpeg) are detected and installed automatically.
 - The installer sets up a virtual environment and configures a global `hermes` command.
 - If `hermes` is not found after install, reload your shell (`source ~/.bashrc` or `source ~/.zshrc`).
+- Use `--skip-browser` to skip Playwright installation in headless environments.
+- For service accounts, run `sudo npx playwright install-deps chromium` separately to allow unprivileged user installs.
 
 ## Related
 

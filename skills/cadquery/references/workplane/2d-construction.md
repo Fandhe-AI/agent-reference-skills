@@ -75,6 +75,14 @@ result = (
 |--------|-----------|-------------|
 | `parametricSurface` | `parametricSurface(func, N=20, start=0, stop=1, tol=1e-6, minDeg=1, maxDeg=6, smoothing=None)` | Spline surface approximating a 2-parameter function |
 | `placeSketch` | `placeSketch(*sketches)` | Place `Sketch` object(s) based on current stack items |
+| `sketch` | `sketch()` | Initialize an in-place `Sketch` on the current workplane |
+
+### Additional Curves
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `splineApprox` | `splineApprox(points, tol=1e-3, minDeg=1, maxDeg=6, smoothing=None, makeWire=True, forConstruction=False)` | Spline approximating a set of points (least-squares fit, unlike `spline` which interpolates) |
+| `polygon` | `polygon(nSides, diameter, forConstruction=False)` | Regular polygon with given number of sides and outer diameter |
 
 ## Notes
 

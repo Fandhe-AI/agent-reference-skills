@@ -1,5 +1,7 @@
 # ワークスペース
 
+> **Deprecated**: `vitest.workspace.ts` による独立ワークスペース設定ファイルは非推奨。`vitest.config.ts` の `test.projects` オプションへ移行する。
+
 モノレポや異なるテスト設定を単一プロセスで実行するための機能。
 
 ## 基本設定

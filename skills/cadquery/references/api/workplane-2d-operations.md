@@ -17,6 +17,7 @@
 | `Workplane.polarLineTo` | `polarLineTo(distance, angle, forConstruction=False)` | Draw a line to given polar coordinates |
 | `Workplane.moveTo` | `moveTo(x=0, y=0)` | Move the current point to (x, y) without drawing |
 | `Workplane.move` | `move(xDist=0, yDist=0)` | Move the current point by relative distance without drawing |
+| `Workplane.bezier` | `bezier(listOfXYTuple, includeCurrent=False, forConstruction=False)` | Create a Bézier curve through the provided points |
 | `Workplane.spline` | `spline(listOfXYTuple, tangents=None, periodic=False, scale=True, tol=None, forConstruction=False, includeCurrent=False, makeWire=False)` | Create a spline through the provided 2D or 3D points |
 | `Workplane.parametricCurve` | `parametricCurve(func, N=400, start=0, stop=1, tol=1e-6, minDeg=1, maxDeg=6, smoothing=None, makeWire=True)` | Create a spline curve approximating a parametric function |
 | `Workplane.parametricSurface` | `parametricSurface(func, N=25, start=0, stop=1, tol=1e-3, minDeg=1, maxDeg=6, smoothing=None)` | Create a spline surface approximating a parametric function |
@@ -32,6 +33,7 @@
 | `Workplane.ellipse` | `ellipse(x_radius, y_radius, rotation_angle=0, forConstruction=False)` | Make an ellipse for each item on the stack |
 | `Workplane.ellipseArc` | `ellipseArc(x_radius, y_radius, angle1=360, angle2=360, rotation_angle=0, sense=1, forConstruction=False, startAtCurrent=True, makeWire=False)` | Draw an elliptical arc |
 | `Workplane.polyline` | `polyline(listOfXYTuple, forConstruction=False, includeCurrent=False)` | Create a polyline from a list of points |
+| `Workplane.polygon` | `polygon(nSides, diameter, forConstruction=False, circumscribed=False)` | Create a regular polygon for each point on the stack |
 | `Workplane.close` | `close()` | Close the current wire by connecting back to the start |
 | `Workplane.rarray` | `rarray(xSpacing, ySpacing, xCount, yCount, center=True)` | Create a rectangular array of points on the stack |
 | `Workplane.polarArray` | `polarArray(radius, startAngle, angle, count, fill=True, rotate=True)` | Create a polar array of points on the stack |

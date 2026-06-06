@@ -13,34 +13,66 @@ model: sonnet
 Driver.js 公式ドキュメントの全 API を網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-## ディレクトリ構造
+## ディレクトリ構成
 
-```
-.claude/skills/driverjs/
-├── SKILL.md                                    ← このファイル（エントリーポイント）
-└── references/
-    ├── getting-started/README.md               ← インストール・基本操作（2ページ）
-    ├── api/README.md                           ← 設定・メソッド・テーマ（3ページ）
-    ├── examples/README.md                      ← ユースケース別サンプル（4ページ）
-    └── migration/README.md                     ← バージョン移行（1ページ）
+```text
+skills/driverjs/
+  SKILL.md
+  references/
+    getting-started/
+      README.md
+      installation.md
+      basic-usage.md
+    api/
+      README.md
+      configuration.md
+      methods.md
+      theming.md
+    examples/
+      README.md
+      async-and-lifecycle.md
+      highlight-and-popover.md
+      styling.md
+      tours.md
+    migration/
+      README.md
+      migrate-to-1x.md
+  samples/
+    README.md
+    basic-tour.md
+    single-element-highlight.md
+    async-tour.md
+    confirm-on-exit.md
+    custom-popover-buttons.md
+    custom-theme.md
+  scripts/
+    README.md
+    install.md
+    setup.md
+    api.md
 ```
 
 ## 探索手順
 
-1. ユーザーのタスクに最も関連するカテゴリを特定する
-2. そのカテゴリの `README.md` を読む
-3. README.md 内の一覧から必要な個別ファイルを選んで読む
-4. 必要に応じて関連ページのリンクを辿る
+タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-## カテゴリ → README.md マッピング
+1. 下記マッピング表でタスクに対応するカテゴリを探す
+2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
+3. 該当ページの `.md` を Read して詳細を確認する
 
-| タスク例 | カテゴリ | README パス |
-|---------|---------|------------|
-| npm install, CDN, import, driver() 初期化, ツアー開始, highlight | getting-started | [references/getting-started/README.md](./references/getting-started/README.md) |
-| Config オプション, Popover 型, DriveStep 型, State 型, コールバック/フック | api | [references/api/README.md](./references/api/README.md) |
-| drive(), moveNext(), destroy(), getState(), setConfig(), refresh() | api | [references/api/README.md](./references/api/README.md) |
-| CSS クラス, popoverClass, onPopoverRender, テーマカスタマイズ | api | [references/api/README.md](./references/api/README.md) |
-| アニメーション/静的ツアー, 進捗表示, 非同期ステップ, 終了確認 | examples | [references/examples/README.md](./references/examples/README.md) |
-| ポップオーバー配置 (side/align), ボタン設定, オーバーレイスタイル | examples | [references/examples/README.md](./references/examples/README.md) |
-| 単一要素ハイライト, フォームヘルプ, モーダル表示 | examples | [references/examples/README.md](./references/examples/README.md) |
-| 0.x → 1.x 移行, 破壊的変更, API リネーム | migration | [references/migration/README.md](./references/migration/README.md) |
+## タスク → カテゴリ マッピング
+
+| タスク | カテゴリ | 参照 README |
+|--------|---------|------------|
+| npm install、CDN、import、driver() 初期化、ツアー開始 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| インストール方法・パッケージマネージャーを確認したい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| Config オプション、DriveStep 型、コールバック/フックを調べたい | api | [references/api/README.md](references/api/README.md) |
+| drive(), moveNext(), destroy(), getState(), setConfig() などメソッドを調べたい | api | [references/api/README.md](references/api/README.md) |
+| CSS クラス、popoverClass、onPopoverRender、テーマカスタマイズ | api | [references/api/README.md](references/api/README.md) |
+| 非同期ステップ、終了確認、ライフサイクル制御のパターンを知りたい | examples | [references/examples/README.md](references/examples/README.md) |
+| ポップオーバー配置、ボタン設定、単一要素ハイライトのパターンを知りたい | examples | [references/examples/README.md](references/examples/README.md) |
+| オーバーレイ・ポップオーバーの外観カスタマイズ方法を知りたい | examples | [references/examples/README.md](references/examples/README.md) |
+| マルチステップツアーの構成例を見たい | examples | [references/examples/README.md](references/examples/README.md) |
+| 0.x → 1.x 移行、破壊的変更、API リネームを確認したい | migration | [references/migration/README.md](references/migration/README.md) |
+| 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・初期化・API 実行のコマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

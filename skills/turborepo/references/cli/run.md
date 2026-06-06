@@ -36,9 +36,16 @@ turbo run <task> [options]
 |---|---|
 | `--dry` / `--dry-run` | 実行せずにタスク計画を表示 |
 | `--graph` | タスクグラフを可視化（`dot`/`svg`/`html`/`mermaid`） |
+| `--json` | 人間可読テキストの代わりに NDJSON を stdout へ出力 |
+| `--log-file` | 構造化 JSON ログをファイルに書き込む |
 | `--output-logs` | ログ出力レベル |
+| `--log-order` | ログ順序（`stream`/`grouped`/`auto`、デフォルト: `auto`） |
+| `--log-prefix` | ログプレフィックス制御（`task`/`none`/`auto`、デフォルト: `auto`） |
 | `--summarize` | 実行メタデータを JSON で出力 |
 | `--profile` | パフォーマンストレースを生成 |
+| `--anon-profile` | 機密情報を除外したプロファイルを生成 |
+| `--framework-inference` | フレームワーク推論の有効/無効（デフォルト: `true`） |
+| `--verbosity` / `-v` | ログレベル（`-v`=Info, `-vv`=Debug, `-vvv`=Trace） |
 
 ## フィルタ構文
 

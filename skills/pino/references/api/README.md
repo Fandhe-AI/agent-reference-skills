@@ -1,13 +1,13 @@
-# Pino — API
+# API
 
 | Name | Description | Path |
 |------|-------------|------|
-| `pino()` | エクスポート関数 `pino([options], [destination]) => logger` の概要 | [./pino-function.md](./pino-function.md) |
-| `options` | `pino()` に渡す全オプションプロパティ（name, level, transport, serializers 等） | [./options.md](./options.md) |
-| `destination` | `pino()` の第2引数 destination パラメータと metadata | [./destination.md](./destination.md) |
-| Logging Method Parameters | ログメソッドのパラメータ仕様（mergingObject, message, interpolationValues, Errors） | [./logging-method-parameters.md](./logging-method-parameters.md) |
-| Logger Instance | Logger インスタンスのログメソッド（trace, debug, info, warn, error, fatal, silent） | [./logger-instance.md](./logger-instance.md) |
-| `logger.child()` | 子ロガーの作成（bindings, options） | [./logger-child.md](./logger-child.md) |
-| Logger Methods | bindings, setBindings, flush, level, isLevelEnabled, levels 等のメソッド・プロパティ | [./logger-methods.md](./logger-methods.md) |
-| Statics | pino.destination, pino.transport, pino.multistream, stdSerializers 等の静的メソッド | [./statics.md](./statics.md) |
-| Interfaces & Types | MultiStreamRes, StreamEntry, DestinationStream, Level, TypeScript 型定義 | [./interfaces-and-types.md](./interfaces-and-types.md) |
+| Destination | The `destination` parameter is the second optional argument to `pino()`. It controls where log output is written, supporting file descriptors, file paths, streams, and SonicBoom instances. | [destination.md](./destination.md) |
+| Interfaces and Types | TypeScript interfaces, types, and module augmentation capabilities provided by Pino. | [interfaces-and-types.md](./interfaces-and-types.md) |
+| logger.child() | The `logger.child` method creates stateful child loggers where key-value pairs are pinned to the logger and output on every log line. | [logger-child.md](./logger-child.md) |
+| Logger Instance | The logger instance is the object returned by the main exported `pino()` function. Its primary purpose is to provide logging methods. | [logger-instance.md](./logger-instance.md) |
+| Logger Methods and Properties | Additional methods and properties available on the logger instance beyond the core logging methods. | [logger-methods.md](./logger-methods.md) |
+| Logging Method Parameters | Each logging method (`trace`, `debug`, `info`, `warn`, `error`, `fatal`) shares the same signature and parameter behavior. | [logging-method-parameters.md](./logging-method-parameters.md) |
+| Options | The `options` object is the first optional parameter to the `pino()` function. It controls all aspects of logger behavior including log levels, formatting, serialization, redaction, and more. | [options.md](./options.md) |
+| pino() Function | The exported `pino` function is the main entry point for creating a Pino logger instance. It accepts two optional parameters and returns a logger. | [pino-function.md](./pino-function.md) |
+| Statics | Static methods and properties available on the exported `pino` function itself (not on logger instances). | [statics.md](./statics.md) |

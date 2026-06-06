@@ -35,6 +35,9 @@ face_wp = top_face_verts.end()
 | `size` | `size()` | Number of objects currently on the stack |
 | `add` | `add(obj)` | Add a shape, list of shapes, or another `Workplane` to the stack |
 | `end` | `end(n=1)` | Return the nth ancestor `Workplane` in the parent chain |
+| `newObject` | `newObject(objlist)` | Return a new `Workplane` with the given object list as its stack |
+| `pushPoints` | `pushPoints(pntList)` | Push a list of points (as `Vector` or tuples) onto the stack |
+| `copyWorkplane` | `copyWorkplane(obj)` | Copy the workplane (plane and center) from another `Workplane` object |
 
 ## Notes
 

@@ -15,52 +15,189 @@ model: sonnet
 CadQuery — OpenCascade ベースの Python 製パラメトリック 3D CAD モデリングライブラリ。
 スクリプトとして CAD モデルを記述でき、Workplane / Sketch / Assembly といった抽象レイヤー上で
 制約ベースの設計を可能にする。STEP / DXF / STL / glTF など多様な業界標準フォーマットの入出力に対応。
-公式ドキュメント (cadquery.readthedocs.io) の全 20 ページを 14 カテゴリに構造化。
 
-## ディレクトリ構造
+## ディレクトリ構成
 
-```
-.claude/skills/cadquery/
-├── SKILL.md                                  ← このファイル（エントリーポイント）
-└── references/
-    ├── getting-started/README.md             ← 入門索引（5 ページ）
-    ├── workplane/README.md                   ← Workplane page 索引（9 ページ）
-    ├── sketch/README.md                      ← Sketch page 索引（2 ページ）
-    ├── assemblies/README.md                  ← Assemblies page 索引（4 ページ）
-    ├── free-function/README.md               ← Free Function API 索引（9 ページ）
-    ├── visualization/README.md               ← Visualization 索引（5 ページ）
-    ├── file-io/README.md                     ← File I/O 索引（15 ページ）
-    ├── examples/README.md                    ← Examples 索引（9 ページ / 33 例カバー）
-    ├── api/README.md                         ← API Reference + Cheatsheet 索引（14 ページ）
-    ├── selectors/README.md                   ← Selectors Reference 索引（8 ページ）
-    ├── classes/README.md                     ← Class Summary 索引（4 ページ）
-    ├── cqgi/README.md                        ← CQGI 索引（7 ページ）
-    ├── extending/README.md                   ← Plugin/拡張ガイド索引（10 ページ）
-    └── misc/README.md                        ← Citing 索引（1 ページ）
+```text
+skills/cadquery/
+  SKILL.md
+  references/
+    getting-started/
+      README.md
+      concepts.md
+      design-principles.md
+      installation.md
+      introduction.md
+      quickstart.md
+    workplane/
+      README.md
+      2d-construction.md
+      3d-construction.md
+      chaining.md
+      construction-geometry.md
+      context-solid.md
+      iteration.md
+      overview.md
+      selectors.md
+      stack.md
+    sketch/
+      README.md
+      tutorial.md
+      workplane-integration.md
+    assemblies/
+      README.md
+      colors.md
+      constraints.md
+      locations.md
+      tutorial.md
+    free-function/
+      README.md
+      adding-features.md
+      boolean-operations.md
+      operations.md
+      parametric-mapping.md
+      placement.md
+      primitives.md
+      shape-construction.md
+      text.md
+      tutorial.md
+    visualization/
+      README.md
+      control-points.md
+      jupyter.md
+      pure-python.md
+      screenshots.md
+      styling.md
+    file-io/
+      README.md
+      exporting-amf-3mf.md
+      exporting-assemblies.md
+      exporting-dxf.md
+      exporting-gltf.md
+      exporting-other.md
+      exporting-stl.md
+      exporting-step.md
+      exporting-svg.md
+      exporting-tjs.md
+      exporting-vrml.md
+      importing-assemblies.md
+      importing-dxf.md
+      importing-step.md
+      introduction.md
+      scripts-and-output.md
+    examples/
+      README.md
+      advanced-techniques.md
+      basic-shapes.md
+      construction-geometry.md
+      full-projects.md
+      holes-and-fillets.md
+      mirroring.md
+      moving-points.md
+      shells-lofts-extrusion.md
+      workplanes.md
+    api/
+      README.md
+      assemblies-api.md
+      cheatsheet.md
+      file-management.md
+      iteration-methods.md
+      selectors-api.md
+      sketch-edges-constraints.md
+      sketch-faces.md
+      sketch-initialization.md
+      sketch-selection.md
+      stack-selector-methods.md
+      workplane-2d-operations.md
+      workplane-3d-non-2d.md
+      workplane-3d-operations.md
+      workplane-initialization.md
+    selectors/
+      README.md
+      combining.md
+      filtering-edges.md
+      filtering-faces.md
+      filtering-vertices.md
+      shape-and-sketch.md
+      special-methods.md
+      topological.md
+      user-directions.md
+    classes/
+      README.md
+      core.md
+      geometry.md
+      selectors.md
+      topological.md
+    cqgi/
+      README.md
+      complete-api.md
+      execution-environment.md
+      important-methods.md
+      overview.md
+      script-side.md
+      script-variables.md
+      stl-automation.md
+    extending/
+      README.md
+      coordinate-systems.md
+      example-plugins.md
+      helper-methods.md
+      linking.md
+      opencascade-methods.md
+      plugin-example.md
+      plugins.md
+      preserving-chain.md
+      special-methods.md
+      stack.md
+    misc/
+      README.md
+      citing.md
+  samples/
+    README.md
+    assembly-with-constraints.md
+    basic-box.md
+    export-step-stl.md
+    extruded-profile.md
+    mirroring.md
+    parametric-pillow-block.md
+    rectangular-array.md
+    shell-loft.md
+    sketch-api.md
+    tagging-and-splitting.md
+    workplane-operations.md
+  scripts/
+    README.md
+    cqgi.md
+    export.md
+    import.md
+    install.md
 ```
 
 ## 探索手順
 
-1. ユーザーのタスクに最も関連するカテゴリを特定する
-2. そのカテゴリの `README.md` を読む
-3. README.md 内の一覧から必要な個別ファイルを選んで読む
-4. 必要に応じて関連ページのリンクを辿る
+タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-## カテゴリ → README.md マッピング
+1. 下記マッピング表でタスクに対応するカテゴリを探す
+2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
+3. 該当ページの `.md` を Read して詳細を確認する
 
-| タスク例 | カテゴリ | README パス |
-|---------|---------|------------|
-| インストール、最初の一歩、設計原則、BREP/Workplane/Selectors の概念理解 | getting-started | [references/getting-started/README.md](./references/getting-started/README.md) |
-| 2D ワイヤ作成（lineTo, polyline, threePointArc 等）、3D 押し出し（extrude, revolve, sweep, loft）、ブール演算（cut, union）、フィレット・シェル、Workplane chain と Stack | workplane | [references/workplane/README.md](./references/workplane/README.md) |
-| 制約付きスケッチ（segment, arc, spline, constrain, solve）、フェース構築（rect, circle, polygon, slot）、Workplane との統合 | sketch | [references/sketch/README.md](./references/sketch/README.md) |
-| 部品組立、Assembly tutorial、Object locations、9 種制約（Point/Axis/Plane/PointInPlane/Fixed 等）、Assembly colors | assemblies | [references/assemblies/README.md](./references/assemblies/README.md) |
-| Workplane を使わない関数型 API（box/sphere/cylinder, fuse/cut, fillet/chamfer/shell, extrude/revolve/sweep/loft, text 等） | free-function | [references/free-function/README.md](./references/free-function/README.md) |
-| 可視化（show 関数、VTK 統合、スクリーンショット、Control points、Styling、Jupyter インライン表示） | visualization | [references/visualization/README.md](./references/visualization/README.md) |
-| ファイル入出力（STEP/DXF/STL/glTF/SVG/AMF/3MF/TJS/VRML）、Assembly export, CQ-editor の show_object 規約 | file-io | [references/file-io/README.md](./references/file-io/README.md) |
-| 33 個のモデリング例（Plate, Mirroring, Workplanes, Lofts, Holes, Bottle, Lego, Bearing, Enclosure, Braille, Cycloidal Gear 等） | examples | [references/examples/README.md](./references/examples/README.md) |
-| API 一覧（Sketch / Workplane 2D/3D / File / Iteration / Stack / Selectors / Assemblies のメソッドシグネチャ）、API Cheatsheet | api | [references/api/README.md](./references/api/README.md) |
-| Selector 文字列構文（"%face", ">Z", "<<Y", "+Z", "|X", "#X" 等）、組合せ演算子、Nth 系、Topological（ancestors/siblings） | selectors | [references/selectors/README.md](./references/selectors/README.md) |
-| クラス階層（Shape, Vertex, Edge, Wire, Face, Shell, Solid, Compound, CompSolid, Mixin1D/3D, Vector, Matrix, Plane, Location, BoundBox, Color, Material, Selector 階層） | classes | [references/classes/README.md](./references/classes/README.md) |
-| スクリプト実行環境、パラメータ駆動モデリング、show_object/debug、BuildResult、CQModel | cqgi | [references/cqgi/README.md](./references/cqgi/README.md) |
-| Plugin 開発、CadQuery 拡張、OpenCascade 直接呼び出し、Stack 操作、newObject/findSolid、map/apply/invoke | extending | [references/extending/README.md](./references/extending/README.md) |
-| 引用情報（学術用途、Zenodo DOI） | misc | [references/misc/README.md](./references/misc/README.md) |
+## タスク → カテゴリ マッピング
+
+| タスク | カテゴリ | 参照 README |
+|--------|---------|------------|
+| インストール・設計原則・BREP/Workplane/Selectors の概念理解・最初の一歩 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| 2D ワイヤ作成 (lineTo, polyline, threePointArc)、3D 押し出し (extrude, revolve, sweep, loft)、ブール演算 (cut, union)、フィレット・シェル、チェイン・スタック | workplane | [references/workplane/README.md](references/workplane/README.md) |
+| 制約付きスケッチ (segment, arc, spline, constrain, solve)、フェース構築 (rect, circle, polygon, slot)、Workplane との統合 | sketch | [references/sketch/README.md](references/sketch/README.md) |
+| 部品組立、Assembly tutorial、オブジェクト配置 (Location)、9 種制約 (Point/Axis/Plane/Fixed 等)、アセンブリカラー | assemblies | [references/assemblies/README.md](references/assemblies/README.md) |
+| Workplane を使わない関数型 API (box/sphere/cylinder、fuse/cut、fillet/chamfer、extrude/revolve/sweep/loft、text) | free-function | [references/free-function/README.md](references/free-function/README.md) |
+| 可視化 (show 関数、VTK 統合、スクリーンショット、Control Points、スタイリング、Jupyter インライン表示) | visualization | [references/visualization/README.md](references/visualization/README.md) |
+| ファイル入出力 (STEP/DXF/STL/glTF/SVG/AMF/3MF/TJS/VRML)、Assembly export/import、show_object 規約 | file-io | [references/file-io/README.md](references/file-io/README.md) |
+| モデリング例 (Plate, Mirroring, Workplanes, Lofts, Holes, Bottle, Lego, Bearing, Enclosure, Braille, Cycloidal Gear 等) | examples | [references/examples/README.md](references/examples/README.md) |
+| API 一覧 (Sketch / Workplane 2D/3D / File / Iteration / Stack / Selectors / Assemblies のメソッドシグネチャ)、Cheatsheet | api | [references/api/README.md](references/api/README.md) |
+| Selector 文字列構文 (">Z", "<<Y", "+Z", "\|X" 等)、組合せ演算子、Topological (ancestors/siblings) | selectors | [references/selectors/README.md](references/selectors/README.md) |
+| クラス階層 (Shape / Vertex / Edge / Wire / Face / Shell / Solid / Compound、Vector / Matrix / Plane / Location / BoundBox、Selector 階層) | classes | [references/classes/README.md](references/classes/README.md) |
+| スクリプト実行環境、パラメータ駆動モデリング、show_object/debug、BuildResult、CQModel | cqgi | [references/cqgi/README.md](references/cqgi/README.md) |
+| Plugin 開発、CadQuery 拡張、OpenCascade 直接呼び出し、Stack 操作、newObject/findSolid、map/apply/invoke | extending | [references/extending/README.md](references/extending/README.md) |
+| 引用情報 (学術用途、Zenodo DOI) | misc | [references/misc/README.md](references/misc/README.md) |
+| 典型的な使い方を実働コードで確認したい | samples | [samples/README.md](samples/README.md) |
+| インストール・エクスポート・インポート・CQGI 実行コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

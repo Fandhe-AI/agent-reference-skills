@@ -161,6 +161,20 @@ points:
   mirror: 100
 ```
 
+## Templating
+
+String values in the config can reference point attributes using `{{field_name}}` syntax. This is evaluated per-point when a declaration is placed at multiple locations.
+
+Common template expressions:
+
+| Expression | Resolves to |
+|------------|-------------|
+| `{{col.name}}` | Column name of the point |
+| `{{row}}` | Row name of the point |
+| `{{zone.name}}` | Zone name of the point |
+| `{{colrow}}` | Auto-generated `{{col.name}}_{{row}}` |
+| `{{name}}` | Global point name `{{zone.name}}_{{colrow}}` |
+
 ## Related
 
 - [Units](./units.md)

@@ -195,6 +195,17 @@ query {
 | `GitObjectID` | Git オブジェクト ID（SHA1 ハッシュ） |
 | `Base64String` | Base64 エンコードされた文字列 |
 
+## 予定されている Breaking Changes
+
+| 適用日 | 変更内容 |
+|--------|---------|
+| 2026-04-01 | GraphQL audit-log の廃止。複数の audit entry 型からフィールド削除。代替: REST API |
+| 2026-07-01 | `Team.viewerSubscription` / `Team.viewerCanSubscribe` フィールド削除（チーム通知サブスクリプション廃止） |
+| 2026-10-01 | `User.viewerRelevantRepositories` 削除。代替: `viewerCopilotChatRepositorySuggestions` |
+| 2027-01-01 | `CheckAnnotation.databaseId` / `Artifact.databaseId` 削除（64-bit 非対応）。代替: `fullDatabaseId` |
+
+詳細: [Breaking Changes](https://docs.github.com/en/graphql/overview/breaking-changes)
+
 ## 公式ドキュメント
 
 - [GraphQL API Reference](https://docs.github.com/en/graphql/reference)

@@ -141,6 +141,16 @@ valid(target: 'form' | 'json' | 'query' | 'header' | 'cookie' | 'param'): Record
 const { title, body } = c.req.valid('form')
 ```
 
+### cloneRawRequest()
+
+Clone the raw `Request` object after the body has been consumed.
+
+```ts
+cloneRawRequest(): Request
+```
+
+Useful when you need to pass the original request to another function after reading the body.
+
 ## Properties
 
 | Name | Type | Description |
@@ -148,6 +158,7 @@ const { title, body } = c.req.valid('form')
 | `url` | `string` | Full request URL including protocol and query string |
 | `path` | `string` | Pathname portion of the URL (no query string) |
 | `method` | `string` | HTTP method in uppercase (e.g. `GET`) |
+| `raw` | `Request` | The underlying Web API `Request` object |
 | `matchedRoutes` | `RouteData[]` | Array of matched routes with `handler`, `method`, `path` — deprecated in v4.8.0 |
 | `routePath` | `string` | Registered route pattern (e.g. `/posts/:id`) — deprecated in v4.8.0 |
 
@@ -155,6 +166,7 @@ const { title, body } = c.req.valid('form')
 
 - `matchedRoutes` and `routePath` are deprecated since v4.8.0; use Route Helper instead
 - `parseBody()` requires the content-type to be `multipart/form-data` or `application/x-www-form-urlencoded`
+- `cloneRawRequest()` is necessary when passing the request downstream after body consumption, since `Request.body` is a one-time-read stream
 
 ## Related
 

@@ -41,6 +41,28 @@ console.log(files)
 | `files` | `KubbFile[]` | 生成されたファイル出力 |
 | `driver` | `PluginDriver` | プラグイン実行を管理するドライバーインスタンス |
 
+## ストレージ API（v4.36.0+）
+
+カスタムストレージバックエンドを定義するファクトリ関数:
+
+```typescript
+import { defineStorage, fsStorage, memoryStorage } from '@kubb/core'
+```
+
+| エクスポート | 説明 |
+|------------|------|
+| `defineStorage()` | カスタムストレージドライバーの定義 |
+| `fsStorage()` | ファイルシステムストレージ（デフォルト） |
+| `memoryStorage()` | インメモリストレージ（テスト用） |
+
+## URLPath ヘルパー（v4.36.1+）
+
+カスタムプラグインでパスの標準化・組み立てに使用するユーティリティクラス:
+
+```typescript
+import { URLPath } from '@kubb/core'
+```
+
 ## 設定の型
 
 `build()` は `UserConfig` 型のオブジェクトを受け取る。詳細は [configure](../getting-started/configure.md) を参照。

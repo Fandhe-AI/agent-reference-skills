@@ -89,6 +89,12 @@ Filter issue types.
 { "treatConfigHintsAsErrors": true }
 ```
 
+### `treatTagHintsAsErrors`
+
+```json
+{ "treatTagHintsAsErrors": true }
+```
+
 ## Ignore Issues
 
 ### `ignore`

@@ -4,7 +4,7 @@ Source: https://knip.dev/reference/configuration-hints
 
 ## Overview
 
-Configuration hints maintain clean config files and minimize drift. Warnings by default; treat as errors with `--treat-config-hints-as-errors`.
+Configuration hints maintain clean config files and minimize drift. Warnings by default; suppress with `--no-config-hints` or treat as errors with `--treat-config-hints-as-errors`. Tag-related hints can be suppressed with `--no-tag-hints` or escalated with `treatTagHintsAsErrors`.
 
 ## Categories
 

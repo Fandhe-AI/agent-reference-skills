@@ -87,6 +87,15 @@
 |---------|------|
 | `gh search` | リポジトリ・Issue・PR・コードなどの検索 |
 
+### AI・Copilot
+
+| コマンド | 説明 |
+|---------|------|
+| `gh copilot suggest` | AI にコマンドの提案を依頼（`gh copilot` 拡張 / 2025-10-25 に EOL） |
+| `gh copilot explain` | コマンドの意味を AI に説明させる（同上） |
+
+> `gh copilot` 拡張（`github/gh-copilot`）は 2025 年 10 月 25 日に非推奨 (EOL)。後継の GitHub Copilot CLI (`copilot` コマンド) への移行を推奨。
+
 ### API・拡張
 
 | コマンド | 説明 |

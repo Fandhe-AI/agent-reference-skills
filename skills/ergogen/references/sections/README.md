@@ -2,9 +2,9 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Metadata | `meta` top-level fields: engine version constraint, KiCad version/author embedding, and arbitrary documentation fields. | [metadata.md](./metadata.md) |
-| Units | Named numeric variables and built-in spacings (u, cx, cy) used as math formulas throughout the config. | [units.md](./units.md) |
-| Points | 2D key position system: anchors, column/row zones with inheritance, and post-layout rotation/mirroring adjustments. | [points.md](./points.md) |
-| Outlines | 2D shape assembly from rectangle/circle/polygon primitives placed at key points, combined via boolean operations. | [outlines.md](./outlines.md) |
-| Cases | 3D solid generation by extruding outlines and composing them in space; produces JSCAD output. | [cases.md](./cases.md) |
-| PCBs | Footprint placement, net assignment, and KiCad PCB file generation. | [pcbs.md](./pcbs.md) |
+| Cases | The cases section extrudes 2D outlines and composes them in 3D space to… | [cases.md](./cases.md) |
+| Metadata | The meta top-level key stores keyboard documentation. Most fields are… | [metadata.md](./metadata.md) |
+| Outlines | The outlines section builds 2D shapes by combining geometric primitives… | [outlines.md](./outlines.md) |
+| PCBs | The pcbs section places footprints at key positions and assigns nets to… | [pcbs.md](./pcbs.md) |
+| Points | The points section defines the 2D key positions [x, y, r°] that form… | [points.md](./points.md) |
+| Units | The units section defines named numeric variables (usable as math… | [units.md](./units.md) |

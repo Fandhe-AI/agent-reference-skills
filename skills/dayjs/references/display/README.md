@@ -1,5 +1,5 @@
-# Day.js — Display
+# Display
 
 | Name | Description | Path |
 |------|-------------|------|
-| Display | 表示・出力全体（format, fromNow, from, toNow, to, calendar, diff, unix, daysInMonth, toDate, toArray, toJSON, toISOString, toObject, toString） | [./display.md](./display.md) |
+| Day.js — Display | Once parsing and manipulation are done, you need some way to display the Day.js object. This section covers all display and output methods. | [display.md](./display.md) |

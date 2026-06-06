@@ -26,10 +26,14 @@ west build -b nice_nano -S zmk-usb-logging -- -DSHIELD="corne_left"
 sudo tio /dev/ttyACM0
 ```
 
+**Connect on Windows:**
+
+Use PuTTY with the COM port shown in Device Manager (Serial connection).
+
 **Connect on macOS:**
 
 ```bash
-sudo tio /dev/tty.usbmodem14401
+sudo tio /dev/tty.usbmodemXXXXX
 ```
 
 ## Notes

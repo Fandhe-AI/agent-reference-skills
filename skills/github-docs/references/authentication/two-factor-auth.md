@@ -1,6 +1,6 @@
-# 二要素認証 (Two-Factor Authentication / 2FA)
+# 二要素認証 (Two-Factor Authentication / 2FA) とパスキー
 
-二要素認証（2FA）は、パスワードに加えて別の認証要素を要求することで、GitHub アカウントのセキュリティを強化する仕組みです。
+二要素認証（2FA）は、パスワードに加えて別の認証要素を要求することで、GitHub アカウントのセキュリティを強化する仕組みです。パスキーは 2FA を内包したパスワードレス認証として利用できます。
 
 ## 2FA の必須化
 
@@ -86,6 +86,36 @@ TOTP の設定パラメータ:
 - 外部コラボレーターが 2FA を無効にすると、プライベートリポジトリのフォークへのアクセスを失う
 - 2FA を有効にした後、既存のセッションは有効なままだが、GitHub API へのアクセスには PAT や SSH キーが必要
 
+## パスキー（Passkey）
+
+パスキーは FIDO2/WebAuthn 標準に基づくパスワードレス認証。2FA を内包するため、パスキーでサインインすると追加の 2FA 入力が不要になる。
+
+### 対応プラットフォーム
+
+- **Windows Hello**: 指紋、顔認証、PIN
+- **Apple Touch ID / Face ID**: iPhone、iPad、Mac
+- **Android 指紋 / 顔認証**
+- **ハードウェアセキュリティキー**: YubiKey など FIDO2 対応デバイス
+
+### パスキーの追加手順
+
+1. **Settings** > **Password and authentication** > **Passkeys** セクション
+2. **Add a passkey** をクリック
+3. プラットフォームの認証プロンプトに従って登録
+4. パスキーに識別可能な名前を付けて保存
+
+### パスキー vs 2FA との関係
+
+| サインイン方法 | パスワード | 追加認証 |
+|--------------|-----------|---------|
+| パスワード + 2FA | 必要 | 必要 |
+| パスキー | 不要 | 不要（パスキーに内包） |
+
+## ソーシャルログイン
+
+GitHub は Google アカウントまたは Apple ID でのサインインをサポートしている（GitHub.com のみ）。既存の GitHub アカウントにソーシャルログインを連携することも可能。
+
 ## 参考リンク
 
 - [Configuring two-factor authentication - GitHub Docs](https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/configuring-two-factor-authentication)
+- [About passkeys - GitHub Docs](https://docs.github.com/en/authentication/authenticating-with-a-passkey/about-passkeys)

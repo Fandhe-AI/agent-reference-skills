@@ -1,6 +1,6 @@
-# Zod — Migration
+# migration
 
 | Name | Description | Path |
 |------|-------------|------|
-| Zod 4 Release Notes | 新機能、ベンチマーク、バンドルサイズ、TypeScript 効率改善 | [./v4-release-notes.md](./v4-release-notes.md) |
-| Zod 4 Migration Guide | 破壊的変更一覧、移行手順、API 変更詳細 | [./v4-migration-guide.md](./v4-migration-guide.md) |
+| Zod 4 Migration Guide | Complete reference for all breaking changes, deprecated APIs, and migration steps when upgrading from Zod 3 to Zod 4. | [v4-migration-guide.md](./v4-migration-guide.md) |
+| Zod 4 Release Notes | New features, performance benchmarks, bundle size improvements, and architectural changes in Zod 4. | [v4-release-notes.md](./v4-release-notes.md) |

@@ -15,11 +15,26 @@ Edge Functions はデフォルトで JWT 検証が有効になっており、リ
 
 ### CORS の設定パターン
 
-ブラウザからの直接アクセスには CORS ヘッダーが必要。共通ヘッダーを `_shared/cors.ts` に定義して再利用する。
+ブラウザからの直接アクセスには CORS ヘッダーが必要。v2.95.0 以降の `@supabase/supabase-js` では SDK から直接インポートする方法が推奨。古い環境では共通ヘッダーを `_shared/cors.ts` に定義して再利用する。
 
 ## コード例
 
-### CORS 共通設定
+### CORS 共通設定（推奨: SDK からインポート、v2.95.0+）
+
+```typescript
+// supabase/functions/hello-world/index.ts
+// SDK 側でヘッダーが追加されると自動的に同期される
+import { corsHeaders } from '@supabase/supabase-js/cors'
+
+Deno.serve(async (req: Request) => {
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders })
+  }
+  // ...
+})
+```
+
+### CORS 共通設定（レガシー: 手動定義）
 
 ```typescript
 // supabase/functions/_shared/cors.ts

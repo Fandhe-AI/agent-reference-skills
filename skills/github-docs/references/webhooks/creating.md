@@ -105,6 +105,29 @@ POST /orgs/{org}/hooks
 
 Webhook 作成後、GitHub は `ping` イベントを送信して正常にセットアップされたことを確認する。
 
+## 失敗した配信の再配信
+
+GitHub は失敗した配信を自動的に再配信しない。手動または REST API 経由で再配信が可能。
+
+### REST API による再配信
+
+```
+# リポジトリ Webhook の最近の配信一覧
+GET /repos/{owner}/{repo}/hooks/{hook_id}/deliveries
+
+# 特定の配信を再配信
+POST /repos/{owner}/{repo}/hooks/{hook_id}/deliveries/{delivery_id}/attempts
+
+# Organization Webhook の最近の配信一覧
+GET /orgs/{org}/hooks/{hook_id}/deliveries
+
+# GitHub App Webhook の最近の配信一覧
+GET /app/hook/deliveries
+```
+
+> GitHub Marketplace および GitHub Sponsors Webhook には専用の再配信 API エンドポイントがない。
+
 ## 公式ドキュメント
 
 - [Creating webhooks](https://docs.github.com/en/webhooks/using-webhooks/creating-webhooks)
+- [Handling failed webhook deliveries](https://docs.github.com/en/webhooks/using-webhooks/handling-failed-webhook-deliveries)

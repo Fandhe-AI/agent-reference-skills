@@ -1,10 +1,8 @@
 # Recipes
 
-Biome の実践レシピ。CI/CD・Git Hooks・自動化。
-
-| ファイル | 説明 | パス |
-|---------|------|------|
-| continuous-integration | CI/CD（biome ci、GitHub Actions、GitLab CI）設定例 | [./continuous-integration.md](./continuous-integration.md) |
-| git-hooks | Git Hooks（Lefthook、Husky + lint-staged、pre-commit、シェルスクリプト） | [./git-hooks.md](./git-hooks.md) |
-| renovate | Renovate 連携（customManagers:biomeVersions プリセット） | [./renovate.md](./renovate.md) |
-| badges | Formatted/Linted/Checked with Biome バッジ | [./badges.md](./badges.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| バッジ | README.md に追加する Biome バッジ。 | [badges.md](./badges.md) |
+| CI/CD | CI 環境では `biome ci` を使用。`--write`/`--fix` オプションなし（読み取… | [continuous-integration.md](./continuous-integration.md) |
+| Git Hooks | 高速・クロスプラットフォーム・依存関係なし。 | [git-hooks.md](./git-hooks.md) |
+| Renovate | Renovate で biome.json の `$schema` バージョンを自動更新。 | [renovate.md](./renovate.md) |

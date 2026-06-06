@@ -1,4 +1,4 @@
-# Chapter 17: Async and Await
+# Chapter 17: Fundamentals of Asynchronous Programming: Async, Await, Futures, and Streams
 
 Rust's async/await model for writing concurrent I/O-bound programs without blocking threads.
 

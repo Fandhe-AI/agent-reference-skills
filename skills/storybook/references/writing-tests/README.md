@@ -1,12 +1,12 @@
-# Storybook — Writing Tests
+# Writing Tests
 
 | Name | Description | Path |
 |------|-------------|------|
-| `Interaction Testing` | Simulate user behavior and validate component functionality using `play` functions | [./interaction-testing.md](./interaction-testing.md) |
-| `Accessibility Testing` | Audit rendered DOM against WCAG rules using axe-core via `@storybook/addon-a11y` | [./accessibility-testing.md](./accessibility-testing.md) |
-| `Visual Testing` | Compare rendered pixels against baselines to detect UI regressions (Chromatic) | [./visual-testing.md](./visual-testing.md) |
-| `Snapshot Testing` | Capture and compare rendered DOM snapshots using the Portable Stories API | [./snapshot-testing.md](./snapshot-testing.md) |
-| `Test Coverage` | Generate code coverage reports from stories via the Vitest addon | [./test-coverage.md](./test-coverage.md) |
-| `Running in CI` | Configure and run Storybook tests in CI environments with GitHub Actions and others | [./in-ci.md](./in-ci.md) |
-| `Vitest Addon` | Run stories as browser-mode component tests using Vitest and Playwright | [./vitest-addon.md](./vitest-addon.md) |
-| `Portable Stories` | Reuse stories in Jest, Vitest, or Playwright unit tests via `composeStories` API | [./portable-stories.md](./portable-stories.md) |
+| Accessibility Testing | Audit rendered DOM against WCAG rules using the `@storybook/addon-a11y` addon… | [accessibility-testing.md](./accessibility-testing.md) |
+| Interaction Testing | Simulate user behavior and validate component functionality using `play` functi… | [interaction-testing.md](./interaction-testing.md) |
+| Portable Stories (Stories in Unit Tests) | Reuse component stories in Jest, Vitest, or Playwright unit tests using the `c… | [portable-stories.md](./portable-stories.md) |
+| Running Tests in CI | Run Storybook component tests in CI environments using the Vitest addon. | [in-ci.md](./in-ci.md) |
+| Snapshot Testing | Capture a component's rendered DOM/HTML and compare it against a previous snapsh… | [snapshot-testing.md](./snapshot-testing.md) |
+| Test Coverage | Generate a coverage report showing the percentage of code statements covered by… | [test-coverage.md](./test-coverage.md) |
+| Vitest Addon | Transform stories into component tests that run in a real browser environment v… | [vitest-addon.md](./vitest-addon.md) |
+| Visual Testing | Compare rendered pixels of stories against known baselines to detect UI regressi… | [visual-testing.md](./visual-testing.md) |

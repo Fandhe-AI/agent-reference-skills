@@ -1,5 +1,7 @@
 # TypeScript
 
+> **Note:** This page has moved to `/docs/configure/integration/typescript` in the current documentation.
+
 Storybook provides zero-configuration TypeScript support with type-safe story authoring.
 
 ## Overview

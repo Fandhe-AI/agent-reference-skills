@@ -41,6 +41,7 @@ commitlint --print-config
 | オプション | 型 | 説明 |
 |-----------|-----|------|
 | `-g, --config` | string | 設定ファイルへのパス。設定が見つからない場合はリザルトコード 9 |
+| `--default-config` | boolean | 組み込みのデフォルト設定を使用する（設定ファイルなしでワンオフチェックに便利） |
 | `-x, --extends` | array | 拡張する共有設定の配列 |
 | `-p, --parser-preset` | string | conventional-commits-parser 用の設定プリセット |
 | `--options` | string | CLI オプションを含む JSON ファイルまたは CommonJS モジュールへのパス |
@@ -68,6 +69,11 @@ commitlint --print-config
 | `-h, --help` | boolean | - | ヘルプを表示 |
 
 ## 使用例
+
+```bash
+# 設定ファイルなしでデフォルト設定を使用（ワンオフ検証）
+echo "feat: add new feature" | npx commitlint --default-config
+```
 
 ```bash
 # 特定の設定ファイルを使用

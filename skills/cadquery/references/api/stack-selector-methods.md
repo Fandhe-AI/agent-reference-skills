@@ -17,6 +17,12 @@ Methods for navigating, querying, and modifying the object stack and selecting g
 | `Workplane.last` | `last()` | Return the last item on the stack |
 | `Workplane.end` | `end(n=1)` | Return the nth parent of this CQ element |
 | `Workplane.add` | `add(obj)` | Add an object or list of objects to the stack |
+| `Workplane.newObject` | `newObject(objs)` | Create a new Workplane in the chain with the given objects |
+| `Workplane.tag` | `tag(name)` | Tag the current Workplane state for later recall |
+| `Workplane.workplaneFromTagged` | `workplaneFromTagged(name)` | Restore a previously tagged Workplane state |
+| `Workplane.findSolid` | `findSolid(searchStack=True, searchParents=True)` | Find the active solid in the chain |
+| `Workplane.consolidateWires` | `consolidateWires()` | Merge all pending wires into a single wire |
+| `Workplane.combine` | `combine(clean=True, glue=False)` | Combine all solids on the stack into one |
 
 ### Geometry Selectors
 
@@ -29,6 +35,7 @@ Methods for navigating, querying, and modifying the object stack and selecting g
 | `Workplane.solids` | `solids(selector=None, tag=None)` | Select solids, optionally filtered |
 | `Workplane.shells` | `shells(selector=None, tag=None)` | Select shells, optionally filtered |
 | `Workplane.compounds` | `compounds(selector=None, tag=None)` | Select compounds, optionally filtered |
+| `Workplane.ancestors` | `ancestors(kind)` | Select ancestor shapes of the given topological type |
 
 ## Signature / Usage
 

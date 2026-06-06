@@ -1,20 +1,20 @@
-# React Flow — Components
+# Components
 
 | Name | Description | Path |
 |------|-------------|------|
-| `<ReactFlow>` | ノードとエッジを描画するメインコンポーネント | [./ReactFlow.md](./ReactFlow.md) |
-| `<ReactFlowProvider>` | React Flow のコンテキストを提供するプロバイダー | [./ReactFlowProvider.md](./ReactFlowProvider.md) |
-| `<Background>` | ドット・ライン・クロスパターンの背景を描画 | [./Background.md](./Background.md) |
-| `<BaseEdge>` | カスタムエッジの基盤となる SVG パスコンポーネント | [./BaseEdge.md](./BaseEdge.md) |
-| `<ControlButton>` | Controls パネル内に追加するカスタムボタン | [./ControlButton.md](./ControlButton.md) |
-| `<Controls>` | ズーム・フィット・ロック操作のコントロールパネル | [./Controls.md](./Controls.md) |
-| `<EdgeLabelRenderer>` | エッジ上に HTML ラベルを描画するレンダラー | [./EdgeLabelRenderer.md](./EdgeLabelRenderer.md) |
-| `<EdgeText>` | エッジ上にテキストラベルを描画する SVG コンポーネント | [./EdgeText.md](./EdgeText.md) |
-| `<EdgeToolbar>` | エッジにフローティングツールバーを表示 | [./EdgeToolbar.md](./EdgeToolbar.md) |
-| `<Handle>` | ノードの接続ポイント（ソース/ターゲット） | [./Handle.md](./Handle.md) |
-| `<MiniMap>` | フロー全体のミニマップを表示 | [./MiniMap.md](./MiniMap.md) |
-| `<NodeResizeControl>` | ノードのリサイズハンドルを提供するコントロール | [./NodeResizeControl.md](./NodeResizeControl.md) |
-| `<NodeResizer>` | ノードのリサイズ機能を追加するラッパー | [./NodeResizer.md](./NodeResizer.md) |
-| `<NodeToolbar>` | ノードにフローティングツールバーを表示 | [./NodeToolbar.md](./NodeToolbar.md) |
-| `<Panel>` | ビューポート上に固定位置のパネルを配置 | [./Panel.md](./Panel.md) |
-| `<ViewportPortal>` | ビューポート座標系に HTML 要素を配置するポータル | [./ViewportPortal.md](./ViewportPortal.md) |
+| Background | Renders a decorative background pattern (dots, lines, or cross grid) behind the… | [./Background.md](./Background.md) |
+| BaseEdge | The underlying SVG edge component used internally by all React Flow edge types… | [./BaseEdge.md](./BaseEdge.md) |
+| ControlButton | A button component for adding custom actions inside the `<Controls />` panel… | [./ControlButton.md](./ControlButton.md) |
+| Controls | Renders a control panel with zoom in/out, fit-view, and viewport lock buttons… | [./Controls.md](./Controls.md) |
+| EdgeLabelRenderer | A portal component that renders complex edge labels in a positioned `div` laye… | [./EdgeLabelRenderer.md](./EdgeLabelRenderer.md) |
+| EdgeText | An SVG helper component for rendering text labels inside custom edges… | [./EdgeText.md](./EdgeText.md) |
+| EdgeToolbar | Renders a toolbar anchored to a specific position along an edge. Visible only… | [./EdgeToolbar.md](./EdgeToolbar.md) |
+| Handle | A connection point rendered on a custom node that allows edges to be connected… | [./Handle.md](./Handle.md) |
+| MiniMap | Renders a small overview map of the entire flow in a corner of the canvas. O… | [./MiniMap.md](./MiniMap.md) |
+| NodeResizeControl | A lower-level resizing control for custom nodes that gives full control over t… | [./NodeResizeControl.md](./NodeResizeControl.md) |
+| NodeResizer | Renders draggable resize controls around a node to allow resizing in all direc… | [./NodeResizer.md](./NodeResizer.md) |
+| NodeToolbar | Renders a toolbar attached to a node that appears above (or around) it. Visib… | [./NodeToolbar.md](./NodeToolbar.md) |
+| Panel | Positions content as an overlay above the flow canvas. Used internally by `<… | [./Panel.md](./Panel.md) |
+| ReactFlow | The main React Flow component that renders the interactive node-based graph… | [./ReactFlow.md](./ReactFlow.md) |
+| ReactFlowProvider | A React context provider that makes the React Flow store accessible to child… | [./ReactFlowProvider.md](./ReactFlowProvider.md) |
+| ViewportPortal | Renders child elements inside the flow viewport coordinate system, making th… | [./ViewportPortal.md](./ViewportPortal.md) |

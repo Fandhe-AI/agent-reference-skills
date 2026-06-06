@@ -1,7 +1,7 @@
-# Zod — Advanced
+# Advanced
 
 | Name | Description | Path |
 |------|-------------|------|
-| Metadata & Registries | `z.registry()`, `z.globalRegistry`, `.meta()`, `.describe()`, カスタムレジストリ | [./metadata.md](./metadata.md) |
-| JSON Schema | `z.toJSONSchema()`, `z.fromJSONSchema()`、target、metadata、cycles、override | [./json-schema.md](./json-schema.md) |
-| Codecs | `z.codec()`、decode/encode、双方向変換、組み込みコーデック一覧 | [./codecs.md](./codecs.md) |
+| Codecs | Bidirectional transformations with encode and decode for safe data serialization and deserialization. | [codecs.md](./codecs.md) |
+| JSON Schema | Convert between Zod schemas and JSON Schema for OpenAPI definitions, AI structured outputs, and interoperability. | [json-schema.md](./json-schema.md) |
+| Metadata and Registries | Associate schemas with strongly-typed metadata for documentation, code generation, AI structured outputs, and form validation. | [metadata.md](./metadata.md) |

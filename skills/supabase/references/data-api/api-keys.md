@@ -1,12 +1,28 @@
 # API キー
 
-Supabase プロジェクトの認証に使用する anon key と service_role key。JWT ベースのアクセス制御。
+Supabase プロジェクトの認証に使用する API キー。新形式（publishable / secret）と旧形式（anon / service_role）がある。
 
 ## 概要
 
-Supabase の各プロジェクトには 2 種類の API キーが発行される。どちらも JWT（JSON Web Token）形式で、PostgREST がリクエストのロールを判定するために使用する。
+Supabase の各プロジェクトには 2 種類の API キーが発行される。2026 年末に旧形式（JWT ベースの anon / service_role）が非推奨になり、新形式（`sb_publishable_xxx` / `sb_secret_xxx`）への移行が推奨されている。
 
-### anon key（公開キー）
+### 新形式キー（推奨）
+
+**publishable key（`sb_publishable_xxx`）**
+
+- **クライアントサイドで使用可能**（ブラウザ・モバイルアプリ・ソースコードに含めても安全）
+- anon key と同等の権限（低権限）
+- RLS（Row Level Security）ポリシーが適用される
+
+**secret key（`sb_secret_xxx`）**
+
+- **サーバーサイドでのみ使用**（ブラウザからの使用は HTTP 401 で自動拒否）
+- service_role key と同等の権限（高権限・RLS バイパス）
+- Edge Functions、サーバーサイド API から使用
+
+### 旧形式キー（2026年末に非推奨予定）
+
+**anon key**
 
 - **クライアントサイドで使用可能**（ブラウザ・モバイルアプリ）
 - PostgreSQL の `anon` ロールにマッピングされる
@@ -14,7 +30,7 @@ Supabase の各プロジェクトには 2 種類の API キーが発行される
 - ユーザーが認証済みの場合、JWT にユーザー情報が含まれ、RLS ポリシーで `auth.uid()` が利用可能
 - 単体では匿名アクセスと同等
 
-### service_role key（サービスキー）
+**service_role key**
 
 - **サーバーサイドでのみ使用**（絶対にクライアントに公開しない）
 - PostgreSQL の `service_role` ロールにマッピングされる
@@ -22,7 +38,7 @@ Supabase の各プロジェクトには 2 種類の API キーが発行される
 - 管理用のバックエンド処理、マイグレーション、バッチ処理に使用
 - Edge Functions、サーバーサイド API から使用
 
-### JWT の構造
+### JWT の構造（旧形式キー）
 
 ```json
 {
@@ -35,6 +51,8 @@ Supabase の各プロジェクトには 2 種類の API キーが発行される
 ```
 
 ユーザーが認証すると、`role` が `authenticated` になり、`sub` にユーザー ID が含まれる。
+
+新形式キー（`sb_publishable_xxx` / `sb_secret_xxx`）は `Authorization: Bearer` ヘッダーでは使用できない点に注意。
 
 ## コード例
 
@@ -129,13 +147,14 @@ curl 'https://<REF>.supabase.co/rest/v1/profiles?select=*' \
 
 ## 注意点
 
-- **service_role key は絶対にクライアントサイドに公開しない**。環境変数でサーバーサイドに保持する
-- anon key は `NEXT_PUBLIC_` プレフィックスを付けてクライアントに公開可能（RLS が保護するため）
-- API キーはダッシュボードの「Settings > API > Project API keys」から確認できる
+- **secret key / service_role key は絶対にクライアントサイドに公開しない**。新形式 secret key はブラウザから使用すると HTTP 401 で自動拒否される
+- anon key / publishable key は `NEXT_PUBLIC_` プレフィックスを付けてクライアントに公開可能（RLS が保護するため）
+- API キーはダッシュボードの「Settings > API Keys」から確認できる
 - API キーを再生成すると既存のキーは無効になる。全クライアントの更新が必要
 - JWT の有効期限はデフォルトで約 100 年。カスタム JWT を使う場合は有効期限を適切に設定
-- `apikey` ヘッダーと `Authorization` ヘッダーの両方が必要。`apikey` でプロジェクトを特定し、`Authorization` でロールを決定
-- supabase-js は `apikey` ヘッダーを自動的に付与するため、開発者が明示的に設定する必要はない
+- 旧形式キー: `apikey` ヘッダーと `Authorization` ヘッダーの両方が必要。supabase-js は自動付与する
+- 新形式キー（`sb_publishable_xxx`）: `Authorization: Bearer` ヘッダーでは使用できない
+- 旧形式キー（anon / service_role）は 2026 年末に非推奨予定。新形式への移行を推奨
 
 ## 関連
 

@@ -1,17 +1,9 @@
-# Webhooks リファレンス
+# webhooks
 
-GitHub Webhook に関するリファレンスドキュメントの目次。
-
-## ドキュメント一覧
-
-| ファイル | 内容 | 説明 |
-|---------|------|------|
-| [about.md](./about.md) | Webhook 概要 | Webhook の種類、仕組み、ユースケース |
-| [creating.md](./creating.md) | Webhook 作成 | UI・API での作成手順、設定オプション |
-| [events.md](./events.md) | イベントとペイロード | 全イベント一覧、共通ペイロード、ヘッダー |
-| [securing.md](./securing.md) | セキュリティ | HMAC-SHA256 検証、署名バリデーション |
-| [best-practices.md](./best-practices.md) | ベストプラクティス | タイムアウト対策、非同期処理、冪等性 |
-
-## 公式ドキュメント
-
-- [GitHub Webhooks ドキュメント](https://docs.github.com/en/webhooks)
+| Name | Description | Path |
+|------|-------------|------|
+| Webhook 概要 | Webhook は、特定のイベントが発生した際に外部サーバーへ自動的に HTTP リクエスト（POST）を送信する仕組み。 | [about.md](./about.md) |
+| Webhook ベストプラクティス | Webhook ペイロード受信時の 10 秒以内レスポンス、非同期処理キュー、イベントサブスクリプション最適化。 | [best-practices.md](./best-practices.md) |
+| Webhook 作成 | リポジトリ・Organization Webhook の作成手順、ペイロード URL・Content Type・Secret・SSL 検証等の設定。 | [creating.md](./creating.md) |
+| Webhook イベントとペイロード | 配信ヘッダー（X-GitHub-Event、X-Hub-Signature-256）、共通ペイロード、イベント一覧（push、create、fork…）。 | [events.md](./events.md) |
+| Webhook セキュリティ | HMAC-SHA256 署名検証、定数時間比較、Secret 管理、ペイロード整合性・送信元真正性の確認。 | [securing.md](./securing.md) |

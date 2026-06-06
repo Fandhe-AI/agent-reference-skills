@@ -2,10 +2,10 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Motivation | Philosophy and design goals behind Hono | [./motivation.md](./motivation.md) |
-| Web Standards | How Hono uses Fetch API / Request / Response for multi-runtime portability | [./web-standard.md](./web-standard.md) |
-| Middleware | Onion-layer middleware architecture and `app.use()` pattern | [./middleware.md](./middleware.md) |
-| Routers | RegExpRouter, TrieRouter, SmartRouter, LinearRouter, PatternRouter | [./routers.md](./routers.md) |
-| Benchmarks | Benchmark methodology and qualitative performance claims | [./benchmarks.md](./benchmarks.md) |
-| Developer Experience | TypeScript-first DX, type inference, and multi-runtime support | [./developer-experience.md](./developer-experience.md) |
-| Stacks | Full-stack RPC pattern with Zod, Zod Validator Middleware, and `hc` client | [./stacks.md](./stacks.md) |
+| Benchmarks | Hono publishes benchmark results comparing its routing speed and request handling efficiency… | [benchmarks.md](./benchmarks.md) |
+| Developer Experience | Hono is written in TypeScript and prioritizes type-safe application development. Applications… | [developer-experience.md](./developer-experience.md) |
+| Middleware | A Handler is a primitive that receives a Request and returns a Response. Middleware is executed… | [middleware.md](./middleware.md) |
+| Motivation | Hono was created to address the lack of suitable web frameworks for Cloudflare Workers and… | [motivation.md](./motivation.md) |
+| Routers | Hono ships multiple router implementations. The default SmartRouter automatically selects… | [routers.md](./routers.md) |
+| Stacks | Hono Stacks is an integrated full-stack pattern combining Hono (API server), Zod (schema… | [stacks.md](./stacks.md) |
+| Web Standards | Hono is built exclusively on Web Standards — the standardized APIs originally designed for… | [web-standard.md](./web-standard.md) |

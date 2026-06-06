@@ -2,7 +2,7 @@
 
 Hermes Agent implements a defense-in-depth architecture across five distinct security boundaries, covering everything from user authorization through container isolation to prompt injection prevention.
 
-## 5-Layer Defense Model
+## 7-Layer Defense Model
 
 | Layer | Boundary | Purpose |
 |-------|----------|---------|
@@ -11,6 +11,8 @@ Hermes Agent implements a defense-in-depth architecture across five distinct sec
 | 3 | **Container Isolation** | Docker/Singularity/Modal sandboxing with hardened settings |
 | 4 | **MCP Credential Filtering** | Environment variable isolation for MCP subprocesses |
 | 5 | **Context File Scanning** | Prompt injection detection in project files |
+| 6 | **Cross-Session Isolation** | Session data separation and path traversal hardening |
+| 7 | **Input Sanitization** | Terminal tool working directory validation |
 
 ---
 
@@ -43,6 +45,8 @@ Bypasses all dangerous command approval prompts for the session.
 | Environment variable | `HERMES_YOLO_MODE=1` |
 
 Use only in fully trusted environments.
+
+**Note:** Even with YOLO mode enabled, a hardline blocklist remains always active. Catastrophic operations (e.g., `rm -rf /`, fork bombs, disk format) are blocked unconditionally and cannot be bypassed.
 
 ### Dangerous Patterns
 
@@ -385,7 +389,9 @@ All URL-capable tools validate URLs before fetching to prevent Server-Side Reque
 | Cloud metadata hostnames | `metadata.google.internal`, `metadata.goog` |
 | Reserved, multicast, unspecified | (all) |
 
-SSRF protection is always active and cannot be disabled. DNS failures are treated as blocked (fail-closed). Redirect chains are re-validated at each hop to prevent redirect-based bypasses.
+SSRF protection is always active and cannot be disabled by default. DNS failures are treated as blocked (fail-closed). Redirect chains are re-validated at each hop to prevent redirect-based bypasses.
+
+To intentionally allow internal network access (e.g., self-hosted services), set `allow_private_urls: true` in configuration. Use only in controlled environments.
 
 ---
 
@@ -414,6 +420,24 @@ security:
 - Set `tirith_fail_open: false` in high-security environments to block when unavailable
 - Tirith verdict integrates with the approval flow: safe commands pass through; suspicious/blocked commands trigger user approval with full findings (severity, title, description, safer alternatives)
 - Default choice is **deny** for unattended/automated scenarios
+
+---
+
+## Supply-Chain Vulnerability Scanning
+
+`hermes security audit` performs OSV.dev supply-chain vulnerability scanning across the venv, installed plugins, and MCP server dependencies.
+
+```bash
+hermes security audit [options]
+```
+
+| Flag | Description |
+|------|-------------|
+| `--json` | Machine-readable output |
+| `--fail-on <severity>` | Exit non-zero at or above this severity |
+| `--skip-venv` | Skip venv scanning |
+| `--skip-plugins` | Skip plugin scanning |
+| `--skip-mcp` | Skip MCP server scanning |
 
 ---
 
@@ -480,3 +504,4 @@ This keeps messaging connections separate from command execution.
 - [Tools & Toolsets](../features/tools.md)
 - [MCP](../features/mcp.md)
 - [Context Files](../features/context-files.md)
+- [CLI Commands Reference](../cli/commands.md)

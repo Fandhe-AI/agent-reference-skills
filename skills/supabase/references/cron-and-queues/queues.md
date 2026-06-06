@@ -6,6 +6,16 @@ PostgreSQL ベースのメッセージキュー。キュー作成、メッセー
 
 `pgmq`（Postgres Message Queue）は PostgreSQL 上に軽量なメッセージキューを実装する Extension。外部のキューサービス（SQS、RabbitMQ 等）を使わずに、データベース内でメッセージの送受信を行える。
 
+### キュータイプ
+
+| タイプ | 説明 |
+|--------|------|
+| Basic（通常） | 永続化・トランザクションログあり。信頼性重視 |
+| Unlogged | 一時的・高パフォーマンス。クラッシュ時にメッセージ損失の可能性あり |
+| Partitioned | 大量メッセージ向け（近日公開予定） |
+
+キュー名は小文字・ハイフン・アンダースコアのみ使用可（Postgres 15.6.1.143+ が必要）。
+
 ### 主な機能
 
 - **キュー作成**: `pgmq.create()` でキューを作成
@@ -298,7 +308,10 @@ select cron.schedule(
 - 可視性タイムアウト（VT）内に `delete` / `archive` しないと、メッセージは再度可視化される。これはリトライの仕組みとして利用できるが、意図しない重複処理に注意
 - `read` はポーリング型。リアルタイム通知が必要な場合は Supabase Realtime と組み合わせる
 - `pop` は読み取りと同時に削除するため、処理に失敗するとメッセージが失われる。信頼性が必要な場合は `read` + `delete` パターンを使用
-- pgmq の関数は直接 REST API に公開されない。supabase-js から使用する場合は RPC 関数でラップする
+- supabase-js からは `pgmq_public` スキーマの関数（`pop`, `send`, `send_batch`, `archive`, `delete`, `read`）を Data API 経由で直接呼び出し可能。ただし PostgREST への明示的な expose と RLS 設定が必要
+- クライアント側から `send`/`send_batch` を使用する場合: Select と Insert 権限が必要
+- クライアント側から `read`/`pop` を使用する場合: Select と Update 権限が必要
+- クライアント側から `archive`/`delete` を使用する場合: Select と Delete 権限が必要
 - 大量のメッセージを扱う場合は `create_partitioned` でパーティション付きキューを使用
 - `read_ct`（読み取り回数）で何回リトライされたかを追跡できる。無限リトライを防ぐためにデッドレターキューを検討
 - Edge Functions から定期実行するには pg_cron + pg_net で Edge Functions を呼び出すか、外部のスケジューラを使用

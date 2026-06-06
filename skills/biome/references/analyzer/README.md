@@ -1,7 +1,5 @@
 # Analyzer
 
-Biome アナライザーのリファレンス。
-
-| ファイル | 説明 | パス |
-|---------|------|------|
-| suppressions | 抑制コメント（biome-ignore / biome-ignore-all / biome-ignore-start/end）の構文・使い方 | [./suppressions.md](./suppressions.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| 抑制（Suppressions） | Biome Analyzer の抑制エンジンは linter と assist で共有。抑制コメントで特定行・範囲・ファイル全体のルールを無効化できる。 | [suppressions.md](./suppressions.md) |

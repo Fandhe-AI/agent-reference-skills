@@ -88,6 +88,20 @@ test('async test', async () => {
 | `test.skipIf(condition)` | 条件が truthy ならスキップ |
 | `test.runIf(condition)` | 条件が truthy の場合のみ実行 |
 
+### test.override（v4.1.0+）
+
+`test.extend` で定義したフィクスチャをスイート内でスコープ付きオーバーライドする。
+
+```ts
+const myTest = test.extend<{ port: number }>({
+  port: 3000,
+})
+
+myTest.override({ port: 8080 })('uses port 8080', ({ port }) => {
+  expect(port).toBe(8080)
+})
+```
+
 ### test.each（テーブル駆動テスト）
 
 配列またはテンプレートリテラルを受け取る。
@@ -170,6 +184,30 @@ describe('database tests', () => {
 - `beforeEach`: 外側 → 内側
 - `afterEach`: 内側 → 外側
 - トップレベル（`describe` 外）のフックはファイル内の全テストに適用
+
+## context.skip()（動的スキップ）
+
+テスト実行中に条件に応じてスキップできる。
+
+```ts
+test('dynamic skip', ({ skip }) => {
+  if (someCondition) skip()
+  // 以降は実行されない
+})
+```
+
+## context.annotate()（テストアノテーション）
+
+テスト実行中に注釈を追加する（v4.0+）。
+
+```ts
+test('annotated', async ({ annotate }) => {
+  await annotate('notice message')
+  await annotate('error detail', 'error')
+})
+```
+
+型: `'notice' | 'warning' | 'error'`（省略時は `'notice'`）
 
 ## 関連
 

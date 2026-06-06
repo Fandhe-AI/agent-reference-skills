@@ -1,15 +1,15 @@
-# Supabase — Platform
+# platform
 
 | Name | Description | Path |
 |------|-------------|------|
-| `compute-and-disk` | コンピュートサイズ・ディスク管理・スケーリング | [./compute-and-disk.md](./compute-and-disk.md) |
-| `backups` | バックアップ・ポイントインタイムリカバリ (PITR) | [./backups.md](./backups.md) |
-| `read-replicas` | リードレプリカの設定と利用 | [./read-replicas.md](./read-replicas.md) |
-| `branching` | Database Branching（開発ブランチ） | [./branching.md](./branching.md) |
-| `custom-domains` | カスタムドメインの設定 | [./custom-domains.md](./custom-domains.md) |
-| `network` | ネットワーク制限・IPv4・PrivateLink | [./network.md](./network.md) |
-| `access-control` | アクセス制御・メンバー権限・組織 SSO | [./access-control.md](./access-control.md) |
-| `billing` | 課金・プラン・コスト管理・クレジット | [./billing.md](./billing.md) |
-| `regions` | リージョン一覧と選択 | [./regions.md](./regions.md) |
-| `migrating-to-supabase` | 他サービスからの移行（RDS, Firebase, Heroku 等） | [./migrating-to-supabase.md](./migrating-to-supabase.md) |
-| `performance` | パフォーマンス最適化・負荷テスト | [./performance.md](./performance.md) |
+| アクセス制御 | Supabase はロールベースのアクセス制御（RBAC）を提供する。 | [access-control.md](./access-control.md) |
+| バックアップ | すべてのプロジェクトで日次自動バックアップが有効。 | [backups.md](./backups.md) |
+| 課金 | Supabase の料金プランと使用量ベースの課金体系。 | [billing.md](./billing.md) |
+| Database Branching | Database Branching は PR ごとにプレビュー用のデータベースブランチを自動作成する機能。 | [branching.md](./branching.md) |
+| コンピュートとディスク | Supabase はプロジェクトごとに専用のコンピュートインスタンスを提供する。 | [compute-and-disk.md](./compute-and-disk.md) |
+| カスタムドメイン | Supabase プロジェクトにカスタムドメインを設定することで、API エンドポイントを独自のドメインで公開できる。 | [custom-domains.md](./custom-domains.md) |
+| Supabase への移行ガイド | Supabase は PostgreSQL ベースであるため、PostgreSQL 互換のツールを使用して様々なデータベースやサービスから… | [migrating-to-supabase.md](./migrating-to-supabase.md) |
+| ネットワーク | データベースへのアクセスを特定の IP アドレスに制限できる。 | [network.md](./network.md) |
+| パフォーマンス最適化 | Supabase のコンピュートサイズ選択と接続プーリングについて。 | [performance.md](./performance.md) |
+| リードレプリカ | リードレプリカは読み取り専用のデータベースコピーで、読み取りワークロードをプライマリデータベースから分散できる。 | [read-replicas.md](./read-replicas.md) |
+| リージョン | Supabase の利用可能なリージョン一覧と選択時の考慮事項。 | [regions.md](./regions.md) |

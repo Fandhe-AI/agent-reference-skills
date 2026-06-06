@@ -31,6 +31,7 @@ reset: <T extends FieldValues>(
 | `keepTouched` | `boolean` | `false` | `touchedFields` の状態を保持する。 |
 | `keepIsValid` | `boolean` | `false` | `isValid` の状態を一時的に保持する。 |
 | `keepSubmitCount` | `boolean` | `false` | `submitCount` を保持する。 |
+| `keepFieldsRef` | `boolean` | `false` | フィールド参照のリセットをスキップし、再登録を避ける。マスク入力ライブラリとの連携に有用（v7.60+）。 |
 
 ## コード例
 

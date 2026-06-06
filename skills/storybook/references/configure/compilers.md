@@ -1,5 +1,7 @@
 # Compilers
 
+> **Note:** This page has moved to `/docs/configure/integration/compilers` in the current documentation.
+
 Storybook integrates with SWC and Babel for JavaScript compilation and bundling.
 
 ## Overview

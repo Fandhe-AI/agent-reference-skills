@@ -1,31 +1,7 @@
-# GitHub Pages
+# pages
 
-GitHub Pages は、GitHub リポジトリから直接静的ウェブサイトをホスティングするサービスです。HTML、CSS、JavaScript ファイルをリポジトリに配置するだけで、ウェブサイトを公開できます。
-
-## 目次
-
-| ファイル | 説明 | 主な内容 |
-|---------|------|---------|
-| [getting-started.md](./getting-started.md) | GitHub Pages の始め方 | サイトの種類、公開ソース、制限事項 |
-| [configuration.md](./configuration.md) | 設定 | 公開ソースの設定、Jekyll、カスタム 404 ページ |
-| [custom-domains.md](./custom-domains.md) | カスタムドメイン | DNS 設定、HTTPS、ドメイン検証 |
-
-## クイックスタート
-
-```bash
-# 1. リポジトリを作成（ユーザーサイトの場合）
-gh repo create username.github.io --public
-
-# 2. index.html を作成してコミット
-echo "<h1>Hello, GitHub Pages!</h1>" > index.html
-git add index.html
-git commit -m "Initial GitHub Pages site"
-git push
-
-# 3. Settings > Pages で公開ソースを設定
-# → https://username.github.io でアクセス可能に
-```
-
-## 参考リンク
-
-- [GitHub Pages ドキュメント](https://docs.github.com/en/pages)
+| Name | Description | Path |
+|------|-------------|------|
+| GitHub Pages の設定 (Configuration) | GitHub Pages の公開ソース、Jekyll の設定、カスタム 404 ページに関するリファレンスです。 | [configuration.md](./configuration.md) |
+| カスタムドメイン (Custom Domains) | GitHub Pages サイトにカスタムドメインを設定する方法、DNS の構成、HTTPS の強制、およびドメインの検証に関するリファレンスです。 | [custom-domains.md](./custom-domains.md) |
+| GitHub Pages の始め方 (Getting Started) | GitHub Pages は、リポジトリから直接 HTML、CSS、JavaScript ファイルを取得し、必要に応じてビルドプロセスを経てウェブサイトを公開する静的サイトホスティングサービスです。 | [getting-started.md](./getting-started.md) |

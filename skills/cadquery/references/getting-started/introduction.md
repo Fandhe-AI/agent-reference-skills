@@ -35,7 +35,8 @@ result = cq.Workplane("XY").box(80, 60, 10)
 ## Notes
 
 - CadQuery is intentionally GUI-less so it can be embedded in scientific and engineering workflows.
-- Supported interfaces: CQ-editor (standalone) and a Jupyter extension via `display()`.
+- Supported interfaces: CQ-editor (standalone Qt-based GUI) and jupyter-cadquery (Jupyter/JupyterLab extension via `display(<object>)`).
+- Pure Python interactive visualization (CadQuery 2.4+) is available via `from cadquery.vis import show`.
 
 ## Related
 

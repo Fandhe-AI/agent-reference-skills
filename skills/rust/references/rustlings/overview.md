@@ -20,6 +20,8 @@ It is **not** a replacement for The Book — it is a companion resource that rei
 ```bash
 # Install the rustlings binary
 cargo install rustlings
+# If the above fails, try with --locked:
+cargo install rustlings --locked
 
 # Initialize the exercises workspace (creates a ./rustlings/ directory)
 rustlings init
@@ -33,6 +35,8 @@ rustlings
 
 The `init` command clones the exercise files into the current directory. All subsequent commands are run from inside that directory.
 
+Requires Rust 1.88 or later (edition 2024). Recommended editor: VS Code with rust-analyzer (workspace integrates via `Cargo.toml`).
+
 ## CLI Commands
 
 ### Watch Mode (default)
@@ -43,9 +47,13 @@ Running `rustlings` (no subcommand) enters watch mode. It automatically recompil
 |---------------------|--------|
 | `h` | Print hint for the current exercise |
 | `l` | Open the interactive exercise list |
+| `c` | Check all exercises (batch verify) |
+| `x` | Reset current exercise to original state |
 | `r` | Manually rerun the current exercise (with `--manual-run` flag) |
 | `n` | Move to the next exercise |
 | `q` | Quit watch mode |
+
+In the exercise list (`l`), press `s` or `/` to search by name. Press `c` to jump to a selected exercise; `r` to reset one exercise.
 
 ### Other Subcommands
 
@@ -55,6 +63,7 @@ Running `rustlings` (no subcommand) enters watch mode. It automatically recompil
 | `rustlings hint <exercise>` | Print the hint for a specific exercise |
 | `rustlings list` | List all exercises with their completion status |
 | `rustlings reset <exercise>` | Reset an exercise file to its original state |
+| `rustlings check-all` | Verify all exercises in batch (exits with status code) |
 | `rustlings --manual-run` | Start watch mode without auto-rerun on save |
 
 ## Exercise Structure
@@ -104,11 +113,17 @@ Rustlings does **not** teach concepts through prose — it assumes the learner c
 
 Third-party exercise packs can be used alongside the official exercises. See [Community Exercises](https://rustlings.rust-lang.org/community-exercises/) on the official site for a curated list.
 
+## Solutions
+
+After completing an exercise, a corresponding solution file becomes available for comparison. Solutions are provided to illustrate one correct approach — not the only correct approach.
+
 ## Notes
 
-- Exercise files contain a `// I AM NOT DONE` comment marker. Remove it (or the CLI marks the exercise complete) once you have fixed the code.
-- The `clippy` category exercises require passing `cargo clippy` lints, not just compilation.
+- Since v6.0.0, the `// I AM NOT DONE` comment marker is no longer used. Progress is tracked by the CLI; press `n` to advance to the next exercise when done.
+- The `clippy` category exercises require passing `cargo clippy` lints, not just compilation. Clippy lints are also surfaced across all exercises (not only in the clippy category).
 - The `conversions` category covers `From`/`Into`, `TryFrom`/`TryInto`, `FromStr`, and `AsRef`/`AsMut` — it has no direct single TRPL chapter mapping.
+- Lints added in v6.3.0 forbid unsafe code, unstable features, `todo!()`, empty loops, infinite loops, and memory leaks across all exercises.
+- Minimum supported Rust version: **1.88** (Rust edition 2024, since v6.5.0).
 
 ## Official References
 

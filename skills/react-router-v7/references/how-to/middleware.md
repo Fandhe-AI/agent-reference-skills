@@ -2,21 +2,42 @@
 
 Run code before and after response generation for matched routes. Enables authentication, logging, response header injection, and shared context in a reusable, composable way.
 
-**Status:** Future flag `v8_middleware` required (Framework mode). No flag needed in Data mode.
+**Status:** Future flag `v8_middleware` required (Framework mode). In Data mode, augment the `Future` interface instead.
 
-## 実装方法
+## Setup
 
-1. Enable `future.v8_middleware: true` in `react-router.config.ts` (Framework mode)
-2. Create typed context with `createContext<T>()`
-3. Export a `middleware` array of `MiddlewareFunction` from route modules
-4. Call `await next()` to continue; return the response on the server
-
-## コード例
+### Framework Mode
 
 ```ts
 // react-router.config.ts
 export default { future: { v8_middleware: true } } satisfies Config;
 ```
+
+### Data Mode
+
+```ts
+// src/react-router.d.ts
+import "react-router";
+declare module "react-router" {
+  interface Future { v8_middleware: true; }
+}
+```
+
+## Execution Order
+
+Middleware runs parent → child on the way down, then child → parent on the way up after the Response is generated:
+
+```
+Root middleware start
+  Parent middleware start
+    Child middleware start
+      Run loaders → generate Response
+    Child middleware end
+  Parent middleware end
+Root middleware end
+```
+
+## Server Middleware
 
 ```tsx
 // app/context.ts
@@ -43,16 +64,71 @@ export async function loader({ context }: Route.LoaderArgs) {
 }
 ```
 
-## 注意点
+## Client Middleware
 
-- Execution order: parent → child on the way "down", child → parent on the way "up"
+Runs in the browser for every client-side navigation, regardless of whether loaders exist.
+
+```tsx
+async function timingMiddleware({ request }, next) {
+  const start = performance.now();
+  await next();
+  console.log(`Navigation took ${performance.now() - start}ms`);
+}
+
+export const clientMiddleware: Route.ClientMiddlewareFunction[] = [
+  timingMiddleware,
+];
+```
+
+Client middleware can inspect loader/action results via the return value of `next()`:
+
+```tsx
+async function cmsFallbackMiddleware({ request }, next) {
+  const results = await next();
+  // results is Record<string, DataStrategyResult> keyed by route id
+  const found404 = Object.values(results).some(
+    (r) => isRouteErrorResponse(r.result) && r.result.status === 404,
+  );
+  if (found404) {
+    const cmsRedirect = await checkCMSRedirects(request.url);
+    if (cmsRedirect) throw redirect(cmsRedirect, 302);
+  }
+}
+```
+
+## `getLoadContext` Migration
+
+When middleware is enabled, `context` changes from a plain object to a `RouterContextProvider` instance.
+
+```ts
+// Before (without middleware)
+function getLoadContext(req, res) {
+  return { db: createDb() };
+}
+
+// After (with middleware)
+import { createContext, RouterContextProvider } from "react-router";
+const dbContext = createContext<Database>();
+
+function getLoadContext(req, res) {
+  const context = new RouterContextProvider();
+  context.set(dbContext, createDb());
+  return context;
+}
+```
+
+## Notes
+
 - Server middleware must return the `Response` from `next()`; client middleware typically does not
 - `next()` can only be called once per middleware function
-- Middleware only runs when a loader/action exists on the route. Add an empty `loader` export to force middleware to run on routes without data functions
-- When using middleware, `getLoadContext` must return a `RouterContextProvider` instance
+- Server middleware runs on document requests and `.data` requests, but not on client-side navigations unless a loader/action exists. Add an empty `loader` to force execution on every navigation
+- Middleware errors are caught by the nearest `ErrorBoundary`; `next()` never throws
+- `AsyncLocalStorage` is compatible with server middleware and works well with RSC
 
-## 関連
+## Related
 
 - [./instrumentation.md](./instrumentation.md)
 - [./headers.md](./headers.md)
 - [./security.md](./security.md)
+- [../utils/createContext.md](../utils/createContext.md)
+- [../utils/RouterContextProvider.md](../utils/RouterContextProvider.md)

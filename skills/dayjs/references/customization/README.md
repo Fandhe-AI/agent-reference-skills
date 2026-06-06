@@ -1,5 +1,5 @@
-# Day.js — Customization
+# customization
 
 | Name | Description | Path |
 |------|-------------|------|
-| Customization | Locale customization: overview, month names, month abbreviations, weekday names, weekday abbreviations, minimal weekday abbreviations, relative time, and calendar formats | [./customization.md](./customization.md) |
+| Day.js — Customization | Day.js is very easy to customize. You can create… | [customization.md](./customization.md) |

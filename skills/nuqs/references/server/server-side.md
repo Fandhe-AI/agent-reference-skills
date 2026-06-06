@@ -11,8 +11,14 @@
 ```tsx
 import { createLoader } from 'nuqs/server'
 
-const loadSearchParams = createLoader(keyMap)
+const loadSearchParams = createLoader(keyMap, options?)
 ```
+
+| 引数 | 型 | 説明 |
+|------|------|------|
+| `keyMap` | `Record<string, Parser>` | キーとパーサーのマッピング |
+| `options` | `object` | 省略可 |
+| `options.strict` | `boolean` | 無効な値に対してエラーを throw する（デフォルト: `false`、v2.5.0+） |
 
 ### 基本例
 
@@ -81,8 +87,15 @@ loadSearchParams('?count=banana', { strict: true })
 ```tsx
 import { createSearchParamsCache } from 'nuqs/server'
 
-const searchParamsCache = createSearchParamsCache(keyMap)
+const searchParamsCache = createSearchParamsCache(keyMap, options?)
 ```
+
+| 引数 | 型 | 説明 |
+|------|------|------|
+| `keyMap` | `Record<string, Parser>` | キーとパーサーのマッピング |
+| `options` | `object` | 省略可。`strict` / `urlKeys` を含む |
+| `options.strict` | `boolean` | 無効な値に対してエラーを throw する（デフォルト: `false`） |
+| `options.urlKeys` | `Record<string, string>` | 変数名と URL キー名のマッピング |
 
 ### 基本例
 
@@ -119,7 +132,7 @@ function Results() {
 
 | メソッド | 説明 |
 |---------|------|
-| `.parse(searchParams)` | パラメータを解析してキャッシュに格納 |
+| `.parse(searchParams, options?)` | パラメータを解析してキャッシュに格納。入力が Promise の場合は Promise を返す |
 | `.get(key)` | 単一キーの値を取得 |
 | `.all()` | 全キーの値をオブジェクトで取得 |
 

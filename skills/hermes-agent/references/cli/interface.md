@@ -67,10 +67,11 @@ The layout adapts to terminal width: full → compact → minimal.
 | Key | Action |
 |-----|--------|
 | `Enter` | Send message |
-| `Alt+Enter` / `Ctrl+J` | Insert newline (multi-line input) |
+| `Alt+Enter` / `Ctrl+J` / `Shift+Enter` | Insert newline (multi-line input) |
 | `Alt+V` | Paste image from clipboard |
 | `Ctrl+V` | Paste text and clipboard images |
 | `Ctrl+B` | Start / stop voice recording |
+| `Ctrl+G` | Open input buffer in external editor |
 | `Ctrl+C` | Interrupt agent (double-press to exit) |
 | `Ctrl+D` | Exit |
 | `Ctrl+Z` | Suspend to background (Unix) |
@@ -92,6 +93,9 @@ Type `/` to open the autocomplete dropdown. Commands are case-insensitive.
 | `/voice tts` | Toggle spoken playback |
 | `/reasoning high` | Increase reasoning effort |
 | `/title <name>` | Name the current session |
+| `/sessions` | Open interactive session picker |
+| `/compress` | Manually trigger context compression |
+| `/rollback` | Restore to a previous filesystem checkpoint |
 | `/verbose` | Cycle tool display mode (off → new → all → verbose) |
 
 Installed skills automatically register as additional slash commands.
@@ -140,7 +144,7 @@ compression:
   summary_model: "google/gemini-3-flash-preview"
 ```
 
-The first 3 turns and last 4 turns are preserved; middle content is summarized.
+The first 3 turns and last 20 turns are preserved; middle content is summarized.
 
 ## Background Sessions
 
@@ -177,6 +181,7 @@ The `display.busy_input_mode` config controls interrupt behavior:
 |-------|----------|
 | `"interrupt"` (default) | Process message immediately |
 | `"queue"` | Silently queue the message |
+| `"steer"` | Inject message as mid-stream steering instruction |
 
 ## Notes
 
@@ -184,6 +189,9 @@ The `display.busy_input_mode` config controls interrupt behavior:
 - `display.tool_preview_length` controls truncation length for tool previews in the feed (default: `0` = no limit).
 - Personalities (tone presets: helpful, concise, technical, creative, teacher, kawaii, pirate, etc.) can be selected or custom-defined in configuration.
 - `--quiet` / `-Q` suppresses UI elements; `--verbose` enables debug output.
+- `--tui` launches the terminal UI mode.
+- `--ignore-user-config` skips personal config loading; `--ignore-rules` skips auto-injection of context files (AGENTS.md, SOUL.md, etc.).
+- `hermes -z "<prompt>"` returns only the final response text with no cosmetic output — useful for shell script integration.
 
 ## Related
 

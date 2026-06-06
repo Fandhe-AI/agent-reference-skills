@@ -133,7 +133,7 @@ kubb agent start --allow-all
 
 ### `kubb mcp`
 
-AI アシスタント用の MCP（Model Context Protocol）サーバーを起動する。
+AI アシスタント用の MCP（Model Context Protocol）サーバーを起動する。v4.36.5 以降 `kubb.config.mts` / `kubb.config.cts` にも対応。
 
 ```bash
 npx kubb mcp

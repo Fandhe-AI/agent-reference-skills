@@ -61,7 +61,7 @@ permissions: write-all
 permissions: {}  # 全権限を無効化
 ```
 
-利用可能なスコープ: `actions`, `attestations`, `checks`, `contents`, `deployments`, `discussions`, `id-token`, `issues`, `packages`, `pages`, `pull-requests`, `repository-projects`, `security-events`, `statuses`
+利用可能なスコープ: `actions`, `artifact-metadata`, `attestations`, `checks`, `code-quality`, `contents`, `deployments`, `discussions`, `id-token`, `issues`, `models`, `packages`, `pages`, `pull-requests`, `repository-projects`, `security-events`, `statuses`, `vulnerability-alerts`
 
 各スコープの値: `read`, `write`, `none`
 
@@ -107,6 +107,15 @@ concurrency:
 - `group`: グループ名（大文字小文字を区別しない）
 - `cancel-in-progress`: `true` にすると、同じグループの進行中のジョブをキャンセルする
 - `github`, `inputs`, `vars` コンテキストの式をサポート
+
+```yaml
+# pending キューを使う場合
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false  # キャンセルせず最大 100 件を待機させる
+```
+
+注意: `cancel-in-progress` を省略または `false` にした場合、同じグループの実行は最大 100 件まで待機キューに入る。それ以上は最古のペンディング実行がキャンセルされる。
 
 ### `jobs`
 

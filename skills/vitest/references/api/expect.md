@@ -28,6 +28,7 @@ expect({ a: 1, b: 2 }).toMatchObject({ a: 1 })
 | `toBeUndefined()` | `undefined` |
 | `toBeDefined()` | `undefined` でない |
 | `toBeNaN()` | `NaN` |
+| `toBeTypeOf(type)` | `typeof value === type`（`'string' \| 'number' \| 'boolean' \| 'object' \| 'function' \| 'undefined' \| 'symbol' \| 'bigint'`） |
 | `toBeInstanceOf(Class)` | 指定クラスのインスタンス |
 
 ## 数値マッチャー

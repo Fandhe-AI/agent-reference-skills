@@ -1,5 +1,5 @@
-# TypeDoc — Plugins
+# plugins
 
 | Name | Description | Path |
 |------|-------------|------|
-| `Community Plugins` | コミュニティプラグイン一覧・カテゴリ別分類 | [./community-plugins.md](./community-plugins.md) |
+| コミュニティプラグイン | TypeDocのコミュニティによって開発・提供されている… | [community-plugins.md](./community-plugins.md) |

@@ -1,29 +1,27 @@
-# Cargo
-
-Reference documentation for the Cargo build tool and package manager, distilled from the [Cargo Book](https://doc.rust-lang.org/cargo/).
+# cargo
 
 | Name | Description | Path |
 |------|-------------|------|
-| Getting Started | Installation, `cargo new`, `cargo build`, `cargo run` | [./getting-started.md](./getting-started.md) |
-| Cargo Guide | Why Cargo exists, package layout, dependencies, Cargo.toml vs Cargo.lock, tests, CI | [./cargo-guide.md](./cargo-guide.md) |
-| The Manifest Format | All `Cargo.toml` fields: `[package]`, targets, `[features]`, `[lints]`, `[profile]` | [./reference-manifest.md](./reference-manifest.md) |
-| Cargo.toml vs Cargo.lock | Purpose of each file, when to commit, updating dependencies | [./reference-cargo-toml.md](./reference-cargo-toml.md) |
-| Workspaces | Multi-package workspaces, shared deps/lints/package fields, virtual workspace | [./reference-workspaces.md](./reference-workspaces.md) |
-| Specifying Dependencies | Version syntax (^, ~, *, =), git/path/registry sources, platform-specific, renaming | [./reference-specifying-dependencies.md](./reference-specifying-dependencies.md) |
-| Overriding Dependencies | `[patch]` section, local testing, `[replace]` (deprecated), `paths` overrides | [./reference-overriding-dependencies.md](./reference-overriding-dependencies.md) |
-| Features | Defining features, optional deps, `dep:` prefix, feature unification, resolver v2 | [./reference-features.md](./reference-features.md) |
-| Profiles | Built-in profiles (dev/release/test/bench), settings, custom profiles, overrides | [./reference-profiles.md](./reference-profiles.md) |
-| Configuration | `.cargo/config.toml` hierarchy, all config tables, env var overrides | [./reference-config.md](./reference-config.md) |
-| Environment Variables | Variables Cargo reads, sets for crates, and sets for build scripts | [./reference-environment-variables.md](./reference-environment-variables.md) |
-| Build Scripts | `build.rs`, `cargo::` instructions, linking, `OUT_DIR`, `-sys` convention | [./reference-build-scripts.md](./reference-build-scripts.md) |
-| External Tools | Custom subcommands (`cargo-*`), `--message-format=json`, `cargo metadata` | [./reference-external-tools.md](./reference-external-tools.md) |
-| Lints | `[lints]` table, workspace lints, Cargo's own lint system (nightly) | [./reference-lints.md](./reference-lints.md) |
-| Publishing on crates.io | `cargo login`, `cargo publish`, `cargo yank`, `cargo owner`, required fields | [./reference-publishing.md](./reference-publishing.md) |
-| Registry Authentication | Credential providers, `cargo:token`, keychain providers, CI setup | [./reference-registry-auth.md](./reference-registry-auth.md) |
-| Registries | Alternate registries, git vs sparse protocol, publishing, configuration | [./reference-registries.md](./reference-registries.md) |
-| Dependency Resolution | Resolver algorithm, version selection, resolver versions (1/2/3), troubleshooting | [./reference-resolver.md](./reference-resolver.md) |
-| SemVer Compatibility | Breaking vs non-breaking changes for structs, enums, traits, functions, features | [./reference-semver.md](./reference-semver.md) |
-| Source Replacement | Vendoring (`cargo vendor`), local/directory/registry sources, mirroring | [./reference-source-replacement.md](./reference-source-replacement.md) |
-| Unstable Features | Nightly-only features: `build-std`, `artifact-dir`, `script`, `gc`, etc. | [./reference-unstable.md](./reference-unstable.md) |
-| Cargo Commands | All CLI commands: build, test, run, doc, add, publish, install, tree, vendor, etc. | [./commands.md](./commands.md) |
-| FAQ | Common questions: offline use, lock files, version conflicts, build performance | [./faq.md](./faq.md) |
+| Cargo Guide | A practical guide to using Cargo for everyday Rust development. | [./cargo-guide.md](./cargo-guide.md) |
+| Cargo Commands | Reference for all Cargo CLI commands. | [./commands.md](./commands.md) |
+| Cargo FAQ | Frequently asked questions about Cargo's design and behavior. | [./faq.md](./faq.md) |
+| Getting Started with Cargo | Cargo is the Rust package manager and build tool. | [./getting-started.md](./getting-started.md) |
+| Build Scripts | Build scripts are Rust programs that run before the package is compiled. | [./reference-build-scripts.md](./reference-build-scripts.md) |
+| Cargo.toml vs Cargo.lock | Cargo uses two complementary files for dependency management. | [./reference-cargo-toml.md](./reference-cargo-toml.md) |
+| Configuration | Cargo reads configuration from `.cargo/config.toml` files. | [./reference-config.md](./reference-config.md) |
+| Environment Variables | Cargo reads environment variables to configure its behavior. | [./reference-environment-variables.md](./reference-environment-variables.md) |
+| External Tools | Cargo provides facilities for third-party tools to integrate. | [./reference-external-tools.md](./reference-external-tools.md) |
+| Features | Cargo features provide a mechanism for conditional compilation. | [./reference-features.md](./reference-features.md) |
+| Lints | Cargo supports a `[lints]` table for configuring lint levels. | [./reference-lints.md](./reference-lints.md) |
+| The Manifest Format (Cargo.toml) | `Cargo.toml` is the manifest file for each Rust package. | [./reference-manifest.md](./reference-manifest.md) |
+| Overriding Dependencies | Cargo provides mechanisms to temporarily override dependencies. | [./reference-overriding-dependencies.md](./reference-overriding-dependencies.md) |
+| Profiles | Profiles configure compiler settings for different build scenarios. | [./reference-profiles.md](./reference-profiles.md) |
+| Publishing on crates.io | crates.io is the official Rust package registry. | [./reference-publishing.md](./reference-publishing.md) |
+| Registries | A registry is a source from which Cargo installs crates. | [./reference-registries.md](./reference-registries.md) |
+| Registry Authentication | Cargo authenticates to registries using credential providers. | [./reference-registry-auth.md](./reference-registry-auth.md) |
+| Dependency Resolution | Cargo's dependency resolver determines which specific versions to use. | [./reference-resolver.md](./reference-resolver.md) |
+| SemVer Compatibility | Semantic Versioning (SemVer) defines what changes require version bumps. | [./reference-semver.md](./reference-semver.md) |
+| Source Replacement | Source replacement redirects Cargo's communication with registries. | [./reference-source-replacement.md](./reference-source-replacement.md) |
+| Specifying Dependencies | Dependencies are declared in `Cargo.toml` under dependency sections. | [./reference-specifying-dependencies.md](./reference-specifying-dependencies.md) |
+| Unstable Features | Unstable features are experimental Cargo capabilities on nightly. | [./reference-unstable.md](./reference-unstable.md) |
+| Workspaces | A workspace is a collection of Cargo packages managed together. | [./reference-workspaces.md](./reference-workspaces.md) |

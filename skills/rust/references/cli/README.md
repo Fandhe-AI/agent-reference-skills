@@ -1,17 +1,16 @@
-# Command Line Applications in Rust
-
-Reference for the [Command Line Applications in Rust](https://rust-cli.github.io/book/) book — covering project setup, argument parsing, output, testing, packaging, and in-depth topics.
+# cli
 
 | Name | Description | Path |
 |------|-------------|------|
-| Project Setup | Bootstrap a new CLI project with `cargo new` | [./project-setup.md](./project-setup.md) |
-| Parsing Arguments | Parse typed CLI arguments with `clap` derive | [./parsing-arguments.md](./parsing-arguments.md) |
-| Error Handling | Propagate errors with `?`, `anyhow`, and `thiserror` | [./error-handling.md](./error-handling.md) |
-| Output for Humans | `println!`, progress bars, logging (`log` + `env_logger`) | [./human-communication.md](./human-communication.md) |
-| Output for Machines | Terminal detection, JSON output, stdin piping | [./machine-communication.md](./machine-communication.md) |
-| Testing | Unit tests with `impl Write`, integration tests with `assert_cmd` | [./testing.md](./testing.md) |
-| Packaging and Distribution | `cargo publish`, pre-built binaries, OS package managers | [./packaging-distribution.md](./packaging-distribution.md) |
-| Config Files | Persist settings with `confy` | [./config-files.md](./config-files.md) |
-| In-Depth: Signal Handling | Handle Ctrl+C and Unix signals (`ctrlc`, `signal-hook`) | [./in-depth-signal-handling.md](./in-depth-signal-handling.md) |
-| In-Depth: Exit Codes | Emit meaningful exit codes with `exitcode` crate | [./in-depth-exit-code.md](./in-depth-exit-code.md) |
-| In-Depth: Human Communication | Log levels, progress steps, `human-panic`, man pages | [./in-depth-human-communication.md](./in-depth-human-communication.md) |
+| Using Config Files | Persist user settings between invocations… | [config-files.md](./config-files.md) |
+| Error Handling | Use `Result`, `?` operator, and `anyhow`… | [error-handling.md](./error-handling.md) |
+| Output for Humans | Print to stdout/stderr, progress bars,… | [human-communication.md](./human-communication.md) |
+| In-Depth: Rendering Documentation | CLI documentation: `--help` and man pages… | [in-depth-docs.md](./in-depth-docs.md) |
+| In-Depth: Exit Codes | Emit meaningful exit codes for scripts/CI… | [in-depth-exit-code.md](./in-depth-exit-code.md) |
+| In-Depth: Human Communication | Log levels, progress steps, panic messages… | [in-depth-human-communication.md](./in-depth-human-communication.md) |
+| In-Depth: Signal Handling | Handle Ctrl+C and Unix signals… | [in-depth-signal-handling.md](./in-depth-signal-handling.md) |
+| Output for Machines | Terminal detection, JSON output, stdin… | [machine-communication.md](./machine-communication.md) |
+| Packaging and Distributing a Rust Tool | Three distribution strategies: crates.io,… | [packaging-distribution.md](./packaging-distribution.md) |
+| Parsing Command-Line Arguments | Parse CLI arguments with `clap` derive… | [parsing-arguments.md](./parsing-arguments.md) |
+| Project Setup | Bootstrap Rust CLI project with `cargo… | [project-setup.md](./project-setup.md) |
+| Testing CLIs | Unit tests with generic writer, integration… | [testing.md](./testing.md) |

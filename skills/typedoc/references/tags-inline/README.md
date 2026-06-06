@@ -1,10 +1,8 @@
-# TypeDoc — Inline Tags
-
-インラインタグはコメントテキスト中に `{@tag}` の形式で埋め込むタグ。
+# tags-inline
 
 | Name | Description | Path |
 |------|-------------|------|
-| `@include` | 外部ファイルの内容をインライン挿入（@includeCode 含む） | [./include.md](./include.md) |
-| `@inheritDoc` | 親クラスや参照先からドキュメントを継承 | [./inheritDoc.md](./inheritDoc.md) |
-| `@label` | 宣言にラベルを付与（@link のターゲットに使用） | [./label.md](./label.md) |
-| `@link` | 他の宣言やURLへのリンク（@linkcode, @linkplain 含む） | [./link.md](./link.md) |
+| @include / @includeCode | 外部ファイルの内容をドキュメントコメントに直接取り込むためのインラインタグ。 | [include.md](./include.md) |
+| @inheritDoc | 他のリフレクション（シンボル）からドキュメントをコピーするインラインタグ。 | [inheritDoc.md](./inheritDoc.md) |
+| @label | オーバーロードされた関数シグネチャに名前を付けるインラインタグ。 | [label.md](./label.md) |
+| @link / @linkcode / @linkplain | 他のリフレクション（シンボル）やURL等へのリンクを作成するインラインタグ。 | [link.md](./link.md) |

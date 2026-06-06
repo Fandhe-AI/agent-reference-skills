@@ -4,29 +4,29 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| `@author` | 作成者情報 | [./author.md](./author.md) |
-| `@category` | カテゴリ分類（@categoryDescription, @showCategories, @hideCategories 含む） | [./category.md](./category.md) |
-| `@defaultValue` | デフォルト値の記述（@default 含む） | [./defaultValue.md](./defaultValue.md) |
-| `@deprecated` | 非推奨マーク | [./deprecated.md](./deprecated.md) |
-| `@document` | 外部ドキュメントの参照 | [./document.md](./document.md) |
-| `@example` | 使用例 | [./example.md](./example.md) |
-| `@expand` | 型展開制御（@expandType, @preventExpand + modifier @expand） | [./expand.md](./expand.md) |
-| `@group` | グループ分類（@groupDescription, @showGroups, @hideGroups, @disableGroups 含む） | [./group.md](./group.md) |
-| `@import` | モジュールインポートの明示 | [./import.md](./import.md) |
-| `@inlineType` | 型インライン展開制御（@preventInline + modifier @inline） | [./inline-type.md](./inline-type.md) |
-| `@license` | ライセンス情報 | [./license.md](./license.md) |
-| `@mergeModuleWith` | モジュールのマージ先指定 | [./mergeModuleWith.md](./mergeModuleWith.md) |
-| `@module` | モジュール名の指定 | [./module.md](./module.md) |
-| `@param` | パラメータの説明（@this 含む） | [./param.md](./param.md) |
-| `@privateRemarks` | 出力から除外されるプライベートコメント | [./privateRemarks.md](./privateRemarks.md) |
-| `@property` | プロパティの説明（@prop 含む） | [./property.md](./property.md) |
-| `@remarks` | 詳細な補足説明 | [./remarks.md](./remarks.md) |
-| `@returns` | 戻り値の説明（@return 含む） | [./returns.md](./returns.md) |
-| `@see` | 関連リソースへの参照 | [./see.md](./see.md) |
-| `@since` | 導入バージョン | [./since.md](./since.md) |
-| `@sortStrategy` | ソート順の指定 | [./sortStrategy.md](./sortStrategy.md) |
-| `@summary` | 要約の指定 | [./summary.md](./summary.md) |
-| `@template` | テンプレートパラメータ（JSDoc 互換） | [./template.md](./template.md) |
-| `@throws` | 例外の説明 | [./throws.md](./throws.md) |
-| `@typeParam` | 型パラメータの説明 | [./typeParam.md](./typeParam.md) |
-| `TypeScript Tags` | @type, @yields, @jsx, @typedef, @extends, @augments, @satisfies, @callback | [./typescript-tags.md](./typescript-tags.md) |
+| @author | メソッドや関数の作成者を記録するブロックタグ。 | [./author.md](./author.md) |
+| @category | 関連するAPI項目を共通のヘッダー下に整理するためのブロック… | [./category.md](./category.md) |
+| @defaultValue | アクセサやプロパティのデフォルト値を記録するためのブロック… | [./defaultValue.md](./defaultValue.md) |
+| @deprecated | 宣言が非推奨であり、将来のリリースで削除される可能性がある… | [./deprecated.md](./deprecated.md) |
+| @document | 外部ファイルを生成されるサイト内のドキュメントとして含める… | [./document.md](./document.md) |
+| @example | 関数や機能の使用例を示すためのブロックタグ。 | [./example.md](./example.md) |
+| @expand / @expandType / @preventExpand | 型エイリアスやインターフェースのドキュメントでの表示方法を… | [./expand.md](./expand.md) |
+| @group | ドキュメント項目のグルーピングと表示を制御するタグ群。 | [./group.md](./group.md) |
+| @import | JavaScriptプロジェクトで型インポートを宣言するためのブロック… | [./import.md](./import.md) |
+| @inline / @inlineType / @preventInline | 型エイリアスやインターフェースの変換時のインライン化を制御… | [./inline-type.md](./inline-type.md) |
+| @license | コメントをライセンス宣言としてマークし、生成されるドキュメント… | [./license.md](./license.md) |
+| @mergeModuleWith | モジュールの内容を別のモジュールまたはプロジェクトルートに統… | [./mergeModuleWith.md](./mergeModuleWith.md) |
+| @module | コメントがファイル全体を参照することを示し、オプションでモジ… | [./module.md](./module.md) |
+| @param / @this | 関数やメソッドのパラメータを文書化するブロックタグ。 | [./param.md](./param.md) |
+| @privateRemarks | 生成されるAPIリファレンスドキュメントに含めるべきでないドキ… | [./privateRemarks.md](./privateRemarks.md) |
+| @property / @prop | リフレクションの子要素にドキュメントコメントを追加するブロック… | [./property.md](./property.md) |
+| @remarks | ドキュメントのサマリーセクションと詳細な説明を分離するブロック… | [./remarks.md](./remarks.md) |
+| @returns / @return | 関数の戻り値を文書化するブロックタグ。 | [./returns.md](./returns.md) |
+| @see | 関連するリソースへの参照リストを作成するブロックタグ。 | [./see.md](./see.md) |
+| @since | メソッドや機能が導入されたバージョンを記録するブロックタグ。 | [./since.md](./since.md) |
+| @sortStrategy | 宣言レベルでグローバルなソート設定をオーバーライドするブロック… | [./sortStrategy.md](./sortStrategy.md) |
+| @summary | モジュールページでの関数やモジュールの説明表示をカスタマイズす… | [./summary.md](./summary.md) |
+| @template | 関数、メソッド、クラス、インターフェース、型エイリアスの型パラ… | [./template.md](./template.md) |
+| @typeParam | 関数、メソッド、クラス、インターフェース、型エイリアスの型パラ… | [./typeParam.md](./typeParam.md) |
+| TypeScript Tags | TypeDocが互換性のために認識するTypeScript固有のブロックタグ… | [./typescript-tags.md](./typescript-tags.md) |
+| @throws | 関数やメソッドがスローする可能性のある例外を文書化するブロック… | [./throws.md](./throws.md) |

@@ -368,3 +368,55 @@ Source: https://lefthook.dev/configuration/install_non_git_hooks
 
 install_non_git_hooks: true
 ```
+
+---
+
+## lefthook
+
+Source: https://lefthook.dev/configuration/lefthook
+
+- **型:** String
+
+lefthook 実行ファイルへのフルパス、またはブーンシェル（`sh`）構文でのコマンドを指定する。特定バージョンの lefthook を依存関係から強制使用する場合や、PnP ローダーなどの特殊なプロジェクト構成に有用。
+
+> **注意:** このオプションはセキュリティ上の理由から `remotes` や `extends` からはマージされない。`lefthook-local.yml` からのマージは行われる。
+
+### 実行ファイルパスの直接指定
+
+```yaml
+lefthook: /usr/bin/lefthook
+
+pre-commit:
+  jobs:
+    - run: yarn lint
+```
+
+### ディレクトリ移動を伴うコマンド
+
+```yaml
+lefthook: |
+  cd project-with-lefthook
+  pnpm lefthook
+
+pre-commit:
+  jobs:
+    - run: yarn lint
+      root: project-with-lefthook
+```
+
+### パッケージマネージャーラッパー
+
+```yaml
+lefthook: bundle exec lefthook
+
+pre-commit:
+  jobs:
+    - run: bundle exec rubocop -- {staged_files}
+```
+
+### デバッグ用環境変数の付与
+
+```yaml
+# lefthook-local.yml
+lefthook: LEFTHOOK_VERBOSE=1 lefthook
+```

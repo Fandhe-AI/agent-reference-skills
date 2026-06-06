@@ -1,8 +1,8 @@
 # References
 
 | Name | Description | Path |
-| --- | --- | --- |
-| Layers | 6 つの標準レイヤーの定義・責務・制約 | [./layers.md](./layers.md) |
-| Slices & Segments | スライスとセグメントの概念・命名規則・@x 記法 | [./slices-segments.md](./slices-segments.md) |
-| Public API | Public API パターン・アンチパターン・ツリーシェイキング対策 | [./public-api.md](./public-api.md) |
-| Import Rules | 依存関係ルール・クロスインポート解決策 | [./import-rules.md](./import-rules.md) |
+|------|-------------|------|
+| Import Rules | FSD のインポートルールと依存関係の方向を定義する。 | [import-rules.md](./import-rules.md) |
+| Layers | FSD の第 1 階層。コードを責務に応じた 6 つの標準レイヤーに分割する。 | [layers.md](./layers.md) |
+| Public API | スライス（またはセグメント）とコードベースの他の部分との間の契約。 | [public-api.md](./public-api.md) |
+| Slices & Segments | FSD の第 2・第 3 階層。レイヤーの下にスライスとセグメントが位置する。 | [slices-segments.md](./slices-segments.md) |

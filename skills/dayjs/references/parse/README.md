@@ -1,5 +1,5 @@
-# Day.js — Parse
+# Parse
 
 | Name | Description | Path |
 |------|-------------|------|
-| Parse | パース方法全体（Now, String, String+Format, Unix Timestamp, Date, Object, Array, UTC, Clone, Validation） | [./parse.md](./parse.md) |
+| Day.js — Parse | Day.js creates a wrapper around the native `Date` object by calling `dayjs()` with supported input formats. The Day.js object is immutable — all API operations that change it return a new instance. | [parse.md](./parse.md) |

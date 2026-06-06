@@ -23,6 +23,7 @@ app.get('*', cache({
 | `vary` | `string \| string[]` | No | `Vary` header value; duplicates are removed when merging |
 | `keyGenerator` | `(c) => string \| Promise<string>` | No | Custom cache key generator (default: `c.req.url`) |
 | `cacheableStatusCodes` | `number[]` | No | HTTP status codes to cache (default: `[200]`) |
+| `onCacheNotAvailable` | `(() => void) \| false` | No | Callback when the Cache API is unavailable. Pass `false` to suppress the default `console.log` warning |
 
 ## Notes
 

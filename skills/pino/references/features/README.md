@@ -1,11 +1,11 @@
-# Pino — Features
+# Features
 
 | Name | Description | Path |
 |------|-------------|------|
-| Browser API | ブラウザ環境での Pino の利用（console ラッパー、transmit 機能） | [./browser.md](./browser.md) |
-| Redaction | ログ出力時の機密情報マスキング（パス指定、censor カスタマイズ） | [./redaction.md](./redaction.md) |
-| Child Loggers | 子ロガーの概念と利用パターン | [./child-loggers.md](./child-loggers.md) |
-| Transports | ログの出力先設定（ワーカースレッド、パイプライン、マルチストリーム） | [./transports.md](./transports.md) |
-| Pretty Printing | ログの人間向け整形出力 | [./pretty-printing.md](./pretty-printing.md) |
-| Asynchronous Logging | 非同期ロギングの仕組みと注意点 | [./asynchronous.md](./asynchronous.md) |
-| Diagnostics | Node.js diagnostics_channel によるトレーシング | [./diagnostics.md](./diagnostics.md) |
+| Asynchronous Logging | Asynchronous logging enables the minimum overhead of Pino by buffering log messages and writing them in larger chunks… | [./asynchronous.md](./asynchronous.md) |
+| Browser API | Pino is compatible with browserify for browser-side usage, making it useful for isomorphic/universal JavaScript… | [./browser.md](./browser.md) |
+| Child Loggers | Child loggers allow adding persistent bindings to every log line produced within a particular context, such as a… | [./child-loggers.md](./child-loggers.md) |
+| Diagnostics | Pino provides Node.js tracing channel events that allow insight into the internal workings of the library during… | [./diagnostics.md](./diagnostics.md) |
+| Pretty Printing | By default, Pino log lines are newline-delimited JSON (NDJSON), which is ideal for production usage and long-term… | [./pretty-printing.md](./pretty-printing.md) |
+| Redaction | Pino supports redacting sensitive information from log output using the redact option. Paths to keys containing… | [./redaction.md](./redaction.md) |
+| Transports | Pino transports are used for both transmitting and transforming log output. Pino's log generation approach reduces… | [./transports.md](./transports.md) |

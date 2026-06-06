@@ -1,34 +1,30 @@
-# TypeDoc — Modifier Tags
-
-モディファイアタグはドキュメント対象の特性を変更するタグ。コンテンツを持たない。
+# Tags - Modifier
 
 | Name | Description | Path |
 |------|-------------|------|
-| `@abstract` | 抽象メンバーとしてマーク | [./abstract.md](./abstract.md) |
-| `@alpha` | alpha リリース段階としてマーク | [./alpha.md](./alpha.md) |
-| `@beta` | beta リリース段階としてマーク | [./beta.md](./beta.md) |
-| `@class` | 関数をクラスコンストラクタとして扱う | [./class.md](./class.md) |
-| `@enum` | オブジェクトを列挙型として扱う | [./enum.md](./enum.md) |
-| `@event` | イベントとしてマーク | [./event.md](./event.md) |
-| `@eventProperty` | イベントプロパティとしてマーク | [./eventProperty.md](./eventProperty.md) |
-| `@expand` | 型を展開して表示（@expandType, @preventExpand も参照） | [../tags-block/expand.md](../tags-block/expand.md) |
-| `@experimental` | 実験的 API としてマーク | [./experimental.md](./experimental.md) |
-| `@function` | シンボルを関数として扱う | [./function.md](./function.md) |
-| `@hidden` | ドキュメントから非表示 | [./hidden.md](./hidden.md) |
-| `@hideconstructor` | コンストラクタを非表示 | [./hideconstructor.md](./hideconstructor.md) |
-| `@ignore` | ドキュメントから除外 | [./ignore.md](./ignore.md) |
-| `@inline` | 型をインライン展開（@inlineType, @preventInline も参照） | [../tags-block/inline-type.md](../tags-block/inline-type.md) |
-| `@interface` | クラスをインターフェースとして扱う | [./interface.md](./interface.md) |
-| `@internal` | 内部 API としてマーク | [./internal.md](./internal.md) |
-| `@namespace` | 変数を名前空間として扱う | [./namespace.md](./namespace.md) |
-| `@overload` | オーバーロード署名の表示制御 | [./overload.md](./overload.md) |
-| `@override` | オーバーライドメンバーとしてマーク | [./override.md](./override.md) |
-| `@packageDocumentation` | パッケージドキュメントのエントリーポイント | [./packageDocumentation.md](./packageDocumentation.md) |
-| `@primaryExport` | モジュールの主要エクスポートを指定 | [./primaryExport.md](./primaryExport.md) |
-| `@private` | private アクセス修飾子としてマーク | [./private.md](./private.md) |
-| `@protected` | protected アクセス修飾子としてマーク | [./protected.md](./protected.md) |
-| `@public` | public アクセス修飾子としてマーク | [./public.md](./public.md) |
-| `@readonly` | 読み取り専用としてマーク | [./readonly.md](./readonly.md) |
-| `@sealed` | sealed（継承不可）としてマーク | [./sealed.md](./sealed.md) |
-| `@useDeclaredType` | 推論型の代わりに宣言型を使用 | [./useDeclaredType.md](./useDeclaredType.md) |
-| `@virtual` | virtual（オーバーライド可能）としてマーク | [./virtual.md](./virtual.md) |
+| @abstract | メソッドやプロパティを、TypeScript の実装状態に関係なく、ドキュメント上で抽象としてマークするモディファイアタグ。 | [abstract.md](./abstract.md) |
+| @alpha | 将来的にサードパーティ開発者が使用することを想定しているが、セマンティックバージョニングに準拠するほど安定していないメンバーをマークするモディファイアタグ。 | [alpha.md](./alpha.md) |
+| @beta | 将来的にサードパーティ開発者が使用することを想定しているが、セマンティックバージョニングに準拠するほど安定していないメンバーをマークするモディファイアタグ。 | [beta.md](./beta.md) |
+| @class | 変数宣言をクラスとしてドキュメント化するモディファイアタグ。「動的」プロパティを実際のプロパティに展開する。 | [class.md](./class.md) |
+| @enum | 文字列または数値リテラル値を持つ変数を、通常の変数ではなく列挙型としてドキュメント化するモディファイアタグ。 | [enum.md](./enum.md) |
+| @event | リフレクションを「Events」グループに分類するモディファイアタグ。`@group Events` を指定するのと同等。 | [event.md](./event.md) |
+| @eventProperty | リフレクションを「Events」グループに分類するモディファイアタグ。`@group Events` を指定するのと同等。TSDoc 仕様に準拠。 | [eventProperty.md](./eventProperty.md) |
+| @experimental | 将来的にサードパーティ開発者が使用することを想定しているが、セマンティックバージョニングに準拠するほど安定していないメンバーをマークするモディファイアタグ。 | [experimental.md](./experimental.md) |
+| @function | 呼び出し可能な変数宣言を関数としてドキュメント化するモディファイアタグ。 | [function.md](./function.md) |
+| @hidden | リフレクションを生成されるドキュメントから完全に除去するモディファイアタグ。 | [hidden.md](./hidden.md) |
+| @hideconstructor | クラスのコンストラクタを生成されるドキュメントから隠すモディファイアタグ。TypeScript の issue #58653 の回避策として提供されている。 | [hideconstructor.md](./hideconstructor.md) |
+| @ignore | リフレクションを生成されるドキュメントから完全に除去するモディファイアタグ。`@hidden` と同等。 | [ignore.md](./ignore.md) |
+| @interface | 型エイリアスをインターフェースとしてドキュメント化するモディファイアタグ。「動的」プロパティを実際のプロパティに展開する。 | [interface.md](./interface.md) |
+| @internal | リフレクションが API コンシューマー向けではないことを示すモディファイアタグ。`--excludeInternal` オプションで除外可能。 | [internal.md](./internal.md) |
+| @namespace | 変数を名前空間として表示し、プロパティをエクスポートされた変数や関数として解決するモディファイアタグ。 | [namespace.md](./namespace.md) |
+| @overload | JavaScript プロジェクトで関数のオーバーロードを宣言するためのモディファイアタグ。TypeScript 5.0 以降で認識される。 | [overload.md](./overload.md) |
+| @override | メンバーが親クラスの実装をオーバーライドしていることを示すモディファイアタグ。TSDoc 互換のために解析される。 | [override.md](./override.md) |
+| @packageDocumentation | コメントブロックをファイル全体のドキュメントとしてマークするモディファイアタグ。直後の宣言ではなくファイル自体を説明する。 | [packageDocumentation.md](./packageDocumentation.md) |
+| @primaryExport | 再エクスポートの処理方法を制御し、TypeDoc にシンボルを即座に変換させるモディファイアタグ。 | [primaryExport.md](./primaryExport.md) |
+| @private | リフレクションの可視性を private にオーバーライドするモディファイアタグ。一般的に使用は推奨されない。 | [private.md](./private.md) |
+| @protected | リフレクションの可視性を protected にオーバーライドするモディファイアタグ。一般的に使用は推奨されない。 | [protected.md](./protected.md) |
+| @public | リフレクションの可視性を public にオーバーライドするモディファイアタグ。一般的に使用は推奨されない。 | [public.md](./public.md) |
+| @readonly | TypeScript の書き込み可能性に関わらず、リフレクションを読み取り専用としてドキュメント化するモディファイアタグ。 | [readonly.md](./readonly.md) |
+| @sealed | TSDoc 互換のために解析されるが、TypeDoc では特定の意味を持たないモディファイアタグ。 | [sealed.md](./sealed.md) |
+| @useDeclaredType | 型エイリアスを型ノード表現ではなく宣言された型を使用して変換するモディファイアタグ。派生型のドキュメント改善に有用。 | [useDeclaredType.md](./useDeclaredType.md) |
+| @virtual | TSDoc 互換のために解析されるが、TypeDoc では特定の意味を持たないモディファイアタグ。 | [virtual.md](./virtual.md) |

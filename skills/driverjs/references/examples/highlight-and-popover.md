@@ -24,6 +24,7 @@ driverObj.highlight({
 | right | start / center / end | Right side, top / center / bottom aligned |
 | top | start / center / end | Top side, left / center / right aligned |
 | bottom | start / center / end | Bottom side, left / center / right aligned |
+| over | — | Centered on top of the highlighted element |
 
 The popover automatically repositions to fit within the viewport if the specified position doesn't fit.
 
@@ -54,7 +55,7 @@ const driverObj = driver({
 
 ```javascript
 const driverObj = driver({
-  onPopoverRender: (popover, { config, state }) => {
+  onPopoverRender: (popover, { config, state, driver }) => {
     const btn = document.createElement("button");
     btn.innerText = "Custom Action";
     popover.footerButtons.appendChild(btn);

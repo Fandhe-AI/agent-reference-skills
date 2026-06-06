@@ -1,5 +1,8 @@
 # Migrations
 
+> **Deprecated**: このファイルは公式ドキュメントの構造変更により非推奨となりました。
+> 後継ページは [./migrations/README.md](./migrations/README.md) を参照してください。
+
 BullMQ のバージョンアップ戦略と、Bull から BullMQ への移行方法をまとめています。破壊的変更への対応方法や、安全な移行パターンを解説します。
 
 ---

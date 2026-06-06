@@ -33,7 +33,7 @@ app.get('/api/page', (c) => {
 
 ## Notes
 
-- The `Authorization` header must include a scheme, e.g. `Bearer <token>`.
+- The `Authorization` header must include the `Bearer` scheme exactly (e.g. `Bearer <token>`). Other schemes are rejected with a `401`. This validation was tightened in v4.12.21.
 - For dynamic secrets (e.g. from `c.env`), wrap the middleware in a custom handler function.
 
 ## Related

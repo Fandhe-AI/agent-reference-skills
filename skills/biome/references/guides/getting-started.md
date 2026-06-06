@@ -18,6 +18,9 @@ yarn add -D -E @biomejs/biome
 
 # bun
 bun add -D -E @biomejs/biome
+
+# deno
+deno add -D npm:@biomejs/biome
 ```
 
 ## 初期設定
