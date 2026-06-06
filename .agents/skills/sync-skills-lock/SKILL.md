@@ -110,9 +110,9 @@ git checkout -- .agents/skills/<name>/
 `npx skills add` がすでに `skills-lock.json` と `.agents/skills/<name>/` を更新済みのため、ファイル更新は不要。ステージングのみ行う。
 
 ```bash
-# skills-lock.json と更新されたスキルファイルを両方ステージング
+# skills-lock.json と対象スキルのファイルのみをステージング（他スキルの変更を混入させない）
 git add skills-lock.json
-git add .agents/skills/
+git add ".agents/skills/${SKILL_NAME}/"
 ```
 
 ### Step 8: コミット提案
