@@ -10,7 +10,6 @@ tools:
   - Grep
   - Read
   - Write
-  - Edit
   - WebFetch
   - WebSearch
 ---

@@ -69,10 +69,10 @@ reference-updater は `references/` の既存ファイルのみを Edit し、`s
 
 ### Step 4: 品質を検証する
 
-以下の Agent を起動して品質を確認する。
+以下の Agent を起動して品質を確認する。いずれにも検証対象を限定する `skill_dir`（`skills/<library>/`）を渡す（未指定だと linter が `skills/` 全体を走査し、validator の対象ディレクトリが不定になる）。
 
-- **reference-linter（subagent_type: reference-linter、model: haiku）** — 更新ファイルのフォーマット・テンプレート準拠を確認させる
-- **skill-structure-validator（subagent_type: skill-structure-validator、model: haiku）** — SKILL.md とディレクトリ構造が skill-anatomy 準拠かを確認させる
+- **reference-linter（subagent_type: reference-linter、model: haiku）** — 更新ファイルのフォーマット・テンプレート準拠を確認させる（渡すパラメータ: `skill_dir`）
+- **skill-structure-validator（subagent_type: skill-structure-validator、model: haiku）** — SKILL.md とディレクトリ構造が skill-anatomy 準拠かを確認させる（渡すパラメータ: `skill_dir`）
 
 指摘事項は内容に応じて該当 Agent に差し戻し、修正後に再検証する。
 
