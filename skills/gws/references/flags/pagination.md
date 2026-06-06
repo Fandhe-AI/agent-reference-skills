@@ -19,7 +19,7 @@ gws <service> <method> [--page-all] [--page-limit <N>] [--page-delay <MS>]
 ## Notes
 
 - Without `--page-all`, only the first page is returned.
-- NDJSON output from `--page-all` is suitable for streaming with tools like `jq` (e.g., `| jq '.files[].name'`).
+- `--page-all` outputs NDJSON — one full page response JSON object per line (e.g., `{"files":[...],"nextPageToken":"..."}`). Each line is an independent JSON value, not part of a JSON array, so pass it to `jq` without `-s`/`--slurp`: `gws drive files list --page-all | jq -c '.files[]'` processes each page's items across all pages.
 - `--page-limit` caps the total pages even when `--page-all` is set, preventing runaway requests on large datasets.
 - `--page-delay` throttles requests to avoid hitting rate limits.
 

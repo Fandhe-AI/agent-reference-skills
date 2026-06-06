@@ -115,7 +115,9 @@ gws drive files create --json '{"name": "report.pdf"}' --upload ./report.pdf
 ### NDJSON 出力をパイプで処理
 
 ```sh
-gws drive files list --params '{"pageSize": 100}' --page-all | jq -r '.files[].name'
+# --page-all emits NDJSON: one line per page, each line a full response object
+# jq processes each line independently (no -s/--slurp needed), extracting items from every page
+gws drive files list --params '{"pageSize": 100}' --page-all | jq -c '.files[]'
 ```
 
 ---

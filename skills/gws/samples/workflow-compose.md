@@ -25,11 +25,11 @@ gws workflow +meeting-prep --dry-run
 REPORT=$(gws workflow +standup-report)
 EXIT=$?
 
-if [ $EXIT -eq 0 ]; then
+if [ "$EXIT" -eq 0 ]; then
   gws chat spaces messages create \
     --params '{"parent": "spaces/SPACE_ID"}' \
-    --json "{\"text\": \"$REPORT\"}"
-elif [ $EXIT -eq 2 ]; then
+    --json "$(jq -n --arg text "$REPORT" '{text: $text}')"
+elif [ "$EXIT" -eq 2 ]; then
   echo "Auth error — re-authenticate with: gws auth login" >&2
   exit 1
 else
@@ -63,3 +63,4 @@ gws drive files list \
 - `--dry-run` on any workflow or helper prints the HTTP requests that would be made without executing them — useful for auditing what data a workflow will access.
 - Exit codes are stable and intended for script branching: `0` = success, `1` = API error, `2` = auth error, `3` = validation error, `4` = discovery error, `5` = internal error.
 - `--page-all` outputs NDJSON (one JSON object per page); pipe through `jq` to extract fields for downstream commands.
+- Use `jq -n --arg` to safely build JSON payloads from shell variables — direct interpolation into JSON strings breaks when the value contains newlines or double quotes.

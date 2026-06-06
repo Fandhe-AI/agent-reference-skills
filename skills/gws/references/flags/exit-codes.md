@@ -24,9 +24,10 @@ Structured exit codes returned by `gws` for use in scripts and automation.
 
 ```bash
 gws drive files list
-if [ $? -eq 1 ]; then
+status=$?
+if [ "$status" -eq 1 ]; then
   echo "API error — check the Google API response"
-elif [ $? -eq 2 ]; then
+elif [ "$status" -eq 2 ]; then
   echo "Auth error — run: gws auth login"
 fi
 ```
