@@ -100,6 +100,8 @@ mkdir -p "$WORKDIR"
 
 ```bash
 # sandbox 環境では各コマンドに GIT_SSL_NO_VERIFY=1 を前置する（詳細: docs/sandbox-tls.md）
+# cd する前にローカルリポジトリのルートを捕捉する（cd - は stdout を汚染するため使用しない）
+ORIG_DIR="$(pwd)"
 gh repo clone Fandhe-AI/<repo> "$WORKDIR/upstream"
 cd "$WORKDIR/upstream"
 ```
@@ -139,7 +141,7 @@ fi
 
 ```bash
 # LOCAL_SKILL_DIR は Step 1 で解決済み（skills/<name>/ または .agents/skills/<name>/）
-ORIG_DIR="$(cd - && pwd)"
+# ORIG_DIR は Step 6 で cd する前に捕捉済み（cd - は stdout 汚染のため使用しない）
 cp -R "${ORIG_DIR}/${LOCAL_SKILL_DIR}/." "$WORKDIR/upstream/${UPSTREAM_SKILL_PATH}/"
 ```
 

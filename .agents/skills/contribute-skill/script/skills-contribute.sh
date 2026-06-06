@@ -66,6 +66,8 @@ mkdir -p "$WORKDIR"
 echo "==> 作業ディレクトリ: $WORKDIR"
 
 # Step 6: upstream を clone する
+# cd する前にローカルリポジトリのルートを捕捉する（cd - は stdout 汚染があるため使用しない）
+ORIG_DIR="$(pwd)"
 echo "==> upstream を clone 中..."
 gh repo clone "${UPSTREAM_REPO}" "${WORKDIR}/upstream"
 cd "${WORKDIR}/upstream"
@@ -91,7 +93,6 @@ else
 fi
 
 echo "==> upstream パス: ${UPSTREAM_SKILL_PATH}"
-ORIG_DIR="$(cd - && pwd)"
 cp -R "${ORIG_DIR}/${LOCAL_SKILL_DIR}/." "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}/"
 
 # Step 8: 差分を確認する

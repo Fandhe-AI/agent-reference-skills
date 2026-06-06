@@ -20,16 +20,27 @@ model: sonnet
 - `gh` CLI がインストールされ、認証済みであること
 - `node` / `npx` が利用可能であること（`npx skills add` を使用するため）
 - ルート直下の `skills-lock.json` が存在すること
+- **実行前に `skills-lock.json` に未コミットの変更がないこと**（ステージ済み・未ステージ問わず）。本スキルの実行中に発生する変更は sync 由来のみとなり、`git add skills-lock.json` で全体をステージしても無関係な変更が混入しない
 
 ## フロー
 
-### Step 1: 引数を確認する
+### Step 1: 引数を確認し、事前条件を検証する
 
 ```bash
 TARGET="$ARGUMENTS"  # 空なら全スキル対象
 ```
 
 引数ありの場合は該当スキルのみ処理、なしの場合は `skills-lock.json` の全エントリを対象にする。
+
+次に `skills-lock.json` の clean 状態を確認する。未コミット変更（ステージ済み・未ステージ問わず）があれば中止する。
+
+```bash
+# skills-lock.json に未コミット変更があれば中止（sync 由来以外の変更の混入を防ぐ）
+if ! git diff --quiet -- skills-lock.json || ! git diff --cached --quiet -- skills-lock.json; then
+  echo "エラー: skills-lock.json に未コミットの変更があります。コミットまたは退避してから再実行してください。"
+  exit 1
+fi
+```
 
 ### Step 2: upstream 一覧を集計する
 
@@ -107,11 +118,11 @@ git checkout -- skills-lock.json ".agents/skills/${SKILL_NAME}/"
 #### Step 7: 承認されたスキルを stage する（ループ内で積み上げる）
 
 ```bash
-# 当該スキルのファイルのみをステージング（他スキル・無関係なローカル変更を混入させない）
+# 当該スキルのファイルのみをステージング
 git add skills-lock.json ".agents/skills/${SKILL_NAME}/"
 ```
 
-このコマンドをループ内で実行することで、複数スキルの全スキル sync でも処理した全スキルが過不足なく stage に積み上がる。
+`skills-lock.json` は単一 JSON ファイルのため行単位での部分ステージは現実的でない。しかし Step 1 の事前ガードで実行開始時の clean 状態を保証しているため、ファイル全体をステージしても sync 由来の変更のみが含まれ、無関係な編集が混入することはない。このコマンドをループ内で実行することで、複数スキルの全スキル sync でも処理した全スキルが過不足なく stage に積み上がる。
 
 ### Step 8: コミット提案（ループ後に1回だけ実行）
 
@@ -131,6 +142,7 @@ EOF
 ## 注意事項
 
 - **全スキル sync での途中却下**: 1スキルずつ承認・stage を行うため、途中で却下しても承認済みスキルの stage は保持される。全スキル処理後に一括コミットする
+- **`skills-lock.json` は実行前 clean 前提で全体をステージする**: 単一 JSON ファイルのため部分ステージは現実的でない。Step 1 の事前ガードで clean を保証し、sync 由来以外の変更の混入を防ぐ
 - **ルートの `skills-lock.json` のみを編集**: submodule 配下は手を付けない
 - **source prefix 検証（必須）**: `source` が `Fandhe-AI/` または `https://github.com/Fandhe-AI/` で始まらないエントリは skip する（`contribute-skill` と同じ安全弁）。`skills-lock.json` の改ざんや誤設定から防御するため
 - **`npx skills add --yes` は上書き確認をスキップする**: upstream に破壊的変更がある場合は `git diff` で内容を必ず確認すること
