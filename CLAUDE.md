@@ -167,6 +167,6 @@ The authoritative, enforceable versions of these live in `.claude/rules/` (`refe
 - The `tsdoc` skill is a guideline/template skill rather than an API reference — it has no `references/` subdirectory and embeds all content directly in `SKILL.md`
 - When editing `.claude/` files, use the `_/dotclaude/` staging pattern (write there first, then `mv` to `.claude/`)
 
-## Current Skills (34)
+## Current Skills (35)
 
-better-auth, biome, bullmq, cadquery, chakra-ui, commitlint, dayjs, driverjs, editorconfig, ergogen, feature-sliced-design, github-docs, hermes-agent, hono, kicad_10, knip, kubb, lefthook, nuqs, pino, playwright, react-flow, react-hook-form, react-router-v7, rust, storybook, supabase, syncpack, tsdoc, turborepo, typedoc, vitest, zmk, zod
+better-auth, biome, bullmq, cadquery, chakra-ui, commitlint, dayjs, driverjs, editorconfig, ergogen, feature-sliced-design, github-docs, hermes-agent, hono, kicad_10, knip, kubb, lefthook, nuqs, pino, playwright, react-flow, react-hook-form, react-router-v7, rust, storybook, supabase, syncpack, threejs, tsdoc, turborepo, typedoc, vitest, zmk, zod
