@@ -19,6 +19,8 @@ export function load(app: td.Application) {
 }
 ```
 
+> **重要**: プラグインは異なる Application インスタンスに対して複数回ロードされる可能性がある（単一ロードで複数プロジェクトを変換する場合も含む）。この前提でプラグインを設計すること。
+
 #### CommonJS プラグイン
 
 ```javascript

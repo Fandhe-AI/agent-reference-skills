@@ -33,9 +33,17 @@ Supabase Auth は JWT（JSON Web Token）を使ってユーザーのセッショ
 
 ### 署名鍵
 
-- JWT は HMAC-SHA256（HS256）で署名される
-- 署名鍵はダッシュボードの Settings > API > JWT Secret で確認可能
-- 署名鍵はプロジェクト作成時に自動生成される
+Supabase は **共有秘密鍵（HS256）** と **非対称鍵（RSA / EC / OKP）** の両方をサポートする。
+
+| 方式 | アルゴリズム例 | JWKS エンドポイント | 推奨度 |
+|------|-------------|-------------------|--------|
+| 共有秘密鍵 | HS256 | 公開されない | 非推奨（ローカル検証はセキュリティリスク） |
+| 非対称鍵 | RS256, ES256, Ed25519 | `/.well-known/jwks.json` で公開鍵を公開 | 推奨 |
+
+- HS256 の場合、JWT Secret はダッシュボードの Settings > API > JWT Secret で確認可能
+- 非対称鍵を使用する場合、JWKS エンドポイント（`https://<project>.supabase.co/auth/v1/.well-known/jwks.json`）で公開鍵を取得して検証する
+- 非対称鍵を使用しない場合、JWKS エンドポイントはキーを返さない
+- HS256 のローカル検証は推奨されない。代わりに Auth サーバーに問い合わせる（`GET /auth/v1/user`）
 
 ## コード例
 
@@ -139,17 +147,29 @@ console.log('User plan:', jwt.user_plan)
 
 import jwt from 'jsonwebtoken'
 
-// JWT を手動で検証（Edge Function や外部サーバー）
-function verifySupabaseJWT(token: string) {
-  const secret = process.env.SUPABASE_JWT_SECRET!
-  try {
-    const decoded = jwt.verify(token, secret, {
-      algorithms: ['HS256'],
-    })
-    return decoded
-  } catch (error) {
-    throw new Error('Invalid token')
-  }
+// JWT を手動で検証（非対称鍵の場合 — jose ライブラリ推奨）
+import { createRemoteJWKSet, jwtVerify } from 'jose'
+
+const JWKS = createRemoteJWKSet(
+  new URL('https://<project>.supabase.co/auth/v1/.well-known/jwks.json')
+)
+
+async function verifySupabaseJWT(token: string) {
+  const { payload } = await jwtVerify(token, JWKS, {
+    issuer: 'https://<project>.supabase.co/auth/v1',
+    audience: 'authenticated',
+  })
+  return payload
+}
+
+// 共有秘密鍵（HS256）の場合 — ローカル検証は非推奨
+// 代替: Auth サーバーに問い合わせて検証
+async function verifyViaAuthServer(token: string) {
+  const res = await fetch('https://<project>.supabase.co/auth/v1/user', {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  if (!res.ok) throw new Error('Invalid token')
+  return res.json()
 }
 ```
 
@@ -162,6 +182,8 @@ function verifySupabaseJWT(token: string) {
 - `exp` クレームの有効期限を過ぎた JWT はすべてのサービスで拒否される
 - カスタムクレームは Custom Access Token Hook でのみ追加可能。`updateUser()` では追加できない
 - `amr`（Authentication Methods Reference）には認証に使用された方法（`password`, `otp`, `oauth` 等）が配列で格納される
+- 非対称鍵への移行は推奨だが、移行後は HS256 を前提としたローカル検証コードをすべて jose 等のライブラリへ置き換えること
+- Supabase は外部 JWT（サードパーティ Auth / 自己発行）も `accessToken` オプション経由で受け付ける
 
 ## 関連
 

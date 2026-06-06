@@ -18,7 +18,7 @@ pcbs:
         params:
           net: "{{colrow}}"
     references: true
-    template: default
+    template: kicad5
 ```
 
 ---
@@ -63,6 +63,7 @@ Parameters support `{{key}}` template syntax to access point attributes (e.g., `
 | `ref` | string | Component designator + index (e.g., `D4`). |
 | `ref_hide` | boolean | Whether the silkscreen reference is hidden. |
 | `x` / `y` / `r` | number | Position and rotation. |
+| `rot` | number | Deprecated synonym for `r`. |
 | `xy` | string | `"${x} ${y}"` |
 | `at` | string | Full KiCad `(at ${x} ${y} ${r})` clause. |
 | `local_net(name)` | function | Creates an instance-specific net prefixed by the footprint reference. |
@@ -87,7 +88,7 @@ Each returns an object with `x`, `y`, and `str` fields.
 | `outlines` | object | Edge cut and layer outline definitions. |
 | `footprints` | object / array | Footprint placement configurations. |
 | `references` | boolean | Whether to include reference designators in output. |
-| `template` | string | KiCad output template name (default: `default`). |
+| `template` | string | KiCad output template name (default: `kicad5`). |
 | `params` | object | Extra parameters passed to the template. |
 
 ---
@@ -105,7 +106,7 @@ Each unique net string is assigned a numeric index for KiCad.
 ## Notes
 
 - Generated `.kicad_pcb` files are un-routed; all pads and nets are defined but traces are not drawn.
-- The template receives a `parts` object containing: `names`, `version`, `author`, `nets`, `footprints`, `outlines`, and custom `params`.
+- The template `body` function receives a `parts` object containing: `name`, `version`, `author`, `nets`, `footprints`, `outlines`, and `custom` (user-supplied parameters from `pcbs.<pcb_name>.params`).
 - `version` and `author` in the output come from the `meta` section.
 
 ## Related

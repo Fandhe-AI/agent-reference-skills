@@ -1,13 +1,11 @@
 # Examples
 
-Lefthook の実用的な設定例。
-
-| ファイル | 説明 | パス |
-|---------|------|------|
-| lefthook-local | ローカル設定（lefthook-local.yml）の使い方 | [./lefthook-local.md](./lefthook-local.md) |
-| wrap-commands | コマンドのラッピング例 | [./wrap-commands.md](./wrap-commands.md) |
-| stage-fixed | 自動修正ファイルの再ステージング | [./stage-fixed.md](./stage-fixed.md) |
-| filters | ファイルフィルタリングの例 | [./filters.md](./filters.md) |
-| skip | コマンド・フックのスキップ設定 | [./skip.md](./skip.md) |
-| remotes | リモート設定の共有例 | [./remotes.md](./remotes.md) |
-| commitlint | commitlint との統合 | [./commitlint.md](./commitlint.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| Commitlint and Commitizen with Lefthook | commitlint（コミットメッセージの検証）と Commitizen を統合する | [commitlint.md](./commitlint.md) |
+| Filters（ファイルフィルタリング） | フックに渡されるファイルをフィルタリングするためのオプション | [filters.md](./filters.md) |
+| lefthook-local.yml | メインの設定ファイルをオーバーライド・拡張するローカル設定 | [lefthook-local.md](./lefthook-local.md) |
+| Remotes（リモート設定の共有） | 他の Git リポジトリから設定ファイルを取得・共有する | [remotes.md](./remotes.md) |
+| Skip or Run on Condition（条件付きスキップ・実行） | フックやコマンドを特定の条件に基づいて実行 | [skip.md](./skip.md) |
+| Stage fixed files（修正ファイルの自動ステージング） | リンター修正ファイルを自動的にステージング | [stage-fixed.md](./stage-fixed.md) |
+| Wrap commands（コマンドのラッピング） | ローカル設定ファイルでメイン設定のコマンドをラップ | [wrap-commands.md](./wrap-commands.md) |

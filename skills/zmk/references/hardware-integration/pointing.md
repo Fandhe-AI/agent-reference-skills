@@ -63,6 +63,32 @@ Integration of pointing hardware (trackpads, trackballs) into ZMK keyboards usin
 
 Enable in the central overlay and wire the split input device in the peripheral overlay.
 
+### Split Peripheral Overlay — Input Split Device
+
+```devicetree
+/ {
+    split_inputs {
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        glidepoint_split: glidepoint_split@0 {
+            compatible = "zmk,input-split";
+            reg = <0>;
+            device = <&glidepoint>;
+        };
+    };
+};
+```
+
+In the central overlay, reference the split device from the listener:
+
+```devicetree
+&glidepoint_listener {
+    status = "okay";
+    device = <&glidepoint_split>;
+};
+```
+
 ## Options / Props
 
 ### Kconfig (`Kconfig.defconfig`)
@@ -78,11 +104,15 @@ For optional pointing support, users must also enable the relevant SPI/I2C proto
 
 ### Input Split Node Requirements
 
+The `zmk,input-split` node relays pointing device events from a peripheral to the central side.
+
 | Property | Description |
 |----------|-------------|
+| `compatible` | `"zmk,input-split"` |
 | `#address-cells = <1>` | Required on parent node |
 | `#size-cells = <0>` | Required on parent node |
 | `reg` | Unique integer per split pointer |
+| `device` | Phandle to the physical input device |
 
 ## Notes
 

@@ -67,11 +67,22 @@ OpenAPI/Swagger 仕様からコードを生成する。
 | `output` | `string` | — | 出力ディレクトリ（設定を上書き） |
 | `logLevel` | `enum` | `info` | `silent` \| `error` \| `warn` \| `info` \| `verbose` \| `debug` |
 
+## startServer API
+
+`@kubb/plugin-mcp` から `startServer` 関数がエクスポートされており、カスタムサーバーロジックの実装や追加トランスポート対応が可能:
+
+```typescript
+import { startServer } from '@kubb/plugin-mcp'
+
+startServer({ /* options */ })
+```
+
 ## ユースケース
 
 - **初回コード生成**: 新規プロジェクトで OpenAPI 仕様から TypeScript 型を生成
 - **仕様更新時の再生成**: API 仕様変更後にクライアントコードを再生成
 - **トラブルシューティング**: verbose ログで生成問題を診断
+- **カスタムトランスポート**: `startServer` で独自 MCP サーバー実装
 
 ## トラブルシューティング
 

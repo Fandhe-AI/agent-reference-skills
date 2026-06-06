@@ -1,10 +1,7 @@
-# Helpers & Build Tools
+# helpers
 
-Kubb の CLI、MCP サーバー統合、ビルドツールプラグイン。
-公式サイトの `helpers/` と `builders/` カテゴリを統合している。
-
-| ファイル | 説明 | パス |
-|---------|------|------|
-| cli | @kubb/cli — generate, init, validate, start, agent, mcp コマンド | [./cli.md](./cli.md) |
-| mcp | @kubb/mcp — MCP サーバー統合（Claude Desktop 等） | [./mcp.md](./mcp.md) |
-| unplugin | unplugin-kubb — Vite/webpack/Rollup/esbuild/Nuxt/Astro 統合 | [./unplugin.md](./unplugin.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| @kubb/cli | OpenAPI 仕様からコードを生成する Kubb の CLI… | [cli.md](./cli.md) |
+| @kubb/mcp | Kubb のコード生成機能を AI アシスタントに公開… | [mcp.md](./mcp.md) |
+| unplugin-kubb | Kubb コード生成を複数のビルドツールに統合する… | [unplugin.md](./unplugin.md) |

@@ -38,7 +38,7 @@ wp = cq.Workplane(plane)
 
 | Name | Type | Description |
 |------|------|-------------|
-| `inPlane` | `str \| Plane` | Named plane (`"XY"`, `"YZ"`, `"XZ"`, `"front"`, `"back"`, `"top"`, `"bottom"`, `"left"`, `"right"`) or a `Plane` object |
+| `inPlane` | `str \| Plane \| Face` | Named plane (`"XY"`, `"YZ"`, `"XZ"`, `"front"`, `"back"`, `"top"`, `"bottom"`, `"left"`, `"right"`), a `Plane` object, or a `Face` object |
 | `origin` | `tuple[float, float, float]` | Origin offset for the workplane in world coordinates (default `(0, 0, 0)`) |
 | `obj` | `Shape \| None` | Existing shape to wrap on the stack |
 

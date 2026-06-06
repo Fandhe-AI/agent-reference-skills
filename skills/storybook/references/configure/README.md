@@ -1,16 +1,17 @@
-# Storybook — Configure
+# Configure
 
 | Name | Description | Path |
 |------|-------------|------|
-| `Styling and CSS` | Import CSS and configure CSS Modules, PostCSS, and CSS-in-JS libraries in Storybook | [./styling-and-css.md](./styling-and-css.md) |
-| `Frameworks` | Automatically configure Storybook for React, Vue, Angular, Next.js, and other supported frameworks | [./frameworks.md](./frameworks.md) |
-| `Compilers` | Integrate SWC or Babel for JavaScript compilation and bundling | [./compilers.md](./compilers.md) |
-| `TypeScript` | Zero-config TypeScript support with type-safe story authoring via `Meta` and `StoryObj` generics | [./typescript.md](./typescript.md) |
-| `Images and Assets` | Serve static assets via imports, `staticDirs`, or CDN references | [./images-and-assets.md](./images-and-assets.md) |
-| `Story Rendering` | Run global setup code, inject into preview iframe `<head>` and `<body>` | [./story-rendering.md](./story-rendering.md) |
-| `Story Layout` | Control component positioning in Canvas with `centered`, `fullscreen`, or `padded` layout | [./story-layout.md](./story-layout.md) |
-| `Features and Behavior` | Configure UI panel sizes, toolbar visibility, shortcuts, and dynamic layout functions | [./features-and-behavior.md](./features-and-behavior.md) |
-| `Theming` | Apply built-in themes or create custom themes with the `create()` API | [./theming.md](./theming.md) |
-| `Sidebar and URLs` | Organize sidebar hierarchy, configure roots, and manage story permalink IDs | [./sidebar-and-urls.md](./sidebar-and-urls.md) |
-| `Environment Variables` | Use `STORYBOOK_`-prefixed variables in stories via `.env` files or `main.ts` env config | [./environment-variables.md](./environment-variables.md) |
-| `Addons` | Install and configure core and community addons in `.storybook/main.ts` | [./addons.md](./addons.md) |
+| Addons | Extend and customize Storybook through the addon ecosystem. | [addons.md](./addons.md) |
+| Compilers | Storybook integrates with SWC and Babel for JavaScript compilation and bundling. | [compilers.md](./compilers.md) |
+| Environment Variables | Manage application behavior across environments using environment variables in Storybook. | [environment-variables.md](./environment-variables.md) |
+| Features and Behavior | Configure Storybook's UI layout and behavioral features via the `addons.setConfig()` API. | [features-and-behavior.md](./features-and-behavior.md) |
+| Frameworks | Storybook framework packages automatically configure Storybook for popular development environments. | [frameworks.md](./frameworks.md) |
+| Images and Assets | Three approaches for loading images, fonts, and other static assets in Storybook stories. | [images-and-assets.md](./images-and-assets.md) |
+| Sidebar and URLs | Organize Storybook's sidebar hierarchy and manage story permalinks. | [sidebar-and-urls.md](./sidebar-and-urls.md) |
+| Story Layout | Control how stories are positioned within Storybook's Canvas tab using the `layout` parameter. | [story-layout.md](./story-layout.md) |
+| Story Rendering | Control how stories are rendered in Storybook's preview iframe (Canvas). | [story-rendering.md](./story-rendering.md) |
+| Styling and CSS | Configure CSS and styling in Storybook to match your application's styling approach. | [styling-and-css.md](./styling-and-css.md) |
+| Telemetry | Configure Storybook's anonymous usage data collection. | [telemetry.md](./telemetry.md) |
+| Theming | Customize Storybook's UI appearance using the built-in theming API. | [theming.md](./theming.md) |
+| TypeScript | Storybook provides zero-configuration TypeScript support with type-safe story authoring. | [typescript.md](./typescript.md) |

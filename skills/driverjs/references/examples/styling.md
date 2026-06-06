@@ -59,12 +59,12 @@ For advanced DOM manipulation, use the `onPopoverRender` callback:
 
 ```javascript
 const driverObj = driver({
-  onPopoverRender: (popover, { config, state }) => {
+  onPopoverRender: (popover, { config, state, driver }) => {
     const customButton = document.createElement("button");
     customButton.innerText = "Go to First";
     popover.footerButtons.appendChild(customButton);
     customButton.addEventListener("click", () => {
-      driverObj.drive(0);
+      driver.drive(0);
     });
   },
   steps: [/* ... */]
@@ -95,7 +95,7 @@ driverObj.highlight({
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | overlayColor | string | 'black' | Any valid CSS color value |
-| overlayOpacity | number | 0.5 | Opacity of the overlay (0-1) |
+| overlayOpacity | number | 0.7 | Opacity of the overlay (0-1) |
 
 These options apply to both `highlight()` and tour steps.
 

@@ -59,6 +59,31 @@ fn.mock.lastCall     // 最後の呼び出しの引数
 
 値がモック関数かどうかを判定する型ガード。
 
+### vi.mockObject()（v3.2.0+）
+
+オブジェクトのメソッドを再帰的にモックする。`vi.mock()` のオブジェクト版。
+
+```ts
+function mockObject<T>(value: T, options?: { spy?: boolean }): MaybeMockedDeep<T>
+```
+
+```ts
+const original = {
+  simple: () => 'value',
+  nested: { method: () => 'real' },
+}
+
+// 全メソッドを vi.fn() に置換
+const mocked = vi.mockObject(original)
+expect(mocked.simple()).toBe(undefined)
+mocked.simple.mockReturnValue('mocked')
+
+// 元の実装を保持してスパイ
+const spied = vi.mockObject(original, { spy: true })
+expect(spied.simple()).toBe('value')
+expect(spied.simple).toHaveBeenCalled()
+```
+
 ## モジュールモック
 
 ### vi.mock()
@@ -193,6 +218,22 @@ vi.useFakeTimers(config?: FakeTimerInstallOpts): void
 | `vi.getTimerCount()` | キュー内のタイマー数 |
 | `vi.clearAllTimers()` | 全タイマーを実行せずに削除 |
 | `vi.isFakeTimers()` | フェイクタイマーが有効かどうか |
+| `vi.setTimerTickMode(mode)` | タイマーの進行モードを設定（v4.1.0+） |
+
+### vi.setTimerTickMode()（v4.1.0+）
+
+フェイクタイマーのティックモードを設定する。
+
+| Mode | Description |
+|------|-------------|
+| `'manual'` | `vi.advanceTimersByTime()` 等で手動制御（デフォルト） |
+| `'nextTimerAsync'` | 非同期タイマーを自動的に次のタイマーまで進める |
+| `'interval'` | 指定間隔ごとに自動でタイマーを進める |
+
+```ts
+vi.useFakeTimers()
+vi.setTimerTickMode('nextTimerAsync')
+```
 
 ```ts
 beforeEach(() => { vi.useFakeTimers() })
@@ -253,6 +294,38 @@ vi.mocked(obj, { deep: true }) // ディープモック型
 ### vi.dynamicImportSettled()
 
 全ての動的 import の完了を待つ。
+
+### vi.setConfig()
+
+テストファイル単位で Vitest の設定を上書きする。
+
+```ts
+vi.setConfig({ testTimeout: 10000, fakeTimers: { now: new Date(2024, 0, 1) } })
+```
+
+### vi.resetConfig()
+
+`vi.setConfig()` で変更した設定を元に戻す。
+
+```ts
+afterAll(() => {
+  vi.resetConfig()
+})
+```
+
+### vi.defineHelper()（v4.1.0+）
+
+カスタムアサーションヘルパーを定義する。エラーのスタックトレースを呼び出し元に整形する。
+
+```ts
+const assertPositive = vi.defineHelper((value: number) => {
+  expect(value).toBeGreaterThan(0)
+})
+
+test('is positive', () => {
+  assertPositive(42) // エラー時のスタックがこの行を指す
+})
+```
 
 ## 関連
 

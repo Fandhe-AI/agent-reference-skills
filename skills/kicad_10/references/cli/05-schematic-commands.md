@@ -74,7 +74,7 @@ kicad-cli sch export bom [options] INPUT_FILE
 | `--sort-asc` | Enable ascending sort order (descending is default) |
 | `--filter` | Include only matching reference designators |
 | `--exclude-dnp` | Omit "Do not populate" components |
-| `--include-excluded` | Retain components marked "Exclude from BOM" |
+| `--include-excluded-from-bom` | Retain components marked "Exclude from BOM" |
 | `--field-delimiter` | Separator between columns (default: `,`) |
 | `--string-delimiter` | Character surrounding field values |
 | `--ref-delimiter` | Character between references (default: `,`) |

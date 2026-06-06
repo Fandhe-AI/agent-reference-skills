@@ -257,15 +257,25 @@ supabase storage rm -r ss:///avatars/temp/
 
 ## テスト
 
+## テスト
+
 ### supabase test db
 
 pgTAP を使用してデータベーステストを実行する。
 
 ```bash
-supabase test db
+supabase test db [path] [flags]
 ```
 
 テストファイルは `supabase/tests/` ディレクトリに配置する。
+
+#### フラグ
+
+| フラグ | 説明 |
+|-------|------|
+| `--db-url <string>` | 接続文字列で特定のデータベースをテスト |
+| `--linked` | リンクされたプロジェクトに対してテスト実行 |
+| `--local` | ローカルデータベースに対してテスト実行 |
 
 #### テストファイル例
 
@@ -280,6 +290,131 @@ SELECT has_column('public', 'users', 'email', 'email column exists');
 SELECT * FROM finish();
 ROLLBACK;
 ```
+
+### supabase test new
+
+新しいテストファイルをボイラープレート付きで作成する。
+
+```bash
+supabase test new <name> [flags]
+```
+
+#### フラグ
+
+| フラグ | 説明 |
+|-------|------|
+| `-t, --template <pgtap>` | テストフレームワークのテンプレート指定 |
+
+## ブランチ管理
+
+### supabase branches create
+
+リンクされたプロジェクトのプレビューブランチを作成する。
+
+```bash
+supabase branches create [name] [flags]
+```
+
+#### フラグ
+
+| フラグ | 説明 |
+|-------|------|
+| `--region <region>` | ブランチのリージョン |
+| `--size <size>` | インスタンスサイズ |
+| `--with-data` | メインプロジェクトのデータを引き継ぐ |
+| `--persistent` | 永続的なブランチとして作成 |
+| `--notify-url <url>` | ブランチ作成完了通知先 URL |
+| `--project-ref <ref>` | 対象プロジェクト参照ID |
+
+### supabase branches list
+
+プレビューブランチ一覧を表示する。
+
+```bash
+supabase branches list [--project-ref <ref>]
+```
+
+### supabase branches get
+
+指定ブランチの詳細（接続情報等）を取得する。
+
+```bash
+supabase branches get [name] [--project-ref <ref>]
+```
+
+### supabase branches update
+
+プレビューブランチを更新する。
+
+```bash
+supabase branches update [name] [flags]
+```
+
+#### フラグ
+
+| フラグ | 説明 |
+|-------|------|
+| `--git-branch <branch>` | 関連付ける Git ブランチ名 |
+| `--name <name>` | ブランチ名の変更 |
+| `--status <status>` | ブランチステータスの変更 |
+| `--persistent` | 永続ブランチへの切り替え |
+
+### supabase branches pause
+
+プレビューブランチを一時停止する。
+
+```bash
+supabase branches pause [name] [--project-ref <ref>]
+```
+
+### supabase branches unpause
+
+一時停止中のプレビューブランチを再開する。
+
+```bash
+supabase branches unpause [name] [--project-ref <ref>]
+```
+
+### supabase branches delete
+
+プレビューブランチを削除する。
+
+```bash
+supabase branches delete [name] [--project-ref <ref>]
+```
+
+## シード
+
+### supabase seed buckets
+
+`supabase/config.toml` の設定に基づいてストレージバケットをシードする。
+
+```bash
+supabase seed buckets [flags]
+```
+
+#### フラグ
+
+| フラグ | 説明 |
+|-------|------|
+| `--linked` | リンクされたプロジェクトにシード |
+| `--local` | ローカルデータベースにシード |
+
+## 設定管理
+
+### supabase config push
+
+ローカルの `supabase/config.toml` の設定をリンクされたリモートプロジェクトに反映する。
+
+```bash
+supabase config push [flags]
+```
+
+#### フラグ
+
+| フラグ | 説明 |
+|-------|------|
+| `--project-ref <ref>` | プロジェクト参照ID |
 
 ## SSO
 

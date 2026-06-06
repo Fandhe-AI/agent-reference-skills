@@ -1,16 +1,7 @@
-# GitHub CLI リファレンス
+# CLI
 
-GitHub CLI (`gh`) に関するリファレンスドキュメントの目次。
-
-## ドキュメント一覧
-
-| ファイル | 内容 | 説明 |
-|---------|------|------|
-| [quickstart.md](./quickstart.md) | クイックスタート | インストール、認証、基本コマンド |
-| [reference.md](./reference.md) | コマンドリファレンス | 全コマンド一覧、主要サブコマンド、グローバルフラグ |
-| [extensions.md](./extensions.md) | 拡張機能 | 拡張機能の作成・公開・インストール |
-
-## 公式ドキュメント
-
-- [GitHub CLI ドキュメント](https://docs.github.com/en/github-cli)
-- [GitHub CLI マニュアル](https://cli.github.com/manual/)
+| Name | Description | Path |
+|------|-------------|------|
+| GitHub CLI 拡張機能 | GitHub CLI の機能を拡張するカスタムコマンド。誰でも作成・… | [extensions.md](./extensions.md) |
+| GitHub CLI クイックスタート | | [quickstart.md](./quickstart.md) |
+| GitHub CLI コマンドリファレンス | すべてのコマンドで使用可能なフラグ。 | [reference.md](./reference.md) |

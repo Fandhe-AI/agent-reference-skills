@@ -2,4 +2,4 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Messaging Gateway | Background process connecting 14+ platforms; chat commands, session management, security, background tasks, and service management | [./messaging.md](./messaging.md) |
+| Messaging Gateway | A single background process that connects to all configured platforms (25+), handles sessions, runs cron jobs, delivers voice messages, and includes circuit breakers… | [./messaging.md](./messaging.md) |

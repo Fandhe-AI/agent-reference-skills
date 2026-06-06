@@ -24,7 +24,7 @@ Underlying geometric constructs (e.g., a circle referenced by an arc edge) are a
 
 ## 2. API Layers
 
-CadQuery provides three stacked abstraction layers, plus conversion utilities between them.
+CadQuery provides four stacked abstraction layers, plus conversion utilities between them.
 
 ### Fluent API (primary user layer)
 
@@ -50,6 +50,10 @@ Nine classes mirroring BREP topology (`Shape`, `Compound`, `CompSolid`, `Solid`,
 circle_wire = Wire.makeCircle(10, Vector(0, 0, 0), Vector(0, 0, 1))
 circular_face = Face.makeFromWires(circle_wire, [])
 ```
+
+### Geometry API
+
+Supporting classes for coordinate system and spatial definitions: `Vector`, `Plane`, `Location`. Used by both the Fluent and Direct APIs.
 
 ### OCCT API (lowest level)
 

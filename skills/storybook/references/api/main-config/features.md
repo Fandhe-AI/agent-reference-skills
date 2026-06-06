@@ -9,6 +9,7 @@ Enables or disables Storybook's built-in capabilities and experimental functiona
   actions?: boolean;
   argTypeTargetsV7?: boolean;
   backgrounds?: boolean;
+  changeDetection?: boolean;
   componentsManifest?: boolean;
   controls?: boolean;
   developmentModeForBuild?: boolean;
@@ -50,13 +51,14 @@ export default config;
 |------|------|---------|-------------|
 | `actions` | `boolean` | `true` | Enables the Actions addon |
 | `backgrounds` | `boolean` | `true` | Enables the Backgrounds feature |
+| `changeDetection` | `boolean` | `true` | Monitors git working tree and builder's module graph to show new/modified/related stories |
 | `controls` | `boolean` | `true` | Enables the Controls addon |
 | `highlight` | `boolean` | `true` | Enables element highlight inspection |
 | `interactions` | `boolean` | `true` | Enables interaction test debugging tools |
 | `measure` | `boolean` | `true` | Enables the Measure tool |
 | `outline` | `boolean` | `true` | Enables visual element outline |
 | `viewport` | `boolean` | `true` | Enables the Viewport addon |
-| `componentsManifest` | `boolean` | `true` | Generates manifests for MCP server integration |
+| `componentsManifest` | `boolean` | `false` | Generates manifests for MCP server integration |
 | `sidebarOnboardingChecklist` | `boolean` | `true` | Shows the onboarding checklist in sidebar |
 | `argTypeTargetsV7` | `boolean` | `true` | (Experimental) Filters args with "target" properties from render functions |
 | `developmentModeForBuild` | `boolean` | — | Sets `NODE_ENV` to development in built Storybooks |

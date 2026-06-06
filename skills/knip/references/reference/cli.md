@@ -23,16 +23,16 @@ Source: https://knip.dev/reference/cli
 | `--cache-location` | キャッシュ保存先（default: `./node_modules/.cache/knip`） |
 | `--include-entry-exports` | エントリーファイルの未使用 exports をレポート |
 | `--no-gitignore` | `.gitignore` を無視 |
-| `--production` | 本番ソースのみ lint |
-| `--strict` | ワークスペース分離、production を暗黙的に含む |
-| `--watch` | ファイル変更を監視 |
+| `--production` / `-p` | 本番ソースのみ lint |
+| `--strict` / `-s` | ワークスペース分離、production を暗黙的に含む |
+| `--watch` / `-w` | ファイル変更を監視 |
 
 ## Scope
 
 | Flag | Description |
 |------|-------------|
 | `--workspace [filter]` / `-W` | ワークスペース選択 |
-| `--directory [dir]` | 実行ディレクトリ変更 |
+| `--directory [dir]` / `-D` | 実行ディレクトリ変更 |
 | `--exclude` | issue タイプを除外 |
 | `--include` | issue タイプを含める |
 | `--dependencies` | 依存関係 issue のショートカット |
@@ -46,10 +46,10 @@ Issue types: `files`, `dependencies`, `unlisted`, `unresolved`, `exports`, `nsEx
 
 | Flag | Description |
 |------|-------------|
-| `--fix` | 自動修正 |
+| `--fix` / `-f` | 自動修正 |
 | `--fix-type` | 修正対象を限定（comma-separated） |
 | `--allow-remove-files` | ファイル削除を許可 |
-| `--format` | 修正後にフォーマッター実行 |
+| `--format` / `-F` | 修正後にフォーマッター実行 |
 
 ## Output
 
@@ -60,6 +60,7 @@ Issue types: `files`, `dependencies`, `unlisted`, `unresolved`, `exports`, `nsEx
 | `--reporter [reporter]` | 出力形式（繰り返し可） |
 | `--reporter-options [json]` | レポーターに JSON オプション |
 | `--no-config-hints` | 設定ヒント非表示 |
+| `--no-tag-hints` | タグ関連ヒント非表示 |
 | `--treat-config-hints-as-errors` | 設定ヒントをエラーに |
 | `--max-issues` | 最大 issue 数（超過で exit 1） |
 | `--max-show-issues` | 表示 issue 数の制限 |
@@ -75,6 +76,7 @@ Exit codes: `0` (no issues), `1` (issues found), `2` (error/exception)
 | `--memory` | メモリ使用量表示 |
 | `--memory-realtime` | リアルタイムメモリログ |
 | `--performance` | 実行時間統計 |
+| `--duration` / `-u` | 合計実行時間表示 |
 | `--performance-fn` | 単一関数のプロファイル |
 | `--trace` | エクスポートの import 箇所表示 |
 | `--trace-dependency [name]` | パッケージ/バイナリ参照をトレース |

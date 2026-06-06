@@ -53,6 +53,22 @@ Individual file imports (schematic or board only) are also supported from within
 
 **PCB file imports**: Altium `.PcbDoc`, Cadence Allegro `.brd`, Eagle `.brd` (XML), and others.
 
+## Project Backups and Autosave
+
+KiCad automatically protects work through two mechanisms:
+
+- **On save**: A backup snapshot is created when any editor saves
+- **On inactivity**: An autosave is triggered after a few seconds of inactivity with unsaved changes
+
+### Backup Storage Options
+
+| Mode | Description |
+|------|-------------|
+| Incremental backups | Snapshots viewable in the Local History panel; backed by a hidden `.history` Git repository managed by KiCad. Restore via right-click → **Restore Commit** |
+| Zip archives | Compressed backups of the entire project directory; restore via **File → Unarchive Project…** |
+
+Configure in **Preferences → Preferences → Common → Backup** (location: project directory or KiCad user data directory; maximum total backup size limit).
+
 ## Saving and Loading Project Archives
 
 - **Archive**: **File → Archive Project…** — compresses the project into a ZIP file

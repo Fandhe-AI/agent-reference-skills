@@ -1,13 +1,11 @@
-# TypeDoc — Options
-
-TypeDoc の全設定オプション。typedoc.json / typedoc.config.{js,mjs,cjs} / tsconfig.json で設定可能。
+# Options
 
 | Name | Description | Path |
 |------|-------------|------|
-| `Configuration` | 設定ファイル形式・読み込み順序（options, tsconfig, compilerOptions, plugin） | [./configuration.md](./configuration.md) |
-| `Input` | 入力設定（entryPoints, entryPointStrategy, exclude 系, packageOptions 等） | [./input.md](./input.md) |
-| `Output` | 出力設定（outputs, out, html, json, theme, router, customCss 等） | [./output.md](./output.md) |
-| `Comments` | コメント処理設定（commentStyle, blockTags, inlineTags, jsDocCompatibility 等） | [./comments.md](./comments.md) |
-| `Organization` | ドキュメント構成設定（sort, categoryOrder, groupOrder 等） | [./organization.md](./organization.md) |
-| `Validation` | バリデーション設定（validation, requiredToBeDocumented 等） | [./validation.md](./validation.md) |
-| `Other` | その他の設定（watch, help, version, logLevel 等） | [./other.md](./other.md) |
+| Options: Comments | TypeDoc の Comments オプション一覧。 | [comments.md](./comments.md) |
+| Options: Configuration | TypeDoc の Configuration オプション一覧。 | [configuration.md](./configuration.md) |
+| Options: Input | TypeDoc の Input オプション一覧。 | [input.md](./input.md) |
+| Options: Organization | TypeDoc の Organization オプション一覧。 | [organization.md](./organization.md) |
+| Options: Other | TypeDoc の Other オプション一覧。 | [other.md](./other.md) |
+| Options: Output | TypeDoc の Output オプション一覧。 | [output.md](./output.md) |
+| Options: Validation | TypeDoc の Validation オプション一覧。 | [validation.md](./validation.md) |

@@ -1,8 +1,6 @@
-# TypeScript
+# typescript
 
-Knip の TypeScript 固有のドキュメント。
-
-| ページ名 | 内容 | パス |
-|---------|------|------|
-| Unused Dependencies | 未使用依存関係の問題点と Knip による検出 | [./unused-dependencies.md](./unused-dependencies.md) |
-| Unused Exports | 未使用エクスポートの問題点と Knip による検出 | [./unused-exports.md](./unused-exports.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| Unused Dependencies | Source: https://knip.dev/typescript/unused-dependencies | [unused-dependencies.md](./unused-dependencies.md) |
+| Unused Exports | Source: https://knip.dev/typescript/unused-exports | [unused-exports.md](./unused-exports.md) |

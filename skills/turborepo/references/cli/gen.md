@@ -19,6 +19,8 @@ turbo gen workspace [options]
 | `--copy` | 既存ワークスペースまたは GitHub リポジトリをコピー |
 | `--destination` | 作成先のパス |
 | `--type` | `app` または `package` |
+| `--show-all-dependencies` | 依存関係選択時のワークスペースタイプフィルタを解除 |
+| `--example-path` / `-p` | GitHub URL のブランチ名とサンプルパスを分離 |
 
 ## turbo gen run
 

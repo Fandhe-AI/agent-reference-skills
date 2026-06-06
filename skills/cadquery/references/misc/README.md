@@ -2,4 +2,4 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Citing | How to cite CadQuery in scientific research using the Zenodo DOI | [./citing.md](./citing.md) |
+| Citing CadQuery | How to cite CadQuery in scientific research and publications. | [citing.md](./citing.md) |

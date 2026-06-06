@@ -253,3 +253,59 @@ export const useSearchInput = (initialQuery: string, delay: number) => {
 8. **`@link` に波括弧を付けない** → インラインタグは `{@link Target}` で波括弧が必要
 9. **概要が長すぎる** → 1 行目は 1 文で簡潔に。詳細は `@remarks` に分離する
 10. **`@category` の不統一** → 上記の統一名を使用する
+
+## ディレクトリ構成
+
+```text
+skills/tsdoc/
+  SKILL.md
+  tags/
+    param.md
+    returns.md
+    remarks.md
+    example.md
+    throws.md
+    deprecated.md
+    see.md
+    internal.md
+    default-value.md
+    category.md
+    since.md
+    type-param.md
+    link.md
+  samples/
+    README.md
+    function-comment.md
+    react-component.md
+    interface-type.md
+    custom-hook.md
+    deprecation.md
+    modifier-tags.md
+    multiple-examples.md
+    tsdoc-config.md
+  scripts/
+    README.md
+    install.md
+    lint.md
+    config.md
+```
+
+## 探索手順
+
+タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
+
+1. 下記マッピング表でタスクに対応するカテゴリを探す
+2. タグの詳細は `tags/<tag-name>.md` を直接 Read して確認する
+3. 使用例は `samples/README.md` を参照してから該当ページを Read する
+4. コマンド・設定は `scripts/README.md` を参照してから該当ページを Read する
+
+## タスク → カテゴリ マッピング
+
+| タスク | カテゴリ | 参照先 |
+|--------|---------|--------|
+| `@param` / `@returns` / `@throws` の構文を確認したい | tags | [tags/param.md](tags/param.md), [tags/returns.md](tags/returns.md), [tags/throws.md](tags/throws.md) |
+| `@remarks` / `@example` / `@see` の使い方を知りたい | tags | [tags/remarks.md](tags/remarks.md), [tags/example.md](tags/example.md), [tags/see.md](tags/see.md) |
+| `@deprecated` / `@internal` / `@since` の使い方を知りたい | tags | [tags/deprecated.md](tags/deprecated.md), [tags/internal.md](tags/internal.md), [tags/since.md](tags/since.md) |
+| `@defaultValue` / `@category` / `@typeParam` / `{@link}` を調べたい | tags | [tags/default-value.md](tags/default-value.md), [tags/category.md](tags/category.md), [tags/type-param.md](tags/type-param.md), [tags/link.md](tags/link.md) |
+| 典型的な TSDoc コメントの書き方を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・lint・tsdoc.json 設定のコマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

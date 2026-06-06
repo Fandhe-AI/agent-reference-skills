@@ -19,6 +19,7 @@
 | `POST` | `/repos/{owner}/{repo}/transfer` | リポジトリを別のオーナーに移管 |
 | `POST` | `/repos/{owner}/{repo}/forks` | リポジトリをフォーク |
 | `GET` | `/repos/{owner}/{repo}/forks` | フォーク一覧を取得 |
+| `GET` | `/repos/{owner}/{repo}/activity` | リポジトリのアクティビティを取得 |
 
 ## リポジトリ作成
 
@@ -74,6 +75,7 @@ curl -X POST \
 | `allow_merge_commit` | boolean | - | `true` | マージコミットを許可するか |
 | `allow_rebase_merge` | boolean | - | `true` | リベースマージを許可するか |
 | `delete_branch_on_merge` | boolean | - | `false` | マージ後にブランチを自動削除するか |
+| `custom_properties` | object | - | - | 組織が定義したカスタムプロパティ（キーと値のペア） |
 
 ## リポジトリ一覧の取得
 

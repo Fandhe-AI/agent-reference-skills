@@ -1,5 +1,5 @@
-# Rustlings
+# rustlings
 
 | Name | Description | Path |
 |------|-------------|------|
-| Overview | What Rustlings is, installation, CLI commands, exercise categories, and TRPL mapping | [./overview.md](./overview.md) |
+| Rustlings Overview | Small exercises to get you used to reading and writing Rust code. Intended to be… | [overview.md](./overview.md) |

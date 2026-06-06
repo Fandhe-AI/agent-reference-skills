@@ -62,6 +62,8 @@ The `.uf2` file can be copied to a USB mass-storage bootloader or flashed via DF
 
 - Always `cd app/` before building; failing to do so causes `ERROR: source directory "." does not contain a CMakeLists.txt`
 - Split keyboards require separate build + flash for each half on first flash
+- Multiple external modules must be separated by semicolons: `-DZMK_EXTRA_MODULES="path/to/mod1;path/to/mod2"`
+- `-DZMK_CONFIG` must point to the nested `config/` folder inside the zmk-config directory, not the root
 - To persist CMake arguments across builds: `west config build.cmake-args -- "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"`
 - nRF5340 boards require separate network-core firmware setup
 

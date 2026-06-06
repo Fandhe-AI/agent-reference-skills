@@ -5,8 +5,8 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| `python` | Python クライアント（supabase-py）固有情報 | [./python.md](./python.md) |
-| `dart` | Dart / Flutter クライアント（supabase-dart）固有情報 | [./dart.md](./dart.md) |
-| `swift` | Swift / iOS クライアント（supabase-swift）固有情報 | [./swift.md](./swift.md) |
-| `kotlin` | Kotlin / Android クライアント（supabase-kt）固有情報 | [./kotlin.md](./kotlin.md) |
-| `csharp` | C# / .NET クライアント（supabase-csharp）固有情報 | [./csharp.md](./csharp.md) |
+| C# クライアント (supabase-csharp) | Installation and initialization guide for the C# client | [csharp.md](./csharp.md) |
+| Dart/Flutter クライアント (supabase_flutter) | Installation and initialization guide for the Dart/Flutter client | [dart.md](./dart.md) |
+| Kotlin クライアント (supabase-kt) | Installation and initialization guide for the Kotlin client | [kotlin.md](./kotlin.md) |
+| Python クライアント (supabase-py) | Installation and initialization guide for the Python client | [python.md](./python.md) |
+| Swift クライアント (supabase-swift) | Installation and initialization guide for the Swift client | [swift.md](./swift.md) |

@@ -26,8 +26,10 @@ Two beeps signal recording completion. The agent can reply with text or spoken a
 | Provider | Model Options | Speed | Cost | API Key |
 |----------|--------------|-------|------|---------|
 | Local (faster-whisper) | base / small / large-v3 | CPU-dependent | Free | None |
-| Groq | whisper-large-v3-turbo | ~0.5 s | Free tier | Required |
-| OpenAI | whisper-1 | ~1 s | Paid | Required |
+| Groq | whisper-large-v3-turbo | ~0.5 s | Free tier | `GROQ_API_KEY` |
+| OpenAI | whisper-1 / gpt-4o-mini-transcribe | ~1 s | Paid | `OPENAI_API_KEY` |
+| Mistral | voxtral-mini | — | Paid | Required |
+| xAI | Grok STT | — | Paid | `XAI_API_KEY` |
 
 Local processing: `pip install faster-whisper` (~150 MB model download). The system falls back automatically through available providers.
 
@@ -39,6 +41,7 @@ Local processing: `pip install faster-whisper` (~150 MB model download). The sys
 | ElevenLabs | Excellent | Paid | ~2 s | Yes |
 | OpenAI TTS | Good | Paid | ~1.5 s | Yes |
 | NeuTTS | Good | Free | CPU-dependent | No |
+| Minimax | Good | Paid | — | Yes |
 
 Streaming TTS delivers responses sentence-by-sentence rather than waiting for full completion.
 

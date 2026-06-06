@@ -1,13 +1,15 @@
 # Crafting Your Repository
 
-| 名前 | 説明 | パス |
-| --- | --- | --- |
-| Structuring | リポジトリ構造（ワークスペース定義、exports、名前空間、制約） | [./structuring.md](./structuring.md) |
-| Dependencies | 依存関係管理（インストール構文、一括インストール、バージョン統一） | [./dependencies.md](./dependencies.md) |
-| Internal Packages | 内部パッケージ作成手順（package.json、tsconfig、キャッシュ設定） | [./internal-packages.md](./internal-packages.md) |
-| Tasks | タスク設定（dependsOn 3パターン、inputs、outputs、persistent、with） | [./tasks.md](./tasks.md) |
-| Running Tasks | タスク実行（package.json スクリプト、フィルタリング、複数タスク同時実行） | [./running-tasks.md](./running-tasks.md) |
-| Caching | キャッシュ（ハッシュ計算、inputs/outputs、デバッグ、Git Worktree） | [./caching.md](./caching.md) |
-| Environment Variables | 環境変数（4種類、Strict/Loose、フレームワーク推論、.env） | [./environment-variables.md](./environment-variables.md) |
-| Developing | アプリケーション開発（dev タスク、Watch Mode、TUI キーバインド） | [./developing.md](./developing.md) |
-| CI | CI 構築（--affected、環境変数設定、ベストプラクティス） | [./ci.md](./ci.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| キャッシュ | タスクごとに2種類のハッシュを計算し、両方が一致するときのみキャッシュヒット。 | [caching.md](./caching.md) |
+| CI の構築 | 環境変数と影響パッケージフィルタリング、リモートキャッシュの設定。 | [ci.md](./ci.md) |
+| 依存関係の管理 | ワークスペース内の内部パッケージ依存宣言と一括インストール手法。 | [dependencies.md](./dependencies.md) |
+| アプリケーション開発 | dev タスク設定、キャッシュ無効化、ウォッチモード、UI キーバインド。 | [developing.md](./developing.md) |
+| 環境変数の使用 | env、globalEnv、passThroughEnv の4種類の違いと自動推論。 | [environment-variables.md](./environment-variables.md) |
+| 内部パッケージの作成 | 1パッケージ1責務設計、package.json、exports 設定。 | [internal-packages.md](./internal-packages.md) |
+| タスクの実行 | package.json スクリプト、複数実行、フィルタリング、ショートハンド構文。 | [running-tasks.md](./running-tasks.md) |
+| リポジトリの構造化 | ディレクトリ構成、ワークスペース定義、exports フィールド。 | [structuring.md](./structuring.md) |
+| タスクの設定 | dependsOn、outputs、inputs の設定と特殊値の説明。 | [tasks.md](./tasks.md) |
+| リポジトリの把握 | turbo devtools、turbo ls、turbo query GraphQL インターフェース。 | [understanding-your-repository.md](./understanding-your-repository.md) |
+| アップグレード | codemod による自動移行、v2.0 での主な変更点と非推奨フラグ。 | [upgrading.md](./upgrading.md) |

@@ -1,12 +1,10 @@
-# Assist
+# assist
 
-Biome アシストのリファレンス。コード改善アクション・import ソート・キーソート。
-
-| ファイル | 説明 | パス |
-|---------|------|------|
-| introduction | アシスト概要・IDE 連携（VS Code, Zed）・CLI 実行・設定 | [./introduction.md](./introduction.md) |
-| javascript-actions | JS/TS アクション（organizeImports, useSortedKeys, useSortedAttributes 等） | [./javascript-actions.md](./javascript-actions.md) |
-| javascript-sources | JS/TS アクションの ESLint 対応表 | [./javascript-sources.md](./javascript-sources.md) |
-| css-actions | CSS アクション（useSortedProperties）+ sources | [./css-actions.md](./css-actions.md) |
-| json-actions | JSON アクション（useSortedKeys）+ sources | [./json-actions.md](./json-actions.md) |
-| html-actions | HTML アクション（noDuplicateClasses）+ GraphQL アクション + sources | [./html-actions.md](./html-actions.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| CSS アクション + ソース | CSS プロパティとネストされたルールの順序を強制する useSortedPropert… | [css-actions.md](./css-actions.md) |
+| HTML / GraphQL アクション + ソース | 重複する CSS クラスを削除する HTML アクション。GraphQL 向けア… | [html-actions.md](./html-actions.md) |
+| Assist | Biome Assist はコード改善アクションを提供。リンタールールとは異なり… | [introduction.md](./introduction.md) |
+| JavaScript/TypeScript アクション | インポート・エクスポート、オブジェクト、JSX 属性、interface メンバ… | [javascript-actions.md](./javascript-actions.md) |
+| JavaScript/TypeScript アクションのソース | ESLint プラグインルールと Biome アクションのマッピング。organizeImp… | [javascript-sources.md](./javascript-sources.md) |
+| JSON アクション + ソース | JSON オブジェクトのキーを自然順でソートする useSortedKeys アクション… | [json-actions.md](./json-actions.md) |

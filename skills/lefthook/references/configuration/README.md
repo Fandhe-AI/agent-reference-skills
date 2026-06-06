@@ -1,12 +1,10 @@
 # Configuration
 
-Lefthook の設定リファレンス。
-
-| ファイル | 説明 | パス |
-|---------|------|------|
-| global-settings | グローバル設定（assert_lefthook_installed, colors, extends, min_version, no_auto_install, no_tty, output, rc, skip_lfs, glob_matcher, templates, install_non_git_hooks） | [./global-settings.md](./global-settings.md) |
-| remotes | リモート設定（git_url, ref, refetch, refetch_frequency, configs） | [./remotes.md](./remotes.md) |
-| source-dir | スクリプトディレクトリ設定（source_dir, source_dir_local） | [./source-dir.md](./source-dir.md) |
-| hook-settings | フック設定（parallel, piped, follow, files, fail_on_changes, exclude_tags, exclude, only, skip, setup, jobs） | [./hook-settings.md](./hook-settings.md) |
-| command-settings | コマンド設定（name, run, args, group, tags, glob, files, file_types, env, root, fail_text, stage_fixed, interactive, use_stdin, priority） | [./command-settings.md](./command-settings.md) |
-| script-settings | スクリプト設定（script, runner） | [./script-settings.md](./script-settings.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| Command Settings | フックで実行されるコマンドの設定。各コマンドには名前と関連する run オプションがある。 | [command-settings.md](./command-settings.md) |
+| Global Settings | Lefthook のグローバル設定オプション。プロジェクト全体の動作を制御する設定項目をまとめている。 | [global-settings.md](./global-settings.md) |
+| Hook Settings | Git フック（commands、scripts、skip ルールなど）の設定を含む。任意の Git フックまたはカスタムフック（例: `test`）を指定できる。 | [hook-settings.md](./hook-settings.md) |
+| Remotes | 複数のリモート設定を提供して、lefthook の設定を多くのプロジェクトで共有できる。Lefthook は自動的にリモート設定をダウンロードしてローカルの `lefthook.yml` にマージする。 | [remotes.md](./remotes.md) |
+| Script Settings | `<source_dir>/<hook-name>/` ディレクトリに配置される独自の実行可能スクリプトの設定。スクリプトはプロジェクトルートから実行される。 | [script-settings.md](./script-settings.md) |
+| Source Dir | スクリプトファイルのディレクトリ設定。 | [source-dir.md](./source-dir.md) |

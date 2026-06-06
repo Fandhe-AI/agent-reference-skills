@@ -1,24 +1,24 @@
-# Supabase — Auth
+# Auth
 
 | Name | Description | Path |
 |------|-------------|------|
-| `overview` | Auth アーキテクチャ・フロー概要 | [./overview.md](./overview.md) |
-| `users` | ユーザー管理（作成・更新・削除・メタデータ） | [./users.md](./users.md) |
-| `identities` | ID 管理・アカウントリンク・アンリンク | [./identities.md](./identities.md) |
-| `sessions` | セッション管理（PKCE、Implicit Flow） | [./sessions.md](./sessions.md) |
-| `passwords` | パスワード認証・パスワードセキュリティ設定 | [./passwords.md](./passwords.md) |
-| `email-passwordless` | メール OTP / Magic Link によるパスワードレス認証 | [./email-passwordless.md](./email-passwordless.md) |
-| `phone-login` | 電話番号（SMS OTP）による認証 | [./phone-login.md](./phone-login.md) |
-| `social-login` | ソーシャルログイン（OAuth 全 19 プロバイダ） | [./social-login.md](./social-login.md) |
-| `sso-saml` | Enterprise SSO / SAML 認証 | [./sso-saml.md](./sso-saml.md) |
-| `anonymous-auth` | 匿名認証とユーザー変換 | [./anonymous-auth.md](./anonymous-auth.md) |
-| `mfa` | 多要素認証（TOTP、Phone） | [./mfa.md](./mfa.md) |
-| `auth-hooks` | Auth Hooks（6 種のサーバーサイドフック） | [./auth-hooks.md](./auth-hooks.md) |
-| `server-side` | サーバーサイド認証（SSR フレームワーク連携） | [./server-side.md](./server-side.md) |
-| `redirect-urls` | リダイレクト URL とディープリンク設定 | [./redirect-urls.md](./redirect-urls.md) |
-| `jwts` | JWT 構造・カスタムクレーム・署名鍵 | [./jwts.md](./jwts.md) |
-| `captcha` | CAPTCHA（hCaptcha / Turnstile）連携 | [./captcha.md](./captcha.md) |
-| `oauth-server` | Supabase OAuth Server（MCP 認証含む） | [./oauth-server.md](./oauth-server.md) |
-| `third-party-auth` | サードパーティ Auth 連携（Auth0, Clerk, Firebase 等） | [./third-party-auth.md](./third-party-auth.md) |
-| `rate-limits` | Auth レート制限の設定と対策 | [./rate-limits.md](./rate-limits.md) |
-| `error-codes` | Auth エラーコード一覧と対処法 | [./error-codes.md](./error-codes.md) |
+| 匿名認証 | 匿名ユーザーの作成と、認証済みアカウントへの変換。 | [anonymous-auth.md](./anonymous-auth.md) |
+| Auth Hooks | サーバーサイドで認証フローをカスタマイズする 6 種類のフック。 | [auth-hooks.md](./auth-hooks.md) |
+| CAPTCHA 連携 | hCaptcha と Cloudflare Turnstile による bot 対策。 | [captcha.md](./captcha.md) |
+| メール OTP / Magic Link | メールベースのパスワードレス認証（OTP コードとマジックリンク）。 | [email-passwordless.md](./email-passwordless.md) |
+| Auth エラーコード一覧 | Supabase Auth が返すエラーコードの一覧と対処法。 | [error-codes.md](./error-codes.md) |
+| ID 管理・アカウントリンク | auth.identities テーブルを使った複数プロバイダのアカウントリンク機能。 | [identities.md](./identities.md) |
+| JWT 構造 | Supabase Auth が発行する JWT のクレーム構造と RLS での活用。 | [jwts.md](./jwts.md) |
+| 多要素認証（MFA） | TOTP と Phone（SMS）を使った多要素認証の実装。 | [mfa.md](./mfa.md) |
+| Supabase OAuth Server | Supabase プロジェクトを OAuth 2.0 プロバイダとして機能させる。 | [oauth-server.md](./oauth-server.md) |
+| Auth アーキテクチャ概要 | Supabase Auth は GoTrue ベースの認証サーバーで、JWT によるセッション管理を提供する。 | [overview.md](./overview.md) |
+| パスワード認証 | メールアドレスまたは電話番号とパスワードによるサインアップ・サインイン。 | [passwords.md](./passwords.md) |
+| 電話番号認証 | SMS OTP による電話番号ベースの認証フロー。 | [phone-login.md](./phone-login.md) |
+| Auth レート制限 | 認証エンドポイント別のレート制限と対策。 | [rate-limits.md](./rate-limits.md) |
+| リダイレクト URL 設定 | 認証フロー後のリダイレクト先 URL の設定と管理。 | [redirect-urls.md](./redirect-urls.md) |
+| サーバーサイド認証（SSR） | @supabase/ssr パッケージを使ったサーバーサイドでの認証管理。 | [server-side.md](./server-side.md) |
+| セッション管理 | JWT ベースのセッション管理、PKCE フロー、リフレッシュトークン、認証状態の監視。 | [sessions.md](./sessions.md) |
+| ソーシャルログイン（OAuth） | OAuth 2.0 / OIDC プロバイダを使ったソーシャルログイン。 | [social-login.md](./social-login.md) |
+| Enterprise SSO / SAML | SAML 2.0 プロトコルを使ったエンタープライズ向けシングルサインオン。 | [sso-saml.md](./sso-saml.md) |
+| サードパーティ Auth 連携 | 外部認証プロバイダとの統合と移行パス。 | [third-party-auth.md](./third-party-auth.md) |
+| ユーザー管理 | auth.users テーブルの構造とユーザーの作成・更新・削除を行う方法。 | [users.md](./users.md) |

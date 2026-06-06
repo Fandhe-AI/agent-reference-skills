@@ -1,8 +1,8 @@
-# Supabase — Security
+# security
 
 | Name | Description | Path |
 |------|-------------|------|
-| `overview` | セキュリティ概要・責任共有モデル | [./overview.md](./overview.md) |
-| `rls` | Row Level Security (RLS) の詳細ガイド | [./rls.md](./rls.md) |
-| `ssl-and-network` | SSL 強制・ネットワーク制限 | [./ssl-and-network.md](./ssl-and-network.md) |
-| `compliance` | コンプライアンス（HIPAA、SOC2） | [./compliance.md](./compliance.md) |
+| コンプライアンス | Supabase は SOC2 Type II 認証を取得している。これは独立した監査法人によるセキュリティ統制の有効性の証明。 | [compliance.md](./compliance.md) |
+| セキュリティ概要 | Supabase とユーザーの間でセキュリティ責任が分担される。 | [overview.md](./overview.md) |
+| RLS 詳細ガイド | Row Level Security（RLS）は PostgreSQL のネイティブ機能で、行レベルのアクセス制御を実現する。 | [rls.md](./rls.md) |
+| SSL とネットワークセキュリティ | Supabase のデータベースはデフォルトで SSL 接続をサポートする。本番環境では SSL を強制することを推奨。 | [ssl-and-network.md](./ssl-and-network.md) |

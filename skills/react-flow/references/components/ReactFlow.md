@@ -82,6 +82,7 @@ The main React Flow component that renders the interactive node-based graph. It 
 | `connectOnClick` | `boolean` | `true` | Click-based connection creation |
 | `connectionMode` | `ConnectionMode` | `'strict'` | Connection validation mode |
 | `zIndexMode` | `ZIndexMode` | `'basic'` | Z-index calculation behavior |
+| `autoPanOnSelection` | `boolean` | `true` | Auto-pan viewport when cursor moves to edge while creating a selection box |
 
 ### Connection Line Props
 

@@ -1,6 +1,6 @@
-# パターン
+# patterns
 
 | Name | Description | Path |
-| --- | --- | --- |
-| Mocking | モックパターン集（vi.fn, vi.mock, vi.spyOn, 部分モック） | [./mocking.md](./mocking.md) |
-| Async | 非同期テスト・フェイクタイマーパターン集 | [./async.md](./async.md) |
+|------|-------------|------|
+| 非同期テスト・フェイクタイマーパターン | async/await テスト、Promise の resolves / rejects、フェイクタイマーの基本… | [async.md](./async.md) |
+| モックパターン | vi.fn() でモック関数を作成。戻り値設定、モジュールモック、部分モック。 | [mocking.md](./mocking.md) |

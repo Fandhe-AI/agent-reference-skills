@@ -4,17 +4,17 @@ Reference distilled from [The Rustonomicon](https://doc.rust-lang.org/nomicon/) 
 
 | Name | Description | Path |
 |------|-------------|------|
-| Meet Safe and Unsafe | The two Rust languages, the five unsafe superpowers, and the safe/unsafe boundary | [meet-safe-and-unsafe.md](./meet-safe-and-unsafe.md) |
-| Data Layout | Memory representation: alignment, padding, `repr` attributes, niche optimization | [data-layout.md](./data-layout.md) |
-| Ownership | Ownership, moves, borrows, lifetimes, borrow-checker rules, variance | [ownership.md](./ownership.md) |
-| Type Conversions | Coercions, `as` casts, and `mem::transmute` — safety rules and UB risks | [conversions.md](./conversions.md) |
-| Working with Uninitialized Memory | `MaybeUninit`, `ptr::write`/`ptr::read`, safe initialization patterns | [uninitialized.md](./uninitialized.md) |
-| Ownership Based Resource Management | RAII/OBRM, `Drop` semantics, drop order, `mem::forget`, leaking | [ownership-based-resource-management.md](./ownership-based-resource-management.md) |
-| Unwinding | Panics, exception safety, RAII guards, `catch_unwind`, FFI boundary rules | [unwinding.md](./unwinding.md) |
-| Concurrency and Races | Data races vs. race conditions, `Send`/`Sync`, `Mutex` poisoning | [concurrency.md](./concurrency.md) |
-| Implementing Vec | End-to-end `Vec<T>`: allocation, push/pop, `Drop`, iterators, ZSTs | [implementing-vec.md](./implementing-vec.md) |
-| Implementing Arc and Mutex | `Arc<T>` with atomic ref-counting; `UnsafeCell` for `Mutex<T>` | [implementing-arc-and-mutex.md](./implementing-arc-and-mutex.md) |
-| Foreign Function Interface | `extern "C"`, callbacks, `repr(C)`, linking, calling conventions, unwinding | [ffi.md](./ffi.md) |
-| Beneath std | `#![no_std]`, panic handler, `eh_personality`, custom allocators | [beneath-std.md](./beneath-std.md) |
-| Other reprs | `repr(C)`, `repr(u*)`, `repr(transparent)`, `repr(packed)`, `repr(align(n))` | [other-reprs.md](./other-reprs.md) |
-| Atomics | Memory orderings (Relaxed/Acquire/Release/SeqCst), happens-before, C++20 model | [atomics.md](./atomics.md) |
+| Atomics | Rust's atomic types provide lock-free, thread-safe operations. | [atomics.md](./atomics.md) |
+| Beneath std | Building Rust programs that do not depend on the standard library (`#![no_std]`). | [beneath-std.md](./beneath-std.md) |
+| Concurrency and Races | Rust's ownership system prevents data races at compile time. | [concurrency.md](./concurrency.md) |
+| Data Layout | Covers how Rust represents types in memory. | [data-layout.md](./data-layout.md) |
+| Foreign Function Interface (FFI) | FFI enables calling C libraries from Rust and exposing Rust functions to C… | [ffi.md](./ffi.md) |
+| Implementing Arc and Mutex | A guided implementation of `Arc<T>` demonstrating how to combine raw… | [implementing-arc-and-mutex.md](./implementing-arc-and-mutex.md) |
+| Implementing Vec | A guided walk-through of building `Vec<T>` from scratch using stable Rust. | [implementing-vec.md](./implementing-vec.md) |
+| Meet Safe and Unsafe | Rust contains two programming languages: Safe Rust and Unsafe Rust. | [meet-safe-and-unsafe.md](./meet-safe-and-unsafe.md) |
+| Other reprs | Alternative `#[repr(...)]` attributes beyond the default `repr(Rust)`. | [other-reprs.md](./other-reprs.md) |
+| Ownership | Rust's ownership system provides complete memory safety without a garbage… | [ownership.md](./ownership.md) |
+| Ownership Based Resource Management (OBRM / RAII) | OBRM is the Rust pattern where acquiring a resource means creating an… | [ownership-based-resource-management.md](./ownership-based-resource-management.md) |
+| Type Conversions | Rust provides multiple mechanisms for converting between types. | [conversions.md](./conversions.md) |
+| Unwinding | When Rust code panics, the thread unwinds: it walks back through the call… | [unwinding.md](./unwinding.md) |
+| Working with Uninitialized Memory | All runtime-allocated memory begins life as uninitialized. | [uninitialized.md](./uninitialized.md) |

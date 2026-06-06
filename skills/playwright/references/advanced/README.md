@@ -1,12 +1,10 @@
 # Advanced
 
-Playwright の上級トピック。
-
-| ファイル | 説明 | パス |
-|---------|------|------|
-| typescript | TypeScript（tsconfig, パスマッピング, 手動コンパイル） | [./typescript.md](./typescript.md) |
-| browsers | ブラウザ管理（インストール, チャネル, Chromium/Firefox/WebKit） | [./browsers.md](./browsers.md) |
-| chrome-extensions | Chrome 拡張テスト（persistentContext, Manifest v3, フィクスチャ） | [./chrome-extensions.md](./chrome-extensions.md) |
-| component-testing | コンポーネントテスト 実験的（mount, React/Vue/Svelte） | [./component-testing.md](./component-testing.md) |
-| service-workers | Service Worker（block/allow, ルーティング, ネットワークイベント） | [./service-workers.md](./service-workers.md) |
-| evaluate | JavaScript 評価・ハンドル（evaluate, JSHandle, ElementHandle, addInitScript） | [./evaluate.md](./evaluate.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| Browsers | Playwright downloads and manages browser binaries for Chromium, Firefox, and WebKit. | [browsers.md](./browsers.md) |
+| Chrome Extensions | Playwright supports testing Chrome extensions in Chromium only. | [chrome-extensions.md](./chrome-extensions.md) |
+| Component Testing | Playwright Test can mount and test individual UI components in a real browser. | [component-testing.md](./component-testing.md) |
+| Evaluate and Handles | Playwright scripts run in a Node.js environment, separate from the browser page. | [evaluate.md](./evaluate.md) |
+| Service Workers | Playwright provides APIs for interacting with service workers. | [service-workers.md](./service-workers.md) |
+| TypeScript | Playwright Test has built-in TypeScript support. | [typescript.md](./typescript.md) |

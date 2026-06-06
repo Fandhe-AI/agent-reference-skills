@@ -67,12 +67,43 @@ const res = await client.search.$get(
 | `InferRequestType` | Extract request type from a client method |
 | `InferResponseType` | Extract response type from a client method |
 | `parseResponse()` | Type-safe response parsing with Content-Type handling |
+| `ApplyGlobalResponse` | Merge global error handler response types into all routes |
 
 ```ts
 import { InferRequestType, InferResponseType } from 'hono/client'
 
 type PostRequest = InferRequestType<typeof client.posts.$post>
 type PostResponse = InferResponseType<typeof client.posts.$post, 201>
+```
+
+### `ApplyGlobalResponse`
+
+The RPC client does not automatically infer response types from global error handlers (`app.onError`). `ApplyGlobalResponse` merges those error types into all routes.
+
+```ts
+import type { ApplyGlobalResponse } from 'hono/client'
+
+type AppType = ApplyGlobalResponse<typeof app, { 500: { json: { message: string } } }>
+const client = hc<AppType>('http://localhost:8787/')
+```
+
+## Custom Fetch and Query Serialization
+
+```ts
+// Custom fetch (e.g., Cloudflare Service Bindings)
+const client = hc<AppType>('/', { fetch: env.ANOTHER_SERVICE.fetch.bind(env.ANOTHER_SERVICE) })
+
+// Custom query serialization (e.g., bracket notation for arrays)
+const client = hc<AppType>('/', {
+  buildSearchParams(record) {
+    const params = new URLSearchParams()
+    for (const [k, v] of Object.entries(record)) {
+      if (Array.isArray(v)) v.forEach((val) => params.append(`${k}[]`, val))
+      else params.set(k, String(v))
+    }
+    return params
+  },
+})
 ```
 
 ## URL Helpers

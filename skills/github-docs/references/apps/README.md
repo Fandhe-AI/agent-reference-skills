@@ -1,19 +1,11 @@
-# GitHub Apps リファレンス
+# apps
 
-GitHub Apps に関するリファレンスドキュメントの目次。
-
-## ドキュメント一覧
-
-| ファイル | 内容 | 説明 |
-|---------|------|------|
-| [about.md](./about.md) | GitHub Apps 概要 | App の種類、ユースケース、権限モデル |
-| [creating.md](./creating.md) | GitHub App 作成 | 登録手順、必須フィールド、設定項目 |
-| [authentication.md](./authentication.md) | 認証フロー | JWT・IAT・UAT の 3 つの認証方式 |
-| [permissions-events.md](./permissions-events.md) | パーミッションとイベント | 利用可能な権限とイベント |
-| [installation.md](./installation.md) | インストールフロー | サードパーティからのインストール手順 |
-| [webhooks.md](./webhooks.md) | App Webhook | App 用 Webhook イベントとペイロード |
-| [oauth-apps.md](./oauth-apps.md) | OAuth Apps との比較 | 主要な違いと移行パス |
-
-## 公式ドキュメント
-
-- [GitHub Apps ドキュメント](https://docs.github.com/en/apps)
+| Name | Description | Path |
+|------|-------------|------|
+| GitHub Apps 概要 | GitHub Apps は GitHub の機能を拡張するための公式に推奨されるインテグレーション方式。 | [about.md](./about.md) |
+| GitHub App 認証フロー | GitHub App は用途に応じて 3 つの認証方式を使い分ける。 | [authentication.md](./authentication.md) |
+| GitHub App 作成 | 個人アカウントまたは自分が Owner の Organization に登録できる。 | [creating.md](./creating.md) |
+| GitHub App インストールフロー | インストール方法。 | [installation.md](./installation.md) |
+| OAuth Apps との比較 | GitHub は新規開発では GitHub Apps の使用を推奨している。 | [oauth-apps.md](./oauth-apps.md) |
+| パーミッションとイベント | GitHub App の権限は 3 つのカテゴリに分類される。 | [permissions-events.md](./permissions-events.md) |
+| GitHub App Webhook | GitHub App は 1 つの Webhook エンドポイントを持ち、App がサブスクライブしたイベントの通知を受信する。 | [webhooks.md](./webhooks.md) |

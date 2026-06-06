@@ -15,6 +15,7 @@
 
 - 単独ではデプロイ不可
 - 「Internal Packages」とも呼ばれる
+- 公式ドキュメントでは `internal-packages` として独立ページ化（`/docs/core-concepts/internal-packages`）
 
 ## Internal Packages の3つのコンパイル戦略
 

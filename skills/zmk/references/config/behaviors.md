@@ -30,8 +30,13 @@ Default nodes: `&lt` (layer-tap), `&mt` (mod-tap).
 |----------|------|---------|-------------|
 | `tapping-term-ms` | int | — | Milliseconds before triggering hold |
 | `quick-tap-ms` | int | -1 | Window for double-tap to force tap; -1 disables |
+| `require-prior-idle-ms` | int | -1 | Force tap if another key was released within this many ms; -1 disables |
 | `flavor` | string | — | One of: `hold-preferred`, `balanced`, `tap-preferred`, `tap-unless-interrupted` |
-| `hold-trigger-key-positions` | array | — | Key indices that trigger tap when non-listed keys are pressed |
+| `hold-trigger-key-positions` | array | — | Key indices that trigger hold when listed keys are pressed (positional hold-tap) |
+| `hold-trigger-on-release` | bool | false | Evaluate positional trigger positions on key release instead of press |
+| `hold-while-undecided` | bool | false | Immediately activate hold behavior while decision is pending |
+| `hold-while-undecided-linger` | bool | false | Keep hold active until after tap behavior completes |
+| `retro-tap` | bool | false | Trigger tap behavior if released before any other key was pressed |
 
 ### Macro (`zmk,behavior-macro` / `zmk,behavior-macro-one-param` / `zmk,behavior-macro-two-param`)
 

@@ -14,6 +14,8 @@
 | `Workplane.rotateAboutCenter` | `rotateAboutCenter(axisEndPoint, angleDegrees)` | Rotate stack items around their center by the given angle |
 | `Workplane.translate` | `translate(vec)` | Return a copy of stack items moved by a translation vector |
 | `Workplane.mirror` | `mirror(mirrorPlane="XY", basePointVector=(0,0,0), union=False)` | Mirror stack items about a plane |
+| `Workplane.scale` | `scale(factor)` | Scale all stack items by a uniform factor |
+| `Workplane.thicken` | `thicken(thickness, clean=True)` | Thicken selected faces into solids |
 
 ## Signature / Usage
 
@@ -98,6 +100,8 @@ result = (
 - `split()` uses the active workplane as the cutting plane.
 - `translate()` and `rotate()` create new objects; they do not modify in-place.
 - `mirror(union=True)` automatically unions the mirrored copy back into the original solid.
+- `scale(factor)` applies a uniform scale to all stack items.
+- `thicken(thickness)` offsets the selected faces to produce solid geometry; requires face selection before the call.
 
 ## Related
 

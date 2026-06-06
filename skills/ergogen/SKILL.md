@@ -16,38 +16,68 @@ Ergogen — エルゴノミックキーボードの設計を YAML/JSON 設定か
 Points / Outlines / Cases / PCBs を宣言的に記述し、SVG / DXF / JSCAD / KiCad 形式で出力する。
 公式ドキュメント (docs.ergogen.xyz) 全 12 ページを構造化。
 
-## ディレクトリ構造
+## ディレクトリ構成
 
-```
-.claude/skills/ergogen/
-├── SKILL.md                                ← このファイル（エントリーポイント）
-└── references/
-    ├── guide/README.md                     ← 利用ワークフロー索引（3 ページ）
-    ├── config/README.md                    ← 設定構造・前処理索引（2 ページ）
-    ├── sections/README.md                  ← 6 トップレベルセクション索引（6 ページ）
-    └── formats/README.md                   ← 出力ファイル形式索引（1 ページ）
+```text
+skills/ergogen/
+  SKILL.md
+  references/
+    guide/
+      README.md
+      getting-started.md
+      next-steps.md
+      usage.md
+    config/
+      README.md
+      overview.md
+      preprocessing.md
+    sections/
+      README.md
+      metadata.md
+      units.md
+      points.md
+      outlines.md
+      cases.md
+      pcbs.md
+    formats/
+      README.md
+      file-formats.md
+  samples/
+    README.md
+    basic-layout.md
+    board-outline.md
+    case-3d.md
+    custom-units.md
+    pcb-footprints.md
+    preprocessing-inheritance.md
+    split-mirror.md
+    thumb-cluster.md
+  scripts/
+    README.md
+    install.md
+    cli.md
 ```
 
 ## 探索手順
 
-1. ユーザーのタスクに最も関連するカテゴリを特定する
-2. そのカテゴリの `README.md` を読む
-3. README.md 内の一覧から必要な個別ファイルを選んで読む
-4. 必要に応じて関連ページのリンクを辿る
+タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-## カテゴリ → README.md マッピング
+1. 下記マッピング表でタスクに対応するカテゴリを探す
+2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
+3. 該当ページの `.md` を Read して詳細を確認する
 
-| タスク例 | カテゴリ | README パス |
-|---------|---------|------------|
-| Ergogen の概要・最初の設定例・推奨ワークフロー | guide | [references/guide/README.md](./references/guide/README.md) |
-| CLI (`ergogen input.yaml -o out`) / Web アプリでの実行 | guide | [references/guide/README.md](./references/guide/README.md) |
-| 発展的トピック・コミュニティ（Discord, GitHub）導線 | guide | [references/guide/README.md](./references/guide/README.md) |
-| 6 トップレベルセクション（meta/units/points/outlines/cases/pcbs）の責務 | config | [references/config/README.md](./references/config/README.md) |
-| Preprocessing: `$extends` / `$params` / `$args` / `$skip` / `$unset`, 数式評価 | config | [references/config/README.md](./references/config/README.md) |
-| `meta` セクション: name / version / author / engine | sections | [references/sections/README.md](./references/sections/README.md) |
-| `units` セクション: 組み込み単位（u, cx, cy）、数式記法、`$default_*` | sections | [references/sections/README.md](./references/sections/README.md) |
-| `points` セクション: Anchors / Zones / Adjustments、column-stagger、mirror | sections | [references/sections/README.md](./references/sections/README.md) |
-| `outlines` セクション: rectangle / circle / polygon / outline 参照、operations、exports | sections | [references/sections/README.md](./references/sections/README.md) |
-| `cases` セクション: extrude、shift / rotate、3D ブーリアン合成 | sections | [references/sections/README.md](./references/sections/README.md) |
-| `pcbs` セクション: footprints、nets、traces、KiCad 出力 | sections | [references/sections/README.md](./references/sections/README.md) |
-| 出力ファイル形式（SVG / DXF / JSCAD / KiCad）と推奨ビューア | formats | [references/formats/README.md](./references/formats/README.md) |
+## タスク → カテゴリ マッピング
+
+| タスク | カテゴリ | 参照 README |
+|--------|---------|------------|
+| Ergogen の概要・最初の設定例を知りたい | guide | [references/guide/README.md](references/guide/README.md) |
+| CLI・Web アプリでの実行方法を知りたい | guide | [references/guide/README.md](references/guide/README.md) |
+| コミュニティ・実例リポジトリの導線を知りたい | guide | [references/guide/README.md](references/guide/README.md) |
+| 6 トップレベルセクションの責務・設定ファイル構造を知りたい | config | [references/config/README.md](references/config/README.md) |
+| `$extends` / `$params` / `$args` / `$skip` / `$unset` などの前処理を知りたい | config | [references/config/README.md](references/config/README.md) |
+| `meta` / `units` / `points` / `outlines` / `cases` / `pcbs` セクションを知りたい | sections | [references/sections/README.md](references/sections/README.md) |
+| Anchors / Zones / Adjustments / mirror などキー配置の詳細を知りたい | sections | [references/sections/README.md](references/sections/README.md) |
+| footprints / nets / traces / KiCad 出力を知りたい | sections | [references/sections/README.md](references/sections/README.md) |
+| 出力ファイル形式（SVG / DXF / JSCAD / KiCad）を知りたい | formats | [references/formats/README.md](references/formats/README.md) |
+| 典型的なレイアウト・ケース・PCB の設定例を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

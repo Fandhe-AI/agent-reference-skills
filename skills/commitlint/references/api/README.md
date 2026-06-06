@@ -1,10 +1,8 @@
-# API
+# api
 
-commitlint の Node.js API リファレンス。
-
-| ファイル | 説明 | パス |
-|---------|------|------|
-| load | @commitlint/load — 共有設定の読み込み | [./load.md](./load.md) |
-| read | @commitlint/read — Git コミットメッセージの読み取り | [./read.md](./read.md) |
-| lint | @commitlint/lint — コミットメッセージの検証 | [./lint.md](./lint.md) |
-| format | @commitlint/format — 検証結果のフォーマット | [./format.md](./format.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| @commitlint/format | lint 結果の Report を人間が読める文字列にフォーマットする。 | [format.md](./format.md) |
+| @commitlint/lint | コミットメッセージをルールに基づいて検証する。 | [lint.md](./lint.md) |
+| @commitlint/load | 共有設定や inline ルールを解決し、最終的な Config オブジェクトを返す。 | [load.md](./load.md) |
+| @commitlint/read | Git リポジトリからコミットメッセージを読み取る。 | [read.md](./read.md) |

@@ -1,9 +1,9 @@
-# Guides — Frameworks
+# guides-frameworks
 
-| 名前 | 説明 | パス |
-| --- | --- | --- |
-| Next.js | Next.js 統合（create-next-app、basePath、マイクロフロントエンド） | [./nextjs.md](./nextjs.md) |
-| Nuxt | Nuxt 統合（nuxi、with-vue-nuxt テンプレート、base 設定） | [./nuxt.md](./nuxt.md) |
-| SvelteKit | SvelteKit 統合（sv create、with-svelte テンプレート、base 設定） | [./sveltekit.md](./sveltekit.md) |
-| Vite | Vite 統合（with-vite テンプレート、base 設定） | [./vite.md](./vite.md) |
-| Framework Bindings | ライブラリのフレームワークバインディング（peerDependencies、エントリーポイント分割） | [./framework-bindings.md](./framework-bindings.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| ライブラリのフレームワークバインディング | ライブラリパッケージ内でフレームワーク API を使う際に、peerDependencies として宣言する手法。 | [framework-bindings.md](./framework-bindings.md) |
+| Next.js | クイックスタート、内部パッケージの参照、タスクのカスタマイズ、マイクロフロントエンド設定。 | [nextjs.md](./nextjs.md) |
+| Nuxt | クイックスタート、内部パッケージの参照、マイクロフロントエンド設定。 | [nuxt.md](./nuxt.md) |
+| SvelteKit | クイックスタート、内部パッケージの参照、マイクロフロントエンド設定。 | [sveltekit.md](./sveltekit.md) |
+| Vite | クイックスタート、内部パッケージの参照、マイクロフロントエンド設定、Module Federation。 | [vite.md](./vite.md) |

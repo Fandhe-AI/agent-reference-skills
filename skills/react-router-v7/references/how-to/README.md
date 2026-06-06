@@ -1,28 +1,28 @@
-# How-To Guides
+# How To
 
 | Name | Description | Path |
 |------|-------------|------|
-| Accessibility | Focus management and screen-reader support for client-side routing | [./accessibility.md](./accessibility.md) |
-| Client Data | `clientLoader` / `clientAction` for browser-side data fetching and mutation | [./client-data.md](./client-data.md) |
-| Error Boundary | Catch loader/action/component errors and render fallback UI | [./error-boundary.md](./error-boundary.md) |
-| Error Reporting | Send server and client errors to external monitoring services | [./error-reporting.md](./error-reporting.md) |
-| Fetchers | Submit forms and load data without triggering navigation | [./fetchers.md](./fetchers.md) |
-| File Route Conventions | File-system based routing with `@react-router/fs-routes` | [./file-route-conventions.md](./file-route-conventions.md) |
-| File Uploads | Handle multipart file uploads with streaming and local storage | [./file-uploads.md](./file-uploads.md) |
-| Form Validation | Server-side validation returning inline errors without navigation | [./form-validation.md](./form-validation.md) |
-| Headers | Set HTTP response headers from route modules and `entry.server.tsx` | [./headers.md](./headers.md) |
-| Instrumentation | Add observability (logging, tracing) without modifying route handlers | [./instrumentation.md](./instrumentation.md) |
-| Middleware | Run code before/after response generation using `v8_middleware` | [./middleware.md](./middleware.md) |
-| Navigation Blocking | Block navigation with `useBlocker` when users have unsaved changes | [./navigation-blocking.md](./navigation-blocking.md) |
-| Pre-Rendering | Render pages at build time for static content | [./pre-rendering.md](./pre-rendering.md) |
-| Presets | Package React Router config for tools and hosting providers | [./presets.md](./presets.md) |
-| React Server Components | Experimental RSC support with server functions and mixed component trees | [./react-server-components.md](./react-server-components.md) |
-| Resource Routes | Serve PDFs, JSON APIs, and webhooks without a UI component | [./resource-routes.md](./resource-routes.md) |
-| Route Module Type Safety | Set up generated TypeScript types for params and loader data | [./route-module-type-safety.md](./route-module-type-safety.md) |
-| Security | CSP nonce configuration for inline scripts | [./security.md](./security.md) |
-| Server Bundles | Split server build into multiple bundles per route group | [./server-bundles.md](./server-bundles.md) |
-| SPA Mode | Build a Single Page Application with `ssr: false` | [./spa.md](./spa.md) |
-| Status Codes | Return HTTP status codes from loaders and actions via `data()` | [./status.md](./status.md) |
-| Suspense (Streaming) | Defer non-critical data with unawaited promises and `<Await>` | [./suspense.md](./suspense.md) |
-| Using Handle | Attach route metadata consumed by ancestors via `useMatches()` | [./using-handle.md](./using-handle.md) |
-| View Transitions | Animate page transitions using the View Transitions API | [./view-transitions.md](./view-transitions.md) |
+| Accessibility | React Router renders standard HTML elements by default, providing built-in browser accessibility… | [accessibility.md](./accessibility.md) |
+| Client Data | Use `clientLoader` and `clientAction` to fetch and mutate data directly in the browser. | [client-data.md](./client-data.md) |
+| Error Boundary | Error boundaries automatically catch errors thrown in loaders, actions, and components, rendering… | [error-boundary.md](./error-boundary.md) |
+| Error Reporting | Send errors to external monitoring services from both the server and the client. | [error-reporting.md](./error-reporting.md) |
+| Fetchers | Fetchers allow loading and mutating data without causing a navigation. | [fetchers.md](./fetchers.md) |
+| File Route Conventions | The `@react-router/fs-routes` package enables file-system based routing where filenames in… | [file-route-conventions.md](./file-route-conventions.md) |
+| File Uploads | Handle multipart form file uploads in React Router using `@remix-run/form-data-parser` for… | [file-uploads.md](./file-uploads.md) |
+| Form Validation | Validate form input server-side in an action and return errors to the UI without navigating away. | [form-validation.md](./form-validation.md) |
+| Headers | Set HTTP response headers from route modules using the `headers` export. | [headers.md](./headers.md) |
+| Instrumentation | Add observability (logging, error reporting, performance tracing) by wrapping request handlers… | [instrumentation.md](./instrumentation.md) |
+| Middleware | Run code before and after response generation for matched routes. | [middleware.md](./middleware.md) |
+| Navigation Blocking | Prevent accidental navigation away from a page when users have unsaved changes, and show a custom… | [navigation-blocking.md](./navigation-blocking.md) |
+| Pre-Rendering | Render pages at build time instead of runtime to speed up initial loads for static content. | [pre-rendering.md](./pre-rendering.md) |
+| Presets | Presets package React Router configuration so that tools and hosting providers can configure the… | [presets.md](./presets.md) |
+| React Server Components | Experimental support for React Server Components (RSC), enabling server-side rendering with direct… | [react-server-components.md](./react-server-components.md) |
+| Resource Routes | Routes that serve non-UI resources (PDFs, images, JSON APIs, webhooks) by exporting a `loader`… | [resource-routes.md](./resource-routes.md) |
+| Route Module Type Safety | React Router automatically generates route-specific TypeScript types (params, loader data, etc.)… | [route-module-type-safety.md](./route-module-type-safety.md) |
+| Security | Key security considerations for React Router applications, focusing on Content Security Policy… | [security.md](./security.md) |
+| Server Bundles | Split the server build into multiple bundles, each handling a subset of routes. | [server-bundles.md](./server-bundles.md) |
+| SPA Mode | Build a Single Page Application with React Router by disabling runtime server rendering (`ssr:… | [spa.md](./spa.md) |
+| Status Codes | Set HTTP response status codes from loaders and actions using the `data()` utility. | [status.md](./status.md) |
+| Suspense (Streaming) | Defer non-critical data by returning unawaited promises from loaders, unblocking the initial… | [suspense.md](./suspense.md) |
+| Using Handle | The `handle` export lets routes attach arbitrary metadata that ancestor components can read via… | [using-handle.md](./using-handle.md) |
+| View Transitions | Animate between page transitions using the browser's View Transitions API. | [view-transitions.md](./view-transitions.md) |

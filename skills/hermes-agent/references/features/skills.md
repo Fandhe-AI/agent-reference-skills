@@ -66,6 +66,29 @@ Agents autonomously create and update skills via the `skill_manage` tool when:
 
 Available actions: `create`, `patch` (preferred), `edit`, `delete`, `write_file`, `remove_file`.
 
+## Skill Bundles
+
+Group multiple skills under a single slash command for recurring task combinations.
+
+```bash
+# Create a bundle
+hermes bundles create backend-dev \
+  --skill github-code-review \
+  --skill test-driven-development
+```
+
+Bundles are stored in `~/.hermes/skill-bundles/<slug>.yaml`. The filename stem becomes the slash command (`/backend-dev`).
+
+## Bundled Skills (Opt-In/Out)
+
+Hermes ships with bundled skills seeded on install and every `hermes update`.
+
+```bash
+hermes skills opt-out            # Stop future seeding
+hermes skills opt-out --remove   # Delete unmodified bundled skills
+hermes skills reset skill-name   # Restore a bundled skill to baseline
+```
+
 ## Skills Hub
 
 | Source | Description | Trust |
@@ -74,14 +97,17 @@ Available actions: `create`, `patch` (preferred), `edit`, `delete`, `write_file`
 | `skills-sh` | Vercel's public directory | Community |
 | `well-known` | URL discovery via `/.well-known/skills/index.json` | Community |
 | `github` | Direct repo installs | Community |
-| `clawhub`, `lobehub`, `claude-marketplace` | Community marketplaces | Community |
+| `clawhub`, `lobehub`, `browse.sh` | Community marketplaces | Community |
+| Direct HTTPS URL | Install from any URL | Community |
 
 ```bash
+hermes skills browse              # Browse all hub skills (official first)
 hermes skills browse --source official
 hermes skills search kubernetes --source skills-sh
 hermes skills install openai/skills/k8s
 hermes skills check    # detect upstream updates
 hermes skills update   # reinstall changed skills
+hermes skills reset skill-name   # restore bundled version
 ```
 
 ## Security & Trust Levels

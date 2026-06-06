@@ -1,5 +1,7 @@
 # Frameworks
 
+> **Note:** This page has moved to `/docs/configure/integration/frameworks` in the current documentation.
+
 Storybook framework packages automatically configure Storybook for popular development environments.
 
 ## Overview

@@ -65,8 +65,10 @@ Use `combine` parameter shorthand on creation methods:
 | `rect` | `rect(xLen, yLen, centered=True)` | Rectangle |
 | `circle` | `circle(radius)` | Circle |
 | `ellipse` | `ellipse(x_radius, y_radius)` | Ellipse |
+| `polygon` | `polygon(nSides, diameter)` | Regular polygon |
 | `slot2D` | `slot2D(length, diameter, angle=0)` | Rounded slot |
 | `polyline` | `polyline(listOfXYTuple)` | Connected line segments |
+| `bezier` | `bezier(listOfXYTuple)` | Bézier curve through control points |
 
 ### Positioning
 

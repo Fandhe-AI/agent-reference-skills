@@ -26,6 +26,7 @@ serve({ fetch: app.fetch, port: 8787 })
 | `port` | `number` | Port to listen on (default: `3000`) |
 | `createServer` | `Function` | Custom server factory (e.g., `http2.createServer`) |
 | `serverOptions` | `object` | Options passed to the server factory |
+| `websocket` | `WebSocketServer` | A `ws.WebSocketServer` instance created with `{ noServer: true }` for WebSocket support |
 
 ## Notes
 
@@ -34,6 +35,7 @@ serve({ fetch: app.fetch, port: 8787 })
 - HTTP/2 is supported by passing `createServer` / `createSecureServer` from `node:http2`
 - Graceful shutdown: `serve()` returns a server instance; call `server.close()` on `SIGINT`/`SIGTERM`
 - Default dev port: `3000`
+- WebSocket: `@hono/node-ws` is deprecated. Use `upgradeWebSocket` from `@hono/node-server` with the `websocket` serve option instead (requires `ws` package)
 
 ## Related
 

@@ -165,11 +165,36 @@ DNS 解決に問題がある場合（VPN 環境など）に `https` を指定す
 | `supabase secrets` | シークレット管理 |
 | `supabase storage` | Storage 管理 |
 
+### ブランチ管理
+
+| コマンド | 説明 |
+|---------|------|
+| `supabase branches create` | プレビューブランチ作成 |
+| `supabase branches list` | ブランチ一覧 |
+| `supabase branches get` | ブランチ詳細取得 |
+| `supabase branches update` | ブランチ更新 |
+| `supabase branches pause` | ブランチ一時停止 |
+| `supabase branches unpause` | ブランチ再開 |
+| `supabase branches delete` | ブランチ削除 |
+
+### シード
+
+| コマンド | 説明 |
+|---------|------|
+| `supabase seed buckets` | 設定ファイルからストレージバケットをシード |
+
+### 設定管理
+
+| コマンド | 説明 |
+|---------|------|
+| `supabase config push` | ローカル config.toml をリモートプロジェクトに反映 |
+
 ### その他
 
 | コマンド | 説明 |
 |---------|------|
-| `supabase test db` | DB テスト実行 |
+| `supabase test db` | DB テスト実行 (pgTAP) |
+| `supabase test new` | テストファイル新規作成 |
 | `supabase sso` | SSO 設定 |
 | `supabase network-bans` | ネットワークバン管理 |
 | `supabase network-restrictions` | ネットワーク制限 |

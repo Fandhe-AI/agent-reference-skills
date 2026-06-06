@@ -19,6 +19,9 @@ hermes [global-options] <command> [subcommand/options]
 | `--worktree` | `-w` | Initialize isolated git worktree for parallel workflows |
 | `--yolo` | | Suppress dangerous-command approval requests |
 | `--pass-session-id` | | Embed session ID in system prompt |
+| `--tui` | | Launch terminal UI mode |
+| `--ignore-user-config` | | Skip personal config loading |
+| `--ignore-rules` | | Skip auto-injection of context files |
 
 ## Top-Level Commands
 
@@ -52,6 +55,28 @@ hermes [global-options] <command> [subcommand/options]
 | `hermes version` | Version details display |
 | `hermes update` | Dependency refresh |
 | `hermes uninstall` | System removal |
+| `hermes lsp` | Language Server Protocol integration |
+| `hermes dashboard` | Web-based configuration UI |
+| `hermes proxy` | Local OpenAI-compatible HTTP proxy |
+| `hermes send` | One-shot messaging without agent loop |
+| `hermes bundles` | Skill bundle (grouped slash commands) management |
+| `hermes curator` | Auxiliary-model skill review and maintenance |
+| `hermes backup` | Hermes home snapshot creation |
+| `hermes import` | Restore from backup archive |
+| `hermes checkpoints` | Filesystem checkpoint (rollback) management |
+| `hermes kanban` | Multi-profile collaboration board |
+| `hermes dump` | Copy-pasteable setup summary |
+| `hermes debug` | Upload logs to paste service for support |
+| `hermes logs` | View/tail agent and gateway logs |
+| `hermes prompt-size` | System prompt byte-budget breakdown |
+| `hermes security` | Supply-chain vulnerability audit |
+| `hermes fallback` | Provider fallback chain management |
+| `hermes hooks` | Shell-script hook inspection and management |
+| `hermes portal` | Nous Portal auth/subscription status |
+| `hermes secrets` | External secret manager integration |
+| `hermes migrate` | Config rewriting for deprecated settings |
+| `hermes slack` | Slack app manifest generation |
+| `hermes computer-use` | Computer Use backend management (macOS) |
 
 ---
 
@@ -79,7 +104,7 @@ hermes chat [options]
 | `--source <tag>` | | Session source tag (default: `cli`) |
 | `--max-turns <N>` | | Tool iteration limit (default: 90) |
 
-**`--provider` values:** `auto` `openrouter` `nous` `openai-codex` `copilot-acp` `copilot` `anthropic` `huggingface` `zai` `kimi-coding` `minimax` `minimax-cn` `deepseek` `ai-gateway` `opencode-zen` `opencode-go` `kilocode` `alibaba`
+**`--provider` values:** `auto` `openrouter` `nous` `openai-codex` `copilot-acp` `copilot` `anthropic` `huggingface` `zai` `kimi-coding` `minimax` `minimax-cn` `deepseek` `ai-gateway` `opencode-zen` `opencode-go` `kilocode` `alibaba` (and others — run `hermes model` for the full current list)
 
 ---
 
@@ -530,6 +555,378 @@ hermes completion [bash|zsh]
 ```
 
 Outputs shell completion script to stdout.
+
+---
+
+## `hermes lsp`
+
+```bash
+hermes lsp <subcommand>
+```
+
+Language Server Protocol integration for semantic diagnostics in file operations.
+
+| Subcommand | Description |
+|------------|-------------|
+| `status` | Show LSP status |
+| `list` | List available language servers |
+| `install <server>` | Install a specific language server |
+| `install-all` | Install all supported language servers |
+| `restart` | Restart running servers |
+| `which` | Show server binary locations |
+
+---
+
+## `hermes dashboard`
+
+```bash
+hermes dashboard [options]
+hermes dashboard register
+```
+
+Launches a web-based configuration UI (default port: 9119).
+
+| Flag | Description |
+|------|-------------|
+| `--port <n>` | Listen port |
+| `--host <host>` | Bind host |
+| `--no-open` | Do not auto-open browser |
+| `--insecure` | Allow insecure connections |
+
+`register` integrates with Nous Portal OAuth.
+
+---
+
+## `hermes proxy`
+
+```bash
+hermes proxy <subcommand> [options]
+```
+
+Local OpenAI-compatible HTTP server forwarding to OAuth providers.
+
+| Subcommand | Description |
+|------------|-------------|
+| `start` | Start proxy (`--provider`, `--host`, `--port`) |
+| `status` | Show proxy status |
+| `providers` | List available providers |
+
+---
+
+## `hermes send`
+
+```bash
+hermes send -t <target> [options] [message]
+```
+
+One-shot message delivery without invoking the agent loop.
+
+| Flag | Alias | Description |
+|------|-------|-------------|
+| `--to <target>` | `-t` | Destination platform/channel |
+| `--file <path>` | | Read message from file |
+| `--subject <text>` | `-s` | Message subject |
+| `--list` | `-l` | List available targets |
+| `--quiet` | `-q` | Suppress output |
+| `--json` | | Machine-readable output |
+
+---
+
+## `hermes bundles`
+
+```bash
+hermes bundles <subcommand>
+```
+
+Groups multiple skills under a single `/<bundle-name>` slash command.
+
+| Subcommand | Description |
+|------------|-------------|
+| `list` | Display all bundles |
+| `show <name>` | Bundle details |
+| `create <name>` | Create a bundle |
+| `delete <name>` | Remove a bundle |
+
+Bundles stored at `~/.hermes/skill-bundles/<slug>.yaml`.
+
+---
+
+## `hermes curator`
+
+```bash
+hermes curator <subcommand>
+```
+
+Auxiliary-model background process that reviews, prunes, and consolidates agent-created skills.
+
+| Subcommand | Description |
+|------------|-------------|
+| `status` | Curator status |
+| `run` | Trigger a review cycle |
+| `backup` | Snapshot current skills |
+| `rollback` | Restore previous snapshot |
+| `pause` | Suspend curator |
+| `resume` | Resume curator |
+| `pin <skill>` | Protect skill from pruning |
+| `archive <skill>` | Move skill to archive |
+| `prune` | Delete archived skills |
+
+---
+
+## `hermes backup` / `hermes import`
+
+```bash
+hermes backup [-o <output>] [-q] [-l <label>]
+hermes import <archive> [--name <name>]
+```
+
+Create and restore Hermes home snapshots (config, skills, sessions, data).
+
+`backup` uses SQLite backup API — safe to run while Hermes is active.
+
+| Flag | Description |
+|------|-------------|
+| `-o / --output <path>` | Output file path |
+| `-q / --quick` | Skip session data |
+| `-l / --label <text>` | Archive label |
+
+---
+
+## `hermes checkpoints`
+
+```bash
+hermes checkpoints <subcommand>
+```
+
+Manages the shadow git store used by `/rollback` to restore filesystem state.
+
+| Subcommand | Description |
+|------------|-------------|
+| `status` | Store statistics |
+| `prune` | Remove old checkpoints |
+| `clear` | Delete all checkpoints |
+| `clear-legacy` | Remove pre-migration checkpoints |
+
+---
+
+## `hermes kanban`
+
+```bash
+hermes kanban [--board <slug>] <subcommand>
+```
+
+Multi-profile collaboration board with tasks, dependencies, and dispatcher integration.
+
+| Subcommand | Description |
+|------------|-------------|
+| `init` | Initialize board |
+| `boards list/create/switch/rename/rm` | Board management |
+| `create` | Create task |
+| `list` | List tasks |
+| `show <id>` | Task details |
+| `assign <id> <profile>` | Assign task |
+| `link <id> <dep-id>` | Add dependency |
+| `claim <id>` | Claim task for current profile |
+| `comment <id> <text>` | Add comment |
+| `complete <id>` | Mark complete |
+| `dispatch` | Send tasks to assigned profiles |
+| `specify <id>` | Refine task spec with agent |
+| `decompose <id>` | Break into subtasks |
+
+---
+
+## `hermes dump`
+
+```bash
+hermes dump [--show-keys]
+```
+
+Produces a copy-pasteable setup summary (version, OS, model, API key status, features, services). `--show-keys` includes partial key values.
+
+---
+
+## `hermes debug`
+
+```bash
+hermes debug share [options]
+```
+
+Uploads system info and logs to a paste service for support.
+
+| Flag | Description |
+|------|-------------|
+| `--lines <n>` | Number of log lines to include |
+| `--expire <duration>` | Paste expiry duration |
+| `--local` | Print locally instead of uploading |
+
+---
+
+## `hermes logs`
+
+```bash
+hermes logs [<log-name>] [options]
+```
+
+Views or tails agent, gateway, and error logs.
+
+**Log names:** `agent`, `errors`, `gateway`, `gui`, `desktop`
+
+| Flag | Description |
+|------|-------------|
+| `-n / --lines <n>` | Number of lines to show |
+| `-f / --follow` | Tail (follow) mode |
+| `--level <level>` | Filter by log level |
+| `--session <id>` | Filter by session |
+| `--since <time>` | Show logs since timestamp |
+| `--component <name>` | Filter by component |
+
+---
+
+## `hermes prompt-size`
+
+```bash
+hermes prompt-size [options]
+```
+
+Reports fixed prompt budget breakdown: system prompt, skills, memory, and tool schemas. Runs offline.
+
+| Flag | Description |
+|------|-------------|
+| `--platform <name>` | Target platform for schema calculation |
+| `--json` | Machine-readable output |
+
+---
+
+## `hermes security`
+
+```bash
+hermes security audit [options]
+```
+
+OSV.dev supply-chain vulnerability scan for venv, plugins, and MCP servers.
+
+| Flag | Description |
+|------|-------------|
+| `--json` | Machine-readable output |
+| `--fail-on <severity>` | Exit non-zero at or above severity |
+| `--skip-venv` | Skip venv scanning |
+| `--skip-plugins` | Skip plugin scanning |
+| `--skip-mcp` | Skip MCP server scanning |
+
+---
+
+## `hermes fallback`
+
+```bash
+hermes fallback <subcommand>
+```
+
+Manages ordered provider fallback chain for rate-limit / overload recovery.
+
+| Subcommand | Description |
+|------------|-------------|
+| `list` | Display current fallback chain |
+| `add <provider>` | Append provider to chain |
+| `remove <provider>` | Remove from chain |
+| `clear` | Reset fallback chain |
+
+---
+
+## `hermes hooks`
+
+```bash
+hermes hooks <subcommand>
+```
+
+Inspects, tests, and manages shell-script hooks defined in configuration.
+
+| Subcommand | Description |
+|------------|-------------|
+| `list` | Display all registered hooks |
+| `test <hook>` | Dry-run a hook |
+| `revoke <hook>` | Remove hook consent |
+| `doctor` | Validate hook configuration |
+
+---
+
+## `hermes portal`
+
+```bash
+hermes portal <subcommand>
+```
+
+Nous Portal authentication and Tool Gateway status.
+
+| Subcommand | Description |
+|------------|-------------|
+| `status` | Auth and subscription status |
+| `open` | Open Portal in browser |
+| `tools` | Tool Gateway routing info |
+
+---
+
+## `hermes secrets`
+
+```bash
+hermes secrets <subcommand>
+```
+
+External secret manager integration (Bitwarden currently supported). Pulls API keys at startup rather than storing in `.env`.
+
+| Subcommand | Description |
+|------------|-------------|
+| `setup` | Configure secret manager |
+| `status` | Show current configuration |
+| `sync` | Pull latest secrets |
+| `install` | Install dependencies |
+| `disable` | Disable integration |
+
+---
+
+## `hermes migrate`
+
+```bash
+hermes migrate xai [--apply] [--no-backup]
+```
+
+Rewrites config for retired models or deprecated settings.
+
+| Flag | Description |
+|------|-------------|
+| `--apply` | Write changes (default: dry-run) |
+| `--no-backup` | Skip config backup |
+
+---
+
+## `hermes slack`
+
+```bash
+hermes slack manifest [options]
+```
+
+Generates a Slack app manifest registering gateway commands as slash commands.
+
+| Flag | Description |
+|------|-------------|
+| `--write` | Write manifest to file |
+| `--slashes-only` | Only include slash commands |
+| `--name <name>` | App display name |
+| `--description <text>` | App description |
+
+---
+
+## `hermes computer-use`
+
+```bash
+hermes computer-use <subcommand> [--upgrade]
+```
+
+Manages the Computer Use backend (macOS only, via cua-driver).
+
+| Subcommand | Description |
+|------------|-------------|
+| `install` | Install cua-driver |
+| `status` | Show installation status |
 
 ---
 

@@ -8,6 +8,8 @@
 | `TURBO_BINARY_PATH` | turbo バイナリの場所を手動指定 |
 | `TURBO_CACHE` | キャッシュの読み書き権限を制御 |
 | `TURBO_CACHE_DIR` | キャッシュ保存ディレクトリ |
+| `TURBO_CACHE_MAX_AGE` | キャッシュエントリの最大保持期間（例: `7d`, `24h`） |
+| `TURBO_CACHE_MAX_SIZE` | ローカルキャッシュの最大サイズ（超えると古いものから削除） |
 | `FORCE_COLOR` | ターミナルログに強制的に色を表示 |
 
 ## CI / プラットフォーム系
@@ -43,7 +45,9 @@
 
 | 変数名 | 説明 |
 |---|---|
+| `TURBO_LOG_FILE` | 構造化 JSON ログの出力先ファイル |
 | `TURBO_LOG_ORDER` | `grouped` / `default` |
+| `TURBO_PRINT_VERSION_DISABLED` | 実行時のバージョン出力を抑制 |
 | `TURBO_UI` | TUI の有効/無効 |
 | `TURBO_RUN_SUMMARY` | Run Summary レポート生成 |
 | `TURBO_CONCURRENCY` | 並列実行数 |

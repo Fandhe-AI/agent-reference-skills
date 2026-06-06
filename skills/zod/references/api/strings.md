@@ -47,6 +47,7 @@ z.uuid();
 z.url();
 z.httpUrl();        // http or https URLs only
 z.hostname();
+z.e164();           // E.164 phone number format
 z.emoji();          // validates a single emoji character
 z.base64();
 z.base64url();
@@ -230,6 +231,27 @@ z.iso.time({ precision: 0 });  // HH:MM:SS (second precision)
 z.iso.time({ precision: 3 });  // HH:MM:SS.sss (millisecond precision)
 ```
 
+### Phone Numbers (E.164)
+
+```typescript
+import { z } from "zod";
+
+const phone = z.e164();
+
+phone.parse("+15555555555"); // passes
+phone.parse("555-555-5555"); // fails
+```
+
+The schema validates strings with a leading `+`, a non-zero country code, and 7 to 15 digits total.
+
+### Hostnames
+
+```typescript
+import { z } from "zod";
+
+z.hostname();
+```
+
 ### IP Addresses
 
 ```typescript
@@ -349,6 +371,7 @@ Any schema with an inferred type assignable to `string | number | bigint | boole
 - `z.url()` internally uses the `new URL()` constructor; behavior may differ across runtimes
 - `z.mac()` is colon-delimited and case-sensitive by default
 - `z.hash()` expects hexadecimal encoding by default
+- `z.e164()` validates E.164 phone numbers (leading `+`, non-zero country code, 7-15 digits total)
 - Template literals are new in Zod 4
 
 ## Related

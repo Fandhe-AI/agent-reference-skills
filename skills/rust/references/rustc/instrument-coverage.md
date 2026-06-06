@@ -1,4 +1,4 @@
-# Instrument Coverage
+# Instrumentation-based Code Coverage
 
 Instrumentation-based code coverage uses LLVM profiling to measure which parts of Rust code are executed. Enabled via `-C instrument-coverage`.
 

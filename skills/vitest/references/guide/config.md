@@ -33,7 +33,7 @@ export default defineConfig({
 | `testTimeout` | `number` | `5000` | テストのデフォルトタイムアウト（ms） |
 | `hookTimeout` | `number` | `10000` | フックのデフォルトタイムアウト（ms） |
 | `retry` | `number` | `0` | 失敗テストのリトライ回数 |
-| `reporters` | `string[]` | `['default']` | レポーター（`verbose`, `json`, `html`, `dot` 等） |
+| `reporters` | `string[]` | `['default']` | レポーター（`verbose`, `dot`, `json`, `html`, `junit`, `tap`, `tree`, `blob`, `github-actions`, `minimal` 等） |
 | `watch` | `boolean` | dev: `true` | ウォッチモード |
 | `passWithNoTests` | `boolean` | `false` | テストファイルなしでも成功終了 |
 | `typecheck` | `object` | — | 型テスト設定 |
@@ -58,6 +58,31 @@ export default defineConfig({
 | `forks` | 子プロセス（分離、ネイティブモジュール向き） |
 | `vmThreads` | Worker Threads + VM 分離 |
 | `vmForks` | 子プロセス + VM 分離 |
+
+## ブラウザモードオプション (`test.browser`)
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `browser.enabled` | `boolean` | `false` | ブラウザモードの有効化 |
+| `browser.headless` | `boolean` | CI: `true` | ヘッドレスモード |
+| `browser.provider` | `'playwright' \| 'webdriverio' \| 'preview'` | `'preview'` | ブラウザプロバイダー |
+| `browser.instances` | `object[]` | — | 実行するブラウザ一覧（例: `[{ browser: 'chromium' }]`） |
+| `browser.ui` | `boolean` | `true` | ブラウザ UI の表示 |
+
+```ts
+// vitest.config.ts
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    browser: {
+      enabled: true,
+      provider: 'playwright',
+      instances: [{ browser: 'chromium' }],
+    },
+  },
+})
+```
 
 ## globals: true の TypeScript 設定
 

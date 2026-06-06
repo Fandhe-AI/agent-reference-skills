@@ -89,6 +89,13 @@ zmk-behavior-<name>/
 | `BEHAVIOR_LOCALITY_EVENT_SOURCE` | Runs on the half that invoked the behavior |
 | `BEHAVIOR_LOCALITY_GLOBAL` | Runs on all halves (e.g., RGB lighting) |
 
+**Return values from press/release handlers:**
+
+| Value | Description |
+|-------|-------------|
+| `ZMK_BEHAVIOR_OPAQUE` | This behavior handled the event; stop propagating |
+| `ZMK_BEHAVIOR_TRANSPARENT` | This behavior did not consume the event; continue propagating |
+
 **Useful ZMK API functions:**
 
 | Function / Macro | Description |
@@ -101,6 +108,14 @@ zmk-behavior-<name>/
 | `zmk_keymap_layer_toggle(layer)` | Toggle a keymap layer |
 | `zmk_keymap_layer_to(layer)` | Switch to a specific layer |
 
+**Behavior metadata (ZMK Studio integration):**
+
+Implement `get_parameter_metadata` in `behavior_driver_api` to expose parameter combinations for ZMK Studio. Use `ZMK_BEHAVIOR_METADATA_PARAM1_STANDARD_DOMAIN` / `PARAM2_STANDARD_DOMAIN` with conditional parameter sets when the behavior accepts variant parameter counts (e.g., Bluetooth behavior with `cmd` + optional `profile`).
+
+**Behavior queue (sequential invocation):**
+
+Include `<zmk/behavior_queue.h>` to enqueue behaviors for deferred/sequential execution from within a running behavior handler (used by macros and sensor rotation).
+
 ## Notes
 
 - Read the ZMK clean room policy before starting development.
@@ -110,7 +125,8 @@ zmk-behavior-<name>/
 - Run `west test` from the module root to execute virtual test suites.
 - C source files submitted to ZMK must be formatted with `clang-format`.
 - Code from QMK/TMK may not be used as source material for ZMK due to GPL license restrictions.
-- Use MIT SPDX headers for ZMK contributions: `SPDX-License-Identifier: MIT`.
+- Use MIT SPDX headers for ZMK contributions: `SPDX-License-Identifier: MIT`. Update the copyright year (`XXXX`) to the current year when adding headers.
+- Permissive licenses (MIT) may be included in restrictive projects (GPL), but not the reverse — ZMK's clean room policy prevents GPL code use.
 
 ## Related
 

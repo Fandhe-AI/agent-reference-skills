@@ -35,12 +35,22 @@ result = cq.Workplane("XY").box(1, 2, 3)
 result = cq.Workplane("XY", obj=some_shape).faces(">Z").circle(0.25).extrude(1)
 ```
 
+## Export / SVG Utilities
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `export` | `export(fname, exportType=None, tolerance=0.1, angularTolerance=0.1, opt=None)` | Export the solid to a file; format inferred from extension or `exportType` |
+| `toSvg` | `toSvg(opts=None)` | Return an SVG string representation of the current solid |
+| `exportSvg` | `exportSvg(fileName)` | Write an SVG file of the current solid |
+| `largestDimension` | `largestDimension()` | Return the largest dimension (bounding box diagonal) of the current solid |
+
 ## Notes
 
 - Every Workplane holds a list of current objects (`objects`), a reference to a `Plane`, and a shared `CQContext` (modelling context) that tracks pending wires/edges and named tags.
 - Each method call returns a **new** `Workplane` instance; the previous one is accessible via the `parent` attribute.
 - The `CQContext` object is shared across the entire chain — all Workplane nodes in a chain share one modelling context.
 - `tag()` and `toPending()` are among the few methods that return the **same** Workplane object rather than a new one.
+- `export()` is the recommended shorthand for exporting; it delegates to `cadquery.exporters.export()` internally.
 
 ## Related
 

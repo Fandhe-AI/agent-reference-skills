@@ -1,9 +1,9 @@
-# Guide
+# guide
 
-syncpack の導入・移行に関するガイド。
-
-| ファイル | 説明 | パス |
-|---------|------|------|
-| getting-started | インストール・基本コマンド・設定ファイルの書き方 | [./getting-started.md](./getting-started.md) |
-| migrate-v14 | v13→v14 の破壊的変更・コマンド統合・設定プロパティ削除の対応方法 | [./migrate-v14.md](./migrate-v14.md) |
-| peer-dependencies | peerDependencies の誤検知を防ぐ versionGroups 設定パターン | [./peer-dependencies.md](./peer-dependencies.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| Getting Started | Syncpack is a CLI tool for maintaining consistent dependency versions across JavaScript monorepos. | [getting-started.md](./getting-started.md) |
+| Migrate to v14 | v14 consolidates commands, renames CLI options, and removes config properties in favor of more flexible… | [migrate-v14.md](./migrate-v14.md) |
+| Migrate to v15 | Upgrade guide for Syncpack v15. | [migrate-v15.md](./migrate-v15.md) |
+| Peer Dependencies | Peer dependencies have fundamentally different version semantics from regular dependencies. | [peer-dependencies.md](./peer-dependencies.md) |
+| What's New | Summary of notable features added in recent Syncpack releases. | [whats-new.md](./whats-new.md) |

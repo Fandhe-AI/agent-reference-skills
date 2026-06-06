@@ -13,29 +13,64 @@ model: sonnet
 nuqs — Type-safe URL query state management for React。
 `React.useState` のドロップイン置換として URL クエリパラメータと状態を同期する。
 
-## ディレクトリ構造
+## ディレクトリ構成
 
-```
-.claude/skills/nuqs/
-├── SKILL.md                              ← このファイル（エントリーポイント）
-└── references/
-    ├── hooks/README.md                   ← hooks 索引（2ページ）
-    ├── parsers/README.md                 ← parsers 索引（2ページ）
-    ├── options/README.md                 ← options 索引（1ページ）
-    └── server/README.md                  ← server 索引（1ページ）
+```text
+skills/nuqs/
+  SKILL.md
+  references/
+    hooks/
+      README.md
+      useQueryState.md
+      useQueryStates.md
+    parsers/
+      README.md
+      built-in.md
+      custom.md
+    options/
+      README.md
+      options.md
+    server/
+      README.md
+      server-side.md
+  samples/
+    README.md
+    basic-query-state.md
+    typed-state-with-parsers.md
+    multiple-params-batch-update.md
+    search-filter-debounce.md
+    server-side-parsing.md
+    search-params-cache.md
+    adapter-setup.md
+    custom-parser.md
+    url-key-remapping.md
+    array-params.md
+    testing.md
+  scripts/
+    README.md
+    install.md
+    setup.md
+    testing.md
+    debug.md
 ```
 
 ## 探索手順
 
-1. ユーザーのタスクに最も関連するカテゴリを特定する
-2. そのカテゴリの `README.md` を読む
-3. README.md 内の一覧から必要な個別ファイルを選んで読む
+タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
-## カテゴリ → README.md マッピング
+1. 下記マッピング表でタスクに対応するカテゴリを探す
+2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
+3. 該当ページの `.md` を Read して詳細を確認する
 
-| タスク例 | カテゴリ | README パス |
-|---------|---------|------------|
-| useQueryState、useQueryStates、基本的な使い方、バッチ更新、urlKeys | hooks | [references/hooks/README.md](./references/hooks/README.md) |
-| パーサー、型変換、parseAs*、createParser、カスタムパーサー | parsers | [references/parsers/README.md](./references/parsers/README.md) |
-| history, shallow, scroll, throttle, debounce, clearOnDefault, startTransition | options | [references/options/README.md](./references/options/README.md) |
-| createLoader, createSearchParamsCache, サーバーサイド | server | [references/server/README.md](./references/server/README.md) |
+## タスク → カテゴリ マッピング
+
+| タスク | カテゴリ | 参照 README |
+|--------|---------|------------|
+| useQueryState の基本的な使い方、単一パラメータの読み書き | hooks | [references/hooks/README.md](references/hooks/README.md) |
+| useQueryStates でバッチ更新、複数パラメータの同期 | hooks | [references/hooks/README.md](references/hooks/README.md) |
+| ビルトインパーサー（parseAsString / parseAsInteger / parseAsBoolean / parseAsArrayOf 等）の使い方 | parsers | [references/parsers/README.md](references/parsers/README.md) |
+| createParser でカスタムパーサーを作成する | parsers | [references/parsers/README.md](references/parsers/README.md) |
+| history, shallow, scroll, throttle, debounce, clearOnDefault, startTransition オプション設定 | options | [references/options/README.md](references/options/README.md) |
+| createLoader, createSearchParamsCache でサーバーサイド解析 | server | [references/server/README.md](references/server/README.md) |
+| 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンド・テスト・デバッグ手順を知りたい | scripts | [scripts/README.md](scripts/README.md) |

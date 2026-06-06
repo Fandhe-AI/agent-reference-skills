@@ -4,7 +4,13 @@
 
 ### 概要
 
-Supabase は SOC2 Type II 認証を取得している。これは独立した監査法人によるセキュリティ統制の有効性の証明。
+Supabase は SOC2 Type II 認証を取得している。これは独立した監査法人によるセキュリティ統制の有効性の証明。年次審査を実施。
+
+対象環境は 2 つ:
+1. **顧客関係データ環境** — 課金・利用状況など
+2. **BaaS 製品環境** — Postgres、Storage、Auth などのプロダクト
+
+**重要**: Supabase の SOC2 準拠はユーザーのアプリケーション環境には自動的に継承されない。ユーザーが独自に SOC2 認証を取得する場合は追加の統制実装が必要。
 
 ### 対象範囲
 
@@ -14,7 +20,11 @@ Supabase は SOC2 Type II 認証を取得している。これは独立した監
 
 ### レポートの取得
 
-SOC2 レポートは NDA（秘密保持契約）の下で Enterprise プランの顧客に提供される。Supabase サポートに問い合わせて取得する。
+SOC2 レポートは Enterprise / Team プランの顧客がダッシュボードから取得可能。
+
+### SOC2 と HIPAA の関係
+
+HIPAA 準拠環境は SOC2 基準も満たす。ただし SOC2 は HIPAA 要件を網羅していない（別途 BAA の締結と HIPAA アドオンが必要）。
 
 ## HIPAA
 
@@ -27,6 +37,7 @@ HIPAA（Health Insurance Portability and Accountability Act）は米国の医療
 - **Pro プラン以上**
 - HIPAA アドオンの有効化が必要
 - BAA（Business Associate Agreement）の締結が必要
+- **セルフホスティング環境では HIPAA 統制は利用不可**（ホスティングされたプラットフォームのみ対応）
 
 ### 設定手順
 

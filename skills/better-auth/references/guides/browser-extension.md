@@ -19,7 +19,7 @@ pnpm create plasmo --with-tailwindcss --with-src
 Install the Better Auth package:
 
 ```bash
-pnpm install better-auth
+pnpm add better-auth
 ```
 
 Start the development server:

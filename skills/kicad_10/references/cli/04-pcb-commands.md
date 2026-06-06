@@ -12,8 +12,7 @@ The `pcb` subcommand performs design rule checks, exports boards to numerous for
 | `pcb export drill` | Export drill files | `--output`, `--format`, `--excellon-*`, `--generate-map`, `--map-format` |
 | `pcb export dxf` | Export DXF vector format | `--output`, `--layers`, `--mode-single/multi`, `--use-contours` |
 | `pcb export gencad` | Export GenCAD format | `--output`, `--flip-bottom-pads`, `--unique-pins`, `--unique-footprints` |
-| `pcb export gerber` | Export single Gerber file | `--output`, `--layers`, `--no-x2`, `--precision`, `--board-plot-params` |
-| `pcb export gerbers` | Export all Gerber files (one per layer) | `--output`, `--layers`, `--no-x2`, `--precision`, `--board-plot-params` |
+| `pcb export gerbers` | Export Gerber files (one file per layer) | `--output`, `--layers`, `--no-x2`, `--precision`, `--board-plot-params` |
 | `pcb export glb` | Export binary glTF (GLB) 3D model | `--output`, `--force`, `--no-dnp`, `--board-only`, 3D geometry options |
 | `pcb export hpgl` | Export HPGL (non-functional in 10.0) | deprecated |
 | `pcb export ipc2581` | Export IPC-2581 manufacturing format | `--output`, `--compress`, `--version`, `--units`, `--bom-col-*` |
@@ -32,7 +31,7 @@ The `pcb` subcommand performs design rule checks, exports boards to numerous for
 | `pcb export vrml` | Export VRML 3D model | `--output`, `--force`, `--units`, `--models-dir`, `--models-relative` |
 | `pcb export xao` | Export XAO (SALOME/Gmsh) 3D model | `--output`, `--force`, `--no-dnp`, `--board-only`, 3D geometry options |
 | `pcb import` | Import non-KiCad PCB formats | `--output`, `--format`, `--report-format`, `--report-file` |
-| `pcb render` | Render raytraced PNG/JPEG image | `--output`, `--width`, `--height`, `--side`, `--quality`, `--zoom`, `--rotate`, `--light-*` |
+| `pcb render` | Render raytraced PNG/JPEG image | `--output`, `--variant`, `--width`, `--height`, `--side`, `--quality`, `--zoom`, `--rotate`, `--light-*` |
 | `pcb upgrade` | Upgrade PCB file format | `--force` |
 
 ---
@@ -226,15 +225,14 @@ kicad-cli pcb export gencad [options] INPUT_FILE
 
 ---
 
-## pcb export gerber / pcb export gerbers
+## pcb export gerbers
 
-Exports a board design to Gerber files (one layer per file). `gerbers` is the multi-file form; `gerber` exports a single file.
+Exports a board design to Gerber files (one layer per file).
 
 ### Signature / Usage
 
 ```
 kicad-cli pcb export gerbers [options] INPUT_FILE
-kicad-cli pcb export gerber [options] INPUT_FILE
 ```
 
 ### Options
@@ -514,6 +512,7 @@ kicad-cli pcb export stats [options] INPUT_FILE
 |--------|-------------|
 | `-h, --help` | Show help |
 | `-o, --output` | Output filename (defaults to input with `_statistics` suffix) |
+| `-D, --define-var` | Define/override project variables (repeatable) |
 | `--format` | Report format: `report` (default) or `json` |
 | `--units` | Report units: `mm` (default) or `in` |
 | `--exclude-footprints-without-pads` | Exclude padless footprints from counts |
@@ -739,6 +738,7 @@ kicad-cli pcb render [options] INPUT_FILE
 | `--help` | `-h` | Show help |
 | `--output` | `-o` | Output filename (`.png` or `.jpg`) |
 | `--define-var` | `-D` | Define/override project variables (repeatable) |
+| `--variant` | | Output variant |
 | `--width` | `-w` | Image width in pixels (default: `1600`) |
 | `--height` | | Image height in pixels (default: `900`) |
 | `--side` | | View side: `top`, `bottom`, `left`, `right`, `front`, `back` |

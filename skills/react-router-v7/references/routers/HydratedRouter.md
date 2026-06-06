@@ -28,12 +28,12 @@ hydrateRoot(
 
 ### `onError` detail
 
-The `info` argument contains: `location`, `params`, `unstable_pattern`, and `errorInfo` (render errors only).
+The `info` argument contains: `location`, `params`, `pattern`, and `errorInfo` (render errors only).
 
 ```tsx
 <HydratedRouter
   onError={(error, info) => {
-    const { location, params, unstable_pattern, errorInfo } = info;
+    const { location, params, pattern, errorInfo } = info;
     reportToErrorService(error, location, errorInfo);
   }}
 />

@@ -26,6 +26,7 @@ npm install --save-dev @kubb/plugin-svelte-query
 | `client.importPath` | `string` | — |
 | `client.dataReturnType` | `'data' \| 'full'` | `'data'` |
 | `client.baseURL` | `string` | — |
+| `client.clientType` | `'function' \| 'class'` | `'function'` |
 | `client.bundle` | `boolean` | `false` |
 
 ### query / mutation

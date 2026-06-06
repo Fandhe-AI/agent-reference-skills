@@ -86,11 +86,21 @@ Importable from `cadquery`:
 | `SubtractSelector(a, b)` | Difference of two selectors |
 | `StringSyntaxSelector(selectorString)` | Parse string syntax programmatically |
 
+## Topological Selectors
+
+`ancestors()` and `siblings()` navigate the shape hierarchy based on containment and adjacency.
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `ancestors` | `ancestors(kind)` | Select all shapes of type `kind` that contain the current selection (`"Vertex"`, `"Edge"`, `"Wire"`, `"Face"`, `"Shell"`, `"Solid"`, etc.) |
+| `siblings` | `siblings(kind, level=1)` | Select shapes connected to the current selection via shared shapes of type `kind`; `level` controls adjacency hops |
+
 ## Notes
 
 - All selection methods (`faces`, `edges`, `vertices`, `wires`, `solids`, `shells`, `compounds`) accept an optional `selector` argument (string or `Selector` instance) and an optional `tag` argument to operate on a tagged Workplane instead of the current objects.
 - Negative indices in `[n]` notation wrap from the end (e.g., `[-1]` is the last).
 - `StringSyntaxSelector` is what string arguments are internally parsed into.
+- `ancestors()` and `siblings()` are available as method calls on `Workplane`, not as string syntax.
 
 ## Related
 

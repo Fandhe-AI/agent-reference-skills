@@ -122,7 +122,9 @@ const schema = z
   });
 ```
 
-## `.superRefine()`
+## `.superRefine()` (Deprecated)
+
+> **Deprecated** in favor of `.check()`. Existing code using `.superRefine()` continues to work, but new code should use `.check()` instead.
 
 Generate multiple issues using any of Zod's internal issue types:
 
@@ -467,8 +469,8 @@ schema.parse(null); // => null
 
 ## Notes
 - `.refine()` generates a single issue with a `"custom"` error code
-- `.superRefine()` can generate multiple issues with any of Zod's issue types
-- `.check()` is a lower-level, more verbose API than `.superRefine()` -- it can be faster but is less ergonomic
+- `.superRefine()` is deprecated -- use `.check()` instead for new code
+- `.check()` is a lower-level, more verbose API -- it can be faster but is less ergonomic
 - Refinement functions must never throw -- return falsy to signal failure
 - Async refinements and transforms require `.parseAsync()` / `.safeParseAsync()`
 - `z.codec()` (Zod 4.1+) supports bidirectional transforms with `z.decode()` and `z.encode()`

@@ -96,6 +96,14 @@ constructor(theme: DefaultTheme, page: PageEvent<Reflection>, options: Options)
 
 フックは `RendererHooks` インターフェースで詳細が定義されている。
 
+### リフレクションアイコン（v0.28 以降）
+
+`DefaultThemeRenderContext.reflectionIcon` を使用すると、リフレクションの種類ごとのアイコン表示をきめ細かく制御できる。アイコン全体を差し替えるのではなく、特定の種類のみ変更可能。
+
+### CSS レイヤー（v0.28 以降）
+
+デフォルトテーマの CSS は `@layer typedoc` でラップされる。カスタム CSS でスタイルを上書きする際に `@layer` を活用することで、カスケードの優先順位を制御しやすくなる。
+
 ### 非同期ジョブ
 
 レンダリング前後に非同期処理を実行するためのキュー:

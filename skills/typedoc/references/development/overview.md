@@ -112,6 +112,10 @@ export function load(app: Application) {
 }
 ```
 
+### テスト
+
+TypeDoc は主に JSON モデル比較テストで機能を検証する。既知の仕様に対してモデルを比較し、Mocha ユニットテストで補完する。テーマの変更には、スクリーンショット比較によるビジュアルリグレッションテストも使用される。
+
 ## 注意点
 
 - Converter はステップ 4 で動作し、TypeScript コンパイラの AST を Reflection モデルに変換する

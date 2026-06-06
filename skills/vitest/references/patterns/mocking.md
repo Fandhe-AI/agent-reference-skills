@@ -79,6 +79,26 @@ vi.mock('./config', () => ({
 }))
 ```
 
+## オブジェクトモック: vi.mockObject()（v3.2.0+）
+
+オブジェクトのメソッドを再帰的にモックする。インポートしたモジュールオブジェクトに対して `vi.mock()` なしで使える。
+
+```ts
+import { userService } from './user-service'
+
+const mocked = vi.mockObject(userService)
+mocked.getUser.mockResolvedValue({ id: 1, name: 'Alice' })
+```
+
+元の実装を保持してスパイする場合:
+
+```ts
+const spied = vi.mockObject(userService, { spy: true })
+// 元の実装を実行しつつ呼び出しを追跡
+expect(spied.getUser).toHaveBeenCalled()
+spied.getUser.mockRestore()
+```
+
 ## オブジェクトスパイ: vi.spyOn()
 
 元の実装を保持しつつ呼び出しを追跡する。

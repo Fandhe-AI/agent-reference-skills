@@ -76,11 +76,11 @@ For advanced customization, use the `onPopoverRender` callback to directly manip
 
 ```javascript
 const driverObj = driver({
-  onPopoverRender: (popover, { config, state }) => {
+  onPopoverRender: (popover, { config, state, driver }) => {
     // Add a custom button to the footer
     const customBtn = document.createElement('button');
     customBtn.innerText = 'Skip Tour';
-    customBtn.addEventListener('click', () => driverObj.destroy());
+    customBtn.addEventListener('click', () => driver.destroy());
     popover.footerButtons.appendChild(customBtn);
   },
 });

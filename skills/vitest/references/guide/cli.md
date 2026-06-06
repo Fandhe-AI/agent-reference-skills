@@ -21,7 +21,7 @@
 | Flag | Description |
 |------|-------------|
 | `--run` | ウォッチモードを無効化 |
-| `--reporter <name>` | レポーター指定（`default`, `verbose`, `dot`, `json` 等） |
+| `--reporter <name>` | レポーター指定（`default`, `verbose`, `dot`, `json`, `junit`, `tap`, `tree`, `blob`, `github-actions`, `minimal` 等） |
 | `--coverage.enabled` | カバレッジ収集を有効化 |
 | `--ui` | UI を有効化 |
 | `-u` / `--update` | スナップショットを更新 |
@@ -32,6 +32,12 @@
 | `--environment <name>` | 実行環境を指定（デフォルト: `node`） |
 | `-t` / `--testNamePattern <pattern>` | パターンにマッチするテストのみ実行 |
 | `-w` / `--watch` | ウォッチモードを有効化 |
+| `--project <name>` | 特定プロジェクトのみ実行（複数指定可・ワイルドカード対応、`!pattern` で除外） |
+| `--shard <index>/<count>` | テストスイートをシャード分割（例: `--shard=1/3`） |
+| `--tagsFilter <expr>` | タグでテストを絞り込み（`&&`, `\|\|`, `!` 使用可） |
+| `--listTags` | 利用可能なタグ一覧を表示 |
+| `--strictTags` | 未定義タグをエラーとして扱う |
+| `--browser.enabled` | ブラウザモードを有効化 |
 
 ## よくある使用例
 
@@ -53,6 +59,15 @@ vitest run --changed
 
 # lint-staged 連携
 vitest related src/utils.ts --run
+
+# 特定プロジェクトのみ実行
+vitest run --project unit --project e2e
+
+# シャード分割（CI 並列化）
+vitest run --shard=1/3
+
+# タグでフィルタ
+vitest run --tagsFilter "unit && !slow"
 ```
 
 ## ウォッチモードのキーボードショートカット

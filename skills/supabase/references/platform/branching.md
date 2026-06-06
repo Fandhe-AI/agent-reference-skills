@@ -19,6 +19,33 @@ Database Branching は PR ごとにプレビュー用のデータベースブラ
 - GitHub Integration が有効
 - `supabase/migrations/` にマイグレーションファイルが存在
 
+## ダッシュボードによるブランチ管理（ベータ）
+
+GitHub Integration なしで Dashboard から直接ブランチの作成・レビュー・マージが可能（現在ベータ）。
+
+## CLI によるブランチ管理
+
+```bash
+# プレビューブランチ作成
+supabase branches create my-feature --region ap-northeast-1
+
+# ブランチ一覧
+supabase branches list
+
+# ブランチ詳細（接続情報）取得
+supabase branches get my-feature
+
+# ブランチ更新
+supabase branches update my-feature --name new-feature-name
+
+# ブランチ一時停止 / 再開
+supabase branches pause my-feature
+supabase branches unpause my-feature
+
+# ブランチ削除
+supabase branches delete my-feature
+```
+
 ## 構成ファイル
 
 ### supabase/config.toml

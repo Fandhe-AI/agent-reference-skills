@@ -1,15 +1,13 @@
 # Guides
 
-Knip の実践的なガイドドキュメント。
-
-| ページ名 | 内容 | パス |
-|---------|------|------|
-| Configuring Project Files | entry/project パターンの調整、ベストプラクティス | [./configuring-project-files.md](./configuring-project-files.md) |
-| Troubleshooting | デバッグ、trace、例外の対処 | [./troubleshooting.md](./troubleshooting.md) |
-| Handling Issues | false positive の対処法（未使用ファイル・依存・エクスポート） | [./handling-issues.md](./handling-issues.md) |
-| Issue Reproduction | バグ報告のための最小再現手順 | [./issue-reproduction.md](./issue-reproduction.md) |
-| Contributing | コントリビューション方法 | [./contributing.md](./contributing.md) |
-| Namespace Imports | namespace import のヒューリスティクスと制御 | [./namespace-imports.md](./namespace-imports.md) |
-| Performance | キャッシュ、パフォーマンス計測、最適化 | [./performance.md](./performance.md) |
-| Using Knip in CI | GitHub Actions 統合、CI 最適化 | [./using-knip-in-ci.md](./using-knip-in-ci.md) |
-| Working with CommonJS | CommonJS の require/module.exports 対応 | [./working-with-commonjs.md](./working-with-commonjs.md) |
+| Name | Description | Path |
+|------|-------------|------|
+| Configuring Project Files | `entry` and `project` file patterns are fundamental to Knip. | [configuring-project-files.md](./configuring-project-files.md) |
+| Contributing | How to contribute to the Knip project. | [contributing.md](./contributing.md) |
+| Handling Issues | Formula for detecting unused files and resolving common issues. | [handling-issues.md](./handling-issues.md) |
+| Issue Reproduction | Open an issue on GitHub to help improve Knip. | [issue-reproduction.md](./issue-reproduction.md) |
+| Namespace Imports | When using `import * as NS`, all exports become namespace members. | [namespace-imports.md](./namespace-imports.md) |
+| Performance | Cache and performance optimization techniques for Knip. | [performance.md](./performance.md) |
+| Troubleshooting | Debug mode and trace options for troubleshooting issues. | [troubleshooting.md](./troubleshooting.md) |
+| Using Knip in CI | Knip exits with code `1` when issues are detected, ideal for CI. | [using-knip-in-ci.md](./using-knip-in-ci.md) |
+| Working with CommonJS | CommonJS uses `require()` and `module.exports`. | [working-with-commonjs.md](./working-with-commonjs.md) |

@@ -176,6 +176,30 @@ storybook doctor [options]
 
 ---
 
+### `storybook ai`
+
+Helpers for AI agents. Exposes subcommands that generate AI-friendly instructions for automating Storybook tasks.
+
+```
+storybook ai <subcommand> [options]
+```
+
+#### `storybook ai setup`
+
+Generates a detailed, project-aware Markdown prompt that instructs an AI agent to configure Storybook and write initial stories.
+
+| Option | Description |
+|--------|-------------|
+| `--output <path>` | Write prompt to file |
+| `-c, --config-dir [dir]` | Config directory (default: `.storybook`) |
+| `--package-manager <type>` | Force package manager (`npm`, `yarn`, `pnpm`) |
+| `--disable-telemetry` | Disable telemetry |
+| `--debug` | Output debug logs |
+| `--loglevel [level]` | Log level |
+| `--logfile [path]` | Write logs to file |
+
+---
+
 ### `storybook info`
 
 Report environment debugging information (OS, Node, npm, installed Storybook packages).

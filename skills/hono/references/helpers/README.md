@@ -1,19 +1,19 @@
-# Helpers
+# helpers
 
 | Name | Description | Path |
 |------|-------------|------|
-| HTML | Tagged template literal for safe HTML rendering; `raw()` for unescaped output | [./html.md](./html.md) |
-| CSS | CSS-in-JS via tagged templates with `css`, `cx`, `keyframes`, and `<Style />` | [./css.md](./css.md) |
-| Streaming | HTTP streaming responses: raw (`stream`), plain-text (`streamText`), SSE (`streamSSE`) | [./streaming.md](./streaming.md) |
-| WebSocket | Upgrade HTTP to WebSocket with unified event handlers across runtimes | [./websocket.md](./websocket.md) |
-| Proxy | Forward requests to an upstream origin with automatic header sanitization | [./proxy.md](./proxy.md) |
-| Adapter | Runtime-agnostic `env()` and `getRuntimeKey()` for multi-platform deployments | [./adapter.md](./adapter.md) |
-| Cookie | Read (`getCookie`), write (`setCookie`), and delete (`deleteCookie`) HTTP cookies | [./cookie.md](./cookie.md) |
-| Accepts | HTTP content negotiation against `Accept-*` headers | [./accepts.md](./accepts.md) |
-| ConnInfo | Retrieve client connection metadata (IP, transport, port) via `getConnInfo` | [./conninfo.md](./conninfo.md) |
-| Route | Inspect matched routes and path patterns at runtime | [./route.md](./route.md) |
-| JWT | Sign, verify, and decode JSON Web Tokens | [./jwt.md](./jwt.md) |
-| Factory | Create typed middleware and handlers with a shared `Env` type | [./factory.md](./factory.md) |
-| SSG | Generate a static site from Hono routes via `toSSG` | [./ssg.md](./ssg.md) |
-| Dev | Development utilities: `showRoutes`, `getRouterName` | [./dev.md](./dev.md) |
-| Testing | In-process type-safe test client via `testClient` | [./testing.md](./testing.md) |
+| Accepts Helper | HTTP content negotiation — matches client `Accept-*` headers against server-supported values. | [accepts.md](./accepts.md) |
+| Adapter Helper | Runtime-agnostic utilities for accessing environment variables and identifying the current runtime. | [adapter.md](./adapter.md) |
+| ConnInfo Helper | Retrieve TCP/UDP connection metadata (remote address, transport, port) from the current request. | [conninfo.md](./conninfo.md) |
+| Cookie Helper | Read, write, and delete HTTP cookies with optional cookie prefixes. | [cookie.md](./cookie.md) |
+| CSS Helper | Write CSS-in-JS using tagged template literals inside JSX. Requires `<Style />` in the document head. | [css.md](./css.md) |
+| Dev Helper | Utilities for inspecting registered routes and the active router during development. | [dev.md](./dev.md) |
+| Factory Helper | Create typed middleware and handlers outside of route definitions, sharing a common `Env` type. | [factory.md](./factory.md) |
+| HTML Helper | Tagged template literal for writing HTML safely in JavaScript, plus `raw()` for unescaped output. | [html.md](./html.md) |
+| JWT Helper | Sign, verify, and decode JSON Web Tokens (HS256 by default). | [jwt.md](./jwt.md) |
+| Proxy Helper | Forward incoming requests to an upstream origin with automatic header sanitization. | [proxy.md](./proxy.md) |
+| Route Helper | Inspect matched routes, path patterns, and base paths at runtime — useful for nested sub-applications. | [route.md](./route.md) |
+| SSG Helper | Generate a static site from a Hono application by crawling registered routes and writing HTML files. | [ssg.md](./ssg.md) |
+| Streaming Helper | Helpers for HTTP streaming responses: raw binary, plain text, and Server-Sent Events. | [streaming.md](./streaming.md) |
+| Testing Helper | Create a type-safe RPC client from a Hono app for use in tests — no running server required. | [testing.md](./testing.md) |
+| WebSocket Helper | Upgrade HTTP connections to WebSocket with a unified event-handler API across runtimes. | [websocket.md](./websocket.md) |

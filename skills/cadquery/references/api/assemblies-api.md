@@ -12,7 +12,7 @@ Classes and methods for combining Workplane and Shape objects into hierarchical,
 | `Assembly.constrain` | `constrain(q1, q2, kind, param=None)` | Define a constraint between two assembly parts |
 | `Assembly.solve` | `solve(verbosity=0)` | Solve all constraints and update component positions |
 | `Constraint` | `Constraint(subshapes, sublocs, kind, param=None)` | Low-level constraint specification object |
-| `Color` | `Color(r=None, g=None, b=None, a=1.0)` | RGBA color wrapper for assembly components |
+| `Color` | `Color(name)` or `Color(r, g, b, a=0, srgb=True)` | RGBA color wrapper for assembly components |
 
 ## Signature / Usage
 
@@ -60,6 +60,8 @@ assy.save("assembly.step")
 | `loc` | `Location \| None` | Override location for this component |
 | `name` | `str \| None` | Name for the component |
 | `color` | `Color \| None` | Display color |
+| `material` | `Material \| None` | Material properties |
+| `metadata` | `dict \| None` | Arbitrary metadata dictionary |
 
 ### `Assembly.save(path, exportType, mode, tolerance, angularTolerance)`
 
@@ -118,8 +120,9 @@ cq.Color("red")
 cq.Color("green")
 cq.Color("blue")
 
-# RGBA
-cq.Color(0.8, 0.2, 0.1, 1.0)
+# RGBA (OCC convention: a=0 is fully opaque, a=1 is fully transparent)
+cq.Color(0.8, 0.2, 0.1, 0.0)   # opaque red-orange
+cq.Color(0.0, 0.5, 1.0, 0.5)   # semi-transparent blue
 ```
 
 ## Notes

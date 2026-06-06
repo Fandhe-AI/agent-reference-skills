@@ -76,6 +76,20 @@ expect(() => throwingFn()).toThrowErrorMatchingSnapshot()
 expect(() => throwingFn()).toThrowErrorMatchingInlineSnapshot(`"error message"`)
 ```
 
+## ARIA スナップショット（ブラウザモード・v4.1.4+）
+
+ブラウザモードでのみ使用可能。DOM 要素のアクセシビリティツリーをキャプチャして比較する。
+
+```ts
+await expect.element(page.getByRole('navigation')).toMatchAriaInlineSnapshot(`
+  - navigation "Main":
+    - link "Home":
+      - /url: /
+`)
+```
+
+Playwright の ARIA スナップショット仕様に基づく。ブラウザモード専用のため、通常のテストでは使用不可。
+
 ## 関連
 
 - [Expect マッチャー](../api/expect.md)
