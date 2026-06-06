@@ -47,7 +47,7 @@ mode=check の場合は差分レポートをユーザーに提示して終了す
 
 ### Step 2: 更新を適用する（mode=apply 時）
 
-reference-updater は `references/` の既存ファイルのみを Edit し、`samples/` `scripts/` への変更も新規項目の作成も自身では行わない。差分レポートに記載された後続作業を以下へ委譲する（reference-updater は実作業をしないため二重作成は起きない）。
+reference-updater は `mode=apply` 時に `references/` の**既存ファイルの更新（Edit）まで行う**が、`samples/` `scripts/` の変更と**新規項目の作成は行わない**。差分レポートに記載された後続作業のうち、reference-updater が担当しない以下を委譲する（新規作成は reference-updater 側で行わないため二重作成は起きない）。
 
 **新規項目の作成**:
 - 新しい references カテゴリ → **reference-researcher（subagent_type: reference-researcher、model: sonnet）**へ委譲
