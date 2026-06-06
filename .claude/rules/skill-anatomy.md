@@ -1,5 +1,6 @@
 ---
 name: skill-anatomy
+description: 配布スキルのディレクトリレイアウト・SKILL.md 構成・コンテンツ種別（references / samples / scripts）の役割分担。
 paths:
   - "skills/**/*"
 ---

@@ -4,37 +4,41 @@ description: >
   新しいライブラリ/フレームワークの参照スキルを skills/<library>/ に新規作成するワークフロー。
   公式ドキュメント調査から SKILL.md 作成・検証・CLAUDE.md 反映までを Agent 委譲で進める。
   「スキルを追加して」「<library> のリファレンスを作って」などで使用。
+model: sonnet
 user-invocable: true
-argument-hint: <library> [base_url]
+argument-hint: "<library> [base_url] (例: create-skill zod https://zod.dev)"
 ---
 
-# 新規配布スキルの作成
+# create-skill
 
 `skills/<library>/` に新しいライブラリ/フレームワークの参照スキルを作成するオーケストレーションスキル。
 
-## 役割
+## 使い方
 
-新スキル作成の一連の流れを統括する。main（このスキル自身）は計画・委譲・統合・報告に徹し、ドキュメントの読み込みや references の執筆は専門 Agent に委譲する（`.claude/rules/delegation.md` 準拠）。
-
-## 入力
+```
+/create-skill zod https://zod.dev    # library と base_url を指定
+/create-skill hono                   # base_url 省略時は調査で特定する
+```
 
 | 引数 | 必須 | 説明 |
 | --- | --- | --- |
 | `library` | 必須 | 追加するライブラリ/フレームワークの名前（例: `zod`, `hono`） |
 | `base_url` | 任意 | 公式ドキュメントのベース URL。省略時は調査で特定する |
 
-## 手順
+main（このスキル自身）は計画・委譲・統合・報告に徹し、ドキュメントの読み込みや references の執筆は専門 Agent に委譲する（`.claude/rules/delegation.md` 準拠）。
 
-### Step 1: スキルの要否確認（任意）
+## フロー
 
-`skill-coverage-analyzer`（モデル: opus）に委譲し、以下を確認する。
+### Step 1: スキルの要否を確認する
+
+**skill-coverage-analyzer（subagent_type: skill-coverage-analyzer、model: opus）**に委譲し、以下を確認させる。
 
 - 既存スキルと重複していないか
 - ドキュメントの規模・構造から scope 候補（例: `core`, `plugins`, `cli`）を列挙
 
 スキルが不要と判断された場合はユーザーに確認を取り、中断するかどうかを決める。
 
-### Step 2: 実装計画の作成
+### Step 2: 実装計画を作成する
 
 `create-plan` スキルを呼び出し、`_/local-plans/<library>-skill.md` に計画を作成する。
 
@@ -46,9 +50,9 @@ argument-hint: <library> [base_url]
 - 実装ステップと完了条件
 - 検証方法
 
-### Step 3: references の生成（並列）
+### Step 3: references を並列生成する
 
-公式ドキュメントのナビゲーションを確認し、scope を分割する。各 scope に対して `reference-researcher`（モデル: sonnet）を**並列**起動する。
+公式ドキュメントのナビゲーションを確認し、scope を分割する。各 scope に対して **reference-researcher（subagent_type: reference-researcher、model: sonnet）**を**並列**起動し、対象カテゴリの references（個別ページ .md）と `README.md` インデックスを生成させる。
 
 各 Agent に渡すパラメータ:
 
@@ -59,55 +63,53 @@ argument-hint: <library> [base_url]
 | `scope` | 担当スコープ（例: `core`, `plugins`） |
 | `output_dir` | `skills/<library>/references/<category>/` |
 
-各 Agent は対象カテゴリの references（個別ページ .md）と `README.md` インデックスを生成する。
-
-### Step 3b: samples と scripts の生成（並列・references 生成と並行可）
+### Step 4: samples と scripts を並列生成する
 
 references の生成と並行、または完了後に以下を並列起動する。
 
-- `sample-curator`（モデル: sonnet）— `skills/<library>/samples/` に典型ユースケースの実例を生成する。渡すパラメータ: `library`, `skill_dir`（`skills/<library>/`）, `base_url`
-- `script-collector`（モデル: sonnet）— `skills/<library>/scripts/` にコピペ可能なコマンド集を生成する。渡すパラメータ: `library`, `skill_dir`（`skills/<library>/`）, `base_url`
+- **sample-curator（subagent_type: sample-curator、model: sonnet）** — `skills/<library>/samples/` に典型ユースケースの実例を生成させる。渡すパラメータ: `library`, `skill_dir`（`skills/<library>/`）, `base_url`
+- **script-collector（subagent_type: script-collector、model: sonnet）** — `skills/<library>/scripts/` にコピペ可能なコマンド集を生成させる。渡すパラメータ: `library`, `skill_dir`（`skills/<library>/`）, `base_url`
 
 ライブラリの性質上 samples または scripts が不要と判断される場合（例: ガイドライン型スキル）はスキップしてよい。
 
-### Step 4: SKILL.md の作成
+### Step 5: SKILL.md を作成する
 
-全 scope の完了を確認後、`skill-author`（モデル: sonnet）に委譲して `skills/<library>/SKILL.md` を作成する。
+全 scope の完了を確認後、**skill-author（subagent_type: skill-author、model: sonnet）**に委譲して `skills/<library>/SKILL.md` を作成させる。
 
 - YAML frontmatter（name / description / user-invocable）
 - ディレクトリツリー
 - 探索手順
 - タスク→カテゴリ→README マッピングテーブル
 
-description の品質が不十分な場合は `description-optimizer`（モデル: sonnet）に差し戻して改善する。
+description の品質が不十分な場合は **description-optimizer（subagent_type: description-optimizer、model: sonnet）**に差し戻して改善させる。
 
-### Step 5: 検証
+### Step 6: 品質を検証する
 
 以下の Agent を起動して品質を検証する。
 
-- `reference-linter`（モデル: haiku）— references 本文のフォーマット・テンプレート準拠を確認
-- `skill-structure-validator`（モデル: haiku）— SKILL.md とディレクトリ構造が skill-anatomy 準拠かを確認
+- **reference-linter（subagent_type: reference-linter、model: haiku）** — references 本文のフォーマット・テンプレート準拠を確認させる
+- **skill-structure-validator（subagent_type: skill-structure-validator、model: haiku）** — SKILL.md とディレクトリ構造が skill-anatomy 準拠かを確認させる
 
 指摘事項があれば該当 Agent（reference-researcher または skill-author）に差し戻し、修正後に再検証する。
 
-### Step 6: CLAUDE.md の更新
+### Step 7: CLAUDE.md を更新する
 
 `update-docs` スキルを呼び出し、CLAUDE.md の「Current Skills」一覧とリポジトリ構造ツリーに新スキルを反映する。
 
-### Step 7: コミット（任意）
+### Step 8: コミットする（任意）
 
 ユーザーからコミットの指示があれば `create-commit` スキルでコミットを作成する。
 
-## 完了条件
+## 検証
 
-- `skills/<library>/SKILL.md` が skill-anatomy 準拠で作成済み
-- `skills/<library>/references/` 配下に各カテゴリの references と `README.md` が存在
-- `skills/<library>/samples/` 配下に実例ファイルと `README.md` が存在（生成した場合）
-- `skills/<library>/scripts/` 配下にコマンドファイルと `README.md` が存在（生成した場合）
-- `reference-linter` と `skill-structure-validator` の検証が PASS
-- CLAUDE.md の「Current Skills」一覧に `<library>` が追加済み
+- [ ] `ls skills/<library>/SKILL.md` でファイルが存在することを確認する
+- [ ] `head -10 skills/<library>/SKILL.md` で frontmatter（name / description / user-invocable）が正しく記述されていることを確認する
+- [ ] `ls skills/<library>/references/` 配下に各カテゴリの references と `README.md` が存在することを確認する
+- [ ] `ls skills/<library>/samples/` および `scripts/` が存在することを確認する（生成した場合）
+- [ ] reference-linter と skill-structure-validator の検証が PASS していることを確認する
+- [ ] CLAUDE.md の「Current Skills」一覧に `<library>` が追加されていることを確認する
 
-## 注意
+## 注意事項
 
 - `.claude/` 配下を編集する場合は `.claude/rules/dotclaude-via-temp.md` に従い `_/dotclaude/` 経由で行う
 - references の本文はドキュメント原文の言語（通常英語）で記述する

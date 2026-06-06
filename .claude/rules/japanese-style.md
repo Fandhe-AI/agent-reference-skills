@@ -1,5 +1,6 @@
 ---
 name: japanese-style
+description: 日本語表記スタイル（体言止め・句読点・絵文字不使用・技術用語原語維持）の統一ルール。
 applies_to: 全エージェント
 ---
 

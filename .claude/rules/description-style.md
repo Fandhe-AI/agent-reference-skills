@@ -1,5 +1,6 @@
 ---
 name: description-style
+description: "SKILL.md description のヒット率・長さ最適化（名詞列挙・略語含む・全角200字以内）と YAML の # コメント化回避。"
 applies_to:
   - skill-author
   - description-optimizer

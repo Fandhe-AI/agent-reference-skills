@@ -1,5 +1,6 @@
 ---
 name: reference-template
+description: 個別リファレンスページのテンプレート（Signature / Options / Notes / Related）と README 索引表の書式規約。
 paths:
   - "skills/**/*.md"
 ---

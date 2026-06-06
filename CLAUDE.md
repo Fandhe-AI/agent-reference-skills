@@ -36,7 +36,7 @@ Default: symlink into `.claude/skills/`. Use `--copy` for file copies.
       reference-researcher.md     ← Crawl official docs → write references (sonnet)
       reference-updater.md        ← Diff existing skill vs latest docs, update (sonnet)
       skill-coverage-analyzer.md  ← Cross-skill gap analysis, propose additions (opus, read-only)
-    authoring/
+    author/
       skill-author.md             ← Author SKILL.md (frontmatter, tree, mapping table) (sonnet)
       description-optimizer.md     ← Optimize the `description` for hit-rate & length (sonnet)
       readme-indexer.md           ← Regenerate README index tables (haiku)
@@ -45,7 +45,6 @@ Default: symlink into `.claude/skills/`. Use `--copy` for file copies.
     quality/
       skill-structure-validator.md ← Structural integrity check (haiku, read-only)
       reference-linter.md          ← Per-file template & frontmatter lint (haiku, read-only)
-    verify/
       plan-verifier.md            ← Plan completion verification (sonnet, read-only)
   rules/
     delegation.md            ← Main delegates to sub-agents; task→agent map
@@ -97,14 +96,14 @@ The main agent stays focused on **dialogue, planning, delegation, and reporting*
 | research | `reference-researcher` | sonnet | Crawl official docs → write `references/` (parallel per scope) |
 | research | `reference-updater` | sonnet | Diff a skill against latest docs; `check` or `apply` |
 | research | `skill-coverage-analyzer` | opus | Read-only gap analysis; propose new/under-covered skills |
-| authoring | `skill-author` | sonnet | Author/update `SKILL.md` after references exist |
-| authoring | `description-optimizer` | sonnet | Optimize the `description` field only |
-| authoring | `readme-indexer` | haiku | Regenerate a category's README index table |
-| authoring | `sample-curator` | sonnet | Curate working examples into `samples/` |
-| authoring | `script-collector` | sonnet | Collect runnable commands into `scripts/` |
+| author | `skill-author` | sonnet | Author/update `SKILL.md` after references exist |
+| author | `description-optimizer` | sonnet | Optimize the `description` field only |
+| author | `readme-indexer` | haiku | Regenerate a category's README index table |
+| author | `sample-curator` | sonnet | Curate working examples into `samples/` |
+| author | `script-collector` | sonnet | Collect runnable commands into `scripts/` |
 | quality | `skill-structure-validator` | haiku | Read-only structural integrity check |
 | quality | `reference-linter` | haiku | Read-only per-file template & frontmatter lint |
-| verify | `plan-verifier` | sonnet | Read-only plan-completion verification |
+| quality | `plan-verifier` | sonnet | Read-only plan-completion verification |
 
 Read-only agents (`skill-coverage-analyzer`, `skill-structure-validator`, `reference-linter`, `plan-verifier`) have no Write/Edit/Bash — they report and hand back.
 

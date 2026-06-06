@@ -1,5 +1,6 @@
 ---
 name: delegation
+description: 委譲方針とタスク→Agent マッピング・モデル戦略。main は対話・計画・委譲・報告に徹し、token を消費する実作業を専門サブエージェントへ委譲する。
 applies_to: 全エージェント / main
 ---
 
