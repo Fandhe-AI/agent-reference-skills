@@ -49,7 +49,7 @@ const { data: qrData } = await authClient.twoFactor.getTotpUri({ password: "user
 await authClient.twoFactor.verifyTotp({ code: "012345", trustDevice: true });
 
 // Backup codes
-const { data: codes } = await authClient.twoFactor.generateBackupCodes({ password });
+const { data: codes } = await authClient.twoFactor.generateBackupCodes({ password: "user-password" });
 await authClient.twoFactor.verifyBackupCode({ code: "123456", trustDevice: true });
 
 // Disable 2FA

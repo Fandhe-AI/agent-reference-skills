@@ -11,7 +11,7 @@ export const auth = betterAuth({
     // Before hook: validate or reject a request
     before: createAuthMiddleware(async (ctx) => {
       if (ctx.path !== "/sign-up/email") return;
-      if (!ctx.body?.email.endsWith("@example.com")) {
+      if (!ctx.body?.email?.endsWith("@example.com")) {
         throw new APIError("BAD_REQUEST", {
           message: "Email must end with @example.com",
         });
