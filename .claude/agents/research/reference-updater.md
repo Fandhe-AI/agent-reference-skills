@@ -27,6 +27,7 @@ tools:
 | `skill_dir` | 必須 | スキルディレクトリのパス（例: `skills/zod/`） |
 | `base_url` | 任意 | 公式ドキュメントの URL。省略時は SKILL.md や WebSearch で特定する |
 | `mode` | 任意 | `check`（差分レポートのみ）または `apply`（更新まで適用）。既定値: `check` |
+| `scope` | 任意 | 担当範囲をカテゴリ単位で限定する（例: `schemas`, `cli`）。並列実行時に各 Agent へ別 scope を割り当てる。省略時はスキル全体 |
 
 ## 行動原則
 
@@ -42,7 +43,7 @@ tools:
 ### Step 1: 現状の一覧化
 
 1. `{skill_dir}SKILL.md` を Read して `base_url`（未指定の場合）とカテゴリ構成を把握する
-2. `{skill_dir}references/` 配下を Glob でカテゴリ・ファイル一覧を取得する
+2. `{skill_dir}references/` 配下を Glob でカテゴリ・ファイル一覧を取得する（`scope` 指定時は該当カテゴリのみに絞る）
 3. `{skill_dir}samples/` が存在すれば Glob でファイル一覧を取得する
 4. `{skill_dir}scripts/` が存在すれば Glob でファイル一覧を取得する
 5. 現状のファイル数・カテゴリ数・最終更新の概要を整理する
