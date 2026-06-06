@@ -76,7 +76,17 @@ references の生成と並行、または完了後に以下を並列起動する
 
 ### Step 5: SKILL.md を作成する
 
-全 scope の完了を確認後、**skill-author（subagent_type: skill-author、model: sonnet）**に委譲して `skills/<library>/SKILL.md` を作成させる。
+Step 3（references）と Step 4（samples / scripts）の**両方の完了を確認後**、**skill-author（subagent_type: skill-author、model: sonnet）**に委譲して `skills/<library>/SKILL.md` を作成させる。samples / scripts を先に確定させることで、SKILL.md のツリー・マッピング表に確実に反映される。
+
+渡すパラメータ:
+
+| パラメータ | 内容 |
+| --- | --- |
+| `library` | ライブラリ名 |
+| `skill_dir` | `skills/<library>/` |
+| `user-invocable` | 配布スキルは通常 `false`（skill-anatomy 準拠） |
+
+skill-author が生成する内容:
 
 - YAML frontmatter（name / description / user-invocable）
 - ディレクトリツリー
