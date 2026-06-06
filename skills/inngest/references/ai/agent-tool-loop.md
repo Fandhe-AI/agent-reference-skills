@@ -26,7 +26,7 @@ export const agent = inngest.createFunction(
       iterations++;
 
       // Each LLM call is a durable, retriable step
-      const llmResult = await step.run(`think`, async () => {
+      const llmResult = await step.run(`think-${iterations}`, async () => {
         return await anthropic.messages.create({
           model: "claude-opus-4-5",
           max_tokens: 4096,
@@ -52,9 +52,9 @@ export const agent = inngest.createFunction(
 
       // Each tool call is its own retriable step
       const toolResults: Anthropic.ToolResultBlockParam[] = [];
-      for (const toolCall of toolCalls) {
+      for (const [idx, toolCall] of toolCalls.entries()) {
         const result = await step.run(
-          `tool-${toolCall.name}`,
+          `tool-${iterations}-${idx}-${toolCall.name}`,
           async () => executeTool(toolCall.name, toolCall.input)
         );
         toolResults.push({
@@ -79,7 +79,8 @@ export const agent = inngest.createFunction(
 - Always set `MAX_ITERATIONS` to prevent unbounded loops. Tune based on task complexity (2–3 for Q&A, 15–20 for coding agents).
 - Track cumulative token usage across iterations to stay within budget.
 - Prune the messages array when it grows large to avoid hitting context window limits — keep the first message and recent exchanges.
-- For parallel tool execution, use `Promise.all` with indexed step IDs (e.g. `tool-${toolCall.name}-${idx}`).
+- Step IDs must be unique within a run — Inngest memoizes results by ID, so a repeated ID returns the cached result from the first call rather than re-executing. Use `think-${iterations}` for LLM calls and `tool-${iterations}-${idx}-${toolCall.name}` for tool calls.
+- For parallel tool execution, use `Promise.all` with step IDs that include the iteration and index (e.g. `tool-${iterations}-${idx}-${toolCall.name}`).
 - To gate dangerous tools (send_email, delete_record, deploy) on human approval, integrate `step.waitForEvent()` inside the tool execution block. See [Human-in-the-Loop](./human-in-the-loop.md).
 
 ## Related
