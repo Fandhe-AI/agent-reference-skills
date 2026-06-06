@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # skills-contribute.sh — ローカルスキルを upstream リポジトリへ PR として投稿する実例
 #
-# 使い方: ./script/skills-contribute.sh <skill-name> <upstream-repo>
-# 例: ./script/skills-contribute.sh create-commit Fandhe-AI/agent-cli-skills
+# 使い方（リポジトリルートから実行）:
+#   skills/contribute-skill/script/skills-contribute.sh <skill-name> <upstream-repo>
+#   （インストール先からは .agents/skills/contribute-skill/script/skills-contribute.sh）
+# 例: skills/contribute-skill/script/skills-contribute.sh create-commit Fandhe-AI/agent-cli-skills
 #
 # このスクリプトは contribute-skill スキルが使用するコマンド集。
 # Claude がフロー全体を制御するため、直接実行時は各ステップを確認しながら進めること。
@@ -37,22 +39,33 @@ case "$UPSTREAM_REPO" in
     ;;
 esac
 
-# ローカルスキルのパス確認（両方存在する場合は silently に優先せずユーザーへ確認を求める）
-have_skills=0; have_agents=0
-[[ -d "skills/${SKILL_NAME}" ]] && have_skills=1
-[[ -d ".agents/skills/${SKILL_NAME}" ]] && have_agents=1
-
-if [[ "${have_skills}" -eq 1 && "${have_agents}" -eq 1 ]]; then
-  echo "エラー: skills/${SKILL_NAME} と .agents/skills/${SKILL_NAME} の両方が存在します。"
-  echo "改修したのがどちらかを確認し、明示的に LOCAL_SKILL_DIR を指定して再実行してください。"
-  exit 1
-elif [[ "${have_skills}" -eq 1 ]]; then
-  LOCAL_SKILL_DIR="skills/${SKILL_NAME}"
-elif [[ "${have_agents}" -eq 1 ]]; then
-  LOCAL_SKILL_DIR=".agents/skills/${SKILL_NAME}"
+# ローカルスキルのパス確認（override: 環境変数 LOCAL_SKILL_DIR が設定済みならそれを検証して使う）
+if [[ -n "${LOCAL_SKILL_DIR:-}" ]]; then
+  if [[ "${LOCAL_SKILL_DIR}" != "skills/${SKILL_NAME}" && "${LOCAL_SKILL_DIR}" != ".agents/skills/${SKILL_NAME}" ]]; then
+    echo "エラー: LOCAL_SKILL_DIR は skills/${SKILL_NAME} か .agents/skills/${SKILL_NAME} のいずれかを指定してください: ${LOCAL_SKILL_DIR}"
+    exit 1
+  fi
+  if [[ ! -d "${LOCAL_SKILL_DIR}" ]]; then
+    echo "エラー: 指定された LOCAL_SKILL_DIR が存在しません: ${LOCAL_SKILL_DIR}"
+    exit 1
+  fi
 else
-  echo "エラー: ローカルスキルが見つかりません: skills/${SKILL_NAME} / .agents/skills/${SKILL_NAME}"
-  exit 1
+  # 自動解決（両方存在する場合は中止して override を促す）
+  have_skills=0; have_agents=0
+  [[ -d "skills/${SKILL_NAME}" ]] && have_skills=1
+  [[ -d ".agents/skills/${SKILL_NAME}" ]] && have_agents=1
+  if [[ "${have_skills}" -eq 1 && "${have_agents}" -eq 1 ]]; then
+    echo "エラー: skills/${SKILL_NAME} と .agents/skills/${SKILL_NAME} の両方が存在します。"
+    echo "環境変数 LOCAL_SKILL_DIR にどちらかを指定して再実行してください（例: LOCAL_SKILL_DIR=.agents/skills/${SKILL_NAME} $0 ${SKILL_NAME} ${UPSTREAM_REPO}）。"
+    exit 1
+  elif [[ "${have_skills}" -eq 1 ]]; then
+    LOCAL_SKILL_DIR="skills/${SKILL_NAME}"
+  elif [[ "${have_agents}" -eq 1 ]]; then
+    LOCAL_SKILL_DIR=".agents/skills/${SKILL_NAME}"
+  else
+    echo "エラー: ローカルスキルが見つかりません: skills/${SKILL_NAME} / .agents/skills/${SKILL_NAME}"
+    exit 1
+  fi
 fi
 
 echo "==> contribute-skill: ${SKILL_NAME} → ${UPSTREAM_REPO}"
