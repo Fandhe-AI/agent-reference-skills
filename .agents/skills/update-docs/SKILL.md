@@ -38,14 +38,28 @@ git diff <commit_hash>..HEAD --stat
 
 #### Current Skills の更新
 
-`skills/` 配下のディレクトリ一覧を取得し、`CLAUDE.md` の `## Current Skills` セクションを更新する。
+スキルを2系統に分けて列挙し、`CLAUDE.md` の `## Current Skills` セクションと「リポジトリ管理スキル」セクションをそれぞれ更新する。
+
+**系統 A: `skills/` 配下の配布可能スキル（カウント対象）**
 
 ```bash
 ls -d skills/*/SKILL.md | sed 's|skills/||;s|/SKILL.md||' | sort
 ```
 
-- スキル数のカウントを更新: `## Current Skills (N)`
+- スキル数のカウントを更新: `## Current Skills (N)`（N は系統 A のみ）
 - カンマ区切りのスキル名一覧を更新
+
+**系統 B: `.claude/skills/` 配下の実ディレクトリ（カウント対象外）**
+
+```bash
+find .claude/skills -maxdepth 1 -mindepth 1 -type d | sed 's|.claude/skills/||' | sort
+```
+
+`find -type d` はシンボリックリンクを除外するため、`github-docs` 等の symlink は含まれない。
+
+- `CLAUDE.md` の「リポジトリ管理スキル（.claude/skills/ に配置）」セクションを更新する
+- 系統 B のスキルは `## Current Skills (N)` のカウント N に含めない
+- セクションが存在しない場合は新規作成する
 
 #### Repository Structure の更新
 
@@ -86,3 +100,5 @@ commit_date=2026-03-21T10:00:00+09:00
 - `CLAUDE.md` のみが更新対象。個別スキルの `SKILL.md` や `references/` は対象外
 - 自動生成ファイルは更新対象外
 - `_/.last-update-docs` が `.gitignore` に追加されているか確認する
+- **`.claude/skills/` の実ディレクトリ**: `find .claude/skills -maxdepth 1 -mindepth 1 -type d` で列挙し、`## Current Skills (N)` のカウントには含めない。「リポジトリ管理スキル」セクションに別管理する
+- **symlink vs 実ディレクトリ**: `find -type d` はシンボリックリンクを除くため `github-docs` 等は自動除外される
