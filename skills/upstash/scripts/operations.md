@@ -109,6 +109,7 @@ const receiver = new Receiver({
 const isValid = await receiver.verify({
   signature: "<SIGNATURE_HEADER>",
   body: "<RAW_REQUEST_BODY>",
+  url: "https://your-api.example.com/handler", // must match the JWT sub claim
 });
 ```
 

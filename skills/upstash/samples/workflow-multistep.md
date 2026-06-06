@@ -5,7 +5,6 @@ Define a durable multi-step function with Upstash Workflow; each step is retried
 ```typescript
 // app/api/workflow/onboarding/route.ts
 import { serve } from "@upstash/workflow/nextjs";
-import { Client } from "@upstash/workflow";
 
 export const { POST } = serve(async (context) => {
   const { userId, email } = context.requestPayload as {
