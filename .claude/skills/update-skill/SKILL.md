@@ -74,7 +74,14 @@ reference-updater は `references/` の既存ファイルのみを Edit し、`s
 - **reference-linter（subagent_type: reference-linter、model: haiku）** — 更新ファイルのフォーマット・テンプレート準拠を確認させる
 - **skill-structure-validator（subagent_type: skill-structure-validator、model: haiku）** — SKILL.md とディレクトリ構造が skill-anatomy 準拠かを確認させる
 
-指摘事項があれば該当 Agent（reference-updater または skill-author）に差し戻し、修正後に再検証する。
+指摘事項は内容に応じて該当 Agent に差し戻し、修正後に再検証する。
+
+- references 本文（既存ファイルの不備）→ **reference-updater**
+- references 本文（新規ページの不備）→ **reference-researcher**
+- samples 本文の不備 → **sample-curator**
+- scripts 本文の不備 → **script-collector**
+- 各カテゴリ `README.md` 索引の不備 → **readme-indexer**
+- SKILL.md（ツリー・マッピング表・frontmatter）の不備 → **skill-author**
 
 ### Step 5: CLAUDE.md を反映する
 

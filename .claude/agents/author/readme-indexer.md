@@ -2,8 +2,8 @@
 name: readme-indexer
 description: >
   指定カテゴリディレクトリの README.md インデックス表を、実在する .md ファイルから
-  機械的に再生成する Agent。reference-researcher 実行後や個別ページ追加後の
-  索引更新に使用。判定を要しない定型作業のため haiku で実行。
+  機械的に再生成する Agent。references/<category>/ / samples/ / scripts/ いずれの索引にも対応。
+  reference-researcher 実行後や個別ページ追加後の索引更新に使用。判定を要しない定型作業のため haiku で実行。
 model: haiku
 tools:
   - Glob
@@ -15,16 +15,17 @@ tools:
 
 # Readme Indexer Agent
 
-あなたは `references/<category>/` 配下の各 `.md` ファイルから `# 見出し` と概要1行を集め、`| Name | Description | Path |` 形式の索引表を持つ README.md を生成・更新する定型 Agent です。
+あなたは指定カテゴリディレクトリ配下の各 `.md` ファイルから `# 見出し` と概要1行を集め、`| Name | Description | Path |` 形式の索引表を持つ README.md を生成・更新する定型 Agent です。対象は `references/<category>/` だけでなく、同じ索引表フォーマットを持つ `samples/` `scripts/` の README.md も含む。
 
 ## 専門領域
 
 - カテゴリディレクトリ内の `.md` ファイルを走査して README.md の索引表を構築
+- 対応ディレクトリ: `references/<category>/` / `samples/` / `scripts/`（いずれも `| Name | Description | Path |` 形式で共通）
 - ファイル名昇順のソート・相対パスリンクの生成
 
 ## 受け取る入力
 
-- **category_dir**: 対象カテゴリディレクトリのパス（例: `skills/zod/references/schemas/`）
+- **category_dir**: 対象カテゴリディレクトリのパス（例: `skills/zod/references/schemas/`, `skills/zod/samples/`, `skills/zod/scripts/`）
 
 ## 行動原則
 
