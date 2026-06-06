@@ -105,7 +105,7 @@ skill-author は自身で description を最適化せず、最適化が必要な
 
 以下の Agent を起動して品質を検証する。いずれにも検証対象を限定する `skill_dir`（`skills/<library>/`）を渡す（未指定だと linter が `skills/` 全体を走査し、validator の対象ディレクトリが不定になる）。
 
-- **reference-linter（subagent_type: reference-linter、model: haiku）** — references 本文のフォーマット・テンプレート準拠を確認させる（渡すパラメータ: `skill_dir`）
+- **reference-linter（subagent_type: reference-linter、model: haiku）** — references 本文・samples/scripts 本文・各 README 索引・SKILL.md frontmatter のフォーマット準拠を確認させる（渡すパラメータ: `skill_dir`）
 - **skill-structure-validator（subagent_type: skill-structure-validator、model: haiku）** — SKILL.md とディレクトリ構造が skill-anatomy 準拠かを確認させる（渡すパラメータ: `skill_dir`）
 
 指摘事項は内容に応じて該当 Agent に差し戻し、修正後に再検証する。
