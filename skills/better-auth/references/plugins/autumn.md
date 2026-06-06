@@ -55,6 +55,8 @@ import { AutumnProvider } from "autumn-js/react"
 ## 使用例
 
 ```typescript
+import { useCustomer, AttachDialog } from "autumn-js/react"
+
 // チェックアウト
 const { attach, allowed } = useCustomer()
 await attach({ productId: "pro", dialog: AttachDialog })
