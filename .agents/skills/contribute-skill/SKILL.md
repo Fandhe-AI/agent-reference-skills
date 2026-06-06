@@ -58,11 +58,32 @@ fi
 ルートの `skills-lock.json` を読み、`skills.<SKILL_NAME>.source` を取り出します。
 
 ```bash
-# Python を使わず jq が使えるなら jq で（CLI にあれば）
+# jq が使えるなら jq で取得する
+SOURCE=$(jq -r ".skills[\"${SKILL_NAME}\"].source" skills-lock.json)
+SOURCE_TYPE=$(jq -r ".skills[\"${SKILL_NAME}\"].sourceType" skills-lock.json)
+
+# 安全弁: Fandhe-AI org 以外への push を拒否する
+# 短縮形 (Fandhe-AI/<repo>) と URL 形式 (https://github.com/Fandhe-AI/<repo>) の両方を許可する
+case "${SOURCE}" in
+  Fandhe-AI/*)
+    # 短縮形: そのまま使用
+    REPO_SLUG="${SOURCE}"
+    ;;
+  https://github.com/Fandhe-AI/*)
+    # URL 形式: OWNER/REPO 形式に正規化し末尾 .git を除去する
+    REPO_SLUG="${SOURCE#https://github.com/}"
+    REPO_SLUG="${REPO_SLUG%.git}"
+    ;;
+  *)
+    echo "エラー: source '${SOURCE}' は Fandhe-AI org のリポジトリではありません。中止します。"
+    exit 1
+    ;;
+esac
 ```
 
-- `source` が `Fandhe-AI/` で始まらない場合は **エラーで中止** します（安全弁：見知らぬリポジトリへ意図せず push しないため）。
+- `source` が `Fandhe-AI/`（短縮形）または `https://github.com/Fandhe-AI/`（URL 形式）のいずれでも始まらない場合は **エラーで中止** します（安全弁：見知らぬリポジトリへ意図せず push しないため）。
 - `sourceType` が `github` であることも確認します。
+- 正規化後の `REPO_SLUG` は以降の Step で `gh repo clone`・`gh pr create --repo` に利用します。
 
 ### Step 3: 変更内容を確認する
 
@@ -102,7 +123,7 @@ mkdir -p "$WORKDIR"
 # sandbox 環境では各コマンドに GIT_SSL_NO_VERIFY=1 を前置する（詳細: docs/sandbox-tls.md）
 # cd する前にローカルリポジトリのルートを捕捉する（cd - は stdout を汚染するため使用しない）
 ORIG_DIR="$(pwd)"
-gh repo clone Fandhe-AI/<repo> "$WORKDIR/upstream"
+gh repo clone "${REPO_SLUG}" "$WORKDIR/upstream"
 cd "$WORKDIR/upstream"
 ```
 
@@ -181,7 +202,7 @@ EOF
 git push -u origin "contribute/<SKILL_NAME>-${SLUG}"
 
 gh pr create \
-  --repo Fandhe-AI/<repo> \
+  --repo "${REPO_SLUG}" \
   --base "${DEFAULT_BRANCH:-main}" \
   --title "<type>(<scope>): <subject>" \
   --body "$(cat <<'EOF'
@@ -203,7 +224,7 @@ EOF
 )"
 ```
 
-`--repo` には `OWNER/REPO` 形式を渡します。`skills-lock.json` の `source` が `https://github.com/` で始まる URL 形式だった場合は、プレフィックスと末尾の `.git` を除去した `OWNER/REPO` 形式に変換してから渡してください（URL 形式のまま渡すと `gh pr create` が失敗します）。
+`--repo` には Step 2 で正規化した `${REPO_SLUG}`（`OWNER/REPO` 形式）を渡します。URL 形式から `OWNER/REPO` への変換は Step 2 の case 文で完了しています。
 
 Draft PR を作成する場合は `--draft` を付けます（デフォルトはユーザー確認の上で決定）。
 
@@ -215,7 +236,7 @@ Draft PR を作成する場合は `--draft` を付けます（デフォルトは
 
 ## 注意事項
 
-- **source が Fandhe-AI/ 以外の場合は中止**：意図しない外部リポジトリへの push を防ぐ
+- **source が Fandhe-AI org 以外の場合は中止**：`Fandhe-AI/`（短縮形）と `https://github.com/Fandhe-AI/`（URL 形式）のみを許可し、それ以外は意図しない外部リポジトリへの push を防ぐため中止する
 - **セキュリティ問題が見つかった場合は中止**：修正後に再実行
 - **sandbox 環境での `GIT_SSL_NO_VERIFY=1` 併用**：詳細は後述の「sandbox 環境での実行」節を参照
 - **upstream のパス構造は事前確認**：`skills/<name>/` か `.agents/skills/<name>/` かは upstream によって異なる

@@ -18,6 +18,12 @@ if [[ -z "$SKILL_NAME" || -z "$SOURCE_REPO" ]]; then
   exit 1
 fi
 
+# SKILL_NAME バリデーション: 小文字 kebab-case のみ許可（パストラバーサル防止）
+if [[ ! "$SKILL_NAME" =~ ^[a-z][a-z0-9-]+$ ]]; then
+  echo "エラー: SKILL_NAME は小文字 kebab-case のみ許可されています: ${SKILL_NAME}" >&2
+  exit 1
+fi
+
 # source の安全弁: Fandhe-AI/ または https://github.com/Fandhe-AI/ のみ許可
 case "$SOURCE_REPO" in
   Fandhe-AI/*)
@@ -58,6 +64,18 @@ except FileNotFoundError:
 PYEOF
 
 echo ""
+
+# skills-lock.json の clean チェック（sync 由来以外の変更の混入を防ぐ）
+if ! git diff --quiet -- skills-lock.json || ! git diff --cached --quiet -- skills-lock.json; then
+  echo "エラー: skills-lock.json に未コミットの変更があります。コミットまたは退避してから再実行してください。" >&2
+  exit 1
+fi
+
+# 当該スキルの install ツリーの clean チェック（npx による WIP 上書きを防ぐ）
+if ! git diff --quiet -- ".agents/skills/${SKILL_NAME}/" || ! git diff --cached --quiet -- ".agents/skills/${SKILL_NAME}/"; then
+  echo "エラー: .agents/skills/${SKILL_NAME}/ に未コミットの変更があります。npx の上書きで失われるため中止します。コミットまたは退避してから再実行してください。" >&2
+  exit 1
+fi
 
 # npx skills add で CLI に computedHash を更新させる
 # --yes / -y で確認プロンプトをスキップ

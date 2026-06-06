@@ -21,6 +21,7 @@ model: sonnet
 - `node` / `npx` が利用可能であること（`npx skills add` を使用するため）
 - ルート直下の `skills-lock.json` が存在すること
 - **実行前に `skills-lock.json` に未コミットの変更がないこと**（ステージ済み・未ステージ問わず）。本スキルの実行中に発生する変更は sync 由来のみとなり、`git add skills-lock.json` で全体をステージしても無関係な変更が混入しない
+- **対象スキルの `.agents/skills/<name>/` に未コミット変更がないこと**。`npx skills add` は `.agents/skills/<name>/` を upstream の最新版で上書きするため、そのディレクトリに WIP が存在すると即座に失われる。`git checkout` で戻せるのは「最後にコミットされた状態」のみであり、npx 実行前の未コミット編集は復元できない
 
 ## フロー
 
@@ -79,6 +80,12 @@ esac
 `sha256sum` などで手動計算するのではなく、`npx skills add` に計算を任せる。これにより CLI の内部アルゴリズムと完全に一致する。
 
 ```bash
+# 当該スキルの install ツリーに未コミット変更があれば npx が上書きするため skip
+if ! git diff --quiet -- ".agents/skills/${SKILL_NAME}/" || ! git diff --cached --quiet -- ".agents/skills/${SKILL_NAME}/"; then
+  echo "警告: .agents/skills/${SKILL_NAME}/ に未コミット変更があります。npx の上書きで失われるため skip します。"
+  continue
+fi
+
 # CLI に computedHash を更新させる（--yes で確認プロンプトをスキップ）
 npx skills add "${SOURCE}" --skill "${SKILL_NAME}" --yes
 ```
@@ -89,9 +96,9 @@ npx skills add "${SOURCE}" --skill "${SKILL_NAME}" --yes
 - インストール先（`.agents/skills/<name>/`）を最新化
 - `skills-lock.json` の `computedHash` を CLI 算出値で更新
 
-**重要な副作用**: `npx skills add` はインストール済みファイルを最新の upstream 版で上書きする。upstream との同期が目的のため、これは意図した動作である。
+**重要な副作用**: `npx skills add` はインストール済みファイルを最新の upstream 版で上書きする。upstream との同期が目的のため、これは意図した動作である。上記の per-skill clean ガードにより、WIP がある場合は npx 実行前に skip するため、未コミット編集の消失は防止される。
 
-**注意**: このコマンドは即座に `skills-lock.json` と `.agents/skills/<name>/` を書き換える。ユーザー承認（Step 6）の前に変更が確定するため、承認しない場合は Step 6 の案内に従いリバートが必要。
+**注意**: clean ガードを通過したスキルについては、npx が即座に `skills-lock.json` と `.agents/skills/<name>/` を書き換える。ユーザー承認（Step 6）の前に変更が確定するため、承認しない場合は Step 6 の案内に従いリバートが必要。
 
 #### Step 5: 当該スキルの差分を表示する
 
