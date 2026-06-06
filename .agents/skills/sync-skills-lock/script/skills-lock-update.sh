@@ -39,6 +39,19 @@ case "$SOURCE_REPO" in
     ;;
 esac
 
+# skills-lock.json に source があれば SOURCE_REPO と照合する（誤 upstream 同期防止）
+if command -v jq >/dev/null 2>&1 && [[ -f skills-lock.json ]]; then
+  LOCK_SOURCE=$(jq -r ".skills[\"${SKILL_NAME}\"].source // empty" skills-lock.json 2>/dev/null)
+  if [[ -n "${LOCK_SOURCE}" ]]; then
+    norm_lock="${LOCK_SOURCE#https://github.com/}"; norm_lock="${norm_lock%.git}"
+    norm_arg="${SOURCE_REPO#https://github.com/}"; norm_arg="${norm_arg%.git}"
+    if [[ "${norm_lock}" != "${norm_arg}" ]]; then
+      echo "エラー: 指定された source (${SOURCE_REPO}) が skills-lock.json の source (${LOCK_SOURCE}) と一致しません。中止します。" >&2
+      exit 1
+    fi
+  fi
+fi
+
 # gh CLI の認証確認
 if ! gh auth status &>/dev/null; then
   echo "エラー: gh CLI が認証されていません。gh auth login を実行してください。" >&2
