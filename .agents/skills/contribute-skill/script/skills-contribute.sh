@@ -37,10 +37,18 @@ case "$UPSTREAM_REPO" in
     ;;
 esac
 
-# ローカルスキルのパス確認（skills/ → .agents/skills/ の順で探す）
-if [[ -d "skills/${SKILL_NAME}" ]]; then
+# ローカルスキルのパス確認（両方存在する場合は silently に優先せずユーザーへ確認を求める）
+have_skills=0; have_agents=0
+[[ -d "skills/${SKILL_NAME}" ]] && have_skills=1
+[[ -d ".agents/skills/${SKILL_NAME}" ]] && have_agents=1
+
+if [[ "${have_skills}" -eq 1 && "${have_agents}" -eq 1 ]]; then
+  echo "エラー: skills/${SKILL_NAME} と .agents/skills/${SKILL_NAME} の両方が存在します。"
+  echo "改修したのがどちらかを確認し、明示的に LOCAL_SKILL_DIR を指定して再実行してください。"
+  exit 1
+elif [[ "${have_skills}" -eq 1 ]]; then
   LOCAL_SKILL_DIR="skills/${SKILL_NAME}"
-elif [[ -d ".agents/skills/${SKILL_NAME}" ]]; then
+elif [[ "${have_agents}" -eq 1 ]]; then
   LOCAL_SKILL_DIR=".agents/skills/${SKILL_NAME}"
 else
   echo "エラー: ローカルスキルが見つかりません: skills/${SKILL_NAME} / .agents/skills/${SKILL_NAME}"

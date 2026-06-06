@@ -66,14 +66,16 @@ PYEOF
 echo ""
 
 # skills-lock.json の clean チェック（sync 由来以外の変更の混入を防ぐ）
-if ! git diff --quiet -- skills-lock.json || ! git diff --cached --quiet -- skills-lock.json; then
+# git diff 系は untracked を検出しないため porcelain を使う
+if [[ -n "$(git status --porcelain -- skills-lock.json)" ]]; then
   echo "エラー: skills-lock.json に未コミットの変更があります。コミットまたは退避してから再実行してください。" >&2
   exit 1
 fi
 
 # 当該スキルの install ツリーの clean チェック（npx による WIP 上書きを防ぐ）
-if ! git diff --quiet -- ".agents/skills/${SKILL_NAME}/" || ! git diff --cached --quiet -- ".agents/skills/${SKILL_NAME}/"; then
-  echo "エラー: .agents/skills/${SKILL_NAME}/ に未コミットの変更があります。npx の上書きで失われるため中止します。コミットまたは退避してから再実行してください。" >&2
+# git diff 系は untracked を検出しないため porcelain を使う（未追跡 WIP も保護対象）
+if [[ -n "$(git status --porcelain -- ".agents/skills/${SKILL_NAME}/")" ]]; then
+  echo "エラー: .agents/skills/${SKILL_NAME}/ に未コミット変更（未追跡含む）があります。npx の上書きで失われるため中止します。コミットまたは退避してから再実行してください。" >&2
   exit 1
 fi
 

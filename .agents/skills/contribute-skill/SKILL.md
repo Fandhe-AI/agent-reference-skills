@@ -39,10 +39,25 @@ if [[ -z "${SKILL_NAME}" ]]; then
   exit 1   # ユーザーが選んだスキル名を引数に付けて再実行する
 fi
 
+# kebab-case 検証（パストラバーサル防止）: パス解決より前に実施する
+if [[ ! "${SKILL_NAME}" =~ ^[a-z][a-z0-9-]+$ ]]; then
+  echo "エラー: SKILL_NAME は小文字 kebab-case のみ許可されています: ${SKILL_NAME}"
+  exit 1
+fi
+
 # SKILL_NAME 確定後に対象ディレクトリを解決して LOCAL_SKILL_DIR に設定する
-if [[ -d "skills/${SKILL_NAME}" ]]; then
+# 両方に存在する場合は silently に skills/ を優先せずユーザーへ確認を求める
+have_skills=0; have_agents=0
+[[ -d "skills/${SKILL_NAME}" ]] && have_skills=1
+[[ -d ".agents/skills/${SKILL_NAME}" ]] && have_agents=1
+
+if [[ "${have_skills}" -eq 1 && "${have_agents}" -eq 1 ]]; then
+  echo "エラー: skills/${SKILL_NAME} と .agents/skills/${SKILL_NAME} の両方が存在します。"
+  echo "改修したのがどちらかをユーザーに確認し、明示的に LOCAL_SKILL_DIR を指定してください。"
+  exit 1
+elif [[ "${have_skills}" -eq 1 ]]; then
   LOCAL_SKILL_DIR="skills/${SKILL_NAME}"
-elif [[ -d ".agents/skills/${SKILL_NAME}" ]]; then
+elif [[ "${have_agents}" -eq 1 ]]; then
   LOCAL_SKILL_DIR=".agents/skills/${SKILL_NAME}"
 else
   echo "エラー: ローカルスキルが見つかりません: skills/${SKILL_NAME} / .agents/skills/${SKILL_NAME}"
@@ -51,7 +66,7 @@ fi
 ```
 
 引数が空の場合はパス解決に進まず、`skills/` と `.agents/skills/` の候補一覧を表示して終了します。Claude はその一覧をユーザーに提示し、スキル名を選んでもらってから再実行を促してください。後続の Step では `${LOCAL_SKILL_DIR}/` を使ってローカルパスを参照します。
-どちらにも存在しなければエラーで中止します。
+`skills/` と `.agents/skills/` の**両方にディレクトリが存在する場合は中止**し、どちらが改修対象かユーザーに確認します（silently に `skills/` を優先しません）。どちらにも存在しなければエラーで中止します。
 
 ### Step 2: upstream を特定する
 
@@ -242,6 +257,8 @@ Draft PR を作成する場合は `--draft` を付けます（デフォルトは
 
 ## 注意事項
 
+- **SKILL_NAME は kebab-case のみ許可**：`..` のような値によるパストラバーサルを防ぐため、空判定の直後・パス解決の前に `^[a-z][a-z0-9-]+$` で検証する（security.md A03/A01）
+- **`skills/` と `.agents/skills/` の両方が存在する場合は中止**：silently に `skills/` を優先せず、どちらが改修対象かユーザーに確認してから再実行を求める
 - **source が Fandhe-AI org 以外の場合は中止**：`Fandhe-AI/`（短縮形）と `https://github.com/Fandhe-AI/`（URL 形式）のみを許可し、それ以外は意図しない外部リポジトリへの push を防ぐため中止する
 - **セキュリティ問題が見つかった場合は中止**：修正後に再実行
 - **sandbox 環境での `GIT_SSL_NO_VERIFY=1` 併用**：詳細は後述の「sandbox 環境での実行」節を参照
