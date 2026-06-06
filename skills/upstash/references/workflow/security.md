@@ -27,7 +27,8 @@ export const { POST } = serve(
   async (context) => {
     const token = context.headers.get("authorization")?.split(" ")[1]
     if (!isValid(token)) {
-      return  // exit early without processing
+      console.error("Authentication failed.")
+      return  // bare return aborts the run; QStash stops retrying this message
     }
     // ... workflow steps
   },
@@ -53,6 +54,7 @@ export const { POST } = serve(
 ## Notes
 
 - Built-in signature verification: every request from QStash includes an `Upstash-Signature` header; the SDK validates it automatically when signing keys are configured
+- Custom authorization uses a bare `return` (per the official docs), not an HTTP error response: returning early from the `serve` handler aborts the run so no steps execute, and QStash stops retrying the message. Log the failure (`console.error`) for observability
 - Custom authorization in the failure function is critical — failure functions are invoked independently and bypass the main workflow entry point
 - Signing keys are available in the Upstash Console under the Workflow tab
 
