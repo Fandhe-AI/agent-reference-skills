@@ -185,9 +185,17 @@ else
     UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
   elif [[ -d ".agents/skills/${SKILL_NAME}" ]]; then
     UPSTREAM_SKILL_PATH=".agents/skills/${SKILL_NAME}"
-  else
-    echo "警告: upstream に ${SKILL_NAME} のパスが見つかりません。新規追加として扱います。"
+  elif [[ -d "skills" ]]; then
+    # upstream が skills/ 配下で公開している慣習
+    UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
+    mkdir -p "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
+  elif [[ -d ".agents/skills" ]]; then
+    # upstream が .agents/skills/ 配下で公開している慣習
     UPSTREAM_SKILL_PATH=".agents/skills/${SKILL_NAME}"
+    mkdir -p "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
+  else
+    echo "警告: upstream にスキルルートが見つかりません。skills/ を既定として新規追加します。"
+    UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
     mkdir -p "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
   fi
 fi
@@ -276,7 +284,7 @@ Draft PR を作成する場合は `--draft` を付けます（デフォルトは
 - **source が Fandhe-AI org 以外の場合は中止**：`Fandhe-AI/`（短縮形）と `https://github.com/Fandhe-AI/`（URL 形式）のみを許可し、それ以外は意図しない外部リポジトリへの push を防ぐため中止する
 - **セキュリティ問題が見つかった場合は中止**：修正後に再実行
 - **sandbox 環境での `GIT_SSL_NO_VERIFY=1` 併用**：詳細は後述の「sandbox 環境での実行」節を参照
-- **upstream の配置は lockfile の skillPath を正とする**：ローカルの `skills-lock.json` に `skillPath` が登録されている場合はその dirname を `UPSTREAM_SKILL_PATH` に採用し、クローン内のディレクトリ存在判定より優先する。`skillPath` は `SKILL.md` へのパスである前提であり、それ以外の形式の場合は dirname の結果が不正になりうるため注意する。未登録スキルの場合のみクローン内ディレクトリ存在でフォールバックする
+- **upstream の配置は lockfile の skillPath を正とする**：ローカルの `skills-lock.json` に `skillPath` が登録されている場合はその dirname を `UPSTREAM_SKILL_PATH` に採用し、クローン内のディレクトリ存在判定より優先する。`skillPath` は `SKILL.md` へのパスである前提であり、それ以外の形式の場合は dirname の結果が不正になりうるため注意する。未登録スキル（新規貢献等）の場合のみクローン内ディレクトリ存在でフォールバックし、スキルルートの親ディレクトリ（`skills/` or `.agents/skills/`）の存在で upstream の慣習を検出して決定する。最終デフォルトは `skills/`（より一般的な公開レイアウト）
 - **既に同名の branch がある場合**：秒単位スラッグで通常は衝突しないが、万一の場合はユーザーに確認
 
 ## sandbox 環境での実行

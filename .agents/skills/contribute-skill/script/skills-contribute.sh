@@ -39,6 +39,19 @@ case "$UPSTREAM_REPO" in
     ;;
 esac
 
+# skills-lock.json に source があれば argv の UPSTREAM_REPO と照合する（誤リポ clone 防止）
+if command -v jq >/dev/null 2>&1 && [[ -f skills-lock.json ]]; then
+  LOCK_SOURCE=$(jq -r ".skills[\"${SKILL_NAME}\"].source // empty" skills-lock.json 2>/dev/null)
+  if [[ -n "${LOCK_SOURCE}" ]]; then
+    norm_lock="${LOCK_SOURCE#https://github.com/}"; norm_lock="${norm_lock%.git}"
+    norm_arg="${UPSTREAM_REPO#https://github.com/}"; norm_arg="${norm_arg%.git}"
+    if [[ "${norm_lock}" != "${norm_arg}" ]]; then
+      echo "エラー: 指定された upstream (${UPSTREAM_REPO}) が skills-lock.json の source (${LOCK_SOURCE}) と一致しません。中止します。" >&2
+      exit 1
+    fi
+  fi
+fi
+
 # ローカルスキルのパス確認（override: 環境変数 LOCAL_SKILL_DIR が設定済みならそれを検証して使う）
 if [[ -n "${LOCAL_SKILL_DIR:-}" ]]; then
   if [[ "${LOCAL_SKILL_DIR}" != "skills/${SKILL_NAME}" && "${LOCAL_SKILL_DIR}" != ".agents/skills/${SKILL_NAME}" ]]; then
@@ -115,9 +128,17 @@ else
     UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
   elif [[ -d ".agents/skills/${SKILL_NAME}" ]]; then
     UPSTREAM_SKILL_PATH=".agents/skills/${SKILL_NAME}"
-  else
-    echo "警告: upstream に ${SKILL_NAME} のパスが見つかりません。新規追加として扱います。"
+  elif [[ -d "skills" ]]; then
+    # upstream が skills/ 配下で公開している慣習
+    UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
+    mkdir -p "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
+  elif [[ -d ".agents/skills" ]]; then
+    # upstream が .agents/skills/ 配下で公開している慣習
     UPSTREAM_SKILL_PATH=".agents/skills/${SKILL_NAME}"
+    mkdir -p "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
+  else
+    echo "警告: upstream にスキルルートが見つかりません。skills/ を既定として新規追加します。"
+    UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
     mkdir -p "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
   fi
 fi
