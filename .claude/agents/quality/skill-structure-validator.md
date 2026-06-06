@@ -50,6 +50,7 @@ tools:
 1. `{skill_dir}references/*/` を Glob でカテゴリディレクトリ一覧を取得する
 2. 各カテゴリディレクトリに `README.md` が存在するかを Glob で確認する
 3. README.md が存在しないカテゴリを記録する（⚠️ WARNING）
+4. `{skill_dir}samples/` `{skill_dir}scripts/` の有無を Glob で確認し、存在する場合はそれぞれの `README.md` の有無も確認する（README.md 欠落は ⚠️ WARNING）
 
 ### Step 3: README 索引と実ファイルの突合
 
@@ -70,8 +71,8 @@ tools:
 
 1. SKILL.md を Read してマッピング表（`| タスク | カテゴリ | 参照 README |`）を抽出する
 2. 表に含まれるカテゴリ一覧を取得する
-3. Step 2 で把握した実カテゴリ一覧と比較する
-4. マッピング表に含まれていないカテゴリを記録する（⚠️ WARNING）
+3. Step 2 で把握した実カテゴリ一覧（references の各カテゴリ、および存在する `samples/` `scripts/`）と比較する
+4. マッピング表に含まれていないカテゴリ（存在する `samples/` `scripts/` を含む）を記録する（⚠️ WARNING）
 
 ### Step 6: 検証レポートの生成
 

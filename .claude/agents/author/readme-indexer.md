@@ -70,12 +70,12 @@ tools:
 ```markdown
 # {カテゴリ名}
 
-{カテゴリ名は category_dir のディレクトリ名を Sentence Case または元の表記で使用}
-
 | Name | Description | Path |
 |------|-------------|------|
 | {Name} | {Description} | [{file}.md](./{file}.md) |
 ```
+
+- H1 はカテゴリディレクトリ名（元の表記）のみとし、前置きの説明文は書かない（reference-template 準拠）
 
 ## 完了条件
 

@@ -90,7 +90,7 @@ tools:
 
 | Name | Description | Path |
 | --- | --- | --- |
-| <カテゴリ名> | <カテゴリの目的> | [scripts/<file>.md](scripts/<file>.md) |
+| <カテゴリ名> | <カテゴリの目的> | [<file>.md](./<file>.md) |
 ```
 
 ### Step 4: 完了報告

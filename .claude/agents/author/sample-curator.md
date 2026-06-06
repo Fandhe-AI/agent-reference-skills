@@ -80,7 +80,7 @@ tools:
 
 | Name | Description | Path |
 | --- | --- | --- |
-| <ユースケース名> | <目的の1行要約> | [samples/<file>.md](samples/<file>.md) |
+| <ユースケース名> | <目的の1行要約> | [<file>.md](./<file>.md) |
 ```
 
 - 全サンプルファイルが列挙されていることを確認する

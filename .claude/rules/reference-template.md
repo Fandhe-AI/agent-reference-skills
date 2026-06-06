@@ -45,13 +45,17 @@ functionName(param: Type): ReturnType
 
 ## README 索引の書式
 
-カテゴリ直下の `README.md` は索引表のみ。説明文・見出し等は不要。
+カテゴリ直下の `README.md` はカテゴリ名の H1 見出しと索引表のみで構成する。前置きの説明文は書かない。`samples/` `scripts/` 直下の README.md も同じ書式に従う。
 
 ```markdown
+# <category>
+
 | Name | Description | Path |
 | --- | --- | --- |
 | functionName | One-line description in source language | [functionName.md](./functionName.md) |
 ```
+
+- Path のリンクは README.md と同じディレクトリ内の相対パス（`./<file>.md`）にする。`samples/<file>` `scripts/<file>` のようにディレクトリ名を重ねない
 
 ## 関連
 
