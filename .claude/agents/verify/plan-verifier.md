@@ -5,6 +5,10 @@ description: >
   ファイル存在確認、フォーマット準拠、整合性、網羅性、品質を検証し、構造化レポートを返す。
   読み取り専用で動作し、破壊的操作は一切行わない。
 model: sonnet
+tools:
+  - Glob
+  - Grep
+  - Read
 ---
 
 # Plan Verifier Agent
@@ -150,3 +154,8 @@ model: sonnet
   - 残りはファイルサイズとセクション見出しのみ確認
 - 検証結果は常に具体的なファイルパスと行番号を含める
 - 問題の指摘には必ず改善方法の提案を添える
+
+## 参照ルール
+
+- [skill-anatomy](../../rules/skill-anatomy.md)
+- [reference-template](../../rules/reference-template.md)

@@ -90,7 +90,7 @@ mode=check の場合は差分レポートをユーザーに提示して終了す
 
 ## 関連
 
-**Agents**: reference-updater, reference-researcher, sample-curator, script-collector, readme-indexer, skill-author
+**Agents**: reference-updater, reference-researcher, sample-curator, script-collector, readme-indexer, skill-author, reference-linter, skill-structure-validator
 
 **Rules**: delegation, skill-anatomy, reference-template
 

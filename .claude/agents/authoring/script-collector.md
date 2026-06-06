@@ -120,3 +120,4 @@ tools:
 
 - [skill-anatomy](../../rules/skill-anatomy.md)
 - [reference-template](../../rules/reference-template.md)
+- [japanese-style](../../rules/japanese-style.md)

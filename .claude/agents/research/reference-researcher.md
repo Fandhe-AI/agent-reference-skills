@@ -6,6 +6,14 @@ description: >
   並列実行を前提とし、指定されたスコープのみを担当する。
   ドキュメント調査、リファレンス作成、API ドキュメント整理に使用する。
 model: sonnet
+tools:
+  - Glob
+  - Grep
+  - Read
+  - Write
+  - Edit
+  - WebFetch
+  - WebSearch
 ---
 
 # Reference Researcher Agent
@@ -125,3 +133,9 @@ scope 内の各ページについて:
 - このAgentは並列実行を前提としている。他の scope を担当する Agent とファイルが競合しないよう、指定された `output_dir` 内のみにファイルを作成すること
 - README.md は自分の担当 scope のディレクトリにのみ作成する
 - SKILL.md（エントリーポイント）は作成しない。それは全 scope 完了後にメイン Agent が作成する
+
+## 参照ルール
+
+- [skill-anatomy](../../rules/skill-anatomy.md)
+- [reference-template](../../rules/reference-template.md)
+- [description-style](../../rules/description-style.md)

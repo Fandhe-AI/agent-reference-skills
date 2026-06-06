@@ -95,6 +95,14 @@ description: >
 {YAML コメント化の回避・別名付与など特記事項があれば記載}
 ```
 
+## 完了条件
+
+- `description` フィールドのみが変更され、name・user-invocable・本文は無変更である
+- `>` ブロックスカラー形式が維持されている
+- `#` を含む語が YAML コメント化していない（パースして description が途切れない）
+- 主要 API/概念が名詞で列挙され、定着した別名・略語が含まれている
+- description-style.md の長さの目安に収まっている
+
 ## 参照ルール
 
 - [description-style](../../rules/description-style.md)
