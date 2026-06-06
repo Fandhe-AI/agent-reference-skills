@@ -47,7 +47,7 @@ mode=check の場合は差分レポートをユーザーに提示して終了す
 
 ### Step 2: 更新を適用する（mode=apply 時）
 
-reference-updater が返した差分レポートを確認し、以下の観点で追加委譲を判断する。
+reference-updater は既存ファイルの更新のみを行い新規項目は作成しないため、差分レポートで「新規」とされた項目の作成を以下へ委譲する（二重作成は起きない）。
 
 **追加カテゴリがある場合**:
 - 新しい references カテゴリ → **reference-researcher（subagent_type: reference-researcher、model: sonnet）**へ委譲
