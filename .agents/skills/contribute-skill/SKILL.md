@@ -79,10 +79,16 @@ case "${SOURCE}" in
     exit 1
     ;;
 esac
+
+# sourceType が github 以外なら中止（GitHub 以外の source は本スキルの想定外）
+if [[ "${SOURCE_TYPE}" != "github" ]]; then
+  echo "エラー: sourceType '${SOURCE_TYPE}' は github ではありません。中止します。"
+  exit 1
+fi
 ```
 
 - `source` が `Fandhe-AI/`（短縮形）または `https://github.com/Fandhe-AI/`（URL 形式）のいずれでも始まらない場合は **エラーで中止** します（安全弁：見知らぬリポジトリへ意図せず push しないため）。
-- `sourceType` が `github` であることも確認します。
+- `sourceType` が `github` 以外の場合も **エラーで中止** します（GitHub 以外の source は本スキルの想定外であり、`gh repo clone` / `gh pr create` が正常動作しないため）。
 - 正規化後の `REPO_SLUG` は以降の Step で `gh repo clone`・`gh pr create --repo` に利用します。
 
 ### Step 3: 変更内容を確認する
