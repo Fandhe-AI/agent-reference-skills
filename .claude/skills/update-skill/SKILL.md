@@ -81,7 +81,8 @@ reference-updater は `references/` の既存ファイルのみを Edit し、`s
 - samples 本文の不備 → **sample-curator**
 - scripts 本文の不備 → **script-collector**
 - 各カテゴリ `README.md` 索引の不備 → **readme-indexer**
-- SKILL.md（ツリー・マッピング表・frontmatter）の不備 → **skill-author**
+- SKILL.md の `description`（ヒット率・長さ・YAML の `#` 起因の不備）→ **description-optimizer**
+- SKILL.md のツリー・マッピング表・`description` 以外の frontmatter の不備 → **skill-author**
 
 ### Step 5: CLAUDE.md を反映する
 
