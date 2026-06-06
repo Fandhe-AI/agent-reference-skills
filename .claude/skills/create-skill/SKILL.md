@@ -76,7 +76,7 @@ references の生成と並行、または完了後に以下を並列起動する
 
 ### Step 5: SKILL.md を作成する
 
-Step 3（references）と Step 4（samples / scripts）の**両方の完了を確認後**、**skill-author（subagent_type: skill-author、model: sonnet）**に委譲して `skills/<library>/SKILL.md` を作成させる。samples / scripts を先に確定させることで、SKILL.md のツリー・マッピング表に確実に反映される。
+Step 3（references）と **Step 4 で実際に起動した Agent**（samples / scripts）の完了を確認後、**skill-author（subagent_type: skill-author、model: sonnet）**に委譲して `skills/<library>/SKILL.md` を作成させる。Step 4 で samples / scripts を不要と判断してスキップした場合は、その分の完了を待たずに Step 3 の完了のみで先へ進む（起動していない Agent の完了は待たない）。samples / scripts を先に確定させることで、SKILL.md のツリー・マッピング表に確実に反映される。
 
 渡すパラメータ:
 
@@ -102,7 +102,13 @@ description の品質が不十分な場合は **description-optimizer（subagent
 - **reference-linter（subagent_type: reference-linter、model: haiku）** — references 本文のフォーマット・テンプレート準拠を確認させる
 - **skill-structure-validator（subagent_type: skill-structure-validator、model: haiku）** — SKILL.md とディレクトリ構造が skill-anatomy 準拠かを確認させる
 
-指摘事項があれば該当 Agent（reference-researcher または skill-author）に差し戻し、修正後に再検証する。
+指摘事項は内容に応じて該当 Agent に差し戻し、修正後に再検証する。
+
+- references 本文の不備 → **reference-researcher**
+- samples 本文の不備 → **sample-curator**
+- scripts 本文の不備 → **script-collector**
+- 各カテゴリ `README.md` 索引の不備 → **readme-indexer**
+- SKILL.md（ツリー・マッピング表・frontmatter）の不備 → **skill-author**
 
 ### Step 7: CLAUDE.md を更新する
 

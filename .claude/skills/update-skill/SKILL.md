@@ -47,14 +47,18 @@ mode=check の場合は差分レポートをユーザーに提示して終了す
 
 ### Step 2: 更新を適用する（mode=apply 時）
 
-reference-updater は既存ファイルの更新のみを行い新規項目は作成しないため、差分レポートで「新規」とされた項目の作成を以下へ委譲する（二重作成は起きない）。
+reference-updater は `references/` の既存ファイルのみを Edit し、`samples/` `scripts/` への変更も新規項目の作成も自身では行わない。差分レポートに記載された後続作業を以下へ委譲する（reference-updater は実作業をしないため二重作成は起きない）。
 
-**追加カテゴリがある場合**:
+**新規項目の作成**:
 - 新しい references カテゴリ → **reference-researcher（subagent_type: reference-researcher、model: sonnet）**へ委譲
 - 新しい samples ユースケース → **sample-curator（subagent_type: sample-curator、model: sonnet）**へ委譲
 - 新しい CLI/コマンド → **script-collector（subagent_type: script-collector、model: sonnet）**へ委譲
 
-複数の追加が必要な場合は並列起動する。
+**既存 samples / scripts の変更追従**（reference-updater が「更新要」と報告した場合）:
+- API 変更で既存サンプルが古くなった → **sample-curator** へ委譲し、該当ユースケースを再生成させる
+- CLI コマンド変更で既存スクリプトが古くなった → **script-collector** へ委譲し、該当カテゴリを再生成させる
+
+複数の作業が必要な場合は並列起動する。
 
 ### Step 3: 索引・エントリポイントを再生成する
 

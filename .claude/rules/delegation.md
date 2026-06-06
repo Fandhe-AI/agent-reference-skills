@@ -20,7 +20,7 @@ token を消費する実作業（ドキュメント調査、references 作成、
 ## やってはいけないこと
 
 - 公式ドキュメントのクロール・内容調査（reference-researcher に委譲）
-- references/ 配下のページ作成・更新（reference-researcher に委譲）
+- references/ 配下のページ新規作成（reference-researcher に委譲）／既存スキルの最新ドキュメント追従・更新（reference-updater に委譲）
 - SKILL.md の新規作成・description 変更（skill-author / description-optimizer に委譲）
 - README 索引表の再生成（readme-indexer に委譲）
 - スキル構造の検証・lint（skill-structure-validator / reference-linter に委譲）
