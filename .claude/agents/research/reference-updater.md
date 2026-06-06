@@ -46,8 +46,8 @@ tools:
 
 1. `{skill_dir}SKILL.md` を Read して `base_url`（未指定の場合）とカテゴリ構成を把握する
 2. `{skill_dir}references/` 配下を Glob でカテゴリ・ファイル一覧を取得する（`scope` 指定時は該当カテゴリのみに絞る）
-3. `{skill_dir}samples/` が存在すれば Glob でファイル一覧を取得する
-4. `{skill_dir}scripts/` が存在すれば Glob でファイル一覧を取得する
+3. **`scope` 未指定（全体）の場合のみ** `{skill_dir}samples/` が存在すれば Glob でファイル一覧を取得する（`scope` 指定時はルール7に従い `samples/` には触れない）
+4. **`scope` 未指定（全体）の場合のみ** `{skill_dir}scripts/` が存在すれば Glob でファイル一覧を取得する（`scope` 指定時はルール7に従い `scripts/` には触れない）
 5. 現状のファイル数・カテゴリ数・最終更新の概要を整理する
 
 ### Step 2: 公式ドキュメントの現行ナビゲーション取得
@@ -91,8 +91,8 @@ tools:
 以下の観点で後続作業の要否を報告する:
 
 - **変更カテゴリ一覧** — 追加・変更・削除が発生した references カテゴリ名を明示列挙する（後続の readme-indexer 再生成対象を一意に決めるため）
-- `samples/` の更新要否（新規 API で典型パターンが変わった場合）
-- `scripts/` の更新要否（CLI コマンドの変更があった場合）
+- `samples/` の更新要否（新規 API で典型パターンが変わった場合）※ `scope` 指定時はスキップし、全体実行でのみ報告する
+- `scripts/` の更新要否（CLI コマンドの変更があった場合）※ `scope` 指定時はスキップし、全体実行でのみ報告する
 - `SKILL.md` のマッピング表更新要否（カテゴリの追加・削除があった場合）
 - 差し戻し推奨 Agent（readme-indexer / skill-author / reference-linter）
 

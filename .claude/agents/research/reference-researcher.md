@@ -25,10 +25,10 @@ tools:
 呼び出し時に以下が指定されます:
 
 - **library**: ライブラリ名（例: `react-router-v7`）
-- **base_url**: 公式ドキュメントのベース URL
+- **base_url**: 公式ドキュメントのベース URL。`mode=full` では必須。`mode=survey` で省略された場合は WebSearch で `{library} official documentation` を検索して特定してから調査を開始する
 - **scope**: 担当する範囲（例: `hooks`, `components` 等。カンマ区切りで複数カテゴリを指定可）
 - **output_dir**: 出力先ディレクトリパス。`scope` が**単一カテゴリ**なら当該カテゴリディレクトリ（例: `skills/react-router-v7/references/hooks/`）、**複数カテゴリ**（カンマ区切り）なら `references/` ルート（例: `skills/react-router-v7/references/`）を渡す。複数カテゴリ時はカテゴリごとに `<category>/` サブディレクトリと各 README.md を自分で作成する
-- **mode**: `full`（既定）または `survey`。`survey` はサイト構造の調査のみを行い、ファイルを一切書き出さずカテゴリ候補を報告する（scope 未確定時の事前調査用）。**`survey` 時は `scope` を省略し、サイト全体のカテゴリ構造を対象とする**（`output_dir` も不要）
+- **mode**: `full`（既定）または `survey`。`survey` はサイト構造の調査のみを行い、ファイルを一切書き出さずカテゴリ候補を報告する（scope 未確定時の事前調査用）。**`survey` 時は `scope` を省略し、サイト全体のカテゴリ構造を対象とする**（`output_dir` も不要）。`survey` 時に `base_url` も省略された場合は WebSearch で特定し、特定した URL を survey レポートに含めて返す
 
 ## 行動原則
 
@@ -43,7 +43,7 @@ tools:
 
 ### Step 1: ページ一覧の取得
 
-1. `base_url` を WebFetch で取得する
+1. `base_url` を WebFetch で取得する（`mode=survey` で `base_url` が未指定の場合は、先に WebSearch で `{library} official documentation` を検索して `base_url` を特定してから WebFetch する）
 2. ナビゲーション / サイドバーから、指定された `scope` に該当する全ページの URL リストを抽出する（`mode=survey` の場合はサイト全体のカテゴリ構造を抽出する）
 3. リストを整理し、作業対象を確定させる
 
