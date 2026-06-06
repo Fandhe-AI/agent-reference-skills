@@ -11,17 +11,27 @@ export const emailApprovalWorkflow = inngest.createFunction(
   { id: "email-approval-workflow" },
   { event: "agent/email.draft-requested" },
   async ({ event, step }) => {
+    // event.data.approvalId is a unique ID supplied by the caller
+    // (e.g. `${taskId}-${iteration}-send_email`) used to correlate the response
+    const approvalId = event.data.approvalId;
+
     // Step 1: Agent drafts content
     const draft = await step.run("draft-email", async () => {
       return await generateEmail({ recipient: event.data.recipient });
     });
 
-    // Step 2: Notify reviewer (Slack, email, dashboard)
+    // Step 2: Notify reviewer — include approvalId so the reviewer can echo it back
     await step.run("request-approval", async () => {
-      await sendSlackMessage({ channel: "#agent-approvals", text: draft.body });
+      await sendSlackMessage({
+        channel: "#agent-approvals",
+        text: draft.body,
+        metadata: { approvalId },   // reviewer UI must send this back in the response event
+      });
     });
 
     // Step 3: Pause until a matching event arrives (or timeout)
+    // `match: "data.approvalId"` correlates this run's trigger approvalId
+    // with the same field in the incoming `agent/approval.response` event
     const approval = await step.waitForEvent("wait-for-approval", {
       event: "agent/approval.response",
       match: "data.approvalId",
@@ -42,13 +52,25 @@ export const emailApprovalWorkflow = inngest.createFunction(
 );
 ```
 
+**Triggering the function** (the caller must supply `approvalId`):
+
+```ts
+await inngest.send({
+  name: "agent/email.draft-requested",
+  data: {
+    recipient: "user@example.com",
+    approvalId: `${taskId}-${iteration}-send_email`,  // unique per approval request
+  },
+});
+```
+
 **Sending the approval response** (e.g. from a Slack webhook handler):
 
 ```ts
 await inngest.send({
   name: "agent/approval.response",
   data: {
-    approvalId: value.approvalId,
+    approvalId: reviewerPayload.approvalId,  // echoed from the Slack notification metadata
     approved: true,
     respondedBy: slackUserId,
   },

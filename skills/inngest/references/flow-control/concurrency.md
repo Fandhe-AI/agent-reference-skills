@@ -21,6 +21,7 @@ inngest.createFunction(
       },
     ],
   },
+  { event: "ai/generate.requested" },
   async ({ event, step }) => { /* handler */ }
 );
 ```

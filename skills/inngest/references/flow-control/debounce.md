@@ -14,6 +14,7 @@ inngest.createFunction(
       timeout: "2m",
     },
   },
+  { event: "user/profile.updated" },
   async ({ event, step }) => { /* handler */ }
 );
 ```
