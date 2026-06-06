@@ -51,8 +51,8 @@ npx auth@latest migrate --yes
 ## pnpm での実行
 
 ```sh
-pnpm auth@latest generate
-pnpm auth@latest migrate
+pnpm dlx auth@latest generate
+pnpm dlx auth@latest migrate
 ```
 
 ## yarn での実行

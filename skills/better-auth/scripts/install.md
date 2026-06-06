@@ -11,13 +11,13 @@ npm install better-auth
 ## パッケージのインストール（pnpm）
 
 ```sh
-pnpm install better-auth
+pnpm add better-auth
 ```
 
 ## パッケージのインストール（yarn）
 
 ```sh
-yarn install better-auth
+yarn add better-auth
 ```
 
 ## パッケージのインストール（bun）
