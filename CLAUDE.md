@@ -64,6 +64,8 @@ Default: symlink into `.claude/skills/`. Use `--copy` for file copies.
     implement-review/        ← Code review
     implement-review-pr/     ← PR review
     update-docs/             ← CLAUDE.md update
+    contribute-skill/        ← Contribute a local skill to an upstream repo via PR
+    sync-skills-lock/        ← Sync skills-lock.json computedHash with upstream
 skills/
   <library-name>/
     SKILL.md                 ← Entry point with YAML frontmatter (name, description, user-invocable)

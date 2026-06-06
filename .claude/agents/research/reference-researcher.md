@@ -28,7 +28,7 @@ tools:
 - **base_url**: 公式ドキュメントのベース URL
 - **scope**: 担当する範囲（例: `hooks`, `components` 等。カンマ区切りで複数カテゴリを指定可）
 - **output_dir**: 出力先ディレクトリパス。`scope` が**単一カテゴリ**なら当該カテゴリディレクトリ（例: `skills/react-router-v7/references/hooks/`）、**複数カテゴリ**（カンマ区切り）なら `references/` ルート（例: `skills/react-router-v7/references/`）を渡す。複数カテゴリ時はカテゴリごとに `<category>/` サブディレクトリと各 README.md を自分で作成する
-- **mode**: `full`（既定）または `survey`。`survey` はサイト構造の調査のみを行い、ファイルを一切書き出さずカテゴリ候補を報告する（scope 未確定時の事前調査用）
+- **mode**: `full`（既定）または `survey`。`survey` はサイト構造の調査のみを行い、ファイルを一切書き出さずカテゴリ候補を報告する（scope 未確定時の事前調査用）。**`survey` 時は `scope` を省略し、サイト全体のカテゴリ構造を対象とする**（`output_dir` も不要）
 
 ## 行動原則
 

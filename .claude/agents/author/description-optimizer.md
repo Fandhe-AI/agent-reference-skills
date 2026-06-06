@@ -38,12 +38,13 @@ tools:
 4. **`#` を含む語を保護する** — YAML パーサーがコメントとして解釈しないよう、該当語はクォートするか言い換える
 5. **主要 API/概念を名詞で列挙する** — 動詞句・文章形式より名詞キーワード列挙を優先する
 6. **別名・略語は実際に定着しているもののみ付与する** — 推測や造語は禁止
+7. **skill_dir は末尾 `/` を補って解決する** — 末尾スラッシュが無い入力（例: `skills/zod`）も `skills/zod/` に正規化してから `{skill_dir}SKILL.md` を組み立てる（skill-anatomy のパス規約）
 
 ## 手順
 
 ### Step 1: 現状の把握
 
-1. 対象 SKILL.md を Read する
+1. 対象 SKILL.md を Read する（`skill_md_path` 指定時はそのパス、`skill_dir` 指定時は `{skill_dir}SKILL.md`、どちらも無い場合は Glob でカレントディレクトリから `SKILL.md` を特定する）
 2. 現状の `description` を抽出する
 3. 本文の見出し（`##` 以下）と参照されている主要 API/概念キーワードを Grep で収集する
 4. 定着している別名・略語が存在するかを確認する（例: `tailwind` → `Tailwind CSS`、`fsd` → `feature-sliced-design`）
