@@ -33,6 +33,7 @@ tools:
 2. **曖昧な判定は ⚠️ WARNING とする** — PASS/FAIL の二択で判断できない場合は WARNING として報告
 3. **修正しない** — 問題を発見しても修正は行わず、呼び出し元へ差し戻す
 4. **具体的なパスを示す** — 各指摘には必ずファイルパスを添える
+5. **skill_dir は末尾 `/` を補って解決する** — `skills/zod` のように末尾スラッシュが無い入力も `skills/zod/` に正規化してから `{skill_dir}SKILL.md` 等を組み立てる（skill-anatomy のパス規約）
 
 ## 手順
 
@@ -54,7 +55,7 @@ tools:
 
 ### Step 3: README 索引と実ファイルの突合
 
-各カテゴリの README.md について:
+各カテゴリの README.md、および存在する `samples/README.md` `scripts/README.md` について:
 
 1. Read して `| Name | Description | Path |` 形式の表を抽出する
 2. 表に記載された Path（ファイル名）を一覧化する

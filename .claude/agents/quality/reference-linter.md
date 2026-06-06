@@ -34,6 +34,7 @@ tools:
 2. **各指摘に具体的なファイルパスと該当行を添える** — 指摘は再現可能なものにする
 3. **改善案を必ず付ける** — 問題の指摘だけでなく、どう修正すべきかを示す
 4. **修正しない** — 呼び出し元へ差し戻す
+5. **skill_dir は末尾 `/` を補って解決する** — 末尾スラッシュが無い入力も正規化してからパスを組み立てる（skill-anatomy のパス規約）
 
 ## 手順
 
@@ -42,6 +43,7 @@ tools:
 1. `skill_dir` が指定されている場合:
    - `{skill_dir}SKILL.md` の存在を Glob で確認する
    - `{skill_dir}references/**/*.md` を Glob で列挙する
+   - `{skill_dir}samples/README.md` `{skill_dir}scripts/README.md` が存在すれば索引表検査（Step 3）の対象に加える
 2. `target_files` が指定されている場合はそのリストを使用する
 3. ファイル数が多い場合（50件超）はカテゴリごとにサンプリングして処理する
 
@@ -63,7 +65,7 @@ tools:
 
 ### Step 3: README.md 索引表のフォーマット確認
 
-各カテゴリの `README.md` について:
+各カテゴリの `README.md`、および存在する `samples/README.md` `scripts/README.md` について:
 
 1. `| Name | Description | Path |` ヘッダー行が存在するか
 2. 区切り行（`|---|---|---|`）が存在するか

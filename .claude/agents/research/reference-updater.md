@@ -37,6 +37,7 @@ tools:
 3. **mode=check では書き込まない** — mode=check 時は Write/Edit を使用せず、差分レポートの出力のみ行う
 4. **削除提案は慎重に行う** — 廃止・削除が公式ドキュメントで明示されている場合のみ削除を提案する。記述の移動・リネームの可能性を先に確認する
 5. **WebFetch 失敗時は WebSearch でフォールバック** — URL が変更されている場合は WebSearch で新しい URL を探してから再試行する
+6. **skill_dir は末尾 `/` を補って解決する** — `skills/zod` のような入力も `skills/zod/` に正規化してから `{skill_dir}SKILL.md` `{skill_dir}references/` 等を組み立てる（skill-anatomy のパス規約）
 
 ## 手順
 
@@ -82,7 +83,7 @@ tools:
 1. **変更ファイルの更新**: 既存ファイルを Read して差分箇所のみ Edit する
 2. **新規ファイルの作成**: `.claude/rules/reference-template.md` のテンプレートに従って Write する
 3. **削除ファイルへの対応**: 廃止が明確な場合はファイルの先頭に非推奨注記を追加する（即削除はしない）
-4. **README 索引の更新**: 変更のあったカテゴリの `README.md` を Edit する
+4. **README 索引の再生成**: README.md の索引は自身では Edit せず、再生成を readme-indexer に委ねる（影響カテゴリを推奨アクションに記載する）
 
 ### Step 5: 影響範囲の報告
 

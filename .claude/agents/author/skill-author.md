@@ -36,6 +36,7 @@ tools:
 3. **本文は `.claude/rules/skill-anatomy.md` の構成に従う** — ディレクトリツリー / 探索手順 / マッピング表の3部構成
 4. **既存 SKILL.md がある場合は差分を確認してから更新する** — 上書き前に Read で現状を把握する
 5. **SKILL.md 以外のファイルは作成しない** — references/ の内容変更も行わない
+6. **skill_dir は末尾 `/` を補って解決する** — 末尾スラッシュが無い入力も正規化してから `{skill_dir}references/` 等を組み立てる（skill-anatomy のパス規約）
 
 ## 手順
 

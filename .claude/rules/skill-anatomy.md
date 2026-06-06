@@ -70,6 +70,10 @@ skills/<library-name>/
 | references/ を持たず SKILL.md に埋め込む | tsdoc | ページ数が少なくガイドライン型のスキル |
 | `rules/` を持つ | feature-sliced-design | 「何であるか（references）」と「どう強制するか（rules）」を分離 |
 
+## パス規約
+
+`skill_dir` / `category_dir` / `output_dir` 等のパスパラメータは末尾 `/` を補って解決する。末尾スラッシュが無い入力（例: `skills/zod`）を受け取った場合も `skills/zod/` に正規化してから `{skill_dir}SKILL.md` のように連結する（`skills/zodSKILL.md` のような誤連結を防ぐ）。
+
 ## 関連
 
 - `.claude/rules/reference-template.md`
