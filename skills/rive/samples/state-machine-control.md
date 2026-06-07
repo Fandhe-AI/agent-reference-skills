@@ -12,23 +12,23 @@ const r = new Rive({
   stateMachines: "bumpy",
   onLoad: () => {
     r.resizeDrawingSurfaceToCanvas();
+
+    // Retrieve all inputs for a named state machine
+    const inputs = r.stateMachineInputs("bumpy");
+
+    // Trigger input — fires a one-shot transition
+    const bumpTrigger = inputs.find((i) => i.name === "bump");
+    bumpTrigger.fire();
+
+    // Number input — set an arbitrary numeric value
+    const levelInput = inputs.find((i) => i.name === "level");
+    levelInput.value = 42;
+
+    // Boolean input — toggle a state
+    const isActiveInput = inputs.find((i) => i.name === "isActive");
+    isActiveInput.value = true;
   },
 });
-
-// Retrieve all inputs for a named state machine
-const inputs = r.stateMachineInputs("bumpy");
-
-// Trigger input — fires a one-shot transition
-const bumpTrigger = inputs.find((i) => i.name === "bump");
-bumpTrigger.fire();
-
-// Number input — set an arbitrary numeric value
-const levelInput = inputs.find((i) => i.name === "level");
-levelInput.value = 42;
-
-// Boolean input — toggle a state
-const isActiveInput = inputs.find((i) => i.name === "isActive");
-isActiveInput.value = true;
 
 // Monitor state changes
 r.on("statechange", (event) => {
