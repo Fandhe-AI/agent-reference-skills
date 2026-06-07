@@ -1,8 +1,9 @@
-# Scripting — Index
+# Scripting
 
 | Name | Description | Path |
 |------|-------------|------|
-| Headless CLI | Run Blender in background mode for scripting and rendering without a GUI | [headless-cli.md](./headless-cli.md) |
-| Add-on Development | Structure, registration, and UI patterns for Blender Python add-ons and extensions | [addon-development.md](./addon-development.md) |
-| Text Editor and Python Console | In-editor scripting tools — Text Editor for full scripts and Python Console for interactive inspection | [text-editor.md](./text-editor.md) |
-| Extending the Python Environment | Add third-party Python packages to Blender, use bpy as a standalone module, and manage extensions via CLI | [extending.md](./extending.md) |
+| Add-on Development | Python modules that extend the editor through registered classes | [addon-development.md](./addon-development.md) |
+| Blender MCP Server | LLM interface to Blender's Python API over MCP protocol | [mcp-server.md](./mcp-server.md) |
+| Extending the Python Environment | Third-party packages, bpy standalone module, extensions CLI | [extending.md](./extending.md) |
+| Headless CLI | Run Blender in background mode without GUI for automation | [headless-cli.md](./headless-cli.md) |
+| Text Editor and Python Console | Built-in scripting tools for code execution and API exploration | [text-editor.md](./text-editor.md) |

@@ -5,7 +5,7 @@ description: >
   bpy.data / bpy.context / bpy.ops / bpy.types / bpy.props コア API。
   Mesh / Modifier / Geometry Nodes / Armature / Keyframe / Driver / Shape Key / NLA、
   Cycles / EEVEE / Shader Nodes / Rigid Body / Cloth / Fluid / Compositor Nodes / AOV、
-  headless CLI レンダリング、add-on 開発、Extensions システム。
+  headless CLI レンダリング、add-on 開発、Extensions システム、MCP Server (Model Context Protocol)。
 user-invocable: false
 ---
 
@@ -45,6 +45,7 @@ skills/blender/
       addon-development.md
       text-editor.md
       extending.md
+      mcp-server.md
     animation-rigging/
       README.md
       keyframes.md
@@ -95,11 +96,13 @@ skills/blender/
     physics-simulation.md
     rendering-setup.md
     compositing-nodes.md
+    mcp-server-workflow.md
   scripts/
     README.md
     cli-commands.md
     addon-lifecycle.md
     python-environment.md
+    mcp-server.md
 ```
 
 ## 探索手順
@@ -130,6 +133,7 @@ skills/blender/
 | add-on / Extension を開発したい | scripting | [references/scripting/README.md](references/scripting/README.md) |
 | テキストエディター・Python コンソールを使いたい | scripting | [references/scripting/README.md](references/scripting/README.md) |
 | 内蔵 Python に外部パッケージを追加したい | scripting | [references/scripting/README.md](references/scripting/README.md) |
+| MCP 経由で LLM から Blender を操作したい / MCP サーバーを設定したい | scripting | [references/scripting/README.md](references/scripting/README.md) |
 | キーフレームを Python から挿入・削除・補間モードを変更したい | animation-rigging | [references/animation-rigging/README.md](references/animation-rigging/README.md) |
 | ドライバーで他プロパティや Python 式を使って値を制御したい | animation-rigging | [references/animation-rigging/README.md](references/animation-rigging/README.md) |
 | アーマチュア・ボーン・IK をスクリプトでセットアップしたい | animation-rigging | [references/animation-rigging/README.md](references/animation-rigging/README.md) |
