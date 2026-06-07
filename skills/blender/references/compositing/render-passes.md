@@ -109,17 +109,21 @@ aov.type = 'COLOR'   # 'COLOR' or 'VALUE'
 
 ### Accessing Pass Sockets in Compositor
 
+Use `get_compositor_tree()` from [compositor-nodes.md](./compositor-nodes.md) to obtain the tree in a version-safe, idempotent way. After clearing existing nodes, create a Render Layers node explicitly.
+
 ```python
-# Blender ≤ 4.4
-scene.use_nodes = True
-tree = scene.node_tree
+import bpy
 
-# Blender 5.0+ (scene.use_nodes / scene.node_tree removed)
-tree = bpy.data.node_groups.new("Compositor", "CompositorNodeTree")
-scene.compositing_node_group = tree
+scene = bpy.context.scene
+tree, links = get_compositor_tree(scene)
+nodes = tree.nodes
+nodes.clear()
 
-rl = tree.nodes["Render Layers"]
-# Access enabled pass outputs by name
+# Always create Render Layers explicitly — never assume default nodes exist
+rl = nodes.new("CompositorNodeRLayers")
+rl.scene = scene
+
+# Access enabled pass outputs by name (not by index — enabled passes shift indices)
 z_socket      = rl.outputs["Depth"]
 normal_socket = rl.outputs["Normal"]
 diffuse_dir   = rl.outputs["DiffDir"]

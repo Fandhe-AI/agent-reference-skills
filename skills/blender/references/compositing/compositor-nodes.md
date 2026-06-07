@@ -9,44 +9,52 @@ The Blender Compositor is a node-based post-processing system that operates on r
 
 ## Overview
 
-The compositor API changed between Blender 4.x and 5.0. Use the appropriate pattern for the target version.
+The compositor API changed between Blender 4.x and 5.0.
 
 **Blender ≤ 4.4:** Enable with `scene.use_nodes = True`; access the tree via `scene.node_tree`.
 
 **Blender 5.0+:** `scene.use_nodes` and the "Use Nodes" checkbox were removed. Create a `CompositorNodeTree` node group and assign it to `scene.compositing_node_group` instead.
 
+For cross-version scripts, use these two canonical helpers. All code examples in this skill call these helpers rather than duplicating the branching logic.
+
 ```python
 import bpy
 
-scene = bpy.context.scene
-
-# Blender ≤ 4.4
-scene.use_nodes = True
-tree = scene.node_tree       # CompositorNodeTree
-
-# Blender 5.0+
-tree = bpy.data.node_groups.new("Compositor", "CompositorNodeTree")
-scene.compositing_node_group = tree
-
-nodes = tree.nodes
-links = tree.links
-```
-
-For cross-version scripts, detect the available API at runtime:
-
-```python
 def get_compositor_tree(scene):
-    """Return (tree, links) compatible with Blender 4.x and 5.0+."""
+    """Return (tree, links) for the compositor. Idempotent across Blender 4.x / 5.0+."""
     if hasattr(scene, 'compositing_node_group'):
-        # Blender 5.0+
-        tree = bpy.data.node_groups.new("Compositor", "CompositorNodeTree")
-        scene.compositing_node_group = tree
+        # Blender 5.0+: reuse existing group to avoid orphaning datablocks
+        tree = scene.compositing_node_group
+        if tree is None:
+            tree = bpy.data.node_groups.new("Compositor", "CompositorNodeTree")
+            scene.compositing_node_group = tree
     else:
         # Blender ≤ 4.4
         scene.use_nodes = True
         tree = scene.node_tree
-    tree.nodes.clear()
     return tree, tree.links
+
+
+def add_output_node(tree, source_socket, location=(700, 0)):
+    """Create the final output node (version-aware) and link source_socket to it."""
+    scene = bpy.context.scene
+    if hasattr(scene, 'compositing_node_group'):
+        # Blender 5.0+: NodeGroupOutput; ensure a Color OUTPUT socket exists on the interface
+        out = tree.nodes.new('NodeGroupOutput')
+        if not any(
+            getattr(s, 'in_out', None) == 'OUTPUT'
+            for s in tree.interface.items_tree
+        ):
+            tree.interface.new_socket(
+                name="Image", socket_type='NodeSocketColor', in_out='OUTPUT'
+            )
+        tree.links.new(source_socket, out.inputs[0])
+    else:
+        # Blender ≤ 4.4: CompositorNodeComposite
+        out = tree.nodes.new('CompositorNodeComposite')
+        tree.links.new(source_socket, out.inputs["Image"])
+    out.location = location
+    return out
 ```
 
 ## Key Nodes
@@ -95,24 +103,27 @@ def get_compositor_tree(scene):
 
 ### Enabling and Accessing the Node Tree
 
+Use `get_compositor_tree()` defined in the Overview section. It handles both versions and is idempotent — calling it again on a scene that already has a compositor tree reuses the existing group rather than creating a new orphaned datablock.
+
 ```python
+import bpy
+
 scene = bpy.context.scene
-
-# Blender ≤ 4.4
-scene.use_nodes = True           # enable compositor
-tree = scene.node_tree           # bpy.types.CompositorNodeTree
-
-# Blender 5.0+: scene.use_nodes and scene.node_tree are removed
-tree = bpy.data.node_groups.new("Compositor", "CompositorNodeTree")
-scene.compositing_node_group = tree
-
-nodes = tree.nodes               # bpy.types.Nodes collection
-links = tree.links               # bpy.types.NodeLinks collection
+tree, links = get_compositor_tree(scene)
+nodes = tree.nodes
 ```
 
 ### Adding and Connecting Nodes
 
 ```python
+# Clear any existing nodes, then build from scratch
+nodes.clear()
+
+# Always create Render Layers explicitly — never rely on default nodes after clear()
+rl = nodes.new("CompositorNodeRLayers")
+rl.location = (0, 0)
+rl.scene = scene
+
 # Add a Blur node
 blur = nodes.new("CompositorNodeBlur")
 blur.filter_type = 'GAUSS'
@@ -120,40 +131,11 @@ blur.size_x = 10
 blur.size_y = 10
 blur.location = (300, 0)
 
-# Get existing default nodes
-rl  = nodes["Render Layers"]
-
-# Output node differs by version:
-# Blender ≤ 4.4
-out = nodes["Composite"]                  # CompositorNodeComposite
-# Blender 5.0+
-out = nodes.new("NodeGroupOutput")
-tree.interface.new_socket(name="Image", socket_type='NodeSocketColor', in_out='OUTPUT')
-
 # Connect: Render Layers Image → Blur → output
 links.new(rl.outputs["Image"], blur.inputs["Image"])
-links.new(blur.outputs["Image"], out.inputs["Image"])
-```
 
-### Rebuilding a Tree from Scratch (version-aware)
-
-```python
-nodes.clear()
-rl = nodes.new("CompositorNodeRLayers")
-rl.location = (0, 0)
-
-if hasattr(scene, 'compositing_node_group'):
-    # Blender 5.0+: Group Output node
-    out = nodes.new("NodeGroupOutput")
-    out.location = (400, 0)
-    if not tree.interface.items_tree:
-        tree.interface.new_socket(name="Image", socket_type='NodeSocketColor', in_out='OUTPUT')
-    links.new(rl.outputs["Image"], out.inputs[0])
-else:
-    # Blender ≤ 4.4: Composite node
-    out = nodes.new("CompositorNodeComposite")
-    out.location = (400, 0)
-    links.new(rl.outputs["Image"], out.inputs["Image"])
+# Output node: use add_output_node() to keep version branching in one place
+add_output_node(tree, blur.outputs["Image"], location=(600, 0))
 ```
 
 ## Key Node Properties
@@ -195,11 +177,12 @@ else:
 
 ## Notes
 
-- **Blender 5.0+:** `scene.use_nodes` and `scene.node_tree` are removed. Use `scene.compositing_node_group` with a `NodeGroupOutput` node instead of `CompositorNodeComposite`.
-- **Blender 5.0+:** `CompositorNodeComposite` is undefined. The Group Output node's first Color input socket drives the render output; other inputs are ignored.
-- **Blender ≤ 4.4:** The Composite output node must be present; without it, compositing results are not applied to the final render.
-- Use socket names (e.g., `outputs["Image"]`) rather than indices — enabled passes alter socket indices on the Render Layers node.
-- `nodes.clear()` removes any default nodes; add Render Layers and an output node back manually when rebuilding from scratch.
+- **Version branching:** Keep all 4.x / 5.0+ branching inside `get_compositor_tree()` and `add_output_node()`. Never duplicate `if hasattr(scene, 'compositing_node_group')` in individual scripts.
+- **Idempotency:** `get_compositor_tree()` reuses an existing `compositing_node_group` rather than calling `bpy.data.node_groups.new()` every time. This prevents orphaned `Compositor.001`, `Compositor.002` … datablocks accumulating in the blend file.
+- **Blender 5.0+:** `scene.use_nodes` and `scene.node_tree` are removed. `CompositorNodeComposite` is also removed; use `NodeGroupOutput` instead. The node group's first Color `OUTPUT` interface socket drives the render result.
+- **Blender ≤ 4.4:** `CompositorNodeComposite` is required; without it, compositing results are not applied to the final render.
+- **After `nodes.clear()`:** All default nodes (Render Layers, Composite) are gone. Always recreate them explicitly with `nodes.new(...)`.
+- Use socket names (`outputs["Image"]`) rather than indices — enabled passes shift socket indices on the Render Layers node.
 - The Denoise node works best when paired with the Denoising Albedo and Denoising Normal passes (enable via `view_layer.use_pass_denoising_data`).
 
 ## Related
