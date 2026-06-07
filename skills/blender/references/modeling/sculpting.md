@@ -126,8 +126,12 @@ import bpy
 # Invert mask on active sculpt object
 bpy.ops.sculpt.mask_filter(filter_type='INVERT', auto_smooth_iterations=0)
 
-# Fill (set all to 1) or clear (set all to 0)
+# Smooth mask weights
 bpy.ops.sculpt.mask_filter(filter_type='SMOOTH')
+
+# Fill (set all to 1) or clear (set all to 0)
+bpy.ops.paint.mask_flood_fill(mode='VALUE', value=1.0)  # fill
+bpy.ops.paint.mask_flood_fill(mode='VALUE', value=0.0)  # clear
 
 # Hide a face set by ID
 bpy.ops.sculpt.face_set_change_visibility(mode='TOGGLE')

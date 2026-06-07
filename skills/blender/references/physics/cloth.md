@@ -79,9 +79,14 @@ coll.friction = 10.0
 coll.use_self_collision = True
 coll.self_distance_min = 0.01
 
-# Bake
-override = {'object': obj, 'active_object': obj}
-bpy.ops.ptcache.bake(override, bake=True)
+# Bake (Blender 3.2+ context override)
+with bpy.context.temp_override(
+    scene=bpy.context.scene,
+    active_object=obj,
+    object=obj,
+    point_cache=mod.point_cache,
+):
+    bpy.ops.ptcache.bake(bake=True)
 ```
 
 ## Notes

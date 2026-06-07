@@ -84,9 +84,9 @@ bpy.context.view_layer.objects.active = obj
 # Apply by modifier name
 bpy.ops.object.modifier_apply(modifier="Subdivision")
 
-# Apply all modifiers on the object
-for mod in obj.modifiers:
-    bpy.ops.object.modifier_apply(modifier=mod.name)
+# Apply all modifiers on the object (snapshot names first; applying mutates the stack)
+for mod_name in [m.name for m in obj.modifiers]:
+    bpy.ops.object.modifier_apply(modifier=mod_name)
 ```
 
 ### Configuring Common Modifiers

@@ -20,8 +20,9 @@ if bpy.app.version >= (4, 0, 0):
 from bpy.app.handlers import persistent
 
 @persistent
-def on_load(filepath):
-    print("File loaded:", filepath)
+def on_load(*args):
+    # load_post receives dummy args; read the path from bpy.data
+    print("File loaded:", bpy.data.filepath)
 
 bpy.app.handlers.load_post.append(on_load)
 
