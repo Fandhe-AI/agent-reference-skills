@@ -32,7 +32,7 @@ Cloth simulation is applied via the **Cloth modifier** (`type='CLOTH'`). Setting
 | `bending_damping` | float | 0.5 | Bending damping (0–1000) |
 | `air_damping` | float | 1.0 | Air resistance |
 | `pin_stiffness` | float | 1.0 | Pin spring stiffness (0–50) |
-| `vertex_group_mass` | str | `""` | Vertex group controlling per-vertex mass |
+| `vertex_group_mass` | str | `""` | Vertex group for pinning vertices (Pin Group in the UI; named "mass" for historical reasons) |
 | `vertex_group_structural_stiffness` | str | `""` | Vertex group for structural stiffness |
 | `vertex_group_bending` | str | `""` | Vertex group for bending stiffness |
 
@@ -93,7 +93,7 @@ with bpy.context.temp_override(
 
 - Cloth collision with other objects requires those objects to have a **Collision modifier** (see [collision-forces.md](./collision-forces.md))
 - Higher `quality` values improve simulation accuracy but increase computation time
-- `vertex_group_mass` doubles as the pin group: vertices with weight 1.0 are fully pinned; weight 0.0 simulates freely
+- `vertex_group_mass` is the pin group (despite its name): vertices with weight 1.0 are fully pinned; weight 0.0 simulates freely. The property name is a historical artifact — the UI labels it "Pin Group" under Cloth > Shape
 - Baked cache is invalidated by any modifier-order change or settings edit; free the bake before re-simulating
 
 ## Related
