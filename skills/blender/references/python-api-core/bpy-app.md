@@ -106,15 +106,17 @@ bpy.app.handlers.frame_change_pre.remove(my_handler)
 | `is_registered(fn)` | `-> bool` | Check if `fn` is currently registered. |
 
 ```python
-import functools
+def make_countdown(start):
+    state = {"n": start}
+    def tick():
+        print(state["n"])
+        if state["n"] <= 0:
+            return None  # unregister the timer
+        state["n"] -= 1
+        return 1.0       # run again in 1 second
+    return tick
 
-def countdown(n):
-    print(n)
-    if n <= 0:
-        return None  # stop
-    return 1.0  # call again in 1 second with different closure
-
-bpy.app.timers.register(functools.partial(countdown, 5))
+bpy.app.timers.register(make_countdown(5))
 ```
 
 ### bpy.app.translations
