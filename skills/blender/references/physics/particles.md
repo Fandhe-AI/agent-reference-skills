@@ -78,37 +78,56 @@ Blender's particle system supports two modes: **Emitter** (dynamically spawned p
 
 ## Python API Mapping
 
+### Emitter System
+
 ```python
 import bpy
 
 obj = bpy.context.active_object
 
 # Add particle system modifier
-mod = obj.modifiers.new(name="ParticleSystem", type='PARTICLE_SYSTEM')
+mod  = obj.modifiers.new(name="EmitterPS", type='PARTICLE_SYSTEM')
 psys = mod.particle_system
-ps = psys.settings
+ps   = psys.settings
 
 # Emitter configuration
-ps.type = 'EMITTER'
-ps.count = 5000
-ps.lifetime = 80
+ps.type       = 'EMITTER'
+ps.count      = 5000
+ps.lifetime   = 80
 ps.frame_start = 1
-ps.frame_end = 100
-ps.emit_from = 'FACE'
+ps.frame_end  = 100
+ps.emit_from  = 'FACE'
 
 # Initial velocity
 ps.normal_factor = 2.0
 ps.factor_random = 0.5
 
-# Children
-ps.child_type = 'SIMPLE'
-ps.child_percent = 5
+# Children (optional, for emitter)
+ps.child_type          = 'SIMPLE'
+ps.child_percent       = 5
 ps.rendered_child_count = 50
+```
 
-# Hair setup
-ps.type = 'HAIR'
+### Hair System
+
+The Hair system is a separate particle system (or a new modifier slot). The snippet below adds a second modifier; do not run it in the same context as the Emitter snippet above without intending to stack two systems.
+
+```python
+import bpy
+
+obj = bpy.context.active_object
+
+# Add a separate particle system modifier for hair
+mod  = obj.modifiers.new(name="HairPS", type='PARTICLE_SYSTEM')
+psys = mod.particle_system
+ps   = psys.settings
+
+# Hair configuration
+ps.type       = 'HAIR'
 ps.hair_length = 0.5
-ps.hair_step = 8
+ps.hair_step  = 8
+
+# Children (interpolated works well for hair)
 ps.child_type = 'INTERPOLATED'
 ```
 

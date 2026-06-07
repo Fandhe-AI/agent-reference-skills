@@ -110,15 +110,20 @@ aov.type = 'COLOR'   # 'COLOR' or 'VALUE'
 ### Accessing Pass Sockets in Compositor
 
 ```python
+# Blender ≤ 4.4
 scene.use_nodes = True
 tree = scene.node_tree
 
+# Blender 5.0+ (scene.use_nodes / scene.node_tree removed)
+tree = bpy.data.node_groups.new("Compositor", "CompositorNodeTree")
+scene.compositing_node_group = tree
+
 rl = tree.nodes["Render Layers"]
 # Access enabled pass outputs by name
-z_socket     = rl.outputs["Depth"]
+z_socket      = rl.outputs["Depth"]
 normal_socket = rl.outputs["Normal"]
-diffuse_dir  = rl.outputs["DiffDir"]
-aov_socket   = rl.outputs["MyColor"]   # custom AOV
+diffuse_dir   = rl.outputs["DiffDir"]
+aov_socket    = rl.outputs["MyColor"]   # custom AOV
 ```
 
 ## Notes
@@ -128,6 +133,7 @@ aov_socket   = rl.outputs["MyColor"]   # custom AOV
 - Cryptomatte passes require Cycles or a renderer that supports them; EEVEE support varies by version.
 - AOV type must match the shader AOV Output node's data type (Color vs. Value).
 - The Denoising Data passes (`use_pass_denoising_data`) enable Albedo and Normal inputs for the Denoise compositor node.
+- **Blender 5.0+:** Access the compositor tree via `scene.compositing_node_group` instead of `scene.node_tree`. See [compositor-nodes.md](./compositor-nodes.md) for the cross-version helper pattern.
 
 ## Related
 
