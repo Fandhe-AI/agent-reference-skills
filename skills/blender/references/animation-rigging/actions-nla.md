@@ -43,7 +43,7 @@ obj.keyframe_insert("location", frame=24)
 ```python
 # Object must be active and have an action assigned
 bpy.context.view_layer.objects.active = obj
-bpy.ops.nla.action_pushdown(channel_index=0)
+bpy.ops.nla.action_pushdown(track_index=0)
 ```
 
 After push-down, `obj.animation_data.action` becomes `None` and a new NLA strip is created.

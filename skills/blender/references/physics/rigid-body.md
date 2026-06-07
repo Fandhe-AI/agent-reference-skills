@@ -78,8 +78,11 @@ rb.friction = 0.8
 rb.restitution = 0.3
 rb.collision_shape = 'CONVEX_HULL'
 
-# Passive body (static collider)
-bpy.ops.rigidbody.object_add(type='PASSIVE')
+# Passive collider (floor) — must be a SEPARATE object, made active first
+bpy.ops.mesh.primitive_plane_add(size=20, location=(0, 0, -2))
+floor = bpy.context.active_object
+bpy.ops.rigidbody.object_add(type='PASSIVE')   # applies to `floor` (now active)
+floor.rigid_body.friction = 1.0
 
 # Bake all physics to cache
 bpy.ops.ptcache.bake_all(bake=True)
