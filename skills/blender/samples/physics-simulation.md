@@ -50,9 +50,9 @@ cube.rigid_body.angular_damping  = 0.1
 # Enable Rigid Body World on the scene
 if scene.rigidbody_world is None:
     bpy.ops.rigidbody.world_add()
-scene.rigidbody_world.time_scale      = 1.0
-scene.rigidbody_world.steps_per_second = 60
-scene.rigidbody_world.solver_iterations = 10
+scene.rigidbody_world.time_scale         = 1.0
+scene.rigidbody_world.substeps_per_frame = 10   # substeps per frame (default 10; higher = more accurate)
+scene.rigidbody_world.solver_iterations  = 10
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # PART B — Cloth: subdivided plane as cloth

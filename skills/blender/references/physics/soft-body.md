@@ -5,11 +5,11 @@ description: Soft body modifier for deformable mesh simulation — goal (sticky 
 
 # Soft Body
 
-Soft body simulation makes meshes deform elastically under forces. The **Soft Body modifier** (`type='SOFTBODY'`) exposes settings via `SoftBodySettings`. Three main subsystems: **Goal** (attraction to rest pose), **Edges** (spring network), and **Self Collision**.
+Soft body simulation makes meshes deform elastically under forces. The **Soft Body modifier** (`type='SOFT_BODY'`) exposes settings via `SoftBodySettings`. Three main subsystems: **Goal** (attraction to rest pose), **Edges** (spring network), and **Self Collision**.
 
 ## Overview
 
-- Add via `obj.modifiers.new(name="Softbody", type='SOFTBODY')`
+- Add via `obj.modifiers.new(name="Softbody", type='SOFT_BODY')`
 - Settings accessed via `mod.settings` (`SoftBodySettings`)
 - Point cache via `mod.point_cache`
 
@@ -65,7 +65,7 @@ import bpy
 obj = bpy.context.active_object
 
 # Add Soft Body modifier
-mod = obj.modifiers.new(name="Softbody", type='SOFTBODY')
+mod = obj.modifiers.new(name="Softbody", type='SOFT_BODY')
 sb = mod.settings
 
 # Goal: pin the top vertices
