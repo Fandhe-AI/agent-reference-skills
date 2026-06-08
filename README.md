@@ -38,10 +38,14 @@ npx skills add Fandhe-AI/agent-reference-skills --skill react-router-v7 -g
 
 ```text
 .claude/
-  agents/
-    reference-researcher.md  ← スキルリファレンス作成用エージェント
-    plan-verifier.md         ← 計画検証エージェント（読み取り専用）
+  agents/                    ← 用途別サブエージェント
+    research/                ← reference-researcher / reference-updater / skill-coverage-analyzer
+    author/                  ← skill-author / description-optimizer / readme-indexer / sample-curator / script-collector
+    quality/                 ← skill-structure-validator / reference-linter / plan-verifier
+  rules/                     ← 強制ルール（delegation / skill-anatomy / reference-template ほか）
   skills/                    ← 本リポジトリ開発用のワークフロースキル
+    create-skill/            ← 新スキル作成のオーケストレーション
+    update-skill/            ← 既存スキルを最新ドキュメントへ追従
     create-commit/           ← Conventional Commits 形式でコミット
     create-pr/               ← PR 作成
     create-issue/            ← Issue 作成（sub-issues 対応）
@@ -50,17 +54,21 @@ npx skills add Fandhe-AI/agent-reference-skills --skill react-router-v7 -g
     implement-review/        ← コードレビュー
     implement-review-pr/     ← PR レビュー
     update-docs/             ← CLAUDE.md 更新
+    contribute-skill/        ← upstream リポジトリへスキルを PR 投稿
+    sync-skills-lock/        ← skills-lock.json の computedHash 同期
 skills/
   <library-name>/
     SKILL.md                 ← エントリーポイント（YAML frontmatter + 探索手順）
-    references/              ← カテゴリ別リファレンス
+    references/              ← カテゴリ別 API リファレンス（「何か」）
       <category>/
         README.md            ← インデックステーブル
         <page>.md            ← 個別 API / コンセプト
+    samples/                 ← (任意) 動く実例・典型ワークフロー（「どう使うか」）
+    scripts/                 ← (任意) 実行可能コマンド集（「どう実行するか」）
     rules/                   ← (任意) 適用ルール
 ```
 
-## スキル一覧
+## スキル一覧（全 44 スキル）
 
 ### フレームワーク / ライブラリ
 
@@ -77,6 +85,7 @@ skills/
 | [hermes-agent](skills/hermes-agent/) | Hermes Agent — AI CLI エージェント, MCP, Voice Mode, Messaging Gateway |
 | [hono](skills/hono/) | Hono — 軽量 Web フレームワーク, Middleware, Helpers, マルチランタイム |
 | [nuqs](skills/nuqs/) | nuqs — URL search params state manager |
+| [inngest](skills/inngest/) | Inngest — イベント駆動 Durable Execution, createFunction, step, フロー制御 |
 
 ### ビルド / テスト / 品質
 
@@ -100,6 +109,32 @@ skills/
 | [typedoc](skills/typedoc/) | TypeDoc — TypeScript ドキュメントジェネレーター |
 | [tsdoc](skills/tsdoc/) | TSDoc — コメント記述ガイドライン, TypeDoc 互換タグ |
 
+### 3D / グラフィックス / アニメーション / デザイン
+
+| スキル | 説明 |
+| -------- | ------ |
+| [threejs](skills/threejs/) | Three.js — WebGL / WebGPU 3D グラフィックス, Scene, Mesh, Material, Loader |
+| [blender](skills/blender/) | Blender — Python API (bpy / bmesh), モデリング, レンダリング, add-on, MCP Server |
+| [cadquery](skills/cadquery/) | CadQuery — Python 製 3D CAD スクリプティング, Workplane, Sketch, Assemblies |
+| [motion](skills/motion/) | Motion (旧 Framer Motion) — animate, scroll, gestures, layout, hooks |
+| [rive](skills/rive/) | Rive — アニメーションランタイム, State Machine, Data Binding, useRive |
+| [theatrejs](skills/theatrejs/) | Theatre.js — アニメーションツールキット, Sheet, Sequence, R3F 統合, studio |
+| [figma](skills/figma/) | Figma — REST API / Plugin API / Widget API / Code Connect / MCP Server |
+
+### ハードウェア / EDA
+
+| スキル | 説明 |
+| -------- | ------ |
+| [kicad_10](skills/kicad_10/) | KiCad 10.0 — EDA スイート, 回路図設計, 基板設計, kicad-cli, ガーバー出力 |
+| [ergogen](skills/ergogen/) | Ergogen — 自作キーボード設計, YAML 設定, points / outlines / cases / pcbs |
+| [zmk](skills/zmk/) | ZMK Firmware — キーボードファームウェア, keymap, behaviors, bluetooth, split |
+
+### 言語
+
+| スキル | 説明 |
+| -------- | ------ |
+| [rust](skills/rust/) | Rust — 所有権, ライフタイム, トレイト, async/await, Cargo, 標準ライブラリ |
+
 ### ユーティリティ / インフラ
 
 | スキル | 説明 |
@@ -109,6 +144,9 @@ skills/
 | [pino](skills/pino/) | Pino — JSON ロガー, transport, redaction |
 | [bullmq](skills/bullmq/) | BullMQ — Redis ジョブキュー, Worker, FlowProducer |
 | [github-docs](skills/github-docs/) | GitHub — REST API, Actions, Webhooks, gh CLI |
+| [gws](skills/gws/) | Google Workspace CLI (gws) — Rust 製, Gmail / Drive / Calendar 等 19 サービス統一操作 |
+| [upstash](skills/upstash/) | Upstash — サーバーレスデータ, @upstash/redis / ratelimit / QStash / vector / workflow |
+| [vercel](skills/vercel/) | Vercel — CLI, vercel.json, Functions, Blob, Edge Config, デプロイメント管理 |
 
 ### アーキテクチャ
 
@@ -118,28 +156,31 @@ skills/
 
 ## エージェント
 
-### reference-researcher
+main エージェントは「対話・計画・委譲・報告」に徹し、token を消費する実作業（ドキュメント調査、references 作成、SKILL.md 作成、検証、lint、棚卸し）はすべて用途別サブエージェントへ委譲する。詳細は `.claude/rules/delegation.md` を参照。
 
-公式ドキュメントを調査し、スキル用の構造化 markdown を自動生成するエージェント。
-
-**パラメータ:**
-
-| 名前 | 説明 | 例 |
-| ------ | ------ | ---- |
-| `library` | ライブラリ名 | `react-router-v7` |
-| `base_url` | 公式ドキュメントの URL | `https://reactrouter.com/` |
-| `scope` | 担当範囲（カンマ区切り） | `hooks,components` |
-| `output_dir` | 出力先パス | `skills/react-router-v7/references/hooks/` |
-
-スコープごとに並列実行を想定。`SKILL.md` は全スコープ完了後に手動で作成する。
-
-### plan-verifier
-
-計画ファイルや指示書に基づいて実行された作業が正しく漏れなく完了しているかを検証するエージェント。読み取り専用で動作し、破壊的操作は一切行わない。
+| カテゴリ | エージェント | model | 役割 |
+| -------- | ------------ | ----- | ---- |
+| research | `reference-researcher` | sonnet | 公式ドキュメントをクロールして `references/` を作成（scope 毎に並列） |
+| research | `reference-updater` | sonnet | 既存スキルを最新ドキュメントと差分比較・更新（check / apply） |
+| research | `skill-coverage-analyzer` | opus | 読み取り専用のギャップ分析・新スキル提案 |
+| author | `skill-author` | sonnet | references 完成後に `SKILL.md` を作成・更新 |
+| author | `description-optimizer` | sonnet | `description` フィールドのヒット率・長さ最適化 |
+| author | `readme-indexer` | haiku | カテゴリ README の索引表を再生成 |
+| author | `sample-curator` | sonnet | 動く実例を `samples/` に整備 |
+| author | `script-collector` | sonnet | 実行可能コマンドを `scripts/` に収集 |
+| quality | `skill-structure-validator` | haiku | 読み取り専用の構造整合性チェック |
+| quality | `reference-linter` | haiku | 読み取り専用のファイル・frontmatter lint |
+| quality | `plan-verifier` | sonnet | 読み取り専用の計画完了検証 |
 
 ## 新しいスキルの追加手順
 
-1. `reference-researcher` エージェントをスコープごとに並列実行し、`references/` 以下を生成する
-2. 生成されたファイルを確認・修正する
-3. `SKILL.md` を作成する（YAML frontmatter + ディレクトリ構造 + カテゴリマッピングテーブル）
-4. このリポジトリの `skills/` ディレクトリに配置する
+`/create-skill <library> [base_url]` を実行すると、委譲ベースで以下のフローを自動でオーケストレーションする（main エージェントは自分でドキュメントをクロールしない）。
+
+1. (任意) `skill-coverage-analyzer` が追加価値とスコープを確認
+2. `create-plan` が `_/local-plans/<library>-skill.md` を作成
+3. `reference-researcher` を **scope 毎に並列実行** → `references/`、`sample-curator` → `samples/`、`script-collector` → `scripts/`
+4. `skill-author` が `SKILL.md` を作成（必要に応じ `description-optimizer` が description を最適化）
+5. `reference-linter` + `skill-structure-validator` が検証し、指摘を該当エージェントへ差し戻し
+6. `update-docs` が新スキルを CLAUDE.md / README.md に反映
+
+既存スキルを最新ドキュメントへ追従させる場合は `/update-skill <library> [check|apply]`（`reference-updater` が駆動）を実行する。
