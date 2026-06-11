@@ -45,7 +45,7 @@ export function App() {
 // Option B: useRecipe hook — apply recipe inside a custom component
 function CustomBadge({ variant, size, children }) {
   const recipe = useRecipe({ recipe: badgeRecipe })
-  const [variantProps, rest] = badgeRecipe.splitVariantProps({ variant, size })
+  const [variantProps, rest] = recipe.splitVariantProps({ variant, size })
   const styles = recipe(variantProps)
   return <chakra.span css={styles} {...rest}>{children}</chakra.span>
 }
