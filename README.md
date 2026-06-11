@@ -68,7 +68,7 @@ skills/
     rules/                   ← (任意) 適用ルール
 ```
 
-## スキル一覧（全 44 スキル）
+## スキル一覧（全 45 スキル）
 
 ### フレームワーク / ライブラリ
 
@@ -147,6 +147,7 @@ skills/
 | [gws](skills/gws/) | Google Workspace CLI (gws) — Rust 製, Gmail / Drive / Calendar 等 19 サービス統一操作 |
 | [upstash](skills/upstash/) | Upstash — サーバーレスデータ, @upstash/redis / ratelimit / QStash / vector / workflow |
 | [vercel](skills/vercel/) | Vercel — CLI, vercel.json, Functions, Blob, Edge Config, デプロイメント管理 |
+| [proxmox-ve](skills/proxmox-ve/) | Proxmox VE — KVM/LXC ハイパーバイザー, クラスター, Ceph, HA, SDN, CLI, REST API |
 
 ### アーキテクチャ
 
