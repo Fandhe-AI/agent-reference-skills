@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'agent-reference-skills: 日本語でやりとり / 重い作業は .claude/agents へ委譲し main は計画・統合・報告に徹する (.claude/rules/delegation.md) / .claude 配下の編集は _/dotclaude 経由 (dotclaude-via-temp) / SKILL.md description は description-style.md 準拠'"
+            "command": "echo 'agent-reference-skills: 日本語でやりとり / 重い作業は .claude/agents へ委譲し main は計画・統合・報告に徹する (.claude/rules/delegation.md) / .claude 配下の編集は _/dotclaude 経由 (dotclaude-via-temp) / SKILL.md description は description-style.md 準拠 / Conventional Commits 厳守 (--no-verify 禁止)'"
           }
         ]
       }
