@@ -49,6 +49,14 @@ if command -v jq >/dev/null 2>&1 && [[ -f skills-lock.json ]]; then
       echo "エラー: 指定された upstream (${UPSTREAM_REPO}) が skills-lock.json の source (${LOCK_SOURCE}) と一致しません。中止します。" >&2
       exit 1
     fi
+    # sourceType の安全弁: github 以外（欠落・null 含む）は gh repo clone / gh pr create が
+    # 成立しないため中止する（contribute-skill/SKILL.md Step 2 と同じガード）。
+    # lockfile にエントリが存在する場合のみ検査し、未登録の新規スキル貢献は対象外とする
+    LOCK_SOURCE_TYPE=$(jq -r ".skills[\"${SKILL_NAME}\"].sourceType // empty" skills-lock.json 2>/dev/null)
+    if [[ "${LOCK_SOURCE_TYPE}" != "github" ]]; then
+      echo "エラー: sourceType '${LOCK_SOURCE_TYPE}' は github ではありません。中止します。" >&2
+      exit 1
+    fi
   fi
 fi
 

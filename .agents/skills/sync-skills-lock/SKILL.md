@@ -124,7 +124,10 @@ git diff skills-lock.json ".agents/skills/${SKILL_NAME}/"
 **却下された場合**は当該スキルのみ即座にリバートして**次スキルへ continue**する（全体を中止しない）:
 
 ```bash
-# 当該スキルの変更のみをリバート（追跡ファイル）
+# 当該スキルの変更のみをリバート（追跡ファイル）。
+# git checkout -- <file> は HEAD ではなく「index（ステージ）」の内容を作業ツリーへ復元する。
+# 前スキルの承認変更は git add で既に index に載っているため、checkout 後の作業ツリーにも
+# 引き継がれ、承認済み computedHash が消えることはない。
 git checkout -- skills-lock.json ".agents/skills/${SKILL_NAME}/"
 # npx が新規作成した未追跡ファイルも削除（Step 4 の clean ガードで実行前は clean を保証済み）
 # ${SKILL_NAME} は kebab-case 検証済みのため、対象は当該スキルディレクトリ配下に限定される
@@ -133,7 +136,7 @@ git clean -fd ".agents/skills/${SKILL_NAME}/"
 
 Step 4 の clean ガードにより `npx` 実行前の当該ディレクトリは clean（未追跡含む）であることが保証されているため、`git clean` で削除される未追跡ファイルは `npx` が作成したものに限られる。`git clean` の対象は kebab-case 検証済みの `${SKILL_NAME}` 配下のみに限定されており、リポジトリ全体には影響しない。
 
-このリバートは「次スキルの `npx skills add` 実行前」に行うため、`skills-lock.json` から戻るのは当該スキル分のみである。承認済みの他スキルはすでに stage 済みのため影響を受けない。
+このリバートは「次スキルの `npx skills add` 実行前」に行うため、`skills-lock.json` から戻るのは当該スキル分のみである。`git checkout --` は HEAD ではなく index から復元するため、承認済みの他スキルの hash は index にも作業ツリーにも保持されており、影響を受けない。
 
 #### Step 7: 承認されたスキルを stage する（ループ内で積み上げる）
 

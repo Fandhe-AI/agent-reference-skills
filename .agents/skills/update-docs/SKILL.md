@@ -49,13 +49,19 @@ ls -d skills/*/SKILL.md | sed 's|skills/||;s|/SKILL.md||' | sort
 - スキル数のカウントを更新: `## Current Skills (N)`（N は系統 A のみ）
 - カンマ区切りのスキル名一覧を更新
 
-**系統 B: `.claude/skills/` 配下の実ディレクトリ（カウント対象外）**
+**系統 B: `.claude/skills/` / `.agents/skills/` 配下のスキル（カウント対象外）**
 
 ```bash
-find .claude/skills -maxdepth 1 -mindepth 1 -type d | sed 's|.claude/skills/||' | sort
+# -L で symlink を追従し、.claude/skills/（symlink）と .agents/skills/（実体）の
+# 両レイアウトを網羅する。SKILL.md を持つディレクトリ名を抽出し重複排除する。
+# （npx skills add は .agents/skills/ に実体を置き .claude/skills/ から symlink する）
+find -L .claude/skills .agents/skills -mindepth 1 -maxdepth 1 -type d 2>/dev/null \
+  | sed -E 's#.*/##' | sort -u
 ```
 
-`find -type d` はシンボリックリンクを除外するため、`github-docs` 等の symlink は含まれない。
+`find -L` で symlink を追従するため、`.claude/skills/` 配下が symlink でも、また
+スキル実体が `.agents/skills/` 側にある場合でも取りこぼさない（`-type d` 単独だと
+symlink エントリを除外してしまうため `-L` が必須）。
 
 - `CLAUDE.md` の「リポジトリ管理スキル（.claude/skills/ に配置）」セクションを更新する
 - 系統 B のスキルは `## Current Skills (N)` のカウント N に含めない

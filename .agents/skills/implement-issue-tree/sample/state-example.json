@@ -1,0 +1,44 @@
+{
+  "parent": 42,
+  "baseBranch": "main",
+  "parallel": 3,
+  "updatedAt": "2026-06-12T10:45:00Z",
+  "items": {
+    "43": {
+      "type": "implement",
+      "status": "merged",
+      "pr": 101,
+      "branch": "feat/43-add-auth-api",
+      "worktree": "",
+      "fixCount": 1,
+      "note": "CI 失敗を 1 回修正して squash merge 完了"
+    },
+    "44": {
+      "type": "implement",
+      "status": "monitoring",
+      "pr": 102,
+      "branch": "feat/44-add-user-profile",
+      "worktree": "/path/to/repo/.git/worktrees/impl-44",
+      "fixCount": 0,
+      "note": ""
+    },
+    "45": {
+      "type": "implement",
+      "status": "failed",
+      "pr": 103,
+      "branch": "feat/45-add-payment",
+      "worktree": "/path/to/repo/.git/worktrees/impl-45",
+      "fixCount": 6,
+      "note": "マージに到達できなかった（最終状態: blocked）: fixCount 上限（6 回）に達した"
+    },
+    "42": {
+      "type": "verify-close",
+      "status": "pending",
+      "pr": 0,
+      "branch": "",
+      "worktree": "",
+      "fixCount": 0,
+      "note": ""
+    }
+  }
+}
