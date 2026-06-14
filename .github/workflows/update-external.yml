@@ -39,8 +39,11 @@ jobs:
       - name: Checkout
         # actions/checkout v6.0.3
         # PAT 未設定時は GITHUB_TOKEN にフォールバック（auto-merge 後の CI 未発火に注意）。
+        # base-branch が main 固定のため、workflow_dispatch を main 以外から実行しても
+        # 常に main をチェックアウトして main 基準で更新を計算する。
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
+          ref: main
           submodules: recursive
           fetch-depth: 0
           token: ${{ secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
@@ -75,8 +78,11 @@ jobs:
       - name: Checkout
         # actions/checkout v6.0.3
         # PAT 未設定時は GITHUB_TOKEN にフォールバック（auto-merge 後の CI 未発火に注意）。
+        # base-branch が main 固定のため、workflow_dispatch を main 以外から実行しても
+        # 常に main をチェックアウトして main 基準で更新を計算する。
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
+          ref: main
           fetch-depth: 0
           token: ${{ secrets.SKILLS_PAT || secrets.GITHUB_TOKEN }}
 
