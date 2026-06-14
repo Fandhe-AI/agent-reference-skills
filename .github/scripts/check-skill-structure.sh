@@ -39,10 +39,13 @@ for skill_md in skills/*/SKILL.md; do
     fi
   done
 
-  # name の値がディレクトリ名と一致するか検証
+  # name の値がディレクトリ名と一致するか検証。
+  # name: が無い場合 grep が非ゼロ終了するが、pipefail + set -e で全体を中断させず
+  # 残りのスキルも検証してサマリを出せるよう `|| true` で握り潰す
+  # (値が空なら下の比較を skip するため誤検知にはならない)。
   name_value="$(printf '%s\n' "${fm}" \
     | grep -E '^name:' | head -n 1 \
-    | sed -E 's/^name:[[:space:]]*//; s/[[:space:]]*$//')"
+    | sed -E 's/^name:[[:space:]]*//; s/[[:space:]]*$//' || true)"
   if [ -n "${name_value}" ] && [ "${name_value}" != "${name_expected}" ]; then
     err "${skill_md}: name '${name_value}' がディレクトリ名 '${name_expected}' と不一致"
   fi
