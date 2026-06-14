@@ -1,0 +1,58 @@
+{
+  // markdownlint-cli2 設定。リポジトリ全体の markdown を lint する。
+  // 方針: markdownlint の既定ルールを基本 ON にしつつ、現状のドキュメント記法と
+  // 衝突する装飾系ルールのみ無効化して「緑のベースライン」を確保する。
+  // MD025 (単一 h1) / MD042 (空リンク) / MD051 (リンク fragment) / MD047 (末尾改行)
+  // など約40の有意なルールは ON のまま維持され、今後の regression を検知する。
+  "config": {
+    "default": true,
+
+    // --- 文体・装飾系: このリポジトリの記法では恒久的に無効 ---
+    // line-length: 日本語と英語が混在し行長制限はノイズが多い
+    "MD013": false,
+    // inline HTML: テーブルや details 要素で使用するため許容
+    "MD033": false,
+    // first-line-heading: frontmatter (---) で始まる SKILL.md を許容
+    "MD041": false,
+    // ordered list の連番スタイルは強制しない
+    "MD029": false,
+    // 強調を見出し代わりに使う記法を許容
+    "MD036": false,
+    // 末尾に句読点を持つ見出し (日本語の「。」等) を許容
+    "MD026": false,
+    // table column style: 索引表は compact 記法で揃えており整列強制はノイズ
+    "MD060": false,
+    // blanks-around-*: 既存ドキュメントは見出し/リスト/コード前後の空行を詰める
+    "MD022": false,
+    "MD031": false,
+    "MD032": false,
+    "MD058": false,
+    // bare URL: リファレンス本文中の素の URL を許容
+    "MD034": false,
+    // commands-show-output: scripts/ のコマンド例で $ なし表記を許容
+    "MD014": false,
+    // hard tabs はコードブロック内のみ許容 (Rust 等のソース引用でタブを使う)
+    "MD010": { "code_blocks": false },
+
+    // --- 既存違反による暫定無効 (本文クリーンアップ後に再有効化を検討) ---
+    // fenced-code-language: 言語指定なしコードフェンスが既存に多数
+    "MD040": false,
+    // duplicate-heading: リファレンス本文に同名の "Notes" 見出し等が複数存在
+    "MD024": false,
+    // descriptive-link-text / no-space-in-code / no-blanks-blockquote
+    "MD059": false,
+    "MD038": false,
+    "MD028": false,
+    // trailing-spaces / heading-increment / table-column-count: 既存に少数残存
+    "MD009": false,
+    "MD001": false,
+    "MD056": false
+  },
+  "globs": ["**/*.md"],
+  "ignores": [
+    "_/**",
+    ".claude/skills/**",
+    ".agents/skills/**",
+    "node_modules/**"
+  ]
+}

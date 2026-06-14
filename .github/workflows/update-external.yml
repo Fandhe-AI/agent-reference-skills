@@ -1,0 +1,108 @@
+name: Update external sources
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # 00:00 UTC = 09:00 JST
+  workflow_dispatch:
+    inputs:
+      target:
+        description: '更新対象 (手動実行時のみ有効。schedule は常に all)'
+        type: choice
+        required: false
+        default: all
+        options:
+          - all
+          - submodule
+          - skill
+
+permissions:
+  contents: read
+
+concurrency:
+  group: update-external
+  cancel-in-progress: false
+
+jobs:
+  submodule:
+    name: Update submodule references
+    # schedule / 手動 all / 手動 submodule のとき実行する。
+    # 注: 現状このリポジトリに submodule は無いため実質 no-op だが、将来の追加に備え
+    # team-hub と同じ構成を維持する。
+    if: ${{ github.event_name != 'workflow_dispatch' || contains(fromJSON('["all", "submodule"]'), inputs.target) }}
+    runs-on: self-hosted
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        # actions/checkout v5.0.1
+        # SUBMODULE_PAT は当リポジトリ限定の fine-grained PAT 推奨
+        # (contents: write + pull-requests: write のみ)。未設定なら GITHUB_TOKEN に
+        # フォールバックする (GITHUB_TOKEN 起票 PR は CI を起動しない点に注意)。
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+        with:
+          submodules: recursive
+          fetch-depth: 0
+          token: ${{ secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
+
+      - name: Update submodules and open PR
+        # Fandhe-AI/actions/submodule-update @ main (b506f30f) — auto-merge 統合版。
+        uses: Fandhe-AI/actions/submodule-update@b506f30f6a5fbfa7a616ddbdbae804d9ee493aa9
+        with:
+          token: ${{ secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
+          base-branch: main
+          branch-prefix: chore/submodule-update
+          commit-message: 'chore: submodule を最新に更新'
+          pr-title: 'chore: submodule を最新に更新'
+          pr-labels: 'dependencies,automated'
+          # auto-merge の ON/OFF。repository variable SUBMODULE_AUTO_MERGE で制御。
+          # 未設定 (null/空) → 有効。false / no / off / 0 / disabled → 無効。
+          auto-merge: ${{ vars.SUBMODULE_AUTO_MERGE }}
+          # 自動マージを許可する submodule の allowlist。未指定 → 全 submodule を許可。
+          # 改行 / カンマ区切りで複数指定でき、各エントリは biome scanner 準拠 glob
+          # として順次評価する (last match wins)。
+          auto-merge-allowlist: ${{ vars.SUBMODULE_AUTO_MERGE_ALLOWLIST }}
+          auto-merge-strategy: squash
+
+  skills:
+    name: Update agent skills
+    # schedule / 手動 all / 手動 skill のとき実行する。
+    if: ${{ github.event_name != 'workflow_dispatch' || contains(fromJSON('["all", "skill"]'), inputs.target) }}
+    runs-on: self-hosted
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        # actions/checkout v5.0.1 (submodule job と同 SHA)
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        # actions/setup-node v6.4.0。
+        # skills-update は `npx skills` を使うため node が必要 (self-hosted 非搭載対策)。
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: '20'
+
+      - name: Update skills and open PR
+        # Fandhe-AI/actions/skills-update @ main (b506f30f)。
+        # ソース agent-cli-skills は public のため source-token は不要 (token を流用)。
+        uses: Fandhe-AI/actions/skills-update@b506f30f6a5fbfa7a616ddbdbae804d9ee493aa9
+        with:
+          token: ${{ secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
+          base-branch: main
+          branch-prefix: chore/skills-update
+          commit-message: 'chore: エージェントスキルを最新に更新'
+          pr-title: 'chore: エージェントスキルを最新に更新'
+          pr-labels: 'dependencies,automated'
+          # auto-merge の ON/OFF。repository variable SKILLS_AUTO_MERGE で制御。
+          # 未設定 (null/空) → 有効。false / no / off / 0 / disabled → 無効。
+          auto-merge: ${{ vars.SKILLS_AUTO_MERGE }}
+          # 自動マージを許可するスキル名の allowlist。未指定 → 全スキルを許可。
+          # 改行 / カンマ区切りで複数指定でき、各エントリは biome scanner 準拠 glob
+          # として順次評価する (last match wins)。
+          auto-merge-allowlist: ${{ vars.SKILLS_AUTO_MERGE_ALLOWLIST }}
+          auto-merge-strategy: squash
