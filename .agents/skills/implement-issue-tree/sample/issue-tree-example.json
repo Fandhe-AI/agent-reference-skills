@@ -1,0 +1,12 @@
+{
+  "_comment": "TREE_SCHEMA に準拠したイシューツリーの例（Plan フェーズの agent が返す形式）。siblingIndex と dependsOn が必須",
+  "nodes": [
+    { "number": 42, "title": "ユーザー管理機能を実装する", "state": "open", "parent": 0, "siblingIndex": 0, "dependsOn": [] },
+    { "number": 43, "title": "ユーザー登録 API を実装する", "state": "open", "parent": 42, "siblingIndex": 0, "dependsOn": [] },
+    { "number": 44, "title": "ユーザー一覧 API を実装する", "state": "open", "parent": 42, "siblingIndex": 1, "dependsOn": [43] },
+    { "number": 45, "title": "ユーザー削除 API を実装する", "state": "closed", "parent": 42, "siblingIndex": 2, "dependsOn": [] },
+    { "number": 46, "title": "メール認証フローを追加する", "state": "open", "parent": 43, "siblingIndex": 0, "dependsOn": [] }
+  ],
+  "_note_order": "post-order DFS の優先度: #46 → #43 → #44（#45 はスキップ）→ #42（verify-close）",
+  "_note_parallel": "並列度 3 の場合、依存のない #46 が先に着手される。#43 は子の #46 完了後に着手。#44 は dependsOn:[43] のため #43 完了まで待機。#42 は全子完了後に verify-close される"
+}

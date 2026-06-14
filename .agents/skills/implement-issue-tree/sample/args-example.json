@@ -1,0 +1,25 @@
+{
+  "_comment": "implement-issue-tree workflow の args 例。parallel は 1〜8（省略時 3）",
+  "examples": [
+    {
+      "description": "親イシュー #42 の配下を main へ、並列度 3（既定）でマージ",
+      "args": { "parent": 42 }
+    },
+    {
+      "description": "親イシュー #42 の配下を main へ、並列度を明示して 4 で実行",
+      "args": { "parent": 42, "parallel": 4 }
+    },
+    {
+      "description": "親イシュー #100 の配下を develop ブランチへ、並列度 2 でマージ",
+      "args": { "parent": 100, "branch": "develop", "parallel": 2 }
+    },
+    {
+      "description": "並列度 1 を指定して従来どおりの直列実行（依存順に 1 件ずつ）",
+      "args": { "parent": 42, "branch": "main", "parallel": 1 }
+    },
+    {
+      "description": "サブ親イシュー #200 だけを対象に部分実行（大規模ツリーの分割実行）",
+      "args": { "parent": 200, "branch": "main", "parallel": 3 }
+    }
+  ]
+}
