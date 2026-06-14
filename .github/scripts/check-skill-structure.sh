@@ -56,19 +56,21 @@ if [ "${found}" -eq 0 ]; then
 fi
 echo "checked ${found} skill(s)"
 
-# --- 4. skills-lock.json の JSON 妥当性 (利用可能なツールで best-effort 検証) ---
-if [ -f skills-lock.json ]; then
-  if command -v node >/dev/null 2>&1; then
-    node -e 'JSON.parse(require("fs").readFileSync("skills-lock.json","utf8"))' \
-      || err "skills-lock.json が妥当な JSON でない"
-  elif command -v python3 >/dev/null 2>&1; then
-    python3 -c 'import json; json.load(open("skills-lock.json"))' \
-      || err "skills-lock.json が妥当な JSON でない"
-  elif command -v jq >/dev/null 2>&1; then
-    jq empty skills-lock.json || err "skills-lock.json が妥当な JSON でない"
-  else
-    echo "::warning::JSON 検証ツール (node/python3/jq) が無く skills-lock.json の検証を skip"
-  fi
+# --- 4. skills-lock.json の存在と JSON 妥当性 ---
+# skills-lock.json は必須ファイル。不在を黙って skip すると「検証済み」を偽る
+# (CI / ワークフローのコメントが矛盾する) ため、不在は明確にエラーにする。
+if [ ! -f skills-lock.json ]; then
+  err "skills-lock.json が存在しない (必須ファイル)"
+elif command -v node >/dev/null 2>&1; then
+  node -e 'JSON.parse(require("fs").readFileSync("skills-lock.json","utf8"))' \
+    || err "skills-lock.json が妥当な JSON でない"
+elif command -v python3 >/dev/null 2>&1; then
+  python3 -c 'import json; json.load(open("skills-lock.json"))' \
+    || err "skills-lock.json が妥当な JSON でない"
+elif command -v jq >/dev/null 2>&1; then
+  jq empty skills-lock.json || err "skills-lock.json が妥当な JSON でない"
+else
+  echo "::warning::JSON 検証ツール (node/python3/jq) が無く skills-lock.json の JSON 検証を skip (存在は確認済み)"
 fi
 
 if [ "${errors}" -gt 0 ]; then
