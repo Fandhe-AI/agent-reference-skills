@@ -46,8 +46,9 @@ jobs:
           token: ${{ secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
 
       - name: Update submodules and open PR
-        # Fandhe-AI/actions/submodule-update @ main (b506f30f) — auto-merge 統合版。
-        uses: Fandhe-AI/actions/submodule-update@b506f30f6a5fbfa7a616ddbdbae804d9ee493aa9
+        # Fandhe-AI/actions/submodule-update @ main (c80ff94, #8) — auto-merge 統合版。
+        # c80ff94: auto-merge 時の GITHUB_TOKEN による CI 未発火をガード・文書化。
+        uses: Fandhe-AI/actions/submodule-update@c80ff94f229f86ba9e08723948c4dee0e1fb66bf
         with:
           token: ${{ secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
           base-branch: main
@@ -88,9 +89,10 @@ jobs:
           node-version: '20'
 
       - name: Update skills and open PR
-        # Fandhe-AI/actions/skills-update @ main (b506f30f)。
+        # Fandhe-AI/actions/skills-update @ main (c80ff94, #8)。
+        # c80ff94: auto-merge 時の GITHUB_TOKEN による CI 未発火をガード・文書化。
         # ソース agent-cli-skills は public のため source-token は不要 (token を流用)。
-        uses: Fandhe-AI/actions/skills-update@b506f30f6a5fbfa7a616ddbdbae804d9ee493aa9
+        uses: Fandhe-AI/actions/skills-update@c80ff94f229f86ba9e08723948c4dee0e1fb66bf
         with:
           token: ${{ secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
           base-branch: main
