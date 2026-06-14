@@ -1,0 +1,113 @@
+name: Update external sources
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'   # 毎週月曜 0:00 UTC = 09:00 JST
+  workflow_dispatch:       # 手動実行も可能
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  # --------------------------------------------------
+  # Submodule の更新 (Fandhe-AI/actions/submodule-update)
+  # --------------------------------------------------
+  # 注: 現状このリポジトリに submodule は無いため実質 no-op だが、将来の追加に備え
+  # template-frontend-react_router と同じ構成を維持する。
+  update-submodules:
+    name: Update submodule references
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # GITHUB_TOKEN で作成した PR は後続 CI を発火しないため、CI 発火 + auto-merge を
+      # 成立させるには App トークンを使う。owner を指定し、submodule (別リポジトリ) も
+      # 読めるよう App インストールスコープまでトークンを広げる
+      # (App は本リポジトリと全 submodule リポジトリにインストールが必要)。
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.AUTOMATION_APP_ID }}
+          private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      # workflow_dispatch を main 以外から実行しても常に main 基準で更新を計算する
+      # (base-branch: main へ無関係な差分が混入するのを防ぐ)。
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          submodules: recursive
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Update submodules and open PR
+        # Fandhe-AI/actions/submodule-update @ main (c80ff94, #8) — auto-merge 統合版。
+        # c80ff94: auto-merge 時の GITHUB_TOKEN による CI 未発火をガード・文書化。
+        uses: Fandhe-AI/actions/submodule-update@c80ff94f229f86ba9e08723948c4dee0e1fb66bf
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          base-branch: main
+          branch-prefix: chore/submodule-update
+          commit-message: 'chore: submodule を最新に更新'
+          pr-title: 'chore: submodule を最新に更新'
+          pr-labels: 'dependencies,automated'
+          # auto-merge の ON/OFF。repository variable SUBMODULE_AUTO_MERGE で制御。
+          # 未設定 (null/空) → 有効。false / no / off / 0 / disabled → 無効。
+          auto-merge: ${{ vars.SUBMODULE_AUTO_MERGE }}
+          # 自動マージを許可する submodule の allowlist。未指定 → 全 submodule を許可。
+          auto-merge-allowlist: ${{ vars.SUBMODULE_AUTO_MERGE_ALLOWLIST }}
+          auto-merge-strategy: squash
+
+  # --------------------------------------------------
+  # Skills の更新 (Fandhe-AI/actions/skills-update)
+  # --------------------------------------------------
+  update-skills:
+    name: Update agent skills
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # owner を指定し、skills の取得元 (Fandhe-AI/agent-cli-skills 等の別リポジトリ) を
+      # 読めるよう App インストールスコープまで広げる
+      # (public な取得元は認証不要。private なソースは App のインストールが必要)。
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ vars.AUTOMATION_APP_ID }}
+          private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      # workflow_dispatch を main 以外から実行しても常に main 基準で更新を計算する。
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          token: ${{ steps.app-token.outputs.token }}
+
+      # ubuntu-latest は Node を同梱するため setup-node は不要 (skills-update は npx skills を使う)。
+      - name: Update skills and open PR
+        # Fandhe-AI/actions/skills-update @ main (c80ff94, #8)。
+        # c80ff94: auto-merge 時の GITHUB_TOKEN による CI 未発火をガード・文書化。
+        # ソース agent-cli-skills は public のため source-token は不要 (token を流用)。
+        uses: Fandhe-AI/actions/skills-update@c80ff94f229f86ba9e08723948c4dee0e1fb66bf
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          base-branch: main
+          branch-prefix: chore/skills-update
+          commit-message: 'chore: エージェントスキルを最新に更新'
+          pr-title: 'chore: エージェントスキルを最新に更新'
+          pr-labels: 'dependencies,automated'
+          # auto-merge の ON/OFF。repository variable SKILLS_AUTO_MERGE で制御。
+          # 未設定 (null/空) → 有効。false / no / off / 0 / disabled → 無効。
+          auto-merge: ${{ vars.SKILLS_AUTO_MERGE }}
+          # 自動マージを許可するスキル名の allowlist。未指定 → 全スキルを許可。
+          auto-merge-allowlist: ${{ vars.SKILLS_AUTO_MERGE_ALLOWLIST }}
+          auto-merge-strategy: squash

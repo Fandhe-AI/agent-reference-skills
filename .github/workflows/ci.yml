@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # --------------------------------------------------
+  # スキル構造検証（依存なし・全 PR / push 共通）
+  # --------------------------------------------------
+  # 各 skills/<name>/SKILL.md の frontmatter (name / description / user-invocable)、
+  # name とディレクトリ名の一致、skills-lock.json の JSON 妥当性を bash で検証する。
+  structure:
+    name: Skill structure check
+    runs-on: ubuntu-latest
+    # bash + grep のみの軽量ジョブ。hang 検知の保険として 5 分で打ち切る。
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        # actions/checkout v5.0.1
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+        with:
+          persist-credentials: false
+
+      - name: Validate skill structure
+        run: bash .github/scripts/check-skill-structure.sh
+
+  # --------------------------------------------------
+  # markdownlint（全 markdown の lint）
+  # --------------------------------------------------
+  # ルール設定は `.markdownlint-cli2.jsonc` を参照する（緑のベースライン構成）。
+  markdownlint:
+    name: markdownlint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        # actions/checkout v5.0.1
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        # actions/setup-node v6.4.0。node バージョンを固定して再現性を確保する。
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: '20'
+
+      - name: Run markdownlint-cli2
+        # 設定 (globs / ignores / rules) は .markdownlint-cli2.jsonc から自動検出する。
+        # サプライチェーン強化のためバージョンを固定する。
+        run: npx --yes markdownlint-cli2@0.22.1
