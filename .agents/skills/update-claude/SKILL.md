@@ -89,6 +89,8 @@ ls <target-repo>/.claude/workflows/implement-issue-tree.js 2>/dev/null || echo "
 | security.md | OWASP Top 10・秘密情報混入防止の記載があるか |
 | japanese-style.md | 日本語出力スタイルの記載があるか |
 | conventional-commits.md | Conventional Commits 詳細規約があるか |
+| code-comment-style.md | コメント規約（役割・呼び出し文脈・責務境界の埋め込み方針）があるか |
+| out-of-scope-tracking.md | スコープ外事項の追跡規約（Issue 確認→ユーザー承認→起票フロー）があるか |
 
 #### 2-3. Skills 診断
 
@@ -100,6 +102,7 @@ ls <target-repo>/.claude/workflows/implement-issue-tree.js 2>/dev/null || echo "
 - `implement-issue`・`implement-issue-tree`
 - `implement-review`・`implement-review-pr`
 - `update-docs`
+- `comment-code`（`code-comment-style.md` 規約に従うコメント追加・補強スキル）
 
 #### 2-4. hooks 診断
 
@@ -205,6 +208,10 @@ tools: [必要最小限のツール]
 `.claude/rules/` に追加する。
 `delegation.md`・`delegation-impl.md` は Fandhe-AI/agent-cli-skills の実例を参考に
 対象リポのパス構成に合わせてカスタマイズする。
+
+`code-comment-style.md` と `out-of-scope-tracking.md` が不足している場合は、
+`init-claude` スキルの「3-3. rules/ を生成する」に記載の雛形骨子を参照して生成する。
+生成時は対象リポの言語・構成（ドキュメンテーションコメント形式・ディレクトリ構成等）に合わせて調整する。
 
 #### 4-3. 不足スキルを補完する
 

@@ -96,6 +96,8 @@ cat <target-repo>/.github/workflows/*.yml 2>/dev/null | head -60 || true
 | `security.md` | OWASP Top 10・秘密情報混入防止 |
 | `japanese-style.md` | 日本語出力スタイル |
 | `conventional-commits.md` | Conventional Commits 詳細規約 |
+| `code-comment-style.md` | コメント規約（役割・責務・呼び出し文脈を埋め込む）。規約（rule）は init-claude が生成し、規約に従ってコメントを追加・補強する `comment-code`（skill）は npx skills add で導入される |
+| `out-of-scope-tracking.md` | 実装対象外の追跡規約（スコープ外事項を放置しない） |
 
 #### Skills 設計方針
 
@@ -109,6 +111,7 @@ cat <target-repo>/.github/workflows/*.yml 2>/dev/null | head -60 || true
 - `implement-review` — レビュー対応
 - `implement-review-pr` — PR レビュー対応
 - `update-docs` — CLAUDE.md 更新
+- `comment-code` — `code-comment-style.md` 規約に従ったコメント・ドキュメンテーションコメントの追加・補強
 
 #### hooks 設計方針
 
@@ -153,6 +156,8 @@ main の役割・パスベース切り替え表・model 配分表
 
 ## Rules
 （3-1 では見出しのみ。ルールファイル一覧の表は 3-3 完了後に 3-6 で確定する）
+（標準セット: delegation / delegation-impl / coding-<lang> / security / japanese-style /
+  conventional-commits / code-comment-style / out-of-scope-tracking）
 
 ## Current Skills
 （3-1 では見出しのみ。導入済みスキル一覧は 3-5 完了後に 3-6 で確定する）
@@ -183,6 +188,76 @@ tools: [必要最小限のツール]
 Step 2 で設計したルールを `.claude/rules/` に作成する。
 `delegation.md`・`delegation-impl.md` は本リポの実例（Fandhe-AI/agent-cli-skills）を参考に
 対象リポのパス構成に合わせてカスタマイズする。
+
+`code-comment-style.md` と `out-of-scope-tracking.md` は以下の雛形骨子をベースに、
+対象リポの言語・構成に合わせて調整して生成する。
+
+##### code-comment-style.md の雛形骨子
+
+```markdown
+# コメント規約
+
+## 目的
+
+後続の読み手（Claude を含む）は渡された情報からしか判断できない。
+コメントはパッケージ・サービス・モジュール視点での役割と、他ファイル・他サービスとの
+文脈を埋め込み、ファイル単体で文脈が伝わる状態にする。
+
+## 何を書くか
+
+- このファイル・モジュール・関数の役割と責務境界（1〜2行要約をドキュメンテーションコメントで）
+- 呼び出し元・呼び出し先の文脈（「〜から呼ばれる」「〜を呼んで〜を返す」）
+- 他ファイル・他サービスとの契約（インターフェース・プロトコル・前提条件）
+- 非自明な前提・副作用・エラー処理の意図
+
+## 何を書かないか
+
+- コードを読めば分かる逐語説明（`i++  // i をインクリメント` 等）
+- 陳腐化しやすい実装詳細の重複（コードと2重に管理しない）
+
+## ドキュメンテーションコメントの形式
+
+言語慣習に従う（Rust: `///`、TypeScript/JavaScript: `/** */`、Python: docstring 等）。
+パッケージ・モジュール・公開 API の入口には必ず1〜2行の役割要約を付ける。
+```
+
+##### out-of-scope-tracking.md の雛形骨子
+
+```markdown
+# 実装対象外の追跡規約
+
+## 目的
+
+実装・レビュー中にスコープ外と判断した事項を放置しない。
+後で埋もれるのを防ぐため、発見したタイミングで Issue に記録して追跡可能にする。
+
+## フロー
+
+1. **検出**: 実装・レビュー中にスコープ外と判断した事項をメモする
+2. **既存 Issue の確認**:
+   ```bash
+   gh issue list --search "${KEYWORD}" --state open
+   ```
+   キーワードは `"${KEYWORD}"` でクォートして渡す。
+3. **ユーザーに承認を得る**: 既存 Issue への追記か新規起票かをユーザーと確認する
+4. **記録**:
+   - 既存 Issue がある場合:
+
+```bash
+gh issue comment "${ISSUE_NUMBER}" --body "$(cat <<'EOF'
+（本文をここに記述）
+EOF
+)"
+```
+
+   - 存在しない場合: `create-issue-tree` または `create-issue` で適切な親 Issue 配下に起票
+5. **元 PR・レビューに切り出し先を記録**: コメントまたは PR 本文に切り出し先の Issue 番号を記載する
+
+## 注意
+
+- ユーザーの承認なしに勝手に Issue を起票しない
+- スコープ外の修正を現在の PR に混入させない（別 Issue・別 PR で対処する）
+```
 
 #### 3-4. settings.json を生成する
 
