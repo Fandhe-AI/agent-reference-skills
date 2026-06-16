@@ -70,7 +70,7 @@ function sanitizeWorktreePath(p) {
 }
 
 const COMMON = [
-  `リポジトリ: カレントディレクトリ（base branch: ${baseBranch}）。`,
+  `リポジトリ: カレントディレクトリが実装対象リポ（base branch: ${baseBranch}）であること。起動直後に \`git remote get-url origin\` を確認し、想定と異なる submodule（例: docs/spec 等）の worktree に誤配置されていないか検証すること。`,
   '自動運転モード: ユーザーへの質問・承認待ちは不可。判断が必要なら安全側に倒して進める。',
   '対象リポジトリの CLAUDE.md・.claude/rules・テスト実行規約・コーディング規約があれば必ず読んで従う。',
   '対象リポジトリに delegation ルールや専門サブエージェントがあれば、それに従い役割単位で委譲する。',
@@ -139,6 +139,12 @@ const FIX_SCHEMA = {
     pushed: { type: 'boolean' },
     summary: { type: 'string' },
     worktreePath: { type: 'string', description: 'pwd の結果（worktree の絶対パス）。空文字でも可' },
+    routingError: {
+      type: 'boolean',
+      description:
+        'worktree が別リポ（submodule 等）に誤配置されていて修正不能な場合 true。'
+        + 'true のとき pushed は false。push 不要（修正済み）と区別するための専用シグナル。',
+    },
   },
 }
 
@@ -359,7 +365,8 @@ function implementPrompt(item) {
     `イシュー #${item.number}「${title}」を実装し PR を作成する担当エージェント。`,
     COMMON,
     '手順:',
-    `0. まず既存 PR・ブランチを確認する（中断再開・重複 PR 防止）:`,
+    `0. worktree routing ガード（他のどの gh / git 操作よりも先に、最初に必ず実行する）: \`git remote get-url origin\` でカレント worktree の remote を確認し、\`gh issue view ${item.number} --json number,title\` で取得した title が、このタスクの対象イシュー「${title}」と実質的に同一であることを確認する（このプロンプト中の「${title}」はプロンプト安全化のためバッククォート・$・バックスラッシュ・改行がエスケープ／除去されている場合がある。GitHub は raw title を返すため完全一致は要求せず、語句の一致で同一 issue かを判断する。番号の存在だけでは別リポの同番号 issue を誤認しうるため照合する）。remote が想定と異なる / issue が解決できない / 取得 title が明らかに無関係（別 issue）のいずれかなら、後続（手順 0b の gh pr list・手順 2 の git fetch を含む一切の操作）を実行せず、即 prNumber: 0 と「worktree routing error: remote=<URL> でイシュー #${item.number}「${title}」を解決できず誤配置。実装リポの worktree への再配置が必要」を理由として返す。手動で別ディレクトリへ移動して作業しないこと（隔離契約違反・他エージェント干渉のため）。`,
+    `0b. 既存 PR・ブランチを確認する（中断再開・重複 PR 防止。手順 0 のガードを通過した後にのみ実行する）:`,
     `   a. 以下の 2 通りでイシュー #${item.number} に対応する open PR が既にないか確認する:`,
     `      - gh pr list --state open --search "Closes #${item.number}" --json number,title,headRefName`,
     `      - gh pr list --state open --search "${item.number} in:title" --json number,title,headRefName`,
@@ -412,19 +419,21 @@ function monitorPrompt(item, impl) {
 
 function fixPrompt(item, impl, finding) {
   const branch = sanitizeBranch(impl.branch)
+  const title = sanitize(item.title)
   return [
     `PR #${impl.prNumber}（イシュー #${item.number}、ブランチ ${branch}）への指摘を修正する担当。`,
     COMMON,
     '指摘内容:',
     sanitize(finding.summary),
     '手順:',
+    `0. worktree routing ガード（他のどの gh / git 操作よりも先に、最初に必ず実行する）: \`git remote get-url origin\` でカレント worktree の remote を確認し、\`gh issue view ${item.number} --json number,title\` で取得した title が、このタスクの対象イシュー「${title}」と実質的に同一であることを確認する（プロンプト中の「${title}」は安全化のため記号がエスケープ／除去されている場合があるため完全一致は要求せず語句の一致で判断する。番号の存在だけでは別リポの同番号 issue を誤認しうる）。remote が想定と異なる / issue が解決できない / 取得 title が明らかに無関係（別 issue）のいずれか（= submodule 等の別リポ worktree に誤配置）なら、git fetch / git push を含む後続を一切実行せず、即 \`routingError: true\`・\`pushed: false\`・summary に「worktree routing error: remote=<URL> で誤配置」を入れて返す（routingError は「push 不要（修正済み）」と区別され、オーケストレーターが即 blocked にする）。`,
     `1. 本エージェントは隔離された git worktree 内で動作する。ブランチ ${branch} は他の worktree で checkout 済みの可能性があるため、git fetch origin && git checkout --detach origin/${branch} で detached HEAD として取得して作業する。マージコンフリクトの解消が必要な場合は git merge origin/${baseBranch} を実行して解消する。`,
     '2. 指摘を重要度を問わずすべて修正する（実装は対象リポジトリの delegation ルール・専門サブエージェントがあればそれに従い委譲する）。対象リポジトリの CLAUDE.md・rules の不変条件（migration・スキーマ等）を守る。',
     '3. 対象リポジトリのテスト実行規約に従い、ビルド・lint・テストを実行して通す。',
     `4. create-commit スキルに従いコミットし、git push origin HEAD:refs/heads/${branch} で反映する。`,
     '5. unresolved-comments の指摘を修正した場合は、対応したスレッドを gh api graphql の resolveReviewThread ミューテーションで解決済みにマークする（可能な場合）。',
     '6. pwd の結果を worktreePath として返す（worktree の絶対パスを記録するため）。',
-    '返却: pushed / summary / worktreePath（pwd の結果）。',
+    '返却: pushed / summary / worktreePath（pwd の結果）/ routingError（手順 0 で worktree 誤配置を検出した場合のみ true。その際 pushed は false。誤配置でなければ省略可）。',
   ].join('\n')
 }
 
@@ -624,6 +633,9 @@ async function runImplement(item) {
   // monitoring からの正常再開時のみ保存済みの fixCount を引き継ぐ。それ以外は 0
   let fixCount = savedFixCount
   let noPushRounds = 0
+  // fix 中に worktree 誤配置（別リポ）を検出したか。ループ後の最終 updateState で
+  // 汎用マージ失敗 note ではなく routing 専用 note を記録するために使う。
+  let routingErrorDetected = false
   // 現在追跡中の worktree パス。impl または最後の fix の worktreePath を常に最新に保つ。
   // 再開時は状態ファイルから引き継ぐ。merged 時・fix 時の削除対象として使用する
   let currentWorktreePath = impl.worktreePath ?? ''
@@ -679,6 +691,23 @@ async function runImplement(item) {
         recordFailure({ issue: item.number, pr: impl.prNumber, reason: fixFailReason })
         return false
       }
+      if (f.routingError) {
+        // worktree 誤配置（別リポ）は修正不能。fix 成功パス（fixCount++ / 旧 worktree 削除）より
+        // 前に即 break する。誤配置で新たに作られた worktree（newWorktreePath）のみ掃除し、
+        // 直前の正常 worktree（oldWorktreePath）は patch.worktree で明示保持してデバッグ・
+        // 手動再開用に残す（patch から worktree を省くと cleanup 後に .worktree が "" へ
+        // クリアされ正常 worktree の追跡を失うため、必ず oldWorktreePath を渡す）。fixCount は
+        // 進展なしのため増やさない。最終 status / note はループ後の共通処理で記録する。
+        routingErrorDetected = true
+        log(`PR #${impl.prNumber} の修正エージェントが worktree routing error を報告、即 blocked とする`)
+        await updateState(
+          item.number,
+          { worktree: oldWorktreePath },
+          { cleanupWorktree: newWorktreePath },
+        )
+        lastState = 'blocked'
+        break
+      }
       // fix 成功: fixCount をインクリメントして永続化し、旧 worktree を削除する
       fixCount++
       // 旧パスを保持し続けると stale になるため、有効・無効を問わず必ず新値で上書きする
@@ -707,7 +736,11 @@ async function runImplement(item) {
     // timeout は次ラウンドで再監視する
   }
   if (!merged) {
-    const reason = `マージに到達できなかった（最終状態: ${lastState}）`
+    // routing error は専用 note を残す（汎用マージ失敗 note で上書きしない）。worktree は
+    // 直前の正常パスを残すため、ここでは cleanupWorktree を指定せず .worktree を触らない。
+    const reason = routingErrorDetected
+      ? 'worktree routing error: fix worktree が別リポに誤配置（修正不能）。実装リポの worktree への再配置が必要'
+      : `マージに到達できなかった（最終状態: ${lastState}）`
     await updateState(item.number, { status: 'failed', pr: impl.prNumber, fixCount, note: reason })
     recordFailure({ issue: item.number, pr: impl.prNumber, reason })
     return false
