@@ -170,7 +170,24 @@ EOF
 - **source prefix 検証（必須）**: `source` が `Fandhe-AI/` または `https://github.com/Fandhe-AI/` で始まらないエントリは skip する（`contribute-skill` と同じ安全弁）。`skills-lock.json` の改ざんや誤設定から防御するため
 - **`npx skills add --yes` は上書き確認をスキップする**: upstream に破壊的変更がある場合は `git diff` で内容を必ず確認すること
 - **新スキルの取扱い**: ローカルに存在するが upstream に未登録のスキル（`contribute-skill`, `sync-skills-lock` 自身など）は、upstream マージ後に登録する。マージ前に `computedHash` を勝手に書き込まない
-- **sandbox 環境での実行**: ネットワーク越しの GitHub 操作には `GIT_SSL_NO_VERIFY=1` の併用を検討する（詳細は `docs/sandbox-tls.md` を参照）
+## sandbox 環境での実行
+
+このスキルは sandbox 環境では実行できない。ネットワークアクセス・ファイルシステムへの書き込みが必要なため、通常の Claude Code セッションで実行すること。
+
+## 検証
+
+コミット後、以下で完了を確認する。
+
+```bash
+# skills-lock.json が更新済みであることを確認
+git show HEAD -- skills-lock.json | grep computedHash
+
+# 差分なし（sync 完了）を確認
+git status --porcelain skills-lock.json
+```
+
+- コミットに sync 対象スキルの `computedHash` 更新が含まれること
+- ステージ・未ステージに残留変更がないこと
 
 ## 既存スキルとの関係
 

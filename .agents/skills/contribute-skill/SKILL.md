@@ -151,7 +151,6 @@ mkdir -p "$WORKDIR"
 ### Step 6: upstream を clone する
 
 ```bash
-# sandbox 環境では各コマンドに GIT_SSL_NO_VERIFY=1 を前置する（詳細: docs/sandbox-tls.md）
 # cd する前にローカルリポジトリのルートを捕捉する（cd - は stdout を汚染するため使用しない）
 ORIG_DIR="$(pwd)"
 gh repo clone "${REPO_SLUG}" "$WORKDIR/upstream"
@@ -233,7 +232,6 @@ EOF
 ### Step 10: push と PR 作成
 
 ```bash
-# sandbox 環境では各コマンドに GIT_SSL_NO_VERIFY=1 を前置する（詳細: docs/sandbox-tls.md）
 git push -u origin "contribute/<SKILL_NAME>-${SLUG}"
 
 gh pr create \
@@ -275,15 +273,29 @@ Draft PR を作成する場合は `--draft` を付けます（デフォルトは
 - **`skills/` と `.agents/skills/` の両方が存在する場合は中止**：silently に `skills/` を優先せず、環境変数 `LOCAL_SKILL_DIR` に改修対象パスを指定して再実行を求める。`LOCAL_SKILL_DIR` は `skills/<name>` か `.agents/skills/<name>` の2パスのみ受理し、任意パス指定によるパストラバーサルを防ぐ
 - **source が Fandhe-AI org 以外の場合は中止**：`Fandhe-AI/`（短縮形）と `https://github.com/Fandhe-AI/`（URL 形式）のみを許可し、それ以外は意図しない外部リポジトリへの push を防ぐため中止する
 - **セキュリティ問題が見つかった場合は中止**：修正後に再実行
-- **sandbox 環境での `GIT_SSL_NO_VERIFY=1` 併用**：詳細は後述の「sandbox 環境での実行」節を参照
 - **upstream の配置はクローンしたリポジトリのレイアウトで判定する**：`skills-lock.json` の `skillPath` はローカル install パス（例: `.agents/skills/github-docs/SKILL.md`）であり、upstream リポジトリ内の配置ではない。`skillPath` の dirname を `UPSTREAM_SKILL_PATH` に採用してはならない。判定順は `skills/<name>` の存在 → `.agents/skills/<name>` の存在 → スキルルート親ディレクトリ（`skills/` or `.agents/skills/`）の慣習 → 最終デフォルト `skills/`（より一般的な公開レイアウト）
 - **既に同名の branch がある場合**：秒単位スラッグで通常は衝突しないが、万一の場合はユーザーに確認
 
 ## sandbox 環境での実行
 
-sandbox で本スキルを実行する場合、ネットワーク越しの GitHub 操作には `GIT_SSL_NO_VERIFY=1` の併用を検討してください。本スキルの主なリモート操作は `gh repo clone` / `git push` / `gh pr create` で、「リモート書き込み」判定は **要** です。コマンド分類の詳細と TLS 検証無効化の注意事項は [`docs/sandbox-tls.md`](../../docs/sandbox-tls.md) を参照してください。
+このスキルは sandbox 環境では実行できない。ネットワークアクセス・ファイルシステムへの書き込みが必要なため、通常の Claude Code セッションで実行すること。
+
+## 検証
+
+PR 作成後、以下で完了を確認する。
+
+```bash
+# PR が作成されたことを確認
+gh pr view --repo "${REPO_SLUG}" --web
+
+# または URL を直接確認（Step 11 で出力済み）
+```
+
+- PR URL が返されること
+- PR のタイトル・差分が意図した内容であること
+- `sync-skills-lock` 実行案内が出力されていること
 
 ## 既存スキルとの関係
 
 - Step 4 のセキュリティチェック、Step 9 の Conventional Commits、Step 10 の PR body は `create-pr/SKILL.md` の流儀を踏襲
-- マージ後は `/sync-skills-lock` で `skills-lock.json` の `computedHash` を更新
+- マージ後は `sync-skills-lock` で `skills-lock.json` の `computedHash` を更新

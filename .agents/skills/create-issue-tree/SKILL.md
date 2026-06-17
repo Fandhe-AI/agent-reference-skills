@@ -319,6 +319,15 @@ gh api "repos/{owner}/{repo}/issues/${PHASE_NUMBER}/sub_issues?per_page=100" \
   --jq '.[] | {number: .number, labels: [.labels[].name]}'
 ```
 
+## よくある失敗
+
+| 問題 | 回避策 |
+|------|--------|
+| `--root` を指定せず 2 回目の部分起票でルート issue が重複作成される | 2 回目以降は必ず `--root <既存ルートissue番号>` を渡す |
+| `sub_issue_id` に issue 番号をそのまま渡す | `gh api .../issues/<number> --jq '.id'` で database id を取得してから POST する |
+| phase ラベルが存在しないリポジトリで issue 作成が失敗する | Step 4 冒頭の `gh label create "phase:${PHASE}"` を必ず先に実行する |
+| closed 親の下に open issue が残置される | Phase 親を close する前に全子 issue の close を確認する |
+
 ## 注意事項
 
 - **1 issue は 4h 程度に収める。** 4h を超えると判断した場合は sub-issue に分解する

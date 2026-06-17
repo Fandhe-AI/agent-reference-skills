@@ -81,13 +81,30 @@ EOF
 
 ユーザーに PR URL を返す。
 
+## 検証
+
+PR 作成後に以下を確認してから完了を宣言する（詳細は `.claude/rules/verification.md`）。「PR を作成したはず」等の推測語での完了主張は禁止。
+
+```bash
+# PR が作成されたことと CI ステータスを確認する
+gh pr view <pr-number>
+gh pr checks <pr-number>
+```
+
+## よくある失敗
+
+| 問題 | 回避策 |
+|------|--------|
+| セキュリティ問題を検出しても PR 作成を続行する | Step 2 で問題を発見したら即座に処理を中止し、ユーザーに警告して修正を依頼する |
+| PR URL を返さずに完了する | `gh pr create` の出力から PR URL を取得してユーザーに提示する |
+| Conventional Commits 形式に準拠しないタイトルをつける | `type(scope): subject`（72文字以内）の形式を厳守する |
+
 ## 注意事項
 
 - ベースブランチはリポジトリの規約に従う
 - セキュリティ問題が未解決の場合は PR 作成を中止する
 - Draft PR を作成する場合は `--draft` フラグを追加する（ユーザーに確認）
-- **sandbox 環境での `GIT_SSL_NO_VERIFY=1` 併用**：詳細は後述の「sandbox 環境での実行」節を参照
 
 ## sandbox 環境での実行
 
-sandbox で本スキルを実行する場合、ネットワーク越しの GitHub 操作には `GIT_SSL_NO_VERIFY=1` の併用を検討してください。本スキルの主なリモート操作は `git push` / `gh pr create` で、「リモート書き込み」判定は **要** です。コマンド分類の詳細と TLS 検証無効化の注意事項は [`docs/sandbox-tls.md`](../../docs/sandbox-tls.md) を参照してください。
+このスキルは sandbox 環境では実行できない。ネットワークアクセス・ファイルシステムへの書き込みが必要なため、通常の Claude Code セッションで実行すること。

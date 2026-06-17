@@ -136,8 +136,19 @@ is:issue,pr is:open label:sprint-1 repo:<owner>/<repo>
 - フィールド作成でエラーが発生した場合（既に存在する等）はスキップして続行する
 - Organization プロジェクトの場合、適切な権限が必要
 - ビルトインワークフローは CLI/API では設定できないため、Web UI での設定が必要
-- **sandbox 環境での `GIT_SSL_NO_VERIFY=1` 併用**：詳細は後述の「sandbox 環境での実行」節を参照
+- sandbox 環境では実行できない（後述の「sandbox 環境での実行」節を参照）
+
+## 検証
+
+Step 8 完了後、以下で作成結果を確認する:
+
+```bash
+gh project view <number> --owner <owner> --format json
+gh project field-list <number> --owner <owner> --format json
+```
+
+プロジェクト URL・フィールド一覧（Status / Priority / Size）が出力されれば完了。
 
 ## sandbox 環境での実行
 
-sandbox で本スキルを実行する場合、ネットワーク越しの GitHub 操作には `GIT_SSL_NO_VERIFY=1` の併用を検討してください。本スキルの主なリモート操作は `gh project create` / `gh api` で、「リモート書き込み」判定は **要（本スキルは主に API 経由）** です。コマンド分類の詳細と TLS 検証無効化の注意事項は [`docs/sandbox-tls.md`](../../docs/sandbox-tls.md) を参照してください。
+このスキルは sandbox 環境では実行できない。ネットワークアクセス・ファイルシステムへの書き込みが必要なため、通常の Claude Code セッションで実行すること。
