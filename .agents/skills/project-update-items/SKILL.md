@@ -100,8 +100,18 @@ gh project item-edit \
 - オプション値がプロジェクトのフィールド定義に存在しない場合はエラーを報告する
 - 複数フィールドを同時に更新する場合は、フィールドごとに `item-edit` を実行する
 - GitHub API レート制限に注意し、大量更新時はバッチサイズを調整する
-- **sandbox 環境での `GIT_SSL_NO_VERIFY=1` 併用**：詳細は後述の「sandbox 環境での実行」節を参照
+- sandbox 環境では実行できない（後述の「sandbox 環境での実行」節を参照）
+
+## 検証
+
+Step 6 完了後、以下で更新内容を確認する:
+
+```bash
+gh project item-list <number> --owner <owner> --format json --limit 999
+```
+
+対象アイテムのフィールド値が新しい値に変わっていれば完了。
 
 ## sandbox 環境での実行
 
-sandbox で本スキルを実行する場合、ネットワーク越しの GitHub 操作には `GIT_SSL_NO_VERIFY=1` の併用を検討してください。本スキルの主なリモート操作は `gh project item-edit` で、「リモート書き込み」判定は **要（本スキルは主に API 経由）** です。コマンド分類の詳細と TLS 検証無効化の注意事項は [`docs/sandbox-tls.md`](../../docs/sandbox-tls.md) を参照してください。
+このスキルは sandbox 環境では実行できない。ネットワークアクセス・ファイルシステムへの書き込みが必要なため、通常の Claude Code セッションで実行すること。

@@ -92,9 +92,19 @@ gh project item-archive <number> \
 
 Auto-archive が無効の場合は有効化を推奨:
 ```
-💡 Auto-archive を有効にすると、Done から N 日経過したアイテムが自動でアーカイブされます。
+推奨: Auto-archive を有効にすると、Done から N 日経過したアイテムが自動でアーカイブされます。
 設定: <workflows URL>
 ```
+
+## 検証
+
+Step 7 完了後、以下でアーカイブ結果を確認する:
+
+```bash
+gh project item-list <number> --owner <owner> --format json --limit 999
+```
+
+Status が "Done" のアイテムが一覧から消えていれば完了。アーカイブ済みアイテムは削除されておらず、元に戻せる（`gh project item-archive --undo`）。
 
 ## 注意事項
 
@@ -103,8 +113,7 @@ Auto-archive が無効の場合は有効化を推奨:
 - アーカイブされたアイテムはプロジェクトビューから非表示になるが、削除はされない
 - Auto-archive ビルトインワークフローとの併用で手動実行の頻度を減らせる
 - 特定の条件（日付範囲、ラベル等）でフィルタしてアーカイブすることも可能
-- **sandbox 環境での `GIT_SSL_NO_VERIFY=1` 併用**：詳細は後述の「sandbox 環境での実行」節を参照
 
 ## sandbox 環境での実行
 
-sandbox で本スキルを実行する場合、ネットワーク越しの GitHub 操作には `GIT_SSL_NO_VERIFY=1` の併用を検討してください。本スキルの主なリモート操作は `gh project item-archive` で、「リモート書き込み」判定は **要（本スキルは主に API 経由）** です。コマンド分類の詳細と TLS 検証無効化の注意事項は [`docs/sandbox-tls.md`](../../docs/sandbox-tls.md) を参照してください。
+このスキルは sandbox 環境では実行できない。ネットワークアクセス・ファイルシステムへの書き込みが必要なため、通常の Claude Code セッションで実行すること。

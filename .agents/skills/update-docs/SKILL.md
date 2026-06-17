@@ -104,6 +104,20 @@ commit_date=2026-03-21T10:00:00+09:00
 
 更新したファイルの一覧と変更内容を表示する。
 
+## 検証
+
+更新後、以下で完了を確認する。
+
+```bash
+# CLAUDE.md のスキル数が実ディレクトリ数と一致しているか確認
+grep "^## Current Skills" CLAUDE.md
+ls -d skills/*/SKILL.md | wc -l
+```
+
+- `## Current Skills (N)` の N がカウントと一致すること
+- スキル名一覧に追加・削除したスキルが反映されていること
+- `_/.last-update-docs` が最新コミットの hash で更新されていること
+
 ## 注意事項
 
 - `CLAUDE.md` のみが更新対象。個別スキルの `SKILL.md` や `references/` は対象外

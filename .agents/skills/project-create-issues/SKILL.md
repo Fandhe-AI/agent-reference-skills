@@ -127,8 +127,19 @@ gh api \
 - ドラフト→Issue 変換時にフィールド値が失われるため、Step 4 で事前に保存しておく
 - ラベル・アサイニー・マイルストーンが必要な場合はユーザーに確認する
 - 大量のドラフト変換時は GitHub API レート制限に注意する
-- **sandbox 環境での `GIT_SSL_NO_VERIFY=1` 併用**：詳細は後述の「sandbox 環境での実行」節を参照
+- sandbox 環境では実行できない（後述の「sandbox 環境での実行」節を参照）
+
+## 検証
+
+Step 7 完了後、以下で作成された Issue とプロジェクトへの追加を確認する:
+
+```bash
+gh issue list --state open --limit 20
+gh project item-list <number> --owner <owner> --format json --limit 999
+```
+
+変換前のドラフトが消え、実 Issue がプロジェクトに追加されていれば完了。親 Issue の sub-issues は `gh api repos/{owner}/{repo}/issues/{parent_number}/sub_issues` で確認する。
 
 ## sandbox 環境での実行
 
-sandbox で本スキルを実行する場合、ネットワーク越しの GitHub 操作には `GIT_SSL_NO_VERIFY=1` の併用を検討してください。本スキルの主なリモート操作は `gh issue create` / `gh project item-add` で、「リモート書き込み」判定は **要（本スキルは主に API 経由）** です。コマンド分類の詳細と TLS 検証無効化の注意事項は [`docs/sandbox-tls.md`](../../docs/sandbox-tls.md) を参照してください。
+このスキルは sandbox 環境では実行できない。ネットワークアクセス・ファイルシステムへの書き込みが必要なため、通常の Claude Code セッションで実行すること。
