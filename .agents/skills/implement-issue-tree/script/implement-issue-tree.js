@@ -8,7 +8,7 @@ export const meta = {
     { title: 'State', detail: '状態ファイル更新（進捗・worktree パスの記録）', model: 'haiku' },
     { title: 'Plan', detail: 'イシューごとの実装計画立案（opus・worktree なし）', model: 'opus' },
     { title: 'Implement', detail: '計画に沿った実装・ローカルコミット（push・PR 作成なし）（worktree 並列）', model: 'sonnet' },
-    { title: 'Review', detail: 'ローカル diff の品質・セキュリティレビュー（OK→Merge / Low 含む指摘→修正ループ）', model: 'sonnet' },
+    { title: 'Review', detail: 'ローカル diff の品質・セキュリティレビュー（OK→Merge / 指摘→修正ループ / 最終ラウンドは Low のみ許容しコメント化）', model: 'sonnet' },
     { title: 'Merge', detail: 'CI / 外部チェック（検出時のみ）監視・レビュー全解決確認・squash merge・クローズ', model: 'sonnet' },
   ],
 }
@@ -237,9 +237,14 @@ const PR_CREATE_SCHEMA = {
 // Review エージェントは修正を行わず判定のみ担う（修正は fix エージェントの責務）。
 const REVIEW_SCHEMA = {
   type: 'object',
-  required: ['state', 'summary'],
+  required: ['state', 'summary', 'highestSeverity'],
   properties: {
     state: { type: 'string', enum: ['ok', 'needs-fix'] },
+    highestSeverity: {
+      type: 'string',
+      enum: ['none', 'low', 'medium', 'high', 'critical'],
+      description: '全指摘のうち最も高い重要度。指摘なし（state=ok）は none。最終 Review ラウンドで low/none なら通過扱いにするため必須。',
+    },
     summary: { type: 'string', description: 'ok の場合は確認内容の要約。needs-fix の場合は全指摘を重要度付きで列挙' },
   },
 }
@@ -511,7 +516,30 @@ function reviewPrompt(item, impl) {
     '   - 対象リポジトリの CLAUDE.md・rules への準拠',
     '3. Low（要改善）含む指摘が 1 件でもあれば state: needs-fix とし、summary に全指摘を重要度付き（Critical / High / Medium / Low）で列挙する。',
     '   指摘がなければ state: ok とし、summary に確認した観点と問題なしの旨を記す。',
-    '返却: state（"ok" または "needs-fix"）/ summary。',
+    '4. highestSeverity に全指摘のうち最も高い重要度を入れる（Critical→critical / High→high / Medium→medium / Low→low）。指摘なし（state=ok）は none。',
+    '   重要: 重要度は厳密に判定すること。Low は「動作に影響しない様式・命名・重複・行数・コメント等の改善提案」に限る。',
+    '   実バグ・誤った挙動・セキュリティ・認可・データ不整合・エッジケースの欠落は最低でも medium とする（最終ラウンドで Low のみは通過扱いになるため）。',
+    '返却: state（"ok" または "needs-fix"）/ highestSeverity / summary。',
+  ].join('\n')
+}
+
+// 最終 Review ラウンドで Low のみだった場合に、その Low 指摘を PR コメントとして記録するエージェント。
+// マージはブロックせず（3 回目は Low 許容方針）、マージ後の follow-up 候補として PR に残す。
+// 呼び出し元は PR 作成成功後（prNumber 確定後）にのみ起動する。
+function lowFindingsCommentPrompt(item, prNumber, findings) {
+  return [
+    `イシュー #${item.number} の PR #${prNumber} に、最終 Review ラウンドで検出された Low（要改善）指摘をコメントとして記録するエージェント。`,
+    'これらの Low 指摘はマージをブロックしない（3 回目 Review で Low は許容する方針）。コードの変更・コミット・push は行わない。gh pr comment のみ実行する。',
+    '手順: 以下のコマンドを 1 回だけ実行する（本文はヒアドキュメントで渡しコマンドインジェクションを防ぐ）。',
+    `gh pr comment ${prNumber} --body "$(cat <<'LOWEOF'`,
+    '## 最終 Review で許容した Low 指摘（follow-up 候補）',
+    '',
+    '3 回目の Review ラウンドで残った以下の Low（要改善）指摘は、マージをブロックせず follow-up 候補として記録する。必要に応じて別 issue 化・後続 PR で対応すること。',
+    '',
+    sanitize(findings),
+    'LOWEOF',
+    ')"',
+    '成功したら ok: true、失敗したら ok: false を返す。',
   ].join('\n')
 }
 
@@ -845,12 +873,23 @@ function recordFailure(failure) {
   // results の status は既定で 'failed'。状態ファイルへ 'blocked' を書く呼び出し
   // （Review 非収束など）は failure.status を渡し、results と状態ファイルの status を一致させる。
   results.push({ issue: failure.issue, status: failure.status ?? 'failed', pr: failure.pr, note: failure.reason })
+  // halt は systemic な失敗（エージェントのクラッシュ・API エラー等の 'failed' が連続）でのみ発火させる。
+  // 'blocked'（Review 非収束など特定イシュー固有の局所的な品質ブロック）は独立した他イシューの
+  // 着手を止める理由にならないため halt の連続カウントに数えない（数えると、実バグ持ちの 1 件で
+  // 無関係な pending leaf 群が未着手のまま取り残される）。blocked は results/failures には記録する。
+  if (failure.status === 'blocked') {
+    log(`#${failure.issue} を blocked として記録し次へ進む（halt 非カウント）: ${failure.reason}`)
+    return
+  }
   consecutiveFailures++
   log(`#${failure.issue} を完了できず次へ進む（${consecutiveFailures} 連続）: ${failure.reason}`)
   if (consecutiveFailures >= 3 && !halted) {
     halted = {
       reason: '3 イシュー連続で完了できなかったため新規着手を停止する。ユーザーの判断を待つこと',
-      issues: failures.slice(-3).map((f) => f.issue),
+      // halt は非 blocked（'failed'）の連続でのみ発火する。blocked は連続カウントに数えないため、
+      // 停滞イシューの報告も blocked を除外した直近 3 件の 'failed' から取る（さもないと halt の
+      // 真因でない blocked を「直近の停滞イシュー」として誤表示する。Bugbot PR #40 指摘）。
+      issues: failures.filter((f) => f.status !== 'blocked').slice(-3).map((f) => f.issue),
     }
   }
 }
@@ -989,6 +1028,9 @@ async function runImplement(item) {
     let reviewsLeft = 3
     // ループ外からも参照できるよう最後の Review 指摘をここで保持する
     let lastReviewSummary = '不明'
+    // 最終 Review ラウンドで Low のみだった場合に通過させ、その Low 指摘を PR 作成後に
+    // コメントとして追加するため保持する（Medium 以上が残った場合は空のまま blocked になる）。
+    let deferredLowFindings = ''
     while (!reviewPassed && reviewsLeft > 0) {
       reviewsLeft--
       const r = await agent(reviewPrompt(item, impl), {
@@ -1008,9 +1050,20 @@ async function runImplement(item) {
       lastReviewSummary = r?.summary ?? 'review エージェントが異常終了した'
       log(`#${item.number}: Review 指摘あり（残り ${reviewsLeft} 回）: ${sanitize(lastReviewSummary)}`)
       // 残レビュー回数が 0（最終反復）なら fix しても再レビューできない。
-      // 未検証の変更をブランチに残さず計算資源も浪費しないため、fix を行わず
-      // 収束失敗として下の !reviewPassed ハンドラへ抜ける。
+      // ここで Low のみの指摘（highestSeverity === 'low'）は通過扱いにし、
+      // その Low 指摘は PR 作成後にコメントとして追加する（マージ後 follow-up 候補）。
+      // Medium 以上が残る場合は従来どおり fix を行わず収束失敗（blocked）として抜ける。
       if (reviewsLeft === 0) {
+        // この分岐は state === 'needs-fix'（指摘あり）でのみ到達する。指摘がある以上
+        // highestSeverity は最低でも low のはず。'none' は state === 'ok'（指摘なし）専用の値であり、
+        // needs-fix + none は矛盾した出力なので未解決指摘として安全側でブロックする（low のみ通過。
+        // Bugbot PR #40 指摘）。highestSeverity 不明（r が無効等）も安全側で medium 相当とみなす。
+        const finalSeverity = r?.highestSeverity ?? 'medium'
+        if (finalSeverity === 'low') {
+          reviewPassed = true
+          deferredLowFindings = lastReviewSummary
+          log(`#${item.number}: 最終 Review は Low のみ — 通過させ、Low 指摘は PR コメントへ追加する`)
+        }
         break
       }
       if (fixCount >= 6) {
@@ -1101,6 +1154,18 @@ async function runImplement(item) {
     // impl オブジェクトを PR 作成後の prNumber で更新する（以降の Merge ループが参照する）
     impl = { ...impl, prNumber: prCreateResult.prNumber }
     log(`#${item.number}: push + PR 作成完了 — PR #${impl.prNumber}`)
+    // 最終 Review ラウンドで Low のみで通過した場合、その Low 指摘を PR コメントとして残す
+    // （マージ後 follow-up 候補。マージ自体はブロックしない）。失敗してもマージは継続する。
+    if (deferredLowFindings) {
+      await agent(lowFindingsCommentPrompt(item, impl.prNumber, deferredLowFindings), {
+        label: `low-comment:#${item.number}`,
+        phase: 'Review',
+        model: 'sonnet',
+        effort: 'low',
+        schema: STATE_WRITE_SCHEMA,
+      })
+      log(`#${item.number}: 最終 Review の Low 指摘を PR #${impl.prNumber} にコメント追加した`)
+    }
     // PR 作成完了: pr / status を monitoring に更新して Merge ループへ引き継ぐ。
     // fixCount を runImplement スコープ全体で共有するため、以降の Merge ループもこの変数を使う。
     // Review fix で worktree が差し替わっている場合があるため、impl.worktreePath（最初の
