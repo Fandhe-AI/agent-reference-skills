@@ -293,6 +293,12 @@ const RECOVER_SCHEMA = {
       type: 'boolean',
       description: '未 commit 変更を WIP commit として branch に退避したか',
     },
+    worktreeMissing: {
+      type: 'boolean',
+      description:
+        'state に worktree パスが記録されていたが実体が存在しなかった（dead worktree）場合 true。' +
+        'true のときは WIP リスクが無いため driver が state 由来 branch へのフォールバックを許可する。',
+    },
   },
 }
 
@@ -888,30 +894,59 @@ function recoverPrompt(item, branch, oldWorktree) {
   const branchJson = JSON.stringify(branch)
   const oldWorktreeJson = JSON.stringify(oldWorktree)
 
-  // ブランチ解決ステップ: branch が空かつ oldWorktree が非空のとき先頭に挿入する。
-  // state に branch が記録されていない状態で worktree だけ残っているケースが対象。
+  // ブランチ解決ステップ: oldWorktree が非空のとき常に先頭に挿入する。
+  // WIP commit は git -C <worktree> commit で worktree が実際にチェックアウト中の
+  // ブランチ（= worktree HEAD）に積まれる。退避先・継続先はこの worktree HEAD で
+  // なければならない。state に branch が記録されていても、それが worktree HEAD と
+  // 食い違うと continue が別ブランチを checkout して WIP を取り残す
+  // （Stale branch wins over worktree, PR #76 修正）。そのため state branch は参考値に
+  // 留め、worktree HEAD を権威ある「対象ブランチ」として確定する。
   // このステップで確定したブランチ名を以降の手順（step1 WIP 退避・step2b diff 読み取り・判断）で使う。
   // 解決失敗時（detached HEAD など）は WIP commit・diff 取得・削除を一切実行せず保全して返す。
-  const resolveStepLines =
-    !branch && oldWorktree
-      ? [
-          `【ブランチ解決ステップ】（state に branch が記録されていないため先にブランチ名を特定する）`,
-          `   git -C ${oldWorktreeJson} rev-parse --abbrev-ref HEAD を実行してチェックアウト中のブランチ名を取得する。`,
-          `   - 出力が "HEAD"（detached HEAD）または空の場合: ブランチ解決失敗。`,
-          `     WIP commit・diff 取得・worktree/branch の削除を一切実行しない。`,
-          `     decision は返さない（または "unresolved" を返す）。reason に「worktree のブランチを解決できず保全が必要」を入れて返す。`,
-          `     branch は空文字で返す。`,
-          `   - 取得できた場合: 解決したブランチ名を「対象ブランチ」として以降の手順で使用する。`,
-          `     返却の branch にこの解決したブランチ名を入れる。`,
-          ``,
-        ]
-      : []
-
-  // branch が最初から非空で渡された場合は「対象ブランチ」として直接使用する（解決ステップ不要）。
-  // 返却の branch にはその名前を入れる。
-  const resolvedBranchNote = branch
-    ? [`（対象ブランチ: ${branch}。返却の branch にこの名前を入れる）`, ``]
+  //
+  // dead worktree（state に worktree パス記録ありだが実体なし）: rev-parse はパス不在で
+  // エラーになる。この場合 WIP は積みようがない（取り残しリスクが無い）ため、state branch が
+  // あれば branch-only 回復へ切り替える。worktreeMissing: true を返して driver に state branch
+  // フォールバックを許可させる（Dead worktree path blocks branch, PR #42 修正）。
+  const resolveStepLines = oldWorktree
+    ? [
+        `【ブランチ解決ステップ】（WIP 退避先・継続先を確定するため worktree の実ブランチを特定する）`,
+        `   git -C ${oldWorktreeJson} rev-parse --abbrev-ref HEAD を実行してチェックアウト中のブランチ名を取得する。`,
+        `   - コマンドがパス不在 / git worktree でないことを理由に失敗した場合（dead worktree）:`,
+        `     worktree の実体が無いため WIP commit は不要（取り残すデータが無い）。worktreeMissing: true を返す。`,
+        ...(branch
+          ? [
+              `     state branch "${branch}" を「対象ブランチ」として branch-only 回復に切り替える`,
+              `     （WIP 退避はスキップ。手順 2b の diff 読み取り・手順 3 の判断はこの branch に対して行う）。`,
+              `     返却の branch には "${branch}" を入れる。`,
+            ]
+          : [
+              `     state branch も無いため既存コミットを読めない。手順 3 では discard を選び、branch は空文字で返す。`,
+            ]),
+        `   - 出力が "HEAD"（detached HEAD）または空の場合: ブランチ解決失敗（worktree は実在するが HEAD 不定）。`,
+        `     WIP commit・diff 取得・worktree/branch の削除を一切実行しない。worktreeMissing は false（または未設定）。`,
+        `     decision は返さない（または "unresolved" を返す）。reason に「worktree のブランチを解決できず保全が必要」を入れて返す。`,
+        `     branch は空文字で返す。`,
+        `   - ブランチ名が取得できた場合: 解決したブランチ名を「対象ブランチ」として以降の手順で使用する。`,
+        `     返却の branch にこの解決したブランチ名を入れる。worktreeMissing は false。`,
+        ...(branch
+          ? [
+              `     注意: state には branch "${branch}" が記録されているが、これは参考値に過ぎない。`,
+              `     worktree HEAD が食い違う場合は worktree HEAD（実際に WIP が積まれる側）を`,
+              `     必ず優先し、返却の branch には worktree HEAD のブランチ名を入れること。`,
+            ]
+          : []),
+        ``,
+      ]
     : []
+
+  // oldWorktree が無い「branch のみの残骸」の場合のみ、state branch を「対象ブランチ」として
+  // 直接使用する（worktree HEAD が存在せず WIP 退避も発生しないため食い違いが起きない）。
+  // oldWorktree が非空の場合はブランチ解決ステップが対象ブランチを確定する。
+  const resolvedBranchNote =
+    branch && !oldWorktree
+      ? [`（対象ブランチ: ${branch}。返却の branch にこの名前を入れる）`, ``]
+      : []
 
   // 手順 1（WIP 退避）・手順 2b（diff 読み取り）は、残骸の種類（worktree あり / branch のみ）で
   // 条件分岐する。oldWorktree が空のとき git -C "" がメインリポ cwd を対象にしてしまい、
@@ -924,12 +959,10 @@ function recoverPrompt(item, branch, oldWorktree) {
   const step1Lines = oldWorktree
     ? [
         `1. 未 commit 変更の退避（WIP commit）:`,
-        ...(!branch
-          ? [
-              `   前提: 上記ブランチ解決ステップで対象ブランチが確定している場合のみ実行する。`,
-              `   解決失敗（decision を返さない / "unresolved" の場合）はこの手順を飛ばすこと。`,
-            ]
-          : []),
+        `   前提: 上記ブランチ解決ステップで worktree HEAD を対象ブランチとして確定できた場合のみ実行する。`,
+        `   解決失敗（decision を返さない / "unresolved" の場合）はこの手順を飛ばすこと。`,
+        `   dead worktree（worktreeMissing: true）の場合も worktree 実体が無いためこの手順を飛ばすこと。`,
+        `   退避は worktree が現在チェックアウト中のブランチ（解決した対象ブランチ）に対して行う。`,
         `   a. git -C ${oldWorktreeJson} status --porcelain で未 commit 変更の有無を確認する。`,
         `   b. 変更がある場合: 以下のコマンドで WIP commit として対象ブランチに退避する（--no-verify は絶対に使わない）。`,
         `      git -C ${oldWorktreeJson} add -A`,
@@ -951,21 +984,24 @@ function recoverPrompt(item, branch, oldWorktree) {
       ]
 
   // 手順 2b: diff 読み取り（対象ブランチが確定しているときのみ）
-  // branch が空で oldWorktree が非空の場合は「ブランチ解決ステップ」でブランチが確定した場合のみ実行する。
-  // branch が最初から空で oldWorktree も空の場合は既存コミットを参照できないため discard を促す。
+  // oldWorktree が非空の場合は「ブランチ解決ステップ」で対象ブランチ（worktree HEAD）が
+  // 確定した場合のみ実行する。oldWorktree が空でも branch のみの残骸なら state branch を読む。
+  // branch も oldWorktree も空の場合は既存コミットを参照できないため discard を促す。
   const step2bLines =
-    branch || (!branch && oldWorktree)
+    branch || oldWorktree
       ? [
           `2. 既存作業の読み取り:`,
-          ...(!branch && oldWorktree
+          ...(oldWorktree
             ? [
                 `   前提: 上記ブランチ解決ステップで対象ブランチが確定している場合のみ実行する。`,
-                `   解決失敗の場合はこの手順を飛ばすこと。`,
+                `   - worktree HEAD を解決できた場合: その worktree HEAD を対象ブランチとして読む。`,
+                `   - dead worktree（worktreeMissing: true）で state branch があった場合: その state branch を対象ブランチとして読む。`,
+                `   - 解決失敗（worktree 実在・HEAD 不定）の場合はこの手順を飛ばすこと。`,
               ]
             : []),
           `   a. git fetch origin ${baseBranch} で origin/${baseBranch} を最新化する。`,
           `   b. 対象ブランチと origin/${baseBranch} の差分を読む:`,
-          `      git diff origin/${baseBranch}...${branch ? branchJson : '<解決したブランチ名>'} を実行する。`,
+          `      git diff origin/${baseBranch}...${oldWorktree ? '<解決した対象ブランチ名>' : branchJson} を実行する。`,
           `      （--quiet で差分が空か確認してから diff を取得する。差分がない場合は空 branch と判断）`,
           `   c. gh issue view ${item.number} でイシュー本文・受入基準を読む。`,
         ]
@@ -1325,17 +1361,36 @@ async function runImplement(item) {
       //   明示的 discard 以外では worktree/branch を絶対に削除しない（PR #41 修正 #1・#2）。
       //
       // 【effectiveBranch の決定】
-      //   state に branch が記録されていなく worktree のみ残っていた場合、Recover エージェントが
-      //   worktree HEAD から実ブランチ名を解決して recoverResult.branch に入れて返す。
+      //   Recover エージェントは worktree が残っている場合、worktree HEAD から実ブランチ名を
+      //   解決して recoverResult.branch に入れて返す。WIP commit は git -C <worktree> commit で
+      //   worktree HEAD（= resolvedBranch）に積まれるため、continue / discard の対象は
+      //   worktree HEAD でなければならない。
       //   driver 側でエージェント返却の branch を isValidBranchName 検証 + sanitizeBranch して使用する。
-      //   sanitizedRecoverBranch（state からの branch）か resolvedBranch（エージェント解決）の
-      //   いずれかが有効であれば effectiveBranch として採用する。
+      //
+      //   precedence（Stale branch wins over worktree 対策, PR #76）:
+      //   - worktree が「実在」した場合: WIP は worktree HEAD に積まれるため resolvedBranch のみ信頼する。
+      //     state 由来の sanitizedRecoverBranch が worktree HEAD と食い違っても採用しない
+      //     （state branch を checkout すると worktree HEAD 側の WIP を取り残すため）。
+      //     エージェントがブランチを解決できなかった場合（detached HEAD 等）は resolvedBranch が空となり、
+      //     continue / discard ガードが成立せず残骸を保全（failed）する。
+      //   - worktree が無い branch のみの残骸、または dead worktree（worktreeMissing: true、
+      //     state にパス記録ありだが実体なし）の場合: worktree 実体が無く WIP 退避も発生しないため、
+      //     state 由来の sanitizedRecoverBranch を権威として優先する（食い違う agent branch より state を信頼。
+      //     branch-only は元々 state が源泉、dead worktree も live な worktree HEAD が無いため state が正）。
+      //     これにより有効な state branch があれば回復に到達でき（Dead worktree path blocks branch, PR #42 一次対応）、
+      //     かつ agent が誤った branch を返しても state を上書きしない（Branch-only state branch precedence, PR #42）。
+      //     driver は worktree 実体の有無を直接判定できない（fs アクセスなし）ため、エージェントが
+      //     返す worktreeMissing を実在判定の signal として用いる。
       const recoverDecision = recoverResult?.decision
       const resolvedBranch = isValidBranchName(recoverResult?.branch ?? '')
         ? sanitizeBranch(recoverResult.branch)
         : ''
-      // sanitizedRecoverBranch（state 由来）を優先し、無ければ resolvedBranch（エージェント解決）を使う。
-      const effectiveBranch = sanitizedRecoverBranch || resolvedBranch
+      // worktree がパス記録あり かつ 実在する（= worktreeMissing でない）ときのみ resolvedBranch を排他採用。
+      // それ以外（branch-only / dead worktree）は state 優先で fallback する。
+      const worktreeAlive = Boolean(sanitizedRecoverWorktree) && recoverResult?.worktreeMissing !== true
+      const effectiveBranch = worktreeAlive
+        ? resolvedBranch
+        : sanitizedRecoverBranch || resolvedBranch
 
       if (recoverDecision === 'continue' && effectiveBranch) {
         // --- continue 経路: 旧 worktree のみ掃除し、effectiveBranch を保持して Implement を継続 ---
