@@ -410,18 +410,16 @@ async function updateState(issueNumber, patch, options = {}) {
         ? (patch.worktree ?? '')
         : ''
   const sanitizedCleanupPath = sanitizeWorktreePath(rawCleanupPath)
-  // メインリポ自身（process.cwd()）の誤削除をコード側でもガードする。
-  // プロンプト指示（「先頭エントリのメインリポは削除しない」）と二重防御にする。
-  // ガード対象は cwd と完全一致するパスのみ。cwd 配下の worktree（例: .worktrees/...）は
-  // 正当な掃除対象であるためプレフィックス一致（cwd + '/'）では除外しない。
-  // プレフィックス判定を残すと、Recover が掃除すべき残骸 worktree がスキップされ
-  // checkout -B 衝突が再発するリグレッションを引き起こす（PR #41 修正 #4）。
-  const cwd = process.cwd()
-  const isMainRepo = sanitizedCleanupPath !== '' && sanitizedCleanupPath === cwd
-  if (isMainRepo) {
-    log(`⚠️ updateState: cleanupWorktree "${sanitizedCleanupPath}" がメインリポ（${cwd}）と完全一致するため削除をスキップする`)
-  }
-  const cleanupWorktreePath = isMainRepo ? '' : sanitizedCleanupPath
+  // メインリポ誤削除の防止は agent 側の削除タスクが担う（cwd 非依存で確実）:
+  //   - git worktree list --porcelain で対象パスの実在を確認してから削除
+  //   - 「メインリポ自身（先頭エントリの worktree 行）は絶対に削除しない」指示
+  // 加えて sanitizeWorktreePath が `..` やシェル特殊文字を除外済み。
+  // 以前は process.cwd() で JS 側にも二重ガードを設けていたが、Workflow サンドボックスに
+  // process が無く、agent で cwd を解決する代替は脆弱だった（解決失敗時の fail-closed が
+  // 削除をスキップしつつ patch の worktree フィールドはクリアして state と disk が乖離し、
+  // Recover が防ぐはずの「branch already checked out」を再発させる / pwd 出力解析を誤る）。
+  // cwd 非依存の agent ガードで十分なため JS 側ガードは撤去する。
+  const cleanupWorktreePath = sanitizedCleanupPath
   // worktreePath は JSON.stringify 経由でエスケープしてプロンプトに埋め込む（インジェクション対策）
   const cleanupPathJson = JSON.stringify(cleanupWorktreePath)
 
