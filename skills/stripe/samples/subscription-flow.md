@@ -24,12 +24,12 @@ app.post("/create-subscription", async (req, res) => {
     items: [{ price: priceId }],
     payment_behavior: "default_incomplete",
     payment_settings: { save_default_payment_method: "on_subscription" },
-    expand: ["latest_invoice.payment_intent"],
+    expand: ["latest_invoice.confirmation_secret"],
   });
 
   res.json({
     subscriptionId: subscription.id,
-    clientSecret: subscription.latest_invoice.payment_intent.client_secret,
+    clientSecret: subscription.latest_invoice.confirmation_secret.client_secret,
   });
 });
 
@@ -88,6 +88,6 @@ async function subscribe(email, priceId) {
 ## Notes
 
 - `payment_behavior: "default_incomplete"` でサブスクリプションを未完了状態で作成し、フロントエンドで支払いを確定させる
-- `expand: ["latest_invoice.payment_intent"]` で `client_secret` を1リクエストで取得できる
+- `expand: ["latest_invoice.confirmation_secret"]` で `client_secret` を1リクエストで取得できる（Basil API `2025-03-31.basil` 以降は invoice から `payment_intent` が分離されたため、`payment_intent` ではなく `confirmation_secret` を expand する）
 - サブスクリプションのプロビジョニングは Webhook の `invoice.paid` イベントで制御する（フロントエンドの `return_url` だけに頼らない）
 - プラン変更時は既存 subscription item の `id` を指定して更新する
