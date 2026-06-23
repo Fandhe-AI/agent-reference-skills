@@ -138,6 +138,9 @@ echo -e "[Stripe]\nname=stripe\nbaseurl=https://packages.stripe.dev/stripe-cli-r
 sudo yum install stripe
 ```
 
+> **セキュリティ注記**: `gpgcheck=0` は Stripe 公式手順のままだが、GPG 署名検証が無効になる。これにより、パッケージの改ざんを検知できないリスクがある。より厳格な環境では、Stripe の GPG 公開鍵をインポートしたうえで `gpgcheck=1` に変更することを推奨する。
+> (Note: `gpgcheck=0` disables GPG signature verification per Stripe's official instructions. For stricter security, import Stripe's GPG key and set `gpgcheck=1`.)
+
 ## Stripe CLI（Docker）
 
 ```sh

@@ -6,7 +6,7 @@ Represents a financing offer from Stripe Capital to a Connect subaccount. Platfo
 
 ```bash
 # List financing offers for connected accounts on your platform
-curl https://api.stripe.com/v1/capital/financing_offers \
+curl -G https://api.stripe.com/v1/capital/financing_offers \
   -u "sk_live_YOUR_SECRET_KEY:" \
   -d limit=3
 

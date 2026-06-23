@@ -41,7 +41,9 @@ curl -X POST https://api.stripe.com/v1/financial_connections/accounts/{ACCOUNT_I
 | `POST` | `/v1/financial_connections/accounts/:id/subscribe` | Subscribe to data refreshes |
 | `POST` | `/v1/financial_connections/accounts/:id/unsubscribe` | Unsubscribe from data refreshes |
 
-## Account Object Fields
+## Options / Props
+
+### Account Object Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -64,7 +66,7 @@ curl -X POST https://api.stripe.com/v1/financial_connections/accounts/{ACCOUNT_I
 | `supported_payment_method_types` | array | E.g., `["us_bank_account"]` |
 | `transaction_refresh` | object\|null | Status and timestamp of last transaction refresh |
 
-## List Parameters
+### List Parameters (`GET /v1/financial_connections/accounts`)
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -74,7 +76,7 @@ curl -X POST https://api.stripe.com/v1/financial_connections/accounts/{ACCOUNT_I
 | `starting_after` | string | Cursor for forward pagination |
 | `ending_before` | string | Cursor for backward pagination |
 
-## Refresh `features` Values
+### Refresh `features` Values (`POST /v1/financial_connections/accounts/:id/refresh`)
 
 | Value | Description |
 |-------|-------------|

@@ -76,4 +76,6 @@ Response includes `client_secret` used by the front-end Stripe.js `ConnectCompon
 
 ## Related
 
-- [accounts.md](./accounts.md)
+- [Accounts](./accounts.md)
+- [Charge Types](./charge-types.md)
+- [Transfers & Payouts](./transfers-payouts.md)

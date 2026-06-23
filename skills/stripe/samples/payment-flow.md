@@ -1,6 +1,6 @@
 # Payment Flow
 
-Accept a one-time payment using PaymentIntents and Stripe's Payment Element.
+PaymentIntents と Payment Element を使って1回払いの決済を受け付ける。
 
 ```javascript
 // server: Node.js + Express
