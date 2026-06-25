@@ -15,7 +15,7 @@ final class TransactionObserver {
     init() {
         updates = Task(priority: .background) {
             for await verificationResult in Transaction.updates {
-                guard case .verified(let transaction) = verificationResult else { return }
+                guard case .verified(let transaction) = verificationResult else { continue }
                 // Deliver content, handle revocation/expiration
                 await transaction.finish()
             }

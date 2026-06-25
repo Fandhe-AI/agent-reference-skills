@@ -12,7 +12,7 @@ struct Transaction
 // Listen for new/updated transactions at app launch
 Task(priority: .background) {
     for await verificationResult in Transaction.updates {
-        guard case .verified(let transaction) = verificationResult else { return }
+        guard case .verified(let transaction) = verificationResult else { continue }
         // Deliver content
         await transaction.finish()
     }
