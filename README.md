@@ -68,7 +68,23 @@ skills/
     rules/                   ← (任意) 適用ルール
 ```
 
-## スキル一覧（全 45 スキル）
+## スキル一覧（全 57 スキル）
+
+### Apple プラットフォーム
+
+| スキル | 説明 |
+| -------- | ------ |
+| [apple-swift](skills/apple-swift/) | Swift — 標準ライブラリ, 並行処理 (async/await, actor, Task), プロトコル & ジェネリクス, Observation |
+| [apple-swiftui](skills/apple-swiftui/) | SwiftUI — View, レイアウト, 状態管理 (@State / @Binding), ナビゲーション, モディファイア, アニメーション |
+| [apple-data](skills/apple-data/) | SwiftData / Core Data / Foundation / Combine — 永続化, データフロー, ネットワーク |
+| [apple-app-services](skills/apple-app-services/) | StoreKit / CloudKit / WidgetKit / Notifications / MapKit / HealthKit / Sign in with Apple |
+| [apple-uikit](skills/apple-uikit/) | UIKit — UIViewController, ビュー/コントロール, UICollectionView / UITableView, Auto Layout |
+| [apple-appkit](skills/apple-appkit/) | AppKit — NSApplication, NSWindow, ビュー/コントロール, NSTableView / NSCollectionView |
+| [apple-graphics](skills/apple-graphics/) | Metal / Core Animation / Core Graphics / Core Image / SpriteKit / SceneKit |
+| [apple-spatial](skills/apple-spatial/) | RealityKit / ARKit / visionOS — 空間コンピューティング |
+| [apple-media](skills/apple-media/) | AVFoundation 再生 / キャプチャ / オーディオ / PhotoKit |
+| [apple-ml](skills/apple-ml/) | Core ML / Create ML / Vision / Natural Language / Speech — オンデバイス機械学習 |
+| [apple-distribution](skills/apple-distribution/) | App Store Connect API / TestFlight / In-App Purchase |
 
 ### フレームワーク / ライブラリ
 
@@ -144,6 +160,7 @@ skills/
 | [pino](skills/pino/) | Pino — JSON ロガー, transport, redaction |
 | [bullmq](skills/bullmq/) | BullMQ — Redis ジョブキュー, Worker, FlowProducer |
 | [github-docs](skills/github-docs/) | GitHub — REST API, Actions, Webhooks, gh CLI |
+| [stripe](skills/stripe/) | Stripe — 決済, Checkout, Subscriptions, Webhooks, Connect, 全商品 API |
 | [gws](skills/gws/) | Google Workspace CLI (gws) — Rust 製, Gmail / Drive / Calendar 等 19 サービス統一操作 |
 | [upstash](skills/upstash/) | Upstash — サーバーレスデータ, @upstash/redis / ratelimit / QStash / vector / workflow |
 | [vercel](skills/vercel/) | Vercel — CLI, vercel.json, Functions, Blob, Edge Config, デプロイメント管理 |
