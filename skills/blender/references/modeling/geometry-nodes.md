@@ -95,6 +95,16 @@ links = node_tree.links
 # Clear default nodes if any
 nodes.clear()
 
+# Blender 4.0+: Group Input/Output nodes expose NO sockets until the tree
+# interface declares them. Create the interface sockets BEFORE linking —
+# otherwise input_node.outputs["Geometry"] raises KeyError on a fresh tree.
+node_tree.interface.new_socket(
+    name="Geometry", in_out='INPUT', socket_type='NodeSocketGeometry'
+)
+node_tree.interface.new_socket(
+    name="Geometry", in_out='OUTPUT', socket_type='NodeSocketGeometry'
+)
+
 # Add Group Input and Output
 input_node  = nodes.new("NodeGroupInput")
 output_node = nodes.new("NodeGroupOutput")
@@ -111,6 +121,9 @@ links.new(set_pos.outputs["Geometry"], output_node.inputs["Geometry"])
 ```
 
 ### Defining Group Interface Sockets (Blender 4.0+)
+
+The full interface for a tree (run on a fresh tree; the linking example above
+created only the minimal Geometry sockets it needed before linking).
 
 ```python
 import bpy
