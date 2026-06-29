@@ -26,11 +26,15 @@ Utility modules that extend `bpy` with common patterns for I/O operators, object
 
 Mixin for file-import operators. Adds `filepath` property and file-selector `invoke`.
 
+List the mixin **before** `bpy.types.Operator` in the base classes so the helper's
+`invoke` (which opens the file selector) wins the MRO regardless of any `invoke`
+defined further down the operator hierarchy.
+
 ```python
 from bpy_extras.io_utils import ImportHelper
 import bpy
 
-class MyImportOperator(bpy.types.Operator, ImportHelper):
+class MyImportOperator(ImportHelper, bpy.types.Operator):
     bl_idname = "import.my_format"
     bl_label  = "Import My Format"
     filename_ext = ".mf"
@@ -54,7 +58,7 @@ Mixin for file-export operators. Adds `filepath` property and pre-fills it from 
 from bpy_extras.io_utils import ExportHelper
 import bpy
 
-class MyExportOperator(bpy.types.Operator, ExportHelper):
+class MyExportOperator(ExportHelper, bpy.types.Operator):
     bl_idname = "export.my_format"
     bl_label  = "Export My Format"
     filename_ext = ".mf"
@@ -78,7 +82,7 @@ class MyExportOperator(bpy.types.Operator, ExportHelper):
 from bpy_extras.io_utils import orientation_helper
 
 @orientation_helper(axis_forward='-Z', axis_up='Y')
-class MyExportOperator(bpy.types.Operator, ExportHelper):
+class MyExportOperator(ExportHelper, bpy.types.Operator):
     ...
 ```
 
