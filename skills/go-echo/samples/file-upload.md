@@ -11,6 +11,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
@@ -32,8 +33,10 @@ func upload(c *echo.Context) error {
 	}
 	defer src.Close()
 
-	// Destination
-	dst, err := os.Create(file.Filename)
+	// Destination — sanitize the client-supplied filename to prevent path
+	// traversal (e.g. "../../etc/passwd"); never trust file.Filename directly.
+	dstPath := filepath.Join("uploads", filepath.Base(file.Filename))
+	dst, err := os.Create(dstPath)
 	if err != nil {
 		return err
 	}
@@ -76,5 +79,6 @@ func main() {
 ## Notes
 
 - `c.FormFile("file")` returns a `*multipart.FileHeader`; call `.Open()` to get a readable `src`.
+- `file.Filename` is client-supplied: always strip directory components with `filepath.Base` (and confine writes under a known directory) before using it as a path, otherwise a value like `../../evil` can overwrite arbitrary files. Create the `uploads/` directory beforehand (`os.MkdirAll`).
 - For multiple files, use `c.MultipartForm()` and read `form.File["files"]` (input name must have `multiple` attribute) instead of `c.FormFile`.
 - `enctype="multipart/form-data"` on the HTML `<form>` is required for file fields to be sent correctly.

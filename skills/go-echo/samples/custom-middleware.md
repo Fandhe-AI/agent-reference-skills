@@ -40,12 +40,8 @@ func (s *Stats) Process(next echo.HandlerFunc) echo.HandlerFunc {
 			if ok := errors.As(err, &sc); ok {
 				status = sc.StatusCode()
 			}
-		} else {
-			rw, uErr := echo.UnwrapResponse(c.Response())
-			if uErr == nil {
-				status = rw.Status
-			}
-			err = uErr
+		} else if rw, uErr := echo.UnwrapResponse(c.Response()); uErr == nil {
+			status = rw.Status
 		}
 
 		s.mutex.Lock()
@@ -97,4 +93,4 @@ func main() {
 - A middleware must satisfy `func(next echo.HandlerFunc) echo.HandlerFunc`; wrap `next(c)` to run logic before/after the handler.
 - `e.Use(...)` registers global middleware in registration order; use a route group's `.Use(...)` (see `jwt-authentication.md`) to scope it instead.
 - Struct methods (e.g. `(*Stats).Process`) let middleware carry state across requests, guarded here with a `sync.RWMutex`.
-- `echo.UnwrapResponse(c.Response())` exposes the final status code after the handler chain has run.
+- `echo.UnwrapResponse(c.Response())` exposes the final status code after the handler chain has run. Leave the handler's own `err` untouched when unwrapping fails, otherwise a successful request would be reported as an error.

@@ -25,15 +25,16 @@ func hello(c *echo.Context) error {
 
 	for {
 		// Write
-		err := ws.WriteMessage(websocket.TextMessage, []byte("Hello, Client!"))
-		if err != nil {
+		if err := ws.WriteMessage(websocket.TextMessage, []byte("Hello, Client!")); err != nil {
 			c.Logger().Error("failed to write WS message", "error", err)
+			return nil // connection is broken; stop the loop and close it
 		}
 
 		// Read
 		_, msg, err := ws.ReadMessage()
 		if err != nil {
 			c.Logger().Error("failed to read WS message", "error", err)
+			return nil // client closed or read failed; exit the handler
 		}
 		fmt.Printf("%s\n", msg)
 	}
@@ -72,5 +73,5 @@ Client-side (served from `public/index.html`):
 
 - `websocket.Upgrader{}.Upgrade(c.Response(), c.Request(), nil)` performs the HTTP-to-WebSocket handshake.
 - Echo also supports `golang.org/x/net/websocket` via `websocket.Handler(...).ServeHTTP(c.Response(), c.Request())` for a stdlib-only alternative.
-- The read/write loop keeps the connection open; return from the handler to close it (deferred `ws.Close()`).
+- The read/write loop keeps the connection open; return from the handler on any read/write error so the loop stops and the deferred `ws.Close()` runs. Ignoring the error would spin the goroutine on a broken connection.
 - `e.Static("/", "public")` serves the accompanying HTML/JS client alongside the WebSocket endpoint.

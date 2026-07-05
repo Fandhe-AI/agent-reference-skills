@@ -9,8 +9,8 @@ import "github.com/labstack/echo/v5/middleware"
 
 e.Pre(middleware.HTTPSRedirect())
 
-// Custom configuration
-e.Use(middleware.HTTPSRedirectWithConfig(middleware.RedirectConfig{
+// Custom configuration — register with Pre() so it runs before routing
+e.Pre(middleware.HTTPSRedirectWithConfig(middleware.RedirectConfig{
   Code: http.StatusTemporaryRedirect, // 307
 }))
 ```

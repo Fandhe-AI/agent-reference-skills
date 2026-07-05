@@ -11,8 +11,8 @@ e.Pre(middleware.AddTrailingSlash())
 // or
 e.Pre(middleware.RemoveTrailingSlash())
 
-// Custom configuration with redirect
-e.Use(middleware.AddTrailingSlashWithConfig(middleware.AddTrailingSlashConfig{
+// Custom configuration with redirect — register with Pre() so it runs before routing
+e.Pre(middleware.AddTrailingSlashWithConfig(middleware.AddTrailingSlashConfig{
   RedirectCode: http.StatusMovedPermanently,
 }))
 ```
