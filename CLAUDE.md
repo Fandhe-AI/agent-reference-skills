@@ -167,6 +167,6 @@ The authoritative, enforceable versions of these live in `.claude/rules/` (`refe
 - The `tsdoc` skill is a guideline/template skill rather than an API reference — it has no `references/` subdirectory and embeds all content directly in `SKILL.md`
 - When editing `.claude/` files, use the `_/dotclaude/` staging pattern (write there first, then `mv` to `.claude/`)
 
-## Current Skills (58)
+## Current Skills (59)
 
-apple-app-services, apple-appkit, apple-data, apple-distribution, apple-graphics, apple-media, apple-ml, apple-spatial, apple-swift, apple-swiftui, apple-uikit, better-auth, biome, blender, bullmq, cadquery, chakra-ui, commitlint, dayjs, driverjs, editorconfig, ergogen, feature-sliced-design, figma, github-docs, gws, hermes-agent, hono, inngest, kicad_10, knip, kubb, lefthook, motion, nextjs-app, nuqs, pino, playwright, proxmox-ve, react-flow, react-hook-form, react-router-v7, rive, rust, storybook, stripe, supabase, syncpack, theatrejs, threejs, tsdoc, turborepo, typedoc, upstash, vercel, vitest, zmk, zod
+apple-app-services, apple-appkit, apple-data, apple-distribution, apple-graphics, apple-media, apple-ml, apple-spatial, apple-swift, apple-swiftui, apple-uikit, better-auth, biome, blender, bullmq, cadquery, chakra-ui, commitlint, dayjs, driverjs, editorconfig, ergogen, feature-sliced-design, figma, github-docs, go-echo, gws, hermes-agent, hono, inngest, kicad_10, knip, kubb, lefthook, motion, nextjs-app, nuqs, pino, playwright, proxmox-ve, react-flow, react-hook-form, react-router-v7, rive, rust, storybook, stripe, supabase, syncpack, theatrejs, threejs, tsdoc, turborepo, typedoc, upstash, vercel, vitest, zmk, zod

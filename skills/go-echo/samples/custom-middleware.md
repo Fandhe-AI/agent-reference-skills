@@ -1,0 +1,96 @@
+# Custom Middleware
+
+Write custom middleware both as a plain function and as a struct method, and register them globally.
+
+```go
+package main
+
+import (
+	"context"
+	"errors"
+	"net/http"
+	"sync"
+	"time"
+
+	"github.com/labstack/echo/v5"
+)
+
+type Stats struct {
+	Uptime       time.Time      `json:"uptime"`
+	RequestCount uint64         `json:"requestCount"`
+	Statuses     map[int]uint64 `json:"statuses"`
+	mutex        sync.RWMutex
+}
+
+func NewStats() *Stats {
+	return &Stats{
+		Uptime:   time.Now(),
+		Statuses: map[int]uint64{},
+	}
+}
+
+// Process is the middleware function.
+func (s *Stats) Process(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c *echo.Context) error {
+		err := next(c)
+
+		status := http.StatusInternalServerError
+		if err != nil {
+			var sc echo.HTTPStatusCoder
+			if ok := errors.As(err, &sc); ok {
+				status = sc.StatusCode()
+			}
+		} else if rw, uErr := echo.UnwrapResponse(c.Response()); uErr == nil {
+			status = rw.Status
+		}
+
+		s.mutex.Lock()
+		defer s.mutex.Unlock()
+		s.RequestCount++
+		s.Statuses[status]++
+
+		return err
+	}
+}
+
+// Handle is the endpoint to get stats.
+func (s *Stats) Handle(c *echo.Context) error {
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
+	return c.JSON(http.StatusOK, s)
+}
+
+// ServerHeader middleware adds a `Server` header to the response.
+func ServerHeader(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c *echo.Context) error {
+		c.Response().Header().Set(echo.HeaderServer, "Echo/5.0")
+		return next(c)
+	}
+}
+
+func main() {
+	e := echo.New()
+
+	s := NewStats()
+	e.Use(s.Process)
+	e.GET("/stats", s.Handle)
+
+	e.Use(ServerHeader)
+
+	e.GET("/", func(c *echo.Context) error {
+		return c.String(http.StatusOK, "Hello, World!")
+	})
+
+	sc := echo.StartConfig{Address: ":1323"}
+	if err := sc.Start(context.Background(), e); err != nil {
+		e.Logger.Error("failed to start server", "error", err)
+	}
+}
+```
+
+## Notes
+
+- A middleware must satisfy `func(next echo.HandlerFunc) echo.HandlerFunc`; wrap `next(c)` to run logic before/after the handler.
+- `e.Use(...)` registers global middleware in registration order; use a route group's `.Use(...)` (see `jwt-authentication.md`) to scope it instead.
+- Struct methods (e.g. `(*Stats).Process`) let middleware carry state across requests, guarded here with a `sync.RWMutex`.
+- `echo.UnwrapResponse(c.Response())` exposes the final status code after the handler chain has run. Leave the handler's own `err` untouched when unwrapping fails, otherwise a successful request would be reported as an error.
