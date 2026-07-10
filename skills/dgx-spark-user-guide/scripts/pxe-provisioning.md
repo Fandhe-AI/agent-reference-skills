@@ -79,6 +79,8 @@ menuentry "Install DGX Spark FastOS" {
 
 ## DHCP server config example (dhcpd.conf)
 
+> **Note**: This example is transcribed as-is from the official NVIDIA documentation. It nests `class` inside the `pool` block, whereas the common ISC DHCP convention is to declare `class` at subnet or global scope and reference it from `pool` with `allow members of "pxeclients";`. Depending on your dhcpd version, the structure as written may fail to parse, or the PXE options may not be applied to clients — if so, move the `class` declaration to subnet scope.
+
 ```text
 authoritative;
 default-lease-time 120;
@@ -89,12 +91,15 @@ subnet 192.168.99.0 netmask 255.255.255.0 {
 pool {
    range 192.168.99.2;
 
+# Required for PXE Boot
 class "pxeclients" {
    match if substring (option vendor-class-identifier, 0, 9) = "PXEClient";
       filename "grubnetaa64.efi.signed";
+      # TFTP Server IP address
       next-server 192.168.99.1;
       option root-path "/local/tftp/";
 }
+
 }
 }
 ```
