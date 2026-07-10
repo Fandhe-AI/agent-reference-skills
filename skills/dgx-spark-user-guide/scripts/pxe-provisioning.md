@@ -354,6 +354,8 @@ runcmd:
     fi
 ```
 
+> **Note**: This `runcmd` block is transcribed verbatim from the official NVIDIA documentation (`enterprise-custom-install.html`); the code above is not modified from the source. Because `trap '_oemdata_exit' EXIT` is registered before the `mount -L OEMDATA` attempt, the trap fires unconditionally on script exit — including when the `mount -L OEMDATA` step fails — and always writes `/etc/cloud/cloud-init.disabled`. Consequently, the OEMDATA partition must be attached and mountable on the very first boot; if it is missing or fails to mount on that first boot, cloud-init is disabled anyway and will not retry the mount/hook sequence on any subsequent boot.
+
 ## Run the OEMDATA hook with mirror server variables
 
 ```sh
