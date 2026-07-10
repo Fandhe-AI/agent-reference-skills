@@ -62,6 +62,16 @@ dpkg -l | grep dgx-spark-fieldiag
 sudo mokutil --sb-state
 ```
 
+## Disable Secure Boot before running diagnostics
+
+The Field Diagnostic Software requires Secure Boot to be disabled. Reboot directly into UEFI firmware setup, then disable Secure Boot from the menu.
+
+```sh
+sudo systemctl reboot --firmware-setup
+```
+
+After reboot, navigate to **Security** → **Secure Boot** → **Disable Secure Boot**, then save changes and reboot.
+
 ## Run the field diagnostic
 
 > **警告**: `sudo init 3` はグラフィカルセッションを含むランレベルを切り替える。実行中のアプリケーションを終了・保存してから実行すること。
@@ -71,6 +81,16 @@ sudo init 3
 cd /opt/nvidia/dgx-spark-fieldiag
 sudo ./partnerdiag --field
 ```
+
+## Re-enable Secure Boot after diagnostics complete
+
+Diagnostics finished; restore Secure Boot to its normal enabled state before returning the system to service.
+
+```sh
+sudo systemctl reboot --firmware-setup
+```
+
+After reboot, navigate to **Security** → **Secure Boot** → **Enable Secure Boot**, then save changes and reboot the system.
 
 ## Verify diagnostic tool availability
 

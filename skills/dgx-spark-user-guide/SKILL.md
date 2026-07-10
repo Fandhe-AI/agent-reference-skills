@@ -5,7 +5,10 @@ description: >
   ハードウェア仕様、first-boot / UEFI 設定、Spark Stacking クラスタ、
   DGX OS / NGC / container runtime ソフトウェアスタック、
   PXE / cloud-init プロビジョニング、fleet lifecycle 運用、
-  apt / fwupdmgr 更新、system recovery、PSIRT サポート。
+  apt / fwupdmgr 更新、system recovery、PSIRT サポート、
+  vLLM / TensorRT-LLM / Ollama / ComfyUI / NIM / NeMo fine-tune / NCCL
+  等の build.nvidia.com/spark playbook、複数 Spark 接続・Tailscale・VS Code、
+  NVIDIA Developer Forums 由来の known issues / troubleshooting。
 user-invocable: false
 ---
 
@@ -59,6 +62,23 @@ skills/dgx-spark-user-guide/
       ai-enterprise-support.md
       security-vulnerability-response.md
       field-diagnostic-software.md
+    playbooks/
+      README.md
+      vllm.md
+      trt-llm.md
+      ollama.md
+      comfy-ui.md
+      nim-llm.md
+      nemo-fine-tune.md
+      nccl.md
+      connect-two-sparks.md
+      tailscale.md
+      vscode.md
+      ...（他 36 ページ、計 46 ページ）
+    community/
+      README.md
+      known-issues.md
+      troubleshooting.md
   scripts/
     README.md
     install-update.md
@@ -91,4 +111,6 @@ skills/dgx-spark-user-guide/
 | apt / fwupdmgr で OS・コンポーネントを更新したい | system-update | [references/system-update/README.md](references/system-update/README.md) |
 | リカバリー USB で工場出荷状態に戻したい | system-update | [references/system-update/README.md](references/system-update/README.md) |
 | サポート窓口・PSIRT・field diagnostic を確認したい | support | [references/support/README.md](references/support/README.md) |
+| 特定モデル/フレームワーク（vLLM, TRT-LLM, Ollama, ComfyUI, NIM, NeMo 等）を DGX Spark 上で動かす手順を知りたい | playbooks | [references/playbooks/README.md](references/playbooks/README.md) |
+| 既知の不具合・フォーラム由来のトラブルシューティングを調べたい | community | [references/community/README.md](references/community/README.md) |
 | インストール・更新・PXE・コンテナ・リカバリーのコマンドをコピペで実行したい | scripts | [scripts/README.md](scripts/README.md) |

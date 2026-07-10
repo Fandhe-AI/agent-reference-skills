@@ -144,6 +144,31 @@ dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz
 zcat Packages.gz > Packages 2>/dev/null || gzip -dc Packages.gz > Packages
 ```
 
+## Generate Release / InRelease for the local apt repository
+
+Whenever `Packages.gz` is regenerated, recreate the uncompressed `Packages`, rewrite `Release` with fresh checksums, then copy it to `InRelease`. This avoids 404 responses from apt clients that request `InRelease` first.
+
+```sh
+cd "$REPO_DIR"
+{
+  echo "Origin: OEM Local Repo"
+  echo "Label: oem-local"
+  echo "Suite: ."
+  echo "Codename: ."
+  echo "Architectures: arm64 amd64"
+  echo "Components: ."
+  echo "Description: OEM local package repository"
+  echo "Date: $(date -u -R)"
+  echo "MD5Sum:"
+  printf ' %s %s Packages.gz\n' "$(md5sum Packages.gz | awk '{print $1}')" "$(stat -c%s Packages.gz)"
+  printf ' %s %s Packages\n' "$(md5sum Packages | awk '{print $1}')" "$(stat -c%s Packages)"
+  echo "SHA256:"
+  printf ' %s %s Packages.gz\n' "$(sha256sum Packages.gz | awk '{print $1}')" "$(stat -c%s Packages.gz)"
+  printf ' %s %s Packages\n' "$(sha256sum Packages | awk '{print $1}')" "$(stat -c%s Packages)"
+} > Release
+cp Release InRelease
+```
+
 ## Serve a local repository / mirror over HTTP
 
 ```sh
@@ -167,6 +192,14 @@ sudo apt install -y perl wget
 sudo wget -O /usr/local/bin/apt-mirror \
   https://raw.githubusercontent.com/apt-mirror/apt-mirror/master/apt-mirror
 sudo chmod +x /usr/local/bin/apt-mirror
+```
+
+## Run apt-mirror to sync the local apt mirror
+
+Always run synchronization with `/usr/local/bin/apt-mirror` rather than the distro-packaged `apt-mirror`, which is often too old for certain DEP-11 metadata paths.
+
+```sh
+sudo /usr/local/bin/apt-mirror /etc/apt/mirror.spark.list
 ```
 
 ## Sync LVFS mirror (full)
@@ -292,6 +325,35 @@ File: `oemdata/cloud-init/seed/meta-data`
 instance-id: oem-spark-01
 ```
 
+## cloud-init user-data: auto-mount OEMDATA and run hook.sh on first boot
+
+The repacked-ISO install path embeds this `runcmd` block in cloud-init `user-data`. On first boot it mounts the partition labeled `OEMDATA`, copies `hook.sh` from it to `/tmp` for execution, then disables cloud-init and unmounts the partition once done (whether or not `hook.sh` was found).
+
+```yaml
+runcmd:
+  - |
+    OEM_MNT=/mnt/oemdata
+    mkdir -p "$OEM_MNT"
+    _oemdata_exit() {
+      echo "OEMDATA exit trap: disabling cloud-init and unmounting OEMDATA"
+      umount "$OEM_MNT" 2>/dev/null || true
+      rmdir "$OEM_MNT" 2>/dev/null || true
+      mkdir -p /etc/cloud
+      touch /etc/cloud/cloud-init.disabled
+    }
+    trap '_oemdata_exit' EXIT
+    if mount -L OEMDATA "$OEM_MNT" 2>/dev/null; then
+      echo "OEMDATA partition found, checking for hook.sh"
+      if [ -f "$OEM_MNT/hook.sh" ]; then
+        HOOK_RUN=/tmp/oemdata-hook.sh
+        cp -f "$OEM_MNT/hook.sh" "$HOOK_RUN"
+        chmod 700 "$HOOK_RUN"
+        export OEM_MNT
+        sh "$HOOK_RUN"
+      fi
+    fi
+```
+
 ## Run the OEMDATA hook with mirror server variables
 
 ```sh
@@ -302,7 +364,7 @@ export LVFS_WEB_SUBDIR=lvfs
 sudo -E /path/to/oemdata/hook.sh
 ```
 
-## Run the mirror sync script with LVFS credentials
+## Run the mirror sync script with LVFS credentials (first run)
 
 ```sh
 export LVFS_USERNAME='you@example.com'
@@ -310,4 +372,16 @@ export LVFS_TOKEN='your-lvfs-token'
 sudo -E ./spark-mirror-sync.sh --install-deps --install-apt-mirror
 ```
 
+## Re-run the mirror sync script for subsequent syncs
+
+After the initial run with `--install-deps --install-apt-mirror`, later synchronizations only need to invoke the script without arguments. The default `MIRROR_ROOT` when running with `sudo` (without `-H`) is `/root/mirror`.
+
+```sh
+sudo -E ./spark-mirror-sync.sh
+```
+
 Cloud-init invokes `hook.sh` on first boot while the applicable installation media remains connected. The repacked ISO approach embeds cloud-init configuration directly, whereas the OEMDATA partition method keeps provisioning artifacts on separate USB storage. Commands assume ARM64 Ubuntu Noble-based DGX Spark targets.
+
+**Notes**:
+- ISO repack (`repack_baseos.sh`) references `xorriso` (via `xorriso -as mkisofs`) and the `cd-boot-images-arm64` package (for `.../usr/share/cd-boot-images-arm64/images/boot/grub/efi.img`) as prerequisites. The official documentation does not provide a single unified `apt install` command covering all repack prerequisites, so none is listed here; install `xorriso` and `cd-boot-images-arm64` at minimum, and add any additional packages the script reports missing.
+- LVFS mirror sync (`sync-pulp.py`) requires: `sudo apt install -y python3 python3-requests python3-lxml`.
