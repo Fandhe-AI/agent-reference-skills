@@ -9,7 +9,8 @@ Reference material for customizing DGX Spark deployments using Cloud-Init, USB i
 ./repack_baseos.sh
 
 # 2. Write ISO to USB, then add an OEMDATA partition in free space
-sudo parted /dev/sdX ---pretend-input-tty
+sudo parted "$USB" print
+sudo parted -s "$USB" mkpart primary 14GiB 100%
 # format new partition as ext4 labeled OEMDATA
 
 # 3. Host a local package repository (minimal desktop example)

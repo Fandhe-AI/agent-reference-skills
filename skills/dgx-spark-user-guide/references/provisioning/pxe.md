@@ -68,9 +68,7 @@ set default=0
 set timeout=5
 
 menuentry 'Install BaseOS 7.0.0' {
-   linux /baseos/vmlinuz fsck.mode=skip autoinstall ip=dhcp
-   url=http://<Server IP>/base_os_7.0.0/base_os_7.0.0.iso
-   nvme-core.multipath=n nouveau.modeset=0
+   linux /baseos/vmlinuz fsck.mode=skip autoinstall ip=dhcp url=http://<Server IP>/base_os_7.0.0/base_os_7.0.0.iso nvme-core.multipath=n nouveau.modeset=0
    initrd /baseos/initrd
 }
 ```
@@ -79,10 +77,7 @@ Recovery media entry:
 
 ```
 menuentry "Install DGX Spark FastOS" {
-    linux /fastos/vmlinuz nouveau.modeset=0 console=tty0
-    console=ttyS0,921600 noui pxeinstall=true
-    fastos_usbimg_url=http://<Server IP>/fastos/usb.customer.tar.gz
-    ip=dhcp
+    linux /fastos/vmlinuz nouveau.modeset=0 console=tty0 console=ttyS0,921600 sbsa_gwdt.action=1 noui pxeinstall=true fastos_usbimg_url=http://<Server IP>/fastos/usb.customer.tar.gz ip=dhcp static_ip=<static ip>:<gateway ip>
     initrd /fastos/initrd
 }
 ```
