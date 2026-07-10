@@ -85,11 +85,15 @@ menuentry "Install DGX Spark FastOS" {
 ## Setup Instructions
 
 - **HTTP**: place the ISO or tarball in the designated directory (`/local/http/base_os_7.0.0/` or `/local/http/fastos/`).
-- **TFTP**:
-  1. Mount the ISO: `sudo mount -o loop /path/to/iso /mnt`
-  2. Extract kernel and initrd to the TFTP directory
-  3. Download the GRUB binary: `wget http://ports.ubuntu.com/ubuntu-ports/dists/jammy/main/uefi/grub2-arm64/current/grubnetaa64.efi.signed`
-  4. Copy it to the TFTP root
+- **TFTP** (DGX OS image):
+  1. Mount the ISO: `sudo mount -o loop /local/http/base_os_7.0.0/base_os_7.0.0.iso /mnt`
+  2. Copy kernel and initrd: `cp /mnt/casper/vmlinuz /local/tftp/baseos/vmlinuz` and `cp /mnt/casper/initrd /local/tftp/baseos/initrd`
+  3. Unmount: `umount /mnt`
+  4. Download the GRUB binary: `wget http://ports.ubuntu.com/ubuntu-ports/dists/jammy/main/uefi/grub2-arm64/current/grubnetaa64.efi.signed`
+  5. Copy it to the TFTP root
+- **TFTP** (recovery media):
+  1. Extract the tarball: `tar xpfv /tmp/usb.customer.tar.gz`
+  2. Copy kernel and initrd: `cp /tmp/usbimg.customer/usb/vmlinuz /local/tftp/fastos/` and `cp /tmp/usbimg.customer/usb/initrd /local/tftp/fastos/`
 - **DHCP**: configure the server to specify the TFTP server address and bootloader filename (see class snippet above).
 
 ## Options / Props
