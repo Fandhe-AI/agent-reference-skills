@@ -9,8 +9,8 @@ export const meta = {
     // Recover は Plan の直前に配置する。中断 worktree が残る場合のみ起動し、
     // 残骸がなければスキップして通常の Plan に進む（per-issue 分岐）。
     // 判断軸は Review（正しさ・マージ可否）ではなく「この途中作業から継続するのが妥当か」。
-    { title: 'Recover', detail: '中断作業の回復判断（継続/破棄）', model: 'opus' },
-    { title: 'Plan', detail: 'イシューごとの実装計画立案（opus・worktree なし）', model: 'opus' },
+    { title: 'Recover', detail: '中断作業の回復判断（継続/破棄）' },
+    { title: 'Plan', detail: 'イシューごとの実装計画立案（セッション継承モデル・worktree なし）' },
     { title: 'Implement', detail: '計画に沿った実装・ローカルコミット（push・PR 作成なし）（worktree 並列）', model: 'sonnet' },
     { title: 'Review', detail: 'ローカル diff の品質・セキュリティレビュー（OK→Merge / 指摘→修正ループ / 最終ラウンドは Low のみ許容しコメント化）', model: 'sonnet' },
     { title: 'Merge', detail: 'CI / 外部チェック（検出時のみ）監視・レビュー全解決確認・squash merge・クローズ', model: 'sonnet' },
@@ -1324,7 +1324,7 @@ async function runImplement(item) {
     const hasRemnant = Boolean(fallbackOldWorktree || candidateBranch)
 
     if (hasRemnant) {
-      // --- Recover フェーズ: 旧 worktree・branch の継続可否を opus で判断する ---
+      // --- Recover フェーズ: 旧 worktree・branch の継続可否をセッション継承モデルで判断する ---
       // isolation なし（メインリポ cwd）: worktree/branch はグローバル状態のため
       // Plan と同様に非隔離で操作する（worktree 隔離では git -C <oldwt> や
       // git diff origin/<base>...<branch> がグローバル branch ref に届かない）。
@@ -1341,7 +1341,6 @@ async function runImplement(item) {
         {
           label: `recover:#${item.number}`,
           phase: 'Recover',
-          model: 'opus',
           effort: 'medium',
           schema: RECOVER_SCHEMA,
         },
@@ -1506,7 +1505,6 @@ async function runImplement(item) {
       const planResult = await agent(planPrompt(item), {
         label: `plan:#${item.number}`,
         phase: 'Plan',
-        model: 'opus',
         effort: 'high',
         schema: PLAN_SCHEMA,
       })
@@ -1520,7 +1518,7 @@ async function runImplement(item) {
       log(`#${item.number}: 計画立案完了 — ${sanitize(planResult.summary ?? '')}`)
 
       // --- Implement フェーズ: 計画に沿って sonnet で実装する ---
-      // impl エージェントは opus から sonnet に変更（計画は Plan フェーズで完了済みのため）。
+      // impl エージェントは sonnet（計画は Plan フェーズで完了済みのため実装は下位固定でよい）。
       await updateState(item.number, { status: 'implementing' })
       impl = await agent(implementPrompt(item, planResult.plan), {
         label: `impl:#${item.number}`,
