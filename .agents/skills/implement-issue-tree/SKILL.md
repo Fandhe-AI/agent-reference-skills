@@ -3,10 +3,9 @@ name: implement-issue-tree
 description: >
   親イシュー配下のサブイシュー（孫含む）を依存順を保ちつつ worktree で並列に自動実装・push 前 review・PR 作成・CI 監視・squash merge まで一括自動化。
   「イシューツリーを並列実装」「配下のサブイシューをまとめて実装」「ツリー全体を並列で実装して」「イシュー階層を自動開発」で使用。
-  per-issue 計画立案（Plan: opus）→実装（Implement: sonnet）の分業。push 前 review（Review 通過後にのみ push・PR 作成して CI を 1 回だけ起動）。
+  per-issue 計画立案（Plan: セッション継承モデル）→実装（Implement: sonnet）の分業。push 前 review（Review 通過後にのみ push・PR 作成して CI を 1 回だけ起動）。
   外部チェック自動判定（Cursor Bugbot 非導入リポでも不要待機なし）。並列度（parallel）と依存（dependsOn）で実行順を制御。
   単一イシューの実装は implement-issue、PR レビューは implement-review-pr を参照。
-model: opus
 user-invocable: true
 argument-hint: "<親イシュー番号> [マージ先ブランチ（省略時 main）] [並列度（省略時 3）]"
 ---
@@ -95,7 +94,7 @@ gh pr list --state merged --limit 3 --json headRefOid --jq '.[].headRefOid' \
 
 ### Step 2: 中断作業の回復可否を per-issue で判断する（Recover）
 
-各末端イシューに着手する前に、残骸 worktree / ブランチが存在するかを確認する。**既存作業がなければ Recover をスキップして Plan へ進む**。既存作業がある場合は Recover phase（opus エージェント）が「途中作業を継続できるか」を判断し、その結果に応じて以下のどちらかへ分岐する。
+各末端イシューに着手する前に、残骸 worktree / ブランチが存在するかを確認する。**既存作業がなければ Recover をスキップして Plan へ進む**。既存作業がある場合は Recover phase（セッション継承モデルのエージェント）が「途中作業を継続できるか」を判断し、その結果に応じて以下のどちらかへ分岐する。
 
 - **continue（継続）**: 既存 branch をそのまま checkout し、回復ブリーフ（done / remaining / broken の要約）を Implement へ渡して続きから実装する。Plan はスキップされる。Recover が直接 Review へ進むことはなく、継続作業は必ず Implement → Review → Merge を経由する。
 - **discard（破棄）**: 既存 worktree と branch を自動削除し、通常の Plan → Implement（新規 branch）で再実行する。
@@ -106,7 +105,7 @@ gh pr list --state merged --limit 3 --json headRefOid --jq '.[].headRefOid' \
 
 ### Step 3: イシューごとに実装計画を立案する（Plan）
 
-各 末端イシューを実装する前に、opus エージェントで実装計画を立案する（worktree なし・読み取りのみ）。計画は Implement エージェントへ引数で渡す（worktree 跨ぎのファイル参照を避けるため）。
+各 末端イシューを実装する前に、セッション継承モデルのエージェントで実装計画を立案する（worktree なし・読み取りのみ）。計画は Implement エージェントへ引数で渡す（worktree 跨ぎのファイル参照を避けるため）。
 
 **Recover phase で continue 判定が出た場合は Plan をスキップ**し、回復ブリーフを受け取った Implement エージェントが既存 branch から直接実装を続行する。
 
@@ -340,8 +339,8 @@ Workflow の返却値（`done`・`failures`・`notStarted`）を確認し、`fai
 | `plan:issue-tree`（Tree 取得・依存抽出） | sonnet | medium | 本文読解・依存判断 |
 | `detect:external-checks`（外部チェック判定） | haiku | low | 定型コマンド集計 |
 | `state:load` / `state:update` / `state:init-all` | haiku | low | jq の機械処理 |
-| `recover:#N`（中断作業の継続可否判断） | opus | medium | 計画判断相当（Plan と同じ軸で判断するため opus） |
-| `plan:#N`（per-issue 計画立案） | opus | high | 最も複雑な計画立案 |
+| `recover:#N`（中断作業の継続可否判断） | （指定なし＝セッション継承） | medium | 計画判断相当（Plan と同じ軸で判断） |
+| `plan:#N`（per-issue 計画立案） | （指定なし＝セッション継承） | high | 最も複雑な計画立案 |
 | `impl:#N`（実装） | sonnet | medium | 計画に沿った実装（コスト最適化） |
 | `review:#N`（独立 Review） | sonnet | medium | 品質・セキュリティ判定 |
 | `fix:#N`（修正） | sonnet | medium | 実装系・コスト最適化 |
@@ -374,7 +373,7 @@ cat _/issue-trees/42.json
 
 `monitoring` 中断からの再開では、保存された `pr`（PR 番号）・`branch`・`fixCount`（修正済み回数）を引き継いで monitor ループから再開する。`fixCount` の上限（6 回）は引き継いだ値に基づいて判定される。
 
-`planning` / `implementing` / `reviewing` からの再開では、まず Recover phase が残骸 worktree / branch の有無を確認する。**残骸がある場合**は Recover（opus）が「途中作業を継続できるか」を判断し、continue なら既存 branch を checkout して Implement で継続、discard なら worktree と branch を掃除して Plan から新規実行する。**残骸がない場合**は通常の Plan → Implement から再実行する。いずれの経路でも push 前 review フローのため PR 未作成の状態で中断している。impl 手順 0b-a が既存 open PR を検索し、あれば再利用する。「push 成功・PR 作成失敗」のケース（状態 `failed`・`branch` 保存済み）では impl 手順 0b-b がリモートブランチを検出して push 済みコミットを保持したまま回復する。
+`planning` / `implementing` / `reviewing` からの再開では、まず Recover phase が残骸 worktree / branch の有無を確認する。**残骸がある場合**は Recover が「途中作業を継続できるか」を判断し、continue なら既存 branch を checkout して Implement で継続、discard なら worktree と branch を掃除して Plan から新規実行する。**残骸がない場合**は通常の Plan → Implement から再実行する。いずれの経路でも push 前 review フローのため PR 未作成の状態で中断している。impl 手順 0b-a が既存 open PR を検索し、あれば再利用する。「push 成功・PR 作成失敗」のケース（状態 `failed`・`branch` 保存済み）では impl 手順 0b-b がリモートブランチを検出して push 済みコミットを保持したまま回復する。
 
 **Recover の判断軸は Review とは別**である。Review は「正しいか・マージできるか」を判定するのに対し、Recover は「この途中作業から継続するのが妥当か」を判断する。動かない・未完成でも方向が妥当なら continue（残りは Implement が完成させる）。未 commit 変更は Recover が WIP commit として branch へ退避してから worktree を削除するため、continue / discard どちらの経路でもデータを失わない。
 
