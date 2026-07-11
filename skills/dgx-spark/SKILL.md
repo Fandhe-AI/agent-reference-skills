@@ -1,5 +1,5 @@
 ---
-name: dgx-spark-user-guide
+name: dgx-spark
 description: >
   NVIDIA DGX Spark User Guide リファレンス。GB10 Grace Blackwell Superchip
   ハードウェア仕様、first-boot / UEFI 設定、Spark Stacking クラスタ、
@@ -15,7 +15,7 @@ user-invocable: false
 ## ディレクトリ構成
 
 ```text
-skills/dgx-spark-user-guide/
+skills/dgx-spark/
   SKILL.md
   references/
     hardware/
