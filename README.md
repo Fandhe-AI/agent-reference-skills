@@ -68,7 +68,7 @@ skills/
     rules/                   ← (任意) 適用ルール
 ```
 
-## スキル一覧（全 57 スキル）
+## スキル一覧（全 61 スキル）
 
 ### Apple プラットフォーム
 
@@ -90,6 +90,7 @@ skills/
 
 | スキル | 説明 |
 | -------- | ------ |
+| [nextjs-app](skills/nextjs-app/) | Next.js App Router — Server Components, Server Actions, ルーティング, キャッシュ, Metadata |
 | [react-router-v7](skills/react-router-v7/) | React Router v7 Framework Mode — loader, action, hooks, middleware, SSR/SPA |
 | [react-hook-form](skills/react-hook-form/) | React Hook Form v7 — useForm, register, Controller, バリデーション |
 | [react-flow](skills/react-flow/) | React Flow — ノード, エッジ, カスタムノード, レイアウト |
@@ -100,6 +101,7 @@ skills/
 | [driverjs](skills/driverjs/) | Driver.js — プロダクトツアー, 要素ハイライト, ポップオーバー |
 | [hermes-agent](skills/hermes-agent/) | Hermes Agent — AI CLI エージェント, MCP, Voice Mode, Messaging Gateway |
 | [hono](skills/hono/) | Hono — 軽量 Web フレームワーク, Middleware, Helpers, マルチランタイム |
+| [go-echo](skills/go-echo/) | Echo — Go 製高性能 Web フレームワーク, Routing, Middleware, Binding, Validation |
 | [nuqs](skills/nuqs/) | nuqs — URL search params state manager |
 | [inngest](skills/inngest/) | Inngest — イベント駆動 Durable Execution, createFunction, step, フロー制御 |
 
@@ -144,6 +146,8 @@ skills/
 | [kicad_10](skills/kicad_10/) | KiCad 10.0 — EDA スイート, 回路図設計, 基板設計, kicad-cli, ガーバー出力 |
 | [ergogen](skills/ergogen/) | Ergogen — 自作キーボード設計, YAML 設定, points / outlines / cases / pcbs |
 | [zmk](skills/zmk/) | ZMK Firmware — キーボードファームウェア, keymap, behaviors, bluetooth, split |
+| [dgx-spark](skills/dgx-spark/) | DGX Spark — GB10 Grace Blackwell, セットアップ, ConnectX-7 クラスタ, ローカル LLM, プレイブック |
+| [nvidia-sync](skills/nvidia-sync/) | NVIDIA Sync — DGX Spark / DGX Station リモート接続, Cluster Assistant, ConnectX-7, Tailscale, アプリ起動 |
 
 ### 言語
 

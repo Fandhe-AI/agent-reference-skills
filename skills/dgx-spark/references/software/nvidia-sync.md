@@ -21,8 +21,13 @@ Streamlines SSH connections, port forwarding, and tunnel management, letting loc
 
 - After initial setup, DGX Spark broadcasts its hostname across the local network using multicast DNS (mDNS), enabling automatic discovery in NVIDIA Sync.
 - Full guidance covering installation, device management, Tailscale configuration, custom applications, and troubleshooting is in the [NVIDIA Sync User Guide](https://docs.nvidia.com/sync/latest/index.html).
+- The dedicated `nvidia-sync` skill in this repository carries the distilled reference for the full user guide, including the Cluster Assistant wizard and ConnectX-7 network verification.
 
 ## Related
 
 - [Software Overview](./software-overview.md)
 - [DGX Dashboard](./dgx-dashboard.md)
+- [nvidia-sync skill — Getting Started](../../../nvidia-sync/references/getting-started/README.md)
+- [nvidia-sync skill — Connections](../../../nvidia-sync/references/connections/README.md)
+- [nvidia-sync skill — Cluster Assistant / ConnectX-7](../../../nvidia-sync/references/cluster/README.md)
+- [nvidia-sync skill — Applications](../../../nvidia-sync/references/applications/README.md)
