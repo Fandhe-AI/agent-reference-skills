@@ -53,6 +53,37 @@ delegation:
 - Undefined variables remain verbatim as `${UNDEFINED_VAR}`
 - Only `${VAR}` syntax is supported — bare `$VAR` is not expanded
 
+## Local OpenAI-Compatible Servers (vLLM, Ollama, llama.cpp)
+
+Point `model.base_url` at the server and set `model.provider` to **`custom`**:
+
+```bash
+hermes config set model.provider custom
+hermes config set model.base_url http://<host>:8000/v1
+hermes config set model.default <served-model-name>
+```
+
+`vllm`, `ollama`, and `llamacpp` are documented as aliases of `custom`, but `hermes doctor` in v0.18.x reports them as unknown providers (`model.provider 'vllm' is unknown`). Inference still works; the check does not recognize them. Use the canonical `custom` to keep `doctor` clean. LM Studio is first-class — use `provider: lmstudio`.
+
+Local servers commonly need no API key. Leave `.env` empty rather than inventing a placeholder key.
+
+## Quieting a Chat Bot
+
+Gateway platforms stream by progressively editing the message, and each edit can fire a notification. To make a bot post exactly one finished answer:
+
+```bash
+hermes --profile <name> config set display.tool_progress off
+hermes --profile <name> config set display.interim_assistant_messages false
+hermes --profile <name> config set display.cleanup_progress true
+hermes --profile <name> config set display.long_running_notifications false
+hermes --profile <name> config set display.background_process_notifications error
+hermes --profile <name> config set streaming.enabled false
+```
+
+Trade-off: the reply lands later, but the edit-per-token notification storm is gone. These are per-profile, so a chat bot can be quiet while the CLI profile keeps streaming.
+
+Note that `hermes config set display.tool_progress off` stores the boolean `false` rather than the string `"off"`. That is handled — the loader maps `False` to `"off"` — so the setting takes effect as written.
+
 ## Terminal Backend Configuration
 
 ### Local (default)
