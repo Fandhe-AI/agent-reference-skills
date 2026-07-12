@@ -58,6 +58,52 @@ Configure CPU cores, memory (MB), disk (MB), and filesystem persistence when usi
 - PID limits enforced
 - Full namespace isolation
 
+## Web Search Providers
+
+`web_search` / `web_extract` dispatch to a registered provider. Selection precedence:
+
+1. `web.search_backend` / `web.extract_backend` in `config.yaml` (per-capability override)
+2. `web.backend` (shared fallback)
+3. The only registered-and-available provider, if exactly one qualifies
+4. Legacy preference order, filtered by availability:
+   `firecrawl` → `parallel` → `tavily` → `exa` → `searxng` → `brave-free` → `ddgs`
+5. Otherwise `None` — the tool errors and points at `hermes tools`
+
+| Provider | Requires | Search | Extract |
+|----------|----------|--------|---------|
+| `firecrawl` | `FIRECRAWL_API_KEY` | ✅ | ✅ |
+| `parallel` | `PARALLEL_API_KEY` | ✅ | ✅ |
+| `tavily` | `TAVILY_API_KEY` | ✅ | ✅ |
+| `exa` | `EXA_API_KEY` | ✅ | ✅ |
+| `searxng` | `SEARXNG_URL` (self-hosted, no key) | ✅ | — |
+| `brave-free` | `BRAVE_SEARCH_API_KEY` | ✅ | — |
+| `ddgs` | the optional `ddgs` package installed | ✅ | — |
+
+Pin the backend explicitly rather than relying on the fallback order:
+
+```bash
+hermes config set web.search_backend searxng
+```
+
+### Self-hosted SearXNG
+
+`SEARXNG_URL=http://127.0.0.1:8888` is enough — but **SearXNG ships with its JSON API disabled**, and Hermes needs it. Add `json` to `search.formats` in `settings.yml`, or every query fails with HTTP 403:
+
+```yaml
+search:
+  formats:
+    - html
+    - json
+```
+
+Verify before wiring it up:
+
+```bash
+curl -s 'http://127.0.0.1:8888/search?q=test&format=json' | head -c 200
+```
+
+Note that SearXNG is search-only. If you also need `web_extract`, point `web.extract_backend` at an extract-capable provider.
+
 ## Sudo Support
 
 Sudo prompts are handled interactively (password cached for the session) or via the `SUDO_PASSWORD` environment variable for unattended use.
