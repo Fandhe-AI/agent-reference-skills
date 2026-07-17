@@ -120,7 +120,14 @@ fi
 
 ```bash
 git log --oneline -- "${LOCAL_SKILL_DIR}/"
-git diff HEAD~1 HEAD -- "${LOCAL_SKILL_DIR}/"
+# HEAD~1 の有無を明示的に判定する（git diff は差分ありでも終了コード 0 のため || で分岐しない）
+if git rev-parse --verify -q HEAD~1 >/dev/null; then
+  git diff HEAD~1 HEAD -- "${LOCAL_SKILL_DIR}/"
+else
+  # 親コミットがない場合（初回コミット・shallow clone 等）は空ツリーと HEAD を比較する
+  # （作業ツリー差分ではコミット済み・クリーンな状態で空になるため使わない）
+  git diff "$(git hash-object -t tree /dev/null)" HEAD -- "${LOCAL_SKILL_DIR}/"
+fi
 ```
 
 ユーザーに「この改修内容で upstream に PR を作ってよいか」を確認します。
@@ -142,11 +149,10 @@ git diff HEAD~1 HEAD -- "${LOCAL_SKILL_DIR}/"
 ```bash
 UID_VAL=$(id -u)
 TS=$(date +%Y%m%d-%H%M%S)
-WORKDIR="/tmp/claude-${UID_VAL}/contribute-${SKILL_NAME}-${TS}"
+# $TMPDIR が設定されていればそちらを優先する（サンドボックス互換: /tmp が書き込み不可の環境がある）
+WORKDIR="${TMPDIR:-/tmp/claude-${UID_VAL}}/contribute-${SKILL_NAME}-${TS}"
 mkdir -p "$WORKDIR"
 ```
-
-`$TMPDIR` が設定されていればそちらを優先します（サンドボックス互換）。
 
 ### Step 6: upstream を clone する
 
@@ -214,7 +220,7 @@ git diff
 
 ```bash
 SLUG=$(date +%Y%m%d-%H%M%S)
-git switch -c "contribute/<SKILL_NAME>-${SLUG}"
+git switch -c "contribute/${SKILL_NAME}-${SLUG}"
 git add <変更パス>
 git commit -m "$(cat <<'EOF'
 <type>(<scope>): <subject>
@@ -232,7 +238,7 @@ EOF
 ### Step 10: push と PR 作成
 
 ```bash
-git push -u origin "contribute/<SKILL_NAME>-${SLUG}"
+git push -u origin "contribute/${SKILL_NAME}-${SLUG}"
 
 gh pr create \
   --repo "${REPO_SLUG}" \

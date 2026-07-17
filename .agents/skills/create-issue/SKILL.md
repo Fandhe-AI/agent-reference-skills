@@ -23,11 +23,46 @@ GitHub Issue を親子構造で作成します。
 - 受け入れ条件
 - 個別タスクへの分解
 
+### Step 1.5: milestone を決定する
+
+作成する Issue（親・子とも同一）に GitHub Milestone を割り当てるかユーザーに確認する。
+
+**milestone 非運用リポジトリのガード**: リポジトリに milestone が 1 件も存在しない場合
+（closed 含む）は milestone 非運用リポジトリとみなし、確認せずこのステップをスキップする
+（ユーザーが明示的に milestone 割当を求めた場合を除く）。
+
+```bash
+MILESTONE_COUNT=$(gh api "repos/{owner}/{repo}/milestones?state=all" --jq 'length')
+# MILESTONE_COUNT が 0 なら、このステップをスキップして Step 2 へ進む
+```
+
+- 割り当てる場合:
+  - 親 Issue 番号が分かっている場合（既存ツリーへの追加等）は、
+    `gh issue view <親番号> --json milestone --jq '.milestone.title // empty'` で親の milestone を
+    取得し、継承してよいかユーザーに確認する。取得結果が空（親が milestone 未設定）の場合は
+    継承せず、次の一覧提示フローへ進む
+  - 親が不明・親の milestone が空の場合は
+    `gh api repos/{owner}/{repo}/milestones --jq '.[] | select(.state=="open") | .title'`
+    でオープン中の milestone 一覧を提示し、選んでもらう
+  - 一覧にない新規 milestone 名を使う場合は、`gh issue create --milestone` が既存名しか
+    受け付けないため、先に `gh api --method POST "repos/{owner}/{repo}/milestones" -f "title=<名前>"`
+    で作成する（同名の closed milestone があると 422 になるため reopen か別名をユーザーに確認する）
+  - 決定した名前を `MILESTONE` に設定する
+  - 親 Issue 番号が分かっていて親が milestone 未設定の場合は、決定した `MILESTONE` を
+    親にも `gh issue edit <親番号> --milestone "${MILESTONE}"` で反映する
+    （子だけ milestone が付き親が未設定のまま残る不整合を防ぐ。冪等）
+- 割り当てない場合: `MILESTONE` は空のまま Step 2 以降へ進む（Issue は milestone なしで作成する）
+
 ### Step 2: 親 Issue を作成する
 
 ```bash
-gh issue create \
-  --title "feat: 機能名" \
+# MILESTONE が空でなければ --milestone を付与する（Step 1.5 で決定済み）
+PARENT_ARGS=(--title "feat: 機能名")
+if [[ -n "${MILESTONE}" ]]; then
+  PARENT_ARGS+=(--milestone "${MILESTONE}")
+fi
+
+gh issue create "${PARENT_ARGS[@]}" \
   --body "$(cat <<'EOF'
 ## 概要
 ...
@@ -50,12 +85,15 @@ EOF
 
 ### Step 3: 子 Issue を作成する
 
-各個別タスクを子 Issue として作成:
+各個別タスクを子 Issue として作成（`MILESTONE` は親と同じ値を使う）:
 
 ```bash
-gh issue create \
-  --title "feat: タスク名" \
-  --body "..."
+CHILD_ARGS=(--title "feat: タスク名")
+if [[ -n "${MILESTONE}" ]]; then
+  CHILD_ARGS+=(--milestone "${MILESTONE}")
+fi
+
+gh issue create "${CHILD_ARGS[@]}" --body "..."
 ```
 
 ### Step 4: Sub-issues として紐付ける
@@ -104,7 +142,7 @@ gh api "repos/{owner}/{repo}/issues/<親Issue番号>/sub_issues" --jq '.[].numbe
 
 - Issue タイトルは Conventional Commits 形式を推奨
 - 子 Issue は独立して完了できる粒度にする
-- ラベル・マイルストーンが必要な場合はユーザーに確認する
+- milestone の要否は Step 1.5 で必ずユーザーに確認する（省略しない）。ラベルが必要な場合も別途確認する
 
 ## sandbox 環境での実行
 
