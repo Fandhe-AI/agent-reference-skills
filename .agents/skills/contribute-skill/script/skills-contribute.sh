@@ -97,13 +97,21 @@ echo "--- ローカル変更履歴 ---"
 git log --oneline -- "${LOCAL_SKILL_DIR}/"
 echo ""
 echo "--- 最新差分 ---"
-git diff HEAD~1 HEAD -- "${LOCAL_SKILL_DIR}/" 2>/dev/null || git diff -- "${LOCAL_SKILL_DIR}/"
+# HEAD~1 の有無を明示的に判定する（git diff は差分ありでも終了コード 0 のため || で分岐しない）
+if git rev-parse --verify -q HEAD~1 >/dev/null; then
+  git diff HEAD~1 HEAD -- "${LOCAL_SKILL_DIR}/"
+else
+  # 親コミットがない場合（初回コミット・shallow clone 等）は空ツリーと HEAD を比較する
+  # （作業ツリー差分ではコミット済み・クリーンな状態で空になるため使わない）
+  git diff "$(git hash-object -t tree /dev/null)" HEAD -- "${LOCAL_SKILL_DIR}/"
+fi
 echo ""
 
 # Step 5: 作業用ディレクトリを用意する
+# $TMPDIR が設定されていればそちらを優先する（サンドボックス互換: /tmp が書き込み不可の環境がある）
 UID_VAL=$(id -u)
 TS=$(date +%Y%m%d-%H%M%S)
-WORKDIR="/tmp/claude-${UID_VAL}/contribute-${SKILL_NAME}-${TS}"
+WORKDIR="${TMPDIR:-/tmp/claude-${UID_VAL}}/contribute-${SKILL_NAME}-${TS}"
 mkdir -p "$WORKDIR"
 echo "==> 作業ディレクトリ: $WORKDIR"
 
