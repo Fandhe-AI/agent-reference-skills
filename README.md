@@ -49,11 +49,23 @@ npx skills add Fandhe-AI/agent-reference-skills --skill react-router-v7 -g
     create-commit/           ← Conventional Commits 形式でコミット
     create-pr/               ← PR 作成
     create-issue/            ← Issue 作成（sub-issues 対応）
+    create-issue-tree/       ← Phase 分割した Issue ツリーを起票
+    update-issue-tree/       ← 既存 Issue ツリーの棚卸し・更新
     create-plan/             ← 実装計画作成
     implement-issue/         ← Issue 実装
+    implement-issue-tree/    ← Issue ツリーを worktree で並列実装
     implement-review/        ← コードレビュー
     implement-review-pr/     ← PR レビュー
     update-docs/             ← CLAUDE.md 更新
+    init-claude/             ← 対象リポジトリへ .claude/ 体系を初期セットアップ
+    update-claude/           ← 既存 .claude/ 体系の診断・追補
+    project-init/            ← GitHub Project v2 のセットアップ
+    project-add-items/       ← プロジェクトアイテムの一括作成
+    project-create-issues/   ← ドラフトアイテムを Issue へ変換
+    project-update-items/    ← アイテムのフィールド値を一括更新
+    project-view-status/     ← 進捗レポート生成
+    project-sync-issues/     ← Issue/PR とプロジェクト Status の同期
+    project-archive-done/    ← 完了アイテムのアーカイブ
     contribute-skill/        ← upstream リポジトリへスキルを PR 投稿
     sync-skills-lock/        ← skills-lock.json の computedHash 同期
 skills/
@@ -68,7 +80,7 @@ skills/
     rules/                   ← (任意) 適用ルール
 ```
 
-## スキル一覧（全 61 スキル）
+## スキル一覧（全 62 スキル）
 
 ### Apple プラットフォーム
 
@@ -95,6 +107,7 @@ skills/
 | [react-hook-form](skills/react-hook-form/) | React Hook Form v7 — useForm, register, Controller, バリデーション |
 | [react-flow](skills/react-flow/) | React Flow — ノード, エッジ, カスタムノード, レイアウト |
 | [chakra-ui](skills/chakra-ui/) | Chakra UI v3 — コンポーネント, テーマ, レシピ, スタイルプロップ |
+| [ark-ui](skills/ark-ui/) | Ark UI — headless / unstyled コンポーネント (Chakra v3 の Zag.js 基盤), asChild, RootProvider, collections |
 | [storybook](skills/storybook/) | Storybook — CSF, args, decorators, play function, autodocs |
 | [better-auth](skills/better-auth/) | Better Auth — 認証, OAuth, passkey, twoFactor, プラグイン |
 | [supabase](skills/supabase/) | Supabase — database, auth, storage, edge-functions, realtime, RLS |

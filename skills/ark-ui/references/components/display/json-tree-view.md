@@ -6,27 +6,28 @@ Displays JSON data in an interactive, collapsible tree structure. Supports a wid
 
 ```tsx
 import { JsonTreeView } from '@ark-ui/react/json-tree-view'
+import { ChevronRightIcon } from 'lucide-react'
+
+const data = {
+  name: 'Ark UI',
+  version: 1,
+  tags: ['headless', 'accessible'],
+  address: { city: 'Anytown', coordinates: { lat: 37.77, lng: -122.42 } },
+}
 
 export const Basic = () => (
-  <JsonTreeView.Root data={{ name: 'Ark UI', version: 1 }}>
-    <JsonTreeView.Tree>
-      {(node) => (
-        <JsonTreeView.Node key={node.id}>
-          <JsonTreeView.Label />
-        </JsonTreeView.Node>
-      )}
-    </JsonTreeView.Tree>
+  <JsonTreeView.Root data={data} defaultExpandedDepth={1}>
+    <JsonTreeView.Tree arrow={<ChevronRightIcon />} />
   </JsonTreeView.Root>
 )
 ```
 
+Nested objects/arrays inside `data` (e.g. `address.coordinates`) are expanded recursively by `JsonTreeView.Tree` itself — no manual per-node mapping is required, unlike `TreeView` (see [Tree View](../collections/tree-view.md)).
+
 ## Anatomy
 
-- `JsonTreeView.Root` — container for the entire tree view
-- `JsonTreeView.Tree` — main tree rendering component
-- `JsonTreeView.Node` — individual expandable/collapsible item
-- `JsonTreeView.Label` — node identifier and value
-- `JsonTreeView.Arrow` — expand/collapse indicator icon
+- `JsonTreeView.Root` — container that owns the `data` and state (expansion/selection/checked/rename)
+- `JsonTreeView.Tree` — self-contained recursive renderer; accepts `arrow`, `indentGuide`, `renderValue` for presentation
 
 ## Options / Props
 
@@ -39,7 +40,9 @@ export const Basic = () => (
 | `maxPreviewItems` | `number` | Limit the number of items shown in collapsed previews |
 | `collapseStringsAfterLength` | `number` | Truncate long string values |
 | `groupArraysAfterLength` | `number` | Group large arrays instead of listing every item |
-| `renderValue` | `(node) => ReactNode` | Custom renderer for leaf values |
+| `arrow` (on `Tree`) | `ReactElement` | Icon used for the expand/collapse indicator |
+| `indentGuide` (on `Tree`) | `boolean \| ReactElement` | Visual guide line for indentation |
+| `renderValue` (on `Tree`) | `(node: JsonNodeHastElement) => ReactNode` | Custom renderer for leaf values |
 
 ## Notes
 
@@ -52,3 +55,4 @@ export const Basic = () => (
 ## Related
 
 - [Highlight](./highlight.md)
+- [Tree View](../collections/tree-view.md)

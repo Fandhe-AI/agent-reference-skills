@@ -7,9 +7,16 @@ Displays hierarchical data with controlled expansion/selection, lazy loading, vi
 ```tsx
 import { TreeView, createTreeCollection } from "@ark-ui/react"
 
-const collection = createTreeCollection({
+interface Node {
+  id: string
+  name: string
+  children?: Node[]
+}
+
+const collection = createTreeCollection<Node>({
   rootNode: {
     id: "ROOT",
+    name: "",
     children: [
       { id: "node1", name: "Node 1" },
       { id: "node2", name: "Node 2", children: [{ id: "node2.1", name: "Node 2.1" }] },
@@ -19,16 +26,39 @@ const collection = createTreeCollection({
   nodeToString: (node) => node.name,
 })
 
+// Recursive: branch nodes (with children) render TreeView.Branch, leaf nodes render TreeView.Item.
+// indexPath must be extended for each nesting level so deep nodes render correctly.
+const TreeNode = ({ node, indexPath }: { node: Node; indexPath: number[] }) => {
+  return (
+    <TreeView.NodeProvider key={node.id} node={node} indexPath={indexPath}>
+      {node.children ? (
+        <TreeView.Branch>
+          <TreeView.BranchControl>
+            <TreeView.BranchIndicator>▶</TreeView.BranchIndicator>
+            <TreeView.BranchText>{node.name}</TreeView.BranchText>
+          </TreeView.BranchControl>
+          <TreeView.BranchContent>
+            <TreeView.BranchIndentGuide />
+            {node.children.map((child, index) => (
+              <TreeNode key={child.id} node={child} indexPath={[...indexPath, index]} />
+            ))}
+          </TreeView.BranchContent>
+        </TreeView.Branch>
+      ) : (
+        <TreeView.Item>
+          <TreeView.ItemText>{node.name}</TreeView.ItemText>
+        </TreeView.Item>
+      )}
+    </TreeView.NodeProvider>
+  )
+}
+
 const App = () => (
   <TreeView.Root collection={collection}>
     <TreeView.Label>Tree</TreeView.Label>
     <TreeView.Tree>
       {collection.rootNode.children?.map((node, index) => (
-        <TreeView.NodeProvider key={node.id} node={node} indexPath={[index]}>
-          <TreeView.Item>
-            <TreeView.ItemText>{node.name}</TreeView.ItemText>
-          </TreeView.Item>
-        </TreeView.NodeProvider>
+        <TreeNode key={node.id} node={node} indexPath={[index]} />
       ))}
     </TreeView.Tree>
   </TreeView.Root>
