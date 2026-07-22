@@ -59,11 +59,23 @@ Default: symlink into `.claude/skills/`. Use `--copy` for file copies.
     create-commit/           ← Conventional Commits
     create-pr/               ← PR creation
     create-issue/            ← Issue creation (sub-issues)
+    create-issue-tree/       ← Phase-split issue tree creation
+    update-issue-tree/       ← Issue tree audit & refresh
     create-plan/             ← Implementation planning
     implement-issue/         ← Issue implementation
+    implement-issue-tree/    ← Parallel worktree implementation of an issue tree
     implement-review/        ← Code review
     implement-review-pr/     ← PR review
     update-docs/             ← CLAUDE.md update
+    init-claude/             ← Bootstrap .claude/ into a target repo
+    update-claude/           ← Audit & extend an existing .claude/ setup
+    project-init/            ← GitHub Project v2 setup
+    project-add-items/       ← Bulk-create project items
+    project-create-issues/   ← Convert draft items into issues
+    project-update-items/    ← Bulk-update project item fields
+    project-view-status/     ← Project progress report
+    project-sync-issues/     ← Issue/PR ↔ project status sync
+    project-archive-done/    ← Archive completed project items
     contribute-skill/        ← Contribute a local skill to an upstream repo via PR
     sync-skills-lock/        ← Sync skills-lock.json computedHash with upstream
 skills/
@@ -165,8 +177,9 @@ The authoritative, enforceable versions of these live in `.claude/rules/` (`refe
 - Empty sections are omitted; code examples are kept to one minimal snippet
 - Skills with `rules/` directories (like `feature-sliced-design`) separate "what it is" (references) from "how to enforce it" (rules)
 - The `tsdoc` skill is a guideline/template skill rather than an API reference — it has no `references/` subdirectory and embeds all content directly in `SKILL.md`
+- `ark-ui` and `chakra-ui` intentionally overlap: Ark UI is the headless/unstyled Zag.js layer, Chakra UI v3 is the styled implementation on top of it. Ark pages carry a `## Notes` line pointing at the Chakra import difference so agents don't mix `@ark-ui/react` and `@chakra-ui/react` APIs
 - When editing `.claude/` files, use the `_/dotclaude/` staging pattern (write there first, then `mv` to `.claude/`)
 
-## Current Skills (61)
+## Current Skills (62)
 
-apple-app-services, apple-appkit, apple-data, apple-distribution, apple-graphics, apple-media, apple-ml, apple-spatial, apple-swift, apple-swiftui, apple-uikit, better-auth, biome, blender, bullmq, cadquery, chakra-ui, commitlint, dayjs, dgx-spark, driverjs, editorconfig, ergogen, feature-sliced-design, figma, github-docs, go-echo, gws, hermes-agent, hono, inngest, kicad_10, knip, kubb, lefthook, motion, nextjs-app, nuqs, nvidia-sync, pino, playwright, proxmox-ve, react-flow, react-hook-form, react-router-v7, rive, rust, storybook, stripe, supabase, syncpack, theatrejs, threejs, tsdoc, turborepo, typedoc, upstash, vercel, vitest, zmk, zod
+apple-app-services, apple-appkit, apple-data, apple-distribution, apple-graphics, apple-media, apple-ml, apple-spatial, apple-swift, apple-swiftui, apple-uikit, ark-ui, better-auth, biome, blender, bullmq, cadquery, chakra-ui, commitlint, dayjs, dgx-spark, driverjs, editorconfig, ergogen, feature-sliced-design, figma, github-docs, go-echo, gws, hermes-agent, hono, inngest, kicad_10, knip, kubb, lefthook, motion, nextjs-app, nuqs, nvidia-sync, pino, playwright, proxmox-ve, react-flow, react-hook-form, react-router-v7, rive, rust, storybook, stripe, supabase, syncpack, theatrejs, threejs, tsdoc, turborepo, typedoc, upstash, vercel, vitest, zmk, zod
