@@ -31,7 +31,6 @@ const chart = useChart({ data, series })
 | `interaction` | `"hover" \| "click"` | — | Enables highlighting (`hover`) or toggling (`click`) of series |
 | `payload` | `LegendPayload[]` | — | Override the legend entries; defaults to the payload provided by Recharts |
 
-
 ## Notes
 
 - Extends Recharts' `LegendProps`, so positioning props such as `layout`, `verticalAlign`, and `align` are also supported.

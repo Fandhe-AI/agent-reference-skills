@@ -40,7 +40,6 @@ const chart = useChart({ data, series })
 | `formatter` | `(value, name) => ReactNode \| [ReactNode, ReactNode]` | — | Custom formatter for a value (and optionally its name) |
 | `render` | `(item: Payload) => ReactNode` | — | Fully custom render function for a tooltip entry |
 
-
 ## Notes
 
 - Extends Recharts' `TooltipContentProps` and is passed via the `content` prop of Recharts' `<Tooltip>`, not rendered directly.
