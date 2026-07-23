@@ -22,7 +22,7 @@ export const Basic = () => (
 )
 ```
 
-Nested objects/arrays inside `data` (e.g. `address.coordinates`) are expanded recursively by `JsonTreeView.Tree` itself — no manual per-node mapping is required, unlike `TreeView` (see [Tree View](../collections/tree-view.md)).
+Nested objects/arrays inside `data` (e.g. `address.coordinates`) are expanded recursively by `JsonTreeView.Tree` itself — no manual per-node mapping is required, unlike `TreeView` (see [Tree View](../components/collections/tree-view.md)).
 
 ## Anatomy
 
@@ -55,4 +55,4 @@ Nested objects/arrays inside `data` (e.g. `address.coordinates`) are expanded re
 ## Related
 
 - [Highlight](./highlight.md)
-- [Tree View](../collections/tree-view.md)
+- [Tree View](../components/collections/tree-view.md)

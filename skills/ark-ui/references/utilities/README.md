@@ -11,6 +11,8 @@
 | Format Time | Format time values to a locale | [format-time.md](./format-time.md) |
 | Format Relative Time | Format relative time intervals via Intl.RelativeTimeFormat | [format-relative-time.md](./format-relative-time.md) |
 | Frame | Render content inside an iframe with size tracking | [frame.md](./frame.md) |
+| Highlight | Emphasizes matching text within a larger body of text | [highlight.md](./highlight.md) |
+| JSON Tree View | Interactive collapsible tree view for JSON data | [json-tree-view.md](./json-tree-view.md) |
 | Locale | Provide locale/direction settings to the application | [locale.md](./locale.md) |
 | Presence | Control mounting/unmounting based on state | [presence.md](./presence.md) |
 | Swap | Animate transitions between two visual states | [swap.md](./swap.md) |
