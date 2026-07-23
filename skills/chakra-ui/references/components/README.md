@@ -109,6 +109,7 @@
 | Action Bar | Floating action bar that appears when items are selected, typically docked at the bottom of the viewport. | [./overlays/action-bar.md](./overlays/action-bar.md) |
 | Dialog | Modal dialog with backdrop, focus trapping, and multiple size/placement options. | [./overlays/dialog.md](./overlays/dialog.md) |
 | Drawer | Slide-in panel from any edge of the viewport, similar to Dialog. | [./overlays/drawer.md](./overlays/drawer.md) |
+| Floating Panel | Non-modal floating window that supports drag, resize, and stage (minimize/maximize) interactions. | [./overlays/floating-panel.md](./overlays/floating-panel.md) |
 | Hover Card | Popover-style card triggered on hover, for previewing content without navigation. | [./overlays/hover-card.md](./overlays/hover-card.md) |
 | Menu | Dropdown menu with keyboard navigation, checkbox/radio items, and nested submenus. | [./overlays/menu.md](./overlays/menu.md) |
 | Overlay Manager | Programmatic API for opening, closing, and updating overlays (dialogs, drawers, etc.) imperatively. | [./overlays/overlay-manager.md](./overlays/overlay-manager.md) |

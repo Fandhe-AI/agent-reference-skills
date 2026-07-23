@@ -49,4 +49,4 @@ export const Basic = () => (
 
 ## Related
 
-- [Highlight](./highlight.md)
+- [Highlight](../../utilities/highlight.md)

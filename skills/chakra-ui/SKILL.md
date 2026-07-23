@@ -64,11 +64,13 @@ skills/chakra-ui/
       axes.md
       cartesian-grid.md
       donut-chart.md
+      legend.md
       line-chart.md
       pie-chart.md
       radar-chart.md
       scatter-chart.md
       sparkline.md
+      tooltip.md
       use-chart.md
     styling/
       README.md

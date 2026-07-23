@@ -105,8 +105,6 @@ skills/ark-ui/
         qr-code.md
         clipboard.md
         marquee.md
-        highlight.md
-        json-tree-view.md
     utilities/
       README.md
       client-only.md
@@ -118,6 +116,8 @@ skills/ark-ui/
       format-time.md
       format-relative-time.md
       frame.md
+      highlight.md
+      json-tree-view.md
       locale.md
       presence.md
       swap.md
@@ -159,7 +159,7 @@ skills/ark-ui/
 | Dialog, Drawer, Popover, Tooltip, Toast, Tour, Floating Panel などオーバーレイ系コンポーネント API を知りたい | components/overlays | [references/components/overlays/README.md](references/components/overlays/README.md) |
 | Accordion, Tabs, Toggle, Splitter, Scroll Area などディスクロージャー系コンポーネント API を知りたい | components/disclosure | [references/components/disclosure/README.md](references/components/disclosure/README.md) |
 | Date Picker, Date Input, Timer など日時系コンポーネント API を知りたい | components/date-time | [references/components/date-time/README.md](references/components/date-time/README.md) |
-| Avatar, Progress, QR Code, Clipboard, Highlight, JSON Tree View など表示系コンポーネント API を知りたい | components/display | [references/components/display/README.md](references/components/display/README.md) |
-| EnvironmentProvider, LocaleProvider, フォーマットユーティリティ（format-number 等）、Focus Trap, Presence を使いたい | utilities | [references/utilities/README.md](references/utilities/README.md) |
+| Avatar, Progress, QR Code, Clipboard, Marquee など表示系コンポーネント API を知りたい | components/display | [references/components/display/README.md](references/components/display/README.md) |
+| EnvironmentProvider, LocaleProvider, フォーマットユーティリティ（format-number 等）、Focus Trap, Presence, Highlight, JSON Tree View を使いたい | utilities | [references/utilities/README.md](references/utilities/README.md) |
 | 典型的な使い方・実例（Provider Setup, Panda/Tailwind スタイリング, RootProvider による外部状態制御, React Hook Form 統合等）を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・MCP Server セットアップ・llms.txt 取得コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

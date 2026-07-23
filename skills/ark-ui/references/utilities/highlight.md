@@ -30,4 +30,4 @@ export const Basic = () => (
 
 ## Related
 
-- [Marquee](./marquee.md)
+- [Marquee](../components/display/marquee.md)
