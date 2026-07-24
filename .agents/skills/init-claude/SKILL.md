@@ -176,12 +176,15 @@ Step 2 で設計した Agent を `.claude/agents/<category>/<name>.md` に作成
 
 ```yaml
 ---
-subagent_type: <name>
+name: <name>
 description: "<役割の説明>"
 model: <haiku|sonnet|opus>
 tools: [必要最小限のツール]
 ---
 ```
+
+frontmatter のキーは Claude Code の subagent 定義仕様に従い `name` を使う
+（`subagent_type` は Agent ツール呼び出し時のパラメータ名であり、定義キーではない）。
 
 #### 3-3. rules/ を生成する
 

@@ -196,12 +196,15 @@ ls <target-repo>/.claude/workflows/implement-issue-tree.js 2>/dev/null
 
 ```yaml
 ---
-subagent_type: <name>
+name: <name>
 description: "<役割の説明（発火トリガー語を含める）>"
 model: <haiku|sonnet|opus|fable>
 tools: [必要最小限のツール]
 ---
 ```
+
+frontmatter のキーは Claude Code の subagent 定義仕様に従い `name` を使う
+（`subagent_type` は Agent ツール呼び出し時のパラメータ名であり、定義キーではない）。
 
 #### 4-2. 不足 Rules を追加する
 
