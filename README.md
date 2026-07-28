@@ -80,7 +80,7 @@ skills/
     rules/                   ← (任意) 適用ルール
 ```
 
-## スキル一覧（全 64 スキル）
+## スキル一覧（全 87 スキル）
 
 ### Apple プラットフォーム
 
@@ -97,6 +97,43 @@ skills/
 | [apple-media](skills/apple-media/) | AVFoundation 再生 / キャプチャ / オーディオ / PhotoKit |
 | [apple-ml](skills/apple-ml/) | Core ML / Create ML / Vision / Natural Language / Speech — オンデバイス機械学習 |
 | [apple-distribution](skills/apple-distribution/) | App Store Connect API / TestFlight / In-App Purchase |
+
+### Android プラットフォーム
+
+Jetpack Compose 系の 3 スキル（`android-compose-*`）は `androidx.compose.*`、`android-wear` は `androidx.wear.compose.*`、`android-platform-core` の Glance は `androidx.glance.*` と、同名で別 API のため統合していない。
+
+| スキル | 説明 |
+| -------- | ------ |
+| [android-compose-ui](skills/android-compose-ui/) | Jetpack Compose UI 基盤 — Composable, Modifier, remember / State, Column / Row / Box / LazyColumn, テキスト, ジェスチャ, セマンティクス |
+| [android-compose-components](skills/android-compose-components/) | Material3 コンポーネント — Button, TextField, Card, Scaffold, Dialog, BottomSheet, NavigationBar, MaterialTheme |
+| [android-compose-graphics-animation](skills/android-compose-graphics-animation/) | Compose アニメーション・描画 — AnimatedVisibility, animate*AsState, Animatable, Canvas, DrawScope, Brush |
+| [android-architecture](skills/android-architecture/) | 推奨アーキテクチャ — UI / Domain / Data レイヤー, UDF, ViewModel, Lifecycle, Hilt DI, Paging 3 |
+| [android-navigation](skills/android-navigation/) | 画面遷移 — Navigation 3 (NavDisplay), Navigation Compose, 型安全ルート, ディープリンク / App Links, 予測型戻る |
+| [android-data](skills/android-data/) | データ層 — Room, DataStore, MediaStore, スコープ付きストレージ, Retrofit / OkHttp |
+| [android-background-work](skills/android-background-work/) | バックグラウンド処理 — WorkManager, Service, AlarmManager, BroadcastReceiver, コルーチン / Flow |
+| [android-platform-core](skills/android-platform-core/) | プラットフォーム基盤 — Activity, Intent, AndroidManifest, ランタイム権限, 通知, WindowInsets, Glance ウィジェット |
+| [android-media-camera](skills/android-media-camera/) | Media3 / CameraX — ExoPlayer, MediaSession, DRM, ImageCapture, ImageAnalysis, VideoCapture |
+| [android-testing](skills/android-testing/) | テスト — JUnit4, Espresso, Robolectric, MockK / Mockito, UiAutomator, Compose UI テスト |
+| [android-build-gradle](skills/android-build-gradle/) | Gradle ビルド — AGP, Kotlin DSL, version catalog, KSP, R8/ProGuard, App Bundle |
+| [android-wear](skills/android-wear/) | Wear OS — Wear Compose, Tiles / ProtoLayout, Complications, Health Services, Watch Face Format |
+
+### Windows プラットフォーム
+
+対象は Windows アプリ開発のみ（IT Pro / Windows Server / IoT / ドライバー / Windows 365 は対象外）。WinUI 3 (`Microsoft.UI.Xaml`) と WPF (`System.Windows`) / WinForms (`System.Windows.Forms`) は同名 API を持つため、後者は `windows-interop-modernize` が担当し統合していない。
+
+| スキル | 説明 |
+| -------- | ------ |
+| [windows-winui-controls](skills/windows-winui-controls/) | WinUI 3 コントロール — Button, TextBox, ListView, ItemsView, NavigationView, TabView, ContentDialog, CommandBar, InfoBar, WebView2 |
+| [windows-winui-ui](skills/windows-winui-ui/) | XAML UI 基盤 — Grid / StackPanel / Canvas, XAML マークアップ, Style / ControlTemplate / VisualState, x:Bind / Binding, Storyboard / Composition |
+| [windows-app-sdk](skills/windows-app-sdk/) | Windows App SDK — AppInstance / アクティベーション, AppWindow / タイトルバー, AppNotification, MRT Core, ウィジェット, 配置とリリースチャネル |
+| [windows-design](skills/windows-design/) | Fluent Design ガイドライン — レイアウト / 角丸 / 影, カラー / Mica / Acrylic, タイポグラフィ / アイコン, モーション, ナビゲーション / コマンド, アクセシビリティ |
+| [windows-data-storage](skills/windows-data-storage/) | ファイル・設定・データ — Windows.Storage, ApplicationData, FileOpenPicker / FolderPicker, JSON / XML, SQLite |
+| [windows-platform-integration](skills/windows-platform-integration/) | OS 統合 — デバイス / センサー, ネットワーク, 入力 / ポインター / インク, グローバリゼーション, 資格情報 / Windows Hello, クリップボード / 共有 / ジャンプリスト |
+| [windows-graphics-media](skills/windows-graphics-media/) | グラフィックス・メディア — Direct2D / DirectWrite, Direct3D 11/12 / DXGI, Composition / Visual, MediaCapture / 画面キャプチャ, MediaPlayer / AudioGraph |
+| [windows-ai](skills/windows-ai/) | Windows AI — Windows AI Foundry (Phi Silica, OCR, Imaging), Windows ML / ONNX Runtime, Foundry Local, MCP / App Actions, DirectML |
+| [windows-packaging-publish](skills/windows-packaging-publish/) | パッケージング・公開 — MSIX, パッケージ ID, App Installer / 配置, SignTool / Trusted Signing, Microsoft Store / Partner Center |
+| [windows-interop-modernize](skills/windows-interop-modernize/) | 相互運用・近代化 — Win32 / COM, C++/WinRT, C#/WinRT, XAML Islands, WPF / WinForms 連携, UWP からの移行 |
+| [windows-testing-performance](skills/windows-testing-performance/) | 品質 — 単体テスト / WinAppDriver / WACK, 起動時間 / 仮想化 / プロファイリング, UI オートメーション, DispatcherQueue / スレッド |
 
 ### フレームワーク / ライブラリ
 
