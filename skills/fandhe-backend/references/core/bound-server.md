@@ -1,0 +1,43 @@
+# BoundServer
+
+`Server::bind` が返す、リスニングソケットを保持した状態のサーバ。accept ループを回し、コネクションごとに接続処理タスクを spawn する。
+
+## Signature / Usage
+
+```rust
+let bound = server.bind("127.0.0.1:3000").await?;
+bound.run().await
+```
+
+graceful shutdown 付き:
+
+```rust
+use std::time::Duration;
+
+let bound = server.bind("127.0.0.1:3000").await?;
+bound.run_until(async {
+    tokio::signal::ctrl_c().await.ok();
+}).await
+```
+
+## Options / Props
+
+| Name | Type | Description |
+|------|------|-------------|
+| `local_addr()` | `-> io::Result<SocketAddr>` | バインドしたローカルアドレスを返す（`0` ポート指定時の実ポート確認用） |
+| `run()` | `async fn(self) -> io::Result<()>` | shutdown 手段を持たない `run_until(std::future::pending())` の薄いラッパー |
+| `run_until(shutdown)` | `async fn(self, F: Future<Output = ()>) -> io::Result<()>` | `shutdown` 完了まで accept ループを回し、その後 graceful shutdown シーケンスを実行する |
+
+## Notes
+
+- 同時接続数は `Server::max_connections` の `Semaphore` で強制する。上限中は新規 `accept` 自体を保留し、あふれた接続は listen backlog に滞留させる（あふれた分は OS 側で拒否）
+- accept エラー（`EMFILE`/`ENFILE` 等の一過性エラー）ではループを終了させず、`ACCEPT_ERROR_BACKOFF`（10ms）待って次の accept を再試行する
+- `run_until` の graceful shutdown シーケンス: 1) accept 停止（shutdown フラグを立てリスナーを drop）、2) in-flight 完了待ち（`shutdown_grace_period` を上限に全 permit の解放を待つ）、3) 上限超過時は残存タスクを強制 abort
+- shutdown_flag 受信後は `UpgradeHandler` がマッチする新規リクエストも 503 で拒否する
+- `run_until` の Future 自体が外部キャンセルされても in-flight 接続は abort されず、独立タスクとして完走する（`CancelSafeJoinSet` による）
+- 既知の限界: shutdown_flag 受信前に Upgrade 委譲済みの WebSocket 専用タスクは `run_until` の `JoinSet` 管理外のため、grace 超過時の強制 abort 対象にならない
+
+## Related
+
+- [Server](./server.md)
+- [Handler](./handler.md)

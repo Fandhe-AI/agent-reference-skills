@@ -13,7 +13,7 @@ user-invocable: false
 
 fandhe-frontend は Rust 製フロントエンドフレームワーク。SSR / SPA / SSG / View Transitions を単一フレームワークで網羅し、単一実行ファイル（Docker 想定）でのデプロイまでを担う。テキスト補間の既定エスケープ・`unsafe` の排除（`core` / `interactive` は `forbid(unsafe_code)`）・依存クレート数の上限管理を製品仕様として固定した、AI 時代のセキュリティリスク低減志向の設計。
 
-**Primitives / Themes と Ark UI / Chakra UI の使い分け** — 本スキルの Primitives（`fandhe-frontend-headless-ui`）・Themes（`fandhe-frontend-pre-styled-ui`）はコンポーネント名・anatomy 構成が Ark UI / Chakra UI v3 と対応するが、**すべて Rust API** であり `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは別物（相互に import できない）。Primitives はスタイル無しの anatomy と状態機械のみを提供する headless 層（`skills/ark-ui/` 相当）、Themes は Primitives に既定 CSS と variant を足した薄い styled ラッパー層（`skills/chakra-ui/` 相当）。React/JS プロジェクトの調査には `skills/ark-ui/` `skills/chakra-ui/` を、Rust プロジェクトの調査には本スキルを使うこと。
+**他スキルとの使い分け** — 本スキルの Primitives（`fandhe-frontend-headless-ui`）・Themes（`fandhe-frontend-pre-styled-ui`）はコンポーネント名・anatomy 構成が Ark UI / Chakra UI v3 と対応するが、**すべて Rust API** であり `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは別物（相互に import できない）。Primitives はスタイル無しの anatomy と状態機械のみを提供する headless 層（`skills/ark-ui/` 相当）、Themes は Primitives に既定 CSS と variant を足した薄い styled ラッパー層（`skills/chakra-ui/` 相当）。React/JS プロジェクトの調査には `skills/ark-ui/` `skills/chakra-ui/` を、Rust プロジェクトの調査には本スキルを使うこと。バックエンド（Rust 製 HTTP サーバーフレームワーク）を調べる場合は `skills/fandhe-backend/` を参照すること。
 
 公式ドキュメント: https://fandhe-ai.github.io/fandhe-frontend/ / リポジトリ: https://github.com/Fandhe-AI/fandhe-frontend
 

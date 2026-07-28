@@ -80,7 +80,7 @@ skills/
     rules/                   ← (任意) 適用ルール
 ```
 
-## スキル一覧（全 63 スキル）
+## スキル一覧（全 64 スキル）
 
 ### Apple プラットフォーム
 
@@ -116,6 +116,7 @@ skills/
 | [hermes-agent](skills/hermes-agent/) | Hermes Agent — AI CLI エージェント, MCP, Voice Mode, Messaging Gateway |
 | [hono](skills/hono/) | Hono — 軽量 Web フレームワーク, Middleware, Helpers, マルチランタイム |
 | [go-echo](skills/go-echo/) | Echo — Go 製高性能 Web フレームワーク, Routing, Middleware, Binding, Validation |
+| [fandhe-backend](skills/fandhe-backend/) | fandhe-backend — Rust 製バックエンド HTTP サーバーフレームワーク, Server / Router / Handler, Middleware / UpgradeHandler / RequestGate, sans-IO HTTP/1.1, プラグイン |
 | [nuqs](skills/nuqs/) | nuqs — URL search params state manager |
 | [inngest](skills/inngest/) | Inngest — イベント駆動 Durable Execution, createFunction, step, フロー制御 |
 
