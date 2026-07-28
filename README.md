@@ -80,7 +80,7 @@ skills/
     rules/                   ← (任意) 適用ルール
 ```
 
-## スキル一覧（全 62 スキル）
+## スキル一覧（全 63 スキル）
 
 ### Apple プラットフォーム
 
@@ -108,6 +108,7 @@ skills/
 | [react-flow](skills/react-flow/) | React Flow — ノード, エッジ, カスタムノード, レイアウト |
 | [chakra-ui](skills/chakra-ui/) | Chakra UI v3 — コンポーネント, テーマ, レシピ, スタイルプロップ |
 | [ark-ui](skills/ark-ui/) | Ark UI — headless / unstyled コンポーネント (Chakra v3 の Zag.js 基盤), asChild, RootProvider, collections |
+| [fandhe-frontend](skills/fandhe-frontend/) | fandhe-frontend — Rust 製フロントエンドフレームワーク, SSR/SPA/SSG/View Transitions, hydration, Primitives (headless) / Themes (styled), fw CLI |
 | [storybook](skills/storybook/) | Storybook — CSF, args, decorators, play function, autodocs |
 | [better-auth](skills/better-auth/) | Better Auth — 認証, OAuth, passkey, twoFactor, プラグイン |
 | [supabase](skills/supabase/) | Supabase — database, auth, storage, edge-functions, realtime, RLS |
