@@ -34,8 +34,8 @@ context->DrawIndexed(indexCount, 0, 0);
 | Name | Type | Description |
 |------|------|-------------|
 | NumViews | UINT | Number of render targets to bind (0 to `D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT`, typically 8). |
-| ppRenderTargetViews | ID3D11RenderTargetView* const* | Array of render-target views; pass `NULL`/0 to unbind all. |
-| pDepthStencilView | ID3D11DepthStencilView* | Depth-stencil view to bind, or `NULL`. |
+| ppRenderTargetViews | `ID3D11RenderTargetView* const*` | Array of render-target views; pass `NULL`/0 to unbind all. |
+| pDepthStencilView | `ID3D11DepthStencilView*` | Depth-stencil view to bind, or `NULL`. |
 
 `Draw` / `DrawIndexed` parameters:
 
