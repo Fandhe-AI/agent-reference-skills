@@ -1,0 +1,126 @@
+---
+name: android-wear
+description: >
+  Wear OS (Kotlin) の androidx.wear API・Watch Face Format (WFF) リファレンス。
+  Wear Compose の CurvedLayout, rotary input, ambient mode, ScalingLazyColumn。
+  Tiles / ProtoLayout, ComplicationDataSourceService と ComplicationData 型,
+  Health Services (MeasureClient, ExerciseClient, PassiveMonitoringClient),
+  WFF の XML 要素・式・コンプリケーションスロット・ユーザー設定。
+user-invocable: false
+---
+
+# Wear OS (Kotlin) リファレンス
+
+Wear OS 公式ドキュメントの主要 API を網羅したスキル。
+`androidx.wear.compose.*` はモバイルの `androidx.compose.*` とは別 API であり、同名コンポーネントでも取り違えに注意する。
+ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+## ディレクトリ構成
+
+```text
+skills/android-wear/
+  SKILL.md
+  references/
+    wear-compose/
+      README.md
+      theme.md
+      scaffold.md
+      time-text.md
+      lists.md
+      button.md
+      edge-button.md
+      icon-button.md
+      selection-controls.md
+      card.md
+      list-header.md
+      picker.md
+      dialogs.md
+      progress-indicators.md
+      curved-layout.md
+      swipe-to-reveal.md
+      rotary-input.md
+      ambient-mode.md
+      swipe-dismissable-nav-host.md
+    tiles/
+      README.md
+      tile-service.md
+      tile-builders.md
+      dimensions.md
+      color-and-type.md
+      layout-elements.md
+      modifiers.md
+      material3-layout.md
+      material3-buttons.md
+      material3-cards-progress.md
+      actions-and-interactivity.md
+      updating-tiles.md
+      platform-data.md
+      tile-preview-debugging.md
+    complications-health/
+      README.md
+      complicationdatasourceservice.md
+      shorttextcomplicationdata.md
+      longtextcomplicationdata.md
+      rangedvaluecomplicationdata.md
+      monochromaticimagecomplicationdata.md
+      smallimagecomplicationdata.md
+      nodatacomplicationdata.md
+      complicationtext.md
+      complicationdatasourceupdaterequester.md
+      healthservicesclient.md
+      measureclient.md
+      exerciseclient.md
+      passivemonitoringclient.md
+      datatype.md
+      datapointcontainer.md
+      healthservicespermissions.md
+      healthservicessimulation.md
+    watch-face/
+      README.md
+      overview.md
+      setup.md
+      root-element.md
+      scene-and-parts.md
+      shapes.md
+      transform.md
+      time.md
+      text.md
+      images.md
+      expressions.md
+      complications.md
+      user-configurations.md
+      personalization-and-photos.md
+      ambient-mode.md
+      effects.md
+      versions.md
+      memory-optimization.md
+      build-and-debug.md
+```
+
+## 探索手順
+
+タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
+
+1. 下記マッピング表でタスクに対応するカテゴリを探す
+2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
+3. 該当ページの `.md` を Read して詳細を確認する
+
+## タスク → カテゴリ マッピング
+
+| タスク | カテゴリ | 参照 README |
+|--------|---------|------------|
+| Wear Compose でテーマ・画面骨格 (Scaffold/TimeText) を組みたい | wear-compose | [references/wear-compose/README.md](references/wear-compose/README.md) |
+| ScalingLazyColumn / TransformingLazyColumn でリスト表示したい | wear-compose | [references/wear-compose/README.md](references/wear-compose/README.md) |
+| Button / IconButton / SelectionControls / Card / Picker / Dialog を使いたい | wear-compose | [references/wear-compose/README.md](references/wear-compose/README.md) |
+| CurvedLayout / rotary input (クラウン・ベゼル) / ambient mode を実装したい | wear-compose | [references/wear-compose/README.md](references/wear-compose/README.md) |
+| Tile (TileService) を実装したい | tiles | [references/tiles/README.md](references/tiles/README.md) |
+| ProtoLayout / Material3 タイル部品でレイアウトを組みたい | tiles | [references/tiles/README.md](references/tiles/README.md) |
+| Tile のアクション・更新・プラットフォームデータ連携をしたい | tiles | [references/tiles/README.md](references/tiles/README.md) |
+| ComplicationDataSourceService とコンプリケーションデータ型を実装したい | complications-health | [references/complications-health/README.md](references/complications-health/README.md) |
+| Health Services (MeasureClient/ExerciseClient/PassiveMonitoringClient) で運動・健康データを扱いたい | complications-health | [references/complications-health/README.md](references/complications-health/README.md) |
+| Health Services の権限・シミュレーションを確認したい | complications-health | [references/complications-health/README.md](references/complications-health/README.md) |
+| Watch Face Format (WFF) の XML 要素・シーン・図形・時刻表示を書きたい | watch-face | [references/watch-face/README.md](references/watch-face/README.md) |
+| WFF の式・データソース・コンプリケーションスロット・ユーザー設定を扱いたい | watch-face | [references/watch-face/README.md](references/watch-face/README.md) |
+| WFF のビルド・デバッグ・メモリ最適化・バージョン対応を確認したい | watch-face | [references/watch-face/README.md](references/watch-face/README.md) |
+
+モバイルの Jetpack Compose は `android-compose-ui` / `android-compose-components`、モバイルのウィジェット（Glance）は `android-platform-core` が担当する（本スキルの対象外）。
