@@ -29,16 +29,11 @@ kernel void my_kernel(device float4 *p [[buffer(0)]],
 | Sampling/interpolation: `center_perspective` (default), `center_no_perspective`, `centroid_perspective`, `centroid_no_perspective`, `sample_perspective`, `sample_no_perspective`, `flat` | `stage_in` fragment struct member | Selects interpolation method; `[[position]]` forces `center_no_perspective`, integers force `flat` |
 | `static` / `extern` | program-scope declarations | `static` only for `device`-space program-scope variables (not inside a function); `thread_local` is unsupported |
 
-## Signature / Usage — kernel dispatch relation
-
-```metal
-// (gx, gy) = (wx*Sx + lx, wy*Sy + ly); simdgroups_per_threadgroup = ceil(threads_per_threadgroup / threads_per_simdgroup)
-```
-
 ## Notes
 
 - These are `.metal`-source binding attributes, not the host-side argument encoding APIs (`MTLArgumentEncoder`, `[MTLRenderCommandEncoder setBuffer:]`) covered by `apple-graphics`; index values here must match what the host binds at those slots.
 - Buffers passed as separate arguments to the same function must not alias; `size_t`/`ptrdiff_t` (or aggregates containing them) cannot be used as graphics/kernel argument types.
+- Kernel dispatch relation between the grid/threadgroup built-ins above: `(gx, gy) = (wx*Sx + lx, wy*Sy + ly)`; `simdgroups_per_threadgroup = ceil(threads_per_threadgroup / threads_per_simdgroup)`.
 - Detailed per-stage built-in attribute tables (vertex-input, fragment-input/output, object/mesh-input) beyond the kernel/intersection subset above are in spec sections 5.2.3.1-5.2.3.10; consult the official PDF for the full enumeration if a stage other than kernel/intersection is needed.
 
 ## Related
