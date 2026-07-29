@@ -1,4 +1,4 @@
-# Move to C++/WinRT from C#
+# Moving from C# to C++/WinRT
 
 A catalog of the technical details involved in porting a C# project's source code to its equivalent in C++/WinRT, grouped into language-projection changes, language-syntax changes, language-procedure changes, and C++/WinRT-specific porting tasks (IDL authoring, boxing/unboxing, collections, events).
 

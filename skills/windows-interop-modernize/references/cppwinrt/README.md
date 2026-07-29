@@ -18,7 +18,7 @@
 | Interop between C++/WinRT and the ABI | Techniques for converting between ABI types and C++/WinRT projected types. | [interop-abi.md](./interop-abi.md) |
 | Interop Between C++/WinRT and C++/CX | Helper functions for converting objects between C++/CX and C++/WinRT. | [interop-winrt-cx.md](./interop-winrt-cx.md) |
 | C++/WinRT Configuration Macros | Preprocessor macros that configure C++/WinRT's generated code behavior. | [macros.md](./macros.md) |
-| Move to C++/WinRT from C# | A catalog of technical details for porting C# source code to C++/WinRT (projection, syntax, procedure, IDL). | [move-to-winrt-from-csharp.md](./move-to-winrt-from-csharp.md) |
+| Moving from C# to C++/WinRT | A catalog of technical details for porting C# source code to C++/WinRT (projection, syntax, procedure, IDL). | [move-to-winrt-from-csharp.md](./move-to-winrt-from-csharp.md) |
 | Move to C++/WinRT from C++/CX | A catalog of technical differences between C++/CX and C++/WinRT for porting. | [move-to-winrt-from-cx.md](./move-to-winrt-from-cx.md) |
 | Move to C++/WinRT from WRL | A porting catalog for replacing WRL constructs with their C++/WinRT equivalents. | [move-to-winrt-from-wrl.md](./move-to-winrt-from-wrl.md) |
 | C++/WinRT Naming Conventions | Reserved-name rules for the winrt namespace and its sub-namespaces. | [naming.md](./naming.md) |

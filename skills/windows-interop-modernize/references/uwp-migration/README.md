@@ -11,7 +11,7 @@
 | Migrate from UWP to the Windows App SDK | Overview of moving a C# or C++/WinRT UWP app to Windows App SDK and WinUI 3. | [migration-overview.md](./migration-overview.md) |
 | Additional migration guidance | Miscellaneous migration tips: conditional compilation, XAML resources, event revokers. | [misc-migration-guidance.md](./misc-migration-guidance.md) |
 | MRT to MRT Core migration | Migration guidance for moving from UWP MRT to Windows App SDK MRT Core. | [mrtcore-migration.md](./mrtcore-migration.md) |
-| Mapping UWP APIs to the Windows App SDK | Namespace, class, and member mapping from Windows.* to Microsoft.* equivalents. | [namespace-mapping.md](./namespace-mapping.md) |
+| Mapping UWP APIs to the Windows App SDK | Namespace, class, and member mapping from `Windows.*` to `Microsoft.*` equivalents. | [namespace-mapping.md](./namespace-mapping.md) |
 | Overall migration strategy | Practical strategies and environment-setup steps for migrating UWP source code. | [overall-migration-strategy.md](./overall-migration-strategy.md) |
 | Push notifications functionality migration | Migration for push notifications from Partner Center to Azure App Registration. | [push-notifications-migration.md](./push-notifications-migration.md) |
 | Threading functionality migration | Migration for moving from CoreDispatcher to DispatcherQueue threading model. | [threading-migration.md](./threading-migration.md) |
