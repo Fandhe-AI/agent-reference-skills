@@ -5,8 +5,8 @@ Introductory material for the PTX instruction set (chapter 9, sections 9.1–9.6
 ## Signature / Usage
 
 ```ptx
-@p  add.s32 d, a, b;   // predicated instruction: executes only if predicate p is true
-@!p add.s32 d, a, b;   // executes only if p is false
+setp.eq.f32  p,y,0;     // is y zero?
+@!p div.f32      ratio,x,y  // avoid division by zero
 ```
 
 ## Options / Props
