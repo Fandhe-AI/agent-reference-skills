@@ -80,7 +80,7 @@ skills/
     rules/                   ← (任意) 適用ルール
 ```
 
-## スキル一覧（全 89 スキル）
+## スキル一覧（全 90 スキル）
 
 ### Apple プラットフォーム
 
@@ -93,6 +93,7 @@ skills/
 | [apple-uikit](skills/apple-uikit/) | UIKit — UIViewController, ビュー/コントロール, UICollectionView / UITableView, Auto Layout |
 | [apple-appkit](skills/apple-appkit/) | AppKit — NSApplication, NSWindow, ビュー/コントロール, NSTableView / NSCollectionView |
 | [apple-graphics](skills/apple-graphics/) | Metal / Core Animation / Core Graphics / Core Image / SpriteKit / SceneKit |
+| [apple-silicon](skills/apple-silicon/) | Apple Silicon GPU コンピュート — Metal Shading Language, compute dispatch / unified memory, MPS / MPSGraph, MLX |
 | [apple-spatial](skills/apple-spatial/) | RealityKit / ARKit / visionOS — 空間コンピューティング |
 | [apple-media](skills/apple-media/) | AVFoundation 再生 / キャプチャ / オーディオ / PhotoKit |
 | [apple-ml](skills/apple-ml/) | Core ML / Create ML / Vision / Natural Language / Speech — オンデバイス機械学習 |
