@@ -11,14 +11,14 @@ pip install mlx
 Linux で CUDA を使う場合はエクストラを指定する。
 
 ```sh
-pip install mlx[cuda12]
-pip install mlx[cuda13]
+pip install 'mlx[cuda12]'
+pip install 'mlx[cuda13]'
 ```
 
 Linux で CPU のみを使う場合。
 
 ```sh
-pip install mlx[cpu]
+pip install 'mlx[cpu]'
 ```
 
 ## ソースからビルドする（Python API）
