@@ -14,3 +14,4 @@
 | StorageFileQueryResult | Enumerates files matched by a `StorageFolder` query, optionally indexer-backed. | [storage-file-query-result.md](./storage-file-query-result.md) |
 | QueryOptions | Configures file/folder query filters, sort order, and indexer usage. | [query-options.md](./query-options.md) |
 | CommonFileQuery | Enum of predefined sort/scan modes for file queries (`OrderByName`, `OrderByDate`, ...). | [common-file-query.md](./common-file-query.md) |
+| StorageFolderQueryResult / StorageItemQueryResult | Sibling `StorageFolder` query results: folders-only, and mixed files+folders enumeration. | [storage-folder-item-query-result.md](./storage-folder-item-query-result.md) |

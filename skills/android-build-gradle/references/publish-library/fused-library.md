@@ -51,7 +51,7 @@ publishing {
 ## Notes
 
 - Requires the Maven Publish Plugin applied alongside `com.android.fused-library`.
-- Included local Android library modules must already be published to a configured repository before being fused.
+- A directly `include`d local Android library module (e.g. `include(project(":image-rendering"))`) needs no prior publishing. Publishing to a local configured repository is only required when an `include`d dependency (e.g. an external library) itself transitively depends on a local Android library project, since transitive dependencies are not packaged.
 - Constraints: identical classpaths or identical Java resource paths across included libraries fail the build; Android resources are merged by dependency order (first match wins on name clashes); Data Binding is not supported; multiple build types/flavors cannot be fused into a single fused library; the output is publication-only by default (cannot be consumed as a project dependency) unless `android.experimental.fusedLibrarySupport.publicationOnly=false` is set in `gradle.properties`.
 - Debug with `gradle :<module>:report` (JSON dependency report in `build/reports/`) or `gradle :<module>:dependencies`.
 - Known gaps at time of writing: consumer ProGuard rules not literally named `proguard.txt` fail the build pre-AGP 9.1; `.aar` file dependencies are unsupported; no RenderScript or Prefab artifact support.

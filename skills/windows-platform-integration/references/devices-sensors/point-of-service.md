@@ -1,6 +1,6 @@
 # Point of Service (Windows.Devices.PointOfService)
 
-Retail/hospitality peripheral APIs: `BarcodeScanner`, `MagneticStripeReader`, `PosPrinter`/`ReceiptPrinter`, `CashDrawer`, and `LineDisplay`. All device types share the same create → claim → enable → use → release lifecycle, illustrated below with `BarcodeScanner`.
+Retail/hospitality peripheral APIs: `BarcodeScanner`, `MagneticStripeReader`, `PosPrinter` (with `ClaimedReceiptPrinter`/`ClaimedSlipPrinter`/`ClaimedJournalPrinter` stations), `CashDrawer`, and `LineDisplay`. All device types share the same create → claim → enable → use → release lifecycle, illustrated below with `BarcodeScanner`.
 
 ## Signature / Usage
 
@@ -18,7 +18,7 @@ if (barcodeScanner != null)
     if (claimedScanner != null)
     {
         // Respond to another app's claim request so the OS doesn't revoke this one.
-        claimedScanner.ReleaseDeviceRequested += (sender, args) => sender.RetainDevice();
+        claimedScanner.ReleaseDeviceRequested += (object sender, ClaimedBarcodeScanner myScanner) => myScanner.RetainDevice();
 
         // 3. Enable it for I/O.
         await claimedScanner.EnableAsync();
@@ -26,7 +26,9 @@ if (barcodeScanner != null)
         // 4. Use it.
         claimedScanner.DataReceived += (sender, args) =>
         {
-            string barcodeData = args.Report.ScanDataLabel.ToString();
+            // ScanDataLabel is an IBuffer; decode it via DataReader to get the string.
+            var reader = Windows.Storage.Streams.DataReader.FromBuffer(args.Report.ScanDataLabel);
+            string barcodeData = reader.ReadString(args.Report.ScanDataLabel.Length);
         };
     }
 }

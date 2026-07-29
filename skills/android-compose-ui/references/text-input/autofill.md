@@ -33,7 +33,8 @@ Column {
 
 ## Notes
 
-- Package: `androidx.compose.ui.autofill` (`ContentType`, `LocalAutofillManager`, `AutofillManager`), semantics property lives in `androidx.compose.ui.semantics`.
+- Package: `androidx.compose.ui.autofill` (`ContentType`, `AutofillManager`); `LocalAutofillManager` lives in `androidx.compose.ui.platform` (CompositionLocals), and semantics property lives in `androidx.compose.ui.semantics`.
+- `LocalAutofillHighlightColor` is defined in `androidx.compose.foundation.text` (foundation artifact, not `ui.autofill`) and is `@Deprecated` in favor of `LocalAutofillHighlightBrush`, which supersedes it with a `Brush`-based override.
 - Requires device/emulator autofill to be enabled and a credential provider configured; behavior otherwise depends on the installed provider.
 - Credentials are saved automatically when the user navigates away from the screen; explicit `commit()` is only needed for in-place submit flows that don't navigate.
 - `ContentType.NewUsername` / `ContentType.NewPassword` also surface a "Suggest strong password" toolbar action handled entirely by the system.

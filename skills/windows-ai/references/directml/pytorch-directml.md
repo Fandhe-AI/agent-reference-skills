@@ -38,3 +38,4 @@ print(result.item())  # 3
 
 - [DirectML Overview](./directml-overview.md)
 - [ONNX Runtime DirectML execution provider](./onnxruntime-directml.md)
+- [GPU-accelerated ML training with DirectML](./gpu-accelerated-training.md)

@@ -39,3 +39,4 @@ class ExampleActivity : AppCompatActivity() {
 - [AndroidEntryPoint](./android-entry-point.md)
 - [Hilt components and scopes](./hilt-components-scopes.md)
 - [Use Hilt with other Jetpack libraries](./hilt-jetpack.md)
+- [hiltViewModel() Compose artifact/package split](./hilt-viewmodel-compose-split.md)

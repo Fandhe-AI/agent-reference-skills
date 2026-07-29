@@ -9,6 +9,7 @@
 | Compose UI (PlayerSurface, ContentFrame) | Compose primitives and state holders / Material 3 composables for playback UI. | [compose-ui.md](./compose-ui.md) |
 | Customization | Injectable RenderersFactory / LoadControl and other component customization. | [customization.md](./customization.md) |
 | DataSource.Factory and Caching | HTTP data loading and on-disk caching (SimpleCache, CacheDataSource, downloads). | [data-source-cache.md](./data-source-cache.md) |
+| Downloading Media (DownloadManager, DownloadService, DownloadHelper) | Offline download management, foreground download service, adaptive-stream track selection for downloads. | [downloading-media.md](./downloading-media.md) |
 | DRM | DRM-protected playback configuration (Widevine, ClearKey, PlayReady). | [drm.md](./drm.md) |
 | ExoPlayer | Default `Player` implementation and `ExoPlayer.Builder` for injecting components. | [exoplayer.md](./exoplayer.md) |
 | Live Streaming | `Player` and `MediaItem` APIs specific to live content: querying live offset and convergence. | [live-streaming.md](./live-streaming.md) |

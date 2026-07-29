@@ -10,6 +10,7 @@
 | Collections with C++/WinRT | Functions and base classes for passing std::vector/std::map as Windows Runtime collections. | [collections.md](./collections.md) |
 | winrt::com_ptr and winrt::Windows::Foundation::IInspectable | Smart pointer that wraps an implementation type and manages its reference count. | [com-ptr-iinspectable.md](./com-ptr-iinspectable.md) |
 | Consume APIs with C++/WinRT | Shows how to consume runtime classes from Windows, third-party components, or own projects. | [consume-apis.md](./consume-apis.md) |
+| Consume COM Components with C++/WinRT | Uses winrt::com_ptr (put_void, put, as, try_as, capture) to consume classic COM APIs such as Direct2D/DirectX. | [consume-com.md](./consume-com.md) |
 | Error Handling: hresult_error, check_hresult, throw_last_error | C++/WinRT converts error HRESULTs into exceptions and provides helper functions. | [error-handling.md](./error-handling.md) |
 | Events and Delegates: event_token, auto_revoke, winrt::event | Shows how to register, revoke, and author event-handling delegates in C++/WinRT. | [events-delegates.md](./events-delegates.md) |
 | Get Started with C++/WinRT | Walks through a simple C++/WinRT console app and adding support to Desktop projects. | [get-started.md](./get-started.md) |
@@ -17,6 +18,7 @@
 | Interop between C++/WinRT and the ABI | Techniques for converting between ABI types and C++/WinRT projected types. | [interop-abi.md](./interop-abi.md) |
 | Interop Between C++/WinRT and C++/CX | Helper functions for converting objects between C++/CX and C++/WinRT. | [interop-winrt-cx.md](./interop-winrt-cx.md) |
 | C++/WinRT Configuration Macros | Preprocessor macros that configure C++/WinRT's generated code behavior. | [macros.md](./macros.md) |
+| Move to C++/WinRT from C# | A catalog of technical details for porting C# source code to C++/WinRT (projection, syntax, procedure, IDL). | [move-to-winrt-from-csharp.md](./move-to-winrt-from-csharp.md) |
 | Move to C++/WinRT from C++/CX | A catalog of technical differences between C++/CX and C++/WinRT for porting. | [move-to-winrt-from-cx.md](./move-to-winrt-from-cx.md) |
 | Move to C++/WinRT from WRL | A porting catalog for replacing WRL constructs with their C++/WinRT equivalents. | [move-to-winrt-from-wrl.md](./move-to-winrt-from-wrl.md) |
 | C++/WinRT Naming Conventions | Reserved-name rules for the winrt namespace and its sub-namespaces. | [naming.md](./naming.md) |

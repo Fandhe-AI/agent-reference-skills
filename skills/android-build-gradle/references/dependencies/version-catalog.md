@@ -52,3 +52,4 @@ dependencies {
 
 - [dependency-coordinates.md](./dependency-coordinates.md)
 - [compose-bom.md](./compose-bom.md)
+- [migrate-to-catalogs.md](./migrate-to-catalogs.md)

@@ -61,7 +61,7 @@ dependencies {
 
 - Macrobenchmark tests live in a dedicated `com.android.test` module (not `androidTest` inside `:app`), since the library launches the target app as a separate process and instruments it externally via UI Automator.
 - `StartupMode.COLD` is required to get a representative `timeToInitialDisplayMs`; reusing a warm process under `COLD` mode is a common source of misleading results.
-- Emulators without Play Store images or debug builds without R8 disable some compilation modes; benchmarks should run on release-like (`isDebuggable = false`, but signed as the "benchmark" build type) builds for realistic numbers.
+- Emulators are discouraged because results aren't representative of real end-user performance (and Macrobenchmark errors out on a low-battery device); the target app should be non-debuggable and preferably minified (release-like, signed as the "benchmark" build type) for realistic numbers.
 
 ## Related
 

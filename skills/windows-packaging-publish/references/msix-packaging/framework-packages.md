@@ -15,23 +15,30 @@ A framework package is an MSIX package that other packages declare as a dependen
 
 ```cpp
 // Dynamic dependency API — take a runtime dependency on a framework package
-// from an unpackaged (or externally-located) desktop app
-MddAddPackageDependency(packageDependencyId, MddPackageDependencyProcessorArchitectures::None,
-                         MddCreatePackageDependencyOptions::None, &packageDependencyContext, nullptr);
+// already resolved via MddTryCreatePackageDependency, from an unpackaged
+// (or externally-located) desktop app
+HRESULT MddAddPackageDependency(
+  PCWSTR                         packageDependencyId,
+  INT32                          rank,
+  MddAddPackageDependencyOptions options,
+  MDD_PACKAGEDEPENDENCY_CONTEXT  *packageDependencyContext,
+  PWSTR                          *packageFullName
+) noexcept;
 ```
 
 ## Options / Props
 
 | Concept | Description |
 |---------|-------------|
-| Framework package | An MSIX package built to be depended on by other packages rather than run standalone; declares itself via `IsFrameworkPackage` in its own manifest |
-| `PackageDependency` | Manifest element a dependent package uses to statically reference a framework package by name/publisher/minimum version |
-| Dynamic dependencies | Run-time API (`MddBootstrapInitialize`/`MddAddPackageDependency` family) that lets an unpackaged or externally-located app pull in a framework package (most commonly the Windows App SDK's own) without a manifest-level dependency |
+| Framework package | An MSIX package built to be depended on by other packages rather than run standalone; declares itself via the `<Framework>` element (under `<Properties>`) in its own manifest, defaulting to `false` |
+| `PackageDependency` | Manifest element a dependent package uses to statically reference a framework package by `Name`/`Publisher`/`MinVersion` (the resolved package's version must be >= `MinVersion`) |
+| Dynamic dependencies | Run-time API (`MddTryCreatePackageDependency`/`MddAddPackageDependency` family) that lets an unpackaged or externally-located app pull in a framework package (most commonly the Windows App SDK's own) without a manifest-level dependency |
 
 ## Notes
 
 - The Windows App SDK deployment architecture (see windows-app-sdk-deployment-architecture.md in this skill) documents the Windows App SDK's own framework package specifically; this page covers the generic MSIX mechanism that any package can use to be, or depend on, a framework package.
-- Framework packages must match major version and publisher with what a dependent package declares; Windows services framework packages independently of the apps that depend on them, so a shared bug fix can update all dependents at once.
+- A framework package cannot declare dependencies on other packages, and cannot define `Applications` or `Capabilities` in its manifest.
+- Windows services framework packages side-by-side, independent of the apps that depend on them: install-time references (from `PackageDependency`) keep a version installed while any app depends on it, and run-time references (from `MddAddPackageDependency`) keep a version resolved while an app is actively using it, so a shared bug fix can update all dependents without breaking one still running the old version.
 - Common use of dynamic dependencies: an unpackaged desktop app referencing the Windows App SDK runtime, or referencing WinUI 2 / the DirectX Runtime as a framework package from an unpackaged app.
 
 ## Related

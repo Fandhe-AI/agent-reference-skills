@@ -44,5 +44,6 @@ public sealed class PopInThemeAnimation : Timeline
 ## Related
 
 - [EntranceThemeTransition](./entrance-theme-transition.md)
+- [Theme Transitions](./theme-transitions.md)
 - [Transitions Property](./transitions-property.md)
 - [Storyboard](./storyboard.md)

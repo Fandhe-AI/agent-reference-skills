@@ -27,7 +27,8 @@ Built-in XAML controls already provide UI Automation support through base classe
 
 ## Related
 
-- [Expose basic accessibility information (AutomationProperties)](./automation-properties.md)
+- [Expose basic accessibility information (name, role, value)](./basic-accessibility-information.md)
+- [AutomationProperties (attached properties)](./automation-properties.md)
 - [Custom automation peers](./automation-peers.md)
 - [Control patterns and interfaces](./control-patterns-and-interfaces.md)
 - [Keyboard accessibility](./keyboard-accessibility.md)

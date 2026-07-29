@@ -32,7 +32,7 @@ Declares a brand-new permission with the `<permission>` manifest element so othe
 
 ## Notes
 
-- Define each custom permission exactly once across an app family; if the requesting apps are not all signed with the same certificate, the first app installed that declares the permission "owns" the definition and others must match its `protectionLevel`.
+- The system doesn't allow multiple packages to declare a permission with the same name unless all the packages are signed with the same certificate; once a package declares a permission, the system refuses to let the user install any other package with the same permission name unless it is signed with that same certificate. Design each custom permission to be defined only once across an app family if the apps aren't all signed with the same certificate.
 - For capabilities meant only for an app's own other apps (not third parties), prefer `signature` (or `signature|knownSigner`) over a `dangerous`/user-facing permission — it needs no user confirmation and avoids exposing an unnecessary permission prompt.
 - Use `<permission-group>` only when grouping multiple custom permissions for combined display; it has no effect on granting behavior by itself.
 - This element defines a new permission for other apps to request; requesting/declaring use of an existing permission (system or third-party) is covered separately in declaring-permissions.

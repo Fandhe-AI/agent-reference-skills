@@ -38,8 +38,8 @@ dcompDevice->Commit();
 | DCompositionCreateDevice3(renderingDevice, iid, dcompositionDevice) | function | Creates the device; `renderingDevice` is the `IDXGIDevice`/`ID2D1Device` used to create composition surfaces; `iid` selects `IDCompositionDevice` or `IDCompositionDesktopDevice`. |
 | IDCompositionDesktopDevice::CreateTargetForHwnd(hwnd, topmost, target) | method | Creates an `IDCompositionTarget` bound to a window; `topmost = TRUE` renders the composition tree above the window's own GDI/DirectX content. |
 | IDCompositionDevice::CreateVisual(visual) | method | Creates an `IDCompositionVisual` (or `IDCompositionVisual2`) node; visuals are assembled into a tree with `AddVisual`/`RemoveVisual` on a parent visual. |
-| IDCompositionVisual2::SetContent(content) | method | Sets the visual's bitmap content — an `IDXGISwapChain`/`IDXGISwapChain1`, an `IDCompositionSurface`, or another visual (for nesting). |
-| IDCompositionVisual::SetOffsetX / SetOffsetY / SetTransform / SetClip / SetOpacity | methods | Configure the visual's 2D transform, clip rectangle, and opacity; `IDCompositionVisual3` adds 3D transforms (`SetTransform` with a `IDCompositionRotateTransform3D` etc.) and shadow. |
+| IDCompositionVisual2::SetContent(content) | method | Sets the visual's bitmap content, which must be an `IDCompositionSurface`, an `IDXGISwapChain1`, or a wrapper returned by `CreateSurfaceFromHandle`/`CreateSurfaceFromHwnd`; nesting other visuals is done separately with `AddVisual`/`RemoveVisual`, not through `SetContent`. |
+| IDCompositionVisual::SetOffsetX / SetOffsetY / SetTransform / SetClip | methods | Configure the visual's 2D transform and clip rectangle; `IDCompositionVisual3` (Windows 8.1+) adds `SetDepthMode`, `SetOffsetZ`, `SetOpacity`, a 3D `SetTransform` overload (`const D2D_MATRIX_4X4_F&` or an `IDCompositionTransform3D`), and `SetVisible`. |
 | IDCompositionTarget::SetRoot(visual) | method | Sets the visual tree's root visual for this target. |
 | IDCompositionDevice::Commit() | method | Atomically submits all pending changes (visual-tree edits, property changes, animations) to the composition engine in one batch. |
 

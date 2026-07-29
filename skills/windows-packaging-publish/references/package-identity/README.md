@@ -5,6 +5,7 @@
 | APIs Requiring Package Identity | Windows platform features and APIs that only work in a process with package identity | [apis-requiring-package-identity.md](./apis-requiring-package-identity.md) |
 | Detecting Package Identity | At runtime, determine whether a process has package identity using `GetCurrentPackageFullName` | [detect-package-identity.md](./detect-package-identity.md) |
 | Get Activation Info for Packaged Apps | Packaged desktop apps can retrieve UWP-style activation info at startup | [get-activation-info-for-packaged-apps.md](./get-activation-info-for-packaged-apps.md) |
+| Integrate a Packaged Desktop App with File Explorer | Add a File Explorer context menu command via `IExplorerCommand` and package manifest registration | [integrate-packaged-app-with-file-explorer.md](./integrate-packaged-app-with-file-explorer.md) |
 | Package Class | `Windows.ApplicationModel.Package` provides information about an installed package | [package-class.md](./package-class.md) |
 | PackageId Class | `Windows.ApplicationModel.PackageId` provides package identification info | [package-id-class.md](./package-id-class.md) |
 | Package Identity Overview | Unique identifier that identifies a package across space and time via 5-part tuple | [package-identity-overview.md](./package-identity-overview.md) |

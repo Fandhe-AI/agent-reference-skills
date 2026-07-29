@@ -30,11 +30,11 @@ someElement.AddHandler(UIElement.PointerPressedEvent,
 | `RoutedEventArgs.OriginalSource` | object | The element that originally raised the event, constant along the whole bubble route (unlike `sender`, which is the element the current handler is attached to). |
 | `PointerRoutedEventArgs.Handled` / `KeyRoutedEventArgs.Handled` / `DragEventArgs.Handled` | `bool` | Setting `true` stops the event from reaching most subsequent handlers further up the route. Not all routed events have a `Handled` property (e.g. `GotFocus`/`LostFocus` always bubble to the root). |
 | `UIElement.AddHandler(RoutedEvent, handler, handledEventsToo)` | method | Attaches a handler that is invoked even for events already marked `Handled` by an earlier handler. Requires the event's static `*Event` identifier (e.g. `UIElement.PointerPressedEvent`). |
-| `IsHitTestVisible` | bool (read-only) | `true` only if `Visibility == Visible`, `Background`/`Fill` is non-null, the control is enabled, and it has non-zero actual size; determines whether an element can be an input event source. |
+| `IsHitTestVisible` | bool (read/write) | Settable in XAML (`<uiElement IsHitTestVisible="bool"/>`) or code; default `true`. Per the conceptual overview, returns `true` only if `Visibility == Visible`, `Background`/`Fill` is non-null, the control is enabled, and it has non-zero actual size; determines whether an element can be an input event source. |
 
 ## Notes
 
-- Routed events bubble only (child → parent); a small number also exist as `Preview*` variants (e.g. `PreviewKeyDown`) that fire earlier, but there is no general tunnel/bubble pair for every event as in WPF.
+- Most routed events bubble only (child → parent). A small number of `Preview*` events (e.g. `PreviewKeyDown`, `PreviewKeyUp`) do use a genuine tunneling routing strategy (parent → child, ahead of the bubbling pass) — `PreviewKeyDown`'s corresponding bubbling event is `KeyDown` — but this tunnel/bubble pairing exists only for that small set, not for every event as in WPF.
 - Custom routed events cannot be declared — routed events are limited to the fixed set defined on `UIElement` (`PointerPressed`, `KeyDown`, `Tapped`, `GotFocus`, `DragOver`, etc.). Define a plain CLR/WinRT event instead for custom control notifications.
 - Events raised from a `Popup` or `ToolTip` do not route through the main visual tree — attach handlers to elements inside the `Popup`/`ToolTip` content, not to the `Popup`/`ToolTip` itself.
 - Controls can internally mark input events handled (e.g. `Button` handles `PointerPressed` to raise `Click`); override the relevant `On*` method (e.g. `Control.OnKeyDown`) to change that behavior in a derived control.

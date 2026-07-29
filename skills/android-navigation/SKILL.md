@@ -42,6 +42,7 @@ skills/android-navigation/
       supportingpanescenestrategy.md
       scenedecoratorstrategy.md
       migration-guide.md
+      modularize.md
     nav-compose/
       README.md
       navhost.md
@@ -83,6 +84,7 @@ skills/android-navigation/
       README.md
       back-handler.md
       predictive-back-handler.md
+      navigation-back-handler.md
       on-back-pressed-dispatcher.md
       on-back-pressed-callback.md
       navigation-event-dispatcher.md

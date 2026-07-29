@@ -9,6 +9,7 @@
 | ColorPicker | A control for browsing and selecting colors via a spectrum, sliders, or RGB/HSV/hex text input. | [color-picker.md](./color-picker.md) |
 | DatePicker | A standardized control for picking a localized date value via a drop-down picker surface (day/month/year columns). | [date-picker.md](./date-picker.md) |
 | Expander | A container with a header that is always visible and a content area that can be expanded/collapsed to show or hide secondary content. | [expander.md](./expander.md) |
+| Icon Elements | Base `IconElement` / `IconSource` class family — `FontIcon`, `SymbolIcon`, `PathIcon`, `BitmapIcon`, `ImageIcon` (plus their `*Source` forms) and `IconSourceElement` — used to assign icons via `Icon`/`IconSource` properties across controls. | [icon-elements.md](./icon-elements.md) |
 | Image | A control that displays image content (`Image` element) or paints another object with an image (`ImageBrush`). | [image.md](./image.md) |
 | InkCanvas / InkToolbar | UWP controls for pen/stylus ink input (`InkCanvas`) and an associated toolbar of ink tools (`InkToolbar`). | [inkcanvas-inktoolbar.md](./inkcanvas-inktoolbar.md) |
 | MediaPlayerElement | A control to display video and image content, with built-in transport controls for play/pause, seek, volume, and captions. | [media-player-element.md](./media-player-element.md) |

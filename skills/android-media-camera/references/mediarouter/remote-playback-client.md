@@ -7,28 +7,37 @@ Client-side helper that sends playback commands (play/seek/pause/resume/stop/sta
 ```kotlin
 val client = RemotePlaybackClient(context, route)
 
-client.play(mediaUri, mimeType, null, 0, null, object : RemotePlaybackClient.ItemActionCallback() {
-    override fun onResult(data: Bundle, sessionId: String?, itemId: String?, itemStatus: MediaItemStatus?) {
+val itemCallback = object : RemotePlaybackClient.ItemActionCallback() {
+    override fun onResult(data: Bundle, sessionId: String, sessionStatus: MediaSessionStatus?, itemId: String, itemStatus: MediaItemStatus) {
         // playback started on the receiver
     }
     override fun onError(error: String?, code: Int, data: Bundle?) {
         // handle failure
     }
-})
+}
+client.play(mediaUri, mimeType, null, 0, null, itemCallback)
 
-client.pause(null, callback)
-client.resume(null, callback)
-client.seek(itemId, position, null, callback)
+val sessionCallback = object : RemotePlaybackClient.SessionActionCallback() {
+    override fun onResult(data: Bundle, sessionId: String, sessionStatus: MediaSessionStatus?) {
+        // session state updated
+    }
+    override fun onError(error: String?, code: Int, data: Bundle?) {
+        // handle failure
+    }
+}
+client.pause(null, sessionCallback)
+client.resume(null, sessionCallback)
+client.seek(itemId, position, null, itemCallback)
 client.release()
 ```
 
 ```java
 public RemotePlaybackClient(Context context, MediaRouter.RouteInfo route);
 public void play(Uri contentUri, String mimeType, Bundle metadata, long positionMillis, Bundle extras, ItemActionCallback callback);
-public void pause(Bundle extras, ItemActionCallback callback);
-public void resume(Bundle extras, ItemActionCallback callback);
+public void pause(Bundle extras, SessionActionCallback callback);
+public void resume(Bundle extras, SessionActionCallback callback);
 public void seek(String itemId, long positionMillis, Bundle extras, ItemActionCallback callback);
-public void stop(Bundle extras, ItemActionCallback callback);
+public void stop(Bundle extras, SessionActionCallback callback);
 public void release();
 ```
 
@@ -37,8 +46,9 @@ public void release();
 | Name | Type | Description |
 |------|------|-------------|
 | `route` (constructor) | `MediaRouter.RouteInfo` | Must support `CATEGORY_REMOTE_PLAYBACK`; check via `route.supportsControlCategory()` before constructing. |
-| `ItemActionCallback.onResult` | callback | Delivers `MediaItemStatus` and session/item ids on success. |
-| `ItemActionCallback.onError` | callback | Delivers an error string and machine-readable code on failure. |
+| `ItemActionCallback.onResult` | callback | `onResult(Bundle, String sessionId, MediaSessionStatus?, String itemId, MediaItemStatus)` — used by `play()`/`seek()`. |
+| `SessionActionCallback.onResult` | callback | `onResult(Bundle, String sessionId, MediaSessionStatus?)` — used by `pause()`/`resume()`/`stop()`. |
+| `ActionCallback.onError` | callback | Delivers an error string and machine-readable code on failure (shared by both callback types). |
 
 ## Notes
 

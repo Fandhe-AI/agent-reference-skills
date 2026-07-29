@@ -14,6 +14,7 @@
 | Image | Lays out and draws an image from an `ImageProvider`. | [image.md](./image.md) |
 | Layout containers: Box, Column, Row, Spacer | Glance layout composables that translate to `RemoteViews` layouts. | [layout-containers.md](./layout-containers.md) |
 | LazyColumn / LazyVerticalGrid | Scrollable lazy containers that only lay out currently visible items. | [lazy-lists.md](./lazy-lists.md) |
+| MultiProcessGlanceAppWidget | `GlanceAppWidget` subclass for widgets whose receiver runs in a non-default process. | [multi-process-glance-app-widget.md](./multi-process-glance-app-widget.md) |
 | Pin a widget from in-app: requestPinGlanceAppWidget | Lets the app itself trigger the "Add to Home screen" dialog for one of its Glance widgets. | [pin-in-app.md](./pin-in-app.md) |
 | CircularProgressIndicator / LinearProgressIndicator | Progress indicator composables for Glance. | [progress-indicators.md](./progress-indicators.md) |
 | Interop with classic RemoteViews: AndroidRemoteViews | Escape hatch for embedding hand-built `RemoteViews` layouts inside a Glance composition. | [remoteviews-interop.md](./remoteviews-interop.md) |

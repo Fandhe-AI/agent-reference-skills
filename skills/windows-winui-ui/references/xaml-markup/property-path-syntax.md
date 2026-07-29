@@ -25,7 +25,7 @@ A string mini-language for identifying a nested property, used as `Binding.Path`
 
 - Data binding: all properties on the path must be public; the end (last) property must be public and mutable, and read/write if used as the `Path` of a `TwoWay` binding.
 - Animation targeting: the path is evaluated relative to the object named by `Storyboard.TargetName`; the end property must be public, read-write, a dependency property, and of an animatable type (`Color`, `Double`, `Point`, or via `ObjectAnimationUsingKeyFrames`).
-- Indexers can appear mid-path (e.g. `(Control.Background).(GradientBrush.GradientStops)[0].(GradientStop.Color)`) but a collection indexer can never be the last (end) step, since a collection itself isn't animatable/bindable as a leaf value.
+- Indexers can appear mid-path (e.g. `(Control.Background).(GradientBrush.GradientStops)[0].(GradientStop.Color)`). For **animation targeting** an indexer can never be the end step, since a collection isn't a value that can be animated. For **data binding** an indexer can be the end step — e.g. `"Teams[1].Players[Smith]"` is a valid binding path.
 - `PropertyPath` (`Microsoft.UI.Xaml.PropertyPath`) has no default constructor — construct it with `new PropertyPath(string)` using this same string syntax when building a binding in code.
 - A failed path resolution in data binding silently falls back to a blank/default value rather than throwing; use Visual Studio's binding debug output to isolate which step failed.
 

@@ -45,7 +45,7 @@ val granted = result == PackageManager.PERMISSION_GRANTED
 
 - `<receiver>` permission checks fail silently (broadcast just isn't delivered) whereas `<activity>`/`<service>` checks raise `SecurityException` — design error handling accordingly.
 - Prefer setting `Intent.FLAG_GRANT_READ_URI_PERMISSION`/`FLAG_GRANT_WRITE_URI_PERMISSION` on the outgoing `Intent` over calling `grantUriPermission()` directly when possible: Intent-flag grants auto-revoke when the receiving task finishes, while explicit `grantUriPermission()` calls do not expire on their own and must be revoked manually.
-- On apps targeting Android 11+ (API 30+), granting a `Uri` permission to another app makes that app visible to you even under package-visibility (`<queries>`) restrictions.
+- On apps targeting Android 11+ (API 30+), if your app has a content provider and has granted `Uri` permissions to another app, your app is automatically visible to that other app even under package-visibility (`<queries>`) restrictions.
 - Defining a new custom permission is covered separately in defining-custom-permissions; this page focuses on using `android:permission` and signature permissions to guard components you already own.
 
 ## Related

@@ -32,10 +32,11 @@ pDeviceContext->EndDraw();
 
 - Namespace: Win32 COM (d2d1_1.h). Inherits from `ID2D1Image`. Created via [ID2D1DeviceContext::CreateCommandList](./id2d1devicecontext.md); set as the context's render target with `SetTarget`, same as a bitmap.
 - Introduced with Direct2D 1.1. Unlike setting a bitmap as target (which rasterizes immediately), a command list retains vector content for later resolution-independent playback via `DrawImage`.
-- Useful as the input to an `ID2D1ImageBrush` (tiling/pattern fills that stay vector) and as a lower-memory replacement for `CreateCompatibleRenderTarget` when printing or compositing.
+- Useful as the input to an [ID2D1ImageBrush](./id2d1imagebrush.md) (tiling/pattern fills that stay vector) and as a lower-memory replacement for `CreateCompatibleRenderTarget` when printing or compositing.
 - Direct3D/DXGI and GDI interop content is not recorded — it is rasterized in place and stored as an `ID2D1Bitmap`, losing resolution independence at that point.
 
 ## Related
 
 - [ID2D1DeviceContext](./id2d1devicecontext.md)
 - [ID2D1Device](./id2d1device.md)
+- [ID2D1ImageBrush](./id2d1imagebrush.md)

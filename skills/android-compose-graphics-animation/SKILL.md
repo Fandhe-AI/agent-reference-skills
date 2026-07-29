@@ -32,6 +32,8 @@ skills/android-compose-graphics-animation/
       enterexittransition.md
       lookaheadscope.md
       animateitem.md
+      animatebounds.md
+      animateenterexit.md
       animationvector.md
       targetbasedanimation-decayanimation.md
     animation-spec/

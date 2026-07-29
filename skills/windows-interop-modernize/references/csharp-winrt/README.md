@@ -2,6 +2,7 @@
 
 | Name | Description | Path |
 | --- | --- | --- |
+| Agile Objects with C#/WinRT | IAgileObject checks, AsAgile extension method, and AgileReference<T> for marshaling non-agile projected types across apartments. | [agile-objects.md](./agile-objects.md) |
 | AOT and Trimming with C#/WinRT | C#/WinRT supports .NET Native AOT publishing building on top of IL trimming support. | [aot-trimming.md](./aot-trimming.md) |
 | Detecting WinRT API Availability (ApiInformation) | ApiInformation lets you detect whether a WinRT API contract, type, or member is present at runtime. | [api-availability-checks.md](./api-availability-checks.md) |
 | Calling Asynchronous WinRT APIs from .NET | WinRT asynchronous methods return IAsyncAction/IAsyncOperation instead of .NET Task. | [async-operations.md](./async-operations.md) |

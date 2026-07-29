@@ -1,6 +1,6 @@
 # NavigationUI
 
-Static helper functions (top-level `androidx.navigation.ui` package) plus the `AppBarConfiguration` class that wire a Fragment-based `NavController` to standard app-bar/drawer/bottom-nav UI chrome: `Toolbar`, `CollapsingToolbarLayout`, `ActionBar`, `NavigationView` (drawer), and `BottomNavigationView`.
+Static helper functions (top-level `androidx.navigation.ui` package) plus the `AppBarConfiguration` class that wire a Fragment-based `NavController` to standard app-bar/drawer/bottom-nav UI chrome: `Toolbar`, `CollapsingToolbarLayout`, `ActionBar`, `NavigationView` (drawer), and `NavigationBarView` (shared Material base class for `BottomNavigationView` and `NavigationRailView`).
 
 ## Signature / Usage
 
@@ -26,9 +26,9 @@ fun AppCompatActivity.setupActionBarWithNavController(
 
 fun NavController.navigateUp(appBarConfiguration: AppBarConfiguration): Boolean
 
-// NavigationView (drawer) / BottomNavigationView
+// NavigationView (drawer) / NavigationBarView (BottomNavigationView, NavigationRailView)
 fun NavigationView.setupWithNavController(navController: NavController)
-fun BottomNavigationView.setupWithNavController(navController: NavController)
+fun NavigationBarView.setupWithNavController(navController: NavController)
 
 // Menu item
 fun MenuItem.onNavDestinationSelected(navController: NavController): Boolean
@@ -69,12 +69,12 @@ override fun onSupportNavigateUp(): Boolean {
 ## Notes
 
 - A **top-level destination** never shows an Up button; with a `DrawerLayout` supplied it shows the drawer/hamburger icon instead.
-- `Toolbar.setupWithNavController` and `setupActionBarWithNavController` both handle Up-button clicks automatically; only `NavigationView`/`BottomNavigationView` variants require no extra Up handling since they don't manage a navigation icon.
+- `Toolbar.setupWithNavController` and `setupActionBarWithNavController` both handle Up-button clicks automatically; only `NavigationView`/`NavigationBarView` (`BottomNavigationView`, `NavigationRailView`) variants require no extra Up handling since they don't manage a navigation icon.
 - When using `AppCompatActivity.setupActionBarWithNavController` instead of a `Toolbar`, override `onSupportNavigateUp()` and delegate to `NavController.navigateUp(appBarConfiguration)`.
 - Menu items whose `id` matches a destination `id` in the graph can navigate via `MenuItem.onNavDestinationSelected(navController)` from `onOptionsItemSelected`.
-- Titles shown in the app bar come from each destination's `android:label` (supports `{argName}` placeholder interpolation from arguments); `NavigationView`/`BottomNavigationView` selection state is kept in sync via `NavController.addOnDestinationChangedListener`.
+- Titles shown in the app bar come from each destination's `android:label` (supports `{argName}` placeholder interpolation from arguments); `NavigationView`/`NavigationBarView` selection state is kept in sync via `NavController.addOnDestinationChangedListener`.
 - This is the Fragment/View-based navigation integration layer; Navigation Compose apps build their own top bar/drawer/bottom-nav directly from `currentBackStackEntryAsState()` instead of `NavigationUI`.
-- Package: `androidx.navigation.ui` (`androidx.navigation:navigation-ui-ktx`).
+- Package: `androidx.navigation.ui` (`androidx.navigation:navigation-ui`) — the extension functions live directly in this artifact; there is no separate `-ktx` artifact for current releases.
 
 ## Related
 

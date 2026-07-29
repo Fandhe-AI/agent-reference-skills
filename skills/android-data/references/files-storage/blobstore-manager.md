@@ -39,12 +39,12 @@ blobStoreManager.openSession(sessionId).use { session ->
 | `Session.allowSameSignatureAccess()` | method | — | Grants read access to apps signed with the same certificate. |
 | `Session.allowPublicAccess()` | method | — | Grants read access to any app on the device. |
 | `Session.commit(executor, callback)` | method | — | Finalizes the session, applying the access grants and making the blob available via `openBlob`. |
-| `USE_DATA_IN_BACKGROUND` | manifest permission | — | Required to access shared data blobs. |
 
 ## Notes
 
 - Intended for large, re-downloadable datasets (ML models, media libraries, reference data) — not for private per-app persistence, which belongs in app-specific storage or a `ContentProvider`.
 - At least one `allow*Access()` call is required before `commit()`, or no other app can read the blob back.
+- No manifest permission is required for ordinary use (`openBlob`, `createSession`, `allow*Access`, `commit`). `ACCESS_BLOBS_ACROSS_USERS` is a separate signature/privileged permission needed only to access blobs contributed by another user profile on the device, not for normal same-user sharing.
 
 ## Related
 

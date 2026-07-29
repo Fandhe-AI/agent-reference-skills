@@ -5,11 +5,13 @@
 | Accessing the SD card | Reads/writes non-essential data on optional removable SD card via… | [access-sd-card.md](./access-sd-card.md) |
 | CachedFileManager | Static helper class for managing real-time updates to files from other apps… | [cached-file-manager.md](./cached-file-manager.md) |
 | DataReader / DataWriter | Typed read/write of primitives, strings, and buffers over a stream | [data-reader-writer.md](./data-reader-writer.md) |
+| DownloadsFolder | Static class; creates files/folders in the Downloads folder without a capability. | [downloads-folder.md](./downloads-folder.md) |
 | FileIO | Static helpers to read/write text, lines, buffers, bytes for a StorageFile. | [file-io.md](./file-io.md) |
 | IRandomAccessStream | Seekable stream interface for input/output over storage items. | [irandom-access-stream.md](./irandom-access-stream.md) |
 | IStorageItem | Base interface shared by StorageFile and StorageFolder. | [istorage-item.md](./istorage-item.md) |
 | PathIO | Static helpers to read/write files directly by path or URI. | [path-io.md](./path-io.md) |
 | StorageFile | Represents a file; get/copy/move/delete/open, content properties. | [storage-file.md](./storage-file.md) |
+| StorageFile Streamed Content | On-demand streamed file content: CreateStreamedFileAsync / ReplaceWithStreamedFileAsync / CreateStreamedFileFromUriAsync. | [streamed-file-content.md](./streamed-file-content.md) |
 | StorageFolder | Manages folders; get/create/enumerate files and folders. | [storage-folder.md](./storage-folder.md) |
 | StorageItemThumbnail | Thumbnail image stream for a file, folder, or other resource. | [storage-item-thumbnail.md](./storage-item-thumbnail.md) |
 | StorageLibrary | Virtual collection of folders (known folder + user-added folders). | [storage-library.md](./storage-library.md) |

@@ -58,3 +58,4 @@ class MyFragment : Fragment() {
 - [viewModel() (Compose)](./viewmodel-compose.md)
 - [ViewModel](./viewmodel.md)
 - [ViewModelProvider.Factory](./viewmodelprovider-factory.md)
+- [ViewModelStoreProvider](./viewmodelstoreprovider.md)

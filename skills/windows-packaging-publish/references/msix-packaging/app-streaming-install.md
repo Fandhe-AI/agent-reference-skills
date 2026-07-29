@@ -5,19 +5,21 @@ App streaming install lets the Microsoft Store download an app's essential files
 ## Signature / Usage
 
 ```xml
-<!-- Simplified content group map (packaged as part of the app) -->
-<ContentGroupMap xmlns="http://schemas.microsoft.com/appx/2016/blockmap/contentgroupmap">
-  <ContentGroup Name="Required">
-    <FileList>
-      <File Name="AppxManifest.xml"/>
-      <File Name="bin\MyApp.exe"/>
-    </FileList>
-  </ContentGroup>
-  <ContentGroup Name="Level2">
-    <FileList>
-      <File Name="assets\level2\*"/>
-    </FileList>
-  </ContentGroup>
+<!-- SourceAppxContentGroupMap.xml (converted by MakeAppx.exe/Visual Studio to the final AppxContentGroupMap.xml packaged with the app) -->
+<ContentGroupMap xmlns="http://schemas.microsoft.com/appx/2016/sourcecontentgroupmap">
+  <Required>
+    <ContentGroup Name="Required">
+      <File Name="StreamingTestApp.exe"/>
+    </ContentGroup>
+  </Required>
+  <Automatic>
+    <ContentGroup Name="Level2">
+      <File Name="Assets\Level2\*"/>
+    </ContentGroup>
+    <ContentGroup Name="Level3">
+      <File Name="Assets\Level3\*"/>
+    </ContentGroup>
+  </Automatic>
 </ContentGroupMap>
 ```
 
@@ -26,14 +28,15 @@ App streaming install lets the Microsoft Store download an app's essential files
 | Concept | Description |
 |---------|-------------|
 | Content group map | XML file packaged with the app; divides package files into named content groups and sets their download order |
-| `Required` group | Reserved content group name for the files needed for basic app activation; always downloaded first |
-| Additional groups | Any other named content groups download after `Required`, in the order declared |
+| `<Required>` section | Wraps the single, reserved `ContentGroup Name="Required"` — the files needed for basic app activation; always downloaded first |
+| `<Automatic>` section | Wraps any number of named content groups that download after `Required`, in the order declared |
 
 ## Notes
 
 - Only applicable to apps distributed through the Microsoft Store; the Store performs the staged download based on the content group map.
 - The package must still contain all files at build/submission time — streaming install only affects client-side download ordering, not what's included in the package.
-- See the "Create and convert a source content group map" article on the same docs page for the exact schema and a conversion tool from an unstructured file list.
+- Footprint files (`AppxManifest.xml`, `AppxSignature.p7x`, `resources.pri`, etc.) must not be included in the content group map — they are ignored even if caught by a wildcard `File` entry.
+- Author `SourceAppxContentGroupMap.xml` (wildcards allowed) and convert it to the final `AppxContentGroupMap.xml` (no wildcards) via Visual Studio's **Store > Convert Content Group Map File** or `MakeAppx convertCGM`; see "Create and convert a source content group map" on the same docs page.
 
 ## Related
 

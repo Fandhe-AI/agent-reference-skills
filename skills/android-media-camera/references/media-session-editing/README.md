@@ -14,6 +14,7 @@
 | MediaSession.Callback | Interface implemented on `MediaSession.Builder.setCallback()` to accept/reject connections and handle commands. | [media-session-callback.md](./media-session-callback.md) |
 | MediaSessionService | Superclass for a `Service` that hosts a `Player` and `MediaSession` for background playback. | [media-session-service.md](./media-session-service.md) |
 | MediaSession | Connects a `Player` to the outside world for external playback advertisement and control. | [media-session.md](./media-session.md) |
+| Muxer / Muxer.Factory | Pluggable output-container writer for `Transformer`; `setMuxerFactory()` swaps in `InAppMp4Muxer`, `InAppFragmentedMp4Muxer`, `FrameworkMuxer`, or a custom `Muxer` implementation. | [muxer-customization.md](./muxer-customization.md) |
 | SessionCommand / SessionCommands | `SessionCommand` represents a single command a `MediaController` can send, predefined or custom. | [session-commands.md](./session-commands.md) |
 | SessionToken | Identifies an ongoing `MediaSession` or service that a `MediaController` or `MediaBrowser` can connect to. | [session-token.md](./session-token.md) |
 | Tone mapping (HDR to SDR) | Converts HDR video to SDR during export, needed when mixing HDR and SDR assets. | [tone-mapping.md](./tone-mapping.md) |

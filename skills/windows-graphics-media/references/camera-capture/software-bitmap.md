@@ -53,5 +53,6 @@ using (BitmapBuffer buffer = converted.LockBuffer(BitmapBufferAccessMode.Read))
 
 - [MediaFrameReader](./media-frame-reader.md)
 - [AdvancedPhotoCapture](./advanced-photo-capture.md)
+- [FaceDetector](./face-detector.md)
 - [FaceTracker](./face-tracker.md)
 - [VariablePhotoSequence](./variable-photo-sequence.md)

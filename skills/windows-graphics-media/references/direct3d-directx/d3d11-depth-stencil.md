@@ -60,7 +60,7 @@ context->ClearDepthStencilView(dsv.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCI
 ## Notes
 
 - The depth/stencil view is passed as the `pDepthStencilView` argument to `OMSetRenderTargets`, alongside the render-target views.
-- A depth-only format (e.g. `DXGI_FORMAT_D32_FLOAT`) has no stencil plane; use a combined format (`D3D11_FORMAT_D24_UNORM_S8_UINT`, `D32_FLOAT_S8X24_UINT`) to enable stencil testing.
+- A depth-only format (e.g. `DXGI_FORMAT_D32_FLOAT`) has no stencil plane; use a combined format (`DXGI_FORMAT_D24_UNORM_S8_UINT`, `DXGI_FORMAT_D32_FLOAT_S8X24_UINT`) to enable stencil testing.
 - If `OMSetDepthStencilState` is never called, the pipeline uses a default state equivalent to `DepthEnable = TRUE`, `DepthWriteMask = ALL`, `DepthFunc = LESS`, `StencilEnable = FALSE`.
 - Namespace: Win32 COM (`d3d11.h`).
 

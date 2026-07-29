@@ -40,9 +40,10 @@ val player =
 - For offline downloads, `DownloadManager` (`DownloadService` + `SimpleCache` with `NoOpCacheEvictor`) manages persisted download state; play back downloaded content through a `CacheDataSource.Factory` pointed at the same cache, never by reading files directly from the download directory.
 - `ResolvingDataSource.Factory(upstream) { dataSpec -> dataSpec.withRequestHeaders(...) }` supports just-in-time header injection or URI resolution per request.
 - Adaptive downloads (DASH/HLS/SmoothStreaming) use `DownloadHelper` to select which tracks to download; when playing back, apply the same `streamKeys` as the download (`downloadRequest.toMediaItem()` handles this automatically).
-- Artifact: `androidx.media3:media3-datasource` (`DataSource`, `SimpleCache`, `CacheDataSource`, `LeastRecentlyUsedCacheEvictor` in `androidx.media3.datasource.cache`); `DownloadManager` / `DownloadService` are in `androidx.media3:media3-exoplayer` (`androidx.media3.exoplayer.offline`), both pulled in transitively by `media3-exoplayer`.
+- Artifact: `androidx.media3:media3-datasource` (`DataSource` in `androidx.media3.datasource`; `SimpleCache`, `CacheDataSource`, `LeastRecentlyUsedCacheEvictor` in the `androidx.media3.datasource.cache` subpackage); `DownloadManager` / `DownloadService` are in `androidx.media3:media3-exoplayer` (`androidx.media3.exoplayer.offline`), both pulled in transitively by `media3-exoplayer`.
 
 ## Related
 
 - [MediaSource and factories](./media-source.md)
 - [Customization](./customization.md)
+- [Downloading Media (DownloadManager, DownloadService, DownloadHelper)](./downloading-media.md)

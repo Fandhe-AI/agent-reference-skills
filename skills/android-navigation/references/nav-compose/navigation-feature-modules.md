@@ -47,18 +47,20 @@ val installMonitor = DynamicInstallMonitor()
 navController.navigate(destinationId, null, null, DynamicExtras(installMonitor))
 
 if (installMonitor.isInstallRequired) {
-    installMonitor.status.observe(this) { sessionState ->
-        when (sessionState.status()) {
-            SplitInstallSessionStatus.INSTALLED ->
-                navController.navigate(destinationId, destinationArgs, null, null)
-            SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION ->
-                SplitInstallManager.startConfirmationDialogForResult(sessionState, this, /* ... */ 0)
-            else -> Unit
+    installMonitor.status.observe(this, object : Observer<SplitInstallSessionState> {
+        override fun onChanged(sessionState: SplitInstallSessionState) {
+            when (sessionState.status()) {
+                SplitInstallSessionStatus.INSTALLED ->
+                    navController.navigate(destinationId, destinationArgs, null, null)
+                SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION ->
+                    SplitInstallManager.startConfirmationDialogForResult(/* ... */)
+                else -> Unit
+            }
+            if (sessionState.hasTerminalStatus()) {
+                installMonitor.status.removeObserver(this)
+            }
         }
-        if (sessionState.hasTerminalStatus()) {
-            installMonitor.status.removeObserver(this)
-        }
-    }
+    })
 }
 ```
 

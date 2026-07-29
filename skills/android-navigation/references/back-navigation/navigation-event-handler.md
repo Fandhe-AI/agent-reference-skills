@@ -1,6 +1,6 @@
 # NavigationEventHandler
 
-Abstract class registered on a `NavigationEventDispatcher` to receive Back/Up/Forward/Home navigation event lifecycle callbacks, including predictive progress, from `androidx.navigationevent` 1.0.0+.
+Abstract class registered on a `NavigationEventDispatcher` to receive back/forward navigation event lifecycle callbacks, including predictive progress, from `androidx.navigationevent` 1.0.0+.
 
 ## Signature / Usage
 
@@ -54,5 +54,6 @@ myHandler.remove()
 
 - [NavigationEventDispatcher](./navigation-event-dispatcher.md)
 - [NavigationEventInput](./navigation-event-input.md)
+- [NavigationBackHandler](./navigation-back-handler.md)
 - [BackHandler](./back-handler.md)
 - [PredictiveBackHandler](./predictive-back-handler.md)

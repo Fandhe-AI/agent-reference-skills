@@ -36,10 +36,10 @@ public PlaybackStats getPlaybackStats();
 |------|------|---------|-------------|
 | `EventTime` | class | — | Associates an `AnalyticsListener` callback with `realtimeMs`, the `Timeline`, `windowIndex`, and `mediaPeriodId` (e.g. distinguishes an ad period from content) at the time of the event. |
 | `keepHistory` (`PlaybackStatsListener` ctor) | `boolean` | — | If `true`, retains full event history (`playbackStateHistory`, `mediaTimeHistory`, `videoFormatHistory`, `fatalErrorHistory`, …); costs memory. Set `false` if only final aggregated stats are needed. |
-| `PlaybackStats.totalPlayTimeMs` | `long` | — | Total time spent actively playing. |
-| `PlaybackStats.totalRebufferCount` | `int` | — | Number of rebuffers during the session. |
-| `PlaybackStats.getMeanVideoFormatBitrate()` | `long` | — | Average video bitrate across the session. |
-| `PlaybackStats.getMeanTimeBetweenRebuffers()` | `long` | — | Average time between rebuffer events. |
+| `PlaybackStats.getTotalPlayTimeMs()` | `long` | — | Total time spent actively playing. |
+| `PlaybackStats.totalRebufferCount` | `int` | — | Number of rebuffers during the session (public field). |
+| `PlaybackStats.getMeanVideoFormatBitrate()` | `int` | — | Average video bitrate across the session. |
+| `PlaybackStats.getMeanTimeBetweenRebuffers()` | `float` | — | Average time between rebuffer events. |
 
 ## Notes
 

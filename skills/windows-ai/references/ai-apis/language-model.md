@@ -36,7 +36,7 @@ Console.WriteLine(result.Text);
 | `GetReadyState()` | Static method. Returns the `AIFeatureReadyState` readiness of the model. |
 | `EnsureReadyAsync()` | Static method. Downloads/installs the model if needed. |
 | `GenerateResponseAsync(String)` / `(String, LanguageModelOptions)` / `(LanguageModelContext, String, LanguageModelOptions)` | Generates a response to a string prompt, returning progress for each token generated (via `IAsyncOperationWithProgress`), and the complete result on completion. |
-| `GenerateStructuredJsonResponseAsync(String schema, String prompt[, LanguageModelOptions])` | Generates a response constrained to a caller-supplied JSON schema. |
+| `GenerateStructuredJsonResponseAsync(String prompt, String jsonSchema[, LanguageModelOptions])` | Generates a response constrained to a caller-supplied JSON schema; returns a `GenerateStructuredJsonResponseResult`. |
 | `GenerateEmbeddingVectors(String[, ContentFilterOptions])` | Returns an embedding vector representing the string prompt (semantic search). |
 | `GenerateResponseFromEmbeddingsAsync(IIterable<EmbeddingVector>[, LanguageModelOptions])` | Generates a response to an embedding vector prompt. |
 | `CreateContext()` / `CreateContext(String)` / `CreateContext(String, ContentFilterOptions)` | Returns a `LanguageModelContext` context window. |
@@ -63,3 +63,6 @@ Console.WriteLine(result.Text);
 - [Device requirements and fallback](./device-requirements.md)
 - [Content moderation](./content-moderation.md)
 - [Text Intelligence Skills](./text-intelligence-skills.md)
+- [Language Model best practices](./language-model-best-practices.md)
+- [Generate structured JSON output with Phi Silica](./phi-silica-structured-output.md)
+- [Windows AI API troubleshooting](./troubleshooting.md)

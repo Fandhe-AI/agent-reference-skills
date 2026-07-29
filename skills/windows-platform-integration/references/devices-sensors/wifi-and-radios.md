@@ -56,7 +56,7 @@ if (wifiRadio != null)
 | `WiFiDirectDevice.GetConnectionEndpointPairs()` | Returns local/remote `HostName` pairs for opening a socket over the Wi-Fi Direct link. |
 | `Radio.GetRadiosAsync()` | Enumerates all radios on the local device. |
 | `Radio.SetStateAsync(RadioState)` | Turns a radio on/off/disabled. |
-| `Radio.GetRadioAccessStatusAsync()` (static) | Checks whether the app is permitted to access radios at all before enumerating. |
+| `Radio.RequestAccessAsync()` (static) | Requests permission to control radios; returns a `RadioAccessStatus`. Must be called (and granted `Allowed`) before enumerating/controlling radios. |
 
 ### Events
 

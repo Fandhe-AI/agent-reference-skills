@@ -54,11 +54,12 @@ ToggleButton(checked = checked, onCheckedChange = { checked = it }) {
 - `TonalToggleButton` is deprecated in favor of `FilledTonalToggleButton` (same parameters).
 - Requires `@OptIn(ExperimentalMaterial3ExpressiveApi::class)`.
 - For a single-icon toggle with no text label, use `IconToggleButton` instead.
-- `ToggleButtonGroup`/multi-select layouts aside, this family is standalone — for mutually-exclusive grouped choices use `SegmentedButton`.
+- For grouped/multi-select toggles inside a `ButtonGroup`, use the `ButtonGroupScope.toggleableItem(checked, label, onCheckedChange, icon, weight, enabled)` scope function rather than this standalone composable; for mutually-exclusive grouped choices use `SegmentedButton`.
 - Package: `androidx.compose.material3`.
 
 ## Related
 
 - [IconToggleButton](./icontogglebutton.md)
 - [SegmentedButton](./segmentedbutton.md)
+- [ButtonGroup](./buttongroup.md)
 - [Button](./button.md)

@@ -44,7 +44,7 @@ notificationManager.notify(notificationId, customNotification)
 
 ## Notes
 
-- Minimum layout heights: collapsed 48dp, heads-up 88dp, expanded 252dp; exact constraints vary by Android version.
+- The height available for a custom layout depends on the Android version: on some versions the collapsed view is limited to as little as 48dp, the heads-up view to as little as 88dp, and the expanded view to as little as 252dp. These are the caps a layout may be squeezed into, not minimum design heights.
 - Use the Support Library text styles `TextAppearance.Compat.Notification.Title` / `TextAppearance.Compat.Notification.Line2` so custom text matches system notification typography; avoid background images on the `RemoteViews`, which tend to break text readability across themes.
 - **Android 12 (API level 31) and higher**: apps can no longer render a fully custom (undecorated) notification — the system applies a standard template that behaves like `DecoratedCustomViewStyle` regardless of whether the style was set.
 - A Live Update notification must **not** set a custom `RemoteViews` via `setCustomContentView()` — that alone disqualifies it from promotion.

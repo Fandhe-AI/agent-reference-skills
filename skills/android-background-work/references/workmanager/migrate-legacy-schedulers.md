@@ -1,6 +1,6 @@
 # Migrate from FirebaseJobDispatcher / GcmNetworkManager
 
-Official mapping guides for moving off the two deprecated pre-WorkManager job schedulers onto `Worker`/`WorkRequest`. Both source libraries are deprecated; WorkManager is the only currently maintained option and already unifies `JobScheduler`/`AlarmManager`/Firebase JobDispatcher/GCMNetworkManager scheduling under one API back to API 14.
+Official mapping guides for moving off the two deprecated pre-WorkManager job schedulers onto `Worker`/`WorkRequest`. Both source libraries are deprecated; WorkManager is the only currently maintained option and unifies `JobScheduler`/`AlarmManager`/Firebase JobDispatcher/GCMNetworkManager scheduling under one API, currently down to minSdk API 23 (raised from API 21 in WorkManager 2.11.0).
 
 ## Signature / Usage
 

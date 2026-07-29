@@ -23,8 +23,7 @@ Android Studio's Background Task Inspector lists, cancels, and graphs `WorkManag
 
 ## Notes
 
-- Requires API level 26+ and WorkManager 2.5.0+; there is no documented `adb`/`dumpsys` command as a substitute — the inspector is the primary supported tool.
-- This inspector superseded the deprecated Background Task Inspector integration in the old Energy Profiler.
+- Requires API level 26+ and WorkManager 2.5.0+. Documented substitutes without the inspector: `adb shell dumpsys jobscheduler` (API 23+) lists jobs attributed to your package (look for `androidx.work.impl.background.systemjob.SystemJobService` and the job's required/satisfied/unsatisfied constraints), and `Configuration.Builder().setMinimumLoggingLevel(android.util.Log.DEBUG)` enables verbose `WM-`-tagged logcat output.
 - Package/tooling: Android Studio App Inspection (`View > Tool Windows > App Inspection`), not an `androidx.work` API.
 
 ## Related

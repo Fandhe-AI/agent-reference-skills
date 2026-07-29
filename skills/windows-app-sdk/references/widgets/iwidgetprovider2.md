@@ -36,4 +36,5 @@ internal class WidgetProvider : IWidgetProvider, IWidgetProvider2
 ## Related
 
 - [IWidgetProvider](./iwidgetprovider.md)
+- [Widget provider error and analytics reporting](./widget-provider-error-analytics-reporting.md)
 - [implement-widget-provider](./implement-widget-provider.md)

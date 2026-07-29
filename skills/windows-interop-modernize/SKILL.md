@@ -55,6 +55,7 @@ skills/windows-interop-modernize/
       collections.md
       com-ptr-iinspectable.md
       consume-apis.md
+      consume-com.md
       error-handling.md
       events-delegates.md
       get-started.md
@@ -62,6 +63,7 @@ skills/windows-interop-modernize/
       interop-abi.md
       interop-winrt-cx.md
       macros.md
+      move-to-winrt-from-csharp.md
       move-to-winrt-from-cx.md
       move-to-winrt-from-wrl.md
       naming.md
@@ -77,6 +79,7 @@ skills/windows-interop-modernize/
       xaml-cust-ctrl.md
     csharp-winrt/
       README.md
+      agile-objects.md
       aot-trimming.md
       api-availability-checks.md
       async-operations.md
@@ -102,6 +105,7 @@ skills/windows-interop-modernize/
       windows-xaml-manager.md
     wpf-winforms-interop/
       README.md
+      copilot-modernization-guide.md
       dotnet-upgrade-assistant.md
       hwndhost-hwndsource.md
       windows-app-sdk-existing-project.md

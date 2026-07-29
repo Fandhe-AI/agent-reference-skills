@@ -16,7 +16,7 @@ A generic name/value pair attached to a component or the app, read via `PackageM
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `android:name` | String | required | Property name. A parsing error occurs if two sibling `<property>` tags share the same name. Valid names include `PackageManager` / `PackageManager.Property` constants (e.g. `WindowProperties`) or custom ad hoc names. |
+| `android:name` | String | required | Property name. A parsing error occurs if two sibling `<property>` tags share the same name. |
 | `android:value` | String/Integer/Boolean/Color/Float | — | Literal value assigned to the property, retrieved via `PackageManager.Property.getString()/getInteger()/getBoolean()/getFloat()`. Do not set together with `android:resource` — if both are present, `android:resource` wins. |
 | `android:resource` | Resource ID | — | Reference to a resource; the numeric ID is stored and retrieved via `PackageManager.Property.getResourceId()`. |
 

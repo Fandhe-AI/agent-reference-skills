@@ -48,7 +48,7 @@ fun extractSamples(context: Context, mediaPath: String) {
 | `sampleTrackIndex` | `Int` | — | Track index of the current sample. |
 | `sampleTime` | `Long` | — | Presentation timestamp of the current sample, in microseconds. |
 | `sampleSize` | `Long` | — | Size in bytes of the current sample. |
-| `advance()` | `Unit` | — | Advances to the next sample. |
+| `advance()` | `Boolean` | — | Advances to the next sample; returns `false` at end of stream. |
 | `release()` | `Unit` | — | Releases the extractor's resources. |
 
 ## Notes

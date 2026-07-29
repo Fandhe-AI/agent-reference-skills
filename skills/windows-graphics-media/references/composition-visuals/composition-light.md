@@ -17,17 +17,17 @@ light.Targets.Add(targetVisual);
 
 | Name | Type | Description |
 |------|------|-------------|
-| Targets | `CompositionLightTargetsCollection`, inherited | Visuals lit by this light; a light with no targets lights nothing. |
-| ExclusionsFromTargets | `CompositionLightTargetsCollection`, inherited | Visuals excluded from an otherwise-targeted subtree (e.g. target a container but exclude one child). |
+| Targets | `VisualUnorderedCollection`, inherited | Visuals lit by this light; a light with no targets lights nothing. |
+| ExclusionsFromTargets | `VisualUnorderedCollection`, inherited | Visuals excluded from an otherwise-targeted subtree (e.g. target a container but exclude one child). |
 | IsEnabled | bool, inherited | Turns the light on/off without removing it. |
-| Color | Color | `PointLight`/`DistantLight`/`SpotLight`: the light's color. |
-| CoordinateSpace | Visual | `PointLight`/`SpotLight`: the visual whose coordinate space `Offset`/`Direction` are relative to. **Required** — the light does not render if unset. |
+| Color | Color | `AmbientLight`/`PointLight`/`DistantLight`/`SpotLight`: the light's color. |
+| CoordinateSpace | Visual | `PointLight`/`DistantLight`/`SpotLight`: the visual whose coordinate space `Offset`/`Direction` are relative to. **Required** — the light does not render if unset. |
 | Offset | Vector3 | `PointLight`/`SpotLight`: position of the light relative to `CoordinateSpace`. |
 | ConstantAttenuation / LinearAttenuation / QuadraticAttenuation | float | `PointLight`/`SpotLight`: coefficients of the distance-attenuation equation controlling falloff. |
 | MinAttenuationCutoff / MaxAttenuationCutoff | float | `PointLight`/`SpotLight`: range within which the light is effective. |
 | Direction | Vector3 | `DistantLight`/`SpotLight`: direction the light points. |
 | InnerConeAngle / OuterConeAngle, InnerConeColor / OuterConeColor | float / Color | `SpotLight` only: the inner and outer light cones. |
-| Intensity | float | `AmbientLight`/`PointLight`: intensity multiplier. |
+| Intensity | float | `AmbientLight`/`PointLight`/`DistantLight`: intensity multiplier. |
 
 ## Notes
 

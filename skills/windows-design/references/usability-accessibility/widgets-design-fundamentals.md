@@ -36,3 +36,4 @@ Widgets support three sizes — small, medium, large — and each should be desi
 - [Widget states and built-in UI components](./widgets-states-and-ui.md)
 - [Widget interaction design guidance](./widgets-interaction-design.md)
 - [Integrate with the widget picker](./widgets-picker-integration.md)
+- [Widget principles](./widgets-principles.md)

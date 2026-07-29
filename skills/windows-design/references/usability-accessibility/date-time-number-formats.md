@@ -37,7 +37,7 @@ var currencyFormatUSD = new Windows.Globalization.NumberFormatting.CurrencyForma
 ## Notes
 
 - Prefer **format templates** over **format patterns**: templates guarantee a culturally-appropriate, valid standard format per language-region; patterns are invariant/explicit and are not guaranteed to be correct across cultures.
-- Use standard [calendar, date, and time controls](../../develop/ui/controls/date-and-time) when letting the user pick a date/time — they automatically use the best format for the app runtime language list.
+- Use standard [calendar, date, and time controls](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/date-and-time) when letting the user pick a date/time — they automatically use the best format for the app runtime language list.
 - If formatting only per the *user profile* language list (rather than the app's translated language list), a user without a corresponding translation may see accurately-formatted dates alongside untranslated surrounding text.
 
 ## Related

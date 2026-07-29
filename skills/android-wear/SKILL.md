@@ -39,6 +39,7 @@ skills/android-wear/
       animated-text-placeholder.md
       picker.md
       dialogs.md
+      dynamic-color-scheme.md
       progress-indicators.md
       slider-stepper.md
       pager.md

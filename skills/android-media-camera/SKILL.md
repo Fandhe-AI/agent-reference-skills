@@ -29,6 +29,7 @@ skills/android-media-camera/
       compose-ui.md
       customization.md
       data-source-cache.md
+      downloading-media.md
       drm.md
       exoplayer.md
       live-streaming.md
@@ -58,6 +59,7 @@ skills/android-media-camera/
       media-session-callback.md
       media-session-service.md
       media-session.md
+      muxer-customization.md
       session-commands.md
       session-token.md
       tone-mapping.md
@@ -127,6 +129,7 @@ skills/android-media-camera/
 | TrackSelector / Timeline / Tracks でトラック選択・再生リスト構造を扱いたい | media3-playback | [references/media3-playback/README.md](references/media3-playback/README.md) |
 | PlayerView / Compose UI で再生画面を組み立てたい | media3-playback | [references/media3-playback/README.md](references/media3-playback/README.md) |
 | DRM 保護コンテンツを再生したい | media3-playback | [references/media3-playback/README.md](references/media3-playback/README.md) |
+| DownloadManager / DownloadService でオフライン再生用にメディアをダウンロードしたい | media3-playback | [references/media3-playback/README.md](references/media3-playback/README.md) |
 | MediaSession / MediaSessionService でバックグラウンド再生・外部連携をしたい | media-session-editing | [references/media-session-editing/README.md](references/media-session-editing/README.md) |
 | MediaController / MediaBrowser でセッションに接続・操作したい | media-session-editing | [references/media-session-editing/README.md](references/media-session-editing/README.md) |
 | メディア通知 (MediaNotification.Provider) をカスタマイズしたい | media-session-editing | [references/media-session-editing/README.md](references/media-session-editing/README.md) |

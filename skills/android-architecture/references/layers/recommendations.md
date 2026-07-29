@@ -32,3 +32,4 @@ class BookmarksViewModel @Inject constructor(
 - [layers](./layers.md)
 - [ui-layer](./ui-layer.md)
 - [data-layer](./data-layer.md)
+- [models-and-naming-conventions](./models-and-naming-conventions.md)

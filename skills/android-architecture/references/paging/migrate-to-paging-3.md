@@ -7,7 +7,7 @@ Migration path from Paging 2 (`androidx.paging:paging-runtime:2.x`) to Paging 3.
 ```kotlin
 // Paging 2
 val config = PagedList.Config.Builder().setPageSize(20).build()
-val pagedList = PagedList.Builder(dataSourceFactory, config).build()
+val pagedList = PagedList.Builder(dataSource, config).build()
 
 // Paging 3
 val flow: Flow<PagingData<User>> = Pager(
@@ -30,7 +30,7 @@ val flow: Flow<PagingData<User>> = Pager(
 
 ## Notes
 
-- `getRefreshKey(state: PagingState<Key, Value>)` replaces the old positional/key-based refresh logic; return `state.anchorPosition` for positional keys or look up the closest item's key via `state.getClosestItemToPosition(...)` for item keys.
+- `getRefreshKey(state: PagingState<Key, Value>)` replaces the old positional/key-based refresh logic; return `state.anchorPosition` for positional keys or look up the closest item's key via `state.closestItemToPosition(...)` for item keys. (The official migration guide's own snippet spells this `getClosestItemToPosition`; the actual `PagingState` API surface has no `get`-prefixed overload — only `closestItemToPosition`.)
 - Partial migration is supported: migrate only `DataSource` → `PagingSource` and keep the existing `PagedListAdapter` presentation layer, migrating incrementally.
 - Gradle: `androidx.paging:paging-runtime:3.x.x` (Views) and `androidx.paging:paging-compose:3.x.x` (Compose) replace the Paging 2 artifact.
 - This is a migration guide, not a stable API surface — always confirm current class/method names against the linked API pages before writing migration code.

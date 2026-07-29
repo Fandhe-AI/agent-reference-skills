@@ -6,6 +6,7 @@
 | Accessibility in the Store | Declaring accessible in Microsoft Store | [accessibility-in-the-store.md](./accessibility-in-the-store.md) |
 | Accessibility testing | Automated checks and manual AT testing | [accessibility-testing.md](./accessibility-testing.md) |
 | Accessible text requirements | Text role, color contrast, system text-scaling support | [accessible-text-requirements.md](./accessible-text-requirements.md) |
+| Expose basic accessibility information (name, role, value) | Accessible-name sourcing, dynamic content, localization workflow | [basic-accessibility-information.md](./basic-accessibility-information.md) |
 | Custom automation peers | Provider-side object a control exposes to UI Automation | [automation-peers.md](./automation-peers.md) |
 | AutomationProperties (attached properties) | Attached properties for name, description, and metadata | [automation-properties.md](./automation-properties.md) |
 | Control patterns and interfaces | Interface implementations for control functionality | [control-patterns-and-interfaces.md](./control-patterns-and-interfaces.md) |

@@ -42,4 +42,5 @@ public TransitionCollection Transitions { get; set; }
 - [EntranceThemeTransition](./entrance-theme-transition.md)
 - [RepositionThemeTransition](./reposition-theme-transition.md)
 - [AddDeleteThemeTransition](./add-delete-theme-transition.md)
+- [Theme Transitions](./theme-transitions.md)
 - [Storyboard](./storyboard.md)

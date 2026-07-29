@@ -6,7 +6,7 @@
 | Actions | Extension functions on `SemanticsNodeInteraction` that inject simulated user events (clicks, text input, scrolling, gestures). | [actions.md](./actions.md) |
 | Assertions | Extension functions on `SemanticsNodeInteraction` and `SemanticsNodeInteractionCollection` that verify state and fail the test with descriptive messages. | [assertions.md](./assertions.md) |
 | ComposeTestRule | JUnit4 `TestRule` that hosts Compose content under test and drives the semantics tree during testing. | [compose-test-rule.md](./compose-test-rule.md) |
-| Compose Testing v2 APIs | Experimental alternative to v1 JUnit4 rule APIs; uses `StandardTestDispatcher` for more explicit synchronization. | [compose-testing-v2.md](./compose-testing-v2.md) |
+| Compose Testing v2 APIs | Recommended replacement for the deprecated v1 JUnit4 rule APIs; uses `StandardTestDispatcher` for more explicit synchronization. | [compose-testing-v2.md](./compose-testing-v2.md) |
 | DeviceConfigurationOverride | Wraps test content and locally overrides device-wide properties (screen/window size, font scale, layout direction). | [device-configuration-override.md](./device-configuration-override.md) |
 | Espresso / UiAutomator interoperability | Hybrid apps mixing Compose and Views; match Views with Espresso and Compose elements with `ComposeTestRule` in same test. | [espresso-interop.md](./espresso-interop.md) |
 | Finders | Functions that select nodes from the semantics tree by matcher, text, tag, content description, or tree root. | [finders.md](./finders.md) |

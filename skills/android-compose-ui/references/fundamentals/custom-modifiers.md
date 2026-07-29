@@ -1,6 +1,6 @@
 # Custom Modifiers (Modifier.Node)
 
-`Modifier.Node` is the low-level, high-performance API for authoring custom modifiers — the same API Compose's own built-in modifiers are implemented with. It supersedes the deprecated `composed {}` factory: a node instance survives across recompositions and is updated in place instead of being recreated, avoiding per-frame allocation and recomposition overhead.
+`Modifier.Node` is the low-level, high-performance API for authoring custom modifiers — the same API Compose's own built-in modifiers are implemented with. `composed {}` is no longer recommended due to the performance issues it created; a `Modifier.Node` instance survives across recompositions and is updated in place instead of being recreated, avoiding per-frame allocation and recomposition overhead.
 
 ## Signature / Usage
 
@@ -34,7 +34,7 @@ fun Modifier.circle(color: Color) = this then CircleElement(color)
 | `PointerInputModifierNode` | Receives raw pointer input events |
 | `SemanticsModifierNode` | Contributes semantics for testing/accessibility |
 | `ParentDataModifierNode` | Passes data up to the parent layout |
-| `LayoutAwareModifierNode` | `onMeasured()` / `onPlaced()` callbacks |
+| `LayoutAwareModifierNode` | `onPlaced(LayoutCoordinates)` / `onRemeasured(IntSize)` callbacks |
 | `GlobalPositionAwareModifierNode` | `onGloballyPositioned()` callback |
 | `CompositionLocalConsumerModifierNode` | Reads `CompositionLocal`s at the usage site via `currentValueOf()` |
 | `ObserverModifierNode` | Reacts to snapshot-state reads outside a scope via `onObservedReadsChanged()` (pair with `observeReads {}` in `onAttach()`) |

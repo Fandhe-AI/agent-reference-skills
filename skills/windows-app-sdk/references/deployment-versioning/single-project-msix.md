@@ -36,7 +36,7 @@ msbuild /p:GenerateAppxPackageOnBuild=true
 - Supports only a single executable per MSIX; combining multiple executables in one package still requires a separate Windows Application Packaging Project (see windows-packaging-publish for that workflow) — this replaces that older two-project approach for the common single-exe WinUI 3 case.
 - After moving files, enable the **Deploy** checkbox for every configuration/platform combination in Visual Studio's **Configuration Manager**, or deployment silently no-ops.
 - Does not produce `.msixbundle` bundles; only a single `.msix`. Combine multiple architectures into a bundle with a separate bundler tool if needed.
-- The single-project MSIX packaging tools ship with the Windows App SDK Visual Studio extension; only versions predating Windows App SDK 1.0 Preview 3 (C#) may need the standalone VSIX installed separately.
+- The single-project MSIX packaging tools ship with the Windows App SDK extension for Visual Studio, except for Windows App SDK 0.8 (any project type) and C# projects using Windows App SDK 1.0 up to and including Preview 3 — those might need the tools installed separately (built into Visual Studio 2026 and later; a standalone VSIX extension for earlier Visual Studio versions).
 
 ## Related
 

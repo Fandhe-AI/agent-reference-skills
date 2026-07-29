@@ -18,6 +18,7 @@
 | @Query | Writes a custom SQL statement and exposes it as a DAO method. The SQL is validated at compile time. | [query.md](./query.md) |
 | @Relation | Defines a one-to-one, one-to-many, or (combined with `@Junction`) many-to-many relationship, resolved by Room through separate queries rather than object references. | [relation.md](./relation.md) |
 | Room.databaseBuilder / RoomDatabase.Builder | Creates the singleton instance of a `@Database`-annotated class, configured via a chain of `RoomDatabase.Builder` calls. | [room-database-builder.md](./room-database-builder.md) |
+| RoomDatabase.Callback / setDriver(SQLiteDriver) | `RoomDatabase.Callback` hooks into database creation/open/destructive-migration lifecycle events; `setDriver()` configures Room to run on a `SQLiteDriver` such as `BundledSQLiteDriver`. | [callback-driver.md](./callback-driver.md) |
 | Testing Room Databases | Room databases are tested with JUnit tests running on an Android device, typically against an in-memory database instance. | [testing.md](./testing.md) |
 | @Transaction | Ensures a DAO method that requires Room to run multiple queries executes atomically. | [transaction.md](./transaction.md) |
 | @TypeConverter / @TypeConverters | `@TypeConverter` marks a method that converts a custom type to/from a type Room can persist; `@TypeConverters` registers converter classes with Room. | [type-converter.md](./type-converter.md) |

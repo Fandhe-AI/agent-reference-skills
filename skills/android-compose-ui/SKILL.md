@@ -102,6 +102,7 @@ skills/android-compose-ui/
     text-input/
       README.md
       basictext.md
+      basicmarquee.md
       basictextfield.md
       textfieldstate.md
       annotatedstring.md

@@ -40,7 +40,7 @@ RemoteModifier.clickable(
 |------|------|---------|-------------|
 | `rememberMutableRemoteInt(initialValue: Int)` | `MutableRemoteInt` | — | Declares an `Int` piece of state that lives in the rendered document and can be updated without a service round-trip. Supports operators like `+` (`clickCounter + 1`). |
 | `rememberMutableRemoteString(initialValue: String)` | `MutableRemoteString` | — | Same as above for `String` state. |
-| `RemoteDp` | class | — | Deferred `Dp` value; construct via `RemoteDp(dp)` or the `.rdp` extension on `Int`/`Float`/`Dp`, resolved to pixels at display time rather than at compose time. |
+| `RemoteDp` | class | — | Deferred `Dp` value; construct via `RemoteDp(dp)` (or `Dp.asRdp()`) from an existing `Dp`, or via the `.rdp` extension on `Int`/`Float` directly, resolved to pixels at display time rather than at compose time. |
 | `valueChange(remoteState: MutableRemoteState<T>, updatedValue: RemoteState<T>): Action` | `Action` | — | Action that writes `updatedValue` into `remoteState` entirely on the renderer side, with no callback into `provideWidgetData()`. |
 | `pendingIntentAction(pendingIntent: (Context) -> PendingIntent): Action` | `@Composable Action` | — | Action that resolves and fires an Android `PendingIntent`, handing control back to the app process (equivalent to tapping out of the remote-rendered surface). The `Context` is supplied by the composable to avoid holding a `PendingIntent` across serialization. |
 

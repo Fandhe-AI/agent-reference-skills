@@ -16,4 +16,5 @@
 | Windows App SDK: Deploy Framework-Dependent Packaged Apps | Deployment guidance for MSIX-packaged apps using Windows App SDK | [windows-app-sdk-deploy-packaged-apps.md](./windows-app-sdk-deploy-packaged-apps.md) |
 | Windows App SDK: Deploy Unpackaged / Packaged-with-External-Location Apps | Deployment guidance for desktop apps with external location or unpackaged model | [windows-app-sdk-deploy-unpackaged-apps.md](./windows-app-sdk-deploy-unpackaged-apps.md) |
 | Windows App SDK Deployment Architecture | High-level architecture and key terms for how apps consume Windows App SDK runtime | [windows-app-sdk-deployment-architecture.md](./windows-app-sdk-deployment-architecture.md) |
+| Windows App SDK: Check for / Remove Runtime Versions | PowerShell commands to check installed Windows App SDK runtime versions and remove outdated ones | [windows-app-sdk-runtime-version-management.md](./windows-app-sdk-runtime-version-management.md) |
 | Windows App SDK: Self-Contained Deployment | Switches Windows App SDK project to self-contained, bundling runtime with the app | [windows-app-sdk-self-contained-deploy.md](./windows-app-sdk-self-contained-deploy.md) |

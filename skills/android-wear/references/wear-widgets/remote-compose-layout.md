@@ -35,7 +35,7 @@ private fun ClickableDemoContent() {
         RemoteBox(
             modifier =
                 RemoteModifier.size(width = 200.rdp, height = 100.rdp)
-                    .background(RemoteColor(Color.LightGray))
+                    .background(Color.LightGray.rc)
                     .clickable(onClickAction)
                     .padding(RemoteDp(16.dp)),
             contentAlignment = RemoteAlignment.Center,
@@ -52,7 +52,7 @@ Standard Kotlin → Remote Compose value conversion:
 val remoteColor = Color.Blue.rc   // Color -> deferred RemoteColor
 val remoteText = "Hello".rs       // String -> deferred RemoteString
 val remoteInt = 1.ri              // Int -> deferred RemoteInt
-val remoteDp = 200.rdp            // Int/Float/Dp -> deferred RemoteDp, resolved at display time
+val remoteDp = 200.rdp            // Int/Float -> deferred RemoteDp, resolved at display time (Dp converts via Dp.asRdp())
 ```
 
 ## Options / Props
@@ -62,12 +62,12 @@ val remoteDp = 200.rdp            // Int/Float/Dp -> deferred RemoteDp, resolved
 | `RemoteBox(modifier, contentAlignment, content)` | `@RemoteComposable` | — | Single-child container mapping to ProtoLayout `Box`; positions `content` per `contentAlignment` (e.g. `RemoteAlignment.Center`). |
 | `RemoteColumn(modifier, content)` | `@RemoteComposable` | — | Vertical layout container; maps to ProtoLayout `Column`. |
 | `RemoteText(text, color, style)` | `@RemoteComposable` | — | Text element; `text` takes a `.rs`-converted `RemoteString`, `color` a `.rc`-converted `RemoteColor`. |
-| `RemoteButton(text, onClick)` | `@RemoteComposable` | — | Tappable Material3 button; `onClick` takes a Remote Compose action, typically `valueChange(...)` or `pendingIntentAction { ... }` (see remote-state-and-actions). |
+| `RemoteButton(onClick, modifier, ..., content)` | `@RemoteComposable` | — | Tappable Material3 button; `onClick` takes a Remote Compose `Action`, typically `valueChange(...)` or `pendingIntentAction { ... }` (see remote-state-and-actions). No overload takes a `text` parameter — button text goes inside the trailing `content` (or `label`) slot lambda, e.g. `RemoteButton(onClick = onClickAction) { RemoteText("Tap me!".rs) }`. |
 | `RemoteModifier` | modifier chain | — | Remote Compose counterpart of `Modifier`, from `androidx.compose.remote.creation.compose.modifier` (`fillMaxSize()`, `size()`, `padding()`, `background()`, `clickable()`); applies to Remote composables only. |
 | `.rc` | extension on e.g. `Color` | — | Converts a standard Kotlin value to its deferred Remote Compose equivalent (`RemoteColor`). |
 | `.rs` | extension on `String` | — | Converts a `String` to a deferred `RemoteString`. |
 | `.ri` | extension on `Int` | — | Converts an `Int` to a deferred `RemoteInt`. |
-| `.rdp` | extension on `Int` / `Float` / `Dp` | — | Converts a numeric value or `Dp` to a deferred `RemoteDp`, resolved at display time (for dynamic layout calculations). |
+| `.rdp` | extension on `Int` / `Float` | — | Converts a numeric value to a deferred `RemoteDp`, resolved at display time (for dynamic layout calculations). A `Dp` converts via `Dp.asRdp()` or the `RemoteDp(dp)` companion invoke — there is no `Dp.rdp` extension. |
 
 ## Notes
 

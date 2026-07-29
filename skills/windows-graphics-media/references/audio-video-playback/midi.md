@@ -44,7 +44,9 @@ midiOutPort.SendMessage(noteOn);
 - Namespace: `Windows.Devices.Midi`. Device discovery uses the general `Windows.Devices.Enumeration.DeviceInformation`/`DeviceWatcher` pattern rather than a MIDI-specific enumeration API.
 - Enumerating output devices always surfaces a built-in "Microsoft GS Wavetable Synth" device that can be played directly without any additional extension SDK in desktop/WinUI 3 apps.
 - Dispose `MidiInPort`/`IMidiOutPort` and unregister `MessageReceived` when done, and stop any `DeviceWatcher` instances used for enumeration.
+- This API is MIDI 1.0 byte-stream only. For MIDI 2.0 (Universal MIDI Packet, MIDI-CI) support, Microsoft's current-generation stack is Windows MIDI Services (`Windows.Devices.Midi2`), a separately-installed open-source SDK/runtime — see Windows MIDI Services below; it does not replace this API, which remains valid for MIDI 1.0 scenarios.
 
 ## Related
 
 - [AudioGraph](./audio-graph.md)
+- [Windows MIDI Services (Windows.Devices.Midi2, MIDI 2.0)](./midi-services.md)

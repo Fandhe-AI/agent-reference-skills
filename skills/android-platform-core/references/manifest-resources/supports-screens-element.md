@@ -38,7 +38,7 @@ Legacy pre-density-independence manifest elements for declaring supported screen
 
 ## Notes
 
-- All contained in: `<manifest>`. All introduced API level 1 (deprecated/legacy status noted per-element above).
+- All contained in: `<manifest>`. Introduced API levels differ per element: `<supports-screens>` API level 4, `<compatible-screens>` API level 9, `<uses-configuration>` API level 3 (deprecated/legacy status noted per-element above).
 - `<compatible-screens>` is explicitly the more error-prone legacy alternative: Android recommends `<supports-screens>` with `sw<N>dp` qualifiers instead, since an app is excluded from Google Play on any screen configuration not explicitly listed.
 - `<supports-gl-texture>` and `<uses-configuration>` are largely superseded by `<uses-feature>` declarations, which provide equivalent Google Play filtering with clearer semantics.
 

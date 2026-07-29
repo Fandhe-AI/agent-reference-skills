@@ -5,9 +5,12 @@ Replaces the definition of an already-enqueued `WorkRequest` in place — preser
 ## Signature / Usage
 
 ```kotlin
-public abstract fun updateWork(request: WorkRequest): ListenableFuture<UpdateResult>
+public abstract class WorkManager {
+    public abstract fun updateWork(request: WorkRequest): ListenableFuture<UpdateResult>
 
-public enum class UpdateResult { NOT_APPLIED, APPLIED_IMMEDIATELY, APPLIED_FOR_NEXT_RUN }
+    // UpdateResult is nested inside WorkManager, not a top-level type
+    public enum class UpdateResult { NOT_APPLIED, APPLIED_IMMEDIATELY, APPLIED_FOR_NEXT_RUN }
+}
 ```
 
 ```kotlin
@@ -36,7 +39,7 @@ suspend fun relaxUploadConstraint(workManager: WorkManager, uniqueWorkName: Stri
 ## Notes
 
 - Preserves enqueue time: e.g. a request enqueued 3 hours ago with a 6-hour initial delay is still eligible to run in 3 hours after the update, as long as the delay itself wasn't changed.
-- Cannot change the worker's type (e.g. swap the `Worker` class) or convert between `OneTimeWorkRequest` and `PeriodicWorkRequest` — the returned future completes exceptionally with `IllegalArgumentException` in that case. Use cancel + enqueue instead for such changes.
+- Cannot convert between `OneTimeWorkRequest` and `PeriodicWorkRequest` — the returned future completes exceptionally with `IllegalArgumentException` per the API javadoc, though the current implementation actually throws `UnsupportedOperationException` for this case. Use cancel + enqueue instead for such a conversion. Swapping the `Worker`/`CoroutineWorker` class itself while keeping the same request type (one-time or periodic) is allowed and is applied by `updateWork()`.
 - If no enqueued work matches `request`'s id, the future completes exceptionally with `IllegalArgumentException`.
 - Each successful update increments the work's generation, retrievable via `WorkInfo.getGeneration()`; the returned `UpdateResult` itself does not carry the generation.
 - Package: `androidx.work`.

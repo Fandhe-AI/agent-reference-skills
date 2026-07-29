@@ -60,7 +60,7 @@ class MyComposeTest {
 - `AndroidComposeTestRule<R : TestRule, A : ComponentActivity>` is the Android implementation of `ComposeContentTestRule`; it exposes `activity: A` for interacting with the hosting Activity.
 - Artifact: `androidx.compose.ui:ui-test-junit4` (and `androidx.compose.ui:ui-test-manifest` as `debugImplementation` when using `createComposeRule()`).
 - Test methods are automatically synchronized with Compose; see `synchronization.md` for `waitForIdle` / `mainClock` details.
-- Google's migration guide additionally documents an alpha v2 factory family (`androidx.compose.ui.test.junit4.v2.createComposeRule`/`createAndroidComposeRule`/`createEmptyComposeRule`, plus rule-free `runComposeUiTest`) that defaults to `StandardTestDispatcher` instead of this page's `UnconfinedTestDispatcher` behavior; the factories documented above remain the fully-supported default. See compose-testing-v2.md.
+- The factories documented on this page (`androidx.compose.ui.test.junit4.createComposeRule`/`createAndroidComposeRule`/`createEmptyComposeRule`) are now `@Deprecated`. Google's official migration guide states migration to the v2 factory family (`androidx.compose.ui.test.junit4.v2.createComposeRule`/`createAndroidComposeRule`/`createEmptyComposeRule`, plus rule-free `runComposeUiTest`, which default to `StandardTestDispatcher` instead of this page's `UnconfinedTestDispatcher` behavior) is "strongly recommended" for new and existing tests. See compose-testing-v2.md.
 
 ## Related
 

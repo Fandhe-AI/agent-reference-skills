@@ -1,6 +1,6 @@
 # Multiprocess WorkManager (RemoteWorkManager / RemoteListenableWorker / RemoteCoroutineWorker)
 
-APIs from the `androidx.work:work-multiprocess` artifact for multi-process apps: binding individual workers to a specific process, and enqueueing/querying/cancelling work from any process via `RemoteWorkManager`. Available since WorkManager 2.6 (`RemoteListenableWorker`/`RemoteCoroutineWorker`) and 2.7 (`RemoteWorkManager`).
+APIs from the `androidx.work:work-multiprocess` artifact for multi-process apps: binding individual workers to a specific process, and enqueueing/querying/cancelling work from any process via `RemoteWorkManager`. `RemoteWorkManager` is available since WorkManager 2.5.0; `RemoteListenableWorker`/`RemoteCoroutineWorker` since 2.6.0.
 
 ## Signature / Usage
 
@@ -30,7 +30,7 @@ public abstract class RemoteWorkManager {
 
 // A worker bound to run in a specific remote process
 public abstract class RemoteCoroutineWorker(context: Context, params: WorkerParameters) :
-    ListenableWorker(context, params)
+    RemoteListenableWorker(context, params)
 ```
 
 ```kotlin

@@ -86,3 +86,4 @@ class ExamplePagingSource(
 
 - [Pager](./pager.md)
 - [RemoteMediator](./remotemediator.md)
+- [PagingState.closestItemAroundPosition](./closestitemaroundposition.md)

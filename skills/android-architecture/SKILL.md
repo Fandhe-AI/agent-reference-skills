@@ -33,6 +33,7 @@ skills/android-architecture/
       data-layer.md
       offline-first.md
       recommendations.md
+      models-and-naming-conventions.md
       modularization.md
       modularization-patterns.md
     lifecycle-viewmodel/
@@ -43,6 +44,7 @@ skills/android-architecture/
       viewmodel-scoping-apis.md
       viewmodelprovider-factory.md
       viewmodelscope.md
+      viewmodelstoreprovider.md
       androidviewmodel.md
       savedstatehandle.md
       saving-ui-state.md
@@ -55,6 +57,7 @@ skills/android-architecture/
       flowwithlifecycle.md
       collectasstatewithlifecycle.md
       locallifecycleowner.md
+      rememberlifecycleowner.md
       lifecycleeventeffect.md
       lifecyclestarteffect.md
       lifecycleresumeeffect.md
@@ -77,6 +80,7 @@ skills/android-architecture/
       hilt-multi-module.md
       qualifier-named.md
       hilt-view-model.md
+      hilt-viewmodel-compose-split.md
       entry-point.md
       hilt-testing.md
       manual-di.md
@@ -86,6 +90,7 @@ skills/android-architecture/
       migrate-to-paging-3.md
       pagingconfig.md
       pagingsource.md
+      closestitemaroundposition.md
       testpager.md
       pagingdata.md
       remotemediator.md

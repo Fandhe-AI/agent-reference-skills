@@ -43,6 +43,7 @@ if (currentFrame.SoftwareBitmap.BitmapPixelFormat == faceDetectionPixelFormat)
 
 ## Related
 
+- [FaceDetector](./face-detector.md)
 - [SceneAnalysisEffect / FaceDetectionEffect](./scene-analysis-face-detection-effects.md)
 - [SoftwareBitmap](./software-bitmap.md)
 - [MediaFrameReader](./media-frame-reader.md)

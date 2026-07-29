@@ -43,7 +43,7 @@ val viewModel: ExampleViewModel by hiltNavGraphViewModels(R.id.example_graph)
 |------|------|---------|-------------|
 | `androidx.hilt:hilt-work` | Gradle artifact | — | Adds `@HiltWorker` and `HiltWorkerFactory` for injecting `Worker` classes. Requires `androidx.hilt:hilt-compiler` on the `ksp`/`kapt` configuration. |
 | `androidx.hilt:hilt-navigation-fragment` | Gradle artifact | — | Adds `hiltNavGraphViewModels()`, a Kotlin extension retrieving a `@HiltViewModel` scoped to a Fragment `NavBackStackEntry`/nav graph. |
-| `hiltNavGraphViewModels(navGraphId, key?)` | `(Int, String?) -> Lazy<VM>` | `key = null` | Retrieves (creating if absent) the Hilt-managed `ViewModel` scoped to the given navigation graph; the optional `key` allows multiple instances of the same `ViewModel` type. |
+| `hiltNavGraphViewModels(navGraphId)` | `(Int) -> Lazy<VM>` | — | Retrieves (creating if absent) the Hilt-managed `ViewModel` scoped to the given navigation graph. An overload taking a `creationCallback: (VMF) -> VM` also exists for assisted injection. |
 
 ## Notes
 

@@ -42,7 +42,7 @@ notifier.Show(toast);
 | `ToastCollectionManager.FindAllToastCollectionsAsync()` | method | Lists all collections created by the app. |
 | `ToastCollectionManager.RemoveToastCollectionAsync(String id)` | method | Deletes a collection and every notification it contains. |
 | `ToastNotificationManagerForUser.GetToastNotifierForToastCollectionIdAsync(String id)` | method | Returns a `ToastNotifier` scoped to the collection, used to `Show` notifications into it. |
-| `ToastNotificationManager.GetHistoryForToastCollectionAsync(String id)` | method | Returns the `ToastNotificationHistory` for the collection, for `Remove(tag, group)` / `Clear()` of its notifications. |
+| `ToastNotificationManagerForUser.GetHistoryForToastCollectionIdAsync(String collectionId)` | method | Returns the `ToastNotificationHistory` for the collection, for `Remove(tag, group)` / `Clear()` of its notifications. |
 
 ## Notes
 

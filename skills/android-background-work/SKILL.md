@@ -93,6 +93,7 @@ skills/android-background-work/
       combine-zip-flatmaplatest.md
       channel.md
       retry-retrywhen.md
+      mutex-shared-mutable-state.md
       testing-coroutines-flow.md
 ```
 

@@ -5,7 +5,7 @@
 ## Signature / Usage
 
 ```kotlin
-public open class TestNavHostController(context: Context) : NavHostController(context)
+public final class TestNavHostController(context: Context) : NavHostController(context)
 ```
 
 ```kotlin
@@ -53,7 +53,7 @@ class NavigationTest {
 
 - Requires `androidTestImplementation("androidx.navigation:navigation-testing:$navVersion")`.
 - The `NavHost` under test must accept a `NavHostController` as a parameter (e.g. `AppNavHost(navController: NavHostController)`) so a `TestNavHostController` can be substituted for the real one.
-- For Compose navigation, register `ComposeNavigator` (and any other navigators used, e.g. `DialogNavigator`) on `navController.navigatorProvider` before setting content — otherwise navigation to `composable`/`dialog` destinations throws `IllegalStateException: Navigator ... is not a valid navigator`.
+- For Compose navigation, register `ComposeNavigator` (and any other navigators used, e.g. `DialogNavigator`) on `navController.navigatorProvider` before setting content — otherwise navigation to `composable`/`dialog` destinations throws `IllegalStateException: Could not find Navigator with name "composable". You must call NavController.addNavigator() for each navigation type.`.
 - Assert navigation by triggering the real UI action (click, etc.) and then reading `navController.currentBackStackEntry?.destination`; prefer `hasRoute<T>()` for type-safe routes over comparing raw route strings.
 - Decouple screens from `NavController` by passing navigation as lambda callbacks (e.g. `navigateToFriendProfile: (String) -> Unit`) — this lets individual screen composables be tested without any `NavHost`/`TestNavHostController` at all.
 - Fragment-based navigation is tested the same way via `FragmentScenario`, injecting a `TestNavHostController` as the fragment's `NavController` and asserting on it after simulating a click.

@@ -40,7 +40,7 @@ boolean isCurrentMediaItemDynamic();
 |------|------|---------|-------------|
 | `targetOffsetMs` | `long` | from media/manifest | Live offset (distance behind the live edge) the player tries to maintain. |
 | `minOffsetMs` / `maxOffsetMs` | `long` | from media/manifest | Bounds within which the live offset is allowed to drift before the player adjusts. |
-| `minPlaybackSpeed` / `maxPlaybackSpeed` | `float` | `1.0f` | Range of playback speed the player may use to converge the live offset toward `targetOffsetMs`. |
+| `minPlaybackSpeed` / `maxPlaybackSpeed` | `float` | `C.RATE_UNSET` | Range of playback speed the player may use to converge the live offset toward `targetOffsetMs`; unset means the value comes from the media/manifest (with `DefaultLivePlaybackSpeedControl`'s fallback speeds applied for low-latency streams). Explicitly setting both to `1.0f` disables the speed adjustment. |
 | `player.getCurrentLiveOffset()` | `long` | — | Current offset between real time and the playback position, or `C.TIME_UNSET` if not live/unknown. |
 | `player.isCurrentMediaItemLive()` | `boolean` | — | Whether the current item is a live stream (stays `true` even after the stream has ended). |
 | `player.isCurrentMediaItemDynamic()` | `boolean` | — | Whether the current item's timeline is still being updated (typically `true` while a live stream is ongoing). |

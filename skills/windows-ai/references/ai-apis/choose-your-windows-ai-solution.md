@@ -56,5 +56,6 @@ else
 ## Related
 
 - [Device requirements and fallback](./device-requirements.md)
+- [Ready-to-use local LLMs on Windows](./local-llms.md)
 - [Foundry Local overview](../foundry-local/overview.md)
 - [Windows ML overview](../windows-ml/overview.md)

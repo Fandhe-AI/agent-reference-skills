@@ -68,6 +68,7 @@ skills/windows-testing-performance/
       README.md
       ui-automation-overview.md
       automation-properties.md
+      basic-accessibility-information.md
       landmarks-and-headings.md
       automation-peers.md
       control-patterns-and-interfaces.md

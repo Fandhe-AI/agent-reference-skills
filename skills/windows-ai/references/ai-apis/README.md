@@ -11,9 +11,12 @@
 | ImageObjectExtractor | Identify specific object with point/rectangle hints returning a greyscale mask | [image-object-extractor.md](./image-object-extractor.md) |
 | ImageObjectRemover | Remove masked objects and reconstruct the image background (Object Erase) | [image-object-remover.md](./image-object-remover.md) |
 | ImageScaler | Scale and sharpen images up to 8x original resolution (Image Super Resolution) | [image-scaler.md](./image-scaler.md) |
+| Language Model best practices | Non-determinism, multi-turn context, context-window management, and disposal guidance for LanguageModel | [language-model-best-practices.md](./language-model-best-practices.md) |
 | LanguageModelContext | Context window for multi-turn conversations with configurable system prompt | [language-model-context.md](./language-model-context.md) |
 | LanguageModelOptions / ContentFilterOptions | Sampling, content filtering, and LoRA adapter options for language model | [language-model-options.md](./language-model-options.md) |
 | LanguageModel | Local small language model (Phi Silica) for on-device inference | [language-model.md](./language-model.md) |
+| Ready-to-use local LLMs on Windows | Decision guide for local LLMs: Phi Silica, Foundry Local, or bring-your-own via Windows ML | [local-llms.md](./local-llms.md) |
+| Generate structured JSON output with Phi Silica | Constrain LanguageModel output to a JSON Schema via LanguageModelExperimental | [phi-silica-structured-output.md](./phi-silica-structured-output.md) |
 | Phi Silica LoRA fine-tuning | Fine-tune Phi Silica with Low Rank Adaptation adapter for specific use case | [phi-silica-lora.md](./phi-silica-lora.md) |
 | RecognizedText / RecognizedLine / RecognizedWord | OCR result with lines, words, bounding boxes, and confidence scores | [recognized-text.md](./recognized-text.md) |
 | Responsible AI guidelines | Govern, map, measure, manage principles for responsible AI development | [responsible-ai.md](./responsible-ai.md) |
@@ -21,4 +24,5 @@
 | SpeechRecognitionModel | Batch or streaming speech-to-text transcription on NPU or CPU | [speech-recognition-model.md](./speech-recognition-model.md) |
 | Text Intelligence Skills | Summarize, rewrite with tone control, convert text to table | [text-intelligence-skills.md](./text-intelligence-skills.md) |
 | TextRecognizer | AI-based OCR for text detection and extraction from images | [text-recognizer.md](./text-recognizer.md) |
+| Windows AI API troubleshooting | LAF token, GPU/CPU driver, manifest capability, and Feedback Hub diagnostic checklist | [troubleshooting.md](./troubleshooting.md) |
 | VideoScaler | Real-time video upscaling (Video Super Resolution) up to 8x resolution | [video-scaler.md](./video-scaler.md) |

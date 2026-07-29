@@ -38,6 +38,7 @@ skills/android-build-gradle/
       gradle-properties.md
       local-properties.md
       multidex.md
+      native-16kb-page-size.md
       native-dependencies-prefab.md
       native-build-cmake.md
     dependencies/
@@ -50,6 +51,7 @@ skills/android-build-gradle/
       dependency-exclusion.md
       viewing-dependencies.md
       ksp-vs-kapt.md
+      migrate-to-catalogs.md
       variant-specific-dependencies.md
       dependency-verification.md
     optimize-release/

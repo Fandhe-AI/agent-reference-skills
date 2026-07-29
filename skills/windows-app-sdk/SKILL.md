@@ -91,6 +91,7 @@ skills/windows-app-sdk/
       implement-feed-provider.md
       web-widget-providers.md
       widget-provider-activateapplication-protocol.md
+      widget-provider-error-analytics-reporting.md
     deployment-versioning/
       README.md
       deployment-architecture.md
@@ -109,6 +110,10 @@ skills/windows-app-sdk/
       check-windows-app-sdk-versions.md
       single-project-msix.md
       remove-windows-app-sdk-versions.md
+      packagedependency.md
+      packagedeploymentmanager.md
+      runtimecompatibilityoptions.md
+      runtimeinfo.md
 ```
 
 ## 探索手順

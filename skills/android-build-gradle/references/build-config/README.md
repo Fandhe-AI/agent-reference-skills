@@ -12,6 +12,7 @@
 | local.properties and sdk.dir | Machine-local configuration file at the project… | [local-properties.md](./local-properties.md) |
 | Module build.gradle.kts | The subproject-level build file (e.g.… | [module-build-gradle.md](./module-build-gradle.md) |
 | Multidex (multiDexEnabled, MultiDexApplication, multiDexKeepProguard) | Configuration required when an app (or its test APK)… | [multidex.md](./multidex.md) |
+| 16 KB page size support for native libraries | Google Play–required 16 KB ELF alignment for `.so`… | [native-16kb-page-size.md](./native-16kb-page-size.md) |
 | Custom C/C++ build system integration (externalNativeBuild, ndk {} block) | `externalNativeBuild` links a module's Gradle build… | [native-build-cmake.md](./native-build-cmake.md) |
 | Native (C/C++) dependencies via Prefab | `buildFeatures.prefab` lets a module consume… | [native-dependencies-prefab.md](./native-dependencies-prefab.md) |
 | packaging | Nested block inside `android { }` that controls… | [packaging.md](./packaging.md) |

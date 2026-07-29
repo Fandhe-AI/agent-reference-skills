@@ -10,6 +10,7 @@
 | makeappx.exe (Command-Line Packaging) | `MakeAppx.exe` creates app packages and bundles from command line | [makeappx-cli.md](./makeappx-cli.md) |
 | Modification Packages | MSIX packages that store customizations to overlay onto a main app without repackaging | [modification-packages.md](./modification-packages.md) |
 | MSIX App Attach | Delivers MSIX applications by mounting a disk image rather than installing directly | [msix-app-attach.md](./msix-app-attach.md) |
+| MSIX Containerization Overview | AppContainer/full-trust execution model, virtual file system and registry isolation | [msix-containerization-overview.md](./msix-containerization-overview.md) |
 | What is MSIX? | MSIX is the modern Windows app packaging format for reliable install/uninstall and updates | [msix-overview.md](./msix-overview.md) |
 | MSIX Packaging Tool | Converts existing desktop installer to MSIX via UI or command line without source code | [msix-packaging-tool.md](./msix-packaging-tool.md) |
 | Optional Packages and Related Sets | Optional packages contain DLC/extension content that integrates with a main package | [optional-packages.md](./optional-packages.md) |
@@ -20,5 +21,6 @@
 | MSIX Package Structure | Every MSIX contains app payload plus three core system files for deploy/verify/update | [package-structure.md](./package-structure.md) |
 | Package Support Framework (PSF) | Open-source kit that applies runtime fixes to desktop apps to run correctly in MSIX container | [package-support-framework.md](./package-support-framework.md) |
 | Resource Packages | Segments language/display-scale assets into separate packages Windows downloads by configuration | [resource-packages.md](./resource-packages.md) |
+| Single-Project MSIX Packaging | Builds a WinUI 3 desktop app directly into an MSIX package without a separate packaging project | [single-project-msix.md](./single-project-msix.md) |
 | Unsigned MSIX Package (Local Testing) | Since Windows 11, MSIX packages can be installed unsigned for faster local iteration | [unsigned-package.md](./unsigned-package.md) |
 | Packaging with the Windows Application Packaging Project (Visual Studio) | Use Visual Studio's Windows Application Packaging Project to generate MSIX packages | [vs-packaging-project.md](./vs-packaging-project.md) |

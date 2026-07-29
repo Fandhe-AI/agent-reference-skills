@@ -30,17 +30,16 @@ Flag any APIs without a direct WinUI 3 equivalent rather than guessing.
 | UWP | WinUI 3 replacement | Notes |
 |------|-------------|------|
 | `Pivot` | `TabView`, `NavigationView` (top mode), or `RadioButtons` + visibility | `RadioButtons` is simplest for 2–3 fixed tabs; `TabView` for dynamic/closeable tabs. |
-| `InkToolbar` (custom subclass) | `CommandBar` with `AppBarToggleButton` items | The built-in `InkToolbar` still exists, but custom subclassing patterns don't translate — rebuild with `CommandBar`. |
-| `RadialController.CreateForCurrentView()` | `RadialControllerInterop.GetForWindow(hwnd)` | No direct 1:1 equivalent; requires window-handle interop. |
+| `InkToolbar` (custom subclass) | `CommandBar` with `AppBarToggleButton` items | `InkToolbar` is **not available** in WinUI 3 (Windows App SDK 2.0) — there is no built-in equivalent to subclass. Rebuild the toolbar UI with `CommandBar`. |
+| `RadialController.CreateForCurrentView()` | `RadialControllerInterop.CreateForWindow(hwnd)` | No direct 1:1 equivalent; requires window-handle interop. |
 | `Win2D.uwp` (NuGet) | `Microsoft.Graphics.Win2D` (NuGet) | Package name changed only; `Microsoft.Graphics.Canvas.*` API surface is identical. |
-| `Windows.UI.Input.Inking.*` | `Microsoft.UI.Input.Inking.*` | Namespace move only; `InkCanvas`/`InkPresenter` otherwise identical. |
+| `Windows.UI.Input.Inking.*` (`InkCanvas`, `InkPresenter`) | No direct namespace substitution | `Microsoft.UI.Xaml.Controls.InkCanvas` is **Experimental only** (introduced in Windows App SDK 2.0 Experimental 1, not in the stable 2.0 channel); referencing it from a stable-channel project fails with `WMC0001 Unknown type`. Don't do a namespace find/replace — rebuild ink capture with Win2D and pointer-input handling instead. |
 | `PrintManager.GetForCurrentView()` | `PrintManagerInterop.GetForWindow(hwnd)` | Requires the window handle; omitting it throws `COMException`. `PrintDocument` rendering APIs (`Paginate`, `GetPreviewPage`, `AddPages`) are unchanged. |
 | Custom `BindableBase`/`DelegateCommand` | `CommunityToolkit.Mvvm` `ObservableObject`/`RelayCommand`/`[ObservableProperty]` | NuGet package `CommunityToolkit.Mvvm`; replaces hand-rolled MVVM base classes. |
 
 ## Notes
 
 - **`x:Bind` defaults to `OneTime` mode**, unlike `{Binding}` which defaults to `OneWay`. During migration, audit every `x:Bind` expression against a property that changes at runtime — a missing `Mode=OneWay`/`Mode=TwoWay` causes "UI doesn't update" bugs invisible at compile time.
-- `InkStrokeContainer.SaveAsync()`/`LoadAsync()` still require `IRandomAccessStream`; bridge to `System.IO` streams via `MemoryStream.AsRandomAccessStream()`.
 - App lifecycle (`Application.Current.Suspending`/`Resuming` → `Microsoft.Windows.AppLifecycle`) is **not** a simple substitution — treat it as a dedicated rewrite rather than an automated find/replace, unlike the other rows in this table.
 - For the full namespace/member mapping table (not just the AI-agent quick-reference subset), see the namespace-mapping.md page in this category.
 

@@ -35,6 +35,7 @@ skills/android-data/
       transaction.md
       database.md
       room-database-builder.md
+      callback-driver.md
       migration.md
       type-converter.md
       relation.md
@@ -63,6 +64,7 @@ skills/android-data/
       mediastore.md
       storage-access-framework.md
       photo-picker.md
+      embedded-photo-picker.md
       file-provider.md
       uri-permissions.md
       blobstore-manager.md

@@ -58,7 +58,7 @@ commandList->SetGraphicsRootDescriptorTable(0, srvHeap->GetGPUDescriptorHandleFo
 |------|-------------|
 | D3D12_RESOURCE_BARRIER_TYPE_TRANSITION | A subresource changes usage state; described by `D3D12_RESOURCE_TRANSITION_BARRIER` (`pResource`, `Subresource`, `StateBefore`, `StateAfter`). Use `D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES` to transition every subresource at once. |
 | D3D12_RESOURCE_BARRIER_TYPE_ALIASING | Two resources share overlapping memory in the same heap (placed/reserved resources); described by `D3D12_RESOURCE_ALIASING_BARRIER` (`pResourceBefore`, `pResourceAfter`, either may be `NULL`). |
-| D3D12_RESOURCE_BARRIER_TYPE_UAV | All prior UAV reads/writes on a resource must complete before subsequent UAV reads/writes begin; described by `D3D12_RESOURCE_BARRIER_UAV` (`pResource`, may be `NULL` to mean "any UAV"). |
+| D3D12_RESOURCE_BARRIER_TYPE_UAV | All prior UAV reads/writes on a resource must complete before subsequent UAV reads/writes begin; described by `D3D12_RESOURCE_UAV_BARRIER` (`pResource`, may be `NULL` to mean "any UAV"). |
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -75,10 +75,12 @@ commandList->SetGraphicsRootDescriptorTable(0, srvHeap->GetGPUDescriptorHandleFo
 - Before `IDXGISwapChain::Present`, a back buffer must be in `D3D12_RESOURCE_STATE_PRESENT` (numerically identical to `D3D12_RESOURCE_STATE_COMMON`, value 0).
 - Batch multiple barriers into one `ResourceBarrier` call where possible; barriers are not free — they can force cache flushes and stalls, so avoid unnecessary transitions to/from `COMMON`.
 - Only `SetDescriptorHeaps`-bound, `D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE` heaps (CBV/SRV/UAV and sampler, at most one of each type simultaneously) can be referenced by a descriptor table; RTV/DSV heaps are never shader-visible and are addressed directly (e.g. `OMSetRenderTargets`), not through root parameters.
+- This legacy `D3D12_RESOURCE_BARRIER`/`ResourceBarrier` model coexists with the newer Enhanced Barriers model (`ID3D12GraphicsCommandList7::Barrier`, `D3D12_BARRIER_GROUP`), which splits state into independent sync/access/layout and requires an `EnhancedBarriersSupported` capability check — see the linked page.
 - Namespace: Win32 COM (`d3d12.h`).
 
 ## Related
 
 - [Direct3D 12 overview](./d3d12-overview.md)
+- [D3D12 Enhanced Barriers: ID3D12GraphicsCommandList7::Barrier, D3D12_BARRIER_GROUP, D3D12_BARRIER_LAYOUT](./d3d12-enhanced-barriers.md)
 - [Compute shaders (ID3D11ComputeShader, Dispatch, UAV)](./d3d11-compute-shader.md)
 - [DirectX Raytracing: ID3D12StateObject, acceleration structures, DispatchRays](./d3d12-raytracing.md)

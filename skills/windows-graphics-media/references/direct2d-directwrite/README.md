@@ -16,6 +16,7 @@
 | ID2D1Factory1 | Extends ID2D1Factory with device creation and effect registration. | [id2d1factory1.md](./id2d1factory1.md) |
 | ID2D1Geometry | Base geometry resource: bounds, hit-testing, combine/simplify/outline/tessellate. | [id2d1geometry.md](./id2d1geometry.md) |
 | ID2D1GeometrySink | Sink used to build a path geometry's figures and segments. | [id2d1geometrysink.md](./id2d1geometrysink.md) |
+| ID2D1ImageBrush | Paints an area with an ID2D1Image (effect output, command list, or bitmap) rather than a fixed bitmap. | [id2d1imagebrush.md](./id2d1imagebrush.md) |
 | ID2D1Layer | Represents the backing store required to render a layer — an offscreen buffer used with `PushLayer`/`PopLayer` to apply an opacity, opacity-mask brush, or geometric mask to a group of drawing operations. `PushAxisAlignedClip`/`PopAxisAlignedClip` provide a lighter-weight, layer-free alternative for simple rectangular clipping. | [id2d1layer.md](./id2d1layer.md) |
 | ID2D1LinearGradientBrush | Paints an area with a linear gradient. | [id2d1lineargradientbrush.md](./id2d1lineargradientbrush.md) |
 | ID2D1PathGeometry | Complex shape composed of arcs, curves, and lines, populated via a geometry sink. | [id2d1pathgeometry.md](./id2d1pathgeometry.md) |

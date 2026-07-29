@@ -14,6 +14,7 @@
 | Location Permissions | Location access is requested in stages: coarse, fine, and (API 29+) background, each with its own prompt. | [location-permissions.md](./location-permissions.md) |
 | MANAGE_EXTERNAL_STORAGE (All-Files Access) | Special permission that grants read/write access to shared storage outside the app's sandbox. | [manage-external-storage.md](./manage-external-storage.md) |
 | Media Permissions | Granular runtime permissions for reading other apps' media from shared storage, split by media type. | [media-permissions.md](./media-permissions.md) |
+| Nearby Devices Permissions | Bluetooth (SCAN/CONNECT/ADVERTISE), Wi-Fi (NEARBY_WIFI_DEVICES), and local-network (ACCESS_LOCAL_NETWORK) runtime permissions. | [nearby-devices-permissions.md](./nearby-devices-permissions.md) |
 | Permission Groups and One-Time Permission | Related permissions are bundled into groups; sensitive data permissions offer a one-time grant option. | [permission-groups-and-one-time-permission.md](./permission-groups-and-one-time-permission.md) |
 | Permission Types and Protection Levels | Android permissions are grouped into install-time, runtime, and special permissions with different grant behaviors. | [permission-types-and-protection-levels.md](./permission-types-and-protection-levels.md) |
 | POST_NOTIFICATIONS Runtime Permission | Runtime permission introduced in Android 13 that gates whether an app can post non-exempt notifications. | [post-notifications-permission.md](./post-notifications-permission.md) |

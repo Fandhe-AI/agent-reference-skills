@@ -62,7 +62,7 @@ LinearWavyProgressIndicator(
 - Omitting `progress` selects the indeterminate, continuously animating overload.
 - The default `indicatorAmplitude` flattens the wave to `0f` at `progress <= 0.1f` or `progress >= 0.95f`.
 - Use `WavyProgressIndicatorDefaults.ProgressAnimationSpec` when animating `progress` between values.
-- Package: `androidx.compose.material3`. Stable (non-experimental) since `1.5.0-alpha19`.
+- Package: `androidx.compose.material3`. Stable (non-experimental) since `1.5.0-alpha18`.
 
 ## Related
 

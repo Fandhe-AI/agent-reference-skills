@@ -22,7 +22,7 @@ UI Automation exposes an app's UI to assistive technologies and inspection tools
 
 ## Notes
 
-- Set per element via `AutomationProperties.AccessibilityView` (`Raw` \| `Control` \| `Content` \| `Default`) — see AutomationProperties (attached properties). Placing a composed-UI element in `Raw` keeps it available for diagnostic and traversal scenarios while excluding it from the control/content views most assistive technologies use; inspect `generic.xaml` control templates for real-world examples.
+- Set per element via `AutomationProperties.AccessibilityView`, whose value is the `AccessibilityView` enum with exactly three members — `Raw` (0), `Control` (1), `Content` (2, documented as the default behavior when the property is left unset; there is no separate `Default` member) — see AutomationProperties (attached properties). Placing a composed-UI element in `Raw` keeps it available for diagnostic and traversal scenarios while excluding it from the control/content views most assistive technologies use; inspect `generic.xaml` control templates for real-world examples.
 - Applies to WinUI 3 / Windows App SDK (`Microsoft.UI.Xaml.Automation.*`). WPF's unrelated `System.Windows.Automation` namespace models the same raw/control/content distinction through `TreeWalker.RawViewWalker` / `ControlViewWalker` / `ContentViewWalker`, not through this attached property.
 - **AccScope** visualizes the UI Automation tree (as a list or visual overlay) to inspect these views directly during early design and control-template validation — see Accessibility testing for the full inspection-tool comparison.
 

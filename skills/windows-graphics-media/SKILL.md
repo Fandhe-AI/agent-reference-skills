@@ -4,7 +4,7 @@ description: >
   Windows アプリ開発 (DirectX / WinRT メディア) のグラフィックス・メディア API リファレンス。
   Direct2D (ID2D1Factory, ID2D1DeviceContext, ID2D1Bitmap1, ID2D1Effect, ID2D1PathGeometry),
   DirectWrite (IDWriteFactory, IDWriteTextLayout, DWriteCore), Direct3D 11/12
-  (D3D11CreateDevice, DXGI SwapChain, HLSL, D3D12 PipelineState), Windows.UI.Composition
+  (D3D11CreateDevice, DXGI SwapChain, HLSL, D3D12 PipelineState), Microsoft.UI.Composition
   (Compositor, Visual, ExpressionAnimation, InteractionTracker, MicaController),
   カメラ・画面キャプチャ (MediaCapture, MediaFrameReader, GraphicsCaptureSession,
   Windows Studio Effects)、音声・動画再生 (MediaPlayer, MediaPlaybackSession,
@@ -16,7 +16,7 @@ user-invocable: false
 
 Windows アプリの描画・合成・カメラ・音声動画再生に関する公式ドキュメントを蒸留したリファレンス。
 Direct2D/DirectWrite によるベクター描画とテキストレイアウト、Direct3D 11/12 による低レベル GPU 描画、
-Windows.UI.Composition による合成ビジュアル層、MediaCapture によるカメラ/画面キャプチャ、
+Microsoft.UI.Composition による合成ビジュアル層、MediaCapture によるカメラ/画面キャプチャ、
 Windows.Media.Playback 系による音声・動画再生を扱う。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
@@ -66,6 +66,7 @@ skills/windows-graphics-media/
       d3d11-sampler-srv.md
       d3d11-shaders-drawing.md
       d3d12-barriers-descriptors.md
+      d3d12-enhanced-barriers.md
       d3d12-overview.md
       d3d12-raytracing.md
       directcomposition.md
@@ -76,6 +77,7 @@ skills/windows-graphics-media/
       hlsl-shader-compilation.md
     composition-visuals/
       README.md
+      animation-controller.md
       composition-drawing-surface.md
       composition-effect-brush.md
       composition-gradient-brush.md
@@ -108,6 +110,7 @@ skills/windows-graphics-media/
       camera-stream-state.md
       device-enumeration.md
       direct3d11-capture-frame-pool.md
+      face-detector.md
       face-tracker.md
       graphics-capture-item.md
       graphics-capture-picker.md
@@ -134,6 +137,7 @@ skills/windows-graphics-media/
       custom-video-audio-effects.md
       drm-playready.md
       media-binder.md
+      media-break-manager.md
       media-capture-integration.md
       media-clip.md
       media-composition.md
@@ -142,11 +146,13 @@ skills/windows-graphics-media/
       media-playback-list.md
       media-playback-session.md
       media-player-element.md
+      media-player-surface.md
       media-player.md
       media-source.md
       media-timeline-controller.md
       media-transcoder.md
       media-transport-controls.md
+      midi-services.md
       midi.md
       system-media-transport-controls.md
       timed-metadata-track.md
@@ -181,4 +187,4 @@ skills/windows-graphics-media/
 | AdaptiveMediaSource / DRM でストリーミング再生や保護コンテンツを扱いたい | audio-video-playback | [references/audio-video-playback/README.md](references/audio-video-playback/README.md) |
 | AudioGraph / MediaTranscoder / MediaComposition で音声処理・動画編集をしたい | audio-video-playback | [references/audio-video-playback/README.md](references/audio-video-playback/README.md) |
 
-このスキルは DirectX (Direct2D/DirectWrite/Direct3D)、Windows.UI.Composition、WinRT メディア (カメラキャプチャ・音声動画再生) の API のみを扱う。コントロール UI は windows-winui-controls、レイアウト・スタイリング等の一般 UI は windows-winui-ui、Windows App SDK 全体像は windows-app-sdk が担当する。
+このスキルは DirectX (Direct2D/DirectWrite/Direct3D)、Microsoft.UI.Composition、WinRT メディア (カメラキャプチャ・音声動画再生) の API のみを扱う。コントロール UI は windows-winui-controls、レイアウト・スタイリング等の一般 UI は windows-winui-ui、Windows App SDK 全体像は windows-app-sdk が担当する。

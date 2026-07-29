@@ -134,6 +134,7 @@ skills/windows-winui-ui/
       entrance-theme-transition.md
       reposition-theme-transition.md
       add-delete-theme-transition.md
+      theme-transitions.md
       transitions-property.md
       connected-animation.md
       implicit-animations.md

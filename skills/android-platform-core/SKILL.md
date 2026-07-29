@@ -91,6 +91,7 @@ skills/android-platform-core/
       location-permissions.md
       location-button.md
       media-permissions.md
+      nearby-devices-permissions.md
       restrict-interactions-with-other-apps.md
       data-safety-and-privacy-policy.md
       advertising-and-app-set-id.md
@@ -141,6 +142,7 @@ skills/android-platform-core/
       image.md
       layout-containers.md
       lazy-lists.md
+      multi-process-glance-app-widget.md
       pin-in-app.md
       progress-indicators.md
       remoteviews-interop.md

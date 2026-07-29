@@ -41,8 +41,8 @@ fun AnimatedVectorDrawable() {
 
 ## Notes
 
-- Package: `androidx.compose.animation.graphics.vector`; requires the `androidx.compose.animation:animation-graphics` artifact, separate from `androidx.compose.animation:animation`.
-- Both APIs are marked `@ExperimentalAnimationGraphicsApi` and require opt-in.
+- `AnimatedImageVector` is in package `androidx.compose.animation.graphics.vector`; `animatedVectorResource` and `rememberAnimatedVectorPainter` are in `androidx.compose.animation.graphics.res`. Requires the `androidx.compose.animation:animation-graphics` artifact, separate from `androidx.compose.animation:animation`.
+- Stabilized in Compose 1.8; the previous `@ExperimentalAnimationGraphicsApi` opt-in requirement was removed and no longer applies on current releases.
 - Requires an `AnimatedVectorDrawable` XML resource (`animated-vector` + one or more `objectAnimator` targeting a `VectorDrawable`'s paths/groups) already defined as a drawable resource — this API only plays it back, it does not build one at runtime.
 - For animating an in-memory `ImageVector` without an XML `AnimatedVectorDrawable`, drive path/group properties directly with Compose animation APIs (`animateFloatAsState`, `Animatable`) instead.
 

@@ -20,3 +20,4 @@
 | System.Windows.Window | Creates, configures, shows, and manages windows and dialog boxes in WPF apps. | [wpf-window.md](./wpf-window.md) |
 | WindowsFormsHost / ElementHost | Cross-hosting WinForms controls in WPF and WPF controls in WinForms. | [wpf-winforms-hosting.md](./wpf-winforms-hosting.md) |
 | XAML in WPF | Declarative XML-based markup for instantiating WPF objects and code-behind separation. | [wpf-xaml-overview.md](./wpf-xaml-overview.md) |
+| Modernizing a WPF or WinForms App with GitHub Copilot | Decision guide: upgrade in place, add Windows App SDK features, or rebuild with WinUI 3. | [copilot-modernization-guide.md](./copilot-modernization-guide.md) |

@@ -13,7 +13,7 @@
 
 ## Notes
 
-- All `*TemplateSettings` classes live in the `Microsoft.UI.Xaml.Controls.Primitives` namespace and derive from `DependencyObject`; a control exposes its instance via a read-only `TemplateSettings` property (e.g. `ComboBox.TemplateSettings`, `ProgressRing.TemplateSettings`).
+- Older `*TemplateSettings` classes (e.g. `ComboBoxTemplateSettings`, `GridViewItemTemplateSettings`, `ListViewItemTemplateSettings`, `ToggleSwitchTemplateSettings`, `ToolTipTemplateSettings`) live in `Microsoft.UI.Xaml.Controls.Primitives`, but the namespace split isn't universal — several newer controls' `*TemplateSettings` classes (e.g. `ProgressRingTemplateSettings`, `ProgressBarTemplateSettings`, `NavigationViewTemplateSettings`, `ExpanderTemplateSettings`) live in `Microsoft.UI.Xaml.Controls` instead. All of them derive from `DependencyObject`; a control exposes its instance via a read-only `TemplateSettings` property (e.g. `ComboBox.TemplateSettings`, `ProgressRing.TemplateSettings`).
 - The properties are read-only and intended for XAML-only consumption (bindings/animations inside a `ControlTemplate`), not for code to set — the dependency-property identifiers backing them aren't public API.
 - Some properties come in **From**/**To** pairs used as storyboard animation bounds (e.g. `ComboBoxTemplateSettings.DropDownOpenedHeight`/`DropDownClosedHeight`), so re-templated parts referencing them animate in sync with the control's built-in transitions.
 - When binding a `TemplateSettings` value to a property of a different type, add an `IValueConverter` — there's no implicit conversion.

@@ -29,7 +29,9 @@ skills/windows-ai/
       language-model.md
       language-model-options.md
       language-model-context.md
+      language-model-best-practices.md
       phi-silica-lora.md
+      phi-silica-structured-output.md
       text-recognizer.md
       recognized-text.md
       image-scaler.md
@@ -45,12 +47,15 @@ skills/windows-ai/
       image-generator.md
       text-intelligence-skills.md
       choose-your-windows-ai-solution.md
+      local-llms.md
+      troubleshooting.md
     windows-ml/
       README.md
       overview.md
       get-started.md
       deployment-bootstrap.md
       execution-provider-catalog.md
+      execution-provider-errors.md
       execution-providers-overview.md
       supported-execution-providers.md
       install-execution-providers.md
@@ -58,8 +63,12 @@ skills/windows-ai/
       select-execution-providers.md
       bring-your-own-eps.md
       onnx-runtime-inference.md
+      onnx-versions.md
+      run-genai-onnx-models.md
+      migrate-to-windows-ml.md
       model-compilation.md
       model-conversion.md
+      models.md
       legacy-windows-machine-learning.md
       learning-model.md
       learning-model-session.md
@@ -67,6 +76,8 @@ skills/windows-ai/
       learning-model-evaluation-result.md
       model-catalog.md
       model-catalog-source-schema.md
+      winml-cli.md
+      logs.md
     foundry-local/
       README.md
       overview.md
@@ -123,6 +134,10 @@ skills/windows-ai/
       onnxruntime-directml.md
       pytorch-directml.md
       version-history.md
+      programming-guide.md
+      errors-and-device-removal.md
+      webnn-overview.md
+      gpu-accelerated-training.md
     npu-devices/
       README.md
       npu-hardware-overview.md

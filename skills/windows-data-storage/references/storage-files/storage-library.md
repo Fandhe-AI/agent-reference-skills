@@ -31,10 +31,12 @@ picturesLibrary.DefinitionChanged += (library, args) => { /* re-enumerate Folder
 | Name | Type | Description |
 |------|------|-------------|
 | `GetLibraryAsync(KnownLibraryId)` | static method | Gets the `StorageLibrary` for `KnownLibraryId.Music` / `Pictures` / `Videos`. |
+| `GetLibraryForUserAsync(User, KnownLibraryId)` | static method | Gets the specified library scoped to a particular `User` (multi-user devices). |
+| `AreFolderSuggestionsAvailableAsync()` | method | Determines whether there are suggestions for adding existing folders with content to the library. |
 | `Folders` | `IObservableVector<StorageFolder>` | The root folders currently in the library. |
 | `SaveFolder` | `StorageFolder` | The folder where new files are saved by default. |
 | `RequestAddFolderAsync()` | method | Shows a folder picker letting the user add a folder to the library; returns the added `StorageFolder` (or `null` if cancelled). |
-| `RequestRemoveFolderAsync(IStorageFolder)` | method | Shows a confirmation dialog and removes the specified folder from the library. The folder itself is not deleted from disk. |
+| `RequestRemoveFolderAsync(StorageFolder)` | method | Shows a confirmation dialog and removes the specified folder from the library. The folder itself is not deleted from disk. Must be called from a UI thread. |
 | `ChangeTracker` | `StorageLibraryChangeTracker` | Change tracker for file/folder operations under this library's root folders. |
 | `DefinitionChanged` | event | Raised when the library's folder set changes (folder added/removed). |
 

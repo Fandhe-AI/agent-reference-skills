@@ -53,3 +53,4 @@ shadow.StartAnimation("Offset", offsetAnimation);
 - [ExpressionAnimation](./expression-animation.md)
 - [Natural motion animation](./natural-motion-animation.md)
 - [ImplicitAnimationCollection](./implicit-animation-collection.md)
+- [AnimationController](./animation-controller.md)

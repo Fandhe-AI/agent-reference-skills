@@ -8,6 +8,7 @@
 | Dependency Exclusion and Constraints | Mechanisms for controlling transitive dependency… | [dependency-exclusion.md](./dependency-exclusion.md) |
 | Dependency Verification | Gradle feature that mitigates supply-chain attacks… | [dependency-verification.md](./dependency-verification.md) |
 | KSP vs kapt | KSP (Kotlin Symbol Processing) is the Kotlin-first… | [ksp-vs-kapt.md](./ksp-vs-kapt.md) |
+| Migrate to Version Catalogs | Incremental, per-dependency migration path from… | [migrate-to-catalogs.md](./migrate-to-catalogs.md) |
 | Repository Declarations | Declares where Gradle should look up dependency… | [repositories.md](./repositories.md) |
 | Build Variant-Specific Dependencies | Declares dependencies scoped to a single build type,… | [variant-specific-dependencies.md](./variant-specific-dependencies.md) |
 | Version Catalog | Centralizes dependency and plugin versions in… | [version-catalog.md](./version-catalog.md) |

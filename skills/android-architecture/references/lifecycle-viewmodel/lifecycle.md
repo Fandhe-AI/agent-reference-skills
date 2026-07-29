@@ -23,6 +23,14 @@ val lifecycleOwner = LocalLifecycleOwner.current
 val currentState = lifecycleOwner.lifecycle.currentStateAsState()
 ```
 
+```kotlin
+// Lambda-based addObserver, added in Lifecycle 2.11.0 — no anonymous LifecycleEventObserver needed.
+val observer = lifecycle.addObserver { source, event ->
+    if (event == Lifecycle.Event.ON_START) { /* ... */ }
+}
+lifecycle.removeObserver(observer)
+```
+
 ## Options / Props
 
 | Name | Type | Default | Description |
@@ -30,6 +38,7 @@ val currentState = lifecycleOwner.lifecycle.currentStateAsState()
 | `currentState` | `Lifecycle.State` | — | Current state, updated synchronously as the owner transitions. |
 | `currentStateFlow` | `StateFlow<Lifecycle.State>` | — | Observable stream of state changes. |
 | `addObserver` / `removeObserver` | function | — | Registers/unregisters a `LifecycleObserver` (typically `DefaultLifecycleObserver` or `LifecycleEventObserver`). |
+| `addObserver(action)` | `inline fun Lifecycle.addObserver(crossinline action: LifecycleObserver.(source: LifecycleOwner, event: Lifecycle.Event) -> Unit): LifecycleObserver` | — | Extension overload taking a lambda instead of a `LifecycleObserver` instance; wraps it in a `LifecycleEventObserver` and returns that observer (pass it to `removeObserver` to unregister). Added in Lifecycle 2.11.0 (June 2026). |
 | `State.isAtLeast(state)` | function | — | Whether the current state is at or above `state`. |
 | `Event.ON_CREATE` | enum | — | Fired on `onCreate`; transitions to `CREATED`. |
 | `Event.ON_START` | enum | — | Fired on `onStart`; transitions to `STARTED`. |

@@ -21,7 +21,7 @@ await socket.ConnectAsync(
     service.ConnectionHostName,
     service.ConnectionServiceName,
     SocketProtectionLevel.BluetoothEncryptionAllowNullAuthentication);
-// Read/write service.OutputStream / socket.InputStream as usual.
+// Read/write via socket.OutputStream / socket.InputStream as usual (the streams belong to the StreamSocket, not the service).
 
 // --- Server: host an RFCOMM service and accept a connection ---
 RfcommServiceProvider provider = await RfcommServiceProvider.CreateAsync(RfcommServiceId.ObexObjectPush);

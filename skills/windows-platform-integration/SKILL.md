@@ -57,6 +57,7 @@ skills/windows-platform-integration/
       image-scanner.md
       point-of-service.md
       wifi-and-radios.md
+      lamp-array.md
       device-capabilities-manifest.md
     networking/
       README.md
@@ -91,6 +92,7 @@ skills/windows-platform-integration/
       xy-focus.md
       tab-navigation.md
       gesture-recognizer.md
+      haptic-feedback.md
       input-activation-listener.md
       input-pointer-source.md
       input-keyboard-source.md
@@ -144,8 +146,10 @@ skills/windows-platform-integration/
       data-package.md
       data-package-view.md
       data-transfer-manager.md
+      default-apps-platform.md
       protocol-file-association.md
       launcher.md
+      cross-device-people-api.md
       jump-list.md
       taskbar-manager.md
       secondary-tile.md
@@ -156,6 +160,8 @@ skills/windows-platform-integration/
       context-menu-extensions.md
       protocol-activation.md
       recall.md
+      cross-device-resume-overview.md
+      search-providers.md
 ```
 
 ## 探索手順

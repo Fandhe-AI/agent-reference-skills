@@ -50,7 +50,7 @@ MaterialExpressiveTheme(
 - Nesting `MaterialExpressiveTheme` inside another `MaterialExpressiveTheme` behaves like `MaterialTheme` instead: unset parameters inherit from the enclosing theme rather than resetting to defaults.
 - Internally still renders a `MaterialTheme`, so `MaterialTheme.colorScheme` / `.typography` / `.shapes` / `.motionScheme` read the resolved expressive values inside `content`.
 - `expressiveLightColorScheme()` is the expressive counterpart of `lightColorScheme()`: it calls `lightColorScheme()` with a handful of roles (`onPrimaryContainer`, `onSecondaryContainer`, `onTertiaryContainer`, `onErrorContainer`) adjusted for expressive contrast. There is no separate `expressiveDarkColorScheme()` — use the regular `darkColorScheme()` for dark mode.
-- Stable (non-experimental) as of the promotion recorded at Compose Material3 1.5.0-alpha19; no `@ExperimentalMaterial3ExpressiveApi` opt-in is required to call it.
+- Stable (non-experimental) as of the promotion recorded at Compose Material3 1.5.0-alpha18; no `@ExperimentalMaterial3ExpressiveApi` opt-in is required to call it.
 - Package: `androidx.compose.material3`.
 
 ## Related

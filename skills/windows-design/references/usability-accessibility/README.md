@@ -24,5 +24,6 @@
 | Widget design fundamentals | Layout, sizing, color/theming, margins, and typography guidance for designing a Windows widget UI. | [widgets-design-fundamentals.md](./widgets-design-fundamentals.md) |
 | Widget interaction design guidance | Interaction design patterns for Windows widgets: navigation, containers, image links, pagination, hyperlinks, and dropdown menus. | [widgets-interaction-design.md](./widgets-interaction-design.md) |
 | Integrate with the widget picker | Design requirements for the assets a widget provider supplies so the widget integrates correctly into the Widgets Board's widget picker. | [widgets-picker-integration.md](./widgets-picker-integration.md) |
+| Widget principles | Five principles for designing great Windows widgets — Glanceable, Focused & Useful, Predictable & Calm, User-Anchored, Timely — and the steps for planning a widget experience. | [widgets-principles.md](./widgets-principles.md) |
 | Widget states and built-in UI components | The different states a widget can be in on the Widgets Board, and the UI elements the Widgets host renders and manages itself. | [widgets-states-and-ui.md](./widgets-states-and-ui.md) |
 | Writing style | Voice, tone, and style conventions for UI text: error messages, dialogs, buttons, and spoken experiences. | [writing-style.md](./writing-style.md) |

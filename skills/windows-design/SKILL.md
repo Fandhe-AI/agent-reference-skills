@@ -51,6 +51,7 @@ skills/windows-design/
       segoe-fluent-icons-font.md
       segoe-ui-symbol-font.md
       icon-elements.md
+      icon-composition-modifiers-localization.md
       app-icons.md
       app-icon-design.md
       app-icon-construction.md
@@ -106,6 +107,7 @@ skills/windows-design/
       instructional-ui.md
       secondary-tile-pinning.md
       widgets-design-fundamentals.md
+      widgets-principles.md
       widgets-states-and-ui.md
       widgets-interaction-design.md
       widgets-picker-integration.md

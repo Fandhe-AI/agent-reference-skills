@@ -8,9 +8,9 @@ Enables an app to receive notifications when the docked touch keyboard, or Soft 
 using Windows.UI.ViewManagement;
 
 // WinUI 3 / desktop apps: InputPane.GetForCurrentView() requires a CoreWindow and
-// throws outside UWP — use the WinRT.Interop projection with the window HWND instead.
+// throws outside UWP — use the InputPaneInterop projection with the window HWND instead.
 IntPtr hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-InputPane inputPane = WinRT.Interop.InputPaneInterop.GetForWindow(hWnd);
+InputPane inputPane = Windows.UI.ViewManagement.InputPaneInterop.GetForWindow(hWnd);
 
 // UWP apps only:
 // InputPane inputPane = InputPane.GetForCurrentView();
@@ -41,7 +41,7 @@ inputPane.TryHide();
 |------|------|-------------|
 | `InputPane.GetForCurrentView()` | static method | Returns the `InputPane` object for the currently visible app window/view. UWP-only — requires a `CoreWindow`, throws in a desktop (WinUI 3) app. |
 | `InputPane.GetForUIContext(UIContext)` | static method | Returns the `InputPane` for the view identified by a `UIContext` (added 18362/1903). |
-| `WinRT.Interop.InputPaneInterop.GetForWindow(IntPtr)` | static method | Desktop (WinUI 3 / Win32) equivalent of `GetForCurrentView`; returns the `InputPane` for the window identified by an HWND. |
+| `Windows.UI.ViewManagement.InputPaneInterop.GetForWindow(IntPtr)` | static method | Desktop (WinUI 3 / Win32) equivalent of `GetForCurrentView`; C# projection of the `IInputPaneInterop` COM interface, returns the `InputPane` for the window identified by an HWND. |
 | `InputPane.TryShow()` | method → `bool` | Best-effort request to show the SIP; shown only if no hardware keyboard is available, and rejected (`false`) if the app is not in the foreground. |
 | `InputPane.TryHide()` | method → `bool` | Best-effort request to hide the SIP; rejected (`false`) if the app is not in the foreground. |
 | `InputPane.OccludedRect` | `Windows.Foundation.Rect` | Region of the app window obscured by the input pane; accurate for a docked panel only. |
@@ -57,7 +57,7 @@ inputPane.TryHide();
 - There is no `Occluded` event — visibility transitions are only `Showing`/`Hiding`; occlusion geometry itself is read from `OccludedRect` on the `InputPane` or on the event args.
 - Microsoft recommends `CoreInputView` / `CoreInputViewOcclusion` / `CoreInputViewOcclusionKind` instead of `InputPane` on Windows 10 Creators Fall Update and later, since those APIs also report occlusion from undocked/floating/transitory panels (IME candidate windows, floating toolbars), not just a docked SIP.
 - Overlay UI such as `InputPane` is not fully supported in full-screen apps (e.g. games) or Windows Holographic apps in holographic view.
-- `InputPane` is listed among the `XxxForCurrentView` WinRT classes that are unsupported in desktop apps; `WinRT.Interop.InputPaneInterop.GetForWindow(hWnd)` is the documented COM interop replacement (see `WinRT.Interop` coverage in the windows-interop-modernize skill).
+- `InputPane` is listed among the `XxxForCurrentView` WinRT classes that are unsupported in desktop apps; `Windows.UI.ViewManagement.InputPaneInterop.GetForWindow(hWnd)` — the C# projection of the `IInputPaneInterop` COM interface — is the documented interop replacement. This class lives in the `Windows.UI.ViewManagement` namespace, not `WinRT.Interop`, which projects only `InitializeWithWindow` (`IInitializeWithWindow`) and `WindowNative` (`IWindowNative`) (see the windows-interop-modernize skill for that pair).
 
 ## Related
 

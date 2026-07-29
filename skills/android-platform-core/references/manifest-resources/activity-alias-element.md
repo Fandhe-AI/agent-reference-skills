@@ -31,7 +31,7 @@ Declares an alternate public name for an existing `<activity>`, with its own ico
 | `android:exported` | Boolean | `"false"` if no intent filters, otherwise `"true"` | Whether other apps can launch the target through this alias. |
 | `android:enabled` | Boolean | `"true"` | Whether the system can instantiate the target through this alias; both `<application>` and `<activity-alias>` must be `"true"`. |
 | `android:icon` / `android:label` | Drawable / string resource | inherited from target | Presented in place of the target activity's own icon/label when launched via the alias. |
-| `android:permission` | String | inherited from target | Permission required to launch the target through this alias; supersedes the target's own permission for alias-based access. |
+| `android:permission` | String | none (no permission required) | Permission required to launch the target through this alias; supplants any permission set on the target activity itself. If unset, no permission is needed to activate the target through the alias, even if the target itself requires one. |
 | `android:intentMatchingFlags` | Flags | `"none"` | Fine-tunes intent matching: `"enforceIntentFilter"`, `"allowNullAction"`. |
 
 ## Notes

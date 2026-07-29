@@ -33,6 +33,7 @@ skills/windows-packaging-publish/
       makeappx-cli.md
       modification-packages.md
       msix-app-attach.md
+      msix-containerization-overview.md
       msix-overview.md
       msix-packaging-tool.md
       optional-packages.md
@@ -43,6 +44,7 @@ skills/windows-packaging-publish/
       package-structure.md
       package-support-framework.md
       resource-packages.md
+      single-project-msix.md
       unsigned-package.md
       vs-packaging-project.md
     package-identity/
@@ -50,6 +52,7 @@ skills/windows-packaging-publish/
       apis-requiring-package-identity.md
       detect-package-identity.md
       get-activation-info-for-packaged-apps.md
+      integrate-packaged-app-with-file-explorer.md
       package-class.md
       package-id-class.md
       package-identity-overview.md
@@ -73,6 +76,7 @@ skills/windows-packaging-publish/
       windows-app-sdk-deploy-packaged-apps.md
       windows-app-sdk-deploy-unpackaged-apps.md
       windows-app-sdk-deployment-architecture.md
+      windows-app-sdk-runtime-version-management.md
       windows-app-sdk-self-contained-deploy.md
     code-signing/
       README.md
@@ -111,8 +115,10 @@ skills/windows-packaging-publish/
       msstore-cli.md
       package-flights.md
       pricing-and-availability.md
+      publish-app-update.md
       pwa-submission.md
       ratings-reviews-report.md
+      remove-app-and-addon.md
       reserve-app-name.md
       resolve-submission-errors.md
       screenshots-and-images.md
@@ -145,9 +151,11 @@ skills/windows-packaging-publish/
 | パッケージ ID の5要素・PackageFamilyName・PackageFullName を理解したい | package-identity | [references/package-identity/README.md](references/package-identity/README.md) |
 | Package / PackageId / PackageManager クラスで実行時にパッケージ情報を取得・操作したい | package-identity | [references/package-identity/README.md](references/package-identity/README.md) |
 | スパースパッケージで非パッケージアプリにパッケージ ID を付与したい | package-identity | [references/package-identity/README.md](references/package-identity/README.md) |
+| パッケージ化デスクトップアプリに File Explorer コンテキストメニューを統合したい | package-identity | [references/package-identity/README.md](references/package-identity/README.md) |
 | Microsoft Store / サイドロード / 非パッケージ配布のどれを選ぶか判断したい | deployment | [references/deployment/README.md](references/deployment/README.md) |
 | App Installer ファイルで自動更新付きサイドローディングを構成したい | deployment | [references/deployment/README.md](references/deployment/README.md) |
 | Windows App SDK の Bootstrapper API・自己完結型デプロイ・Intune 配布を構成したい | deployment | [references/deployment/README.md](references/deployment/README.md) |
+| Windows App SDK ランタイムのインストール済みバージョン確認・削除を行いたい | deployment | [references/deployment/README.md](references/deployment/README.md) |
 | SignTool でパッケージに署名・タイムスタンプ・検証したい | code-signing | [references/code-signing/README.md](references/code-signing/README.md) |
 | 証明書の種類（自己署名 / OV / EV / Azure Trusted Signing）を選定したい | code-signing | [references/code-signing/README.md](references/code-signing/README.md) |
 | CI/CD パイプラインで自動署名を組み込みたい | code-signing | [references/code-signing/README.md](references/code-signing/README.md) |

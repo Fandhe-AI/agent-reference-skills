@@ -83,14 +83,14 @@ Widget info XML (`res/xml/hello_widget_info.xml`), declaring supported container
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `GlanceWearWidgetService.widget` | `GlanceWearWidget` | — | Abstract property returning the single widget instance this service provides. |
-| `GlanceWearWidget.provideWidgetData(context, params)` | `suspend (Context, WearWidgetParams) -> WearWidgetData` | — | Suspend function invoked by the system to produce the widget's content; runs off the main thread. |
+| `GlanceWearWidget.provideWidgetData(context, params)` | `suspend (Context, WearWidgetParams) -> WearWidgetData` | — | `@MainThread` suspend function invoked by the system to produce the widget's content; the `suspend` modifier lets it dispatch work to another dispatcher internally, but the call itself is made on the main thread. |
 | `WearWidgetDocument(background, content)` | `WearWidgetData` | — | Builds the widget's Remote Compose document; `background` accepts a `WearWidgetBrush`, `content` is a `@RemoteComposable` lambda. |
 | `<wearwidget-provider preferredType>` | `"SMALL"` \| `"LARGE"` | — | XML attribute naming the default container size shown when the system has not chosen otherwise. |
 | `<container type>` | `"SMALL"` \| `"LARGE"` | — | One `<container>` element per supported size (2x1 small, 2x2 large), each with its own `previewImage`. |
 
 ## Notes
 
-- Package/artifacts: `androidx.glance.wear:wear`, `androidx.glance.wear:wear-core` (widget runtime), `androidx.compose.remote:remote-creation-compose`, `androidx.compose.remote:remote-core` (Remote Compose), `androidx.wear.compose.remote:remote-material3` (Material3 Remote Compose components) — all `1.0.0-alpha1x` as of this writing.
+- Package/artifacts: `androidx.glance.wear:wear`, `androidx.glance.wear:wear-core` (widget runtime, `1.0.0-alpha14`), `androidx.compose.remote:remote-creation-compose`, `androidx.compose.remote:remote-core` (Remote Compose, `1.0.0-alpha15`), `androidx.wear.compose.remote:remote-material3` (Material3 Remote Compose components, `1.0.0-alpha15`) — versions as of this writing.
 - The manifest `<service>` reuses the tiles permission `com.google.android.wearable.permission.BIND_TILE_PROVIDER` and can declare both `androidx.glance.wear.action.BIND_WIDGET_PROVIDER` and `androidx.wear.tiles.action.BIND_TILE_PROVIDER` intent-filter actions on the same service class — see migrate-from-tiles for the dual-service vs. single-service strategy this enables.
 - Requires a Wear OS 7 emulator or device (Wear Widgets renderer 1.6.1+) and `compileSdk`/`targetSdk` 37+.
 - Debug via `adb shell am broadcast -a com.google.android.wearable.app.DEBUG_SURFACE --es operation add-tile --ecn component <package>/.HelloWidgetService` to add the widget to the carousel, and `-a com.google.android.wearable.app.DEBUG_SYSUI --es operation show-tile --ei index 0` to display it.

@@ -22,7 +22,7 @@ GattLocalCharacteristicResult charResult =
 GattLocalCharacteristic readCharacteristic = charResult.Characteristic;
 readCharacteristic.ReadRequested += async (sender, args) =>
 {
-    GattReadRequestDeferral deferral = args.GetDeferral();
+    Windows.Foundation.Deferral deferral = args.GetDeferral();
     var writer = new Windows.Storage.Streams.DataWriter();
     writer.WriteByte(0x01);
     GattReadRequest request = await args.GetRequestAsync();

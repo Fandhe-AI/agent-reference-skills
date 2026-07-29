@@ -9,7 +9,7 @@
 | Analytics and Reports (Overview) | Partner Center analytics for apps: acquisition, usage, health, and customer-feedback reporting | [analytics-overview.md](./analytics-overview.md) |
 | App Certification Process | The pipeline a submission goes through after clicking Submit: preprocessing, testing, release | [app-certification-process.md](./app-certification-process.md) |
 | App Package Requirements (MSIX) | Requirements for MSIX/AppX packages: types, signing, format limits, version numbering | [app-package-requirements.md](./app-package-requirements.md) |
-| Summary Report and Insights Report | Top-level Partner Center analytics: Summary (consolidated dashboard) and Insights (AI changes) | [app-performance-insights.md](./app-performance-insights.md) |
+| Summary Report and Insights Report | Top-level Partner Center analytics: Summary (consolidated dashboard) and Insights (AI review summary, Trend insights) | [app-performance-insights.md](./app-performance-insights.md) |
 | App Properties | The Properties page: category, privacy policy, support info, product declarations | [app-properties.md](./app-properties.md) |
 | Attract-and-Promote Marketing Features | Partner Center tools for driving discovery: promotional codes, CIDs, sale pricing | [attract-and-promote.md](./attract-and-promote.md) |
 | Create App Submission | Creating a submission bundles all required configuration sections for certification | [create-app-submission.md](./create-app-submission.md) |
@@ -23,8 +23,10 @@
 | Microsoft Store Developer CLI (msstore) | Cross-platform CLI for automating Store publishing for MSIX and MSI/EXE apps | [msstore-cli.md](./msstore-cli.md) |
 | Package Flights | Distributing packages to a limited group of testers without disrupting Store listing | [package-flights.md](./package-flights.md) |
 | Pricing and Availability | Configures app cost, free trial, sale pricing, and customer availability | [pricing-and-availability.md](./pricing-and-availability.md) |
+| Publish an App Update | Shipping an update to an already-live listing via Partner Center, per product type | [publish-app-update.md](./publish-app-update.md) |
 | PWA Submission Flow (Partner Center) | Creating a Partner Center submission for Progressive Web App (PWA) products | [pwa-submission.md](./pwa-submission.md) |
 | Ratings & Reviews Report | Partner Center report consolidating customer star ratings and written reviews | [ratings-reviews-report.md](./ratings-reviews-report.md) |
+| Remove an App or Add-on | Making an app or add-on unavailable in Partner Center to delist it from the Store | [remove-app-and-addon.md](./remove-app-and-addon.md) |
 | Reserve App Name | The first step toward publishing an MSIX app: reserving a unique app name | [reserve-app-name.md](./reserve-app-name.md) |
 | Resolve Submission Errors | Common submission/certification errors for MSIX apps and how to resolve them | [resolve-submission-errors.md](./resolve-submission-errors.md) |
 | Screenshots and Images | Visual assets — screenshots, logos, trailers — for app Store representation | [screenshots-and-images.md](./screenshots-and-images.md) |

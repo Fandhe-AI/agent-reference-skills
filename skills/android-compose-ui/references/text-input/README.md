@@ -5,6 +5,7 @@
 | AnnotatedString / buildAnnotatedString | A string annotated with character-level (`SpanStyle`) and paragraph-level (`ParagraphStyle`) style ranges, plus optional link/TTS/string annotations. | [annotatedstring.md](./annotatedstring.md) |
 | Autofill (ContentType) | The Compose Autofill API lets `BasicTextField`/`TextField` integrate with system autofill services (password managers, credential providers). | [autofill.md](./autofill.md) |
 | BasicText | Foundation-level composable that displays text with semantics/accessibility information but without Material Design styling. | [basictext.md](./basictext.md) |
+| Modifier.basicMarquee | Applies an animated marquee (auto-scrolling) effect to content that's too wide to fit in the available space. | [basicmarquee.md](./basicmarquee.md) |
 | BasicTextField | Foundation-level composable for editable text with hardware/software keyboard support but no decorations (no hint, placeholder, border). | [basictextfield.md](./basictextfield.md) |
 | LocalClipboard / Clipboard / ClipEntry | `LocalClipboard` is the modern CompositionLocal for reading and writing the platform clipboard from Compose. | [clipboard.md](./clipboard.md) |
 | Emoji display (EmojiSupportMatch) | Compose (BOM March 2023 / Compose UI 1.4+) resolves modern, variable-width emoji automatically in text composables. | [emoji.md](./emoji.md) |

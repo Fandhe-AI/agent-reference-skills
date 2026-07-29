@@ -14,7 +14,7 @@ if (barometer != null)
     barometer.ReadingChanged += (sender, e) =>
     {
         BarometerReading reading = e.Reading;
-        float pressure = reading.StationPressureInHectopascals;
+        double pressure = reading.StationPressureInHectopascals;
     };
 }
 ```
@@ -27,7 +27,7 @@ if (barometer != null)
 | `MinimumReportInterval` | `uint` | Smallest report interval the barometer supports. |
 | `ReportLatency` | `uint` | Delay between batches of sensor information. |
 | `ReportThreshold` | `BarometerDataThreshold` | Threshold configuration for the barometer. |
-| `MaxBatchSize` | `int` | Maximum number of events the sensor can batch. |
+| `MaxBatchSize` | `uint` | Maximum number of events the sensor can batch. |
 | `DeviceId` | `string` | Device identifier. |
 
 ### Key methods
@@ -49,8 +49,8 @@ if (barometer != null)
 
 | Name | Type | Description |
 |------|------|-------------|
-| `StationPressureInHectopascals` | `float` | Barometric (station) pressure determined by the sensor. |
-| `PerformanceCount` | `ulong` | Performance counter value for correlating with other sensor readings. |
+| `StationPressureInHectopascals` | `double` | Barometric (station) pressure determined by the sensor. |
+| `PerformanceCount` | `TimeSpan?` (`IReference<TimeSpan>`) | Performance counter value for correlating with other sensor readings; `null` if not supported on the sensor. |
 | `Properties` | `IMapView<string, object>` | Additional data properties reported by the sensor. |
 | `Timestamp` | `DateTimeOffset` | Time of the most recent barometer reading. |
 

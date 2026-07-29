@@ -49,7 +49,7 @@ await m_photoSequenceCapture.FinishAsync();
 | Name | Description |
 |------|-------------|
 | `VideoDeviceController.VariablePhotoSequenceController` | Gets the `VariablePhotoSequenceController`; check its `Supported` property before use. |
-| `VariablePhotoSequenceController.FrameCapabilities` | A `FrameControlCapabilities` object describing which per-frame settings the device supports: `Exposure`, `ExposureCompensation`, `Flash`, `Focus`, `IsoSpeed`, `PhotoConfirmation`. |
+| `VariablePhotoSequenceController.FrameCapabilities` | A `FrameControlCapabilities` object describing which per-frame settings the device supports: `Exposure`, `ExposureCompensation`, `Flash`, `Focus`, `IsoSpeed`, and the boolean `PhotoConfirmationSupported`. |
 | `VariablePhotoSequenceController.DesiredFrameControllers` | Collection of `FrameController` objects, one per frame to capture; each frame's controls (e.g. `ExposureCompensationControl.Value`, `FlashControl.Mode`/`.PowerPercent`) can be set independently. |
 | `MediaCapture.PrepareVariablePhotoSequenceCaptureAsync(ImageEncodingProperties)` | Instance method on `MediaCapture`; returns a configured `VariablePhotoSequenceCapture`. |
 | `VariablePhotoSequenceCapture.StartAsync()` | Begins capturing the configured sequence of frames. |
@@ -60,7 +60,7 @@ await m_photoSequenceCapture.FinishAsync();
 ## Notes
 
 - Namespace: `Windows.Media.Capture.Core` (`VariablePhotoSequenceCapture`); `VariablePhotoSequenceController`, `FrameController`, and `FrameControlCapabilities` are in `Windows.Media.Devices.Core`.
-- You cannot start another capture while the sequence's source frames are still being captured, but a new capture can be initiated after the last `PhotoCaptured` event and before/after `Stopped` fires.
+- Update your UI to disable starting another capture while a sequence is in progress (on `StartAsync`), and re-enable it only once `Stopped` fires (all frames in the sequence have been captured).
 - Frame controllers can be reused across multiple sequence captures: clear and re-add `DesiredFrameControllers`, or mutate the existing controller objects' properties, without fully reinitializing `VariablePhotoSequenceCapture`.
 - For built-in HDR compositing without implementing a custom algorithm, prefer `AdvancedPhotoCapture` with `AdvancedPhotoMode.Hdr`; use `VariablePhotoSequence` when you need a custom per-frame processing pipeline (e.g. a custom HDR blend).
 
