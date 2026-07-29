@@ -6,6 +6,7 @@ Compile a kernel from source text at runtime with `hiprtcCreateProgram`/`hiprtcC
 #include <hip/hiprtc.h>
 #include <hip/hip_runtime.h>
 #include <cstdlib>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -43,7 +44,8 @@ extern "C" __global__ void saxpy_kernel(const float a, const float* d_x, float* 
     if (log_size) {
         std::string log(log_size, '\0');
         hiprtcGetProgramLog(prog, &log[0]);
-        // Print the compile log even on success; it may contain warnings.
+        // Always print the compile log, even on success; it may contain warnings.
+        std::cerr << log << '\n';
     }
     if (compile_result != HIPRTC_SUCCESS) {
         return EXIT_FAILURE;

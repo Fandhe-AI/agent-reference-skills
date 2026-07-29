@@ -15,14 +15,18 @@ __global__ void matrix_transpose_kernel(float* out, const float* in, const unsig
     const unsigned int y = threadIdx.y;
 
     if (x < width && y < width) {
+        // Each lane loads its own element first.
         const float val = in[y * width + x];
 
+        // Then fetches the element owned by the lane at the transposed
+        // (x, y) -> (y, x) position, so the actual value exchange happens
+        // through the shuffle itself rather than through the write index.
         // AMD devices use __shfl directly; NVIDIA (via HIP's CUDA backend)
         // requires the newer __shfl_sync with an explicit active-thread mask.
 #if defined(__HIP_PLATFORM_AMD__)
-        out[x * width + y] = __shfl(val, y * width + x);
+        out[y * width + x] = __shfl(val, x * width + y);
 #elif defined(__HIP_PLATFORM_NVIDIA__)
-        out[x * width + y] = __shfl_sync(__activemask(), val, y * width + x);
+        out[y * width + x] = __shfl_sync(__activemask(), val, x * width + y);
 #endif
     }
 }
