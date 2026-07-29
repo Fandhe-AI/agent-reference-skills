@@ -20,6 +20,7 @@ mov.u32  %r0,%ctaid.x;
 
 ## Notes
 
+- Distinct from `programming-model/programming-model.md`: this page covers the PTX virtual-ISA thread hierarchy (CTA, cluster, grid, special registers) exposed to PTX assembly; the other page covers the higher-level CUDA C/C++ host/device programming model (host, device, kernel, thread block, grid, SM).
 - PTX ISA 9.3 — Chapter 2
 - A CTA is a cooperative thread array whose threads can communicate via shared memory and synchronize via `bar.sync`.
 - Clusters (introduced for sm_90 / Hopper) group multiple CTAs, enabling cross-CTA synchronization and shared-memory access within the cluster.
