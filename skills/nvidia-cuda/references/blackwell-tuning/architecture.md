@@ -2,6 +2,16 @@
 
 The Blackwell GPU is NVIDIA's architecture generation following Hopper, exposed to CUDA through compute capability 10.0 and compute capability 12.0. It maintains compatibility with the CUDA programming model used by prior architectures such as Ampere and Hopper.
 
+## Signature / Usage
+
+```sh
+# Target Blackwell compute capability 10.0 (e.g. B200) at compile time:
+nvcc -gencode=arch=compute_100,code=sm_100 -o app app.cu
+
+# Target Blackwell compute capability 12.0 (e.g. RTX 50-series):
+nvcc -gencode=arch=compute_120,code=sm_120 -o app app.cu
+```
+
 ## Notes
 
 - Applications that follow the best practices established for Ampere and Hopper should typically see speedups on Blackwell GPUs without any code changes, since the CUDA programming model itself is unchanged.

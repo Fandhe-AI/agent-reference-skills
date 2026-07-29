@@ -1,5 +1,20 @@
 # Introduction
 
+## Signature / Usage
+
+```cuda
+// Minimal CUDA kernel definition and launch, illustrating the "write CUDA
+// kernels directly in a high-level language such as C++" approach.
+__global__ void addOne(int *data) {
+    int i = threadIdx.x;
+    data[i] += 1;
+}
+
+int main() {
+    addOne<<<1, 256>>>(data); // launch 256 threads on the GPU
+}
+```
+
 ## Notes
 
 - Distinct from `ptx-isa/introduction.md`: this page introduces CUDA/GPU computing at the platform level; the PTX ISA page introduces the PTX virtual ISA specifically.
@@ -11,7 +26,6 @@
   - AI frameworks that frequently offer GPU-accelerated components, often built on the specialized libraries above.
   - Domain-specific languages (DSLs) such as NVIDIA's Warp or OpenAI's Triton, which compile to run directly on the CUDA platform and provide a higher-level GPU programming abstraction than conventional high-level languages.
   - The [NVIDIA Accelerated Computing Hub](https://github.com/NVIDIA/accelerated-computing-hub) contains resources, examples, and tutorials for GPU and CUDA computing.
-- This page has no code examples in the source documentation; `## Signature / Usage` is omitted accordingly.
 - Document version: CUDA Programming Guide v13.3 (`https://docs.nvidia.com/cuda/cuda-programming-guide/`).
 - Scope boundary with the `dgx-spark` skill: GB10-based hardware, DGX OS, and operational playbooks are covered by the `dgx-spark` skill's hardware / software categories. This `nvidia-cuda` skill covers CUDA the programming model and how to write CUDA C++ / Python code, independent of any specific hardware SKU.
 

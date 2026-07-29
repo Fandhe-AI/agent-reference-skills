@@ -1,5 +1,15 @@
 # The CUDA platform
 
+## Signature / Usage
+
+```sh
+# Compile for a specific compute capability (embeds a cubin), and additionally
+# embed PTX for forward compatibility with future GPUs (fatbin container):
+nvcc -gencode=arch=compute_90,code=sm_90 \
+     -gencode=arch=compute_90,code=compute_90 \
+     -o app app.cu
+```
+
 ## Options / Props
 
 | Name | Type | Description |
@@ -18,7 +28,6 @@
 - Binary compatibility: GPUs guarantee binary compatibility within the same major compute capability version. A cubin compiled for CC 8.6 runs on CC 8.6 or 8.9 GPUs, but not on CC 8.0 (a lower minor version).
 - PTX compatibility: PTX embedded in an executable enables forward compatibility, since the device driver JIT-compiles it at runtime for equal or higher compute capabilities without needing to rebuild the application.
 - Just-in-time compilation: the device driver JIT-compiles PTX to binary at runtime, which increases load time but allows the application to benefit from newer compiler improvements and to execute on future GPUs. The compute cache automatically stores compiled binaries and invalidates them upon driver upgrades.
-- This page has no code examples in the source documentation; `## Signature / Usage` is omitted accordingly.
 
 ## Related
 
