@@ -32,9 +32,14 @@ __global__ void matrix_transpose_dynamic_shared(float* out, const float* in, con
 }
 
 template <unsigned int Width, unsigned int Size>
-void deploy_multiple_streams(const float* h_in, std::vector<float*>& h_out, int num_streams)
+void deploy_multiple_streams(const float* h_in, std::vector<float*>& h_out)
 {
     constexpr unsigned int tpb = 4;
+    // Fixed at 2: the function launches exactly one kernel variant per
+    // stream (static-shared and dynamic-shared transpose), so it is not
+    // parameterizable to an arbitrary stream count without adding more
+    // kernel variants.
+    constexpr int num_streams = 2;
 
     std::vector<hipStream_t> streams(num_streams);
     for (int i = 0; i < num_streams; i++) {

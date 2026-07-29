@@ -5,6 +5,7 @@ Compile a kernel from source text at runtime with `hiprtcCreateProgram`/`hiprtcC
 ```cpp
 #include <hip/hiprtc.h>
 #include <hip/hip_runtime.h>
+#include <cstdlib>
 #include <string>
 #include <vector>
 

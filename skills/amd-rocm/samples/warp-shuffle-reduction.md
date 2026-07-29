@@ -4,6 +4,7 @@ Exchange values between threads in the same wavefront/warp with `__shfl`, and qu
 
 ```cpp
 #include <hip/hip_runtime.h>
+#include <cstdlib>
 #include <iostream>
 
 // Transposes a width x width matrix (width <= warpSize) using a single
