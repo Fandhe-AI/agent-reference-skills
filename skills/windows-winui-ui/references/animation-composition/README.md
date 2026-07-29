@@ -1,4 +1,4 @@
-# Animation & Composition
+# animation-composition
 
 | Name | Description | Path |
 |------|-------------|------|
@@ -12,6 +12,7 @@
 | EntranceThemeTransition | Animated entrance behavior for controls/containers on first appearance. | [entrance-theme-transition.md](./entrance-theme-transition.md) |
 | RepositionThemeTransition | Animates an element's layout move to its new position. | [reposition-theme-transition.md](./reposition-theme-transition.md) |
 | AddDeleteThemeTransition | Animates children of a panel as they are added or removed. | [add-delete-theme-transition.md](./add-delete-theme-transition.md) |
+| Theme Transitions (ContentThemeTransition, PopupThemeTransition, PaneThemeTransition, ReorderThemeTransition, EdgeUIThemeTransition, NavigationThemeTransition) | Remaining preconfigured Transition subclasses: content swap, popup, pane, reorder, edge UI, and page navigation. | [theme-transitions.md](./theme-transitions.md) |
 | UIElement.Transitions | Property holding the `TransitionCollection` applied to a `UIElement`. | [transitions-property.md](./transitions-property.md) |
 | ConnectedAnimationService / ConnectedAnimation | Animates a shared element's transition between two navigation views. | [connected-animation.md](./connected-animation.md) |
 | Implicit Animations (ElementCompositionPreview, Visual, Compositor, ExpressionAnimation) | Composition-layer animations that run automatically on property change. | [implicit-animations.md](./implicit-animations.md) |

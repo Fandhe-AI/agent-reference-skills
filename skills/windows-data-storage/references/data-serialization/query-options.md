@@ -51,4 +51,5 @@ foreach (StorageFile file in files)
 ## Related
 
 - [StorageFileQueryResult](./storage-file-query-result.md)
+- [StorageFolderQueryResult / StorageItemQueryResult](./storage-folder-item-query-result.md)
 - [CommonFileQuery](./common-file-query.md)

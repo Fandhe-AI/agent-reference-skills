@@ -1,6 +1,15 @@
 # Mapping UWP features to the Windows App SDK
 
-Compares major feature areas (packaging, lifecycle, windowing, UI platform, resources, .NET runtime, and more) between UWP and the Windows App SDK, to help plan a migration.
+Compares major feature areas (packaging, lifecycle, windowing, UI platform, resources, .NET runtime, and more) between UWP and the Windows App SDK, to help plan a migration. Read the row for the feature area under migration, then follow its "Migration notes" link for the detailed migration guide.
+
+## Signature / Usage
+
+```text
+UWP (Windows.*)                       -> Windows App SDK (packaged apps)
+CoreWindow / AppWindow (preview)       -> HWND, AppWindow v2
+CoreDispatcher / DispatcherQueue       -> DispatcherQueue, WndProc
+InProc/OOP background tasks            -> Full-trust COM background task
+```
 
 ## Options / Props
 

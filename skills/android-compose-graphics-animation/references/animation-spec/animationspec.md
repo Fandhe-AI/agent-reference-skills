@@ -34,7 +34,7 @@ public object AnimationConstants {
 ## Notes
 
 - Package: `androidx.compose.animation.core`.
-- Concrete spec types: `TweenSpec`, `SpringSpec`, `SnapSpec`, `KeyframesSpec`, `KeyframesWithSplineSpec`, `ArcAnimationSpec`, `RepeatableSpec`, `InfiniteRepeatableSpec`.
+- Concrete spec types: `TweenSpec`, `SpringSpec`, `SnapSpec`, `KeyframesSpec`, `KeyframesWithSplineSpec`, `ArcAnimationSpec`, `RepeatableSpec`, `InfiniteRepeatableSpec`. `DecayAnimationSpec<T>` (`splineBasedDecay`, `exponentialDecay`) is a sibling hierarchy for fling/momentum animations — it implements neither `FiniteAnimationSpec<T>` nor `DurationBasedAnimationSpec<T>` and is driven by initial velocity rather than an authored target value.
 - `vectorize()` converts the generic `AnimationSpec<T>` into a `VectorizedAnimationSpec<V>` operating on `AnimationVector`; this is an internal implementation detail most call sites do not need to touch directly.
 
 ## Related
@@ -44,4 +44,5 @@ public object AnimationConstants {
 - [keyframes](./keyframes.md)
 - [repeatable](./repeatable.md)
 - [snap](./snap.md)
+- [DecayAnimationSpec](./decayanimationspec.md)
 - [TwoWayConverter](./vectorconverter.md)

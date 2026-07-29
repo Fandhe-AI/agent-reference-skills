@@ -34,3 +34,4 @@ class MyBroadcastReceiver : BroadcastReceiver() {
 - [Registering broadcast receivers](./registering-receivers.md)
 - [Sending broadcasts](./sending-broadcasts.md)
 - [Implicit broadcast restrictions](./implicit-broadcast-restrictions.md)
+- [WakeLock and PowerManager](./wakelock.md)

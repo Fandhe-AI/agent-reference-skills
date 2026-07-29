@@ -1,6 +1,6 @@
 # Transformer
 
-Editing/transcoding API for exporting media: trims, concatenates, converts formats, and applies audio/video effects, using `MediaCodec` and OpenGL for hardware acceleration. Output is always MP4.
+Editing/transcoding API for exporting media: trims, concatenates, converts formats, and applies audio/video effects, using `MediaCodec` and OpenGL for hardware acceleration. Output is always MP4 by default, written via a pluggable `Muxer.Factory` (see Muxer / Muxer.Factory).
 
 ## Signature / Usage
 
@@ -56,3 +56,4 @@ transformer.start(editedMediaItem, outputPath)
 ## Related
 
 - [MediaSession](./media-session.md)
+- [Muxer / Muxer.Factory](./muxer-customization.md)

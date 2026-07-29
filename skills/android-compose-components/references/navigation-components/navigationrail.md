@@ -49,3 +49,4 @@ NavigationRail(modifier = Modifier.padding(contentPadding)) {
 
 - [NavigationRailItem](./navigationrailitem.md)
 - [NavigationBar](./navigationbar.md)
+- [WideNavigationRail](./widenavigationrail.md)

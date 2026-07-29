@@ -79,6 +79,7 @@ TextField(
 - `OutlinedTextField` is the bordered, lower-emphasis variant with the same parameter shape.
 - `BasicTextField` (foundation, not material3) has no decorations; use it for fully custom designs.
 - Package: `androidx.compose.material3`.
+- This is the Jetpack Compose (Kotlin) API — distinct from the same-named SwiftUI / Ark UI / Chakra UI / fandhe-frontend components.
 
 ## Related
 

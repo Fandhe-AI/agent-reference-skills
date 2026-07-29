@@ -1,23 +1,29 @@
-# Usability & Accessibility
+# usability-accessibility
 
 | Name | Description | Path |
 |------|-------------|------|
-| Usability overview | Overview of accessibility, settings, bidirectional text, and in-app help guidance | [usability-overview.md](./usability-overview.md) |
-| Accessibility overview | Concepts and technologies for building accessible Windows apps (UI Automation, keyboard, screen readers) | [accessibility-overview.md](./accessibility-overview.md) |
-| Designing inclusive software | Inclusive design principles, practical steps, and contrast/DPI/font recommendations | [designing-inclusive-software.md](./designing-inclusive-software.md) |
-| Keyboard accessibility | Tab order, TabIndex, F6 pane navigation, keyboard shortcuts, and focus visuals | [keyboard-accessibility.md](./keyboard-accessibility.md) |
-| Contrast themes | High-contrast theme dictionaries, SystemColor resources, and best practices | [high-contrast-themes.md](./high-contrast-themes.md) |
-| Accessible text requirements | Text contrast ratios, UI Automation text roles, auto-suggest accessibility, text scaling | [accessible-text-requirements.md](./accessible-text-requirements.md) |
-| Targeting (touch target size) | Minimum touch target sizing and spacing guidance | [touch-target-size.md](./touch-target-size.md) |
-| Screen sizes and breakpoints | Small/medium/large breakpoints, effective pixels, multiples of four | [screen-sizes-breakpoints.md](./screen-sizes-breakpoints.md) |
-| Responsive design techniques | Reposition, resize, reflow, show/hide, re-architect, and adaptive layout techniques | [responsive-design.md](./responsive-design.md) |
-| Globalization and localization | Globalization vs. localizability vs. localization, and a formatting/layout checklist | [globalization-localization.md](./globalization-localization.md) |
-| Adjust layout and fonts, and support RTL | FlowDirection API, image mirroring, and dynamic-layout guidance for RTL languages | [rtl-layout.md](./rtl-layout.md) |
-| Design your app for bidirectional text | BiDi design philosophy, mirroring, mixed-text handling case studies | [bidirectional-text.md](./bidirectional-text.md) |
-| Globalize your date/time/number formats | DateTimeFormatter, CurrencyFormatter, Calendar, PhoneNumberFormatter APIs | [date-time-number-formats.md](./date-time-number-formats.md) |
-| Writing style | Voice and tone principles, style conventions, error messages, buttons | [writing-style.md](./writing-style.md) |
-| Guidelines for app settings | Settings page layout, SettingsCard/SettingsExpander, entry points | [app-settings.md](./app-settings.md) |
-| Widget design fundamentals | Widget sizes, margins, color/theming, typography | [widgets-design-fundamentals.md](./widgets-design-fundamentals.md) |
-| Widget states and built-in UI components | Default/signed-out/error/customization states and system-rendered UI | [widgets-states-and-ui.md](./widgets-states-and-ui.md) |
-| Widget interaction design guidance | Navigation, containers, pagination, hyperlinks, dropdown menus | [widgets-interaction-design.md](./widgets-interaction-design.md) |
-| Integrate with the widget picker | Widget picker screenshot requirements and locale variants | [widgets-picker-integration.md](./widgets-picker-integration.md) |
+| Accessibility overview | Introduces the concepts and technologies for building accessible Windows apps: keyboard support, screen readers, high-contrast settings, and alternative/supplemental UI. | [accessibility-overview.md](./accessibility-overview.md) |
+| Accessible text requirements | Best practices for accessible text: contrast, UI Automation text roles, auto-suggest accessibility, text in graphics, and text scaling. | [accessible-text-requirements.md](./accessible-text-requirements.md) |
+| Guidelines for app help | General principles for deciding whether an app needs help content and how to design it well. | [app-help-guidelines.md](./app-help-guidelines.md) |
+| Guidelines for app settings | Best practices for creating, organizing, and displaying app settings — the user-customizable portions of a Windows app, accessed through a dedicated settings page. | [app-settings.md](./app-settings.md) |
+| Design your app for bidirectional text | Design philosophy and case studies for combining left-to-right (LTR) and right-to-left (RTL) writing systems in a Windows app. | [bidirectional-text.md](./bidirectional-text.md) |
+| Globalize your date/time/number formats | Format dates, times, numbers, phone numbers, and currencies appropriately so the app is global-ready before later adapting it for additional cultures, regions, and languages. | [date-time-number-formats.md](./date-time-number-formats.md) |
+| Designing inclusive software | Inclusive design treats accessibility as a core engineering and product-quality concern from the start of the product lifecycle, not a final compliance step. | [designing-inclusive-software.md](./designing-inclusive-software.md) |
+| External help | External help hosts detailed instructions on a web page outside the app, for content too extensive or advanced to fit in-app — tutorials, walkthroughs, and reference material aimed at a minority of users. | [external-help.md](./external-help.md) |
+| Globalization and localization | Overview and checklist for designing and developing a Windows app so it functions correctly across languages, regions, and cultures. | [globalization-localization.md](./globalization-localization.md) |
+| Contrast themes | Contrast themes use a constrained color palette (contrast ratios typically at or above 7:1) to improve legibility, reduce visual fatigue, and support users who need high visual separation between foreground and background content. | [high-contrast-themes.md](./high-contrast-themes.md) |
+| In-app help | In-app help is the default way to present help: displayed within the app, on request, for content that is simple and straightforward enough not to need external hosting. | [in-app-help.md](./in-app-help.md) |
+| Instructional UI | Instructional UI teaches users about non-obvious app functions — such as a required gesture, or a secondary feature they might otherwise miss — directly through the interface, at the moment it's relevant. | [instructional-ui.md](./instructional-ui.md) |
+| Keyboard accessibility | Keyboard access should be treated as a primary interaction model, not a secondary fallback — it supports users with vision, learning, dexterity/mobility, and language/communication disabilities, and improves productivity for keyboard-first users. | [keyboard-accessibility.md](./keyboard-accessibility.md) |
+| Responsive design techniques | Techniques for tailoring an app's UI for specific breakpoints and device capabilities. | [responsive-design.md](./responsive-design.md) |
+| Adjust layout and fonts, and support RTL | Design an app's layouts and fonts to support multiple languages, including right-to-left (RTL) flow direction. | [rtl-layout.md](./rtl-layout.md) |
+| Screen sizes and breakpoints for responsive design | Design Windows app UI for a few key width categories called breakpoints, rather than optimizing for every possible screen size. | [screen-sizes-breakpoints.md](./screen-sizes-breakpoints.md) |
+| Secondary tile pinning | Design guidance for letting users pin a specific area of an app (a city's weather, a contact, a playlist) as its own tile on the Start menu, separate from the app's primary tile. | [secondary-tile-pinning.md](./secondary-tile-pinning.md) |
+| Targeting (touch target size) | All interactive UI elements must be large enough to accurately access and use regardless of device type or input method, accounting for the imprecise nature of touch contact area. | [touch-target-size.md](./touch-target-size.md) |
+| Usability overview | Guidance for making a Windows app more usable by addressing accessibility, bidirectional text support, a well-designed settings experience, and in-app help. | [usability-overview.md](./usability-overview.md) |
+| Widget design fundamentals | Layout, sizing, color/theming, margins, and typography guidance for designing a Windows widget UI. | [widgets-design-fundamentals.md](./widgets-design-fundamentals.md) |
+| Widget interaction design guidance | Interaction design patterns for Windows widgets: navigation, containers, image links, pagination, hyperlinks, and dropdown menus. | [widgets-interaction-design.md](./widgets-interaction-design.md) |
+| Integrate with the widget picker | Design requirements for the assets a widget provider supplies so the widget integrates correctly into the Widgets Board's widget picker. | [widgets-picker-integration.md](./widgets-picker-integration.md) |
+| Widget principles | Five principles for designing great Windows widgets — Glanceable, Focused & Useful, Predictable & Calm, User-Anchored, Timely — and the steps for planning a widget experience. | [widgets-principles.md](./widgets-principles.md) |
+| Widget states and built-in UI components | The different states a widget can be in on the Widgets Board, and the UI elements the Widgets host renders and manages itself. | [widgets-states-and-ui.md](./widgets-states-and-ui.md) |
+| Writing style | Voice, tone, and style conventions for UI text: error messages, dialogs, buttons, and spoken experiences. | [writing-style.md](./writing-style.md) |

@@ -59,6 +59,7 @@ Slider(
 
 - `RangeSlider` is the two-thumb variant for selecting a `ClosedFloatingPointRange<Float>` (min/max); see Related.
 - Package: `androidx.compose.material3`.
+- This is the Jetpack Compose (Kotlin) API — distinct from the same-named SwiftUI / Ark UI / Chakra UI / fandhe-frontend components.
 
 ## Related
 

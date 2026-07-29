@@ -34,7 +34,7 @@ deleteCommand.ExecuteRequested += DeleteCommand_ExecuteRequested;
 | `StandardUICommand` | class | Derives from `XamlUICommand`; provides pre-defined platform commands (e.g. `Save`, `Delete`) with standard icon/accelerator/description |
 | Command | property | Bindable property on many controls (`Button`, `AppBarButton`, `MenuFlyoutItem`, `SwipeItem`) that accepts an `ICommand` |
 
-## Choosing where to place a command
+### Choosing where to place a command
 
 Expose commands through as many commanding surfaces as makes sense for the input types you support: `Swipe`, `MenuBar`, `CommandBar`, `CommandBarFlyout`, and context menu.
 

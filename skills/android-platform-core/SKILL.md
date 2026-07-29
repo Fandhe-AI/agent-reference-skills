@@ -21,76 +21,97 @@ skills/android-platform-core/
   references/
     app-components/
       README.md
-      app-components-overview.md
-      activity.md
       activity-lifecycle.md
-      component-activity-compose.md
-      tasks-and-back-stack.md
-      configuration-changes.md
-      intent.md
-      intent-filters.md
-      common-intents.md
-      package-visibility.md
       activity-result-contracts.md
-      content-provider-basics.md
-      content-provider-creating.md
+      activity.md
+      app-components-overview.md
       app-process-priority.md
       application-class.md
+      background-activity-launch.md
+      common-intents.md
+      component-activity-compose.md
+      configuration-changes.md
+      content-provider-basics.md
+      content-provider-creating.md
+      intent-filters.md
+      intent.md
+      package-visibility.md
+      parcelables-and-bundles.md
+      tasks-and-back-stack.md
     manifest-resources/
       README.md
-      manifest-structure.md
-      manifest-element.md
-      application-element.md
+      action-category-data-elements.md
+      activity-alias-element.md
       activity-element.md
-      uses-permission-element.md
-      uses-feature-element.md
-      uses-sdk-element.md
-      queries-element.md
-      provider-element.md
-      receiver-element.md
-      service-element.md
-      manifest-merging.md
-      resource-directories.md
-      resource-qualifiers.md
-      string-resources.md
-      value-resources.md
-      style-theme-resources.md
-      drawable-resources.md
       adaptive-icons.md
-      localization-rtl.md
+      application-element.md
       compose-resource-access.md
+      drawable-resources.md
+      grant-uri-permission-element.md
+      instrumentation-element.md
+      localization-rtl.md
+      manifest-element.md
+      manifest-merging.md
+      manifest-structure.md
+      meta-data-element.md
+      permission-element.md
+      property-element.md
+      provider-element.md
+      queries-element.md
+      receiver-element.md
+      resource-directories.md
       resource-naming-compression.md
+      resource-qualifiers.md
+      service-element.md
+      string-resources.md
+      style-theme-resources.md
+      supports-screens-element.md
+      uri-relative-filter-group-element.md
+      uses-feature-element.md
+      uses-library-element.md
+      uses-permission-element.md
+      uses-sdk-element.md
+      value-resources.md
     permissions-privacy/
       README.md
       permission-types-and-protection-levels.md
       declaring-permissions.md
+      defining-custom-permissions.md
       requesting-runtime-permissions.md
       requesting-permissions-in-compose.md
       evaluating-permission-need.md
       explaining-permission-access.md
       permission-groups-and-one-time-permission.md
+      default-handler-permissions.md
       automatic-permission-reset.md
       special-permissions-overview.md
       system-alert-window.md
       manage-external-storage.md
       post-notifications-permission.md
       location-permissions.md
+      location-button.md
       media-permissions.md
+      nearby-devices-permissions.md
+      restrict-interactions-with-other-apps.md
       data-safety-and-privacy-policy.md
       advertising-and-app-set-id.md
     notifications/
       README.md
+      custom-notification.md
+      expanded-notifications.md
+      full-screen-intent.md
+      live-update.md
+      metric-style.md
+      notification-actions.md
+      notification-badges.md
       notification-builder.md
       notification-channels.md
-      notification-manager.md
-      notification-permission.md
-      notification-actions.md
-      expanded-notifications.md
-      notification-progress.md
       notification-groups.md
+      notification-manager.md
       notification-navigation.md
-      full-screen-intent.md
-      notification-badges.md
+      notification-permission.md
+      notification-progress.md
+      promoted-notifications.md
     system-ui/
       README.md
       window-insets.md
@@ -109,24 +130,30 @@ skills/android-platform-core/
       keep-screen-on.md
     glance-widgets/
       README.md
+      actions.md
+      button.md
+      composition-locals.md
+      error-handling.md
+      generated-previews.md
       glance-app-widget.md
       glance-app-widget-receiver.md
       glance-modifier.md
+      glance-theme.md
+      image.md
       layout-containers.md
       lazy-lists.md
-      text.md
-      image.md
-      button.md
+      multi-process-glance-app-widget.md
+      pin-in-app.md
       progress-indicators.md
-      toggle-controls.md
-      scaffold-titlebar.md
-      glance-theme.md
-      actions.md
-      state-management.md
-      widget-updates.md
-      size-modes.md
-      composition-locals.md
+      remoteviews-interop.md
       remoteviews-legacy.md
+      scaffold-titlebar.md
+      size-modes.md
+      state-management.md
+      text.md
+      toggle-controls.md
+      widget-configuration.md
+      widget-updates.md
 ```
 
 `glance-widgets` は `androidx.glance` の API であり、モバイル Compose (`androidx.compose`) とは別 API 系統（同名の `Text` / `Image` / `Button` でもシグネチャが異なる）。

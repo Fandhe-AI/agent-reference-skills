@@ -57,3 +57,4 @@ passiveMonitoringClient.setPassiveListenerServiceAsync(PassiveDataService::class
 
 - [HealthServicesClient](./healthservicesclient.md)
 - [HealthServicesPermissions](./healthservicespermissions.md)
+- [Health Services Capabilities](./healthservicescapabilities.md)

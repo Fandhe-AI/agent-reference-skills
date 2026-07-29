@@ -8,6 +8,7 @@
 | ToggleButton | Button that can be on/off/indeterminate; base class for CheckBox and RadioButton | [togglebutton.md](./togglebutton.md) |
 | DropDownButton | Button with a chevron that opens an attached flyout | [dropdownbutton.md](./dropdownbutton.md) |
 | SplitButton | Button with a primary action side and a flyout side | [splitbutton.md](./splitbutton.md) |
+| ToggleSplitButton | Two-state (on/off) variant of SplitButton | [togglesplitbutton.md](./togglesplitbutton.md) |
 | CheckBox | Select/deselect action items, with optional indeterminate state | [checkbox.md](./checkbox.md) |
 | RadioButton | Single mutually-exclusive option, grouped via GroupName or a parent container | [radiobutton.md](./radiobutton.md) |
 | RadioButtons | Recommended control for grouping mutually exclusive options | [radiobuttons.md](./radiobuttons.md) |

@@ -28,3 +28,4 @@ The different states a widget can be in on the Widgets Board, and the UI element
 
 - [Widget design fundamentals](./widgets-design-fundamentals.md)
 - [Widget interaction design guidance](./widgets-interaction-design.md)
+- [Widget principles](./widgets-principles.md)

@@ -25,6 +25,7 @@ skills/android-data/
       column-info.md
       ignore.md
       embedded.md
+      foreign-key.md
       dao.md
       query.md
       insert.md
@@ -34,6 +35,7 @@ skills/android-data/
       transaction.md
       database.md
       room-database-builder.md
+      callback-driver.md
       migration.md
       type-converter.md
       relation.md
@@ -58,11 +60,14 @@ skills/android-data/
       app-specific-storage.md
       internal-file-io.md
       shared-preferences.md
+      auto-backup.md
       mediastore.md
       storage-access-framework.md
       photo-picker.md
+      embedded-photo-picker.md
       file-provider.md
       uri-permissions.md
+      blobstore-manager.md
       scoped-storage.md
       cache-management.md
       activity-result-contracts-files.md
@@ -75,11 +80,13 @@ skills/android-data/
       networkcapabilities.md
       network-callback.md
       data-saver.md
+      downloadmanager.md
       cronet.md
       cronet-urlrequest.md
       cronet-okhttp-interceptor.md
       retrofit.md
       okhttp.md
+      okhttp-websocket.md
       kotlinx-serialization-converter.md
       httpurlconnection.md
       caching-and-retry.md

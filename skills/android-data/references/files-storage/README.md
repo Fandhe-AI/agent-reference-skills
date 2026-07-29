@@ -2,16 +2,19 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Storage Options Overview | Internal / external / scoped storage concepts and how to choose between them. | [storage-overview.md](./storage-overview.md) |
-| App-Specific Storage | `Context.filesDir` / `cacheDir` / `getExternalFilesDir()` / `getDir()`. | [app-specific-storage.md](./app-specific-storage.md) |
-| Internal File I/O | `openFileOutput` / `openFileInput` stream helpers. | [internal-file-io.md](./internal-file-io.md) |
-| SharedPreferences | `getSharedPreferences`, `SharedPreferences.Editor`, key-value storage. | [shared-preferences.md](./shared-preferences.md) |
-| MediaStore | Querying and inserting images, video, and audio via `MediaStore`. | [mediastore.md](./mediastore.md) |
-| Storage Access Framework | `ACTION_OPEN_DOCUMENT` / `ACTION_CREATE_DOCUMENT` / `ACTION_OPEN_DOCUMENT_TREE` / `DocumentFile`. | [storage-access-framework.md](./storage-access-framework.md) |
-| Photo Picker | `ActivityResultContracts.PickVisualMedia` / `PickMultipleVisualMedia`. | [photo-picker.md](./photo-picker.md) |
-| FileProvider and File Sharing | `<provider>` manifest declaration, `file_paths.xml`, `FileProvider.getUriForFile`. | [file-provider.md](./file-provider.md) |
-| Uri Permission Grants | `FLAG_GRANT_READ_URI_PERMISSION` and persistable Uri permissions. | [uri-permissions.md](./uri-permissions.md) |
-| Scoped Storage and MANAGE_EXTERNAL_STORAGE | Scoped storage rules and the `MANAGE_EXTERNAL_STORAGE` special permission. | [scoped-storage.md](./scoped-storage.md) |
-| Cache Management and StorageManager | Cache directories, quota, and free-space allocation via `StorageManager`. | [cache-management.md](./cache-management.md) |
-| ActivityResultContracts for File Selection | `GetContent` and related file-picking activity result contracts. | [activity-result-contracts-files.md](./activity-result-contracts-files.md) |
-| Assets and AssetManager | Reading bundled read-only files from `assets/` via `AssetManager`. | [assets.md](./assets.md) |
+| ActivityResultContracts for File Selection | Prebuilt `ActivityResultContract` classes in `androidx.activity.result.contract.ActivityResultContracts` that wrap common file/content-picking intents for use with `registerForActivityResult()`. | [activity-result-contracts-files.md](./activity-result-contracts-files.md) |
+| App-Specific Storage | Dedicated internal and external directories for files that only the app needs, accessed via `Context.filesDir`, `cacheDir`, `getExternalFilesDir()`, and `getDir()`. | [app-specific-storage.md](./app-specific-storage.md) |
+| Assets and AssetManager | The `assets/` project directory bundles read-only files with the APK, accessed at runtime through `AssetManager` (or `Context.getAssets()`), and is distinct from `res/raw`. | [assets.md](./assets.md) |
+| Auto Backup for Apps | Automatically backs up an app's shared preferences, internal storage files, and databases to the user's Google Drive (25 MB free quota, most-recent copy only) so data survives reinstall or device transfer, without writing a custom `BackupAgent`. | [auto-backup.md](./auto-backup.md) |
+| BlobStoreManager and Shared Datasets | System service (API 30+) for sharing large, cache-like datasets across apps: one app contributes a blob keyed by its content hash, and any app that already knows the same `BlobHandle` can read the cached copy instead of re-downloading it. | [blobstore-manager.md](./blobstore-manager.md) |
+| Cache Management and StorageManager | APIs for creating and clearing app cache files, and for querying available/allocatable device storage via `StorageManager`. | [cache-management.md](./cache-management.md) |
+| Embedded Photo Picker | `androidx.photopicker` API that embeds the system Photo Picker UI directly in the app's own view/Compose hierarchy via a `SurfaceView`-hosted `EmbeddedPhotoPickerSession`, instead of launching a separate activity. | [embedded-photo-picker.md](./embedded-photo-picker.md) |
+| FileProvider and File Sharing | Special subclass of `ContentProvider` (`androidx.core.content.FileProvider`) that generates secure, temporary content `Uri`s for sharing files stored in app-specific directories with other apps. | [file-provider.md](./file-provider.md) |
+| Internal File I/O (openFileOutput / openFileInput) | Stream-based helpers on `Context` for reading and writing files directly under the app's internal `filesDir`. | [internal-file-io.md](./internal-file-io.md) |
+| MediaStore | Content-provider-backed index of shared media (images, video, audio, downloads) used to query, open, insert, and update media files on external storage. | [mediastore.md](./mediastore.md) |
+| Photo Picker | Built-in system UI (`ActivityResultContracts.PickVisualMedia` / `PickMultipleVisualMedia`) that lets users grant access to selected images and videos without a broad storage permission. | [photo-picker.md](./photo-picker.md) |
+| Scoped Storage and MANAGE_EXTERNAL_STORAGE | Scoped storage restricts apps targeting Android 10+ (API level 29+) to their app-specific directory and self-created media; `MANAGE_EXTERNAL_STORAGE` is the special permission that opts specific, narrowly-permitted app categories out of that restriction. | [scoped-storage.md](./scoped-storage.md) |
+| SharedPreferences | Stores private, primitive key-value data (booleans, floats, ints, longs, strings, string sets) through `Context.getSharedPreferences()` and the `SharedPreferences.Editor` API. | [shared-preferences.md](./shared-preferences.md) |
+| Storage Access Framework | System file-picker framework (`ACTION_OPEN_DOCUMENT`, `ACTION_CREATE_DOCUMENT`, `ACTION_OPEN_DOCUMENT_TREE`) plus the `DocumentFile` wrapper for accessing documents and other non-media files across providers, including cloud storage. | [storage-access-framework.md](./storage-access-framework.md) |
+| Storage Options Overview | Android offers app-specific storage, shared storage, preferences, and databases; the right choice depends on data sensitivity, size, and whether other apps need access. | [storage-overview.md](./storage-overview.md) |
+| Uri Permission Grants | Temporary, per-`Uri` read/write access granted to another app via intent flags, typically used together with `FileProvider` or Storage Access Framework results. | [uri-permissions.md](./uri-permissions.md) |

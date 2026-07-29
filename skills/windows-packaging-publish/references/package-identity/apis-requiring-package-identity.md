@@ -30,3 +30,4 @@ A subset of Windows platform features and APIs only work in a process that has *
 - [Sparse Packages and External Location Packages](./sparse-packages-external-location.md)
 - [Detecting Package Identity](./detect-package-identity.md)
 - [Packaged vs Unpackaged Behavior](./packaged-vs-unpackaged-behavior.md)
+- [Integrate a Packaged Desktop App with File Explorer](./integrate-packaged-app-with-file-explorer.md)

@@ -37,3 +37,4 @@ await packageManager.RemovePackageAsync(packageFullName, RemovalOptions.RemoveFo
 - [PackageManager Class](./package-manager.md)
 - [Sparse Packages and External Location Packages](./sparse-packages-external-location.md)
 - [Package Identity Overview](./package-identity-overview.md)
+- [Differential (Delta) Package Updates](../msix-packaging/differential-package-updates.md)

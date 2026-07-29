@@ -26,3 +26,4 @@ fun MyComposable() {
 
 - [LifecycleOwner](./lifecycleowner.md)
 - [viewModel() (Compose)](./viewmodel-compose.md)
+- [rememberLifecycleOwner](./rememberlifecycleowner.md)

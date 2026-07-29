@@ -24,7 +24,7 @@ Use the **Windows Application Packaging Project** in Visual Studio to generate a
 | Visual Studio version | 2017 15.5+ (Windows Application Packaging Project template) |
 | Required workload | Universal Windows Platform development, or the MSIX Packaging Tools optional component in .NET / .NET desktop workloads |
 | Minimum target | Windows 10 Anniversary Update (10.0; Build 14393) |
-| WinUI 3 apps | Use single-project MSIX instead of a separate packaging project |
+| WinUI 3 apps | Use [single-project MSIX](./single-project-msix.md) instead of a separate packaging project |
 
 ## Notes
 
@@ -37,5 +37,6 @@ Use the **Windows Application Packaging Project** in Visual Studio to generate a
 
 - [MSIX Packaging Tool](./msix-packaging-tool.md)
 - [makeappx.exe CLI](./makeappx-cli.md)
+- [Single-Project MSIX Packaging](./single-project-msix.md)
 - [Package Bundles and Architecture](./package-bundles-architecture.md)
 - [Package Asset Requirements](./package-asset-requirements.md)

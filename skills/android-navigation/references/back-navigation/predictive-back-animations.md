@@ -34,8 +34,6 @@ fun DetailScreen(onBack: () -> Unit) {
 }
 ```
 
-## Navigation Compose: popEnterTransition / popExitTransition
-
 With `androidx.navigation:navigation-compose:2.8.0`+, `NavHost` cross-fades between screens automatically on back swipe. Use `popEnterTransition` / `popExitTransition` to customize the animation specifically for back navigation (as opposed to `enterTransition` / `exitTransition`, which apply to forward navigation too):
 
 ```kotlin

@@ -1,7 +1,5 @@
 # pickers
 
-> This is the Jetpack Compose (Kotlin, `androidx.compose.material3`) API — distinct from the same-named SwiftUI / Ark UI / Chakra UI / fandhe-frontend components.
-
 | Name | Description | Path |
 |------|-------------|------|
 | DatePicker | Calendar UI (or keyboard input) for selecting a single date. | [datepicker.md](./datepicker.md) |

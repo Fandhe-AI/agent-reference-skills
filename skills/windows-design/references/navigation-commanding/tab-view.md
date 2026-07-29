@@ -31,12 +31,12 @@ Displays a set of tabs and their respective content, letting users rearrange, cl
 | CanTearOutTabs | bool | Enables drag-to-new-window tab tear-out (Windows App SDK 1.6+) |
 | TabViewItem.IsClosable | bool | Set `false` to hide the close button and prevent closing |
 
-## Static vs. document tabs
+### Static vs. document tabs
 
 - **Static tabs**: fixed set of pages in a fixed order (e.g. settings). Set `IsAddTabButtonVisible="False"`, `CanReorderTabs="False"`, and `IsClosable="False"` on each item. If there are more than a few static items, consider `NavigationView` instead.
 - **Document tabs** (default configuration): users can dynamically open, close, rearrange, and drag tabs between windows, similar to a browser.
 
-## Keyboard shortcuts (recommended)
+### Keyboard shortcuts (recommended)
 
 | Action | Shortcut |
 |------|-------------|

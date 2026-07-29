@@ -88,5 +88,6 @@ public fun RadioButton(
 
 ## Related
 
+- [SplitCheckboxButton / SplitSwitchButton / SplitRadioButton](./split-selection-controls.md)
 - [IconButton / IconToggleButton](./icon-button.md)
 - [ListHeader](./list-header.md)

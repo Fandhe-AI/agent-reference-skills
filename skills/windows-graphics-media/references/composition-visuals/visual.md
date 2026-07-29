@@ -30,7 +30,7 @@ visual.Opacity = 0.8f;
 
 ## Notes
 
-- Namespace: `Microsoft.UI.Composition` (Windows App SDK / WinUI 3). Derived: `ContainerVisual` (and, transitively, `SpriteVisual`, `ShapeVisual`, `LayerVisual`). The UWP equivalent is `Windows.UI.Composition.Visual`.
+- Namespace: `Microsoft.UI.Composition` (Windows App SDK / WinUI 3). Derived: `ContainerVisual` (and, transitively, `SpriteVisual`, [ShapeVisual](./shape-visual.md), [LayerVisual](./layer-visual.md)). The UWP equivalent is `Windows.UI.Composition.Visual`.
 - Visual objects are thread-agile and not bound to the UI thread.
 - Animatable properties are driven via `CompositionObject.StartAnimation(propertyName, animation)` — see [ExpressionAnimation](./expression-animation.md) and [ImplicitAnimationCollection](./implicit-animation-collection.md).
 - Distinct from Apple `UIView`/`NSView`, Android View, and three.js `Object3D` — this is the WinRT composition-tree node, not a framework UI element.

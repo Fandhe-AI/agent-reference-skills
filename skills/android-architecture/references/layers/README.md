@@ -12,5 +12,6 @@
 | Data Layer | Repository + data source pattern for exposing app data and business logic. | [data-layer.md](./data-layer.md) |
 | Offline-First Apps | Local source of truth, write strategies, sync strategies, conflict resolution. | [offline-first.md](./offline-first.md) |
 | Architecture Recommendations | Strongly recommended / recommended / optional practices across all layers. | [recommendations.md](./recommendations.md) |
+| Models and Naming Conventions | Per-layer model mapping, and naming rules for methods/properties/streams/interface implementations. | [models-and-naming-conventions.md](./models-and-naming-conventions.md) |
 | Modularization | Splitting a codebase into loosely coupled modules; benefits and pitfalls. | [modularization.md](./modularization.md) |
 | Modularization Patterns | Module types (data/feature/app/common) and dependency-direction conventions. | [modularization-patterns.md](./modularization-patterns.md) |

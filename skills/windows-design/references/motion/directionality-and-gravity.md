@@ -2,11 +2,13 @@
 
 Directional signals help solidify the mental model of the journey a user takes across experiences. Direction of any motion should support both the continuity of the space and the integrity of the objects within it. Directional movement is subject to forces like gravity, which reinforces the natural feel of motion.
 
-## Direction of movement
+## Options / Props
+
+### Direction of movement
 
 Objects can move in any world axis (X, Y, Z), mirroring physical motion. When moving objects, avoid unnatural collisions, and always support higher-level constructs already present in the scene, such as scroll direction or layout hierarchy.
 
-## Direction of navigation
+### Direction of navigation
 
 Navigation direction between scenes is conceptual: users navigate forward and back, and scenes move in and out of view.
 
@@ -24,7 +26,7 @@ When navigation replaces on-screen items rather than moving a single object, sho
 | Backward-In | Same as Forward-In, but reversed. |
 | Backward-Out | Same as Forward-Out, but reversed. |
 
-## Gravity
+### Gravity
 
 Objects that move on the Z-axis and aren't anchored to the scene by an on-screen affordance can be affected by gravity. As an object breaks free of the scene and before it reaches escape velocity, gravity pulls down on it, creating a more natural trajectory. Gravity typically manifests when an object must jump from one scene to another — this is why connected animation uses the concept of gravity.
 

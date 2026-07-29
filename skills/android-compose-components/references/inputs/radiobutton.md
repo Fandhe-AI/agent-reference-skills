@@ -50,6 +50,7 @@ Column(Modifier.selectableGroup()) {
 - Recommended pattern: set `onClick = null` on `RadioButton` and drive selection via `Modifier.selectable(role = Role.RadioButton)` on the enclosing `Row`.
 - Use `RadioButton` when only one item can be selected; use `Checkbox` when multiple can be selected.
 - Package: `androidx.compose.material3`.
+- This is the Jetpack Compose (Kotlin) API — distinct from the same-named SwiftUI / Ark UI / Chakra UI / fandhe-frontend components.
 
 ## Related
 

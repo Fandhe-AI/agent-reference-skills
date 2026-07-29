@@ -26,7 +26,7 @@ if (animation != null)
 | `DirectConnectedAnimationConfiguration` | Backward | Element linearly translates using a decelerate cubic-bezier easing, returning the user to the previous state as fast as possible. | No — animates over 150ms with the Decelerate easing function |
 | `BasicConnectedAnimationConfiguration` | Either | Default (and only) animation prior to Windows 10 version 1809 (SDK 17763). | Yes / Yes |
 
-## When to use connected animation
+### When to use connected animation
 
 Use connected animation when changing pages and there's an image or other piece of shared UI between the source and destination views — generally preferred over a drill-in navigation transition in that case.
 

@@ -2,19 +2,22 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Canvas | Composable area for freeform DrawScope drawing. | [canvas.md](./canvas.md) |
-| DrawScope | Scoped drawing environment: drawRect/drawCircle/drawLine/drawPath/drawArc/drawImage/drawText and transforms. | [draw-scope.md](./draw-scope.md) |
-| Modifier.drawBehind | Draws a DrawScope behind the composable's content. | [modifier-draw-behind.md](./modifier-draw-behind.md) |
-| Modifier.drawWithContent | Draws with explicit control over when content() is drawn relative to custom drawing. | [modifier-draw-with-content.md](./modifier-draw-with-content.md) |
-| Modifier.drawWithCache | Caches drawing objects (Brush, Path, Shader) across size/state-stable recompositions. | [modifier-draw-with-cache.md](./modifier-draw-with-cache.md) |
-| Modifier.graphicsLayer | Separate draw layer for scale/rotation/translation/alpha/clip/shadow/renderEffect/compositing. | [modifier-graphics-layer.md](./modifier-graphics-layer.md) |
-| Modifier.clip | Clips content to a Shape. | [modifier-clip.md](./modifier-clip.md) |
-| Modifier.shadow | Draws an elevation-based shadow using a Shape outline. | [modifier-shadow.md](./modifier-shadow.md) |
-| Modifier.alpha | Draws content with reduced opacity. | [modifier-alpha.md](./modifier-alpha.md) |
-| Modifier.blur | Draws content blurred by a given radius (API 31+). | [modifier-blur.md](./modifier-blur.md) |
-| Shape | Outline provider interface plus RoundedCornerShape / CircleShape / CutCornerShape / GenericShape. | [shape.md](./shape.md) |
-| Brush | Paint source for solid colors, linear/radial/sweep gradients, and custom ShaderBrush. | [brush.md](./brush.md) |
-| Path | Mutable geometric path and PathEffect (dash, corner, chain, stamp). | [path.md](./path.md) |
-| Color | Value class encoding color components and color space. | [color.md](./color.md) |
-| BlendMode | Compositing mode for blending source and destination pixels. | [blend-mode.md](./blend-mode.md) |
-| RenderEffect | Post-draw visual effect (BlurEffect, OffsetEffect) applied to a graphicsLayer. | [render-effect.md](./render-effect.md) |
+| BlendMode | Value class describing how the source (currently drawn) pixels are composited with the destination (already drawn) pixels. | [blend-mode.md](./blend-mode.md) |
+| Brush | Paint source usable wherever a draw or background operation accepts color: solid colors, linear/radial/sweep gradients, and custom `ShaderBrush` implementations. | [brush.md](./brush.md) |
+| Canvas | Composable that allows you to specify an area on the screen and perform freeform `DrawScope` drawing on it. | [canvas.md](./canvas.md) |
+| Color | Value class encoding color information (up to 4 components plus alpha, packed with an optional `ColorSpace`) used throughout Compose drawing and styling APIs. | [color.md](./color.md) |
+| DrawScope | Scoped drawing environment providing shape, image, text, and path drawing functions plus coordinate transformations, used inside `Canvas`, `Modifier.drawBehind`, `Modifier.drawWithContent`, and `Modifier.drawWithCache`. | [draw-scope.md](./draw-scope.md) |
+| MeshGradient / MeshGradientPainter | `MeshGradientPainter` renders a mesh gradient: a grid of vertices, each with its own color and optional Bezier control points, interpolated into cubic Bézier patches. It is a distinct primitive from `Brush.linearGradient`/`radialGradient`/`sweepGradient` — colors vary per vertex across a 2D grid rather than along a line, circle, or sweep. | [mesh-gradient.md](./mesh-gradient.md) |
+| Modifier.alpha | Draws content with a modified alpha (opacity), which may be less than fully opaque. | [modifier-alpha.md](./modifier-alpha.md) |
+| Modifier.blur | Draws content blurred with the specified radii. | [modifier-blur.md](./modifier-blur.md) |
+| Modifier.clip | Clips the content of the modified composable to a given `Shape`. | [modifier-clip.md](./modifier-clip.md) |
+| Modifier.drawBehind | Draws into a `DrawScope` positioned behind the modified composable's content. A thin wrapper around `Modifier.drawWithContent`. | [modifier-draw-behind.md](./modifier-draw-behind.md) |
+| Modifier.drawWithCache | Caches expensive drawing objects (`Brush`, `Shader`, `Path`, measured text, etc.) across recompositions, only recreating them when size or read state changes. | [modifier-draw-with-cache.md](./modifier-draw-with-cache.md) |
+| Modifier.drawWithContent | Draws into a `ContentDrawScope`, giving full control over when the composable's own content (`drawContent()`) is drawn relative to custom drawing. | [modifier-draw-with-content.md](./modifier-draw-with-content.md) |
+| Modifier.dropShadow / Modifier.innerShadow | Draws a customizable shadow outside (`dropShadow`) or inside (`innerShadow`) a `Shape` outline, configured via a shared `Shadow` class that supports blur radius, spread, offset, solid color, gradient `Brush`, alpha, and blend mode. Unlike the elevation-based `Modifier.shadow`, these accept a `Brush` for gradient-colored shadows and let inner/outer geometry be tuned independently of any physical elevation. | [modifier-drop-shadow.md](./modifier-drop-shadow.md) |
+| Modifier.graphicsLayer | Makes content draw into a separate draw layer, enabling scale, rotation, translation, alpha, clip, shadow, render effects, and compositing-strategy control without redrawing the composable's own draw instructions. | [modifier-graphics-layer.md](./modifier-graphics-layer.md) |
+| Modifier.shadow | Creates a `graphicsLayer` that draws a shadow whose visual depth is defined by `elevation`, using `shape` as the physical object outline. | [modifier-shadow.md](./modifier-shadow.md) |
+| Path | Mutable geometric path used with `DrawScope.drawPath`, `Modifier.clip` (via `Shape`), and `GenericShape`. `PathEffect` transforms how a `Path` is stroked. | [path.md](./path.md) |
+| RenderEffect | Visual effect applied to the rasterized content of a `graphicsLayer`, such as blurring or offsetting pixels after drawing. | [render-effect.md](./render-effect.md) |
+| RoundedPolygon / Morph / CornerRounding | `androidx.graphics.shapes` (a separate `androidx.graphics:graphics-shapes` library, not `androidx.compose.foundation.shape`) builds polygonal shapes with optional rounded corners (`RoundedPolygon`) and automatically morphs between two of them (`Morph`). It is distinct from the `Shape` interface used by `Modifier.clip`/`Modifier.background`; wrap the resulting `Path` in a custom `Shape` to use it there. | [rounded-polygon-morph.md](./rounded-polygon-morph.md) |
+| Shape | Defines a generic shape via `createOutline`. `androidx.compose.foundation.shape` provides `RoundedCornerShape`, `CutCornerShape`, and `CircleShape`; `GenericShape` builds an arbitrary shape from a `Path` lambda. | [shape.md](./shape.md) |

@@ -18,7 +18,7 @@ Package identity (publisher + name + version) is assigned to an app once it is p
 | Reliable install/uninstall | 99.96% install success rate; guarantees a clean uninstall with no leftover files or registry entries |
 | Differential updates | Only changed 64 KB blocks are downloaded on update |
 | Disk space efficiency | Shared files across apps are managed by Windows; each app remains independent |
-| Containerized execution | Apps run in a lightweight container with virtual file system/registry; see MSIX containerization overview |
+| Containerized execution | Apps run in a lightweight container with virtual file system/registry; see [MSIX Containerization Overview](./msix-containerization-overview.md) |
 | Enterprise-ready | Full support for deployment via Intune, Configuration Manager, Enterprise Modern App Management CSP |
 
 ## Notes
@@ -29,6 +29,7 @@ Package identity (publisher + name + version) is assigned to an app once it is p
 
 ## Related
 
+- [MSIX Containerization Overview](./msix-containerization-overview.md)
 - [MSIX Package Structure](./package-structure.md)
 - [Package Manifest Schema](./package-manifest-schema.md)
 - [Visual Studio Packaging Project](./vs-packaging-project.md)

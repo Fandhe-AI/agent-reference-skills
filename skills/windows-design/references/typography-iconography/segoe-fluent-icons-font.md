@@ -30,3 +30,4 @@ Segoe Fluent Icons is the recommended symbol icon font for Windows 11 apps, repl
 
 - [Icon Elements](./icon-elements.md)
 - [Typography](./typography.md)
+- [Segoe MDL2 Assets Font](./segoe-ui-symbol-font.md)

@@ -21,5 +21,7 @@ App icons are the visual indicators that help users find and launch a Windows ap
 
 ## Related
 
+- [Design Guidelines for Windows App Icons](./app-icon-design.md)
 - [App Icon Construction](./app-icon-construction.md)
+- [Generate App Icons Using Visual Studio](./visual-studio-asset-generation.md)
 - [Icon Elements](./icon-elements.md)

@@ -41,3 +41,6 @@ Root element of `AndroidManifest.xml`. Declares the app's namespace, package ide
 
 - [application element](./application-element.md)
 - [manifest merging and placeholders](./manifest-merging.md)
+- [permission / permission-group / permission-tree elements](./permission-element.md)
+- [instrumentation / profileable elements](./instrumentation-element.md)
+- [compatible-screens / supports-screens / supports-gl-texture / uses-configuration elements](./supports-screens-element.md)

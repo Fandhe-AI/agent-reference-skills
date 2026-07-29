@@ -34,3 +34,4 @@ Declares the set of other apps this app intends to interact with, for package vi
 
 - [activity element](./activity-element.md)
 - [provider element](./provider-element.md)
+- [action / category / data elements](./action-category-data-elements.md)

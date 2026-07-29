@@ -21,7 +21,7 @@ public fun EdgeButton(
 ```kotlin
 ScreenScaffold(
     scrollState = columnState,
-    edgeButton = { EdgeButton(onClick = { /* TODO */ }) { Text("More") } },
+    edgeButton = { EdgeButton(onClick = { /* handle click */ }) { Text("More") } },
 ) { contentPadding -> /* list content */ }
 ```
 

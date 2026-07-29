@@ -59,4 +59,4 @@ entry<ScreenC>(
 
 - [NavDisplay](./navdisplay.md)
 - [NavEntry](./naventry.md)
-- `../back-navigation/predictive-back-animations.md`
+- [Predictive back animations](../back-navigation/predictive-back-animations.md)

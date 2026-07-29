@@ -36,15 +36,20 @@ skills/android-navigation/
       rememberviewmodelstorenaventrydecorator.md
       scene.md
       scenestrategy.md
+      dialogscenestrategy.md
       singlepanescenestrategy.md
       listdetailscenestrategy.md
       supportingpanescenestrategy.md
+      scenedecoratorstrategy.md
+      migration-guide.md
+      modularize.md
     nav-compose/
       README.md
       navhost.md
       navcontroller.md
       remembernavcontroller.md
       navhostcontroller.md
+      testnavhostcontroller.md
       composable.md
       navigation.md
       dialog.md
@@ -59,8 +64,10 @@ skills/android-navigation/
       localownersprovider.md
       navhostfragment.md
       findnavcontroller.md
+      navigationui.md
       safe-args.md
       navigation-graph-xml.md
+      navigation-feature-modules.md
     deep-links/
       README.md
       deep-link-types.md
@@ -77,8 +84,12 @@ skills/android-navigation/
       README.md
       back-handler.md
       predictive-back-handler.md
+      navigation-back-handler.md
       on-back-pressed-dispatcher.md
       on-back-pressed-callback.md
+      navigation-event-dispatcher.md
+      navigation-event-handler.md
+      navigation-event-input.md
       local-on-back-pressed-dispatcher-owner.md
       back-event-compat.md
       on-back-invoked-dispatcher.md

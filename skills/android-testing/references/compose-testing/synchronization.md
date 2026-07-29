@@ -54,8 +54,10 @@ composeTestRule.mainClock.advanceTimeBy(500)
 - Register `IdlingResource`s via `composeTestRule.registerIdlingResource(...)` / `unregisterIdlingResource(...)` for custom background work, mirroring Espresso's `IdlingResource`.
 - Avoid external `CountDownLatch`-based waits — they don't advance the virtual clock and can deadlock.
 - Package: `androidx.compose.ui.test`.
+- This synchronization model assumes v1's default `UnconfinedTestDispatcher`, under which a launched coroutine (e.g. inside `LaunchedEffect`) runs eagerly up to its first suspension point before the next line of test code executes. The alpha v2 APIs (`runComposeUiTest`/`createComposeRule` in the `.v2` packages) default to `StandardTestDispatcher` instead, so coroutines are only queued, not run — an assertion placed immediately after triggering one can see stale state unless it goes behind `waitForIdle()`/`runOnIdle()`, or the clock's underlying scheduler is advanced explicitly with `mainClock.scheduler.runCurrent()`. See compose-testing-v2.md.
 
 ## Related
 
 - [compose-test-rule](./compose-test-rule.md)
 - [actions](./actions.md)
+- [compose-testing-v2](./compose-testing-v2.md)

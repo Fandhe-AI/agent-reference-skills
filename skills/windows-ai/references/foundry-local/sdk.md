@@ -65,6 +65,7 @@ Console.WriteLine($"Endpoint: {manager.Endpoint}, ApiKey: {manager.ApiKey}, Mode
 ## Notes
 
 - Two SDK generations exist: the version above (`FoundryLocalManager`, `StartModelAsync`, `GetModelInfo`, `Endpoint`, `ApiKey`) is the **CLI-dependent SDK** (C# `Microsoft.AI.Foundry.Local` ≤ 0.3.0, JS/Python `foundry-local-sdk` ≤ 0.5.x) — it requires the `foundry` CLI/service and is supported until **31 August 2026**. The newer **current SDK** (same package names, later versions) is self-contained (no CLI dependency), uses a `Configuration`/`FoundryLocalConfig` object plus `FoundryLocalManager.CreateAsync`/`.create()`/`.initialize()`, a `catalog` object (`manager.catalog.getModel(alias)`), and native `model.get_chat_client()` / `model.GetChatClientAsync()` clients in addition to the REST endpoint. New development should use the current SDK.
+- On Windows, the current SDK generation also ships as `Microsoft.AI.Foundry.Local.WinML` (NuGet) / `foundry-local-sdk-winml` (PyPI) — a Windows-only variant with the identical API that bundles hardware acceleration (QNN NPU/NVIDIA GPU/CPU via WinML). See [Microsoft.AI.Foundry.Local.WinML](./winml-package.md) for setup and the required `Betalgo.Ranul.OpenAI` dependency for C#'s `ChatMessage` type.
 - Passing an **alias** (for example `qwen2.5-0.5b`) auto-selects the best model variant for the end-user's hardware at run time; passing a specific **model ID** pins an exact CPU/GPU/NPU variant.
 - Combine with the OpenAI SDK by pointing `base_url`/`Endpoint` at the manager's endpoint; the Azure AI Inference SDK and any other OpenAI-compatible HTTP client work the same way since the endpoint speaks the OpenAI wire format.
 - Browser/JS usage without Node.js must supply `host` manually and cannot call `init`/`isServiceRunning`/`startService` — start the service via `foundry service start` first.
@@ -75,3 +76,4 @@ Console.WriteLine($"Endpoint: {manager.Endpoint}, ApiKey: {manager.ApiKey}, Mode
 - [Foundry Local REST API](./rest-api.md)
 - [Foundry Local Architecture](./architecture.md)
 - [Model Catalog and Hardware Variants](./model-catalog.md)
+- [Microsoft.AI.Foundry.Local.WinML](./winml-package.md)

@@ -25,4 +25,5 @@ using Microsoft.Windows.AI.MachineLearning; // ExecutionProviderCatalog
 - [Get started with Windows ML](./get-started.md)
 - [Execution providers overview](./execution-providers-overview.md)
 - [ONNX Runtime inference APIs](./onnx-runtime-inference.md)
+- [Windows ML Model Catalog](./model-catalog.md)
 - [Legacy Windows Machine Learning](./legacy-windows-machine-learning.md)

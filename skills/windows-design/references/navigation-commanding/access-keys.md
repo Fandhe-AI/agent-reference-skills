@@ -30,7 +30,7 @@ Alt + alphanumeric mnemonics (typically pressed sequentially) that let users qui
 | KeyTipHorizontalOffset / KeyTipVerticalOffset | double | Fine-grained keytip position offsets (not usable with `Auto` placement) |
 | AutomationProperties.AccessKey | attached property | Read by Narrator/accessibility clients |
 
-## Notation and display convention
+### Notation and display convention
 
 - Displayed to users as floating **keytip** badges next to the owning control, shown only while Alt is held/pressed.
 - Single-character access keys double as an automatic Alt+key shortcut (e.g. Alt+F opens File without needing keytips shown first).

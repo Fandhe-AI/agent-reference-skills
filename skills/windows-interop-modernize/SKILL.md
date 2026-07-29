@@ -25,102 +25,125 @@ skills/windows-interop-modernize/
   references/
     win32-com/
       README.md
-      create-window.md
-      register-window-class.md
-      window-procedure.md
-      message-loop.md
-      window-messages.md
-      window-lifecycle.md
-      window-styles.md
-      extended-window-styles.md
-      win32-data-types.md
-      message-box.md
-      dialog-box.md
-      com-initialization.md
       com-create-instance.md
-      iunknown.md
+      com-initialization.md
       com-smart-pointers.md
-      dpi-awareness.md
-      pinvoke-csharp.md
+      create-window.md
       cswin32.md
+      dialog-box.md
+      dpi-awareness.md
+      extended-window-styles.md
+      hresult-error-handling.md
+      iunknown.md
+      message-box.md
+      message-loop.md
+      pinvoke-csharp.md
+      register-window-class.md
+      win32-data-types.md
+      window-lifecycle.md
+      window-messages.md
+      window-procedure.md
+      window-styles.md
       windows-rs.md
     cppwinrt/
       README.md
-      overview.md
-      get-started.md
-      init-apartment.md
-      projection-headers.md
-      strings.md
+      agile-objects.md
+      async-coroutines.md
+      author-apis.md
+      author-coclasses.md
+      boxing.md
+      collections.md
       com-ptr-iinspectable.md
       consume-apis.md
-      author-apis.md
-      async-coroutines.md
-      events-delegates.md
-      weak-references.md
+      consume-com.md
       error-handling.md
+      events-delegates.md
+      get-started.md
+      init-apartment.md
       interop-abi.md
-      native-interop.md
-      xaml-binding.md
+      interop-winrt-cx.md
+      macros.md
+      move-to-winrt-from-csharp.md
       move-to-winrt-from-cx.md
+      move-to-winrt-from-wrl.md
+      naming.md
+      native-interop.md
+      overview.md
+      pass-parms-to-abi.md
+      projection-headers.md
+      std-cpp-data-types.md
+      strings.md
+      use-csharp-component-from-cpp-winrt.md
+      weak-references.md
+      xaml-binding.md
+      xaml-cust-ctrl.md
     csharp-winrt/
       README.md
+      agile-objects.md
+      aot-trimming.md
+      api-availability-checks.md
+      async-operations.md
+      authoring-winrt-components.md
+      com-interop.md
+      dotnet-winrt-removal.md
+      net-mappings-of-winrt-types.md
+      net-projection-from-cppwinrt-component.md
       overview.md
       sdk-net-ref-targetframework.md
-      async-operations.md
-      net-mappings-of-winrt-types.md
       window-handle-interop.md
-      com-interop.md
-      authoring-winrt-components.md
-      aot-trimming.md
-      dotnet-winrt-removal.md
-      api-availability-checks.md
       winrt-api-desktop-support.md
     xaml-islands/
       README.md
-      overview.md
-      desktop-window-xaml-source.md
       desktop-child-site-bridge.md
-      windows-xaml-manager.md
+      desktop-window-xaml-source.md
+      dpi-and-sizing.md
       hosting-wpf-winforms-win32.md
       input-focus-navigation.md
-      dpi-and-sizing.md
-      uwp-vs-winui3-migration.md
       limitations.md
+      overview.md
+      uwp-vs-winui3-migration.md
+      windows-xaml-manager.md
     wpf-winforms-interop/
       README.md
-      wpf-window.md
-      wpf-application.md
-      wpf-basic-controls.md
-      wpf-xaml-overview.md
-      wpf-dependency-property.md
-      wpf-routed-events.md
-      wpf-data-binding.md
-      wpf-styles-templates.md
-      wpf-vs-winui3.md
-      winforms-form-control.md
+      copilot-modernization-guide.md
+      dotnet-upgrade-assistant.md
+      hwndhost-hwndsource.md
+      windows-app-sdk-existing-project.md
       winforms-application-run.md
       winforms-designer.md
-      windows-app-sdk-existing-project.md
+      winforms-form-control.md
       winrt-apis-in-wpf-winforms.md
+      wpf-application.md
+      wpf-basic-controls.md
+      wpf-commanding.md
+      wpf-data-binding.md
+      wpf-dependency-property.md
+      wpf-routed-events.md
+      wpf-styles-templates.md
+      wpf-vs-winui3.md
+      wpf-window.md
       wpf-winforms-hosting.md
-      hwndhost-hwndsource.md
-      dotnet-upgrade-assistant.md
+      wpf-xaml-overview.md
     uwp-migration/
       README.md
-      migration-overview.md
-      overall-migration-strategy.md
-      namespace-mapping.md
-      feature-mapping.md
-      what-is-supported.md
-      upgrade-assistant.md
+      ai-assisted-migration.md
       applifecycle-migration.md
-      windowing-migration.md
-      threading-migration.md
-      mrtcore-migration.md
-      winui3-ui-migration.md
-      push-notifications-migration.md
-      toast-notifications-migration.md
       background-task-migration.md
+      dwritecore-migration.md
+      feature-mapping.md
+      keyboard-events-migration.md
+      migration-overview.md
+      misc-migration-guidance.md
+      mrtcore-migration.md
+      namespace-mapping.md
+      overall-migration-strategy.md
+      push-notifications-migration.md
+      threading-migration.md
+      toast-notifications-migration.md
+      upgrade-assistant.md
+      what-is-supported.md
+      windowing-migration.md
+      winui3-ui-migration.md
 ```
 
 ## 探索手順

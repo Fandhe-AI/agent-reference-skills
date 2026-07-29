@@ -35,14 +35,24 @@ public static bool TryGoBack()
 }
 ```
 
-## Back button placement
+## Options / Props
+
+| Name | Type | Description |
+|------|------|-------------|
+| Frame.CanGoBack | bool | Whether a back navigation is currently possible |
+| Frame.GoBack() | method | Navigates to the previous page in the back stack |
+| Frame.BackStack / Frame.ForwardStack | collection | Navigation history entries |
+| TitleBarBackButtonStyle | resource | Built-in style for a stand-alone back button placed in the title bar area |
+| TitleBar.IsBackButtonVisible / IsBackButtonEnabled | bool | Shows/enables a back button on the built-in `TitleBar` control |
+
+### Back button placement
 
 - Place the back button in the upper-left corner of the app.
 - If the title bar is customized, place the back button in the title bar (use the built-in `TitleBar` control's `IsBackButtonVisible` / `IsBackButtonEnabled` and handle `BackRequested`).
 - For a stand-alone back button, use `Button` with the `TitleBarBackButtonStyle` resource; if a top `CommandBar` exists, place the button in `CommandBar.Content`.
 - Show a disabled back button (bound to `Frame.CanGoBack`) rather than hiding it, unless the app will never have a backstack.
 
-## Add-to-history rules for custom back stacks
+### Add-to-history rules for custom back stacks
 
 | Navigation action | Add to navigation history? |
 |------|-------------|

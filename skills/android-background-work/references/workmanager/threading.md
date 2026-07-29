@@ -32,4 +32,5 @@ override suspend fun doWork(): Result { /* use withContext(Dispatchers.IO) { ...
 
 - [Worker / ListenableWorker / Result](./worker.md)
 - [CoroutineWorker](./coroutineworker.md)
+- [RxWorker](./rxworker.md)
 - [ForegroundInfo and long-running workers](./foreground-work.md)

@@ -90,3 +90,4 @@ public interface MotionScheme {
 ## Related
 
 - [AppScaffold](./scaffold.md)
+- [dynamicColorScheme](./dynamic-color-scheme.md)

@@ -33,6 +33,10 @@ class MyViewModel(
 
 // Compose:
 val viewModel: MyViewModel = viewModel(factory = MyViewModel.Factory)
+
+// Reified convenience extensions on an existing ViewModelProvider:
+val vm: MyViewModel = provider.get()
+val keyedVm: MyViewModel = provider.get(key = "second")
 ```
 
 ## Options / Props
@@ -40,6 +44,8 @@ val viewModel: MyViewModel = viewModel(factory = MyViewModel.Factory)
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `create(modelClass, extras)` | function | — | Instantiates a ViewModel of `modelClass` using data available in `extras`. |
+| `ViewModelProvider.get<VM>()` | `inline fun <reified VM : ViewModel> ViewModelProvider.get(): VM` | — | Reified extension equivalent to `get(VM::class)`, removing the need to pass the class explicitly. |
+| `ViewModelProvider.get<VM>(key)` | `inline fun <reified VM : ViewModel> ViewModelProvider.get(key: String): VM` | — | Reified extension equivalent to `get(key, VM::class)`; added in Lifecycle 2.11.0 (June 2026) for parity with the no-key `get<VM>()` extension. |
 | `CreationExtras[APPLICATION_KEY]` | key | — | The `Application` instance. |
 | `CreationExtras[VIEW_MODEL_KEY]` | key | — | Custom key passed to `ViewModelProvider.get(key, ...)`. |
 | `CreationExtras[DEFAULT_ARGS_KEY]` | key | — | `Bundle` of arguments used to build a `SavedStateHandle`. |

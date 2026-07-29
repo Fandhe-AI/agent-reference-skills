@@ -45,3 +45,4 @@ Box(
 
 - [Modifier.graphicsLayer](./modifier-graphics-layer.md)
 - [Shape](./shape.md)
+- [Modifier.dropShadow / Modifier.innerShadow](./modifier-drop-shadow.md)

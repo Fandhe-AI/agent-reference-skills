@@ -2,25 +2,31 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| ViewModel | Business-logic / screen-level state holder that survives configuration changes. | [viewmodel.md](./viewmodel.md) |
-| viewModel() | Compose function to retrieve/create a ViewModel scoped to a ViewModelStoreOwner. | [viewmodel-compose.md](./viewmodel-compose.md) |
-| ViewModelProvider.Factory / viewModelFactory | Instantiates ViewModels with constructor dependencies via CreationExtras. | [viewmodelprovider-factory.md](./viewmodelprovider-factory.md) |
-| viewModelScope | Built-in CoroutineScope canceled automatically when the ViewModel is cleared. | [viewmodelscope.md](./viewmodelscope.md) |
-| AndroidViewModel | ViewModel subclass carrying an Application reference. | [androidviewmodel.md](./androidviewmodel.md) |
-| SavedStateHandle | Key-value map surviving process death, passed into ViewModels. | [savedstatehandle.md](./savedstatehandle.md) |
-| Lifecycle | Holds the current State and dispatches Event transitions to observers. | [lifecycle.md](./lifecycle.md) |
-| LifecycleOwner | Interface for a component that owns a Lifecycle. | [lifecycleowner.md](./lifecycleowner.md) |
-| DefaultLifecycleObserver | Callback interface with one method per lifecycle event. | [defaultlifecycleobserver.md](./defaultlifecycleobserver.md) |
-| LifecycleEventObserver | Functional interface receiving every Lifecycle.Event via one callback. | [lifecycleeventobserver.md](./lifecycleeventobserver.md) |
-| repeatOnLifecycle | Restarts a coroutine block while the Lifecycle is at least at a given state. | [repeatonlifecycle.md](./repeatonlifecycle.md) |
-| flowWithLifecycle | Flow operator gating emissions by lifecycle state. | [flowwithlifecycle.md](./flowwithlifecycle.md) |
-| collectAsStateWithLifecycle | Compose extension collecting a Flow into State, lifecycle-aware. | [collectasstatewithlifecycle.md](./collectasstatewithlifecycle.md) |
-| LocalLifecycleOwner | CompositionLocal exposing the current LifecycleOwner. | [locallifecycleowner.md](./locallifecycleowner.md) |
-| LifecycleEventEffect | Composable effect running a one-shot callback on a specific Lifecycle.Event. | [lifecycleeventeffect.md](./lifecycleeventeffect.md) |
-| LifecycleStartEffect | Composable effect pairing ON_START body with mandatory ON_STOP/dispose cleanup. | [lifecyclestarteffect.md](./lifecyclestarteffect.md) |
-| LifecycleResumeEffect | Composable effect pairing ON_RESUME body with mandatory ON_PAUSE/dispose cleanup. | [lifecycleresumeeffect.md](./lifecycleresumeeffect.md) |
-| LiveData | Lifecycle-aware observable data holder. | [livedata.md](./livedata.md) |
-| MutableLiveData | LiveData subclass exposing setValue/postValue. | [mutablelivedata.md](./mutablelivedata.md) |
-| observeAsState | Compose extension observing a LiveData as State. | [observeasstate.md](./observeasstate.md) |
-| ProcessLifecycleOwner | Singleton LifecycleOwner for the whole application process. | [processlifecycleowner.md](./processlifecycleowner.md) |
-| SavedStateRegistry | Interface for components to contribute/consume saved state. | [savedstateregistry.md](./savedstateregistry.md) |
+| AndroidViewModel | A `ViewModel` subclass that carries an `Application` reference, for cases that genuinely need application context (e.g. resources, system services). | [androidviewmodel.md](./androidviewmodel.md) |
+| collectAsStateWithLifecycle | Compose extension that collects a `Flow`/`StateFlow` into a Compose `State`, automatically starting/stopping collection based on the current `LifecycleOwner`. The recommended way to collect flows in composables. | [collectasstatewithlifecycle.md](./collectasstatewithlifecycle.md) |
+| DefaultLifecycleObserver | Callback interface with one method per lifecycle event, for observing a `LifecycleOwner`'s state changes without annotation-based dispatch. | [defaultlifecycleobserver.md](./defaultlifecycleobserver.md) |
+| flowWithLifecycle | `Flow` operator that only emits upstream values while `lifecycle` is at least at `minActiveState`, automatically starting/canceling the upstream collection as the lifecycle moves in and out of range. | [flowwithlifecycle.md](./flowwithlifecycle.md) |
+| Lifecycle | Abstract class holding the current lifecycle status (`State`) of a component and dispatching transition `Event`s to registered observers. | [lifecycle.md](./lifecycle.md) |
+| LifecycleEventEffect | Composable effect that runs a one-shot callback whenever a specific `Lifecycle.Event` occurs. Best for actions with no matching cleanup, like analytics logging. | [lifecycleeventeffect.md](./lifecycleeventeffect.md) |
+| LifecycleEventObserver | Functional interface receiving a single callback for every `Lifecycle.Event`, useful when the specific `Event` value (not just the derived state) matters. | [lifecycleeventobserver.md](./lifecycleeventobserver.md) |
+| LifecycleOwner | Interface for a component that has a `Lifecycle`, letting other components observe it without coupling to the owner's concrete type. Implemented by `ComponentActivity`, `Fragment`, `ProcessLifecycleOwner`, `NavBackStackEntry`, etc. | [lifecycleowner.md](./lifecycleowner.md) |
+| LifecycleResumeEffect | Composable effect for paired resume/pause operations: the effect body runs on `ON_RESUME`, and the mandatory `onPauseOrDispose` block runs on `ON_PAUSE` or when the composable leaves the composition. Suited to resources only needed during active user interaction (camera preview, animations). | [lifecycleresumeeffect.md](./lifecycleresumeeffect.md) |
+| lifecycleScope | Built-in `CoroutineScope` attached to a `Lifecycle`; coroutines launched in it are canceled automatically once the `Lifecycle` reaches the `DESTROYED` state. | [lifecyclescope.md](./lifecyclescope.md) |
+| LifecycleStartEffect | Composable effect for paired start/stop operations: the effect body runs on `ON_START`, and the mandatory `onStopOrDispose` block runs on `ON_STOP` or when the composable leaves the composition. | [lifecyclestarteffect.md](./lifecyclestarteffect.md) |
+| LiveData | Lifecycle-aware observable data holder. Only notifies observers that are in an active state (`STARTED` or `RESUMED`), automatically stops notifying destroyed observers, and delivers the latest value when an inactive observer becomes active again. | [livedata.md](./livedata.md) |
+| LocalLifecycleOwner | `CompositionLocal` exposing the current `LifecycleOwner` inside a composable tree. | [locallifecycleowner.md](./locallifecycleowner.md) |
+| MutableLiveData | `LiveData` subclass that publicly exposes `setValue(T)` and `postValue(T)`, letting callers push new values. | [mutablelivedata.md](./mutablelivedata.md) |
+| observeAsState | Compose extension that observes a `LiveData` and represents its latest value as a Compose `State`, triggering recomposition on updates. | [observeasstate.md](./observeasstate.md) |
+| ProcessLifecycleOwner | Singleton `LifecycleOwner` representing the lifecycle of the entire application process, useful for foreground/background detection independent of any single Activity. | [processlifecycleowner.md](./processlifecycleowner.md) |
+| rememberLifecycleOwner | Composable function that creates a new `LifecycleOwner` scoped to the call site, capped by `maxLifecycle` and tracking an optional `parent`, for building custom scoped lifecycles directly in Compose UI. | [rememberlifecycleowner.md](./rememberlifecycleowner.md) |
+| repeatOnLifecycle | Suspend function that runs a coroutine block that automatically restarts whenever the `Lifecycle` reaches `state`, and cancels when it drops below `state`. Suspends the caller until the `Lifecycle` is destroyed. | [repeatonlifecycle.md](./repeatonlifecycle.md) |
+| SavedStateHandle | Key-value map passed to a `ViewModel` that persists small, transient UI state (scroll position, selected id, in-progress text) across process death, unlike plain ViewModel fields which only survive configuration changes. | [savedstatehandle.md](./savedstatehandle.md) |
+| SavedStateRegistry | Interface for plugging custom components into the saved-state mechanism, letting them contribute and consume state around process recreation. `rememberSaveable` and `SavedStateHandle` build on top of it. | [savedstateregistry.md](./savedstateregistry.md) |
+| Saving UI States | Overview comparing the three techniques for persisting UI state across configuration changes, system-initiated process death, and full app dismissal: in-memory `ViewModel` fields, `SavedStateHandle` (saved state), and persistent storage (database/DataStore/network). | [saving-ui-state.md](./saving-ui-state.md) |
+| ViewModel | Business-logic / screen-level state holder that caches state and survives configuration changes (e.g. screen rotation). Destroyed when its `ViewModelStoreOwner` (Activity, NavBackStackEntry, composable scope, ...) is permanently removed. | [viewmodel.md](./viewmodel.md) |
+| ViewModel APIs Cheat Sheet | Quick lookup of which `ViewModel`-retrieval API to use depending on UI toolkit (Views vs. Compose) and desired scope (current owner, parent Fragment, host Activity, or Navigation graph), and whether Hilt is used. | [viewmodel-cheatsheet.md](./viewmodel-cheatsheet.md) |
+| viewModel() | Compose function that retrieves an existing `ViewModel` or creates a new one scoped to a `ViewModelStoreOwner`, defaulting to the current `LocalViewModelStoreOwner`. | [viewmodel-compose.md](./viewmodel-compose.md) |
+| ViewModel Scoping APIs | Kotlin property delegates for retrieving a `ViewModel` scoped to a chosen `ViewModelStoreOwner` — the current Activity/Fragment, a custom owner, the host Activity from a Fragment, or a Navigation graph — so multiple screens can share one instance. | [viewmodel-scoping-apis.md](./viewmodel-scoping-apis.md) |
+| ViewModelProvider.Factory / viewModelFactory | Mechanism for instantiating `ViewModel`s that take constructor dependencies. Required unless the ViewModel has a no-arg constructor or takes only a `SavedStateHandle`. `viewModelFactory { }` is the Kotlin DSL for building a `Factory` from `initializer { }` blocks driven by `CreationExtras`. | [viewmodelprovider-factory.md](./viewmodelprovider-factory.md) |
+| viewModelScope | Built-in `CoroutineScope` extension property attached to every `ViewModel`; coroutines launched in it are canceled automatically when the ViewModel is cleared. | [viewmodelscope.md](./viewmodelscope.md) |
+| ViewModelStoreProvider | Compose APIs (`rememberViewModelStoreProvider` / `rememberViewModelStoreOwner`) for creating `ViewModelStore` instances scoped to an arbitrary UI position (e.g. a `HorizontalPager` page), surviving configuration changes and auto-clearing when removed from composition. | [viewmodelstoreprovider.md](./viewmodelstoreprovider.md) |

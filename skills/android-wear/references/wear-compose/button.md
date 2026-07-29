@@ -56,4 +56,4 @@ Button(onClick = { /* action */ }) {
 
 - [EdgeButton](./edge-button.md)
 - [IconButton / IconToggleButton](./icon-button.md)
-- [ButtonGroup — see Card notes for layout family](./card.md)
+- [ButtonGroup](./button-group.md)

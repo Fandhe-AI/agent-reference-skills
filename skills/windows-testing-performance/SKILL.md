@@ -33,10 +33,15 @@ skills/windows-testing-performance/
       wack-certification.md
       wack-test-categories.md
       msix-sideloading.md
+      loose-file-registration.md
       widgets-testing.md
       app-actions-testing.md
       ci-testing.md
       testing-troubleshooting.md
+      device-portal.md
+      plm-testing.md
+      winapp-cli-debugging.md
+      winapp-cli-ui-automation.md
     performance/
       README.md
       choose-between-tools.md
@@ -58,10 +63,12 @@ skills/windows-testing-performance/
       profiling-tools.md
       xaml-analysis.md
       optimize-background-activity.md
+      optimize-winrt-interop.md
     accessibility/
       README.md
       ui-automation-overview.md
       automation-properties.md
+      basic-accessibility-information.md
       landmarks-and-headings.md
       automation-peers.md
       control-patterns-and-interfaces.md
@@ -73,6 +80,7 @@ skills/windows-testing-performance/
       accessibility-checklist.md
       accessibility-in-the-store.md
       system-button-narration.md
+      ui-automation-tree-views.md
     threading/
       README.md
       dispatcher-queue.md
@@ -86,6 +94,7 @@ skills/windows-testing-performance/
       ui-thread-updates.md
       deadlock-avoidance.md
       background-tasks.md
+      agile-objects-marshaling.md
 ```
 
 ## 探索手順

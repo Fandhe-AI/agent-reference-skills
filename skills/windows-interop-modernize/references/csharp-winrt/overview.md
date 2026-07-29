@@ -26,5 +26,6 @@ The **cswinrt.exe** compiler (shipped in the `Microsoft.Windows.CsWinRT` NuGet p
 - [Microsoft.Windows.SDK.NET.Ref and TargetFramework](./sdk-net-ref-targetframework.md)
 - [.NET Mappings of WinRT Types](./net-mappings-of-winrt-types.md)
 - [Authoring WinRT Components with C#/WinRT](./authoring-winrt-components.md)
+- [Generate a C# Projection from a C++/WinRT Component](./net-projection-from-cppwinrt-component.md)
 - [AOT and Trimming with C#/WinRT](./aot-trimming.md)
 - [System.Runtime.InteropServices.WindowsRuntime Removal](./dotnet-winrt-removal.md)

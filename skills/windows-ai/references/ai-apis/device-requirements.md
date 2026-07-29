@@ -52,3 +52,4 @@ using LanguageModel languageModel = await LanguageModel.CreateAsync();
 - [LanguageModel](./language-model.md)
 - [TextRecognizer](./text-recognizer.md)
 - [ImageScaler](./image-scaler.md)
+- [Windows AI API troubleshooting](./troubleshooting.md)

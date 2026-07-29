@@ -35,6 +35,7 @@ skills/android-compose-components/
       splitbutton.md
       buttongroup.md
       floatingactionbuttonmenu.md
+      togglebutton.md
     inputs/
       README.md
       checkbox.md
@@ -77,6 +78,7 @@ skills/android-compose-components/
       scaffold.md
       surface.md
       listitem.md
+      segmentedlistitem.md
       divider.md
       modalbottomsheet.md
       bottomsheetscaffold.md
@@ -87,6 +89,8 @@ skills/android-compose-components/
       swipetodismissbox.md
       pulltorefreshbox.md
       tooltipbox.md
+      verticaldraghandle.md
+      noninteractivescrollbar.md
     navigation-components/
       README.md
       topappbar.md
@@ -101,6 +105,8 @@ skills/android-compose-components/
       shortnavigationbaritem.md
       navigationrail.md
       navigationrailitem.md
+      widenavigationrail.md
+      widenavigationrailitem.md
       navigationdraweritem.md
       primarytabrow.md
       tab.md
@@ -112,7 +118,9 @@ skills/android-compose-components/
       snackbarhoststate.md
       snackbardata.md
       linearprogressindicator.md
+      linearwavyprogressindicator.md
       circularprogressindicator.md
+      circularwavyprogressindicator.md
       loadingindicator.md
       badge.md
       badgedbox.md
@@ -121,6 +129,7 @@ skills/android-compose-components/
     theming/
       README.md
       material-theme.md
+      material-expressive-theme.md
       color-scheme.md
       dynamic-color-scheme.md
       typography.md

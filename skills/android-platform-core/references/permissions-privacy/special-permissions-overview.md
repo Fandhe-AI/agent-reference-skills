@@ -45,3 +45,4 @@ override fun onResume() {
 - [manage-external-storage](./manage-external-storage.md)
 - [post-notifications-permission](./post-notifications-permission.md)
 - [permission-types-and-protection-levels](./permission-types-and-protection-levels.md)
+- [default-handler-permissions](./default-handler-permissions.md)

@@ -30,6 +30,7 @@ skills/windows-winui-controls/
       togglebutton.md
       dropdownbutton.md
       splitbutton.md
+      togglesplitbutton.md
       checkbox.md
       radiobutton.md
       radiobuttons.md
@@ -54,6 +55,7 @@ skills/windows-winui-controls/
       hyperlink.md
     collections/
       README.md
+      annotated-scroll-bar.md
       list-view.md
       grid-view.md
       items-view.md
@@ -64,6 +66,7 @@ skills/windows-winui-controls/
       list-box.md
       combo-box.md
       selector-bar.md
+      semantic-zoom.md
       item-container.md
       scroll-view.md
     navigation-controls/
@@ -79,6 +82,7 @@ skills/windows-winui-controls/
       menubar.md
       menubaritem.md
       pipspager.md
+      twopaneview.md
     dialogs-flyouts-commands/
       README.md
       content-dialog.md
@@ -98,6 +102,7 @@ skills/windows-winui-controls/
     media-misc-controls/
       README.md
       image.md
+      icon-elements.md
       media-player-element.md
       webview2.md
       inkcanvas-inktoolbar.md
@@ -113,6 +118,7 @@ skills/windows-winui-controls/
       swipe-control.md
       refresh-container.md
       parallax-view.md
+      shapes.md
       title-bar.md
 ```
 
@@ -131,6 +137,7 @@ skills/windows-winui-controls/
 | Button / CheckBox / RadioButtons / ToggleSwitch / Slider で基本的な操作 UI を実装したい | basic-controls | [references/basic-controls/README.md](references/basic-controls/README.md) |
 | ProgressBar / ProgressRing / RatingControl で進捗・評価を表示したい | basic-controls | [references/basic-controls/README.md](references/basic-controls/README.md) |
 | SplitButton / DropDownButton でフライアウト付きボタンを実装したい | basic-controls | [references/basic-controls/README.md](references/basic-controls/README.md) |
+| ToggleSplitButton で on/off 状態を持つフライアウト付きボタンを実装したい | basic-controls | [references/basic-controls/README.md](references/basic-controls/README.md) |
 | TextBox / RichEditBox / PasswordBox / NumberBox でテキスト・数値入力を実装したい | text-controls | [references/text-controls/README.md](references/text-controls/README.md) |
 | AutoSuggestBox でサジェスト付き検索入力を実装したい | text-controls | [references/text-controls/README.md](references/text-controls/README.md) |
 | TextBlock / RichTextBlock / Run / Span / Bold / Hyperlink でリッチテキスト表示を組み立てたい | text-controls | [references/text-controls/README.md](references/text-controls/README.md) |
@@ -145,6 +152,7 @@ skills/windows-winui-controls/
 | TeachingTip / InfoBar / InfoBadge / ToolTip で通知・ヒントを表示したい | dialogs-flyouts-commands | [references/dialogs-flyouts-commands/README.md](references/dialogs-flyouts-commands/README.md) |
 | Image / MediaPlayerElement / WebView2 でメディア・Web コンテンツを表示したい | media-misc-controls | [references/media-misc-controls/README.md](references/media-misc-controls/README.md) |
 | CalendarView / DatePicker / TimePicker / ColorPicker で日付・時刻・色を選択したい | media-misc-controls | [references/media-misc-controls/README.md](references/media-misc-controls/README.md) |
+| FontIcon / SymbolIcon / PathIcon / BitmapIcon / ImageIcon でコントロールにアイコンを割り当てたい | media-misc-controls | [references/media-misc-controls/README.md](references/media-misc-controls/README.md) |
 | Expander / AnimatedIcon / SwipeControl / RefreshContainer / TitleBar でその他の UI 挙動を実装したい | media-misc-controls | [references/media-misc-controls/README.md](references/media-misc-controls/README.md) |
 
 このスキルは WinUI 3 / Windows App SDK 固有のコントロール API のみを扱う。同名の Button / TextBox / NavigationView 等は apple-swiftui, ark-ui, chakra-ui, fandhe-frontend, android-compose-components とは無関係の別 API であり、Windows レイアウト・ウィンドウ管理・データバインディングなど他の windows-* スキルが存在する場合はそちらが担当する。

@@ -51,3 +51,4 @@ fun DiceRollScreen(viewModel: DiceRollViewModel = viewModel()) {
 - [ViewModel](./viewmodel.md)
 - [ViewModelProvider.Factory](./viewmodelprovider-factory.md)
 - [LocalLifecycleOwner](./locallifecycleowner.md)
+- [ViewModelStoreProvider](./viewmodelstoreprovider.md)

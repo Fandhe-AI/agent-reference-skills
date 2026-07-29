@@ -20,6 +20,7 @@ data class User(
 | `tableName` | `String` | Class name | Custom name for the database table. |
 | `primaryKeys` | `String[]` | — | Columns composing a composite primary key. |
 | `indices` | `Index[]` | — | Indices for query optimization (`Index(value = [...], unique = false)`). |
+| `foreignKeys` | `ForeignKey[]` | — | Foreign key constraints to other entities (`ForeignKey(entity = ..., parentColumns = ..., childColumns = ..., onDelete = ...)`). |
 | `ignoredColumns` | `String[]` | — | Fields excluded from persistence, useful for inheritance. |
 
 ## Notes
@@ -33,6 +34,7 @@ data class User(
 
 - [PrimaryKey](./primary-key.md)
 - [ColumnInfo](./column-info.md)
+- [ForeignKey](./foreign-key.md)
 - [Ignore](./ignore.md)
 - [Embedded](./embedded.md)
 - [Fts4 / DatabaseView](./fts-database-view.md)

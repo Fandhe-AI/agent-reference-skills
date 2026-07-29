@@ -2,12 +2,14 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Dependency Configurations | `implementation` / `api` / `compileOnly` / `runtimeOnly` / `testImplementation` / `androidTestImplementation` / `ksp` / `kapt` / `annotationProcessor` / `lintChecks` / `lintPublish` configurations. | [dependency-configurations.md](./dependency-configurations.md) |
-| Dependency Coordinates | `group:artifact:version` (GAV) syntax and local module/file dependencies. | [dependency-coordinates.md](./dependency-coordinates.md) |
-| Repository Declarations | `dependencyResolutionManagement` / `repositories { google() mavenCentral() }` in `settings.gradle.kts`. | [repositories.md](./repositories.md) |
-| Version Catalog | `gradle/libs.versions.toml` `[versions]` / `[libraries]` / `[plugins]` / `[bundles]` and the `libs.*` accessor. | [version-catalog.md](./version-catalog.md) |
-| Compose BOM | `platform("androidx.compose:compose-bom:...")` for unified Compose library versioning. | [compose-bom.md](./compose-bom.md) |
-| Dependency Exclusion and Constraints | `exclude`, `constraints { }`, `resolutionStrategy` / `strictly` for controlling transitive dependency versions. | [dependency-exclusion.md](./dependency-exclusion.md) |
-| Viewing and Resolving Dependencies | `./gradlew app:dependencies` and reading the resolved dependency tree. | [viewing-dependencies.md](./viewing-dependencies.md) |
-| KSP vs kapt | Migrating annotation processors from `kapt` to `ksp` (Kotlin Symbol Processing). | [ksp-vs-kapt.md](./ksp-vs-kapt.md) |
-| Build Variant-Specific Dependencies | Variant-prefixed configurations such as `debugImplementation` / `freeImplementation` / `freeDebugImplementation`. | [variant-specific-dependencies.md](./variant-specific-dependencies.md) |
+| Compose BOM | A Bill of Materials that lets you manage the… | [compose-bom.md](./compose-bom.md) |
+| Dependency Configurations | Configurations (`implementation`, `api`,… | [dependency-configurations.md](./dependency-configurations.md) |
+| Dependency Coordinates | The `group:artifact:version` (GAV) syntax used to… | [dependency-coordinates.md](./dependency-coordinates.md) |
+| Dependency Exclusion and Constraints | Mechanisms for controlling transitive dependency… | [dependency-exclusion.md](./dependency-exclusion.md) |
+| Dependency Verification | Gradle feature that mitigates supply-chain attacks… | [dependency-verification.md](./dependency-verification.md) |
+| KSP vs kapt | KSP (Kotlin Symbol Processing) is the Kotlin-first… | [ksp-vs-kapt.md](./ksp-vs-kapt.md) |
+| Migrate to Version Catalogs | Incremental, per-dependency migration path from… | [migrate-to-catalogs.md](./migrate-to-catalogs.md) |
+| Repository Declarations | Declares where Gradle should look up dependency… | [repositories.md](./repositories.md) |
+| Build Variant-Specific Dependencies | Declares dependencies scoped to a single build type,… | [variant-specific-dependencies.md](./variant-specific-dependencies.md) |
+| Version Catalog | Centralizes dependency and plugin versions in… | [version-catalog.md](./version-catalog.md) |
+| Viewing and Resolving Dependencies | Inspecting the resolved dependency tree to… | [viewing-dependencies.md](./viewing-dependencies.md) |

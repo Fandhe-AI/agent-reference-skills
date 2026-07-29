@@ -22,7 +22,7 @@ visual.Shadow = shadow;
 | Name | Type | Description |
 |------|------|-------------|
 | Brush | CompositionBrush | Describes how the `SpriteVisual` is painted (color, surface, or effect brush). |
-| Shadow | CompositionShadow | The shadow (e.g. `DropShadow`) applied to the visual. |
+| Shadow | CompositionShadow | The shadow (e.g. [DropShadow](./drop-shadow.md)) applied to the visual. |
 | Children | VisualCollection | Inherited from `ContainerVisual` — `SpriteVisual` can also host child visuals. |
 
 Position/transform properties (`Offset`, `Size`, `Opacity`, `Clip`, `CenterPoint`, `RotationAngle`, ...) are inherited from [Visual](./visual.md) via `ContainerVisual`.
@@ -37,5 +37,6 @@ Position/transform properties (`Offset`, `Size`, `Opacity`, `Clip`, `CenterPoint
 - [Visual](./visual.md)
 - [ContainerVisual](./container-visual.md)
 - [CompositionSurfaceBrush](./composition-surface-brush.md)
+- [DropShadow](./drop-shadow.md)
 - [CompositionEffectBrush](./composition-effect-brush.md)
 - [Compositor](./compositor.md)

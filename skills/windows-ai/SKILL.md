@@ -14,7 +14,7 @@ user-invocable: false
 
 Windows AI Foundry を中心とした Windows 上の AI/ML 開発機能の公式ドキュメントを蒸留したリファレンス。
 組み込み AI API、ローカル ONNX 推論 (Windows ML)、ローカルモデルホスティング (Foundry Local)、
-エージェント連携 (MCP / App Actions)、低レベル GPU 推論 (DirectML) を扱う。
+エージェント連携 (MCP / App Actions)、低レベル GPU 推論 (DirectML)、NPU ハードウェア・プロファイリング (Copilot+ PC / WPR / WPA) を扱う。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
 ## ディレクトリ構成
@@ -29,7 +29,9 @@ skills/windows-ai/
       language-model.md
       language-model-options.md
       language-model-context.md
+      language-model-best-practices.md
       phi-silica-lora.md
+      phi-silica-structured-output.md
       text-recognizer.md
       recognized-text.md
       image-scaler.md
@@ -40,12 +42,20 @@ skills/windows-ai/
       semantic-search.md
       content-moderation.md
       responsible-ai.md
+      speech-recognition-model.md
+      video-scaler.md
+      image-generator.md
+      text-intelligence-skills.md
+      choose-your-windows-ai-solution.md
+      local-llms.md
+      troubleshooting.md
     windows-ml/
       README.md
       overview.md
       get-started.md
       deployment-bootstrap.md
       execution-provider-catalog.md
+      execution-provider-errors.md
       execution-providers-overview.md
       supported-execution-providers.md
       install-execution-providers.md
@@ -53,13 +63,21 @@ skills/windows-ai/
       select-execution-providers.md
       bring-your-own-eps.md
       onnx-runtime-inference.md
+      onnx-versions.md
+      run-genai-onnx-models.md
+      migrate-to-windows-ml.md
       model-compilation.md
       model-conversion.md
+      models.md
       legacy-windows-machine-learning.md
       learning-model.md
       learning-model-session.md
       learning-model-binding.md
       learning-model-evaluation-result.md
+      model-catalog.md
+      model-catalog-source-schema.md
+      winml-cli.md
+      logs.md
     foundry-local/
       README.md
       overview.md
@@ -69,6 +87,7 @@ skills/windows-ai/
       sdk.md
       model-catalog.md
       cache-management.md
+      winml-package.md
     mcp-app-actions/
       README.md
       mcp-overview.md
@@ -115,6 +134,18 @@ skills/windows-ai/
       onnxruntime-directml.md
       pytorch-directml.md
       version-history.md
+      programming-guide.md
+      errors-and-device-removal.md
+      webnn-overview.md
+      gpu-accelerated-training.md
+    npu-devices/
+      README.md
+      npu-hardware-overview.md
+      byom-model-sources.md
+      task-manager-npu.md
+      gpuview-npu.md
+      onnxruntime-etw-tracing.md
+      wpr-wpa-npu-profiling.md
 ```
 
 ## 探索手順
@@ -142,6 +173,9 @@ skills/windows-ai/
 | Agent Launchers / Agent Workspace / セキュリティ同意モデルを実装したい | mcp-app-actions | [references/mcp-app-actions/README.md](references/mcp-app-actions/README.md) |
 | DirectML で GPU 推論デバイス・オペレーターを直接制御したい | directml | [references/directml/README.md](references/directml/README.md) |
 | ONNX Runtime / PyTorch から DirectML バックエンドを利用したい | directml | [references/directml/README.md](references/directml/README.md) |
+| Copilot+ PC / NPU ハードウェア要件を確認したい | npu-devices | [references/npu-devices/README.md](references/npu-devices/README.md) |
+| Task Manager / WPR / WPA / GPUView / ETW で NPU 使用率・推論を計測したい | npu-devices | [references/npu-devices/README.md](references/npu-devices/README.md) |
+| 自前 ONNX モデルを NPU 向けに調達・量子化したい (BYOM) | npu-devices | [references/npu-devices/README.md](references/npu-devices/README.md) |
 
-このスキルは Windows AI Foundry 配下の AI/ML 機能（組み込み AI API、ローカル推論、エージェント連携、DirectML）のみを扱う。
+このスキルは Windows AI Foundry 配下の AI/ML 機能（組み込み AI API、ローカル推論、エージェント連携、DirectML、NPU ハードウェア・プロファイリング）のみを扱う。
 WinUI コントロールやレイアウト・データバインディングなど UI 実装は windows-winui-controls, windows-winui-ui, windows-app-sdk が担当し、パッケージング・配布は windows-packaging-publish、グラフィックス・メディア描画は windows-graphics-media が担当する。

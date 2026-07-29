@@ -1,18 +1,19 @@
 # animation-apis
 
-> This is the Jetpack Compose (Kotlin, `androidx.compose.animation`) API — distinct from the same-named SwiftUI / Ark UI / Chakra UI / fandhe-frontend animation APIs.
-
 | Name | Description | Path |
 |------|-------------|------|
-| AnimatedVisibility | Shows/hides a composable with enter/exit transitions, removing it from composition when hidden. | [animatedvisibility.md](./animatedvisibility.md) |
-| AnimatedContent | Animates between different content based on a target state, with a customizable ContentTransform. | [animatedcontent.md](./animatedcontent.md) |
-| Crossfade | Simple fade-only transition between two pieces of content based on a target state. | [crossfade.md](./crossfade.md) |
-| Modifier.animateContentSize | Modifier that automatically animates a composable's size when it changes. | [animatecontentsize.md](./animatecontentsize.md) |
-| animate*AsState | Family of composable functions (`animateFloatAsState`, `animateDpAsState`, `animateColorAsState`, etc.) that animate a single value to a target. | [animateasstate.md](./animateasstate.md) |
-| Animatable | Coroutine-based, suspend-driven animatable value holder with `animateTo` / `snapTo` / `animateDecay`. | [animatable.md](./animatable.md) |
-| rememberInfiniteTransition / InfiniteTransition | Holds child animations that repeat indefinitely until removed from composition. | [infinitetransition.md](./infinitetransition.md) |
-| updateTransition / rememberTransition / Transition | Coordinates multiple child animations driven by a single state change. | [transition.md](./transition.md) |
-| EnterTransition / ExitTransition | Composable building blocks (`fadeIn`, `slideIn*`, `expandIn`, `scaleIn`, etc.) used by `AnimatedVisibility` and `AnimatedContent`. | [enterexittransition.md](./enterexittransition.md) |
-| LookaheadScope | Provides lookahead-measured target layout info used to build custom layout-change animations. | [lookaheadscope.md](./lookaheadscope.md) |
-| Modifier.animateItem | Modifier for lazy list/grid items that animates appearance, disappearance, and reordering. | [animateitem.md](./animateitem.md) |
-| AnimationVector / TwoWayConverter | Low-level vector representation and converter types used to animate arbitrary value types. | [animationvector.md](./animationvector.md) |
+| Animatable | Coroutine-based, low-level API for animating a single value with fine-grained control: different initial/target values, `snapTo`, and decay (fling) animations. | [animatable.md](./animatable.md) |
+| animate*AsState | Family of composable functions that animate a single value from its current value to `targetValue` whenever `targetValue` changes. Internally creates and remembers an `Animatable`, so no manual object management is required. | [animateasstate.md](./animateasstate.md) |
+| AnimatedContent | Animates between different content for a given `targetState`, replacing the initial content with the target content using a customizable `ContentTransform`. | [animatedcontent.md](./animatedcontent.md) |
+| AnimatedVisibility | Animates the appearance and disappearance of its content based on a `visible` boolean. The content is removed from composition once the exit animation finishes. | [animatedvisibility.md](./animatedvisibility.md) |
+| Crossfade | Simpler alternative to `AnimatedContent` that always crossfades between the initial and target content when `targetState` changes. | [crossfade.md](./crossfade.md) |
+| EnterTransition / ExitTransition | Composable building blocks used by `AnimatedVisibility` and `AnimatedContent` to describe how content appears (`EnterTransition`) or disappears (`ExitTransition`). Combine multiple with `+`. | [enterexittransition.md](./enterexittransition.md) |
+| LookaheadScope | Provides a scope in which child layouts are first measured/placed in a "lookahead" pass to determine their final target size and position, so custom animations can smoothly interpolate towards that target instead of jumping to it. | [lookaheadscope.md](./lookaheadscope.md) |
+| Modifier.animateBounds | Modifier that animates a layout's position/size changes within a `LookaheadScope`, driven by a `BoundsTransform`. | [animatebounds.md](./animatebounds.md) |
+| Modifier.animateContentSize | Modifier that animates a composable's size whenever its content's measured size changes. | [animatecontentsize.md](./animatecontentsize.md) |
+| Modifier.animateEnterExit | Member of `AnimatedVisibilityScope`/`AnimatedContentScope` letting a child run its own enter/exit transition in addition to the parent's. | [animateenterexit.md](./animateenterexit.md) |
+| Modifier.animateItem | Modifier for items inside `LazyColumn` / `LazyRow` / `LazyVerticalGrid` / `LazyHorizontalGrid` (and staggered grids) that animates appearance (fade in), disappearance (fade out), and reordering (placement). | [animateitem.md](./animateitem.md) |
+| AnimationVector / TwoWayConverter | `AnimationVector` is the low-level numeric representation (1 to 4 `Float` components) that the animation system interpolates internally. `TwoWayConverter` converts an arbitrary value type `T` to/from its `AnimationVector` representation so the same animation engine (`Animatable`, `animateValueAsState`, `Transition.animateValue`, `InfiniteTransition.animateValue`) can drive it. | [animationvector.md](./animationvector.md) |
+| rememberInfiniteTransition / InfiniteTransition | `InfiniteTransition` holds one or more child animations that start immediately and repeat continuously (via `infiniteRepeatable`/`repeatable` specs) until the transition leaves composition. | [infinitetransition.md](./infinitetransition.md) |
+| TargetBasedAnimation / DecayAnimation | Stateless, low-level `Animation` implementations that compute an animated value at an arbitrary play time you supply yourself. They sit beneath `Animatable` in the animation hierarchy (`Transition` → `animate*AsState` → `Animatable` → `TargetBasedAnimation`/`DecayAnimation`) and are used when an app needs manual control over playback time instead of a coroutine driving it. | [targetbasedanimation-decayanimation.md](./targetbasedanimation-decayanimation.md) |
+| updateTransition / rememberTransition / Transition | `Transition` manages one or more child animations and runs them in parallel whenever the driving state changes, exposing a shared `currentState` / `targetState` / `isRunning`. | [transition.md](./transition.md) |

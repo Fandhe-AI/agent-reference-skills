@@ -2,15 +2,16 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Service | Application component for long-running background work; lifecycle callbacks and started/bound modes. | [service.md](./service.md) |
-| `<service>` manifest element | Manifest declaration required for every `Service` subclass. | [service-manifest.md](./service-manifest.md) |
-| onStartCommand() return values | `START_STICKY` / `START_NOT_STICKY` / `START_REDELIVER_INTENT` restart semantics. | [start-command-return-values.md](./start-command-return-values.md) |
-| startService / startForegroundService / stopSelf / stopService | Methods to launch and terminate a started service. | [start-stop-service.md](./start-stop-service.md) |
-| Foreground service | User-noticeable service that must show a persistent notification. | [foreground-service.md](./foreground-service.md) |
-| foregroundServiceType | Manifest attribute declaring a foreground service's type and required permission (API 34+). | [foreground-service-types.md](./foreground-service-types.md) |
-| Foreground service launch restrictions | Background-start restrictions introduced in Android 12+ and tightened in 14+. | [foreground-service-restrictions.md](./foreground-service-restrictions.md) |
-| Foreground service time limits (Android 15+) | Running-time limits for `dataSync`/`mediaProcessing`/`shortService` types. | [foreground-service-timeout.md](./foreground-service-timeout.md) |
-| Bound service | Client-server service accessed via `bindService()`/`ServiceConnection`/`IBinder`. | [bound-service.md](./bound-service.md) |
-| Messenger | Single-threaded, queue-based cross-process binding technique. | [messenger.md](./messenger.md) |
-| AIDL | Interface definition language for multithreaded cross-application IPC. | [aidl.md](./aidl.md) |
-| Processes and threads | Default process/thread model; services run on the main thread unless moved off it. | [processes-and-threads.md](./processes-and-threads.md) |
+| AIDL (Android Interface Definition Language) | An IDL for defining a programming interface that both a service and its clients agree on for IPC, letting clients from other applications bind to and multithread against a service. | [aidl.md](./aidl.md) |
+| Bound service | A service that offers a client-server interface via `bindService()`, allowing components (activities, other services) to send requests, receive responses, and perform IPC. A purely bound service runs only while at least one client is bound. | [bound-service.md](./bound-service.md) |
+| Foreground service | A service that performs an operation noticeable to the user (e.g. music playback, active navigation) and therefore must display a persistent status bar notification while it runs. | [foreground-service.md](./foreground-service.md) |
+| Foreground service launch restrictions | Rules that block apps from starting a foreground service while running in the background, introduced in Android 12 (API 31) and tightened in later releases. | [foreground-service-restrictions.md](./foreground-service-restrictions.md) |
+| Foreground service time limits (Android 15+) | For apps targeting Android 15 (API 35) or higher, `dataSync`, `mediaProcessing`, and `shortService` foreground services are subject to running-time limits while the app is in the background. | [foreground-service-timeout.md](./foreground-service-timeout.md) |
+| foregroundServiceType | Manifest attribute (and matching `ServiceInfo.FOREGROUND_SERVICE_TYPE_*` constant) that declares what kind of work a foreground service performs. Required for apps targeting API 34+ (Android 14), together with the corresponding runtime permission. | [foreground-service-types.md](./foreground-service-types.md) |
+| Handle user-initiated stopping of foreground services | Starting in Android 13 (API 33), the notification drawer's Task Manager lets users stop an app that has an ongoing foreground service — regardless of the app's target SDK version — from an **Active apps** list with a **Stop** button per app. | [handle-user-stopping.md](./handle-user-stopping.md) |
+| Messenger | A cross-process binding technique that queues all incoming requests onto a single thread inside the service, avoiding manual thread-safety work while still supporting IPC. | [messenger.md](./messenger.md) |
+| Processes and threads | Foundational model for where application components — including `Service` — run: by default, every component runs in a single process on a single main (UI) thread. | [processes-and-threads.md](./processes-and-threads.md) |
+| Service | An application component that performs long-running operations in the background without a user interface. A `Service` continues running even after the user switches to another app. | [service.md](./service.md) |
+| `<service>` manifest element | Every `Service` subclass must be declared in `AndroidManifest.xml` with a `<service>` element before it can be started or bound. | [service-manifest.md](./service-manifest.md) |
+| startService / startForegroundService / stopSelf / stopService | `Context` and `Service` methods for launching and terminating a started service. | [start-stop-service.md](./start-stop-service.md) |
+| onStartCommand() return values | Constants returned from `Service.onStartCommand()` that tell the system how to handle the service if it is killed while running. | [start-command-return-values.md](./start-command-return-values.md) |

@@ -31,3 +31,4 @@ A widget has a single primary page; clicking a call to action should launch the 
 
 - [Widget design fundamentals](./widgets-design-fundamentals.md)
 - [Widget states and built-in UI components](./widgets-states-and-ui.md)
+- [Widget principles](./widgets-principles.md)

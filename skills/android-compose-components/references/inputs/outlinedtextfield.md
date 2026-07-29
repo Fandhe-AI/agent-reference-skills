@@ -76,6 +76,7 @@ OutlinedTextField(
 
 - A legacy overload accepts `value: String` / `onValueChange: (String) -> Unit` with `visualTransformation` / `keyboardActions` / `singleLine` / `maxLines` / `minLines` instead of the `state`-based parameters.
 - Package: `androidx.compose.material3`.
+- This is the Jetpack Compose (Kotlin) API — distinct from the same-named SwiftUI / Ark UI / Chakra UI / fandhe-frontend components.
 
 ## Related
 

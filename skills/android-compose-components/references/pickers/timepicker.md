@@ -39,6 +39,7 @@ TimePicker(state = timePickerState)
 - `TimeInput` is the alternative keyboard-entry variant sharing the same `TimePickerState`.
 - Typically hosted inside `TimePickerDialog` (or a custom `AlertDialog`/`Dialog`) with confirm/dismiss buttons supplied by the caller.
 - Package: `androidx.compose.material3`.
+- This is the Jetpack Compose (Kotlin) API — distinct from the same-named SwiftUI / Ark UI / Chakra UI / fandhe-frontend components.
 
 ## Related
 

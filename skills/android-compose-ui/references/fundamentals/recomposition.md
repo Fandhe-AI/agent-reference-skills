@@ -33,6 +33,7 @@ fun NamePicker(header: String, names: List<String>, onNameClicked: (String) -> U
 
 - [Composable Functions](./composable-functions.md)
 - [Phases of Compose](./phases.md)
+- [Stability & Strong Skipping](./stability.md)
 - [derivedStateOf](../state-lifecycle/derivedstateof.md)
 - [remember](../state-lifecycle/remember.md)
 - [mutableStateOf](../state-lifecycle/mutablestateof.md)

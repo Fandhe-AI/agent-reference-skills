@@ -35,6 +35,12 @@ skills/windows-data-storage/
       irandom-access-stream.md
       data-reader-writer.md
       storage-item-thumbnail.md
+      storage-library.md
+      storage-library-change-tracker.md
+      storage-provider-sync-root-manager.md
+      downloads-folder.md
+      streamed-file-content.md
+      access-sd-card.md
       system-io-vs-windows-storage.md
     app-data-settings/
       README.md
@@ -69,6 +75,7 @@ skills/windows-data-storage/
       storage-file-query-result.md
       query-options.md
       common-file-query.md
+      storage-folder-item-query-result.md
 ```
 
 ## 探索手順
@@ -96,5 +103,6 @@ skills/windows-data-storage/
 | JsonObject / JsonArray / JsonValue / XmlDocument で構造化データをパース・生成したい | data-serialization | [references/data-serialization/README.md](references/data-serialization/README.md) |
 | SQLite / EF Core でローカルデータベースを構築したい | data-serialization | [references/data-serialization/README.md](references/data-serialization/README.md) |
 | QueryOptions / CommonFileQuery / StorageFileQueryResult でファイルクエリ・キャッシュ戦略を扱いたい | data-serialization | [references/data-serialization/README.md](references/data-serialization/README.md) |
+| StorageFolderQueryResult / StorageItemQueryResult でフォルダー・混在アイテムのクエリ結果を列挙したい | data-serialization | [references/data-serialization/README.md](references/data-serialization/README.md) |
 
 このスキルは Windows App SDK / WinRT のファイル・設定・データ保存 API のみを扱う。コントロール UI は windows-winui-controls、ライフサイクル・ウィンドウ・通知は windows-app-sdk が担当し、いずれもここでは扱わない。

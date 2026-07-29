@@ -41,15 +41,17 @@ Describes the XML content model behind app notifications (toasts): visuals (text
 | `ToastButton.Arguments` | string (required) | App-defined arguments returned to the app when the button is clicked. |
 | `ToastButton.ActivationType` | `ToastActivationType` | `Foreground` (default), `Background`, or `Protocol`. |
 | `ToastAudio.Src` / `Loop` / `Silent` | uri / bool / bool | Custom sound, looping, or muting. Only `ms-appx` / `ms-resource` URIs supported. |
-| `ToastHeader.Id` / `Title` / `Arguments` | string | Groups notifications sharing the same header `Id` under one heading. |
+| `ToastHeader.Id` / `Title` / `Arguments` | string | Groups notifications sharing the same header `Id` under one clickable heading; only `Id` determines grouping, `Title`/`Arguments` shown come from the most recent notification in the group. |
 
 ## Notes
 
-- Reference: `Microsoft.Windows.AppNotifications.Builder.AppNotificationBuilder` produces this XML programmatically; prefer the builder for local notifications and reserve raw XML for cloud-sourced (WNS) push toasts.
+- Reference: `Microsoft.Windows.AppNotifications.Builder.AppNotificationBuilder` produces this XML programmatically; prefer the builder for local notifications and reserve raw XML for cloud-sourced (WNS) push toasts. `AppNotificationBuilder` has no `SetHeader` method, so headers require hand-authoring the `<header>` XML element and passing it to the `AppNotification` constructor directly.
 - Cloud-sourced push toasts are sent with header `X-WNS-Type: wns/toast`, `Content-Type: text/xml`, and this XML as the request body.
+- Clicking a header raises `NotificationInvoked` with the header's `Arguments`, but doesn't clear the notifications under it; headers also don't change the per-app 20-notification cap or FIFO eviction. For grouping notifications under a separate app-like title/icon instead of a heading, see app notification collections (`ToastCollection`).
 
 ## Related
 
 - [AppNotificationBuilder](./app-notification-builder.md)
 - [AppNotification](./app-notification.md)
 - [PushNotificationManager](./push-notification-manager.md)
+- [App notification collections](./app-notification-collections.md)

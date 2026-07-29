@@ -37,3 +37,4 @@ Declares a `ContentProvider` component and its access-control attributes. See th
 
 - [application element](./application-element.md)
 - [queries element](./queries-element.md)
+- [grant-uri-permission element](./grant-uri-permission-element.md)

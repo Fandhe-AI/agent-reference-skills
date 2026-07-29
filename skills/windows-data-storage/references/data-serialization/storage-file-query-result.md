@@ -44,3 +44,4 @@ foreach (StorageFile file in fileList)
 
 - [QueryOptions](./query-options.md)
 - [CommonFileQuery](./common-file-query.md)
+- [StorageFolderQueryResult / StorageItemQueryResult](./storage-folder-item-query-result.md)

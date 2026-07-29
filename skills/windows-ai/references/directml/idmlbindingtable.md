@@ -51,3 +51,4 @@ bindingTable->BindInputs(1, &inputBinding);
 - [IDMLCompiledOperator](./idmlcompiledoperator.md)
 - [IDMLOperatorInitializer](./idmloperatorinitializer.md)
 - [Tensors: DML_TENSOR_DESC / DML_BUFFER_TENSOR_DESC](./tensors.md)
+- [DirectML Programming Guide](./programming-guide.md)

@@ -2,14 +2,18 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Build Speed Optimization | Gradle daemon warm-up, parallel execution, `org.gradle.jvmargs` heap tuning. | [build-speed-optimization.md](./build-speed-optimization.md) |
-| Build Cache and Configuration Cache | `org.gradle.caching` and `org.gradle.configuration-cache` settings and behavior. | [build-cache-configuration-cache.md](./build-cache-configuration-cache.md) |
-| Migrate from kapt to KSP | Replacing kapt annotation processing with the faster Kotlin-first KSP. | [migrate-to-ksp.md](./migrate-to-ksp.md) |
-| Migrate to Kotlin DSL | Converting `build.gradle` (Groovy) to `build.gradle.kts` (Kotlin). | [migrate-to-kotlin-dsl.md](./migrate-to-kotlin-dsl.md) |
-| AGP Upgrade Assistant | Android Studio tool for automated AGP version upgrades. | [agp-upgrade-assistant.md](./agp-upgrade-assistant.md) |
-| AGP / Gradle Version Compatibility | AGP-to-Gradle minimum version table and Gradle Wrapper update commands. | [agp-gradle-version-compatibility.md](./agp-gradle-version-compatibility.md) |
-| JDK Configuration | JDK requirements for AGP, Gradle JDK settings, and Java/Kotlin toolchain configuration. | [jdk-configuration.md](./jdk-configuration.md) |
-| Namespace Migration | `namespace` build property replacing the deprecated manifest `package` attribute. | [namespace-migration.md](./namespace-migration.md) |
-| Manifest Merger Conflicts | `tools:node` / `tools:replace` / `tools:remove` markers for resolving manifest merge conflicts. | [manifest-merger-conflicts.md](./manifest-merger-conflicts.md) |
-| Build Analyzer | Android Studio tool for identifying build duration bottlenecks and warnings. | [build-analyzer.md](./build-analyzer.md) |
-| Debug Dependency Resolution Errors | Duplicate class errors and classpath version conflicts, dependency tree inspection. | [dependency-resolution-errors.md](./dependency-resolution-errors.md) |
+| AGP / Gradle Version Compatibility and Wrapper Update | Each Android Gradle plugin (AGP) version requires a… | [agp-gradle-version-compatibility.md](./agp-gradle-version-compatibility.md) |
+| AGP / Kotlin / D8 / R8 Version Compatibility | Each Kotlin compiler version requires a minimum… | [agp-kotlin-d8-r8-compatibility.md](./agp-kotlin-d8-r8-compatibility.md) |
+| AGP Upgrade Assistant | Built-in Android Studio tool (**Tools > AGP… | [agp-upgrade-assistant.md](./agp-upgrade-assistant.md) |
+| Build Analyzer | Android Studio tool (**Build window > Build… | [build-analyzer.md](./build-analyzer.md) |
+| Build Cache and Configuration Cache | `org.gradle.caching` reuses task outputs across… | [build-cache-configuration-cache.md](./build-cache-configuration-cache.md) |
+| Build Speed Optimization | Techniques to speed up Gradle builds: Gradle daemon… | [build-speed-optimization.md](./build-speed-optimization.md) |
+| Apply Custom Build Logic | AGP exposes the Variant API… | [custom-build-logic.md](./custom-build-logic.md) |
+| Debug Dependency Resolution Errors | Duplicate class errors and classpath version… | [dependency-resolution-errors.md](./dependency-resolution-errors.md) |
+| JDK Configuration | The JDK used to run Gradle/AGP must meet the… | [jdk-configuration.md](./jdk-configuration.md) |
+| Manifest Merger Conflicts | The manifest merger combines the build variant, main… | [manifest-merger-conflicts.md](./manifest-merger-conflicts.md) |
+| Migrate to Built-in Kotlin | AGP 9.0+ integrates the Kotlin compiler directly… | [migrate-to-built-in-kotlin.md](./migrate-to-built-in-kotlin.md) |
+| Migrate to Kotlin DSL | AGP 4.0+ supports Kotlin DSL (`build.gradle.kts`)… | [migrate-to-kotlin-dsl.md](./migrate-to-kotlin-dsl.md) |
+| Migrate from kapt to KSP | Kapt is in maintenance mode. KSP (Kotlin Symbol… | [migrate-to-ksp.md](./migrate-to-ksp.md) |
+| Namespace Migration | The `namespace` property in `build.gradle.kts`… | [namespace-migration.md](./namespace-migration.md) |
+| Android SDK Upgrade Assistant | Android Studio tool (**Tools > Android SDK… | [sdk-upgrade-assistant.md](./sdk-upgrade-assistant.md) |

@@ -53,4 +53,4 @@ Card(onClick = { /* open */ }) {
 ## Related
 
 - [ListHeader](./list-header.md)
-- [ButtonGroup — see `androidx.wear.compose.material3.ButtonGroup` for grouped layouts](./button.md)
+- [ButtonGroup](./button-group.md)

@@ -27,20 +27,30 @@ skills/android-wear/
       scaffold.md
       time-text.md
       lists.md
+      expandable.md
       button.md
+      button-group.md
       edge-button.md
       icon-button.md
       selection-controls.md
+      split-selection-controls.md
       card.md
       list-header.md
+      animated-text-placeholder.md
       picker.md
       dialogs.md
+      dynamic-color-scheme.md
       progress-indicators.md
+      slider-stepper.md
+      pager.md
       curved-layout.md
       swipe-to-reveal.md
       rotary-input.md
+      hierarchical-focus.md
       ambient-mode.md
       swipe-dismissable-nav-host.md
+      navigation3.md
+      screen-sizes.md
     tiles/
       README.md
       tile-service.md
@@ -52,10 +62,18 @@ skills/android-wear/
       material3-layout.md
       material3-buttons.md
       material3-cards-progress.md
+      animations.md
       actions-and-interactivity.md
       updating-tiles.md
       platform-data.md
       tile-preview-debugging.md
+      versioning.md
+    wear-widgets/
+      README.md
+      glance-wear-widget-service.md
+      migrate-from-tiles.md
+      remote-compose-layout.md
+      remote-state-and-actions.md
     complications-health/
       README.md
       complicationdatasourceservice.md
@@ -70,8 +88,10 @@ skills/android-wear/
       healthservicesclient.md
       measureclient.md
       exerciseclient.md
+      exerciseevent.md
       passivemonitoringclient.md
       datatype.md
+      debouncedgoal.md
       datapointcontainer.md
       healthservicespermissions.md
       healthservicessimulation.md
@@ -87,6 +107,7 @@ skills/android-wear/
       text.md
       images.md
       expressions.md
+      weather.md
       complications.md
       user-configurations.md
       personalization-and-photos.md
@@ -95,6 +116,18 @@ skills/android-wear/
       versions.md
       memory-optimization.md
       build-and-debug.md
+      watch-face-push.md
+    data-layer-communication/
+      README.md
+      assets.md
+      capabilityclient.md
+      dataclient.md
+      messageclient.md
+      nodeclient.md
+      ongoingactivity.md
+      remoteactivityhelper.md
+      remoteauthclient.md
+      wearablelistenerservice.md
 ```
 
 ## 探索手順
@@ -116,11 +149,19 @@ skills/android-wear/
 | Tile (TileService) を実装したい | tiles | [references/tiles/README.md](references/tiles/README.md) |
 | ProtoLayout / Material3 タイル部品でレイアウトを組みたい | tiles | [references/tiles/README.md](references/tiles/README.md) |
 | Tile のアクション・更新・プラットフォームデータ連携をしたい | tiles | [references/tiles/README.md](references/tiles/README.md) |
+| Wear Widget (GlanceWearWidgetService) を実装したい | wear-widgets | [references/wear-widgets/README.md](references/wear-widgets/README.md) |
+| Remote Compose (RemoteBox/RemoteColumn/RemoteText/RemoteButton) でウィジェットのレイアウトを組みたい | wear-widgets | [references/wear-widgets/README.md](references/wear-widgets/README.md) |
+| Remote Compose の状態・アクション (rememberMutableRemote* / valueChange / pendingIntentAction) を扱いたい | wear-widgets | [references/wear-widgets/README.md](references/wear-widgets/README.md) |
+| Tile から Wear Widget への移行を検討したい | wear-widgets | [references/wear-widgets/README.md](references/wear-widgets/README.md) |
 | ComplicationDataSourceService とコンプリケーションデータ型を実装したい | complications-health | [references/complications-health/README.md](references/complications-health/README.md) |
 | Health Services (MeasureClient/ExerciseClient/PassiveMonitoringClient) で運動・健康データを扱いたい | complications-health | [references/complications-health/README.md](references/complications-health/README.md) |
 | Health Services の権限・シミュレーションを確認したい | complications-health | [references/complications-health/README.md](references/complications-health/README.md) |
 | Watch Face Format (WFF) の XML 要素・シーン・図形・時刻表示を書きたい | watch-face | [references/watch-face/README.md](references/watch-face/README.md) |
 | WFF の式・データソース・コンプリケーションスロット・ユーザー設定を扱いたい | watch-face | [references/watch-face/README.md](references/watch-face/README.md) |
 | WFF のビルド・デバッグ・メモリ最適化・バージョン対応を確認したい | watch-face | [references/watch-face/README.md](references/watch-face/README.md) |
+| DataClient で端末間 (phone/watch) の DataItem・Asset を同期したい | data-layer-communication | [references/data-layer-communication/README.md](references/data-layer-communication/README.md) |
+| MessageClient で端末間メッセージ (RPC 的な一方向/リクエスト-レスポンス) を送りたい | data-layer-communication | [references/data-layer-communication/README.md](references/data-layer-communication/README.md) |
+| NodeClient / CapabilityClient でノード・アプリ機能を検出したい | data-layer-communication | [references/data-layer-communication/README.md](references/data-layer-communication/README.md) |
+| RemoteActivityHelper / RemoteAuthClient / OngoingActivity でフォンとの連携・認証・進行中アクティビティを扱いたい | data-layer-communication | [references/data-layer-communication/README.md](references/data-layer-communication/README.md) |
 
-モバイルの Jetpack Compose は `android-compose-ui` / `android-compose-components`、モバイルのウィジェット（Glance）は `android-platform-core` が担当する（本スキルの対象外）。
+モバイルの Jetpack Compose は `android-compose-ui` / `android-compose-components` が担当する（本スキルの対象外）。モバイルのホーム画面ウィジェット（`androidx.glance.appwidget` / RemoteViews）は `android-platform-core` が担当するが、本スキルの `wear-widgets` は Remote Compose ベースの Wear OS 上のウィジェット（フルスクリーンタイルの後継、カルーセル表示）を扱い、これらとは別 API である。

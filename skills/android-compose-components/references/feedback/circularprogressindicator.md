@@ -57,3 +57,4 @@ CircularProgressIndicator(
 
 - [LinearProgressIndicator](./linearprogressindicator.md)
 - [LoadingIndicator](./loadingindicator.md)
+- [CircularWavyProgressIndicator](./circularwavyprogressindicator.md)

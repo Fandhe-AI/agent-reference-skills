@@ -10,7 +10,7 @@ Timing, easing, directionality, and gravity work together to form the foundation
 | Built-in animation | System components (common controls, shared motion) are "Fluent by default" — fundamentals are already applied consistently with their implied usage. |
 | Custom animation | When the system doesn't yet provide an exact motion solution for a scenario, use the baseline fundamental recommendations (timing, easing, directionality, gravity) as a starting point. |
 
-## Example: transition timings
+### Example: transition timings
 
 | Element | Direction | Effect | Duration | Easing |
 |---|---|---|---|---|

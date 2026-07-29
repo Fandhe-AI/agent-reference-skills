@@ -1,6 +1,14 @@
 # .NET Mappings of WinRT Types
 
-C#/WinRT maps certain WinRT types to .NET equivalents in desktop apps that target .NET 6+. Visual Studio IntelliSense shows the .NET type instead of the WinRT type — for example a WinRT method taking `IVector<string>` shows as `IList<string>` in C#. When authoring a WinRT component with C#/WinRT, you write the .NET type in member signatures and C#/WinRT translates it to the corresponding WinRT type when generating the component.
+C#/WinRT maps certain WinRT types to .NET equivalents in desktop apps that target .NET 6+. Visual Studio IntelliSense shows the .NET type instead of the WinRT type. When authoring a WinRT component with C#/WinRT, you write the .NET type in member signatures and C#/WinRT translates it to the corresponding WinRT type when generating the component.
+
+## Signature / Usage
+
+```csharp
+// WinRT signature: IVector<string> Items { get; }
+// C# IntelliSense / authoring surface shows the .NET-mapped type:
+IList<string> Items { get; }
+```
 
 ## Options / Props
 

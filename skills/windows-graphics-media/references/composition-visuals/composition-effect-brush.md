@@ -32,7 +32,7 @@ ElementCompositionPreview.SetElementChildVisual(blurArea, blurSprite);
 |------|------|-------------|
 | GetSourceParameter(String) | method | Retrieves the `CompositionBrush` bound to a named `CompositionEffectSourceParameter`. |
 | SetSourceParameter(String, CompositionBrush) | method | Binds an effect source parameter name (declared via `CompositionEffectSourceParameter`) to a source brush or another effect brush (for chaining). |
-| Properties | CompositionPropertySet, inherited | Allows getting/animating effect properties declared as animatable, addressed as `"EffectName.PropertyName"`. |
+| Properties | [CompositionPropertySet](./composition-property-set.md), inherited | Allows getting/animating effect properties declared as animatable, addressed as `"EffectName.PropertyName"`. |
 
 ## Notes
 

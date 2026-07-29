@@ -5,7 +5,7 @@ description: >
   MSIX, AppxManifest, MakeAppx, MSIX Packaging Tool, Package Bundles, App Attach,
   Package Support Framework, Package Identity, PackageFamilyName, PackageManager,
   スパースパッケージ, App Installer, サイドローディング, Windows App SDK Bootstrapper,
-  自己完結型デプロイ, SignTool, Azure Trusted Signing, 証明書, CI/CD 署名,
+  自己完結型デプロイ, SignTool, Azure Trusted Signing (Azure Artifact Signing), 証明書, CI/CD 署名,
   Partner Center, アプリ送信, 年齢レーティング, ストアリスティング, 段階的ロールアウト,
   StoreContext, msstore CLI, 認定プロセス, 分析レポート。
 user-invocable: false
@@ -25,86 +25,112 @@ skills/windows-packaging-publish/
   references/
     msix-packaging/
       README.md
-      msix-overview.md
-      package-structure.md
-      package-manifest-schema.md
-      vs-packaging-project.md
-      msix-packaging-tool.md
+      app-streaming-install.md
+      asset-packages.md
+      create-psf-fixup.md
+      differential-package-updates.md
+      framework-packages.md
       makeappx-cli.md
-      package-bundles-architecture.md
-      msix-app-attach.md
       modification-packages.md
+      msix-app-attach.md
+      msix-containerization-overview.md
+      msix-overview.md
+      msix-packaging-tool.md
       optional-packages.md
       package-asset-requirements.md
+      package-bundles-architecture.md
+      package-extensions-guide.md
+      package-manifest-schema.md
+      package-structure.md
       package-support-framework.md
+      resource-packages.md
+      single-project-msix.md
+      unsigned-package.md
+      vs-packaging-project.md
     package-identity/
       README.md
-      package-identity-overview.md
       apis-requiring-package-identity.md
+      detect-package-identity.md
+      get-activation-info-for-packaged-apps.md
+      integrate-packaged-app-with-file-explorer.md
       package-class.md
       package-id-class.md
+      package-identity-overview.md
       package-manager.md
-      sparse-packages-external-location.md
-      detect-package-identity.md
-      packaged-vs-unpackaged-behavior.md
       package-uninstall-update.md
+      packaged-vs-unpackaged-behavior.md
+      sparse-packages-external-location.md
     deployment/
       README.md
-      choose-distribution-path.md
       app-installer-file-overview.md
-      app-installer-update-settings.md
-      sideloading-prerequisites.md
       app-installer-troubleshooting.md
-      windows-app-sdk-deployment-architecture.md
+      app-installer-update-settings.md
+      choose-distribution-path.md
+      dotnet-deployment-models.md
+      enterprise-deployment-intune.md
+      enterprise-deployment-tools.md
+      gradual-package-rollout.md
+      sideloading-prerequisites.md
+      store-package-code-driven-update.md
+      windows-app-sdk-bootstrapper-api.md
       windows-app-sdk-deploy-packaged-apps.md
       windows-app-sdk-deploy-unpackaged-apps.md
-      windows-app-sdk-bootstrapper-api.md
+      windows-app-sdk-deployment-architecture.md
+      windows-app-sdk-runtime-version-management.md
       windows-app-sdk-self-contained-deploy.md
-      dotnet-deployment-models.md
-      gradual-package-rollout.md
-      enterprise-deployment-intune.md
     code-signing/
       README.md
-      msix-signing-requirements.md
+      azure-key-vault-signing.md
+      azure-trusted-signing.md
       certificate-types.md
+      cicd-signing.md
+      device-guard-signing.md
+      msix-signing-requirements.md
       self-signed-certificate.md
+      signing-troubleshooting.md
       signtool-sign.md
       signtool-timestamp.md
       signtool-verify.md
-      azure-trusted-signing.md
-      cicd-signing.md
-      device-guard-signing.md
-      signing-troubleshooting.md
+      smartscreen-reputation.md
     store-publish/
       README.md
-      developer-account.md
-      reserve-app-name.md
-      create-app-submission.md
-      pricing-and-availability.md
-      market-selection.md
-      visibility-options.md
-      app-properties.md
-      age-ratings.md
-      app-package-requirements.md
-      upload-app-packages.md
-      store-listings.md
-      screenshots-and-images.md
-      additional-information.md
-      app-certification-process.md
-      resolve-submission-errors.md
-      package-flights.md
-      gradual-package-rollout.md
-      msi-exe-publishing.md
-      store-context.md
-      store-product.md
-      submission-api-msix.md
-      submission-api-msi.md
-      msstore-cli.md
-      analytics-overview.md
       acquisitions-report.md
-      usage-report.md
+      add-on-submission.md
+      additional-information.md
+      age-ratings.md
+      analytics-overview.md
+      app-certification-process.md
+      app-package-requirements.md
+      app-performance-insights.md
+      app-properties.md
+      attract-and-promote.md
+      create-app-submission.md
+      developer-account.md
+      distribute-win32-app.md
+      gradual-package-rollout.md
       health-report.md
+      market-selection.md
+      msi-exe-publishing.md
+      msi-manual-package-validation.md
+      msstore-cli.md
+      package-flights.md
+      pricing-and-availability.md
+      publish-app-update.md
+      pwa-submission.md
+      ratings-reviews-report.md
+      remove-app-and-addon.md
+      reserve-app-name.md
+      resolve-submission-errors.md
+      screenshots-and-images.md
+      store-context.md
+      store-listings.md
       store-policies.md
+      store-product.md
+      submission-api-msi.md
+      submission-api-msix.md
+      upload-app-packages.md
+      usage-report.md
+      visibility-options.md
 ```
 
 ## 探索手順
@@ -125,9 +151,11 @@ skills/windows-packaging-publish/
 | パッケージ ID の5要素・PackageFamilyName・PackageFullName を理解したい | package-identity | [references/package-identity/README.md](references/package-identity/README.md) |
 | Package / PackageId / PackageManager クラスで実行時にパッケージ情報を取得・操作したい | package-identity | [references/package-identity/README.md](references/package-identity/README.md) |
 | スパースパッケージで非パッケージアプリにパッケージ ID を付与したい | package-identity | [references/package-identity/README.md](references/package-identity/README.md) |
+| パッケージ化デスクトップアプリに File Explorer コンテキストメニューを統合したい | package-identity | [references/package-identity/README.md](references/package-identity/README.md) |
 | Microsoft Store / サイドロード / 非パッケージ配布のどれを選ぶか判断したい | deployment | [references/deployment/README.md](references/deployment/README.md) |
 | App Installer ファイルで自動更新付きサイドローディングを構成したい | deployment | [references/deployment/README.md](references/deployment/README.md) |
 | Windows App SDK の Bootstrapper API・自己完結型デプロイ・Intune 配布を構成したい | deployment | [references/deployment/README.md](references/deployment/README.md) |
+| Windows App SDK ランタイムのインストール済みバージョン確認・削除を行いたい | deployment | [references/deployment/README.md](references/deployment/README.md) |
 | SignTool でパッケージに署名・タイムスタンプ・検証したい | code-signing | [references/code-signing/README.md](references/code-signing/README.md) |
 | 証明書の種類（自己署名 / OV / EV / Azure Trusted Signing）を選定したい | code-signing | [references/code-signing/README.md](references/code-signing/README.md) |
 | CI/CD パイプラインで自動署名を組み込みたい | code-signing | [references/code-signing/README.md](references/code-signing/README.md) |

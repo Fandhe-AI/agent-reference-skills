@@ -36,7 +36,7 @@ android {
 
 ## Notes
 
-- AGP 8.x requires JDK 17 to run; using a lower version fails with `Android Gradle plugin requires Java 17 to run. You are currently using Java 11.`
+- AGP 8.x and 9.x both require JDK 17 to run (unchanged through the current 9.3 release); using a lower version fails with `Android Gradle plugin requires Java 17 to run. You are currently using Java 11.`
 - Configure the Gradle JDK in Android Studio via **Settings > Build, Execution, Deployment > Build Tools > Gradle**; `GRADLE_LOCAL_JAVA_HOME` is the default for new projects and avoids requiring the project to already be open.
 - Match JDK versions between local machines and CI/CD to avoid inconsistent builds.
 - `compileSdk` determines available Java APIs independently of the JDK running the build (e.g. API 34 exposes Java 17 core libraries, API 33 exposes Java 11).

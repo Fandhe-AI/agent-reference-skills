@@ -32,7 +32,7 @@ SoftwareBitmap finalImage = imageScaler.ScaleSoftwareBitmap(softwareBitmap, targ
 
 ## Notes
 
-- Namespace: `Microsoft.Windows.AI.Imaging`.
+- Namespace: `Microsoft.Windows.AI.Imaging`. Distinct from `VideoScaler` (`Microsoft.Windows.AI.Video`, Video Super Resolution) — `ImageScaler` scales a single `SoftwareBitmap`, while `VideoScaler` upsamples real-time video frames (`VideoFrame`/`Direct3DSurface`).
 - Scaling is limited to a maximum factor of 8x; requesting a larger final width or height throws an exception.
 - Requires NPU hardware (Copilot+ PC); no GPU/CPU fallback currently.
 - Apps must be packaged as MSIX with the `systemAIModels` capability declared in `Package.appxmanifest`, and `MaxVersionTested` set to `10.0.26226.0` or later.
@@ -41,3 +41,4 @@ SoftwareBitmap finalImage = imageScaler.ScaleSoftwareBitmap(softwareBitmap, targ
 
 - [Device requirements and fallback](./device-requirements.md)
 - [ImageObjectExtractor](./image-object-extractor.md)
+- [VideoScaler](./video-scaler.md)

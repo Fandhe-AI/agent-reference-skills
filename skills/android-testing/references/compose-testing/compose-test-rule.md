@@ -1,6 +1,6 @@
 # ComposeTestRule
 
-JUnit4 `TestRule` that hosts Compose content under test and drives the semantics tree during a test. `createComposeRule()` creates a standalone rule; `createAndroidComposeRule<A>()` creates one backed by an `Activity` (needed to access the activity instance or for hybrid View/Compose apps).
+JUnit4 `TestRule` that hosts Compose content under test and drives the semantics tree during a test. `createComposeRule()` creates a standalone rule; `createAndroidComposeRule<A>()` creates one backed by an `Activity` (needed to access the activity instance or for hybrid View/Compose apps); `createEmptyComposeRule()` creates a rule with no host and no `setContent` at all, for tests where content is set by something else (e.g. the app's own launched Activity).
 
 ## Signature / Usage
 
@@ -8,6 +8,8 @@ JUnit4 `TestRule` that hosts Compose content under test and drives the semantics
 fun createComposeRule(): ComposeContentTestRule
 
 inline fun <reified A : ComponentActivity> createAndroidComposeRule(): AndroidComposeTestRule<ActivityScenarioRule<A>, A>
+
+fun createEmptyComposeRule(): ComposeTestRule
 
 interface ComposeContentTestRule : ComposeTestRule {
     fun setContent(composable: @Composable () -> Unit)
@@ -54,12 +56,15 @@ class MyComposeTest {
 
 - `createComposeRule()` requires no Activity; add `debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")` so a stub `ComponentActivity` can be launched to host content.
 - `createAndroidComposeRule<YourActivity>()` uses your own Activity, so `ui-test-manifest` is not needed; `setContent` calls your Activity's `setContent`.
+- `createEmptyComposeRule()` returns a bare `ComposeTestRule` (no `setContent` method at all) — use it when some other component (your own launched Activity, a Fragment, etc.) sets the Compose content and the rule is only needed for its idling/synchronization behavior.
 - `AndroidComposeTestRule<R : TestRule, A : ComponentActivity>` is the Android implementation of `ComposeContentTestRule`; it exposes `activity: A` for interacting with the hosting Activity.
 - Artifact: `androidx.compose.ui:ui-test-junit4` (and `androidx.compose.ui:ui-test-manifest` as `debugImplementation` when using `createComposeRule()`).
 - Test methods are automatically synchronized with Compose; see `synchronization.md` for `waitForIdle` / `mainClock` details.
+- The factories documented on this page (`androidx.compose.ui.test.junit4.createComposeRule`/`createAndroidComposeRule`/`createEmptyComposeRule`) are now `@Deprecated`. Google's official migration guide states migration to the v2 factory family (`androidx.compose.ui.test.junit4.v2.createComposeRule`/`createAndroidComposeRule`/`createEmptyComposeRule`, plus rule-free `runComposeUiTest`, which default to `StandardTestDispatcher` instead of this page's `UnconfinedTestDispatcher` behavior) is "strongly recommended" for new and existing tests. See compose-testing-v2.md.
 
 ## Related
 
 - [finders](./finders.md)
 - [synchronization](./synchronization.md)
 - [espresso-interop](./espresso-interop.md)
+- [compose-testing-v2](./compose-testing-v2.md)

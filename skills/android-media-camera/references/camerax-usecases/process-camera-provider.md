@@ -18,7 +18,22 @@ cameraProviderFuture.addListener({
 ```
 
 ```kotlin
+// Kotlin coroutine entry point (androidx.camera:camera-lifecycle 1.4.0+)
+lifecycleScope.launch {
+    val cameraProvider = ProcessCameraProvider.awaitInstance(context)
+    cameraProvider.bindToLifecycle(
+        this@MainActivity,
+        CameraSelector.DEFAULT_BACK_CAMERA,
+        preview,
+        imageCapture
+    )
+}
+```
+
+```kotlin
 fun getInstance(context: Context): ListenableFuture<ProcessCameraProvider>
+
+suspend fun ProcessCameraProvider.Companion.awaitInstance(context: Context): ProcessCameraProvider
 
 fun bindToLifecycle(
     lifecycleOwner: LifecycleOwner,
@@ -50,6 +65,7 @@ val availableCameraInfos: List<CameraInfo>
 
 ## Notes
 
+- `awaitInstance(context)` is a suspend extension on `ProcessCameraProvider.Companion` (`androidx.camera:camera-lifecycle` 1.4.0+) that wraps `getInstance(context).await()`; prefer it over the `ListenableFuture`/`addListener` pattern in Kotlin coroutine code.
 - Camera opens automatically when the lifecycle reaches `RESUMED` and closes on other transitions; no manual `onResume()`/`onPause()` calls needed.
 - Only one instance each of `Preview`, `VideoCapture`, `ImageAnalysis`, `ImageCapture` can be bound concurrently.
 - Call `unbindAll()` when the view and camera use cases have decoupled lifecycle owners (custom lifecycle, retained fragments).

@@ -61,3 +61,4 @@ class MyApplication : Application(), Configuration.Provider {
 - [WorkerFactory / DelegatingWorkerFactory](./worker-factory.md)
 - [Data / workDataOf / InputMerger](./data.md)
 - [Testing workers](./testing.md)
+- [Multiprocess WorkManager](./multiprocess.md)

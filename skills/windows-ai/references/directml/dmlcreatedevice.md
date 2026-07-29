@@ -49,7 +49,7 @@ DMLCreateDevice(
 
 - A newer overload, `DMLCreateDevice1`, was introduced in DirectML 1.1.0 and additionally takes a minimum `DML_FEATURE_LEVEL`; `DMLCreateDevice` is equivalent to calling it with `DML_FEATURE_LEVEL_1_0`.
 - `IDMLDevice` inherits from `IDMLObject`; it is thread-safe, and unlike the Direct3D 12 device is not a singleton (multiple DirectML devices can wrap the same D3D12 device, though there's little benefit to doing so since it has no mutable state).
-- `IDMLDevice1` (used with `CompileGraph`) extends `IDMLDevice` with graph-compilation and additional eviction/residency methods.
+- `IDMLDevice1` inherits from `IDMLDevice` and adds a single method, `CompileGraph`, for compiling a graph of DirectML operators into an object dispatchable to the GPU; it introduces no additional eviction/residency methods (`Evict`/`MakeResident` are already `IDMLDevice` methods).
 
 ## Related
 
@@ -60,3 +60,4 @@ DMLCreateDevice(
 - [IDMLBindingTable / DML_BINDING_DESC](./idmlbindingtable.md)
 - [IDMLCommandRecorder](./idmlcommandrecorder.md)
 - [DML_GRAPH_DESC / IDMLDevice1::CompileGraph](./graphs.md)
+- [Handling errors and device-removal in DirectML](./errors-and-device-removal.md)

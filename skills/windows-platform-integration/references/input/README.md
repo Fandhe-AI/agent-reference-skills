@@ -1,18 +1,20 @@
-# Input
+# input
 
 | Name | Description | Path |
-|------|-------------|------|
-| Pointer input | PointerPressed/Moved/Released, PointerRoutedEventArgs, PointerPoint, PointerPointProperties, CapturePointer | [pointer-input.md](./pointer-input.md) |
-| Keyboard input | KeyDown/KeyUp, KeyRoutedEventArgs, VirtualKey, CoreWindow differences | [keyboard-input.md](./keyboard-input.md) |
-| Keyboard accelerators | KeyboardAccelerator (Ctrl+key shortcuts) | [keyboard-accelerators.md](./keyboard-accelerators.md) |
-| Access keys | AccessKeyManager, AccessKey property, keytips (Alt+key navigation) | [access-keys.md](./access-keys.md) |
-| Focus manager | FocusManager, FocusState, GotFocus/LostFocus/GettingFocus/LosingFocus | [focus-manager.md](./focus-manager.md) |
-| XY focus | 2D directional (arrow key/D-pad) navigation, XYFocusKeyboardNavigation | [xy-focus.md](./xy-focus.md) |
-| Tab navigation | TabIndex, IsTabStop, TabFocusNavigation | [tab-navigation.md](./tab-navigation.md) |
-| Touch and gestures | GestureRecognizer, ManipulationStarted/Delta/Completed, ManipulationModes | [gesture-recognizer.md](./gesture-recognizer.md) |
-| InputActivationListener | Window/island activation state changes | [input-activation-listener.md](./input-activation-listener.md) |
-| InputPointerSource | Low-latency independent pointer input source (Microsoft.UI.Input) | [input-pointer-source.md](./input-pointer-source.md) |
-| InputKeyboardSource | Thread/window keyboard input and virtual-key state (Microsoft.UI.Input) | [input-keyboard-source.md](./input-keyboard-source.md) |
-| Pen and Windows Ink | InkPresenter, InkStrokeContainer, InkDrawingAttributes | [pen-and-ink.md](./pen-and-ink.md) |
-| Drag and drop | DragEnter/Drop, DataPackage, AllowDrop, CanDrag | [drag-and-drop.md](./drag-and-drop.md) |
-| Custom text input and IME | CoreTextEditContext | [text-input-ime.md](./text-input-ime.md) |
+| --- | --- | --- |
+| Access keys (AccessKeyManager) | Alt + alphanumeric shortcuts ("mnemonics") that move keyboard focus to specific UI, shown as "keytip" badges when Alt is pressed. | [access-keys.md](./access-keys.md) |
+| Drag and drop (DragEnter / Drop / DataPackage / AllowDrop / CanDrag) | Transfer data within or between apps using the standard press-hold-and-pan gesture, driven by the `CanDrag`/`AllowDrop` properties and `DataPackage`. | [drag-and-drop.md](./drag-and-drop.md) |
+| Focus manager (FocusManager, FocusState, GotFocus / LostFocus) | `FocusManager` provides static methods for programmatic focus navigation; `UIElement` exposes `GotFocus`/`LostFocus`/`GettingFocus`/`LosingFocus` routed events and the `FocusState` enum describes how an element was focused. | [focus-manager.md](./focus-manager.md) |
+| Touch and gestures (GestureRecognizer, ManipulationStarted/Delta/Completed, ManipulationModes) | `GestureRecognizer` interprets raw pointer input into taps, holds, and manipulations (pan/zoom/rotate) at the API level; `UIElement` exposes the same manipulation concepts as built-in routed events gated by `ManipulationMode`. | [gesture-recognizer.md](./gesture-recognizer.md) |
+| Haptic feedback (InputHapticsManager) | Triggers active haptic waveforms (`TrySendHapticWaveform`, `TrySendHapticWaveformForPlayCount`, `TryStopFeedback`, `KnownSimpleHapticsControllerWaveforms`) on haptics-capable mice, touchpads, and pens. | [haptic-feedback.md](./haptic-feedback.md) |
+| InputActivationListener | Observes changes to the input activation state (activated/deactivated) of a top-level window or `ContentIsland`. | [input-activation-listener.md](./input-activation-listener.md) |
+| InputKeyboardSource | Processes keyboard input and queries virtual-key state for the current thread, a top-level window, or a `ContentIsland` — used for modifier-key checks and low-level keyboard handling outside `UIElement.KeyDown`/`KeyUp`. | [input-keyboard-source.md](./input-keyboard-source.md) |
+| InputPane (on-screen touch keyboard) | Enables an app to receive notifications when the docked touch keyboard, or Soft Input Panel (SIP), is about to be shown or hidden, to determine which portion of the app window it obscures, and to programmatically request that it show or hide. `Windows.UI.ViewManagement.InputPane` is distinct from `CoreTextEditContext`, which handles the actual text/IME data flow for a custom edit control. | [input-pane.md](./input-pane.md) |
+| InputPointerSource | Reports low-latency pointer input and cursor handling for a top-level window, `ContentIsland`, or a `SwapChainPanel`'s independent input thread — used for custom/DirectX rendering surfaces outside the normal XAML `UIElement` pointer pipeline. | [input-pointer-source.md](./input-pointer-source.md) |
+| Keyboard accelerators (KeyboardAccelerator) | Shortcuts that invoke an app command (typically Ctrl + a letter/function key) via the `KeyboardAccelerator` object, without manually handling `KeyDown` events. | [keyboard-accelerators.md](./keyboard-accelerators.md) |
+| Keyboard input (KeyDown / KeyUp / KeyRoutedEventArgs / VirtualKey) | Handle keystrokes from hardware and software keyboards through the `UIElement.KeyDown` / `KeyUp` routed events and `KeyRoutedEventArgs`. | [keyboard-input.md](./keyboard-input.md) |
+| Pen and Windows Ink (InkPresenter, InkStrokeContainer, InkDrawingAttributes) | The Windows Ink platform captures pen (and optionally touch/mouse) input as digital ink strokes through the `InkCanvas` control and its code-behind `InkPresenter` object. | [pen-and-ink.md](./pen-and-ink.md) |
+| Pointer input (PointerPressed / PointerMoved / PointerReleased) | Handle pointer events (touch, mouse, pen/stylus, touchpad) through `UIElement` pointer event handlers and the `Microsoft.UI.Input.PointerPoint` object for extended properties. | [pointer-input.md](./pointer-input.md) |
+| Tab navigation (TabIndex, IsTabStop, TabFocusNavigation) | The Tab key cycles focus between all interactive controls in the app; `IsTabStop`, `TabIndex`, and `TabFocusNavigation` customize which elements participate and in what order. | [tab-navigation.md](./tab-navigation.md) |
+| Custom text input and IME (CoreTextEditContext) | Enables a custom (non-`TextBox`) edit control to receive text from any Windows text service — hardware/software keyboard, IME composition, speech, or handwriting — via `Windows.UI.Text.Core.CoreTextEditContext`. | [text-input-ime.md](./text-input-ime.md) |
+| XY focus (2D directional navigation) | Arrow-key / D-pad directional navigation between controls within a "directional area", controlled by `XYFocusKeyboardNavigation` and the `XYFocus*NavigationStrategy` properties. | [xy-focus.md](./xy-focus.md) |

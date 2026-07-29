@@ -50,6 +50,8 @@ skills/android-testing/
       androidtestorchestrator.md
       screenshot-testing.md
       gradle-managed-devices.md
+      test-stability.md
+      content-provider-testing.md
     espresso/
       README.md
       onview.md
@@ -67,6 +69,9 @@ skills/android-testing/
       custom-matchers-actions.md
       best-practices.md
       recipes.md
+      espresso-device.md
+      contrib-actions.md
+      multiprocess.md
     compose-testing/
       README.md
       compose-test-rule.md
@@ -82,6 +87,15 @@ skills/android-testing/
       screenshot-testing.md
       preview-screenshot-testing.md
       accessibility-testing.md
+      state-restoration-tester.md
+      device-configuration-override.md
+      compose-testing-v2.md
+    performance-testing/
+      README.md
+      compilation-mode.md
+      macrobenchmark-metrics.md
+      macrobenchmark-rule.md
+      microbenchmark-rule.md
 ```
 
 ## 探索手順
@@ -110,6 +124,9 @@ skills/android-testing/
 | `createComposeRule` / finder / `SemanticsMatcher` で Compose UI をテストしたい | compose-testing | [references/compose-testing/README.md](references/compose-testing/README.md) |
 | Compose のアサーション・アクション・テスト同期（`waitForIdle` 等）を制御したい | compose-testing | [references/compose-testing/README.md](references/compose-testing/README.md) |
 | Compose と Espresso/UiAutomator を相互運用したい、スクリーンショットテストを書きたい | compose-testing | [references/compose-testing/README.md](references/compose-testing/README.md) |
+| `MacrobenchmarkRule` で起動・スクロール・アニメーションの性能を計測したい | performance-testing | [references/performance-testing/README.md](references/performance-testing/README.md) |
+| `BenchmarkRule` でホットパスをマイクロベンチマークしたい | performance-testing | [references/performance-testing/README.md](references/performance-testing/README.md) |
+| `CompilationMode` / `Metric` で計測条件と取得指標を制御したい | performance-testing | [references/performance-testing/README.md](references/performance-testing/README.md) |
 | Hilt のテストをしたい | - | android-architecture スキルの担当 |
 | Room のテストをしたい | - | android-data スキルの担当 |
 | WorkManager のテストをしたい | - | android-background-work スキルの担当 |

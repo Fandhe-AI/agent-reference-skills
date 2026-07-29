@@ -28,14 +28,14 @@ Keyboard shortcuts (e.g. Ctrl+C) that let users invoke common actions or command
 | KeyboardAcceleratorPlacementMode | enum | `Auto` (show in tooltip/label) or `Hidden` |
 | KeyboardAcceleratorTextOverride | string | Overrides the accelerator text shown in a `MenuFlyoutItem` / `AppBarButton` label |
 
-## Notation and display convention
+### Notation and display convention
 
 - Accelerators are described as modifier(s) + key, joined by `+` (e.g. "Ctrl+Shift+M"), following `VirtualKeyModifiers` enum order.
 - For `Button`, `AppBarButton`, and `AppBarToggleButton`, the accelerator is appended to the control's default tooltip automatically.
 - For `MenuFlyoutItem` and `ToggleMenuFlyoutItem`, the accelerator is displayed with the flyout item's text instead of a tooltip.
 - Only the first accelerator is presented if a control has more than one.
 
-## Common keyboard accelerators
+### Common keyboard accelerators
 
 | Action | Accelerator |
 |------|-------------|

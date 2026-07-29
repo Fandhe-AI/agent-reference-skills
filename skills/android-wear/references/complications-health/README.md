@@ -1,21 +1,24 @@
-# complications-health
+# Complications & Health
 
 | Name | Description | Path |
 |------|-------------|------|
-| ComplicationDataSourceService | Base Service that supplies data to watch face complications (onComplicationRequest, getPreviewData, manifest metadata). | [complicationdatasourceservice.md](./complicationdatasourceservice.md) |
-| ShortTextComplicationData | Complication data type for a short (≤7 char) piece of text. | [shorttextcomplicationdata.md](./shorttextcomplicationdata.md) |
-| LongTextComplicationData | Complication data type for longer, unbounded text. | [longtextcomplicationdata.md](./longtextcomplicationdata.md) |
-| RangedValueComplicationData | Complication data type for a numeric value within a range (e.g. percentage, gauge). | [rangedvaluecomplicationdata.md](./rangedvaluecomplicationdata.md) |
-| MonochromaticImageComplicationData | Complication data type for a single-color, tintable icon. | [monochromaticimagecomplicationdata.md](./monochromaticimagecomplicationdata.md) |
-| SmallImageComplicationData | Complication data type for a small, full-color image. | [smallimagecomplicationdata.md](./smallimagecomplicationdata.md) |
-| NoDataComplicationData | Sent when a data source has no data to display, optionally with a placeholder. | [nodatacomplicationdata.md](./nodatacomplicationdata.md) |
-| PlainComplicationText / TimeDifferenceComplicationText | Static text and live time-difference text for ComplicationData fields. | [complicationtext.md](./complicationtext.md) |
-| ComplicationDataSourceUpdateRequester | Requests an immediate on-demand update instead of waiting for the poll interval. | [complicationdatasourceupdaterequester.md](./complicationdatasourceupdaterequester.md) |
-| HealthServicesClient | Entry point exposing ExerciseClient / MeasureClient / PassiveMonitoringClient. | [healthservicesclient.md](./healthservicesclient.md) |
-| MeasureClient | Live foreground callbacks for frequently-sampled data such as heart rate. | [measureclient.md](./measureclient.md) |
-| ExerciseClient | Starts, pauses, resumes, and ends tracked exercises; delivers ExerciseUpdate callbacks. | [exerciseclient.md](./exerciseclient.md) |
-| PassiveMonitoringClient | Long-running background monitoring via callback or PassiveListenerService. | [passivemonitoringclient.md](./passivemonitoringclient.md) |
-| DataType | Typed identifier for a category of health/fitness data (HEART_RATE_BPM, STEPS, CALORIES, DISTANCE, ...). | [datatype.md](./datatype.md) |
-| DataPointContainer / SampleDataPoint / IntervalDataPoint | Container and data point types delivered by measure/passive callbacks. | [datapointcontainer.md](./datapointcontainer.md) |
-| Health Services Permissions | Required runtime permissions (BODY_SENSORS, ACTIVITY_RECOGNITION, ACCESS_FINE_LOCATION, etc.) per DataType. | [healthservicespermissions.md](./healthservicespermissions.md) |
-| Simulating Health Services Data | adb commands and emulator sensor panel for synthetic sensor/exercise data. | [healthservicessimulation.md](./healthservicessimulation.md) |
+| ComplicationDataSourceService | Base `Service` class that a complication data source app implements to supply data to watch face complications. The system binds to it and calls back for live data and preview content. | [complicationdatasourceservice.md](./complicationdatasourceservice.md) |
+| ComplicationDataSourceUpdateRequester | Requests that the system immediately call back into a `ComplicationDataSourceService` for updated data, instead of waiting for the manifest's `UPDATE_PERIOD_SECONDS` poll interval. | [complicationdatasourceupdaterequester.md](./complicationdatasourceupdaterequester.md) |
+| DataPointContainer / SampleDataPoint / IntervalDataPoint | Container delivered by `MeasureCallback.onDataReceived` / `PassiveListenerCallback.onNewDataPointsReceived`, holding type-safe access to the individual `DataPoint`s received for each `DataType`. | [datapointcontainer.md](./datapointcontainer.md) |
+| DataType | Typed identifier for a category of health/fitness data managed by Health Services, used to request and read data from `MeasureClient`, `ExerciseClient`, and `PassiveMonitoringClient`. | [datatype.md](./datatype.md) |
+| DebouncedGoal | A goal for instantaneous, sample-based metrics (heart rate, speed, etc.) that only triggers once the threshold has been crossed continuously for a configured duration, avoiding repeated alerts from a value that flickers around the threshold. | [debouncedgoal.md](./debouncedgoal.md) |
+| ExerciseClient | Controls exercise tracking: starting, pausing, resuming, and ending workouts, and receiving state, metric, and goal updates via `ExerciseUpdateCallback`. | [exerciseclient.md](./exerciseclient.md) |
+| ExerciseEvent | Notifies the app when a discrete event occurs during an exercise (e.g. a golf shot), delivered out of band and with lower latency than the periodic `onExerciseUpdateReceived` metric stream. | [exerciseevent.md](./exerciseevent.md) |
+| Health Services Capabilities | Device/OEM capability checks via `ExerciseClient.getCapabilitiesAsync()` / `ExerciseTypeCapabilities` and `PassiveMonitoringClient.getCapabilitiesAsync()` / `PassiveMonitoringCapabilities`, used before requesting exercise or passive-monitoring data types. | [healthservicescapabilities.md](./healthservicescapabilities.md) |
+| Health Services Permissions | Runtime permissions required to read specific `DataType`s through `MeasureClient`, `ExerciseClient`, and `PassiveMonitoringClient`. | [healthservicespermissions.md](./healthservicespermissions.md) |
+| HealthServicesClient | Entry point for Health Services on Wear OS. Exposes the `ExerciseClient`, `MeasureClient`, and `PassiveMonitoringClient` used to read fitness and health sensor data. | [healthservicesclient.md](./healthservicesclient.md) |
+| LongTextComplicationData | Complication data type whose primary content is a longer piece of text, with no strict character limit (unlike `ShortTextComplicationData`). | [longtextcomplicationdata.md](./longtextcomplicationdata.md) |
+| MeasureClient | Registers live callbacks for frequently-sampled health data (e.g. heart rate) while the app is in the foreground. Not suitable for workout tracking — use `ExerciseClient` for that. | [measureclient.md](./measureclient.md) |
+| MonochromaticImageComplicationData | Complication data type for a single-color image that watch faces can tint according to their own styling. | [monochromaticimagecomplicationdata.md](./monochromaticimagecomplicationdata.md) |
+| NoDataComplicationData | Complication data type that can be sent by any complication data source, regardless of its configured type, when it has no data to display. | [nodatacomplicationdata.md](./nodatacomplicationdata.md) |
+| PassiveMonitoringClient | Registers long-running background monitoring of Health Services data, independent of the app's lifecycle and of any active exercise session. | [passivemonitoringclient.md](./passivemonitoringclient.md) |
+| PlainComplicationText / TimeDifferenceComplicationText | `ComplicationText` implementations used as the `text`/`title`/`contentDescription` of `ComplicationData` builders: static plain text, and text that renders a live time difference without polling. | [complicationtext.md](./complicationtext.md) |
+| RangedValueComplicationData | Complication data type for a numerical value within a range, such as a percentage or a battery/goal gauge. | [rangedvaluecomplicationdata.md](./rangedvaluecomplicationdata.md) |
+| ShortTextComplicationData | Complication data type whose primary content is a short piece of text, expected to be no more than seven characters in length. | [shorttextcomplicationdata.md](./shorttextcomplicationdata.md) |
+| Simulating Health Services Data | `adb` commands and the Android Studio emulator's Wear Health Services sensor panel, used to generate synthetic sensor data for testing Health Services integrations without a real workout. | [healthservicessimulation.md](./healthservicessimulation.md) |
+| SmallImageComplicationData | Complication data type that shows a small, full-color image (as opposed to the tintable single-color `MonochromaticImage`). | [smallimagecomplicationdata.md](./smallimagecomplicationdata.md) |

@@ -48,4 +48,4 @@ fun MyApp() {
 - [NavBackStack](./navbackstack.md)
 - [NavEntry](./naventry.md)
 - [NavDisplay](./navdisplay.md)
-- `../deep-links/navigation3-deep-links.md`
+- [Deep Links in Navigation 3](../deep-links/navigation3-deep-links.md)

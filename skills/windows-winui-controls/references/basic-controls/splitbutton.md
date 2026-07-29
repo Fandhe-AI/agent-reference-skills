@@ -31,10 +31,11 @@ A button with two parts that can be invoked separately: one side behaves like a 
 
 - Package: `Microsoft.UI.Xaml.Controls` (WinUI 3). Inherits directly from `ContentControl`, not `Button`.
 - With touch input, both halves invoke the flyout (drop-down-button behavior); with mouse/keyboard, the two halves can be invoked separately.
-- The `ToggleSplitButton` control (derived class, two-state variant of `SplitButton`) is available but not part of this scope.
+- `ToggleSplitButton` (derived class, two-state variant of `SplitButton`) is documented separately.
 - Set `SingleSelectionFollowsFocus="False"` on list/grid controls used inside the flyout so keyboard navigation works without prematurely invoking the item.
 
 ## Related
 
+- [ToggleSplitButton](./togglesplitbutton.md)
 - [DropDownButton](./dropdownbutton.md)
 - [Button](./button.md)

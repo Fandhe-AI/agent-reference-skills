@@ -44,3 +44,6 @@ Declares an `Activity` component within `<application>` and its window/behavior 
 
 - [application element](./application-element.md)
 - [queries element](./queries-element.md)
+- [activity-alias element](./activity-alias-element.md)
+- [action / category / data elements](./action-category-data-elements.md)
+- [meta-data element](./meta-data-element.md)

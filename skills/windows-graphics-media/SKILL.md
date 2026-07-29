@@ -4,7 +4,7 @@ description: >
   Windows アプリ開発 (DirectX / WinRT メディア) のグラフィックス・メディア API リファレンス。
   Direct2D (ID2D1Factory, ID2D1DeviceContext, ID2D1Bitmap1, ID2D1Effect, ID2D1PathGeometry),
   DirectWrite (IDWriteFactory, IDWriteTextLayout, DWriteCore), Direct3D 11/12
-  (D3D11CreateDevice, DXGI SwapChain, HLSL, D3D12 PipelineState), Windows.UI.Composition
+  (D3D11CreateDevice, DXGI SwapChain, HLSL, D3D12 PipelineState), Microsoft.UI.Composition
   (Compositor, Visual, ExpressionAnimation, InteractionTracker, MicaController),
   カメラ・画面キャプチャ (MediaCapture, MediaFrameReader, GraphicsCaptureSession,
   Windows Studio Effects)、音声・動画再生 (MediaPlayer, MediaPlaybackSession,
@@ -16,7 +16,7 @@ user-invocable: false
 
 Windows アプリの描画・合成・カメラ・音声動画再生に関する公式ドキュメントを蒸留したリファレンス。
 Direct2D/DirectWrite によるベクター描画とテキストレイアウト、Direct3D 11/12 による低レベル GPU 描画、
-Windows.UI.Composition による合成ビジュアル層、MediaCapture によるカメラ/画面キャプチャ、
+Microsoft.UI.Composition による合成ビジュアル層、MediaCapture によるカメラ/画面キャプチャ、
 Windows.Media.Playback 系による音声・動画再生を扱う。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
@@ -28,98 +28,135 @@ skills/windows-graphics-media/
   references/
     direct2d-directwrite/
       README.md
-      id2d1factory.md
-      id2d1factory1.md
-      id2d1device.md
-      id2d1devicecontext.md
-      id2d1rendertarget.md
-      id2d1bitmap1.md
-      id2d1solidcolorbrush.md
-      id2d1lineargradientbrush.md
-      id2d1geometry.md
-      id2d1pathgeometry.md
-      id2d1geometrysink.md
-      id2d1strokestyle.md
-      id2d1effect.md
       d2d1createfactory.md
       direct2d-direct3d-interop.md
-      wic-interop.md
-      idwritefactory.md
-      idwritetextformat.md
-      idwritetextlayout.md
-      idwritefontcollection.md
       dwrite-text-metrics.md
       dwritecore.md
+      id2d1bitmap1.md
+      id2d1bitmapbrush.md
+      id2d1commandlist.md
+      id2d1device.md
+      id2d1devicecontext.md
+      id2d1effect.md
+      id2d1factory.md
+      id2d1factory1.md
+      id2d1geometry.md
+      id2d1geometrysink.md
+      id2d1layer.md
+      id2d1lineargradientbrush.md
+      id2d1pathgeometry.md
+      id2d1radialgradientbrush.md
+      id2d1rendertarget.md
+      id2d1solidcolorbrush.md
+      id2d1strokestyle.md
+      id2d1svgdocument.md
+      idwritefactory.md
+      idwritefontcollection.md
+      idwritefontface.md
+      idwritetextformat.md
+      idwritetextlayout.md
+      wic-interop.md
     direct3d-directx/
       README.md
-      dxgi-factory-adapter.md
-      dxgi-swap-chain.md
+      d3d11-blend-rasterizer.md
+      d3d11-compute-shader.md
+      d3d11-depth-stencil.md
       d3d11-device-context.md
       d3d11-resources.md
+      d3d11-sampler-srv.md
       d3d11-shaders-drawing.md
+      d3d12-barriers-descriptors.md
+      d3d12-enhanced-barriers.md
       d3d12-overview.md
-      hlsl-shader-compilation.md
-      directx-xaml-composition.md
+      d3d12-raytracing.md
+      directcomposition.md
       directx-winui3-integration.md
+      directx-xaml-composition.md
+      dxgi-factory-adapter.md
+      dxgi-swap-chain.md
+      hlsl-shader-compilation.md
     composition-visuals/
       README.md
+      animation-controller.md
+      composition-drawing-surface.md
+      composition-effect-brush.md
+      composition-gradient-brush.md
+      composition-light.md
+      composition-property-set.md
+      composition-surface-brush.md
       compositor.md
-      visual.md
       container-visual.md
-      sprite-visual.md
+      desktop-acrylic-controller.md
+      drop-shadow.md
       element-composition-preview.md
       expression-animation.md
       implicit-animation-collection.md
-      composition-effect-brush.md
       interaction-tracker.md
-      visual-interaction-source.md
-      composition-surface-brush.md
+      key-frame-animation.md
+      layer-visual.md
       loaded-image-surface.md
       mica-controller.md
-      desktop-acrylic-controller.md
+      natural-motion-animation.md
+      shape-visual.md
+      sprite-visual.md
+      visual-interaction-source.md
+      visual.md
     camera-capture/
       README.md
-      media-capture.md
-      media-capture-initialization-settings.md
+      advanced-photo-capture.md
+      camera-capabilities-privacy.md
       camera-capture-ui.md
-      low-lag-photo-capture.md
-      low-lag-media-recording.md
-      media-frame-reader.md
-      media-frame-source-group.md
-      device-enumeration.md
-      video-device-controller.md
+      camera-profiles.md
       camera-stream-state.md
+      device-enumeration.md
+      direct3d11-capture-frame-pool.md
+      face-detector.md
+      face-tracker.md
       graphics-capture-item.md
       graphics-capture-picker.md
-      direct3d11-capture-frame-pool.md
       graphics-capture-session.md
-      camera-capabilities-privacy.md
+      low-lag-media-recording.md
+      low-lag-photo-capture.md
+      media-capture-initialization-settings.md
+      media-capture.md
+      media-frame-reader.md
+      media-frame-source-group.md
+      scene-analysis-face-detection-effects.md
+      software-bitmap.md
+      variable-photo-sequence.md
+      video-device-controller.md
       windows-studio-effects.md
     audio-video-playback/
       README.md
-      media-player.md
-      media-playback-session.md
+      adaptive-media-source.md
+      audio-device-output-node.md
+      audio-file-input-node.md
+      audio-frame-input-node.md
+      audio-graph.md
+      audio-state-monitor.md
+      custom-video-audio-effects.md
+      drm-playready.md
+      media-binder.md
+      media-break-manager.md
+      media-capture-integration.md
+      media-clip.md
+      media-composition.md
       media-playback-command-manager.md
-      system-media-transport-controls.md
-      media-player-element.md
-      media-transport-controls.md
-      media-source.md
       media-playback-item.md
       media-playback-list.md
-      media-binder.md
-      adaptive-media-source.md
+      media-playback-session.md
+      media-player-element.md
+      media-player-surface.md
+      media-player.md
+      media-source.md
       media-timeline-controller.md
-      timed-text-source.md
-      timed-metadata-track.md
-      media-composition.md
-      media-clip.md
       media-transcoder.md
-      audio-graph.md
-      audio-file-input-node.md
-      audio-device-output-node.md
-      audio-frame-input-node.md
-      media-capture-integration.md
-      drm-playready.md
+      media-transport-controls.md
+      midi-services.md
+      midi.md
+      system-media-transport-controls.md
+      timed-metadata-track.md
+      timed-text-source.md
 ```
 
 ## 探索手順
@@ -150,4 +187,4 @@ skills/windows-graphics-media/
 | AdaptiveMediaSource / DRM でストリーミング再生や保護コンテンツを扱いたい | audio-video-playback | [references/audio-video-playback/README.md](references/audio-video-playback/README.md) |
 | AudioGraph / MediaTranscoder / MediaComposition で音声処理・動画編集をしたい | audio-video-playback | [references/audio-video-playback/README.md](references/audio-video-playback/README.md) |
 
-このスキルは DirectX (Direct2D/DirectWrite/Direct3D)、Windows.UI.Composition、WinRT メディア (カメラキャプチャ・音声動画再生) の API のみを扱う。コントロール UI は windows-winui-controls、レイアウト・スタイリング等の一般 UI は windows-winui-ui、Windows App SDK 全体像は windows-app-sdk が担当する。
+このスキルは DirectX (Direct2D/DirectWrite/Direct3D)、Microsoft.UI.Composition、WinRT メディア (カメラキャプチャ・音声動画再生) の API のみを扱う。コントロール UI は windows-winui-controls、レイアウト・スタイリング等の一般 UI は windows-winui-ui、Windows App SDK 全体像は windows-app-sdk が担当する。

@@ -30,10 +30,11 @@ WFF's expression language drives `<Transform>` values, `<Condition>` branches, a
 - This is the Wear OS Watch Face Format / watch face API — distinct from the same-named concept in other skills.
 - Expressions re-evaluate whenever any referenced data source updates; prefer data sources that change as infrequently as possible (e.g. `[AMPM_STATE]` over `[SECONDS_IN_DAY] > 43200`) to minimize re-evaluation cost.
 - `<Condition>` expressions must be wrapped in `<![CDATA[ ... ]]>` to avoid XML entity-escaping issues with `<`/`>`/`&`.
-- Weather-related data sources (current and forecast conditions) were added in WFF v2 (see [versions](./versions.md)).
+- Weather-related data sources (current and forecast conditions) were added in WFF v2 (see [versions](./versions.md) and [weather](./weather.md) for the full `[WEATHER.*]` vocabulary).
 
 ## Related
 
 - [transform](./transform.md)
 - [user-configurations](./user-configurations.md)
 - [complications](./complications.md)
+- [weather](./weather.md)

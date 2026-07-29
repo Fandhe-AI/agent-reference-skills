@@ -46,7 +46,7 @@ fun takePicture(jpegOutputFileOptions: OutputFileOptions, rawOutputFileOptions: 
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `captureMode` | `Int` | `CAPTURE_MODE_MINIMIZE_LATENCY` | `CAPTURE_MODE_MAXIMIZE_QUALITY` (0), `CAPTURE_MODE_MINIMIZE_LATENCY` (1), `CAPTURE_MODE_ZERO_SHUTTER_LAG` (2). |
+| `captureMode` | `Int` | `CAPTURE_MODE_MINIMIZE_LATENCY` | `CAPTURE_MODE_MAXIMIZE_QUALITY` (0), `CAPTURE_MODE_MINIMIZE_LATENCY` (1), `CAPTURE_MODE_ZERO_SHUTTER_LAG` (2, see Zero-Shutter Lag). |
 | `flashMode` | `Int` | `FLASH_MODE_OFF` | `FLASH_MODE_AUTO` (0), `FLASH_MODE_ON` (1), `FLASH_MODE_OFF` (2), `FLASH_MODE_SCREEN` (3). |
 | `targetRotation` | `Int` | display rotation | `Surface.ROTATION_*`; also updatable at runtime via `imageCapture.targetRotation`. |
 | `jpegQuality` | `Int` | — | 1–100 JPEG compression quality. |
@@ -65,3 +65,4 @@ fun takePicture(jpegOutputFileOptions: OutputFileOptions, rawOutputFileOptions: 
 - [ImageAnalysis](./image-analysis.md)
 - [Orientation and rotation](./orientation-rotation.md)
 - [CameraController](./camera-controller.md)
+- [Zero-Shutter Lag](./zero-shutter-lag.md)

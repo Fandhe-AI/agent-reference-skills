@@ -35,3 +35,4 @@ Affected APIs removed/changed: `System.IO.WindowsRuntimeStorageExtensions`, `Sys
 - [C#/WinRT Overview](./overview.md)
 - [Microsoft.Windows.SDK.NET.Ref and TargetFramework](./sdk-net-ref-targetframework.md)
 - [Calling Asynchronous WinRT APIs from .NET](./async-operations.md)
+- [Generate a C# Projection from a C++/WinRT Component](./net-projection-from-cppwinrt-component.md)

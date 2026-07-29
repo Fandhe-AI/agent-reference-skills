@@ -61,3 +61,4 @@ entryProvider = { key ->
 
 - [NavEntry](./naventry.md)
 - [NavDisplay](./navdisplay.md)
+- [Modularize Navigation 3 Code](./modularize.md)

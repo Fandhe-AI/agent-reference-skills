@@ -57,3 +57,4 @@ if (loading) {
 
 - [CircularProgressIndicator](./circularprogressindicator.md)
 - [LoadingIndicator](./loadingindicator.md)
+- [LinearWavyProgressIndicator](./linearwavyprogressindicator.md)

@@ -59,3 +59,5 @@ var result = await languageModel.GenerateResponseAsync(prompt, options);
 - [LanguageModel](./language-model.md)
 - [Content moderation](./content-moderation.md)
 - [Phi Silica LoRA fine-tuning](./phi-silica-lora.md)
+- [Generate structured JSON output with Phi Silica](./phi-silica-structured-output.md)
+- [Language Model best practices](./language-model-best-practices.md)

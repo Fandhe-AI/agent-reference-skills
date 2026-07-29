@@ -48,5 +48,6 @@ public sealed class EntranceThemeTransition : Transition
 
 - [RepositionThemeTransition](./reposition-theme-transition.md)
 - [AddDeleteThemeTransition](./add-delete-theme-transition.md)
+- [Theme Transitions](./theme-transitions.md)
 - [Transitions Property](./transitions-property.md)
 - [Theme Animations](./theme-animations.md)

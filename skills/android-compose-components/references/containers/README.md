@@ -1,20 +1,21 @@
 # containers
 
-> This is the Jetpack Compose (Kotlin, `androidx.compose.material3`) API — distinct from the same-named SwiftUI / Ark UI / Chakra UI / fandhe-frontend components.
-
 | Name | Description | Path |
 |------|-------------|------|
-| Card | Filled container for a single coherent piece of content (with ElevatedCard/OutlinedCard style variants). | [card.md](./card.md) |
-| Scaffold | Basic Material layout structure coordinating top bar, bottom bar, FAB, and snackbar host. | [scaffold.md](./scaffold.md) |
-| Surface | Central Material container metaphor providing elevation, tonal color, and shadow. | [surface.md](./surface.md) |
-| ListItem | Vertical index row combining leading/trailing content with headline, overline, and supporting text. | [listitem.md](./listitem.md) |
-| Divider | Thin line grouping content, as HorizontalDivider / VerticalDivider. | [divider.md](./divider.md) |
-| ModalBottomSheet | Modal bottom sheet overlaying content with a scrim until dismissed. | [modalbottomsheet.md](./modalbottomsheet.md) |
-| BottomSheetScaffold | Standard bottom sheet that co-exists with the screen's main content. | [bottomsheetscaffold.md](./bottomsheetscaffold.md) |
-| ModalNavigationDrawer | Slide-in navigation drawer over app content (with Dismissible/Permanent variants). | [navigationdrawer.md](./navigationdrawer.md) |
-| AlertDialog | Material-themed dialog with predefined icon/title/text/button slots (with BasicAlertDialog variant). | [alertdialog.md](./alertdialog.md) |
-| Dialog | Unstyled dialog container for fully custom content (`androidx.compose.ui.window`). | [dialog.md](./dialog.md) |
-| HorizontalMultiBrowseCarousel | Scrollable carousel showing many differently-sized items (with HorizontalUncontainedCarousel variant). | [carousel.md](./carousel.md) |
-| SwipeToDismissBox | Container dismissible by swiping content left or right. | [swipetodismissbox.md](./swipetodismissbox.md) |
-| PullToRefreshBox | Container adding pull-down-to-refresh gesture support to scrollable content. | [pulltorefreshbox.md](./pulltorefreshbox.md) |
-| TooltipBox | Wraps a composable with a hover/long-press tooltip (PlainTooltip / RichTooltip). | [tooltipbox.md](./tooltipbox.md) |
+| AlertDialog | Material Design themed dialog that provides important prompts… | [alertdialog.md](./alertdialog.md) |
+| BottomSheetScaffold | Standard bottom sheet that co-exists with the screen's main UI… | [bottomsheetscaffold.md](./bottomsheetscaffold.md) |
+| Card | Filled card that contains content and actions relating to a single… | [card.md](./card.md) |
+| HorizontalMultiBrowseCarousel | Horizontal carousel that displays many differently-sized items… | [carousel.md](./carousel.md) |
+| Dialog | A basic, unstyled composable container for fully custom dialog… | [dialog.md](./dialog.md) |
+| Divider | A thin line that groups content in lists and layouts. Provided… | [divider.md](./divider.md) |
+| ListItem | A continuous, vertical index row combining leading/trailing… | [listitem.md](./listitem.md) |
+| ModalBottomSheet | Modal bottom sheet that appears above app content, disabling… | [modalbottomsheet.md](./modalbottomsheet.md) |
+| ModalNavigationDrawer | Modal navigation drawer that slides in over app content and… | [navigationdrawer.md](./navigationdrawer.md) |
+| Modifier.nonInteractiveScrollbar | A visual-only scrollbar `Modifier` that draws the current scroll… | [noninteractivescrollbar.md](./noninteractivescrollbar.md) |
+| PullToRefreshBox | A container that expects a scrollable layout as content and adds… | [pulltorefreshbox.md](./pulltorefreshbox.md) |
+| Scaffold | Implements the basic Material Design visual layout structure,… | [scaffold.md](./scaffold.md) |
+| SegmentedListItem | A `ListItem` variant whose base shape is derived from its index… | [segmentedlistitem.md](./segmentedlistitem.md) |
+| Surface | The central container metaphor in Material Design: a piece of… | [surface.md](./surface.md) |
+| SwipeToDismissBox | A composable that can be dismissed by swiping its content left… | [swipetodismissbox.md](./swipetodismissbox.md) |
+| TooltipBox | Wraps a composable with a tooltip that provides a descriptive… | [tooltipbox.md](./tooltipbox.md) |
+| VerticalDragHandle | A standalone, capsule-shaped drag handle used to let the user… | [verticaldraghandle.md](./verticaldraghandle.md) |

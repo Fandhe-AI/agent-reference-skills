@@ -66,7 +66,7 @@ Windows.ApplicationModel.Resources.Core         -> Microsoft.Windows.Application
 
 - `Windows.UI.Xaml.*` maps to `Microsoft.UI.Xaml.*` (WinUI 3) — this is a distinct namespace/API from `System.Windows.Controls.*` (WPF) and `System.Windows.Forms.*` (WinForms); do not mix them when porting code.
 - If your namespace/class member isn't listed here, first search by member name, then by class name, then by namespace — an unlisted item means only a straightforward namespace rename is required.
-- For a condensed quick-reference substitution table intended for AI-assisted migration, see "Migrate a UWP app to WinUI 3 with AI assistance" (outside this skill's scope).
+- For a condensed quick-reference substitution table intended for AI-assisted migration (plus agent-specific gotchas like `x:Bind` defaulting to `OneTime`), see [AI-assisted migration](./ai-assisted-migration.md).
 
 ## Related
 

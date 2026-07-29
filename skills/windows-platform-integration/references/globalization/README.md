@@ -1,19 +1,20 @@
 # globalization
 
 | Name | Description | Path |
-|------|-------------|------|
-| ApplicationLanguages | App/user language preferences: `Languages`, `ManifestLanguages`, `PrimaryLanguageOverride` | [application-languages.md](./application-languages.md) |
-| Language | BCP-47 language tag info: display name, native name, script, layout direction | [language.md](./language.md) |
-| Calendar | Calendar/clock-aware date-time component manipulation | [calendar.md](./calendar.md) |
-| GeographicRegion | Region info: codes, display/native name, currencies in use | [geographic-region.md](./geographic-region.md) |
-| ClockIdentifiers | Static 12-hour / 24-hour clock identifier constants | [clock-identifiers.md](./clock-identifiers.md) |
-| CurrencyIdentifiers | Static ISO 4217 currency identifier constants | [currency-identifiers.md](./currency-identifiers.md) |
-| DecimalFormatter | Locale-aware decimal number formatting/parsing | [decimal-formatter.md](./decimal-formatter.md) |
-| CurrencyFormatter | Locale-aware currency formatting/parsing | [currency-formatter.md](./currency-formatter.md) |
-| PercentFormatter | Locale-aware percent/permille formatting/parsing | [percent-formatter.md](./percent-formatter.md) |
-| DateTimeFormatter | Template/pattern-based date and time formatting | [date-time-formatter.md](./date-time-formatter.md) |
-| Resources File (.resw) and ResourceLoader | String localization via .resw, x:Uid, and ResourceLoader | [resource-loader-resw.md](./resource-loader-resw.md) |
-| Resource qualifiers | language-*, scale-*, contrast-*, theme, and other resource qualifiers | [resource-qualifiers.md](./resource-qualifiers.md) |
-| Bidirectional text and RTL (FlowDirection) | RTL layout support via FrameworkElement.FlowDirection | [bidirectional-text.md](./bidirectional-text.md) |
-| Package manifest language declarations | User profile / app manifest / app runtime language lists | [package-manifest-languages.md](./package-manifest-languages.md) |
-| Multilingual App Toolkit (MAT) | Deprecated XLIFF-based translation tooling for .resw files | [multilingual-app-toolkit.md](./multilingual-app-toolkit.md) |
+| --- | --- | --- |
+| ApplicationLanguages | Specifies the language-related preferences that the app can use and maintain: the user's runtime language list, the app's manifest-declared languages, and a persisted primary-language override. | [application-languages.md](./application-languages.md) |
+| Bidirectional text and RTL (FlowDirection) | Guidance and API for supporting right-to-left (RTL) reading order — for languages such as Arabic and Hebrew — via the `FrameworkElement.FlowDirection` property, plus mirroring of images and layouts. | [bidirectional-text.md](./bidirectional-text.md) |
+| Calendar | Manipulates the representation of a `DateTime` within a given calendar system (e.g. Gregorian, Japanese, Hijri) and clock (12-hour or 24-hour). | [calendar.md](./calendar.md) |
+| ClockIdentifiers | Static class containing the clock identifiers for the supported clocks, for use anywhere a clock identifier string is required (e.g. `Calendar.ChangeClock`, `DateTimeFormatter` constructors). | [clock-identifiers.md](./clock-identifiers.md) |
+| CurrencyFormatter | Formats and parses currency amounts, choosing between currency symbol or currency code display. | [currency-formatter.md](./currency-formatter.md) |
+| CurrencyIdentifiers | Static class containing currency identifiers for all supported currencies, exposed as static string properties keyed by ISO 4217 currency code (e.g. `USD`, `JPY`, `EUR`). Used with `CurrencyFormatter` and `CurrencyAmount`. | [currency-identifiers.md](./currency-identifiers.md) |
+| DateTimeFormatter | Formats dates and times for a given language, calendar, and clock, using either a **format template** (component names such as `shortdate`, `longtime`) or a **format pattern** (explicit field placeholders such as `{month.integer}/{day.integer}/{year.full}`). | [date-time-formatter.md](./date-time-formatter.md) |
+| DecimalFormatter | Formats and parses decimal numbers according to the user's or specified languages and geographic region. | [decimal-formatter.md](./decimal-formatter.md) |
+| GeographicRegion | Describes a region, usually a country but possibly a macroregion. Provides its identifiers, display/native names, and the currencies in use there. | [geographic-region.md](./geographic-region.md) |
+| Language | Provides information related to a BCP-47 language tag, such as its display name, native name, script, and layout direction. | [language.md](./language.md) |
+| Multilingual App Toolkit (MAT) | A Visual Studio extension that helped manage translation of `.resw` string resources via the industry-standard XLIFF format. **Deprecated**: reached end-of-support on October 15, 2025. | [multilingual-app-toolkit.md](./multilingual-app-toolkit.md) |
+| NumeralSystem values / NumeralSystemTranslator | `NumeralSystem` is a string property (values such as `"Latn"` for Latin digits or `"Arab"` for Arabic-Indic digits) exposed by `Calendar`, `CurrencyFormatter`, `DecimalFormatter`, `PercentFormatter`, `PermilleFormatter`, and `INumberFormatterOptions` in `Windows.Globalization` / `Windows.Globalization.NumberFormatting`. | [numeral-system.md](./numeral-system.md) |
+| Package manifest language declarations | Describes the three related language lists a Windows app deals with — the **user profile language list**, the **app manifest language list**, and the **app runtime language list** — and how the package manifest (`Package.appxmanifest` / built `AppxManifest.xml`) declares supported languages. | [package-manifest-languages.md](./package-manifest-languages.md) |
+| PercentFormatter | Formats and parses percentages according to the user's or specified languages and geographic region. (`PermilleFormatter` is the sibling class for permille/‰ values.) | [percent-formatter.md](./percent-formatter.md) |
+| Resources File (.resw) and ResourceLoader | Moves hardcoded string literals out of code, XAML markup, and the package manifest into a `.resw` Resources File so each supported language can ship a translated copy. Strings are then referenced from XAML via `x:Uid`, from code via `ResourceLoader`, and from the manifest via `ms-resource:` URIs. | [resource-loader-resw.md](./resource-loader-resw.md) |
+| Resource qualifiers (language, scale, contrast, theme, ...) | The MRT Core resource system selects the right resource file at runtime by matching folder or file name **qualifiers** (`<qualifier-name>-<qualifier-value>`, e.g. `language-ja`, `scale-200`, `contrast-high`) against the current runtime context (display language, DPI scale, high-contrast setting, app theme, etc.). | [resource-qualifiers.md](./resource-qualifiers.md) |

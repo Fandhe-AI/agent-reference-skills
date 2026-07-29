@@ -22,9 +22,9 @@ root.Children.InsertAtTop(child);
 | CreateSpriteVisual() | method | Creates a [SpriteVisual](./sprite-visual.md). |
 | CreateColorBrush() / CreateColorBrush(Color) | method | Creates a `CompositionColorBrush`, optionally with an initial color. |
 | CreateSurfaceBrush() / CreateSurfaceBrush(ICompositionSurface) | method | Creates a [CompositionSurfaceBrush](./composition-surface-brush.md). |
-| CreateScalarKeyFrameAnimation() | method | Creates a `ScalarKeyFrameAnimation` for interpolator-driven animation of a scalar property. |
+| CreateScalarKeyFrameAnimation() | method | Creates a [ScalarKeyFrameAnimation](./key-frame-animation.md) for interpolator-driven animation of a scalar property. |
 | CreateExpressionAnimation() / CreateExpressionAnimation(String) | method | Creates an [ExpressionAnimation](./expression-animation.md). |
-| CreateSpringVector3Animation() | method | Creates a `SpringVector3NaturalMotionAnimation` for physics-based spring motion on a `Vector3` property. |
+| CreateSpringVector3Animation() | method | Creates a [SpringVector3NaturalMotionAnimation](./natural-motion-animation.md) for physics-based spring motion on a `Vector3` property. |
 | CreateImplicitAnimationCollection() | method | Creates an [ImplicitAnimationCollection](./implicit-animation-collection.md). |
 | CreateEffectFactory(IGraphicsEffect) | method | Creates a `CompositionEffectFactory` from a Win2D/`Windows.UI.Composition.Effects` graph, used to build a [CompositionEffectBrush](./composition-effect-brush.md). |
 | DispatcherQueue | property | The dispatcher queue for this compositor. |
@@ -46,3 +46,5 @@ root.Children.InsertAtTop(child);
 - [ImplicitAnimationCollection](./implicit-animation-collection.md)
 - [CompositionEffectBrush](./composition-effect-brush.md)
 - [CompositionSurfaceBrush](./composition-surface-brush.md)
+- [KeyFrameAnimation](./key-frame-animation.md)
+- [Natural motion animation](./natural-motion-animation.md)

@@ -37,3 +37,4 @@ Permissions an app might request must be declared in `AndroidManifest.xml` with 
 - [permission-types-and-protection-levels](./permission-types-and-protection-levels.md)
 - [requesting-runtime-permissions](./requesting-runtime-permissions.md)
 - [evaluating-permission-need](./evaluating-permission-need.md)
+- [defining-custom-permissions](./defining-custom-permissions.md)

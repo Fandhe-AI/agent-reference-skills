@@ -33,7 +33,7 @@ private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTex
 | SuggestionChosen | event | Fires when the user picks a suggestion from the list |
 | QuerySubmitted | event | Fires when the user commits a query (Enter, query icon, or selecting a suggestion); `args.ChosenSuggestion` is non-null only for the latter |
 
-## Search-specific guidance
+### Search-specific guidance
 
 - Set `QueryIcon="Find"` to give the box a typical search-box appearance.
 - When there are no results for the entered text, display a single-line "No results" message so users know the search executed.

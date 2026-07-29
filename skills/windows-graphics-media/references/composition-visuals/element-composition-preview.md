@@ -21,8 +21,8 @@ ElementCompositionPreview.SetElementChildVisual(RootGrid, overlay);
 | GetElementVisual(UIElement) | static method | Retrieves the `Visual` that backs a XAML element in the composition tree. |
 | SetElementChildVisual(UIElement, Visual) | static method | Sets a custom `Visual` as the last child of the element's visual tree (e.g. to draw custom effects behind/above the element). |
 | GetElementChildVisual(UIElement) | static method | Retrieves a `Visual` previously set by `SetElementChildVisual`. |
-| GetScrollViewerManipulationPropertySet(ScrollViewer) | static method | Retrieves the composition `CompositionPropertySet` tracking a `ScrollViewer`'s manipulation (scroll/zoom) values, for use in expression animations. |
-| GetPointerPositionPropertySet(UIElement) | static method | Retrieves the pointer position relative to a `UIElement` as a `CompositionPropertySet`. |
+| GetScrollViewerManipulationPropertySet(ScrollViewer) | static method | Retrieves the composition [CompositionPropertySet](./composition-property-set.md) tracking a `ScrollViewer`'s manipulation (scroll/zoom) values, for use in expression animations. |
+| GetPointerPositionPropertySet(UIElement) | static method | Retrieves the pointer position relative to a `UIElement` as a [CompositionPropertySet](./composition-property-set.md). |
 | SetIsTranslationEnabled(UIElement, Boolean) | static method | Enables a render-time post-layout translation transform for positioning XAML elements with Composition APIs. |
 | SetImplicitShowAnimation / SetImplicitHideAnimation(UIElement, ICompositionAnimationBase) | static method | Associates a show/hide animation with a `UIElement`'s visibility transitions. |
 
