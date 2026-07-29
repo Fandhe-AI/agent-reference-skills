@@ -21,7 +21,7 @@ du -h render.metallib
 
 ```sh
 mkdir -p shaders/macos
-xcrun metal-lipo -archs render.binary.metallib | tr ' ' '\n' | xargs -n 1 -I{} xcrun metal-lipo -thin {} -output shaders/macos/{}.binary.metallib render.binary.metallib
+xcrun metal-lipo -archs render.binary.metallib | tr ' ' '\n' | grep -v '^$' | xargs -I{} xcrun metal-lipo -thin {} -output shaders/macos/{}.binary.metallib render.binary.metallib
 ```
 
 ```sh

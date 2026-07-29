@@ -5,7 +5,8 @@ Recording source information while compiling a Metal library and extracting it i
 Metal Toolchain 未導入の場合は先に [toolchain-setup.md](./toolchain-setup.md) を参照。
 
 > **注記**: Apple 公式ドキュメントは中間表現アーティファクトに `.ir` と `.air` の両表記を使う。
-> 本ページのコマンドは `.air` を前提とする。
+> 本ページのコマンドは `.air` を前提とし、既定拡張子への依存を避けるため `-o` で明示的に指定する
+> （`metal-compile.md` は同種のコンパイルで `.ir` を使用）。
 
 ## ソース情報を記録しつつ 1 コマンドでライブラリを生成する
 
@@ -16,9 +17,9 @@ xcrun -sdk macosx metal -frecord-sources=flat Shadow.metal PointLights.metal Dir
 ## ソース情報を記録しつつ個別にコンパイル・リンクする
 
 ```sh
-xcrun -sdk macosx metal -c -frecord-sources Shadow.metal
-xcrun -sdk macosx metal -c -frecord-sources PointLights.metal
-xcrun -sdk macosx metal -c -frecord-sources DirectionalLight.metal
+xcrun -sdk macosx metal -o Shadow.air -c -frecord-sources Shadow.metal
+xcrun -sdk macosx metal -o PointLights.air -c -frecord-sources PointLights.metal
+xcrun -sdk macosx metal -o DirectionalLight.air -c -frecord-sources DirectionalLight.metal
 ```
 
 ```sh
