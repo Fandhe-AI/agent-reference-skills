@@ -33,15 +33,17 @@ ls shaders/macos
 
 ## ベンダー毎に再結合する
 
-アーカイブに含まれないベンダーは `find` の結果が空になるためスキップされる
-（`ls vendor*` 直書きだと zsh で `no matches found` になり中断する）。
+アーカイブに含まれないベンダーはスキップされる。
+薄いバイナリは `xargs -0` 経由で個別の引数として渡す
+（`ls vendor*` 直書きは zsh で `no matches found` になり、
+変数へ入れて未クォート展開する方法は zsh が単語分割しないため 1 引数に潰れる）。
 
 ```sh
 mkdir -p shaders/macos/lib
 for vendor in applegpu intelgpu amdgpu; do
-  thin=$(find shaders/macos -maxdepth 1 -name "${vendor}*.binary.metallib")
-  [ -n "${thin}" ] || continue
-  xcrun -sdk macosx metal-lipo ${thin} -create -output "shaders/macos/lib/${vendor}.binary.metallib"
+  find shaders/macos -maxdepth 1 -name "${vendor}*.binary.metallib" -print0 |
+    xargs -0 sh -c '[ "$#" -gt 0 ] || exit 0; xcrun -sdk macosx metal-lipo "$@" -create -output "$0"' \
+      "shaders/macos/lib/${vendor}.binary.metallib"
 done
 ```
 
