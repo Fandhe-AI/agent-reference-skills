@@ -4,6 +4,7 @@ Allocate memory accessible from both host and device with `hipMallocManaged`, th
 
 ```cpp
 #include <hip/hip_runtime.h>
+#include <cstdlib>
 #include <iostream>
 
 #define HIP_CHECK(expr)                                                    \
@@ -12,6 +13,7 @@ Allocate memory accessible from both host and device with `hipMallocManaged`, th
         if (err != hipSuccess) {                                          \
             std::cerr << "HIP error: " << hipGetErrorString(err) << " at " \
                       << __LINE__ << "\n";                                \
+            std::exit(EXIT_FAILURE);                                     \
         }                                                                 \
     }
 

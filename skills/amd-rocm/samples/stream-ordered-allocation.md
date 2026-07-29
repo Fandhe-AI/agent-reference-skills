@@ -5,6 +5,7 @@ Allocate and free device memory with stream-ordered semantics using `hipMallocAs
 ```cpp
 #include <hip/hip_runtime.h>
 #include <cstdint>
+#include <cstdlib>
 #include <iostream>
 #include <limits>
 

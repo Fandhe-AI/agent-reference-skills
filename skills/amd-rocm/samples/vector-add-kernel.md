@@ -4,6 +4,7 @@ Define a `__global__` kernel, launch it with `<<<>>>` grid/block configuration, 
 
 ```cpp
 #include <hip/hip_runtime.h>
+#include <cstdlib>
 #include <iostream>
 #include <numeric>
 #include <vector>

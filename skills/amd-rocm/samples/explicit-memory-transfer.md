@@ -4,6 +4,7 @@ Allocate device memory with `hipMalloc`, copy explicitly with `hipMemcpy`, and u
 
 ```cpp
 #include <hip/hip_runtime.h>
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
 
