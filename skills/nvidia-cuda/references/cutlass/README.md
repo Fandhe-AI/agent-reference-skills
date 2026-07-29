@@ -1,7 +1,5 @@
 # cutlass
 
-CUTLASS (GEMM / Tensor Core) リファレンス。CuTe DSL (Python)・CUTLASS Operator API・CUTLASS C++ の3系統を横断索引する。
-
 | Name | Description | Path |
 | --- | --- | --- |
 | **CuTe DSL** | | |
