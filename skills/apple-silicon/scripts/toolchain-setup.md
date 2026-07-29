@@ -20,7 +20,7 @@ xcodebuild -downloadComponent metalToolchain -exportPath ~/Downloads
 書き出したディスクイメージを別マシンで取り込む場合は次のコマンドを使う。
 
 ```sh
-xcodebuild -importComponent metalToolchain ~/Downloads/metalToolchain.dmg
+xcodebuild -importComponent metalToolchain -importPath ~/Downloads/metalToolchain.dmg
 ```
 
 ## 導入確認

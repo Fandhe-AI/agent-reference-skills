@@ -29,5 +29,6 @@ xcrun -sdk macosx metal shaders.ir -o shaders.metallib -lUtility -L ./
 設定項目の一覧は `man` で確認できる。
 
 ```sh
+man metal-tt
 man metal-config
 ```
