@@ -7,12 +7,17 @@ Record a sequence of stream operations into a `cudaGraph_t` with `cudaStreamBegi
 #include <stdio.h>
 
 // Each block reduces its slice of input into one partial sum in output[blockIdx.x].
+// The grid-stride loop lets a fixed-size grid cover an input of any length,
+// since numBlocks * blockDim can be far smaller than n.
 __global__ void reduce(const float *input, double *output, size_t n)
 {
     extern __shared__ double sdata[];
     size_t tid = threadIdx.x;
-    size_t i = blockIdx.x * blockDim.x + tid;
-    sdata[tid] = (i < n) ? (double)input[i] : 0.0;
+    double sum = 0.0;
+    for (size_t i = blockIdx.x * blockDim.x + tid; i < n; i += (size_t)blockDim.x * gridDim.x) {
+        sum += (double)input[i];
+    }
+    sdata[tid] = sum;
     __syncthreads();
     for (size_t s = blockDim.x / 2; s > 0; s >>= 1) {
         if (tid < s) {
@@ -106,4 +111,5 @@ int main(void)
 - Fork/join across multiple streams during capture (recording work on a second stream that `cudaStreamWaitEvent`s on the capturing stream) is legal and produces parallel branches in the resulting graph, but this minimal example captures on a single stream for clarity.
 - `cudaGraphInstantiate` performs the one-time validation and resource setup; the returned `cudaGraphExec_t` is what `cudaGraphLaunch` replays, and it can be relaunched an arbitrary number of times without re-instantiating.
 - The graph and its instantiated executable are independent objects — destroying `graph` after instantiation is safe and does not invalidate `graphExec`.
+- `reduce`'s grid-stride loop (`i += blockDim.x * gridDim.x`) is required because `numBlocks * blockDim.x` (256 * 256 = 65,536) is far smaller than `inputSize` (1 << 20 = 1,048,576); a single `i = blockIdx.x * blockDim.x + tid` load per thread would silently drop most of the input from the sum.
 - Derived from the official NVIDIA/cuda-samples sample "simpleCudaGraphs" (`cudaGraphsUsingStreamCapture`, cpp/3_CUDA_Features), tag `v13.3`.
