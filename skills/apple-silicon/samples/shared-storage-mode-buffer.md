@@ -55,4 +55,4 @@ let buffer = device.makeBuffer(length: 256,
 
 - This is the compute side of Metal on Apple silicon; the rendering-side Metal API (MTKView, render pipeline states, render command encoders) is covered by the separate apple-graphics skill.
 - `storageModeShared` is what makes "unified memory" concrete: it is one physical allocation the CPU and GPU both address, unlike CUDA's managed memory which migrates pages between separate CPU and GPU memories.
-- Derived from the official Apple sample "Performing calculations on a GPU" (MIT License), archive published/d80f8573d811, and the code listings on developer.apple.com/documentation/metal/setting-resource-storage-modes ("Setting resource storage modes").
+- Derived from the official Apple sample "Performing calculations on a GPU" (distributed under the Apple Sample Code License, not MIT), archive published/d80f8573d811, and the code listings on developer.apple.com/documentation/metal/setting-resource-storage-modes ("Setting resource storage modes").

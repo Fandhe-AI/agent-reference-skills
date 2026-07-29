@@ -128,4 +128,4 @@ kernel void add_arrays(device const float* inA,
 
 - This is the compute side of Metal on Apple silicon; the rendering-side Metal API (MTKView, render pipeline states, render command encoders) is covered by the separate apple-graphics skill.
 - Uses `dispatchThreads:threadsPerThreadgroup:` (non-uniform threadgroup dispatch), so no out-of-bounds thread ever calls the kernel — no index guard needed in `add_arrays`.
-- Derived from the official Apple sample "Performing calculations on a GPU" (MIT License), archive published/d80f8573d811.
+- Derived from the official Apple sample "Performing calculations on a GPU" (distributed under the Apple Sample Code License, not MIT), archive published/d80f8573d811.

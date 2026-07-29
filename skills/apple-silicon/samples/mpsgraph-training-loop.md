@@ -86,4 +86,4 @@ func encodeTrainingBatch(commandBuffer: MPSCommandBuffer,
 - MPSGraph is a GPU compute graph API, not the Core ML model runtime covered by the separate apple-ml skill.
 - `targetOperations: updateOps` is what makes this a training step and not just a forward pass: the `assign` ops mutate every variable tensor in place, so the next call to `encodeTrainingBatch` sees updated weights.
 - The completion handler runs after the GPU finishes the batch; it reads the loss back and only then signals the semaphore, which is what caps in-flight batches at two.
-- Derived from the official Apple sample "Training a neural network using MPSGraph" (MIT License), archive published/a81b46b0b0e0 (`MPSGraphClassifier/MNISTClassifierGraph.swift`).
+- Derived from the official Apple sample "Training a neural network using MPSGraph" (distributed under the Apple Sample Code License, not MIT), archive published/a81b46b0b0e0 (`MPSGraphClassifier/MNISTClassifierGraph.swift`).
