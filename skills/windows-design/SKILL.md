@@ -34,6 +34,7 @@ skills/windows-design/
       alignment-margin-padding.md
       geometry.md
       elevation-layering.md
+      titlebar-design.md
     color-materials/
       README.md
       color.md
@@ -48,15 +49,19 @@ skills/windows-design/
       README.md
       typography.md
       segoe-fluent-icons-font.md
+      segoe-ui-symbol-font.md
       icon-elements.md
       app-icons.md
+      app-icon-design.md
       app-icon-construction.md
+      visual-studio-asset-generation.md
     motion/
       README.md
       motion-overview.md
       motion-principles.md
       timing-and-easing.md
       directionality-and-gravity.md
+      content-transition-animations.md
       page-transitions.md
       connected-animation.md
       implicit-animations.md
@@ -65,6 +70,7 @@ skills/windows-design/
       reduce-motion.md
     navigation-commanding/
       README.md
+      app-silhouette.md
       navigation-basics.md
       navigation-history-and-backwards-navigation.md
       navigationview.md
@@ -94,10 +100,18 @@ skills/windows-design/
       date-time-number-formats.md
       writing-style.md
       app-settings.md
+      app-help-guidelines.md
+      in-app-help.md
+      external-help.md
+      instructional-ui.md
+      secondary-tile-pinning.md
       widgets-design-fundamentals.md
       widgets-states-and-ui.md
       widgets-interaction-design.md
       widgets-picker-integration.md
+    signature-experiences/
+      README.md
+      haptics.md
 ```
 
 ## 探索手順
@@ -130,5 +144,6 @@ skills/windows-design/
 | キーボード操作・ハイコントラストテーマなどアクセシビリティ要件を満たしたい | usability-accessibility | [references/usability-accessibility/README.md](references/usability-accessibility/README.md) |
 | RTL レイアウト・双方向テキスト・グローバリゼーションに対応したい | usability-accessibility | [references/usability-accessibility/README.md](references/usability-accessibility/README.md) |
 | ウィジェットのデザイン原則・状態・ライティングスタイルを確認したい | usability-accessibility | [references/usability-accessibility/README.md](references/usability-accessibility/README.md) |
+| ハプティクス（触覚フィードバック）のデザイン指針を確認したい | signature-experiences | [references/signature-experiences/README.md](references/signature-experiences/README.md) |
 
 このスキルは Fluent Design のビジュアル・UX ガイドライン（レイアウト・色・タイポグラフィ・モーション・ナビゲーション UX・アクセシビリティ規範）のみを扱う。WinUI 3 コントロールの API シグネチャは windows-winui-controls、アプリライフサイクル・ウィンドウ管理・通知・パッケージング等は windows-app-sdk が担当する。

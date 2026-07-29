@@ -38,12 +38,16 @@ skills/android-architecture/
     lifecycle-viewmodel/
       README.md
       viewmodel.md
+      viewmodel-cheatsheet.md
       viewmodel-compose.md
+      viewmodel-scoping-apis.md
       viewmodelprovider-factory.md
       viewmodelscope.md
       androidviewmodel.md
       savedstatehandle.md
+      saving-ui-state.md
       lifecycle.md
+      lifecyclescope.md
       lifecycleowner.md
       defaultlifecycleobserver.md
       lifecycleeventobserver.md
@@ -67,7 +71,10 @@ skills/android-architecture/
       module-install-in.md
       provides.md
       binds.md
+      dagger-basics.md
       hilt-components-scopes.md
+      hilt-jetpack.md
+      hilt-multi-module.md
       qualifier-named.md
       hilt-view-model.md
       entry-point.md
@@ -76,8 +83,10 @@ skills/android-architecture/
     paging/
       README.md
       pager.md
+      migrate-to-paging-3.md
       pagingconfig.md
       pagingsource.md
+      testpager.md
       pagingdata.md
       remotemediator.md
       loadstate.md

@@ -41,3 +41,4 @@
 ## Related
 
 - [uses-feature element](./uses-feature-element.md)
+- [permission / permission-group / permission-tree elements](./permission-element.md)

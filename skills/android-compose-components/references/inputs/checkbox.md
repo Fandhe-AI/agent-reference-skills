@@ -40,6 +40,7 @@ Checkbox(
 - A second overload accepts explicit `checkmarkStroke: Stroke` and `outlineStroke: Stroke` for custom stroke styling.
 - For parent-child checkbox groups with an indeterminate state, use `TriStateCheckbox` instead.
 - Package: `androidx.compose.material3`.
+- This is the Jetpack Compose (Kotlin) API — distinct from the same-named SwiftUI / Ark UI / Chakra UI / fandhe-frontend components.
 
 ## Related
 

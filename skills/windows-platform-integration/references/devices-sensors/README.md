@@ -1,26 +1,34 @@
-# Devices and Sensors
+# devices-sensors
 
 | Name | Description | Path |
-|------|-------------|------|
-| DeviceInformation / FindAllAsync | Snapshot device enumeration, well-known device properties | [device-information.md](./device-information.md) |
-| DeviceWatcher / DeviceInformationKind / DeviceSelector | Live device enumeration with add/remove/update notifications | [device-watcher.md](./device-watcher.md) |
-| Accelerometer | G-force readings on x/y/z axes | [accelerometer.md](./accelerometer.md) |
-| Gyrometer | Angular velocity readings on x/y/z axes | [gyrometer.md](./gyrometer.md) |
-| Compass | Heading relative to magnetic/true north | [compass.md](./compass.md) |
-| Inclinometer | Pitch/roll/yaw rotation angles | [inclinometer.md](./inclinometer.md) |
-| LightSensor | Ambient light in lux | [light-sensor.md](./light-sensor.md) |
-| OrientationSensor | Rotation matrix and quaternion for 3D orientation | [orientation-sensor.md](./orientation-sensor.md) |
-| SimpleOrientationSensor | Quadrant rotation and face-up/face-down orientation | [simple-orientation-sensor.md](./simple-orientation-sensor.md) |
-| Pedometer | Step count and step kind | [pedometer.md](./pedometer.md) |
-| ProximitySensor | Object-detected proximity readings | [proximity-sensor.md](./proximity-sensor.md) |
-| ActivitySensor | Physical activity type and confidence | [activity-sensor.md](./activity-sensor.md) |
-| BluetoothLEDevice | Bluetooth LE peer device, GATT services, connection status | [bluetooth-le-device.md](./bluetooth-le-device.md) |
-| GattDeviceService | GATT primary service on a Bluetooth LE device | [gatt-device-service.md](./gatt-device-service.md) |
-| BluetoothLEAdvertisementWatcher | Scan for Bluetooth LE advertisement packets | [bluetooth-le-advertisement-watcher.md](./bluetooth-le-advertisement-watcher.md) |
-| UsbDevice | Custom/WinUSB device access and control transfers | [usb-device.md](./usb-device.md) |
-| SerialDevice | Serial port access, baud rate, read/write streams | [serial-device.md](./serial-device.md) |
-| HidDevice | Custom Human Interface Device access, input/output/feature reports | [hid-device.md](./hid-device.md) |
-| Battery | Per-controller and aggregate battery reports | [battery.md](./battery.md) |
-| PowerManager | Device-wide battery/power-supply status | [power-manager.md](./power-manager.md) |
-| Printing (PrintManager / PrintDocument) | Print app content via the system print UI | [printing.md](./printing.md) |
-| Device capability manifest declarations | DeviceCapability elements in Package.appxmanifest | [device-capabilities-manifest.md](./device-capabilities-manifest.md) |
+| --- | --- | --- |
+| Accelerometer | Represents an accelerometer sensor that returns G-force readings with respect to the x, y, and z axes. | [accelerometer.md](./accelerometer.md) |
+| ActivitySensor | Represents a sensor that provides the current physical activity (still, walking, running, driving, etc.) and its confidence level. | [activity-sensor.md](./activity-sensor.md) |
+| Altimeter | Provides an interface for an altimetric sensor to measure the relative altitude, reported in meters of altitude change since the sensor was created. | [altimeter.md](./altimeter.md) |
+| Barometer | Provides an interface for a barometric sensor to measure atmospheric (station) pressure, reported in hectopascals. | [barometer.md](./barometer.md) |
+| Battery | Provides information about a battery controller currently connected to the device (the electronics interfacing between a physical battery and the OS), including charge, capacity, and status. | [battery.md](./battery.md) |
+| BluetoothLEAdvertisementWatcher | An object used to scan for and receive Bluetooth Low Energy (LE) advertisement packets broadcast by nearby devices. | [bluetooth-le-advertisement-watcher.md](./bluetooth-le-advertisement-watcher.md) |
+| BluetoothLEDevice | Represents a Bluetooth Low Energy (LE) device. Provides access to GATT services and connection status for a paired or discovered peer device. | [bluetooth-le-device.md](./bluetooth-le-device.md) |
+| Compass | Represents a compass sensor that returns a heading with respect to magnetic north and, on systems that support it, true north. | [compass.md](./compass.md) |
+| Device capability manifest declarations | Apps must declare the device types they use as `DeviceCapability` elements in the `Capabilities` node of `Package.appxmanifest`. Most capabilities can be added via the Visual Studio Manifest Designer; USB, HID, Bluetooth GATT, and Bluetooth RFCOMM require manually editing the manifest XML because they need child elements (vendor/product IDs, usage pages, service UUIDs). | [device-capabilities-manifest.md](./device-capabilities-manifest.md) |
+| DeviceInformation / DeviceInformation.FindAllAsync | Represents a device. `DeviceInformation` gives access to well-known device properties (`Id`, `Kind`, `Name`) plus additional properties specified during device enumeration, via the `Windows.Devices.Enumeration` namespace. | [device-information.md](./device-information.md) |
+| DeviceInformationPairing / DeviceInformationCustomPairing | Pairs a `DeviceInformation` object with the local system. `DeviceInformationPairing` (via `DeviceInformation.Pairing`) drives basic, Windows-handled pairing; `DeviceInformationCustomPairing` (via `Pairing.Custom`) lets the app participate in the pairing ceremony itself (PIN entry, confirmation, etc.) — commonly needed for Bluetooth/BLE and USB devices that require user interaction to pair. | [device-pairing.md](./device-pairing.md) |
+| DeviceWatcher / DeviceInformationKind / DeviceSelector | `DeviceWatcher` enumerates devices dynamically, notifying the app when devices matching a query are added, removed, or updated after the initial enumeration is complete. `DeviceInformationKind` classifies what a `DeviceInformation` object represents, and the "device selector" is the Advanced Query Syntax (AQS) string used to filter both `DeviceWatcher` and `DeviceInformation.FindAllAsync`. | [device-watcher.md](./device-watcher.md) |
+| GattDeviceService | Represents a GATT primary service on a Bluetooth LE device. Instantiated from a device service instance path obtained via `Windows.Devices.Enumeration` or `BluetoothLEDevice.GetGattServicesAsync`. | [gatt-device-service.md](./gatt-device-service.md) |
+| GattServiceProvider | Lets a Windows app act as a Bluetooth LE GATT **peripheral** (server), publishing local services/characteristics that remote central devices can discover, read, write, and subscribe to. The complementary client-role API (consuming a remote peripheral's services) is `GattDeviceService`. | [gatt-server.md](./gatt-server.md) |
+| Gyrometer | Represents a gyrometer sensor that provides angular velocity readings with respect to the x, y, and z axes. | [gyrometer.md](./gyrometer.md) |
+| HidDevice / Windows.Devices.HumanInterfaceDevice | Represents a top-level HID collection and its corresponding device, for custom Human Interface Device (HID) access — sending/receiving input, output, and feature reports. | [hid-device.md](./hid-device.md) |
+| ImageScanner | Represents a locally-attached document/image scanner (installed via a Windows Image Acquisition (WIA) driver), and drives flatbed, feeder, or auto-configured scans to a folder or stream. Pairs with `printing.md`'s document-printing coverage as the scan-side counterpart. | [image-scanner.md](./image-scanner.md) |
+| Inclinometer | Represents an inclinometer sensor that provides pitch, roll, and yaw values corresponding to rotation angles around the x, y, and z axes respectively. | [inclinometer.md](./inclinometer.md) |
+| LightSensor | Represents an ambient-light sensor that provides the ambient-light reading as a lux value. | [light-sensor.md](./light-sensor.md) |
+| OrientationSensor | Represents an orientation sensor that returns a rotation matrix and a quaternion, typically used to adjust perspective in game and 3D applications. | [orientation-sensor.md](./orientation-sensor.md) |
+| Pedometer | Provides an interface for a pedometer to measure the number of steps taken, broken down by step kind (walking, running, unknown). | [pedometer.md](./pedometer.md) |
+| Point of Service (Windows.Devices.PointOfService) | Retail/hospitality peripheral APIs: `BarcodeScanner`, `MagneticStripeReader`, `PosPrinter`/`ReceiptPrinter`, `CashDrawer`, and `LineDisplay`. All device types share the same create → claim → enable → use → release lifecycle, illustrated below with `BarcodeScanner`. | [point-of-service.md](./point-of-service.md) |
+| PowerManager | Static class providing access to a device's aggregate battery and power-supply status: battery status, energy saver status, power supply status, and remaining charge/discharge time. | [power-manager.md](./power-manager.md) |
+| Printing (PrintManager / PrintDocument) | APIs for printing app content: `PrintManager` (`Windows.Graphics.Printing`) orchestrates the OS printing flow; `PrintDocument` (`Microsoft.UI.Xaml.Printing`) prepares XAML content into pages sent to the printer. | [printing.md](./printing.md) |
+| ProximitySensor | Provides an interface for a proximity sensor to determine whether an object is detected nearby (for example, to turn the display off during a phone call). | [proximity-sensor.md](./proximity-sensor.md) |
+| RfcommDeviceService / RfcommServiceProvider | Classic Bluetooth (Bluetooth BR/EDR) support via the Serial Port Profile (RFCOMM). `RfcommDeviceService` connects as a client to a remote RFCOMM service; `RfcommServiceProvider` hosts an RFCOMM service so the app acts as a server. Both hand the actual byte transfer off to `StreamSocket`. | [bluetooth-rfcomm.md](./bluetooth-rfcomm.md) |
+| SerialDevice / Windows.Devices.SerialCommunication | Represents a serial port. Provides methods and properties to find serial ports and read/write data through `Windows.Storage.Streams` input/output streams. | [serial-device.md](./serial-device.md) |
+| SimpleOrientationSensor | Represents a simple orientation sensor that detects the current quadrant orientation of the device (rotated 0/90/180/270 degrees) as well as its face-up or face-down status. | [simple-orientation-sensor.md](./simple-orientation-sensor.md) |
+| UsbDevice / Windows.Devices.Usb | Represents a custom USB device (WinUSB). Provides methods and properties to enumerate USB devices and send IN/OUT control transfers. | [usb-device.md](./usb-device.md) |
+| WiFiAdapter / WiFiDirectDevice / Radio | Three related but distinct WinRT surfaces for wireless hardware: `Windows.Devices.WiFi` enumerates Wi-Fi adapters and connects them to networks; `Windows.Devices.WiFiDirect` sets up ad-hoc device-to-device Wi-Fi Direct connections; `Windows.Devices.Radios` finds and toggles the radios (Wi-Fi, Bluetooth, etc.) present on the local device. | [wifi-and-radios.md](./wifi-and-radios.md) |

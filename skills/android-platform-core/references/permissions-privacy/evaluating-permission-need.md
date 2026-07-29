@@ -37,3 +37,4 @@ intent.resolveActivity(packageManager)?.run { startActivity(intent) }
 - [declaring-permissions](./declaring-permissions.md)
 - [media-permissions](./media-permissions.md)
 - [explaining-permission-access](./explaining-permission-access.md)
+- [location-button](./location-button.md)

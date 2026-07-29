@@ -37,6 +37,9 @@ skills/android-build-gradle/
       lint-config.md
       gradle-properties.md
       local-properties.md
+      multidex.md
+      native-dependencies-prefab.md
+      native-build-cmake.md
     dependencies/
       README.md
       dependency-configurations.md
@@ -48,6 +51,7 @@ skills/android-build-gradle/
       viewing-dependencies.md
       ksp-vs-kapt.md
       variant-specific-dependencies.md
+      dependency-verification.md
     optimize-release/
       README.md
       shrink-code.md
@@ -62,6 +66,15 @@ skills/android-build-gradle/
       baseline-profiles.md
       build-variant-optimization.md
       release-checklist.md
+      native-debug-symbols.md
+      dynamic-feature-modules.md
+    publish-library/
+      README.md
+      prep-library-release.md
+      publication-variants.md
+      upload-library.md
+      test-fixtures-publishing.md
+      fused-library.md
     migrate-troubleshoot/
       README.md
       build-speed-optimization.md
@@ -75,6 +88,10 @@ skills/android-build-gradle/
       manifest-merger-conflicts.md
       build-analyzer.md
       dependency-resolution-errors.md
+      migrate-to-built-in-kotlin.md
+      custom-build-logic.md
+      sdk-upgrade-assistant.md
+      agp-kotlin-d8-r8-compatibility.md
 ```
 
 ## 探索手順
@@ -99,6 +116,9 @@ skills/android-build-gradle/
 | R8/ProGuard によるコード圧縮・難読化を設定したい | optimize-release | [references/optimize-release/README.md](references/optimize-release/README.md) |
 | App Bundle / APK splits / baseline profile でリリース最適化したい | optimize-release | [references/optimize-release/README.md](references/optimize-release/README.md) |
 | 署名設定・リリースチェックリストを確認したい | optimize-release | [references/optimize-release/README.md](references/optimize-release/README.md) |
+| Android ライブラリのリリース準備・メタデータを設定したい | publish-library | [references/publish-library/README.md](references/publish-library/README.md) |
+| ライブラリを Maven に publish したい（publication variants / upload） | publish-library | [references/publish-library/README.md](references/publish-library/README.md) |
+| fused library や test fixtures を publish したい | publish-library | [references/publish-library/README.md](references/publish-library/README.md) |
 | ビルド速度・build cache / configuration cache を改善したい | migrate-troubleshoot | [references/migrate-troubleshoot/README.md](references/migrate-troubleshoot/README.md) |
 | kapt から KSP へ、Groovy から Kotlin DSL へ移行したい | migrate-troubleshoot | [references/migrate-troubleshoot/README.md](references/migrate-troubleshoot/README.md) |
 | AGP アップグレードやマニフェストマージ・依存関係解決エラーに対処したい | migrate-troubleshoot | [references/migrate-troubleshoot/README.md](references/migrate-troubleshoot/README.md) |

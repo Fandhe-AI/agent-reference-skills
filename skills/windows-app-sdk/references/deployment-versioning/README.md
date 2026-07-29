@@ -1,17 +1,20 @@
-# Deployment & Versioning
+# deployment-versioning
 
 | Name | Description | Path |
-|------|-------------|------|
-| Deployment Architecture | Runtime packages (Framework/Main/Singleton/DDLM), MSIX deployment pipeline stages | [deployment-architecture.md](./deployment-architecture.md) |
-| Deployment Overview | Framework-dependent vs self-contained trade-offs, initialization matrix, x64/ARM64 considerations | [deploy-overview.md](./deploy-overview.md) |
-| Deployment Guide for Packaged Apps | Framework package dependency + Deployment API for packaged (MSIX) apps | [deploy-packaged-apps.md](./deploy-packaged-apps.md) |
-| Deployment Guide for Unpackaged Apps | Installer vs direct MSIX deployment for unpackaged/packaged-with-external-location apps | [deploy-unpackaged-apps.md](./deploy-unpackaged-apps.md) |
-| Self-Contained Deployment | `WindowsAppSDKSelfContained` property, bundling the runtime into build output | [deploy-self-contained-apps.md](./deploy-self-contained-apps.md) |
-| Release Channels | Stable / Preview / Experimental channels, support and servicing lifecycle | [release-channels.md](./release-channels.md) |
-| Downloads | Runtime installer/redistributable/NuGet download locations per channel | [downloads.md](./downloads.md) |
-| System Requirements | Minimum OS, Windows SDK, and dev tool requirements | [system-requirements.md](./system-requirements.md) |
-| Project Properties and Auto-Initializers | `WindowsAppSDKSelfContained`, `WindowsPackageType`, and other deployment MSBuild properties | [project-properties.md](./project-properties.md) |
-| Use the Windows App SDK Runtime (Bootstrapper API) | `MddBootstrapInitialize`/`Bootstrap.Initialize`, auto-initialization via `WindowsPackageType=None` | [use-windows-app-sdk-run-time.md](./use-windows-app-sdk-run-time.md) |
-| Tutorial: Bootstrapper API in an Unpackaged App | Step-by-step C#/C++ bootstrapper API tutorial | [tutorial-unpackaged-deployment.md](./tutorial-unpackaged-deployment.md) |
-| DeploymentManager | `GetStatus`, `Initialize`, `Repair` static methods for the Deployment API | [deploymentmanager.md](./deploymentmanager.md) |
-| DeploymentResult | `Status` / `ExtendedError` result type returned by `DeploymentManager` | [deploymentresult.md](./deploymentresult.md) |
+| --- | --- | --- |
+| Check for Installed Versions of the Windows App SDK Runtime | How to list the Windows App SDK runtime packages (Framework, Main, Singleton, DDLM) installed on a development computer, using PowerShell's `Get-AppxPackage`. | [check-windows-app-sdk-versions.md](./check-windows-app-sdk-versions.md) |
+| Deployment Architecture | High-level architecture of Windows App SDK framework-dependent deployment: the Windows App SDK runtime packages, how apps reference the shared Framework package, and how the MSIX deployment pipeline stages/registers packages. | [deployment-architecture.md](./deployment-architecture.md) |
+| Deployment Guide for Packaged Apps | Guidance for deploying framework-dependent packaged (MSIX) apps that use the Windows App SDK: declaring the Framework package dependency and calling the Deployment API for Main/Singleton packages. | [deploy-packaged-apps.md](./deploy-packaged-apps.md) |
+| Deployment Guide for Unpackaged Apps | Guidance for deploying framework-dependent apps that are packaged with external location, or fully unpackaged: deploying the Windows App SDK runtime via installer or direct MSIX packages, and runtime requirements (Bootstrapper, Dynamic Dependencies). | [deploy-unpackaged-apps.md](./deploy-unpackaged-apps.md) |
+| Deployment Overview | Decision-level overview of the two Windows App SDK deployment modes — framework-dependent and self-contained — with their trade-offs, initialization guidance, and multi-architecture (x64/ARM64) considerations. | [deploy-overview.md](./deploy-overview.md) |
+| DeploymentManager | Static class providing access to deployment information and initialization for the Windows App SDK runtime, used by framework-dependent packaged apps. | [deploymentmanager.md](./deploymentmanager.md) |
+| DeploymentResult | Sealed class returned by `DeploymentManager` methods, providing deployment status and error information for the Windows App SDK runtime referenced by the current package. | [deploymentresult.md](./deploymentresult.md) |
+| Downloads | Where to obtain the latest Windows App SDK runtime installers/redistributables (per release channel) and the NuGet SDK package. | [downloads.md](./downloads.md) |
+| Package Your App Using Single-Project MSIX | Single-project MSIX lets you build a packaged WinUI 3 desktop app from a single project — no separate **Windows Application Packaging Project** needed. New apps get it via the **WinUI Blank App (Packaged)** template; existing two-project solutions can be converted by moving `Package.appxmanifest` into the app project and enabling `EnableMsixTooling`. | [single-project-msix.md](./single-project-msix.md) |
+| Project Properties and Auto-Initializers | MSBuild project properties (`.csproj`/`.vcxproj`) that control how a Windows App SDK app is deployed and initialized, including the auto-initializer routines that run automatically before your app's entry point. | [project-properties.md](./project-properties.md) |
+| Release Channels | The three Windows App SDK release channels — Stable, Preview, and Experimental — their support status, cadence, and the servicing lifecycle policy for versions. | [release-channels.md](./release-channels.md) |
+| Remove Outdated Windows App SDK Runtime Versions | How to uninstall outdated Windows App SDK runtime packages (Framework, Main, Singleton, DDLM) from a development computer, via PowerShell's `Remove-AppxPackage` or the **Apps & features** Settings page. | [remove-windows-app-sdk-versions.md](./remove-windows-app-sdk-versions.md) |
+| Self-Contained Deployment | Guide for switching a Windows App SDK project from the default framework-dependent deployment to self-contained deployment, bundling the Framework package contents into the app's build output. | [deploy-self-contained-apps.md](./deploy-self-contained-apps.md) |
+| System Requirements | Minimum OS, SDK, and tooling requirements to develop and run Windows App SDK apps, and how the Windows OS version, Windows SDK, and Windows App SDK relate to each other. | [system-requirements.md](./system-requirements.md) |
+| Tutorial: Bootstrapper API in an Unpackaged App | Step-by-step tutorial configuring a C# or C++ console/desktop app (packaged with external location, or unpackaged) to explicitly call the bootstrapper API and use Windows App SDK features such as `ResourceManager`. | [tutorial-unpackaged-deployment.md](./tutorial-unpackaged-deployment.md) |
+| Use the Windows App SDK Runtime (Bootstrapper API) | How packaged-with-external-location and unpackaged apps initialize the Windows App SDK runtime at startup, via automatic initialization (`WindowsPackageType=None`) or by calling the Bootstrapper API explicitly. | [use-windows-app-sdk-run-time.md](./use-windows-app-sdk-run-time.md) |

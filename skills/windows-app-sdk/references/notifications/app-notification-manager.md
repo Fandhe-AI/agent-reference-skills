@@ -51,3 +51,4 @@ AppNotificationManager.Default.Show(notification);
 - [AppNotification](./app-notification.md)
 - [AppNotificationBuilder](./app-notification-builder.md)
 - [AppNotificationActivatedEventArgs](./app-notification-activated-event-args.md)
+- [Notification listener](./notification-listener.md)

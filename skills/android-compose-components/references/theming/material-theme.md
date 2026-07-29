@@ -55,3 +55,4 @@ Text(
 - [Shapes](./shapes.md)
 - [MotionScheme](./motion-scheme.md)
 - [Anatomy of a theme](./theme-anatomy.md)
+- [MaterialExpressiveTheme](./material-expressive-theme.md)

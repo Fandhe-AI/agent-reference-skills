@@ -29,16 +29,16 @@ Parallax is a visual effect where items closer to the viewer move faster than it
 | HorizontalShift | double | How far the background shifts horizontally over the entire parallax operation. `0` means no movement; larger values create a more dramatic effect. |
 | Background element (child) | `UIElement` | Set as a child of `ParallaxView`, e.g. an `Image` or a panel containing further UI. Automatically resized so it works for the parallax operation. |
 
-## Notes
-
-- `ParallaxView` must be placed behind the foreground element; `Grid` and `Canvas` panels work well for layering.
-- Package: `Microsoft.UI.Xaml.Controls` (WinUI 3) — `ParallaxView` class. Distinct from CSS/JS parallax scrolling libraries and the Motion (Framer Motion) `useScroll`-based parallax pattern.
-
-## Recommendations
+### Recommendations
 
 - Use parallax in lists with a background image.
 - Consider using parallax in `ListViewItem`s that contain an image.
 - Don't use it everywhere — overuse can diminish its impact.
+
+## Notes
+
+- `ParallaxView` must be placed behind the foreground element; `Grid` and `Canvas` panels work well for layering.
+- Package: `Microsoft.UI.Xaml.Controls` (WinUI 3) — `ParallaxView` class. Distinct from CSS/JS parallax scrolling libraries and the Motion (Framer Motion) `useScroll`-based parallax pattern.
 
 ## Related
 

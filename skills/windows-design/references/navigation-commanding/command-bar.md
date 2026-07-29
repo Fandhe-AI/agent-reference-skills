@@ -32,7 +32,7 @@ Gives users easy access to an app's most common tasks. Can hold both simple comm
 | IsDynamicOverflowEnabled | bool | Whether primary commands move into overflow automatically as width changes |
 | IsSticky | bool | Keeps the bar open until explicitly closed instead of light-dismissing |
 
-## Placement
+### Placement
 
 - Small handheld devices: position at the bottom of the screen for reachability.
 - Larger screens: position near the top for noticeability and discoverability.

@@ -78,6 +78,7 @@ signtool sign /a /v /fd sha256 /f ExportedSigningCertificate.pfx PSFSamplePackag
 
 ## Related
 
+- [Create a Package Support Framework Fixup](./create-psf-fixup.md)
 - [makeappx.exe CLI](./makeappx-cli.md)
 - [MSIX Packaging Tool](./msix-packaging-tool.md)
 - [Visual Studio Packaging Project](./vs-packaging-project.md)

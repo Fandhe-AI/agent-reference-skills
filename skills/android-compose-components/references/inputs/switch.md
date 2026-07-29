@@ -41,6 +41,7 @@ Switch(
 
 - Use `thumbContent` with `Modifier.size(SwitchDefaults.IconSize)` to show a checkmark icon inside the thumb when checked.
 - Package: `androidx.compose.material3`.
+- This is the Jetpack Compose (Kotlin) API — distinct from the same-named SwiftUI / Ark UI / Chakra UI / fandhe-frontend components.
 
 ## Related
 

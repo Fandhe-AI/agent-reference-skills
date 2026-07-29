@@ -1,6 +1,15 @@
 # What's supported when migrating from UWP to WinUI 3
 
-Before migrating, review which UWP features are fully supported in WinUI 3 and the Windows App SDK (2.0), which have alternatives, and which aren't yet supported — including known control gaps and performance considerations.
+Before migrating, review which UWP features are fully supported in WinUI 3 and the Windows App SDK (2.0), which have alternatives, and which aren't yet supported — including known control gaps and performance considerations. Look up the UWP feature or control being ported in the table below, then check its status and alternative before writing migration code.
+
+## Signature / Usage
+
+```text
+UWP feature      -> WinUI 3 / Windows App SDK 2.0 status
+ContentDialog    -> Available (preferred over MessageDialog)
+CoreWindow       -> Not supported in 2.0 (use AppWindow instead)
+InkCanvas        -> Experimental only, not in stable channel
+```
 
 ## Options / Props
 

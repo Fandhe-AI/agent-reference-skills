@@ -56,3 +56,5 @@ AppNotificationManager.Default.Show(appNotification);
 - [AppNotification](./app-notification.md)
 - [AppNotificationManager](./app-notification-manager.md)
 - [Toast content schema](./toast-content-schema.md)
+- [Scheduled app notifications](./app-notification-scheduled.md)
+- [App notification collections](./app-notification-collections.md)

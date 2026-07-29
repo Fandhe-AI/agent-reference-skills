@@ -53,10 +53,12 @@ fun interface Analyzer {
 
 - Only one `Analyzer` can be active at a time; a later `setAnalyzer` call replaces the previous one.
 - `imageProxy.close()` must always be called or the pipeline stalls / frames are dropped; do not call `Image.close()` directly on the wrapped `Media.Image`.
-- For ML Kit integration, see the `ML Kit Analyzer` guide (`/training/camerax/mlkitanalyzer`) — not covered in this skill.
+- For ML Kit integration, see MlKitAnalyzer.
 - Artifact: `androidx.camera:camera-core`.
 
 ## Related
 
 - [ImageCapture](./image-capture.md)
 - [Orientation and rotation](./orientation-rotation.md)
+- [MlKitAnalyzer](./mlkit-analyzer.md)
+- [Transform output](./transform-output.md)

@@ -32,6 +32,9 @@ public abstract class WorkManager internal constructor() {
     public abstract fun getWorkInfoByIdFlow(id: UUID): Flow<WorkInfo?>
     public abstract fun getWorkInfoByIdLiveData(id: UUID): LiveData<WorkInfo?>
     public abstract fun getWorkInfosByTagFlow(tag: String): Flow<List<WorkInfo>>
+    public abstract fun getWorkInfos(workQuery: WorkQuery): ListenableFuture<List<WorkInfo>>
+
+    public abstract fun updateWork(request: WorkRequest): ListenableFuture<UpdateResult>
 
     public abstract fun pruneWork(): Operation
     public abstract fun createCancelPendingIntent(id: UUID): PendingIntent
@@ -64,12 +67,14 @@ WorkManager.getInstance(context).enqueueUniquePeriodicWork(
 | `cancelUniqueWork(uniqueWorkName)` | `(String) -> Operation` | — | Cancels all work under a unique name. |
 | `getWorkInfoByIdFlow(id)` / `getWorkInfoByIdLiveData(id)` | `(UUID) -> Flow<WorkInfo?> / LiveData<WorkInfo?>` | — | Observes state changes for a single request. |
 | `getWorkInfosByTagFlow(tag)` | `(String) -> Flow<List<WorkInfo>>` | — | Observes state for all requests carrying `tag`. |
+| `getWorkInfos(workQuery)` | `(WorkQuery) -> ListenableFuture<List<WorkInfo>>` | — | Combined multi-criteria query across ids/tags/unique names/states in a single call; see [WorkQuery](./workquery.md). |
+| `updateWork(request)` | `(WorkRequest) -> ListenableFuture<UpdateResult>` | — | Replaces an already-enqueued request's definition in place, preserving its enqueue time/slot instead of cancel+re-enqueue; see [updateWork](./update-work.md). |
 | `pruneWork()` | `() -> Operation` | — | Cancels and removes all finished work from the internal database to free space. |
 | `createCancelPendingIntent(id)` | `(UUID) -> PendingIntent` | — | `PendingIntent` that cancels the given work, e.g. for a notification action. |
 
 ## Notes
 
-- `Operation` represents an asynchronous WorkManager database operation and exposes a `LiveData<Operation.State>`; call `.result.get()` in tests to block until enqueued.
+- `Operation` represents an asynchronous WorkManager database operation and exposes a `LiveData<Operation.State>`; call `.result.get()` in tests to block until enqueued. See [Operation](./operation.md) for `State.SUCCESS`/`FAILURE` inspection.
 - `enqueueUniqueWork` / `enqueueUniquePeriodicWork` are the recommended way to avoid duplicate scheduling of the same logical job (e.g. periodic log upload), preferred over manually tracked tags.
 - Package: `androidx.work`.
 
@@ -80,3 +85,6 @@ WorkManager.getInstance(context).enqueueUniquePeriodicWork(
 - [ExistingWorkPolicy / ExistingPeriodicWorkPolicy](./existingworkpolicy.md)
 - [WorkContinuation](./workcontinuation.md)
 - [WorkInfo and monitoring](./workinfo.md)
+- [WorkQuery](./workquery.md)
+- [updateWork](./update-work.md)
+- [Operation](./operation.md)

@@ -32,9 +32,10 @@ class ExampleActivity : AppCompatActivity() {
 - With Navigation Compose, `hiltViewModel()` automatically scopes the `ViewModel` to the current navigation destination.
 - With Navigation 3, use `rememberViewModelStoreNavEntryDecorator()` together with `hiltViewModel()` inside the entry provider.
 - Assisted injection is supported via `@HiltViewModel(assistedFactory = ...)` combined with `@AssistedInject` / `@Assisted` / `@AssistedFactory` for passing runtime arguments alongside Hilt-managed dependencies.
-- `WorkManager` integration uses a separate `@HiltWorker` annotation with `@AssistedInject`, plus injecting `HiltWorkerFactory` into a `Configuration.Provider` on the `Application` class (requires the `androidx.hilt:hilt-work` artifact).
+- `WorkManager` and Fragment-based Navigation integration (`@HiltWorker`, `hiltNavGraphViewModels`) are covered in Use Hilt with other Jetpack libraries.
 
 ## Related
 
 - [AndroidEntryPoint](./android-entry-point.md)
 - [Hilt components and scopes](./hilt-components-scopes.md)
+- [Use Hilt with other Jetpack libraries](./hilt-jetpack.md)

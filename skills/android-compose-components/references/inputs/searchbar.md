@@ -68,6 +68,7 @@ ExpandedFullScreenSearchBar(
 - A second, non-deprecated `SearchBar` overload also exists taking additional `windowInsets: WindowInsets` and `scrollBehavior: SearchBarScrollBehavior?` parameters (delegates to an internal `AppBarWithSearch`), for search bars embedded in a scrolling app bar.
 - The results UI is rendered by a separate composable driven by the same `state`: `ExpandedFullScreenSearchBar` (full-screen results) or `ExpandedDockedSearchBar` (bounded panel, for large/tablet screens).
 - Package: `androidx.compose.material3`.
+- This is the Jetpack Compose (Kotlin) API — distinct from the same-named SwiftUI / Ark UI / Chakra UI / fandhe-frontend components.
 
 ## Related
 

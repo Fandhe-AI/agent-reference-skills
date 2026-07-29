@@ -76,3 +76,4 @@ Box(Modifier.background(color.value))
 
 - [animate*AsState](./animateasstate.md)
 - [AnimationVector / TwoWayConverter](./animationvector.md)
+- [DecayAnimationSpec](../animation-spec/decayanimationspec.md)

@@ -2,15 +2,18 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| @HiltAndroidApp | Triggers Hilt's code generation on the `Application` class, creating the app-level dependency container. | [hilt-android-app.md](./hilt-android-app.md) |
-| @AndroidEntryPoint | Enables field injection and generates a Hilt component for the annotated Android framework class. | [android-entry-point.md](./android-entry-point.md) |
-| @Inject | Requests a dependency via constructor injection or field injection. | [inject.md](./inject.md) |
-| @Module / @InstallIn | Declares a Hilt module and binds it to a component in the hierarchy. | [module-install-in.md](./module-install-in.md) |
-| @Provides | Provides an instance of a type that can't use constructor injection, from a module function. | [provides.md](./provides.md) |
-| @Binds | Maps an interface to its implementation via an abstract module function. | [binds.md](./binds.md) |
-| Hilt components and scopes | Reference table of generated components, their lifetimes, and matching scope annotations. | [hilt-components-scopes.md](./hilt-components-scopes.md) |
-| @Qualifier / @Named | Distinguishes multiple bindings of the same type. | [qualifier-named.md](./qualifier-named.md) |
-| @HiltViewModel / hiltViewModel() | Injects and retrieves a Hilt-managed `ViewModel`, including Compose and assisted injection. | [hilt-view-model.md](./hilt-view-model.md) |
-| @EntryPoint / EntryPointAccessors | Accesses Hilt dependencies from code Hilt can't inject directly. | [entry-point.md](./entry-point.md) |
-| Hilt testing | `@HiltAndroidTest`, `HiltAndroidRule`, `@TestInstallIn`, `@UninstallModules`, `@BindValue`. | [hilt-testing.md](./hilt-testing.md) |
-| Manual dependency injection | Hand-written DI via container classes, for comparison with Hilt. | [manual-di.md](./manual-di.md) |
+| @AndroidEntryPoint | Enables field injection and generates an individual Hilt component for the annotated Android framework class. | [android-entry-point.md](./android-entry-point.md) |
+| @Binds | Annotates an abstract function inside a Hilt module to tell Hilt which implementation to use for an interface. | [binds.md](./binds.md) |
+| Dagger basics (@Component, @Subcomponent, custom scopes) | Dagger is the annotation-processing DI framework Hilt is built on top of. `@Inject`, `@Module`, `@Provides`, and `@Binds` are Dagger annotations that Hilt reuses as-is; what Hilt automates away is hand-writing `@Component` interfaces, wiring their hierarchy with `@Subcomponent`, and defining custom `@Scope` annotations for each Android lifecycle. | [dagger-basics.md](./dagger-basics.md) |
+| @EntryPoint / EntryPointAccessors | Provides a boundary for accessing Hilt dependencies from code that Hilt does not directly support (e.g. `ContentProvider`, or third-party libraries that instantiate classes themselves). | [entry-point.md](./entry-point.md) |
+| @HiltAndroidApp | Triggers Hilt's code generation, including a base class for the application that serves as the app-level dependency container. | [hilt-android-app.md](./hilt-android-app.md) |
+| Hilt components and scopes | Hilt generates a component for each Android class that supports injection; each component has a defined lifetime and, optionally, a scope annotation for binding reuse within that lifetime. | [hilt-components-scopes.md](./hilt-components-scopes.md) |
+| Use Hilt with other Jetpack libraries | Hilt ships dedicated `androidx.hilt` artifacts that extend its dependency injection to `ViewModel`, `WorkManager`, and both the Compose and Fragment-based Navigation libraries, beyond the core `@HiltAndroidApp` / `@AndroidEntryPoint` setup. | [hilt-jetpack.md](./hilt-jetpack.md) |
+| Hilt in multi-module apps | Hilt code generation requires every Hilt module and constructor-injected class used by the `Application` class to be in the app module's transitive Gradle dependencies. Feature modules whose dependency direction is inverted (e.g. Dynamic Feature Modules) cannot use Hilt annotations directly and must bridge to the app-level Hilt graph through a Dagger `@Component` plus an `@EntryPoint`. | [hilt-multi-module.md](./hilt-multi-module.md) |
+| Hilt testing (@HiltAndroidTest / HiltAndroidRule / @UninstallModules) | Annotations and rules for using Hilt-injected dependencies in instrumented and Robolectric tests, and for swapping production bindings with fakes. | [hilt-testing.md](./hilt-testing.md) |
+| @HiltViewModel / hiltViewModel() | `@HiltViewModel` marks a `ViewModel` as injectable by Hilt; `hiltViewModel()` retrieves a Hilt-provided `ViewModel` instance scoped to the current navigation destination in Compose. | [hilt-view-model.md](./hilt-view-model.md) |
+| @Inject | Requests a dependency from the Hilt dependency graph, either through constructor injection or field injection. | [inject.md](./inject.md) |
+| Manual dependency injection | Passing dependencies through constructors by hand, typically centralized in a dependency "container" class, without relying on a DI library such as Hilt or Dagger. | [manual-di.md](./manual-di.md) |
+| @Module / @InstallIn | Declares a Hilt module and binds it to a generated component so its dependencies become available to that component and its children. | [module-install-in.md](./module-install-in.md) |
+| @Provides | Annotates a function inside a Hilt module to tell Hilt how to provide a type that cannot use constructor injection (e.g. an interface, or a class from an external library). | [provides.md](./provides.md) |
+| @Qualifier / @Named | Distinguishes multiple bindings of the same type by attaching a custom (or the built-in `@Named`) qualifier annotation to both the binding and the injection site. | [qualifier-named.md](./qualifier-named.md) |

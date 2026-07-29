@@ -29,3 +29,4 @@ private fun Greeting(name: String) {
 ## Related
 
 - [Phases of Compose](./phases.md)
+- [Custom Modifiers (Modifier.Node)](./custom-modifiers.md)

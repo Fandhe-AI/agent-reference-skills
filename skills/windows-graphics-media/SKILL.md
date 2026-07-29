@@ -28,98 +28,129 @@ skills/windows-graphics-media/
   references/
     direct2d-directwrite/
       README.md
-      id2d1factory.md
-      id2d1factory1.md
-      id2d1device.md
-      id2d1devicecontext.md
-      id2d1rendertarget.md
-      id2d1bitmap1.md
-      id2d1solidcolorbrush.md
-      id2d1lineargradientbrush.md
-      id2d1geometry.md
-      id2d1pathgeometry.md
-      id2d1geometrysink.md
-      id2d1strokestyle.md
-      id2d1effect.md
       d2d1createfactory.md
       direct2d-direct3d-interop.md
-      wic-interop.md
-      idwritefactory.md
-      idwritetextformat.md
-      idwritetextlayout.md
-      idwritefontcollection.md
       dwrite-text-metrics.md
       dwritecore.md
+      id2d1bitmap1.md
+      id2d1bitmapbrush.md
+      id2d1commandlist.md
+      id2d1device.md
+      id2d1devicecontext.md
+      id2d1effect.md
+      id2d1factory.md
+      id2d1factory1.md
+      id2d1geometry.md
+      id2d1geometrysink.md
+      id2d1layer.md
+      id2d1lineargradientbrush.md
+      id2d1pathgeometry.md
+      id2d1radialgradientbrush.md
+      id2d1rendertarget.md
+      id2d1solidcolorbrush.md
+      id2d1strokestyle.md
+      id2d1svgdocument.md
+      idwritefactory.md
+      idwritefontcollection.md
+      idwritefontface.md
+      idwritetextformat.md
+      idwritetextlayout.md
+      wic-interop.md
     direct3d-directx/
       README.md
-      dxgi-factory-adapter.md
-      dxgi-swap-chain.md
+      d3d11-blend-rasterizer.md
+      d3d11-compute-shader.md
+      d3d11-depth-stencil.md
       d3d11-device-context.md
       d3d11-resources.md
+      d3d11-sampler-srv.md
       d3d11-shaders-drawing.md
+      d3d12-barriers-descriptors.md
       d3d12-overview.md
-      hlsl-shader-compilation.md
-      directx-xaml-composition.md
+      d3d12-raytracing.md
+      directcomposition.md
       directx-winui3-integration.md
+      directx-xaml-composition.md
+      dxgi-factory-adapter.md
+      dxgi-swap-chain.md
+      hlsl-shader-compilation.md
     composition-visuals/
       README.md
+      composition-drawing-surface.md
+      composition-effect-brush.md
+      composition-gradient-brush.md
+      composition-light.md
+      composition-property-set.md
+      composition-surface-brush.md
       compositor.md
-      visual.md
       container-visual.md
-      sprite-visual.md
+      desktop-acrylic-controller.md
+      drop-shadow.md
       element-composition-preview.md
       expression-animation.md
       implicit-animation-collection.md
-      composition-effect-brush.md
       interaction-tracker.md
-      visual-interaction-source.md
-      composition-surface-brush.md
+      key-frame-animation.md
+      layer-visual.md
       loaded-image-surface.md
       mica-controller.md
-      desktop-acrylic-controller.md
+      natural-motion-animation.md
+      shape-visual.md
+      sprite-visual.md
+      visual-interaction-source.md
+      visual.md
     camera-capture/
       README.md
-      media-capture.md
-      media-capture-initialization-settings.md
+      advanced-photo-capture.md
+      camera-capabilities-privacy.md
       camera-capture-ui.md
-      low-lag-photo-capture.md
-      low-lag-media-recording.md
-      media-frame-reader.md
-      media-frame-source-group.md
-      device-enumeration.md
-      video-device-controller.md
+      camera-profiles.md
       camera-stream-state.md
+      device-enumeration.md
+      direct3d11-capture-frame-pool.md
+      face-tracker.md
       graphics-capture-item.md
       graphics-capture-picker.md
-      direct3d11-capture-frame-pool.md
       graphics-capture-session.md
-      camera-capabilities-privacy.md
+      low-lag-media-recording.md
+      low-lag-photo-capture.md
+      media-capture-initialization-settings.md
+      media-capture.md
+      media-frame-reader.md
+      media-frame-source-group.md
+      scene-analysis-face-detection-effects.md
+      software-bitmap.md
+      variable-photo-sequence.md
+      video-device-controller.md
       windows-studio-effects.md
     audio-video-playback/
       README.md
-      media-player.md
-      media-playback-session.md
+      adaptive-media-source.md
+      audio-device-output-node.md
+      audio-file-input-node.md
+      audio-frame-input-node.md
+      audio-graph.md
+      audio-state-monitor.md
+      custom-video-audio-effects.md
+      drm-playready.md
+      media-binder.md
+      media-capture-integration.md
+      media-clip.md
+      media-composition.md
       media-playback-command-manager.md
-      system-media-transport-controls.md
-      media-player-element.md
-      media-transport-controls.md
-      media-source.md
       media-playback-item.md
       media-playback-list.md
-      media-binder.md
-      adaptive-media-source.md
+      media-playback-session.md
+      media-player-element.md
+      media-player.md
+      media-source.md
       media-timeline-controller.md
-      timed-text-source.md
-      timed-metadata-track.md
-      media-composition.md
-      media-clip.md
       media-transcoder.md
-      audio-graph.md
-      audio-file-input-node.md
-      audio-device-output-node.md
-      audio-frame-input-node.md
-      media-capture-integration.md
-      drm-playready.md
+      media-transport-controls.md
+      midi.md
+      system-media-transport-controls.md
+      timed-metadata-track.md
+      timed-text-source.md
 ```
 
 ## 探索手順

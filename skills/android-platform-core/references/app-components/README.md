@@ -2,18 +2,20 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| App components overview | The four fundamental components (Activity, Service, BroadcastReceiver, ContentProvider) and how they're activated. | [app-components-overview.md](./app-components-overview.md) |
-| Activity | Entry point providing the window in which the app draws its UI. | [activity.md](./activity.md) |
-| Activity lifecycle | States and callbacks (onCreate/onStart/onResume/onPause/onStop/onDestroy) an Activity transitions through. | [activity-lifecycle.md](./activity-lifecycle.md) |
-| ComponentActivity and setContent | Compose entry point Activity subclass and its setContent function. | [component-activity-compose.md](./component-activity-compose.md) |
-| Tasks and back stack | launchMode, taskAffinity, intent flags, and Recents behavior controlling how activities group into tasks. | [tasks-and-back-stack.md](./tasks-and-back-stack.md) |
-| Configuration changes and state restoration | Activity destroy/recreate on configuration change, rememberSaveable and ViewModel state survival. | [configuration-changes.md](./configuration-changes.md) |
-| Intent | Messaging object for activating components, explicit vs. implicit, action/data/category/extras/flags. | [intent.md](./intent.md) |
-| Intent filters and resolution | Declaring `<intent-filter>` and how the system matches implicit intents against it. | [intent-filters.md](./intent-filters.md) |
-| Common intents | Catalog of frequently used implicit intents (ACTION_VIEW, ACTION_SEND, ACTION_GET_CONTENT, etc.) and Intent.createChooser. | [common-intents.md](./common-intents.md) |
-| Package visibility | `<queries>` manifest element controlling which other apps' packages/components are visible to intent resolution. | [package-visibility.md](./package-visibility.md) |
-| Activity Result contracts | Type-safe replacement for startActivityForResult/onActivityResult via registerForActivityResult / rememberLauncherForActivityResult. | [activity-result-contracts.md](./activity-result-contracts.md) |
-| ContentProvider basics | Querying a ContentProvider via ContentResolver, content URI structure, CRUD methods. | [content-provider-basics.md](./content-provider-basics.md) |
-| Creating a ContentProvider | Implementing a custom ContentProvider subclass with UriMatcher and manifest declaration. | [content-provider-creating.md](./content-provider-creating.md) |
-| App process priority and memory trimming | Process priority tiers (foreground/visible/service/cached) and the onTrimMemory callback. | [app-process-priority.md](./app-process-priority.md) |
-| Application class and initialization | Application base class and the androidx.startup App Startup library for ordered initialization. | [application-class.md](./application-class.md) |
+| Activity lifecycle | States an `Activity` transitions through, from creation to destruction, with callbacks. | [activity-lifecycle.md](./activity-lifecycle.md) |
+| Activity Result contracts | Type-safe, lifecycle-aware replacement for `startActivityForResult()` and `onActivityResult()`. | [activity-result-contracts.md](./activity-result-contracts.md) |
+| Activity | Provides the window in which the app draws UI; entry point for user journeys. | [activity.md](./activity.md) |
+| App components overview | The four fundamental building blocks: Activity, Service, BroadcastReceiver, ContentProvider. | [app-components-overview.md](./app-components-overview.md) |
+| App process priority and memory trimming | How Android ranks processes for killing under memory pressure via `onTrimMemory()`. | [app-process-priority.md](./app-process-priority.md) |
+| Application class and initialization | `Application` base class instantiated once per process; App Startup library alternative. | [application-class.md](./application-class.md) |
+| Background activity launch (BAL) restrictions | Restrictions on activities started from background; `ActivityOptions` opt-in flags for legitimate cases. | [background-activity-launch.md](./background-activity-launch.md) |
+| Common intents | Catalog of frequently used implicit intents for invoking built-in device apps. | [common-intents.md](./common-intents.md) |
+| ComponentActivity and setContent | `ComponentActivity` base class for Compose apps; `setContent` sets composable tree as root. | [component-activity-compose.md](./component-activity-compose.md) |
+| Configuration changes and state restoration | Configuration changes destroy/recreate `Activity`; state must be explicitly saved/restored. | [configuration-changes.md](./configuration-changes.md) |
+| ContentProvider basics | A `ContentProvider` manages access to central data and exposes it via content URIs. | [content-provider-basics.md](./content-provider-basics.md) |
+| Creating a ContentProvider | Implementing a custom `ContentProvider` subclass to expose app data via `ContentResolver`. | [content-provider-creating.md](./content-provider-creating.md) |
+| Intent filters and resolution | `<intent-filter>` declares which implicit `Intent`s a component can receive. | [intent-filters.md](./intent-filters.md) |
+| Intent | Asynchronous messaging object used to request actions from other components. | [intent.md](./intent.md) |
+| Package visibility | Privacy feature (Android 11+) that limits which installed packages an app can query. | [package-visibility.md](./package-visibility.md) |
+| Parcelables and bundles | `Parcelable` and `Bundle` marshal data across process boundaries. | [parcelables-and-bundles.md](./parcelables-and-bundles.md) |
+| Tasks and back stack | A task is a LIFO back stack of activities; `launchMode` and flags control associations. | [tasks-and-back-stack.md](./tasks-and-back-stack.md) |

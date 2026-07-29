@@ -74,7 +74,7 @@ AppScaffold {
 
 - Declare exactly one `AppScaffold` per activity/NavHost, and one `ScreenScaffold` (or Pager scaffold) per destination/page so `TimeText` stays visible and animates correctly across swipe-to-dismiss / navigation transitions.
 - `ScreenScaffold` has many overloads keyed by scroll-state type (`ScalingLazyListState`, `TransformingLazyColumnState`, `LazyListState`, `ScrollState`, `ScrollInfoProvider`); the `ScrollState` overload does not support the `edgeButton` slot.
-- `HorizontalPagerScaffold` / `VerticalPagerScaffold` pair with `HorizontalPager` / `VerticalPager` from `androidx.compose.foundation.pager`.
+- `HorizontalPagerScaffold` / `VerticalPagerScaffold` take a Wear `androidx.wear.compose.foundation.pager.PagerState`, so pair them with the Wear `HorizontalPager` / `VerticalPager` from that same package, not the mobile `androidx.compose.foundation.pager` one (incompatible `PagerState` type).
 - Package: `androidx.wear.compose.material3` (artifact `androidx.wear.compose:compose-material3`).
 
 ## Related
@@ -83,3 +83,4 @@ AppScaffold {
 - [TransformingLazyColumn / ScalingLazyColumn](./lists.md)
 - [EdgeButton](./edge-button.md)
 - [Progress indicators (PageIndicator)](./progress-indicators.md)
+- [HorizontalPager / VerticalPager (Wear)](./pager.md)

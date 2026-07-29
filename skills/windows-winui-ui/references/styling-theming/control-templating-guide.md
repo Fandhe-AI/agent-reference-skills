@@ -59,6 +59,7 @@ protected override void OnApplyTemplate()
 - Visual Studio's "Edit a Copy" template-editing action starts from a copy of the current default template, which is the safest way to avoid missing required visual states.
 - Custom dependency properties are declared via `DependencyProperty.Register` (C#) or the IDL DP pattern (C++/WinRT) and exposed as a `<name>` + `<name>Property` pair.
 - Prefer using WinUI's existing lightweight-styling resource keys/`BasedOn` over full re-templating where possible, to keep pace with future default template changes (see `Style, Setter, BasedOn`).
+- For accessibility, a custom templated control should also override `UIElement.OnCreateAutomationPeer` to return a dedicated `AutomationPeer` subclass — the `windows-testing-performance` skill covers authoring one in full.
 
 ## Related
 

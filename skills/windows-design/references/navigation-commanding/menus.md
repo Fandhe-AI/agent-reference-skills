@@ -42,7 +42,7 @@
 | FlyoutBase.AttachedFlyout | attached property | Attaches a `MenuFlyout` to show programmatically via `FlyoutBase.ShowAttachedFlyout` |
 | LightDismissOverlayMode | enum | `Auto` (default; dims on Xbox only), `On`, or `Off` |
 
-## Icons
+### Icons
 
 Provide icons for the most commonly used items, items with a standard or well-known icon, or items whose icon clearly illustrates the command. Don't add icons just to fill space — cryptic icons create clutter. `MenuFlyoutItem` icons render at 16x16px.
 

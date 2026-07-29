@@ -34,7 +34,7 @@ An adaptive control that implements top-level navigation for an app, supporting 
 | AutoSuggestBox | AutoSuggestBox | Optional app-level search box hosted in the pane |
 | CompactModeThresholdWidth / ExpandedModeThresholdWidth | double | Breakpoints for `Auto` adaptive behavior |
 
-## Top vs. left navigation
+### Top vs. left navigation
 
 Recommend **top** navigation when: there are 5 or fewer top-level categories of equal importance, all options should be visible on screen, more content space is desired, or icons can't clearly describe categories.
 
@@ -42,11 +42,11 @@ Recommend **left** navigation when: there are 5-10 equally important top-level c
 
 `Auto` (the default) adapts between `LeftMinimal` (≤640px), `LeftCompact` (641-1007px), and `Left` (≥1008px).
 
-## Hierarchical navigation
+### Hierarchical navigation
 
 Use `NavigationViewItem.MenuItems` (or `MenuItemsSource` bound to child data with `ItemTemplate` set to a `NavigationViewItem`) to nest child items under a parent. NavigationView shows hierarchy in `Top`, `Left`, and `LeftCompact` display modes. Although any number of nested levels is supported, keep the hierarchy to two levels for usability.
 
-## Navigation and backwards navigation
+### Navigation and backwards navigation
 
 `NavigationView` does not perform navigation automatically — handle `ItemInvoked` (raised whenever an item is tapped, even if already selected) or `SelectionChanged` (raised on a real selection change) to navigate your `Frame`. It has a built-in back button, but you must handle the `BackRequested` event yourself to call `Frame.GoBack()`.
 

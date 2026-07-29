@@ -40,6 +40,13 @@ skills/android-background-work/
       worker-factory.md
       threading.md
       testing.md
+      debugging.md
+      migrate-legacy-schedulers.md
+      multiprocess.md
+      operation.md
+      rxworker.md
+      update-work.md
+      workquery.md
     services/
       README.md
       service.md
@@ -54,6 +61,7 @@ skills/android-background-work/
       messenger.md
       aidl.md
       processes-and-threads.md
+      handle-user-stopping.md
     alarms-broadcasts/
       README.md
       alarmmanager.md
@@ -67,6 +75,8 @@ skills/android-background-work/
       sending-broadcasts.md
       boot-completed.md
       jobscheduler.md
+      user-initiated-data-transfer.md
+      wakelock.md
     coroutines-flow/
       README.md
       suspend-functions.md
@@ -82,6 +92,7 @@ skills/android-background-work/
       callbackflow-channelflow.md
       combine-zip-flatmaplatest.md
       channel.md
+      retry-retrywhen.md
       testing-coroutines-flow.md
 ```
 

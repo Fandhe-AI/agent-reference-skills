@@ -22,66 +22,92 @@ skills/android-media-camera/
   references/
     media3-playback/
       README.md
-      player.md
-      player-listener.md
+      ad-insertion.md
+      analytics.md
+      audio-attributes.md
+      cast-player.md
+      compose-ui.md
+      customization.md
+      data-source-cache.md
+      drm.md
       exoplayer.md
+      live-streaming.md
       media-item.md
       media-metadata.md
       media-source.md
-      data-source-cache.md
-      track-selection.md
-      timeline-tracks.md
       playback-exception.md
       playback-parameters.md
+      player.md
+      player-listener.md
       player-view.md
-      compose-ui.md
-      audio-attributes.md
-      drm.md
-      customization.md
+      preload-manager.md
+      retrieving-metadata.md
+      timeline-tracks.md
+      track-selection.md
     media-session-editing/
       README.md
-      media-session.md
+      command-button.md
+      composition-player.md
+      composition.md
+      edited-media-item.md
+      media-browser.md
+      media-button-receiver.md
+      media-controller.md
+      media-library-service.md
+      media-notification-provider.md
       media-session-callback.md
       media-session-service.md
-      media-library-service.md
-      media-controller.md
-      media-browser.md
-      session-token.md
+      media-session.md
       session-commands.md
-      command-button.md
-      media-notification-provider.md
-      media-button-receiver.md
+      session-token.md
+      tone-mapping.md
       transformer.md
+    media3-inspector/
+      README.md
+      frame-extractor.md
+      media-extractor-compat.md
+      metadata-retriever.md
+    mediarouter/
+      README.md
+      media-router.md
+      media-route-button.md
+      media-route-provider.md
+      media-route-selector.md
+      remote-playback-client.md
     camerax-usecases/
       README.md
-      process-camera-provider.md
-      camera-selector.md
-      preview.md
-      preview-view.md
-      camera-compose-viewfinder.md
-      image-capture.md
-      image-analysis.md
-      video-capture.md
-      recording.md
-      use-case-group-viewport.md
+      camera-permissions.md
       camera-controller.md
       camera-effect.md
+      camera-compose-viewfinder.md
+      camera-selector.md
+      image-analysis.md
+      image-capture.md
+      mlkit-analyzer.md
       orientation-rotation.md
-      camera-permissions.md
+      preview.md
+      preview-view.md
+      process-camera-provider.md
+      recording.md
+      transform-output.md
+      use-case-group-viewport.md
+      video-capture.md
+      zero-shutter-lag.md
     camerax-config/
       README.md
-      camera-control.md
-      camera-info.md
-      zoom-state.md
-      exposure-state.md
-      focus-metering-action.md
-      camera-state.md
-      camerax-config.md
-      camera-filter.md
-      camera-extensions.md
       camera2-interop.md
+      camera-control.md
+      camera-filter.md
+      camera-info.md
+      camera-state.md
+      camera-extensions.md
+      camerax-config.md
       concurrent-camera.md
       dynamic-range.md
+      exposure-state.md
+      focus-metering-action.md
+      resolution-selector.md
+      zoom-state.md
 ```
 
 ## 探索手順
@@ -105,6 +131,11 @@ skills/android-media-camera/
 | MediaController / MediaBrowser でセッションに接続・操作したい | media-session-editing | [references/media-session-editing/README.md](references/media-session-editing/README.md) |
 | メディア通知 (MediaNotification.Provider) をカスタマイズしたい | media-session-editing | [references/media-session-editing/README.md](references/media-session-editing/README.md) |
 | Transformer でメディアの編集・トランスコードをしたい | media-session-editing | [references/media-session-editing/README.md](references/media-session-editing/README.md) |
+| 再生せずに MediaItem のメタデータ・解像度・コーデックを取得したい | media3-inspector | [references/media3-inspector/README.md](references/media3-inspector/README.md) |
+| サムネイル・フレーム抽出や MediaExtractor 互換のデマルチプレクスをしたい | media3-inspector | [references/media3-inspector/README.md](references/media3-inspector/README.md) |
+| 外部出力デバイス・出力先ルートの検出・選択をしたい | mediarouter | [references/mediarouter/README.md](references/mediarouter/README.md) |
+| MediaRouteButton でルート選択 UI を表示したい | mediarouter | [references/mediarouter/README.md](references/mediarouter/README.md) |
+| カスタム MediaRouteProvider の公開やリモート再生コマンド送信をしたい | mediarouter | [references/mediarouter/README.md](references/mediarouter/README.md) |
 | ProcessCameraProvider / Preview / ImageCapture でカメラプレビュー・撮影を実装したい | camerax-usecases | [references/camerax-usecases/README.md](references/camerax-usecases/README.md) |
 | ImageAnalysis / VideoCapture でフレーム解析・動画録画をしたい | camerax-usecases | [references/camerax-usecases/README.md](references/camerax-usecases/README.md) |
 | CameraController で高レベル API を使いたい | camerax-usecases | [references/camerax-usecases/README.md](references/camerax-usecases/README.md) |

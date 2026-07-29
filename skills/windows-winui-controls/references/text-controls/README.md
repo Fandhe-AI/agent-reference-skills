@@ -1,4 +1,4 @@
-# Text controls
+# Text Controls
 
 | Name | Description | Path |
 |------|-------------|------|

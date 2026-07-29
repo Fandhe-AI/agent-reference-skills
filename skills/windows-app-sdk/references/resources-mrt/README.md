@@ -1,7 +1,7 @@
 # resources-mrt
 
 | Name | Description | Path |
-|------|-------------|------|
+| --- | --- | --- |
 | ResourceManager | Access to app resource maps and advanced resource enumeration/inspection. | [resource-manager.md](./resource-manager.md) |
 | ResourceContext | Collection of resource qualifier values (language, scale, contrast, ...) used to select a resource candidate. | [resource-context.md](./resource-context.md) |
 | ResourceMap | Hierarchical collection of an app/package's resources, with subtree and value lookup. | [resource-map.md](./resource-map.md) |

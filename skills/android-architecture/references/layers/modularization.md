@@ -2,6 +2,19 @@
 
 The practice of organizing a codebase into loosely coupled, self-contained modules, each serving a clear purpose, to reduce complexity and improve scalability.
 
+## Signature / Usage
+
+```kotlin
+// settings.gradle.kts declares each module...
+include(":app", ":feature:login", ":core:data")
+
+// feature/login/build.gradle.kts wires the dependency direction:
+// the feature module depends on core:data, not the other way around.
+dependencies {
+    implementation(project(":core:data"))
+}
+```
+
 ## Notes
 
 - Benefits: reusability (share code / build multiple app variants), strict visibility control (`internal`/`private` hides implementation), customizable delivery (Play Feature Delivery), scalability (limits coupling), clear ownership, encapsulation, isolated testability, and faster incremental/parallel/cached Gradle builds.

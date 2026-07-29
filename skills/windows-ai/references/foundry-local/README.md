@@ -1,11 +1,12 @@
-# Foundry Local
+# foundry-local
 
 | Name | Description | Path |
 |------|-------------|------|
-| What is Foundry Local? | Overview, features, on-device motivation, Foundry Local vs Azure AI Foundry | [overview.md](./overview.md) |
-| Foundry Local Architecture | Core API, ONNX Runtime, Foundry Catalog, WinML, execution providers, model lifecycle | [architecture.md](./architecture.md) |
-| Foundry Local CLI | winget/brew install, `foundry model`/`service`/`cache` commands | [installation-and-cli.md](./installation-and-cli.md) |
-| Foundry Local REST API | OpenAI-compatible `/v1/chat/completions`, `/v1/models`, and management endpoints | [rest-api.md](./rest-api.md) |
-| Foundry Local SDK (foundry-local-sdk) | `FoundryLocalManager`, `StartModelAsync`, `GetModelInfo`, `Endpoint`, `ApiKey`, OpenAI SDK integration | [sdk.md](./sdk.md) |
-| Model Catalog and Hardware Variants | Model aliases, CPU/GPU/NPU variants, filtering, execution provider requirements | [model-catalog.md](./model-catalog.md) |
-| Cache Management | `foundry cache` commands and SDK cache equivalents | [cache-management.md](./cache-management.md) |
+| Foundry Local Architecture | In-process native library architecture for local AI inference with ONNX Runtime | [architecture.md](./architecture.md) |
+| Cache Management | Manage downloaded and compiled model cache | [cache-management.md](./cache-management.md) |
+| Foundry Local CLI | Command-line interface for installing Foundry Local and managing models | [installation-and-cli.md](./installation-and-cli.md) |
+| Model Catalog and Hardware Variants | Cloud-hosted registry with hardware-optimized model variants (CPU/GPU/NPU) | [model-catalog.md](./model-catalog.md) |
+| What is Foundry Local? | End-to-end local AI solution with SDK, curated catalog, automatic hardware acceleration | [overview.md](./overview.md) |
+| Foundry Local REST API | OpenAI-compatible REST API for model inference and management | [rest-api.md](./rest-api.md) |
+| Foundry Local SDK | SDK entry point for model management (C#, JavaScript, Python, Rust) | [sdk.md](./sdk.md) |
+| Microsoft.AI.Foundry.Local.WinML | Windows-specific NuGet package for Foundry Local with WinML integration | [winml-package.md](./winml-package.md) |

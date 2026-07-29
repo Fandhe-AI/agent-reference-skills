@@ -44,4 +44,4 @@ class LogHistoryAndroidUnitTest {
 - [ApplicationProvider](./applicationprovider.md)
 - [Test filter annotations](./test-filter-annotations.md)
 - [Set up project for AndroidX Test](./set-up-project.md)
-- [../fundamentals-local/README.md](../fundamentals-local/README.md)
+- [JUnit4 basics](../fundamentals-local/junit4-basics.md)

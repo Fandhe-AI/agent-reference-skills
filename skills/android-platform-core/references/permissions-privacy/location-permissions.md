@@ -38,3 +38,4 @@ Location access is requested in stages: coarse (approximate), fine (precise), an
 - [requesting-runtime-permissions](./requesting-runtime-permissions.md)
 - [explaining-permission-access](./explaining-permission-access.md)
 - [evaluating-permission-need](./evaluating-permission-need.md)
+- [location-button](./location-button.md)

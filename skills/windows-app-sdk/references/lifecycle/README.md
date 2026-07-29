@@ -1,10 +1,12 @@
 # lifecycle
 
 | Name | Description | Path |
-|------|-------------|------|
-| Application | `Microsoft.UI.Xaml.Application`, `Application.Current`, `OnLaunched` entry point | [application.md](./application.md) |
-| AppInstance | Instance identity, `GetCurrent`, `GetInstances`, `Restart`, `Activated` event | [app-instance.md](./app-instance.md) |
-| AppActivationArguments / ExtendedActivationKind | Activation payload and activation kind enum | [app-activation-arguments.md](./app-activation-arguments.md) |
-| Rich activation (ActivationRegistrationManager) | Register/unregister for file type, protocol, startup activation | [rich-activation.md](./rich-activation.md) |
-| Single-instancing and multi-instancing | `FindOrRegisterForKey` + `RedirectActivationToAsync` patterns | [single-instancing.md](./single-instancing.md) |
-| PowerManager | Battery, power source, display, suspend/idle state notifications | [power-manager.md](./power-manager.md) |
+| --- | --- | --- |
+| Application | The `Application` class encapsulates a Windows App SDK app and provides its entry point, app-scoped resources, and unhandled exception detection. The `Application` object is created by the Windows App SDK framework and is accessible from `Microsoft.UI.Xaml.Application.Current`. | [application.md](./application.md) |
+| AppActivationArguments / ExtendedActivationKind | `AppActivationArguments` contains the type and data payload for an app activation. `ExtendedActivationKind` defines the set of activation types the payload can represent, used by the `Kind` property. | [app-activation-arguments.md](./app-activation-arguments.md) |
+| AppInstance | `Microsoft.Windows.AppLifecycle.AppInstance` represents an instance of an app. It supports activation redirection scenarios (single-instancing / multi-instancing) for both packaged and unpackaged Windows App SDK apps. | [app-instance.md](./app-instance.md) |
+| FocusSessionManager | `Windows.UI.Shell.FocusSessionManager` detects whether Windows 11's Focus feature (Do Not Disturb, silenced icon flashing/badge notifications) is currently active, so an app can reduce its own distracting behavior (auto-playing GIFs, animations, sounds) while a Focus session is running. | [focus-session.md](./focus-session.md) |
+| PowerManager | `PowerManager` (`Microsoft.Windows.System.Power`) provides static properties and events that give visibility into a device's power state (battery, power source, display, suspend/idle status), letting the app make resource-usage decisions. The API uses a callback model, reaching all app types including background/headless apps. | [power-manager.md](./power-manager.md) |
+| Rich activation (ActivationRegistrationManager) | Rich activation brings UWP-style activation kinds (file, protocol, startup task) to unpackaged Windows App SDK apps. `ActivationRegistrationManager` provides static methods to register and unregister for these activation kinds at runtime. | [rich-activation.md](./rich-activation.md) |
+| Single-instancing and multi-instancing | An app's instancing model determines whether multiple instances of its main process can run at once. WinUI 3 apps are multi-instanced by default; use `AppInstance.FindOrRegisterForKey` and `RedirectActivationToAsync` at launch to opt into single-instance (or partially single-instance) behavior. | [single-instancing.md](./single-instancing.md) |
+| Windows app restore | Windows app restore backs up a user's installed app list to the cloud and, on a new PC, creates pinned placeholders so users find their apps where they expect them. App restore itself is a Windows OS/Microsoft Store capability, not an SDK API surface — this page covers the app-side tenets that maximize how well an app participates in it. | [app-restore.md](./app-restore.md) |

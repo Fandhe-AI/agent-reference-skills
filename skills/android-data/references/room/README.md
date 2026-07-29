@@ -1,26 +1,25 @@
 # room
 
-> This is the Android Room persistence library (Kotlin, `androidx.room`) — distinct from the same-named concepts in other skills.
-
 | Name | Description | Path |
 |------|-------------|------|
+| Async DAO Queries (Flow / suspend / LiveData) | Room disallows database access on the main thread; DAO methods return asynchronous types depending on the query kind and framework. | [async-queries.md](./async-queries.md) |
+| @ColumnInfo | Customizes the column name and other column-specific settings for a field within an `@Entity`. | [column-info.md](./column-info.md) |
+| @Dao | Marks an interface or abstract class as a Data Access Object, providing methods to query, insert, update, and delete data. | [dao.md](./dao.md) |
+| @Database | Marks an abstract class extending `RoomDatabase` as the main access point to the persisted database, holding the entities and exposing DAOs. | [database.md](./database.md) |
+| @Delete | Defines a DAO method that deletes rows matching the given entities. | [delete.md](./delete.md) |
+| @Embedded | Decomposes the fields of another class directly into the columns of the enclosing table, without creating a relationship. | [embedded.md](./embedded.md) |
 | @Entity | Marks a class as a Room entity, representing a table in the database. | [entity.md](./entity.md) |
-| @PrimaryKey | Designates a field as the primary key of an `@Entity`. | [primary-key.md](./primary-key.md) |
-| @ColumnInfo | Customizes the column name and settings for an entity field. | [column-info.md](./column-info.md) |
-| @Ignore | Excludes a field from being persisted. | [ignore.md](./ignore.md) |
-| @Embedded | Decomposes another class's fields directly into the enclosing table's columns. | [embedded.md](./embedded.md) |
-| @Dao | Marks an interface/abstract class as a Data Access Object. | [dao.md](./dao.md) |
-| @Query | Writes a compile-time-validated custom SQL statement as a DAO method. | [query.md](./query.md) |
-| @Insert | Defines a DAO method that inserts entities into the database. | [insert.md](./insert.md) |
-| @Update | Defines a DAO method that updates rows matching given entities. | [update.md](./update.md) |
-| @Delete | Defines a DAO method that deletes rows matching given entities. | [delete.md](./delete.md) |
-| @Upsert | Inserts an entity, or updates it on a uniqueness conflict. | [upsert.md](./upsert.md) |
-| @Transaction | Runs a multi-query DAO method atomically. | [transaction.md](./transaction.md) |
-| @Database | Marks the `RoomDatabase` subclass holding entities, views, and migrations. | [database.md](./database.md) |
-| Room.databaseBuilder / RoomDatabase.Builder | Builds the `@Database` singleton instance and configures migrations, converters, prepopulation. | [room-database-builder.md](./room-database-builder.md) |
-| Migration / Auto-Migration Annotations | Manual `Migration` objects and `@AutoMigration` / `@RenameTable` / `@RenameColumn` / `@DeleteColumn` / `@DeleteTable` for schema upgrades. | [migration.md](./migration.md) |
-| @TypeConverter / @TypeConverters | Converts custom types to/from types Room can persist. | [type-converter.md](./type-converter.md) |
-| @Relation | Defines one-to-one/one-to-many/many-to-many relationships resolved via separate queries. | [relation.md](./relation.md) |
-| @Fts4 / @DatabaseView | Full-text-search virtual tables and read-only SQL views. | [fts-database-view.md](./fts-database-view.md) |
-| Async DAO Queries (Flow / suspend / LiveData) | Asynchronous return types for one-shot and observable DAO queries. | [async-queries.md](./async-queries.md) |
-| Testing Room Databases | In-memory database testing, migration testing, DAO mocking. | [testing.md](./testing.md) |
+| @ForeignKey | Declares a foreign key constraint from an `@Entity` to another `@Entity`, via the `foreignKeys` parameter of `@Entity`. SQLite enforces the relationship at write time, unlike `@Relation` which only resolves reads. | [foreign-key.md](./foreign-key.md) |
+| @Fts4 / @DatabaseView | `@Fts4` backs an entity with a SQLite full-text-search virtual table; `@DatabaseView` backs a class with a read-only SQL view. | [fts-database-view.md](./fts-database-view.md) |
+| @Ignore | Excludes a specific field (or, via `@Entity(ignoredColumns = [...])`, an inherited field) from being persisted. | [ignore.md](./ignore.md) |
+| @Insert | Defines a DAO method that inserts its parameters into the database. | [insert.md](./insert.md) |
+| Migration / Automated Migration Annotations | Handles Room database schema changes across versions, either manually with a `Migration` object or automatically via `@AutoMigration`. | [migration.md](./migration.md) |
+| @PrimaryKey | Designates a field as the primary key that uniquely identifies each row of an `@Entity`. | [primary-key.md](./primary-key.md) |
+| @Query | Writes a custom SQL statement and exposes it as a DAO method. The SQL is validated at compile time. | [query.md](./query.md) |
+| @Relation | Defines a one-to-one, one-to-many, or (combined with `@Junction`) many-to-many relationship, resolved by Room through separate queries rather than object references. | [relation.md](./relation.md) |
+| Room.databaseBuilder / RoomDatabase.Builder | Creates the singleton instance of a `@Database`-annotated class, configured via a chain of `RoomDatabase.Builder` calls. | [room-database-builder.md](./room-database-builder.md) |
+| Testing Room Databases | Room databases are tested with JUnit tests running on an Android device, typically against an in-memory database instance. | [testing.md](./testing.md) |
+| @Transaction | Ensures a DAO method that requires Room to run multiple queries executes atomically. | [transaction.md](./transaction.md) |
+| @TypeConverter / @TypeConverters | `@TypeConverter` marks a method that converts a custom type to/from a type Room can persist; `@TypeConverters` registers converter classes with Room. | [type-converter.md](./type-converter.md) |
+| @Update | Defines a DAO method that updates rows matching the given entities. | [update.md](./update.md) |
+| @Upsert | Shortcut annotation that inserts an entity when there is no uniqueness conflict, or updates it when a conflict is detected. | [upsert.md](./upsert.md) |

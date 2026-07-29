@@ -54,6 +54,7 @@ skills/windows-winui-controls/
       hyperlink.md
     collections/
       README.md
+      annotated-scroll-bar.md
       list-view.md
       grid-view.md
       items-view.md
@@ -64,6 +65,7 @@ skills/windows-winui-controls/
       list-box.md
       combo-box.md
       selector-bar.md
+      semantic-zoom.md
       item-container.md
       scroll-view.md
     navigation-controls/
@@ -79,6 +81,7 @@ skills/windows-winui-controls/
       menubar.md
       menubaritem.md
       pipspager.md
+      twopaneview.md
     dialogs-flyouts-commands/
       README.md
       content-dialog.md
@@ -113,6 +116,7 @@ skills/windows-winui-controls/
       swipe-control.md
       refresh-container.md
       parallax-view.md
+      shapes.md
       title-bar.md
 ```
 

@@ -1,21 +1,22 @@
 # espresso
 
-> This is Espresso (Kotlin, Android View-system UI testing) — distinct from the same-named Playwright / Vitest API. Not applicable to Jetpack Compose UIs; see the `compose-testing` category for that.
-
 | Name | Description | Path |
 |------|-------------|------|
-| Espresso.onView | Locates a single view and returns a ViewInteraction, the main test entry point. | [onview.md](./onview.md) |
-| ViewInteraction | Chains ViewActions via perform() and ViewAssertions via check() on a located view. | [viewinteraction.md](./viewinteraction.md) |
-| ViewMatchers | Hamcrest matchers (withId, withText, isDisplayed, etc.) for locating views. | [viewmatchers.md](./viewmatchers.md) |
-| ViewActions | Actions (click, typeText, scrollTo, swipeLeft, etc.) executed via perform(). | [viewactions.md](./viewactions.md) |
-| ViewAssertions | Assertions (matches, doesNotExist, selectedDescendantsMatch) executed via check(). | [viewassertions.md](./viewassertions.md) |
-| Espresso.onData | Entry point for AdapterView (ListView/GridView/Spinner) items not currently in the hierarchy. | [ondata.md](./ondata.md) |
-| RecyclerViewActions | espresso-contrib actions for scrolling and acting on RecyclerView items. | [recyclerviewactions.md](./recyclerviewactions.md) |
-| Espresso.pressBack / openActionBarOverflowOrOptionsMenu | Static Espresso methods for Back button and action bar overflow/options menu. | [global-actions.md](./global-actions.md) |
-| IdlingResource / IdlingRegistry / CountingIdlingResource | Synchronizes Espresso with asynchronous work outside the message queue. | [idling-resource.md](./idling-resource.md) |
-| Espresso-Intents (intended / intending) | Validates and stubs Intents sent by the app under test. | [intents.md](./intents.md) |
-| Espresso-Web (onWebView / withElement) | Tests WebView DOM content via WebDriver Atoms. | [web.md](./web.md) |
-| AccessibilityChecks | Enables automatic accessibility validation during view actions. | [accessibility-checks.md](./accessibility-checks.md) |
-| Custom Matchers and Actions | How to implement custom ViewMatcher / ViewAction / data matchers. | [custom-matchers-actions.md](./custom-matchers-actions.md) |
-| Espresso Best Practices | Guidance for reliable, fast Espresso tests. | [best-practices.md](./best-practices.md) |
-| Espresso Recipes | Common patterns: hasSibling, action bar overflow, inRoot, custom failure handler, list header/footer. | [recipes.md](./recipes.md) |
+| AccessibilityChecks | Enables automatic accessibility validation on every view action performed during an Espresso test. | [accessibility-checks.md](./accessibility-checks.md) |
+| Espresso Best Practices | Guidance for writing reliable, fast Espresso tests and avoiding common flakiness sources. | [best-practices.md](./best-practices.md) |
+| DrawerActions / PickerActions / NavigationViewActions | `espresso-contrib` `ViewAction`s for opening/closing `DrawerLayout`, setting `DatePicker`/`TimePicker`, navigating `NavigationView`. | [contrib-actions.md](./contrib-actions.md) |
+| Custom Matchers and Actions | How to extend Espresso with app-specific `ViewMatcher`s and `ViewAction`s when built-ins are insufficient. | [custom-matchers-actions.md](./custom-matchers-actions.md) |
+| Espresso Device API | `androidx.test.espresso:espresso-device` API for controlling screen configuration of virtual devices during tests. | [espresso-device.md](./espresso-device.md) |
+| Espresso.pressBack / openActionBarOverflowOrOptionsMenu | Static utility methods on the `Espresso` class for device Back button and action bar overflow menu. | [global-actions.md](./global-actions.md) |
+| IdlingResource / IdlingRegistry / CountingIdlingResource | Mechanism for synchronizing Espresso with asynchronous work that framework's built-in synchronization doesn't cover. | [idling-resource.md](./idling-resource.md) |
+| Espresso-Intents (intended / intending) | Extension to Espresso that validates and stubs `Intent`s sent by the app under test. | [intents.md](./intents.md) |
+| Multiprocess Espresso | `androidx.test.espresso:espresso-remote` extends Espresso's synchronization across process boundaries. | [multiprocess.md](./multiprocess.md) |
+| Espresso.onData | Entry point for interacting with items in an `AdapterView` (ListView, GridView, Spinner). | [ondata.md](./ondata.md) |
+| Espresso.onView | Locates a single view in the current view hierarchy and returns a `ViewInteraction` for chaining actions/assertions. | [onview.md](./onview.md) |
+| Espresso Recipes | Common Espresso testing patterns for scenarios not covered by basic matcher/action/assertion APIs. | [recipes.md](./recipes.md) |
+| RecyclerViewActions | `ViewAction`s for scrolling and acting on items inside a `RecyclerView`. | [recyclerviewactions.md](./recyclerviewactions.md) |
+| ViewActions | Factory functions for `ViewAction`s passed to `perform()` to simulate user interaction. | [viewactions.md](./viewactions.md) |
+| ViewAssertions | Factory functions for `ViewAssertion`s passed to `check()` to verify the state of a located view. | [viewassertions.md](./viewassertions.md) |
+| ViewInteraction | The object returned by `onView()` / `onData()` exposing `perform()` and `check()` for chaining. | [viewinteraction.md](./viewinteraction.md) |
+| ViewMatchers | Hamcrest `Matcher<View>` factory functions used to locate a view or combine/negate other matchers. | [viewmatchers.md](./viewmatchers.md) |
+| Espresso-Web (onWebView / withElement) | Entry point for testing `WebView` UI content with Espresso using WebDriver "Atoms". | [web.md](./web.md) |

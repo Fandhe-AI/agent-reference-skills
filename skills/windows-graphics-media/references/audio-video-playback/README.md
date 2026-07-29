@@ -1,27 +1,30 @@
 # audio-video-playback
 
 | Name | Description | Path |
-|------|-------------|------|
-| MediaPlayer | 再生・一時停止・音量制御・SMTC 統合を担う中核クラス | [media-player.md](./media-player.md) |
-| MediaPlaybackSession | 再生セッションの状態（位置・レート・バッファリング）と関連イベント | [media-playback-session.md](./media-playback-session.md) |
-| MediaPlaybackCommandManager | SMTC の挙動制御とコマンド受信 | [media-playback-command-manager.md](./media-playback-command-manager.md) |
-| SystemMediaTransportControls | システムのメディアトランスポート UI との統合 | [system-media-transport-controls.md](./system-media-transport-controls.md) |
-| MediaPlayerElement | WinUI 3 の動画再生 XAML コントロール | [media-player-element.md](./media-player-element.md) |
-| MediaTransportControls | MediaPlayerElement のトランスポート UI | [media-transport-controls.md](./media-transport-controls.md) |
-| MediaSource | ファイル・ストリーム・URI・アダプティブ配信を統一的に扱うソース | [media-source.md](./media-source.md) |
-| MediaPlaybackItem | トラック情報を持つ再生可能アイテム | [media-playback-item.md](./media-playback-item.md) |
-| MediaPlaybackList | ギャップレス再生対応のプレイリスト | [media-playback-list.md](./media-playback-list.md) |
-| MediaBinder | メディアソースの遅延バインディング | [media-binder.md](./media-binder.md) |
-| AdaptiveMediaSource | HLS / DASH アダプティブストリーミング | [adaptive-media-source.md](./adaptive-media-source.md) |
-| MediaTimelineController | 複数 MediaPlayer のタイムライン同期制御 | [media-timeline-controller.md](./media-timeline-controller.md) |
-| TimedTextSource | 字幕・キャプションの外部ソース | [timed-text-source.md](./timed-text-source.md) |
-| TimedMetadataTrack | タイムドメタデータ／字幕トラックとキュー | [timed-metadata-track.md](./timed-metadata-track.md) |
-| MediaComposition | 動画編集用のクリップ・オーディオトラック集合 | [media-composition.md](./media-composition.md) |
-| MediaClip | 単一の動画・画像・カラー・サーフェスクリップ | [media-clip.md](./media-clip.md) |
-| MediaTranscoder | 音声・動画ファイルのトランスコード | [media-transcoder.md](./media-transcoder.md) |
-| AudioGraph | 低遅延オーディオ処理・ルーティングのグラフ | [audio-graph.md](./audio-graph.md) |
-| AudioFileInputNode | ファイルからのオーディオグラフ入力ノード | [audio-file-input-node.md](./audio-file-input-node.md) |
-| AudioDeviceOutputNode | デバイスへのオーディオグラフ出力ノード | [audio-device-output-node.md](./audio-device-output-node.md) |
-| AudioFrameInputNode | アプリ生成オーディオのグラフ入力ノード | [audio-frame-input-node.md](./audio-frame-input-node.md) |
-| MediaCapture integration | MediaCapture のフレームソースを再生・オーディオグラフに接続する連携ポイント | [media-capture-integration.md](./media-capture-integration.md) |
-| PlayReady DRM overview | MediaProtectionManager による PlayReady 保護コンテンツ再生の概要 | [drm-playready.md](./drm-playready.md) |
+| --- | --- | --- |
+| AdaptiveMediaSource | Represents the source of adaptive streaming content, supporting HLS and MPEG-DASH manifests with automatic bitrate switching. | [adaptive-media-source.md](./adaptive-media-source.md) |
+| AudioDeviceOutputNode | Represents a node in an `AudioGraph` that outputs audio data from the graph to an audio device such as a speaker or external audio interface. | [audio-device-output-node.md](./audio-device-output-node.md) |
+| AudioFileInputNode | Represents a node in an `AudioGraph` that inputs audio data into the graph from an audio file. | [audio-file-input-node.md](./audio-file-input-node.md) |
+| AudioFrameInputNode | Represents a node in an `AudioGraph` that inputs audio data into the graph from app-implemented code that generates audio samples programmatically (e.g. synthesized tones, procedural audio). | [audio-frame-input-node.md](./audio-frame-input-node.md) |
+| AudioGraph | Represents a graph of connected audio input, output, and submix nodes for low-latency audio processing and routing, higher-level than raw XAudio2 COM APIs. | [audio-graph.md](./audio-graph.md) |
+| Detect and respond to audio state changes (AudioStateMonitor) | `AudioStateMonitor` lets an app detect system-initiated changes to the sound level of an audio stream it owns — for example the system "ducking" or muting playback/capture when an alarm rings or another app opens a communications stream (VoIP call). | [audio-state-monitor.md](./audio-state-monitor.md) |
+| Custom video/audio effects (IBasicVideoEffect / IBasicAudioEffect) | Interfaces for implementing custom, real-time effects that operate on individual video or audio frames as they pass through `MediaCapture`, `MediaComposition`/`MediaClip`, or `MediaTranscoder` pipelines. A class implementing `IBasicVideoEffect` (or the audio equivalent `IBasicAudioEffect`) must be hosted in a separate Windows Runtime component project, not the app project directly. | [custom-video-audio-effects.md](./custom-video-audio-effects.md) |
+| PlayReady DRM overview | Describes how to play PlayReady-protected media content through `MediaPlayer`, using `MediaProtectionManager` to handle license acquisition. | [drm-playready.md](./drm-playready.md) |
+| MediaBinder | Enables deferred binding of media content associated with a `MediaSource`. Use this class for media content that shouldn't be bound to a `MediaSource` until a media player is actually about to play the content, such as content that requires payment or authorization to access. | [media-binder.md](./media-binder.md) |
+| MediaClip | Represents a single media object (video, image, solid color, or Direct3D surface) usable within a `MediaComposition`. | [media-clip.md](./media-clip.md) |
+| MediaCapture integration | Describes how the audio/video playback and editing APIs interoperate with `Windows.Media.Capture.MediaCapture` (camera/microphone capture), allowing live capture streams to be played back, recorded, or fed into an `AudioGraph`. | [media-capture-integration.md](./media-capture-integration.md) |
+| MediaComposition | Represents a collection of media clips and background audio tracks for video editing. The top-level object of the `Windows.Media.Editing` non-linear editing API. | [media-composition.md](./media-composition.md) |
+| MediaPlayer | Provides access to media playback functionality such as play, pause, fast-forward, rewind, and volume. The core class for audio/video playback in Windows apps. | [media-player.md](./media-player.md) |
+| MediaPlaybackCommandManager | Specifies the behavior of and receives events from the System Media Transport Controls (SMTC). Use this class to customize the interaction between a `MediaPlayer` and the SMTC. | [media-playback-command-manager.md](./media-playback-command-manager.md) |
+| MediaPlaybackItem | Represents a media item that can be played back. Acts as a wrapper around a `MediaSource` that exposes the audio tracks, video tracks, and timed metadata tracks included in the source. | [media-playback-item.md](./media-playback-item.md) |
+| MediaPlaybackList | Represents a list of `MediaPlaybackItem` objects that can be played back as a playlist. Provides methods for switching the currently playing item and enabling looping and shuffling. Items are rendered with gapless playback where the source format supports it. | [media-playback-list.md](./media-playback-list.md) |
+| MediaPlaybackSession | Provides information about the state of the current playback session of a `MediaPlayer` and provides events for responding to changes in playback session state. | [media-playback-session.md](./media-playback-session.md) |
+| MediaPlayerElement | A XAML control that renders audio and video content using a `MediaPlayer`. The primary video-playback control for WinUI 3 apps. | [media-player-element.md](./media-player-element.md) |
+| MediaSource | Represents a media source. Provides a common way to reference media from different sources (files, streams, URIs, adaptive streaming, frame sources) and exposes a common model for accessing media data regardless of the underlying media format. | [media-source.md](./media-source.md) |
+| MediaTimelineController | Provides information about and control over the rate, position, and state of one or more `MediaPlayer` instances. Makes it possible to synchronize multiple media players from a single controller and simplifies building custom transport controls. | [media-timeline-controller.md](./media-timeline-controller.md) |
+| MediaTranscoder | Transcodes audio and video files from one encoding/container format to another, with optional trimming and effects. | [media-transcoder.md](./media-transcoder.md) |
+| MediaTransportControls | The playback controls UI (play/pause, seek bar, volume, etc) attached to a `MediaPlayerElement`. | [media-transport-controls.md](./media-transport-controls.md) |
+| MIDI (Windows.Devices.Midi) | APIs for enumerating MIDI input/output devices and sending/receiving MIDI messages. Windows supports MIDI over USB (class-compliant and proprietary drivers), MIDI over Bluetooth LE, and third-party MIDI over Ethernet/routed MIDI, plus a built-in General MIDI synth ("Microsoft GS Wavetable Synth"). | [midi.md](./midi.md) |
+| SystemMediaTransportControls | Represents an object that enables integration with the system media transport controls (SMTC) and support for media commands, such as the flyout that lets a user play/pause/skip media from outside the app. | [system-media-transport-controls.md](./system-media-transport-controls.md) |
+| TimedMetadataTrack | Represents a timed metadata track. The track contains a list of `IMediaCue` objects (e.g. subtitle cues, chapter markers, custom data cues) and raises events at the beginning and end of the time window of each cue. | [timed-metadata-track.md](./timed-metadata-track.md) |
+| TimedTextSource | Represents a source of timed text data (subtitles/captions), such as SRT, WebVTT, or TTML files. | [timed-text-source.md](./timed-text-source.md) |

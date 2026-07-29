@@ -48,4 +48,5 @@ override fun onCreate(savedInstanceState: Bundle?) {
 ## Related
 
 - [nav-deep-link](./nav-deep-link.md)
-- `../navigation3/README.md` (NavDisplay, NavKey)
+- [NavDisplay](../navigation3/navdisplay.md)
+- [NavKey](../navigation3/navkey.md)

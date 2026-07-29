@@ -49,4 +49,4 @@ backStack.removeLastOrNull()          // navigate back
 
 - [NavKey](./navkey.md)
 - [NavDisplay](./navdisplay.md)
-- `../deep-links/navigation3-deep-links.md`
+- [Deep Links in Navigation 3](../deep-links/navigation3-deep-links.md)

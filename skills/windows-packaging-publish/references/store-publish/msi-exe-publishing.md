@@ -29,3 +29,4 @@ Publishing traditional Win32 installer apps (MSI or EXE) to the Microsoft Store,
 - [Create App Submission](./create-app-submission.md)
 - [App Certification Process](./app-certification-process.md)
 - [Submission API MSI](./submission-api-msi.md)
+- [MSI/EXE Manual Package Validation](./msi-manual-package-validation.md)

@@ -1,7 +1,7 @@
 # Windowing
 
 | Name | Description | Path |
-|------|-------------|------|
+| --- | --- | --- |
 | Windowing overview | XAML `Window` vs `AppWindow`, HWND lifecycle, framework comparison | [windowing-overview.md](./windowing-overview.md) |
 | AppWindow | System-managed container for app content; size/position/z-order/presenter/icon APIs | [app-window.md](./app-window.md) |
 | AppWindowPresenter | Base class for pre-defined window configurations | [app-window-presenter.md](./app-window-presenter.md) |

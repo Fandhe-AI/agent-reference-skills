@@ -2,22 +2,23 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| remember | Store an object in memory across recompositions, recalculated only when given keys change. | [remember.md](./remember.md) |
-| rememberSaveable | Like remember, but also survives activity/process recreation via saved instance state. | [remembersaveable.md](./remembersaveable.md) |
-| mutableStateOf | Create an observable MutableState<T> that triggers recomposition when written. | [mutablestateof.md](./mutablestateof.md) |
-| mutableStateListOf | Create an observable, snapshot-aware MutableList<T>. | [mutablestatelistof.md](./mutablestatelistof.md) |
-| mutableStateMapOf | Create an observable, snapshot-aware MutableMap<K, V>. | [mutablestatemapof.md](./mutablestatemapof.md) |
-| mutableStateSetOf | Create an observable, snapshot-aware MutableSet<T>. | [mutablestatesetof.md](./mutablestatesetof.md) |
-| MutableState | Mutable value holder interface returned by mutableStateOf and friends. | [mutablestate.md](./mutablestate.md) |
-| State | Jetpack Compose (androidx.compose.runtime) read-only value holder interface. | [state.md](./state.md) |
-| derivedStateOf | Derive a State from other State objects, recomposing only when the derived result changes. | [derivedstateof.md](./derivedstateof.md) |
-| snapshotFlow | Convert Compose Snapshot state reads into a cold Flow. | [snapshotflow.md](./snapshotflow.md) |
-| produceState | Convert non-Compose state (Flow, LiveData, callbacks) into Compose State via a coroutine. | [producestate.md](./producestate.md) |
-| collectAsState | Collect a Flow/StateFlow as Compose State (not lifecycle-aware). | [collectasstate.md](./collectasstate.md) |
-| rememberUpdatedState | Keep a State updated with the latest value without restarting effects that reference it. | [rememberupdatedstate.md](./rememberupdatedstate.md) |
-| LaunchedEffect | Launch a coroutine scoped to the Composition, restarted when keys change. | [launchedeffect.md](./launchedeffect.md) |
-| DisposableEffect | Run a side effect that requires cleanup (onDispose) when keys change or leaving Composition. | [disposableeffect.md](./disposableeffect.md) |
-| SideEffect | Run a non-suspend block after every successful recomposition, publishing state to non-Compose code. | [sideeffect.md](./sideeffect.md) |
-| rememberCoroutineScope | Get a CoroutineScope bound to the Composition for launching coroutines from event handlers. | [remembercoroutinescope.md](./remembercoroutinescope.md) |
-| Saver | Convert values to/from a savable form for rememberSaveable; includes listSaver and mapSaver. | [saver.md](./saver.md) |
-| State Hoisting | Pattern for moving state to a composable's caller via value/onValueChange parameters. | [state-hoisting.md](./state-hoisting.md) |
+| collectAsState | Collects values from a `Flow` or `StateFlow` and represents the latest value as Compose `State`, triggering recomposition of readers on every new emission. | [collectasstate.md](./collectasstate.md) |
+| derivedStateOf | Creates a `State` object whose value is the result of `calculation`, recomputed only when one of the state objects read inside `calculation` changes. | [derivedstateof.md](./derivedstateof.md) |
+| DisposableEffect | A side effect of composition that requires cleanup, run when the given keys change or when the composable leaves the Composition. | [disposableeffect.md](./disposableeffect.md) |
+| LaunchedEffect | Runs a suspend function scoped to the Composition. Launches a coroutine when it enters the Composition and cancels it when it leaves. | [launchedeffect.md](./launchedeffect.md) |
+| MutableState | A mutable value holder. Reads of `value` during a composable function's execution subscribe the current recompose scope to changes. | [mutablestate.md](./mutablestate.md) |
+| mutableStateListOf | Creates an instance of `MutableList<T>` that is observable and can be snapshot, so structural changes trigger recomposition. | [mutablestatelistof.md](./mutablestatelistof.md) |
+| mutableStateMapOf | Creates an instance of `MutableMap<K, V>` that is observable and can be snapshot, so structural changes trigger recomposition. | [mutablestatemapof.md](./mutablestatemapof.md) |
+| mutableStateOf | Creates an observable `MutableState<T>`. Any write to `value` schedules recomposition of every composable function that read `value`. | [mutablestateof.md](./mutablestateof.md) |
+| mutableStateSetOf | Creates an instance of `MutableSet<T>` that is observable and can be snapshot, so structural changes trigger recomposition. | [mutablestatesetof.md](./mutablestatesetof.md) |
+| produceState | Converts non-Compose state (e.g. `Flow`, `LiveData`, callback-based APIs) into Compose `State` by launching a coroutine. | [producestate.md](./producestate.md) |
+| remember | Stores an object in memory during composition. A value computed by `remember` is calculated once during initial composition and returned unchanged on recomposition. | [remember.md](./remember.md) |
+| rememberCoroutineScope | Returns a `CoroutineScope` bound to the point in the Composition where it is called, for launching coroutines in event handlers. | [remembercoroutinescope.md](./remembercoroutinescope.md) |
+| rememberSaveable | Behaves like `remember`, but the stored value also survives activity or process recreation via the saved instance state mechanism. | [remembersaveable.md](./remembersaveable.md) |
+| rememberUpdatedState | Remembers a `mutableStateOf(newValue)` and updates its value to `newValue` on every recomposition, without restarting effects. | [rememberupdatedstate.md](./rememberupdatedstate.md) |
+| Saver | Describes how to convert an object of an arbitrary type into a form that can be saved by `rememberSaveable`, and restored back. | [saver.md](./saver.md) |
+| SideEffect | Schedules `effect` to run after every successful recomposition, used to publish Compose state to non-Compose code. | [sideeffect.md](./sideeffect.md) |
+| snapshotFlow | Converts Compose `Snapshot` state reads (e.g. `MutableState` objects) into a cold `Flow`. | [snapshotflow.md](./snapshotflow.md) |
+| State Hoisting | A pattern for making a composable stateless by moving its state to the caller, replacing an internal `remember`ed variable with a value parameter. | [state-hoisting.md](./state-hoisting.md) |
+| State | A read-only value holder. Reading `value` during the execution of a `@Composable` function subscribes the current recompose scope to changes. | [state.md](./state.md) |
+| State Lifespans | Conceptual guidance for choosing where to store Compose state based on how long it must survive: recomposition only, configuration changes, or process death. | [state-lifespans.md](./state-lifespans.md) |

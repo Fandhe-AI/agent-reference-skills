@@ -51,3 +51,6 @@ Declares the application and its global attributes; the container for all app co
 - [manifest element](./manifest-element.md)
 - [activity element](./activity-element.md)
 - [style and theme resources](./style-theme-resources.md)
+- [activity-alias element](./activity-alias-element.md)
+- [uses-library / uses-native-library elements](./uses-library-element.md)
+- [property element](./property-element.md)

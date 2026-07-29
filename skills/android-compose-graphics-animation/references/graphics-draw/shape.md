@@ -53,7 +53,7 @@ val triangle = GenericShape { size, _ ->
 - `RoundedCornerShape` and `CutCornerShape` automatically mirror corner sizes in `LayoutDirection.Rtl`; use `AbsoluteRoundedCornerShape` / `AbsoluteCutCornerShape` to opt out.
 - `CircleShape` is defined as `RoundedCornerShape(50)` (50% corner radius on all sides).
 - `Outline` returned by `createOutline` is one of `Outline.Rectangle`, `Outline.Rounded`, or `Outline.Generic` (arbitrary `Path`).
-- The separate `androidx.graphics:graphics-shapes` library (`RoundedPolygon`, `Morph`, `CornerRounding`) builds and morphs polygonal shapes; wrap the resulting `Path` in a custom `Shape` implementation to use with `Modifier.clip`.
+- The separate `androidx.graphics:graphics-shapes` library (`RoundedPolygon`, `Morph`, `CornerRounding`) builds and morphs polygonal shapes; wrap the resulting `Path` in a custom `Shape` implementation to use with `Modifier.clip`. See [RoundedPolygon / Morph / CornerRounding](./rounded-polygon-morph.md).
 - Package: `androidx.compose.ui.graphics` (`Shape`, `GenericShape`) / `androidx.compose.foundation.shape` (`RoundedCornerShape`, `CutCornerShape`, `CircleShape`).
 
 ## Related
@@ -61,3 +61,4 @@ val triangle = GenericShape { size, _ ->
 - [Modifier.clip](./modifier-clip.md)
 - [Path](./path.md)
 - [Modifier.shadow](./modifier-shadow.md)
+- [RoundedPolygon / Morph / CornerRounding](./rounded-polygon-morph.md)

@@ -2,12 +2,14 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Composable Functions | `@Composable` functions: declarative UI model, statelessness, idempotency rules. | [composable-functions.md](./composable-functions.md) |
-| Composition and Recomposition | Composition tree, call site identity, `key()`, skipping, stable types. | [recomposition.md](./recomposition.md) |
-| Modifier | Chained decorators for size/layout/behavior/appearance; order-matters, scoped modifiers. | [modifier.md](./modifier.md) |
-| Phases of Compose | Composition/Layout/Drawing phases and phase-local state reads for performance. | [phases.md](./phases.md) |
-| compositionLocalOf | Tracked `ProvidableCompositionLocal` factory. | [compositionlocalof.md](./compositionlocalof.md) |
-| staticCompositionLocalOf | Untracked `ProvidableCompositionLocal` factory for rarely-changing values. | [staticcompositionlocalof.md](./staticcompositionlocalof.md) |
-| CompositionLocalProvider | Binds values to `CompositionLocal` keys for a subtree. | [compositionlocalprovider.md](./compositionlocalprovider.md) |
-| SnapshotMutationPolicy | `structuralEqualityPolicy` / `referentialEqualityPolicy` / `neverEqualPolicy` factories for `MutableState` equivalence. | [snapshotmutationpolicy.md](./snapshotmutationpolicy.md) |
-| movableContentOf | Wraps a composable lambda so its remembered state/nodes move instead of being disposed and recreated. | [movablecontentof.md](./movablecontentof.md) |
+| Composable Functions | The `@Composable` annotation marks a Kotlin function as part of Compose's declarative UI model: it converts data into UI by emitting other composables. | [composable-functions.md](./composable-functions.md) |
+| compositionLocalOf | Creates a tracked `ProvidableCompositionLocal` that passes a value down the Composition implicitly. | [compositionlocalof.md](./compositionlocalof.md) |
+| CompositionLocalProvider | Binds values to `CompositionLocal` keys for a given hierarchy using the `provides` infix function. | [compositionlocalprovider.md](./compositionlocalprovider.md) |
+| Custom Modifiers (Modifier.Node) | `Modifier.Node` is the low-level, high-performance API for authoring custom modifiers — the same API Compose's own built-in modifiers are implemented with. | [custom-modifiers.md](./custom-modifiers.md) |
+| Modifier | A `Modifier` decorates or augments a composable: size, layout, behavior, appearance, accessibility, input handling, and interactions. | [modifier.md](./modifier.md) |
+| movableContentOf | Wraps a `@Composable` lambda so that when the returned lambda is called from a new location in the Composition, the remembered state and layout nodes are moved. | [movablecontentof.md](./movablecontentof.md) |
+| Phases of Compose | Compose renders each frame through three phases: **Composition** (what UI to show), **Layout** (where to place it), and **Drawing** (how it renders). | [phases.md](./phases.md) |
+| Composition and Recomposition | A **Composition** is the tree describing the app's UI produced by running composables. **Recomposition** re-runs affected composables when state changes. | [recomposition.md](./recomposition.md) |
+| SnapshotMutationPolicy | Factories controlling when a `MutableState`-backed value is treated as changed, and therefore whether readers are invalidated. | [snapshotmutationpolicy.md](./snapshotmutationpolicy.md) |
+| Stability & Strong Skipping | A type is **stable** if Compose can be sure whether its value changed between recompositions. | [stability.md](./stability.md) |
+| staticCompositionLocalOf | Creates an untracked `ProvidableCompositionLocal`. Reads of `.current` are not tracked individually by Compose. | [staticcompositionlocalof.md](./staticcompositionlocalof.md) |

@@ -2,17 +2,19 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Permissions and Main Thread Restriction | INTERNET/ACCESS_NETWORK_STATE permissions and the NetworkOnMainThreadException rule. | [permissions-and-threading.md](./permissions-and-threading.md) |
-| Network Security Configuration | Declarative `network_security_config.xml` for trust anchors, cleartext policy, and pinning. | [network-security-config.md](./network-security-config.md) |
-| ConnectivityManager | System service for reading active network state and registering connectivity callbacks. | [connectivitymanager.md](./connectivitymanager.md) |
-| NetworkCapabilities | Transport and capability flags (Wi-Fi/cellular, validated internet, metered) for a Network. | [networkcapabilities.md](./networkcapabilities.md) |
-| ConnectivityManager.NetworkCallback | Callback for observing network availability/capabilities/link-property changes. | [network-callback.md](./network-callback.md) |
-| Data Saver (restrictBackgroundStatus) | Respecting the user's Data Saver preference on metered networks. | [data-saver.md](./data-saver.md) |
-| Cronet | Chromium network stack as an Android library; Google's recommended HTTP client. | [cronet.md](./cronet.md) |
-| UrlRequest / UrlRequest.Callback | Cronet's async request object and response streaming callback. | [cronet-urlrequest.md](./cronet-urlrequest.md) |
-| CronetInterceptor (cronet-okhttp) | OkHttp interceptor that routes OkHttp/Retrofit traffic through Cronet. | [cronet-okhttp-interceptor.md](./cronet-okhttp-interceptor.md) |
-| Retrofit | Type-safe HTTP client interface (Square) built on OkHttp, with suspend function support. | [retrofit.md](./retrofit.md) |
-| OkHttp | HTTP client (Square) with connection pooling, HTTP/2, and interceptors. | [okhttp.md](./okhttp.md) |
-| kotlinx.serialization Retrofit Converter | Retrofit Converter.Factory backed by kotlinx.serialization Json. | [kotlinx-serialization-converter.md](./kotlinx-serialization-converter.md) |
-| HttpsURLConnection / HttpURLConnection | Built-in legacy HTTP(S) client; superseded by Cronet/Retrofit/OkHttp for new code. | [httpurlconnection.md](./httpurlconnection.md) |
-| Caching, Timeouts, Error Handling, and Retries | Cross-cutting resilience practices: timeouts, caching, error surfacing, WorkManager retry. | [caching-and-retry.md](./caching-and-retry.md) |
+| Caching, Timeouts, Error Handling, and Retries | Cross-cutting practices for making network calls resilient: response caching, request timeouts, error propagation, and retrying failed requests in the background. | [caching-and-retry.md](./caching-and-retry.md) |
+| ConnectivityManager | System service that reports the state of network connectivity: the active network, its capabilities, and link properties. | [connectivitymanager.md](./connectivitymanager.md) |
+| Cronet | The Chromium network stack packaged as an Android library. Google's recommended HTTP client for reduced latency and higher throughput, powering networking in apps like YouTube and Google Photos. | [cronet.md](./cronet.md) |
+| CronetInterceptor (cronet-okhttp) | An OkHttp `Interceptor` that redirects OkHttp/Retrofit traffic to use Cronet as the transport layer instead of OkHttp's own network stack. | [cronet-okhttp-interceptor.md](./cronet-okhttp-interceptor.md) |
+| UrlRequest / UrlRequest.Callback | Cronet's request object and callback interface for sending an individual asynchronous HTTP request and streaming its response. | [cronet-urlrequest.md](./cronet-urlrequest.md) |
+| Data Saver (restrictBackgroundStatus) | APIs for respecting the user's Data Saver preference (Android 7.0/API 24+) and limiting data consumption on metered networks. | [data-saver.md](./data-saver.md) |
+| DownloadManager | A system service (`android.app.DownloadManager`) that handles long-running HTTP/HTTPS downloads in the background, outside the app's own process lifecycle. It queues requests, retries across connectivity changes, and can show a system notification with progress. | [downloadmanager.md](./downloadmanager.md) |
+| HttpsURLConnection / HttpURLConnection | The platform's built-in HTTP(S) client, supporting TLS, streaming uploads/downloads, configurable timeouts, IPv6, and connection pooling, without any third-party dependency. | [httpurlconnection.md](./httpurlconnection.md) |
+| kotlinx.serialization Retrofit Converter | A Retrofit `Converter.Factory` that (de)serializes request/response bodies using `kotlinx.serialization`'s `Json` (or any `TextFormat`/`BinaryFormat`), for use with `@Serializable` data classes. | [kotlinx-serialization-converter.md](./kotlinx-serialization-converter.md) |
+| ConnectivityManager.NetworkCallback | Callback interface for observing changes to network availability, capabilities, and link properties over time, registered via `ConnectivityManager`. | [network-callback.md](./network-callback.md) |
+| Network Security Configuration | Declarative XML configuration (`res/xml/network_security_config.xml`) for customizing trusted CAs, cleartext traffic policy, and certificate pinning without code changes. | [network-security-config.md](./network-security-config.md) |
+| NetworkCapabilities | Describes the transports and capabilities of a `Network`, such as whether it is Wi-Fi/cellular and whether it currently has validated internet access. | [networkcapabilities.md](./networkcapabilities.md) |
+| OkHttp | An HTTP client for Java/Kotlin from Square, providing connection pooling, HTTP/2, transparent GZIP, response caching, and automatic recovery from common connection failures. Powers Retrofit's default transport. | [okhttp.md](./okhttp.md) |
+| OkHttp WebSocket | OkHttp's `WebSocket` API for full-duplex, persistent connections (RFC 6455) over the same `OkHttpClient` used for regular HTTP calls; ships in the core `okhttp` artifact. | [okhttp-websocket.md](./okhttp-websocket.md) |
+| Network Permissions and Main Thread Restriction | Baseline requirements for any network operation on Android: manifest permissions and thread placement. | [permissions-and-threading.md](./permissions-and-threading.md) |
+| Retrofit | A type-safe HTTP client for Android and Java/Kotlin from Square. Turns a Kotlin interface annotated with HTTP method annotations into an implementation that performs REST calls, built on OkHttp. | [retrofit.md](./retrofit.md) |

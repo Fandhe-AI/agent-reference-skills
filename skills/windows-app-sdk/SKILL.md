@@ -30,6 +30,8 @@ skills/windows-app-sdk/
       rich-activation.md
       single-instancing.md
       power-manager.md
+      focus-session.md
+      app-restore.md
     windowing/
       README.md
       windowing-overview.md
@@ -57,6 +59,9 @@ skills/windows-app-sdk/
       push-notification-channel.md
       push-notification-received-event-args.md
       badge-notifications.md
+      app-notification-collections.md
+      notification-listener.md
+      app-notification-scheduled.md
     resources-mrt/
       README.md
       resource-manager.md
@@ -79,6 +84,13 @@ skills/windows-app-sdk/
       widget-provider-manifest.md
       implement-widget-provider.md
       widgets-create-a-template.md
+      widget-header-customization.md
+      feed-provider-manifest.md
+      feedmanager.md
+      ifeedprovider.md
+      implement-feed-provider.md
+      web-widget-providers.md
+      widget-provider-activateapplication-protocol.md
     deployment-versioning/
       README.md
       deployment-architecture.md
@@ -94,6 +106,9 @@ skills/windows-app-sdk/
       tutorial-unpackaged-deployment.md
       deploymentmanager.md
       deploymentresult.md
+      check-windows-app-sdk-versions.md
+      single-project-msix.md
+      remove-windows-app-sdk-versions.md
 ```
 
 ## 探索手順

@@ -40,15 +40,23 @@ skills/windows-platform-integration/
       pedometer.md
       proximity-sensor.md
       activity-sensor.md
+      altimeter.md
+      barometer.md
       bluetooth-le-device.md
       gatt-device-service.md
       bluetooth-le-advertisement-watcher.md
+      bluetooth-rfcomm.md
+      device-pairing.md
+      gatt-server.md
       usb-device.md
       serial-device.md
       hid-device.md
       battery.md
       power-manager.md
       printing.md
+      image-scanner.md
+      point-of-service.md
+      wifi-and-radios.md
       device-capabilities-manifest.md
     networking/
       README.md
@@ -68,7 +76,9 @@ skills/windows-platform-integration/
       download-operation.md
       network-information.md
       connection-profile.md
+      proximity.md
       dnssd.md
+      syndication.md
       network-capabilities.md
       loopback-exemption.md
     input/
@@ -84,6 +94,7 @@ skills/windows-platform-integration/
       input-activation-listener.md
       input-pointer-source.md
       input-keyboard-source.md
+      input-pane.md
       pen-and-ink.md
       drag-and-drop.md
       text-input-ime.md
@@ -98,6 +109,7 @@ skills/windows-platform-integration/
       decimal-formatter.md
       currency-formatter.md
       percent-formatter.md
+      numeral-system.md
       date-time-formatter.md
       resource-loader-resw.md
       resource-qualifiers.md
@@ -122,6 +134,7 @@ skills/windows-platform-integration/
       data-protection-provider.md
       certificate.md
       certificate-enrollment-manager.md
+      smart-cards.md
       windows-hello-passkeys.md
       app-capabilities.md
       appcontainer.md
@@ -142,6 +155,7 @@ skills/windows-platform-integration/
       app-actions-search.md
       context-menu-extensions.md
       protocol-activation.md
+      recall.md
 ```
 
 ## 探索手順

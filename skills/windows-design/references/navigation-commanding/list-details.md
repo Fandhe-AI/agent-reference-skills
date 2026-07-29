@@ -16,13 +16,7 @@ A navigation pattern with a list pane and a details pane; selecting an item in t
 </SplitView>
 ```
 
-## When to use
-
-- Building an email app, address book, or any list-driven app.
-- Locating and prioritizing a large collection of content.
-- Allowing quick addition/removal of list items while working back-and-forth between contexts.
-
-## Layout styles
+## Options / Props
 
 | Available window width | Recommended style |
 |------|-------------|
@@ -30,6 +24,12 @@ A navigation pattern with a list pane and a details pane; selecting an item in t
 | 641 epx or wider | Side-by-side — list pane and details pane are both visible; use a `SplitView` with the list in the pane and details in the content |
 
 For a fully responsive layout, define `VisualState`s with `AdaptiveTrigger` breakpoints to switch between stacked and side-by-side.
+
+### When to use
+
+- Building an email app, address book, or any list-driven app.
+- Locating and prioritizing a large collection of content.
+- Allowing quick addition/removal of list items while working back-and-forth between contexts.
 
 ## Notes
 

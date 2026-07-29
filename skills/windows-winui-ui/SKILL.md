@@ -28,85 +28,100 @@ skills/windows-winui-ui/
   references/
     layout-panels/
       README.md
-      grid.md
-      stackpanel.md
-      canvas.md
-      relativepanel.md
-      variablesizedwrapgrid.md
-      itemswrapgrid.md
-      itemsstackpanel.md
-      wrappanel.md
+      3-d-perspective-effects.md
+      alignment-margin-padding.md
+      attached-layouts.md
       border.md
-      viewbox.md
+      canvas.md
+      choosing-a-layout-panel.md
+      custom-panels.md
+      grid.md
+      itemsstackpanel.md
+      itemswrapgrid.md
+      layout-fundamentals.md
+      panel.md
+      relativepanel.md
+      responsive-layouts.md
       scrollviewer.md
       splitview.md
-      panel.md
-      layout-fundamentals.md
-      alignment-margin-padding.md
-      responsive-layouts.md
-      choosing-a-layout-panel.md
+      stackpanel.md
+      transforms.md
+      variablesizedwrapgrid.md
+      viewbox.md
+      wrappanel.md
     xaml-markup/
       README.md
-      xaml-overview.md
-      xaml-syntax-guide.md
-      x-name-attribute.md
-      x-key-attribute.md
-      x-class-attribute.md
-      x-bind-markup-extension.md
-      x-load-attribute.md
-      x-datatype-attribute.md
-      x-uid-directive.md
-      x-null-markup-extension.md
-      xaml-intrinsic-data-types.md
-      staticresource-markup-extension.md
-      themeresource-markup-extension.md
-      customresource-markup-extension.md
-      relativesource-markup-extension.md
-      templatebinding-markup-extension.md
       attached-properties-overview.md
       custom-attached-properties.md
-      dependency-properties-overview.md
       custom-dependency-properties.md
-      xaml-resource-dictionary.md
+      customresource-markup-extension.md
+      dependency-properties-overview.md
+      events-and-routed-events-overview.md
+      move-draw-commands-syntax.md
+      property-path-syntax.md
+      relativesource-markup-extension.md
+      staticresource-markup-extension.md
+      template-settings-classes.md
+      templatebinding-markup-extension.md
+      themeresource-markup-extension.md
+      x-class-attribute.md
+      x-datatype-attribute.md
+      x-defaultbindmode-attribute.md
+      x-deferloadstrategy-attribute.md
+      x-fieldmodifier-attribute.md
+      x-key-attribute.md
+      x-load-attribute.md
+      x-name-attribute.md
+      x-null-markup-extension.md
+      x-uid-directive.md
+      xaml-and-whitespace.md
+      xaml-intrinsic-data-types.md
       xaml-namescopes.md
       xaml-namespaces-and-namespace-mapping.md
+      xaml-overview.md
+      xaml-resource-dictionary.md
+      xaml-syntax-guide.md
+      x-bind-markup-extension.md
       xamlreader-load.md
     styling-theming/
       README.md
-      style-setter.md
-      resource-dictionary.md
-      control-template.md
-      data-template.md
-      data-template-selector.md
-      item-container-style.md
-      visual-state-manager.md
-      visual-state.md
-      visual-state-group.md
-      visual-transition.md
-      theme-resources.md
-      element-theme.md
-      high-contrast-themes.md
-      xaml-controls-resources.md
-      mica-material.md
-      system-backdrops.md
       acrylic-material.md
       brushes.md
       control-templating-guide.md
+      control-template.md
+      high-contrast-themes.md
+      data-template.md
+      data-template-selector.md
+      element-theme.md
+      item-container-style.md
+      mica-material.md
+      resource-dictionary.md
+      shadows.md
+      style-setter.md
+      system-backdrops.md
+      theme-resources.md
+      visual-state.md
+      visual-state-group.md
+      visual-state-manager.md
+      visual-transition.md
+      xaml-controls-resources.md
     data-binding/
       README.md
-      x-bind-markup-extension.md
       binding-markup-extension.md
-      function-bindings.md
-      inotifypropertychanged.md
-      inotifycollectionchanged.md
-      observablecollection.md
-      ivalueconverter.md
-      datacontext.md
       collectionviewsource.md
-      itemssource-binding.md
-      dependency-property-registration.md
       data-binding-and-mvvm.md
+      datacontext.md
+      dependency-property-registration.md
       data-binding-debugging.md
+      function-bindings.md
+      inotifycollectionchanged.md
+      inotifypropertychanged.md
+      isupportincrementalloading.md
+      itemssource-binding.md
+      ivalueconverter.md
+      observablecollection.md
+      x-bind-markup-extension.md
+      x-phase-attribute.md
     animation-composition/
       README.md
       storyboard.md

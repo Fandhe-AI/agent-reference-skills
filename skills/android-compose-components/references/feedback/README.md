@@ -1,17 +1,17 @@
 # feedback
 
-> This is the Jetpack Compose (Kotlin, `androidx.compose.material3`) API — distinct from the same-named SwiftUI / Ark UI / Chakra UI / fandhe-frontend components.
-
 | Name | Description | Path |
 |------|-------------|------|
-| Snackbar | Brief bottom-of-screen message about an app process, content- or data-based. | [snackbar.md](./snackbar.md) |
-| SnackbarHost | Host composable inside `Scaffold` that shows, hides, and dismisses snackbars. | [snackbarhost.md](./snackbarhost.md) |
-| SnackbarHostState | State holder providing `showSnackbar()` to enqueue and await a snackbar result. | [snackbarhoststate.md](./snackbarhoststate.md) |
-| SnackbarData | Data/visuals/result/duration types passed through `SnackbarHost` to `Snackbar`. | [snackbardata.md](./snackbardata.md) |
-| LinearProgressIndicator | Horizontal bar expressing determinate or indeterminate progress. | [linearprogressindicator.md](./linearprogressindicator.md) |
-| CircularProgressIndicator | Circular spinner expressing determinate or indeterminate progress. | [circularprogressindicator.md](./circularprogressindicator.md) |
-| LoadingIndicator | Material 3 Expressive shape-morphing loading indicator (experimental), plus `ContainedLoadingIndicator`. | [loadingindicator.md](./loadingindicator.md) |
-| Badge | Small dot/text indicator for counts or status, used inside `BadgedBox`. | [badge.md](./badge.md) |
-| BadgedBox | Container overlaying a `Badge` on anchored content such as an `Icon`. | [badgedbox.md](./badgedbox.md) |
-| Icon | Draws an `ImageVector`, `ImageBitmap`, or `Painter` with a tint color. | [icon.md](./icon.md) |
-| Text | High-level text element with typography, color, and layout options. | [text.md](./text.md) |
+| Badge | Small visual element representing dynamic information, such as… | [badge.md](./badge.md) |
+| BadgedBox | Container composable that overlays a `badge` (typically `Badge`)… | [badgedbox.md](./badgedbox.md) |
+| CircularProgressIndicator | Material Design circular progress indicator, a circle whose stroke… | [circularprogressindicator.md](./circularprogressindicator.md) |
+| CircularWavyProgressIndicator | Material Expressive circular progress indicator that renders the… | [circularwavyprogressindicator.md](./circularwavyprogressindicator.md) |
+| Icon | Material Design icon component that draws an `ImageVector`,… | [icon.md](./icon.md) |
+| LinearProgressIndicator | Material Design linear progress indicator, expressing an… | [linearprogressindicator.md](./linearprogressindicator.md) |
+| LinearWavyProgressIndicator | Material Expressive linear progress indicator that renders the… | [linearwavyprogressindicator.md](./linearwavyprogressindicator.md) |
+| LoadingIndicator | Material 3 Expressive loading indicator that morphs between… | [loadingindicator.md](./loadingindicator.md) |
+| Snackbar | Implements the Material Design snackbar pattern for brief… | [snackbar.md](./snackbar.md) |
+| SnackbarData | Data types passed through `SnackbarHost`: `SnackbarData`… | [snackbardata.md](./snackbardata.md) |
+| SnackbarHost | Host for snackbars to be used in `Scaffold`'s `snackbarHost` slot… | [snackbarhost.md](./snackbarhost.md) |
+| SnackbarHostState | State manager for `SnackbarHost`. Guarantees at most one… | [snackbarhoststate.md](./snackbarhoststate.md) |
+| Text | High-level element that displays text and provides semantics/accessibility… | [text.md](./text.md) |

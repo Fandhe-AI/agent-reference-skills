@@ -51,4 +51,5 @@ namespace AuthoringDemo
 ## Related
 
 - [C#/WinRT Overview](./overview.md)
+- [Generate a C# Projection from a C++/WinRT Component](./net-projection-from-cppwinrt-component.md)
 - [AOT and Trimming with C#/WinRT](./aot-trimming.md)

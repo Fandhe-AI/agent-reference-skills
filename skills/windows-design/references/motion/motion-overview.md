@@ -2,7 +2,7 @@
 
 Motion describes the way the interface animates and responds to user interaction. Motion in Windows is reactive, direct, and context appropriate — it provides feedback to user input and reinforces spatial paradigms that support way-finding. This guidance describes how the Fluent Design motion language is applied to Windows apps.
 
-## Usage
+## Signature / Usage
 
 Windows motion is fast, direct, and context-appropriate. Timing and easing curves are adjusted based on the purpose of the animation to create a coherent experience.
 

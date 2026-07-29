@@ -33,6 +33,7 @@ skills/android-compose-graphics-animation/
       lookaheadscope.md
       animateitem.md
       animationvector.md
+      targetbasedanimation-decayanimation.md
     animation-spec/
       README.md
       animationspec.md
@@ -45,6 +46,7 @@ skills/android-compose-graphics-animation/
       repeatmode.md
       startoffset.md
       vectorconverter.md
+      decayanimationspec.md
     shared-elements/
       README.md
       sharedtransitionlayout.md
@@ -68,6 +70,7 @@ skills/android-compose-graphics-animation/
       modifier-graphics-layer.md
       modifier-clip.md
       modifier-shadow.md
+      modifier-drop-shadow.md
       modifier-alpha.md
       modifier-blur.md
       shape.md
@@ -76,6 +79,8 @@ skills/android-compose-graphics-animation/
       color.md
       blend-mode.md
       render-effect.md
+      mesh-gradient.md
+      rounded-polygon-morph.md
     images/
       README.md
       image.md
@@ -87,6 +92,7 @@ skills/android-compose-graphics-animation/
       contentscale.md
       colorfilter.md
       imagevector.md
+      animatedimagevector.md
       remembervectorpainter.md
       icons.md
       asyncimage.md

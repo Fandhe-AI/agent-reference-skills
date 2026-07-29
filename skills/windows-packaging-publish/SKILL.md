@@ -5,7 +5,7 @@ description: >
   MSIX, AppxManifest, MakeAppx, MSIX Packaging Tool, Package Bundles, App Attach,
   Package Support Framework, Package Identity, PackageFamilyName, PackageManager,
   スパースパッケージ, App Installer, サイドローディング, Windows App SDK Bootstrapper,
-  自己完結型デプロイ, SignTool, Azure Trusted Signing, 証明書, CI/CD 署名,
+  自己完結型デプロイ, SignTool, Azure Trusted Signing (Azure Artifact Signing), 証明書, CI/CD 署名,
   Partner Center, アプリ送信, 年齢レーティング, ストアリスティング, 段階的ロールアウト,
   StoreContext, msstore CLI, 認定プロセス, 分析レポート。
 user-invocable: false
@@ -25,86 +25,106 @@ skills/windows-packaging-publish/
   references/
     msix-packaging/
       README.md
-      msix-overview.md
-      package-structure.md
-      package-manifest-schema.md
-      vs-packaging-project.md
-      msix-packaging-tool.md
+      app-streaming-install.md
+      asset-packages.md
+      create-psf-fixup.md
+      differential-package-updates.md
+      framework-packages.md
       makeappx-cli.md
-      package-bundles-architecture.md
-      msix-app-attach.md
       modification-packages.md
+      msix-app-attach.md
+      msix-overview.md
+      msix-packaging-tool.md
       optional-packages.md
       package-asset-requirements.md
+      package-bundles-architecture.md
+      package-extensions-guide.md
+      package-manifest-schema.md
+      package-structure.md
       package-support-framework.md
+      resource-packages.md
+      unsigned-package.md
+      vs-packaging-project.md
     package-identity/
       README.md
-      package-identity-overview.md
       apis-requiring-package-identity.md
+      detect-package-identity.md
+      get-activation-info-for-packaged-apps.md
       package-class.md
       package-id-class.md
+      package-identity-overview.md
       package-manager.md
-      sparse-packages-external-location.md
-      detect-package-identity.md
-      packaged-vs-unpackaged-behavior.md
       package-uninstall-update.md
+      packaged-vs-unpackaged-behavior.md
+      sparse-packages-external-location.md
     deployment/
       README.md
-      choose-distribution-path.md
       app-installer-file-overview.md
-      app-installer-update-settings.md
-      sideloading-prerequisites.md
       app-installer-troubleshooting.md
-      windows-app-sdk-deployment-architecture.md
+      app-installer-update-settings.md
+      choose-distribution-path.md
+      dotnet-deployment-models.md
+      enterprise-deployment-intune.md
+      enterprise-deployment-tools.md
+      gradual-package-rollout.md
+      sideloading-prerequisites.md
+      store-package-code-driven-update.md
+      windows-app-sdk-bootstrapper-api.md
       windows-app-sdk-deploy-packaged-apps.md
       windows-app-sdk-deploy-unpackaged-apps.md
-      windows-app-sdk-bootstrapper-api.md
+      windows-app-sdk-deployment-architecture.md
       windows-app-sdk-self-contained-deploy.md
-      dotnet-deployment-models.md
-      gradual-package-rollout.md
-      enterprise-deployment-intune.md
     code-signing/
       README.md
-      msix-signing-requirements.md
+      azure-key-vault-signing.md
+      azure-trusted-signing.md
       certificate-types.md
+      cicd-signing.md
+      device-guard-signing.md
+      msix-signing-requirements.md
       self-signed-certificate.md
+      signing-troubleshooting.md
       signtool-sign.md
       signtool-timestamp.md
       signtool-verify.md
-      azure-trusted-signing.md
-      cicd-signing.md
-      device-guard-signing.md
-      signing-troubleshooting.md
+      smartscreen-reputation.md
     store-publish/
       README.md
-      developer-account.md
-      reserve-app-name.md
-      create-app-submission.md
-      pricing-and-availability.md
-      market-selection.md
-      visibility-options.md
-      app-properties.md
-      age-ratings.md
-      app-package-requirements.md
-      upload-app-packages.md
-      store-listings.md
-      screenshots-and-images.md
-      additional-information.md
-      app-certification-process.md
-      resolve-submission-errors.md
-      package-flights.md
-      gradual-package-rollout.md
-      msi-exe-publishing.md
-      store-context.md
-      store-product.md
-      submission-api-msix.md
-      submission-api-msi.md
-      msstore-cli.md
-      analytics-overview.md
       acquisitions-report.md
-      usage-report.md
+      add-on-submission.md
+      additional-information.md
+      age-ratings.md
+      analytics-overview.md
+      app-certification-process.md
+      app-package-requirements.md
+      app-performance-insights.md
+      app-properties.md
+      attract-and-promote.md
+      create-app-submission.md
+      developer-account.md
+      distribute-win32-app.md
+      gradual-package-rollout.md
       health-report.md
+      market-selection.md
+      msi-exe-publishing.md
+      msi-manual-package-validation.md
+      msstore-cli.md
+      package-flights.md
+      pricing-and-availability.md
+      pwa-submission.md
+      ratings-reviews-report.md
+      reserve-app-name.md
+      resolve-submission-errors.md
+      screenshots-and-images.md
+      store-context.md
+      store-listings.md
       store-policies.md
+      store-product.md
+      submission-api-msi.md
+      submission-api-msix.md
+      upload-app-packages.md
+      usage-report.md
+      visibility-options.md
 ```
 
 ## 探索手順

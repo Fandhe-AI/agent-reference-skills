@@ -27,3 +27,5 @@ Access via Partner Center dashboard, or programmatically via the Microsoft Store
 - [Acquisitions Report](./acquisitions-report.md)
 - [Usage Report](./usage-report.md)
 - [Health Report](./health-report.md)
+- [Ratings & Reviews Report](./ratings-reviews-report.md)
+- [Summary Report and Insights Report](./app-performance-insights.md)

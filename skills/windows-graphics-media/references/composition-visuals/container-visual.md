@@ -1,6 +1,6 @@
 # ContainerVisual
 
-A node in the visual tree that can have children. Base class for `SpriteVisual`, `ShapeVisual`, and `LayerVisual`.
+A node in the visual tree that can have children. Base class for `SpriteVisual`, [ShapeVisual](./shape-visual.md), and [LayerVisual](./layer-visual.md).
 
 ## Signature / Usage
 

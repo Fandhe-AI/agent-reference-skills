@@ -62,3 +62,4 @@ Console.WriteLine(result.Text);
 - [Semantic Search and embeddings](./semantic-search.md)
 - [Device requirements and fallback](./device-requirements.md)
 - [Content moderation](./content-moderation.md)
+- [Text Intelligence Skills](./text-intelligence-skills.md)

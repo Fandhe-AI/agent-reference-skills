@@ -30,6 +30,8 @@ skills/android-compose-ui/
       compositionlocalprovider.md
       snapshotmutationpolicy.md
       movablecontentof.md
+      custom-modifiers.md
+      stability.md
     state-lifecycle/
       README.md
       remember.md
@@ -51,6 +53,7 @@ skills/android-compose-ui/
       remembercoroutinescope.md
       saver.md
       state-hoisting.md
+      state-lifespans.md
     layout/
       README.md
       column.md
@@ -74,6 +77,10 @@ skills/android-compose-ui/
       layout.md
       subcomposelayout.md
       scroll.md
+      alignment-lines.md
+      intrinsic-measurements.md
+      visibility-tracking.md
+      flexbox-grid.md
     adaptive-layout/
       README.md
       window-size-class.md
@@ -91,6 +98,7 @@ skills/android-compose-ui/
       navigation-suite-scaffold.md
       folding-feature.md
       window-info-tracker.md
+      canonical-layouts.md
     text-input/
       README.md
       basictext.md
@@ -106,6 +114,9 @@ skills/android-compose-ui/
       visualtransformation.md
       selectioncontainer.md
       textmeasurer.md
+      autofill.md
+      clipboard.md
+      emoji.md
     touch-input/
       README.md
       clickable.md
@@ -129,6 +140,8 @@ skills/android-compose-ui/
       semantics.md
       test-tag.md
       haptic-feedback.md
+      drag-and-drop.md
+      stylus-input.md
 ```
 
 ## 探索手順

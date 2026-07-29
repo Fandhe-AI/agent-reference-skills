@@ -39,3 +39,4 @@ Common error codes:
 
 - [Sideloading prerequisites](./sideloading-prerequisites.md)
 - [Choose a distribution path](./choose-distribution-path.md)
+- [Enterprise IT-Admin Deployment Tools](./enterprise-deployment-tools.md)

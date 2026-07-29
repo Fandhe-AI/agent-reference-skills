@@ -21,4 +21,4 @@ tolerance = 0.5f  // allow up to 0.5% pixel difference
 
 - [AndroidTestOrchestrator](./androidtestorchestrator.md)
 - [UI Automator](./uiautomator.md)
-- [../compose-testing/README.md](../compose-testing/README.md)
+- [Preview screenshot testing](../compose-testing/preview-screenshot-testing.md)

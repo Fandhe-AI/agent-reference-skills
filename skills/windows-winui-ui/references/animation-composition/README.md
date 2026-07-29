@@ -1,4 +1,4 @@
-# Animation & Composition
+# animation-composition
 
 | Name | Description | Path |
 |------|-------------|------|

@@ -35,6 +35,10 @@ skills/windows-data-storage/
       irandom-access-stream.md
       data-reader-writer.md
       storage-item-thumbnail.md
+      storage-library.md
+      storage-library-change-tracker.md
+      storage-provider-sync-root-manager.md
+      access-sd-card.md
       system-io-vs-windows-storage.md
     app-data-settings/
       README.md

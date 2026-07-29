@@ -117,3 +117,4 @@ Declares one or more extensibility points for the package or application. Each `
 - [Package Asset Requirements](./package-asset-requirements.md)
 - [Modification Packages](./modification-packages.md)
 - [Optional Packages](./optional-packages.md)
+- [Package Extensions How-To Guide](./package-extensions-guide.md)

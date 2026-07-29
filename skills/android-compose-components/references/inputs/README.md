@@ -1,7 +1,5 @@
 # inputs
 
-> This is the Jetpack Compose (Kotlin, `androidx.compose.material3`) API — distinct from the same-named SwiftUI / Ark UI / Chakra UI / fandhe-frontend components.
-
 | Name | Description | Path |
 |------|-------------|------|
 | Checkbox | Select or deselect a single item; two-state (checked/unchecked). | [checkbox.md](./checkbox.md) |

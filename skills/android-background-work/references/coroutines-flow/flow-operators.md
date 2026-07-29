@@ -52,3 +52,4 @@ searchQueryFlow
 - [Flow basics](./flow-basics.md)
 - [Dispatchers and withContext](./dispatchers-withcontext.md)
 - [combine, zip, flatMapLatest](./combine-zip-flatmaplatest.md)
+- [retry, retryWhen](./retry-retrywhen.md)

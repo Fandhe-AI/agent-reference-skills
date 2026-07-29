@@ -31,10 +31,11 @@ public abstract class JobService extends Service {
 
 - Jobs run on the app's main thread; offload actual work to another thread and call `jobFinished()` when done.
 - In most cases, prefer **WorkManager** over the raw `JobScheduler`/`JobInfo` API for background work; WorkManager provides backward compatibility and a more flexible constraint/chaining API. See the [workmanager README](../workmanager/README.md) for `Worker`/`Constraints`.
-- User-initiated jobs must post a notification within about 10 seconds of starting to avoid an ANR-like penalty.
+- User-initiated jobs must post a notification within about 10 seconds of starting to avoid an ANR-like penalty; see [User-initiated data transfer jobs](./user-initiated-data-transfer.md) for the `setUserInitiated`/stop-reason API surface.
 - `JobScheduler`-scheduled jobs (and WorkManager, which is built on it) are deferred during Doze — see [Doze and App Standby](./doze-app-standby.md).
 
 ## Related
 
 - [Doze and App Standby](./doze-app-standby.md)
 - [AlarmManager](./alarmmanager.md)
+- [User-initiated data transfer jobs](./user-initiated-data-transfer.md)

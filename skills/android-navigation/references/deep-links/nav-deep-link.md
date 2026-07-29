@@ -45,4 +45,5 @@ composable<Profile>(
 
 - [deep-link-xml-tag](./deep-link-xml-tag.md)
 - [handle-deep-link](./handle-deep-link.md)
-- `../nav-compose/README.md` (composable(), type-safe routes)
+- [composable](../nav-compose/composable.md)
+- [Type-Safe Routes](../nav-compose/type-safe-routes.md)

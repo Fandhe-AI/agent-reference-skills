@@ -38,6 +38,7 @@ class ExampleActivity : ComponentActivity() {
 - The system kills **processes**, not individual activities; process kill likelihood increases in order: foreground (Resumed) < visible (Started/Paused) < background (Stopped) < empty (Destroyed).
 - In Compose, prefer not to hook lifecycle callbacks directly: use `rememberSaveable` for lightweight UI state and `ViewModel` for state that must survive configuration changes; observe lifecycle via `LocalLifecycleOwner` or `collectAsStateWithLifecycle()`.
 - `onDestroy()` is not guaranteed to be called when the system kills a background process to reclaim memory — don't rely on it for persistence.
+- When another activity or a dialog only partially covers this one, just `onPause()` fires and the covered activity resumes via `onResume()` on return. When it's fully covered, `onPause()` → `onStop()` fire; on return, `onRestart()` → `onStart()` → `onResume()` fire if the same instance is reused, or `onStart()` → `onResume()` (no `onRestart()`) if a new instance is created.
 
 ## Related
 

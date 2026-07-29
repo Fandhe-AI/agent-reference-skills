@@ -37,3 +37,5 @@ Android permissions are grouped into install-time, runtime, and special permissi
 - [requesting-runtime-permissions](./requesting-runtime-permissions.md)
 - [special-permissions-overview](./special-permissions-overview.md)
 - [permission-groups-and-one-time-permission](./permission-groups-and-one-time-permission.md)
+- [defining-custom-permissions](./defining-custom-permissions.md)
+- [restrict-interactions-with-other-apps](./restrict-interactions-with-other-apps.md)

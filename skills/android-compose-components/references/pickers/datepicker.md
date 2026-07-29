@@ -66,6 +66,7 @@ DatePickerDialog(
 - Set `initialDisplayMode = DisplayMode.Input` (via `rememberDatePickerState`) to start in keyboard-entry mode.
 - Can also be shown "docked" inline (e.g. inside a `Popup`) instead of a modal dialog.
 - Package: `androidx.compose.material3`.
+- This is the Jetpack Compose (Kotlin) API — distinct from the same-named SwiftUI / Ark UI / Chakra UI / fandhe-frontend components.
 
 ## Related
 
