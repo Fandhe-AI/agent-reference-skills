@@ -23,3 +23,4 @@ DGX Spark ships with a comprehensive software stack optimized for AI development
 - [NVIDIA Container Runtime for Docker](./container-runtime-docker.md)
 - [NGC](./ngc.md)
 - [NVIDIA AI Enterprise Quick Start](./nvaie-quickstart.md)
+- CUDA programming stack (CUDA C++/Python, PTX ISA, Blackwell tuning, CUTLASS): see the `nvidia-cuda` skill

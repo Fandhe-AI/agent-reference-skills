@@ -82,6 +82,7 @@ skills/amd-rocm/
       gpu-arch-specs.md
       cdna-architecture.md
       rdna-architecture.md
+      performance-optimization-guides.md
       mi100-microarchitecture.md
       mi250-microarchitecture.md
       mi300-microarchitecture.md

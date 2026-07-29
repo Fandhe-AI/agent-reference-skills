@@ -14,3 +14,4 @@
 | mi350-performance-counters | MI350/MI355 hardware performance-counter blocks | [mi350-performance-counters.md](./mi350-performance-counters.md) |
 | isa-documentation | Per-generation ISA document index (titles, URLs; no instruction-level content) | [isa-documentation.md](./isa-documentation.md) |
 | machine-readable-isa | Machine-readable ISA (XML), IsaDecoder, isa_spec_manager, RGA | [machine-readable-isa.md](./machine-readable-isa.md) |
+| performance-optimization-guides | RDNA-architecture performance guidance: wave32/wave64, occupancy, LDS bank conflicts, cache hierarchy | [performance-optimization-guides.md](./performance-optimization-guides.md) |

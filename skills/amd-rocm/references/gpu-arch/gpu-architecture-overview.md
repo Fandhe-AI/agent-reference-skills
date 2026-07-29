@@ -30,6 +30,7 @@ Model-to-`gfx`-target-to-CU-count mapping lives in [gpu-arch-specs.md](./gpu-arc
 
 ## Notes
 
+- Source: `rocm.docs.amd.com/en/latest/conceptual/gpu-arch.html` (ROCm doc tree "GPU architecture documentation" index page).
 - CDNA is the data-center-only compute architecture (matrix cores, no display/raster hardware); RDNA is the client/graphics architecture also used for compute via HIP. Both are programmed through the same HIP/ROCm stack, but target different `gfx` LLVM codes and have different CU internals.
 - CDNA4 (MI350 series) has no dedicated "Microarchitecture guide" page in the official docs (only ISA / whitepaper / performance-counters entries exist); its specs are covered by [gpu-arch-specs.md](./gpu-arch-specs.md) and [precision-support.md](./precision-support.md) instead.
 - These are AMD CDNA/RDNA hardware terms (compute unit, wavefront, matrix core, LDS, gfx target) and are distinct from NVIDIA SM / warp / tensor core / shared memory / compute capability terminology.

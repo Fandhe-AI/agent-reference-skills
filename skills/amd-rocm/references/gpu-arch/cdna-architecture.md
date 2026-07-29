@@ -22,6 +22,8 @@ Cache hierarchy per generation (L1 vector cache, L2, LDS, per-CU register files)
 
 ## Notes
 
+- Source: `rocm.docs.amd.com/en/latest/reference/gpu-arch/{mi100,mi250,mi300}.html` (per-generation microarchitecture pages) plus `rocm.docs.amd.com/en/latest/reference/glossary/device-hardware.html` (XCD/GCD/Matrix Core definitions), synthesized into one cross-generation CDNA summary; no single rocm.docs.amd.com or gpuopen.com page presents CDNA1-4 as one consolidated summary.
+- The generation-specific detail behind each row is already covered per-page in this category: see [mi100-microarchitecture.md](./mi100-microarchitecture.md), [mi250-microarchitecture.md](./mi250-microarchitecture.md), [mi300-microarchitecture.md](./mi300-microarchitecture.md).
 - CDNA3's chiplet design connects XCDs (and, for MI300A, CCDs) via AMD Infinity Fabric; MI300 GPUs additionally form a fully-connected 8-GPU system via 7 Infinity Fabric links per GPU.
 - MI300A is an APU package (GPU XCDs + CPU CCDs sharing unified memory); MI300X is GPU-only. Both use the same `gfx942` ISA.
 - MI250 (CDNA2) inter-GCD bandwidth: 4 Infinity Fabric links at 25 GT/s ≈ 200 GB/s per direction (400 GB/s bidirectional) between the two GCDs in one OAM; external GPU-to-GPU links are 16-wide at 25 GT/s (~50 GB/s per link, 100 GB/s bidirectional).
