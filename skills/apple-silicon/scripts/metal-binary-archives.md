@@ -12,6 +12,9 @@ xcrun metal-lipo -archs render.binary.metallib
 
 ## ファイルサイズを比較する
 
+`render.metallib` はバイナリアーカイブ化する前の通常の Metal ライブラリ。
+手元にない場合はこのセクションを飛ばす。
+
 ```sh
 du -h render.binary.metallib
 du -h render.metallib
@@ -30,11 +33,16 @@ ls shaders/macos
 
 ## ベンダー毎に再結合する
 
+アーカイブに含まれないベンダーは `find` の結果が空になるためスキップされる
+（`ls vendor*` 直書きだと zsh で `no matches found` になり中断する）。
+
 ```sh
 mkdir -p shaders/macos/lib
-xcrun -sdk macosx metal-lipo $(ls shaders/macos/applegpu*) -create -output shaders/macos/lib/applegpu.binary.metallib
-xcrun -sdk macosx metal-lipo $(ls shaders/macos/intelgpu*) -create -output shaders/macos/lib/intelgpu.binary.metallib
-xcrun -sdk macosx metal-lipo $(ls shaders/macos/amdgpu*) -create -output shaders/macos/lib/amdgpu.binary.metallib
+for vendor in applegpu intelgpu amdgpu; do
+  thin=$(find shaders/macos -maxdepth 1 -name "${vendor}*.binary.metallib")
+  [ -n "${thin}" ] || continue
+  xcrun -sdk macosx metal-lipo ${thin} -create -output "shaders/macos/lib/${vendor}.binary.metallib"
+done
 ```
 
 ```sh

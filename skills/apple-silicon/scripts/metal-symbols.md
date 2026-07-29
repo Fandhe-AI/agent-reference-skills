@@ -11,7 +11,7 @@ Metal Toolchain 未導入の場合は先に [toolchain-setup.md](./toolchain-set
 ## ソース情報を記録しつつ 1 コマンドでライブラリを生成する
 
 ```sh
-xcrun -sdk macosx metal -frecord-sources=flat Shadow.metal PointLights.metal DirectionalLight.metal
+xcrun -sdk macosx metal -frecord-sources=flat -o LightsAndShadow.metallib Shadow.metal PointLights.metal DirectionalLight.metal
 ```
 
 ## ソース情報を記録しつつ個別にコンパイル・リンクする
