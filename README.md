@@ -80,7 +80,7 @@ skills/
     rules/                   ← (任意) 適用ルール
 ```
 
-## スキル一覧（全 88 スキル）
+## スキル一覧（全 89 スキル）
 
 ### Apple プラットフォーム
 
@@ -201,6 +201,7 @@ Jetpack Compose 系の 3 スキル（`android-compose-*`）は `androidx.compose
 | [dgx-spark](skills/dgx-spark/) | DGX Spark — GB10 Grace Blackwell, セットアップ, ConnectX-7 クラスタ, ローカル LLM, プレイブック |
 | [nvidia-cuda](skills/nvidia-cuda/) | NVIDIA CUDA — CUDA C++/Python, kernel, nvcc, PTX ISA, Blackwell チューニング, CUTLASS / CuTe GEMM |
 | [nvidia-sync](skills/nvidia-sync/) | NVIDIA Sync — DGX Spark / DGX Station リモート接続, Cluster Assistant, ConnectX-7, Tailscale, アプリ起動 |
+| [amd-rocm](skills/amd-rocm/) | AMD ROCm / HIP — HIP プログラミングモデル, ランタイム API, hipify, rocBLAS / MIOpen / RCCL, CDNA / RDNA アーキテクチャ |
 
 ### 言語
 
