@@ -80,7 +80,7 @@ skills/
     rules/                   ← (任意) 適用ルール
 ```
 
-## スキル一覧（全 87 スキル）
+## スキル一覧（全 88 スキル）
 
 ### Apple プラットフォーム
 
@@ -199,6 +199,7 @@ Jetpack Compose 系の 3 スキル（`android-compose-*`）は `androidx.compose
 | [ergogen](skills/ergogen/) | Ergogen — 自作キーボード設計, YAML 設定, points / outlines / cases / pcbs |
 | [zmk](skills/zmk/) | ZMK Firmware — キーボードファームウェア, keymap, behaviors, bluetooth, split |
 | [dgx-spark](skills/dgx-spark/) | DGX Spark — GB10 Grace Blackwell, セットアップ, ConnectX-7 クラスタ, ローカル LLM, プレイブック |
+| [nvidia-cuda](skills/nvidia-cuda/) | NVIDIA CUDA — CUDA C++/Python, kernel, nvcc, PTX ISA, Blackwell チューニング, CUTLASS / CuTe GEMM |
 | [nvidia-sync](skills/nvidia-sync/) | NVIDIA Sync — DGX Spark / DGX Station リモート接続, Cluster Assistant, ConnectX-7, Tailscale, アプリ起動 |
 
 ### 言語
