@@ -5,12 +5,13 @@ Driver API for capturing and inspecting CUDA-internal error/warning log messages
 ## Signature / Usage
 
 ```c
-void callbackFunc(void *data, CUlogLevel logLevel, char *message, size_t length) {
-    // handle log entry
-}
+// Callback signature invoked for each log entry (verbatim from the official page)
+void callbackFunc(void *data, CUlogLevel logLevel, char *message, size_t length);
+```
 
-CUlogsCallbackHandle handle;
-cuLogsRegisterCallback(callbackFunc, /* data */ nullptr, &handle);
+```bash
+# Alternative activation without code changes
+export CUDA_LOG_FILE=stderr
 ```
 
 ## Options / Props
@@ -28,6 +29,7 @@ cuLogsRegisterCallback(callbackFunc, /* data */ nullptr, &handle);
 - Log entries are formatted as `[Time][TID][Source][Severity][API Entry Point] Message`, e.g. `[22:21:32.099][25642][CUDA][E][cuLogsDumpToMemory] buffer cannot be NULL`.
 - The internal log buffer holds a maximum of 100 entries; `cuLogsDumpToMemory` is capped at 25,600 bytes, and entries are newline-separated.
 - Error log management is currently available only through the CUDA Driver API, not the Runtime API.
+- The registration call itself (`cuLogsRegisterCallback`'s exact parameter list and its handle type) was not returned verbatim by the source fetch; only the callback signature above is quoted directly from the official page. Confirm the registration call's exact signature against the official page before relying on it.
 
 ## Related
 
