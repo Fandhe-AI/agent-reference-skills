@@ -16,8 +16,8 @@ cudaFuncSetAttribute(
 
 | Name | Description |
 |------|-------------|
-| HBM3 / HBM3e | B200 GPU memory subsystem; up to 180 GB capacity on B200 |
-| L2 cache capacity | 126 MB on GB200 (increased L2 capacity vs. prior generations) |
+| HBM3 / HBM3e | B200 GPU memory subsystem; up to 180 GB capacity on a single B200 GPU |
+| L2 cache capacity | 126 MB, as reported for the GB200 Superchip (Grace CPU + 2x B200 GPUs) configuration — not a per-single-B200-GPU figure; increased L2 capacity vs. prior generations |
 | L2 cache persistence | Controlled via the same CUDA APIs used since Ampere (e.g. `cudaStreamSetAttribute` / `cudaCtxSetAttribute` with `cudaAccessPolicyWindow`) |
 | Unified shared memory/L1/texture cache | Combined capacity of 256 KB per SM on compute capability 10.0 (B200), same maximum as Hopper |
 | `cudaFuncSetAttribute` + `cudaFuncAttributePreferredSharedMemoryCarveout` | Configures the runtime split between shared memory and L1/texture cache within the unified 256 KB |

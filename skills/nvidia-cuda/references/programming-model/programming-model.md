@@ -26,6 +26,8 @@ This chapter introduces the CUDA programming model at a high level, separate fro
 
 ## Notes
 
+- Distinct from `ptx-isa/programming-model.md`: this page covers the CUDA C/C++ host/device programming model (host, device, kernel, thread block, grid, SM); the PTX ISA page covers the lower-level virtual-ISA thread hierarchy (CTA, cluster, grid) exposed to PTX assembly.
+
 ### Heterogeneous systems
 
 The CUDA programming model assumes a heterogeneous computing system that includes both GPUs and CPUs. CUDA applications always start execution on the CPU (the host); host code uses CUDA APIs to copy data between host and device memory, launch code on the GPU, and wait for copies or GPU code to complete. The CPU and GPU can execute simultaneously, and best performance usually comes from maximizing utilization of both.

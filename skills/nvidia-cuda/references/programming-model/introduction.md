@@ -2,6 +2,7 @@
 
 ## Notes
 
+- Distinct from `ptx-isa/introduction.md`: this page introduces CUDA/GPU computing at the platform level; the PTX ISA page introduces the PTX virtual ISA specifically.
 - The GPU (Graphics Processing Unit) started as fixed-function hardware for real-time 3D rendering. GPUs became increasingly programmable over successive generations, and by 2003 certain graphics pipeline stages became fully programmable.
 - In 2006, NVIDIA introduced CUDA (Compute Unified Device Architecture) to let any computational workload use GPU throughput independent of graphics APIs. CUDA and GPU computing since then have accelerated scientific simulation (fluid dynamics, energy transport), business applications (databases, analytics), and AI (image classification, diffusion models, large language models).
 - A GPU provides much higher instruction throughput and memory bandwidth than a CPU within a similar price and power envelope. A CPU is designed to execute a serial sequence of operations (a thread) as fast as possible and runs a few tens of threads in parallel; a GPU is designed to execute thousands of threads in parallel, trading lower single-thread performance for much greater total throughput. GPUs devote more transistors to data processing units, while CPUs dedicate more transistors to data caching and flow control.
