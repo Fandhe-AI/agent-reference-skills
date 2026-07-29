@@ -24,7 +24,7 @@ pip install mlx[cpu]
 ## ソースからビルドする（Python API）
 
 ```sh
-git clone git@github.com:ml-explore/mlx.git mlx && cd mlx
+git clone https://github.com/ml-explore/mlx.git mlx && cd mlx
 ```
 
 ```sh
@@ -67,17 +67,21 @@ make install
 ## Linux の前提パッケージ
 
 ```sh
-apt-get update -y
-apt-get install libblas-dev liblapack-dev liblapacke-dev -y
+sudo apt-get update -y
+sudo apt-get install libblas-dev liblapack-dev liblapacke-dev -y
 ```
 
 ## Linux で CUDA ビルドを行う場合
 
+> **注記**: MLX は Apple Silicon 以外に Linux/CUDA バックエンドもサポートしており、以下は MLX 公式ドキュメントに
+> 記載された Linux 側のビルド手順（NVIDIA CUDA toolkit のセットアップ含む）。CUDA 自体の詳細な使い方は
+> nvidia-cuda スキルを参照。
+
 ```sh
 wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb
-dpkg -i cuda-keyring_1.1-1_all.deb
-apt-get update -y
-apt-get -y install cuda-toolkit-12-9
-apt-get install libblas-dev liblapack-dev liblapacke-dev libcudnn9-dev-cuda-12 -y
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
+sudo apt-get update -y
+sudo apt-get -y install cuda-toolkit-12-9
+sudo apt-get install libblas-dev liblapack-dev liblapacke-dev libcudnn9-dev-cuda-12 -y
 CMAKE_ARGS="-DMLX_BUILD_CUDA=ON" pip install -e ".[dev]"
 ```

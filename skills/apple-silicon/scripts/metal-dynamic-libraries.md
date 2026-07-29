@@ -12,11 +12,12 @@ xcrun -sdk macosx metal -dynamiclib utilities.metal -o libUtility.ir.metallib -i
 
 ## アーカイブを配布用の動的ライブラリへまとめる
 
-> **注記**: 公式ドキュメント内でも入力ファイル名が前段の出力（`libUtility.ir.metallib`）と一致しておらず
-> `libUtility.metalir.metallib` と表記されている。原文どおり掲載するため、自環境で実行する際はファイル名を揃えること。
+> **注記**: 公式ドキュメント内では入力ファイル名が前段の出力（`libUtility.ir.metallib`）と一致しておらず
+> `libUtility.metalir.metallib` と表記されている（上流の表記揺れ）。本コマンド列は前段の出力ファイル名
+> `libUtility.ir.metallib` に揃えて自己整合させている。
 
 ```sh
-xcrun -sdk macosx metal-tt libUtility.metalir.metallib -o libUtility.metallib $(xcrun -sdk macosx metal-config --native-arch-flags --gpu-family=metal3)
+xcrun -sdk macosx metal-tt libUtility.ir.metallib -o libUtility.metallib $(xcrun -sdk macosx metal-config --native-arch-flags --gpu-family=metal3)
 ```
 
 ## シェーダーライブラリを動的ライブラリにリンクする

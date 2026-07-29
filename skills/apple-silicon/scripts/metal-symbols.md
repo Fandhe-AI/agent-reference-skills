@@ -4,8 +4,8 @@ Recording source information while compiling a Metal library and extracting it i
 
 Metal Toolchain 未導入の場合は先に [toolchain-setup.md](./toolchain-setup.md) を参照。
 
-Apple 公式ドキュメントは同一の中間表現アーティファクトに `.ir` と `.air` の両表記を使っており、
-本ページの拡張子は `Source:` のページ（Generating and loading a Metal library symbol file）に従う。
+> **注記**: 中間表現ファイルの拡張子は `.air`（本ページ）。`metal-compile.md` の `.ir` とは別コマンドの
+> 出力表記であり混在させない。
 
 ## ソース情報を記録しつつ 1 コマンドでライブラリを生成する
 

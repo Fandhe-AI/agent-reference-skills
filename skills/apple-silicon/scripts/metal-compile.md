@@ -23,5 +23,3 @@ xcrun -sdk macosx metal-ar -q Lights.metalar DirectionalLight.ir PointLights.ir
 ```sh
 xcrun -sdk macosx metal -o LightsAndShadow.metallib Lights.metalar Shadow.ir
 ```
-
-このページの中間表現ファイルの拡張子は `.ir` で統一する（`metal-symbols.md` の `.air` とは別ページの表記であり混在させない）。

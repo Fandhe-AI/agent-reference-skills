@@ -44,5 +44,5 @@ du -h shaders/macos/lib/*
 設定項目の一覧は `man` で確認できる。
 
 ```sh
-man metal-pack
+man metal-lipo
 ```

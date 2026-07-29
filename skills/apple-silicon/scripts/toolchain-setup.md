@@ -36,5 +36,5 @@ error: cannot execute tool 'metal' due to missing Metal Toolchain;
        use: xcodebuild -downloadComponent MetalToolchain
 ```
 
-エラーメッセージ中の表記は `MetalToolchain`（先頭大文字）だが、実行するコマンドの引数は
-公式ドキュメント記載どおり `metalToolchain`（先頭小文字）を使う。
+エラーメッセージ中の表記は `MetalToolchain`（先頭大文字）だが、コマンドの引数には
+`metalToolchain`（先頭小文字）を使う。
