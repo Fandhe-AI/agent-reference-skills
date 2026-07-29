@@ -68,7 +68,11 @@ int main(void)
 
     float *inputVec_h;
     cudaMallocHost(&inputVec_h, sizeof(float) * inputSize);
-    double result_h = 0.0;
+    // Pinned like inputVec_h: graph memcpy nodes require device or
+    // pinned/device-mapped host memory, not pageable stack memory.
+    double *result_h;
+    cudaMallocHost(&result_h, sizeof(double));
+    *result_h = 0.0;
 
     cudaGraph_t graph;
     cudaGraphCreate(&graph, 0);
@@ -112,7 +116,7 @@ int main(void)
 
     cudaMemcpy3DParms resultCopyParams = {0};
     resultCopyParams.srcPtr = make_cudaPitchedPtr(result_d, sizeof(double), 1, 1);
-    resultCopyParams.dstPtr = make_cudaPitchedPtr(&result_h, sizeof(double), 1, 1);
+    resultCopyParams.dstPtr = make_cudaPitchedPtr(result_h, sizeof(double), 1, 1);
     resultCopyParams.extent = make_cudaExtent(sizeof(double), 1, 1);
     resultCopyParams.kind   = cudaMemcpyDeviceToHost;
 
@@ -125,7 +129,7 @@ int main(void)
 
     cudaHostNodeParams hostParams = {0};
     hostParams.fn       = hostCallback;
-    hostParams.userData = &result_h;
+    hostParams.userData = result_h;
 
     cudaGraphNode_t hostNode;
     cudaGraphNode_t hostDeps[] = {resultCopyNode};
@@ -146,6 +150,7 @@ int main(void)
     cudaFree(outputVec_d);
     cudaFree(result_d);
     cudaFreeHost(inputVec_h);
+    cudaFreeHost(result_h);
     return 0;
 }
 ```
@@ -155,6 +160,7 @@ int main(void)
 - Each `cudaGraphAdd*Node` call takes an explicit dependency array (e.g. `reduceDeps = {memcpyNode}`); the graph scheduler only starts a node once every node in its dependency array has completed, independent of the order nodes were added.
 - A node with an empty dependency array (`NULL, 0`) has no predecessors and is eligible to run immediately when the graph launches, so multiple independent root nodes execute concurrently if hardware resources allow.
 - `cudaGraphAddHostNode` reads whatever is in its `userData` pointer at the time it runs; a D2H `cudaGraphAddMemcpyNode` (`resultCopyNode`) must depend on the producing kernel node and the host node must in turn depend on that copy, or the callback observes stale/initial host memory instead of the computed value.
+- Graph memcpy nodes only accept device memory or pinned/device-mapped host memory — a plain stack/heap (pageable) destination can fail at node creation or graph instantiation. `result_h` is therefore allocated with `cudaMallocHost` (and freed with `cudaFreeHost`), mirroring the H2D path's `inputVec_h`, instead of being an ordinary stack variable.
 - `cudaGraphAddHostNode` runs its callback on a CPU thread once its GPU-side dependencies complete — useful for triggering host-side bookkeeping (logging, moving to the next batch) synchronized to graph progress without a blocking `cudaStreamSynchronize`.
 - `reduce`'s grid-stride loop (`i += blockDim.x * gridDim.x`) is required because `numBlocks * blockDim.x` (256 * 256 = 65,536) is far smaller than `inputSize` (1 << 20 = 1,048,576); a single `i = blockIdx.x * blockDim.x + tid` load per thread would silently drop most of the input from the sum.
 - Rebuilding node parameters and calling `cudaGraphAddKernelNode` again for a changed launch configuration is possible via `cudaGraphExecKernelNodeSetParams` for cheap re-instantiation, avoiding a full graph rebuild when only e.g. kernel arguments change between launches.
