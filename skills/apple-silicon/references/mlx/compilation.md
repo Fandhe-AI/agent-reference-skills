@@ -11,10 +11,14 @@ import mlx.core as mx
 def fn(x, y):
     return mx.exp(x) + y
 
-# Recompiles only when input shapes change, unless shapeless=True:
-@mx.compile(shapeless=True)
+# shapeless=True avoids recompiling when only input shapes change.
+# mx.compile is not decorator-friendly with kwargs; wrap the plain function instead:
 def fn_shapeless(x, y):
-    return mx.exp(x) + y
+    return mx.abs(x + y)
+
+compiled_fn = mx.compile(fn_shapeless, shapeless=True)
+compiled_fn(mx.array(1.0), mx.array(-2.0))
+compiled_fn(mx.array([1.0, -6.0]), mx.array([-2.0, 3.0]))  # no recompile, same graph shape-agnostic
 
 mx.disable_compile()   # temporarily disable all compilation globally, e.g. to debug/print
 mx.enable_compile()    # re-enable

@@ -12,7 +12,7 @@ tree = tree_unflatten(flat)                 # reconstructs the nested dict/list 
 
 fp16_params = tree_map(lambda p: p.astype(mx.float16), model.parameters())
 
-total_params = tree_reduce(lambda acc, p: acc + p.size, model.parameters(), 0)
+total_params = tree_reduce(lambda acc, p: acc + p.size, model.parameters(), initializer=0)
 ```
 
 ## Options / Props
@@ -23,7 +23,7 @@ total_params = tree_reduce(lambda acc, p: acc + p.size, model.parameters(), 0)
 | `tree_unflatten(flat)` | Reconstructs the original nested tree from its flattened form |
 | `tree_map(fn, tree)` | Applies `fn` to every leaf, returning a new tree of the same shape |
 | `tree_map_with_path(fn, tree)` | Like `tree_map`, but `fn` also receives each leaf's path |
-| `tree_reduce(fn, tree, initial)` | Aggregates all leaves with a reduction function |
+| `tree_reduce(fn, tree, initializer=None, is_leaf=None)` | Aggregates all leaves with a reduction function |
 | `tree_merge(tree_a, tree_b, merge_fn=None)` | Combines two trees, resolving overlaps with `merge_fn` if given |
 
 ## Notes

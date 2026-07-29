@@ -13,13 +13,15 @@ normed = fast.rms_norm(x, weight, eps=1e-5)
 
 out = fast.scaled_dot_product_attention(q, k, v, scale=1.0 / (dims ** 0.5))
 
-q_rot = fast.rope(q, dims=head_dim, traditional=False, base=10000.0, offset=0)
+q_rot = fast.rope(q, dims=head_dim, traditional=False, base=10000.0, scale=1.0, offset=0)
 
 kernel = fast.metal_kernel(
     name="my_kernel",
     input_names=["x"],
     output_names=["y"],
     source="y[thread_position_in_grid.x] = x[thread_position_in_grid.x] * 2;",
+    header="",
+    ensure_row_contiguous=True,
 )
 ```
 
@@ -29,9 +31,9 @@ kernel = fast.metal_kernel(
 | --- | --- |
 | `fast.rms_norm(x, weight, eps)` | Fused Root Mean Square normalization |
 | `fast.layer_norm(x, weight, bias, eps)` | Fused layer normalization |
-| `fast.rope(x, dims, traditional, base, offset)` | Fused rotary positional encoding |
+| `fast.rope(a, dims, *, traditional, base, scale, offset, freqs=None)` | Fused rotary positional encoding; `traditional`/`base`/`scale`/`offset` are keyword-only, and `base` and `freqs` are mutually exclusive |
 | `fast.scaled_dot_product_attention(q, k, v, scale, mask=None)` | Fused multi-head attention: `softmax(Q @ Kᵀ · scale) @ V` |
-| `fast.metal_kernel(...)` | Define a custom, JIT-compiled Metal kernel from source |
+| `fast.metal_kernel(name, input_names, output_names, source, header='', ensure_row_contiguous=True, atomic_outputs=False, compile_options=None)` | Define a custom, JIT-compiled Metal kernel from source |
 | `fast.cuda_kernel(...)` | Define a custom, JIT-compiled CUDA kernel from source |
 
 ## Notes

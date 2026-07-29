@@ -15,8 +15,8 @@ x = mx.random.normal((100,))
 total = dist.all_sum(x, group=group)       # reduce-sum across all processes
 gathered = dist.all_gather(x, group=group) # concatenate x from every process
 
-dist.send(x, dst=1, group=group)           # point-to-point, by rank
-y = dist.recv_like(x, src=0, group=group)
+dist.send(x, dst=1, group=group)           # send(x, dst, *, group=None, stream=None)
+y = dist.recv_like(x, src=0, group=group)  # receive an array matching x's shape/dtype from rank 0
 ```
 
 ## Options / Props
