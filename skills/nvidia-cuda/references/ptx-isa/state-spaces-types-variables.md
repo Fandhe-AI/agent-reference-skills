@@ -5,9 +5,9 @@ PTX defines named state spaces for organizing memory and register access, and a 
 ## Signature / Usage
 
 ```ptx
-.global .f32 array[N];
+.global .align 128 .b8 gbl[128];
 .reg .u32 %r0;
-.shared .align 4 .b8 buf[128];
+.shared .align 128 .b8 sMem[128];
 ```
 
 ## Options / Props

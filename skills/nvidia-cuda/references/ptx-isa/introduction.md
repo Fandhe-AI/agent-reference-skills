@@ -5,9 +5,14 @@ PTX (Parallel Thread Execution) defines a virtual machine and instruction set ar
 ## Signature / Usage
 
 ```ptx
-.version 9.3
-.target sm_90
-.address_size 64
+// example of directive placement within a module (per PTX ISA .address_size docs)
+   .version 2.3
+   .target sm_20
+   .address_size 64
+...
+.entry foo () {
+...
+}
 ```
 
 ## Options / Props
@@ -22,6 +27,7 @@ PTX (Parallel Thread Execution) defines a virtual machine and instruction set ar
 ## Notes
 
 - PTX ISA 9.3 — Chapter 1
+- The module-header example above is the doc's own illustrative placement example (from the `.address_size` directive page); the `.version`/`.target` values shown (2.3 / sm_20) are the example's, not necessarily the latest supported values — see directives for the full option lists.
 - PTX is an intermediate representation between high-level compilers (e.g. NVCC) and hardware-specific machine instructions (SASS); the `ptxas` component performs the final translation.
 - Every PTX module declares its ISA version (`.version`), target architecture (`.target`), and addressing mode (`.address_size`) at the top, as detailed in the `directives` and `syntax` pages.
 

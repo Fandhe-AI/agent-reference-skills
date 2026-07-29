@@ -5,15 +5,9 @@ Assembly directives that declare module metadata, kernel/function entry points, 
 ## Signature / Usage
 
 ```ptx
-.version 9.3
-.target sm_90
-.address_size 64
-
-.visible .entry my_kernel (.param .u64 ptr)
-.maxntid 256, 1, 1
-{
-    ret;
-}
+// example directives (per PTX ISA .version / .address_size docs)
+.version 3.1
+.address_size 64       // addresses are 64 bit
 ```
 
 ## Options / Props
@@ -32,7 +26,7 @@ Assembly directives that declare module metadata, kernel/function entry points, 
 ## Notes
 
 - PTX ISA 9.3 — Chapter 11
-- `.version`/`.target`/`.address_size` must appear once at the top of every module, declaring the PTX ISA version, target GPU architecture (e.g. `sm_90`), and pointer address width (32 or 64 bits).
+- `.version`/`.target`/`.address_size` must appear once at the top of every module, declaring the PTX ISA version, target GPU architecture (e.g. `sm_100`, `sm_90`), and pointer address width (32 or 64 bits, default 32 if `.address_size` is omitted).
 - `.visible` controls external linkage visibility of a kernel or function symbol across modules, analogous to symbol visibility in a linked object file.
 - `.reqnctapercluster` / `.explicitcluster` / `.maxclusterrank` (sm_90+) declare the cluster dimensions a kernel requires or supports.
 

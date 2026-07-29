@@ -5,7 +5,7 @@ Scalar and SIMD video (packed byte/half-word) arithmetic instructions, and misce
 ## Signature / Usage
 
 ```ptx
-vadd.s32.s32.s32 d, a, b, c;
+vadd.s32.u32.s32.sat      r1, r2.b0, r3.h0;
 nanosleep.u32 t;
 ```
 

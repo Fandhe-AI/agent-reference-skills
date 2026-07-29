@@ -5,18 +5,12 @@ PTX source modules are ASCII text. A module begins with directive statements (`.
 ## Signature / Usage
 
 ```ptx
-.version 9.3
-.target sm_90
-.address_size 64
+// example of directive placement within a module (per PTX ISA .address_size docs)
+   .version 2.3
+   .target sm_20
+   .address_size 64
 
-.visible .entry kernel_name (.param .u64 ptr)
-{
-    .reg .u32 %r<2>;
-    @%p1 bra L1;      // predicated branch
-    // ...
-L1:
-    ret;
-}
+@p   bra{.uni}  tgt;           // tgt is a label, predicated branch
 ```
 
 ## Options / Props

@@ -5,11 +5,11 @@ Barrier, memory fence, atomic/reduction, warp-vote, and asynchronous mbarrier in
 ## Signature / Usage
 
 ```ptx
-bar.sync 0;
-membar.gpu;
-atom.global.add.s32 d, [a], b;
-vote.sync.all.pred p, q, membermask;
-mbarrier.init.shared.b64 [addr], count;
+bar.cta.sync  1;    // arrive, wait for others to arrive
+membar.gl;
+atom.global.add.s32  d,[a],1;
+vote.sync.all.pred    p,q,0xffffffff;
+mbarrier.init{.layout}{.shared{::cta}}.b64 [addr], count;
 ```
 
 ## Options / Props

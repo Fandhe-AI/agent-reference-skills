@@ -5,8 +5,8 @@ PTX instructions operate on register operands, immediate constants, and address 
 ## Signature / Usage
 
 ```ptx
-ld.global.f32 %f1, [a+4];   // register-plus-offset addressing
-mov.b64 {d1, d2}, %rd0;     // vector operand (brace notation)
+d = *(a+immOff);   // register-plus-offset addressing, i.e. [reg+immOff]
+mov.v4.f32 {a,b,c,d}, V;   // vector operand (brace notation)
 ```
 
 ## Options / Props

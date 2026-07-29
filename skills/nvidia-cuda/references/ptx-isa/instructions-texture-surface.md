@@ -5,8 +5,8 @@ Texture-fetch and surface load/store/reduce instructions operating on the `.tex`
 ## Signature / Usage
 
 ```ptx
-tex.1d.v4.f32.s32 {r0,r1,r2,r3}, [texref, {x}];
-suld.b.2d.v4.b32.zero {r0,r1,r2,r3}, [surfref, {x,y}];
+tex.geom.v4.dtype.ctype  d, [a, c] {, e} {, f};
+suld.b.1d.v4.b32.trap  {s1,s2,s3,s4}, [surf_B, {x}];
 ```
 
 ## Options / Props

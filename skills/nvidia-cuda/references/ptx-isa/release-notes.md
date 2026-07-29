@@ -5,7 +5,7 @@ PTX ISA is versioned independently from — but shipped alongside — each CUDA 
 ## Signature / Usage
 
 ```ptx
-.version 9.3
+.version  major.minor    // major, minor are integers; current doc title reports 9.3
 ```
 
 ## Options / Props

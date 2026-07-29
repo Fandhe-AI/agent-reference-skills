@@ -5,11 +5,9 @@ Warp-level, asynchronous warpgroup-level, and TensorCore 5th-generation (Blackwe
 ## Signature / Usage
 
 ```ptx
-mma.sync.aligned.m16n8k16.row.col.f32.f16.f16.f32
-    {d0,d1,d2,d3}, {a0,a1,a2,a3}, {b0,b1}, {c0,c1,c2,c3};
+mma.sync.aligned.m8n8k4.alayout.blayout.dtype.f16.f16.ctype  d, a, b, c;
 
-tcgen05.mma.cta_group::1.kind::f16
-    [d_tmem], [a_desc], [b_desc], idesc, enable;
+tcgen05.mma.cta_group::1.kind::tf32      [taddr0],  adesc,  bdesc, idesc, {m0, m1, m2, m3}, p;
 ```
 
 ## Options / Props

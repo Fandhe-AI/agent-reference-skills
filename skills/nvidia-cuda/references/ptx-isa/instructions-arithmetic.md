@@ -5,9 +5,9 @@ Integer, extended-precision integer, floating-point, half-precision floating-poi
 ## Signature / Usage
 
 ```ptx
-add.s32 d, a, b;
-fma.rn.f32 d, a, b, c;
-add.cc.u32 d, a, b;   // extended-precision: carry-out
+add.type1        d, a, b;
+add.cc.type  d, a, b;
+fma.rnd{.ftz}{.sat}.f32  d, a, b, c;
 ```
 
 ## Options / Props

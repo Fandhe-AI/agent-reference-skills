@@ -5,11 +5,8 @@ PTX exposes a data-parallel SIMT (Single-Instruction, Multiple-Thread) programmi
 ## Signature / Usage
 
 ```ptx
-// compute a global thread index from block/grid hierarchy
-mov.u32 %r0, %ctaid.x;
-mov.u32 %r1, %ntid.x;
-mov.u32 %r2, %tid.x;
-mad.lo.u32 %r3, %r0, %r1, %r2;   // %r3 = ctaid.x * ntid.x + tid.x
+mov.u32      %r1,%tid.x;  // move tid.x to %rh
+mov.u32  %r0,%ctaid.x;
 ```
 
 ## Options / Props

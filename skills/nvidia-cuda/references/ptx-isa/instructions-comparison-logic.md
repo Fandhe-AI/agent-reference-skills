@@ -5,9 +5,9 @@ Comparison/selection, half-precision comparison, and logic/shift instructions (P
 ## Signature / Usage
 
 ```ptx
-setp.lt.s32 p, a, b;
-selp.f32 d, a, b, p;
-shl.b32 d, a, b;
+setp.lt.s32  p|q, a, b;  // p = (a < b); q = !(a < b);
+selp.u32 %r1,1,0,%p;    // convert predicate to 32-bit value
+shl.b32  q,a,2;
 ```
 
 ## Options / Props

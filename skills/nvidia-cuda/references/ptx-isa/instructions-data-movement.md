@@ -5,10 +5,10 @@ Register/memory data movement, address-space conversion, and fabric (multi-GPU N
 ## Signature / Usage
 
 ```ptx
-mov.u32 %r0, %ctaid.x;
-ld.global.f32 %f0, [ptr];
-st.global.f32 [ptr], %f0;
-cvta.global.u64 %rd0, generic_ptr;
+ld.global.f32    d,[a];
+st.global.f32    [a],b;
+cvta.const.u32   ptr,cvar;   // convert const address to generic address
+cvta.to.global.u32  p,gptr;  // convert generic address to global address
 ```
 
 ## Options / Props
@@ -22,7 +22,7 @@ cvta.global.u64 %rd0, generic_ptr;
 
 - PTX ISA 9.3 — Chapter 9.7.9–9.7.10
 - `mov` transfers data between registers or from a constant into a register; `ld`/`st` load and store to/from memory across state spaces and addressing modes.
-- `cvta` converts a state-space-specific address into a generic address (or the reverse), enabling generic addressing across `.global`/`.shared`/`.local`.
+- `cvta.space` converts a `.const`/`.global`/`.local`/`.shared`/`.param` address into a generic address; `cvta.to.space` performs the reverse conversion (generic → state-space address).
 - Fabric instructions (9.7.10) target the NVLink fabric address space for cross-GPU/multimem access.
 
 ## Related

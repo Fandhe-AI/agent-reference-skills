@@ -5,12 +5,9 @@ PTX abstracts function calls through the `.func` directive, the `.param` state s
 ## Signature / Usage
 
 ```ptx
-.func (.reg .u32 retval) my_func (.param .u32 arg1)
-{
-    ret;
-}
+.func (.reg .u32 rv) foo (.reg .u32 a, .reg .u32 b) ...
 
-call.uni (retval), my_func, (arg1);
+call.uni g, (a);  // call function 'g' with parameter 'a'
 ```
 
 ## Options / Props

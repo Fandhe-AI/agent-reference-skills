@@ -5,9 +5,9 @@ Predefined, read-only registers (state space `.sreg`) that expose a thread's pos
 ## Signature / Usage
 
 ```ptx
-mov.u32 %r0, %tid.x;
-mov.u32 %r1, %laneid;
-mov.u64 %rd0, %clock64;
+mov.u32      %r1,%tid.x;  // move tid.x to %rh
+mov.u32  %r, %laneid;
+mov.u64  r1,%clock64;
 ```
 
 ## Options / Props

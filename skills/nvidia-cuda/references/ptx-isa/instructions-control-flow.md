@@ -5,10 +5,9 @@ Branching, function call/return, and explicit stack-manipulation instructions (P
 ## Signature / Usage
 
 ```ptx
-bra target;
-call (retval), function_name, (arguments);
-ret;
-alloca.u64 dest, size;
+bra.uni  L_exit;    // uniform unconditional jump
+@p  call     (d), h, (a, b);  // return value into register d
+alloca.type  ptr, size{, immAlign};
 ```
 
 ## Options / Props

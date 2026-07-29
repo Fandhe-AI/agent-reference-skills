@@ -5,10 +5,8 @@ PTX defines a memory consistency model based on scoped, "morally strong" operati
 ## Signature / Usage
 
 ```ptx
-ld.acquire.gpu.global.u32 %r0, [ptr];
-// ... critical section ...
-st.release.gpu.global.u32 [ptr], %r1;
-fence.sc.gpu;
+ld.acquire [M];
+st.release [M];
 ```
 
 ## Options / Props
