@@ -7,6 +7,11 @@ Deep-learning kernels, BLAS operations, kernel primitives, and mathematical func
 ```cmake
 # link the HIP runtime that these math libraries build on
 find_package(hip REQUIRED)
+# then link the specific library needed, e.g.:
+#   find_package(hipBLAS REQUIRED)   -> hipblasSgemm(...)   BLAS marshalling
+#   find_package(hipFFT REQUIRED)    -> hipfftExecC2C(...)  FFT marshalling
+#   find_package(rocBLAS REQUIRED)   -> rocblas_sgemm(...)  native rocBLAS impl
+#   find_package(MIOpen REQUIRED)    -> miopenConvolutionForward(...)
 ```
 
 ## Options / Props

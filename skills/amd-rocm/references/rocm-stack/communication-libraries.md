@@ -7,6 +7,9 @@ Libraries that enable inter-GPU and inter-node data exchange for multi-GPU ROCm 
 ```cmake
 # link the HIP runtime that RCCL/rocSHMEM build on
 find_package(hip REQUIRED)
+# then link the specific library needed, e.g.:
+#   find_package(rccl REQUIRED)     -> ncclAllReduce(...)   multi-GPU/multi-node collectives
+#   find_package(rocshmem REQUIRED) -> rocshmem_put(...)     intra-kernel GPU-centric networking
 ```
 
 ## Options / Props
