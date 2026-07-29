@@ -2,6 +2,19 @@
 
 B200 GPUs implement fifth-generation NVLink with higher bandwidth, additional links per GPU, and improved error detection versus prior generations.
 
+## Signature / Usage
+
+```cuda
+// Enable peer access between two NVLink-connected GPUs; once enabled,
+// peer memory transfers are transparently routed over NVLink when available.
+int canAccess = 0;
+cudaDeviceCanAccessPeer(&canAccess, /* device */ 0, /* peerDevice */ 1);
+if (canAccess) {
+    cudaSetDevice(0);
+    cudaDeviceEnablePeerAccess(/* peerDevice */ 1, /* flags */ 0);
+}
+```
+
 ## Options / Props
 
 | Name | Description |

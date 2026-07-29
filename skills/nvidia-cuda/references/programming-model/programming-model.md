@@ -2,6 +2,21 @@
 
 This chapter introduces the CUDA programming model at a high level, separate from any language; the terminology applies to CUDA in any supported programming language.
 
+## Signature / Usage
+
+```cuda
+// A kernel launch expresses the grid (of thread blocks) and block (of threads)
+// dimensions via the <<<...>>> execution configuration.
+__global__ void kernel(float *data) {
+    int tid = blockIdx.x * blockDim.x + threadIdx.x; // global thread index
+    data[tid] *= 2.0f;
+}
+
+dim3 grid(numBlocks);
+dim3 block(256); // 256 threads per block, a multiple of the 32-thread warp size
+kernel<<<grid, block>>>(data);
+```
+
 ## Options / Props
 
 | Name | Type | Description |

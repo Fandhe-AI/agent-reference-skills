@@ -2,6 +2,14 @@
 
 High-priority recommendations for tuning CUDA applications on NVIDIA Blackwell GPUs, plus the compatibility check to perform before tuning.
 
+## Signature / Usage
+
+```sh
+# Compatibility check build flags (Blackwell Compatibility Guide, section 1.3):
+# compile for the target Blackwell SM architecture before tuning.
+nvcc -gencode=arch=compute_100,code=sm_100 -o app app.cu
+```
+
 ## Options / Props
 
 | Name | Description |
