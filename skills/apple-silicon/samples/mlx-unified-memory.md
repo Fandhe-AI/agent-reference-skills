@@ -15,6 +15,12 @@ b = mx.random.normal((100,))
 mx.add(a, b, stream=mx.cpu)
 mx.add(a, b, stream=mx.gpu)
 
+# c depends on b (computed on the CPU stream); MLX inserts a
+# cross-stream dependency automatically so d only starts once c is
+# ready — no manual synchronization call is required.
+c = mx.add(a, b, stream=mx.cpu)
+d = mx.add(a, c, stream=mx.gpu)
+
 
 def fun(a, b, d1, d2):
     # Dense matmul: a good fit for the GPU stream.
@@ -26,17 +32,12 @@ def fun(a, b, d1, d2):
     return x, b
 
 
-a = mx.random.uniform(shape=(4096, 512))
-b = mx.random.uniform(shape=(512, 4))
+# Matmul-shaped inputs: (4096, 512) @ (512, 4).
+mm_a = mx.random.uniform(shape=(4096, 512))
+mm_b = mx.random.uniform(shape=(512, 4))
 
-# c depends on b (computed on the CPU stream); MLX inserts a
-# cross-stream dependency automatically so d only starts once c is
-# ready — no manual synchronization call is required.
-c = mx.add(a, b, stream=mx.cpu)
-d = mx.add(a, c, stream=mx.gpu)
-
-x, b = fun(a, b, d1=mx.gpu, d2=mx.cpu)
-mx.eval(x, b)
+x, mm_b = fun(mm_a, mm_b, d1=mx.gpu, d2=mx.cpu)
+mx.eval(x, mm_b)
 ```
 
 ## Notes
