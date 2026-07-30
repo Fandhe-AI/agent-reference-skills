@@ -240,6 +240,12 @@ EOF
 ```bash
 git push -u origin "contribute/${SKILL_NAME}-${SLUG}"
 
+# 貢献元リポジトリの OWNER/REPO を取得する（PR body の Source 節に使用。
+# 本スキルは任意のリポジトリから実行されるため、特定リポジトリ名を固定しない）
+SRC_REPO=$(git -C "${ORIG_DIR}" remote get-url origin 2>/dev/null \
+  | sed -E 's#^(git@github\.com:|https://github\.com/)##; s#\.git$##')
+[[ -n "${SRC_REPO}" ]] || SRC_REPO=$(basename "${ORIG_DIR}")
+
 gh pr create \
   --repo "${REPO_SLUG}" \
   --base "${DEFAULT_BRANCH:-main}" \
@@ -251,7 +257,7 @@ gh pr create \
 
 ## Source
 
-ローカルの [ideas リポジトリ](../../) 側で改修後、`/contribute-skill <SKILL_NAME>` により投稿。
+ローカルの <SRC_REPO> 側で改修後、`/contribute-skill <SKILL_NAME>` により投稿。
 
 ## Test plan
 
@@ -264,6 +270,8 @@ EOF
 ```
 
 `--repo` には Step 2 で正規化した `${REPO_SLUG}`（`OWNER/REPO` 形式）を渡します。URL 形式から `OWNER/REPO` への変換は Step 2 の case 文で完了しています。
+
+body の `<SRC_REPO>` は上で取得した貢献元リポジトリの `OWNER/REPO`（origin 未設定時はディレクトリ名）に置き換えます（heredoc はクォート済みのため Claude が実値で埋める。特定リポジトリ名のハードコード禁止）。
 
 Draft PR を作成する場合は `--draft` を付けます（デフォルトはユーザー確認の上で決定）。
 
