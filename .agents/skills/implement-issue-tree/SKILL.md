@@ -381,15 +381,17 @@ cat _/issue-trees/42.json
 
 ### worktree の自動削除
 
-**merged 確定時**に、状態ファイルの更新と同じエージェント内で worktree を自動削除する。削除は `git worktree remove --force <path>` で実行し（squash merge 済みのため force でよい）、削除後に `git worktree prune` を実行する。削除完了後、状態ファイルの `worktree` フィールドは空文字に更新されるため、残骸の有無を状態ファイルから判別できる。
+**merged 確定時**に、状態ファイルの更新と同じエージェント内で worktree を自動削除する。削除は `git worktree remove --force <path>` で実行し（squash merge 済みのため force でよい）、削除後に `git worktree prune` を実行する。削除完了後、状態ファイルの `worktree` フィールドは空文字に更新されるため、残骸の有無を状態ファイルから判別できる。`remove --force` が locked 等で失敗した場合は `git worktree unlock` してから再試行し、それでも失敗すれば実在確認・メインリポ非該当を確認した上で `rm -rf` にフォールバックする（さらに失敗しても非致命として継続し、次回ランのスイープに委ねる）。
 
 **fix のたびに古い worktree は削除され、常に最新の 1 つだけが追跡される**。fix エージェントも `isolation: 'worktree'` で動作するため、fix のたびに新しい worktree が作成される。fix 完了後に旧 worktree を自動削除し、状態ファイルの `worktree` フィールドを新しいパスに更新する。これにより fix を複数回繰り返しても残骸 worktree が蓄積しない。
 
 **review / pr-create の worktree はエージェント返却直後に削除する**。この 2 つは `isolation: 'worktree'` で動作するが成果物を保持しない（review は読み取り専用の判定のみ、pr-create は push 完了時点で成果が origin 上に存在する）ため、イシューのクローズまで残す価値がない。返却値の `worktreePath` を使ってその場で削除する。追跡中の実装 worktree（impl / fix）とは別物のため、状態ファイルの `worktree` フィールドは上書きしない。
 
-**ラン終了時に worktree スイープを実行する**。個別の削除経路が状態ファイル書き込み失敗等で取りこぼした残骸を回収する最終防衛線であり、クローズ（merged / closed）に至ったイシューの worktree を残さないことを保証する。削除対象は**本ラン内で削除を試みた worktree パスの集合**に限定され、かつ `git worktree list` に実在するものだけを削除する。「観測した全パスから保持リストを引く」方式は採らない（状態ファイルへの書き込みが失敗した worktree が「削除候補には載るが保持リストには載らない」状態になり、実装中・レビュー中の worktree が未コミット変更ごと消える。書き込み失敗が fail-safe ではなく fail-destructive に倒れる）。パスの命名規約からの推測は行わないため、並行して走る別ランの worktree・利用者が手動で作った worktree は構造的に対象になり得ない（ホスト側の worktree 命名規約に依存しない設計。命名規約に依存した絞り込みは、規約の想定が外れたときの失敗方向が `git worktree remove --force` による削除過多になるため採用しない）。観測がゼロなら削除を一切行わない（fail-safe）。保持されるのは failed / blocked / monitoring イシューが記録した worktree で（monitoring は halt 等で中断したイシュー。状態ファイルが指す worktree の実体だけ消えると乖離が生じるため保持する）、ブランチは削除しない（未 push のコミットを持つ可能性があるため、ブランチの寿命は worktree の寿命と切り離す）。スイープ結果は Workflow の返却値 `sweptWorktrees` で確認できる。
+**ラン終了時に worktree スイープを実行する**。個別の削除経路が状態ファイル書き込み失敗等で取りこぼした残骸を回収する最終防衛線であり、クローズ（merged / closed）に至ったイシューの worktree を残さないことを保証する。削除対象は**本ラン内で削除を試みた worktree パスの集合**と、後述の孤立 worktree スキャンでブランチ名一致・merged / closed 確定した worktree に限定され、かつ `git worktree list` に実在するものだけを削除する。「観測した全パスから保持リストを引く」方式は採らない（状態ファイルへの書き込みが失敗した worktree が「削除候補には載るが保持リストには載らない」状態になり、実装中・レビュー中の worktree が未コミット変更ごと消える。書き込み失敗が fail-safe ではなく fail-destructive に倒れる）。パスの命名規約からの推測は行わないため、並行して走る別ランの worktree・利用者が手動で作った worktree は構造的に対象になり得ない（ホスト側の worktree 命名規約に依存しない設計。命名規約に依存した絞り込みは、規約の想定が外れたときの失敗方向が `git worktree remove --force` による削除過多になるため採用しない）。観測がゼロなら削除を一切行わない（fail-safe）。保持されるのは failed / blocked / monitoring イシューが記録した worktree で（monitoring は halt 等で中断したイシュー。状態ファイルが指す worktree の実体だけ消えると乖離が生じるため保持する）、ブランチは削除しない（未 push のコミットを持つ可能性があるため、ブランチの寿命は worktree の寿命と切り離す）。スイープ結果は Workflow の返却値 `sweptWorktrees` で確認できる。
 
 なお、削除候補への登録は「削除を試みる地点」（`updateState` の `cleanupWorktree` 処理）で、実際の削除を行うエージェント呼び出しより**前**に行う。このため状態ファイルへの書き込みが失敗しても候補には残り、スイープ本来の目的（書き込み失敗で追跡から漏れた残骸の回収）が維持される。逆に、まだ削除を試みていない worktree は候補に載らないため削除され得ない。
+
+**孤立 worktree の自動検出（orphan scan）**。エージェントが worktree 作成後・`worktreePath` 返却前にクラッシュすると、そのパスは状態ファイルにも削除候補にも載らず、checkout 済みの branch だけが残って次回実行の checkout を失敗させ続けることがある。これに対処するため、ラン開始時とラン終了時の両方で `git worktree list --porcelain` を取得し、ブランチ名（`<type>/<issueNumber>-<short-name>`）を実行キューの issue 番号と照合する。命名規約からの推測は行わず、ブランチ名一致のみを根拠にする。ラン開始時に一致した孤立 worktree は状態ファイルへ記録して Recover の対象に載せ、ラン終了時に一致したものは対応イシューが merged / closed 確定であれば削除候補へ、それ以外（failed 等）は削除せず状態ファイルへ記録して次回 Recover に委ねる。
 
 **中断・失敗後の残骸 worktree は、再実行時に Recover phase が自動処理する**。continue 判定の残骸は Recover が worktree を削除してから Implement で既存 branch を checkout し、discard 判定（空 worktree・方向違い等）は Recover が worktree と branch を自動削除する。手動で worktree を削除したり、削除確認に答えたりする必要はない。
 

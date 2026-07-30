@@ -5,13 +5,13 @@
       "source": "Fandhe-AI/agent-cli-skills",
       "sourceType": "github",
       "skillPath": "skills/contribute-skill/SKILL.md",
-      "computedHash": "6015daf9a5fe8860b5e1a25e1ff224b257dfcf0c148f2538bb2966f1c609b185"
+      "computedHash": "2801a3f63d8a98ec97efe874cd6bf62d68d6a659106cedf06f339ed6d1527356"
     },
     "create-commit": {
       "source": "Fandhe-AI/agent-cli-skills",
       "sourceType": "github",
       "skillPath": "skills/create-commit/SKILL.md",
-      "computedHash": "c742f48f3cf7024c10cd236a08407605ae849279056f8a093631600a36cdd1ba"
+      "computedHash": "f4e01f312504b127114dc1370f7e7fcb6e6330e83a154330f8a821806863da1f"
     },
     "create-issue": {
       "source": "Fandhe-AI/agent-cli-skills",
@@ -47,7 +47,7 @@
       "source": "Fandhe-AI/agent-cli-skills",
       "sourceType": "github",
       "skillPath": "skills/implement-issue-tree/SKILL.md",
-      "computedHash": "9792825873ad0a12342fe012061a0ca1731f0672ff90118dce5d1bb801d1e1ae"
+      "computedHash": "c9f287f7dfcdbcf9c43f4dce1be1e760e575a35965e1043904c17261a5be6618"
     },
     "implement-review": {
       "source": "Fandhe-AI/agent-cli-skills",
