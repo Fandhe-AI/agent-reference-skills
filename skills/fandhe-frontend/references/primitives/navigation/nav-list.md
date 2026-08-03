@@ -15,7 +15,7 @@ root (nav)
 ## Signature / Usage
 
 ```rust
-use headless_ui::nav_list::{root, heading, list, item, link};
+use fandhe_frontend_headless_ui::nav_list::{root, heading, list, item, link};
 
 pub fn root<'a>(label: &'a str, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node;
 pub fn heading(attrs: Vec<(&str, &str)>, children: Vec<Node>) -> Node;

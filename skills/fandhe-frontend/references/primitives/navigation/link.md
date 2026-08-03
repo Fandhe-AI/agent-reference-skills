@@ -11,7 +11,7 @@ root (a)
 ## Signature / Usage
 
 ```rust
-use headless_ui::link::root;
+use fandhe_frontend_headless_ui::link::root;
 
 pub fn root<'a>(
     href: &'a str,

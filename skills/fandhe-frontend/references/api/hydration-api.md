@@ -20,6 +20,14 @@ pub fn find_attr_values(node: &Node, attr_name: &str) -> Vec<String>
 
 pub fn find_nav_targets(node: &Node) -> Vec<String>
 // data-nav 属性専用のショートカット
+
+// 拡張 API（Section 12 追記。#[cfg(target_arch = "wasm32")] の pub use 経由で公開）
+pub fn replace_subtree(slot: &Element, node: &Node) -> Result<(), JsValue>
+// Node ツリーから DOM サブツリーを置き換える。HTML 文字列組み立てを経由しない
+
+pub fn set_timeout_once(key: &str, ms: u32, f: impl FnOnce() + 'static) -> Result<(), JsValue>
+pub fn clear_timeout_once(key: &str)
+// key 単位の単発タイマー。明示的なレジストリ管理で closure.forget() を使わない
 ```
 
 ## Options / Props
@@ -30,6 +38,8 @@ pub fn find_nav_targets(node: &Node) -> Vec<String>
 | `mount_csr(root_id)` | fn | CSR がSSR/SSGと同一関数を呼び `innerHTML` へ反映する |
 | `find_attr_values(node, attr_name)` | fn | DOM 非依存でハイドレーション対象属性値を列挙 |
 | `find_nav_targets(node)` | fn | `data-nav` 属性専用の列挙ショートカット |
+| `replace_subtree(slot, node)` | fn | `Node` ツリーで DOM サブツリーを置換。ツリーに `Node::RawHtml` を検出した場合は fail-closed で失敗する |
+| `set_timeout_once(key, ms, f)` / `clear_timeout_once(key)` | fn | `key` 単位の単発タイマー。同一 `key` での再呼び出し・明示 `clear` まで期限切れタイマーはレジストリに残る（遅延クリーンアップ） |
 
 ## Notes
 

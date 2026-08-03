@@ -6,7 +6,7 @@ OpenAPI ドキュメント生成プラグイン（TASK-3.1、REQ-3【Must】）�
 - crate 名: `fandhe-backend-plugin-openapi`（crates/plugin-openapi）
 - 配線パターン: 非該当（拡張点不使用）。ビルド時生成でランタイム拡張点を使わない。実行時経路は `try_intercept` のパスインターセプト型の静的サービング変種として配線される（`.await` を挟まない同期分岐）
 
-## 登録方法
+## Signature / Usage
 
 `crates/core` の `openapi` feature 有効時、`Server::openapi()`（フレームワーク固定スキーマ配信）または `Server::openapi_with(doc)`（利用者独自スキーマ、`OpenApiDoc` を渡す）を登録する。両メソッドは排他ではなく後勝ち（最後に呼んだ方が残る）。
 
@@ -14,8 +14,6 @@ OpenAPI ドキュメント生成プラグイン（TASK-3.1、REQ-3【Must】）�
 let doc = OpenApiDoc::from_json(json_bytes)?.with_yaml(yaml_bytes)?;
 // Server::openapi_with(doc) へ渡す
 ```
-
-## Signature
 
 ```rust,ignore
 pub const OPENAPI_JSON: &str; // include_str! によるコンパイル時埋め込み
@@ -29,7 +27,7 @@ impl OpenApiDoc {
 }
 ```
 
-## Config
+## Options / Props
 
 `OpenApiDoc`（利用者独自スキーマ用。`OpenApiDoc::from_json` 経由でのみ構築、検証済み型。型は `OpenApiDoc` のフィールド `json: Vec<u8>` / `yaml: Option<Vec<u8>>` に対応）。
 

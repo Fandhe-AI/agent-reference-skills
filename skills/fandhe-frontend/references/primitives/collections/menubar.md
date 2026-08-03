@@ -9,8 +9,14 @@ Application menu bar arranging multiple [menu](./menu.md) instances horizontally
 pub fn root<'a>(orientation: Orientation, label: &'a str, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
 pub fn menu<'a>(state: OpenState, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
 pub fn trigger<'a>(
-    focused: bool, state: OpenState, disabled: bool, highlighted: bool,
-    controls: Option<&'a str>, attrs: Vec<(&'a str, &'a str)>, /* children */
+    focused: bool,
+    state: OpenState,
+    disabled: bool,
+    highlighted: bool,
+    index: usize,
+    controls: Option<&'a str>,
+    attrs: Vec<(&'a str, &'a str)>,
+    children: Vec<Node>,
 ) -> Node
 pub fn positioner<'a>(state: OpenState, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
 pub fn content<'a>(state: OpenState, id: Option<&'a str>, labelledby: Option<&'a str>, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
@@ -33,10 +39,10 @@ impl Menubar {
     pub fn is_focused(&self, index: usize) -> bool
     pub fn is_open(&self, index: usize) -> bool
     pub fn menu_state(&self, index: usize) -> OpenState
-    // root/menu/trigger/positioner/content も index を受け取る利便メソッドとして提供
+    // menu/trigger/positioner/content は index を受け取る利便メソッドとして提供（root のみ index を取らず label を受け取る）
 }
 
-pub enum MenubarAction { Next, Prev, /* ... */ }
+pub enum MenubarAction { Next, Prev, First, Last, Focus(usize), Open(usize), Close, Toggle(usize) }
 ```
 
 ## Anatomy
@@ -61,6 +67,7 @@ root
 | label | `&str` | `root` の `aria-label` |
 | focused | `bool` | `trigger` が roving-tabindex の対象かどうか |
 | loop_focus | `bool` | 端で循環するかどうか |
+| index | `usize` | `trigger` の位置。`Menubar` の `menu_state(index)` などへ対応付ける |
 | controls | `Option<&str>` | `trigger`/`sub_trigger` の `aria-controls` |
 
 ## Notes

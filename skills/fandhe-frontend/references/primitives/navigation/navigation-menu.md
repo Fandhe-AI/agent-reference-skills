@@ -16,7 +16,7 @@ root (nav)
 ## Signature / Usage
 
 ```rust
-use headless_ui::navigation_menu::{root, list, item, trigger, content, link, NavigationMenu};
+use fandhe_frontend_headless_ui::navigation_menu::{root, list, item, trigger, content, link, NavigationMenu};
 
 pub fn root<'a>(label: &'a str, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node;
 pub fn list(attrs: Vec<(&str, &str)>, children: Vec<Node>) -> Node;
@@ -24,6 +24,7 @@ pub fn item<'a>(state: OpenState, disabled: bool, attrs: Vec<(&'a str, &'a str)>
 pub fn trigger<'a>(
     state: OpenState,
     disabled: bool,
+    value: &'a str,
     id: Option<&'a str>,
     controls: Option<&'a str>,
     attrs: Vec<(&'a str, &'a str)>,
@@ -58,6 +59,7 @@ impl NavigationMenu {
 | `root.label` | `&str` | — | `root`（`nav`）へ付与する `aria-label`（必須引数） |
 | `item.state` | `OpenState` | — | 項目の開閉状態。`data-state` に反映される |
 | `item.disabled` | `bool` | — | `true` のとき `data-disabled` を付与する |
+| `trigger.value` | `&str` | — | `item`/`content` と対応付ける識別値（`NavigationMenu` の `SingleSelect` キー） |
 | `trigger.controls` | `Option<&str>` | `None` | `Some` のとき `aria-controls` で `content` と関連付ける |
 | `trigger.disabled` | `bool` | — | ネイティブ `disabled` 存在属性と `data-disabled` の両方へ反映。`type="button"` は常に固定付与（フォーム内 submit 誤爆対策） |
 | `content.labelled_by` | `Option<&str>` | `None` | `Some` のときのみ `aria-labelledby` を付与する |

@@ -6,11 +6,9 @@
 - crate 名: `fandhe-backend-plugin-compression`（crates/plugin-compression）
 - 配線パターン: レスポンス後処理型（`crate::plugin::finalize_response`）の第 2 インスタンス。CORS の後（CORS → 圧縮の順で固定）に適用される
 
-## 登録方法
+## Signature / Usage
 
 コア側の `Server::compression(config)` に `CompressionConfig` を登録した場合のみ、`finalize_response` シーム経由で `apply_compression` が実リクエストへ圧縮を適用する。未登録時は `compression` feature が有効でも無効化される（opt-in）。
-
-## Signature
 
 ```rust,ignore
 pub fn accepts_gzip(head: &RequestHead) -> bool;
@@ -20,9 +18,13 @@ pub fn apply_compression(
     config: &CompressionConfig,
     response: Response,
 ) -> Response;
+
+impl CompressionConfig {
+    pub fn matches_content_type(&self, content_type: &str) -> bool;
+}
 ```
 
-## Config
+## Options / Props
 
 `CompressionConfig`（`CompressionConfig::builder()` 経由で構築、infallible。型は `CompressionConfig`/`CompressionConfigBuilder` のフィールド型に対応）。
 
@@ -37,6 +39,7 @@ pub fn apply_compression(
 ## Notes
 
 - これは Rust 製 fandhe-backend の API であり、JS/TS の `hono` や Go の `go-echo` の同名機能（圧縮ミドルウェア）とは別物
+- `matches_content_type(content_type)`（v0.2.0 で公開）: `;` 以降のパラメータ（`; charset=utf-8` 等）を無視し type/subtype 部分のみを大文字小文字無視で比較する。登録パターンが末尾 `/` の場合は type プレフィックス一致、それ以外は完全一致
 - BREACH 類似の情報漏洩リスク（TLS 上の圧縮応答で秘密情報と攻撃者制御入力が混在する場合）は opt-in 設計と `compressible_types` / `min_size` の調整で緩和する。完全な解消はできない
 - `flate2` は `default-features = false` + `rust_backend`（miniz_oxide）に固定し C 実装（zlib）へのリンクを排除する
 - gzip 圧縮は同期 CPU 処理であり「同期ブロッキング I/O 禁止」規約の対象外（I/O 待ちが発生しないため）

@@ -52,6 +52,7 @@ impl Handler for StreamingHandler {
 - RFC 9112 §6.3 に従い、1xx・204・304 を `handle_streaming` から返した場合は body 送出ループへ入らずヘッド送出のみで完了する
 - パスインターセプト型プラグイン（graphql / openapi / static 等）が処理を完結させなかった場合にのみ `handle_streaming` が確認され、`Some` ならそのリクエストに対して `handle` は呼ばれない
 - レスポンス後処理型プラグイン（CORS ヘッダ付与・gzip 圧縮）はストリーミング応答には適用されない（`Response` 型前提のシームのため）。必要なヘッダはハンドラ・構成側で別途手当てする
+- `Interceptor::map_response`（v0.2.0 で追加）はストリーミング応答にも適用されるが、status / ヘッダの変更のみが反映され、body（chunk 列）は書き換え対象外
 - タイムアウト・書き込みエラー・producer 打ち切りの場合、`Middleware::on_response` は呼ばれない（「完走した応答のみ観測する」契約）
 - チャンク待ち・実書き込みの双方に 30 秒のタイムアウトと接続生存期間上限（`Server::max_connection_lifetime`）の短い方が適用され、超過時は接続を強制クローズする
 

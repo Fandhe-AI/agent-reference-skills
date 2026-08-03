@@ -53,6 +53,7 @@ fn compute_position(anchor: Rect, floating: Size, viewport: Size, config: &Posit
 - CSS 変数は数値形式のみで、呼び出し側がエスケープを経由する
 - `password_input` は値を一切保持しない設計
 - SSR は状態機械を経由せず自由関数で静的マークアップを生成し、CSR/hydration は `Component`/`Hydrate` trait経由で状態遷移する。DOM操作は wasm層（`fandhe-frontend-wasm-full`）の責務
+- JS ゼロ SSG（wasm 層を配線しない構成）では `data-state` 等の表示状態は SSR/SSG ビルド時に渡した引数の値で固定表示され、開閉・選択操作は反映されない（イシュー #1118）。Accordion 等の開閉挙動をクリックのみで実現したい場合は本層の状態機械ではなくブラウザネイティブの `<details>`/`<summary>` 等を使う
 
 ## Related
 

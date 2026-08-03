@@ -12,7 +12,7 @@ root (div)
 ## Signature / Usage
 
 ```rust
-use headless_ui::link_overlay::{root, overlay};
+use fandhe_frontend_headless_ui::link_overlay::{root, overlay};
 
 pub fn root(attrs: Vec<(&str, &str)>, children: Vec<Node>) -> Node;
 pub fn overlay<'a>(href: &'a str, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node;

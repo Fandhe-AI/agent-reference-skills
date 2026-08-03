@@ -6,7 +6,7 @@ WebRTC シグナリングプロキシプラグイン（TASK-8.2-2）。別プロ
 - crate 名: `fandhe-backend-plugin-webrtc-proxy`（crates/plugin-webrtc-proxy）
 - 配線パターン: パスインターセプト型（`try_intercept`）。プラグイン境界パターン第 1 号
 
-## 登録方法
+## Signature / Usage
 
 `fandhe_backend_core::server::Server::webrtc_proxy` へ `ProxyConfig` を登録する。`POST /rtc/offer` をパスインターセプトし、`forward_offer` が静的設定された上流 WebRTC サービスへ HTTP/1.1 で中継する。
 
@@ -14,13 +14,11 @@ WebRTC シグナリングプロキシプラグイン（TASK-8.2-2）。別プロ
 let config = ProxyConfig::new("127.0.0.1:9000");
 ```
 
-## Signature
-
 ```rust,ignore
 pub async fn try_handle_rtc_offer(head: &RequestHead, body: &[u8], config: &ProxyConfig) -> Option<Response>;
 ```
 
-## Config
+## Options / Props
 
 `ProxyConfig`（`ProxyConfig::new(upstream_addr)` で構築、他は `with_*` で上書き。型は `ProxyConfig` のフィールド型に対応）。
 

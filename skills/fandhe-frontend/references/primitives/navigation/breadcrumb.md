@@ -17,7 +17,7 @@ root (nav)
 ## Signature / Usage
 
 ```rust
-use headless_ui::breadcrumb::{root, list, item, link, current_link, separator, ellipsis, breadcrumb, BreadcrumbItem};
+use fandhe_frontend_headless_ui::breadcrumb::{root, list, item, link, current_link, separator, ellipsis, breadcrumb, BreadcrumbItem};
 
 pub fn root<'a>(aria_label_value: Option<&'a str>, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node;
 pub fn list(attrs: Vec<(&str, &str)>, children: Vec<Node>) -> Node;

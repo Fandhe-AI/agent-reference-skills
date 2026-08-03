@@ -1,6 +1,6 @@
 # Handler
 
-リクエストに対する最終応答を生成する、コアが公開する既定ハンドラ拡張点。3 拡張点（`Middleware` / `UpgradeHandler` / `RequestGate`）とは別枠で、ルーティング結果を最終応答へ変換する差し込み口。
+リクエストに対する最終応答を生成する、コアが公開する既定ハンドラ拡張点。4 拡張点（`Middleware` / `UpgradeHandler` / `RequestGate` / `Interceptor`）とは別枠で、ルーティング結果を最終応答へ変換する差し込み口。
 
 ## Signature / Usage
 
@@ -32,7 +32,7 @@ pub trait Handler: Send + Sync {
 
 ## Notes
 
-- `handle` はイシュー #315 で async 契約へ移行済み。3 拡張点は意図的に同期のまま据え置かれた非対称設計
+- `handle` はイシュー #315 で async 契約へ移行済み。4 拡張点は意図的に同期のまま据え置かれた非対称設計
 - `handle_streaming` で `Some` を返すと、書き出しループは `Content-Length` 一括応答の代わりに chunked framing で逐次送信する
 - `handle_streaming` の producer からの次チャンク待ちには `DEFAULT_WRITE_TIMEOUT`（30秒）が適用される。SSE のハートビート等アイドル区間が長い実装は `BodyWriter::send(Vec::new())`（空チャンクは無出力）を間隔内に呼んでリセットする
 - ハンドラ内 panic は接続単位で spawn されたタスク内に閉じ込められ、他コネクションの処理を妨げない

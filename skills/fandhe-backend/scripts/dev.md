@@ -23,13 +23,16 @@ curl -v http://127.0.0.1:3000/health      # 200 応答
 cargo run
 ```
 
-コピー後は `Cargo.toml` の依存から `path = ...` を外し、`version = "0.1.0"` のみの crates.io 版参照に切り替える。
+コピー後は `Cargo.toml` の依存から `path = ...` を外し、`version = "0.2.0"` のみの crates.io 版参照に切り替える。
 
 ## feature 別サンプルを実行する（fandhe-backend 本体クローン内）
 
 ```sh
 # websocket
 cargo run --release --example ws_echo -p fandhe-backend-core --features websocket
+
+# websocket（NFR-6 計測専用、minimal.rs との RPS/レイテンシ比較用）
+cargo run --release --example ws_nfr6 -p fandhe-backend-core --features websocket
 
 # graphql
 cargo run --release --example graphql_nfr6 -p fandhe-backend-core --features graphql
@@ -49,11 +52,35 @@ cargo run --example compression_demo -p fandhe-backend-core --features compressi
 # static
 cargo run --example static_demo -p fandhe-backend-core --features static
 
+# openapi（Server::openapi() によるフレームワーク固定スキーマ配信。GET /openapi.json, /openapi.yaml）
+cargo run --example openapi_endpoints -p fandhe-backend-core --features openapi
+
+# openapi（Server::openapi_with(doc) による利用者アプリ独自スキーマ配信）
+cargo run --example openapi_custom_doc -p fandhe-backend-core --features openapi
+
 # hub-wiring
 cargo run --release -p fandhe-backend-plugin-hub-wiring --example hub_service_demo
 ```
 
-`crates/core/examples/*` は最小 example。`fandhe-backend-plugin-hub-wiring` は `fandhe-backend-core` の feature ではなく独立クレートであり、直接依存として利用する。
+`crates/core/examples/*` は最小 example。`fandhe-backend-plugin-hub-wiring` は `fandhe-backend-core` の feature ではなく独立クレートであり、直接依存として利用する。`openapi_endpoints` は `Cargo.toml` 上 `required-features` の指定がなく feature 無しでもコンパイル・起動できるが（`#[cfg(feature = "openapi")]` が `Server::openapi()` 呼び出し1行のみを覆う）、`GET /openapi.json` を含む本来の動作確認には `--features openapi` を付ける。
+
+## feature 不要のサンプルを実行する（fandhe-backend 本体クローン内）
+
+```sh
+# NFR-1 性能ベンチのベースライン（ws_nfr6 / graphql_nfr6 / core-bench の比較対象）
+cargo run --release --example minimal -p fandhe-backend-core
+
+# graceful shutdown（BoundServer::run_until + tokio::signal::ctrl_c の利用例）
+cargo run --example graceful_shutdown -p fandhe-backend-core
+
+# async ハンドラ（Router::route_async / route_param_async による最小 todo API）
+cargo run --example todo_async -p fandhe-backend-core
+
+# 性能受け入れ計測用サーバ（axum-ref と機能等価な計測対象バイナリ）
+cargo run --release --example core-bench -p fandhe-backend-core
+```
+
+`Cargo.toml` の `[[example]]` に `required-features` の指定がない example 群。ビルド用の追加 `--features` は不要（`graceful_shutdown` が使う `tokio::signal::ctrl_c` は dev-dependencies 側で `signal` feature が既定有効）。
 
 ## OpenAPI ドキュメントを再生成する
 

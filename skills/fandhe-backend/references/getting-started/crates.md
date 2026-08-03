@@ -1,12 +1,12 @@
 # クレート構成
 
-fandhe-backend は 13 クレートで構成される（すべて v0.1.0、lockstep で crates.io に公開済み）。コア 3 クレート + プラグイン 10 クレートに分かれ、依存方向は `server → routes → http::*` の一方向。
+fandhe-backend は 13 クレートで構成される（すべて v0.2.0、lockstep で crates.io に公開済み）。コア 3 クレート + プラグイン 10 クレートに分かれ、依存方向は `server → routes → http::*` の一方向。
 
 ## コア（3 クレート）
 
 | クレート | 役割 |
 |---------|------|
-| `fandhe-backend-core` | 最小コア。HTTP/1.1 サーバ・3 種拡張点（`Middleware` / `UpgradeHandler` / `RequestGate`）・Cargo feature 駆動のプラグイン配線を提供する |
+| `fandhe-backend-core` | 最小コア。HTTP/1.1 サーバ・4 種拡張点（`Middleware` / `UpgradeHandler` / `RequestGate` / `Interceptor`）・Cargo feature 駆動のプラグイン配線を提供する |
 | `fandhe-backend-http` | HTTP/1.1 プリミティブ（sans-IO パーサ・レスポンス構築・chunked / query / form / cookie 各パーサ） |
 | `fandhe-backend-routes` | ルータ（静的・パスパラメータ・ワイルドカード・フォールバック・async ハンドラ対応）。`fandhe-backend-http` にのみ依存する中間層 |
 
@@ -28,7 +28,7 @@ fandhe-backend は 13 クレートで構成される（すべて v0.1.0、lockst
 ## Notes
 
 - `fandhe-backend-plugin-hub-wiring` のみ `fandhe-backend-core` の Cargo feature ではなく、`RequestGate` 拡張点（`TenantGate`）を直接登録して使う独立クレート
-- 3 拡張点（`Middleware` / `UpgradeHandler` / `RequestGate`）のいずれにも載らない「レスポンス後処理型」パターンも存在する（`cors` が第 1 号、`compression` が第 2 インスタンス）
+- コア 4 拡張点（`Middleware` / `UpgradeHandler` / `RequestGate` / `Interceptor`）のいずれにも載らない「レスポンス後処理型」プラグインパターンも存在する（`cors` が第 1 号、`compression` が第 2 インスタンス）。`Interceptor` はプラグインではなくユーザーコード向けの拡張点である点に注意（v0.2.0 で追加、イシュー #420）
 
 ## Related
 
