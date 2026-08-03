@@ -1,6 +1,6 @@
 # Combobox
 
-headless `combobox`（13 anatomy parts: root, label, control, input, trigger, clear-trigger, positioner, content, item-group, item-group-label, item, item-text, item-indicator）を包む styled wrapper。[select](./select.md) と同じ設計（ARIA 1.2 combobox パターンの姉妹）に従う: `size` variant、`data-state` による open/closed スタイリング、`--fandhe-reference-width` 経由の `sameWidth` 風リストボックス。
+headless `combobox`（14 anatomy parts: root, label, control, input, trigger, clear-trigger, positioner, content, item-group, item-group-label, item, item-text, item-indicator, live-region）を包む styled wrapper。[select](./select.md) と同じ設計（ARIA 1.2 combobox パターンの姉妹）に従う: `size` variant、`data-state` による open/closed スタイリング、`--fandhe-reference-width` 経由の `sameWidth` 風リストボックス。
 
 ## Signature / Usage
 
@@ -36,6 +36,7 @@ pub fn stylesheet() -> String
 - `content` の `min-width` は SSR でのレイアウトシフト回避のため menu/select の `10rem` とは異なり `auto` にフォールバックする
 - `positioner` は `data-positioned` マーカーが存在する時、静的な `position: absolute` から `position: fixed`（ビューポート座標）に切り替わる
 - `Combobox` 状態機械と headless の自由関数 `root` は再エクスポートされない（エスケープハッチ: `fandhe_frontend_headless_ui::combobox::Combobox`）
+- headless 側の 14 番目のパーツ `live_region`（動的な状態変化を `role="status"` + `aria-live="polite"` + `aria-atomic="true"` で通知）は本 styled 層では意図的に再エクスポートしない。必要な場合は `fandhe_frontend_headless_ui::combobox::live_region` を直接 import する
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製）
 
 ## Related

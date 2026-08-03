@@ -43,10 +43,11 @@ curl -v http://127.0.0.1:3000/missing     # 404 応答（未登録パス）
 
 - **`Server`**（`fandhe_backend_core::Server`）: builder パターンで構成するエントリポイント。`handler` でデフォルトハンドラ（通常は `fandhe_backend_routes::Router`）を、`middleware` / `gate` / `upgrade_handler` で拡張点を登録し、`bind` → `run` でサーバを起動する
 - **`fandhe_backend_routes::Router`**: パス・メソッドごとにハンドラを登録するルーティング層。`impl Handler for Router` により `Server::handler` にそのまま渡せる
-- **3 拡張点**（`fandhe_backend_core::{Middleware, UpgradeHandler, RequestGate}`）: 新機能はまずこの 3 種のいずれかに載るか検討する
+- **4 拡張点**（`fandhe_backend_core::{Middleware, UpgradeHandler, RequestGate, Interceptor}`）: 新機能はまずこの 4 種のいずれかに載るか検討する
   - `Middleware`: リクエスト/レスポンスの前後処理（例: `plugin-tracing`）
   - `UpgradeHandler`: プロトコルアップグレード（例: `plugin-websocket` の WebSocket ハンドシェイク）
   - `RequestGate`: リクエストの許可/拒否判定
+  - `Interceptor`（v0.2.0 で追加）: ユーザーコード向けのリクエスト割り込み・レスポンス書き換え（既存 3 拡張点で表現できないリダイレクト返却・確定レスポンスの差し替え等）
 
 ## Notes
 

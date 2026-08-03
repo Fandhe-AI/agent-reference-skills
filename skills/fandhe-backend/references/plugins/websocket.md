@@ -6,11 +6,9 @@ WebSocket プラグイン（TASK-4.1）。コアの `UpgradeHandler` 拡張点�
 - crate 名: `fandhe-backend-plugin-websocket`（crates/plugin-websocket）
 - 配線パターン: UpgradeHandler 型（`try_handle_upgrade`）。`UpgradeHandler` trait を実装するアダプタ（`WebSocketUpgradeAdapter`）はコア側（`crates/core/src/server.rs`）に置かれる
 
-## 登録方法
+## Signature / Usage
 
 `Server::websocket(config)`（コア側 API）へ `WebSocketConfig` を登録する。マッチ確定時はコアが専用タスクを `tokio::spawn` し、`OwnedSemaphorePermit` をそのタスクへ move する（同時接続数上限の維持）。
-
-## Signature
 
 ```rust,ignore
 pub fn matches(head: &RequestHead, config: &WebSocketConfig) -> bool;
@@ -25,7 +23,7 @@ where
     S: AsyncRead + AsyncWrite + Unpin;
 ```
 
-## Config
+## Options / Props
 
 `WebSocketConfig`（`with_*` メソッドで構築、`Default` あり。型は `WebSocketConfig` の各 `pub` フィールドに対応）。
 

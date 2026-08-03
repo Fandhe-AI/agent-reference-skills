@@ -6,7 +6,7 @@ CORS（Cross-Origin Resource Sharing）プラグイン。プリフライト応�
 - crate 名: `fandhe-backend-plugin-cors`（crates/plugin-cors）
 - 配線パターン: レスポンス後処理型（`crate::plugin::finalize_response`、`docs/design/plugin-boundary.md` 5.9 節）。3 拡張点 trait（Middleware/UpgradeHandler/RequestGate）には非該当
 
-## 登録方法
+## Signature / Usage
 
 プリフライトと実リクエストへのヘッダ付与を 2 層に分けて配線する。
 
@@ -18,8 +18,6 @@ router.options_fallback(|head, allow, _body| {
     fandhe_backend_plugin_cors::preflight_response(head, allow, &config)
 });
 ```
-
-## Signature
 
 ```rust,ignore
 pub fn is_preflight(head: &RequestHead) -> bool;
@@ -33,7 +31,7 @@ pub fn preflight_response(
 pub fn apply_cors_headers(head: &RequestHead, config: &CorsConfig, response: Response) -> Response;
 ```
 
-## Config
+## Options / Props
 
 `CorsConfig`（`CorsConfig::builder()` 経由でのみ構築、`CorsConfigBuilder` のフィールド型に対応）。
 

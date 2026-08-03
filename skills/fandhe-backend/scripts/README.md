@@ -2,5 +2,5 @@
 
 | Name | Description | Path |
 | --- | --- | --- |
-| install | コア / プラグインの導入・feature 有効化コマンド | [install.md](./install.md) |
-| dev | ビルド・実行・テスト・lint・依存監査コマンド | [dev.md](./dev.md) |
+| dev | fandhe-backend を組み込んだアプリのビルド・実行・検証コマンド集。 | [dev.md](./dev.md) |
+| install | fandhe-backend のコア / プラグインを cargo add で導入するコマンド集。 | [install.md](./install.md) |

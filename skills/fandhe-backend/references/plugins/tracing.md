@@ -6,7 +6,7 @@
 - crate 名: `fandhe-backend-plugin-tracing`（crates/plugin-tracing）
 - 配線パターン: Middleware 型（`TracingMiddleware` アダプタがコア側 `crates/core/src/server.rs` に存在、`Middleware` trait 上の実装）
 
-## 登録方法
+## Signature / Usage
 
 `Server::tracing(config)`（コア側 API、`tracing` feature 限定）へ `TracingConfig` を渡すと、コア既存の `middlewares: Vec<Box<dyn Middleware>>` へ `TracingMiddleware` が push される。ログ出力の初期化は `init_tracing` を利用側が呼ぶ。
 
@@ -15,8 +15,6 @@ let _guard = fandhe_backend_plugin_tracing::init_tracing(TracingOutput::Stdout);
 // _guard はプロセス終了までスコープを保持し続ける
 ```
 
-## Signature
-
 ```rust,ignore
 pub fn init_tracing(output: TracingOutput) -> WorkerGuard;
 
@@ -24,9 +22,15 @@ impl TracingLayer {
     pub fn new(config: &TracingConfig) -> Self;
     pub fn record_response(&self, head: &RequestHead, elapsed: Duration);
 }
+
+// v0.2.0 で公開
+impl Sampler {
+    pub const fn new(interval: NonZeroU64) -> Self;
+    pub fn should_sample(&self) -> bool;
+}
 ```
 
-## Config
+## Options / Props
 
 `TracingConfig`（型は `TracingConfig` の `pub` フィールドに対応）。
 
@@ -46,6 +50,7 @@ impl TracingLayer {
 - `init_tracing` の戻り値 `WorkerGuard` はプロセス終了までスコープを保持すること。drop すると非同期 writer のフラッシュスレッドが停止し以降のログが失われる
 - 非同期・バッファ済み writer は lossy（バックプレッシャ時にイベントを黙って破棄する）。欠落を許容できないログには不向き
 - 記録は応答時の 1 イベントに統合済み（TASK-10.2、span は生成しない）
+- `Sampler`（v0.2.0 で `pub` 公開）: `interval` 回に 1 回だけ `true` を返す単体のサンプリングカウンタ（`AtomicU64` の `fetch_add` で原子的に判定、複数スレッドから同時呼び出し可）。`TracingLayer` 内部の実装をそのまま外部から再利用したい場合に使う
 
 ## Related
 

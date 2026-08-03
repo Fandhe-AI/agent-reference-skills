@@ -6,15 +6,13 @@ GraphQL プラグイン実装（TASK-5.1）。パスインターセプト型の�
 - crate 名: `fandhe-backend-plugin-graphql`（crates/plugin-graphql）
 - 配線パターン: パスインターセプト型（`try_intercept`）。設定登録型（`GraphQlConfig` 未登録時はフォールスルー）
 
-## 登録方法
+## Signature / Usage
 
 `fandhe_backend_core::Server::graphql` へ `GraphQlConfig` を登録する。未登録の場合 `graphql` feature が有効でも `POST /graphql` はフォールスルー（404）する。
 
 ```rust,ignore
 let config = GraphQlConfig::new(schema); // schema: async_graphql::Executor 実装
 ```
-
-## Signature
 
 ```rust,ignore
 pub const GRAPHQL_PATH: &str = "/graphql";
@@ -32,7 +30,7 @@ impl GraphQlConfig {
 }
 ```
 
-## Config
+## Options / Props
 
 `GraphQlConfig`（`GraphQlConfig::new(executor)` のみで構築、既定値なし）。
 
@@ -44,6 +42,7 @@ impl GraphQlConfig {
 
 ## Notes
 
+- これは Rust 製 fandhe-backend の API であり、JS/TS の `hono` や Go の `go-echo` の同名機能（GraphQL ハンドラ）とは別物
 - `POST /graphql` のみ対象（`GET /graphql` の GraphQL over HTTP GET クエリ形式はスコープ外）
 - body は `{"query": String, "variables"?: Value, "operationName"?: String}` としてパースする。JSON 不正・`query` 欠落は `400` + 固定 body（リクエスト由来の値を一切エコーしない）
 - 実行時エラー（バリデーション・resolver エラー）は GraphQL over HTTP の慣行どおり `200` + 応答 body の `"errors"` フィールドで表現する

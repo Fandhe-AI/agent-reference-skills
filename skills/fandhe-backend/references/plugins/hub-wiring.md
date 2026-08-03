@@ -6,7 +6,7 @@ hub 共通配線プラグイン（TASK-9.1 / TASK-9.2）。コアの `RequestGat
 - crate 名: `fandhe-backend-plugin-hub-wiring`（crates/plugin-hub-wiring）
 - 配線パターン: RequestGate 型（依存逆転型）。既存 4 プラグイン（コア → プラグインの optional 依存 + feature ゲート）とは逆に、本クレートが `fandhe-backend-core` へ一方向に依存する。`crates/core` の `Cargo.toml`・`server.rs`・`plugin.rs` は本クレートのために一切変更しない
 
-## 登録方法
+## Signature / Usage
 
 利用側サービスが本クレートを依存に追加し、`Server::gate(TenantGate::new(config))`（`crates/core/src/server.rs`）で登録する。
 
@@ -16,8 +16,6 @@ let authenticator = config.authenticator(); // ハンドラ側で再利用する
 let gate = TenantGate::new(config);
 // server.gate(gate) へ登録
 ```
-
-## Signature
 
 ```rust,ignore
 impl TenantGateConfig {
@@ -32,7 +30,7 @@ impl RequestGate for TenantGate {
 }
 ```
 
-## Config
+## Options / Props
 
 `TenantGateConfig`（`new(jwks)` または `from_jwks_json(json)` で構築。型は `TenantGateConfig` のフィールドに対応）。
 

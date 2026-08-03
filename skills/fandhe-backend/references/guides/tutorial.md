@@ -34,7 +34,7 @@ let server = Server::new()
 ## 手順
 
 1. **最小サーバ**: `../getting-started/minimal-server.md` の手順で `examples/minimal.rs` を動かし、`Server` + `Router` の基本構成を確認する。`cargo test --doc -p fandhe-backend-core` でクレート doc のクイックスタートも検証できる
-2. **拡張点を実装する（`Middleware`）**: コアが公開する 3 種の拡張点（`Middleware` / `UpgradeHandler` / `RequestGate`）のうち、最も単純な `Middleware`（リクエスト数を数えるだけの実装）で実装パターンを確認する。`Server::middleware` へ登録するとコアのリクエストループから `on_request` / `on_response` が呼ばれる
+2. **拡張点を実装する（`Middleware`）**: コアが公開する 4 種の拡張点（`Middleware` / `UpgradeHandler` / `RequestGate` / `Interceptor`）のうち、最も単純な `Middleware`（リクエスト数を数えるだけの実装）で実装パターンを確認する。`Server::middleware` へ登録するとコアのリクエストループから `on_request` / `on_response` が呼ばれる
 3. **feature を有効化する（websocket エコー）**: `UpgradeHandler` 拡張点を通じて WebSocket ハンドシェイクへ委譲する実装は `fandhe-backend-plugin-websocket` が提供する
 
 ```bash

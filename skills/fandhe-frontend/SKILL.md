@@ -4,7 +4,8 @@ description: >
   Rust 製フロントエンドフレームワーク fandhe-frontend のリファレンス。
   SSR / SPA / SSG / View Transitions 統合、hydration、単一実行ファイル配布。
   既定エスケープ・forbid(unsafe_code) の安全設計。
-  主要クレート core / app / interactive / headless-ui(Primitives) / pre-styled-ui(Themes)（fandhe-frontend- 接頭）。
+  主要クレート core / app / interactive / headless-ui(Primitives) / pre-styled-ui(Themes) /
+  server(SSG generate_pages/generate_assets)（fandhe-frontend- 接頭）。
   CLI fw（new / gate / structure / impact）。
 user-invocable: false
 ---
@@ -33,6 +34,7 @@ skills/fandhe-frontend/
       embedding-guide.md
       view-transitions.md
       npm-asset-build.md
+      no-js-ssg.md
     api/
       README.md
       component-api.md
@@ -44,6 +46,7 @@ skills/fandhe-frontend/
       headless-ui-api.md
       pre-styled-ui-api.md
       pre-styled-recipe-api.md
+      server-api.md
     primitives/                    # fandhe-frontend-headless-ui（Rust, unstyled）
       form/                        # 22 ページ
         README.md
@@ -159,9 +162,8 @@ skills/fandhe-frontend/
     ssr-routing.md
     ssg-blog.md
     dist-server-docker.md
-    interactive-state-machine.md
-    headless-ui-anatomy.md
-    pre-styled-ui-theming.md
+    interactive-view-transitions.md
+    headless-pre-styled-ui.md
   scripts/
     README.md
     install.md
@@ -185,6 +187,7 @@ skills/fandhe-frontend/
 | fandhe-frontend とは何か、特徴・設計思想を知りたい / `fw new` での最短経路 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | マクロ非依存のコンポーネント記述 / 既存 HTML への埋め込み / View Transitions 有効化 / NPM 静的アセット取り込み | guides | [references/guides/README.md](references/guides/README.md) |
 | `el`/`text`/`render`/`raw_html` などコア API、App/Loader/Router API、Hydration API・状態フォーマット、headless-ui/pre-styled-ui の公開 API・slot recipe | api | [references/api/README.md](references/api/README.md) |
+| クライアント JS ゼロの SSG 構成での制約・代替パターン、`fandhe-frontend-server` の SSG API（`generate`/`generate_with`/`generate_pages`/`generate_assets`） | guides / api | [references/guides/README.md](references/guides/README.md) / [references/api/README.md](references/api/README.md) |
 | Checkbox, Slider, Color Picker などフォーム系 Primitives（unstyled）API を知りたい | primitives/form | [references/primitives/form/README.md](references/primitives/form/README.md) |
 | Combobox, Select, Tree View などコレクション系 Primitives（unstyled）API を知りたい | primitives/collections | [references/primitives/collections/README.md](references/primitives/collections/README.md) |
 | Dialog, Popover, Toast などオーバーレイ系 Primitives（unstyled）API を知りたい | primitives/overlays | [references/primitives/overlays/README.md](references/primitives/overlays/README.md) |
@@ -203,5 +206,5 @@ skills/fandhe-frontend/
 | Accordion, Tabs, Splitter などディスクロージャー系 Themes（styled）部品を知りたい | themes/disclosure | [references/themes/disclosure/README.md](references/themes/disclosure/README.md) |
 | Calendar, Date Picker, Timer など日時系 Themes（styled）部品を知りたい | themes/date-time | [references/themes/date-time/README.md](references/themes/date-time/README.md) |
 | Separator, SkipNav, VisuallyHidden などユーティリティ系 Themes（styled）部品を知りたい | themes/utilities | [references/themes/utilities/README.md](references/themes/utilities/README.md) |
-| SSR ルーティング、SSG 静的書き出し、単一バイナリ配布、状態機械 dispatch、headless/pre-styled 部品の典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
+| SSR ルーティング、SSG 静的書き出し、単一バイナリ配布、View Transitions を伴う状態機械 dispatch、headless/pre-styled 部品を横断した典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | `fw` CLI・WASM ツールチェーン導入、ビルド、デプロイ前検証コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

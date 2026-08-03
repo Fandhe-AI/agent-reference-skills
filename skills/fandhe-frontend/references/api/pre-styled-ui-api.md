@@ -1,6 +1,6 @@
 # fandhe-frontend-pre-styled-ui API
 
-`fandhe-frontend-headless-ui` の上に、テーマトークン・variant API・静的CSS生成を重ねた2層構造の上層。v0.31.0時点で98個の公開モジュールを持つ。
+`fandhe-frontend-headless-ui` の上に、テーマトークン・variant API・静的CSS生成を重ねた2層構造の上層。リポジトリ main は106個の公開モジュール（`grep -c '^pub mod ' crates/pre-styled-ui/src/lib.rs` 実測値）を持つ。crates.io の最新公開版は v0.40.0（確認時点。以前の v0.5.0 時点からモジュール数が大きく更新されている）で、main との乖離は縮小済み。crates.io 版で実際に使えるモジュール・API は `https://docs.rs/fandhe-frontend-pre-styled-ui/<version>` で確認すること。
 
 ## Signature / Usage
 
@@ -13,6 +13,15 @@ pub fn push_theme(&mut self, theme: &Theme)
 pub fn as_css(&self) -> &str
 pub fn write_css_file(&self, path: &Path) -> std::io::Result<()>
 pub fn style_element(&self) -> Node
+```
+
+```rust
+// theme: 既定トークンの上書き（イシュー #1138）
+pub fn upsert_color(&mut self, name: &str, light: &str, dark: &str) -> Result<(), ThemeError>
+pub fn upsert_space(&mut self, name: &str, value: &str) -> Result<(), ThemeError>
+pub fn upsert_typography(&mut self, name: &str, value: &str) -> Result<(), ThemeError>
+pub fn upsert_radius(&mut self, name: &str, value: &str) -> Result<(), ThemeError>
+pub fn upsert_shadow(&mut self, name: &str, light: &str, dark: &str) -> Result<(), ThemeError>
 ```
 
 ```rust
@@ -94,6 +103,7 @@ pub use fandhe_frontend_pre_styled_ui::fandhe_frontend_interactive::{Component, 
 - `data-focus-visible` 存在属性 + wasm配線による付け外しで、キーボード操作時のみフォーカスリングを表示する（switch / radio_group / checkbox）
 - charts の `size` variant は `--fandhe-<scope>-height` custom property経由でplot高さを切り替え、`color-palette` は非提供（系列色は固定指定）
 - `raw_html()` の使用は `stylesheet::StyleSheet::style_element` 内1箇所に限定し、全パスに `#[expect(clippy::disallowed_methods)]` を付与
+- Theme トークン API は `push_*` 系（fail-closed、同名トークンは拒否・既定値の上書き不可）に加え、`upsert_color` / `upsert_space` / `upsert_typography` / `upsert_radius` / `upsert_shadow`（既存トークンを挿入順を保ったまま上書き、または無ければ追加。イシュー #1138、`crates/pre-styled-ui/src/theme.rs`、main では commit `2a81311` で着地済み）が利用できる。crates.io でも v0.40.0（確認時点の最新）に `Theme::upsert_*` が含まれることを docs.rs で確認済み
 
 ## Related
 

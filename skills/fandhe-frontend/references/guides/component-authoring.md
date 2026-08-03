@@ -39,7 +39,8 @@ assert_eq!(render(&greeting), r#"<p class="greeting">hello, world</p>"#);
 - 条件分岐は `if`/`match`、リスト描画はイテレータ→`Vec<Node>`、空ノードは空の `Vec` で表現する。`Node` に専用の `Empty`/`Fragment` バリアントは無い
 - `escape_html`/`escape_html_into` は冪等ではない。既にエンティティ化済みの文字列を再度渡すと二重エスケープされる（`text()`/`el()` 経由で使う限りこの契約は自動的に満たされる）
 - タグショートカット（`core::tags` モジュール）: `div`/`span`/`p`/`a`/`form`/`table` など。すべて `el()` への一行委譲でシグネチャは共通 `fn <name>(attrs: Vec<(&str, &str)>, children: Vec<Node>) -> Node`
-- 既知の制約（void 要素）: `img`/`br`/`hr`/`input` は v1 では常に終了タグを出力する（例: `<img src="/logo.png"></img>`）。自己終端出力への最適化は将来課題
+- void 要素（`img`/`br`/`hr`/`input` 等）は開始タグのみで自己終端し、終了タグを出力しない（例: `<img src="/logo.png">`。`</img>` は付かない）。子ノードは無視される（イシュー #1139。以前は常に終了タグを出力していたが SSR/hydration の DOM 不一致バグ対応で反転した）
+- 動的な属性値・条件付き属性を組み立てる場合は `el_owned`（`Vec<(String, String)>` 版の `el`）、`attr_if`/`attr_if_value`（条件を満たさない場合は属性ごと省略）を使う（イシュー #1121）
 - 意図的に提供しないヘルパー: `script`/`style`/`iframe`（攻撃面が大きいため）。`select`/`option`（Rust の `Option` 型との混同回避のため）。属性なし版ヘルパー・attrs ビルダ API も不採用
 - `raw_html()` を使ってよいのは、渡す文字列がフレームワーク利用者コード内の固定リテラル、または別途信頼できるサニタイズ処理を経た文字列である場合のみ。ユーザー入力・外部 API のレスポンス・DB から取得した値をそのまま渡してはいけない
 - `format!("<div>{}</div>", user_input)` のような文字列組み立てによる HTML 生成は既定エスケープの保証が一切効かないため禁止

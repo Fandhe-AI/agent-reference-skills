@@ -2,6 +2,39 @@
 
 `fandhe_frontend_app::router::Router` が実装する v1 パスマッチング仕様。SSR・SSG・CSR で共有される（REQ-7 対応）。
 
+## Signature / Usage
+
+```rust
+pub struct Router<H> { /* ... */ }
+
+impl<H> Router<H> {
+    pub fn new() -> Self;
+    pub fn route(self, pattern: &str, handler: H) -> Result<Self, RouterError>;
+    pub fn resolve(&self, path: &str) -> Option<RouteMatch<'_, H>>;
+}
+
+pub struct RouteMatch<'a, H> {
+    pub handler: &'a H,
+    pub params: Params,
+}
+```
+
+```rust
+// パターン → マッチ結果の実例（マッチング仕様に基づく）
+fn demo() -> Result<(), RouterError> {
+    let router = Router::new()
+        .route("/items", "list")?
+        .route("/items/:id", "detail")?;
+
+    let m = router.resolve("/items/1?ref=home").unwrap();
+    assert_eq!(m.params.get("id"), Some("1")); // クエリ文字列は照合前に切り落とされる
+
+    assert!(router.resolve("/items/1/").is_none());
+    // 末尾スラッシュは正規化されない厳格一致のため "/items/1" と不一致
+    Ok(())
+}
+```
+
 ## マッチング仕様
 
 | 項目 | 挙動 |

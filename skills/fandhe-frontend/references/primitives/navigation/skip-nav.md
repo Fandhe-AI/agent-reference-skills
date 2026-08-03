@@ -12,7 +12,7 @@ content (div)
 ## Signature / Usage
 
 ```rust
-use headless_ui::skip_nav::{link, content, DEFAULT_ID};
+use fandhe_frontend_headless_ui::skip_nav::{link, content, DEFAULT_ID};
 
 pub const DEFAULT_ID: &str = "fandhe-skip-nav";
 

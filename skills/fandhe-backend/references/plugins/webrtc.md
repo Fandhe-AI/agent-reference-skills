@@ -6,11 +6,9 @@ in-process WebRTC プラグイン（TASK-8.1）。SDP Offer/Answer・データ�
 - crate 名: `fandhe-backend-plugin-webrtc`（crates/plugin-webrtc）
 - 配線パターン: パスインターセプト型（`try_intercept`）。`webrtc-proxy` と同時に登録された場合は `webrtc-proxy` が優先される
 
-## 登録方法
+## Signature / Usage
 
 `fandhe_backend_core::server::Server::webrtc` へ `WebRtcConfig` を登録する。`POST /rtc/offer` をパスインターセプトし、SDP Offer から `RTCPeerConnection` を生成、非トリクル ICE で SDP Answer を返す。
-
-## Signature
 
 ```rust,ignore
 pub const OFFER_PATH: &str; // "/rtc/offer"
@@ -22,7 +20,7 @@ pub async fn try_handle_rtc_offer(
 ) -> Option<Response>;
 ```
 
-## Config
+## Options / Props
 
 `WebRtcConfig`（`WebRtcConfig::new()` または `Default` で構築。型は `WebRtcConfig` のフィールド型に対応）。
 
