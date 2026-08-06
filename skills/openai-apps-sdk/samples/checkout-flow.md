@@ -99,7 +99,7 @@ const checkoutRequest = {
 const response = await window.openai.requestCheckout(checkoutRequest);
 ```
 
-Server side — MCP tool that finalizes the session once payment succeeds:
+Server side — MCP tool that finalizes the session once payment succeeds. The completed order must carry the same totals and `fulfillment_option_id` the buyer approved above (line items 3000 + tax 300 + shipping 550 = total 3850) — do not silently drop the shipping line or the payer will be charged less than what the payment sheet displayed:
 
 ```py
 from typing import Annotated, Any
@@ -134,8 +134,8 @@ async def complete_checkout(
             "currency": "USD",
             "line_items": [
                 {
-                    "id": "line_item_1",
-                    "item": {"id": "item_1", "quantity": 1},
+                    "id": "line_item_123",
+                    "item": {"id": "item_123", "quantity": 1},
                     "base_amount": 3000,
                     "discount": 0,
                     "subtotal": 3000,
@@ -155,24 +155,25 @@ async def complete_checkout(
             },
             "fulfillment_options": [
                 {
-                    "id": "fulfillment_option_1",
+                    "id": "standard_shipping",
                     "type": "shipping",
                     "title": "Standard shipping",
                     "subtitle": "3-5 business days",
                     "carrier": "USPS",
                     "earliest_delivery_time": "2026-02-24T15:00:00Z",
                     "latest_delivery_time": "2026-02-28T18:00:00Z",
-                    "subtotal": 0,
-                    "tax": 0,
-                    "total": 0,
+                    "subtotal": 500,
+                    "tax": 50,
+                    "total": 550,
                 },
             ],
-            "fulfillment_option_id": "fulfillment_option_1",
+            "fulfillment_option_id": "standard_shipping",
             "totals": [
                 {"type": "items_base_amount", "display_text": "Items subtotal", "amount": 3000},
                 {"type": "subtotal", "display_text": "Subtotal", "amount": 3000},
+                {"type": "fulfillment", "display_text": "Shipping", "amount": 550},
                 {"type": "tax", "display_text": "Tax", "amount": 300},
-                {"type": "total", "display_text": "Total", "amount": 3300},
+                {"type": "total", "display_text": "Total", "amount": 3850},
             ],
             "order": {
                 "id": "order_id_123",
@@ -189,7 +190,7 @@ async def complete_checkout(
 
 - `window.openai.requestCheckout` opens ChatGPT's native payment sheet and returns the finalized `order` payload; always feature-detect (`window.openai?.requestCheckout`) before calling it.
 - Give every checkout session a unique `id`; totals must reconcile (`items_base_amount` + `fulfillment` + `tax` = `total`).
-- The MCP server tool (Python example above) runs after payment authorization and returns the completed order plus a session-tracking `_meta` key.
+- The MCP server tool (Python example above) runs after payment authorization and must derive its response from the same checkout session — matching `fulfillment_option_id`, `fulfillment_options`, and `totals` (including the `fulfillment` line) that the buyer approved, then returns the completed order plus a session-tracking `_meta` key.
 - Monetization/Checkout is ChatGPT-specific and not part of the shared MCP Apps standard; this is the ChatGPT-app (server/publisher) side of MCP.
 
 Source: https://developers.openai.com/plugins/build/monetization

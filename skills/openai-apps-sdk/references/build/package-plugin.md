@@ -4,8 +4,9 @@ Assembles skills and (optionally) an MCP server into the installable plugin unit
 
 ## Signature / Usage
 
+`.codex-plugin/plugin.json`:
+
 ```json
-// .codex-plugin/plugin.json
 {
   "name": "my-plugin",
   "version": "0.1.0",

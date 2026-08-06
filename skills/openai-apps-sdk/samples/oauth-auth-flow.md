@@ -18,7 +18,7 @@ server.registerTool(
     outputSchema: {},
     securitySchemes: [
       { type: "noauth" },
-      { type: "oauth2", scopes: ["search.read"] },
+      { type: "oauth2", scopes: ["files:read"] },
     ],
   },
   async ({ q }) => {
@@ -44,7 +44,7 @@ server.registerTool(
       title: z.string(),
     },
     outputSchema: {},
-    securitySchemes: [{ type: "oauth2", scopes: ["docs.write"] }],
+    securitySchemes: [{ type: "oauth2", scopes: ["files:write"] }],
   },
   async ({ title }) => {
     return {
@@ -114,6 +114,7 @@ Error result a tool returns when a required token is missing:
 
 ## Notes
 
+- Keep scope names identical across every layer: tool `securitySchemes`, `scopes_supported` on both `.well-known` metadata documents, and the `WWW-Authenticate` challenge (`files:read` / `files:write` here). A mismatch (e.g. a tool requesting a scope the authorization server never advertises) makes a strict AS reject the request with `invalid_scope`.
 - `securitySchemes: [{ type: "noauth" }, { type: "oauth2", scopes: [...] }]` on a tool lets ChatGPT call it unauthenticated first and step up to OAuth only when a scoped tool is invoked.
 - ChatGPT supports Client ID Metadata Documents (CIMD): set `client_id_metadata_document_supported: true` on the authorization server so no manual client registration is required.
 - On missing/insufficient auth, return `isError: true` with `_meta["mcp/www_authenticate"]` so the host can trigger the OAuth flow.

@@ -7,8 +7,14 @@ Use Azure as a Workload Identity Provider via Azure managed identity tokens (IMD
 Request a managed identity token from IMDS:
 
 ```bash
-curl -G http://169.254.169.254/metadata/identity/oauth2/token \
-  --data-urlencode resource=<APPLICATION_ID_URI>
+APPLICATION_ID_URI="api://<application-client-id>"
+
+TOKEN=$(curl -sS -G -H "Metadata: true" \
+  "http://169.254.169.254/metadata/identity/oauth2/token" \
+  --data-urlencode "api-version=2018-02-01" \
+  --data-urlencode "resource=${APPLICATION_ID_URI}" \
+  | jq -r .access_token)
+export TOKEN
 ```
 
 Enable OIDC issuer on AKS and retrieve it:

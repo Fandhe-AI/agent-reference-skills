@@ -15,7 +15,7 @@ client = OpenAI(webhook_secret=os.environ["OPENAI_WEBHOOK_SECRET"])
 def webhook():
     try:
         # with webhook_secret set above, unwrap raises if the signature is invalid
-        event = client.webhooks.unwrap(request.data, request.headers)
+        event = client.webhooks.unwrap(request.get_data(as_text=True), request.headers)
 
         if event.type == "response.completed":
             response_id = event.data.id
@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
 ## Notes
 
-- `client.webhooks.unwrap(request.data, request.headers)` both verifies the `webhook-signature` header and parses the payload into a typed event; catch `InvalidWebhookSignatureError` and return HTTP 400 on failure.
-- Pass the body as raw bytes (`request.data`), not a parsed/re-serialized JSON object, or signature verification fails.
+- `client.webhooks.unwrap(request.get_data(as_text=True), request.headers)` both verifies the `webhook-signature` header and parses the payload into a typed event; catch `InvalidWebhookSignatureError` and return HTTP 400 on failure.
+- Pass the raw request body exactly as received — as text (`request.get_data(as_text=True)`), not a parsed/re-serialized JSON object — or signature verification fails.
 - Combine with `background=True` on `responses.create` (see `background-responses.md`) to avoid polling: the webhook fires `response.completed` / `response.failed` when the long-running response finishes.
 - Example from the OpenAI API (developers.openai.com) `guides/webhooks` page.

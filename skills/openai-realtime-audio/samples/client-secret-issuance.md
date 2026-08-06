@@ -8,8 +8,8 @@ curl https://api.openai.com/v1/realtime/client_secrets \
   -H "Content-Type: application/json" \
   -d '{
     "expires_after": {
-      "unit": "minutes",
-      "value": 30
+      "anchor": "created_at",
+      "seconds": 1800
     },
     "session": {
       "type": "realtime",
@@ -48,6 +48,6 @@ Example response:
 ## Notes
 
 - OpenAI Realtime API の例。この `value`（`ek_` プレフィックス）が `webrtc-browser-session.md` の `EPHEMERAL_KEY` になる
+- `expires_after` は `anchor`（現状 `"created_at"` のみサポート）と `seconds`（10〜7200、デフォルト 600）の組み合わせで指定する。`unit`/`value` 形式は存在しない
 - `session` に付けた設定（model, instructions など）はそのトークンで開始するセッションの初期値になるが、クライアント接続時に上書き可能
-- トークンは短命（数十分〜。ドキュメント記載時点では最短1分のケースもある）。都度サーバーで新規発行する
 - この発行 API 自体は標準の API key で叩く（バックエンドのみで実行し、フロントエンドに API key を渡さない）

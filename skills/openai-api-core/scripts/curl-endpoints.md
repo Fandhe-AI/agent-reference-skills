@@ -28,9 +28,12 @@ curl https://api.openai.com/v1/chat/completions \
         "role": "user",
         "content": "Hello!"
       }
-    ]
+    ],
+    "store": true
   }'
 ```
+
+`store: true` を指定すると completion が保存され、以降の「Chat Completions の取得」で参照できる。
 
 ## Chat Completions の取得
 

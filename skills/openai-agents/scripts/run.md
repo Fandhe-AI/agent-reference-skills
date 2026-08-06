@@ -13,10 +13,11 @@ Quickstart のサンプルコードをファイルに保存した後、通常の
 ## TypeScript/JavaScript エージェントスクリプトの実行
 
 ```sh
+npm pkg set type=module
 node index.js
 ```
 
-Quickstart のサンプルコードを `index.js` に保存した後、Node.js スクリプトとして実行する（公式ガイドは "Place this into your `index.js` file and run it" とのみ記載しており、実行コマンド自体は通常の Node.js 実行方法に従う）。
+Quickstart のサンプルコードを `index.js` に保存した後、Node.js スクリプトとして実行する（公式ガイドは "Place this into your `index.js` file and run it" とのみ記載しており、実行コマンド自体は通常の Node.js 実行方法に従う）。サンプルコードは ESM の `import` 構文を使用するため、`npm init -y` で作成した `package.json` はデフォルトの CommonJS のままだと実行時にエラーになる。`npm pkg set type=module` で `package.json` に `"type": "module"` を追加してから実行する。
 
 ## ローカル filesystem MCP サーバーの起動
 
