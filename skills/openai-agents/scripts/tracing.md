@@ -30,8 +30,9 @@ result = await Runner.run(
 ## トレースエクスポート用 API キーの設定 (Python コード)
 
 ```python
+import os
 from agents import set_tracing_export_api_key
-set_tracing_export_api_key("$OPENAI_API_KEY")
+set_tracing_export_api_key(os.environ["OPENAI_API_KEY"])
 ```
 
 デフォルトの `OPENAI_API_KEY` とは別のキーでトレースを OpenAI にエクスポートしたい場合に使う。

@@ -14,11 +14,11 @@ response = client.responses.create(
     tools=[{"type": "image_generation"}],
 )
 
-image_data = [
-    output.result
-    for output in response.output
-    if output.type == "image_generation_call"
+image_generation_calls = [
+    output for output in response.output if output.type == "image_generation_call"
 ]
+
+image_data = [output.result for output in image_generation_calls]
 
 if image_data:
     image_base64 = image_data[0]

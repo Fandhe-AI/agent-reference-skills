@@ -42,8 +42,8 @@ export OPENAI_PROJECT_ID="proj_..."
 
 ```sh
 export OPENAI_AGENTS_TRACE_INCLUDE_SENSITIVE_DATA=0
-export OPENAI_AGENTS_DONT_LOG_MODEL_DATA=0
-export OPENAI_AGENTS_DONT_LOG_TOOL_DATA=0
+export OPENAI_AGENTS_DONT_LOG_MODEL_DATA=1
+export OPENAI_AGENTS_DONT_LOG_TOOL_DATA=1
 ```
 
-`0` を設定すると、モデル入出力やツール呼び出しの詳細データをトレース・ログに含めなくなる。
+`TRACE_INCLUDE_SENSITIVE_DATA=0` に加えて `DONT_LOG_MODEL_DATA=1` / `DONT_LOG_TOOL_DATA=1` を設定すると、モデル入出力やツール呼び出しの詳細データをトレース・ログに含めなくなる。

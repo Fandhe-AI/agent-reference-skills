@@ -3,6 +3,17 @@
 A working Node MCP server exposing two tools (`add_todo`, `complete_todo`) that share one `ui://` widget resource, servable over Streamable HTTP for ChatGPT to connect to.
 
 ```js
+import { readFileSync } from "node:fs";
+import { createServer } from "node:http";
+import { z } from "zod";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import {
+  registerAppTool,
+  registerAppResource,
+  RESOURCE_MIME_TYPE,
+} from "@modelcontextprotocol/ext-apps/server";
+
 const todoHtml = readFileSync("public/todo-widget.html", "utf8");
 
 const addTodoInputSchema = {

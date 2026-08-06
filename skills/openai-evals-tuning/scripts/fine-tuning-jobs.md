@@ -26,7 +26,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 Supports pagination and metadata filtering:
 
 ```bash
-curl https://api.openai.com/v1/fine_tuning/jobs?limit=2&metadata[key]=value \
+curl -g "https://api.openai.com/v1/fine_tuning/jobs?limit=2&metadata[key]=value" \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 

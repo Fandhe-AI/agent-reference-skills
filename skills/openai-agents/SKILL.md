@@ -94,4 +94,3 @@ skills/openai-agents/
 | guardrails・human review・tracing・background mode を設定したい | orchestration | [references/orchestration/README.md](references/orchestration/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・環境変数・トレーシング設定・実行コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
-</content>

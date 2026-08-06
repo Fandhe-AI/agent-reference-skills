@@ -17,7 +17,7 @@ async def main() -> None:
     )
 
     if video.status == "completed":
-        content = client.videos.download_content(video.id, variant="video")
+        content = await client.videos.download_content(video.id, variant="video")
         content.write_to_file("video.mp4")
         print("Video successfully completed and saved to video.mp4")
     else:

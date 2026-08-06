@@ -223,11 +223,7 @@ log_user_prompt = false   # redact user prompts unless explicitly enabled
 
 ```toml
 [otel]
-exporter = { otlp-http = {
-  endpoint = "https://otel.example.com/v1/logs",
-  protocol = "binary",
-  headers = { "x-otlp-api-key" = "${OTLP_TOKEN}" }
-}}
+exporter = { otlp-http = { endpoint = "https://otel.example.com/v1/logs", protocol = "binary", headers = { "x-otlp-api-key" = "${OTLP_TOKEN}" } } }
 ```
 
 Disable anonymous usage metrics collection:

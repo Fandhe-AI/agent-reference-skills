@@ -104,7 +104,7 @@ Error result a tool returns when a required token is missing:
     ],
     "_meta": {
       "mcp/www_authenticate": [
-        "'Bearer resource_metadata=\"https://your-mcp.example.com/.well-known/oauth-protected-resource\", error=\"insufficient_scope\", error_description=\"You need to login to continue\"'"
+        "Bearer resource_metadata=\"https://your-mcp.example.com/.well-known/oauth-protected-resource\", error=\"insufficient_scope\", error_description=\"You need to login to continue\""
       ]
     },
     "isError": true
