@@ -26,7 +26,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   }'
 ```
 
-`shell_call` output item:
+When the shell tool runs against your own local runtime, the model returns a `shell_call` action item:
 
 ```json
 {
@@ -41,13 +41,30 @@ curl -L 'https://api.openai.com/v1/responses' \
 }
 ```
 
-Your harness returns a matching `shell_call_output` item with the captured stdout/stderr/exit status.
+Your harness executes the command, captures `stdout`/`stderr`/outcome, and returns a matching `shell_call_output` item in the next request:
+
+```json
+{
+  "type": "shell_call_output",
+  "call_id": "call_9d14ac6f2b73485e91c0f4da6e1b27c8",
+  "max_output_length": 4096,
+  "output": [
+    {
+      "stdout": "...",
+      "stderr": "...",
+      "outcome": { "type": "exit", "exit_code": 0 }
+    }
+  ]
+}
+```
+
+With hosted shell containers managed by OpenAI (`environment.type: "container_auto"`, as in the example above), OpenAI provisions and runs the container end-to-end: the client sends nothing back — both the `shell_call` and its `shell_call_output` appear automatically in the response.
 
 ## Options / Props
 
 | Name | Type | Description |
 |------|------|-------------|
-| `environment.type` | `"container_auto"` etc. | Hosted container mode, or configure a local executor instead |
+| `environment.type` | `"container_auto"` etc. | Hosted container mode, or a local runtime you execute yourself (you handle `shell_call_output`) |
 | `action.commands` | `string[]` | Commands to run |
 | `action.timeout_ms` | `number` | Timeout hint |
 | `action.max_output_length` | `number` | Output truncation length |

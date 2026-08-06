@@ -6,6 +6,8 @@ Stream source audio into a dedicated translation session and receive translated 
 
 ```javascript
 // WebSocket
+import WebSocket from "ws";
+
 const ws = new WebSocket(
   "wss://api.openai.com/v1/realtime/translations?model=gpt-realtime-translate",
   { headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` } }
