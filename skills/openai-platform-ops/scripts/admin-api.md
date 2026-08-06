@@ -53,13 +53,15 @@ curl -X POST \
 
 Queries bucketed completions usage for the organization. `start_time` (Unix seconds) is required; `bucket_width` and `limit` are optional.
 
-No official `curl` example is published for this endpoint. The command below is a `curl` translation of the official OpenAI Cookbook's Python `requests` example — the endpoint path, header names, and query-parameter names (`start_time`, `bucket_width`, `limit`, and the `page` cursor) are verbatim from that source; the `curl` syntax and the 30-day `start_time` calculation are not from the docs.
+No official `curl` example is published for this endpoint. The command below is a `curl` translation of the official OpenAI Cookbook's Python `requests` example — the endpoint path, header names, and query-parameter names (`start_time`, `bucket_width`, `limit`, and the `page` cursor) are verbatim from that source; the `curl` syntax and the `start_time` calculation are not from the docs. `start_time` is computed at run time (last 30 days) with POSIX arithmetic so it works on both macOS and Linux and never falls outside the retention window.
 
 ```bash
+start_time=$(($(date +%s) - 30*24*3600))
+
 curl -G "https://api.openai.com/v1/organization/usage/completions" \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
   -H "Content-Type: application/json" \
-  --data-urlencode "start_time=1730419200" \
+  --data-urlencode "start_time=$start_time" \
   --data-urlencode "bucket_width=1d" \
   --data-urlencode "limit=7"
 ```

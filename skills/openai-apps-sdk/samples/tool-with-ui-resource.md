@@ -17,7 +17,7 @@ const widgetHtml = `
     <div style="font-size: 20px; margin-bottom: 6px;">
       Result: <span id="out">—</span>
     </div>
-    <button id="reroll">Re-roll</button>
+    <button id="reroll" disabled>Re-roll</button>
   </div>
 
   <script>
@@ -38,6 +38,10 @@ const widgetHtml = `
       return new Promise((resolve, reject) => {
         pendingRequests.set(id, { resolve, reject });
       });
+    }
+
+    function notify(method, params) {
+      window.parent.postMessage({ jsonrpc: "2.0", method, params }, "*");
     }
 
     window.addEventListener(
@@ -67,6 +71,18 @@ const widgetHtml = `
       { passive: true }
     );
 
+    // Bridge-lifecycle hosts reject tools/call sent before the widget
+    // completes the ui/initialize handshake, so the Re-roll button stays
+    // disabled until initialization is confirmed.
+    async function initializeBridge() {
+      const appInfo = { name: "dice-widget", version: "1.0.0" };
+      const appCapabilities = {};
+      const protocolVersion = "2026-01-26";
+      await request("ui/initialize", { appInfo, appCapabilities, protocolVersion });
+      notify("ui/notifications/initialized", {});
+      rerollButton.disabled = false;
+    }
+
     rerollButton.onclick = async () => {
       const sides = latestToolOutput?.sides ?? latestToolInput?.sides ?? 6;
       const next = await request("tools/call", {
@@ -77,6 +93,8 @@ const widgetHtml = `
         render(next.structuredContent);
       }
     };
+
+    initializeBridge();
   </script>
 `.trim();
 
@@ -154,6 +172,7 @@ export default server;
 ## Notes
 
 - Only `render_dice_widget` sets `_meta.ui.resourceUri`; `roll_dice` stays template-free so re-rolls don't remount the iframe.
+- The Re-roll button starts `disabled` and only becomes clickable after `initializeBridge()` completes the `ui/initialize` request / `ui/notifications/initialized` notification handshake described in `references/build/app-quickstart.md` — hosts that enforce bridge lifecycle reject `tools/call` sent before that handshake finishes.
 - The widget listens for `ui/notifications/tool-result` / `ui/notifications/tool-input` over `postMessage` and calls `tools/call` directly for re-rolls.
 - `_meta["openai/toolInvocation/invoking"]` / `invoked` control the status text ChatGPT shows while the tool runs.
 - This is the ChatGPT-app (server/publisher) side of MCP; consuming MCP servers from the Agents SDK is covered by the `openai-agents` skill.

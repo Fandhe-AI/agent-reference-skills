@@ -40,9 +40,13 @@ Maven の `pom.xml` に追記する。
 </dependency>
 ```
 
-## Go SDK の利用
+## Go SDK のインストール
 
-Go は `go.mod` への import で解決する（`go get` は明示的にドキュメント記載なし）。
+```bash
+go get github.com/openai/openai-go/v3
+```
+
+`go.mod` に依存が追加される。使う際は以下のように import する。
 
 ```go
 import (

@@ -23,7 +23,7 @@ Training file (JSONL), one preference pair per line. Only single-turn conversati
 ```javascript
 const job = await openai.fineTuning.jobs.create({
   training_file: "file-all-about-the-weather",
-  model: "gpt-4o-2024-08-06",
+  model: "gpt-4.1-mini-2025-04-14",
   method: {
     type: "dpo",
     dpo: { hyperparameters: { beta: 0.1 } },

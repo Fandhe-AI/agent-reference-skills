@@ -47,6 +47,7 @@ try {
 ```
 
 ```python
+from pydantic import BaseModel
 from agents import (
     Agent,
     GuardrailFunctionOutput,
@@ -55,6 +56,18 @@ from agents import (
     Runner,
     TResponseInputItem,
     input_guardrail,
+)
+
+
+class MathHomeworkOutput(BaseModel):
+    is_math_homework: bool
+    reasoning: str
+
+
+guardrail_agent = Agent(
+    name="Guardrail check",
+    instructions="Check if the user is asking you to do their math homework.",
+    output_type=MathHomeworkOutput,
 )
 
 

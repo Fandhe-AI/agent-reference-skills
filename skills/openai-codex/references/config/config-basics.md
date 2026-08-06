@@ -58,6 +58,8 @@ ignore_default_excludes = false
 
 `shell_environment_policy.ignore_default_excludes` defaults to `true` (skips filtering `KEY`/`SECRET`/`TOKEN` variable names); set `false` to enable that automatic filtering.
 
+`shell_environment_policy.filters` (`map<string, "include" | "exclude">`) is the canonical, current form for pattern-based variable filtering; include entries create an allowlist and can't restore excluded values. The legacy `shell_environment_policy.exclude` / `include_only` arrays still work but are superseded by `filters` — don't combine the legacy arrays with `filters` in the same config layer.
+
 ## Feature flags
 
 Use `[features]` to toggle optional/experimental capabilities.

@@ -109,8 +109,8 @@ web_search = "cached"  # disabled | cached | indexed | live
 ################################################################################
 # Skills (per-skill overrides)
 ################################################################################
-[[skills.config]]
-# path = "/path/to/skill/SKILL.md"
+# [[skills.config]]
+# path = "/path/to/skill"       # folder containing SKILL.md
 # enabled = false
 
 ################################################################################

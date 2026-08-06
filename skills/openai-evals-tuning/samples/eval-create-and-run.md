@@ -3,6 +3,7 @@
 Define an eval with a data schema and grading criteria, upload test data, then run the eval against a model.
 
 ```python
+import time
 from openai import OpenAI
 
 client = OpenAI()
@@ -57,14 +58,20 @@ run = client.evals.runs.create(
     },
 )
 
-# 4. Poll run status
+# 4. Poll until the run reaches a terminal status (completed / failed / canceled)
+TERMINAL_STATUSES = {"completed", "failed", "canceled"}
 status = client.evals.runs.retrieve(run.id, eval_id=eval_obj.id)
-print(status)
+while status.status not in TERMINAL_STATUSES:
+    time.sleep(5)
+    status = client.evals.runs.retrieve(run.id, eval_id=eval_obj.id)
+
+print(status.status)
 ```
 
 ## Notes
 
 - This is an OpenAI LLM-evaluation example; "evals" here is OpenAI's Evals API, not a JS/TS test runner (Vitest etc.).
 - `data_source_config.item_schema` defines the JSON Schema for each test data row; `testing_criteria` holds the grader definitions.
+- A run starts `queued`, moves to `in_progress`, then settles into a terminal status (`completed`, `failed`, `canceled`) — a single `retrieve()` call right after `runs.create()` will usually still show `queued`/`in_progress`, so poll in a loop until the status is terminal.
 - OpenAI is winding down the Evals platform (read-only 2026-10-31, shut down 2026-11-30). Consider Datasets for new projects.
 - `{{ item.* }}` refers to the uploaded test data row, `{{ sample.output_text }}` refers to the model output — both use the shared templating syntax.

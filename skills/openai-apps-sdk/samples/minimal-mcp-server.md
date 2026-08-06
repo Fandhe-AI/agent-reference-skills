@@ -12,9 +12,15 @@ Create `public/todo-widget.html` first — the minimal widget the server reads a
     <button id="add-btn">Add "Buy milk"</button>
     <script>
       function render(tasks) {
-        document.getElementById("todo-list").innerHTML = tasks
-          .map((t) => `<li>${t.completed ? "✅" : "⬜"} ${t.title}</li>`)
-          .join("");
+        const list = document.getElementById("todo-list");
+        list.innerHTML = "";
+        for (const t of tasks) {
+          const li = document.createElement("li");
+          // textContent, not innerHTML: a model- or user-supplied title could
+          // contain markup that would otherwise execute inside the iframe.
+          li.textContent = `${t.completed ? "✅" : "⬜"} ${t.title}`;
+          list.appendChild(li);
+        }
       }
       // Read-only render of the tool's structured output on mount.
       render(window.openai.toolOutput?.tasks ?? []);
@@ -233,6 +239,7 @@ ngrok http <port>
 ## Notes
 
 - Create `public/todo-widget.html` before starting the server — `readFileSync("public/todo-widget.html")` fails with `ENOENT` if the file is missing. The widget above is intentionally minimal; the full quickstart version renders a form and persists per-item busy state via the shared MCP Apps bridge instead of `window.openai`.
+- The widget builds `<li>` nodes with `createElement` and sets the label via `textContent`, never `innerHTML` — a todo title can originate from the model or another user, and interpolating it into an HTML string would let it inject markup/scripts that execute inside the iframe.
 - The widget renders `window.openai.toolOutput` read-only on mount; `add_todo` (a mutating tool) is only called from the button's `click` handler, never automatically — auto-invoking a mutating tool on mount would re-run the mutation every time the widget remounts.
 - `registerAppResource` publishes the `ui://` HTML widget; `registerAppTool` links a tool to it via `_meta.ui.resourceUri`.
 - `StreamableHTTPServerTransport` with `sessionIdGenerator: undefined` runs the server in stateless mode — a fresh `McpServer` instance is created per request.

@@ -48,10 +48,10 @@ Multiple images can be included in one `content` array in a single request; each
 |---|---|
 | `low` | Fast, low-cost understanding; resizes to 512x512. |
 | `high` | Standard high-fidelity understanding when precise coordinates aren't required. |
-| `original` | Large, dense, spatially sensitive, or computer-use images (OCR, bounding boxes, localization); available on `gpt-5.4`+. Preserves input dimensions without resizing to a patch/pixel budget. |
+| `original` | Large, dense, spatially sensitive, or computer-use images (OCR, bounding boxes, localization); available on `gpt-5.4`+. On the GPT-5.6 family, preserves input dimensions with no patch/pixel-budget resize; on `gpt-5.4`/`gpt-5.5`, dimensions are preserved only up to 10,000 patches or a 6000px max dimension, beyond which the image is resized proportionally (see `image-tokens-and-limitations.md`). |
 | `auto` | Automatic selection; on `gpt-5.5` and GPT-5.6 models, equivalent to `original`. |
 
-`low`/`high` may resize the image before analysis, which can obscure small details and cause returned coordinates to no longer match the original image — use `original` for coordinate-sensitive tasks such as computer use.
+`low`/`high` may resize the image before analysis, which can obscure small details and cause returned coordinates to no longer match the original image — use `original` for coordinate-sensitive tasks such as computer use. Even `original` is not resize-free on every model: only the GPT-5.6 family guarantees no resizing at any size; `gpt-5.4`/`gpt-5.5` still resize proportionally once the 10,000-patch/6000px budget is exceeded.
 
 ## Image input requirements
 
