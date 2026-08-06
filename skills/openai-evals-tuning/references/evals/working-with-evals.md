@@ -52,8 +52,13 @@ const run = await openai.evals.runs.create(evalObj.id, {
   },
 });
 
-// 4. Poll run status
-const status = await openai.evals.runs.retrieve(run.id, { eval_id: evalObj.id });
+// 4. Poll until the run reaches a terminal status (completed / failed / canceled)
+const TERMINAL_STATUSES = new Set(["completed", "failed", "canceled"]);
+let status = await openai.evals.runs.retrieve(run.id, { eval_id: evalObj.id });
+while (!TERMINAL_STATUSES.has(status.status)) {
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  status = await openai.evals.runs.retrieve(run.id, { eval_id: evalObj.id });
+}
 ```
 
 ## Options / Props
@@ -71,6 +76,7 @@ Template syntax `{{ }}` supports two namespaces: `item` (fields from the data so
 ## Notes
 
 - Test data is uploaded as a JSONL file via the Files API with `purpose: "evals"`; each line is `{"item": {...}}` conforming to `item_schema`.
+- A run starts `queued`, moves to `in_progress`, then settles into a terminal status (`completed`, `failed`, `canceled`) — a single `retrieve()` call right after `runs.create()` will usually still show `queued`/`in_progress`, so poll in a loop until the status is terminal.
 - Eval run status/results can be polled via API (`status`, `result_counts`, `per_testing_criteria_results`) or viewed in the dashboard via the run's `report_url`.
 - Subscribe to `eval.run.succeeded` / `eval.run.failed` / `eval.run.canceled` webhook events for async completion notifications.
 - If you don't need advanced features (external models, larger-scale batch runs, API-driven runs), the lighter-weight Datasets dashboard flow may be sufficient — see `getting-started-datasets.md`.

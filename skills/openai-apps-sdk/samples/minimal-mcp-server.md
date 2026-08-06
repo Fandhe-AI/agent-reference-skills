@@ -165,7 +165,7 @@ const httpServer = createServer(async (req, res) => {
     res.writeHead(204, {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-      "Access-Control-Allow-Headers": "content-type, mcp-session-id",
+      "Access-Control-Allow-Headers": "content-type, mcp-session-id, mcp-protocol-version",
       "Access-Control-Expose-Headers": "Mcp-Session-Id",
     });
     res.end();
@@ -243,6 +243,7 @@ ngrok http <port>
 - The widget renders `window.openai.toolOutput` read-only on mount; `add_todo` (a mutating tool) is only called from the button's `click` handler, never automatically — auto-invoking a mutating tool on mount would re-run the mutation every time the widget remounts.
 - `registerAppResource` publishes the `ui://` HTML widget; `registerAppTool` links a tool to it via `_meta.ui.resourceUri`.
 - `StreamableHTTPServerTransport` with `sessionIdGenerator: undefined` runs the server in stateless mode — a fresh `McpServer` instance is created per request.
+- The preflight `Access-Control-Allow-Headers` must include `mcp-protocol-version` alongside `content-type` and `mcp-session-id` — a browser-based Streamable HTTP client sends `MCP-Protocol-Version` on requests after initialization, and an incomplete allow-list makes the browser block the request before it reaches the server.
 - Use `ngrok` (or another tunnel) to expose the local server to ChatGPT during development via Settings > Connectors > developer mode.
 - This is the ChatGPT-app (server/publisher) side of MCP; consuming MCP servers from the Agents SDK is covered by the `openai-agents` skill.
 

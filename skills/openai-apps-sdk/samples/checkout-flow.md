@@ -99,7 +99,7 @@ const checkoutRequest = {
 const response = await window.openai.requestCheckout(checkoutRequest);
 ```
 
-Server side — MCP tool that finalizes the session once payment succeeds. The completed order must carry the same totals and `fulfillment_option_id` the buyer approved above (line items 3000 + tax 300 + shipping 550 = total 3850) — do not silently drop the shipping line or the payer will be charged less than what the payment sheet displayed:
+Server side — MCP tool that finalizes the session once payment succeeds. The completed order must carry the same totals and `fulfillment_option_id` the buyer approved above (line items 3000 + tax 300 + shipping 550 = total 3850) — do not silently drop the shipping line or the payer will be charged less than what the payment sheet displayed. The `fulfillment_options` delivery window must also stay `2027-01-15T15:00:00Z`–`2027-01-19T18:00:00Z`, the same dates the buyer approved in the session above — reporting a different (and already-elapsed) window on the completed order would contradict what the payment sheet showed:
 
 ```py
 from typing import Annotated, Any
@@ -160,8 +160,8 @@ async def complete_checkout(
                     "title": "Standard shipping",
                     "subtitle": "3-5 business days",
                     "carrier": "USPS",
-                    "earliest_delivery_time": "2026-02-24T15:00:00Z",
-                    "latest_delivery_time": "2026-02-28T18:00:00Z",
+                    "earliest_delivery_time": "2027-01-15T15:00:00Z",
+                    "latest_delivery_time": "2027-01-19T18:00:00Z",
                     "subtotal": 500,
                     "tax": 50,
                     "total": 550,
@@ -190,7 +190,7 @@ async def complete_checkout(
 
 - `window.openai.requestCheckout` opens ChatGPT's native payment sheet and returns the finalized `order` payload; always feature-detect (`window.openai?.requestCheckout`) before calling it.
 - Give every checkout session a unique `id`; totals must reconcile (`items_base_amount` + `fulfillment` + `tax` = `total`).
-- The MCP server tool (Python example above) runs after payment authorization and must derive its response from the same checkout session — matching `fulfillment_option_id`, `fulfillment_options`, and `totals` (including the `fulfillment` line) that the buyer approved, then returns the completed order plus a session-tracking `_meta` key.
+- The MCP server tool (Python example above) runs after payment authorization and must derive its response from the same checkout session — matching `fulfillment_option_id`, `fulfillment_options` (including the delivery-window timestamps), and `totals` (including the `fulfillment` line) that the buyer approved, then returns the completed order plus a session-tracking `_meta` key.
 - Monetization/Checkout is ChatGPT-specific and not part of the shared MCP Apps standard; this is the ChatGPT-app (server/publisher) side of MCP.
 
 Source: https://developers.openai.com/plugins/build/monetization

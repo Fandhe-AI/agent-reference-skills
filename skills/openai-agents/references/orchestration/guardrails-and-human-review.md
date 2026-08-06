@@ -42,6 +42,8 @@ try {
 } catch (error) {
   if (error instanceof InputGuardrailTripwireTriggered) {
     console.log("Guardrail blocked the request.");
+  } else {
+    throw error;
   }
 }
 ```
@@ -89,6 +91,11 @@ agent = Agent(
     instructions="Help customers with support questions.",
     input_guardrails=[math_guardrail],
 )
+
+try:
+    await Runner.run(agent, "Can you solve 2x + 3 = 11 for me?")
+except InputGuardrailTripwireTriggered:
+    print("Guardrail blocked the request.")
 ```
 
 Human review / approvals:
@@ -96,6 +103,7 @@ Human review / approvals:
 ```typescript
 import { Agent, run, tool } from "@openai/agents";
 import { z } from "zod";
+import * as readline from "readline";
 
 const cancelOrder = tool({
   name: "cancel_order",
@@ -113,15 +121,33 @@ const agent = new Agent({
   tools: [cancelOrder],
 });
 
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
 let result = await run(agent, "Cancel order 123.");
 
 if (result.interruptions?.length) {
   const state = result.state;
   for (const interruption of result.interruptions) {
-    state.approve(interruption);
+    const approved = await new Promise<boolean>((resolve) => {
+      rl.question(
+        `Approve action: ${interruption.name}? (y/n): `,
+        (answer) => {
+          resolve(answer.toLowerCase() === "y");
+        }
+      );
+    });
+    if (approved) {
+      state.approve(interruption);
+    } else {
+      state.reject(interruption);
+    }
   }
   result = await run(agent, state);
 }
+rl.close();
 ```
 
 ```python
@@ -144,8 +170,14 @@ result = await Runner.run(agent, "Cancel order 123.")
 if result.interruptions:
     state = result.to_state()
     for interruption in result.interruptions:
-        state.approve(interruption)
+        response = input(f"Approve {interruption.name}? (y/n): ")
+        if response.lower() == "y":
+            state.approve(interruption)
+        else:
+            state.reject(interruption)
     result = await Runner.run(agent, state)
+
+print(result.final_output)
 ```
 
 ## Options / Props

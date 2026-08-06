@@ -4,8 +4,9 @@ Graders compare a reference answer to a model-generated answer and return a grad
 
 ## Signature / Usage
 
+`string_check` grader:
+
 ```json
-// string_check grader
 {
   "type": "string_check",
   "name": "Match output to human label",
@@ -13,8 +14,11 @@ Graders compare a reference answer to a model-generated answer and return a grad
   "input": "{{ sample.output_text }}",
   "reference": "{{ item.correct_label }}"
 }
+```
 
-// text_similarity grader
+`text_similarity` grader:
+
+```json
 {
   "type": "text_similarity",
   "name": "summary_similarity",
@@ -23,8 +27,11 @@ Graders compare a reference answer to a model-generated answer and return a grad
   "pass_threshold": 0.8,
   "evaluation_metric": "fuzzy_match"
 }
+```
 
-// score_model grader
+`score_model` grader:
+
+```json
 {
   "type": "score_model",
   "name": "my_score_model",
@@ -37,15 +44,21 @@ Graders compare a reference answer to a model-generated answer and return a grad
   ],
   "sampling_params": { "max_completions_tokens": 32768, "top_p": 1, "reasoning_effort": "medium" }
 }
+```
 
-// python grader
+`python` grader:
+
+```json
 {
   "type": "python",
   "source": "def grade(sample, item):\n    return 1.0",
   "image_tag": "2025-05-08"
 }
+```
 
-// multigrader (combined graders)
+`multi` grader (combines sub-graders):
+
+```json
 {
   "type": "multi",
   "graders": {

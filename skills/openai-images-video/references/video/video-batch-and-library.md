@@ -39,7 +39,7 @@ curl -X DELETE "https://api.openai.com/v1/videos/REPLACE_WITH_YOUR_VIDEO_ID" \
 
 ## Notes
 
-- General Batch API semantics (batch object lifecycle, output file format) are covered by the Batch guide in `openai-api-core`; this page covers only the video-specific request shape and constraints.
+- General Batch API semantics: upload the `.jsonl` input file via the Files API (`purpose="batch"`), submit it with `POST /v1/batches` (`input_file_id`, `endpoint`, `completion_window: "24h"`), poll status with `GET /v1/batches/{batch_id}` until it reaches `completed` (other terminal states: `failed`, `expired`, `cancelled`), then download results from `GET /v1/files/{file_id}/content`. See the official Batch guide: https://developers.openai.com/api/docs/guides/batch. This page covers only the video-specific request shape and constraints.
 
 ## Related
 

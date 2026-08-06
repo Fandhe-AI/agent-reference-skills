@@ -30,6 +30,29 @@ Hosted `programmatic_tool_calling` tool: the model writes and executes JavaScrip
     "allowed_callers": ["programmatic"]
   },
   {
+    "type": "function",
+    "name": "get_demand",
+    "description": "Return an object with sku (string) and requested_units (number).",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "sku": { "type": "string" }
+      },
+      "required": ["sku"],
+      "additionalProperties": false
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "sku": { "type": "string" },
+        "requested_units": { "type": "number" }
+      },
+      "required": ["sku", "requested_units"],
+      "additionalProperties": false
+    },
+    "allowed_callers": ["programmatic"]
+  },
+  {
     "type": "programmatic_tool_calling"
   }
 ]
