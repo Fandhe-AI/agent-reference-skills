@@ -27,6 +27,7 @@ bound.run_until(async {
 | `local_addr()` | `-> io::Result<SocketAddr>` | バインドしたローカルアドレスを返す（`0` ポート指定時の実ポート確認用） |
 | `run()` | `async fn(self) -> io::Result<()>` | shutdown 手段を持たない `run_until(std::future::pending())` の薄いラッパー |
 | `run_until(shutdown)` | `async fn(self, F: Future<Output = ()>) -> io::Result<()>` | `shutdown` 完了まで accept ループを回し、その後 graceful shutdown シーケンスを実行する |
+| `rebind_handle()` | `-> RebindHandle`（v0.3.0 で新設、issue #485） | 稼働中の listener を無停止で差し替えるためのハンドルを返す |
 
 ## Notes
 
@@ -35,9 +36,10 @@ bound.run_until(async {
 - `run_until` の graceful shutdown シーケンス: 1) accept 停止（shutdown フラグを立てリスナーを drop）、2) in-flight 完了待ち（`shutdown_grace_period` を上限に全 permit の解放を待つ）、3) 上限超過時は残存タスクを強制 abort
 - shutdown_flag 受信後は `UpgradeHandler` がマッチする新規リクエストも 503 で拒否する
 - `run_until` の Future 自体が外部キャンセルされても in-flight 接続は abort されず、独立タスクとして完走する（`CancelSafeJoinSet` による）
-- 既知の限界: shutdown_flag 受信前に Upgrade 委譲済みの WebSocket 専用タスクは `run_until` の `JoinSet` 管理外のため、grace 超過時の強制 abort 対象にならない
+- v0.3.0（#491/#493）で解消: Upgrade 委譲済みの WebSocket タスクも、コアが配線した世代キャンセルシグナルにより shutdown 時に close code 1001 の正常 Close ハンドシェイクと有界ドレインで終端する。grace 超過時の強制 abort 対象外という既知の限界は撤廃された
 
 ## Related
 
 - [Server](./server.md)
 - [Handler](./handler.md)
+- [RebindHandle](./rebind-handle.md)

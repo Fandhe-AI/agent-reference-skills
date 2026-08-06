@@ -30,7 +30,10 @@ impl Interceptor for RedirectInterceptor {
     }
     fn intercept(&self, head: &RequestHead, _body: &[u8]) -> Option<Response> {
         if head.path() == "/old-path" {
-            Some(Response::redirect("/new-path"))
+            Some(
+                Response::redirect(302, "/new-path")
+                    .expect("valid redirect status/location"),
+            )
         } else {
             None
         }

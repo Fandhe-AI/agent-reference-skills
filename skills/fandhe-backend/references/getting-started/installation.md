@@ -1,6 +1,6 @@
 # インストール
 
-crates.io に v0.2.0（2026-08-01）として公開済みで、リポジトリのクローンは不要。
+crates.io に v0.3.0（2026-08-05）として公開済みで、リポジトリのクローンは不要。
 
 ## Signature / Usage
 
@@ -20,9 +20,9 @@ cargo add fandhe-backend-core --features websocket
 
 ## Notes
 
-- 公開対象クレートは `fandhe-backend-core` / `fandhe-backend-http` / `fandhe-backend-routes` と `fandhe-backend-plugin-*` の計 13 クレート（すべて v0.2.0 の lockstep）だが、通常は `fandhe-backend-core` の feature 経由で利用すれば十分
+- 公開対象クレートは `fandhe-backend-core` / `fandhe-backend-http` / `fandhe-backend-routes` と `fandhe-backend-plugin-*` の計 13 クレート（すべて v0.3.0 の lockstep）だが、通常は `fandhe-backend-core` の feature 経由で利用すれば十分
 - feature を何も指定しない場合、`fandhe-backend-plugin-*` の依存・コードは一切バイナリに含まれない（pay-for-what-you-use）
-- `cargo new` の代わりに雛形から始めることもできる。複数 feature を組み合わせた実運用形の雛形は `templates/app/`、1 機能ずつの独立サンプルは `examples/` にあり、いずれも standalone プロジェクトとしてコピーしてそのまま `cargo run` できる（コピー後は `Cargo.toml` の依存から `path = ...` を外し、`version = "0.2.0"` のみの crates.io 版参照に切り替える）
+- `cargo new` の代わりに雛形から始めることもできる。複数 feature を組み合わせた実運用形の雛形は `templates/app/`、1 機能ずつの独立サンプルは `examples/` にあり、いずれも standalone プロジェクトとしてコピーしてそのまま `cargo run` できる（コピー後は `Cargo.toml` の依存から `path = ...` を外し、`version = "0.3.0"` のみの crates.io 版参照に切り替える）
 
 ## Related
 

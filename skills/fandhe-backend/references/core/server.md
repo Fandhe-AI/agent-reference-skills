@@ -43,7 +43,7 @@ feature 限定の登録メソッド（`webrtc-proxy` / `webrtc` / `websocket` / 
 
 ## Notes
 
-- クレート直下には `fandhe_backend_core::version() -> &'static str`（`CARGO_PKG_VERSION` を返す）も公開されている。ビルド疎通確認用の最小 API で、`Server` の挙動には関与しない
+- クレート直下の公開 API は `handle_connection` / `handle_connection_with_peer_addr` / `version()` の3つ。`version() -> &'static str`（`CARGO_PKG_VERSION` を返す）はビルド疎通確認用の最小 API で `Server` の挙動には関与しない。`handle_connection_with_peer_addr(server, stream, peer_addr)`（v0.3.0 で追加、issue #486）はカスタム accept ループから実 peer address を注入する経路で、`handle_connection` は peer address を省略する薄いラッパー
 - `Handler` は非対称設計: 4 拡張点は同期のままだが `Handler::handle` はイシュー #315 で async 化されている
 - `fandhe_backend_routes::Router` は `impl Handler for Router` により `.handler(router)` へそのまま登録できる（`Router::dispatch` への薄いアダプタ）
 - `bind` は `addr` に TCP リスナーを張り `BoundServer` を返す。実際の accept ループは `BoundServer::run` / `run_until` が担う

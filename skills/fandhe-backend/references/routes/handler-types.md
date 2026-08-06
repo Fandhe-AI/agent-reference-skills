@@ -7,7 +7,8 @@
 ```rust
 use std::future::Future;
 use std::pin::Pin;
-use fandhe_backend_http::request::{RequestHead, PathParams};
+use fandhe_backend_http::request::RequestHead;
+use fandhe_backend_routes::PathParams;
 use fandhe_backend_http::response::{Response, AllowedMethods};
 
 pub type HandlerFuture = Pin<Box<dyn Future<Output = Response> + Send>>;
