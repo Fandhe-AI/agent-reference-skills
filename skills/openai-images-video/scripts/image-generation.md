@@ -93,6 +93,8 @@ curl https://api.openai.com/v1/images/edits \
         }'
 ```
 
+This JSON (`application/json`) request form is a separate serialization from the multipart examples above: the top-level field is `images`, an array of `{ file_id, image_url }` reference objects, not the multipart `image[]` file-upload field.
+
 ## Streaming image editing
 
 ```bash
