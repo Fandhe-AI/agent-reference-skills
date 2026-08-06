@@ -23,7 +23,7 @@ curl -v http://127.0.0.1:3000/health      # 200 応答
 cargo run
 ```
 
-コピー後は `Cargo.toml` の依存から `path = ...` を外し、`version = "0.2.0"` のみの crates.io 版参照に切り替える。
+コピー後は `Cargo.toml` の依存から `path = ...` を外し、`version = "0.3.0"` のみの crates.io 版参照に切り替える。
 
 ## feature 別サンプルを実行する（fandhe-backend 本体クローン内）
 

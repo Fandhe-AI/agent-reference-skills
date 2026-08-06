@@ -9,7 +9,7 @@ AI によるセキュリティ脆弱性発見リスクに備えて Rust で新�
 
 ## 全体構成
 
-公開対象は 13 クレート（コア 3 + プラグイン 10）で、すべて v0.2.0（2026-08-01 公開、lockstep）。通常は `fandhe-backend-core` の Cargo feature 経由で利用し、個別プラグインクレートを直接依存に追加する必要はない（`fandhe-backend-plugin-hub-wiring` のみ独立クレートとして直接利用する）。
+公開対象は 13 クレート（コア 3 + プラグイン 10）で、すべて v0.3.0（2026-08-05 公開、lockstep）。通常は `fandhe-backend-core` の Cargo feature 経由で利用し、個別プラグインクレートを直接依存に追加する必要はない（`fandhe-backend-plugin-hub-wiring` のみ独立クレートとして直接利用する）。
 
 - クレート一覧の詳細は [crates.md](./crates.md) を参照
 - feature フラグの詳細は [features.md](./features.md) を参照

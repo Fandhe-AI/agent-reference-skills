@@ -1,6 +1,6 @@
 # クレート構成
 
-fandhe-backend は 13 クレートで構成される（すべて v0.2.0、lockstep で crates.io に公開済み）。コア 3 クレート + プラグイン 10 クレートに分かれ、依存方向は `server → routes → http::*` の一方向。
+fandhe-backend は 13 クレートで構成される（すべて v0.3.0、lockstep で crates.io に公開済み）。コア 3 クレート + プラグイン 10 クレートに分かれ、依存方向は `server → routes → http::*` の一方向。
 
 ## コア（3 クレート）
 

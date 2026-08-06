@@ -4,10 +4,10 @@
 
 ```toml
 [dependencies]
-fandhe-backend-core = { version = "0.2.0", features = ["websocket"] }
-fandhe-backend-http = "0.2.0"
-fandhe-backend-routes = "0.2.0"
-fandhe-backend-plugin-websocket = "0.2.0"
+fandhe-backend-core = { version = "0.3.0", features = ["websocket"] }
+fandhe-backend-http = "0.3.0"
+fandhe-backend-routes = "0.3.0"
+fandhe-backend-plugin-websocket = "0.3.0"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal"] }
 futures-util = { version = "0.3", default-features = false, features = ["std"] }
 ```
@@ -76,3 +76,5 @@ bye      # -> サーバから Close
 - WebSocket 配線自体は `Router` の責務範囲外。`Server::websocket(config)` で登録する
 - `WebSocketConfig` のサイズ・アイドルタイムアウトは既定値（DoS 安全側、1 MiB / 256 KiB / 60 秒）から変更しない限り安全側に倒れる
 - HTTP 側のルーティング（`GET /`）と WS 配線は同一 `Server` に共存できる
+- v0.3.0 (issue #499): `on_message` が返す `Future` は shutdown・rebind の drain 処理中、任意の await 点で drop されうる契約になった。実装は drop-safe を保ち、完了保証が必要な副作用（DB 書き込み等）はこの Future の await に依存せず `tokio::spawn` で切り離したタスクとして実行する。キャンセルされた場合、意図した `WsOutcome::Reply` は送出されない
+- `WebSocketConfig::with_close_grace(Duration)`（既定 10 秒）でクローズハンドシェイクの猶予期間を調整できる。`Duration::ZERO` や既定より大幅に長い値もクランプされずそのまま適用される

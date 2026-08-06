@@ -45,7 +45,9 @@ skills/fandhe-backend/
       handler.md
       middleware.md
       request-gate.md
+      gate-context.md
       upgrade-handler.md
+      rebind-handle.md
       interceptor.md
       streaming-response.md
       extension-points.md
@@ -116,7 +118,7 @@ skills/fandhe-backend/
 | --- | --- | --- |
 | フレームワークの全体像・2 つの核となる原則、クレート構成、feature フラグ一覧、インストール手順、最小構成のコード例を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | 最小サーバから Middleware 実装までの段階的チュートリアル、feature 別サンプル一覧、4 拡張点の契約・自作手順、ストリーミング送信、graceful shutdown の手順、ガイド群の読み方・対象読者を知りたい | guides | [references/guides/README.md](references/guides/README.md) |
-| `Server` / `BoundServer` / `Handler` / `Middleware` / `RequestGate` / `UpgradeHandler` / `Interceptor` / `StreamingResponse` の型定義・API、4 拡張点・plugin シームの全体フローを知りたい | core | [references/core/README.md](references/core/README.md) |
+| `Server` / `BoundServer` / `Handler` / `Middleware` / `RequestGate` / `UpgradeHandler` / `Interceptor` / `StreamingResponse` の型定義・API、`GateContext`（`RequestGate::check` へ渡される接続コンテキスト、peer_addr）、`BoundServer::rebind_handle` / `RebindHandle`（稼働中 listener の無停止差し替え）、4 拡張点・plugin シームの全体フローを知りたい | core | [references/core/README.md](references/core/README.md) |
 | リダイレクト返却・レスポンス差し替え（`Interceptor` の `intercept` / `map_response`）を知りたい | core | [references/core/README.md](references/core/README.md) |
 | `Router` のルーティング規則、`{name}` / `{*name}` パスパターン、`HandlerFuture` 等の公開型エイリアスを知りたい | routes | [references/routes/README.md](references/routes/README.md) |
 | sans-IO なリクエスト/レスポンスパーサー、Cookie・クエリ・フォーム・percent-decode、body フレーミング・chunked コーディング、読み取りバッファ、エラーレスポンス、ソケットオプション・keep-alive を知りたい | http | [references/http/README.md](references/http/README.md) |

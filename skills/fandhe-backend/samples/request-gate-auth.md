@@ -4,14 +4,14 @@
 
 ```toml
 [dependencies]
-fandhe-backend-core = "0.2.0"
-fandhe-backend-http = "0.2.0"
-fandhe-backend-routes = "0.2.0"
+fandhe-backend-core = "0.3.0"
+fandhe-backend-http = "0.3.0"
+fandhe-backend-routes = "0.3.0"
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 ```
 
 ```rust
-use fandhe_backend_core::{GateOutcome, RequestGate, Server};
+use fandhe_backend_core::{GateContext, GateOutcome, RequestGate, Server};
 use fandhe_backend_http::request::RequestHead;
 use fandhe_backend_routes::Router;
 
@@ -23,14 +23,11 @@ impl RequestGate for ApiKeyGate {
         "api-key-gate"
     }
 
-    fn check(&self, head: &RequestHead) -> GateOutcome {
+    fn check(&self, head: &RequestHead, _ctx: &GateContext) -> GateOutcome {
         match head.header("x-api-key") {
             Some(_) => GateOutcome::Allow,
             // 判定不能・情報欠落時は必ず Reject（フェイルクローズ）
-            None => GateOutcome::Reject {
-                status: 401,
-                body: Vec::new(),
-            },
+            None => GateOutcome::reject(401, Vec::new()),
         }
     }
 }
@@ -55,7 +52,8 @@ curl -si http://127.0.0.1:3000/ -H 'X-Api-Key: secret'        # 200
 ## Notes
 
 - 判定に必要な情報が欠落・不正、あるいは判定不能な場合は必ず `Reject` を返す（フェイルクローズ、疑わしきは通過させない）
-- `GateOutcome::Reject` の `status` は数値（`u16`）のみを運ぶ。reason phrase の組み立てはコア側の責務であり、任意文字列をステータス行へ書き出せない設計でヘッダインジェクション等を型レベルで排除している
+- v0.3.0 で `check` の署名が破壊的に変更された: `fn check(&self, head: &RequestHead, ctx: &GateContext) -> GateOutcome`（第 2 引数 `&GateContext` 追加）。`ctx.peer_addr() -> Option<SocketAddr>` で接続元アドレスを取得できる（`tokio::io::duplex` 経由など非ソケット経路では `None`）
+- v0.3.0 で `GateOutcome::Reject { status, body }` は `GateOutcome::Reject { response: Response }` に変更された（ヘッダインジェクション等を型レベルで排除する `Response` ベースへの統一）。旧形相当の最小拒否には新設のヘルパー `GateOutcome::reject(status: u16, body: Vec<u8>) -> Self` を使う。`Retry-After` など追加ヘッダが必要な場合は `GateOutcome::Reject { response: Response::new(...).with_header(...)? }` を直接構築する
 - 拒否レスポンス送出後も、登録済み `Middleware` の `on_response` は呼ばれる（観測の一貫性）
 - 複数の `RequestGate` を登録した場合、登録順に評価し最初の `Reject` を優先する
 - 上の例はヘッダの有無のみを見る最小例であり、そのまま認証に使ってはならない。本番実装ではトークン値の定数時間比較（タイミング攻撃対策）・失効管理・有効期限検証が必須
