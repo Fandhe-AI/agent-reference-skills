@@ -2,31 +2,8 @@
 
 Train a model from prompt/preferred/non-preferred response triples instead of single "correct" answers.
 
-```json
-{
-  "input": {
-    "messages": [
-      {
-        "role": "user",
-        "content": "Hello, can you tell me how cold San Francisco is today?"
-      }
-    ],
-    "tools": [],
-    "parallel_tool_calls": true
-  },
-  "preferred_output": [
-    {
-      "role": "assistant",
-      "content": "Today in San Francisco, it is not quite cold as expected. Morning clouds will give away to sunshine, with a high near 68°F (20°C) and a low around 57°F (14°C)."
-    }
-  ],
-  "non_preferred_output": [
-    {
-      "role": "assistant",
-      "content": "It is not particularly cold in San Francisco today."
-    }
-  ]
-}
+```jsonl
+{"input":{"messages":[{"role":"user","content":"Hello, can you tell me how cold San Francisco is today?"}],"tools":[],"parallel_tool_calls":true},"preferred_output":[{"role":"assistant","content":"Today in San Francisco, it is not quite cold as expected. Morning clouds will give away to sunshine, with a high near 68°F (20°C) and a low around 57°F (14°C)."}],"non_preferred_output":[{"role":"assistant","content":"It is not particularly cold in San Francisco today."}]}
 ```
 
 ```python
