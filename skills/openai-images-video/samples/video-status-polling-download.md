@@ -67,7 +67,9 @@ curl -L "https://api.openai.com/v1/videos/video_abc123/content?variant=thumbnail
 
 ## Notes
 
+- The `sora-2` / `sora-2-pro` models and the Videos API are scheduled to shut down on September 24, 2026 — see the official deprecations page before starting a new integration.
 - Poll `video.status` (`queued` -> `in_progress` -> `completed` / `failed`); `video.progress` (0-100) is available for progress bars.
 - Download URLs from `GET /videos/{id}/content` are valid for a maximum of 1 hour after generation; re-fetch if expired.
 - Instead of polling, configure a webhook endpoint to receive `video.completed` / `video.failed` events.
 - `content?variant=` also accepts `thumbnail` and `spritesheet` for supporting assets besides the main `video`.
+</content>

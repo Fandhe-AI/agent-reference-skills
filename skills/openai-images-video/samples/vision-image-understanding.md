@@ -3,6 +3,10 @@
 Send an image to the Responses API and ask the model to describe or analyze it.
 
 ```javascript
+import OpenAI from "openai";
+
+const openai = new OpenAI();
+
 const response = await openai.responses.create({
   model: "gpt-5.6",
   input: [
@@ -55,6 +59,11 @@ response = client.responses.create(
 Reusable File ID (upload once, reference many times):
 
 ```javascript
+import fs from "node:fs";
+import OpenAI from "openai";
+
+const openai = new OpenAI();
+
 async function createFile(filePath) {
   const fileContent = fs.createReadStream(filePath);
   const result = await openai.files.create({
@@ -90,3 +99,4 @@ const response = await openai.responses.create({
 - `detail` controls processing depth: `low` (fast/cheap), `high` (fine detail), `original` (large or spatially sensitive images), `auto` (model picks).
 - Supported formats: PNG, JPEG, WEBP, non-animated GIF. Requests accept up to 512 MB total payload and up to 1500 images.
 - Vision models may underperform on non-Latin text in images, rotated images, and precise spatial tasks (e.g. chess positions).
+</content>

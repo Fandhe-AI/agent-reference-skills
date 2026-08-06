@@ -1,5 +1,7 @@
 # Video Generation with Sora (Videos API)
 
+> **Deprecation notice**: `sora-2`, `sora-2-pro`, and the Videos API are scheduled to shut down on **September 24, 2026**. See `openai-api-core/references/legacy-migration/deprecations.md`; no replacement was announced as of this writing.
+
 Sora is OpenAI's video generation model; the Videos API exposes programmatic creation, extension, editing, and management of generated videos.
 
 ## Models
@@ -16,7 +18,7 @@ Both support `16`- and `20`-second generations.
 Video generation is asynchronous: `POST /videos` returns a job with `id` and `status`; poll `GET /videos/{video_id}` or use webhooks until `status` is `completed`; then fetch the file with `GET /videos/{video_id}/content`.
 
 ```javascript
-const video = await openai.videos.create({
+let video = await openai.videos.create({
   model: "sora-2",
   prompt: "A video of the words 'Thank you' in sparkling letters",
 });

@@ -18,6 +18,22 @@ TOKEN=$(curl -sSf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
   "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=${ENCODED_AUDIENCE}" | jq -r .value)
 ```
 
+`TOKEN` is the GitHub-issued OIDC subject token, not an OpenAI credential yet. Exchange it at the token endpoint (see `workload-identity-federation.md`) to mint a short-lived OpenAI access token:
+
+```bash
+ACCESS_TOKEN=$(curl -sSf https://auth.openai.com/oauth/token \
+  -H "Content-Type: application/json" \
+  -d '{
+    "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
+    "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
+    "subject_token": "'"$TOKEN"'",
+    "identity_provider_id": "'"$OPENAI_IDENTITY_PROVIDER_ID"'",
+    "service_account_id": "'"$OPENAI_SERVICE_ACCOUNT_ID"'"
+  }' | jq -r .access_token)
+```
+
+`ACCESS_TOKEN` is the OpenAI bearer credential — pass it as `Authorization: Bearer $ACCESS_TOKEN` on subsequent API calls; it expires within 1 hour (`expires_in` in the response).
+
 ## Options / Props
 
 Key claims: `iss` (`https://token.actions.githubusercontent.com`), `aud`, `sub` (built from workflow metadata), `repository`, `repository_owner`, `ref`, `workflow`, `workflow_ref`, `environment`, `run_id`, `run_number`, `run_attempt`, `job_workflow_ref`.

@@ -9,15 +9,21 @@ Create `public/todo-widget.html` first — the minimal widget the server reads a
 <html>
   <body>
     <ul id="todo-list"></ul>
+    <button id="add-btn">Add "Buy milk"</button>
     <script>
       function render(tasks) {
         document.getElementById("todo-list").innerHTML = tasks
           .map((t) => `<li>${t.completed ? "✅" : "⬜"} ${t.title}</li>`)
           .join("");
       }
+      // Read-only render of the tool's structured output on mount.
       render(window.openai.toolOutput?.tasks ?? []);
-      window.openai.callTool("add_todo", { title: "Buy milk" }).then((res) => {
-        render(res.structuredContent.tasks);
+
+      // callTool is only invoked from a user action, never automatically.
+      document.getElementById("add-btn").addEventListener("click", () => {
+        window.openai.callTool("add_todo", { title: "Buy milk" }).then((res) => {
+          render(res.structuredContent.tasks);
+        });
       });
     </script>
   </body>
@@ -227,9 +233,11 @@ ngrok http <port>
 ## Notes
 
 - Create `public/todo-widget.html` before starting the server — `readFileSync("public/todo-widget.html")` fails with `ENOENT` if the file is missing. The widget above is intentionally minimal; the full quickstart version renders a form and persists per-item busy state via the shared MCP Apps bridge instead of `window.openai`.
+- The widget renders `window.openai.toolOutput` read-only on mount; `add_todo` (a mutating tool) is only called from the button's `click` handler, never automatically — auto-invoking a mutating tool on mount would re-run the mutation every time the widget remounts.
 - `registerAppResource` publishes the `ui://` HTML widget; `registerAppTool` links a tool to it via `_meta.ui.resourceUri`.
 - `StreamableHTTPServerTransport` with `sessionIdGenerator: undefined` runs the server in stateless mode — a fresh `McpServer` instance is created per request.
 - Use `ngrok` (or another tunnel) to expose the local server to ChatGPT during development via Settings > Connectors > developer mode.
 - This is the ChatGPT-app (server/publisher) side of MCP; consuming MCP servers from the Agents SDK is covered by the `openai-agents` skill.
 
 Source: https://developers.openai.com/plugins/build/app-quickstart
+</content>

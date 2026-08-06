@@ -163,7 +163,11 @@ npm install \
   @openai/codex-security@0.1.3
 ```
 
+`npm install` does not define `CODEX_SECURITY_BIN` — set it explicitly to the installed binary path before invoking it (matches the CI example in `references/security/cli-ci.md`).
+
 ```bash
+CODEX_SECURITY_BIN="$RUNNER_TEMP/codex-security/node_modules/.bin/codex-security"
+
 "$CODEX_SECURITY_BIN" scan . \
   --diff "$BASE_REVISION" \
   --head "$HEAD_SHA" \

@@ -15,15 +15,17 @@ response = client.responses.create(
 V4A diff format, from the `apply_patch_call` object (`update_file` example):
 
 ```json
-"diff": "
-@@
--def fib(n):
-+def fibonacci(n):
-    if n <= 1:
-        return n
--    return fib(n-1) + fib(n-2)
-+    return fibonacci(n-1) + fibonacci(n-2)
-"
+{
+  "id": "apc_08f3d96c87a585390069118b594f7481a088b16cda7d9415fe",
+  "type": "apply_patch_call",
+  "status": "completed",
+  "call_id": "call_Rjsqzz96C5xzPb0jUWJFRTNW",
+  "operation": {
+    "type": "update_file",
+    "path": "lib/fib.py",
+    "diff": "@@\n-def fib(n):\n+def fibonacci(n):\n    if n <= 1:\n        return n\n-    return fib(n-1) + fib(n-2)\n+    return fibonacci(n-1) + fibonacci(n-2)\n"
+  }
+}
 ```
 
 Workflow:
