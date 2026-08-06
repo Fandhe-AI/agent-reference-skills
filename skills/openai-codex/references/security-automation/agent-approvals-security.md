@@ -36,7 +36,7 @@ network_access = true
 | `features.network_proxy.enabled` / `.domains` | boolean / table | Constrains already-enabled command network access to an allow/deny domain policy. Does not grant network access by itself. |
 | `web_search` | `cached` (default) \| `live` \| `disabled` \| `indexed` | Controls the web search tool independently of full network access. |
 | `--ask-for-approval never` / `-a never` | flag | Disables approval prompts; works with all `--sandbox` modes. |
-| `codex sandbox macos\|linux\|windows [--permissions-profile <name>]` | CLI | Test what a command would do under the sandbox locally (alias: `codex debug`). |
+| `codex sandbox macos\|linux\|windows [--permission-profile <name>] [COMMAND]...` | CLI | Test what a command would do under the sandbox locally (aliases: `codex debug`, `codex sandbox seatbelt`, `codex sandbox landlock`). |
 
 ## Notes
 
@@ -50,6 +50,7 @@ network_access = true
 - Dev Containers can supply the outer isolation boundary when the host cannot run the Linux sandbox directly; see the `openai/codex` `.devcontainer` secure example.
 - Opt-in OpenTelemetry (`[otel]`) can log tool approval decisions and results (off by default); keep `log_user_prompt = false` unless policy allows storing prompt text.
 - This page is distinct from "Codex Security", OpenAI's separate product for scanning connected GitHub repositories (`docs/security/*`) — not covered in this category.
+- The official guide (this page) writes the flag as `--permissions-profile` (plural), while the CLI reference (`/docs/cli/reference`) lists `-P, --permission-profile <NAME>` (singular, alongside a separate `-p, --profile <NAME>`); the singular form is authoritative.
 
 ## Related
 

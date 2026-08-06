@@ -6,15 +6,15 @@ Use webhooks to receive real-time HTTP POST notifications about events in the Op
 
 ```javascript
 // Verify and unwrap an incoming webhook request (Node/Express)
-const client = new OpenAI();
-const webhook_secret = process.env.OPENAI_WEBHOOK_SECRET;
-if (!webhook_secret) throw new Error("Set OPENAI_WEBHOOK_SECRET.");
+const client = new OpenAI({ webhookSecret: process.env.OPENAI_WEBHOOK_SECRET });
 
-const event = await client.webhooks.unwrap(
-  req.body,
-  req.headers,
-  webhook_secret
-);
+// Don't use express.json() — signature verification needs the raw text body
+app.use(express.text({ type: "application/json" }));
+
+app.post("/webhook", async (req, res) => {
+  const event = await client.webhooks.unwrap(req.body, req.headers);
+  res.status(200).send();
+});
 ```
 
 ```python

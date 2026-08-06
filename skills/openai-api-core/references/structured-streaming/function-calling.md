@@ -10,6 +10,13 @@ import json
 
 client = OpenAI()
 
+def get_horoscope(sign):
+    return f"{sign}: Next Tuesday you will befriend a baby otter."
+
+def call_function(name, args):
+    if name == "get_horoscope":
+        return get_horoscope(args["sign"])
+
 tools = [
     {
         "type": "function",

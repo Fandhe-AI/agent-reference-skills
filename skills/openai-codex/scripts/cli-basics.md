@@ -106,6 +106,8 @@ Listed in the official command reference (see `developer-commands.md?surface=cli
 
 `codex login`, `codex login status`, and `codex logout` are documented in detail in `auth.md` (kept here only for completeness of the subcommand list).
 
+`codex app` (stable) launches the ChatGPT desktop app and is macOS/Windows only; the subcommand is not compiled on other platforms, where `app` instead falls through to prompt interpretation. Distinct from `codex app-server` above.
+
 ## Slash commands (in-session)
 
 Type these during an interactive `codex` session:

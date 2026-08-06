@@ -65,4 +65,3 @@ dataChannel.addEventListener("message", (event) => {
 - `call_id` はサーバーが生成する ID なので、`response.done` の `response.output` から該当する `function_call` item を parse して取り出す。ハードコードした値をそのまま送ると実際の `call_id` と一致せずフローが止まる
 - Agents SDK（`RealtimeAgent` / `RealtimeSession`）を使ったオーケストレーションは openai-agents スキルの範囲。ここでは生の Realtime API イベントのみを扱う
 - function call の結果を返した後、`response.create` を送って続きの応答を生成させる
-</content>

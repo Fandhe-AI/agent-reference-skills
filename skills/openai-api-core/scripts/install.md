@@ -36,7 +36,7 @@ Maven の `pom.xml` に追記する。
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.0.0</version>
+  <version>4.50.0</version>
 </dependency>
 ```
 

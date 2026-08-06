@@ -8,7 +8,7 @@ OpenAI API helper for Java, currently in beta. Distributed as the `com.openai:op
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.0.0</version>
+  <version>4.50.0</version>
 </dependency>
 ```
 

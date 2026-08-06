@@ -33,6 +33,8 @@ User-correctable failures return `error.type = "image_generation_user_error"`. U
 ```
 
 ```python
+import openai
+
 try:
     client.images.generate(model="gpt-image-2", prompt="...")
 except openai.BadRequestError as error:

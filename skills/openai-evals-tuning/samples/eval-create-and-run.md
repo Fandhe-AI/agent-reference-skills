@@ -84,4 +84,3 @@ print(status.status)
 - A run starts `queued`, moves to `in_progress`, then settles into a terminal status (`completed`, `failed`, `canceled`) — a single `retrieve()` call right after `runs.create()` will usually still show `queued`/`in_progress`, so poll in a loop until the status is terminal.
 - OpenAI is winding down the Evals platform (read-only 2026-10-31, shut down 2026-11-30). Consider Datasets for new projects.
 - `{{ item.* }}` refers to the uploaded test data row, `{{ sample.output_text }}` refers to the model output — both use the shared templating syntax.
-</content>
