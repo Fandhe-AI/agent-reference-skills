@@ -30,10 +30,29 @@ server.registerTool(
 );
 ```
 
-Tool that requires auth unconditionally:
+Tool that requires auth unconditionally. `securitySchemes` on the descriptor is discovery metadata only — ChatGPT reads it to decide when to run the OAuth flow, but nothing stops a malformed or malicious client from calling the tool without ever obtaining a token. The handler itself must independently verify the bearer token (signature, issuer, audience, expiry) and the required scope before doing the write, and return the same `mcp/www_authenticate` challenge shape on failure that ChatGPT uses to trigger login:
 
 ```ts
 declare const server: McpServer;
+
+async function verifyAccessToken(authorizationHeader: string | undefined) {
+  // Verify independently — ChatGPT attaches the token as
+  // `Authorization: Bearer <token>` but performs no verification for you.
+  // At minimum, check:
+  //   - signature (against the authorization server's JWKS)
+  //   - issuer (`iss` matches https://auth.yourcompany.com)
+  //   - audience (`aud`/`resource` matches this server's resource identifier)
+  //   - expiry (`exp` has not passed)
+  //   - scopes (the token's `scope`/`scp` claim includes the required scope)
+  // Return the verified claims, or null/throw if any check fails.
+  return await tokenVerifier.verify(authorizationHeader);
+}
+
+// Reads the incoming `Authorization` header for the current call. The MCP TS
+// SDK's tool-handler second argument carries transport-specific request
+// context; the exact accessor depends on your transport, so it's factored
+// into this helper rather than destructured inline.
+declare function getAuthorizationHeader(handlerContext: unknown): string | undefined;
 
 server.registerTool(
   "create_doc",
@@ -46,7 +65,23 @@ server.registerTool(
     outputSchema: {},
     securitySchemes: [{ type: "oauth2", scopes: ["files:write"] }],
   },
-  async ({ title }) => {
+  async ({ title }, handlerContext) => {
+    const claims = await verifyAccessToken(getAuthorizationHeader(handlerContext));
+
+    if (!claims || !claims.scopes.includes("files:write")) {
+      return {
+        content: [
+          { type: "text", text: "Authentication required: missing or invalid access token." },
+        ],
+        _meta: {
+          "mcp/www_authenticate": [
+            'Bearer resource_metadata="https://your-mcp.example.com/.well-known/oauth-protected-resource", error="insufficient_scope", error_description="You need to login to continue"',
+          ],
+        },
+        isError: true,
+      };
+    }
+
     return {
       content: [{ type: "text", text: `Created doc: ${title}` }],
       structuredContent: {},
@@ -116,6 +151,7 @@ Error result a tool returns when a required token is missing:
 
 - Keep scope names identical across every layer: tool `securitySchemes`, `scopes_supported` on both `.well-known` metadata documents, and the `WWW-Authenticate` challenge (`files:read` / `files:write` here). A mismatch (e.g. a tool requesting a scope the authorization server never advertises) makes a strict AS reject the request with `invalid_scope`.
 - `securitySchemes: [{ type: "noauth" }, { type: "oauth2", scopes: [...] }]` on a tool lets ChatGPT call it unauthenticated first and step up to OAuth only when a scoped tool is invoked.
+- `securitySchemes` only tells ChatGPT when to run the OAuth flow — it is not enforced on the server's behalf. Every handler that requires auth (`create_doc` above) must independently verify the bearer token's signature, issuer, audience, expiry, and scopes before acting, and must not perform the write if verification fails.
 - ChatGPT supports Client ID Metadata Documents (CIMD): set `client_id_metadata_document_supported: true` on the authorization server so no manual client registration is required.
 - On missing/insufficient auth, return `isError: true` with `_meta["mcp/www_authenticate"]` so the host can trigger the OAuth flow.
 - This is the ChatGPT-app (server/publisher) side of MCP; consuming MCP servers from the Agents SDK is covered by the `openai-agents` skill.

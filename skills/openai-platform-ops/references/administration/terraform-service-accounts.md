@@ -35,6 +35,8 @@ resource "openai_project_group_role" "application_access" {
 Create the API key outside Terraform via the Administration API:
 
 ```bash
+umask 077
+
 curl -X POST \
   "https://api.openai.com/v1/organization/projects/$PROJECT_ID/service_accounts/$SERVICE_ACCOUNT_ID/api_keys" \
   -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
@@ -42,6 +44,8 @@ curl -X POST \
   -d '{"name": "Production App", "scopes": ["api.responses.write"]}' \
   --output service-account-api-key.json
 ```
+
+Move the key `value` into a secrets manager immediately, then delete the response file (`rm service-account-api-key.json`) — never commit it or store it in Terraform state/output.
 
 ## Notes
 

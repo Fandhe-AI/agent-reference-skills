@@ -68,15 +68,27 @@ const todoOutputSchema = {
   ),
 };
 
-let todos = [];
-let nextId = 1;
+// Per-session todo lists, keyed by the client's mcp-session-id header. Demo-only
+// isolation: in a real deployment, scope by a verified user/tenant ID instead
+// (see Notes).
+const todoStores = new Map();
 
-const replyWithTodos = (message) => ({
+function getStore(sessionKey) {
+  let store = todoStores.get(sessionKey);
+  if (!store) {
+    store = { todos: [], nextId: 1 };
+    todoStores.set(sessionKey, store);
+  }
+  return store;
+}
+
+const replyWithTodos = (store, message) => ({
   content: message ? [{ type: "text", text: message }] : [],
-  structuredContent: { tasks: todos },
+  structuredContent: { tasks: store.todos },
 });
 
-function createTodoServer() {
+function createTodoServer(sessionKey) {
+  const store = getStore(sessionKey);
   const server = new McpServer({
     name: "todo-plugin-server",
     version: "0.1.0",
@@ -108,14 +120,17 @@ function createTodoServer() {
       outputSchema: todoOutputSchema,
       _meta: {
         ui: { resourceUri: "ui://widget/todo.html" },
+        // Required for the widget's window.openai.callTool("add_todo", ...) to
+        // be allowed through the compatibility bridge — default is false.
+        "openai/widgetAccessible": true,
       },
     },
     async (args) => {
       const title = args?.title?.trim?.() ?? "";
-      if (!title) return replyWithTodos("Missing title.");
-      const todo = { id: `todo-${nextId++}`, title, completed: false };
-      todos = [...todos, todo];
-      return replyWithTodos(`Added "${todo.title}".`);
+      if (!title) return replyWithTodos(store, "Missing title.");
+      const todo = { id: `todo-${store.nextId++}`, title, completed: false };
+      store.todos = [...store.todos, todo];
+      return replyWithTodos(store, `Added "${todo.title}".`);
     }
   );
 
@@ -133,17 +148,17 @@ function createTodoServer() {
     },
     async (args) => {
       const id = args?.id;
-      if (!id) return replyWithTodos("Missing todo id.");
-      const todo = todos.find((task) => task.id === id);
+      if (!id) return replyWithTodos(store, "Missing todo id.");
+      const todo = store.todos.find((task) => task.id === id);
       if (!todo) {
-        return replyWithTodos(`Todo ${id} was not found.`);
+        return replyWithTodos(store, `Todo ${id} was not found.`);
       }
 
-      todos = todos.map((task) =>
+      store.todos = store.todos.map((task) =>
         task.id === id ? { ...task, completed: true } : task
       );
 
-      return replyWithTodos(`Completed "${todo.title}".`);
+      return replyWithTodos(store, `Completed "${todo.title}".`);
     }
   );
 
@@ -182,7 +197,11 @@ const httpServer = createServer(async (req, res) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Expose-Headers", "Mcp-Session-Id");
 
-    const server = createTodoServer();
+    // Demo isolation only: falls back to a shared bucket when the header is
+    // absent (stateless mode assigns no session id). Use a verified
+    // user/tenant id in production instead of trusting a client-supplied header.
+    const sessionKey = req.headers["mcp-session-id"] ?? "anonymous";
+    const server = createTodoServer(sessionKey);
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined, // stateless mode
       enableJsonResponse: true,
@@ -241,8 +260,9 @@ ngrok http <port>
 - Create `public/todo-widget.html` before starting the server — `readFileSync("public/todo-widget.html")` fails with `ENOENT` if the file is missing. The widget above is intentionally minimal; the full quickstart version renders a form and persists per-item busy state via the shared MCP Apps bridge instead of `window.openai`.
 - The widget builds `<li>` nodes with `createElement` and sets the label via `textContent`, never `innerHTML` — a todo title can originate from the model or another user, and interpolating it into an HTML string would let it inject markup/scripts that execute inside the iframe.
 - The widget renders `window.openai.toolOutput` read-only on mount; `add_todo` (a mutating tool) is only called from the button's `click` handler, never automatically — auto-invoking a mutating tool on mount would re-run the mutation every time the widget remounts.
+- `add_todo`'s tool descriptor sets `_meta["openai/widgetAccessible"]: true` — the default is `false`, and without it the compatibility bridge rejects the widget's `window.openai.callTool("add_todo", ...)` call. `complete_todo` isn't invoked from this widget, so it's left without the flag.
 - `registerAppResource` publishes the `ui://` HTML widget; `registerAppTool` links a tool to it via `_meta.ui.resourceUri`.
-- `StreamableHTTPServerTransport` with `sessionIdGenerator: undefined` runs the server in stateless mode — a fresh `McpServer` instance is created per request.
+- `StreamableHTTPServerTransport` with `sessionIdGenerator: undefined` runs in stateless mode — a fresh `McpServer` instance is created per request. Todo state lives in a `Map` keyed by the `mcp-session-id` header (`todoStores`) so that clients presenting distinct session IDs don't read or write each other's todos — but this is best-effort, demo-grade isolation only: stateless mode assigns no session ID, so when the header is absent every such client falls into one shared "anonymous" bucket, and a client-supplied header can also be spoofed. Production servers should scope state by a verified user/tenant ID instead (e.g. derived from the OAuth access token), not by this header.
 - The preflight `Access-Control-Allow-Headers` must include `mcp-protocol-version` alongside `content-type` and `mcp-session-id` — a browser-based Streamable HTTP client sends `MCP-Protocol-Version` on requests after initialization, and an incomplete allow-list makes the browser block the request before it reaches the server.
 - Use `ngrok` (or another tunnel) to expose the local server to ChatGPT during development via Settings > Connectors > developer mode.
 - This is the ChatGPT-app (server/publisher) side of MCP; consuming MCP servers from the Agents SDK is covered by the `openai-agents` skill.

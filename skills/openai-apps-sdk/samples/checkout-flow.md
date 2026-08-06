@@ -99,7 +99,7 @@ const checkoutRequest = {
 const response = await window.openai.requestCheckout(checkoutRequest);
 ```
 
-Server side — MCP tool that finalizes the session once payment succeeds. The completed order must carry the same totals and `fulfillment_option_id` the buyer approved above (line items 3000 + tax 300 + shipping 550 = total 3850) — do not silently drop the shipping line or the payer will be charged less than what the payment sheet displayed. The `fulfillment_options` delivery window must also stay `2027-01-15T15:00:00Z`–`2027-01-19T18:00:00Z`, the same dates the buyer approved in the session above — reporting a different (and already-elapsed) window on the completed order would contradict what the payment sheet showed:
+Server side — MCP tool that finalizes the session. ChatGPT sends `payment_data` (a PSP payment token, not a completed payment) once the buyer confirms the sheet; the tool must charge that token with the PSP itself and only return `status: "completed"` if the charge succeeds — never mark an order completed on the strength of the request alone. On decline, return `isError: true` describing the failure instead of a completed order. The completed order must otherwise carry the same totals and `fulfillment_option_id` the buyer approved above (line items 3000 + tax 300 + shipping 550 = total 3850) — do not silently drop the shipping line or the payer will be charged less than what the payment sheet displayed. The `fulfillment_options` delivery window must also stay `2027-01-15T15:00:00Z`–`2027-01-19T18:00:00Z`, the same dates the buyer approved in the session above — reporting a different (and already-elapsed) window on the completed order would contradict what the payment sheet showed:
 
 ```py
 from typing import Annotated, Any
@@ -119,6 +119,14 @@ class CompleteCheckoutOutput(BaseModel):
     order: dict[str, Any]
 
 
+async def charge_with_psp(payment_data: PaymentData, amount: int, currency: str):
+    # payment_data.token is the PSP payment token ChatGPT collected in the sheet.
+    # Send it to the PSP (Stripe/Adyen/...) to actually capture funds; the token
+    # itself is not proof of payment. Returns an object with `.succeeded` and,
+    # on failure, `.decline_reason` (e.g. "insufficient_funds").
+    return await psp_client.charge(token=payment_data.token, amount=amount, currency=currency)
+
+
 @tool(description="")
 async def complete_checkout(
     self,
@@ -126,6 +134,19 @@ async def complete_checkout(
     buyer: Buyer,
     payment_data: PaymentData,
 ) -> Annotated[types.CallToolResult, CompleteCheckoutOutput]:
+    charge = await charge_with_psp(payment_data, amount=3850, currency="USD")
+
+    if not charge.succeeded:
+        # `payment_declined` is one of the error codes the ChatGPT payment sheet
+        # renders directly; do not populate structuredContent (it must satisfy
+        # CompleteCheckoutOutput, i.e. a *completed* order) on this path.
+        return types.CallToolResult(
+            content=[
+                {"type": "text", "text": f"payment_declined: {charge.decline_reason}"}
+            ],
+            isError=True,
+        )
+
     return types.CallToolResult(
         content=[],
         structuredContent={
@@ -190,7 +211,8 @@ async def complete_checkout(
 
 - `window.openai.requestCheckout` opens ChatGPT's native payment sheet and returns the finalized `order` payload; always feature-detect (`window.openai?.requestCheckout`) before calling it.
 - Give every checkout session a unique `id`; totals must reconcile (`items_base_amount` + `fulfillment` + `tax` = `total`).
-- The MCP server tool (Python example above) runs after payment authorization and must derive its response from the same checkout session — matching `fulfillment_option_id`, `fulfillment_options` (including the delivery-window timestamps), and `totals` (including the `fulfillment` line) that the buyer approved, then returns the completed order plus a session-tracking `_meta` key.
+- `payment_data` is a PSP token, not a completed payment — `complete_checkout` must call the PSP (`charge_with_psp` above) and only return `status: "completed"` once the charge succeeds. On decline, return `isError: true` describing the failure (mentioning `payment_declined`, the code the payment sheet renders directly) with no `structuredContent`, since `CompleteCheckoutOutput` only describes a completed order.
+- The MCP server tool (Python example above) runs after the PSP charge succeeds and must derive its response from the same checkout session — matching `fulfillment_option_id`, `fulfillment_options` (including the delivery-window timestamps), and `totals` (including the `fulfillment` line) that the buyer approved, then returns the completed order plus a session-tracking `_meta` key.
 - Monetization/Checkout is ChatGPT-specific and not part of the shared MCP Apps standard; this is the ChatGPT-app (server/publisher) side of MCP.
 
 Source: https://developers.openai.com/plugins/build/monetization
