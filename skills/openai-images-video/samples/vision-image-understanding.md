@@ -99,4 +99,3 @@ const response = await openai.responses.create({
 - `detail` controls processing depth: `low` (fast/cheap), `high` (fine detail), `original` (large or spatially sensitive images), `auto` (model picks).
 - Supported formats: PNG, JPEG, WEBP, non-animated GIF. Requests accept up to 512 MB total payload and up to 1500 images.
 - Vision models may underperform on non-Latin text in images, rotated images, and precise spatial tasks (e.g. chess positions).
-</content>

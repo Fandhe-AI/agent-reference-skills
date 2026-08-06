@@ -44,4 +44,3 @@ curl -X POST "https://api.openai.com/v1/videos" \
 - `video.create` returns immediately with `status: "queued"`; poll `GET /videos/{video_id}` (or use `create_and_poll` in Python) until `status` is `completed` or `failed`.
 - `sora-2` favors speed/iteration; `sora-2-pro` favors production quality. Both support 16- or 20-second clips (`seconds` accepts other values per size/model limits).
 - For status polling and downloading the finished MP4, see `video-status-polling-download.md`.
-</content>

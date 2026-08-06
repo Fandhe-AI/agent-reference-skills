@@ -240,4 +240,3 @@ ngrok http <port>
 - This is the ChatGPT-app (server/publisher) side of MCP; consuming MCP servers from the Agents SDK is covered by the `openai-agents` skill.
 
 Source: https://developers.openai.com/plugins/build/app-quickstart
-</content>
