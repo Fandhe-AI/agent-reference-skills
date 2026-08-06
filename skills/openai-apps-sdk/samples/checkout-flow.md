@@ -99,7 +99,7 @@ const checkoutRequest = {
 const response = await window.openai.requestCheckout(checkoutRequest);
 ```
 
-Server side — MCP tool that finalizes the session. ChatGPT sends `payment_data` (a PSP payment token, not a completed payment) once the buyer confirms the sheet; the tool must charge that token with the PSP itself and only return `status: "completed"` if the charge succeeds — never mark an order completed on the strength of the request alone. MCP calls can be retried before the caller sees a response, so `complete_checkout` must be idempotent: pass a stable `idempotency_key` derived from `checkout_session_id` to the PSP charge call, and short-circuit with the stored result if the session is already `completed` — otherwise a retry re-charges the buyer's payment token on every attempt. On decline, return `isError: true` describing the failure instead of a completed order. The completed order must otherwise carry the same totals and `fulfillment_option_id` the buyer approved above (line items 3000 + tax 300 + shipping 550 = total 3850) — do not silently drop the shipping line or the payer will be charged less than what the payment sheet displayed. The `fulfillment_options` delivery window must also stay `2027-01-15T15:00:00Z`–`2027-01-19T18:00:00Z`, the same dates the buyer approved in the session above — reporting a different (and already-elapsed) window on the completed order would contradict what the payment sheet showed:
+Server side — MCP tool that finalizes the session. ChatGPT sends `payment_data` (a PSP payment token, not a completed payment) once the buyer confirms the sheet; the tool must charge that token with the PSP itself and only return `status: "completed"` if the charge succeeds — never mark an order completed on the strength of the request alone. MCP calls can be retried before the caller sees a response, so `complete_checkout` must be idempotent: pass a stable `idempotency_key` derived from `checkout_session_id` to the PSP charge call, and short-circuit with the stored result if the session is already `completed` — otherwise a retry re-charges the buyer's payment token on every attempt. On decline, return `isError: true` describing the failure instead of a completed order. The completed order must otherwise carry the same totals, line items, and `fulfillment_option_id` the buyer approved above (line items 3000 + tax 300 + shipping 550 = total 3850) — do not silently drop the shipping line or the payer will be charged less than what the payment sheet displayed. The `fulfillment_options` delivery window must also stay `2027-01-15T15:00:00Z`–`2027-01-19T18:00:00Z`, the same dates the buyer approved in the session above — reporting a different (and already-elapsed) window on the completed order would contradict what the payment sheet showed. The contact/address on the completed order must likewise come from the approved session's `fulfillment_address` rather than being re-typed, so it can never drift from what the buyer confirmed:
 
 ```py
 from typing import Annotated, Any
@@ -152,6 +152,11 @@ async def complete_checkout(
             isError=False,
         )
 
+    # The approved session is the source of truth for what the buyer saw on the
+    # payment sheet (fulfillment_address, line items, totals) — the completed
+    # order must be derived from it, not re-typed.
+    session = await get_checkout_session(checkout_session_id)
+
     charge = await charge_with_psp(
         payment_data,
         amount=3850,
@@ -178,6 +183,7 @@ async def complete_checkout(
             {
                 "id": "line_item_123",
                 "item": {"id": "item_123", "quantity": 1},
+                "name": "Canvas backpack",
                 "base_amount": 3000,
                 "discount": 0,
                 "subtotal": 3000,
@@ -185,16 +191,7 @@ async def complete_checkout(
                 "total": 3300,
             },
         ],
-        "fulfillment_address": {
-            "name": "Jane Customer",
-            "line_one": "123 Main St",
-            "line_two": "Apt 4B",
-            "city": "San Francisco",
-            "state": "CA",
-            "country": "US",
-            "postal_code": "94107",
-            "phone_number": "+1 (555) 555-5555",
-        },
+        "fulfillment_address": session["fulfillment_address"],
         "fulfillment_options": [
             {
                 "id": "standard_shipping",
@@ -239,7 +236,7 @@ async def complete_checkout(
 - Give every checkout session a unique `id`; totals must reconcile (`items_base_amount` + `fulfillment` + `tax` = `total`).
 - `payment_data` is a PSP token, not a completed payment — `complete_checkout` must call the PSP (`charge_with_psp` above) and only return `status: "completed"` once the charge succeeds. On decline, return `isError: true` describing the failure (mentioning `payment_declined`, the code the payment sheet renders directly) with no `structuredContent`, since `CompleteCheckoutOutput` only describes a completed order.
 - MCP calls can be retried before the caller observes the response, so `complete_checkout` must be idempotent: pass an idempotency key derived from `checkout_session_id` to the PSP charge, and return the stored result for an already-`completed` session instead of charging again — otherwise a retry after a successful-but-unacknowledged charge re-bills the buyer's payment token.
-- The MCP server tool (Python example above) runs after the PSP charge succeeds and must derive its response from the same checkout session — matching `fulfillment_option_id`, `fulfillment_options` (including the delivery-window timestamps), and `totals` (including the `fulfillment` line) that the buyer approved, then returns the completed order plus a session-tracking `_meta` key.
+- The MCP server tool (Python example above) runs after the PSP charge succeeds and must derive its response from the same approved checkout session (`get_checkout_session` above) — matching `fulfillment_address`, `fulfillment_option_id`, `fulfillment_options` (including the delivery-window timestamps), and `totals` (including the `fulfillment` line) that the buyer approved, then returns the completed order plus a session-tracking `_meta` key. Line items carry the same `id` / `item` / `name` shape (per the checkout contract's `line_items[]` fields) as the session that produced them.
 - Monetization/Checkout is ChatGPT-specific and not part of the shared MCP Apps standard; this is the ChatGPT-app (server/publisher) side of MCP.
 
 Source: https://developers.openai.com/plugins/build/monetization

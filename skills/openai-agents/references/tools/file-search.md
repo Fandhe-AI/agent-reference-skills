@@ -57,7 +57,7 @@ console.log(response);
 ## Notes
 
 - Supports 24 file formats (PDFs, documents, code files, plain text). Text files must be UTF-8, UTF-16, or ASCII encoded.
-- Available across Responses, Chat Completions, and Assistants (legacy) endpoints; rate limits range 100–1000 RPM depending on account tier.
+- Available in the Responses API and the Assistants (legacy) API; not available via Chat Completions. Rate limits range 100–1000 RPM depending on account tier.
 - Vector store creation, file upload/chunking, and attribute filtering are covered in [Vector Stores](./vector-stores.md).
 
 ## Related
