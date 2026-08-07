@@ -18,5 +18,5 @@
 | SemanticsMatcher | Predicate over a SemanticsNode, used with onNode / onAllNodes and assert(). The… | [semantics-matcher.md](./semantics-matcher.md) |
 | SemanticsNodeInteraction / SemanticsNodeInteractionCollection | SemanticsNodeInteraction represents a single matched node… | [semantics-node-interaction.md](./semantics-node-interaction.md) |
 | StateRestorationTester | Tests that a composable's rememberSaveable state survives a save/restore cycle… | [state-restoration-tester.md](./state-restoration-tester.md) |
-| Synchronization | Compose tests are synchronized with the UI by default: every assert* / perform* call… | [synchronization.md](./synchronization.md) |
+| Synchronization | Compose tests are synchronized with the UI by default: every `assert*` / `perform*` call waits until the UI is idle before proceeding. | [synchronization.md](./synchronization.md) |
 | Modifier.testTag in tests | Modifier.testTag attaches a stable identifier to a composable so tests can find it… | [test-tag-usage.md](./test-tag-usage.md) |
