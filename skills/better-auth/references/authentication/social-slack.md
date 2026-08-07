@@ -1,25 +1,6 @@
 # Slack
 
-## Credentials
-
-- `SLACK_CLIENT_ID`
-- `SLACK_CLIENT_SECRET`
-
-### Setup Instructions
-
-Follow these steps at [Your Apps on Slack API](https://api.slack.com/apps):
-
-1. Create a new app by selecting "From scratch"
-2. Name your app and choose a development workspace
-3. Navigate to "OAuth & Permissions"
-4. Register your redirect URLs:
-   - Development: `http://localhost:3000/api/auth/callback/slack`
-   - Production: `https://yourdomain.com/api/auth/callback/slack`
-5. Retrieve Client ID and Client Secret from "Basic Information"
-
-Production environments require HTTPS. Use [ngrok](https://ngrok.com/) for local HTTPS tunneling.
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -34,10 +15,6 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
-
-### Basic Sign-In
-
 ```typescript
 import { createAuthClient } from "better-auth/client";
 const authClient = createAuthClient();
@@ -47,9 +24,7 @@ const signIn = async () => {
 };
 ```
 
-### Request Additional Scopes
-
-By default, Slack uses OpenID Connect scopes: `openid`, `profile`, `email`. Request extra permissions:
+By default, Slack uses the OpenID Connect scopes `openid`, `profile`, `email`. Request extra permissions:
 
 ```typescript
 const signInWithSlack = async () => {
@@ -59,15 +34,6 @@ const signInWithSlack = async () => {
   });
 };
 ```
-
-## リダイレクト URL
-
-- **Development**: `http://localhost:3000/api/auth/callback/slack`
-- **Production**: `https://yourdomain.com/api/auth/callback/slack`
-
-## プロバイダー固有の設定・注意点
-
-### Workspace-Specific Sign-In
 
 Restrict authentication to a single Slack workspace:
 
@@ -81,6 +47,21 @@ socialProviders: {
 }
 ```
 
-### Post-Authentication
+## Options / Props
 
-After successful sign-in, access user information through the session. The access token is stored securely on the server for making subsequent API requests to Slack endpoints. Request appropriate scopes if accessing additional Slack APIs beyond basic profile data.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `clientId` | string | — | `SLACK_CLIENT_ID`, retrieved from "Basic Information" in your Slack app |
+| `clientSecret` | string | — | `SLACK_CLIENT_SECRET`, retrieved from "Basic Information" in your Slack app |
+| `team` | string | — | Restrict sign-in to a single Slack workspace ID |
+
+## Notes
+
+- Setup: at [Your Apps on Slack API](https://api.slack.com/apps), create a new app "From scratch", name it and choose a development workspace, navigate to "OAuth & Permissions", register redirect URLs, then retrieve Client ID and Client Secret from "Basic Information"
+- Redirect URL — development: `http://localhost:3000/api/auth/callback/slack`; production: `https://yourdomain.com/api/auth/callback/slack`
+- Production environments require HTTPS; use [ngrok](https://ngrok.com/) for local HTTPS tunneling
+- After successful sign-in, the access token is stored securely on the server for making subsequent API requests to Slack endpoints; request appropriate scopes if accessing additional Slack APIs beyond basic profile data
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

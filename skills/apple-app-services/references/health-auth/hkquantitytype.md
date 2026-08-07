@@ -37,7 +37,7 @@ iOS 8.0+, iPadOS 8.0+, macOS 13.0+, watchOS 2.0+, visionOS 1.0+. The `aggregatio
 
 ## Related
 
-- [hkobjecttype.md](./hkobjecttype.md)
-- [hksampletype.md](./hksampletype.md)
-- [hkquantitysample.md](./hkquantitysample.md)
-- [hkstatisticsquery.md](./hkstatisticsquery.md)
+- [HKObjectType](./hkobjecttype.md)
+- [HKSampleType](./hksampletype.md)
+- [HKQuantitySample](./hkquantitysample.md)
+- [HKStatisticsQuery](./hkstatisticsquery.md)

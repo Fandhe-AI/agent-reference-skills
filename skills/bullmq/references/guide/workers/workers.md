@@ -95,6 +95,19 @@ queueEvents.on('progress', ({ jobId, data }) => {
 });
 ```
 
+## 一時停止と再開
+
+```typescript
+// ワーカーを一時停止（デフォルトはアクティブなジョブの完了を待つ）
+await worker.pause();
+
+// 現在処理中のジョブを待たずに即座に一時停止
+await worker.pause(true);
+
+// ワーカーを再開（v6 以降 Promise<void> を返すため await が必須）
+await worker.resume();
+```
+
 ## TypeScript ジェネリクス
 
 データ型と戻り値の型を指定可能。
@@ -122,6 +135,7 @@ const worker = new Worker<MyData, MyReturn>(queueName, async (job: Job) => {});
 - `error` イベントリスナーを必ず設定すること。設定しないと、未処理の例外がジョブの処理を停止させる可能性がある
 - プロセッサ関数の戻り値は `returnvalue` プロパティや `completed` イベントで取得可能
 - 進捗は `job.updateProgress()` で数値またはオブジェクトとして報告でき、Worker イベントまたは QueueEvents で受信可能
+- **`Worker#resume()` は v6 以降非同期化され `Promise<void>` を返す。必ず `await` すること**（v5 以前は同期メソッドだった）
 
 ## 関連
 

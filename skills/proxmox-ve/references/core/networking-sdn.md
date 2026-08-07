@@ -67,12 +67,25 @@ iface bond0 inet manual
 | IPAM | Auto-assign IPs from pool |
 | DNS | Register subnet in DNS |
 
+### SDN Fabrics (PVE 9+)
+
+Fabrics automate underlay routing between cluster nodes, configuring routing protocols on physical interfaces to build a routed underlay for a full-mesh Ceph network or as the foundation for VXLAN/EVPN overlays. VXLAN/EVPN zones can reference a fabric as their underlay, deriving VTEP IPs from fabric router-IDs.
+
+| Protocol | Description |
+|----------|-------------|
+| OpenFabric | IS-IS-based, IPv4/IPv6, optimized for spine-leaf topologies; recommended for simple setups |
+| OSPF | OSPFv2 (IPv4 only), widely-used link-state routing |
+| WireGuard | Encrypted VPN transport for secure inter-node fabric links |
+
+Configuration: select a protocol, define router-IDs (loopback addresses), assign per-node peering interfaces, set optional parameters (hello intervals, listen ports), and optionally apply route filters via prefix lists. FRR implementations are used, so `frr` and `frr-pythontools` must be installed.
+
 ## Notes
 
 - Network changes are staged in `/etc/network/interfaces.new`; apply with "Apply Configuration" in the web UI or `ifreload -a` (requires `ifupdown2`)
-- SDN core packages are installed by default in PVE 8.1+; advanced features require `dnsmasq` (DHCP), `frr` (BGP/EVPN), and `ifupdown2`
+- SDN core packages are installed by default in PVE 8.1+; advanced features require `dnsmasq` (DHCP), `frr` (BGP/EVPN/Fabrics), and `ifupdown2`
 - Use a dedicated physical NIC for Corosync cluster traffic separate from VM traffic
 - VNets become standard Linux bridges on each node after SDN configuration is applied
+- Fabrics are a PVE 9 addition; they configure the underlay only, separate from zone/VNet definitions
 
 ## Related
 

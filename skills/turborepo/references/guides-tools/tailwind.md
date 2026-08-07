@@ -1,14 +1,14 @@
 # Tailwind CSS
 
-## クイックスタート
+## Usage
+
+Quick start:
 
 ```bash
 pnpm dlx create-turbo@latest -e with-tailwind
 ```
 
-## アーキテクチャ
-
-### 共有 Tailwind 設定パッケージ
+Architecture — shared Tailwind config package:
 
 ```css
 /* packages/tailwind-config/shared-styles.css */
@@ -19,14 +19,12 @@ pnpm dlx create-turbo@latest -e with-tailwind
 }
 ```
 
-### UI パッケージ
-
-`ui:` プレフィックスを付けてスタイル優先度の競合を防ぐ:
+UI package: prefix classes with `ui:` to avoid style-priority conflicts.
 
 ```html
 <button class="ui:bg-blue-500 ui:text-white">Button</button>
 ```
 
-## ベストプラクティス
+## Notes
 
-スタイルビルドとコンポーネントビルドを別タスクに分離し、並列実行しつつ依存関係を正しく管理する。
+- Separate style builds and component builds into different tasks, running them in parallel while managing dependencies correctly.

@@ -2,11 +2,14 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| WebGLRenderer | Primary WebGL 2 renderer. The most important renderer class — handles rendering, shadow maps, XR, tone mapping, and more. | [WebGLRenderer.md](./WebGLRenderer.md) |
-| WebGLRenderTarget | Off-screen render target for rendering to a 2D texture instead of the canvas. | [WebGLRenderTarget.md](./WebGLRenderTarget.md) |
-| WebGLCubeRenderTarget | Render target for cube map textures. Used for dynamic environment maps with `CubeCamera`. | [WebGLCubeRenderTarget.md](./WebGLCubeRenderTarget.md) |
-| WebGL3DRenderTarget | Render target for 3D (volume) textures (`Data3DTexture`). | [WebGL3DRenderTarget.md](./WebGL3DRenderTarget.md) |
-| WebGLArrayRenderTarget | Render target for texture arrays (`DataArrayTexture`, multiple 2D layers). | [WebGLArrayRenderTarget.md](./WebGLArrayRenderTarget.md) |
-| WebGPURenderer | Modern renderer targeting WebGPU with automatic WebGL 2 fallback. Supports compute shaders and TSL node materials. | [WebGPURenderer.md](./WebGPURenderer.md) |
-| WebXRManager | XR session manager accessed via `renderer.xr`. Manages controllers, cameras, and frame rendering for VR/AR. | [WebXRManager.md](./WebXRManager.md) |
-| WebXRDepthSensing | Provides depth texture access from the WebXR Depth Sensing API for AR depth occlusion. | [WebXRDepthSensing.md](./WebXRDepthSensing.md) |
+| Info | A renderer module that provides statistical… | [Info.md](./Info.md) |
+| PostProcessing | A post-processing management module for… | [PostProcessing.md](./PostProcessing.md) |
+| Renderer | Base class for the modern node-based… | [Renderer.md](./Renderer.md) |
+| WebGL3DRenderTarget | A render target that renders to a 3D… | [WebGL3DRenderTarget.md](./WebGL3DRenderTarget.md) |
+| WebGLArrayRenderTarget | A render target that renders to a texture… | [WebGLArrayRenderTarget.md](./WebGLArrayRenderTarget.md) |
+| WebGLCubeRenderTarget | A render target for rendering to a cube… | [WebGLCubeRenderTarget.md](./WebGLCubeRenderTarget.md) |
+| WebGLRenderTarget | An off-screen render target for WebGL… | [WebGLRenderTarget.md](./WebGLRenderTarget.md) |
+| WebGLRenderer | The primary renderer for three.js. Uses… | [WebGLRenderer.md](./WebGLRenderer.md) |
+| WebGPURenderer | The modern renderer for three.js. Targets… | [WebGPURenderer.md](./WebGPURenderer.md) |
+| WebXRDepthSensing | Provides access to the WebXR Depth… | [WebXRDepthSensing.md](./WebXRDepthSensing.md) |
+| WebXRManager | Abstracts the WebXR Device API for use… | [WebXRManager.md](./WebXRManager.md) |

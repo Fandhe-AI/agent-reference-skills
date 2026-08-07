@@ -1,236 +1,55 @@
 # Options: Comments
 
-TypeDoc の Comments オプション一覧。
+TypeDoc options controlling how doc comments are parsed and rendered.
 
-## commentStyle
-
-**Type:** `"jsdoc" | "block" | "line" | "all"`
-**Default:** `"jsdoc"`
-**CLI:** `--commentStyle <style>`
-
-TypeDoc が解析するコメント構文を決定する。
-
-- **jsdoc:** `/**` で始まるブロックコメント
-- **block:** すべてのブロックコメント
-- **line:** `//` コメント
-- **all:** ブロックとラインの両方
-
-非 JSDoc コメントは VSCode の IntelliSense の品質を低下させる可能性がある。
+## Usage
 
 ```json
 {
-  "commentStyle": "jsdoc"
-}
-```
-
-## useTsLinkResolution
-
-**Type:** `boolean`
-**Default:** `true`
-**CLI:** `--useTsLinkResolution`
-
-`{@link}` タグが TypeScript の解析ルールを使用して解決されるかどうかを制御する。
-
-```json
-{
-  "useTsLinkResolution": true
-}
-```
-
-## preserveLinkText
-
-**Type:** `boolean`
-**Default:** `true`
-**CLI:** `--preserveLinkText`
-
-`{@link}` タグが完全なオリジナルのリンクテキストを表示するか、ターゲットリフレクション名のみを表示するかを決定する。
-
-```json
-{
-  "preserveLinkText": true
-}
-```
-
-## jsDocCompatibility
-
-**Type:** `object`
-**Default:** `{ "exampleTag": true, "defaultTag": true, "inheritDocTag": true, "ignoreUnescapedBraces": true }`
-**CLI:** `--jsDocCompatibility` および `--jsDocCompatibility.<property>`
-
-JSDoc と TSDoc 標準間の競合を処理する。
-
-- **exampleTag:** `@example` タグのコードブロック推論
-- **defaultTag:** `@default` タグのコードブロック推論
-- **inheritDocTag:** `@inheritDoc` の大文字小文字の処理
-- **ignoreUnescapedBraces:** ブレースのエスケープ警告
-
-```json
-{
-  "jsDocCompatibility": {
-    "exampleTag": true,
-    "defaultTag": true,
-    "inheritDocTag": true,
-    "ignoreUnescapedBraces": true
-  }
-}
-```
-
-## suppressCommentWarningsInDeclarationFiles
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** `--suppressCommentWarningsInDeclarationFiles`
-
-`.d.ts` ファイル内の未指定タグに関する警告を抑制する。
-
-```json
-{
-  "suppressCommentWarningsInDeclarationFiles": true
-}
-```
-
-## blockTags
-
-**Type:** `string[]`
-**Default:** TypeDoc の標準ブロックタグ
-**CLI:** なし
-
-有効なブロックタグを指定する。カスタムタグは `OptionDefaults.blockTags` を拡張して追加できる。`tsdoc.json` でも設定可能。
-
-```json
-{
-  "blockTags": [
-    "@example",
-    "@remarks",
-    "@param",
-    "@returns",
-    "@throws",
-    "@see",
-    "@customTag"
-  ]
-}
-```
-
-## inlineTags
-
-**Type:** `string[]`
-**Default:** TypeDoc の標準インラインタグ
-**CLI:** なし
-
-有効なインラインタグを指定する。カスタムタグは `OptionDefaults.inlineTags` を拡張して追加できる。`tsdoc.json` でも設定可能。
-
-```json
-{
-  "inlineTags": [
-    "@link",
-    "@inheritDoc",
-    "@label"
-  ]
-}
-```
-
-## modifierTags
-
-**Type:** `string[]`
-**Default:** TypeDoc の標準修飾子タグ
-**CLI:** なし
-
-有効な修飾子タグを指定する。カスタムタグは `OptionDefaults.modifierTags` を拡張して追加できる。`tsdoc.json` でも設定可能。
-
-```json
-{
-  "modifierTags": [
-    "@public",
-    "@private",
-    "@protected",
-    "@internal",
-    "@readonly",
-    "@override",
-    "@virtual",
-    "@sealed",
-    "@deprecated"
-  ]
-}
-```
-
-## cascadedModifierTags
-
-**Type:** `string[]`
-**Default:** なし
-**CLI:** なし
-
-すべての子リフレクションにカスケードすべき修飾子タグを指定する。`@deprecated` はブロックタグであるため、ここには含めるべきではない。
-
-```json
-{
-  "cascadedModifierTags": ["@alpha", "@beta"]
-}
-```
-
-## excludeTags
-
-**Type:** `string[]`
-**Default:** なし
-**CLI:** `--excludeTags`
-
-コメント解析中に削除するタグ。REST API ドキュメント用に apiDoc を使用するプロジェクトに便利。
-
-```json
-{
-  "excludeTags": ["@apiNote", "@apiGroup"]
-}
-```
-
-## notRenderedTags
-
-**Type:** `string[]`
-**Default:** なし
-**CLI:** `--notRenderedTags`
-
-コメントに保持されるが出力から除外されるタグ。packages モードでのデシリアライゼーション後の処理のためのレンダリング命令や意味を持つタグ向け。
-
-```json
-{
-  "notRenderedTags": ["@packageDocumentation"]
-}
-```
-
-## preservedTypeAnnotationTags
-
-**Type:** `string[]`
-**Default:** なし
-**CLI:** なし
-
-型注釈が保持されるべきブロックタグ。そのコンテンツがレンダリングされたドキュメントに含まれることを可能にする。
-
-```json
-{
-  "preservedTypeAnnotationTags": ["@returns"]
-}
-```
-
-## externalSymbolLinkMappings
-
-**Type:** `object`（パッケージ名からエクスポート名-URL マッピングへのマッピング）
-**Default:** なし
-**CLI:** なし
-
-外部型をドキュメント URL にマッピングする。`.` セパレーターで名前空間付き名前をサポートする。`@types` パッケージと元のモジュールの両方をサポートする。グローバル型には特別な `global` パッケージを使用する。リンクを作成せずに型を解決済みとしてマークするには `"#"` を使用する。
-
-```json
-{
+  "commentStyle": "jsdoc",
+  "blockTags": ["@example", "@remarks", "@param", "@returns", "@throws", "@see", "@customTag"],
   "externalSymbolLinkMappings": {
     "global": {
       "Promise": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise"
-    },
-    "typescript": {
-      "CompilerOptions": "https://www.typescriptlang.org/tsconfig"
     }
   }
 }
 ```
 
-## 関連
+## Options / Props
+
+| Option | Type | Default | CLI | Description |
+| --- | --- | --- | --- | --- |
+| `commentStyle` | `"jsdoc" \| "block" \| "line" \| "all"` | `"jsdoc"` | `--commentStyle <style>` | Comment syntax TypeDoc parses. |
+| `useTsLinkResolution` | `boolean` | `true` | `--useTsLinkResolution` | Whether `{@link}` tags are resolved using TypeScript's resolution rules. |
+| `preserveLinkText` | `boolean` | `true` | `--preserveLinkText` | Whether `{@link}` tags render the full original link text or only the target reflection name. |
+| `jsDocCompatibility` | `object` | `{ "exampleTag": true, "defaultTag": true, "inheritDocTag": true, "ignoreUnescapedBraces": true }` | `--jsDocCompatibility` / `--jsDocCompatibility.<property>` | Handles conflicts between JSDoc and the TSDoc standard. |
+| `suppressCommentWarningsInDeclarationFiles` | `boolean` | `false` | `--suppressCommentWarningsInDeclarationFiles` | Suppresses warnings about unrecognized tags inside `.d.ts` files. |
+| `blockTags` | `string[]` | TypeDoc's standard block tags | — | Valid block tags. Custom tags can be added by extending `OptionDefaults.blockTags`; also configurable via `tsdoc.json`. |
+| `inlineTags` | `string[]` | TypeDoc's standard inline tags | — | Valid inline tags. Custom tags can be added by extending `OptionDefaults.inlineTags`; also configurable via `tsdoc.json`. |
+| `modifierTags` | `string[]` | TypeDoc's standard modifier tags | — | Valid modifier tags. Custom tags can be added by extending `OptionDefaults.modifierTags`; also configurable via `tsdoc.json`. |
+| `cascadedModifierTags` | `string[]` | none | — | Modifier tags that should cascade to all child reflections. |
+| `excludeTags` | `string[]` | none | `--excludeTags` | Tags to strip during comment parsing. Useful for projects that use apiDoc for REST API documentation. |
+| `notRenderedTags` | `string[]` | none | `--notRenderedTags` | Tags kept on the comment but excluded from rendered output. Intended for tags with rendering instructions or meaning for post-deserialization processing in packages mode. |
+| `preservedTypeAnnotationTags` | `string[]` | none | — | Block tags whose type annotation should be preserved so its content appears in the rendered documentation. |
+| `externalSymbolLinkMappings` | `object` (package name to export-name-URL mapping) | none | — | Maps external types to documentation URLs. |
+
+## Notes
+
+- `jsDocCompatibility` sub-keys: `exampleTag` (code block inference for `@example`), `defaultTag` (code block inference for `@default`), `inheritDocTag` (case handling for `@inheritDoc`), `ignoreUnescapedBraces` (brace-escaping warnings).
+- `commentStyle` values: `jsdoc` (block comments starting with `/**`), `block` (all block comments), `line` (`//` comments), `all` (both block and line). Non-JSDoc comments can degrade VSCode IntelliSense quality.
+- `externalSymbolLinkMappings` supports `.`-separated namespaced names, both `@types` packages and the original module, a special `global` package for global types, and `"#"` to mark a type as resolved without creating a link. Example:
+  ```json
+  {
+    "externalSymbolLinkMappings": {
+      "typescript": {
+        "CompilerOptions": "https://www.typescriptlang.org/tsconfig"
+      }
+    }
+  }
+  ```
+
+## Related
 
 - [Options: Configuration](./configuration.md)
 - [Options: Input](./input.md)

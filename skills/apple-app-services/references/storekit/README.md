@@ -2,18 +2,21 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Product | In-App Purchase product info from App Store Connect; fetch, display, and purchase | [product.md](./product.md) |
-| Product.PurchaseResult | Enum returned by `purchase()`: `.success`, `.userCancelled`, `.pending` | [product-purchaseresult.md](./product-purchaseresult.md) |
-| Product.PurchaseOption | Optional settings for purchase calls: account token, quantity, offers, behavior | [product-purchaseoption.md](./product-purchaseoption.md) |
-| Transaction | Signed record of a customer purchase; properties, finish, refund | [transaction.md](./transaction.md) |
-| Transaction.updates | Async sequence emitting transactions from outside the app or other devices | [transaction-updates.md](./transaction-updates.md) |
-| Transaction.currentEntitlements | Async sequence of latest transactions granting current entitlements | [transaction-currententitlements.md](./transaction-currententitlements.md) |
-| VerificationResult | Generic enum wrapping JWS-verified or unverified StoreKit values | [verificationresult.md](./verificationresult.md) |
-| AppStore | Namespace for sync, canMakePayments, showManageSubscriptions, and more | [appstore.md](./appstore.md) |
-| AppTransaction | Cryptographically signed record of the app purchase; originalAppVersion | [apptransaction.md](./apptransaction.md) |
-| Message | Receive and control display of App Store messages (e.g., billing alerts) | [message.md](./message.md) |
-| Product.SubscriptionInfo | Auto-renewable subscription metadata: status, period, group, offers | [product-subscriptioninfo.md](./product-subscriptioninfo.md) |
-| Product.SubscriptionInfo.Status | Snapshot of subscription renewal state, transaction, and renewal info | [product-subscriptioninfo-status.md](./product-subscriptioninfo-status.md) |
-| Product.SubscriptionInfo.RenewalState | Subscription states: subscribed, expired, inBillingRetryPeriod, inGracePeriod, revoked | [product-subscriptioninfo-renewalstate.md](./product-subscriptioninfo-renewalstate.md) |
-| StoreView | SwiftUI view merchandising a collection of In-App Purchase products | [storeview.md](./storeview.md) |
-| SubscriptionStoreView | SwiftUI view merchandising auto-renewable subscription options in a group | [subscriptionstoreview.md](./subscriptionstoreview.md) |
+| AppStore | Namespace for App Store interactions: subscription management, device verification, payment capability checks, transaction sync, and offer code redemption. | [appstore.md](./appstore.md) |
+| AppTransaction | Information that represents the customer's purchase of the app, cryptographically signed by the App Store. | [apptransaction.md](./apptransaction.md) |
+| Message | An instance for receiving and displaying App Store messages (e.g., billing issue alerts) in your app. | [message.md](./message.md) |
+| Product.PromotionInfo | Information about a promoted in-app purchase that customizes its order and visibility on the device. | [product-promotioninfo.md](./product-promotioninfo.md) |
+| Product.PurchaseError | Error information for product purchase errors. | [product-purchaseerror.md](./product-purchaseerror.md) |
+| Product.PurchaseOption | Optional settings for a product purchase that add account info, offer details, or behavioral flags. | [product-purchaseoption.md](./product-purchaseoption.md) |
+| Product.PurchaseResult | The result of a product purchase. | [product-purchaseresult.md](./product-purchaseresult.md) |
+| Product.SubscriptionInfo | Information about an auto-renewable subscription: status, period, group, and offer details. | [product-subscriptioninfo.md](./product-subscriptioninfo.md) |
+| Product.SubscriptionInfo.RenewalState | The renewal states of auto-renewable subscriptions. | [product-subscriptioninfo-renewalstate.md](./product-subscriptioninfo-renewalstate.md) |
+| Product.SubscriptionInfo.Status | Renewal status information for an auto-renewable subscription at a point in time. | [product-subscriptioninfo-status.md](./product-subscriptioninfo-status.md) |
+| Product.SubscriptionRelationship | An option set that describes the relationship between a subscription and other subscriptions in the same subscription group, used to filter subscription products. | [product-subscriptionrelationship.md](./product-subscriptionrelationship.md) |
+| Product | Information about a product that you configure in App Store Connect. | [product.md](./product.md) |
+| StoreView | A SwiftUI view that merchandises a collection of In-App Purchase products with localized names, descriptions, prices, and purchase buttons. | [storeview.md](./storeview.md) |
+| SubscriptionStoreView | A SwiftUI view that merchandises auto-renewable subscription options within the same subscription group. | [subscriptionstoreview.md](./subscriptionstoreview.md) |
+| Transaction | Information that represents the customer's purchase of a product in your app. | [transaction.md](./transaction.md) |
+| Transaction.currentEntitlements | A sequence of the latest transactions that entitle the customer to In-App Purchases and subscriptions. | [transaction-currententitlements.md](./transaction-currententitlements.md) |
+| Transaction.updates | An asynchronous sequence that emits transactions created or updated outside the app or on other devices. | [transaction-updates.md](./transaction-updates.md) |
+| VerificationResult | A type describing the result of StoreKit's automatic JWS verification. | [verificationresult.md](./verificationresult.md) |

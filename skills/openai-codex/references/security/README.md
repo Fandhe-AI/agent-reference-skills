@@ -1,27 +1,26 @@
-# security
-
-Codex Security (vulnerability-scanning product family: desktop-app plugin, CLI/SDK `@openai/codex-security`, and Codex Security cloud). This is distinct from Codex's built-in approvals / sandbox / network controls, which are covered in the `security-automation` category.
+# Security
 
 | Name | Description | Path |
 |------|-------------|------|
-| Codex Security | Product overview across desktop app, CLI/SDK, and cloud | [overview.md](./overview.md) |
-| Codex Security cloud setup | Five-step cloud onboarding: access, environment, scan, threat model, findings | [cloud-setup.md](./cloud-setup.md) |
-| Codex Security cloud FAQ | What Codex Security cloud is, the analysis pipeline, validation | [cloud-faq.md](./cloud-faq.md) |
-| Improving the threat model | Editing the repo-specific `project overview` that tunes scan context | [threat-model.md](./threat-model.md) |
-| Codex Security plugin quickstart | Install the plugin, run a first read-only scan (desktop app / CLI) | [plugin-quickstart.md](./plugin-quickstart.md) |
-| Use the Codex Security workbench | Scans / Findings / Repositories views in the desktop app | [workbench.md](./workbench.md) |
-| Run a Codex Security scan | Standard scan of a repository or scoped folder | [scans.md](./scans.md) |
-| Run a deep security scan | Slower, more thorough repository/folder review | [deep-scans.md](./deep-scans.md) |
-| Review code changes for security | Diff-scoped review of PRs, commits, or local changes | [code-changes.md](./code-changes.md) |
-| Triage a backlog | Read-only static triage of existing findings against the repo | [triage-backlog.md](./triage-backlog.md) |
-| Fix and verify security findings | Turn an accepted finding into a verified patch | [fix-findings.md](./fix-findings.md) |
-| Export and track security findings | JSON/CSV/SARIF export and Linear/GitHub/Jira/advisory tracking | [export-findings.md](./export-findings.md) |
-| Write vulnerability reports | Self-contained per-vulnerability Markdown reports | [vulnerability-reports.md](./vulnerability-reports.md) |
-| Propose security hardening | Evidence-backed structural/architectural hardening options | [security-hardening.md](./security-hardening.md) |
-| Codex Security plugin changelog | Plugin version history and notable changes | [plugin-changelog.md](./plugin-changelog.md) |
-| Codex Security CLI quickstart | Install, sign in, run a first terminal scan | [cli-quickstart.md](./cli-quickstart.md) |
-| Codex Security CLI reference | Full command, flag, artifact, and exit-code reference | [cli-reference.md](./cli-reference.md) |
-| Codex Security CLI FAQ | Common questions about scans, findings, coverage, cost | [cli-faq.md](./cli-faq.md) |
-| Run bulk security scans | GitHub discovery or CSV-driven resumable campaigns | [cli-bulk-scans.md](./cli-bulk-scans.md) |
-| Run Codex Security in CI | GitHub Actions workflow, SARIF upload, severity policy | [cli-ci.md](./cli-ci.md) |
-| Codex Security TypeScript SDK | Programmatic scans, targets, results, and error handling | [sdk.md](./sdk.md) |
+| Run bulk security scans | Discover GitHub repositories or run resumable security scans from a CSV inventory using `npx @openai/codex-security bulk-scan`. | [cli-bulk-scans.md](./cli-bulk-scans.md) |
+| Run Codex Security in CI | Scan pull-request changes, preserve structured results, upload SARIF, and set a severity policy using the `@openai/codex-security` CLI. | [cli-ci.md](./cli-ci.md) |
+| Codex Security CLI FAQ | Answers about Codex Security scans, findings, false positives, coverage, cost, and CI. | [cli-faq.md](./cli-faq.md) |
+| Codex Security CLI quickstart | Set up the `@openai/codex-security` CLI, run a local scan, and review the report, findings, and coverage. | [cli-quickstart.md](./cli-quickstart.md) |
+| Codex Security CLI reference | Arguments, output formats, scan artifacts, and exit codes for the `codex-security` command-line tool (`@openai/codex-security`). | [cli-reference.md](./cli-reference.md) |
+| Codex Security cloud FAQ | Common questions about Codex Security cloud: what it is, how it works, the analysis pipeline, validation, and threat models. | [cloud-faq.md](./cloud-faq.md) |
+| Codex Security cloud setup | Walks through the five-step process from initial access to reviewed findings and remediation pull requests in Codex Security cloud. | [cloud-setup.md](./cloud-setup.md) |
+| Review code changes for security | Runs a security change review to find regressions in one Git-backed change set. Codex reviews each changed source-like file and its directly supporting code; it doesn't expand into a full repository audit. | [code-changes.md](./code-changes.md) |
+| Run a deep security scan | Run a deep scan when a more thorough review is needed and a longer runtime is acceptable. Deep scans search a repository more extensively and can reduce variability between runs. | [deep-scans.md](./deep-scans.md) |
+| Export and track security findings | Use a completed Codex Security scan for two handoffs: **Export** creates a portable JSON, CSV, or SARIF file; **Track findings** prepares selected findings as Linear/GitHub/Jira issues or a private draft GitHub Security Advisory (with duplicate check and approval gate). Neither changes the sealed scan bundle. | [export-findings.md](./export-findings.md) |
+| Fix and verify security findings | Turn an accepted security finding into a focused, verified patch. Codex validates the issue and, when safe and practical, adds a focused regression test that fails before the fix and passes after it. | [fix-findings.md](./fix-findings.md) |
+| Codex Security | Codex Security is an application security agent that helps security and engineering teams find, confirm, and fix vulnerabilities. Use it in Codex, from your terminal, through the TypeScript SDK, or with connected GitHub repositories. | [overview.md](./overview.md) |
+| Codex Security plugin changelog | Notable user-facing changes to the Codex Security plugin, by version. Latest release in the hosted Codex Security catalog: `0.1.17`. | [plugin-changelog.md](./plugin-changelog.md) |
+| Codex Security plugin quickstart | Install the Codex Security plugin, run your first read-only scan, and review the result in Codex (desktop app or CLI). | [plugin-quickstart.md](./plugin-quickstart.md) |
+| Run a Codex Security scan | Start with a standard scan for an initial review or routine repository/component assessment; it runs the full scan workflow once. | [scans.md](./scans.md) |
+| Codex Security TypeScript SDK | Run Codex Security scans from TypeScript, select targets, inspect results, and manage scan lifecycle via `@openai/codex-security`. ESM, Node.js 22+ (scanning also requires Python 3.10+). | [sdk.md](./sdk.md) |
+| Propose security hardening | Use `$codex-security:propose-security-hardening` to turn security evidence into structural or architectural hardening options. Analyzes a completed Codex Security scan or supplied findings, disclosure reports, incident reviews, assessment documents, and source code. | [security-hardening.md](./security-hardening.md) |
+| Security Review | Research preview. Automatic or on-demand security review of a GitHub pull request diff, run alongside (or independently of) general Code Review — analyzes the PR diff, supporting repository context, and configured threat model for security-specific risks. Available to Enterprise, Business, Edu, and Pro workspaces; not available on Plus. | [security-review.md](./security-review.md) |
+| Improving the threat model | Explains what a threat model is in Codex Security cloud and how editing it improves scan results and prioritization. | [threat-model.md](./threat-model.md) |
+| Triage a backlog | Use `$codex-security:triage-finding` to review existing security findings against the current repository. This is a read-only static analysis: Codex treats each finding as an unproven claim and inspects repository evidence without executing code. | [triage-backlog.md](./triage-backlog.md) |
+| Write vulnerability reports | Use `$codex-security:vulnerability-writeup` to create a self-contained report for each distinct vulnerability, from Codex Security scan results or supplied findings, disclosure notes, PoCs, and source code directly. A Codex Security scan isn't required. | [vulnerability-reports.md](./vulnerability-reports.md) |
+| Use the Codex Security workbench | The Security workbench brings scans, findings, and repositories together in the Codex desktop app. Codex performs scan analysis in a regular task, while the workbench keeps results available on return. | [workbench.md](./workbench.md) |

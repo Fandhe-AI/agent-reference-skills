@@ -1,23 +1,23 @@
 # Polar
 
-Polar の決済インフラと Better Auth をシームレスに統合するプラグイン。チェックアウト・ポータル・使用量追跡・Webhook を提供する。
+A plugin that seamlessly integrates Polar's payment infrastructure with Better Auth. It provides checkout, customer portal, usage tracking, and webhooks.
 
-## インストール
+## Signature / Usage
+
+### Installation
 
 ```bash
 pnpm add better-auth @polar-sh/better-auth @polar-sh/sdk
 ```
 
-環境変数:
+Environment variables:
 
 ```
 POLAR_ACCESS_TOKEN=...
 POLAR_WEBHOOK_SECRET=...
 ```
 
-## セットアップ
-
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -42,7 +42,7 @@ export const auth = betterAuth({
 })
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/react"
@@ -53,13 +53,11 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
-
 ### checkout
 
 ```typescript
 await authClient.checkout({ products: ["prod_xxx"] })
-// または
+// or
 await authClient.checkout({ slug: "pro-plan" })
 ```
 
@@ -80,17 +78,17 @@ await authClient.usage.ingest({ event: "api_call", value: 1 })
 const { data: meters } = await authClient.usage.meters.list()
 ```
 
-## 設定オプション
+## Options / Props
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |---|---|---|
-| `client` | Polar | Polar SDK インスタンス（必須） |
-| `createCustomerOnSignUp?` | boolean | サインアップ時にカスタマーを自動作成 |
-| `getCustomerCreateParams?` | function | カスタマー作成時のカスタムメタデータ |
+| `client` | Polar | Polar SDK instance (required) |
+| `createCustomerOnSignUp?` | boolean | Automatically create a customer on sign-up |
+| `getCustomerCreateParams?` | function | Custom metadata for customer creation |
 
-## Webhook ハンドラー
+## Notes
 
-25 以上のハンドラーを提供: `onOrderPaid`, `onSubscriptionCreated`, `onCustomerStateChanged`, `onPayload`（キャッチオール）など。
+- 25+ webhook handlers are provided: `onOrderPaid`, `onSubscriptionCreated`, `onCustomerStateChanged`, `onPayload` (catch-all), and more
 
 ## Related
 

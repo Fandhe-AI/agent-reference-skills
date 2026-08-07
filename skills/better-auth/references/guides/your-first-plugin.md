@@ -1,15 +1,11 @@
 # Your First Plugin
 
-Better Auth プラグインの作成チュートリアル。「birthday plugin」を例に、ユーザーの誕生日を追跡し年齢検証を行うプラグインの開発手順を解説します。
-
-## 概要
-
-This guide walks you through building a Better Auth plugin from conception through implementation. The example creates a "birthday plugin" that will:
+Better Auth プラグインの作成チュートリアル。「birthday plugin」を例に、ユーザーの誕生日を追跡し年齢検証を行うプラグインの開発手順を解説する。This guide walks you through building a Better Auth plugin from conception through implementation. The example creates a "birthday plugin" that will:
 - Store user birth dates in the database
 - Verify users are at least 5 years old during signup
 - Provide frontend APIs for birthday management
 
-## 手順
+## Signature / Usage
 
 ### Phase 1: Planning Your Plugin
 
@@ -55,10 +51,7 @@ export const birthdayPlugin = () =>
   } satisfies BetterAuthPlugin);
 ```
 
-Field options include:
-- **type**: "string", "number", "boolean", or "date"
-- **required**: Mandatory on new records (default: false)
-- **unique**: Enforces uniqueness (default: false)
+See `## Options / Props` for the available field options.
 
 #### Authorization Logic
 
@@ -165,7 +158,7 @@ npx auth@latest generate
 
 This command automatically generates database migrations for plugin schemas.
 
-## Key Concepts
+### Key Concepts
 
 **Hooks**: Execute custom logic before or after authentication events. The "before" hook intercepts requests, while "after" hooks process completed actions.
 
@@ -175,7 +168,17 @@ This command automatically generates database migrations for plugin schemas.
 
 **APIError**: Provides standardized error responses with HTTP status codes and custom messages.
 
-## 注意点
+## Options / Props
+
+**Schema field options:**
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `type` | `"string"` \| `"number"` \| `"boolean"` \| `"date"` | — | Field data type |
+| `required` | boolean | `false` | Mandatory on new records |
+| `unique` | boolean | `false` | Enforces uniqueness |
+
+## Notes
 
 - After creation, share your plugin with the community through the Better Auth Discord server or GitHub pull requests
 - The framework maintains a community plugins registry for discoverable extensions

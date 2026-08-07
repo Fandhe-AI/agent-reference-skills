@@ -1,23 +1,19 @@
 # @summary
 
-モジュールページでの関数やモジュールの説明表示をカスタマイズするブロックタグ。
+Block tag for customizing the description shown for a function or module on the module page.
 
-## 構文
+## Signature / Usage
 
 ```
 @summary
-モジュールページ用の説明文
+Description text for the module page
 ```
 
-## 詳細説明
+When rendering a module, TypeDoc uses the first paragraph of the comment's summary text. This is not always suitable for standalone display, so when the `@summary` tag is present, TypeDoc renders the content of that block instead.
 
-モジュールをレンダリングする際、TypeDocはコメントのサマリーテキストの最初の段落を使用する。これがスタンドアロン表示に常に適しているとは限らないため、`@summary` タグが存在する場合、TypeDocはそのブロックの内容を代わりにレンダリングする。
+If `@summary` is omitted but the `--useFirstParagraphOfCommentAsSummary` flag is enabled, TypeDoc falls back to using the first paragraph.
 
-`@summary` が省略されている場合でも `--useFirstParagraphOfCommentAsSummary` フラグが有効であれば、TypeDocは最初の段落をフォールバックとして使用する。
-
-**オーバーロード関数の場合**: タグは最初のシグネチャのコメントまたは関数実装のコメントに配置できる。
-
-## コード例
+**Overloaded functions**: the tag can be placed on the comment of either the first signature or the function implementation.
 
 ```typescript
 /**
@@ -28,16 +24,16 @@
 export function forkProcess(): void;
 ```
 
-この例では、メンバーページでは「Description for member page」が表示され、モジュールページでは「Description for module page」が表示される。
+In this example, the member page shows "Description for member page", while the module page shows "Description for module page".
 
-## 注意点
+## Notes
 
-- モジュールページとメンバーページで異なる説明を表示するのに有用
-- オーバーロード関数では最初のシグネチャまたは実装のコメントに配置可能
-- `--useFirstParagraphOfCommentAsSummary` フラグとの連携がある
+- Useful for showing different descriptions on the module page versus the member page
+- For overloaded functions, can be placed on the comment of the first signature or the implementation
+- Interacts with the `--useFirstParagraphOfCommentAsSummary` flag
 
-## 関連
+## Related
 
-- [@remarks](./remarks.md) -- サマリーと詳細の分離
-- `--useFirstParagraphOfCommentAsSummary` オプション
+- [@remarks](./remarks.md) -- separating summary and details
+- `--useFirstParagraphOfCommentAsSummary` option
 - [JSDoc @summary](https://jsdoc.app/tags-summary)

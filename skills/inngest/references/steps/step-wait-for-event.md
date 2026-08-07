@@ -46,6 +46,7 @@ if (approval === null) {
 - Multiple function runs can all be resumed by a single matching event (fan-out)
 - CEL expressions do not support the `in` operator; use multiple `||` equality checks instead
 - `match: "data.userId"` is equivalent to `if: "event.data.userId == async.data.userId"`
+- For lower-latency, transactional resumption of a single run (e.g. UI-triggered actions), use `step.waitForSignal(stepId, { signal, timeout })` instead — it resumes via a direct API call rather than a broadcast event match, at the cost of not supporting fan-out to multiple runs. In most cases prefer `waitForEvent`.
 
 ## Related
 

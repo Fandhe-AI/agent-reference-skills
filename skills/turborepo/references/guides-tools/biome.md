@@ -1,8 +1,8 @@
 # Biome
 
-高速フォーマッター兼リンター。ルートタスクとして運用が推奨。
+Fast formatter and linter. Recommended to run as a root task.
 
-## 設定
+## Usage
 
 ```json
 {
@@ -22,6 +22,6 @@
 }
 ```
 
-## 注意
+## Notes
 
-ルートタスクのため、バージョンアップや設定変更時に全タスクのキャッシュミスが発生する。
+- Because it runs as a root task, version bumps or config changes invalidate the cache for all tasks.

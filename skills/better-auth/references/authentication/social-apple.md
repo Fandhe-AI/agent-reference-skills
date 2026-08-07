@@ -1,12 +1,6 @@
 # Apple
 
-## Credentials
-
-- `APPLE_CLIENT_ID` - Service ID (reverse domain format, e.g., `com.yourcompany.yourapp.si`)
-- `APPLE_CLIENT_SECRET` - JWT generated from `.p8` key file
-- `APPLE_APP_BUNDLE_IDENTIFIER` (optional) - App ID for native iOS implementations
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -22,10 +16,6 @@ export const auth = betterAuth({
     trustedOrigins: ["https://appleid.apple.com"],
 })
 ```
-
-## クライアントサインイン
-
-### Standard OAuth Flow
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -51,16 +41,23 @@ await authClient.signIn.social({
 })
 ```
 
-## リダイレクト URL
+## Options / Props
 
-`https://yourdomain.com/api/auth/callback/apple`
+| Name | Type | Description |
+| --- | --- | --- |
+| `clientId` | string | `APPLE_CLIENT_ID` — Service ID (reverse domain format, e.g., `com.yourcompany.yourapp.si`) |
+| `clientSecret` | string | `APPLE_CLIENT_SECRET` — JWT generated from `.p8` key file |
+| `appBundleIdentifier` | string (optional) | `APPLE_APP_BUNDLE_IDENTIFIER` — App ID for native iOS implementations |
 
-Apple Developer Portal の Return URLs に追加する。
+## Notes
 
-## プロバイダー固有の設定・注意点
-
+- Redirect URL: `https://yourdomain.com/api/auth/callback/apple` — add it to the Return URLs in Apple Developer Portal
 - **Service ID Setup**: Use reverse domain format distinct from App ID (e.g., `.si` suffix for service identifier)
 - **Client Secret Requirements**: Apple allows a maximum expiration of 6 months (180 days) for the client secret JWT
 - **Native iOS Consideration**: When using ID Token authentication on native iOS, provide `appBundleIdentifier` to avoid JWT claim validation failures
 - **Development Limitation**: Apple Sign In does not support `localhost` or non-HTTPS URLs; valid HTTPS/TLS certificates required
 - **Scope**: The documentation does not specify explicit scope configuration examples for Apple OAuth, though standard OAuth scope handling through Better Auth's plugin system applies
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

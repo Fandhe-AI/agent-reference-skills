@@ -1,30 +1,7 @@
 # unable_to_get_user_info
 
-## 説明
+## Notes
 
-This error occurs during the OAuth callback phase at the `/api/auth/callback` endpoint. After successfully exchanging an authorization code for tokens, Better Auth attempts to retrieve the user's profile from the provider. The error is triggered when the provider's response is inadequate or missing critical user information needed to establish an account.
-
-## 原因
-
-1. **Insufficient Scopes**: "Missing or insufficient scopes, so the provider does not return profile data."
-
-2. **Provider Response Issues**: The OAuth provider returned an empty profile object or an error response instead of expected user details.
-
-3. **Token Exchange Problems**: While the authorization code was successfully exchanged for tokens, the subsequent user info request failed due to network errors, authentication failures (401/403), or invalid tokens.
-
-4. **Configuration Mismatches**: Wrong client credentials, misaligned environments (dev/staging/prod), or provider endpoint misconfigurations.
-
-5. **Provider Outages**: Temporary service disruptions or rate limiting from the OAuth provider.
-
-## 対処法
-
-### Request the Right Data
-
-- Initiate OAuth flows using Better Auth's built-in methods to ensure correct scopes and parameters are sent
-- Configure your provider application to return essential profile details your app requires
-
-### Verify Configuration and Environment
-
-- Confirm client credentials and callback URLs match your current environment
-- Ensure provider response modes and endpoints align with your integration setup
-- Check that required fields like `id` and `email` (when needed) are being requested via appropriate scopes
+- Occurs during the OAuth callback phase at `/api/auth/callback`. After exchanging an authorization code for tokens, Better Auth attempts to retrieve the user's profile from the provider; this error is triggered when the response is missing or inadequate for account creation.
+- Common causes: insufficient OAuth scopes, so the provider doesn't return profile data; the provider returned an empty profile object or an error response instead of user details; the token exchange succeeded but the subsequent user-info request failed (network errors, 401/403, invalid tokens); wrong client credentials or misaligned dev/staging/prod environments; provider endpoint misconfiguration; temporary provider outages or rate limiting.
+- Fix: initiate OAuth flows using Better Auth's built-in methods to ensure correct scopes and parameters are sent; configure the provider application to return the profile details your app requires; confirm client credentials and callback URLs match the current environment; ensure provider response modes and endpoints align with your integration; check that required fields such as `id` and `email` are requested via the appropriate scopes.

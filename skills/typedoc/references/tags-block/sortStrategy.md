@@ -1,20 +1,16 @@
 # @sortStrategy
 
-宣言レベルでグローバルなソート設定をオーバーライドするブロックタグ。
+Block tag for overriding the global sort configuration at the declaration level.
 
-## 構文
+## Signature / Usage
 
 ```
-@sortStrategy ソート戦略名
+@sortStrategy strategyName
 ```
 
-## 詳細説明
+The `@sortStrategy` tag can be used to locally override the `sort` option for a module, namespace, class, or interface.
 
-`@sortStrategy` タグはモジュール、名前空間、クラス、またはインターフェースに対して `sort` オプションをローカルにオーバーライドするために使用できる。
-
-ソートはタグが配置された宣言の直接の子要素に適用される。ただし、子要素がさらに子要素を持つ場合（例: ネストされた名前空間）、孫要素は `@sortStrategy` タグに従ってソートされない。
-
-## コード例
+The sort applies to the direct children of the declaration on which the tag is placed. If a child itself has further children (e.g. a nested namespace), the grandchildren are not sorted according to the `@sortStrategy` tag.
 
 ```typescript
 /**
@@ -28,14 +24,14 @@ export class Class {
 }
 ```
 
-上記の例では、メソッドがアルファベット順にソートされるのではなく、ソースコードの記述順で表示される。
+In the example above, the methods are displayed in source-code order rather than being sorted alphabetically.
 
-## 注意点
+## Notes
 
-- 直接の子要素にのみ適用される（孫要素には適用されない）
-- モジュール、名前空間、クラス、インターフェースに使用可能
-- ソート戦略名は `--sort` オプションで使用可能な値と同じ（例: `source-order`, `alphabetical`）
+- Applies only to direct children (not to grandchildren)
+- Can be used on modules, namespaces, classes, and interfaces
+- Strategy names are the same values accepted by the `--sort` option (e.g. `source-order`, `alphabetical`)
 
-## 関連
+## Related
 
-- `--sort` オプション -- グローバルなソート設定
+- `--sort` option -- global sort configuration

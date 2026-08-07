@@ -1,6 +1,8 @@
-# internals
+# Internals
 
 | Name | Description | Path |
 |------|-------------|------|
-| 言語サポート | サポート状況一覧 | [language-support.md](./language-support.md) |
-| 開発哲学 | プロジェクト管理と技術的原則 | [philosophy.md](./philosophy.md) |
+| Architecture | Walks the filesystem to collect project metadata. | [architecture.md](./architecture.md) |
+| Changelog | Biome's Version History. Maintained in the `biomejs/biome` repository, with a dedicated page published for each version (e.g. `/internals/changelog/version/2-5-7/`). | [changelog.md](./changelog.md) |
+| 言語サポート | | [language-support.md](./language-support.md) |
+| 開発哲学 | | [philosophy.md](./philosophy.md) |

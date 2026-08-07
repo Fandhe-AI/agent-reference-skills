@@ -1,119 +1,50 @@
-# ビルトインテーマ
+# Built-in Theme
 
-TypeDocに同梱されているデフォルトテーマの機能と、テーマのカスタマイズオプション。TypeDocは1つのビルトインデフォルトテーマを提供し、追加テーマはプラグインによって提供される。
+TypeDoc ships with a single built-in theme (`default`); additional themes are provided by plugins.
 
-## 詳細説明
-
-### テーマの指定
-
-`--theme` オプションでテーマを変更できる。デフォルトでは `default` テーマが使用される。
+## Signature / Usage
 
 ```bash
 typedoc --theme default
 ```
 
-### カスタマイズオプション
-
-デフォルトテーマは以下のオプションでカスタマイズできる。
-
-#### customCss
-
-カスタムCSSファイルを指定して、デフォルトテーマのスタイルを上書きする。
-
 ```bash
 typedoc --customCss ./custom-styles.css
-```
-
-```json
-{
-  "customCss": "./custom-styles.css"
-}
-```
-
-指定されたCSSファイルは生成されたドキュメントの全ページに適用される。デフォルトテーマのCSSクラスやCSS変数を上書きすることで、色、フォント、レイアウトなどを変更できる。
-
-#### customJs
-
-カスタムJavaScriptファイルを指定して、生成されたドキュメントにスクリプトを追加する。
-
-```bash
 typedoc --customJs ./custom-script.js
-```
-
-```json
-{
-  "customJs": "./custom-script.js"
-}
-```
-
-指定されたJavaScriptファイルは全ページに読み込まれる。
-
-#### customFooterHtml
-
-カスタムHTMLをフッターに追加する。
-
-```bash
 typedoc --customFooterHtml "<p>Copyright 2024</p>"
 ```
 
 ```json
 {
-  "customFooterHtml": "<p>Copyright 2024 My Company</p>"
-}
-```
-
-#### customFooterHtmlDisableWrapper
-
-`customFooterHtml` で追加するフッター HTML の自動 `<p>` ラッパーを無効化する。
-
-```json
-{
-  "customFooterHtmlDisableWrapper": true
-}
-```
-
-### ルーター（出力フォルダー構造）
-
-`--router` オプションで出力フォルダーの構造を変更できる（v0.28 以降）。デフォルトは `kind`。プラグインによる拡張も可能。
-
-```json
-{
+  "theme": "default",
+  "customCss": "./custom-styles.css",
+  "customJs": "./custom-script.js",
+  "customFooterHtml": "<p>Copyright 2024 My Company</p>",
   "router": "kind"
 }
 ```
 
-### CSS レイヤー
+## Options / Props
 
-v0.28 以降、デフォルトテーマの CSS は `@layer typedoc` でラップされる。`customCss` で CSS を上書きする際、カスケードの制御に `@layer` を活用できる。
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `theme` | string | `"default"` | Selects the active theme. TypeDoc only bundles `default`; other values require a plugin. |
+| `customCss` | string | — | Path to a CSS file applied to every generated page, overriding the default theme's classes/CSS variables. |
+| `customJs` | string | — | Path to a JavaScript file loaded on every generated page. |
+| `customFooterHtml` | string | — | Custom HTML injected into the page footer. |
+| `customFooterHtmlDisableWrapper` | boolean | `false` | Disables the automatic `<p>` wrapper around `customFooterHtml`. |
+| `router` | string | `"kind"` | Controls the output folder structure (v0.28+). Extensible via plugins. |
 
-### ナビゲーション / サイドバーのカスタマイズ
+## Notes
 
-デフォルトテーマはサイドバーナビゲーションを提供し、以下のような設定が可能：
+- TypeDoc bundles exactly one built-in theme (`default`); additional themes are supplied by plugins — see [Community Themes](./community-themes.md).
+- `customCss` can override the default theme's internal CSS classes and variables, but that internal structure may change between theme updates.
+- `customJs` is loaded on every page, so consider its performance impact.
+- Since v0.28, the built-in CSS is wrapped in `@layer typedoc`; account for cascade/layer priority when overriding with `customCss`.
+- The default theme includes: search, dark/light mode toggle, source code links, type information (parameters, return values, properties), inheritance hierarchy display, signature rendering, Markdown rendering in comments, and syntax highlighting for code blocks.
+- The default sidebar navigation reflects the module/namespace/class hierarchy, supports organizing entries by category or group, and supports expand/collapse of navigation items.
 
-- モジュール、名前空間、クラス等の階層構造に基づいたナビゲーション
-- カテゴリやグループによるエントリの整理
-- ナビゲーション項目の展開/折りたたみ
+## Related
 
-### デフォルトテーマの機能
-
-- **検索機能** — ドキュメント内のシンボルを検索
-- **ダークモード / ライトモード** — テーマの切り替え
-- **ソースコードリンク** — ソースファイルへのリンク
-- **型情報の表示** — パラメータ、戻り値、プロパティの型情報
-- **継承関係の表示** — クラスの継承階層
-- **シグネチャの表示** — 関数やメソッドのシグネチャ
-- **Markdownレンダリング** — コメント内のMarkdownのレンダリング
-- **コードブロックのシンタックスハイライト** — コード例のハイライト表示
-
-## 注意点
-
-- TypeDocには1つのビルトインテーマ（`default`）のみが同梱されている
-- 追加テーマはプラグインとして提供される（[コミュニティテーマ](./community-themes.md)を参照）
-- `customCss` でデフォルトテーマの内部CSSクラスやCSS変数を上書きできるが、テーマのアップデートで内部構造が変更される可能性がある
-- `customJs` は全ページに読み込まれるため、パフォーマンスへの影響に注意
-- v0.28 以降、組み込みCSSは `@layer typedoc` でラップされる。`customCss` で上書きする際はカスケード優先順位に注意
-
-## 関連
-
-- [コミュニティテーマ](./community-themes.md) — サードパーティ製テーマの一覧
-- [コミュニティプラグイン](../plugins/community-plugins.md) — プラグイン一覧
+- [Community Themes](./community-themes.md) — list of third-party themes
+- [Community Plugins](../plugins/community-plugins.md) — plugin list

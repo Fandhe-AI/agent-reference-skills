@@ -56,6 +56,16 @@ skills/apple-swift/
       asyncthrowingstream.md
       checkedcontinuation.md
       withcheckedcontinuation.md
+      discardingtaskgroup.md
+      throwingdiscardingtaskgroup.md
+      withdiscardingtaskgroup.md
+      withthrowingdiscardingtaskgroup.md
+      clock.md
+      duration.md
+      instantprotocol.md
+      continuousclock.md
+      suspendingclock.md
+      taskexecutor.md
     protocols-generics/
       README.md
       equatable.md
@@ -107,6 +117,9 @@ skills/apple-swift/
 | AsyncSequence / AsyncStream / for await in を使いたい | concurrency | [references/concurrency/README.md](references/concurrency/README.md) |
 | Sendable 準拠・コールバック API を async に橋渡ししたい | concurrency | [references/concurrency/README.md](references/concurrency/README.md) |
 | TaskLocal / TaskPriority を使いたい | concurrency | [references/concurrency/README.md](references/concurrency/README.md) |
+| DiscardingTaskGroup / withDiscardingTaskGroup で結果を破棄する子タスクを構造化したい | concurrency | [references/concurrency/README.md](references/concurrency/README.md) |
+| Clock / Duration / InstantProtocol / ContinuousClock / SuspendingClock で時間計測・スリープを扱いたい | concurrency | [references/concurrency/README.md](references/concurrency/README.md) |
+| TaskExecutor でタスクの実行先を指定したい | concurrency | [references/concurrency/README.md](references/concurrency/README.md) |
 | Equatable / Hashable / Comparable を型に準拠させたい | protocols-generics | [references/protocols-generics/README.md](references/protocols-generics/README.md) |
 | Codable / Encodable / Decodable で JSON シリアライズしたい | protocols-generics | [references/protocols-generics/README.md](references/protocols-generics/README.md) |
 | Identifiable / CaseIterable / RawRepresentable を使いたい | protocols-generics | [references/protocols-generics/README.md](references/protocols-generics/README.md) |

@@ -1,30 +1,33 @@
-# Tags - Modifier
+# tags-modifier
 
 | Name | Description | Path |
 |------|-------------|------|
-| @abstract | メソッドやプロパティを、TypeScript の実装状態に関係なく、ドキュメント上で抽象としてマークするモディファイアタグ。 | [abstract.md](./abstract.md) |
-| @alpha | 将来的にサードパーティ開発者が使用することを想定しているが、セマンティックバージョニングに準拠するほど安定していないメンバーをマークするモディファイアタグ。 | [alpha.md](./alpha.md) |
-| @beta | 将来的にサードパーティ開発者が使用することを想定しているが、セマンティックバージョニングに準拠するほど安定していないメンバーをマークするモディファイアタグ。 | [beta.md](./beta.md) |
-| @class | 変数宣言をクラスとしてドキュメント化するモディファイアタグ。「動的」プロパティを実際のプロパティに展開する。 | [class.md](./class.md) |
-| @enum | 文字列または数値リテラル値を持つ変数を、通常の変数ではなく列挙型としてドキュメント化するモディファイアタグ。 | [enum.md](./enum.md) |
-| @event | リフレクションを「Events」グループに分類するモディファイアタグ。`@group Events` を指定するのと同等。 | [event.md](./event.md) |
-| @eventProperty | リフレクションを「Events」グループに分類するモディファイアタグ。`@group Events` を指定するのと同等。TSDoc 仕様に準拠。 | [eventProperty.md](./eventProperty.md) |
-| @experimental | 将来的にサードパーティ開発者が使用することを想定しているが、セマンティックバージョニングに準拠するほど安定していないメンバーをマークするモディファイアタグ。 | [experimental.md](./experimental.md) |
-| @function | 呼び出し可能な変数宣言を関数としてドキュメント化するモディファイアタグ。 | [function.md](./function.md) |
-| @hidden | リフレクションを生成されるドキュメントから完全に除去するモディファイアタグ。 | [hidden.md](./hidden.md) |
-| @hideconstructor | クラスのコンストラクタを生成されるドキュメントから隠すモディファイアタグ。TypeScript の issue #58653 の回避策として提供されている。 | [hideconstructor.md](./hideconstructor.md) |
-| @ignore | リフレクションを生成されるドキュメントから完全に除去するモディファイアタグ。`@hidden` と同等。 | [ignore.md](./ignore.md) |
-| @interface | 型エイリアスをインターフェースとしてドキュメント化するモディファイアタグ。「動的」プロパティを実際のプロパティに展開する。 | [interface.md](./interface.md) |
-| @internal | リフレクションが API コンシューマー向けではないことを示すモディファイアタグ。`--excludeInternal` オプションで除外可能。 | [internal.md](./internal.md) |
-| @namespace | 変数を名前空間として表示し、プロパティをエクスポートされた変数や関数として解決するモディファイアタグ。 | [namespace.md](./namespace.md) |
-| @overload | JavaScript プロジェクトで関数のオーバーロードを宣言するためのモディファイアタグ。TypeScript 5.0 以降で認識される。 | [overload.md](./overload.md) |
-| @override | メンバーが親クラスの実装をオーバーライドしていることを示すモディファイアタグ。TSDoc 互換のために解析される。 | [override.md](./override.md) |
-| @packageDocumentation | コメントブロックをファイル全体のドキュメントとしてマークするモディファイアタグ。直後の宣言ではなくファイル自体を説明する。 | [packageDocumentation.md](./packageDocumentation.md) |
-| @primaryExport | 再エクスポートの処理方法を制御し、TypeDoc にシンボルを即座に変換させるモディファイアタグ。 | [primaryExport.md](./primaryExport.md) |
-| @private | リフレクションの可視性を private にオーバーライドするモディファイアタグ。一般的に使用は推奨されない。 | [private.md](./private.md) |
-| @protected | リフレクションの可視性を protected にオーバーライドするモディファイアタグ。一般的に使用は推奨されない。 | [protected.md](./protected.md) |
-| @public | リフレクションの可視性を public にオーバーライドするモディファイアタグ。一般的に使用は推奨されない。 | [public.md](./public.md) |
-| @readonly | TypeScript の書き込み可能性に関わらず、リフレクションを読み取り専用としてドキュメント化するモディファイアタグ。 | [readonly.md](./readonly.md) |
-| @sealed | TSDoc 互換のために解析されるが、TypeDoc では特定の意味を持たないモディファイアタグ。 | [sealed.md](./sealed.md) |
-| @useDeclaredType | 型エイリアスを型ノード表現ではなく宣言された型を使用して変換するモディファイアタグ。派生型のドキュメント改善に有用。 | [useDeclaredType.md](./useDeclaredType.md) |
-| @virtual | TSDoc 互換のために解析されるが、TypeDoc では特定の意味を持たないモディファイアタグ。 | [virtual.md](./virtual.md) |
+| @abstract | Modifier tag that marks a method or property as abstract in the generated documentation, regardless of its actual TypeScript implementation state. | [abstract.md](./abstract.md) |
+| @alpha | Modifier tag marking a member intended for eventual use by third-party developers, but not yet stable enough to follow semantic versioning. | [alpha.md](./alpha.md) |
+| @beta | Modifier tag marking a member intended for eventual use by third-party developers, but not yet stable enough to follow semantic versioning. | [beta.md](./beta.md) |
+| @class | Modifier tag that documents a variable declaration as a class, expanding "dynamic" properties into actual properties. | [class.md](./class.md) |
+| @enum | Modifier tag that documents a variable holding string or numeric literal values as an enum instead of an ordinary variable. | [enum.md](./enum.md) |
+| @event | Modifier tag that classifies a reflection into the "Events" group. Equivalent to specifying `@group Events`. | [event.md](./event.md) |
+| @eventProperty | Modifier tag that classifies a reflection into the "Events" group. Equivalent to specifying `@group Events`. Conforms to the TSDoc specification. | [eventProperty.md](./eventProperty.md) |
+| @expand | Modifier tag that causes TypeDoc to inline-expand a type alias or interface's declaration at every location where the type is referenced. | [expand.md](./expand.md) |
+| @experimental | Modifier tag marking a member intended for eventual use by third-party developers, but not yet stable enough to follow semantic versioning. | [experimental.md](./experimental.md) |
+| @function | Modifier tag that documents a callable variable declaration as a function. | [function.md](./function.md) |
+| @hidden | Modifier tag that completely removes a reflection from the generated documentation. | [hidden.md](./hidden.md) |
+| @hideconstructor | Modifier tag that hides a class's constructor from the generated documentation. Provided as a workaround for TypeScript issue #58653. | [hideconstructor.md](./hideconstructor.md) |
+| @ignore | Modifier tag that completely removes a reflection from the generated documentation. Equivalent to `@hidden`. | [ignore.md](./ignore.md) |
+| @inline | Modifier tag that causes TypeDoc to inline-expand a type alias or interface's definition at the location where it is referenced. | [inline.md](./inline.md) |
+| @interface | Modifier tag that documents a type alias as an interface, expanding "dynamic" properties into actual properties. | [interface.md](./interface.md) |
+| @internal | Modifier tag that marks a reflection as not intended for API consumers. Can be excluded from output with `--excludeInternal`. | [internal.md](./internal.md) |
+| @namespace | Modifier tag that documents a variable as a namespace, resolving its properties as exported variables and functions. | [namespace.md](./namespace.md) |
+| @override | Modifier tag indicating a member overrides an implementation from a parent class. Parsed for TSDoc compatibility. | [override.md](./override.md) |
+| @overload | Modifier tag for declaring function overloads in JavaScript projects. Recognized from TypeScript 5.0 onward. | [overload.md](./overload.md) |
+| @packageDocumentation | Modifier tag that marks a comment block as documentation for the entire file, rather than for the declaration that immediately follows it. | [packageDocumentation.md](./packageDocumentation.md) |
+| @primaryExport | Modifier tag that controls how re-exports are processed, forcing TypeDoc to convert a symbol immediately. | [primaryExport.md](./primaryExport.md) |
+| @private | Modifier tag that overrides a reflection's visibility to private. Its use is generally discouraged. | [private.md](./private.md) |
+| @protected | Modifier tag that overrides a reflection's visibility to protected. Its use is generally discouraged. | [protected.md](./protected.md) |
+| @public | Modifier tag that overrides a reflection's visibility to public. Its use is generally discouraged. | [public.md](./public.md) |
+| @readonly | Modifier tag that documents a reflection as read-only regardless of its actual TypeScript writability. | [readonly.md](./readonly.md) |
+| @reexport | Modifier tag applied to a type alias or variable declaration that references another symbol, telling TypeDoc to treat it as a re-export. | [reexport.md](./reexport.md) |
+| @sealed | Modifier tag parsed for TSDoc compatibility, but with no specific meaning in TypeDoc. | [sealed.md](./sealed.md) |
+| @useDeclaredType | Modifier tag that converts a type alias using its declared type instead of its type-node representation. Useful for improving the documentation of derived types. | [useDeclaredType.md](./useDeclaredType.md) |
+| @virtual | Modifier tag parsed for TSDoc compatibility, but with no specific meaning in TypeDoc. | [virtual.md](./virtual.md) |

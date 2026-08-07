@@ -1,6 +1,8 @@
 # Travis CI
 
-## .travis.yml 設定例（pnpm）
+## Usage
+
+Example `.travis.yml` (pnpm):
 
 ```yaml
 language: node_js
@@ -20,8 +22,7 @@ script:
   - pnpm test
 ```
 
-pnpm を使う場合、`npm: false` でデフォルトの npm キャッシュを無効化し、`~/.pnpm-store` を別途キャッシュする。
+## Notes
 
-## Remote Cache 設定
-
-Travis リポジトリ設定の環境変数セクションで `TURBO_TOKEN` と `TURBO_TEAM` を登録。環境変数は自動でロードされるため CI ファイルの変更は不要。
+- When using pnpm, disable the default npm cache with `npm: false` and cache `~/.pnpm-store` separately.
+- Configure Remote Cache by registering `TURBO_TOKEN` and `TURBO_TEAM` under Travis repository settings' environment variables section. Environment variables are loaded automatically, so no CI file changes are needed.

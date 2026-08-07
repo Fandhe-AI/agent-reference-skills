@@ -1,20 +1,16 @@
 # @hidden
 
-リフレクションを生成されるドキュメントから完全に除去するモディファイアタグ。
+Modifier tag that completely removes a reflection from the generated documentation.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @hidden */
 ```
 
-## 詳細説明
+A reflection tagged `@hidden` is completely removed from the generated documentation. It is functionally equivalent to JSDoc's `@ignore` tag, and TypeDoc recognizes both.
 
-`@hidden` タグが付与されたリフレクションは、生成されるドキュメントから完全に除去される。JSDoc の `@ignore` タグと同等の機能を持ち、TypeDoc は両方を認識する。
-
-`@internal` タグとは異なり、`@hidden` はオプション設定に関係なく常にドキュメントから除去する。`@internal` は `--excludeInternal` オプションが有効な場合にのみ除去される。
-
-## コード例
+Unlike `@internal`, `@hidden` always removes the item from the documentation regardless of any option settings. `@internal` is only removed when the `--excludeInternal` option is enabled.
 
 ```typescript
 export class Visibility {
@@ -26,13 +22,13 @@ export class Visibility {
 ```typescript
 export class UserService {
     /**
-     * 内部キャッシュ。ドキュメントに含めない。
+     * Internal cache. Not included in the documentation.
      * @hidden
      */
     private _cache: Map<string, User> = new Map();
 
     /**
-     * ユーザーを取得する。
+     * Retrieves a user.
      */
     getUser(id: string): User {
         return this._cache.get(id);
@@ -40,13 +36,13 @@ export class UserService {
 }
 ```
 
-## 注意点
+## Notes
 
-- `@ignore` と機能的に同等
-- `@internal` とは異なり、常にドキュメントから除去される（オプション不要）
-- アクセスレベルの指定ではなく、ドキュメントからの完全な除去を行う
+- Functionally equivalent to `@ignore`
+- Unlike `@internal`, it is always removed from the documentation (no option required)
+- Performs complete removal from documentation rather than specifying an access level
 
-## 関連
+## Related
 
 - [@ignore](./ignore.md)
 - [@internal](./internal.md)

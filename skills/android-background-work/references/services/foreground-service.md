@@ -49,14 +49,14 @@ stopForeground(Service.STOP_FOREGROUND_REMOVE)
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| `ServiceCompat.startForeground(service, id, notification, foregroundServiceType)` | method | — | Promotes the service to the foreground. `id` must be non-zero; `notification` must use `PRIORITY_LOW` or higher; `foregroundServiceType` must match a type declared in the manifest (API 29+). |
+| `ServiceCompat.startForeground(service, id, notification, foregroundServiceType)` | method | — | Promotes the service to the foreground. `id` must be non-zero; `notification` must use `PRIORITY_LOW` or higher; `foregroundServiceType` must match a type declared in the manifest (API 29+), or `IllegalArgumentException`/`MissingForegroundServiceTypeException` is thrown (see Notes). Can be called again later with an additional/combined type to add a type to an already-running foreground service. |
 | `Service.stopForeground(Int)` | method | — | Removes the service from the foreground while it keeps running. Accepts `STOP_FOREGROUND_REMOVE` or `STOP_FOREGROUND_DETACH` to control notification removal. |
 
 ## Notes
 
 - Only use a foreground service for work the user should be actively aware of; for everything else prefer the `workmanager` category or plain background work.
 - Launching requires two steps: `startForegroundService()` from the caller, then `ServiceCompat.startForeground()`/`startForeground()` inside the service, which must happen within a few seconds or the system throws `ForegroundServiceDidNotStartInTimeException`.
-- API 34+ (Android 14): must request the appropriate `foregroundServiceType` and matching permission, or a `SecurityException`/`MissingForegroundServiceTypeException` is thrown. See [foregroundServiceType](./foreground-service-types.md).
+- API 34+ (Android 14): must request the appropriate `foregroundServiceType` and matching permission, or a `SecurityException` is thrown when promoting to foreground; if the manifest declares no `foregroundServiceType` at all, `startForeground()` throws `MissingForegroundServiceTypeException`; if the manifest declares some type(s) but a different type is passed to `startForeground()`, it throws `IllegalArgumentException`. See [foregroundServiceType](./foreground-service-types.md).
 - API 31+ (Android 12): background-start restrictions apply; see [Foreground service launch restrictions](./foreground-service-restrictions.md).
 - API 35+ (Android 15): `dataSync`/`mediaProcessing`/`shortService` types are subject to running-time limits; see [Foreground service time limits (Android 15+)](./foreground-service-timeout.md).
 - Stopping the service completely (`stopSelf()`/`stopService()`) automatically removes its notification.

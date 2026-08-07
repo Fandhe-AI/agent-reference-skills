@@ -1,52 +1,54 @@
-# リポジトリの把握
+# Understanding Your Repository
 
-## turbo devtools
+## Usage
 
-ブラウザベースのパッケージグラフ可視化ツール。タスクグラフの問題診断に使う。
+### turbo devtools
+
+A browser-based package graph visualization tool, used to diagnose task graph issues.
 
 ```bash
 turbo devtools
 ```
 
-## turbo ls
+### turbo ls
 
-パッケージとそのディレクトリ位置を一覧表示。`turbo run` と同じフィルタリングオプションが使用できる。
+Lists packages and their directory locations. Supports the same filtering options as `turbo run`.
 
 ```bash
 turbo ls
 turbo ls --filter ...ui
 ```
 
-## turbo run（引数なし）
+### turbo run (no arguments)
 
-タスクを指定せずに `turbo run` を実行すると、モノレポ内で利用可能な全タスクとそれが定義されているパッケージを表示する。
+Running `turbo run` without specifying a task shows every available task in the monorepo and the package it's defined in.
 
 ```bash
 turbo run
 ```
 
-## turbo query（v2.2.0+）
+### turbo query (v2.2.0+)
 
-GraphQL インターフェースでリポジトリを深く調査できる。
+A GraphQL interface for deep inspection of the repository.
 
-### 使用例
+#### Examples
 
 ```bash
-# build タスクを持つパッケージを検索
+# Find packages that have a build task
 turbo query "query { packages(filter: { has: { field: TASK_NAME, value: \"build\"}}) { items { name } } }"
 
-# 10以上のパッケージから依存されているパッケージを検索
+# Find packages depended on by 10 or more packages
 turbo query "query { packages(filter: { greaterThan: { field: DIRECT_DEPENDENT_COUNT, value: 10 } }) { items { name } } }"
 
-# 直近の変更で影響を受けたパッケージと理由を確認
+# Check which packages were affected by a recent change, and why
 turbo query "query { affectedPackages(base: \"HEAD^\", head: \"HEAD\") { items { reason { __typename } } } }"
 ```
 
-### 主なユースケース
+#### Common use cases
 
-- キャッシュミスの多発パッケージ（頻繁にインポートされるパッケージ）の特定
-- `--affected` フラグ使用時の影響範囲の把握
-- 肥大化パッケージの分割判断
+- Identifying packages with frequent cache misses (packages that are imported often)
+- Understanding the scope of impact when using the `--affected` flag
+- Deciding whether an oversized package should be split
 
 ## Related
 

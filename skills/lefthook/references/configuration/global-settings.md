@@ -420,3 +420,49 @@ pre-commit:
 # lefthook-local.yml
 lefthook: LEFTHOOK_VERBOSE=1 lefthook
 ```
+
+---
+
+## ai
+
+Source: https://lefthook.dev/configuration/ai
+
+- **型:** Object (プロバイダー名 → イベント名と hook 名のマッピング)
+- **ステータス:** beta
+
+`lefthook.yml` 内で LLM agent hooks を宣言できる。`lefthook install` 実行時に、各プロバイダー固有の設定ファイルを生成し、イベント発火時にエージェントが `lefthook run <hook>` を呼び出すようにする。
+
+### 対応プロバイダー
+
+| プロバイダー | 生成ファイル |
+| --- | --- |
+| `claude` | `.claude/settings.json` |
+| `codex` | `.codex/hooks.json` |
+| `cursor` | `.cursor/hooks.json` |
+| `copilot` | `.github/hooks/lefthook.json` |
+
+```yaml
+# lefthook.yml
+
+ai:
+  claude:
+    Stop: validate
+    PreToolUse: security-check
+  codex:
+    Stop: validate
+  cursor:
+    stop: validate
+    preToolUse: security-check
+  copilot:
+    postToolUse: validate
+
+validate:
+  jobs:
+    - run: go test ./...
+
+security-check:
+  jobs:
+    - run: ./scripts/security.sh
+```
+
+> イベント名の大小文字は各プロバイダーの hook 仕様に従う（`claude`/`codex` は PascalCase、`cursor`/`copilot` は camelCase）。`claude`/`codex`/`cursor` はユーザーが手動で追記した既存エントリを保持するが、`copilot` は生成のたびに完全上書きする。

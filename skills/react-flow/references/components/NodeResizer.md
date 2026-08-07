@@ -2,6 +2,26 @@
 
 Renders draggable resize controls around a node to allow resizing in all directions. Must be placed inside a custom node component.
 
+## 使用例
+
+```tsx
+import { memo } from 'react';
+import { Handle, Position, NodeResizer } from '@xyflow/react';
+
+function ResizableNode({ data }: { data: { label: string } }) {
+  return (
+    <>
+      <NodeResizer minWidth={100} minHeight={30} />
+      <Handle type="target" position={Position.Left} />
+      <div style={{ padding: 10 }}>{data.label}</div>
+      <Handle type="source" position={Position.Right} />
+    </>
+  );
+}
+
+export default memo(ResizableNode);
+```
+
 ## Props
 
 | Name | Type | Default | Description |
@@ -23,26 +43,6 @@ Renders draggable resize controls around a node to allow resizing in all directi
 | `onResizeStart` | `OnResizeStart` | — | Callback invoked when resizing begins |
 | `onResize` | `OnResize` | — | Callback invoked on each resize step |
 | `onResizeEnd` | `OnResizeEnd` | — | Callback invoked when resizing ends |
-
-## 使用例
-
-```tsx
-import { memo } from 'react';
-import { Handle, Position, NodeResizer } from '@xyflow/react';
-
-function ResizableNode({ data }: { data: { label: string } }) {
-  return (
-    <>
-      <NodeResizer minWidth={100} minHeight={30} />
-      <Handle type="target" position={Position.Left} />
-      <div style={{ padding: 10 }}>{data.label}</div>
-      <Handle type="source" position={Position.Right} />
-    </>
-  );
-}
-
-export default memo(ResizableNode);
-```
 
 ## 注意点
 

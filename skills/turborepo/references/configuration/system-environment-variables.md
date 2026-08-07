@@ -1,79 +1,81 @@
-# システム環境変数
+# System Environment Variables
 
-## 設定系
+## Options / Props
 
-| 変数名 | 説明 |
+### Configuration
+
+| Variable | Description |
 |---|---|
-| `TURBO_API` | Remote Cache サービスのベース URL |
-| `TURBO_BINARY_PATH` | turbo バイナリの場所を手動指定 |
-| `TURBO_CACHE` | キャッシュの読み書き権限を制御 |
-| `TURBO_CACHE_DIR` | キャッシュ保存ディレクトリ |
-| `TURBO_CACHE_MAX_AGE` | キャッシュエントリの最大保持期間（例: `7d`, `24h`） |
-| `TURBO_CACHE_MAX_SIZE` | ローカルキャッシュの最大サイズ（超えると古いものから削除） |
-| `FORCE_COLOR` | ターミナルログに強制的に色を表示 |
+| `TURBO_API` | Base URL of the Remote Cache service |
+| `TURBO_BINARY_PATH` | Manually specify the location of the turbo binary |
+| `TURBO_CACHE` | Controls cache read/write permissions |
+| `TURBO_CACHE_DIR` | Cache storage directory |
+| `TURBO_CACHE_MAX_AGE` | Maximum retention period for cache entries (e.g. `7d`, `24h`) |
+| `TURBO_CACHE_MAX_SIZE` | Maximum size of the local cache (oldest entries are evicted once exceeded) |
+| `FORCE_COLOR` | Force colored output in terminal logs |
 
-## CI / プラットフォーム系
+### CI / Platform
 
-| 変数名 | 説明 |
+| Variable | Description |
 |---|---|
-| `TURBO_CI_VENDOR_ENV_KEY` | Framework Inference から除外する環境変数プレフィックス |
-| `TURBO_PLATFORM_ENV` | CI 環境で設定された環境変数キーの CSV |
-| `TURBO_PLATFORM_ENV_DISABLED` | プラットフォーム設定の照合を無効化 |
+| `TURBO_CI_VENDOR_ENV_KEY` | Environment variable prefix to exclude from Framework Inference |
+| `TURBO_PLATFORM_ENV` | CSV of environment variable keys set in the CI environment |
+| `TURBO_PLATFORM_ENV_DISABLED` | Disables matching against platform configuration |
 
-## キャッシュ・パフォーマンス系
+### Cache / Performance
 
-| 変数名 | 説明 |
+| Variable | Description |
 |---|---|
-| `TURBO_FORCE` | キャッシュをバイパスしてタスクを再実行 |
-| `TURBO_REMOTE_ONLY` | ローカルキャッシュを無視 |
-| `TURBO_REMOTE_CACHE_READ_ONLY` | Remote Cache の読み取りのみ許可 |
-| `TURBO_REMOTE_CACHE_SIGNATURE_KEY` | アーティファクトの署名キー |
-| `TURBO_REMOTE_CACHE_TIMEOUT` | ダウンロードタイムアウト（秒） |
-| `TURBO_REMOTE_CACHE_UPLOAD_TIMEOUT` | アップロードタイムアウト（秒） |
-| `TURBO_PREFLIGHT` | プリフライトリクエストを有効化 |
+| `TURBO_FORCE` | Bypasses the cache and re-runs tasks |
+| `TURBO_REMOTE_ONLY` | Ignores the local cache |
+| `TURBO_REMOTE_CACHE_READ_ONLY` | Allows read-only access to the Remote Cache |
+| `TURBO_REMOTE_CACHE_SIGNATURE_KEY` | Signing key for artifacts |
+| `TURBO_REMOTE_CACHE_TIMEOUT` | Download timeout in seconds |
+| `TURBO_REMOTE_CACHE_UPLOAD_TIMEOUT` | Upload timeout in seconds |
+| `TURBO_PREFLIGHT` | Enables preflight requests |
 
-## 認証系
+### Authentication
 
-| 変数名 | 説明 |
+| Variable | Description |
 |---|---|
-| `TURBO_TOKEN` | Remote Cache アクセスのベアラートークン |
-| `TURBO_TEAM` | アカウント/チームのスラッグ |
-| `TURBO_TEAMID` | アカウント ID |
-| `TURBO_LOGIN` | Remote Cache サービスのログイン URL |
+| `TURBO_TOKEN` | Bearer token for Remote Cache access |
+| `TURBO_TEAM` | Account/team slug |
+| `TURBO_TEAMID` | Account ID |
+| `TURBO_LOGIN` | Login URL for the Remote Cache service |
 
-## ログ・UI 系
+### Logging / UI
 
-| 変数名 | 説明 |
+| Variable | Description |
 |---|---|
-| `TURBO_LOG_FILE` | 構造化 JSON ログの出力先ファイル |
-| `TURBO_LOG_ORDER` | `grouped` / `default` |
-| `TURBO_PRINT_VERSION_DISABLED` | 実行時のバージョン出力を抑制 |
-| `TURBO_UI` | TUI の有効/無効 |
-| `TURBO_RUN_SUMMARY` | Run Summary レポート生成 |
-| `TURBO_CONCURRENCY` | 並列実行数 |
+| `TURBO_LOG_FILE` | Output file for structured JSON logs |
+| `TURBO_LOG_ORDER` | `grouped` or `default` |
+| `TURBO_PRINT_VERSION_DISABLED` | Suppresses version output at runtime |
+| `TURBO_UI` | Enables/disables the TUI |
+| `TURBO_RUN_SUMMARY` | Generates a Run Summary report |
+| `TURBO_CONCURRENCY` | Number of parallel executions |
 
-## ソース管理系
+### Source Control
 
-| 変数名 | 説明 |
+| Variable | Description |
 |---|---|
-| `TURBO_SCM_BASE` | `--affected` のベースリファレンス |
-| `TURBO_SCM_HEAD` | `--affected` のヘッドリファレンス |
+| `TURBO_SCM_BASE` | Base reference for `--affected` |
+| `TURBO_SCM_HEAD` | Head reference for `--affected` |
 
-## タスク実行時に自動提供される変数
+### Automatically Provided During Task Execution
 
-| 変数名 | 説明 |
+| Variable | Description |
 |---|---|
-| `TURBO_HASH` | 現在実行中のタスクのハッシュ値 |
-| `TURBO_IS_TUI` | TUI 使用時に `true` |
-| `TURBO_IS_MFE` | microfrontends.json 使用時にポートがセット |
+| `TURBO_HASH` | Hash value of the currently running task |
+| `TURBO_IS_TUI` | `true` when the TUI is in use |
+| `TURBO_IS_MFE` | Set to the port when `microfrontends.json` is in use |
 
-## その他
+### Other
 
-| 変数名 | 説明 |
+| Variable | Description |
 |---|---|
-| `TURBO_DANGEROUSLY_DISABLE_PACKAGE_MANAGER_CHECK` | packageManager 検証を無効化 |
-| `TURBO_DOWNLOAD_LOCAL_ENABLED` | 正しいローカルバージョンのインストールを許可 |
-| `TURBO_GLOBAL_WARNING_DISABLED` | ローカルバージョン未検出時の警告を抑制 |
-| `TURBO_NO_UPDATE_NOTIFIER` | 更新通知を非表示 |
-| `TURBO_TELEMETRY_MESSAGE_DISABLED` | テレメトリ通知を抑制 |
-| `TURBO_SSO_LOGIN_CALLBACK_PORT` | SSO コールバックポート（デフォルト: 9789） |
+| `TURBO_DANGEROUSLY_DISABLE_PACKAGE_MANAGER_CHECK` | Disables `packageManager` validation |
+| `TURBO_DOWNLOAD_LOCAL_ENABLED` | Allows installation of the correct local version |
+| `TURBO_GLOBAL_WARNING_DISABLED` | Suppresses the warning when no local version is detected |
+| `TURBO_NO_UPDATE_NOTIFIER` | Hides the update notification |
+| `TURBO_TELEMETRY_MESSAGE_DISABLED` | Suppresses the telemetry notice |
+| `TURBO_SSO_LOGIN_CALLBACK_PORT` | SSO callback port (default: 9789) |

@@ -1,11 +1,11 @@
-# guide
+# Guide
 
 | Name | Description | Path |
 |------|-------------|------|
-| CLI コマンド | デフォルト: dev では watch モード、CI では run モード | [cli.md](./cli.md) |
-| 設定 (vitest.config.ts) | vitest.config.ts（または vite.config.ts の test キー）で設定 | [config.md](./config.md) |
-| カバレッジ | V8 ネイティブカバレッジ。高速。Node.js, Deno, Chromium… | [coverage.md](./coverage.md) |
-| テスト環境 | Node.js, jsdom, happy-dom, edge-runtime などの環境を切り替え | [environment.md](./environment.md) |
-| スナップショットテスト | スナップショットファイルで実行結果を保存・比較 | [snapshot.md](./snapshot.md) |
-| 型テスト | expectTypeOf と assertType で型レベルのテストを実行 | [testing-types.md](./testing-types.md) |
-| ワークスペース | モノレポや異なるテスト設定を単一プロセスで実行 | [workspace.md](./workspace.md) |
+| CLI Commands | Commands and options for running Vitest from the command line | [cli.md](./cli.md) |
+| Config (vitest.config.ts) | Configured via `vitest.config.ts` (or the `test` key in `vite.config.ts`) | [config.md](./config.md) |
+| Coverage | Code coverage reporting configuration and providers (v8 and istanbul) | [coverage.md](./coverage.md) |
+| Test Environment | Test runtime environments node, jsdom, happy-dom, and edge-runtime | [environment.md](./environment.md) |
+| Snapshot Testing | Snapshot testing with toMatchSnapshot, toMatchInlineSnapshot, and toMatchFileSnapshot | [snapshot.md](./snapshot.md) |
+| Type Testing | Vitest supports type-level testing via `expectTypeOf` and `assertType`. Files matching `*.test-d.ts` are automatically recognized as type tests | [testing-types.md](./testing-types.md) |
+| Workspace | Run multiple projects in a single process using the projects option in vitest.config.ts | [workspace.md](./workspace.md) |

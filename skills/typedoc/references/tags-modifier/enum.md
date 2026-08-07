@@ -1,53 +1,49 @@
 # @enum
 
-文字列または数値リテラル値を持つ変数を、通常の変数ではなく列挙型（enum）としてドキュメント化するモディファイアタグ。
+Modifier tag that documents a variable holding string or numeric literal values as an enum instead of an ordinary variable.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @enum */
 ```
 
-## 詳細説明
+Applying `@enum` to a variable causes TypeDoc to convert it into an enum instead of an ordinary variable. The target variable must be an object whose values are string or numeric literals.
 
-`@enum` タグを変数に付与すると、TypeDoc はその変数を通常の変数ではなく列挙型として変換する。対象の変数は、文字列または数値のリテラル値を持つオブジェクトである必要がある。
+Individual doc comments can be written for each enum member.
 
-列挙メンバーには個別のドキュメントコメントを記述できる。
-
-## コード例
-
-### `as const` を使用する方法（推奨）
+### Using `as const` (recommended)
 
 ```typescript
 /**
- * 方向を表す列挙型。
+ * Represents a direction.
  * @enum
  */
 export const Direction = {
-    /** 上方向 */
+    /** Up */
     Up: "UP",
-    /** 下方向 */
+    /** Down */
     Down: "DOWN",
-    /** 左方向 */
+    /** Left */
     Left: "LEFT",
-    /** 右方向 */
+    /** Right */
     Right: "RIGHT",
 } as const;
 ```
 
-### 明示的な型注釈を使用する方法
+### Using an explicit type annotation
 
 ```typescript
 /**
- * ステータスコード。
+ * Status codes.
  * @enum
  */
 export const Status: {
-    /** 成功 */
+    /** Success */
     Ok: 200;
-    /** 未検出 */
+    /** Not found */
     NotFound: 404;
-    /** サーバーエラー */
+    /** Server error */
     Error: 500;
 } = {
     Ok: 200,
@@ -56,11 +52,11 @@ export const Status: {
 };
 ```
 
-### 宣言ファイル（.d.ts）での使用
+### Usage in a declaration file (`.d.ts`)
 
 ```typescript
 /**
- * ログレベル。
+ * Log level.
  * @enum
  */
 declare const LogLevel: {
@@ -71,14 +67,14 @@ declare const LogLevel: {
 };
 ```
 
-## 注意点
+## Notes
 
-- 文字列リテラルまたは数値リテラルのプロパティを持つオブジェクトに対して使用する
-- 各列挙メンバーに個別のドキュメントコメントを付けることができる
-- `as const` を使用する方法が最もシンプルで推奨される
-- 宣言ファイル（`.d.ts`）内で `declare` キーワードと共に使用可能
+- Applies to objects whose properties are string or numeric literals
+- Each enum member can have its own doc comment
+- The `as const` approach is the simplest and recommended
+- Can be used in declaration files (`.d.ts`) together with the `declare` keyword
 
-## 関連
+## Related
 
 - [@namespace](./namespace.md)
 - [@interface](./interface.md)

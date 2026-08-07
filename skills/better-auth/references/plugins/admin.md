@@ -1,10 +1,10 @@
 # Admin
 
-Admin プラグインは、ユーザー管理のための管理機能を提供する。ユーザーの作成、ロール管理、BAN/BAN解除、なりすまし、セッション管理などの操作が可能。
+The Admin plugin provides administrative functions for user management: creating users, role management, ban/unban, impersonation, session management, and more.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -17,15 +17,15 @@ export const auth = betterAuth({
 })
 ```
 
-マイグレーション:
+Migration:
 
 ```bash
 npx auth migrate
-# または
+# or
 npx auth generate
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -38,14 +38,12 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
-
-### ユーザー作成
+### Create user
 
 `POST /admin/create-user`
 
 ```typescript
-// クライアント
+// Client
 const { data: newUser, error } = await authClient.admin.createUser({
     email: "user@example.com",
     password: "some-secure-password",
@@ -54,7 +52,7 @@ const { data: newUser, error } = await authClient.admin.createUser({
     data: { customField: "customValue" },
 })
 
-// サーバー
+// Server
 const newUser = await auth.api.createUser({
     body: {
         email: "user@example.com",
@@ -66,12 +64,12 @@ const newUser = await auth.api.createUser({
 })
 ```
 
-### ユーザー一覧
+### List users
 
 `GET /admin/list-users`
 
 ```typescript
-// クライアント
+// Client
 const { data: users, error } = await authClient.admin.listUsers({
     query: {
         searchValue: "some name",
@@ -87,7 +85,7 @@ const { data: users, error } = await authClient.admin.listUsers({
     },
 })
 
-// サーバー
+// Server
 const users = await auth.api.listUsers({
     query: {
         searchValue: "some name",
@@ -105,21 +103,21 @@ const users = await auth.api.listUsers({
 })
 ```
 
-クエリパラメータ:
-- `searchValue` (string): 検索語
-- `searchField` ("email" | "name"): 検索フィールド
-- `searchOperator` ("contains" | "starts_with" | "ends_with"): 検索タイプ
-- `limit` (string | number): 返す行数（デフォルト: 100）
-- `offset` (string | number): 開始位置
-- `sortBy` (string): ソートフィールド
-- `sortDirection` ("asc" | "desc"): ソート順
-- `filterField` (string): フィルターフィールド
-- `filterValue` (string | number | boolean | string[] | number[]): フィルター値
-- `filterOperator` ("eq" | "ne" | "lt" | "lte" | "gt" | "gte" | "in" | "not_in" | "contains" | "starts_with" | "ends_with"): フィルター操作
+Query parameters:
+- `searchValue` (string): search term
+- `searchField` ("email" | "name"): field to search
+- `searchOperator` ("contains" | "starts_with" | "ends_with"): search type
+- `limit` (string | number): number of rows to return (default: 100)
+- `offset` (string | number): start position
+- `sortBy` (string): sort field
+- `sortDirection` ("asc" | "desc"): sort order
+- `filterField` (string): filter field
+- `filterValue` (string | number | boolean | string[] | number[]): filter value
+- `filterOperator` ("eq" | "ne" | "lt" | "lte" | "gt" | "gte" | "in" | "not_in" | "contains" | "starts_with" | "ends_with"): filter operator
 
-レスポンス: `{ users: User[], total: number, limit: number | undefined, offset: number | undefined }`
+Response: `{ users: User[], total: number, limit: number | undefined, offset: number | undefined }`
 
-ページネーション例:
+Pagination example:
 
 ```typescript
 const pageSize = 10
@@ -136,7 +134,7 @@ const totalUsers = users.total
 const totalPages = Math.ceil(totalUsers / pageSize)
 ```
 
-### ユーザー取得
+### Get user
 
 `GET /admin/get-user`
 
@@ -146,25 +144,25 @@ const { data, error } = await authClient.admin.getUser({
 })
 ```
 
-### ロール設定
+### Set role
 
 `POST /admin/set-role`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.admin.setRole({
     userId: "user-id",
     role: "admin",
 })
 
-// サーバー
+// Server
 const data = await auth.api.setRole({
     body: { userId: "user-id", role: "admin" },
     headers: await headers(),
 })
 ```
 
-### パスワード設定
+### Set password
 
 `POST /admin/set-user-password`
 
@@ -175,25 +173,25 @@ const { data, error } = await authClient.admin.setUserPassword({
 })
 ```
 
-### ユーザー更新
+### Update user
 
 `POST /admin/update-user`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.admin.updateUser({
     userId: "user-id",
     data: { name: "John Doe" },
 })
 
-// サーバー
+// Server
 const data = await auth.api.adminUpdateUser({
     body: { userId: "user-id", data: { name: "John Doe" } },
     headers: await headers(),
 })
 ```
 
-### ユーザー BAN
+### Ban user
 
 `POST /admin/ban-user`
 
@@ -205,12 +203,12 @@ await authClient.admin.banUser({
 })
 ```
 
-パラメータ:
-- `userId` (string, 必須)
-- `banReason` (string): BAN 理由
-- `banExpiresIn` (number): 有効期限（秒）。undefined = 永久
+Parameters:
+- `userId` (string, required)
+- `banReason` (string): reason for the ban
+- `banExpiresIn` (number): expiration in seconds. undefined = permanent
 
-### ユーザー BAN 解除
+### Unban user
 
 `POST /admin/unban-user`
 
@@ -218,7 +216,7 @@ await authClient.admin.banUser({
 await authClient.admin.unbanUser({ userId: "user-id" })
 ```
 
-### ユーザーセッション一覧
+### List user sessions
 
 `POST /admin/list-user-sessions`
 
@@ -228,7 +226,7 @@ const { data, error } = await authClient.admin.listUserSessions({
 })
 ```
 
-### セッション取り消し
+### Revoke session
 
 `POST /admin/revoke-user-session`
 
@@ -238,7 +236,7 @@ const { data, error } = await authClient.admin.revokeUserSession({
 })
 ```
 
-### 全セッション取り消し
+### Revoke all sessions
 
 `POST /admin/revoke-user-sessions`
 
@@ -248,7 +246,7 @@ const { data, error } = await authClient.admin.revokeUserSessions({
 })
 ```
 
-### ユーザーなりすまし
+### Impersonate user
 
 `POST /admin/impersonate-user`
 
@@ -258,7 +256,7 @@ const { data, error } = await authClient.admin.impersonateUser({
 })
 ```
 
-管理者間のなりすましはデフォルトで無効。有効化するには:
+Impersonation between admins is disabled by default. To enable it:
 
 ```typescript
 const superAdmin = ac.newRole({
@@ -267,7 +265,7 @@ const superAdmin = ac.newRole({
 })
 ```
 
-### なりすまし停止
+### Stop impersonating
 
 `POST /admin/stop-impersonating`
 
@@ -275,7 +273,7 @@ const superAdmin = ac.newRole({
 await authClient.admin.stopImpersonating()
 ```
 
-### ユーザー削除
+### Remove user
 
 `POST /admin/remove-user`
 
@@ -285,17 +283,17 @@ const { data: deletedUser, error } = await authClient.admin.removeUser({
 })
 ```
 
-### 権限チェック
+### Permission check
 
 `POST /admin/has-permission`
 
 ```typescript
-// クライアント
+// Client
 const canCreateProject = await authClient.admin.hasPermission({
     permissions: { project: ["create"] },
 })
 
-// サーバー
+// Server
 await auth.api.userHasPermission({
     body: {
         userId: 'id',
@@ -303,7 +301,7 @@ await auth.api.userHasPermission({
     },
 })
 
-// ロールで直接チェック
+// Check directly against a role
 await auth.api.userHasPermission({
     body: {
         role: "admin",
@@ -312,7 +310,7 @@ await auth.api.userHasPermission({
 })
 ```
 
-### ロール権限チェック（同期、クライアント側）
+### Role permission check (synchronous, client side)
 
 ```typescript
 const canCreateProject = authClient.admin.checkRolePermission({
@@ -321,24 +319,10 @@ const canCreateProject = authClient.admin.checkRolePermission({
 })
 ```
 
-## アクセス制御システム
-
-### デフォルトロール
-
-- **admin**: 全リソースと全アクションのフルコントロール
-- **user**: 管理アクションなし
-
-ユーザーは複数ロールをカンマ区切り文字列で保持可能。
-
-### デフォルト権限
-
-- **user リソース**: `create`, `list`, `set-role`, `ban`, `impersonate`, `impersonate-admins`, `delete`, `set-password`
-- **session リソース**: `list`, `revoke`, `delete`
-
-### カスタム権限設定
+### Custom access control setup
 
 ```typescript
-// ステップ1: アクセス制御作成
+// Step 1: create access control
 import { createAccessControl } from "better-auth/plugins/access"
 
 const statement = {
@@ -347,7 +331,7 @@ const statement = {
 
 const ac = createAccessControl(statement)
 
-// ステップ2: ロール作成
+// Step 2: create roles
 export const user = ac.newRole({ project: ["create"] })
 export const admin = ac.newRole({ project: ["create", "update"] })
 export const myCustomRole = ac.newRole({
@@ -355,7 +339,7 @@ export const myCustomRole = ac.newRole({
     user: ["ban"],
 })
 
-// デフォルト権限を含める場合
+// Including default permissions
 import { defaultStatements, adminAc } from "better-auth/plugins/admin/access"
 
 const statement = {
@@ -369,7 +353,7 @@ const admin = ac.newRole({
     ...adminAc.statements,
 })
 
-// ステップ3: サーバーに渡す
+// Step 3: pass to server
 export const auth = betterAuth({
     plugins: [
         adminPlugin({
@@ -379,7 +363,7 @@ export const auth = betterAuth({
     ],
 })
 
-// ステップ4: クライアントに渡す
+// Step 4: pass to client
 export const client = createAuthClient({
     plugins: [
         adminClient({
@@ -390,38 +374,24 @@ export const client = createAuthClient({
 })
 ```
 
-## 設定オプション
+## Options / Props
 
-| オプション | 型 | デフォルト | 説明 |
+| Option | Type | Default | Description |
 |---|---|---|---|
-| `defaultRole` | string | `"user"` | デフォルトロール |
-| `adminRoles` | string[] | `["admin"]` | 管理者とみなすロール |
-| `adminUserIds` | string[] | `[]` | 管理者として扱うユーザー ID |
-| `impersonationSessionDuration` | number | 3600（1時間） | なりすましセッション時間（秒） |
-| `defaultBanReason` | string | `"No reason"` | デフォルト BAN 理由 |
-| `defaultBanExpiresIn` | number | undefined（永久） | デフォルト BAN 期限（秒） |
-| `bannedUserMessage` | string | `"You have been banned..."` | BAN ユーザーへのメッセージ |
+| `defaultRole` | string | `"user"` | Default role |
+| `adminRoles` | string[] | `["admin"]` | Roles considered admins |
+| `adminUserIds` | string[] | `[]` | User IDs treated as admins |
+| `impersonationSessionDuration` | number | 3600 (1 hour) | Impersonation session duration (seconds) |
+| `defaultBanReason` | string | `"No reason"` | Default ban reason |
+| `defaultBanExpiresIn` | number | undefined (permanent) | Default ban expiration (seconds) |
+| `bannedUserMessage` | string | `"You have been banned..."` | Message shown to banned users |
 
-## DB スキーマ
+## Notes
 
-### user テーブル追加フィールド
-
-| フィールド | 型 | 説明 |
-|---|---|---|
-| `role` | string | ユーザーのロール。デフォルト `user` |
-| `banned` | boolean | BAN 状態 |
-| `banReason` | string | BAN 理由 |
-| `banExpires` | date | BAN 有効期限 |
-
-### session テーブル追加フィールド
-
-| フィールド | 型 | 説明 |
-|---|---|---|
-| `impersonatedBy` | string | なりすまし元の管理者 ID |
-
-## 注意点
-
-- メール列挙保護を使用している場合（`requireEmailVerification` または `autoSignIn: false`）、`customSyntheticUser` の設定が必要:
+- All admin operations require user authentication and admin privileges
+- Banned users cannot sign in, and all existing sessions are revoked
+- `adminRoles` is unnecessary when using custom access control
+- When using email enumeration protection (`requireEmailVerification` or `autoSignIn: false`), `customSyntheticUser` must be configured:
 
 ```typescript
 export const auth = betterAuth({
@@ -442,6 +412,31 @@ export const auth = betterAuth({
 })
 ```
 
-- 全管理操作にはユーザー認証と管理者権限が必要
-- BAN されたユーザーはサインインできず、既存セッションは全て取り消される
-- カスタムアクセス制御使用時は `adminRoles` は不要
+### Default roles and permissions
+
+- **admin**: full control over all resources and actions
+- **user**: no admin actions
+- Users can hold multiple roles as a comma-separated string
+- **user resource**: `create`, `list`, `set-role`, `ban`, `impersonate`, `impersonate-admins`, `delete`, `set-password`
+- **session resource**: `list`, `revoke`, `delete`
+
+### DB schema
+
+Additional fields on the user table:
+
+| Field | Type | Description |
+|---|---|---|
+| `role` | string | User's role. Default `user` |
+| `banned` | boolean | Ban status |
+| `banReason` | string | Ban reason |
+| `banExpires` | date | Ban expiration |
+
+Additional fields on the session table:
+
+| Field | Type | Description |
+|---|---|---|
+| `impersonatedBy` | string | ID of the admin who initiated impersonation |
+
+## Related
+
+- [organization.md](./organization.md)

@@ -21,6 +21,7 @@ skills/vercel/
       global-options.md
       activity.md
       agent.md
+      ai-gateway.md
       alerts.md
       alias.md
       api.md
@@ -30,9 +31,12 @@ skills/vercel/
       buy.md
       cache.md
       certs.md
+      connect.md
       contract.md
+      crons.md
       curl.md
       deploy.md
+      deploy-hooks.md
       dev.md
       dns.md
       domains.md
@@ -40,6 +44,8 @@ skills/vercel/
       firewall.md
       flags.md
       git.md
+      global-config.md
+      global-options.md
       guidance.md
       help.md
       httpstat.md
@@ -55,6 +61,7 @@ skills/vercel/
       mcp.md
       metrics.md
       microfrontends.md
+      oauth-apps.md
       open.md
       project.md
       promote.md
@@ -71,8 +78,11 @@ skills/vercel/
       target.md
       teams.md
       telemetry.md
+      tokens.md
       traces.md
+      upgrade.md
       usage.md
+      vcr.md
       webhooks.md
       whoami.md
     configuration/
@@ -156,6 +166,14 @@ skills/vercel/
     promote-rollback.md
     domains.md
     ops.md
+    crons.md
+    connect.md
+    oauth-apps.md
+    ai-gateway.md
+    tokens.md
+    upgrade.md
+    global-config.md
+    deploy-hooks.md
 ```
 
 ## 探索手順

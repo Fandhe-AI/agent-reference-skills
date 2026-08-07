@@ -2,7 +2,7 @@
 
 Auth0 から Better Auth へ移行するためのガイド。ユーザーデータ移行・認証方法の移植・アプリケーションコードの更新を含む。
 
-## 主な移行手順
+## Signature / Usage
 
 1. **Better Auth のセットアップ**: プロジェクトに Better Auth をインストールし、PostgreSQL 等の DB に接続する
 2. **認証機能の設定**: メール/パスワード認証・ソーシャルプロバイダー・管理者機能・2FA 等のプラグインを設定する
@@ -11,7 +11,7 @@ Auth0 から Better Auth へ移行するためのガイド。ユーザーデー�
 5. **アプリケーションコードの更新**: サインインコンポーネントとミドルウェアを Better Auth クライアントとセッション管理に移行する
 6. **クリーンアップ**: 移行が完了・確認できたら Auth0 の依存関係を削除する
 
-## 考慮事項
+## Notes
 
 - 移行により有効なセッションがすべて無効化される
 - パスワードハッシュのエクスポートは Auth0 Enterprise ユーザーのみ可能（無料プランはサポートに連絡が必要）
@@ -19,5 +19,5 @@ Auth0 から Better Auth へ移行するためのガイド。ユーザーデー�
 
 ## Related
 
-- [clerk-migration.md](./clerk-migration.md)
-- [next-auth-migration.md](./next-auth-migration.md)
+- [Migrating from Clerk](./clerk-migration.md)
+- [Migrating from Auth.js (NextAuth)](./next-auth-migration.md)

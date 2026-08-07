@@ -1,10 +1,8 @@
-# Pull Requests API
+# pulls
 
-GitHub Pull Requests API のリファレンスセクション。
-
-| ファイル | 説明 |
-|---|---|
-| [pulls.md](./pulls.md) | PR の CRUD 操作（一覧取得・作成・更新・マージ・ブランチ更新） |
-| [reviews.md](./reviews.md) | PR レビューの作成・取得・提出・却下 |
-| [review-comments.md](./review-comments.md) | PR レビューコメントの一覧取得・作成・更新・削除・返信 |
-| [review-requests.md](./review-requests.md) | PR レビューリクエストの取得・作成・削除 |
+| Name | Description | Path |
+|------|-------------|------|
+| Pull Requests API | プルリクエストの CRUD 操作・マージ・ブランチ更新を行うエンドポイント。 | [pulls.md](./pulls.md) |
+| PR Review Comments API | プルリクエストのレビューコメント（差分上のインラインコメント）の一覧取得・作成・更新・削除・返信を行うエンドポイント。 | [review-comments.md](./review-comments.md) |
+| PR Review Requests API | プルリクエストのレビューリクエスト（レビュー依頼）の取得・作成・削除を行うエンドポイント。 | [review-requests.md](./review-requests.md) |
+| PR Reviews API | プルリクエストのレビューの作成・取得・提出・却下を行うエンドポイント。 | [reviews.md](./reviews.md) |

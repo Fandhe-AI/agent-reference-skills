@@ -125,6 +125,11 @@ skills/threejs/
       PointLight.md
       RectAreaLight.md
       SpotLight.md
+      DirectionalLightShadow.md
+      PointLightShadow.md
+      SpotLightShadow.md
+      IESSpotLight.md
+      ProjectorLight.md
     helpers/
       README.md
       ArrowHelper.md
@@ -173,6 +178,7 @@ skills/threejs/
       FramebufferTexture.md
       HTMLTexture.md
       Source.md
+      StorageTexture.md
       VideoTexture.md
       VideoFrameTexture.md
     loaders/
@@ -249,6 +255,7 @@ skills/threejs/
       Vector4.md
     renderers/
       README.md
+      Renderer.md
       WebGLRenderer.md
       WebGLRenderTarget.md
       WebGLCubeRenderTarget.md
@@ -257,6 +264,8 @@ skills/threejs/
       WebGPURenderer.md
       WebXRManager.md
       WebXRDepthSensing.md
+      Info.md
+      PostProcessing.md
     controls/
       README.md
       OrbitControls.md
@@ -268,6 +277,43 @@ skills/threejs/
       PointerLockControls.md
       TrackballControls.md
       TransformControls.md
+    extras/
+      README.md
+      Curve.md
+      CurvePath.md
+      Path.md
+      Shape.md
+      ShapePath.md
+      ArcCurve.md
+      CatmullRomCurve3.md
+      CubicBezierCurve.md
+      CubicBezierCurve3.md
+      EllipseCurve.md
+      LineCurve.md
+      LineCurve3.md
+      QuadraticBezierCurve.md
+      QuadraticBezierCurve3.md
+      SplineCurve.md
+    nodes/
+      README.md
+      TSL.md
+      Node.md
+      NodeBuilder.md
+      AttributeNode.md
+      UniformNode.md
+      VaryingNode.md
+      TextureNode.md
+      CubeTextureNode.md
+      OperatorNode.md
+      MathNode.md
+      ConditionalNode.md
+      LoopNode.md
+      FunctionNode.md
+      ComputeNode.md
+      StorageBufferNode.md
+      MaterialNode.md
+      LightingModel.md
+      PhysicalLightingModel.md
   samples/
     README.md
     basic-scene-setup.md
@@ -313,9 +359,11 @@ skills/threejs/
 | ExtrudeGeometry / LatheGeometry でカスタム形状を作りたい | geometries | [references/geometries/README.md](references/geometries/README.md) |
 | MeshStandardMaterial / MeshPhysicalMaterial で PBR マテリアルを設定したい | materials | [references/materials/README.md](references/materials/README.md) |
 | ShaderMaterial / RawShaderMaterial でカスタム GLSL を書きたい | materials | [references/materials/README.md](references/materials/README.md) |
-| WebGPU / TSL ノードマテリアルを使いたい | materials | [references/materials/README.md](references/materials/README.md) |
+| WebGPU 向けノードマテリアルクラス (node-materials) を使いたい | materials | [references/materials/README.md](references/materials/README.md) |
 | DirectionalLight / PointLight / SpotLight でシーンを照らしたい | lights | [references/lights/README.md](references/lights/README.md) |
 | AmbientLight や LightProbe で間接光を設定したい | lights | [references/lights/README.md](references/lights/README.md) |
+| DirectionalLightShadow / PointLightShadow / SpotLightShadow で影の設定を調整したい | lights | [references/lights/README.md](references/lights/README.md) |
+| IESSpotLight / ProjectorLight で特殊な投光パターンを扱いたい | lights | [references/lights/README.md](references/lights/README.md) |
 | AxesHelper / GridHelper / CameraHelper でデバッグ補助を表示したい | helpers | [references/helpers/README.md](references/helpers/README.md) |
 | SkeletonHelper / DirectionalLightHelper でアニメーションやライトを可視化したい | helpers | [references/helpers/README.md](references/helpers/README.md) |
 | Mesh / Group / Sprite を配置・操作したい | objects | [references/objects/README.md](references/objects/README.md) |
@@ -323,6 +371,7 @@ skills/threejs/
 | SkinnedMesh / Skeleton でスケルタルアニメーションを扱いたい | objects | [references/objects/README.md](references/objects/README.md) |
 | Texture / CubeTexture / VideoTexture を設定したい | textures | [references/textures/README.md](references/textures/README.md) |
 | DataTexture / DepthTexture でオフスクリーン処理をしたい | textures | [references/textures/README.md](references/textures/README.md) |
+| StorageTexture でコンピュートシェーダーの書き込み先を用意したい | textures | [references/textures/README.md](references/textures/README.md) |
 | TextureLoader / LoadingManager で読み込み進捗を管理したい | loaders | [references/loaders/README.md](references/loaders/README.md) |
 | FileLoader / ObjectLoader / MaterialLoader を使いたい | loaders | [references/loaders/README.md](references/loaders/README.md) |
 | GLTFLoader で .gltf / .glb モデルを読み込みたい | loaders-addons | [references/loaders-addons/README.md](references/loaders-addons/README.md) |
@@ -335,7 +384,16 @@ skills/threejs/
 | WebGLRenderer / WebGPURenderer を初期化・設定したい | renderers | [references/renderers/README.md](references/renderers/README.md) |
 | WebGLRenderTarget でオフスクリーンレンダリング・ポストプロセスをしたい | renderers | [references/renderers/README.md](references/renderers/README.md) |
 | WebXRManager で VR / AR セッションを管理したい | renderers | [references/renderers/README.md](references/renderers/README.md) |
+| Renderer 基底クラスの共通 API を確認したい | renderers | [references/renderers/README.md](references/renderers/README.md) |
+| Info でドローコール数・メモリ使用量を統計取得したい | renderers | [references/renderers/README.md](references/renderers/README.md) |
+| PostProcessing でエフェクトチェーンを構築したい | renderers | [references/renderers/README.md](references/renderers/README.md) |
 | OrbitControls / TrackballControls でカメラを操作したい | controls | [references/controls/README.md](references/controls/README.md) |
 | TransformControls / DragControls でオブジェクトをインタラクティブに操作したい | controls | [references/controls/README.md](references/controls/README.md) |
+| Curve / Shape / Path で 2D/3D 曲線・輪郭を扱いたい | extras | [references/extras/README.md](references/extras/README.md) |
+| CatmullRomCurve3 / CubicBezierCurve でスプライン・ベジェ曲線を作りたい | extras | [references/extras/README.md](references/extras/README.md) |
+| TSL (Three.js Shading Language) でノードベースシェーダーを構築したい | nodes | [references/nodes/README.md](references/nodes/README.md) |
+| UniformNode / TextureNode / MathNode で TSL ノードを組み立てたい | nodes | [references/nodes/README.md](references/nodes/README.md) |
+| ComputeNode / StorageBufferNode で WebGPU コンピュートシェーダーを書きたい | nodes | [references/nodes/README.md](references/nodes/README.md) |
+| PhysicalLightingModel / LightingModel でカスタムライティングモデルを実装したい | nodes | [references/nodes/README.md](references/nodes/README.md) |
 | 典型的な使い方・実装パターンを確認したい | samples | [samples/README.md](samples/README.md) |
 | インストール・Vite セットアップ・import パターン・Draco 設定を知りたい | scripts | [scripts/README.md](scripts/README.md) |

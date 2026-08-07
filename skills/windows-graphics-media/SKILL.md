@@ -42,6 +42,7 @@ skills/windows-graphics-media/
       id2d1factory1.md
       id2d1geometry.md
       id2d1geometrysink.md
+      id2d1imagebrush.md
       id2d1layer.md
       id2d1lineargradientbrush.md
       id2d1pathgeometry.md
@@ -110,11 +111,14 @@ skills/windows-graphics-media/
       camera-stream-state.md
       device-enumeration.md
       direct3d11-capture-frame-pool.md
+      effects-for-video-capture.md
       face-detector.md
       face-tracker.md
+      get-a-preview-frame.md
       graphics-capture-item.md
       graphics-capture-picker.md
       graphics-capture-session.md
+      handle-device-orientation-with-mediacapture.md
       low-lag-media-recording.md
       low-lag-photo-capture.md
       media-capture-initialization-settings.md
@@ -122,6 +126,8 @@ skills/windows-graphics-media/
       media-frame-reader.md
       media-frame-source-group.md
       scene-analysis-face-detection-effects.md
+      set-media-encoding-properties.md
+      simple-camera-preview-access.md
       software-bitmap.md
       variable-photo-sequence.md
       video-device-controller.md
@@ -183,6 +189,7 @@ skills/windows-graphics-media/
 | MediaCapture でカメラから写真・動画・音声をキャプチャしたい | camera-capture | [references/camera-capture/README.md](references/camera-capture/README.md) |
 | フォーカス・露出・ズームなどカメラデバイスを制御したい | camera-capture | [references/camera-capture/README.md](references/camera-capture/README.md) |
 | 画面キャプチャ (GraphicsCaptureSession) や Windows Studio Effects を使いたい | camera-capture | [references/camera-capture/README.md](references/camera-capture/README.md) |
+| プレビュー表示・端末回転補正・エンコードプロパティ設定など実装手順を知りたい | camera-capture | [references/camera-capture/README.md](references/camera-capture/README.md) |
 | MediaPlayer / MediaPlayerElement で動画・音声を再生したい | audio-video-playback | [references/audio-video-playback/README.md](references/audio-video-playback/README.md) |
 | AdaptiveMediaSource / DRM でストリーミング再生や保護コンテンツを扱いたい | audio-video-playback | [references/audio-video-playback/README.md](references/audio-video-playback/README.md) |
 | AudioGraph / MediaTranscoder / MediaComposition で音声処理・動画編集をしたい | audio-video-playback | [references/audio-video-playback/README.md](references/audio-video-playback/README.md) |

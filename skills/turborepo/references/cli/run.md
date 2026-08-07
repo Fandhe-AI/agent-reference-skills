@@ -1,90 +1,86 @@
 # turbo run
 
+## Signature / Usage
+
 ```bash
 turbo run <task> [options]
 ```
 
-## 主要オプション
+## Options / Props
 
-### フィルタリング
+### Filtering
 
-| オプション | 説明 |
+| Option | Description |
 |---|---|
-| `--filter <pattern>` / `-F` | 実行対象パッケージを絞り込む |
-| `--affected` | 変更があったパッケージのみ実行 |
-| `--only` | 依存タスクを実行せず指定タスクのみ |
+| `--filter <pattern>` / `-F` | Narrow down which packages to run |
+| `--affected` | Run only packages with changes |
+| `--only` | Run only the specified task, without its dependent tasks |
 
-### キャッシュ制御
+### Cache control
 
-| オプション | デフォルト | 説明 |
+| Option | Default | Description |
 |---|---|---|
-| `--cache` | `local:rw,remote:rw` | キャッシュの読み書きモード |
-| `--force` | — | キャッシュを無視して再実行 |
-| `--cache-dir` | `.turbo/cache` | キャッシュディレクトリ |
+| `--cache` | `local:rw,remote:rw` | Cache read/write mode |
+| `--force` | — | Ignore cache and re-run |
+| `--cache-dir` | `.turbo/cache` | Cache directory |
 
-### 実行制御
+### Execution control
 
-| オプション | デフォルト | 説明 |
+| Option | Default | Description |
 |---|---|---|
-| `--concurrency` | `10` | 最大同時実行数 |
-| `--continue` | `never` | エラー時の動作（`never`/`dependencies-successful`/`always`） |
-| `--env-mode` | `strict` | 環境変数のアクセス制御 |
+| `--concurrency` | `10` | Maximum concurrent executions |
+| `--continue` | `never` | Behavior on error (`never`/`dependencies-successful`/`always`) |
+| `--env-mode` | `strict` | Environment variable access control |
 
-### 出力・デバッグ
+### Output & debugging
 
-| オプション | 説明 |
+| Option | Description |
 |---|---|
-| `--dry` / `--dry-run` | 実行せずにタスク計画を表示 |
-| `--graph` | タスクグラフを可視化（`dot`/`svg`/`html`/`mermaid`） |
-| `--json` | 人間可読テキストの代わりに NDJSON を stdout へ出力 |
-| `--log-file` | 構造化 JSON ログをファイルに書き込む |
-| `--output-logs` | ログ出力レベル |
-| `--log-order` | ログ順序（`stream`/`grouped`/`auto`、デフォルト: `auto`） |
-| `--log-prefix` | ログプレフィックス制御（`task`/`none`/`auto`、デフォルト: `auto`） |
-| `--summarize` | 実行メタデータを JSON で出力 |
-| `--profile` | パフォーマンストレースを生成 |
-| `--anon-profile` | 機密情報を除外したプロファイルを生成 |
-| `--framework-inference` | フレームワーク推論の有効/無効（デフォルト: `true`） |
-| `--verbosity` / `-v` | ログレベル（`-v`=Info, `-vv`=Debug, `-vvv`=Trace） |
+| `--dry` / `--dry-run` | Show the task plan without running it |
+| `--graph` | Visualize the task graph (`dot`/`svg`/`html`/`mermaid`) |
+| `--json` | Output NDJSON to stdout instead of human-readable text |
+| `--log-file` | Write structured JSON logs to a file |
+| `--output-logs` | Log output level |
+| `--log-order` | Log ordering (`stream`/`grouped`/`auto`, default: `auto`) |
+| `--log-prefix` | Log prefix control (`task`/`none`/`auto`, default: `auto`) |
+| `--summarize` | Output run metadata as JSON |
+| `--profile` | Generate a performance trace |
+| `--anon-profile` | Generate a profile with sensitive info stripped |
+| `--framework-inference` | Enable/disable framework inference (default: `true`) |
+| `--verbosity` / `-v` | Log level (`-v`=Info, `-vv`=Debug, `-vvv`=Trace) |
 
-## フィルタ構文
+## Notes
 
-### パッケージ名
+- Filter syntax:
+  - By package name:
+    ```bash
+    turbo run build --filter=ui
+    turbo run build --filter=@acme/ui
+    ```
+  - By directory:
+    ```bash
+    turbo run build --filter=./apps/*
+    ```
+  - Git-based:
+    ```bash
+    turbo run build --filter=[HEAD^1]
+    turbo run build --filter=[origin/main]
+    ```
+  - Microsyntax operators:
 
-```bash
-turbo run build --filter=ui
-turbo run build --filter=@acme/ui
-```
+    | Operator | Meaning |
+    |---|---|
+    | `!` | Exclude |
+    | `...pkg` | Include pkg's dependents (upstream) |
+    | `pkg...` | Include pkg's dependencies (downstream) |
+    | `^` | Exclude the target itself when used with `...` |
 
-### ディレクトリ
-
-```bash
-turbo run build --filter=./apps/*
-```
-
-### Git ベース
-
-```bash
-turbo run build --filter=[HEAD^1]
-turbo run build --filter=[origin/main]
-```
-
-### マイクロシンタックス演算子
-
-| 演算子 | 意味 |
-|---|---|
-| `!` | 除外 |
-| `...pkg` | pkg の依存元（上流）を含む |
-| `pkg...` | pkg の依存先（下流）を含む |
-| `^` | `...` 使用時に対象自身を除外 |
-
-## よく使う組み合わせ
-
-```bash
-turbo run build --affected                         # 変更パッケージのみ
-turbo run build --dry=json                         # ドライラン
-turbo run test --continue=always                   # エラーでも続行
-turbo run build --cache=local:r,remote:rw          # ローカル読み込みのみ
-turbo run test --filter=...@acme/ui                # 依存元すべて
-turbo run web#lint                                 # 特定タスク
-```
+- Common combinations:
+  ```bash
+  turbo run build --affected                         # changed packages only
+  turbo run build --dry=json                         # dry run
+  turbo run test --continue=always                   # continue on error
+  turbo run build --cache=local:r,remote:rw          # local reads only
+  turbo run test --filter=...@acme/ui                # all dependents
+  turbo run web#lint                                 # a specific task
+  ```

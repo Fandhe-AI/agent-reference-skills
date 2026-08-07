@@ -1,25 +1,21 @@
 # @event
 
-リフレクションを「Events」グループに分類するモディファイアタグ。`@group Events` を指定するのと同等。
+Modifier tag that classifies a reflection into the "Events" group. Equivalent to specifying `@group Events`.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @event */
 ```
 
-## 詳細説明
+`@event` marks a class property or method as an event-related member and automatically places it in the "Events" group of the generated documentation. It acts as a shorthand for `@group Events`.
 
-`@event` タグは、クラスのプロパティやメソッドをイベント関連のメンバーとしてマークし、生成されるドキュメントの「Events」グループに自動的に配置する。`@group Events` のショートハンドとして機能する。
-
-イベント駆動型のクラス（特に `EventEmitter` を継承するクラス）で、イベント関連のメンバーをドキュメント上で明確に分類するために使用する。
-
-## コード例
+Used in event-driven classes (especially those extending `EventEmitter`) to clearly classify event-related members in the documentation.
 
 ```typescript
 export class App extends EventEmitter {
     /**
-     * リクエスト受信時に発火するイベント。
+     * Event fired when a request is received.
      * @event
      */
     static ON_REQUEST = "request";
@@ -31,31 +27,31 @@ import { EventEmitter } from "events";
 
 export class Server extends EventEmitter {
     /**
-     * サーバー起動時のイベント。
+     * Event fired when the server starts.
      * @event
      */
     static STARTED = "started";
 
     /**
-     * 接続時のイベント。
+     * Event fired on connection.
      * @event
      */
     static CONNECTION = "connection";
 
     /**
-     * エラー発生時のイベント。
+     * Event fired on error.
      * @event
      */
     static ERROR = "error";
 }
 ```
 
-## 注意点
+## Notes
 
-- `@group Events` と同等の効果を持つショートハンド
-- ドキュメントの「Events」セクションにメンバーが自動的にグループ化される
+- Equivalent shorthand for `@group Events`
+- Automatically groups the member under the "Events" section in the documentation
 
-## 関連
+## Related
 
 - [@eventProperty](./eventProperty.md)
 - [@group](../tags-block/group.md)

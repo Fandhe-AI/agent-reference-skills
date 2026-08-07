@@ -15,7 +15,7 @@ Segoe UI Variable is the default system font for Windows apps. The Windows type 
 
 | Style | Weight | Size/line height (effective px) |
 |-------|--------|----------------------------------|
-| Caption | Text | 12/16 |
+| Caption | Small | 12/16 |
 | Body | Text | 14/20 |
 | Body Strong | Text semibold | 14/20 |
 | Body Large | Text | 18/24 |
@@ -50,7 +50,7 @@ These styles are exposed as XAML static resources (for example `TitleTextBlockSt
 - For clipping, use `TextWrapping="WrapWholeWords" TextTrimming="Clip"` — the default behavior of most WinUI text controls; avoid ellipses unless containers are not well-defined or there is a "see more" link.
 - Bold and Italic are not part of the Windows type ramp; use Semibold for emphasis. Italic is excluded because it reduces legibility, particularly for people with dyslexia.
 - Keep 50–60 characters per line for readability; avoid fewer than 20 or more than 60.
-- Non-Latin languages fall back to dedicated UI fonts: Ebrima (African scripts), Gadugi (North American scripts), Leelawadee UI (Southeast Asian scripts), Malgun Gothic (Korean), Microsoft JhengHei UI (Traditional Chinese), Microsoft YaHei UI (Simplified Chinese), Myanmar Text, Nirmala UI (South Asian scripts), Segoe UI (Arabic, Armenian, Georgian, Hebrew), Yu Gothic UI (Japanese).
+- Non-Latin languages fall back to dedicated UI fonts: Ebrima (African scripts), Gadugi (North American scripts), Leelawadee UI (Southeast Asian scripts), Malgun Gothic (Korean), Microsoft JhengHei UI (Traditional Chinese), Microsoft YaHei UI (Simplified Chinese), Myanmar Text, Nirmala UI (South Asian scripts), Segoe UI (Arabic, Armenian, Georgian, Hebrew), SimSun (legacy Chinese), Yu Gothic UI (Japanese).
 - Use the `LanguageFont` font-mapping APIs (`Windows.Globalization.Fonts.LanguageFont`) for programmatic access to the recommended font family/size/weight/style per language and content category (UI headers, notifications, body text, document body).
 - Package: guidance applies to WinUI 3 / UWP XAML apps (`Microsoft.UI.Xaml` / `Windows.UI.Xaml`). Distinct from the Typography concept in Fluent 2 web/Figma tokens, and unrelated to SwiftUI/Compose text style APIs.
 

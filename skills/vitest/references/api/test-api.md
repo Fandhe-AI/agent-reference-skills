@@ -2,7 +2,7 @@
 
 ## describe
 
-テストスイートを定義する。ネスト可能。
+Defines a test suite. Can be nested.
 
 ```ts
 describe(name: string, fn: () => void, timeout?: number): void
@@ -22,17 +22,17 @@ describe('math utils', () => {
 })
 ```
 
-### describe のモディファイア
+### describe modifiers
 
 | Modifier | Description |
 |----------|-------------|
-| `describe.only` | このスイートのみ実行 |
-| `describe.skip` | スキップ |
-| `describe.todo` | 未実装マーク |
-| `describe.concurrent` | 内部テストを並列実行 |
-| `describe.sequential` | concurrent コンテキスト内で順次実行を強制 |
-| `describe.shuffle` | ランダム順で実行 |
-| `describe.each(table)` | テーブル駆動でスイートを繰り返し |
+| `describe.only` | Run only this suite |
+| `describe.skip` | Skip |
+| `describe.todo` | Mark as not yet implemented |
+| `describe.concurrent` | Run inner tests concurrently |
+| `describe.sequential` | Force sequential execution inside a concurrent context |
+| `describe.shuffle` | Run in random order |
+| `describe.each(table)` | Repeat the suite in table-driven fashion |
 
 ```ts
 describe.each([
@@ -47,7 +47,7 @@ describe.each([
 
 ## test / it
 
-個別のテストケースを定義する。`it` は `test` のエイリアス。
+Defines an individual test case. `it` is an alias for `test`.
 
 ```ts
 test(name: string, fn?: () => void | Promise<void>, timeout?: number): void
@@ -64,33 +64,22 @@ test('async test', async () => {
 })
 ```
 
-### test のオプション
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `timeout` | `number` | `5000` | タイムアウト（ms） |
-| `retry` | `number` | `0` | 失敗時のリトライ回数 |
-| `repeats` | `number` | `0` | テストの繰り返し回数 |
-| `concurrent` | `boolean` | `false` | 並列実行 |
-| `sequential` | `boolean` | `true` | 順次実行 |
-| `tags` | `string[]` | `[]` | テストタグ |
-
-### test のモディファイア
+### test modifiers
 
 | Modifier | Description |
 |----------|-------------|
-| `test.only` | このテストのみ実行（CI では使用禁止エラー） |
-| `test.skip` | スキップ |
-| `test.todo` | 未実装マーク（body 不要） |
-| `test.fails` | テストが失敗することを期待 |
-| `test.concurrent` | 並列実行 |
-| `test.sequential` | concurrent スイート内で順次実行 |
-| `test.skipIf(condition)` | 条件が truthy ならスキップ |
-| `test.runIf(condition)` | 条件が truthy の場合のみ実行 |
+| `test.only` | Run only this test (errors if used in CI) |
+| `test.skip` | Skip |
+| `test.todo` | Mark as not yet implemented (no body required) |
+| `test.fails` | Expect the test to fail |
+| `test.concurrent` | Run concurrently |
+| `test.sequential` | Run sequentially inside a concurrent suite |
+| `test.skipIf(condition)` | Skip if the condition is truthy |
+| `test.runIf(condition)` | Run only if the condition is truthy |
 
-### test.override（v4.1.0+）
+### test.override (v4.1.0+)
 
-`test.extend` で定義したフィクスチャをスイート内でスコープ付きオーバーライドする。
+Overrides a fixture defined with `test.extend`, scoped to the suite.
 
 ```ts
 const myTest = test.extend<{ port: number }>({
@@ -102,9 +91,9 @@ myTest.override({ port: 8080 })('uses port 8080', ({ port }) => {
 })
 ```
 
-### test.each（テーブル駆動テスト）
+### test.each (table-driven tests)
 
-配列またはテンプレートリテラルを受け取る。
+Accepts an array or a template literal.
 
 ```ts
 test.each([
@@ -116,11 +105,11 @@ test.each([
 })
 ```
 
-フォーマット指定子: `%s`（文字列）, `%d`（数値）, `%i`（整数）, `%f`（浮動小数点）, `%j`（JSON）, `%#`（インデックス）, `%$`（テスト番号）
+Format specifiers: `%s` (string), `%d` (number), `%i` (integer), `%f` (float), `%j` (JSON), `%#` (index), `%$` (test number)
 
 ### test.for
 
-`test.each` の代替。配列引数をスプレッドせず、TestContext にアクセス可能。
+An alternative to `test.each`. Does not spread array arguments and gives access to the TestContext.
 
 ```ts
 test.for([
@@ -131,9 +120,9 @@ test.for([
 })
 ```
 
-### test.extend（フィクスチャ）
+### test.extend (fixtures)
 
-テストコンテキストにカスタムフィクスチャを追加する。
+Adds custom fixtures to the test context.
 
 ```ts
 const myTest = test.extend<{ db: Database }>({
@@ -149,7 +138,7 @@ myTest('uses fixture', ({ db }) => {
 })
 ```
 
-## ライフサイクルフック
+## Lifecycle Hooks
 
 ```ts
 beforeAll(fn: () => void | Promise<void>, timeout?: number): void
@@ -179,26 +168,57 @@ describe('database tests', () => {
 })
 ```
 
-### フックの実行順序
+### Hook execution order
 
-- `beforeEach`: 外側 → 内側
-- `afterEach`: 内側 → 外側
-- トップレベル（`describe` 外）のフックはファイル内の全テストに適用
+- `beforeEach`: outer → inner
+- `afterEach`: inner → outer
+- Top-level hooks (outside `describe`) apply to all tests in the file
 
-## context.skip()（動的スキップ）
+## aroundEach / aroundAll (v4.1.0+)
 
-テスト実行中に条件に応じてスキップできる。
+Hooks that wrap each test or the entire suite in the current suite. Call `runTest` / `runSuite` to actually run the wrapped test (including `beforeEach`/`afterEach` and fixtures). See [Hooks](./hooks.md) for the full reference.
+
+```ts
+aroundEach(
+  body: (runTest: () => Promise<void>, context: TestContext) => Promise<void>,
+  timeout?: number,
+): void
+
+aroundAll(
+  body: (runSuite: () => Promise<void>, context: ModuleContext) => Promise<void>,
+  timeout?: number,
+): void
+```
+
+```ts
+import { aroundEach, test } from 'vitest'
+
+aroundEach(async (runTest) => {
+  await db.transaction(runTest)
+})
+
+test('insert user', async () => {
+  await db.insert({ name: 'Alice' })
+  // transaction is automatically rolled back after the test
+})
+```
+
+Also available as `myTest.aroundEach` / `myTest.aroundAll`, a scoped version that inherits the types from `test.extend`.
+
+## context.skip() (dynamic skip)
+
+Skips the test conditionally during execution.
 
 ```ts
 test('dynamic skip', ({ skip }) => {
   if (someCondition) skip()
-  // 以降は実行されない
+  // nothing below this runs
 })
 ```
 
-## context.annotate()（テストアノテーション）
+## context.annotate() (test annotations)
 
-テスト実行中に注釈を追加する（v4.0+）。
+Adds an annotation during test execution (v4.0+).
 
 ```ts
 test('annotated', async ({ annotate }) => {
@@ -207,9 +227,21 @@ test('annotated', async ({ annotate }) => {
 })
 ```
 
-型: `'notice' | 'warning' | 'error'`（省略時は `'notice'`）
+Type: `'notice' | 'warning' | 'error'` (defaults to `'notice'`)
 
-## 関連
+## Options / Props
 
-- [Expect マッチャー](./expect.md)
-- [Vi ユーティリティ](./vi.md)
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `timeout` | `number` | `5000` | Timeout (ms) |
+| `retry` | `number` | `0` | Number of retries on failure |
+| `repeats` | `number` | `0` | Number of times to repeat the test |
+| `concurrent` | `boolean` | `false` | Run concurrently |
+| `sequential` | `boolean` | `true` | Run sequentially |
+| `tags` | `string[]` | `[]` | Test tags |
+
+## Related
+
+- [Expect Matchers](./expect.md)
+- [Vi Utilities](./vi.md)
+- [Hooks](./hooks.md)

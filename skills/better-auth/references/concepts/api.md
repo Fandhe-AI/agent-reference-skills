@@ -1,24 +1,12 @@
 # API
 
-Better Auth はサーバー側 API アクセスを、auth インスタンスに公開される `api` オブジェクトを通じて提供する。HTTP リクエストではなく通常の関数呼び出しとして認証エンドポイントと直接やり取りできる。
+Better Auth provides server-side API access through the `api` object exposed on the auth instance. You can interact directly with authentication endpoints as regular function calls instead of HTTP requests.
 
-## 概要
+## Signature / Usage
 
-auth インスタンスを作成すると、`api` オブジェクトが提供される。このオブジェクトは Better Auth インスタンスに存在するすべてのエンドポイントを公開する。API は [better-call](https://github.com/bekacru/better-call) を活用し、REST エンドポイントを標準関数として呼び出せる軽量ウェブフレームワーク。
+Once you create an auth instance, the `api` object is provided. This object exposes every endpoint that exists on the Better Auth instance. The API leverages [better-call](https://github.com/bekacru/better-call), a lightweight web framework that lets you call REST endpoints as standard functions.
 
-## API パラメーター
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `body` | Object | No | リクエストボディデータ |
-| `headers` | Headers | Conditional | HTTP ヘッダー（認証トークン、IP 情報） |
-| `query` | Object | No | URL クエリパラメーター |
-| `returnHeaders` | boolean | No | レスポンスヘッダーを戻り値に含める |
-| `asResponse` | boolean | No | 生の Response オブジェクトを返す |
-
-## コード例
-
-### セッション取得
+### Getting the session
 
 ```typescript
 import { auth } from "@/lib/auth";
@@ -28,7 +16,7 @@ await auth.api.getSession({
 });
 ```
 
-### Body パラメーター付き
+### With body parameters
 
 ```typescript
 await auth.api.signInEmail({
@@ -40,7 +28,7 @@ await auth.api.signInEmail({
 });
 ```
 
-### Query パラメーター付き
+### With query parameters
 
 ```typescript
 await auth.api.verifyEmail({
@@ -50,7 +38,7 @@ await auth.api.verifyEmail({
 });
 ```
 
-### メールサインアップ
+### Email sign-up
 
 ```typescript
 await auth.api.signUpEmail({
@@ -63,7 +51,7 @@ await auth.api.signUpEmail({
 });
 ```
 
-### レスポンスヘッダーの取得
+### Getting response headers
 
 ```typescript
 const { headers, response } = await auth.api.signUpEmail({
@@ -79,7 +67,7 @@ const cookies = headers.getSetCookie();
 const customHeader = headers.get("x-custom-header");
 ```
 
-### Response オブジェクトの取得
+### Getting the Response object
 
 ```typescript
 const response = await auth.api.signInEmail({
@@ -91,17 +79,11 @@ const response = await auth.api.signInEmail({
 });
 ```
 
-## エラーハンドリング
-
-### 型定義
+### Error handling
 
 ```typescript
 import { APIError, isAPIError } from "better-auth/api";
-```
 
-### 実装
-
-```typescript
 try {
   await auth.api.signInEmail({
     body: {
@@ -116,17 +98,32 @@ try {
 }
 ```
 
-## 注意点
+## Options / Props
 
-- クライアント側の呼び出しとは異なり、サーバー実装はプレーンな JavaScript オブジェクトを直接受け取る
-- `returnHeaders` オプションは Cookie 抽出用の標準 `Headers` オブジェクトを取得する
-- `asResponse` オプションは完全な HTTP レスポンスメタデータが必要な場合に使用
-- コア機能やプラグインで定義されたすべてのエンドポイントが自動的に利用可能になる
-- エラーインスタンスは `APIError` を継承し、一貫したエラーハンドリングパターンを提供
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `body` | Object | No | Request body data |
+| `headers` | Headers | Conditional | HTTP headers (auth tokens, IP info) |
+| `query` | Object | No | URL query parameters |
+| `returnHeaders` | boolean | No | Include response headers in the return value |
+| `asResponse` | boolean | No | Return the raw Response object |
 
-## セキュリティ考慮事項
+## Notes
 
-- 一部のエンドポイントはヘッダーが必要（セッショントークン、IP 検出のため）
-- ヘッダーはユーザーセッショントークンや IP アドレス情報など、レート制限や不正検知に必要なメタデータを提供
-- レスポンスヘッダーには認証 Cookie が含まれ、セキュリティ上の慎重な取り扱いが必要
-- すべてのサーバー側呼び出しは信頼されたコードとして実行される
+- Unlike client-side calls, server implementations receive plain JavaScript objects directly
+- The `returnHeaders` option obtains a standard `Headers` object for cookie extraction
+- The `asResponse` option is used when full HTTP response metadata is needed
+- All endpoints defined by core features or plugins are automatically available
+- Error instances inherit from `APIError`, providing a consistent error-handling pattern
+
+### Security
+
+- Some endpoints require headers (for session tokens, IP detection)
+- Headers provide metadata such as user session tokens and IP address information needed for rate limiting and fraud detection
+- Response headers include auth cookies and require careful handling for security
+- All server-side calls execute as trusted code
+
+## Related
+
+- [Client](./client.md)
+- [Hooks](./hooks.md)

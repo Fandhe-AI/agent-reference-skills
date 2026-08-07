@@ -2,7 +2,7 @@
 
 JSDoc compatibility details, supported tags, behavioral differences, and the jsDocCompatibility configuration options.
 
-## 詳細説明
+## Signature / Usage
 
 TypeDoc aims to recognize most JSDoc comments in a manner similar to how they are handled by TypeScript and Visual Studio Code. When JSDoc and TSDoc specifications conflict, TypeDoc attempts to detect which implementation is intended. JSDoc compatibility is configurable via the `--jsDocCompatibility` option.
 
@@ -15,64 +15,6 @@ TypeDoc aims to recognize most JSDoc comments in a manner similar to how they ar
 3. **`@see` tags** -- TypeDoc does not parse `@see` tag contents as links (unlike JSDoc which treats the content as a reference). The content is rendered as-is.
 
 4. **Tag support** -- TypeDoc does not support all JSDoc tags. Some JSDoc-specific tags have no equivalent in TypeDoc's model.
-
-### jsDocCompatibility Option
-
-The `jsDocCompatibility` option controls how TypeDoc handles conflicts between JSDoc and TSDoc standards in comment parsing. It can be set globally to `true` or `false`, or configured per sub-option.
-
-#### Sub-Options
-
-| Sub-Option | Default | Description |
-|---|---|---|
-| `exampleTag` | `true` | Controls parsing of `@example` tag content as code. JSDoc specifies that `@example` content should be parsed as code, conflicting with TSDoc. When enabled, TypeDoc infers from tag content whether it contains a code block. |
-| `defaultTag` | `true` | Controls parsing of `@default` / `@defaultValue` tag content as code, following the same JSDoc vs. TSDoc conflict resolution as `exampleTag`. |
-| `inheritDocTag` | `true` | When `false`, TypeDoc produces a warning when rewriting `@inheritdoc` (lowercase d) to the TSDoc-standard `@inheritDoc` (capitalized D). |
-| `ignoreUnescapedBraces` | `true` | Controls warning emission for unescaped braces (`{` and `}`) in comments. TSDoc requires escaping braces to avoid ambiguity with inline tag syntax. When enabled, unescaped braces do not trigger warnings. |
-
-### JSDoc Tags Recognized by TypeDoc
-
-TypeDoc recognizes the following JSDoc-origin tags:
-
-#### Supported JSDoc Block Tags
-
-| Tag | TypeDoc Behavior |
-|---|---|
-| `@param` | Documents function parameters. Type annotations are optional (TypeScript provides types). |
-| `@returns` / `@return` | Documents return values. |
-| `@throws` | Documents thrown exceptions. |
-| `@example` | Provides usage examples. Content parsing depends on `jsDocCompatibility.exampleTag`. |
-| `@default` / `@defaultValue` | Specifies default values. Content parsing depends on `jsDocCompatibility.defaultTag`. |
-| `@deprecated` | Marks code as deprecated. |
-| `@see` | References related documentation (content not parsed as links). |
-| `@author` | Identifies the author. |
-| `@since` | Indicates version/date when added. |
-| `@type` | Specifies a type. |
-| `@typedef` | Defines a type (JSDoc type definitions). |
-| `@callback` | Defines a callback type. |
-| `@property` / `@prop` | Documents object properties. |
-| `@extends` / `@augments` | Extends a type. |
-| `@satisfies` | Satisfies a type constraint. |
-| `@template` | Documents generic type parameters. |
-| `@yields` | Documents generator yield values. |
-
-#### Supported JSDoc Modifier Tags
-
-| Tag | TypeDoc Behavior |
-|---|---|
-| `@abstract` | Marks as abstract. |
-| `@class` | Forces class classification. |
-| `@enum` | Marks as enumeration. |
-| `@function` | Forces function classification. |
-| `@hideconstructor` | Hides the constructor from docs. |
-| `@interface` | Forces interface classification. |
-| `@namespace` | Forces namespace classification. |
-| `@override` | Marks as override. |
-| `@private` | Marks as private visibility. |
-| `@protected` | Marks as protected visibility. |
-| `@public` | Marks as public visibility. |
-| `@readonly` | Marks as read-only. |
-
-## コード例
 
 ### CLI Configuration
 
@@ -180,7 +122,57 @@ When `false`, braces must be escaped:
 function getUser(): { name: string } {}
 ```
 
-## 注意点
+## Options / Props
+
+### jsDocCompatibility Sub-Options
+
+| Sub-Option | Default | Description |
+|---|---|---|
+| `exampleTag` | `true` | Controls parsing of `@example` tag content as code. JSDoc specifies that `@example` content should be parsed as code, conflicting with TSDoc. When enabled, TypeDoc infers from tag content whether it contains a code block. |
+| `defaultTag` | `true` | Controls parsing of `@default` / `@defaultValue` tag content as code, following the same JSDoc vs. TSDoc conflict resolution as `exampleTag`. |
+| `inheritDocTag` | `true` | When `false`, TypeDoc produces a warning when rewriting `@inheritdoc` (lowercase d) to the TSDoc-standard `@inheritDoc` (capitalized D). |
+| `ignoreUnescapedBraces` | `true` | Controls warning emission for unescaped braces (`{` and `}`) in comments. TSDoc requires escaping braces to avoid ambiguity with inline tag syntax. When enabled, unescaped braces do not trigger warnings. |
+
+### Supported JSDoc Block Tags
+
+| Tag | TypeDoc Behavior |
+|---|---|
+| `@param` | Documents function parameters. Type annotations are optional (TypeScript provides types). |
+| `@returns` / `@return` | Documents return values. |
+| `@throws` | Documents thrown exceptions. |
+| `@example` | Provides usage examples. Content parsing depends on `jsDocCompatibility.exampleTag`. |
+| `@default` / `@defaultValue` | Specifies default values. Content parsing depends on `jsDocCompatibility.defaultTag`. |
+| `@deprecated` | Marks code as deprecated. |
+| `@see` | References related documentation (content not parsed as links). |
+| `@author` | Identifies the author. |
+| `@since` | Indicates version/date when added. |
+| `@type` | Specifies a type. |
+| `@typedef` | Defines a type (JSDoc type definitions). |
+| `@callback` | Defines a callback type. |
+| `@property` / `@prop` | Documents object properties. |
+| `@extends` / `@augments` | Extends a type. |
+| `@satisfies` | Satisfies a type constraint. |
+| `@template` | Documents generic type parameters. |
+| `@yields` | Documents generator yield values. |
+
+### Supported JSDoc Modifier Tags
+
+| Tag | TypeDoc Behavior |
+|---|---|
+| `@abstract` | Marks as abstract. |
+| `@class` | Forces class classification. |
+| `@enum` | Marks as enumeration. |
+| `@function` | Forces function classification. |
+| `@hideconstructor` | Hides the constructor from docs. |
+| `@interface` | Forces interface classification. |
+| `@namespace` | Forces namespace classification. |
+| `@override` | Marks as override. |
+| `@private` | Marks as private visibility. |
+| `@protected` | Marks as protected visibility. |
+| `@public` | Marks as public visibility. |
+| `@readonly` | Marks as read-only. |
+
+## Notes
 
 - By default, all `jsDocCompatibility` sub-options are `true`, providing maximum JSDoc compatibility.
 - Setting `jsDocCompatibility` to `false` disables ALL sub-options at once, switching to strict TSDoc behavior.
@@ -190,7 +182,7 @@ function getUser(): { name: string } {}
 - When `ignoreUnescapedBraces` is disabled, all braces in comments must be escaped with backslashes to avoid being interpreted as inline tag delimiters.
 - TypeDoc processes JSDoc type expressions in comments but generally prefers TypeScript's own type information from the source code.
 
-## 関連
+## Related
 
 - [Doc Comments](./doc-comments.md)
 - [Declaration References](./declaration-references.md)

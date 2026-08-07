@@ -1,27 +1,24 @@
 # @primaryExport
 
-再エクスポート（re-export）の処理方法を制御し、TypeDoc にシンボルを即座に変換させるモディファイアタグ。
+Modifier tag that controls how re-exports are processed, forcing TypeDoc to convert a symbol immediately.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @primaryExport */
 ```
 
-## 詳細説明
+By default, TypeDoc defers conversion of re-exported symbols and uses the original module as the documented reference when available. The `@primaryExport` tag overrides this behavior, forcing TypeDoc to convert the symbol immediately rather than deferring it.
 
-デフォルトでは、TypeDoc は再エクスポートされたシンボルの変換を遅延させ、利用可能な場合は元のモジュールをドキュメントの参照先として使用する。`@primaryExport` タグは、この動作をオーバーライドし、TypeDoc にシンボルを遅延させずに即座に変換させる。
+When applied to a namespace comment, the re-exports within that namespace are converted and documented directly inside the namespace rather than referencing their original source.
 
-名前空間コメントに適用すると、その名前空間内の再エクスポートが元のソースを参照するのではなく、直接その名前空間内で変換・ドキュメント化される。
-
-これは、階層的なエクスポート構造とフラットなエクスポート構造の両方を維持しつつ、ドキュメントを特定の場所に向けたい場合に有用。
-
-## コード例
+This is useful when both a hierarchical export structure and a flat export structure need to be maintained, while pointing the documentation at a specific location.
 
 ```typescript
 /**
- * モデルの主要なドキュメントをこの名前空間にしたいが、
- * 後方互換性のためにフラットなエクスポート構造も維持する。
+ * We want the primary documentation for the model to live in this
+ * namespace, while also keeping a flat export structure for backward
+ * compatibility.
  * @primaryExport
  */
 export * as Models from "./models/index.js";
@@ -30,21 +27,21 @@ export * from "./models/index.js";
 
 ```typescript
 /**
- * すべてのユーティリティ関数。
+ * All utility functions.
  * @primaryExport
  */
 export * as Utils from "./utils/index.js";
-// フラットなアクセスも可能
+// Flat access is also available
 export * from "./utils/index.js";
 ```
 
-## 注意点
+## Notes
 
-- 再エクスポートを含む名前空間宣言に適用する
-- TypeDoc のデフォルトの遅延変換戦略をオーバーライドする
-- 階層的エクスポートとフラットエクスポートの共存に有用
+- Applied to a namespace declaration that contains re-exports
+- Overrides TypeDoc's default deferred conversion strategy
+- Useful for making hierarchical and flat exports coexist
 
-## 関連
+## Related
 
 - [@packageDocumentation](./packageDocumentation.md)
 - [@namespace](./namespace.md)

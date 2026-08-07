@@ -1,23 +1,23 @@
 # Creem
 
-Creem の金融 OS を Better Auth に統合するプラグイン。決済処理・サブスクリプション管理を認証レイヤーに直接組み込む。
+Plugin integrating Creem's financial OS with Better Auth. Payment processing and subscription management built directly into the authentication layer.
 
-## インストール
+## Signature / Usage
+
+### Installation
 
 ```bash
 npm install @creem_io/better-auth
 ```
 
-環境変数:
+Environment variables:
 
 ```
 CREEM_API_KEY=your_api_key_here
 CREEM_WEBHOOK_SECRET=your_webhook_secret_here
 ```
 
-## セットアップ
-
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -36,7 +36,7 @@ export const auth = betterAuth({
 })
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/react"
@@ -47,36 +47,36 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
+### API methods
 
-| メソッド | 説明 |
+| Method | Description |
 |---|---|
-| `authClient.creem.createCheckout({ productId, successUrl, discountCode?, metadata? })` | 支払いセッション作成 |
-| `authClient.creem.createPortal()` | セルフサービス管理ポータルを開く |
-| `cancelSubscription()` | サブスクリプションをキャンセル |
-| `retrieveSubscription()` | サブスクリプション詳細を取得 |
-| `hasAccessGranted()` | サブスクリプションステータスに基づいたアクセス確認 |
-| `searchTransactions({ productId, pageNumber, pageSize })` | トランザクション検索 |
+| `authClient.creem.createCheckout({ productId, successUrl, discountCode?, metadata? })` | Create a payment session |
+| `authClient.creem.createPortal()` | Open the self-service management portal |
+| `cancelSubscription()` | Cancel a subscription |
+| `retrieveSubscription()` | Retrieve subscription details |
+| `hasAccessGranted()` | Check access based on subscription status |
+| `searchTransactions({ productId, pageNumber, pageSize })` | Search transactions |
 
-## 設定オプション
+### Key features
 
-| プロパティ | 型 | 説明 |
+- Automatic sync of customer and subscription data
+- Access management based on subscription status
+- Webhook signature verification
+- Trial abuse prevention (one per account)
+- Supports both DB persistence mode and API mode
+
+## Options / Props
+
+| Property | Type | Description |
 |---|---|---|
-| `apiKey` | string | Creem API キー（必須） |
-| `webhookSecret?` | string | Webhook 署名シークレット |
-| `testMode?` | boolean | テストモード |
-| `persistSubscriptions?` | boolean | DB へのサブスクリプション永続化 |
-| `defaultSuccessUrl?` | string | デフォルトの成功 URL |
-| `onGrantAccess?` | function | アクセス付与時のハンドラー |
-| `onRevokeAccess?` | function | アクセス取り消し時のハンドラー |
-
-## 主な機能
-
-- 顧客・サブスクリプションデータの自動同期
-- サブスクリプションステータスに基づいたアクセス管理
-- Webhook 署名検証
-- トライアル悪用防止（1 アカウントあたり 1 回）
-- DB 永続化モードと API モードの両対応
+| `apiKey` | string | Creem API key (required) |
+| `webhookSecret?` | string | Webhook signature secret |
+| `testMode?` | boolean | Test mode |
+| `persistSubscriptions?` | boolean | Persist subscriptions to the DB |
+| `defaultSuccessUrl?` | string | Default success URL |
+| `onGrantAccess?` | function | Handler for granting access |
+| `onRevokeAccess?` | function | Handler for revoking access |
 
 ## Related
 

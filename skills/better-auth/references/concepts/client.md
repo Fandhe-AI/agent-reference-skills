@@ -1,10 +1,10 @@
 # Client
 
-Better Auth はフロントエンド認証用のフレームワーク非依存クライアントライブラリを提供する。コアクライアントは React, Vue, Svelte, Solid, バニラ JavaScript をフレームワーク固有のインポートを通じてサポートする。
+Better Auth provides a framework-agnostic client library for frontend authentication. The core client supports React, Vue, Svelte, Solid, and vanilla JavaScript through framework-specific imports.
 
-## セットアップ
+## Signature / Usage
 
-### 基本セットアップ
+### Basic setup
 
 ```typescript
 import { createAuthClient } from "better-auth/client";
@@ -14,53 +14,25 @@ const authClient = createAuthClient({
 });
 ```
 
-### フレームワーク別インポート
-
-| Framework | Import Path | Usage |
-|-----------|-------------|-------|
-| React | `better-auth/react` | Hooks とクライアントメソッド |
-| Vue | `better-auth/vue` | Composition API サポート |
-| Svelte | `better-auth/svelte` | ストアとリアクティブデータ |
-| Solid | `better-auth/solid` | シグナルとプリミティブ |
-| Vanilla JS | `better-auth/client` | コア機能 |
-
-## 設定オプション
-
-| Option | Type | Description |
-|--------|------|-------------|
-| `baseURL` | string | 認証サーバーのベース URL（同一ドメインなら省略可） |
-| `fetchOptions` | object | デフォルト fetch 設定 |
-| `disableDefaultFetchPlugins` | boolean | ブラウザ固有動作を無効化（React Native/Expo 向け） |
-| `plugins` | array | クライアントプラグインで機能拡張 |
-
-## 認証メソッド
-
-### サインイン (Email)
+### Auth methods
 
 ```typescript
+// Sign in (Email)
 const { data, error } = await authClient.signIn.email({
   email: "user@example.com",
   password: "password1234",
 });
-```
 
-### サインイン (Social)
-
-```typescript
+// Sign in (Social)
 await authClient.signIn.social({
   provider: "github",
 });
-```
 
-### マジックリンク
-
-```typescript
+// Magic link
 await authClient.signIn.magicLink({
   email: "test@email.com",
 });
 ```
-
-## Hooks
 
 ### useSession Hook
 
@@ -82,41 +54,30 @@ export function User() {
 }
 ```
 
-**Vue:**
+**Vue / Svelte:**
 
 ```typescript
 const session = authClient.useSession();
-// Returns: { data, isPending, error, refetch }
+// Returns: { data, isPending, error, refetch } (Svelte returns a store with reactive updates)
 ```
 
-**Svelte:**
+### Fetch options
 
 ```typescript
-const session = authClient.useSession();
-// リアクティブ更新付きストアを返す
-```
-
-## Fetch オプション
-
-### デフォルト Fetch オプションの設定
-
-```typescript
+// Setting default fetch options
 const authClient = createAuthClient({
   fetchOptions: {
-    // better-fetch オプション
+    // better-fetch options
   },
 });
-```
 
-### リクエスト毎の Fetch オプション
-
-```typescript
+// Per-request fetch options
 await authClient.signIn.email(
   { email: "test@email.com", password: "pass" },
-  { onSuccess(ctx) { /* 成功処理 */ } }
+  { onSuccess(ctx) { /* success handling */ } }
 );
 
-// または fetchOptions プロパティ内で
+// Or within the fetchOptions property
 await authClient.signIn.email({
   email: "test@email.com",
   password: "pass",
@@ -124,9 +85,9 @@ await authClient.signIn.email({
 });
 ```
 
-## Hook リレンダー制御
+### Controlling hook re-renders
 
-エンドポイント成功時に UI 更新をトリガーすべきでない場合、自動 Hook 更新を無効化:
+Disable automatic hook updates when an endpoint's success shouldn't trigger a UI update:
 
 ```typescript
 await authClient.updateUser(
@@ -134,7 +95,7 @@ await authClient.updateUser(
   { disableSignal: true }
 );
 
-// 必要に応じて手動リフェッチ
+// Refetch manually when needed
 const { refetch } = authClient.useSession();
 await authClient.updateUser(
   { name: "New Name" },
@@ -142,9 +103,7 @@ await authClient.updateUser(
 );
 ```
 
-## エラーハンドリング
-
-### レスポンスオブジェクト構造
+### Error handling
 
 ```typescript
 const { data, error } = await authClient.signIn.email({
@@ -152,14 +111,12 @@ const { data, error } = await authClient.signIn.email({
   password: "pass",
 });
 
-// error オブジェクトのプロパティ:
-// - message: string (ユーザー向けエラーメッセージ)
-// - status: number (HTTP ステータスコード)
-// - statusText: string (HTTP ステータステキスト)
-// - code?: string (翻訳用エラーコード)
+// error object properties:
+// - message: string (user-facing error message)
+// - status: number (HTTP status code)
+// - statusText: string (HTTP status text)
+// - code?: string (error code for translation)
 ```
-
-### エラーコードの使用
 
 ```typescript
 const authClient = createAuthClient();
@@ -182,19 +139,7 @@ if (error?.code && error.code in errorMessages) {
 }
 ```
 
-### Hook でのエラーハンドリング
-
-```typescript
-const { data, error, isPending } = useSession();
-
-if (error) {
-  // セッションフェッチエラーの処理
-}
-```
-
-## プラグイン
-
-### マジックリンクプラグイン例
+### Plugins
 
 ```typescript
 import { createAuthClient } from "better-auth/client";
@@ -204,16 +149,40 @@ const authClient = createAuthClient({
   plugins: [magicLinkClient()],
 });
 
-// 新しいプラグインメソッドの使用
+// Using the new plugin method
 await authClient.signIn.magicLink({ email: "test@email.com" });
 ```
 
-## 注意点
+## Options / Props
 
-- **非ブラウザ環境:** React Native/Expo では `disableDefaultFetchPlugins: true` を設定してデフォルト fetch プラグインを無効化
-- **ベース URL 設定:** カスタムパスを含む完全な URL を明示的に提供（例: `http://localhost:3000/custom-path/auth`）
-- **Fetch ライブラリ:** Better Auth は「better-fetch」を使用（ネイティブ Fetch API のラッパー）
-- **シグナル管理:** 特定のエンドポイントは atom シグナルをトリガーし、認証状態との UI 同期を維持するために Hook のリレンダーを引き起こす
-- フレームワーク非依存のコアとフレームワーク固有のラッパー
-- 全フレームワークで一貫したメソッドシグネチャ
-- フレームワークごとの組み込みリアクティブデータ管理
+### createAuthClient config options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `baseURL` | string | Base URL of the auth server (optional if same domain) |
+| `fetchOptions` | object | Default fetch configuration |
+| `disableDefaultFetchPlugins` | boolean | Disable browser-specific behavior (for React Native/Expo) |
+| `plugins` | array | Extend functionality with client plugins |
+
+### Per-framework imports
+
+| Framework | Import Path | Usage |
+|-----------|-------------|-------|
+| React | `better-auth/react` | Hooks and client methods |
+| Vue | `better-auth/vue` | Composition API support |
+| Svelte | `better-auth/svelte` | Stores and reactive data |
+| Solid | `better-auth/solid` | Signals and primitives |
+| Vanilla JS | `better-auth/client` | Core functionality |
+
+## Notes
+
+- **Non-browser environments:** On React Native/Expo, set `disableDefaultFetchPlugins: true` to disable the default fetch plugins
+- **Base URL configuration:** Provide the full URL explicitly, including any custom path (e.g. `http://localhost:3000/custom-path/auth`)
+- **Fetch library:** Better Auth uses "better-fetch" (a wrapper around the native Fetch API)
+- **Signal management:** Certain endpoints trigger atom signals, causing hook re-renders to keep the UI in sync with auth state
+- Framework-agnostic core with framework-specific wrappers, consistent method signatures across all frameworks, and built-in reactive data management per framework
+
+## Related
+
+- [API](./api.md)
+- [Session Management](./session-management.md)

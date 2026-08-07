@@ -2,9 +2,10 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Installation | Install Motion for React, imports, React 18.2+ requirement, Next.js/Vite/CDN setup | [installation.md](./installation.md) |
-| Accessibility | Reduced Motion support via MotionConfig `reducedMotion` and `useReducedMotion` hook | [accessibility.md](./accessibility.md) |
-| Performance | Compositor-only properties (transform/opacity), three rendering steps, will-change, hardware acceleration | [performance.md](./performance.md) |
-| Reduce Bundle Size | `m` component + `LazyMotion`, `domAnimation`/`domMax` features, code-splitting, strict mode | [reduce-bundle-size.md](./reduce-bundle-size.md) |
-| Upgrade from Framer Motion | Rename to `motion`, import path change, breaking changes per major version | [upgrade-guide.md](./upgrade-guide.md) |
-| Migrate from GSAP | GSAP-to-Motion API mapping, declarative timelines, scroll, bundle size, limitations | [migrate-from-gsap.md](./migrate-from-gsap.md) |
+| Accessibility | Respect the OS "Reduced Motion" setting to avoid motion sickness and usability issues. Motion provides `MotionConfig` and the `useReducedMotion` hook. | [accessibility.md](./accessibility.md) |
+| Installation | Install Motion for React and import the `motion` component. Requires React 18.2 or higher. | [installation.md](./installation.md) |
+| Migrate from GSAP | Motion separates animation values from options into distinct objects and uses declarative timelines, the Web Animations API, and ScrollTimeline for hardware-accelerated, tree-shakeable animations. | [migrate-from-gsap.md](./migrate-from-gsap.md) |
+| Performance | Animate cheap, compositor-only properties (`transform`, `opacity`) to keep animations hardware-accelerated and smooth even when the main JS thread is busy. | [performance.md](./performance.md) |
+| Reduce Bundle Size | Replace the full `motion` component (34kb) with the slim `m` component plus `LazyMotion` to cut the initial bundle to under 4.6kb, loading animation features on demand. | [reduce-bundle-size.md](./reduce-bundle-size.md) |
+| Troubleshooting | Motion's error/warning guide: each runtime message links to a dedicated page explaining the message, its cause, and the fix. This page summarizes the most common ones. | [troubleshooting.md](./troubleshooting.md) |
+| Upgrade from Framer Motion | Framer Motion was renamed to Motion. Uninstall `framer-motion`, install `motion`, and update imports from `"framer-motion"` to `"motion/react"`. | [upgrade-guide.md](./upgrade-guide.md) |

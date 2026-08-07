@@ -19,6 +19,7 @@ skills/go-echo/
       quickstart.md
       installation.md
       customization.md
+      ip-address.md
     routing/
       README.md
       route-registration.md
@@ -36,6 +37,7 @@ skills/go-echo/
       response.md
       storage.md
       binding.md
+      cookies.md
     request-binding/
       README.md
       bind.md
@@ -74,6 +76,7 @@ skills/go-echo/
       auth-basic-auth.md
       auth-key-auth.md
       auth-jwt.md
+      auth-casbin.md
       security-cors.md
       security-csrf.md
       security-secure.md
@@ -93,6 +96,10 @@ skills/go-echo/
       util-trailing-slash.md
       util-method-override.md
       util-session.md
+      observability-prometheus.md
+    testing/
+      README.md
+      handler-testing.md
   samples/
     README.md
     hello-world.md
@@ -105,6 +112,16 @@ skills/go-echo/
     graceful-shutdown.md
     template-rendering.md
     custom-middleware.md
+    auto-tls.md
+    embed-resources.md
+    http2-server.md
+    http2-server-push.md
+    jsonp.md
+    streaming-response.md
+    subdomain.md
+    timeout.md
+    reverse-proxy.md
+    load-balancing.md
   scripts/
     README.md
     install.md
@@ -126,12 +143,13 @@ skills/go-echo/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
-| Echo アプリの最小構成・インストール・Validator/Binder/Renderer 差し替えを知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| Echo アプリの最小構成・インストール・Validator/Binder/Renderer 差し替え・クライアント実 IP 解決を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | ルート登録・Group・path/query parameter・静的ルート・reverse routing を知りたい | routing | [references/routing/README.md](references/routing/README.md) |
-| echo.Context のメソッド・per-request storage・Context 拡張を知りたい | context | [references/context/README.md](references/context/README.md) |
+| echo.Context のメソッド・per-request storage・Context 拡張・Cookie の読み書きを知りたい | context | [references/context/README.md](references/context/README.md) |
 | リクエストボディ・path/query/header の Bind、custom binder、Validator 実装を知りたい | request-binding | [references/request-binding/README.md](references/request-binding/README.md) |
 | JSON/XML/HTML/Blob/Stream/File/Template でレスポンスを返したい | response | [references/response/README.md](references/response/README.md) |
 | HTTPError・カスタム HTTPErrorHandler・handler/middleware でのエラー伝播を知りたい | error-handling | [references/error-handling/README.md](references/error-handling/README.md) |
-| JWT/BasicAuth/KeyAuth 認証、CORS/CSRF/Secure、Gzip/Recover/Logger/RateLimiter などの middleware を知りたい | middleware | [references/middleware/README.md](references/middleware/README.md) |
-| 典型的な使い方を知りたい（CRUD API, JWT 認証, WebSocket, SSE, ファイルアップロード/ダウンロード, graceful shutdown, テンプレートレンダリング, カスタム middleware） | samples | [samples/README.md](samples/README.md) |
+| JWT/BasicAuth/KeyAuth/Casbin 認証、CORS/CSRF/Secure、Gzip/Recover/Logger/RateLimiter、Prometheus メトリクスなどの middleware を知りたい | middleware | [references/middleware/README.md](references/middleware/README.md) |
+| handler・middleware を httptest / echotest でテストしたい | testing | [references/testing/README.md](references/testing/README.md) |
+| 典型的な使い方を知りたい（CRUD API, JWT 認証, WebSocket, SSE, ファイルアップロード/ダウンロード, graceful shutdown, テンプレートレンダリング, カスタム middleware, Auto TLS, HTTP/2, JSONP, streaming, subdomain routing, reverse proxy, load balancing） | samples | [samples/README.md](samples/README.md) |
 | インストール・実行・テスト・AutoTLS/TLS・開発ツールのコマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

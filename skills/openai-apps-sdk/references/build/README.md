@@ -1,13 +1,12 @@
-# build
-
-This category covers building a plugin's server-side implementation: the MCP server that exposes tools, optional ChatGPT/Codex UI rendered in an iframe, authentication, skills, packaging, and monetization. This is the side that publishes an MCP server as a ChatGPT/Codex plugin — consuming an MCP server (Agents SDK integrations, connectors) is covered by the openai-agents skill.
+# Build
 
 | Name | Description | Path |
 |------|-------------|------|
-| App quickstart | End-to-end tutorial: build a web component + MCP server for a to-do plugin | [app-quickstart.md](./app-quickstart.md) |
-| MCP server | Build tools, return results, import skills, authenticate, deploy the endpoint | [mcp-server.md](./mcp-server.md) |
-| Add UI to your MCP server | MCP Apps bridge, `window.openai` extensions, presentation, state management, React scaffolding | [chatgpt-ui.md](./chatgpt-ui.md) |
-| Authentication | OAuth 2.1 flow, protected resource metadata, CIMD/DCR, mTLS, token verification | [auth.md](./auth.md) |
-| Build skills | Author `SKILL.md`, connect skills to MCP tools, import from MCP, package | [build-skills.md](./build-skills.md) |
-| Package your plugin | `plugin.json` manifest, marketplaces, local testing, distribution | [package-plugin.md](./package-plugin.md) |
-| Checkout and monetization | External checkout, saved payment methods, ChatGPT payment sheet, `complete_checkout` tool | [checkout-monetization.md](./checkout-monetization.md) |
+| App quickstart | End-to-end tutorial that builds a to-do plugin | [app-quickstart.md](./app-quickstart.md) |
+| Authentication | OAuth 2.1 flow for plugin MCP servers that… | [auth.md](./auth.md) |
+| Build skills | A skill complements a plugin's MCP server… | [build-skills.md](./build-skills.md) |
+| Add UI to your MCP server | Optional custom UI for tools that need… | [chatgpt-ui.md](./chatgpt-ui.md) |
+| Checkout and monetization | How a plugin's widget and MCP server… | [checkout-monetization.md](./checkout-monetization.md) |
+| Examples | The Pizzaz demo bundles several UI components… | [examples.md](./examples.md) |
+| MCP server | The MCP server defines the tools available… | [mcp-server.md](./mcp-server.md) |
+| Package your plugin | Assembles skills and optionally an MCP… | [package-plugin.md](./package-plugin.md) |

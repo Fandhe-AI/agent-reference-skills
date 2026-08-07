@@ -52,6 +52,6 @@ iOS 8.0+, iPadOS 8.0+, macOS 13.0+, watchOS 2.0+, visionOS 1.0+. In iOS 13+/watc
 
 ## Related
 
-- [hkquantitytype.md](./hkquantitytype.md)
-- [hkunit.md](./hkunit.md)
-- [hksamplequery.md](./hksamplequery.md)
+- [HKQuantityType](./hkquantitytype.md)
+- [HKUnit](./hkunit.md)
+- [HKSampleQuery](./hksamplequery.md)

@@ -1,12 +1,12 @@
-# TypeDoc 国際化 (Internationalization)
+# TypeDoc Internationalization
 
-TypeDoc v0.26 で導入された国際化機能。コンソール出力と生成される HTML/JSON の言語を制御する。
+Internationalization feature introduced in TypeDoc v0.26. Controls the language of console output and generated HTML/JSON.
 
-## 詳細説明
+## Usage
 
-### --lang オプション
+### The --lang option
 
-`--lang` オプションでコンソール出力と生成されるドキュメントの言語を指定する:
+The `--lang` option sets the language for console output and generated documentation:
 
 ```bash
 typedoc --lang ja
@@ -18,28 +18,28 @@ typedoc --lang ja
 }
 ```
 
-### ロケールの構造
+### Locale structure
 
-ロケールファイルは `src/lib/internationalization/locales` ディレクトリに格納される。デフォルトの英語ロケールは `src/lib/internationalization/translatable.ts` に定義されている。
+Locale files are stored in the `src/lib/internationalization/locales` directory. The default English locale is defined in `src/lib/internationalization/translatable.ts`.
 
-#### ロケールファイルの形式
+#### Locale file format
 
 ```typescript
 import { buildTranslation } from "../translatable";
 
 export = buildTranslation({
-  docs_generated_at_0: "ドキュメントは {0} に生成されました",
-  // 他の翻訳キー...
+  docs_generated_at_0: "Documentation generated at {0}",
+  // other translation keys...
 });
 ```
 
-### 新しいロケールの追加
+### Adding a new locale
 
-1. `src/lib/internationalization/locales` に新しいファイルを作成
-2. `buildTranslation()` を使用して完全な翻訳を提供するか、`buildIncompleteTranslation()` を使用して部分的な翻訳を提供する
-3. 未翻訳の文字列は自動的に英語にフォールバックする
+1. Create a new file under `src/lib/internationalization/locales`
+2. Provide a complete translation with `buildTranslation()`, or a partial one with `buildIncompleteTranslation()`
+3. Untranslated strings automatically fall back to English
 
-#### 完全な翻訳
+#### Complete translation
 
 ```typescript
 import { buildTranslation } from "../translatable";
@@ -48,29 +48,29 @@ export = buildTranslation({
   docs_generated_at_0: "ドキュメントは {0} に生成されました",
   kind_class: "クラス",
   kind_function: "関数",
-  // すべてのキーを含める
+  // include all keys
 });
 ```
 
-#### 部分的な翻訳
+#### Partial translation
 
 ```typescript
 import { buildIncompleteTranslation } from "../translatable";
 
 export = buildIncompleteTranslation({
   docs_generated_at_0: "ドキュメントは {0} に生成されました",
-  // 一部のキーのみ
+  // only some keys
 });
 ```
 
-### プレースホルダー構文
+### Placeholder syntax
 
-翻訳キー名の末尾の数字はプレースホルダーの数を示す:
+The trailing number in a translation key name indicates the number of placeholders:
 
-- `docs_generated_at_0` — `{0}` プレースホルダー 1 つ
-- `tag_param_0_is_not_defined_1` — `{0}` と `{1}` の 2 つのプレースホルダー
+- `docs_generated_at_0` — 1 placeholder, `{0}`
+- `tag_param_0_is_not_defined_1` — 2 placeholders, `{0}` and `{1}`
 
-翻訳文字列では `{n}` 形式でプレースホルダーを使用:
+Translation strings use the `{n}` form for placeholders:
 
 ```typescript
 {
@@ -79,59 +79,57 @@ export = buildIncompleteTranslation({
 }
 ```
 
-### バリデーション
+### Validation
 
-`buildTranslation` と `buildIncompleteTranslation` 関数は以下を検証する:
+`buildTranslation` and `buildIncompleteTranslation` validate that:
 
-- 翻訳文字列がデフォルトロケールと同じ数のプレースホルダーを含むこと
-- デフォルトロケールに存在しないキーがないこと
-- ユニットテストで未定義のプレースホルダーの使用を検出
+- translation strings contain the same number of placeholders as the default locale
+- there are no keys that don't exist in the default locale
+- unit tests catch use of undefined placeholders
 
-### プラグインでの翻訳可能文字列
+### Translatable strings in plugins
 
-プラグインは `Application.internationalization.addTranslations()` を使用して翻訳を統合できる。
+Plugins can integrate translations using `Application.internationalization.addTranslations()`.
 
-#### 手順
+#### Steps
 
-1. `TranslatableStrings` インターフェースに宣言マージを行う
-2. プレースホルダー引数を配列形式で指定
-3. キー名にインデックス番号を含む命名規則に従う
+1. Declaration-merge into the `TranslatableStrings` interface
+2. Specify placeholder arguments as an array
+3. Follow the naming convention that embeds the index number in the key name
 
-## コード例
-
-### プラグインでの国際化
+### Internationalization in a plugin
 
 ```typescript
 import { Application } from "typedoc";
 
-// TranslatableStrings インターフェースの拡張
+// Extend the TranslatableStrings interface
 declare module "typedoc" {
   interface TranslatableStrings {
-    // 引数なしの文字列
+    // A string with no arguments
     my_plugin_greeting: [];
-    // 1つの string 引数を持つ文字列
+    // A string with one string argument
     my_plugin_found_0: [string];
-    // 2つの引数を持つ文字列
+    // A string with two arguments
     my_plugin_processed_0_of_1: [string, string];
   }
 }
 
 export function load(app: Application) {
-  // デフォルト（英語）の翻訳を追加
+  // Add the default (English) translations
   app.internationalization.addTranslations("en", {
     my_plugin_greeting: "Hello from my plugin",
     my_plugin_found_0: "Found {0} items",
     my_plugin_processed_0_of_1: "Processed {0} of {1} items",
   });
 
-  // 日本語の翻訳を追加
+  // Add Japanese translations
   app.internationalization.addTranslations("ja", {
     my_plugin_greeting: "プラグインからこんにちは",
     my_plugin_found_0: "{0} 件のアイテムが見つかりました",
     my_plugin_processed_0_of_1: "{1} 件中 {0} 件を処理しました",
   });
 
-  // 翻訳の使用
+  // Use a translation
   app.converter.on("end", () => {
     const message = app.internationalization.translate(
       "my_plugin_found_0",
@@ -142,7 +140,7 @@ export function load(app: Application) {
 }
 ```
 
-### ロケールファイルの作成例
+### Example locale file
 
 ```typescript
 // src/lib/internationalization/locales/ja.ts
@@ -161,16 +159,16 @@ export = buildIncompleteTranslation({
 });
 ```
 
-## 注意点
+## Notes
 
-- 機械翻訳のみで不慣れな言語の翻訳を提出しないこと
-- 部分的な翻訳は `buildIncompleteTranslation` を使用する
-- 未翻訳の文字列は自動的に英語にフォールバックする
-- プレースホルダーの数はキー名の末尾の数字で示される
-- プラグインの翻訳キーは `TranslatableStrings` インターフェースの宣言マージで型安全に追加する
-- ユニットテストが翻訳の整合性を検証する
+- Do not submit machine-translated-only translations for a language you are not fluent in
+- Use `buildIncompleteTranslation` for partial translations
+- Untranslated strings automatically fall back to English
+- The number of placeholders is indicated by the trailing number in the key name
+- Plugin translation keys are added type-safely via declaration merging on `TranslatableStrings`
+- Unit tests verify translation consistency
 
-## 関連
+## Related
 
-- [プラグイン開発](./plugin-development.md)
-- [Application クラス](../api/application.md)
+- [Plugin Development](./plugin-development.md)
+- [Application class](../api/application.md)

@@ -1,8 +1,12 @@
-# BullMQ — Repeatable Jobs
+# BullMQ — Repeatable Jobs（Legacy, v6 で削除）
+
+> **Note:** このページで説明する Legacy Repeatable Jobs API は BullMQ v6.0.0 で完全に削除された。`Queue#add` / `Queue#addBulk` の `repeat` オプション、`Repeat` クラス、`Queue#getRepeatableJobs()`、`Queue#removeRepeatable()`、`Queue#removeRepeatableByKey()` はすべて利用不可。今後は [Job Schedulers](../job-schedulers/job-schedulers.md)（`upsertJobScheduler` / `getJobSchedulers` / `removeJobScheduler`）を使用すること。v5→v6 へのアップグレード手順は [Migration to Newer Versions](../migrations/migration-to-newer-versions.md) を参照。
+>
+> 以下は v5 以前（非推奨期間中）の API リファレンスとして残している。
 
 Repeatable ジョブは、一度キューに追加するだけで事前定義されたスケジュールに従い繰り返し実行される特別なメタジョブです。cron 式またはミリ秒間隔で繰り返しパターンを指定できます。
 
-> **Note:** BullMQ バージョン 5.16.0 以降では、これらの API は非推奨となり、より堅牢な [Job Schedulers](../job-schedulers/job-schedulers.md) が推奨されています。
+> **Note:** BullMQ バージョン 5.16.0 以降では、これらの API は非推奨となり、より堅牢な [Job Schedulers](../job-schedulers/job-schedulers.md) が推奨されていました（v6 で完全削除）。
 
 ## 基本的な使い方
 

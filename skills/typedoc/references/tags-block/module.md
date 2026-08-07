@@ -1,32 +1,28 @@
 # @module
 
-コメントがファイル全体を参照することを示し、オプションでモジュール名を変更するブロックタグ。
+Block tag indicating that a comment refers to the entire file, with an optional module rename.
 
-## 構文
+## Signature / Usage
 
 ```
 @module
 ```
 
-または
+or
 
 ```
-@module モジュール名
+@module Module Name
 ```
 
-## 詳細説明
+The `@module` tag marks a comment as referring to the entire file rather than a specific declaration. You can optionally specify a module name to rename it when TypeDoc's automatic naming is inaccurate.
 
-`@module` タグはコメントが特定の宣言ではなくファイル全体を参照するものとしてマークする。オプションでモジュール名を指定して、TypeDocの自動命名が不正確な場合にリネームできる。
+**Placement rule**: a comment block using `@module` must be the first comment in the file, ideally placed before any `import` statements.
 
-**配置ルール**: `@module` タグを使用するコメントブロックはファイルの最初のコメントでなければならない。できれば `import` 文の前に配置する。
+TSDoc's `@packageDocumentation` tag has similar functionality but cannot rename the module.
 
-TSDocの `@packageDocumentation` タグも同様の機能を持つが、モジュールのリネームはできない。
+If neither `@module` nor `@packageDocumentation` is included, a file-level comment may be misinterpreted as documentation for the next `import` statement.
 
-`@module` または `@packageDocumentation` のいずれかを含めないと、ファイルレベルのコメントが次の `import` 文のドキュメントとして誤って解釈される可能性がある。
-
-## コード例
-
-### モジュール名を変更する場合
+### Renaming the module
 
 ```typescript
 /**
@@ -37,7 +33,7 @@ TSDocの `@packageDocumentation` タグも同様の機能を持つが、モジ�
 import { something } from "somewhere";
 ```
 
-### モジュール名を変更しない場合
+### Without renaming the module
 
 ```typescript
 /**
@@ -48,24 +44,24 @@ import { something } from "somewhere";
 import { something } from "somewhere";
 ```
 
-### 間違った使用例
+### Incorrect usage
 
 ```typescript
-// @module タグなし -- このコメントはimport文のドキュメントとして扱われる
+// No @module tag -- this comment is treated as documentation for the import statement below
 /**
  * This comment will be associated with the import below, not the module
  */
 import { something } from "somewhere";
 ```
 
-## 注意点
+## Notes
 
-- ファイルの最初のコメントブロックに配置しなければならない
-- `import` 文の前に配置することを推奨
-- `@module` なしのファイルレベルコメントは次の宣言のドキュメントとして解釈される
-- `@packageDocumentation` はリネーム機能がない代替手段
+- Must be placed in the first comment block of the file
+- Recommended to place it before any `import` statements
+- A file-level comment without `@module` is interpreted as documentation for the next declaration
+- `@packageDocumentation` is an alternative without renaming capability
 
-## 関連
+## Related
 
-- [@mergeModuleWith](./mergeModuleWith.md) -- モジュールの統合
-- `@packageDocumentation` -- TSDoc標準のファイルレベルドキュメント
+- [@mergeModuleWith](./mergeModuleWith.md) -- merging modules
+- `@packageDocumentation` -- the TSDoc-standard file-level documentation tag

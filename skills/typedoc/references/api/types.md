@@ -1,16 +1,16 @@
 # Types
 
-TypeDoc の型システム。TypeScript の型を表現する 18 の Type サブクラス。
+TypeDoc's type system. 18 `Type` subclasses representing TypeScript types.
 
-## シグネチャ
+## Signature
 
-### 基底クラス: Type
+### Base class: Type
 
 ```typescript
 abstract class Type {
   abstract readonly type: string;
 
-  // 共通メソッド
+  // Common methods
   toString(): string;
   stringify(context: TypeContext): string;
   visit<T, A extends unknown[]>(visitor: TypeVisitor<T, A>, ...args: A): T;
@@ -18,31 +18,33 @@ abstract class Type {
   toObject(serializer: Serializer): JSONOutput.SomeType;
   fromObject(deserializer: Deserializer, obj: JSONOutput.SomeType): void;
 
-  // 保護メソッド
+  // Protected methods
   protected abstract getTypeString(): string;
   abstract needsParenthesis(context: TypeContext): boolean;
 }
 ```
 
-## 主要メソッド
+## Methods
 
-### Type (基底クラス) 共通メソッド
+### Type (base class) common methods
 
-| メソッド | シグネチャ | 説明 |
+| Method | Signature | Description |
 |---------|----------|------|
-| `toString` | `(): string` | 型の文字列表現を返す |
-| `stringify` | `(context: TypeContext): string` | コンテキストに応じた文字列表現 |
-| `visit` | `<T>(visitor: TypeVisitor<T>): T` | ビジターパターンで型を処理 |
-| `estimatePrintWidth` | `(): number` | 1行で印字した場合の推定幅 |
-| `toObject` | `(serializer: Serializer): JSONOutput.SomeType` | JSON にシリアライズ |
-| `fromObject` | `(de: Deserializer, obj): void` | JSON からデシリアライズ |
-| `needsParenthesis` | `(context: TypeContext): boolean` | 括弧が必要か判定 |
+| `toString` | `(): string` | Returns the string representation of the type |
+| `stringify` | `(context: TypeContext): string` | Returns a context-aware string representation |
+| `visit` | `<T>(visitor: TypeVisitor<T>): T` | Processes the type using the visitor pattern |
+| `estimatePrintWidth` | `(): number` | Estimated width when printed on a single line |
+| `toObject` | `(serializer: Serializer): JSONOutput.SomeType` | Serializes to JSON |
+| `fromObject` | `(de: Deserializer, obj): void` | Deserializes from JSON |
+| `needsParenthesis` | `(context: TypeContext): boolean` | Determines whether parentheses are required |
 
-## 全 18 サブクラス
+## Subclasses
+
+There are 18 `Type` subclasses in total.
 
 ### ArrayType
 
-配列型を表現する (`string[]`)。
+Represents an array type (`string[]`).
 
 ```typescript
 class ArrayType extends Type {
@@ -53,15 +55,15 @@ class ArrayType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `elementType` | `SomeType` | 配列の要素型 |
+| `elementType` | `SomeType` | The array's element type |
 
 ---
 
 ### ConditionalType
 
-条件型を表現する (`T extends U ? X : Y`)。
+Represents a conditional type (`T extends U ? X : Y`).
 
 ```typescript
 class ConditionalType extends Type {
@@ -80,18 +82,18 @@ class ConditionalType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `checkType` | `SomeType` | 評価される型 |
-| `extendsType` | `SomeType` | テスト対象の制約型 |
-| `trueType` | `SomeType` | 条件が真の場合の結果型 |
-| `falseType` | `SomeType` | 条件が偽の場合の結果型 |
+| `checkType` | `SomeType` | The type being evaluated |
+| `extendsType` | `SomeType` | The constraint type being tested against |
+| `trueType` | `SomeType` | The resulting type when the condition is true |
+| `falseType` | `SomeType` | The resulting type when the condition is false |
 
 ---
 
 ### IndexedAccessType
 
-インデックスアクセス型を表現する (`T[K]`)。
+Represents an indexed access type (`T[K]`).
 
 ```typescript
 class IndexedAccessType extends Type {
@@ -103,16 +105,16 @@ class IndexedAccessType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `objectType` | `SomeType` | アクセス対象のオブジェクト型 |
-| `indexType` | `SomeType` | インデックスの型 |
+| `objectType` | `SomeType` | The object type being accessed |
+| `indexType` | `SomeType` | The type used as the index |
 
 ---
 
 ### InferredType
 
-推論型を表現する (`infer T`)。
+Represents an inferred type (`infer T`).
 
 ```typescript
 class InferredType extends Type {
@@ -124,16 +126,16 @@ class InferredType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `name` | `string` | 推論される型変数名 |
-| `constraint` | `SomeType?` | オプションの制約 |
+| `name` | `string` | The inferred type variable's name |
+| `constraint` | `SomeType?` | An optional constraint |
 
 ---
 
 ### IntersectionType
 
-交差型を表現する (`A & B`)。
+Represents an intersection type (`A & B`).
 
 ```typescript
 class IntersectionType extends Type {
@@ -144,15 +146,15 @@ class IntersectionType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `types` | `SomeType[]` | 交差される型の配列 |
+| `types` | `SomeType[]` | The array of intersected types |
 
 ---
 
 ### IntrinsicType
 
-組み込み型を表現する (`string`, `number`, `boolean` など)。
+Represents a built-in type (`string`, `number`, `boolean`, etc.).
 
 ```typescript
 class IntrinsicType extends Type {
@@ -163,15 +165,15 @@ class IntrinsicType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `name` | `string` | 組み込み型の名前 (`"string"`, `"number"` など) |
+| `name` | `string` | The name of the built-in type (`"string"`, `"number"`, etc.) |
 
 ---
 
 ### LiteralType
 
-リテラル型を表現する (`"hello"`, `42`, `true` など)。
+Represents a literal type (`"hello"`, `42`, `true`, etc.).
 
 ```typescript
 class LiteralType extends Type {
@@ -182,15 +184,15 @@ class LiteralType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `value` | `string \| number \| bigint \| boolean \| null` | リテラル値 |
+| `value` | `string \| number \| bigint \| boolean \| null` | The literal value |
 
 ---
 
 ### MappedType
 
-マップ型を表現する (`{ [K in T]: U }`)。
+Represents a mapped type (`{ [K in T]: U }`).
 
 ```typescript
 class MappedType extends Type {
@@ -213,20 +215,20 @@ class MappedType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `parameter` | `string` | マップ変数名 |
-| `parameterType` | `SomeType` | パラメータの制約型 |
-| `templateType` | `SomeType` | テンプレート結果型 |
-| `readonlyModifier` | `"+" \| "-"?` | readonly 修飾子 |
-| `optionalModifier` | `"+" \| "-"?` | optional 修飾子 |
-| `nameType` | `SomeType?` | プロパティ名のリマッピング型 |
+| `parameter` | `string` | The mapping variable name |
+| `parameterType` | `SomeType` | The constraint type of the parameter |
+| `templateType` | `SomeType` | The resulting template type |
+| `readonlyModifier` | `"+" \| "-"?` | The `readonly` modifier |
+| `optionalModifier` | `"+" \| "-"?` | The optional modifier |
+| `nameType` | `SomeType?` | The type used to remap the property name |
 
 ---
 
 ### OptionalType
 
-オプション型を表現する (タプル内の `T?`)。
+Represents an optional type (a tuple element's `T?`).
 
 ```typescript
 class OptionalType extends Type {
@@ -237,15 +239,15 @@ class OptionalType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `elementType` | `SomeType` | オプションの要素型 |
+| `elementType` | `SomeType` | The optional element type |
 
 ---
 
 ### PredicateType
 
-型述語を表現する (`x is string`)。
+Represents a type predicate (`x is string`).
 
 ```typescript
 class PredicateType extends Type {
@@ -258,17 +260,17 @@ class PredicateType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `name` | `string` | パラメータ名 |
-| `asserts` | `boolean` | `asserts` キーワードの有無 |
-| `targetType` | `SomeType?` | 述語の対象型 |
+| `name` | `string` | The parameter name |
+| `asserts` | `boolean` | Whether the `asserts` keyword is present |
+| `targetType` | `SomeType?` | The predicate's target type |
 
 ---
 
 ### QueryType
 
-型クエリを表現する (`typeof X`)。
+Represents a type query (`typeof X`).
 
 ```typescript
 class QueryType extends Type {
@@ -279,15 +281,15 @@ class QueryType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `queryType` | `ReferenceType` | クエリ対象の参照型 |
+| `queryType` | `ReferenceType` | The reference type being queried |
 
 ---
 
 ### ReferenceType
 
-他の Reflection を参照する型を表現する (クラス、インターフェース、列挙型など)。
+Represents a type that refers to another Reflection (a class, interface, enum, etc.).
 
 ```typescript
 class ReferenceType extends Type {
@@ -301,11 +303,11 @@ class ReferenceType extends Type {
   refersToTypeParameter: boolean;
   preferValues: boolean;
 
-  // アクセサ
+  // Accessors
   get reflection(): Reflection | undefined;
   get symbolId(): ReflectionSymbolId | undefined;
 
-  // 静的ファクトリメソッド
+  // Static factory methods
   static createResolvedReference(
     name: string,
     target: Reflection | ReflectionId,
@@ -325,27 +327,27 @@ class ReferenceType extends Type {
     packageName?: string
   ): ReferenceType;
 
-  // メソッド
+  // Methods
   toDeclarationReference(): DeclarationReference;
   isIntentionallyBroken(): boolean;
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `name` | `string` | 参照先の型名 |
-| `typeArguments` | `SomeType[]?` | ジェネリック型引数 |
-| `qualifiedName` | `string` | 定義ファイルからの完全修飾名 |
-| `externalUrl` | `string?` | 外部プロジェクトの URL |
-| `package` | `string?` | 参照先のパッケージ名 |
-| `reflection` | `Reflection?` (アクセサ) | 解決された Reflection |
-| `symbolId` | `ReflectionSymbolId?` (アクセサ) | 未解決の場合のシンボル ID |
+| `name` | `string` | The referenced type's name |
+| `typeArguments` | `SomeType[]?` | Generic type arguments |
+| `qualifiedName` | `string` | The fully qualified name from the defining file |
+| `externalUrl` | `string?` | The URL of an external project |
+| `package` | `string?` | The name of the referenced package |
+| `reflection` | `Reflection?` (accessor) | The resolved Reflection |
+| `symbolId` | `ReflectionSymbolId?` (accessor) | The symbol ID when unresolved |
 
 ---
 
 ### RestType
 
-残余型を表現する (`...T`)。
+Represents a rest type (`...T`).
 
 ```typescript
 class RestType extends Type {
@@ -356,15 +358,15 @@ class RestType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `elementType` | `SomeType` | 残余パラメータの要素型 |
+| `elementType` | `SomeType` | The rest parameter's element type |
 
 ---
 
 ### TemplateLiteralType
 
-テンプレートリテラル型を表現する (`` `hello${string}` ``)。
+Represents a template literal type (`` `hello${string}` ``).
 
 ```typescript
 class TemplateLiteralType extends Type {
@@ -376,16 +378,16 @@ class TemplateLiteralType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `head` | `string` | テンプレートの先頭文字列 |
-| `tail` | `[SomeType, string][]` | 型と文字列のペア配列（補間部分） |
+| `head` | `string` | The literal string at the start of the template |
+| `tail` | `[SomeType, string][]` | Pairs of type and following string (the interpolated parts) |
 
 ---
 
 ### TupleType
 
-タプル型を表現する (`[string, number]`)。
+Represents a tuple type (`[string, number]`).
 
 ```typescript
 class TupleType extends Type {
@@ -396,15 +398,15 @@ class TupleType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `elements` | `SomeType[]` | タプルの要素型の順序付き配列 |
+| `elements` | `SomeType[]` | The ordered array of tuple element types |
 
 ---
 
 ### TypeOperatorType
 
-型演算子を表現する (`keyof T`, `unique T`, `readonly T`)。
+Represents a type operator (`keyof T`, `unique T`, `readonly T`).
 
 ```typescript
 class TypeOperatorType extends Type {
@@ -416,16 +418,16 @@ class TypeOperatorType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `operator` | `"keyof" \| "unique" \| "readonly"` | 演算子の種類 |
-| `target` | `SomeType` | 演算対象の型 |
+| `operator` | `"keyof" \| "unique" \| "readonly"` | The kind of operator |
+| `target` | `SomeType` | The type the operator is applied to |
 
 ---
 
 ### UnionType
 
-共用体型を表現する (`A | B`)。
+Represents a union type (`A | B`).
 
 ```typescript
 class UnionType extends Type {
@@ -437,16 +439,16 @@ class UnionType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `types` | `SomeType[]` | 共用体を構成する型の配列 |
-| `elementSummaries` | `CommentDisplayPart[][]?` | 各メンバーのドキュメント（型エイリアスでのみ有効） |
+| `types` | `SomeType[]` | The array of types making up the union |
+| `elementSummaries` | `CommentDisplayPart[][]?` | Documentation for each member (only valid on type aliases) |
 
 ---
 
 ### UnknownType
 
-未知の型を表現する。TypeDoc が認識できない型の場合に使用される。
+Represents an unknown type. Used when TypeDoc cannot recognize the type.
 
 ```typescript
 class UnknownType extends Type {
@@ -457,13 +459,13 @@ class UnknownType extends Type {
 }
 ```
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `name` | `string` | 型のテキスト表現 |
+| `name` | `string` | The textual representation of the type |
 
-## コード例
+## Examples
 
-### ビジターパターンによる型処理
+### Processing types with the visitor pattern
 
 ```typescript
 import { Models } from "typedoc";
@@ -491,12 +493,12 @@ function processType(type: Models.SomeType): string {
     literal(t) {
       return String(t.value);
     },
-    // 他の型はデフォルトで toString() を使用
+    // Other types fall back to toString() by default
   });
 }
 ```
 
-### 型の判別
+### Discriminating types
 
 ```typescript
 import { Models } from "typedoc";
@@ -523,7 +525,7 @@ function analyzeType(type: Models.SomeType): void {
 }
 ```
 
-## 関連
+## Related
 
 - [Reflections](./reflections.md)
 - [Converter](./converter.md)

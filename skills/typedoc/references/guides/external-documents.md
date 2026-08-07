@@ -2,7 +2,7 @@
 
 Including external Markdown documents in TypeDoc output using the @document tag, projectDocuments option, YAML frontmatter, media handling, and relative link resolution.
 
-## 詳細説明
+## Signature / Usage
 
 TypeDoc can include external Markdown documents as part of the generated documentation. Documents can be added as children of reflections or as top-level project documents. There are three methods for including documents.
 
@@ -42,14 +42,7 @@ Documents may include YAML frontmatter to specify child documents nested under t
 
 ### YAML Frontmatter
 
-Documents may include frontmatter delimited by `---` on separate lines. The following fields are supported:
-
-| Field | Description |
-|---|---|
-| `title` | Document name displayed in sidebar navigation. If not specified, TypeDoc uses the filename. |
-| `group` | Equivalent to the `@group` tag. Organizes the document into a named group in the index. |
-| `category` | Equivalent to the `@category` tag. Organizes the document into a named category. |
-| `children` | Array of paths to additional documents that should be nested under this document. |
+Documents may include frontmatter delimited by `---` on separate lines.
 
 Example frontmatter:
 
@@ -98,8 +91,6 @@ This means you can reference images and other assets using relative paths in you
 
 See the [CSV data](./assets/sample.csv) for reference.
 ```
-
-## コード例
 
 ### Basic External Document
 
@@ -214,7 +205,18 @@ Download the [full specification](./assets/spec.pdf).
 
 TypeDoc will copy `images/architecture.png` and `assets/spec.pdf` to the `media` folder in the output.
 
-## 注意点
+## Options / Props
+
+### YAML Frontmatter Fields
+
+| Field | Description |
+|---|---|
+| `title` | Document name displayed in sidebar navigation. If not specified, TypeDoc uses the filename. |
+| `group` | Equivalent to the `@group` tag. Organizes the document into a named group in the index. |
+| `category` | Equivalent to the `@category` tag. Organizes the document into a named category. |
+| `children` | Array of paths to additional documents that should be nested under this document. |
+
+## Notes
 
 - Document paths in `@document` tags are relative to the file containing the comment, not the project root.
 - Document paths in `projectDocuments` are relative to the TypeDoc configuration file (usually `typedoc.json`).
@@ -226,7 +228,7 @@ TypeDoc will copy `images/architecture.png` and `assets/spec.pdf` to the `media`
 - Non-document files (images, PDFs, etc.) referenced in links are automatically copied to a `media` folder in the output. You do not need to manually copy assets.
 - External documents are full Markdown files, not code comments, so you do not need the `/** */` wrapping.
 
-## 関連
+## Related
 
 - [Doc Comments](./doc-comments.md)
 - [Declaration References](./declaration-references.md)

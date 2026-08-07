@@ -1,16 +1,16 @@
 # CLI
 
-`npx auth@latest` コマンドによるプロジェクト操作。
+Project operations via the `npx auth@latest` command.
 
-## プロジェクトの初期化
+## Initialize a project
 
 ```sh
 npx auth@latest init
 ```
 
-Better Auth をプロジェクトに初期化する。オプションで `--framework`、`--database`、`--plugins`、`--package-manager` を指定できる。
+Initializes Better Auth in a project. Options include `--framework`, `--database`, `--plugins`, and `--package-manager`.
 
-## プロジェクトの初期化（オプション指定）
+## Initialize a project (with options)
 
 ```sh
 npx auth@latest init \
@@ -21,29 +21,29 @@ npx auth@latest init \
   --package-manager pnpm
 ```
 
-現在サポートされているフレームワークは Next.js、データベースは SQLite のみ（要確認）。
+Currently supported frameworks are limited to Next.js, and databases to SQLite (verify before relying on this).
 
-## 環境診断情報の表示
+## Show environment diagnostics
 
 ```sh
 npx auth@latest info
 ```
 
-OS、Node.js バージョン、Better Auth バージョン、検出されたフレームワーク・ORM を表示する。機密データは自動的に `[REDACTED]` に置換される。
+Displays OS, Node.js version, Better Auth version, and detected framework/ORM. Sensitive data is automatically replaced with `[REDACTED]`.
 
-## 環境診断情報の JSON 出力
+## Output environment diagnostics as JSON
 
 ```sh
 npx auth@latest info --json
 ```
 
-## 診断情報をファイルへ書き出し
+## Write diagnostics to a file
 
 ```sh
 npx auth@latest info --json > auth-info.json
 ```
 
-## シークレットキーの生成
+## Generate a secret key
 
 ```sh
 npx auth@latest secret

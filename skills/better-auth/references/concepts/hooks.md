@@ -1,15 +1,10 @@
 # Hooks
 
-Hooks は認証ライフサイクルの特定のポイント（エンドポイント実行の前後）でインターセプトし、カスタムロジックを実行する。別のエンドポイントを構築する必要がない。
+Hooks intercept specific points in the auth lifecycle (before/after endpoint execution) to run custom logic, without needing to build a separate endpoint.
 
-## Hook タイプ
+## Signature / Usage
 
-| Type | Timing | Use Cases |
-|------|--------|-----------|
-| `before` | エンドポイント処理の前 | リクエストの変更、事前検証、カスタムレスポンスでの早期リターン |
-| `after` | エンドポイント完了後 | レスポンスの変更、副作用のトリガー（通知、分析） |
-
-## セットアップ
+### Setup
 
 ```typescript
 export const auth = betterAuth({
@@ -20,34 +15,7 @@ export const auth = betterAuth({
 });
 ```
 
-## Context (`ctx`) オブジェクト
-
-| Property | Description |
-|----------|-------------|
-| `ctx.path` | 現在のエンドポイントパス（例: `/sign-up/email`） |
-| `ctx.body` | パース済み POST リクエストボディ |
-| `ctx.headers` | リクエストヘッダー |
-| `ctx.request` | Request オブジェクト（サーバーのみモードでは存在しない場合あり） |
-| `ctx.query` | クエリパラメーター |
-| `ctx.context` | 認証関連コンテキスト（下記テーブル参照） |
-
-### `ctx.context` プロパティ
-
-| Property | Description |
-|----------|-------------|
-| `newSession` | 新しく作成されたセッション — `after` hooks でのみ利用可能 |
-| `returned` | 前の Hook の戻り値 |
-| `responseHeaders` | 前の Hook からのヘッダー |
-| `authCookies` | BetterAuth Cookie 設定 |
-| `secret` | Auth インスタンスのシークレットキー |
-| `password` | パスワードユーティリティ: `hash`, `verify` |
-| `adapter` | ORM ライクなデータベースアダプターメソッド |
-| `internalAdapter` | 内部 DB 操作メソッド（例: `createSession()`） |
-| `generateId` | ID 生成ユーティリティ |
-
-## コード例
-
-### Before Hook — メールドメイン制限
+### Before hook — restricting email domains
 
 ```typescript
 export const auth = betterAuth({
@@ -64,7 +32,7 @@ export const auth = betterAuth({
 });
 ```
 
-### After Hook — 登録時の通知
+### After hook — notification on sign-up
 
 ```typescript
 export const auth = betterAuth({
@@ -84,55 +52,83 @@ export const auth = betterAuth({
 });
 ```
 
-## レスポンスユーティリティ
-
-### JSON レスポンス
+### Response utilities
 
 ```typescript
+// JSON response
 return ctx.json({ message: "Hello World" });
-```
 
-### リダイレクト
-
-```typescript
+// Redirect
 throw ctx.redirect("/sign-up/name");
-```
 
-### Cookie
-
-```typescript
-// プレーン Cookie
+// Plain cookie
 ctx.setCookies("my-cookie", "value");
 const cookie = ctx.getCookies("my-cookie");
 
-// 署名付き Cookie
+// Signed cookie
 await ctx.setSignedCookie("my-signed-cookie", "value", ctx.context.secret, {
   maxAge: 1000,
 });
 const signedCookie = await ctx.getSignedCookie("my-signed-cookie");
-```
 
-### エラースロー
-
-```typescript
+// Throwing an error
 throw new APIError("BAD_REQUEST", { message: "Invalid request" });
 ```
 
-## バックグラウンドタスク
+### Background tasks
 
 ```typescript
 // Fire-and-forget
 ctx.context.runInBackground(sendAnalyticsEvent(newSession.user.id));
 
-// レスポンス前に完了が必要
+// Must complete before the response
 await ctx.context.runInBackgroundOrAwait(sendWelcomeEmail(newSession.user));
 ```
 
-`advanced.backgroundTasks` でハンドラーを設定する。
+Configure the handler via `advanced.backgroundTasks`.
 
-## 注意点
+## Options / Props
 
-- 認証動作のカスタマイズには、別のエンドポイントを構築するよりも Hooks を使用することを推奨
-- 複数エンドポイントで再利用されるロジックには、プラグインの作成を検討
-- `ctx.request` はサーバーのみ（非 HTTP）呼び出しでは存在しない場合がある
-- `ctx.context.newSession` は `after` hooks でのみ設定される
+### Hook types
+
+| Type | Timing | Use Cases |
+|------|--------|-----------|
+| `before` | Before endpoint processing | Modifying the request, pre-validation, early return with a custom response |
+| `after` | After endpoint completion | Modifying the response, triggering side effects (notifications, analytics) |
+
+### Context (`ctx`) object
+
+| Property | Description |
+|----------|-------------|
+| `ctx.path` | Current endpoint path (e.g. `/sign-up/email`) |
+| `ctx.body` | Parsed POST request body |
+| `ctx.headers` | Request headers |
+| `ctx.request` | Request object (may not exist in server-only mode) |
+| `ctx.query` | Query parameters |
+| `ctx.context` | Auth-related context (see table below) |
+
+### `ctx.context` properties
+
+| Property | Description |
+|----------|-------------|
+| `newSession` | Newly created session — only available in `after` hooks |
+| `returned` | Return value from the previous hook |
+| `responseHeaders` | Headers from the previous hook |
+| `authCookies` | BetterAuth cookie configuration |
+| `secret` | Secret key of the auth instance |
+| `password` | Password utilities: `hash`, `verify` |
+| `adapter` | ORM-like database adapter methods |
+| `internalAdapter` | Internal DB operation methods (e.g. `createSession()`) |
+| `generateId` | ID generation utility |
+
+## Notes
+
+- Using hooks is recommended over building a separate endpoint for customizing auth behavior
+- Consider writing a plugin for logic reused across multiple endpoints
+- `ctx.request` may not exist in server-only (non-HTTP) calls
+- `ctx.context.newSession` is only set in `after` hooks
+
+## Related
+
+- [Plugins](./plugins.md)
+- [API](./api.md)

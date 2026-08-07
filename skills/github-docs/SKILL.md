@@ -4,7 +4,8 @@ description: >
   GitHub 公式ドキュメント リファレンス。
   REST API、GraphQL API、GitHub Actions (workflow, jobs, steps, expressions)、
   Webhooks、GitHub Apps、gh CLI、認証 (PAT / GITHUB_TOKEN / OAuth Apps)、
-  pull requests, issues, projects, releases, Codespaces, Packages。
+  pull requests, issues, projects (Projects v2), releases, Codespaces, Packages,
+  Copilot API, security (code scanning / secret scanning / Dependabot), activity (events / notifications)。
 user-invocable: false
 model: sonnet
 ---
@@ -72,6 +73,10 @@ skills/github-docs/
       configuration.md
       custom-domains.md
       getting-started.md
+    projects/
+      README.md
+      graphql-api.md
+      rest-api.md
     pull-requests/
       README.md
       code-owners.md
@@ -98,10 +103,21 @@ skills/github-docs/
         workflow-jobs.md
         workflow-runs.md
         workflows.md
+      activity/
+        events.md
+        notifications.md
+        starring.md
+        watching.md
       checks/
         README.md
         check-runs.md
         check-suites.md
+      codespaces/
+        codespaces.md
+      copilot/
+        spaces.md
+        usage-metrics.md
+        user-management.md
       deployments/
         README.md
         deployments.md
@@ -141,8 +157,13 @@ skills/github-docs/
       pages/
         README.md
         pages.md
+      projects/
+        fields.md
+        items.md
+        projects.md
       pulls/
         README.md
+        pulls.md
         review-comments.md
         review-requests.md
         reviews.md
@@ -160,6 +181,12 @@ skills/github-docs/
       search/
         README.md
         search.md
+      security/
+        code-scanning.md
+        dependabot-alerts.md
+        dependabot-secrets.md
+        secret-scanning.md
+        secret-scanning-push-protection.md
       users/
         README.md
         users.md
@@ -212,11 +239,15 @@ skills/github-docs/
 | gh コマンド、CLI クイックスタート、CLI 拡張機能 | cli | [references/cli/README.md](references/cli/README.md) |
 | GraphQL クエリ・ミューテーション・スキーマ・ページネーション | graphql | [references/graphql/README.md](references/graphql/README.md) |
 | GitHub Pages 作成・設定・カスタムドメイン | pages | [references/pages/README.md](references/pages/README.md) |
+| GitHub Projects（v2）の GraphQL / REST API 操作 | projects | [references/projects/README.md](references/projects/README.md) |
 | PR 作成・レビュー・マージ、CODEOWNERS、コンフリクト解決 | pull-requests | [references/pull-requests/README.md](references/pull-requests/README.md) |
 | リポジトリ作成・設定、ブランチ保護、リリース・タグ管理 | repositories | [references/repositories/README.md](references/repositories/README.md) |
 | REST API 概要・認証・レート制限・ページネーション | rest-api/overview | [references/rest-api/README.md](references/rest-api/README.md) |
 | Actions API（ワークフロー・シークレット・アーティファクト等） | rest-api/actions | [references/rest-api/README.md](references/rest-api/README.md) |
+| アクティビティ API（イベント・通知・スター・ウォッチ） | rest-api/activity | [references/rest-api/README.md](references/rest-api/README.md) |
 | チェック API（check-runs・check-suites） | rest-api/checks | [references/rest-api/README.md](references/rest-api/README.md) |
+| Codespaces API | rest-api/codespaces | [references/rest-api/README.md](references/rest-api/README.md) |
+| Copilot API（利用状況メトリクス・ユーザー管理・Spaces） | rest-api/copilot | [references/rest-api/README.md](references/rest-api/README.md) |
 | デプロイ・環境 API | rest-api/deployments | [references/rest-api/README.md](references/rest-api/README.md) |
 | Gist API | rest-api/gists | [references/rest-api/README.md](references/rest-api/README.md) |
 | Git データ API（blobs・commits・refs・tags・trees） | rest-api/git | [references/rest-api/README.md](references/rest-api/README.md) |
@@ -224,9 +255,11 @@ skills/github-docs/
 | Organization API | rest-api/orgs | [references/rest-api/README.md](references/rest-api/README.md) |
 | パッケージ API | rest-api/packages | [references/rest-api/README.md](references/rest-api/README.md) |
 | Pages API | rest-api/pages | [references/rest-api/README.md](references/rest-api/README.md) |
+| Projects（v2）REST API（items・fields） | rest-api/projects | [references/rest-api/README.md](references/rest-api/README.md) |
 | PR API（レビュー・レビューコメント・レビューリクエスト） | rest-api/pulls | [references/rest-api/README.md](references/rest-api/README.md) |
 | リポジトリ API（ブランチ・コンテンツ・リリース・Webhook） | rest-api/repos | [references/rest-api/README.md](references/rest-api/README.md) |
 | 検索 API | rest-api/search | [references/rest-api/README.md](references/rest-api/README.md) |
+| セキュリティ API（code scanning・secret scanning・Dependabot alerts/secrets） | rest-api/security | [references/rest-api/README.md](references/rest-api/README.md) |
 | ユーザー API | rest-api/users | [references/rest-api/README.md](references/rest-api/README.md) |
 | Webhook 作成・イベントペイロード・セキュリティ・ベストプラクティス | webhooks | [references/webhooks/README.md](references/webhooks/README.md) |
 | 典型的な Actions ワークフロー・デプロイ・CI パターンを知りたい | samples | [samples/README.md](samples/README.md) |

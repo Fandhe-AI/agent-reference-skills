@@ -1,13 +1,12 @@
-# 型テスト
+# Type Testing
 
-Vitest は `expectTypeOf` と `assertType` で型レベルのテストを行える。
-`*.test-d.ts` ファイルが型テストとして自動認識される。
+Vitest supports type-level testing via `expectTypeOf` and `assertType`. Files matching `*.test-d.ts` are automatically recognized as type tests.
 
-## セットアップ
+## Signature / Usage
 
 ```bash
 vitest typecheck
-# または
+# or
 vitest --typecheck
 ```
 
@@ -20,11 +19,7 @@ vitest --typecheck
 }
 ```
 
-設定で `typecheck.include` を使ってマッチパターンをカスタマイズ可能。
-
-## expectTypeOf
-
-流暢な API で型アサーションを行う。
+Use `typecheck.include` in the config to customize the match pattern.
 
 ```ts
 import { expectTypeOf } from 'vitest'
@@ -39,27 +34,6 @@ expectTypeOf([]).toBeArray()
 expectTypeOf(() => {}).toBeFunction()
 ```
 
-### 型の等値・拡張チェック
-
-```ts
-expectTypeOf<string>().toEqualTypeOf<string>()
-expectTypeOf<string>().toExtend<string | number>()
-
-// 関数の引数・戻り値
-expectTypeOf(fn).parameter(0).toBeString()
-expectTypeOf(fn).returns.toBeNumber()
-```
-
-### NOT
-
-```ts
-expectTypeOf<string>().not.toBeNumber()
-```
-
-## assertType
-
-TypeScript の型システムを直接利用するシンプルな方法。
-
 ```ts
 import { assertType } from 'vitest'
 
@@ -70,18 +44,32 @@ assertType<number>(answer)
 assertType<string>(answer)
 ```
 
-## 仕組み
+## Notes
 
-Vitest は内部で `tsc` または `vue-tsc` を呼び出し、結果をパースする。
-ファイルは静的解析のみで実行されない。
+- Type equality / extension checks:
 
-## ベストプラクティス
+```ts
+expectTypeOf<string>().toEqualTypeOf<string>()
+expectTypeOf<string>().toExtend<string | number>()
 
-- 型引数を使うと推論より明確なエラーメッセージが得られる: `expectTypeOf(value).toEqualTypeOf<Expected>()`
-- `@ts-expect-error` と組み合わせてランタイムテストにも含めるとタイポを検出できる
-- `--allowOnly` や `-t` フラグは型テストでも使用可能
+// function parameters / return values
+expectTypeOf(fn).parameter(0).toBeString()
+expectTypeOf(fn).returns.toBeNumber()
+```
 
-## 関連
+- Negation:
 
-- [設定](./config.md)
+```ts
+expectTypeOf<string>().not.toBeNumber()
+```
+
+- How it works: Vitest internally invokes `tsc` or `vue-tsc` and parses the results. Files are statically analyzed only, never executed.
+- Best practices:
+  - Using type arguments gives clearer error messages than relying on inference: `expectTypeOf(value).toEqualTypeOf<Expected>()`
+  - Combine with `@ts-expect-error` to also catch typos in a runtime test
+  - `--allowOnly` and `-t` flags also work with type tests
+
+## Related
+
+- [Config](./config.md)
 - [CLI](./cli.md)

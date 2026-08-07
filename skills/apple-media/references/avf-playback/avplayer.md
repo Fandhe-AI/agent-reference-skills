@@ -48,6 +48,17 @@ let token = player.addPeriodicTimeObserver(
 | `actionAtItemEnd` | `AVPlayer.ActionAtItemEnd` | Behavior when item finishes (`.advance`, `.pause`, `.none`) |
 | `allowsExternalPlayback` | `Bool` | Enables AirPlay / HDMI output |
 | `sourceClock` | `CMClock?` | Reference clock for synchronised multi-player playback |
+| `eligibleForHDRPlayback` (class) | `Bool` | Whether the current device can present content to an HDR display |
+| `availableHDRModes` (class) | `AVPlayer.HDRMode` | HDR modes available to the player |
+| `audiovisualBackgroundPlaybackPolicy` | `AVPlayerAudiovisualBackgroundPlaybackPolicy` | Policy controlling playback behaviour when the app moves to the background |
+| `networkResourcePriority` | `AVPlayer.NetworkResourcePriority` | Priority for network bandwidth distribution relative to other players |
+| `playbackCoordinator` | `AVPlayerPlaybackCoordinator` | Coordinator for synchronised playback across devices |
+| `appliesMediaSelectionCriteriaAutomatically` | `Bool` | Whether automatic media selection criteria are applied |
+| `mediaSelectionCriteria(forMediaCharacteristic:)` | method | Returns the automatic media selection criteria for a media characteristic |
+| `setMediaSelectionCriteria(_:forMediaCharacteristic:)` | method | Sets the automatic media selection criteria for a media characteristic |
+| `audioOutputDeviceUniqueID` | `String?` | Unique ID of the Core Audio output device used for playback |
+| `audioOutputSuppressedDueToNonMixableAudioRoute` | `Bool` | Whether audio output is suppressed due to a non-mixable audio route |
+| `intendedSpatialAudioExperience` | `AVAudioSpatialAudioExperience` | The player's intended Spatial Audio experience |
 | `replaceCurrentItem(with:)` | method | Swap current item without creating a new player |
 | `seek(to:toleranceBefore:toleranceAfter:completionHandler:)` | method | Precise seek with tolerance control |
 | `playImmediately(atRate:)` | method | Play at rate without waiting |
@@ -63,6 +74,7 @@ let token = player.addPeriodicTimeObserver(
 - Observe `status` via KVO or Swift Observation before calling `play()` to ensure the player is ready.
 - Time observer tokens must be kept alive and removed with `removeTimeObserver(_:)` to avoid retain cycles.
 - `AVQueuePlayer` is the recommended subclass for playlist-style playback.
+- `isClosedCaptionDisplayEnabled`, `allowsAirPlayVideo`, `usesAirPlayVideoWhileAirPlayScreenIsActive`, and `masterClock` are deprecated in the current documentation; use `sourceClock` in place of `masterClock`, and system-level AirPlay routing (`AVRoutePickerView`) in place of the AirPlay video properties.
 
 ## Related
 

@@ -1,15 +1,15 @@
-# @vercel/edge-config
+# @vercel/edge-config (renamed to @vercel/global-config)
 
-Read-only SDK for Edge Config. Install: `npm i @vercel/edge-config`.
+Read-only SDK for Global Config (formerly Edge Config). Install: `npm i @vercel/global-config`.
 
-Reads from `EDGE_CONFIG` environment variable by default. Use `createClient` for multiple configs or custom env var names.
+Reads from `GLOBAL_CONFIG` environment variable by default (was `EDGE_CONFIG`). Use `createClient` for multiple configs or custom env var names.
 
 ## get()
 
 Fetches a single value by key.
 
 ```ts
-import { get } from '@vercel/edge-config';
+import { get } from '@vercel/global-config';
 
 const value = await get('featureFlag');
 ```
@@ -19,7 +19,7 @@ const value = await get('featureFlag');
 Returns all items, or a subset by key array.
 
 ```ts
-import { getAll } from '@vercel/edge-config';
+import { getAll } from '@vercel/global-config';
 
 const all = await getAll();
 const subset = await getAll(['keyA', 'keyB']);
@@ -32,17 +32,17 @@ const subset = await getAll(['keyA', 'keyB']);
 Checks if a key exists. Returns `boolean`.
 
 ```ts
-import { has } from '@vercel/edge-config';
+import { has } from '@vercel/global-config';
 
 const exists = await has('featureFlag'); // true | false
 ```
 
 ## digest()
 
-Returns a hash string of the current Edge Config version. Changes whenever the config is updated.
+Returns a hash string of the current Global Config version. Changes whenever the config is updated.
 
 ```ts
-import { digest } from '@vercel/edge-config';
+import { digest } from '@vercel/global-config';
 
 const version = await digest();
 ```
@@ -51,12 +51,12 @@ Useful for cache invalidation and verifying update propagation.
 
 ## createClient()
 
-Creates a client bound to a specific connection string. Use when reading from multiple Edge Configs or a non-default env var.
+Creates a client bound to a specific connection string. Use when reading from multiple Global Configs or a non-default env var.
 
 ```ts
-import { createClient } from '@vercel/edge-config';
+import { createClient } from '@vercel/global-config';
 
-const config = createClient(process.env.MY_OTHER_EDGE_CONFIG);
+const config = createClient(process.env.MY_OTHER_GLOBAL_CONFIG);
 
 const value = await config.get('key');
 const all = await config.getAll();
@@ -74,8 +74,9 @@ All methods throw errors when:
 
 ## Notes
 
-- The SDK cannot write to Edge Config; use the [Vercel REST API](./vercel-api.md) for writes
-- Writing requires Vercel Access Tokens; reading uses Edge Config read tokens — these are separate
+- Package renamed from `@vercel/edge-config` to `@vercel/global-config`; connection-string env var renamed from `EDGE_CONFIG` to `GLOBAL_CONFIG`. No documented alias/fallback was found for either old name — verify current behavior before relying on it
+- The SDK cannot write to Global Config; use the [Vercel REST API](./vercel-api.md) for writes
+- Writing requires Vercel Access Tokens; reading uses Global Config read tokens — these are separate
 - For high write volumes, consider Upstash Redis from the Marketplace instead
 
 ## Related

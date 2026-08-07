@@ -1,42 +1,31 @@
 # Instrumentation (Experimental)
 
-OpenTelemetry ベースの分散トレーシングで Better Auth の認証操作を監視・デバッグする。エンドポイント・フック・DB 操作・プラグインライフサイクルイベントのトレースを提供する。
+## Notes
 
-**注意**: この機能は実験的で、API とスパン構造は今後変更される可能性がある。
+- OpenTelemetry-based distributed tracing for monitoring and debugging Better Auth authentication operations. Provides traces for endpoints, hooks, DB operations, and plugin lifecycle events.
+- Experimental: the API and span structure may change in the future.
+- Setup: follow the OpenTelemetry official setup guide for Node.js apps and configure two components — a `TracerProvider` (the central component managing span creation) and a `SpanExporter` (collects and exports trace data).
+- Endpoint spans capture HTTP operations, tracking request handlers, before/after hooks, and plugin middleware.
+- DB spans instrument adapter operations (create, read, update, delete), including the before/after hooks of mutation operations.
 
-## セットアップ
+## Options / Props
 
-Node.js アプリには OpenTelemetry の公式セットアップガイドに従い、以下の 2 コンポーネントを設定する:
+Endpoint span attributes:
 
-1. **TracerProvider** — スパン作成を管理する中心コンポーネント
-2. **SpanExporter** — トレースデータの収集・エクスポートを担う
+| Name | Description |
+| --- | --- |
+| `http.route` | Route template (low cardinality) |
+| `http.response.status_code` | HTTP status code |
+| `better_auth.context` | Execution origin (user or plugin-specific) |
 
-## 対応スパンタイプ
+DB span attributes:
 
-### エンドポイントスパン
-
-HTTP 操作をキャプチャ。以下の属性を含む:
-
-| 属性 | 説明 |
-|---|---|
-| `http.route` | ルートテンプレート（低カーディナリティ） |
-| `http.response.status_code` | HTTP ステータスコード |
-| `better_auth.context` | 実行元（user またはプラグイン固有） |
-
-リクエストハンドラー・before/after フック・プラグインミドルウェアをトラッキング。
-
-### DB スパン
-
-アダプター操作（create, read, update, delete）を計測。以下の属性を含む:
-
-| 属性 | 説明 |
-|---|---|
-| `db.operation.name` | DB 操作タイプ |
-| `better_auth.context` | コレクション識別子 |
-
-ミューテーション操作の before/after フックも計測。
+| Name | Description |
+| --- | --- |
+| `db.operation.name` | DB operation type |
+| `better_auth.context` | Collection identifier |
 
 ## Related
 
-- [options.md](./options.md)
-- [telemetry.md](./telemetry.md)
+- [options](./options.md)
+- [telemetry](./telemetry.md)

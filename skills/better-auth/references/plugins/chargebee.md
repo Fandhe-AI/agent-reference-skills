@@ -1,17 +1,17 @@
 # Chargebee
 
-Chargebee のサブスクリプション管理・決済を Better Auth に統合するプラグイン。Chargebee チームによりメンテナンスされている。
+Plugin integrating Chargebee's subscription management and billing with Better Auth. Maintained by the Chargebee team.
 
-## インストール
+## Signature / Usage
+
+### Installation
 
 ```bash
 npm install @chargebee/better-auth chargebee
 npx auth migrate
 ```
 
-## セットアップ
-
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -40,7 +40,7 @@ export const auth = betterAuth({
 })
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { chargebeeClient } from "@chargebee/better-auth/client"
@@ -50,54 +50,56 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
+### API methods
 
-| メソッド | 説明 |
+| Method | Description |
 |---|---|
-| `subscription.create()` | 新規サブスクリプション作成（チェックアウトリダイレクト） |
-| `subscription.update()` | プランの変更・サブスクリプション更新 |
-| `subscription.list()` | アクティブなサブスクリプション一覧取得 |
-| `subscription.cancel()` | キャンセル（ポータルリダイレクト） |
-| `subscription.portal()` | セルフサービス課金ポータルを開く |
+| `subscription.create()` | Create a new subscription (checkout redirect) |
+| `subscription.update()` | Change plan / update subscription |
+| `subscription.list()` | List active subscriptions |
+| `subscription.cancel()` | Cancel (portal redirect) |
+| `subscription.portal()` | Open the self-service billing portal |
 
-## 設定オプション
+### Advanced features
 
-| プロパティ | 型 | 説明 |
+- **Organization billing**: `organization.enabled: true` enables per-organization billing (API calls require `customerType: "organization"`)
+- **Trial management**: `preventDuplicateTrials: true` prevents duplicate trials
+- **Multi-item**: supports subscriptions with multiple plans, add-ons, and charges
+
+## Options / Props
+
+| Property | Type | Description |
 |---|---|---|
-| `chargebeeClient` | Chargebee | SDK インスタンス（必須） |
-| `createCustomerOnSignUp` | boolean | サインアップ時にカスタマーを自動作成 |
-| `preventDuplicateTrials` | boolean | 複数トライアルを防止 |
-| `authorizeReference?` | function | 参照 ID の権限チェック |
-| `subscription.enabled` | boolean | サブスクリプション機能の有効化 |
-| `subscription.plans` | array \| function | 利用可能なプラン定義 |
-| `webhookUsername` | string | Webhook Basic Auth ユーザー名 |
-| `webhookPassword` | string | Webhook Basic Auth パスワード |
-| `webhookHandler?` | function | カスタム Webhook ハンドラー |
+| `chargebeeClient` | Chargebee | SDK instance (required) |
+| `createCustomerOnSignUp` | boolean | Automatically create a customer on sign-up |
+| `preventDuplicateTrials` | boolean | Prevent multiple trials |
+| `authorizeReference?` | function | Permission check for the reference ID |
+| `subscription.enabled` | boolean | Enable subscription features |
+| `subscription.plans` | array \| function | Definitions of available plans |
+| `webhookUsername` | string | Webhook Basic Auth username |
+| `webhookPassword` | string | Webhook Basic Auth password |
+| `webhookHandler?` | function | Custom webhook handler |
 
-### プラン定義
+### Plan definition
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |---|---|---|
-| `name` | string | プラン識別子（必須） |
-| `itemPriceId` | string | Chargebee Item Price ID（必須） |
+| `name` | string | Plan identifier (required) |
+| `itemPriceId` | string | Chargebee Item Price ID (required) |
 | `type` | string | `"plan"` / `"addon"` / `"charge"` |
-| `limits` | object | 利用制限 |
-| `freeTrial?` | object | 無料トライアル設定 |
+| `limits` | object | Usage limits |
+| `freeTrial?` | object | Free trial settings |
 
-## データベーススキーマ
+## Notes
 
-4 つのテーブルを追加:
+### DB schema
 
-- `user`: `chargebeeCustomerId` フィールドを追加
-- `organization`: `chargebeeCustomerId` フィールドを追加（組織プラグイン使用時）
-- `subscription`: ステータス・期間・トライアル日・シート・メタデータを追跡
-- `subscriptionItem`: プラン/アドオン/チャージの個別アイテムを保存
+Adds 4 tables:
 
-## 高度な機能
-
-- **組織課金**: `organization.enabled: true` で組織単位の課金（API コールに `customerType: "organization"` が必要）
-- **トライアル管理**: `preventDuplicateTrials: true` で重複トライアルを防止
-- **マルチアイテム**: 複数プラン・アドオン・チャージのサブスクリプションをサポート
+- `user`: adds a `chargebeeCustomerId` field
+- `organization`: adds a `chargebeeCustomerId` field (when using the organization plugin)
+- `subscription`: tracks status, period, trial dates, seats, and metadata
+- `subscriptionItem`: stores individual plan/add-on/charge items
 
 ## Related
 

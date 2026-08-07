@@ -40,6 +40,7 @@ skills/pino/
       asynchronous.md
       pretty-printing.md
       diagnostics.md
+      bundling.md
     integrations/
       README.md
       web-frameworks.md
@@ -60,6 +61,8 @@ skills/pino/
       testing.md
       transports-and-systemd.md
       unicode-and-windows.md
+      log-to-different-streams.md
+      grafana-loki-kubernetes.md
   samples/
     README.md
     basic-logging.md
@@ -98,9 +101,11 @@ skills/pino/
 | redaction で機密情報をマスクしたい | features | [references/features/README.md](references/features/README.md) |
 | transport で出力先を切り替えたい、pino-pretty を使いたい | features | [references/features/README.md](references/features/README.md) |
 | 非同期ロギング・ブラウザ対応・diagnostics を調べたい | features | [references/features/README.md](references/features/README.md) |
+| webpack 等でバンドルしたい | features | [references/features/README.md](references/features/README.md) |
 | Fastify / Express との統合方法を知りたい | integrations | [references/integrations/README.md](references/integrations/README.md) |
 | エコシステム・関連パッケージを把握したい | integrations | [references/integrations/README.md](references/integrations/README.md) |
 | ログローテーション・フィルタリング・テストを知りたい | help | [references/help/README.md](references/help/README.md) |
 | トラブルシューティング（重複キー・文字コード・systemd）を解決したい | help | [references/help/README.md](references/help/README.md) |
+| 複数ストリームへの出力振り分け、Grafana Loki / Kubernetes 連携を知りたい | help | [references/help/README.md](references/help/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

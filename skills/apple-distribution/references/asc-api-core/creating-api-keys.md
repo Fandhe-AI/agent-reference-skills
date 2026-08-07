@@ -31,6 +31,33 @@ Two key types exist:
 - The download link appears only once — Apple does not retain a copy
 - Store the `.p8` file securely; do not commit to repositories or embed in client-side code
 
+**Generate a JWT with the key and call the API**
+
+```python
+import jwt
+import time
+
+with open("AuthKey_2X9R4HXF34.p8", "r") as f:
+    private_key = f.read()
+
+token = jwt.encode(
+    {
+        "iss": "69a6de7d-XXXX-XXXX-XXXX-e53f8b0f2e0e",  # Issuer ID
+        "iat": int(time.time()),
+        "exp": int(time.time()) + 1200,  # max 20 minutes
+        "aud": "appstoreconnect-v1",
+    },
+    private_key,
+    algorithm="ES256",
+    headers={"kid": "2X9R4HXF34", "typ": "JWT"},
+)
+```
+
+```sh
+curl -H "Authorization: Bearer $TOKEN" \
+  https://api.appstoreconnect.apple.com/v1/apps
+```
+
 ## Notes
 
 - Revoke keys immediately if lost or compromised

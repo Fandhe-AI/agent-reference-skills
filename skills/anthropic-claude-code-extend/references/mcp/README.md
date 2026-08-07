@@ -1,9 +1,7 @@
 # mcp
 
-Claude Code CLI から MCP サーバーへ接続する設定。Agent SDK の MCP は anthropic-agent-sdk、Claude API の MCP connector / tunnels は anthropic-api-tools-mcp を参照。
-
 | Name | Description | Path |
 | --- | --- | --- |
-| Control MCP server access for your organization | organization が MCP server access を制御 (allowlist / denylist / managed config) | [managed-mcp.md](./managed-mcp.md) |
-| Connect Claude Code to tools via MCP | Claude Code から MCP server へ接続する client-side 設定 (http / stdio / ws) | [mcp.md](./mcp.md) |
-| Connect to MCP servers | MCP server add / verify / use / remove のステップバイステップ walkthrough | [mcp-quickstart.md](./mcp-quickstart.md) |
+| Control MCP server access for your organization | Restrict which MCP servers users can add or connect to with managed configuration files, allowlists, and denylists. | [managed-mcp.md](./managed-mcp.md) |
+| Connect to MCP servers | Add an MCP server to Claude Code, verify the connection, and find the configuration on disk. Step-by-step walkthrough; see the MCP reference for every configuration option. | [mcp-quickstart.md](./mcp-quickstart.md) |
+| Connect Claude Code to tools via MCP | Learn how to connect Claude Code to your tools with the Model Context Protocol (MCP). Full reference; see the MCP quickstart for a step-by-step walkthrough. | [mcp.md](./mcp.md) |

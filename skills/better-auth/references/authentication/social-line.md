@@ -2,14 +2,7 @@
 
 A messaging platform popular in Asia for social authentication.
 
-## Credentials
-
-- `LINE_CLIENT_ID` - Your Channel ID
-- `LINE_CLIENT_SECRET` - Your Channel secret
-
-Obtain from the LINE Developers Console.
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth";
@@ -26,10 +19,6 @@ export const auth = betterAuth({
   },
 });
 ```
-
-## クライアントサインイン
-
-### Standard OAuth Flow
 
 ```typescript
 import { createAuthClient } from "better-auth/client";
@@ -51,15 +40,6 @@ await authClient.signIn.social({
   },
 });
 ```
-
-## リダイレクト URL
-
-LINE Developers Console で設定する。Redirect URI must match exactly what's configured.
-
-## プロバイダー固有の設定・注意点
-
-- **Default Scopes**: `openid profile email` (customizable via provider options)
-- **ID Token Verification**: Uses the official endpoint and checks audience and optional nonce per spec
 
 ### Multi-Channel Support
 
@@ -86,3 +66,24 @@ export const auth = betterAuth({
 ```
 
 Sign in using the appropriate `providerId` like `"line-jp"`, `"line-th"`, or `"line-tw"`.
+
+## Options / Props
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `clientId` | string | `LINE_CLIENT_ID` — your Channel ID, obtained from the LINE Developers Console |
+| `clientSecret` | string | `LINE_CLIENT_SECRET` — your Channel secret, obtained from the LINE Developers Console |
+| `redirectURI` | string (optional) | Override the callback URL |
+| `scope` | string[] (optional) | Additional OAuth scopes |
+| `disableDefaultScope` | boolean (optional) | Disable the default scope |
+
+## Notes
+
+- Redirect URL: configured in the LINE Developers Console; must match exactly what's configured
+- **Default Scopes**: `openid profile email` (customizable via provider options)
+- **ID Token Verification**: uses the official endpoint and checks audience and optional nonce per spec
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)
+- [Other Social Providers](./other-social-providers.md)

@@ -1,13 +1,5 @@
-# Gists API
+# Gists
 
-GitHub Gist（コードスニペット共有）を管理するAPIセクション。
-
-## エンドポイントカテゴリ
-
-| カテゴリ | 説明 |
-|---------|------|
-| [Gists](gists.md) | Gistの作成・取得・更新・削除、フォーク、スター、コメント |
-
-## 概要
-
-Gists APIはGitHub Gistのプログラム的な管理を提供する。Gistはバージョン管理されたコードスニペットで、パブリックまたはシークレット（URLを知っている人のみアクセス可能）として作成できる。
+| Name | Description | Path |
+|------|-------------|------|
+| Gists API | GitHub Gist（コードスニペット）を作成・管理するAPI。 | [gists.md](./gists.md) |

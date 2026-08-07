@@ -44,6 +44,6 @@ iOS 13.0+, iPadOS 13.0+, macOS 10.15+, tvOS 13.0+, watchOS 6.0+, visionOS 1.0+, 
 
 ## Related
 
-- [asauthorizationappleidprovider.md](./asauthorizationappleidprovider.md)
-- [asauthorizationappleidcredential.md](./asauthorizationappleidcredential.md)
-- [asauthorizationcontroller.md](./asauthorizationcontroller.md)
+- [ASAuthorizationAppleIDProvider](./asauthorizationappleidprovider.md)
+- [ASAuthorizationAppleIDCredential](./asauthorizationappleidcredential.md)
+- [ASAuthorizationController](./asauthorizationcontroller.md)

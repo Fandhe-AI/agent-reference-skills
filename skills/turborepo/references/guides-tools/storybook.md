@@ -1,26 +1,24 @@
 # Storybook
 
-## テンプレートから開始
+## Usage
+
+Start from a template:
 
 ```bash
 pnpm dlx create-turbo@latest -e design-system
 ```
 
-## キャッシュ設定
+Cache configuration:
 
 ```json
 { "tasks": { "build": { "outputs": ["storybook-static/**"] } } }
 ```
 
-`.gitignore` に `storybook-static` を追加。
+Add `storybook-static` to `.gitignore`.
 
-## Co-Located Stories パターン
+Co-located stories pattern, recommended for large design systems: place stories inside the source package.
 
-大規模デザインシステムで推奨。ストーリーをソースパッケージ内に配置:
+1. Point the story paths to the source package in `.storybook/main.ts`.
+2. Exclude story files from production build `inputs` to preserve caching.
 
-1. `.storybook/main.ts` でストーリーのパスをソースパッケージへ向ける
-2. ストーリーファイルを本番ビルドの `inputs` から除外してキャッシュを維持
-
-## スタイルの統合
-
-CSS は `.storybook/preview.ts` で手動インポートが必要。
+Style integration: CSS must be imported manually in `.storybook/preview.ts`.

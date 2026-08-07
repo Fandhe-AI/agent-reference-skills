@@ -1,19 +1,6 @@
 # Reddit
 
-## Credentials
-
-- `REDDIT_CLIENT_ID` - Available under the app name in Reddit Developer Portal
-- `REDDIT_CLIENT_SECRET` - Generated when creating the app
-
-### Getting Credentials
-
-1. Navigate to the [Reddit Developer Portal](https://www.reddit.com/prefs/apps)
-2. Select "Create App" or "Create Another App"
-3. Choose "web app" as the application type
-4. Set redirect URL to `http://localhost:3000/api/auth/callback/reddit` (local development) or your production domain (e.g., `https://example.com/api/auth/callback/reddit`)
-5. Retrieve the client ID (displayed below app name) and client secret
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -28,8 +15,6 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
-
 ```typescript
 import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
@@ -41,15 +26,7 @@ const signIn = async () => {
 }
 ```
 
-## リダイレクト URL
-
-- **Local development**: `http://localhost:3000/api/auth/callback/reddit`
-- **Production**: `https://example.com/api/auth/callback/reddit`
-- If you change the base path of the auth routes, make sure to update the redirect URL accordingly
-
-## プロバイダー固有の設定・注意点
-
-### Optional Configuration: Scopes and Duration
+Optional scope and duration configuration:
 
 ```typescript
 export const auth = betterAuth({
@@ -64,12 +41,31 @@ export const auth = betterAuth({
 })
 ```
 
-### Available Scopes
+## Options / Props
 
-- `identity`: Access basic account information
-- `read`: Access posts and comments
-- `submit`: Submit posts and comments
-- `subscribe`: Manage subreddit subscriptions
-- `history`: Access voting history
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `clientId` | string | — | `REDDIT_CLIENT_ID`, shown under the app name in the Reddit Developer Portal |
+| `clientSecret` | string | — | `REDDIT_CLIENT_SECRET`, generated when creating the app |
+| `duration` | string | — | e.g. `"permanent"`, to request a refresh token |
+| `scope` | string[] | — | See available scopes below |
 
-For comprehensive scope options, consult the [Reddit OAuth2 documentation](https://www.reddit.com/dev/api/oauth).
+Available scopes:
+
+| Scope | Description |
+| --- | --- |
+| `identity` | Access basic account information |
+| `read` | Access posts and comments |
+| `submit` | Submit posts and comments |
+| `subscribe` | Manage subreddit subscriptions |
+| `history` | Access voting history |
+
+## Notes
+
+- Getting credentials: navigate to the [Reddit Developer Portal](https://www.reddit.com/prefs/apps), select "Create App" or "Create Another App", choose "web app" as the application type, set the redirect URL to `http://localhost:3000/api/auth/callback/reddit` (local) or your production domain (e.g. `https://example.com/api/auth/callback/reddit`), then retrieve the client ID and client secret
+- Redirect URL — local development: `http://localhost:3000/api/auth/callback/reddit`; production: `https://example.com/api/auth/callback/reddit`. If you change the base path of the auth routes, update the redirect URL accordingly
+- For comprehensive scope options, consult the [Reddit OAuth2 documentation](https://www.reddit.com/dev/api/oauth)
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

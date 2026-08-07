@@ -1,59 +1,32 @@
 # @inheritDoc
 
-他のリフレクション（シンボル）からドキュメントをコピーするインラインタグ。TSDoc仕様に準拠し、特定のドキュメント要素のみがコピーされる。
+An inline tag that copies documentation from another reflection (symbol). Follows the TSDoc spec, under which only specific documentation elements are copied.
 
-## 構文
+## Signature / Usage
 
-### ブレース付き形式（TSDoc標準）
+### Braced form (TSDoc standard)
 
 ```
 {@inheritDoc ReferenceName}
 ```
 
-### ブレースなし形式（JSDoc互換）
+### Unbraced form (JSDoc-compatible)
 
 ```
 @inheritDoc
 ```
 
-ブレースなし形式の場合、TypeDocは「親」リフレクション（親クラスやインターフェースの対応するメンバー）からコメントを継承する。
+In the unbraced form, TypeDoc inherits the comment from the "parent" reflection (the corresponding member on a parent class or interface).
 
-## 詳細説明
-
-### コピーされる要素
-
-TypeDocはTSDoc仕様に従い、以下の要素のみをコピーする：
-
-- **summary** — コメントの要約部分
-- **@remarks** ブロック
-- **@param** ブロック — パラメータの説明
-- **@typeParam** ブロック — 型パラメータの説明
-- **@returns** ブロック — 戻り値の説明
-
-### 宣言リファレンスによる参照
-
-ブレース付き形式では、宣言リファレンス（Declaration Reference）を使って任意のリフレクションを参照できる。クラス階層に関係なく、任意のシンボルからドキュメントをコピーできる。
-
-### JSDoc互換性
-
-TypeDocはTSDocとJSDocの両方の構文をサポートしている：
-
-- `{@inheritDoc}` — TSDoc標準のインラインタグ形式
-- `@inheritDoc` — JSDocスタイルのブロックレベル形式
-
-JSDocスタイル（ブレースなし）の場合、TypeDocは親リフレクションから自動的にコメントを継承する。
-
-## コード例
-
-### 基本的な使用例
+### Examples
 
 ```typescript
 /**
- * 基底クラスのドキュメント。
- * このクラスはデータの処理を行う。
+ * Documentation for the base class.
+ * This class handles data processing.
  *
  * @remarks
- * 詳細な実装ノート。
+ * Detailed implementation notes.
  */
 export class SomeClass {}
 
@@ -61,17 +34,15 @@ export class SomeClass {}
 export interface SomeUnrelatedClass {}
 ```
 
-この例では、`SomeClass` のドキュメント（summary、@remarks）が `SomeUnrelatedClass` にコピーされる。
-
-### クラス階層での使用
+In this example, `SomeClass`'s documentation (summary, `@remarks`) is copied to `SomeUnrelatedClass`.
 
 ```typescript
 export class Base {
   /**
-   * 要素を処理する。
+   * Processes an element.
    *
-   * @param input - 処理対象の入力値
-   * @returns 処理結果
+   * @param input - the value to process
+   * @returns the processing result
    */
   process(input: string): string {
     return input;
@@ -86,12 +57,10 @@ export class Derived extends Base {
 }
 ```
 
-### JSDocスタイルの自動継承
-
 ```typescript
 export class Base {
   /**
-   * 初期化処理を実行する。
+   * Runs initialization.
    */
   init(): void {}
 }
@@ -101,21 +70,21 @@ export class Child extends Base {
    * @inheritDoc
    */
   init(): void {
-    // 親クラスのドキュメントが自動的に継承される
+    // documentation is automatically inherited from the parent class
   }
 }
 ```
 
-## 注意点
+## Notes
 
-- TSDoc仕様に基づき、コピーされるのはsummary、@remarks、@param、@typeParam、@returnsのみ
-- `{@inheritDoc}` （ブレース付き）はインラインタグとして扱われる
-- `@inheritDoc` （ブレースなし）はブロックレベルタグとして扱われ、親リフレクションからの継承を行う
-- TSDocではインラインタグ、JSDocではブロックレベルタグという分類の違いがある
-- 宣言リファレンスの構文に従って参照先を指定する
+- Per the TSDoc spec, only the following elements are copied: **summary**, the **`@remarks`** block, **`@param`** blocks, **`@typeParam`** blocks, and the **`@returns`** block.
+- The braced form (`{@inheritDoc Target}`) can reference any reflection via a declaration reference, regardless of the class hierarchy.
+- `{@inheritDoc}` (braced) is treated as an inline tag; `@inheritDoc` (unbraced) is treated as a block-level tag that inherits from the parent reflection — TSDoc classifies it as inline, JSDoc as block-level.
+- TypeDoc supports both TSDoc and JSDoc syntax for this tag.
+- The reference target is specified using declaration-reference syntax.
 
-## 関連
+## Related
 
-- [@include](./include.md) — 外部ファイルからのコンテンツ取り込み
-- [@link](./link.md) — 他のリフレクションへのリンク作成
-- [Declaration References](../guides/declaration-references.md) — 宣言リファレンスの構文
+- [@include](./include.md) — includes content from an external file
+- [@link](./link.md) — creates a link to another reflection
+- [Declaration References](../guides/declaration-references.md) — declaration reference syntax

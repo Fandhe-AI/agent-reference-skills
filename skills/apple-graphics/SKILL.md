@@ -4,9 +4,10 @@ description: >
   Apple グラフィックスフレームワークリファレンス。
   Metal, Core Animation, Core Graphics, Core Image, SpriteKit, SceneKit。
   MTLDevice, MTKView, MTLBuffer, MTLTexture,
-  CALayer, CABasicAnimation, CADisplayLink,
+  Metal 4 (MTL4CommandQueue, MTL4CommandBuffer, MTL4ArgumentTable),
+  CALayer, CABasicAnimation, CADisplayLink, CAMetalDisplayLink, CAMetalDrawable,
   CGContext, CGPath, CGImage,
-  CIFilter, CIContext, CIImage,
+  CIFilter, CIContext, CIImage, CIRAWFilter, CIWarpKernel, CIBlendKernel,
   SKScene, SKSpriteNode, SKAction,
   SCNNode, SCNGeometry, SCNMaterial。
 user-invocable: false
@@ -36,6 +37,11 @@ skills/apple-graphics/
       mtlrenderpassdescriptor.md
       mtkview.md
       mtktextureloader.md
+      mtl4commandqueue.md
+      mtl4commandbuffer.md
+      mtl4compilerdescriptor.md
+      mtl4argumenttable.md
+      mtl4renderpipelinedescriptor.md
     core-animation/
       README.md
       calayer.md
@@ -53,6 +59,14 @@ skills/apple-graphics/
       catransaction.md
       camediatimingfunction.md
       cadisplaylink.md
+      cametaldisplaylink.md
+      cametaldrawable.md
+      cascrolllayer.md
+      catiledlayer.md
+      catransformlayer.md
+      caconstraint.md
+      capropertyanimation.md
+      cavaluefunction.md
     core-graphics/
       README.md
       cgcontext.md
@@ -84,6 +98,11 @@ skills/apple-graphics/
       cidetector.md
       cisampler.md
       ciimageprocessorkernel.md
+      ciwarpkernel.md
+      cirawfilter.md
+      ciblendkernel.md
+      cifiltershape.md
+      cirenderdestination.md
     spritekit/
       README.md
       skscene.md
@@ -144,10 +163,12 @@ skills/apple-graphics/
 | レンダーパイプライン・シェーダーを設定したい | metal | [references/metal/README.md](references/metal/README.md) |
 | バッファ・テクスチャを作成・管理したい | metal | [references/metal/README.md](references/metal/README.md) |
 | MTKView でメタルレンダリングループを構築したい | metal | [references/metal/README.md](references/metal/README.md) |
+| Metal 4 API (MTL4CommandQueue / MTL4ArgumentTable) でコマンドを記録したい | metal | [references/metal/README.md](references/metal/README.md) |
 | レイヤーにアニメーションを追加したい | core-animation | [references/core-animation/README.md](references/core-animation/README.md) |
 | グラデーション・パーティクル・テキストをレイヤーで描きたい | core-animation | [references/core-animation/README.md](references/core-animation/README.md) |
 | スプリングアニメーション・キーフレームアニメーションを使いたい | core-animation | [references/core-animation/README.md](references/core-animation/README.md) |
-| 表示同期コールバック (CADisplayLink) を設定したい | core-animation | [references/core-animation/README.md](references/core-animation/README.md) |
+| 表示同期コールバック (CADisplayLink / CAMetalDisplayLink) を設定したい | core-animation | [references/core-animation/README.md](references/core-animation/README.md) |
+| スクロールレイヤー・タイル表示・3D レイヤー階層を扱いたい | core-animation | [references/core-animation/README.md](references/core-animation/README.md) |
 | Quartz 2D でパスを描画・塗りつぶしたい | core-graphics | [references/core-graphics/README.md](references/core-graphics/README.md) |
 | アフィン変換・クリッピングを適用したい | core-graphics | [references/core-graphics/README.md](references/core-graphics/README.md) |
 | ビットマップコンテキストを作成したい | core-graphics | [references/core-graphics/README.md](references/core-graphics/README.md) |
@@ -156,6 +177,7 @@ skills/apple-graphics/
 | カスタムカーネル (GPU) を書きたい | core-image | [references/core-image/README.md](references/core-image/README.md) |
 | 顔・QR コードを検出したい | core-image | [references/core-image/README.md](references/core-image/README.md) |
 | Metal バックエンドで CIImage を高速レンダリングしたい | core-image | [references/core-image/README.md](references/core-image/README.md) |
+| RAW 画像・ジオメトリワープ・ブレンドカーネルを処理したい | core-image | [references/core-image/README.md](references/core-image/README.md) |
 | 2D ゲームシーンを構築したい | spritekit | [references/spritekit/README.md](references/spritekit/README.md) |
 | スプライト・テキスト・シェイプを配置したい | spritekit | [references/spritekit/README.md](references/spritekit/README.md) |
 | 物理シミュレーション・衝突判定を設定したい | spritekit | [references/spritekit/README.md](references/spritekit/README.md) |

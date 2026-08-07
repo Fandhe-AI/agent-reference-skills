@@ -1,10 +1,8 @@
-# ワークスペース
+# Workspace
 
-> **Deprecated**: `vitest.workspace.ts` による独立ワークスペース設定ファイルは非推奨。`vitest.config.ts` の `test.projects` オプションへ移行する。
+> **Deprecated**: standalone workspace configuration via `vitest.workspace.ts` is deprecated. Migrate to the `test.projects` option in `vitest.config.ts`.
 
-モノレポや異なるテスト設定を単一プロセスで実行するための機能。
-
-## 基本設定
+## Signature / Usage
 
 ```ts
 // vitest.config.ts
@@ -17,17 +15,17 @@ export default defineConfig({
 })
 ```
 
-## プロジェクト検出
+## Options / Props
 
-glob パターンにマッチするフォルダが個別プロジェクトとして扱われる。
-config ファイルがなくてもプロジェクトとして認識される。
+| Option | Description |
+|--------|-------------|
+| `projects` | Glob patterns and/or inline project configs; folders matching the glob are treated as individual projects |
 
-認識される config ファイル名:
-- `vitest.config.ts` / `vite.config.js`
-- `vitest.unit.config.ts` / `vite.e2e.config.js`
-- `vitest.<name>.config.*`
+## Notes
 
-### 除外
+- Project detection: folders matching the glob pattern are treated as individual projects. A project is recognized even without a config file.
+  Recognized config file names: `vitest.config.ts` / `vite.config.js`, `vitest.unit.config.ts` / `vite.e2e.config.js`, `vitest.<name>.config.*`
+- Exclusion:
 
 ```ts
 projects: [
@@ -36,9 +34,7 @@ projects: [
 ]
 ```
 
-## インライン設定
-
-glob パターンとインライン設定を混在可能。
+- Inline config can be mixed with glob patterns:
 
 ```ts
 projects: [
@@ -54,11 +50,7 @@ projects: [
 ]
 ```
 
-## 設定の継承
-
-### extends オプション
-
-`extends: true` でルートレベルの設定を継承:
+- Config inheritance via `extends`: `extends: true` inherits the root-level config.
 
 ```ts
 {
@@ -70,7 +62,7 @@ projects: [
 }
 ```
 
-### mergeConfig
+- `mergeConfig`:
 
 ```ts
 import { defineProject, mergeConfig } from 'vitest/config'
@@ -84,23 +76,22 @@ export default mergeConfig(
 )
 ```
 
-## プロジェクト指定実行
+- Running a specific project:
 
 ```bash
-# 特定プロジェクト
+# single project
 npm run test -- --project e2e
 
-# 複数プロジェクト
+# multiple projects
 npm run test -- --project e2e --project unit
 ```
 
-## プロジェクト設定で使えないオプション
+- Options not available in project-level config:
+  - `coverage` — process-wide setting only
+  - `reporters` — root level only
+  - `resolveSnapshotPath` — the root resolver applies
 
-- `coverage` — プロセス全体設定のみ
-- `reporters` — ルートレベルのみ
-- `resolveSnapshotPath` — ルートのリゾルバが適用
+## Related
 
-## 関連
-
-- [設定](./config.md)
-- [テスト環境](./environment.md)
+- [Config](./config.md)
+- [Test Environment](./environment.md)

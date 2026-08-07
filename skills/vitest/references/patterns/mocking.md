@@ -1,6 +1,6 @@
-# モックパターン
+# Mocking Patterns
 
-## 基本: vi.fn() でモック関数を作成
+## Basics: Creating a Mock Function with vi.fn()
 
 ```ts
 const handler = vi.fn()
@@ -9,7 +9,7 @@ expect(handler).toHaveBeenCalledWith('event')
 expect(handler).toHaveBeenCalledTimes(1)
 ```
 
-## 戻り値の設定
+## Setting Return Values
 
 ```ts
 const fetchUser = vi.fn()
@@ -22,17 +22,17 @@ await fetchUser() // { id: 2, name: 'Bob' }
 await fetchUser() // throws 'not found'
 ```
 
-## モジュールモック: vi.mock()
+## Module Mocking: vi.mock()
 
-### オートモック
+### Automocking
 
 ```ts
 vi.mock('./user-service')
-// 全エクスポートが vi.fn() になる
+// every export becomes vi.fn()
 import { getUser } from './user-service'
 ```
 
-### ファクトリモック
+### Factory Mock
 
 ```ts
 vi.mock('./api', () => ({
@@ -41,9 +41,9 @@ vi.mock('./api', () => ({
 }))
 ```
 
-### 部分モック（importOriginal）
+### Partial Mock (importOriginal)
 
-一部のエクスポートだけをモックし、残りは本物を使う。
+Mocks only some exports while keeping the rest of the original implementation.
 
 ```ts
 vi.mock('./utils', async (importOriginal) => {
@@ -55,10 +55,10 @@ vi.mock('./utils', async (importOriginal) => {
 })
 ```
 
-### vi.hoisted() と組み合わせ
+### Combining with vi.hoisted()
 
-`vi.mock` ファクトリはホイストされるため、外部変数を直接参照できない。
-`vi.hoisted()` を使ってホイストレベルで変数を定義する。
+`vi.mock` factories are hoisted, so they cannot reference outer variables directly.
+Use `vi.hoisted()` to define variables at the hoisted level.
 
 ```ts
 const mockFetch = vi.hoisted(() => vi.fn())
@@ -67,11 +67,11 @@ vi.mock('./api', () => ({
   fetchData: mockFetch,
 }))
 
-// テスト内で mockFetch を設定
+// configure mockFetch inside the test
 mockFetch.mockResolvedValue({ data: [] })
 ```
 
-### デフォルトエクスポートのモック
+### Mocking a Default Export
 
 ```ts
 vi.mock('./config', () => ({
@@ -79,9 +79,9 @@ vi.mock('./config', () => ({
 }))
 ```
 
-## オブジェクトモック: vi.mockObject()（v3.2.0+）
+## Object Mocking: vi.mockObject() (v3.2.0+)
 
-オブジェクトのメソッドを再帰的にモックする。インポートしたモジュールオブジェクトに対して `vi.mock()` なしで使える。
+Recursively mocks the methods of an object. Works on an imported module object without needing `vi.mock()`.
 
 ```ts
 import { userService } from './user-service'
@@ -90,18 +90,18 @@ const mocked = vi.mockObject(userService)
 mocked.getUser.mockResolvedValue({ id: 1, name: 'Alice' })
 ```
 
-元の実装を保持してスパイする場合:
+To spy while keeping the original implementation:
 
 ```ts
 const spied = vi.mockObject(userService, { spy: true })
-// 元の実装を実行しつつ呼び出しを追跡
+// runs the original implementation while tracking calls
 expect(spied.getUser).toHaveBeenCalled()
 spied.getUser.mockRestore()
 ```
 
-## オブジェクトスパイ: vi.spyOn()
+## Object Spying: vi.spyOn()
 
-元の実装を保持しつつ呼び出しを追跡する。
+Tracks calls while keeping the original implementation.
 
 ```ts
 const spy = vi.spyOn(console, 'warn')
@@ -110,15 +110,15 @@ expect(spy).toHaveBeenCalledWith(expect.stringContaining('deprecated'))
 spy.mockRestore()
 ```
 
-### 実装の差し替え
+### Replacing the Implementation
 
 ```ts
 const spy = vi.spyOn(fs, 'readFileSync').mockReturnValue('mocked content')
-// テスト後に復元
+// restore after the test
 spy.mockRestore()
 ```
 
-### getter/setter のスパイ
+### Spying on Getters/Setters
 
 ```ts
 const obj = {
@@ -130,46 +130,46 @@ vi.spyOn(obj, 'value', 'get').mockReturnValue(100)
 expect(obj.value).toBe(100)
 ```
 
-## グローバル・環境変数のスタブ
+## Stubbing Globals and Environment Variables
 
 ```ts
-// グローバル変数
+// global variable
 vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
   ok: true,
   json: () => Promise.resolve({ data: [] }),
 }))
 
-// 環境変数
+// environment variable
 vi.stubEnv('NODE_ENV', 'test')
 vi.stubEnv('API_KEY', 'test-key')
 
-// afterEach で復元
+// restore in afterEach
 afterEach(() => {
   vi.unstubAllGlobals()
   vi.unstubAllEnvs()
 })
 ```
 
-## モックのクリーンアップ
+## Cleaning Up Mocks
 
 ```ts
-// beforeEach パターン
+// beforeEach pattern
 beforeEach(() => {
-  vi.clearAllMocks()   // 履歴クリア（実装保持）
+  vi.clearAllMocks()   // clears call history, keeps implementation
 })
 
-// または config で自動化
+// or automate it via config
 // vitest.config.ts: clearMocks: true / resetMocks: true / restoreMocks: true
 ```
 
 | Config Option | Effect |
 |---------------|--------|
-| `clearMocks: true` | 各テスト前に `vi.clearAllMocks()` |
-| `resetMocks: true` | 各テスト前に `vi.resetAllMocks()` |
-| `restoreMocks: true` | 各テスト前に `vi.restoreAllMocks()` |
+| `clearMocks: true` | calls `vi.clearAllMocks()` before each test |
+| `resetMocks: true` | calls `vi.resetAllMocks()` before each test |
+| `restoreMocks: true` | calls `vi.restoreAllMocks()` before each test |
 
-## 関連
+## Related
 
-- [Vi ユーティリティ](../api/vi.md)
-- [Expect マッチャー](../api/expect.md)
-- [非同期テストパターン](./async.md)
+- [Vi utilities](../api/vi.md)
+- [Expect matchers](../api/expect.md)
+- [Async testing patterns](./async.md)

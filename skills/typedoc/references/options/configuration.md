@@ -1,18 +1,8 @@
 # Options: Configuration
 
-TypeDoc の Configuration オプション一覧。
+TypeDoc options controlling how TypeDoc is itself configured and extended.
 
-## options
-
-**Type:** `string`
-**Default:** 自動検出（`typedoc.json`, `typedoc.jsonc`, `typedoc.config.js`, `typedoc.config.cjs`, `typedoc.config.mjs`, `.config/typedoc.*` など）
-**CLI:** `--options <filename>`
-
-コマンドラインオプションに対応するエントリを含む設定ファイルを指定する。`extends` キーを使用して、現在のオプションをインポートする前に追加ファイルを読み込むことができる。
-
-サポートされるファイル形式:
-- **JSON ファイル:** JSONC として解析される（末尾カンマとコメントを許可）。`$schema` キーを含めることを推奨: `"https://typedoc.org/schema.json"`
-- **JavaScript ファイル:** オプションキーを持つオブジェクトをエクスポートする
+## Usage
 
 ```json
 {
@@ -22,52 +12,20 @@ TypeDoc の Configuration オプション一覧。
 }
 ```
 
-## tsconfig
+## Options / Props
 
-**Type:** `string`
-**Default:** カレントディレクトリと親ディレクトリを検索（`tsc` と同様）
-**CLI:** `--tsconfig <path>`
+| Option | Type | Default | CLI | Description |
+| --- | --- | --- | --- | --- |
+| `options` | `string` | auto-detected (`typedoc.json`, `typedoc.jsonc`, `typedoc.config.js`, `typedoc.config.cjs`, `typedoc.config.mjs`, `.config/typedoc.*`, etc.) | `--options <filename>` | Specifies a config file containing entries corresponding to command-line options. The `extends` key can load additional files before importing the current options. |
+| `tsconfig` | `string` | searches the current and parent directories (like `tsc`) | `--tsconfig <path>` | Specifies the `tsconfig.json` file to read options from. TypeDoc reads the `"typedocOptions"` key and looks for a `tsdoc.json` in the same directory. |
+| `compilerOptions` | `object` | none | — (config file only) | Selectively overrides TypeScript compiler options for documentation generation. Values override those from `tsconfig.json`. |
+| `plugin` | `string[]` | none (no plugins loaded) | `--plugin <name>` (repeatable) | Specifies plugins to load. Can reference npm packages or local files. JavaScript config files can also specify a function directly. |
 
-オプションを読み取るための `tsconfig.json` ファイルを指定する。TypeDoc は `"typedocOptions"` キーを読み取り、同じディレクトリ内の `tsdoc.json` を探す。
+## Notes
 
-```json
-{
-  "tsconfig": "./tsconfig.json"
-}
-```
+- `options` supported file formats: JSON files are parsed as JSONC (trailing commas and comments allowed); including `$schema: "https://typedoc.org/schema.json"` is recommended. JavaScript files export an object with option keys.
 
-## compilerOptions
-
-**Type:** `object`
-**Default:** なし
-**CLI:** なし（設定ファイル専用）
-
-ドキュメント生成のために TypeScript コンパイラオプションを選択的にオーバーライドする。値は `tsconfig.json` のものをオーバーライドする。
-
-```json
-{
-  "compilerOptions": {
-    "strict": true,
-    "moduleResolution": "node"
-  }
-}
-```
-
-## plugin
-
-**Type:** `string[]`
-**Default:** なし（プラグインは読み込まれない）
-**CLI:** `--plugin <name>`（繰り返し可）
-
-読み込むプラグインを指定する。npm パッケージまたはローカルファイルを参照できる。JavaScript 設定ファイルでは関数を直接指定することもできる。
-
-```json
-{
-  "plugin": ["typedoc-plugin-markdown", "./my-plugin.js"]
-}
-```
-
-## 関連
+## Related
 
 - [Options: Input](./input.md)
 - [Options: Output](./output.md)

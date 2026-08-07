@@ -1,8 +1,10 @@
 # ESLint
 
-## ESLint v9（Flat Config）— 推奨
+## Usage
 
-設定パッケージ構成:
+ESLint v9 (Flat Config) — recommended.
+
+Config package structure:
 ```
 packages/eslint-config/
   package.json
@@ -11,16 +13,16 @@ packages/eslint-config/
   react-internal.js
 ```
 
-ESLint プラグインや依存関係を `@repo/eslint-config` パッケージに一元管理する。
+Centralize ESLint plugins and dependencies in the `@repo/eslint-config` package.
 
-## lint タスク設定
+`lint` task configuration:
 
 ```json
 { "tasks": { "lint": { "dependsOn": ["^lint"] } } }
 ```
 
-`^lint` により設定パッケージ変更時に依存パッケージのキャッシュが自動無効化される。
+`^lint` automatically invalidates the cache of dependent packages when the config package changes.
 
-## 注意
+## Notes
 
-ESLint v8 は 2024年10月5日に EOL。新規プロジェクトでは必ず v9 Flat Config を使用する。
+- ESLint v8 reached EOL on October 5, 2024. New projects should always use v9 Flat Config.

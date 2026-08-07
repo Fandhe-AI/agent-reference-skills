@@ -1,35 +1,31 @@
 # @license
 
-コメントをライセンス宣言としてマークし、生成されるドキュメントから除外するブロックタグ。
+Block tag that marks a comment as a license declaration and excludes it from the generated documentation.
 
-## 構文
+## Signature / Usage
 
 ```
-@license ライセンス識別子
+@license License Identifier
 ```
 
-## 詳細説明
+Comments containing `@license` are excluded from the generated documentation. When TypeDoc detects this tag, it treats the entire comment block as a license notice rather than documentation content.
 
-`@license` を含むコメントは生成されるドキュメントから除外される。TypeDocがこのタグを検出すると、コメントブロック全体をドキュメント内容ではなくライセンス通知として扱う。
-
-これにより、ソースコードにライセンス情報を含めつつ、最終的なAPIドキュメントに表示されないようにすることができる。
-
-## コード例
+This lets you include license information in source code without it appearing in the final API documentation.
 
 ```typescript
 /** @license Apache-2.0 */
 export const api = {
-    // このエクスポートのコメントは文書化されない
+    // The comment for this export is not documented
 };
 ```
 
-## 注意点
+## Notes
 
-- `@license` を含むコメントブロック全体がドキュメント生成から除外される
-- SPDXライセンス識別子やライセンステキストの宣言に適している
-- モジュール/エクスポートレベルでのライセンス宣言に使用可能
-- コメントブロックに `@license` が含まれると、そのブロック内の他のドキュメントも除外される
+- The entire comment block containing `@license` is excluded from documentation generation
+- Suitable for declaring SPDX license identifiers or license text
+- Can be used for module/export-level license declarations
+- If a comment block contains `@license`, other documentation within that block is also excluded
 
-## 関連
+## Related
 
-- [@import](./import.md) -- 同様にコメントがTypeDocによって無視されるタグ
+- [@import](./import.md) -- another tag whose comment is likewise ignored by TypeDoc

@@ -81,6 +81,8 @@ skills/android-compose-ui/
       intrinsic-measurements.md
       visibility-tracking.md
       flexbox-grid.md
+      styles.md
+      media-query.md
     adaptive-layout/
       README.md
       window-size-class.md
@@ -166,6 +168,7 @@ skills/android-compose-ui/
 | `Column` / `Row` / `Box` で子要素を並べたい | layout | [references/layout/README.md](references/layout/README.md) |
 | `LazyColumn` / `LazyRow` / `LazyVerticalGrid` で大量データをスクロール表示したい | layout | [references/layout/README.md](references/layout/README.md) |
 | `HorizontalPager` / `FlowRow` / `ConstraintLayout` / カスタム `Layout` を使いたい | layout | [references/layout/README.md](references/layout/README.md) |
+| `Style` / `StyleScope` で CSS ライクに状態別スタイルを定義したい、`mediaQuery` で環境シグナルに応じて UI を切り替えたい | layout | [references/layout/README.md](references/layout/README.md) |
 | `WindowSizeClass` で画面幅に応じたレイアウトを切り替えたい | adaptive-layout | [references/adaptive-layout/README.md](references/adaptive-layout/README.md) |
 | `ListDetailPaneScaffold` / `SupportingPaneScaffold` でマルチペイン UI を作りたい | adaptive-layout | [references/adaptive-layout/README.md](references/adaptive-layout/README.md) |
 | 折りたたみデバイスの `FoldingFeature` / `Posture` に対応したい | adaptive-layout | [references/adaptive-layout/README.md](references/adaptive-layout/README.md) |

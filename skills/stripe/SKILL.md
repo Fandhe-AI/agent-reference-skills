@@ -68,6 +68,7 @@ skills/stripe/
       invoices.md
       products-prices.md
       customer-portal.md
+      billing-meters.md
     tax/
       README.md
       tax-calculations.md
@@ -176,6 +177,7 @@ skills/stripe/
 | サブスクリプション・請求書を作成・管理したい | billing | [references/billing/README.md](references/billing/README.md) |
 | 料金プラン（従量課金・段階課金等）を定義したい | billing | [references/billing/README.md](references/billing/README.md) |
 | 顧客ポータル（自己管理 UI）を設定したい | billing | [references/billing/README.md](references/billing/README.md) |
+| 従量課金（Billing Meters）でメーターイベントを計測したい | billing | [references/billing/README.md](references/billing/README.md) |
 | 消費税・VAT・GST を自動計算・収集したい | tax | [references/tax/README.md](references/tax/README.md) |
 | 税登録（Tax Registration）を国ごとに管理したい | tax | [references/tax/README.md](references/tax/README.md) |
 | ASC 606 / IFRS 15 に準拠した収益認識を自動化したい | revenue-recognition | [references/revenue-recognition/README.md](references/revenue-recognition/README.md) |

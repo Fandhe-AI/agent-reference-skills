@@ -65,7 +65,7 @@ const result = await step.ai.wrap(
 - Unlike `step.ai.infer()`, the inference request is executed within your own function's compute — the function is not paused during the API call.
 - All arguments must be JSON-serializable to enable prompt editing in the dev server.
 - Complex SDK overloads may require type casting.
-- Streaming responses are not supported.
+- Streaming responses are not supported (planned alongside realtime support, same as `step.ai.infer()`).
 
 ## Related
 

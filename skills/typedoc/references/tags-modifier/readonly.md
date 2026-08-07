@@ -1,34 +1,30 @@
 # @readonly
 
-TypeScript の書き込み可能性に関わらず、リフレクションを読み取り専用としてドキュメント化するモディファイアタグ。
+Modifier tag that documents a reflection as read-only regardless of its actual TypeScript writability.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @readonly */
 ```
 
-## 詳細説明
+The `@readonly` tag instructs TypeDoc to document a reflection as read-only, regardless of the actual writability rules enforced by TypeScript.
 
-`@readonly` タグは、TypeScript の実際の書き込み可能性ルールに関係なく、リフレクションを読み取り専用としてドキュメント化することを指示する。
-
-このタグが適用されると、プロパティに関連付けられた setter メソッドがドキュメント出力から除去される。これにより、コード上は setter が存在していても、ドキュメント上ではプロパティが読み取り専用として提示される。
-
-## コード例
+When applied, the setter method associated with a property is removed from the generated documentation. This presents the property as read-only in the documentation even though a setter exists in the code.
 
 ```typescript
 export class Config {
     private _name: string = "";
 
     /**
-     * 設定名。読み取り専用として公開する。
+     * Configuration name. Exposed as read-only.
      * @readonly
      */
     get name(): string {
         return this._name;
     }
 
-    // この setter はドキュメントに含まれない
+    // This setter is not included in the documentation
     set name(value: string) {
         this._name = value;
     }
@@ -40,7 +36,7 @@ export class Counter {
     private _count = 0;
 
     /**
-     * 現在のカウント値。
+     * Current count value.
      * @readonly
      */
     get count(): number {
@@ -59,14 +55,14 @@ export class Counter {
 }
 ```
 
-## 注意点
+## Notes
 
-- setter メソッドがドキュメントから除去される
-- TypeScript の `readonly` キーワードとは独立して動作する
-- getter/setter ペアにおいて、ドキュメント上で setter を隠したい場合に有用
-- TSDoc 仕様に準拠: https://tsdoc.org/pages/tags/readonly/
+- Removes the setter method from the documentation
+- Operates independently of TypeScript's `readonly` keyword
+- Useful when you want to hide the setter of a getter/setter pair in the documentation
+- Follows the TSDoc spec: https://tsdoc.org/pages/tags/readonly/
 
-## 関連
+## Related
 
 - [@sealed](./sealed.md)
 - [@virtual](./virtual.md)

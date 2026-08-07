@@ -1,28 +1,24 @@
 # @useDeclaredType
 
-型エイリアスを型ノード表現ではなく宣言された型を使用して変換するモディファイアタグ。派生型のドキュメント改善に有用。
+Modifier tag that converts a type alias using its declared type instead of its type-node representation. Useful for improving the documentation of derived types.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @useDeclaredType */
 ```
 
-## 詳細説明
+The `@useDeclaredType` tag instructs TypeDoc to use the declared type, rather than the type-node representation, when converting a type alias. This can make derived types such as `ReturnType` or `Pick` more readable in the generated documentation.
 
-`@useDeclaredType` タグは、型エイリアスの変換時に型ノード表現ではなく宣言された型（declared type）を使用するよう TypeDoc に指示する。これにより、`ReturnType` や `Pick` などの派生型がより読みやすくドキュメント化される場合がある。
+This tag only has an effect on type aliases; applying it to other elements has no effect.
 
-このタグは型エイリアスにのみ効果があり、他の要素に適用しても影響はない。
+### Important caveats
 
-### 重要な注意事項
+The output is not stable and may change between TypeScript versions. Small changes to a type can produce different results, and in some cases the tag can produce worse documentation. A common failure pattern is a type being documented as a reference to itself.
 
-出力は安定しておらず、TypeScript のバージョン間で変更される可能性がある。型の小さな変更が異なる結果を生む場合があり、場合によっては劣ったドキュメントが生成されることもある。よくある失敗パターンとして、型が自身への参照としてドキュメント化されてしまうケースがある。
+Conditional mapped types do not work as expected with this tag.
 
-条件付きマップ型（conditional mapped types）は、このタグで期待通りに動作しない。
-
-## コード例
-
-### 基本的な使用法
+### Basic usage
 
 ```typescript
 function getData() {
@@ -31,10 +27,10 @@ function getData() {
 
 /** @useDeclaredType */
 export type Data = ReturnType<typeof getData>;
-// ドキュメント上では: export type Data = { abc: number }[];
+// Documented as: export type Data = { abc: number }[];
 ```
 
-### 効果的なケース
+### A case where it works well
 
 ```typescript
 function createConfig() {
@@ -47,26 +43,26 @@ function createConfig() {
 
 /** @useDeclaredType */
 export type Config = ReturnType<typeof createConfig>;
-// { host: string; port: number; debug: boolean } として表示される
+// Displayed as { host: string; port: number; debug: boolean }
 ```
 
-### 注意が必要なケース
+### A case requiring caution
 
 ```typescript
-// 条件付きマップ型は期待通りに動作しない可能性がある
+// Conditional mapped types may not work as expected
 /** @useDeclaredType */
 export type ConditionalResult<T> = T extends string ? { text: T } : { value: T };
-// 自身への参照としてドキュメント化される場合がある
+// May be documented as a reference to itself
 ```
 
-## 注意点
+## Notes
 
-- 型エイリアスにのみ効果がある
-- 出力は安定しておらず、TypeScript バージョン間で変わる可能性がある
-- 型の小さな変更が異なる結果を生む場合がある
-- 条件付きマップ型では期待通りに動作しない
-- 型が自身への参照としてドキュメント化される失敗パターンに注意
+- Only has an effect on type aliases
+- Output is not stable and may change between TypeScript versions
+- Small changes to a type can produce different results
+- Does not work as expected with conditional mapped types
+- Watch for the failure pattern where a type is documented as a reference to itself
 
-## 関連
+## Related
 
 - [@interface](./interface.md)

@@ -40,8 +40,8 @@ iOS 8.0+, iPadOS 8.0+, macOS 13.0+, watchOS 2.0+, visionOS 1.0+. Only use Health
 
 ## Related
 
-- [hksamplequery.md](./hksamplequery.md)
-- [hkstatisticsquery.md](./hkstatisticsquery.md)
-- [hkstatisticscollectionquery.md](./hkstatisticscollectionquery.md)
-- [hkobserverquery.md](./hkobserverquery.md)
-- [hkhealthstore.md](./hkhealthstore.md)
+- [HKSampleQuery](./hksamplequery.md)
+- [HKStatisticsQuery](./hkstatisticsquery.md)
+- [HKStatisticsCollectionQuery](./hkstatisticscollectionquery.md)
+- [HKObserverQuery](./hkobserverquery.md)
+- [HKHealthStore](./hkhealthstore.md)

@@ -38,7 +38,7 @@ Button {
 
 | Modifier | Description |
 |---|---|
-| `buttonStyle(_:)` | `.automatic`, `.bordered`, `.borderedProminent`, `.borderless`, `.plain` |
+| `buttonStyle(_:)` | `.automatic`, `.bordered`, `.borderedProminent`, `.borderless`, `.plain`, `.glass` (`GlassButtonStyle`), `.glassProminent` (`GlassProminentButtonStyle`) |
 | `buttonBorderShape(_:)` | Shape of the border (`.capsule`, `.roundedRectangle`, etc.) |
 | `buttonRepeatBehavior(_:)` | Whether the action repeats on long press |
 | `buttonSizing(_:)` | `.fitted` or `.flexible` |
@@ -49,6 +49,7 @@ Button {
 - Available on iOS 13.0+, macOS 10.15+, tvOS 13.0+, watchOS 6.0+, visionOS 1.0+.
 - Use `ButtonRole.destructive` for irreversible actions; the system applies a red tint automatically.
 - `buttonStyle(.borderedProminent)` produces the filled, primary-action style common in iOS.
+- `buttonStyle(.glass)` / `.glassProminent` apply the Liquid Glass material (translucent, blur + specular highlight) introduced at WWDC25; available iOS 26.0+, iPadOS 26.0+, macOS 26.0+, tvOS 26.0+, watchOS 26.0+, visionOS 26.0+. Combine with `glassEffect(_:in:)` / `GlassEffectContainer` on custom views for the same material outside of `Button`.
 
 ## Related
 

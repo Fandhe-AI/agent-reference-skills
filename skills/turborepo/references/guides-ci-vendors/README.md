@@ -1,10 +1,10 @@
-# Guides CI Vendors
+# guides-ci-vendors
 
 | Name | Description | Path |
-|------|-------------|------|
-| Buildkite | .buildkite/pipeline.yml 設定例。Remote Cache 設定。 | [buildkite.md](./buildkite.md) |
-| CircleCI | TTY 対応の CI 設定。TURBO_UI: "false" 必須。 | [circleci.md](./circleci.md) |
-| GitHub Actions | pnpm 対応ワークフロー例。Remote Cache/actions/cache 設定。 | [github-actions.md](./github-actions.md) |
-| GitLab CI | .gitlab-ci.yml pnpm 設定例。Remote Cache 統合。 | [gitlab-ci.md](./gitlab-ci.md) |
-| Travis CI | .travis.yml pnpm キャッシュ設定。Remote Cache 統合。 | [travis-ci.md](./travis-ci.md) |
-| Vercel | ゼロコンフィグ統合。自動的に Turborepo を検出・Remote Cache 構成。 | [vercel.md](./vercel.md) |
+| --- | --- | --- |
+| Buildkite | Configure Turborepo CI/CD with .buildkite/pipeline.yml and remote cache via secrets plugin. | [buildkite.md](./buildkite.md) |
+| CircleCI | CircleCI configuration with TURBO_UI disabled for TTY and remote cache environment variables. | [circleci.md](./circleci.md) |
+| GitHub Actions | GitHub Actions workflow with TURBO_TOKEN and TURBO_TEAM for remote cache and actions/cache support. | [github-actions.md](./github-actions.md) |
+| GitLab CI | GitLab CI configuration with TURBO_TOKEN and TURBO_TEAM integration under Settings → CI/CD → Variables. | [gitlab-ci.md](./gitlab-ci.md) |
+| Travis CI | Travis CI configuration with pnpm cache setup and remote cache environment variables. | [travis-ci.md](./travis-ci.md) |
+| Vercel | Zero-config Turborepo deployment with automatic remote cache configuration and monorepo detection. | [vercel.md](./vercel.md) |

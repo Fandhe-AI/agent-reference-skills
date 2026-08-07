@@ -1,380 +1,65 @@
 # Options: Input
 
-TypeDoc の Input オプション一覧。
+TypeDoc options controlling entry point discovery and source input.
 
-## entryPoints
-
-**Type:** `string[]`（glob パターン）
-**Default:** `package.json` の `"exports"` または `"main"` フィールドから自動検出
-**CLI:** `--entryPoints <paths>`
-
-ドキュメントのエントリポイント glob を指定する。TypeDoc はエクスポートを調べ、それに応じてドキュメントを作成する。複数のファイルやパターン（例: `src/multiple/*.ts`）を扱える。`"typedoc"` 条件付きエクスポートが存在する場合、`"import"` よりも優先される。
+## Usage
 
 ```json
 {
-  "entryPoints": ["src/index.ts", "src/secondary.ts"]
-}
-```
-
-## entryPointStrategy
-
-**Type:** `"resolve" | "expand" | "packages" | "merge"`
-**Default:** `"resolve"`
-**CLI:** `--entryPointStrategy <strategy>`
-
-エントリポイントの処理方法を制御する。
-
-- **resolve:** ルート tsconfig のエントリポイントを含む。ディレクトリには `<directory>/index` を含む
-- **expand:** ディレクトリの内容をエントリポイントとして再帰的に展開する（v0.22.0 以前のデフォルト）
-- **packages:** ディレクトリを別々のプロジェクトとして扱い、JSON モデルをマージする。各パッケージが独自の TypeDoc 設定を持てる
-- **merge:** 事前の TypeDoc 実行（`--json` オプション付き）からの `.json` ファイルをマージする
-
-```json
-{
-  "entryPointStrategy": "packages"
-}
-```
-
-## packageOptions
-
-**Type:** `object`
-**Default:** なし
-**CLI:** なし
-
-`"packages"` ストラテジー使用時の個別パッケージの設定。パスはパッケージディレクトリからの相対パスとして解釈される。`entryPointStrategy` が `"packages"` でない場合は効果がない。
-
-```json
-{
-  "entryPointStrategy": "packages",
-  "packageOptions": {
-    "entryPoints": ["src/index.ts"]
-  }
-}
-```
-
-## alwaysCreateEntryPointModule
-
-**Type:** `boolean`
-**Default:** `false`（`projectDocuments` 使用時は `true`）
-**CLI:** `--alwaysCreateEntryPointModule`
-
-単一のエントリポイントに対して、エクスポートをプロジェクトルートに直接配置する代わりに、モジュールラッパーの作成を強制する。
-
-```json
-{
-  "alwaysCreateEntryPointModule": true
-}
-```
-
-## projectDocuments
-
-**Type:** `string[]`（ファイルパス）
-**Default:** なし
-**CLI:** なし
-
-生成されるドキュメントサイトに追加する Markdown ドキュメントを指定する。
-
-```json
-{
-  "projectDocuments": ["docs/guide.md", "docs/api-overview.md"]
-}
-```
-
-## exclude
-
-**Type:** `string[]`（minimatch パターン）
-**Default:** なし
-**CLI:** `--exclude <pattern>`（繰り返し可）
-
-エントリポイントの検討からファイルを除外する。コンパイルを妨げるものではない。完全な除外には TypeScript の tsconfig.json の `exclude` を使用する。除外されたファイル内のエクスポートされたメンバーはドキュメントから除外される。
-
-```json
-{
+  "entryPoints": ["src/index.ts", "src/secondary.ts"],
+  "entryPointStrategy": "resolve",
   "exclude": ["**/node_modules/**", "**/*.spec.ts"]
 }
 ```
 
-## externalPattern
-
-**Type:** `string[]`（パターン）
-**Default:** なし
-**CLI:** `--externalPattern <pattern>`（繰り返し可）
-
-外部と見なされるファイルのパターンを定義する。`excludeExternals` と組み合わせて使用し、外部モジュールをドキュメントから削除する。
-
-```json
-{
-  "externalPattern": ["**/node_modules/**"]
-}
-```
-
-## excludeExternals
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** `--excludeExternals`
-
-外部として解決された TypeScript ファイルがドキュメント化されるのを防ぐ。
-
-```json
-{
-  "excludeExternals": true
-}
-```
-
-## excludeNotDocumented
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** `--excludeNotDocumented`
-
-`excludeNotDocumentedKinds` に一致する場合、ドキュメントコメントのないシンボルを削除する。
-
-```json
-{
-  "excludeNotDocumented": true
-}
-```
-
-## excludeNotDocumentedKinds
-
-**Type:** `string[]`
-**Default:** `["Module", "Namespace", "Enum", "Variable", "Function", "Class", "Interface", "Constructor", "Property", "Method", "CallSignature", "IndexSignature", "ConstructorSignature", "Accessor", "GetSignature", "SetSignature", "TypeAlias", "Reference"]`
-**CLI:** なし
-
-`excludeNotDocumented` で削除できるシンボルの種類を指定する。
-
-```json
-{
-  "excludeNotDocumentedKinds": ["Variable", "Function", "Class"]
-}
-```
-
-## excludeInternal
-
-**Type:** `boolean`
-**Default:** `stripInternal` コンパイラオプションが有効な場合 `true`、それ以外は `false`
-**CLI:** `--excludeInternal`
-
-`@internal` doc タグが付けられたシンボルを削除する。
-
-```json
-{
-  "excludeInternal": true
-}
-```
-
-## excludePrivate
-
-**Type:** `boolean`
-**Default:** `true`
-**CLI:** `--excludePrivate`
-
-`private` および `#private` クラスフィールドをドキュメントから削除する。`#private` フィールドを含めるには、これと `excludePrivateClassFields` の両方を `false` にする必要がある。
-
-```json
-{
-  "excludePrivate": false
-}
-```
-
-## excludePrivateClassFields
-
-**Type:** `boolean`
-**Default:** `true`
-**CLI:** `--excludePrivateClassFields`
-
-`#private` クラスフィールドを生成されるドキュメントから削除する。
-
-```json
-{
-  "excludePrivateClassFields": false
-}
-```
-
-## excludeProtected
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** `--excludeProtected`
-
-protected クラスメンバーをドキュメントから削除する。
-
-```json
-{
-  "excludeProtected": true
-}
-```
-
-## excludeReferences
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** `--excludeReferences`
-
-既にドキュメントに含まれているシンボルの再エクスポートを削除する。
-
-```json
-{
-  "excludeReferences": true
-}
-```
-
-## excludeCategories
-
-**Type:** `string[]`
-**Default:** なし
-**CLI:** `--excludeCategories <category>`（繰り返し可）
-
-指定されたカテゴリに関連付けられたリフレクションを削除する。
-
-```json
-{
-  "excludeCategories": ["Internal", "Deprecated"]
-}
-```
-
-## maxTypeConversionDepth
-
-**Type:** `number`
-**Default:** `10`
-**CLI:** `--maxTypeConversionDepth <number>`
-
-型を変換する際の最大再帰深度を指定する。
-
-```json
-{
-  "maxTypeConversionDepth": 10
-}
-```
-
-## name
-
-**Type:** `string`
-**Default:** `package.json` のパッケージ名
-**CLI:** `--name <name>`
-
-ドキュメントヘッダーのプロジェクト名を設定する。
-
-```json
-{
-  "name": "My Library"
-}
-```
-
-## includeVersion
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** `--includeVersion`
-
-生成されるドキュメントに `package.json` のバージョンを含める。
-
-```json
-{
-  "includeVersion": true
-}
-```
-
-## disableSources
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** `--disableSources`
-
-変換中の宣言位置のキャプチャを無効にする。
-
-```json
-{
-  "disableSources": true
-}
-```
-
-## sourceLinkTemplate
-
-**Type:** `string`（URL テンプレート）
-**Default:** GitHub、GitLab、BitBucket 向けに自動生成
-**CLI:** `--sourceLinkTemplate <template>`
-
-ソース URL のリンクテンプレート。`{path}`、`{line}`、`{gitRevision}` プレースホルダーをサポートする。`disableSources` が設定されている場合は効果がない。
-
-```json
-{
-  "sourceLinkTemplate": "https://github.com/user/repo/blob/{gitRevision}/{path}#L{line}"
-}
-```
-
-## gitRevision
-
-**Type:** `string`
-**Default:** 最後のコミット
-**CLI:** `--gitRevision <revision>`
-
-ソースリンクのリビジョン/ブランチを指定する。現在のブランチには特別な値 `{branch}` を受け入れる。`disableSources` が設定されている場合は効果がない。
-
-```json
-{
-  "gitRevision": "main"
-}
-```
-
-## gitRemote
-
-**Type:** `string`
-**Default:** `"origin"`
-**CLI:** `--gitRemote <remote>`
-
-GitHub、Bitbucket、または GitLab でのソースファイルリンク用の Git リモート。`disableSources` が設定されている場合は効果がない。
-
-```json
-{
-  "gitRemote": "origin"
-}
-```
-
-## disableGit
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** `--disableGit`
-
-TypeDoc が Git を使用してソースのリンク可能性を判断するのを防ぐ。有効にすると、Git リポジトリ外でもソースは常にリンクされる。
-
-```json
-{
-  "disableGit": true
-}
-```
-
-## readme
-
-**Type:** `string`（ファイルパスまたは `"none"`）
-**Default:** 自動検出
-**CLI:** `--readme <path|none>`
-
-インデックスページに表示する readme ファイルへのパス。`"none"` に設定するとインデックスページを無効にする。
-
-```json
-{
-  "readme": "README.md"
-}
-```
-
-## basePath
-
-**Type:** `string`（ディレクトリパス）
-**Default:** なし
-**CLI:** `--basePath <path>`
-
-ドキュメントコメントおよび外部ドキュメント内の相対パスを解決するためのアセットファイルを含むディレクトリ。`displayBasePath` オプションのデフォルトとしても使用される。
-
-```json
-{
-  "basePath": "./src"
-}
-```
-
-## 関連
+## Options / Props
+
+### Entry points
+
+| Option | Type | Default | CLI | Description |
+| --- | --- | --- | --- | --- |
+| `entryPoints` | `string[]` (glob patterns) | auto-detected from `package.json`'s `"exports"` or `"main"` field | `--entryPoints <paths>` | Specifies documentation entry point globs. TypeDoc examines exports and builds documentation accordingly. Supports multiple files or patterns (e.g. `src/multiple/*.ts`). The `"typedoc"` conditional export takes priority over `"import"` when present. |
+| `entryPointStrategy` | `"resolve" \| "expand" \| "packages" \| "merge"` | `"resolve"` | `--entryPointStrategy <strategy>` | Controls how entry points are processed. |
+| `packageOptions` | `object` | none | — | Per-package configuration when using the `"packages"` strategy. Paths are resolved relative to the package directory. Has no effect unless `entryPointStrategy` is `"packages"`. |
+| `alwaysCreateEntryPointModule` | `boolean` | `false` (`true` when `projectDocuments` is used) | `--alwaysCreateEntryPointModule` | Forces creation of a module wrapper for a single entry point instead of placing exports directly at the project root. |
+| `projectDocuments` | `string[]` (file paths) | none | — | Markdown documents to add to the generated documentation site. |
+
+### Filtering
+
+| Option | Type | Default | CLI | Description |
+| --- | --- | --- | --- | --- |
+| `exclude` | `string[]` (minimatch patterns) | none | `--exclude <pattern>` (repeatable) | Excludes files from entry point consideration; does not affect compilation. Use TypeScript's `tsconfig.json` `exclude` for full exclusion. Exported members in excluded files are dropped from documentation. |
+| `externalPattern` | `string[]` (patterns) | none | `--externalPattern <pattern>` (repeatable) | Defines patterns for files considered external. Use with `excludeExternals` to remove external modules from documentation. |
+| `excludeExternals` | `boolean` | `false` | `--excludeExternals` | Prevents TypeScript files resolved as external from being documented. |
+| `excludeNotDocumented` | `boolean` | `false` | `--excludeNotDocumented` | Removes symbols without a doc comment, for kinds matching `excludeNotDocumentedKinds`. |
+| `excludeNotDocumentedKinds` | `string[]` | `["Module", "Namespace", "Enum", "Variable", "Function", "Class", "Interface", "Constructor", "Property", "Method", "CallSignature", "IndexSignature", "ConstructorSignature", "Accessor", "GetSignature", "SetSignature", "TypeAlias", "Reference"]` | — | Symbol kinds that `excludeNotDocumented` can remove. |
+| `excludeInternal` | `boolean` | `true` if the `stripInternal` compiler option is enabled, otherwise `false` | `--excludeInternal` | Removes symbols tagged `@internal`. |
+| `excludePrivate` | `boolean` | `true` | `--excludePrivate` | Removes `private` and `#private` class fields from documentation. To include `#private` fields, both this and `excludePrivateClassFields` must be `false`. |
+| `excludePrivateClassFields` | `boolean` | `true` | `--excludePrivateClassFields` | Removes `#private` class fields from generated documentation. |
+| `excludeProtected` | `boolean` | `false` | `--excludeProtected` | Removes protected class members from documentation. |
+| `excludeReferences` | `boolean` | `false` | `--excludeReferences` | Removes re-exports of symbols already documented elsewhere. |
+| `excludeCategories` | `string[]` | none | `--excludeCategories <category>` (repeatable) | Removes reflections associated with the given categories. |
+
+### Project metadata & sources
+
+| Option | Type | Default | CLI | Description |
+| --- | --- | --- | --- | --- |
+| `maxTypeConversionDepth` | `number` | `10` | `--maxTypeConversionDepth <number>` | Maximum recursion depth when converting types. |
+| `name` | `string` | package name from `package.json` | `--name <name>` | Sets the project name in the documentation header. |
+| `includeVersion` | `boolean` | `false` | `--includeVersion` | Includes the `package.json` version in generated documentation. |
+| `disableSources` | `boolean` | `false` | `--disableSources` | Disables capturing declaration locations during conversion. |
+| `sourceLinkTemplate` | `string` (URL template) | auto-generated for GitHub, GitLab, BitBucket | `--sourceLinkTemplate <template>` | Link template for source URLs. Supports `{path}`, `{line}`, `{gitRevision}` placeholders. No effect when `disableSources` is set. |
+| `gitRevision` | `string` | latest commit | `--gitRevision <revision>` | Revision/branch to use for source links. Accepts the special value `{branch}` for the current branch. No effect when `disableSources` is set. |
+| `gitRemote` | `string` | `"origin"` | `--gitRemote <remote>` | Git remote for source file links on GitHub, Bitbucket, or GitLab. No effect when `disableSources` is set. |
+| `disableGit` | `boolean` | `false` | `--disableGit` | Prevents TypeDoc from using Git to determine source linkability. When enabled, sources are always linked even outside a Git repository. |
+| `readme` | `string` (file path or `"none"`) | auto-detected | `--readme <path\|none>` | Path to the readme file shown on the index page. Set to `"none"` to disable the index page. |
+| `basePath` | `string` (directory path) | none | `--basePath <path>` | Directory containing asset files used to resolve relative paths in doc comments and external documents. Also used as the default for `displayBasePath`. |
+
+## Notes
+
+- `entryPointStrategy` values: `resolve` (root tsconfig entry points; directories include `<directory>/index`), `expand` (recursively expands directory contents as entry points; the default before v0.22.0), `packages` (treats directories as separate projects and merges the JSON models; each package can have its own TypeDoc config), `merge` (merges `.json` files from prior TypeDoc runs made with `--json`).
+
+## Related
 
 - [Options: Configuration](./configuration.md)
 - [Options: Output](./output.md)

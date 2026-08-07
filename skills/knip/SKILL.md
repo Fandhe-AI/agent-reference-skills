@@ -4,7 +4,8 @@ description: >
   Knip (TypeScript / JavaScript 未使用コード検出ツール) リファレンス。
   未使用ファイル・export・依存関係・型・列挙メンバーの検出、
   auto-fix、monorepo (workspaces) 対応、
-  knip.json / knip.config.ts 設定、プラグイン、ignore 設定。
+  knip.json / knip.config.ts 設定、プラグイン、ignore 設定、
+  初回クリーンアップ (first cleanup)、内部動作の仕組み (how Knip works)。
 user-invocable: false
 model: sonnet
 ---
@@ -24,12 +25,13 @@ skills/knip/
       README.md
       configuration.md
       features.md
+      first-cleanup.md
       getting-started.md
-      screenshots-videos.md
     explanations/
       README.md
       comparison-and-migration.md
       entry-files.md
+      how-knip-works.md
       plugins.md
       why-use-knip.md
     features/
@@ -113,8 +115,8 @@ skills/knip/
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | インストール・初期設定・基本的な使い方を知りたい | overview | [references/overview/README.md](references/overview/README.md) |
-| 機能一覧・ゼロ設定の仕組みを知りたい | overview | [references/overview/README.md](references/overview/README.md) |
-| エントリーファイル・プラグインの仕組みを理解したい | explanations | [references/explanations/README.md](references/explanations/README.md) |
+| 機能一覧・ゼロ設定の仕組み・初回クリーンアップ後の対応を知りたい | overview | [references/overview/README.md](references/overview/README.md) |
+| エントリーファイル・プラグインの仕組み・内部動作を理解したい | explanations | [references/explanations/README.md](references/explanations/README.md) |
 | 導入理由・他ツールとの比較・移行手順を知りたい | explanations | [references/explanations/README.md](references/explanations/README.md) |
 | auto-fix・production mode・monorepo・reporters を使いたい | features | [references/features/README.md](references/features/README.md) |
 | rules / filters・compilers・script parser を設定したい | features | [references/features/README.md](references/features/README.md) |

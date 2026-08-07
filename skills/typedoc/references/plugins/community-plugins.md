@@ -1,10 +1,10 @@
-# コミュニティプラグイン
+# Community Plugins
 
-TypeDocのコミュニティによって開発・提供されているプラグインの一覧。`--plugin` フラグで読み込み可能。npmで `typedoc-plugin` キーワードで検索できる。
+Community-developed and maintained plugins for TypeDoc, loadable via the `--plugin` flag. Searchable on npm with the `typedoc-plugin` keyword.
 
-## 詳細説明
+## Signature / Usage
 
-TypeDocはプラグインシステムを持ち、`--plugin` オプションでプラグインを指定して機能を拡張できる。
+TypeDoc has a plugin system; pass one or more plugins with the `--plugin` option to extend functionality.
 
 ```bash
 typedoc --plugin typedoc-plugin-markdown
@@ -16,148 +16,148 @@ typedoc --plugin typedoc-plugin-markdown
 }
 ```
 
-## 一覧
+## Options / Props
 
-### v0.28 対応プラグイン
+### Plugins compatible with v0.28
 
-#### AI・スキル生成
+#### AI & skill generation
 
-| パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
+| Package | Author | Version | Description | License |
 |---|---|---|---|---|
-| **typedoc-plugin-skillit** | pmouli | 1.4.0 | AI エージェントスキル（SKILL.md）と llms.txt を生成 | MIT |
-| **@skillit/typedoc** | pmouli | 1.1.0 | TypeScript API ドキュメントから AI エージェントスキル（SKILL.md）を生成 | MIT |
-| **typedoc-ai-md-link** | whatyoubendoing | 0.0.1 | 生成ドキュメントに AI 向け代替 Markdown リンクを追加 | MIT |
-| **typedoc-ai-actions** | whatyoubendoing | 0.0.1 | 生成ドキュメントに GitHub・Markdown・AI アクションを追加 | MIT |
-| **typedoc-plugin-llms-txt** | boneskull | 0.1.2 | LLM 消費用の `llms.txt` ファイルを生成 | BlueOak-1.0.0 |
+| **typedoc-plugin-skillit** | pmouli | 1.4.0 | Generates an AI agent skill (SKILL.md) and llms.txt | MIT |
+| **@skillit/typedoc** | pmouli | 1.1.0 | Generates an AI agent skill (SKILL.md) from TypeScript API docs | MIT |
+| **typedoc-ai-md-link** | whatyoubendoing | 0.0.1 | Adds AI-friendly alternate Markdown links to generated docs | MIT |
+| **typedoc-ai-actions** | whatyoubendoing | 0.0.1 | Adds GitHub, Markdown, and AI actions to generated docs | MIT |
+| **typedoc-plugin-llms-txt** | boneskull | 0.1.2 | Generates an `llms.txt` file for LLM consumption | BlueOak-1.0.0 |
 
-#### 出力形式・Markdown
+#### Output formats & Markdown
 
-| パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
+| Package | Author | Version | Description | License |
 |---|---|---|---|---|
-| **typedoc-plugin-markdown** | tgreyuk | 4.12.0 | TypeScript API ドキュメントを Markdown 形式で生成 | MIT |
-| **typedoc-plugin-md** | ocavue | 0.7.1 | Markdown ドキュメント生成 | MIT |
-| **typedoc-plugin-inline-sources** | tgreyuk | 1.3.0 | ソースコードをドキュメントにインライン表示 | MIT |
-| **typedoc-plugin-file-overview** | prachwal_org | 0.2.0 | 構造化されたファイルレベルのメタデータブロックを Markdown 出力にレンダリング | MIT |
+| **typedoc-plugin-markdown** | tgreyuk | 4.12.0 | Generates TypeScript API docs in Markdown format | MIT |
+| **typedoc-plugin-md** | ocavue | 0.7.1 | Markdown documentation generation | MIT |
+| **typedoc-plugin-inline-sources** | tgreyuk | 1.3.0 | Displays source code inline in the docs | MIT |
+| **typedoc-plugin-file-overview** | prachwal_org | 0.2.0 | Renders structured file-level metadata blocks in Markdown output | MIT |
 
-#### 型情報・表示改善
+#### Type information & display improvements
 
-| パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
+| Package | Author | Version | Description | License |
 |---|---|---|---|---|
-| **typedoc-plugin-zod** | gerrit0 | 1.4.3 | `z.infer<typeof x>` を推論された型に置換 | MIT |
-| **typedoc-plugin-valibot** | mkljczk | 1.0.2 | `v.InferOutput<typeof x>` を推論された型に置換 | MIT |
-| **typedoc-plugin-vue** | gerrit0 | 1.5.1 | Vue `defineComponent` と Pinia の表示を改善 | MIT |
-| **typedoc-plugin-missing-exports** | gerrit0 | 4.1.3 | エクスポートされていない型もドキュメントに含める | MIT |
-| **typedoc-plugin-rename-defaults** | felipecrs | 0.7.3 | `default` エクスポートを元の名前にリネーム | MIT |
-| **typedoc-color-chip** | whatyoubendoing | 0.0.2 | カラーリテラルをカラーチップとしてレンダリング | MIT |
+| **typedoc-plugin-zod** | gerrit0 | 1.4.3 | Replaces `z.infer<typeof x>` with the inferred type | MIT |
+| **typedoc-plugin-valibot** | mkljczk | 1.0.2 | Replaces `v.InferOutput<typeof x>` with the inferred type | MIT |
+| **typedoc-plugin-vue** | gerrit0 | 1.5.1 | Improves display of Vue `defineComponent` and Pinia | MIT |
+| **typedoc-plugin-missing-exports** | gerrit0 | 4.1.3 | Includes non-exported types in the documentation | MIT |
+| **typedoc-plugin-rename-defaults** | felipecrs | 0.7.3 | Renames `default` exports back to their original name | MIT |
+| **typedoc-color-chip** | whatyoubendoing | 0.0.2 | Renders color literals as color chips | MIT |
 
-#### リンク・参照
+#### Links & references
 
-| パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
+| Package | Author | Version | Description | License |
 |---|---|---|---|---|
-| **typedoc-plugin-mdn-links** | gerrit0 | 5.1.1 | グローバル型を MDN ドキュメントにリンク | MIT |
-| **typedoc-plugin-dt-links** | gerrit0 | 2.0.57 | `@types` パッケージの GitHub ソースコードリンクを追加 | MIT |
-| **typedoc-plugin-redirect** | gerrit0 | 1.3.0 | 生成サイトにリダイレクトページを追加 | MIT |
+| **typedoc-plugin-mdn-links** | gerrit0 | 5.1.1 | Links global types to MDN documentation | MIT |
+| **typedoc-plugin-dt-links** | gerrit0 | 2.0.57 | Adds GitHub source links for `@types` packages | MIT |
+| **typedoc-plugin-redirect** | gerrit0 | 1.3.0 | Adds redirect pages to the generated site | MIT |
 
-#### ドキュメント構造・組織化
+#### Documentation structure & organization
 
-| パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
+| Package | Author | Version | Description | License |
 |---|---|---|---|---|
-| **typedoc-plugin-merge-modules** | krisztianb | 7.0.0 | モジュールコンテンツをマージ | ISC |
-| **typedoc-plugin-no-inherit** | jonchardy | 1.6.1 | 継承メンバーをドキュメントから除外 | MIT |
-| **typedoc-plugin-default-groups** | herveperchec | 1.0.2 | リフレクションにデフォルトグループを追加 | GPL-3.0-only |
+| **typedoc-plugin-merge-modules** | krisztianb | 7.0.0 | Merges module contents | ISC |
+| **typedoc-plugin-no-inherit** | jonchardy | 1.6.1 | Excludes inherited members from the documentation | MIT |
+| **typedoc-plugin-default-groups** | herveperchec | 1.0.2 | Adds default groups to reflections | GPL-3.0-only |
 
-#### ナビゲーション
+#### Navigation
 
-| パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
+| Package | Author | Version | Description | License |
 |---|---|---|---|---|
-| **typedoc-plugin-navigation-title** | herveperchec | 1.2.3 | `@navigationTitle` タグでカスタムナビゲーションタイトルを設定 | GPL-3.0-only |
-| **typedoc-plugin-navigation-hooks** | herveperchec | 1.1.2 | ナビゲーション関連フック（実験的） | GPL-3.0-only |
+| **typedoc-plugin-navigation-title** | herveperchec | 1.2.3 | Sets a custom navigation title via the `@navigationTitle` tag | GPL-3.0-only |
+| **typedoc-plugin-navigation-hooks** | herveperchec | 1.1.2 | Navigation-related hooks (experimental) | GPL-3.0-only |
 
-#### テキスト処理
+#### Text processing
 
-| パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
+| Package | Author | Version | Description | License |
 |---|---|---|---|---|
-| **typedoc-plugin-replace-text** | krisztianb | 4.2.0 | ドキュメント内のテキストを置換 | ISC |
-| **@reside-ic/typedoc-plugin-copy-doc** | m-kusumgar | 1.1.2 | 関連ドキュメントをコピー | MIT |
+| **typedoc-plugin-replace-text** | krisztianb | 4.2.0 | Replaces text within the documentation | ISC |
+| **@reside-ic/typedoc-plugin-copy-doc** | m-kusumgar | 1.1.2 | Copies related documentation | MIT |
 
-#### ダイアグラム・可視化
+#### Diagrams & visualization
 
-| パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
+| Package | Author | Version | Description | License |
 |---|---|---|---|---|
-| **typedoc-umlclass** | krisztianb | 0.10.2 | UML クラスダイアグラムを生成 | ISC |
-| **@boneskull/typedoc-plugin-mermaid** | boneskull | 0.2.1 | Mermaid ダイアグラムのレンダリング | BlueOak-1.0.0 |
+| **typedoc-umlclass** | krisztianb | 0.10.2 | Generates UML class diagrams | ISC |
+| **@boneskull/typedoc-plugin-mermaid** | boneskull | 0.2.1 | Renders Mermaid diagrams | BlueOak-1.0.0 |
 
-#### バージョン管理
+#### Version management
 
-| パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
+| Package | Author | Version | Description | License |
 |---|---|---|---|---|
-| **@r74tech/typedoc-plugin-monorepo-versions** | r74tech | 1.0.2 | モノレポのバージョン選択メニュー付きドキュメントビルド追跡 | MIT |
-| **@shipgirl/typedoc-plugin-versions** | 0t4u | 0.3.2 | バージョン選択メニュー付きビルド追跡 | MIT |
+| **@r74tech/typedoc-plugin-monorepo-versions** | r74tech | 1.0.2 | Tracks monorepo builds with a version-selection menu for the docs | MIT |
+| **@shipgirl/typedoc-plugin-versions** | 0t4u | 0.3.2 | Tracks builds with a version-selection menu | MIT |
 
-#### コード例・インポート
+#### Code examples & imports
 
-| パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
+| Package | Author | Version | Description | License |
 |---|---|---|---|---|
-| **typedoc-plugin-include-example** | ferdodo | 3.0.2 | ファイルをサンプルコードとして取り込み | MIT |
-| **typedoc-plugin-import-target** | herveperchec | 1.4.0 | インポートターゲットを解決しコードブロックを挿入 | GPL-3.0-only |
-| **typedoc-plugin-language-switcher** | jackmacwindows | 1.0.2 | コードブロックで複数言語の切り替えを提供 | ISC |
+| **typedoc-plugin-include-example** | ferdodo | 3.0.2 | Includes files as example code | MIT |
+| **typedoc-plugin-import-target** | herveperchec | 1.4.0 | Resolves import targets and inserts code blocks | GPL-3.0-only |
+| **typedoc-plugin-language-switcher** | jackmacwindows | 1.0.2 | Provides multi-language switching for code blocks | ISC |
 
-#### 追加機能・ユーティリティ
+#### Extras & utilities
 
-| パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
+| Package | Author | Version | Description | License |
 |---|---|---|---|---|
-| **typedoc-plugin-extras** | drarig29 | 4.0.1 | favicon、description、生成日時等の追加情報 | MIT |
-| **typedoc-plugin-coverage** | gerrit0 | 4.0.3 | ドキュメントカバレッジバッジを生成 | MIT |
-| **@typhonjs-typedoc/typedoc-pkg** | typhonrt | 0.4.2 | package.json からのゼロコンフィグ API ドキュメント生成 CLI | MPL-2.0 |
+| **typedoc-plugin-extras** | drarig29 | 4.0.1 | Adds favicon, description, generation date, and other extras | MIT |
+| **typedoc-plugin-coverage** | gerrit0 | 4.0.3 | Generates a documentation coverage badge | MIT |
+| **@typhonjs-typedoc/typedoc-pkg** | typhonrt | 0.4.2 | Zero-config API documentation generation CLI from package.json | MPL-2.0 |
 
-#### アナリティクス
+#### Analytics
 
-| パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
+| Package | Author | Version | Description | License |
 |---|---|---|---|---|
-| **typedoc-plugin-umami-analytics** | lordofbacon | 1.0.1 | Umami Analytics トラッキングを統合 | Apache-2.0 |
-| **@8hobbies/typedoc-plugin-plausible** | hong-xu | 2.2.0 | Plausible Analytics トラッキングを追加 | Apache-2.0 |
+| **typedoc-plugin-umami-analytics** | lordofbacon | 1.0.1 | Integrates Umami Analytics tracking | Apache-2.0 |
+| **@8hobbies/typedoc-plugin-plausible** | hong-xu | 2.2.0 | Adds Plausible Analytics tracking | Apache-2.0 |
 
-### v0.27 追加対応プラグイン
+### Additional plugins compatible with v0.27
 
-上記v0.28対応プラグインに加え、以下のプラグインがv0.27で利用可能。
+In addition to the v0.28-compatible plugins above, the following plugins are available for v0.27.
 
-| パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
+| Package | Author | Version | Description | License |
 |---|---|---|---|---|
-| **typedoc-plugin-ga** | eubereveloper | 1.1.1 | Google Analyticsを追加 | — |
-| **@vpalmisano/typedoc-plugin-ga** | vpalmisano | 1.0.6 | Google Analytics統合 | — |
-| **@8hobbies/typedoc-plugin-404** | hong-xu | 3.2.1 | 404ページを生成 | — |
-| **@giancosta86/typedoc-readonly** | giancosta86 | 1.0.1 | 高度なReadonlyサポート | — |
-| **typedoc-plugin-external-link** | imranbarbhuiya | 3.0.2 | カスタム外部リンクを追加 | — |
+| **typedoc-plugin-ga** | eubereveloper | 1.1.1 | Adds Google Analytics | — |
+| **@vpalmisano/typedoc-plugin-ga** | vpalmisano | 1.0.6 | Google Analytics integration | — |
+| **@8hobbies/typedoc-plugin-404** | hong-xu | 3.2.1 | Generates a 404 page | — |
+| **@giancosta86/typedoc-readonly** | giancosta86 | 1.0.1 | Advanced readonly support | — |
+| **typedoc-plugin-external-link** | imranbarbhuiya | 3.0.2 | Adds custom external links | — |
 
-### v0.26 追加対応プラグイン
+### Additional plugins compatible with v0.26
 
-上記に加え、以下のプラグインがv0.26で利用可能。
+In addition to the above, the following plugins are available for v0.26.
 
-| パッケージ名 | 作者 | バージョン | 説明 | ライセンス |
+| Package | Author | Version | Description | License |
 |---|---|---|---|---|
-| **typedoc-plugin-custom-validation** | rebeccastevens | 2.0.2 | カスタムバリデーション | BSD-3-Clause |
-| **@emuanalytics/typedoc-plugin-no-inherit** | robin.summerhill | 1.4.2 | 継承除外（旧バージョン互換） | MIT |
-| **typedoc-plugin-emojify** | mrfigg | 1.0.1 | 絵文字パースサポートを追加 | — |
-| **@mrfigg/typedoc-plugin-lib-utils** | mrfigg | 1.3.1 | ユーティリティ関数 | — |
-| **typedoc-plugin-document-page-headings** | mrfigg | 1.0.0 | ページ見出しを追加 | — |
-| **typedoc-plugin-version-header** | mrfigg | 1.0.0 | ページヘッダーにバージョン表示 | — |
-| **typedoc-plugin-rename-documents** | mrfigg | 1.0.0 | ドキュメントのリネーム | — |
-| **typedoc-plugin-github-widget** | mrfigg | 1.0.0 | GitHubウィジェットを追加 | — |
-| **nil-typedoc-plugin-markdown** | khannanov-nil | 4.3.1 | Markdown生成 | — |
-| **@konami-emoji-blast/typedoc** | joshuakgoldberg | 0.0.2 | 絵文字統合 | — |
-| **typedoc-plugin-mermaid** | kamiazya | 1.12.0 | mermaid.jsダイアグラムのグラフ生成 | — |
-| **@zamiell/typedoc-plugin-not-exported** | zamiell | 0.3.0 | エクスポートされていないシンボルを含める | — |
+| **typedoc-plugin-custom-validation** | rebeccastevens | 2.0.2 | Custom validation | BSD-3-Clause |
+| **@emuanalytics/typedoc-plugin-no-inherit** | robin.summerhill | 1.4.2 | Excludes inherited members (legacy-version compatible) | MIT |
+| **typedoc-plugin-emojify** | mrfigg | 1.0.1 | Adds emoji parsing support | — |
+| **@mrfigg/typedoc-plugin-lib-utils** | mrfigg | 1.3.1 | Utility functions | — |
+| **typedoc-plugin-document-page-headings** | mrfigg | 1.0.0 | Adds page headings | — |
+| **typedoc-plugin-version-header** | mrfigg | 1.0.0 | Displays a version in the page header | — |
+| **typedoc-plugin-rename-documents** | mrfigg | 1.0.0 | Renames documents | — |
+| **typedoc-plugin-github-widget** | mrfigg | 1.0.0 | Adds a GitHub widget | — |
+| **nil-typedoc-plugin-markdown** | khannanov-nil | 4.3.1 | Markdown generation | — |
+| **@konami-emoji-blast/typedoc** | joshuakgoldberg | 0.0.2 | Emoji integration | — |
+| **typedoc-plugin-mermaid** | kamiazya | 1.12.0 | Graph generation for mermaid.js diagrams | — |
+| **@zamiell/typedoc-plugin-not-exported** | zamiell | 0.3.0 | Includes non-exported symbols | — |
 
-## 注意点
+## Notes
 
-- プラグインはTypeDocの特定バージョンとの互換性がある。使用するTypeDocバージョンに対応したプラグインを選択すること
-- 複数のプラグインは配列で指定可能: `"plugin": ["plugin-a", "plugin-b"]`
-- プラグインの開発については、TypeDocのPlugin Developmentドキュメントを参照
-- GPL-3.0-onlyライセンスのプラグインは、プロジェクトのライセンスとの互換性に注意
-- npmで `typedoc-plugin` キーワードで最新のプラグインを検索できる
-- 各プラグインの詳細な設定オプションは、各プラグインのnpmページやGitHubリポジトリを参照
+- Plugins are compatible with specific TypeDoc versions; choose a plugin version that matches the TypeDoc version in use
+- Multiple plugins can be specified as an array: `"plugin": ["plugin-a", "plugin-b"]`
+- See TypeDoc's Plugin Development documentation for information on writing plugins
+- Check GPL-3.0-only licensed plugins for compatibility with your project's license
+- Search npm for the `typedoc-plugin` keyword to find the latest plugins
+- See each plugin's npm page or GitHub repository for its detailed configuration options
 
-## 関連
+## Related
 
-- [ビルトインテーマ](../themes/built-in.md) — デフォルトテーマの機能
-- [コミュニティテーマ](../themes/community-themes.md) — サードパーティ製テーマ
+- [Built-in themes](../themes/built-in.md) — default theme features
+- [Community themes](../themes/community-themes.md) — third-party themes

@@ -1,16 +1,16 @@
 # Dub
 
-Dub のリンク管理プラットフォームと Better Auth を統合するプラグイン。Dub リンク経由でサインアップした際のリードトラッキングと、OAuth リンクをサポートする。
+Plugin integrating Dub's link management platform with Better Auth. Supports lead tracking for sign-ups originating from Dub links and OAuth links.
 
-## インストール
+## Signature / Usage
+
+### Installation
 
 ```bash
 npm install @dub/better-auth dub
 ```
 
-## セットアップ
-
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -29,7 +29,7 @@ export const auth = betterAuth({
 })
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -40,33 +40,31 @@ export const authClient = createAuthClient({
 })
 ```
 
-## 機能
+### Lead tracking
 
-### リードトラッキング
+Automatically tracks sign-up events as Dub leads. Disable with `disableLeadTracking: true`.
 
-サインアップイベントを自動的に Dub のリードとしてトラッキング。`disableLeadTracking: true` で無効化できる。
-
-### OAuth リンク
+### OAuth links
 
 ```typescript
-// Dub との OAuth 連携
+// OAuth integration with Dub
 await authClient.dub.link({ callbackURL: "/dashboard" })
 
-// サーバー側
+// Server side
 const result = await auth.api.dubLink({ headers: req.headers })
 ```
 
-## 設定オプション
+## Options / Props
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |---|---|---|
-| `dubClient` | Dub | Dub クライアントインスタンス |
-| `disableLeadTracking?` | boolean | リードトラッキングの無効化 |
-| `leadEventName?` | string | サインアップリードのカスタムイベント名 |
-| `customLeadTrack?` | function | カスタムリードトラッキング関数 |
-| `oauth.clientId?` | string | OAuth クライアント識別子 |
-| `oauth.clientSecret?` | string | OAuth クライアントシークレット |
-| `oauth.pkce?` | boolean | PKCE セキュリティフローの有効化 |
+| `dubClient` | Dub | Dub client instance |
+| `disableLeadTracking?` | boolean | Disable lead tracking |
+| `leadEventName?` | string | Custom event name for sign-up leads |
+| `customLeadTrack?` | function | Custom lead tracking function |
+| `oauth.clientId?` | string | OAuth client identifier |
+| `oauth.clientSecret?` | string | OAuth client secret |
+| `oauth.pkce?` | boolean | Enable the PKCE security flow |
 
 ## Related
 

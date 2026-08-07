@@ -1,50 +1,43 @@
-# キャッシュ
+# Caching
 
-## ハッシュ計算の仕組み
+## Usage
 
-タスクごとに2種類のハッシュを計算し、両方が一致するときのみキャッシュヒット。
+Two kinds of hashes are computed for each task; a cache hit only occurs when both match.
 
-### グローバルハッシュ（全タスク共通）
+### Global hash (shared across all tasks)
 
-- turbo.json 設定変更
-- ルートの package.json ロックファイル更新
-- `globalDependencies` のファイル内容変更
-- `globalEnv` の環境変数値変更
-- `--` 以降の passthrough 引数
+- Changes to the `turbo.json` configuration
+- Updates to the root `package.json` lockfile
+- Content changes to files listed in `globalDependencies`
+- Value changes to environment variables in `globalEnv`
+- Passthrough arguments after `--`
 
-### パッケージハッシュ（タスク個別）
+### Package hash (per task)
 
-- パッケージ固有の turbo.json 変更
-- パッケージの package.json 変更
-- ファイルの変更（デフォルト: 全ファイル。`inputs` で設定可能）
+- Changes to a package-specific `turbo.json`
+- Changes to a package's `package.json`
+- File changes (default: all files; configurable via `inputs`)
 
-## キャッシュされる内容
+### What gets cached
 
-- `outputs` に定義したファイル/ディレクトリ
-- ターミナルログ（常にキャッシュ）
-
-## キャッシュ制御
-
-| 方法 | 説明 |
-|---|---|
-| `"cache": false` | 特定タスクのキャッシュを永続的に無効化 |
-| `--force` | キャッシュを読まずに再実行 |
-| `--cache` フラグ | local/remote の読み書きを細かく制御 |
-| `--summarize` | ハッシュのデバッグ用レポートを生成 |
-
-## デバッグ
+- Files/directories defined in `outputs`
+- Terminal logs (always cached)
 
 ```bash
-turbo build --dry       # 実行せずにタスク計画を確認
-turbo build --summarize # 入出力の詳細サマリーを JSON で生成
+turbo build --dry       # Preview the task plan without running it
+turbo build --summarize # Generate a detailed JSON summary of inputs/outputs
 ```
 
-## Git Worktree のキャッシュ共有
+## Options
 
-メインのワークツリーとリンクされたワークツリー間でローカルキャッシュを自動共有。`cacheDir` を明示的に指定するとこの機能は無効。
+| Method | Description |
+| --- | --- |
+| `"cache": false` | Permanently disable caching for a specific task |
+| `--force` | Re-run without reading the cache |
+| `--cache` flag | Fine-grained control over local/remote read/write |
+| `--summarize` | Generate a debug report of hashing |
 
-## キャッシュが効果を発揮しにくいケース
+## Notes
 
-- タスクの実行速度がネットワーク遅延より速い
-- 出力アーティファクトが非常に大きい
-- スクリプト自体が内部キャッシュ機構を持っている
+- Local cache is shared automatically between the main worktree and linked Git worktrees; explicitly setting `cacheDir` disables this.
+- Caching provides less benefit when: task execution is faster than network latency, output artifacts are very large, or the script itself has its own internal caching mechanism.

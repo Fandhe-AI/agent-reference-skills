@@ -1,697 +1,108 @@
 # Options: Output
 
-TypeDoc の Output オプション一覧。
+TypeDoc options controlling generated output targets, theming, and rendering.
 
-## outputs
-
-**Type:** `array`（出力設定オブジェクトの配列）
-**Default:** なし
-**CLI:** なし
-
-複数の出力先とそのタイプおよび個別オプションを指定する。各出力オブジェクトには name（例: `"html"`, `"json"`, `"markdown"`）、path、およびオプションのレンダリング設定が含まれる。
+## Usage
 
 ```json
 {
   "outputs": [
     { "name": "html", "path": "./docs" },
     { "name": "json", "path": "./docs/api.json" }
-  ]
-}
-```
-
-## out
-
-**Type:** `string`（ファイルパス）
-**Default:** なし
-**CLI:** `--out <path/to/documentation/>`
-
-デフォルト出力タイプの書き込み先を指定する。`outputs` オプションを上書きするショートカットとして機能する。プラグインによって変更されない限り、デフォルトで HTML を生成する。
-
-```json
-{
-  "out": "./docs"
-}
-```
-
-## html
-
-**Type:** `string`（ファイルパス）
-**Default:** なし
-**CLI:** `--html <path/to/documentation/>`
-
-HTML ドキュメント出力の場所を指定する。`outputs` オプションを上書きする出力ショートカットとして機能する。
-
-```json
-{
-  "html": "./docs/html"
-}
-```
-
-## json
-
-**Type:** `string`（ファイルパス）
-**Default:** なし
-**CLI:** `--json <path/to/out-file.json>`
-
-すべてのリフレクションデータを含む JSON ファイルの出力先を指定する。`outputs` オプションを上書きする出力ショートカットとして機能する。
-
-```json
-{
-  "json": "./docs/api.json"
-}
-```
-
-## pretty
-
-**Type:** `boolean`
-**Default:** `true`
-**CLI:** `--pretty`
-
-JSON 出力を読みやすい形式でフォーマットするかどうかを決定する。
-
-```json
-{
-  "pretty": true
-}
-```
-
-## emit
-
-**Type:** `"docs" | "both" | "none"`
-**Default:** `"docs"`
-**CLI:** `--emit <value>`
-
-TypeDoc が何を書き込むかを制御する。`"docs"` はドキュメントのみを出力し、`"both"` はドキュメントと JavaScript を出力し、`"none"` はファイルを出力せずに変換と検証を行う。
-
-```json
-{
-  "emit": "docs"
-}
-```
-
-## theme
-
-**Type:** `string`
-**Default:** `"default"`
-**CLI:** `--theme <name>`
-
-ドキュメントのレンダリングに使用するテーマを指定する。
-
-```json
-{
-  "theme": "default"
-}
-```
-
-## router
-
-**Type:** `"kind" | "kind-dir" | "structure" | "structure-dir" | "group" | "category"`
-**Default:** `"kind"`
-**CLI:** `--router <name>`
-
-HTML 出力のファイル構造を決定する。
-
-- **kind:** メンバーの種類別にページを整理
-- **kind-dir:** kind と同じだが、クリーン URL のためにディレクトリ内の index.html としてレンダリング
-- **structure:** モジュール構造別にページを整理
-- **structure-dir:** structure と同じだが、ディレクトリ内の index.html としてレンダリング
-- **group:** グループタグ別にページを整理
-- **category:** カテゴリタグ別にページを整理
-
-```json
-{
+  ],
+  "theme": "default",
   "router": "kind"
 }
 ```
 
-## lightHighlightTheme
-
-**Type:** `string`（Shiki テーマ名）
-**Default:** なし（Shiki のデフォルト）
-**CLI:** `--lightHighlightTheme <theme>`
-
-ライトモードでのコードスニペットのシンタックスハイライト用 Shiki テーマを指定する。
-
-```json
-{
-  "lightHighlightTheme": "github-light"
-}
-```
-
-## darkHighlightTheme
-
-**Type:** `string`（Shiki テーマ名）
-**Default:** なし（Shiki のデフォルト）
-**CLI:** `--darkHighlightTheme <theme>`
-
-ダークモードでのコードスニペットのシンタックスハイライト用 Shiki テーマを指定する。
-
-```json
-{
-  "darkHighlightTheme": "github-dark"
-}
-```
-
-## highlightLanguages
-
-**Type:** `string[]`
-**Default:** `["bash", "console", "css", "html", "javascript", "json", "jsonc", "json5", "tsx", "typescript"]`
-**CLI:** なし
-
-コードブロックのハイライトに読み込む Shiki 文法を指定する。
-
-```json
-{
-  "highlightLanguages": ["bash", "css", "html", "javascript", "json", "typescript", "python"]
-}
-```
-
-## ignoredHighlightLanguages
-
-**Type:** `string[]`
-**Default:** `[]`
-**CLI:** なし
-
-ハイライト中に警告を生成せずに黙って無視すべきコードブロック内の言語。
-
-```json
-{
-  "ignoredHighlightLanguages": ["mermaid", "plantuml"]
-}
-```
-
-## typePrintWidth
-
-**Type:** `number`
-**Default:** `80`
-**CLI:** `--typePrintWidth <number>`
-
-型をレンダリングする際にコードが折り返される文字幅を設定する。変更するには対応するテーマの調整が必要。
-
-```json
-{
-  "typePrintWidth": 120
-}
-```
-
-## customCss
-
-**Type:** `string`（ファイルパス）
-**Default:** なし
-**CLI:** `--customCss <path>`
-
-アセットにコピーされテーマによって参照される CSS ファイルへのパス。
-
-```json
-{
-  "customCss": "./src/custom-theme.css"
-}
-```
-
-## customJs
-
-**Type:** `string`（ファイルパス）
-**Default:** なし
-**CLI:** `--customJs <path>`
-
-アセットにコピーされテーマによって参照される JavaScript ファイル（モジュールではない）へのパス。
-
-```json
-{
-  "customJs": "./src/custom-script.js"
-}
-```
-
-## customFooterHtml
-
-**Type:** `string`（HTML コンテンツ）
-**Default:** なし
-**CLI:** `--customFooterHtml <html>`
-
-ページフッターに挿入するカスタム HTML。
-
-```json
-{
-  "customFooterHtml": "Copyright 2024 My Company"
-}
-```
-
-## customFooterHtmlDisableWrapper
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** `--customFooterHtmlDisableWrapper`
-
-有効にすると、カスタムフッター HTML の `<p>` 要素による自動ラッピングを無効にし、フォーマットを直接制御できる。
-
-```json
-{
-  "customFooterHtmlDisableWrapper": true
-}
-```
-
-## markdownItOptions
-
-**Type:** `object`
-**Default:** `{ "html": true, "linkify": true }`
-**CLI:** なし
-
-doc コメントを解析する際に markdown-it に転送される設定オプション。markdown-it のデフォルトをオーバーライドする。
-
-```json
-{
-  "markdownItOptions": {
-    "html": true,
-    "linkify": true
-  }
-}
-```
-
-## markdownItLoader
-
-**Type:** `function`
-**Default:** なし
-**CLI:** なし（JS 設定ファイル専用）
-
-プラグインを設定するために markdown-it インスタンスを受け取るコールバック関数。JavaScript 設定ファイルでのみ使用可能。
-
-```js
-// typedoc.config.mjs
-export default {
-  markdownItLoader(parser) {
-    parser.use(require("markdown-it-abbr"));
-  }
-};
-```
-
-## displayBasePath
-
-**Type:** `string`（ファイルパス）
-**Default:** 最も低い共通ディレクトリから自動決定
-**CLI:** `--displayBasePath <path>`
-
-ドキュメント内でファイルパスを表示するためのベースパス。表示にのみ影響し、リンク生成には影響しない。デフォルトは `basePath` オプションの値。
-
-```json
-{
-  "displayBasePath": "./src"
-}
-```
-
-## cname
-
-**Type:** `string`（ドメイン名）
-**Default:** なし
-**CLI:** `--cname <domain>`
-
-指定されたテキストで出力ディレクトリに CNAME ファイルを作成する。
-
-```json
-{
-  "cname": "docs.example.com"
-}
-```
-
-## favicon
-
-**Type:** `string`（ファイルパス）
-**Default:** なし
-**CLI:** `--favicon <path>`
-
-サイトの favicon として参照する favicon ファイル（`.ico`、`.png`、または `.svg`）へのパス。
-
-```json
-{
-  "favicon": "./assets/favicon.ico"
-}
-```
-
-## sourceLinkExternal
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** `--sourceLinkExternal`
-
-有効にすると、HTML ドキュメント生成時にソースコードリンクが新しいタブで開く。
-
-```json
-{
-  "sourceLinkExternal": true
-}
-```
-
-## markdownLinkExternal
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** `--markdownLinkExternal`
-
-有効にすると、コメントおよび Markdown ファイル内の http/https リンクが新しいタブで開く。
-
-```json
-{
-  "markdownLinkExternal": true
-}
-```
-
-## lang
-
-**Type:** `string`（言語コード）
-**Default:** `"en"`
-**CLI:** `--lang <code>`
-
-lang HTML 属性を設定し、ドキュメント生成に使用される翻訳を決定する。
-
-```json
-{
-  "lang": "ja"
-}
-```
-
-## locales
-
-**Type:** `object`（ロケールをキーとした翻訳オーバーライド）
-**Default:** なし
-**CLI:** なし
-
-指定されたロケールのカスタム翻訳。値は指定された言語のデフォルト翻訳をオーバーライドする。
-
-```json
-{
-  "locales": {
-    "ja": {
-      "theme_search_placeholder": "検索..."
+## Options / Props
+
+### Output targets
+
+| Option | Type | Default | CLI | Description |
+| --- | --- | --- | --- | --- |
+| `outputs` | `array` (array of output config objects) | none | — | Specifies multiple output destinations along with their type and per-output options. Each output object has a name (e.g. `"html"`, `"json"`, `"markdown"`), a path, and optional rendering settings. |
+| `out` | `string` (file path) | none | `--out <path/to/documentation/>` | Where to write the default output type. Acts as a shortcut that overrides the `outputs` option. Generates HTML by default unless changed by a plugin. |
+| `html` | `string` (file path) | none | `--html <path/to/documentation/>` | Location for HTML documentation output. Acts as an output shortcut that overrides the `outputs` option. |
+| `json` | `string` (file path) | none | `--json <path/to/out-file.json>` | Location for a JSON file containing all reflection data. Acts as an output shortcut that overrides the `outputs` option. |
+| `pretty` | `boolean` | `true` | `--pretty` | Whether JSON output is formatted for readability. |
+| `emit` | `"docs" \| "both" \| "none"` | `"docs"` | `--emit <value>` | Controls what TypeDoc writes. `"docs"` outputs documentation only, `"both"` outputs documentation and JavaScript, `"none"` performs conversion and validation without writing files. |
+
+### Theming & highlighting
+
+| Option | Type | Default | CLI | Description |
+| --- | --- | --- | --- | --- |
+| `theme` | `string` | `"default"` | `--theme <name>` | Theme used to render documentation. |
+| `router` | `"kind" \| "kind-dir" \| "structure" \| "structure-dir" \| "group" \| "category"` | `"kind"` | `--router <name>` | Determines the file structure of HTML output. |
+| `lightHighlightTheme` | `string` (Shiki theme name) | none (Shiki's default) | `--lightHighlightTheme <theme>` | Shiki theme for syntax highlighting of code snippets in light mode. |
+| `darkHighlightTheme` | `string` (Shiki theme name) | none (Shiki's default) | `--darkHighlightTheme <theme>` | Shiki theme for syntax highlighting of code snippets in dark mode. |
+| `highlightLanguages` | `string[]` | `["bash", "console", "css", "html", "javascript", "json", "jsonc", "json5", "tsx", "typescript"]` | — | Shiki grammars loaded for highlighting code blocks. |
+| `ignoredHighlightLanguages` | `string[]` | `[]` | — | Languages in code blocks to silently ignore, without generating warnings, during highlighting. |
+| `typePrintWidth` | `number` | `80` | `--typePrintWidth <number>` | Character width at which type-rendering code wraps. Changing it requires adjusting the corresponding theme. |
+
+### Custom assets
+
+| Option | Type | Default | CLI | Description |
+| --- | --- | --- | --- | --- |
+| `customCss` | `string` (file path) | none | `--customCss <path>` | Path to a CSS file copied to assets and referenced by the theme. |
+| `customJs` | `string` (file path) | none | `--customJs <path>` | Path to a JavaScript file (not a module) copied to assets and referenced by the theme. |
+| `customFooterHtml` | `string` (HTML content) | none | `--customFooterHtml <html>` | Custom HTML inserted into the page footer. |
+| `customFooterHtmlDisableWrapper` | `boolean` | `false` | `--customFooterHtmlDisableWrapper` | When enabled, disables automatic wrapping of the custom footer HTML in a `<p>` element, allowing direct control of formatting. |
+| `markdownItOptions` | `object` | `{ "html": true, "linkify": true }` | — | Configuration options forwarded to markdown-it when parsing doc comments. Overrides markdown-it's defaults. |
+| `markdownItLoader` | `function` | none | — (JS config file only) | Callback receiving the markdown-it instance, used to configure plugins. Only available in JavaScript config files. |
+
+### Paths & site metadata
+
+| Option | Type | Default | CLI | Description |
+| --- | --- | --- | --- | --- |
+| `displayBasePath` | `string` (file path) | auto-determined from the lowest common directory | `--displayBasePath <path>` | Base path for displaying file paths in the documentation. Affects display only, not link generation. Defaults to the `basePath` option's value. |
+| `cname` | `string` (domain name) | none | `--cname <domain>` | Creates a CNAME file in the output directory with the given text. |
+| `favicon` | `string` (file path) | none | `--favicon <path>` | Path to a favicon file (`.ico`, `.png`, or `.svg`) referenced as the site's favicon. |
+| `sourceLinkExternal` | `boolean` | `false` | `--sourceLinkExternal` | When enabled, source code links open in a new tab in generated HTML documentation. |
+| `markdownLinkExternal` | `boolean` | `false` | `--markdownLinkExternal` | When enabled, http/https links in comments and Markdown files open in a new tab. |
+| `lang` | `string` (language code) | `"en"` | `--lang <code>` | Sets the `lang` HTML attribute and determines the translations used to generate documentation. |
+| `locales` | `object` (translation overrides keyed by locale) | none | — | Custom translations for a given locale. Values override the default translations for that language. |
+| `githubPages` | `boolean` | `true` | `--githubPages` | When enabled, automatically adds a `.nojekyll` file to prevent GitHub Pages from processing documentation with Jekyll. Useful for scoped packages. |
+| `cacheBust` | `boolean` | `false` | `--cacheBust` | When enabled, includes a generation timestamp in script and link tags to prevent stale assets from previous builds. |
+| `hideGenerator` | `boolean` | `false` | `--hideGenerator` | When enabled, hides the TypeDoc attribution link in the page footer. |
+| `searchInComments` | `boolean` | `false` | `--searchInComments` | When enabled, allows searching within comment text on the documentation site. Note: significantly increases search index size. |
+| `searchInDocuments` | `boolean` | `false` | `--searchInDocuments` | When enabled, allows searching within document text on the documentation site. Note: significantly increases search index size. |
+| `cleanOutputDir` | `boolean` | `true` | `--cleanOutputDir` | Whether TypeDoc cleans the output directory before generation. |
+| `titleLink` | `string` (URL) | the documentation home page | `--titleLink <url>` | Destination URL for the header title link. |
+| `navigationLinks` | `object` (name-to-URL mapping) | none | — | Additional links shown in the page header navigation. |
+| `sidebarLinks` | `object` (name-to-URL mapping) | none | — | Additional links shown in the page sidebar. |
+
+### Navigation & search structure
+
+| Option | Type | Default | CLI | Description |
+| --- | --- | --- | --- | --- |
+| `navigation` | `object` (boolean properties) | `{ "includeCategories": true, "includeGroups": false, "includeFolders": true, "compactFolders": false, "excludeReferences": true }` | — | Controls the left sidebar navigation structure. Interacts with the `categorizeByGroup` option. |
+| `headings` | `object` (boolean properties) | `{ "readme": true, "document": false }` | — | Whether descriptive headings are shown on the rendered readme file and document pages. |
+| `sluggerConfiguration` | `object` | `{ "lowercase": true }` | — | Controls how page anchors are generated. Exists for backward compatibility; lowercasing has been the default since v0.27. |
+| `navigationLeaves` | `string[]` | none | — | Namespaces/modules not to expand in the navigation tree. Use dot notation for nested namespaces (e.g. `"ParentNS.ChildNS"`). |
+| `visibilityFilters` | `object` (boolean values) | all standard filters visible by default | — | Configures filters available on documentation pages. Standard options include protected, private, inherited, and external. Modifier tags can also be added for custom sorting. |
+| `searchCategoryBoosts` | `object` (category-to-multiplier mapping) | none | — | Boosts search relevance for items in the given category using a numeric multiplier. |
+| `searchGroupBoosts` | `object` (group-to-multiplier mapping) | none | — | Boosts search relevance for items in the given group using a numeric multiplier. |
+| `hostedBaseUrl` | `string` (URL) | none | — | Base URL where the TypeDoc site is hosted. Used for sitemap generation, canonical links, and enabling absolute link generation. |
+| `useHostedBaseUrlForAbsoluteLinks` | `boolean` | `false` | — | When enabled and `hostedBaseUrl` is set, generates absolute links instead of relative links. |
+| `useFirstParagraphOfCommentAsSummary` | `boolean` | `false` | — | When enabled, uses the first paragraph of a comment as a short summary in module/namespace member lists, unless overridden by the `@summary` tag. |
+| `includeHierarchySummary` | `boolean` | `true` | `--includeHierarchySummary` | Controls whether a `hierarchy.html` page listing the full class hierarchy of documented members is generated. |
+
+## Notes
+
+- `router` values: `kind` (organizes pages by member kind), `kind-dir` (same as `kind` but renders as `index.html` inside directories for clean URLs), `structure` (organizes pages by module structure), `structure-dir` (same as `structure` but renders as `index.html` inside directories), `group` (organizes pages by group tag), `category` (organizes pages by category tag).
+- `emit` values: `"docs"` (documentation only), `"both"` (documentation and JavaScript), `"none"` (conversion and validation without writing files).
+- `markdownItLoader` example (JavaScript config file only):
+  ```js
+  // typedoc.config.mjs
+  export default {
+    markdownItLoader(parser) {
+      parser.use(require("markdown-it-abbr"));
     }
-  }
-}
-```
+  };
+  ```
 
-## githubPages
-
-**Type:** `boolean`
-**Default:** `true`
-**CLI:** `--githubPages`
-
-有効にすると、GitHub Pages が Jekyll を使用してドキュメントを処理するのを防ぐために `.nojekyll` ファイルを自動的に追加する。スコープ付きパッケージに便利。
-
-```json
-{
-  "githubPages": true
-}
-```
-
-## cacheBust
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** `--cacheBust`
-
-有効にすると、前回のビルドからの古いアセットを防ぐために、script タグと link タグに生成タイムスタンプを含める。
-
-```json
-{
-  "cacheBust": true
-}
-```
-
-## hideGenerator
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** `--hideGenerator`
-
-有効にすると、ページフッターの TypeDoc 帰属リンクを非表示にする。
-
-```json
-{
-  "hideGenerator": true
-}
-```
-
-## searchInComments
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** `--searchInComments`
-
-有効にすると、ドキュメントサイトのコメントテキスト内を検索できる。注意: 検索インデックスのサイズが大幅に増加する。
-
-```json
-{
-  "searchInComments": true
-}
-```
-
-## searchInDocuments
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** `--searchInDocuments`
-
-有効にすると、ドキュメントサイトのドキュメントテキスト内を検索できる。注意: 検索インデックスのサイズが大幅に増加する。
-
-```json
-{
-  "searchInDocuments": true
-}
-```
-
-## cleanOutputDir
-
-**Type:** `boolean`
-**Default:** `true`
-**CLI:** `--cleanOutputDir`
-
-TypeDoc が生成前に出力ディレクトリをクリーンアップするかどうかを制御する。
-
-```json
-{
-  "cleanOutputDir": true
-}
-```
-
-## titleLink
-
-**Type:** `string`（URL）
-**Default:** ドキュメントのホームページ
-**CLI:** `--titleLink <url>`
-
-ヘッダーのタイトルリンクの遷移先 URL を指定する。
-
-```json
-{
-  "titleLink": "https://example.com"
-}
-```
-
-## navigationLinks
-
-**Type:** `object`（名前から URL へのマッピング）
-**Default:** なし
-**CLI:** なし
-
-ページヘッダーナビゲーションに表示する追加リンクを定義する。
-
-```json
-{
-  "navigationLinks": {
-    "GitHub": "https://github.com/user/repo",
-    "Website": "https://example.com"
-  }
-}
-```
-
-## sidebarLinks
-
-**Type:** `object`（名前から URL へのマッピング）
-**Default:** なし
-**CLI:** なし
-
-ページサイドバーに表示する追加リンクを定義する。
-
-```json
-{
-  "sidebarLinks": {
-    "Getting Started": "https://example.com/guide"
-  }
-}
-```
-
-## navigation
-
-**Type:** `object`（ブーリアンプロパティ）
-**Default:** `{ "includeCategories": true, "includeGroups": false, "includeFolders": true, "compactFolders": false, "excludeReferences": true }`
-**CLI:** なし
-
-左サイドバーのナビゲーション構造を制御する。`categorizeByGroup` オプションと相互作用する。
-
-```json
-{
-  "navigation": {
-    "includeCategories": true,
-    "includeGroups": false,
-    "includeFolders": true,
-    "compactFolders": false,
-    "excludeReferences": true
-  }
-}
-```
-
-## headings
-
-**Type:** `object`（ブーリアンプロパティ）
-**Default:** `{ "readme": true, "document": false }`
-**CLI:** なし
-
-readme ファイルおよびドキュメントのレンダリングされたページに説明的な見出しを表示するかどうかを決定する。
-
-```json
-{
-  "headings": {
-    "readme": true,
-    "document": true
-  }
-}
-```
-
-## sluggerConfiguration
-
-**Type:** `object`
-**Default:** `{ "lowercase": true }`
-**CLI:** なし
-
-ページアンカーの生成方法を制御する。後方互換性のために存在し、小文字化はバージョン 0.27 時点でデフォルトで true。
-
-```json
-{
-  "sluggerConfiguration": {
-    "lowercase": true
-  }
-}
-```
-
-## navigationLeaves
-
-**Type:** `string[]`
-**Default:** なし
-**CLI:** なし
-
-ナビゲーションツリーで展開しない名前空間/モジュールを指定する。ネストされた名前空間にはドット表記を使用する（例: `"ParentNS.ChildNS"`）。
-
-```json
-{
-  "navigationLeaves": ["InternalModule", "ParentNS.ChildNS"]
-}
-```
-
-## visibilityFilters
-
-**Type:** `object`（ブーリアン値）
-**Default:** すべての標準フィルターがデフォルトで表示
-**CLI:** なし
-
-ドキュメントページで利用可能なフィルターを設定する。標準オプションには protected、private、inherited、external が含まれる。カスタムソート用の修飾子タグも追加可能。
-
-```json
-{
-  "visibilityFilters": {
-    "protected": true,
-    "private": false,
-    "inherited": true,
-    "external": false
-  }
-}
-```
-
-## searchCategoryBoosts
-
-**Type:** `object`（カテゴリから乗数へのマッピング）
-**Default:** なし
-**CLI:** なし
-
-数値乗数を使用して、指定されたカテゴリ内のアイテムの検索関連性を高める。
-
-```json
-{
-  "searchCategoryBoosts": {
-    "Getting Started": 1.5
-  }
-}
-```
-
-## searchGroupBoosts
-
-**Type:** `object`（グループから乗数へのマッピング）
-**Default:** なし
-**CLI:** なし
-
-数値乗数を使用して、指定されたグループ内のアイテムの検索関連性を高める。
-
-```json
-{
-  "searchGroupBoosts": {
-    "Classes": 1.5
-  }
-}
-```
-
-## hostedBaseUrl
-
-**Type:** `string`（URL）
-**Default:** なし
-**CLI:** なし
-
-TypeDoc サイトがホストされるベース URL。サイトマップ生成、正規リンク、および絶対リンク生成の有効化に使用される。
-
-```json
-{
-  "hostedBaseUrl": "https://docs.example.com"
-}
-```
-
-## useHostedBaseUrlForAbsoluteLinks
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** なし
-
-有効にし `hostedBaseUrl` が設定されている場合、相対リンクの代わりに絶対リンクを生成する。
-
-```json
-{
-  "useHostedBaseUrlForAbsoluteLinks": true
-}
-```
-
-## useFirstParagraphOfCommentAsSummary
-
-**Type:** `boolean`
-**Default:** `false`
-**CLI:** なし
-
-有効にすると、`@summary` タグでオーバーライドされない限り、モジュール/名前空間のメンバーリストでコメントの最初の段落を短い要約として使用する。
-
-```json
-{
-  "useFirstParagraphOfCommentAsSummary": true
-}
-```
-
-## includeHierarchySummary
-
-**Type:** `boolean`
-**Default:** `true`
-**CLI:** `--includeHierarchySummary`
-
-ドキュメント化されたメンバーの完全なクラス階層をリストする hierarchy.html ページを生成するかどうかを制御する。
-
-```json
-{
-  "includeHierarchySummary": true
-}
-```
-
-## 関連
+## Related
 
 - [Options: Configuration](./configuration.md)
 - [Options: Input](./input.md)

@@ -21,6 +21,7 @@ Materials are chosen per surface type, not mixed arbitrarily:
 ## Notes
 
 - Package: `Microsoft.UI.Xaml.Media` (`Microsoft.UI.Xaml.Media.AcrylicBrush`, `Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop`, `Microsoft.UI.Xaml.Media.MicaBackdrop`) in WinUI 3 / Windows App SDK. Distinct from the JS `@ark-ui/react` / `@chakra-ui/react` styling systems and from Jetpack Compose `Surface`/elevation.
+- Mica also indicates window focus with active and inactive states as a built-in feature.
 - Layering in Windows is tightly coupled with materials: apply a material as the base layer, then use theme resources such as `LayerFillColorDefaultBrush` for the content layer that sits on top of it.
 - All materials are automatically disabled or replaced with a solid fallback color in High Contrast mode, when Battery Saver is active, on low-end hardware, or when the user disables transparency effects.
 

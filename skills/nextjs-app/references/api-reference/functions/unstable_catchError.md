@@ -1,4 +1,6 @@
-# unstable_catchError
+# unstable_catchError (deprecated alias)
+
+> **Deprecated**: `unstable_catchError` was renamed to `catchError` and became stable in `v16.3.0`. See [catchError](./catchError.md) for the current reference.
 
 `unstable_catchError` creates a component that wraps its children in an error boundary — a programmatic alternative to the `error.js` file convention, usable anywhere in the component tree.
 

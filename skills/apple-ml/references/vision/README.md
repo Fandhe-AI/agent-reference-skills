@@ -1,19 +1,33 @@
-# Vision
+# vision
 
 | Name | Description | Path |
 |------|-------------|------|
-| VNRequest | Abstract base class for all Vision analysis requests | [vnrequest.md](./vnrequest.md) |
-| VNImageRequestHandler | Processes Vision requests against a single image (iOS 11+, callback-based) | [vnimagerequesthandler.md](./vnimagerequesthandler.md) |
-| VNSequenceRequestHandler | Processes Vision requests across a sequence of frames for stateful tracking | [vnsequencerequesthandler.md](./vnsequencerequesthandler.md) |
-| VNDetectFaceRectanglesRequest | Detects faces and returns bounding boxes as VNFaceObservation | [vndetectfacerectanglesrequest.md](./vndetectfacerectanglesrequest.md) |
-| VNDetectFaceLandmarksRequest | Detects facial landmarks (eyes, mouth, contours) within faces | [vndetectfacelandmarksrequest.md](./vndetectfacelandmarksrequest.md) |
-| VNRecognizeTextRequest | Finds and recognizes text in an image (iOS 13+, callback-based) | [vnrecognizetextrequest.md](./vnrecognizetextrequest.md) |
-| VNDetectBarcodesRequest | Detects barcodes and QR codes; returns payload and symbology | [vndetectbarcodesrequest.md](./vndetectbarcodesrequest.md) |
-| VNCoreMLRequest | Runs a Core ML model on an image via Vision pipeline | [vncoremlrequest.md](./vncoremlrequest.md) |
-| VNCoreMLModel | Wraps an MLModel for use with VNCoreMLRequest | [vncoremlmodel.md](./vncoremlmodel.md) |
-| VNClassifyImageRequest | Classifies image content using Apple's built-in Vision model | [vnclassifyimagerequest.md](./vnclassifyimagerequest.md) |
-| VNDetectHumanBodyPoseRequest | Detects 2D human body pose joint positions in an image | [vndetecthumanbodyposerequest.md](./vndetecthumanbodyposerequest.md) |
-| VNObservation | Abstract base class for all Vision analysis results | [vnobservation.md](./vnobservation.md) |
-| VNRecognizedTextObservation | Observation holding recognized text candidates and bounding box | [vnrecognizedtextobservation.md](./vnrecognizedtextobservation.md) |
-| ImageRequestHandler | Modern async/await image handler (iOS 18+) | [imagerequesthandler.md](./imagerequesthandler.md) |
-| RecognizeTextRequest | Modern async/await text recognition request (iOS 18+) | [recognizetextrequest.md](./recognizetextrequest.md) |
+| CalculateImageAestheticsScoresRequest | Analyzes an image for aesthetically pleasing attributes… | [calculateimageaestheticsscoresrequest.md](./calculateimageaestheticsscoresrequest.md) |
+| ClassifyImageRequest | Modern async/await replacement for `VNClassifyImageRequest`… | [classifyimagerequest.md](./classifyimagerequest.md) |
+| CoreMLRequest | Modern async/await replacement for `VNCoreMLRequest`… | [coremlrequest.md](./coremlrequest.md) |
+| DetectBarcodesRequest (modern) | Modern async/await replacement for `VNDetectBarcodesRequest`… | [detectbarcodesrequest-modern.md](./detectbarcodesrequest-modern.md) |
+| DetectContoursRequest | Detects the contours of the edges in an image… | [detectcontoursrequest.md](./detectcontoursrequest.md) |
+| DetectFaceRectanglesRequest (modern) | Modern async/await replacement for `VNDetectFaceRectangles…` | [detectfacerectanglesrequest-modern.md](./detectfacerectanglesrequest-modern.md) |
+| DetectHumanBodyPose3DRequest | Detects points on human bodies in 3D space… | [detecthumanbodypose3drequest.md](./detecthumanbodypose3drequest.md) |
+| DetectHumanBodyPoseRequest (modern) | Modern async/await replacement for `VNDetectHumanBodyPose…` | [detecthumanbodyposerequest-modern.md](./detecthumanbodyposerequest-modern.md) |
+| DetectRectanglesRequest | Finds projected rectangular regions in an image… | [detectrectanglesrequest.md](./detectrectanglesrequest.md) |
+| GenerateImageFeaturePrintRequest | Generates a feature print representation… | [generateimagefeatureprintrequest.md](./generateimagefeatureprintrequest.md) |
+| GeneratePersonInstanceMaskRequest | Produces a mask of individual people… | [generatepersoninstancemaskrequest.md](./generatepersoninstancemaskrequest.md) |
+| GeneratePersonSegmentationRequest | Produces a matte image for person/background segmentation… | [generatepersonsegmentationrequest.md](./generatepersonsegmentationrequest.md) |
+| ImageRequestHandler | Modern async/await replacement for `VNImageRequestHandler`… | [imagerequesthandler.md](./imagerequesthandler.md) |
+| RecognizeDocumentsRequest | Scans a document image and identifies structure… | [recognizedocumentsrequest.md](./recognizedocumentsrequest.md) |
+| RecognizeTextRequest | Modern async/await replacement for `VNRecognizeTextRequest`… | [recognizetextrequest.md](./recognizetextrequest.md) |
+| TrackObjectRequest | Tracks movement of objects across frames… | [trackobjectrequest.md](./trackobjectrequest.md) |
+| VNClassifyImageRequest | Classifies image content using Vision's built-in model… | [vnclassifyimagerequest.md](./vnclassifyimagerequest.md) |
+| VNCoreMLModel | A container wrapping a Core ML model… | [vncoremlmodel.md](./vncoremlmodel.md) |
+| VNCoreMLRequest | Applies a Core ML model to an image… | [vncoremlrequest.md](./vncoremlrequest.md) |
+| VNDetectBarcodesRequest | Detects barcodes and QR codes… | [vndetectbarcodesrequest.md](./vndetectbarcodesrequest.md) |
+| VNDetectFaceLandmarksRequest | Detects facial features (eyes, nose, mouth, contours)… | [vndetectfacelandmarksrequest.md](./vndetectfacelandmarksrequest.md) |
+| VNDetectFaceRectanglesRequest | Detects faces and returns bounding boxes… | [vndetectfacerectanglesrequest.md](./vndetectfacerectanglesrequest.md) |
+| VNDetectHumanBodyPoseRequest | Detects 2D human body pose and joint positions… | [vndetecthumanbodyposerequest.md](./vndetecthumanbodyposerequest.md) |
+| VNImageRequestHandler | Processes Vision requests against a single image… | [vnimagerequesthandler.md](./vnimagerequesthandler.md) |
+| VNObservation | Abstract base class for Vision analysis results… | [vnobservation.md](./vnobservation.md) |
+| VNRecognizedTextObservation | Represents recognized text region… | [vnrecognizedtextobservation.md](./vnrecognizedtextobservation.md) |
+| VNRecognizeTextRequest | Locates and recognizes text in images… | [vnrecognizetextrequest.md](./vnrecognizetextrequest.md) |
+| VNRequest | Abstract superclass for Vision requests… | [vnrequest.md](./vnrequest.md) |
+| VNSequenceRequestHandler | Processes Vision requests across frame sequences… | [vnsequencerequesthandler.md](./vnsequencerequesthandler.md) |

@@ -1,22 +1,18 @@
 # @experimental
 
-将来的にサードパーティ開発者が使用することを想定しているが、セマンティックバージョニングに準拠するほど安定していないメンバーをマークするモディファイアタグ。
+Modifier tag marking a member intended for eventual use by third-party developers, but not yet stable enough to follow semantic versioning.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @experimental */
 ```
 
-## 詳細説明
+`@experimental` indicates that an API member is in an experimental stage and may undergo breaking changes. Per the TSDoc specification, `@beta` and `@experimental` are treated as semantically equivalent.
 
-`@experimental` タグは、API メンバーが実験的段階にあり、破壊的変更が行われる可能性があることを示す。TSDoc 仕様では、`@beta` と `@experimental` はセマンティック的に同等として扱われる。
+Within a project, it is recommended to use only one of the two consistently rather than mixing them.
 
-プロジェクト内ではどちらか一方のみを使用し、両方を同時に使用しないことが推奨される。
-
-TypeDoc は `--visibilityFilters` オプションを通じて、`@experimental` タグが付いたメンバーの表示/非表示を制御できる。
-
-## コード例
+TypeDoc can show/hide `@experimental`-tagged members via the `--visibilityFilters` option.
 
 ```typescript
 export class Visibility {
@@ -28,7 +24,7 @@ export class Visibility {
 ```typescript
 export class DataProcessor {
     /**
-     * ストリーミング処理モード。APIが変更される可能性あり。
+     * Streaming processing mode. The API may change.
      * @experimental
      */
     async *processStream(input: AsyncIterable<Buffer>): AsyncGenerator<Result> {
@@ -37,13 +33,13 @@ export class DataProcessor {
 }
 ```
 
-## 注意点
+## Notes
 
-- TSDoc 仕様に準拠: https://tsdoc.org/pages/tags/experimental/
-- `@beta` と `@experimental` はセマンティック的に同等。どちらか一方を使用すること
-- `--visibilityFilters` オプションで表示/非表示を制御可能
+- Conforms to the TSDoc specification: https://tsdoc.org/pages/tags/experimental/
+- `@beta` and `@experimental` are semantically equivalent; use only one consistently
+- The `--visibilityFilters` option controls visibility
 
-## 関連
+## Related
 
 - [@alpha](./alpha.md)
 - [@beta](./beta.md)

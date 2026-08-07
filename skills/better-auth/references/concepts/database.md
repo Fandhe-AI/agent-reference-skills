@@ -1,104 +1,10 @@
 # Database
 
-Better Auth はユーザー、セッション、アカウント、検証レコードを保存するためにデータベースに接続する。複数のデータベースアダプターをサポートし、ステートレスセッション管理ではデータベースなしでも動作可能。
+Better Auth connects to a database to store users, sessions, accounts, and verification records. It supports multiple database adapters and can operate without a database using stateless session management.
 
-## コアスキーマテーブル
+## Signature / Usage
 
-### User テーブル
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string (pk) | 一意の識別子 |
-| `name` | string | ユーザー名 |
-| `email` | string | メールアドレス |
-| `emailVerified` | boolean | メール検証状態 |
-| `image` | string (optional) | プロフィール画像 URL |
-| `createdAt` | timestamp | 作成日時 |
-| `updatedAt` | timestamp | 更新日時 |
-
-### Session テーブル
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string (pk) | 一意の識別子 |
-| `userId` | string (fk) | 関連ユーザー ID |
-| `token` | string | セッショントークン |
-| `expiresAt` | timestamp | 有効期限 |
-| `ipAddress` | string (optional) | クライアント IP アドレス |
-| `userAgent` | string (optional) | ブラウザ/クライアント情報 |
-| `createdAt` | timestamp | 作成日時 |
-| `updatedAt` | timestamp | 更新日時 |
-
-### Account テーブル
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string (pk) | 一意の識別子 |
-| `userId` | string (fk) | 関連ユーザー ID |
-| `accountId` | string | プロバイダー内アカウント ID |
-| `providerId` | string | 認証プロバイダー ID |
-| `accessToken` | string (optional) | アクセストークン |
-| `refreshToken` | string (optional) | リフレッシュトークン |
-| `scope` | string | トークンスコープ |
-| `idToken` | string (optional) | ID トークン |
-| `password` | string (optional) | ハッシュ化パスワード |
-| `createdAt` | timestamp | 作成日時 |
-| `updatedAt` | timestamp | 更新日時 |
-
-### Verification テーブル
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string (pk) | 一意の識別子 |
-| `identifier` | string | 検証識別子 |
-| `value` | string | 検証値 |
-| `expiresAt` | timestamp | 有効期限 |
-| `createdAt` | timestamp | 作成日時 |
-| `updatedAt` | timestamp | 更新日時 |
-
-## サポートデータベース/アダプター
-
-- SQLite / D1
-- PostgreSQL
-- MySQL
-- MSSQL
-- MongoDB
-- Prisma ORM
-- Drizzle ORM
-- Kysely（ビルトイン）
-
-## 主要機能
-
-### CLI ツール
-
-```bash
-npx auth@latest migrate    # マイグレーション適用
-npx auth@latest generate   # スキーマ生成
-```
-
-### セカンダリストレージ
-
-Redis などのキーバリューストアをセッションデータや短命レコードに実装し、プライマリデータベースの負荷を軽減。
-
-### カスタムスキーマ
-
-テーブル名、カラム名のカスタマイズ、`additionalFields` 設定によるユーザー/セッションスキーマの拡張が可能。
-
-### ID 生成オプション
-
-3つのアプローチ: データベース管理、カスタム関数、一貫した生成器（UUID または数値シリアル）。
-
-### データベースフック
-
-ユーザー、セッション、アカウント操作の before/after ライフサイクルフックで検証やカスタムロジックを実装。
-
-### 実験的 Joins
-
-パフォーマンス最適化: 単一リクエストで複数クエリを実行（50 以上のエンドポイントで対応）。
-
-## コード例
-
-### カスタムフィールド
+### Custom fields
 
 ```typescript
 import { betterAuth } from "better-auth";
@@ -117,9 +23,98 @@ export const auth = betterAuth({
 });
 ```
 
-## 注意点
+### CLI tools
 
-- プログラマティックマイグレーションは Kysely アダプターのみ対応（Prisma/Drizzle は非対応）
-- PostgreSQL はスキーマパスを自動検出
-- データベースフックで `APIError` をスローすることで操作を中止可能
-- クライアント側でカスタムフィールドの型推論を行うには追加設定が必要
+```bash
+npx auth@latest migrate    # Apply migrations
+npx auth@latest generate   # Generate schema
+```
+
+## Options / Props
+
+### Core schema tables
+
+#### User table
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (pk) | Unique identifier |
+| `name` | string | User's name |
+| `email` | string | Email address |
+| `emailVerified` | boolean | Email verification status |
+| `image` | string (optional) | Profile image URL |
+| `createdAt` | timestamp | Creation timestamp |
+| `updatedAt` | timestamp | Last update timestamp |
+
+#### Session table
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (pk) | Unique identifier |
+| `userId` | string (fk) | Associated user ID |
+| `token` | string | Session token |
+| `expiresAt` | timestamp | Expiration time |
+| `ipAddress` | string (optional) | Client IP address |
+| `userAgent` | string (optional) | Browser/client info |
+| `createdAt` | timestamp | Creation timestamp |
+| `updatedAt` | timestamp | Last update timestamp |
+
+#### Account table
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (pk) | Unique identifier |
+| `userId` | string (fk) | Associated user ID |
+| `accountId` | string | Account ID within the provider |
+| `providerId` | string | Auth provider ID |
+| `accessToken` | string (optional) | Access token |
+| `refreshToken` | string (optional) | Refresh token |
+| `scope` | string | Token scope |
+| `idToken` | string (optional) | ID token |
+| `password` | string (optional) | Hashed password |
+| `createdAt` | timestamp | Creation timestamp |
+| `updatedAt` | timestamp | Last update timestamp |
+
+#### Verification table
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string (pk) | Unique identifier |
+| `identifier` | string | Verification identifier |
+| `value` | string | Verification value |
+| `expiresAt` | timestamp | Expiration time |
+| `createdAt` | timestamp | Creation timestamp |
+| `updatedAt` | timestamp | Last update timestamp |
+
+## Notes
+
+### Supported databases/adapters
+
+- SQLite / D1
+- PostgreSQL
+- MySQL
+- MSSQL
+- MongoDB
+- Prisma ORM
+- Drizzle ORM
+- Kysely (built-in)
+
+### Key features
+
+- **Secondary storage**: Implement a key-value store like Redis for session data or short-lived records to reduce load on the primary database
+- **Custom schema**: Customize table names, column names, and extend the user/session schema via `additionalFields`
+- **ID generation options**: Three approaches — database-managed, custom function, or consistent generator (UUID or numeric serial)
+- **Database hooks**: Implement validation or custom logic with before/after lifecycle hooks on user, session, and account operations
+- **Experimental joins**: Execute multiple queries in a single request as a performance optimization (supported on 50+ endpoints)
+
+### Other notes
+
+- Programmatic migrations are supported only by the Kysely adapter (not Prisma/Drizzle)
+- PostgreSQL automatically detects the schema path
+- Throwing `APIError` in a database hook can abort the operation
+- Additional configuration is required for client-side type inference of custom fields
+
+## Related
+
+- [CLI](./cli.md)
+- [TypeScript](./typescript.md)

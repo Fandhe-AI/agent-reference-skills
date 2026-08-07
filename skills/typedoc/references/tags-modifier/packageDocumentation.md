@@ -1,27 +1,23 @@
 # @packageDocumentation
 
-コメントブロックをファイル全体のドキュメントとしてマークするモディファイアタグ。直後の宣言ではなくファイル自体を説明する。
+Modifier tag that marks a comment block as documentation for the entire file, rather than for the declaration that immediately follows it.
 
-## 構文
+## Signature / Usage
 
 ```
 /**
- * ファイルの説明
+ * File description
  * @packageDocumentation
  */
 ```
 
-## 詳細説明
+The `@packageDocumentation` tag indicates that a comment block documents the file itself, rather than the declaration that immediately follows it.
 
-`@packageDocumentation` タグは、コメントブロックがファイルの直後の宣言ではなく、ファイル自体のドキュメントであることを示す。
+A comment block carrying this tag must be placed as the first comment in the file. It is recommended to place it before any `import` statements; without this tag, a comment preceding an `import` statement would otherwise be interpreted as documentation for that import.
 
-このタグを含むコメントブロックは、ファイルの最初のコメントとして配置する必要がある。import 文よりも前に置くことが推奨される。このタグがない場合、import 文の前のコメントは import 文のドキュメントとして解釈されてしまう。
+The `@module` tag provides equivalent functionality and is recommended when it is semantically clearer.
 
-`@module` タグは同等の機能を提供し、セマンティック的により明確な場合は `@module` の使用が推奨される。
-
-## コード例
-
-### 基本的な使用法
+### Basic usage
 
 ```typescript
 // file1.ts
@@ -33,14 +29,14 @@
 import * as lib from "lib";
 ```
 
-### 詳細なファイルドキュメント
+### Detailed file documentation
 
 ```typescript
 /**
- * ユーザー認証モジュール。
+ * User authentication module.
  *
- * このモジュールは、JWT ベースの認証フローを提供する。
- * OAuth 2.0 プロバイダーとの統合もサポートしている。
+ * This module provides a JWT-based authentication flow.
+ * Integration with OAuth 2.0 providers is also supported.
  *
  * @packageDocumentation
  */
@@ -52,13 +48,13 @@ export class AuthService {
 }
 ```
 
-## 注意点
+## Notes
 
-- ファイルの最初のコメントとして配置する必要がある
-- import 文より前に配置することが推奨される
-- TSDoc 仕様に準拠: https://tsdoc.org/pages/tags/packagedocumentation/
-- `@module` タグが同等の機能を提供する代替手段
+- Must be placed as the first comment in the file
+- Recommended to be placed before any `import` statements
+- Follows the TSDoc spec: https://tsdoc.org/pages/tags/packagedocumentation/
+- `@module` provides an equivalent alternative
 
-## 関連
+## Related
 
 - [@module](../tags-block/module.md)

@@ -1,24 +1,20 @@
 # @mergeModuleWith
 
-モジュールの内容を別のモジュールまたはプロジェクトルートに統合するブロックタグ。
+Block tag that merges the contents of a module into another module or into the project root.
 
-## 構文
+## Signature / Usage
 
 ```
-@mergeModuleWith <ターゲット>
+@mergeModuleWith <target>
 ```
 
-ターゲットには以下を指定できる：
-- ドット区切りの修飾モジュール名（ネストされたモジュール用）
-- `<project>` -- メンバーをルートプロジェクトリフレクション直下に配置する特殊値
+The target can be:
+- a dot-separated qualified module name (for nested modules)
+- `<project>` -- a special value that places members directly under the root project reflection
 
-## 詳細説明
+The `@mergeModuleWith` tag instructs TypeDoc to place the children of a module or namespace into another module and remove the current module.
 
-`@mergeModuleWith` タグは、モジュールまたは名前空間の子要素を別のモジュールに配置し、現在のモジュールを削除するようTypeDocに指示する。
-
-この機能は、`packages` エントリポイント戦略を使用して複数のTypeScriptコンパイル出力を単一のエクスポートモジュールに統合するプロジェクトをサポートする。
-
-## コード例
+This feature supports projects that use the `packages` entry point strategy to consolidate multiple TypeScript compilation outputs into a single exported module.
 
 ```typescript
 // module-a.ts
@@ -36,15 +32,15 @@ export function fn1() {}
 export function fn2() {}
 ```
 
-上記の例では、`fn1` と `fn2` はそれぞれのモジュールではなくプロジェクトルート直下に配置される。
+In the example above, `fn1` and `fn2` are placed directly under the project root instead of under their respective modules.
 
-## 注意点
+## Notes
 
-- **リンク解決への影響**: このタグを使用するとリンク解決に影響が出る。`@mergeModuleWith` を含むモジュールをターゲットにしたリンクは、モジュールが削除されるため壊れる可能性がある
-- 子要素へのリンクも設定によっては曖昧に解決される可能性がある
-- `packages` エントリポイント戦略と組み合わせて使用することが想定されている
+- **Impact on link resolution**: using this tag affects link resolution. Links targeting a module that contains `@mergeModuleWith` may break because the module is removed
+- Links to children may also resolve ambiguously depending on configuration
+- Intended for use together with the `packages` entry point strategy
 
-## 関連
+## Related
 
-- [@module](./module.md) -- モジュールの文書化
-- `@packageDocumentation` -- パッケージドキュメント
+- [@module](./module.md) -- documenting modules
+- `@packageDocumentation` -- package-level documentation

@@ -1,88 +1,98 @@
-# CLI コマンド
+# CLI Commands
 
-## コマンド
+## Signature / Usage
+
+```bash
+vitest run --coverage.enabled
+```
+
+Filter by filename: `vitest foobar`
+Line number targeting (v3+): `vitest basic/foo.test.ts:10`
+
+## Options / Props
+
+Commands:
 
 | Command | Description |
 |---------|-------------|
-| `vitest` | デフォルト: dev では watch モード、CI では run モード |
-| `vitest run` | ウォッチなしで単一実行 |
-| `vitest watch` | ウォッチモードで実行（エイリアス: `vitest dev`） |
-| `vitest bench` | ベンチマークテストのみ実行 |
-| `vitest related <files>` | 指定ソースファイルに関連するテストのみ実行 |
-| `vitest list` | マッチするテスト一覧を出力 |
-| `vitest init <name>` | プロジェクト設定のセットアップ |
-| `vitest typecheck` | 型テストの実行 |
+| `vitest` | Default: watch mode in dev, run mode in CI |
+| `vitest run` | Single run without watching |
+| `vitest watch` | Run in watch mode (alias: `vitest dev`) |
+| `vitest bench` | Run benchmark tests only |
+| `vitest related <files>` | Run only tests related to the given source files |
+| `vitest list` | Print the list of matching tests |
+| `vitest init <name>` | Set up project configuration |
+| `vitest typecheck` | Run type tests |
 
-ファイル名で絞り込み可能: `vitest foobar`
-行番号指定（v3+）: `vitest basic/foo.test.ts:10`
-
-## 主要フラグ
+Main flags:
 
 | Flag | Description |
 |------|-------------|
-| `--run` | ウォッチモードを無効化 |
-| `--reporter <name>` | レポーター指定（`default`, `verbose`, `dot`, `json`, `junit`, `tap`, `tree`, `blob`, `github-actions`, `minimal` 等） |
-| `--coverage.enabled` | カバレッジ収集を有効化 |
-| `--ui` | UI を有効化 |
-| `-u` / `--update` | スナップショットを更新 |
-| `--changed` | 変更されたファイルに関連するテストのみ実行 |
-| `--bail <n>` | n 個のテスト失敗で実行を停止 |
-| `--passWithNoTests` | テストなしでも成功終了 |
-| `--globals` | API をグローバルに注入 |
-| `--environment <name>` | 実行環境を指定（デフォルト: `node`） |
-| `-t` / `--testNamePattern <pattern>` | パターンにマッチするテストのみ実行 |
-| `-w` / `--watch` | ウォッチモードを有効化 |
-| `--project <name>` | 特定プロジェクトのみ実行（複数指定可・ワイルドカード対応、`!pattern` で除外） |
-| `--shard <index>/<count>` | テストスイートをシャード分割（例: `--shard=1/3`） |
-| `--tagsFilter <expr>` | タグでテストを絞り込み（`&&`, `\|\|`, `!` 使用可） |
-| `--listTags` | 利用可能なタグ一覧を表示 |
-| `--strictTags` | 未定義タグをエラーとして扱う |
-| `--browser.enabled` | ブラウザモードを有効化 |
+| `--run` | Disable watch mode |
+| `--reporter <name>` | Specify reporter (`default`, `verbose`, `dot`, `json`, `junit`, `tap`, `tree`, `blob`, `github-actions`, `minimal`, etc.) |
+| `--coverage.enabled` | Enable coverage collection |
+| `--ui` | Enable the UI |
+| `-u` / `--update` | Update snapshots |
+| `--changed` | Run only tests related to changed files |
+| `--bail <n>` | Stop the run after n test failures |
+| `--passWithNoTests` | Exit successfully even with no tests |
+| `--globals` | Inject the API into the global scope |
+| `--environment <name>` | Specify the runtime environment (default: `node`) |
+| `-t` / `--testNamePattern <pattern>` | Run only tests matching the pattern |
+| `-w` / `--watch` | Enable watch mode |
+| `--project <name>` | Run only the specified project(s) (repeatable, wildcards supported, `!pattern` to exclude) |
+| `--shard <index>/<count>` | Shard the test suite (e.g. `--shard=1/3`) |
+| `--tagsFilter <expr>` | Filter tests by tag (`&&`, `\|\|`, `!` supported) |
+| `--listTags` | List available tags |
+| `--strictTags` | Treat undefined tags as an error |
+| `--browser.enabled` | Enable browser mode |
 
-## よくある使用例
+## Notes
+
+- Common usage:
 
 ```bash
-# 単一実行（CI 向け）
+# single run (for CI)
 vitest run
 
-# カバレッジ付き実行
+# run with coverage
 vitest run --coverage.enabled
 
-# スナップショット更新
+# update snapshots
 vitest run -u
 
-# 特定テストのみ
+# specific tests only
 vitest run -t "should handle errors"
 
-# 変更ファイルに関連するテストのみ
+# only tests related to changed files
 vitest run --changed
 
-# lint-staged 連携
+# lint-staged integration
 vitest related src/utils.ts --run
 
-# 特定プロジェクトのみ実行
+# specific projects only
 vitest run --project unit --project e2e
 
-# シャード分割（CI 並列化）
+# sharding (CI parallelization)
 vitest run --shard=1/3
 
-# タグでフィルタ
+# filter by tag
 vitest run --tagsFilter "unit && !slow"
 ```
 
-## ウォッチモードのキーボードショートカット
+- Watch mode keyboard shortcuts:
 
 | Key | Action |
 |-----|--------|
-| `a` | 全テストを再実行 |
-| `f` | 失敗テストのみ再実行 |
-| `u` | スナップショットを更新 |
-| `p` | ファイル名でフィルタ |
-| `t` | テスト名でフィルタ |
-| `q` | 終了 |
+| `a` | Rerun all tests |
+| `f` | Rerun failed tests only |
+| `u` | Update snapshots |
+| `p` | Filter by filename |
+| `t` | Filter by test name |
+| `q` | Quit |
 
-## 関連
+## Related
 
-- [設定](./config.md)
-- [カバレッジ](./coverage.md)
-- [スナップショット](./snapshot.md)
+- [Config](./config.md)
+- [Coverage](./coverage.md)
+- [Snapshot](./snapshot.md)

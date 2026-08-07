@@ -83,3 +83,7 @@ dayjs('1970-00-00', 'YYYY-MM-DD', true)
 | format | string | Format token string describing the input |
 | locale | string | (optional) Locale for month/weekday name parsing |
 | strict | boolean | (optional) Reject invalid dates when `true` |
+
+### Notes
+
+- Supports `Q` (quarter, converted to the quarter's first month) and `w`/`ww` (week of year, applied via `.week()`) as parse tokens in addition to the tokens shown above.

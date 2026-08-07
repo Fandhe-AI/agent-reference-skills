@@ -1,6 +1,8 @@
 # Jest
 
-## 基本設定
+## Usage
+
+Basic setup:
 
 ```json
 { "scripts": { "test": "jest" } }
@@ -10,7 +12,7 @@
 { "tasks": { "test": {} } }
 ```
 
-## ウォッチモードの分離（重要）
+Separating watch mode (important):
 
 ```json
 {
@@ -26,7 +28,7 @@
 }
 ```
 
-## VS Code Jest 拡張機能
+VS Code Jest extension:
 
 ```json
 {

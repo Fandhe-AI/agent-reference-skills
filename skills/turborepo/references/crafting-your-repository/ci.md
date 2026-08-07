@@ -1,39 +1,41 @@
-# CI の構築
+# Building CI
 
-## 環境変数
+## Usage
 
-| 変数 | 用途 |
-|---|---|
-| `TURBO_TOKEN` | Remote Cache へのアクセストークン |
-| `TURBO_TEAM` | リポジトリのアカウント名（Vercel チームスラッグ） |
-
-## 影響を受けるパッケージのみ実行
+### Running only affected packages
 
 ```bash
-# シンプルな方法
+# Simple approach
 turbo run build --affected
 
-# JSON で影響パッケージを確認
+# Check affected packages as JSON
 turbo query affected --packages web
 
-# バイナリチェック（変更あり: 終了コード 1）
+# Binary check (exit code 1 if there are changes)
 turbo query affected --packages web --exit-code
 ```
 
-## 典型的なワークフロー
+### Typical workflow
 
 ```bash
-# 品質チェックは全パッケージで
+# Run quality checks across all packages
 turbo run lint check-types test
 
-# ビルドは特定パッケージのみ
+# Build only specific packages
 turbo build --filter=web
 ```
 
-## 注意点
+## Options
 
-- シャロークローンの制限: Git 履歴がない場合、ソース管理変更によるフィルタリングは使えない
-- GitHub Actions の自動検出: PR の base/head ブランチ間の差分を自動検出
-- グローバル `turbo` のバージョン固定を推奨
-- `turbo run <task>` を明示的に使う（将来のサブコマンドとの名前衝突防止）
-- `outputs`、`env`、`globalEnv` を正しく設定しないとキャッシュミスやビルド失敗が発生
+| Environment variable | Purpose |
+| --- | --- |
+| `TURBO_TOKEN` | Access token for Remote Cache |
+| `TURBO_TEAM` | Account name for the repository (Vercel team slug) |
+
+## Notes
+
+- Shallow clone limitation: without Git history, filtering by source-control changes doesn't work.
+- GitHub Actions auto-detection: automatically detects the diff between a PR's base and head branches.
+- Pinning the global `turbo` version is recommended.
+- Use `turbo run <task>` explicitly (avoids future subcommand name collisions).
+- Misconfigured `outputs`, `env`, or `globalEnv` can cause cache misses or build failures.

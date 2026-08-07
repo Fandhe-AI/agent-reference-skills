@@ -1,18 +1,14 @@
 # @since
 
-メソッドや機能が導入されたバージョンを記録するブロックタグ。
+Block tag for recording the version in which a method or feature was introduced.
 
-## 構文
+## Signature / Usage
 
 ```
-@since バージョン情報
+@since version information
 ```
 
-## 詳細説明
-
-`@since` タグはメソッドが導入されたバージョンを文書化するために使用できる。TypeDocはこのタグに特別な動作を付与せず、生成されたコメント内の段落としてレンダリングする。
-
-## コード例
+The `@since` tag can be used to document the version in which a method was introduced. TypeDoc assigns no special behavior to this tag; it is rendered as a paragraph in the generated comment.
 
 ```typescript
 /**
@@ -21,13 +17,13 @@
 export function rand(min: number, max: number): number;
 ```
 
-## 注意点
+## Notes
 
-- TypeDocはこのタグに特別な書式設定や処理を適用しない
-- 生成されたドキュメントで標準的な段落テキストとしてレンダリングされる
-- APIコンシューマーにバージョン履歴のコンテキストを提供するのに有用
+- TypeDoc applies no special formatting or processing to this tag
+- Rendered as standard paragraph text in the generated documentation
+- Useful for giving API consumers version-history context
 
-## 関連
+## Related
 
-- [@author](./author.md) -- 同様に特別な動作がないメタデータタグ
-- [@deprecated](./deprecated.md) -- 非推奨バージョン情報と組み合わせて使用可能
+- [@author](./author.md) -- another metadata tag with no special behavior
+- [@deprecated](./deprecated.md) -- can be combined with deprecation version information

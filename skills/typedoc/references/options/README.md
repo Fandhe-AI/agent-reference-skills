@@ -2,10 +2,10 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Options: Comments | TypeDoc の Comments オプション一覧。 | [comments.md](./comments.md) |
-| Options: Configuration | TypeDoc の Configuration オプション一覧。 | [configuration.md](./configuration.md) |
-| Options: Input | TypeDoc の Input オプション一覧。 | [input.md](./input.md) |
-| Options: Organization | TypeDoc の Organization オプション一覧。 | [organization.md](./organization.md) |
-| Options: Other | TypeDoc の Other オプション一覧。 | [other.md](./other.md) |
-| Options: Output | TypeDoc の Output オプション一覧。 | [output.md](./output.md) |
-| Options: Validation | TypeDoc の Validation オプション一覧。 | [validation.md](./validation.md) |
+| Options: Comments | TypeDoc options controlling how doc comments are parsed and rendered. | [comments.md](./comments.md) |
+| Options: Configuration | TypeDoc options controlling how TypeDoc is itself configured and extended. | [configuration.md](./configuration.md) |
+| Options: Input | TypeDoc options controlling entry point discovery and source input. | [input.md](./input.md) |
+| Options: Organization | TypeDoc options controlling how reflections are grouped, categorized, and sorted. | [organization.md](./organization.md) |
+| Options: Other | TypeDoc options for watch mode, CLI info, and diagnostics. | [other.md](./other.md) |
+| Options: Output | TypeDoc options controlling generated output targets, theming, and rendering. | [output.md](./output.md) |
+| Options: Validation | TypeDoc options controlling documentation validation and required-documentation checks. | [validation.md](./validation.md) |

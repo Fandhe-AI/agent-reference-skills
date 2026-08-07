@@ -2,7 +2,7 @@
 
 Using TypeDoc's limited API surface in the browser to deserialize and work with TypeDoc's JSON output.
 
-## 詳細説明
+## Signature / Usage
 
 TypeDoc exports a subset of its API via the `typedoc/browser` entry point. This allows you to load and work with TypeDoc's JSON output (produced by `--json`) in a browser environment without requiring Node.js.
 
@@ -33,8 +33,6 @@ Call `setTranslations(translations)` before using the deserializer.
 3. Create a `Deserializer` instance.
 4. Call `deserializer.reviveProject()` to reconstruct the project model.
 5. Navigate the model using TypeDoc's reflection API.
-
-## コード例
 
 ### Basic Browser Usage
 
@@ -109,7 +107,7 @@ async function loadDocs(jsonUrl: string) {
 loadDocs("/api/docs.json");
 ```
 
-## 注意点
+## Notes
 
 - The browser bundle provides a **limited** API surface compared to the full Node.js API. It is primarily for reading and navigating TypeDoc JSON output, not for generating documentation.
 - You must call `setTranslations()` before using the `Deserializer`, otherwise the deserialized model may have missing or incorrect string values.
@@ -117,7 +115,7 @@ loadDocs("/api/docs.json");
 - The `projectRoot` option in `reviveProject` is used for resolving relative file paths in the model. In a browser context, `"/"` is typically sufficient.
 - The `FileRegistry` is required for tracking file references within the project model.
 
-## 関連
+## Related
 
 - [Installation & CLI Usage](./installation.md)
 - [Node Module API](./node-module-api.md)

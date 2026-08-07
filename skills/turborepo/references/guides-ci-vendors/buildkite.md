@@ -1,6 +1,8 @@
 # Buildkite
 
-## .buildkite/pipeline.yml 設定例
+## Usage
+
+Example `.buildkite/pipeline.yml`:
 
 ```yaml
 steps:
@@ -14,9 +16,9 @@ steps:
       npm run build
 ```
 
-## Remote Cache 設定
+## Notes
 
-secrets プラグインで環境変数を注入:
+- Configure Remote Cache by injecting environment variables through the `secrets` plugin:
 
 ```yaml
 steps:

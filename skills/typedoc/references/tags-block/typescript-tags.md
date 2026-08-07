@@ -1,40 +1,36 @@
 # TypeScript Tags
 
-TypeDocが互換性のために認識するTypeScript固有のブロックタグ群。このページでは `@type`、`@yields`、`@jsx`、`@typedef`、`@extends`、`@augments`、`@satisfies`、`@callback` を扱う。
+TypeScript-specific block tags that TypeDoc recognizes for compatibility. This page covers `@type`, `@yields`, `@jsx`, `@typedef`, `@extends`, `@augments`, `@satisfies`, and `@callback`.
 
-## 構文
+## Signature / Usage
 
 ```
-@type {型}
-@yields {型} 説明
+@type {Type}
+@yields {Type} description
 @jsx pragma
-@typedef {型} 名前
-@extends {型}
-@augments {型}
-@satisfies {型}
-@callback 名前
+@typedef {Type} Name
+@extends {Type}
+@augments {Type}
+@satisfies {Type}
+@callback Name
 ```
 
-## 詳細説明
+TypeDoc recognizes these TypeScript-specific block tags for compatibility. It assigns no special behavior to them and strips them from the generated documentation.
 
-TypeDocはこれらのTypeScript固有のブロックタグを互換性のために認識する。TypeDocはこれらのタグの存在に特別な動作を付与せず、生成されるドキュメントから削除する。
+These tags are parsed as block tags, but none of them are reflected in TypeDoc's documentation output. They are recognized only for compatibility with TypeScript's JSDoc support.
 
-これらのタグはブロックタグとして解析されるが、TypeDocのドキュメント出力には一切反映されない。TypeScriptのJSDocサポートとの互換性のために認識されるのみ。
+### Recognized tags
 
-### 認識されるタグ一覧
-
-| タグ | 説明 |
+| Tag | Description |
 |------|------|
-| `@type` | 変数やプロパティの型を指定（JSDoc） |
-| `@yields` | ジェネレータ関数のyield型を文書化 |
-| `@jsx` | JSXプラグマを指定 |
-| `@typedef` | カスタム型を定義（JSDoc） |
-| `@extends` | クラスの継承を文書化（JSDoc） |
-| `@augments` | `@extends` の同義語 |
-| `@satisfies` | TypeScript 5.0のsatisfies演算子に対応（JSDoc） |
-| `@callback` | コールバック関数の型を定義（JSDoc） |
-
-## コード例
+| `@type` | Specifies the type of a variable or property (JSDoc) |
+| `@yields` | Documents the yield type of a generator function |
+| `@jsx` | Specifies a JSX pragma |
+| `@typedef` | Defines a custom type (JSDoc) |
+| `@extends` | Documents class inheritance (JSDoc) |
+| `@augments` | Synonym for `@extends` |
+| `@satisfies` | Corresponds to TypeScript 5.0's satisfies operator (JSDoc) |
+| `@callback` | Defines the type of a callback function (JSDoc) |
 
 ```javascript
 /**
@@ -65,17 +61,17 @@ class Derived extends Base {}
 const config = { /* ... */ };
 ```
 
-## 注意点
+## Notes
 
-- これらのタグはすべてTypeDocによって生成ドキュメントから削除される
-- 特別な動作や表示は付与されない
-- TypeScriptのJSDocサポートとの互換性維持が目的
-- `@satisfies` はTypeScript 5.0以降でサポートされる
-- 主にJavaScriptプロジェクトでTypeScript型システムを利用する場合に使用される
+- All of these tags are stripped from the generated documentation by TypeDoc
+- No special behavior or display is applied
+- Recognized purely to maintain compatibility with TypeScript's JSDoc support
+- `@satisfies` is supported from TypeScript 5.0 onward
+- Used mainly in JavaScript projects that rely on the TypeScript type system
 
-## 関連
+## Related
 
-- [@param](./param.md) -- パラメータの文書化（JSDocプロジェクトで組み合わせて使用）
-- [@template](./template.md) -- 型パラメータの文書化（JSDocプロジェクト向け）
-- [@import](./import.md) -- JSDocでの型インポート
-- [TypeScript JSDocリファレンス](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html)
+- [@param](./param.md) -- documenting parameters (used together in JSDoc projects)
+- [@template](./template.md) -- documenting type parameters (for JSDoc projects)
+- [@import](./import.md) -- importing types in JSDoc
+- [TypeScript JSDoc reference](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html)

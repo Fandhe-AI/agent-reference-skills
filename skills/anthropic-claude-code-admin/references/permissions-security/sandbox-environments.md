@@ -24,6 +24,20 @@ Compares Claude Code isolation options — from the built-in per-command Bash sa
 | Standardize across a team | Dev container committed to the repo |
 | No local setup device | Claude Code on the web |
 
+## Example
+
+```json
+// ~/.srt-settings.json
+{
+  "allowWrite": ["$PROJECT_DIR", "~/.claude", "~/.claude.json", "/tmp"],
+  "allowedDomains": ["api.anthropic.com", "claude.ai", "platform.claude.com"]
+}
+```
+
+```bash
+npx @anthropic-ai/sandbox-runtime claude
+```
+
 ## Notes
 
 - The sandboxed Bash tool alone does **not** cover file tools (Read/Edit/WebFetch — gated by permission rules instead), MCP servers, or hooks, which run unconstrained on the host; use the sandbox runtime or a container/VM to put the whole process behind one OS boundary.

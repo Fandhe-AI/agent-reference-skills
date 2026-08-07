@@ -1,12 +1,12 @@
 # Application
 
-TypeDoc のメインエントリーポイント。TypeScript ソースファイルのドキュメント変換を Converter と Renderer を通じてオーケストレーションする。
+TypeDoc's main entry point. Orchestrates the conversion of TypeScript source files into documentation via the `Converter` and `Renderer`.
 
-## シグネチャ
+## Signature
 
 ```typescript
 class Application extends AbstractComponent<Application, ApplicationEvents> {
-  // 静的メソッド
+  // Static methods
   static bootstrap(
     options?: Configuration.TypeDocOptions,
     readers?: readonly Configuration.OptionsReader[]
@@ -17,7 +17,7 @@ class Application extends AbstractComponent<Application, ApplicationEvents> {
     readers?: readonly Configuration.OptionsReader[]
   ): Promise<Application>;
 
-  // インスタンスメソッド
+  // Instance methods
   convert(): Promise<Models.ProjectReflection | undefined>;
   convertAndWatch(
     success: (project: Models.ProjectReflection) => Promise<void>
@@ -34,7 +34,7 @@ class Application extends AbstractComponent<Application, ApplicationEvents> {
   watchFile(path: string, shouldRestart?: boolean): void;
   toString(): string;
 
-  // イベントメソッド
+  // Event methods
   on<K extends keyof ApplicationEvents>(
     event: K,
     listener: (this: undefined, ...args: ApplicationEvents[K]) => void,
@@ -49,7 +49,7 @@ class Application extends AbstractComponent<Application, ApplicationEvents> {
     ...args: ApplicationEvents[K]
   ): void;
 
-  // プロパティ
+  // Properties
   converter: Converter;
   renderer: Renderer;
   outputs: Outputs;
@@ -58,14 +58,14 @@ class Application extends AbstractComponent<Application, ApplicationEvents> {
   options: Configuration.Options;
   logger: Logger;
   internationalization: Internationalization;
-  /** @deprecated 0.29 で削除予定。ProjectReflection 上の参照を使用すること */
+  /** @deprecated will be removed in 0.29. Use the reference on ProjectReflection instead */
   files: Models.FileRegistry;
   componentName: string;
 
-  // 静的プロパティ
+  // Static properties
   static readonly VERSION: string;
 
-  // 静的イベント
+  // Static events
   static readonly EVENT_BOOTSTRAP_END: string;
   static readonly EVENT_PROJECT_REVIVE: string;
   static readonly EVENT_VALIDATE_PROJECT: string;
@@ -74,7 +74,7 @@ class Application extends AbstractComponent<Application, ApplicationEvents> {
 }
 ```
 
-## 主要メソッド
+## Methods
 
 ### bootstrap()
 
@@ -85,7 +85,7 @@ static bootstrap(
 ): Promise<Application>
 ```
 
-プラグインをロードせずに TypeDoc を初期化する。テスト時やプラグインが不要な場合に使用する。
+Initializes TypeDoc without loading plugins. Used for testing or when plugins are not needed.
 
 ### bootstrapWithPlugins()
 
@@ -96,7 +96,7 @@ static bootstrapWithPlugins(
 ): Promise<Application>
 ```
 
-プラグインのロードを有効にして TypeDoc を初期化する。通常のユースケースではこちらを使用する。
+Initializes TypeDoc with plugin loading enabled. Use this for normal use cases.
 
 ### convert()
 
@@ -104,7 +104,7 @@ static bootstrapWithPlugins(
 convert(): Promise<Models.ProjectReflection | undefined>
 ```
 
-設定されたファイルに対してコンバーターを実行し、プロジェクト Reflection を返す。エラー時は `undefined` を返す。
+Runs the converter against the configured files and returns the project Reflection. Returns `undefined` on error.
 
 ### convertAndWatch()
 
@@ -114,7 +114,7 @@ convertAndWatch(
 ): Promise<boolean>
 ```
 
-変換/ウォッチサイクルを実行し、各変換後にコールバックを実行する。再起動が必要な場合は `true`、エラー時は `false` を返す。
+Runs a convert/watch cycle, invoking the callback after each conversion. Returns `true` if a restart is required, `false` on error.
 
 ### generateDocs()
 
@@ -122,7 +122,7 @@ convertAndWatch(
 generateDocs(project: Models.ProjectReflection, out: string): Promise<void>
 ```
 
-プロジェクトの HTML ドキュメントを指定ディレクトリにレンダリングする。
+Renders the project's HTML documentation to the given directory.
 
 ### generateJson()
 
@@ -130,7 +130,7 @@ generateDocs(project: Models.ProjectReflection, out: string): Promise<void>
 generateJson(project: Models.ProjectReflection, out: string): Promise<void>
 ```
 
-プロジェクト Reflection を JSON ファイルにシリアライズする。
+Serializes the project Reflection to a JSON file.
 
 ### generateOutputs()
 
@@ -138,7 +138,7 @@ generateJson(project: Models.ProjectReflection, out: string): Promise<void>
 generateOutputs(project: Models.ProjectReflection): Promise<void>
 ```
 
-設定されたすべての出力形式を生成する。
+Generates all configured output formats.
 
 ### validate()
 
@@ -146,7 +146,7 @@ generateOutputs(project: Models.ProjectReflection): Promise<void>
 validate(project: Models.ProjectReflection): void
 ```
 
-プロジェクト Reflection に対してバリデーションを実行する。
+Runs validation against a project Reflection.
 
 ### getEntryPoints()
 
@@ -154,7 +154,7 @@ validate(project: Models.ProjectReflection): void
 getEntryPoints(): DocumentationEntryPoint[] | undefined
 ```
 
-ドキュメント化されたエントリーポイントを取得する。
+Retrieves the documented entry points.
 
 ### getDefinedEntryPoints()
 
@@ -162,7 +162,7 @@ getEntryPoints(): DocumentationEntryPoint[] | undefined
 getDefinedEntryPoints(): DocumentationEntryPoint[] | undefined
 ```
 
-ストラテジーオプションに従ってエントリーポイントを展開する。
+Expands entry points according to the configured strategy option.
 
 ### setOptions()
 
@@ -173,7 +173,7 @@ setOptions(
 ): boolean
 ```
 
-アプリケーションオプションを更新する。
+Updates the application's options.
 
 ### getTypeScriptPath()
 
@@ -181,7 +181,7 @@ setOptions(
 getTypeScriptPath(): string
 ```
 
-TypeScript コンパイラへのパスを返す。
+Returns the path to the TypeScript compiler.
 
 ### getTypeScriptVersion()
 
@@ -189,7 +189,7 @@ TypeScript コンパイラへのパスを返す。
 getTypeScriptVersion(): string
 ```
 
-TypeScript バージョン文字列を返す。
+Returns the TypeScript version string.
 
 ### watchFile()
 
@@ -197,9 +197,9 @@ TypeScript バージョン文字列を返す。
 watchFile(path: string, shouldRestart?: boolean): void
 ```
 
-ウォッチモードでの再ビルド用にファイル依存関係を登録する。
+Registers a file dependency for rebuilds in watch mode.
 
-## 主要プロパティ
+## Properties
 
 ### converter
 
@@ -207,7 +207,7 @@ watchFile(path: string, shouldRestart?: boolean): void
 converter: Converter
 ```
 
-宣言 Reflection を作成するコンバーターインスタンス。
+The converter instance that creates declaration Reflections.
 
 ### renderer
 
@@ -215,7 +215,7 @@ converter: Converter
 renderer: Renderer
 ```
 
-HTML 出力を生成するレンダラーインスタンス。
+The renderer instance that produces HTML output.
 
 ### serializer
 
@@ -223,7 +223,7 @@ HTML 出力を生成するレンダラーインスタンス。
 serializer: Serializer
 ```
 
-JSON 出力を生成するシリアライザーインスタンス。
+The serializer instance that produces JSON output.
 
 ### deserializer
 
@@ -231,7 +231,7 @@ JSON 出力を生成するシリアライザーインスタンス。
 deserializer: Deserializer
 ```
 
-JSON から復元するデシリアライザーインスタンス。
+The deserializer instance that restores data from JSON.
 
 ### options
 
@@ -239,7 +239,7 @@ JSON から復元するデシリアライザーインスタンス。
 options: Configuration.Options
 ```
 
-設定コンテナ。オプションの取得・設定を行う。
+The options container. Handles getting and setting configuration values.
 
 ### logger
 
@@ -247,7 +247,7 @@ options: Configuration.Options
 logger: Logger
 ```
 
-メッセージ出力ユーティリティ。
+The message output utility.
 
 ### internationalization
 
@@ -255,7 +255,7 @@ logger: Logger
 internationalization: Internationalization
 ```
 
-翻訳サポート。`addTranslations()` で翻訳を追加できる。
+Translation support. Translations can be added with `addTranslations()`.
 
 ### outputs
 
@@ -263,92 +263,92 @@ internationalization: Internationalization
 outputs: Outputs
 ```
 
-出力管理。
+Output management.
 
-## 静的イベント
+## Static Events
 
 ### EVENT_BOOTSTRAP_END
 
-プラグインのロードとオプションの凍結後に発火する。
+Fired after plugins are loaded and options are frozen.
 
 ### EVENT_PROJECT_REVIVE
 
-JSON デシリアライゼーション後に発火する。
+Fired after JSON deserialization.
 
 ### EVENT_VALIDATE_PROJECT
 
-バリデーション中に発火する。
+Fired during validation.
 
 ### EVENT_GENERATE_OUTPUTS_BEGIN
 
-出力生成の直前に発火する。バリデーション警告があり `treatWarningsAsErrors` が有効な場合に補助ファイルの生成をスキップするプラグインで使用する。
+Fired immediately before output generation. Used by plugins that need to skip generating auxiliary files when validation warnings exist and `treatWarningsAsErrors` is enabled.
 
 ### EVENT_GENERATE_OUTPUTS_END
 
-出力生成の直後に発火する。バリデーション警告があり `treatWarningsAsErrors` が有効な場合に補助ファイルの生成をスキップするプラグインで使用する。
+Fired immediately after output generation. Used by plugins that need to skip generating auxiliary files when validation warnings exist and `treatWarningsAsErrors` is enabled.
 
-## アクセサ
+## Accessors
 
-| アクセサ | 型 | 説明 |
+| Accessor | Type | Description |
 |---------|---|------|
-| `application` | `Application` | Application インスタンスを返す |
-| `owner` | `Application` | コンポーネントのオーナーを返す |
-| `lang` | `string` | 言語設定 |
-| `entryPointStrategy` | `EntryPointStrategy` | エントリーポイント展開戦略 |
-| `entryPoints` | `string[]` | エントリーポイントパターン |
-| `skipErrorChecking` | `boolean` | エラーチェックのトグル |
+| `application` | `Application` | Returns the `Application` instance |
+| `owner` | `Application` | Returns the component's owner |
+| `lang` | `string` | Language setting |
+| `entryPointStrategy` | `EntryPointStrategy` | Entry point expansion strategy |
+| `entryPoints` | `string[]` | Entry point patterns |
+| `skipErrorChecking` | `boolean` | Toggle for error checking |
 
-## コード例
+## Examples
 
 ```typescript
 import { Application } from "typedoc";
 
-// プラグイン付きで初期化
+// Initialize with plugins
 const app = await Application.bootstrapWithPlugins({
   entryPoints: ["src/index.ts"],
   out: "docs",
 });
 
-// 変換
+// Convert
 const project = await app.convert();
 
 if (project) {
-  // バリデーション
+  // Validate
   app.validate(project);
 
-  // HTML ドキュメント生成
+  // Generate HTML documentation
   await app.generateDocs(project, "docs");
 
-  // JSON 出力
+  // Output JSON
   await app.generateJson(project, "docs/api.json");
 
-  // すべての設定済み出力を生成
+  // Generate all configured outputs
   await app.generateOutputs(project);
 }
 ```
 
-### イベントリスニング
+### Listening to events
 
 ```typescript
 import { Application } from "typedoc";
 
 const app = await Application.bootstrapWithPlugins();
 
-// ブートストラップ完了後のイベント
+// Event fired after bootstrap completes
 app.on(Application.EVENT_BOOTSTRAP_END, () => {
   console.log("Bootstrap completed");
 });
 
-// バリデーションイベント
+// Validation event
 app.on(Application.EVENT_VALIDATE_PROJECT, (project) => {
   console.log(`Validating project: ${project.name}`);
 });
 ```
 
-## 関連
+## Related
 
 - [Converter](./converter.md)
 - [Renderer](./renderer.md)
 - [Options API](./options-api.md)
 - [Serialization](./serialization.md)
-- [アーキテクチャ概要](../development/overview.md)
+- [Architecture Overview](../development/overview.md)

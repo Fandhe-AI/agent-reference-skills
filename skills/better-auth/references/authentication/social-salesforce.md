@@ -1,23 +1,6 @@
 # Salesforce
 
-## Credentials
-
-- `SALESFORCE_CLIENT_ID` (labeled as "Consumer Key" in Salesforce)
-- `SALESFORCE_CLIENT_SECRET` (labeled as "Consumer Secret" in Salesforce)
-
-Obtain from your Salesforce Connected App.
-
-### Environment Variables
-
-Add to `.env.local` (development) or `.env` (production):
-
-```
-SALESFORCE_CLIENT_ID=your_consumer_key_here
-SALESFORCE_CLIENT_SECRET=your_consumer_secret_here
-BETTER_AUTH_URL=http://localhost:3000
-```
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -33,8 +16,6 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
-
 ```typescript
 import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
@@ -46,20 +27,29 @@ const signIn = async () => {
 }
 ```
 
-## リダイレクト URL
+## Options / Props
 
-Callback URL must match exactly between Salesforce and Better Auth configuration.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `clientId` | string | — | `SALESFORCE_CLIENT_ID`, labeled "Consumer Key" in Salesforce, obtained from your Salesforce Connected App |
+| `clientSecret` | string | — | `SALESFORCE_CLIENT_SECRET`, labeled "Consumer Secret" in Salesforce, obtained from your Salesforce Connected App |
+| `environment` | `'production' \| 'sandbox'` | `"production"` | Select `"sandbox"` for testing |
+| `loginUrl` | string | — | Custom My Domain URL without the `https://` prefix |
+| `redirectURI` | string | — | Override the auto-generated callback URI if needed |
 
-## プロバイダー固有の設定・注意点
+## Notes
 
-### Configuration Options
-
-- `environment`: Select `"production"` (default) or `"sandbox"` for testing
-- `loginUrl`: Custom My Domain URL without `https://` prefix
-- `redirectURI`: Override auto-generated callback URI if needed
-
-### Key Notes
-
+- Environment variables (add to `.env.local` for development or `.env` for production):
+  ```
+  SALESFORCE_CLIENT_ID=your_consumer_key_here
+  SALESFORCE_CLIENT_SECRET=your_consumer_secret_here
+  BETTER_AUTH_URL=http://localhost:3000
+  ```
+- The callback URL must match exactly between Salesforce and the Better Auth configuration
 - PKCE is required and automatically handled by the provider
 - Default scopes: `openid`, `email`, `profile`, and `id`
-- Use HTTPS for production; HTTP acceptable for local development
+- Use HTTPS for production; HTTP is acceptable for local development
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

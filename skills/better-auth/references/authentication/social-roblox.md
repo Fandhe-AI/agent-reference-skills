@@ -1,13 +1,6 @@
 # Roblox
 
-## Credentials
-
-- `ROBLOX_CLIENT_ID`
-- `ROBLOX_CLIENT_SECRET`
-
-Obtain from [Roblox Creator Hub](https://create.roblox.com/dashboard/credentials?activeTab=OAuthTab).
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -22,8 +15,6 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
-
 ```typescript
 import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
@@ -35,12 +26,18 @@ const signIn = async () => {
 }
 ```
 
-## リダイレクト URL
+## Options / Props
 
-- **Development**: `http://localhost:3000/api/auth/callback/roblox`
-- **Production**: Update to your application's domain
-- Adjust if you've customized the auth route base path
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `clientId` | string | — | `ROBLOX_CLIENT_ID`, obtained from [Roblox Creator Hub](https://create.roblox.com/dashboard/credentials?activeTab=OAuthTab) |
+| `clientSecret` | string | — | `ROBLOX_CLIENT_SECRET`, obtained from [Roblox Creator Hub](https://create.roblox.com/dashboard/credentials?activeTab=OAuthTab) |
 
-## プロバイダー固有の設定・注意点
+## Notes
 
-- **Email Limitation**: The Roblox API does not provide email addresses. As a workaround, the user's `email` field uses the `preferred_username` value instead. This means the email field will contain the user's Roblox username rather than an actual email address.
+- Redirect URL — development: `http://localhost:3000/api/auth/callback/roblox`; production: update to your application's domain. Adjust if you've customized the auth route base path
+- **Email limitation**: the Roblox API does not provide email addresses. As a workaround, the user's `email` field uses the `preferred_username` value instead, meaning it contains the user's Roblox username rather than an actual email address
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

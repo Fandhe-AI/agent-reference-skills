@@ -1,13 +1,6 @@
 # VK (VK ID Provider)
 
-## Credentials
-
-- `VK_CLIENT_ID`
-- `VK_CLIENT_SECRET`
-
-Obtain from the [VK ID Developer Portal](https://id.vk.com/about/business/go/docs).
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth";
@@ -22,8 +15,6 @@ export const auth = betterAuth({
 });
 ```
 
-## クライアントサインイン
-
 ```typescript
 import { createAuthClient } from "better-auth/client";
 
@@ -36,14 +27,19 @@ const signIn = async () => {
 };
 ```
 
-## リダイレクト URL
+## Options / Props
 
-- **Local Development**: `http://localhost:3000/api/auth/callback/vk`
-- **Production**: Update to your application's URL
-- If you modify the base path of auth routes, adjust the redirect URL accordingly
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `clientId` | string | — | `VK_CLIENT_ID`, obtained from the [VK ID Developer Portal](https://id.vk.com/about/business/go/docs) |
+| `clientSecret` | string | — | `VK_CLIENT_SECRET`, obtained from the [VK ID Developer Portal](https://id.vk.com/about/business/go/docs) |
 
-## プロバイダー固有の設定・注意点
+## Notes
 
-- The `signIn.social` function initiates the authentication flow with the VK provider
-- Provider value must be set to `"vk"`
+- Redirect URL — local development: `http://localhost:3000/api/auth/callback/vk`; production: update to your application's URL. If you modify the base path of auth routes, adjust the redirect URL accordingly
+- The `signIn.social` function initiates the authentication flow with the VK provider; the `provider` value must be `"vk"`
 - Environment variables should be securely stored and loaded from your configuration system
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

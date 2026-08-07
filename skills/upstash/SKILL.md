@@ -7,6 +7,8 @@ description: >
   QStash — publishJSON、schedules、queues、DLQ、URL Groups、callbacks、flow-control。
   @upstash/vector — upsert、query、ANN、hybrid index、sparse index、embedding models、namespace。
   @upstash/workflow — durable execution、serve、context.run/sleep/call/invoke、waitForEvent、parallel steps、agents。
+  Upstash Search — search、upsert、fetch、range、filtering、reranking、algorithm、@upstash/search。
+  Upstash Box — サンドボックス、agent、filesystem、git、browser（CDP/AI actions/recordings）、network policy、snapshots、schedules。
 user-invocable: false
 ---
 
@@ -64,6 +66,7 @@ skills/upstash/
       receiver.md
       messages.md
       flow-control.md
+      logs.md
     vector/
       README.md
       ts-sdk-overview.md
@@ -111,6 +114,55 @@ skills/upstash/
       quickstart-express.md
       quickstart-cloudflare.md
       quickstart-nuxt.md
+    search/
+      README.md
+      overview.md
+      getting-started.md
+      search.md
+      upsert.md
+      fetch.md
+      delete.md
+      range.md
+      filtering.md
+      indexes.md
+      content-and-metadata.md
+      algorithm.md
+      advanced-settings.md
+      reranking.md
+      info.md
+      info-reset.md
+      reset.md
+      pricing.md
+      ts-sdk-overview.md
+      python-sdk.md
+    box/
+      README.md
+      quickstart.md
+      agent.md
+      filesystem.md
+      git.md
+      network-policy.md
+      schedules.md
+      security.md
+      snapshots.md
+      browser-overview.md
+      browser-tabs.md
+      browser-reading-pages.md
+      browser-ai-actions.md
+      browser-live-view.md
+      browser-recordings.md
+      browser-connect.md
+      guides-ai-sdk-code-interpreter.md
+      guides-code-review-agent.md
+      guides-crabbox-setup.md
+      guides-hermes-setup.md
+      guides-langchain-deep-agents.md
+      guides-nextjs-setup.md
+      guides-openclaw-setup.md
+      guides-pi-setup.md
+      guides-remote-development.md
+      guides-tanstack-ai-file-editor.md
+      guides-web-scraping-playwright.md
   samples/
     README.md
     redis-session-cache.md
@@ -118,6 +170,9 @@ skills/upstash/
     qstash-background-job.md
     vector-semantic-search.md
     workflow-multistep.md
+    search-filtered-query.md
+    box-agent-sandbox.md
+    box-code-execution.md
   scripts/
     README.md
     install.md
@@ -147,6 +202,7 @@ skills/upstash/
 | メッセージの発行（publish）・スケジューリングをしたい | qstash | [references/qstash/README.md](references/qstash/README.md) |
 | FIFO キュー・DLQ・URL グループを使いたい | qstash | [references/qstash/README.md](references/qstash/README.md) |
 | QStash リクエストの署名検証をしたい | qstash | [references/qstash/README.md](references/qstash/README.md) |
+| メッセージ配信ログ（Logs）を確認したい | qstash | [references/qstash/README.md](references/qstash/README.md) |
 | ベクターの upsert・類似検索（ANN）をしたい | vector | [references/vector/README.md](references/vector/README.md) |
 | メタデータフィルタリング・ハイブリッド検索・sparse index を使いたい | vector | [references/vector/README.md](references/vector/README.md) |
 | 埋め込みモデル・名前空間（namespace）を知りたい | vector | [references/vector/README.md](references/vector/README.md) |
@@ -154,5 +210,10 @@ skills/upstash/
 | context.run / sleep / call / invoke / waitForEvent を知りたい | workflow | [references/workflow/README.md](references/workflow/README.md) |
 | ワークフローのエラー処理・リトライ・並列ステップを知りたい | workflow | [references/workflow/README.md](references/workflow/README.md) |
 | AI エージェントパイプライン（durable agents）を構築したい | workflow | [references/workflow/README.md](references/workflow/README.md) |
+| フルテキスト・セマンティック検索インデックスを作成・検索したい | search | [references/search/README.md](references/search/README.md) |
+| Search のフィルタリング・reranking・スコアリングを知りたい | search | [references/search/README.md](references/search/README.md) |
+| AI エージェント用のサンドボックス（コンテナ）を作成・操作したい | box | [references/box/README.md](references/box/README.md) |
+| Box のファイルシステム・git・ブラウザ（CDP/AI actions）を操作したい | box | [references/box/README.md](references/box/README.md) |
+| Box のネットワークポリシー・スナップショット・スケジュールを設定したい | box | [references/box/README.md](references/box/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

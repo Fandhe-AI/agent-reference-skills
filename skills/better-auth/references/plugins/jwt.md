@@ -1,12 +1,12 @@
 # JWT
 
-JWT プラグインは、セッションを使用できないサービス向けに JWT トークンでのユーザー認証を可能にする。JWT トークン取得エンドポイントとトークン検証用の JWKS エンドポイントを提供する。
+The JWT plugin enables authenticating users with JWT tokens for services that cannot use sessions. It provides an endpoint to obtain a JWT token and a JWKS endpoint for token verification.
 
-セッションの代替ではなく、JWT トークンを必要とするサービス向けに使用する。
+Not a replacement for sessions — use it for services that require JWT tokens.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -19,15 +19,15 @@ export const auth = betterAuth({
 })
 ```
 
-マイグレーション:
+Migration:
 
 ```bash
 npx auth migrate
-# または
+# or
 npx auth generate
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -40,9 +40,7 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
-
-### トークン取得（クライアント）
+### Get token (client)
 
 ```typescript
 const { data, error } = await authClient.token()
@@ -51,13 +49,13 @@ if (data) {
 }
 ```
 
-### HTTP エンドポイント
+### HTTP endpoint
 
 `GET /api/auth/token`
 
-レスポンス: `{ "token": "ey..." }`
+Response: `{ "token": "ey..." }`
 
-### セッションヘッダー経由
+### Via session header
 
 ```typescript
 await authClient.getSession({
@@ -69,7 +67,7 @@ await authClient.getSession({
 })
 ```
 
-### JWKS エンドポイント
+### JWKS endpoint
 
 `GET /api/auth/jwks`
 
@@ -84,9 +82,7 @@ await authClient.getSession({
 }
 ```
 
-## トークン検証
-
-### リモート JWKS（Jose 使用）
+### Token verification (remote JWKS, using Jose)
 
 ```typescript
 import { jwtVerify, createRemoteJWKSet } from 'jose'
@@ -103,7 +99,7 @@ async function validateToken(token: string) {
 }
 ```
 
-### ローカル JWKS
+### Token verification (local JWKS)
 
 ```typescript
 import { jwtVerify, createLocalJWKSet } from 'jose'
@@ -119,9 +115,7 @@ async function validateToken(token: string) {
 }
 ```
 
-## 設定オプション
-
-### アルゴリズム選択
+### Algorithm selection
 
 ```typescript
 jwt({
@@ -134,37 +128,28 @@ jwt({
 })
 ```
 
-| アルゴリズム | カーブ/オプション | デフォルト |
-|---|---|---|
-| EdDSA | crv: Ed25519, Ed448 | Ed25519 |
-| ES256 | N/A | - |
-| ES512 | N/A | - |
-| RSA256 | modulusLength (number) | 2048 |
-| PS256 | modulusLength (number) | 2048 |
-| ECDH-ES | crv: P-256, P-384, P-521 | P-256 |
-
-### 秘密鍵暗号化
+### Private key encryption
 
 ```typescript
 jwt({
     jwks: {
-        disablePrivateKeyEncryption: true  // デフォルト: false（AES256 GCM）
+        disablePrivateKeyEncryption: true  // default: false (AES256 GCM)
     }
 })
 ```
 
-### キーローテーション
+### Key rotation
 
 ```typescript
 jwt({
     jwks: {
-        rotationInterval: 60 * 60 * 24 * 30,  // 30日（秒）
-        gracePeriod: 60 * 60 * 24 * 30         // 30日（秒）
+        rotationInterval: 60 * 60 * 24 * 30,  // 30 days (seconds)
+        gracePeriod: 60 * 60 * 24 * 30         // 30 days (seconds)
     }
 })
 ```
 
-### JWT ペイロードの変更
+### Modifying the JWT payload
 
 ```typescript
 jwt({
@@ -186,24 +171,24 @@ jwt({
         issuer: "https://example.com",
         audience: "https://example.com",
         expirationTime: "1h",
-        getSubject: (session) => session.user.email  // デフォルト: user id
+        getSubject: (session) => session.user.email  // default: user id
     }
 })
 ```
 
-デフォルト: BASE_URL が issuer と audience に使用。有効期限は15分。
+Default: BASE_URL is used for issuer and audience. Default expiration is 15 minutes.
 
-### カスタム JWKS パス
+### Custom JWKS path
 
 ```typescript
-// サーバー
+// Server
 jwt({ jwks: { jwksPath: "/.well-known/jwks.json" } })
 
-// クライアント（サーバーと一致させる）
+// Client (must match the server)
 jwtClient({ jwks: { jwksPath: "/.well-known/jwks.json" } })
 ```
 
-### リモート JWKS URL
+### Remote JWKS URL
 
 ```typescript
 jwt({
@@ -214,7 +199,7 @@ jwt({
 })
 ```
 
-### カスタム署名
+### Custom signing
 
 ```typescript
 jwt({
@@ -232,7 +217,7 @@ jwt({
 })
 ```
 
-### カスタムアダプター
+### Custom adapter
 
 ```typescript
 jwt({
@@ -243,20 +228,36 @@ jwt({
 })
 ```
 
-## DB スキーマ
+## Options / Props
 
-### jwks テーブル
+| Algorithm | Curve/options | Default |
+|---|---|---|
+| EdDSA | crv: Ed25519, Ed448 | Ed25519 |
+| ES256 | N/A | - |
+| ES512 | N/A | - |
+| RSA256 | modulusLength (number) | 2048 |
+| PS256 | modulusLength (number) | 2048 |
+| ECDH-ES | crv: P-256, P-384, P-521 | P-256 |
 
-| フィールド | 型 | キー | 説明 |
+## Notes
+
+- The private key is encrypted with AES256 GCM by default. Keeping encryption enabled is recommended for security
+- JWKS is cached indefinitely and only refreshed when the key ID (kid) differs
+- When used with OAuth Provider mode, disable the `/token` endpoint and set `disableSettingJwtHeader: true`
+
+### DB schema
+
+jwks table:
+
+| Field | Type | Key | Description |
 |---|---|---|---|
-| id | string | PK | 一意識別子 |
-| publicKey | string | - | Web Key の公開部分 |
-| privateKey | string | - | Web Key の秘密部分 |
-| createdAt | Date | - | 作成日時 |
-| expiresAt | Date | ? | 有効期限 |
+| id | string | PK | Unique identifier |
+| publicKey | string | - | Public part of the Web Key |
+| privateKey | string | - | Private part of the Web Key |
+| createdAt | Date | - | Creation timestamp |
+| expiresAt | Date | ? | Expiration date |
 
-## 注意点
+## Related
 
-- 秘密鍵はデフォルトで AES256 GCM を使用して暗号化される。セキュリティ上、暗号化を維持することが推奨
-- JWKS は無期限にキャッシュされ、キー ID（kid）が異なる場合のみリフレッシュされる
-- OAuth Provider モードで使用する場合は `/token` エンドポイントを無効化し、`disableSettingJwtHeader: true` を設定する
+- [oauth-provider.md](./oauth-provider.md)
+- [oidc-provider.md](./oidc-provider.md)

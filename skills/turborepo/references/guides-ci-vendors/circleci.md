@@ -1,8 +1,8 @@
 # CircleCI
 
-**重要: CircleCI は TTY を使用するため、`TURBO_UI: "false"` が全 run ステップで必須。**
+## Usage
 
-## .circleci/config.yml 設定例（pnpm）
+Example `.circleci/config.yml` (pnpm):
 
 ```yaml
 version: 2.1
@@ -33,6 +33,7 @@ jobs:
             TURBO_UI: "false"
 ```
 
-## Remote Cache 設定
+## Notes
 
-CircleCI プロジェクト設定の「環境変数」タブで `TURBO_TOKEN` と `TURBO_TEAM` を登録。環境変数は自動でロードされるため CI ファイルの変更は不要。
+- CircleCI uses a TTY, so `TURBO_UI: "false"` is required on every `run` step.
+- Configure Remote Cache by registering `TURBO_TOKEN` and `TURBO_TEAM` under the CircleCI project's "Environment Variables" tab. Environment variables are loaded automatically, so no CI file changes are needed.

@@ -2,26 +2,27 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Authentication | Overview of OAuth apps, plan access tokens, and personal access tokens | [authentication.md](./authentication.md) |
-| OAuth Apps | OAuth 2 authorization code flow for user-delegated access | [oauth-apps.md](./oauth-apps.md) |
-| Personal Access Tokens | Per-user tokens passed via `X-Figma-Token` header | [personal-access-tokens.md](./personal-access-tokens.md) |
-| Plan Access Tokens | Org-scoped tokens for CI/CD and admin automation (beta) | [plan-access-tokens.md](./plan-access-tokens.md) |
-| Scopes | Permission scopes restricting token access to specific resources | [scopes.md](./scopes.md) |
-| Rate Limits | Per-tier rate limits, 429 headers, and retry best practices | [rate-limits.md](./rate-limits.md) |
-| Errors | Standard HTTP error codes (400, 403, 404, 429, 500) | [errors.md](./errors.md) |
-| Files | GET file, GET file nodes, GET images, image fills, file metadata | [files.md](./files.md) |
-| File Versions | GET version history for a file | [file-versions.md](./file-versions.md) |
-| Comments | CRUD for comments and emoji reactions on files | [comments.md](./comments.md) |
-| Users | GET current authenticated user via OAuth (`/v1/me`) | [users.md](./users.md) |
-| Projects | List team projects, project files, and project metadata | [projects.md](./projects.md) |
-| Components & Styles | Published components, component sets, and styles from team libraries | [components.md](./components.md) |
-| Variables | Read and bulk-modify variables in files (Enterprise) | [variables.md](./variables.md) |
-| Dev Resources | CRUD for developer URLs attached to nodes in Dev Mode | [dev-resources.md](./dev-resources.md) |
-| Webhooks | Create and manage event-driven webhooks on teams, projects, files | [webhooks.md](./webhooks.md) |
-| Activity Logs | Organization-level activity log events (Enterprise, OAuth required) | [activity-logs.md](./activity-logs.md) |
-| Developer Logs | Granular API call logs (Enterprise + Governance+, plan token only) | [developer-logs.md](./developer-logs.md) |
-| Discovery | Text events from org files (Enterprise + Governance+) | [discovery.md](./discovery.md) |
-| Library Analytics | Component, style, and variable usage analytics (Enterprise) | [library-analytics.md](./library-analytics.md) |
-| Payments | Payment information for plugins, widgets, and Community files | [payments.md](./payments.md) |
-| oEmbed | Rich embed previews for Figma files and published Makes | [oembed.md](./oembed.md) |
-| SCIM API | SCIM v2 user and group provisioning for organizations | [scim.md](./scim.md) |
+| Activity Logs | Endpoint for retrieving organization activity log events… | [activity-logs.md](./activity-logs.md) |
+| AI Usage | Endpoint for fetching per-user, per-day AI credit usage… | [ai-usage.md](./ai-usage.md) |
+| Authentication | Overview of Figma REST API authentication methods… | [authentication.md](./authentication.md) |
+| Comments | Endpoints for reading, posting, and deleting comments… | [comments.md](./comments.md) |
+| Components & Styles | Endpoints for reading published components, component sets… | [components.md](./components.md) |
+| Dev Resources | Endpoints for reading and managing developer-contributed URLs… | [dev-resources.md](./dev-resources.md) |
+| Developer Logs | Endpoint for searching granular API call logs across an… | [developer-logs.md](./developer-logs.md) |
+| Discovery | Endpoint for fetching text events that have occurred in… | [discovery.md](./discovery.md) |
+| Errors | Standard HTTP error codes returned by the Figma REST API… | [errors.md](./errors.md) |
+| File Versions | Endpoint for retrieving the version history of a Figma… | [file-versions.md](./file-versions.md) |
+| Files | Endpoints for reading Figma file content, nodes, rendered… | [files.md](./files.md) |
+| Library Analytics | Endpoints for retrieving usage and action analytics for… | [library-analytics.md](./library-analytics.md) |
+| OAuth Apps | OAuth 2 flow for obtaining access tokens on behalf of users… | [oauth-apps.md](./oauth-apps.md) |
+| oEmbed | Endpoint for generating embeddable rich previews of Figma… | [oembed.md](./oembed.md) |
+| Payments | Endpoint for fetching payment information for users of… | [payments.md](./payments.md) |
+| Personal Access Tokens | Per-user API tokens that authenticate requests as the token… | [personal-access-tokens.md](./personal-access-tokens.md) |
+| Plan Access Tokens | Organization-scoped API tokens not tied to individual user… | [plan-access-tokens.md](./plan-access-tokens.md) |
+| Projects | Endpoints for listing team projects, files within a project… | [projects.md](./projects.md) |
+| Rate Limits | Per-user, per-plan rate limits applied to all Figma REST… | [rate-limits.md](./rate-limits.md) |
+| SCIM API | SCIM v2 endpoints for provisioning and managing users and… | [scim.md](./scim.md) |
+| Scopes | Permission scopes that restrict what resources an OAuth 2… | [scopes.md](./scopes.md) |
+| Users | Endpoint for reading the authenticated user's profile… | [users.md](./users.md) |
+| Variables | Endpoints for reading and bulk-modifying variables and… | [variables.md](./variables.md) |
+| Webhooks | Endpoints for creating, reading, updating, and deleting… | [webhooks.md](./webhooks.md) |

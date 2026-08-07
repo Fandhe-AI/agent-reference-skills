@@ -2,6 +2,48 @@
 
 The main React Flow component that renders the interactive node-based graph. It wraps the viewport, nodes, edges, and all built-in UI elements.
 
+## 使用例
+
+```tsx
+import { useCallback } from 'react';
+import {
+  ReactFlow,
+  addEdge,
+  useNodesState,
+  useEdgesState,
+  type OnConnect,
+} from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
+
+const initialNodes = [
+  { id: '1', position: { x: 0, y: 0 }, data: { label: 'Node 1' } },
+  { id: '2', position: { x: 0, y: 100 }, data: { label: 'Node 2' } },
+];
+const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
+
+export default function Flow() {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  const onConnect: OnConnect = useCallback(
+    (connection) => setEdges((eds) => addEdge(connection, eds)),
+    [setEdges],
+  );
+
+  return (
+    <div style={{ width: '100vw', height: '100vh' }}>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+      />
+    </div>
+  );
+}
+```
+
 ## Props
 
 ### Common Props
@@ -190,48 +232,6 @@ The main React Flow component that renders the interactive node-based graph. It 
 | `onSelectionStart` | `(event: MouseEvent) => void` | Selection initiation handler |
 | `onSelectionEnd` | `(event: MouseEvent) => void` | Selection completion handler |
 | `onSelectionContextMenu` | `(event: MouseEvent, nodes: Node[]) => void` | Selection right-click handler |
-
-## 使用例
-
-```tsx
-import { useCallback } from 'react';
-import {
-  ReactFlow,
-  addEdge,
-  useNodesState,
-  useEdgesState,
-  type OnConnect,
-} from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
-
-const initialNodes = [
-  { id: '1', position: { x: 0, y: 0 }, data: { label: 'Node 1' } },
-  { id: '2', position: { x: 0, y: 100 }, data: { label: 'Node 2' } },
-];
-const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
-
-export default function Flow() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-
-  const onConnect: OnConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
-    [setEdges],
-  );
-
-  return (
-    <div style={{ width: '100vw', height: '100vh' }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-      />
-    </div>
-  );
-}
-```
 
 ## 注意点
 

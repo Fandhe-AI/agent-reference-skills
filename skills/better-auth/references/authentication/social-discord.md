@@ -1,13 +1,6 @@
 # Discord
 
-## Credentials
-
-- `DISCORD_CLIENT_ID`
-- `DISCORD_CLIENT_SECRET`
-
-Obtain from the [Discord Developer Portal](https://discord.com/developers/applications).
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -22,8 +15,6 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
-
 ```typescript
 import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
@@ -34,14 +25,6 @@ const signIn = async () => {
     })
 }
 ```
-
-## リダイレクト URL
-
-- **Development**: `http://localhost:3000/api/auth/callback/discord`
-- **Production**: Update to match your application's domain
-- **Custom base paths**: Adjust the redirect URL if you modify the auth route base path
-
-## プロバイダー固有の設定・注意点
 
 ### Bot Permissions
 
@@ -55,6 +38,23 @@ discord: {
 }
 ```
 
-The `permissions` parameter only works when the `bot` scope is included in your OAuth2 scopes. Consult [Discord's permissions documentation](https://discord.com/developers/docs/topics/permissions) for additional details.
+## Options / Props
 
-For the complete list of supported options across all social providers, refer to the [Provider Options documentation](/docs/concepts/oauth#provider-options).
+| Name | Type | Description |
+| --- | --- | --- |
+| `clientId` | string | `DISCORD_CLIENT_ID` — obtain from the [Discord Developer Portal](https://discord.com/developers/applications) |
+| `clientSecret` | string | `DISCORD_CLIENT_SECRET` — obtain from the [Discord Developer Portal](https://discord.com/developers/applications) |
+| `permissions` | number | Bitwise permission value; only applied when the `bot` scope is included in the OAuth2 scopes |
+
+## Notes
+
+- Redirect URL:
+  - Development: `http://localhost:3000/api/auth/callback/discord`
+  - Production: update to match your application's domain
+  - Custom base paths: adjust the redirect URL if you modify the auth route base path
+- Consult [Discord's permissions documentation](https://discord.com/developers/docs/topics/permissions) for permission bit details
+- For the complete list of supported options across all social providers, refer to the [Provider Options documentation](/docs/concepts/oauth#provider-options)
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

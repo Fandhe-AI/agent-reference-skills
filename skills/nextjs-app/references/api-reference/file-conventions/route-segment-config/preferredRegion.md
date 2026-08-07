@@ -1,4 +1,6 @@
-# preferredRegion
+# preferredRegion (deprecated)
+
+> **Deprecated**: `preferredRegion` is deprecated. Remove the `preferredRegion` export from route files.
 
 Specifies the preferred deployment region for a route segment; the value is passed to the deployment platform.
 
@@ -15,7 +17,7 @@ export const preferredRegion = // string || string[]
 | `string` | Deploy the route to a single specific region, e.g. `'iad1'`. |
 | `string[]` | Deploy the route to **all** listed regions (not a single choice), e.g. `['iad1', 'sfo1']`. |
 
-On Vercel, regions are only honored when `runtime = 'edge'` is set, and accept: `'auto'` (default, uses the default region), `'global'` (prefer all available regions), `'home'` (prefer the home region). An unsupported value throws an error.
+On Vercel, regions were previously only honored when `runtime = 'edge'` was set (now deprecated), and accept: `'auto'` (default, uses the default region), `'global'` (prefer all available regions), `'home'` (prefer the home region). An unsupported value throws an error.
 
 ## Notes
 

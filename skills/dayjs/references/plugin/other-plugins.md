@@ -127,3 +127,7 @@ dayjs.updateLocale('en', {
 |-----------|------|-------------|
 | locale | string | Target locale identifier (e.g., `'en'`) |
 | config | object | Locale properties to update (e.g., `months` as string array) |
+
+### Notes
+
+- For a `config` property that is a plain object (not an array) and already exists as an object on the locale, `updateLocale` merges it one level deep (`{ ...existing, ...update }`) instead of replacing it wholesale. Arrays and primitive values are still replaced entirely.

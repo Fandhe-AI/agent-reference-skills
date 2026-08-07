@@ -2,20 +2,6 @@
 
 A connection point rendered on a custom node that allows edges to be connected. Handles define where edges start (`source`) and end (`target`).
 
-## Props
-
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `type` | `'source' \| 'target'` | `'source'` | Whether this handle initiates or terminates a connection |
-| `position` | `Position` | `Position.Top` | Placement of the handle relative to the node (`Top`, `Right`, `Bottom`, `Left`) |
-| `id` | `string \| null` | — | Handle identifier; required when a node has multiple handles of the same type |
-| `isConnectable` | `boolean` | `true` | Whether connections can be made to/from this handle |
-| `isConnectableStart` | `boolean` | `true` | Whether a connection can be initiated from this handle |
-| `isConnectableEnd` | `boolean` | `true` | Whether a connection can end on this handle |
-| `isValidConnection` | `IsValidConnection` | — | Validation callback called when a connection is dragged onto this handle |
-| `onConnect` | `OnConnect` | — | Callback called when a connection is made via this handle |
-| `...props` | `Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, 'id'>` | — | Standard HTML div attributes (except `id`) |
-
 ## 使用例
 
 ```tsx
@@ -38,6 +24,20 @@ export function CustomNode({ data }: NodeProps) {
 <Handle type="source" position={Position.Right} id="a" />
 <Handle type="source" position={Position.Right} id="b" style={{ top: '75%' }} />
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `type` | `'source' \| 'target'` | `'source'` | Whether this handle initiates or terminates a connection |
+| `position` | `Position` | `Position.Top` | Placement of the handle relative to the node (`Top`, `Right`, `Bottom`, `Left`) |
+| `id` | `string \| null` | — | Handle identifier; required when a node has multiple handles of the same type |
+| `isConnectable` | `boolean` | `true` | Whether connections can be made to/from this handle |
+| `isConnectableStart` | `boolean` | `true` | Whether a connection can be initiated from this handle |
+| `isConnectableEnd` | `boolean` | `true` | Whether a connection can end on this handle |
+| `isValidConnection` | `IsValidConnection` | — | Validation callback called when a connection is dragged onto this handle |
+| `onConnect` | `OnConnect` | — | Callback called when a connection is made via this handle |
+| `...props` | `Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, 'id'>` | — | Standard HTML div attributes (except `id`) |
 
 ## 注意点
 

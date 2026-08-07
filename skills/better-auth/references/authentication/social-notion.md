@@ -1,13 +1,6 @@
 # Notion
 
-## Credentials
-
-- `NOTION_CLIENT_ID`
-- `NOTION_CLIENT_SECRET`
-
-Obtain from the [Notion Developers Portal](https://www.notion.so/my-integrations).
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -22,8 +15,6 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
-
 ```typescript
 import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
@@ -35,29 +26,7 @@ const signIn = async () => {
 }
 ```
 
-## リダイレクト URL
-
-Notion integration settings の OAuth Domain & URIs で設定:
-- **Local development**: `http://localhost:3000/api/auth/callback/notion`
-- **Production**: `https://example.com/api/auth/callback/notion`
-
-## プロバイダー固有の設定・注意点
-
-### Required Capabilities
-
-Enable the "Read user information including email addresses" capability in your Notion integration for user authentication.
-
-### Integration Types
-
-Notion supports two integration models:
-- **Public integrations**: Installable by any Notion workspace
-- **Internal integrations**: Limited to your own workspace
-
-Choose public for multi-workspace authentication scenarios.
-
-### Additional Scopes
-
-Request additional Notion capabilities post-signup using the `linkSocial` method:
+Request additional Notion capabilities post-signup with `linkSocial`:
 
 ```typescript
 const requestNotionAccess = async () => {
@@ -67,4 +36,20 @@ const requestNotionAccess = async () => {
 };
 ```
 
-After authentication, leverage the access token to interact with the Notion API for managing pages, databases, and other workspace content.
+## Options / Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `clientId` | string | — | `NOTION_CLIENT_ID`, obtained from the [Notion Developers Portal](https://www.notion.so/my-integrations) |
+| `clientSecret` | string | — | `NOTION_CLIENT_SECRET`, obtained from the [Notion Developers Portal](https://www.notion.so/my-integrations) |
+
+## Notes
+
+- Redirect URL is set in the Notion integration settings' OAuth Domain & URIs — local development: `http://localhost:3000/api/auth/callback/notion`; production: `https://example.com/api/auth/callback/notion`
+- Enable the "Read user information including email addresses" capability in your Notion integration for user authentication
+- Notion supports two integration models: **public integrations** (installable by any Notion workspace) and **internal integrations** (limited to your own workspace) — choose public for multi-workspace authentication scenarios
+- After authentication, use the access token to interact with the Notion API for managing pages, databases, and other workspace content
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

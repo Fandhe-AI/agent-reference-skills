@@ -2,7 +2,7 @@
 
 Comment syntax, Markdown support, code blocks, TSDoc support overview, and all supported tags for documenting TypeScript code with TypeDoc.
 
-## 詳細説明
+## Signature / Usage
 
 ### Comment Syntax
 
@@ -45,14 +45,6 @@ Fenced code blocks (triple backticks) are fully supported with syntax highlighti
  */
 export class MyClass {}
 ```
-
-**Configuration for highlighting:**
-
-| Option | Description |
-|---|---|
-| `--lightHighlightTheme` | Highlighting theme for light mode |
-| `--darkHighlightTheme` | Highlighting theme for dark mode |
-| `--highlightLanguages` | Additional languages to load for highlighting |
 
 **Important**: Indentation-based code blocks will NOT prevent tags from being parsed within the code block. Always use fenced code blocks (triple backticks).
 
@@ -125,98 +117,6 @@ TypeDoc takes advantage of the fact that TSDoc syntax (with the exception of tag
 6. **`@privateRemarks`** may be configured for inclusion in documentation.
 7. **`@public`** is NOT inherited by contained members.
 8. **`@typeParam`** supports ignoring type annotations for TypeScript compatibility.
-
-### Supported Tags
-
-#### Block Tags
-
-| Tag | Description |
-|---|---|
-| `@author` | Identifies the author of the code |
-| `@category` | Organizes exports into categories |
-| `@categoryDescription` | Provides descriptions for categories |
-| `@showCategories` | Controls category visibility |
-| `@hideCategories` | Hides specific categories |
-| `@defaultValue` / `@default` | Specifies default parameter values |
-| `@deprecated` | Marks code as no longer recommended |
-| `@document` | Controls documentation generation (external docs) |
-| `@example` | Provides usage examples |
-| `@expandType` | Controls type expansion in output |
-| `@group` | Organizes exports into groups |
-| `@groupDescription` | Provides descriptions for groups |
-| `@showGroups` | Controls group visibility |
-| `@hideGroups` | Hides specific groups |
-| `@disableGroups` | Disables group organization |
-| `@import` | Imports external documentation |
-| `@inlineType` | Controls type inlining |
-| `@license` | Specifies licensing information (comment is ignored) |
-| `@mergeModuleWith` | Merges module documentation |
-| `@module` | Documents a module |
-| `@param` / `@this` | Documents function parameters |
-| `@preventExpand` | Prevents type expansion |
-| `@preventInline` | Prevents type inlining |
-| `@privateRemarks` | Internal-only documentation |
-| `@property` / `@prop` | Documents object properties |
-| `@remarks` | Provides additional details |
-| `@returns` / `@return` | Documents return values |
-| `@see` | References related documentation |
-| `@since` | Indicates when the feature was added |
-| `@sortStrategy` | Defines sorting behavior |
-| `@summary` | Provides brief descriptions |
-| `@template` | Documents generic type parameters |
-| `@throws` | Documents thrown exceptions |
-| `@typeParam` | Documents type parameters |
-| `@type` | TypeScript type tag |
-| `@yields` | Documents generator yields |
-| `@jsx` | JSX pragma |
-| `@typedef` | Type definition (JSDoc) |
-| `@extends` / `@augments` | Extends a type |
-| `@satisfies` | Satisfies a type |
-| `@callback` | Callback type definition |
-
-#### Modifier Tags
-
-| Tag | Description |
-|---|---|
-| `@abstract` | Marks as abstract |
-| `@alpha` | Stability: alpha stage |
-| `@beta` | Stability: beta stage |
-| `@class` | Forces class classification |
-| `@enum` | Marks as enumeration |
-| `@event` | Marks as event |
-| `@eventProperty` | Marks as event property |
-| `@expand` | Enables type expansion |
-| `@experimental` | Marks as experimental |
-| `@function` | Forces function classification |
-| `@hidden` | Removes from documentation |
-| `@hideconstructor` | Hides constructor |
-| `@ignore` | Ignores in documentation |
-| `@inline` | Enables type inlining |
-| `@interface` | Forces interface classification |
-| `@internal` | Marks as internal only |
-| `@namespace` | Forces namespace classification |
-| `@overload` | Marks as function overload |
-| `@override` | Marks as override |
-| `@packageDocumentation` | Documents the package |
-| `@primaryExport` | Designates primary export |
-| `@private` | Marks as private |
-| `@protected` | Marks as protected |
-| `@public` | Marks as public |
-| `@readonly` | Marks as read-only |
-| `@sealed` | Prevents subclassing |
-| `@useDeclaredType` | Uses declared type |
-| `@virtual` | Marks as virtual |
-
-#### Inline Tags
-
-| Tag | Description |
-|---|---|
-| `@include` / `@includeCode` | Includes external content |
-| `@inheritDoc` | Inherits documentation from parent |
-| `@label` | Assigns labels to sections |
-| `@link` / `@linkcode` / `@linkplain` | Creates cross-references |
-
-## コード例
 
 ### Comprehensive Comment Example
 
@@ -305,7 +205,105 @@ destroy(): void {}
 export interface Config {}
 ```
 
-## 注意点
+## Options / Props
+
+### Highlighting Configuration
+
+| Option | Description |
+|---|---|
+| `--lightHighlightTheme` | Highlighting theme for light mode |
+| `--darkHighlightTheme` | Highlighting theme for dark mode |
+| `--highlightLanguages` | Additional languages to load for highlighting |
+
+### Supported Tags -- Block Tags
+
+| Tag | Description |
+|---|---|
+| `@author` | Identifies the author of the code |
+| `@category` | Organizes exports into categories |
+| `@categoryDescription` | Provides descriptions for categories |
+| `@showCategories` | Controls category visibility |
+| `@hideCategories` | Hides specific categories |
+| `@defaultValue` / `@default` | Specifies default parameter values |
+| `@deprecated` | Marks code as no longer recommended |
+| `@document` | Controls documentation generation (external docs) |
+| `@example` | Provides usage examples |
+| `@expandType` | Controls type expansion in output |
+| `@group` | Organizes exports into groups |
+| `@groupDescription` | Provides descriptions for groups |
+| `@showGroups` | Controls group visibility |
+| `@hideGroups` | Hides specific groups |
+| `@disableGroups` | Disables group organization |
+| `@import` | Imports external documentation |
+| `@inlineType` | Controls type inlining |
+| `@license` | Specifies licensing information (comment is ignored) |
+| `@mergeModuleWith` | Merges module documentation |
+| `@module` | Documents a module |
+| `@param` / `@this` | Documents function parameters |
+| `@preventExpand` | Prevents type expansion |
+| `@preventInline` | Prevents type inlining |
+| `@privateRemarks` | Internal-only documentation |
+| `@property` / `@prop` | Documents object properties |
+| `@remarks` | Provides additional details |
+| `@returns` / `@return` | Documents return values |
+| `@see` | References related documentation |
+| `@since` | Indicates when the feature was added |
+| `@sortStrategy` | Defines sorting behavior |
+| `@summary` | Provides brief descriptions |
+| `@template` | Documents generic type parameters |
+| `@throws` | Documents thrown exceptions |
+| `@typeParam` | Documents type parameters |
+| `@type` | TypeScript type tag |
+| `@yields` | Documents generator yields |
+| `@jsx` | JSX pragma |
+| `@typedef` | Type definition (JSDoc) |
+| `@extends` / `@augments` | Extends a type |
+| `@satisfies` | Satisfies a type |
+| `@callback` | Callback type definition |
+
+### Supported Tags -- Modifier Tags
+
+| Tag | Description |
+|---|---|
+| `@abstract` | Marks as abstract |
+| `@alpha` | Stability: alpha stage |
+| `@beta` | Stability: beta stage |
+| `@class` | Forces class classification |
+| `@enum` | Marks as enumeration |
+| `@event` | Marks as event |
+| `@eventProperty` | Marks as event property |
+| `@expand` | Enables type expansion |
+| `@experimental` | Marks as experimental |
+| `@function` | Forces function classification |
+| `@hidden` | Removes from documentation |
+| `@hideconstructor` | Hides constructor |
+| `@ignore` | Ignores in documentation |
+| `@inline` | Enables type inlining |
+| `@interface` | Forces interface classification |
+| `@internal` | Marks as internal only |
+| `@namespace` | Forces namespace classification |
+| `@overload` | Marks as function overload |
+| `@override` | Marks as override |
+| `@packageDocumentation` | Documents the package |
+| `@primaryExport` | Designates primary export |
+| `@private` | Marks as private |
+| `@protected` | Marks as protected |
+| `@public` | Marks as public |
+| `@readonly` | Marks as read-only |
+| `@sealed` | Prevents subclassing |
+| `@useDeclaredType` | Uses declared type |
+| `@virtual` | Marks as virtual |
+
+### Supported Tags -- Inline Tags
+
+| Tag | Description |
+|---|---|
+| `@include` / `@includeCode` | Includes external content |
+| `@inheritDoc` | Inherits documentation from parent |
+| `@label` | Assigns labels to sections |
+| `@link` / `@linkcode` / `@linkplain` | Creates cross-references |
+
+## Notes
 
 - TypeDoc ignores comments containing `@license` or `@import` tags entirely.
 - Indentation-based code blocks do NOT prevent tag parsing. Always use fenced (triple backtick) code blocks.
@@ -316,7 +314,7 @@ export interface Config {}
 - Export specifier comments take precedence over module comments for the same symbol.
 - The `--useTsLinkResolution` option controls whether `@link` tags use TypeScript's resolution or TSDoc's declaration references.
 
-## 関連
+## Related
 
 - [JSDoc Support](./jsdoc-support.md)
 - [Declaration References](./declaration-references.md)

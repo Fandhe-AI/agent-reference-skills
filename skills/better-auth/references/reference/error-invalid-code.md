@@ -1,18 +1,20 @@
 # invalid_code
 
-提供された認証コードが無効または期限切れである際のエラー。
+## Signature / Usage
 
-## 説明
+```
+Error code: invalid_code
+```
 
-認証コードが無効・期限切れ・または検証できない場合に発生する。認証コードはワンタイム使用・有効期限付きで設計されている。
+Raised when the provided authentication code is invalid or has expired. Authentication codes are designed as single-use and time-limited.
 
-## 対処方法
+## Notes
 
-1. **認証フローの再開始**: 新しいコードを取得するために、新たな認証フローを開始する
-2. **コードの制約を守る**: コードはシングルユース・有効期限付きであることを前提とした設計にする
-3. **コールバックエンドポイントの確認**: 正しいコードがコールバックエンドポイントに到達しているか確認する
+- Restart the auth flow: begin a new authentication flow to obtain a fresh code
+- Respect code constraints: design your integration around codes being single-use and time-limited
+- Verify the callback endpoint: confirm the correct code is reaching the callback endpoint
 
 ## Related
 
-- [error-no-code.md](./error-no-code.md)
-- [errors.md](./errors.md)
+- [no_code](./error-no-code.md)
+- [errors](./errors.md)

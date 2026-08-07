@@ -58,5 +58,5 @@ iOS 8.0+, iPadOS 8.0+, macOS 13.0+, watchOS 2.0+, visionOS 1.0+. Unit instances 
 
 ## Related
 
-- [hkquantitysample.md](./hkquantitysample.md)
-- [hkquantitytype.md](./hkquantitytype.md)
+- [HKQuantitySample](./hkquantitysample.md)
+- [HKQuantityType](./hkquantitytype.md)

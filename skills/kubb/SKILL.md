@@ -5,6 +5,7 @@ description: >
   kubb.config.ts、OpenAPI から TypeScript 型・TanStack Query フック・
   Zod スキーマ・MSW モック・Faker・Axios / SWR / React Query クライアント生成。
   プラグインベース、モノレポ対応。
+  parser-ts / parser-md パーサー、adapter-oas アダプター、Kit API・diagnostics。
 user-invocable: false
 model: sonnet
 ---
@@ -22,7 +23,6 @@ skills/kubb/
   references/
     getting-started/
       README.md
-      configure.md
       installation.md
       introduction.md
       quick-start.md
@@ -32,25 +32,39 @@ skills/kubb/
       README.md
       overview.md
       core.md
-      plugin-oas.md
-      plugin-ts.md
-      plugin-client.md
-      plugin-zod.md
-      plugin-react-query.md
-      plugin-vue-query.md
-      plugin-solid-query.md
-      plugin-svelte-query.md
-      plugin-swr.md
-      plugin-faker.md
-      plugin-msw.md
+      plugin-axios.md
+      plugin-barrel.md
       plugin-cypress.md
+      plugin-faker.md
+      plugin-fetch.md
       plugin-mcp.md
+      plugin-msw.md
+      plugin-react-query.md
       plugin-redoc.md
+      plugin-swr.md
+      plugin-ts.md
+      plugin-vue-query.md
+      plugin-zod.md
+    adapters/
+      README.md
+      adapter-oas.md
+    parsers/
+      README.md
+      parser-md.md
+      parser-ts.md
+    reference/
+      README.md
+      diagnostics.md
+      kit-api.md
     helpers/
       README.md
       cli.md
       mcp.md
       unplugin.md
+    ai/
+      README.md
+      claude.md
+      mcp.md
     examples/
       README.md
       simple.md
@@ -71,7 +85,17 @@ skills/kubb/
       advanced.md
     guides/
       README.md
+      architecture.md
+      ast.md
+      concepts-plugins.md
+      creating-plugins.md
+      generators.md
+      macros.md
       migration-guide.md
+      printers.md
+      renderers.md
+      resolver-customization.md
+      resolvers.md
       tutorial.md
   samples/
     README.md
@@ -106,12 +130,19 @@ skills/kubb/
 |--------|---------|------------|
 | インストール、初期設定、kubb.config.ts オプション | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | トラブルシューティング、テレメトリー設定 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
-| OpenAPI パース、TypeScript 型・API クライアント生成 | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| TypeScript 型・API クライアント生成 | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | Zod スキーマ・Faker モック・MSW ハンドラー生成 | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | React Query / Vue Query / Solid Query / Svelte Query / SWR hooks 生成 | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| Axios / Fetch クライアント生成、barrel（index.ts）出力 | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | Cypress テスト定義・MCP サーバー・Redoc ドキュメント生成 | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| OpenAPI 仕様のパース・アダプター（@kubb/adapter-oas） | adapters | [references/adapters/README.md](references/adapters/README.md) |
+| Kubb の AST から TypeScript / Markdown ソースへの変換（parser-ts / parser-md） | parsers | [references/parsers/README.md](references/parsers/README.md) |
+| ビルド失敗時の診断メッセージ、Kit API（`kubb/kit`）でのカスタムプラグイン構築 | reference | [references/reference/README.md](references/reference/README.md) |
 | CLI コマンド詳細、MCP サーバー統合、Vite / webpack / Rollup / esbuild 統合 | helpers | [references/helpers/README.md](references/helpers/README.md) |
+| Claude Code プラグイン（スラッシュコマンド・Agent）、AI アシスタントからの MCP サーバー利用 | ai | [references/ai/README.md](references/ai/README.md) |
 | 各プラグインの kubb.config.ts 設定例、カスタムジェネレーター | examples | [references/examples/README.md](references/examples/README.md) |
+| アーキテクチャ、AST・Resolver・Renderer・Printer 概念の理解 | guides | [references/guides/README.md](references/guides/README.md) |
+| カスタムプラグインの作成、Macro・Resolver のカスタマイズ | guides | [references/guides/README.md](references/guides/README.md) |
 | v3→v5 マイグレーション、ステップバイステップチュートリアル | guides | [references/guides/README.md](references/guides/README.md) |
 | 典型的な使い方・ワークフローを知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンド・generate コマンドを実行したい | scripts | [scripts/README.md](scripts/README.md) |

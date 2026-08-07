@@ -16,21 +16,24 @@ skills/apple-app-services/
   references/
     storekit/
       README.md
-      product.md
-      product-purchaseresult.md
-      product-purchaseoption.md
-      product-subscriptioninfo.md
-      product-subscriptioninfo-status.md
-      product-subscriptioninfo-renewalstate.md
-      transaction.md
-      transaction-updates.md
-      transaction-currententitlements.md
-      verificationresult.md
       appstore.md
       apptransaction.md
       message.md
+      product-promotioninfo.md
+      product-purchaseerror.md
+      product-purchaseoption.md
+      product-purchaseresult.md
+      product-subscriptioninfo.md
+      product-subscriptioninfo-renewalstate.md
+      product-subscriptioninfo-status.md
+      product-subscriptionrelationship.md
+      product.md
       storeview.md
       subscriptionstoreview.md
+      transaction.md
+      transaction-currententitlements.md
+      transaction-updates.md
+      verificationresult.md
     cloudkit/
       README.md
       ckcontainer.md
@@ -70,61 +73,73 @@ skills/apple-app-services/
       activitykit-activity.md
     notifications/
       README.md
-      UNUserNotificationCenter.md
-      UNUserNotificationCenterDelegate.md
-      UNNotificationRequest.md
-      UNNotificationContent.md
-      UNMutableNotificationContent.md
-      UNNotificationTrigger.md
-      UNTimeIntervalNotificationTrigger.md
       UNCalendarNotificationTrigger.md
       UNLocationNotificationTrigger.md
-      UNNotificationCategory.md
+      UNMutableNotificationContent.md
+      UNNotification.md
       UNNotificationAction.md
-      UNNotificationSettings.md
+      UNNotificationAttachment.md
+      UNNotificationCategory.md
+      UNNotificationContent.md
+      UNNotificationContentProviding.md
+      UNNotificationRequest.md
       UNNotificationResponse.md
+      UNNotificationServiceExtension.md
+      UNNotificationSettings.md
+      UNNotificationSound.md
+      UNNotificationTrigger.md
+      UNPushNotificationTrigger.md
+      UNTextInputNotificationAction.md
+      UNTextInputNotificationResponse.md
+      UNTimeIntervalNotificationTrigger.md
+      UNUserNotificationCenter.md
+      UNUserNotificationCenterDelegate.md
       requestAuthorization.md
     location-maps/
       README.md
-      CLLocationManager.md
+      Annotation.md
+      CLAuthorizationStatus.md
+      CLBackgroundActivitySession.md
+      CLGeocoder.md
       CLLocation.md
       CLLocationCoordinate2D.md
-      CLAuthorizationStatus.md
+      CLLocationManager.md
       CLLocationManagerDelegate.md
       CLLocationUpdate.md
-      CLGeocoder.md
+      CLMonitor.md
       CLPlacemark.md
+      CLRegion.md
+      LookAroundPreview.md
       Map.md
-      Marker.md
-      Annotation.md
-      MapPolyline.md
-      MapCircle.md
       MapCameraPosition.md
+      MapCircle.md
+      MapPolyline.md
+      MapStyle.md
+      Marker.md
       MKCoordinateRegion.md
       MKMapItem.md
-      MapStyle.md
-      LookAroundPreview.md
     health-auth/
       README.md
-      hkhealthstore.md
-      hkobjecttype.md
-      hkquantitytype.md
-      hksampletype.md
-      hkquery.md
-      hksamplequery.md
-      hkstatisticsquery.md
-      hkstatisticscollectionquery.md
-      hkobserverquery.md
-      hkquantitysample.md
-      hkunit.md
-      hkauthorizationstatus.md
-      asauthorizationcontroller.md
+      asauthorizationappleidcredential.md
       asauthorizationappleidprovider.md
       asauthorizationappleidrequest.md
-      asauthorizationappleidcredential.md
-      signinwithapplebutton.md
-      aswebauthenticationsession.md
+      asauthorizationcontroller.md
       asauthorizationcontrollerdelegate.md
+      aswebauthenticationsession.md
+      hkauthorizationstatus.md
+      hkhealthstore.md
+      hkobjecttype.md
+      hkobserverquery.md
+      hkquantitysample.md
+      hkquantitytype.md
+      hkquery.md
+      hksamplequery.md
+      hksampletype.md
+      hkstatisticscollectionquery.md
+      hkstatisticsquery.md
+      hkstateofmind.md
+      hkunit.md
+      signinwithapplebutton.md
 ```
 
 ## 探索手順
@@ -143,6 +158,7 @@ skills/apple-app-services/
 | サブスクリプションの状態・更新情報を確認したい | storekit | [references/storekit/README.md](references/storekit/README.md) |
 | StoreKit UI（StoreView / SubscriptionStoreView）を使いたい | storekit | [references/storekit/README.md](references/storekit/README.md) |
 | Transaction の検証・権利確認を行いたい | storekit | [references/storekit/README.md](references/storekit/README.md) |
+| プロモーション表示・購入エラーハンドリング・関連サブスクリプション判定を行いたい | storekit | [references/storekit/README.md](references/storekit/README.md) |
 | CloudKit でレコードを読み書き・クエリしたい | cloudkit | [references/cloudkit/README.md](references/cloudkit/README.md) |
 | iCloud データをデバイス間で同期したい | cloudkit | [references/cloudkit/README.md](references/cloudkit/README.md) |
 | CloudKit のプッシュ通知サブスクリプションを設定したい | cloudkit | [references/cloudkit/README.md](references/cloudkit/README.md) |
@@ -153,13 +169,15 @@ skills/apple-app-services/
 | TimelineProvider でウィジェットの更新スケジュールを制御したい | widgetkit | [references/widgetkit/README.md](references/widgetkit/README.md) |
 | ローカル通知をスケジュールしたい | notifications | [references/notifications/README.md](references/notifications/README.md) |
 | 通知の権限リクエスト・設定状態を確認したい | notifications | [references/notifications/README.md](references/notifications/README.md) |
-| 通知アクションボタン・カテゴリを定義したい | notifications | [references/notifications/README.md](references/notifications/README.md) |
+| 通知アクションボタン・カテゴリ・テキスト入力アクションを定義したい | notifications | [references/notifications/README.md](references/notifications/README.md) |
 | 地理領域トリガーで通知を送りたい | notifications | [references/notifications/README.md](references/notifications/README.md) |
+| リモート通知のコンテンツを配信前に加工したい（Notification Service Extension） | notifications | [references/notifications/README.md](references/notifications/README.md) |
 | 現在地の取得・位置情報の許可を管理したい | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
 | SwiftUI の Map ビューにマーカー・アノテーションを表示したい | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
 | 座標からジオコーディング・逆ジオコーディングしたい | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
 | Look Around や地図スタイルを設定したい | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
+| ジオフェンス・ビーコン領域や継続的なバックグラウンド位置取得を実装したい | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
 | HealthKit でヘルスデータの読み書き権限を要求したい | health-auth | [references/health-auth/README.md](references/health-auth/README.md) |
-| 歩数・心拍数などのサンプルを照会・統計集計したい | health-auth | [references/health-auth/README.md](references/health-auth/README.md) |
+| 歩数・心拍数・State of Mind などのサンプルを照会・統計集計したい | health-auth | [references/health-auth/README.md](references/health-auth/README.md) |
 | Sign in with Apple を実装したい | health-auth | [references/health-auth/README.md](references/health-auth/README.md) |
 | OAuth / OpenID Connect の Web 認証フローを実装したい | health-auth | [references/health-auth/README.md](references/health-auth/README.md) |

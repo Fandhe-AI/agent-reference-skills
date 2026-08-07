@@ -1,13 +1,11 @@
-# concepts
-
-The MCP here is the server side that publishes a ChatGPT/Codex plugin (skills + tools). Consuming MCP servers as a client is covered by the openai-agents skill, not this one.
+# Concepts
 
 | Name | Description | Path |
 |------|-------------|------|
-| Quickstart | Connect an MCP server and invoke it as a personal plugin from ChatGPT Work | [quickstart.md](./quickstart.md) |
-| Plugin Architecture | Plugin shapes: skills only, MCP server only, both, MCP server with UI | [plugin-architecture.md](./plugin-architecture.md) |
-| MCP server | What an MCP server exposes (tools/resources/prompts/instructions), tool call flow, transport/auth | [mcp-server.md](./mcp-server.md) |
-| Skills (plugin skills) | SKILL.md-based instruction folders that guide the model through MCP tool workflows | [plugin-skills.md](./plugin-skills.md) |
-| UI guidelines | Display modes (inline card/carousel, fullscreen, PiP) and visual design system | [ui-guidelines.md](./ui-guidelines.md) |
-| Brainstorm Plugin Use Cases | Building a use-case inventory and mapping it to skill/MCP/UI decisions | [plan-use-cases.md](./plan-use-cases.md) |
-| Define tools | Tool contract fields, read/write separation, descriptions, safety annotations | [define-tools.md](./define-tools.md) |
+| Brainstorm Plugin Use Cases | Before building, list what people will expect the plugin to do based on its name, description, skills, tools, and connection to an existing product. This determines what belongs in the plugin: a skill for instructions/resources, an MCP server for live data/authentication/controlled actions, and UI only when visual interaction materially improves a workflow. | [plan-use-cases.md](./plan-use-cases.md) |
+| Define tools | Tools are the actions and data that a plugin's MCP server exposes to ChatGPT and Codex. Define them after brainstorming use cases and before implementing the server; every tool should help complete a user goal rather than mirror an internal API. | [define-tools.md](./define-tools.md) |
+| MCP server | The Model Context Protocol (MCP) is an open specification for connecting AI clients to external tools and data. A plugin includes an MCP server when it needs to read live information, take actions, or integrate with another service. The MCP server is optional — a plugin that only provides instructions and resources can consist of skills alone. | [mcp-server.md](./mcp-server.md) |
+| Plugin Architecture | Plugins are the packages people discover, install, share, and publish in ChatGPT and Codex. A plugin can contain skills, an MCP server, or both. | [plugin-architecture.md](./plugin-architecture.md) |
+| Skills (plugin skills) | Skills are folders of instructions and resources that teach ChatGPT and Codex how to complete repeatable workflows. In an MCP-backed plugin, a skill complements the server by teaching the model how to combine its tools for recognizable user goals. | [plugin-skills.md](./plugin-skills.md) |
+| Quickstart | Plugins extend and customize ChatGPT and Codex. A plugin can include skills that provide instructions and resources, an MCP server that exposes tools, or both. This tutorial creates a personal plugin by connecting an MCP server and invoking its tool from ChatGPT Work. | [quickstart.md](./quickstart.md) |
+| UI guidelines | Optional plugin UI extends what users can do without breaking the flow of conversation. Use cards, carousels, fullscreen views, and other display modes only when visual interaction improves the workflow. | [ui-guidelines.md](./ui-guidelines.md) |

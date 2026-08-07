@@ -1,6 +1,6 @@
 # @kubb/plugin-zod
 
-OpenAPI スキーマから Zod バリデーションスキーマを生成するプラグイン。Zod v3/v4 対応。
+OpenAPI スキーマから Zod バリデーションスキーマを生成するプラグイン。v5 で Zod v3 対応は廃止され、`zod@^4` 専用になった。
 
 ## インストール
 
@@ -8,60 +8,26 @@ OpenAPI スキーマから Zod バリデーションスキーマを生成する�
 npm install --save-dev @kubb/plugin-zod
 ```
 
-## 設定オプション
+## 設定オプション（v5）
 
-### output
-
-| オプション | 型 | デフォルト | 説明 |
-|-----------|-----|----------|------|
-| `output.path` | `string` | `'zod'` | 出力先パス |
-| `output.barrelType` | `'all' \| 'named' \| 'propagate' \| false` | `'named'` | バレルファイル制御 |
-| `output.banner` / `output.footer` | `string \| (oas) => string` | — | ファイルコメント |
-| `output.override` | `boolean` | `false` | 既存ファイル上書き |
-
-### Zod 固有オプション
+`version` オプションは削除された（Zod v4 専用）。`typed` は `inferred: true` に置き換わり、`z.infer` エイリアスをエクスポートする形になった。`dateType` / `unknownType` / `emptySchemaType` は `adapterOas` に移動した。`mapper` / `operations` / `wrapOutput` は削除され、`resolver` / `macros` / `printer` に統合された。`inferred: true` で生成される型名には `Type` サフィックスが付く（例: `PetSchema` → `PetSchemaType`）。
 
 | オプション | 型 | デフォルト | 説明 |
 |-----------|-----|----------|------|
-| `version` | `'3' \| '4'` | `'3'` | Zod バージョン |
-| `importPath` | `string` | `'zod'` | Zod インポートパス |
-| `typed` | `boolean` | `false` | TypeScript 型アノテーション有効化（@kubb/plugin-ts 必要） |
-| `inferred` | `boolean` | `false` | `z.infer` で推論型を返す |
-| `mini` | `boolean` | `false` | Zod Mini 機能 API（v4+、ベータ） |
-| `guidType` | `'uuid' \| 'guid'` | `'uuid'` | UUID バリデーター（v4 のみ） |
-
-### データ型オプション
-
-| オプション | 型 | デフォルト | 説明 |
-|-----------|-----|----------|------|
-| `dateType` | `false \| 'string' \| 'stringOffset' \| 'stringLocal' \| 'date'` | `'string'` | 日付ハンドリング |
-| `unknownType` | `'any' \| 'unknown' \| 'void'` | `'any'` | 不明な型のフォールバック |
-| `emptySchemaType` | `'any' \| 'unknown' \| 'void'` | `unknownType` の値 | 空スキーマの型 |
-| `coercion` | `boolean \| {dates?, strings?, numbers?}` | `false` | `z.coerce` の有効化 |
-
-### その他
-
-| オプション | 型 | デフォルト | 説明 |
-|-----------|-----|----------|------|
-| `operations` | `boolean` | `false` | オペレーション関連スキーマ生成 |
-| `mapper` | `Record<string, string>` | — | カスタム型マッピング |
-| `contentType` | `'application/json' \| string` | — | コンテンツタイプ |
-| `group.type` | `'tag'` | — | タグによるグループ化 |
-| `include` / `exclude` | `Array<{type, pattern}>` | — | フィルタリング |
-| `override` | `Array<{type, pattern, options}>` | — | 条件付きオーバーライド |
-| `transformers.name` | `(name, type?) => string` | — | 名前カスタマイズ |
-| `transformers.schema` | `(props, defaults) => Schema[]` | — | スキーマ生成カスタマイズ |
-| `wrapOutput` | `({output, schema}) => string` | — | 生成スキーマの後処理 |
-
-### dateType の例
-
-```typescript
-// false: z.string()
-// 'string': z.string().datetime()
-// 'stringOffset': z.string().datetime({ offset: true })
-// 'stringLocal': z.string().datetime({ local: true })
-// 'date': z.date()
-```
+| `output` | `Output` | `{ path: 'zod', barrel: { type: 'named' } }` | 出力先パス・バレルエクスポート設定 |
+| `group` | `Group` | — | tag / path によるフォルダー分割 |
+| `importPath` | `string` | `mini ? 'zod/mini' : 'zod'` | `z` のインポート元モジュール |
+| `inferred` | `boolean` | `false` | 各スキーマに `z.infer` エイリアスを付与 |
+| `coercion` | `boolean \| { dates?: boolean, strings?: boolean, numbers?: boolean }` | `false` | `z.coerce` によるバリデーション前の型変換 |
+| `guidType` | `'uuid' \| 'guid'` | `'uuid'` | `format: uuid` プロパティのバリデーター |
+| `regexType` | `'literal' \| 'constructor'` | `'literal'` | OpenAPI `pattern` の表現方法 |
+| `mini` | `boolean` | `false` | Zod Mini スキーマ生成 |
+| `include` | `Array<Include>` | — | 対象を絞り込むフィルタリング |
+| `exclude` | `Array<Exclude>` | — | 対象を除外するフィルタリング |
+| `override` | `Array<Override>` | — | パターン単位のオプション上書き |
+| `resolver` | `ResolverPatch<ResolverZod>` | — | 生成名・ファイルパスのカスタマイズ（旧 `transformers.name`） |
+| `macros` | `Array<Macro>` | — | 出力前の AST ノード書き換え |
+| `printer` | `{ nodes?: PrinterZodNodes \| PrinterZodMiniNodes }` | — | スキーマ種別ごとのハンドラー差し替え（旧 `wrapOutput`） |
 
 ### coercion の例
 
@@ -70,7 +36,7 @@ npm install --save-dev @kubb/plugin-zod
 // { numbers: true, strings: false }: z.string(), z.coerce.number()
 ```
 
-### mini モードの例（v4+、ベータ）
+### mini モードの例（ベータ）
 
 ```typescript
 import { z } from 'zod/mini'
@@ -82,8 +48,7 @@ z.array(z.string()).check(z.minLength(1), z.maxLength(10))
 ## 設定例
 
 ```typescript
-import { defineConfig } from "@kubb/core"
-import { pluginOas } from "@kubb/plugin-oas"
+import { defineConfig } from "kubb/config"
 import { pluginTs } from "@kubb/plugin-ts"
 import { pluginZod } from "@kubb/plugin-zod"
 
@@ -91,17 +56,13 @@ export default defineConfig({
   input: { path: "./petStore.yaml" },
   output: { path: "./src/gen" },
   plugins: [
-    pluginOas(),
     pluginTs(),
     pluginZod({
-      output: { path: "./zod" },
+      output: { path: "./zod", mode: "directory" },
       group: { type: "tag", name: ({ group }) => `${group}Schemas` },
-      typed: true,
-      dateType: "stringOffset",
-      unknownType: "unknown",
-      version: "4",
-      wrapOutput: ({ output }) =>
-        `${output}.openapi({ description: 'Custom' })`,
+      inferred: true,
+      coercion: { dates: true },
+      guidType: "uuid",
     }),
   ],
 })

@@ -2,7 +2,7 @@
 
 TypeDoc is a documentation generator for TypeScript projects. It converts comments in TypeScript source code into rendered HTML documentation or a JSON model.
 
-## 詳細説明
+## Signature / Usage
 
 ### Requirements
 
@@ -45,7 +45,78 @@ Common entry point example:
 typedoc --entryPoints src/index.ts --out docs
 ```
 
-### Key CLI Options
+```typescript
+// Basic usage
+// typedoc --entryPoints src/index.ts --out docs
+
+// Multiple entry points
+// typedoc --entryPoints src/index.ts --entryPoints src/secondary.ts --out docs
+
+// With specific theme and readme
+// typedoc --entryPoints src/index.ts --out docs --theme default --readme README.md
+
+// Output JSON instead of HTML
+// typedoc --entryPoints src/index.ts --json docs/api.json
+
+// Watch mode for development
+// typedoc --entryPoints src/index.ts --out docs --watch
+
+// Skip type checking for faster builds
+// typedoc --entryPoints src/index.ts --out docs --skipErrorChecking
+
+// Show resolved configuration
+// typedoc --showConfig
+```
+
+### Configuration via typedoc.json
+
+```json
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/index.ts"],
+  "out": "docs",
+  "name": "My Project",
+  "readme": "README.md",
+  "theme": "default",
+  "excludePrivate": true,
+  "excludeExternals": true,
+  "plugin": ["typedoc-plugin-markdown"],
+  "sort": ["alphabetical"],
+  "categorizeByGroup": true,
+  "navigation": {
+    "includeCategories": true,
+    "includeGroups": true
+  }
+}
+```
+
+### Configuration via tsconfig.json
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext"
+  },
+  "typedocOptions": {
+    "entryPoints": ["src/index.ts"],
+    "out": "docs"
+  }
+}
+```
+
+### Configuration via package.json
+
+```json
+{
+  "typedocOptions": {
+    "entryPoints": ["src/index.ts"],
+    "out": "docs"
+  }
+}
+```
+
+## Options / Props
 
 TypeDoc has 100+ CLI options. The most commonly used ones:
 
@@ -193,86 +264,7 @@ TypeDoc has 100+ CLI options. The most commonly used ones:
 | `--preserveWatchOutput` | Do not clear screen between watch rebuilds |
 | `--alwaysCreateEntryPointModule` | Always create a Module for entry points |
 
-### Syntax Highlighting
-
-TypeDoc supports 200+ languages for code highlighting (via Shiki), including: javascript, typescript, python, java, c++, rust, go, and many more.
-
-Over 60 highlighting themes are available, including: `github-dark`, `dracula`, `nord`, `rose-pine`, `tokyo-night`, `synthwave-84`.
-
-## コード例
-
-```typescript
-// Basic usage
-// typedoc --entryPoints src/index.ts --out docs
-
-// Multiple entry points
-// typedoc --entryPoints src/index.ts --entryPoints src/secondary.ts --out docs
-
-// With specific theme and readme
-// typedoc --entryPoints src/index.ts --out docs --theme default --readme README.md
-
-// Output JSON instead of HTML
-// typedoc --entryPoints src/index.ts --json docs/api.json
-
-// Watch mode for development
-// typedoc --entryPoints src/index.ts --out docs --watch
-
-// Skip type checking for faster builds
-// typedoc --entryPoints src/index.ts --out docs --skipErrorChecking
-
-// Show resolved configuration
-// typedoc --showConfig
-```
-
-### Configuration via typedoc.json
-
-```json
-{
-  "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["src/index.ts"],
-  "out": "docs",
-  "name": "My Project",
-  "readme": "README.md",
-  "theme": "default",
-  "excludePrivate": true,
-  "excludeExternals": true,
-  "plugin": ["typedoc-plugin-markdown"],
-  "sort": ["alphabetical"],
-  "categorizeByGroup": true,
-  "navigation": {
-    "includeCategories": true,
-    "includeGroups": true
-  }
-}
-```
-
-### Configuration via tsconfig.json
-
-```json
-{
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext"
-  },
-  "typedocOptions": {
-    "entryPoints": ["src/index.ts"],
-    "out": "docs"
-  }
-}
-```
-
-### Configuration via package.json
-
-```json
-{
-  "typedocOptions": {
-    "entryPoints": ["src/index.ts"],
-    "out": "docs"
-  }
-}
-```
-
-## 注意点
+## Notes
 
 - Global installation may cause plugin/theme resolution issues; prefer local installation.
 - TypeDoc reads configuration from `typedoc.json`, `tsconfig.json`, and `package.json` in that order.
@@ -281,8 +273,10 @@ Over 60 highlighting themes are available, including: `github-dark`, `dracula`, 
 - Using `--excludeNotDocumented` can significantly reduce output for large projects.
 - The `--skipErrorChecking` option can speed up generation but may produce incomplete docs if there are type errors.
 - Indentation-based code blocks in comments will NOT prevent tags from being parsed. Use fenced code blocks (triple backticks) instead.
+- TypeDoc supports 200+ languages for code highlighting (via Shiki), including: javascript, typescript, python, java, c++, rust, go, and many more.
+- Over 60 highlighting themes are available, including: `github-dark`, `dracula`, `nord`, `rose-pine`, `tokyo-night`, `synthwave-84`.
 
-## 関連
+## Related
 
 - [Node Module API](./node-module-api.md)
 - [Browser Bundle](./browser-bundle.md)

@@ -1,16 +1,9 @@
-# Expect マッチャー
+# Expect Matchers
 
-`expect(value)` でアサーションラッパーを作成し、マッチャーをチェーンする。
-`.not` でマッチャーを否定できる。
+## Signature / Usage
 
-## 等値マッチャー
-
-| Matcher | Description |
-|---------|-------------|
-| `toBe(value)` | `Object.is` による厳密等値。プリミティブ・参照比較向き |
-| `toEqual(value)` | 再帰的な構造等値。`undefined` プロパティは無視 |
-| `toStrictEqual(value)` | `toEqual` + `undefined` プロパティ・配列の疎密・オブジェクト型も検査 |
-| `toMatchObject(subset)` | オブジェクトが指定サブセットのプロパティを持つか検査 |
+`expect(value)` creates an assertion wrapper and chains matchers onto it.
+`.not` negates any matcher.
 
 ```ts
 expect(1 + 1).toBe(2)
@@ -18,20 +11,29 @@ expect({ a: 1, b: 2 }).toEqual({ a: 1, b: 2 })
 expect({ a: 1, b: 2 }).toMatchObject({ a: 1 })
 ```
 
-## 型・値マッチャー
+## Equality Matchers
 
 | Matcher | Description |
 |---------|-------------|
-| `toBeTruthy()` | truthy な値 |
-| `toBeFalsy()` | falsy な値 |
+| `toBe(value)` | Strict equality via `Object.is`. For primitives / reference comparisons |
+| `toEqual(value)` | Recursive structural equality. Ignores `undefined` properties |
+| `toStrictEqual(value)` | `toEqual` + also checks `undefined` properties, array sparseness, and object type |
+| `toMatchObject(subset)` | Checks the object has the given subset of properties |
+
+## Type and Value Matchers
+
+| Matcher | Description |
+|---------|-------------|
+| `toBeTruthy()` | Truthy value |
+| `toBeFalsy()` | Falsy value |
 | `toBeNull()` | `null` |
 | `toBeUndefined()` | `undefined` |
-| `toBeDefined()` | `undefined` でない |
+| `toBeDefined()` | Not `undefined` |
 | `toBeNaN()` | `NaN` |
-| `toBeTypeOf(type)` | `typeof value === type`（`'string' \| 'number' \| 'boolean' \| 'object' \| 'function' \| 'undefined' \| 'symbol' \| 'bigint'`） |
-| `toBeInstanceOf(Class)` | 指定クラスのインスタンス |
+| `toBeTypeOf(type)` | `typeof value === type` (`'string' \| 'number' \| 'boolean' \| 'object' \| 'function' \| 'undefined' \| 'symbol' \| 'bigint'`) |
+| `toBeInstanceOf(Class)` | Instance of the given class |
 
-## 数値マッチャー
+## Number Matchers
 
 | Matcher | Description |
 |---------|-------------|
@@ -39,16 +41,16 @@ expect({ a: 1, b: 2 }).toMatchObject({ a: 1 })
 | `toBeGreaterThanOrEqual(n)` | `value >= n` |
 | `toBeLessThan(n)` | `value < n` |
 | `toBeLessThanOrEqual(n)` | `value <= n` |
-| `toBeCloseTo(n, precision?)` | 浮動小数点の近似比較（デフォルト精度 2 桁） |
+| `toBeCloseTo(n, precision?)` | Approximate floating-point comparison (default precision: 2 digits) |
 
-## コレクションマッチャー
+## Collection Matchers
 
 | Matcher | Description |
 |---------|-------------|
-| `toContain(item)` | 配列にアイテムを含む / 文字列に部分文字列を含む |
-| `toContainEqual(item)` | 配列に構造的に等しいアイテムを含む（`toEqual` ロジック） |
+| `toContain(item)` | Array contains item / string contains substring |
+| `toContainEqual(item)` | Array contains a structurally equal item (`toEqual` logic) |
 | `toHaveLength(n)` | `.length === n` |
-| `toHaveProperty(keyPath, value?)` | プロパティの存在確認（ドット記法・配列パス対応） |
+| `toHaveProperty(keyPath, value?)` | Checks a property exists (supports dot notation and array paths) |
 
 ```ts
 expect([1, 2, 3]).toContain(2)
@@ -56,23 +58,23 @@ expect([{ id: 1 }, { id: 2 }]).toContainEqual({ id: 1 })
 expect({ user: { name: 'Alice' } }).toHaveProperty('user.name', 'Alice')
 ```
 
-## 文字列マッチャー
+## String Matchers
 
 | Matcher | Description |
 |---------|-------------|
-| `toMatch(pattern)` | 正規表現または部分文字列にマッチ |
+| `toMatch(pattern)` | Matches a regex or substring |
 
 ```ts
 expect('hello world').toMatch(/world/)
 expect('hello world').toMatch('world')
 ```
 
-## エラーマッチャー
+## Error Matchers
 
 | Matcher | Description |
 |---------|-------------|
-| `toThrow(error?)` | 関数が例外をスローする（メッセージ/クラスで検証可能） |
-| `toThrowError(error?)` | `toThrow` のエイリアス |
+| `toThrow(error?)` | Function throws an exception (can verify by message/class) |
+| `toThrowError(error?)` | Alias for `toThrow` |
 
 ```ts
 expect(() => JSON.parse('{')).toThrow(SyntaxError)
@@ -80,13 +82,13 @@ expect(() => fn()).toThrow('expected message')
 expect(() => fn()).toThrow(/pattern/)
 ```
 
-## スナップショットマッチャー
+## Snapshot Matchers
 
 | Matcher | Description |
 |---------|-------------|
-| `toMatchSnapshot(hint?)` | 保存済みスナップショットと比較。初回は作成 |
-| `toMatchInlineSnapshot(snapshot?)` | テストファイル内にインラインでスナップショット保存 |
-| `toMatchFileSnapshot(filepath)` | 指定ファイルとスナップショット比較（async） |
+| `toMatchSnapshot(hint?)` | Compares against the saved snapshot. Creates one on first run |
+| `toMatchInlineSnapshot(snapshot?)` | Stores the snapshot inline in the test file |
+| `toMatchFileSnapshot(filepath)` | Compares against a snapshot in the given file (async) |
 | `toThrowErrorMatchingSnapshot(hint?)` | `toThrow` + `toMatchSnapshot` |
 | `toThrowErrorMatchingInlineSnapshot(snapshot?)` | `toThrow` + `toMatchInlineSnapshot` |
 
@@ -100,21 +102,21 @@ expect({ a: 1 }).toMatchInlineSnapshot(`
 `)
 ```
 
-## モック/スパイマッチャー
+## Mock and Spy Matchers
 
 | Matcher | Description |
 |---------|-------------|
-| `toHaveBeenCalled()` | 1回以上呼ばれた |
-| `toHaveBeenCalledTimes(n)` | ちょうど n 回呼ばれた |
-| `toHaveBeenCalledWith(...args)` | 指定引数で呼ばれた（任意の呼び出し） |
-| `toHaveBeenCalledExactlyOnceWith(...args)` | 1回だけ指定引数で呼ばれた |
-| `toHaveBeenLastCalledWith(...args)` | 最後の呼び出しが指定引数 |
-| `toHaveBeenNthCalledWith(n, ...args)` | n 番目の呼び出しが指定引数（1始まり） |
-| `toHaveReturned()` | 1回以上正常にリターンした |
-| `toHaveReturnedTimes(n)` | ちょうど n 回リターンした |
-| `toHaveReturnedWith(value)` | 指定値をリターンした |
-| `toHaveLastReturnedWith(value)` | 最後のリターン値が一致 |
-| `toHaveNthReturnedWith(n, value)` | n 番目のリターン値が一致 |
+| `toHaveBeenCalled()` | Called one or more times |
+| `toHaveBeenCalledTimes(n)` | Called exactly n times |
+| `toHaveBeenCalledWith(...args)` | Called with the given arguments (any call) |
+| `toHaveBeenCalledExactlyOnceWith(...args)` | Called exactly once with the given arguments |
+| `toHaveBeenLastCalledWith(...args)` | Last call was made with the given arguments |
+| `toHaveBeenNthCalledWith(n, ...args)` | The nth call (1-indexed) was made with the given arguments |
+| `toHaveReturned()` | Returned successfully one or more times |
+| `toHaveReturnedTimes(n)` | Returned exactly n times |
+| `toHaveReturnedWith(value)` | Returned the given value |
+| `toHaveLastReturnedWith(value)` | Last return value matches |
+| `toHaveNthReturnedWith(n, value)` | The nth return value matches |
 
 ```ts
 const fn = vi.fn(() => 42)
@@ -123,25 +125,25 @@ expect(fn).toHaveBeenCalledWith('hello')
 expect(fn).toHaveReturnedWith(42)
 ```
 
-## 非同期マッチャー
+## Async Matchers
 
 | Modifier | Description |
 |----------|-------------|
-| `resolves` | Promise の解決値をアンラップ（`await` 必須） |
-| `rejects` | Promise の拒否理由をアンラップ（`await` 必須） |
+| `resolves` | Unwraps a Promise's resolved value (requires `await`) |
+| `rejects` | Unwraps a Promise's rejection reason (requires `await`) |
 
 ```ts
 await expect(Promise.resolve(42)).resolves.toBe(42)
 await expect(Promise.reject(new Error('fail'))).rejects.toThrow('fail')
 ```
 
-## アサーション制御
+## Assertion Control
 
 | Method | Description |
 |--------|-------------|
-| `expect.assertions(n)` | テスト内でちょうど n 個のアサーションが実行されることを検証 |
-| `expect.hasAssertions()` | 少なくとも 1 つのアサーションが実行されることを検証 |
-| `expect.unreachable(msg?)` | 到達すべきでないコードパス（到達時に失敗） |
+| `expect.assertions(n)` | Verifies exactly n assertions run in the test |
+| `expect.hasAssertions()` | Verifies at least one assertion runs |
+| `expect.unreachable(msg?)` | Marks a code path that should not be reached (fails if reached) |
 
 ```ts
 test('async callback is called', async () => {
@@ -151,34 +153,34 @@ test('async callback is called', async () => {
 })
 ```
 
-## ソフトアサーション
+## Soft Assertions
 
 ```ts
-expect.soft(a).toBe(1)  // 失敗してもテスト続行
-expect.soft(b).toBe(2)  // 全失敗をまとめて報告
+expect.soft(a).toBe(1)  // test continues even if this fails
+expect.soft(b).toBe(2)  // all failures are reported together
 ```
 
-## poll（リトライアサーション）
+## poll (retrying assertions)
 
 ```ts
 await expect.poll(() => fetchStatus()).toBe('ready')
-// デフォルト: interval 50ms, timeout 1000ms
+// defaults: interval 50ms, timeout 1000ms
 await expect.poll(() => count, { interval: 100, timeout: 5000 }).toBeGreaterThan(10)
 ```
 
-## 非対称マッチャー
+## Asymmetric Matchers
 
-`toEqual` / `toMatchObject` 内で使用可能。
+Usable inside `toEqual` / `toMatchObject`.
 
 | Matcher | Description |
 |---------|-------------|
-| `expect.anything()` | `null` / `undefined` 以外の任意の値 |
-| `expect.any(Class)` | 指定クラスのインスタンス |
-| `expect.arrayContaining(items)` | 指定アイテムを全て含む配列 |
-| `expect.objectContaining(obj)` | 指定プロパティを含むオブジェクト |
-| `expect.stringContaining(str)` | 部分文字列を含む文字列 |
-| `expect.stringMatching(pattern)` | 正規表現にマッチする文字列 |
-| `expect.closeTo(n, precision?)` | 浮動小数点の近似マッチ |
+| `expect.anything()` | Any value other than `null` / `undefined` |
+| `expect.any(Class)` | Instance of the given class |
+| `expect.arrayContaining(items)` | Array containing all the given items |
+| `expect.objectContaining(obj)` | Object containing the given properties |
+| `expect.stringContaining(str)` | String containing the given substring |
+| `expect.stringMatching(pattern)` | String matching the given regex |
+| `expect.closeTo(n, precision?)` | Approximate floating-point match |
 
 ```ts
 expect({ id: 1, name: 'Alice', createdAt: new Date() }).toEqual({
@@ -190,8 +192,8 @@ expect({ id: 1, name: 'Alice', createdAt: new Date() }).toEqual({
 expect([1, 2, 3, 4]).toEqual(expect.arrayContaining([1, 3]))
 ```
 
-## 関連
+## Related
 
 - [Test API](./test-api.md)
-- [Vi ユーティリティ](./vi.md)
-- [モックパターン](../patterns/mocking.md)
+- [Vi Utilities](./vi.md)
+- [Mocking patterns](../patterns/mocking.md)

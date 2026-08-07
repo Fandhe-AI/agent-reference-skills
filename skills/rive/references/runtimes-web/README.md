@@ -1,16 +1,22 @@
 # runtimes-web
 
 | Name | Description | Path |
-| --- | --- | --- |
-| packages | Package selection: @rive-app/webgl2 vs canvas vs canvas-lite | [packages.md](./packages.md) |
-| Rive (constructor) | RiveParameters — all constructor options including src, canvas, autoplay, autoBind, callbacks | [rive-constructor.md](./rive-constructor.md) |
-| Rive instance methods | play/pause/stop/reset, resize, stateMachineInputs, on/off, cleanup | [rive-methods.md](./rive-methods.md) |
-| Layout / Fit / Alignment | Layout class, Fit enum (Contain/Cover/Fill/…), Alignment enum | [layout.md](./layout.md) |
-| State Machine Playback | stateMachineInputs, StateMachineInput (boolean/number/trigger), onStateChange | [state-machine-playback.md](./state-machine-playback.md) |
-| Data Binding | ViewModel, ViewModelInstance, property accessors, lists, images, artboard swap, observability | [data-binding.md](./data-binding.md) |
-| Loading Assets | assetLoader callback, embedded/hosted/referenced strategies, decodeFont, decodeImage | [loading-assets.md](./loading-assets.md) |
-| Fonts | Dynamic font loading, RiveFont.setFallbackFontCallback for missing glyphs | [fonts.md](./fonts.md) |
-| Audio | volume property, embedded vs referenced audio, browser autoplay restriction | [audio.md](./audio.md) |
-| Events | EventType, RiveEventType, on/off API, RiveEvent payload, OpenUrl handling | [events.md](./events.md) |
-| RiveFile | Pre-parse and share a .riv file across multiple Rive instances | [rive-file.md](./rive-file.md) |
-| Preloading WASM | RuntimeLoader.setWasmUrl — self-host the WASM binary for faster startup | [preloading-wasm.md](./preloading-wasm.md) |
+|------|-------------|------|
+| Artboards (Web) | Selecting which artboard to render at runtime. | [artboards.md](./artboards.md) |
+| Audio | Playing audio from Rive animations in the web runtime. | [audio.md](./audio.md) |
+| Caching a Rive File | Load a `.riv` file once and reuse it across multiple… | [caching-a-rive-file.md](./caching-a-rive-file.md) |
+| Canvas vs WebGL2 | Choosing between `@rive-app/webgl2` and `@rive-app/canvas`… | [canvas-vs-webgl.md](./canvas-vs-webgl.md) |
+| Data Binding | Connect JavaScript code to animated properties through… | [data-binding.md](./data-binding.md) |
+| Events | Subscribe to Rive runtime lifecycle events and Rive-defined… | [events.md](./events.md) |
+| Web Runtime FAQ | Common issues and answers for the web runtime. | [faq.md](./faq.md) |
+| Fonts | Dynamic font loading and fallback font configuration for… | [fonts.md](./fonts.md) |
+| Layout / Fit / Alignment | Controls how Rive content is scaled and positioned within the canvas. | [layout.md](./layout.md) |
+| Loading Assets | Three strategies for supplying image, font, and audio… | [loading-assets.md](./loading-assets.md) |
+| Low-level API Usage | Advanced JS APIs for constructing and driving your own render… | [low-level-api-usage.md](./low-level-api-usage.md) |
+| Migration Guides (Web) | Migration paths between web runtime package versions and… | [migration-guides.md](./migration-guides.md) |
+| Web Packages Overview | Three npm packages for different rendering needs and bundle-size… | [packages.md](./packages.md) |
+| Preloading WASM | Self-host and preload the Rive WebAssembly binary for faster… | [preloading-wasm.md](./preloading-wasm.md) |
+| Rive (constructor) | High-level class that loads a `.riv` file, manages the render… | [rive-constructor.md](./rive-constructor.md) |
+| RiveFile | Pre-parse a `.riv` file once and share it across multiple… | [rive-file.md](./rive-file.md) |
+| Rive Instance Methods | Methods available on a `Rive` instance for playback control,… | [rive-methods.md](./rive-methods.md) |
+| State Machine Playback | Control state machine playback and interact with inputs… | [state-machine-playback.md](./state-machine-playback.md) |

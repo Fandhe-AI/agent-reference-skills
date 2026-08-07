@@ -4,8 +4,7 @@
 
 ```typescript
 // kubb.config.ts
-import { defineConfig } from '@kubb/core'
-import { pluginOas } from '@kubb/plugin-oas'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig([
@@ -14,7 +13,6 @@ export default defineConfig([
     input: { path: './specs/petStore.yaml' },
     output: { path: './src/gen/petStore', clean: true },
     plugins: [
-      pluginOas({ generators: [] }),
       pluginTs({ output: { path: 'models' } }),
     ],
   },
@@ -23,7 +21,6 @@ export default defineConfig([
     input: { path: './specs/userApi.yaml' },
     output: { path: './src/gen/userApi', clean: true },
     plugins: [
-      pluginOas({ generators: [] }),
       pluginTs({ output: { path: 'models' } }),
     ],
   },
@@ -38,7 +35,7 @@ export default defineConfig([
     name: 'externalApi',
     input: { path: 'https://api.example.com/openapi.json' },
     output: { path: './src/gen/external' },
-    plugins: [pluginOas(), pluginTs()],
+    plugins: [pluginTs()],
   },
 ])
 ```
@@ -49,3 +46,4 @@ export default defineConfig([
 - `name` フィールドを指定すると CLI 出力で設定を識別しやすくなる
 - リモート URL 参照時はネットワーク到達性とスキーマの安定性に注意する
 - 各設定は独立した `output.path` を持つ必要がある
+- v5 では `@kubb/plugin-oas` は廃止された。パース・バリデーションのオプションを明示したい場合は各設定エントリに `adapter: adapterOas({ validate: true })` を追加する（デフォルトのままでよい場合は省略可能）

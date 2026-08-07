@@ -64,6 +64,7 @@ skills/kicad_10/
       12-design-blocks.md
       13-simulator.md
       14-advanced-topics.md
+      15-actions-reference.md
     pcbnew/
       README.md
       01-introduction.md
@@ -81,6 +82,7 @@ skills/kicad_10/
       13-multichannel-layout.md
       14-design-blocks.md
       15-advanced-topics.md
+      16-actions-reference.md
     gerbview/
       README.md
       01-introduction.md

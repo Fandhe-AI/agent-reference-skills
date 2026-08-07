@@ -1,31 +1,27 @@
 # @typeParam
 
-関数、メソッド、クラス、インターフェース、型エイリアスの型パラメータを文書化するブロックタグ。
+Block tag for documenting the type parameters of a function, method, class, interface, or type alias.
 
-## 構文
+## Signature / Usage
 
 ```
-@typeParam 型パラメータ名 - 説明
+@typeParam TypeParamName - description
 ```
 
-## 詳細説明
+The `@typeParam` tag is used to document the type parameters of a function, method, class, interface, or type alias. TypeDoc recognizes `@template` as an equivalent alias.
 
-`@typeParam` タグは関数、メソッド、クラス、インターフェース、型エイリアスの型パラメータを文書化するために使用される。TypeDocは `@template` を同等のエイリアスとして認識する。
+Conforms to the TSDoc specification.
 
-TSDocの仕様に準拠している。
+**Notes on TSDoc compatibility**: the TSDoc standard specifies two requirements:
+1. The tag should not include type information
+2. The description should follow the parameter name, separated by a hyphen
 
-**TSDoc互換性に関する補足**: TSDoc標準では以下の2つの要件を規定している：
-1. タグに型情報を含めるべきではない
-2. パラメータ名の後にハイフンで区切って説明を記述する
-
-ただし、TypeDocはJavaScriptファイルでのTypeScript型注釈との互換性向上のため、これらの制約を緩和している。以下のすべてのバリエーションが同一に処理される：
+However, TypeDoc relaxes these constraints for improved compatibility with TypeScript type annotations in JavaScript files. All of the following variants are treated identically:
 
 - `@typeParam test - description`
 - `@typeParam test description`
 - `@typeParam {string} test - description`
 - `@typeParam {string} test description`
-
-## コード例
 
 ```typescript
 /**
@@ -36,14 +32,14 @@ export function identity<T>(x: T): T {
 }
 ```
 
-## 注意点
+## Notes
 
-- TypeDocは柔軟な構文をサポートし、ハイフン区切りや型情報の有無に関わらず処理する
-- `@template` は `@typeParam` のエイリアスとして扱われる
-- TypeScriptプロジェクトでは `@typeParam` の使用が推奨される
+- TypeDoc supports flexible syntax regardless of the hyphen separator or presence of type information
+- `@template` is treated as an alias of `@typeParam`
+- `@typeParam` is recommended for TypeScript projects
 
-## 関連
+## Related
 
-- [@template](./template.md) -- JavaScriptプロジェクト向けの代替構文
-- [@param](./param.md) -- 通常のパラメータの文書化
+- [@template](./template.md) -- alternative syntax for JavaScript projects
+- [@param](./param.md) -- documenting regular parameters
 - [TSDoc @typeParam](https://tsdoc.org/pages/tags/typeParam/)

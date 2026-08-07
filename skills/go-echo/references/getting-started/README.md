@@ -2,6 +2,7 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Quickstart | Minimal Echo app: module setup, Hello World handler, run server | [quickstart.md](./quickstart.md) |
-| Installation | `go get` steps, Go version requirement, v4/v5 versioning | [installation.md](./installation.md) |
-| Customization | Overriding Echo instance fields (Logger, Validator, Binder, Renderer, etc.) | [customization.md](./customization.md) |
+| Customization | The `Echo` instance exposes several fields that let you replace default behaviors… | [customization.md](./customization.md) |
+| Installation | Echo is distributed as a Go module under `github.com/labstack/echo/v5`. | [installation.md](./installation.md) |
+| IP Address Resolution | Echo resolves the client's real IP via `Context#RealIP()`, driven by the… | [ip-address.md](./ip-address.md) |
+| Quickstart | Echo is a high performance, minimalist Go web framework. | [quickstart.md](./quickstart.md) |

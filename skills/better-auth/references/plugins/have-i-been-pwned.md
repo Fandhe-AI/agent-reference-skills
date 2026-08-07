@@ -1,10 +1,10 @@
 # Have I Been Pwned
 
-Have I Been Pwned プラグインは、侵害されたクレデンシャルでのアカウント作成やパスワード更新を防止することでアカウントセキュリティを強化する。Have I Been Pwned API と統合し、既知のデータ侵害でのパスワード露出をチェックする。
+The Have I Been Pwned plugin strengthens account security by preventing account creation or password updates with compromised credentials. It integrates with the Have I Been Pwned API to check whether a password has been exposed in a known data breach.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -17,11 +17,11 @@ export const auth = betterAuth({
 })
 ```
 
-クライアント側の設定は不要。
+No client-side configuration is needed.
 
-## 動作
+### Behavior
 
-侵害されたパスワードでのアカウント作成やパスワード更新の試行時:
+When attempting to create an account or update a password with a compromised password:
 
 ```json
 {
@@ -30,11 +30,7 @@ export const auth = betterAuth({
 }
 ```
 
-## 設定オプション
-
-| オプション | 型 | 説明 |
-|---|---|---|
-| `customPasswordCompromisedMessage` | string | ユーザーに表示されるカスタムエラーメッセージ |
+### Custom message
 
 ```typescript
 haveIBeenPwned({
@@ -42,8 +38,14 @@ haveIBeenPwned({
 })
 ```
 
-## 注意点
+## Options / Props
 
-- パスワードハッシュの最初の5文字のみが API に送信される（k-匿名性）
-- 完全なパスワードが外部サービスに送信されることはない
-- データ侵害からのクレデンシャル侵害に対する追加のアカウント保護レイヤーを提供
+| Option | Type | Description |
+|---|---|---|
+| `customPasswordCompromisedMessage` | string | Custom error message shown to the user |
+
+## Notes
+
+- Only the first 5 characters of the password hash are sent to the API (k-anonymity)
+- The full password is never sent to an external service
+- Provides an additional layer of account protection against credential exposure from data breaches

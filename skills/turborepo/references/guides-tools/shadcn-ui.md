@@ -1,23 +1,23 @@
 # shadcn/ui
 
-## セットアップ
+## Usage
 
-モノレポ用の canary バージョンを使用:
+Setup: use the canary version for monorepos.
 
 ```bash
 pnpm dlx shadcn@canary init
 ```
 
-セットアップウィザードで monorepo オプションを選択。
+Choose the monorepo option in the setup wizard.
 
-## コンポーネントの追加
+Adding components:
 
 ```bash
 pnpm dlx shadcn@canary add [COMPONENT]
 ```
 
-## 注意点
+## Notes
 
-- モノレポサポートは `@canary` バージョンが必須
-- npm パッケージではなくファイルが直接コピーされる
-- Tailwind CSS が前提条件
+- Monorepo support requires the `@canary` version.
+- Files are copied directly rather than installed as an npm package.
+- Tailwind CSS is a prerequisite.

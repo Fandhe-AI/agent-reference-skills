@@ -129,6 +129,8 @@ skills/windows-interop-modernize/
       ai-assisted-migration.md
       applifecycle-migration.md
       background-task-migration.md
+      case-study-1-photolab.md
+      case-study-2-photo-editor.md
       dwritecore-migration.md
       feature-mapping.md
       keyboard-events-migration.md
@@ -173,5 +175,6 @@ skills/windows-interop-modernize/
 | UWP アプリを Windows App SDK / WinUI 3 へ移行する全体戦略・名前空間対応を知りたい | uwp-migration | [references/uwp-migration/README.md](references/uwp-migration/README.md) |
 | ウィンドウ管理・スレッディング・通知・バックグラウンドタスクの UWP 固有 API を移行したい | uwp-migration | [references/uwp-migration/README.md](references/uwp-migration/README.md) |
 | .NET Upgrade Assistant で機械的な移行を進めたい | uwp-migration | [references/uwp-migration/README.md](references/uwp-migration/README.md) |
+| PhotoLab (C#) / Photo Editor (C++/WinRT) の移行事例を参考にしたい、AI コーディングエージェントで移行を自動化したい | uwp-migration | [references/uwp-migration/README.md](references/uwp-migration/README.md) |
 
 このスキルは Win32・COM・C++/WinRT・C#/WinRT・XAML Islands・WPF/WinForms・UWP 間の相互運用と移行手順のみを扱う。WinUI 3 のコントロール API 自体は windows-winui-controls、レイアウト・スタイル・XAML 記法は windows-winui-ui、Windows App SDK のランタイム機能は windows-app-sdk が担当する。

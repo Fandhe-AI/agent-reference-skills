@@ -1,14 +1,6 @@
 # Cognito (Amazon Cognito)
 
-## Credentials
-
-- `COGNITO_CLIENT_ID`
-- `COGNITO_CLIENT_SECRET`
-- `COGNITO_DOMAIN`
-- `COGNITO_REGION`
-- `COGNITO_USERPOOL_ID`
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth";
@@ -26,8 +18,6 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
-
 ```typescript
 import { createAuthClient } from "better-auth/client"
 
@@ -40,36 +30,31 @@ const signIn = async () => {
 }
 ```
 
-## リダイレクト URL
+## Options / Props
 
-`http://localhost:3000/api/auth/callback/cognito` (ローカル開発)
+| Name | Type | Description |
+| --- | --- | --- |
+| `clientId` | string | `COGNITO_CLIENT_ID` |
+| `clientSecret` | string | `COGNITO_CLIENT_SECRET` |
+| `domain` | string | `COGNITO_DOMAIN` — Cognito Hosted UI domain |
+| `region` | string | `COGNITO_REGION` |
+| `userPoolId` | string | `COGNITO_USERPOOL_ID` |
+| `scope` | string[] | Additional OAuth2 scopes |
+| `getUserInfo` | function | Custom function retrieving user information from the Cognito UserInfo endpoint |
 
-## プロバイダー固有の設定・注意点
+## Notes
 
-### Setup Prerequisites
+- Redirect URL: `http://localhost:3000/api/auth/callback/cognito` (local development)
+- **Setup Prerequisites**: A User Pool is required for Cognito authentication. The callback URL must match exactly.
+  1. Create User Pool in AWS Cognito Console
+  2. Configure App client (note Client ID and Secret)
+  3. Set Cognito Hosted UI domain
+  4. Enable OAuth flows: "Authorization code grant"
+  5. Enable OAuth scopes: `openid`, `profile`, `email`
+  6. Add callback URL (e.g., `http://localhost:3000/api/auth/callback/cognito`)
+- **Common Cognito scopes**: `openid` (required for OpenID Connect), `profile` (basic profile information access), `email` (user email access), `phone` (phone number access), `aws.cognito.signin.user.admin` (Cognito-specific APIs)
+- Scopes must be configured in the Cognito App Client settings before use
 
-User Pool is required for Cognito authentication. Callback URL must match exactly.
+## Related
 
-Configuration steps:
-1. Create User Pool in AWS Cognito Console
-2. Configure App client (note Client ID and Secret)
-3. Set Cognito Hosted UI domain
-4. Enable OAuth flows: "Authorization code grant"
-5. Enable OAuth scopes: "openid", "profile", "email"
-6. Add callback URL (e.g., `http://localhost:3000/api/auth/callback/cognito`)
-
-### Scopes
-
-**Common Cognito scopes**:
-- `openid`: Required for OpenID Connect
-- `profile`: Basic profile information access
-- `email`: User email access
-- `phone`: Phone number access
-- `aws.cognito.signin.user.admin`: Cognito-specific APIs
-
-### Custom Options
-
-- `scope`: Additional OAuth2 scopes (array format)
-- `getUserInfo`: Custom function retrieving user information from Cognito UserInfo endpoint
-
-Scopes must be configured in the Cognito App Client settings before use.
+- [Social Providers Common](./social-providers-common.md)

@@ -23,6 +23,7 @@ UWP controls for pen/stylus ink input (`InkCanvas`) and an associated toolbar of
 - **Not available in the stable WinUI 3 / Windows App SDK 2.0 channel.** `InkCanvas` exists only as an experimental API (introduced in Windows App SDK 2.0 Experimental 1); `InkToolbar` is not available at all. Referencing either type in WinUI 3 XAML produces a `WMC0001 Unknown type` build error because the types don't exist in `Microsoft.UI.Xaml.Controls`.
 - Recommended WinUI 3 alternatives: [Win2D](https://github.com/Microsoft/Win2D) combined with manual pointer input handling, or third-party inking libraries.
 - Do not use experimental APIs in production apps; they may change or be removed in future releases.
+- Confirmed current as of Windows App SDK 2.0 (2026-07); see [Known control gaps](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/migrate-to-windows-app-sdk/what-is-supported#known-control-gaps) for the authoritative status table.
 
 ## Related
 

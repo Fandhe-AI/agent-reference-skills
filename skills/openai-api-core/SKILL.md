@@ -40,12 +40,15 @@ skills/openai-api-core/
       background.md
       responses-multi-agent.md
       compaction.md
+      deployment-checklist.md
     structured-streaming/
       README.md
       structured-outputs.md
       streaming-responses.md
       function-calling.md
       programmatic-tool-calling.md
+      websocket-mode.md
+      prompt-generation.md
     webhooks-errors/
       README.md
       webhooks.md
@@ -65,6 +68,7 @@ skills/openai-api-core/
       README.md
       responses-vs-chat-completions.md
       migrate-chat-completions-to-responses.md
+      migrate-from-prompt-objects.md
       assistants-to-responses-migration.md
       deprecations.md
   samples/
@@ -105,14 +109,18 @@ Codex（コーディングエージェント CLI）は `openai-codex` スキル�
 | Responses API でテキストを生成する・プロンプト設計の基本を知りたい | responses | [references/responses/README.md](references/responses/README.md) |
 | 会話状態の管理（`previous_response_id` / Conversations API）・プロンプトキャッシュを扱いたい | responses | [references/responses/README.md](references/responses/README.md) |
 | reasoning モデルの `effort`/`summary` 設定・background mode・マルチエージェント・compaction を知りたい | responses | [references/responses/README.md](references/responses/README.md) |
+| 本番投入前の設計チェックリスト（deployment checklist）を確認したい | responses | [references/responses/README.md](references/responses/README.md) |
 | 構造化出力（JSON Schema, strict mode）を得たい | structured-streaming | [references/structured-streaming/README.md](references/structured-streaming/README.md) |
 | SSE ストリーミングでレスポンスを逐次受信したい | structured-streaming | [references/structured-streaming/README.md](references/structured-streaming/README.md) |
 | function calling / programmatic tool calling でツールを呼び出したい | structured-streaming | [references/structured-streaming/README.md](references/structured-streaming/README.md) |
+| WebSocket 経由で常時接続の agentic ワークフローを組みたい | structured-streaming | [references/structured-streaming/README.md](references/structured-streaming/README.md) |
+| Playground の Generate 機能でプロンプト/関数定義/スキーマを自動生成したい | structured-streaming | [references/structured-streaming/README.md](references/structured-streaming/README.md) |
 | webhook の受信・検証・Realtime API のサーバー側制御を知りたい | webhooks-errors | [references/webhooks-errors/README.md](references/webhooks-errors/README.md) |
 | エラーコード・例外クラス・レート制限とバックオフ戦略を知りたい | webhooks-errors | [references/webhooks-errors/README.md](references/webhooks-errors/README.md) |
 | 公式 SDK（Python / JavaScript / .NET / Java / Go / Ruby）の使い方を知りたい | libraries | [references/libraries/README.md](references/libraries/README.md) |
 | openai CLI のインストール・コマンドを知りたい | libraries | [references/libraries/README.md](references/libraries/README.md) |
 | Responses API と Chat Completions API のどちらを使うか判断したい | legacy-migration | [references/legacy-migration/README.md](references/legacy-migration/README.md) |
 | Chat Completions / Assistants から Responses API へ移行したい・非推奨スケジュールを知りたい | legacy-migration | [references/legacy-migration/README.md](references/legacy-migration/README.md) |
+| 管理された `prompt` オブジェクトからコード内バージョン管理へ移行したい | legacy-migration | [references/legacy-migration/README.md](references/legacy-migration/README.md) |
 | 典型的な使い方を知りたい（テキスト生成, 構造化出力, ストリーミング, 会話継続, function calling, webhook 検証, background 実行等） | samples | [samples/README.md](samples/README.md) |
 | インストール・認証設定・curl でのエンドポイント呼び出し・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

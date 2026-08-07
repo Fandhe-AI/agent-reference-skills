@@ -77,6 +77,8 @@ skills/biome/
       renovate.md
     internals/
       README.md
+      architecture.md
+      changelog.md
       language-support.md
       philosophy.md
   samples/
@@ -134,5 +136,7 @@ skills/biome/
 | Renovate による biome.json 自動更新 | recipes | [references/recipes/README.md](references/recipes/README.md) |
 | 言語サポート状況、対応言語 | internals | [references/internals/README.md](references/internals/README.md) |
 | 開発哲学、プロジェクト原則 | internals | [references/internals/README.md](references/internals/README.md) |
+| アーキテクチャ、内部実装 | internals | [references/internals/README.md](references/internals/README.md) |
+| バージョン履歴、changelog | internals | [references/internals/README.md](references/internals/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

@@ -1,28 +1,24 @@
 # @defaultValue
 
-アクセサやプロパティのデフォルト値を記録するためのブロックタグ。
+Block tag that records the default value of an accessor or property.
 
-## 構文
-
-```
-@defaultValue デフォルト値の説明
-```
-
-または
+## Signature / Usage
 
 ```
-@default デフォルト値の説明
+@defaultValue Description of the default value
 ```
 
-## 詳細説明
+or
 
-`@defaultValue` タグはアクセサやプロパティのデフォルト値を文書化するために使用できる。TypeDocは `@default` を一般的に使用される代替形式として認識する。
+```
+@default Description of the default value
+```
 
-デフォルトテーマではこのタグに特別な動作を付与せず、他のブロックタグと同様に `# Default Value` ヘッダー下にその内容を表示する。
+The `@defaultValue` tag can be used to document the default value of an accessor or property. TypeDoc recognizes `@default` as a commonly used alternative form.
 
-TSDocの仕様に準拠している。
+The default theme assigns no special behavior to this tag and, like other block tags, displays its content under a `# Default Value` heading.
 
-## コード例
+It conforms to the TSDoc specification.
 
 ```typescript
 export interface CompilerOptions {
@@ -35,13 +31,13 @@ export interface CompilerOptions {
 }
 ```
 
-## 注意点
+## Notes
 
-- `@defaultValue` と `@default` はどちらも同じ動作をする
-- デフォルトテーマでは `# Default Value` ヘッダーの下に段落としてレンダリングされる
-- アクセサおよびプロパティの文書化に適している
+- `@defaultValue` and `@default` behave identically
+- The default theme renders it as a paragraph under a `# Default Value` heading
+- Suitable for documenting accessors and properties
 
-## 関連
+## Related
 
-- [@property](./property.md) -- プロパティの文書化
+- [@property](./property.md) -- documenting properties
 - [TSDoc @defaultValue](https://tsdoc.org/pages/tags/defaultValue/)

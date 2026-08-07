@@ -24,6 +24,7 @@ Android Studio's Background Task Inspector lists, cancels, and graphs `WorkManag
 ## Notes
 
 - Requires API level 26+ and WorkManager 2.5.0+. Documented substitutes without the inspector: `adb shell dumpsys jobscheduler` (API 23+) lists jobs attributed to your package (look for `androidx.work.impl.background.systemjob.SystemJobService` and the job's required/satisfied/unsatisfied constraints), and `Configuration.Builder().setMinimumLoggingLevel(android.util.Log.DEBUG)` enables verbose `WM-`-tagged logcat output.
+- WorkManager 2.4.0+: `adb shell am broadcast -a "androidx.work.diagnostics.REQUEST_DIAGNOSTICS" -p "<package_name>"` dumps a snapshot of recently completed, currently running, and scheduled work (id, class name, state, unique name, tags) to logcat; works only in debug builds.
 - Package/tooling: Android Studio App Inspection (`View > Tool Windows > App Inspection`), not an `androidx.work` API.
 
 ## Related

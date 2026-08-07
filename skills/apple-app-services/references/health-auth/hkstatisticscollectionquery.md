@@ -59,7 +59,7 @@ iOS 8.0+, iPadOS 8.0+, macOS 13.0+, watchOS 2.0+, visionOS 1.0+. Only works with
 
 ## Related
 
-- [hkstatisticsquery.md](./hkstatisticsquery.md)
-- [hkquantitytype.md](./hkquantitytype.md)
-- [hkquery.md](./hkquery.md)
-- [hkhealthstore.md](./hkhealthstore.md)
+- [HKStatisticsQuery](./hkstatisticsquery.md)
+- [HKQuantityType](./hkquantitytype.md)
+- [HKQuery](./hkquery.md)
+- [HKHealthStore](./hkhealthstore.md)

@@ -1,6 +1,8 @@
 # Vitest
 
-## アプローチ 1: パッケージ単位（推奨）
+## Usage
+
+Approach 1: per-package (recommended)
 
 ```json
 {
@@ -17,9 +19,9 @@
 }
 ```
 
-カバレッジマージ: `nyc merge` → `nyc report`
+Coverage merging: `nyc merge` → `nyc report`.
 
-## アプローチ 2: Vitest Projects（ルート一元管理）
+Approach 2: Vitest Projects (centralized at root)
 
 ```ts
 export default defineConfig({
@@ -33,13 +35,11 @@ export default defineConfig({
 { "tasks": { "//#test": { "outputs": ["coverage/**"] } } }
 ```
 
-デメリット: どのパッケージを変更しても全体キャッシュミスが発生。
+Drawback: changing any package invalidates the entire cache.
 
-## アプローチ 3: ハイブリッド
+Approach 3: hybrid — create a shared config package `@repo/vitest-config` that each package imports.
 
-共有設定パッケージ `@repo/vitest-config` を作成し、各パッケージがインポート。
+## Notes
 
-## 注意
-
-- `workspaces` は非推奨。`projects` を使う
-- サンプル: `npx create-turbo@latest --example with-vitest`
+- `workspaces` is deprecated; use `projects` instead.
+- Example: `npx create-turbo@latest --example with-vitest`.

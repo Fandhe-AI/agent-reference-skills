@@ -53,6 +53,25 @@ class MyViewController: UIViewController {
 | `tabBarController` | `UITabBarController?` | Nearest ancestor tab bar controller |
 | `splitViewController` | `UISplitViewController?` | Nearest ancestor split view controller |
 | `transitioningDelegate` | `UIViewControllerTransitioningDelegate?` | Provider of custom transition animators |
+| `contentUnavailableConfiguration` | `(any UIContentConfiguration)?` | Configuration describing the empty/unavailable state to display; typically a `UIContentUnavailableConfiguration` (iOS 17+) |
+| `preferredTransition` | `UIViewController.Transition?` | Transition animation to use when presenting the view controller (iOS 18+) |
+| `traitOverrides` | `UITraitOverrides` | Overrides trait values (e.g. `traitOverrides.userInterfaceStyle`) for the view controller's trait environment (iOS 17+) |
+| `tab` | `UITab?` | The `UITab` instance used to create this view controller when added to a tab-based `UITabBarController`; `nil` by default (iOS 18+) |
+| `ornaments` | `[UIOrnament]` | SwiftUI ornaments to display adjacent to the view controller (visionOS only) |
+
+## Content Unavailable State (iOS 17+)
+
+```swift
+override func updateContentUnavailableConfiguration(using state: UIContentUnavailableConfigurationState) {
+    if isLoading {
+        contentUnavailableConfiguration = UIContentUnavailableConfiguration.loading()
+    } else if items.isEmpty {
+        contentUnavailableConfiguration = UIContentUnavailableConfiguration.empty()
+    } else {
+        contentUnavailableConfiguration = nil
+    }
+}
+```
 
 ## Presentation Methods
 
@@ -86,6 +105,11 @@ childVC.removeFromParent()
 - Views load lazily on first access to the `view` property.
 - A view controller is the sole owner of its views; do not share views between controllers.
 - Inserted into the responder chain between its root view and the root view's superview.
+- `contentUnavailableConfiguration` (iOS 17+) mirrors the `UIContentConfiguration` pattern used by cells; prefer overriding `updateContentUnavailableConfiguration(using:)` and calling `setNeedsUpdateContentUnavailableConfiguration()` over setting the property directly.
+- `preferredTransition` (iOS 18+) works with `UIViewController.Transition` (e.g. `.zoom(options:sourceViewProvider:)`) to drive fluid transition animations between view controllers.
+- `traitOverrides` (iOS 17+) is the modern replacement for overriding `traitCollection` directly; it conforms to `UIMutableTraits` and is also available on `UIWindowScene`, `UIWindow`, `UIView`, and `UIPresentationController`.
+- `tab` (iOS 18+) is populated automatically when the view controller is supplied via `UITab`/`UISearchTab` for the new tab-based `UITabBarController` navigation model.
+- `ornaments` is visionOS-only; it has no effect on iOS/iPadOS/tvOS/Mac Catalyst.
 
 ## Related
 

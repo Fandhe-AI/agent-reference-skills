@@ -1,8 +1,8 @@
-# パッケージ固有 turbo.json
+# Package-Specific turbo.json
 
-## extends
+## Usage
 
-ルートの `turbo.json` 設定を継承する。パッケージレベルの `turbo.json` にのみ使用。
+`extends` inherits the root `turbo.json` configuration. It is only valid in a package-level `turbo.json`.
 
 ```json
 {
@@ -15,17 +15,15 @@
 }
 ```
 
-`"extends": ["//"]` はルートワークスペースを意味する。
-
-## パッケージレベルでのオーバーライド
-
-パッケージの `turbo.json` ではルートの同名タスクの設定を上書きできる:
-- `outputs`, `inputs`, `env`, `passThroughEnv` は上書き
-- `dependsOn` はルート設定とマージ
-
-## 使用例
+`"extends": ["//"]` refers to the root workspace.
 
 ```
-apps/web/turbo.json      ← Next.js 用の outputs を定義
-packages/ui/turbo.json   ← UI ライブラリ用の outputs を定義
+apps/web/turbo.json      # defines outputs for the Next.js app
+packages/ui/turbo.json   # defines outputs for the UI library
 ```
+
+## Notes
+
+- A package's `turbo.json` can override the same-named task's configuration from the root:
+  - `outputs`, `inputs`, `env`, `passThroughEnv` are overridden
+  - `dependsOn` is merged with the root configuration

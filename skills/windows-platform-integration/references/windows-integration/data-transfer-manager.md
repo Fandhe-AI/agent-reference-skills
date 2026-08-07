@@ -1,6 +1,6 @@
 # DataTransferManager
 
-Static class that programmatically initiates an exchange of content ("Share") with other apps. Fires `DataRequested` when a share operation starts, and can trigger the Share UI on demand with `ShowShareUI`.
+Static class that programmatically initiates an exchange of content with other apps through the Windows Share Sheet. Fires `DataRequested` when a share operation starts, and can trigger the Share UI on demand with `ShowShareUI`.
 
 ## Signature / Usage
 
@@ -61,8 +61,9 @@ interop.ShowShareUIForWindow(hWnd);
 ## Notes
 
 - Namespace: `Windows.ApplicationModel.DataTransfer` (WinRT). `DataTransferManager` is not agile — be mindful of its threading/marshaling model.
-- **WinUI 3 / desktop apps have no `CoreWindow`.** Instead of `DataTransferManager.ShowShareUI`, retrieve the manager and show the UI via the `IDataTransferManagerInterop` COM interface (`GetForWindow` / `ShowShareUIForWindow`), passing the window's HWND obtained from `WinRT.Interop.WindowNative.GetWindowHandle(this)`.
+- **Desktop apps (WinUI 3, WPF, WinForms — packaged or unpackaged) have no `CoreWindow`.** Instead of `DataTransferManager.GetForCurrentView` / `ShowShareUI` (UWP-only), retrieve the manager and show the UI via the `IDataTransferManagerInterop` COM interface (`GetForWindow` / `ShowShareUIForWindow`) on a per-window basis. Obtain the HWND via `WinRT.Interop.WindowNative.GetWindowHandle(this)` (WinUI 3), `new System.Windows.Interop.WindowInteropHelper(this).Handle` (WPF), or `this.Handle` (WinForms).
 - The share payload itself is built with [DataPackage](./data-package.md); the `DataRequested` handler must complete synchronously or call `args.Request.GetDeferral()` for async work.
+- Prefer `DataPackage.SetWebLink` / `SetApplicationLink` over `SetText` when sharing a URL, so target apps can render rich link previews instead of treating it as plain text.
 
 ## Related
 

@@ -1,6 +1,8 @@
 # BullMQ — Connections
 
-BullMQ は Redis への接続に ioredis モジュールを使用する。Queue や Worker の各インスタンスに接続設定を渡す方法、共有接続の注意点、および必須の Redis 設定について説明する。
+BullMQ は Redis への接続にデフォルトで ioredis モジュールを使用する。Queue や Worker の各インスタンスに接続設定を渡す方法、共有接続の注意点、および必須の Redis 設定について説明する。
+
+> **Note:** v6 以降、`ioredis` は BullMQ の直接依存から外れ `optional peer dependency` になった（`redis` / `pg` / `bullmq-otel` も同様）。Redis を利用する場合は `npm install ioredis` を明示的に実行する必要がある。
 
 ## 基本的な接続
 
@@ -82,6 +84,7 @@ const mySecondWorker = new Worker('mySecondWorker', async job => {}, {
 - **keyPrefix を使用しないこと**: ioredis の `keyPrefix` オプションは使用禁止。BullMQ は独自のキー・プレフィックス機構（`prefix` オプション）を提供している
 - **maxmemory-policy**: Redis の設定で `maxmemory-policy=noeviction` が必須。これを設定しないと、Redis がキーを自動削除し BullMQ の動作が壊れる可能性がある
 - **QueueScheduler / QueueEvents**: これらはブロッキング接続を必要とするため、接続の共有ができない
+- **ioredis は peer dependency（v6〜）**: `package.json` の `dependencies` には含まれず `peerDependencies`（`optional: true`）として宣言されている。Redis を使う場合は別途 `ioredis` をインストールすること
 
 ## 関連
 

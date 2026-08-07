@@ -61,6 +61,6 @@ iOS 8.0+, iPadOS 8.0+, macOS 13.0+, watchOS 2.0+, visionOS 1.0+. Returns a point
 
 ## Related
 
-- [hkquery.md](./hkquery.md)
-- [hkquantitysample.md](./hkquantitysample.md)
-- [hkobserverquery.md](./hkobserverquery.md)
+- [HKQuery](./hkquery.md)
+- [HKQuantitySample](./hkquantitysample.md)
+- [HKObserverQuery](./hkobserverquery.md)

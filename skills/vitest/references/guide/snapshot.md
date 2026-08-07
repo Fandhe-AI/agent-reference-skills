@@ -1,19 +1,16 @@
-# スナップショットテスト
+# Snapshot Testing
 
-## 基本
-
-### toMatchSnapshot()
-
-値をスナップショットファイル（`__snapshots__/` ディレクトリ）に保存し、次回以降の実行で比較する。
+## Signature / Usage
 
 ```ts
 expect(result).toMatchSnapshot()
 expect(result).toMatchSnapshot('optional hint')
 ```
 
-### toMatchInlineSnapshot()
+## Notes
 
-スナップショットをテストファイル内にインラインで保存する。初回実行時に Vitest が自動的にテストファイルを更新する。
+- `toMatchSnapshot()`: saves the value to a snapshot file (in the `__snapshots__/` directory) and compares against it on subsequent runs.
+- `toMatchInlineSnapshot()`: stores the snapshot inline in the test file. Vitest automatically updates the test file on the first run.
 
 ```ts
 expect({ a: 1, b: 2 }).toMatchInlineSnapshot(`
@@ -24,29 +21,23 @@ expect({ a: 1, b: 2 }).toMatchInlineSnapshot(`
 `)
 ```
 
-### toMatchFileSnapshot()
-
-指定ファイルパスとスナップショットを比較する（async）。HTML や JSON など構文ハイライトを活かしたい場合に有用。
+- `toMatchFileSnapshot()`: compares against a snapshot at the given file path (async). Useful for HTML, JSON, etc. where syntax highlighting is helpful.
 
 ```ts
 await expect(htmlOutput).toMatchFileSnapshot('./snapshots/output.html')
 ```
 
-## スナップショットの更新
+- Updating snapshots:
 
 ```bash
-# CLI フラグで更新
+# update via CLI flag
 vitest run -u
 
-# ウォッチモードでは 'u' キーを押す
+# in watch mode, press 'u'
 ```
 
-### CI での挙動
-
-`process.env.CI` が truthy の場合、スナップショットの書き込みは無効化される。
-不一致・未作成・不要なスナップショットはテスト失敗になる。
-
-## カスタムシリアライザ
+- CI behavior: when `process.env.CI` is truthy, snapshot writing is disabled. Mismatches, missing snapshots, and obsolete snapshots all fail the test.
+- Custom serializers:
 
 ```ts
 expect.addSnapshotSerializer({
@@ -59,7 +50,7 @@ expect.addSnapshotSerializer({
 })
 ```
 
-または `vitest.config.ts` の `snapshotSerializers` で設定:
+Or configure via `snapshotSerializers` in `vitest.config.ts`:
 
 ```ts
 export default defineConfig({
@@ -69,16 +60,14 @@ export default defineConfig({
 })
 ```
 
-## エラースナップショット
+- Error snapshots:
 
 ```ts
 expect(() => throwingFn()).toThrowErrorMatchingSnapshot()
 expect(() => throwingFn()).toThrowErrorMatchingInlineSnapshot(`"error message"`)
 ```
 
-## ARIA スナップショット（ブラウザモード・v4.1.4+）
-
-ブラウザモードでのみ使用可能。DOM 要素のアクセシビリティツリーをキャプチャして比較する。
+- ARIA snapshots (browser mode, v4.1.4+): available only in browser mode. Captures and compares the accessibility tree of a DOM element.
 
 ```ts
 await expect.element(page.getByRole('navigation')).toMatchAriaInlineSnapshot(`
@@ -88,9 +77,9 @@ await expect.element(page.getByRole('navigation')).toMatchAriaInlineSnapshot(`
 `)
 ```
 
-Playwright の ARIA スナップショット仕様に基づく。ブラウザモード専用のため、通常のテストでは使用不可。
+Based on Playwright's ARIA snapshot spec. Browser mode only; not available in regular tests.
 
-## 関連
+## Related
 
-- [Expect マッチャー](../api/expect.md)
+- [Expect Matchers](../api/expect.md)
 - [CLI](./cli.md)

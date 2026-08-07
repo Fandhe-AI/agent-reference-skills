@@ -1,109 +1,86 @@
 # @include / @includeCode
 
-外部ファイルの内容をドキュメントコメントに直接取り込むためのインラインタグ。`@include` はMarkdownコンテンツをそのまま挿入し、`@includeCode` はファイル内容をコードブロックとして挿入する（ファイル拡張子に基づくシンタックスハイライト付き）。
+Inline tags that embed the content of an external file directly into a doc comment. `@include` inserts Markdown content verbatim; `@includeCode` inserts the file content as a fenced code block (with syntax highlighting based on the file extension).
 
-## 構文
+## Signature / Usage
 
 ```
 {@include ./path/to/file.md}
 {@includeCode ./path/to/file.ts}
 ```
 
-### 部分的なファイル取り込み（リージョン指定）
+### Partial file inclusion (named regions)
 
-名前付きリージョンを使って、ファイルの特定部分のみを取り込むことができる。リージョンの区切りはVS Codeの折りたたみ規約に従う。
+Named regions can be used to include only a specific part of a file. Region delimiters follow VS Code's folding convention.
 
 ```
 {@includeCode ./file.ts#regionName}
 {@includeCode ./file.ts#region1,region2}
 ```
 
-#### 言語別リージョン構文
+Per-language region syntax:
 
 - **TypeScript / JavaScript:**
   ```typescript
   // #region regionName
-  // コード
+  // code
   // #endregion regionName
   ```
-
 - **Markdown:**
   ```markdown
   <!-- #region regionName -->
-  コンテンツ
+  content
   <!-- #endregion regionName -->
   ```
-
 - **Python:**
   ```python
   # region regionName
-  # コード
+  # code
   # endregion regionName
   ```
-  または:
+  or
   ```python
   #region regionName
   #endregion regionName
   ```
-
 - **C# / PHP / PowerShell:**
   ```csharp
   #region regionName
-  // コード
+  // code
   #endregion regionName
   ```
 
-### 部分的なファイル取り込み（行番号指定）
+### Partial file inclusion (line numbers)
 
-リージョンコメントを追加できない場合、行番号で範囲を指定できる。
+When region comments cannot be added, a range of line numbers can be specified instead.
 
 ```
 {@includeCode ../../package.json:2,6-7}
 ```
 
-- コロン（`:`）の後に行番号をカンマ区切りで指定
-- 範囲指定にはハイフン（`-`）を使用（例: `6-7`）
-- 行番号は1始まり（Line 1が先頭行）
+- Line numbers follow a colon (`:`), comma-separated
+- Use a hyphen (`-`) for ranges (e.g. `6-7`)
+- Line numbers are 1-based (line 1 is the first line)
 
-## 詳細説明
-
-### @include の動作
-
-`@include` タグが検出されると、TypeDocは指定されたファイルのコンテンツを読み込み、タグの位置にそのままMarkdownとして挿入する。これにより、共通のドキュメントを複数の場所で再利用できる。
-
-### @includeCode の動作
-
-`@includeCode` は `@include` と同様にファイルを読み込むが、内容をコードブロック（フェンスドコードブロック）で囲んで挿入する。ファイル拡張子に基づいて自動的にシンタックスハイライトが適用される。
-
-### パス指定
-
-パスはPOSIXスタイルのスラッシュ（`/`）を使用すること。Windowsスタイルのパス区切り文字（`\`）は使用しない。これにより、クロスプラットフォームでの互換性が確保される。
-
-## コード例
-
-### 基本的な使用例
+### Examples
 
 ```typescript
 /**
- * この関数の使い方の詳細は以下を参照：
+ * See the following for usage details:
  *
  * {@include ./docs/usage-guide.md}
  */
 export function processData(input: string): void { /* ... */ }
 ```
 
-### コードファイルの取り込み
-
 ```typescript
 /**
- * 設定ファイルの例：
+ * Example config file:
  *
  * {@includeCode ./examples/config.ts}
  */
 export interface Config { /* ... */ }
 ```
-
-### リージョン指定の使用例
 
 ```typescript
 // examples/helpers.ts
@@ -113,44 +90,40 @@ function validateInput(input: string): boolean {
 }
 // #endregion validation
 
-// ドキュメントコメント内で使用
 /**
- * バリデーション処理の例：
+ * Validation example:
  *
  * {@includeCode ./examples/helpers.ts#validation}
  */
 export function validate(input: string): boolean { /* ... */ }
 ```
 
-### 複数リージョンの取り込み
-
 ```typescript
 /**
- * 以下のコードを参照：
+ * See the following code:
  *
  * {@includeCode ./examples/helpers.ts#setup,validation}
  */
 ```
 
-### 行番号指定の使用例
-
 ```typescript
 /**
- * package.jsonの関連部分：
+ * The relevant part of package.json:
  *
  * {@includeCode ../../package.json:2,6-7}
  */
 ```
 
-## 注意点
+## Notes
 
-- パスはPOSIXスタイルのスラッシュ（`/`）を使用すること。Windowsスタイルのバックスラッシュは使用不可
-- 行番号による指定は、ファイルが変更されるたびに参照が壊れる可能性があるため、できるだけリージョン指定を使用すること
-- 行番号は1始まり（エディタの表示と同じ）
-- 複数のリージョンはカンマ区切りで指定可能
-- `jsdocCompatibility` オプションが関連するドキュメント処理の動作を制御する
+- `@include` reads the target file's content and inserts it verbatim as Markdown at the tag's location, enabling reuse of shared documentation across multiple places.
+- `@includeCode` reads the file the same way as `@include`, but wraps the content in a fenced code block with syntax highlighting inferred from the file extension.
+- Paths must use POSIX-style forward slashes (`/`); Windows-style backslashes (`\`) are not supported, ensuring cross-platform compatibility.
+- Line-number based inclusion can break as the referenced file changes, so named regions are preferred where possible.
+- Multiple regions can be specified as a comma-separated list.
+- The `jsdocCompatibility` option affects related comment-processing behavior.
 
-## 関連
+## Related
 
-- [@link](./link.md) — 他の要素へのリンク作成
-- [@inheritDoc](./inheritDoc.md) — 他のリフレクションからドキュメントをコピー
+- [@link](./link.md) — creates a link to another reflection
+- [@inheritDoc](./inheritDoc.md) — copies documentation from another reflection

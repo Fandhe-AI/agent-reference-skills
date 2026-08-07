@@ -1,22 +1,22 @@
 # Autumn
 
-オープンソースの SaaS 課金インフラ Autumn と Better Auth を統合するプラグイン。サブスクリプションステータス、使用量メータリング、機能権限を管理する。Webhook 設定不要で Autumn に直接クエリできる。
+Plugin integrating the open-source SaaS billing infrastructure Autumn with Better Auth. Manages subscription status, usage metering, and feature entitlements. No webhook setup is required; Autumn can be queried directly.
 
-## インストール
+## Signature / Usage
+
+### Installation
 
 ```bash
 npm install autumn-js
 ```
 
-環境変数:
+Environment variables:
 
 ```
 AUTUMN_SECRET_KEY=am_sk_xxxxxxxxxx
 ```
 
-## セットアップ
-
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -31,7 +31,7 @@ export const auth = betterAuth({
 })
 ```
 
-### クライアント側（React）
+### Setup (client side, React)
 
 ```jsx
 import { AutumnProvider } from "autumn-js/react"
@@ -41,39 +41,39 @@ import { AutumnProvider } from "autumn-js/react"
 </AutumnProvider>
 ```
 
-## API メソッド
+### API methods
 
-| メソッド | 説明 |
+| Method | Description |
 |---|---|
-| `attach()` | チェックアウトまたは支払い確認ダイアログを開始 |
-| `check()` | 顧客が特定機能にアクセスできるか検証 |
-| `track()` | 使用量イベントを記録（主にサーバー側） |
-| `customer` | サブスクリプション・残高を含む課金データを返す |
-| `openBillingPortal()` | 顧客の課金管理インターフェースを開く |
-| `cancel()` | プロダクトサブスクリプションをキャンセル |
+| `attach()` | Starts checkout or a payment confirmation dialog |
+| `check()` | Verifies whether a customer can access a specific feature |
+| `track()` | Records a usage event (mainly server side) |
+| `customer` | Returns billing data including subscriptions and balances |
+| `openBillingPortal()` | Opens the customer's billing management interface |
+| `cancel()` | Cancels a product subscription |
 
-## 使用例
+### Usage example
 
 ```typescript
 import { useCustomer, AttachDialog } from "autumn-js/react"
 
-// チェックアウト
+// Checkout
 const { attach, allowed } = useCustomer()
 await attach({ productId: "pro", dialog: AttachDialog })
 
-// 機能アクセス検証
+// Feature access check
 if (allowed({ featureId: "messages" })) { /* proceed */ }
 
-// 使用量追跡
+// Usage tracking
 await auth.api.track({ featureId: "messages", value: 2 })
 ```
 
-## 設定オプション
+## Options / Props
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |---|---|---|
-| `customerScope` | `"user"` \| `{ customerScope: string }` | 課金スコープ |
-| `identify?` | function | 高度なシナリオ向けのカスタム識別関数 |
+| `customerScope` | `"user"` \| `{ customerScope: string }` | Billing scope |
+| `identify?` | function | Custom identification function for advanced scenarios |
 
 ## Related
 

@@ -1,53 +1,53 @@
-# TypeDoc アーキテクチャ概要
+# TypeDoc Architecture Overview
 
-TypeDoc の高レベルアーキテクチャと処理フローの解説。
+High-level architecture and processing flow of TypeDoc.
 
-## 詳細説明
+## Usage
 
-### 処理パイプライン
+### Processing pipeline
 
-TypeDoc は以下の段階的パイプラインに従って実行される:
+TypeDoc runs through the following staged pipeline:
 
-1. **オプション読み取り** — どのプラグインをロードするか決定
-2. **プラグインロード** — プラグインシステムを初期化
-3. **オプション再読み取り** — プラグイン固有のオプションを取得
-4. **入力ファイルの変換 (Convert)** — ソースコードを「Reflection」と呼ばれる内部モデル表現に変換 (`src/lib/models`)
-5. **モデルの解決 (Resolve)** — モデル間の相互参照とリンクを処理
-6. **モデルの出力 (Output)** — HTML や JSON 形式にシリアライズ
+1. **Read options** — determine which plugins to load
+2. **Load plugins** — initialize the plugin system
+3. **Re-read options** — pick up plugin-specific options
+4. **Convert input files** — transform source code into the internal model representation called "Reflections" (`src/lib/models`)
+5. **Resolve the model** — process cross-references and links between models
+6. **Output the model** — serialize to HTML or JSON
 
 ```
 Entry Points → Converter → Reflections → Resolver → Renderer → Output (HTML/JSON)
 ```
 
-### コンポーネント構成
+### Component layout
 
-コードベースは処理段階に対応する構造になっている:
+The codebase is structured to match the processing stages:
 
-| 処理段階 | ソースパス |
-|----------|-----------|
-| オプション処理 | `src/lib/utils/options` |
-| プラグインシステム | `src/lib/utils/plugins` |
-| 変換ロジック | `src/lib/converter/symbols.ts` (`ts.SymbolFlags` で整理) |
-| 解決処理 | `src/lib/output/plugins` (内部プラグインが `Converter.EVENT_RESOLVE` をリッスン) |
-| JSON シリアライゼーション | `src/lib/serialization` |
-| HTML 出力 | `src/lib/output` |
+| Stage | Source path |
+| --- | --- |
+| Option processing | `src/lib/utils/options` |
+| Plugin system | `src/lib/utils/plugins` |
+| Conversion logic | `src/lib/converter/symbols.ts` (organized by `ts.SymbolFlags`) |
+| Resolution | `src/lib/output/plugins` (internal plugins listen to `Converter.EVENT_RESOLVE`) |
+| JSON serialization | `src/lib/serialization` |
+| HTML output | `src/lib/output` |
 
-### コンバーター (Converter)
+### Converter
 
-3つの主要変換モジュールが TypeScript の構文木を Reflection に変換する:
+Three primary conversion modules transform the TypeScript syntax tree into Reflections:
 
-- **`symbols.ts`** — エクスポートされた `ts.Symbol` オブジェクトを処理
-- **`types.ts`** — `ts.Type` と `ts.TypeNode` の変換を処理
-- **`jsdoc.ts`** — JSDoc で宣言された型やシンボルを処理
+- **`symbols.ts`** — processes exported `ts.Symbol` objects
+- **`types.ts`** — processes `ts.Type` and `ts.TypeNode` conversion
+- **`jsdoc.ts`** — processes types and symbols declared via JSDoc
 
-### リフレクション (Reflections)
+### Reflections
 
-Reflection はテーマやシリアライゼーション全体で一貫した処理を可能にする内部モデル構造。すべてのドキュメント対象要素（クラス、関数、プロパティなど）が Reflection として表現される。
+A Reflection is the internal model structure that enables consistent handling across themes and serialization. Every documentable element (classes, functions, properties, etc.) is represented as a Reflection.
 
-主要な Reflection 階層:
+Main Reflection hierarchy:
 
 ```
-Reflection (基底クラス)
+Reflection (base class)
 ├── ContainerReflection
 │   ├── ProjectReflection
 │   └── DeclarationReflection
@@ -58,44 +58,44 @@ Reflection (基底クラス)
 └── DocumentReflection
 ```
 
-### レンダラー (Renderer)
+### Renderer
 
-テーマシステムを通じて HTML を生成する。`Theme` クラスのインスタンスを使用し、Reflection ツリーを走査して各ページの HTML を出力する。
+Generates HTML through the theme system. It uses an instance of the `Theme` class, walking the Reflection tree to render each page's HTML.
 
-### 出力形式
+### Output formats
 
-- **JSON 出力**: `JSONOutput.ProjectReflection` インターフェースで定義。外部ツールから利用可能
-- **HTML 出力**: テーマレンダリングシステムを通じて生成
+- **JSON output**: defined by the `JSONOutput.ProjectReflection` interface. Usable by external tools
+- **HTML output**: generated through the theme rendering system
 
-## コード例
+### Example
 
 ```typescript
 import { Application } from "typedoc";
 
-// 基本的な処理フロー
+// Basic processing flow
 const app = await Application.bootstrapWithPlugins({
   entryPoints: ["src/index.ts"],
 });
 
-// 1. 変換: ソースコード → Reflections
+// 1. Convert: source code → Reflections
 const project = await app.convert();
 
 if (project) {
-  // 2. 出力: Reflections → HTML
+  // 2. Output: Reflections → HTML
   await app.generateDocs(project, "./docs");
 
-  // または JSON 出力
+  // Or JSON output
   await app.generateJson(project, "./docs.json");
 }
 ```
 
-### プラグインによるイベントリスニング
+### Listening to events from a plugin
 
 ```typescript
 import { Application, Converter, ParameterType } from "typedoc";
 
 export function load(app: Application) {
-  // カスタムオプションの追加
+  // Register a custom option
   app.options.addDeclaration({
     name: "plugin-option",
     help: "Displayed when --help is passed",
@@ -103,31 +103,31 @@ export function load(app: Application) {
     defaultValue: "",
   });
 
-  // Converter イベントのリッスン
+  // Listen for a Converter event
   app.converter.on(Converter.EVENT_RESOLVE, (context) => {
     if (app.options.getValue("plugin-option") === "something") {
-      // カスタムロジック
+      // Custom logic
     }
   });
 }
 ```
 
-### テスト
+### Testing
 
-TypeDoc は主に JSON モデル比較テストで機能を検証する。既知の仕様に対してモデルを比較し、Mocha ユニットテストで補完する。テーマの変更には、スクリーンショット比較によるビジュアルリグレッションテストも使用される。
+TypeDoc primarily verifies behavior with JSON model comparison tests, comparing generated models against known specifications, complemented by Mocha unit tests. Theme changes also use screenshot-based visual regression testing.
 
-## 注意点
+## Notes
 
-- Converter はステップ 4 で動作し、TypeScript コンパイラの AST を Reflection モデルに変換する
-- プラグインはステップ 2 の後にイベントリスナーを登録して動作をカスタマイズする
-- Reflection モデルは HTML 出力と JSON 出力の両方で共通して使用される
-- `src/lib/converter/symbols.ts` が最も中心的な変換ロジックを含む
+- The Converter runs at step 4, transforming the TypeScript compiler's AST into the Reflection model
+- Plugins register event listeners after step 2 to customize behavior
+- The Reflection model is shared by both HTML output and JSON output
+- `src/lib/converter/symbols.ts` contains the most central conversion logic
 
-## 関連
+## Related
 
-- [プラグイン開発](./plugin-development.md)
-- [カスタムテーマ](./custom-themes.md)
-- [Application クラス](../api/application.md)
-- [Converter クラス](../api/converter.md)
-- [Renderer クラス](../api/renderer.md)
+- [Plugin Development](./plugin-development.md)
+- [Custom Themes](./custom-themes.md)
+- [Application class](../api/application.md)
+- [Converter class](../api/converter.md)
+- [Renderer class](../api/renderer.md)
 - [Reflections](../api/reflections.md)

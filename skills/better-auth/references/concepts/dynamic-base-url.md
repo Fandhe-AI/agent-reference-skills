@@ -1,8 +1,8 @@
 # Dynamic Base URL
 
-許可リストベースのアプローチによる動的ベース URL 解決をサポートし、アプリケーションが複数ドメインやプレビューデプロイメント（カスタムドメイン、Vercel プレビュー、ブランチデプロイメントなど）で同時に動作できるようにする。
+Supports dynamic base URL resolution through an allowlist-based approach, letting an application operate across multiple domains and preview deployments (custom domains, Vercel previews, branch deployments, etc.) at the same time.
 
-## セットアップ
+## Signature / Usage
 
 ```typescript
 export const auth = betterAuth({
@@ -16,38 +16,9 @@ export const auth = betterAuth({
 });
 ```
 
-リクエスト受信時、Better Auth は `x-forwarded-host` または `host` ヘッダーからホストを抽出し、許可リストに対して検証する。
+When a request is received, Better Auth extracts the host from the `x-forwarded-host` or `host` header and validates it against the allowlist.
 
-## 設定オプション
-
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `allowedHosts` | `string[]` | Required | 許可するホストパターンのリスト（ワイルドカード対応） |
-| `fallback` | `string` | — | マッチしないホスト用の URL（エラーはスローされない） |
-| `protocol` | `"http" \| "https" \| "auto"` | `"auto"` | URL 構築に使用するプロトコル |
-
-### ワイルドカードパターン
-
-| Pattern | Matches |
-|---------|---------|
-| `myapp.com` | 完全一致ドメインのみ |
-| `*.vercel.app` | 任意の Vercel サブドメイン |
-| `preview-*.myapp.com` | `preview-` で始まるサブドメイン |
-| `localhost:*` | 任意のポートの localhost |
-
-### プロトコルハンドリング
-
-| Value | Behavior |
-|-------|----------|
-| `"https"` | 常に HTTPS |
-| `"http"` | 常に HTTP |
-| `"auto"` | `x-forwarded-proto` から導出。利用不可の場合は HTTPS がデフォルト |
-
-Cookie `Secure` フラグ: `https` → secure、`http` → insecure、`auto`/未設定 → `NODE_ENV === "production"` に依存（`advanced.useSecureCookies` でオーバーライド可能）。
-
-## コード例
-
-### フォールバック URL
+### Fallback URL
 
 ```typescript
 export const auth = betterAuth({
@@ -58,7 +29,7 @@ export const auth = betterAuth({
 });
 ```
 
-### 環境ベースのプロトコル
+### Environment-based protocol
 
 ```typescript
 export const auth = betterAuth({
@@ -69,7 +40,7 @@ export const auth = betterAuth({
 });
 ```
 
-### 動的ホストでのクロスサブドメイン Cookie
+### Cross-subdomain cookies with dynamic hosts
 
 ```typescript
 export const auth = betterAuth({
@@ -80,13 +51,13 @@ export const auth = betterAuth({
   advanced: {
     crossSubDomainCookies: {
       enabled: true,
-      // domain: ".example.com", // オプション: 静的ドメインを強制
+      // domain: ".example.com", // Optional: force a static domain
     },
   },
 });
 ```
 
-### 後方互換性（静的文字列）
+### Backward compatibility (static string)
 
 ```typescript
 export const auth = betterAuth({
@@ -94,36 +65,69 @@ export const auth = betterAuth({
 });
 ```
 
-### 一般的な実装パターン
+### Common implementation patterns
 
-**Vercel デプロイメント:**
+**Vercel deployments:**
 
 ```typescript
 allowedHosts: ["myapp.com", "www.myapp.com", "*.vercel.app"]
 ```
 
-**開発 + 本番:**
+**Development + production:**
 
 ```typescript
 allowedHosts: ["localhost:3000", "localhost:5173", "myapp.com", "*.vercel.app"],
 protocol: process.env.NODE_ENV === "development" ? "http" : "https"
 ```
 
-**複数本番ドメイン:**
+**Multiple production domains:**
 
 ```typescript
 allowedHosts: ["myapp.com", "myapp.co.uk", "myapp.eu"]
 ```
 
-## 注意点
+## Options / Props
 
-- `allowedHosts` は自動的にパターンを `trustedOrigins` に追加し、重複を排除
-- `allowedHosts` の設定は必須 — Better Auth は自動プラットフォーム検出を行わない
-- `fallback` は未認識ホストを静かにマスクし、設定ミスを隠蔽する可能性があるため慎重に使用
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `allowedHosts` | `string[]` | Required | List of allowed host patterns (supports wildcards) |
+| `fallback` | `string` | — | URL for hosts that don't match (no error is thrown) |
+| `protocol` | `"http" \| "https" \| "auto"` | `"auto"` | Protocol used to construct URLs |
 
-## セキュリティ考慮事項
+### Wildcard patterns
 
-- **必須の許可リスト**: すべてのホストパターンは明示的に宣言する必要がある（自動検出なし）
-- **ヘッダーのサニタイゼーション**: `x-forwarded-host` と `host` ヘッダーは処理前にサニタイズされる
-- **明示的ワイルドカードのみ**: ワイルドカードはサポートされるが、意図的な設定が必要
-- **未知ホストでのエラー**: `fallback` が設定されていない限り、未知のホストはエラーをスローする（可視性のためにこちらが推奨）
+| Pattern | Matches |
+|---------|---------|
+| `myapp.com` | Exact domain match only |
+| `*.vercel.app` | Any Vercel subdomain |
+| `preview-*.myapp.com` | Subdomains starting with `preview-` |
+| `localhost:*` | localhost on any port |
+
+### Protocol handling
+
+| Value | Behavior |
+|-------|----------|
+| `"https"` | Always HTTPS |
+| `"http"` | Always HTTP |
+| `"auto"` | Derived from `x-forwarded-proto`. Defaults to HTTPS if unavailable |
+
+Cookie `Secure` flag: `https` -> secure, `http` -> insecure, `auto`/unset -> depends on `NODE_ENV === "production"` (can be overridden with `advanced.useSecureCookies`).
+
+## Notes
+
+> **Note**: As of 2026-08 the official `concepts/dynamic-base-url` page no longer exists (404). The same content has been consolidated into `guides/dynamic-base-url.md`, which is now the primary source. This page is kept for the time being as a reference during the transition.
+
+- `allowedHosts` automatically appends its patterns to `trustedOrigins`, deduplicating entries
+- Configuring `allowedHosts` is required — Better Auth does not perform automatic platform detection
+- `fallback` silently masks unrecognized hosts and may hide misconfiguration, so use it with care
+
+### Security
+
+- **Allowlist is mandatory**: every host pattern must be explicitly declared (no automatic detection)
+- **Header sanitization**: the `x-forwarded-host` and `host` headers are sanitized before processing
+- **Explicit wildcards only**: wildcards are supported but require intentional configuration
+- **Errors on unknown hosts**: unless `fallback` is configured, unknown hosts throw an error (recommended, for visibility)
+
+## Related
+
+- [Cookies](./cookies.md)

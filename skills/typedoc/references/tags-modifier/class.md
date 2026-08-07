@@ -1,25 +1,21 @@
 # @class
 
-変数宣言をクラスとしてドキュメント化するモディファイアタグ。「動的」プロパティを実際のプロパティに展開する。
+Modifier tag that documents a variable declaration as a class, expanding "dynamic" properties into actual properties.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @class */
 ```
 
-## 詳細説明
+Applying `@class` to a variable causes TypeDoc to convert it into a class. This performs:
 
-`@class` タグを変数に付与すると、TypeDoc はその変数をクラスとして変換する。このとき、以下の処理が行われる:
+1. **Property expansion**: all "dynamic" properties are expanded into actual properties
+2. **Name resolution**: a type or interface declared with the same name as the `@class`-annotated variable is ignored
+3. **Overload handling**: if the constructor function has multiple overloads, the return type of the first overload determines the class shape
+4. **Generics support**: if the constructor function is generic, its type parameters are promoted to the class's type parameters
 
-1. **プロパティの展開**: すべての「動的」プロパティが実際のプロパティとして展開される
-2. **名前の解決**: `@class` アノテーションが付けられた変数と同じ名前で宣言された型やインターフェースは無視される
-3. **オーバーロードの処理**: コンストラクタ関数に複数のオーバーロードがある場合、最初のオーバーロードの戻り値の型がクラスの形状を決定するために使用される
-4. **ジェネリクスのサポート**: コンストラクタ関数がジェネリックな場合、型パラメータはコンストラクタ関数からクラスの型パラメータに昇格する
-
-主に JavaScript プロジェクトで、クラス構文を使わずにコンストラクタ関数パターンで定義されたクラスをドキュメント化する場合に有用。
-
-## コード例
+Mainly useful for JavaScript projects that document classes defined via the constructor-function pattern instead of class syntax.
 
 ```javascript
 /** @class */
@@ -32,7 +28,7 @@ export function ClassLike() {
 
 ```javascript
 /**
- * ユーザーオブジェクトを生成する。
+ * Creates a user object.
  * @class
  */
 export function User(name, email) {
@@ -48,14 +44,14 @@ User.prototype.greet = function () {
 };
 ```
 
-## 注意点
+## Notes
 
-- 主に JavaScript のコンストラクタ関数パターンで使用される
-- 同名の型/インターフェース宣言は TypeDoc により無視される
-- コンストラクタ関数のオーバーロードがある場合、最初のオーバーロードの戻り値型がクラス形状となる
-- ジェネリックなコンストラクタ関数では、型パラメータがクラスレベルに昇格する
+- Mainly used for the JavaScript constructor-function pattern
+- A type/interface declaration with the same name is ignored by TypeDoc
+- With constructor function overloads, the first overload's return type becomes the class shape
+- For generic constructor functions, type parameters are promoted to the class level
 
-## 関連
+## Related
 
 - [@interface](./interface.md)
 - [@function](./function.md)

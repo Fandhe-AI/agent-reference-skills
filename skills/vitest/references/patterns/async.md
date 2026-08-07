@@ -1,6 +1,6 @@
-# 非同期テスト・フェイクタイマーパターン
+# Async Testing & Fake Timers Patterns
 
-## async/await テスト
+## async/await Tests
 
 ```ts
 test('fetches data', async () => {
@@ -9,7 +9,7 @@ test('fetches data', async () => {
 })
 ```
 
-## Promise の resolves / rejects
+## Promise resolves / rejects
 
 ```ts
 test('resolves', async () => {
@@ -21,9 +21,9 @@ test('rejects', async () => {
 })
 ```
 
-## expect.assertions() でコールバック漏れを検出
+## Catching Missed Callback Assertions with expect.assertions()
 
-非同期コールバック内のアサーションが確実に実行されることを保証する。
+Guarantees that assertions inside an async callback are actually executed.
 
 ```ts
 test('callback is called', async () => {
@@ -39,7 +39,7 @@ test('callback is called', async () => {
 })
 ```
 
-## フェイクタイマー: 基本パターン
+## Fake Timers: Basic Pattern
 
 ```ts
 beforeEach(() => {
@@ -62,7 +62,7 @@ test('debounce fires after delay', () => {
 })
 ```
 
-## フェイクタイマー: setInterval
+## Fake Timers: setInterval
 
 ```ts
 test('interval fires repeatedly', () => {
@@ -74,7 +74,7 @@ test('interval fires repeatedly', () => {
 })
 ```
 
-## フェイクタイマー: 全タイマー実行
+## Fake Timers: Running All Pending Timers
 
 ```ts
 test('runs all pending timers', () => {
@@ -90,7 +90,7 @@ test('runs all pending timers', () => {
 })
 ```
 
-## フェイクタイマー: 次のタイマーだけ進める
+## Fake Timers: Advancing to the Next Timer Only
 
 ```ts
 test('step through timers', () => {
@@ -109,7 +109,7 @@ test('step through timers', () => {
 })
 ```
 
-## フェイクタイマー: 日付のモック
+## Fake Timers: Mocking the Current Date
 
 ```ts
 test('mocks current date', () => {
@@ -123,9 +123,9 @@ test('mocks current date', () => {
 })
 ```
 
-## フェイクタイマー: 非同期タイマー
+## Fake Timers: Async Timers
 
-`setTimeout` 内で async 処理がある場合は async 版を使う。
+Use the async variant when the callback inside `setTimeout` performs async work.
 
 ```ts
 test('async timer', async () => {
@@ -141,9 +141,9 @@ test('async timer', async () => {
 })
 ```
 
-## vi.waitFor(): リトライパターン
+## vi.waitFor(): Retry Pattern
 
-コールバックが成功するまで繰り返し実行する。
+Repeatedly runs the callback until it succeeds.
 
 ```ts
 test('eventually becomes ready', async () => {
@@ -155,9 +155,9 @@ test('eventually becomes ready', async () => {
 })
 ```
 
-フェイクタイマーと組み合わせると、タイマーを自動的に進めながらリトライする。
+Combined with fake timers, it retries while automatically advancing timers.
 
-## vi.waitUntil(): 条件待ち
+## vi.waitUntil(): Waiting for a Condition
 
 ```ts
 test('waits for condition', async () => {
@@ -169,7 +169,7 @@ test('waits for condition', async () => {
 })
 ```
 
-## expect.poll(): ポーリングアサーション
+## expect.poll(): Polling Assertions
 
 ```ts
 test('polling assertion', async () => {
@@ -182,8 +182,8 @@ test('polling assertion', async () => {
 })
 ```
 
-## 関連
+## Related
 
-- [Vi ユーティリティ](../api/vi.md)
-- [Expect マッチャー](../api/expect.md)
-- [モックパターン](./mocking.md)
+- [Vi utilities](../api/vi.md)
+- [Expect matchers](../api/expect.md)
+- [Mocking patterns](./mocking.md)

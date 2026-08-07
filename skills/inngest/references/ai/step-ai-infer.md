@@ -53,7 +53,7 @@ Models can also be imported from `@inngest/ai/models` as named imports (e.g. `im
 - Once the provider responds, the function resumes with the full response as the step result.
 - Requests and responses are automatically tracked in Inngest's AI observability dashboard (token usage, latency, model metrics).
 - API keys are never stored or logged by Inngest; authentication originates from your own function environment.
-- Streaming responses are not yet supported (forthcoming with realtime support).
+- Streaming responses are not yet supported (documented as "coming soon, alongside real-time support with Inngest functions").
 - Available for both TypeScript and Python SDKs.
 
 ## Related

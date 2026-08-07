@@ -2,7 +2,7 @@
 
 Syntax and resolution rules for @link references, including module source, component path, meaning disambiguation, and local/global resolution.
 
-## 詳細説明
+## Signature / Usage
 
 Declaration references are used within `{@link}`, `{@linkcode}`, and `{@linkplain}` tags to create cross-references to other documented symbols. TypeDoc's approach aligns closely with TypeScript's language service behavior, matching VSCode's resolution patterns.
 
@@ -20,13 +20,6 @@ All three parts are optional depending on context, but at least a component path
 
 The section before `!` identifies which module a reference targets.
 
-| Syntax | Behavior |
-|---|---|
-| `moduleA!` | Resolve starting from module `moduleA` |
-| `"with!bang and \"quoted path\""!` | Quoted module name (supports escaping) |
-| `!` (alone at start) | Force resolution from the project root (global scope) |
-| (omitted) | Resolve locally relative to the current declaration scope |
-
 Examples:
 
 ```typescript
@@ -39,12 +32,6 @@ Examples:
 ### Component Path
 
 The component path is composed of component names separated by delimiters: `.`, `#`, or `~`.
-
-| Delimiter | Behavior |
-|---|---|
-| `.` | General-purpose: tries exports/static properties first, then members |
-| `#` | Accesses instance members (class properties, interface members, enum values) |
-| `~` | Namespace/module exports only (stricter than `.`) |
 
 Examples:
 
@@ -64,36 +51,6 @@ Examples:
 ### Meaning Disambiguation
 
 An optional suffix after `:` specifies the declaration type or overload index to disambiguate between merged declarations or overloaded functions.
-
-#### Keyword Meanings
-
-| Keyword | Targets |
-|---|---|
-| `class` | Class declarations |
-| `interface` | Interface declarations |
-| `type` | Type alias declarations |
-| `enum` | Enum declarations |
-| `namespace` | Namespace declarations |
-| `function` | Function declarations |
-| `var` | Variable declarations |
-| `constructor` | Class constructors |
-| `member` | Class/interface members |
-| `event` | Event declarations |
-| `call` | Call signatures |
-| `new` | Construct signatures |
-| `index` | Index signatures |
-| `complex` | Complex type expressions |
-| `getter` | Getter accessors |
-| `setter` | Setter accessors |
-
-#### Meaning Syntax Formats
-
-| Format | Description |
-|---|---|
-| `:keyword` | Disambiguate by declaration kind |
-| `:keyword(N)` | Specific overload by zero-based index |
-| `:(N)` or `:N` | Shorthand for overload index |
-| `:LABEL` | Custom label from `{@label}` tag (alphanumeric + underscore) |
 
 Examples:
 
@@ -187,8 +144,6 @@ namespace Outer {
   class Inner {}
 }
 ```
-
-## コード例
 
 ### Basic @link Usage
 
@@ -308,7 +263,56 @@ namespace API {
 }
 ```
 
-## 注意点
+## Options / Props
+
+### Module Source Syntax
+
+| Syntax | Behavior |
+|---|---|
+| `moduleA!` | Resolve starting from module `moduleA` |
+| `"with!bang and \"quoted path\""!` | Quoted module name (supports escaping) |
+| `!` (alone at start) | Force resolution from the project root (global scope) |
+| (omitted) | Resolve locally relative to the current declaration scope |
+
+### Component Path Delimiters
+
+| Delimiter | Behavior |
+|---|---|
+| `.` | General-purpose: tries exports/static properties first, then members |
+| `#` | Accesses instance members (class properties, interface members, enum values) |
+| `~` | Namespace/module exports only (stricter than `.`) |
+
+### Meaning Keywords
+
+| Keyword | Targets |
+|---|---|
+| `class` | Class declarations |
+| `interface` | Interface declarations |
+| `type` | Type alias declarations |
+| `enum` | Enum declarations |
+| `namespace` | Namespace declarations |
+| `function` | Function declarations |
+| `var` | Variable declarations |
+| `constructor` | Class constructors |
+| `member` | Class/interface members |
+| `event` | Event declarations |
+| `call` | Call signatures |
+| `new` | Construct signatures |
+| `index` | Index signatures |
+| `complex` | Complex type expressions |
+| `getter` | Getter accessors |
+| `setter` | Setter accessors |
+
+### Meaning Syntax Formats
+
+| Format | Description |
+|---|---|
+| `:keyword` | Disambiguate by declaration kind |
+| `:keyword(N)` | Specific overload by zero-based index |
+| `:(N)` or `:N` | Shorthand for overload index |
+| `:LABEL` | Custom label from `{@label}` tag (alphanumeric + underscore) |
+
+## Notes
 
 - The `.` delimiter is the most flexible and commonly used. Use `#` or `~` only when you need to specifically target instance members or namespace exports.
 - When resolution fails, TypeDoc walks up the scope chain automatically. This means short names often work without full paths.
@@ -320,7 +324,7 @@ namespace API {
 - The `--useTsLinkResolution` option controls whether `@link` tags use TypeScript's resolution algorithm or TypeDoc's declaration reference resolution.
 - Classes and interfaces do not create scopes for resolution purposes, unlike modules and namespaces which do.
 
-## 関連
+## Related
 
 - [Doc Comments](./doc-comments.md)
 - [JSDoc Support](./jsdoc-support.md)

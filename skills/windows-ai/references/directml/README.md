@@ -2,20 +2,39 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| DirectML Overview | Architecture overview, Direct3D 12 relationship, layer-by-layer vs graph workflows | [directml-overview.md](./directml-overview.md) |
-| DMLCreateDevice / IDMLDevice | Device creation function and root device interface | [dmlcreatedevice.md](./dmlcreatedevice.md) |
-| IDMLOperator / DML_OPERATOR_DESC | Uncompiled operator interface and generic operator descriptor container | [idmloperator.md](./idmloperator.md) |
-| IDMLCompiledOperator | Compiled, GPU-dispatchable form of an operator or graph | [idmlcompiledoperator.md](./idmlcompiledoperator.md) |
-| IDMLOperatorInitializer | Object used to initialize one or more compiled operators | [idmloperatorinitializer.md](./idmloperatorinitializer.md) |
-| IDMLBindingTable / DML_BINDING_DESC | Resource binding table and generic binding descriptor | [idmlbindingtable.md](./idmlbindingtable.md) |
-| IDMLCommandRecorder | Records DirectML dispatches into a Direct3D 12 command list | [idmlcommandrecorder.md](./idmlcommandrecorder.md) |
-| Tensors (DML_TENSOR_DESC / DML_BUFFER_TENSOR_DESC) | Tensor descriptors and buffer-backed tensor layout, strides, sizing | [tensors.md](./tensors.md) |
-| Key operators | Convolution, GEMM, ReLU activation operator descriptors | [operators.md](./operators.md) |
-| DML_GRAPH_DESC / IDMLDevice1::CompileGraph | Graph-based operator compilation | [graphs.md](./graphs.md) |
-| ONNX Runtime DirectML execution provider | Using DirectML via ONNX Runtime session options | [onnxruntime-directml.md](./onnxruntime-directml.md) |
-| PyTorch with DirectML | `torch-directml` package installation and device usage | [pytorch-directml.md](./pytorch-directml.md) |
-| DirectML version history | Version/feature-level table, `DML_TARGET_VERSION`, hardware requirements | [version-history.md](./version-history.md) |
-| DirectML Programming Guide | Get started workflow, binding, UAV barriers/synchronization, strides, fused activations, helper functions, debug layer | [programming-guide.md](./programming-guide.md) |
-| Handling errors and device-removal | `DXGI_ERROR_DEVICE_REMOVED`, `IDMLDevice::GetDeviceRemovedReason`, recovery-by-recreation pattern | [errors-and-device-removal.md](./errors-and-device-removal.md) |
-| WebNN Overview | Web Neural Network API built on DirectML for in-browser, on-device inference | [webnn-overview.md](./webnn-overview.md) |
-| GPU-accelerated ML training | TensorFlow-DirectML plugin, PyTorch with DirectML, NVIDIA CUDA-in-WSL comparison | [gpu-accelerated-training.md](./gpu-accelerated-training.md) |
+| DirectML constants | Constants declared in `DirectML.h`. | [api-reference-constants.md](./api-reference-constants.md) |
+| DirectML enumerations | Index of all enumerations declared in `DirectML.h`. | [api-reference-enumerations.md](./api-reference-enumerations.md) |
+| DirectML functions | Index of all free functions declared in… | [api-reference-functions.md](./api-reference-functions.md) |
+| DirectML interfaces | Index of all interfaces declared in… | [api-reference-interfaces.md](./api-reference-interfaces.md) |
+| DirectML structures | Index of the roughly 150 structures… | [api-reference-structures.md](./api-reference-structures.md) |
+| Enable NVIDIA CUDA on WSL 2 | Enables running existing NVIDIA CUDA-based… | [cuda-on-wsl2.md](./cuda-on-wsl2.md) |
+| Using the DirectML Debug Layer | An optional development-time component… | [debug-layer.md](./debug-layer.md) |
+| DMLCreateDevice / IDMLDevice | `DMLCreateDevice` creates a DirectML… | [dmlcreatedevice.md](./dmlcreatedevice.md) |
+| DirectML Overview | Direct Machine Learning (DirectML) is a… | [directml-overview.md](./directml-overview.md) |
+| DirectML Tools | Companion tools that enhance DirectML and… | [directml-tools.md](./directml-tools.md) |
+| DirectMLX | `DirectMLX.h` is a C++ header-only… | [directmlx.md](./directmlx.md) |
+| Handling Errors and Device-Removal in DirectML | Describes how DirectML surfaces… | [errors-and-device-removal.md](./errors-and-device-removal.md) |
+| DirectML Feature Level History | Per-feature-level changelog of operators… | [feature-level-history.md](./feature-level-history.md) |
+| Using Fused Operators to Improve Performance | Operator fusion merges an activation… | [fused-operators.md](./fused-operators.md) |
+| GPU-Accelerated ML Training with DirectML | Covers the setup paths for GPU-accelerated… | [gpu-accelerated-training.md](./gpu-accelerated-training.md) |
+| DML_GRAPH_DESC / IDMLDevice1::CompileGraph | `DML_GRAPH_DESC` describes a directed… | [graphs.md](./graphs.md) |
+| DirectML Helper Functions | Reference C++ helper functions commonly… | [helper-functions.md](./helper-functions.md) |
+| IDMLBindingTable / DML_BINDING_DESC | `IDMLBindingTable` wraps a range of an… | [idmlbindingtable.md](./idmlbindingtable.md) |
+| IDMLCommandRecorder | Records dispatches of DirectML work… | [idmlcommandrecorder.md](./idmlcommandrecorder.md) |
+| IDMLCompiledOperator | Represents a compiled, efficient form of… | [idmlcompiledoperator.md](./idmlcompiledoperator.md) |
+| IDMLOperator / DML_OPERATOR_DESC | `IDMLOperator` represents an uncompiled… | [idmloperator.md](./idmloperator.md) |
+| IDMLOperatorInitializer | Represents a specialized dispatchable… | [idmloperatorinitializer.md](./idmloperatorinitializer.md) |
+| ONNX Runtime DirectML Execution Provider | The DirectML execution provider (EP)… | [onnxruntime-directml.md](./onnxruntime-directml.md) |
+| Key Operators | DirectML ships roughly 150 concrete… | [operators.md](./operators.md) |
+| DirectML Programming Guide | The application-facing patterns for… | [programming-guide.md](./programming-guide.md) |
+| PyTorch with DirectML | **PyTorch with DirectML** (the… | [pytorch-directml.md](./pytorch-directml.md) |
+| Resource Lifetime and Synchronization | DirectML follows the same resource… | [resource-lifetime-sync.md](./resource-lifetime-sync.md) |
+| DirectML sample applications | Links to official DirectML sample… | [sample-applications.md](./sample-applications.md) |
+| Using Strides to Express Padding and Memory Layout | `DML_BUFFER_TENSOR_DESC` separates a… | [strides-padding-layout.md](./strides-padding-layout.md) |
+| DML_TENSOR_DESC / DML_BUFFER_TENSOR_DESC and Tensor Layout | `DML_TENSOR_DESC` is a generic,… | [tensors.md](./tensors.md) |
+| DirectML Plugin for TensorFlow 2 (tensorflow-directml-plugin) | `tensorflow-directml-plugin` is a… | [tensorflow-directml.md](./tensorflow-directml.md) |
+| GPU acceleration in WSL - FAQ (TensorFlow-DirectML) | FAQ covering device placement, multi-GPU… | [tensorflow-directml-faq.md](./tensorflow-directml-faq.md) |
+| UAV Barriers and Resource State Barriers | Correctness requirements for synchronizing… | [uav-barriers.md](./uav-barriers.md) |
+| DirectML Version History and Hardware Requirements | DirectML is distributed as a system… | [version-history.md](./version-history.md) |
+| WebNN Overview | The Web Neural Network (WebNN) API is… | [webnn-overview.md](./webnn-overview.md) |
+| WebNN Tutorial | Step-by-step tutorial building a… | [webnn-tutorial.md](./webnn-tutorial.md) |

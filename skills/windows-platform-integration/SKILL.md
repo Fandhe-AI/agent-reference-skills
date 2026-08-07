@@ -146,22 +146,30 @@ skills/windows-platform-integration/
       data-package.md
       data-package-view.md
       data-transfer-manager.md
+      share-sheet-send.md
+      share-sheet-receive.md
+      share-sheet-contacts.md
       default-apps-platform.md
       protocol-file-association.md
+      protocol-activation.md
       launcher.md
       cross-device-people-api.md
+      cross-device-resume-overview.md
+      connected-experiences-overview.md
       jump-list.md
       taskbar-manager.md
+      pin-to-taskbar.md
       secondary-tile.md
       start-screen-manager.md
       startup-task.md
       app-diagnostic-info.md
       app-actions-search.md
       context-menu-extensions.md
-      protocol-activation.md
       recall.md
-      cross-device-resume-overview.md
       search-providers.md
+      widget-providers.md
+      feed-providers.md
+      microsoft-copilot-key-provider.md
 ```
 
 ## 探索手順
@@ -195,6 +203,10 @@ skills/windows-platform-integration/
 | クリップボード・共有 (DataTransferManager) を実装したい | windows-integration | [references/windows-integration/README.md](references/windows-integration/README.md) |
 | JumpList / TaskbarManager / SecondaryTile / スタート画面連携をしたい | windows-integration | [references/windows-integration/README.md](references/windows-integration/README.md) |
 | プロトコルアクティベーション・StartupTask で起動制御をしたい | windows-integration | [references/windows-integration/README.md](references/windows-integration/README.md) |
+| Share Sheet の送信・受信・連絡先候補への表示を実装したい | windows-integration | [references/windows-integration/README.md](references/windows-integration/README.md) |
+| Widgets Board のウィジェット・Dashboard フィードを提供したい | windows-integration | [references/windows-integration/README.md](references/windows-integration/README.md) |
+| Recall 連携・Windows Search 提供元・Copilot キー・taskbar ピン留めを実装したい | windows-integration | [references/windows-integration/README.md](references/windows-integration/README.md) |
+| Connected Experiences (People / Resume / Share) 全体像を把握したい | windows-integration | [references/windows-integration/README.md](references/windows-integration/README.md) |
 
 このスキルは Windows App SDK / WinRT の OS 統合 API（デバイス・ネットワーク・入力・地域化・セキュリティ・シェル連携）のみを扱う。
 コントロール・レイアウト・XAML UI は windows-winui-controls / windows-winui-ui / windows-design、グラフィックス・メディア描画は windows-graphics-media、パッケージング・配布は windows-packaging-publish が担当する。

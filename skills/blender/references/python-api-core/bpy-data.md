@@ -39,13 +39,14 @@ print(bpy.data.filepath)
 | Attribute | Type | Description |
 |-----------|------|-------------|
 | `actions` | `BlendDataActions` | Action data-blocks |
+| `annotations` | `BlendDataAnnotations` | Annotation data-blocks (legacy Grease Pencil sketches, e.g. viewport freehand notes) |
 | `armatures` | `BlendDataArmatures` | Armature data-blocks |
 | `brushes` | `BlendDataBrushes` | Brush data-blocks |
 | `cameras` | `BlendDataCameras` | Camera data-blocks |
 | `collections` | `BlendDataCollections` | Collection data-blocks |
 | `curves` | `BlendDataCurves` | Curve data-blocks |
 | `fonts` | `BlendDataFonts` | Vector font data-blocks |
-| `grease_pencils` | `BlendDataGreasePencilsV3` | Grease Pencil data-blocks |
+| `grease_pencils` | `BlendDataGreasePencils` | Grease Pencil data-blocks (drawing/animation tool) |
 | `hair_curves` | `BlendDataHairCurves` | Hair curve data-blocks |
 | `images` | `BlendDataImages` | Image data-blocks |
 | `lights` | `BlendDataLights` | Light data-blocks |
@@ -81,6 +82,7 @@ print(bpy.data.filepath)
 - Modifying a data-block directly (e.g., `mesh.vertices`) requires the object not to be in Edit Mode — use `bpy.ops.object.mode_set(mode='OBJECT')` first.
 - Linked data-blocks (from external `.blend` files) appear in the same collections but have `library` set to a `Library` object. They cannot be edited directly without making them local.
 - Library overrides allow editing linked data: use `datablock.override_create(remap_local_usages=True)`.
+- Blender 5.0 split the former overloaded `bpy.data.grease_pencils` (typed `BlendDataGreasePencilsV3`) into two collections: `grease_pencils` (`BlendDataGreasePencils`, modern Grease Pencil drawing/animation data) and `annotations` (`BlendDataAnnotations`, legacy freehand viewport notes, formerly `bpy.types.GreasePencil`/`GPencilStroke` now `Annotation`/`AnnotationStroke`).
 
 ## Related
 

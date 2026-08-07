@@ -1,8 +1,8 @@
-# マイクロフロントエンド
+# Microfrontends
 
-Turborepo はローカル開発用のプロキシサーバーをビルトインで提供。複数アプリを単一エントリーポイント（デフォルト: `http://localhost:3024`）で統合できる。
+## Signature / Usage
 
-## microfrontends.json
+Turborepo ships a built-in local development proxy server that unifies multiple applications behind a single entry point (default: `http://localhost:3024`).
 
 ```json
 {
@@ -26,32 +26,29 @@ Turborepo はローカル開発用のプロキシサーバーをビルトイン�
 }
 ```
 
-## ポート設定
+Port configuration:
 
 ```json
 { "scripts": { "dev": "next dev --port $(turbo get-mfe-port)" } }
 ```
 
-Vite: `TURBO_MFE_PORT` 環境変数を使用。
+Vite: use the `TURBO_MFE_PORT` environment variable.
 
-## フレームワーク別ベースパス設定
+## Options / Props
 
-| フレームワーク | 設定ファイル | プロパティ |
+| Framework | Config file | Property |
 |---|---|---|
 | Next.js | `next.config.ts` | `basePath` |
 | Nuxt / SvelteKit / Vite | `vite.config.ts` | `base` |
 
-## ルーティングパスパターン
-
-| パターン | 説明 |
+| Pattern | Description |
 |---|---|
-| `/pricing` | 完全一致 |
-| `/blog/:slug` | パラメータ（単一セグメント） |
-| `/docs/:path*` | ワイルドカード（0以上） |
-| `/api/:path+` | Plus（1以上） |
+| `/pricing` | Exact match |
+| `/blog/:slug` | Parameter (single segment) |
+| `/docs/:path*` | Wildcard (zero or more) |
+| `/api/:path+` | Plus (one or more) |
 
-パスは大文字・小文字を区別する。
+## Notes
 
-## 本番環境
-
-Turborepo のプロキシはローカル開発専用。Vercel の場合は `@vercel/microfrontends` で本番対応。
+- Paths are case-sensitive.
+- The Turborepo proxy is for local development only. For production on Vercel, use `@vercel/microfrontends`.

@@ -1,19 +1,6 @@
 # Zoom
 
-## Credentials
-
-- `ZOOM_CLIENT_ID`
-- `ZOOM_CLIENT_SECRET`
-
-### Setup Instructions
-
-1. Visit [Zoom Marketplace](https://marketplace.zoom.us)
-2. Hover on the `Develop` button and select `Build App`
-3. Select `General App` and click `Create`
-4. Under "Select how the app is managed," choose `User-managed`
-5. Under "App Credentials," copy your `Client ID` and `Client Secret`
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -28,8 +15,6 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
-
 ```typescript
 import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
@@ -41,18 +26,19 @@ const signIn = async () => {
 }
 ```
 
-## リダイレクト URL
+## Options / Props
 
-Set your OAuth Redirect URL in the Zoom app settings under "OAuth Information" > "OAuth Redirect URL":
-- **Development**: `http://localhost:3000/api/auth/callback/zoom`
-- **Production**: Update to your application's actual URL
-- Adjust the path if you've customized your auth route base path
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `clientId` | string | — | `ZOOM_CLIENT_ID`, retrieved from "App Credentials" in the Zoom app |
+| `clientSecret` | string | — | `ZOOM_CLIENT_SECRET`, retrieved from "App Credentials" in the Zoom app |
 
-## プロバイダー固有の設定・注意点
+## Notes
 
-### Required Scopes
+- Setup: visit [Zoom Marketplace](https://marketplace.zoom.us), hover on `Develop` and select `Build App`, select `General App` and click `Create`, choose `User-managed` under "Select how the app is managed," then copy `Client ID` and `Client Secret` from "App Credentials"
+- Set the OAuth Redirect URL in the Zoom app settings under "OAuth Information" > "OAuth Redirect URL" — development: `http://localhost:3000/api/auth/callback/zoom`; production: update to your application's actual URL. Adjust the path if you've customized your auth route base path
+- Minimum required scope: `user:read:user` (View a user). Add any additional scopes your application needs through the Zoom app dashboard
 
-The minimum required scope is:
-- **`user:read:user`** (View a user)
+## Related
 
-Add any additional scopes your application needs through the Zoom app dashboard.
+- [Social Providers Common](./social-providers-common.md)

@@ -141,6 +141,7 @@ function Results() {
 - `createSearchParamsCache` は React の `cache` 関数に基づく。**現在のページレンダリング内でのみ有効**。Next.js App Router のサーバーコンポーネント専用
 - React Router / Remix では `createSearchParamsCache` ではなく `createLoader` を loader 関数内で使い、`request` または `request.url` を渡す
 - Loader はデータの**バリデーション**を行わない。JSON オブジェクトや特定の制約には Zod 等のスキーマバリデーションを併用する
+- Remix v2 は EOL となり `nuqs/adapters/remix` は nuqs@3.0.0 で削除予定。React Router v6 も EOL となり `nuqs/adapters/react-router/v6`（および無指定の `nuqs/adapters/react-router`）は nuqs@3.0.0 で削除予定。React Router v7 / v8 への移行を推奨
 
 ## 関連
 

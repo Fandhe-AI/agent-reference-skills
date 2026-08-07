@@ -2,20 +2,23 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Entity | Base class for all scene objects; attach components to define appearance and behavior | [entity.md](./entity.md) |
-| ModelEntity | Renderable entity with mesh and materials, supporting physics and collision | [modelentity.md](./modelentity.md) |
-| AnchorEntity | Tethers virtual content to real-world surfaces, images, faces, or world positions | [anchorentity.md](./anchorentity.md) |
-| Component | Protocol for attaching a single aspect of geometry or behavior to an entity | [component.md](./component.md) |
-| Entity.ComponentSet | Type-keyed collection of components stored on an entity | [componentset.md](./componentset.md) |
-| ModelComponent | Component providing a MeshResource and Material array for rendering | [modelcomponent.md](./modelcomponent.md) |
-| Scene | Container that holds all anchors and entities rendered by an AR/3D view | [scene.md](./scene.md) |
-| RealityView | SwiftUI view that hosts RealityKit content with make/update closures | [realityview.md](./realityview.md) |
-| MeshResource | Procedural or custom 3D geometry (box, sphere, plane, cylinder, text, etc.) | [meshresource.md](./meshresource.md) |
-| Material | Protocol adopted by all surface-appearance types (PBR, unlit, video, etc.) | [material.md](./material.md) |
-| SimpleMaterial | Basic light-responsive material with color, roughness, and metallic properties | [simplematerial.md](./simplematerial.md) |
-| PhysicallyBasedMaterial | Full PBR material with baseColor, roughness, metallic, emissive, clearcoat, and blending | [physicallybasedmaterial.md](./physicallybasedmaterial.md) |
-| Transform | Component defining scale, rotation, and translation of an entity | [transform.md](./transform.md) |
-| System | Protocol for per-frame ECS logic that queries and updates multiple entities | [system.md](./system.md) |
-| BodyTrackingComponent | Animates a rigged character by tracking a real person's body pose (iOS only) | [bodytrackingcomponent.md](./bodytrackingcomponent.md) |
-| CollisionComponent | Enables collision detection and physics-simulation participation | [collisioncomponent.md](./collisioncomponent.md) |
-| PhysicsBodyComponent | Defines physics behavior mode (dynamic/static/kinematic), mass, and damping | [physicsbodycomponent.md](./physicsbodycomponent.md) |
+| AnchorEntity | An anchor that tethers entities to a real-world scene location. | [anchorentity.md](./anchorentity.md) |
+| BodyTrackingComponent | A component that animates a virtual character by tracking a real person's body pose. | [bodytrackingcomponent.md](./bodytrackingcomponent.md) |
+| CollisionComponent | A component that enables collision detection and physics participation for an entity. | [collisioncomponent.md](./collisioncomponent.md) |
+| Component | A protocol that represents a single geometry or behavior aspect attached to an entity. | [component.md](./component.md) |
+| ComputeGraphComponent | A component that drives a compute graph–based particle simulation on an entity… | [computegraphcomponent.md](./computegraphcomponent.md) |
+| Entity | The fundamental building block of a RealityKit scene. Attach components to provide appearance and behavior. | [entity.md](./entity.md) |
+| Entity.ComponentSet | A collection that stores the components attached to an entity. Accessed via `entity.components`. | [componentset.md](./componentset.md) |
+| EntityAction | A protocol that defines an action for an entity. Types conforming to `EntityAction` hold… | [entityaction.md](./entityaction.md) |
+| GaussianSplatComponent | A component that renders 3D Gaussian splat data, displaying volumetric imagery… | [gaussiansplatcomponent.md](./gaussiansplatcomponent.md) |
+| Material | A protocol describing the surface properties of a 3D mesh, such as color and texture. | [material.md](./material.md) |
+| MeshResource | A high-level representation of vertices and edges that define a 3D shape. | [meshresource.md](./meshresource.md) |
+| ModelComponent | A component that provides a mesh and materials for an entity's visual appearance. | [modelcomponent.md](./modelcomponent.md) |
+| ModelEntity | A representation of a physical object that RealityKit renders and optionally simulates. | [modelentity.md](./modelentity.md) |
+| PhysicallyBasedMaterial | A material that simulates real-world surfaces using Physically Based Rendering (PBR). | [physicallybasedmaterial.md](./physicallybasedmaterial.md) |
+| PhysicsBodyComponent | A component that defines how an entity behaves in the physics simulation. | [physicsbodycomponent.md](./physicsbodycomponent.md) |
+| RealityView | A SwiftUI view that hosts RealityKit 3D content. | [realityview.md](./realityview.md) |
+| Scene | A container that holds the collection of entities an AR or 3D view renders. | [scene.md](./scene.md) |
+| SimpleMaterial | A basic material that responds to lighting in the scene. | [simplematerial.md](./simplematerial.md) |
+| System | A protocol for objects that apply behavior to multiple entities every scene update. | [system.md](./system.md) |
+| Transform | A component that defines the scale, rotation, and translation of an entity. | [transform.md](./transform.md) |

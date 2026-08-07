@@ -1,69 +1,71 @@
-# タスクの設定
+# Configuring Tasks
 
-## dependsOn（依存関係）
+## Usage
 
-### ^ トポロジカル依存
+### dependsOn
+
+#### `^` topological dependency
 
 ```json
 { "build": { "dependsOn": ["^build"] } }
 ```
 
-全依存パッケージの `build` を先に実行。
+Runs `build` in all dependency packages first.
 
-### 同一パッケージ依存
+#### Same-package dependency
 
 ```json
 { "test": { "dependsOn": ["build"] } }
 ```
 
-同じパッケージ内の `build` を先に実行。
+Runs `build` in the same package first.
 
-### package#task 構文
+#### `package#task` syntax
 
 ```json
 { "lint": { "dependsOn": ["utils#build"] } }
 ```
 
-特定パッケージの特定タスクへの依存を明示。
+Declares an explicit dependency on a specific task in a specific package.
 
-### 依存なし（並列実行）
+#### No dependency (parallel execution)
 
-`dependsOn` を省略するか空配列にする。
+Omit `dependsOn` or set it to an empty array.
 
-## outputs（キャッシュ対象）
+### outputs (cache targets)
 
 ```json
 { "build": { "outputs": [".next/**", "!.next/cache/**", "dist/**"] } }
 ```
 
-`outputs` を定義しないとファイルキャッシュなし（ログのみ）。
+Without `outputs`, no file caching occurs (only logs are cached).
 
-## inputs（ハッシュ対象ファイル）
+### inputs (files that affect the hash)
 
 ```json
 { "spell-check": { "inputs": ["**/*.md", "**/*.mdx"] } }
 ```
 
-特殊値:
-- `$TURBO_DEFAULT$`: デフォルト挙動を維持しつつ追加・除外
-- `$TURBO_ROOT$`: リポジトリルートからの相対パス
-- `$TURBO_EXTENDS$`: 継承した値に追記
+Special values:
+- `$TURBO_DEFAULT$`: keep the default behavior while adding/excluding files
+- `$TURBO_ROOT$`: path relative to the repository root
+- `$TURBO_EXTENDS$`: append to an inherited value
 
-## ルートタスク
+### Root tasks
 
 ```json
 { "//#lint:root": {} }
 ```
 
-ワークスペースルートの `package.json` スクリプトを実行。
+Runs a `package.json` script from the workspace root.
 
-## cache: false（副作用タスク）
+### cache: false (side-effect tasks)
 
 ```json
 { "deploy": { "dependsOn": ["^build"], "cache": false } }
 ```
 
-## persistent + with（長時間実行タスク）
+### persistent + with (long-running tasks)
 
 ```json
 {

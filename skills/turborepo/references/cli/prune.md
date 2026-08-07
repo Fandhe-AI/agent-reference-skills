@@ -1,42 +1,40 @@
 # turbo prune
 
-特定パッケージとその依存関係のみを含む部分的なモノレポを生成する。Docker デプロイのレイヤーキャッシュ最適化に有用。
+## Signature / Usage
 
 ```bash
 turbo prune [package] [options]
 ```
 
-## オプション
+Generates a partial monorepo containing only a target package and its dependencies. Useful for optimizing Docker layer caching in deployments.
 
-| オプション | デフォルト | 説明 |
+## Options / Props
+
+| Option | Default | Description |
 |---|---|---|
-| `--docker` | `false` | Docker レイヤーキャッシュ最適化向け出力構造 |
-| `--out-dir` | `./out` | 出力ディレクトリのパス |
-| `--use-gitignore` | `true` | `.gitignore` を考慮 |
+| `--docker` | `false` | Output structure optimized for Docker layer caching |
+| `--out-dir` | `./out` | Path to the output directory |
+| `--use-gitignore` | `true` | Respect `.gitignore` |
 
-## --docker フラグの出力構造
+## Notes
 
-```
-out/
-├── json/          # package.json のみ（依存インストール用）
-├── full/          # 完全なソースコード（ビルド用）
-└── pnpm-lock.yaml # プルーニング済みロックファイル
-```
+- Output structure with `--docker`:
+  ```
+  out/
+  ├── json/          # package.json only (for dependency install)
+  ├── full/          # full source code (for build)
+  └── pnpm-lock.yaml # pruned lockfile
+  ```
+- Example Dockerfile usage:
+  ```dockerfile
+  FROM node:alpine AS installer
+  COPY out/json/ .
+  RUN npm install
 
-## Dockerfile での使用例
-
-```dockerfile
-FROM node:alpine AS installer
-COPY out/json/ .
-RUN npm install
-
-FROM node:alpine AS builder
-COPY --from=installer /app/node_modules ./node_modules
-COPY out/full/ .
-RUN turbo run build
-```
-
-## 注意点
-
-- `pnpm deploy` と異なり、モノレポ構造を維持
-- `globalDependencies` で参照されるファイルはデフォルトではコピーされない
+  FROM node:alpine AS builder
+  COPY --from=installer /app/node_modules ./node_modules
+  COPY out/full/ .
+  RUN turbo run build
+  ```
+- Unlike `pnpm deploy`, the monorepo structure is preserved.
+- Files referenced via `globalDependencies` are not copied by default.

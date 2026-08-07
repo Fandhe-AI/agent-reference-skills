@@ -1,68 +1,68 @@
 # Generate
 
-データベーススキーマの生成とマイグレーション適用。
+Generating database schemas and applying migrations.
 
-## スキーマ／マイグレーションファイルの生成
+## Generate schema/migration files
 
 ```sh
 npx auth@latest generate
 ```
 
-ORM に応じたスキーマファイルを生成する。Prisma: `prisma/schema.prisma`、Drizzle: `schema.ts`、Kysely: `schema.sql` がデフォルト出力先。
+Generates a schema file appropriate to the ORM. Default output paths: Prisma: `prisma/schema.prisma`, Drizzle: `schema.ts`, Kysely: `schema.sql`.
 
-## 出力先を指定してスキーマを生成
+## Generate schema to a specific output path
 
 ```sh
 npx auth@latest generate --output ./db/schema.ts
 ```
 
-## 設定ファイルのパスを指定してスキーマを生成
+## Generate schema with a specific config file path
 
 ```sh
 npx auth@latest generate --config ./src/lib/auth.ts
 ```
 
-デフォルトでは `./, ./utils, ./lib` およびそれらの `src/` 相当を検索する。
+By default, searches `./, ./utils, ./lib` and their `src/` equivalents.
 
-## 確認プロンプトをスキップしてスキーマを生成
+## Generate schema without confirmation prompt
 
 ```sh
 npx auth@latest generate --yes
 ```
 
-## マイグレーションの適用（Kysely アダプターのみ）
+## Apply migrations (Kysely adapter only)
 
-> **警告**: このコマンドはデータベースに直接スキーマを適用する。実行前にバックアップを取ること。
+> **Warning**: This command applies the schema directly to the database. Back up your data before running it.
 
 ```sh
 npx auth@latest migrate
 ```
 
-Kysely アダプターを使用しているプロジェクト専用。PostgreSQL では `search_path` を自動検出し正しいスキーマへテーブルを作成する。
+For projects using the Kysely adapter only. On PostgreSQL, it auto-detects `search_path` and creates tables in the correct schema.
 
-## 確認プロンプトをスキップしてマイグレーションを適用
+## Apply migrations without confirmation prompt
 
-> **警告**: 確認なしにスキーマ変更をデータベースへ適用する。
+> **Warning**: Applies schema changes to the database without confirmation.
 
 ```sh
 npx auth@latest migrate --yes
 ```
 
-## pnpm での実行
+## Running with pnpm
 
 ```sh
 pnpm dlx auth@latest generate
 pnpm dlx auth@latest migrate
 ```
 
-## yarn での実行
+## Running with yarn
 
 ```sh
 yarn auth@latest generate
 yarn auth@latest migrate
 ```
 
-## bun での実行
+## Running with bun
 
 ```sh
 bun auth@latest generate

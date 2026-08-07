@@ -21,6 +21,19 @@ Anthropic's data usage, training, and retention policies for Claude Code.
 | Error reports | Pro/Max sign-in + v2.1.198+ + direct Claude API + no ZDR/HIPAA | Error messages/stack traces, redacted for secrets/paths/emails |
 | WebFetch domain safety check | Every WebFetch call | Only the hostname, sent to `api.anthropic.com`, cached 5 min |
 
+## Example
+
+```bash
+# Disable all non-essential outbound traffic at once
+export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+
+# Or disable individual data flows
+export DISABLE_TELEMETRY=1
+export DISABLE_ERROR_REPORTING=1
+export DISABLE_FEEDBACK_COMMAND=1
+export CLAUDE_CODE_DISABLE_FEEDBACK_SURVEY=1
+```
+
 ## Notes
 
 - Local caching: session transcripts are stored in plaintext under `~/.claude/projects/` for 30 days by default (`cleanupPeriodDays` to adjust) to enable session resumption.

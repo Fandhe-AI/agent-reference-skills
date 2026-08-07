@@ -1,6 +1,8 @@
 # TypeScript
 
-## 設定共有 — @repo/typescript-config
+## Usage
+
+Shared config — `@repo/typescript-config`:
 
 ```
 packages/typescript-config/
@@ -10,11 +12,11 @@ packages/typescript-config/
 ```
 
 ```json
-// base.json の代表的なオプション
+// Representative options in base.json
 { "compilerOptions": { "target": "es2022", "module": "NodeNext", "strict": true, "isolatedModules": true } }
 ```
 
-## exports フィールド
+`exports` field:
 
 ```json
 {
@@ -24,17 +26,17 @@ packages/typescript-config/
 }
 ```
 
-## 型チェック
+Type checking:
 
 ```json
 { "scripts": { "check-types": "tsc --noEmit" } }
 ```
 
-## ベストプラクティス
+## Notes
 
-- bundler ではなく `tsc` を使う
-- `declaration: true` と `declarationMap: true` を有効にする
-- TypeScript の `paths` より Node.js の subpath imports を使う（TS 5.4+）
-- ルートの `tsconfig.json` は作成しない
-- **TypeScript Project References は使わない**（設定が複雑になりキャッシュ効率も悪化）
-- ワークスペース全体で TypeScript のバージョンを統一する
+- Use `tsc` rather than a bundler.
+- Enable `declaration: true` and `declarationMap: true`.
+- Prefer Node.js subpath imports over TypeScript `paths` (TS 5.4+).
+- Do not create a root `tsconfig.json`.
+- **Do not use TypeScript Project References** (they complicate configuration and hurt caching efficiency).
+- Keep the TypeScript version consistent across the whole workspace.

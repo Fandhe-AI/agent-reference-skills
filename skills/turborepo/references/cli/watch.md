@@ -1,26 +1,26 @@
 # turbo watch
 
+## Signature / Usage
+
 ```bash
 turbo watch [tasks]
 ```
 
-コードの変更をもとにタスクを再実行する。
+Re-runs tasks based on code changes.
 
-## 動作レベル
+## Notes
 
-- **デフォルト**: パッケージレベル。ファイルが1つでも変わると全タスク再実行
-- **`futureFlags.watchUsingTaskInputs` 有効化**: タスクの `inputs` グロブに基づいてフィルタリング
+- Watch granularity:
+  - **Default**: package-level. Any single file change re-runs all tasks.
+  - **With `futureFlags.watchUsingTaskInputs` enabled**: filters based on each task's `inputs` globs.
+- Relationship with persistent tasks:
 
-## persistent タスクとの関係
+  | Case | Recommendation |
+  |---|---|
+  | Has a built-in watcher (e.g. `next dev`) | Mark as `"persistent": true` and don't use `turbo watch` |
+  | Watcher isn't monorepo-aware | Mark as `"interruptible": true` so it restarts on change detection |
 
-| ケース | 推奨 |
-|---|---|
-| 組み込みウォッチャー付き（`next dev` 等） | `"persistent": true` でマークし `turbo watch` は使わない |
-| モノレポ非対応のウォッチャー | `"interruptible": true` でマークし、変更検知時に再起動 |
-
-persistent タスクは `turbo watch` に無視される。
-
-## 制限事項
-
-- キャッシュ: 現在実験的（`--experimental-write-cache` で使用可能）
-- ソース管理下のファイルへ書き込むタスクは無限ループの恐れあり
+  Persistent tasks are ignored by `turbo watch`.
+- Limitations:
+  - Caching is currently experimental (enable with `--experimental-write-cache`)
+  - Tasks that write to files under source control risk infinite loops

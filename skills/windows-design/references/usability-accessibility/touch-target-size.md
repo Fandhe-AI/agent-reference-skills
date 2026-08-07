@@ -20,7 +20,7 @@ In general, set touch target size to the 7.5mm square range (40x40 px on a 135 P
 
 - Alternative touch-optimized guidance elsewhere in the design docs suggests **44x44 epx** with at least **4 epx** of visible space between targets as an option for touch-first UI.
 - Important APIs: `Windows.UI.Core`, `Windows.UI.Input`, `Windows.UI.Xaml.Input`.
-- See [Content design basics](../basics/content-basics) (outside this scope) for control size and density guidance, and [Screen sizes and breakpoints](./screen-sizes-breakpoints.md) for the effective-pixel system referenced by these sizes.
+- See [Spacing, gutters, and content density](../foundations/layout-spacing-and-density.md) for control size and density guidance, and [Screen sizes and breakpoints](./screen-sizes-breakpoints.md) for the effective-pixel system referenced by these sizes.
 
 ## Related
 

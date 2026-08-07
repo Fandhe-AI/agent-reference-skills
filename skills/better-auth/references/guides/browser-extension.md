@@ -1,12 +1,8 @@
 # Browser Extension Guide
 
-ブラウザ拡張機能での Better Auth の使用方法。Plasmo フレームワークを使用して Better Auth と統合するブラウザ拡張機能の作成ガイド。
+ブラウザ拡張機能での Better Auth の使用方法。Plasmo フレームワークを使用して Better Auth と統合するブラウザ拡張機能の作成ガイド。This guide helps developers create browser extensions using Plasmo framework integrated with Better Auth for authentication. The guide assumes you have "a backend setup of Better Auth and are ready to create a browser extension to connect to it."
 
-## 概要
-
-This guide helps developers create browser extensions using Plasmo framework integrated with Better Auth for authentication. The guide assumes you have "a backend setup of Better Auth and are ready to create a browser extension to connect to it."
-
-## 手順
+## Signature / Usage
 
 ### 1. Setup & Installation
 
@@ -123,7 +119,7 @@ trustedOrigins: [
 ]
 ```
 
-## 注意点
+## Notes
 
 - Wildcards reduce security by trusting all extensions and are not recommended for production — use explicit listing instead
 - A completed example is available in the Better Auth GitHub repository

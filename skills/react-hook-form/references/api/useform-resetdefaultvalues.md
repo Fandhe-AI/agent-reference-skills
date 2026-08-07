@@ -1,10 +1,11 @@
 # useForm — resetDefaultValues
 
-`resetDefaultValues` メソッドはフォームのデフォルト値を更新し、それに伴い dirty/valid 状態を再計算する。v7.77.0 以降で利用可能。`reset()` と異なり、ユーザーが入力した値には影響せず、デフォルト値の基準線のみを更新する。
+`resetDefaultValues` メソッドはフォームのデフォルト値を更新し、それに伴い dirty/valid 状態を再計算する。v7.77.0 以降で利用可能。`reset()` と異なり、ユーザーが入力した値には影響せず、デフォルト値の基準線のみを更新する。v7.82.0 以降は `useFormContext()` 経由の form context からも公開される。
 
 ## バージョン要件
 
-- v7.77.0+
+- v7.77.0+（`useForm` から直接取得）
+- v7.82.0+（`useFormContext()` の form context 経由でも取得可能）
 
 ## シグネチャ
 
@@ -84,6 +85,23 @@ function UserProfileForm({ userId }: { userId: string }) {
 resetDefaultValues(newDefaults, { keepDirty: true });
 ```
 
+### useFormContext 経由での利用（v7.82.0+）
+
+```tsx
+import { useFormContext } from "react-hook-form";
+
+function SaveButton() {
+  const { resetDefaultValues, getValues } = useFormContext();
+
+  const handleSave = async () => {
+    await saveUser(getValues());
+    resetDefaultValues(getValues());
+  };
+
+  return <button onClick={handleSave}>保存</button>;
+}
+```
+
 ### subscribe との組み合わせ
 
 ```tsx
@@ -100,6 +118,7 @@ const { subscribe, resetDefaultValues } = useForm({
 - 呼び出し後、`isDirty` は新しいデフォルト値と現在の入力値の差分で再計算される。
 - `subscribe` のコールバック内で呼び出すと無限ループになるため禁止。
 - v7.77.0 以前は `reset(values)` でデフォルト値と入力値を同時に更新する必要があったが、`resetDefaultValues` により分離が可能になった。
+- v7.82.0 以降は `FormProvider` 配下のコンポーネントで `useFormContext()` からも `resetDefaultValues` を取得できる（`useForm` を直接呼び出す必要がない）。
 
 ## Related
 

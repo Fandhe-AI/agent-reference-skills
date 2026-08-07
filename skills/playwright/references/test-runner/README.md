@@ -10,5 +10,6 @@
 | Projects | Logical test groups with shared configuration for multi-browser… | [projects.md](./projects.md) |
 | Reporters | Built-in and custom test result reporters with multiple outputs… | [reporters.md](./reporters.md) |
 | Retries | Automatic test retry with flaky/passed/failed categorization… | [retries.md](./retries.md) |
+| Sharding | Splitting the test suite across machines via `--shard=x/y` and merging blob reports | [sharding.md](./sharding.md) |
 | Timeouts | Test timeout configuration at multiple layers (test, expect,…) | [timeouts.md](./timeouts.md) |
 | Web Server | Local dev server auto-launch and readiness polling for tests… | [web-server.md](./web-server.md) |

@@ -5,7 +5,8 @@ description: >
   インストール、CLI コマンド (chat, model, gateway, config, skills, cron, webhook, mcp, profile)、
   Configuration (Terminal Backends, Memory, TTS / STT, Compression, Display, Auxiliary Models)、
   Features (Tools, Skills, MCP, Memory, Voice Mode, Personality, Context Files)、
-  Messaging Gateway (14+ プラットフォーム)、Security、Architecture。
+  Messaging Gateway (14+ プラットフォーム)、Security、Architecture、
+  Platform Support、Nous Portal 連携 (Tool Gateway)。
 user-invocable: false
 model: sonnet
 ---
@@ -27,6 +28,7 @@ skills/hermes-agent/
       installation.md
       quickstart.md
       learning-path.md
+      platform-support.md
     cli/
       README.md
       commands.md
@@ -53,6 +55,7 @@ skills/hermes-agent/
       README.md
       mcp-guide.md
       voice-mode-guide.md
+      run-nemotron-3-ultra-free.md
       tips.md
     architecture/
       README.md
@@ -61,6 +64,9 @@ skills/hermes-agent/
       README.md
       faq.md
       skills-hub.md
+    integrations/
+      README.md
+      nous-portal.md
   samples/
     README.md
     basic-chat.md
@@ -97,14 +103,15 @@ skills/hermes-agent/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
-| インストール、クイックスタート、学習パス、プロバイダー設定 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| インストール、クイックスタート、学習パス、プロバイダー設定、サポート対象プラットフォーム階層 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | CLI 起動オプション、キーバインド、スラッシュコマンド、全 CLI コマンドリファレンス | cli | [references/cli/README.md](references/cli/README.md) |
 | config.yaml 設定、Terminal Backend (Docker/SSH/Modal 等)、TTS/STT、Display、Compression | configuration | [references/configuration/README.md](references/configuration/README.md) |
 | Tools & Toolsets、Memory、Skills、MCP、Voice Mode、Personality、Context Files | features | [references/features/README.md](references/features/README.md) |
 | Messaging Gateway、Telegram/Discord/Slack/WhatsApp 等の連携、サービス管理 | messaging | [references/messaging/README.md](references/messaging/README.md) |
 | セキュリティモデル、Dangerous Command Approval、Container Isolation、SSRF Protection | security | [references/security/README.md](references/security/README.md) |
-| MCP 実践ガイド、Voice Mode セットアップ、Tips & Best Practices | guides | [references/guides/README.md](references/guides/README.md) |
+| MCP 実践ガイド、Voice Mode セットアップ、Nemotron 3 Ultra 無料利用、Tips & Best Practices | guides | [references/guides/README.md](references/guides/README.md) |
 | 内部アーキテクチャ、サブシステム構成、設計原則 | architecture | [references/architecture/README.md](references/architecture/README.md) |
 | FAQ、トラブルシューティング、Skills Hub 概要 | reference | [references/reference/README.md](references/reference/README.md) |
+| Nous Portal 連携、Tool Gateway、フロンティアモデル統合サブスクリプション | integrations | [references/integrations/README.md](references/integrations/README.md) |
 | 典型的な使い方を知りたい（チャット、MCP、音声、Docker、スケジュール等） | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンド・ゲートウェイ起動・認証・Cron 等を実行したい | scripts | [scripts/README.md](scripts/README.md) |

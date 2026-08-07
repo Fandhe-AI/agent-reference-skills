@@ -8,11 +8,11 @@ OpenAPI 仕様から Redoc HTML ドキュメントを生成するプラグイン
 npm install --save-dev @kubb/plugin-redoc
 ```
 
-## 設定オプション
+## 設定オプション（v5 でも変更なし）
 
 | オプション | 型 | デフォルト | 説明 |
 |-----------|-----|----------|------|
-| `output.path` | `string` | `'docs.html'` | 生成される HTML ファイルのパス |
+| `output.path` | `string` | `'docs.html'` | 生成される HTML ファイルのパス（ディレクトリではなく単一ファイルを指す） |
 
 ## 設定例
 

@@ -9,44 +9,38 @@ AI モデルが API と対話可能になる。
 npm install --save-dev @kubb/plugin-mcp
 ```
 
-## 設定オプション
+## 設定オプション（v5）
 
-### output
+`client` はオブジェクトではなく登録済みクライアントプラグイン（`@kubb/plugin-axios` / `@kubb/plugin-fetch`）を指す文字列になった。`baseURL` は `pluginMcp` ではなくクライアントプラグイン側で設定する。`contentType` / `paramsCasing` / `generators` は削除され、`transformers.name` は `resolver` に置き換わった。`pluginMcp` は `@kubb/plugin-ts` と `@kubb/plugin-zod` に依存するため、あわせて登録が必要。生成されるハンドラーは第2引数に MCP の `RequestHandlerExtra` を受け取るようになり、内部でリクエストを組み立てず登録済みクライアントの named operation を呼び出す形に変わった。
 
-| オプション | 型 | デフォルト |
-|-----------|-----|----------|
-| `output.path` | `string` | `'mcp'` |
-| `output.barrelType` | `'all' \| 'named' \| 'propagate' \| false` | `'named'` |
-| `output.banner` / `output.footer` | `string \| (oas) => string` | — |
-| `output.override` | `boolean` | `false` |
-
-### client
-
-| オプション | 型 | デフォルト |
-|-----------|-----|----------|
-| `client.importPath` | `string` | — |
-| `client.dataReturnType` | `'data' \| 'full'` | `'data'` |
-| `client.baseURL` | `string` | — |
-
-### その他
-
-| オプション | 型 | デフォルト |
-|-----------|-----|----------|
-| `contentType` | `'application/json' \| string` | — |
-| `paramsCasing` | `'camelcase'` | — |
-| `group.type` | `'tag'` | — |
-| `group.name` | `(context) => string` | `'${ctx.group}Requests'` |
-| `include` / `exclude` | `Array<{type, pattern}>` | — |
-| `override` | `Array<{type, pattern, options}>` | — |
-| `transformers.name` | `(name, type?) => string` | — |
-| `generators` | `Generator[]` | — |
+| オプション | 型 | デフォルト | 説明 |
+|-----------|-----|----------|------|
+| `output` | `Output` | `{ path: 'mcp', barrel: { type: 'named' } }` | 出力先パス・バレルエクスポート設定 |
+| `group` | `Group` | — | tag / path によるフォルダー分割（`output.mode: 'directory'` 必須） |
+| `client` | `'fetch' \| 'axios'` | — | ハンドラーが呼び出す登録済みクライアントプラグイン |
+| `include` | `Array<Include>` | — | 対象を絞り込むフィルタリング |
+| `exclude` | `Array<Exclude>` | — | 対象を除外するフィルタリング |
+| `override` | `Array<Override>` | — | パターン単位のオプション上書き |
+| `resolver` | `ResolverPatch<ResolverMcp>` | — | 生成名・ファイルパスのカスタマイズ（旧 `transformers.name`） |
+| `macros` | `Array<Macro>` | — | 出力前の AST ノード書き換え |
 
 ## 設定例
 
 ```typescript
-pluginMcp({
-  output: { path: './mcp', barrelType: 'named' },
-  client: { baseURL: 'https://petstore.swagger.io/v2' },
-  group: { type: 'tag', name: ({ group }) => `${group}Handlers` },
+import { defineConfig } from 'kubb/config'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginZod } from '@kubb/plugin-zod'
+import { pluginFetch } from '@kubb/plugin-fetch'
+import { pluginMcp } from '@kubb/plugin-mcp'
+
+export default defineConfig({
+  input: './petStore.yaml',
+  output: { path: './src/gen' },
+  plugins: [
+    pluginTs(),
+    pluginZod(),
+    pluginFetch({ baseURL: 'https://petstore.swagger.io/v2' }),
+    pluginMcp({ client: 'fetch' }),
+  ],
 })
 ```

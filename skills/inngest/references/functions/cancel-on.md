@@ -44,6 +44,7 @@ inngest.createFunction(
 - `if` allows complex multi-field conditions, e.g. `"async.data.userId == event.data.userId && async.data.billing_plan == 'pro'"`.
 - Cancellation only applies while the function is waiting (sleeping, awaiting events) or between steps — it will not interrupt a step mid-execution.
 - `cancelOn` is incompatible with `batchEvents`.
+- `cancelOn` is a per-function, event-driven mechanism defined in code. It is distinct from platform-level **Bulk Cancellation**, an operator-initiated dashboard/REST action that cancels many runs of a function matching a selected date range retroactively; both share the same limitation that a step already executing on the worker is not force-stopped.
 
 ## Related
 

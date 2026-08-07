@@ -1,37 +1,43 @@
 # Installation
 
-## 新規プロジェクト作成（クイックスタート）
+## Signature / Usage
 
-| パッケージマネージャー | コマンド |
-|---|---|
+```bash
+# Create a new project (quickstart)
+pnpm dlx create-turbo@latest
+yarn dlx create-turbo@latest
+npx create-turbo@latest
+bunx create-turbo@latest
+```
+
+```bash
+# Install globally
+pnpm add turbo --global
+npm install turbo --global
+```
+
+```bash
+# Install as a repository devDependency
+npm install turbo --save-dev
+```
+
+## Options / Props
+
+| Package Manager | Command |
+| --- | --- |
 | pnpm | `pnpm dlx create-turbo@latest` |
 | yarn | `yarn dlx create-turbo@latest` |
 | npm | `npx create-turbo@latest` |
 | bun | `bunx create-turbo@latest` |
 
-スターターには2つのアプリケーションと3つの共有ライブラリが含まれる。
+## Notes
 
-## グローバルインストール
+- The starter created by `create-turbo` includes two applications and three shared libraries
+- Global `turbo` usage: `turbo build` builds along the dependency graph, `turbo build --filter=docs --dry` performs a dry run, `turbo generate` runs code generation, and `cd apps/docs && turbo build` builds a specific package
+- Add `turbo` as a root devDependency as well, to keep the version consistent across the team
+- A globally installed `turbo` automatically delegates to the local version if one exists in the repository, preserving workflow convenience while keeping the team's version consistent
 
-```bash
-pnpm add turbo --global
-npm install turbo --global
-```
+## Related
 
-用途:
-- `turbo build` — 依存グラフに沿ってビルド
-- `turbo build --filter=docs --dry` — ドライラン
-- `turbo generate` — コード生成
-- `cd apps/docs && turbo build` — 特定パッケージのビルド
-
-## リポジトリへのインストール（devDependency）
-
-```bash
-npm install turbo --save-dev
-```
-
-チーム間でバージョンを統一するため、ルートの devDependency にも追加する。
-
-## ローカルバージョンへの委譲
-
-グローバルの `turbo` はリポジトリにローカルバージョンが存在する場合、自動的にそちらに委譲する。ワークフローの利便性を保ちつつチーム全体のバージョン一貫性を維持できる。
+- [Add to Existing Repository](./add-to-existing.md)
+- [Editor Integration](./editor-integration.md)

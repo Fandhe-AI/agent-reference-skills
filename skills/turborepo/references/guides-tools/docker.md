@@ -1,20 +1,20 @@
 # Docker
 
-## 問題
+## Usage
 
-モノレポでは `package-lock.json` がリポジトリ全体で共有されるため、無関係な変更が全アプリの再ビルドを引き起こす。
+Problem: in a monorepo, `package-lock.json` is shared across the whole repository, so unrelated changes trigger full rebuilds of every app.
 
-## 解決策: turbo prune
+Solution: `turbo prune`
 
 ```bash
 turbo prune api --docker
 ```
 
-出力構造:
-- `./out/json` — 依存インストール用の package.json のみ
-- `./out/full` — 完全なソースファイルと設定
+Output structure:
+- `./out/json` — only the `package.json` files needed for dependency install
+- `./out/full` — full source files and configuration
 
-## Dockerfile 実装例
+Example Dockerfile:
 
 ```dockerfile
 FROM base AS prepare
@@ -28,7 +28,7 @@ COPY --from=prepare /app/out/full/ .
 RUN yarn turbo build
 ```
 
-## Remote Cache との連携
+Remote Cache integration:
 
 ```bash
 docker build -f apps/web/Dockerfile . \

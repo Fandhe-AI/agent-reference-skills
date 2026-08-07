@@ -1,12 +1,12 @@
-# TypeDoc カスタムテーマ
+# TypeDoc Custom Themes
 
-TypeDoc のテーマシステムを拡張し、カスタム HTML 出力を作成する方法。
+How to extend TypeDoc's theme system to produce custom HTML output.
 
-## 詳細説明
+## Usage
 
-### テーマの定義
+### Defining a theme
 
-テーマはプラグインから `Application.renderer.defineTheme()` を呼び出して定義する。最も基本的な実装は `DefaultTheme` を継承する方法:
+Themes are defined from a plugin by calling `Application.renderer.defineTheme()`. The simplest implementation extends `DefaultTheme`:
 
 ```typescript
 import { Application, DefaultTheme } from "typedoc";
@@ -16,9 +16,9 @@ export function load(app: Application) {
 }
 ```
 
-### DefaultTheme の拡張
+### Extending DefaultTheme
 
-カスタムテーマは `DefaultTheme` を継承し、`getRenderContext()` をオーバーライドしてカスタムコンテキストを返す:
+A custom theme extends `DefaultTheme` and overrides `getRenderContext()` to return a custom context:
 
 ```typescript
 import {
@@ -32,7 +32,7 @@ import {
 } from "typedoc";
 
 class MyThemeContext extends DefaultThemeRenderContext {
-  // テンプレートメソッドをオーバーライド
+  // Override a template method
   override footer = (context: DefaultThemeRenderContext) => {
     return (
       <footer>
@@ -57,63 +57,36 @@ export function load(app: Application) {
 
 ### DefaultThemeRenderContext
 
-`DefaultThemeRenderContext` はテーマのすべてのテンプレートメソッドを提供するクラス。コンストラクタは以下の引数を取る:
+`DefaultThemeRenderContext` is the class that provides all of a theme's template methods. Its constructor takes:
 
 ```typescript
 constructor(theme: DefaultTheme, page: PageEvent<Reflection>, options: Options)
 ```
 
-#### 主要テンプレートメソッド
+### Hook system
 
-| メソッド | 説明 |
-|---------|------|
-| `reflectionTemplate` | 通常の Reflection ページのレンダリング |
-| `documentTemplate` | ドキュメントページのレンダリング |
-| `hierarchyTemplate` | 型階層ページのレンダリング |
-| `indexTemplate` | インデックスページのレンダリング |
+Hooks let you inject content into the HTML without rewriting the whole theme.
 
-> **重要**: `this` を使用するテンプレート関数は必ずバインドする必要がある。アロー関数を使用するか、コンストラクタで `this.myMethod = this.myMethod.bind(this)` を呼ぶこと。
+Hooks are described in detail by the `RendererHooks` interface.
 
-### フックシステム
+### Reflection icons (v0.28+)
 
-フックを使うと、テーマ全体を書き換えることなく HTML にコンテンツを注入できる。
+`DefaultThemeRenderContext.reflectionIcon` allows fine-grained control over the icon shown for each Reflection kind, letting you change icons for specific kinds without replacing the whole icon set.
 
-#### 利用可能なフック
+### CSS layers (v0.28+)
 
-| フック名 | 説明 |
-|---------|------|
-| `head.end` | `<head>` タグの末尾に挿入 |
-| `body.begin` | `<body>` タグの先頭に挿入 |
-| `body.end` | `<body>` タグの末尾に挿入 |
-| `content.begin` | コンテンツエリアの先頭に挿入 |
-| `content.end` | コンテンツエリアの末尾に挿入 |
-| `sidebar.begin` | サイドバーの先頭に挿入 |
-| `sidebar.end` | サイドバーの末尾に挿入 |
-| `pageSidebar.begin` | ページサイドバーの先頭に挿入 |
-| `pageSidebar.end` | ページサイドバーの末尾に挿入 |
-| `footer.begin` | フッターの先頭に挿入 |
-| `footer.end` | フッターの末尾に挿入 |
+The default theme's CSS is wrapped in `@layer typedoc`. When overriding styles with custom CSS, using `@layer` makes it easier to control cascade precedence.
 
-フックは `RendererHooks` インターフェースで詳細が定義されている。
+### Async job queues
 
-### リフレクションアイコン（v0.28 以降）
+Queues for running asynchronous work before and after rendering:
 
-`DefaultThemeRenderContext.reflectionIcon` を使用すると、リフレクションの種類ごとのアイコン表示をきめ細かく制御できる。アイコン全体を差し替えるのではなく、特定の種類のみ変更可能。
+- **`preRenderAsyncJobs`**: run before documents are generated
+- **`postRenderAsyncJobs`**: run after documents have been written
 
-### CSS レイヤー（v0.28 以降）
+### Custom JSX elements
 
-デフォルトテーマの CSS は `@layer typedoc` でラップされる。カスタム CSS でスタイルを上書きする際に `@layer` を活用することで、カスケードの優先順位を制御しやすくなる。
-
-### 非同期ジョブ
-
-レンダリング前後に非同期処理を実行するためのキュー:
-
-- **`preRenderAsyncJobs`**: ドキュメント生成前に実行
-- **`postRenderAsyncJobs`**: ドキュメント書き込み後に実行
-
-### カスタム JSX 要素
-
-TypeDoc の `IntrinsicElements` インターフェースを拡張して独自の JSX 要素を定義できる:
+You can extend TypeDoc's `IntrinsicElements` interface to define your own JSX elements:
 
 ```typescript
 declare module "typedoc" {
@@ -130,22 +103,20 @@ declare module "typedoc" {
 }
 ```
 
-## コード例
-
-### フックの使用
+### Using hooks
 
 ```typescript
 import { Application, JSX } from "typedoc";
 
 export function load(app: Application) {
-  // <head> にスクリプトを注入
+  // Inject a script into <head>
   app.renderer.hooks.on("head.end", () => (
     <script>
       <JSX.Raw html="alert('hi!');" />
     </script>
   ));
 
-  // フッターにカスタムコンテンツを追加
+  // Add custom content to the footer
   app.renderer.hooks.on("footer.end", () => (
     <div class="custom-footer">
       <p>Custom footer content</p>
@@ -154,7 +125,7 @@ export function load(app: Application) {
 }
 ```
 
-### 非同期ジョブの使用
+### Using async jobs
 
 ```typescript
 import { Application, RendererEvent } from "typedoc";
@@ -162,17 +133,17 @@ import { Application, RendererEvent } from "typedoc";
 export function load(app: Application) {
   app.renderer.preRenderAsyncJobs.push(async (output: RendererEvent) => {
     app.logger.info("Pre render, no docs written yet");
-    // 外部リソースの取得など
+    // e.g. fetch external resources
   });
 
   app.renderer.postRenderAsyncJobs.push(async (output: RendererEvent) => {
     app.logger.info("Post render, all docs written");
-    // 追加ファイルの生成など
+    // e.g. generate additional files
   });
 }
 ```
 
-### 完全なカスタムテーマの例
+### Complete custom theme example
 
 ```typescript
 import {
@@ -185,11 +156,11 @@ import {
 } from "typedoc";
 
 class CustomContext extends DefaultThemeRenderContext {
-  // ナビゲーションのカスタマイズ
+  // Customize navigation
   override navigation = (context: DefaultThemeRenderContext) => {
     return (
       <nav class="custom-nav">
-        {/* カスタムナビゲーション */}
+        {/* Custom navigation */}
       </nav>
     );
   };
@@ -206,16 +177,45 @@ export function load(app: Application) {
 }
 ```
 
-## 注意点
+## Options / Props
 
-- テンプレートメソッドで `this` を使用する場合は必ずバインドすること
-- `DefaultThemeRenderContext` を継承する際、テンプレート関数はアロー関数またはバインド済み関数として定義する
-- フックはプラグインが HTML を安全に注入するための推奨方法
-- `JSX.Raw` を使用するとエスケープされない HTML を直接挿入できる
-- カスタムテーマは `typedoc.json` の `theme` オプションで指定する
+### Main template methods
 
-## 関連
+| Method | Description |
+| --- | --- |
+| `reflectionTemplate` | Renders a regular Reflection page |
+| `documentTemplate` | Renders a document page |
+| `hierarchyTemplate` | Renders the type hierarchy page |
+| `indexTemplate` | Renders the index page |
 
-- [プラグイン開発](./plugin-development.md)
-- [Renderer クラス](../api/renderer.md)
-- [イベントシステム](../api/events.md)
+> **Important**: template functions that use `this` must be bound — either use an arrow function or call `this.myMethod = this.myMethod.bind(this)` in the constructor.
+
+### Available hooks
+
+| Hook name | Description |
+| --- | --- |
+| `head.end` | Inserted at the end of the `<head>` tag |
+| `body.begin` | Inserted at the start of the `<body>` tag |
+| `body.end` | Inserted at the end of the `<body>` tag |
+| `content.begin` | Inserted at the start of the content area |
+| `content.end` | Inserted at the end of the content area |
+| `sidebar.begin` | Inserted at the start of the sidebar |
+| `sidebar.end` | Inserted at the end of the sidebar |
+| `pageSidebar.begin` | Inserted at the start of the page sidebar |
+| `pageSidebar.end` | Inserted at the end of the page sidebar |
+| `footer.begin` | Inserted at the start of the footer |
+| `footer.end` | Inserted at the end of the footer |
+
+## Notes
+
+- Template functions that use `this` must always be bound
+- When extending `DefaultThemeRenderContext`, define template functions as arrow functions or already-bound functions
+- Hooks are the recommended way for plugins to safely inject HTML
+- `JSX.Raw` inserts unescaped HTML directly
+- A custom theme is selected via the `theme` option in `typedoc.json`
+
+## Related
+
+- [Plugin Development](./plugin-development.md)
+- [Renderer class](../api/renderer.md)
+- [Event system](../api/events.md)

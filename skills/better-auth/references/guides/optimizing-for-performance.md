@@ -1,14 +1,12 @@
 # Optimizing for Performance
 
-Better Auth のパフォーマンス最適化ガイド。
+Better Auth のパフォーマンス最適化ガイド。Better Auth アプリケーションのパフォーマンスを向上させるための戦略と設定方法を解説する。
 
-## 概要
+## Signature / Usage
 
-Better Auth アプリケーションのパフォーマンスを向上させるための戦略と設定方法を解説します。
+### Caching Strategies
 
-## Caching Strategies
-
-### Cookie Cache
+#### Cookie Cache
 
 Enable session caching to reduce database queries:
 
@@ -25,7 +23,7 @@ auth.config({
 
 **Benefit**: "Storing session data in a short-lived, signed cookie" minimizes repeated database hits when sessions remain static.
 
-### Framework-Specific Caching
+#### Framework-Specific Caching
 
 **Next.js (v15+)**: Implement the `"use cache"` directive in server functions to automatically cache responses.
 
@@ -35,7 +33,7 @@ auth.config({
 
 **TanStack Query**: Configure `useQuery` hook with `staleTime` parameters (e.g., `15 minutes`) to manage client-side cache duration.
 
-## Background Task Processing
+### Background Task Processing
 
 For serverless environments, defer non-critical operations:
 
@@ -54,13 +52,13 @@ auth.config({
 
 **Operations to defer**: cleanup tasks, analytics, rate limit updates, email sending.
 
-## Server-Side Rendering (SSR)
+### Server-Side Rendering (SSR)
 
 Pre-fetch user sessions on the server and pass to client as fallback data to eliminate client-side session requests.
 
-## Database Performance
+### Database Performance
 
-### Recommended Indexes
+#### Recommended Indexes
 
 | Table | Fields | Plugin |
 |-------|--------|--------|
@@ -76,7 +74,7 @@ Pre-fetch user sessions on the server and pass to client as fallback data to eli
 
 Index these fields to optimize query performance across authentication flows.
 
-## Bundle Size Reduction
+### Bundle Size Reduction
 
 Use the minimal build variant for custom adapters:
 
@@ -87,7 +85,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 
 **Limitation**: Direct database connections unsupported; migrations require external tools.
 
-## 注意点
+## Notes
 
 - **Session caching** reduces database pressure for unchanged sessions
 - **Background task deferral** improves response times on serverless platforms

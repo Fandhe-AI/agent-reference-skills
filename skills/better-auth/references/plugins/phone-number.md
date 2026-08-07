@@ -1,10 +1,10 @@
 # Phone Number
 
-Phone Number プラグインは、電話番号を使用したユーザー認証を可能にする。OTP 検証機能を含み、SMS プロバイダーと連携した安全な電話ベースの認証を提供する。
+The Phone Number plugin enables user authentication using phone numbers. It includes OTP verification and provides secure phone-based authentication integrated with SMS providers.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -14,22 +14,22 @@ const auth = betterAuth({
     plugins: [
         phoneNumber({
             sendOTP: ({ phoneNumber, code }, ctx) => {
-                // SMS で OTP コードを送信
+                // Send the OTP code via SMS
             }
         })
     ]
 })
 ```
 
-マイグレーション:
+Migration:
 
 ```bash
 npx auth migrate
-# または
+# or
 npx auth generate
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -42,30 +42,28 @@ const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
-
-### OTP 送信
+### Send OTP
 
 `POST /phone-number/send-otp`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.phoneNumber.sendOtp({
     phoneNumber: "+1234567890",
 })
 
-// サーバー
+// Server
 const data = await auth.api.sendPhoneNumberOTP({
     body: { phoneNumber: "+1234567890" },
 })
 ```
 
-### 電話番号検証
+### Verify phone number
 
 `POST /phone-number/verify`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.phoneNumber.verify({
     phoneNumber: "+1234567890",
     code: "123456",
@@ -73,7 +71,7 @@ const { data, error } = await authClient.phoneNumber.verify({
     updatePhoneNumber: false,
 })
 
-// サーバー
+// Server
 const data = await auth.api.verifyPhoneNumber({
     body: {
         phoneNumber: "+1234567890",
@@ -84,13 +82,13 @@ const data = await auth.api.verifyPhoneNumber({
 })
 ```
 
-パラメータ:
-- `phoneNumber` (string, 必須): 検証する電話番号
-- `code` (string, 必須): OTP コード
-- `disableSession` (boolean, 任意): 検証後のセッション作成を無効化
-- `updatePhoneNumber` (boolean, 任意): ログイン中のユーザーの電話番号を更新（アクティブセッション必要）
+Parameters:
+- `phoneNumber` (string, required): the phone number to verify
+- `code` (string, required): the OTP code
+- `disableSession` (boolean, optional): prevent session creation after verification
+- `updatePhoneNumber` (boolean, optional): update the logged-in user's phone number (requires an active session)
 
-### 電話番号でサインイン
+### Sign in with phone number
 
 `POST /sign-in/phone-number`
 
@@ -102,7 +100,7 @@ const { data, error } = await authClient.signIn.phoneNumber({
 })
 ```
 
-### パスワードリセット要求
+### Request password reset
 
 `POST /phone-number/request-password-reset`
 
@@ -112,7 +110,7 @@ const { data, error } = await authClient.phoneNumber.requestPasswordReset({
 })
 ```
 
-### パスワードリセット
+### Reset password
 
 `POST /phone-number/reset-password`
 
@@ -124,21 +122,21 @@ const { data, error } = await authClient.phoneNumber.resetPassword({
 })
 ```
 
-## 設定オプション
+## Options / Props
 
-| オプション | 型 | デフォルト | 説明 |
+| Option | Type | Default | Description |
 |---|---|---|---|
-| `otpLength` | number | 6 | OTP コードの長さ |
-| `sendOTP` | function | 必須 | SMS 送信コールバック |
-| `expiresIn` | number | 300 | OTP 有効期限（秒） |
-| `callbackOnVerification` | function | - | 検証成功後のコールバック |
-| `sendPasswordResetOTP` | function | - | パスワードリセット OTP 送信関数 |
-| `phoneNumberValidator` | function | - | カスタムバリデーション関数 |
-| `verifyOTP` | function | - | カスタム OTP 検証関数（内部ロジック上書き） |
-| `requireVerification` | boolean | false | サインイン前に電話番号検証を要求 |
-| `allowedAttempts` | number | 3 | ブルートフォース防止の試行制限 |
+| `otpLength` | number | 6 | Length of the OTP code |
+| `sendOTP` | function | required | SMS-sending callback |
+| `expiresIn` | number | 300 | OTP expiration (seconds) |
+| `callbackOnVerification` | function | - | Callback fired after successful verification |
+| `sendPasswordResetOTP` | function | - | Function to send the password-reset OTP |
+| `phoneNumberValidator` | function | - | Custom validation function |
+| `verifyOTP` | function | - | Custom OTP verification function (overrides internal logic) |
+| `requireVerification` | boolean | false | Require phone verification before sign-in |
+| `allowedAttempts` | number | 3 | Attempt limit for brute-force prevention |
 
-### カスタム OTP 検証（Twilio 連携例）
+### Custom OTP verification (Twilio integration example)
 
 ```typescript
 verifyOTP: async ({ phoneNumber, code }, ctx) => {
@@ -150,7 +148,7 @@ verifyOTP: async ({ phoneNumber, code }, ctx) => {
 }
 ```
 
-### 検証時自動サインアップ
+### Auto sign-up on verification
 
 ```typescript
 signUpOnVerification: {
@@ -159,17 +157,15 @@ signUpOnVerification: {
 }
 ```
 
-## DB スキーマ
+### DB schema (user table additional fields)
 
-### user テーブル追加フィールド
-
-| フィールド | 型 | 任意 | 説明 |
+| Field | Type | Optional | Description |
 |---|---|---|---|
-| `phoneNumber` | string | Yes | ユーザーの電話番号 |
-| `phoneNumberVerified` | boolean | Yes | 検証状態 |
+| `phoneNumber` | string | Yes | The user's phone number |
+| `phoneNumberVerified` | boolean | Yes | Verification state |
 
-## 注意点
+## Notes
 
-- `sendOTP` 関数はリクエスト処理中に await しないこと。サーバーレスでは `waitUntil` を使用
-- `requireVerification` 有効時、未検証ユーザーのサインイン試行は 401 エラー（PHONE_NUMBER_NOT_VERIFIED）を返し、自動で OTP を送信
-- 試行制限超過時は OTP コードが自動削除され、403 ステータスが返される
+- Do not `await` the `sendOTP` function during request processing. On serverless, use `waitUntil`
+- When `requireVerification` is enabled, sign-in attempts by unverified users return a 401 error (PHONE_NUMBER_NOT_VERIFIED) and automatically send an OTP
+- On exceeding the attempt limit, the OTP code is automatically deleted and a 403 status is returned

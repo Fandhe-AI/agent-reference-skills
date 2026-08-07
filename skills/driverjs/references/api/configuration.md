@@ -20,15 +20,20 @@ const driverObj = driver({
 |--------|------|---------|-------------|
 | steps | DriveStep[] | undefined | Array of tour steps |
 | animate | boolean | true | Whether to animate transitions |
+| duration | number | 400 | Duration of the transition animation in milliseconds |
 | overlayColor | string | `'black'` | Backdrop overlay color |
 | smoothScroll | boolean | false | Smooth scroll to highlighted element |
 | allowClose | boolean | true | Allow closing via backdrop click |
-| overlayOpacity | number | 0.7 | Opacity of backdrop |
+| allowScroll | boolean | true | Whether to allow scrolling the page while the driver is active |
+| overlayOpacity | number | 0.5 | Opacity of backdrop |
 | overlayClickBehavior | `'close'` \| `'nextStep'` \| DriverHook | `'close'` | Action on backdrop click |
 | stagePadding | number | 10 | Distance between element and cutout (px) |
 | stageRadius | number | 5 | Border radius of cutout (px) |
-| allowKeyboardControl | boolean | undefined | Enable keyboard navigation |
+| allowKeyboardControl | boolean | true | Enable keyboard navigation |
 | disableActiveInteraction | boolean | false | Prevent interaction with highlighted element |
+| advanceOnClick | boolean | false | Advance the tour when the highlighted element is clicked |
+| skipMissingElement | boolean | false | Skip a step whose target element is specified but missing from the DOM |
+| waitForElement | number | 0 | Wait up to this many milliseconds for a step's element to appear |
 | popoverClass | string | undefined | Custom CSS class for popover |
 | popoverOffset | number | 10 | Distance between popover and element (px) |
 | showButtons | AllowedButtons[] | `['next','previous','close']` (tours); `[]` (highlight) | Buttons to show |
@@ -60,6 +65,7 @@ type DriverHook = (element: Element | undefined, step: DriveStep, options: { con
 | onNextClick | (element, step, options: { config, state, driver }) | Called on next button click |
 | onPrevClick | (element, step, options: { config, state, driver }) | Called on previous button click |
 | onCloseClick | (element, step, options: { config, state, driver }) | Called on close button click |
+| onDoneClick | (element, step, options: { config, state, driver }) | Called on done button click (final step) |
 
 When overriding `onNextClick` or `onPrevClick`, automatic navigation is disabled. You must manually call `driverObj.moveNext()` or `driverObj.movePrevious()` to advance:
 

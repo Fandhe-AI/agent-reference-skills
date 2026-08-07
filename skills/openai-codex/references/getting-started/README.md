@@ -1,12 +1,15 @@
 # Getting Started
 
-> OpenAI Codex (learn.chatgpt.com) のドキュメント。`CLI` / `agent` はキーワードとして他のサードパーティ AI CLI スキル（例: hermes-agent, Nous Research 製）と衝突しうるが、本カテゴリは OpenAI 公式 Codex 製品を指す。
-
 | Name | Description | Path |
 |------|-------------|------|
-| Codex CLI | Install and run Codex from your terminal and scripts | [cli.md](./cli.md) |
-| Codex IDE extension | Use Codex beside your code and editor context (VS Code, Cursor, Windsurf, Xcode, JetBrains) | [ide.md](./ide.md) |
-| Codex cloud | Delegate work to Codex in isolated, parallel cloud environments (web, GitHub, Linear, Slack) | [cloud.md](./cloud.md) |
-| Agent internet access | Control internet access for Codex cloud chats (on/off, domain allowlist, HTTP methods) | [cloud-internet-access.md](./cloud-internet-access.md) |
-| Models | Choose a model (Sol / Terra / Luna / Spark) and reasoning effort across surfaces | [models.md](./models.md) |
-| Best practices | Prompting, planning, validation, MCP, skills, and scheduled tasks — proven practices for better results | [best-practices.md](./best-practices.md) |
+| Best practices | Getting started with Codex and proven practices for better results, across the CLI, IDE extension, and ChatGPT desktop app — prompting, planning, validation, MCP, skills, and scheduled tasks. | [best-practices.md](./best-practices.md) |
+| Codex CLI | Inspect code, make changes, run commands, and automate repeatable work without leaving your terminal. Works against your local repository with configurable model, reasoning effort, and permissions. | [cli.md](./cli.md) |
+| CLI customization | Terminal-specific options for how interactive Codex CLI sessions look and how you enter commands and prompts: syntax-highlight themes, shell completions, and an external prompt editor. | [cli-customization.md](./cli-customization.md) |
+| Codex cloud | Run coding tasks in isolated, parallel cloud environments. Work in parallel, and start work from the web, GitHub, Linear, or Slack. | [cloud.md](./cloud.md) |
+| Agent internet access | Control internet access for Codex cloud chats. By default, Codex blocks internet access during the agent phase; setup scripts still run with internet access so dependencies can install. Agent internet access can be enabled per environment when needed. | [cloud-internet-access.md](./cloud-internet-access.md) |
+| Codex Micro | A limited-run hardware keyboard accessory (collaboration with Work Louder) for the ChatGPT desktop app: six illuminated Agent Keys that follow chats and show status, customizable Command Keys, an analog stick, a dial, and voice input — a way to check chats, switch between them, and trigger Codex actions or skills without leaving the keyboard. | [codex-micro.md](./codex-micro.md) |
+| Codex IDE extension | Use Codex beside your code and editor context. Bring open files and selections into the prompt, review edits in place, and hand off longer work without breaking your flow. | [ide.md](./ide.md) |
+| Models | Meet the AI models that power ChatGPT Work and Codex, and how to choose between them across the desktop app, ChatGPT Work on the web, Codex CLI, and the IDE extension. | [models.md](./models.md) |
+| Codex Remote | Start, guide, and review Codex coding tasks from the ChatGPT mobile app while the work actually runs on a connected Mac or Windows PC — follow progress, approve requested actions, and review diffs from your phone. | [remote.md](./remote.md) |
+| Remote connections | Full setup and reference for connecting the ChatGPT mobile app (or another ChatGPT desktop app device) to a Mac/Windows host running Codex, or connecting the desktop app to a project on an SSH host. The remote session uses the connected host's projects, chats, files, credentials, permissions, plugins, Computer Use, browser setup, and local tools. | [remote-connections.md](./remote-connections.md) |
+| ChatGPT desktop app for Windows | The Windows build of the ChatGPT desktop app: worktrees, scheduled tasks, Git functionality, built-in browser, file previews, plugins, and skills, running natively via PowerShell under the native Windows sandbox, or configurable to run the agent inside WSL2. | [windows-app.md](./windows-app.md) |

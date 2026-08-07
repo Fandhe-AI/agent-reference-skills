@@ -18,10 +18,10 @@ export const dynamicParams = true // true | false
 ## Notes
 
 - Replaces the `fallback: true | false | blocking` option of `getStaticPaths` from the `pages` directory.
-- Not available when [Cache Components](../../config/next-config-js/cacheComponents.md) is enabled.
+- Not available when [Cache Components](../../config/caching.md) is enabled.
 - Removed entirely (along with `dynamic`, `revalidate`, `fetchCache`) when Cache Components is enabled, as of `v16.0.0`.
 
 ## Related
 
-- [generateStaticParams](../../functions/generate-static-params.md)
+- [generateStaticParams](../../functions/generateStaticParams.md)
 - [Route Segment Config overview](../route-segment-config.md)

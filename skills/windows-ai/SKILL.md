@@ -25,68 +25,87 @@ skills/windows-ai/
   references/
     ai-apis/
       README.md
-      device-requirements.md
-      language-model.md
-      language-model-options.md
-      language-model-context.md
-      language-model-best-practices.md
-      phi-silica-lora.md
-      phi-silica-structured-output.md
-      text-recognizer.md
-      recognized-text.md
-      image-scaler.md
-      image-object-extractor.md
-      image-foreground-extractor.md
-      image-object-remover.md
-      image-description-generator.md
-      semantic-search.md
-      content-moderation.md
-      responsible-ai.md
-      speech-recognition-model.md
-      video-scaler.md
-      image-generator.md
-      text-intelligence-skills.md
+      ai-dev-gallery.md
+      platform-card-click-to-do.md
+      platform-card-paint.md
+      platform-card-recall.md
+      platform-card-windows-studio-effects.md
+      faq-cloud-vs-local.md
       choose-your-windows-ai-solution.md
+      content-moderation.md
+      copilot-plus-developer-guide.md
+      device-requirements.md
+      faq-using-ai.md
+      foundry-toolkit-vscode.md
+      phi-silica-structured-output.md
+      image-description-generator.md
+      image-foreground-extractor.md
+      image-generator.md
+      image-object-extractor.md
+      image-object-remover.md
+      image-scaler.md
+      language-model-best-practices.md
+      language-model.md
+      language-model-context.md
+      language-model-options.md
+      phi-silica-lora.md
+      platform-card-image-ai-apis.md
+      platform-card-phi-silica.md
+      platform-card-ocr.md
       local-llms.md
+      recognized-text.md
+      responsible-ai.md
+      semantic-search.md
+      speech-recognition-model.md
+      text-intelligence-skills.md
+      text-recognizer.md
+      video-scaler.md
       troubleshooting.md
     windows-ml/
       README.md
-      overview.md
-      get-started.md
+      api-reference.md
+      bring-your-own-eps.md
+      check-ep-versions.md
       deployment-bootstrap.md
+      eps-vs-bring-your-own.md
       execution-provider-catalog.md
       execution-provider-errors.md
       execution-providers-overview.md
-      supported-execution-providers.md
+      get-started.md
       install-execution-providers.md
-      register-execution-providers.md
-      select-execution-providers.md
-      bring-your-own-eps.md
-      onnx-runtime-inference.md
-      onnx-versions.md
-      run-genai-onnx-models.md
+      learning-model-binding.md
+      learning-model-evaluation-result.md
+      learning-model-session.md
+      learning-model.md
+      legacy-windows-machine-learning.md
+      logs.md
       migrate-to-windows-ml.md
+      model-catalog-source-schema.md
+      model-catalog.md
       model-compilation.md
       model-conversion.md
       models.md
-      legacy-windows-machine-learning.md
-      learning-model.md
-      learning-model-session.md
-      learning-model-binding.md
-      learning-model-evaluation-result.md
-      model-catalog.md
-      model-catalog-source-schema.md
+      onnx-runtime-inference.md
+      onnx-versions.md
+      overview.md
+      register-execution-providers.md
+      run-genai-onnx-models.md
+      samples.md
+      select-execution-providers.md
+      supported-execution-providers.md
+      tutorial.md
+      update-eps.md
+      webgpu-ep-experimental.md
       winml-cli.md
-      logs.md
     foundry-local/
       README.md
-      overview.md
       architecture.md
+      cache-management.md
       installation-and-cli.md
+      model-catalog.md
+      overview.md
       rest-api.md
       sdk.md
-      model-catalog.md
-      cache-management.md
       winml-package.md
     mcp-app-actions/
       README.md
@@ -121,30 +140,49 @@ skills/windows-ai/
       security-consent-model.md
     directml/
       README.md
-      directml-overview.md
+      api-reference-constants.md
+      api-reference-enumerations.md
+      api-reference-functions.md
+      api-reference-interfaces.md
+      api-reference-structures.md
+      cuda-on-wsl2.md
+      debug-layer.md
       dmlcreatedevice.md
-      idmloperator.md
-      idmlcompiledoperator.md
-      idmloperatorinitializer.md
+      directml-overview.md
+      directml-tools.md
+      directmlx.md
+      errors-and-device-removal.md
+      feature-level-history.md
+      fused-operators.md
+      gpu-accelerated-training.md
+      graphs.md
+      helper-functions.md
       idmlbindingtable.md
       idmlcommandrecorder.md
-      tensors.md
-      operators.md
-      graphs.md
+      idmlcompiledoperator.md
+      idmloperator.md
+      idmloperatorinitializer.md
       onnxruntime-directml.md
-      pytorch-directml.md
-      version-history.md
+      operators.md
       programming-guide.md
-      errors-and-device-removal.md
+      pytorch-directml.md
+      resource-lifetime-sync.md
+      sample-applications.md
+      strides-padding-layout.md
+      tensors.md
+      tensorflow-directml.md
+      tensorflow-directml-faq.md
+      uav-barriers.md
+      version-history.md
       webnn-overview.md
-      gpu-accelerated-training.md
+      webnn-tutorial.md
     npu-devices/
       README.md
-      npu-hardware-overview.md
       byom-model-sources.md
-      task-manager-npu.md
       gpuview-npu.md
+      npu-hardware-overview.md
       onnxruntime-etw-tracing.md
+      task-manager-npu.md
       wpr-wpa-npu-profiling.md
 ```
 
@@ -163,16 +201,19 @@ skills/windows-ai/
 | LanguageModel でオンデバイス生成 AI (Phi Silica) を呼び出したい | ai-apis | [references/ai-apis/README.md](references/ai-apis/README.md) |
 | TextRecognizer / ImageScaler / ImageObjectExtractor / ImageDescriptionGenerator で画像・OCR 処理を実装したい | ai-apis | [references/ai-apis/README.md](references/ai-apis/README.md) |
 | SemanticSearch / ContentModeration / responsible AI ガイドラインを適用したい | ai-apis | [references/ai-apis/README.md](references/ai-apis/README.md) |
+| Copilot+ PC 向け開発ガイド・AI Dev Gallery・Foundry Toolkit で AI 機能を選定・試作したい | ai-apis | [references/ai-apis/README.md](references/ai-apis/README.md) |
 | Windows ML で ONNX モデルをローカル推論したい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
-| execution providers の選択・登録・インストールをしたい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
+| execution providers の選択・登録・インストール・トラブルシューティングをしたい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
 | LearningModel / LearningModelSession でモデルをバインド・評価したい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
+| Windows ML の CLI・診断ログ・WebGPU EP を扱いたい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
 | Foundry Local で LLM をローカルホストしたい | foundry-local | [references/foundry-local/README.md](references/foundry-local/README.md) |
-| Foundry Local の CLI / REST API / SDK / model catalog を使いたい | foundry-local | [references/foundry-local/README.md](references/foundry-local/README.md) |
-| MCP サーバーを実装・テストしたい | mcp-app-actions | [references/mcp-app-actions/README.md](references/mcp-app-actions/README.md) |
+| Foundry Local の CLI / REST API / SDK / model catalog / キャッシュ管理を使いたい | foundry-local | [references/foundry-local/README.md](references/foundry-local/README.md) |
+| MCP サーバーを実装・登録・テストしたい | mcp-app-actions | [references/mcp-app-actions/README.md](references/mcp-app-actions/README.md) |
 | App Actions / IActionProvider でアプリの機能を外部公開したい | mcp-app-actions | [references/mcp-app-actions/README.md](references/mcp-app-actions/README.md) |
 | Agent Launchers / Agent Workspace / セキュリティ同意モデルを実装したい | mcp-app-actions | [references/mcp-app-actions/README.md](references/mcp-app-actions/README.md) |
-| DirectML で GPU 推論デバイス・オペレーターを直接制御したい | directml | [references/directml/README.md](references/directml/README.md) |
-| ONNX Runtime / PyTorch から DirectML バックエンドを利用したい | directml | [references/directml/README.md](references/directml/README.md) |
+| DirectML で GPU 推論デバイス・オペレーター・テンソルを直接制御したい | directml | [references/directml/README.md](references/directml/README.md) |
+| ONNX Runtime / PyTorch / TensorFlow から DirectML バックエンドを利用したい | directml | [references/directml/README.md](references/directml/README.md) |
+| WebNN で GPU/NPU 推論をブラウザ・アプリから呼び出したい | directml | [references/directml/README.md](references/directml/README.md) |
 | Copilot+ PC / NPU ハードウェア要件を確認したい | npu-devices | [references/npu-devices/README.md](references/npu-devices/README.md) |
 | Task Manager / WPR / WPA / GPUView / ETW で NPU 使用率・推論を計測したい | npu-devices | [references/npu-devices/README.md](references/npu-devices/README.md) |
 | 自前 ONNX モデルを NPU 向けに調達・量子化したい (BYOM) | npu-devices | [references/npu-devices/README.md](references/npu-devices/README.md) |

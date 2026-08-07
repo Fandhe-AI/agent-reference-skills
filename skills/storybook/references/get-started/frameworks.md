@@ -6,6 +6,14 @@ Storybook supports a wide range of officially maintained and community-maintaine
 
 Choose the framework that matches your project. Official frameworks are maintained by the Storybook team; community frameworks are actively developed by contributors.
 
+```js
+// .storybook/main.js
+export default {
+  framework: '@storybook/react-vite',
+  stories: ['../src/**/*.stories.@(js|ts)'],
+};
+```
+
 ## Officially Supported Frameworks
 
 | Framework | Build Tools |

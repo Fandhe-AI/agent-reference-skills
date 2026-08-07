@@ -111,6 +111,7 @@ skills/android-compose-components/
       primarytabrow.md
       tab.md
       leadingicontab.md
+      appbarcolumn.md
     feedback/
       README.md
       snackbar.md
@@ -140,6 +141,7 @@ skills/android-compose-components/
       theme-anatomy.md
       custom-design-system.md
       material2-material3-migration.md
+      material-shapes.md
 ```
 
 ## 探索手順
@@ -167,11 +169,11 @@ skills/android-compose-components/
 | Carousel / TooltipBox / SwipeToDismissBox / PullToRefreshBox でジェスチャ付きコンテナを使いたい | containers | [references/containers/README.md](references/containers/README.md) |
 | TopAppBar / BottomAppBar / FloatingToolbar で画面上下のバーを実装したい | navigation-components | [references/navigation-components/README.md](references/navigation-components/README.md) |
 | NavigationBar / NavigationRail / ShortNavigationBar で主要ナビゲーションを実装したい | navigation-components | [references/navigation-components/README.md](references/navigation-components/README.md) |
-| PrimaryTabRow / Tab / LeadingIconTab / AppBarRow でタブ・アクション行を実装したい | navigation-components | [references/navigation-components/README.md](references/navigation-components/README.md) |
+| PrimaryTabRow / Tab / LeadingIconTab / AppBarRow / AppBarColumn でタブ・アクション行を実装したい | navigation-components | [references/navigation-components/README.md](references/navigation-components/README.md) |
 | Snackbar / SnackbarHost / SnackbarHostState でメッセージ通知を実装したい | feedback | [references/feedback/README.md](references/feedback/README.md) |
 | LinearProgressIndicator / CircularProgressIndicator / LoadingIndicator で進捗を表示したい | feedback | [references/feedback/README.md](references/feedback/README.md) |
 | Badge / BadgedBox / Icon / Text で表示要素を組み立てたい | feedback | [references/feedback/README.md](references/feedback/README.md) |
-| MaterialTheme / ColorScheme / Typography / Shapes / Dynamic color でテーマをカスタマイズしたい | theming | [references/theming/README.md](references/theming/README.md) |
+| MaterialTheme / ColorScheme / Typography / Shapes / MaterialShapes / Dynamic color でテーマをカスタマイズしたい | theming | [references/theming/README.md](references/theming/README.md) |
 | Material2 から Material3 へ移行したい | theming | [references/theming/README.md](references/theming/README.md) |
 | レイアウト・状態管理・ジェスチャを扱いたい | — | 別スキル `android-compose-ui` の担当 |
 | アニメーション・描画を扱いたい | — | 別スキル `android-compose-graphics-animation` の担当 |

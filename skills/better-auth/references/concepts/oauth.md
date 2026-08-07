@@ -1,8 +1,10 @@
 # OAuth
 
-Better Auth は Google, Facebook, GitHub などの人気プロバイダーを通じたユーザー認証のために、組み込みの OAuth 2.0 および OpenID Connect サポートを提供する。未サポートプロバイダーには Generic OAuth Plugin でカスタム統合が可能。
+Better Auth provides built-in OAuth 2.0 and OpenID Connect support for authenticating users through popular providers such as Google, Facebook, and GitHub. Unsupported providers can be integrated with custom code via the Generic OAuth Plugin.
 
-## セットアップ
+## Signature / Usage
+
+### Setup
 
 ```typescript
 import { betterAuth } from "better-auth";
@@ -17,11 +19,9 @@ export const auth = betterAuth({
 });
 ```
 
-## API / メソッド
+### Sign-in operations
 
-### サインイン操作
-
-**クライアント側:**
+**Client-side:**
 
 ```typescript
 await authClient.signIn.social({
@@ -29,7 +29,7 @@ await authClient.signIn.social({
 });
 ```
 
-**サーバー側:**
+**Server-side:**
 
 ```typescript
 await auth.api.signInSocial({
@@ -37,9 +37,9 @@ await auth.api.signInSocial({
 });
 ```
 
-### アカウントリンク
+### Account linking
 
-**クライアント側:**
+**Client-side:**
 
 ```typescript
 await authClient.linkSocial({
@@ -47,7 +47,7 @@ await authClient.linkSocial({
 });
 ```
 
-**サーバー側:**
+**Server-side:**
 
 ```typescript
 await auth.api.linkSocialAccount({
@@ -56,18 +56,18 @@ await auth.api.linkSocialAccount({
 });
 ```
 
-### アクセストークン取得
+### Getting the access token
 
-期限切れトークンを自動的にリフレッシュ:
+Automatically refreshes expired tokens:
 
 ```typescript
 const { accessToken } = await authClient.getAccessToken({
   providerId: "google",
-  accountId: "accountId", // オプション
+  accountId: "accountId", // optional
 });
 ```
 
-### プロバイダーアカウント情報
+### Provider account info
 
 ```typescript
 const info = await authClient.accountInfo({
@@ -75,11 +75,9 @@ const info = await authClient.accountInfo({
 });
 ```
 
-## 高度な機能
+### Additional scopes
 
-### 追加スコープ
-
-初回サインアップ後に追加の権限をリクエスト（`linkSocial` を再呼び出し）:
+Request additional permissions after the initial sign-up (re-invoke `linkSocial`). Requires Better Auth 1.2.7 or later:
 
 ```typescript
 await authClient.linkSocial({
@@ -88,14 +86,12 @@ await authClient.linkSocial({
 });
 ```
 
-Better Auth 1.2.7 以降が必要。
+### Passing custom data through the OAuth flow
 
-### OAuth フローでのカスタムデータ渡し
-
-データベースに永続化せずに一時的なデータを送信:
+Send temporary data without persisting it to the database:
 
 ```typescript
-// クライアント側
+// Client-side
 await authClient.signIn.social({
   provider: "google",
   additionalData: {
@@ -104,7 +100,7 @@ await authClient.signIn.social({
   },
 });
 
-// サーバー側
+// Server-side
 await auth.api.signInSocial({
   body: {
     provider: "google",
@@ -115,9 +111,9 @@ await auth.api.signInSocial({
 });
 ```
 
-### Hooks での追加データアクセス
+### Accessing additional data in hooks
 
-OAuth コールバック時に `getOAuthState` を使用:
+Use `getOAuthState` during the OAuth callback:
 
 ```typescript
 import { getOAuthState } from "better-auth/api";
@@ -133,7 +129,7 @@ export const auth = betterAuth({
               referralCode?: string;
               source?: string;
             }>();
-            // データの検証と処理
+            // Validate and process the data
           }
         },
       },
@@ -142,26 +138,7 @@ export const auth = betterAuth({
 });
 ```
 
-## 設定オプション
-
-| Option | Type | Description |
-|--------|------|-------------|
-| `scope` | `string[]` | リクエストする OAuth スコープ（例: `["email", "profile"]`） |
-| `redirectURI` | `string` | カスタムコールバック URI。デフォルト: `/api/auth/callback/${provider}` |
-| `disableSignUp` | `boolean` | 新規ユーザー登録を防止 |
-| `disableIdTokenSignIn` | `boolean` | サインインでの ID トークン使用を無効化 |
-| `verifyIdToken` | `function` | カスタム ID トークン検証関数 |
-| `overrideUserInfoOnSignIn` | `boolean` | 毎回のサインインでユーザーデータを更新（デフォルト: false） |
-| `mapProfileToUser` | `function` | プロバイダープロファイルをデータベースユーザーオブジェクトにマップ |
-| `refreshAccessToken` | `function` | カスタムトークンリフレッシュ実装 |
-| `clientKey` | `string` | TikTok 固有の `clientId` の代替 |
-| `getUserInfo` | `function` | デフォルトのユーザー情報取得をオーバーライド |
-| `disableImplicitSignUp` | `boolean` | 明示的な `requestSignUp` フラグを要求 |
-| `prompt` | `string` | 認証フロープロンプト（`"select_account"`, `"consent"`, `"login"`, `"none"`） |
-| `responseMode` | `string` | レスポンス配信方法（`"query"`, `"form_post"`） |
-| `disableDefaultScope` | `boolean` | プロバイダーデフォルトを無視し、指定スコープのみ使用 |
-
-### プロファイルマッピング例
+### Profile mapping example
 
 ```typescript
 socialProviders: {
@@ -178,25 +155,51 @@ socialProviders: {
 }
 ```
 
-追加ユーザーフィールドを設定するには `user.additionalFields` を設定する。
+Configure `user.additionalFields` to set additional user fields.
 
-## 組み込み OAuth State データ
+## Options / Props
 
-- `callbackURL` — OAuth フローコールバック先
-- `codeVerifier` — PKCE コードベリファイアー
-- `errorURL` — エラーリダイレクト先
-- `newUserURL` — 新規ユーザーリダイレクト先
-- `link` — メールとユーザー ID 情報
-- `requestSignUp` — 新規ユーザーサインアップフラグ
-- `expiresAt` — State の有効期限タイムスタンプ
+| Option | Type | Description |
+|--------|------|-------------|
+| `scope` | `string[]` | OAuth scopes to request (e.g. `["email", "profile"]`) |
+| `redirectURI` | `string` | Custom callback URI. Default: `/api/auth/callback/${provider}` |
+| `disableSignUp` | `boolean` | Prevent new user registration |
+| `disableIdTokenSignIn` | `boolean` | Disable using the ID token for sign-in |
+| `verifyIdToken` | `function` | Custom ID token verification function |
+| `overrideUserInfoOnSignIn` | `boolean` | Update user data on every sign-in (default: false) |
+| `mapProfileToUser` | `function` | Map the provider profile to the database user object |
+| `refreshAccessToken` | `function` | Custom token refresh implementation |
+| `clientKey` | `string` | Alternative to `clientId` for TikTok |
+| `getUserInfo` | `function` | Override the default user info fetching |
+| `disableImplicitSignUp` | `boolean` | Require an explicit `requestSignUp` flag |
+| `prompt` | `string` | Auth flow prompt (`"select_account"`, `"consent"`, `"login"`, `"none"`) |
+| `responseMode` | `string` | Response delivery method (`"query"`, `"form_post"`) |
+| `disableDefaultScope` | `boolean` | Ignore provider defaults and use only the specified scopes |
 
-## 注意点
+### Built-in OAuth state data
 
-- 組み込みソーシャルプロバイダーはカスタムトークンリフレッシュ関数をサポートするが、Generic OAuth Plugin は現在この機能を提供していない
-- ユーザー情報マッピングにはカスタムデータベースフィールド用に `user.additionalFields` の設定が必要
-- すべての OAuth state データはクライアントからのもので、重要な操作に使用する前に検証すべき
-- TikTok は `clientId` の代わりに `clientKey` を使用
+| Field | Description |
+|-------|-------------|
+| `callbackURL` | OAuth flow callback destination |
+| `codeVerifier` | PKCE code verifier |
+| `errorURL` | Error redirect destination |
+| `newUserURL` | New user redirect destination |
+| `link` | Email and user ID information |
+| `requestSignUp` | New user sign-up flag |
+| `expiresAt` | State expiration timestamp |
 
-## セキュリティ考慮事項
+## Notes
 
-- クライアント提供のすべてのデータを使用前に検証・サニタイズすること
+- Built-in social providers support a custom token refresh function, but the Generic OAuth Plugin does not currently provide this feature
+- User info mapping requires configuring `user.additionalFields` for custom database fields
+- All OAuth state data comes from the client and should be validated before use in critical operations
+- TikTok uses `clientKey` instead of `clientId`
+
+### Security
+
+- Validate and sanitize all client-provided data before use
+
+## Related
+
+- [Users & Accounts](./users-accounts.md)
+- [Client](./client.md)

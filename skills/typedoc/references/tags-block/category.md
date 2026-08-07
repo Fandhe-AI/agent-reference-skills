@@ -1,33 +1,29 @@
 # @category
 
-関連するAPI項目を共通のヘッダー下に整理するためのブロックタグ。このページでは `@category`、`@categoryDescription`、`@showCategories`、`@hideCategories` を扱う。
+Block tag for organizing related API items under a common heading. This page covers `@category`, `@categoryDescription`, `@showCategories`, and `@hideCategories`.
 
-## 構文
-
-```
-@category カテゴリ名
-```
+## Signature / Usage
 
 ```
-@categoryDescription カテゴリ名
-カテゴリの説明文
+@category Category Name
 ```
 
-## 詳細説明
+```
+@categoryDescription Category Name
+Description text for the category
+```
 
-### @category（ブロックタグ）
+### @category (block tag)
 
-API項目をページのインデックス内で論理的なグループに配置する。複数回指定することで、1つのリフレクションを複数のカテゴリ見出し下に表示できる。
+Places an API item into a logical group within the page index. Specify it multiple times to display a single reflection under multiple category headings.
 
-### @categoryDescription（ブロックタグ）
+### @categoryDescription (block tag)
 
-カテゴリに補足的なコンテキストを提供する。`@categoryDescription` の最初の行がカテゴリ名として使用され、続く行が説明として使用される。このタグは、カテゴリ化された子要素を含む親リフレクションのコメントブロックに配置する必要がある。
+Provides supplementary context for a category. The first line of `@categoryDescription` is used as the category name, and the following lines are used as the description. This tag must be placed on the comment block of the parent reflection that contains the categorized children.
 
-### @showCategories / @hideCategories（モディファイアタグ）
+### @showCategories / @hideCategories (modifier tags)
 
-ナビゲーションツリーにおけるカテゴリの表示・非表示を選択的にカスタマイズするモディファイアタグ。`navigation.includeCategories` オプションと連携して動作する。
-
-## コード例
+Modifier tags that selectively customize the visibility of categories in the navigation tree. They work together with the `navigation.includeCategories` option.
 
 ```typescript
 /**
@@ -52,17 +48,17 @@ export function dualPurposeFunction(): void;
 export function advancedFunction(): void;
 ```
 
-## 注意点
+## Notes
 
-- 1つのリフレクションに複数の `@category` を指定可能
-- `@categoryDescription` は子要素の親コメントに配置する
-- `@showCategories` と `@hideCategories` はナビゲーションツリーのみに影響する
+- A single reflection can specify multiple `@category` tags
+- `@categoryDescription` must be placed on the parent comment of the children
+- `@showCategories` and `@hideCategories` affect only the navigation tree
 
-## 関連
+## Related
 
-- [@group](./group.md) -- 代替のグルーピングメカニズム
-- `--categorizeByGroup` オプション
-- `--defaultCategory` オプション
-- `--categoryOrder` オプション
-- `--searchCategoryBoosts` オプション
-- `--navigation.includeCategories` オプション
+- [@group](./group.md) -- an alternative grouping mechanism
+- `--categorizeByGroup` option
+- `--defaultCategory` option
+- `--categoryOrder` option
+- `--searchCategoryBoosts` option
+- `--navigation.includeCategories` option

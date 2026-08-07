@@ -45,6 +45,7 @@ skills/anthropic-claude-code-admin/
       network-config.md
       server-managed-settings.md
       corporate-launcher.md
+      managed-mcp.md
       third-party-integrations.md
       platforms.md
     usage-analytics/
@@ -68,5 +69,5 @@ skills/anthropic-claude-code-admin/
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | 権限ルール（allow / ask / deny）・permission modes・auto mode・サンドボックス環境選択・sandboxed Bash・zero data retention・データ使用ポリシー・脆弱性スキャン（Claude Security）・法的コンプライアンスを知りたい | permissions-security | [references/permissions-security/README.md](references/permissions-security/README.md) |
-| 組織向け導入設定・authentication（SSO / OAuth / API キー）・企業ネットワーク設定（プロキシ / CA / mTLS）・server-managed settings・corporate launcher 経由での運用・プラットフォーム別統合を知りたい | enterprise-setup | [references/enterprise-setup/README.md](references/enterprise-setup/README.md) |
+| 組織向け導入設定・authentication（SSO / OAuth / API キー）・企業ネットワーク設定（プロキシ / CA / mTLS）・server-managed settings・corporate launcher 経由での運用・組織単位の MCP サーバーアクセス制御（managed MCP）・プラットフォーム別統合を知りたい | enterprise-setup | [references/enterprise-setup/README.md](references/enterprise-setup/README.md) |
 | チーム利用状況の analytics・OpenTelemetry monitoring・コスト管理・モノレポ/大規模コードベースでの運用設定を知りたい | usage-analytics | [references/usage-analytics/README.md](references/usage-analytics/README.md) |

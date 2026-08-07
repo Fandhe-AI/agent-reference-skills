@@ -1,12 +1,14 @@
-# タスクの実行
+# Running Tasks
 
-## 3つの実行方法
+## Usage
 
-1. `package.json` スクリプト（頻繁に使うタスク）
-2. グローバル `turbo` CLI（オンデマンド）
-3. `--filter` でスコープを絞る
+### Three ways to run tasks
 
-## package.json スクリプト
+1. `package.json` scripts (for frequently-used tasks)
+2. Global `turbo` CLI (on demand)
+3. Scoping with `--filter`
+
+### package.json scripts
 
 ```json
 {
@@ -19,33 +21,35 @@
 }
 ```
 
-## 複数タスクの同時実行
+### Running multiple tasks at once
 
 ```bash
 turbo run build test lint check-types
 ```
 
-自動並列化される。
+Automatically parallelized.
 
-## フィルタリング
-
-| フィルター | 例 |
-|---|---|
-| パッケージ名 | `turbo build --filter=@acme/web` |
-| ディレクトリ | `turbo lint --filter="./packages/utilities/*"` |
-| 依存元を含む | `turbo build --filter=...ui` |
-| 依存先を含む | `turbo dev --filter=web...` |
-| Git 差分 | `turbo build --filter=[HEAD^1]` |
-
-複数フィルターは OR（和集合）として動作。
-
-## ショートハンド構文（v2.2.4+）
+### Shorthand syntax (v2.2.4+)
 
 ```bash
 turbo run web#build docs#lint
 ```
 
-## 注意点
+## Options
 
-- `turbo` コマンドはルートの `package.json` にのみ書く（パッケージ内に書くと再帰実行）
-- タスク実行順序は CLI 引数の順ではなく `turbo.json` の設定で制御
+### Filtering
+
+| Filter | Example |
+| --- | --- |
+| Package name | `turbo build --filter=@acme/web` |
+| Directory | `turbo lint --filter="./packages/utilities/*"` |
+| Include dependents | `turbo build --filter=...ui` |
+| Include dependencies | `turbo dev --filter=web...` |
+| Git diff | `turbo build --filter=[HEAD^1]` |
+
+Multiple filters are combined as an OR (union).
+
+## Notes
+
+- The `turbo` command should only be written in the root `package.json` (writing it in a package's own `package.json` causes recursive execution).
+- Task execution order is controlled by the `turbo.json` configuration, not the order of CLI arguments.

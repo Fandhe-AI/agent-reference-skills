@@ -1,24 +1,20 @@
 # @template
 
-関数、メソッド、クラス、インターフェース、型エイリアスの型パラメータを文書化するブロックタグ。
+Block tag for documenting the type parameters of a function, method, class, interface, or type alias.
 
-## 構文
-
-```
-@template 型パラメータ名 - 説明
-```
+## Signature / Usage
 
 ```
-@template {制約型} 型パラメータ名 - 説明
+@template TypeParamName - description
 ```
 
-## 詳細説明
+```
+@template {ConstraintType} TypeParamName - description
+```
 
-`@template` タグは関数、メソッド、クラス、インターフェース、型エイリアスの型パラメータを文書化するために使用される。
+The `@template` tag is used to document the type parameters of a function, method, class, interface, or type alias.
 
-TypeDocはJavaScriptプロジェクトとの互換性を維持するため、`@template` を `@typeParam` のエイリアスとして扱う。TypeScriptプロジェクトでは、TSDoc標準の `@typeParam` タグの使用が推奨される。
-
-## コード例
+TypeDoc treats `@template` as an alias of `@typeParam` for compatibility with JavaScript projects. In TypeScript projects, using the TSDoc-standard `@typeParam` tag is recommended.
 
 ```javascript
 /**
@@ -29,13 +25,13 @@ export function identity(x) {
 }
 ```
 
-## 注意点
+## Notes
 
-- TypeDocは `@template` を `@typeParam` のエイリアスとして処理する
-- 主にJavaScriptプロジェクトでTypeScriptをドキュメントコメント経由で利用する場合に使用
-- TypeScriptプロジェクトでは `@typeParam` の使用を推奨
-- 型制約（`{string}` など）を含めることが可能
+- TypeDoc processes `@template` as an alias of `@typeParam`
+- Mainly used when documenting TypeScript in JavaScript projects via doc comments
+- `@typeParam` is recommended for TypeScript projects
+- Type constraints (such as `{string}`) can be included
 
-## 関連
+## Related
 
-- [@typeParam](./typeParam.md) -- TypeScriptプロジェクト向けの推奨代替タグ
+- [@typeParam](./typeParam.md) -- the recommended alternative tag for TypeScript projects

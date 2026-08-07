@@ -2,17 +2,6 @@
 
 Renders a toolbar attached to a node that appears above (or around) it. Visible only when the node is selected by default. Does not scale with viewport zoom.
 
-## Props
-
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `nodeId` | `string \| string[]` | — | Node ID(s) to attach the toolbar to; accepts an array for group toolbars |
-| `isVisible` | `boolean` | — | When `true`, the toolbar is visible regardless of node selection state |
-| `position` | `Position` | `Position.Top` | Where the toolbar appears relative to the node (`Top`, `Right`, `Bottom`, `Left`) |
-| `offset` | `number` | `10` | Spacing (px) between the node and the toolbar |
-| `align` | `Align` | `'center'` | Alignment of the toolbar relative to the node edge (`'start'`, `'center'`, `'end'`) |
-| `...props` | `HTMLAttributes<HTMLDivElement>` | — | Standard HTML div attributes |
-
 ## 使用例
 
 ```tsx
@@ -38,6 +27,17 @@ function CustomNode({ data }: { data: { label: string; toolbarVisible?: boolean 
 
 export default memo(CustomNode);
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `nodeId` | `string \| string[]` | — | Node ID(s) to attach the toolbar to; accepts an array for group toolbars |
+| `isVisible` | `boolean` | — | When `true`, the toolbar is visible regardless of node selection state |
+| `position` | `Position` | `Position.Top` | Where the toolbar appears relative to the node (`Top`, `Right`, `Bottom`, `Left`) |
+| `offset` | `number` | `10` | Spacing (px) between the node and the toolbar |
+| `align` | `Align` | `'center'` | Alignment of the toolbar relative to the node edge (`'start'`, `'center'`, `'end'`) |
+| `...props` | `HTMLAttributes<HTMLDivElement>` | — | Standard HTML div attributes |
 
 ## 注意点
 

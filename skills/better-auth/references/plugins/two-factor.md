@@ -1,10 +1,10 @@
 # Two-Factor Authentication (2FA)
 
-2FA プラグインは、パスワードに加えて第2の認証手段を要求することでセキュリティを強化する。OTP（ワンタイムパスワード）、TOTP（時間ベースワンタイムパスワード）、バックアップコード、信頼済みデバイス管理をサポートする。
+The 2FA plugin strengthens security by requiring a second authentication factor in addition to a password. It supports OTP (one-time password), TOTP (time-based one-time password), backup codes, and trusted device management.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -18,15 +18,15 @@ export const auth = betterAuth({
 })
 ```
 
-マイグレーション:
+Migration:
 
 ```bash
 npx auth migrate
-# または
+# or
 npx auth generate
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -39,18 +39,16 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
-
-### 2FA 有効化
+### Enable 2FA
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.twoFactor.enable({
     password: "secure-password",
     issuer: "my-app-name"
 })
 
-// サーバー
+// Server
 const data = await auth.api.enableTwoFactor({
     body: {
         password: "secure-password",
@@ -60,50 +58,50 @@ const data = await auth.api.enableTwoFactor({
 })
 ```
 
-パラメータ:
-- `password` (string, 必須): ユーザーのパスワード
-- `issuer` (string, 任意): TOTP URI のカスタム発行者名
+Parameters:
+- `password` (string, required): the user's password
+- `issuer` (string, optional): custom issuer name for the TOTP URI
 
-`skipVerificationOnEnable: true` でない限り、TOTP 検証が成功するまで `twoFactorEnabled` は `false` のまま。
+Unless `skipVerificationOnEnable: true` is set, `twoFactorEnabled` stays `false` until TOTP verification succeeds.
 
-### 2FA 無効化
+### Disable 2FA
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.twoFactor.disable({ password })
 
-// サーバー
+// Server
 const data = await auth.api.disableTwoFactor({
     body: { password },
     headers: await headers()
 })
 ```
 
-### TOTP URI 取得
+### Get TOTP URI
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.twoFactor.getTotpUri({ password })
 
-// サーバー
+// Server
 const data = await auth.api.getTOTPURI({
     body: { password },
     headers: await headers()
 })
 ```
 
-認証アプリ用の QR コード生成に使う `totpURI` を返す。
+Returns the `totpURI` used to generate a QR code for authenticator apps.
 
-### TOTP 検証
+### Verify TOTP
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.twoFactor.verifyTotp({
     code: "012345",
     trustDevice: true
 })
 
-// サーバー
+// Server
 const data = await auth.api.verifyTOTP({
     body: {
         code: "012345",
@@ -113,37 +111,37 @@ const data = await auth.api.verifyTOTP({
 })
 ```
 
-パラメータ:
-- `code` (string, 必須): 認証アプリからの OTP コード
-- `trustDevice` (boolean, 任意): デバイスを30日間記憶する。その期間内のログインで更新される
+Parameters:
+- `code` (string, required): the OTP code from the authenticator app
+- `trustDevice` (boolean, optional): remember the device for 30 days, refreshed on login within that window
 
-現在の時間ウィンドウの前後1期間のコードを受け入れる。
+Accepts codes from the current time window plus one period on either side.
 
-### OTP 送信
+### Send OTP
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.twoFactor.sendOtp({
     trustDevice: true
 })
 
-// サーバー
+// Server
 const data = await auth.api.sendTwoFactorOTP({
     body: { trustDevice: true },
     headers: await headers()
 })
 ```
 
-### OTP 検証
+### Verify OTP
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.twoFactor.verifyOtp({
     code: "012345",
     trustDevice: true
 })
 
-// サーバー
+// Server
 const data = await auth.api.verifyTwoFactorOTP({
     body: {
         code: "012345",
@@ -153,32 +151,32 @@ const data = await auth.api.verifyTwoFactorOTP({
 })
 ```
 
-### バックアップコード生成
+### Generate backup codes
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.twoFactor.generateBackupCodes({ password })
 
-// サーバー
+// Server
 const data = await auth.api.generateBackupCodes({
     body: { password },
     headers: await headers()
 })
 ```
 
-新しいコードを生成すると以前のコードは削除される。
+Generating new codes deletes the previous set.
 
-### バックアップコード検証
+### Verify backup code
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.twoFactor.verifyBackupCode({
     code: "123456",
     disableSession: false,
     trustDevice: true
 })
 
-// サーバー
+// Server
 const data = await auth.api.verifyBackupCode({
     body: {
         code: "123456",
@@ -189,14 +187,14 @@ const data = await auth.api.verifyBackupCode({
 })
 ```
 
-パラメータ:
-- `code` (string, 必須): バックアップコード
-- `disableSession` (boolean, 任意): セッション Cookie の設定を防ぐ
-- `trustDevice` (boolean, 任意): デバイスを30日間信頼する
+Parameters:
+- `code` (string, required): the backup code
+- `disableSession` (boolean, optional): prevents setting the session cookie
+- `trustDevice` (boolean, optional): trust the device for 30 days
 
-コードは一度だけ使用可能で、検証後に削除される。
+Codes are single-use and deleted after verification.
 
-### バックアップコード閲覧（サーバーのみ）
+### View backup codes (server only)
 
 ```typescript
 const data = await auth.api.viewBackupCodes({
@@ -204,9 +202,9 @@ const data = await auth.api.viewBackupCodes({
 })
 ```
 
-### 2FA 有効ユーザーのサインイン
+### Sign-in for 2FA-enabled users
 
-2FA が有効なユーザーがサインインすると、レスポンスに `twoFactorRedirect: true` が含まれる。
+When a 2FA-enabled user signs in, the response includes `twoFactorRedirect: true`.
 
 ```typescript
 await authClient.signIn.email({
@@ -215,93 +213,91 @@ await authClient.signIn.email({
 }, {
     async onSuccess(context) {
         if (context.data.twoFactorRedirect) {
-            // 2FA 検証フローを処理
+            // Handle the 2FA verification flow
         }
     }
 })
 ```
 
-代替設定:
+Alternative configuration:
 
 ```typescript
-// グローバルコールバック
+// Global callback
 twoFactorClient({
     onTwoFactorRedirect(){
-        // グローバルに検証を処理
+        // Handle verification globally
     }
 })
 
-// ページにリダイレクト（フルリロードが発生）
+// Redirect to a page (triggers a full reload)
 twoFactorClient({
     twoFactorPage: "/two-factor"
 })
 ```
 
-## 設定オプション
+## Options / Props
 
-### サーバーオプション
+### Server options
 
-| オプション | 型 | デフォルト | 説明 |
+| Option | Type | Default | Description |
 |---|---|---|---|
-| `twoFactorTable` | string | `"twoFactor"` | 2FA データのテーブル名 |
-| `skipVerificationOnEnable` | boolean | `false` | 有効化時の TOTP 検証をスキップ |
-| `issuer` | string | アプリ名 or "Better Auth" | TOTP 発行者の表示名 |
+| `twoFactorTable` | string | `"twoFactor"` | Table name for 2FA data |
+| `skipVerificationOnEnable` | boolean | `false` | Skip TOTP verification at enable time |
+| `issuer` | string | app name or "Better Auth" | Display name for the TOTP issuer |
 
-### TOTP オプション
+### TOTP options
 
-| オプション | 型 | デフォルト | 説明 |
+| Option | Type | Default | Description |
 |---|---|---|---|
-| `digits` | number | 6 | 生成コードの桁数 |
-| `period` | number | 30 | 時間ウィンドウ（秒） |
+| `digits` | number | 6 | Number of digits in generated codes |
+| `period` | number | 30 | Time window (seconds) |
 
-### OTP オプション
+### OTP options
 
-| オプション | 型 | 説明 |
+| Option | Type | Description |
 |---|---|---|
-| `sendOTP` | function | OTP をユーザーに送信するコールバック |
-| `period` | number | コードの有効期間（秒） |
-| `storeOTP` | string | ストレージ戦略識別子 |
+| `sendOTP` | function | Callback to send the OTP to the user |
+| `period` | number | Code validity period (seconds) |
+| `storeOTP` | string | Storage strategy identifier |
 
-### バックアップコードオプション
+### Backup code options
 
-| オプション | 型 | デフォルト | 説明 |
+| Option | Type | Default | Description |
 |---|---|---|---|
-| `amount` | number | 10 | 生成するコード数 |
-| `length` | number | 8 | コードあたりの文字数 |
-| `customBackupCodesGenerate` | function | - | カスタム生成ロジック |
-| `storeBackupCodes` | string | - | ストレージ識別子 |
+| `amount` | number | 10 | Number of codes to generate |
+| `length` | number | 8 | Characters per code |
+| `customBackupCodesGenerate` | function | - | Custom generation logic |
+| `storeBackupCodes` | string | - | Storage identifier |
 
-### クライアントオプション
+### Client options
 
 ```typescript
 twoFactorClient({
     onTwoFactorRedirect(){
-        // ユーザーが 2FA を検証する必要があるときのコールバック
+        // Callback for when the user needs to verify 2FA
     }
 })
 ```
 
-## DB スキーマ
+### DB schema (user table)
 
-### user テーブル
-
-| フィールド | 型 | 任意 | 説明 |
+| Field | Type | Optional | Description |
 |---|---|---|---|
-| `twoFactorEnabled` | boolean | Yes | 2FA の有効化状態 |
+| `twoFactorEnabled` | boolean | Yes | Whether 2FA is enabled |
 
-### twoFactor テーブル
+### DB schema (twoFactor table)
 
-| フィールド | 型 | キー | 説明 |
+| Field | Type | Key | Description |
 |---|---|---|---|
-| `id` | string | PK | 認証レコード ID |
-| `userId` | string | FK | 関連ユーザー |
-| `secret` | string | - | コード生成用の TOTP シークレット |
-| `backupCodes` | string | - | シリアライズされたリカバリーコード |
+| `id` | string | PK | Authentication record ID |
+| `userId` | string | FK | Associated user |
+| `secret` | string | - | TOTP secret for code generation |
+| `backupCodes` | string | - | Serialized recovery codes |
 
-## 注意点
+## Notes
 
-- 2FA は現時点ではクレデンシャルアカウントにのみ有効化可能。ソーシャルアカウントでは、プロバイダー側で既に 2FA を処理していると想定される
-- サーバー側の auth メソッドを使用する場合、状態を維持するためにレスポンスヘッダー/Cookie を後続の 2FA 呼び出しに転送する必要がある
-- OTP メソッドにはプラグイン設定で `sendOTP` コールバックの実装が必要
-- 信頼済みデバイスは正確に30日間記憶され、そのウィンドウ内でのログイン成功時に期間が更新される
-- `twoFactorPage` 設定を使用するとフルブラウザリロードが発生する。プログラム的な処理には `onTwoFactorRedirect` が推奨
+- 2FA can currently only be enabled for credential accounts. For social accounts, 2FA is assumed to already be handled by the provider
+- When using server-side auth methods, response headers/cookies must be forwarded to subsequent 2FA calls to maintain state
+- OTP methods require implementing the `sendOTP` callback in the plugin configuration
+- Trusted devices are remembered for exactly 30 days, and the window resets on each successful login within it
+- Using the `twoFactorPage` setting triggers a full browser reload. `onTwoFactorRedirect` is recommended for programmatic handling

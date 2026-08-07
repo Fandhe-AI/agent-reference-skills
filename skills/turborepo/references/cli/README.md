@@ -1,11 +1,12 @@
-# cli
+# CLI
 
 | Name | Description | Path |
 |------|-------------|------|
-| turbo boundaries | ワークスペース間の依存関係違反を検査する実験的機能。 | [boundaries.md](./boundaries.md) |
-| turbo gen | エイリアス: `turbo generate` | [gen.md](./gen.md) |
-| その他のコマンド | turbo ls のパッケージ一覧表示。 | [other-commands.md](./other-commands.md) |
-| turbo prune | 特定パッケージとその依存関係のみを含む部分的なモノレポを生成する。 | [prune.md](./prune.md) |
-| turbo query | モノレポに対して GraphQL クエリを実行し、パッケージ依存関係やタスク関係を分析する。 | [query.md](./query.md) |
-| turbo run | `turbo run <task> [options]` | [run.md](./run.md) |
-| turbo watch | コードの変更をもとにタスクを再実行する。 | [watch.md](./watch.md) |
+| turbo boundaries | Experimental feature that checks for dependency violations across workspaces. | [boundaries.md](./boundaries.md) |
+| turbo gen | | [gen.md](./gen.md) |
+| Options overview | Flags, `turbo.json` configuration, and System Environment Variables for Turborepo. Three ways to manage `turbo` behavior, listed in order of precedence: CLI flags > System Environment Variables > `turbo.json` configuration. Where a flag is provided, it overrides the same setting from an environment variable or `turbo.json`. | [options-overview.md](./options-overview.md) |
+| Other commands | | [other-commands.md](./other-commands.md) |
+| turbo prune | Generates a partial monorepo containing only a target package and its dependencies. Useful for optimizing Docker layer caching in deployments. | [prune.md](./prune.md) |
+| turbo query | Runs GraphQL queries against the monorepo to analyze package dependencies and task relationships. | [query.md](./query.md) |
+| turbo run | | [run.md](./run.md) |
+| turbo watch | Re-runs tasks based on code changes. | [watch.md](./watch.md) |

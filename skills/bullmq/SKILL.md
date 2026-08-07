@@ -21,10 +21,12 @@ skills/bullmq/
   SKILL.md
   references/
     guide/
+      README.md
       architecture.md
       connections.md
       going-to-production.md
       introduction.md
+      migrations.md
       parallelism-and-concurrency.md
       queuescheduler.md
       rate-limiting.md
@@ -62,8 +64,8 @@ skills/bullmq/
         jobs.md
         lifo.md
         prioritized.md
-        repeatable.md
         removing-jobs.md
+        repeatable.md
         retrying-jobs.md
         stalled.md
       metrics/
@@ -73,6 +75,7 @@ skills/bullmq/
       migrations/
         README.md
         bull-to-bullmq.md
+        migrate-from-v5-to-v6.md
         migration-to-newer-versions.md
       nestjs/
         README.md
@@ -196,6 +199,7 @@ skills/bullmq/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
+| アーキテクチャ、Redis 接続設定、本番運用、並列性/並行性、QueueScheduler 廃止、トラブルシューティング | guide | [references/guide/README.md](references/guide/README.md) |
 | キューの設定、バルク追加、グローバル並行数、ジョブ自動削除 | guide/queues | [references/guide/queues/README.md](references/guide/queues/README.md) |
 | ワーカーの並行処理、グレースフルシャットダウン、サンドボックス | guide/workers | [references/guide/workers/README.md](references/guide/workers/README.md) |
 | ジョブの種類（遅延・繰り返し・優先度・FIFO/LIFO）、リトライ、重複排除 | guide/jobs | [references/guide/jobs/README.md](references/guide/jobs/README.md) |
@@ -207,7 +211,7 @@ skills/bullmq/
 | Redis 互換性、Dragonfly 対応 | guide/redis-compatibility | [references/guide/redis-compatibility/README.md](references/guide/redis-compatibility/README.md) |
 | AWS MemoryDB / ElastiCache でのホスティング | guide/redis-hosting | [references/guide/redis-hosting/README.md](references/guide/redis-hosting/README.md) |
 | NestJS との統合、Queue インジェクション | guide/nestjs | [references/guide/nestjs/README.md](references/guide/nestjs/README.md) |
-| BullMQ / Bull からの移行、バージョンアップ | guide/migrations | [references/guide/migrations/README.md](references/guide/migrations/README.md) |
+| BullMQ / Bull からの移行、バージョンアップ、v5 → v6 移行 | guide/migrations | [references/guide/migrations/README.md](references/guide/migrations/README.md) |
 | 冪等性、スロットル、ステップ処理等の実装パターン | patterns | [references/patterns/README.md](references/patterns/README.md) |
 | BullMQ Pro（グループ、Observable、バッチ） | bullmq-pro | [references/bullmq-pro/README.md](references/bullmq-pro/README.md) |
 | BullMQ Pro グループ（並行数・レート制限・優先度） | bullmq-pro/groups | [references/bullmq-pro/groups/README.md](references/bullmq-pro/groups/README.md) |

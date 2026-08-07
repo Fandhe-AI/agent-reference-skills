@@ -1,15 +1,15 @@
-# Guide
+# guide
 
 | Name | Description | Path |
 |------|-------------|------|
-| Architecture | BullMQ は Redis 上にジョブキュー機能を実装しており、明確に定義されたライフサイクルステート… | [architecture.md](./architecture.md) |
-| BullMQ — Connections | BullMQ は Redis への接続に ioredis モジュールを使用する。Queue や Worker の各インスタンス… | [connections.md](./connections.md) |
-| BullMQ — Introduction | BullMQ は 4 つのコアクラスを中心に構築されたジョブキューライブラリである。Queue でジョブを登… | [introduction.md](./introduction.md) |
-| Going to Production | BullMQ ベースのアプリケーションを本番環境にデプロイする際の重要な考慮事項とベストプラクティス… | [going-to-production.md](./going-to-production.md) |
-| Migrations | > **Deprecated**: このファイルは公式ドキュメントの構造変更により非推奨となりました。後継ページは… | [migrations.md](./migrations.md) |
-| Parallelism and Concurrency | BullMQ では並列性（Parallelism）と並行性（Concurrency）は異なる概念です。並列性は複数のワーカー… | [parallelism-and-concurrency.md](./parallelism-and-concurrency.md) |
-| Rate Limiting | BullMQ はワーカーレベルのレート制限機能を提供し、`limiter` オプション（`max` と `duration`）を使… | [rate-limiting.md](./rate-limiting.md) |
-| QueueScheduler | `QueueScheduler` は BullMQ v2.0 で廃止されたヘルパークラスです。v2.0 以前では、遅延ジョブの管理とス… | [queuescheduler.md](./queuescheduler.md) |
-| Retrying Failing Jobs | BullMQ は失敗したジョブの自動リトライ機能を提供します。`attempts` オプションと組み込みまたはカス… | [retrying-failing-jobs.md](./retrying-failing-jobs.md) |
-| Returning Job Data | BullMQ では Worker のプロセッサ関数から値を返すことができ、その戻り値は `job.returnvalue` プロパ… | [returning-job-data.md](./returning-job-data.md) |
-| Troubleshooting | BullMQ を使用する際によく遭遇するエラーとその解決策をまとめています。ロックの消失、環境変数の問… | [troubleshooting.md](./troubleshooting.md) |
+| Architecture | Redis 上のジョブキュー実装。ライフサイクルステート管理。 | [architecture.md](./architecture.md) |
+| BullMQ — Connections | Redis への接続設定。ioredis モジュール。Queue / Worker。 | [connections.md](./connections.md) |
+| Going to Production | 本番環境デプロイのベストプラクティス。Redis 永続化・メモリポリシー。 | [going-to-production.md](./going-to-production.md) |
+| BullMQ — Introduction | 4 つのコアクラス。Queue / Worker / QueueEvents / FlowProducer。 | [introduction.md](./introduction.md) |
+| Migrations | バージョンアップ戦略。破壊的変更への対応。Bull から BullMQ への移行。 | [migrations.md](./migrations.md) |
+| Parallelism and Concurrency | 並列性と並行性の概念。Parallelism / Concurrency。ワーカー設定。 | [parallelism-and-concurrency.md](./parallelism-and-concurrency.md) |
+| QueueScheduler | `QueueScheduler` は v2.0 で廃止。遅延ジョブ管理・ストール検出。 | [queuescheduler.md](./queuescheduler.md) |
+| Rate Limiting | ワーカーレベルのレート制限。`limiter` オプション。max / duration。 | [rate-limiting.md](./rate-limiting.md) |
+| Retrying Failing Jobs | 失敗したジョブの自動リトライ。`attempts` / バックオフ戦略。 | [retrying-failing-jobs.md](./retrying-failing-jobs.md) |
+| Returning Job Data | Worker プロセッサからの値返却。`returnvalue` プロパティ。 | [returning-job-data.md](./returning-job-data.md) |
+| Troubleshooting | よく遭遇するエラーと解決策。Missing Locks エラー・環境変数の問題。 | [troubleshooting.md](./troubleshooting.md) |

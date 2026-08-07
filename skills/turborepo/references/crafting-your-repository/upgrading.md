@@ -1,6 +1,8 @@
-# アップグレード
+# Upgrading
 
-## codemod による自動移行
+## Usage
+
+### Automatic migration with codemods
 
 ```bash
 # pnpm
@@ -16,13 +18,13 @@ npx @turbo/codemod migrate
 bunx @turbo/codemod migrate
 ```
 
-`turbo.json` の自動更新と、ワークスペース `package.json` への `name` フィールド追加を行う。
+Automatically updates `turbo.json` and adds a `name` field to workspace `package.json` files.
 
-## v2.0 での主な変更点
+### Key changes in v2.0
 
-### packageManager フィールドの必須化
+#### packageManager field is now required
 
-ルート `package.json` に `packageManager` フィールドを追加する:
+Add a `packageManager` field to the root `package.json`:
 
 ```json
 {
@@ -30,30 +32,30 @@ bunx @turbo/codemod migrate
 }
 ```
 
-### 環境変数モードの変更
+#### Environment variable mode change
 
-Strict Mode がデフォルトになった。段階的移行には `--env-mode=loose` フラグか、`turbo.json` の `envMode` キーを使う。
+Strict Mode is now the default. For a gradual migration, use the `--env-mode=loose` flag or the `envMode` key in `turbo.json`.
 
-### 削除されたフラグ
+#### Removed flags
 
-| 削除フラグ | 代替 |
-|---|---|
+| Removed flag | Replacement |
+| --- | --- |
 | `--ignore` | `--filter` |
 | `--scope` | `--filter` |
 
-### フィルタリングの変更
+#### Filtering changes
 
-- 名前空間の自動推論が削除された
-- マッチしないパッケージ指定はエラーになる
-- `--only` はパッケージ依存ではなくタスク依存を制限するようになった
+- Automatic namespace inference has been removed
+- Specifying a package that doesn't match now errors
+- `--only` now restricts task dependencies instead of package dependencies
 
-### キャッシュハッシュの変更
+#### Cache hash change
 
-ルート `package.json` の `engines` フィールドがキャッシュハッシュに含まれるようになった。
+The root `package.json`'s `engines` field is now included in the cache hash.
 
-## eslint-config-turbo の更新
+## Notes
 
-`eslint-config-turbo` を使用している場合、メジャーバージョンを合わせて更新する。
+- If you use `eslint-config-turbo`, update it to a matching major version.
 
 ## Related
 

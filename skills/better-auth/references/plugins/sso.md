@@ -1,16 +1,16 @@
 # SSO
 
-SSO プラグインは、OIDC、OAuth2、SAML 2.0 をサポートし、単一のクレデンシャルセットで複数のアプリケーションへの認証を可能にする。
+The SSO plugin supports OIDC, OAuth2, and SAML 2.0, allowing authentication to multiple applications with a single set of credentials.
 
-## セットアップ
+## Signature / Usage
 
-### インストール
+### Installation
 
 ```bash
 npm install @better-auth/sso
 ```
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -31,7 +31,7 @@ const auth = betterAuth({
 })
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -44,9 +44,7 @@ const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
-
-### OIDC プロバイダー登録
+### Register an OIDC provider
 
 ```typescript
 const { data, error } = await authClient.sso.register({
@@ -71,7 +69,7 @@ const { data, error } = await authClient.sso.register({
 })
 ```
 
-### SAML プロバイダー登録
+### Register a SAML provider
 
 ```typescript
 await authClient.sso.register({
@@ -95,42 +93,42 @@ await authClient.sso.register({
 })
 ```
 
-### SSO サインイン
+### SSO sign-in
 
 ```typescript
-// メールで
+// By email
 await authClient.signIn.sso({ email: "user@example.com", callbackURL: "/dashboard" })
 
-// ドメインで
+// By domain
 await authClient.signIn.sso({ domain: "example.com", callbackURL: "/dashboard" })
 
-// 組織スラッグで
+// By organization slug
 await authClient.signIn.sso({ organizationSlug: "example-org", callbackURL: "/dashboard" })
 
-// プロバイダー ID で
+// By provider ID
 await authClient.signIn.sso({ providerId: "example-provider-id", callbackURL: "/dashboard", loginHint: "user@example.com" })
 ```
 
-### ドメイン検証
+### Domain verification
 
 ```typescript
-// 検証トークン要求
+// Request a verification token
 const { data, error } = await authClient.sso.requestDomainVerification({
     providerId: "acme-corp"
 })
 
-// ドメイン検証
+// Verify domain
 const { data, error } = await authClient.sso.verifyDomain({
     providerId: "acme-corp"
 })
 ```
 
-DNS レコード形式:
-- ホスト: `_better-auth-token-{providerId}`
-- 値: 検証トークン
-- TTL: 1週間
+DNS record format:
+- Host: `_better-auth-token-{providerId}`
+- Value: the verification token
+- TTL: 1 week
 
-### SP メタデータ取得
+### Retrieving SP metadata
 
 ```typescript
 const response = await auth.api.spMetadata({
@@ -138,22 +136,22 @@ const response = await auth.api.spMetadata({
 })
 ```
 
-## 設定オプション
+## Options / Props
 
-| オプション | 型 | 説明 |
+| Option | Type | Description |
 |---|---|---|
-| `provisionUser` | function | ユーザープロビジョニングカスタムロジック |
-| `organizationProvisioning.disabled` | boolean | 組織プロビジョニングの無効化 |
-| `organizationProvisioning.defaultRole` | string | デフォルトロール |
-| `organizationProvisioning.getRole` | function | ロール割り当てロジック |
-| `defaultOverrideUserInfo` | boolean | ユーザー情報の上書き |
-| `disableImplicitSignUp` | boolean | 暗黙的サインアップの無効化 |
-| `providersLimit` | number \| function | プロバイダー数制限 |
-| `redirectURI` | string | リダイレクト URI |
-| `domainVerification.enabled` | boolean | ドメイン検証の有効化 |
-| `defaultSSO` | array | デフォルト SSO 設定 |
+| `provisionUser` | function | Custom user provisioning logic |
+| `organizationProvisioning.disabled` | boolean | Disables organization provisioning |
+| `organizationProvisioning.defaultRole` | string | Default role |
+| `organizationProvisioning.getRole` | function | Role assignment logic |
+| `defaultOverrideUserInfo` | boolean | Overrides user info |
+| `disableImplicitSignUp` | boolean | Disables implicit sign-up |
+| `providersLimit` | number \| function | Limits the number of providers |
+| `redirectURI` | string | Redirect URI |
+| `domainVerification.enabled` | boolean | Enables domain verification |
+| `defaultSSO` | array | Default SSO configuration |
 
-### SAML セキュリティ設定
+### SAML security configuration
 
 ```typescript
 saml: {
@@ -168,36 +166,25 @@ saml: {
 }
 ```
 
-## DB スキーマ
+### DB schema (ssoProvider table)
 
-### ssoProvider テーブル
-
-| フィールド | 型 | 説明 |
+| Field | Type | Description |
 |---|---|---|
 | id | string | PK |
-| issuer | string | OIDC 発行者 URL |
-| domain | string | メールドメイン |
-| oidcConfig | string? | OIDC 設定（JSON） |
-| samlConfig | string? | SAML 設定（JSON） |
+| issuer | string | OIDC issuer URL |
+| domain | string | Email domain |
+| oidcConfig | string? | OIDC configuration (JSON) |
+| samlConfig | string? | SAML configuration (JSON) |
 | userId | string | FK to user |
-| providerId | string | 一意のプロバイダー識別子 |
-| organizationId | string? | 組織リンケージ |
-| domainVerified | boolean? | ドメイン検証状態 |
+| providerId | string | Unique provider identifier |
+| organizationId | string? | Organization linkage |
+| domainVerified | boolean? | Domain verification state |
 
-## OIDC ディスカバリーエラー
+## Notes
 
-| コード | 意味 |
-|---|---|
-| `issuer_mismatch` | ディスカバリードキュメントが異なる issuer を報告 |
-| `discovery_incomplete` | 必須フィールドの欠落 |
-| `discovery_not_found` | ディスカバリーエンドポイントで 404 |
-| `discovery_timeout` | 10秒タイムアウト超過 |
-| `discovery_untrusted_origin` | trustedOrigins にないオリジン |
-
-## 注意点
-
-- SAML アサーションリプレイ保護は常に有効
-- 信頼済みオリジンの設定がディスカバリードメインに必要
-- サポートされるアルゴリズム: RSA-SHA256/384/512, ECDSA-SHA256/384/512
-- 非推奨アルゴリズム（SHA-1, RSA 1.5, 3DES）の使用は `algorithms.onDeprecated` で制御
-- SAML エンドポイント: `/api/auth/sso/saml2/sp/metadata`, `/api/auth/sso/saml2/callback/{providerId}`
+- OIDC discovery error codes: `issuer_mismatch` (the discovery document reports a different issuer), `discovery_incomplete` (required fields missing), `discovery_not_found` (404 at the discovery endpoint), `discovery_timeout` (10-second timeout exceeded), `discovery_untrusted_origin` (origin not in trustedOrigins)
+- SAML assertion replay protection is always enabled
+- The discovery domain must be configured in trusted origins
+- Supported algorithms: RSA-SHA256/384/512, ECDSA-SHA256/384/512
+- Use of deprecated algorithms (SHA-1, RSA 1.5, 3DES) is controlled via `algorithms.onDeprecated`
+- SAML endpoints: `/api/auth/sso/saml2/sp/metadata`, `/api/auth/sso/saml2/callback/{providerId}`

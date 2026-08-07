@@ -2,14 +2,14 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| キャッシュ | タスクごとに2種類のハッシュを計算し、両方が一致するときのみキャッシュヒット。 | [caching.md](./caching.md) |
-| CI の構築 | 環境変数と影響パッケージフィルタリング、リモートキャッシュの設定。 | [ci.md](./ci.md) |
-| 依存関係の管理 | ワークスペース内の内部パッケージ依存宣言と一括インストール手法。 | [dependencies.md](./dependencies.md) |
-| アプリケーション開発 | dev タスク設定、キャッシュ無効化、ウォッチモード、UI キーバインド。 | [developing.md](./developing.md) |
-| 環境変数の使用 | env、globalEnv、passThroughEnv の4種類の違いと自動推論。 | [environment-variables.md](./environment-variables.md) |
-| 内部パッケージの作成 | 1パッケージ1責務設計、package.json、exports 設定。 | [internal-packages.md](./internal-packages.md) |
-| タスクの実行 | package.json スクリプト、複数実行、フィルタリング、ショートハンド構文。 | [running-tasks.md](./running-tasks.md) |
-| リポジトリの構造化 | ディレクトリ構成、ワークスペース定義、exports フィールド。 | [structuring.md](./structuring.md) |
-| タスクの設定 | dependsOn、outputs、inputs の設定と特殊値の説明。 | [tasks.md](./tasks.md) |
-| リポジトリの把握 | turbo devtools、turbo ls、turbo query GraphQL インターフェース。 | [understanding-your-repository.md](./understanding-your-repository.md) |
-| アップグレード | codemod による自動移行、v2.0 での主な変更点と非推奨フラグ。 | [upgrading.md](./upgrading.md) |
+| Caching | Two kinds of hashes are computed for each task; a cache hit only occurs when both match. | [caching.md](./caching.md) |
+| Building CI | Configure Turborepo for CI with affected package filtering and remote caching. | [ci.md](./ci.md) |
+| Dependency Management | Declare and manage internal package dependencies across workspace packages. | [dependencies.md](./dependencies.md) |
+| Application Development | Set up development tasks with persistent processes and watch mode. | [developing.md](./developing.md) |
+| Using Environment Variables | Configure environment variables with four scoping levels and automatic framework inference. | [environment-variables.md](./environment-variables.md) |
+| Creating Internal Packages | Design each package around a single responsibility. | [internal-packages.md](./internal-packages.md) |
+| Running Tasks | Run tasks across packages with filtering, dependencies, and shorthand syntax. | [running-tasks.md](./running-tasks.md) |
+| Structuring a Repository | Organize a monorepo with apps and packages directories and workspace configuration. | [structuring.md](./structuring.md) |
+| Configuring Tasks | Configure task dependencies, outputs, and inputs for efficient caching. | [tasks.md](./tasks.md) |
+| Understanding Your Repository | Inspect monorepo structure and dependencies with devtools, CLI, and GraphQL queries. | [understanding-your-repository.md](./understanding-your-repository.md) |
+| Upgrading | Upgrade Turborepo with automated codemods and adapt to breaking changes. | [upgrading.md](./upgrading.md) |

@@ -5,6 +5,7 @@ description: >
   認証・認可、サインアップ・サインイン、セッション管理、OAuth、パスキー、
   二要素認証 (TOTP)、プラグイン (organization, admin, magic-link, anonymous 等)。
   betterAuth, createAuthClient, signUp, signIn, getSession。
+  フレームワーク統合 (Next.js, Nuxt, SvelteKit, Hono, Express, Expo, TanStack 等)。
 user-invocable: false
 model: sonnet
 ---
@@ -51,6 +52,34 @@ skills/better-auth/
       postgresql.md
       prisma.md
       sqlite.md
+    integrations/
+      README.md
+      astro.md
+      convex.md
+      electron.md
+      elysia.md
+      encore.md
+      expo.md
+      express.md
+      fastify.md
+      hono.md
+      lynx.md
+      nestjs.md
+      next.md
+      nitro.md
+      nuxt.md
+      react-router.md
+      solid-start.md
+      svelte-kit.md
+      tanstack.md
+      waku.md
+    examples/
+      README.md
+      astro.md
+      next-js.md
+      nuxt.md
+      react-router.md
+      svelte-kit.md
     authentication/
       README.md
       email-password.md
@@ -104,6 +133,7 @@ skills/better-auth/
       captcha.md
       chargebee.md
       commet.md
+      community-plugins.md
       creem.md
       device-authorization.md
       dodopayments.md
@@ -136,7 +166,9 @@ skills/better-auth/
       username.md
     reference/
       README.md
+      contributing.md
       options.md
+      resources.md
       security.md
       faq.md
       instrumentation.md
@@ -176,17 +208,36 @@ skills/better-auth/
       your-first-plugin.md
   samples/
     README.md
+    astro.md
     client-setup.md
+    convex.md
+    electron.md
+    elysia.md
     email-password-auth.md
     email-verification.md
+    encore.md
+    expo.md
+    express.md
+    fastify.md
+    hono.md
     hooks.md
+    lynx.md
+    nestjs.md
+    next.md
+    nitro.md
+    nuxt.md
     password-reset.md
+    react-router.md
     server-setup.md
     session-management.md
     sign-out.md
     social-sign-in.md
+    solid-start.md
+    svelte-kit.md
+    tanstack.md
     two-factor-auth.md
     user-management.md
+    waku.md
   scripts/
     README.md
     cli.md
@@ -212,16 +263,21 @@ skills/better-auth/
 | OAuth フロー・型安全性・プラグイン概念・動的ベース URL | concepts | [references/concepts/README.md](references/concepts/README.md) |
 | Prisma / Drizzle / MongoDB / SQLite / PostgreSQL / MySQL 等の DB アダプター | adapters | [references/adapters/README.md](references/adapters/README.md) |
 | コミュニティ製サードパーティ DB アダプター | adapters | [references/adapters/README.md](references/adapters/README.md) |
+| Next.js / Nuxt / SvelteKit / Hono / Express / Fastify / Expo 等フレームワーク統合 | integrations | [references/integrations/README.md](references/integrations/README.md) |
+| Astro / React Router / TanStack / Convex / Electron / NestJS 等の統合手順 | integrations | [references/integrations/README.md](references/integrations/README.md) |
+| 公式ウォークスルー実例 (Astro, Next.js, Nuxt, React Router, SvelteKit) | examples | [references/examples/README.md](references/examples/README.md) |
 | Email/Password 認証・ソーシャルログイン (GitHub, Google, Apple 等) | authentication | [references/authentication/README.md](references/authentication/README.md) |
 | 特定ソーシャルプロバイダー (Discord, Microsoft, LINE, Twitter 等) の設定 | authentication | [references/authentication/README.md](references/authentication/README.md) |
 | 2FA (TOTP)・パスキー・マジックリンク・SMS OTP・匿名認証 | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | Organization・Admin・SSO・SCIM・API Key・JWT・Bearer トークン | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | Stripe / Chargebee / Polar / Autumn 等の課金・サブスクリプション統合 | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | MCP 認証・エージェント認証・SIWE・キャプチャ・パスワード漏洩チェック | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| コミュニティ製プラグイン一覧を確認したい | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | 設定オプション一覧・セキュリティガイド・FAQ | reference | [references/reference/README.md](references/reference/README.md) |
 | エラーコード調査・OpenTelemetry・テレメトリー | reference | [references/reference/README.md](references/reference/README.md) |
+| コントリビューションガイド・コミュニティ動画/ブログ等のリソース集 | reference | [references/reference/README.md](references/reference/README.md) |
 | Auth.js (NextAuth) / Auth0 / Clerk / Supabase / WorkOS からの移行 | guides | [references/guides/README.md](references/guides/README.md) |
 | カスタムプラグイン作成・カスタム DB アダプター作成・パフォーマンス最適化 | guides | [references/guides/README.md](references/guides/README.md) |
 | SAML SSO (Okta)・ブラウザ拡張機能統合・動的ベース URL 詳細 | guides | [references/guides/README.md](references/guides/README.md) |
-| 典型的な使い方・動作するコード例を確認したい | samples | [samples/README.md](samples/README.md) |
+| 典型的な使い方・動作するコード例・フレームワーク別セットアップ断片 | samples | [samples/README.md](samples/README.md) |
 | インストールコマンド・CLI コマンド・スキーマ生成を知りたい | scripts | [scripts/README.md](scripts/README.md) |

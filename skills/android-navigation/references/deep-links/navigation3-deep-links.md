@@ -48,7 +48,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
 ## Notes
 
-- Requires `androidx.navigation3:navigation3-runtime:1.2.0-alpha05` or newer — the latest stable release (`1.1.4` as of this writing) does not include the `deeplink` package at all; apps on stable must still hand-roll matching (see the JetNews-style recipe pattern referenced above) or wait for promotion to a stable release.
+- Requires `androidx.navigation3:navigation3-runtime:1.2.0-alpha05` or newer (latest alpha as of this writing: `1.2.0-alpha07`) — the latest stable release (`1.1.5` as of this writing) does not include the `deeplink` package at all; apps on stable must still hand-roll matching (see the JetNews-style recipe pattern referenced above) or wait for promotion to a stable release.
 - `AndroidManifest.xml` `<intent-filter>` declarations are still required to make the app reachable from the OS; see [intent-filter-deep-links](./intent-filter-deep-links.md).
 - This built-in matcher pipeline is manual/explicit by design — app code still owns the list of matchers and the order they're tried in; there is no auto-wiring from `<intent-filter>` to a `NavKey` like Navigation Compose's `navDeepLink()`.
 - This is the Android Navigation 3 (Kotlin, `androidx.navigation3.runtime.deeplink`) deep-link API — distinct from the same-named concept in other skills, and from Navigation Compose's `androidx.navigation.NavDeepLinkRequest` (string-pattern matching in `androidx.navigation`).

@@ -1,16 +1,22 @@
 # internal_server_error
 
-認証処理中に予期せぬエラーが発生した際の汎用エラー。ユーザー入力の問題ではなく、認証プロセス内部の障害を示す。
+## Signature / Usage
 
-## 対処方法
+```
+Error code: internal_server_error
+```
 
-1. **サーバーログの確認**: 詳細な障害情報をサーバーログで確認し、根本原因を特定する
-2. **DB 接続の確認**: DB 接続が正常に機能し、設定が正しいか確認する
-3. **環境変数の確認**: 必要なすべての環境変数が正しく設定されているか確認する
-4. **カスタムコードの確認**: 実装したカスタムフックやアダプターにランタイムエラーがないか確認する
+Generic error raised when an unexpected failure occurs during authentication processing. It indicates a failure inside the auth process itself rather than a problem with user input.
+
+## Notes
+
+- Check server logs: inspect detailed failure information in server logs to identify the root cause
+- Verify database connectivity: confirm the database connection is functioning correctly and configured properly
+- Verify environment variables: confirm all required environment variables are set correctly
+- Review custom code: check any custom hooks or adapters you implemented for runtime errors
 
 ## Related
 
-- [error-unable-to-create-session.md](./error-unable-to-create-session.md)
-- [error-unable-to-create-user.md](./error-unable-to-create-user.md)
-- [errors.md](./errors.md)
+- [unable_to_create_session](./error-unable-to-create-session.md)
+- [unable_to_create_user](./error-unable-to-create-user.md)
+- [errors](./errors.md)

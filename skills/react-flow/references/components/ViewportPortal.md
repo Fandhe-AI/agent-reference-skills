@@ -2,12 +2,6 @@
 
 Renders child elements inside the flow viewport coordinate system, making them move and scale along with the canvas when panning and zooming.
 
-## Props
-
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | — | Content to render within the viewport coordinate space |
-
 ## 使用例
 
 ```tsx
@@ -31,6 +25,12 @@ export default function Flow() {
   );
 }
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | — | Content to render within the viewport coordinate space |
 
 ## 注意点
 

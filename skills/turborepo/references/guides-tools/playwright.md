@@ -1,6 +1,8 @@
 # Playwright
 
-## 環境変数の設定（Strict Mode 対応）
+## Usage
+
+Environment variable setup (Strict Mode compatible):
 
 ```json
 {
@@ -10,27 +12,25 @@
 }
 ```
 
-またはグローバル:
+Or globally:
 
 ```json
 { "globalPassThroughEnv": ["PLAYWRIGHT_*"] }
 ```
 
-## タスクグラフの設計
+Task graph design:
 
 ```json
 { "tasks": { "e2e": { "dependsOn": ["^build"] } } }
 ```
 
-上流ビルドをスキップする場合:
+To skip upstream builds:
 
 ```bash
 turbo run e2e --filter=@repo/playwright-myapp --only
 ```
 
-## 共有ユーティリティパッケージ
-
-Playwright を重複インストールしないよう `peerDependencies` を使用:
+Shared utility package: use `peerDependencies` to avoid installing Playwright redundantly.
 
 ```json
 {

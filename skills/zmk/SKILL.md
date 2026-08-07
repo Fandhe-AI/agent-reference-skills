@@ -6,7 +6,7 @@ description: >
   Features (bluetooth, split keyboards, encoders, displays, lighting, pointing, studio, low-power)、
   Keymaps (keycodes, modifiers, combos, conditional layers)、
   Behaviors (タップ・ホールド、レイヤー、マクロ、tap-dance, sticky-key)、
-  Input Processors、Hardware Integration、Troubleshooting。
+  Input Processors、Hardware Integration、Troubleshooting (building, flashing, connection, hardware issues)。
 user-invocable: false
 model: sonnet
 ---
@@ -16,7 +16,7 @@ model: sonnet
 ZMK Firmware — Zephyr RTOS 上に構築されたオープンソース (MIT) のキーボードファームウェア。
 省電力・無線・分割キーボード対応を主眼に設計され、devicetree ベースの宣言的設定により多様な MCU（nRF52/RP2/SAMD21/STM32 等）と shield をサポートする。
 公式ドキュメント (zmk.dev/docs) の全 11 カテゴリを構造化。
-keymap 設計・behaviors 選択・config 設定・新規 board/shield 作成・ローカルビルド時に参照する。
+keymap 設計・behaviors 選択・config 設定・新規 board/shield 作成・ローカルビルド・トラブルシューティング時に参照する。
 
 ## ディレクトリ構成
 
@@ -134,6 +134,7 @@ skills/zmk/
       battery.md
       shift-registers.md
       soft-off-setup.md
+      pointing.md
       bootloader/
         README.md
         overview.md
@@ -158,6 +159,13 @@ skills/zmk/
       posix-board.md
       pre-commit.md
       tests.md
+    troubleshooting/
+      README.md
+      overview.md
+      building-issues.md
+      flashing-issues.md
+      connection-issues.md
+      hardware-issues.md
   samples/
     README.md
     basic-keymap.md
@@ -210,9 +218,11 @@ skills/zmk/
 | Clean room ポリシー、ドキュメント編集、PR ガイド | contributing | [references/contributing/README.md](references/contributing/README.md) |
 | 新規 board / shield 作成、physical layouts、pinctrl、dongle、shift-registers | hardware-integration | [references/hardware-integration/README.md](references/hardware-integration/README.md) |
 | battery 統合、soft-off setup、hardware metadata files | hardware-integration | [references/hardware-integration/README.md](references/hardware-integration/README.md) |
+| pointing device (trackpad, trackball) のハードウェア統合、input-listener / input-split 設定 | hardware-integration | [references/hardware-integration/README.md](references/hardware-integration/README.md) |
 | Adafruit nRF52 / RP2 / SAMD21-UF2 / STM32 / TinyUF2 bootloader のフラッシュ手順 | hardware-integration/bootloader | [references/hardware-integration/bootloader/README.md](references/hardware-integration/bootloader/README.md) |
 | Backlight / Underglow (RGB) / LED Indicators のハードウェア統合 | hardware-integration/lighting | [references/hardware-integration/lighting/README.md](references/hardware-integration/lighting/README.md) |
 | Container / Native セットアップ、`west build` / `west flash`、IDE 連携 | local-toolchain | [references/local-toolchain/README.md](references/local-toolchain/README.md) |
 | posix-board、pre-commit、テスト実行 | local-toolchain | [references/local-toolchain/README.md](references/local-toolchain/README.md) |
+| ビルドエラー、フラッシュ失敗、接続不良、ハードウェア不調のトラブルシューティング | troubleshooting | [references/troubleshooting/README.md](references/troubleshooting/README.md) |
 | keymap の典型的な書き方・動作サンプルを知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI・ビルド・フラッシュ・デバッグコマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

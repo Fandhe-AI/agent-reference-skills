@@ -1,25 +1,21 @@
 # @eventProperty
 
-リフレクションを「Events」グループに分類するモディファイアタグ。`@group Events` を指定するのと同等。TSDoc 仕様に準拠。
+Modifier tag that classifies a reflection into the "Events" group. Equivalent to specifying `@group Events`. Conforms to the TSDoc specification.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @eventProperty */
 ```
 
-## 詳細説明
+Like `@event`, `@eventProperty` places the documented member into the "Events" group. It is a tag defined by the TSDoc specification and acts as a shorthand for `@group Events`.
 
-`@eventProperty` タグは、`@event` と同様に、ドキュメント対象のメンバーを「Events」グループに配置する。TSDoc 仕様で定義されたタグであり、`@group Events` のショートハンドとして機能する。
-
-`@event` タグと機能的には同等だが、TSDoc 標準に準拠するプロジェクトではこちらを使用することがある。
-
-## コード例
+It is functionally equivalent to `@event`, but projects that follow the TSDoc standard may prefer this tag.
 
 ```typescript
 export class App extends EventEmitter {
     /**
-     * リクエスト受信時に発火するイベント。
+     * Event fired when a request is received.
      * @eventProperty
      */
     static ON_REQUEST = "request";
@@ -31,26 +27,26 @@ import { EventEmitter } from "events";
 
 export class WebSocket extends EventEmitter {
     /**
-     * メッセージ受信イベント。
+     * Message received event.
      * @eventProperty
      */
     static MESSAGE = "message";
 
     /**
-     * 接続クローズイベント。
+     * Connection closed event.
      * @eventProperty
      */
     static CLOSE = "close";
 }
 ```
 
-## 注意点
+## Notes
 
-- TSDoc 仕様に準拠したタグ
-- `@event` と機能的に同等
-- `@group Events` のショートハンドとして動作する
+- A tag defined by the TSDoc specification
+- Functionally equivalent to `@event`
+- Acts as a shorthand for `@group Events`
 
-## 関連
+## Related
 
 - [@event](./event.md)
 - [@group](../tags-block/group.md)

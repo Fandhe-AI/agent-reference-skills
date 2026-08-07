@@ -1,23 +1,19 @@
 # @privateRemarks
 
-生成されるAPIリファレンスドキュメントに含めるべきでないドキュメントテキストを追加するブロックタグ。
+Block tag for adding documentation text that should not be included in the generated API reference documentation.
 
-## 構文
+## Signature / Usage
 
 ```
 @privateRemarks
-内部メモやコメント
+Internal notes or comments
 ```
 
-## 詳細説明
+The `@privateRemarks` tag can be used to include implementation notes or internal comments that are not intended for API consumers. Text inside this tag is excluded from the generated documentation output by default.
 
-`@privateRemarks` タグはAPIコンシューマー向けではない実装メモや内部コメントを含めるために使用できる。このタグ内のテキストは生成されるドキュメント出力からデフォルトで除外される。
+Conforms to the TSDoc specification.
 
-TSDocの仕様に準拠している。
-
-ただし、`--excludeTags` オプションがカスタム設定されている場合は、このタグを手動でリストに追加して除外を維持する必要がある。
-
-## コード例
+If the `--excludeTags` option has been customized, this tag must be added to the list manually to keep it excluded.
 
 ```typescript
 /**
@@ -29,14 +25,14 @@ TSDocの仕様に準拠している。
 export function rand(): number;
 ```
 
-## 注意点
+## Notes
 
-- デフォルトで生成されるドキュメントから除外される
-- `--excludeTags` オプションをカスタマイズしている場合は、手動でこのタグをリストに追加する必要がある
-- 実装の詳細や内部メモの記録に適している
+- Excluded from generated documentation by default
+- If `--excludeTags` has been customized, this tag must be added to the list manually
+- Suitable for recording implementation details and internal notes
 
-## 関連
+## Related
 
-- [@remarks](./remarks.md) -- 公開される詳細説明
-- `--excludeTags` オプション -- タグの除外設定
+- [@remarks](./remarks.md) -- publicly visible detailed description
+- `--excludeTags` option -- tag exclusion configuration
 - [TSDoc @privateRemarks](https://tsdoc.org/pages/tags/privateRemarks/)

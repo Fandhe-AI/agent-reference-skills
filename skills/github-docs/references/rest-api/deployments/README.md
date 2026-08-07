@@ -1,14 +1,6 @@
-# Deployments API
+# Deployments
 
-リポジトリのデプロイメントとデプロイ環境を管理するAPIセクション。
-
-## エンドポイントカテゴリ
-
-| カテゴリ | 説明 |
-|---------|------|
-| [Deployments](deployments.md) | デプロイメントの作成・管理、デプロイステータスの追跡 |
-| [Environments](environments.md) | デプロイ環境の設定・管理（保護ルール、レビュアーなど） |
-
-## 概要
-
-Deployments APIはリポジトリのデプロイメントをプログラム的に管理する。外部のCI/CDシステムと連携して、デプロイの開始・進行状況の追跡・環境の設定を行う。デプロイメントはコミットの特定の ref をデプロイ対象として記録し、ステータスで進行状況を追跡する。
+| Name | Description | Path |
+|------|-------------|------|
+| Deployments API | リポジトリのデプロイメントを作成・管理するAPI。デプロイメントは特定のrefを特定の環境にデプロイするリクエストを表す。 | [deployments.md](./deployments.md) |
+| Environments API | リポジトリのデプロイ環境を設定・管理するAPI。環境には保護ルール、レビュアー、ブランチポリシーなどを設定できる。 | [environments.md](./environments.md) |

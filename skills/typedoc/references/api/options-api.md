@@ -1,21 +1,21 @@
 # Options
 
-TypeDoc と TypeScript のオプション宣言を管理するクラス。型安全なオプションの取得・設定を提供する。
+Class that manages TypeDoc and TypeScript option declarations. Provides type-safe option retrieval and assignment.
 
-## シグネチャ
+## Signature
 
 ```typescript
 class Options {
   constructor();
 
-  // 宣言管理
+  // Declaration management
   addDeclaration<K extends keyof TypeDocOptionMap>(
     declaration: { name: K } & KeyToDeclaration<K>
   ): void;
   getDeclaration(name: string): Readonly<DeclarationOption> | undefined;
   getDeclarations(): Readonly<DeclarationOption>[];
 
-  // 値の操作
+  // Value manipulation
   getValue<K extends keyof TypeDocOptionMap>(name: K): TypeDocOptionValues[K];
   setValue<K extends keyof TypeDocOptionMap>(
     name: K,
@@ -26,11 +26,11 @@ class Options {
   getRawValues(): Readonly<Partial<TypeDocOptionValues>>;
   reset(name?: keyof TypeDocOptionMap): void;
 
-  // リーダー管理
+  // Reader management
   addReader(reader: OptionsReader): void;
   read(logger: Logger, cwd?: string, usedFile?: (path: string) => void): Promise<void>;
 
-  // コンパイラオプション
+  // Compiler options
   getCompilerOptions(logger: Logger): ts.CompilerOptions;
   setCompilerOptions(
     fileNames: readonly string[],
@@ -44,19 +44,19 @@ class Options {
   getFileNames(): readonly string[];
   getProjectReferences(): readonly ts.ProjectReference[];
 
-  // ユーティリティ
+  // Utilities
   getHelp(): string;
   getSimilarOptions(missingName: string): string[];
   copyForPackage(packageDir: string): Options;
   snapshot(): { __optionSnapshot: never };
   restore(snapshot: { __optionSnapshot: never }): void;
 
-  // プロパティ
+  // Properties
   packageDir?: string;
 }
 ```
 
-## 主要メソッド
+## Methods
 
 ### addDeclaration()
 
@@ -66,7 +66,7 @@ addDeclaration<K extends keyof TypeDocOptionMap>(
 ): void
 ```
 
-新しいオプション宣言を追加する。プラグインでカスタムオプションを定義する際に使用する。
+Adds a new option declaration. Used by plugins to define custom options.
 
 ### getValue()
 
@@ -74,7 +74,7 @@ addDeclaration<K extends keyof TypeDocOptionMap>(
 getValue<K extends keyof TypeDocOptionMap>(name: K): TypeDocOptionValues[K]
 ```
 
-指定されたオプションの現在の値を型安全に取得する。
+Retrieves the current value of the given option in a type-safe way.
 
 ### setValue()
 
@@ -86,7 +86,7 @@ setValue<K extends keyof TypeDocOptionMap>(
 ): void
 ```
 
-指定されたオプションの値を設定する。`configPath` はファイルパスの解決に使用される。
+Sets the value of the given option. `configPath` is used to resolve file paths.
 
 ### isSet()
 
@@ -94,7 +94,7 @@ setValue<K extends keyof TypeDocOptionMap>(
 isSet(name: keyof TypeDocOptionMap): boolean
 ```
 
-オプションが明示的に設定されているかどうかを返す（デフォルト値のままでないか）。
+Returns whether the option was explicitly set (as opposed to still holding its default value).
 
 ### getRawValues()
 
@@ -102,7 +102,7 @@ isSet(name: keyof TypeDocOptionMap): boolean
 getRawValues(): Readonly<Partial<TypeDocOptionValues>>
 ```
 
-すべてのオプションの生の値を読み取り専用で返す。
+Returns the raw values of all options, read-only.
 
 ### reset()
 
@@ -110,7 +110,7 @@ getRawValues(): Readonly<Partial<TypeDocOptionValues>>
 reset(name?: keyof TypeDocOptionMap): void
 ```
 
-指定されたオプション（または全オプション）をデフォルト値にリセットする。
+Resets the given option (or all options) to its default value.
 
 ### addReader()
 
@@ -118,7 +118,7 @@ reset(name?: keyof TypeDocOptionMap): void
 addReader(reader: OptionsReader): void
 ```
 
-オプションリーダーを追加する。
+Adds an options reader.
 
 ### read()
 
@@ -126,7 +126,7 @@ addReader(reader: OptionsReader): void
 read(logger: Logger, cwd?: string, usedFile?: (path: string) => void): Promise<void>
 ```
 
-登録されたすべてのリーダーからオプションを読み取る。
+Reads options from all registered readers.
 
 ### getCompilerOptions()
 
@@ -134,7 +134,7 @@ read(logger: Logger, cwd?: string, usedFile?: (path: string) => void): Promise<v
 getCompilerOptions(logger: Logger): ts.CompilerOptions
 ```
 
-TypeScript コンパイラオプションを取得する。
+Retrieves the TypeScript compiler options.
 
 ### snapshot() / restore()
 
@@ -143,9 +143,9 @@ snapshot(): { __optionSnapshot: never }
 restore(snapshot: { __optionSnapshot: never }): void
 ```
 
-オプションの状態をスナップショットとして保存し、後で復元する。パッケージモードでの使用を想定。
+Saves the current options state as a snapshot and restores it later. Intended for use in package mode.
 
-## 主要プロパティ
+## Properties
 
 ### packageDir
 
@@ -153,21 +153,21 @@ restore(snapshot: { __optionSnapshot: never }): void
 packageDir?: string
 ```
 
-パッケージモードでのパッケージディレクトリ。
+The package directory in package mode.
 
-## オプションリーダー
+## Option Readers
 
-オプションは優先度順に読み取られる:
+Options are read in the following priority order:
 
-| リーダー | 優先度 | 説明 |
+| Reader | Priority | Description |
 |---------|-------|------|
-| `ArgumentsReader` (最初) | 0 | CLI 引数 (最初のパス) |
+| `ArgumentsReader` (first) | 0 | CLI arguments (first pass) |
 | `TypeDocReader` | 100 | `typedoc.json` / `typedoc.config.js` |
 | `TSConfigReader` | 200 | `tsconfig.json` |
-| `ArgumentsReader` (最後) | 300 | CLI 引数 (最終パス、上書き) |
-| `PackageJsonReader` | — | `package.json` の `typedocOptions` |
+| `ArgumentsReader` (last) | 300 | CLI arguments (final pass, overrides) |
+| `PackageJsonReader` | — | `typedocOptions` in `package.json` |
 
-### OptionsReader インターフェース
+### OptionsReader Interface
 
 ```typescript
 interface OptionsReader {
@@ -177,34 +177,34 @@ interface OptionsReader {
 }
 ```
 
-## ParameterType 列挙型
+## ParameterType Enum
 
 ```typescript
 enum ParameterType {
-  String,         // 文字列値
-  Path,           // ファイルパス (解決される)
-  Number,         // 数値
-  Boolean,        // 真偽値
-  Map,            // キーと値のマップ
-  Mixed,          // 混合型
-  Array,          // 文字列配列
-  PathArray,      // パス配列
-  ModuleArray,    // モジュール配列
-  GlobArray,      // Glob パターン配列
-  Flags,          // フラグの組み合わせ
-  Object,         // オブジェクト
+  String,         // String value
+  Path,           // File path (resolved)
+  Number,         // Numeric value
+  Boolean,        // Boolean value
+  Map,            // Key/value map
+  Mixed,          // Mixed type
+  Array,          // String array
+  PathArray,      // Path array
+  ModuleArray,    // Module array
+  GlobArray,      // Glob pattern array
+  Flags,          // Combination of flags
+  Object,         // Object
 }
 ```
 
-## コード例
+## Examples
 
-### カスタムオプションの定義
+### Defining a custom option
 
 ```typescript
 import { Application, ParameterType } from "typedoc";
 
 export function load(app: Application) {
-  // 文字列オプション
+  // String option
   app.options.addDeclaration({
     name: "myPluginTitle",
     help: "Title for the custom section",
@@ -212,7 +212,7 @@ export function load(app: Application) {
     defaultValue: "Custom Section",
   });
 
-  // ブールオプション
+  // Boolean option
   app.options.addDeclaration({
     name: "myPluginEnabled",
     help: "Enable the custom plugin feature",
@@ -220,7 +220,7 @@ export function load(app: Application) {
     defaultValue: true,
   });
 
-  // パスオプション
+  // Path option
   app.options.addDeclaration({
     name: "myPluginOutput",
     help: "Output directory for custom files",
@@ -228,7 +228,7 @@ export function load(app: Application) {
     defaultValue: "./custom-output",
   });
 
-  // マップオプション (列挙的な選択肢)
+  // Map option (enum-like choices)
   app.options.addDeclaration({
     name: "myPluginFormat",
     help: "Output format",
@@ -241,7 +241,7 @@ export function load(app: Application) {
     defaultValue: "json",
   });
 
-  // 配列オプション
+  // Array option
   app.options.addDeclaration({
     name: "myPluginExclude",
     help: "Patterns to exclude",
@@ -251,14 +251,14 @@ export function load(app: Application) {
 }
 ```
 
-### オプション値の取得と使用
+### Reading and using option values
 
 ```typescript
 import { Application, Converter } from "typedoc";
 
 export function load(app: Application) {
   app.converter.on(Converter.EVENT_RESOLVE_END, () => {
-    // 型安全に値を取得
+    // Read values in a type-safe way
     const title = app.options.getValue("myPluginTitle");
     const enabled = app.options.getValue("myPluginEnabled");
     const output = app.options.getValue("myPluginOutput");
@@ -268,7 +268,7 @@ export function load(app: Application) {
       app.logger.info(`Output to: ${output}`);
     }
 
-    // オプションが明示的に設定されているか確認
+    // Check whether the option was explicitly configured
     if (app.options.isSet("myPluginTitle")) {
       app.logger.info("Title was explicitly configured");
     }
@@ -276,28 +276,28 @@ export function load(app: Application) {
 }
 ```
 
-### オプションのスナップショット
+### Option snapshotting
 
 ```typescript
-// パッケージモードでの使用例
+// Example usage in package mode
 const snap = app.options.snapshot();
 try {
   app.options.setValue("out", "./package-docs");
-  // パッケージ固有の処理
+  // Package-specific processing
 } finally {
   app.options.restore(snap);
 }
 ```
 
-## 注意点
+## Notes
 
-- オプションは `Application.bootstrap()` または `bootstrapWithPlugins()` 後に凍結される
-- プラグインのカスタムオプションは `load()` 関数内で `addDeclaration()` を使用して宣言する
-- `ParameterType.Path` はファイルパスを自動的に解決する
-- リーダーの優先度により CLI 引数が最終的に他の設定を上書きする
-- `copyForPackage()` はパッケージモードでパッケージごとのオプションコピーを作成する
+- Options are frozen after `Application.bootstrap()` or `bootstrapWithPlugins()`
+- Plugin custom options should be declared with `addDeclaration()` inside the `load()` function
+- `ParameterType.Path` automatically resolves file paths
+- Reader priority means CLI arguments ultimately override all other settings
+- `copyForPackage()` creates a per-package options copy in package mode
 
-## 関連
+## Related
 
 - [Application](./application.md)
-- [プラグイン開発](../development/plugin-development.md)
+- [Plugin Development](../development/plugin-development.md)

@@ -1,24 +1,26 @@
-# AI との連携
+# Working with AI
 
-## Agent Skills
+## Signature / Usage
+
+Agent Skills:
 
 ```bash
 npx skills add vercel/turborepo
 ```
 
-Turborepo のベストプラクティス・パターン・アンチパターンをエージェントに教える。
+Teaches an agent Turborepo's best practices, patterns, and anti-patterns.
 
-## Git Worktrees による並列エージェント実行
+Parallel agent execution with Git worktrees:
 
 ```bash
 turbo run build
 git branch feature-branch && git worktree add ../agent-2-worktree feature-branch
-cd ../agent-2-worktree && turbo run build  # キャッシュが再利用される
+cd ../agent-2-worktree && turbo run build  # Cache is reused
 ```
 
-Turborepo はワークツリー間でローカルキャッシュを自動共有する。
+Turborepo automatically shares the local cache across worktrees.
 
-## Task Descriptions
+Task descriptions:
 
 ```json
 {
@@ -36,20 +38,18 @@ Turborepo はワークツリー間でローカルキャッシュを自動共有�
 }
 ```
 
-AI がタスクの目的を理解しやすくなる。
+Task descriptions make it easier for AI to understand the purpose of a task.
 
-## ターミナルドキュメント検索
-
-AI エージェントがシェルコマンドを実行できる場合、`turbo docs` でバージョン付きドキュメントを直接検索できる:
+Terminal documentation search: if an AI agent can run shell commands, it can search versioned docs directly with `turbo docs`:
 
 ```bash
-turbo docs [クエリ]
+turbo docs [query]
 ```
 
-## 機械可読ドキュメント
+## Options / Props
 
-| 方法 | 説明 |
+| Method | Description |
 |---|---|
-| Markdown ルート | URL 末尾に `.md` を付加（例: `https://turborepo.dev/docs.md`） |
-| サイトマップ | `https://turborepo.dev/sitemap.md` |
-| バージョン指定 | `https://v2-7-6.turborepo.dev/docs` のようにサブドメインで指定 |
+| Markdown route | Append `.md` to the URL (e.g. `https://turborepo.dev/docs.md`) |
+| Sitemap | `https://turborepo.dev/sitemap.md` |
+| Version pinning | Specify via subdomain, e.g. `https://v2-7-6.turborepo.dev/docs` |

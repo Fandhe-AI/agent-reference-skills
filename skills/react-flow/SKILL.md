@@ -22,8 +22,8 @@ skills/react-flow/
   references/
     learn/
       README.md
-      adding-interactivity.md
       accessibility.md
+      adding-interactivity.md
       built-in-components.md
       building-a-flow.md
       computing-flows.md
@@ -31,11 +31,15 @@ skills/react-flow/
       custom-nodes.md
       devtools-and-debugging.md
       edge-labels.md
+      getting-started-with-react-flow-components.md
       handles.md
       hooks-providers.md
       layouting.md
+      mind-map-app-with-react-flow.md
       multiplayer.md
       performance.md
+      react-flow-and-the-web-audio-api.md
+      slide-shows-with-react-flow.md
       ssr-ssg-configuration.md
       state-management.md
       sub-flows.md
@@ -219,6 +223,7 @@ skills/react-flow/
 | 基本概念・用語を理解したい | learn | [references/learn/README.md](references/learn/README.md) |
 | フロー構築・インタラクション・カスタマイズ手順を知りたい | learn | [references/learn/README.md](references/learn/README.md) |
 | カスタムノード / エッジ・レイアウト・SSR を実装したい | learn | [references/learn/README.md](references/learn/README.md) |
+| マインドマップ・スライドショー・Web Audio 連携等のチュートリアルを参照したい | learn | [references/learn/README.md](references/learn/README.md) |
 | エラー対応・バージョンマイグレーションを行いたい | troubleshooting | [references/troubleshooting/README.md](references/troubleshooting/README.md) |
 | アトリビューション（帰属表示）を削除したい | troubleshooting | [references/troubleshooting/README.md](references/troubleshooting/README.md) |
 | ReactFlow, Background, Controls, MiniMap 等コンポーネントの Props を調べたい | components | [references/components/README.md](references/components/README.md) |

@@ -1,10 +1,10 @@
 # One Tap
 
-One Tap プラグインは、Google の One Tap API を使用した1回のインタラクションでの認証を可能にする。自動プロンプト表示とカスタムボタンレンダリングモードの両方をサポートする。
+The One Tap plugin enables single-interaction authentication using Google's One Tap API. It supports both an automatic prompt display and a custom button rendering mode.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -17,11 +17,7 @@ export const auth = betterAuth({
 })
 ```
 
-サーバーオプション:
-- `disableSignUp` (boolean, デフォルト: false): 既存ユーザーのみに認証を制限
-- `clientId` (string, 任意): Google OAuth クライアント ID
-
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -44,34 +40,17 @@ export const authClient = createAuthClient({
 })
 ```
 
-## クライアント設定オプション
-
-| オプション | 型 | デフォルト | 説明 |
-|---|---|---|---|
-| `clientId` | string | 必須 | Google OAuth クライアント ID |
-| `autoSelect` | boolean | false | サインイン済みの場合にアカウントを自動選択 |
-| `cancelOnTapOutside` | boolean | true | 外部タップでプロンプトを閉じる |
-| `uxMode` | string | "popup" | フローモード: "popup" or "redirect" |
-| `context` | string | "signin" | 使用コンテキスト: "signin", "signup", "use" |
-| `additionalOptions` | object | {} | Google Identity Services の追加オプション |
-| `promptOptions.baseDelay` | number | 1000 | リトライ遅延（ミリ秒） |
-| `promptOptions.maxAttempts` | number | 5 | コールバック前の最大プロンプト試行数 |
-| `promptOptions.fedCM` | boolean | true | サインアウト時に FedCM 状態をクリア |
-
-## API メソッド
-
-### プロンプトモード（デフォルト）
+### Prompt mode (default)
 
 ```typescript
 await authClient.oneTap()
 ```
 
-Google One Tap ポップアップを自動表示する。
+Automatically displays the Google One Tap popup.
 
-### ボタンモード
+### Button mode (Vanilla JavaScript)
 
 ```typescript
-// Vanilla JavaScript
 await authClient.oneTap({
     button: {
         container: "#google-signin-button",
@@ -85,7 +64,7 @@ await authClient.oneTap({
 })
 ```
 
-React:
+### Button mode (React)
 
 ```typescript
 function SignInButton() {
@@ -106,23 +85,10 @@ function SignInButton() {
 }
 ```
 
-### ボタン設定オプション
-
-| オプション | 型 | デフォルト | 値 |
-|---|---|---|---|
-| `type` | string | "standard" | "standard", "icon" |
-| `theme` | string | "outline" | "outline", "filled_blue", "filled_black" |
-| `size` | string | "large" | "large", "medium", "small" |
-| `text` | string | "signin_with" | "signin_with", "signup_with", "continue_with", "signin" |
-| `shape` | string | "rectangular" | "rectangular", "pill", "circle", "square" |
-| `logo_alignment` | string | "left" | "left", "center" |
-| `width` | number | undefined | 最大400ピクセル |
-| `locale` | string | undefined | 言語コード（例: "zh_CN"） |
-
-### リダイレクト動作のカスタマイズ
+### Customizing redirect behavior
 
 ```typescript
-// ハードリロード回避
+// Avoid a hard reload
 await authClient.oneTap({
     fetchOptions: {
         onSuccess: () => {
@@ -131,27 +97,63 @@ await authClient.oneTap({
     }
 })
 
-// カスタムコールバック URL
+// Custom callback URL
 await authClient.oneTap({
     callbackURL: "/dashboard"
 })
 ```
 
-### プロンプト非表示の処理
+### Handling prompt dismissal
 
 ```typescript
 await authClient.oneTap({
     onPromptNotification: (notification) => {
         console.warn("Prompt dismissed.", notification)
-        // 代替認証 UI を表示
+        // Show an alternative auth UI
     }
 })
 ```
 
-エクスポネンシャルバックオフで自動リトライ。`maxAttempts` 到達時にコールバックが通知を受け取る。
+Automatically retries with exponential backoff. The callback is notified once `maxAttempts` is reached.
 
-## 注意点
+## Options / Props
 
-- Google Cloud Console で正確な Authorized JavaScript Origins の設定が必要（例: http://localhost:3000, https://example.com）
-- `promptOptions.fedCM` 有効時（デフォルト）、サインアウト時に `navigator.credentials.preventSilentAccess()` が呼ばれる
-- FedCM がアクティブな場合、`cancelOnTapOutside` が動作しない可能性がある（ブラウザが閉じ動作を管理）
+### Server options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `disableSignUp` | boolean | false | Restricts authentication to existing users only |
+| `clientId` | string | - | Google OAuth client ID (optional) |
+
+### Client configuration options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `clientId` | string | required | Google OAuth client ID |
+| `autoSelect` | boolean | false | Auto-select the account when already signed in |
+| `cancelOnTapOutside` | boolean | true | Close the prompt when tapping outside |
+| `uxMode` | string | "popup" | Flow mode: "popup" or "redirect" |
+| `context` | string | "signin" | Usage context: "signin", "signup", "use" |
+| `additionalOptions` | object | {} | Additional Google Identity Services options |
+| `promptOptions.baseDelay` | number | 1000 | Retry delay (milliseconds) |
+| `promptOptions.maxAttempts` | number | 5 | Maximum prompt attempts before the callback fires |
+| `promptOptions.fedCM` | boolean | true | Clear FedCM state on sign-out |
+
+### Button configuration options
+
+| Option | Type | Default | Values |
+|---|---|---|---|
+| `type` | string | "standard" | "standard", "icon" |
+| `theme` | string | "outline" | "outline", "filled_blue", "filled_black" |
+| `size` | string | "large" | "large", "medium", "small" |
+| `text` | string | "signin_with" | "signin_with", "signup_with", "continue_with", "signin" |
+| `shape` | string | "rectangular" | "rectangular", "pill", "circle", "square" |
+| `logo_alignment` | string | "left" | "left", "center" |
+| `width` | number | undefined | up to 400 pixels |
+| `locale` | string | undefined | language code (e.g. "zh_CN") |
+
+## Notes
+
+- Requires accurate Authorized JavaScript Origins configuration in Google Cloud Console (e.g. http://localhost:3000, https://example.com)
+- When `promptOptions.fedCM` is enabled (default), `navigator.credentials.preventSilentAccess()` is called on sign-out
+- When FedCM is active, `cancelOnTapOutside` may not work (the browser manages the close behavior)
