@@ -51,4 +51,3 @@ Codex searches the repository for `AGENTS.md` files and follows the applicable `
 
 - [Codex cloud](../getting-started/cloud.md)
 - [Codex GitHub Action](../security-automation/github-action.md)
-</content>

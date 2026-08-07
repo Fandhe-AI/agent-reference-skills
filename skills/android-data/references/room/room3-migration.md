@@ -76,4 +76,3 @@ val supportDb = roomDatabase.getSupportWrapper()
 - [Migration / Automated Migration Annotations](./migration.md)
 - [Room.databaseBuilder / RoomDatabase.Builder](./room-database-builder.md)
 - [RoomDatabase.Callback / setDriver(SQLiteDriver)](./callback-driver.md)
-</content>

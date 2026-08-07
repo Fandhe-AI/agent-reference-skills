@@ -46,4 +46,3 @@ Linear suggests a repository from issue context; Codex picks the environment tha
 - [Codex cloud](../getting-started/cloud.md)
 - [MCP server configuration](../config/mcp-config.md)
 - [Use Codex in Slack](./slack.md)
-</content>

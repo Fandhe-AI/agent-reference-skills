@@ -234,4 +234,3 @@ TypeDoc will copy `images/architecture.png` and `assets/spec.pdf` to the `media`
 - [Declaration References](./declaration-references.md)
 - [JSDoc Support](./jsdoc-support.md)
 - [Installation & CLI](../getting-started/installation.md)
-</content>

@@ -46,4 +46,3 @@ response = client.responses.create(
 - [Deprecations](./deprecations.md)
 - [Migrate Chat Completions to Responses](./migrate-chat-completions-to-responses.md)
 - [Responses API vs. Chat Completions API](./responses-vs-chat-completions.md)
-</content>

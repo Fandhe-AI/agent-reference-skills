@@ -330,4 +330,3 @@ namespace API {
 - [JSDoc Support](./jsdoc-support.md)
 - [External Documents](./external-documents.md)
 - [Installation & CLI](../getting-started/installation.md)
-</content>

@@ -188,4 +188,3 @@ function getUser(): { name: string } {}
 - [Declaration References](./declaration-references.md)
 - [External Documents](./external-documents.md)
 - [Installation & CLI](../getting-started/installation.md)
-</content>

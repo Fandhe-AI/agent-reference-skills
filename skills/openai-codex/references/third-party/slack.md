@@ -38,4 +38,3 @@ By default Codex posts an answer in the thread, which can include information fr
 
 - [Codex cloud](../getting-started/cloud.md)
 - [Use Codex in Linear](./linear.md)
-</content>
