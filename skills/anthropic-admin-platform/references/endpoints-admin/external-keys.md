@@ -81,4 +81,4 @@ Update: all fields optional and partial (unset fields unchanged). `geo` and `pro
 
 ## Related
 
-- workspaces.md
+- [workspaces.md](./workspaces.md)

@@ -43,5 +43,5 @@ curl https://api.anthropic.com/v1/organizations/rate_limits \
 
 ## Related
 
-- workspaces.md
-- spend-limits.md
+- [workspaces.md](./workspaces.md)
+- [spend-limits.md](./spend-limits.md)

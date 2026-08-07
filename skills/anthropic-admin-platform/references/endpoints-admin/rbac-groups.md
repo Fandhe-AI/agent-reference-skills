@@ -83,6 +83,6 @@ curl https://api.anthropic.com/v1/organizations/rbac_groups \
 
 ## Related
 
-- rbac-roles.md
-- users.md
-- invites.md
+- [rbac-roles.md](./rbac-roles.md)
+- [users.md](./users.md)
+- [invites.md](./invites.md)

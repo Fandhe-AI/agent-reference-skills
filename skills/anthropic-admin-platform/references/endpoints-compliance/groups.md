@@ -41,4 +41,4 @@ curl https://api.anthropic.com/v1/compliance/groups \
 
 ## Related
 
-- organizations.md — organization-level roles and permissions
+- [organizations.md](./organizations.md) — organization-level roles and permissions

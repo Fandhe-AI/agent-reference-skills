@@ -47,5 +47,5 @@ curl https://api.anthropic.com/v1/compliance/organizations \
 
 ## Related
 
-- groups.md — RBAC group directory and membership
-- activities.md — `organization_ids` filter uses the UUIDs listed here
+- [groups.md](./groups.md) — RBAC group directory and membership
+- [activities.md](./activities.md) — `organization_ids` filter uses the UUIDs listed here

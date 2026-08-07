@@ -58,5 +58,5 @@ curl https://api.anthropic.com/v1/organizations/api_keys \
 
 ## Related
 
-- external-keys.md
-- workspaces.md
+- [external-keys.md](./external-keys.md)
+- [workspaces.md](./workspaces.md)

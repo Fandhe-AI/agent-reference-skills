@@ -59,5 +59,5 @@ curl https://api.anthropic.com/v1/compliance/apps/chats \
 
 ## Related
 
-- apps-artifacts.md — artifact versions referenced by chat messages
-- apps-projects.md — projects that group chats
+- [apps-artifacts.md](./apps-artifacts.md) — artifact versions referenced by chat messages
+- [apps-projects.md](./apps-projects.md) — projects that group chats

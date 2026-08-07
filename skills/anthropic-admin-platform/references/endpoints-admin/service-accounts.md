@@ -80,6 +80,6 @@ Mirrors `workspaces.md`'s `POST/GET/DELETE /workspaces/{workspace_id}/service_ac
 
 ## Related
 
-- workspaces.md
-- federation-rules.md
-- federation-issuers.md
+- [workspaces.md](./workspaces.md)
+- [federation-rules.md](./federation-rules.md)
+- [federation-issuers.md](./federation-issuers.md)

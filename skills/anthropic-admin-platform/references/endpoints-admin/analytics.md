@@ -63,7 +63,7 @@ Two families of endpoints:
 
 ## Related
 
-- cost-report.md
-- usage-report.md
-- rbac-groups.md
-- workspaces.md
+- [cost-report.md](./cost-report.md)
+- [usage-report.md](./usage-report.md)
+- [rbac-groups.md](./rbac-groups.md)
+- [workspaces.md](./workspaces.md)

@@ -45,5 +45,5 @@ curl "https://api.anthropic.com/v1/organizations/cost_report?starting_at=2025-08
 
 ## Related
 
-- usage-report.md
-- workspaces.md
+- [usage-report.md](./usage-report.md)
+- [workspaces.md](./workspaces.md)

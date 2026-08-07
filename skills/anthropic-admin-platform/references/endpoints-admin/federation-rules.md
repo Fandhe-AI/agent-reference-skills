@@ -91,6 +91,6 @@ List `limit`/`page` are accepted but have no effect; only explicit per-workspace
 
 ## Related
 
-- federation-issuers.md
-- service-accounts.md
-- workspaces.md
+- [federation-issuers.md](./federation-issuers.md)
+- [service-accounts.md](./service-accounts.md)
+- [workspaces.md](./workspaces.md)

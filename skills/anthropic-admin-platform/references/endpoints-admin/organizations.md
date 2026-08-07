@@ -32,5 +32,5 @@ curl https://api.anthropic.com/v1/organizations/me \
 
 ## Related
 
-- workspaces.md
-- users.md
+- [workspaces.md](./workspaces.md)
+- [users.md](./users.md)

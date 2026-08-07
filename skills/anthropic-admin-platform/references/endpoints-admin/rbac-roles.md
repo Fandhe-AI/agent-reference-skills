@@ -59,4 +59,4 @@ curl https://api.anthropic.com/v1/organizations/rbac_roles \
 
 ## Related
 
-- rbac-groups.md
+- [rbac-groups.md](./rbac-groups.md)

@@ -41,4 +41,4 @@ curl https://api.anthropic.com/v1/compliance/apps/artifacts/$ARTIFACT_VERSION_ID
 
 ## Related
 
-- apps-chats.md — chat messages reference artifacts by `version_id`
+- [apps-chats.md](./apps-chats.md) — chat messages reference artifacts by `version_id`

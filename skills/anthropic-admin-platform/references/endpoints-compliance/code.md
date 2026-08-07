@@ -47,4 +47,4 @@ curl https://api.anthropic.com/v1/compliance/apps/code/artifacts \
 
 ## Related
 
-- apps-artifacts.md — chat Artifacts (distinct resource from Code Artifacts)
+- [apps-artifacts.md](./apps-artifacts.md) — chat Artifacts (distinct resource from Code Artifacts)

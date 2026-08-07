@@ -85,6 +85,6 @@ SpendLimitIncreaseRequest object: `{ id, actor, created_at, period, resolved_at,
 
 ## Related
 
-- workspaces.md
-- rate-limits.md
-- usage-report.md
+- [workspaces.md](./workspaces.md)
+- [rate-limits.md](./rate-limits.md)
+- [usage-report.md](./usage-report.md)

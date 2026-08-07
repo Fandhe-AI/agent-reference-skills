@@ -73,4 +73,4 @@ TunnelCertificate object: `{ id, archived_at, created_at, expires_at, fingerprin
 
 ## Related
 
-- workspaces.md
+- [workspaces.md](./workspaces.md)

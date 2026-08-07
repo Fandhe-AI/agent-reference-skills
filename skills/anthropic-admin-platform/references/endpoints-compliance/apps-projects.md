@@ -53,5 +53,5 @@ curl https://api.anthropic.com/v1/compliance/apps/projects \
 
 ## Related
 
-- apps-chats.md — chats belonging to a project, and file content download
-- organizations.md — `organization_ids` filter and role names referenced by collaborators
+- [apps-chats.md](./apps-chats.md) — chats belonging to a project, and file content download
+- [organizations.md](./organizations.md) — `organization_ids` filter and role names referenced by collaborators

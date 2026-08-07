@@ -67,6 +67,6 @@ curl https://api.anthropic.com/v1/organizations/users \
 
 ## Related
 
-- invites.md
-- workspaces.md
-- rbac-groups.md
+- [invites.md](./invites.md)
+- [workspaces.md](./workspaces.md)
+- [rbac-groups.md](./rbac-groups.md)

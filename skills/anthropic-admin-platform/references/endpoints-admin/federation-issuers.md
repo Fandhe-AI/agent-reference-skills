@@ -69,5 +69,5 @@ Update: same fields, all optional, `issuer_url` replaces (JWKS source repoints f
 
 ## Related
 
-- federation-rules.md
-- service-accounts.md
+- [federation-rules.md](./federation-rules.md)
+- [service-accounts.md](./service-accounts.md)

@@ -77,5 +77,5 @@ curl https://api.anthropic.com/v1/organizations/invites \
 
 ## Related
 
-- users.md
-- rbac-groups.md
+- [users.md](./users.md)
+- [rbac-groups.md](./rbac-groups.md)

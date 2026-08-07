@@ -75,5 +75,5 @@ curl "https://api.anthropic.com/v1/organizations/usage_report/messages?starting_
 
 ## Related
 
-- cost-report.md
-- rate-limits.md
+- [cost-report.md](./cost-report.md)
+- [rate-limits.md](./rate-limits.md)
