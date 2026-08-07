@@ -80,7 +80,7 @@ skills/
     rules/                   ← (任意) 適用ルール
 ```
 
-## スキル一覧（全 90 スキル）
+## スキル一覧（全 98 スキル）
 
 ### Apple プラットフォーム
 
@@ -135,6 +135,21 @@ Jetpack Compose 系の 3 スキル（`android-compose-*`）は `androidx.compose
 | [windows-packaging-publish](skills/windows-packaging-publish/) | パッケージング・公開 — MSIX, パッケージ ID, App Installer / 配置, SignTool / Trusted Signing, Microsoft Store / Partner Center |
 | [windows-interop-modernize](skills/windows-interop-modernize/) | 相互運用・近代化 — Win32 / COM, C++/WinRT, C#/WinRT, XAML Islands, WPF / WinForms 連携, UWP からの移行 |
 | [windows-testing-performance](skills/windows-testing-performance/) | 品質 — 単体テスト / WinAppDriver / WACK, 起動時間 / 仮想化 / プロファイリング, UI オートメーション, DispatcherQueue / スレッド |
+
+### OpenAI プラットフォーム
+
+openai-agents は MCP を消費する側、openai-apps-sdk は MCP サーバーを ChatGPT アプリとして公開する側で棲み分け。
+
+| スキル | 説明 |
+| -------- | ------ |
+| [openai-api-core](skills/openai-api-core/) | OpenAI API — Responses API / structured outputs / streaming / webhooks / 公式 SDK |
+| [openai-agents](skills/openai-agents/) | OpenAI Agents SDK — built-in tools / MCP / handoffs / guardrails / tracing |
+| [openai-realtime-audio](skills/openai-realtime-audio/) | OpenAI Realtime API — WebRTC / WebSocket / SIP, STT / TTS |
+| [openai-images-video](skills/openai-images-video/) | OpenAI 画像・動画生成 — gpt-image / vision / Sora |
+| [openai-evals-tuning](skills/openai-evals-tuning/) | OpenAI Evals・Fine-tuning — Evals / graders / SFT・DPO・RFT |
+| [openai-platform-ops](skills/openai-platform-ops/) | OpenAI 運用・管理 — Administration API / RBAC / WIF / Terraform / production ガイド |
+| [openai-codex](skills/openai-codex/) | OpenAI Codex — CLI / IDE / cloud / AGENTS.md / sandbox / administration / Codex Security |
+| [openai-apps-sdk](skills/openai-apps-sdk/) | OpenAI Apps SDK — ChatGPT plugins / window.openai / registerAppTool / ui:// リソース / MCP 公開側 |
 
 ### フレームワーク / ライブラリ
 
