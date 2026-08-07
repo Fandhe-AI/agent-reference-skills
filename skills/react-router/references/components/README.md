@@ -1,0 +1,17 @@
+# Components
+
+| Name | Description | Path |
+|------|-------------|------|
+| Await | Renders a deferred (unawaited) Promise returned from a loader, providing automatic error handling. Must be wrapped in a `<React.Suspense>` boundary to show a loading fallback. Available in Framework and Data modes; not available in Declarative mode. | [Await.md](./Await.md) |
+| Form | A progressively enhanced HTML `<form>` that submits data to route actions via `fetch`, activating pending states in `useNavigation`. After submission completes, all page data is automatically revalidated. Available in Framework and Data modes; not available in Declarative mode. | [Form.md](./Form.md) |
+| Link | A progressively enhanced `<a href>` wrapper that enables client-side navigation. Supports prefetching, scroll management, view transitions, and relative path resolution. Available in Framework, Data, and Declarative modes. | [Link.md](./Link.md) |
+| Links | Renders all `<link>` tags collected from each route module's `links` export. Must be placed inside the `<head>` of the root document. Framework mode only. | [Links.md](./Links.md) |
+| Meta | Renders all `<meta>` tags collected from each route module's `meta` export. Must be placed inside the `<head>` of the root document. Framework mode only. | [Meta.md](./Meta.md) |
+| Navigate | A component wrapper around `useNavigate` for use in React class components where hooks are not available. Triggers an immediate navigation when rendered. Available in Framework, Data, and Declarative modes. Prefer `useNavigate` over this component when hooks are available. | [Navigate.md](./Navigate.md) |
+| NavLink | A `<Link>` wrapper that automatically applies active/pending CSS classes and `aria-current="page"` based on whether its route is currently active. Supports render-function children and styles for dynamic styling. Available in Framework, Data, and Declarative modes. | [NavLink.md](./NavLink.md) |
+| Outlet | Renders the matching child route element inside a parent route's component. Returns `null` when no child route matches the current URL. Available in Framework, Data, and Declarative modes. | [Outlet.md](./Outlet.md) |
+| PrefetchPageLinks | Renders `<link rel="prefetch">` and `<link rel="modulepreload">` tags for all modules and data of a target page, enabling instant navigation. Used internally by `<Link prefetch>` but can be rendered standalone. Framework mode only. | [PrefetchPageLinks.md](./PrefetchPageLinks.md) |
+| Route | Configures an element to render when a pattern matches the current location. Must be rendered within a `<Routes>` element. Available in Framework, Data, and Declarative modes. | [Route.md](./Route.md) |
+| Routes | Renders a branch of `<Route>` elements that best matches the current location, and renders only the first matching `<Route>`. Available in Framework, Data, and Declarative modes. | [Routes.md](./Routes.md) |
+| ScrollRestoration | Emulates browser scroll restoration on location changes and renders an inline `<script>` to prevent scroll flash. Should be rendered once, right before `<Scripts>`. Available in Framework and Data modes; not available in Declarative mode. | [ScrollRestoration.md](./ScrollRestoration.md) |
+| Scripts | Renders the client-side JavaScript runtime of the app. Must be placed inside `<body>`. Can be omitted to ship a JavaScript-free, traditional web app when server-rendering. Framework mode only. | [Scripts.md](./Scripts.md) |
