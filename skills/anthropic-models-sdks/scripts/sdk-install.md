@@ -119,7 +119,7 @@ message = anthropic.messages.create(
 )
 ```
 
-## C#
+## C# (.NET)
 
 ```bash
 dotnet add package Anthropic
