@@ -80,7 +80,7 @@ skills/
     rules/                   ← (任意) 適用ルール
 ```
 
-## スキル一覧（全 98 スキル）
+## スキル一覧（全 110 スキル）
 
 ### Apple プラットフォーム
 
@@ -135,6 +135,25 @@ Jetpack Compose 系の 3 スキル（`android-compose-*`）は `androidx.compose
 | [windows-packaging-publish](skills/windows-packaging-publish/) | パッケージング・公開 — MSIX, パッケージ ID, App Installer / 配置, SignTool / Trusted Signing, Microsoft Store / Partner Center |
 | [windows-interop-modernize](skills/windows-interop-modernize/) | 相互運用・近代化 — Win32 / COM, C++/WinRT, C#/WinRT, XAML Islands, WPF / WinForms 連携, UWP からの移行 |
 | [windows-testing-performance](skills/windows-testing-performance/) | 品質 — 単体テスト / WinAppDriver / WACK, 起動時間 / 仮想化 / プロファイリング, UI オートメーション, DispatcherQueue / スレッド |
+
+### Anthropic プラットフォーム
+
+Claude Code 系 6 スキルは code.claude.com、Claude API 系 6 スキルは platform.claude.com が出典。「Skills」「MCP」「Agent (SDK)」は各スキルで別概念のため統合していない。
+
+| スキル | 説明 |
+| -------- | ------ |
+| [anthropic-claude-code](skills/anthropic-claude-code/) | Claude Code CLI — 基礎, settings.json, CLAUDE.md / メモリ, 環境変数, トラブルシューティング |
+| [anthropic-claude-code-surfaces](skills/anthropic-claude-code-surfaces/) | Claude Code サーフェス — Desktop (Mac / Windows / Linux), VS Code / JetBrains 拡張, web / mobile |
+| [anthropic-claude-code-extend](skills/anthropic-claude-code-extend/) | Claude Code 拡張 — Agent Skills (SKILL.md), subagents, hooks, MCP, plugins, routines |
+| [anthropic-claude-code-admin](skills/anthropic-claude-code-admin/) | Claude Code 管理 — permissions, sandboxing, enterprise 設定, analytics / OpenTelemetry |
+| [anthropic-claude-code-deploy](skills/anthropic-claude-code-deploy/) | Claude Code デプロイ — Bedrock / Vertex / Foundry 経由, apps gateway, LLM gateway, GitHub Actions / GitLab CI/CD, headless / devcontainer |
+| [anthropic-agent-sdk](skills/anthropic-agent-sdk/) | Claude Agent SDK — TypeScript / Python, query, カスタムツール, MCP, subagents, sessions |
+| [anthropic-api-core](skills/anthropic-api-core/) | Claude API — Messages API, streaming, batches, files, structured outputs, prompt caching |
+| [anthropic-api-tools-mcp](skills/anthropic-api-tools-mcp/) | Claude API ツール — tool use, server tools (web search / code execution / computer use), Skills API, MCP connector |
+| [anthropic-managed-agents](skills/anthropic-managed-agents/) | Claude Managed Agents (beta) — agents / sessions, environments / vaults, deployments / webhooks / dreams |
+| [anthropic-admin-platform](skills/anthropic-admin-platform/) | Claude API 管理 — Admin API, Compliance API, organization / workspace / API キー管理 |
+| [anthropic-prompt-eval](skills/anthropic-prompt-eval/) | Claude プロンプト・評価 — prompt engineering, モデル別プロンプティング, evals / grading, guardrails, ユースケース |
+| [anthropic-models-sdks](skills/anthropic-models-sdks/) | Claude モデル・SDK — モデル選択 / model ID, pricing / deprecation, SDK 7 言語, Claude API 用 CLI (ant) |
 
 ### OpenAI プラットフォーム
 
