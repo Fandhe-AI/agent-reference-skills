@@ -1,13 +1,6 @@
 # Vercel
 
-## Credentials
-
-- `VERCEL_CLIENT_ID`
-- `VERCEL_CLIENT_SECRET`
-
-Obtain by creating a Vercel App in the [Vercel Dashboard](https://vercel.com/dashboard).
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -22,8 +15,6 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
-
 ```typescript
 import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
@@ -35,23 +26,7 @@ const signIn = async () => {
 }
 ```
 
-## リダイレクト URL
-
-- **Local Development**: `http://localhost:3000/api/auth/callback/vercel`
-- **Production**: Set to your application's URL
-- Adjust the redirect path if you've customized your auth route base path
-
-## プロバイダー固有の設定・注意点
-
-### Available Scopes
-
-Vercel supports these OpenID Connect scopes:
-- `openid` (default)
-- `email`
-- `profile`
-- `offline_access`
-
-Scopes are configured at the Vercel App level. Optional scope parameter can request a subset:
+Request a subset of scopes:
 
 ```typescript
 vercel: {
@@ -61,6 +36,20 @@ vercel: {
 }
 ```
 
-### Security Note
+## Options / Props
 
-Vercel requires PKCE (Proof Key for Code Exchange) for enhanced security -- this is automatically handled by Better Auth.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `clientId` | string | — | `VERCEL_CLIENT_ID`, obtained by creating a Vercel App in the [Vercel Dashboard](https://vercel.com/dashboard) |
+| `clientSecret` | string | — | `VERCEL_CLIENT_SECRET`, obtained by creating a Vercel App in the [Vercel Dashboard](https://vercel.com/dashboard) |
+| `scope` | string[] | Vercel App-configured | Supported values: `openid` (default), `email`, `profile`, `offline_access` |
+
+## Notes
+
+- Redirect URL — local development: `http://localhost:3000/api/auth/callback/vercel`; production: set to your application's URL. Adjust the redirect path if you've customized your auth route base path
+- Scopes are configured at the Vercel App level
+- Vercel requires PKCE (Proof Key for Code Exchange) for enhanced security; this is automatically handled by Better Auth
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

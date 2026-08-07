@@ -1,8 +1,10 @@
-# タスクのスキップ
+# Skipping Tasks
 
-キャッシュヒットを超えた最適化として、コード変更がないワークスペースの CI タスクを完全にスキップする。
+## Signature / Usage
 
-## 主要コマンド
+Beyond cache hits, this optimization fully skips CI tasks for workspaces with no code changes.
+
+Main commands:
 
 ```bash
 turbo query affected --packages web
@@ -10,19 +12,13 @@ turbo query affected --tasks test --packages web
 turbo query affected --packages web --base main --head HEAD
 ```
 
-## --exit-code フラグ
-
-| 戻り値 | 意味 |
-|---|---|
-| `0` | 影響なし（スキップ可能） |
-| `1` | 影響あり（タスク実行が必要） |
-| `2` | エラー |
+`--exit-code` flag:
 
 ```bash
 turbo query affected --packages web --exit-code
 ```
 
-## シェルスクリプトでの使用例
+Shell script example:
 
 ```bash
 #!/bin/bash
@@ -35,14 +31,18 @@ fi
 turbo run test --filter=web
 ```
 
-## Git 履歴の注意点
+## Options / Props
 
-シャロークローンでは全パッケージが変更済みとして扱われる場合がある。適切な履歴取得には以下を推奨:
+| Exit code | Meaning |
+|---|---|
+| `0` | No impact (safe to skip) |
+| `1` | Impacted (task run required) |
+| `2` | Error |
 
-```bash
-git fetch --filter=blob:none --depth=0
-```
+## Notes
 
-## 重要
-
-`turbo-ignore` は非推奨。`turbo query affected` への移行を推奨。
+- Shallow clones may cause all packages to be treated as changed. For proper history retrieval, run:
+  ```bash
+  git fetch --filter=blob:none --depth=0
+  ```
+- `turbo-ignore` is deprecated; migrate to `turbo query affected`.

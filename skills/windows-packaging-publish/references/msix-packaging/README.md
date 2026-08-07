@@ -1,26 +1,29 @@
 # MSIX Packaging
 
 | Name | Description | Path |
-| --- | --- | --- |
-| App Streaming Install | Lets users launch apps while remaining files download in the background | [app-streaming-install.md](./app-streaming-install.md) |
-| Asset Packages and Flat Bundles | Centralizes architecture/language/scale-agnostic files to remove duplication across packages | [asset-packages.md](./asset-packages.md) |
-| Create a Package Support Framework Fixup | Author a new Package Support Framework fixup for a compatibility issue | [create-psf-fixup.md](./create-psf-fixup.md) |
-| Differential (Delta) Package Updates | Package updates only download blocks that changed rather than the whole package | [differential-package-updates.md](./differential-package-updates.md) |
-| Framework Packages | MSIX packages that other packages declare as dependencies to share common binaries/resources | [framework-packages.md](./framework-packages.md) |
-| makeappx.exe (Command-Line Packaging) | `MakeAppx.exe` creates app packages and bundles from command line | [makeappx-cli.md](./makeappx-cli.md) |
-| Modification Packages | MSIX packages that store customizations to overlay onto a main app without repackaging | [modification-packages.md](./modification-packages.md) |
-| MSIX App Attach | Delivers MSIX applications by mounting a disk image rather than installing directly | [msix-app-attach.md](./msix-app-attach.md) |
-| MSIX Containerization Overview | AppContainer/full-trust execution model, virtual file system and registry isolation | [msix-containerization-overview.md](./msix-containerization-overview.md) |
-| What is MSIX? | MSIX is the modern Windows app packaging format for reliable install/uninstall and updates | [msix-overview.md](./msix-overview.md) |
-| MSIX Packaging Tool | Converts existing desktop installer to MSIX via UI or command line without source code | [msix-packaging-tool.md](./msix-packaging-tool.md) |
-| Optional Packages and Related Sets | Optional packages contain DLC/extension content that integrates with a main package | [optional-packages.md](./optional-packages.md) |
-| Package Asset Requirements (Icons, Tiles, Logos) | Windows displays app assets at multiple pixel sizes and scale factors | [package-asset-requirements.md](./package-asset-requirements.md) |
-| Package Bundles and Architecture | MSIX bundles package multiple architecture/language/scale packages into one distributable | [package-bundles-architecture.md](./package-bundles-architecture.md) |
-| Package Extensions How-To Guide | Predefined manifest extensions let packaged apps integrate with Windows | [package-extensions-guide.md](./package-extensions-guide.md) |
-| Package Manifest Schema (AppxManifest.xml) | XML document containing info for deploy, display, update: identity, dependencies, capabilities | [package-manifest-schema.md](./package-manifest-schema.md) |
-| MSIX Package Structure | Every MSIX contains app payload plus three core system files for deploy/verify/update | [package-structure.md](./package-structure.md) |
-| Package Support Framework (PSF) | Open-source kit that applies runtime fixes to desktop apps to run correctly in MSIX container | [package-support-framework.md](./package-support-framework.md) |
-| Resource Packages | Segments language/display-scale assets into separate packages Windows downloads by configuration | [resource-packages.md](./resource-packages.md) |
-| Single-Project MSIX Packaging | Builds a WinUI 3 desktop app directly into an MSIX package without a separate packaging project | [single-project-msix.md](./single-project-msix.md) |
-| Unsigned MSIX Package (Local Testing) | Since Windows 11, MSIX packages can be installed unsigned for faster local iteration | [unsigned-package.md](./unsigned-package.md) |
-| Packaging with the Windows Application Packaging Project (Visual Studio) | Use Visual Studio's Windows Application Packaging Project to generate MSIX packages | [vs-packaging-project.md](./vs-packaging-project.md) |
+|------|-------------|------|
+| App Streaming Install | Download app's essential files first for immediate launch | [app-streaming-install.md](./app-streaming-install.md) |
+| App-V vs. MSIX Feature Comparison | Feature comparison to choose between App-V and MSIX | [appv-vs-msix-comparison.md](./appv-vs-msix-comparison.md) |
+| Asset Packages and Flat Bundles | Centralize architecture/language/scale-agnostic files… | [asset-packages.md](./asset-packages.md) |
+| Create a Package Support Framework Fixup | Author custom runtime API replacement for MSIX… | [create-psf-fixup.md](./create-psf-fixup.md) |
+| Differential (Delta) Package Updates | Download only changed 64 KB blocks on app update | [differential-package-updates.md](./differential-package-updates.md) |
+| Framework Packages | Shared MSIX package used as dependency by other… | [framework-packages.md](./framework-packages.md) |
+| makeappx.exe (Command-Line Packaging) | Command-line tool to create/sign MSIX packages… | [makeappx-cli.md](./makeappx-cli.md) |
+| Modification Packages | MSIX overlay for app customization without repack… | [modification-packages.md](./modification-packages.md) |
+| MSIX App Attach | Deliver MSIX apps via disk image mount to VMs | [msix-app-attach.md](./msix-app-attach.md) |
+| MSIX Containerization Overview | OS-level app isolation with virtual file system… | [msix-containerization-overview.md](./msix-containerization-overview.md) |
+| What is MSIX? | Modern Windows app packaging format with clean… | [msix-overview.md](./msix-overview.md) |
+| MSIX Packaging Tool | Convert existing desktop installers to MSIX… | [msix-packaging-tool.md](./msix-packaging-tool.md) |
+| MSIX SDK | Cross-platform library to create/verify MSIX… | [msix-sdk.md](./msix-sdk.md) |
+| MSIX Toolkit | Community-driven scripts and tools for MSIX… | [msix-toolkit.md](./msix-toolkit.md) |
+| Optional Packages and Related Sets | Downloadable content (DLC) or split large apps | [optional-packages.md](./optional-packages.md) |
+| Package Asset Requirements (Icons, Tiles, Logos) | Icon and tile asset specifications by scale factor | [package-asset-requirements.md](./package-asset-requirements.md) |
+| Package Bundles and Architecture | Bundle multiple architecture packages into single… | [package-bundles-architecture.md](./package-bundles-architecture.md) |
+| Package Extensions How-To Guide | Manifest extensions for firewall, file handlers…… | [package-extensions-guide.md](./package-extensions-guide.md) |
+| Package Manifest Schema (AppxManifest.xml) | XML package identity, dependencies, capabilities | [package-manifest-schema.md](./package-manifest-schema.md) |
+| MSIX Package Structure | Package format with metadata and signature files | [package-structure.md](./package-structure.md) |
+| Package Support Framework (PSF) | Open-source runtime fixes for MSIX container… | [package-support-framework.md](./package-support-framework.md) |
+| Resource Packages | Language/scale-specific assets downloaded per… | [resource-packages.md](./resource-packages.md) |
+| Single-Project MSIX Packaging | WinUI 3 apps build directly to MSIX without… | [single-project-msix.md](./single-project-msix.md) |
+| Unsigned MSIX Package (Local Testing) | Install unsigned MSIX packages in Windows 11 | [unsigned-package.md](./unsigned-package.md) |
+| Packaging with the Windows Application Packaging Project (Visual Studio) | Visual Studio project type to generate MSIX… | [vs-packaging-project.md](./vs-packaging-project.md) |

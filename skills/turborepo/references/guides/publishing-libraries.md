@@ -1,18 +1,20 @@
-# ライブラリの公開
+# Publishing Libraries
 
-## ビルド設定（tsup）
+## Signature / Usage
+
+Build configuration (tsup):
 
 ```json
 { "scripts": { "build": "tsup src/index.ts --format cjs,esm --dts" } }
 ```
 
-## キャッシュ設定
+Cache configuration:
 
 ```json
 { "tasks": { "build": { "outputs": ["dist/**"] } } }
 ```
 
-## パッケージエントリーポイント
+Package entry points:
 
 ```json
 {
@@ -22,13 +24,7 @@
 }
 ```
 
-## バージョン管理と公開（Changesets）
-
-| コマンド | 説明 |
-|---|---|
-| `changeset` | 新しい changeset を追加 |
-| `changeset version` | 新しいバージョンを作成 |
-| `changeset publish` | npm に公開 |
+Versioning and publishing (Changesets):
 
 ```json
 {
@@ -38,9 +34,15 @@
 }
 ```
 
-スクリプト名を `publish` ではなく `publish-packages` にして npm ビルトインとの競合を防ぐ。
+## Options / Props
 
-## 代替ツール
+| Command | Description |
+|---|---|
+| `changeset` | Add a new changeset |
+| `changeset version` | Create a new version |
+| `changeset publish` | Publish to npm |
 
-- intuit/auto — PR ラベルに基づいたリリース生成
-- microsoft/beachball — セマンティックバージョン管理
+## Notes
+
+- Name the script `publish-packages` rather than `publish` to avoid colliding with the npm built-in command.
+- Alternative tools: `intuit/auto` (release generation from PR labels), `microsoft/beachball` (semantic version management).

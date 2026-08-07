@@ -1,12 +1,12 @@
 # Test Utils
 
-Test Utils プラグインは、Better Auth の統合テストおよび E2E テスト用の包括的なテストツールキットを提供する。テストデータ作成用ファクトリー、DB ヘルパー、認証ヘルパー、OTP キャプチャ機能を含む。
+The Test Utils plugin provides a comprehensive testing toolkit for Better Auth integration and E2E tests. It includes factories for test data, DB helpers, auth helpers, and an OTP capture feature.
 
-**重要**: テスト環境専用。本番環境には絶対にデプロイしないこと。
+**Important**: for test environments only. Never deploy to production.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -19,18 +19,14 @@ export const auth = betterAuth({
 })
 ```
 
-### テストヘルパーへのアクセス
+### Accessing test helpers
 
 ```typescript
 const ctx = await auth.$context
 const test = ctx.test
 ```
 
-## API メソッド
-
-### ファクトリー（DB に保存されない）
-
-**ユーザー作成**
+### Factory (not persisted to DB): create user
 
 ```typescript
 const user = test.createUser()
@@ -43,7 +39,7 @@ const user = test.createUser({
 })
 ```
 
-**組織作成（organization プラグイン必要）**
+### Factory (not persisted to DB): create organization (requires the organization plugin)
 
 ```typescript
 const org = test.createOrganization({
@@ -52,22 +48,20 @@ const org = test.createOrganization({
 })
 ```
 
-### DB ヘルパー
-
-**ユーザー保存**
+### DB helper: save user
 
 ```typescript
 const user = test.createUser({ email: "test@example.com" })
 const savedUser = await test.saveUser(user)
 ```
 
-**ユーザー削除**
+### DB helper: delete user
 
 ```typescript
 await test.deleteUser(user.id)
 ```
 
-**組織保存/削除**
+### DB helper: save/delete organization
 
 ```typescript
 const org = test.createOrganization({ name: "Test Org" })
@@ -75,7 +69,7 @@ const savedOrg = await test.saveOrganization(org)
 await test.deleteOrganization(org.id)
 ```
 
-**メンバー追加**
+### DB helper: add member
 
 ```typescript
 const member = await test.addMember({
@@ -85,22 +79,20 @@ const member = await test.addMember({
 })
 ```
 
-### 認証ヘルパー
-
-**ログイン**
+### Auth helper: log in
 
 ```typescript
 const { session, user, headers, cookies, token } = await test.login({
     userId: user.id
 })
-// session - セッションオブジェクト
-// user - ユーザーオブジェクト
-// headers - セッション Cookie 付きの Headers オブジェクト
-// cookies - Cookie 配列（Playwright/Puppeteer 用）
-// token - セッショントークン文字列
+// session - session object
+// user - user object
+// headers - a Headers object with the session cookie attached
+// cookies - an array of cookies (for Playwright/Puppeteer)
+// token - the session token string
 ```
 
-**認証ヘッダー取得**
+### Auth helper: get auth headers
 
 ```typescript
 const headers = await test.getAuthHeaders({ userId: user.id })
@@ -109,12 +101,12 @@ const session = await auth.api.getSession({ headers })
 const response = await fetch("/api/protected", { headers })
 ```
 
-**Cookie 取得**
+### Auth helper: get cookies
 
 ```typescript
 const cookies = await test.getCookies({
     userId: user.id,
-    domain: "localhost"  // 任意、デフォルトは baseURL ドメイン
+    domain: "localhost"  // optional, defaults to the baseURL domain
 })
 
 // Playwright
@@ -126,13 +118,11 @@ for (const cookie of cookies) {
 }
 ```
 
-Cookie オブジェクト構造: `name`, `value`, `domain`, `path`, `httpOnly`, `secure`, `sameSite`
+Cookie object shape: `name`, `value`, `domain`, `path`, `httpOnly`, `secure`, `sameSite`
 
-### OTP キャプチャ
+### OTP capture: setup (Email OTP integration)
 
-OTP キャプチャはパッシブ。生成された OTP のコピーを保存し、送信を妨げない。
-
-**セットアップ（Email OTP 連携）**
+OTP capture is passive. It stores a copy of the generated OTP without interfering with delivery.
 
 ```typescript
 export const auth = betterAuth({
@@ -140,14 +130,14 @@ export const auth = betterAuth({
         testUtils({ captureOTP: true }),
         emailOTP({
             async sendVerificationOTP({ email, otp }) {
-                // メール送信ロジック
+                // Email-sending logic
             }
         })
     ]
 })
 ```
 
-**OTP 取得**
+### OTP capture: get OTP
 
 ```typescript
 await auth.api.sendVerificationOTP({
@@ -158,21 +148,13 @@ const otp = test.getOTP("user@example.com")
 // "123456"
 ```
 
-**OTP クリア**
+### OTP capture: clear OTPs
 
 ```typescript
 test.clearOTPs()
 ```
 
-## 設定オプション
-
-| オプション | 型 | デフォルト | 説明 |
-|---|---|---|---|
-| `captureOTP` | boolean | `false` | テスト用 OTP キャプチャを有効化 |
-
-## テスト例
-
-### Vitest 統合テスト
+### Test example (Vitest integration test)
 
 ```typescript
 import { describe, it, expect, beforeAll } from "vitest"
@@ -199,7 +181,7 @@ describe("protected route", () => {
 })
 ```
 
-### Playwright E2E テスト
+### Test example (Playwright E2E test)
 
 ```typescript
 import { test, expect } from "@playwright/test"
@@ -222,9 +204,15 @@ test("dashboard shows user name", async ({ context, page }) => {
 })
 ```
 
-## 注意点
+## Options / Props
 
-- テスト環境専用。本番ビルドに含めないこと
-- 各テストは作成したデータをクリーンアップしてテスト汚染を防ぐべき
-- OTP キャプチャ機能は本番で有効にしないこと
-- テストヘルパーで作成されたトークンはテスト環境でのみ有効
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `captureOTP` | boolean | `false` | Enables OTP capture for testing |
+
+## Notes
+
+- For test environments only. Do not include in production builds
+- Each test should clean up the data it created to avoid test pollution
+- Do not enable the OTP capture feature in production
+- Tokens created by test helpers are valid only in the test environment

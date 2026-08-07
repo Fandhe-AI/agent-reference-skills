@@ -29,6 +29,6 @@ iOS 8.0+, iPadOS 8.0+, macOS 13.0+, watchOS 2.0+, visionOS 1.0+. Concrete subcla
 
 ## Related
 
-- [hkobjecttype.md](./hkobjecttype.md)
-- [hkquantitytype.md](./hkquantitytype.md)
-- [hkquantitysample.md](./hkquantitysample.md)
+- [HKObjectType](./hkobjecttype.md)
+- [HKQuantityType](./hkquantitytype.md)
+- [HKQuantitySample](./hkquantitysample.md)

@@ -2,7 +2,7 @@
 
 Supabase Auth から Better Auth へ移行するためのガイド。
 
-## 主な移行手順
+## Signature / Usage
 
 1. **Better Auth のセットアップ**: インストールして PostgreSQL 接続文字列で DB に接続する
 2. **設定**: メール/パスワード認証・ソーシャルプロバイダーを設定し、anonymous や phone-number 等のプラグインを追加する
@@ -11,7 +11,7 @@ Supabase Auth から Better Auth へ移行するためのガイド。
 5. **パスワードアルゴリズムの更新**: Supabase と同じ bcrypt ハッシュを使用するよう設定する
 6. **コードの更新**: Supabase API コールを Better Auth 相当に置き換える（例: `supabase.auth.signUp` → `authClient.signUp.email`）
 
-## API コール対応表
+### API コール対応表
 
 | Supabase | Better Auth |
 |---|---|
@@ -19,7 +19,7 @@ Supabase Auth から Better Auth へ移行するためのガイド。
 | `supabase.auth.signInWithPassword()` | `authClient.signIn.email()` |
 | `supabase.auth.getSession()` | `authClient.getSession()` |
 
-## 考慮事項
+## Notes
 
 - SSO 移行は Enterprise SAML プロバイダーの IdP 設定更新が別途必要
 - 移行により有効なセッションがすべて無効化される
@@ -27,5 +27,5 @@ Supabase Auth から Better Auth へ移行するためのガイド。
 
 ## Related
 
-- [auth0-migration.md](./auth0-migration.md)
-- [clerk-migration.md](./clerk-migration.md)
+- [Migrating from Auth0](./auth0-migration.md)
+- [Migrating from Clerk](./clerk-migration.md)

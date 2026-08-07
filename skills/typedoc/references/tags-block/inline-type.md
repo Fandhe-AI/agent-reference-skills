@@ -1,45 +1,41 @@
 # @inline / @inlineType / @preventInline
 
-型エイリアスやインターフェースの変換時のインライン化を制御するタグ群。このページではブロックタグの `@inlineType`、`@preventInline` およびモディファイアタグの `@inline` を扱う。
+Tags controlling inlining of type aliases and interfaces when rendered. This page covers the block tags `@inlineType`, `@preventInline`, and the modifier tag `@inline`.
 
-## 構文
+## Signature / Usage
 
 ```
 @inline
 ```
 
 ```
-@inlineType 型名
+@inlineType Type Name
 ```
 
 ```
-@preventInline 型名
+@preventInline Type Name
 ```
 
-## 詳細説明
+### @inline (modifier tag)
 
-### @inline（モディファイアタグ）
+When applied to a type alias or interface, TypeDoc expands and inlines the type wherever it is referenced (instead of creating a reference to the type).
 
-型エイリアスやインターフェースに適用すると、参照される場所でTypeDocが型を展開してインライン表示する（型への参照を作成する代わりに）。
+**Limitations**:
+- Inlining may not be possible in certain cases, such as type references with type parameters
+- May produce incorrect results for types other than object literals, unions, intersections, and literal types
+- Applying this tag to a commonly used type can significantly increase documentation size
 
-**制限事項**:
-- 型パラメータを持つ型参照など、特定のケースではインライン化できない場合がある
-- オブジェクトリテラル、ユニオン型、インターセクション型、リテラル型以外の型では正しくない結果を生成する可能性がある
-- 一般的に使用される型にこのタグを使用すると、ドキュメントサイズが大幅に増加する可能性がある
+### @inlineType (block tag)
 
-### @inlineType（ブロックタグ）
+Provides selective inlining for a specific reference. Lets you inline a type at a specific location without applying inlining globally. Specify the type name without type arguments in the tag.
 
-特定の参照に対して選択的にインライン化を提供する。グローバルにインライン化を適用せずに、特定の場所で型をインライン化できる。タグには型引数なしの型名を指定する。
+### @preventInline (block tag)
 
-### @preventInline（ブロックタグ）
+Prevents inlining of a type marked with `@inline`, creating a named reference instead.
 
-`@inline` でマークされた型のインライン化を防止し、代わりに名前付き参照を作成する。
+**Important note**: if TypeScript itself does not generate a named reference for the underlying type structure, this tag cannot prevent expansion.
 
-**重要な注意**: TypeScript自体が基盤となる型構造で名前付き参照を生成しない場合、このタグは展開を防止できない。
-
-## コード例
-
-### @inline の使用
+### Using @inline
 
 ```typescript
 /**
@@ -54,7 +50,7 @@ export type HelloProps = {
 export function Hello(props: HelloProps): JSX.Element;
 ```
 
-### @inlineType の使用
+### Using @inlineType
 
 ```typescript
 /**
@@ -63,7 +59,7 @@ export function Hello(props: HelloProps): JSX.Element;
 export function Hello(props: HelloProps): JSX.Element;
 ```
 
-### @preventInline の使用
+### Using @preventInline
 
 ```typescript
 /**
@@ -72,13 +68,13 @@ export function Hello(props: HelloProps): JSX.Element;
 export function Hello(props: HelloProps): JSX.Element;
 ```
 
-## 注意点
+## Notes
 
-- `@inline` はモディファイアタグ、`@inlineType` と `@preventInline` はブロックタグ
-- `@inline` を頻繁に使用される型に適用するとドキュメントサイズが大幅に増加する
-- TypeScriptが名前付き参照を生成しない場合、`@preventInline` は効果がない
-- オブジェクトリテラル、ユニオン型、インターセクション型、リテラル型以外では不正確な結果になる可能性がある
+- `@inline` is a modifier tag; `@inlineType` and `@preventInline` are block tags
+- Applying `@inline` to a frequently used type significantly increases documentation size
+- `@preventInline` has no effect if TypeScript does not generate a named reference
+- May produce inaccurate results for types other than object literals, unions, intersections, and literal types
 
-## 関連
+## Related
 
-- [@expand](./expand.md) -- 型の展開制御（@expand, @expandType, @preventExpand）
+- [@expand](./expand.md) -- controlling type expansion (@expand, @expandType, @preventExpand)

@@ -1,11 +1,9 @@
 # Python API Modules
 
-Standalone Blender Python API modules — independent of `bpy` operators and callable from scripts, add-ons, or the Python console.
-
 | Name | Description | Path |
 |------|-------------|------|
-| bmesh | Internal mesh editing API: BMVert / BMEdge / BMFace operations, bmesh.ops (extrude, bevel, bisect, …), UV / vertex-color layers | [bmesh.md](./bmesh.md) |
-| mathutils | Geometric math types: Vector, Matrix, Quaternion, Euler, Color, noise | [mathutils.md](./mathutils.md) |
-| gpu / gpu_extras | Custom GPU shaders, GPUBatch / GPUVertBuf, viewport overlay drawing, draw_texture_2d | [gpu.md](./gpu.md) |
-| bpy_extras | I/O operator mixins (ImportHelper / ExportHelper), object_data_add, view3d coordinate conversion | [bpy-extras.md](./bpy-extras.md) |
-| bl_math / blf / aud / imbuf / idprop | Scalar math (clamp, lerp, smoothstep), text drawing, audio playback, image buffers, custom properties | [other-modules.md](./other-modules.md) |
+| bpy_extras | Utility modules that extend `bpy` with common patterns for I/O operators, object creation, 3D viewport coordinate conversion, and other tasks. | [bpy-extras.md](./bpy-extras.md) |
+| bmesh | Provides access to Blender's internal mesh editing API with geometry connectivity data and mesh editing operations such as split, separate, collapse, and dissolve. | [bmesh.md](./bmesh.md) |
+| gpu / gpu_extras | Provides Python wrappers for Blender's GPU implementation, enabling custom vertex/fragment shaders, vertex buffer objects, index buffers, batches, and viewport overlay drawing via draw handlers. | [gpu.md](./gpu.md) |
+| mathutils | Provides geometric math types — `Vector`, `Matrix`, `Quaternion`, `Euler`, `Color` — and the `mathutils.noise` submodule for procedural noise. | [mathutils.md](./mathutils.md) |
+| Other Standalone Modules | Covers `bl_math` (scalar math), `blf` (font/text drawing), `aud` (audio), `imbuf` (image buffers), and `idprop` (custom ID properties). | [other-modules.md](./other-modules.md) |

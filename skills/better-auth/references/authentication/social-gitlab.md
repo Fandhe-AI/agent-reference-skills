@@ -1,12 +1,6 @@
 # GitLab
 
-## Credentials
-
-- `GITLAB_CLIENT_ID`
-- `GITLAB_CLIENT_SECRET`
-- `GITLAB_ISSUER` (Optional) - URL for self-hosted GitLab instances; defaults to `"https://gitlab.com"`
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -20,6 +14,17 @@ export const auth = betterAuth({
         },
     },
 })
+```
+
+```typescript
+import { createAuthClient } from "better-auth/client"
+const authClient = createAuthClient()
+
+const signIn = async () => {
+    const data = await authClient.signIn.social({
+        provider: "gitlab"
+    })
+}
 ```
 
 ### Self-Hosted GitLab Configuration
@@ -36,24 +41,21 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
+## Options / Props
 
-```typescript
-import { createAuthClient } from "better-auth/client"
-const authClient = createAuthClient()
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `clientId` | string | — | `GITLAB_CLIENT_ID` |
+| `clientSecret` | string | — | `GITLAB_CLIENT_SECRET` |
+| `issuer` | string (optional) | `https://gitlab.com` | `GITLAB_ISSUER` — URL for self-hosted GitLab instances |
 
-const signIn = async () => {
-    const data = await authClient.signIn.social({
-        provider: "gitlab"
-    })
-}
-```
+## Notes
 
-## リダイレクト URL
-
-- **Local development**: `http://localhost:3000/api/auth/callback/gitlab`
-- **Production**: Adjust to your application's URL
-
-## プロバイダー固有の設定・注意点
-
+- Redirect URL:
+  - Local development: `http://localhost:3000/api/auth/callback/gitlab`
+  - Production: adjust to your application's URL
 - The `issuer` parameter enables flexibility for organizations using self-hosted GitLab instances separate from the public GitLab.com service
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

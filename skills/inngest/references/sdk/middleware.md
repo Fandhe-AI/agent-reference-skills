@@ -98,6 +98,7 @@ class PrismaMiddleware extends Middleware.BaseMiddleware {
 
 ## Notes
 
+- This page documents the **TypeScript SDK v4** middleware API (`Middleware.BaseMiddleware` class, hooks as shown above). v3 used a distinct factory-based `InngestMiddleware` API that is not forward-compatible; v3 middleware must be rewritten to migrate to v4.
 - A **fresh middleware instance** is created per request — instance properties (`this`) are safe to use for per-request state.
 - Undefined hooks have **zero overhead** — the SDK skips them entirely.
 - Errors thrown in observable hooks (`on*`) are caught and logged; they do not propagate to the run.

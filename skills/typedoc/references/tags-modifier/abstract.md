@@ -1,25 +1,21 @@
 # @abstract
 
-メソッドやプロパティを、TypeScript の実装状態に関係なく、ドキュメント上で抽象（abstract）としてマークするモディファイアタグ。
+Modifier tag that marks a method or property as abstract in the generated documentation, regardless of its actual TypeScript implementation state.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @abstract */
 ```
 
-## 詳細説明
+Applying `@abstract` to a class method or property displays it as an abstract member in the generated documentation. Unlike TypeScript's `abstract` keyword, it can be used on methods that actually have a default implementation.
 
-`@abstract` タグは、クラスのメソッドやプロパティに付与することで、生成されるドキュメント上でそれらを抽象メンバーとして表示する。TypeScript の `abstract` キーワードとは異なり、実際にはデフォルト実装を持つメソッドに対しても使用できる。
-
-主な用途は、JavaScript ユーザー（型情報なし）が利用するモジュールにおいて、サブクラスでオーバーライドすべきメソッドにデフォルト実装を提供しつつ、ドキュメント上では抽象として明示するケースである。デフォルト実装では、より有用なエラーメッセージを投げることで開発者体験を向上させることができる。
-
-## コード例
+The primary use case is modules consumed by JavaScript users (without type information): a subclass method that should be overridden can ship with a default implementation while still being documented as abstract. The default implementation can improve the developer experience by throwing a more helpful error message.
 
 ```typescript
 export class AbstractExample {
     /**
-     * サブクラスで必ずオーバーライドすること。
+     * Must be overridden in a subclass.
      * @abstract
      */
     requiredOverride(): void {
@@ -30,15 +26,15 @@ export class AbstractExample {
 }
 ```
 
-上記の例では、`requiredOverride` メソッドはデフォルト実装を持つが、ドキュメント上では抽象メソッドとして表示される。
+In the example above, `requiredOverride` has a default implementation but is documented as an abstract method.
 
-## 注意点
+## Notes
 
-- TypeScript の `abstract` キーワードとは異なり、コンパイル時の強制力はない
-- 主に JavaScript プロジェクトや、型情報なしで利用するコンシューマー向けに有用
-- `--visibilityFilters` オプションでドキュメント出力の表示を制御できる
+- Unlike TypeScript's `abstract` keyword, this tag has no compile-time enforcement
+- Mainly useful for JavaScript projects, or for consumers without type information
+- The `--visibilityFilters` option controls whether it is shown in the generated output
 
-## 関連
+## Related
 
 - [@public](./public.md)
 - [@virtual](./virtual.md)

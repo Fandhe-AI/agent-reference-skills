@@ -1,8 +1,10 @@
-# 多言語サポート
+# Multi-Language Support
 
-Turborepo はスクリプトの実行内容には関与しない設計のため、Rust や Go 等も統合可能。
+## Signature / Usage
 
-## ワークスペース定義への追加
+Turborepo is agnostic about what a script actually runs, so toolchains like Rust or Go can be integrated as well.
+
+Adding to the workspace definition:
 
 ```yaml
 # pnpm-workspace.yaml
@@ -12,7 +14,7 @@ packages:
   - "cli"
 ```
 
-## package.json によるラッピング
+Wrapping with `package.json`:
 
 ```json
 {
@@ -21,16 +23,18 @@ packages:
 }
 ```
 
-## キャッシング設定
+Caching configuration:
 
 ```json
 { "tasks": { "build": { "outputs": ["target/release/**"] } } }
 ```
 
-## 依存関係の定義
+Declaring dependencies:
 
 ```json
 { "dependencies": { "@repo/rust-cli": "workspace:*" } }
 ```
 
-非 JS ツールチェーン（Rust, Go 等）は別途インストール済みである必要がある。
+## Notes
+
+- Non-JS toolchains (Rust, Go, etc.) must be installed separately; Turborepo does not manage them.

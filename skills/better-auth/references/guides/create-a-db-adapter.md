@@ -1,12 +1,8 @@
 # Create a DB Adapter
 
-Better Auth のカスタム DB アダプター作成ガイド。
+Better Auth のカスタム DB アダプター作成ガイド。Better Auth provides `createAdapterFactory` to simplify custom database adapter development. The function handles schema configurations, ID generation, JSON parsing, key mapping, and joins — allowing developers to focus on database logic.
 
-## 概要
-
-Better Auth provides `createAdapterFactory` to simplify custom database adapter development. The function handles schema configurations, ID generation, JSON parsing, key mapping, and joins — allowing developers to focus on database logic.
-
-## 手順
+## Signature / Usage
 
 ### 1. Import and Configure
 
@@ -43,19 +39,15 @@ config: {
 }
 ```
 
-**Key Configuration Options:**
-- `supportsJSON`: Whether the database handles JSON natively
-- `supportsDates`: Whether dates are supported
-- `supportsBooleans`: Whether boolean types exist
-- `supportsNumericIds`: Whether auto-incrementing IDs are available
+See `## Options / Props` for the capability flags.
 
 ### 3. Implement Adapter Methods
 
 The adapter function receives helper utilities and must return methods for database operations.
 
-## Core Adapter Methods
+### Core Adapter Methods
 
-### `create`
+#### `create`
 
 "The `create` method is used to create a new record in the database."
 
@@ -65,7 +57,7 @@ create: async ({ model, data, select }) => {
 }
 ```
 
-### `update`
+#### `update`
 
 "The `update` method is used to update a record in the database."
 
@@ -75,19 +67,19 @@ update: async ({ model, where, update }) => {
 }
 ```
 
-### `updateMany`
+#### `updateMany`
 
 Updates multiple records; must return the count of updated records.
 
-### `delete`
+#### `delete`
 
 Removes a single record matching the where clause.
 
-### `deleteMany`
+#### `deleteMany`
 
 "The `deleteMany` method is used to delete multiple records from the database." Returns the deletion count.
 
-### `findOne`
+#### `findOne`
 
 "The `findOne` method is used to find a single record in the database."
 
@@ -97,7 +89,7 @@ findOne: async ({ model, where, select, join }) => {
 }
 ```
 
-### `findMany`
+#### `findMany`
 
 "The `findMany` method is used to find multiple records in the database."
 
@@ -108,26 +100,17 @@ findMany: async ({ model, where, limit, sortBy, offset, join }) => {
 }
 ```
 
-### `count`
+#### `count`
 
 "The `count` method is used to count the number of records in the database."
 
-## Available Helper Parameters
+### Available Helper Parameters
 
-Adapters receive these utilities from the factory:
+Adapters receive these utilities from the factory (see `## Options / Props` for the full list).
 
-- `options`: Better Auth configuration
-- `schema`: User's database schema
-- `debugLog`: Debug logging function
-- `getFieldName`: Transform field names for the database
-- `getModelName`: Transform model names for the database
-- `transformInput`: Process data before saving
-- `transformOutput`: Process data after retrieval
-- `transformWhereClause`: Convert where conditions
+### Advanced Configuration
 
-## Advanced Configuration
-
-### Custom Key Mapping
+#### Custom Key Mapping
 
 Map keys between Better Auth and your database:
 
@@ -140,7 +123,7 @@ mapKeysTransformOutput: {
 }
 ```
 
-### Custom Data Transformation
+#### Custom Data Transformation
 
 ```typescript
 customTransformInput: ({ field, data }) => {
@@ -149,7 +132,7 @@ customTransformInput: ({ field, data }) => {
 }
 ```
 
-### Transaction Support
+#### Transaction Support
 
 Declare transaction capability:
 
@@ -159,11 +142,11 @@ transaction: (callback) => {
 }
 ```
 
-### Join Support
+#### Join Support
 
 Set `supportsJoin: true` for native database joins; otherwise Better Auth handles them via multiple queries.
 
-## Testing Your Adapter
+### Testing Your Adapter
 
 Install test utilities:
 
@@ -191,17 +174,42 @@ const { execute } = await testAdapter({
 execute();
 ```
 
-## Optional Methods
+### Optional Methods
 
-### `createSchema`
+#### `createSchema`
 
 Allows the CLI to generate database schemas for your adapter, accepting table definitions and output file path.
 
-### `options`
+#### `options`
 
 Return custom configuration passed to your adapter for later use.
 
-## 注意点
+## Options / Props
+
+**Config capability flags:**
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `supportsJSON` | boolean | — | Whether the database handles JSON natively |
+| `supportsDates` | boolean | — | Whether dates are supported |
+| `supportsBooleans` | boolean | — | Whether boolean types exist |
+| `supportsNumericIds` | boolean | — | Whether auto-incrementing IDs are available |
+| `supportsJoin` | boolean | — | Whether the database supports native joins (otherwise Better Auth handles them via multiple queries) |
+
+**Helper parameters passed to the adapter function:**
+
+| Name | Description |
+| --- | --- |
+| `options` | Better Auth configuration |
+| `schema` | User's database schema |
+| `debugLog` | Debug logging function |
+| `getFieldName` | Transform field names for the database |
+| `getModelName` | Transform model names for the database |
+| `transformInput` | Process data before saving |
+| `transformOutput` | Process data after retrieval |
+| `transformWhereClause` | Convert where conditions |
+
+## Notes
 
 - "All `model` values are already transformed into the correct model name for the database"
 - "We will automatically fill in any missing fields you return based on the user's `schema` configuration"

@@ -8,3 +8,5 @@
 | Fan-out Pattern | Trigger multiple independent functions from a single event, each running in parallel. | [fan-out.md](./fan-out.md) |
 | Human-in-the-Loop | Pause a workflow and wait for a human approval event before continuing. | [human-in-the-loop.md](./human-in-the-loop.md) |
 | AI Workflow | Make LLM calls durable and observable using step.ai — automatic retries, memoization, and inference tracking included. | [ai-workflow.md](./ai-workflow.md) |
+| Realtime Publish/Subscribe | Push live progress updates from a running function to a React client using channels, topics, and useRealtime. | [realtime-publish-subscribe.md](./realtime-publish-subscribe.md) |
+| Singleton Function | Ensure only one run of a function is active per key at a time, skipping or cancelling overlapping triggers. | [singleton-function.md](./singleton-function.md) |

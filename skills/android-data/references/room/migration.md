@@ -4,18 +4,21 @@ Handles Room database schema changes across versions, either manually with a `Mi
 
 ## Signature / Usage
 
-Manual migration:
+Manual migration (Room 3.0+, `androidx.room3`):
 
 ```kotlin
+import androidx.sqlite.SQLiteConnection
+
 val MIGRATION_1_2 = object : Migration(1, 2) {
-    override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL(
+    override suspend fun migrate(connection: SQLiteConnection) {
+        connection.execSQL(
             "CREATE TABLE `Fruit` (`id` INTEGER, `name` TEXT, PRIMARY KEY(`id`))"
         )
     }
 }
 
-Room.databaseBuilder(applicationContext, MyDb::class.java, "database-name")
+Room.databaseBuilder<MyDb>(applicationContext, "database-name")
+    .setDriver(BundledSQLiteDriver())
     .addMigrations(MIGRATION_1_2)
     .build()
 ```
@@ -63,16 +66,18 @@ abstract class AppDatabase : RoomDatabase() {
 
 ## Notes
 
-- This is the Android Room persistence library (Kotlin, `androidx.room`) — distinct from the same-named concept in other skills.
-- Automated migrations require Room 2.4.0-alpha01+ and rely on exported schemas (`exportSchema = true` on `@Database`); they fail if the schema wasn't exported or compiled.
-- Implement `onPostMigrate(database)` on an `AutoMigrationSpec` to run custom logic after an automated migration completes.
+- This is the Android Room persistence library (Kotlin, `androidx.room3`, Room 3.0+) — distinct from the same-named concept in other skills.
+- Room 3.0 made `Migration.migrate()` and `AutoMigrationSpec.onPostMigrate()` `suspend` functions that take an `androidx.sqlite.SQLiteConnection` instead of a `SupportSQLiteDatabase`; execute SQL via `connection.execSQL(...)` rather than `database.execSQL(...)`. The legacy `SupportSQLiteDatabase`-based signatures are Room 2.x (`androidx.room`) only — see [Migrating to Room 3.0](./room3-migration.md) and the official [Room 2.x → 3.0 migration guide](https://developer.android.com/training/data-storage/room/migration-2-to-3).
+- Automated migrations rely on exported schemas (`exportSchema = true` on `@Database`, configured via `room3 { schemaDirectory(...) }` in the Room Gradle plugin); they fail if the schema wasn't exported or compiled.
+- Implement `onPostMigrate(connection)` on an `AutoMigrationSpec` to run custom logic after an automated migration completes.
 - In Kotlin, use the `@RenameTable.Entries` container when applying multiple annotations of the same type.
 - Manual migrations (`addMigrations`) take precedence over automated migrations for the same version transition.
 - Use `RoomDatabase.Builder.fallbackToDestructiveMigration()` when no migration path exists; this permanently deletes data in affected tables.
-- Test migrations with `MigrationTestHelper` from the `androidx.room:room-testing` artifact.
+- Test migrations with `MigrationTestHelper` from the `androidx.room3:room3-testing` artifact; see [Testing](./testing.md) for the Room 3.0 `SQLiteConnection`-based API.
 
 ## Related
 
 - [Room.databaseBuilder / RoomDatabase.Builder](./room-database-builder.md)
 - [Database](./database.md)
 - [Testing](./testing.md)
+- [Migrating to Room 3.0 (androidx.room3)](./room3-migration.md)

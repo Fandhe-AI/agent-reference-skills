@@ -2,12 +2,6 @@
 
 A portal component that renders complex edge labels in a positioned `div` layer above the SVG canvas. Because edges are SVG-based, HTML elements (buttons, inputs, etc.) cannot be placed directly in an edge; this component provides an escape hatch.
 
-## Props
-
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | — | HTML content to render inside the label portal |
-
 ## 使用例
 
 ```tsx
@@ -42,6 +36,12 @@ export function CustomEdge({ id, data, ...props }: EdgeProps) {
   );
 }
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | — | HTML content to render inside the label portal |
 
 ## 注意点
 

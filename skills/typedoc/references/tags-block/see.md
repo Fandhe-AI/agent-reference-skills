@@ -1,26 +1,22 @@
 # @see
 
-関連するリソースへの参照リストを作成するブロックタグ。
+Block tag for creating a list of references to related resources.
 
-## 構文
-
-```
-@see [表示テキスト](URL)
-```
+## Signature / Usage
 
 ```
-@see {@link シンボル名}
+@see [display text](URL)
 ```
 
-## 詳細説明
+```
+@see {@link symbolName}
+```
 
-`@see` タグはエクスポートに関連する他のリソースへの参照リストを作成するために使用される。
+The `@see` tag is used to create a list of references to other resources related to an export.
 
-TSDocの仕様に準拠している。
+Conforms to the TSDoc specification.
 
-**重要なJSDocとの違い**: TypeDocはJSDocとは異なる方法で `@see` を処理する。JSDocではタグ内容をベアなシンボル参照として解析できるが、TypeDocでは他のシンボルを参照する際に明示的な `{@link}` 構文が必要。`{@link}` ラッパーなしの直接的なシンボル名はサポートされない。
-
-## コード例
+**Important difference from JSDoc**: TypeDoc handles `@see` differently from JSDoc. JSDoc can parse the tag content as a bare symbol reference, but TypeDoc requires the explicit `{@link}` syntax to reference another symbol. A bare symbol name without the `{@link}` wrapper is not supported.
 
 ```typescript
 /**
@@ -30,14 +26,14 @@ TSDocの仕様に準拠している。
 export function factorial(n: number): number;
 ```
 
-## 注意点
+## Notes
 
-- 他のシンボルを参照する場合は必ず `{@link}` 構文を使用する必要がある
-- URLリンクはマークダウン形式 `[テキスト](URL)` で記述する
-- JSDocのベアシンボル参照構文はTypeDocでは動作しない
-- 複数の `@see` タグを1つのコメントに含めることが可能
+- The `{@link}` syntax must always be used when referencing another symbol
+- URL links should be written in Markdown format `[text](URL)`
+- JSDoc's bare symbol reference syntax does not work in TypeDoc
+- Multiple `@see` tags can be included in a single comment
 
-## 関連
+## Related
 
 - [TSDoc @see](https://tsdoc.org/pages/tags/see/)
 - [JSDoc @see](https://jsdoc.app/tags-see)

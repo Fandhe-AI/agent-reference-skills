@@ -1,20 +1,16 @@
 # @ignore
 
-リフレクションを生成されるドキュメントから完全に除去するモディファイアタグ。`@hidden` と同等。
+Modifier tag that completely removes a reflection from the generated documentation. Equivalent to `@hidden`.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @ignore */
 ```
 
-## 詳細説明
+A reflection tagged `@ignore` is completely removed from the generated documentation. It is functionally equivalent to the `@hidden` tag, and TypeDoc recognizes both.
 
-`@ignore` タグが付与されたリフレクションは、生成されるドキュメントから完全に除去される。`@hidden` タグと機能的に同等であり、TypeDoc は両方を認識する。
-
-JSDoc との互換性のためにサポートされている。`@internal` タグとは異なり、`@ignore` はオプション設定に関係なく常にドキュメントから除去する。
-
-## コード例
+It is supported for compatibility with JSDoc. Unlike `@internal`, `@ignore` always removes the item from the documentation regardless of any option settings.
 
 ```typescript
 export class Visibility {
@@ -26,7 +22,7 @@ export class Visibility {
 ```typescript
 export class Logger {
     /**
-     * デバッグ用の内部メソッド。
+     * Internal method for debugging.
      * @ignore
      */
     _debugInternal(msg: string): void {
@@ -34,7 +30,7 @@ export class Logger {
     }
 
     /**
-     * メッセージをログに出力する。
+     * Logs a message.
      */
     log(msg: string): void {
         this._debugInternal(msg);
@@ -42,13 +38,13 @@ export class Logger {
 }
 ```
 
-## 注意点
+## Notes
 
-- `@hidden` と機能的に同等
-- `@internal` とは異なり、常にドキュメントから除去される（オプション不要）
-- JSDoc との互換性のためにサポートされている
+- Functionally equivalent to `@hidden`
+- Unlike `@internal`, it is always removed from the documentation (no option required)
+- Supported for compatibility with JSDoc
 
-## 関連
+## Related
 
 - [@hidden](./hidden.md)
 - [@internal](./internal.md)

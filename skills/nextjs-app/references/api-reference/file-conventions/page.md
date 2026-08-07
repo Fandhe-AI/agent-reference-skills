@@ -36,4 +36,4 @@ Use the globally available `PageProps<'/route'>` helper (generated during `next 
 
 - [layout.js](./layout.md)
 - [Dynamic Segments](./dynamic-routes.md)
-- [generateStaticParams](../functions/generate-static-params.md)
+- [generateStaticParams](../functions/generateStaticParams.md)

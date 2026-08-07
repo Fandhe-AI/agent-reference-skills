@@ -1,12 +1,13 @@
-# responses
+# Responses
 
 | Name | Description | Path |
-| --- | --- | --- |
-| Text generation | Generate text from a prompt via `responses.create`; message roles and prompt engineering basics | [text.md](./text.md) |
-| Conversation state | Multi-turn state via manual replay, the Conversations API, or `previous_response_id` | [conversation-state.md](./conversation-state.md) |
-| Prompt caching | Automatic and explicit prompt-prefix caching for latency/cost reduction | [prompt-caching.md](./prompt-caching.md) |
-| Reasoning models | `reasoning.effort` / `mode` / `context` / `summary`, context window management, `phase` | [reasoning.md](./reasoning.md) |
-| Reasoning best practices | When to use reasoning vs GPT models; effective prompting for reasoning models | [reasoning-best-practices.md](./reasoning-best-practices.md) |
-| Background mode | Run long tasks asynchronously with `background: true`, polling, and streaming resume | [background.md](./background.md) |
-| Multi-agent | Beta feature to spawn/coordinate subagents within a single Responses request | [responses-multi-agent.md](./responses-multi-agent.md) |
-| Compaction | Server-side auto-compaction and the standalone `/responses/compact` endpoint | [compaction.md](./compaction.md) |
+|------|-------------|------|
+| API deployment checklist | Checklist of high-value, commonly underused Responses API design choices that… | [deployment-checklist.md](./deployment-checklist.md) |
+| Background mode | Run long-running reasoning-model tasks asynchronously without client-side… | [background.md](./background.md) |
+| Compaction | Reduces context size in long-running Responses API interactions while… | [compaction.md](./compaction.md) |
+| Conversation state | Manage multi-turn conversation state with the Responses API, either… | [conversation-state.md](./conversation-state.md) |
+| Multi-agent | Beta Responses API feature that lets a model spawn and coordinate… | [responses-multi-agent.md](./responses-multi-agent.md) |
+| Prompt caching | Automatic caching of repeated prompt prefixes to reduce latency and… | [prompt-caching.md](./prompt-caching.md) |
+| Reasoning best practices | Guidance on choosing between reasoning (o-series) models and GPT… | [reasoning-best-practices.md](./reasoning-best-practices.md) |
+| Reasoning models | Reasoning models (e.g. GPT-5.6) use internal reasoning tokens before… | [reasoning.md](./reasoning.md) |
+| Text generation | Generate text from a prompt using the Responses API — the recommended… | [text.md](./text.md) |

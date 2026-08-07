@@ -1,16 +1,16 @@
 # Passkey
 
-Passkey プラグインは、WebAuthn と FIDO2 標準を利用した暗号鍵ペアによる安全なパスワードレス認証を提供する。内部的に SimpleWebAuthn を使用し、生体認証、PIN、セキュリティキーによる認証を可能にする。
+The Passkey plugin provides secure, passwordless authentication using WebAuthn/FIDO2 cryptographic key pairs. It uses SimpleWebAuthn internally and supports biometric, PIN, and security-key authentication.
 
-## セットアップ
+## Signature / Usage
 
-### インストール
+### Installation
 
 ```bash
 npm install @better-auth/passkey
 ```
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -23,15 +23,15 @@ export const auth = betterAuth({
 })
 ```
 
-マイグレーション:
+Migration:
 
 ```bash
 npx auth migrate
-# または
+# or
 npx auth generate
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -44,20 +44,18 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
-
-### パスキー追加/登録
+### Add/register a passkey
 
 `POST /passkey/add-passkey`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.passkey.addPasskey({
     name: "example-passkey-name",
     authenticatorAttachment: "cross-platform",
 })
 
-// サーバー
+// Server
 const data = await auth.api.addPasskey({
     body: {
         name: "example-passkey-name",
@@ -66,23 +64,23 @@ const data = await auth.api.addPasskey({
 })
 ```
 
-パラメータ:
-- `name` (string, 任意): 認証器のラベル。省略時はユーザーメールまたは ID がデフォルト
-- `authenticatorAttachment` ("platform" | "cross-platform", 任意): 登録する認証器タイプ
+Parameters:
+- `name` (string, optional): label for the authenticator. Defaults to the user's email or ID if omitted
+- `authenticatorAttachment` ("platform" | "cross-platform", optional): the authenticator type to register
 
-クライアント専用エンドポイント。`throw: true` は効果なし。
+Client-only endpoint. `throw: true` has no effect.
 
-### パスキーでサインイン
+### Sign in with passkey
 
 `POST /sign-in/passkey`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.signIn.passkey({
     autoFill: true,
 })
 
-// コールバック付き
+// With callbacks
 await authClient.signIn.passkey({
     autoFill: true,
     fetchOptions: {
@@ -96,52 +94,52 @@ await authClient.signIn.passkey({
 })
 ```
 
-パラメータ:
-- `autoFill` (boolean): ブラウザオートフィル（Conditional UI）を有効にする
+Parameters:
+- `autoFill` (boolean): enables browser autofill (Conditional UI)
 
-### パスキー一覧
+### List passkeys
 
 `GET /passkey/list-user-passkeys`
 
 ```typescript
-// クライアント
+// Client
 const { data: passkeys, error } = await authClient.passkey.listUserPasskeys()
 
-// サーバー
+// Server
 const passkeys = await auth.api.listPasskeys({
     headers: await headers(),
 })
 ```
 
-### パスキー削除
+### Delete passkey
 
 `POST /passkey/delete-passkey`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.passkey.deletePasskey({
     id: "some-passkey-id",
 })
 
-// サーバー
+// Server
 const data = await auth.api.deletePasskey({
     body: { id: "some-passkey-id" },
     headers: await headers(),
 })
 ```
 
-### パスキー名更新
+### Update passkey name
 
 `POST /passkey/update-passkey`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.passkey.updatePasskey({
     id: "id of passkey",
     name: "my-new-passkey-name",
 })
 
-// サーバー
+// Server
 const data = await auth.api.updatePasskey({
     body: {
         id: "id of passkey",
@@ -151,18 +149,16 @@ const data = await auth.api.updatePasskey({
 })
 ```
 
-## Conditional UI（ブラウザオートフィル）
+### Conditional UI (browser autofill): update input fields
 
-### 入力フィールドの更新
-
-`autocomplete="webauthn"` 属性を追加（最後のエントリとして）:
+Add the `autocomplete="webauthn"` attribute (as the last value):
 
 ```html
 <input type="text" name="name" autocomplete="username webauthn">
 <input type="password" name="password" autocomplete="current-password webauthn">
 ```
 
-### パスキーのプリロード
+### Conditional UI (browser autofill): preloading passkeys
 
 ```typescript
 useEffect(() => {
@@ -174,68 +170,66 @@ useEffect(() => {
 }, [])
 ```
 
-## 設定オプション
+### Expo integration
 
-| オプション | 型 | 必須 | 説明 |
-|---|---|---|---|
-| `rpID` | string | Yes | ウェブサイトの一意識別子（ドメインベース） |
-| `rpName` | string | Yes | 人間が読めるサイト名 |
-| `origin` | string | Yes | Better Auth サーバーのオリジン URL（末尾スラッシュなし） |
-| `authenticatorSelection` | object | No | WebAuthn 認証器選択条件のカスタマイズ |
-| `advanced.webAuthnChallengeCookie` | string | No | チャレンジ Cookie 名（デフォルト: `"better-auth-passkey"`） |
-
-### authenticatorSelection オプション
-
-- `authenticatorAttachment`: "platform"（デバイス固定）| "cross-platform"（セキュリティキー）| 未設定（両方許可、platform 優先）
-- `residentKey`: "required"（最高セキュリティ）| "preferred"（推奨）| "discouraged"（最速）
-- `userVerification`: "required"（最高セキュリティ）| "preferred" | "discouraged"（最速）
-
-## DB スキーマ
-
-### passkey テーブル
-
-| フィールド | 型 | キー | 説明 |
-|---|---|---|---|
-| id | string | PK | 一意のパスキー識別子 |
-| name | string | ? | パスキー認証器ラベル（任意） |
-| publicKey | string | - | 公開鍵クレデンシャル |
-| userId | string | FK | 関連ユーザー ID |
-| credentialID | string | - | 登録済みクレデンシャル一意識別子 |
-| counter | number | - | パスキーカウンター値 |
-| deviceType | string | - | 認証器デバイスタイプ |
-| backedUp | boolean | - | バックアップ状態 |
-| transports | string | ? | 登録時トランスポート（任意） |
-| createdAt | Date | ? | 作成日時 |
-| aaguid | string | ? | Authenticator Attestation GUID |
-
-## Expo 連携
-
-Expo で使用する場合、チャレンジ Cookie が適切に検出・保存されるよう `cookiePrefix` を設定する。
+When using Expo, set `cookiePrefix` so the challenge cookie is detected and stored correctly.
 
 ```typescript
-// サーバー
+// Server
 passkey({
     advanced: {
         webAuthnChallengeCookie: "my-app-passkey"
     }
 })
 
-// クライアント
+// Client
 expoClient({
     storage: SecureStore,
     cookiePrefix: "my-app"
 })
 
-// 複数プレフィックス
+// Multiple prefixes
 expoClient({
     storage: SecureStore,
     cookiePrefix: ["better-auth", "my-app", "custom-auth"]
 })
 ```
 
-`cookiePrefix` が `webAuthnChallengeCookie` プレフィックスと一致しない場合、パスキー認証は失敗する。
+If `cookiePrefix` doesn't match the `webAuthnChallengeCookie` prefix, passkey authentication will fail.
 
-## 注意点
+## Options / Props
 
-- デバッグ時はChrome DevToolsのWebAuthnタブで「エミュレートされた認証器」を使用可能
-- 一部のブラウザではオートフィルプロンプトの前に入力フィールドとのユーザーインタラクションが必要
+| Option | Type | Required | Description |
+|---|---|---|---|
+| `rpID` | string | Yes | The website's unique identifier (domain-based) |
+| `rpName` | string | Yes | Human-readable site name |
+| `origin` | string | Yes | The Better Auth server's origin URL (no trailing slash) |
+| `authenticatorSelection` | object | No | Customizes WebAuthn authenticator selection criteria |
+| `advanced.webAuthnChallengeCookie` | string | No | Challenge cookie name (default: `"better-auth-passkey"`) |
+
+### authenticatorSelection options
+
+- `authenticatorAttachment`: "platform" (device-bound) | "cross-platform" (security key) | unset (both allowed, platform preferred)
+- `residentKey`: "required" (highest security) | "preferred" (recommended) | "discouraged" (fastest)
+- `userVerification`: "required" (highest security) | "preferred" | "discouraged" (fastest)
+
+### DB schema (passkey table)
+
+| Field | Type | Key | Description |
+|---|---|---|---|
+| id | string | PK | Unique passkey identifier |
+| name | string | ? | Passkey authenticator label (optional) |
+| publicKey | string | - | Public key credential |
+| userId | string | FK | Associated user ID |
+| credentialID | string | - | Unique identifier for the registered credential |
+| counter | number | - | Passkey counter value |
+| deviceType | string | - | Authenticator device type |
+| backedUp | boolean | - | Backup state |
+| transports | string | ? | Transports used at registration (optional) |
+| createdAt | Date | ? | Creation timestamp |
+| aaguid | string | ? | Authenticator Attestation GUID |
+
+## Notes
+
+- Use the "Emulated Authenticator" in Chrome DevTools' WebAuthn tab when debugging
+- Some browsers require user interaction with the input field before the autofill prompt appears

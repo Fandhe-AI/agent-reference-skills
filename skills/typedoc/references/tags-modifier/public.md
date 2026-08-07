@@ -1,24 +1,20 @@
 # @public
 
-リフレクションの可視性を public にオーバーライドするモディファイアタグ。一般的に使用は推奨されない。
+Modifier tag that overrides a reflection's visibility to public. Its use is generally discouraged.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @public */
 ```
 
-## 詳細説明
+The `@public` tag overrides a reflection's visibility to public. For example, applying `@public` to a member declared as `protected` makes it appear as public in the documentation.
 
-`@public` タグは、リフレクションの可視性を public にオーバーライドする。例えば、`protected` で宣言されたメンバーに `@public` を付与すると、ドキュメント上では public として表示される。
+Use of this tag is generally discouraged. TypeDoc recommends treating every exported member that is not explicitly annotated with `@alpha`, `@beta`, `@experimental`, or `@internal` as public.
 
-このタグは一般的に使用すべきではない。TypeDoc は、`@alpha`、`@beta`、`@experimental`、`@internal` のいずれかで明示的にアノテーションされていないすべてのエクスポートメンバーを public として扱うことを推奨している。
+### Difference from the TSDoc spec
 
-### TSDoc 仕様との差異
-
-TypeDoc の実装は TSDoc 標準とは異なる。TSDoc ではメンバーの可視性とリリースの可視性を別々に区別するが、TypeDoc は後方互換性のために実効的な可視性を変更する。`@public` バッジは、直接アノテーションされたメンバーにのみ表示され、含まれるメンバーには継承されない。
-
-## コード例
+TypeDoc's implementation differs from the TSDoc standard. TSDoc distinguishes member visibility from release visibility separately, whereas TypeDoc changes the effective visibility for backward compatibility. The `@public` badge is shown only on directly annotated members and is not inherited by contained members.
 
 ```typescript
 export class Visibility {
@@ -26,13 +22,13 @@ export class Visibility {
     protected member = 123;
 }
 
-// ドキュメント上では member は public として表示される
+// `member` is displayed as public in the documentation
 ```
 
 ```typescript
 export class EventBus {
     /**
-     * イベントの発火。サブクラス向けだがドキュメントでは公開。
+     * Fires an event. Intended for subclasses, but exposed in the docs.
      * @public
      */
     protected emit(event: string, data: unknown): void {
@@ -41,14 +37,14 @@ export class EventBus {
 }
 ```
 
-## 注意点
+## Notes
 
-- 一般的に使用は推奨されない
-- TSDoc 仕様との実装の差異がある（メンバー可視性 vs リリース可視性）
-- `@public` バッジは直接アノテーションされたメンバーにのみ表示される
-- エクスポートされたメンバーは `@alpha` / `@beta` / `@experimental` / `@internal` がない場合、暗黙的に public
+- Generally discouraged
+- Implementation differs from the TSDoc spec (member visibility vs. release visibility)
+- The `@public` badge is shown only on directly annotated members
+- Exported members without `@alpha` / `@beta` / `@experimental` / `@internal` are implicitly public
 
-## 関連
+## Related
 
 - [@private](./private.md)
 - [@protected](./protected.md)

@@ -5,7 +5,7 @@
 | after | Schedule work to run after a response (or prerender) finishes. | [after.md](./after.md) |
 | cacheLife | Set the cache lifetime of a `use cache` function or component. | [cacheLife.md](./cacheLife.md) |
 | cacheTag | Tag cached data for on-demand invalidation. | [cacheTag.md](./cacheTag.md) |
-| unstable_catchError | Programmatic error boundary wrapper (experimental). | [unstable_catchError.md](./unstable_catchError.md) |
+| catchError | Programmatic error boundary wrapper (stable since v16.3.0; formerly `unstable_catchError`). | [catchError.md](./catchError.md) |
 | connection | Wait for an incoming request before continuing rendering. | [connection.md](./connection.md) |
 | cookies | Read/write HTTP request cookies. | [cookies.md](./cookies.md) |
 | draftMode | Enable/disable/check Draft Mode. | [draftMode.md](./draftMode.md) |

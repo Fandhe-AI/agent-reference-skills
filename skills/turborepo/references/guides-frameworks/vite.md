@@ -1,12 +1,14 @@
 # Vite
 
-## クイックスタート
+## Usage
+
+### Quickstart
 
 ```bash
 pnpm dlx create-turbo@latest -e with-vite
 ```
 
-## 内部パッケージの参照
+### Referencing internal packages
 
 ```jsonc
 // pnpm / bun
@@ -16,7 +18,7 @@ pnpm dlx create-turbo@latest -e with-vite
 "@repo/ui": "*"
 ```
 
-## マイクロフロントエンド設定
+### Micro-frontend configuration
 
 ```ts
 export default defineConfig({
@@ -24,17 +26,24 @@ export default defineConfig({
 });
 ```
 
-`base` を設定しないと画像や CSS が正しくルーティングされない。
+### Module Federation
 
-## Module Federation
-
-ランタイムでのモジュール共有には `with-vite-module-federation` テンプレートを使う:
+Use the `with-vite-module-federation` template for runtime module sharing:
 
 ```bash
 pnpm dlx create-turbo@latest -e with-vite-module-federation
 ```
 
-複数の Vite アプリ・パッケージ間で React / Vue / Svelte コンポーネントや依存関係をランタイム共有できる。
+This allows sharing React / Vue / Svelte components and dependencies across multiple Vite apps and packages at runtime.
 
-Module Federation 使用時の `turbo.json` 設定:
-- `dev` タスク: `"cache": false`、`"persistent": true`、`"dependsOn": ["^build"]`（共有パッケージのビルドを先に実行）
+`turbo.json` configuration when using Module Federation:
+- `dev` task: `"cache": false`, `"persistent": true`, `"dependsOn": ["^build"]` (build shared packages first)
+
+## Notes
+
+- Not setting `base` causes images and CSS to be routed incorrectly.
+
+## Related
+
+- [Next.js](./nextjs.md)
+- [Rsbuild](./rsbuild.md)

@@ -1,6 +1,6 @@
 # BullMQ — Repeat Strategies
 
-BullMQ には Repeatable ジョブを作成するための2つの定義済み戦略（every と cron）があり、さらにカスタム戦略を定義することも可能です。
+BullMQ には Repeatable ジョブを作成するための2つの定義済み戦略（every と cron）があり、さらにカスタム戦略を定義することも可能です。v6 以降、Repeatable ジョブは [Job Schedulers](./job-schedulers.md)（`upsertJobScheduler`）経由でのみ作成する（legacy な `Queue#add({ repeat })` API は v6 で削除済み）。
 
 ## "Every" 戦略
 

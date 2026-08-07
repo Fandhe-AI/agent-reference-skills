@@ -1,10 +1,9 @@
-# Social Providers 共通設定
+# Social Providers Common Configuration
 
-## 基本パターン
-
-### サーバー側共通コード
+## Signature / Usage
 
 ```typescript
+// server
 import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
@@ -17,9 +16,8 @@ export const auth = betterAuth({
 });
 ```
 
-### クライアント側共通コード
-
 ```typescript
+// client
 import { createAuthClient } from "better-auth/client";
 const authClient = createAuthClient();
 
@@ -30,36 +28,7 @@ const signIn = async () => {
 };
 ```
 
-## 共通オプション
-
-全プロバイダーで使える設定:
-
-| Option | Type | Description |
-|--------|------|-------------|
-| `clientId` | string | OAuth アプリケーションの Client ID |
-| `clientSecret` | string | OAuth アプリケーションの Client Secret |
-| `scope` | string[] | 追加のスコープを指定 |
-| `redirectURI` | string | コールバック URL をオーバーライド |
-| `disableDefaultScope` | boolean | デフォルトスコープを無効にする |
-| `mapProfileToUser` | function | プロバイダーのプロフィールをユーザーオブジェクトにマッピング |
-| `getUserInfo` | function | カスタムユーザー情報取得 |
-| `verifyIdToken` | function | カスタム ID トークン検証 |
-
-## コールバック URL パターン
-
-全プロバイダー共通:
-
-```
-/api/auth/callback/{provider}
-```
-
-- **ローカル開発**: `http://localhost:3000/api/auth/callback/{provider}`
-- **本番環境**: `https://yourdomain.com/api/auth/callback/{provider}`
-- auth ルートのベースパスを変更した場合は、リダイレクト URL も合わせて更新する
-
-## アカウントリンク
-
-追加スコープのリクエストやアカウントリンクには `linkSocial` を使用:
+Request additional scopes / link an account:
 
 ```typescript
 const requestAdditionalAccess = async () => {
@@ -70,15 +39,7 @@ const requestAdditionalAccess = async () => {
 };
 ```
 
-Better Auth version 1.2.7 以降では、追加スコープリクエスト時の "Social account already linked" エラーが防止される。
-
-## アクセストークン取得
-
-認証後、アクセストークンはサーバー側に安全に保存される。サーバー側からプロバイダー API へのリクエストに使用可能。
-
-## ID Token サインイン
-
-一部のプロバイダーでは、リダイレクトなしで ID トークンを使用したサインインが可能:
+Sign in with an ID token (no redirect), supported by providers such as Google, Apple, Facebook, and LINE:
 
 ```typescript
 const data = await authClient.signIn.social({
@@ -90,4 +51,25 @@ const data = await authClient.signIn.social({
 });
 ```
 
-対応プロバイダー: Google, Apple, Facebook, LINE など。
+## Options / Props
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `clientId` | string | OAuth application Client ID |
+| `clientSecret` | string | OAuth application Client Secret |
+| `scope` | string[] | Additional scopes to request |
+| `redirectURI` | string | Override the callback URL |
+| `disableDefaultScope` | boolean | Disable the default scope |
+| `mapProfileToUser` | function | Map the provider profile to the user object |
+| `getUserInfo` | function | Custom user information retrieval |
+| `verifyIdToken` | function | Custom ID token verification |
+
+## Notes
+
+- The callback URL pattern is common to all providers: `/api/auth/callback/{provider}` — local development: `http://localhost:3000/api/auth/callback/{provider}`; production: `https://yourdomain.com/api/auth/callback/{provider}`. If you change the base path of the auth routes, update the redirect URL accordingly
+- After authentication, the access token is stored securely on the server and can be used for provider API requests from the server side
+- As of Better Auth 1.2.7, requesting additional scopes no longer triggers a "Social account already linked" error
+
+## Related
+
+- [Other Social Providers](./other-social-providers.md)

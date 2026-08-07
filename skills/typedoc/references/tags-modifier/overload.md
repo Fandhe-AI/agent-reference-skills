@@ -1,35 +1,31 @@
 # @overload
 
-JavaScript プロジェクトで関数のオーバーロードを宣言するためのモディファイアタグ。TypeScript 5.0 以降で認識される。
+Modifier tag for declaring function overloads in JavaScript projects. Recognized from TypeScript 5.0 onward.
 
-## 構文
+## Signature / Usage
 
 ```
 /**
  * @overload
- * @param {型} パラメータ名 説明
- * @return {戻り値型}
+ * @param {Type} paramName Description
+ * @return {ReturnType}
  */
 ```
 
-## 詳細説明
+The `@overload` tag is used in JavaScript projects to define multiple signatures (overloads) for a function. It corresponds to the JSDoc overload support introduced in TypeScript 5.0.
 
-`@overload` タグは、JavaScript プロジェクトにおいて関数の複数のシグネチャ（オーバーロード）を定義するために使用される。TypeScript 5.0 で導入された JSDoc オーバーロードサポートに対応している。
-
-このタグは生成されるドキュメントから自動的に除去され、各オーバーロードの `@param` と `@return` 情報のみが関数のシグネチャとして表示される。
-
-## コード例
+The tag itself is automatically stripped from the generated documentation; only the `@param` and `@return` information from each overload is shown as the function's signature.
 
 ```javascript
 /**
  * @overload
- * @param {string} value 文字列値
+ * @param {string} value A string value
  * @return {void}
  */
 /**
  * @overload
- * @param {number} value 数値
- * @param {number} [maximumFractionDigits] 最大小数桁数
+ * @param {number} value A numeric value
+ * @param {number} [maximumFractionDigits] Maximum number of fraction digits
  * @return {void}
  */
 /**
@@ -45,18 +41,18 @@ function printValue(value, maximumFractionDigits) {
 }
 ```
 
-上記の例では、`printValue` 関数に2つのオーバーロードシグネチャが定義される:
+In the example above, two overload signatures are defined for `printValue`:
 1. `printValue(value: string): void`
 2. `printValue(value: number, maximumFractionDigits?: number): void`
 
-## 注意点
+## Notes
 
-- JavaScript プロジェクト向けのタグ（TypeScript ではネイティブのオーバーロード構文を使用）
-- TypeScript 5.0 以降で認識される
-- 生成されるドキュメントからは自動的に除去される
-- `--excludeTags` オプションで除外可能
+- Intended for JavaScript projects (TypeScript projects should use native overload syntax)
+- Recognized from TypeScript 5.0 onward
+- Automatically removed from the generated documentation
+- Can be excluded via the `--excludeTags` option
 
-## 関連
+## Related
 
 - [@param](../tags-block/param.md)
 - [@returns](../tags-block/returns.md)

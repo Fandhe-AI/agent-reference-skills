@@ -1,5 +1,7 @@
 # SceneKit
 
+> Deprecated at iOS/iPadOS/macOS/tvOS/visionOS/watchOS/Mac Catalyst 26.0: "SceneKit is deprecated, use RealityKit instead." Apple points to WWDC25 session 288 ("Bring your SceneKit projects to RealityKit") for migration guidance. Pages below still describe the SceneKit API as it exists prior to removal.
+
 | Name | Description | Path |
 |------|-------------|------|
 | SCNScene | Container for the 3D scene node hierarchy and global properties | [scnscene.md](./scnscene.md) |

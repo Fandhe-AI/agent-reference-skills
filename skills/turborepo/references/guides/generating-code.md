@@ -1,18 +1,18 @@
-# コード生成
+# Generating Code
 
-## ビルトイン生成コマンド
+## Signature / Usage
+
+Built-in generator commands:
 
 ```bash
-turbo gen workspace              # 空のパッケージを追加
-turbo gen workspace --copy       # 既存パッケージをテンプレートとして複製
-turbo gen workspace --copy https://github.com/...  # リモートから複製
+turbo gen workspace              # Add an empty package
+turbo gen workspace --copy       # Duplicate an existing package as a template
+turbo gen workspace --copy https://github.com/...  # Duplicate from a remote source
 ```
 
-## カスタムジェネレーター
-
-内部的に Plop の設定形式を使用。設定ファイルの配置場所:
-- モノレポルート: `turbo/generators/config.ts`
-- 任意のワークスペース内: `{workspace}/turbo/generators/config.ts`
+Custom generators use the Plop configuration format internally. Config file locations:
+- Monorepo root: `turbo/generators/config.ts`
+- Any workspace: `{workspace}/turbo/generators/config.ts`
 
 ```ts
 import type { PlopTypes } from "@turbo/gen";
@@ -30,14 +30,14 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
 }
 ```
 
-## 実行方法
+Running a generator:
 
 ```bash
 turbo gen [generator-name]
 turbo gen [generator-name] --args answer1 answer2
 ```
 
-## 注意点
+## Notes
 
-- ESM 依存関係は現在非対応
-- TypeScript 使用時は `@turbo/gen` を devDependency としてインストール
+- ESM dependencies are not currently supported.
+- When using TypeScript, install `@turbo/gen` as a devDependency.

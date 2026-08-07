@@ -1,20 +1,16 @@
 # @virtual
 
-TSDoc 互換のために解析されるが、TypeDoc では特定の意味を持たないモディファイアタグ。
+Modifier tag parsed for TSDoc compatibility, but with no specific meaning in TypeDoc.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @virtual */
 ```
 
-## 詳細説明
+TypeDoc parses the `@virtual` tag for compatibility with the TSDoc spec, but does not assign it any specific behavior. Semantically, it is used as a convention to indicate that a method is intended to be overridden in a subclass.
 
-TypeDoc は TSDoc 仕様との互換性のために `@virtual` タグを解析するが、このタグに特定の機能を割り当てていない。セマンティック的には、メソッドがサブクラスでオーバーライドされることを想定していることを示す規約として使用される。
-
-`--visibilityFilters` オプションで、このタグが付いたメンバーの表示を制御できる。
-
-## コード例
+The `--visibilityFilters` option controls the display of members carrying this tag.
 
 ```typescript
 export class Visibility {
@@ -26,33 +22,33 @@ export class Visibility {
 ```typescript
 export class BasePlugin {
     /**
-     * プラグインの初期化処理。
-     * サブクラスでオーバーライドしてカスタマイズ可能。
+     * Plugin initialization logic.
+     * Can be overridden in a subclass to customize behavior.
      * @virtual
      */
     initialize(): void {
-        // デフォルトの初期化処理
+        // Default initialization logic
     }
 
     /**
-     * プラグインの破棄処理。
-     * サブクラスでオーバーライドしてリソースを解放可能。
+     * Plugin disposal logic.
+     * Can be overridden in a subclass to release resources.
      * @virtual
      */
     dispose(): void {
-        // デフォルトの破棄処理
+        // Default disposal logic
     }
 }
 ```
 
-## 注意点
+## Notes
 
-- TSDoc 互換のために解析されるが、TypeDoc 固有の機能は付与されない
-- ドキュメントの規約としてオーバーライド可能を示す用途に使用可能
-- `--visibilityFilters` オプションで表示制御可能
-- TSDoc 仕様に準拠: https://tsdoc.org/pages/tags/virtual/
+- Parsed for TSDoc compatibility, but grants no TypeDoc-specific behavior
+- Can be used as a documentation convention to indicate overriding is expected
+- Display can be controlled via the `--visibilityFilters` option
+- Follows the TSDoc spec: https://tsdoc.org/pages/tags/virtual/
 
-## 関連
+## Related
 
 - [@sealed](./sealed.md)
 - [@override](./override.md)

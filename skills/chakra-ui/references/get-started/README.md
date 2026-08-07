@@ -4,7 +4,6 @@
 |------|-------------|------|
 | AI LLMs | Chakra UI v3 provides LLMs.txt files that make the documentation accessible to AI coding tools such as Cursor, Windsurf, GitHub Copilot, ChatGPT, and Claude. | [ai-llms.md](./ai-llms.md) |
 | AI MCP Server | The Chakra UI MCP Server is a Model Context Protocol server that provides AI assistants (Claude Code, Cursor, Copilot) with access to Chakra UI components, design tokens, and migration guidance. | [ai-mcp-server.md](./ai-mcp-server.md) |
-| AI Rules | Configuration rules for AI coding assistants (Cursor, GitHub Copilot, Claude) to generate accurate Chakra UI v3 code. | [ai-rules.md](./ai-rules.md) |
 | AI Skills | Chakra UI provides three Claude Code AI skills — reusable instruction sets that activate automatically based on user requests to streamline Chakra UI v3 development. | [ai-skills.md](./ai-skills.md) |
 | Changelog | Chakra UI v3 changelog is maintained on GitHub. | [changelog.md](./changelog.md) |
 | CLI | The Chakra UI CLI generates theme typings, adds community snippets, downloads Pro blocks, and ejects default theme tokens. | [cli.md](./cli.md) |

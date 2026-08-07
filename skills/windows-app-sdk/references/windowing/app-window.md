@@ -37,6 +37,8 @@ appWindow.SetPresenter(AppWindowPresenterKind.Default);
 | `IsVisible` | `bool` (read-only) | Whether the window is shown. |
 | `IsShownInSwitchers` | `bool` | Whether the window appears in ALT+TAB / taskbar. |
 | `DispatcherQueue` | `DispatcherQueue` (read-only) | Dispatcher queue associated with the app window. |
+| `PersistedStateId` | `Guid?` | Experimental. Identifier used to save/restore this window's placement across app sessions. |
+| `PlacementRestorationBehavior` | `PlacementRestorationBehavior` | Experimental. Controls how the window's placement is restored when created (e.g. use saved placement or not). |
 
 **Key methods**
 
@@ -45,7 +47,9 @@ appWindow.SetPresenter(AppWindowPresenterKind.Default);
 | `Create()` / `Create(AppWindowPresenter[, WindowId[, DispatcherQueue]])` | Creates a new app window. |
 | `GetFromWindowId(WindowId)` (static) | Returns the `AppWindow` for a `WindowId`, or `null`. |
 | `Show()` / `Show(bool activate)` / `Hide()` | Shows or hides the window. |
+| `ShowOnceWithRequestedStartupState()` | Shows the window once, with the default presenter, in the requested startup state. |
 | `Destroy()` | Attempts to destroy the app window. |
+| `AssociateWithDispatcherQueue(DispatcherQueue)` | Associates the app window with the specified dispatcher queue. |
 | `Move(PointInt32)` | Moves the window to a screen point. |
 | `Resize(SizeInt32)` | Resizes the window (outer bounds). |
 | `ResizeClient(SizeInt32)` | Resizes so the client area matches the given size. |
@@ -55,6 +59,15 @@ appWindow.SetPresenter(AppWindowPresenterKind.Default);
 | `SetIcon(string)` / `SetIcon(IconId)` | Sets the window icon. |
 | `SetTaskbarIcon`, `SetTitleBarIcon` | Sets taskbar / title bar specific icons. |
 
+**Window placement persistence (Experimental, `windows-app-sdk-2.0-experimental`)**
+
+| Name | Description |
+|------|-------------|
+| `GetCurrentPlacement()` | Returns an `AppWindowPlacementDetails` snapshot of the window's current placement. |
+| `SaveCurrentPlacement()` | Saves the window's current placement under its `PersistedStateId`. |
+| `SaveCurrentPlacementForAllPersistedStateIds()` (static) | Saves the current placement for every window that has a `PersistedStateId` set. |
+| `SetCurrentPlacement(AppWindowPlacementDetails, bool isFirstWindow)` | Applies the given placement details to the window; returns `bool` indicating success. |
+
 **Events**: `Changed` (`AppWindowChangedEventArgs`: `DidPositionChange`, `DidSizeChange`, `DidPresenterChange`, `DidVisibilityChange`), `Closing`, `Destroying`.
 
 ## Notes
@@ -62,6 +75,7 @@ appWindow.SetPresenter(AppWindowPresenterKind.Default);
 - Package: `Microsoft.UI.Windowing` (Windows App SDK / WinUI 3). Distinct from `System.Windows.Window` (WPF) and the JS/Compose `Window` concepts in other skills.
 - Title bar customization APIs are partially supported on Windows 10 (since WASDK 1.2) and fully supported on Windows 11 — check `AppWindowTitleBar.IsCustomizationSupported()` first.
 - The Windows App SDK doesn't provide methods for attaching UI framework content directly to an `AppWindow` created via `Create()`; for WinUI, get the system-created instance instead.
+- Window placement persistence/restoration (`PersistedStateId`, `PlacementRestorationBehavior`, `GetCurrentPlacement`, `SaveCurrentPlacement`, `SaveCurrentPlacementForAllPersistedStateIds`, `SetCurrentPlacement`) is Experimental and available only on the `windows-app-sdk-2.0-experimental` moniker; `AssociateWithDispatcherQueue` is stable since 1.4.
 
 ## Related
 

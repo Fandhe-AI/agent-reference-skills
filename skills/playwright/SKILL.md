@@ -35,6 +35,7 @@ skills/playwright/
       projects.md
       reporters.md
       retries.md
+      sharding.md
       timeouts.md
       web-server.md
     core-concepts/
@@ -54,6 +55,7 @@ skills/playwright/
       aria-snapshots.md
       authentication.md
       best-practices.md
+      clock.md
       dialogs-downloads.md
       events.md
       mock-browser-apis.md
@@ -123,7 +125,7 @@ skills/playwright/
 | テスト作成の基本、最初のテスト、CI セットアップ、デバッグ実行 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | playwright.config.ts、fixtures、annotations、parallelism、sharding、retries、timeouts | test-runner | [references/test-runner/README.md](references/test-runner/README.md) |
 | locators、assertions、actions、auto-waiting、emulation、frames、isolation | core-concepts | [references/core-concepts/README.md](references/core-concepts/README.md) |
-| 認証、ネットワークモック、API テスト、ビジュアルテスト、POM、アクセシビリティ、ベストプラクティス | guides | [references/guides/README.md](references/guides/README.md) |
+| 認証、ネットワークモック、API テスト、ビジュアルテスト、POM、アクセシビリティ、ベストプラクティス、クロック制御 | guides | [references/guides/README.md](references/guides/README.md) |
 | CLI コマンド、codegen、trace viewer、UI mode、test agents | tooling | [references/tooling/README.md](references/tooling/README.md) |
 | TypeScript、ブラウザ管理、Chrome 拡張、コンポーネントテスト、evaluate、service workers | advanced | [references/advanced/README.md](references/advanced/README.md) |
 | Page、Locator、BrowserContext、APIRequestContext、Assertions クラス API | api | [references/api/README.md](references/api/README.md) |

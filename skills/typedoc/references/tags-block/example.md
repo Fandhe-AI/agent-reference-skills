@@ -1,27 +1,23 @@
 # @example
 
-関数や機能の使用例を示すためのブロックタグ。
+Block tag used to show a usage example for a function or feature.
 
-## 構文
+## Signature / Usage
 
 ```
 @example
-使用例のコードまたはテキスト
+Example code or text
 ```
 
-## 詳細説明
+The `@example` tag indicates that the following text is an example of how to use the function. It conforms to the TSDoc specification.
 
-`@example` タグは、続くテキストが関数の使用方法の例であることを示す。TSDocの仕様に準拠している。
+TypeDoc processes the content of `@example` in two ways:
 
-TypeDocは `@example` の内容を2つの方法で処理する：
+1. **Without a code block**: If no markdown code block is included, TypeDoc treats the entire tag content as a code example. This approach is not strictly TSDoc-compliant but is supported for compatibility with VSCode.
 
-1. **コードブロックなしの場合**: マークダウンコードブロックが含まれていない場合、TypeDocはタグ内容全体をコード例として扱う。このアプローチは厳密にはTSDoc準拠ではないが、VSCodeとの互換性のためにサポートされている。
+2. **With a code block**: If a code block marked with triple backticks is included, both TypeDoc and VSCode treat text outside the code block as regular documentation text, and only the marked section as code.
 
-2. **コードブロックありの場合**: トリプルバッククォートでマークされたコードブロックが含まれている場合、TypeDocとVSCodeの両方がコードブロック外のテキストを通常のドキュメントテキストとして、マークされたセクションのみをコードとして扱う。
-
-## コード例
-
-### コードブロックなし
+### Without a code block
 
 ```typescript
 /**
@@ -31,7 +27,7 @@ TypeDocは `@example` の内容を2つの方法で処理する：
 export function factorial(n: number): number;
 ```
 
-### コードブロックあり
+### With a code block
 
 ````typescript
 /**
@@ -44,13 +40,13 @@ export function factorial(n: number): number;
 export function factorial(n: number): number;
 ````
 
-## 注意点
+## Notes
 
-- コードブロックなしの場合はタグ内容全体がコードとして扱われる
-- コードブロックありの場合は明示的にマークされた部分のみがコードとして表示される
-- 複数の `@example` タグを1つのコメントに含めることが可能
-- TSDoc仕様ではコードブロック形式が推奨される
+- Without a code block, the entire tag content is treated as code
+- With a code block, only the explicitly marked section is displayed as code
+- Multiple `@example` tags can be included in a single comment
+- The TSDoc specification recommends the code-block format
 
-## 関連
+## Related
 
 - [TSDoc @example](https://tsdoc.org/pages/tags/example/)

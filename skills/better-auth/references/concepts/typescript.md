@@ -1,12 +1,12 @@
 # TypeScript
 
-Better Auth は型安全な認証ライブラリとして設計されており、クライアントとサーバーの両方が TypeScript で構築されている。strict モードの有効化と `$Infer` プロパティによる型推論の使用が推奨される。
+Better Auth is designed as a type-safe auth library, with both the client and server built in TypeScript. Enabling strict mode and using the `$Infer` property for type inference is recommended.
 
-## TypeScript 設定要件
+## Signature / Usage
 
-### Strict モード（推奨）
+### Strict mode (recommended)
 
-`tsconfig.json` で TypeScript の strict モードを有効化:
+Enable TypeScript's strict mode in `tsconfig.json`:
 
 ```json
 {
@@ -16,7 +16,7 @@ Better Auth は型安全な認証ライブラリとして設計されており�
 }
 ```
 
-strict モードが有効にできない場合、最低限以下を設定:
+If strict mode cannot be enabled, set at minimum:
 
 ```json
 {
@@ -26,17 +26,13 @@ strict モードが有効にできない場合、最低限以下を設定:
 }
 ```
 
-**重要:** `strict` が `true` の場合、`strictNullChecks` は自動的に有効になる。`strictNullChecks` を明示的に `false` に設定すると、型推論の問題が発生する可能性がある。
+**Important:** when `strict` is `true`, `strictNullChecks` is automatically enabled. Explicitly setting `strictNullChecks` to `false` can cause type inference issues.
 
-### コンパイラ設定の警告
+### Type inference with `$Infer`
 
-TypeScript 推論が最大シリアライゼーション長を超える問題が発生した場合、`declaration` と `composite` オプションの両方が**有効になっていない**ことを確認する。
+Both the client and server implementations expose a `$Infer` property for extracting types from the auth config.
 
-## `$Infer` による型推論
-
-クライアントとサーバーの両方の実装が、auth 設定から型を抽出するための `$Infer` プロパティを公開する。
-
-### サーバー側の型推論
+Server-side type inference:
 
 ```typescript
 import { betterAuth } from "better-auth";
@@ -49,9 +45,9 @@ export const auth = betterAuth({
 type Session = typeof auth.$Infer.Session;
 ```
 
-`Session` 型は `session` と `user` プロパティの両方を含み、`user` プロパティはユーザーオブジェクト型を表す。
+The `Session` type includes both `session` and `user` properties, where `user` represents the user object type.
 
-### クライアント側の型推論
+Client-side type inference:
 
 ```typescript
 import { createAuthClient } from "better-auth/client";
@@ -61,11 +57,7 @@ const authClient = createAuthClient();
 export type Session = typeof authClient.$Infer.Session;
 ```
 
-## 追加フィールドの設定
-
-Better Auth ではユーザーとセッションオブジェクトを適切に型付けされたカスタムフィールドで拡張できる。
-
-### 追加フィールドの定義
+### Defining additional fields
 
 ```typescript
 export const auth = betterAuth({
@@ -81,22 +73,11 @@ export const auth = betterAuth({
 });
 ```
 
-追加フィールドは推論された `Session` 型に自動的に表示される。
+Additional fields automatically appear in the inferred `Session` type.
 
-### `input` プロパティ
+### Client-side additional field inference
 
-`input` プロパティは登録などのユーザー操作時にフィールドを設定できるかを制御:
-
-- **`input: true`（デフォルト）**: 操作時のユーザー入力にフィールドが含まれる
-- **`input: false`**: ユーザー入力からフィールドを除外
-
-**セキュリティ注意:** `role` のようなユーザーが設定すべきでないフィールドは、セキュリティ脆弱性を防ぐため `input: false` に設定することが重要。
-
-## クライアント側の追加フィールド推論
-
-### モノレポ / 単一プロジェクトセットアップ
-
-`inferAdditionalFields` プラグインを型インポートと共に使用:
+In monorepo/single-project setups, use the `inferAdditionalFields` plugin along with the type import:
 
 ```typescript
 import { inferAdditionalFields } from "better-auth/client/plugins";
@@ -108,9 +89,7 @@ export const authClient = createAuthClient({
 });
 ```
 
-### クライアント-サーバー分離プロジェクト
-
-追加フィールドを手動で指定:
+In client-server-separated projects, specify additional fields manually:
 
 ```typescript
 import { createAuthClient } from "better-auth/client";
@@ -129,9 +108,29 @@ export const authClient = createAuthClient({
 });
 ```
 
-## 注意点
+## Options / Props
 
-- strict モードは型推論の問題を防ぎ、Better Auth 開発に必須
-- `$Infer` プロパティはセッションとユーザー型への型安全なアクセスを提供
-- 追加フィールドにはセキュリティ上重要なプロパティに `input: false` の明示的設定が必要
-- クライアント側のフィールド推論はプロジェクトアーキテクチャに依存（モノレポ vs 分離プロジェクト）
+### `input` property
+
+The `input` property controls whether a field can be set during user actions such as registration.
+
+| Value | Description |
+|-------|-------------|
+| `input: true` (default) | Field is included in user input for the action |
+| `input: false` | Field is excluded from user input |
+
+## Notes
+
+- Strict mode prevents type inference issues and is essential for Better Auth development
+- The `$Infer` property provides type-safe access to session and user types
+- Security-critical additional field properties require explicitly setting `input: false`
+- Client-side field inference depends on project architecture (monorepo vs separated projects)
+- If TypeScript inference hits the maximum serialization length, make sure `declaration` and `composite` options are **not both** enabled
+
+### Security
+
+- **Security note:** it's important to set `input: false` for fields users shouldn't be able to set, such as `role`, to prevent security vulnerabilities
+
+## Related
+
+- [Database](./database.md)

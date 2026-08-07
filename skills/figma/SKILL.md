@@ -37,6 +37,7 @@ skills/figma/
       dev-resources.md
       webhooks.md
       activity-logs.md
+      ai-usage.md
       developer-logs.md
       discovery.md
       library-analytics.md
@@ -175,6 +176,7 @@ skills/figma/
 | OAuth 認証・Personal / Plan Access Token を設定したい | rest-api | [references/rest-api/README.md](references/rest-api/README.md) |
 | Variables・Dev Resources・Webhooks を REST API で操作したい | rest-api | [references/rest-api/README.md](references/rest-api/README.md) |
 | SCIM・activity-logs・library-analytics (Enterprise) を使いたい | rest-api | [references/rest-api/README.md](references/rest-api/README.md) |
+| AI credit usage を日次・ユーザー単位で取得したい | rest-api | [references/rest-api/README.md](references/rest-api/README.md) |
 | Plugin を開発したい（manifest・figma グローバル・node 操作） | plugin-api | [references/plugin-api/README.md](references/plugin-api/README.md) |
 | figma.variables / figma.codegen / figma.ui を使いたい | plugin-api | [references/plugin-api/README.md](references/plugin-api/README.md) |
 | FrameNode・TextNode・ComponentNode などのノード型を調べたい | plugin-api | [references/plugin-api/README.md](references/plugin-api/README.md) |

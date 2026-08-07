@@ -1,12 +1,12 @@
 # Bearer
 
-Bearer プラグインは、ブラウザ Cookie の代替として Bearer トークンによる認証を提供する。リクエストをインターセプトし、Authorization ヘッダーに Bearer トークンを追加して API に転送する。
+The Bearer plugin provides authentication via Bearer tokens as an alternative to browser cookies. It intercepts requests and forwards them to the API with a Bearer token added to the Authorization header.
 
-**セキュリティ警告**: Cookie をサポートしない API や Bearer トークンを必要とする API にのみ使用すること。不適切な実装はセキュリティ脆弱性につながる可能性がある。
+**Security warning**: use this only for APIs that don't support cookies or that require a Bearer token. Improper implementation can lead to security vulnerabilities.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -17,9 +17,9 @@ export const auth = betterAuth({
 })
 ```
 
-### クライアント側
+### Setup (client side)
 
-ステップ1: サインイン後に Bearer トークンを取得
+Step 1: obtain the Bearer token after sign-in
 
 ```typescript
 const { data } = await authClient.signIn.email({
@@ -33,7 +33,7 @@ const { data } = await authClient.signIn.email({
 })
 ```
 
-ステップ2: グローバル設定
+Step 2: global configuration
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -50,7 +50,7 @@ export const authClient = createAuthClient({
 })
 ```
 
-ステップ3: 自動トークン注入の設定
+Step 3: configure automatic token injection
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -65,13 +65,13 @@ export const authClient = createAuthClient({
 })
 ```
 
-ステップ4: 認証済みリクエストの送信
+Step 4: send an authenticated request
 
 ```typescript
 const { data } = await authClient.listSessions()
 ```
 
-ステップ5: リクエスト単位のトークン上書き（任意）
+Step 5: per-request token override (optional)
 
 ```typescript
 const { data } = await authClient.listSessions({
@@ -83,11 +83,9 @@ const { data } = await authClient.listSessions({
 })
 ```
 
-## API メソッド
+### Usage outside the auth client
 
-### Auth クライアント外での使用
-
-クライアント側:
+Client side:
 
 ```typescript
 const token = localStorage.getItem("bearer_token")
@@ -99,7 +97,7 @@ const response = await fetch("https://api.example.com/data", {
 })
 ```
 
-サーバー側のセッション検証:
+Server-side session verification:
 
 ```typescript
 import { auth } from "@/lib/auth"
@@ -114,20 +112,17 @@ export async function handler(req, res) {
 }
 ```
 
-## 設定オプション
+## Options / Props
 
-| オプション | 型 | デフォルト | 説明 |
+| Option | Type | Default | Description |
 |---|---|---|---|
-| `requireSignature` | boolean | `false` | トークンの署名を要求する |
+| `requireSignature` | boolean | `false` | Require the token to be signed |
 
-## レスポンスヘッダー
+## Notes
 
-認証成功後のレスポンスに含まれるヘッダー名: `set-auth-token`
-
-## 注意点
-
-- トークンの保存方法: localStorage は基本的なもの。機密性の高いアプリケーションではより安全な代替を検討すること
-- 常に HTTPS 経由でトークンを送信すること
-- Cookie の保護機能をバイパスするため、API アーキテクチャ上 Cookie が使用できない場合にのみ使用すること
-- 本番環境ではトークン整合性検証のため `requireSignature: true` を有効にすること
-- トークンの有効期限切れを適切に処理するリフレッシュ機構を実装すること
+- Response header: the `set-auth-token` header is included in the response after a successful sign-in
+- Token storage: localStorage is basic. Consider a more secure alternative for sensitive applications
+- Always send tokens over HTTPS
+- Only use this when cookies cannot be used due to API architecture, as it bypasses cookie protections
+- Enable `requireSignature: true` in production for token integrity verification
+- Implement a refresh mechanism to properly handle token expiration

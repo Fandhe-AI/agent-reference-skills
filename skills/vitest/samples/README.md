@@ -11,4 +11,4 @@
 | Spy on Methods | Track calls to existing methods with `vi.spyOn` without replacing the implementation. | [spy-on-methods.md](./spy-on-methods.md) |
 | Test Environment | Configure the runtime environment for tests (Node, jsdom, happy-dom, edge-runtime). | [test-environment.md](./test-environment.md) |
 | Type Testing | Assert TypeScript types at compile time using `expectTypeOf` and `assertType`. | [type-testing.md](./type-testing.md) |
-| Workspace Setup | Run tests across multiple packages in a monorepo with a single Vitest process. | [workspace-setup.md](./workspace-setup.md) |
+| Workspace Setup (Projects) | Run tests across multiple packages in a monorepo using the `test.projects` config (replaces the deprecated `workspace`). | [workspace-setup.md](./workspace-setup.md) |

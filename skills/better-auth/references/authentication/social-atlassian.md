@@ -1,13 +1,6 @@
 # Atlassian
 
-## Credentials
-
-- `ATLASSIAN_CLIENT_ID`
-- `ATLASSIAN_CLIENT_SECRET`
-
-Obtain from the [Atlassian Developer Console](https://developer.atlassian.com/console/myapps/).
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -22,8 +15,6 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
-
 ```typescript
 import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
@@ -35,13 +26,19 @@ const signIn = async () => {
 }
 ```
 
-## リダイレクト URL
+## Options / Props
 
-`https://yourdomain.com/api/auth/callback/atlassian`
+| Name | Type | Description |
+| --- | --- | --- |
+| `clientId` | string | `ATLASSIAN_CLIENT_ID` — obtain from the [Atlassian Developer Console](https://developer.atlassian.com/console/myapps/) |
+| `clientSecret` | string | `ATLASSIAN_CLIENT_SECRET` — obtain from the [Atlassian Developer Console](https://developer.atlassian.com/console/myapps/) |
 
-Atlassian Developer Console でコールバック URL を設定する。auth ルートのベースパスを変更した場合は、リダイレクト URI も更新する。
+## Notes
 
-## プロバイダー固有の設定・注意点
-
+- Redirect URL: `https://yourdomain.com/api/auth/callback/atlassian` — configure it in the Atlassian Developer Console; update it if the auth route base path changes
 - **Default scopes**: `read:jira-user` and `offline_access`
 - For additional scopes, consult the [Atlassian OAuth 2.0 (3LO) apps documentation](https://developer.atlassian.com/cloud/confluence/oauth-2-3lo-apps/)
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

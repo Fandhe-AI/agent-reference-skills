@@ -1,43 +1,43 @@
 # Install
 
-better-auth パッケージのインストールと初期シークレット生成。
+Installing the better-auth package and generating an initial secret.
 
-## パッケージのインストール（npm）
+## Install the package (npm)
 
 ```sh
 npm install better-auth
 ```
 
-## パッケージのインストール（pnpm）
+## Install the package (pnpm)
 
 ```sh
 pnpm add better-auth
 ```
 
-## パッケージのインストール（yarn）
+## Install the package (yarn)
 
 ```sh
 yarn add better-auth
 ```
 
-## パッケージのインストール（bun）
+## Install the package (bun)
 
 ```sh
 bun install better-auth
 ```
 
-## シークレットキーの生成（openssl）
+## Generate a secret key (openssl)
 
 ```sh
 openssl rand -base64 32
 ```
 
-32文字以上の高エントロピーな文字列を生成する。`.env` の `BETTER_AUTH_SECRET` に設定する。
+Generates a high-entropy string of 32+ characters. Set it as `BETTER_AUTH_SECRET` in `.env`.
 
-## シークレットキーの生成（CLI）
+## Generate a secret key (CLI)
 
 ```sh
 npx auth@latest secret
 ```
 
-Better Auth CLI でシークレットキーを生成する。
+Generates a secret key using the Better Auth CLI.

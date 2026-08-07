@@ -1,27 +1,12 @@
 # unable_to_create_session
 
-認証成功後にセッションの作成に失敗した際のエラー。
+## Notes
 
-## 発生条件
-
-認証ステップが成功した後、Better Auth がセッションを作成できない場合に発生する。セッションはユーザーのログイン状態を維持するために必須。
-
-## 主な原因
-
-- セッションレコードの DB 書き込み失敗
-- セッションストレージの設定ミスまたはアクセス不能
-- ネットワーク接続の問題や DB タイムアウト
-- セッション関連のデータフィールドが不完全または無効
-- カスタムフックやアダプターによるセッション作成への干渉
-
-## 対処方法
-
-1. **DB・ストレージの確認**: データベースまたはセッションストアが正しく設定・アクセス可能か確認する
-2. **スキーマの確認**: セッション関連テーブルが存在し、最新のマイグレーションが適用されているか確認する
-3. **設定の確認**: セッション処理パラメータが正しいか確認する
-4. **ログの確認**: セッション作成プロセス中の具体的なエラーをサーバーログで確認する
+- Occurs when Better Auth fails to create a session after a successful authentication step. Sessions are required to maintain the user's login state.
+- Common causes: session record DB write failure; session storage misconfiguration or inaccessibility; network issues or DB timeouts; incomplete or invalid session-related data fields; custom hooks or adapters interfering with session creation.
+- Fix: verify the database or session store is correctly configured and reachable; confirm session-related tables exist and the latest migrations are applied; check that session handling parameters are correct; review server logs for the specific error during session creation.
 
 ## Related
 
-- [error-unable-to-create-user.md](./error-unable-to-create-user.md)
-- [error-internal-server-error.md](./error-internal-server-error.md)
+- [unable_to_create_user](./error-unable-to-create-user.md)
+- [internal_server_error](./error-internal-server-error.md)

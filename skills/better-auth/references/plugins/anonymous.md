@@ -1,10 +1,10 @@
 # Anonymous
 
-Anonymous プラグインは、個人情報（PII）を要求せずに認証済みエクスペリエンスを提供する。ユーザーは匿名でアカウントを確立し、後から認証方法をリンクできる。
+The Anonymous plugin provides an authenticated experience without requiring personally identifiable information (PII). Users can establish an account anonymously and later link an authentication method.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -17,15 +17,15 @@ export const auth = betterAuth({
 })
 ```
 
-マイグレーション:
+Migration:
 
 ```bash
 npx auth migrate
-# または
+# or
 npx auth generate
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -38,63 +38,51 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
-
-### 匿名サインイン
+### Anonymous sign-in
 
 ```typescript
 const user = await authClient.signIn.anonymous()
 ```
 
-クレデンシャルや PII なしでユーザーを認証する。
+Authenticates a user without credentials or PII.
 
-### アカウントリンク
+### Account linking
 
-匿名ユーザーが別の方法でサインイン/サインアップすると、`onLinkAccount` コールバックが実行される:
+When an anonymous user signs in/up with another method, the `onLinkAccount` callback runs:
 
 ```typescript
 export const auth = betterAuth({
     plugins: [
         anonymous({
             onLinkAccount: async ({ anonymousUser, newUser }) => {
-                // カート、設定等のデータを移行
+                // Migrate cart, settings, etc. data
             }
         })
     ]
 })
 ```
 
-トリガー:
+Trigger:
 
 ```typescript
 const user = await authClient.signIn.email({ email })
 ```
 
-匿名ユーザーはリンク後にデフォルトで削除される。
+The anonymous user is deleted by default after linking.
 
-### 匿名ユーザー削除
+### Delete anonymous user
 
 ```typescript
-// クライアント
+// Client
 await authClient.deleteAnonymousUser()
 
-// サーバー
+// Server
 await auth.api.deleteAnonymousUser()
 ```
 
-匿名ユーザー認証が必要。`disableDeleteAnonymousUser` 設定に従う。
+Requires anonymous user authentication. Follows the `disableDeleteAnonymousUser` setting.
 
-## 設定オプション
-
-| オプション | 型 | デフォルト | 説明 |
-|---|---|---|---|
-| `emailDomainName` | string | `temp@{id}.com` で生成 | 一時メールアドレスのカスタムドメイン |
-| `generateRandomEmail` | () => string \| Promise<string> | - | カスタムメール生成関数。`emailDomainName` を上書き |
-| `onLinkAccount` | async ({ anonymousUser, newUser }) => void | - | アカウントリンク時のコールバック |
-| `disableDeleteAnonymousUser` | boolean | false | 匿名ユーザー削除エンドポイントを無効化 |
-| `generateName` | () => string \| Promise<string> | - | 匿名ユーザーのカスタム名生成 |
-
-### カスタムメール生成
+### Custom email generation
 
 ```typescript
 generateRandomEmail: () => {
@@ -103,19 +91,29 @@ generateRandomEmail: () => {
 }
 ```
 
-一意で有効なメールを返す必要がある。
+Must return a unique, valid email.
 
-## DB スキーマ
+## Options / Props
 
-### user テーブル追加フィールド
-
-| フィールド | 型 | 任意 | 説明 |
+| Option | Type | Default | Description |
 |---|---|---|---|
-| `isAnonymous` | boolean | Yes | 匿名ユーザーアカウントの識別 |
+| `emailDomainName` | string | Generated as `temp@{id}.com` | Custom domain for the temporary email address |
+| `generateRandomEmail` | () => string \| Promise<string> | - | Custom email generation function. Overrides `emailDomainName` |
+| `onLinkAccount` | async ({ anonymousUser, newUser }) => void | - | Callback fired on account linking |
+| `disableDeleteAnonymousUser` | boolean | false | Disable the anonymous user deletion endpoint |
+| `generateName` | () => string \| Promise<string> | - | Custom name generation for anonymous users |
 
-## 注意点
+## Notes
 
-- 匿名ユーザーはアカウントリンク時にデフォルトで削除される
-- `disableDeleteAnonymousUser` はエンドポイントアクセスを防ぐが、リンク時の自動削除には影響しない
-- カスタムメール生成関数は一意性の確保が開発者の責任
-- 匿名サインアップ時に PII は不要で保存されない
+- Anonymous users are deleted by default when their account is linked
+- `disableDeleteAnonymousUser` prevents endpoint access but does not affect automatic deletion on linking
+- Ensuring uniqueness of custom email generation is the developer's responsibility
+- No PII is required or stored during anonymous sign-up
+
+### DB schema
+
+Additional fields on the user table:
+
+| Field | Type | Optional | Description |
+|---|---|---|---|
+| `isAnonymous` | boolean | Yes | Identifies anonymous user accounts |

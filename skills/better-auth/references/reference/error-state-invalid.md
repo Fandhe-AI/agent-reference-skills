@@ -1,34 +1,6 @@
 # state_invalid
 
-Cookie ベースの state ストレージ使用時に、OAuth state Cookie の復号・解析に失敗した際のエラー。
-
-## 発生条件
-
-`account.storeStateStrategy: "cookie"` 設定時、OAuth フローの開始からコールバックフェーズの間に state Cookie の復号・解析が失敗した場合に発生する。
-
-## 主な原因
-
-- OAuth フロー開始からコールバックまでの間に `BETTER_AUTH_SECRET` をローテーションした
-- プロキシや CDN による Cookie の破損・切り詰め
-- Cookie 値が手動で変更または競合している
-
-## 対処方法
-
-**1. シークレットローテーションのタイミング調整**
-
-低トラフィック時間帯にシークレットをローテーションするか、新旧両方のシークレットを移行期間中並行して保持する。
-
-**2. プロキシ・CDN の検証**
-
-プロキシや CDN が Cookie 値を変更・切り詰め・エンコードしていないか確認する。
-
-**3. Cookie の検証**
-
-ブラウザの DevTools で `better-auth.oauth_state` Cookie がリダイレクトからコールバックまで変化していないことを確認する。
-
-**4. ストレージ戦略の変更**
-
-Cookie 復号に依存しない database 戦略への移行を検討する:
+## Signature / Usage
 
 ```typescript
 export const auth = betterAuth({
@@ -38,7 +10,20 @@ export const auth = betterAuth({
 })
 ```
 
+This error occurs when using cookie-based state storage (`account.storeStateStrategy: "cookie"`) and Better Auth fails to decrypt or parse the OAuth state cookie between the start of the OAuth flow and the callback phase.
+
+## Notes
+
+- Causes:
+  - `BETTER_AUTH_SECRET` was rotated between OAuth flow initiation and callback
+  - Cookie corruption or truncation by a proxy or CDN
+  - The cookie value was manually altered or conflicts with another cookie
+- Time secret rotation carefully: rotate secrets during low-traffic periods, or keep both old and new secrets valid in parallel during a migration window
+- Verify proxy/CDN behavior: confirm proxies and CDNs are not modifying, truncating, or re-encoding the cookie value
+- Verify the cookie: use browser DevTools to confirm the `better-auth.oauth_state` cookie doesn't change between the redirect and the callback
+- Consider switching storage strategy: move to the `database` strategy (shown above) to avoid relying on cookie decryption
+
 ## Related
 
-- [error-state-mismatch.md](./error-state-mismatch.md)
-- [error-state-not-found.md](./error-state-not-found.md)
+- [state_mismatch](./error-state-mismatch.md)
+- [state_not_found](./error-state-not-found.md)

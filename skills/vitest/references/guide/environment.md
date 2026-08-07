@@ -1,15 +1,6 @@
-# テスト環境
+# Test Environment
 
-## 組み込み環境
-
-| Environment | Description |
-|-------------|-------------|
-| `node`（デフォルト） | Node.js 環境 |
-| `jsdom` | jsdom パッケージによるブラウザ API エミュレーション |
-| `happy-dom` | jsdom より高速なブラウザ API エミュレーション（API は少なめ） |
-| `edge-runtime` | Vercel Edge Runtime エミュレーション |
-
-## グローバル設定
+## Signature / Usage
 
 ```ts
 // vitest.config.ts
@@ -20,9 +11,18 @@ export default defineConfig({
 })
 ```
 
-## ファイル単位の環境指定
+## Options / Props
 
-テストファイル先頭のコメントで個別に環境を上書きできる。
+| Environment | Description |
+|-------------|-------------|
+| `node` (default) | Node.js environment |
+| `jsdom` | Browser API emulation via the jsdom package |
+| `happy-dom` | Faster browser API emulation than jsdom (fewer APIs) |
+| `edge-runtime` | Vercel Edge Runtime emulation |
+
+## Notes
+
+- Per-file override via a comment at the top of the test file:
 
 ```ts
 // @vitest-environment jsdom
@@ -34,7 +34,7 @@ test('DOM test', () => {
 })
 ```
 
-## glob パターンでの環境指定
+- Glob-based environment assignment:
 
 ```ts
 // vitest.config.ts
@@ -49,9 +49,7 @@ export default defineConfig({
 })
 ```
 
-## カスタム環境
-
-`vitest-environment-${name}` パッケージまたはファイルパスで独自環境を作成可能。
+- Custom environments can be created via a `vitest-environment-${name}` package or a file path:
 
 ```ts
 // vitest-environment-custom.ts
@@ -59,17 +57,17 @@ export default {
   name: 'custom',
   transformMode: 'ssr',
   setup() {
-    // 環境セットアップ
+    // environment setup
     return {
       teardown() {
-        // クリーンアップ
+        // cleanup
       },
     }
   },
 }
 ```
 
-## 関連
+## Related
 
-- [設定](./config.md)
-- [ワークスペース](./workspace.md)
+- [Config](./config.md)
+- [Workspace](./workspace.md)

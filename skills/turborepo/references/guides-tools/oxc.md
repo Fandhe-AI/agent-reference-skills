@@ -1,8 +1,10 @@
 # Oxc (oxlint / oxfmt)
 
-Rust 製の超高速 JavaScript / TypeScript ツールスイート。
+Rust-based, extremely fast JavaScript / TypeScript tool suite.
 
-## oxlint
+## Usage
+
+oxlint:
 
 ```json
 {
@@ -19,7 +21,7 @@ Rust 製の超高速 JavaScript / TypeScript ツールスイート。
 }
 ```
 
-## oxfmt（アルファ版）
+oxfmt (alpha):
 
 ```json
 {
@@ -27,8 +29,8 @@ Rust 製の超高速 JavaScript / TypeScript ツールスイート。
 }
 ```
 
-## 注意点
+## Notes
 
-- type-aware lint を有効にする場合、Compiled Package は事前にビルドが必要
-- oxfmt はアルファ版のため本番採用には注意
-- 統合ワークフロー: 検証は並列、修正は逐次実行（ファイル書き込み競合防止）
+- To enable type-aware lint, Compiled Packages must be built beforehand.
+- oxfmt is alpha software; use caution before adopting it in production.
+- Integrated workflow: run checks in parallel, run fixes sequentially (to avoid file-write conflicts).

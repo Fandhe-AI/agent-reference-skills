@@ -42,6 +42,8 @@ skills/windows-testing-performance/
       plm-testing.md
       winapp-cli-debugging.md
       winapp-cli-ui-automation.md
+      static-analysis-dotnet-cpp.md
+      telemetry-crash-reporting.md
     performance/
       README.md
       choose-between-tools.md
@@ -95,6 +97,14 @@ skills/windows-testing-performance/
       deadlock-avoidance.md
       background-tasks.md
       agile-objects-marshaling.md
+  scripts/
+    README.md
+    install.md
+    winapp-cli.md
+    wack.md
+    sideloading.md
+    ci.md
+    device-portal.md
 ```
 
 ## 探索手順
@@ -121,6 +131,7 @@ skills/windows-testing-performance/
 | DispatcherQueue で UI スレッドに処理をマーシャリングしたい | threading | [references/threading/README.md](references/threading/README.md) |
 | WinRT 非同期パターン・async/await・ConfigureAwait を扱いたい | threading | [references/threading/README.md](references/threading/README.md) |
 | スレッドプール・アパートメントモデル・デッドロック回避・バックグラウンドタスクを実装したい | threading | [references/threading/README.md](references/threading/README.md) |
+| Appium/WinAppDriver/Playwright のセットアップ・WACK 実行・サイドローディング・CI・Device Portal のコマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
 
 このスキルは WinUI 3 / Windows App SDK アプリのテスト・パフォーマンス・アクセシビリティ・スレッドに特化する。
 コントロール API・レイアウト・データバインディング・パッケージング等は windows-winui-controls, windows-winui-ui, windows-app-sdk, windows-design, windows-data-storage, windows-platform-integration, windows-graphics-media, windows-ai, windows-packaging-publish, windows-interop-modernize が担当する。

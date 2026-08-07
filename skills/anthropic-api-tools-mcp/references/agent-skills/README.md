@@ -1,11 +1,9 @@
 # Agent Skills
 
-Claude API (Messages API) 側の Agent Skills。Claude Code CLI の Skills (SKILL.md) は anthropic-claude-code-extend、Agent SDK からの利用は anthropic-agent-sdk を参照。
-
 | Name | Description | Path |
 |------|-------------|------|
-| Best practices | Skill authoring guideline・conciseness・naming・progressive disclosure・evaluation | [best-practices.md](./best-practices.md) |
-| Claude API skill | Open-source Agent Skill・Messages API reference・multiple language support | [claude-api-skill.md](./claude-api-skill.md) |
-| Enterprise | Skill governance・risk tier assessment・lifecycle management・distribution control | [enterprise.md](./enterprise.md) |
-| Overview | Agent Skills・modular capability・progressive disclosure・three-level loading | [overview.md](./overview.md) |
-| Quickstart | Pre-built Agent Skills (PowerPoint/Excel/Word/PDF) チュートリアル・API usage | [quickstart.md](./quickstart.md) |
+| Skill authoring best practices | Guidance for writing effective, discoverable Agent Skills: conciseness, degrees of freedom, naming, descriptions, progressive disclosure, workflows/feedback loops, and evaluation. | [best-practices.md](./best-practices.md) |
+| Claude API skill | An open-source Agent Skill (`claude-api`) that gives Claude up-to-date reference material for building on the Messages API and Claude Managed Agents (beta), across eight languages. Bundled with Claude Code and available from the Anthropic skills repository. | [claude-api-skill.md](./claude-api-skill.md) |
+| Skills for enterprise | Governance guidance for deploying Agent Skills at enterprise scale: risk-tier assessment, review checklist, evaluation requirements, lifecycle management, and distribution/version control. | [enterprise.md](./enterprise.md) |
+| Agent Skills overview | Agent Skills are modular capabilities that extend Claude's functionality on the Claude API. Each Skill packages instructions, metadata, and optional resources (scripts, templates) that Claude uses automatically when relevant, via progressive disclosure. | [overview.md](./overview.md) |
+| Agent Skills quickstart (API) | Tutorial for using pre-built Agent Skills (PowerPoint, Excel, Word, PDF) with the Claude API in under 10 minutes: list Skills, create a document, download the generated file. | [quickstart.md](./quickstart.md) |

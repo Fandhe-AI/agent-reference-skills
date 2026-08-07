@@ -1,13 +1,15 @@
 # SvelteKit
 
-## クイックスタート
+## Usage
+
+### Quickstart
 
 ```bash
 pnpm dlx create-turbo@latest -e with-svelte
-pnpm dlx sv create apps/my-app  # 既存リポジトリに追加
+pnpm dlx sv create apps/my-app  # add to an existing repo
 ```
 
-## 内部パッケージの参照
+### Referencing internal packages
 
 ```jsonc
 // pnpm / bun
@@ -17,9 +19,9 @@ pnpm dlx sv create apps/my-app  # 既存リポジトリに追加
 "@repo/ui": "*"
 ```
 
-## マイクロフロントエンド設定
+### Micro-frontend configuration
 
-SvelteKit も Vite ベースのため、`vite.config.ts` で `base` を設定:
+SvelteKit is also Vite-based, so set `base` in `vite.config.ts`:
 
 ```ts
 export default defineConfig({

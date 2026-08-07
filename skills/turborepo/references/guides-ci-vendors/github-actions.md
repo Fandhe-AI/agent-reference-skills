@@ -1,6 +1,8 @@
 # GitHub Actions
 
-## ワークフロー設定例（pnpm）
+## Usage
+
+Example workflow (pnpm):
 
 ```yaml
 name: CI
@@ -31,20 +33,21 @@ jobs:
       - run: pnpm test
 ```
 
-## Remote Cache 設定
+## Notes
 
-1. Vercel でスコープ付きアクセストークンを作成
-2. GitHub Secrets に `TURBO_TOKEN` を登録
-3. GitHub Variables に `TURBO_TEAM` を登録
-4. ワークフロー YAML に環境変数を追加:
+- Configure Remote Cache:
+  1. Create a scoped access token in Vercel.
+  2. Register `TURBO_TOKEN` in GitHub Secrets.
+  3. Register `TURBO_TEAM` in GitHub Variables.
+  4. Add the environment variables to the workflow YAML:
 
-```yaml
-env:
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-```
+  ```yaml
+  env:
+    TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+    TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  ```
 
-## actions/cache によるローカルキャッシング
+- Local caching with `actions/cache`:
 
 ```yaml
 - uses: actions/cache@v4

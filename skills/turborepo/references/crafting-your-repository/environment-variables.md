@@ -1,15 +1,19 @@
-# 環境変数の使用
+# Using Environment Variables
 
-## 4種類のキーの違い
+## Options
 
-| キー | スコープ | ハッシュ影響 | 用途 |
-|---|---|---|---|
-| `env` | タスク個別 | あり | ビルド出力に影響する変数 |
-| `globalEnv` | 全タスク | あり | リポジトリ全体に影響する変数 |
-| `passThroughEnv` | タスク個別 | なし | 実行には必要だが出力に影響しない変数 |
-| `globalPassThroughEnv` | 全タスク | なし | リポジトリ全体で実行時に必要な変数 |
+### The four key types
 
-## 設定例
+| Key | Scope | Affects hash | Purpose |
+| --- | --- | --- | --- |
+| `env` | Per task | Yes | Variables that affect the build output |
+| `globalEnv` | All tasks | Yes | Variables that affect the whole repository |
+| `passThroughEnv` | Per task | No | Variables needed at runtime but that don't affect output |
+| `globalPassThroughEnv` | All tasks | No | Variables needed at runtime across the whole repository |
+
+## Usage
+
+### Configuration example
 
 ```json
 {
@@ -24,20 +28,20 @@
 }
 ```
 
-## Strict Mode vs Loose Mode
+### Strict Mode vs Loose Mode
 
-- `strict`（デフォルト）: 宣言されていない環境変数はタスクに渡されない
-- `loose`: プロセスの全環境変数がタスクに渡される
+- `strict` (default): undeclared environment variables are not passed to the task
+- `loose`: all of the process's environment variables are passed to the task
 
-## フレームワーク自動推論
+### Framework inference
 
-Next.js の `NEXT_PUBLIC_*`、Vite の `VITE_*` 等は自動的にハッシュに含まれる。
+Next.js's `NEXT_PUBLIC_*`, Vite's `VITE_*`, etc. are automatically included in the hash.
 
-無効化: `turbo build --framework-inference=false`
+Disable with: `turbo build --framework-inference=false`
 
-## .env ファイルの扱い
+### Handling .env files
 
-Turborepo は `.env` ファイルを自動ロードしない。`inputs` に追加してハッシュに含める:
+Turborepo does not automatically load `.env` files. Add them to `inputs` to include them in the hash:
 
 ```json
 {
@@ -50,8 +54,8 @@ Turborepo は `.env` ファイルを自動ロードしない。`inputs` に追�
 }
 ```
 
-## ベストプラクティス
+## Notes
 
-- `.env` ファイルはルートではなくアプリパッケージに置く
-- `eslint-config-turbo` でハッシュに含まれていない変数を検出
-- トラブルシューティング: `turbo build --summarize`
+- Keep `.env` files in the app package, not the root.
+- `eslint-config-turbo` detects variables that are missing from the hash.
+- Troubleshooting: `turbo build --summarize`.

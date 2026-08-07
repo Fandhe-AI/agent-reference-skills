@@ -4,8 +4,8 @@ OpenAPI 仕様から MSW（Mock Service Worker）ハンドラーと Faker モッ
 
 ```typescript
 // kubb.config.ts
-import { defineConfig } from '@kubb/core'
-import { pluginOas } from '@kubb/plugin-oas'
+import { defineConfig } from 'kubb/config'
+import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginFaker } from '@kubb/plugin-faker'
 import { pluginMsw } from '@kubb/plugin-msw'
@@ -13,13 +13,12 @@ import { pluginMsw } from '@kubb/plugin-msw'
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen', clean: true },
+  adapter: adapterOas({ dateType: 'date' }),
   plugins: [
-    pluginOas({ generators: [] }),
     pluginTs({ output: { path: 'models' } }),
     pluginFaker({
       output: { path: './mocks' },
       group: { type: 'tag', name: ({ group }) => `${group}Mocks` },
-      dateType: 'date',
       seed: [42],
     }),
     pluginMsw({
@@ -34,7 +33,7 @@ export default defineConfig({
 
 ```bash
 # インストール
-npm install --save-dev @kubb/cli @kubb/core @kubb/plugin-oas @kubb/plugin-ts @kubb/plugin-faker @kubb/plugin-msw
+npm install --save-dev kubb@beta @kubb/plugin-ts@beta @kubb/plugin-faker@beta @kubb/plugin-msw@beta
 npm install msw @faker-js/faker
 ```
 
@@ -51,6 +50,7 @@ export const worker = setupWorker(...handlers)
 ## Notes
 
 - `pluginFaker` を `pluginMsw` より前に配置する（`parser: 'faker'` 時に Faker の出力を参照するため）
+- `dateType` は v5 でプラグイン個別オプションから `adapter: adapterOas({ dateType })` に集約された（`pluginFaker` / `pluginTs` / `pluginZod` 個別のオプションではなくなった）
 - `handlers: true` で全エンドポイントを統合した `handlers.ts` を生成する
 - `seed` を固定するとテスト実行ごとに同じモックデータが生成される
 - `parser: 'data'`（デフォルト）は空レスポンスを返す最小ハンドラーを生成する

@@ -1,19 +1,21 @@
 # Prisma
 
-DB クライアントをモノレポ内の共有内部パッケージとして構成する。
+Configure the DB client as a shared internal package inside the monorepo.
 
-## クイックスタート
+## Usage
+
+Quick start:
 
 ```bash
 npx create-turbo@latest -e with-prisma
 ```
 
-## 主要な統合ポイント
+Key integration points:
 
-- Prisma Client の初期化
-- Internal Package パターンに従った構造化
-- マイグレーション（`prisma migrate`）
-- ローカル開発ワークフロー
-- 本番デプロイ戦略
+- Initializing the Prisma Client
+- Structuring following the Internal Package pattern
+- Migrations (`prisma migrate`)
+- Local development workflow
+- Production deployment strategy
 
-詳細は Prisma 公式ガイドを参照。
+See the official Prisma guide for details.

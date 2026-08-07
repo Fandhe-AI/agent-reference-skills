@@ -9,15 +9,22 @@ GitHub REST API のバージョニングの仕組みとサポートポリシー�
 | 現在のデフォルトバージョン | `2022-11-28` |
 | ヘッダー名 | `X-GitHub-Api-Version` |
 
+### サポート中のバージョン一覧
+
+| バージョン | リリース日 | サポート終了 |
+|-----------|-----------|--------------|
+| `2026-03-10` | 2026-03-10 | 未定 |
+| `2022-11-28`（デフォルト） | 2022-11-28 | 2028-03-10 |
+
 ### バージョン指定
 
 ```bash
-curl -H "X-GitHub-Api-Version: 2022-11-28" \
+curl -H "X-GitHub-Api-Version: 2026-03-10" \
   -H "Authorization: Bearer TOKEN" \
   https://api.github.com/repos/OWNER/REPO
 ```
 
-`X-GitHub-Api-Version` ヘッダーを省略した場合、デフォルトバージョン（`2022-11-28`）が使用される。
+`X-GitHub-Api-Version` ヘッダーを省略した場合、デフォルトバージョン（`2022-11-28`）が使用される。`2026-03-10` を利用するには明示的にヘッダーを指定する必要がある。
 
 ## サポートポリシー
 
@@ -50,6 +57,26 @@ curl -H "X-GitHub-Api-Version: 2022-11-28" \
 - 既存パラメータの制限の緩和
 - 新しいWebhookイベントの追加
 
+## 2026-03-10 の破壊的変更（抜粋）
+
+`2022-11-28` から `2026-03-10` への主な破壊的変更:
+
+- Rate limit エンドポイントから `rate` プロパティを削除（`resources.core` を使用）
+- チーム作成リクエストから非推奨の `permission` プロパティを削除
+- リポジトリコンテンツ一覧で submodule が `type: "file"` ではなく `type: "submodule"` を返す
+- SARIF レスポンスの `Content-Type` を `application/sarif+json` に修正
+- リポジトリ設定から `use_squash_pr_title_as_default` を削除（`squash_merge_commit_title` に置換）
+- API ルートエンドポイントから `authorizations_url` / `hub_url` を削除、`/hub` エンドポイント自体を廃止
+- Issue の単数形 `assignee` フィールドを削除（`assignees` 配列を使用）
+- Pull request レスポンスから `merge_commit_sha` を削除
+- Workflow dispatch のレスポンスが `204` から `200`（ワークフロー実行詳細付き）に変更、`return_run_details` パラメータを削除
+- Code scanning の言語 enum で個別の `javascript` / `typescript` を統合 `javascript-typescript` に置換
+- Advisory のセキュリティメトリクスで `cvss` を非推奨化（`cvss_severities` を使用）
+- Attestation bundle 一覧レスポンスから `bundle` プロパティを削除（`bundle_url` を使用）
+- Trade control 対象操作（リポジトリ作成・組織削除・メンバー削除等）のステータスコードが `422`/`403` から `451 Unavailable For Legal Reasons` に変更
+
+詳細な全項目は公式ドキュメントの Breaking changes ページを参照。
+
 ## バージョン管理のベストプラクティス
 
 - **`X-GitHub-Api-Version` ヘッダーを常に明示する** — デフォルトバージョンに依存しない
@@ -71,6 +98,7 @@ curl -H "Authorization: Bearer TOKEN" \
 
 ```json
 [
-  "2022-11-28"
+  "2022-11-28",
+  "2026-03-10"
 ]
 ```

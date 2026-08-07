@@ -39,6 +39,12 @@ skills/apple-data/
       transient-macro.md
       versioned-schema.md
       schema-migration-plan.md
+      unique-macro.md
+      index-macro.md
+      data-store-protocol.md
+      history-tracking.md
+      model-document.md
+      results-observer.md
     coredata/
       README.md
       nsmanagedobject.md
@@ -121,6 +127,10 @@ skills/apple-data/
 | Predicate / SortDescriptor でフィルタ・ソートしたい | swiftdata | [references/swiftdata/README.md](references/swiftdata/README.md) |
 | @Attribute / @Relationship / @Transient を設定したい | swiftdata | [references/swiftdata/README.md](references/swiftdata/README.md) |
 | VersionedSchema / SchemaMigrationPlan でマイグレーションしたい | swiftdata | [references/swiftdata/README.md](references/swiftdata/README.md) |
+| @Unique / @Index で一意性・索引を設定したい | swiftdata | [references/swiftdata/README.md](references/swiftdata/README.md) |
+| DataStore プロトコルでカスタムストレージを実装したい | swiftdata | [references/swiftdata/README.md](references/swiftdata/README.md) |
+| History tracking / ResultsObserver で変更を観測したい | swiftdata | [references/swiftdata/README.md](references/swiftdata/README.md) |
+| ModelDocument でドキュメントベースアプリを作りたい | swiftdata | [references/swiftdata/README.md](references/swiftdata/README.md) |
 | NSManagedObject でエンティティを操作したい | coredata | [references/coredata/README.md](references/coredata/README.md) |
 | NSManagedObjectContext で CRUD を実行したい | coredata | [references/coredata/README.md](references/coredata/README.md) |
 | NSPersistentContainer でスタックをセットアップしたい | coredata | [references/coredata/README.md](references/coredata/README.md) |

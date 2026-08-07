@@ -68,11 +68,13 @@ skills/typedoc/
       enum.md
       event.md
       eventProperty.md
+      expand.md
       experimental.md
       function.md
       hidden.md
       hideconstructor.md
       ignore.md
+      inline.md
       interface.md
       internal.md
       namespace.md
@@ -84,6 +86,7 @@ skills/typedoc/
       protected.md
       public.md
       readonly.md
+      reexport.md
       sealed.md
       useDeclaredType.md
       virtual.md

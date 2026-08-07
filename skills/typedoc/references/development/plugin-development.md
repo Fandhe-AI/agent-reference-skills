@@ -1,46 +1,46 @@
-# TypeDoc プラグイン開発
+# TypeDoc Plugin Development
 
-TypeDoc プラグインの作成方法、イベントシステム、カスタムオプションの追加方法。
+How to write TypeDoc plugins, the event system, and adding custom options.
 
-## 詳細説明
+## Usage
 
-### プラグインの基本構造
+### Basic plugin structure
 
-TypeDoc プラグインは `load` 関数をエクスポートする Node モジュール。ESM と CommonJS の両方をサポートするが、ESM が推奨される。
+A TypeDoc plugin is a Node module that exports a `load` function. Both ESM and CommonJS are supported, but ESM is recommended.
 
-#### ESM プラグイン
+#### ESM plugin
 
 ```typescript
 import * as td from "typedoc";
 
 export function load(app: td.Application) {
-  // app, app.converter, app.renderer 等にイベントリスナーを登録
-  // この関数は async にできる
+  // Register listeners on app, app.converter, app.renderer, etc.
+  // This function may be async
 }
 ```
 
-> **重要**: プラグインは異なる Application インスタンスに対して複数回ロードされる可能性がある（単一ロードで複数プロジェクトを変換する場合も含む）。この前提でプラグインを設計すること。
+> **Important**: a plugin may be loaded multiple times against different `Application` instances (including a single load converting multiple projects). Design the plugin with this in mind.
 
-#### CommonJS プラグイン
+#### CommonJS plugin
 
 ```javascript
 const td = require("typedoc");
 
 module.exports = {
   load(app) {
-    // イベントリスナーを登録
+    // Register listeners
   },
 };
 ```
 
-#### JS 設定ファイルからの直接参照
+#### Referencing a plugin directly from a JS config file
 
 ```javascript
 // typedoc.config.js
 import * as td from "typedoc";
 
 export function customPlugin(app) {
-  // イベントリスナーを登録
+  // Register listeners
 }
 
 const config = {
@@ -50,52 +50,18 @@ const config = {
 export default config;
 ```
 
-### イベントシステム
+### Event system
 
-プラグインは変換とレンダリング中に発火するイベントにリスナーを登録して TypeDoc の動作を変更する。イベントは以下の4つのクラスで提供される:
+Plugins alter TypeDoc's behavior by registering listeners for events fired during conversion and rendering. Events are provided by four classes:
 
-- **Application** — アプリケーションライフサイクルイベント
-- **Converter** — 変換処理イベント
-- **Renderer** — レンダリング処理イベント
-- **Serializer / Deserializer** — シリアライゼーションイベント
+- **Application** — application lifecycle events
+- **Converter** — conversion process events
+- **Renderer** — rendering process events
+- **Serializer / Deserializer** — serialization events
 
-各クラスは利用可能なイベントを記述する静的 `EVENT_*` プロパティを提供する。
+Each class exposes the events it offers via static `EVENT_*` properties.
 
-### Converter イベント
-
-| イベント定数 | 値 | 説明 |
-|-------------|---|------|
-| `Converter.EVENT_BEGIN` | `"begin"` | 変換開始時に発火。`Context` を受け取る |
-| `Converter.EVENT_END` | `"end"` | 変換完了時に発火。`Context` を受け取る |
-| `Converter.EVENT_CREATE_PROJECT` | `"createProject"` | プロジェクト Reflection 作成時。`Context`, `ProjectReflection` を受け取る |
-| `Converter.EVENT_CREATE_DECLARATION` | `"createDeclaration"` | 宣言 Reflection 作成時。`Context`, `DeclarationReflection` を受け取る |
-| `Converter.EVENT_CREATE_DOCUMENT` | `"createDocument"` | ドキュメント Reflection 作成時。`DocumentReflection` を受け取る |
-| `Converter.EVENT_CREATE_SIGNATURE` | `"createSignature"` | シグネチャ Reflection 作成時。`Context`, `SignatureReflection`, 宣言ノード, `ts.Signature` を受け取る |
-| `Converter.EVENT_CREATE_PARAMETER` | `"createParameter"` | パラメータ Reflection 作成時。`Context`, `ParameterReflection`, オプションの `ts.Node` を受け取る |
-| `Converter.EVENT_CREATE_TYPE_PARAMETER` | `"createTypeParameter"` | 型パラメータ Reflection 作成時。`Context`, `TypeParameterReflection` を受け取る |
-| `Converter.EVENT_RESOLVE_BEGIN` | `"resolveBegin"` | 解決処理開始時。`Context` を受け取る |
-| `Converter.EVENT_RESOLVE` | `"resolveReflection"` | 個々の Reflection 解決時。`Context`, `Reflection` を受け取る |
-| `Converter.EVENT_RESOLVE_END` | `"resolveEnd"` | 解決処理完了時。`Context` を受け取る |
-
-### Renderer イベント
-
-| イベント定数 | 値 | 説明 |
-|-------------|---|------|
-| `Renderer.EVENT_BEGIN` | `"beginRender"` | レンダリング開始前。`RendererEvent` を受け取る |
-| `Renderer.EVENT_END` | `"endRender"` | 全ドキュメント書き込み後。`RendererEvent` を受け取る |
-| `Renderer.EVENT_BEGIN_PAGE` | `"beginPage"` | ページレンダリング前。`PageEvent` を受け取る |
-| `Renderer.EVENT_END_PAGE` | `"endPage"` | ページレンダリング後（書き込み前）。`PageEvent` を受け取る |
-| `Renderer.EVENT_PREPARE_INDEX` | `"prepareIndex"` | 検索インデックス準備時。`IndexEvent` を受け取る |
-
-### Application イベント
-
-| イベント定数 | 説明 |
-|-------------|------|
-| `Application.EVENT_BOOTSTRAP_END` | プラグインロードとオプション凍結後に発火 |
-| `Application.EVENT_PROJECT_REVIVE` | JSON デシリアライゼーション後に発火 |
-| `Application.EVENT_VALIDATE_PROJECT` | バリデーション中に発火 |
-
-### カスタムオプションの追加
+### Adding a custom option
 
 ```typescript
 import { Application, ParameterType } from "typedoc";
@@ -128,16 +94,16 @@ export function load(app: Application) {
 }
 ```
 
-### 外部シンボルリゾルバ
+### External symbol resolver
 
-サードパーティライブラリのシンボルへのリンクを解決するリゾルバを追加できる:
+You can add a resolver that links symbols from third-party libraries:
 
 ```typescript
 import { Application, Converter } from "typedoc";
 
 export function load(app: Application) {
   app.converter.addUnknownSymbolResolver((ref, refl, part, symbolId) => {
-    // リンク先の URL を返すか、undefined を返す
+    // Return the target URL, or undefined
     if (ref.moduleSource === "some-package") {
       return `https://docs.example.com/${ref.symbolReference?.path?.[0]?.path}`;
     }
@@ -146,9 +112,7 @@ export function load(app: Application) {
 }
 ```
 
-## コード例
-
-### 基本的なプラグイン
+### Basic plugin example
 
 ```typescript
 import {
@@ -160,7 +124,7 @@ import {
 } from "typedoc";
 
 export function load(app: Application) {
-  // 宣言 Reflection 作成時のリスナー
+  // Listener for declaration Reflection creation
   app.converter.on(
     Converter.EVENT_CREATE_DECLARATION,
     (context: Context, reflection: DeclarationReflection) => {
@@ -170,7 +134,7 @@ export function load(app: Application) {
     }
   );
 
-  // 解決処理完了時のリスナー
+  // Listener for resolution completion
   app.converter.on(Converter.EVENT_RESOLVE_END, (context: Context) => {
     const project = context.project;
     app.logger.info(
@@ -180,7 +144,7 @@ export function load(app: Application) {
 }
 ```
 
-### レンダリングプラグイン
+### Rendering plugin example
 
 ```typescript
 import {
@@ -192,7 +156,7 @@ import {
 } from "typedoc";
 
 export function load(app: Application) {
-  // ページ生成前にコンテンツを修正
+  // Modify content before a page is generated
   app.renderer.on(
     Renderer.EVENT_END_PAGE,
     (page: PageEvent<Reflection>) => {
@@ -205,14 +169,14 @@ export function load(app: Application) {
     }
   );
 
-  // レンダリング完了後に追加ファイルを生成
+  // Generate extra files after rendering completes
   app.renderer.postRenderAsyncJobs.push(async (output: RendererEvent) => {
-    // 追加の出力処理
+    // Additional output processing
   });
 }
 ```
 
-### typedoc-plugin-mdn-links パターン
+### typedoc-plugin-mdn-links pattern
 
 ```typescript
 import { Application, Converter, ReferenceType } from "typedoc";
@@ -224,7 +188,7 @@ export function load(app: Application) {
     const name = ref.symbolReference?.path?.[0]?.path;
     if (!name) return;
 
-    // MDN ドキュメントへのリンクを返す
+    // Return a link to MDN documentation
     const mdnTypes: Record<string, string> = {
       Array: "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array",
       Map: "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map",
@@ -237,22 +201,58 @@ export function load(app: Application) {
 }
 ```
 
-## 注意点
+## Options / Props
 
-- `load` 関数は `async` にすることができる
-- ESM プラグインが推奨される（CommonJS では実験的機能の警告が出る場合がある）
-- イベントリスナーの `this` は `undefined` にバインドされる
-- `Converter.EVENT_RESOLVE` は各 Reflection に対して個別に発火する
-- カスタムオプションは `app.options.getValue("option-name")` で取得する
-- プラグインは `typedoc.json` の `plugin` 配列で指定するか、JS 設定ファイルで直接インポートする
+### Converter events
 
-## 関連
+| Event constant | Value | Description |
+| --- | --- | --- |
+| `Converter.EVENT_BEGIN` | `"begin"` | Fired at the start of conversion. Receives `Context` |
+| `Converter.EVENT_END` | `"end"` | Fired when conversion completes. Receives `Context` |
+| `Converter.EVENT_CREATE_PROJECT` | `"createProject"` | Fired when the project Reflection is created. Receives `Context`, `ProjectReflection` |
+| `Converter.EVENT_CREATE_DECLARATION` | `"createDeclaration"` | Fired when a declaration Reflection is created. Receives `Context`, `DeclarationReflection` |
+| `Converter.EVENT_CREATE_DOCUMENT` | `"createDocument"` | Fired when a document Reflection is created. Receives `DocumentReflection` |
+| `Converter.EVENT_CREATE_SIGNATURE` | `"createSignature"` | Fired when a signature Reflection is created. Receives `Context`, `SignatureReflection`, the declaration node, `ts.Signature` |
+| `Converter.EVENT_CREATE_PARAMETER` | `"createParameter"` | Fired when a parameter Reflection is created. Receives `Context`, `ParameterReflection`, an optional `ts.Node` |
+| `Converter.EVENT_CREATE_TYPE_PARAMETER` | `"createTypeParameter"` | Fired when a type parameter Reflection is created. Receives `Context`, `TypeParameterReflection` |
+| `Converter.EVENT_RESOLVE_BEGIN` | `"resolveBegin"` | Fired at the start of resolution. Receives `Context` |
+| `Converter.EVENT_RESOLVE` | `"resolveReflection"` | Fired for each individual Reflection being resolved. Receives `Context`, `Reflection` |
+| `Converter.EVENT_RESOLVE_END` | `"resolveEnd"` | Fired when resolution completes. Receives `Context` |
 
-- [アーキテクチャ概要](./overview.md)
-- [カスタムテーマ](./custom-themes.md)
-- [国際化](./internationalization.md)
-- [Application クラス](../api/application.md)
-- [Converter クラス](../api/converter.md)
-- [Renderer クラス](../api/renderer.md)
-- [イベントシステム](../api/events.md)
+### Renderer events
+
+| Event constant | Value | Description |
+| --- | --- | --- |
+| `Renderer.EVENT_BEGIN` | `"beginRender"` | Before rendering starts. Receives `RendererEvent` |
+| `Renderer.EVENT_END` | `"endRender"` | After all documents have been written. Receives `RendererEvent` |
+| `Renderer.EVENT_BEGIN_PAGE` | `"beginPage"` | Before a page is rendered. Receives `PageEvent` |
+| `Renderer.EVENT_END_PAGE` | `"endPage"` | After a page is rendered (before writing). Receives `PageEvent` |
+| `Renderer.EVENT_PREPARE_INDEX` | `"prepareIndex"` | When the search index is being prepared. Receives `IndexEvent` |
+
+### Application events
+
+| Event constant | Description |
+| --- | --- |
+| `Application.EVENT_BOOTSTRAP_END` | Fired after plugins are loaded and options are frozen |
+| `Application.EVENT_PROJECT_REVIVE` | Fired after JSON deserialization |
+| `Application.EVENT_VALIDATE_PROJECT` | Fired during validation |
+
+## Notes
+
+- The `load` function may be `async`
+- ESM plugins are recommended (CommonJS may emit experimental-feature warnings)
+- `this` in event listeners is bound to `undefined`
+- `Converter.EVENT_RESOLVE` fires individually for each Reflection
+- Custom options are read with `app.options.getValue("option-name")`
+- Plugins are specified via the `plugin` array in `typedoc.json`, or imported directly in a JS config file
+
+## Related
+
+- [Architecture Overview](./overview.md)
+- [Custom Themes](./custom-themes.md)
+- [Internationalization](./internationalization.md)
+- [Application class](../api/application.md)
+- [Converter class](../api/converter.md)
+- [Renderer class](../api/renderer.md)
+- [Event system](../api/events.md)
 - [Options API](../api/options-api.md)

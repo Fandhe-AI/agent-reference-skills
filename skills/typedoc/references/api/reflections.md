@@ -1,13 +1,13 @@
 # Reflections
 
-TypeDoc の内部モデル。ソースコード中のすべてのドキュメント対象要素（クラス、関数、プロパティなど）を表現する Reflection 階層。
+TypeDoc's internal model. The Reflection hierarchy represents every documentable element in the source code (classes, functions, properties, and so on).
 
-## シグネチャ
+## Signature
 
-### Reflection 階層
+### Reflection Hierarchy
 
 ```typescript
-// 基底クラス
+// Base class
 abstract class Reflection {
   abstract readonly variant: keyof ReflectionVariant;
   id: ReflectionId;
@@ -19,7 +19,7 @@ abstract class Reflection {
   comment?: Comment;
 }
 
-// コンテナ (子要素を持つ Reflection の基底)
+// Container (base for Reflections that have children)
 abstract class ContainerReflection extends Reflection {
   children?: DeclarationReflection[];
   documents?: DocumentReflection[];
@@ -28,17 +28,17 @@ abstract class ContainerReflection extends Reflection {
   categories?: ReflectionCategory[];
 }
 
-// プロジェクト (ルート)
+// Project (root)
 class ProjectReflection extends ContainerReflection {
   readonly variant: "project";
   files: FileRegistry;
-  reflections: { [id: number]: Reflection };  // 読み取り専用
+  reflections: { [id: number]: Reflection };  // read-only
   packageName?: string;
   packageVersion?: string;
   readme?: CommentDisplayPart[];
 }
 
-// 宣言 (クラス、関数、プロパティなど)
+// Declaration (class, function, property, etc.)
 class DeclarationReflection extends ContainerReflection {
   variant: "declaration" | "reference";
   type?: SomeType;
@@ -61,7 +61,7 @@ class DeclarationReflection extends ContainerReflection {
   typeHierarchy?: DeclarationHierarchy;
 }
 
-// シグネチャ
+// Signature
 class SignatureReflection extends Reflection {
   readonly variant: "signature";
   parent: DeclarationReflection;
@@ -74,7 +74,7 @@ class SignatureReflection extends Reflection {
   sources?: SourceReference[];
 }
 
-// パラメータ
+// Parameter
 class ParameterReflection extends Reflection {
   readonly variant: "param";
   parent?: SignatureReflection;
@@ -82,16 +82,16 @@ class ParameterReflection extends Reflection {
   defaultValue?: string;
 }
 
-// 型パラメータ
+// Type parameter
 class TypeParameterReflection extends Reflection {
   readonly variant: "typeParam";
   parent?: DeclarationReflection | SignatureReflection;
-  type?: SomeType;       // 制約
-  default?: SomeType;    // デフォルト値
+  type?: SomeType;       // constraint
+  default?: SomeType;    // default value
   varianceModifier?: VarianceModifier;
 }
 
-// リファレンス (インポートされた Reflection)
+// Reference (an imported Reflection)
 class ReferenceReflection extends DeclarationReflection {
   readonly variant: "reference";
   getTargetReflection(): Reflection;
@@ -100,7 +100,7 @@ class ReferenceReflection extends DeclarationReflection {
   tryGetTargetReflectionDeep(): Reflection | undefined;
 }
 
-// ドキュメント (Markdown ファイル)
+// Document (a Markdown file)
 class DocumentReflection extends Reflection {
   readonly variant: "document";
   content: CommentDisplayPart[];
@@ -110,27 +110,27 @@ class DocumentReflection extends Reflection {
 }
 ```
 
-## 主要メソッド
+## Methods
 
-### Reflection (基底クラス)
+### Reflection (base class)
 
-| メソッド | シグネチャ | 説明 |
+| Method | Signature | Description |
 |---------|----------|------|
-| `getFullName` | `(separator?: string): string` | 完全な階層名を返す |
-| `getFriendlyFullName` | `(): string` | ユーザー表示用の名前を返す |
-| `getChildByName` | `(arg: string \| string[]): Reflection \| undefined` | 名前で子要素を検索 |
-| `hasComment` | `(notRenderedTags?: readonly string[]): boolean` | 表示可能なコメントがあるか |
-| `isDeprecated` | `(): boolean` | 非推奨かどうか |
-| `kindOf` | `(kind: ReflectionKind \| ReflectionKind[]): boolean` | Reflection の種類をテスト |
-| `setFlag` | `(flag: ReflectionFlag, value?: boolean): void` | フラグを設定 |
-| `traverse` | `(callback: TraverseCallback): void` | 子要素を走査 (抽象メソッド) |
-| `visit` | `(visitor: ReflectionVisitor): void` | ビジターパターンを適用 |
-| `toObject` | `(serializer: Serializer): JSONOutput.Reflection` | JSON にシリアライズ |
-| `fromObject` | `(de: Deserializer, obj: JSONOutput.Reflection): void` | JSON からデシリアライズ |
+| `getFullName` | `(separator?: string): string` | Returns the full hierarchical name |
+| `getFriendlyFullName` | `(): string` | Returns a user-facing display name |
+| `getChildByName` | `(arg: string \| string[]): Reflection \| undefined` | Looks up a child by name |
+| `hasComment` | `(notRenderedTags?: readonly string[]): boolean` | Whether there is a renderable comment |
+| `isDeprecated` | `(): boolean` | Whether the reflection is deprecated |
+| `kindOf` | `(kind: ReflectionKind \| ReflectionKind[]): boolean` | Tests the reflection's kind |
+| `setFlag` | `(flag: ReflectionFlag, value?: boolean): void` | Sets a flag |
+| `traverse` | `(callback: TraverseCallback): void` | Traverses child elements (abstract method) |
+| `visit` | `(visitor: ReflectionVisitor): void` | Applies the visitor pattern |
+| `toObject` | `(serializer: Serializer): JSONOutput.Reflection` | Serializes to JSON |
+| `fromObject` | `(de: Deserializer, obj: JSONOutput.Reflection): void` | Deserializes from JSON |
 
-#### 型ガードメソッド
+#### Type guard methods
 
-| メソッド | 戻り値型 |
+| Method | Return Type |
 |---------|---------|
 | `isProject()` | `this is ProjectReflection` |
 | `isDeclaration()` | `this is DeclarationReflection` |
@@ -143,80 +143,80 @@ class DocumentReflection extends Reflection {
 
 ### ProjectReflection
 
-| メソッド | シグネチャ | 説明 |
+| Method | Signature | Description |
 |---------|----------|------|
-| `getReflectionById` | `(id: number): Reflection \| undefined` | ID で Reflection を取得 |
-| `getReflectionsByKind` | `(kind: ReflectionKind): Reflection[]` | 種類でフィルタリング |
-| `getChildrenByKind` | `(kind: ReflectionKind): DeclarationReflection[]` | 直接の子を種類でフィルタリング |
-| `registerReflection` | `(reflection, id?, filePath?)` | Reflection をインデックスに登録 |
-| `registerSymbolId` | `(reflection, id)` | シンボル ID を関連付け |
-| `removeReflection` | `(reflection)` | Reflection をドキュメントから削除 |
-| `mergeReflections` | `(source, target)` | Reflection を統合 (内部用) |
-| `getReflectionFromSymbolId` | `(symbolId): Reflection \| undefined` | シンボル ID から取得 |
+| `getReflectionById` | `(id: number): Reflection \| undefined` | Retrieves a Reflection by ID |
+| `getReflectionsByKind` | `(kind: ReflectionKind): Reflection[]` | Filters by kind |
+| `getChildrenByKind` | `(kind: ReflectionKind): DeclarationReflection[]` | Filters direct children by kind |
+| `registerReflection` | `(reflection, id?, filePath?)` | Registers a Reflection in the index |
+| `registerSymbolId` | `(reflection, id)` | Associates a symbol ID |
+| `removeReflection` | `(reflection)` | Removes a Reflection from the documentation |
+| `mergeReflections` | `(source, target)` | Merges Reflections (internal use) |
+| `getReflectionFromSymbolId` | `(symbolId): Reflection \| undefined` | Retrieves a Reflection from a symbol ID |
 
 ### DeclarationReflection
 
-| メソッド | シグネチャ | 説明 |
+| Method | Signature | Description |
 |---------|----------|------|
-| `getAllSignatures` | `(): SignatureReflection[]` | すべてのシグネチャを取得 |
-| `getNonIndexSignatures` | `(): SignatureReflection[]` | インデックスシグネチャ以外を取得 |
-| `getProperties` | `(): DeclarationReflection[]` | プロパティを取得 |
-| `hasGetterOrSetter` | `(): boolean` | getter/setter があるか |
-| `getChildOrTypePropertyByName` | `(path: string[]): DeclarationReflection \| undefined` | 名前パスで検索 |
-| `addChild` | `(child: Reflection): void` | 子要素を追加 |
-| `removeChild` | `(child): void` | 子要素を削除 |
+| `getAllSignatures` | `(): SignatureReflection[]` | Retrieves all signatures |
+| `getNonIndexSignatures` | `(): SignatureReflection[]` | Retrieves signatures excluding index signatures |
+| `getProperties` | `(): DeclarationReflection[]` | Retrieves properties |
+| `hasGetterOrSetter` | `(): boolean` | Whether a getter or setter exists |
+| `getChildOrTypePropertyByName` | `(path: string[]): DeclarationReflection \| undefined` | Looks up by a name path |
+| `addChild` | `(child: Reflection): void` | Adds a child element |
+| `removeChild` | `(child): void` | Removes a child element |
 
 ### ReferenceReflection
 
-| メソッド | シグネチャ | 説明 |
+| Method | Signature | Description |
 |---------|----------|------|
-| `getTargetReflection` | `(): Reflection` | 参照先 Reflection を取得 |
-| `getTargetReflectionDeep` | `(): Reflection` | チェーンされた参照を完全に解決 |
-| `tryGetTargetReflection` | `(): Reflection \| undefined` | 安全に参照先を取得 |
-| `tryGetTargetReflectionDeep` | `(): Reflection \| undefined` | 安全に深い参照を解決 |
+| `getTargetReflection` | `(): Reflection` | Retrieves the target Reflection |
+| `getTargetReflectionDeep` | `(): Reflection` | Fully resolves chained references |
+| `tryGetTargetReflection` | `(): Reflection \| undefined` | Safely retrieves the target |
+| `tryGetTargetReflectionDeep` | `(): Reflection \| undefined` | Safely resolves a deep reference |
 
 ### DocumentReflection
 
-| メソッド | シグネチャ | 説明 |
+| Method | Signature | Description |
 |---------|----------|------|
-| `addChild` | `(child: DocumentReflection): void` | 子ドキュメントを追加 |
+| `addChild` | `(child: DocumentReflection): void` | Adds a child document |
 
-## 主要プロパティ
+## Properties
 
-### ReflectionKind (列挙型)
+### ReflectionKind enum
 
-主な種類:
+Main values:
 
-| 値 | 説明 |
+| Value | Description |
 |---|------|
-| `Project` | プロジェクトルート |
-| `Module` | モジュール |
-| `Namespace` | 名前空間 |
-| `Enum` | 列挙型 |
-| `EnumMember` | 列挙型メンバー |
-| `Variable` | 変数 |
-| `Function` | 関数 |
-| `Class` | クラス |
-| `Interface` | インターフェース |
-| `Constructor` | コンストラクタ |
-| `Property` | プロパティ |
-| `Method` | メソッド |
-| `CallSignature` | 呼び出しシグネチャ |
-| `IndexSignature` | インデックスシグネチャ |
-| `ConstructorSignature` | コンストラクタシグネチャ |
-| `Parameter` | パラメータ |
-| `TypeLiteral` | 型リテラル |
-| `TypeParameter` | 型パラメータ |
-| `Accessor` | アクセサ |
-| `GetSignature` | getter シグネチャ |
-| `SetSignature` | setter シグネチャ |
-| `TypeAlias` | 型エイリアス |
-| `Reference` | リファレンス |
-| `Document` | ドキュメント |
+| `Project` | Project root |
+| `Module` | Module |
+| `Namespace` | Namespace |
+| `Enum` | Enum |
+| `EnumMember` | Enum member |
+| `Variable` | Variable |
+| `Function` | Function |
+| `Class` | Class |
+| `Interface` | Interface |
+| `Constructor` | Constructor |
+| `Property` | Property |
+| `Method` | Method |
+| `CallSignature` | Call signature |
+| `IndexSignature` | Index signature |
+| `ConstructorSignature` | Constructor signature |
+| `Parameter` | Parameter |
+| `TypeLiteral` | Type literal |
+| `TypeParameter` | Type parameter |
+| `Accessor` | Accessor |
+| `GetSignature` | Getter signature |
+| `SetSignature` | Setter signature |
+| `TypeAlias` | Type alias |
+| `Reference` | Reference |
+| `Document` | Document |
 
-## コード例
+## Examples
 
-### Reflection の走査
+### Traversing Reflections
 
 ```typescript
 import {
@@ -231,13 +231,13 @@ export function load(app: Application) {
   app.converter.on(Converter.EVENT_RESOLVE_END, (context: Context) => {
     const project = context.project;
 
-    // すべてのクラスを取得
+    // Get all classes
     const classes = project.getReflectionsByKind(ReflectionKind.Class);
     for (const cls of classes) {
       if (cls.isDeclaration()) {
         console.log(`Class: ${cls.name}`);
 
-        // メソッドを取得
+        // Get methods
         const methods = cls.getChildrenByKind(ReflectionKind.Method);
         for (const method of methods) {
           console.log(`  Method: ${method.name}`);
@@ -248,7 +248,7 @@ export function load(app: Application) {
 }
 ```
 
-### Reflection の修正
+### Modifying Reflections
 
 ```typescript
 import { Application, Converter, DeclarationReflection } from "typedoc";
@@ -257,12 +257,12 @@ export function load(app: Application) {
   app.converter.on(
     Converter.EVENT_CREATE_DECLARATION,
     (_context: Context, reflection: DeclarationReflection) => {
-      // コメントの追加
+      // Add a comment
       if (!reflection.comment) {
         reflection.comment = new Comment();
       }
 
-      // Reflection の削除
+      // Remove a Reflection
       if (reflection.name.startsWith("__internal")) {
         const project = reflection.project;
         project.removeReflection(reflection);
@@ -272,7 +272,7 @@ export function load(app: Application) {
 }
 ```
 
-### ビジターパターン
+### Visitor pattern
 
 ```typescript
 import { ReflectionVisitor } from "typedoc";
@@ -292,9 +292,9 @@ const visitor: ReflectionVisitor = {
 project.visit(visitor);
 ```
 
-## 関連
+## Related
 
 - [Types](./types.md)
 - [Converter](./converter.md)
 - [Serialization](./serialization.md)
-- [アーキテクチャ概要](../development/overview.md)
+- [Architecture Overview](../development/overview.md)

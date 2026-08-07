@@ -1,23 +1,23 @@
 # Dodo Payments
 
-グローバルな Merchant-of-Record プラットフォーム Dodo Payments を Better Auth に統合するプラグイン。150 以上の国での販売・税・不正・コンプライアンスを一元管理する。
+Plugin integrating the global Merchant-of-Record platform Dodo Payments with Better Auth. Centralizes sales, tax, fraud, and compliance across 150+ countries.
 
-## インストール
+## Signature / Usage
+
+### Installation
 
 ```bash
 npm install @dodopayments/better-auth dodopayments better-auth zod
 ```
 
-環境変数:
+Environment variables:
 
 ```
 DODO_PAYMENTS_API_KEY=your_api_key_here
 DODO_PAYMENTS_WEBHOOK_SECRET=your_webhook_secret_here
 ```
 
-## セットアップ
-
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -37,7 +37,7 @@ export const auth = betterAuth({
 })
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { dodoPaymentsClient } from "@dodopayments/better-auth/client"
@@ -47,38 +47,38 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
+### API methods
 
-| メソッド | 説明 |
+| Method | Description |
 |---|---|
-| `authClient.dodopayments.checkoutSession({ slug })` | チェックアウトセッション作成 |
-| `authClient.dodopayments.customer.portal()` | 顧客ポータルへのリダイレクト |
-| `authClient.dodopayments.subscriptions.list()` | サブスクリプション一覧取得 |
-| `authClient.dodopayments.payments.list()` | 支払い履歴取得 |
+| `authClient.dodopayments.checkoutSession({ slug })` | Create a checkout session |
+| `authClient.dodopayments.customer.portal()` | Redirect to the customer portal |
+| `authClient.dodopayments.subscriptions.list()` | List subscriptions |
+| `authClient.dodopayments.payments.list()` | Get payment history |
 
-## 設定オプション
+### Key features
 
-| プロパティ | 型 | 説明 |
+- Automatic customer creation on sign-up
+- Type-safe checkout flow
+- Self-service customer portal access
+- Webhook signature verification
+- Default webhook endpoint: `/api/auth/dodopayments/webhooks`
+
+## Options / Props
+
+| Property | Type | Description |
 |---|---|---|
-| `client` | DodoPayments | SDK インスタンス（必須） |
-| `createCustomerOnSignUp` | boolean | サインアップ時にカスタマーを自動作成 |
-| `use` | array | サブプラグイン配列（checkout, portal, webhooks） |
+| `client` | DodoPayments | SDK instance (required) |
+| `createCustomerOnSignUp` | boolean | Automatically create a customer on sign-up |
+| `use` | array | Array of sub-plugins (checkout, portal, webhooks) |
 
-### checkout 設定
+### checkout configuration
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |---|---|---|
-| `products` | array | 商品 ID とスラッグのマッピング配列 |
-| `successUrl?` | string | 決済成功後のリダイレクト URL |
-| `authenticatedUsersOnly?` | boolean | 認証ユーザーのみに制限（デフォルト: false） |
-
-## 主な機能
-
-- サインアップ時の顧客自動生成
-- 型安全なチェックアウトフロー
-- セルフサービス顧客ポータルアクセス
-- Webhook 署名検証
-- デフォルト Webhook エンドポイント: `/api/auth/dodopayments/webhooks`
+| `products` | array | Array mapping product IDs to slugs |
+| `successUrl?` | string | Redirect URL after successful payment |
+| `authenticatedUsersOnly?` | boolean | Restrict to authenticated users only (default: false) |
 
 ## Related
 

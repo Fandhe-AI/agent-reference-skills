@@ -1,19 +1,19 @@
 # Renderer
 
-ProjectReflection を Theme インスタンスで処理し、HTML ドキュメントを出力ディレクトリに書き込むクラス。
+Class that processes a `ProjectReflection` through a `Theme` instance and writes the resulting HTML documentation to an output directory.
 
-## シグネチャ
+## Signature
 
 ```typescript
 class Renderer extends AbstractComponent<Application, RendererEvents> {
-  // メソッド
+  // Methods
   render(project: Models.ProjectReflection, outputDirectory: string): Promise<void>;
   defineTheme(name: string, theme: new (renderer: Renderer) => Theme): void;
   defineRouter(name: string, router: new (app: Application) => Router): void;
   removeTheme(name: string): void;
   removeRouter(name: string): void;
 
-  // イベントメソッド
+  // Event methods
   on<K extends keyof RendererEvents>(
     event: K,
     listener: (this: undefined, ...args: RendererEvents[K]) => void,
@@ -28,7 +28,7 @@ class Renderer extends AbstractComponent<Application, RendererEvents> {
     ...args: RendererEvents[K]
   ): void;
 
-  // プロパティ
+  // Properties
   theme?: Theme;
   router?: Router;
   hooks: EventHooks<RendererHooks, JSX.Element>;
@@ -39,7 +39,7 @@ class Renderer extends AbstractComponent<Application, RendererEvents> {
   cacheBust: boolean;
   componentName: string;
 
-  // 静的イベント定数
+  // Static event constants
   static readonly EVENT_BEGIN: "beginRender";
   static readonly EVENT_END: "endRender";
   static readonly EVENT_BEGIN_PAGE: "beginPage";
@@ -48,7 +48,7 @@ class Renderer extends AbstractComponent<Application, RendererEvents> {
 }
 ```
 
-## 主要メソッド
+## Methods
 
 ### render()
 
@@ -56,13 +56,13 @@ class Renderer extends AbstractComponent<Application, RendererEvents> {
 render(project: Models.ProjectReflection, outputDirectory: string): Promise<void>
 ```
 
-プロジェクト Reflection を処理し、HTML ドキュメントを指定ディレクトリに出力する。以下の順序で処理が行われる:
+Processes a project Reflection and writes the resulting HTML documentation to the given directory. Processing proceeds in the following order:
 
-1. `preRenderAsyncJobs` を実行
-2. `EVENT_BEGIN` イベントを発火
-3. 各ページの `EVENT_BEGIN_PAGE` → レンダリング → `EVENT_END_PAGE` を実行
-4. `EVENT_END` イベントを発火
-5. `postRenderAsyncJobs` を実行
+1. Run `preRenderAsyncJobs`
+2. Fire the `EVENT_BEGIN` event
+3. For each page, run `EVENT_BEGIN_PAGE` → render → `EVENT_END_PAGE`
+4. Fire the `EVENT_END` event
+5. Run `postRenderAsyncJobs`
 
 ### defineTheme()
 
@@ -70,7 +70,7 @@ render(project: Models.ProjectReflection, outputDirectory: string): Promise<void
 defineTheme(name: string, theme: new (renderer: Renderer) => Theme): void
 ```
 
-カスタムテーマを登録する。テーマ名と `Theme` を継承するクラスのコンストラクタを受け取る。
+Registers a custom theme. Takes a theme name and the constructor of a class extending `Theme`.
 
 ### defineRouter()
 
@@ -78,7 +78,7 @@ defineTheme(name: string, theme: new (renderer: Renderer) => Theme): void
 defineRouter(name: string, router: new (app: Application) => Router): void
 ```
 
-カスタムルーターを登録する。URL 構造をカスタマイズする際に使用する。
+Registers a custom router. Used to customize the URL structure.
 
 ### removeTheme()
 
@@ -86,7 +86,7 @@ defineRouter(name: string, router: new (app: Application) => Router): void
 removeTheme(name: string): void
 ```
 
-登録済みテーマを削除する。
+Removes a registered theme.
 
 ### removeRouter()
 
@@ -94,9 +94,9 @@ removeTheme(name: string): void
 removeRouter(name: string): void
 ```
 
-登録済みルーターを削除する。
+Removes a registered router.
 
-## 主要プロパティ
+## Properties
 
 ### theme
 
@@ -104,7 +104,7 @@ removeRouter(name: string): void
 theme?: Theme
 ```
 
-現在アクティブなテーマインスタンス。レンダリング開始時に設定される。
+The currently active theme instance. Set when rendering begins.
 
 ### router
 
@@ -112,7 +112,7 @@ theme?: Theme
 router?: Router
 ```
 
-現在アクティブなルーターインスタンス。URL 生成に使用される。
+The currently active router instance, used for URL generation.
 
 ### hooks
 
@@ -120,9 +120,9 @@ router?: Router
 hooks: EventHooks<RendererHooks, JSX.Element>
 ```
 
-プラグインが HTML にコンテンツを注入するためのフックシステム。テーマ全体を書き換えずに部分的なカスタマイズが可能。
+The hook system that lets plugins inject content into the HTML. Enables partial customization without rewriting the whole theme.
 
-利用可能なフック: `head.end`, `body.begin`, `body.end`, `content.begin`, `content.end`, `sidebar.begin`, `sidebar.end`, `pageSidebar.begin`, `pageSidebar.end`, `footer.begin`, `footer.end`
+Available hooks: `head.end`, `body.begin`, `body.end`, `content.begin`, `content.end`, `sidebar.begin`, `sidebar.end`, `pageSidebar.begin`, `pageSidebar.end`, `footer.begin`, `footer.end`
 
 ### preRenderAsyncJobs
 
@@ -130,7 +130,7 @@ hooks: EventHooks<RendererHooks, JSX.Element>
 preRenderAsyncJobs: ((output: RendererEvent) => Promise<void>)[]
 ```
 
-ドキュメント生成前に実行される非同期コールバックの配列。
+Array of async callbacks run before documentation is generated.
 
 ### postRenderAsyncJobs
 
@@ -138,7 +138,7 @@ preRenderAsyncJobs: ((output: RendererEvent) => Promise<void>)[]
 postRenderAsyncJobs: ((output: RendererEvent) => Promise<void>)[]
 ```
 
-ドキュメント書き込み後に実行される非同期コールバックの配列。
+Array of async callbacks run after documentation is written.
 
 ### renderStartTime
 
@@ -146,7 +146,7 @@ postRenderAsyncJobs: ((output: RendererEvent) => Promise<void>)[]
 renderStartTime: number
 ```
 
-レンダリング開始時のタイムスタンプ。
+Timestamp recorded when rendering starts.
 
 ### markedPlugin
 
@@ -154,34 +154,34 @@ renderStartTime: number
 markedPlugin: MarkedPlugin
 ```
 
-Markdown パーシングプラグイン。
+The Markdown parsing plugin.
 
-## イベント定数
+## Event Constants
 
-| 定数 | 値 | コールバック引数 | 説明 |
+| Constant | Value | Callback Arguments | Description |
 |-----|---|----------------|------|
-| `EVENT_BEGIN` | `"beginRender"` | `(event: RendererEvent)` | レンダリング開始前に発火 |
-| `EVENT_END` | `"endRender"` | `(event: RendererEvent)` | 全ドキュメント書き込み後に発火 |
-| `EVENT_BEGIN_PAGE` | `"beginPage"` | `(event: PageEvent)` | ページレンダリング前に発火 |
-| `EVENT_END_PAGE` | `"endPage"` | `(event: PageEvent)` | ページレンダリング後（ディスク書き込み前）に発火 |
-| `EVENT_PREPARE_INDEX` | `"prepareIndex"` | `(event: IndexEvent)` | 検索インデックス準備時に発火 |
+| `EVENT_BEGIN` | `"beginRender"` | `(event: RendererEvent)` | Fired before rendering begins |
+| `EVENT_END` | `"endRender"` | `(event: RendererEvent)` | Fired after all documents have been written |
+| `EVENT_BEGIN_PAGE` | `"beginPage"` | `(event: PageEvent)` | Fired before a page is rendered |
+| `EVENT_END_PAGE` | `"endPage"` | `(event: PageEvent)` | Fired after a page is rendered (before it is written to disk) |
+| `EVENT_PREPARE_INDEX` | `"prepareIndex"` | `(event: IndexEvent)` | Fired while preparing the search index |
 
-## アクセサ
+## Accessors
 
-| アクセサ | 型 | 説明 |
+| Accessor | Type | Description |
 |---------|---|------|
-| `application` | `Application` | Application インスタンス |
-| `owner` | `Application` | コンポーネントのオーナー |
+| `application` | `Application` | The `Application` instance |
+| `owner` | `Application` | The component's owner |
 
-## コード例
+## Examples
 
-### テーマの定義
+### Defining a theme
 
 ```typescript
 import { Application, DefaultTheme, Renderer } from "typedoc";
 
 class MyTheme extends DefaultTheme {
-  // カスタムテーマの実装
+  // Custom theme implementation
 }
 
 export function load(app: Application) {
@@ -189,58 +189,58 @@ export function load(app: Application) {
 }
 ```
 
-### フックの使用
+### Using hooks
 
 ```typescript
 import { Application, JSX } from "typedoc";
 
 export function load(app: Application) {
-  // head にカスタム CSS を追加
+  // Add custom CSS to head
   app.renderer.hooks.on("head.end", () => (
     <link rel="stylesheet" href="custom.css" />
   ));
 
-  // フッターにバージョン情報を追加
+  // Add version info to the footer
   app.renderer.hooks.on("footer.end", () => (
     <p>Generated with MyPlugin v1.0</p>
   ));
 }
 ```
 
-### レンダリングイベントのリスニング
+### Listening to rendering events
 
 ```typescript
 import { Application, Renderer, PageEvent, RendererEvent, Reflection } from "typedoc";
 
 export function load(app: Application) {
-  // レンダリング開始時
+  // When rendering begins
   app.renderer.on(Renderer.EVENT_BEGIN, (event: RendererEvent) => {
     console.log(`Rendering to: ${event.outputDirectory}`);
     console.log(`Pages to generate: ${event.pages.length}`);
   });
 
-  // 各ページのレンダリング後
+  // After each page is rendered
   app.renderer.on(Renderer.EVENT_END_PAGE, (event: PageEvent<Reflection>) => {
     if (event.contents) {
-      // HTML コンテンツの修正
+      // Modify the HTML content
       event.contents = event.contents.replace("old-text", "new-text");
     }
   });
 
-  // 非同期ジョブ
+  // Async jobs
   app.renderer.preRenderAsyncJobs.push(async (output) => {
-    // レンダリング前の準備処理
+    // Preparation before rendering
   });
 
   app.renderer.postRenderAsyncJobs.push(async (output) => {
-    // レンダリング後のクリーンアップ処理
+    // Cleanup after rendering
   });
 }
 ```
 
-## 関連
+## Related
 
 - [Application](./application.md)
-- [イベントシステム](./events.md)
-- [カスタムテーマ](../development/custom-themes.md)
-- [プラグイン開発](../development/plugin-development.md)
+- [Events](./events.md)
+- [Custom Themes](../development/custom-themes.md)
+- [Plugin Development](../development/plugin-development.md)

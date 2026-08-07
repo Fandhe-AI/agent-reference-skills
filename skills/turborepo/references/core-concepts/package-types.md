@@ -1,35 +1,28 @@
 # Package Types
 
-## Application Packages
+## Usage
 
-ワークスペースから直接デプロイするために設計されたパッケージ。
+**Application Packages** — packages designed to be deployed directly from the workspace.
 
-- 通常 `./apps` ディレクトリに配置
-- Next.js、Svelte、Vite、CLI アプリなど
-- パッケージグラフの「終端ノード」として機能
-- 通常は他のパッケージの依存関係としてインストールしない
+- Usually placed in the `./apps` directory
+- Next.js, Svelte, Vite, CLI apps, etc.
+- Act as "leaf nodes" in the package graph
+- Not normally installed as a dependency of other packages
 
-## Library Packages
+**Library Packages** — packages that contain code shared across the workspace.
 
-ワークスペース全体で共有されるコードを含むパッケージ。
+- Cannot be deployed on their own
+- Also called "Internal Packages"
+- Documented as a standalone page in the official docs: `internal-packages` (`/docs/core-concepts/internal-packages`)
 
-- 単独ではデプロイ不可
-- 「Internal Packages」とも呼ばれる
-- 公式ドキュメントでは `internal-packages` として独立ページ化（`/docs/core-concepts/internal-packages`）
+### Internal Packages: three compilation strategies
 
-## Internal Packages の3つのコンパイル戦略
+1. **Just-in-Time (JIT) packages** — the application's bundler compiles the TypeScript source files directly.
+   - Minimal configuration
+   - No build step required
+   - Limitations: only works for transpilable consumers, cannot use TypeScript `paths`, no Turborepo build caching
 
-### 1. Just-in-Time（JIT）パッケージ
-
-アプリケーションのバンドラーが TypeScript ソースファイルを直接コンパイル。
-
-- 設定が最小限で済む
-- ビルドステップ不要
-- 制限: トランスパイル可能なコンシューマーでのみ動作、TypeScript の `paths` 使用不可、Turborepo のビルドキャッシュ不可
-
-### 2. Compiled Packages
-
-`tsc` 等でコンパイル。Turborepo がビルド出力をキャッシュ可能。
+2. **Compiled Packages** — compiled with `tsc` or similar. Turborepo can cache the build output.
 
 ```json
 {
@@ -42,13 +35,15 @@
 }
 ```
 
-### 3. Publishable Packages
+3. **Publishable Packages** — packages prepared for distribution to the npm registry. Using `changesets` is recommended.
 
-npm レジストリへの配布を準備したパッケージ。`changesets` の使用を推奨。
+## Options / Props
 
-## インストール構文
-
-| パッケージマネージャー | 構文 |
-|---|---|
+| Package manager | Install syntax |
+| --- | --- |
 | pnpm / bun | `"@repo/ui": "workspace:*"` |
 | yarn / npm | `"@repo/ui": "*"` |
+
+## Related
+
+- [Package and Task Graph](./package-and-task-graph.md)

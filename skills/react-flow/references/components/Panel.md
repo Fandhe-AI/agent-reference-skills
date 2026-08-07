@@ -2,6 +2,25 @@
 
 Positions content as an overlay above the flow canvas. Used internally by `<MiniMap />` and `<Controls />`. Accepts all standard HTML div attributes.
 
+## 使用例
+
+```tsx
+import { ReactFlow, Panel } from '@xyflow/react';
+
+export default function Flow() {
+  return (
+    <ReactFlow nodes={[]} edges={[]}>
+      <Panel position="top-left">
+        <button onClick={() => console.log('action')}>Custom Action</button>
+      </Panel>
+      <Panel position="bottom-right" style={{ background: 'white', padding: 8 }}>
+        Legend
+      </Panel>
+    </ReactFlow>
+  );
+}
+```
+
 ## Props
 
 | Name | Type | Default | Description |
@@ -21,25 +40,6 @@ Positions content as an overlay above the flow canvas. Used internally by `<Mini
 | `'bottom-right'` | Bottom-right corner |
 | `'center-left'` | Left edge, centered vertically |
 | `'center-right'` | Right edge, centered vertically |
-
-## 使用例
-
-```tsx
-import { ReactFlow, Panel } from '@xyflow/react';
-
-export default function Flow() {
-  return (
-    <ReactFlow nodes={[]} edges={[]}>
-      <Panel position="top-left">
-        <button onClick={() => console.log('action')}>Custom Action</button>
-      </Panel>
-      <Panel position="bottom-right" style={{ background: 'white', padding: 8 }}>
-        Legend
-      </Panel>
-    </ReactFlow>
-  );
-}
-```
 
 ## 注意点
 

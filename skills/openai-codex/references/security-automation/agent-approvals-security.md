@@ -30,7 +30,7 @@ network_access = true
 | Name | Type | Description |
 |------|------|-------------|
 | `sandbox_mode` | `read-only` \| `workspace-write` \| `danger-full-access` | What Codex can technically do (where it can write, whether it can reach the network) when executing model-generated commands. |
-| `approval_policy` | `untrusted` \| `on-request` \| `never` \| `{ granular = {...} }` | When Codex must stop and ask before acting. Granular policy can toggle `sandbox_approval`, `rules`, `mcp_elicitations`, `request_permissions`, `skill_approval` independently. |
+| `approval_policy` | `untrusted` \| `on-request` \| `never` \| `{ granular = { sandbox_approval = true, rules = true, mcp_elicitations = true, request_permissions = false, skill_approval = false } }` | When Codex must stop and ask before acting. Granular policy can toggle `sandbox_approval`, `rules`, `mcp_elicitations`, `request_permissions`, `skill_approval` independently. |
 | `approvals_reviewer` | `user` (default) \| `auto_review` | Who reviews interactive approval requests. `auto_review` routes eligible requests to a reviewer agent instead of a human (see Auto-review). |
 | `sandbox_workspace_write.network_access` | boolean | Enables network access in `workspace-write` mode (off by default). |
 | `features.network_proxy.enabled` / `.domains` | boolean / table | Constrains already-enabled command network access to an allow/deny domain policy. Does not grant network access by itself. |

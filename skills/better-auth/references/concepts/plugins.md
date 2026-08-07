@@ -1,43 +1,36 @@
 # Plugins
 
-プラグインは Better Auth の基本機能を拡張し、認証メソッド、機能、カスタム動作を追加できる。サーバー側プラグイン、クライアント側プラグイン、または両方が連携して動作する。
+Plugins extend Better Auth's core functionality, letting you add auth methods, features, and custom behavior. Server-side plugins, client-side plugins, or both can work together.
 
-## プラグインの機能
+## Signature / Usage
 
-- 任意のアクション用のカスタムエンドポイント作成
-- カスタムスキーマによるデータベーステーブルの拡張
-- 特定のルートグループをターゲットとするミドルウェア
-- 特定のルートやリクエストへの Hook 実装
-- `onRequest`/`onResponse` によるグローバルリクエスト/レスポンスハンドラー
-- カスタムレートリミットルールの定義
+### Setup
 
-## セットアップ
-
-**サーバー設定:**
+**Server config:**
 
 ```typescript
 export const auth = betterAuth({
   plugins: [
-    // プラグインをここに追加
+    // Add plugins here
   ],
 });
 ```
 
-**クライアント設定:**
+**Client config:**
 
 ```typescript
 const authClient = createAuthClient({
   plugins: [
-    // クライアントプラグインをここに追加
+    // Add client plugins here
   ],
 });
 ```
 
-ベストプラクティス: auth クライアントとサーバー auth インスタンスは別ファイルに保持する。
+Best practice: keep the auth client and the server auth instance in separate files.
 
-## サーバープラグインの作成
+### Creating a server plugin
 
-最小要件は `BetterAuthPlugin` インターフェースを満たすユニーク `id` プロパティを持つオブジェクト。関数でラップするとオプション渡しが可能:
+The minimum requirement is an object with a unique `id` property that satisfies the `BetterAuthPlugin` interface. Wrapping it in a function allows passing options:
 
 ```typescript
 export const myPlugin = () => {
@@ -47,9 +40,9 @@ export const myPlugin = () => {
 };
 ```
 
-### エンドポイント
+### Endpoints
 
-`better-auth/api` の `createAuthEndpoint` を使用してエンドポイントを作成:
+Use `createAuthEndpoint` from `better-auth/api` to create an endpoint:
 
 ```typescript
 const myPlugin = () => {
@@ -72,32 +65,9 @@ const myPlugin = () => {
 };
 ```
 
-**エンドポイントのルール:**
-- パスには kebab-case を使用
-- POST または GET メソッドのみ使用
-- データ変更には POST、データ取得には GET
-- `createAuthEndpoint` 関数を使用
-- ユニークなパスを確保。プラグイン名でプレフィックスを付けて競合を回避
+### Schema
 
-**利用可能なコンテキストプロパティ:**
-- `appName`: アプリケーション名（デフォルト: "Better Auth"）
-- `options`: 渡された Better Auth 設定
-- `tables`: コアテーブル定義
-- `baseURL`: パス付き auth サーバーベース URL
-- `session`: セッション設定（`updateAge`, `expiresIn`）
-- `secret`: 暗号操作用シークレットキー
-- `authCookie`: デフォルト Cookie 設定
-- `logger`: Better Auth ロガーインスタンス
-- `db`: Kysely データベースインスタンス
-- `adapter`: ORM ライクなデータベース関数
-- `internalAdapter`: 内部データベース呼び出し（例: `createSession()`）
-- `createAuthCookie`: Cookie 管理ヘルパー
-- `trustedOrigins`: 設定済み信頼オリジンリスト
-- `isTrustedOrigin`: オリジン検証ヘルパー
-
-### スキーマ
-
-テーブル名をキーとした `schema` オブジェクトでデータベーステーブルを定義:
+Define database tables via a `schema` object keyed by table name:
 
 ```typescript
 const myPlugin = () => {
@@ -110,29 +80,20 @@ const myPlugin = () => {
             type: "string",
           },
         },
-        modelName: "myTable", // オプション
+        modelName: "myTable", // optional
       },
     },
   } satisfies BetterAuthPlugin;
 };
 ```
 
-**フィールドプロパティ:**
-- `type`: `"string"`, `"number"`, `"boolean"`, または `"date"`
-- `required`: boolean（デフォルト: `true`）
-- `unique`: boolean（デフォルト: `false`）
-- `references`: `model`, `field`, `onDelete`（デフォルト: cascade）を持つオブジェクト
+**Auto-inference:** Adding fields to the `user` or `session` table automatically infers their types in the `getSession()` and `signUpEmail()` responses.
 
-**スキーマプロパティ:**
-- `disableMigration`: true でテーブルマイグレーションをスキップ
-
-**自動推論:** `user` または `session` テーブルにフィールドを追加すると、`getSession()` と `signUpEmail()` レスポンスで型が自動推論される。
-
-**セキュリティ注意:** `user` や `session` テーブルに機密データを保存しないこと。代わりに別テーブルを作成する。
+**Security note:** Do not store sensitive data on the `user` or `session` tables — create a separate table instead.
 
 ### Hooks
 
-Hook はクライアントまたはサーバー呼び出しからのアクションの前後に実行:
+Hooks run before or after actions from client or server calls:
 
 ```typescript
 const myPlugin = () => {
@@ -146,7 +107,7 @@ const myPlugin = () => {
           },
           handler: createAuthMiddleware(async (ctx) => {
             return {
-              context: ctx, // 必要に応じてコンテキストを変更
+              context: ctx, // Modify context as needed
             };
           }),
         },
@@ -159,7 +120,7 @@ const myPlugin = () => {
           handler: createAuthMiddleware(async (ctx) => {
             return ctx.json({
               message: "Hello World",
-            }); // 必要に応じてレスポンスを変更
+            }); // Modify response as needed
           }),
         },
       ],
@@ -168,9 +129,9 @@ const myPlugin = () => {
 };
 ```
 
-### ミドルウェア
+### Middleware
 
-ミドルウェアはクライアントからの API リクエストでのみ実行される（直接エンドポイント呼び出しでは実行されない）:
+Middleware runs only on API requests from a client (not on direct endpoint calls):
 
 ```typescript
 const myPlugin = () => {
@@ -180,7 +141,7 @@ const myPlugin = () => {
       {
         path: "/my-plugin/hello-world",
         middleware: createAuthMiddleware(async (ctx) => {
-          // カスタムロジック
+          // Custom logic
         }),
       },
     ],
@@ -188,31 +149,31 @@ const myPlugin = () => {
 };
 ```
 
-`APIError` のスローまたは `Response` オブジェクトの返却でリクエストを停止できる。
+You can stop the request by throwing `APIError` or returning a `Response` object.
 
 ### onRequest / onResponse
 
-**`onRequest`:** リクエスト前に実行。何も返さなければ続行、`{ response }` を返すと中断、変更された `request` を返すとリクエストを変更。
+**`onRequest`:** Runs before the request. Returning nothing continues, returning `{ response }` short-circuits, and returning a modified `request` changes the request.
 
-**`onResponse`:** レスポンス生成後に実行。変更されたレスポンスを返すか、何も返さずそのまま送信。
+**`onResponse`:** Runs after the response is generated. Return a modified response, or nothing to send it as-is.
 
 ```typescript
 const myPlugin = () => {
   return {
     id: "my-plugin",
     onRequest: async (request, context) => {
-      // 何かする
+      // Do something
     },
     onResponse: async (response, context) => {
-      // 何かする
+      // Do something
     },
   } satisfies BetterAuthPlugin;
 };
 ```
 
-### レートリミット
+### Rate limit
 
-パスマッチャーでカスタムレートリミットルールを定義:
+Define custom rate limit rules with a path matcher:
 
 ```typescript
 const myPlugin = () => {
@@ -231,9 +192,9 @@ const myPlugin = () => {
 };
 ```
 
-### 信頼オリジン
+### Trusted origins
 
-`isTrustedOrigin()` を使用して設定済み信頼オリジンに対してカスタムエンドポイントを検証:
+Use `isTrustedOrigin()` to validate custom endpoints against configured trusted origins:
 
 ```typescript
 const myPlugin = () => {
@@ -270,9 +231,9 @@ const myPlugin = () => {
 };
 ```
 
-### サーバープラグインヘルパー関数
+### Server plugin helper functions
 
-**`getSessionFromCtx`:** auth ミドルウェアコンテキストからクライアントセッションデータを取得:
+**`getSessionFromCtx`:** Gets the client session data from the auth middleware context:
 
 ```typescript
 const myPlugin = {
@@ -295,7 +256,7 @@ const myPlugin = {
 } satisfies BetterAuthPlugin;
 ```
 
-**`sessionMiddleware`:** クライアントセッションを検証し、コンテキストにセッションデータを追加:
+**`sessionMiddleware`:** Validates the client session and adds session data to the context:
 
 ```typescript
 const myPlugin = () => {
@@ -320,9 +281,9 @@ const myPlugin = () => {
 };
 ```
 
-## クライアントプラグインの作成
+### Creating a client plugin
 
-クライアントプラグインはサーバー機能とインターフェースし、Better Fetch を使用してリクエストを行う:
+Client plugins interface with server functionality and make requests using Better Fetch:
 
 ```typescript
 export const myPluginClient = () => {
@@ -332,9 +293,9 @@ export const myPluginClient = () => {
 };
 ```
 
-### エンドポイント推論
+### Endpoint inference
 
-`$InferServerPlugin` を使用してサーバーエンドポイントを自動推論。kebab-case パスは camelCase に変換される（例: `/my-plugin/hello-world` → `myPlugin.helloWorld`）:
+Use `$InferServerPlugin` to automatically infer server endpoints. kebab-case paths convert to camelCase (e.g. `/my-plugin/hello-world` -> `myPlugin.helloWorld`):
 
 ```typescript
 const myPluginClient = () => {
@@ -345,9 +306,9 @@ const myPluginClient = () => {
 };
 ```
 
-### カスタムアクション
+### Custom actions
 
-`getActions` 関数で `$fetch` を使用して追加メソッドを定義:
+Use `$fetch` inside the `getActions` function to define additional methods:
 
 ```typescript
 const myPluginClient = {
@@ -373,11 +334,11 @@ const myPluginClient = {
 } satisfies BetterAuthClientPlugin;
 ```
 
-**ガイドライン:** 各関数は 1 つの引数を受け取り、オプションの 2 番目の引数で fetch オプションを受け取る。`data` と `error` キーを持つオブジェクトを返す。
+**Guideline:** each function should take one argument, with an optional second argument for fetch options. Return an object with `data` and `error` keys.
 
-### カスタム Atoms (Hooks)
+### Custom atoms (hooks)
 
-nanostores を使用して再利用可能な Hooks を作成:
+Create reusable hooks using nanostores:
 
 ```typescript
 const myPluginClient = {
@@ -392,9 +353,9 @@ const myPluginClient = {
 } satisfies BetterAuthClientPlugin;
 ```
 
-### パスメソッドオーバーライド
+### Path method override
 
-デフォルト HTTP メソッドをオーバーライド（ボディなしリクエストは GET、それ以外は POST）:
+Override the default HTTP method (GET for requests without a body, otherwise POST):
 
 ```typescript
 const myPluginClient = {
@@ -406,10 +367,63 @@ const myPluginClient = {
 } satisfies BetterAuthClientPlugin;
 ```
 
-### Fetch プラグイン
+## Options / Props
 
-高度なリクエスト/レスポンス処理のために `fetchPlugins` 配列で Better Fetch プラグインを渡せる。
+### Plugin capabilities
 
-### Atom リスナー
+- Create custom endpoints for arbitrary actions
+- Extend database tables with a custom schema
+- Target specific route groups with middleware
+- Implement hooks for specific routes or requests
+- Global request/response handlers via `onRequest`/`onResponse`
+- Define custom rate limit rules
 
-Atom の変更をリッスンし、動的に再評価する（組み込みプラグインの例を参照）。
+### Endpoint rules
+
+- Use kebab-case for paths
+- Use only POST or GET methods
+- POST for data mutation, GET for data retrieval
+- Use the `createAuthEndpoint` function
+- Ensure unique paths — prefix with the plugin name to avoid conflicts
+
+### Available context properties
+
+| Property | Description |
+|----------|-------------|
+| `appName` | Application name (default: "Better Auth") |
+| `options` | The Better Auth config that was passed in |
+| `tables` | Core table definitions |
+| `baseURL` | Auth server base URL with path |
+| `session` | Session config (`updateAge`, `expiresIn`) |
+| `secret` | Secret key for cryptographic operations |
+| `authCookie` | Default cookie configuration |
+| `logger` | Better Auth logger instance |
+| `db` | Kysely database instance |
+| `adapter` | ORM-like database functions |
+| `internalAdapter` | Internal database calls (e.g. `createSession()`) |
+| `createAuthCookie` | Cookie management helper |
+| `trustedOrigins` | List of configured trusted origins |
+| `isTrustedOrigin` | Origin validation helper |
+
+### Field properties (schema)
+
+| Property | Description |
+|----------|-------------|
+| `type` | `"string"`, `"number"`, `"boolean"`, or `"date"` |
+| `required` | boolean (default: `true`) |
+| `unique` | boolean (default: `false`) |
+| `references` | Object with `model`, `field`, `onDelete` (default: cascade) |
+
+### Schema properties
+
+- `disableMigration`: skip table migration when `true`
+
+## Notes
+
+- You can pass Better Fetch plugins via the `fetchPlugins` array for advanced request/response handling (Fetch Plugins)
+- Listen to atom changes and re-evaluate dynamically (see built-in plugin examples, Atom Listeners)
+
+## Related
+
+- [Hooks](./hooks.md)
+- [API](./api.md)

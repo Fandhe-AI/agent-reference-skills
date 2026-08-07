@@ -1,48 +1,41 @@
 # @param / @this
 
-関数やメソッドのパラメータを文書化するブロックタグ。このページでは `@param` と `@this` を扱う。
+Block tag for documenting the parameters of a function or method. This page covers both `@param` and `@this`.
 
-## 構文
-
-```
-@param パラメータ名 - 説明
-```
+## Signature / Usage
 
 ```
-@param パラメータ名.プロパティ名 - 説明
+@param paramName - description
 ```
 
 ```
-@this 型名
+@param paramName.propertyName - description
 ```
 
-## 詳細説明
+```
+@this TypeName
+```
 
-### @param（ブロックタグ）
+### @param (block tag)
 
-関数やメソッドのパラメータを文書化する。TSDocの仕様に準拠している。
+Documents the parameters of a function or method. Conforms to the TSDoc specification.
 
-**基本的な使用法**: `@param name - description` の形式でパラメータ名と説明を記述する。
+**Basic usage**: write `@param name - description` to record the parameter name and description.
 
-**オブジェクトリテラルのサポート**: オブジェクト型のパラメータの場合、ドット記法（例: `@param options.value`）を使用してネストされたプロパティを文書化できる。ただし、サポートされるのは1レベルの深さまで。
+**Object literal support**: for object-typed parameters, dot notation (e.g. `@param options.value`) can be used to document nested properties. Only one level of nesting is supported.
 
-**分割代入パラメータ**: TypeDocは `@param` タグから分割代入パラメータ名を自動推論する。推論を成功させるにはすべてのパラメータを文書化する必要がある。文書化されていない場合、パラメータは `__namedParameters` として表示される。
+**Destructured parameters**: TypeDoc automatically infers destructured parameter names from `@param` tags. All parameters must be documented for the inference to succeed; otherwise the parameter is displayed as `__namedParameters`.
 
-**JSDoc互換性**: TypeDocは互換性向上のため柔軟な構文バリエーションをサポートする。型注釈の有無やハイフン区切りの有無に関わらず、すべてのバリアントを同じように処理する。
+**JSDoc compatibility**: TypeDoc supports flexible syntax variants for improved compatibility. All of the following are treated identically, regardless of whether a type annotation or hyphen separator is present:
 
-以下の形式はすべて同一に処理される：
 - `@param test - description`
 - `@param test description`
 - `@param {string} test - description`
 - `@param {string} test description`
 
-### @this（ブロックタグ）
+### @this (block tag)
 
-JavaScriptで `this` を使用する関数の `this` の型を指定する。TypeDocはこの情報をパラメータの説明に組み込む。
-
-## コード例
-
-### 基本的な @param の使用
+Specifies the type of `this` for a function that uses `this` in JavaScript. TypeDoc incorporates this information into the parameter description.
 
 ```typescript
 /**
@@ -51,8 +44,6 @@ JavaScriptで `this` を使用する関数の `this` の型を指定する。Typ
  */
 export function sum(a: number, b: number): number;
 ```
-
-### オブジェクトプロパティの文書化
 
 ```typescript
 /**
@@ -63,8 +54,6 @@ export function sum(a: number, b: number): number;
 export function configure(options: { value: number; name: string }): void;
 ```
 
-### 分割代入パラメータ
-
 ```typescript
 /**
  * @param value - The value
@@ -72,8 +61,6 @@ export function configure(options: { value: number; name: string }): void;
  */
 export function configure({ value, name }: { value: number; name: string }): void;
 ```
-
-### @this の使用
 
 ```javascript
 /**
@@ -85,16 +72,16 @@ function handler(req) {
 }
 ```
 
-## 注意点
+## Notes
 
-- オブジェクトプロパティのドット記法は1レベルの深さまでサポート
-- 分割代入パラメータの自動推論にはすべてのパラメータの文書化が必要
-- TypeDocはJSDoc互換の柔軟な構文をサポート
-- `@this` は主にJavaScriptプロジェクトで使用される
+- Dot notation for object properties is only supported for one level of nesting
+- Automatic inference of destructured parameters requires all parameters to be documented
+- TypeDoc supports flexible, JSDoc-compatible syntax
+- `@this` is used primarily in JavaScript projects
 
-## 関連
+## Related
 
-- [@returns](./returns.md) -- 戻り値の文書化
-- [@typeParam](./typeParam.md) -- 型パラメータの文書化
-- [@expand](./expand.md) -- パラメータ型の展開制御
+- [@returns](./returns.md) -- documenting return values
+- [@typeParam](./typeParam.md) -- documenting type parameters
+- [@expand](./expand.md) -- controlling expansion of parameter types
 - [TSDoc @param](https://tsdoc.org/pages/tags/param/)

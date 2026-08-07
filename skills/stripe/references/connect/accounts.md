@@ -54,7 +54,8 @@ curl https://api.stripe.com/v1/accounts \
 
 ## Notes
 
-- For new integrations, Stripe recommends the [Accounts v2 API](https://docs.stripe.com/connect/accounts-v2) (`POST /v2/core/accounts`) which unifies `Account` and `Customer` into a single object with `configuration` assignments (`merchant`, `customer`, `recipient`).
+- For new integrations, Stripe recommends the [Accounts v2 API](https://docs.stripe.com/connect/accounts-v2) (`POST /v2/core/accounts`) which unifies `Account` and `Customer` into a single object with `configuration` assignments (`merchant`, `customer`, `recipient`). Accounts v2 is no longer Connect-only: as of the `2026-04-22.preview` API version it is generally available (GA) for Connect platforms and in public preview (requires `Stripe-Version: 2026-04-22.preview` or later) for all other Stripe users, specifically for representing customers as `Account` objects via the `customer` configuration.
+- Accounts v2 capability requests use a nested shape instead of the flat v1 `capabilities[<name>][requested]` params documented above: `configuration.merchant.capabilities.<name>.requested` (e.g. `card_payments`) and `configuration.customer.capabilities.<name>.requested` (e.g. `automatic_indirect_tax`). Each capability object also exposes a `status` (`active` \| `pending` \| `restricted` \| `unsupported`) and `status_details`.
 - Stripe-managed accounts (`requirement_collection: "stripe"`) only return full properties after an Account Link or Account Session is created for onboarding.
 - The `type` parameter (`standard`, `express`, `custom`) is deprecated; use `controller` instead.
 - The `account.updated` webhook fires whenever account status or properties change.

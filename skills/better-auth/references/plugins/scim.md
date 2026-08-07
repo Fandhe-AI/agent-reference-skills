@@ -1,16 +1,16 @@
 # SCIM
 
-SCIM プラグインは、Better Auth に SCIM 2.0 準拠サーバーを公開し、サードパーティ ID プロバイダーがサービスへの ID 同期を可能にする。
+The SCIM plugin exposes a SCIM 2.0-compliant server on Better Auth, allowing third-party identity providers to sync identities into your service.
 
-## セットアップ
+## Signature / Usage
 
-### インストール
+### Installation
 
 ```bash
 npm install @better-auth/scim
 ```
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -21,9 +21,9 @@ const auth = betterAuth({
 })
 ```
 
-POST, GET, PUT, PATCH, DELETE の HTTP メソッドサポートが必要。
+Requires support for the POST, GET, PUT, PATCH, and DELETE HTTP methods.
 
-Next.js 例:
+Next.js example:
 
 ```typescript
 import { auth } from "@/lib/auth"
@@ -31,39 +31,37 @@ import { toNextJsHandler } from "better-auth/next-js"
 export const { POST, GET, PUT, PATCH, DELETE } = toNextJsHandler(auth)
 ```
 
-マイグレーション:
+Migration:
 
 ```bash
 npx auth migrate
-# または
+# or
 npx auth generate
 ```
 
-## API メソッド
-
-### SCIM トークン生成
+### Generate SCIM token
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.scim.generateToken({
     providerId: "acme-corp",
     organizationId: "the-org",
 })
 
-// サーバー
+// Server
 const data = await auth.api.generateSCIMToken({
     body: { providerId: "acme-corp", organizationId: "the-org" },
     headers: await headers(),
 })
 ```
 
-### プロバイダー接続一覧
+### List provider connections
 
 ```typescript
 const { data, error } = await authClient.scim.listProviderConnections()
 ```
 
-### プロバイダー接続詳細
+### Get provider connection details
 
 ```typescript
 const { data, error } = await authClient.scim.getProviderConnection({
@@ -71,7 +69,7 @@ const { data, error } = await authClient.scim.getProviderConnection({
 })
 ```
 
-### プロバイダー接続削除
+### Delete provider connection
 
 ```typescript
 const { data, error } = await authClient.scim.deleteProviderConnection({
@@ -79,9 +77,9 @@ const { data, error } = await authClient.scim.deleteProviderConnection({
 })
 ```
 
-### SCIM ユーザー操作
+### SCIM user operations
 
-**一覧**: `GET /scim/v2/Users`
+**List**: `GET /scim/v2/Users`
 
 ```typescript
 const data = await auth.api.listSCIMUsers({
@@ -90,9 +88,9 @@ const data = await auth.api.listSCIMUsers({
 })
 ```
 
-**取得**: `GET /scim/v2/Users/:userId`
+**Get**: `GET /scim/v2/Users/:userId`
 
-**作成**: `POST /scim/v2/Users`
+**Create**: `POST /scim/v2/Users`
 
 ```typescript
 const data = await auth.api.createSCIMUser({
@@ -105,9 +103,9 @@ const data = await auth.api.createSCIMUser({
 })
 ```
 
-**更新**: `PUT /scim/v2/Users/:userId`
+**Update**: `PUT /scim/v2/Users/:userId`
 
-**部分更新**: `PATCH /scim/v2/Users/:userId`
+**Patch**: `PATCH /scim/v2/Users/:userId`
 
 ```typescript
 const data = await auth.api.patchSCIMUser({
@@ -119,9 +117,9 @@ const data = await auth.api.patchSCIMUser({
 })
 ```
 
-**削除**: `DELETE /scim/v2/Users/:userId`
+**Delete**: `DELETE /scim/v2/Users/:userId`
 
-### サービスプロバイダー設定
+### Service provider configuration
 
 - `GET /scim/v2/ServiceProviderConfig`
 - `GET /scim/v2/Schemas`
@@ -129,17 +127,17 @@ const data = await auth.api.patchSCIMUser({
 - `GET /scim/v2/ResourceTypes`
 - `GET /scim/v2/ResourceTypes/:resourceTypeId`
 
-## 設定オプション
+## Options / Props
 
-### プロバイダー所有権
+### Provider ownership
 
 ```typescript
 scim({ providerOwnership: { enabled: true } })
 ```
 
-各 SCIM トークンを生成したユーザーにリンク。有効化後にマイグレーションが必要。
+Links each SCIM token to the user who generated it. Requires a migration after enabling.
 
-### デフォルト SCIM トークン
+### Default SCIM token
 
 ```typescript
 scim({
@@ -151,12 +149,12 @@ scim({
 })
 ```
 
-SCIM トークンは `base64(scimToken:providerId[:organizationId])` 形式で base64 エンコードが必要。
+The SCIM token must be base64-encoded in the form `base64(scimToken:providerId[:organizationId])`.
 
-### トークン保存方法
+### Token storage method
 
 ```typescript
-// 暗号化
+// Encrypted
 scim({
     storeSCIMToken: {
         encrypt: async (scimToken) => myCustomEncryptor(scimToken),
@@ -164,7 +162,7 @@ scim({
     }
 })
 
-// ハッシュ
+// Hashed
 scim({
     storeSCIMToken: {
         hash: async (scimToken) => myCustomHasher(scimToken),
@@ -172,37 +170,35 @@ scim({
 })
 ```
 
-デフォルト: プレーンテキスト
+Default: plain text
 
-## ライフサイクルフック
+### Lifecycle hooks
 
 ```typescript
 scim({
     beforeSCIMTokenGenerated: async ({ user, member, scimToken }) => {
-        // 検証とインターセプト
+        // Validate and intercept
     },
     afterSCIMTokenGenerated: async ({ user, member, scimToken, scimProvider }) => {
-        // トークン共有や通知
+        // Share the token or notify
     },
 })
 ```
 
-## DB スキーマ
+### DB schema (scimProvider table)
 
-### scimProvider テーブル
-
-| フィールド | 型 | キー | 説明 |
+| Field | Type | Key | Description |
 |---|---|---|---|
-| id | string | PK | DB 識別子 |
-| providerId | string | - | プロバイダー ID |
-| scimToken | string | - | 認証用 Bearer トークン |
-| organizationId | string | ? | 組織 ID（任意） |
-| userId | string | ? | 所有者ユーザー ID（providerOwnership 有効時） |
+| id | string | PK | DB identifier |
+| providerId | string | - | Provider ID |
+| scimToken | string | - | Bearer token used for authentication |
+| organizationId | string | ? | Organization ID (optional) |
+| userId | string | ? | Owning user ID (when providerOwnership is enabled) |
 
-## 注意点
+## Notes
 
-- **重大なセキュリティ警告**: Better Auth インスタンスにアクセスできる認証済みユーザーは誰でも SCIM トークンを生成可能。マルチテナントシナリオでは重大なセキュリティリスク
-- `beforeSCIMTokenGenerated` フックでトークン生成を管理者に制限すること:
+- **Critical security warning**: any authenticated user with access to the Better Auth instance can generate a SCIM token. This is a serious risk in multi-tenant scenarios
+- Use the `beforeSCIMTokenGenerated` hook to restrict token generation to admins:
 
 ```typescript
 scim({

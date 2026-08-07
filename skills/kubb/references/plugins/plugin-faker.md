@@ -8,48 +8,32 @@ OpenAPI スキーマから Faker.js モックデータジェネレーターを�
 npm install --save-dev @kubb/plugin-faker
 ```
 
-## 設定オプション
+## 設定オプション（v5）
 
-### output
-
-| オプション | 型 | デフォルト |
-|-----------|-----|----------|
-| `output.path` | `string` | `'mocks'` |
-| `output.barrelType` | `'all' \| 'named' \| 'propagate' \| false` | `'named'` |
-| `output.banner` / `output.footer` | `string \| (oas) => string` | — |
-| `output.override` | `boolean` | `false` |
-
-### データ生成オプション
+`dateType` / `unknownType` / `emptySchemaType` は `adapterOas` に移動した。`mapper` / `paramsCasing` / `contentType` / `generators` は削除され、`transformers.name` は `resolver` に置き換わった。`locale` が新設された。
 
 | オプション | 型 | デフォルト | 説明 |
 |-----------|-----|----------|------|
-| `dateType` | `'string' \| 'date'` | `'string'` | 日付フィールドの型（Date vs ISO文字列） |
+| `output` | `Output` | `{ path: 'mocks' }` | 出力先パス |
+| `group` | `Group` | — | tag / path によるフォルダー分割 |
 | `dateParser` | `'faker' \| 'dayjs' \| 'moment' \| string` | `'faker'` | 日付フォーマットライブラリ |
 | `regexGenerator` | `'faker' \| 'randexp'` | `'faker'` | 正規表現文字列生成ライブラリ |
-| `seed` | `number` | — | テスト用の固定シード値 |
-| `unknownType` | `'any' \| 'unknown' \| 'void'` | `'any'` | 不明な型のフォールバック |
-| `emptySchemaType` | `'any' \| 'unknown' \| 'void'` | `unknownType` の値 | 空スキーマの型 |
-
-### その他
-
-| オプション | 型 | デフォルト |
-|-----------|-----|----------|
-| `mapper` | `Record<string, string>` | — |
-| `paramsCasing` | `'camelcase'` | — |
-| `contentType` | `'application/json' \| string` | — |
-| `group.type` | `'tag'` | — |
-| `include` / `exclude` | `Array<{type, pattern}>` | — |
-| `override` | `Array<{type, pattern, options}>` | — |
-| `transformers.name` | `(name, type?) => string` | — |
-| `generators` | `Generator[]` | — |
+| `locale` | `string` | `'en'` | 生成値の Faker ロケールコード |
+| `seed` | `number \| number[]` | — | `faker.seed(...)` に渡す固定シード値 |
+| `include` | `Array<Include>` | — | 対象を絞り込むフィルタリング |
+| `exclude` | `Array<Exclude>` | — | 対象を除外するフィルタリング |
+| `override` | `Array<Override>` | — | パターン単位のオプション上書き |
+| `resolver` | `ResolverPatch<ResolverFaker>` | — | 生成名・ファイルパスのカスタマイズ（旧 `transformers.name`） |
+| `macros` | `Array<Macro>` | — | 出力前の AST ノード書き換え |
+| `printer` | `{ nodes?: PrinterFakerNodes }` | — | スキーマ種別ごとのハンドラー差し替え |
 
 ### dateParser の例
 
 ```typescript
-// dateParser: 'dayjs', dateType: 'string'
+// dateParser: 'dayjs'（日付フィールドの型は adapterOas の dateType に従う）
 dayjs(faker.date.anytime()).format("YYYY-MM-DD")
 
-// dateType: 'date'
+// adapterOas の dateType: 'date' を使う場合
 faker.date.anytime()
 ```
 
@@ -57,9 +41,10 @@ faker.date.anytime()
 
 ```typescript
 pluginFaker({
-  output: { path: './mocks', barrelType: 'named' },
+  output: { path: './mocks' },
   group: { type: 'tag', name: ({ group }) => `${group}Service` },
-  dateType: 'date',
+  dateParser: 'dayjs',
+  locale: 'en',
   seed: [100],
 })
 ```

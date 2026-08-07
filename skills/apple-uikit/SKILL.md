@@ -21,10 +21,12 @@ skills/apple-uikit/
       uiviewcontroller.md
       uinavigationcontroller.md
       uitabbarcontroller.md
+      uitab.md
       uisplitviewcontroller.md
       uipageviewcontroller.md
       uipresentationcontroller.md
       uisheetpresentationcontroller.md
+      uicontentunavailableconfiguration.md
       viewcontroller-lifecycle.md
       viewcontroller-presentation.md
       uiresponder.md
@@ -95,7 +97,9 @@ skills/apple-uikit/
 |--------|---------|------------|
 | UIViewController のライフサイクルを知りたい | view-controllers | [references/view-controllers/README.md](references/view-controllers/README.md) |
 | ナビゲーション・タブ・スプリットビューを構成したい | view-controllers | [references/view-controllers/README.md](references/view-controllers/README.md) |
+| UITab で UITabBarController のタブを構成したい | view-controllers | [references/view-controllers/README.md](references/view-controllers/README.md) |
 | モーダル・シート表示を実装したい | view-controllers | [references/view-controllers/README.md](references/view-controllers/README.md) |
+| 空状態・コンテンツ未取得時の表示を実装したい | view-controllers | [references/view-controllers/README.md](references/view-controllers/README.md) |
 | レスポンダーチェーン・イベント処理を知りたい | view-controllers | [references/view-controllers/README.md](references/view-controllers/README.md) |
 | UIView・UILabel・UIButton などのビュー/コントロールを使いたい | views-controls | [references/views-controls/README.md](references/views-controls/README.md) |
 | テキスト入力・スクロール・スタックビューを実装したい | views-controls | [references/views-controls/README.md](references/views-controls/README.md) |

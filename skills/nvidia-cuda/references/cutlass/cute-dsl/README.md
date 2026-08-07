@@ -1,47 +1,47 @@
-# cute-dsl
+# CuTe DSL
 
 | Name | Description | Path |
-| --- | --- | --- |
-| **Guides** | | |
-| Overview | CuTe DSL purpose, core abstractions, compilation approach | [overview.md](./overview.md) |
-| Functionality | Supported MMA ops by architecture (Ampere/Hopper/Blackwell) | [functionality.md](./functionality.md) |
-| Quick Start | Install, platform/driver requirements | [quick-start.md](./quick-start.md) |
-| CuTe DSL (Index) | Navigation page for the CuTe DSL guide tree | [cute-dsl.md](./cute-dsl.md) |
-| DSL Introduction | @jit / @kernel decorators, calling conventions | [dsl-introduction.md](./dsl-introduction.md) |
-| DSL Code Generation | Pre-staging/meta-stage/object-stage, tracing vs preprocessor mode | [dsl-code-generation.md](./dsl-code-generation.md) |
-| DSL Control Flow | range/range_constexpr, if/while, const_expr, limitations | [dsl-control-flow.md](./dsl-control-flow.md) |
-| JIT Argument Generation | Constexpr vs dynamic args, JitArgument/DynamicExpression protocols | [dsl-jit-arg-generation.md](./dsl-jit-arg-generation.md) |
-| Static vs Dynamic Layouts | mark_layout_dynamic, compile tradeoffs | [dsl-dynamic-layout.md](./dsl-dynamic-layout.md) |
-| Struct-like JIT Arguments | NamedTuple, @native_struct, frozen dataclass | [dsl-struct-types.md](./dsl-struct-types.md) |
-| JIT Caching | cute.compile, cache key, CUTE_DSL_CACHE_DIR | [dsl-jit-caching.md](./dsl-jit-caching.md) |
-| JIT Compilation Options | opt-level, enable-assertions, keep-cubin/ptx | [dsl-jit-compilation-options.md](./dsl-jit-compilation-options.md) |
-| DSL Types | IntValue, Ratio, ScaledBasis, Swizzle, Layout, Pointer, struct/union | [dsl-types.md](./dsl-types.md) |
-| Framework Integration | DLPack, from_dlpack, mark_layout_dynamic, TVM FFI | [framework-integration.md](./framework-integration.md) |
-| Debugging | CUTE_DSL_DEBUG, CUTE_DSL_KEEP, logging env vars | [debugging.md](./debugging.md) |
-| IKET Profiling | In-kernel event tracing, mark/range_push/pop | [iket-profiling.md](./iket-profiling.md) |
-| Autotuning GEMM | Search space, caching, benchmarking practices | [autotuning-gemm.md](./autotuning-gemm.md) |
-| Compile with TVM FFI | --enable-tvm-ffi, fake tensors | [compile-with-tvm-ffi.md](./compile-with-tvm-ffi.md) |
-| Ahead-of-Time Compilation | export_to_c, CuteDSLRuntime.h | [dsl-ahead-of-time-compilation.md](./dsl-ahead-of-time-compilation.md) |
-| Naming Conventions | Hungarian-style identifier prefixes (g/s/r/t, tTR_/tRS_/bSG_/bGS_) | [naming-conventions.md](./naming-conventions.md) |
-| Deprecation Policy | Soft deprecation process, current deprecations | [deprecation-policy.md](./deprecation-policy.md) |
-| MMA Guides (Index) | Navigation for the three architecture-specific MMA guides | [mma-intro.md](./mma-intro.md) |
-| MMA: WMMA Programming (Warp-Level) | SM80+ warp-level MMA, MmaF16BF16Op/MmaFP8Op | [mma-wmma-programming.md](./mma-wmma-programming.md) |
-| MMA: WGMMA Programming (Hopper) | SM90a warpgroup MMA, async issue model | [mma-wgmma-programming.md](./mma-wgmma-programming.md) |
-| MMA: tcgen05 Programming (Blackwell) | SM100 tcgen05 MMA, TMEM, CTA-pair cooperation | [mma-tcgen05-programming.md](./mma-tcgen05-programming.md) |
-| Limitations | Unsupported features, 32-bit layout algebra, OOP constraints | [limitations.md](./limitations.md) |
-| FAQs | C++ vs Python DSL, architecture support, license | [faqs.md](./faqs.md) |
-| **CuTe DSL API** | | |
-| API (Index) | Navigation for the cutlass.cute Python API reference | [api-overview.md](./api-overview.md) |
-| cute | Layout/Tensor/Atom core API, layout algebra | [api-cute.md](./api-cute.md) |
-| cute.arch | NVVM device-function wrappers (thread/cluster/mbarrier/atomics) | [api-cute-arch.md](./api-cute-arch.md) |
-| cute.runtime | Pointer/Tensor/FakeTensor, from_dlpack, make_ptr | [api-cute-runtime.md](./api-cute-runtime.md) |
-| cute.nvgpu (Index) | Navigation for common/warp/warpgroup/cpasync/tcgen05 submodules | [api-cute-nvgpu.md](./api-cute-nvgpu.md) |
-| cute.nvgpu (Common) | Arch-agnostic MMA/Copy ops, TMA atom helpers | [api-cute-nvgpu-common.md](./api-cute-nvgpu-common.md) |
-| cute.nvgpu.warp | Warp-level MMA ops, LdMatrix/StMatrix | [api-cute-nvgpu-warp.md](./api-cute-nvgpu-warp.md) |
-| cute.nvgpu.warpgroup | Hopper warpgroup MMA ops, fence/commit_group/wait_group | [api-cute-nvgpu-warpgroup.md](./api-cute-nvgpu-warpgroup.md) |
-| cute.nvgpu.cpasync | cp.async / TMA copy ops | [api-cute-nvgpu-cpasync.md](./api-cute-nvgpu-cpasync.md) |
-| cute.nvgpu.tcgen05 | Blackwell tcgen05 MMA ops, TMEM load/store | [api-cute-nvgpu-tcgen05.md](./api-cute-nvgpu-tcgen05.md) |
-| pipeline | PipelineAsync/PipelineTmaUmma/PipelineState, producer/consumer | [api-pipeline.md](./api-pipeline.md) |
-| utils | SmemAllocator, TmemAllocator, tile schedulers, HardwareInfo | [api-utils.md](./api-utils.md) |
-| utils (SM90) | make_smem_layout_a/b/epi for Hopper | [api-utils-sm90.md](./api-utils-sm90.md) |
-| utils (SM100) | make_smem_layout_a/b/epi, block-scaled MMA helpers for Blackwell | [api-utils-sm100.md](./api-utils-sm100.md) |
+|------|-------------|------|
+| CuTe DSL (Index) | Navigation page for the CuTe DSL documentation tree | [cute-dsl.md](./cute-dsl.md) |
+| CuTe DSL API (Index) | Navigation page for the `cutlass.cute` Python API reference | [api-overview.md](./api-overview.md) |
+| CuTe DSL API: cute | Core layout, tensor, atom operations and layout algebra | [api-cute.md](./api-cute.md) |
+| CuTe DSL API: cute.arch | NVVM device-function wrappers for thread ops, synchronization, memory barriers, and atomics | [api-cute-arch.md](./api-cute-arch.md) |
+| CuTe DSL API: cute.nvgpu | Navigation/index page for the `cutlass.cute.nvgpu` module | [api-cute-nvgpu.md](./api-cute-nvgpu.md) |
+| CuTe DSL API: cute.nvgpu (Common) | Architecture-agnostic MMA and Copy operations plus helpers | [api-cute-nvgpu-common.md](./api-cute-nvgpu-common.md) |
+| CuTe DSL API: cute.nvgpu.cpasync | cp.async and TMA copy operations for bulk tensor transfers | [api-cute-nvgpu-cpasync.md](./api-cute-nvgpu-cpasync.md) |
+| CuTe DSL API: cute.nvgpu.tcgen05 | Blackwell SM100 tcgen05 MMA operations and TMEM utilities | [api-cute-nvgpu-tcgen05.md](./api-cute-nvgpu-tcgen05.md) |
+| CuTe DSL API: cute.nvgpu.warp | Warp-level MMA and ldmatrix/stmatrix operations | [api-cute-nvgpu-warp.md](./api-cute-nvgpu-warp.md) |
+| CuTe DSL API: cute.nvgpu.warpgroup | Hopper SM90a warpgroup MMA operations | [api-cute-nvgpu-warpgroup.md](./api-cute-nvgpu-warpgroup.md) |
+| CuTe DSL API: cute.runtime | Runtime pointer, tensor, and DLPack conversion utilities | [api-cute-runtime.md](./api-cute-runtime.md) |
+| CuTe DSL API: pipeline | Pipeline utilities for TMA, MMA, and async copies | [api-pipeline.md](./api-pipeline.md) |
+| CuTe DSL API: utils | General memory management, tile scheduling, and hardware info | [api-utils.md](./api-utils.md) |
+| CuTe DSL API: utils (SM90) | Hopper-specific SMEM layout builders and epilogue utilities | [api-utils-sm90.md](./api-utils-sm90.md) |
+| CuTe DSL API: utils (SM100) | Blackwell-specific epilogue and block-scaled MMA utilities | [api-utils-sm100.md](./api-utils-sm100.md) |
+| Auto-Tuning GEMM | GEMM kernel tuning via parameter space search and caching | [autotuning-gemm.md](./autotuning-gemm.md) |
+| Compile with TVM FFI | TVM FFI integration for faster PyTorch interop | [compile-with-tvm-ffi.md](./compile-with-tvm-ffi.md) |
+| Debugging | Environment variables and attributes for troubleshooting | [debugging.md](./debugging.md) |
+| Deprecation Policy | Soft and hard deprecation timelines for DSL features | [deprecation-policy.md](./deprecation-policy.md) |
+| DSL Introduction | Core concepts, decorators, and basic JIT/kernel patterns | [dsl-introduction.md](./dsl-introduction.md) |
+| DSL Code Generation | Meta-stage vs. object-stage execution and preprocessor modes | [dsl-code-generation.md](./dsl-code-generation.md) |
+| DSL Control Flow | Loop and conditional constructs for static/dynamic control | [dsl-control-flow.md](./dsl-control-flow.md) |
+| Static vs. Dynamic Layouts | Static vs. dynamic shape handling and compilation trade-offs | [dsl-dynamic-layout.md](./dsl-dynamic-layout.md) |
+| JIT Function Argument Generation | Argument protocols, `Constexpr`, and custom type adaptation | [dsl-jit-arg-generation.md](./dsl-jit-arg-generation.md) |
+| JIT Caching | Implicit caching and explicit `cute.compile()` for reuse | [dsl-jit-caching.md](./dsl-jit-caching.md) |
+| JIT Compilation Options | Optimization levels, debugging flags, and PTX/CUBIN retention | [dsl-jit-compilation-options.md](./dsl-jit-compilation-options.md) |
+| Struct-like JIT Arguments | NamedTuple, `@native_struct`, and frozen dataclass containers | [dsl-struct-types.md](./dsl-struct-types.md) |
+| DSL Types | IntValue, Ratio, Swizzle, Layout, Pointer, and struct/union decorators | [dsl-types.md](./dsl-types.md) |
+| Ahead-of-Time (AOT) Compilation | Kernel export to C/C++ headers and object files | [dsl-ahead-of-time-compilation.md](./dsl-ahead-of-time-compilation.md) |
+| FAQs | Common questions on DSLs, porting, framework support, and licensing | [faqs.md](./faqs.md) |
+| Framework Integration | DLPack tensor conversion, dynamic layouts, and TVM FFI | [framework-integration.md](./framework-integration.md) |
+| Functionality | Supported MMA data types and instruction sets by architecture | [functionality.md](./functionality.md) |
+| IKET Profiling (In-Kernel Event Tracing) | Mark/range instrumentation and Perfetto trace visualization | [iket-profiling.md](./iket-profiling.md) |
+| Limitations | Unsupported features and constraints in the beta DSL | [limitations.md](./limitations.md) |
+| Architecture-Specific MMA Programming Guides (Index) | Navigation page covering WMMA, WGMMA, and tcgen05 guides | [mma-intro.md](./mma-intro.md) |
+| MMA: Warp-Level MMA Programming Guide | Warp-synchronous MMA setup, data flow, and complete workflow | [mma-wmma-programming.md](./mma-wmma-programming.md) |
+| MMA: Warpgroup MMA (WGMMA) Programming Guide | Hopper warpgroup MMA ops, SMEM descriptors, and async fences | [mma-wgmma-programming.md](./mma-wgmma-programming.md) |
+| MMA: tcgen05 Programming Guide (Blackwell, SM100) | Blackwell tcgen05 MMA, TMEM, 2-CTA cooperation, and block-scaled variants | [mma-tcgen05-programming.md](./mma-tcgen05-programming.md) |
+| Naming Conventions | Hungarian-style notation for memory spaces, operands, and axes | [naming-conventions.md](./naming-conventions.md) |
+| CuTe DSL Overview | Purpose, core abstractions, compilation model, and public beta status | [overview.md](./overview.md) |
+| Primitives API (experimental) | Low-level NVVM dialect wrappers for barriers, TMA, atomics | [primitives-api.md](./primitives-api.md) |
+| Quick Start | Installation, Python version, CUDA toolkit, and driver requirements | [quick-start.md](./quick-start.md) |
+| Task Scheduling (TS, experimental) | Navigation for experimental task-scheduling infrastructure | [task-scheduling.md](./task-scheduling.md) |

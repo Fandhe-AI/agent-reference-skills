@@ -32,7 +32,7 @@ export default async function Page({
 
 ## Related
 
-- [generateStaticParams](../functions/generate-static-params.md)
+- [generateStaticParams](../functions/generateStaticParams.md)
 - [layout.js](./layout.md)
 - [page.js](./page.md)
 - [route.js](./route.md)

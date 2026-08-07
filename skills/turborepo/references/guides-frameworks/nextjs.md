@@ -1,13 +1,15 @@
 # Next.js
 
-## クイックスタート
+## Usage
+
+### Quickstart
 
 ```bash
-pnpm dlx create-turbo@latest        # デフォルトテンプレート
-pnpm dlx create-next-app@latest apps/my-app  # 既存リポジトリに追加
+pnpm dlx create-turbo@latest        # default template
+pnpm dlx create-next-app@latest apps/my-app  # add to an existing repo
 ```
 
-## 内部パッケージの参照
+### Referencing internal packages
 
 ```jsonc
 // pnpm / bun
@@ -17,11 +19,11 @@ pnpm dlx create-next-app@latest apps/my-app  # 既存リポジトリに追加
 "@repo/ui": "*"
 ```
 
-## タスクのカスタマイズ
+### Customizing tasks
 
-デフォルトではルートの `turbo.json` のタスクが使用される。アプリ固有の設定は Package Configurations で上書き可能。
+By default, tasks from the root `turbo.json` are used. App-specific configuration can override this via Package Configurations.
 
-## マイクロフロントエンド設定
+### Micro-frontend configuration
 
 ```ts
 // apps/docs/next.config.ts
@@ -31,4 +33,10 @@ const nextConfig: NextConfig = {
 export default nextConfig;
 ```
 
-`basePath` の設定を忘れるとアセットのルーティングが壊れる。
+## Notes
+
+- Forgetting to set `basePath` breaks asset routing.
+
+## Related
+
+- [Vite](./vite.md)

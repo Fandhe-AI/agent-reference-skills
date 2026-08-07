@@ -1,25 +1,21 @@
 # @alpha
 
-将来的にサードパーティ開発者が使用することを想定しているが、セマンティックバージョニングに準拠するほど安定していないメンバーをマークするモディファイアタグ。
+Modifier tag marking a member intended for eventual use by third-party developers, but not yet stable enough to follow semantic versioning.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @alpha */
 ```
 
-## 詳細説明
+`@alpha` indicates an API's maturity level. A member tagged `@alpha` is at the earliest release phase and may change with frequent breaking changes.
 
-`@alpha` タグは、API の成熟度レベルを示すために使用される。このタグが付与されたメンバーは、最も初期段階のリリースフェーズにあることを意味し、破壊的変更が頻繁に行われる可能性がある。
+It conforms to the TSDoc specification, and TypeDoc can show/hide `@alpha`-tagged members via the `--visibilityFilters` option.
 
-TSDoc 仕様に準拠しており、TypeDoc は `--visibilityFilters` オプションを通じて、`@alpha` タグが付いたメンバーの表示/非表示を制御できる。
-
-リリース安定度の階層は以下の通り:
-1. `@alpha` — 最も不安定。大幅な変更の可能性あり
-2. `@beta` / `@experimental` — ある程度安定しているがSemVer未準拠
-3. `@public` — 安定版
-
-## コード例
+The release stability hierarchy is:
+1. `@alpha` — least stable, subject to major changes
+2. `@beta` / `@experimental` — reasonably stable but not SemVer-compliant
+3. `@public` — stable
 
 ```typescript
 export class Visibility {
@@ -31,7 +27,7 @@ export class Visibility {
 ```typescript
 export class ApiClient {
     /**
-     * 新しい認証フロー。大幅に変更される可能性あり。
+     * New authentication flow. Subject to significant change.
      * @alpha
      */
     authenticateV2(token: string): Promise<void> {
@@ -40,13 +36,13 @@ export class ApiClient {
 }
 ```
 
-## 注意点
+## Notes
 
-- TSDoc 仕様に準拠: https://tsdoc.org/pages/tags/alpha/
-- `--visibilityFilters` オプションで `@alpha` メンバーの表示/非表示を制御可能
-- `@alpha` と `@beta` / `@experimental` を同時に使用しないこと
+- Conforms to the TSDoc specification: https://tsdoc.org/pages/tags/alpha/
+- The `--visibilityFilters` option controls visibility of `@alpha` members
+- Do not use `@alpha` together with `@beta` / `@experimental`
 
-## 関連
+## Related
 
 - [@beta](./beta.md)
 - [@experimental](./experimental.md)

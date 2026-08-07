@@ -12,6 +12,7 @@ setValue: (
     shouldValidate?: boolean;
     shouldDirty?: boolean;
     shouldTouch?: boolean;
+    delayError?: boolean;
   }
 ) => void
 ```
@@ -31,6 +32,7 @@ setValue: (
 | `shouldValidate` | `boolean` | `false` | `true` にすると、値の設定後にバリデーションを実行する。`errors` と `isValid` が更新される。フィールドレベルでのみ `touchedFields` が更新される。 |
 | `shouldDirty` | `boolean` | `false` | `true` にすると、`defaultValues` と比較して `dirtyFields` と `isDirty` を更新する。フィールドレベルでのみ更新。 |
 | `shouldTouch` | `boolean` | `false` | `true` にすると、フィールドを touched 状態にする。 |
+| `delayError` | `boolean` | `false` | `true` にすると、`useForm` のトップレベルオプション `delayError`（ミリ秒）で設定した遅延をこの呼び出しにも適用する（v7.82.0+）。`shouldValidate: true` と併用した場合のみ有効。UI のちらつき抑制に有効。 |
 
 ## コード例
 
@@ -79,6 +81,16 @@ setValue("firstName", "太郎", {
   shouldDirty: true,
   shouldTouch: true,
 });
+```
+
+### エラー反映の遅延（delayError）
+
+```tsx
+// useForm 側で delayError（ミリ秒）を設定しておく
+const { setValue } = useForm({ delayError: 500 });
+
+// setValue 呼び出し時に delayError: true でその遅延を適用し、UIのちらつきを抑える
+setValue("firstName", "太郎", { shouldValidate: true, delayError: true });
 ```
 
 ### ドット記法によるネストフィールド

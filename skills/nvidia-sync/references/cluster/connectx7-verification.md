@@ -14,21 +14,7 @@ ping -c 3 <peer-cluster-ip>
 
 Cluster Assistant creates `/etc/netplan/99-nvidia-sync-cluster.yaml`, defining the high-level network setup for the managed cluster's ConnectX-7 network, separate from management networking. Your DGX Spark or GB10 device has two QSFP links that are both configured and appear in the cluster Netplan file.
 
-## Options / Props
-
-| Name | Type | Description |
-| --- | --- | --- |
-| `/etc/netplan/99-nvidia-sync-cluster.yaml` | file | Netplan configuration for the ConnectX-7 cluster network; contains `ethernets` entries for device names and assigned address ranges |
-| `ip -br link` | command | Shows link status; `LOWER_UP` indicates an active connection, `NO-CARRIER` indicates inactive |
-| `ip -br addr` | command | Shows assigned IP addresses; verify they match the Netplan configuration |
-
-## Notes
-
-- Compare interface names between the Netplan file and `ip -br link` / `ip -br addr` output to confirm proper assignment.
-- Not all nodes necessarily connect directly to every other node, depending on topology; use `ping -c 3 <peer-cluster-ip>` to test connectivity to reachable peers only.
-- Removing the Netplan file only removes network configuration, not SSH settings or aliases created during setup.
-
-## Removal Process
+### Removal Process
 
 To disable the configuration on individual nodes:
 
@@ -44,10 +30,22 @@ ip -br addr
 2. Apply changes with `netplan generate` and `netplan try`.
 3. Verify removal with `ip -br addr`.
 
+## Options / Props
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `/etc/netplan/99-nvidia-sync-cluster.yaml` | file | Netplan configuration for the ConnectX-7 cluster network; contains `ethernets` entries for device names and assigned address ranges |
+| `ip -br link` | command | Shows link status; `LOWER_UP` indicates an active connection, `NO-CARRIER` indicates inactive |
+| `ip -br addr` | command | Shows assigned IP addresses; verify they match the Netplan configuration |
+
+## Notes
+
+- Compare interface names between the Netplan file and `ip -br link` / `ip -br addr` output to confirm proper assignment.
+- Not all nodes necessarily connect directly to every other node, depending on topology; use `ping -c 3 <peer-cluster-ip>` to test connectivity to reachable peers only.
+- Removing the Netplan file only removes network configuration, not SSH settings or aliases created during setup.
+
 ## Related
 
 - [cluster-assistant](./cluster-assistant.md)
 - [direct-connections](../connections/direct-connections.md)
-- [connect-two-sparks (dgx-spark playbook)](../../../dgx-spark/references/playbooks/connect-two-sparks.md)
-- [connect-three-sparks (dgx-spark playbook)](../../../dgx-spark/references/playbooks/connect-three-sparks.md)
-- [multi-sparks-through-switch (dgx-spark playbook)](../../../dgx-spark/references/playbooks/multi-sparks-through-switch.md)
+- connect-two-sparks, connect-three-sparks, multi-sparks-through-switch playbooks: dgx-spark スキル参照

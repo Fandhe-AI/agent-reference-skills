@@ -8,12 +8,12 @@
 // 単一ノード
 useNodesData<NodesType extends Node = Node>(
   nodeId: string
-): Pick<NodesType, 'id' | 'type' | 'data'> | null
+): DistributivePick<NodesType, 'id' | 'type' | 'data'> | null
 
 // 複数ノード
 useNodesData<NodesType extends Node = Node>(
   nodeIds: string[]
-): Pick<NodesType, 'id' | 'type' | 'data'>[]
+): DistributivePick<NodesType, 'id' | 'type' | 'data'>[]
 ```
 
 ## Parameters

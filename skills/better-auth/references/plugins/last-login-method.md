@@ -1,10 +1,10 @@
 # Last Login Method
 
-Last Login Method プラグインは、ユーザーが使用した最新の認証方法を追跡・表示する。「Google でログイン済み」などのログインインジケーターの表示や、ユーザーの好みに基づく認証方法の優先順位付けが可能。
+The Last Login Method plugin tracks and displays the most recent authentication method used by a user. It enables login indicators such as "Signed in with Google" and lets you prioritize authentication methods based on user preference.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -17,7 +17,7 @@ export const auth = betterAuth({
 })
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -30,103 +30,26 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
-
-### 最後に使用したログイン方法の取得
+### Get the last used login method
 
 ```typescript
 const lastMethod = authClient.getLastUsedLoginMethod()
-// "google", "email", "github" 等
+// "google", "email", "github", etc.
 ```
 
-### 特定の方法が最後に使用されたか確認
+### Check whether a specific method was last used
 
 ```typescript
 const wasGoogle = authClient.isLastUsedLoginMethod("google")
 ```
 
-### 保存された認証方法の記録をクリア
+### Clear the stored login method record
 
 ```typescript
 authClient.clearLastUsedLoginMethod()
 ```
 
-## 設定オプション
-
-### サーバー設定
-
-```typescript
-lastLoginMethod({
-    cookieName: "better-auth.last_used_login_method",
-    maxAge: 60 * 60 * 24 * 30,  // 30日（秒）
-    storeInDatabase: false,
-    customResolveMethod: (ctx) => {
-        if (ctx.path === "/oauth/callback/custom-provider") return "custom-provider"
-        return null
-    },
-    schema: {
-        user: { lastLoginMethod: "custom_field_name" }
-    }
-})
-```
-
-| オプション | 型 | デフォルト | 説明 |
-|---|---|---|---|
-| `cookieName` | string | `"better-auth.last_used_login_method"` | Cookie 識別子。`httpOnly: false` |
-| `maxAge` | number | `2592000`（30日） | Cookie の有効期限（秒） |
-| `storeInDatabase` | boolean | `false` | DB に方法を永続化 |
-| `customResolveMethod` | function | - | リクエストコンテキストからログイン方法を判定するカスタムロジック |
-| `schema` | object | - | `storeInDatabase` 有効時の DB フィールド名マッピング |
-
-### クライアント設定
-
-```typescript
-lastLoginMethodClient({
-    cookieName: "better-auth.last_used_login_method"  // サーバーと一致させる
-})
-```
-
-## DB 設定
-
-### DB ストレージ有効化
-
-```typescript
-lastLoginMethod({ storeInDatabase: true })
-```
-
-マイグレーション:
-
-```bash
-npx auth@latest migrate
-```
-
-### DB スキーマ
-
-user テーブル追加フィールド:
-
-| フィールド | 型 | 任意 | 説明 |
-|---|---|---|---|
-| `lastLoginMethod` | string | Yes | 最後に使用した認証方法 |
-
-### DB フィールドへのアクセス
-
-```typescript
-// サーバー
-const session = await auth.api.getSession({ headers })
-console.log(session?.user.lastLoginMethod)
-
-// クライアント
-const { data: session } = authClient.useSession()
-console.log(session?.user.lastLoginMethod)
-```
-
-## デフォルトのメソッド解決
-
-- **Email**: `"email"`（`/sign-in/email` と `/sign-up/email`）
-- **OAuth プロバイダー**: プロバイダー ID（例: `"google"`, `"github"`）
-- **OAuth コールバック**: `/callback/:id` や `/oauth2/callback/:id` からプロバイダー ID を抽出
-
-## 高度な実装例
+### Advanced implementation example
 
 ```typescript
 lastLoginMethod({
@@ -139,7 +62,7 @@ lastLoginMethod({
 })
 ```
 
-## UI 統合例
+### UI integration example
 
 ```typescript
 export function SignInPage() {
@@ -160,7 +83,7 @@ export function SignInPage() {
 }
 ```
 
-## Expo 実装
+### Expo implementation
 
 ```typescript
 import { lastLoginMethodClient } from "@better-auth/expo/plugins"
@@ -173,9 +96,77 @@ export const authClient = createAuthClient({
 })
 ```
 
-Expo 専用アプリケーションではサーバープラグインを省略し、クライアントプラグインのみに依存可能。
+For Expo-only applications, you can omit the server plugin and rely solely on the client plugin.
 
-## 注意点
+## Options / Props
 
-- Cookie は `httpOnly: false` を使用してクライアント側 JavaScript からアクセス可能
-- Better Auth の `crossSubDomainCookies` や `crossOriginCookies` 設定を自動的に継承
+### Server configuration
+
+```typescript
+lastLoginMethod({
+    cookieName: "better-auth.last_used_login_method",
+    maxAge: 60 * 60 * 24 * 30,  // 30 days (seconds)
+    storeInDatabase: false,
+    customResolveMethod: (ctx) => {
+        if (ctx.path === "/oauth/callback/custom-provider") return "custom-provider"
+        return null
+    },
+    schema: {
+        user: { lastLoginMethod: "custom_field_name" }
+    }
+})
+```
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `cookieName` | string | `"better-auth.last_used_login_method"` | Cookie identifier. `httpOnly: false` |
+| `maxAge` | number | `2592000` (30 days) | Cookie expiration (seconds) |
+| `storeInDatabase` | boolean | `false` | Persist the method to the DB |
+| `customResolveMethod` | function | - | Custom logic to determine the login method from the request context |
+| `schema` | object | - | DB field name mapping when `storeInDatabase` is enabled |
+
+### Client configuration
+
+```typescript
+lastLoginMethodClient({
+    cookieName: "better-auth.last_used_login_method"  // must match the server
+})
+```
+
+### DB configuration
+
+Enabling DB storage:
+
+```typescript
+lastLoginMethod({ storeInDatabase: true })
+```
+
+Migration:
+
+```bash
+npx auth@latest migrate
+```
+
+Additional field on the user table:
+
+| Field | Type | Optional | Description |
+|---|---|---|---|
+| `lastLoginMethod` | string | Yes | The last authentication method used |
+
+Accessing the DB field:
+
+```typescript
+// Server
+const session = await auth.api.getSession({ headers })
+console.log(session?.user.lastLoginMethod)
+
+// Client
+const { data: session } = authClient.useSession()
+console.log(session?.user.lastLoginMethod)
+```
+
+## Notes
+
+- Default method resolution: **Email** resolves to `"email"` (`/sign-in/email` and `/sign-up/email`), **OAuth providers** resolve to the provider ID (e.g. `"google"`, `"github"`), **OAuth callbacks** extract the provider ID from `/callback/:id` or `/oauth2/callback/:id`
+- The cookie uses `httpOnly: false` so it is accessible from client-side JavaScript
+- Automatically inherits Better Auth's `crossSubDomainCookies` and `crossOriginCookies` settings

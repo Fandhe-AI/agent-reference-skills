@@ -1,10 +1,12 @@
 # API Key Advanced
 
-API Key プラグインの高度な機能: セッション生成、複数設定、組織所有キー、ストレージモード、レート制限、リフィル、カスタムキー生成。
+Advanced features of the API Key plugin: session generation, multi-config, organization-owned keys, storage modes, rate limiting, refill, and custom key generation.
 
-## API キーからのセッション生成
+## Signature / Usage
 
-API キー検証時にモックセッションを自動作成する。
+### Generating a session from an API key
+
+Automatically creates a mock session when an API key is validated.
 
 ```typescript
 export const auth = betterAuth({
@@ -16,17 +18,17 @@ export const auth = betterAuth({
 })
 ```
 
-ユーザー所有の API キー（`references: "user"`）でのみ動作。組織所有キーではセッションをモックできない。
+Only works for user-owned API keys (`references: "user"`). Sessions cannot be mocked for organization-owned keys.
 
-`enableSessionForAPIKeys` 有効時、API キーはリクエストごとに1回検証され、レート制限が適用される。
+When `enableSessionForAPIKeys` is enabled, the API key is validated once per request and rate limiting applies.
 
-### カスタムヘッダー設定
+### Custom header configuration
 
 ```typescript
-// 複数ヘッダー
+// Multiple headers
 apiKey({ apiKeyHeaders: ["x-api-key", "xyz-api-key"] })
 
-// カスタムゲッター
+// Custom getter
 apiKey({
     customAPIKeyGetter: (ctx) => {
         const has = ctx.request.headers.has("x-api-key")
@@ -36,9 +38,9 @@ apiKey({
 })
 ```
 
-## 複数設定
+### Multi-config
 
-異なるプレフィックス、レート制限、権限を持つ個別の API キー設定を定義する。
+Define separate API key configurations with different prefixes, rate limits, and permissions.
 
 ```typescript
 apiKey([
@@ -64,15 +66,15 @@ apiKey([
 ])
 ```
 
-### 特定設定でのキー作成
+Creating a key with a specific config:
 
 ```typescript
-// パブリックキー → pk_...
+// Public key → pk_...
 const publicKey = await auth.api.createApiKey({
     body: { configId: "public", userId: user.id },
 })
 
-// シークレットキー → sk_...
+// Secret key → sk_...
 const secretKey = await auth.api.createApiKey({
     body: {
         configId: "secret",
@@ -82,9 +84,9 @@ const secretKey = await auth.api.createApiKey({
 })
 ```
 
-全操作に `configId` 指定が必要。
+`configId` is required for all operations.
 
-### グローバルオプション
+Global options:
 
 ```typescript
 apiKey(
@@ -92,11 +94,11 @@ apiKey(
         { configId: "public", defaultPrefix: "pk_" },
         { configId: "secret", defaultPrefix: "sk_" },
     ],
-    { schema: { /* カスタムスキーマ */ } }
+    { schema: { /* custom schema */ } }
 )
 ```
 
-## 組織所有 API キー
+### Organization-owned API keys
 
 ```typescript
 apiKey([
@@ -105,7 +107,7 @@ apiKey([
 ])
 ```
 
-### 組織キー作成
+Creating an organization key:
 
 ```typescript
 const orgKey = await auth.api.createApiKey({
@@ -113,16 +115,7 @@ const orgKey = await auth.api.createApiKey({
 })
 ```
 
-### アクセス制御と権限
-
-| アクション | 権限 | 説明 |
-|---|---|---|
-| Create | `apiKey: ["create"]` | 組織 API キーの作成 |
-| Read/List | `apiKey: ["read"]` | 組織 API キーの閲覧と一覧 |
-| Update | `apiKey: ["update"]` | 組織 API キーの変更 |
-| Delete | `apiKey: ["delete"]` | 組織 API キーの削除 |
-
-### ロール設定
+Role configuration:
 
 ```typescript
 import { createAccessControl } from "better-auth/plugins/access"
@@ -144,21 +137,16 @@ export const auth = betterAuth({
 })
 ```
 
-組織 owner（`creatorRole`、デフォルト `"owner"`）は全 API キー操作に自動的にフルアクセス。
+Organization owners (`creatorRole`, default `"owner"`) automatically get full access to all API key operations.
 
-エラーコード:
-- `USER_NOT_MEMBER_OF_ORGANIZATION`
-- `INSUFFICIENT_API_KEY_PERMISSIONS`
-
-## ストレージモード
-
-### データベース（デフォルト）
+### Storage modes
 
 ```typescript
+// Database (default)
 apiKey({ storage: "database" })
 ```
 
-### セカンダリストレージのみ
+Secondary storage only:
 
 ```typescript
 const redis = createClient()
@@ -177,15 +165,13 @@ export const auth = betterAuth({
 })
 ```
 
-### セカンダリストレージ + DB フォールバック
-
-セカンダリストレージを先にチェック。見つからない場合は DB にクエリし、自動的にセカンダリストレージに格納。書き込みは両方に行われる。
+Secondary storage with DB fallback (secondary storage is checked first; if not found, the DB is queried and the result is automatically stored in secondary storage; writes go to both):
 
 ```typescript
 apiKey({ storage: "secondary-storage", fallbackToDatabase: true })
 ```
 
-### カスタムストレージ
+Custom storage:
 
 ```typescript
 apiKey({
@@ -198,23 +184,23 @@ apiKey({
 })
 ```
 
-## レート制限
+### Rate limiting
 
-API キーが検証されるたびに適用される（`/api-key/verify` エンドポイントおよびセッション作成用の API キー使用時）。
+Applied every time an API key is verified (via the `/api-key/verify` endpoint and when used for session creation).
 
-### デフォルト設定
+Default configuration:
 
 ```typescript
 apiKey({
     rateLimit: {
         enabled: true,
-        timeWindow: 1000 * 60 * 60 * 24, // 1日
+        timeWindow: 1000 * 60 * 60 * 24, // 1 day
         maxRequests: 10,
     },
 })
 ```
 
-### キーごとのカスタマイズ
+Per-key customization:
 
 ```typescript
 const apiKey = await auth.api.createApiKey({
@@ -227,28 +213,14 @@ const apiKey = await auth.api.createApiKey({
 })
 ```
 
-### スライディングウィンドウアルゴリズム
+Sliding window algorithm:
 
-1. 最初のリクエスト: 許可、`requestCount` を1に設定
-2. ウィンドウ内: `requestCount` を増分。`rateLimitMax` に達すると `RATE_LIMITED` エラーで拒否
-3. ウィンドウリセット: 最終リクエストからの経過時間が `timeWindow` を超えるとカウンタリセット
-4. 超過レスポンス: `tryAgainIn` ミリ秒値を含む
+1. First request: allowed, `requestCount` set to 1
+2. Within window: `requestCount` incremented. Once `rateLimitMax` is reached, rejected with a `RATE_LIMITED` error
+3. Window reset: counter resets once the elapsed time since the last request exceeds `timeWindow`
+4. Over-limit response: includes a `tryAgainIn` millisecond value
 
-## Remaining, Refill, Expiration
-
-### Remaining カウント
-
-API キーが使用されるたびに `remaining` カウントが更新される。`null` の場合は制限なし。0になるとキーは無効化・削除される。
-
-### Refill
-
-API キー使用時に最終リフィルからの経過時間が `refillInterval` を超えると、`remaining` が `refillAmount` にリセットされる。
-
-### Expiration
-
-`expiresIn` が設定されていない場合、API キーは無期限。設定されている場合、その時間後に期限切れとなる。
-
-## カスタムキー生成と検証
+### Custom key generation and validation
 
 ```typescript
 apiKey({
@@ -262,21 +234,48 @@ apiKey({
 })
 ```
 
-`customKeyGenerator` で `length` プロパティを使用しない場合、`defaultKeyLength` を設定する必要がある。
+If `customKeyGenerator` does not use the `length` property, `defaultKeyLength` must be configured.
 
-## メタデータ
+### Metadata
 
 ```typescript
-// 有効化
+// Enable
 apiKey({ enableMetadata: true })
 
-// メタデータ付きで作成
+// Create with metadata
 const apiKey = await auth.api.createApiKey({
     body: { metadata: { plan: "premium" } },
 })
 ```
 
-## 注意点
+## Options / Props
 
-- `verifyApiKey()` で手動検証後に `getSession()` で同じ API キーヘッダーを使用すると、レート制限カウンタが2回インクリメントされる。`enableSessionForAPIKeys: true` を使用するか、検証結果を再利用すること
-- 組織所有キーはユーザーセッションをモックできない
+### Access control and permissions for organization-owned keys
+
+| Action | Permission | Description |
+|---|---|---|
+| Create | `apiKey: ["create"]` | Create an organization API key |
+| Read/List | `apiKey: ["read"]` | View and list organization API keys |
+| Update | `apiKey: ["update"]` | Modify an organization API key |
+| Delete | `apiKey: ["delete"]` | Delete an organization API key |
+
+Error codes:
+- `USER_NOT_MEMBER_OF_ORGANIZATION`
+- `INSUFFICIENT_API_KEY_PERMISSIONS`
+
+### Remaining, Refill, Expiration
+
+- **Remaining count**: the `remaining` count is updated each time the API key is used. `null` means no limit. Once it reaches 0, the key is disabled/deleted
+- **Refill**: when an API key is used, if the elapsed time since the last refill exceeds `refillInterval`, `remaining` is reset to `refillAmount`
+- **Expiration**: if `expiresIn` is not set, the API key never expires. If set, the key expires after that duration
+
+## Notes
+
+- Manually validating with `verifyApiKey()` and then using the same API key header with `getSession()` will increment the rate limit counter twice. Use `enableSessionForAPIKeys: true` or reuse the validation result
+- Organization-owned keys cannot mock a user session
+
+## Related
+
+- [api-key.md](./api-key.md)
+- [api-key-reference.md](./api-key-reference.md)
+- [organization.md](./organization.md)

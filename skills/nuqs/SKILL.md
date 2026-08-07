@@ -4,6 +4,7 @@ description: >
   nuqs (Type-safe URL search params state manager for React / Next.js) リファレンス。
   useQueryState, useQueryStates, parsers (parseAsString / parseAsInteger / parseAsBoolean / parseAsArrayOf 等)、
   Next.js App Router / Pages Router、SSR、シャロールーティング、history 制御。
+  createSerializer, createStandardSchemaV1, inferParserType ユーティリティ、URL 長さ制限 (limits)。
 user-invocable: false
 model: sonnet
 ---
@@ -33,6 +34,14 @@ skills/nuqs/
     server/
       README.md
       server-side.md
+    utilities/
+      README.md
+      createSerializer.md
+      createStandardSchemaV1.md
+      inferParserType.md
+    limits/
+      README.md
+      limits.md
   samples/
     README.md
     basic-query-state.md
@@ -72,5 +81,7 @@ skills/nuqs/
 | createParser でカスタムパーサーを作成する | parsers | [references/parsers/README.md](references/parsers/README.md) |
 | history, shallow, scroll, throttle, debounce, clearOnDefault, startTransition オプション設定 | options | [references/options/README.md](references/options/README.md) |
 | createLoader, createSearchParamsCache でサーバーサイド解析 | server | [references/server/README.md](references/server/README.md) |
+| createSerializer, createStandardSchemaV1, inferParserType でパーサーからユーティリティを生成する | utilities | [references/utilities/README.md](references/utilities/README.md) |
+| URL 長さ・ブラウザ制限（throttling, max URL length）を知りたい | limits | [references/limits/README.md](references/limits/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンド・テスト・デバッグ手順を知りたい | scripts | [scripts/README.md](scripts/README.md) |

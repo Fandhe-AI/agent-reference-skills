@@ -7,7 +7,7 @@ Reference for the two `NextAdapter` interface methods: `modifyConfig` and `onBui
 ```typescript
 async modifyConfig(
   config: NextConfigComplete,
-  context: { phase: string; nextVersion: string }
+  context: { phase: string; nextVersion: string; projectDir: string }
 ): Promise<NextConfigComplete>
 
 async onBuildComplete(context: {
@@ -29,6 +29,7 @@ async onBuildComplete(context: {
 | config | NextConfigComplete | The complete Next.js configuration object (`modifyConfig`). |
 | context.phase | string | Current build phase (`modifyConfig`). |
 | context.nextVersion | string | Version of Next.js being used. |
+| context.projectDir | string | Absolute path to the Next.js project directory (`modifyConfig`). |
 | context.routing | object | Routing phases/metadata: `beforeMiddleware`, `beforeFiles`, `afterFiles`, `dynamicRoutes`, `onMatch`, `fallback`, `shouldNormalizeNextData`, `rsc`. |
 | context.outputs | AdapterOutputs | Build outputs organized by type. |
 | context.projectDir | string | Absolute path to the Next.js project directory. |

@@ -48,6 +48,6 @@ iOS 8.0+, iPadOS 8.0+, macOS 14.0+, watchOS 2.0+, visionOS 1.0+. HealthKit is un
 
 ## Related
 
-- [hkauthorizationstatus.md](./hkauthorizationstatus.md)
-- [hkquery.md](./hkquery.md)
-- [hkobjecttype.md](./hkobjecttype.md)
+- [HKAuthorizationStatus](./hkauthorizationstatus.md)
+- [HKQuery](./hkquery.md)
+- [HKObjectType](./hkobjecttype.md)

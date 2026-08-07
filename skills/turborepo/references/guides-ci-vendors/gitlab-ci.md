@@ -1,6 +1,8 @@
 # GitLab CI
 
-## .gitlab-ci.yml 設定例（pnpm）
+## Usage
+
+Example `.gitlab-ci.yml` (pnpm):
 
 ```yaml
 image: node:latest
@@ -23,7 +25,8 @@ build:
       - .pnpm-store
 ```
 
-## Remote Cache 設定
+## Notes
 
-1. Vercel でスコープ付きアクセストークンを作成
-2. GitLab「リポジトリ設定 → CI/CD → Variables」で `TURBO_TOKEN` と `TURBO_TEAM` を登録
+- Configure Remote Cache:
+  1. Create a scoped access token in Vercel.
+  2. Register `TURBO_TOKEN` and `TURBO_TEAM` under GitLab "Settings → CI/CD → Variables".

@@ -1,17 +1,21 @@
-# @kubb/cli
+# kubb（CLI）
 
-OpenAPI 仕様からコードを生成する Kubb の CLI ツール。
+OpenAPI 仕様からコードを生成する Kubb の CLI ツール。v5 で CLI パッケージ名が `@kubb/cli` から `kubb` に変わった（2026-08 時点 `kubb@beta` として配布）。
 
 ## インストール
 
 ```bash
-bun add -d @kubb/cli
-pnpm add -D @kubb/cli
-npm install --save-dev @kubb/cli
-yarn add -D @kubb/cli
+npm install --save-dev kubb@beta
+pnpm add -D kubb@beta
+bun add -d kubb@beta
+yarn add -D kubb@beta
 ```
 
-## コマンド一覧
+`npx kubb@beta init` で直接ウィザードを起動することもできる。
+
+## コマンド一覧（v5）
+
+v5 では CLI コマンドが `init` / `generate` / `validate` / `mcp` の4つに整理された。`kubb start`（SSE ストリーミングサーバー）と `kubb agent`（Kubb Studio 連携）は公式ドキュメントの現行コマンド一覧に記載がない（v5 で削除されたと判断）。
 
 ### `kubb init`
 
@@ -21,143 +25,92 @@ yarn add -D @kubb/cli
 npx kubb init
 ```
 
-**ワークフロー**:
-1. `package.json` の作成/検出
-2. パッケージマネージャーの検出（npm, pnpm, yarn, bun）
-3. OpenAPI 仕様ファイルのパスを入力
-4. 出力ディレクトリの指定
-5. プラグイン選択メニュー表示
-6. パッケージのインストール
-7. `kubb.config.ts` の生成
+**オプション**:
 
-デフォルトで `@kubb/plugin-oas` と `@kubb/plugin-ts` が選択される。
+| オプション | デフォルト | 説明 |
+|-----------|----------|------|
+| `-y, --yes` | `false` | 全プロンプトをスキップしデフォルト値を使用 |
+| `-i, --input` | — | OpenAPI 仕様のパス（ローカルファイル/URL）。spec パス入力プロンプトをバイパス |
+| `-o, --output` | — | 生成先ディレクトリ。出力ディレクトリ入力プロンプトをバイパス |
+| `--plugins` | — | インストールするプラグインのカンマ区切りリスト。プラグイン選択プロンプトをバイパス。指定可能な値: `plugin-ts`, `plugin-axios`, `plugin-fetch`, `plugin-react-query`, `plugin-vue-query`, `plugin-zod`, `plugin-faker`, `plugin-msw`, `plugin-cypress`, `plugin-mcp`, `plugin-redoc` |
 
 ### `kubb generate`（または `kubb`）
 
-設定ファイルに基づいてコードを生成する。
+`kubb.config.ts` に基づいてコード生成パイプラインを実行する。引数なしで `kubb` を実行した場合のデフォルトコマンド。
 
 ```bash
 kubb generate [OPTIONS]
 kubb petStore.yaml
 ```
 
-**オプション**:
+**引数**:
 
-| オプション | 説明 |
-|-----------|------|
-| `-c, --config` | 設定ファイルのパス |
-| `-l, --logLevel` | ログレベル: `silent` \| `info` \| `verbose` \| `debug` |
-| `-w, --watch` | 入力ファイルの変更を監視 |
-| `-v, --verbose` | プラグインのパフォーマンスメトリクスを含む詳細ログ |
-| `-s, --silent` | 全出力を抑制 |
-| `-d, --debug` | 完全なデバッグログ（`.kubb/kubb-{name}-{timestamp}.log` を作成） |
-| `-h, --help` | ヘルプを表示 |
-| `-v, --version` | バージョンを表示 |
-
-**ログレベル詳細**:
-- `silent`: 出力なし
-- `info`: 警告、エラー、情報メッセージ（デフォルト）
-- `verbose`: プラグインのタイミングとパフォーマンスメトリクスを追加
-- `debug`: 完全な実行トレースと詳細情報
-
-### `kubb start`
-
-SSE（Server-Sent Events）ストリーミング付き HTTP サーバーを起動する。
-
-```bash
-kubb start petStore.yaml
-kubb start --config kubb.config.ts
-```
+| 引数 | 説明 |
+|------|------|
+| `[input]` | Swagger/OpenAPI ドキュメントへのパスまたは URL（任意）。設定の `input` を上書きする |
 
 **オプション**:
 
 | オプション | デフォルト | 説明 |
 |-----------|----------|------|
-| `-c, --config` | — | 設定ファイルのパス |
-| `-l, --logLevel` | `info` | ログレベル |
-| `-p, --port` | 自動選択 | サーバーポート |
-| `--host` | `localhost` | サーバーホスト名 |
+| `-c, --config <path>` | — | 設定ファイルのパス（例: `./kubb.staging.ts`） |
+| `-l, --logLevel <silent\|info\|verbose>` | `info` | ログの詳細度。プラグインのタイミングを見るには `verbose` |
+| `-s, --silent` | `false` | `logLevel` を `silent` に強制し出力を抑制 |
+| `--verbose` | `false` | `logLevel` を `verbose` に強制し遅いプラグインを表示 |
+| `--reporter <cli\|json\|file>` | `cli` | 実行するレポーターをカンマ区切りで指定 |
+| `-w, --watch` | `false` | 入力仕様の変更を監視し都度パイプラインを再実行 |
 
 ### `kubb validate`
 
-Swagger/OpenAPI ファイルの構文と構造をチェックする。`oas-normalize` を使用。
+パイプラインを実行せずに Swagger/OpenAPI ドキュメントが有効かをチェックする。
 
 ```bash
-kubb validate --input petstore.yaml
+kubb validate <input>
 ```
 
-**オプション**:
+**引数**:
 
-| オプション | 説明 |
-|-----------|------|
-| `-i, --input` | Swagger/OpenAPI ファイルのパス |
-| `-h, --help` | ヘルプを表示 |
+| 引数 | 必須 | 説明 |
+|------|------|------|
+| `<input>` | 必須 | 検証対象の Swagger/OpenAPI ドキュメントへのパスまたは URL |
 
-`@kubb/oas` パッケージが必要。
-
-### `kubb agent`
-
-Kubb Studio との WebSocket 連携用 HTTP サーバーを管理する。
-
-```bash
-kubb agent start
-kubb agent start --config ./my-config.ts
-kubb agent start --host 0.0.0.0 --port 8080
-kubb agent start --allow-write
-kubb agent start --allow-all
-```
-
-**`agent start` オプション**:
-
-| オプション | デフォルト | 説明 |
-|-----------|----------|------|
-| `-c, --config` | `kubb.config.ts` | 設定ファイルのパス |
-| `-p, --port` | `3000` | サーバーポート |
-| `--host` | `localhost` | サーバーホスト名 |
-| `--allow-write` | — | ファイルシステム書き込みを許可 |
-| `--allow-all` | — | 全権限を付与（`--allow-write` を含む） |
-
-**環境変数**:
-
-| 変数 | 説明 |
-|------|------|
-| `PORT` | サーバーポート |
-| `KUBB_ROOT` | プロジェクトルート |
-| `KUBB_CONFIG` | 設定ファイルのパス |
-| `KUBB_AGENT_TOKEN` | 認証トークン（Kubb Studio で作成） |
-| `KUBB_STUDIO_URL` | Studio エンドポイント |
-| `KUBB_ALLOW_WRITE` | 書き込み許可 |
-| `KUBB_ALLOW_ALL` | 全権限 |
-
-**API エンドポイント**: `GET /api/health` — サーバーステータス確認
+検証に失敗すると非ゼロの終了ステータスを返すため CI に組み込める。
 
 ### `kubb mcp`
 
-AI アシスタント用の MCP（Model Context Protocol）サーバーを起動する。v4.36.5 以降 `kubb.config.mts` / `kubb.config.cts` にも対応。
+AI アシスタント用の MCP（Model Context Protocol）サーバーを起動する。開発中の機能につき、破壊的変更が発生しうる。
 
 ```bash
-npx kubb mcp
+kubb mcp
 ```
 
-`@kubb/mcp` パッケージが必要。Claude Desktop、Cursor 等の MCP 対応ツールで利用可能。
+提供されるツール:
 
-## デバッグ
+| ツール | 説明 |
+|--------|------|
+| `generate` | 解決済み `kubb.config.ts` に対して Kubb パイプラインを実行し、ログをクライアントへストリーミング |
+| `validate` | パスまたは URL の OpenAPI/Swagger ドキュメントを検証（`@kubb/adapter-oas` が必要） |
+| `init` | プロンプトなしでカレントディレクトリに `kubb.config.ts` を生成（パッケージのインストールは行わない） |
 
-`--debug` フラグで `.kubb/` ディレクトリに詳細ログを作成:
-- タイムスタンプ
-- 設定詳細
-- プラグイン実行タイミング
-- スキーマパース情報
-- ファイル生成進捗
-- フォーマッター/リンター詳細
-- エラースタックトレース
+Claude Desktop、Cursor、VS Code 等の MCP 対応クライアントから登録できる:
+
+```json
+{
+  "mcpServers": {
+    "kubb": {
+      "command": "npx",
+      "args": ["kubb", "mcp"]
+    }
+  }
+}
+```
 
 ## テレメトリ
 
-`kubb generate` 実行後に匿名使用統計を収集。OpenAPI 仕様、ファイルパス、シークレットは収集されない。
+CLI はデフォルトで匿名使用統計を収集する（`generate` / `validate` / `mcp` コマンド実行後）。OpenAPI 仕様の内容、ファイルパス、シークレット・API キー・トークン、生成コード、IP アドレスやユーザー識別子は収集されない。データは OpenTelemetry OTLP 形式で `https://otlp.kubb.dev/v1/traces` に送信される（5秒でタイムアウトし、失敗時は無視）。
 
 **無効化**:
 ```bash
-DO_NOT_TRACK=1 kubb generate          # 標準的な無効化
+DO_NOT_TRACK=1 kubb generate           # 標準的な無効化（推奨）
 KUBB_DISABLE_TELEMETRY=1 kubb generate # Kubb 固有の無効化
 ```

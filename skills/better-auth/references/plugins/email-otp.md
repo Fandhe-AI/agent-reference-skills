@@ -1,10 +1,10 @@
 # Email OTP
 
-Email OTP プラグインは、メールアドレスに送信されるワンタイムパスワードを使用した認証を可能にする。サインイン、メール検証、パスワードリセット、メール変更をサポートする。
+The Email OTP plugin enables authentication using one-time passwords sent to an email address. Supports sign-in, email verification, password reset, and email change.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -15,11 +15,11 @@ export const auth = betterAuth({
         emailOTP({
             async sendVerificationOTP({ email, otp, type }) {
                 if (type === "sign-in") {
-                    // サインイン用 OTP 送信
+                    // Send OTP for sign-in
                 } else if (type === "email-verification") {
-                    // メール検証用 OTP 送信
+                    // Send OTP for email verification
                 } else {
-                    // パスワードリセット用 OTP 送信
+                    // Send OTP for password reset
                 }
             },
         })
@@ -27,7 +27,7 @@ export const auth = betterAuth({
 })
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -40,26 +40,24 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
-
-### OTP 送信
+### Send OTP
 
 `POST /email-otp/send-verification-otp`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.emailOtp.sendVerificationOtp({
     email: "user@example.com",
     type: "sign-in",  // "sign-in" | "email-verification" | "forget-password"
 })
 
-// サーバー
+// Server
 const data = await auth.api.sendVerificationOTP({
     body: { email: "user@example.com", type: "sign-in" },
 })
 ```
 
-### OTP チェック
+### Check OTP
 
 `POST /email-otp/check-verification-otp`
 
@@ -71,12 +69,12 @@ const { data, error } = await authClient.emailOtp.checkVerificationOtp({
 })
 ```
 
-### OTP でサインイン
+### Sign in with OTP
 
 `POST /sign-in/email-otp`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.signIn.emailOtp({
     email: "user@example.com",
     otp: "123456",
@@ -84,7 +82,7 @@ const { data, error } = await authClient.signIn.emailOtp({
     image: "https://example.com/image.png",
 })
 
-// サーバー
+// Server
 const data = await auth.api.signInEmailOTP({
     body: {
         email: "user@example.com",
@@ -95,9 +93,9 @@ const data = await auth.api.signInEmailOTP({
 })
 ```
 
-既存でないユーザーは自動登録される。`disableSignUp: true` で無効化可能。
+Users who don't yet exist are registered automatically. Disable with `disableSignUp: true`.
 
-### メール検証
+### Email verification
 
 `POST /email-otp/verify-email`
 
@@ -108,7 +106,7 @@ const { data, error } = await authClient.emailOtp.verifyEmail({
 })
 ```
 
-### パスワードリセット要求
+### Request password reset
 
 `POST /email-otp/request-password-reset`
 
@@ -118,7 +116,7 @@ const { data, error } = await authClient.emailOtp.requestPasswordReset({
 })
 ```
 
-### パスワードリセット
+### Reset password
 
 `POST /email-otp/reset-password`
 
@@ -130,20 +128,20 @@ const { data, error } = await authClient.emailOtp.resetPassword({
 })
 ```
 
-### メール変更要求
+### Request email change
 
 `POST /email-otp/request-email-change`
 
 ```typescript
 const { data, error } = await authClient.emailOtp.requestEmailChange({
     newEmail: "user@example.com",
-    otp: "123456",  // changeEmail.verifyCurrentEmail 有効時に必要
+    otp: "123456",  // required when changeEmail.verifyCurrentEmail is enabled
 })
 ```
 
-セッション Cookie が必要。
+Requires a session cookie.
 
-### メール変更
+### Change email
 
 `POST /email-otp/change-email`
 
@@ -154,31 +152,19 @@ const { data, error } = await authClient.emailOtp.changeEmail({
 })
 ```
 
-## 設定オプション
-
-| オプション | 型 | デフォルト | 説明 |
-|---|---|---|---|
-| `otpLength` | number | 6 | OTP の桁数 |
-| `expiresIn` | number | 300 | 有効期間（秒） |
-| `sendVerificationOnSignUp` | boolean | false | 登録時に自動で OTP を送信 |
-| `disableSignUp` | boolean | false | OTP サインイン時の自動登録を防止 |
-| `allowedAttempts` | number | 3 | 無効化前の最大検証試行数 |
-| `resendStrategy` | "rotate" \| "reuse" | "rotate" | "rotate"=新OTP、"reuse"=既存を延長 |
-| `overrideDefaultEmailVerification` | boolean | false | デフォルトのメール検証をOTPで置き換え |
-
-### OTP 保存設定
+### OTP storage configuration
 
 ```typescript
-// プレーンテキスト
+// Plaintext
 emailOTP({ storeOTP: "plain" })
 
-// 暗号化
+// Encrypted
 emailOTP({ storeOTP: "encrypted" })
 
-// ハッシュ
+// Hashed
 emailOTP({ storeOTP: "hashed" })
 
-// カスタム暗号化
+// Custom encryption
 emailOTP({
     storeOTP: {
         encrypt: async (otp) => myCustomEncryptor(otp),
@@ -186,7 +172,7 @@ emailOTP({
     }
 })
 
-// カスタムハッシュ
+// Custom hashing
 emailOTP({
     storeOTP: {
         hash: async (otp) => myCustomHasher(otp),
@@ -194,18 +180,18 @@ emailOTP({
 })
 ```
 
-### メール変更設定
+### Email change configuration
 
 ```typescript
 emailOTP({
     changeEmail: {
         enabled: true,
-        verifyCurrentEmail: true  // 現在のメールからの確認を要求
+        verifyCurrentEmail: true  // require confirmation from the current email
     }
 })
 ```
 
-### カスタム OTP 生成
+### Custom OTP generation
 
 ```typescript
 emailOTP({
@@ -213,9 +199,25 @@ emailOTP({
 })
 ```
 
-## 注意点
+## Options / Props
 
-- タイミング攻撃を防ぐため、メール送信を await しないこと。サーバーレスでは `waitUntil` を使用
-- `changeEmail` エンドポイントにはセッション Cookie が必要
-- 最大試行回数超過時は `TOO_MANY_ATTEMPTS` エラーコードが返される
-- 保存された OTP メソッドは送信される OTP に影響しない（永続化のみ）
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `otpLength` | number | 6 | Number of digits in the OTP |
+| `expiresIn` | number | 300 | Validity period (seconds) |
+| `sendVerificationOnSignUp` | boolean | false | Automatically send an OTP on registration |
+| `disableSignUp` | boolean | false | Prevent automatic sign-up during OTP sign-in |
+| `allowedAttempts` | number | 3 | Maximum verification attempts before invalidation |
+| `resendStrategy` | "rotate" \| "reuse" | "rotate" | "rotate"=new OTP, "reuse"=extend existing |
+| `overrideDefaultEmailVerification` | boolean | false | Replace the default email verification with OTP |
+
+## Notes
+
+- To prevent timing attacks, don't `await` email sending. Use `waitUntil` in serverless environments
+- The `changeEmail` endpoint requires a session cookie
+- Exceeding the maximum attempts returns a `TOO_MANY_ATTEMPTS` error code
+- The stored OTP method does not affect the OTP that is sent (it only affects persistence)
+
+## Related
+
+- [magic-link.md](./magic-link.md)

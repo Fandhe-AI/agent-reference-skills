@@ -2,7 +2,7 @@
 
 Auth.js (NextAuth.js) から Better Auth へ移行するためのガイド。
 
-## 主な移行手順
+## Signature / Usage
 
 1. **Better Auth インスタンスのセットアップ**: GitHub OAuth 等のプロバイダーを設定して Better Auth をインストールする
 
@@ -27,11 +27,11 @@ Auth.js (NextAuth.js) から Better Auth へ移行するためのガイド。
 
 6. **リソースの保護**: ミドルウェアベースではなくページレベルで認証チェックを実装する
 
-## 重要な注意点
+## Notes
 
-パスワード認証を使用する場合、パスワードは `account` テーブルに `providerId: "credential"` で保存する必要がある。
+- パスワード認証を使用する場合、パスワードは `account` テーブルに `providerId: "credential"` で保存する必要がある
 
 ## Related
 
-- [auth0-migration.md](./auth0-migration.md)
-- [clerk-migration.md](./clerk-migration.md)
+- [Migrating from Auth0](./auth0-migration.md)
+- [Migrating from Clerk](./clerk-migration.md)

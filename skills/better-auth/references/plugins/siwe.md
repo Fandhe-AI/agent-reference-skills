@@ -1,10 +1,10 @@
 # Sign In With Ethereum (SIWE)
 
-ERC-4361 標準に基づき、Ethereum ウォレットでユーザー認証を可能にするプラグイン。カスタムメッセージ検証とノンス生成をサポート。
+A plugin that enables user authentication with Ethereum wallets based on the ERC-4361 standard. It supports custom message verification and nonce generation.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -21,15 +21,15 @@ export const auth = betterAuth({
 })
 ```
 
-マイグレーション:
+Migration:
 
 ```bash
 npx auth migrate
-# または
+# or
 npx auth generate
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -40,59 +40,52 @@ export const authClient = createAuthClient({
 })
 ```
 
-## 使用方法
-
-**ノンス生成:**
+### Generate nonce
 
 ```typescript
 const nonce = await authClient.siwe.nonce({
     address: walletAddress,
-    chainId: 1  // オプション
+    chainId: 1  // optional
 })
 ```
 
-**署名検証:**
+### Verify signature
 
 ```typescript
 await authClient.siwe.verify({
     message,
     signature,
     address: walletAddress,
-    chainId: 1,  // オプション
-    email: "user@example.com"  // オプション
+    chainId: 1,  // optional
+    email: "user@example.com"  // optional
 })
 ```
 
-## 設定オプション
+## Options / Props
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |---|---|---|
-| `domain` | string | アプリケーションのドメイン名（必須） |
-| `emailDomainName?` | string | 非匿名アカウント用のメールドメイン |
-| `anonymous?` | boolean | メールなしのサインアップを許可（デフォルト: true） |
-| `getNonce?` | function | カスタムノンス生成関数 |
-| `verifyMessage?` | function | カスタムメッセージ検証関数 |
-| `ensLookup?` | function | ENS 名・アバター検索（オプション） |
+| `domain` | string | The application's domain name (required) |
+| `emailDomainName?` | string | Email domain used for non-anonymous accounts |
+| `anonymous?` | boolean | Allow sign-up without an email (default: true) |
+| `getNonce?` | function | Custom nonce generation function |
+| `verifyMessage?` | function | Custom message verification function |
+| `ensLookup?` | function | ENS name/avatar lookup (optional) |
 
-## データベーススキーマ
+### DB schema (walletAddress table)
 
-`walletAddress` テーブルを追加:
-
-| フィールド | 型 | 説明 |
+| Field | Type | Description |
 |---|---|---|
-| `id` | string | 主キー |
-| `userId` | string | ユーザー ID |
-| `address` | string | Ethereum ウォレットアドレス |
-| `chainId` | number | チェーン ID |
-| `isPrimary` | boolean | プライマリウォレットフラグ |
-| `createdAt` | Date | 作成日時 |
+| `id` | string | Primary key |
+| `userId` | string | User ID |
+| `address` | string | Ethereum wallet address |
+| `chainId` | number | Chain ID |
+| `isPrimary` | boolean | Primary wallet flag |
+| `createdAt` | Date | Creation timestamp |
 
-## 対応チェーン
+## Notes
 
-- Ethereum mainnet (chainId: 1、デフォルト)
-- Polygon (137)
-- Arbitrum (42161)
-- Base (8453)
+- Supported chains: Ethereum mainnet (chainId: 1, default), Polygon (137), Arbitrum (42161), Base (8453)
 
 ## Related
 

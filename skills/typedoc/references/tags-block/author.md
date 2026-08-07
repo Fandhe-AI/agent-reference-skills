@@ -1,18 +1,14 @@
 # @author
 
-メソッドや関数の作成者を記録するブロックタグ。
+Block tag that records the author of a method or function.
 
-## 構文
+## Signature / Usage
 
 ```
-@author 著者名
+@author Author Name
 ```
 
-## 詳細説明
-
-TypeDocはこのタグに特別な動作を付与しません。生成されたコメント内の段落としてレンダリングされます。純粋に情報提供目的のタグであり、ドキュメント出力に通常の段落テキストとして表示されます。
-
-## コード例
+TypeDoc assigns no special behavior to this tag; it is rendered as a paragraph in the generated comment. It is purely informational and appears as regular paragraph text in the documentation output.
 
 ```typescript
 /**
@@ -21,12 +17,12 @@ TypeDocはこのタグに特別な動作を付与しません。生成された�
 export function rand(min: number, max: number): number;
 ```
 
-## 注意点
+## Notes
 
-- JSDocスタイルのコメント（`/** */`）内に配置する
-- タグの内容は生成されたドキュメントで標準的な段落テキストとしてレンダリングされる
-- 特別な設定や複雑な処理は不要
+- Place it inside a JSDoc-style comment (`/** */`)
+- The tag content is rendered as standard paragraph text in the generated documentation
+- No special configuration or processing is required
 
-## 関連
+## Related
 
-- [@since](./since.md) -- バージョン情報の記録
+- [@since](./since.md) -- recording version information

@@ -14,6 +14,18 @@ Three methods are available to add a device:
 2. **Manual IP address entry** — select "Add a device manually" in the broadcast modal when mDNS is unavailable.
 3. **Import from SSH configuration** — import a pre-configured SSH alias from `~/.ssh/config` (Mac/Linux) or `C:\Users\<user-name>\.ssh/config` (Windows). Requires key-based authentication; verify the SSH alias works before importing.
 
+### Connect / Disconnect
+
+**To Connect:**
+1. Verify network access to the device
+2. Launch NVIDIA Sync
+3. Select the device from the top-left dropdown menu
+4. Click **Connect**
+
+**To Disconnect:**
+1. Open the NVIDIA Sync pop-up
+2. Click **Disconnect**
+
 ## Options / Props
 
 | Name | Type | Description |
@@ -31,18 +43,6 @@ Three methods are available to add a device:
 - Direct connections support both password-based and key-based SSH authentication, using standard port 22 (customizable).
 - If connection details are incorrect, the device will not be added.
 - For devices on a different network than your laptop, use the Tailscale integration instead.
-
-## Connect / Disconnect
-
-**To Connect:**
-1. Verify network access to the device
-2. Launch NVIDIA Sync
-3. Select the device from the top-left dropdown menu
-4. Click **Connect**
-
-**To Disconnect:**
-1. Open the NVIDIA Sync pop-up
-2. Click **Disconnect**
 
 ## Related
 

@@ -2,7 +2,7 @@
 
 Okta を IdP として使用した SAML ベースのシングルサインオン統合ガイド。SAML は認証・認可データを IdP とサービスプロバイダー間で交換する XML ベースの標準。
 
-## 主な手順
+## Signature / Usage
 
 1. **Okta のセットアップ**: Okta 管理コンソールで SAML アプリケーションを作成し、コールバックエンドポイント・エンティティ ID を設定して IdP メタデータと証明書をダウンロードする
 
@@ -37,11 +37,11 @@ export const auth = betterAuth({
 
 5. **動的登録**: プロダクション環境では API を通じてプログラムで SAML プロバイダーを登録する
 
-## 注意事項
+## Notes
 
 - プロダクションでは本番グレードの IdP と適切な URL を使用する（開発用証明書をライブデプロイに使わない）
 
 ## Related
 
-- [your-first-plugin.md](./your-first-plugin.md)
-- `/references/plugins/sso.md`
+- [Your First Plugin](./your-first-plugin.md)
+- [SSO](../plugins/sso.md)

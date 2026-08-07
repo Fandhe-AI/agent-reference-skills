@@ -1,13 +1,6 @@
 # Twitter (X)
 
-## Credentials
-
-- `TWITTER_CLIENT_ID`
-- `TWITTER_CLIENT_SECRET`
-
-Obtain from the [Twitter Developer Portal](https://developer.twitter.com/en/portal/dashboard).
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -22,8 +15,6 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
-
 ```typescript
 import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
@@ -35,12 +26,18 @@ const signIn = async () => {
 }
 ```
 
-## リダイレクト URL
+## Options / Props
 
-- **Local development**: `http://localhost:3000/api/auth/callback/twitter`
-- **Production**: Update to your production domain URL
-- Adjust the redirect URL if you modify the base path of auth routes
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `clientId` | string | — | `TWITTER_CLIENT_ID`, obtained from the [Twitter Developer Portal](https://developer.twitter.com/en/portal/dashboard) |
+| `clientSecret` | string | — | `TWITTER_CLIENT_SECRET`, obtained from the [Twitter Developer Portal](https://developer.twitter.com/en/portal/dashboard) |
 
-## プロバイダー固有の設定・注意点
+## Notes
 
-- **Email Scope**: Twitter API v2 now supports email address retrieval. Ensure the `user.email` scope is requested when configuring your Twitter application to enable email functionality during authentication.
+- Redirect URL — local development: `http://localhost:3000/api/auth/callback/twitter`; production: update to your production domain URL. Adjust it if you modify the base path of auth routes
+- **Email scope**: Twitter API v2 now supports email address retrieval — ensure the `user.email` scope is requested when configuring your Twitter application to enable email functionality during authentication
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

@@ -17,6 +17,22 @@ Settings > Tailscale > Enable Tailscale
 
 If the browser does not open, use the option in NVIDIA Sync to resend the request.
 
+### Adding Devices to Tailscale
+
+1. Access **Settings** → **Tailscale** tab
+2. Click **Add a Device**
+3. Select the target device from the dropdown menu
+4. Navigate to the Tailscale authentication key settings via the provided link
+5. Generate an authentication key using default settings
+6. Copy/paste the key into the modal; select **Add Device**
+7. A terminal opens; follow the installation prompts for the Tailscale client
+
+### Disabling Tailscale
+
+1. Open **Settings** → **Tailscale** tab
+2. Access the three-dot action menu
+3. Select **Disable Tailscale**
+
 ## Options / Props
 
 | Name | Type | Description |
@@ -33,29 +49,7 @@ If the browser does not open, use the option in NVIDIA Sync to resend the reques
 - Remove devices from the Tailscale administration console before disabling the integration.
 - Session timeouts require restarting the enable flow; expired devices need reauthentication or a new auth key.
 - Unenroll operations require a direct local network connection.
-
-## Adding Devices to Tailscale
-
-1. Access **Settings** → **Tailscale** tab
-2. Click **Add a Device**
-3. Select the target device from the dropdown menu
-4. Navigate to the Tailscale authentication key settings via the provided link
-5. Generate an authentication key using default settings
-6. Copy/paste the key into the modal; select **Add Device**
-7. A terminal opens; follow the installation prompts for the Tailscale client
-
-## Troubleshooting
-
-For "Unable to Connect" errors:
-1. Verify network connectivity
-2. Confirm the device is enrolled in the Tailscale administration console
-3. Expand the source error for additional details
-
-## Disabling Tailscale
-
-1. Open **Settings** → **Tailscale** tab
-2. Access the three-dot action menu
-3. Select **Disable Tailscale**
+- For "Unable to Connect" errors: verify network connectivity, confirm the device is enrolled in the Tailscale administration console, and expand the source error for additional details.
 
 ## Related
 

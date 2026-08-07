@@ -1,10 +1,10 @@
 # Device Authorization
 
-Device Authorization プラグインは、RFC 8628 OAuth 2.0 Device Authorization Grant を実装し、スマート TV、CLI アプリケーション、IoT デバイス、ゲームコンソールなど入力能力が限られたデバイスでの認証を可能にする。
+The Device Authorization plugin implements the RFC 8628 OAuth 2.0 Device Authorization Grant, enabling authentication on devices with limited input capabilities such as smart TVs, CLI applications, IoT devices, and game consoles.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -19,15 +19,15 @@ export const auth = betterAuth({
 })
 ```
 
-マイグレーション:
+Migration:
 
 ```bash
 npx auth migrate
-# または
+# or
 npx auth generate
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -40,36 +40,34 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
-
-### デバイスコード要求
+### Request a device code
 
 `POST /device/code`
 
 ```typescript
 const { data, error } = await authClient.device.code({
-    client_id,  // 必須
-    scope,      // 任意
+    client_id,  // required
+    scope,      // optional
 })
 ```
 
-レスポンス: `user_code`, `device_code`, `verification_uri`, `verification_uri_complete`, `interval`, `expires_in`
+Response: `user_code`, `device_code`, `verification_uri`, `verification_uri_complete`, `interval`, `expires_in`
 
-### トークンポーリング
+### Token polling
 
 `POST /device/token`
 
 ```typescript
 const { data, error } = await authClient.device.token({
     grant_type: "urn:ietf:params:oauth:grant-type:device_code",
-    device_code,  // 必須
-    client_id,    // 必須
+    device_code,  // required
+    client_id,    // required
 })
 ```
 
-認可成功時にアクセストークンを返す。
+Returns an access token once authorization succeeds.
 
-### ユーザーコード検証
+### User code verification
 
 ```typescript
 const response = await authClient.device({
@@ -77,41 +75,27 @@ const response = await authClient.device({
 })
 ```
 
-### デバイス承認
+### Approve device
 
 `POST /device/approve`
 
 ```typescript
 const { data, error } = await authClient.device.approve({
-    userCode,  // 必須
+    userCode,  // required
 })
 ```
 
-### デバイス拒否
+### Deny device
 
 `POST /device/deny`
 
 ```typescript
 const { data, error } = await authClient.device.deny({
-    userCode,  // 必須
+    userCode,  // required
 })
 ```
 
-## 設定オプション
-
-| オプション | 型 | デフォルト | 説明 |
-|---|---|---|---|
-| `verificationUri` | string | `/device` | ユーザーがコードを入力する URL（絶対または相対） |
-| `expiresIn` | string | `30m` | デバイスコードの有効期限 |
-| `interval` | string | `5s` | 最小ポーリング間隔 |
-| `userCodeLength` | number | `8` | ユーザーフレンドリーなコードの長さ |
-| `deviceCodeLength` | number | `40` | デバイス検証コードの長さ |
-| `generateDeviceCode` | function | - | カスタムデバイスコード生成 |
-| `generateUserCode` | function | - | カスタムユーザーコード生成 |
-| `validateClient` | function | - | クライアント ID の検証 |
-| `onDeviceAuthRequest` | function | - | 認可要求時のフック |
-
-### カスタムコード生成例
+### Custom code generation example
 
 ```typescript
 deviceAuthorization({
@@ -127,7 +111,7 @@ deviceAuthorization({
 })
 ```
 
-### クライアント検証例
+### Client validation example
 
 ```typescript
 deviceAuthorization({
@@ -138,38 +122,56 @@ deviceAuthorization({
 })
 ```
 
-## DB スキーマ
+## Options / Props
 
-### deviceCode テーブル
-
-| フィールド | 型 | キー | 説明 |
+| Option | Type | Default | Description |
 |---|---|---|---|
-| id | string | PK | 一意識別子 |
-| deviceCode | string | - | デバイス検証コード |
-| userCode | string | - | ユーザーフレンドリーなコード |
-| userId | string | - | 承認/拒否したユーザー（nullable） |
-| clientId | string | - | OAuth クライアント識別子（nullable） |
-| scope | string | - | 要求スコープ（nullable） |
-| status | string | - | pending, approved, denied |
-| expiresAt | Date | - | 有効期限 |
-| lastPolledAt | Date | - | 最終ポーリング日時（nullable） |
-| pollingInterval | number | - | ポーリング間隔（秒、nullable） |
+| `verificationUri` | string | `/device` | URL where the user enters the code (absolute or relative) |
+| `expiresIn` | string | `30m` | Expiration time for the device code |
+| `interval` | string | `5s` | Minimum polling interval |
+| `userCodeLength` | number | `8` | Length of the user-friendly code |
+| `deviceCodeLength` | number | `40` | Length of the device verification code |
+| `generateDeviceCode` | function | - | Custom device code generation |
+| `generateUserCode` | function | - | Custom user code generation |
+| `validateClient` | function | - | Client ID validation |
+| `onDeviceAuthRequest` | function | - | Hook fired on authorization request |
 
-## エラーコード
+## Notes
 
-| コード | 意味 |
+- Enforces a polling interval to prevent abuse
+- Codes expire after the configured time (default 30 minutes)
+- Always validate the client ID in production
+- Use HTTPS for device authorization in production
+- User codes use a limited character set that excludes similar-looking characters (0/O, 1/I)
+- User authentication is required for approval/denial
+
+### Error codes
+
+| Code | Meaning |
 |---|---|
-| `authorization_pending` | ユーザーがまだ承認していない（ポーリング継続） |
-| `slow_down` | ポーリング頻度が高すぎる（間隔を延長） |
-| `expired_token` | デバイスコードが期限切れ |
-| `access_denied` | ユーザーが認可を拒否 |
-| `invalid_grant` | 無効なデバイスコードまたはクライアント ID |
+| `authorization_pending` | User has not yet approved (continue polling) |
+| `slow_down` | Polling too frequently (increase interval) |
+| `expired_token` | Device code has expired |
+| `access_denied` | User denied authorization |
+| `invalid_grant` | Invalid device code or client ID |
 
-## 注意点
+### DB schema
 
-- ポーリング間隔を強制し、乱用を防止
-- コードは設定された時間後に期限切れ（デフォルト30分）
-- 本番環境では常にクライアント ID を検証すること
-- 本番ではデバイス認可に HTTPS を使用
-- ユーザーコードは類似文字（0/O, 1/I）を除外した限定文字セットを使用
-- 承認/拒否にはユーザー認証が必要
+deviceCode table:
+
+| Field | Type | Key | Description |
+|---|---|---|---|
+| id | string | PK | Unique identifier |
+| deviceCode | string | - | Device verification code |
+| userCode | string | - | User-friendly code |
+| userId | string | - | User who approved/denied (nullable) |
+| clientId | string | - | OAuth client identifier (nullable) |
+| scope | string | - | Requested scope (nullable) |
+| status | string | - | pending, approved, denied |
+| expiresAt | Date | - | Expiration date |
+| lastPolledAt | Date | - | Last polling timestamp (nullable) |
+| pollingInterval | number | - | Polling interval in seconds (nullable) |
+
+## Related
+
+- [agent-auth.md](./agent-auth.md)

@@ -1,66 +1,6 @@
-# turbo.json 設定
+# turbo.json Configuration
 
-## グローバル設定
-
-| キー | デフォルト | 説明 |
-|---|---|---|
-| `extends` | — | ルート `turbo.json` から拡張（パッケージ固有設定用） |
-| `globalDependencies` | `[]` | 全タスクのハッシュに含めるファイルのグロブ |
-| `globalEnv` | `[]` | 全タスクのハッシュに影響する環境変数 |
-| `globalPassThroughEnv` | `[]` | 全タスクで利用可能にする環境変数（ハッシュ影響なし） |
-| `ui` | `"stream"` | `"tui"` または `"stream"` |
-| `cacheDir` | `".turbo/cache"` | キャッシュ保存場所 |
-| `cacheMaxAge` | `"0"` | キャッシュ最大保持期間（例: `"7d"`, `"24h"`） |
-| `cacheMaxSize` | `"0"` | キャッシュ最大サイズ（例: `"10GB"`, `"500MB"`） |
-| `envMode` | `"strict"` | `"strict"` または `"loose"` |
-| `concurrency` | `"10"` | 並列実行の最大タスク数 |
-| `noUpdateNotifier` | `false` | アップデート通知を無効化 |
-| `dangerouslyDisablePackageManagerCheck` | `false` | `packageManager` 検証を無効化 |
-| `futureFlags` | — | 将来デフォルト化される実験的機能を有効化 |
-| `tags` | — | Boundaries で使用するパッケージタグ（パッケージ設定のみ） |
-| `global` | — | グローバルオプションの名前空間（`globalConfiguration` フラグ必須） |
-| `remoteCache` | — | Remote Cache 設定 |
-| `experimentalObservability` | — | OpenTelemetry メトリクス出力設定 |
-| `boundaries` | — | `turbo boundaries` コマンドのルール設定 |
-| `tasks` | — | タスク定義 |
-
-## futureFlags
-
-| フラグ | デフォルト | 説明 |
-|---|---|---|
-| `errorsOnlyShowHash` | `false` | `outputLogs: "errors-only"` 時にタスクハッシュを表示 |
-| `longerSignatureKey` | `false` | Remote Cache 署名キーを 32 バイト以上に制限 |
-| `affectedUsingTaskInputs` | `false` | `--affected` でタスクレベルの `inputs` を使用 |
-| `watchUsingTaskInputs` | `false` | `turbo watch` でタスクの `inputs` グロブでフィルタリング |
-| `pruneIncludesGlobalFiles` | `false` | `turbo prune` 出力に `globalDependencies` ファイルを含める |
-| `filterUsingTasks` | `false` | `--filter` をパッケージでなくタスクレベルで解決 |
-| `globalConfiguration` | `false` | グローバルオプションを `global` 名前空間に移動 |
-
-## タスク定義（tasks 配下）
-
-| キー | デフォルト | 説明 |
-|---|---|---|
-| `dependsOn` | `[]` | タスクの実行依存関係 |
-| `inputs` | ソース管理対象全ファイル | ハッシュ対象ファイルのグロブ |
-| `outputs` | `[]` | キャッシュするファイル |
-| `cache` | `true` | キャッシュの有効/無効 |
-| `env` | `[]` | タスクのハッシュに影響する環境変数 |
-| `passThroughEnv` | `[]` | 実行時のみ利用可能な環境変数 |
-| `persistent` | `false` | 長時間実行プロセスに指定 |
-| `interactive` | `false` | stdin 入力を有効にする |
-| `interruptible` | `false` | `turbo watch` 時の再起動許可 |
-| `outputLogs` | `"full"` | `"full"` / `"hash-only"` / `"new-only"` / `"errors-only"` / `"none"` |
-| `with` | `[]` | 並行実行するタスクを指定 |
-| `extends` | `true` | 継承チェーンから設定を引き継ぐ（タスクレベル） |
-| `description` | `""` | タスクの説明（情報表示のみ） |
-
-## inputs の特殊値
-
-- `$TURBO_DEFAULT$`: デフォルト挙動を維持しつつ追加・除外
-- `$TURBO_ROOT$`: リポジトリルートからの相対パス
-- `$TURBO_EXTENDS$`: 継承した値に追記
-
-## 完成例
+## Usage
 
 ```json
 {
@@ -88,3 +28,66 @@
   }
 }
 ```
+
+## Options / Props
+
+### Global Configuration
+
+| Key | Default | Description |
+|---|---|---|
+| `extends` | — | Extends the root `turbo.json` (for package-specific configuration) |
+| `globalDependencies` | `[]` | Globs of files to include in every task's hash |
+| `globalEnv` | `[]` | Environment variables that affect every task's hash |
+| `globalPassThroughEnv` | `[]` | Environment variables made available to every task (no hash impact) |
+| `ui` | `"stream"` | `"tui"` or `"stream"` |
+| `cacheDir` | `".turbo/cache"` | Cache storage location |
+| `cacheMaxAge` | `"0"` | Maximum cache retention period (e.g. `"7d"`, `"24h"`) |
+| `cacheMaxSize` | `"0"` | Maximum cache size (e.g. `"10GB"`, `"500MB"`) |
+| `envMode` | `"strict"` | `"strict"` or `"loose"` |
+| `concurrency` | `"10"` | Maximum number of tasks to run in parallel |
+| `noUpdateNotifier` | `false` | Disables the update notification |
+| `dangerouslyDisablePackageManagerCheck` | `false` | Disables `packageManager` validation |
+| `futureFlags` | — | Enables experimental features that will become default in the future |
+| `tags` | — | Package tags used by Boundaries (package configuration only) |
+| `global` | — | Namespace for global options (requires the `globalConfiguration` flag) |
+| `remoteCache` | — | Remote Cache configuration |
+| `experimentalObservability` | — | OpenTelemetry metrics output configuration |
+| `boundaries` | — | Rule configuration for the `turbo boundaries` command |
+| `tasks` | — | Task definitions |
+
+### futureFlags
+
+| Flag | Default | Description |
+|---|---|---|
+| `errorsOnlyShowHash` | `false` | Shows the task hash when `outputLogs: "errors-only"` |
+| `longerSignatureKey` | `false` | Restricts Remote Cache signature keys to 32 bytes or more |
+| `affectedUsingTaskInputs` | `false` | Uses task-level `inputs` for `--affected` |
+| `watchUsingTaskInputs` | `false` | Filters `turbo watch` using the task's `inputs` globs |
+| `pruneIncludesGlobalFiles` | `false` | Includes `globalDependencies` files in `turbo prune` output |
+| `filterUsingTasks` | `false` | Resolves `--filter` at the task level instead of the package level |
+| `globalConfiguration` | `false` | Moves global options under the `global` namespace |
+
+### Task Definitions (`tasks`)
+
+| Key | Default | Description |
+|---|---|---|
+| `dependsOn` | `[]` | Execution dependencies of the task |
+| `inputs` | all files tracked in source control | Globs of files included in the hash |
+| `outputs` | `[]` | Files to cache |
+| `cache` | `true` | Enables/disables caching |
+| `env` | `[]` | Environment variables that affect the task's hash |
+| `passThroughEnv` | `[]` | Environment variables available only at runtime |
+| `persistent` | `false` | Marks the task as a long-running process |
+| `interactive` | `false` | Enables stdin input |
+| `interruptible` | `false` | Allows restarts during `turbo watch` |
+| `outputLogs` | `"full"` | `"full"` / `"hash-only"` / `"new-only"` / `"errors-only"` / `"none"` |
+| `with` | `[]` | Tasks to run concurrently |
+| `extends` | `true` | Inherits configuration from the extends chain (task level) |
+| `description` | `""` | Description of the task (informational only) |
+
+## Notes
+
+- `inputs` special values:
+  - `$TURBO_DEFAULT$`: retains the default behavior while adding/excluding entries
+  - `$TURBO_ROOT$`: path relative to the repository root
+  - `$TURBO_EXTENDS$`: appends to the inherited value

@@ -75,6 +75,7 @@ skills/anthropic-api-tools-mcp/
       troubleshooting.md
     endpoints/
       README.md
+      admin-mcp-tunnels.md
       skills-create.md
       skills-delete.md
       skills-list.md

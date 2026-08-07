@@ -1,14 +1,14 @@
 # Captcha
 
-Captcha プラグインは、キーエンドポイントに captcha 検証を追加することでボット保護を統合する。サインアップ、サインイン、パスワードリセットなどのアクションを人間のユーザーのみが実行できるようにする。
+The Captcha plugin integrates bot protection by adding captcha verification to key endpoints. It ensures actions like sign-up, sign-in, and password reset can only be performed by human users.
 
-サポートプロバイダー: Google reCAPTCHA、Cloudflare Turnstile、hCaptcha、CaptchaFox
+Supported providers: Google reCAPTCHA, Cloudflare Turnstile, hCaptcha, CaptchaFox
 
-Email & Password 認証ではそのまま動作する。他の認証方法では `endpoints` 配列の設定が必要。
+Works out of the box with Email & Password authentication. Other authentication methods require configuring the `endpoints` array.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -25,7 +25,7 @@ export const auth = betterAuth({
 })
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 await authClient.signIn.email({
@@ -39,35 +39,35 @@ await authClient.signIn.email({
 })
 ```
 
-`x-captcha-user-remote-ip` ヘッダーは不要。IP 検出はサーバー側で自動的に行われる。
+The `x-captcha-user-remote-ip` header is unnecessary. IP detection happens automatically on the server side.
 
-### 推奨クライアントライブラリ
+Recommended client libraries:
 
 - **Cloudflare Turnstile**: `@marsidev/react-turnstile`
-- **Google reCAPTCHA**: `react-google-recaptcha`（v2）、`react-google-recaptcha-v3`（v3）
+- **Google reCAPTCHA**: `react-google-recaptcha` (v2), `react-google-recaptcha-v3` (v3)
 - **hCaptcha**: `@hcaptcha/react-hcaptcha`
 - **CaptchaFox**: `@captchafox/react`
 
-## 動作の仕組み
+### How it works
 
-1. 設定されたエンドポイントへの全 POST リクエストをインターセプト
-2. プロバイダーの `/siteverify` エンドポイントでサーバー側トークン検証
-3. トークンがない、拒否された、または `/siteverify` が利用できない場合はエラーを返す
-4. トークンが受け入れられた場合はリクエストを続行
+1. Intercepts all POST requests to the configured endpoints
+2. Verifies the token server-side against the provider's `/siteverify` endpoint
+3. Returns an error if the token is missing, rejected, or `/siteverify` is unavailable
+4. Continues the request if the token is accepted
 
-## 設定オプション
+## Options / Props
 
-| オプション | 型 | 必須 | デフォルト | 説明 |
+| Option | Type | Required | Default | Description |
 |---|---|---|---|---|
-| `provider` | string | Yes | - | captcha プロバイダー |
-| `secretKey` | string | Yes | - | サーバー側検証用のプロバイダーシークレットキー |
-| `endpoints` | string[] | No | `["/sign-up/email", "/sign-in/email", "/request-password-reset"]` | captcha 検証を強制するパス |
-| `minScore` | number | No | 0.5 | 最小スコア閾値（Google reCAPTCHA v3 のみ） |
-| `siteKey` | string | No | - | サイトキー間のトークン再利用防止（hCaptcha、CaptchaFox のみ） |
-| `siteVerifyURLOverride` | string | No | - | captcha 検証リクエストのカスタム URL |
+| `provider` | string | Yes | - | Captcha provider |
+| `secretKey` | string | Yes | - | Provider secret key for server-side verification |
+| `endpoints` | string[] | No | `["/sign-up/email", "/sign-in/email", "/request-password-reset"]` | Paths where captcha verification is enforced |
+| `minScore` | number | No | 0.5 | Minimum score threshold (Google reCAPTCHA v3 only) |
+| `siteKey` | string | No | - | Prevents token reuse across site keys (hCaptcha, CaptchaFox only) |
+| `siteVerifyURLOverride` | string | No | - | Custom URL for the captcha verification request |
 
-## 注意点
+## Notes
 
-- トークン検証はサーバー上でのみ行われる
-- IP アドレスはサーバー側で自動検出される
-- トークンがないか拒否された場合、リクエストは中断される
+- Token verification only happens on the server
+- The IP address is automatically detected server-side
+- The request is aborted if the token is missing or rejected

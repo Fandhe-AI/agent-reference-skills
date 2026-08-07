@@ -2,14 +2,14 @@
 
 nuqs の URL 更新動作を制御するオプション。フックレベル、パーサーレベル、呼び出しレベルで設定可能。
 
-## デフォルト動作
+## Signature / Usage
+
+デフォルト動作:
 
 - クライアントのみ更新（サーバーリクエストなし）— `shallow: true`
 - 履歴エントリを置換 — `history: 'replace'`
 - スクロールなし — `scroll: false`
 - ブラウザ適応スロットル（50ms; Safari 120ms）
-
-## オプション設定方法
 
 ```tsx
 // パーサーのビルダーパターン
@@ -22,14 +22,24 @@ const [state, setState] = useQueryState(
 setState('bar', { scroll: true })
 ```
 
-## 全オプション
+オプションの優先順位（高い順）:
+
+1. **Call-level**: `setState('value', { history: 'push' })` — 最高優先
+2. **Hook/Parser-level**: `parseAsString.withOptions({ ... })`
+3. **Adapter defaults**: `<NuqsAdapter defaultOptions={{...}}>` — 最低優先
+
+## Options / Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `history` | `'replace' \| 'push'` | `'replace'` | `'replace'` は更新を単一の履歴エントリに圧縮、`'push'` は更新ごとに新しい履歴エントリを作成 |
+| `shallow` | `boolean` | `true` | `true` はクライアントのみ更新、`false` はサーバーに通知（loader/RSC を再実行） |
+| `scroll` | `boolean` | `false` | `true` で更新時にページ上部へスクロール |
+| `limitUrlUpdates` | `throttle(ms) \| debounce(ms) \| defaultRateLimit` | ブラウザ適応スロットル（50ms; Safari 120ms; 旧 Safari 320ms） | URL 更新とサーバーリクエストのレート制限。hooks が返す state 自体は常に即座に更新される |
+| `clearOnDefault` | `boolean` | `true`（v2.0.0 で `false` → `true` に変更） | `true` は state がデフォルト値と等しい場合にキーを URL から削除、`false` はデフォルト値でもキーを保持 |
+| `startTransition` | `React.startTransition` 関数 | — | `shallow: false` 必須。サーバー再レンダリング（RSC）をトランジションでラップしローディング状態を取得 |
 
 ### `history`
-
-| | |
-|---|---|
-| **型** | `'replace' \| 'push'` |
-| **デフォルト** | `'replace'` |
 
 `'replace'`: 更新を単一の履歴エントリに圧縮（git squash のように）。
 `'push'`: 更新ごとに新しい履歴エントリを作成。ブラウザの戻るボタンで状態変更を戻れる。
@@ -38,24 +48,23 @@ setState('bar', { scroll: true })
 
 ### `shallow`
 
-| | |
-|---|---|
-| **型** | `boolean` |
-| **デフォルト** | `true` |
-
 `true`: クライアントのみの更新。ネットワークリクエストなし。
 `false`: サーバーに通知。SSR フレームワークの loader/RSC を再実行する。
 
 React Router / Remix では `shallow: false` で loader が再実行される。
+
+> **注意**: Remix v2 は EOL となり、`nuqs/adapters/remix` は nuqs@3.0.0 で削除予定。React Router v6 も EOL となり `nuqs/adapters/react-router/v6`（および無指定の `nuqs/adapters/react-router`）は nuqs@3.0.0 で削除予定。React Router v7 / v8 への移行を推奨。
 
 #### React Router での補足: `useOptimisticSearchParams`
 
 React Router の `useSearchParams` は shallow 更新を反映しない。代わりに nuqs が提供する `useOptimisticSearchParams` を使用する:
 
 ```tsx
+// React Router v8 の場合
+import { useOptimisticSearchParams } from 'nuqs/adapters/react-router/v8'
 // React Router v7 の場合
 import { useOptimisticSearchParams } from 'nuqs/adapters/react-router/v7'
-// React Router v6 の場合
+// React Router v6 の場合（EOL、nuqs@3.0.0 で削除予定）
 import { useOptimisticSearchParams } from 'nuqs/adapters/react-router/v6'
 
 const searchParams = useOptimisticSearchParams()
@@ -64,20 +73,10 @@ const searchParams = useOptimisticSearchParams()
 
 ### `scroll`
 
-| | |
-|---|---|
-| **型** | `boolean` |
-| **デフォルト** | `false` |
-
 `true`: 更新時にページ上部へスクロール。
 `false`: スクロール位置を維持。
 
 ### `limitUrlUpdates`（URL 更新のレート制限）
-
-| | |
-|---|---|
-| **型** | `throttle(ms) \| debounce(ms) \| defaultRateLimit` |
-| **デフォルト** | ブラウザ適応スロットル（50ms; Safari 120ms; 旧 Safari 320ms） |
 
 hooks が返す state は常に即座に更新される。レート制限されるのは URL の書き換えとサーバーリクエストのみ。
 
@@ -134,11 +133,6 @@ setState('bar', { limitUrlUpdates: defaultRateLimit })
 
 ### `clearOnDefault`
 
-| | |
-|---|---|
-| **型** | `boolean` |
-| **デフォルト** | `true`（v2.0.0 で `false` → `true` に変更） |
-
 `true`: state がデフォルト値と等しい場合、キーを URL から削除。
 `false`: デフォルト値でもキーを URL に保持。
 
@@ -154,10 +148,7 @@ const dateParser = createParser({
 
 ### `startTransition`
 
-| | |
-|---|---|
-| **型** | `React.startTransition` 関数 |
-| **必須条件** | `shallow: false` |
+`shallow: false` が必須条件。
 
 サーバー再レンダリング（RSC）をトランジションでラップし、ローディング状態を取得:
 
@@ -171,15 +162,7 @@ const [query, setQuery] = useQueryState(
 
 > **注意**: nuqs v1 では `startTransition` を渡すと自動で `shallow: false` になった。v2+ では明示的に設定が必要。
 
-## オプション優先順位
-
-高い順:
-
-1. **Call-level**: `setState('value', { history: 'push' })` — 最高優先
-2. **Hook/Parser-level**: `parseAsString.withOptions({ ... })`
-3. **Adapter defaults**: `<NuqsAdapter defaultOptions={{...}}>` — 最低優先
-
-## グローバルデフォルト（`<NuqsAdapter>` v2.5.0+）
+### グローバルデフォルト（`<NuqsAdapter>` v2.5.0+）
 
 ```tsx
 <NuqsAdapter
@@ -194,7 +177,7 @@ const [query, setQuery] = useQueryState(
 </NuqsAdapter>
 ```
 
-## `processUrlSearchParams`（v2.6.0+）
+### `processUrlSearchParams`（v2.6.0+）
 
 パラメータマージ後、URL 更新前に実行されるミドルウェア:
 
@@ -209,11 +192,11 @@ const [query, setQuery] = useQueryState(
 </NuqsAdapter>
 ```
 
-## 非推奨オプション
+## Notes
 
-- `throttleMs`: v2.5.0 で非推奨。`{ throttleMs: 100 }` → `{ limitUrlUpdates: throttle(100) }` に置換
+- `throttleMs` は v2.5.0 で非推奨。`{ throttleMs: 100 }` → `{ limitUrlUpdates: throttle(100) }` に置換
 
-## 関連
+## Related
 
 - [useQueryState](../hooks/useQueryState.md)
 - [useQueryStates](../hooks/useQueryStates.md)

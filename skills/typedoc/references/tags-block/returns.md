@@ -1,28 +1,24 @@
 # @returns / @return
 
-関数の戻り値を文書化するブロックタグ。
+Block tag for documenting the return value of a function.
 
-## 構文
-
-```
-@returns 戻り値の説明
-```
-
-または
+## Signature / Usage
 
 ```
-@return 戻り値の説明
+@returns description of the return value
 ```
 
-## 詳細説明
+or
 
-`@returns` タグは関数の戻り値を文書化するために使用される。TSDocの仕様に準拠している。
+```
+@return description of the return value
+```
 
-TypeDocは `@return` を `@returns` の同等のエイリアスとして認識する。
+The `@returns` tag is used to document the return value of a function. Conforms to the TSDoc specification.
 
-1つのコメントにつき最大1つの `@returns` タグのみ含めるべきである。
+TypeDoc recognizes `@return` as an equivalent alias of `@returns`.
 
-## コード例
+At most one `@returns` tag should be included per comment.
 
 ```typescript
 /**
@@ -33,13 +29,13 @@ TypeDocは `@return` を `@returns` の同等のエイリアスとして認識�
 export function sum(a: number, b: number): number;
 ```
 
-## 注意点
+## Notes
 
-- 1つのコメントにつき最大1つの `@returns` のみ使用すべき
-- `@returns` と `@return` はどちらも同じ動作をする
-- TSDoc仕様では `@returns` が推奨される
+- At most one `@returns` tag should be used per comment
+- `@returns` and `@return` behave identically
+- The TSDoc specification recommends `@returns`
 
-## 関連
+## Related
 
-- [@param](./param.md) -- パラメータの文書化
+- [@param](./param.md) -- documenting parameters
 - [TSDoc @returns](https://tsdoc.org/pages/tags/returns/)

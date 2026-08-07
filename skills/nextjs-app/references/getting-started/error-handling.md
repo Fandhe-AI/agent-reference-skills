@@ -10,15 +10,15 @@ Display expected errors and handle uncaught exceptions.
 
 export default function ErrorPage({
   error,
-  unstable_retry,
+  retry,
 }: {
   error: Error & { digest?: string }
-  unstable_retry: () => void
+  retry: () => void
 }) {
   return (
     <div>
       <h2>Something went wrong!</h2>
-      <button onClick={() => unstable_retry()}>Try again</button>
+      <button onClick={() => retry()}>Try again</button>
     </div>
   )
 }
@@ -40,12 +40,12 @@ export async function createPost(prevState: any, formData: FormData) {
 
 | Name | Type | Description |
 |------|------|-------------|
-| `error.js` | file convention | Client Component error boundary for a route segment; receives `error` and `unstable_retry` |
+| `error.js` | file convention | Client Component error boundary for a route segment; receives `error` and `retry` |
 | `global-error.js` | file convention | Root-level error boundary; must define its own `<html>`/`<body>` |
 | `notFound()` | `next/navigation` | Triggers the nearest `not-found.js` 404 UI |
 | `not-found.js` | file convention | 404 UI shown after `notFound()` is called |
 | `useActionState` | React hook | Recommended way to surface expected Server Function errors to the client instead of `try`/`catch` |
-| `unstable_catchError` | `next/error` | Creates a reusable error boundary wrapper for any part of the component tree |
+| `catchError` | `next/error` | Creates a reusable error boundary wrapper for any part of the component tree (stable since `v16.3.0`; formerly `unstable_catchError`) |
 
 ## Notes
 

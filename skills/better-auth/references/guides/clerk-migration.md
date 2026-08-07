@@ -2,7 +2,7 @@
 
 Clerk から Better Auth へ移行するためのガイド。ユーザーデータ移行・認証方法の移植・コンポーネントの更新を含む。
 
-## 主な移行手順
+## Signature / Usage
 
 1. **Better Auth のセットアップ**: インストールし DB 接続を設定する
 2. **認証設定**: メール/パスワード（bcrypt ハッシュ設定）・ソーシャルプロバイダー・プラグインを設定する
@@ -13,12 +13,12 @@ Clerk から Better Auth へ移行するためのガイド。ユーザーデー�
 7. **ミドルウェアの更新**: ルート保護のロジックを Better Auth セッション用に更新する
 8. **クリーンアップ**: 移行確認後に Clerk の依存関係を削除する
 
-## 考慮事項
+## Notes
 
 - 移行により有効なセッションがすべて無効化される
 - 組織の移行は現在ガイドに記載されていない
 
 ## Related
 
-- [auth0-migration.md](./auth0-migration.md)
-- [next-auth-migration.md](./next-auth-migration.md)
+- [Migrating from Auth0](./auth0-migration.md)
+- [Migrating from Auth.js (NextAuth)](./next-auth-migration.md)

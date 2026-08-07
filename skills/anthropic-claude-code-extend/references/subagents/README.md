@@ -1,14 +1,13 @@
-# subagents
-
-Claude Code CLI のサブエージェント・エージェントチーム・routines。Agent SDK のサブエージェント定義は anthropic-agent-sdk を参照。routines-fire のみ platform.claude.com の API エンドポイント。
+# Subagents
 
 | Name | Description | Path |
-| --- | --- | --- |
-| Agent teams | 複数 Claude Code インスタンスの協調実行・team lead + teammate 型 | [agent-teams.md](./agent-teams.md) |
-| Agent view | バックグラウンド session の一括管理・dispatch UI | [agent-view.md](./agent-view.md) |
-| Run agents in parallel (overview) | 複数 task 並列実行の 4 つのアプローチ比較 (overview) | [agents.md](./agents.md) |
-| Routines | スケジュール・API・GitHub event 起動の cloud 自動化 | [routines.md](./routines.md) |
-| Trigger a routine via API (/fire) | 既存 routine を POST で起動する /fire API エンドポイント | [routines-fire.md](./routines-fire.md) |
-| Scheduled tasks (/loop) | セッション内 interval/cron task の /loop + CronCreate / CronDelete | [scheduled-tasks.md](./scheduled-tasks.md) |
-| Subagents | 独立コンテキスト・専用プロンプト・tool access 制御 subagent 定義 | [sub-agents.md](./sub-agents.md) |
-| Dynamic workflows | JavaScript 記述の大規模 subagent orchestration runtime (dozens~hundreds) | [workflows.md](./workflows.md) |
+|------|-------------|------|
+| Agent teams | Coordinate multiple Claude Code instances working together: one session acts as team lead… | [agent-teams.md](./agent-teams.md) |
+| Agent view | Dispatch and manage many background Claude Code sessions from a single terminal screen… | [agent-view.md](./agent-view.md) |
+| Run agents in parallel (overview) | Compares the four ways Claude Code takes on multiple tasks at once: subagents, agent… | [agents.md](./agents.md) |
+| Desktop scheduled tasks | Local recurring or one-off tasks configured from the Claude Code Desktop app's… | [desktop-scheduled-tasks.md](./desktop-scheduled-tasks.md) |
+| Trigger a routine via API (/fire) | Start a Claude Code routine session on demand by sending an authenticated POST request… | [routines-fire.md](./routines-fire.md) |
+| Routines | A saved Claude Code configuration (prompt, one or more repositories, connectors) that… | [routines.md](./routines.md) |
+| Scheduled tasks (/loop) | Run a prompt repeatedly on an interval, poll for status, or set a one-time reminder… | [scheduled-tasks.md](./scheduled-tasks.md) |
+| Subagents | Specialized AI assistants that handle specific types of tasks in their own context… | [sub-agents.md](./sub-agents.md) |
+| Dynamic workflows | A JavaScript script that orchestrates subagents at scale (dozens to hundreds per run)… | [workflows.md](./workflows.md) |

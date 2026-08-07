@@ -1,13 +1,6 @@
 # Twitch
 
-## Credentials
-
-- `TWITCH_CLIENT_ID`
-- `TWITCH_CLIENT_SECRET`
-
-Obtain from the [Twitch Developer Portal](https://dev.twitch.tv/console/apps).
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -22,8 +15,6 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
-
 ```typescript
 import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
@@ -35,12 +26,18 @@ const signIn = async () => {
 }
 ```
 
-## リダイレクト URL
+## Options / Props
 
-- **Local Development**: `http://localhost:3000/api/auth/callback/twitch`
-- **Production**: Use your application's production URL
-- Update the redirect URL if you change your auth routes' base path
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `clientId` | string | — | `TWITCH_CLIENT_ID`, obtained from the [Twitch Developer Portal](https://dev.twitch.tv/console/apps) |
+| `clientSecret` | string | — | `TWITCH_CLIENT_SECRET`, obtained from the [Twitch Developer Portal](https://dev.twitch.tv/console/apps) |
 
-## プロバイダー固有の設定・注意点
+## Notes
 
-- **Email Requirement**: Twitch users who do not have an email address will not be able to sign in. Ensure your implementation handles this limitation by requiring verified email addresses during the authentication flow.
+- Redirect URL — local development: `http://localhost:3000/api/auth/callback/twitch`; production: use your application's production URL. Update it if you change your auth routes' base path
+- **Email requirement**: Twitch users without an email address cannot sign in — ensure your implementation handles this limitation by requiring verified email addresses during the authentication flow
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

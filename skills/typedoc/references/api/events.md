@@ -1,8 +1,8 @@
 # Events
 
-TypeDoc のイベントシステム。Converter と Renderer のライフサイクル全体にわたるイベントディスパッチ機構。
+TypeDoc's event system. An event dispatch mechanism spanning the full lifecycle of the `Converter` and `Renderer`.
 
-## シグネチャ
+## Signature
 
 ### EventHooks
 
@@ -39,11 +39,11 @@ class EventHooks<T extends Record<keyof T, unknown[]>, R> {
 
 ```typescript
 class PageEvent<Model extends RouterTarget = RouterTarget> {
-  // 静的イベント
+  // Static events
   static readonly BEGIN: "beginPage";
   static readonly END: "endPage";
 
-  // プロパティ
+  // Properties
   readonly model: Model;
   project: Models.ProjectReflection;
   filename: string;
@@ -53,7 +53,7 @@ class PageEvent<Model extends RouterTarget = RouterTarget> {
   pageHeadings: PageHeading[];
   pageSections: { title: string; headings: PageHeading[] }[];
 
-  // メソッド
+  // Methods
   constructor(model: Model);
   isReflectionEvent(): this is PageEvent<Models.Reflection>;
   startNewSection(title: string): void;
@@ -64,11 +64,11 @@ class PageEvent<Model extends RouterTarget = RouterTarget> {
 
 ```typescript
 class RendererEvent {
-  // 静的イベント
+  // Static events
   static readonly BEGIN: "beginRender";
   static readonly END: "endRender";
 
-  // プロパティ
+  // Properties
   readonly outputDirectory: string;
   readonly project: Models.ProjectReflection;
   pages: PageDefinition<RouterTarget>[];
@@ -85,15 +85,15 @@ class RendererEvent {
 
 ```typescript
 class IndexEvent {
-  // 静的イベント
+  // Static events
   static readonly PREPARE_INDEX: "prepareIndex";
 
-  // プロパティ
+  // Properties
   searchResults: (Models.DeclarationReflection | Models.DocumentReflection)[];
   searchFields: Record<string, string>[];
   readonly searchFieldWeights: Record<string, number>;
 
-  // メソッド
+  // Methods
   constructor(
     searchResults: (Models.DeclarationReflection | Models.DocumentReflection)[]
   );
@@ -105,10 +105,10 @@ class IndexEvent {
 
 ```typescript
 class MarkdownEvent {
-  // 静的イベント
+  // Static events
   static readonly PARSE: "parseMarkdown";
 
-  // プロパティ
+  // Properties
   readonly page: PageEvent;
   readonly originalText: string;
   parsedText: string;
@@ -117,7 +117,7 @@ class MarkdownEvent {
 }
 ```
 
-## 主要メソッド
+## Methods
 
 ### EventHooks
 
@@ -131,7 +131,7 @@ on<K extends keyof T>(
 ): void
 ```
 
-イベントリスナーを登録する。`order` で実行順序を制御できる（小さい値が先に実行）。
+Registers an event listener. `order` controls execution order (lower values run first).
 
 #### once()
 
@@ -143,7 +143,7 @@ once<K extends keyof T>(
 ): void
 ```
 
-1回だけ実行されるリスナーを登録する。
+Registers a listener that runs only once.
 
 #### off()
 
@@ -154,7 +154,7 @@ off<K extends keyof T>(
 ): void
 ```
 
-リスナーを解除する。
+Removes a listener.
 
 #### emit()
 
@@ -165,7 +165,7 @@ emit<K extends keyof T>(
 ): R[]
 ```
 
-イベントを発火し、すべてのリスナーからの戻り値を収集する。
+Fires an event and collects the return values from all listeners.
 
 #### saveMomento() / restoreMomento()
 
@@ -174,7 +174,7 @@ saveMomento(): EventHooksMomento<T, R>
 restoreMomento(momento: EventHooksMomento<T, R>): void
 ```
 
-リスナーの状態を保存し、後で復元する。
+Saves the listener state and restores it later.
 
 ### PageEvent
 
@@ -184,7 +184,7 @@ restoreMomento(momento: EventHooksMomento<T, R>): void
 isReflectionEvent(): this is PageEvent<Models.Reflection>
 ```
 
-モデルが Reflection かどうかの型ガード。
+Type guard for whether the model is a Reflection.
 
 #### startNewSection()
 
@@ -192,7 +192,7 @@ isReflectionEvent(): this is PageEvent<Models.Reflection>
 startNewSection(title: string): void
 ```
 
-「On This Page」サイドバーに折りたたみ可能なセクションを作成する。
+Creates a collapsible section in the "On This Page" sidebar.
 
 ### IndexEvent
 
@@ -202,91 +202,91 @@ startNewSection(title: string): void
 removeResult(index: number): void
 ```
 
-インデックスから検索結果を削除する。`searchFields` からも対応するエントリが同時に削除される。
+Removes a search result from the index. The corresponding entry is also removed from `searchFields`.
 
-## 主要プロパティ
+## Properties
 
-### PageEvent プロパティ
+### PageEvent properties
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `model` | `Model` (readonly) | レンダリング対象のモデル |
-| `project` | `ProjectReflection` | 処理中のプロジェクト |
-| `filename` | `string` | 出力ファイル名 |
-| `url` | `string` | ターゲット URL |
-| `pageKind` | `PageKind` | ページの種類 |
-| `contents` | `string?` | 最終 HTML コンテンツ（プラグインで変更可能） |
-| `pageHeadings` | `PageHeading[]` | レンダリング中に構築されるナビゲーションリンク |
-| `pageSections` | `{ title: string; headings: PageHeading[] }[]` | ページセクション（通常 `@group` タグから） |
+| `model` | `Model` (readonly) | The model being rendered |
+| `project` | `ProjectReflection` | The project currently being processed |
+| `filename` | `string` | Output file name |
+| `url` | `string` | Target URL |
+| `pageKind` | `PageKind` | The kind of page |
+| `contents` | `string?` | Final HTML content (modifiable by plugins) |
+| `pageHeadings` | `PageHeading[]` | Navigation links built up during rendering |
+| `pageSections` | `{ title: string; headings: PageHeading[] }[]` | Page sections (typically from `@group` tags) |
 
-### RendererEvent プロパティ
+### RendererEvent properties
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `outputDirectory` | `string` (readonly) | ドキュメント生成先ディレクトリ |
-| `project` | `ProjectReflection` (readonly) | 処理中のプロジェクト |
-| `pages` | `PageDefinition[]` | 生成予定の全ページ |
+| `outputDirectory` | `string` (readonly) | The directory documentation is generated into |
+| `project` | `ProjectReflection` (readonly) | The project being processed |
+| `pages` | `PageDefinition[]` | All pages scheduled for generation |
 
-### IndexEvent プロパティ
+### IndexEvent properties
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `searchResults` | `(DeclarationReflection \| DocumentReflection)[]` | フィルタリング可能な検索結果 |
-| `searchFields` | `Record<string, string>[]` | カスタム検索フィールド。`name`, `comment`, `document` は組み込み |
-| `searchFieldWeights` | `Record<string, number>` (readonly) | 検索フィールドの重み。`name` は 10 倍の重み |
+| `searchResults` | `(DeclarationReflection \| DocumentReflection)[]` | Filterable search results |
+| `searchFields` | `Record<string, string>[]` | Custom search fields. `name`, `comment`, `document` are built in |
+| `searchFieldWeights` | `Record<string, number>` (readonly) | Weight of each search field. `name` has 10x weight |
 
-### MarkdownEvent プロパティ
+### MarkdownEvent properties
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `page` | `PageEvent` (readonly) | パースが行われているページ |
-| `originalText` | `string` (readonly) | パース前の元テキスト |
-| `parsedText` | `string` | パース済みの出力（プラグインで変更可能） |
+| `page` | `PageEvent` (readonly) | The page currently being parsed |
+| `originalText` | `string` (readonly) | The original text before parsing |
+| `parsedText` | `string` | The parsed output (modifiable by plugins) |
 
-## イベントライフサイクル
+## Event Lifecycle
 
-### Converter ライフサイクル
+### Converter lifecycle
 
 ```
 EVENT_BEGIN
   → EVENT_CREATE_PROJECT
-  → EVENT_CREATE_DECLARATION (各宣言ごと)
-    → EVENT_CREATE_SIGNATURE (シグネチャごと)
-    → EVENT_CREATE_PARAMETER (パラメータごと)
-    → EVENT_CREATE_TYPE_PARAMETER (型パラメータごと)
-  → EVENT_CREATE_DOCUMENT (ドキュメントごと)
+  → EVENT_CREATE_DECLARATION (per declaration)
+    → EVENT_CREATE_SIGNATURE (per signature)
+    → EVENT_CREATE_PARAMETER (per parameter)
+    → EVENT_CREATE_TYPE_PARAMETER (per type parameter)
+  → EVENT_CREATE_DOCUMENT (per document)
   → EVENT_RESOLVE_BEGIN
-  → EVENT_RESOLVE (各 Reflection ごと)
+  → EVENT_RESOLVE (per Reflection)
   → EVENT_RESOLVE_END
 EVENT_END
 ```
 
-### Renderer ライフサイクル
+### Renderer lifecycle
 
 ```
-preRenderAsyncJobs (非同期)
+preRenderAsyncJobs (async)
   → EVENT_BEGIN (RendererEvent)
     → EVENT_PREPARE_INDEX (IndexEvent)
-    → EVENT_BEGIN_PAGE (PageEvent) ← 各ページ
-    → EVENT_END_PAGE (PageEvent)   ← 各ページ
+    → EVENT_BEGIN_PAGE (PageEvent) ← per page
+    → EVENT_END_PAGE (PageEvent)   ← per page
   → EVENT_END (RendererEvent)
-postRenderAsyncJobs (非同期)
+postRenderAsyncJobs (async)
 ```
 
-## コード例
+## Examples
 
-### Converter イベントのリスニング
+### Listening to Converter events
 
 ```typescript
 import { Application, Converter, Context, DeclarationReflection } from "typedoc";
 
 export function load(app: Application) {
-  // 変換開始
+  // Conversion started
   app.converter.on(Converter.EVENT_BEGIN, (context: Context) => {
     app.logger.info("Conversion started");
   });
 
-  // 宣言作成時
+  // Declaration created
   app.converter.on(
     Converter.EVENT_CREATE_DECLARATION,
     (context: Context, reflection: DeclarationReflection) => {
@@ -294,7 +294,7 @@ export function load(app: Application) {
     }
   );
 
-  // 解決処理完了時
+  // Resolution completed
   app.converter.on(Converter.EVENT_RESOLVE_END, (context: Context) => {
     app.logger.info(`Total reflections: ${
       Object.keys(context.project.reflections).length
@@ -303,23 +303,23 @@ export function load(app: Application) {
 }
 ```
 
-### Renderer イベントのリスニング
+### Listening to Renderer events
 
 ```typescript
 import { Application, Renderer, RendererEvent, PageEvent, Reflection } from "typedoc";
 
 export function load(app: Application) {
-  // レンダリング開始
+  // Rendering started
   app.renderer.on(Renderer.EVENT_BEGIN, (event: RendererEvent) => {
     app.logger.info(`Output: ${event.outputDirectory}`);
   });
 
-  // ページレンダリング後
+  // After a page has been rendered
   app.renderer.on(
     Renderer.EVENT_END_PAGE,
     (event: PageEvent<Reflection>) => {
       if (event.contents) {
-        // HTML の修正
+        // Modify the HTML
         event.contents += "<!-- Generated by MyPlugin -->";
       }
     }
@@ -327,18 +327,18 @@ export function load(app: Application) {
 }
 ```
 
-### フックの使用
+### Using hooks
 
 ```typescript
 import { Application, JSX } from "typedoc";
 
 export function load(app: Application) {
-  // head にスタイルシートを追加
+  // Add a stylesheet to head
   app.renderer.hooks.on("head.end", () => (
     <link rel="stylesheet" href="custom.css" />
   ));
 
-  // フッターにコンテンツを追加
+  // Add content to the footer
   app.renderer.hooks.on("footer.end", () => (
     <div class="custom-footer">
       <p>Custom content</p>
@@ -347,7 +347,7 @@ export function load(app: Application) {
 }
 ```
 
-### 検索インデックスのカスタマイズ
+### Customizing the search index
 
 ```typescript
 import { Application, Renderer, IndexEvent } from "typedoc";
@@ -356,19 +356,19 @@ export function load(app: Application) {
   app.renderer.on(
     Renderer.EVENT_PREPARE_INDEX,
     (event: IndexEvent) => {
-      // カスタム検索フィールドの追加
+      // Add a custom search field
       for (let i = 0; i < event.searchResults.length; i++) {
         const refl = event.searchResults[i];
         event.searchFields[i]["category"] = refl.categories?.[0]?.title ?? "";
       }
-      // フィールドの重みを設定
+      // Set the field weight
       (event.searchFieldWeights as any)["category"] = 5;
     }
   );
 }
 ```
 
-### Markdown パース結果の修正
+### Modifying Markdown parse results
 
 ```typescript
 import { Application, MarkdownEvent } from "typedoc";
@@ -377,7 +377,7 @@ export function load(app: Application) {
   app.renderer.on(
     MarkdownEvent.PARSE,
     (event: MarkdownEvent) => {
-      // パース済み HTML を修正
+      // Modify the parsed HTML
       event.parsedText = event.parsedText.replace(
         /TODO/g,
         '<span class="todo">TODO</span>'
@@ -387,19 +387,19 @@ export function load(app: Application) {
 }
 ```
 
-## 注意点
+## Notes
 
-- イベントリスナーの `this` は `undefined` にバインドされる
-- `EventHooks` はリスナーの戻り値を収集できる（Renderer フック向け）
-- `PageEvent.contents` は `EVENT_END_PAGE` リスナーで変更可能
-- `IndexEvent.searchResults` からアイテムを削除する場合は `removeResult()` を使用する
-- `searchFieldWeights` は `name` が他のフィールドの 10 倍の重みを持つ
-- `order` パラメータで実行順序を制御できる（小さい値が優先）
-- `saveMomento()` / `restoreMomento()` でリスナーの状態を保存・復元できる
+- Event listener `this` is bound to `undefined`
+- `EventHooks` can collect listener return values (used for Renderer hooks)
+- `PageEvent.contents` can be modified in `EVENT_END_PAGE` listeners
+- Use `removeResult()` to remove an item from `IndexEvent.searchResults`
+- `searchFieldWeights` gives `name` 10x the weight of other fields
+- The `order` parameter controls execution order (lower values run first)
+- `saveMomento()` / `restoreMomento()` can save and restore listener state
 
-## 関連
+## Related
 
 - [Converter](./converter.md)
 - [Renderer](./renderer.md)
 - [Application](./application.md)
-- [プラグイン開発](../development/plugin-development.md)
+- [Plugin Development](../development/plugin-development.md)

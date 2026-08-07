@@ -1,19 +1,14 @@
 # Rate Limit
 
-Better Auth にはトラフィック管理と不正利用防止のための組み込みレートリミッターが含まれている。
+Better Auth includes a built-in rate limiter for traffic management and abuse prevention.
 
-## 概要
+## Signature / Usage
 
-**本番環境デフォルト:**
-- ウィンドウ: 60 秒
-- 最大リクエスト: ウィンドウあたり 100
-- ステータス: 開発モードでは無効
+**Production defaults:** a 60-second window with a maximum of 100 requests per window. Disabled by default in development mode. Requests made server-side via `auth.api` completely bypass rate limiting.
 
-サーバー側の `auth.api` 経由リクエストはレートリミットを完全にバイパスする。
+### Setup
 
-## セットアップ
-
-開発環境でレートリミットを有効化:
+Enable rate limiting in development:
 
 ```typescript
 export const auth = betterAuth({
@@ -25,9 +20,9 @@ export const auth = betterAuth({
 });
 ```
 
-## IP アドレス検出
+### IP address detection
 
-デフォルトで `x-forwarded-for` ヘッダーを使用。インフラに応じてカスタムヘッダーを設定:
+Uses the `x-forwarded-for` header by default. Configure a custom header depending on your infrastructure:
 
 ```typescript
 export const auth = betterAuth({
@@ -40,27 +35,27 @@ export const auth = betterAuth({
 });
 ```
 
-## IPv6 サポート
+### IPv6 support
 
-Better Auth は代替表現を使用したバイパス攻撃を防ぐため IPv6 アドレスを正規化する。IPv4 マップ IPv6 アドレス（`::ffff:192.0.2.1` など）は自動的に IPv4 形式に変換。
+Better Auth normalizes IPv6 addresses to prevent bypass attacks using alternate representations. IPv4-mapped IPv6 addresses (e.g. `::ffff:192.0.2.1`) are automatically converted to IPv4 form.
 
-### サブネットベースのリミット
+Subnet-based limiting:
 
 ```typescript
 export const auth = betterAuth({
   advanced: {
     ipAddress: {
-      ipv6Subnet: 64, // /64 サブネットでレートリミット
+      ipv6Subnet: 64, // Rate limit by /64 subnet
     },
   },
 });
 ```
 
-一般的なプレフィックス長: 128（個別）、64（/64 サブネット）、48（/48 割り当て）、32（/32 ISP）。
+Common prefix lengths: 128 (individual), 64 (/64 subnet), 48 (/48 allocation), 32 (/32 ISP).
 
-## カスタムレートリミットルール
+### Custom rate limit rules
 
-機密エンドポイントにより厳しい制限を適用:
+Apply stricter limits to sensitive endpoints:
 
 ```typescript
 export const auth = betterAuth({
@@ -73,62 +68,44 @@ export const auth = betterAuth({
         window: 10,
         max: 3,
       }),
-      "/get-session": false, // 特定パスで無効化
+      "/get-session": false, // Disable for a specific path
     },
   },
 });
 ```
 
-プリセットカスタムルール: `/sign-in/email`（3 リクエスト/10 秒）、`/two-factor/verify`（3 リクエスト/10 秒）。
+Preset custom rules: `/sign-in/email` (3 requests/10s), `/two-factor/verify` (3 requests/10s).
 
-## ストレージオプション
-
-### データベースストレージ
+### Storage options
 
 ```typescript
+// Database storage
 rateLimit: {
   storage: "database",
-  modelName: "rateLimit", // オプション
+  modelName: "rateLimit", // optional
 }
-```
 
-### セカンダリストレージ (Redis)
-
-```typescript
+// Secondary storage (Redis)
 rateLimit: {
   storage: "secondary-storage",
 }
-```
 
-### カスタム実装
-
-```typescript
+// Custom implementation
 rateLimit: {
   customStorage: {
-    get: async (key) => { /* データ取得 */ },
-    set: async (key, value) => { /* データ保存 */ },
+    get: async (key) => { /* fetch data */ },
+    set: async (key, value) => { /* store data */ },
   },
 }
 ```
 
-マイグレーション実行: `npx auth@latest migrate`
+Run migration: `npx auth@latest migrate`
 
-## データベーススキーマ
+### Error handling
 
-データベースバックのレートリミット用テーブル:
+When the rate limit is exceeded, the response includes an `X-Retry-After` header indicating the wait time in seconds.
 
-| Field | Type | Purpose |
-|-------|------|---------|
-| id | string | 主キー |
-| key | string | ユニークなレートリミット識別子 |
-| count | integer | ウィンドウ内リクエスト数 |
-| lastRequest | bigint | 最後のリクエストタイムスタンプ（エポック ms） |
-
-## エラーハンドリング
-
-レートリミット超過時、レスポンスに待機時間（秒）を示す `X-Retry-After` ヘッダーが含まれる。
-
-### グローバルクライアントハンドリング
+Global client handling:
 
 ```typescript
 export const authClient = createAuthClient({
@@ -143,22 +120,39 @@ export const authClient = createAuthClient({
 });
 ```
 
-### リクエスト毎のハンドリング
+Per-request handling:
 
 ```typescript
 await authClient.signIn.email({
   fetchOptions: {
     onError: async (context) => {
       if (context.response.status === 429) {
-        // 429 レスポンスの処理
+        // Handle the 429 response
       }
     },
   },
 });
 ```
 
-## 注意点
+## Options / Props
 
-- サーバー側の `auth.api` 経由リクエストはレートリミットをバイパスする
-- 開発モードではデフォルト無効
-- IPv6 アドレスはバイパス攻撃防止のため正規化される
+### Database schema
+
+Table used for database-backed rate limiting:
+
+| Field | Type | Purpose |
+|-------|------|---------|
+| id | string | Primary key |
+| key | string | Unique rate limit identifier |
+| count | integer | Number of requests within the window |
+| lastRequest | bigint | Timestamp of the last request (epoch ms) |
+
+## Notes
+
+- Requests made server-side via `auth.api` bypass rate limiting
+- Disabled by default in development mode
+- IPv6 addresses are normalized to prevent bypass attacks
+
+## Related
+
+- [Database](./database.md)

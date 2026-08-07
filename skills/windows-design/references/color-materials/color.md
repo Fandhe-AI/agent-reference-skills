@@ -54,6 +54,8 @@ Color LightBlue = Color.FromArgb(255, 54, 192, 255);
 - The user can also select the **high contrast** theme, which overrides `RequestedTheme`.
 - When placing colored text on a colored (e.g. accent-tinted) background, verify contrast — see Accessible color contrast.
 - Accent color shades (`Light1-3` / `Dark1-3`) are also available programmatically via `UISettings.GetColorValue` and the `UIColorType` enum.
+- Usability: verify sufficient contrast regardless of accent/theme, account for ambient lighting (a dark page can be unreadable outdoors; a light page can be painful in a dark room), and avoid using color alone to differentiate elements — about 8% of men and 0.5% of women have red-green colorblindness.
+- For implementation detail (changing themes, using theme brushes, customizing accent colors in code) see "Theming in Windows apps".
 
 ## Related
 

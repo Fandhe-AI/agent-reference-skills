@@ -2,12 +2,6 @@
 
 A button component for adding custom actions inside the `<Controls />` panel. Accepts all standard HTML button attributes.
 
-## Props
-
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `...props` | `ButtonHTMLAttributes<HTMLButtonElement>` | — | All standard HTML `<button>` element attributes (`onClick`, `className`, `disabled`, `title`, etc.) |
-
 ## 使用例
 
 ```tsx
@@ -29,6 +23,12 @@ export default function Flow() {
   );
 }
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `...props` | `ButtonHTMLAttributes<HTMLButtonElement>` | — | All standard HTML `<button>` element attributes (`onClick`, `className`, `disabled`, `title`, etc.) |
 
 ## 注意点
 

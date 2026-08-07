@@ -1,86 +1,91 @@
 # CLI
 
-Better Auth には、データベーススキーマの管理、プロジェクトの初期化、シークレットキーの生成、認証セットアップの診断情報収集のための組み込み CLI が含まれている。
+Better Auth includes a built-in CLI for managing the database schema, initializing projects, generating secret keys, and collecting diagnostic information about the auth setup.
 
-## コマンド一覧
-
-| Command | Purpose | Key Flags |
-|---------|---------|-----------|
-| `generate` | DB スキーマの生成 | `--output`, `--config`, `--yes` |
-| `migrate` | DB へのスキーマ適用（Kysely アダプターのみ） | `--config`, `--yes` |
-| `init` | プロジェクトの初期化 | `--name`, `--framework`, `--plugins`, `--database`, `--package-manager` |
-| `info` | 環境診断情報の表示 | `--config`, `--json` |
-| `secret` | 秘密鍵の生成 | なし |
-
-## コマンド詳細
-
-### generate コマンド
+## Signature / Usage
 
 ```bash
 npx auth@latest generate
-```
-
-**オプション:**
-- `--output`: 生成されたスキーマの保存先を指定。デフォルトは ORM タイプに依存（Prisma: `prisma/schema.prisma`、Drizzle: `schema.ts`、Kysely: `schema.sql`）
-- `--config`: Better Auth 設定ファイルのパス。デフォルトでは `./, ./utils, ./lib` またはそれらの `src/` 相当を検索
-- `--yes`: 確認プロンプトをスキップし、直接スキーマを生成
-
-### migrate コマンド
-
-```bash
 npx auth@latest migrate
-```
-
-**オプション:**
-- `--config`: Better Auth 設定ファイルのパス
-- `--yes`: 確認をスキップし、直接スキーマを適用
-
-**特別機能:** PostgreSQL で設定された `search_path` を自動検出し、正しいスキーマにテーブルを作成する。
-
-### init コマンド
-
-```bash
 npx auth@latest init
-```
-
-**オプション:**
-- `--name`: アプリケーション名（デフォルト: `package.json` の `name`）
-- `--framework`: 使用フレームワーク（現在: Next.js のみ）
-- `--plugins`: インストールするプラグインのカンマ区切りリスト
-- `--database`: データベース選択（現在: SQLite のみ）
-- `--package-manager`: npm, pnpm, yarn, または bun（デフォルト: 検出されたマネージャー）
-
-### info コマンド
-
-```bash
 npx auth@latest info
+npx auth@latest secret
 ```
 
-**出力内容:**
-- システム詳細（OS、CPU、メモリ、Node.js バージョン）
-- パッケージマネージャー情報
-- Better Auth バージョンと設定（機密データは自動マスク）
-- 検出されたフレームワーク（Next.js, React, Vue など）
-- データベースクライアントと ORM（Prisma, Drizzle など）
+### generate command
 
-**オプション:**
-- `--config`: カスタム設定ファイルパス
-- `--json`: JSON 形式で結果を出力（共有やプログラム処理用）
+The default output destination for the generated schema depends on the ORM type (Prisma: `prisma/schema.prisma`, Drizzle: `schema.ts`, Kysely: `schema.sql`).
+
+### migrate command
+
+Applies the schema to the DB (Kysely adapter only). Automatically detects the `search_path` configured in PostgreSQL and creates tables in the correct schema.
+
+### init command
+
+Initializes a project.
+
+### info command
+
+Displays environment diagnostic information.
 
 ```bash
 npx auth@latest info --json > auth-info.json
 ```
 
-### secret コマンド
+Output includes: system details (OS, CPU, memory, Node.js version), package manager info, Better Auth version and config (sensitive data automatically masked), detected frameworks (Next.js, React, Vue, etc.), and database clients/ORMs (Prisma, Drizzle, etc.).
 
-```bash
-npx auth@latest secret
-```
+### secret command
 
-Better Auth インスタンス用の暗号化秘密鍵を生成する。
+Generates an encryption secret key for the Better Auth instance.
 
-## セキュリティ・トラブルシューティング
+## Options / Props
 
-- **データ保護:** `info` コマンドでは、シークレット、API キー、データベース URL などの機密データは自動的に `[REDACTED]` に置換される
-- **モジュール解決エラー:** 「Cannot find module X」エラーが発生した場合、設定ファイルのインポートエイリアスを一時的に削除し、相対パスを使用する。CLI 実行後にエイリアスに戻す
-- **PostgreSQL 非デフォルトスキーマ:** migrate コマンドは PostgreSQL のカスタム検索パスを自動的に処理する
+| Command | Purpose | Key Flags |
+|---------|---------|-----------|
+| `generate` | Generate the DB schema | `--output`, `--config`, `--yes` |
+| `migrate` | Apply the schema to the DB (Kysely adapter only) | `--config`, `--yes` |
+| `init` | Initialize a project | `--name`, `--framework`, `--plugins`, `--database`, `--package-manager` |
+| `info` | Display environment diagnostic information | `--config`, `--json` |
+| `secret` | Generate a secret key | none |
+
+### generate options
+
+| Option | Description |
+|--------|-------------|
+| `--output` | Specify the output destination for the generated schema |
+| `--config` | Path to the Better Auth config file. By default, searches `./, ./utils, ./lib` or their `src/` equivalents |
+| `--yes` | Skip confirmation prompts and generate the schema directly |
+
+### migrate options
+
+| Option | Description |
+|--------|-------------|
+| `--config` | Path to the Better Auth config file |
+| `--yes` | Skip confirmation and apply the schema directly |
+
+### init options
+
+| Option | Description |
+|--------|-------------|
+| `--name` | Application name (default: `name` from `package.json`) |
+| `--framework` | Framework to use (currently: Next.js only) |
+| `--plugins` | Comma-separated list of plugins to install |
+| `--database` | Database selection (currently: SQLite only) |
+| `--package-manager` | npm, pnpm, yarn, or bun (default: detected manager) |
+
+### info options
+
+| Option | Description |
+|--------|-------------|
+| `--config` | Custom config file path |
+| `--json` | Output results in JSON format (for sharing or programmatic processing) |
+
+## Notes
+
+- **Data protection:** In the `info` command, sensitive data such as secrets, API keys, and database URLs are automatically replaced with `[REDACTED]`
+- **Module resolution errors:** If a "Cannot find module X" error occurs, temporarily remove import aliases from the config file and use relative paths instead. Restore the aliases after running the CLI
+- **PostgreSQL non-default schema:** The migrate command automatically handles PostgreSQL's custom search path
+
+## Related
+
+- [Database](./database.md)

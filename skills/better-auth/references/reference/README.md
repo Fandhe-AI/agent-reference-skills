@@ -1,29 +1,31 @@
-# reference
+# Reference
 
 | Name | Description | Path |
 |------|-------------|------|
-| account_already_linked_to_different_user | OAuth プロバイダーアカウントが既に別のユーザーにリンクされている際のエラー。… | [error-account-already-linked.md](./error-account-already-linked.md) |
-| account_not_linked | OAuth フロー中にプロバイダーアカウントを現在のユーザーにリンクできない際のエラー。… | [error-account-not-linked.md](./error-account-not-linked.md) |
-| email_doesn't_match | OAuth アカウントリンク時のメールアドレス不一致エラー。… | [error-email-doesnt-match.md](./error-email-doesnt-match.md) |
-| email_not_found | プロバイダーからメールアドレスが返されなかった際のエラー。… | [error-email-not-found.md](./error-email-not-found.md) |
-| internal_server_error | 認証処理中に予期せぬエラーが発生した際の汎用エラー。… | [error-internal-server-error.md](./error-internal-server-error.md) |
-| invalid_callback_request | OAuth コールバック処理時のリクエスト解析失敗エラー。… | [error-invalid-callback-request.md](./error-invalid-callback-request.md) |
-| invalid_code | 提供された認証コードが無効または期限切れである際のエラー。… | [error-invalid-code.md](./error-invalid-code.md) |
-| no_code | OAuth コールバックに認可コードが見つからない際のエラー。… | [error-no-code.md](./error-no-code.md) |
-| no_callback_url | OAuth フロー中に state パラメータにコールバック URL が含まれていない際のエラー。… | [error-no-callback-url.md](./error-no-callback-url.md) |
-| oauth_provider_not_found | Better Auth がコールバックリクエストの OAuth プロバイダーを識別できない。… | [error-oauth-provider-not-found.md](./error-oauth-provider-not-found.md) |
-| signup_disabled | サインアップが無効化されているプロバイダーでの登録試行。… | [error-signup-disabled.md](./error-signup-disabled.md) |
-| state_invalid | Cookie ベースの state ストレージ使用時にコード復号・解析に失敗した際のエラー。… | [error-state-invalid.md](./error-state-invalid.md) |
-| state_mismatch | OAuth フロー中にリクエストの state パラメータがクッキーの state と一致しない。… | [error-state-mismatch.md](./error-state-mismatch.md) |
-| state_not_found | OAuth コールバックリクエストで state パラメータが見つからない。… | [error-state-not-found.md](./error-state-not-found.md) |
-| unable_to_create_session | 認証成功後にセッションの作成に失敗した際のエラー。… | [error-unable-to-create-session.md](./error-unable-to-create-session.md) |
-| unable_to_create_user | 認証中にユーザーの作成に失敗した際のエラー。… | [error-unable-to-create-user.md](./error-unable-to-create-user.md) |
-| unable_to_get_user_info | OAuth コールバック時にプロバイダーからユーザープロフィール取得に失敗。… | [error-unable-to-get-user-info.md](./error-unable-to-get-user-info.md) |
-| unable_to_link_account | OAuth フロー時にプロバイダーアカウントをリンクできない際のエラー。… | [error-unable-to-link-account.md](./error-unable-to-link-account.md) |
-| Unknown Error | 予期しないエラーが Better Auth システム内で発生した際の汎用エラーページ。… | [error-unknown.md](./error-unknown.md) |
-| Errors | Better Auth のエラーコード一覧・概要。… | [errors.md](./errors.md) |
-| FAQ | Better Auth に関するよくある質問と回答。… | [faq.md](./faq.md) |
-| Instrumentation (Experimental) | OpenTelemetry ベースの分散トレーシングで Better Auth の認証操作を監視・デバッグ。… | [instrumentation.md](./instrumentation.md) |
-| Configuration Options | betterAuth({...}) で利用可能なすべての設定オプションの完全リファレンス。… | [options.md](./options.md) |
-| Security | Better Auth のセキュリティガイドライン・ベストプラクティスの包括的リファレンス。… | [security.md](./security.md) |
-| Telemetry | Better Auth が収集するオプションの匿名使用状況データ。… | [telemetry.md](./telemetry.md) |
+| account_already_linked_to_different_user | This error occurs when attempting to link an OAuth provider account to the currently authenticated user, but that provider account is already linked to another user in the project. Better Auth blocks this linkage to prevent account takeover attacks. | [error-account-already-linked.md](./error-account-already-linked.md) |
+| account_not_linked | This error occurs during an OAuth flow when a provider account cannot be linked to the current user, either because linking conditions are not met or automatic linking is not permitted. | [error-account-not-linked.md](./error-account-not-linked.md) |
+| Configuration Options | Complete reference for all configuration options available in `betterAuth({...})`. | [options.md](./options.md) |
+| Contributing to Better Auth | Guide for contributing code, plugins, and documentation to the Better Auth open-source project. | [contributing.md](./contributing.md) |
+| email_doesn't_match | This error occurs during OAuth account linking when the email returned by the provider does not match the email on the currently authenticated user. | [error-email-doesnt-match.md](./error-email-doesnt-match.md) |
+| email_not_found | This error occurs during OAuth authentication when Better Auth cannot obtain an email from the OAuth provider. | [error-email-not-found.md](./error-email-not-found.md) |
+| Errors | When an error occurs, users are redirected to `/api/auth/error`. | [errors.md](./errors.md) |
+| FAQ | Frequently asked questions covering common Better Auth authentication setup, client import paths, session management, proxy configuration, and troubleshooting. | [faq.md](./faq.md) |
+| Instrumentation (Experimental) | OpenTelemetry-based distributed tracing for monitoring and debugging Better Auth authentication operations. Provides traces for endpoints, hooks, DB operations, and plugin lifecycle events. | [instrumentation.md](./instrumentation.md) |
+| internal_server_error | Generic error raised when an unexpected failure occurs during authentication processing. It indicates a failure inside the auth process itself rather than a problem with user input. | [error-internal-server-error.md](./error-internal-server-error.md) |
+| invalid_callback_request | This error occurs during OAuth callback processing when the incoming request cannot be properly parsed or is missing required fields needed to complete the authentication flow. | [error-invalid-callback-request.md](./error-invalid-callback-request.md) |
+| invalid_code | Raised when the provided authentication code is invalid or has expired. Authentication codes are designed as single-use and time-limited. | [error-invalid-code.md](./error-invalid-code.md) |
+| no_callback_url | This error occurs when the OAuth flow reaches your `/api/auth/callback` endpoint but the `state` parameter lacks a callback URL. Better Auth stores metadata in the state parameter during OAuth initialization, including the redirect destination after successful authentication. Without this URL, the system cannot safely proceed. | [error-no-callback-url.md](./error-no-callback-url.md) |
+| no_code | This error occurs during the OAuth callback when the authorization code is missing from the request. The OAuth provider should redirect back to your `/api/auth/callback` route with a `code` parameter, but it's absent. | [error-no-code.md](./error-no-code.md) |
+| oauth_provider_not_found | This error occurs when Better Auth cannot identify which OAuth provider should handle a callback request. The system expects a specific provider identifier in the callback URL path but cannot find it. | [error-oauth-provider-not-found.md](./error-oauth-provider-not-found.md) |
+| Resources | Curated collection of community video tutorials and blog posts for learning Better Auth. | [resources.md](./resources.md) |
+| Security | Comprehensive reference for Better Auth's security guidelines and best practices. | [security.md](./security.md) |
+| signup_disabled | This error occurs when a user attempts to register using an OAuth provider that has signup functionality disabled in the application's configuration. | [error-signup-disabled.md](./error-signup-disabled.md) |
+| state_invalid | This error occurs when using cookie-based state storage (`account.storeStateStrategy: "cookie"`) and Better Auth fails to decrypt or parse the OAuth state cookie between the start of the OAuth flow and the callback phase. | [error-state-invalid.md](./error-state-invalid.md) |
+| state_mismatch | This error occurs when the `state` parameter in the request doesn't match the `state` parameter in the cookie. During OAuth flows, Better Auth generates a unique `state` value, stores it in a cookie, and validates it matches when the OAuth provider redirects back to your callback endpoint. | [error-state-mismatch.md](./error-state-mismatch.md) |
+| state_not_found | Occurs when Better Auth cannot find the `state` parameter in an OAuth callback request. The `state` value is a security token generated at the start of an OAuth flow and must be present when the provider redirects back. | [error-state-not-found.md](./error-state-not-found.md) |
+| Telemetry | Optional anonymous usage data collected by Better Auth, available since v1.3.5. Disabled by default. | [telemetry.md](./telemetry.md) |
+| Unable to create session | Occurs when Better Auth fails to create a session after a successful authentication step. Sessions are required to maintain the user's login state. | [error-unable-to-create-session.md](./error-unable-to-create-session.md) |
+| Unable to create user | Occurs when user creation fails during authentication, primarily in OAuth or SSO-based sign-up flows. | [error-unable-to-create-user.md](./error-unable-to-create-user.md) |
+| Unable to get user info | Occurs during the OAuth callback phase at `/api/auth/callback`. After exchanging an authorization code for tokens, Better Auth attempts to retrieve the user's profile from the provider; this error is triggered when the response is missing or inadequate for account creation. | [error-unable-to-get-user-info.md](./error-unable-to-get-user-info.md) |
+| Unable to link account | Occurs specifically during OAuth flows when Better Auth cannot link a provider account to the currently authenticated user. | [error-unable-to-link-account.md](./error-unable-to-link-account.md) |
+| Unknown Error | Generic error page shown when an unidentified error occurs within Better Auth. Indicates something unexpected happened during an authentication operation. | [error-unknown.md](./error-unknown.md) |

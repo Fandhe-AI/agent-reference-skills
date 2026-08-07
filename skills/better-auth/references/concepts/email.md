@@ -1,46 +1,32 @@
 # Email
 
-Email は認証方法に関係なく Better Auth のすべてのユーザーに必須のフィールド。フレームワークはメール検証、パスワードリセット、トークンベースのワークフローを提供する。
+Email is a required field for all Better Auth users regardless of the auth method. The framework provides email verification, password reset, and token-based workflows.
 
-## メール検証
+## Signature / Usage
 
-トークンベースのメール検証（OTP ベースは Email OTP プラグインで利用可能）。`sendVerificationEmail` 関数の実装が必要。
+Token-based email verification (OTP-based verification is available via the Email OTP plugin). Requires implementing the `sendVerificationEmail` function. Setting `emailAndPassword.requireEmailVerification` to `true` blocks unverified logins (returns HTTP 403).
 
-### 設定オプション
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `sendVerificationEmail` | `function` | — | 検証メール送信ハンドラー（必須） |
-| `sendOnSignUp` | `boolean` | `false` | 登録時に自動的に検証メールを送信 |
-| `sendOnSignIn` | `boolean` | `false` | 未検証の場合、サインイン時に検証メールを再送 |
-| `autoSignInAfterVerification` | `boolean` | `false` | メール確認直後にセッションを作成 |
-| `afterEmailVerification` | `async function` | — | 検証成功後に実行されるコールバック |
-
-`emailAndPassword.requireEmailVerification` を `true` に設定すると、未検証ログインをブロック（HTTP 403 を返す）。
-
-## コード例
-
-### サーバー — 基本検証セットアップ
+### Server — basic verification setup
 
 ```typescript
 export const auth = betterAuth({
   emailVerification: {
     sendVerificationEmail: async ({ user, url, token }, request) => {
-      // `url` は構築済みの検証リンク
-      // `token` はカスタム検証 URL 構築用
+      // `url` is the pre-built verification link
+      // `token` can be used to build a custom verification URL
       void sendEmail({
         to: user.email,
         subject: "Verify your email",
         text: `Click to verify: ${url}`,
       });
-      // await しないこと — タイミング攻撃を回避
+      // Don't await this — avoids timing attacks
     },
     sendOnSignUp: true,
   },
 });
 ```
 
-### サーバー — ログインに検証を必須化
+### Server — require verification for login
 
 ```typescript
 export const auth = betterAuth({
@@ -57,7 +43,7 @@ export const auth = betterAuth({
 });
 ```
 
-### サーバー — 自動サインイン + 検証後コールバック
+### Server — auto sign-in + post-verification callback
 
 ```typescript
 export const auth = betterAuth({
@@ -73,7 +59,7 @@ export const auth = betterAuth({
 });
 ```
 
-### クライアント — 未検証ログインの 403 処理
+### Client — handling 403 for unverified login
 
 ```typescript
 authClient.signIn.email(
@@ -88,7 +74,7 @@ authClient.signIn.email(
 );
 ```
 
-### クライアント — 手動検証トリガー
+### Client — manually triggering verification
 
 ```typescript
 await authClient.sendVerificationEmail({
@@ -97,7 +83,7 @@ await authClient.sendVerificationEmail({
 });
 ```
 
-### クライアント — カスタムトークン検証
+### Client — custom token verification
 
 ```typescript
 await authClient.verifyEmail({
@@ -105,10 +91,10 @@ await authClient.verifyEmail({
 });
 ```
 
-## パスワードリセットメール
+### Password reset email
 
 ```typescript
-// サーバー設定
+// Server config
 export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
@@ -123,24 +109,38 @@ export const auth = betterAuth({
 });
 ```
 
-## 機能サマリー
+## Options / Props
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `sendVerificationEmail` | `function` | — | Handler for sending the verification email (required) |
+| `sendOnSignUp` | `boolean` | `false` | Automatically send a verification email on sign-up |
+| `sendOnSignIn` | `boolean` | `false` | Resend the verification email on sign-in if unverified |
+| `autoSignInAfterVerification` | `boolean` | `false` | Create a session immediately after email confirmation |
+| `afterEmailVerification` | `async function` | — | Callback executed after successful verification |
+
+### Feature summary
 
 | Feature | Trigger | Use Case |
 |---------|---------|----------|
-| 自動検証 | `sendOnSignUp: true` | 新規ユーザー登録フロー |
-| 必須検証 | `requireEmailVerification: true` | 高セキュリティアプリケーション |
-| 手動トリガー | `sendVerificationEmail()` | ユーザー主導の再検証 |
-| 自動サインイン | `autoSignInAfterVerification: true` | シームレスなオンボーディング |
-| カスタムコールバック | `afterEmailVerification` | 検証後ワークフロー |
+| Auto verification | `sendOnSignUp: true` | New user registration flow |
+| Required verification | `requireEmailVerification: true` | High-security applications |
+| Manual trigger | `sendVerificationEmail()` | User-initiated re-verification |
+| Auto sign-in | `autoSignInAfterVerification: true` | Seamless onboarding |
+| Custom callback | `afterEmailVerification` | Post-verification workflow |
 
-## 注意点
+## Notes
 
-- **タイミング攻撃防止**: 検証/リセットハンドラー内でメール送信を await しないこと
-- **サーバーレスプラットフォーム**: Vercel (`waitUntil`)、Firebase (`onFinish`) 等のプラットフォーム固有メカニズムを使用し、レスポンスをブロックせずに配信を確保
-- `requireEmailVerification` が有効で SSO ユーザーのメールが未検証の場合、検証メールは送信されるが SSO ログインはブロックされない
+- **Timing attack prevention**: do not await email sending inside verification/reset handlers
+- **Serverless platforms**: use platform-specific mechanisms such as Vercel (`waitUntil`) or Firebase (`onFinish`) to ensure delivery without blocking the response
+- If `requireEmailVerification` is enabled and an SSO user's email is unverified, a verification email is sent but SSO login is not blocked
 
-## セキュリティ考慮事項
+### Security
 
-- **タイミング攻撃**: 検証/リセットハンドラーでメール送信を await しない
-- **トークンセキュリティ**: トークンは暗号的に生成される。ログに生トークンを露出させないこと
-- **メール所有確認**: 検証はフォーマットの妥当性ではなく、アドレスの実際の管理権を確認する
+- **Timing attacks**: do not await email sending in verification/reset handlers
+- **Token security**: tokens are cryptographically generated. Never expose raw tokens in logs
+- **Email ownership confirmation**: verification confirms actual control of the address, not merely format validity
+
+## Related
+
+- [Users & Accounts](./users-accounts.md)

@@ -64,6 +64,16 @@ const r = new Rive({
 | `automaticallyHandleEvents` | `boolean` | `false` | Handle Rive events (e.g., OpenUrl) automatically |
 | `dispatchPointerExit` | `boolean` | `true` | Fire pointer-exit event when pointer leaves canvas |
 | `tabIndex` | `number` | — | Canvas tab index for keyboard focus |
+| `shouldDisableRiveListeners` | `boolean` | `false` | Disable Rive's implicit state machine listener/detector setup on the canvas |
+| `isTouchScrollEnabled` | `boolean` | `false` | Allow page scroll behavior during touch/drag interactions on the canvas |
+| `focusOptions` | `RiveFocusOptions` | — | Focus behavior configuration object |
+
+### Rendering (additional)
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `drawingOptions` | `DrawOptimizationOptions` | `DrawOnChanged` | Rendering optimization mode (e.g., only redraw when the artboard state changes) |
+| `enablePerfMarks` | `boolean` | `false` | Emit `performance.mark` / `performance.measure` entries for profiling |
 
 ### Lifecycle callbacks
 
@@ -78,11 +88,18 @@ const r = new Rive({
 | `onStateChange` | `(event: Event) => void` | State machine transitioned to a new state |
 | `onAdvance` | `(event: Event) => void` | Artboard advanced each frame |
 
+### Deprecated
+
+| Name | Type | Description |
+|------|------|-------------|
+| `animations` | `string \| string[]` | **Deprecated.** Timeline animation name(s) to load; use `stateMachines` instead |
+
 ## Notes
 
 - Call `r.resizeDrawingSurfaceToCanvas()` inside `onLoad` to match the canvas's device pixel ratio.
 - Call `r.cleanup()` when the instance is no longer needed to free WASM memory.
 - Only one artboard can be rendered per `Rive` instance.
+- `load(params: RiveLoadParameters)` replaces the current file/artboard/state machines on an existing `Rive` instance; it accepts a subset of constructor options (`src`/`buffer`/`riveFile`, `autoplay`, `autoBind`, `artboard`, `stateMachines`, `useOffscreenRenderer`, `shouldDisableRiveListeners`, `tabIndex`) and the deprecated `animations`.
 
 ## Related
 

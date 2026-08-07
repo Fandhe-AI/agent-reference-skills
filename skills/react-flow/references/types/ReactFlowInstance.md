@@ -58,7 +58,7 @@ type ReactFlowInstance<NodeType extends Node = Node, EdgeType extends Edge = Edg
 | `addEdges` | `(payload) => void` | エッジを追加 |
 | `getEdge` | `(id) => Edge \| undefined` | ID でエッジを取得 |
 | `toObject` | `() => ReactFlowJsonObject` | フロー全体を JSON オブジェクトとしてエクスポート |
-| `deleteElements` | `(params) => Promise<{...}>` | 指定したノード・エッジを削除 |
+| `deleteElements` | `(payload: { nodes?: (Partial<Node> & { id: string })[]; edges?: (Partial<Edge> & { id: string })[] }) => Promise<{ deletedNodes: Node[]; deletedEdges: Edge[] }>` | 指定した ID のノード・エッジを削除。接続エッジ・子ノードも自動削除し、削除済み要素を返す |
 | `updateNode` | `(id, update, options?) => void` | ノードのプロパティを更新 |
 | `updateNodeData` | `(id, update, options?) => void` | ノードの `data` プロパティを更新 |
 | `updateEdge` | `(id, update, options?) => void` | エッジのプロパティを更新 |

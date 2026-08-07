@@ -1,28 +1,22 @@
 # @property / @prop
 
-リフレクションの子要素にドキュメントコメントを追加するブロックタグ。
+Block tag for adding documentation comments to the children of a reflection.
 
-## 構文
-
-```
-@property プロパティ名 プロパティの説明
-```
-
-または
+## Signature / Usage
 
 ```
-@prop プロパティ名 プロパティの説明
+@property propertyName Description of the property
 ```
 
-## 詳細説明
+or
 
-`@property` タグ（エイリアス: `@prop`）は、インラインコメントを配置するのが不便な場合にリフレクションの子要素にドキュメントコメントを追加するために使用される。
+```
+@prop propertyName Description of the property
+```
 
-このタグは主に `@namespace` タグや `@interface` タグと組み合わせて使用することが想定されている。これらのタグで変換された型では、各メンバーにコメントを配置する便利な場所がない場合がある。
+The `@property` tag (alias: `@prop`) is used to add documentation comments to the children of a reflection when it is inconvenient to place an inline comment.
 
-## コード例
-
-### @interface との組み合わせ
+This tag is primarily intended for use alongside `@namespace` and `@interface` tags. Types converted by those tags may not have a convenient place to put a comment on each member.
 
 ```typescript
 /**
@@ -34,7 +28,7 @@
 export type Resolved = Record<"a" | "b" | "c", string>;
 ```
 
-上記は以下のように処理される：
+The example above is processed as:
 
 ```typescript
 export interface Resolved {
@@ -46,15 +40,15 @@ export interface Resolved {
 }
 ```
 
-## 注意点
+## Notes
 
-- `@property` と `@prop` は同一の動作をする
-- 主に `@namespace` や `@interface` タグと組み合わせて使用される
-- 各プロパティに個別のJSDocコメントを記述しにくい場面で有用
-- 文書化されないプロパティ（上記の例の `c`）はコメントなしで表示される
+- `@property` and `@prop` behave identically
+- Primarily used alongside `@namespace` or `@interface` tags
+- Useful when it is difficult to write an individual JSDoc comment for each property
+- Undocumented properties (such as `c` in the example above) are displayed without a comment
 
-## 関連
+## Related
 
-- `@namespace` タグ -- 名前空間としての変換
-- `@interface` タグ -- インターフェースとしての変換
-- [@defaultValue](./defaultValue.md) -- プロパティのデフォルト値の文書化
+- `@namespace` tag -- conversion into a namespace
+- `@interface` tag -- conversion into an interface
+- [@defaultValue](./defaultValue.md) -- documenting a property's default value

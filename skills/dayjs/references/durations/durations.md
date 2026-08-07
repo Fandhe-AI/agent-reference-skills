@@ -336,6 +336,16 @@ dayjs.duration(1, 'd').toISOString() // "P1D"
 
 ---
 
+## Value Of (valueOf)
+
+`.valueOf()` returns the duration converted to milliseconds (equivalent to `.asMilliseconds()`).
+
+```javascript
+dayjs.duration(1500).valueOf()  // 1500
+```
+
+---
+
 ## Locale
 
 Get or set the locale of a duration. Affects string methods like `humanize()`.

@@ -1,44 +1,40 @@
 # @expand / @expandType / @preventExpand
 
-型エイリアスやインターフェースのドキュメントでの表示方法を制御するタグ群。このページではブロックタグの `@expandType`、`@preventExpand` およびモディファイアタグの `@expand` を扱う。
+Tags controlling how type aliases and interfaces are displayed in documentation. This page covers the block tags `@expandType`, `@preventExpand`, and the modifier tag `@expand`.
 
-## 構文
+## Signature / Usage
 
 ```
 @expand
 ```
 
 ```
-@expandType 型名
+@expandType Type Name
 ```
 
 ```
-@preventExpand 型名
+@preventExpand Type Name
 ```
 
-## 詳細説明
+### @expand (modifier tag)
 
-### @expand（モディファイアタグ）
+When placed on a type alias or interface, TypeDoc inline-expands the type declaration everywhere the type is referenced.
 
-型エイリアスやインターフェースに配置すると、その型が参照されるすべての場所でTypeDocが型宣言をインライン展開する。
+**Caution**: applying this tag to a commonly used type can significantly increase the size of the generated documentation.
 
-**注意**: このタグを一般的に使用される型に適用すると、生成されるドキュメントのサイズが大幅に増加する可能性がある。
+It is especially useful for React components, since it causes prop documentation to appear when viewing the component function itself.
 
-Reactコンポーネントに特に有用で、コンポーネント関数自体を閲覧する際にプロパティのドキュメントが表示されるようになる。
+### @expandType (block tag)
 
-### @expandType（ブロックタグ）
+Placed on any reflection to expand a specific type reference at render time. Specify the type name without type arguments in the tag.
 
-任意のリフレクションに配置して、レンダリング時に特定の型参照を展開する。タグには型引数なしの型名を指定する。
+This tag is inherited across a namespace or module, so a single declaration can expand a type throughout the scope.
 
-このタグは名前空間やモジュール全体で継承されるため、単一の宣言でスコープ全体の型を展開できる。
+### @preventExpand (block tag)
 
-### @preventExpand（ブロックタグ）
+Explicitly prevents expansion of a type that would otherwise be expanded via `@expand`, `@expandType`, or `@param` documentation. Provides fine-grained control to selectively disable expansion.
 
-`@expand`、`@expandType`、または `@param` ドキュメントを介して展開される型の展開を明示的に防止する。選択的に展開を無効化するための細かい制御を提供する。
-
-## コード例
-
-### @expand の使用
+### Using @expand
 
 ```typescript
 /**
@@ -53,7 +49,7 @@ export type HelloProps = {
 export function Hello(props: HelloProps): JSX.Element;
 ```
 
-### @expandType の使用
+### Using @expandType
 
 ```typescript
 /**
@@ -62,7 +58,7 @@ export function Hello(props: HelloProps): JSX.Element;
 export function Hello(props: HelloProps): JSX.Element;
 ```
 
-### @preventExpand の使用
+### Using @preventExpand
 
 ```typescript
 /**
@@ -71,14 +67,14 @@ export function Hello(props: HelloProps): JSX.Element;
 export function Hello(props: HelloProps): JSX.Element;
 ```
 
-## 注意点
+## Notes
 
-- `@expand` はモディファイアタグ、`@expandType` と `@preventExpand` はブロックタグ
-- `@expand` を頻繁に使用される型に適用するとドキュメントサイズが大幅に増加する
-- `@expandType` は名前空間/モジュール間で継承される
-- `@preventExpand` は `@expand` や `@expandType` による展開をオーバーライドできる
+- `@expand` is a modifier tag; `@expandType` and `@preventExpand` are block tags
+- Applying `@expand` to a frequently used type significantly increases documentation size
+- `@expandType` is inherited across namespaces/modules
+- `@preventExpand` can override expansion caused by `@expand` or `@expandType`
 
-## 関連
+## Related
 
-- [inline-type](./inline-type.md) -- 型のインライン化制御（@inline, @inlineType, @preventInline）
-- [@param](./param.md) -- パラメータの型展開との関連
+- [inline-type](./inline-type.md) -- controlling type inlining (@inline, @inlineType, @preventInline)
+- [@param](./param.md) -- related to parameter type expansion

@@ -1,13 +1,6 @@
 # Kick
 
-## Credentials
-
-- `KICK_CLIENT_ID`
-- `KICK_CLIENT_SECRET`
-
-Obtain from the [Kick Developer Portal](https://kick.com/settings/developer).
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -22,8 +15,6 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
-
 ```typescript
 import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
@@ -35,12 +26,22 @@ const signIn = async () => {
 }
 ```
 
-## リダイレクト URL
+## Options / Props
 
-- **Local Development**: `http://localhost:3000/api/auth/callback/kick`
-- **Production**: Update to match your application's URL
-- Adjust the path if you've customized your auth route base path
+| Name | Type | Description |
+| --- | --- | --- |
+| `clientId` | string | `KICK_CLIENT_ID` — obtain from the [Kick Developer Portal](https://kick.com/settings/developer) |
+| `clientSecret` | string | `KICK_CLIENT_SECRET` — obtain from the [Kick Developer Portal](https://kick.com/settings/developer) |
 
-## プロバイダー固有の設定・注意点
+## Notes
 
+- Redirect URL:
+  - Local Development: `http://localhost:3000/api/auth/callback/kick`
+  - Production: update to match your application's URL
+  - Adjust the path if you've customized your auth route base path
 - For additional scopes or provider-specific options beyond the standard configuration, refer to the official Kick OAuth documentation or the Better Auth "Other Social Providers" guide for extended customization patterns
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)
+- [Other Social Providers](./other-social-providers.md)

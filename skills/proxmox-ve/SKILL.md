@@ -48,6 +48,7 @@ skills/proxmox-ve/
       qm-conf.md
       pct-conf.md
       datacenter-cfg.md
+      cpu-models-conf.md
     api/
       README.md
       rest-overview.md
@@ -109,6 +110,7 @@ skills/proxmox-ve/
 | VM 設定ファイル (qm.conf) の書式を知りたい | config | [references/config/README.md](references/config/README.md) |
 | コンテナ設定ファイル (pct.conf) の書式を知りたい | config | [references/config/README.md](references/config/README.md) |
 | データセンター設定 (datacenter.cfg) のパラメーターを知りたい | config | [references/config/README.md](references/config/README.md) |
+| カスタム CPU モデル定義 (cpu-models.conf) を知りたい | config | [references/config/README.md](references/config/README.md) |
 | REST API の認証・エンドポイント体系・pvesh の使い方を知りたい | api | [references/api/README.md](references/api/README.md) |
 | QEMU/LXC の REST API エンドポイントを調べたい | api | [references/api/README.md](references/api/README.md) |
 | クラスター・アクセス・ストレージ系 API を呼び出したい | api | [references/api/README.md](references/api/README.md) |

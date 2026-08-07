@@ -1,16 +1,14 @@
 # Package and Task Graph
 
-## パッケージグラフ
+## Usage
 
-パッケージマネージャーが作成するモノレポの基盤構造。内部パッケージ同士がインストールされると、Turborepo が自動的に依存関係を識別する。
+**Package Graph** — the foundational monorepo structure created by the package manager. When internal packages install each other, Turborepo automatically identifies the dependency relationships between them.
 
-## タスクグラフ
+**Task Graph** — the relationships between tasks defined in `turbo.json`. The underlying data structure is a directed acyclic graph (DAG):
 
-`turbo.json` で定義するタスク同士の関係。データ構造は有向非巡回グラフ（DAG）。
-
-- ノード = タスク
-- エッジ = タスクの依存関係
-- Task A → Task B のエッジは「A は B に依存する」を意味する
+- Nodes = tasks
+- Edges = task dependencies
+- An edge from Task A to Task B means "A depends on B"
 
 ```json
 {
@@ -22,8 +20,11 @@
 }
 ```
 
-## トランジットノード
+## Notes
 
-タスクの実装を持たないパッケージでも、依存先がそのタスクを持つ場合、タスクグラフに含まれる。`ui` に `build` タスクがなくても、`ui` が依存する `core` に `build` タスクがある場合、`ui` は「トランジットノード」として扱われる（自身では何も実行しないが、グラフ上は存在する）。
+- **Transit nodes** — a package with no implementation of a given task can still be included in the task graph if a package it depends on has that task. For example, if `ui` has no `build` task but `ui` depends on `core`, which does have a `build` task, `ui` is treated as a "transit node" (it runs nothing itself, but still exists on the graph).
+- A configuration like `"dependsOn": ["^test"]` triggers the build of dependencies even for a package that has no `build` task itself.
 
-`"dependsOn": ["^test"]` のような設定があれば、`build` タスクを持たないパッケージでも、依存先のビルドがトリガーされる。
+## Related
+
+- [Package Types](./package-types.md)

@@ -1,22 +1,18 @@
 # @deprecated
 
-宣言が非推奨であり、将来のリリースで削除される可能性があることを示すブロックタグ。
+Block tag indicating that a declaration is deprecated and may be removed in a future release.
 
-## 構文
+## Signature / Usage
 
 ```
-@deprecated 代替手段の説明
+@deprecated Description of the alternative
 ```
 
-## 詳細説明
+The `@deprecated` tag indicates that a declaration should no longer be used. TypeDoc renders deprecated members with strikethrough formatting (similar to VSCode's display).
 
-`@deprecated` タグは宣言が今後使用すべきでないことを示す。TypeDocは非推奨メンバーを取り消し線の書式で表示する（VSCodeの表示と同様）。
+It conforms to the TSDoc specification.
 
-TSDocの仕様に準拠している。
-
-タグには説明メッセージを含めることができ、`{@link}` 構文を使用して代替APIへの参照を追加できる。個別の関数シグネチャを非推奨としてマークし、他のシグネチャはアクティブなまま保持することも可能。
-
-## コード例
+The tag can include a description message, and `{@link}` syntax can be used to add a reference to a replacement API. Individual function signatures can be marked deprecated while other signatures remain active.
 
 ```typescript
 /**
@@ -41,13 +37,13 @@ export class NewWidget {
 }
 ```
 
-## 注意点
+## Notes
 
-- 非推奨メンバーは取り消し線で表示される
-- `{@link}` 構文で代替APIへのクロスリファレンスを追加できる
-- 個別のオーバーロードシグネチャを選択的に非推奨としてマーク可能
-- 説明なしで `@deprecated` のみ記述しても機能する
+- Deprecated members are displayed with strikethrough
+- `{@link}` syntax can be used to add cross-references to replacement APIs
+- Individual overload signatures can be selectively marked as deprecated
+- `@deprecated` also works with no description
 
-## 関連
+## Related
 
 - [TSDoc @deprecated](https://tsdoc.org/pages/tags/deprecated/)

@@ -1,23 +1,25 @@
-# リポジトリの構造化
+# Structuring a Repository
 
-## 推奨ディレクトリ構成
+## Usage
+
+### Recommended directory layout
 
 ```
-apps/       # アプリケーション・サービス
-packages/   # ライブラリ・ツール設定
+apps/       # Applications and services
+packages/   # Libraries and tooling configuration
 turbo.json
 package.json
 ```
 
-## 最低限必要なもの
+### Minimum requirements
 
-1. パッケージマネージャーのワークスペース定義
-2. ロックファイル
-3. ルート `package.json`
-4. ルート `turbo.json`
-5. 各パッケージの `package.json`
+1. Package manager workspace definition
+2. Lockfile
+3. Root `package.json`
+4. Root `turbo.json`
+5. Each package's `package.json`
 
-## ワークスペース定義
+### Workspace definition
 
 **pnpm** (`pnpm-workspace.yaml`):
 ```yaml
@@ -26,14 +28,14 @@ packages:
   - "packages/*"
 ```
 
-**npm / yarn / bun** (ルート `package.json`):
+**npm / yarn / bun** (root `package.json`):
 ```json
 {
   "workspaces": ["apps/*", "packages/*"]
 }
 ```
 
-## exports フィールド
+### exports field
 
 ```json
 {
@@ -45,11 +47,11 @@ packages:
 }
 ```
 
-バレルファイルを避け、条件付きエクスポートが可能。IDE の自動補完が効く。
+Avoids barrel files and allows conditional exports. IDE autocomplete works correctly.
 
-## 制約
+## Notes
 
-- ネストしたパッケージは非対応（`apps/**` は不可）
-- ロックファイル必須
-- パッケージ名には名前空間プレフィックス推奨（例: `@acme/name`）
-- パッケージ間を相対パス（`../`）でアクセスしない
+- Nested packages are not supported (`apps/**` is invalid).
+- A lockfile is required.
+- A namespace prefix is recommended for package names (e.g. `@acme/name`).
+- Do not access other packages via relative paths (`../`).

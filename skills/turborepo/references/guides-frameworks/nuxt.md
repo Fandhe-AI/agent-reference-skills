@@ -1,13 +1,15 @@
 # Nuxt
 
-## クイックスタート
+## Usage
+
+### Quickstart
 
 ```bash
 pnpm dlx create-turbo@latest -e with-vue-nuxt
-pnpm dlx nuxi@latest init apps/my-app  # 既存リポジトリに追加
+pnpm dlx nuxi@latest init apps/my-app  # add to an existing repo
 ```
 
-## 内部パッケージの参照
+### Referencing internal packages
 
 ```jsonc
 // pnpm / bun
@@ -17,9 +19,9 @@ pnpm dlx nuxi@latest init apps/my-app  # 既存リポジトリに追加
 "@repo/ui": "*"
 ```
 
-## マイクロフロントエンド設定
+### Micro-frontend configuration
 
-Nuxt は内部的に Vite を使用するため、`vite.config.ts` で `base` を設定:
+Nuxt uses Vite internally, so set `base` in `vite.config.ts`:
 
 ```ts
 export default defineConfig({

@@ -1,6 +1,8 @@
-# アプリケーション開発
+# Application Development
 
-## dev タスク設定
+## Usage
+
+### dev task configuration
 
 ```json
 {
@@ -13,10 +15,10 @@
 }
 ```
 
-- `"cache": false`: 頻繁に変化する開発コードにはキャッシュ不要
-- `"persistent": true`: 終了しないタスクに誤って依存するのを防ぐ
+- `"cache": false`: no caching needed for frequently-changing development code
+- `"persistent": true`: prevents other tasks from accidentally depending on a task that never exits
 
-## セットアップスクリプト付き dev
+### dev with a setup script
 
 ```json
 {
@@ -33,31 +35,33 @@
 }
 ```
 
-## コマンド
+### Commands
 
 ```bash
-turbo dev                      # 全 dev タスクを実行
-turbo dev --filter=web         # web とその依存パッケージのみ
-turbo watch dev lint           # ウォッチモード
+turbo dev                      # Run all dev tasks
+turbo dev --filter=web         # Run only web and its dependencies
+turbo watch dev lint           # Watch mode
 ```
 
-## ターミナル UI キーバインド
+### Watch Mode
 
-| キー | 機能 |
-|---|---|
-| `m` | キーバインドメニューの表示切替 |
-| `↑`/`↓` or `j`/`k` | タスクリストのナビゲーション |
-| `p` | 選択タスクのピン留め切替 |
-| `h` | タスクリストの表示切替 |
-| `c` | ハイライトされたログをコピー |
-| `u`/`d` | ログのスクロール上下 |
-| `i` | タスクとのインタラクション開始 |
-| `Ctrl+z` | インタラクションの停止 |
+`turbo watch` automatically re-runs tasks in package B when package A (which B depends on) changes.
 
-## Watch Mode
+## Options
 
-`turbo watch` はパッケージ A を変更すると、それに依存するパッケージ B のタスクも自動的に再実行する。
+Terminal UI keybindings:
 
-## 制限事項
+| Key | Action |
+| --- | --- |
+| `m` | Toggle the keybinding menu |
+| `↑`/`↓` or `j`/`k` | Navigate the task list |
+| `p` | Toggle pinning the selected task |
+| `h` | Toggle the task list display |
+| `c` | Copy the highlighted log |
+| `u`/`d` | Scroll logs up/down |
+| `i` | Start interacting with a task |
+| `Ctrl+z` | Stop interacting |
 
-ティアダウンタスク: Turborepo はティアダウンスクリプトを自動実行できない。`turbo dev:teardown` で手動実行する。
+## Notes
+
+- Teardown tasks: Turborepo cannot automatically run teardown scripts. Run `turbo dev:teardown` manually.

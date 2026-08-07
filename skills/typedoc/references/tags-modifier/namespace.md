@@ -1,22 +1,16 @@
 # @namespace
 
-変数を名前空間（namespace）としてドキュメント化し、プロパティをエクスポートされた変数や関数として解決するモディファイアタグ。
+Modifier tag that documents a variable as a namespace, resolving its properties as exported variables and functions.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @namespace */
 ```
 
-## 詳細説明
+Applying `@namespace` to a variable makes TypeDoc convert that variable into a namespace. The object's properties are resolved and documented as exported variables and functions.
 
-`@namespace` タグを変数に付与すると、TypeDoc はその変数を名前空間として変換する。オブジェクトのプロパティは、エクスポートされた変数や関数として解決・ドキュメント化される。
-
-主に JavaScript プロジェクトで、オブジェクトリテラルを使って名前空間パターンを実現しているコードをドキュメント化する場合に有用。
-
-## コード例
-
-### 基本的な使用法
+This is mainly useful for documenting JavaScript projects that use an object literal to implement a namespace pattern.
 
 ```javascript
 const a = 1;
@@ -27,7 +21,7 @@ const c = { a, b, c: 3 };
 export const d = { ...c, d: 4 };
 ```
 
-上記は以下と同等にドキュメント化される:
+The example above is documented equivalently to:
 
 ```typescript
 export namespace d {
@@ -38,38 +32,38 @@ export namespace d {
 }
 ```
 
-### ユーティリティ名前空間
+### Utility namespace
 
 ```typescript
 /**
- * 文字列操作ユーティリティ。
+ * String manipulation utilities.
  * @namespace
  */
 export const StringUtils = {
     /**
-     * 文字列を大文字に変換する。
+     * Converts a string to upper case.
      */
     toUpper: (s: string) => s.toUpperCase(),
 
     /**
-     * 文字列を小文字に変換する。
+     * Converts a string to lower case.
      */
     toLower: (s: string) => s.toLowerCase(),
 
     /**
-     * 最大文字数。
+     * Maximum allowed length.
      */
     MAX_LENGTH: 255,
 };
 ```
 
-## 注意点
+## Notes
 
-- オブジェクトのプロパティがエクスポートされた変数/関数として展開される
-- 関数プロパティは関数として、値プロパティは変数としてドキュメント化される
-- `@property` タグと組み合わせて各メンバーにドキュメントを付けることができる
+- Object properties are expanded as exported variables/functions
+- Function properties are documented as functions, value properties as variables
+- Can be combined with the `@property` tag to document individual members
 
-## 関連
+## Related
 
 - [@interface](./interface.md)
 - [@class](./class.md)

@@ -2,7 +2,7 @@
 
 How to use TypeDoc programmatically from Node.js to generate documentation, convert projects, and produce JSON or HTML output.
 
-## 詳細説明
+## Signature / Usage
 
 TypeDoc can be used as a Node.js module rather than through the CLI. The primary entry point is the `Application` class, which provides methods to bootstrap the application, convert TypeScript projects into a documentation model, and generate output.
 
@@ -27,8 +27,6 @@ The programmatic workflow follows these steps:
 - **`app.generateOutputs(project)`** -- Generates all configured outputs (HTML, JSON, etc.) based on the options provided during bootstrap.
 - **`app.generateDocs(project, outputDir)`** -- Generates HTML documentation to a specific output directory.
 - **`app.generateJson(project, outputPath)`** -- Generates a JSON file describing the project to a specific path.
-
-## コード例
 
 ### Basic Programmatic Usage
 
@@ -157,7 +155,7 @@ main().catch((err) => {
 });
 ```
 
-## 注意点
+## Notes
 
 - Always check that `app.convert()` returns a non-null project before generating output. A null result indicates conversion failure.
 - `Application.bootstrapWithPlugins` is preferred over `Application.bootstrap` unless you need to avoid loading plugins.
@@ -166,7 +164,7 @@ main().catch((err) => {
 - `generateOutputs` respects the `emit` option and all configured output destinations.
 - `generateDocs` and `generateJson` are convenience methods for targeting specific output types directly.
 
-## 関連
+## Related
 
 - [Installation & CLI Usage](./installation.md)
 - [Browser Bundle](./browser-bundle.md)

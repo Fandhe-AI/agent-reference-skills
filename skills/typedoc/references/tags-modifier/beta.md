@@ -1,22 +1,18 @@
 # @beta
 
-将来的にサードパーティ開発者が使用することを想定しているが、セマンティックバージョニングに準拠するほど安定していないメンバーをマークするモディファイアタグ。
+Modifier tag marking a member intended for eventual use by third-party developers, but not yet stable enough to follow semantic versioning.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @beta */
 ```
 
-## 詳細説明
+`@beta` is used for members whose API maturity is further along than `@alpha` but not yet considered stable. Per the TSDoc specification, `@beta` and `@experimental` are treated as semantically equivalent.
 
-`@beta` タグは、API の成熟度が `@alpha` より進んでいるが、まだ安定版とは見なせないメンバーに使用される。TSDoc 仕様では、`@beta` と `@experimental` はセマンティック的に同等として扱われると定義されている。
+Within a project, it is recommended to use only one of the two consistently rather than mixing them.
 
-プロジェクト内ではどちらか一方のみを使用し、両方を同時に使用しないことが推奨される。
-
-TypeDoc は `--visibilityFilters` オプションを通じて、`@beta` タグが付いたメンバーの表示/非表示を制御できる。
-
-## コード例
+TypeDoc can show/hide `@beta`-tagged members via the `--visibilityFilters` option.
 
 ```typescript
 export class Visibility {
@@ -28,7 +24,7 @@ export class Visibility {
 ```typescript
 export class SearchEngine {
     /**
-     * ファジー検索機能。APIが変更される可能性あり。
+     * Fuzzy search feature. The API may change.
      * @beta
      */
     fuzzySearch(query: string, options?: FuzzyOptions): Result[] {
@@ -37,13 +33,13 @@ export class SearchEngine {
 }
 ```
 
-## 注意点
+## Notes
 
-- TSDoc 仕様に準拠: https://tsdoc.org/pages/tags/beta/
-- `@beta` と `@experimental` はセマンティック的に同等。どちらか一方を使用すること
-- `--visibilityFilters` オプションで表示/非表示を制御可能
+- Conforms to the TSDoc specification: https://tsdoc.org/pages/tags/beta/
+- `@beta` and `@experimental` are semantically equivalent; use only one consistently
+- The `--visibilityFilters` option controls visibility
 
-## 関連
+## Related
 
 - [@alpha](./alpha.md)
 - [@experimental](./experimental.md)

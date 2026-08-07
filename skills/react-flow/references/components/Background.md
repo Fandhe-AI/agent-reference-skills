@@ -2,22 +2,6 @@
 
 Renders a decorative background pattern (dots, lines, or cross grid) behind the flow canvas. Must be rendered as a child of `<ReactFlow />`.
 
-## Props
-
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `string` | — | Unique identifier; required when multiple `<Background />` components are used on the same page |
-| `variant` | `BackgroundVariant` | `BackgroundVariant.Dots` | Pattern style: `Dots`, `Lines`, or `Cross` |
-| `gap` | `number \| [number, number]` | `20` | Spacing between pattern elements; accepts a tuple `[x, y]` for independent axis control |
-| `size` | `number` | `1` (Dots/Cross), ignored (Lines) | Radius of each dot or size of each rectangle |
-| `offset` | `number \| [number, number]` | `0` | Offset of the pattern |
-| `lineWidth` | `number` | `1` | Stroke thickness used when drawing the pattern |
-| `color` | `string` | — | Color of the pattern elements |
-| `bgColor` | `string` | — | Background fill color |
-| `className` | `string` | — | CSS class applied to the container |
-| `patternClassName` | `string` | — | CSS class applied to the SVG pattern element |
-| `style` | `CSSProperties` | — | Inline styles applied to the container |
-
 ## 使用例
 
 ```tsx
@@ -40,6 +24,22 @@ export default function Flow() {
   <Background id="2" gap={100} color="#ccc" variant={BackgroundVariant.Lines} />
 </ReactFlow>
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `id` | `string` | — | Unique identifier; required when multiple `<Background />` components are used on the same page |
+| `variant` | `BackgroundVariant` | `BackgroundVariant.Dots` | Pattern style: `Dots`, `Lines`, or `Cross` |
+| `gap` | `number \| [number, number]` | `20` | Spacing between pattern elements; accepts a tuple `[x, y]` for independent axis control |
+| `size` | `number` | `1` (Dots/Cross), ignored (Lines) | Radius of each dot or size of each rectangle |
+| `offset` | `number \| [number, number]` | `0` | Offset of the pattern |
+| `lineWidth` | `number` | `1` | Stroke thickness used when drawing the pattern |
+| `color` | `string` | — | Color of the pattern elements |
+| `bgColor` | `string` | — | Background fill color |
+| `className` | `string` | — | CSS class applied to the container |
+| `patternClassName` | `string` | — | CSS class applied to the SVG pattern element |
+| `style` | `CSSProperties` | — | Inline styles applied to the container |
 
 ## 注意点
 

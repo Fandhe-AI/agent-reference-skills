@@ -1,12 +1,12 @@
 # MCP
 
-MCP（Model Context Protocol）プラグインは、Better Auth インスタンスを MCP クライアント用の OAuth プロバイダーとして機能させる。MCP アプリケーションの認証とアクセストークン発行を管理する。
+The MCP (Model Context Protocol) plugin turns a Better Auth instance into an OAuth provider for MCP clients. It manages authentication and access token issuance for MCP applications.
 
-**注意**: このプラグインは近い将来、OAuth Provider プラグインに置き換えられる予定。
+**Note**: This plugin is expected to be replaced by the OAuth Provider plugin in the near future.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -21,19 +21,19 @@ export const auth = betterAuth({
 })
 ```
 
-マイグレーション:
+Migration:
 
 ```bash
 npx auth migrate
-# または
+# or
 npx auth generate
 ```
 
-OIDC Provider プラグインと同じスキーマを使用。
+Uses the same schema as the OIDC Provider plugin.
 
-### Well-Known エンドポイント
+### Well-Known endpoints
 
-OAuth ディスカバリーメタデータ (`.well-known/oauth-authorization-server/route.ts`):
+OAuth discovery metadata (`.well-known/oauth-authorization-server/route.ts`):
 
 ```typescript
 import { oAuthDiscoveryMetadata } from "better-auth/plugins"
@@ -41,7 +41,7 @@ import { auth } from "../../../lib/auth"
 export const GET = oAuthDiscoveryMetadata(auth)
 ```
 
-OAuth 保護リソースメタデータ (`/.well-known/oauth-protected-resource/route.ts`):
+OAuth protected resource metadata (`/.well-known/oauth-protected-resource/route.ts`):
 
 ```typescript
 import { oAuthProtectedResourceMetadata } from "better-auth/plugins"
@@ -49,9 +49,7 @@ import { auth } from "@/lib/auth"
 export const GET = oAuthProtectedResourceMetadata(auth)
 ```
 
-## MCP セッション処理
-
-### withMcpAuth 使用
+### MCP session handling (withMcpAuth)
 
 ```typescript
 import { auth } from "@/lib/auth"
@@ -76,23 +74,21 @@ const handler = withMcpAuth(auth, (req, session) => {
 export { handler as GET, handler as POST, handler as DELETE }
 ```
 
-### auth.api.getMcpSession 使用
+### MCP session handling (auth.api.getMcpSession)
 
 ```typescript
 const handler = async (req: Request) => {
     const session = await auth.api.getMcpSession({ headers: req.headers })
     if (!session) {
-        return new Response(null, { status: 401 })  // 401 を返すことが必須
+        return new Response(null, { status: 401 })  // must return 401
     }
     return createMcpHandler(/* ... */)(req)
 }
 ```
 
-## リモート MCP クライアント
+### Remote MCP client (creating a client)
 
-別サービスとして動作する MCP サーバー用。
-
-### クライアント作成
+For an MCP server that runs as a separate service.
 
 ```typescript
 import { createMcpAuthClient } from "better-auth/plugins/mcp/client"
@@ -102,7 +98,7 @@ const mcpAuth = createMcpAuthClient({
 })
 ```
 
-### ルート保護
+### Remote MCP client (protecting routes)
 
 ```typescript
 const handler = mcpAuth.handler(async (req, session) => {
@@ -114,16 +110,14 @@ const handler = mcpAuth.handler(async (req, session) => {
 })
 ```
 
-### ディスカバリーエンドポイントのマウント
+### Remote MCP client (mounting discovery endpoints)
 
 ```typescript
 const discovery = mcpAuth.discoveryHandler()
 const protectedResource = mcpAuth.protectedResourceHandler("http://localhost:4000")
 ```
 
-## フレームワークアダプター
-
-### Hono
+### Framework adapter (Hono)
 
 ```typescript
 import { Hono } from "hono"
@@ -139,7 +133,7 @@ app.use("/mcp/*", middleware)
 app.post("/mcp", (c) => { const session = c.get("mcpSession") })
 ```
 
-### Express
+### Framework adapter (Express)
 
 ```typescript
 import express from "express"
@@ -152,7 +146,7 @@ app.use("/mcp", mcpAuth.middleware())
 app.post("/mcp", (req, res) => { const session = req.mcpSession })
 ```
 
-### Official MCP SDK
+### Framework adapter (Official MCP SDK)
 
 ```typescript
 import { mcpAuthOfficial } from "better-auth/plugins/mcp/client/adapters"
@@ -166,7 +160,7 @@ app.post("/mcp", auth.handler(async (req, session) => {
 }))
 ```
 
-### mcp-use
+### Framework adapter (mcp-use)
 
 ```typescript
 import { mcpAuthMcpUse } from "better-auth/plugins/mcp/client/adapters"
@@ -178,50 +172,55 @@ const server = new MCPServer({
 })
 ```
 
-## 設定オプション
+## Options / Props
 
-### プラグイン設定
+### Plugin configuration
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |---|---|---|
-| `loginPage` | string | ログインページのパス |
-| `resource?` | string | リソース識別子（任意） |
-| `oidcConfig?` | object | 追加 OIDC 設定 |
+| `loginPage` | string | Path to the login page |
+| `resource?` | string | Resource identifier (optional) |
+| `oidcConfig?` | object | Additional OIDC configuration |
 
-### OIDC 設定
+### OIDC configuration
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |---|---|---|
-| `codeExpiresIn?` | number | 認可コードの有効期限（秒） |
-| `accessTokenExpiresIn?` | number | アクセストークンの有効期限（秒） |
-| `refreshTokenExpiresIn?` | number | リフレッシュトークンの有効期限（秒） |
-| `defaultScope?` | string | トークンのデフォルトスコープ |
-| `scopes?` | string[] | 利用可能なスコープ |
+| `codeExpiresIn?` | number | Authorization code expiration (seconds) |
+| `accessTokenExpiresIn?` | number | Access token expiration (seconds) |
+| `refreshTokenExpiresIn?` | number | Refresh token expiration (seconds) |
+| `defaultScope?` | string | Default token scope |
+| `scopes?` | string[] | Available scopes |
 
-### リモートクライアントオプション
+### Remote client options
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |---|---|---|
-| `authURL` | string | Better Auth サーバー URL（baseURL + basePath） |
-| `resource?` | string | リソース識別子（任意） |
-| `allowedOrigin?` | string | CORS 許可オリジン |
-| `fetch?` | typeof fetch | カスタム fetch 実装 |
+| `authURL` | string | Better Auth server URL (baseURL + basePath) |
+| `resource?` | string | Resource identifier (optional) |
+| `allowedOrigin?` | string | Allowed CORS origin |
+| `fetch?` | typeof fetch | Custom fetch implementation |
 
-## セッションオブジェクト
+### Session object
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |---|---|---|
-| `accessToken?` | string | アクセストークン |
-| `refreshToken?` | string | リフレッシュトークン |
-| `accessTokenExpiresAt?` | string | アクセストークン有効期限 |
-| `refreshTokenExpiresAt?` | string | リフレッシュトークン有効期限 |
-| `clientId?` | string | OAuth クライアント識別子 |
-| `userId?` | string | 認証済みユーザー ID |
-| `scopes?` | string | 付与されたスコープ |
+| `accessToken?` | string | Access token |
+| `refreshToken?` | string | Refresh token |
+| `accessTokenExpiresAt?` | string | Access token expiration |
+| `refreshTokenExpiresAt?` | string | Refresh token expiration |
+| `clientId?` | string | OAuth client identifier |
+| `userId?` | string | Authenticated user ID |
+| `scopes?` | string | Granted scopes |
 
-## 注意点
+## Notes
 
-- OAuth Provider プラグインへの移行予定
-- `getMcpSession` 使用時、未認証 MCP リクエストには 401 ステータスを返すことが必須
-- クライアントディスカバリーのため `.well-known` エンドポイントのマウントが必要
-- 同一プロセスサーバーには `withMcpAuth`、別サービスには `createMcpAuthClient` を使用
+- Expected to be migrated to the OAuth Provider plugin
+- When using `getMcpSession`, unauthenticated MCP requests must return a 401 status
+- The `.well-known` endpoints must be mounted for client discovery
+- Use `withMcpAuth` for same-process servers, and `createMcpAuthClient` for separate services
+
+## Related
+
+- [oauth-provider.md](./oauth-provider.md)
+- [oidc-provider.md](./oidc-provider.md)

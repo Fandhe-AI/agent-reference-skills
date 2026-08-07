@@ -1,49 +1,54 @@
 # turbo gen
 
+## Signature / Usage
+
 ```bash
 turbo gen [subcommand] [options]
 ```
 
-エイリアス: `turbo generate`
+Alias: `turbo generate`
 
-## turbo gen workspace
+## Options / Props
+
+### turbo gen workspace
 
 ```bash
 turbo gen workspace [options]
 ```
 
-| オプション | 説明 |
+| Option | Description |
 |---|---|
-| `--name` | ワークスペースの名前 |
-| `--empty` | 空のワークスペースを作成（デフォルト: `true`） |
-| `--copy` | 既存ワークスペースまたは GitHub リポジトリをコピー |
-| `--destination` | 作成先のパス |
-| `--type` | `app` または `package` |
-| `--show-all-dependencies` | 依存関係選択時のワークスペースタイプフィルタを解除 |
-| `--example-path` / `-p` | GitHub URL のブランチ名とサンプルパスを分離 |
+| `--name` | Name of the workspace |
+| `--empty` | Create an empty workspace (default: `true`) |
+| `--copy` | Copy an existing workspace or GitHub repository |
+| `--destination` | Path to create the workspace at |
+| `--type` | `app` or `package` |
+| `--show-all-dependencies` | Remove the workspace-type filter when selecting dependencies |
+| `--example-path` / `-p` | Separate the branch name and example path in a GitHub URL |
 
-## turbo gen run
+### turbo gen run
 
 ```bash
 turbo gen run [generator-name] [options]
 ```
 
-| オプション | 説明 |
+| Option | Description |
 |---|---|
-| `--args` | ジェネレーターのプロンプトに直接渡す回答 |
-| `--config` | ジェネレーター設定ファイル（デフォルト: `turbo/generators/config.js`） |
-| `--root` | リポジトリルートのパス |
+| `--args` | Answers passed directly to the generator's prompts |
+| `--config` | Generator config file (default: `turbo/generators/config.js`) |
+| `--root` | Path to the repository root |
 
-## @turbo/gen の型定義
+## Notes
 
-```ts
-import type { PlopTypes } from "@turbo/gen";
+- `@turbo/gen` type definitions:
+  ```ts
+  import type { PlopTypes } from "@turbo/gen";
 
-export default function generator(plop: PlopTypes.NodePlopAPI): void {
-  plop.setGenerator("name", {
-    description: "description",
-    prompts: [],
-    actions: [],
-  });
-}
-```
+  export default function generator(plop: PlopTypes.NodePlopAPI): void {
+    plop.setGenerator("name", {
+      description: "description",
+      prompts: [],
+      actions: [],
+    });
+  }
+  ```

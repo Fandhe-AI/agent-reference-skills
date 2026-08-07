@@ -4,16 +4,14 @@
 
 ```typescript
 // kubb.config.ts
-import { defineConfig } from '@kubb/core'
-import { pluginOas } from '@kubb/plugin-oas'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginFetch } from '@kubb/plugin-fetch'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen', clean: true },
   plugins: [
-    pluginOas({ generators: [] }),
     pluginTs({
       output: { path: 'models' },
       // タグ "store" を除外
@@ -24,7 +22,7 @@ export default defineConfig({
         name: ({ group }) => `${group}Controller`,
       },
     }),
-    pluginClient({
+    pluginFetch({
       output: { path: './clients' },
       // operationId でフィルタリング（正規表現可）
       include: [{ type: 'operationId', pattern: '^get' }],
@@ -41,6 +39,7 @@ export default defineConfig({
 ```typescript
 pluginReactQuery({
   output: { path: './hooks' },
+  client: 'fetch',
   override: [
     {
       type: 'operationId',
@@ -62,3 +61,4 @@ pluginReactQuery({
 - `pattern` は文字列（完全一致）または正規表現文字列として評価される
 - `group.type: 'tag'` は OpenAPI の `tags` フィールドに基づきファイルを分割する
 - `override` はマッチしたエンドポイントのプラグインオプションのみを上書きし、それ以外には影響しない
+- `pluginReactQuery` は `client: 'fetch'`（文字列）でクライアントプラグインを指定する。あわせて `pluginFetch`（または `pluginAxios`）の登録が必要

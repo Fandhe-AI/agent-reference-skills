@@ -1,20 +1,20 @@
 # Agent Auth
 
-Agent Auth プラグインは、Better Auth サーバーを Agent Auth Protocol 標準を実装した Agent Auth プロバイダーとして機能させる。AI エージェントのサービスディスカバリー、登録、ケーパビリティ承認、短期署名 JWT を使用したスコープ付きアクション実行を可能にする。
+The Agent Auth plugin makes a Better Auth server act as an Agent Auth provider implementing the Agent Auth Protocol standard. It enables AI agent service discovery, registration, capability approval, and scoped action execution using short-lived signed JWTs.
 
-**ステータス**: 開発中であり、まだ安定していない。
+**Status**: under active development and not yet stable.
 
-## セットアップ
+## Signature / Usage
 
-### インストール
+### Installation
 
 ```bash
 npm install @better-auth/agent-auth
-# オプション
+# optional
 npm install @auth/agent @auth/agent-cli
 ```
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -56,9 +56,9 @@ export const auth = betterAuth({
 })
 ```
 
-### ディスカバリードキュメントエンドポイント
+### Discovery document endpoint
 
-`/.well-known/agent-configuration` に公開:
+Published at `/.well-known/agent-configuration`:
 
 ```typescript
 // app/.well-known/agent-configuration/route.ts
@@ -71,13 +71,13 @@ export async function GET() {
 }
 ```
 
-マイグレーション:
+Migration:
 
 ```bash
 npx auth migrate
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -88,9 +88,9 @@ export const authClient = createAuthClient({
 })
 ```
 
-## OpenAPI アダプター
+### OpenAPI adapter
 
-既存の OpenAPI 3.x スペックをエージェントケーパビリティに自動変換:
+Automatically converts an existing OpenAPI 3.x spec into agent capabilities:
 
 ```typescript
 import { createFromOpenAPI } from "@better-auth/agent-auth/openapi"
@@ -108,7 +108,7 @@ export const auth = betterAuth({
 })
 ```
 
-### アップストリーム認証付き
+With upstream authentication:
 
 ```typescript
 createFromOpenAPI(spec, {
@@ -120,7 +120,7 @@ createFromOpenAPI(spec, {
 })
 ```
 
-### デフォルトホストケーパビリティ
+Default host capabilities:
 
 ```typescript
 createFromOpenAPI(spec, {
@@ -129,7 +129,7 @@ createFromOpenAPI(spec, {
 })
 ```
 
-### HTTP メソッド別承認強度
+Approval strength by HTTP method:
 
 ```typescript
 createFromOpenAPI(spec, {
@@ -143,7 +143,7 @@ createFromOpenAPI(spec, {
 })
 ```
 
-## ケーパビリティ設定
+### Capability configuration
 
 ```typescript
 agentAuth({
@@ -156,29 +156,29 @@ agentAuth({
                 properties: { title: { type: "string" }, body: { type: "string" } },
                 required: ["title"],
             },
-            location: "https://api.example.com/v1/issues",  // カスタム URL（任意）
+            location: "https://api.example.com/v1/issues",  // custom URL (optional)
         },
     ],
     async onExecute({ capability, arguments: args, agentSession }) {
-        // ケーパビリティ実行ハンドラー
+        // capability execution handler
     },
 })
 ```
 
-## onExecute 外でのエージェントセッション
+### Agent session outside onExecute
 
-カスタムロケーションルート用:
+For custom location routes:
 
 ```typescript
-// API メソッド使用
+// Using the API method
 const agentSession = await auth.api.getAgentSession({ headers: request.headers })
 
-// ヘルパー使用
+// Using the helper
 import { verifyAgentRequest } from "@better-auth/agent-auth"
 const agentSession = await verifyAgentRequest(request, auth)
 ```
 
-### グラントの確認
+Checking a grant:
 
 ```typescript
 const CAP = "create_issue"
@@ -187,20 +187,12 @@ const allowed = agentSession.agent.capabilityGrants.some(
 )
 ```
 
-### エージェントセッションオブジェクト
+Agent session object:
+- `agentSession.user` - resolved user
+- `agentSession.agent` - agent id, name, mode, capabilityGrants, host id, metadata
+- `agentSession.host` - host record
 
-- `agentSession.user` - 解決されたユーザー
-- `agentSession.agent` - エージェント id, name, mode, capabilityGrants, host id, metadata
-- `agentSession.host` - ホストレコード
-
-## JWT `aud` 検証
-
-JWT の `aud` クレームは呼び出される URL と一致する必要がある:
-- ケーパビリティ固有 location なし: `default_location`/`endpoints.execute`、issuer、または base URL を使用
-- ケーパビリティ固有 location あり: `aud` はその絶対 URL と一致
-- リバースプロキシの背後: 正しい `Host`/`X-Forwarded-Proto` 処理のため `trustProxy: true` を設定
-
-## 承認フロー
+### Approval flow
 
 ```typescript
 agentAuth({
@@ -213,54 +205,34 @@ agentAuth({
 })
 ```
 
-サポートされるメソッド:
-- `device_authorization` - ユーザーコード付きのブラウザベース承認
-- `ciba` - バックチャネル承認フロー
+Supported methods:
+- `device_authorization` - browser-based approval with a user code
+- `ciba` - back-channel approval flow
 
-## イベントと監査
+### Events and audit
 
 ```typescript
 agentAuth({
     onEvent: async (event) => {
-        // ライフサイクルイベントのキャプチャ:
-        // - エージェント作成/取り消し
-        // - ホスト作成/登録
-        // - ケーパビリティ要求/承認
-        // - ケーパビリティ実行
+        // Captures lifecycle events:
+        // - agent creation/revocation
+        // - host creation/registration
+        // - capability request/approval
+        // - capability execution
         console.log(event)
     },
 })
 ```
 
-## 設定オプション
-
-| プロパティ | 型 | 説明 |
-|---|---|---|
-| `providerName?` | string | プロバイダーの表示名 |
-| `providerDescription?` | string | プロバイダーの説明 |
-| `modes?` | `("delegated" \| "autonomous")[]` | サポートするエージェントモード |
-| `capabilities?` | Capability[] | 利用可能なケーパビリティの配列 |
-| `onExecute?` | function | ケーパビリティ実行ハンドラー |
-| `requireAuthForCapabilities?` | boolean | ケーパビリティ一覧に認証を要求 |
-| `approvalMethods?` | string[] | 有効な承認メソッド |
-| `resolveApprovalMethod?` | function | カスタム承認メソッド選択 |
-| `deviceAuthorizationPage?` | string | デバイス認可 UI のパス |
-| `defaultHostCapabilities?` | string[] \| function | デフォルト自動付与ケーパビリティ |
-| `allowDynamicHostRegistration?` | boolean \| function | 新規ホスト登録の許可 |
-| `onEvent?` | function | 監査ログ用イベントフック |
-| `trustProxy?` | boolean | URL 検証用のプロキシヘッダーを信頼 |
-
-## API メソッド
-
 ### getAgentConfiguration()
 
-ディスカバリードキュメントを返す:
+Returns the discovery document:
 
 ```typescript
 const configuration = await auth.api.getAgentConfiguration()
 ```
 
-レスポンス: `issuer`, `endpoints`, `default_location`, プロバイダーメタデータ、サポートモード
+Response: `issuer`, `endpoints`, `default_location`, provider metadata, supported modes
 
 ### getAgentSession()
 
@@ -268,20 +240,43 @@ const configuration = await auth.api.getAgentConfiguration()
 const agentSession = await auth.api.getAgentSession({ headers: request.headers })
 ```
 
-## DB スキーマ
+## Options / Props
 
-プラグインが作成するテーブル:
-- `agent` - エージェントレコード
-- `host` - ホストレコード（エージェント登録ソース）
-- `capabilityGrant` - ユーザー承認済みケーパビリティグラント
-- `approval` - 承認要求と決定
+| Property | Type | Description |
+|---|---|---|
+| `providerName?` | string | Display name of the provider |
+| `providerDescription?` | string | Description of the provider |
+| `modes?` | `("delegated" \| "autonomous")[]` | Supported agent modes |
+| `capabilities?` | Capability[] | Array of available capabilities |
+| `onExecute?` | function | Capability execution handler |
+| `requireAuthForCapabilities?` | boolean | Require auth to list capabilities |
+| `approvalMethods?` | string[] | Enabled approval methods |
+| `resolveApprovalMethod?` | function | Custom approval method selection |
+| `deviceAuthorizationPage?` | string | Path to the device authorization UI |
+| `defaultHostCapabilities?` | string[] \| function | Default auto-granted capabilities |
+| `allowDynamicHostRegistration?` | boolean \| function | Allow new host registration |
+| `onEvent?` | function | Event hook for audit logging |
+| `trustProxy?` | boolean | Trust proxy headers for URL validation |
 
-## 注意点
+## Notes
 
-- 開発中であり、安定していない
-- ケーパビリティ固有の `location` URL は `onExecute` をバイパスする。カスタムハンドラーでグラント/制約チェックを実装する必要あり
-- デバイス認可 UI は提供されない。`deviceAuthorizationPage` で参照されるページを実装する必要あり
-- リバースプロキシの背後では正しい `aud` 検証のため `trustProxy: true` を設定
-- JWT 署名はリクエストごとに検証される
-- `jti`（JWT ID）でトークンリプレイ攻撃を防止
-- ケーパビリティは DB グラントと JWT クレームの両方で交差検証される
+- Under active development, not yet stable
+- Capability-specific `location` URLs bypass `onExecute`. Grant/constraint checks must be implemented in the custom handler
+- No device authorization UI is provided. The page referenced by `deviceAuthorizationPage` must be implemented
+- Behind a reverse proxy, set `trustProxy: true` for correct `aud` validation
+- JWT signatures are verified on every request
+- `jti` (JWT ID) prevents token replay attacks
+- Capabilities are cross-validated against both the DB grant and the JWT claims
+- The JWT `aud` claim must match the URL being called: without a capability-specific location, use `default_location`/`endpoints.execute`, issuer, or base URL. With a capability-specific location, `aud` must match that absolute URL
+
+### DB schema
+
+Tables created by the plugin:
+- `agent` - agent records
+- `host` - host records (source of agent registration)
+- `capabilityGrant` - user-approved capability grants
+- `approval` - approval requests and decisions
+
+## Related
+
+- [device-authorization.md](./device-authorization.md)

@@ -1,12 +1,12 @@
-# Vi ユーティリティ
+# Vi Utilities
 
-`vi` オブジェクトはモック、スパイ、タイマー、スタブの操作を提供する。
+The `vi` object provides operations for mocks, spies, timers, and stubs.
 
-## 関数モック
+## Mock Functions
 
 ### vi.fn()
 
-呼び出し追跡付きのモック関数を作成する。
+Creates a mock function with call tracking.
 
 ```ts
 vi.fn<T extends Procedure>(implementation?: T): MockInstance<T>
@@ -21,21 +21,21 @@ const greet = vi.fn((name: string) => `Hello, ${name}`)
 expect(greet('Alice')).toBe('Hello, Alice')
 ```
 
-#### モックインスタンスのメソッド
+#### Mock instance methods
 
 | Method | Description |
 |--------|-------------|
-| `mockReturnValue(val)` | 毎回 `val` を返す |
-| `mockReturnValueOnce(val)` | 次の呼び出しのみ `val` を返す |
-| `mockResolvedValue(val)` | `Promise.resolve(val)` を返す |
-| `mockResolvedValueOnce(val)` | 次の呼び出しのみ resolved promise を返す |
-| `mockRejectedValue(err)` | `Promise.reject(err)` を返す |
-| `mockRejectedValueOnce(err)` | 次の呼び出しのみ rejected promise を返す |
-| `mockImplementation(fn)` | 実装を差し替え |
-| `mockImplementationOnce(fn)` | 次の呼び出しのみ差し替え |
-| `mockClear()` | 呼び出し履歴をリセット（実装は保持） |
-| `mockReset()` | 履歴 + 実装をリセット（`undefined` を返す） |
-| `mockRestore()` | 元の実装を復元（`vi.spyOn` のみ有効） |
+| `mockReturnValue(val)` | Returns `val` on every call |
+| `mockReturnValueOnce(val)` | Returns `val` on the next call only |
+| `mockResolvedValue(val)` | Returns `Promise.resolve(val)` |
+| `mockResolvedValueOnce(val)` | Returns a resolved promise on the next call only |
+| `mockRejectedValue(err)` | Returns `Promise.reject(err)` |
+| `mockRejectedValueOnce(err)` | Returns a rejected promise on the next call only |
+| `mockImplementation(fn)` | Replaces the implementation |
+| `mockImplementationOnce(fn)` | Replaces the implementation for the next call only |
+| `mockClear()` | Resets call history (keeps implementation) |
+| `mockReset()` | Resets history + implementation (returns `undefined`) |
+| `mockRestore()` | Restores the original implementation (only valid with `vi.spyOn`) |
 
 ```ts
 const fn = vi.fn()
@@ -46,22 +46,22 @@ fn() // 'first'
 fn() // 'default'
 ```
 
-#### 呼び出し情報
+#### Call information
 
 ```ts
 fn.mock.calls       // [[arg1, arg2], [arg1], ...]
 fn.mock.results      // [{ type: 'return', value: ... }, ...]
-fn.mock.instances    // new 呼び出し時のインスタンス
-fn.mock.lastCall     // 最後の呼び出しの引数
+fn.mock.instances    // instances created via `new`
+fn.mock.lastCall     // arguments of the last call
 ```
 
 ### vi.isMockFunction()
 
-値がモック関数かどうかを判定する型ガード。
+Type guard that checks whether a value is a mock function.
 
-### vi.mockObject()（v3.2.0+）
+### vi.mockObject() (v3.2.0+)
 
-オブジェクトのメソッドを再帰的にモックする。`vi.mock()` のオブジェクト版。
+Recursively mocks all methods on an object. The object equivalent of `vi.mock()`.
 
 ```ts
 function mockObject<T>(value: T, options?: { spy?: boolean }): MaybeMockedDeep<T>
@@ -73,37 +73,37 @@ const original = {
   nested: { method: () => 'real' },
 }
 
-// 全メソッドを vi.fn() に置換
+// replace all methods with vi.fn()
 const mocked = vi.mockObject(original)
 expect(mocked.simple()).toBe(undefined)
 mocked.simple.mockReturnValue('mocked')
 
-// 元の実装を保持してスパイ
+// spy while keeping the original implementation
 const spied = vi.mockObject(original, { spy: true })
 expect(spied.simple()).toBe('value')
 expect(spied.simple).toHaveBeenCalled()
 ```
 
-## モジュールモック
+## Module Mocking
 
 ### vi.mock()
 
-モジュール全体をモックに置換する。ファイル先頭にホイストされる。
+Replaces an entire module with a mock. Hoisted to the top of the file.
 
 ```ts
 vi.mock(modulePath: string, factory?: () => unknown): void
 ```
 
 ```ts
-// オートモック（全エクスポートが vi.fn() になる）
+// automock (all exports become vi.fn())
 vi.mock('./utils')
 
-// ファクトリモック
+// factory mock
 vi.mock('./api', () => ({
   fetchUser: vi.fn().mockResolvedValue({ id: 1, name: 'Alice' }),
 }))
 
-// 部分モック
+// partial mock
 vi.mock('./utils', async (importOriginal) => {
   const actual = await importOriginal<typeof import('./utils')>()
   return {
@@ -115,15 +115,15 @@ vi.mock('./utils', async (importOriginal) => {
 
 ### vi.doMock()
 
-ホイストされない `vi.mock`。次の動的 import に適用される。
+A non-hoisted version of `vi.mock`. Applies to the next dynamic import.
 
 ### vi.unmock() / vi.doUnmock()
 
-モックレジストリからモジュールを除去し、元のモジュールを復元する。
+Removes a module from the mock registry and restores the original module.
 
 ### vi.importActual()
 
-モックをバイパスして元のモジュールをインポートする。
+Imports the original module, bypassing mocks.
 
 ```ts
 vi.mock('./config', async (importOriginal) => {
@@ -134,17 +134,17 @@ vi.mock('./config', async (importOriginal) => {
 
 ### vi.importMock()
 
-オートモック版のモジュールをインポートする。
+Imports the automocked version of a module.
 
 ### vi.resetModules()
 
-モジュールキャッシュをクリアし、再インポート時に再評価させる。
+Clears the module cache so modules are re-evaluated on the next import.
 
-## オブジェクトスパイ
+## Object Spies
 
 ### vi.spyOn()
 
-既存オブジェクトのメソッドにスパイを設定する。元の実装はデフォルトで保持。
+Sets up a spy on an existing object's method. Keeps the original implementation by default.
 
 ```ts
 vi.spyOn<T, K extends keyof T>(object: T, method: K, accessType?: 'get' | 'set'): MockInstance
@@ -160,40 +160,40 @@ spy.mockRestore()
 vi.spyOn(obj, 'value', 'get').mockReturnValue(100)
 ```
 
-## モック管理
+## Mock Management
 
 | Method | Description |
 |--------|-------------|
-| `vi.clearAllMocks()` | 全スパイの `.mockClear()` を呼ぶ |
-| `vi.resetAllMocks()` | 全スパイの `.mockReset()` を呼ぶ |
-| `vi.restoreAllMocks()` | 全スパイの元の実装を復元 |
+| `vi.clearAllMocks()` | Calls `.mockClear()` on all spies |
+| `vi.resetAllMocks()` | Calls `.mockReset()` on all spies |
+| `vi.restoreAllMocks()` | Restores the original implementation on all spies |
 
-## 環境・グローバルスタブ
+## Environment and Global Stubs
 
 ### vi.stubEnv()
 
-環境変数を一時的に変更する。
+Temporarily changes an environment variable.
 
 ```ts
 vi.stubEnv('NODE_ENV', 'production')
 vi.stubEnv('API_URL', 'https://test.example.com')
-vi.unstubAllEnvs() // 全復元
+vi.unstubAllEnvs() // restore all
 ```
 
 ### vi.stubGlobal()
 
-グローバル変数を一時的に変更する。
+Temporarily changes a global variable.
 
 ```ts
 vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ json: () => ({}) }))
-vi.unstubAllGlobals() // 全復元
+vi.unstubAllGlobals() // restore all
 ```
 
-## フェイクタイマー
+## Fake Timers
 
 ### vi.useFakeTimers()
 
-`setTimeout`, `setInterval`, `Date` 等をフェイクに置換する。
+Replaces `setTimeout`, `setInterval`, `Date`, etc. with fakes.
 
 ```ts
 vi.useFakeTimers(config?: FakeTimerInstallOpts): void
@@ -201,34 +201,34 @@ vi.useFakeTimers(config?: FakeTimerInstallOpts): void
 
 | Method | Description |
 |--------|-------------|
-| `vi.useFakeTimers()` | フェイクタイマーを有効化 |
-| `vi.useRealTimers()` | リアルタイマーに復元 |
-| `vi.advanceTimersByTime(ms)` | 指定ミリ秒分タイマーを進める |
-| `vi.advanceTimersByTimeAsync(ms)` | 非同期版 |
-| `vi.advanceTimersToNextTimer()` | 次のタイマーまで進める |
-| `vi.advanceTimersToNextTimerAsync()` | 非同期版 |
-| `vi.advanceTimersToNextFrame()` | `requestAnimationFrame` コールバックを進める |
-| `vi.runAllTimers()` | 全タイマーを実行（無限ループ防止: 10,000 回制限） |
-| `vi.runAllTimersAsync()` | 非同期版 |
-| `vi.runOnlyPendingTimers()` | 現在キューにあるタイマーのみ実行 |
-| `vi.runOnlyPendingTimersAsync()` | 非同期版 |
-| `vi.setSystemTime(date)` | `Date.now()` / `new Date()` を固定値に設定 |
-| `vi.getRealSystemTime()` | 実際のシステム時刻を取得 |
-| `vi.getMockedSystemTime()` | モック中の Date を取得（未モック時は `null`） |
-| `vi.getTimerCount()` | キュー内のタイマー数 |
-| `vi.clearAllTimers()` | 全タイマーを実行せずに削除 |
-| `vi.isFakeTimers()` | フェイクタイマーが有効かどうか |
-| `vi.setTimerTickMode(mode)` | タイマーの進行モードを設定（v4.1.0+） |
+| `vi.useFakeTimers()` | Enables fake timers |
+| `vi.useRealTimers()` | Restores real timers |
+| `vi.advanceTimersByTime(ms)` | Advances timers by the given number of milliseconds |
+| `vi.advanceTimersByTimeAsync(ms)` | Async version |
+| `vi.advanceTimersToNextTimer()` | Advances to the next timer |
+| `vi.advanceTimersToNextTimerAsync()` | Async version |
+| `vi.advanceTimersToNextFrame()` | Advances `requestAnimationFrame` callbacks |
+| `vi.runAllTimers()` | Runs all timers (infinite-loop guard: 10,000 iteration limit) |
+| `vi.runAllTimersAsync()` | Async version |
+| `vi.runOnlyPendingTimers()` | Runs only timers currently in the queue |
+| `vi.runOnlyPendingTimersAsync()` | Async version |
+| `vi.setSystemTime(date)` | Fixes `Date.now()` / `new Date()` to a given value |
+| `vi.getRealSystemTime()` | Gets the actual system time |
+| `vi.getMockedSystemTime()` | Gets the mocked Date (`null` if not mocked) |
+| `vi.getTimerCount()` | Number of timers in the queue |
+| `vi.clearAllTimers()` | Removes all timers without running them |
+| `vi.isFakeTimers()` | Whether fake timers are enabled |
+| `vi.setTimerTickMode(mode)` | Sets the timer tick mode (v4.1.0+) |
 
-### vi.setTimerTickMode()（v4.1.0+）
+### vi.setTimerTickMode() (v4.1.0+)
 
-フェイクタイマーのティックモードを設定する。
+Sets the tick mode for fake timers.
 
 | Mode | Description |
 |------|-------------|
-| `'manual'` | `vi.advanceTimersByTime()` 等で手動制御（デフォルト） |
-| `'nextTimerAsync'` | 非同期タイマーを自動的に次のタイマーまで進める |
-| `'interval'` | 指定間隔ごとに自動でタイマーを進める |
+| `'manual'` | Manual control via `vi.advanceTimersByTime()` etc. (default) |
+| `'nextTimerAsync'` | Automatically advances async timers to the next timer |
+| `'interval'` | Automatically advances timers at a given interval |
 
 ```ts
 vi.useFakeTimers()
@@ -252,11 +252,11 @@ it('mocks current date', () => {
 })
 ```
 
-## ユーティリティ
+## Utilities
 
 ### vi.hoisted()
 
-`vi.mock` ファクトリ内で外部変数を参照するためのホイスト機構。
+A hoisting mechanism for referencing external variables inside a `vi.mock` factory.
 
 ```ts
 const mockFetch = vi.hoisted(() => vi.fn())
@@ -266,7 +266,7 @@ mockFetch.mockResolvedValue({ data: [] })
 
 ### vi.waitFor()
 
-コールバックが成功するまでリトライする。
+Retries a callback until it succeeds.
 
 ```ts
 await vi.waitFor(() => {
@@ -276,7 +276,7 @@ await vi.waitFor(() => {
 
 ### vi.waitUntil()
 
-コールバックが truthy を返すまで待機する。
+Waits until a callback returns a truthy value.
 
 ```ts
 const result = await vi.waitUntil(() => fetchStatus() === 'ready')
@@ -284,20 +284,20 @@ const result = await vi.waitUntil(() => fetchStatus() === 'ready')
 
 ### vi.mocked()
 
-TypeScript 用のモック型ヘルパー。
+A TypeScript helper for mock types.
 
 ```ts
-vi.mocked(myFn) // MockInstance<typeof myFn> として型推論
-vi.mocked(obj, { deep: true }) // ディープモック型
+vi.mocked(myFn) // inferred as MockInstance<typeof myFn>
+vi.mocked(obj, { deep: true }) // deep mock type
 ```
 
 ### vi.dynamicImportSettled()
 
-全ての動的 import の完了を待つ。
+Waits for all dynamic imports to settle.
 
 ### vi.setConfig()
 
-テストファイル単位で Vitest の設定を上書きする。
+Overrides Vitest configuration for the current test file.
 
 ```ts
 vi.setConfig({ testTimeout: 10000, fakeTimers: { now: new Date(2024, 0, 1) } })
@@ -305,7 +305,7 @@ vi.setConfig({ testTimeout: 10000, fakeTimers: { now: new Date(2024, 0, 1) } })
 
 ### vi.resetConfig()
 
-`vi.setConfig()` で変更した設定を元に戻す。
+Reverts configuration changed by `vi.setConfig()`.
 
 ```ts
 afterAll(() => {
@@ -313,9 +313,9 @@ afterAll(() => {
 })
 ```
 
-### vi.defineHelper()（v4.1.0+）
+### vi.defineHelper() (v4.1.0+)
 
-カスタムアサーションヘルパーを定義する。エラーのスタックトレースを呼び出し元に整形する。
+Defines a custom assertion helper. Formats error stack traces to point to the caller.
 
 ```ts
 const assertPositive = vi.defineHelper((value: number) => {
@@ -323,13 +323,13 @@ const assertPositive = vi.defineHelper((value: number) => {
 })
 
 test('is positive', () => {
-  assertPositive(42) // エラー時のスタックがこの行を指す
+  assertPositive(42) // error stack points to this line
 })
 ```
 
-## 関連
+## Related
 
 - [Test API](./test-api.md)
-- [Expect マッチャー](./expect.md)
-- [モックパターン](../patterns/mocking.md)
-- [非同期テストパターン](../patterns/async.md)
+- [Expect Matchers](./expect.md)
+- [Mocking patterns](../patterns/mocking.md)
+- [Async testing patterns](../patterns/async.md)

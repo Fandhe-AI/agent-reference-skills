@@ -1,31 +1,27 @@
 # @function
 
-呼び出し可能な変数宣言を関数としてドキュメント化するモディファイアタグ。
+Modifier tag that documents a callable variable declaration as a function.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @function */
 ```
 
-## 詳細説明
+If a variable declaration is callable but not constructable, TypeDoc can convert it into a function. TypeDoc performs this conversion automatically when the variable's initializer is a function expression without an explicit type annotation.
 
-変数宣言が呼び出し可能（callable）であるが、コンストラクタブル（constructable）でない場合、TypeDoc はそれを関数として変換できる。TypeDoc は、変数の初期化子が関数式であり、明示的な型注釈がない場合に自動的にこの変換を行う。
+The `@function` tag lets you manually document a callable variable as a function in cases where the automatic conversion does not apply (for example, when there is an explicit type annotation).
 
-`@function` タグを使用すると、自動変換が行われないケース（明示的な型注釈がある場合など）でも、手動で呼び出し可能な変数を関数としてドキュメント化できる。
+This tag has no effect on non-callable variables or on constructable variables.
 
-このタグは、呼び出し不可能な変数やコンストラクタブルな変数には効果がない。
-
-## コード例
-
-### 自動変換（タグ不要）
+### Automatic conversion (no tag needed)
 
 ```typescript
-// 関数式の初期化子で型注釈なし → 自動的に関数としてドキュメント化
+// Function-expression initializer without a type annotation → documented as a function automatically
 export const Callable3 = () => "";
 ```
 
-### 手動変換（@function タグ使用）
+### Manual conversion (using the `@function` tag)
 
 ```typescript
 type MultiCallSignature = {
@@ -34,26 +30,26 @@ type MultiCallSignature = {
 };
 
 /**
- * 複数のオーバーロードを持つ関数。
+ * A function with multiple overloads.
  * @function
  */
 export const Callable: MultiCallSignature = () => "";
 ```
 
-### 変換されないケース
+### Case not converted
 
 ```typescript
-// 型注釈あり + @function タグなし → 変数としてドキュメント化
+// Has a type annotation and no @function tag → documented as a variable
 export const Callable2: MultiCallSignature = () => "";
 ```
 
-## 注意点
+## Notes
 
-- 呼び出し可能だがコンストラクタブルでない変数にのみ効果がある
-- 関数式の初期化子 + 型注釈なしの場合は自動変換されるため、タグは不要
-- 明示的な型注釈がある呼び出し可能な変数を関数としてドキュメント化したい場合に使用する
+- Only affects variables that are callable but not constructable
+- No tag is needed when the initializer is a function expression without a type annotation (automatic conversion applies)
+- Use this tag to document a callable variable with an explicit type annotation as a function
 
-## 関連
+## Related
 
 - [@namespace](./namespace.md)
 - [@interface](./interface.md)

@@ -1,10 +1,10 @@
 # Organization
 
-Organization プラグインは、組織メンバーとチームの管理を可能にし、ユーザーアクセスと権限管理を簡素化する。ロールと権限の割り当て、招待、チーム管理をサポートする。
+The Organization plugin manages organization members and teams, simplifying user access and permission management. It supports role and permission assignment, invitations, and team management.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -17,15 +17,15 @@ export const auth = betterAuth({
 })
 ```
 
-マイグレーション:
+Migration:
 
 ```bash
 npx auth migrate
-# または
+# or
 npx auth generate
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -38,11 +38,9 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
+### Organization management
 
-### 組織管理
-
-**組織作成**
+**Create organization**
 
 ```typescript
 const { data, error } = await authClient.organization.create({
@@ -55,7 +53,7 @@ const { data, error } = await authClient.organization.create({
 })
 ```
 
-**スラッグ利用可否チェック**
+**Check slug availability**
 
 ```typescript
 const { data, error } = await authClient.organization.checkSlug({
@@ -63,15 +61,15 @@ const { data, error } = await authClient.organization.checkSlug({
 })
 ```
 
-**ユーザーの組織一覧**
+**List user's organizations**
 
 ```typescript
 const { data: organizations } = authClient.useListOrganizations()
-// または
+// or
 const { data, error } = await authClient.organization.list()
 ```
 
-**アクティブ組織設定**
+**Set active organization**
 
 ```typescript
 const { data, error } = await authClient.organization.setActive({
@@ -80,13 +78,13 @@ const { data, error } = await authClient.organization.setActive({
 })
 ```
 
-**アクティブ組織取得**
+**Get active organization**
 
 ```typescript
 const { data: activeOrganization } = authClient.useActiveOrganization()
 ```
 
-**組織の完全情報取得**
+**Get full organization details**
 
 ```typescript
 const { data, error } = await authClient.organization.getFullOrganization({
@@ -98,7 +96,7 @@ const { data, error } = await authClient.organization.getFullOrganization({
 })
 ```
 
-**組織更新**
+**Update organization**
 
 ```typescript
 const { data, error } = await authClient.organization.update({
@@ -112,7 +110,7 @@ const { data, error } = await authClient.organization.update({
 })
 ```
 
-**組織削除**
+**Delete organization**
 
 ```typescript
 const { data, error } = await authClient.organization.delete({
@@ -120,9 +118,9 @@ const { data, error } = await authClient.organization.delete({
 })
 ```
 
-### メンバー管理
+### Member management
 
-**メンバー一覧**
+**List members**
 
 ```typescript
 const { data, error } = await authClient.organization.listMembers({
@@ -139,7 +137,7 @@ const { data, error } = await authClient.organization.listMembers({
 })
 ```
 
-**メンバー追加（サーバーのみ）**
+**Add member (server only)**
 
 ```typescript
 const { data, error } = await authClient.organization.addMember({
@@ -150,7 +148,7 @@ const { data, error } = await authClient.organization.addMember({
 })
 ```
 
-**メンバー削除**
+**Remove member**
 
 ```typescript
 const { data, error } = await authClient.organization.removeMember({
@@ -159,7 +157,7 @@ const { data, error } = await authClient.organization.removeMember({
 })
 ```
 
-**メンバーロール更新**
+**Update member role**
 
 ```typescript
 await authClient.organization.updateMemberRole({
@@ -169,27 +167,27 @@ await authClient.organization.updateMemberRole({
 })
 ```
 
-**アクティブメンバー取得**
+**Get active member**
 
 ```typescript
 const { data: member, error } = await authClient.organization.getActiveMember()
 ```
 
-**アクティブメンバーロール取得**
+**Get active member role**
 
 ```typescript
 const { data: { role }, error } = await authClient.organization.getActiveMemberRole()
 ```
 
-**組織脱退**
+**Leave organization**
 
 ```typescript
 await authClient.organization.leave({ organizationId: "organization-id" })
 ```
 
-### 招待
+### Invitations
 
-**招待送信**
+**Send invitation**
 
 ```typescript
 const { data, error } = await authClient.organization.inviteMember({
@@ -201,7 +199,7 @@ const { data, error } = await authClient.organization.inviteMember({
 })
 ```
 
-**招待承認**
+**Accept invitation**
 
 ```typescript
 const { data, error } = await authClient.organization.acceptInvitation({
@@ -209,19 +207,19 @@ const { data, error } = await authClient.organization.acceptInvitation({
 })
 ```
 
-**招待拒否**
+**Reject invitation**
 
 ```typescript
 await authClient.organization.rejectInvitation({ invitationId: "invitation-id" })
 ```
 
-**招待キャンセル**
+**Cancel invitation**
 
 ```typescript
 await authClient.organization.cancelInvitation({ invitationId: "invitation-id" })
 ```
 
-**招待取得**
+**Get invitation**
 
 ```typescript
 const { data, error } = await authClient.organization.getInvitation({
@@ -229,7 +227,7 @@ const { data, error } = await authClient.organization.getInvitation({
 })
 ```
 
-**招待一覧**
+**List invitations**
 
 ```typescript
 const { data, error } = await authClient.organization.listInvitations({
@@ -237,15 +235,15 @@ const { data, error } = await authClient.organization.listInvitations({
 })
 ```
 
-**ユーザー招待一覧**
+**List user's invitations**
 
 ```typescript
 const invitations = await authClient.organization.listUserInvitations()
 ```
 
-### チーム
+### Teams
 
-**チーム作成**
+**Create team**
 
 ```typescript
 const { data, error } = await authClient.organization.createTeam({
@@ -254,7 +252,7 @@ const { data, error } = await authClient.organization.createTeam({
 })
 ```
 
-**チーム一覧**
+**List teams**
 
 ```typescript
 const { data, error } = await authClient.organization.listTeams({
@@ -262,7 +260,7 @@ const { data, error } = await authClient.organization.listTeams({
 })
 ```
 
-**チーム更新**
+**Update team**
 
 ```typescript
 const { data, error } = await authClient.organization.updateTeam({
@@ -276,7 +274,7 @@ const { data, error } = await authClient.organization.updateTeam({
 })
 ```
 
-**チーム削除**
+**Delete team**
 
 ```typescript
 const { data, error } = await authClient.organization.removeTeam({
@@ -285,7 +283,7 @@ const { data, error } = await authClient.organization.removeTeam({
 })
 ```
 
-**アクティブチーム設定**
+**Set active team**
 
 ```typescript
 const { data, error } = await authClient.organization.setActiveTeam({
@@ -293,13 +291,13 @@ const { data, error } = await authClient.organization.setActiveTeam({
 })
 ```
 
-**ユーザーチーム一覧**
+**List user's teams**
 
 ```typescript
 const { data, error } = await authClient.organization.listUserTeams()
 ```
 
-**チームメンバー一覧**
+**List team members**
 
 ```typescript
 const { data, error } = await authClient.organization.listTeamMembers({
@@ -307,7 +305,7 @@ const { data, error } = await authClient.organization.listTeamMembers({
 })
 ```
 
-**チームメンバー追加**
+**Add team member**
 
 ```typescript
 const { data, error } = await authClient.organization.addTeamMember({
@@ -316,7 +314,7 @@ const { data, error } = await authClient.organization.addTeamMember({
 })
 ```
 
-**チームメンバー削除**
+**Remove team member**
 
 ```typescript
 const { data, error } = await authClient.organization.removeTeamMember({
@@ -325,9 +323,9 @@ const { data, error } = await authClient.organization.removeTeamMember({
 })
 ```
 
-### アクセス制御
+### Access control
 
-**権限チェック**
+**Permission check**
 
 ```typescript
 const canCreateProject = await authClient.organization.hasPermission({
@@ -335,7 +333,7 @@ const canCreateProject = await authClient.organization.hasPermission({
 })
 ```
 
-**ロール権限チェック（クライアント側）**
+**Role permission check (client side)**
 
 ```typescript
 const canDelete = authClient.organization.checkRolePermission({
@@ -344,9 +342,9 @@ const canDelete = authClient.organization.checkRolePermission({
 })
 ```
 
-### 動的アクセス制御
+### Dynamic access control
 
-**ロール作成**
+**Create role**
 
 ```typescript
 const permission = { project: ["create", "update", "delete"] }
@@ -357,7 +355,7 @@ await authClient.organization.createRole({
 })
 ```
 
-**ロール削除**
+**Delete role**
 
 ```typescript
 await authClient.organization.deleteRole({
@@ -367,7 +365,7 @@ await authClient.organization.deleteRole({
 })
 ```
 
-**ロール一覧**
+**List roles**
 
 ```typescript
 const { data: roles, error } = await authClient.organization.listRoles({
@@ -375,7 +373,7 @@ const { data: roles, error } = await authClient.organization.listRoles({
 })
 ```
 
-**ロール取得**
+**Get role**
 
 ```typescript
 const { data: role, error } = await authClient.organization.getRole({
@@ -387,7 +385,7 @@ const { data: role, error } = await authClient.organization.getRole({
 })
 ```
 
-**ロール更新**
+**Update role**
 
 ```typescript
 const { data: updatedRole, error } = await authClient.organization.updateRole({
@@ -401,22 +399,22 @@ const { data: updatedRole, error } = await authClient.organization.updateRole({
 })
 ```
 
-## 設定オプション
+## Options / Props
 
-| オプション | 型 | デフォルト | 説明 |
+| Option | Type | Default | Description |
 |---|---|---|---|
-| `allowUserToCreateOrganization` | `boolean \| (user: User) => Promise<boolean>` | `true` | 組織作成権限の制御 |
-| `organizationLimit` | `number \| (user: User) => Promise<boolean>` | 無制限 | ユーザーあたりの最大組織数 |
-| `creatorRole` | `"admin" \| "owner"` | `"owner"` | 作成者の初期ロール |
-| `membershipLimit` | `number \| (user: User, org: Organization) => Promise<number>` | `100` | 組織あたりの最大メンバー数 |
-| `sendInvitationEmail` | `async (data) => Promise<void>` | - | 招待メール送信関数 |
-| `invitationExpiresIn` | number (秒) | `172800`（48時間） | 招待の有効期間 |
-| `cancelPendingInvitationsOnReInvite` | boolean | `false` | 再招待時に既存の招待をキャンセル |
-| `invitationLimit` | `number \| (user: User) => Promise<boolean>` | `100` | 保留中の最大招待数 |
-| `requireEmailVerificationOnInvitation` | boolean | `false` | 招待操作にメール認証を要求 |
-| `disableOrganizationDeletion` | boolean | `false` | 組織削除を無効化 |
+| `allowUserToCreateOrganization` | `boolean \| (user: User) => Promise<boolean>` | `true` | Controls who can create organizations |
+| `organizationLimit` | `number \| (user: User) => Promise<boolean>` | unlimited | Maximum organizations per user |
+| `creatorRole` | `"admin" \| "owner"` | `"owner"` | Initial role of the creator |
+| `membershipLimit` | `number \| (user: User, org: Organization) => Promise<number>` | `100` | Maximum members per organization |
+| `sendInvitationEmail` | `async (data) => Promise<void>` | - | Function to send the invitation email |
+| `invitationExpiresIn` | number (seconds) | `172800` (48 hours) | Invitation validity period |
+| `cancelPendingInvitationsOnReInvite` | boolean | `false` | Cancel existing invitations on re-invite |
+| `invitationLimit` | `number \| (user: User) => Promise<boolean>` | `100` | Maximum pending invitations |
+| `requireEmailVerificationOnInvitation` | boolean | `false` | Require email verification for invitation actions |
+| `disableOrganizationDeletion` | boolean | `false` | Disables organization deletion |
 
-### チーム設定
+### Team configuration
 
 ```typescript
 teams: {
@@ -427,7 +425,7 @@ teams: {
 }
 ```
 
-### 動的アクセス制御設定
+### Dynamic access control configuration
 
 ```typescript
 dynamicAccessControl: {
@@ -436,7 +434,7 @@ dynamicAccessControl: {
 }
 ```
 
-### スキーマカスタマイズ
+### Schema customization
 
 ```typescript
 schema: {
@@ -454,94 +452,7 @@ schema: {
 }
 ```
 
-## DB スキーマ
-
-### organization テーブル
-
-| フィールド | 型 | キー | 説明 |
-|---|---|---|---|
-| id | string | PK | 一意識別子 |
-| name | string | - | 組織名 |
-| slug | string | - | URL フレンドリーな識別子 |
-| logo | string | ? | ロゴ URL |
-| metadata | string | ? | カスタムメタデータ JSON |
-| createdAt | Date | - | 作成日時 |
-
-### member テーブル
-
-| フィールド | 型 | キー | 説明 |
-|---|---|---|---|
-| id | string | PK | 一意識別子 |
-| userId | string | FK | ユーザー参照 |
-| organizationId | string | FK | 組織参照 |
-| role | string | - | メンバーロール |
-| createdAt | Date | - | 追加日時 |
-
-### invitation テーブル
-
-| フィールド | 型 | キー | 説明 |
-|---|---|---|---|
-| id | string | PK | 一意識別子 |
-| email | string | - | 招待先メール |
-| inviterId | string | FK | 招待者ユーザー参照 |
-| organizationId | string | FK | 組織参照 |
-| role | string | ? | 割り当てロール |
-| status | string | - | 招待状態 |
-| createdAt | Date | - | 作成日時 |
-| expiresAt | Date | - | 有効期限 |
-| teamId | string | ? | チーム参照（任意） |
-
-### session テーブル追加フィールド
-
-| フィールド | 型 | 説明 |
-|---|---|---|
-| activeOrganizationId | string | ? | 現在のアクティブ組織 |
-| activeTeamId | string | ? | 現在のアクティブチーム |
-
-### organizationRole テーブル（動的AC のみ）
-
-| フィールド | 型 | キー | 説明 |
-|---|---|---|---|
-| id | string | PK | 一意識別子 |
-| organizationId | string | FK | 組織参照 |
-| role | string | - | ロール名 |
-| permission | string | - | 権限 JSON |
-| createdAt | Date | - | 作成日時 |
-| updatedAt | Date | ? | 更新日時 |
-
-### team テーブル（チーム有効時のみ）
-
-| フィールド | 型 | キー | 説明 |
-|---|---|---|---|
-| id | string | PK | 一意識別子 |
-| name | string | - | チーム名 |
-| organizationId | string | FK | 組織参照 |
-| createdAt | Date | - | 作成日時 |
-| updatedAt | Date | ? | 更新日時 |
-
-### teamMember テーブル（チーム有効時のみ）
-
-| フィールド | 型 | キー | 説明 |
-|---|---|---|---|
-| id | string | PK | 一意識別子 |
-| teamId | string | FK | チーム参照 |
-| userId | string | FK | ユーザー参照 |
-| createdAt | Date | ? | 追加日時 |
-
-## デフォルトロールと権限
-
-ロール:
-- `owner`: 組織削除を含む完全な制御
-- `admin`: 組織削除/所有権を除く完全な制御
-- `member`: 読み取りのみ
-
-リソースとアクション:
-- `organization`: update, delete
-- `member`: create, update, delete
-- `invitation`: create, cancel
-- `team`: create, update, delete（有効時）
-
-## フックシステム
+### Hook system
 
 ```typescript
 organizationHooks: {
@@ -556,10 +467,84 @@ organizationHooks: {
 }
 ```
 
-## 注意点
+### DB schema (organization table)
 
-- メール認証を招待承認の要件にできる
-- ロールベースのアクセス制御が不正な操作を防止
-- 招待は設定された期間後に期限切れ（デフォルト48時間）
-- 複数ロールはカンマ区切り文字列でサポート
-- 動的ロールはクライアント側でチェックできない。検証には `hasPermission` API を使用する
+| Field | Type | Key | Description |
+|---|---|---|---|
+| id | string | PK | Unique identifier |
+| name | string | - | Organization name |
+| slug | string | - | URL-friendly identifier |
+| logo | string | ? | Logo URL |
+| metadata | string | ? | Custom metadata JSON |
+| createdAt | Date | - | Creation timestamp |
+
+### DB schema (member table)
+
+| Field | Type | Key | Description |
+|---|---|---|---|
+| id | string | PK | Unique identifier |
+| userId | string | FK | User reference |
+| organizationId | string | FK | Organization reference |
+| role | string | - | Member role |
+| createdAt | Date | - | Date added |
+
+### DB schema (invitation table)
+
+| Field | Type | Key | Description |
+|---|---|---|---|
+| id | string | PK | Unique identifier |
+| email | string | - | Invitee email |
+| inviterId | string | FK | Inviter user reference |
+| organizationId | string | FK | Organization reference |
+| role | string | ? | Assigned role |
+| status | string | - | Invitation status |
+| createdAt | Date | - | Creation timestamp |
+| expiresAt | Date | - | Expiration timestamp |
+| teamId | string | ? | Team reference (optional) |
+
+### DB schema (session table additional fields)
+
+| Field | Type | Description |
+|---|---|---|
+| activeOrganizationId | string | ? | Currently active organization |
+| activeTeamId | string | ? | Currently active team |
+
+### DB schema (organizationRole table, dynamic AC only)
+
+| Field | Type | Key | Description |
+|---|---|---|---|
+| id | string | PK | Unique identifier |
+| organizationId | string | FK | Organization reference |
+| role | string | - | Role name |
+| permission | string | - | Permission JSON |
+| createdAt | Date | - | Creation timestamp |
+| updatedAt | Date | ? | Update timestamp |
+
+### DB schema (team table, teams enabled only)
+
+| Field | Type | Key | Description |
+|---|---|---|---|
+| id | string | PK | Unique identifier |
+| name | string | - | Team name |
+| organizationId | string | FK | Organization reference |
+| createdAt | Date | - | Creation timestamp |
+| updatedAt | Date | ? | Update timestamp |
+
+### DB schema (teamMember table, teams enabled only)
+
+| Field | Type | Key | Description |
+|---|---|---|---|
+| id | string | PK | Unique identifier |
+| teamId | string | FK | Team reference |
+| userId | string | FK | User reference |
+| createdAt | Date | ? | Date added |
+
+## Notes
+
+- Default roles: `owner` (full control including organization deletion), `admin` (full control except deletion/ownership transfer), `member` (read-only)
+- Default resources and actions: `organization` (update, delete), `member` (create, update, delete), `invitation` (create, cancel), `team` (create, update, delete, when enabled)
+- Email verification can be required for invitation acceptance
+- Role-based access control prevents unauthorized operations
+- Invitations expire after the configured period (48 hours by default)
+- Multiple roles are supported as a comma-separated string
+- Dynamic roles cannot be checked client-side; use the `hasPermission` API for verification

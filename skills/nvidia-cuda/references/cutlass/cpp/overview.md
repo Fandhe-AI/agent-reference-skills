@@ -2,7 +2,7 @@
 
 ## Signature / Usage
 
-CUTLASS (CUDA Templates for Linear Algebra Subroutines and Solvers) is a collection of abstractions for implementing high-performance matrix-matrix multiplication (GEMM) and related computations at all levels and scales within CUDA. This documentation covers CUTLASS 4.6.1 (released July 2026). The project has provided C++ template abstractions since 2017.
+CUTLASS (CUDA Templates for Linear Algebra Subroutines and Solvers) is a collection of abstractions for implementing high-performance matrix-matrix multiplication (GEMM) and related computations at all levels and scales within CUDA. This documentation covers CUTLASS 4.7.0 (released August 2026). The project has provided C++ template abstractions since 2017.
 
 ```cpp
 // Two primary interfaces exposed by the project:
@@ -18,7 +18,7 @@ CUTLASS (CUDA Templates for Linear Algebra Subroutines and Solvers) is a collect
 | Architectures | Volta (SM70) through Blackwell | Minimum compute capability for the library |
 | Compiler | C++17-compatible host compiler | Minimum language standard |
 | CUDA Toolkit | 11.4 minimum, 12.8 recommended | Toolkit version requirements |
-| New in 4.6 | `cute.compile_to` fine-grained compilation API, IKET profiler, cross-compilation support, shared memory auto-calculation, CUTLASS Operator API with discovery | Notable additions in this release |
+| New in 4.7 | Primitives API for lower-level Tensor Core programming, Task Scheduling framework (static analysis of warp-specialized kernels), improved compiler diagnostics for register spills/memory issues with source line numbers | Notable additions in this release |
 
 ## Notes
 

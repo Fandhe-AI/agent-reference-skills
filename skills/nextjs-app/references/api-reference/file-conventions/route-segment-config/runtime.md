@@ -6,7 +6,7 @@ Selects the JavaScript runtime used for rendering a route.
 
 ```tsx filename="layout.tsx | page.tsx | route.ts"
 export const runtime = 'nodejs'
-// 'nodejs' | 'edge'
+// 'nodejs'
 ```
 
 ## Options / Props
@@ -14,10 +14,11 @@ export const runtime = 'nodejs'
 | Value | Description |
 |------|-------------|
 | `'nodejs'` (default) | Runs on the Node.js runtime. |
-| `'edge'` | Runs on the Edge runtime. |
+| `'edge'` (deprecated) | Runs on the Edge runtime. Deprecated — remove the `runtime` export from route files. |
 
 ## Notes
 
+- The Edge Runtime is deprecated; remove the `runtime` export from route files.
 - `runtime: 'edge'` is not supported for Cache Components.
 - This option cannot be used in `proxy.js`.
 - `runtime = 'experimental-edge'` was deprecated in `v15.0.0-RC` — a codemod is available to transform it to `'edge'`.

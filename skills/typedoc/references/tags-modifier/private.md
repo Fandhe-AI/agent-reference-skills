@@ -1,22 +1,18 @@
 # @private
 
-リフレクションの可視性を private にオーバーライドするモディファイアタグ。一般的に使用は推奨されない。
+Modifier tag that overrides a reflection's visibility to private. Its use is generally discouraged.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @private */
 ```
 
-## 詳細説明
+The `@private` tag overrides a reflection's visibility to private, producing documentation output equivalent to TypeScript's `private` keyword.
 
-`@private` タグは、リフレクションの可視性を private にオーバーライドする。TypeScript の `private` キーワードと同等のドキュメント出力を生成する。
+Use of this tag is generally discouraged and it may be removed in a future release. Using TypeScript's `private` keyword directly is recommended instead.
 
-このタグは一般的に使用すべきではなく、将来のリリースで削除される可能性がある。TypeScript の `private` キーワードを直接使用することが推奨される。
-
-`--excludePrivate` オプションを使用すると、private メンバーをドキュメントから除外できる。
-
-## コード例
+The `--excludePrivate` option can be used to exclude private members from the documentation.
 
 ```typescript
 export class Visibility {
@@ -24,7 +20,7 @@ export class Visibility {
     member = 123;
 }
 
-// 上記は以下と同等にドキュメント化される:
+// The above is documented equivalently to:
 export class Visibility {
     private member = 123;
 }
@@ -33,25 +29,25 @@ export class Visibility {
 ```typescript
 export class Config {
     /**
-     * 内部設定値。
+     * Internal configuration value.
      * @private
      */
     _secretKey: string;
 
     /**
-     * 公開設定値。
+     * Public configuration value.
      */
     appName: string;
 }
 ```
 
-## 注意点
+## Notes
 
-- 一般的に使用は推奨されない。将来のリリースで削除される可能性がある
-- TypeScript の `private` キーワードの使用を推奨
-- `--excludePrivate` オプションで private メンバーを除外可能
+- Generally discouraged; may be removed in a future release
+- Prefer TypeScript's `private` keyword
+- Private members can be excluded via the `--excludePrivate` option
 
-## 関連
+## Related
 
 - [@protected](./protected.md)
 - [@public](./public.md)

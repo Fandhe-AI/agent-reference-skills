@@ -142,6 +142,7 @@ skills/android-platform-core/
       image.md
       layout-containers.md
       lazy-lists.md
+      metrics.md
       multi-process-glance-app-widget.md
       pin-in-app.md
       progress-indicators.md
@@ -150,6 +151,7 @@ skills/android-platform-core/
       scaffold-titlebar.md
       size-modes.md
       state-management.md
+      testing.md
       text.md
       toggle-controls.md
       widget-configuration.md
@@ -185,5 +187,7 @@ skills/android-platform-core/
 | WindowInsets・エッジツーエッジ・ディスプレイカットアウトに対応したい | system-ui | [references/system-ui/README.md](references/system-ui/README.md) |
 | Picture-in-Picture・ショートカット・スプラッシュスクリーン・ダークテーマを扱いたい | system-ui | [references/system-ui/README.md](references/system-ui/README.md) |
 | Glance でアプリウィジェットを作りたい | glance-widgets | [references/glance-widgets/README.md](references/glance-widgets/README.md) |
+| ウィジェットの設定画面・状態保存・更新トリガーを実装したい | glance-widgets | [references/glance-widgets/README.md](references/glance-widgets/README.md) |
+| Glance のテスト・プレビュー生成・エラー処理を扱いたい | glance-widgets | [references/glance-widgets/README.md](references/glance-widgets/README.md) |
 
 Service / BroadcastReceiver は `android-background-work`、ディープリンクと予測型戻るは `android-navigation`、ファイル/MediaStore は `android-data`、Compose の UI は `android-compose-ui` / `android-compose-components` の担当。

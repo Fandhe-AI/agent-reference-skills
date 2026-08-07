@@ -1,20 +1,9 @@
-# カバレッジ
+# Coverage
 
-## プロバイダ
-
-| Provider | Description |
-|----------|-------------|
-| **v8**（デフォルト） | V8 ネイティブカバレッジ。高速。Node.js, Deno, Chromium ブラウザ対応 |
-| **istanbul** | ソースコード計装ベース。全ランタイム対応。計装オーバーヘッドあり |
-
-## セットアップ
+## Signature / Usage
 
 ```bash
-# v8（デフォルト）
-npm i -D @vitest/coverage-v8
-
-# istanbul
-npm i -D @vitest/coverage-istanbul
+vitest run --coverage.enabled
 ```
 
 ```ts
@@ -28,13 +17,17 @@ export default defineConfig({
 })
 ```
 
-## 実行
+Install the provider package:
 
 ```bash
-vitest run --coverage.enabled
+# v8 (default)
+npm i -D @vitest/coverage-v8
+
+# istanbul
+npm i -D @vitest/coverage-istanbul
 ```
 
-または設定で有効化:
+Or enable via config:
 
 ```ts
 coverage: {
@@ -42,7 +35,14 @@ coverage: {
 }
 ```
 
-## 主要オプション
+## Options / Props
+
+| Provider | Description |
+|----------|-------------|
+| **v8** (default) | Native V8 coverage. Fast. Supports Node.js, Deno, Chromium-based browsers |
+| **istanbul** | Source code instrumentation based. Supports all runtimes. Has instrumentation overhead |
+
+Main options:
 
 ```ts
 coverage: {
@@ -57,25 +57,27 @@ coverage: {
     statements: 80,
   },
   reportsDirectory: './coverage',
-  all: true, // 未カバーファイルもレポートに含める
+  all: true, // include uncovered files in the report
 }
 ```
 
-## カバレッジ無視コメント
+## Notes
+
+- Coverage ignore comments:
 
 ```ts
 /* v8 ignore next */
 const result = condition ? 'a' : 'b'
 
 /* v8 ignore start -- @preserve */
-// このブロックはカバレッジから除外
+// this block is excluded from coverage
 /* v8 ignore stop -- @preserve */
 
 /* istanbul ignore if -- @preserve */
 if (unlikely) { /* ... */ }
 ```
 
-## 関連
+## Related
 
-- [設定](./config.md)
+- [Config](./config.md)
 - [CLI](./cli.md)

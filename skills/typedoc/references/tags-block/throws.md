@@ -1,24 +1,20 @@
 # @throws
 
-関数やメソッドがスローする可能性のある例外を文書化するブロックタグ。
+Block tag for documenting exceptions that a function or method may throw.
 
-## 構文
-
-```
-@throws 例外の説明
-```
+## Signature / Usage
 
 ```
-@throws {@link エラー型} 条件の説明
+@throws description of the exception
 ```
 
-## 詳細説明
+```
+@throws {@link ErrorType} description of the condition
+```
 
-`@throws` タグは関数やメソッドから発生する可能性のある例外を文書化するために使用される。TSDocの仕様に準拠している。
+The `@throws` tag is used to document exceptions that may be raised from a function or method. Conforms to the TSDoc specification.
 
-`{@link}` 構文を使用してエラー型を参照し、条件の説明を含めることができる。
-
-## コード例
+The `{@link}` syntax can be used to reference the error type, along with a description of the condition under which it is thrown.
 
 ```typescript
 /**
@@ -27,14 +23,14 @@
 export function rand(min: number, max: number): number;
 ```
 
-## 注意点
+## Notes
 
-- `{@link}` 構文でエラー型への参照が可能
-- 複数の `@throws` タグを1つのコメントに含めることが可能
-- 例外が発生する条件の説明を含めることが推奨される
+- The `{@link}` syntax can be used to reference an error type
+- Multiple `@throws` tags can be included in a single comment
+- Including a description of the condition under which the exception occurs is recommended
 
-## 関連
+## Related
 
-- [@returns](./returns.md) -- 戻り値の文書化
-- [@param](./param.md) -- パラメータの文書化
+- [@returns](./returns.md) -- documenting return values
+- [@param](./param.md) -- documenting parameters
 - [TSDoc @throws](https://tsdoc.org/pages/tags/throws/)

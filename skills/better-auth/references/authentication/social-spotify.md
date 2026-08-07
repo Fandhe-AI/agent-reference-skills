@@ -1,25 +1,6 @@
 # Spotify
 
-## Credentials
-
-- `SPOTIFY_CLIENT_ID`
-- `SPOTIFY_CLIENT_SECRET`
-
-Obtain from the Spotify Developer Portal.
-
-### Environment Configuration
-
-Set your base URL in `.env`:
-
-```
-BETTER_AUTH_URL=http://127.0.0.1:3000
-```
-
-**Important Note**: Spotify no longer supports `localhost` as a redirect URI. You must use `127.0.0.1` for local development.
-
-Set the redirect URL in Spotify Dashboard to: `http://127.0.0.1:3000/api/auth/callback/spotify`
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -34,8 +15,6 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
-
 ```typescript
 import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
@@ -47,13 +26,21 @@ const signIn = async () => {
 }
 ```
 
-## リダイレクト URL
+## Options / Props
 
-- **Development**: `http://127.0.0.1:3000/api/auth/callback/spotify` (NOT `localhost`)
-- **Production**: Use HTTPS redirect URLs matching your application domain
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `clientId` | string | — | `SPOTIFY_CLIENT_ID`, obtained from the Spotify Developer Portal |
+| `clientSecret` | string | — | `SPOTIFY_CLIENT_SECRET`, obtained from the Spotify Developer Portal |
 
-## プロバイダー固有の設定・注意点
+## Notes
 
-- Spotify no longer supports `localhost` as a redirect URI; use `127.0.0.1` instead
-- Ensure browser access uses matching loopback IP (not `localhost:3000`)
+- Set the base URL in `.env`: `BETTER_AUTH_URL=http://127.0.0.1:3000`
+- **Important**: Spotify no longer supports `localhost` as a redirect URI — you must use `127.0.0.1` for local development, and browser access must use the matching loopback IP (not `localhost:3000`)
+- Set the redirect URL in the Spotify Dashboard to `http://127.0.0.1:3000/api/auth/callback/spotify`
+- Redirect URL — development: `http://127.0.0.1:3000/api/auth/callback/spotify` (NOT `localhost`); production: use HTTPS redirect URLs matching your application domain
 - Update redirect URLs if changing auth route base paths
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

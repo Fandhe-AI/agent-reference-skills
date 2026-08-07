@@ -1,10 +1,10 @@
 # Username
 
-Username プラグインは、メールとパスワードの認証に軽量なユーザー名サポートを追加する。ユーザーはメールアドレスの代わりにユーザー名で認証できる。
+The Username plugin adds lightweight username support to email and password authentication. Users can authenticate with a username instead of an email address.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -20,15 +20,15 @@ export const auth = betterAuth({
 })
 ```
 
-マイグレーション:
+Migration:
 
 ```bash
 npx auth migrate
-# または
+# or
 npx auth generate
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -41,12 +41,10 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
-
-### ユーザー名でサインアップ
+### Sign up with a username
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.signUp.email({
     email: "email@domain.com",
     name: "Test User",
@@ -55,7 +53,7 @@ const { data, error } = await authClient.signUp.email({
     displayUsername: "Test User123"
 })
 
-// サーバー
+// Server
 const data = await auth.api.signUpEmail({
     body: {
         email: "email@domain.com",
@@ -67,18 +65,18 @@ const data = await auth.api.signUpEmail({
 })
 ```
 
-username のみ指定した場合、displayUsername は正規化前の username 値がデフォルトになる。
+When only `username` is provided, `displayUsername` defaults to the pre-normalization username value.
 
-### ユーザー名でサインイン
+### Sign in with a username
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.signIn.username({
     username: "test",
     password: "password1234"
 })
 
-// サーバー
+// Server
 const data = await auth.api.signInUsername({
     body: {
         username: "test",
@@ -87,24 +85,24 @@ const data = await auth.api.signInUsername({
 })
 ```
 
-### ユーザー名更新
+### Update username
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.updateUser({
     username: "new-username"
 })
 
-// サーバー
+// Server
 const data = await auth.api.updateUser({
     body: { username: "new-username" }
 })
 ```
 
-### ユーザー名の利用可否チェック
+### Check username availability
 
 ```typescript
-// クライアント
+// Client
 const { data: response, error } = await authClient.isUsernameAvailable({
     username: "new-username"
 })
@@ -113,25 +111,25 @@ if (response?.available) {
     console.log("Username is available")
 }
 
-// サーバー
+// Server
 const response = await auth.api.isUsernameAvailable({
     body: { username: "new-username" }
 })
 ```
 
-## 設定オプション
+## Options / Props
 
-| オプション | 型 | デフォルト | 説明 |
+| Option | Type | Default | Description |
 |---|---|---|---|
-| `minUsernameLength` | number | 3 | 最小ユーザー名文字数 |
-| `maxUsernameLength` | number | 30 | 最大ユーザー名文字数 |
-| `usernameValidator` | function | 英数字、アンダースコア、ドットのみ | カスタムバリデーション関数 |
-| `displayUsernameValidator` | function | なし | 表示ユーザー名のバリデーション |
-| `usernameNormalization` | function \| false | 小文字変換 | 正規化関数 |
-| `displayUsernameNormalization` | function \| false | なし | 表示ユーザー名の正規化 |
-| `validationOrder` | object | プレ正規化 | バリデーション順序 |
+| `minUsernameLength` | number | 3 | Minimum username length |
+| `maxUsernameLength` | number | 30 | Maximum username length |
+| `usernameValidator` | function | letters, digits, underscore, and dot only | Custom validation function |
+| `displayUsernameValidator` | function | none | Validation for the display username |
+| `usernameNormalization` | function \| false | lowercase | Normalization function |
+| `displayUsernameNormalization` | function \| false | none | Normalization for the display username |
+| `validationOrder` | object | pre-normalization | Validation order |
 
-### カスタムバリデーション
+### Custom validation
 
 ```typescript
 username({
@@ -142,7 +140,7 @@ username({
 })
 ```
 
-### カスタム正規化
+### Custom normalization
 
 ```typescript
 username({
@@ -155,7 +153,7 @@ username({
 })
 ```
 
-### バリデーション順序
+### Validation order
 
 ```typescript
 username({
@@ -166,7 +164,7 @@ username({
 })
 ```
 
-### ユーザー名利用可否チェックの無効化
+### Disabling the username availability check
 
 ```typescript
 betterAuth({
@@ -176,18 +174,16 @@ betterAuth({
 })
 ```
 
-## DB スキーマ
+### DB schema (user table additional fields)
 
-### user テーブル追加フィールド
-
-| フィールド | 型 | 任意 | 説明 |
+| Field | Type | Optional | Description |
 |---|---|---|---|
-| `username` | string | Yes | 認証用の正規化されたユーザー名 |
-| `displayUsername` | string | Yes | 正規化前の表示用ユーザー名 |
+| `username` | string | Yes | The normalized username used for authentication |
+| `displayUsername` | string | Yes | The pre-normalization username used for display |
 
-## 注意点
+## Notes
 
-- ユーザー名はデフォルトで小文字に正規化され、大文字小文字を区別しないマッチングになる
-- `displayUsername` は表示目的で元のケースを保持する
-- サインアップ/更新時に username のみ指定すると、displayUsername は正規化前の username 値に自動的に設定される
-- 利用可否チェックエンドポイントはセキュリティ/プライバシー上の理由で無効化可能
+- Usernames are normalized to lowercase by default, making matching case-insensitive
+- `displayUsername` preserves the original casing for display purposes
+- If only `username` is provided at sign-up/update time, `displayUsername` is automatically set to the pre-normalization username value
+- The availability-check endpoint can be disabled for security/privacy reasons

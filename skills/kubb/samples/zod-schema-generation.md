@@ -4,24 +4,21 @@ OpenAPI 仕様から Zod バリデーションスキーマを生成するワー�
 
 ```typescript
 // kubb.config.ts
-import { defineConfig } from '@kubb/core'
-import { pluginOas } from '@kubb/plugin-oas'
+import { defineConfig } from 'kubb/config'
+import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
 
 export default defineConfig({
   input: { path: './petStore.yaml' },
   output: { path: './src/gen', clean: true },
+  adapter: adapterOas({ dateType: 'stringOffset', unknownType: 'unknown' }),
   plugins: [
-    pluginOas({ generators: [] }),
     pluginTs({ output: { path: 'models' } }),
     pluginZod({
       output: { path: './zod' },
       group: { type: 'tag', name: ({ group }) => `${group}Schemas` },
-      typed: true,
-      dateType: 'stringOffset',
-      unknownType: 'unknown',
-      version: '4',
+      inferred: true,
     }),
   ],
 })
@@ -29,7 +26,7 @@ export default defineConfig({
 
 ```bash
 # インストール
-npm install --save-dev @kubb/cli @kubb/core @kubb/plugin-oas @kubb/plugin-ts @kubb/plugin-zod
+npm install --save-dev kubb@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta
 npm install zod
 ```
 
@@ -46,7 +43,7 @@ if (result.success) {
 
 ## Notes
 
-- `typed: true` を指定すると TypeScript 型アノテーション付きでスキーマが生成される（`pluginTs` が必要）
-- `version: '4'` で Zod v4 用のスキーマを生成する（デフォルトは `'3'`）
-- `dateType: 'stringOffset'` は `z.string().datetime({ offset: true })` を生成する
-- `wrapOutput` でスキーマに `.openapi()` などの後処理を追加できる
+- `inferred: true`（旧 `typed`）を指定すると TypeScript 型アノテーション付きでスキーマが生成される（`pluginTs` が必要）
+- v5 で Zod バージョン切替用の `version` オプションは廃止され、常に最新の Zod API 向けにスキーマを生成する
+- `dateType` / `unknownType` は `pluginZod` 個別オプションから `adapter: adapterOas()` に集約された
+- `printer` オプションでノードごとの出力を個別にカスタマイズできる（例: `integer()` を `z.number()` に固定）

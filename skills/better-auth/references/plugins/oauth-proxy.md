@@ -1,10 +1,10 @@
 # OAuth Proxy
 
-OAuth Proxy プラグインは、本番サーバーを通じて OAuth リクエストをプロキシすることを可能にする。リダイレクト URL が事前に決定できない開発環境やプレビューデプロイメントに有用で、複数の環境が単一の OAuth クライアント登録を共有できる。
+The OAuth Proxy plugin lets OAuth requests be proxied through a production server. It's useful for development environments and preview deployments where the redirect URL can't be determined in advance, letting multiple environments share a single OAuth client registration.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -25,15 +25,15 @@ export const auth = betterAuth({
 })
 ```
 
-### OAuth プロバイダー設定
+### OAuth provider configuration
 
-本番ドメインのみでコールバック URL を登録:
+Register the callback URL only for the production domain:
 
 ```
 https://my-production-app.com/api/auth/callback/github
 ```
 
-### 信頼済みオリジン
+### Trusted origins
 
 ```typescript
 export const auth = betterAuth({
@@ -44,9 +44,9 @@ export const auth = betterAuth({
 })
 ```
 
-全環境でデータの暗号化/復号のため同じ `BETTER_AUTH_SECRET` を共有する必要がある。
+All environments must share the same `BETTER_AUTH_SECRET` for encrypting/decrypting data.
 
-### クライアント側
+### Client side
 
 ```typescript
 await authClient.signIn.social({
@@ -55,27 +55,27 @@ await authClient.signIn.social({
 })
 ```
 
-## 動作の仕組み
+### How it works
 
-1. プレビューサーバーが OAuth を開始、本番のリダイレクト URI でプロバイダーにリダイレクト
-2. OAuth プロバイダーが本番サーバーにコールバック
-3. 本番がコードをトークンに交換しユーザー情報を取得
-4. 本番がプロフィールデータを暗号化しプレビューサーバーにリダイレクト（本番の DB には書き込まない）
-5. プレビューサーバーがプロフィールを復号し、自身の DB でユーザー/セッションを作成
+1. The preview server starts the OAuth flow and redirects to the provider using the production redirect URI
+2. The OAuth provider calls back to the production server
+3. Production exchanges the code for a token and fetches the user info
+4. Production encrypts the profile data and redirects to the preview server (production's DB is not written to)
+5. The preview server decrypts the profile and creates the user/session in its own DB
 
-暗号化されたプロフィールデータは URL クエリパラメータで渡され、同じシークレットを共有するサーバーでのみ復号可能。
+The encrypted profile data is passed via a URL query parameter and can only be decrypted by servers sharing the same secret.
 
-## 設定オプション
+## Options / Props
 
-| オプション | 型 | デフォルト | 説明 |
+| Option | Type | Default | Description |
 |---|---|---|---|
-| `productionURL` | string | `BETTER_AUTH_URL` 環境変数 | 本番サーバー URL。`baseURL` と一致する場合はプロキシしない |
-| `currentURL` | string | 自動検出 | アプリケーションの現在の URL。自動検出が失敗した場合のみ設定 |
-| `maxAge` | number（秒） | `60` | 暗号化プロフィールペイロードの最大有効期間。リプレイ攻撃防止のため短く保つ（30-60秒） |
+| `productionURL` | string | `BETTER_AUTH_URL` env var | The production server URL. No proxying occurs if it matches `baseURL` |
+| `currentURL` | string | auto-detected | The current application URL. Set only if auto-detection fails |
+| `maxAge` | number (seconds) | `60` | Maximum lifetime of the encrypted profile payload. Keep short (30-60s) to prevent replay attacks |
 
-## 注意点
+## Notes
 
-- 開発/プレビュー環境専用
-- `baseURL` が `productionURL` と一致する場合、プロキシは行われない
-- プレビューデプロイメントは本番とは別のデータベースを使用可能
-- 全環境で同じ `BETTER_AUTH_SECRET` の共有が必須
+- Intended for development/preview environments only
+- No proxying occurs when `baseURL` matches `productionURL`
+- Preview deployments can use a database separate from production
+- All environments must share the same `BETTER_AUTH_SECRET`

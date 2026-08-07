@@ -1,46 +1,34 @@
 # account_not_linked
 
-OAuth フロー中に、プロバイダーアカウントを現在のユーザーにリンクできない際のエラー。
-
-## 発生条件
-
-リンク条件が満たされていない場合、または自動リンクが許可されていない場合に、OAuth フロー中に発生する。
-
-## 主な原因
-
-- ユーザーが別の認証プロバイダーまたは方法で登録している
-- アカウントリンク機能が有効化または正しく設定されていない
-- プロバイダーのメールが既存ユーザーアカウントと一致しない
-- 信頼済みプロバイダーの制限など設定ルールが自動リンクをブロックしている
-
-## 対処方法
-
-**1. アカウントリンクの設定**
+## Signature / Usage
 
 ```typescript
 export const auth = betterAuth({
     account: {
         accountLinking: {
             enabled: true,
-            trustedProviders: ["google", "github"]  // 必要に応じて
+            trustedProviders: ["google", "github"]  // as needed
         }
     }
 })
 ```
 
-**2. メール一致の検証**
+This error occurs during an OAuth flow when a provider account cannot be linked to the current user, either because linking conditions are not met or automatic linking is not permitted.
 
-OAuth プロバイダーが、既存ユーザーレコードに対応する検証済みメールアドレスを返しているか確認する。
+## Notes
 
-**3. ユーザーへの案内**
-
-ユーザーを最初に接続したプロバイダーまたはサインアップ方法で認証するよう案内する。
-
-**4. 設定の整合性確認**
-
-すべてのデプロイ環境で認証設定が一致していることを確認する。
+- Main causes:
+  - The user registered with a different auth provider or method
+  - Account linking is not enabled or not configured correctly
+  - The provider's email does not match the existing user account
+  - Configuration rules (e.g., trusted provider restrictions) block automatic linking
+- Resolution:
+  - Enable and configure account linking as shown above
+  - Verify the OAuth provider returns a verified email that matches the existing user record
+  - Guide the user to authenticate using the provider or sign-up method they connected first
+  - Confirm auth configuration is consistent across all deployment environments
 
 ## Related
 
-- [error-account-already-linked.md](./error-account-already-linked.md)
-- [errors.md](./errors.md)
+- [account_already_linked_to_different_user](./error-account-already-linked.md)
+- [errors](./errors.md)

@@ -2,7 +2,7 @@
 
 Built-in authenticator that does not require external provider credentials.
 
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth";
@@ -13,25 +13,6 @@ export const auth = betterAuth({
   },
 });
 ```
-
-## 設定オプション
-
-| Name | Type | Description |
-|------|------|-------------|
-| `enabled` | boolean | Enable email/password authentication |
-| `disableSignUp` | boolean | Disable user registration |
-| `minPasswordLength` | number | Minimum password length (default: 8) |
-| `maxPasswordLength` | number | Maximum password length (default: 128) |
-| `sendResetPassword` | function | Email sending handler for password resets |
-| `onPasswordReset` | function | Callback after successful password reset |
-| `onExistingUserSignUp` | function | Callback when signup attempted with existing email |
-| `autoSignIn` | boolean | Auto sign-in after signup |
-| `requireEmailVerification` | boolean | Require email verification before login |
-| `revokeSessionsOnPasswordReset` | boolean | Invalidate all sessions on password change |
-| `resetPasswordTokenExpiresIn` | number | Token expiration time |
-| `password` | object | Custom hashing algorithm configuration |
-
-## クライアント操作
 
 ### Sign Up
 
@@ -96,8 +77,6 @@ const { data, error } = await authClient.resetPassword({
 });
 ```
 
-## コード例
-
 ### Email Verification Configuration
 
 ```typescript
@@ -153,10 +132,31 @@ export const auth = betterAuth({
 });
 ```
 
-## 注意点
+## Options / Props
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `enabled` | boolean | Enable email/password authentication |
+| `disableSignUp` | boolean | Disable user registration |
+| `minPasswordLength` | number | Minimum password length (default: 8) |
+| `maxPasswordLength` | number | Maximum password length (default: 128) |
+| `sendResetPassword` | function | Email sending handler for password resets |
+| `onPasswordReset` | function | Callback after successful password reset |
+| `onExistingUserSignUp` | function | Callback when signup attempted with existing email |
+| `autoSignIn` | boolean | Auto sign-in after signup |
+| `requireEmailVerification` | boolean | Require email verification before login |
+| `revokeSessionsOnPasswordReset` | boolean | Invalidate all sessions on password change |
+| `resetPasswordTokenExpiresIn` | number | Token expiration time |
+| `password` | object | Custom hashing algorithm configuration |
+
+## Notes
 
 - Default password length: minimum 8, maximum 128 characters
 - Avoid awaiting the email sending function to prevent timing attacks
 - Email enumeration protection: returns identical responses whether email exists or not when verification is required
 - No external OAuth credentials needed
 - Use `customSyntheticUser` option when plugins add user fields to maintain security
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

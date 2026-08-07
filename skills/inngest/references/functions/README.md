@@ -1,15 +1,19 @@
-# Functions
+# functions
 
 | Name | Description | Path |
 |------|-------------|------|
-| createFunction | Define an Inngest function with triggers, configuration, and a handler | [create-function.md](./create-function.md) |
-| Triggers | Event and cron triggers that start function runs | [triggers.md](./triggers.md) |
-| Retries | Configure retry attempts per step (0–20, default 4) | [retries.md](./retries.md) |
-| cancelOn | Stop a running or sleeping function when a matching event arrives | [cancel-on.md](./cancel-on.md) |
-| timeouts | Auto-cancel runs that exceed start or execution time limits | [timeouts.md](./timeouts.md) |
-| onFailure | Handler invoked after all retries are exhausted | [on-failure.md](./on-failure.md) |
-| batchEvents | Aggregate multiple events into a single invocation | [batch-events.md](./batch-events.md) |
-| priority | Dynamically order runs within a function using CEL expressions | [priority.md](./priority.md) |
-| idempotency | Prevent duplicate executions within a 24-hour window via CEL key | [idempotency.md](./idempotency.md) |
-| Durable Execution | Step memoization and fault-tolerant execution engine concepts | [durable-execution.md](./durable-execution.md) |
-| Versioning | Evolve function code safely while runs are in progress | [versioning.md](./versioning.md) |
+| batchEvents | Aggregates multiple events into a single function invocation. The handler receives an `events` array instead of a single `event`. Useful for reducing API calls, consolidating DB writes, or optimizing serverless costs. | [batch-events.md](./batch-events.md) |
+| cancelOn | Stops execution of a running or sleeping function when a specific event is received. Functions are cancelled between steps — a currently executing step finishes before cancellation takes effect. | [cancel-on.md](./cancel-on.md) |
+| createFunction | Defines an Inngest function by specifying configuration (id, triggers, flow control) and a handler. Returns an `InngestFunction` to be exported and served. | [create-function.md](./create-function.md) |
+| Deferred Functions | A deferred function runs in the background as a fire-and-forget side effect of another run, launched via `defer(id, { function, data })` from inside a parent handler. The parent never waits for or sees a result. Beta, TypeScript SDK only. | [deferred-functions.md](./deferred-functions.md) |
+| Durable Endpoints | Wraps a regular HTTP API endpoint so its critical logic runs inside `step.run()` blocks, adding retry-from-point-of-failure, tracing, and observability while keeping the normal request/response mental model. Available in the TypeScript and Go SDKs. | [durable-endpoints.md](./durable-endpoints.md) |
+| Durable Execution | Inngest's execution engine provides fault-tolerant, resumable function execution. Functions survive infrastructure outages, network failures, and timeouts by persisting state externally and re-executing with memoized step results. | [durable-execution.md](./durable-execution.md) |
+| idempotency | Prevents duplicate function executions within a 24-hour window by evaluating a CEL expression as a unique key per triggering event. Equivalent to `rateLimit` with `limit: 1` and `period: "24h"`. | [idempotency.md](./idempotency.md) |
+| onFailure | A callback function invoked automatically when a function exhausts all retry attempts and permanently fails. Appears in the Inngest dashboard as a separate function named `"<function name> (failure)"`. | [on-failure.md](./on-failure.md) |
+| priority | Dynamically orders function runs within the same function based on event data. Higher values move a run ahead of recently queued runs; negative values push it back. | [priority.md](./priority.md) |
+| Retries | Controls the number of retry attempts when a function step throws an error. Each step within a function is retried independently. | [retries.md](./retries.md) |
+| Rollbacks | A step that exhausts all retries throws a `StepError` at its call site instead of failing the whole function immediately. Catching it inside the handler lets each step's failure be handled and rolled back individually, rather than letting the error bubble up and mark the entire function run as failed. | [rollbacks.md](./rollbacks.md) |
+| Durable Endpoints Streaming | Streams data back to clients in real-time over Server-Sent Events (SSE) from within a [Durable Endpoint](./durable-endpoints.md), preserving durability: if a step fails and retries, chunks streamed during that step are automatically rolled back on the client. TypeScript SDK only. | [streaming.md](./streaming.md) |
+| timeouts | Automatically cancels a function run that takes too long to start or to finish executing. Cancelled runs emit an `inngest/function.cancelled` system event. | [timeouts.md](./timeouts.md) |
+| Triggers | Triggers define what starts an Inngest function run. A function accepts up to 10 triggers — any combination of event triggers and cron triggers. | [triggers.md](./triggers.md) |
+| Versioning and Function Evolution | Inngest supports evolving function code while runs are in progress. Step-based memoization ensures completed steps are never re-executed, allowing safe deployments without explicit version markers. | [versioning.md](./versioning.md) |

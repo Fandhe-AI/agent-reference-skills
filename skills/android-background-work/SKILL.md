@@ -23,60 +23,69 @@ skills/android-background-work/
   references/
     workmanager/
       README.md
-      worker.md
-      coroutineworker.md
-      workrequest.md
-      periodicworkrequest.md
-      workmanager.md
-      constraints.md
       backoffpolicy.md
+      configuration.md
+      constraints.md
+      coroutineworker.md
+      custom-configuration.md
       data.md
-      workinfo.md
-      workcontinuation.md
+      debugging.md
       existingworkpolicy.md
       foreground-work.md
-      outofquotapolicy.md
-      configuration.md
-      worker-factory.md
-      threading.md
-      testing.md
-      debugging.md
+      listenableworker-threading.md
+      long-running-support.md
       migrate-legacy-schedulers.md
       multiprocess.md
+      observe-progress.md
       operation.md
+      outofquotapolicy.md
+      periodicworkrequest.md
       rxworker.md
+      testing.md
+      threading.md
       update-work.md
+      workcontinuation.md
+      worker-factory.md
+      worker.md
+      workinfo.md
+      workmanager.md
       workquery.md
+      workrequest.md
     services/
       README.md
-      service.md
-      service-manifest.md
-      start-command-return-values.md
-      start-stop-service.md
-      foreground-service.md
-      foreground-service-types.md
+      aidl.md
+      bound-service.md
       foreground-service-restrictions.md
       foreground-service-timeout.md
-      bound-service.md
-      messenger.md
-      aidl.md
-      processes-and-threads.md
+      foreground-service-types.md
+      foreground-service.md
+      fgs-changes.md
+      fgs-troubleshooting.md
       handle-user-stopping.md
+      messenger.md
+      processes-and-threads.md
+      service-manifest.md
+      service.md
+      start-command-return-values.md
+      start-stop-service.md
     alarms-broadcasts/
       README.md
-      alarmmanager.md
       alarm-types.md
-      exact-alarm-permissions.md
-      pendingintent.md
-      doze-app-standby.md
-      broadcastreceiver.md
-      registering-receivers.md
-      implicit-broadcast-restrictions.md
-      sending-broadcasts.md
+      alarmmanager.md
       boot-completed.md
+      broadcastreceiver.md
+      doze-app-standby.md
+      exact-alarm-permissions.md
+      implicit-broadcast-restrictions.md
       jobscheduler.md
+      pendingintent.md
+      registering-receivers.md
+      sending-broadcasts.md
       user-initiated-data-transfer.md
       wakelock.md
+      wakelock-best-practices.md
+      wakelock-debug-locally.md
+      wakelock-identify-use-cases.md
     coroutines-flow/
       README.md
       suspend-functions.md

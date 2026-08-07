@@ -13,6 +13,11 @@ var catalog = ExecutionProviderCatalog.GetDefault();
 await catalog.EnsureAndRegisterCertifiedAsync();
 
 var readyState = VideoScaler.GetReadyState();
+if (readyState == AIFeatureReadyState.NotSupportedOnCurrentSystem)
+{
+    // VSR cannot run on this device; fall back to a non-VSR pipeline or hide the feature.
+    throw new Exception("Video Super Resolution is not supported on this device.");
+}
 if (readyState == AIFeatureReadyState.NotReady)
 {
     var operation = await VideoScaler.EnsureReadyAsync();
@@ -52,6 +57,7 @@ if (result.Status == VideoScalerStatus.Success)
 ## Notes
 
 - Namespace: `Microsoft.Windows.AI.Video`. Distinct from `ImageScaler` (`Microsoft.Windows.AI.Imaging`, Image Super Resolution) — `VideoScaler` targets real-time video frames (`VideoFrame`/`Direct3DSurface`), `ImageScaler` targets a single `SoftwareBitmap`.
+- `GetReadyState()` can return `AIFeatureReadyState.NotSupportedOnCurrentSystem` (device cannot run VSR at all — fall back to a non-VSR pipeline or hide the feature), separately from `NotReady` (supported but not yet downloaded/initialized).
 - Supported hardware: NPU (Copilot+ PC) and CPU; **not supported on GPU**. Hardware selection is automatic. Model ships preinstalled as part of the Windows App SDK — no first-run download/consent step.
 - For a good CPU experience, target 4+ physical cores, 3 GHz+ base clock, 32 MB+ L3 cache; `GetReadyState` only confirms support, so also run a CPU-capability check (e.g. via WMI `Win32_Processor`) to decide between VSR and a lightweight fallback on borderline hardware.
 - Not recommended for sensitive content where upscaling could alter identity/facial features (e.g. medical imaging, legal/forensic evidence, identity verification).

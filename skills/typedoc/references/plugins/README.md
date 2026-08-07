@@ -1,5 +1,5 @@
 # plugins
 
 | Name | Description | Path |
-|------|-------------|------|
-| コミュニティプラグイン | TypeDocのコミュニティによって開発・提供されている… | [community-plugins.md](./community-plugins.md) |
+| --- | --- | --- |
+| Community Plugins | Community-developed and maintained plugins for TypeDoc, loadable via the `--plugin` flag. Searchable on npm with the `typedoc-plugin` keyword. | [community-plugins.md](./community-plugins.md) |

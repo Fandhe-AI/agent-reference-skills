@@ -51,6 +51,6 @@ iOS 8.0+, iPadOS 8.0+, macOS 13.0+, watchOS 2.0+, visionOS 1.0+. Only works with
 
 ## Related
 
-- [hkstatisticscollectionquery.md](./hkstatisticscollectionquery.md)
-- [hkquantitytype.md](./hkquantitytype.md)
-- [hkquery.md](./hkquery.md)
+- [HKStatisticsCollectionQuery](./hkstatisticscollectionquery.md)
+- [HKQuantityType](./hkquantitytype.md)
+- [HKQuery](./hkquery.md)

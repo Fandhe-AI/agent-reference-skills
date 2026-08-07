@@ -2,18 +2,6 @@
 
 Renders a toolbar anchored to a specific position along an edge. Visible only when the edge is selected (unless `isVisible` is overridden). Does not scale with viewport zoom.
 
-## Props
-
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `edgeId` | `string` | — | ID of the edge this toolbar is attached to (required) |
-| `x` | `number` | — | X position of the toolbar in flow coordinates |
-| `y` | `number` | — | Y position of the toolbar in flow coordinates |
-| `isVisible` | `boolean` | `false` | When `true`, the toolbar is visible even if the edge is not selected |
-| `alignX` | `"left" \| "center" \| "right"` | `"center"` | Horizontal alignment relative to the provided `x` coordinate |
-| `alignY` | `"center" \| "top" \| "bottom"` | `"center"` | Vertical alignment relative to the provided `y` coordinate |
-| `...props` | `HTMLAttributes<HTMLDivElement>` | — | Standard HTML div element attributes |
-
 ## 使用例
 
 ```tsx
@@ -35,6 +23,18 @@ function CustomEdge(props: EdgeProps) {
 
 export default memo(CustomEdge);
 ```
+
+## Props
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `edgeId` | `string` | — | ID of the edge this toolbar is attached to (required) |
+| `x` | `number` | — | X position of the toolbar in flow coordinates |
+| `y` | `number` | — | Y position of the toolbar in flow coordinates |
+| `isVisible` | `boolean` | `false` | When `true`, the toolbar is visible even if the edge is not selected |
+| `alignX` | `"left" \| "center" \| "right"` | `"center"` | Horizontal alignment relative to the provided `x` coordinate |
+| `alignY` | `"center" \| "top" \| "bottom"` | `"center"` | Vertical alignment relative to the provided `y` coordinate |
+| `...props` | `HTMLAttributes<HTMLDivElement>` | — | Standard HTML div element attributes |
 
 ## 注意点
 

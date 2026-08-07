@@ -1,10 +1,8 @@
 # skills-commands
 
-Claude Code CLI 本体の Skills (SKILL.md)・slash commands・output styles。Agent SDK からの利用は anthropic-agent-sdk、Claude API 側の Agent Skills / Skills API は anthropic-api-tools-mcp を参照。
-
 | Name | Description | Path |
 | --- | --- | --- |
-| Commands | セッション内から Claude Code を操作する slash command 一覧 | [commands.md](./commands.md) |
-| Output styles | システムプロンプト・トーン・出力形式を指定する style 設定 | [output-styles.md](./output-styles.md) |
-| Prompt library | SDLC フェーズ別の copy-paste prompt ライブラリ | [prompt-library.md](./prompt-library.md) |
-| Skills | SKILL.md で定義する reusable /command・context-loaded workflow | [skills.md](./skills.md) |
+| Commands | Commands control Claude Code from inside a session: switch models, manage permissions, clear context, run a workflow. | [commands.md](./commands.md) |
+| Output styles | Output styles change how Claude responds, not what Claude knows — they modify the system prompt to set role, tone, and output format. | [output-styles.md](./output-styles.md) |
+| Prompt library | A library of copy-paste prompts for Claude Code, tagged by task and SDLC phase. | [prompt-library.md](./prompt-library.md) |
+| Skills | Create a `SKILL.md` file with instructions and Claude Code adds it to its toolkit. | [skills.md](./skills.md) |

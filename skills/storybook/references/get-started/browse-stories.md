@@ -18,6 +18,16 @@ Storybook's UI is a component workshop with three main regions: the **Sidebar** 
 2. Review its stories to pick the right variant
 3. Copy the story's `args` definition into your application code
 
+```js
+// Button.stories.js — copy this args shape into your app code
+export const Primary = {
+  args: {
+    label: 'Button',
+    primary: true,
+  },
+};
+```
+
 ## Notes
 
 **Toolbar controls:**

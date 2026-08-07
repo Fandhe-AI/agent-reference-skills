@@ -3,7 +3,11 @@ name: apple-spatial
 description: >
   visionOS / iOS 空間コンピューティングリファレンス。RealityKit、ARKit、visionOS SwiftUI API。
   Entity, ModelEntity, AnchorEntity, Component, RealityView, MeshResource, Material, System,
+  EntityAction, GaussianSplatComponent, ComputeGraphComponent,
+  PhysicsJointsComponent, ForceEffectComponent, ClothBodyComponent,
+  NavigationComponent, NavigationMeshComponent, NavigationController,
   ImmersiveSpace, ImmersionStyle, Model3D, WindowGroup, VolumetricWindowStyle,
+  ObjectTrackingProvider, RoomTrackingProvider,
   ARSession, ARWorldTrackingConfiguration, ARKitSession,
   WorldTrackingProvider, HandTrackingProvider, SceneReconstructionProvider。
 user-invocable: false
@@ -34,6 +38,19 @@ skills/apple-spatial/
       bodytrackingcomponent.md
       collisioncomponent.md
       physicsbodycomponent.md
+      entityaction.md
+      gaussiansplatcomponent.md
+      computegraphcomponent.md
+      physics-advanced/
+        README.md
+        physicsjointscomponent.md
+        forceeffectcomponent.md
+        clothbodycomponent.md
+      navigation/
+        README.md
+        navigationcomponent.md
+        navigationmeshcomponent.md
+        navigationcontroller.md
     arkit/
       README.md
       arsession.md
@@ -65,6 +82,8 @@ skills/apple-spatial/
       ornament.md
       glassbackgroundeffect.md
       hovereffect.md
+      object-tracking.md
+      room-tracking.md
 ```
 
 ## 探索手順
@@ -80,9 +99,12 @@ skills/apple-spatial/
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | Entity・ModelEntity・AnchorEntity の作成・操作 | realitykit | [references/realitykit/README.md](references/realitykit/README.md) |
-| Component・System による ECS 設計 | realitykit | [references/realitykit/README.md](references/realitykit/README.md) |
-| MeshResource・Material・マテリアル設定 | realitykit | [references/realitykit/README.md](references/realitykit/README.md) |
+| Component・System による ECS 設計、EntityAction | realitykit | [references/realitykit/README.md](references/realitykit/README.md) |
+| MeshResource・Material・マテリアル設定、GaussianSplatComponent | realitykit | [references/realitykit/README.md](references/realitykit/README.md) |
+| ComputeGraphComponent によるパーティクルシミュレーション | realitykit | [references/realitykit/README.md](references/realitykit/README.md) |
 | 物理シミュレーション・コリジョン設定 | realitykit | [references/realitykit/README.md](references/realitykit/README.md) |
+| PhysicsJointsComponent・ForceEffectComponent・ClothBodyComponent による高度な物理 | realitykit/physics-advanced | [references/realitykit/physics-advanced/README.md](references/realitykit/physics-advanced/README.md) |
+| NavigationComponent・NavigationMeshComponent によるパスファインディング | realitykit/navigation | [references/realitykit/navigation/README.md](references/realitykit/navigation/README.md) |
 | iOS ARSession・ARWorldTrackingConfiguration の設定 | arkit | [references/arkit/README.md](references/arkit/README.md) |
 | ARAnchor・ARPlaneAnchor・ARFrame の取得 | arkit | [references/arkit/README.md](references/arkit/README.md) |
 | visionOS ARKitSession・WorldTrackingProvider の利用 | arkit | [references/arkit/README.md](references/arkit/README.md) |
@@ -91,3 +113,4 @@ skills/apple-spatial/
 | WindowGroup・VolumetricWindowStyle による 3D ウィンドウ | visionos | [references/visionos/README.md](references/visionos/README.md) |
 | Model3D・RealityView による 3D コンテンツ表示 | visionos | [references/visionos/README.md](references/visionos/README.md) |
 | ornament・glassBackgroundEffect・hoverEffect の適用 | visionos | [references/visionos/README.md](references/visionos/README.md) |
+| ObjectTrackingProvider・RoomTrackingProvider による物体・部屋認識 | visionos | [references/visionos/README.md](references/visionos/README.md) |

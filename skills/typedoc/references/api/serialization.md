@@ -1,22 +1,22 @@
 # Serialization
 
-TypeDoc のシリアライゼーションシステム。Reflection モデルと JSON 間の変換を行う Serializer と Deserializer クラス。
+TypeDoc's serialization system. The `Serializer` and `Deserializer` classes convert between the Reflection model and JSON.
 
-## シグネチャ
+## Signature
 
 ### Serializer
 
 ```typescript
 class Serializer extends EventDispatcher<SerializerEvents> {
-  // 静的イベント
+  // Static events
   static readonly EVENT_BEGIN: "begin";
   static readonly EVENT_END: "end";
 
-  // プロパティ
+  // Properties
   projectRoot: NormalizedPath;
   project: Models.ProjectReflection;
 
-  // コアメソッド
+  // Core methods
   projectToObject(
     value: Models.ProjectReflection,
     projectRoot: NormalizedPath
@@ -30,11 +30,11 @@ class Serializer extends EventDispatcher<SerializerEvents> {
     value: T[] | undefined
   ): ModelToObject<T>[] | undefined;
 
-  // コンポーネント管理
+  // Component management
   addSerializer<T extends object>(serializer: SerializerComponent<T>): void;
   removeSerializer(serializer: SerializerComponent<any>): void;
 
-  // イベントメソッド
+  // Event methods
   on<K extends keyof SerializerEvents>(
     event: K,
     listener: (...args: SerializerEvents[K]) => void,
@@ -55,7 +55,7 @@ class Serializer extends EventDispatcher<SerializerEvents> {
 
 ```typescript
 class Deserializer {
-  // プロパティ
+  // Properties
   logger: Logger;
   projectRoot: NormalizedPath;
   oldIdToNewId: Record<ReflectionId, ReflectionId | undefined>;
@@ -64,7 +64,7 @@ class Deserializer {
   reflectionBuilders: Record<string, Function>;
   typeBuilders: Record<string, Function>;
 
-  // コアメソッド
+  // Core methods
   constructor(logger: Logger);
 
   reviveProject(
@@ -97,7 +97,7 @@ class Deserializer {
 }
 ```
 
-## 主要メソッド
+## Methods
 
 ### Serializer
 
@@ -110,7 +110,7 @@ projectToObject(
 ): JSONOutput.ProjectReflection
 ```
 
-プロジェクト Reflection 全体を JSON オブジェクトに変換する。begin/end イベントを発火する。
+Converts an entire project Reflection into a JSON object. Fires the begin/end events.
 
 #### toObject()
 
@@ -118,7 +118,7 @@ projectToObject(
 toObject<T>(value: T | undefined): ModelToObject<T> | undefined
 ```
 
-個々のモデルオブジェクトを JSON 表現に変換する。各モデルの `toObject()` メソッドを呼び出す。
+Converts an individual model object into its JSON representation. Calls the model's own `toObject()` method.
 
 #### toObjectsOptional()
 
@@ -126,7 +126,7 @@ toObject<T>(value: T | undefined): ModelToObject<T> | undefined
 toObjectsOptional<T>(value: T[] | undefined): ModelToObject<T>[] | undefined
 ```
 
-オプションのモデル配列をシリアライズする。
+Serializes an optional array of model objects.
 
 #### addSerializer()
 
@@ -134,7 +134,7 @@ toObjectsOptional<T>(value: T[] | undefined): ModelToObject<T>[] | undefined
 addSerializer<T extends object>(serializer: SerializerComponent<T>): void
 ```
 
-カスタムシリアライザーコンポーネントを追加する。
+Adds a custom serializer component.
 
 #### removeSerializer()
 
@@ -142,7 +142,7 @@ addSerializer<T extends object>(serializer: SerializerComponent<T>): void
 removeSerializer(serializer: SerializerComponent<any>): void
 ```
 
-シリアライザーコンポーネントを削除する。
+Removes a serializer component.
 
 ### Deserializer
 
@@ -156,7 +156,7 @@ reviveProject(
 ): ProjectReflection
 ```
 
-単一の JSON プロジェクトを ProjectReflection に復元する。
+Restores a single JSON project into a `ProjectReflection`.
 
 #### reviveProjects()
 
@@ -172,7 +172,7 @@ reviveProjects(
 ): ProjectReflection
 ```
 
-複数の JSON プロジェクトを処理し、統合された ProjectReflection を返す。
+Processes multiple JSON projects and returns a merged `ProjectReflection`.
 
 #### constructReflection()
 
@@ -180,7 +180,7 @@ reviveProjects(
 constructReflection<T>(obj: JSONOutput.Reflection): T
 ```
 
-JSON から Reflection インスタンスを構築する。`variant` フィールドに基づいて適切なクラスを選択する。
+Builds a Reflection instance from JSON, choosing the appropriate class based on the `variant` field.
 
 #### constructType()
 
@@ -188,7 +188,7 @@ JSON から Reflection インスタンスを構築する。`variant` フィー�
 constructType(obj: JSONOutput.SomeType): Models.SomeType
 ```
 
-JSON から Type インスタンスを構築する。`type` フィールドに基づいて適切なクラスを選択する。
+Builds a Type instance from JSON, choosing the appropriate class based on the `type` field.
 
 #### defer()
 
@@ -196,43 +196,43 @@ JSON から Type インスタンスを構築する。`type` フィールドに�
 defer(cb: (project: ProjectReflection) => void): void
 ```
 
-デシリアライゼーション完了後に実行されるコールバックを遅延登録する。相互参照の解決に使用する。
+Registers a callback to run after deserialization completes. Used to resolve cross-references.
 
-## 主要プロパティ
+## Properties
 
-### Serializer プロパティ
+### Serializer properties
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `projectRoot` | `NormalizedPath` | シリアライゼーション中に設定されるプロジェクトルート |
-| `project` | `ProjectReflection` | シリアライゼーション中に設定されるプロジェクト |
+| `projectRoot` | `NormalizedPath` | The project root, set during serialization |
+| `project` | `ProjectReflection` | The project, set during serialization |
 
-### Deserializer プロパティ
+### Deserializer properties
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |-----------|---|------|
-| `logger` | `Logger` | ロギングインスタンス |
-| `projectRoot` | `NormalizedPath` | デシリアライゼーション中に設定される |
-| `oldIdToNewId` | `Record<ReflectionId, ReflectionId \| undefined>` | 旧 ID から新 ID へのマッピング |
-| `oldFileIdToNewFileId` | `Record<FileId, FileId \| undefined>` | 旧ファイル ID から新ファイル ID へのマッピング |
-| `project` | `ProjectReflection \| undefined` | 現在のプロジェクト |
-| `reflectionBuilders` | `object` | variant → ビルダー関数のマッピング |
-| `typeBuilders` | `object` | type kind → ビルダー関数のマッピング |
+| `logger` | `Logger` | The logging instance |
+| `projectRoot` | `NormalizedPath` | Set during deserialization |
+| `oldIdToNewId` | `Record<ReflectionId, ReflectionId \| undefined>` | Mapping from old IDs to new IDs |
+| `oldFileIdToNewFileId` | `Record<FileId, FileId \| undefined>` | Mapping from old file IDs to new file IDs |
+| `project` | `ProjectReflection \| undefined` | The current project |
+| `reflectionBuilders` | `object` | Mapping of variant → builder function |
+| `typeBuilders` | `object` | Mapping of type kind → builder function |
 
-## イベント
+## Events
 
-### Serializer イベント
+### Serializer events
 
-| イベント | 値 | 説明 |
+| Event | Value | Description |
 |--------|---|------|
-| `EVENT_BEGIN` | `"begin"` | シリアライゼーション開始時 |
-| `EVENT_END` | `"end"` | シリアライゼーション完了時 |
+| `EVENT_BEGIN` | `"begin"` | Fired when serialization begins |
+| `EVENT_END` | `"end"` | Fired when serialization completes |
 
-## JSONOutput 名前空間
+## JSONOutput Namespace
 
-シリアライズされた JSON の型定義。外部ツールで TypeDoc の JSON 出力を消費する際に使用する。
+Type definitions for the serialized JSON output. Used when consuming TypeDoc's JSON output from external tools.
 
-### 主要インターフェース
+### Main interfaces
 
 ```typescript
 namespace JSONOutput {
@@ -272,7 +272,7 @@ namespace JSONOutput {
     // ...
   }
 
-  // SomeType は各型の JSON 表現のユニオン
+  // SomeType is a union of the JSON representation of each type
   type SomeType =
     | ArrayType
     | ConditionalType
@@ -295,9 +295,9 @@ namespace JSONOutput {
 }
 ```
 
-## コード例
+## Examples
 
-### JSON への出力
+### Outputting JSON
 
 ```typescript
 import { Application } from "typedoc";
@@ -308,15 +308,15 @@ const app = await Application.bootstrapWithPlugins({
 
 const project = await app.convert();
 if (project) {
-  // JSON ファイルへの出力
+  // Write to a JSON file
   await app.generateJson(project, "./api.json");
 
-  // プログラムから JSON オブジェクトを取得
+  // Get the JSON object programmatically
   const jsonObj = app.serializer.projectToObject(project, "/path/to/project");
 }
 ```
 
-### JSON からの復元
+### Restoring from JSON
 
 ```typescript
 import { Application, Models } from "typedoc";
@@ -334,29 +334,29 @@ const project = app.deserializer.reviveProject(
   }
 );
 
-// 復元された ProjectReflection を使用
+// Use the restored ProjectReflection
 await app.generateDocs(project, "./docs");
 ```
 
-### カスタムシリアライザー
+### Custom serializer
 
 ```typescript
 import { Application, Serializer, DeclarationReflection } from "typedoc";
 
 export function load(app: Application) {
-  // シリアライゼーション開始時のリスナー
+  // Listener for serialization start
   app.serializer.on(Serializer.EVENT_BEGIN, () => {
     app.logger.info("Serialization started");
   });
 
-  // シリアライゼーション完了時のリスナー
+  // Listener for serialization completion
   app.serializer.on(Serializer.EVENT_END, () => {
     app.logger.info("Serialization completed");
   });
 }
 ```
 
-### JSON 出力の後処理
+### Post-processing JSON output
 
 ```typescript
 import { Application } from "typedoc";
@@ -370,7 +370,7 @@ const project = await app.convert();
 if (project) {
   const json = app.serializer.projectToObject(project, "/path/to/project");
 
-  // JSON を加工
+  // Post-process the JSON
   const enhanced = {
     ...json,
     generatedAt: new Date().toISOString(),
@@ -381,18 +381,18 @@ if (project) {
 }
 ```
 
-## 注意点
+## Notes
 
-- `Serializer` は `EventDispatcher` を継承し、begin/end イベントを発火する
-- `Deserializer` はイベントを発火しない
-- `JSONOutput` 名前空間の型は外部ツールで JSON を消費する際に有用
-- `Deserializer.defer()` はデシリアライゼーション完了後に実行されるため、相互参照の解決に適している
-- `oldIdToNewId` マッピングは複数プロジェクトを統合する際の ID 衝突を解決する
-- JSON 出力の形式は TypeDoc のバージョン間で変更される可能性がある
+- `Serializer` extends `EventDispatcher` and fires begin/end events
+- `Deserializer` does not fire events
+- Types in the `JSONOutput` namespace are useful when consuming the JSON from external tools
+- `Deserializer.defer()` runs after deserialization completes, making it suitable for resolving cross-references
+- The `oldIdToNewId` mapping resolves ID collisions when merging multiple projects
+- The JSON output format may change between TypeDoc versions
 
-## 関連
+## Related
 
 - [Application](./application.md)
 - [Reflections](./reflections.md)
 - [Types](./types.md)
-- [アーキテクチャ概要](../development/overview.md)
+- [Architecture Overview](../development/overview.md)

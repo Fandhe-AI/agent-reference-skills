@@ -88,6 +88,13 @@ skills/storybook/
       builder-api.md
       vite.md
       webpack.md
+    sharing/
+      README.md
+      design-integrations.md
+      embed.md
+      package-composition.md
+      publish-storybook.md
+      storybook-composition.md
     api/
       README.md
       arg-types.md
@@ -103,6 +110,7 @@ skills/storybook/
         core.md
         docs.md
         env.md
+        features.md
         framework.md
         indexers.md
         log-level.md
@@ -184,6 +192,7 @@ skills/storybook/
 | Actions、Controls、Viewport、Backgrounds、Toolbars、Highlight | essentials | [references/essentials/README.md](references/essentials/README.md) |
 | CSS、TypeScript、Theming、Telemetry、環境変数、サイドバー、アドオン登録、コンパイラー | configure | [references/configure/README.md](references/configure/README.md) |
 | Vite、Webpack、Builder API | builders | [references/builders/README.md](references/builders/README.md) |
+| Storybook の公開・共有、デザインツール連携、Composition、埋め込み | sharing | [references/sharing/README.md](references/sharing/README.md) |
 | CSF、ArgTypes、Parameters、CLI オプション、新フレームワーク追加 | api | [references/api/README.md](references/api/README.md) |
 | main.js / main.ts の framework、stories、addons、features 等の設定 | api/main-config | [references/api/main-config/README.md](references/api/main-config/README.md) |
 | Canvas、Source、Meta、Controls 等の Doc Block コンポーネント | api/doc-blocks | [references/api/doc-blocks/README.md](references/api/doc-blocks/README.md) |

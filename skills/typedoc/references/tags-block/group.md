@@ -1,16 +1,16 @@
 # @group
 
-ドキュメント項目のグルーピングと表示を制御するタグ群。このページでは `@group`、`@groupDescription`、`@showGroups`、`@hideGroups`、`@disableGroups` を扱う。
+Tags controlling the grouping and display of documentation items. This page covers `@group`, `@groupDescription`, `@showGroups`, `@hideGroups`, and `@disableGroups`.
 
-## 構文
-
-```
-@group グループ名
-```
+## Signature / Usage
 
 ```
-@groupDescription グループ名
-グループの説明文
+@group Group Name
+```
+
+```
+@groupDescription Group Name
+Description text for the group
 ```
 
 ```
@@ -19,30 +19,26 @@
 @disableGroups
 ```
 
-## 詳細説明
+### @group (block tag)
 
-### @group（ブロックタグ）
+Places related API items under a common heading in the page index.
 
-関連するAPI項目をページのインデックス内で共通のヘッダー下に配置する。
+- Specify it multiple times to display a single reflection under multiple headings
+- Unlike `@category`, if `@group` is not specified, reflections are automatically grouped by kind
+- Custom member type simulation is possible
+- `@event` is equivalent to `@group Events`; `@eventProperty` is also placed in the Events group
 
-- 複数回指定して1つのリフレクションを複数の見出し下に表示可能
-- `@category` と異なり、`@group` が指定されていない場合はリフレクションが種類別に自動グルーピングされる
-- カスタムメンバー型のシミュレーションが可能
-- `@event` は `@group Events` と同等、`@eventProperty` も Events グループに配置される
+### @groupDescription (block tag)
 
-### @groupDescription（ブロックタグ）
+Provides additional context for a reflection group. The first line is used as the group name, and the following lines are used as the description. Place it on the comment of the parent reflection that contains the group.
 
-リフレクショングループに追加のコンテキストを提供する。最初の行がグループ名として、続く行が説明として使用される。グループを含む親リフレクションのコメントに配置する。
+### @showGroups / @hideGroups (modifier tags)
 
-### @showGroups / @hideGroups（モディファイアタグ）
+Modifier tags that selectively control the visibility of groups in the navigation tree. They work together with the `navigation.includeGroups` option. They affect only navigation, not page content.
 
-ナビゲーションツリーにおけるグループの表示を選択的に制御するモディファイアタグ。`navigation.includeGroups` オプションと連携する。ナビゲーションにのみ影響し、ページの内容には影響しない。
+### @disableGroups (modifier tag)
 
-### @disableGroups（モディファイアタグ）
-
-親要素単位でTypeDocの自動グルーピングを無効にする。メンバーが少ないドキュメントにのみ推奨される。
-
-## コード例
+Disables TypeDoc's automatic grouping on a per-parent basis. Recommended only for documentation with few members.
 
 ```typescript
 /**
@@ -67,15 +63,15 @@ export class MyComponent {
 }
 ```
 
-## 注意点
+## Notes
 
-- `@group` を指定しない場合、リフレクションは種類別（メソッド、プロパティなど）に自動グルーピングされる
-- `@disableCategories` タグは存在しない（カテゴリは `@category` で明示的に要求された場合のみ作成されるため）
-- `@showGroups` と `@hideGroups` はナビゲーションツリーのみに影響する
-- `@event` は `@group Events` のショートカット
+- If `@group` is not specified, reflections are automatically grouped by kind (methods, properties, etc.)
+- There is no `@disableCategories` tag (categories are only created when explicitly requested via `@category`)
+- `@showGroups` and `@hideGroups` affect only the navigation tree
+- `@event` is a shortcut for `@group Events`
 
-## 関連
+## Related
 
-- [@category](./category.md) -- 代替のカテゴリ分類メカニズム
-- `--searchGroupBoosts` オプション
-- `--navigation.includeGroups` オプション
+- [@category](./category.md) -- an alternative categorization mechanism
+- `--searchGroupBoosts` option
+- `--navigation.includeGroups` option

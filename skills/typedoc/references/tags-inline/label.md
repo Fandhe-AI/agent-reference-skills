@@ -1,42 +1,28 @@
 # @label
 
-オーバーロードされた関数シグネチャに名前を付けるインラインタグ。付けた名前は宣言リファレンス（Declaration Reference）で参照できる。TSDoc仕様（https://tsdoc.org/pages/tags/label/）に対応。
+An inline tag that assigns a name to an overloaded function signature. The assigned name can then be referenced via a declaration reference. Conforms to the TSDoc spec (https://tsdoc.org/pages/tags/label/).
 
-## 構文
+## Signature / Usage
 
 ```
 {@label IDENTIFIER}
 ```
 
-### 識別子の制約
-
-`@label` に指定する識別子は以下の規則に従う必要がある：
-
-- 大文字アルファベット（A-Z）、数字（0-9）、アンダースコア（_）のみ使用可能
-- 数字で始めることはできない
-- この規則に合致しない場合、TypeDocは宣言リファレンスの作成時にラベルを利用できない
-
-## 詳細説明
-
-### 目的
-
-関数のオーバーロードが複数存在する場合、パラメータシグネチャではなく名前で特定のオーバーロードを参照できるようにする。`@label` で付けた名前は `@link` タグの宣言リファレンス構文で使用できる。
-
-### 宣言リファレンスでの参照
-
-ラベルを付けたシグネチャは、コロン（`:`）区切りで参照する：
+Referencing a labeled signature from a declaration reference (colon-separated):
 
 ```
 {@link functionName:LABEL_NAME}
 ```
 
-### TSDocとの互換性
+### Identifier constraints
 
-TSDocは `@label` をコアタグとして定義しているが、TypeDocが実装している宣言リファレンスの形式（`functionName:LABEL`）はTSDoc標準では許可されていない。TypeDocは宣言リファレンスの文法を拡張してこの機能をサポートしている。
+The identifier passed to `@label` must follow these rules:
 
-## コード例
+- Only uppercase letters (A-Z), digits (0-9), and underscores (`_`) are allowed
+- Cannot start with a digit
+- If these rules are violated, TypeDoc cannot use the label when building declaration references
 
-### オーバーロード関数のラベル付け
+### Examples
 
 ```typescript
 /** {@label BASE} */
@@ -51,36 +37,33 @@ export function round(x: number, y = 0): number {
 }
 ```
 
-### ラベルを使った参照
-
 ```typescript
 /**
- * 精度指定で丸めた値。
- * 丸め処理には {@link round:PRECISION} を使用。
+ * Value rounded with a specified precision.
+ * Rounding uses {@link round:PRECISION}.
  */
 export const rounded = round(123.456, 2);
 ```
 
-### 別の関数からの参照
-
 ```typescript
 /**
- * {@link round:BASE} は整数への丸めを行い、
- * {@link round:PRECISION} は指定桁数での丸めを行う。
+ * {@link round:BASE} rounds to an integer, while
+ * {@link round:PRECISION} rounds to a specified number of digits.
  */
 export function formatNumber(value: number): string {
   return round(value, 2).toFixed(2);
 }
 ```
 
-## 注意点
+## Notes
 
-- 識別子は大文字英字・数字・アンダースコアのみ（例: `BASE`, `PRECISION`, `WITH_OPTIONS`）
-- 識別子は数字で始められない（例: `2ND` は不可、`SECOND` は可）
-- TypeDocの宣言リファレンス拡張を使用しているため、標準TSDocとの完全な互換性はない
-- 主にオーバーロード関数の特定シグネチャを明確に参照するために使用する
+- `@label` lets a specific overload be referenced by name instead of by its parameter signature, when a function has multiple overloads.
+- The name assigned by `@label` can be used with the `@link` tag's declaration-reference syntax.
+- Identifiers may only contain uppercase letters, digits, and underscores (e.g. `BASE`, `PRECISION`, `WITH_OPTIONS`), and cannot start with a digit (e.g. `2ND` is invalid, `SECOND` is valid).
+- TSDoc defines `@label` as a core tag, but the declaration-reference form TypeDoc implements (`functionName:LABEL`) is not permitted by the TSDoc standard itself — TypeDoc extends the declaration-reference grammar to support it.
+- Primarily used to unambiguously reference a specific signature of an overloaded function.
 
-## 関連
+## Related
 
-- [@link](./link.md) — ラベルを参照するためのリンクタグ
-- [Declaration References](../guides/declaration-references.md) — 宣言リファレンスの構文
+- [@link](./link.md) — link tag used to reference labels
+- [Declaration References](../guides/declaration-references.md) — declaration reference syntax

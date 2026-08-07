@@ -1,24 +1,9 @@
-# Git Data API
+# git
 
-Git データベースへの低レベルアクセスを提供するAPIセクション。
-
-## エンドポイントカテゴリ
-
-| カテゴリ | 説明 |
-|---------|------|
-| [Blobs](blobs.md) | Gitブロブ（ファイルコンテンツ）の作成・取得 |
-| [Commits](commits.md) | 低レベルGitコミットオブジェクトの作成・取得 |
-| [References](refs.md) | Gitリファレンス（ブランチ・タグポインタ）の管理 |
-| [Tags](tags.md) | 注釈付きタグオブジェクトの作成・取得 |
-| [Trees](trees.md) | Gitツリーオブジェクト（ディレクトリ構造）の作成・取得 |
-
-## 概要
-
-Git Data APIは、GitHubリポジトリのGitオブジェクトデータベースに直接アクセスする手段を提供する。通常のREST APIよりも低レベルな操作が可能で、コミットやブランチをプログラム的に構築する場合に使用する。
-
-## 一般的なワークフロー
-
-1. ブロブを作成してファイルコンテンツを格納
-2. ツリーを作成してディレクトリ構造を定義
-3. コミットを作成してツリーとメッセージを紐付け
-4. リファレンスを更新してブランチを新しいコミットに向ける
+| Name | Description | Path |
+|------|-------------|------|
+| Git Blobs API | Gitブロブ（バイナリラージオブジェクト）を作成・取得するAPI。ブロブはファイルコンテンツを格納するGitオブジェクト。 | [blobs.md](./blobs.md) |
+| Git Commits API | 低レベルのGitコミットオブジェクトを作成・取得するAPI。通常のCommits APIとは異なり、Gitデータベースに直接コミットオブジェクトを作成する。 | [commits.md](./commits.md) |
+| Git References API | Gitリファレンス（ブランチやタグのポインタ）を管理するAPI。リファレンスはコミットSHAへのポインタ。 | [refs.md](./refs.md) |
+| Git Tags API | 注釈付きタグ（annotated tag）オブジェクトを作成・取得するAPI。軽量タグ（lightweight tag）はReferences APIで直接作成する。 | [tags.md](./tags.md) |
+| Git Trees API | Gitツリーオブジェクト（ディレクトリ構造）を作成・取得するAPI。ツリーはファイルとサブディレクトリの一覧を表す。 | [trees.md](./trees.md) |

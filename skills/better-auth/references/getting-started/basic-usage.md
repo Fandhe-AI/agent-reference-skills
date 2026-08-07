@@ -1,10 +1,10 @@
 # Basic Usage
 
-コア認証パターン: メール/パスワード認証、ソーシャル OAuth、セッション管理、サインアウト。
+Core authentication patterns: email/password authentication, social OAuth, session management, sign-out.
 
-## Email & Password
+## Signature / Usage
 
-### サーバー設定
+### Email & Password — server setup
 
 ```typescript
 import { betterAuth } from "better-auth";
@@ -18,15 +18,7 @@ export const auth = betterAuth({
 });
 ```
 
-### 設定オプション
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `enabled` | boolean | false | メール/パスワード認証の有効化 |
-| `autoSignIn` | boolean | true | サインアップ後の自動サインイン |
-| `minPasswordLength` | number | 8 | 最小パスワード文字数 |
-
-### サインアップ (クライアント)
+### Email & Password — sign up (client)
 
 ```typescript
 const { data, error } = await authClient.signUp.email({
@@ -36,13 +28,13 @@ const { data, error } = await authClient.signUp.email({
   image: "https://example.com/avatar.png",
   callbackURL: "/dashboard",
 }, {
-  onRequest: (ctx) => { /* ローディング表示 */ },
-  onSuccess: (ctx) => { /* リダイレクトまたは UI 更新 */ },
+  onRequest: (ctx) => { /* show loading state */ },
+  onSuccess: (ctx) => { /* redirect or update UI */ },
   onError: (ctx) => { alert(ctx.error.message); },
 });
 ```
 
-### サインイン (クライアント)
+### Email & Password — sign in (client)
 
 ```typescript
 const { data, error } = await authClient.signIn.email({
@@ -53,7 +45,7 @@ const { data, error } = await authClient.signIn.email({
 });
 ```
 
-### サインイン (サーバー側)
+### Email & Password — sign in (server)
 
 ```typescript
 const response = await auth.api.signInEmail({
@@ -62,9 +54,7 @@ const response = await auth.api.signInEmail({
 });
 ```
 
-## Social Sign-On (OAuth)
-
-### サーバー設定
+### Social Sign-On (OAuth) — server setup
 
 ```typescript
 export const auth = betterAuth({
@@ -77,7 +67,7 @@ export const auth = betterAuth({
 });
 ```
 
-### クライアント実装
+### Social Sign-On (OAuth) — client
 
 ```typescript
 await authClient.signIn.social({
@@ -85,15 +75,13 @@ await authClient.signIn.social({
   callbackURL: "/dashboard",
   errorCallbackURL: "/error",
   newUserCallbackURL: "/welcome",
-  disableRedirect: true,  // 手動リダイレクト
+  disableRedirect: true,  // manual redirect
 });
 ```
 
-サポートプロバイダー: Apple, Google, GitHub, Discord, LinkedIn, Twitter/X, PayPal, Slack, Twitch など 40 以上。
+Supported providers: Apple, Google, GitHub, Discord, LinkedIn, Twitter/X, PayPal, Slack, Twitch, and 40+ more.
 
-## セッション管理
-
-### クライアント側 (Hook)
+### Session management — client (hook)
 
 ```typescript
 // React
@@ -103,16 +91,16 @@ const { data: session, isPending, error, refetch } = authClient.useSession();
 const session = authClient.useSession(); // { data, isPending, error, refetch }
 
 // Svelte
-const session = authClient.useSession(); // リアクティブストア
+const session = authClient.useSession(); // reactive store
 ```
 
-### クライアント側 (Async)
+### Session management — client (async)
 
 ```typescript
 const { data: session, error } = await authClient.getSession();
 ```
 
-### サーバー側
+### Session management — server
 
 ```typescript
 // Next.js
@@ -127,12 +115,12 @@ const session = await auth.api.getSession({
 });
 ```
 
-## サインアウト
+### Sign out
 
 ```typescript
 await authClient.signOut();
 
-// リダイレクト付き
+// With redirect
 await authClient.signOut({
   fetchOptions: {
     onSuccess: () => router.push("/login"),
@@ -140,9 +128,7 @@ await authClient.signOut({
 });
 ```
 
-## プラグイン例: 二要素認証
-
-### サーバーセットアップ
+### Plugin example: two-factor authentication
 
 ```typescript
 import { twoFactor } from "better-auth/plugins";
@@ -152,13 +138,11 @@ export const auth = betterAuth({
 });
 ```
 
-プラグイン追加後にマイグレーションを実行:
+Run a migration after adding a plugin:
 
 ```bash
 npx auth migrate
 ```
-
-### クライアントセットアップ
 
 ```typescript
 import { createAuthClient } from "better-auth/client";
@@ -171,7 +155,7 @@ const authClient = createAuthClient({
 });
 ```
 
-### 2FA メソッド
+2FA methods:
 
 ```typescript
 await authClient.twoFactor.enable({ password });
@@ -179,16 +163,28 @@ await authClient.twoFactor.disable({ password });
 await authClient.twoFactor.verifyTOTP({ code: "123456", trustDevice: true });
 ```
 
-## 利用可能なプラグイン
+## Options / Props
 
-username, magic link, passkey, email-OTP, JWT, organization, SSO, SAML, API keys など 50 以上のプラグイン。
+`emailAndPassword` configuration options:
 
-## 注意点
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `enabled` | boolean | `false` | Enables email/password authentication |
+| `autoSignIn` | boolean | `true` | Automatically signs in after sign-up |
+| `minPasswordLength` | number | `8` | Minimum password length |
 
-- クライアントメソッドは常にクライアント側から呼び出すこと（サーバー側からは使用しない）
-- `autoSignIn: false` でサインアップ後の自動サインインを無効化可能
-- プラグイン追加後は必ず `npx auth migrate` でスキーマ変更を適用
-- パスワードはデフォルトで最低 8 文字（設定変更可能）
-- 本番環境では常に HTTPS を使用
-- セキュアな Cookie がセッション管理に適用される
-- メール検証をサインイン前に必須にすることが可能
+50+ plugins are available, including username, magic link, passkey, email-OTP, JWT, organization, SSO, SAML, and API keys.
+
+## Notes
+
+- Always call client methods from the client side (do not use them from the server)
+- Set `autoSignIn: false` to disable automatic sign-in after sign-up
+- Always run `npx auth migrate` to apply schema changes after adding a plugin
+- Passwords require a minimum of 8 characters by default (configurable)
+- Always use HTTPS in production
+- Secure cookies are applied to session management
+- Email verification can be required before sign-in
+
+## Related
+
+- [Installation](./installation.md)

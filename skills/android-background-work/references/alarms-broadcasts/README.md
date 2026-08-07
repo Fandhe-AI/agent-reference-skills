@@ -1,10 +1,10 @@
-# alarms-broadcasts
+# Alarms and Broadcasts
 
 | Name | Description | Path |
 |------|-------------|------|
 | Alarm types | The `type` argument passed to `AlarmManager` scheduling methods, controlling the clock base and whether the device wakes up. | [alarm-types.md](./alarm-types.md) |
 | AlarmManager | System service that enables time-based operations outside your app's lifetime, firing an `Intent` (via `PendingIntent`) at a set time or interval, even while the device sleeps. | [alarmmanager.md](./alarmmanager.md) |
-| Boot-completed | `AlarmManager` alarms do not survive a device reboot; apps that need alarms to persist must reschedule them when the system finishes booting. | [boot-completed.md](./boot-completed.md) |
+| Boot-completed Rescheduling | `AlarmManager` alarms do not survive a device reboot; apps that need alarms to persist must reschedule them when the system finishes booting. | [boot-completed.md](./boot-completed.md) |
 | BroadcastReceiver | Component that receives broadcast messages from the Android system or other apps, similar to a publish-subscribe pattern. Delivery timing is not guaranteed. | [broadcastreceiver.md](./broadcastreceiver.md) |
 | Doze and App Standby | System power-management states that defer background CPU/network activity, alarms, and jobs when the device is idle, to reduce battery consumption. | [doze-app-standby.md](./doze-app-standby.md) |
 | Exact alarm permissions | Runtime and manifest permissions required to schedule exact alarms (`setExact`, `setExactAndAllowWhileIdle`, `setAlarmClock`) on Android 12+. | [exact-alarm-permissions.md](./exact-alarm-permissions.md) |
@@ -15,3 +15,6 @@
 | Sending broadcasts | Dispatch an `Intent` to matching receivers, either as a normal (unordered) broadcast or an ordered broadcast that receivers can propagate results through or abort. | [sending-broadcasts.md](./sending-broadcasts.md) |
 | User-Initiated Data Transfer Jobs | `JobScheduler` job type (Android 14 / API 34+) for user-initiated, long-running data transfers (e.g. large file downloads/uploads) that must start immediately and run under a mandatory foreground notification rather than waiting for standard `JobScheduler` constraints. | [user-initiated-data-transfer.md](./user-initiated-data-transfer.md) |
 | WakeLock and PowerManager | `android.os.PowerManager` API for keeping the CPU (and optionally the screen) on past its normal sleep timeout; the mechanism `AlarmManager`- and `BroadcastReceiver.goAsync()`-triggered background work relies on to finish before the device suspends again. | [wakelock.md](./wakelock.md) |
+| Follow Wake Lock Best Practices | Practices for correctly acquiring, holding, and releasing a `PowerManager.WakeLock` to avoid battery-life pitfalls and stuck wake locks. | [wakelock-best-practices.md](./wakelock-best-practices.md) |
+| Debug Wake Locks Locally | Tools for finding wake locks held by a locally-running app, including ones acquired implicitly by libraries such as WorkManager without explicit app code. | [wakelock-debug-locally.md](./wakelock-debug-locally.md) |
+| Identify and Optimize Wake Lock Use Cases | Reference of wake lock name patterns reported by debugging tools and Play vitals, mapped to the API/service that acquired them, with per-source optimization recommendations. | [wakelock-identify-use-cases.md](./wakelock-identify-use-cases.md) |

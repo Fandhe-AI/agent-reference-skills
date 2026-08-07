@@ -8,82 +8,44 @@ OpenAPI スキーマから TypeScript の型・インターフェースを生成
 npm install --save-dev @kubb/plugin-ts
 ```
 
-## 設定オプション
+## 設定オプション（v5）
 
-### output
-
-| オプション | 型 | デフォルト | 説明 |
-|-----------|-----|----------|------|
-| `output.path` | `string` | `'types'` | 出力先パス |
-| `output.barrelType` | `'all' \| 'named' \| 'propagate' \| false` | `'named'` | バレルファイル制御 |
-| `output.banner` | `string \| (oas: Oas) => string` | — | ファイル先頭コメント |
-| `output.footer` | `string \| (oas: Oas) => string` | — | ファイル末尾コメント |
-| `output.override` | `boolean` | `false` | 既存ファイル上書き |
-
-### 型生成オプション
+`enumType` / `enumSuffix` / `enumTypeSuffix` / `enumKeyCasing` は単一の `enum` オブジェクトに統合された。`dateType` / `integerType` / `unknownType` / `emptySchemaType` は `adapterOas` に移動した。`contentType` / `paramsCasing` / `generators` は削除され、`transformers.name` は `resolver` に置き換わった。
 
 | オプション | 型 | デフォルト | 説明 |
 |-----------|-----|----------|------|
-| `syntaxType` | `'type' \| 'interface'` | `'type'` | type alias か interface か |
-| `enumType` | `'enum' \| 'asConst' \| 'asPascalConst' \| 'constEnum' \| 'literal' \| 'inlineLiteral'` | `'asConst'` | enum の表現形式（v5 で `inlineLiteral` がデフォルト化） |
-| `enumSuffix` | `string` | `'enum'` | enum 名のサフィックス |
-| `enumTypeSuffix` | `string` | — | `enumType: asConst \| asPascalConst` 使用時の型名サフィックス（v4.37.0+） |
-| `enumKeyCasing` | `'screamingSnakeCase' \| 'snakeCase' \| 'pascalCase' \| 'camelCase' \| 'none'` | `'none'` | enum キーのケーシング |
-
-### データ型オプション
-
-| オプション | 型 | デフォルト | 説明 |
-|-----------|-----|----------|------|
-| `dateType` | `'string' \| 'date'` | `'string'` | 日付フィールドの型 |
-| `integerType` | `'number' \| 'bigint'` | `'bigint'` | int64 の型 |
-| `unknownType` | `'any' \| 'unknown' \| 'void'` | `'any'` | 不明な型のフォールバック |
-| `emptySchemaType` | `'any' \| 'unknown' \| 'void'` | `unknownType` の値 | 空スキーマの型 |
+| `output` | `Output` | `{ path: 'types' }` | 出力先パス |
+| `group` | `Group` | — | tag / path によるフォルダー分割（`output.mode: 'directory'` 必須） |
+| `enum` | `EnumOptions` | `{ type: 'asConst', … }` | enum の表現形式・ケーシングをまとめて指定 |
+| `syntaxType` | `'type' \| 'interface'` | `'type'` | オブジェクトスキーマを type alias か interface で出力 |
 | `optionalType` | `'questionToken' \| 'undefined' \| 'questionTokenAndUndefined'` | `'questionToken'` | オプショナルフィールドの表記 |
 | `arrayType` | `'array' \| 'generic'` | `'array'` | 配列構文（`Type[]` vs `Array<Type>`） |
-
-### 詳細オプション
-
-| オプション | 型 | デフォルト | 説明 |
-|-----------|-----|----------|------|
-| `contentType` | `'application/json' \| string` | — | コンテンツタイプ指定 |
-| `paramsCasing` | `'camelcase'` | — | パラメータ名を camelCase に変換 |
-| `group.type` | `'tag'` | — | タグによるファイルグループ化 |
-| `group.name` | `(context) => string` | — | グループ名カスタマイズ |
-
-### フィルタリング
-
-| オプション | 型 | 説明 |
-|-----------|-----|------|
-| `include` | `Array<{type, pattern}>` | 特定タグ/operationId/path/method/contentType を含める |
-| `exclude` | `Array<{type, pattern}>` | 特定タグ/operationId/path/method/contentType を除外 |
-| `override` | `Array<{type, pattern, options}>` | 条件付きオプションオーバーライド |
-| `transformers.name` | `(name, type?) => string` | 生成名のカスタマイズ |
-| `generators` | `Generator[]` | カスタムジェネレーター |
+| `include` | `Array<Include>` | — | 対象を絞り込むフィルタリング |
+| `exclude` | `Array<Exclude>` | — | 対象を除外するフィルタリング |
+| `override` | `Array<Override>` | — | パターン単位のオプション上書き |
+| `resolver` | `ResolverPatch<ResolverTs>` | — | 生成名・ファイルパスのカスタマイズ（旧 `transformers.name`） |
+| `macros` | `Array<Macro>` | — | 出力前の AST ノード書き換え |
+| `printer` | `{ nodes?: PrinterTsNodes }` | — | スキーマ種別ごとのハンドラー差し替え |
 
 ## 設定例
 
 ```typescript
-import { defineConfig } from "@kubb/core"
-import { pluginOas } from "@kubb/plugin-oas"
+import { defineConfig } from "kubb/config"
 import { pluginTs } from "@kubb/plugin-ts"
 
 export default defineConfig({
   input: { path: "./petStore.yaml" },
   output: { path: "./src/gen" },
   plugins: [
-    pluginOas(),
     pluginTs({
-      output: { path: "./types" },
+      output: { path: "./types", mode: "directory" },
       exclude: [{ type: "tag", pattern: "store" }],
       group: {
         type: "tag",
         name: ({ group }) => `${group}Controller`,
       },
-      enumType: "asConst",
-      dateType: "date",
-      unknownType: "unknown",
+      enum: { type: "asConst" },
       optionalType: "questionTokenAndUndefined",
-      paramsCasing: "camelcase",
     }),
   ],
 })

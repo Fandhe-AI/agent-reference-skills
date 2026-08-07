@@ -1,35 +1,31 @@
 # @hideconstructor
 
-クラスのコンストラクタを生成されるドキュメントから隠すモディファイアタグ。TypeScript の issue #58653 の回避策として提供されている。
+Modifier tag that hides a class's constructor from the generated documentation. Provided as a workaround for TypeScript issue #58653.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @hideconstructor */
 ```
 
-## 詳細説明
+`@hideconstructor` removes a class's constructor from the documentation. There are two ways to use it:
 
-`@hideconstructor` タグは、クラスのコンストラクタをドキュメントから除去するために使用する。以下の2つの使い方がある:
+1. **On the class declaration**: the class's constructor is excluded from the documentation
+2. **On the constructor itself**: that constructor is removed from the documentation
 
-1. **クラス宣言に付与**: クラスのコンストラクタがドキュメントに含まれなくなる
-2. **コンストラクタ自体に付与**: そのコンストラクタがドキュメントから除去される
+This tag exists as a workaround for TypeScript issue #58653; using `@hidden` or `@ignore` is recommended where possible.
 
-このタグは TypeScript の issue #58653 の回避策として存在しており、可能であれば `@hidden` または `@ignore` タグの使用が推奨される。
-
-## コード例
-
-### クラス宣言に付与
+### Applied to the class declaration
 
 ```typescript
 /** @hideconstructor */
 export class Visibility {
-    /** ドキュメントには含まれない */
+    /** Not included in the documentation */
     constructor() {}
 }
 ```
 
-### コンストラクタに直接付与
+### Applied directly to the constructor
 
 ```typescript
 export class Service {
@@ -44,13 +40,13 @@ export class Service {
 }
 ```
 
-## 注意点
+## Notes
 
-- TypeScript#58653 の回避策として存在する
-- 可能であれば `@hidden` または `@ignore` タグの使用が推奨される
-- 将来の TypeScript バージョンで不要になる可能性がある
+- Exists as a workaround for TypeScript#58653
+- Using `@hidden` or `@ignore` is recommended where possible
+- May become unnecessary in a future TypeScript version
 
-## 関連
+## Related
 
 - [@hidden](./hidden.md)
 - [@ignore](./ignore.md)

@@ -1,18 +1,6 @@
 # Railway
 
-## Credentials
-
-- `RAILWAY_CLIENT_ID`
-- `RAILWAY_CLIENT_SECRET`
-
-### Getting Credentials
-
-Navigate to [Railway Developer Settings](https://railway.com/workspace/developer) and:
-1. Create a new OAuth App
-2. Select "Web Application" as the type
-3. Set redirect URL to `http://localhost:3000/api/auth/callback/railway` (development) or your production domain
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -27,8 +15,6 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
-
 ```typescript
 import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
@@ -40,28 +26,7 @@ const signIn = async () => {
 }
 ```
 
-## リダイレクト URL
-
-- **Development**: `http://localhost:3000/api/auth/callback/railway`
-- **Production**: Your application's domain
-
-## プロバイダー固有の設定・注意点
-
-### Available Scopes
-
-| Scope | Purpose |
-|-------|---------|
-| `openid` | Required (default) |
-| `email` | User email access (default) |
-| `profile` | User name/picture (default) |
-| `offline_access` | Refresh tokens |
-| `workspace:viewer` | Workspace read access |
-| `workspace:member` | Workspace member access |
-| `workspace:admin` | Workspace admin access |
-| `project:viewer` | Project read access |
-| `project:member` | Project member access |
-
-### Scope Configuration
+Restrict or extend scopes:
 
 ```typescript
 railway: {
@@ -71,9 +36,7 @@ railway: {
 }
 ```
 
-### Special Requirements
-
-For `offline_access` scope, include `prompt: "consent"`:
+For the `offline_access` scope, also set `prompt: "consent"`:
 
 ```typescript
 railway: {
@@ -84,8 +47,37 @@ railway: {
 }
 ```
 
-### Security Notes
+## Options / Props
 
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `clientId` | string | — | `RAILWAY_CLIENT_ID`, obtained from [Railway Developer Settings](https://railway.com/workspace/developer) |
+| `clientSecret` | string | — | `RAILWAY_CLIENT_SECRET`, obtained from [Railway Developer Settings](https://railway.com/workspace/developer) |
+| `scope` | string[] | `["openid", "email", "profile"]` | Additional scopes (see table below) |
+| `prompt` | string | — | Set to `"consent"` to obtain refresh tokens with `offline_access` |
+
+Available scopes:
+
+| Scope | Purpose |
+| --- | --- |
+| `openid` | Required (default) |
+| `email` | User email access (default) |
+| `profile` | User name/picture (default) |
+| `offline_access` | Refresh tokens |
+| `workspace:viewer` | Workspace read access |
+| `workspace:member` | Workspace member access |
+| `workspace:admin` | Workspace admin access |
+| `project:viewer` | Project read access |
+| `project:member` | Project member access |
+
+## Notes
+
+- Getting credentials: navigate to [Railway Developer Settings](https://railway.com/workspace/developer), create a new OAuth App, select "Web Application" as the type, and set the redirect URL to `http://localhost:3000/api/auth/callback/railway` (development) or your production domain
+- Redirect URL — development: `http://localhost:3000/api/auth/callback/railway`; production: your application's domain
 - Railway implements PKCE, which Better Auth handles automatically
-- Update redirect URL if you modify auth base path
+- Update the redirect URL if you modify the auth base path
 - Store credentials securely in environment variables
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

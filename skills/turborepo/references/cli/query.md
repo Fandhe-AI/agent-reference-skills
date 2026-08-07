@@ -1,51 +1,46 @@
 # turbo query
 
-モノレポに対して GraphQL クエリを実行し、パッケージ依存関係やタスク関係を分析する。
+## Signature / Usage
 
 ```bash
 turbo query [query|file.gql]
 ```
 
-## 使用方法
+Runs GraphQL queries against the monorepo to analyze package dependencies and task relationships.
 
 ```bash
-turbo query                              # インタラクティブモード
-turbo query "query { packages { items { name } } }"  # 直接実行
-turbo query query.gql                    # ファイルから
+turbo query                              # interactive mode
+turbo query "query { packages { items { name } } }"  # run directly
+turbo query query.gql                    # from a file
 ```
 
-## オプション
+## Options / Props
 
-| オプション | 説明 |
+| Option | Description |
 |---|---|
-| `--schema` | GraphQL スキーマを出力 |
-| `--variables` / `-V` | クエリ変数の JSON ファイルパス |
-| `--filter` / `-F` | pnpm スタイルのセレクターでパッケージを絞り込む |
-| `--output` | 出力形式（`json` または `pretty`） |
+| `--schema` | Output the GraphQL schema |
+| `--variables` / `-V` | Path to a JSON file of query variables |
+| `--filter` / `-F` | Filter packages using pnpm-style selectors |
+| `--output` | Output format (`json` or `pretty`) |
 
-## turbo query ls
+## Notes
 
-パッケージ一覧表示のショートハンド。
+- `turbo query ls` — shorthand for listing packages:
+  ```bash
+  turbo query ls              # all packages
+  turbo query ls web          # details for a specific package
+  turbo query ls --affected   # only changed packages
+  turbo query ls --filter=web... --output json
+  ```
+- `turbo query affected` — identifies packages/tasks impacted by changes:
+  ```bash
+  turbo query affected [flags]
+  ```
 
-```bash
-turbo query ls              # 全パッケージ
-turbo query ls web          # 特定パッケージの詳細
-turbo query ls --affected   # 変更のあるパッケージのみ
-turbo query ls --filter=web... --output json
-```
-
-## turbo query affected
-
-変更の影響を受けるパッケージ・タスクを特定する。
-
-```bash
-turbo query affected [flags]
-```
-
-| フラグ | 説明 |
-|---|---|
-| `--tasks [names]` | タスク名でフィルタ |
-| `--packages [names]` | パッケージ名でフィルタ |
-| `--base [ref]` | 比較ベースの Git ref |
-| `--head [ref]` | 比較対象 HEAD（デフォルト: `HEAD`） |
-| `--exit-code` | 変更あり: 1、なし: 0、エラー: 2 |
+  | Flag | Description |
+  |---|---|
+  | `--tasks [names]` | Filter by task name |
+  | `--packages [names]` | Filter by package name |
+  | `--base [ref]` | Git ref to compare from |
+  | `--head [ref]` | Git ref to compare against (default: `HEAD`) |
+  | `--exit-code` | Changes found: 1, none: 0, error: 2 |

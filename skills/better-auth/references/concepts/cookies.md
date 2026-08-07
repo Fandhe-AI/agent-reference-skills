@@ -1,27 +1,10 @@
 # Cookies
 
-Better Auth は Cookie を使用してセッショントークン、セッションデータ、OAuth 状態、その他の認証関連情報を保存する。すべての Cookie は auth オプションの `secret` キーまたは `BETTER_AUTH_SECRET` 環境変数を使用して暗号的に署名される。バージョン管理されたシークレットでのローテーション時、暗号化された Cookie データは現在のキーを自動的に使用し、以前のキーでも復号可能。
+Better Auth uses cookies to store session tokens, session data, OAuth state, and other authentication-related information. All cookies are cryptographically signed using the `secret` key in the auth options or the `BETTER_AUTH_SECRET` environment variable. During rotation with versioned secrets, encrypted cookie data automatically uses the current key while still being decryptable with previous keys.
 
-## 設定オプション
+## Signature / Usage
 
-| Option | Purpose | Default | Type |
-|--------|---------|---------|------|
-| `cookiePrefix` | 全 Cookie 名のプレフィックス | `"better-auth"` | string |
-| `cookies` | カスタム Cookie 名と属性 | 下記デフォルト参照 | object |
-| `crossSubDomainCookies.enabled` | サブドメイン間共有の有効化 | `false` | boolean |
-| `crossSubDomainCookies.domain` | Cookie 共有のルートドメイン | — | string |
-| `useSecureCookies` | 非本番環境でも Secure フラグを強制 | `false` | boolean |
-
-### デフォルト Cookie
-
-- **`session_token`**: セッショントークンを保存
-- **`session_data`**: Cookie キャッシュ有効時にセッションデータを保存
-- **`dont_remember`**: `rememberMe` 無効時のフラグを保存
-- **`two_factor`**: 二要素認証プラグイン使用時（プラグイン依存）
-
-## コード例
-
-### カスタム Cookie プレフィックスの設定
+### Setting a custom cookie prefix
 
 ```typescript
 import { betterAuth } from "better-auth";
@@ -33,7 +16,7 @@ export const auth = betterAuth({
 });
 ```
 
-### カスタム Cookie 名と属性
+### Custom cookie names and attributes
 
 ```typescript
 import { betterAuth } from "better-auth";
@@ -44,7 +27,7 @@ export const auth = betterAuth({
       session_token: {
         name: "custom_session_token",
         attributes: {
-          // カスタム Cookie 属性を設定
+          // Set custom cookie attributes
         },
       },
     },
@@ -52,7 +35,7 @@ export const auth = betterAuth({
 });
 ```
 
-### クロスサブドメイン設定
+### Cross-subdomain configuration
 
 ```typescript
 import { betterAuth } from "better-auth";
@@ -72,7 +55,7 @@ export const auth = betterAuth({
 });
 ```
 
-### Secure Cookie の強制
+### Forcing secure cookies
 
 ```typescript
 import { betterAuth } from "better-auth";
@@ -84,24 +67,22 @@ export const auth = betterAuth({
 });
 ```
 
-## Safari ITP とクロスドメインソリューション
+### Safari ITP and cross-domain solutions
 
-Safari の Intelligent Tracking Prevention (ITP) はサードパーティ Cookie をブロックする。フロントエンドと API が異なるドメインにある場合、Safari で認証が失敗する可能性がある。
+Safari's Intelligent Tracking Prevention (ITP) blocks third-party cookies. If the frontend and API are on different domains, authentication can fail in Safari.
 
-### 問題シナリオ
+Problem scenario:
 
 ```
 Frontend: https://app.domainB.com
 API:      https://domainA.com
 ```
 
-`credentials: "include"` 付きリクエストで、Safari は `domainA.com` をサードパーティとして扱い、`Set-Cookie` ヘッダーが無視され、セッションが失敗する。
+With a request using `credentials: "include"`, Safari treats `domainA.com` as third-party, the `Set-Cookie` header is ignored, and the session fails.
 
-### ソリューション 1: リバースプロキシ
+**Solution 1: Reverse proxy** — route API calls through the frontend's domain.
 
-API 呼び出しをフロントエンドのドメインを通じてルーティング:
-
-**Netlify 設定:**
+Netlify configuration:
 
 ```toml
 [[redirects]]
@@ -111,7 +92,7 @@ API 呼び出しをフロントエンドのドメインを通じてルーティ�
   force = true
 ```
 
-**Vercel 設定:**
+Vercel configuration:
 
 ```json
 {
@@ -124,16 +105,14 @@ API 呼び出しをフロントエンドのドメインを通じてルーティ�
 }
 ```
 
-### ソリューション 2: 共有親ドメイン
-
-共通の親ドメイン構造を使用:
+**Solution 2: Shared parent domain** — use a common parent domain structure:
 
 ```
 https://app.example.com
 https://api.example.com
 ```
 
-クロスサブドメイン Cookie を有効化:
+Enable cross-subdomain cookies:
 
 ```typescript
 export const auth = betterAuth({
@@ -146,18 +125,42 @@ export const auth = betterAuth({
 });
 ```
 
-## セキュリティ考慮事項
+## Options / Props
 
-- **HTTP-Only**: 本番環境ではすべての Cookie がデフォルトで `httpOnly`（JavaScript アクセスを防止）
-- **Secure フラグ**: 本番環境では Cookie は自動的に Secure フラグを使用
-- **ドメイン制限**: クロスサブドメイン Cookie は必要な場合のみ有効にし、ドメインは必要最小限のスコープに設定
-- **信頼されないサブドメイン**: 侵害される可能性のあるサブドメインには注意。信頼されないサービスには別ドメインを検討
-- **署名**: Cookie は改ざん防止のため暗号的に署名される
-- **本番モード**: 非本番環境ではセキュリティを強制するために明示的に `useSecureCookies: true` が必要
+| Option | Purpose | Default | Type |
+|--------|---------|---------|------|
+| `cookiePrefix` | Prefix applied to all cookie names | `"better-auth"` | string |
+| `cookies` | Custom cookie names and attributes | see defaults below | object |
+| `crossSubDomainCookies.enabled` | Enable sharing across subdomains | `false` | boolean |
+| `crossSubDomainCookies.domain` | Root domain for cookie sharing | — | string |
+| `useSecureCookies` | Force the Secure flag even in non-production environments | `false` | boolean |
 
-## 注意点
+### Default cookies
 
-- Cookie の命名パターン: `${prefix}.${cookie_name}`（例: `better-auth.session_token`）
-- プラグインは追加の Cookie を導入する可能性がある（プラグインドキュメントを参照）
-- Cookie によるセッションデータキャッシュは明示的な有効化が必要
-- バージョン管理されたシークレットはキーローテーション時の Cookie 復号を自動的に管理
+| Cookie | Description |
+|--------|-------------|
+| `session_token` | Stores the session token |
+| `session_data` | Stores session data when cookie caching is enabled |
+| `dont_remember` | Stores a flag when `rememberMe` is disabled |
+| `two_factor` | Used when the two-factor auth plugin is enabled (plugin-dependent) |
+
+## Notes
+
+- Cookie naming pattern: `${prefix}.${cookie_name}` (e.g. `better-auth.session_token`)
+- Plugins may introduce additional cookies (see plugin documentation)
+- Session data caching via cookies requires explicit opt-in
+- Versioned secrets automatically manage cookie decryption during key rotation
+
+### Security
+
+- **HTTP-Only**: In production, all cookies default to `httpOnly` (preventing JavaScript access)
+- **Secure flag**: In production, cookies automatically use the Secure flag
+- **Domain restriction**: Enable cross-subdomain cookies only when needed, and scope the domain as narrowly as possible
+- **Untrusted subdomains**: Be cautious of subdomains that could be compromised; consider a separate domain for untrusted services
+- **Signing**: Cookies are cryptographically signed to prevent tampering
+- **Production mode**: Non-production environments require explicitly setting `useSecureCookies: true` to enforce security
+
+## Related
+
+- [Session Management](./session-management.md)
+- [Dynamic Base URL](./dynamic-base-url.md)

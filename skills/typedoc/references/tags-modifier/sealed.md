@@ -1,20 +1,16 @@
 # @sealed
 
-TSDoc 互換のために解析されるが、TypeDoc では特定の意味を持たないモディファイアタグ。
+Modifier tag parsed for TSDoc compatibility, but with no specific meaning in TypeDoc.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @sealed */
 ```
 
-## 詳細説明
+TypeDoc parses the `@sealed` tag for compatibility with the TSDoc spec, but does not assign it any specific behavior. Semantically, it is used as a convention to indicate that a class or method should not be overridden in a subclass.
 
-TypeDoc は TSDoc 仕様との互換性のために `@sealed` タグを解析するが、このタグに特定の機能を割り当てていない。セマンティック的には、クラスやメソッドがサブクラスでオーバーライドされるべきでないことを示す規約として使用される。
-
-`--visibilityFilters` オプションで、このタグが付いたメンバーの表示を制御できる。
-
-## コード例
+The `--visibilityFilters` option controls the display of members carrying this tag.
 
 ```typescript
 export class Visibility {
@@ -26,24 +22,24 @@ export class Visibility {
 ```typescript
 export class SecurityManager {
     /**
-     * 認証ロジック。サブクラスでオーバーライドしないこと。
+     * Authentication logic. Must not be overridden in a subclass.
      * @sealed
      */
     authenticate(token: string): boolean {
-        // セキュリティ上の理由でオーバーライド禁止
+        // Overriding is disallowed for security reasons
         return this.validateToken(token);
     }
 }
 ```
 
-## 注意点
+## Notes
 
-- TSDoc 互換のために解析されるが、TypeDoc 固有の機能は付与されない
-- ドキュメントの規約としてオーバーライド禁止を示す用途に使用可能
-- `--visibilityFilters` オプションで表示制御可能
-- TSDoc 仕様に準拠
+- Parsed for TSDoc compatibility, but grants no TypeDoc-specific behavior
+- Can be used as a documentation convention to indicate overriding is disallowed
+- Display can be controlled via the `--visibilityFilters` option
+- Follows the TSDoc spec
 
-## 関連
+## Related
 
 - [@virtual](./virtual.md)
 - [@override](./override.md)

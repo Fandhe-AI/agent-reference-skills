@@ -23,22 +23,24 @@ skills/chakra-ui/
   references/
     get-started/
       README.md
+      ai-llms.md
+      ai-mcp-server.md
+      ai-skills.md
+      changelog.md
       cli.md
+      contributing.md
+      env-iframe.md
+      env-shadow-dom.md
+      figma.md
       framework-next-app.md
       framework-next-pages.md
       framework-remix.md
-      framework-vite.md
       framework-storybook.md
+      framework-tanstack-router.md
+      framework-vite.md
+      installation.md
       migration.md
-      env-iframe.md
-      env-shadow-dom.md
       playground.md
-      figma.md
-      contributing.md
-      changelog.md
-      ai-llms.md
-      ai-rules.md
-      ai-mcp-server.md
     components/
       README.md
       concepts/
@@ -87,6 +89,7 @@ skills/chakra-ui/
       README.md
       ai.md
       app-headers.md
+      app-integrations.md
       app-navbars.md
       authentication.md
       banners.md
@@ -169,7 +172,7 @@ skills/chakra-ui/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
-| インストール、フレームワーク統合（Next.js/Remix/Vite）、環境設定、CLI、移行 | get-started | [references/get-started/README.md](references/get-started/README.md) |
+| インストール、フレームワーク統合（Next.js/Remix/Vite/TanStack Router）、AI 連携（LLMs.txt/MCP Server/AI Skills）、環境設定、CLI、移行 | get-started | [references/get-started/README.md](references/get-started/README.md) |
 | コンポーネントの使い方、Props、バリアント、レイアウト、フォーム、オーバーレイ | components | [references/components/README.md](references/components/README.md) |
 | チャートの表示、BarChart/LineChart/PieChart、useChart、データ可視化 | charts | [references/charts/README.md](references/charts/README.md) |
 | スタイルプロップ、レスポンシブデザイン、ダークモード、CSS 変数、Chakra Factory | styling | [references/styling/README.md](references/styling/README.md) |

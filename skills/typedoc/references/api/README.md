@@ -1,12 +1,12 @@
-# API
+# api
 
 | Name | Description | Path |
 |------|-------------|------|
-| Application | TypeDoc のメインエントリーポイント。TypeScript ソースファイルのドキュメント変換を… | [application.md](./application.md) |
-| Converter | TypeScript ソースコードを Reflection モデルに変換するクラス。Application のサブコ… | [converter.md](./converter.md) |
-| Events | TypeDoc のイベントシステム。Converter と Renderer のライフサイクル全体にわたるイ… | [events.md](./events.md) |
-| Options | TypeDoc と TypeScript のオプション宣言を管理するクラス。型安全なオプションの取得・… | [options-api.md](./options-api.md) |
-| Reflections | TypeDoc の内部モデル。ソースコード中のすべてのドキュメント対象要素（クラス、関数… | [reflections.md](./reflections.md) |
-| Renderer | ProjectReflection を Theme インスタンスで処理し、HTML ドキュメントを出力ディレクトリ… | [renderer.md](./renderer.md) |
-| Serialization | TypeDoc のシリアライゼーションシステム。Reflection モデルと JSON 間の変換を行う Seria… | [serialization.md](./serialization.md) |
-| Types | TypeDoc の型システム。TypeScript の型を表現する 18 の Type サブクラス。 | [types.md](./types.md) |
+| Application | TypeDoc's main entry point. Orchestrates the conversion of TypeScript source files into documentation via the `Converter` and `Renderer`. | [application.md](./application.md) |
+| Converter | Class that converts TypeScript source code into the Reflection model. Operates as a subcomponent of `Application`. | [converter.md](./converter.md) |
+| Events | TypeDoc's event system. An event dispatch mechanism spanning the full lifecycle of the `Converter` and `Renderer`. | [events.md](./events.md) |
+| Options | Class that manages TypeDoc and TypeScript option declarations. Provides type-safe option retrieval and assignment. | [options-api.md](./options-api.md) |
+| Reflections | TypeDoc's internal model. The Reflection hierarchy represents every documentable element in the source code (classes, functions, properties, and so on). | [reflections.md](./reflections.md) |
+| Renderer | Class that processes a `ProjectReflection` through a `Theme` instance and writes the resulting HTML documentation to an output directory. | [renderer.md](./renderer.md) |
+| Serialization | TypeDoc's serialization system. The `Serializer` and `Deserializer` classes convert between the Reflection model and JSON. | [serialization.md](./serialization.md) |
+| Types | TypeDoc's type system. 18 `Type` subclasses representing TypeScript types. | [types.md](./types.md) |

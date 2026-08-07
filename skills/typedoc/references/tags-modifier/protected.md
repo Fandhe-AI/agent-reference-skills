@@ -1,22 +1,18 @@
 # @protected
 
-リフレクションの可視性を protected にオーバーライドするモディファイアタグ。一般的に使用は推奨されない。
+Modifier tag that overrides a reflection's visibility to protected. Its use is generally discouraged.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @protected */
 ```
 
-## 詳細説明
+The `@protected` tag overrides a reflection's visibility to protected, producing documentation output equivalent to TypeScript's `protected` keyword.
 
-`@protected` タグは、リフレクションの可視性を protected にオーバーライドする。TypeScript の `protected` キーワードと同等のドキュメント出力を生成する。
+Use of this tag is generally discouraged and it may be removed in a future release. Using TypeScript's `protected` keyword directly is recommended instead.
 
-このタグは一般的に使用すべきではなく、将来のリリースで削除される可能性がある。TypeScript の `protected` キーワードを直接使用することが推奨される。
-
-`--excludeProtected` オプションを使用すると、protected メンバーをドキュメントから除外できる。
-
-## コード例
+The `--excludeProtected` option can be used to exclude protected members from the documentation.
 
 ```typescript
 export class Visibility {
@@ -24,7 +20,7 @@ export class Visibility {
     member = 123;
 }
 
-// 上記は以下と同等にドキュメント化される:
+// The above is documented equivalently to:
 export class Visibility {
     protected member = 123;
 }
@@ -33,7 +29,7 @@ export class Visibility {
 ```typescript
 export class BaseComponent {
     /**
-     * サブクラスからのみアクセス可能なライフサイクルメソッド。
+     * Lifecycle method accessible only from subclasses.
      * @protected
      */
     onMount(): void {
@@ -42,13 +38,13 @@ export class BaseComponent {
 }
 ```
 
-## 注意点
+## Notes
 
-- 一般的に使用は推奨されない。将来のリリースで削除される可能性がある
-- TypeScript の `protected` キーワードの使用を推奨
-- `--excludeProtected` オプションで protected メンバーを除外可能
+- Generally discouraged; may be removed in a future release
+- Prefer TypeScript's `protected` keyword
+- Protected members can be excluded via the `--excludeProtected` option
 
-## 関連
+## Related
 
 - [@private](./private.md)
 - [@public](./public.md)

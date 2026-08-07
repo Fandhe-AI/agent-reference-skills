@@ -34,7 +34,7 @@ asyncAction.Cancel();
 // Single-shot timer.
 ThreadPoolTimer delayTimer = ThreadPoolTimer.CreateTimer((source) =>
 {
-    // TODO: work
+    CleanUpTempCache();
 }, TimeSpan.FromMinutes(3));
 
 delayTimer.Cancel();
@@ -42,7 +42,7 @@ delayTimer.Cancel();
 // Periodic timer.
 ThreadPoolTimer periodicTimer = ThreadPoolTimer.CreatePeriodicTimer((source) =>
 {
-    // TODO: recurring work
+    PollSensorAndQueueUiUpdate();
 }, TimeSpan.FromSeconds(2));
 ```
 

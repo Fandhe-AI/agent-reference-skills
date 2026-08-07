@@ -1,20 +1,16 @@
 # @override
 
-メンバーが親クラスの実装をオーバーライドしていることを示すモディファイアタグ。TSDoc 互換のために解析される。
+Modifier tag indicating a member overrides an implementation from a parent class. Parsed for TSDoc compatibility.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @override */
 ```
 
-## 詳細説明
+TypeDoc parses the `@override` tag for compatibility with the TSDoc spec, but does not assign it any specific behavior. It can be used to mark overridden members in the documentation.
 
-TypeDoc は TSDoc 仕様との互換性のために `@override` タグを解析するが、このタグに特定の機能を割り当てていない。ドキュメント上でオーバーライドされたメンバーをマークするために使用できる。
-
-`--visibilityFilters` オプションで、このタグが付いたメンバーの表示を制御できる。
-
-## コード例
+The `--visibilityFilters` option controls the display of members carrying this tag.
 
 ```typescript
 export class Visibility {
@@ -26,28 +22,28 @@ export class Visibility {
 ```typescript
 class BaseRenderer {
     render(): void {
-        // デフォルトの描画処理
+        // Default rendering logic
     }
 }
 
 export class CustomRenderer extends BaseRenderer {
     /**
-     * カスタム描画処理。
+     * Custom rendering logic.
      * @override
      */
     render(): void {
-        // カスタムの描画処理
+        // Custom rendering logic
     }
 }
 ```
 
-## 注意点
+## Notes
 
-- TSDoc 互換のために解析されるが、TypeDoc 固有の機能は付与されない
-- `--visibilityFilters` オプションで表示制御可能
-- TSDoc 仕様に準拠
+- Parsed for TSDoc compatibility, but grants no TypeDoc-specific behavior
+- Display can be controlled via the `--visibilityFilters` option
+- Follows the TSDoc spec
 
-## 関連
+## Related
 
 - [@sealed](./sealed.md)
 - [@virtual](./virtual.md)

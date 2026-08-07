@@ -60,4 +60,4 @@ iOS 12.0+, iPadOS 12.0+, macOS 10.15+, tvOS 16.0+, watchOS 6.2+, visionOS 1.0+, 
 
 ## Related
 
-- [asauthorizationcontroller.md](./asauthorizationcontroller.md)
+- [ASAuthorizationController](./asauthorizationcontroller.md)

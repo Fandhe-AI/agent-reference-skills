@@ -1,22 +1,18 @@
 # @internal
 
-リフレクションが API コンシューマー向けではないことを示すモディファイアタグ。`--excludeInternal` オプションで除外可能。
+Modifier tag that marks a reflection as not intended for API consumers. Can be excluded from output with `--excludeInternal`.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @internal */
 ```
 
-## 詳細説明
+The `@internal` tag marks an API member as not intended for external consumers. Unlike `@hidden` or `@ignore`, the tag alone does not remove the member from the generated documentation.
 
-`@internal` タグは、API メンバーが外部コンシューマー向けではないことを示す。`@hidden` や `@ignore` とは異なり、このタグだけではドキュメントからの除去は行われない。
+To exclude it from the documentation, enable the `--excludeInternal` option. This makes it possible to switch flexibly between internal-developer documentation and externally published documentation.
 
-ドキュメントから除外するには、`--excludeInternal` オプションを有効にする必要がある。これにより、内部開発者向けのドキュメントと外部公開向けのドキュメントを柔軟に切り替えることができる。
-
-TypeScript コンパイラの `--stripInternal` オプションと連携して使用されることがある。
-
-## コード例
+It is sometimes used together with the TypeScript compiler's `--stripInternal` option.
 
 ```typescript
 export class Visibility {
@@ -28,13 +24,13 @@ export class Visibility {
 ```typescript
 export class DatabaseConnection {
     /**
-     * 接続プールの内部状態。
+     * Internal state of the connection pool.
      * @internal
      */
     _poolState: PoolState;
 
     /**
-     * 内部的な接続リセット処理。
+     * Internal connection reset logic.
      * @internal
      */
     _resetConnection(): void {
@@ -42,7 +38,7 @@ export class DatabaseConnection {
     }
 
     /**
-     * データベースにクエリを実行する。
+     * Runs a query against the database.
      */
     query(sql: string): Promise<Result> {
         // ...
@@ -50,15 +46,15 @@ export class DatabaseConnection {
 }
 ```
 
-## 注意点
+## Notes
 
-- `@hidden` / `@ignore` とは異なり、タグ単体ではドキュメントから除去されない
-- `--excludeInternal` オプションを有効にすることで除去される
-- TypeScript の `--stripInternal` コンパイラオプションと関連する
-- TSDoc 仕様に準拠: https://tsdoc.org/pages/tags/internal/
-- 内部向けと外部向けのドキュメントを切り替えるのに有用
+- Unlike `@hidden` / `@ignore`, the tag alone does not remove the member from the documentation
+- Removed from output only when `--excludeInternal` is enabled
+- Related to TypeScript's `--stripInternal` compiler option
+- Follows the TSDoc spec: https://tsdoc.org/pages/tags/internal/
+- Useful for switching between internal and external documentation
 
-## 関連
+## Related
 
 - [@hidden](./hidden.md)
 - [@ignore](./ignore.md)

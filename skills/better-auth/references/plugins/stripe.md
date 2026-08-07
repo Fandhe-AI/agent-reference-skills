@@ -1,16 +1,16 @@
 # Stripe
 
-Stripe の決済・サブスクリプション機能を Better Auth に統合するプラグイン。ユーザーサインアップ時の Stripe カスタマー自動作成、サブスクリプションライフサイクル管理、Webhook 処理を担う。
+A plugin that integrates Stripe's payment and subscription features with Better Auth. It handles automatic Stripe customer creation at user sign-up, subscription lifecycle management, and webhook processing.
 
-## インストール
+## Signature / Usage
+
+### Installation
 
 ```bash
 npm install @better-auth/stripe stripe@^22.0.0
 ```
 
-## セットアップ
-
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -40,86 +40,84 @@ export const auth = betterAuth({
 })
 ```
 
-### Webhook エンドポイント設定
+### Webhook endpoint configuration
 
-Stripe ダッシュボードで `/api/auth/stripe/webhook` を Webhook エンドポイントとして登録する。
+Register `/api/auth/stripe/webhook` as the webhook endpoint in the Stripe dashboard.
 
-マイグレーション:
+Migration:
 
 ```bash
 npx auth migrate
 ```
 
-## API メソッド
+### Subscription management
 
-### サブスクリプション管理
-
-| メソッド | エンドポイント | 説明 |
+| Method | Endpoint | Description |
 |---|---|---|
-| `upgrade` | POST `/subscription/upgrade` | サブスクリプション作成・アップグレード |
-| `list` | GET `/subscription/list` | サブスクリプション一覧取得 |
-| `cancel` | POST `/subscription/cancel` | サブスクリプションキャンセル |
-| `restore` | POST `/subscription/restore` | キャンセル/変更スケジュールの復元 |
-| `billing-portal` | POST `/subscription/billing-portal` | Stripe Billing Portal セッション作成 |
+| `upgrade` | POST `/subscription/upgrade` | Create or upgrade a subscription |
+| `list` | GET `/subscription/list` | List subscriptions |
+| `cancel` | POST `/subscription/cancel` | Cancel a subscription |
+| `restore` | POST `/subscription/restore` | Restore a cancellation/change schedule |
+| `billing-portal` | POST `/subscription/billing-portal` | Create a Stripe Billing Portal session |
 
-### upgrade パラメータ
+### upgrade parameters
 
-| パラメータ | 型 | 説明 |
+| Parameter | Type | Description |
 |---|---|---|
-| `plan` | string | プラン名（必須） |
-| `successUrl` | string | 決済成功後のリダイレクト URL（必須） |
-| `cancelUrl` | string | キャンセル時のリダイレクト URL（必須） |
-| `annual?` | boolean | 年払いフラグ |
-| `referenceId?` | string | 組織課金時の参照 ID |
-| `seats?` | number | シート数（チーム課金） |
-| `scheduleAtPeriodEnd?` | boolean | 期間末にプラン変更をスケジュール |
+| `plan` | string | Plan name (required) |
+| `successUrl` | string | Redirect URL after successful payment (required) |
+| `cancelUrl` | string | Redirect URL on cancellation (required) |
+| `annual?` | boolean | Annual billing flag |
+| `referenceId?` | string | Reference ID for organization billing |
+| `seats?` | number | Seat count (team billing) |
+| `scheduleAtPeriodEnd?` | boolean | Schedule the plan change for the end of the period |
 
-## 設定オプション
+## Options / Props
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |---|---|---|
-| `stripeClient` | Stripe | Stripe インスタンス（必須） |
-| `stripeWebhookSecret` | string | Webhook 署名シークレット（必須） |
-| `createCustomerOnSignUp` | boolean | サインアップ時にカスタマーを自動作成 |
-| `subscription.enabled` | boolean | サブスクリプション機能の有効化 |
-| `subscription.plans` | array \| function | プラン定義 |
-| `onSubscriptionComplete?` | function | チェックアウト完了後のフック |
-| `onSubscriptionCreated?` | function | サブスクリプション作成時のフック |
-| `onSubscriptionUpdate?` | function | サブスクリプション変更時のフック |
-| `onSubscriptionCancel?` | function | キャンセル時のフック |
-| `onSubscriptionDeleted?` | function | 削除時のフック |
-| `getCheckoutSessionParams?` | function | チェックアウトセッションのカスタムパラメータ |
+| `stripeClient` | Stripe | Stripe instance (required) |
+| `stripeWebhookSecret` | string | Webhook signing secret (required) |
+| `createCustomerOnSignUp` | boolean | Automatically create a customer on sign-up |
+| `subscription.enabled` | boolean | Enables the subscription feature |
+| `subscription.plans` | array \| function | Plan definitions |
+| `onSubscriptionComplete?` | function | Hook run after checkout completes |
+| `onSubscriptionCreated?` | function | Hook run when a subscription is created |
+| `onSubscriptionUpdate?` | function | Hook run when a subscription changes |
+| `onSubscriptionCancel?` | function | Hook run on cancellation |
+| `onSubscriptionDeleted?` | function | Hook run on deletion |
+| `getCheckoutSessionParams?` | function | Custom parameters for the checkout session |
 
-### プラン定義
+### Plan definition
 
-| プロパティ | 型 | 説明 |
+| Property | Type | Description |
 |---|---|---|
-| `name` | string | プラン識別子（必須） |
-| `priceId` | string | Stripe Price ID（必須） |
-| `limits` | object | 利用制限 |
-| `annualDiscountPriceId?` | string | 年払い割引 Price ID |
-| `freeTrial?` | object | 無料トライアル設定 |
-| `seatPriceId?` | string | シートごとの Price ID |
+| `name` | string | Plan identifier (required) |
+| `priceId` | string | Stripe Price ID (required) |
+| `limits` | object | Usage limits |
+| `annualDiscountPriceId?` | string | Annual discount Price ID |
+| `freeTrial?` | object | Free trial configuration |
+| `seatPriceId?` | string | Per-seat Price ID |
 
-## データベーススキーマ
+### DB schema
 
-`user` テーブルに `stripeCustomerId` フィールドを追加。組織プラグイン使用時は `organization` テーブルにも同フィールドを追加。
+Adds a `stripeCustomerId` field to the `user` table. When the organization plugin is used, the same field is added to the `organization` table.
 
-`subscription` テーブルを新規作成:
+Creates a new `subscription` table:
 
-| フィールド | 説明 |
+| Field | Description |
 |---|---|
-| `id`, `plan`, `referenceId`, `status` | 基本情報 |
-| `periodStart`, `periodEnd` | 課金期間 |
-| `cancelAtPeriodEnd`, `cancelAt`, `canceledAt`, `endedAt` | キャンセル関連 |
-| `trialStart`, `trialEnd` | トライアル情報 |
-| `seats`, `stripeScheduleId` | チーム管理 |
+| `id`, `plan`, `referenceId`, `status` | Basic information |
+| `periodStart`, `periodEnd` | Billing period |
+| `cancelAtPeriodEnd`, `cancelAt`, `canceledAt`, `endedAt` | Cancellation-related |
+| `trialStart`, `trialEnd` | Trial info |
+| `seats`, `stripeScheduleId` | Team management |
 
-## 高度な機能
+## Notes
 
-- **組織課金**: `organization: { enabled: true }` でユーザーの代わりに組織を課金単位にする
-- **トライアル管理**: 1 アカウントあたり 1 回のトライアルを自動強制
-- **スケジュール変更**: `scheduleAtPeriodEnd: true` で期間末まで変更を先送り（Stripe Subscription Schedules API を使用）
+- **Organization billing**: `organization: { enabled: true }` bills the organization instead of the user
+- **Trial management**: automatically enforces one trial per account
+- **Scheduled changes**: `scheduleAtPeriodEnd: true` defers plan changes to the end of the period (uses Stripe's Subscription Schedules API)
 
 ## Related
 

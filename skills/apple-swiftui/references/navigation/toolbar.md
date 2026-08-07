@@ -46,6 +46,8 @@ Populates the toolbar or navigation bar with the specified items.
 - Available: iOS 14+, iPadOS 14+, macOS 11+, tvOS 14+, watchOS 7+, visionOS 1+
 - Wrap related items in `ToolbarItemGroup` for correct spacing and platform-specific layout.
 - Style the toolbar background with `toolbarBackground(_:for:)` and color scheme with `toolbarColorScheme(_:for:)`.
+- iOS 26 / macOS 26 (WWDC25): toolbar items automatically render on a Liquid Glass surface that floats above content and adapts to what's beneath it; no code change is required to opt in when building with Xcode 26. Custom items are grouped separately from system-provided items (e.g. the back button) by default.
+- Use `ToolbarSpacer` inside the toolbar content builder to split items into distinct Liquid Glass groups (fixed or flexible spacing), signalling that separated actions are unrelated while items left together read as one grouped action.
 
 ## Related
 

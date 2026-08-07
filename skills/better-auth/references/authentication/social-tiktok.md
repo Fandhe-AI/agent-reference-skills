@@ -1,13 +1,6 @@
 # TikTok
 
-## Credentials
-
-- `TIKTOK_CLIENT_KEY` - OAuth application identifier
-- `TIKTOK_CLIENT_SECRET` - OAuth application secret
-
-Obtain from the [TikTok Developer Portal](https://developers.tiktok.com/apps) by creating an application.
-
-## サーバー設定
+## Signature / Usage
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -22,8 +15,6 @@ export const auth = betterAuth({
 })
 ```
 
-## クライアントサインイン
-
 ```typescript
 import { createAuthClient } from "better-auth/client"
 const authClient = createAuthClient()
@@ -35,13 +26,22 @@ const signIn = async () => {
 }
 ```
 
-## リダイレクト URL
+## Options / Props
 
-Must be HTTPS and configured in developer settings. Update if auth route base paths change.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `clientKey` | string | — | `TIKTOK_CLIENT_KEY`, OAuth application identifier, obtained from the [TikTok Developer Portal](https://developers.tiktok.com/apps) |
+| `clientSecret` | string | — | `TIKTOK_CLIENT_SECRET`, OAuth application secret, obtained from the [TikTok Developer Portal](https://developers.tiktok.com/apps) |
 
-## プロバイダー固有の設定・注意点
+## Notes
 
-- **HTTPS Requirement**: The TikTok API does not work with localhost. Use public domains or tools like NGROK for local testing
-- **Sandbox Mode**: Required for testing -- enable via TikTok Developer Portal
-- **Default Scope**: `user.info.profile` (required because TikTok doesn't provide emails; username serves as the email field)
-- **Production**: Requires TikTok approval for requested scopes
+- TikTok uses `clientKey` instead of `clientId` for its OAuth application identifier
+- Redirect URL must be HTTPS and configured in developer settings; update it if auth route base paths change
+- **HTTPS requirement**: the TikTok API does not work with `localhost` — use public domains or tools like NGROK for local testing
+- **Sandbox mode**: required for testing, enable via the TikTok Developer Portal
+- **Default scope**: `user.info.profile` (required because TikTok doesn't provide emails; the username serves as the email field)
+- **Production**: requires TikTok approval for requested scopes
+
+## Related
+
+- [Social Providers Common](./social-providers-common.md)

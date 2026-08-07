@@ -1,57 +1,53 @@
 # @interface
 
-型エイリアスをインターフェースとしてドキュメント化するモディファイアタグ。「動的」プロパティを実際のプロパティに展開する。
+Modifier tag that documents a type alias as an interface, expanding "dynamic" properties into actual properties.
 
-## 構文
+## Signature / Usage
 
 ```
 /** @interface */
 ```
 
-## 詳細説明
+Applying `@interface` to a type alias causes TypeDoc to display the type as an interface. All "dynamic" properties (computed / conditional properties) are expanded into actual properties.
 
-`@interface` タグを型エイリアスに付与すると、TypeDoc はその型をインターフェースとして表示する。このとき、すべての「動的」プロパティ（computed / conditional プロパティ）が実際のプロパティとして展開される。
+This makes complex type definitions, such as `Record` types or mapped types, documented in a more readable interface form.
 
-これにより、`Record` 型やマップ型などの複雑な型定義が、読みやすいインターフェース形式でドキュメント化される。
-
-## コード例
-
-### 基本的な使用法
+### Basic usage
 
 ```typescript
 /**
- * 設定オブジェクトの型。
+ * Configuration object type.
  * @interface
  */
 export type Config = {
-    /** ホスト名 */
+    /** Host name */
     host: string;
-    /** ポート番号 */
+    /** Port number */
     port: number;
-    /** デバッグモード */
+    /** Debug mode */
     debug: boolean;
 };
 ```
 
-### Record 型の展開
+### Expanding a `Record` type
 
 ```typescript
 /**
  * @interface
- * @property a - 最初のプロパティ
- * @property b - 2番目のプロパティ
- * @property c - 3番目のプロパティ
+ * @property a - The first property
+ * @property b - The second property
+ * @property c - The third property
  */
 export type MyRecord = Record<"a" | "b" | "c", string>;
 ```
 
-上記は、3つの明示的な `string` プロパティ（`a`, `b`, `c`）を持つインターフェースとしてドキュメント化される。
+The above is documented as an interface with three explicit `string` properties (`a`, `b`, `c`).
 
-### 複合型
+### Composite types
 
 ```typescript
 /**
- * ユーザーの完全なプロフィール情報。
+ * A user's complete profile information.
  * @interface
  */
 export type UserProfile = BaseUser & {
@@ -60,13 +56,13 @@ export type UserProfile = BaseUser & {
 };
 ```
 
-## 注意点
+## Notes
 
-- 型エイリアスにのみ効果がある
-- computed / conditional プロパティが実際のプロパティとして展開される
-- `@property` / `@prop` タグと組み合わせて各プロパティにドキュメントを付けることができる
+- Only has an effect on type aliases
+- Computed / conditional properties are expanded into actual properties
+- Can be combined with `@property` / `@prop` tags to document each property
 
-## 関連
+## Related
 
 - [@class](./class.md)
 - [@namespace](./namespace.md)

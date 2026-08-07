@@ -55,6 +55,6 @@ iOS 8.0+, iPadOS 8.0+, macOS 13.0+, watchOS 2.0+, visionOS 1.0+. Observer querie
 
 ## Related
 
-- [hkquery.md](./hkquery.md)
-- [hkhealthstore.md](./hkhealthstore.md)
-- [hksamplequery.md](./hksamplequery.md)
+- [HKQuery](./hkquery.md)
+- [HKHealthStore](./hkhealthstore.md)
+- [HKSampleQuery](./hksamplequery.md)

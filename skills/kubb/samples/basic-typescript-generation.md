@@ -4,12 +4,10 @@ OpenAPI 仕様から TypeScript 型を生成する最小構成のワークフロ
 
 ```typescript
 // kubb.config.ts
-import { defineConfig } from '@kubb/core'
-import { pluginOas } from '@kubb/plugin-oas'
+import { defineConfig } from 'kubb/config'
 import { pluginTs } from '@kubb/plugin-ts'
 
 export default defineConfig({
-  root: '.',
   input: {
     path: './petStore.yaml',
   },
@@ -18,7 +16,6 @@ export default defineConfig({
     clean: true,
   },
   plugins: [
-    pluginOas({ validate: true, generators: [] }),
     pluginTs({
       output: { path: 'models' },
     }),
@@ -28,7 +25,7 @@ export default defineConfig({
 
 ```bash
 # インストール
-npm install --save-dev @kubb/cli @kubb/core @kubb/plugin-oas @kubb/plugin-ts
+npm install --save-dev kubb@beta @kubb/plugin-ts@beta
 
 # 生成実行
 npx kubb generate
@@ -49,7 +46,7 @@ export type Pet = {
 
 ## Notes
 
-- `pluginOas` は必ず最初に配置する（他プラグインのベースとなる）
-- `generators: []` を指定すると JSON スキーマファイルの生成をスキップできる
+- v5 系では `@kubb/plugin-oas` は廃止され、OpenAPI のパース・バリデーションは `kubb` パッケージに同梱される `@kubb/adapter-oas` がデフォルトで担う。明示的にオプションを渡す必要がなければ `adapter` フィールド自体を省略できる
 - `output.clean: true` で生成前に出力ディレクトリをクリーンアップする
 - `input.path` にはローカルファイルパスだけでなく URL も指定可能
+- 執筆時点（v5 系）で `kubb` および各プラグインパッケージは `@beta` タグでの配布

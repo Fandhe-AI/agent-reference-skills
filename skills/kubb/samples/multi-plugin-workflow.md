@@ -4,10 +4,10 @@
 
 ```typescript
 // kubb.config.ts
-import { defineConfig } from '@kubb/core'
-import { pluginOas } from '@kubb/plugin-oas'
+import { defineConfig } from 'kubb/config'
+import { adapterOas } from '@kubb/adapter-oas'
 import { pluginTs } from '@kubb/plugin-ts'
-import { pluginClient } from '@kubb/plugin-client'
+import { pluginFetch } from '@kubb/plugin-fetch'
 import { pluginReactQuery } from '@kubb/plugin-react-query'
 import { pluginZod } from '@kubb/plugin-zod'
 import { pluginFaker } from '@kubb/plugin-faker'
@@ -20,30 +20,31 @@ export default defineConfig({
     clean: true,
     barrelType: 'named',
   },
+  adapter: adapterOas({
+    validate: true,
+    dateType: 'stringOffset',
+    unknownType: 'unknown',
+  }),
   plugins: [
-    pluginOas({ validate: true, collisionDetection: true }),
     pluginTs({
       output: { path: './types' },
-      enumType: 'asConst',
-      dateType: 'date',
-      unknownType: 'unknown',
+      enum: { type: 'asConst' },
     }),
-    pluginClient({
+    pluginFetch({
       output: { path: './clients' },
-      client: 'fetch',
       group: { type: 'tag' },
-      parser: 'zod',
+      validator: 'zod',
     }),
     pluginReactQuery({
       output: { path: './hooks' },
       group: { type: 'tag' },
+      client: 'fetch',
       suspense: {},
     }),
     pluginZod({
       output: { path: './zod' },
       group: { type: 'tag' },
-      typed: true,
-      dateType: 'stringOffset',
+      inferred: true,
     }),
     pluginFaker({
       output: { path: './mocks' },
@@ -68,7 +69,7 @@ export default defineConfig({
 ```
 src/gen/
 ├── types/      ← TypeScript 型
-├── clients/    ← Fetch ベース API クライアント（Zod パース付き）
+├── clients/    ← Fetch ベース API クライアント（Zod バリデーション付き）
 ├── hooks/      ← React Query hooks（Suspense 対応）
 ├── zod/        ← Zod バリデーションスキーマ
 ├── mocks/      ← Faker モックデータジェネレーター
@@ -79,7 +80,9 @@ src/gen/
 
 ## Notes
 
-- プラグインの順序は `pluginOas` → `pluginTs` → その他の順を守る
-- `collisionDetection: true` でスキーマ名の衝突を自動解決する
+- プラグインの順序は `pluginTs` → クライアント系（`pluginFetch` / `pluginAxios`）→ その他の順を守る。v5 で `pluginOas` は廃止され、パース・バリデーションはトップレベルの `adapter: adapterOas()` が担う
+- `dateType` / `unknownType` / `enumSuffix` は v5 でプラグイン個別オプションから `adapterOas()` に集約された。旧 `pluginOas` にあった `collisionDetection` は `adapterOas` の options 一覧に存在しない。命名衝突が疑われる場合は各プラグインの `resolver` で個別に名前解決する
 - `hooks.done` で生成後に任意のシェルコマンドを実行できる
-- `pluginClient` の `parser: 'zod'` は `pluginZod` と組み合わせてレスポンスを自動バリデーションする
+- `pluginFetch` の `validator: 'zod'`（旧 `parser: 'zod'`）は `pluginZod` と組み合わせてレスポンスを自動バリデーションする
+- `pluginZod` の旧 `typed` は `inferred` に改称され、Zod バージョン切替用の `version` オプションは廃止された（常に最新の Zod API 向けに生成）
+- `pluginReactQuery` の `client` は `'fetch'` / `'axios'` の文字列で対応クライアントプラグインを指定する

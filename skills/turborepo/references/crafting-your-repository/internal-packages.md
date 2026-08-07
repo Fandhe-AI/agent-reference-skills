@@ -1,10 +1,10 @@
-# 内部パッケージの作成
+# Creating Internal Packages
 
-1パッケージ1責務の設計が推奨。
+Design each package around a single responsibility.
 
-## 作成手順
+## Usage
 
-### 1. ディレクトリを作成
+### 1. Create the directory
 
 ```
 packages/math/
@@ -47,15 +47,13 @@ packages/math/
 }
 ```
 
-`include` / `exclude` はベース設定から継承されないので必ず明記する。
-
-### 4. アプリへの組み込み
+### 4. Add it to an app
 
 ```json
 { "dependencies": { "@repo/math": "workspace:*" } }
 ```
 
-### 5. キャッシュ設定
+### 5. Cache configuration
 
 ```json
 {
@@ -66,3 +64,7 @@ packages/math/
   }
 }
 ```
+
+## Notes
+
+- `include` / `exclude` are not inherited from the base config, so they must always be specified explicitly.

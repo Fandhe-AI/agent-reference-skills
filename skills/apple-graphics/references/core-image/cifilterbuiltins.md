@@ -57,6 +57,7 @@ Each built-in filter has a corresponding protocol (e.g., `CISepiaTone`) and a st
 - iOS 13.0+, iPadOS 13.0+, macOS 10.15+, Mac Catalyst 13.1+, tvOS 13.0+, visionOS 1.0+
 - For filters not covered by type-safe protocols, fall back to `CIFilter(name: "CI...")`.
 - The underlying object is still a `CIFilter`; KVC (`setValue(_:forKey:)`) still works on it.
+- `CIRAWFilter` (RAW sensor data decoding, iOS 15.0+/macOS 12.0+) is a separate `CIFilter` subclass instantiated directly via its own convenience initializers (`init(imageData:identifierHint:)`, `init(imageURL:)`, `init(cvPixelBuffer:properties:)`), not via a `CIFilterBuiltins` factory method. It is not part of this type-safe factory catalog.
 
 ## Related
 

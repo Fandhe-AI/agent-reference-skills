@@ -1,6 +1,6 @@
 # Firewall
 
-Proxmox VE includes a built-in firewall that operates at three levels: datacenter, node/host, and VM/container. Configuration is stored in `/etc/pve/firewall/` and distributed via `pmxcfs`.
+Proxmox VE includes a built-in firewall that operates at three levels: datacenter, node/host, and VM/container. Configuration is stored in `/etc/pve/firewall/` and distributed via `pmxcfs`. Two implementations exist: the traditional iptables-based `pve-firewall` (default) and the newer nftables-based `proxmox-firewall` (tech preview, PVE 9+), which share the same configuration files/format.
 
 ## Signature / Usage
 
@@ -64,12 +64,22 @@ IN DROP -source +blacklist
 - Corosync cluster traffic (UDP 5405–5412)
 - Web UI (TCP 8006), SSH (TCP 22), SPICE (TCP 5900–5999), SPICE proxy (TCP 3128)
 
+### proxmox-firewall (nftables, tech preview)
+
+| Aspect | Detail |
+|--------|--------|
+| Install | `apt install proxmox-firewall` |
+| Enable | Add `nftables: 1` under `[OPTIONS]` in `/etc/pve/nodes/<node>/host.fw`, or toggle in the web UI |
+| Service | `systemctl start/stop/status proxmox-firewall` (replaces `pve-firewall`) |
+| Config format | Identical to `pve-firewall`; no migration needed |
+
 ## Notes
 
 - Each virtual network device has its own firewall enable flag; the firewall must be enabled at both the datacenter and VM level to take effect
 - Security groups bundle reusable rule sets at the cluster level; reference them in VM rules using `GROUP <name>`
 - IP sets group hosts/networks referenced in rules with `+setname` syntax
 - IP aliases associate human-readable names with addresses for cleaner rule definitions
+- `proxmox-firewall` (nftables-based) is a tech preview as of PVE 9: not suited for production, no `REJECT` for guest traffic (dropped instead), NDP/Router Advertisement/DHCP options always generate rules regardless of default policy, and no `fwbrX` bridges are created for Linux bridges. After enabling/disabling it, running VMs/CTs must be restarted
 
 ## Related
 

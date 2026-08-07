@@ -1,74 +1,33 @@
 # Building Issues
 
-Troubleshooting issues when compiling ZMK firmware.
+Troubleshooting compilation errors when building ZMK firmware: CMake errors, West/keymap syntax errors, and devicetree diagnostics.
 
-## Common Issues
+## Signature / Usage
 
-### CMake Error
+```
+-- Using keymap file: /path/to/keymap/file/<keyboard>.keymap
+-- Found BOARD.dts: /path/to/board.dts
+-- Found devicetree overlay: /path/to/overlay.overlay
+-- Found devicetree overlay: /path/to/keymap.keymap
+```
 
-**Symptom:** Error referencing `generic_toolchain.cmake:64 (include)` — include file cannot be found.
+## Options / Props
 
-**Cause:** Zephyr environment variables are not properly configured.
+| Issue | Cause | Solution |
+| --- | --- | --- |
+| CMake Error (`generic_toolchain.cmake:64 (include)`) | Zephyr environment variables not properly defined | Configure Zephyr environment variables per Zephyr's CMake Package documentation |
+| `Keymap node not found` | Keymap file missing/not discovered, or missing/misspelled `compatible = "zmk,keymap"` | Verify `<keyboard>.keymap` exists in the expected location; check build logs for the `-- Using keymap file:` line; ensure the keymap node declares `compatible = "zmk,keymap"` |
+| Devicetree parse error (`expected ';' or ','`) | Syntax error in `.keymap` file | Check the exact line/column reported (post-preprocessor, may not match editor display) for missing semicolons or commas |
+| `lacks #binding-cells` | Incorrect binding syntax, e.g. `&kp BT_SEL 0` instead of `&bt BT_SEL 0` | Verify the binding uses the correct behavior node and parameter count |
+| `devicetree_generated.h undeclared` | Keycode used without `&kp` prefix, e.g. `&kp A SPACE &kp B` instead of `&kp A &kp SPACE &kp B` | Ensure every keycode binding has a leading `&kp` (or other behavior) prefix |
 
-**Solution:** Review [Zephyr's CMake Package documentation](https://docs.zephyrproject.org/4.1.0/build/zephyr_cmake_package.html) to ensure environment variables are correctly set.
+## Notes
 
----
-
-### West Build — Keymap Node Not Found
-
-**Symptom:** `"Keymap node not found, check a keymap is available..."`
-
-**Causes:**
-- Keymap file is missing or not discovered by the build system
-- `compatible = "zmk,keymap"` is misspelled or absent in the keymap node
-
-**Solutions:**
-- Verify the `<keyboard>.keymap` file exists in the expected location
-- Confirm the build log shows `"Using keymap file: /path/to/keymap/file"`
-- Check that `compatible = "zmk,keymap"` is correctly declared
-
----
-
-### Devicetree Parse Error
-
-**Symptom:** Error referencing a line number with `"parse error: expected ';' or ','"`
-
-**Solution:** Check the exact line position for missing punctuation. Column numbers may not match due to preprocessor expansion.
-
----
-
-### Devicetree — `lacks #binding-cells`
-
-**Symptom:** Error mentioning `lacks #binding-cells` with reference to `empty_file.c`
-
-**Cause:** Improper binding parameters (e.g., `&kp BT_SEL 0` instead of `&bt BT_SEL 0`)
-
-**Solution:** Verify correct binding syntax for the behavior being used.
-
----
-
-### Devicetree — Undeclared Variable in `devicetree_generated.h`
-
-**Symptom:** `"undeclared here"` error with a node reference like `IDX_12_PH`
-
-**Cause:** Incorrect number of parameters for behavior nodes (`&kp`, `&mt`, etc.) or missing `&kp` prefix on keycodes.
-
-**Solution:** Ensure keycodes use proper binding syntax (e.g., `&kp SPACE` not `SPACE`).
-
----
-
-### Diagnosing Unexpected Build Results
-
-**Configuration issues:**
-- GitHub Actions: Check the `"<keyboard> Kconfig file"` step in the build job
-- Local builds: Inspect `<build_folder>/zephyr/.config`
-
-**Devicetree issues:**
-- GitHub Actions: Check the `"<keyboard> Devicetree file"` step
-- Local builds: Inspect `<build_folder>/zephyr/zephyr.dts`
+- To verify applied Kconfig changes: check the `<keyboard> Kconfig file` step in GitHub Actions logs, or inspect `<build_folder>/zephyr/.config` for local builds.
+- To verify devicetree processing: check the `<keyboard> Devicetree file` step in GitHub Actions logs, or inspect `<build_folder>/zephyr/zephyr.dts` for local builds (keycodes appear as hex, e.g. `0x7002a` for `SPACE`).
 
 ## Related
 
+- [Keymaps](../keymaps/overview.md)
+- [Config](../config/overview.md)
 - [Flashing Issues](./flashing-issues.md)
-- [Connection Issues](./connection-issues.md)
-- [Hardware Issues](./hardware-issues.md)

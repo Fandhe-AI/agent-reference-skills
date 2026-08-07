@@ -1,8 +1,10 @@
 # Users & Accounts
 
-Better Auth は基本認証を超えた包括的なユーザーとアカウント管理機能を提供する。ユーザー情報更新、メール/パスワード変更、検証付きアカウント削除、トークン暗号化、マルチプロバイダーアカウントリンクが含まれる。
+Better Auth provides comprehensive user and account management beyond basic authentication, including user info updates, email/password changes, account deletion with verification, token encryption, and multi-provider account linking.
 
-## ユーザー情報更新
+## Signature / Usage
+
+### Updating user info
 
 ```typescript
 import { authClient } from "@/lib/auth-client";
@@ -13,9 +15,9 @@ await authClient.updateUser({
 });
 ```
 
-## メール変更
+### Changing email
 
-### サーバーセットアップ
+Server setup:
 
 ```typescript
 export const auth = betterAuth({
@@ -34,9 +36,7 @@ export const auth = betterAuth({
 });
 ```
 
-### 現在のメールによる確認（オプション）
-
-新しいアドレスへの検証を送信する前に、現在のメールで確認を要求:
+Confirmation via current email (optional). Require confirmation via the current email before sending verification to the new address:
 
 ```typescript
 user: {
@@ -44,7 +44,7 @@ user: {
     enabled: true,
     sendChangeEmailConfirmation: async ({ user, newEmail, url, token }, request) => {
       void sendEmail({
-        to: user.email, // 現在のメール
+        to: user.email, // Current email
         subject: "Approve email change",
         text: `Click the link to approve the change to ${newEmail}: ${url}`,
       });
@@ -53,9 +53,7 @@ user: {
 }
 ```
 
-### 検証なしの更新
-
-現在のメールが未検証の場合、即座に更新を許可:
+Updating without verification. Allow immediate updates when the current email is unverified:
 
 ```typescript
 changeEmail: {
@@ -64,7 +62,7 @@ changeEmail: {
 }
 ```
 
-### クライアント使用
+Client usage:
 
 ```typescript
 await authClient.changeEmail({
@@ -73,17 +71,17 @@ await authClient.changeEmail({
 });
 ```
 
-## パスワード変更
+### Changing password
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.changePassword({
   newPassword: "newpassword1234",
   currentPassword: "oldpassword1234",
   revokeOtherSessions: true,
 });
 
-// サーバー
+// Server
 const data = await auth.api.changePassword({
   body: {
     newPassword: "newpassword1234",
@@ -94,9 +92,9 @@ const data = await auth.api.changePassword({
 });
 ```
 
-## パスワード設定
+### Setting a password
 
-パスワードなしの OAuth ユーザー用（サーバーのみ）:
+For OAuth users without a password (server only):
 
 ```typescript
 import { auth } from "@/lib/auth";
@@ -109,9 +107,9 @@ await auth.api.setPassword({
 });
 ```
 
-## パスワード検証
+### Verifying a password
 
-機密操作前のユーザー本人確認:
+Confirm user identity before sensitive operations:
 
 ```typescript
 import { auth } from "@/lib/auth";
@@ -124,11 +122,11 @@ await auth.api.verifyPassword({
 });
 ```
 
-パスワードなしの OAuth ユーザーはメール検証またはフレッシュセッションチェックを代わりに使用すべき。
+OAuth users without a password should use email verification or a fresh session check instead.
 
-## ユーザー削除
+### Deleting a user
 
-### 削除の有効化
+Enabling deletion:
 
 ```typescript
 export const auth = betterAuth({
@@ -140,50 +138,38 @@ export const auth = betterAuth({
 });
 ```
 
-### 検証の追加
-
-削除前のメール検証を実装:
+Adding verification. Implement email verification before deletion:
 
 ```typescript
 user: {
   deleteUser: {
     enabled: true,
     sendDeleteAccountVerification: async ({ user, url, token }, request) => {
-      // 検証メールを送信
+      // Send the verification email
     },
   },
 }
 ```
 
-### クライアント使用
+Client usage:
 
 ```typescript
 await authClient.deleteUser({
   callbackURL: "/goodbye",
 });
 
-// または トークンで
+// Or with a token
 await authClient.deleteUser({
   token,
 });
 
-// または パスワードで
+// Or with a password
 await authClient.deleteUser({
   password: "password",
 });
 ```
 
-### 認証要件
-
-ユーザーは以下のいずれかを満たす必要がある:
-1. **有効なパスワード** — 削除時に提供
-2. **フレッシュセッション** — 最近サインイン（デフォルト: 1 日の鮮度ウィンドウ）
-3. **メール検証有効** — OAuth ユーザー向け
-4. **有効な検証トークン** — メールコールバックから
-
-### コールバック
-
-**beforeDelete:**
+Callbacks:
 
 ```typescript
 deleteUser: {
@@ -195,25 +181,15 @@ deleteUser: {
       });
     }
   },
-}
-```
-
-**afterDelete:**
-
-```typescript
-deleteUser: {
-  enabled: true,
   afterDelete: async (user, request) => {
-    // クリーンアップ処理
+    // Cleanup logic
   },
 }
 ```
 
-## アカウント管理
+### Account management
 
-各認証プロバイダーはプロバイダー固有のデータ（トークン、認証情報）を保存する「アカウント」を作成する。
-
-### ユーザーアカウント一覧
+Each auth provider creates an "account" that stores provider-specific data (tokens, credentials).
 
 ```typescript
 import { authClient } from "@/lib/auth-client";
@@ -221,9 +197,9 @@ import { authClient } from "@/lib/auth-client";
 const accounts = await authClient.listAccounts();
 ```
 
-## トークン暗号化
+### Token encryption
 
-Better Auth はデフォルトではトークンを暗号化しない。データベース Hook を使用して暗号化を実装:
+Better Auth does not encrypt tokens by default. Implement encryption using a database hook:
 
 ```typescript
 export const auth = betterAuth({
@@ -246,27 +222,21 @@ export const auth = betterAuth({
 });
 ```
 
-アカウント取得時にトークンを使用する前に復号化する。
+Decrypt tokens before using them when retrieving an account.
 
-## アカウントリンク
+### Account linking
 
-アカウントリンクはデフォルトで有効で、ユーザーが複数の認証方法を単一アカウントに関連付けられる。プロバイダーからのメール検証が通常必要。
-
-### リンクの無効化
+Account linking is enabled by default, letting a user associate multiple auth methods with a single account. Email verification from the provider is typically required.
 
 ```typescript
+// Disabling linking
 account: {
   accountLinking: {
     enabled: false,
   },
 }
-```
 
-### 強制リンク
-
-検証に関係なく、信頼プロバイダーからのアカウントを自動リンク:
-
-```typescript
+// Forced linking: automatically link accounts from trusted providers regardless of verification
 account: {
   accountLinking: {
     enabled: true,
@@ -275,7 +245,7 @@ account: {
 }
 ```
 
-### 手動ソーシャルアカウントリンク
+Manual social account linking:
 
 ```typescript
 await authClient.linkSocial({
@@ -283,14 +253,14 @@ await authClient.linkSocial({
   callbackURL: "/callback",
 });
 
-// カスタムスコープ付き
+// With a custom scope
 await authClient.linkSocial({
   provider: "google",
   callbackURL: "/callback",
   scopes: ["https://www.googleapis.com/auth/drive.readonly"],
 });
 
-// ID トークン付き（リダイレクトなし）
+// With an ID token (no redirect)
 await authClient.linkSocial({
   provider: "google",
   idToken: {
@@ -302,41 +272,32 @@ await authClient.linkSocial({
 });
 ```
 
-### リンクアカウントに異なるメールを許可
+Allow different emails on linked accounts / update user info on link:
 
 ```typescript
 accountLinking: {
   allowDifferentEmails: true,
-}
-```
-
-### リンク時にユーザー情報を更新
-
-```typescript
-accountLinking: {
   updateUserInfoOnLink: true,
 }
 ```
 
-### 認証情報アカウントリンク
+Use `setPassword` (server) or the "password reset" flow for credential account linking.
 
-メール/パスワードリンクには `setPassword`（サーバー）または「パスワードリセット」フローを使用。
-
-## アカウントリンク解除
+### Unlinking an account
 
 ```typescript
 await authClient.unlinkAccount({
   providerId: "google",
 });
 
-// 特定アカウントのリンク解除
+// Unlinking a specific account
 await authClient.unlinkAccount({
   providerId: "google",
   accountId: "123",
 });
 ```
 
-**セーフガード:** ユーザーがアカウントを 1 つしか持っていない場合、リンク解除は防止される（`allowUnlinkingAll: true` を設定しない限り）。
+**Safeguard:** unlinking is prevented if a user has only one account remaining (unless `allowUnlinkingAll: true` is set).
 
 ```typescript
 account: {
@@ -346,9 +307,26 @@ account: {
 }
 ```
 
-## 注意点
+## Options / Props
 
-- タイミング攻撃を防ぐため、メール送信を await しないこと
-- OAuth ユーザーでパスワードがない場合はメール検証またはフレッシュセッションチェックを使用
-- アカウントリンクはデフォルトで有効
-- トークン暗号化はデフォルトでは行われない — データベースフックで実装が必要
+### User deletion auth requirements
+
+A user must satisfy one of the following:
+
+1. **Valid password** — provided at deletion time
+2. **Fresh session** — recently signed in (default: 1-day freshness window)
+3. **Email verification enabled** — for OAuth users
+4. **Valid verification token** — from the email callback
+
+## Notes
+
+- Don't await email sending, to prevent timing attacks
+- For OAuth users without a password, use email verification or a fresh session check
+- Account linking is enabled by default
+- Token encryption is not performed by default — must be implemented via a database hook
+
+## Related
+
+- [Email](./email.md)
+- [OAuth](./oauth.md)
+- [Session Management](./session-management.md)

@@ -36,7 +36,7 @@ fun MyApp() {
 ## Notes
 
 - Package: `androidx.navigation3` (runtime/ui), `androidx.lifecycle.viewmodel.navigation3` (ViewModel add-on), `androidx.compose.material3.adaptive.navigation3` (Material adaptive add-on).
-- Stability (as of this reference): `navigation3-runtime`/`navigation3-ui` reached **1.0.0 stable** in November 2025; current stable line is **1.1.x** (e.g. 1.1.4), with active `1.2.0-alpha` development ongoing. This is **not alpha** — check the [androidx navigation3 release notes](https://developer.android.com/jetpack/androidx/releases/navigation3) for the latest version before pinning a dependency.
+- Stability (as of this reference): `navigation3-runtime`/`navigation3-ui` reached **1.0.0 stable** in November 2025; current stable line is **1.1.x** (e.g. 1.1.5, July 29, 2026), with active `1.2.0-alpha` development ongoing. This is **not alpha** — check the [androidx navigation3 release notes](https://developer.android.com/jetpack/androidx/releases/navigation3) for the latest version before pinning a dependency.
 - Requires `compileSdk = 36` or later.
 - Building blocks, at a glance: define keys (`NavKey`) → hold a back stack (`NavBackStack` / `rememberNavBackStack`) → map keys to content (`NavEntry` via `entryProvider`) → render with `NavDisplay`, which resolves a `Scene` per `SceneStrategy`.
 - Recipes with runnable examples live outside the main docs site, in the [android/nav3-recipes](https://github.com/android/nav3-recipes) repository.

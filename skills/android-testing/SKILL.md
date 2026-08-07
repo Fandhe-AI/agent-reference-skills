@@ -90,6 +90,8 @@ skills/android-testing/
       state-restoration-tester.md
       device-configuration-override.md
       compose-testing-v2.md
+      common-patterns.md
+      debug.md
     performance-testing/
       README.md
       compilation-mode.md
@@ -124,6 +126,7 @@ skills/android-testing/
 | `createComposeRule` / finder / `SemanticsMatcher` で Compose UI をテストしたい | compose-testing | [references/compose-testing/README.md](references/compose-testing/README.md) |
 | Compose のアサーション・アクション・テスト同期（`waitForIdle` 等）を制御したい | compose-testing | [references/compose-testing/README.md](references/compose-testing/README.md) |
 | Compose と Espresso/UiAutomator を相互運用したい、スクリーンショットテストを書きたい | compose-testing | [references/compose-testing/README.md](references/compose-testing/README.md) |
+| Compose テストの典型パターン（composable の分離・状態到達方法）を知りたい、semantics tree をデバッグしたい | compose-testing | [references/compose-testing/README.md](references/compose-testing/README.md) |
 | `MacrobenchmarkRule` で起動・スクロール・アニメーションの性能を計測したい | performance-testing | [references/performance-testing/README.md](references/performance-testing/README.md) |
 | `BenchmarkRule` でホットパスをマイクロベンチマークしたい | performance-testing | [references/performance-testing/README.md](references/performance-testing/README.md) |
 | `CompilationMode` / `Metric` で計測条件と取得指標を制御したい | performance-testing | [references/performance-testing/README.md](references/performance-testing/README.md) |

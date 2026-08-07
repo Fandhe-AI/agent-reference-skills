@@ -1,10 +1,10 @@
 # Generic OAuth
 
-Generic OAuth プラグインは、任意の OAuth プロバイダーとの柔軟な統合を提供し、OAuth 2.0 と OpenID Connect（OIDC）フローの両方をサポートする。
+The Generic OAuth plugin provides flexible integration with any OAuth provider, supporting both OAuth 2.0 and OpenID Connect (OIDC) flows.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -24,7 +24,7 @@ export const auth = betterAuth({
 })
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -37,12 +37,10 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
-
-### OAuth2 サインイン
+### OAuth2 sign-in
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.signIn.oauth2({
     providerId: "provider-id",
     callbackURL: "/dashboard",
@@ -53,7 +51,7 @@ const { data, error } = await authClient.signIn.oauth2({
     requestSignUp: false
 })
 
-// サーバー
+// Server
 const data = await auth.api.signInWithOAuth2({
     body: {
         providerId: "provider-id",
@@ -67,80 +65,40 @@ const data = await auth.api.signInWithOAuth2({
 })
 ```
 
-### OAuth アカウントリンク
+### OAuth account linking
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.oauth2.link({
     providerId: "my-provider-id",
     callbackURL: "/successful-link"
 })
 
-// サーバー
+// Server
 const data = await auth.api.oAuth2LinkAccount({
     body: { providerId: "my-provider-id", callbackURL: "/successful-link" },
     headers: await headers()
 })
 ```
 
-### コールバック処理
+### Callback handling
 
-プラグインは `/oauth2/callback/:providerId` にルートを自動マウントする。
+The plugin automatically mounts a route at `/oauth2/callback/:providerId`.
 
-デフォルトコールバック URL: `${baseURL}/api/auth/oauth2/callback/:providerId`
+Default callback URL: `${baseURL}/api/auth/oauth2/callback/:providerId`
 
-## プリコンフィグされたプロバイダー
+### Preconfigured providers
 
-- **Auth0**: `auth0(options)` - `domain` が必要
+- **Auth0**: `auth0(options)` - requires `domain`
 - **HubSpot**: `hubspot(options)`
-- **Keycloak**: `keycloak(options)` - `issuer` が必要
-- **LINE**: `line(options)` - `providerId` で複数リージョンをサポート
-- **Microsoft Entra ID**: `microsoftEntraId(options)` - `tenantId` が必要
-- **Okta**: `okta(options)` - `issuer` が必要
+- **Keycloak**: `keycloak(options)` - requires `issuer`
+- **LINE**: `line(options)` - supports multiple regions via `providerId`
+- **Microsoft Entra ID**: `microsoftEntraId(options)` - requires `tenantId`
+- **Okta**: `okta(options)` - requires `issuer`
 - **Slack**: `slack(options)`
 - **Patreon**: `patreon(options)`
 
-## 設定オプション
-
-| オプション | 型 | 説明 |
-|---|---|---|
-| `providerId` | string | プロバイダー設定の一意識別子 |
-| `discoveryUrl` | string | OIDC ディスカバリーエンドポイント URL |
-| `issuer` | string | 検証用の期待される発行者識別子 |
-| `requireIssuerValidation` | boolean | コールバックで issuer の存在を強制（デフォルト: `false`） |
-| `authorizationUrl` | string | OAuth 認可エンドポイント |
-| `tokenUrl` | string | トークン交換エンドポイント |
-| `userInfoUrl` | string | ユーザープロフィール情報エンドポイント |
-| `clientId` | string | OAuth クライアント ID |
-| `clientSecret` | string | OAuth クライアントシークレット |
-| `scopes` | string[] | 要求する OAuth スコープ |
-| `redirectURI` | string | カスタムリダイレクト URL |
-| `responseType` | string | OAuth レスポンスタイプ（デフォルト: `"code"`） |
-| `prompt` | string | 認証体験の制御 |
-| `pkce` | boolean | PKCE セキュリティを有効化（デフォルト: `false`） |
-| `accessType` | string | リフレッシュトークン用に `"offline"` を使用 |
-| `authentication` | string | トークン認証方法: `'basic'` or `'post'`（デフォルト: `'post'`） |
-| `overrideUserInfo` | boolean | サインイン毎にユーザー情報を更新（デフォルト: `false`） |
-| `disableImplicitSignUp` | boolean | 明示的なサインアップ意図を要求 |
-| `disableSignUp` | boolean | 新規ユーザーサインアップを防止 |
-| `getToken` | function | カスタムトークン交換ハンドラー |
-| `getUserInfo` | function | カスタムユーザー情報取得 |
-| `mapProfileToUser` | function | カスタムプロフィールマッピング |
-
-## Issuer バリデーション
-
-RFC 9207 に基づき、ミックスアップ攻撃を防止する。
-
-| 条件 | `requireIssuerValidation` | 結果 |
-|---|---|---|
-| `iss` が期待値と一致 | - | 成功 |
-| `iss` が不一致 | - | `issuer_mismatch` エラー |
-| `iss` がない | `false` | 成功 |
-| `iss` がない | `true` | `issuer_missing` エラー |
-
-## 高度な使用方法
-
-### カスタムトークン交換
+### Custom token exchange
 
 ```typescript
 genericOAuth({
@@ -176,7 +134,7 @@ genericOAuth({
 })
 ```
 
-### プロフィールマッピング
+### Profile mapping
 
 ```typescript
 mapProfileToUser: async (profile) => ({
@@ -184,9 +142,52 @@ mapProfileToUser: async (profile) => ({
 })
 ```
 
-## 注意点
+## Options / Props
 
-- RFC 9207 に基づく issuer バリデーションでミックスアップ攻撃を防止
-- `/oauth2/callback/:providerId` にルートを自動マウント
-- `getToken` は非標準のトークンエンドポイントを持つプロバイダーに有用
-- `raw` フィールドはプロバイダーからの元のトークンレスポンスを保持
+| Option | Type | Description |
+|---|---|---|
+| `providerId` | string | Unique identifier for the provider config |
+| `discoveryUrl` | string | OIDC discovery endpoint URL |
+| `issuer` | string | Expected issuer identifier for validation |
+| `requireIssuerValidation` | boolean | Enforce presence of an issuer in the callback (default: `false`) |
+| `authorizationUrl` | string | OAuth authorization endpoint |
+| `tokenUrl` | string | Token exchange endpoint |
+| `userInfoUrl` | string | User profile information endpoint |
+| `clientId` | string | OAuth client ID |
+| `clientSecret` | string | OAuth client secret |
+| `scopes` | string[] | Requested OAuth scopes |
+| `redirectURI` | string | Custom redirect URL |
+| `responseType` | string | OAuth response type (default: `"code"`) |
+| `prompt` | string | Controls the authentication experience |
+| `pkce` | boolean | Enable PKCE security (default: `false`) |
+| `accessType` | string | Use `"offline"` for a refresh token |
+| `authentication` | string | Token authentication method: `'basic'` or `'post'` (default: `'post'`) |
+| `overrideUserInfo` | boolean | Update user info on every sign-in (default: `false`) |
+| `disableImplicitSignUp` | boolean | Require explicit sign-up intent |
+| `disableSignUp` | boolean | Prevent new user sign-up |
+| `getToken` | function | Custom token exchange handler |
+| `getUserInfo` | function | Custom user info retrieval |
+| `mapProfileToUser` | function | Custom profile mapping |
+
+## Notes
+
+- Prevents mix-up attacks with issuer validation based on RFC 9207
+- Automatically mounts a route at `/oauth2/callback/:providerId`
+- `getToken` is useful for providers with non-standard token endpoints
+- The `raw` field holds the original token response from the provider
+
+### Issuer validation
+
+Based on RFC 9207, prevents mix-up attacks.
+
+| Condition | `requireIssuerValidation` | Result |
+|---|---|---|
+| `iss` matches expected value | - | Success |
+| `iss` mismatch | - | `issuer_mismatch` error |
+| `iss` missing | `false` | Success |
+| `iss` missing | `true` | `issuer_missing` error |
+
+## Related
+
+- [oauth-provider.md](./oauth-provider.md)
+- [dub.md](./dub.md)

@@ -38,6 +38,7 @@ ws.on("message", (message) => console.log(JSON.parse(message.toString())));
 
 ## Notes
 
+- Distinct from **WebSocket Mode** (`wss://api.openai.com/v1/responses`), a separate feature for the Responses API that keeps a persistent connection for long-running, tool-call-heavy text workflows (not yet documented in this skill). This page covers server-side controls for **Realtime API** (voice/audio) sessions only — the two features share the word "WebSocket" but serve different APIs.
 - Two connections exist per session: one from the user's client, one from your application server (the "sideband" connection). The server connection can monitor the session, update instructions, and respond to tool calls.
 - For **SIP** calls, OpenAI POSTs a `realtime.call.incoming` webhook event to your configured webhook URL (headers `webhook-id` / `webhook-timestamp` / `webhook-signature`, same format as standard OpenAI webhooks) carrying `data.call_id` and `data.sip_headers`. Use that `call_id` to open the sideband `wss://api.openai.com/v1/realtime?call_id={callId}` WebSocket.
 - The sideband WebSocket connection lives for the duration of the call/session and behaves like a normal Realtime API WebSocket connection.

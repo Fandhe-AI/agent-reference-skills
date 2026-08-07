@@ -1,22 +1,22 @@
 # Commet
 
-Commet（Merchant of Record）を Better Auth に統合するプラグイン。サブスクリプション・使用量課金・機能ゲーティング・税・グローバル決済を管理する。Commet チームによりメンテナンスされている。
+Plugin integrating Commet (Merchant of Record) with Better Auth. Manages subscriptions, usage-based billing, feature gating, tax, and global payments. Maintained by the Commet team.
 
-## インストール
+## Signature / Usage
+
+### Installation
 
 ```bash
 npm install better-auth @commet/better-auth @commet/node
 ```
 
-環境変数:
+Environment variables:
 
 ```
 COMMET_API_KEY=ck_...
 ```
 
-## セットアップ
-
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -36,7 +36,7 @@ export const auth = betterAuth({
 })
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/react"
@@ -47,22 +47,22 @@ export const authClient = createAuthClient({
 })
 ```
 
-## サブプラグインと API メソッド
+### Sub-plugins and API methods
 
-### portal
+`portal`:
 
 ```typescript
 await authClient.customer.portal()
 ```
 
-### subscriptions
+`subscriptions`:
 
 ```typescript
 const { data: subscription } = await authClient.subscription.get()
 await authClient.subscription.cancel({ reason: "...", immediate: false })
 ```
 
-### features
+`features`:
 
 ```typescript
 const { data: features } = await authClient.features.list()
@@ -71,7 +71,7 @@ const { data: check } = await authClient.features.check("sso")
 const { data: canUse } = await authClient.features.canUse("api_calls")
 ```
 
-### usage
+`usage`:
 
 ```typescript
 await authClient.usage.track({
@@ -82,7 +82,7 @@ await authClient.usage.track({
 })
 ```
 
-### seats
+`seats`:
 
 ```typescript
 const { data: seatBalances } = await authClient.seats.list()
@@ -92,20 +92,20 @@ await authClient.seats.set({ featureCode: "admin", count: 3 })
 await authClient.seats.setAll({ admin: 2, member: 10 })
 ```
 
-### webhooks
+`webhooks`:
 
-Webhook エンドポイント: `/api/auth/commet/webhooks`
+Webhook endpoint: `/api/auth/commet/webhooks`
 
-対応ハンドラー: `onSubscriptionActivated`, `onSubscriptionCanceled`, `onPaymentReceived`, `onPaymentFailed`, `onInvoiceCreated` など
+Supported handlers: `onSubscriptionActivated`, `onSubscriptionCanceled`, `onPaymentReceived`, `onPaymentFailed`, `onInvoiceCreated`, and more
 
-## 設定オプション
+## Options / Props
 
-| プロパティ | 必須 | 説明 |
+| Property | Required | Description |
 |---|---|---|
-| `client` | 必須 | Commet SDK インスタンス |
-| `use` | 必須 | サブプラグイン配列 |
-| `createCustomerOnSignUp?` | 任意 | サインアップ時にカスタマーを自動作成 |
-| `getCustomerCreateParams?` | 任意 | カスタマー作成時の追加パラメータ |
+| `client` | Required | Commet SDK instance |
+| `use` | Required | Array of sub-plugins |
+| `createCustomerOnSignUp?` | Optional | Automatically create a customer on sign-up |
+| `getCustomerCreateParams?` | Optional | Additional parameters when creating a customer |
 
 ## Related
 

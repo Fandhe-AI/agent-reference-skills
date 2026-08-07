@@ -1,4 +1,4 @@
-# その他のコマンド
+# Other commands
 
 ## turbo ls
 
@@ -6,42 +6,43 @@
 turbo ls [package(s)] [flags]
 ```
 
-| オプション | 説明 |
+| Option | Description |
 |---|---|
-| `--affected` | 影響を受けるパッケージのみ |
-| `--output` | `pretty` または `json` |
+| `--affected` | Only affected packages |
+| `--output` | `pretty` or `json` |
 
 ## turbo scan
 
-> **非推奨**: `turbo scan` は将来のメジャーバージョンで削除予定。実行すると非推奨警告が表示される。
+> **Deprecated**: `turbo scan` will be removed in a future major version. Running it shows a deprecation warning.
 
-パフォーマンス最適化を設定するインタラクティブコマンド。Git FS Monitor、Remote Caching、バージョンチェック等を設定。
+Interactive command for configuring performance optimizations. Configures Git FS Monitor, Remote Caching, version checks, and more.
 
 ## turbo info
 
-デバッグ情報を表示（バージョン、パス、デーモン状態、パッケージマネージャー、プラットフォーム詳細）。
+Displays debug information (version, paths, daemon status, package manager, platform details).
 
 ## turbo devtools
 
-パッケージグラフをブラウザで可視化。
+Visualizes the package graph in a browser.
 
-| オプション | デフォルト | 説明 |
+| Option | Default | Description |
 |---|---|---|
-| `--port` | `9876` | サーバーポート |
-| `--no-open` | — | ブラウザ自動起動を無効化 |
+| `--port` | `9876` | Server port |
+| `--no-open` | — | Disable automatic browser launch |
 
 ## turbo login / logout / link / unlink
 
 ```bash
-turbo login          # Vercel 認証（デフォルトプロバイダー）
-turbo login --manual # マニュアルトークン入力
-turbo login --api=https://acme.com/api    # カスタム API エンドポイント
-turbo login --sso-team=slug              # SSO チームでログイン
-turbo logout         # Remote Cache プロバイダーからログアウト
-turbo link           # リモートキャッシュにリンク
-turbo link --yes     # 確認プロンプトをスキップ
-turbo link --scope=your-team  # スコープ（Vercel ではチームスラッグ）
-turbo unlink         # リンク解除
+turbo login          # Vercel auth (default provider)
+turbo login --manual # manual token entry
+turbo login --api=https://acme.com/api    # custom API endpoint
+turbo login --login=https://acme.com      # specify the auth token generation endpoint
+turbo login --sso-team=slug              # log in with an SSO team
+turbo logout         # log out of the Remote Cache provider
+turbo link           # link to Remote Cache
+turbo link --yes     # skip the confirmation prompt
+turbo link --scope=your-team  # scope (team slug for Vercel)
+turbo unlink         # unlink
 ```
 
 ## create-turbo
@@ -50,18 +51,22 @@ turbo unlink         # リンク解除
 npx create-turbo@latest [options]
 ```
 
-| フラグ | 説明 |
+| Flag | Description |
 |---|---|
-| `-m, --package-manager` | パッケージマネージャーを指定 |
-| `-e, --example` | テンプレートまたは GitHub URL |
-| `--skip-install` | 依存関係のインストールをスキップ |
-| `--turbo-version` | 特定の turbo バージョンをインストール |
+| `-m, --package-manager` | Specify the package manager (`npm`, `yarn`, `pnpm`, `bun`) |
+| `-e, --example` | Template name or GitHub URL |
+| `-p, --example-path` | Path when the GitHub URL's branch name contains a slash |
+| `--skip-install` | Skip dependency installation |
+| `--skip-transforms` | Skip post-creation code transforms |
+| `--turbo-version` | Install a specific turbo version |
+| `-v, --version` | Show version |
+| `-h, --help` | Show help |
 
 ## eslint-config-turbo / eslint-plugin-turbo
 
-`turbo.json` のハッシュ設定に宣言されていない環境変数をコード内で検出する。
+Detects environment variables used in code that aren't declared in `turbo.json`'s hashing configuration.
 
-ルール: `turbo/no-undeclared-env-vars`
+Rule: `turbo/no-undeclared-env-vars`
 
 ```json
 {
@@ -73,17 +78,17 @@ npx create-turbo@latest [options]
 
 ## turbo telemetry
 
-匿名使用データの収集を管理する。
+Manages anonymous usage data collection.
 
 ```bash
-turbo telemetry status   # 現在のテレメトリ設定を確認
-turbo telemetry enable   # テレメトリを有効化
-turbo telemetry disable  # テレメトリを無効化
+turbo telemetry status   # check current telemetry setting
+turbo telemetry enable   # enable telemetry
+turbo telemetry disable  # disable telemetry
 ```
 
 ## turbo bin
 
-`turbo` 実行バイナリのファイルシステムパスを取得する。グローバルインストールかローカルインストールかの確認に使用。
+Gets the filesystem path of the `turbo` executable binary. Useful for checking whether it's a global or local install.
 
 ```bash
 turbo bin
@@ -91,11 +96,11 @@ turbo bin
 
 ## turbo docs
 
-ターミナルから Turborepo ドキュメントを検索する（最低バージョン: 2.7.5）。
+Searches Turborepo documentation from the terminal (minimum version: 2.7.5).
 
 ```bash
-turbo docs "caching"                              # キーワード検索
-turbo docs "task dependencies" --docs-version 2.8.0  # 特定バージョンのドキュメントを検索
+turbo docs "caching"                              # keyword search
+turbo docs "task dependencies" --docs-version 2.8.0  # search docs for a specific version
 ```
 
 ## @turbo/codemod
@@ -104,8 +109,8 @@ turbo docs "task dependencies" --docs-version 2.8.0  # 特定バージョンの�
 npx @turbo/codemod migrate
 ```
 
-非推奨機能の自動移行。`--dry` でプレビュー可能。
+Automated migration for deprecated features. Use `--dry` to preview.
 
-## turbo-ignore（非推奨）
+## turbo-ignore (deprecated)
 
-> **非推奨**: `turbo-ignore` は更新を終了。代わりに `turbo query affected` を使用する。`turbo query affected` はタスクレベルの変更検知で精度が高い。
+> **Deprecated**: `turbo-ignore` is no longer updated. Use `turbo query affected` instead, which offers more accurate task-level change detection.

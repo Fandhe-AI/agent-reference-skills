@@ -1,10 +1,10 @@
 # Magic Link
 
-Magic Link プラグインは、検証リンクを含むメールをユーザーに送信することでパスワードレス認証を実現する。リンクをクリックするとパスワードなしで自動的に認証される。
+The Magic Link plugin implements passwordless authentication by sending users an email containing a verification link. Clicking the link automatically authenticates the user without a password.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -14,14 +14,14 @@ export const auth = betterAuth({
     plugins: [
         magicLink({
             sendMagicLink: async ({ email, token, url, metadata }, ctx) => {
-                // メール送信ロジックを実装
+                // Implement email-sending logic
             }
         })
     ]
 })
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -34,14 +34,12 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
-
-### Magic Link でサインイン
+### Sign in with Magic Link
 
 `POST /sign-in/magic-link`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.signIn.magicLink({
     email: "user@email.com",
     name: "my-name",
@@ -51,7 +49,7 @@ const { data, error } = await authClient.signIn.magicLink({
     metadata: { inviteId: "123" },
 })
 
-// サーバー
+// Server
 const data = await auth.api.signInMagicLink({
     body: {
         email: "user@email.com",
@@ -65,20 +63,20 @@ const data = await auth.api.signInMagicLink({
 })
 ```
 
-パラメータ:
-- `email` (string, 必須): マジックリンクを受信するメールアドレス
-- `name` (string): 新規登録時の表示名
-- `callbackURL` (string): 検証後のリダイレクト先
-- `newUserCallbackURL` (string): 新規ユーザーのリダイレクト先
-- `errorCallbackURL` (string): エラー時のリダイレクト先
-- `metadata` (Record<string, any>): sendMagicLink コールバックに渡すカスタムデータ
+Parameters:
+- `email` (string, required): the email address that receives the magic link
+- `name` (string): display name for new sign-ups
+- `callbackURL` (string): redirect destination after verification
+- `newUserCallbackURL` (string): redirect destination for new users
+- `errorCallbackURL` (string): redirect destination on error
+- `metadata` (Record<string, any>): custom data passed to the `sendMagicLink` callback
 
-### Magic Link 検証
+### Verify Magic Link
 
 `GET /magic-link/verify`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.magicLink.verify({
     query: {
         token: "123456",
@@ -86,7 +84,7 @@ const { data, error } = await authClient.magicLink.verify({
     },
 })
 
-// サーバー
+// Server
 const data = await auth.api.magicLinkVerify({
     query: {
         token: "123456",
@@ -96,30 +94,30 @@ const data = await auth.api.magicLinkVerify({
 })
 ```
 
-`disableSignUp` が有効でない限り、アカウントのないユーザーは自動登録される。
+Unless `disableSignUp` is enabled, users without an existing account are signed up automatically.
 
-## 設定オプション
+## Options / Props
 
-| オプション | 型 | デフォルト | 説明 |
+| Option | Type | Default | Description |
 |---|---|---|---|
-| `sendMagicLink` | function | 必須 | マジックリンク要求時に呼ばれるコールバック |
-| `expiresIn` | number | 300（5分） | トークンの有効期限（秒） |
-| `allowedAttempts` | number \| Infinity | 1 | トークン削除前の最大検証試行数 |
-| `disableSignUp` | boolean | false | マジックリンクでの新規ユーザー登録を防止 |
-| `generateToken` | (email: string) => string | - | カスタムトークン生成関数 |
-| `storeToken` | "plain" \| "hashed" \| { type: "custom-hasher", hash: ... } | "plain" | トークン保存方法 |
+| `sendMagicLink` | function | required | Callback invoked when a magic link is requested |
+| `expiresIn` | number | 300 (5 minutes) | Token expiration (seconds) |
+| `allowedAttempts` | number \| Infinity | 1 | Maximum verification attempts before the token is deleted |
+| `disableSignUp` | boolean | false | Prevents new user sign-up via magic link |
+| `generateToken` | (email: string) => string | - | Custom token generation function |
+| `storeToken` | "plain" \| "hashed" \| { type: "custom-hasher", hash: ... } | "plain" | How the token is stored |
 
-### カスタムトークン生成
+### Custom token generation
 
-`generateToken` は暗号的に安全で推測困難な文字列を返す必要がある。
+`generateToken` must return a cryptographically secure, hard-to-guess string.
 
-### トークン保存
+### Token storage
 
 ```typescript
-// ハッシュ化（推奨）
+// Hashed (recommended)
 magicLink({ storeToken: "hashed" })
 
-// カスタムハッシャー
+// Custom hasher
 magicLink({
     storeToken: {
         type: "custom-hasher",
@@ -128,12 +126,12 @@ magicLink({
 })
 ```
 
-ストレージバックエンドはグローバルの `verification` 設定で決定される。Redis には `secondaryStorage` を使用可能。
+The storage backend is determined by the global `verification` setting. Redis can be used via `secondaryStorage`.
 
-## 注意点
+## Notes
 
-- デフォルトのトークン有効期限は5分
-- デフォルトでは1回のみ検証試行可能（ブルートフォース防止）
-- 本番環境では `storeToken: "hashed"` を推奨
-- `disableSignUp: true` でない限り、未登録ユーザーはマジックリンク要求で自動的に作成される
-- エラー時は `errorCallbackURL` または `callbackURL` にエラークエリパラメータ付きでリダイレクト
+- The default token expiration is 5 minutes
+- By default only one verification attempt is allowed (brute-force prevention)
+- `storeToken: "hashed"` is recommended in production
+- Unless `disableSignUp: true`, unregistered users are automatically created when requesting a magic link
+- On error, the user is redirected to `errorCallbackURL` or `callbackURL` with an error query parameter

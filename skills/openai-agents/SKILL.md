@@ -5,7 +5,8 @@ description: >
   Agent, Runner, handoffs, guardrails, tracing、
   built-in tools（web search, file search, computer use, code interpreter, image generation）、
   function tools, vector stores, MCP (Model Context Protocol) connectors,
-  background mode, multi-agent orchestration。
+  background mode, multi-agent orchestration、
+  SandboxAgent（隔離実行環境）。
 user-invocable: false
 ---
 
@@ -27,6 +28,7 @@ skills/openai-agents/
       models-and-providers.md
       running-agents.md
       results-and-state.md
+      sandboxes.md
     tools/
       README.md
       tools-overview.md
@@ -42,6 +44,7 @@ skills/openai-agents/
       function-tools.md
       tool-search.md
       programmatic-tool-calling.md
+      skills.md
     mcp/
       README.md
       mcp-and-connectors.md
@@ -86,8 +89,10 @@ skills/openai-agents/
 |--------|---------|------------|
 | Agent の定義・実行・conversation state・streaming を知りたい | agents-sdk | [references/agents-sdk/README.md](references/agents-sdk/README.md) |
 | モデル/provider の選択、SDK 全体像を知りたい | agents-sdk | [references/agents-sdk/README.md](references/agents-sdk/README.md) |
+| SandboxAgent でファイルシステム/shell 等の隔離実行環境を使いたい | agents-sdk | [references/agents-sdk/README.md](references/agents-sdk/README.md) |
 | web search / file search / code interpreter / computer use 等の built-in tool を使いたい | tools | [references/tools/README.md](references/tools/README.md) |
 | function tool の定義や vector store の作成・検索を知りたい | tools | [references/tools/README.md](references/tools/README.md) |
+| shell tool に Agent Skills（SKILL.md バンドル）をアタッチしたい | tools | [references/tools/README.md](references/tools/README.md) |
 | remote MCP server / connectors への接続・認証を知りたい | mcp | [references/mcp/README.md](references/mcp/README.md) |
 | Agents SDK からの MCP tool 統合や Realtime セッションでの MCP 利用を知りたい | mcp | [references/mcp/README.md](references/mcp/README.md) |
 | handoffs / agents-as-tools でマルチエージェント構成を組みたい | orchestration | [references/orchestration/README.md](references/orchestration/README.md) |

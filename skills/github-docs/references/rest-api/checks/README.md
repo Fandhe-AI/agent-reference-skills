@@ -1,20 +1,6 @@
-# Checks API
+# checks
 
-CI/CDの結果をGitHubのプルリクエストやコミットに関連付けるAPIセクション。
-
-## エンドポイントカテゴリ
-
-| カテゴリ | 説明 |
-|---------|------|
-| [Check Runs](check-runs.md) | 個別のチェック実行の作成・管理・アノテーション |
-| [Check Suites](check-suites.md) | チェックスイート（チェック実行のグループ）の管理 |
-
-## 概要
-
-Checks APIはGitHub Appsが外部のCI/CDツールの結果をGitHubのUIに統合するために使用する。チェック実行（Check Run）は個別のテストやリンターの結果を、チェックスイート（Check Suite）はそれらのグループを表す。
-
-## 重要な注意事項
-
-- **書き込みアクセスはGitHub Appsのみ**に制限されている
-- OAuthアプリやPATでは読み取りのみ可能
-- チェックスイートはプッシュ時に自動作成される
+| Name | Description | Path |
+|------|-------------|------|
+| Check Runs API | 個別のチェック実行を作成・管理するAPI。チェック実行はCI/CDパイプラインの個別ステップ（テスト、リンターなど）の結果を表す。 | [check-runs.md](./check-runs.md) |
+| Check Suites API | チェックスイート（チェック実行のグループ）を管理するAPI。チェックスイートはプッシュ時にGitHubが自動作成されるが、手動で作成することも可能。 | [check-suites.md](./check-suites.md) |

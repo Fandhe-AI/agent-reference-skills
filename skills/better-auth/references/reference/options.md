@@ -1,8 +1,21 @@
 # Configuration Options
 
+## Signature / Usage
+
+```typescript
+betterAuth({
+  appName: "My App",
+  baseURL: "https://example.com",
+  secret: process.env.BETTER_AUTH_SECRET,
+  // ...see Options / Props below for all groups
+})
+```
+
+## Options / Props
+
 Complete reference for all configuration options available in `betterAuth({...})`.
 
-## Core Options
+### Core Options
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
@@ -12,7 +25,7 @@ Complete reference for all configuration options available in `betterAuth({...})
 | `secret` | `string` | `"better-auth-secret-..."` | Secret used for encryption, signing, and hashing. Fallback: `BETTER_AUTH_SECRET` or `AUTH_SECRET` env vars. Generate with `openssl rand -base64 32` |
 | `secrets` | `Array<{ version: number; value: string }>` | — | Versioned secrets for non-destructive rotation. First entry is current key; remaining are decryption-only. Env: `BETTER_AUTH_SECRETS=2:key,1:key` |
 
-## `emailVerification`
+### `emailVerification`
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -22,7 +35,7 @@ Complete reference for all configuration options available in `betterAuth({...})
 | `autoSignInAfterVerification` | `boolean` | — | Automatically sign in after email is verified |
 | `expiresIn` | `number` (seconds) | `3600` | Verification token expiry |
 
-## `emailAndPassword`
+### `emailAndPassword`
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -39,7 +52,7 @@ Complete reference for all configuration options available in `betterAuth({...})
 | `onExistingUserSignUp` | `function` | — | Callback when existing user signs up again |
 | `password` | `object` | — | Custom `hash` and `verify` functions |
 
-## `session`
+### `session`
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -52,7 +65,7 @@ Complete reference for all configuration options available in `betterAuth({...})
 | `cookieCache.enabled` | `boolean` | — | Enable short-lived signed cookie cache |
 | `cookieCache.maxAge` | `number` (seconds) | — | Cookie cache duration |
 
-## `account`
+### `account`
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -65,7 +78,7 @@ Complete reference for all configuration options available in `betterAuth({...})
 | `accountLinking.allowDifferentEmails` | `boolean` | — | Allow linking accounts with different emails |
 | `accountLinking.allowUnlinkingAll` | `boolean` | — | Allow unlinking all providers |
 
-## `database`
+### `database`
 
 | Option | Type | Description |
 |--------|------|-------------|
@@ -74,11 +87,11 @@ Complete reference for all configuration options available in `betterAuth({...})
 
 Supported databases: PostgreSQL, MySQL, SQLite.
 
-## `secondaryStorage`
+### `secondaryStorage`
 
 Secondary storage for session data, verification records, and rate limit data. Suitable for Redis or KV stores.
 
-## `verification`
+### `verification`
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -86,7 +99,7 @@ Secondary storage for session data, verification records, and rate limit data. S
 | `storeIdentifier` | `"plain" \| "hashed" \| function` | `"hashed"` | How to store the identifier |
 | `storeInDatabase` | `boolean` | `false` | Store verification records in database |
 
-## `socialProviders`
+### `socialProviders`
 
 Object with provider names as keys. Per-provider options:
 
@@ -109,7 +122,7 @@ Object with provider names as keys. Per-provider options:
 | `disableIdTokenSignIn` | `boolean` | Disable sign in via ID token |
 | `authorizationEndpoint` | `string` | Custom authorization endpoint URL |
 
-## `trustedOrigins`
+### `trustedOrigins`
 
 | Type | Description |
 |------|-------------|
@@ -130,7 +143,7 @@ trustedOrigins: [
 ]
 ```
 
-## `user`
+### `user`
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -145,7 +158,7 @@ trustedOrigins: [
 | `deleteUser.beforeDelete` | `function` | — | Hook before user deletion |
 | `deleteUser.afterDelete` | `function` | — | Hook after user deletion |
 
-## `rateLimit`
+### `rateLimit`
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -156,7 +169,7 @@ trustedOrigins: [
 | `storage` | `"memory" \| "database" \| "secondary-storage"` | `"memory"` | Where to store rate limit state |
 | `modelName` | `string` | `"rateLimit"` | Database model name |
 
-## `advanced`
+### `advanced`
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -178,7 +191,7 @@ trustedOrigins: [
 | `skipTrailingSlashes` | `boolean` | `false` | Normalize trailing slashes in routes |
 | `trustedProxyHeaders` | `boolean` | — | Derive base URL from `X-Forwarded-Host` / `X-Forwarded-Proto` headers |
 
-## `logger`
+### `logger`
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -187,7 +200,7 @@ trustedOrigins: [
 | `level` | `"debug" \| "info" \| "warn" \| "error"` | `"warn"` | Minimum log level |
 | `log` | `function` | — | Custom log handler `(level, message, ...args)` |
 
-## `hooks`
+### `hooks`
 
 Request lifecycle hooks:
 
@@ -196,7 +209,7 @@ Request lifecycle hooks:
 | `before` | `function` | Execute before request processing |
 | `after` | `function` | Execute after request processing |
 
-## `databaseHooks`
+### `databaseHooks`
 
 Per-model lifecycle hooks. Available models: `user`, `session`, `account`, `verification`.
 
@@ -207,7 +220,7 @@ Per-model lifecycle hooks. Available models: `user`, `session`, `account`, `veri
 | `{model}.update.before` | `function` | Before record update |
 | `{model}.update.after` | `function` | After record update |
 
-## `onAPIError`
+### `onAPIError`
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
@@ -216,7 +229,7 @@ Per-model lifecycle hooks. Available models: `user`, `session`, `account`, `veri
 | `errorURL` | `string` | `/api/auth/error` | URL for error redirects |
 | `customizeDefaultErrorPage` | `object` | — | Customize error page appearance (colors, sizes, fonts) |
 
-## `disabledPaths`
+### `disabledPaths`
 
 Disable specific authentication endpoints:
 
@@ -224,13 +237,13 @@ Disable specific authentication endpoints:
 disabledPaths: ["/sign-up/email", "/sign-in/email"]
 ```
 
-## `telemetry`
+### `telemetry`
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `enabled` | `boolean` | `false` | Enable telemetry |
 
-## `plugins`
+### `plugins`
 
 Array of plugin instances to extend Better Auth functionality.
 
@@ -244,3 +257,8 @@ plugins: [myPlugin(), anotherPlugin()]
 - Options marked with warnings disable security checks — use with caution
 - For `baseURL`, always set explicitly rather than relying on request inference
 - Background tasks enable optimistic responses in serverless environments
+
+## Related
+
+- [security](./security.md)
+- [telemetry](./telemetry.md)

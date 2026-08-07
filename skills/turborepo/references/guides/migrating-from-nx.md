@@ -1,24 +1,26 @@
-# Nx からの移行
+# Migrating from Nx
 
-## 移行の動機
+## Signature / Usage
 
-- エコシステム標準への準拠（JS パッケージマネージャーのワークスペースをそのまま活用）
-- 設定量の削減（約15行 vs 40行以上）
+Migration motivations:
 
-## 移行手順
+- Alignment with ecosystem standards (reuse the JS package manager's native workspaces)
+- Reduced configuration (roughly 15 lines vs 40+)
 
-1. `.gitignore` に `.turbo` を追加
-2. ワークスペース定義を作成
-3. 各アプリに `package.json` を追加
-4. Nx プラグインを設定から削除
-5. `packageManager` フィールドを指定
-6. パッケージマネージャーの install を実行
-7. Turborepo をインストール
-8. `turbo.json` を作成
-9. `turbo build` で動作確認
-10. リモートキャッシュを有効化
+Migration steps:
 
-## 設定対応表
+1. Add `.turbo` to `.gitignore`
+2. Create the workspace definition
+3. Add a `package.json` to each app
+4. Remove Nx plugins from the configuration
+5. Set the `packageManager` field
+6. Run the package manager's install
+7. Install Turborepo
+8. Create `turbo.json`
+9. Verify with `turbo build`
+10. Enable Remote Caching
+
+## Options / Props
 
 | Nx | Turborepo |
 |---|---|
@@ -27,8 +29,6 @@
 | `inputs` | `tasks[task].inputs` |
 | `outputs` | `tasks[task].outputs` |
 
-## CLI 対応表
-
 | Nx | Turborepo |
 |---|---|
 | `nx run` | `turbo run` |
@@ -36,6 +36,6 @@
 | `--projects` | `--filter` |
 | `--parallel` | `--concurrency` |
 
-## 段階的移行
+## Notes
 
-タスク単位・パッケージ単位で1つずつ移行する。移行中は Nx と Turborepo を並行して使用可能。
+- Migrate one task or package at a time. Nx and Turborepo can run side by side during the migration.

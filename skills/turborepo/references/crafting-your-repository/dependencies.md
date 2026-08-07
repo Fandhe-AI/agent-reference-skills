@@ -1,11 +1,13 @@
-# 依存関係の管理
+# Dependency Management
 
-## 内部パッケージの依存宣言
+## Usage
+
+### Declaring internal package dependencies
 
 **pnpm / bun**: `"@repo/ui": "workspace:*"`
 **npm / yarn**: `"@repo/ui": "*"`
 
-## 複数パッケージへの一括インストール
+### Bulk install across multiple packages
 
 ```bash
 # pnpm
@@ -18,13 +20,9 @@ npm install jest --workspace=web --workspace=@repo/ui --save-dev
 yarn workspaces foreach -R --from '{web,@repo/ui}' add jest --dev
 ```
 
-## ベストプラクティス
+## Notes
 
-- **使う場所にインストール**: 依存関係は使用するパッケージの `package.json` に直接書く
-- **ルートには管理ツールのみ**: turbo / husky / lint-staged 等
-- Turborepo は依存関係の管理自体には関与しない（パッケージマネージャーの仕事）
-
-## バージョン統一ツール
-
-- `syncpack`, `manypkg`, `sherif` 等の専用ツール
-- pnpm v9.5+ の **catalogs** 機能
+- **Install where it's used**: declare dependencies directly in the `package.json` of the package that uses them.
+- **Keep the root for tooling only**: turbo, husky, lint-staged, etc.
+- Turborepo does not manage dependencies itself — that is the package manager's job.
+- Version alignment tools: `syncpack`, `manypkg`, `sherif`, or pnpm v9.5+'s **catalogs** feature.

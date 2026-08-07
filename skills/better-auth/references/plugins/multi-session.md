@@ -1,10 +1,10 @@
 # Multi-Session
 
-Multi-Session プラグインは、同じブラウザ内で複数のアクティブセッションを維持し、ログアウトせずにアカウントを切り替えることを可能にする。
+The Multi-Session plugin lets an app maintain multiple active sessions in the same browser and switch between accounts without signing out.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -17,7 +17,7 @@ export const auth = betterAuth({
 })
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -30,71 +30,69 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
-
-### デバイスセッション一覧
+### List device sessions
 
 `GET /multi-session/list-device-sessions`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.multiSession.listDeviceSessions()
 
-// サーバー
+// Server
 const data = await auth.api.listDeviceSessions({
     headers: await headers(),
 })
 ```
 
-セッション Cookie が必要。
+Requires the session cookie.
 
-### アクティブセッション設定
+### Set active session
 
 `POST /multi-session/set-active`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.multiSession.setActive({
     sessionToken: "some-session-token",
 })
 
-// サーバー
+// Server
 const data = await auth.api.setActiveSession({
     body: { sessionToken: "some-session-token" },
     headers: await headers(),
 })
 ```
 
-### セッション取り消し
+### Revoke session
 
 `POST /multi-session/revoke`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.multiSession.revoke({
     sessionToken: "some-session-token",
 })
 
-// サーバー
+// Server
 const data = await auth.api.revokeDeviceSession({
     body: { sessionToken: "some-session-token" },
     headers: await headers(),
 })
 ```
 
-### サインアウトと全セッション取り消し
+### Sign out and revoke all sessions
 
 ```typescript
 await authClient.signOut()
 ```
 
-既存の `signOut` メソッドが全アクティブセッションの取り消しを自動処理する。
+The existing `signOut` method automatically handles revoking all active sessions.
 
-## 設定オプション
+## Options / Props
 
-| オプション | 型 | デフォルト | 説明 |
+| Option | Type | Default | Description |
 |---|---|---|---|
-| `maximumSessions` | number | 5 | デバイスあたりの最大同時セッション数 |
+| `maximumSessions` | number | 5 | Maximum concurrent sessions per device |
 
 ```typescript
 multiSession({
@@ -102,7 +100,7 @@ multiSession({
 })
 ```
 
-## 注意点
+## Notes
 
-- ユーザー認証時に、ブラウザに追加の Cookie が付加され、異なるアカウント間の複数セッションが追跡される
-- Cookie ベースの追跡により、同一ブラウザ内でのシームレスなアカウント切り替えが可能
+- When a user authenticates, an additional cookie is added to the browser to track multiple sessions across different accounts
+- Cookie-based tracking enables seamless account switching within the same browser

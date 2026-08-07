@@ -32,6 +32,6 @@ iOS 8.0+, iPadOS 8.0+, macOS 13.0+, watchOS 2.0+, visionOS 1.0+. The framework r
 
 ## Related
 
-- [hkquantitytype.md](./hkquantitytype.md)
-- [hksampletype.md](./hksampletype.md)
-- [hkhealthstore.md](./hkhealthstore.md)
+- [HKQuantityType](./hkquantitytype.md)
+- [HKSampleType](./hksampletype.md)
+- [HKHealthStore](./hkhealthstore.md)

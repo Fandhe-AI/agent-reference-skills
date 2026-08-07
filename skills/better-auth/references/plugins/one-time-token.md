@@ -1,10 +1,10 @@
 # One-Time Token
 
-One-Time Token（OTT）プラグインは、安全な使い捨てセッショントークンの生成と検証機能を提供する。主にクロスドメイン認証に使用される。
+The One-Time Token (OTT) plugin provides generation and verification of secure, single-use session tokens. It's primarily used for cross-domain authentication.
 
-## セットアップ
+## Signature / Usage
 
-### サーバー側
+### Setup (server side)
 
 ```typescript
 import { betterAuth } from "better-auth"
@@ -17,7 +17,7 @@ export const auth = betterAuth({
 })
 ```
 
-### クライアント側
+### Setup (client side)
 
 ```typescript
 import { createAuthClient } from "better-auth/client"
@@ -30,61 +30,59 @@ export const authClient = createAuthClient({
 })
 ```
 
-## API メソッド
-
-### トークン生成
+### Generate token
 
 `GET /one-time-token/generate`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.oneTimeToken.generate()
 
-// サーバー
+// Server
 const data = await auth.api.generateOneTimeToken({
-    headers: await headers(),  // セッション Cookie が必要
+    headers: await headers(),  // requires the session cookie
 })
 ```
 
-現在のセッションに紐づいた `token` を返す。デフォルトで3分間有効。
+Returns a `token` tied to the current session. Valid for 3 minutes by default.
 
-### トークン検証
+### Verify token
 
 `POST /one-time-token/verify`
 
 ```typescript
-// クライアント
+// Client
 const { data, error } = await authClient.oneTimeToken.verify({
     token: "some-token",
 })
 
-// サーバー
+// Server
 const data = await auth.api.verifyOneTimeToken({
     body: { token: "some-token" },
 })
 ```
 
-トークンに紐づいたセッションを返す。
+Returns the session tied to the token.
 
-## 設定オプション
+## Options / Props
 
-| オプション | 型 | デフォルト | 説明 |
+| Option | Type | Default | Description |
 |---|---|---|---|
-| `disableClientRequest` | boolean | false | true の場合、サーバー側でのみトークン生成 |
-| `expiresIn` | number | 3 | トークンの有効期間（分） |
-| `generateToken` | function | - | カスタムトークン生成ロジック。`session` と `ctx` を受け取る |
-| `storeToken` | "plain" \| "hashed" \| custom | "plain" | トークンの DB 保存方法 |
+| `disableClientRequest` | boolean | false | When true, tokens can only be generated server-side |
+| `expiresIn` | number | 3 | Token validity period (minutes) |
+| `generateToken` | function | - | Custom token generation logic. Receives `session` and `ctx` |
+| `storeToken` | "plain" \| "hashed" \| custom | "plain" | How the token is stored in the DB |
 
-### トークン保存設定
+### Token storage configuration
 
 ```typescript
-// プレーンテキスト（デフォルト）
+// Plain text (default)
 oneTimeToken({ storeToken: "plain" })
 
-// ビルトインハッシャー
+// Built-in hasher
 oneTimeToken({ storeToken: "hashed" })
 
-// カスタムハッシャー
+// Custom hasher
 oneTimeToken({
     storeToken: {
         type: "custom-hasher",
@@ -93,10 +91,10 @@ oneTimeToken({
 })
 ```
 
-## 注意点
+## Notes
 
-- generate エンドポイントにはセッション Cookie が必要
-- トークンは検証に一度だけ使用可能
-- デフォルトの有効期限は3分
-- クロスドメイン認証シナリオ向け設計
-- `disableClientRequest` でトークン生成をサーバー側のみに制限可能
+- The generate endpoint requires the session cookie
+- Tokens can be used for verification only once
+- The default expiration is 3 minutes
+- Designed for cross-domain authentication scenarios
+- `disableClientRequest` can restrict token generation to server-side only

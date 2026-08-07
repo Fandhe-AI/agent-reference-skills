@@ -1,24 +1,22 @@
 # Doc Blocks
 
-Storybook's built-in doc block components and hooks for building MDX documentation pages.
-
 | Name | Description | Path |
-|------|-------------|------|
-| ArgTypes | Static table of argument type definitions for a component's interface | [./arg-types.md](./arg-types.md) |
-| Canvas | Story wrapper with interactive toolbar and automatic source code display | [./canvas.md](./canvas.md) |
-| ColorPalette / ColorItem | Grid of color swatches for documenting a project's color system | [./color-palette.md](./color-palette.md) |
-| Controls | Dynamic interactive table for editing component arguments in docs | [./controls.md](./controls.md) |
-| Description | Renders component, story, or meta descriptions from JSDoc or parameters | [./description.md](./description.md) |
-| IconGallery / IconItem | Grid layout for displaying and documenting icon components | [./icon-gallery.md](./icon-gallery.md) |
-| Markdown | Imports and displays plain markdown content inside MDX files | [./markdown.md](./markdown.md) |
-| Meta | Attaches an MDX file to component stories; controls sidebar placement | [./meta.md](./meta.md) |
-| Primary | Renders the first story in a CSF file | [./primary.md](./primary.md) |
-| Source | Renders code snippets with syntax highlighting in documentation | [./source.md](./source.md) |
-| Stories | Renders the complete collection of stories from a CSF file | [./stories.md](./stories.md) |
-| Story | Renders a single named story within MDX documentation | [./story.md](./story.md) |
-| Subtitle | Secondary heading block for documentation entries | [./subtitle.md](./subtitle.md) |
-| TableOfContents | Fixed sidebar TOC generated from page headings | [./table-of-contents.md](./table-of-contents.md) |
-| Title | Primary heading block for documentation entries | [./title.md](./title.md) |
-| Typeset | Typography sample display for fonts, weights, and sizes | [./typeset.md](./typeset.md) |
-| Unstyled | Disables Storybook's default MDX styles for wrapped content | [./unstyled.md](./unstyled.md) |
-| useOf | Hook to resolve story/meta/component exports for custom doc blocks | [./use-of.md](./use-of.md) |
+| --- | --- | --- |
+| ArgTypes | A static table that displays argument type definitions for a component's interface in documentation. | [./arg-types.md](./arg-types.md) |
+| Canvas | A wrapper around a Story block with an interactive toolbar that displays stories and automatically provides source code snippets. | [./canvas.md](./canvas.md) |
+| ColorPalette / ColorItem | A doc block that documents color-related items such as color swatches used throughout a project. | [./color-palette.md](./color-palette.md) |
+| Controls | A dynamic table displaying component arguments with functioning UI controls for interactive documentation and argument modification. | [./controls.md](./controls.md) |
+| Description | Displays component, story, or meta descriptions sourced from JSDoc comments or parameters as rendered markdown. | [./description.md](./description.md) |
+| IconGallery / IconItem | A doc block that displays icon components in a neat grid layout for documentation purposes. | [./icon-gallery.md](./icon-gallery.md) |
+| Markdown | A doc block that imports and displays plain markdown content within MDX files. | [./markdown.md](./markdown.md) |
+| Meta | Attaches an MDX documentation page to component stories and controls the sidebar entry location. Renders no visible output. | [./meta.md](./meta.md) |
+| Primary | Renders the first story defined in a CSF file, typically positioned beneath the title in documentation. | [./primary.md](./primary.md) |
+| Source | Renders code snippets directly in Storybook documentation. | [./source.md](./source.md) |
+| Stories | Renders the complete collection of stories from a CSF file in documentation. | [./stories.md](./stories.md) |
+| Story | Renders a single story from a CSF file within MDX documentation with all annotations applied. | [./story.md](./story.md) |
+| Subtitle | A secondary heading block for documentation entries in Storybook. | [./subtitle.md](./subtitle.md) |
+| TableOfContents | Renders an interactive table of contents for documentation pages, displayed as a fixed sidebar on the right side of larger screens. | [./table-of-contents.md](./table-of-contents.md) |
+| Title | The primary heading block for documentation entries, typically displaying the component or page name. | [./title.md](./title.md) |
+| Typeset | A documentation block that displays typography samples to showcase fonts, weights, and sizes used in a project. | [./typeset.md](./typeset.md) |
+| Unstyled | Disables Storybook's default MDX documentation styles for the content wrapped inside it. | [./unstyled.md](./unstyled.md) |
+| useOf | A React hook that resolves story, meta, or component exports into their annotated forms for building custom doc blocks. | [./use-of.md](./use-of.md) |

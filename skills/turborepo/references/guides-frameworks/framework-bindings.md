@@ -1,8 +1,10 @@
-# ライブラリのフレームワークバインディング
+# Framework Bindings for Libraries
 
-ライブラリパッケージ内でフレームワーク API を使う際に、`peerDependencies` として宣言する手法。
+## Usage
 
-## peerDependencies の設定
+Declare framework APIs used inside a library package as `peerDependencies` so the consumer's installed framework version is resolved.
+
+### peerDependencies setup
 
 ```json
 {
@@ -13,9 +15,9 @@
 }
 ```
 
-消費者側がインストールしたフレームワークのバージョンがライブラリ内でも解決される。バージョンは範囲指定を推奨（例: `">=15"`）。
+A version range is recommended over a wildcard (e.g. `">=15"`).
 
-## 実装例
+### Example implementation
 
 ```tsx
 import { ComponentProps } from "react";
@@ -32,7 +34,7 @@ export function CustomLink({ children, ...props }: CustomLinkProps) {
 }
 ```
 
-## エントリーポイント分割（複数フレームワーク対応）
+### Entry point splitting (multi-framework support)
 
 ```json
 {
@@ -46,5 +48,5 @@ export function CustomLink({ children, ...props }: CustomLinkProps) {
 }
 ```
 
-- `./link` — フレームワーク非依存の汎用 Link
-- `./next-js/link` — Next.js 専用の Link
+- `./link` — framework-agnostic generic `Link`
+- `./next-js/link` — Next.js-specific `Link`

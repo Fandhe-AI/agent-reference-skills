@@ -35,6 +35,8 @@ private void DataRequested(DataTransferManager sender, DataRequestedEventArgs e)
 - Namespace: `Windows.ApplicationModel.DataTransfer` (WinRT).
 - Source apps put data into a `DataPackage` and hand it to the target app (via Clipboard or DataTransferManager); target apps read it back through the read-only `DataPackageView`.
 - `SetDataProvider` lets a source app defer generating data (e.g. multiple image formats) until the target app actually requests a specific format.
+- Prefer `SetWebLink` (or `SetApplicationLink` for deep links) over `SetText` when sharing a URL through the Windows Share Sheet — target apps can then generate rich link previews and route navigation correctly instead of treating it as plain text.
+- Always set `Properties.Title` when sharing; it's required for the Share Sheet to render the content clearly.
 
 ## Related
 
