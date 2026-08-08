@@ -1,0 +1,41 @@
+name: Codex PR review
+
+# Fandhe-AI/actions の codex-review reusable workflow を SHA 固定で呼び出す
+# 薄い wrapper（fandhe-backend の同名 wrapper と同型、イシュー #122。
+# public リポジトリ向けテンプレート codex-review/templates/codex-review.public.yml 準拠）。
+# 実装本体・多層防御の設計コメントは Fandhe-AI/actions の
+# .github/workflows/codex-review.yml と codex-review/README.md を参照。
+#
+# 有効化スイッチ: Actions variable `CODEX_HOME_DIR` が未設定の間、codex ジョブは
+# fail-closed で skip される（runner 準備が整うまで本 wrapper を先行導入できる）。
+# fork からの PR でも workflow 側が fail-closed で実行を拒否する。
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+
+permissions:
+  contents: read
+
+# reusable workflow のトップレベル concurrency は機能しないため呼び出し側で設定する
+concurrency:
+  group: codex-review-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  codex-review:
+    # <SHA> は Fandhe-AI/actions のコミット SHA で固定する（@main 不可）
+    uses: Fandhe-AI/actions/.github/workflows/codex-review.yml@5982e2f502a19effc36a7b161660b5a4ea17b886 # main
+    permissions:
+      contents: read
+      pull-requests: write
+    # codex ジョブは runner-label（既定値 codex）のまま、public リポジトリでも self-hosted な
+    # codex 専用 runner を使う。これは組織 runner 方針で認められた唯一の例外であり、
+    # fork PR では workflow 側が fail-closed で実行を拒否する。ここでは指定しない。
+    with:
+      # post-feedback-runner-label の既定値は self-hosted であり、public リポジトリでは
+      # 組織 runner 方針（public は GitHub ホステッド）に反する。資格情報に触れない
+      # コメント投稿ジョブなので、必ず ubuntu-latest を明示的に渡すこと。
+      # 詳細は Fandhe-AI/actions の docs/runner-policy.md「3. 例外: codex-review」を参照。
+      post-feedback-runner-label: ubuntu-latest
