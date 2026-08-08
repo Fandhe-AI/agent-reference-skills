@@ -36,12 +36,14 @@ jobs:
         run: bash .github/scripts/check-skill-structure.sh
 
   # --------------------------------------------------
-  # markdownlint（全 markdown の lint）
+  # lint-docs（ドキュメント／設定ファイル系 lint）
   # --------------------------------------------------
   # npx 直呼びの個別実装から Fandhe-AI/actions の lint-docs reusable workflow
-  # （SHA 固定・markdownlint-cli バージョンは共通側で固定）へ置換した（イシュー #121）。
-  # ルール設定は `.markdownlint.jsonc`、除外は `.markdownlintignore` を参照する
-  # （緑のベースライン構成）。structure 等リポジトリ固有ジョブは現状維持。
+  # （SHA 固定・lint ツールバージョンは共通側で固定）へ置換した（イシュー #121）。
+  # markdownlint の設定は `.markdownlint.jsonc`、除外は `.markdownlintignore` を
+  # 参照する（緑のベースライン構成）。イシュー #126 で editorconfig / yamllint /
+  # commitlint も有効化した（設定はそれぞれ `.editorconfig` / `.yamllint` /
+  # `commitlint.config.mjs` を参照）。structure 等リポジトリ固有ジョブは現状維持。
   lint-docs:
     # <SHA> は Fandhe-AI/actions のコミット SHA で固定する（@main 不可）
     uses: Fandhe-AI/actions/.github/workflows/lint-docs.yml@5982e2f502a19effc36a7b161660b5a4ea17b886 # main
@@ -50,11 +52,10 @@ jobs:
     with:
       # public リポジトリのため GitHub ホステッド runner を明示指定（組織 runner 方針）
       runner-label: ubuntu-latest
-      # 本イシューの置換対象は markdownlint のみ。editorconfig / yamllint /
-      # commitlint は従来 CI に存在しないため無効化する（commitlint は
-      # pull_request 専用のため、push でも動く本 workflow では有効化する場合
-      # github.event_name での切り替えが必要になる点にも注意）
       markdownlint: true
-      editorconfig: false
-      yamllint: false
-      commitlint: false
+      editorconfig: true
+      yamllint: true
+      # commitlint は PR の base/head から commit 範囲を取るため pull_request 専用
+      # （reusable 側は他イベントを fail-closed で拒否する）。push でも動く本
+      # workflow では event で切り替え、main への push では実行しない
+      commitlint: ${{ github.event_name == 'pull_request' }}

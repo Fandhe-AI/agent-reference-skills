@@ -1,0 +1,23 @@
+# EditorConfig（https://editorconfig.org）。
+#
+# エディタ間でインデント・改行・文字コードを統一するための宣言。CI では
+# Fandhe-AI/actions の lint-docs reusable workflow（editorconfig-checker）が
+# 本ファイルを正として準拠を検証する（イシュー #126 で有効化）。
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# Markdown は行末スペース 2 つが強制改行の意味を持つため除去しない。
+# インデントもリスト継続行・コードブロック内の引用コード（上流ドキュメント
+# 由来のタブインデントを含む。有効化時の実測で 72 ファイル 257 行が該当）を
+# そのまま保持するため検査しない
+[*.md]
+trim_trailing_whitespace = false
+indent_style = unset
+indent_size = unset

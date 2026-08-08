@@ -1,0 +1,20 @@
+# yamllint 設定（イシュー #126）。
+#
+# CI では Fandhe-AI/actions の lint-docs reusable workflow（yamllint）が
+# 自動探索（.yamllint）で本ファイルを参照する。既定ルールのうち
+# GitHub Actions workflow・本リポジトリの既存慣行と衝突するものだけを緩和する。
+extends: default
+
+rules:
+  # GitHub Actions workflow は先頭の `---` を書かない慣行のため要求しない
+  document-start: disable
+  # workflow の `on:` キーが truthy 判定されるのを除外する（値側の検査は維持）
+  truthy:
+    check-keys: false
+  # SHA 固定の `uses:` 行等があり既定の 80 桁では過剰（有効化時の実測最長 116）
+  line-length:
+    max: 120
+  # `uses: ...@<SHA> # main` の SHA 固定注記はコメント前スペース 1 の
+  # 組織横断の既存慣行（actions リポジトリのテンプレート由来）のため許容する
+  comments:
+    min-spaces-from-content: 1
