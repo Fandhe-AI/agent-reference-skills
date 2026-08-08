@@ -1,0 +1,6 @@
+# markdownlint の除外パス（.markdownlint-cli2.jsonc の "ignores" 節から移行、イシュー #121）。
+# ルール設定本体は .markdownlint.jsonc を参照する。
+_/
+.claude/skills/
+.agents/skills/
+node_modules/
