@@ -54,7 +54,7 @@ reusable workflow を SHA 固定で呼び出す wrapper）は、PR の base コ�
 - **言語規約（P1）**: description・エージェント定義は日本語、リファレンス本文は
   出典公式ドキュメントの言語（通常は英語。fandhe-frontend / fandhe-backend は日本語）
 - **キーワード衝突の棲み分け（P1）**: 同名 API を持つスキル間（ark-ui / chakra-ui /
-  fandhe-frontend、android-* / apple-* / windows-*、openai-* / anthropic-* 等）の
+  fandhe-frontend、`android-*` / `apple-*` / `windows-*`、`openai-*` / `anthropic-*` 等）の
   棲み分け設計（description 先頭 disambiguator・`## Notes` の距離線・README レベル
   距離線）を弱める変更、統合禁止とされた同名別 API ページのマージは指摘する
   （詳細は `CLAUDE.md` Conventions）
@@ -82,9 +82,9 @@ reusable workflow を SHA 固定で呼び出す wrapper）は、PR の base コ�
 
 ## リポジトリ固有の観点
 
-- **委譲体制の維持（P2）**: 読み取り専用エージェント（skill-coverage-analyzer /
+- **委譲体制の維持（P1）**: 読み取り専用エージェント（skill-coverage-analyzer /
   skill-structure-validator / reference-linter / plan-verifier）へ Write/Edit/Bash を
-  付与する変更は責務境界の破壊として指摘する（P1）
+  付与する変更は責務境界の破壊として指摘する
 - **モデル配分（P2）**: opus はコスト境界のある横断分析のみ・sonnet は調査/著作/検証・
   haiku は機械的チェックという配分（`CLAUDE.md`）と整合させる
 - **コミット規約（P2）**: 日本語 Conventional Commits。`--no-verify` の使用を促す・
