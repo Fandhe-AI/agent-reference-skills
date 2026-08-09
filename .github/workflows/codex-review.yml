@@ -26,7 +26,7 @@ concurrency:
 jobs:
   codex-review:
     # <SHA> は Fandhe-AI/actions のコミット SHA で固定する（@main 不可）
-    uses: Fandhe-AI/actions/.github/workflows/codex-review.yml@cb482ae59a8a7b94496aa72a71404dc115b783d8 # main
+    uses: Fandhe-AI/actions/.github/workflows/codex-review.yml@a9da308407866a42ade5be047c63e80b65c64fca # main
     permissions:
       contents: read
       pull-requests: write

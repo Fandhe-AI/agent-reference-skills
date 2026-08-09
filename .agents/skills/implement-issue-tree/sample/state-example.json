@@ -11,7 +11,12 @@
       "branch": "feat/43-add-auth-api",
       "worktree": "",
       "fixCount": 1,
-      "note": "CI 失敗を 1 回修正して squash merge 完了"
+      "note": "CI 失敗を 1 回修正して squash merge 完了。対象外と判断されたコメント: threadId: PRRT_kwDOAbc123 / reason: 命名リファクタは別 issue の対象範囲のため今回は見送り",
+      "outOfScopeLog": [
+        "threadId: PRRT_kwDOAbc123 / reason: 命名リファクタは別 issue の対象範囲のため今回は見送り"
+      ],
+      "lastUnresolvedInfo": "",
+      "lastUnresolvedComments": []
     },
     "44": {
       "type": "implement",
@@ -29,7 +34,18 @@
       "branch": "feat/45-add-payment",
       "worktree": "/path/to/repo/.git/worktrees/impl-45",
       "fixCount": 6,
-      "note": "マージに到達できなかった（最終状態: blocked）: fixCount 上限（6 回）に達した"
+      "note": "マージに到達できなかった（最終状態: blocked）: fixCount 上限（6 回）に達した。最終観測時点の未解決コメント: reviewer が支払い失敗時のロールバック処理漏れを指摘。対象外と判断されたコメント: threadId: PRRT_kwDOxyz789 / reason: ログフォーマット変更は今回のスコープ外のため対応見送り",
+      "outOfScopeLog": [
+        "threadId: PRRT_kwDOxyz789 / reason: ログフォーマット変更は今回のスコープ外のため対応見送り"
+      ],
+      "lastUnresolvedInfo": "reviewer が支払い失敗時のロールバック処理漏れを指摘",
+      "lastUnresolvedComments": [
+        {
+          "threadId": "PRRT_kwDOxyz789",
+          "text": "reviewer: 支払い失敗時のロールバック処理が抜けている。決済 API 呼び出し後の例外パスを確認してほしい",
+          "url": "https://github.com/example-org/example-repo/pull/103#discussion_r1000001"
+        }
+      ]
     },
     "42": {
       "type": "verify-close",
