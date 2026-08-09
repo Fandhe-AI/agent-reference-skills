@@ -26,6 +26,9 @@ on:
         description: 'Deployed URL'
         value: ${{ jobs.deploy.outputs.url }}
 
+permissions:
+  contents: read   # 呼び出し元から継承せず、再利用可能ワークフロー側でも最小権限を明示する
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -61,6 +64,9 @@ name: Release
 on:
   push:
     tags: ['v*']
+
+permissions:
+  contents: read
 
 jobs:
   deploy-staging:

@@ -12,6 +12,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read   # 既定値に依存せず最小権限を明示する
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}

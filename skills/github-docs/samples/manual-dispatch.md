@@ -25,6 +25,9 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: read   # 既定値に依存せず最小権限を明示する
+
 jobs:
   deploy:
     runs-on: ubuntu-latest

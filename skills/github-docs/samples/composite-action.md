@@ -48,6 +48,13 @@ runs:
 
 ```yaml
 # .github/workflows/ci.yml  （呼び出し元）
+name: CI
+
+on: [push, pull_request]
+
+permissions:
+  contents: read   # 既定値に依存せず最小権限を明示する
+
 jobs:
   build:
     runs-on: ubuntu-latest
