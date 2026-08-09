@@ -45,15 +45,28 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          # リリースタグ形式のみ許可する。ブランチ名や任意 SHA は受け付けない
-          if ! printf '%s' "${VERSION}" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+          # リリースタグ形式のみ許可する。bash の [[ =~ ]] は文字列全体に
+          # アンカーされるため、改行を含む入力で一行だけ一致させる迂回ができない
+          if [[ ! "${VERSION}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo 'version must be a release tag like v1.2.3' >&2
             exit 1
           fi
-          # タグを不変の commit SHA へ解決し、後段へは「データ」として渡す。
-          # git/ref/tags の .object.sha は annotated tag では tag object の SHA に
-          # なるため使わない。repos/{repo}/commits/{ref} は peel 済みの commit を返す
-          SHA=$(gh api "repos/${REPO}/commits/${VERSION}" --jq '.sha')
+          # 必ずタグ名前空間で解決する。repos/{repo}/commits/{ref} はブランチも
+          # 解決してしまい、同名ブランチでタグ限定の検証を迂回できる
+          OBJ=$(gh api "repos/${REPO}/git/ref/tags/${VERSION}" --jq '.object.type + " " + .object.sha')
+          TYPE=${OBJ%% *}
+          SHA=${OBJ##* }
+          # annotated tag は tag object を指すため commit に到達するまで peel する
+          while [ "${TYPE}" = 'tag' ]; do
+            OBJ=$(gh api "repos/${REPO}/git/tags/${SHA}" --jq '.object.type + " " + .object.sha')
+            TYPE=${OBJ%% *}
+            SHA=${OBJ##* }
+          done
+          if [ "${TYPE}" != 'commit' ]; then
+            echo 'tag does not resolve to a commit' >&2
+            exit 1
+          fi
+          # 後段へは不変の commit SHA を「データ」として渡す
           echo "sha=${SHA}" >> "${GITHUB_OUTPUT}"
 
   deploy-staging:
