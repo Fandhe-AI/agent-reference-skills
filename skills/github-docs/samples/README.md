@@ -1,5 +1,13 @@
 # Samples
 
+これらのサンプルは**そのまま複製されて消費側リポジトリの CI になる**前提の資材である。
+複製時に危険な書き方が伝播しないよう、全サンプルは以下を満たす。
+
+- 外部 action・別リポジトリの reusable workflow は**コミット SHA 固定**で参照する（末尾コメントでバージョンを示す）。`@v4` / `@main` などの可動 ref は付け替え可能でサプライチェーン攻撃の経路になる
+- `${{ ... }}` を `run:` 本文や `actions/github-script` の `script:` 本文へ**直接展開しない**。`env:` へ渡し、シェルでは `"${VAR}"`、JavaScript では `process.env.VAR` で参照する
+- ジョブの `permissions` は必要最小限を明示する。既定権限が read-only のリポジトリでも動くようにする
+- fork PR を扱う場合、`pull_request_target` へ単純置換しない。PR のコードを実行しないジョブへ分離する（[pr-auto-comment.md](./pr-auto-comment.md) 参照）
+
 | Name | Description | Path |
 |------|-------------|------|
 | Cache Dependencies | `actions/cache` を使って依存関係をキャッシュし、ワークフローの実行時間を短縮するパターン。 | [cache-dependencies.md](./cache-dependencies.md) |

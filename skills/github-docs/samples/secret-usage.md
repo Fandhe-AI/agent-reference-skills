@@ -10,16 +10,21 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+  issues: write   # 下記 Create Release Comment が Issues API へ POST するため
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production  # 環境シークレットを有効化
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
 
       # アクションの入力としてシークレットを渡す
-      - uses: some/deploy-action@v1
+      # サードパーティ action もコミット SHA 固定で参照する（`<40 桁コミット SHA>` は実値に置換）
+      - uses: some/deploy-action@<40 桁コミット SHA>  # v1.2.3
         with:
           token: ${{ secrets.DEPLOY_TOKEN }}
 
@@ -32,14 +37,17 @@ jobs:
 
       # GITHUB_TOKEN を使った REST API 呼び出し
       - name: Create Release Comment
-        run: |
-          curl -X POST \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/${{ github.repository }}/issues/1/comments \
-            -d '{"body":"Deployed to production!"}'
+        shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}   # 式展開せず env 経由でシェル変数へ渡す
+        run: |
+          set -euo pipefail
+          curl -X POST \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/issues/1/comments" \
+            -d '{"body":"Deployed to production!"}'
 
       # シークレットが設定されているかを条件に使う（直接参照は不可）
       - name: Optional step
@@ -56,3 +64,5 @@ jobs:
 - `if:` 条件でシークレットを直接参照できない。環境変数に変換してから条件に使う
 - 環境シークレット（`environment` キーで有効化）はリポジトリシークレットより優先され、デプロイ保護ルールと組み合わせられる
 - シークレット登録値はログで自動的に `***` にマスクされる。動的に生成した値は `echo "::add-mask::$VALUE"` で手動マスクする
+- リポジトリ既定の workflow 権限が read-only の場合、`permissions` に必要な write を明示しないと API 呼び出しが 403 で失敗する。上記の `issues: write` がこれにあたる
+- 外部 action は可動タグではなくコミット SHA 固定で参照する（タグは付け替え可能）

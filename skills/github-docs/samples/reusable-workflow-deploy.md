@@ -33,13 +33,18 @@ jobs:
     outputs:
       url: ${{ steps.deploy.outputs.url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
       - id: deploy
-        run: |
-          echo "Deploying ${{ inputs.version }} to ${{ inputs.environment }}"
-          echo "url=https://${{ inputs.environment }}.example.com" >> $GITHUB_OUTPUT
+        shell: bash
+        # inputs は呼び出し元が自由に決められるため run: 本文へ式展開せず env 経由で渡す
         env:
+          VERSION: ${{ inputs.version }}
+          TARGET_ENV: ${{ inputs.environment }}
           DEPLOY_KEY: ${{ secrets.deploy_key }}
+        run: |
+          set -euo pipefail
+          echo "Deploying ${VERSION} to ${TARGET_ENV}"
+          echo "url=https://${TARGET_ENV}.example.com" >> "${GITHUB_OUTPUT}"
 ```
 
 ```yaml
@@ -72,5 +77,5 @@ jobs:
 
 - 出力の流れはステップ出力 (`$GITHUB_OUTPUT`) -> ジョブ出力 (`outputs`) -> ワークフロー出力 (`workflow_call.outputs`) の順にマッピングが必要
 - `secrets: inherit` で呼び出し元の全シークレットを一括継承できる（同じ Organization 内のワークフローに限る）
-- 別リポジトリの再利用可能ワークフローを参照する場合は `owner/repo/.github/workflows/file.yml@ref` 形式を使う
+- 別リポジトリの再利用可能ワークフローを参照する場合は `owner/repo/.github/workflows/file.yml@<40 桁コミット SHA>` 形式を使う。`@main` や `@v1` などの可動 ref は付け替え可能で、参照先の改変がそのまま自リポジトリの CI で実行されるため使わない
 - 再利用可能ワークフローファイルは `.github/workflows/` のルートに配置する（サブディレクトリ不可）
