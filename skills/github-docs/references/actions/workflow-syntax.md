@@ -112,10 +112,10 @@ concurrency:
 # pending キューを使う場合
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false  # キャンセルせず最大 100 件を待機させる
+  cancel-in-progress: false  # 進行中はキャンセルせず後続を待機させる
 ```
 
-注意: `cancel-in-progress` を省略または `false` にした場合、同じグループの実行は最大 100 件まで待機キューに入る。それ以上は最古のペンディング実行がキャンセルされる。
+注意: 同一の concurrency group で同時に存在できるのは、**進行中 1 件と待機中（pending）1 件のみ**。`cancel-in-progress` を省略または `false` にした場合、進行中の実行はキャンセルされないが、新しい実行が queued になると**それまで待機していた実行はキャンセルされ、最新の 1 件だけが待機列に残る**。待機列が積み上がることはない。
 
 ### `jobs`
 
