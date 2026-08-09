@@ -51,17 +51,19 @@ jobs:
           # coverage を保存したうえで、テスト失敗は必ずステップ失敗として伝播させる
           exit "${TEST_STATUS}"
 
-      - name: Save coverage
+      - name: Save coverage and source PR number
         if: always()
         shell: bash
         # 式を run: 本文へ直接展開せず env 経由でシェル変数として受け取る。
-        # PR 番号は artifact に載せない（後段が API から自前で特定する）
+        # PR 番号は「起点の主張」として保存するだけで、後段は値を信頼しない
         env:
           COVERAGE: ${{ steps.coverage.outputs.percent }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -euo pipefail
           mkdir -p pr-meta
           printf '%s' "${COVERAGE}" > pr-meta/coverage.txt
+          printf '%s' "${PR_NUMBER}" > pr-meta/pr-number.txt
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         if: always()
@@ -107,20 +109,33 @@ jobs:
             const fs = require('fs');
             const run = context.payload.workflow_run;
 
-            // コメント対象の PR は artifact ではなく API から特定する。
-            // artifact 由来の PR 番号は非信頼であり、同じ head SHA を持つ別 PR を
-            // 指させることで他人の PR へ書き込ませる認可欠陥になる
+            // 起点の PR 番号は artifact から受け取るが、値そのものは信頼しない。
+            // 同一 head ブランチ・コミットから base 違いの PR を複数作れるため、
+            // GitHub 由来の情報だけで作った候補集合と突き合わせて一意性を確認する
+            const claimed = Number(fs.readFileSync('pr-meta/pr-number.txt', 'utf8').trim());
+            if (!Number.isInteger(claimed) || claimed <= 0) {
+              core.setFailed('invalid pr number in artifact');
+              return;
+            }
             const { data: prs } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
               head: `${run.head_repository.owner.login}:${run.head_branch}`,
             });
-            const pr = prs.find((p) => p.head.sha === run.head_sha);
-            if (!pr) {
-              core.info('no open PR matches this workflow run; skip commenting');
+            const candidates = prs.filter((p) =>
+              p.number === claimed &&
+              p.head.sha === run.head_sha &&
+              p.head.ref === run.head_branch &&
+              p.head.repo &&
+              p.head.repo.full_name === run.head_repository.full_name
+            );
+            // 候補が 0 件（主張が run と一致しない）でも複数件でも書き込みを中止する
+            if (candidates.length !== 1) {
+              core.setFailed(`cannot uniquely identify the source PR (matched ${candidates.length})`);
               return;
             }
+            const pr = candidates[0];
 
             // artifact の中身は前段（PR 側のコード）が生成した非信頼データ。
             // 形式を検証し、文字列として扱う（eval / exec へ渡さない）
@@ -150,11 +165,14 @@ jobs:
 
 - `workflow_run` ジョブでは **head SHA を checkout してはならない**。checkout した時点で PR 側が
   ワークフロー実行環境を制御でき、`pull_request_target` と同じ資格情報漏えい経路になる
-- artifact の中身は前段（PR 側のコード）が生成したものであり信頼できない。**コメント対象の
-  PR を artifact 由来の PR 番号から決めてはならない**。同じ head SHA を持つ PR は複数あり得る
-  ため、`head SHA の一致` だけでは対象を一意に認証できず、他人の PR へコメントを書かせる
-  誘導が成立する。対象 PR は `pulls.list` に `head` を与えて（`head_repository` の owner と
-  `head_branch` の組）API 側から特定し、artifact からは表示用の値のみを受け取る
+- artifact の中身は前段（PR 側のコード）が生成したものであり信頼できない。**artifact 由来の
+  PR 番号をそのままコメント先にしてはならない**。他人の PR の head commit を指すブランチを
+  作れば、書き込み権限を持つ後段にその PR へ投稿させられる
+- かといって `head SHA の一致` だけでも一意にはならない。同一の head ブランチ・コミットから
+  base 違いの open PR を複数作れるため、候補が 1 件に絞れる保証がない
+- したがって **artifact の PR 番号は「起点の主張」として扱い**、GitHub 由来の情報
+  （`head_repository` / `head_branch` / `head_sha`）だけで作った候補集合と突き合わせて
+  一致を確認する。**候補が 0 件でも 2 件以上でも書き込みを中止する**
 - artifact から受け取る表示用の値も、形式を正規表現で検証してから本文へ埋める
 - やむを得ず `pull_request_target` を使う場合も、`actions/checkout` の `ref` に
   `github.event.pull_request.head.sha` を指定しない。base 側のコードだけを実行する
