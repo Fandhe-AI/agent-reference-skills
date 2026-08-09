@@ -41,6 +41,7 @@ GET /orgs/{org}/projectsV2/{project_number}
 ## Notes
 
 - 対象は **Projects v2**（すべてのパスに `projectsV2` を含む）。クラシック Projects（v1）の REST API エンドポイントは現行ドキュメントに記載がない
+- **プロジェクト本体は読み取り専用**。上表のとおり Projects リソースには GET しかなく、プロジェクトの作成・更新・削除は GraphQL API（`createProjectV2` / `updateProjectV2` / `deleteProjectV2`）を使う。書き込みが可能なのは配下の Fields / Items / Views / Draft items
 - Views の作成エンドポイントは `layout`（`table` / `board` / `roadmap`）、任意のフィルタ、表示フィールドを受け付け、成功時 201 を返す
 - Draft items の作成エンドポイントは必須 `title` と任意 `body` を受け付け、成功時 201 を返す
 
