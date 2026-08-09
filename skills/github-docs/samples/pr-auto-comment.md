@@ -83,7 +83,37 @@ jobs:
 `pull_request_target` は base 側の権限と secrets を持つため、PR のコードを checkout・実行する
 上記構成のまま置換すると、PR 側の任意コードに書き込み token と secrets を渡すことになる。
 
-安全な構成は、**PR のコードを一切実行しないジョブへコメント処理を分離する**こと。
+安全な構成は、**PR のコードを一切実行しないジョブへコメント処理を分離する** 2 段構えである。
+
+1. `pull_request` 側（PR のコードを実行する。書き込み権限を持たない）
+   … coverage と PR 番号をファイルへ書き出し artifact として upload するだけにする
+2. `workflow_run` 側（PR のコードを一切実行しない。書き込み権限を持つ）
+   … artifact を取得し、値を検証してコメントする
+
+#### 1. 前段: `pull_request` 側に artifact upload を追加する
+
+上記 `pr-check.yml` の `permissions` を `contents: read` のみに下げ、コメント投稿ステップの
+代わりに次を置く。
+
+```yaml
+      - name: Save coverage and PR number
+        shell: bash
+        env:
+          COVERAGE: ${{ steps.coverage.outputs.percent }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          mkdir -p pr-meta
+          printf '%s' "${COVERAGE}" > pr-meta/coverage.txt
+          printf '%s' "${PR_NUMBER}" > pr-meta/pr-number.txt
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
+        with:
+          name: pr-meta
+          path: pr-meta/
+```
+
+#### 2. 後段: `workflow_run` でコメントする
 
 ```yaml
 # .github/workflows/pr-comment.yml
@@ -91,32 +121,69 @@ name: PR Comment
 
 on:
   workflow_run:
-    workflows: [PR Check]   # 上記 pull_request ワークフローの完了を受ける
+    workflows: [PR Check]   # 前段の pull_request ワークフローの完了を受ける
     types: [completed]
 
 permissions:
   contents: read
-  pull-requests: write
+  actions: read           # artifact のダウンロードに必要
+  pull-requests: write    # コメント投稿に必要
 
 jobs:
   comment:
     runs-on: ubuntu-latest
+    # 前段が同一リポジトリの PR 由来であっても、artifact の中身は PR 側が制御できる
+    if: github.event.workflow_run.event == 'pull_request'
     steps:
       # checkout しない。PR 側のコード・スクリプト・依存関係を一切実行しない
-      - name: Download coverage artifact
+      - name: Download PR metadata artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093  # v4.3.0
+        with:
+          name: pr-meta
+          path: pr-meta
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment coverage on the PR
         uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b  # v7.1.0
-        env:
-          RUN_ID: ${{ github.event.workflow_run.id }}
         with:
           script: |
-            // artifact のダウンロードとコメント投稿のみを行う
-            // 取得した内容は文字列として扱い、eval / 実行は決してしない
-            core.info(`run: ${process.env.RUN_ID}`);
+            const fs = require('fs');
+            // artifact の中身は PR 側が制御できる。読み取り後に必ず形式を検証し、
+            // 文字列として扱う（eval / exec には決して渡さない）
+            const raw = (name) => fs.readFileSync(`pr-meta/${name}`, 'utf8').trim();
+            const prNumber = raw('pr-number.txt');
+            const coverage = raw('coverage.txt');
+            if (!/^[0-9]{1,10}$/.test(prNumber)) {
+              core.setFailed('invalid pr number in artifact');
+              return;
+            }
+            if (!/^[0-9]{1,3}(\.[0-9]{1,2})?$/.test(coverage)) {
+              core.setFailed('invalid coverage value in artifact');
+              return;
+            }
+            // 対象 PR が本当にこの run の head branch に対応するかを API 側で再確認する
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: Number(prNumber),
+            });
+            if (pr.head.sha !== context.payload.workflow_run.head_sha) {
+              core.setFailed('artifact pr number does not match the workflow run head sha');
+              return;
+            }
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: Number(prNumber),
+              body: `## Test Coverage\n\nStatements: **${coverage}%**`
+            });
 ```
 
 - `workflow_run` ジョブでは **head SHA を checkout してはならない**。checkout した時点で PR 側が
   ワークフロー実行環境を制御でき、`pull_request_target` と同じ資格情報漏えい経路になる
+- artifact の中身は前段（PR 側のコード）が生成したものであり信頼できない。**PR 番号・数値は
+  必ず正規表現で検証し、PR 番号は API で head SHA と突き合わせてから使う**。検証しないと、
+  他の PR や Issue へコメントを書かせる誘導が成立する
 - やむを得ず `pull_request_target` を使う場合も、`actions/checkout` の `ref` に
   `github.event.pull_request.head.sha` を指定しない。base 側のコードだけを実行する
-- PR 側由来のデータ（テスト結果・ファイル内容）は必ず `env:` 経由で受け取り、
-  文字列として出力するだけに留める
