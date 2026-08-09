@@ -50,8 +50,10 @@ jobs:
             echo 'version must be a release tag like v1.2.3' >&2
             exit 1
           fi
-          # タグを不変の commit SHA へ解決し、後段へは「データ」として渡す
-          SHA=$(gh api "repos/${REPO}/git/ref/tags/${VERSION}" --jq '.object.sha')
+          # タグを不変の commit SHA へ解決し、後段へは「データ」として渡す。
+          # git/ref/tags の .object.sha は annotated tag では tag object の SHA に
+          # なるため使わない。repos/{repo}/commits/{ref} は peel 済みの commit を返す
+          SHA=$(gh api "repos/${REPO}/commits/${VERSION}" --jq '.sha')
           echo "sha=${SHA}" >> "${GITHUB_OUTPUT}"
 
   deploy-staging:
