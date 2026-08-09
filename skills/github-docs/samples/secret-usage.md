@@ -23,11 +23,12 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
 
       # アクションの入力としてシークレットを渡す（外部 action はコミット SHA 固定）
-      - name: Notify deploy start
-        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b  # v7.1.0
+      - name: Log in to the container registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f  # v4.6.0
         with:
-          github-token: ${{ secrets.DEPLOY_TOKEN }}
-          script: core.info('deploy start')
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
 
       # 環境変数経由でシークレットをシェルスクリプトに渡す（推奨）
       - name: Deploy
@@ -67,3 +68,4 @@ jobs:
 - シークレット登録値はログで自動的に `***` にマスクされる。動的に生成した値は `echo "::add-mask::$VALUE"` で手動マスクする
 - リポジトリ既定の workflow 権限が read-only の場合、`permissions` に必要な write を明示しないと API 呼び出しが 403 で失敗する。上記の `issues: write` がこれにあたる
 - 外部 action は可動タグではなくコミット SHA 固定で参照する（タグは付け替え可能）
+- このサンプルは `REGISTRY_PASSWORD` / `DEPLOY_TOKEN` 相当のシークレットが登録済みであることを前提とする。複製先で未登録のまま実行するとログインやデプロイが失敗する

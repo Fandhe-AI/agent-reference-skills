@@ -43,9 +43,13 @@ jobs:
         shell: bash
         run: |
           set -uo pipefail
+          # shell: bash は `bash --noprofile --norc -eo pipefail {0}` として起動されるため
+          # 既定で -e が有効。テスト失敗時も coverage を残せるよう、この区間だけ -e を外す
+          set +e
           npm test -- --coverage --coverageReporters=text-summary 2>&1 | tee coverage.txt
           # tee を挟むと $? は tee の結果になる。npm test の終了コードを保持する
           TEST_STATUS=${PIPESTATUS[0]}
+          set -e
           PERCENT=$(grep 'Statements' coverage.txt | awk '{print $3}' | tr -d '%' || true)
           echo "percent=${PERCENT}" >> "${GITHUB_OUTPUT}"
           # coverage を保存したうえで、テスト失敗は必ずステップ失敗として伝播させる
@@ -122,27 +126,40 @@ jobs:
               repo: context.repo.repo,
               state: 'open',
               head: `${run.head_repository.owner.login}:${run.head_branch}`,
+              base: 'main',   // 前段の `branches:` と揃える。base 違いの同 head PR を除く
             });
+            // 候補集合は GitHub 由来の情報だけで作る。ここに claimed を混ぜると
+            // 複数一致が 1 件へ潰れ、一意性の検査そのものが無意味になる
             const candidates = prs.filter((p) =>
-              p.number === claimed &&
               p.head.sha === run.head_sha &&
               p.head.ref === run.head_branch &&
               p.head.repo &&
               p.head.repo.full_name === run.head_repository.full_name
             );
-            // 候補が 0 件（主張が run と一致しない）でも複数件でも書き込みを中止する
             if (candidates.length !== 1) {
               core.setFailed(`cannot uniquely identify the source PR (matched ${candidates.length})`);
               return;
             }
             const pr = candidates[0];
+            // 一意に決まった PR が、前段が主張する起点と一致することを最後に確認する
+            if (pr.number !== claimed) {
+              core.setFailed('artifact pr number does not match the run source PR');
+              return;
+            }
 
             // artifact の中身は前段（PR 側のコード）が生成した非信頼データ。
             // 形式を検証し、文字列として扱う（eval / exec へ渡さない）
             const coverage = fs.readFileSync('pr-meta/coverage.txt', 'utf8').trim();
-            const body = run.conclusion === 'success' && /^[0-9]{1,3}(\.[0-9]{1,2})?$/.test(coverage)
-              ? `## Test Coverage\n\nStatements: **${coverage}%**`
-              : `:x: CI failed. Please check the [workflow run](${run.html_url}).`;
+            // CI の成否と coverage の取得可否は別事象。混同すると green な run に
+            // 「CI failed」を貼ってしまう（coverage が `Unknown` になる構成がある）
+            let body;
+            if (run.conclusion !== 'success') {
+              body = `:x: CI failed. Please check the [workflow run](${run.html_url}).`;
+            } else if (/^[0-9]{1,3}(\.[0-9]{1,2})?$/.test(coverage)) {
+              body = `## Test Coverage\n\nStatements: **${coverage}%**`;
+            } else {
+              body = `## Test Coverage\n\nCoverage summary was not available. See the [workflow run](${run.html_url}).`;
+            }
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -158,7 +175,8 @@ jobs:
 - **`pull_request` を `pull_request_target` へ置き換えて解決してはならない**。`pull_request_target` は base 側の権限と secrets を持つため、PR のコードを checkout・実行する構成のまま置換すると PR 側の任意コードに書き込み token と secrets を渡すことになる
 - `actions/github-script` を使うと JavaScript で GitHub API を直接呼び出せる
 - 外部 action は可動タグ（`@v4` 等）ではなく**コミット SHA 固定**で参照する。タグは付け替え可能でサプライチェーン攻撃の経路になる
-- `tee` などを挟んだパイプラインでは `$?` が最終コマンドの結果になる。`set -o pipefail` だけでは `set -e` 不在時にステップが成功扱いになるため、`${PIPESTATUS[0]}` を保存して明示的に `exit` する
+- `shell: bash` は `bash --noprofile --norc -eo pipefail {0}` として起動されるため既定で `-e` が有効。失敗しても後続処理（成果物の保存など）を続けたい区間は `set +e` / `set -e` で明示的に囲む
+- `tee` などを挟んだパイプラインでは `$?` が最終コマンドの結果になる。`${PIPESTATUS[0]}` を保存し、成果物を残したうえで明示的に `exit` して失敗を伝播させる
 - `${{ ... }}` を `script:` 本文や `run:` 本文へ直接展開しない。PR 側が制御できる値（テスト出力・ブランチ名・PR タイトル等）は引用符を閉じる文字列で任意コード実行に至る。上記のとおり `env:` へ渡し `process.env` から読む
 
 ### 信頼境界の要点
@@ -171,8 +189,12 @@ jobs:
 - かといって `head SHA の一致` だけでも一意にはならない。同一の head ブランチ・コミットから
   base 違いの open PR を複数作れるため、候補が 1 件に絞れる保証がない
 - したがって **artifact の PR 番号は「起点の主張」として扱い**、GitHub 由来の情報
-  （`head_repository` / `head_branch` / `head_sha`）だけで作った候補集合と突き合わせて
-  一致を確認する。**候補が 0 件でも 2 件以上でも書き込みを中止する**
+  （`head_repository` / `head_branch` / `head_sha` と、前段の `branches:` に対応する `base`）
+  だけで候補集合を作る。**候補が 0 件でも 2 件以上でも書き込みを中止し**、1 件に絞れたあとで
+  主張と一致するかを確認する。候補の絞り込み条件に artifact 由来の値を混ぜてはならない
+  （混ぜると複数一致が 1 件へ潰れ、一意性の検査が無意味になる）
+- CI の成否と coverage の取得可否は別事象として扱う。まとめて判定すると、成功した run に
+  「CI failed」コメントを残すことになる
 - artifact から受け取る表示用の値も、形式を正規表現で検証してから本文へ埋める
 - やむを得ず `pull_request_target` を使う場合も、`actions/checkout` の `ref` に
   `github.event.pull_request.head.sha` を指定しない。base 側のコードだけを実行する
