@@ -46,7 +46,12 @@ reusable workflow を SHA 固定で呼び出す wrapper）は、PR の base コ�
 - **スキル構造規約（P1）**: `skills/<name>/` は SKILL.md（frontmatter: `name` =
   ディレクトリ名・`description`・`user-invocable`）+ `references/`（+ 任意の `samples/` /
   `scripts/` / `rules/`）の構成に従う（`.claude/rules/skill-anatomy.md`）。SKILL.md 本文は
-  ディレクトリツリー・探索手順・タスク → カテゴリ → README のマッピング表を含む
+  ディレクトリツリー・探索手順・タスク → カテゴリ → README のマッピング表を含む。
+  **適用範囲はリファレンス型スキル置き場の `skills/` のみ**。`.agents/skills/` は
+  Fandhe-AI/agent-cli-skills から `npx skills add` で取り込む**運用スキルの配布版**であり、
+  源泉リポジトリの規約（単一 SKILL.md + 任意の `sample/` / `script/`。`references/` なし）に
+  従うため本規約の対象外とする（構造の指摘は源泉リポジトリ側で行う。CI の
+  `.github/scripts/check-skill-structure.sh` も `skills/` のみを検証対象とする）
 - **ページテンプレート準拠（P1）**: 個別リファレンスは `# Name` → `## Signature / Usage` →
   `## Options / Props` → `## Notes` → `## Related`、カテゴリ README は索引表
   （`| Name | Description | Path |`）の書式に従う（`reference-template.md`）。
