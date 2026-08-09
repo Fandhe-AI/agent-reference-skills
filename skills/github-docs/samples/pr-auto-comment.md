@@ -51,18 +51,17 @@ jobs:
           # coverage を保存したうえで、テスト失敗は必ずステップ失敗として伝播させる
           exit "${TEST_STATUS}"
 
-      - name: Save coverage and PR number
+      - name: Save coverage
         if: always()
         shell: bash
-        # 式を run: 本文へ直接展開せず env 経由でシェル変数として受け取る
+        # 式を run: 本文へ直接展開せず env 経由でシェル変数として受け取る。
+        # PR 番号は artifact に載せない（後段が API から自前で特定する）
         env:
           COVERAGE: ${{ steps.coverage.outputs.percent }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -euo pipefail
           mkdir -p pr-meta
           printf '%s' "${COVERAGE}" > pr-meta/coverage.txt
-          printf '%s' "${PR_NUMBER}" > pr-meta/pr-number.txt
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         if: always()
@@ -103,39 +102,36 @@ jobs:
 
       - name: Comment coverage on the PR
         uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b  # v7.1.0
-        env:
-          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
-          RUN_URL: ${{ github.event.workflow_run.html_url }}
         with:
           script: |
             const fs = require('fs');
-            // artifact の中身は前段（PR 側のコード）が生成した非信頼データ。
-            // 読み取り後に必ず形式を検証し、文字列として扱う（eval / exec へ渡さない）
-            const raw = (name) => fs.readFileSync(`pr-meta/${name}`, 'utf8').trim();
-            const prNumber = raw('pr-number.txt');
-            const coverage = raw('coverage.txt');
-            if (!/^[0-9]{1,10}$/.test(prNumber)) {
-              core.setFailed('invalid pr number in artifact');
-              return;
-            }
-            // 対象 PR がこの run の head SHA に対応するか API 側で再確認する。
-            // 検証しないと他の PR や Issue へコメントを書かせる誘導が成立する
-            const { data: pr } = await github.rest.pulls.get({
+            const run = context.payload.workflow_run;
+
+            // コメント対象の PR は artifact ではなく API から特定する。
+            // artifact 由来の PR 番号は非信頼であり、同じ head SHA を持つ別 PR を
+            // 指させることで他人の PR へ書き込ませる認可欠陥になる
+            const { data: prs } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pull_number: Number(prNumber),
+              state: 'open',
+              head: `${run.head_repository.owner.login}:${run.head_branch}`,
             });
-            if (pr.head.sha !== context.payload.workflow_run.head_sha) {
-              core.setFailed('artifact pr number does not match the workflow run head sha');
+            const pr = prs.find((p) => p.head.sha === run.head_sha);
+            if (!pr) {
+              core.info('no open PR matches this workflow run; skip commenting');
               return;
             }
-            const body = process.env.CONCLUSION === 'success' && /^[0-9]{1,3}(\.[0-9]{1,2})?$/.test(coverage)
+
+            // artifact の中身は前段（PR 側のコード）が生成した非信頼データ。
+            // 形式を検証し、文字列として扱う（eval / exec へ渡さない）
+            const coverage = fs.readFileSync('pr-meta/coverage.txt', 'utf8').trim();
+            const body = run.conclusion === 'success' && /^[0-9]{1,3}(\.[0-9]{1,2})?$/.test(coverage)
               ? `## Test Coverage\n\nStatements: **${coverage}%**`
-              : `:x: CI failed. Please check the [workflow run](${process.env.RUN_URL}).`;
+              : `:x: CI failed. Please check the [workflow run](${run.html_url}).`;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: Number(prNumber),
+              issue_number: pr.number,
               body,
             });
 ```
@@ -154,8 +150,11 @@ jobs:
 
 - `workflow_run` ジョブでは **head SHA を checkout してはならない**。checkout した時点で PR 側が
   ワークフロー実行環境を制御でき、`pull_request_target` と同じ資格情報漏えい経路になる
-- artifact の中身は前段（PR 側のコード）が生成したものであり信頼できない。**PR 番号・数値は
-  必ず正規表現で検証し、PR 番号は API で head SHA と突き合わせてから使う**。検証しないと、
-  他の PR や Issue へコメントを書かせる誘導が成立する
+- artifact の中身は前段（PR 側のコード）が生成したものであり信頼できない。**コメント対象の
+  PR を artifact 由来の PR 番号から決めてはならない**。同じ head SHA を持つ PR は複数あり得る
+  ため、`head SHA の一致` だけでは対象を一意に認証できず、他人の PR へコメントを書かせる
+  誘導が成立する。対象 PR は `pulls.list` に `head` を与えて（`head_repository` の owner と
+  `head_branch` の組）API 側から特定し、artifact からは表示用の値のみを受け取る
+- artifact から受け取る表示用の値も、形式を正規表現で検証してから本文へ埋める
 - やむを得ず `pull_request_target` を使う場合も、`actions/checkout` の `ref` に
   `github.event.pull_request.head.sha` を指定しない。base 側のコードだけを実行する
