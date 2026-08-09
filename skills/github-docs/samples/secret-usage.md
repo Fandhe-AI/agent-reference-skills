@@ -22,11 +22,12 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
 
-      # アクションの入力としてシークレットを渡す
-      # サードパーティ action もコミット SHA 固定で参照する（`<40 桁コミット SHA>` は実値に置換）
-      - uses: some/deploy-action@<40 桁コミット SHA>  # v1.2.3
+      # アクションの入力としてシークレットを渡す（外部 action はコミット SHA 固定）
+      - name: Notify deploy start
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b  # v7.1.0
         with:
-          token: ${{ secrets.DEPLOY_TOKEN }}
+          github-token: ${{ secrets.DEPLOY_TOKEN }}
+          script: core.info('deploy start')
 
       # 環境変数経由でシークレットをシェルスクリプトに渡す（推奨）
       - name: Deploy

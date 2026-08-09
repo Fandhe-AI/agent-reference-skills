@@ -43,6 +43,13 @@ jobs:
           DEPLOY_KEY: ${{ secrets.deploy_key }}
         run: |
           set -euo pipefail
+          # 呼び出し元が制御する入力は許可リストで検証してから出力へ書く。
+          # 未検証のまま単一行形式で $GITHUB_OUTPUT へ書くと、改行を含む値で
+          # 任意の出力行を注入できる
+          case "${TARGET_ENV}" in
+            staging|production) ;;
+            *) echo 'unsupported environment' >&2; exit 1 ;;
+          esac
           echo "Deploying ${VERSION} to ${TARGET_ENV}"
           echo "url=https://${TARGET_ENV}.example.com" >> "${GITHUB_OUTPUT}"
 ```
@@ -79,3 +86,4 @@ jobs:
 - `secrets: inherit` で呼び出し元の全シークレットを一括継承できる（同じ Organization 内のワークフローに限る）
 - 別リポジトリの再利用可能ワークフローを参照する場合は `owner/repo/.github/workflows/file.yml@<40 桁コミット SHA>` 形式を使う。`@main` や `@v1` などの可動 ref は付け替え可能で、参照先の改変がそのまま自リポジトリの CI で実行されるため使わない
 - 再利用可能ワークフローファイルは `.github/workflows/` のルートに配置する（サブディレクトリ不可）
+- 呼び出し元が渡す `inputs` は信頼できない。`$GITHUB_OUTPUT` へ書く前に許可リスト等で検証する。未検証の値を `名前=値` の単一行形式で書くと、改行を含む入力で出力行を注入できる
