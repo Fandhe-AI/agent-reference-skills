@@ -34,6 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       sha: ${{ steps.resolve.outputs.sha }}
+      code_sha: ${{ steps.resolve.outputs.code_sha }}
     steps:
       - name: Validate and resolve the requested version tag
         id: resolve
@@ -43,6 +44,7 @@ jobs:
           VERSION: ${{ inputs.version }}
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           set -euo pipefail
           # リリースタグ形式のみ許可する。bash の [[ =~ ]] は文字列全体に
@@ -69,18 +71,24 @@ jobs:
           # 後段へは不変の commit SHA を「データ」として渡す
           echo "sha=${SHA}" >> "${GITHUB_OUTPUT}"
 
+          # デプロイを実行するコード（default branch）の SHA もここで確定する。
+          # ブランチ名のまま checkout すると、environment 承認待ちの間に先端が
+          # 動き、承認対象と実際に走るコードがずれる（TOCTOU）
+          CODE_SHA=$(gh api "repos/${REPO}/commits/${DEFAULT_BRANCH}" --jq '.sha')
+          echo "code_sha=${CODE_SHA}" >> "${GITHUB_OUTPUT}"
+
   deploy-staging:
     needs: resolve
     if: inputs.dry_run == false && inputs.environment == 'staging'
     runs-on: ubuntu-latest
     environment: staging   # 固定値。入力では切り替えない
     steps:
-      # デプロイを実行するコードは常に default branch（信頼済み）から取得する。
-      # inputs.version を checkout の ref に指定すると、任意 ref のコードが
-      # この job の environment secrets を読める資格情報漏えい経路になる
+      # デプロイを実行するコードは resolve job が確定した不変の commit SHA から
+      # 取得する。inputs.version を checkout の ref に指定すると、任意 ref の
+      # コードがこの job の environment secrets を読める資格情報漏えい経路になる
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
         with:
-          ref: ${{ github.event.repository.default_branch }}
+          ref: ${{ needs.resolve.outputs.code_sha }}
 
       - name: Deploy
         shell: bash
@@ -100,7 +108,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
         with:
-          ref: ${{ github.event.repository.default_branch }}
+          ref: ${{ needs.resolve.outputs.code_sha }}
 
       - name: Deploy
         shell: bash
@@ -142,7 +150,7 @@ gh workflow run manual-deploy.yml \
 - `choice` タイプは `options` リストで選択肢を定義する
 - `workflow_dispatch` はデフォルトブランチのワークフローファイルが使われる
 - 最大 25 個の入力パラメータを定義できる
-- **`inputs` を `actions/checkout` の `ref` に指定しない**。secrets や environment を持つ job で任意 ref を checkout して実行すると、workflow を変更できない実行者でも攻撃用ブランチを指定して資格情報を窃取できる。デプロイを実行するコードは default branch の信頼済みコミットから取得し、指定された version はタグ形式を検証して不変の commit SHA へ解決したうえで**データ**として渡す
+- **`inputs` を `actions/checkout` の `ref` に指定しない**。secrets や environment を持つ job で任意 ref を checkout して実行すると、workflow を変更できない実行者でも攻撃用ブランチを指定して資格情報を窃取できる。デプロイを実行するコードは信頼済みブランチの**不変な commit SHA**（ブランチ名ではなく）から取得し、指定された version はタグ形式を検証して不変の commit SHA へ解決したうえで**データ**として渡す。ブランチ名のまま checkout すると、environment 承認待ちの間に先端が動き承認対象と実行コードがずれる
 - 同じ理由で **`environment:` に `${{ inputs.* }}` を指定しない**。environment 名を固定した job へ `if:` で分岐する
 - `${{ inputs.* }}` を `run:` 本文へ直接展開しない。入力値は実行者が自由に決められるため、シェルへ展開するとコマンドインジェクションになる。`env:` へ渡して `"${VAR}"` で参照する
 - 外部 action はコミット SHA 固定で参照する
