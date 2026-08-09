@@ -44,8 +44,12 @@ jobs:
         run: |
           set -uo pipefail
           npm test -- --coverage --coverageReporters=text-summary 2>&1 | tee coverage.txt
-          PERCENT=$(grep 'Statements' coverage.txt | awk '{print $3}' | tr -d '%')
+          # tee を挟むと $? は tee の結果になる。npm test の終了コードを保持する
+          TEST_STATUS=${PIPESTATUS[0]}
+          PERCENT=$(grep 'Statements' coverage.txt | awk '{print $3}' | tr -d '%' || true)
           echo "percent=${PERCENT}" >> "${GITHUB_OUTPUT}"
+          # coverage を保存したうえで、テスト失敗は必ずステップ失敗として伝播させる
+          exit "${TEST_STATUS}"
 
       - name: Save coverage and PR number
         if: always()
@@ -143,6 +147,7 @@ jobs:
 - **`pull_request` を `pull_request_target` へ置き換えて解決してはならない**。`pull_request_target` は base 側の権限と secrets を持つため、PR のコードを checkout・実行する構成のまま置換すると PR 側の任意コードに書き込み token と secrets を渡すことになる
 - `actions/github-script` を使うと JavaScript で GitHub API を直接呼び出せる
 - 外部 action は可動タグ（`@v4` 等）ではなく**コミット SHA 固定**で参照する。タグは付け替え可能でサプライチェーン攻撃の経路になる
+- `tee` などを挟んだパイプラインでは `$?` が最終コマンドの結果になる。`set -o pipefail` だけでは `set -e` 不在時にステップが成功扱いになるため、`${PIPESTATUS[0]}` を保存して明示的に `exit` する
 - `${{ ... }}` を `script:` 本文や `run:` 本文へ直接展開しない。PR 側が制御できる値（テスト出力・ブランチ名・PR タイトル等）は引用符を閉じる文字列で任意コード実行に至る。上記のとおり `env:` へ渡し `process.env` から読む
 
 ### 信頼境界の要点
