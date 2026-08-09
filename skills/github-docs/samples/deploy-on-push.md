@@ -62,6 +62,10 @@ jobs:
       url: https://example.com
 
     steps:
+      # ジョブ間で workspace は共有されない。deploy.sh を使うため deploy ジョブでも
+      # checkout が必要（省くと `No such file or directory` で必ず失敗する）
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
+
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093  # v4.3.0
         with:
           name: ${{ needs.build.outputs.artifact_name }}
@@ -82,3 +86,4 @@ jobs:
 - `environment` キーで GitHub Environments のデプロイ保護ルール（レビュー必須等）が適用される
 - `paths-ignore` で Markdown 変更時のデプロイをスキップしてリソースを節約できる
 - ジョブ間のデータ受け渡しには `outputs` + `upload-artifact` / `download-artifact` を組み合わせる
+- **ジョブ間で workspace は共有されない**。後続ジョブでリポジトリ内のスクリプトや設定を使うなら、そのジョブでも `actions/checkout` を実行するか、必要なファイルを artifact に含めて受け渡す
