@@ -25,13 +25,16 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: read   # 既定値に依存せず最小権限を明示する
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
         with:
           ref: ${{ inputs.version }}
 
@@ -44,7 +47,12 @@ jobs:
 
       - name: Dry run
         if: inputs.dry_run == true
-        run: echo "Dry run: would deploy ${{ inputs.version }} to ${{ inputs.environment }}"
+        shell: bash
+        # 入力値を run: 本文へ式展開せず env 経由でシェル変数として受け取る
+        env:
+          VERSION: ${{ inputs.version }}
+          TARGET_ENV: ${{ inputs.environment }}
+        run: echo "Dry run - would deploy ${VERSION} to ${TARGET_ENV}"
 ```
 
 ```bash
@@ -61,3 +69,5 @@ gh workflow run manual-deploy.yml \
 - `choice` タイプは `options` リストで選択肢を定義する
 - `workflow_dispatch` はデフォルトブランチのワークフローファイルが使われる
 - 最大 25 個の入力パラメータを定義できる
+- `${{ inputs.* }}` を `run:` 本文へ直接展開しない。入力値は実行者が自由に決められるため、シェルへ展開するとコマンドインジェクションになる。`env:` へ渡して `"${VAR}"` で参照する
+- 外部 action はコミット SHA 固定で参照する

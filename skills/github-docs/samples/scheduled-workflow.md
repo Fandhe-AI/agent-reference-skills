@@ -16,13 +16,13 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read
+      issues: write   # Issue を作成するため（既定 read-only リポジトリでは必須）
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4.4.0
         with:
           node-version: '20'
           cache: 'npm'
@@ -31,25 +31,38 @@ jobs:
 
       - name: Check outdated packages
         id: outdated
+        shell: bash
         run: |
-          OUTDATED=$(npm outdated --json 2>/dev/null || echo '{}')
-          echo "result=$OUTDATED" >> $GITHUB_OUTPUT
-          if [ "$OUTDATED" != "{}" ]; then
-            echo "has_updates=true" >> $GITHUB_OUTPUT
+          set -uo pipefail
+          # npm outdated は更新候補があると exit 1 を返すため、失敗として扱わない
+          OUTDATED=$(npm outdated --json || true)
+          [ -n "${OUTDATED}" ] || OUTDATED='{}'
+          # 複数行 JSON なので heredoc デリミタで $GITHUB_OUTPUT へ書き込む
+          {
+            echo 'result<<OUTDATED_JSON'
+            printf '%s\n' "${OUTDATED}"
+            echo 'OUTDATED_JSON'
+          } >> "${GITHUB_OUTPUT}"
+          if [ "${OUTDATED}" != '{}' ]; then
+            echo 'has_updates=true' >> "${GITHUB_OUTPUT}"
           else
-            echo "has_updates=false" >> $GITHUB_OUTPUT
+            echo 'has_updates=false' >> "${GITHUB_OUTPUT}"
           fi
 
       - name: Create issue for outdated packages
         if: steps.outdated.outputs.has_updates == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b  # v7.1.0
+        env:
+          # npm レジストリ由来の文字列。式展開せず env 経由で渡す
+          OUTDATED_JSON: ${{ steps.outdated.outputs.result }}
         with:
           script: |
+            const outdated = process.env.OUTDATED_JSON;
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: 'Outdated npm packages detected',
-              body: '```json\n' + '${{ steps.outdated.outputs.result }}' + '\n```',
+              body: '```json\n' + outdated + '\n```',
               labels: ['dependencies']
             });
 ```
@@ -60,3 +73,7 @@ jobs:
 - スケジュールはデフォルトブランチのワークフローファイルのみ実行される
 - パブリックリポジトリでは 60 日間アクティビティがないとスケジュールが自動無効化される
 - `workflow_dispatch` を併記すると手動でもトリガーできるためデバッグに便利
+- Issue を作成するジョブには `permissions.issues: write` が必要。既定権限が read-only のリポジトリでは明示しないと 403 になる
+- `$GITHUB_OUTPUT` へ複数行の値を書くときは `名前<<デリミタ` 形式の heredoc を使う。1 行 `名前=値` 形式では改行以降が壊れる
+- `npm outdated` は更新候補があると終了コード 1 を返す。`set -e` 下では `|| true` を挟まないとステップが失敗する
+- 外部 action は可動タグではなくコミット SHA 固定で参照する

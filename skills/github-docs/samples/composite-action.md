@@ -25,7 +25,7 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4.4.0
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'npm'
@@ -48,23 +48,34 @@ runs:
 
 ```yaml
 # .github/workflows/ci.yml  （呼び出し元）
+name: CI
+
+on: [push, pull_request]
+
+permissions:
+  contents: read   # 既定値に依存せず最小権限を明示する
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
 
       - id: build
         uses: ./.github/actions/setup-and-build
         with:
           node-version: '20'
 
-      - run: echo "Built version ${{ steps.build.outputs.version }}"
+      - name: Show built version
+        shell: bash
+        env:
+          VERSION: ${{ steps.build.outputs.version }}
+        run: echo "Built version ${VERSION}"
 ```
 
 ## Notes
 
 - `runs.using: 'composite'` が必須。`run` ステップでは `shell` の明示指定が必要（`defaults.run.shell` は複合アクション内で効かない）
 - 出力は `$GITHUB_OUTPUT` に書き込んだ値を `outputs.<name>.value: ${{ steps.<id>.outputs.<key> }}` でマッピングする
-- ローカルアクション（`./.github/actions/`）を使う場合は先に `actions/checkout@v4` でチェックアウトが必要
+- ローカルアクション（`./.github/actions/`）を使う場合は先に `actions/checkout` でチェックアウトが必要。ローカル参照（`./...`）は同一リポジトリ・同一コミットを指すため SHA 固定は不要だが、外部 action はコミット SHA 固定で参照する
 - 再利用可能ワークフローはジョブレベル、複合アクションはステップレベルで再利用する点が違いの核心

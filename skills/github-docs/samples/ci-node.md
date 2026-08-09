@@ -12,14 +12,17 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read   # 既定値に依存せず最小権限を明示する
+
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4.4.0
         with:
           node-version: '20'
           cache: 'npm'
@@ -33,7 +36,8 @@ jobs:
 
 ## Notes
 
-- `actions/setup-node@v4` の `cache: 'npm'` を指定するだけで `~/.npm` キャッシュが自動管理される
+- `actions/setup-node` の `cache: 'npm'` を指定するだけで `~/.npm` キャッシュが自動管理される
+- 外部 action はコミット SHA 固定で参照する（バージョンは末尾コメントで示す）。可動タグは付け替え可能でサプライチェーン攻撃の経路になる
 - `npm ci` は `package-lock.json` に基づくクリーンインストールで CI 環境に適している
 - `pull_request` トリガーのデフォルトアクティビティタイプは `opened`, `synchronize`, `reopened`
 - フォークからの PR では `GITHUB_TOKEN` が読み取り専用になるため、シークレットを使う処理は別途対応が必要
