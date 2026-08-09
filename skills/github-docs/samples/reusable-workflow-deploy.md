@@ -83,13 +83,16 @@ jobs:
     with:
       environment: production
       version: ${{ github.ref_name }}
-    secrets: inherit
+    # callee が宣言するシークレットだけを明示的に渡す。`secrets: inherit` は
+    # 呼び出し元の全シークレットを一括注入するため使わない
+    secrets:
+      deploy_key: ${{ secrets.DEPLOY_KEY_PRODUCTION }}
 ```
 
 ## Notes
 
 - 出力の流れはステップ出力 (`$GITHUB_OUTPUT`) -> ジョブ出力 (`outputs`) -> ワークフロー出力 (`workflow_call.outputs`) の順にマッピングが必要
-- `secrets: inherit` で呼び出し元の全シークレットを一括継承できる（同じ Organization 内のワークフローに限る）
+- **シークレットは callee が宣言したものだけを個別に渡す**。`secrets: inherit` は呼び出し元の全シークレットを callee へ一括注入するため、callee が必要としない資格情報まで露出範囲が広がる。最小権限の観点から推奨しない（同一 Organization 内でのみ動作するという制約もある）
 - 別リポジトリの再利用可能ワークフローを参照する場合は `owner/repo/.github/workflows/file.yml@<40 桁コミット SHA>` 形式を使う。`@main` や `@v1` などの可動 ref は付け替え可能で、参照先の改変がそのまま自リポジトリの CI で実行されるため使わない
 - 再利用可能ワークフローファイルは `.github/workflows/` のルートに配置する（サブディレクトリ不可）
 - 呼び出し元が渡す `inputs` は信頼できない。`$GITHUB_OUTPUT` へ書く前に許可リスト等で検証する。未検証の値を `名前=値` の単一行形式で書くと、改行を含む入力で出力行を注入できる
