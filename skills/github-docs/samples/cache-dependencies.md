@@ -24,8 +24,17 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - run: npm ci
-      - run: npm test
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+
+      - name: Test
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm test
 
       # actions/cache を直接使う場合（cache-hit で条件分岐したい場合など）
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4.3.0
@@ -39,7 +48,11 @@ jobs:
 
       # `.next/cache` はインクリメンタルビルドの中間キャッシュであり成果物ではない。
       # cache-hit の有無にかかわらずビルドは常に実行する（キャッシュは再ビルドを速くするだけ）
-      - run: npm run build
+      - name: Build
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run build
 ```
 
 ## Notes

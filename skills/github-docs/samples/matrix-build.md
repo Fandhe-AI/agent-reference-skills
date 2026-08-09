@@ -36,8 +36,17 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - run: npm ci
-      - run: npm test
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+
+      - name: Test
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm test
 ```
 
 ## Notes

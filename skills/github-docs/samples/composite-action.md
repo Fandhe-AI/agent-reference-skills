@@ -31,18 +31,25 @@ runs:
         cache: 'npm'
 
     - name: Install
-      run: npm ci
       shell: bash
+      run: |
+        set -euo pipefail
+        npm ci
       working-directory: ${{ inputs.working-directory }}
 
     - name: Build
-      run: npm run build
       shell: bash
+      run: |
+        set -euo pipefail
+        npm run build
       working-directory: ${{ inputs.working-directory }}
 
     - id: get-version
-      run: echo "version=$(node -p 'require(\"./package.json\").version')" >> $GITHUB_OUTPUT
       shell: bash
+      run: |
+        set -euo pipefail
+        VERSION=$(node -p 'require("./package.json").version')
+        echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
       working-directory: ${{ inputs.working-directory }}
 ```
 
@@ -70,7 +77,9 @@ jobs:
         shell: bash
         env:
           VERSION: ${{ steps.build.outputs.version }}
-        run: echo "Built version ${VERSION}"
+        run: |
+          set -euo pipefail
+          echo "Built version ${VERSION}"
 ```
 
 ## Notes

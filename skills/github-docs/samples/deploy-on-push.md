@@ -29,14 +29,25 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - run: npm ci
-      - run: npm run build
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+
+      - name: Build
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run build
 
       - id: set-output
         shell: bash
         env:
           SHA: ${{ github.sha }}
-        run: echo "artifact_name=dist-${SHA}" >> "${GITHUB_OUTPUT}"
+        run: |
+          set -euo pipefail
+          echo "artifact_name=dist-${SHA}" >> "${GITHUB_OUTPUT}"
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
         with:
@@ -56,7 +67,11 @@ jobs:
           name: ${{ needs.build.outputs.artifact_name }}
           path: dist/
 
-      - run: ./scripts/deploy.sh
+      - name: Deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./scripts/deploy.sh
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
 ```

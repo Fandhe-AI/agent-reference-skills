@@ -27,11 +27,23 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - run: npm ci
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
 
-      - run: npm test
+      - name: Test
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm test
 
-      - run: npm run build
+      - name: Build
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run build
 ```
 
 ## Notes

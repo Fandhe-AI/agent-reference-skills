@@ -37,12 +37,16 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - run: npm ci
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
 
       - id: coverage
         shell: bash
         run: |
-          set -uo pipefail
+          set -euo pipefail
           # shell: bash は `bash --noprofile --norc -eo pipefail {0}` として起動されるため
           # 既定で -e が有効。テスト失敗時も coverage を残せるよう、この区間だけ -e を外す
           set +e
