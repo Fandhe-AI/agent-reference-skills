@@ -18,6 +18,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production  # 環境シークレットを有効化
+    env:
+      # step レベルの env は同じ step の if からは参照できないため job レベルで定義する
+      HAS_OPTIONAL_KEY: ${{ secrets.OPTIONAL_KEY != '' }}
 
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
@@ -68,7 +71,6 @@ jobs:
           set -euo pipefail
           ./optional-integration.sh
         env:
-          HAS_OPTIONAL_KEY: ${{ secrets.OPTIONAL_KEY != '' }}
           OPTIONAL_KEY: ${{ secrets.OPTIONAL_KEY }}
 ```
 
@@ -76,6 +78,7 @@ jobs:
 
 - シークレットはコマンドライン引数に直接渡さず、必ず環境変数経由で渡す（プロセスリストに表示されるため）
 - `if:` 条件でシークレットを直接参照できない。環境変数に変換してから条件に使う
+- そのとき**変換先の env は job（または workflow）レベルに置く**。step レベルの `env:` は同じ step の `if:` 評価時にはまだ利用できず、条件が常に偽になる
 - 環境シークレット（`environment` キーで有効化）はリポジトリシークレットより優先され、デプロイ保護ルールと組み合わせられる
 - シークレット登録値はログで自動的に `***` にマスクされる。動的に生成した値は `echo "::add-mask::$VALUE"` で手動マスクする
 - リポジトリ既定の workflow 権限が read-only の場合、`permissions` に必要な write を明示しないと API 呼び出しが 403 で失敗する。上記の `issues: write` がこれにあたる
