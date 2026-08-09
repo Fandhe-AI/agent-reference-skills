@@ -2546,6 +2546,12 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
   // fix 中に worktree 誤配置（別リポ）を検出したか。ループ後の最終 updateState で
   // 汎用マージ失敗 note ではなく routing 専用 note を記録するために使う。
   let routingErrorDetected = false
+  // monitor が blocked / pr-closed を返した最後の有効な summary（sanitize + capText 済み）。
+  // MERGE_SCHEMA は blocked の理由を summary で返す契約だが、unresolvedComments を伴わない
+  // blocked では lastUnresolvedInfo が更新されず、終端 baseReason の固定文言だけでは具体的な
+  // 理由が状態ファイル・最終レポートから完全に失われていた。復旧判断に必要な原因を
+  // failMergeTerminal の reason へ必ず引き継ぐため専用変数で保持する（本 PR codex-review P1 対応）
+  let lastBlockedSummary = ''
   // 最後に monitor が収集した未解決コメント情報（sanitize 済み）。fixCount >= 6 で blocked に
   // 落ちる際に m を破棄してしまうと unresolved 一覧が失われるため、monitor 結果を受け取る
   // たびに更新して保持しておく（Issue #81: blocked 時の未解決コメント追跡）。
@@ -2652,6 +2658,14 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
     // （halt カウント対象）に確定させる。'blocked' が halt 非カウントで終端するのは、
     // monitor が有効な結果として blocked / unresolved-comments を返した文脈に限る。
     lastState = MERGE_VALID_STATES.has(m?.state) ? m.state : 'invalid-monitor-result'
+    // blocked / pr-closed の具体的理由（MERGE_SCHEMA の契約で summary に入る）を終端記録用に
+    // 保持する。monitor 出力は未信頼のため sanitize + capText を通し、空なら直前の値を維持する
+    // （上書きで既知の理由を消さない）。unresolvedComments を伴わない blocked では
+    // lastUnresolvedInfo が更新されないため、この保持がないと原因が最終レポートから失われる
+    if ((lastState === 'blocked' || lastState === 'pr-closed') && m?.summary) {
+      const blockedSummary = capText(sanitize(m.summary))
+      if (blockedSummary) lastBlockedSummary = blockedSummary
+    }
     // unresolved-comments / blocked のときのみ更新する。fixCount >= 6 到達時に m が break で
     // 破棄されても、この時点で保持した値が最終 note・recordFailure の reason に引き継がれる。
     //
@@ -2897,11 +2911,14 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
     // routing error は専用の基底 note を使う（汎用マージ失敗文言で上書きしない）。従来は
     // routing 経路だけ unresolvedNote / outOfScopeNote を落としていたが、追跡情報の合成・
     // 保存は failMergeTerminal に一本化したため、どちらの基底 reason でも契約を満たす。
+    // monitor が blocked / pr-closed の理由として返した最後の有効な summary を基底文言へ含める。
+    // routing error 経路は fix エージェント由来の専用文言が原因を既に説明しているため付さない
+    const blockedDetail = lastBlockedSummary ? `。monitor の最終報告: ${lastBlockedSummary}` : ''
     const baseReason = routingErrorDetected
       ? 'worktree routing error: fix worktree が別リポに誤配置（修正不能）。実装リポの worktree への再配置が必要'
       : lastState === 'pr-closed'
-        ? `PR #${impl.prNumber} が未マージのままクローズされた（自動フローで回復不能）。継続するには人間が PR を再オープンするか新規実装を判断する`
-        : `マージに到達できなかった（最終状態: ${lastState}）`
+        ? `PR #${impl.prNumber} が未マージのままクローズされた（自動フローで回復不能）。継続するには人間が PR を再オープンするか新規実装を判断する${blockedDetail}`
+        : `マージに到達できなかった（最終状態: ${lastState}）${blockedDetail}`
     // 終端 status の決定（Issue #121: Bugbot High 対応）。未解決レビューコメント・対象外
     // コメント起因の非収束（lastState: unresolved-comments / blocked。fixCount 上限到達・
     // push なし 2 連続・monitor の blocked 判定を含む）は、SKILL.md の
