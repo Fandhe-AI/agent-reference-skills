@@ -136,8 +136,14 @@ jobs:
               p.head.repo &&
               p.head.repo.full_name === run.head_repository.full_name
             );
-            if (candidates.length !== 1) {
+            if (candidates.length > 1) {
               core.setFailed(`cannot uniquely identify the source PR (matched ${candidates.length})`);
+              return;
+            }
+            if (candidates.length === 0) {
+              // 後続の push でブランチ先端が進むと、追い越された run では 0 件になる。
+              // これは通常の PR 運用で起きるため失敗にせず、書き込まずに終了する
+              core.info('no open PR matches this run head sha (superseded run); skip commenting');
               return;
             }
             const pr = candidates[0];
@@ -190,9 +196,12 @@ jobs:
   base 違いの open PR を複数作れるため、候補が 1 件に絞れる保証がない
 - したがって **artifact の PR 番号は「起点の主張」として扱い**、GitHub 由来の情報
   （`head_repository` / `head_branch` / `head_sha` と、前段の `branches:` に対応する `base`）
-  だけで候補集合を作る。**候補が 0 件でも 2 件以上でも書き込みを中止し**、1 件に絞れたあとで
+  だけで候補集合を作る。**候補が 1 件に絞れないかぎり書き込まない**。1 件に絞れたあとで
   主張と一致するかを確認する。候補の絞り込み条件に artifact 由来の値を混ぜてはならない
   （混ぜると複数一致が 1 件へ潰れ、一意性の検査が無意味になる）
+- 候補 0 件と 2 件以上は扱いを分ける。**0 件は追い越された run**（後続 push でブランチ先端が
+  進んだ場合に必ず起きる）なので、失敗にせず書き込まずに終了する。連続 push のたびに
+  `PR Comment` が失敗する状態を避けるため。2 件以上は対象を特定できないため失敗させる
 - CI の成否と coverage の取得可否は別事象として扱う。まとめて判定すると、成功した run に
   「CI failed」コメントを残すことになる
 - artifact から受け取る表示用の値も、形式を正規表現で検証してから本文へ埋める
