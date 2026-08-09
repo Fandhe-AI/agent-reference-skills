@@ -40,7 +40,10 @@ jobs:
 
       - name: Deploy
         if: inputs.dry_run == false
-        run: ./scripts/deploy.sh
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./scripts/deploy.sh
         env:
           TARGET_ENV: ${{ inputs.environment }}
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
@@ -52,7 +55,9 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
           TARGET_ENV: ${{ inputs.environment }}
-        run: echo "Dry run - would deploy ${VERSION} to ${TARGET_ENV}"
+        run: |
+          set -euo pipefail
+          echo "Dry run - would deploy ${VERSION} to ${TARGET_ENV}"
 ```
 
 ```bash

@@ -6,6 +6,8 @@
 - 外部 action・別リポジトリの reusable workflow は**コミット SHA 固定**で参照する（末尾コメントでバージョンを示す）。`@v4` / `@main` などの可動 ref は付け替え可能でサプライチェーン攻撃の経路になる
 - `${{ ... }}` を `run:` 本文や `actions/github-script` の `script:` 本文へ**直接展開しない**。`env:` へ渡し、シェルでは `"${VAR}"`、JavaScript では `process.env.VAR` で参照する
 - ジョブの `permissions` は必要最小限を明示する。既定権限が read-only のリポジトリでも動くようにする
+- 各 `run:` は複数行ブロック（`run: |`）とし、先頭に `set -euo pipefail` を置く。ワークフロー側のステップにも `shell: bash` を明示する。未定義変数やパイプ途中の失敗を見逃さないため
+- `$GITHUB_OUTPUT` などの環境変数は `"${GITHUB_OUTPUT}"` とクォートして参照する
 - fork PR を扱う場合、`pull_request_target` へ単純置換しない。PR のコードを実行しないジョブへ分離する（[pr-auto-comment.md](./pr-auto-comment.md) 参照）
 
 | Name | Description | Path |

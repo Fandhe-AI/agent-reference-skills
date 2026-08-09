@@ -38,7 +38,10 @@ jobs:
 
       # 環境変数経由でシークレットをシェルスクリプトに渡す（推奨）
       - name: Deploy
-        run: ./scripts/deploy.sh
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./scripts/deploy.sh
         env:
           API_KEY: ${{ secrets.API_KEY }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -60,7 +63,10 @@ jobs:
       # シークレットが設定されているかを条件に使う（直接参照は不可）
       - name: Optional step
         if: env.HAS_OPTIONAL_KEY == 'true'
-        run: ./optional-integration.sh
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./optional-integration.sh
         env:
           HAS_OPTIONAL_KEY: ${{ secrets.OPTIONAL_KEY != '' }}
           OPTIONAL_KEY: ${{ secrets.OPTIONAL_KEY }}

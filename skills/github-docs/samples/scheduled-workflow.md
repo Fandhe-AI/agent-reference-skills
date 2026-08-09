@@ -27,13 +27,17 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - run: npm ci
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
 
       - name: Check outdated packages
         id: outdated
         shell: bash
         run: |
-          set -uo pipefail
+          set -euo pipefail
           # npm outdated は更新候補があると exit 1 を返すため、失敗として扱わない
           OUTDATED=$(npm outdated --json || true)
           [ -n "${OUTDATED}" ] || OUTDATED='{}'
