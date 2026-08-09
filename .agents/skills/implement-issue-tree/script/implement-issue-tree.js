@@ -385,8 +385,8 @@ const MERGE_SCHEMA = {
   properties: {
     state: {
       type: 'string',
-      enum: ['merged', 'needs-fix', 'unresolved-comments', 'timeout', 'blocked'],
-      description: 'merged: マージ成功 / needs-fix: CI 失敗・Bugbot 指摘・コンフリクト / unresolved-comments: レビューコメント未解決 / timeout: 監視上限超過 / blocked: 自力解決不可',
+      enum: ['merged', 'needs-fix', 'unresolved-comments', 'timeout', 'blocked', 'pr-closed'],
+      description: 'merged: マージ成功 / needs-fix: CI 失敗・Bugbot 指摘・コンフリクト / unresolved-comments: レビューコメント未解決 / timeout: 監視上限超過 / blocked: 自力解決不可（レビュー非収束等の回復可能な品質ブロック） / pr-closed: PR が未マージのままクローズされた（回復不能）',
     },
     summary: { type: 'string', description: 'needs-fix / unresolved-comments の場合は対応に必要な情報の全文。blocked の場合は残存未解決コメントを含める' },
     // 任意フィールド。旧応答形式（summary のみ）との後方互換のため required には含めない。
@@ -1330,7 +1330,7 @@ function monitorPrompt(item, impl, externalApps) {
     `PR #${impl.prNumber}（イシュー #${item.number}）の CI / 外部チェック監視・レビューコメント確認・マージ判定の担当。修正作業は行わない。`,
     COMMON,
     '手順:',
-    `1. まず gh pr view ${impl.prNumber} --json state,headRefOid で PR の状態と HEAD sha を取得して固定する。state が MERGED の場合（前回実行で状態記録に失敗したマージ済み PR の再監視）は CI 監視を行わず、手順 6 のイシュークローズ確認のみ実施して即 state: merged を返す。state が CLOSED（未マージクローズ）の場合は state: blocked とし summary に理由を書く。fix 後に再監視するたびに sha を取り直す（古い sha を参照しないため）。`,
+    `1. まず gh pr view ${impl.prNumber} --json state,headRefOid で PR の状態と HEAD sha を取得して固定する。state が MERGED の場合（前回実行で状態記録に失敗したマージ済み PR の再監視）は CI 監視を行わず、手順 6 のイシュークローズ確認のみ実施して即 state: merged を返す。state が CLOSED（未マージクローズ）の場合は state: pr-closed とし summary に理由を書く（blocked にはしない。CLOSED は自動フローで回復不能な終端状態のため専用 state で区別する）。fix 後に再監視するたびに sha を取り直す（古い sha を参照しないため）。`,
     `2. gh pr checks ${impl.prNumber} --watch --interval 60 で全チェック完了まで監視する（Bash の timeout に 600000 を指定し、コマンドがタイムアウトしたら同コマンドを再実行。再実行は 4 回まで = 最長およそ 40 分）。`,
     `3. watch 完了後、gh pr checks ${impl.prNumber} の出力で全チェックの結論を列挙して確認する。「watch が終わった」だけでは合格にしない。以下を厳密に確認する:`,
     '   a. 全チェックが success / neutral / skipped で完了していること（failure / cancelled / timed_out が 0 件）。',
@@ -2884,10 +2884,11 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
         noPushRounds = 0
       }
       if (monitorsLeft < 1) monitorsLeft = 1
-    } else if (lastState === 'blocked' || lastState === 'invalid-monitor-result') {
-      // invalid-monitor-result（無効な monitor 結果）も従来の blocked フォールバックと同様に
-      // 即終端する（再監視しても同じ失敗を繰り返す可能性が高く、ラウンドを浪費するだけの
-      // ため）。終端 status の扱いだけが異なる（blocked: halt 非カウント / invalid: failed）。
+    } else if (lastState === 'blocked' || lastState === 'invalid-monitor-result' || lastState === 'pr-closed') {
+      // invalid-monitor-result（無効な monitor 結果）・pr-closed（未マージクローズ）も従来の
+      // blocked フォールバックと同様に即終端する（再監視しても同じ失敗を繰り返す可能性が高く、
+      // ラウンドを浪費するだけのため）。終端 status の扱いだけが異なる
+      // （blocked: halt 非カウント / invalid・pr-closed: failed）。
       break
     }
     // timeout は次ラウンドで再監視する
@@ -2898,13 +2899,19 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
     // 保存は failMergeTerminal に一本化したため、どちらの基底 reason でも契約を満たす。
     const baseReason = routingErrorDetected
       ? 'worktree routing error: fix worktree が別リポに誤配置（修正不能）。実装リポの worktree への再配置が必要'
-      : `マージに到達できなかった（最終状態: ${lastState}）`
+      : lastState === 'pr-closed'
+        ? `PR #${impl.prNumber} が未マージのままクローズされた（自動フローで回復不能）。継続するには人間が PR を再オープンするか新規実装を判断する`
+        : `マージに到達できなかった（最終状態: ${lastState}）`
     // 終端 status の決定（Issue #121: Bugbot High 対応）。未解決レビューコメント・対象外
     // コメント起因の非収束（lastState: unresolved-comments / blocked。fixCount 上限到達・
     // push なし 2 連続・monitor の blocked 判定を含む）は、SKILL.md の
     // 「未解決のまま blocked → 最終レポートへ」の規定どおり 'blocked' で終端し、halt の
     // 連続カウントに乗せない。timeout・invalid-monitor-result（monitor の無効応答 =
-    // エージェントのクラッシュ・API エラー）等の systemic な失敗のみ 'failed' で終端する
+    // エージェントのクラッシュ・API エラー）等の systemic な失敗、および pr-closed
+    // （PR の未マージクローズ = 自動フローで回復不能な終端状態）は 'failed' で終端する。
+    // pr-closed を 'blocked' にすると isActiveMonitoring（status blocked + pr 保存済み）が
+    // 次回実行で同じ CLOSED PR の監視を再開し、blocked → 再開 → blocked の回復不能ループに
+    // 陥るため、必ず再開対象外の 'failed' に落とす（本 PR codex-review P1 対応）
     // （PR #122 codex-review P1 対応: lastState は有効な monitor 応答のみを取るよう検証済みの
     // ため、既定値フォールバック経由で blocked に落ちることはない）。
     // routingErrorDetected は lastState より優先して常に 'failed' とする。worktree の別リポ
