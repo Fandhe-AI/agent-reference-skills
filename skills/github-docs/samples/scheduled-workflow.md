@@ -14,6 +14,7 @@ on:
 jobs:
   check-outdated:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     permissions:
       contents: read

@@ -18,6 +18,7 @@ permissions:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
 
     strategy:
       fail-fast: false

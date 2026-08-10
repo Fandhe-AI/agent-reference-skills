@@ -28,6 +28,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
@@ -99,6 +100,7 @@ permissions:
 jobs:
   comment:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: github.event.workflow_run.event == 'pull_request'
     steps:
       # checkout しない。PR 側のコード・スクリプト・依存関係を一切実行しない

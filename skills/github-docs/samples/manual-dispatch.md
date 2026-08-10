@@ -32,6 +32,7 @@ jobs:
   # 入力の検証だけを行う。secrets も environment も持たせない（fail-closed ゲート）
   resolve:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       sha: ${{ steps.resolve.outputs.sha }}
       code_sha: ${{ steps.resolve.outputs.code_sha }}
@@ -81,6 +82,7 @@ jobs:
     needs: resolve
     if: inputs.dry_run == false && inputs.environment == 'staging'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment: staging   # 固定値。入力では切り替えない
     steps:
       # デプロイを実行するコードは resolve job が確定した不変の commit SHA から
@@ -104,6 +106,7 @@ jobs:
     needs: resolve
     if: inputs.dry_run == false && inputs.environment == 'production'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment: production   # 固定値。入力では切り替えない
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
@@ -124,6 +127,7 @@ jobs:
     needs: resolve
     if: inputs.dry_run == true
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Dry run
         shell: bash

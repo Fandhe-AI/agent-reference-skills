@@ -17,6 +17,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment: production  # 環境シークレットを有効化
     env:
       # step レベルの env は同じ step の if からは参照できないため job レベルで定義する
