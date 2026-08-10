@@ -178,9 +178,16 @@ Kubernetes 上でセルフホステッドランナーをスケールセットと
 - GitHub Apps または PAT で認証する
 
 ```yaml
-# ワークフローでの使用例
+# ワークフローでの使用例 — runner scale set 名 (installation name) をそのままラベルとして指定する
+runs-on: arc-runner-set
+```
+
+runner group も構成している場合は、`group` に **runner group 名**、`labels` に scale set 名を指定する（`runs-on.group` に scale set 名を書くとランナーが選択されずジョブが待機し続ける）:
+
+```yaml
 runs-on:
-  group: arc-runner-set
+  group: my-runner-group        # runner group 名
+  labels: [arc-runner-set]      # runner scale set 名 (installation name)
 ```
 
 詳細: https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners-with-actions-runner-controller
