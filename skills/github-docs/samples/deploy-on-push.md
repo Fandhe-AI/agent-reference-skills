@@ -17,8 +17,10 @@ permissions:
 
 jobs:
   build:
-    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
-    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    # push / workflow_dispatch / schedule / workflow_call など、PR 由来の未検証コードを
+    # 実行しない起動条件のみを想定した組織内 self-hosted ランナーの例。self-hosted
+    # ランナーを運用していない環境（多くの public リポジトリを含む）へコピーする場合は
+    # runs-on: ubuntu-latest 等の GitHub ホステッドへ読み替える
     runs-on: self-hosted
     timeout-minutes: 10
     outputs:
@@ -59,8 +61,10 @@ jobs:
 
   deploy:
     needs: build
-    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
-    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    # push / workflow_dispatch / schedule / workflow_call など、PR 由来の未検証コードを
+    # 実行しない起動条件のみを想定した組織内 self-hosted ランナーの例。self-hosted
+    # ランナーを運用していない環境（多くの public リポジトリを含む）へコピーする場合は
+    # runs-on: ubuntu-latest 等の GitHub ホステッドへ読み替える
     runs-on: self-hosted
     timeout-minutes: 10
     environment:

@@ -31,8 +31,10 @@ permissions:
 jobs:
   # 入力の検証だけを行う。secrets も environment も持たせない（fail-closed ゲート）
   resolve:
-    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
-    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    # push / workflow_dispatch / schedule / workflow_call など、PR 由来の未検証コードを
+    # 実行しない起動条件のみを想定した組織内 self-hosted ランナーの例。self-hosted
+    # ランナーを運用していない環境（多くの public リポジトリを含む）へコピーする場合は
+    # runs-on: ubuntu-latest 等の GitHub ホステッドへ読み替える
     runs-on: self-hosted
     timeout-minutes: 10
     outputs:
@@ -83,8 +85,10 @@ jobs:
   deploy-staging:
     needs: resolve
     if: inputs.dry_run == false && inputs.environment == 'staging'
-    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
-    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    # push / workflow_dispatch / schedule / workflow_call など、PR 由来の未検証コードを
+    # 実行しない起動条件のみを想定した組織内 self-hosted ランナーの例。self-hosted
+    # ランナーを運用していない環境（多くの public リポジトリを含む）へコピーする場合は
+    # runs-on: ubuntu-latest 等の GitHub ホステッドへ読み替える
     runs-on: self-hosted
     timeout-minutes: 10
     environment: staging   # 固定値。入力では切り替えない
@@ -109,8 +113,10 @@ jobs:
   deploy-production:
     needs: resolve
     if: inputs.dry_run == false && inputs.environment == 'production'
-    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
-    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    # push / workflow_dispatch / schedule / workflow_call など、PR 由来の未検証コードを
+    # 実行しない起動条件のみを想定した組織内 self-hosted ランナーの例。self-hosted
+    # ランナーを運用していない環境（多くの public リポジトリを含む）へコピーする場合は
+    # runs-on: ubuntu-latest 等の GitHub ホステッドへ読み替える
     runs-on: self-hosted
     timeout-minutes: 10
     environment: production   # 固定値。入力では切り替えない
@@ -132,8 +138,10 @@ jobs:
   dry-run:
     needs: resolve
     if: inputs.dry_run == true
-    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
-    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    # push / workflow_dispatch / schedule / workflow_call など、PR 由来の未検証コードを
+    # 実行しない起動条件のみを想定した組織内 self-hosted ランナーの例。self-hosted
+    # ランナーを運用していない環境（多くの public リポジトリを含む）へコピーする場合は
+    # runs-on: ubuntu-latest 等の GitHub ホステッドへ読み替える
     runs-on: self-hosted
     timeout-minutes: 10
     steps:

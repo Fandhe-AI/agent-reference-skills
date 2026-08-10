@@ -36,8 +36,10 @@ jobs:
   # environment を選ばせると、許可外の environment の保護ルールと
   # environment secret（caller が渡した secret より優先される）が適用されてしまう
   validate:
-    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
-    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    # push / workflow_dispatch / schedule / workflow_call など、PR 由来の未検証コードを
+    # 実行しない起動条件のみを想定した組織内 self-hosted ランナーの例。self-hosted
+    # ランナーを運用していない環境（多くの public リポジトリを含む）へコピーする場合は
+    # runs-on: ubuntu-latest 等の GitHub ホステッドへ読み替える
     runs-on: self-hosted
     timeout-minutes: 10
     steps:
@@ -56,8 +58,10 @@ jobs:
   deploy-staging:
     needs: validate
     if: inputs.environment == 'staging'
-    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
-    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    # push / workflow_dispatch / schedule / workflow_call など、PR 由来の未検証コードを
+    # 実行しない起動条件のみを想定した組織内 self-hosted ランナーの例。self-hosted
+    # ランナーを運用していない環境（多くの public リポジトリを含む）へコピーする場合は
+    # runs-on: ubuntu-latest 等の GitHub ホステッドへ読み替える
     runs-on: self-hosted
     timeout-minutes: 10
     environment: staging   # 固定値。入力では切り替えない
@@ -79,8 +83,10 @@ jobs:
   deploy-production:
     needs: validate
     if: inputs.environment == 'production'
-    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
-    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    # push / workflow_dispatch / schedule / workflow_call など、PR 由来の未検証コードを
+    # 実行しない起動条件のみを想定した組織内 self-hosted ランナーの例。self-hosted
+    # ランナーを運用していない環境（多くの public リポジトリを含む）へコピーする場合は
+    # runs-on: ubuntu-latest 等の GitHub ホステッドへ読み替える
     runs-on: self-hosted
     timeout-minutes: 10
     environment: production   # 固定値。入力では切り替えない

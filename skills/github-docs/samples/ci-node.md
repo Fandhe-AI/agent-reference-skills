@@ -17,9 +17,10 @@ permissions:
 
 jobs:
   test:
-    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
-    # GitHub ホステッド（ubuntu-latest 等）を使用する
-    runs-on: self-hosted
+    # pull_request でも起動し、fork PR を含む PR 由来のコードをそのまま実行するため、
+    # self-hosted ランナーは使わず GitHub ホステッドに固定する。self-hosted で
+    # 未検証コードを実行するとランナーホスト・内部ネットワークへの侵害経路になる
+    runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
