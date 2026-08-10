@@ -88,19 +88,34 @@ SOURCE=$(jq -r ".skills[\"${SKILL_NAME}\"].source" skills-lock.json)
 SOURCE_TYPE=$(jq -r ".skills[\"${SKILL_NAME}\"].sourceType" skills-lock.json)
 
 # 安全弁: Fandhe-AI org 以外への push を拒否する
-# 短縮形 (Fandhe-AI/<repo>) と URL 形式 (https://github.com/Fandhe-AI/<repo>) の両方を許可する
+# 1) まず正規化する（URL 形式は OWNER/REPO へ変換、短縮形はそのまま採用）
 case "${SOURCE}" in
-  Fandhe-AI/*)
-    # 短縮形: そのまま使用
-    REPO_SLUG="${SOURCE}"
-    ;;
-  https://github.com/Fandhe-AI/*)
-    # URL 形式: OWNER/REPO 形式に正規化し末尾 .git を除去する
+  https://github.com/*)
     REPO_SLUG="${SOURCE#https://github.com/}"
-    REPO_SLUG="${REPO_SLUG%.git}"
     ;;
   *)
-    echo "エラー: source '${SOURCE}' は Fandhe-AI org のリポジトリではありません。中止します。"
+    REPO_SLUG="${SOURCE}"
+    ;;
+esac
+# 末尾 .git の除去は両形式共通で行う
+# （URL 分岐内のみで除去すると短縮形 'Fandhe-AI/<repo>.git' が .git 付きのまま
+#   後段の正規表現を通過してしまうため、検証の前に必ずここで正規化する）
+REPO_SLUG="${REPO_SLUG%.git}"
+
+# 2) 正規化後の値を厳密検証する: owner は Fandhe-AI 固定、repo は単一セグメントのみ許可する
+#    [A-Za-z0-9._-]+ は '/'・'?'・'#'・空文字を含められないため、
+#    パストラバーサル（../）・余剰パスセグメント・クエリ・フラグメントをすべて拒否できる
+#    （前方一致 case では `Fandhe-AI/../../attacker/repo` のような値が誤って通過していた）
+if [[ ! "${REPO_SLUG}" =~ ^Fandhe-AI/[A-Za-z0-9._-]+$ ]]; then
+  echo "エラー: source '${SOURCE}' は Fandhe-AI/<repo> 形式ではありません。中止します。"
+  exit 1
+fi
+
+# 3) '.'・'..' は上記正規表現を通過してしまうため repo 名として明示拒否する
+#    （例: 'Fandhe-AI/..git' は .git 除去後に 'Fandhe-AI/.' へ化ける）
+case "${REPO_SLUG#Fandhe-AI/}" in
+  .|..)
+    echo "エラー: source '${SOURCE}' の repository 名が不正です。中止します。"
     exit 1
     ;;
 esac
@@ -112,7 +127,7 @@ if [[ "${SOURCE_TYPE}" != "github" ]]; then
 fi
 ```
 
-- `source` が `Fandhe-AI/`（短縮形）または `https://github.com/Fandhe-AI/`（URL 形式）のいずれでも始まらない場合は **エラーで中止** します（安全弁：見知らぬリポジトリへ意図せず push しないため）。
+- `source` は正規化後の `OWNER/REPO` が `^Fandhe-AI/[A-Za-z0-9._-]+$` に完全一致する場合のみ許可します（安全弁：見知らぬリポジトリへ意図せず push しないため）。`../` を含むパストラバーサル・クエリ（`?x=1`）・フラグメント（`#frag`）・余剰パスセグメント（`/extra`）を含む値は正規表現に一致せずエラーで中止します。検証は必ず `.git` 除去などの正規化の**後**に行います（正規化前に検証すると `Fandhe-AI/..git` のような値が正規化後に別の値へ化けてすり抜けるため）。
 - `sourceType` が `github` 以外の場合も **エラーで中止** します（GitHub 以外の source は本スキルの想定外であり、`gh repo clone` / `gh pr create` が正常動作しないため）。
 - 正規化後の `REPO_SLUG` は以降の Step で `gh repo clone`・`gh pr create --repo` に利用します。
 
@@ -186,25 +201,35 @@ elif [[ -d ".agents/skills/${SKILL_NAME}" ]]; then
 elif [[ -d "skills" ]]; then
   # upstream が skills/ 配下で公開している慣習
   UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
-  mkdir -p "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
 elif [[ -d ".agents/skills" ]]; then
   # upstream が .agents/skills/ 配下で公開している慣習
   UPSTREAM_SKILL_PATH=".agents/skills/${SKILL_NAME}"
-  mkdir -p "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
 else
   echo "警告: upstream にスキルルートが見つかりません。skills/ を既定として新規追加します。"
   UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
-  mkdir -p "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
 fi
 ```
 
-`UPSTREAM_SKILL_PATH` が確定したらコピーを実行します。
+`UPSTREAM_SKILL_PATH` が確定したらコピーを実行します。`cp -R` は追加・上書きのみで削除を伝搬しないため、ローカルで削除したファイルが upstream 側に残存してしまいます。これを避けるため、宛先ディレクトリを一度消してから作り直し、コピーし直す（delete-then-copy）方式を取ります。
 
 ```bash
+# 削除伝搬のための同期: cp -R は削除を反映しないため、宛先を消してからコピーする
+# 安全弁: 削除対象が clone 内の想定スキルパス（2 形態のみ）であることを検証してから rm する
+case "${UPSTREAM_SKILL_PATH}" in
+  "skills/${SKILL_NAME}"|".agents/skills/${SKILL_NAME}") ;;
+  *)
+    echo "エラー: 想定外の UPSTREAM_SKILL_PATH です: ${UPSTREAM_SKILL_PATH}"
+    exit 1
+    ;;
+esac
+rm -rf "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
+mkdir -p "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
 # LOCAL_SKILL_DIR は Step 1 で解決済み（skills/<name>/ または .agents/skills/<name>/）
 # ORIG_DIR は Step 6 で cd する前に捕捉済み（cd - は stdout 汚染のため使用しない）
 cp -R "${ORIG_DIR}/${LOCAL_SKILL_DIR}/." "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}/"
 ```
+
+削除対象は必ず `${WORKDIR}/upstream/` 配下（clone 用の一時ディレクトリ）に閉じ、`UPSTREAM_SKILL_PATH` が `skills/<name>` か `.agents/skills/<name>` の 2 形態以外なら `rm -rf` の前に中止します。新規スキル追加（宛先未存在）の場合も `rm -rf` は無害に成功し、直後の `mkdir -p` で作成されます。
 
 ### Step 8: 差分を確認する
 
@@ -221,7 +246,7 @@ git diff
 ```bash
 SLUG=$(date +%Y%m%d-%H%M%S)
 git switch -c "contribute/${SKILL_NAME}-${SLUG}"
-git add <変更パス>
+git add "${UPSTREAM_SKILL_PATH}/"
 git commit -m "$(cat <<'EOF'
 <type>(<scope>): <subject>
 
@@ -231,6 +256,7 @@ EOF
 )"
 ```
 
+- `git add "${UPSTREAM_SKILL_PATH}/"` はパス指定 add のため、Step 7 の delete-then-copy で消えたファイルの削除（`D`）も含めて stage されます
 - Conventional Commits 形式
 - `--no-verify` は使用しない（pre-commit フックを通す）
 - co-author は付けない（ローカル規約に合わせる）
@@ -285,9 +311,10 @@ Draft PR を作成する場合は `--draft` を付けます（デフォルトは
 
 - **SKILL_NAME は kebab-case のみ許可**：`..` のような値によるパストラバーサルを防ぐため、空判定の直後・パス解決の前に `^[a-z][a-z0-9-]+$` で検証する（security.md A03/A01）
 - **`skills/` と `.agents/skills/` の両方が存在する場合は中止**：silently に `skills/` を優先せず、環境変数 `LOCAL_SKILL_DIR` に改修対象パスを指定して再実行を求める。`LOCAL_SKILL_DIR` は `skills/<name>` か `.agents/skills/<name>` の2パスのみ受理し、任意パス指定によるパストラバーサルを防ぐ
-- **source が Fandhe-AI org 以外の場合は中止**：`Fandhe-AI/`（短縮形）と `https://github.com/Fandhe-AI/`（URL 形式）のみを許可し、それ以外は意図しない外部リポジトリへの push を防ぐため中止する
+- **source が Fandhe-AI org 以外の場合は中止**：前方一致（`Fandhe-AI/*` 等）ではなく、正規化（`.git` 除去等）後の `OWNER/REPO` が `^Fandhe-AI/[A-Za-z0-9._-]+$` に完全一致するかで判定する。`../` によるパストラバーサル・クエリ・フラグメント・余剰パスセグメントを含む値、および repo 名が `.`／`..` になる値は中止し、意図しない外部リポジトリへの push を防ぐ
 - **セキュリティ問題が見つかった場合は中止**：修正後に再実行
 - **upstream の配置はクローンしたリポジトリのレイアウトで判定する**：`skills-lock.json` の `skillPath` はローカル install パス（例: `.agents/skills/github-docs/SKILL.md`）であり、upstream リポジトリ内の配置ではない。`skillPath` の dirname を `UPSTREAM_SKILL_PATH` に採用してはならない。判定順は `skills/<name>` の存在 → `.agents/skills/<name>` の存在 → スキルルート親ディレクトリ（`skills/` or `.agents/skills/`）の慣習 → 最終デフォルト `skills/`（より一般的な公開レイアウト）
+- **宛先は消してからコピーする（削除伝搬）**：`cp -R` は追加・上書きのみで削除を反映しないため、ローカルで削除したファイルが upstream 側に残存してしまう。`rm -rf` 前に `UPSTREAM_SKILL_PATH` が `skills/<name>` か `.agents/skills/<name>` のいずれかであることを case 文で検証し、それ以外の値なら中止する。削除対象は必ず clone 用の一時ディレクトリ（`${WORKDIR}/upstream/`）配下のみに閉じ、それ以外のファイルには一切触れない
 - **既に同名の branch がある場合**：秒単位スラッグで通常は衝突しないが、万一の場合はユーザーに確認
 
 ## sandbox 環境での実行

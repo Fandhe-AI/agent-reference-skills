@@ -1,25 +1,38 @@
 {
-  "_comment": "implement-issue-tree workflow の args 例。parallel は 1〜8（省略時 3）",
+  "_comment": "implement-issue-tree workflow の args 例。parallel は 1〜8（省略時 3）。externalChecks は外部チェック App slug の配列（未指定 = 構成未確定、[] = 外部チェックなしを確定、[\"cursor\"] 等 = 指定 App を正とする）",
+  "_externalChecks": {
+    "未指定": "構成が未確定。観測結果にかかわらず自動マージを停止し blocked で終端する",
+    "[]": "「外部チェックを使用しない」と人間が確定。外部レビュー待機をスキップする",
+    "[\"cursor\"]": "Cursor Bugbot 導入済み。HEAD sha に対する cursor[bot] レビュー到着をマージの必須条件とする"
+  },
   "examples": [
     {
-      "description": "親イシュー #42 の配下を main へ、並列度 3（既定）でマージ",
-      "args": { "parent": 42 }
+      "description": "親イシュー #42 の配下を main へ、並列度 3（既定）でマージ（Cursor Bugbot 導入済みリポ）",
+      "args": { "parent": 42, "externalChecks": ["cursor"] }
+    },
+    {
+      "description": "外部チェックを使用しないリポジトリ（GitHub Actions のみ）。[] を明示して外部レビュー待機をスキップ",
+      "args": { "parent": 42, "externalChecks": [] }
     },
     {
       "description": "親イシュー #42 の配下を main へ、並列度を明示して 4 で実行",
-      "args": { "parent": 42, "parallel": 4 }
+      "args": { "parent": 42, "parallel": 4, "externalChecks": ["cursor"] }
     },
     {
       "description": "親イシュー #100 の配下を develop ブランチへ、並列度 2 でマージ",
-      "args": { "parent": 100, "branch": "develop", "parallel": 2 }
+      "args": { "parent": 100, "branch": "develop", "parallel": 2, "externalChecks": ["cursor"] }
     },
     {
       "description": "並列度 1 を指定して従来どおりの直列実行（依存順に 1 件ずつ）",
-      "args": { "parent": 42, "branch": "main", "parallel": 1 }
+      "args": { "parent": 42, "branch": "main", "parallel": 1, "externalChecks": ["cursor"] }
     },
     {
       "description": "サブ親イシュー #200 だけを対象に部分実行（大規模ツリーの分割実行）",
-      "args": { "parent": 200, "branch": "main", "parallel": 3 }
+      "args": { "parent": 200, "branch": "main", "parallel": 3, "externalChecks": ["cursor", "sonarcloud"] }
+    },
+    {
+      "description": "externalChecks を省略した場合。観測結果にかかわらずマージ直前に blocked で停止する（実装・PR 作成・CI までは進む）",
+      "args": { "parent": 42 }
     }
   ]
 }

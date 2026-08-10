@@ -50,7 +50,31 @@ GitHub Actions から Projects API にアクセスするには `GITHUB_TOKEN` �
 
 #### Step A-3: GitHub Actions ワークフローを生成する
 
-`Fandhe-AI/actions/project-sync` Composite Action を使用する。`.github/workflows/project-sync.yml` を生成する:
+`Fandhe-AI/actions/project-sync` Composite Action を使用する。`.github/workflows/project-sync.yml` を生成する。
+
+**SHA 解決手順（レビュー済み固定 SHA を使用する）:**
+
+サードパーティ action は `@main` / `@vN` 等の可動参照ではなく、検証済みのコミット SHA で固定する。生成のたびに最新 SHA を動的取得して埋め込む方式は、取得時点で上流が侵害・意図せず改変されていた場合にそのコードをそのまま導入先へ伝播させてしまう。そのため**ワークフロー生成時は以下のレビュー済み固定 SHA を定数として使用し、動的な最新 SHA 取得は行わない**:
+
+| Action | 固定 SHA | 対応バージョン |
+|--------|---------|--------------|
+| `Fandhe-AI/actions/project-sync` | `a85f9d283bfdbe7ff76823d2ca766222a268ee10` | main |
+| `actions/create-github-app-token` | `fee1f7d63c2ff003460e3d139729b119787bc349` | v2.2.2 |
+
+上記 SHA は導入時点でコード内容（`action.yml`・参照スクリプト全文）を実際に取得・精査したうえで固定した値である。SHA を更新する必要がある場合のみ（生成のたびには実行しない）、以下の手順で**変更内容そのもの**を精査してから本ファイルの定数とワークフロー例を更新する:
+
+```bash
+# 更新候補の最新 SHA を取得（更新作業時のみ実行）
+gh api repos/Fandhe-AI/actions/commits/main --jq '.sha'
+# 旧 SHA との差分パッチ（変更内容そのもの）を取得して精査する。ファイル名一覧だけでは不十分
+gh api repos/Fandhe-AI/actions/compare/<旧SHA>...<新SHA> --jq '.files[] | {filename, patch}'
+# project-sync Composite Action のエントリーポイント（action.yml）と参照される
+# 全スクリプトを新 SHA 時点の内容で取得し、composite action が実行するコマンド・
+# ダウンロードするバイナリ等に不審な変更がないか実際に読んで確認する
+gh api repos/Fandhe-AI/actions/contents/project-sync/action.yml?ref=<新SHA> --jq '.content' | base64 -d
+```
+
+差分パッチと `action.yml`（および参照スクリプト全文）を実際に読み、意図しない変更・不審なコマンド追加がないことを人手で確認する。可能であれば署名・リリース provenance（`gh attestation verify` 等）も確認する。確認が取れた場合のみ、上記の固定 SHA 表と後続のワークフロー例内 `uses:` 行のコメント（対応バージョン）を合わせて更新する。
 
 **PAT を使用する場合:**
 
@@ -63,12 +87,16 @@ on:
   pull_request:
     types: [opened, closed, ready_for_review, review_requested]
 
+permissions:
+  contents: read
+
 jobs:
   sync:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Sync project status
-        uses: Fandhe-AI/actions/project-sync@main
+        uses: Fandhe-AI/actions/project-sync@a85f9d283bfdbe7ff76823d2ca766222a268ee10 # main
         with:
           project-number: '<number>'
           project-owner: '<owner>'
@@ -86,20 +114,24 @@ on:
   pull_request:
     types: [opened, closed, ready_for_review, review_requested]
 
+permissions:
+  contents: read
+
 jobs:
   sync:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Generate token
         id: token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2.2.2
         with:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
           owner: '<owner>'
 
       - name: Sync project status
-        uses: Fandhe-AI/actions/project-sync@main
+        uses: Fandhe-AI/actions/project-sync@a85f9d283bfdbe7ff76823d2ca766222a268ee10 # main
         with:
           project-number: '<number>'
           project-owner: '<owner>'
@@ -112,7 +144,7 @@ Status オプション名がデフォルト（Todo / In Progress / In Review / D
 
 ```yaml
       - name: Sync project status
-        uses: Fandhe-AI/actions/project-sync@main
+        uses: Fandhe-AI/actions/project-sync@a85f9d283bfdbe7ff76823d2ca766222a268ee10 # main
         with:
           project-number: '<number>'
           project-owner: '<owner>'
@@ -245,10 +277,31 @@ gh project item-add <number> \
 - 手動補正モードは同期前に必ずユーザーの確認を得る
 - DraftIssue タイプのアイテムは同期対象外（実 Issue が存在しないため）
 - sandbox 環境では実行できない（後述の「sandbox 環境での実行」節を参照）
+- **action は必ずコミット SHA で固定する**: `@main` / `@vN` 等の可動参照は生成しない。上流のタグ付け替え・ブランチ改変が未検証のまま流れ込むサプライチェーンリスクを避けるため（SHA 更新時は差分を確認してから更新する）
+- **permissions は最小権限で明示する**: workflow レベルで `contents: read` を明示する。同期処理自体は `PROJECT_TOKEN` / GitHub App トークン側の権限で動作するため、`GITHUB_TOKEN` への追加権限は不要
 
 ## 検証
 
-**モード A 完了後:** `.github/workflows/project-sync.yml` が存在し、YAML が正しく記述されていること。コミット・プッシュ後に GitHub Actions の実行履歴で初回トリガーが確認できれば完了。
+**モード A 完了後:** `.github/workflows/project-sync.yml` が存在し、YAML が正しく記述されていること。加えて以下を確認する:
+- 全 `uses:` 行が40桁の16進数コミット SHA で固定されていること（`@main`・`@v2.2.2`・`@master`・任意ブランチ名等の可動参照が残っていないことを積極的に検証する）:
+  ```bash
+  total=$(grep -c 'uses:' .github/workflows/project-sync.yml)
+  pinned=$(grep -cE 'uses:\s*[^@[:space:]]+@[0-9a-f]{40}([[:space:]]|#|$)' .github/workflows/project-sync.yml)
+  if [ "$total" -eq 0 ]; then
+    echo "NG: 検証対象の uses: 行が見つからない（workflow 生成に失敗している可能性）" >&2
+    exit 1
+  elif [ "$total" -eq "$pinned" ]; then
+    echo OK
+  else
+    echo "NG: SHA 固定されていない uses: 行がある（total=${total}, pinned=${pinned}）" >&2
+    exit 1
+  fi
+  ```
+  `OK` が出力されること（`uses:` 行が 1 件以上存在し、かつ `total` と `pinned` が一致 = 全 `uses:` が SHA 固定）。`NG:` が出力された場合は workflow の生成内容を見直す
+- `permissions` が明示されていること: `grep -c 'permissions:' .github/workflows/project-sync.yml` が 1 以上
+- `sync` ジョブに `timeout-minutes` が設定されていること: `grep -n 'timeout-minutes' .github/workflows/project-sync.yml` で 1 行以上ヒットする（欠落は CI ワークフロー規約違反・P1）
+
+コミット・プッシュ後に GitHub Actions の実行履歴で初回トリガーが確認できれば完了。
 
 **モード B 完了後:** Step B-7 の結果表で「変更なし: 0 件以上」が表示されていること。以下で最終状態を確認する:
 
