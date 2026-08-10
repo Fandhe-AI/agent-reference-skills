@@ -17,9 +17,6 @@ permissions:
 
 jobs:
   test:
-    # windows-latest / macos-latest を含むクロスプラットフォーム検証のため、
-    # ここは GitHub ホステッドランナーを使う（self-hosted で Windows/macOS を
-    # 用意していない環境が多いため）
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
 

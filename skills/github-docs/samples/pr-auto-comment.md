@@ -27,13 +27,6 @@ permissions:
 
 jobs:
   test:
-    # このジョブは PR 由来の依存関係・テストスクリプトを checkout して実行する
-    # （fork PR も含む）。self-hosted ランナーで fork からの未検証コードを実行すると
-    # ランナー環境・永続的な作業領域・内部ネットワークへの侵害経路になるため、
-    # 組織 runner 方針（private は self-hosted / public は GitHub ホステッド）よりも
-    # 「PR コードを実行するジョブは self-hosted を使わない」を優先する。
-    # self-hosted を使いたい場合は、信頼済み PR だけに絞るゲート（例: 外部コントリビューター
-    # からの PR では実行しない、承認必須の environment を挟む等）を別途実装すること
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -106,12 +99,7 @@ permissions:
 
 jobs:
   comment:
-    # push（直接 push できるのは書き込み権限保有者のみ）・workflow_dispatch・schedule
-    # など、PR 由来の未検証コードを実行しない起動条件のみを想定した組織内 self-hosted
-    # ランナーの例（workflow_call は caller のトリガー次第で安全と限らないため含めない）。
-    # self-hosted ランナーを運用していない環境（多くの public リポジトリを含む）へ
-    # コピーする場合は runs-on: ubuntu-latest 等の GitHub ホステッドへ読み替える
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     if: github.event.workflow_run.event == 'pull_request'
     steps:
@@ -202,7 +190,6 @@ jobs:
 - `shell: bash` は `bash --noprofile --norc -eo pipefail {0}` として起動されるため既定で `-e` が有効。失敗しても後続処理（成果物の保存など）を続けたい区間は `set +e` / `set -e` で明示的に囲む
 - `tee` などを挟んだパイプラインでは `$?` が最終コマンドの結果になる。`${PIPESTATUS[0]}` を保存し、成果物を残したうえで明示的に `exit` して失敗を伝播させる
 - `${{ ... }}` を `script:` 本文や `run:` 本文へ直接展開しない。PR 側が制御できる値（テスト出力・ブランチ名・PR タイトル等）は引用符を閉じる文字列で任意コード実行に至る。上記のとおり `env:` へ渡し `process.env` から読む
-- `test` ジョブ（前段）は PR 由来のコード・依存関係・スクリプトを実行するため（fork PR も含む）、組織 runner 方針より優先して `runs-on: ubuntu-latest`（GitHub ホステッド）を固定で使う。self-hosted で未検証コードを実行するとランナーホスト・内部ネットワークへの侵害経路になる（GitHub 公式ドキュメントも self-hosted ランナーは基本 private リポジトリ限定を推奨）。`comment` ジョブ（後段）は PR コードを checkout しないため組織 runner 方針どおり self-hosted を使う
 
 ### 信頼境界の要点
 

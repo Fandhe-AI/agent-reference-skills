@@ -64,10 +64,6 @@ permissions:
 
 jobs:
   build:
-    # pull_request でも起動し、fork PR を含む PR 由来のコード（composite action 経由の
-    # npm ci/build）をそのまま実行するため、self-hosted ランナーは使わず GitHub
-    # ホステッドに固定する。self-hosted で未検証コードを実行するとランナーホスト・
-    # 内部ネットワークへの侵害経路になる
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

@@ -17,12 +17,7 @@ permissions:
 
 jobs:
   build:
-    # push（直接 push できるのは書き込み権限保有者のみ）・workflow_dispatch・schedule
-    # など、PR 由来の未検証コードを実行しない起動条件のみを想定した組織内 self-hosted
-    # ランナーの例（workflow_call は caller のトリガー次第で安全と限らないため含めない）。
-    # self-hosted ランナーを運用していない環境（多くの public リポジトリを含む）へ
-    # コピーする場合は runs-on: ubuntu-latest 等の GitHub ホステッドへ読み替える
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
       artifact_name: ${{ steps.set-output.outputs.artifact_name }}
@@ -62,12 +57,7 @@ jobs:
 
   deploy:
     needs: build
-    # push（直接 push できるのは書き込み権限保有者のみ）・workflow_dispatch・schedule
-    # など、PR 由来の未検証コードを実行しない起動条件のみを想定した組織内 self-hosted
-    # ランナーの例（workflow_call は caller のトリガー次第で安全と限らないため含めない）。
-    # self-hosted ランナーを運用していない環境（多くの public リポジトリを含む）へ
-    # コピーする場合は runs-on: ubuntu-latest 等の GitHub ホステッドへ読み替える
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     environment:
       name: production

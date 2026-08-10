@@ -36,9 +36,6 @@ jobs:
   # environment を選ばせると、許可外の environment の保護ルールと
   # environment secret（caller が渡した secret より優先される）が適用されてしまう
   validate:
-    # workflow_call は「PR 由来コードを実行しない安全な起動条件」ではない。
-    # pull_request で起動した caller からも呼び出せるため、caller 側の trigger を
-    # 確認できない callee 側では self-hosted を既定にしない（GitHub ホステッドに固定）
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -57,9 +54,6 @@ jobs:
   deploy-staging:
     needs: validate
     if: inputs.environment == 'staging'
-    # actions/checkout で caller の ref を checkout する。caller が pull_request で
-    # 起動していれば PR 由来の未検証コードになりうるため、callee 側では self-hosted を
-    # 既定にしない（GitHub ホステッドに固定）
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: staging   # 固定値。入力では切り替えない
@@ -81,9 +75,6 @@ jobs:
   deploy-production:
     needs: validate
     if: inputs.environment == 'production'
-    # actions/checkout で caller の ref を checkout する。caller が pull_request で
-    # 起動していれば PR 由来の未検証コードになりうるため、callee 側では self-hosted を
-    # 既定にしない（GitHub ホステッドに固定）
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: production   # 固定値。入力では切り替えない
