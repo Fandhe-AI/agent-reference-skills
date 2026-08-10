@@ -64,6 +64,33 @@ jobs:
           auto-merge-allowlist: ${{ vars.SUBMODULE_AUTO_MERGE_ALLOWLIST }}
           auto-merge-strategy: squash
 
+      - name: Warn when PAT is missing
+        if: ${{ secrets.SUBMODULE_PAT == '' }}
+        run: |
+          echo "::warning title=SUBMODULE_PAT 未設定::GITHUB_TOKEN で作成した PR は pull_request workflow を発火させず、" \
+            "必須チェックが走らないため auto-merge が BLOCKED のまま停滞します。" \
+            "fine-grained PAT (contents/pull-requests write) を SUBMODULE_PAT に設定してください。"
+
+      - name: Close superseded update PRs
+        # ブランチ名が {prefix}-{YYYYMMDD} で毎日新規作成されるため、マージされずに
+        # 残った過去日付の PR は常に superseded。最新日付の 1 件だけ残して close する。
+        # close は GITHUB_TOKEN で可能（後続 workflow の発火を必要としない）。
+        if: ${{ always() }}
+        env:
+          GH_TOKEN: ${{ secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
+          BRANCH_PREFIX: chore/submodule-update
+        run: |
+          set -euo pipefail
+          newest=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --json headRefName \
+            --jq "[.[].headRefName | select(startswith(\"$BRANCH_PREFIX-\"))] | sort | last // empty")
+          [ -z "$newest" ] && exit 0
+          query=".[] | select(.headRefName | startswith(\"$BRANCH_PREFIX-\") and . != \"$newest\") | .number"
+          msg="より新しい日次更新 PR (branch: $newest) が最新 main 基準で同内容を再生成しているため close します。"
+          gh pr list --repo "$GITHUB_REPOSITORY" --state open --json number,headRefName --jq "$query" |
+          while read -r pr; do
+            gh pr close "$pr" --repo "$GITHUB_REPOSITORY" --delete-branch --comment "$msg"
+          done
+
   # --------------------------------------------------
   # Skills の更新 (Fandhe-AI/actions/skills-update)
   # --------------------------------------------------
@@ -107,3 +134,30 @@ jobs:
           auto-merge: ${{ vars.SKILLS_AUTO_MERGE || 'false' }}
           auto-merge-allowlist: ${{ vars.SKILLS_AUTO_MERGE_ALLOWLIST }}
           auto-merge-strategy: squash
+
+      - name: Warn when PAT is missing
+        if: ${{ secrets.SKILLS_PAT == '' }}
+        run: |
+          echo "::warning title=SKILLS_PAT 未設定::GITHUB_TOKEN で作成した PR は pull_request workflow を発火させず、" \
+            "必須チェックが走らないため auto-merge が BLOCKED のまま停滞します。" \
+            "fine-grained PAT (contents/pull-requests write) を SKILLS_PAT に設定してください。"
+
+      - name: Close superseded update PRs
+        # ブランチ名が {prefix}-{YYYYMMDD} で毎日新規作成されるため、マージされずに
+        # 残った過去日付の PR は常に superseded。最新日付の 1 件だけ残して close する。
+        # close は GITHUB_TOKEN で可能（後続 workflow の発火を必要としない）。
+        if: ${{ always() }}
+        env:
+          GH_TOKEN: ${{ secrets.SKILLS_PAT || secrets.GITHUB_TOKEN }}
+          BRANCH_PREFIX: chore/skills-update
+        run: |
+          set -euo pipefail
+          newest=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --json headRefName \
+            --jq "[.[].headRefName | select(startswith(\"$BRANCH_PREFIX-\"))] | sort | last // empty")
+          [ -z "$newest" ] && exit 0
+          query=".[] | select(.headRefName | startswith(\"$BRANCH_PREFIX-\") and . != \"$newest\") | .number"
+          msg="より新しい日次更新 PR (branch: $newest) が最新 main 基準で同内容を再生成しているため close します。"
+          gh pr list --repo "$GITHUB_REPOSITORY" --state open --json number,headRefName --jq "$query" |
+          while read -r pr; do
+            gh pr close "$pr" --repo "$GITHUB_REPOSITORY" --delete-branch --comment "$msg"
+          done
