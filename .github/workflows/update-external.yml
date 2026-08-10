@@ -84,12 +84,17 @@ jobs:
           BRANCH_PREFIX: chore/submodule-update
         run: |
           set -euo pipefail
-          newest=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --json headRefName \
-            --jq "[.[].headRefName | select(startswith(\"$BRANCH_PREFIX-\"))] | sort | last // empty")
+          # fork 由来 PR の排除 (isCrossRepository)・日付形式の完全一致・jq --arg のデータ渡しで、
+          # 外部から細工したブランチ名により正規 PR を close させられる余地を残さない。
+          prs=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open \
+            --json number,headRefName,isCrossRepository)
+          filter='.[] | select(.isCrossRepository | not)
+            | select(.headRefName | startswith($p) and (.[($p | length):] | test("^[0-9]{8}$")))'
+          newest=$(jq -r --arg p "$BRANCH_PREFIX-" "[$filter | .headRefName] | sort | last // empty" <<<"$prs")
           [ -z "$newest" ] && exit 0
-          query=".[] | select(.headRefName | startswith(\"$BRANCH_PREFIX-\") and . != \"$newest\") | .number"
           msg="より新しい日次更新 PR (branch: $newest) が最新 main 基準で同内容を再生成しているため close します。"
-          gh pr list --repo "$GITHUB_REPOSITORY" --state open --json number,headRefName --jq "$query" |
+          jq -r --arg p "$BRANCH_PREFIX-" --arg newest "$newest" \
+            "$filter | select(.headRefName != \$newest) | .number" <<<"$prs" |
           while read -r pr; do
             gh pr close "$pr" --repo "$GITHUB_REPOSITORY" --delete-branch --comment "$msg"
           done
@@ -158,12 +163,17 @@ jobs:
           BRANCH_PREFIX: chore/skills-update
         run: |
           set -euo pipefail
-          newest=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --json headRefName \
-            --jq "[.[].headRefName | select(startswith(\"$BRANCH_PREFIX-\"))] | sort | last // empty")
+          # fork 由来 PR の排除 (isCrossRepository)・日付形式の完全一致・jq --arg のデータ渡しで、
+          # 外部から細工したブランチ名により正規 PR を close させられる余地を残さない。
+          prs=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open \
+            --json number,headRefName,isCrossRepository)
+          filter='.[] | select(.isCrossRepository | not)
+            | select(.headRefName | startswith($p) and (.[($p | length):] | test("^[0-9]{8}$")))'
+          newest=$(jq -r --arg p "$BRANCH_PREFIX-" "[$filter | .headRefName] | sort | last // empty" <<<"$prs")
           [ -z "$newest" ] && exit 0
-          query=".[] | select(.headRefName | startswith(\"$BRANCH_PREFIX-\") and . != \"$newest\") | .number"
           msg="より新しい日次更新 PR (branch: $newest) が最新 main 基準で同内容を再生成しているため close します。"
-          gh pr list --repo "$GITHUB_REPOSITORY" --state open --json number,headRefName --jq "$query" |
+          jq -r --arg p "$BRANCH_PREFIX-" --arg newest "$newest" \
+            "$filter | select(.headRefName != \$newest) | .number" <<<"$prs" |
           while read -r pr; do
             gh pr close "$pr" --repo "$GITHUB_REPOSITORY" --delete-branch --comment "$msg"
           done
