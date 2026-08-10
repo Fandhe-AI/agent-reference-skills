@@ -1,6 +1,6 @@
 ---
 name: sync-skills-lock
-description: ルート直下の `skills-lock.json` の `computedHash` を upstream リポジトリの最新状態と照合して更新する。`source` が `Fandhe-AI/` で始まらないエントリは clone せず skip (安全弁)。submodule 配下の `skills-lock.json` は触らない。contribute-skill のマージ後や upstream 同期後、「ハッシュ更新」「skills-lock 同期」などで使用。
+description: ルート直下の `skills-lock.json` の `computedHash` を upstream リポジトリの最新状態と照合して更新する。`source` が `Fandhe-AI/<repo>` に完全一致しないエントリは clone せず skip (安全弁)。submodule 配下の `skills-lock.json` は触らない。contribute-skill のマージ後や upstream 同期後、「ハッシュ更新」「skills-lock 同期」などで使用。
 argument-hint: "[skill-name] (省略時は全スキル)"
 user-invocable: true
 model: sonnet
@@ -63,19 +63,16 @@ Fandhe-AI/agent-cli-skills:
 
 ### Step 3: source を検証する
 
-**安全弁**: 処理前に必ず `source` フィールドが信頼された prefix で始まっていることを確認する。`Fandhe-AI/` の短縮形と `https://github.com/Fandhe-AI/` の URL 形式の両方を許可する。想定外の source は skip してユーザーに警告する。`skills-lock.json` の改ざん・誤設定によって untrusted リポジトリから clone することを防ぐためである。
+**安全弁**: 処理前に必ず `source` フィールドが `Fandhe-AI/<repo>` に完全一致することを確認する。前方一致では `../` を含む値が通過し、clone 時の URL パス正規化で組織外リポジトリを対象にできてしまうため、`OWNER/REPO` へ正規化後に厳密な正規表現で検証する。想定外の source は skip してユーザーに警告する。`skills-lock.json` の改ざん・誤設定によって untrusted リポジトリから clone することを防ぐためである。
 
 ```bash
-case "$SOURCE" in
-  Fandhe-AI/*)
-    ;; # 短縮形 OK
-  https://github.com/Fandhe-AI/*)
-    ;; # URL 形式 OK
-  *)
-    echo "警告: 想定外の source: $SOURCE — このスキルは skip します"
-    continue
-    ;;
-esac
+REPO_SLUG="${SOURCE#https://github.com/}"
+REPO_SLUG="${REPO_SLUG%.git}"
+if [[ ! "$REPO_SLUG" =~ ^Fandhe-AI/[A-Za-z0-9._-]+$ ]] \
+   || [[ "$REPO_SLUG" == "Fandhe-AI/." || "$REPO_SLUG" == "Fandhe-AI/.." ]]; then
+  echo "警告: 想定外の source: $SOURCE — このスキルは skip します"
+  continue
+fi
 ```
 
 ### Step 4–7: 対象スキルを1つずつ処理する（ループ）
@@ -167,7 +164,7 @@ EOF
 - **全スキル sync での途中却下**: 1スキルずつ承認・stage を行うため、途中で却下しても承認済みスキルの stage は保持される。全スキル処理後に一括コミットする
 - **`skills-lock.json` は実行前 clean 前提で全体をステージする**: 単一 JSON ファイルのため部分ステージは現実的でない。Step 1 の事前ガードで clean を保証し、sync 由来以外の変更の混入を防ぐ
 - **ルートの `skills-lock.json` のみを編集**: submodule 配下は手を付けない
-- **source prefix 検証（必須）**: `source` が `Fandhe-AI/` または `https://github.com/Fandhe-AI/` で始まらないエントリは skip する（`contribute-skill` と同じ安全弁）。`skills-lock.json` の改ざんや誤設定から防御するため
+- **source 完全一致検証（必須）**: `source` を `OWNER/REPO` へ正規化した上で `Fandhe-AI/<repo>` に完全一致しないエントリは skip する（`contribute-skill` と同じ安全弁）。前方一致では `../` を含む値が通過してしまうため、完全一致の正規表現で検証する。`skills-lock.json` の改ざんや誤設定から防御するため
 - **`npx skills add --yes` は上書き確認をスキップする**: upstream に破壊的変更がある場合は `git diff` で内容を必ず確認すること
 - **新スキルの取扱い**: ローカルに存在するが upstream に未登録のスキル（`contribute-skill`, `sync-skills-lock` 自身など）は、upstream マージ後に登録する。マージ前に `computedHash` を勝手に書き込まない
 ## sandbox 環境での実行

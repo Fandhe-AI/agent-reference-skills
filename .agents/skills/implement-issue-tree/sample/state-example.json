@@ -29,15 +29,16 @@
     },
     "45": {
       "type": "implement",
-      "status": "blocked",
+      "status": "failed",
       "pr": 103,
       "branch": "feat/45-add-payment",
       "worktree": "/path/to/repo/.git/worktrees/impl-45",
       "fixCount": 6,
-      "note": "マージに到達できなかった（最終状態: blocked）。最終観測時点の未解決コメント: reviewer が支払い失敗時のロールバック処理漏れを指摘。対象外と判断されたコメント: threadId: PRRT_kwDOxyz789 / reason: ログフォーマット変更は今回のスコープ外のため対応見送り",
+      "note": "マージに到達できなかった（最終状態: blocked）: fixCount 上限（6 回）に達した。最終観測時点の未解決コメント: reviewer が支払い失敗時のロールバック処理漏れを指摘。対象外と判断されたコメント: threadId: PRRT_kwDOxyz789 / reason: ログフォーマット変更は今回のスコープ外のため対応見送り",
       "outOfScopeLog": [
         "threadId: PRRT_kwDOxyz789 / reason: ログフォーマット変更は今回のスコープ外のため対応見送り"
       ],
+      "outOfScopeSeen": ["PRRT_kwDOxyz789"],
       "lastUnresolvedInfo": "reviewer が支払い失敗時のロールバック処理漏れを指摘",
       "lastUnresolvedComments": [
         {

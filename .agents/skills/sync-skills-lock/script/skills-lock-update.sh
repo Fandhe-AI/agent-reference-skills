@@ -27,17 +27,16 @@ if [[ ! "$SKILL_NAME" =~ ^[a-z][a-z0-9-]+$ ]]; then
   exit 1
 fi
 
-# source の安全弁: Fandhe-AI/ または https://github.com/Fandhe-AI/ のみ許可
-case "$SOURCE_REPO" in
-  Fandhe-AI/*)
-    ;;
-  https://github.com/Fandhe-AI/*)
-    ;;
-  *)
-    echo "エラー: 想定外の source: $SOURCE_REPO — Fandhe-AI/ 以外の source は許可されていません"
-    exit 1
-    ;;
-esac
+# source の安全弁: Fandhe-AI org の単一リポジトリのみ許可（完全一致検証）
+# 前方一致では `../` を含む値が通過し、clone 時の URL パス正規化で
+# 組織外リポジトリを対象にできるため、OWNER/REPO へ正規化後に厳密検証する
+REPO_SLUG="${SOURCE_REPO#https://github.com/}"
+REPO_SLUG="${REPO_SLUG%.git}"
+if [[ ! "$REPO_SLUG" =~ ^Fandhe-AI/[A-Za-z0-9._-]+$ ]] \
+  || [[ "$REPO_SLUG" == "Fandhe-AI/." || "$REPO_SLUG" == "Fandhe-AI/.." ]]; then
+  echo "エラー: 想定外の source: $SOURCE_REPO — Fandhe-AI/<repo> の完全一致のみ許可されています" >&2
+  exit 1
+fi
 
 # skills-lock.json に source があれば SOURCE_REPO と照合する（誤 upstream 同期防止）
 if command -v jq >/dev/null 2>&1 && [[ -f skills-lock.json ]]; then
