@@ -111,7 +111,7 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
-          token: ${{ secrets.SKILLS_PAT || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         # actions/setup-node v6.4.0。skills-update が使う npx skills のため node を固定する。
@@ -123,7 +123,7 @@ jobs:
         # Fandhe-AI/actions はタグ未作成のため最新コミット SHA に固定する。
         uses: Fandhe-AI/actions/skills-update@c80ff94f229f86ba9e08723948c4dee0e1fb66bf
         with:
-          token: ${{ secrets.SKILLS_PAT || secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
           base-branch: main
           branch-prefix: chore/skills-update
           commit-message: 'chore: エージェントスキルを最新に更新'
@@ -136,11 +136,11 @@ jobs:
           auto-merge-strategy: squash
 
       - name: Warn when PAT is missing
-        if: ${{ secrets.SKILLS_PAT == '' }}
+        if: ${{ secrets.SUBMODULE_PAT == '' }}
         run: |
-          echo "::warning title=SKILLS_PAT 未設定::GITHUB_TOKEN で作成した PR は pull_request workflow を発火させず、" \
+          echo "::warning title=SUBMODULE_PAT 未設定::GITHUB_TOKEN で作成した PR は pull_request workflow を発火させず、" \
             "必須チェックが走らないため auto-merge が BLOCKED のまま停滞します。" \
-            "fine-grained PAT (contents/pull-requests write) を SKILLS_PAT に設定してください。"
+            "fine-grained PAT (contents/pull-requests write) を SUBMODULE_PAT に設定してください (org secret 共有)。"
 
       - name: Close superseded update PRs
         # ブランチ名が {prefix}-{YYYYMMDD} で毎日新規作成されるため、マージされずに
@@ -148,7 +148,7 @@ jobs:
         # close は GITHUB_TOKEN で可能（後続 workflow の発火を必要としない）。
         if: ${{ always() }}
         env:
-          GH_TOKEN: ${{ secrets.SKILLS_PAT || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
           BRANCH_PREFIX: chore/skills-update
         run: |
           set -euo pipefail
