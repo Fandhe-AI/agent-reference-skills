@@ -46,7 +46,7 @@ jobs:
   # `commitlint.config.mjs` を参照）。structure 等リポジトリ固有ジョブは現状維持。
   lint-docs:
     # <SHA> は Fandhe-AI/actions のコミット SHA で固定する（@main 不可）
-    uses: Fandhe-AI/actions/.github/workflows/lint-docs.yml@a85f9d283bfdbe7ff76823d2ca766222a268ee10 # main
+    uses: Fandhe-AI/actions/.github/workflows/lint-docs.yml@fed9c07d98367f77e5e2b63bca38843f46feee96 # main
     permissions:
       contents: read
     with:
