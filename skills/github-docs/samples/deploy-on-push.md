@@ -17,7 +17,10 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
+    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    runs-on: self-hosted
+    timeout-minutes: 10
     outputs:
       artifact_name: ${{ steps.set-output.outputs.artifact_name }}
 
@@ -56,7 +59,10 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
+    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    runs-on: self-hosted
+    timeout-minutes: 10
     environment:
       name: production
       url: https://example.com

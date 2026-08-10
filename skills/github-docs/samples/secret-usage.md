@@ -16,7 +16,10 @@ permissions:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
+    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    runs-on: self-hosted
+    timeout-minutes: 10
     environment: production  # 環境シークレットを有効化
     env:
       # step レベルの env は同じ step の if からは参照できないため job レベルで定義する

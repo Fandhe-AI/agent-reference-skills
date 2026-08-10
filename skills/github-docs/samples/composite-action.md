@@ -64,7 +64,10 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
+    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    runs-on: self-hosted
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4.4.0
 

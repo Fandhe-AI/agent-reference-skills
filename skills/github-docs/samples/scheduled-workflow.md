@@ -13,7 +13,10 @@ on:
 
 jobs:
   check-outdated:
-    runs-on: ubuntu-latest
+    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
+    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    runs-on: self-hosted
+    timeout-minutes: 10
 
     permissions:
       contents: read

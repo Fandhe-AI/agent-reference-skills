@@ -36,7 +36,10 @@ jobs:
   # environment を選ばせると、許可外の environment の保護ルールと
   # environment secret（caller が渡した secret より優先される）が適用されてしまう
   validate:
-    runs-on: ubuntu-latest
+    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
+    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    runs-on: self-hosted
+    timeout-minutes: 10
     steps:
       - name: Validate target environment
         shell: bash
@@ -53,7 +56,10 @@ jobs:
   deploy-staging:
     needs: validate
     if: inputs.environment == 'staging'
-    runs-on: ubuntu-latest
+    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
+    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    runs-on: self-hosted
+    timeout-minutes: 10
     environment: staging   # 固定値。入力では切り替えない
     outputs:
       url: ${{ steps.deploy.outputs.url }}
@@ -73,7 +79,10 @@ jobs:
   deploy-production:
     needs: validate
     if: inputs.environment == 'production'
-    runs-on: ubuntu-latest
+    # 組織 runner 方針: private リポジトリでは self-hosted、public リポジトリでは
+    # GitHub ホステッド（ubuntu-latest 等）を使用する
+    runs-on: self-hosted
+    timeout-minutes: 10
     environment: production   # 固定値。入力では切り替えない
     outputs:
       url: ${{ steps.deploy.outputs.url }}
