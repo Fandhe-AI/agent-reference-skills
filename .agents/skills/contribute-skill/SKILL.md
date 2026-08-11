@@ -35,7 +35,12 @@ if [[ -z "${SKILL_NAME}" ]]; then
   echo "対象スキルを指定してください。候補:"
   ls -1 skills/ 2>/dev/null
   ls -1 .agents/skills/ 2>/dev/null
-  echo "（lockfile 由来のスキルは .agents/skills/ のみに存在する場合がある）"
+  # .claude/skills/ は skills/ への symlink 慣習と実体配置（例: create-skill / create-agent）が
+  # 併存するため、実ディレクトリのみ列挙する（symlink は実体が上の 2 候補に現れる）。
+  # 親の .claude / .claude/skills 自体が symlink の場合も配下の実体は symlink 先で列挙されるため、
+  # 経路の全親が symlink でないときのみ find する（-type d は親 symlink 経由でも列挙してしまう）
+  [[ ! -L .claude && ! -L .claude/skills ]] && find .claude/skills -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sed 's|.*/||'
+  echo "（lockfile 由来のスキルは .agents/skills/ のみ、リポジトリ管理スキルは .claude/skills/ のみに存在する場合がある）"
   exit 1   # ユーザーが選んだスキル名を引数に付けて再実行する
 fi
 
@@ -45,10 +50,41 @@ if [[ ! "${SKILL_NAME}" =~ ^[a-z][a-z0-9-]+$ ]]; then
   exit 1
 fi
 
+# symlink 境界の共通判定（fail-closed）: 相対経路 rel の全要素を先頭から累積検査し、
+# いずれかが symlink なら該当パスを SYMLINK_COMPONENT に設定して 1 を返す。
+# 第2引数 base を与えると base 配下の相対経路として検査する（省略時はカレント基準）。
+# 末尾要素だけの -L 検査では親（例: .claude 自体がリポジトリ外を指す symlink）を
+# すり抜けるため、候補判定・override 検証・upstream 配置判定・rm 前検証の
+# すべての経路判定でこの関数を使い「どの経路要素が symlink でも候補と数えない」を一貫させる。
+assert_no_symlink_components() {
+  local rel="$1" prefix="${2:+${2}/}" acc="" part
+  local -a parts
+  SYMLINK_COMPONENT=""
+  IFS='/' read -r -a parts <<< "${rel}"
+  for part in "${parts[@]}"; do
+    acc="${acc:+${acc}/}${part}"
+    if [[ -L "${prefix}${acc}" ]]; then
+      SYMLINK_COMPONENT="${prefix}${acc}"
+      return 1
+    fi
+  done
+  return 0
+}
+
 # override: 環境変数 LOCAL_SKILL_DIR が設定済みならそれを検証して使う
 if [[ -n "${LOCAL_SKILL_DIR:-}" ]]; then
-  if [[ "${LOCAL_SKILL_DIR}" != "skills/${SKILL_NAME}" && "${LOCAL_SKILL_DIR}" != ".agents/skills/${SKILL_NAME}" ]]; then
-    echo "エラー: LOCAL_SKILL_DIR は skills/${SKILL_NAME} か .agents/skills/${SKILL_NAME} のいずれかを指定してください: ${LOCAL_SKILL_DIR}"
+  case "${LOCAL_SKILL_DIR}" in
+    "skills/${SKILL_NAME}"|".agents/skills/${SKILL_NAME}"|".claude/skills/${SKILL_NAME}") ;;
+    *)
+      echo "エラー: LOCAL_SKILL_DIR は skills/${SKILL_NAME} / .agents/skills/${SKILL_NAME} / .claude/skills/${SKILL_NAME} のいずれかを指定してください: ${LOCAL_SKILL_DIR}"
+      exit 1
+      ;;
+  esac
+  # symlink（.claude/skills/<name> → skills/<name> 慣習）は差分表示が空になるため実体側を要求する。
+  # 末尾要素だけでなく全中間要素（例: .claude → .claude/skills）も累積検査し、
+  # 親ディレクトリが symlink のパス指定も fail-closed で拒否する（自動解決側と同一関数で対称）
+  if ! assert_no_symlink_components "${LOCAL_SKILL_DIR}"; then
+    echo "エラー: LOCAL_SKILL_DIR の経路に symlink が含まれています。実体側のパスを指定してください: ${SYMLINK_COMPONENT} -> $(readlink "${SYMLINK_COMPONENT}")"
     exit 1
   fi
   if [[ ! -d "${LOCAL_SKILL_DIR}" ]]; then
@@ -56,27 +92,33 @@ if [[ -n "${LOCAL_SKILL_DIR:-}" ]]; then
     exit 1
   fi
 else
-  # 自動解決（両方存在する場合は中止して override を促す）
-  have_skills=0; have_agents=0
-  [[ -d "skills/${SKILL_NAME}" ]] && have_skills=1
-  [[ -d ".agents/skills/${SKILL_NAME}" ]] && have_agents=1
-  if [[ "${have_skills}" -eq 1 && "${have_agents}" -eq 1 ]]; then
-    echo "エラー: skills/${SKILL_NAME} と .agents/skills/${SKILL_NAME} の両方が存在します。"
-    echo "環境変数 LOCAL_SKILL_DIR にどちらかを指定して再実行してください（例: LOCAL_SKILL_DIR=.agents/skills/${SKILL_NAME}）。"
+  # 自動解決（複数存在する場合は中止して override を促す）
+  have_skills=0; have_agents=0; have_claude=0
+  # 各候補は経路の全要素（.claude 等の最上位親を含む）が実体の場合のみ数える。
+  # symlink 経由の候補は実体側候補で検出されるため数えず（重複カウント防止）、
+  # .claude 自体がリポジトリ外を指す symlink の場合も候補と数えない（fail-closed）
+  [[ -d "skills/${SKILL_NAME}" ]] && assert_no_symlink_components "skills/${SKILL_NAME}" && have_skills=1
+  [[ -d ".agents/skills/${SKILL_NAME}" ]] && assert_no_symlink_components ".agents/skills/${SKILL_NAME}" && have_agents=1
+  [[ -d ".claude/skills/${SKILL_NAME}" ]] && assert_no_symlink_components ".claude/skills/${SKILL_NAME}" && have_claude=1
+  if (( have_skills + have_agents + have_claude > 1 )); then
+    echo "エラー: ${SKILL_NAME} の実体が skills/ / .agents/skills/ / .claude/skills/ の複数に存在します。"
+    echo "環境変数 LOCAL_SKILL_DIR にどれかを指定して再実行してください（例: LOCAL_SKILL_DIR=.agents/skills/${SKILL_NAME}）。"
     exit 1
   elif [[ "${have_skills}" -eq 1 ]]; then
     LOCAL_SKILL_DIR="skills/${SKILL_NAME}"
   elif [[ "${have_agents}" -eq 1 ]]; then
     LOCAL_SKILL_DIR=".agents/skills/${SKILL_NAME}"
+  elif [[ "${have_claude}" -eq 1 ]]; then
+    LOCAL_SKILL_DIR=".claude/skills/${SKILL_NAME}"
   else
-    echo "エラー: ローカルスキルが見つかりません: skills/${SKILL_NAME} / .agents/skills/${SKILL_NAME}"
+    echo "エラー: ローカルスキルが見つかりません: skills/${SKILL_NAME} / .agents/skills/${SKILL_NAME} / .claude/skills/${SKILL_NAME}"
     exit 1
   fi
 fi
 ```
 
-引数が空の場合はパス解決に進まず、`skills/` と `.agents/skills/` の候補一覧を表示して終了します。Claude はその一覧をユーザーに提示し、スキル名を選んでもらってから再実行を促してください。後続の Step では `${LOCAL_SKILL_DIR}/` を使ってローカルパスを参照します。
-`skills/` と `.agents/skills/` の**両方にディレクトリが存在する場合は中止**し、環境変数 `LOCAL_SKILL_DIR` に改修対象のパス（`skills/<name>` か `.agents/skills/<name>` のいずれか）を指定して再実行するよう案内します（silently に `skills/` を優先しません）。環境変数 `LOCAL_SKILL_DIR` が設定済みの場合は、許可された2パスのいずれかであること・実在することを検証してから採用し、自動解決をスキップします。どちらにも存在しなければエラーで中止します。
+引数が空の場合はパス解決に進まず、`skills/`・`.agents/skills/`・`.claude/skills/`（実ディレクトリのみ。symlink は実体側の候補に現れるため除外）の候補一覧を表示して終了します。Claude はその一覧をユーザーに提示し、スキル名を選んでもらってから再実行を促してください。後続の Step では `${LOCAL_SKILL_DIR}/` を使ってローカルパスを参照します。
+`skills/`・`.agents/skills/`・`.claude/skills/`（実ディレクトリのみ。symlink は実体側でカウント）の**複数にディレクトリが存在する場合は中止**し、環境変数 `LOCAL_SKILL_DIR` に改修対象のパス（`skills/<name>`・`.agents/skills/<name>`・`.claude/skills/<name>` のいずれか）を指定して再実行するよう案内します（silently に `skills/` を優先しません）。環境変数 `LOCAL_SKILL_DIR` が設定済みの場合は、許可された3パスのいずれかであること・経路の全要素（中間の親ディレクトリ含む）が symlink でないこと・実在することを検証してから採用し、自動解決をスキップします。いずれにも存在しなければエラーで中止します。
 
 ### Step 2: upstream を特定する
 
@@ -211,7 +253,7 @@ fi
 # ルートへ cd し直す。LOCAL_SKILL_DIR は通常の変数代入では子プロセスへ継承されない
 # （export されていない）ため明示的に渡す。標準出力はそのまま表示しつつ変数へも捕捉する。
 cd "${ORIG_DIR}"
-SCRIPT_OUTPUT=$(LOCAL_SKILL_DIR="${LOCAL_SKILL_DIR}" "${CONTRIBUTE_SKILL_DIR}/script/skills-contribute.sh" "${SKILL_NAME}" "${REPO_SLUG}" | tee /dev/stderr)
+SCRIPT_OUTPUT=$(LOCAL_SKILL_DIR="${LOCAL_SKILL_DIR}" "${CONTRIBUTE_SKILL_DIR}/scripts/skills-contribute.sh" "${SKILL_NAME}" "${REPO_SLUG}" | tee /dev/stderr)
 
 # スクリプトが実際に使った作業 clone・upstream スキルパスを Step 6 以降の唯一の正として採用する。
 # 以下の参考コードで計算され得る UPSTREAM_SKILL_PATH はこの値で上書きする。
@@ -240,16 +282,31 @@ echo "デフォルトブランチ: ${DEFAULT_BRANCH:-main}"
 ```bash
 # upstream のスキル配置はクローンしたリポジトリのレイアウトで判定する
 # （skills-lock.json の skillPath はローカル install パスであり upstream の配置ではないため使わない）
-if [[ -d "skills/${SKILL_NAME}" ]]; then
+# 各候補は assert_no_symlink_components（Step 1 で定義した共通判定）で経路の全要素が
+# 実体の場合のみ採用する。clone 内に symlink（例: .claude がリポジトリ外を指す）が
+# 含まれていても、その経路をコピー先と数えず fail-closed で次候補へフォールバックする
+if [[ -d "skills/${SKILL_NAME}" ]] && assert_no_symlink_components "skills/${SKILL_NAME}"; then
   UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
-elif [[ -d ".agents/skills/${SKILL_NAME}" ]]; then
+elif [[ -d ".agents/skills/${SKILL_NAME}" ]] && assert_no_symlink_components ".agents/skills/${SKILL_NAME}"; then
   UPSTREAM_SKILL_PATH=".agents/skills/${SKILL_NAME}"
-elif [[ -d "skills" ]]; then
+elif [[ -d ".claude/skills/${SKILL_NAME}" ]] && assert_no_symlink_components ".claude/skills/${SKILL_NAME}"; then
+  # upstream が .claude/skills/ 配下に実体を置いている慣習（例: create-skill / create-agent）。
+  # .claude/skills/<name> は skills/<name> への symlink 慣習も併存するため、
+  # 経路のどこかが symlink の場合は採用しない
+  # （symlink の場合は解決先の実体が上の 2 分岐で検出される）
+  UPSTREAM_SKILL_PATH=".claude/skills/${SKILL_NAME}"
+elif [[ -d "skills" ]] && assert_no_symlink_components "skills"; then
   # upstream が skills/ 配下で公開している慣習
   UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
-elif [[ -d ".agents/skills" ]]; then
+elif [[ -d ".agents/skills" ]] && assert_no_symlink_components ".agents/skills"; then
   # upstream が .agents/skills/ 配下で公開している慣習
   UPSTREAM_SKILL_PATH=".agents/skills/${SKILL_NAME}"
+elif [[ -d ".claude/skills" ]] && assert_no_symlink_components ".claude/skills"; then
+  # upstream が .claude/skills/ を実体スキルルートとして公開している慣習。
+  # 新規スキル（upstream にまだ存在しない）は上の個別パス判定に掛からないため、
+  # 親ディレクトリの存在で判定する。.claude / .claude/skills が symlink の場合は
+  # 実体側ルートが上の skills/ / .agents/skills/ 分岐で検出されるため採用しない
+  UPSTREAM_SKILL_PATH=".claude/skills/${SKILL_NAME}"
 else
   echo "警告: upstream にスキルルートが見つかりません。skills/ を既定として新規追加します。"
   UPSTREAM_SKILL_PATH="skills/${SKILL_NAME}"
@@ -258,9 +315,9 @@ fi
 
 ```bash
 # 削除伝搬のための同期: cp -R は削除を反映しないため、宛先を消してからコピーする
-# 安全弁1: 削除対象が clone 内の想定スキルパス（2 形態のみ）であることを検証してから rm する
+# 安全弁1: 削除対象が clone 内の想定スキルパス（3 形態のみ）であることを検証してから rm する
 case "${UPSTREAM_SKILL_PATH}" in
-  "skills/${SKILL_NAME}"|".agents/skills/${SKILL_NAME}") ;;
+  "skills/${SKILL_NAME}"|".agents/skills/${SKILL_NAME}"|".claude/skills/${SKILL_NAME}") ;;
   *)
     echo "エラー: 想定外の UPSTREAM_SKILL_PATH です: ${UPSTREAM_SKILL_PATH}"
     exit 1
@@ -270,7 +327,7 @@ esac
 # 安全弁2: 実体パスでの symlink 境界検証（fail-closed）。安全弁1 の case allowlist は
 # 文字列形式のみの検証であり、clone 内の中間ディレクトリ（skills / .agents 等）が
 # 実行中に symlink へ差し替えられた場合には対応できないため、rm -rf の直前に
-# 以下を実体パスで再確認する（詳細な実装は script/skills-contribute.sh を参照）。
+# 以下を実体パスで再確認する（詳細な実装は scripts/skills-contribute.sh を参照）。
 #   (a) clone ルートから削除対象までの各中間パス要素が symlink でないこと
 #   (b) 削除対象の親ディレクトリの正規パス（pwd -P）が clone ルート配下であること
 #   (c) 検証と削除の間の TOCTOU を閉じるため、検証済みの親ディレクトリへ cd -P した
@@ -279,15 +336,10 @@ esac
 CLONE_ROOT="${WORKDIR}/upstream"
 DELETE_TARGET="${CLONE_ROOT}/${UPSTREAM_SKILL_PATH}"
 CLONE_ROOT_REAL="$(cd "${CLONE_ROOT}" && pwd -P)"
-check_dir="${CLONE_ROOT}"
-IFS='/' read -ra UPSTREAM_SKILL_PATH_PARTS <<< "${UPSTREAM_SKILL_PATH}"
-for part in "${UPSTREAM_SKILL_PATH_PARTS[@]}"; do
-  check_dir="${check_dir}/${part}"
-  if [[ -L "${check_dir}" ]]; then
-    echo "エラー: 削除対象の経路に symlink が含まれています: ${check_dir}"
-    exit 1
-  fi
-done
+if ! assert_no_symlink_components "${UPSTREAM_SKILL_PATH}" "${CLONE_ROOT}"; then
+  echo "エラー: 削除対象の経路に symlink が含まれています: ${SYMLINK_COMPONENT}"
+  exit 1
+fi
 DELETE_PARENT="$(dirname "${DELETE_TARGET}")"
 DELETE_LEAF="$(basename "${DELETE_TARGET}")"
 if [[ -d "${DELETE_PARENT}" ]]; then
@@ -310,7 +362,7 @@ mkdir -p "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
 cp -R "${ORIG_DIR}/${LOCAL_SKILL_DIR}/." "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}/"
 ```
 
-削除対象は必ず `${WORKDIR}/upstream/` 配下（clone 用の一時ディレクトリ）に閉じ、`UPSTREAM_SKILL_PATH` が `skills/<name>` か `.agents/skills/<name>` の 2 形態以外なら `rm -rf` の前に中止します。加えて中間パスの symlink 化・TOCTOU に対する実体パス検証を rm 直前に行います。新規スキル追加（宛先未存在）の場合も削除処理は無害にスキップされ、直後の `mkdir -p` で作成されます。
+削除対象は必ず `${WORKDIR}/upstream/` 配下（clone 用の一時ディレクトリ）に閉じ、`UPSTREAM_SKILL_PATH` が `skills/<name>`・`.agents/skills/<name>`・`.claude/skills/<name>` の 3 形態以外なら `rm -rf` の前に中止します。加えて中間パスの symlink 化・TOCTOU に対する実体パス検証を rm 直前に行います。新規スキル追加（宛先未存在）の場合も削除処理は無害にスキップされ、直後の `mkdir -p` で作成されます。
 
 ### Step 6: 差分を確認する
 
@@ -391,11 +443,11 @@ Draft PR を作成する場合は `--draft` を付けます（デフォルトは
 ## 注意事項
 
 - **SKILL_NAME は kebab-case のみ許可**：`..` のような値によるパストラバーサルを防ぐため、空判定の直後・パス解決の前に `^[a-z][a-z0-9-]+$` で検証する（security.md A03/A01）
-- **`skills/` と `.agents/skills/` の両方が存在する場合は中止**：silently に `skills/` を優先せず、環境変数 `LOCAL_SKILL_DIR` に改修対象パスを指定して再実行を求める。`LOCAL_SKILL_DIR` は `skills/<name>` か `.agents/skills/<name>` の2パスのみ受理し、任意パス指定によるパストラバーサルを防ぐ。Step 5 で本スキル自身（contribute-skill）の配置を解決する `CONTRIBUTE_SKILL_DIR` も同じ fail-closed 方針を取り、`skills/contribute-skill` と `.agents/skills/contribute-skill` の両方が存在する場合は silently に `skills/` を優先せず中止して環境変数 `CONTRIBUTE_SKILL_DIR` での指定を求める（LOCAL_SKILL_DIR とは非対称にしない）
+- **`skills/`・`.agents/skills/`・`.claude/skills/` の複数に実体が存在する場合は中止**：silently に `skills/` を優先せず、環境変数 `LOCAL_SKILL_DIR` に改修対象パスを指定して再実行を求める。`LOCAL_SKILL_DIR` は `skills/<name>`・`.agents/skills/<name>`・`.claude/skills/<name>` の3パスのみ受理し（末尾要素・中間の親ディレクトリのいずれかが symlink なら実体側パスの指定を要求）、任意パス指定によるパストラバーサルを防ぐ。Step 5 で本スキル自身（contribute-skill）の配置を解決する `CONTRIBUTE_SKILL_DIR` も同じ fail-closed 方針を取り、`skills/contribute-skill` と `.agents/skills/contribute-skill` の両方が存在する場合は silently に `skills/` を優先せず中止して環境変数 `CONTRIBUTE_SKILL_DIR` での指定を求める（LOCAL_SKILL_DIR とは非対称にしない）
 - **source が Fandhe-AI org 以外の場合は中止**：前方一致（`Fandhe-AI/*` 等）ではなく、正規化（`.git` 除去等）後の `OWNER/REPO` が `^Fandhe-AI/[A-Za-z0-9._-]+$` に完全一致するかで判定する。`../` によるパストラバーサル・クエリ・フラグメント・余剰パスセグメントを含む値、および repo 名が `.`／`..` になる値は中止し、意図しない外部リポジトリへの push を防ぐ
 - **セキュリティ問題が見つかった場合は中止**：修正後に再実行
-- **upstream の配置はクローンしたリポジトリのレイアウトで判定する**：`skills-lock.json` の `skillPath` はローカル install パス（例: `.agents/skills/github-docs/SKILL.md`）であり、upstream リポジトリ内の配置ではない。`skillPath` の dirname を `UPSTREAM_SKILL_PATH` に採用してはならない。判定順は `skills/<name>` の存在 → `.agents/skills/<name>` の存在 → スキルルート親ディレクトリ（`skills/` or `.agents/skills/`）の慣習 → 最終デフォルト `skills/`（より一般的な公開レイアウト）
-- **宛先は消してからコピーする（削除伝搬）**：`cp -R` は追加・上書きのみで削除を反映しないため、ローカルで削除したファイルが upstream 側に残存してしまう。`rm -rf` 前に `UPSTREAM_SKILL_PATH` が `skills/<name>` か `.agents/skills/<name>` のいずれかであることを case 文で検証し、それ以外の値なら中止する。加えて rm -rf 直前に実体パス（symlink 境界・clone ルート配下チェック、cd -P + 相対 rm による TOCTOU 対策）を再検証する。削除対象は必ず clone 用の一時ディレクトリ（`${WORKDIR}/upstream/`）配下のみに閉じ、それ以外のファイルには一切触れない。**Step 5 は必ず `${CONTRIBUTE_SKILL_DIR}/script/skills-contribute.sh`（本スキル自身の配置から別途解決したパス。貢献対象のパスである `LOCAL_SKILL_DIR` とは別物）経由で実行し、断片コマンドの個別打鍵で検証を省略しない**
+- **upstream の配置はクローンしたリポジトリのレイアウトで判定する**：`skills-lock.json` の `skillPath` はローカル install パス（例: `.agents/skills/github-docs/SKILL.md`）であり、upstream リポジトリ内の配置ではない。`skillPath` の dirname を `UPSTREAM_SKILL_PATH` に採用してはならない。判定順は `skills/<name>` の存在 → `.agents/skills/<name>` の存在 → `.claude/skills/<name>` の存在 → スキルルート親ディレクトリの慣習（`skills/` → `.agents/skills/` → `.claude/skills/` の順。新規スキルは個別パスが存在しないためこの親ディレクトリ判定で配置先が決まる）→ 最終デフォルト `skills/`（より一般的な公開レイアウト）。全候補で `assert_no_symlink_components` により経路の全要素（`.claude` 等の最上位親を含む）が symlink でない場合のみ採用し、`.claude` 自体がリポジトリ外を指す symlink でも外部内容が upstream へコピーされない（fail-closed。symlink 経由の実体は前段の実体側候補で検出される）
+- **宛先は消してからコピーする（削除伝搬）**：`cp -R` は追加・上書きのみで削除を反映しないため、ローカルで削除したファイルが upstream 側に残存してしまう。`rm -rf` 前に `UPSTREAM_SKILL_PATH` が `skills/<name>`・`.agents/skills/<name>`・`.claude/skills/<name>` のいずれかであることを case 文で検証し、それ以外の値なら中止する。加えて rm -rf 直前に実体パス（symlink 境界・clone ルート配下チェック、cd -P + 相対 rm による TOCTOU 対策）を再検証する。削除対象は必ず clone 用の一時ディレクトリ（`${WORKDIR}/upstream/`）配下のみに閉じ、それ以外のファイルには一切触れない。**Step 5 は必ず `${CONTRIBUTE_SKILL_DIR}/scripts/skills-contribute.sh`（本スキル自身の配置から別途解決したパス。貢献対象のパスである `LOCAL_SKILL_DIR` とは別物）経由で実行し、断片コマンドの個別打鍵で検証を省略しない**
 - **既に同名の branch がある場合**：秒単位スラッグで通常は衝突しないが、万一の場合はユーザーに確認
 
 ## sandbox 環境での実行

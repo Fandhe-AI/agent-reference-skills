@@ -190,4 +190,4 @@ git status --porcelain skills-lock.json
 
 - `contribute-skill` でスキル改修が upstream にマージされた後に本スキルを実行する運用を推奨
 - `create-commit` の Conventional Commits を踏襲（Step 8）
-- 実行可能コマンド集として `script/skills-lock-update.sh` を参照
+- 実行可能コマンド集として `scripts/skills-lock-update.sh` を参照
