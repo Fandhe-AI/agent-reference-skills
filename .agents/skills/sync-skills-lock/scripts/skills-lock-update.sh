@@ -2,10 +2,10 @@
 # skills-lock-update.sh — skills-lock.json の computedHash を npx skills add で更新する
 #
 # 使い方（リポジトリルートから実行）:
-#   skills/sync-skills-lock/script/skills-lock-update.sh <skill-name> <source-repo>
-#   （インストール先からは .agents/skills/sync-skills-lock/script/skills-lock-update.sh）
+#   skills/sync-skills-lock/scripts/skills-lock-update.sh <skill-name> <source-repo>
+#   （インストール先からは .agents/skills/sync-skills-lock/scripts/skills-lock-update.sh）
 # 例:
-#   skills/sync-skills-lock/script/skills-lock-update.sh github-docs Fandhe-AI/agent-reference-skills
+#   skills/sync-skills-lock/scripts/skills-lock-update.sh github-docs Fandhe-AI/agent-reference-skills
 #
 # このスクリプトは sync-skills-lock スキルが使用する実例コマンド集。
 # リポジトリルートから実行すること。
