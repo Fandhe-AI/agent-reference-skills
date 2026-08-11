@@ -12,26 +12,12 @@
 # 経路がなく（settings.json の env はセッション全体=subagent Bash 含めて共有）、hook が
 # 検証でき subagent が読めない鍵を持てないため、MAC/署名による偽造防止は実装不能）。
 #
-# したがって本 hook は subagent からのマージ系コマンドを deny する（例外は下記 carve-out の
-# 正規形 1 スペリングのみ）。間接実行（eval・base64 復元・変数間接呼び出し・コマンド置換
-# $(...)）や未知のスペリングは文字列照合では防げない。**実際にマージを止めるのは、
-# エージェント側（monitor / merge-exec）には新規マージ実行経路を一切開かない方針そのものと、
-# サーバー側の branch protection / ruleset（required checks・必須レビュー等）である**
-# （rust-ai-library PR #441 / agent-cli-skills PR #182 codex P0 / Issue #205）。
-# この hook は多層防御の一層（best-effort deny）にすぎず、依然として**承認境界ではない**。
-#
-# 【Issue #205: carve-out 追加後も grant 偽造 P0 が成立しない理由】
-#   1. host 発行 grant・hook の allow 照合経路は存在しない（偽造対象がない）。本 hook は
-#      引き続き認可を一切行わず、deny リストの縮小（carve-out）のみを追加した。
-#   2. carve-out が許すのはマージ実行ではなく「サーバー側要件が全て満たされたときに GitHub が
-#      マージする」予約（arm）である。仮に注入された subagent がこの正規形を実行しても、
-#      得られる結果は正規経路と同一の「サーバー側 branch protection を満たした場合のみの
-#      マージ」であり、red な CI・未達の必須レビューのまま PR をマージさせることはできない。
-#   3. 残存リスク: autoMerge: false（opt-out）ランで注入された subagent が carve-out の正規形を
-#      実行する可能性は、プロンプト禁止 + 本 hook の非 carve-out スペリング deny の best-effort
-#      でしか防げない（間接実行による hook 迂回は従来から原理的に防げず、carve-out による
-#      ワーストケースの悪化はない）。人間ゲートを要する運用では branch protection の非 author
-#      必須承認を設定すること（詳細は SKILL.md「自動マージの認可境界」節）。
+# したがって本 hook は subagent からのマージ系コマンドを**無条件 deny**する（例外なし）。
+# 間接実行（eval・base64 復元・変数間接呼び出し・コマンド置換 $(...)）や未知のスペリングは
+# 文字列照合では防げない。**実際にマージを止めるのは、この Workflow が『自動マージを行わない』
+# 方針そのもの（autoMerge を無条件 fail-closed 化し新規マージ経路を開かない）と、サーバ側の
+# branch protection（人間がマージする前提の運用推奨）である**（rust-ai-library PR #441 /
+# agent-cli-skills PR #182 codex P0）。この hook は多層防御の一層（best-effort deny）にすぎない。
 #
 # 呼び出し元の前提（契約）:
 #   - .claude/settings.json の hooks.PreToolUse（matcher: "Bash"）に登録されて実行される。
@@ -42,14 +28,11 @@
 #     「implement-issue-tree-merge-guard」を含める（多層防御のログ識別用。allow 経路・canary は
 #     撤去したため必須ではないが、ログ突き合わせのために残す）。
 #
-# 判定ポリシー（carve-out 1 件を除き deny 専用）:
-#   - carve-out（Issue #205）: 正規化済みコマンド全体が
-#       `gh pr merge <整数> --auto --squash`（この 1 スペリングに完全一致）の場合のみ許可
-#       （出力なし exit 0）。GitHub ネイティブ auto-merge の予約（arm）専用。
-#   - 上記以外の subagent（agent_id あり）からのマージ系スペリングは deny:
-#       gh pr merge（carve-out に一致しないあらゆる形）/ REST merge（pulls/<n>/merge・
-#       repos/<o>/<r>/merges）/ GraphQL merge（mergePullRequest / enablePullRequestAutoMerge /
-#       mergeBranch）/ gh pr review --approve / gh alias / gh extension
+# 判定ポリシー（allow 経路なし。deny 専用）:
+#   - subagent（agent_id あり）からのマージ系スペリングは無条件 deny:
+#       gh pr merge（あらゆる形）/ REST merge（pulls/<n>/merge・repos/<o>/<r>/merges）/
+#       GraphQL merge（mergePullRequest / enablePullRequestAutoMerge / mergeBranch）/
+#       gh pr review --approve / gh alias / gh extension
 #   - jq 不在・stdin パース失敗等の異常時 → deny（fail-closed）。ただし stdin に文字列
 #     "agent_id" が現れない入力（main スレッド）は jq 不在でも許可する
 #     （jq 不在環境で main スレッドをロックアウトしないための入口判定）
@@ -304,34 +287,9 @@ contains_subsequence() {
 # 理由はファイル冒頭のコメント参照）。
 all_nf=$(strip_flags "$tokenized")
 
-# --- carve-out: GitHub ネイティブ auto-merge の予約（arm）専用コマンド 1 スペリングのみ許可
-# （Issue #205）--------------------------------------------------------------------------
-# 正規化済みコマンド全体（norm、tokenized 化前）が「gh pr merge <整数> --auto --squash」の
-# 正規形に完全一致する場合に限り deny をスキップする。判定は norm 全体の**完全一致**
-# （^ ... $）で行い、部分一致は使わない: 本 hook はコマンド区切り（; & | && ||）による
-# セグメント分割を採用せず norm を単位として判定する設計（下の判定ポリシーコメント参照）の
-# ため、コマンド連結（`gh pr merge 1 --auto --squash; rm -rf /` 等）や追加フラグ
-# （`--admin` 等）・フラグ順変更を含む形は完全一致に失敗し、通常どおり下の deny へ落ちる。
-# この carve-out は「マージ実行の許可」ではなく「サーバー側へのマージ予約（arm）の許可」に
-# すぎない。`--auto` 付きの `gh pr merge` は実行してもマージを即座には成立させず、GitHub
-# サーバー側の branch protection / ruleset（required checks 全 green・必須レビュー等）を
-# 満たしたときにのみ GitHub がマージを実行する。したがって carve-out を通しても、red な CI・
-# 未達の必須レビューのまま PR がマージされることはない（実マージの認可はサーバー側が担う。
-# SKILL.md「自動マージの認可境界」節参照）。
-# 残存リスク: opt-out ラン（autoMerge: false）で注入された subagent がこの正規形を実行すると
-# 予約自体は成立してしまう（プロンプト禁止 + この carve-out 非対象の deny でしか防げない
-# best-effort。間接実行によるコマンド迂回は従来から原理的に防げず、carve-out によって
-# ワーストケースが悪化することはない — 予約が成立しても実マージはサーバー側要件を満たさない
-# 限り発生しないため）。人間ゲートを要する運用では branch protection に非 author の必須承認を
-# 設定すること（SKILL.md 参照）。
-if printf '%s' "$norm" | grep -qE '^ *gh pr merge [0-9]{1,10} --auto --squash *$'; then
-  exit 0
-fi
-
-# gh pr merge（あらゆる形。グローバルオプションの挟み込みで迂回不可）。上の carve-out に
-# 完全一致しない限り、allow 経路はない。
+# gh pr merge（あらゆる形。グローバルオプションの挟み込みで迂回不可）
 if contains_subsequence "$all_nf" gh pr merge; then
-  deny "subagent からの gh pr merge は禁止（arm 専用の正規形 gh pr merge <n> --auto --squash 以外は禁止。マージ自体は GitHub サーバー側の branch protection / ruleset が判定する）"
+  deny "subagent からの gh pr merge は禁止（この基盤では自動マージを行わない。マージは GitHub 上で人間が行う）"
 fi
 
 # gh api 経由のマージ（グローバルオプションの挟み込みで迂回不可）
