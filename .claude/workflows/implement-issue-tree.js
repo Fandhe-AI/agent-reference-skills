@@ -1,1 +1,1 @@
-../skills/implement-issue-tree/script/implement-issue-tree.js
+../skills/implement-issue-tree/scripts/implement-issue-tree.js
