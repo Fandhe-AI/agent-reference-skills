@@ -1,5 +1,5 @@
 {
-  "_comment": "implement-issue-tree workflow の args 例。parallel は 1〜8（省略時 3）。externalChecks は外部チェック App slug の配列（未指定 = 構成未確定、[] = 外部チェックなしを確定、[\"cursor\"] 等 = 指定 App を正とする）。autoMerge は boolean として受理されるが、クライアント側では値によらず自動マージ・arm を行わない（無条件 fail-closed）。auto-merge は消費リポのサーバー側 workflow（docs/implement-issue-tree/auto-merge-sample.yml）+ branch protection で実現する",
+  "_comment": "implement-issue-tree workflow の args 例。parallel は 1〜8（省略時 3）。externalChecks は外部チェック App slug の配列（未指定 = 構成未確定、[] = 外部チェックなしを確定、[\"cursor\"] 等 = 指定 App を正とする）。autoMerge は boolean として受理されるが、クライアント側では値によらず自動マージ・arm を行わない（無条件 fail-closed）。auto-merge は消費リポのサーバー側 workflow（upstream の docs/implement-issue-tree/auto-merge-sample.yml）+ branch protection で実現する",
   "_externalChecks": {
     "未指定": "構成が未確定。観測結果にかかわらず自動マージを停止し blocked で終端する",
     "[]": "「外部チェックを使用しない」と人間が確定。外部レビュー待機をスキップする",
@@ -7,7 +7,7 @@
   },
   "_autoMerge": {
     "未指定 / false": "自動マージは行われない（既定）。実装・push 前 Review・PR 作成・CI 監視・fix ループまでは自動で進み、PR はマージ可能状態の blocked で停止する（マージは GitHub 上で人間が行う）",
-    "true": "boolean として受理されるが、クライアント側では自動マージも auto-merge の予約（arm）も行わない（無条件 fail-closed。PR #182 codex P0 / PR #206 撤回）。挙動は false / 未指定と同一で、PR はマージ可能状態の blocked で停止する。auto-merge を使う場合はサーバー側 workflow（docs/implement-issue-tree/auto-merge-sample.yml）を配置し branch protection の required checks を設定する。監視中にサーバー側 auto-merge が PR をマージした場合は already-merged 経路で正常完了する",
+    "true": "boolean として受理されるが、クライアント側では自動マージも auto-merge の予約（arm）も行わない（無条件 fail-closed。PR #182 codex P0 / PR #206 撤回）。挙動は false / 未指定と同一で、PR はマージ可能状態の blocked で停止する。auto-merge を使う場合はサーバー側 workflow（upstream の docs/implement-issue-tree/auto-merge-sample.yml）を配置し branch protection の required checks を設定する。監視中にサーバー側 auto-merge が PR をマージした場合は already-merged 経路で正常完了する",
     "boolean 以外": "エラーで停止する（誤記を黙って読み替えない）"
   },
   "examples": [

@@ -94,7 +94,7 @@ const externalChecksInput = (() => {
 // PR を即時マージする「予約のみ」前提の虚偽（Bugbot High）が確認されたため全面撤回した（supersede）。
 // autoMerge 引数は downstream 設定がエラーにならないよう受理を続ける（true でもクライアント側では
 // arm もマージもしない）。auto-merge を使う場合は消費リポのサーバー側 GitHub Actions workflow
-// （docs/implement-issue-tree/auto-merge-sample.yml 参照）+ branch protection が予約・マージ判定を担い、本ワークフローは
+// （upstream の docs/implement-issue-tree/auto-merge-sample.yml 参照）+ branch protection が予約・マージ判定を担い、本ワークフローは
 // PR をマージ可能状態（blocked）まで進めて停止するだけである。監視中にサーバー側 auto-merge で
 // PR が MERGED になった場合は monitor の手順 1 が検出し already-merged 経路で正常完了する。
 // サーバー側を使わない場合、実マージは GitHub 上で人間が行う（branch protection の設定を推奨）。
@@ -2915,14 +2915,14 @@ if (externalChecksInput !== undefined) {
 // autoMerge の値によらず自動マージを行わない方針に変わったため、「autoMerge: true で再実行すれば
 // マージする」という旧文言は撤回する（true でもこの基盤ではマージしない）。
 const AUTO_MERGE_DISABLED_REASON =
-  '自動マージは無効（args.autoMerge が true でない。Issue #165）。PR はマージ可能状態のまま停止した。マージは GitHub 上で人間が行うか、サーバー側 auto-merge workflow（docs/implement-issue-tree/auto-merge-sample.yml）+ branch protection に委ねること'
+  '自動マージは無効（args.autoMerge が true でない。Issue #165）。PR はマージ可能状態のまま停止した。マージは GitHub 上で人間が行うか、サーバー側 auto-merge workflow（upstream の docs/implement-issue-tree/auto-merge-sample.yml）+ branch protection に委ねること'
 // autoMerge: true でもクライアント側では arm もマージも行わない理由（PR #182 codex P0: grant 偽造 /
 // PR #206 撤回: carve-out 認可欠陥 + precheck 自己申告 + --auto 即時マージ）。この実行基盤は agent
 // 単位の権限分離がなく、偽造不能なマージ認可・arm 認可を hook で検証できないため、クライアント側の
 // 自動マージ経路は一切開かない。auto-merge の実現は消費リポのサーバー側 GitHub Actions workflow
-// （docs/implement-issue-tree/auto-merge-sample.yml）+ branch protection へ委譲する。
+// （upstream の docs/implement-issue-tree/auto-merge-sample.yml）+ branch protection へ委譲する。
 const AUTO_MERGE_UNSUPPORTED_REASON =
-  '自動マージ（arm 含む）はこの実行基盤（agent 単位の権限分離がなく、偽造不能なマージ・arm 認可を hook で検証できない）では提供されない。PR はマージ可能状態で停止した。auto-merge を使う場合はサーバー側 workflow（docs/implement-issue-tree/auto-merge-sample.yml）+ branch protection に委ね、使わない場合はマージを GitHub 上で人間が行うこと'
+  '自動マージ（arm 含む）はこの実行基盤（agent 単位の権限分離がなく、偽造不能なマージ・arm 認可を hook で検証できない）では提供されない。PR はマージ可能状態で停止した。auto-merge を使う場合はサーバー側 workflow（upstream の docs/implement-issue-tree/auto-merge-sample.yml）+ branch protection に委ね、使わない場合はマージを GitHub 上で人間が行うこと'
   + '（対象ブランチに branch protection: 第三者=非 author 承認必須・dismiss stale・通常/force push 禁止・required checks を設定することを推奨）。'
   + '根拠: rust-ai-library PR #441 / agent-cli-skills PR #182 codex P0（grant 偽造）/ PR #206 撤回（carve-out 認可欠陥 codex P0・precheck 自己申告 codex P0・--auto 即時マージ Bugbot High）'
 // ラン開始時に自動マージの状態を確定ログへ残す（externalChecks の確定ログと同じ位置）。
@@ -5424,7 +5424,7 @@ if (!residualObserved) {
 //   branch-protection ランタイムゲートおよび PR #206 の precheck / arm / hook carve-out は撤去し、
 //   hook は deny 専用へ戻した。hookDenyOnly: true はその方針を返却値として明示する（レポート側で
 //   「クライアント側自動マージなし・PR はマージ可能状態で停止。マージは人間またはサーバー側
-//   auto-merge workflow（docs/implement-issue-tree/auto-merge-sample.yml）が行う」を案内する材料）。autoMergeRequested:true の
+//   auto-merge workflow（upstream の docs/implement-issue-tree/auto-merge-sample.yml）が行う」を案内する材料）。autoMergeRequested:true の
 //   ランの終端 note には AUTO_MERGE_UNSUPPORTED_REASON が記録される。
 // residualWorktrees（PR #588 codex P1）: 使い捨て worktree を削除しない設計の下でディスク枯渇を防ぐ
 //   残置上限ゲートの観測結果。observed: false はラン開始時の worktree 観測が成立しなかった（未確定）
