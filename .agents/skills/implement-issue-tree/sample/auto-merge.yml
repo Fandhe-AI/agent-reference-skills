@@ -1,0 +1,376 @@
+# implement-issue-tree 用サーバー側 auto-merge workflow のサンプル。
+#
+# 役割: implement-issue-tree のクライアント側（Workflow ランタイム上のエージェント）は
+# auto-merge の予約（arm）を一切行わない（PR #206 の hook carve-out + agent precheck 方式は
+# 認可欠陥・自己申告捏造・即時マージ前提の虚偽が確認され撤回済み）。auto-merge を使う場合は、
+# 本 workflow を消費リポジトリの .github/workflows/auto-merge.yml として配置し、
+# arm の実行をサーバー側（GitHub Actions）へ委譲する。
+#
+# 認可の考え方（PR #207 codex ラウンド2 P0 対応）:
+#   author / ブランチ命名 / Closes マーカーの一致は、いずれも PR 作成主体（共有 gh 認証を
+#   持つエージェント）が自ら満たせる「偽造可能な provenance」であり、認可根拠にならない。
+#   これらは arm 対象の**絞り込み（誤爆防止）にすぎない**。
+#   本 workflow の認可根拠は「PR 作成主体が生成できない信頼済みシグナル」= ベースブランチの
+#   branch protection / ruleset をサーバー側 API で**実測検証**することに置く。arm 実行前に
+#   次の 6 点がすべて構成済みであることを決定的に検証し、1 つでも欠ければ arm せず終了する
+#   （fail-closed。API 取得・解析失敗も arm しない）:
+#     G1. required status checks が 1 件以上構成されている
+#     G2. required approving review count >= 1 が構成されている
+#         （GitHub は PR author の自己承認をサーバー側で拒否するため、これが
+#         「PR 作成主体が生成できない非 author 承認」という偽造不能シグナルになる）
+#     G3. dismiss stale reviews（承認後の HEAD 更新で承認を失効させる）が有効である
+#     G5. required conversation resolution（レビュースレッド全解消の必須化）が有効である
+#         （PR #207 codex ラウンド4 P1 対応。これが無効だと、任意 check 1 件 + 承認 1 件で
+#         レビュースレッド未解消のまま即時マージが成立し得る。有効ならサーバー側が未解消
+#         スレッドのあるマージを拒否するため、arm しても解消まで待たされる。classic は
+#         required_conversation_resolution、ruleset は pull_request ルールの
+#         required_review_thread_resolution で判定し、無効・取得不能なら arm しない）
+#     G6. 下記 REQUIRED_EXTERNAL_CHECKS に列挙した外部レビュー App の「check context 名 +
+#         App ID」の組が、**すべて required status checks に App 束縛付きで含まれる**こと
+#         （PR #207 codex ラウンド4 P1 / ラウンド5 P1 + Bugbot Medium 対応。context 名の
+#         存在だけでは、同名 check を別 App や same-repo の Actions workflow が作成して
+#         偽装できるため、classic は `.checks[].app_id`、ruleset は `integration_id` との
+#         組を完全一致で検証する。App 束縛のない legacy `contexts` エントリや app_id /
+#         integration_id が null・欠落のエントリは充足根拠として受理しない。
+#         1 組でも欠ければ arm しない）
+#     G4. ベースブランチに適用される**全 ruleset の bypass_actors が 0 件**である
+#         （PR #207 codex ラウンド3 P0 対応。bypass actor（App・チーム・ロール等）が
+#         1 件でも設定されていると、その actor による merge は G1〜G3 の保護を迂回できる
+#         ため、G1〜G3 が true でも人間承認なしの即時マージが成立し得る。ruleset 詳細の
+#         取得・解析に失敗した場合も arm しない）。
+#         ruleset 詳細（GET /repos/{repo}/rulesets/{id}）の bypass_actors は
+#         Administration: read 権限がないと応答に含まれず、workflow の GITHUB_TOKEN
+#         （contents / pull-requests write のみ）では取得できない（PR #207 Bugbot High 対応。
+#         GITHUB_TOKEN のままでは推奨構成の ruleset 保護下で G4 が常に検証不能となり
+#         一切 arm されない）。そのため G4 の詳細取得**のみ**、Administration: read を持つ
+#         専用 token `secrets.AUTOMERGE_RULESET_TOKEN` で行う（下記「前提」3 参照）。
+#         token を要求するのは ruleset 由来の実効ルールが 1 件以上あるときのみ:
+#         ベースブランチに適用される ruleset が 0 件（classic branch protection のみで
+#         G1〜G3 充足）の場合、G4 は検証対象なしとして token 不要で通過する
+#         （PR #207 Bugbot Medium 対応）。ただし実効ルール API の取得自体に失敗した場合は
+#         「0 件」と区別して arm しない。ruleset が 1 件以上あるのに secret 未構成（空）の
+#         場合も G4 を検証不能とみなし arm しない（いずれも fail-closed）
+#   同じ理由から、classic branch protection は enforce_admins が有効な場合にのみ G1〜G3 の
+#   認可入力として採用する（無効だと管理者がその保護を迂回して直接マージできるため。
+#   無効なら classic 側は「保護なし」として扱い、ruleset 側のみで判定する）。
+#   この構造では、偽造 PR が仮に arm されても、サーバー側で非 author の人間承認と
+#   required checks が揃わない限りマージされず、人間の承認境界を迂回できない。arm は
+#   「承認とチェックが揃った時点で自動的にマージが完了する」利便性だけを担う。
+#
+# 前提（これらが未設定だと arm されない / arm 失敗になる）:
+#   1. リポジトリ設定で auto-merge を許可する（Settings → General → Allow auto-merge）
+#   2. base ブランチに branch protection / ruleset で上記 G1〜G3 と conversation resolution
+#      必須化（G5）を設定し、bypass actor を置かない（G4）。REQUIRED_EXTERNAL_CHECKS に
+#      列挙した外部 App の check context を、その App に束縛した形（App 指定付き required
+#      check。classic は app_id、ruleset は integration_id）で required status checks に
+#      含める（G6。App 指定なしの legacy contexts では G6 を充足できない）。
+#      classic を使う場合は enforce_admins も有効にする。
+#      注意: classic branch protection の読み取り API（GET /branches/{branch}/protection）は
+#      リポジトリ管理者権限を要求するため、workflow の GITHUB_TOKEN では読めないことがある。
+#      その場合 classic 側の実測は不成立となり arm されない（fail-closed）。**ruleset での
+#      構成を推奨**する（GET /rules/branches/{branch} は読み取り権限で実効ルールを取得できる）。
+#   3. （ruleset を 1 件以上適用する場合のみ）リポジトリ secret `AUTOMERGE_RULESET_TOKEN` に、
+#      ruleset 詳細を読める token を設定する
+#      （fine-grained PAT または GitHub App token。必要権限は **Administration: read のみ**。
+#      write 権限は不要 — arm 実行（gh pr merge --auto）は従来どおり workflow の
+#      GITHUB_TOKEN が行い、この token は G4 の読み取り検証にしか使わない権限分離構成）。
+#      ruleset が 1 件以上あるのに未構成（空）の場合は G4 が検証不能となり一切 arm されない。
+#      ruleset 0 件（classic のみ）の運用では本 secret は不要（fail-closed）。
+#
+# 絞り込み条件（認可根拠ではない。誤爆防止の対象限定のみ。3 条件の AND）:
+#   1. author が「implement-issue-tree の PR 作成専用の automation identity（GitHub App の
+#      bot / machine user）」に完全一致すること。`REPLACE_WITH_AUTOMATION_BOT_LOGIN` を
+#      `your-automation-bot[bot]` のような専用 bot login に置き換える。
+#      【重要】人間の個人アカウント（リポジトリ owner 含む）を指定してはならない。
+#      個人アカウントを指定すると、その人物が手作業で作る通常の PR まで命名規約に一致する
+#      だけで arm 対象になってしまう。専用 identity が未整備の場合は本 workflow を配置せず、
+#      人間マージ運用に留めること。
+#   2. head ブランチが implement-issue-tree の作業ブランチ形式
+#      `<type>/<イシュー番号>-<short-name>`（type は Conventional Commits の英小文字 type）に
+#      厳密一致すること。`if:` の prefix 判定は早期絞り込みで、確定判定は run 内の
+#      アンカー付き正規表現（`^<type>/<数字>-<slug>$`）が行う。
+#   3. PR 本文に implement-issue-tree 生成物のマーカー「Closes #<N>」（N はブランチ名の
+#      イシュー番号と同一）が行として存在すること。
+#
+# インジェクション対策（変更時も維持すること）:
+#   - PR タイトル・本文・ブランチ名・コメント等の未信頼テキストを `${{ }}` で run スクリプトへ
+#     展開しない。`${{ }}` で env へ渡すのはブランチ名・base ブランチ名・PR 番号（整数）・
+#     リポジトリ名のみで、いずれも env 経由でクォートして参照する。PR 本文はシェルへ一切
+#     展開せず、`gh pr view --json body --jq` の test() で真偽値だけを取り出して判定する。
+#     branch protection の判定も jq で真偽値のみ取り出し、API レスポンス本文をシェルへ
+#     コマンドとして展開しない。
+#   - トリガーは pull_request ではなく **pull_request_target** を使う（PR #207 Bugbot High 対応）。
+#     same-repo PR の pull_request イベントは **PR head 側の workflow ファイルを secrets 付きで
+#     実行する**ため、インジェクションされたエージェントが自 PR 内で本ファイルを書き換えるだけで
+#     AUTOMERGE_RULESET_TOKEN を窃取できてしまう。pull_request_target は base ブランチ側の
+#     workflow 定義で実行されるため、PR 内での workflow 改変が無効になり窃取経路が閉じる。
+#   - 【厳守】pull_request_target は secrets を持つ昇格コンテキストで動くため、本 workflow 内で
+#     PR head のコードを一切 checkout・実行してはならない（actions/checkout の追加禁止。
+#     使ってよいのは gh api / gh pr view の読み取り呼び出しと jq による真偽値判定のみ）。
+#
+# permissions は arm に必要な最小構成（contents: write は merge コミット作成、
+# pull-requests: write は auto-merge の有効化に必要）。AUTOMERGE_RULESET_TOKEN には
+# write 権限を一切要求しない（G4 の読み取り検証専用。arm は GITHUB_TOKEN が行う）。
+
+name: auto-merge
+
+# G6 の設定変数: implement-issue-tree の externalChecks で要求する外部レビュー App の
+# 「<check context 名>:<App ID>」の組（カンマ区切りで複数可）。App ID は check run を
+# 作成する GitHub App の数値 ID。context 名だけの検証では、同名 check を別 App や
+# same-repo の Actions workflow（github-actions App）が作成して偽装できるため、
+# context 名と App ID の組を required status checks の App 束縛
+# （classic は `.checks[].app_id`、ruleset は `integration_id`）と完全一致で検証する。
+# 既定例の 1210556 は Cursor Bugbot（cursor App）の App ID。自リポジトリでの実 ID は
+# 対象 App の check が付いた任意のコミットに対して次で確認できる:
+#   gh api "repos/<owner>/<repo>/commits/<sha>/check-runs" \
+#     --jq '.check_runs[] | {name, app_slug: .app.slug, app_id: .app.id}'
+# 列挙した組がすべて App 束縛付きで required status checks に存在しない限り arm しない
+# （fail-closed）。app_id / integration_id が null・欠落のエントリ（App 束縛のない
+# legacy `contexts` を含む）は充足根拠として受理しない。
+# 外部チェックを使わないリポジトリは空文字にできるが、その場合 G6 は検証対象なしとなり、
+# 外部レビュー（Cursor 等）の到着はサーバー側マージ条件で一切担保されない点に注意すること
+# （externalChecks 相当の担保を required checks で行わない運用の明示的な選択となる）。
+env:
+  REQUIRED_EXTERNAL_CHECKS: "Cursor Bugbot:1210556"
+
+# pull_request_target を採用する（base 側 workflow 定義で実行 = PR 内の workflow 改変が無効）。
+# head コードの checkout・実行は絶対に追加しないこと（上記インジェクション対策参照）。
+on:
+  pull_request_target:
+    types: [opened, reopened, ready_for_review]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  arm:
+    # author は implement-issue-tree 専用の automation identity（bot / machine user）のみ。
+    # 人間の個人アカウント（owner 含む）は指定禁止（通常 PR まで arm 対象になるため）。
+    # prefix 判定は早期絞り込みで、確定判定は下の Verify branch protection / provenance step が行う。
+    if: >-
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.user.login == 'REPLACE_WITH_AUTOMATION_BOT_LOGIN' &&
+      (
+        startsWith(github.head_ref, 'feat/') ||
+        startsWith(github.head_ref, 'fix/') ||
+        startsWith(github.head_ref, 'docs/') ||
+        startsWith(github.head_ref, 'refactor/') ||
+        startsWith(github.head_ref, 'test/') ||
+        startsWith(github.head_ref, 'chore/') ||
+        startsWith(github.head_ref, 'style/') ||
+        startsWith(github.head_ref, 'build/') ||
+        startsWith(github.head_ref, 'ci/') ||
+        startsWith(github.head_ref, 'perf/')
+      )
+    runs-on: ubuntu-latest
+    steps:
+      # 認可根拠 = branch protection の実測（G1〜G4）を先に検証し、通過した場合のみ
+      # 絞り込み（ブランチ名・本文マーカー）を確認して arm する。判定に使う値はすべて
+      # env 経由のクォート参照（ブランチ名・base ブランチ名・PR 番号・リポジトリ名）か
+      # jq で取り出した真偽値のみで、未信頼テキストをシェルコマンドとして展開しない。
+      # 条件を満たさない PR / 保護未構成のベースブランチでは arm せず正常終了する
+      # （fail-closed skip。workflow を失敗させない）。
+      - name: Verify branch protection and provenance, then arm auto-merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # G4 の ruleset 詳細取得専用（Administration: read のみ。write 不要）。
+          # 未構成なら G4 が検証不能となり arm しない（fail-closed）。
+          RULESET_TOKEN: ${{ secrets.AUTOMERGE_RULESET_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          # --- 認可ゲート: base ブランチの branch protection / ruleset を実測検証 ---
+          # classic branch protection（管理者権限がないと 403/404。その場合は {} として扱い、
+          # ruleset 側の実測のみで判定する）と、ruleset の実効ルール
+          # （GET /rules/branches/{branch}。classic を含まないため両方を取得して OR で判定）を
+          # 取得する。取得失敗・解析失敗はすべて「保護なし」= arm しない側へ倒す（fail-closed）。
+          classic=$(gh api "repos/${REPO}/branches/${BASE_REF}/protection" 2>/dev/null) \
+            || classic='{}'
+          # rules_fetch_ok は G4 で「ruleset 0 件」と「実効ルール API の取得失敗」を区別する
+          # フラグ。取得失敗を 0 件と同一視すると、classic のみで G1〜G3 を満たすベースブランチで
+          # ruleset の存在を確認できないまま arm し得るため、失敗時は arm しない（fail-closed）。
+          if rules=$(gh api "repos/${REPO}/rules/branches/${BASE_REF}" --paginate --slurp \
+            2>/dev/null); then
+            rules_fetch_ok=true
+          else
+            rules='[[]]'
+            rules_fetch_ok=false
+          fi
+          # classic は enforce_admins が有効な場合のみ G1〜G3 の認可入力として採用する
+          # （無効だと管理者がその保護を迂回して直接マージできるため。無効・取得失敗時は
+          # classic 側を「保護なし」に落とし、ruleset 側の実測のみで判定する）
+          enforce_ok=$(jq -n --argjson c "$classic" \
+            '($c.enforce_admins.enabled // false) == true' 2>/dev/null) || enforce_ok=false
+          if [ "$enforce_ok" != "true" ]; then
+            classic='{}'
+          fi
+          # G1: required status checks >= 1 件（classic か ruleset のいずれかで構成済み）
+          checks_ok=$(jq -n --argjson c "$classic" --argjson r "$rules" '
+            (($c.required_status_checks? // {})
+              | ((.checks // .contexts // []) | length) > 0)
+            or ($r | flatten | any(
+              .type == "required_status_checks"
+              and ((.parameters.required_status_checks // []) | length) > 0))
+          ' 2>/dev/null) || checks_ok=false
+          # G2: 非 author 必須承認 >= 1（GitHub は author の自己承認をサーバー側で拒否する）
+          reviews_ok=$(jq -n --argjson c "$classic" --argjson r "$rules" '
+            (($c.required_pull_request_reviews? // {})
+              | (.required_approving_review_count // 0) >= 1)
+            or ($r | flatten | any(
+              .type == "pull_request"
+              and (.parameters.required_approving_review_count // 0) >= 1))
+          ' 2>/dev/null) || reviews_ok=false
+          # G3: dismiss stale reviews（承認後の HEAD 更新で承認失効）が有効
+          dismiss_ok=$(jq -n --argjson c "$classic" --argjson r "$rules" '
+            (($c.required_pull_request_reviews? // {})
+              | .dismiss_stale_reviews == true)
+            or ($r | flatten | any(
+              .type == "pull_request"
+              and .parameters.dismiss_stale_reviews_on_push == true))
+          ' 2>/dev/null) || dismiss_ok=false
+          if [ "$checks_ok" != "true" ] || [ "$reviews_ok" != "true" ] \
+            || [ "$dismiss_ok" != "true" ]; then
+            echo "skip: base branch '${BASE_REF}' protection not verified" \
+              "(required_checks=${checks_ok}, non_author_approvals>=1=${reviews_ok}," \
+              "dismiss_stale=${dismiss_ok}). Not arming (fail-closed)."
+            exit 0
+          fi
+          # G5: required conversation resolution（レビュースレッド全解消の必須化）が有効で
+          # あること（PR #207 codex ラウンド4 P1 対応）。無効だと承認 + checks が揃った時点で
+          # レビュースレッド未解消のまま即時マージが成立し得る。有効ならサーバー側が未解消
+          # スレッドのあるマージを拒否するため、arm しても解消まで待たされる。classic は
+          # required_conversation_resolution、ruleset は pull_request ルールの
+          # required_review_thread_resolution で判定し、無効・取得不能・解析失敗は arm しない
+          # （fail-closed）。
+          conv_ok=$(jq -n --argjson c "$classic" --argjson r "$rules" '
+            (($c.required_conversation_resolution? // {}) | .enabled == true)
+            or ($r | flatten | any(
+              .type == "pull_request"
+              and .parameters.required_review_thread_resolution == true))
+          ' 2>/dev/null) || conv_ok=false
+          if [ "$conv_ok" != "true" ]; then
+            echo "skip: required conversation resolution is not enforced on base branch" \
+              "'${BASE_REF}' (conversation_resolution=${conv_ok}). Not arming (fail-closed)."
+            exit 0
+          fi
+          # G6: REQUIRED_EXTERNAL_CHECKS（workflow 冒頭の env。「<context>:<App ID>」の
+          # カンマ区切り）に列挙した各組が、classic / ruleset の required status checks に
+          # 「context 名 + App ID」の完全一致で**すべて**存在すること（PR #207 codex
+          # ラウンド4 P1 / ラウンド5 P1 + Bugbot Medium 対応）。context 名の存在だけでは
+          # 同名 check を別 App・same-repo Actions が作成して偽装できるため、App 束縛
+          # （classic は `.checks[].app_id`、ruleset は `integration_id`）を組で検証する。
+          # app_id / integration_id が null・欠落のエントリ（App 束縛のない legacy
+          # `contexts` を含む）は充足根拠から除外する。1 組でも欠ければ arm しない。
+          # 設定値の書式不正（`:<数値 App ID>` を欠く等）・抽出解析の失敗も arm しない
+          # （fail-closed）。空文字（外部チェック不使用の明示選択）のみ検証対象なしで通過。
+          required_pairs=$(jq -nc --argjson c "$classic" --argjson r "$rules" '
+            [
+              (($c.required_status_checks? // {}) | (.checks // [])
+                | map(select((.app_id | type) == "number")
+                  | {context: .context, app_id: .app_id})),
+              ($r | flatten
+                | map(select(.type == "required_status_checks")
+                  | (.parameters.required_status_checks // [])
+                  | map(select((.integration_id | type) == "number")
+                    | {context: .context, app_id: .integration_id}))
+                | flatten)
+            ] | flatten | map(select((.context | type) == "string")) | unique
+          ' 2>/dev/null) || required_pairs='null'
+          external_ok=$(jq -n --argjson req "$required_pairs" \
+            --arg ext "$REQUIRED_EXTERNAL_CHECKS" '
+            ($ext | split(",") | map(gsub("^\\s+|\\s+$"; ""))
+              | map(select(length > 0))) as $entries
+            | ($req | type) == "array"
+            and ($entries | all(test("^.+:[0-9]+$")))
+            and ($entries
+              | map(capture("^(?<ctx>.+):(?<id>[0-9]+)$")
+                | {context: .ctx, app_id: (.id | tonumber)})
+              | all(. as $want | any($req[]; . == $want)))
+          ' 2>/dev/null) || external_ok=false
+          if [ "$external_ok" != "true" ]; then
+            echo "skip: not all REQUIRED_EXTERNAL_CHECKS (${REQUIRED_EXTERNAL_CHECKS})" \
+              "context:app_id pairs are enforced app-bound in required status checks of" \
+              "base branch '${BASE_REF}'. Not arming (fail-closed)."
+            exit 0
+          fi
+          # G4: ベースブランチに適用される全 ruleset の bypass_actors が 0 件であること。
+          # まず ruleset の列挙が完全であること（G1〜G3 の判定に使った実効ルール全要素に
+          # 数値 ruleset_id があり、ルールが 1 件以上あるのに ID が 0 件という不整合がなく、
+          # 実効ルール API の取得自体が成功していること）を検証する。ID 欠落・非数値・
+          # 件数不整合・取得失敗・解析失敗はすべて arm しない側へ倒す（fail-closed）。
+          rules_total=$(jq 'flatten | length' <<<"$rules" 2>/dev/null) || rules_total=''
+          ids_json=$(jq -c '
+            flatten
+            | if all(.ruleset_id | type == "number")
+              then [.[].ruleset_id] | unique
+              else null end
+          ' <<<"$rules" 2>/dev/null) || ids_json='null'
+          ids_count=$(jq 'length' <<<"$ids_json" 2>/dev/null) || ids_count=''
+          if [ "$rules_fetch_ok" != "true" ] || [ "$ids_json" = "null" ] \
+            || [ -z "$rules_total" ] || [ -z "$ids_count" ] \
+            || { [ "$rules_total" -gt 0 ] && [ "$ids_count" -eq 0 ]; }; then
+            echo "skip: could not fully enumerate rulesets for base branch '${BASE_REF}'" \
+              "(fetch_ok=${rules_fetch_ok}, rules=${rules_total:-unknown}," \
+              "ruleset_ids=${ids_count:-unknown}). Not arming (fail-closed)."
+            exit 0
+          fi
+          if [ "$rules_total" -eq 0 ]; then
+            # ruleset 0 件（classic branch protection のみで G1〜G3 充足）なら G4 は検証対象
+            # なし = 空充足。RULESET_TOKEN を要求しない（PR #207 Bugbot Medium 対応。
+            # 列挙の完全性検証を通過済みなので「取得失敗による見かけの 0 件」はここに来ない）。
+            echo "G4: no rulesets apply to base branch '${BASE_REF}'" \
+              "(classic-only protection); nothing to verify. Proceeding."
+          else
+            # ruleset 詳細の bypass_actors は Administration: read がないと応答に含まれず、
+            # workflow の GITHUB_TOKEN では読めないため、詳細取得のみ専用 token
+            # AUTOMERGE_RULESET_TOKEN で行う（arm 実行は従来どおり GITHUB_TOKEN）。
+            # ruleset が 1 件以上あるのに secret 未構成（空）なら G4 は検証不能 =
+            # arm しない（fail-closed）。
+            if [ -z "$RULESET_TOKEN" ]; then
+              echo "skip: AUTOMERGE_RULESET_TOKEN 未構成のため G4 (ruleset bypass_actors) を" \
+                "検証できず arm しない (fail-closed)。Administration: read のみの" \
+                "fine-grained PAT / GitHub App token を secret に設定すること。"
+              exit 0
+            fi
+            # bypass actor（App・チーム・ロール等）が 1 件でも設定されていると、その actor
+            # による merge は G1〜G3 の保護を迂回できるため arm しない。各 ruleset 詳細の
+            # bypass_actors は「配列である」ことを型検証した上で空配列の場合のみ通過。
+            # 欠落・null・非配列・取得失敗（token の権限不足で bypass_actors が応答に
+            # 含まれない場合を含む）はすべて arm しない（fail-closed）。
+            # rid は上の jq が返した数値 ID のみ。取得は RULESET_TOKEN（read 専用）で行う。
+            ruleset_ids=$(jq -r '.[]' <<<"$ids_json")
+            for rid in $ruleset_ids; do
+              bypass_len=$(GH_TOKEN="$RULESET_TOKEN" gh api "repos/${REPO}/rulesets/${rid}" --jq '
+                if (.bypass_actors | type) == "array"
+                then .bypass_actors | length
+                else "not-array" end
+              ' 2>/dev/null) || bypass_len=''
+              if [ "$bypass_len" != "0" ]; then
+                echo "skip: ruleset ${rid} has bypass actors or its details are unreadable" \
+                  "(bypass_actors=${bypass_len:-unreadable}). Not arming (fail-closed)." \
+                  "If unreadable, AUTOMERGE_RULESET_TOKEN の Administration: read 権限を確認。"
+                exit 0
+              fi
+            done
+          fi
+          # --- 絞り込み（認可根拠ではない。誤爆防止のみ）---
+          # 1. ブランチ名の厳密一致（implement-issue-tree の実装ブランチ命名規約に
+          #    アンカー付きで一致し、イシュー番号を抽出できること）
+          branch_re='^(feat|fix|docs|refactor|test|chore|style|build|ci|perf)/([0-9]+)-[0-9A-Za-z._-]+$'
+          if [[ ! "$HEAD_REF" =~ $branch_re ]]; then
+            echo "skip: head branch does not match implement-issue-tree convention: $HEAD_REF"
+            exit 0
+          fi
+          issue="${BASH_REMATCH[2]}"
+          # 2. PR 本文にワークフロー生成物マーカー「Closes #<ブランチ内イシュー番号>」が
+          #    行として存在すること（issue は上の正規表現で抽出済みの数字のみ）
+          marker_ok=$(gh pr view "$PR_NUMBER" --repo "$REPO" --json body \
+            --jq ".body | test(\"(^|\\n)Closes #${issue}([^0-9]|\$)\")")
+          if [ "$marker_ok" != "true" ]; then
+            echo "skip: PR body lacks marker 'Closes #${issue}'"
+            exit 0
+          fi
+          gh pr merge "$PR_NUMBER" --repo "$REPO" --auto --squash

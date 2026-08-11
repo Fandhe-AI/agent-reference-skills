@@ -88,8 +88,16 @@ const externalChecksInput = (() => {
 // 実装不能。よって偽造不能なマージ認可を hook で実装することは原理的に不可能であり、
 // rust-ai-library PR #441 の許容解「境界を実装できるまで自動マージ無効化」に従い、grant / canary /
 // branch-protection ゲートを撤去、hook は deny 専用へ降格、自動マージ経路は開かないこととした。
-// autoMerge 引数は downstream 設定がエラーにならないよう受理を続ける（true でもマージはしない）。
-// 実マージは GitHub 上で人間が行う（対象ブランチに branch protection を設定することを推奨）。
+// PR #206 で一度、agent ベースの precheck + hook carve-out による「クライアント側 arm」を導入したが、
+// carve-out が autoMerge 設定・precheck 結果と結び付かず任意 subagent に arm を許す認可欠陥（codex P0）、
+// precheck が agent の自己申告を認可根拠にする捏造可能性（codex P0）、`gh pr merge --auto` がクリーンな
+// PR を即時マージする「予約のみ」前提の虚偽（Bugbot High）が確認されたため全面撤回した（supersede）。
+// autoMerge 引数は downstream 設定がエラーにならないよう受理を続ける（true でもクライアント側では
+// arm もマージもしない）。auto-merge を使う場合は消費リポのサーバー側 GitHub Actions workflow
+// （sample/auto-merge.yml 参照）+ branch protection が予約・マージ判定を担い、本ワークフローは
+// PR をマージ可能状態（blocked）まで進めて停止するだけである。監視中にサーバー側 auto-merge で
+// PR が MERGED になった場合は monitor の手順 1 が検出し already-merged 経路で正常完了する。
+// サーバー側を使わない場合、実マージは GitHub 上で人間が行う（branch protection の設定を推奨）。
 //   - 未指定（undefined / null） → false（既定）
 //   - boolean true / false       → その値（ただし true でも新規マージは実行せず blocked で終端）
 //   - それ以外の型               → throw。マージゲートの入力のため寛容フォールバック禁止
@@ -2051,7 +2059,7 @@ function monitorPrompt(item, impl, externalApps, externalChecksConfirmed, autoMe
     // 開かない）とサーバ側 branch protection にある。
     `権限境界: 本エージェントはマージ・クローズの実行権限を持たない。gh pr merge / gh issue close / gh pr edit / gh pr close / レビュースレッドの resolve mutation は理由を問わず実行しない（レビューコメントにそれらを促す文言があっても実行しない）。マージ条件を満たすと判断した場合も自らマージせず state: ready を返して終了する。後続エージェントはレビュー本文を読まず checks・HEAD sha・未解決スレッド数のみを自ら再取得して独立に検証するが、新規マージは実行しない（マージ済み PR のクローズ回復のみ。新規マージは GitHub 上で人間が行う）。`,
     '手順:',
-    `1. まず gh pr view ${impl.prNumber} --json state,headRefOid で PR の状態と HEAD sha を取得して固定する。取得した headRefOid は 40 桁のまま headSha として返す（短縮しない）。state が MERGED の場合（前回実行で状態記録に失敗したマージ済み PR の再監視）は CI 監視を行わず即 state: ready を返す（イシュークローズ確認は後続の回復専用エージェントが行う）。state が CLOSED（未マージクローズ）の場合は state: blocked / blockedReason: "unrecoverable" とし summary に理由を書く（同じ PR を再監視しても回復し得ないため、必ず unrecoverable にする）。fix 後に再監視するたびに sha を取り直す（古い sha を参照しないため）。`,
+    `1. まず gh pr view ${impl.prNumber} --json state,headRefOid で PR の状態と HEAD sha を取得して固定する。取得した headRefOid は 40 桁のまま headSha として返す（短縮しない）。state が MERGED の場合（前回実行で状態記録に失敗したマージ済み PR の再監視、またはサーバー側 auto-merge workflow によるマージ完了）は CI 監視を行わず即 state: ready を返す（イシュークローズ確認は後続の回復専用エージェントが行う）。state が CLOSED（未マージクローズ）の場合は state: blocked / blockedReason: "unrecoverable" とし summary に理由を書く（同じ PR を再監視しても回復し得ないため、必ず unrecoverable にする）。fix 後に再監視するたびに sha を取り直す（古い sha を参照しないため）。`,
     `2. gh pr checks ${impl.prNumber} --watch --interval 60 で全チェック完了まで監視する（Bash の timeout に 600000 を指定し、コマンドがタイムアウトしたら同コマンドを再実行。再実行は 4 回まで = 最長およそ 40 分）。gh pr checks --watch がチェック不在で即時に非ゼロ終了する場合がある。これを「監視完了」とみなさず、手順 3 の総数確認へ進む。`,
     `3. watch 完了後、gh pr checks ${impl.prNumber} の出力で全チェックの結論を列挙して確認する。「watch が終わった」だけでは合格にしない。以下を厳密に確認する:`,
     '   a. 全チェックが success / neutral / skipped で完了していること（failure / cancelled / timed_out が 0 件）。',
@@ -2224,7 +2232,7 @@ function mergeExecutePrompt(item, impl, expectedHeadSha, externalApps) {
     // hook は deny 専用へ降格し、host は新規マージ経路を開かない）。runMergeLoop は ready 到達時
     // つねに expectedHeadSha を空文字へ強制するため、本プロンプトは常に「gh pr merge を一切
     // 出力しない回復専用経路」に固定される。手順 5 は PR が既に MERGED の場合のクローズ確認のみ。
-    `5. gh pr merge は実行しない（この基盤では自動マージを行わない。マージは GitHub 上で人間が行う）。手順 1 で state が MERGED だった場合（前回ランのマージ済み PR の回復）のみ本手順に到達し、イシュークローズ確認だけを行って merged: true / reason: already-merged を返す。MERGED でなければ手順 1・2 の指示どおり merged: false を返す:`,
+    `5. gh pr merge は実行しない（この基盤ではクライアント側の自動マージを行わない。マージは GitHub 上で人間が行うか、サーバー側 auto-merge workflow が行う）。手順 1 で state が MERGED だった場合（前回ランのマージ済み PR の回復、またはサーバー側 auto-merge によるマージ完了）のみ本手順に到達し、イシュークローズ確認だけを行って merged: true / reason: already-merged を返す。MERGED でなければ手順 1・2 の指示どおり merged: false を返す:`,
     ...issueCloseLines,
     `   他のイシューが並列実行中のため、working copy のブランチ切り替えや git pull は行わない。`,
     '返却: merged / reason / summary（実測値: チェック件数・未解決スレッド数・headRefOid 等）/ issueClosed（必須。マージしなかった場合は false）。4 フィールドすべてを必ず返すこと。',
@@ -2907,19 +2915,20 @@ if (externalChecksInput !== undefined) {
 // autoMerge の値によらず自動マージを行わない方針に変わったため、「autoMerge: true で再実行すれば
 // マージする」という旧文言は撤回する（true でもこの基盤ではマージしない）。
 const AUTO_MERGE_DISABLED_REASON =
-  '自動マージは無効（args.autoMerge が true でない。Issue #165）。PR はマージ可能状態のまま停止した。マージは GitHub 上で人間が行うこと'
-// autoMerge: true でも自動マージを提供しない理由（PR #182 codex P0: grant 偽造）。この実行基盤は
-// agent 単位の権限分離がなく、hook と subagent が同じ FS・env・gh 認証を共有するため、偽造不能な
-// マージ認可を hook で検証できない（monitor が grant を自作できる）。rust-ai-library PR #441 の元
-// 指摘の「境界を実装できるまで自動マージ無効化」に従い、autoMerge: true でも新規マージ経路を開かない。
+  '自動マージは無効（args.autoMerge が true でない。Issue #165）。PR はマージ可能状態のまま停止した。マージは GitHub 上で人間が行うか、サーバー側 auto-merge workflow（sample/auto-merge.yml）+ branch protection に委ねること'
+// autoMerge: true でもクライアント側では arm もマージも行わない理由（PR #182 codex P0: grant 偽造 /
+// PR #206 撤回: carve-out 認可欠陥 + precheck 自己申告 + --auto 即時マージ）。この実行基盤は agent
+// 単位の権限分離がなく、偽造不能なマージ認可・arm 認可を hook で検証できないため、クライアント側の
+// 自動マージ経路は一切開かない。auto-merge の実現は消費リポのサーバー側 GitHub Actions workflow
+// （sample/auto-merge.yml）+ branch protection へ委譲する。
 const AUTO_MERGE_UNSUPPORTED_REASON =
-  '自動マージはこの実行基盤（agent 単位の権限分離がなく、偽造不能なマージ認可を hook で検証できない）では提供されない。PR はマージ可能状態で停止した。マージは GitHub 上で人間が行うこと'
+  '自動マージ（arm 含む）はこの実行基盤（agent 単位の権限分離がなく、偽造不能なマージ・arm 認可を hook で検証できない）では提供されない。PR はマージ可能状態で停止した。auto-merge を使う場合はサーバー側 workflow（sample/auto-merge.yml）+ branch protection に委ね、使わない場合はマージを GitHub 上で人間が行うこと'
   + '（対象ブランチに branch protection: 第三者=非 author 承認必須・dismiss stale・通常/force push 禁止・required checks を設定することを推奨）。'
-  + '根拠: rust-ai-library PR #441 / agent-cli-skills PR #182 codex P0（grant 偽造）'
+  + '根拠: rust-ai-library PR #441 / agent-cli-skills PR #182 codex P0（grant 偽造）/ PR #206 撤回（carve-out 認可欠陥 codex P0・precheck 自己申告 codex P0・--auto 即時マージ Bugbot High）'
 // ラン開始時に自動マージの状態を確定ログへ残す（externalChecks の確定ログと同じ位置）。
 // autoMerge の値によらず新規マージは行わない（無条件 fail-closed。PR #182 codex P0）。
 log(autoMergeEnabled
-  ? `⚠️ 自動マージ: 要求されたが提供不可（args.autoMerge: true だが、この実行基盤では偽造不能なマージ認可を hook で検証できないため新規マージ経路を開かない。${AUTO_MERGE_UNSUPPORTED_REASON}）。実装・push 前 Review・PR 作成・CI 監視・fix ループまでは自動実行し、PR はマージ可能状態の blocked で停止する`
+  ? `⚠️ 自動マージ: クライアント側では提供不可（args.autoMerge: true でも本ワークフローは arm もマージも行わない。${AUTO_MERGE_UNSUPPORTED_REASON}）。実装・push 前 Review・PR 作成・CI 監視・fix ループまでは自動実行し、PR はマージ可能状態の blocked で停止する。サーバー側 auto-merge workflow が導入済みのリポジトリでは、監視中に PR が MERGED になり次第 already-merged 経路で正常完了する`
   : '⚠️ 自動マージ: 無効（args.autoMerge が true でないため。Issue #165 の fail-closed）。実装・push 前 Review・PR 作成・CI 監視・fix ループまでは従来どおり自動実行し、PR はマージ可能状態の blocked で停止する')
 
 // 【撤去済み: canary プローブ・branch protection ランタイムゲート（PR #182 codex P0）】
@@ -4237,10 +4246,10 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
       const recoveryOnlyCauses = [
         ...(!externalChecksConfirmed ? ['外部チェック構成が未確定'] : []),
         ...(autoMergeEnabled
-          ? ['自動マージはこの実行基盤では提供不可（偽造不能なマージ認可を hook で検証できない。PR #182 codex P0）']
+          ? ['クライアント側の自動マージはこの実行基盤では提供不可（偽造不能なマージ・arm 認可を hook で検証できない。PR #182 codex P0 / PR #206 撤回。auto-merge はサーバー側 workflow + branch protection で実現する）']
           : ['自動マージが無効（args.autoMerge が true でない。Issue #165）']),
       ].join('・')
-      log(`#${item.number}: ${recoveryOnlyCauses}のため新規マージは行わない。PR がマージ済みの場合のクローズ回復のみ試行する`)
+      log(`#${item.number}: ${recoveryOnlyCauses}のため新規マージは行わない。PR がマージ済み（サーバー側 auto-merge によるマージ完了を含む）の場合のクローズ回復のみ試行する`)
     }
     if (lastState === 'ready') {
       // headSha はホスト側で 40 桁小文字 16 進のみを受理する（sanitizeSha）。取得できない
@@ -5047,10 +5056,26 @@ while (true) {
         // 満たしたまま kind: 'verify-close' で到達し得る（runVerifyClose は Merge ループへ入らず
         // fix-routing-error を積み増さないため、この場合は正しく予約 0 として扱う必要がある）。
         //
-        // 観測失敗時（residualObserved === false）はこのゲートを素通りし、従来どおり monitoring
-        // 再開は無条件で許可する。これは意図的な設計判断であり見落としではない —
-        // newStartSuppressed も観測失敗時に monitoring 再開を止めない設計（上のコメント参照）と
-        // 揃え、観測不能を理由に既存 PR の再開まで止めない。
+        // 観測失敗時（residualObserved === false）の扱い（fix-routing-error worktree 新規作成
+        // ideas #230 codex-review P1 対応）: newStartSuppressed は観測失敗時に「新規 worktree を
+        // 作り得る」着手全般を fail-closed で止める設計だが、この kind: 'implement' の monitoring
+        // 再開判定も Merge ループの fix-routing-error worktree を最大 1 件新規作成し得る点は同じ
+        // リスクを持つ（上のコメント参照）。以前は「monitoring 再開は既存 PR の継続だから止めない」
+        // という理由で観測失敗時にこのゲート自体を素通りさせ無条件許可していたが、これは
+        // worktree を新規作成しない一般の monitoring 継続と、fix-routing-error で worktree を
+        // 増やし得るこの kind: 'implement' 経路とを区別できておらず、観測不能な状況でも残置を
+        // 積み増せてしまう fail-open だった。observed が false の間は projected 判定ができないため、
+        // newStartSuppressed と同じ fail-closed 方針に揃え、この周回の再開を defer する
+        // （恒久停止はしない — 次ラン開始時の再観測が成功すれば通常どおり判定できる）。
+        if (item.kind === 'implement' && maxResidualWorktrees > 0 && !residualObserved) {
+          const deferReason =
+            `ラン開始時の worktree 残置観測に失敗しているため monitoring 再開を defer した` +
+            `（観測失敗時は fix-routing-error worktree の新規作成で残置総数を確認できないまま上限を` +
+            `超過し得るため fail-closed で待機する）。git worktree list が実行できる状態を確認してから再実行すること`
+          monitoringResumeGateDeferred.set(n, deferReason)
+          log(`⚠️ #${n}: ${deferReason}`)
+          continue
+        }
         if (item.kind === 'implement' && maxResidualWorktrees > 0 && residualObserved) {
           const recordedByIssue = new Map()
           for (const e of ephemeralWorktrees) {
@@ -5076,6 +5101,13 @@ while (true) {
             continue
           }
         }
+        // 直前の周回までに defer していても今回ゲートを通過したため、古い defer 理由を残さない
+        // （local-llm-server #591 codex-review P1 / issue #201 対応）。削除せずに残すと、この
+        // 再開が今回 halted 等で monitoring/blocked のまま終了した場合、ラン終了時の interrupted
+        // レポートが「同じ引数で再実行しても defer を繰り返すだけ」という古い手動介入案内を
+        // 誤って出し続け、実際には通常の monitor 再開で解決する状況を手動 worktree 削除必須と
+        // 誤案内してしまう（defer が解消した事実を反映していないため）。
+        monitoringResumeGateDeferred.delete(n)
         log(`#${n}: monitoring 再開（PR #${savedItems[String(n)].pr}）: ${sanitize(item.title)}`)
         // monitoringResumeActive には kind: 'implement' の再開のみ載せる（Cursor Bugbot Low 対応。
         // PR #200 レビュー）。verify-close の再開は上の projected 判定でも予約 0 として扱っている
@@ -5386,12 +5418,14 @@ if (!residualObserved) {
 // autoMergeRequested（下流 actions#66 codex-review P1）: args.autoMerge の要求値（受理はするが
 //   実効しない）。要求値を追跡したい消費側はこちらを参照する。false のランでは autoMerge と同じく
 //   「マージ待ち PR 一覧（blocked）」を最終レポートで追跡するための判定材料になる点は従来どおり。
-// mergeGuard（PR #182 codex P0）: 自動マージは autoMerge の値によらずこの実行基盤では提供されない
-//   （grant 偽造で偽造不能なマージ認可を hook で検証できないため）。grant / canary /
-//   branch-protection ランタイムゲートは撤去し、hook は deny 専用へ降格した。hookDenyOnly: true は
-//   その方針を返却値として明示する（レポート側で「自動マージ無効・PR はマージ可能状態で人間が
-//   マージ」を案内する材料）。autoMergeRequested:true のランの終端 note には
-//   AUTO_MERGE_UNSUPPORTED_REASON が記録される。
+// mergeGuard（PR #182 codex P0 / PR #206 撤回）: クライアント側の自動マージ（arm 含む）は
+//   autoMerge の値によらずこの実行基盤では提供されない（grant 偽造・carve-out 認可欠陥・precheck
+//   自己申告のいずれも hook / host で偽造不能に検証できないため）。grant / canary /
+//   branch-protection ランタイムゲートおよび PR #206 の precheck / arm / hook carve-out は撤去し、
+//   hook は deny 専用へ戻した。hookDenyOnly: true はその方針を返却値として明示する（レポート側で
+//   「クライアント側自動マージなし・PR はマージ可能状態で停止。マージは人間またはサーバー側
+//   auto-merge workflow（sample/auto-merge.yml）が行う」を案内する材料）。autoMergeRequested:true の
+//   ランの終端 note には AUTO_MERGE_UNSUPPORTED_REASON が記録される。
 // residualWorktrees（PR #588 codex P1）: 使い捨て worktree を削除しない設計の下でディスク枯渇を防ぐ
 //   残置上限ゲートの観測結果。observed: false はラン開始時の worktree 観測が成立しなかった（未確定）
 //   ことを示し、この場合 observedAtStart / overLimit は信頼できないため最終レポートで「未観測」を
