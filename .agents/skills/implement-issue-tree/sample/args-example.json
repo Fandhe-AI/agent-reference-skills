@@ -1,5 +1,5 @@
 {
-  "_comment": "implement-issue-tree workflow の args 例。parallel は 1〜8（省略時 3）。externalChecks は外部チェック App slug の配列（未指定 = 構成未確定、[] = 外部チェックなしを確定、[\"cursor\"] 等 = 指定 App を正とする）。autoMerge は boolean として受理されるが、この実行基盤では値によらず自動マージを行わない（無条件 fail-closed）",
+  "_comment": "implement-issue-tree workflow の args 例。parallel は 1〜8（省略時 3）。externalChecks は外部チェック App slug の配列（未指定 = 構成未確定、[] = 外部チェックなしを確定、[\"cursor\"] 等 = 指定 App を正とする）。autoMerge は boolean。true かつ externalChecks 明示確定 + repo の auto-merge 許可 + base ブランチの required checks 設定時は GitHub ネイティブ auto-merge を予約しマージまで自動完結する（Issue #205）。前提未達は fail-closed",
   "_externalChecks": {
     "未指定": "構成が未確定。観測結果にかかわらず自動マージを停止し blocked で終端する",
     "[]": "「外部チェックを使用しない」と人間が確定。外部レビュー待機をスキップする",
@@ -7,7 +7,8 @@
   },
   "_autoMerge": {
     "未指定 / false": "自動マージは行われない（既定）。実装・push 前 Review・PR 作成・CI 監視・fix ループまでは自動で進み、PR はマージ可能状態の blocked で停止する（マージは GitHub 上で人間が行う）",
-    "true": "boolean として受理されるが、この実行基盤では自動マージを行わない（無条件 fail-closed。PR #182 codex P0）。挙動は false / 未指定と同一で、PR はマージ可能状態の blocked で停止する。人間マージ前提の branch protection（必須レビュー等）の併用を推奨",
+    "true（前提達成時）": "PR 作成直後に GitHub ネイティブ auto-merge（gh pr merge --auto --squash）を予約する（Issue #205）。前提: externalChecks 明示確定 + repo の auto-merge 許可 + base ブランチの required checks 1 件以上。サーバー側 required checks green + 必須レビュー等の充足でマージまで自動完結する（実際のマージ判定・実行は GitHub サーバー側が行う）",
+    "true（前提未達時）": "arm されず false / 未指定と同一の挙動（fail-closed）。PR はマージ可能状態の blocked で停止する。人間マージ前提の branch protection（required checks・必須レビュー等）の設定を推奨",
     "boolean 以外": "エラーで停止する（誤記を黙って読み替えない）"
   },
   "examples": [
@@ -38,6 +39,10 @@
     {
       "description": "マージ条件を満たしたイシューは新規マージを実行せず、PR はマージ可能状態の blocked + pr 保持で停止する（再実行すると monitoring から再開してマージ条件を再判定する。マージ自体は GitHub 上で人間が行う。Issue #165）",
       "args": { "parent": 42, "externalChecks": ["cursor"] }
+    },
+    {
+      "description": "autoMerge: true を明示。前提（externalChecks 明示確定・repo の auto-merge 許可・base ブランチの required checks 設定）を満たせば GitHub ネイティブ auto-merge を予約しマージまで自動完結する（Issue #205）。前提未達なら fail-closed で人間マージ案内へフォールバック",
+      "args": { "parent": 42, "externalChecks": ["cursor"], "autoMerge": true }
     },
     {
       "description": "externalChecks を省略した場合。観測結果にかかわらずマージ直前に blocked で停止する（実装・PR 作成・CI までは進む）",
