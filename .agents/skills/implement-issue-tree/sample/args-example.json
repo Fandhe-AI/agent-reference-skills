@@ -1,17 +1,22 @@
 {
-  "_comment": "implement-issue-tree workflow の args 例。parallel は 1〜8（省略時 3）。externalChecks は外部チェック App slug の配列（未指定 = 構成未確定、[] = 外部チェックなしを確定、[\"cursor\"] 等 = 指定 App を正とする）",
+  "_comment": "implement-issue-tree workflow の args 例。parallel は 1〜8（省略時 3）。externalChecks は外部チェック App slug の配列（未指定 = 構成未確定、[] = 外部チェックなしを確定、[\"cursor\"] 等 = 指定 App を正とする）。autoMerge は boolean として受理されるが、この実行基盤では値によらず自動マージを行わない（無条件 fail-closed）",
   "_externalChecks": {
     "未指定": "構成が未確定。観測結果にかかわらず自動マージを停止し blocked で終端する",
     "[]": "「外部チェックを使用しない」と人間が確定。外部レビュー待機をスキップする",
     "[\"cursor\"]": "Cursor Bugbot 導入済み。HEAD sha に対する cursor[bot] レビュー到着をマージの必須条件とする"
   },
+  "_autoMerge": {
+    "未指定 / false": "自動マージは行われない（既定）。実装・push 前 Review・PR 作成・CI 監視・fix ループまでは自動で進み、PR はマージ可能状態の blocked で停止する（マージは GitHub 上で人間が行う）",
+    "true": "boolean として受理されるが、この実行基盤では自動マージを行わない（無条件 fail-closed。PR #182 codex P0）。挙動は false / 未指定と同一で、PR はマージ可能状態の blocked で停止する。人間マージ前提の branch protection（必須レビュー等）の併用を推奨",
+    "boolean 以外": "エラーで停止する（誤記を黙って読み替えない）"
+  },
   "examples": [
     {
-      "description": "親イシュー #42 の配下を main へ、並列度 3（既定）でマージ（Cursor Bugbot 導入済みリポ）",
+      "description": "親イシュー #42 の配下を main へ、並列度 3（既定）で実行（Cursor Bugbot 導入済みリポ。マージ可能状態まで自動で進み、マージは人間が行う）",
       "args": { "parent": 42, "externalChecks": ["cursor"] }
     },
     {
-      "description": "外部チェックを使用しないリポジトリ（GitHub Actions のみ）。[] を明示して外部レビュー待機をスキップ",
+      "description": "外部チェックを使用しないリポジトリ（GitHub Actions のみ）。[] を明示して外部レビュー待機をスキップする",
       "args": { "parent": 42, "externalChecks": [] }
     },
     {
@@ -19,7 +24,7 @@
       "args": { "parent": 42, "parallel": 4, "externalChecks": ["cursor"] }
     },
     {
-      "description": "親イシュー #100 の配下を develop ブランチへ、並列度 2 でマージ",
+      "description": "親イシュー #100 の配下を develop ブランチへ、並列度 2 で実行",
       "args": { "parent": 100, "branch": "develop", "parallel": 2, "externalChecks": ["cursor"] }
     },
     {
@@ -29,6 +34,10 @@
     {
       "description": "サブ親イシュー #200 だけを対象に部分実行（大規模ツリーの分割実行）",
       "args": { "parent": 200, "branch": "main", "parallel": 3, "externalChecks": ["cursor", "sonarcloud"] }
+    },
+    {
+      "description": "マージ条件を満たしたイシューは新規マージを実行せず、PR はマージ可能状態の blocked + pr 保持で停止する（再実行すると monitoring から再開してマージ条件を再判定する。マージ自体は GitHub 上で人間が行う。Issue #165）",
+      "args": { "parent": 42, "externalChecks": ["cursor"] }
     },
     {
       "description": "externalChecks を省略した場合。観測結果にかかわらずマージ直前に blocked で停止する（実装・PR 作成・CI までは進む）",
