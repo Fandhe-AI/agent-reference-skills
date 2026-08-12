@@ -31,6 +31,7 @@ init-claude [対象リポジトリのパス]
 - `gh` CLI がインストールされ、認証済みであること（`gh auth status` で確認）
 - 対象リポジトリで `git` が初期化済みであること
 - `npx` が使用できること（`npx skills add` によるスキル導入に使用）
+- `readlink` コマンドが使用できること（workflow js symlink の stale/dangling 判定に使用。`command -v readlink` で事前確認し、利用できない環境では該当処理を中断する）
 
 ## フロー
 
@@ -312,27 +313,104 @@ gh auth status
 # （issue が未作成なら gh auth status のみで前提確認とする）
 gh api "repos/<owner>/<repo>/issues/<既存issue番号>/sub_issues" 2>&1 | head -5
 
-# workflow js の参照確認
-ls -la <target-repo>/.claude/workflows/implement-issue-tree.js 2>/dev/null || \
-  echo "workflow js が存在しない"
+# workflow js の参照確認（-L で symlink か実体かを判定し、readlink でターゲットも
+# EXPECTED_TARGET と比較して stale（向き先が期待と異なる）も検出する）
+# readlink の存在を事前確認する。利用できない環境では空の CURRENT_TARGET により
+# 正常な symlink を stale と誤判定しうるため、その場合は判定自体を中断する
+if ! command -v readlink >/dev/null 2>&1; then
+  echo "エラー: readlink コマンドが見つからない。workflow js の stale/dangling 判定を中断する。readlink を導入するか、手動で ls -la <target-repo>/.claude/workflows/implement-issue-tree.js を確認する"
+else
+  EXPECTED_TARGET="../skills/implement-issue-tree/scripts/implement-issue-tree.js"
+  LINK="<target-repo>/.claude/workflows/implement-issue-tree.js"
+  if [ -L "$LINK" ]; then
+    CURRENT_TARGET="$(readlink "$LINK")"
+    echo "symlink 現在のターゲット: $CURRENT_TARGET"
+    if [ ! -e "$LINK" ]; then
+      echo "警告: dangling symlink（参照先が存在しない）"
+    elif [ "$CURRENT_TARGET" != "$EXPECTED_TARGET" ]; then
+      echo "警告: stale symlink（期待ターゲット $EXPECTED_TARGET と不一致）"
+    fi
+  elif [ -e "$LINK" ]; then
+    echo "実体ファイルとして存在する（symlink ではない）"
+  else
+    echo "workflow js が存在しない"
+  fi
+fi
 ```
 
-不足がある場合は以下の対処方法をユーザーに案内する。
+不足・stale・dangling のいずれかがある場合は以下の対処方法をユーザーに案内する。
 
-**workflow js が存在しない場合の配置方法:**
+**workflow js の配置・張り替え方法:**
 
 named workflow（`{name: "implement-issue-tree"}`）として呼ばない場合は `.claude/workflows/` への配置自体が不要で、Workflow ツールの `scriptPath` に `.claude/skills/implement-issue-tree/scripts/implement-issue-tree.js` を直接指定すればよい。
 
 named workflow として配置する場合は `cp` ではなく**相対 symlink** を使用する。`cp` で配置すると `npx skills add` による更新が named workflow に届かなくなる。
 
-```bash
-mkdir -p <target-repo>/.claude/workflows/
+symlink 配置は `readlink` で現在のターゲットを検証し、期待ターゲットと異なる場合（stale）・参照先が消失している場合（dangling）は張り替える。実体ファイル（非 symlink）は上書きしない。`readlink` が利用できない環境では stale 判定が正しく行えず（空の `CURRENT_TARGET` により正常な symlink を stale と誤判定しうる）、そのまま張り替え処理へ進むと意図せず既存 symlink を書き換える危険があるため、`command -v readlink` で事前確認し、利用できない場合は自動張り替えを中断してユーザーに手動対応を案内する。
 
-# .claude/workflows/ から見た相対パスで symlink を作成する
-# 既に symlink が存在する場合はそのままにする（実体ファイルを上書きしない）
-if [ ! -e "<target-repo>/.claude/workflows/implement-issue-tree.js" ]; then
-  ln -s ../skills/implement-issue-tree/scripts/implement-issue-tree.js \
-        <target-repo>/.claude/workflows/implement-issue-tree.js
+```bash
+if ! command -v readlink >/dev/null 2>&1; then
+  echo "エラー: readlink コマンドが見つからない。stale/dangling を正しく判定できないため workflow js の自動張り替えを中断する。readlink を導入するか、手動で symlink の張り替えを行う: ls -la <target-repo>/.claude/workflows/implement-issue-tree.js"
+else
+  EXPECTED_TARGET="../skills/implement-issue-tree/scripts/implement-issue-tree.js"
+  LINK="<target-repo>/.claude/workflows/implement-issue-tree.js"
+
+  if [ -L "$LINK" ]; then
+    # 既存 symlink: ターゲット不一致（stale）または参照先消失（dangling）なら張り替える
+    if [ "$(readlink "$LINK")" != "$EXPECTED_TARGET" ] || [ ! -e "$LINK" ]; then
+      if [ -d "$LINK" ]; then
+        # $LINK がディレクトリを指す symlink の場合、mv "$TMP_LINK" "$LINK" は
+        # リンク自体を置換せず参照先ディレクトリ内へ TMP_LINK を移動してしまい、
+        # 同名ファイルがあればユーザー資産を上書きし得る。安全のため張り替えを拒否する
+        echo "エラー: $LINK はディレクトリを指す symlink のため自動では張り替えない。内容を確認し、意図しない参照先であれば手動で削除してから再実行する: ls -la $LINK"
+      else
+        echo "張り替え前のターゲット: $(readlink "$LINK")"
+        # 新リンクを競合しない一時パスへ先に作成し、成功を確認してから mv で
+        # 既存リンクを置換する（先に rm すると mkdir/ln 失敗時に旧リンクが失われるため）。
+        # create 分岐と同様、過去の失敗で TMP_LINK が残存している場合は上書きせず案内する
+        TMP_LINK="<target-repo>/_/dotclaude/workflows/implement-issue-tree.js"
+        if [ -e "$TMP_LINK" ] || [ -L "$TMP_LINK" ]; then
+          echo "エラー: 過去の失敗などで一時リンク $TMP_LINK が残存している。内容を確認し、意図しない参照先でなければ削除してから再実行する: ls -la $TMP_LINK"
+        elif mkdir -p "$(dirname "$TMP_LINK")" && ln -s "$EXPECTED_TARGET" "$TMP_LINK"; then
+          if mv "$TMP_LINK" "$LINK"; then   # 既存 symlink はここで初めて置換される（旧リンクは直前まで生存）
+            rmdir <target-repo>/_/dotclaude/workflows 2>/dev/null
+            rmdir <target-repo>/_/dotclaude 2>/dev/null
+          else
+            echo "エラー: symlink の置換 (mv) に失敗。一時リンク $TMP_LINK が残存している可能性があるため、内容を確認し必要なら手動で削除してから再実行する: ls -la $TMP_LINK"
+          fi
+        else
+          echo "エラー: 新しい symlink の作成に失敗。既存の symlink は保持される"
+        fi
+      fi
+    fi
+  elif [ -e "$LINK" ]; then
+    # 実体ファイル: ユーザー資産の可能性があるため上書きせず警告のみ
+    echo "実体ファイルが存在するため symlink 化しない。symlink 化するか確認: ls -la $LINK"
+  else
+    # 不在: 新規作成（張り替え分岐と同様に、一時パスへ先に作成し mkdir/ln の成功を
+    # 確認してから mv する。過去の失敗で TMP_LINK が残存している場合は上書きせず案内する）
+    TMP_LINK="<target-repo>/_/dotclaude/workflows/implement-issue-tree.js"
+    if [ -e "$TMP_LINK" ] || [ -L "$TMP_LINK" ]; then
+      echo "エラー: 過去の失敗などで一時リンク $TMP_LINK が残存している。内容を確認し、意図しない参照先でなければ削除してから再実行する: ls -la $TMP_LINK"
+    elif mkdir -p "$(dirname "$TMP_LINK")" && ln -s "$EXPECTED_TARGET" "$TMP_LINK" && mkdir -p "$(dirname "$LINK")"; then
+      mv "$TMP_LINK" "$LINK"
+      rmdir <target-repo>/_/dotclaude/workflows 2>/dev/null
+      rmdir <target-repo>/_/dotclaude 2>/dev/null
+    else
+      echo "エラー: 新しい symlink の作成、または配置先ディレクトリの作成に失敗。$LINK は未作成のまま"
+    fi
+  fi
+
+  # 設置後チェック: symlink 不在（作成/置換失敗）と dangling（参照先未解決）を区別する
+  if [ -L "$LINK" ]; then
+    # symlink としては存在する場合のみ resolve 失敗（dangling）を判定する
+    [ -e "$LINK" ] || echo "警告: 張り替え後もなお dangling（期待ターゲット自体が未 vendored の可能性）。npx skills add で再取得を案内"
+  else
+    # symlink 自体が存在しない場合は create/replace 失敗（TMP_LINK 残骸等）が原因のため、
+    # npx skills add の再実行では復旧しない。上記のエラーログを確認して原因を解消してから
+    # 手動で ln -s するか再実行するよう案内する
+    echo "エラー: $LINK に symlink が作成されていない。上記エラーの原因（TMP_LINK 残存・mkdir/ln/mv 失敗等）を解消し、必要なら手動で ln -s $EXPECTED_TARGET $LINK を実行してから再確認する"
+  fi
 fi
 ```
 
@@ -358,7 +436,18 @@ ls <target-repo>/skills-lock.json
 
 # implement-issue-tree の前提確認
 gh auth status
-ls <target-repo>/.claude/workflows/implement-issue-tree.js 2>/dev/null || echo "workflow js: 未配置"
+
+# workflow js の symlink 検証（存在確認だけでなく、ターゲット一致・参照先解決も確認する）
+LINK="<target-repo>/.claude/workflows/implement-issue-tree.js"
+EXPECTED_TARGET="../skills/implement-issue-tree/scripts/implement-issue-tree.js"
+if ! command -v readlink >/dev/null 2>&1; then
+  echo "エラー: readlink コマンドが見つからない。symlink ターゲット検証を中断する"
+elif [ -L "$LINK" ]; then
+  echo "symlink ターゲット: $(readlink "$LINK")（期待値: $EXPECTED_TARGET）"
+  [ -e "$LINK" ] && echo "参照先: 解決OK" || echo "参照先: dangling（未解決）"
+else
+  echo "workflow js: 未配置または非 symlink"
+fi
 ```
 
 ## 注意事項
