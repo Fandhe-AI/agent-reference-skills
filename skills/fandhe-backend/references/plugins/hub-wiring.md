@@ -26,7 +26,7 @@ impl TenantGateConfig {
 
 impl RequestGate for TenantGate {
     fn name(&self) -> &'static str;
-    fn check(&self, head: &RequestHead) -> GateOutcome;
+    fn check(&self, head: &RequestHead, ctx: &GateContext) -> GateOutcome;
 }
 ```
 

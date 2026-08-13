@@ -2,6 +2,8 @@
 
 HTTP/1.1 リクエストライン・ヘッダの sans-IO パーサー。`parse_request_head` はソケット I/O を一切持たない純関数（`&[u8]` → 構造体）。body の読み取り・keep-alive 判定・`Content-Length` / `Transfer-Encoding` の意味解釈は責務外（[`body`](./body.md) が担う）。
 
+> v0.4.0 BREAKING: `RequestHead` の `method` / `target` フィールドが非公開化され、`method()` / `target()` アクセサ（いずれも `&str` 返却）経由でのみ取得する契約になった（issue #591）。`version` フィールドは引き続き `pub`。値の意味・検証内容に変更はない。`String` が必要な場合は `head.method().to_owned()` のように呼び出し側で変換する。
+
 ## Signature / Usage
 
 ```rust
@@ -14,13 +16,13 @@ pub enum HttpVersion {
 }
 
 pub struct RequestHead {
-    pub method: String,
-    pub target: String,
     pub version: HttpVersion,
-    // headers: Vec<(String, String)>（非公開）
+    // method / target / headers（非公開）
 }
 
 impl RequestHead {
+    pub fn method(&self) -> &str;
+    pub fn target(&self) -> &str;
     pub fn header(&self, name: &str) -> Option<&str>;
     pub fn headers(&self) -> impl Iterator<Item = (&str, &str)>;
     pub fn path(&self) -> &str;
@@ -57,8 +59,8 @@ let outcome = parse_request_head(buf).unwrap();
 | --- | --- | --- |
 | `MAX_HEADER_BYTES` | `usize` (16 KiB) | リクエストヘッド（リクエストライン + ヘッダ + 空行）の許容バイト数上限。超過は `ParseError::HeaderSectionTooLarge` |
 | `MAX_HEADER_COUNT` | `usize` (100) | 1 リクエストで許容するヘッダ本数上限。超過は `ParseError::TooManyHeaders` |
-| `RequestHead::method` | `String` | RFC 9110 tchar のみで構成される token として検証済み |
-| `RequestHead::target` | `String` | SP・制御文字を含まないことを検証済み（無正規化・非デコード） |
+| `RequestHead::method()` | `-> &str` | RFC 9110 tchar のみで構成される token として検証済み（v0.4.0 でフィールドからアクセサに変更、issue #591） |
+| `RequestHead::target()` | `-> &str` | SP・制御文字を含まないことを検証済み（無正規化・非デコード、v0.4.0 でフィールドからアクセサに変更、issue #591） |
 | `RequestHead::version` | `HttpVersion` | `Http10` / `Http11` のみ受理 |
 
 ## Notes

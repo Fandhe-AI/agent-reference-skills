@@ -4,9 +4,9 @@
 
 ```toml
 [dependencies]
-fandhe-backend-core = "0.3.0"
-fandhe-backend-http = "0.3.0"
-fandhe-backend-routes = "0.3.0"
+fandhe-backend-core = "0.4.0"
+fandhe-backend-http = "0.4.0"
+fandhe-backend-routes = "0.4.0"
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 ```
 

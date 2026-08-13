@@ -1,6 +1,6 @@
 # fandhe-frontend-pre-styled-ui API
 
-`fandhe-frontend-headless-ui` の上に、テーマトークン・variant API・静的CSS生成を重ねた2層構造の上層。リポジトリ main は106個の公開モジュール（`grep -c '^pub mod ' crates/pre-styled-ui/src/lib.rs` 実測値）を持つ。crates.io の最新公開版は v0.40.0（確認時点。以前の v0.5.0 時点からモジュール数が大きく更新されている）で、main との乖離は縮小済み。crates.io 版で実際に使えるモジュール・API は `https://docs.rs/fandhe-frontend-pre-styled-ui/<version>` で確認すること。
+`fandhe-frontend-headless-ui` の上に、テーマトークン・variant API・静的CSS生成を重ねた2層構造の上層。リポジトリ main は106個の公開モジュール（`grep -c '^pub mod ' crates/pre-styled-ui/src/lib.rs` 実測値）を持つ。crates.io の最新公開版は v0.40.0（2026-08-13 確認）で、公開モジュール数も106個（docs.rs のソース `pub mod` 行を実測、2026-08-13 確認）と main に一致する。crates.io 版で実際に使えるモジュール・API は `https://docs.rs/fandhe-frontend-pre-styled-ui/<version>` で確認すること。
 
 ## Signature / Usage
 
@@ -36,10 +36,11 @@ sheet.write_css_file(std::path::Path::new("static/ui.css")).unwrap();
 | 分類 | モジュール |
 | --- | --- |
 | 基盤 | `theme`（デザイントークン・ダークモード）、`css`、`recipe`（variant API）、`stylesheet` |
-| 単純styled部品（15） | button / badge / spinner / alert / callout / card / skeleton / image / icon / separator / highlight / visually_hidden / skip_nav / tag / kbd / code |
-| headlessラッパー（55+） | dialog / tabs / accordion / menu / select / popover / tooltip / switch / radio_group / avatar / checkbox / input / textarea / native_select / number_input / pin_input / password_input / slider / rating_group / segment_group / tags_input / editable / listbox / toggle / toggle_group / combobox / tree_view / json_tree_view / pagination / steps / breadcrumb / carousel / drawer / link / link_overlay / nav_list / action_bar / toolbar / menubar / navigation_menu / tab_nav / checkbox_group / toast / hover_card / toggle_tip / progress / clipboard / checkbox_card / radio_card / floating_panel / scroll_area / splitter / marquee / date_input / qr_code / download_trigger / file_upload / calendar / date_picker / timer / angle_slider / signature_pad / image_cropper |
+| 単純styled部品（16） | button / badge / spinner / alert / callout / card / skeleton / image / icon / separator / highlight / visually_hidden / skip_nav / tag / kbd / code |
+| headlessラッパー（64） | dialog / tabs / accordion / menu / select / popover / tooltip / switch / radio_group / avatar / checkbox / color_picker / input / textarea / native_select / number_input / pin_input / password_input / slider / rating_group / segment_group / tags_input / editable / listbox / toggle / toggle_group / combobox / tree_view / json_tree_view / pagination / steps / breadcrumb / carousel / drawer / link / link_overlay / nav_list / action_bar / toolbar / menubar / navigation_menu / tab_nav / checkbox_group / toast / hover_card / toggle_tip / progress / clipboard / checkbox_card / radio_card / floating_panel / scroll_area / splitter / marquee / date_input / qr_code / download_trigger / file_upload / calendar / date_picker / timer / angle_slider / signature_pad / image_cropper |
 | タイポグラフィ（8） | heading / text / em / mark / blockquote / list / quote / strong |
-| charts | 基盤（data/scale/svg）+ line_chart / area_chart / sparkline / bar_chart / bar_list / bar_segment / pie_chart / donut_chart / scatter_chart / radar_chart |
+| データ表示・その他（8） | color_swatch / data_list / empty_state / stat / status / table / timeline / tour |
+| charts（6） | 基盤 `charts`（data/scale/svg）+ line_chart / area_chart / sparkline / pie_chart / donut_chart（docs.rs `pub mod` 実測、2026-08-13 確認） |
 
 ## 代表的な部品 API
 
@@ -89,10 +90,10 @@ pub fn sparkline(props: &SparklineProps, attrs: Attributes) -> Result<Node, Char
 pub use fandhe_frontend_headless_ui;
 pub use fandhe_frontend_headless_ui::fandhe_frontend_core;
 pub use fandhe_frontend_headless_ui::{OpenState, Orientation};
-pub use fandhe_frontend_pre_styled_ui::fandhe_frontend_interactive::{Component, Hydrate, dispatch, /* ... */};
+pub use fandhe_frontend_headless_ui::fandhe_frontend_interactive;
 ```
 
-`tabs::Orientation`、`accordion::{OpenState, SingleSelectAction, MultiSelectAction}`、`dialog::{OpenState, DisclosureAction}`、`menu::{OpenState, DisclosureAction, CheckableAction, SingleSelectAction}`、`select::OpenState`、`combobox::OpenState` は選択的再エクスポート。popover / tooltip / tree_view / toggle_tip / action_bar / hover_card / menubar / json_tree_view / floating_panel / timer / navigation_menu / scroll_area / toolbar の13モジュールは glob 再エクスポート。
+crates.io v0.40.0（docs.rs のソース `pub use` 行 + 生成済み Re-exports セクションの双方で実測、2026-08-13 確認）では、上記4行（`fandhe_frontend_headless_ui` 本体・`fandhe_frontend_core`・`fandhe_frontend_interactive`・`OpenState`/`Orientation`）以外に crate ルートでの選択的・glob 再エクスポートは確認できなかった。`tabs::Orientation` 等の個別型が必要な場合はモジュールパスを明示する（例: `fandhe_frontend_pre_styled_ui::tabs::Orientation`）。
 
 ## Notes
 
@@ -103,7 +104,7 @@ pub use fandhe_frontend_pre_styled_ui::fandhe_frontend_interactive::{Component, 
 - `data-focus-visible` 存在属性 + wasm配線による付け外しで、キーボード操作時のみフォーカスリングを表示する（switch / radio_group / checkbox）
 - charts の `size` variant は `--fandhe-<scope>-height` custom property経由でplot高さを切り替え、`color-palette` は非提供（系列色は固定指定）
 - `raw_html()` の使用は `stylesheet::StyleSheet::style_element` 内1箇所に限定し、全パスに `#[expect(clippy::disallowed_methods)]` を付与
-- Theme トークン API は `push_*` 系（fail-closed、同名トークンは拒否・既定値の上書き不可）に加え、`upsert_color` / `upsert_space` / `upsert_typography` / `upsert_radius` / `upsert_shadow`（既存トークンを挿入順を保ったまま上書き、または無ければ追加。イシュー #1138、`crates/pre-styled-ui/src/theme.rs`、main では commit `2a81311` で着地済み）が利用できる。crates.io でも v0.40.0（確認時点の最新）に `Theme::upsert_*` が含まれることを docs.rs で確認済み
+- Theme トークン API は `push_*` 系（fail-closed、同名トークンは拒否・既定値の上書き不可）に加え、`upsert_color` / `upsert_space` / `upsert_typography` / `upsert_radius` / `upsert_shadow`（既存トークンを挿入順を保ったまま上書き、または無ければ追加。イシュー #1138、`crates/pre-styled-ui/src/theme.rs`、main では commit `2a81311` で着地済み）が利用できる。crates.io でも v0.40.0（2026-08-13 確認、最新安定版）に `Theme::upsert_*` が含まれることを docs.rs で確認済み
 
 ## Related
 
