@@ -39,7 +39,7 @@ use fandhe_backend_http::connection::read_request;
 let mut socket: &[u8] = b"GET / HTTP/1.1\r\nHost: example.com\r\n\r\n";
 let mut buf = RecvBuffer::new();
 let req = read_request(&mut socket, &mut buf).await.unwrap().unwrap();
-assert_eq!(req.head.method, "GET");
+assert_eq!(req.head.method(), "GET");
 assert!(req.body.is_empty());
 ```
 

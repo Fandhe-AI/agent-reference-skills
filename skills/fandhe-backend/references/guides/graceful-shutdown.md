@@ -43,6 +43,7 @@ curl -v http://127.0.0.1:3001/    # 200 応答
 - `shutdown` は `Future<Output = ()>` であれば何でもよい。シグナル源（Ctrl-C・SIGTERM・管理エンドポイント等）はコアで扱わず利用者が任意の Future として渡す設計（`tokio` の `signal` feature をコアの依存に持ち込まないための pay-for-what-you-use）
 - shutdown フラグ受信後に到着した WebSocket 等の Upgrade リクエストは委譲せず 503 で拒否する（grace 強制クローズの管理外となる detached セッションを増やさないため）
 - v0.3.0（#491/#493）で、shutdown 前に委譲済みの WebSocket セッションが grace 超過時の強制 abort 対象外だった既知の限界は解消済み。コアが世代キャンセルシグナル（最終 shutdown・rebind 世代 drain）を Upgrade 委譲済みの WS タスクへ配線し、close code 1001 の正常 Close ハンドシェイクと有界ドレイン（`WebSocketConfig::with_close_grace`、既定 10 秒）で終端する
+- v0.4.0（issue #518）で drain 中の idle keep-alive 接続（次リクエスト待ちで読み取りブロック中の接続）の扱いが公開契約化された: (a) drain 開始を理由に強制クローズしない（shutdown フラグを立てるのみで read 待ちは中断しない） (b) grace 期限内に到着した後続リクエストは拒否せず受理し完走を待つ（応答には `Connection: close` を付与）が、grace 超過時は上記 (3) の強制クローズが優先され中断され得る (c) Upgrade リクエストは例外として 503 で拒否する（(b) の対象外） (d) いずれの経路でも `shutdown_grace_period` + ε 以内に必ず閉じる（有界クローズのフェイルセーフ）
 - 稼働中の listener をダウンタイムなしで差し替える `BoundServer::rebind_handle()` / `RebindHandle::rebind(addr)`（#485）も同じ世代キャンセルシグナルの仕組みに乗る。rebind 時は旧世代の in-flight 接続・WS タスクが上記の有界ドレインで片付けられてから新 listener に切り替わる
 - accept エラー（`ECONNABORTED`・fd 枯渇等）は一過性として扱い、`run_until` を終了させず短い待機の後に accept を再試行する（1 件のエラーでリスナー全体が停止しない可用性設計）
 - `run()` は `run_until` への薄い委譲として残っており既存の `run()` 利用箇所は無変更のまま動作する。新規コードでは `run_until` の利用を推奨する

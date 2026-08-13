@@ -4,10 +4,10 @@
 
 ```toml
 [dependencies]
-fandhe-backend-core = { version = "0.3.0", features = ["websocket"] }
-fandhe-backend-http = "0.3.0"
-fandhe-backend-routes = "0.3.0"
-fandhe-backend-plugin-websocket = "0.3.0"
+fandhe-backend-core = { version = "0.4.0", features = ["websocket"] }
+fandhe-backend-http = "0.4.0"
+fandhe-backend-routes = "0.4.0"
+fandhe-backend-plugin-websocket = "0.4.0"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal"] }
 futures-util = { version = "0.3", default-features = false, features = ["std"] }
 ```

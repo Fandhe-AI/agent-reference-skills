@@ -37,6 +37,7 @@ bound.run_until(async {
 - shutdown_flag 受信後は `UpgradeHandler` がマッチする新規リクエストも 503 で拒否する
 - `run_until` の Future 自体が外部キャンセルされても in-flight 接続は abort されず、独立タスクとして完走する（`CancelSafeJoinSet` による）
 - v0.3.0（#491/#493）で解消: Upgrade 委譲済みの WebSocket タスクも、コアが配線した世代キャンセルシグナルにより shutdown 時に close code 1001 の正常 Close ハンドシェイクと有界ドレインで終端する。grace 超過時の強制 abort 対象外という既知の限界は撤廃された
+- v0.4.0（issue #518）で drain 中の idle keep-alive 接続（次リクエスト待ちで読み取りブロック中の接続）の扱いが公開契約化された: (a) drain 開始を理由に idle 接続を強制クローズしない（shutdown フラグを立てるのみで read 待ち自体は中断しない）。(b) grace 期限内に到着した後続リクエストは拒否せず受理し完走を待つ（応答には `Connection: close` を付与）が、grace 超過時は上記シーケンス 3) の強制 abort が優先され中断され得る。(c) `UpgradeHandler` がマッチする Upgrade リクエストは例外として 503 で拒否する。(d) 上記いずれの経路でも接続は `shutdown_grace_period` + ε 以内に必ず閉じる（有界クローズのフェイルセーフ）
 
 ## Related
 
