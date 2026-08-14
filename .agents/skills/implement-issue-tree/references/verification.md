@@ -27,8 +27,11 @@ Workflow の返却値（`done`・`failures`・`notStarted`）を確認し、`fai
 ```bash
 # 構文検証（このファイルはトップレベル await・トップレベル export を含む Workflow harness
 # 専用スクリプトのため、単純な node --check では harness 側の実行コンテキストを再現できず
-# 構文エラー扱いになる。async 関数でラップして export を除去したうえで検証する）
-sed 's/^export const meta/const meta/' scripts/implement-issue-tree.js > /tmp/iit-body.js
+# 構文エラー扱いになる。async 関数でラップしたうえで検証する。トップレベル export は
+# meta 以外にも parseExternalChecks・MERGE_EXEC_SCHEMA・MERGE_EXEC_VALID_REASONS・
+# classifyMergeExecDispatch・mergeExecutePrompt 等が存在し、関数本体の中に export を
+# 残すと node --check が構文エラーになるため、行頭 "export " を全件除去する）
+sed -E 's/^export //' scripts/implement-issue-tree.js > /tmp/iit-body.js
 { echo 'async function __wrap(){'; cat /tmp/iit-body.js; echo '}'; } > /tmp/iit-wrapped.mjs
 node --check /tmp/iit-wrapped.mjs
 
@@ -97,7 +100,7 @@ grep -n "monitoringResumeGateDeferred" scripts/implement-issue-tree.js
 
 ### merge-guard hook（deny 専用）・クライアント側自動マージ opt-in 経路の適用確認（PR #182 codex P0 / PR #206 撤回 / opt-in 再有効化）
 
-`scripts/merge-guard-hook.sh` または自動マージ経路を変更した場合、以下で「hook が deny 専用（allow 経路・carve-out なし）であること」と「クライアント側の実マージ経路は opt-in（`autoMerge: true` + `externalChecks` 確定）のときのみ G0 ゲート（サーバー側強制の実測）付きで開き、opt-out・`externalChecks` 未確定では回復専用（recoveryOnly）に固定されること。arm 経路（auto-merge の予約）は引き続き存在しないこと」を確認する:
+`scripts/merge-guard-hook.sh` または自動マージ経路を変更した場合、以下で「hook が deny 専用（allow 経路・carve-out なし）であること」と「クライアント側の実マージ経路は opt-in（`autoMerge: true` + `externalChecks` 確定 + 全 App の信頼済み context 宣言）のときのみ G0 ゲート（サーバー側強制の実測）付きで開き、opt-out・`externalChecks` 未確定・context 未宣言（slug のみの旧形式）では回復専用（recoveryOnly）に固定されること。arm 経路（auto-merge の予約）は引き続き存在しないこと」を確認する:
 
 ```bash
 # 1. hook の構文検証（shellcheck があれば併用）
@@ -114,8 +117,18 @@ grep -n "issueMergeGrant\|buildMergeCommand\|ensureMergeGuardActive\|ensureBranc
 # 4. boundaryNonce / ensureBoundaryNonceSeed は保持されていること（fix/state 用）
 grep -n "function boundaryNonce\|async function ensureBoundaryNonceSeed" scripts/implement-issue-tree.js
 
-# 5. クライアント側マージが opt-in（autoMerge:true + externalChecksConfirmed）のみで開くこと
-grep -n "const recoveryOnly = lastState === 'ready' && !(autoMergeEnabled && externalChecksConfirmed)" scripts/implement-issue-tree.js
+# 5. クライアント側マージが opt-in（autoMerge:true + externalChecksConfirmed + externalChecksContextsConfirmed）のみで開くこと
+grep -n "const recoveryOnly = lastState === 'ready' && !(autoMergeEnabled && externalChecksConfirmed && externalChecksContextsConfirmed)" scripts/implement-issue-tree.js
+
+# 5b. G0 の外部チェック照合が「宣言 context + App ID の組」の完全一致であること（ruleset 経路。classic 経路は G0 (ii) で非対応辞退するため照合式を持たない。
+#     下流 sync PR codex P0 変種 1 対応）と、手順 3 の合格判定対象チェック context の required 化照合
+#     （client-only チェックの fail-closed 停止。同変種 2 対応）が存在すること
+grep -nF 'select(.integration_id == $appid and .context == $ctx)' scripts/implement-issue-tree.js
+grep -n "classic-unsupported" scripts/implement-issue-tree.js
+grep -n "client-only" scripts/implement-issue-tree.js
+grep -n "issuer-unbound" scripts/implement-issue-tree.js
+grep -nF 'any(.n == $r.context and .a == $r.integration_id)' scripts/implement-issue-tree.js
+grep -n "externalChecksContextsConfirmed" scripts/implement-issue-tree.js
 
 # 6. PR #206 で撤回したクライアント側 arm の残骸がないこと（0 件。
 #    hook の carve-out 正規表現・js の precheck / arm シンボルのいずれも実行可能コードに存在しない）
@@ -123,5 +136,5 @@ grep -nE "autoMergePrecheck|autoMergeArmable|autoMergeArmPrompt|AUTO_MERGE_PRECH
 grep -vE '^\s*#' scripts/merge-guard-hook.sh | grep -nE -- "--auto --squash|carve" && echo "NG: hook carve-out 残骸あり" || echo "OK: hook carve-out 残骸なし"
 ```
 
-期待結果: `bash -n` が終了コード 0。手順 2 で hook に allow 経路（grant 照合・`expectedCommand`・完全一致）が **1 件も残っていない**こと。手順 3 で js から grant / canary / branch-protection 関連シンボルが（コメントの経緯言及を除き）**撤去されている**こと。手順 4 で `boundaryNonce` / `ensureBoundaryNonceSeed`（fix / state フェーズの未信頼データ境界トークン用）は**残存**していること。手順 5 で `recoveryOnly` が `lastState === 'ready' && !(autoMergeEnabled && externalChecksConfirmed)` であること（opt-out・externalChecks 未確定では merge-exec が `gh pr merge` を出力しない回復専用経路に固定され、opt-in + 確定のときのみマージ経路が開く。マージ経路は monitor の出力を入力に取らず、merge-exec の自己取得 sha による `--match-head-commit` と G0（`server-enforcement-missing` 辞退）を伴うこと — `grep -n "server-enforcement-missing" scripts/implement-issue-tree.js` が schema・プロンプト・終端分岐にヒットし、`grep -n "sanitizeSha(m?.headSha)" scripts/implement-issue-tree.js` が 0 件であることで確認する。さらに G0 の classic 経路が `enforce_admins` に加えて明示 bypass 経路を検査すること — `grep -n "bypass_pull_request_allowances" scripts/implement-issue-tree.js` が手順 2b (ii) のプロンプトと reason 契約記述にヒットする — も確認する）。手順 6 で PR #206 のクライアント側 arm（precheck / arm エージェント・hook carve-out）の残骸が **0 件**であること（upstream の `docs/implement-issue-tree/auto-merge-sample.yml` はサーバー側 workflow のため対象外）。hook テストは `bash -n` に加え、deny 専用ケース群（subagent の全マージ系スペリング → deny、`gh pr merge <n> --auto --squash` を含むあらゆる `gh pr merge` → deny、`gh pr comment @cursor review`・読み取り系・main スレッド → 許可）で判定を確認する。
+期待結果: `bash -n` が終了コード 0。手順 2 で hook に allow 経路（grant 照合・`expectedCommand`・完全一致）が **1 件も残っていない**こと。手順 3 で js から grant / canary / branch-protection 関連シンボルが（コメントの経緯言及を除き）**撤去されている**こと。手順 4 で `boundaryNonce` / `ensureBoundaryNonceSeed`（fix / state フェーズの未信頼データ境界トークン用）は**残存**していること。手順 5 で `recoveryOnly` が `lastState === 'ready' && !(autoMergeEnabled && externalChecksConfirmed && externalChecksContextsConfirmed)` であること（opt-out・externalChecks 未確定・信頼済み context 未宣言では merge-exec が `gh pr merge` を出力しない回復専用経路に固定され、opt-in + 確定 + 全 App の context 宣言のときのみマージ経路が開く。マージ経路は monitor の出力を入力に取らず、merge-exec の自己取得 sha による `--match-head-commit` と G0（`server-enforcement-missing` 辞退）を伴うこと — `grep -n "server-enforcement-missing" scripts/implement-issue-tree.js` が schema・プロンプト・終端分岐にヒットし、`grep -n "sanitizeSha(m?.headSha)" scripts/implement-issue-tree.js` が 0 件であることで確認する。さらに G0 の classic 経路がクライアント側自動マージ非対応として無条件で fail-closed 辞退すること（classic の bypass 不能性 — enforce_admins・bypass allowance・実行主体ロール・カスタムロールの bypass 権限 — は write 権限の実行トークンから証明できず、検証に必要な protection 読取自体が admin 権限を要求するため。下流 sync PR #2007 codex P0 / PR #236 Bugbot High 対応）— `grep -n "classic-unsupported" scripts/implement-issue-tree.js` が reason enum・reason 契約記述・手順 2b (ii) のプロンプト・終端分岐にヒットする — と、classic protection API・classic 判定式が G0 から撤去されていること — `grep -n "protection/required_status_checks\|protection/enforce_admins\|required_conversation_resolution\|bypass_pull_request_allowances\|collaborators/" scripts/implement-issue-tree.js` が **0 件** — と、required checks の strict 適用（マージ前の base 最新化必須）を ruleset 経路で検査すること — `grep -n "strict_required_status_checks_policy" scripts/implement-issue-tree.js` が手順 2b (i-c) のプロンプトと reason 契約記述にヒットする — も確認する）。手順 5b で G0 (iv) の外部チェック照合が宣言 context + App ID の組（`integration_id` + `context`）の**完全一致**であること（`select(.integration_id == $appid and .context == $ctx)` が手順 2b (iv) のプロンプトにヒットし、App ID 単独の `select(.integration_id == $appid)]` 照合と classic 側の `select(.app_id ==` 照合が **0 件**であること — classic 経路は G0 (ii) で非対応辞退するため照合式を持たない）、G0 (v) の client-only チェック照合（`client-only` が手順 2b (v) のプロンプト・reason 契約・終端文言にヒット）と、G0 (v-b) の required checks 発行元束縛照合（integration_id が数値でない required check・宣言 integration_id と一致する App 発行の check-run を欠く required context を fail-closed で辞退。required context と同名の成功 commit status による required condition 偽装の遮断 — fandhe-backend sync PR #627 codex P0 対応。`grep -n "issuer-unbound" scripts/implement-issue-tree.js` が reason enum・reason 契約記述・手順 2b (v-b) のプロンプト・終端分岐にヒットし、`grep -nF 'any(.n == $r.context and .a == $r.integration_id)' scripts/implement-issue-tree.js` が手順 2b (v-b) の束縛照合 jq 式にヒットする）と、ホスト側ゲート `externalChecksContextsConfirmed`（args パース・recoveryOnly 判定・返却値にヒット）が存在することも確認する。手順 6 で PR #206 のクライアント側 arm（precheck / arm エージェント・hook carve-out）の残骸が **0 件**であること（upstream の `docs/implement-issue-tree/auto-merge-sample.yml` はサーバー側 workflow のため対象外）。hook テストは `bash -n` に加え、deny 専用ケース群（subagent の全マージ系スペリング → deny、`gh pr merge <n> --auto --squash` を含むあらゆる `gh pr merge` → deny、`gh pr comment @cursor review`・読み取り系・main スレッド → 許可）で判定を確認する。
 
