@@ -1,19 +1,20 @@
 {
-  "_comment": "implement-issue-tree workflow の args 例。parallel は 1〜8（省略時 3）。externalChecks は外部チェック App slug の配列（未指定 = 構成未確定、[] = 外部チェックなしを確定、[\"cursor\"] 等 = 指定 App を正とする）。autoMerge は boolean として受理されるが、クライアント側では値によらず自動マージ・arm を行わない（無条件 fail-closed）。auto-merge は消費リポのサーバー側 workflow（upstream の docs/implement-issue-tree/auto-merge-sample.yml）+ branch protection で実現する",
+  "_comment": "implement-issue-tree workflow の args 例。parallel は 1〜8（省略時 3）。externalChecks は外部チェック宣言の配列（未指定 = 構成未確定、[] = 外部チェックなしを確定、[{\"app\": \"cursor\", \"context\": \"Cursor Bugbot\"}] 等 = 指定 App + 信頼済み required check context を正とする）。autoMerge: true + externalChecks 明示（全 App の context 宣言込み）の opt-in ランに限りクライアント側 squash merge を実行する（SKILL.md および references/automerge-design.md「クライアント側自動マージの設計」節参照）。サーバー側 workflow（upstream の docs/implement-issue-tree/auto-merge-sample.yml）+ branch protection への委譲も引き続き利用できる",
   "_externalChecks": {
     "未指定": "構成が未確定。観測結果にかかわらず自動マージを停止し blocked で終端する",
     "[]": "「外部チェックを使用しない」と人間が確定。外部レビュー待機をスキップする",
-    "[\"cursor\"]": "Cursor Bugbot 導入済み。HEAD sha に対する cursor[bot] レビュー到着をマージの必須条件とする"
+    "[{\"app\": \"cursor\", \"context\": \"Cursor Bugbot\"}]": "Cursor Bugbot 導入済み。HEAD sha に対する cursor[bot] レビュー到着をマージの必須条件とし、opt-in マージでは G0 が宣言 context + App ID の組（ruleset は context + integration_id、classic は context + app_id）の完全一致で required 化を照合する。複数 context は {\"app\": ..., \"contexts\": [...]} で宣言する",
+    "[\"cursor\"]（slug のみの旧形式）": "App は確定し監視・外部レビュー待機は動作するが、信頼済み context が未宣言のためクライアント側自動マージは fail-closed で停止する（autoMerge: true でもマージせず blocked 終端。下流 sync PR codex P0 変種 1）"
   },
   "_autoMerge": {
     "未指定 / false": "自動マージは行われない（既定）。実装・push 前 Review・PR 作成・CI 監視・fix ループまでは自動で進み、PR はマージ可能状態の blocked で停止する（マージは GitHub 上で人間が行う）",
-    "true": "boolean として受理されるが、クライアント側では自動マージも auto-merge の予約（arm）も行わない（無条件 fail-closed。PR #182 codex P0 / PR #206 撤回）。挙動は false / 未指定と同一で、PR はマージ可能状態の blocked で停止する。auto-merge を使う場合はサーバー側 workflow（upstream の docs/implement-issue-tree/auto-merge-sample.yml）を配置し branch protection の required checks を設定する。監視中にサーバー側 auto-merge が PR をマージした場合は already-merged 経路で正常完了する",
+    "true": "externalChecks 明示（全 App の信頼済み context 宣言込み。なしの場合は []）と組み合わせた opt-in ランに限り、merge-exec の自己取得再検証 + G0（サーバー側強制の実測）+ --match-head-commit + merge-verify の独立確認を経てクライアント側 squash merge を実行する。externalChecks 未確定・context 未宣言（slug のみの旧形式）では fail-closed でマージせず blocked 停止する。サーバー側 workflow（upstream の docs/implement-issue-tree/auto-merge-sample.yml）+ branch protection への委譲も可。監視中にサーバー側 auto-merge が PR をマージした場合は already-merged 経路で正常完了する",
     "boolean 以外": "エラーで停止する（誤記を黙って読み替えない）"
   },
   "examples": [
     {
       "description": "親イシュー #42 の配下を main へ、並列度 3（既定）で実行（Cursor Bugbot 導入済みリポ。マージ可能状態まで自動で進み、マージは人間が行う）",
-      "args": { "parent": 42, "externalChecks": ["cursor"] }
+      "args": { "parent": 42, "externalChecks": [{ "app": "cursor", "context": "Cursor Bugbot" }] }
     },
     {
       "description": "外部チェックを使用しないリポジトリ（GitHub Actions のみ）。[] を明示して外部レビュー待機をスキップする",
@@ -21,23 +22,23 @@
     },
     {
       "description": "親イシュー #42 の配下を main へ、並列度を明示して 4 で実行",
-      "args": { "parent": 42, "parallel": 4, "externalChecks": ["cursor"] }
+      "args": { "parent": 42, "parallel": 4, "externalChecks": [{ "app": "cursor", "context": "Cursor Bugbot" }] }
     },
     {
       "description": "親イシュー #100 の配下を develop ブランチへ、並列度 2 で実行",
-      "args": { "parent": 100, "branch": "develop", "parallel": 2, "externalChecks": ["cursor"] }
+      "args": { "parent": 100, "branch": "develop", "parallel": 2, "externalChecks": [{ "app": "cursor", "context": "Cursor Bugbot" }] }
     },
     {
       "description": "並列度 1 を指定して従来どおりの直列実行（依存順に 1 件ずつ）",
-      "args": { "parent": 42, "branch": "main", "parallel": 1, "externalChecks": ["cursor"] }
+      "args": { "parent": 42, "branch": "main", "parallel": 1, "externalChecks": [{ "app": "cursor", "context": "Cursor Bugbot" }] }
     },
     {
-      "description": "サブ親イシュー #200 だけを対象に部分実行（大規模ツリーの分割実行）",
-      "args": { "parent": 200, "branch": "main", "parallel": 3, "externalChecks": ["cursor", "sonarcloud"] }
+      "description": "サブ親イシュー #200 だけを対象に部分実行（大規模ツリーの分割実行。外部チェック App が複数ある場合はそれぞれ context と組で宣言する）",
+      "args": { "parent": 200, "branch": "main", "parallel": 3, "externalChecks": [{ "app": "cursor", "context": "Cursor Bugbot" }, { "app": "sonarcloud", "context": "SonarCloud Code Analysis" }] }
     },
     {
       "description": "マージ条件を満たしたイシューは新規マージを実行せず、PR はマージ可能状態の blocked + pr 保持で停止する（再実行すると monitoring から再開してマージ条件を再判定する。マージ自体は GitHub 上で人間が行う。Issue #165）",
-      "args": { "parent": 42, "externalChecks": ["cursor"] }
+      "args": { "parent": 42, "externalChecks": [{ "app": "cursor", "context": "Cursor Bugbot" }] }
     },
     {
       "description": "externalChecks を省略した場合。観測結果にかかわらずマージ直前に blocked で停止する（実装・PR 作成・CI までは進む）",

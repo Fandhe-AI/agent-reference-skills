@@ -1,0 +1,290 @@
+// implement-issue-tree の自動マージゲート（G0）の決定的回帰テスト。
+// 下流 rust-ai-library PR #456 codex P2「新しい自動マージゲートに決定的な回帰テストがない」への
+// upstream 対応として、モデル出力に依存しない JS 純粋部分（引数パーサ・プロンプト契約・
+// execReason 状態写像・reason enum）を node:test で検証する。
+//
+// 読み込み方式: 対象スクリプトは Workflow ハーネス専用文法（トップレベル return・注入グローバル
+// args / agent / log / phase）を含むため module として丸ごと import できない。テストは
+// __IMPLEMENT_ISSUE_TREE_DRIVER_START__ マーカーより上（セクション 1〜5 = 定義と決定的な引数
+// パースのみ）を一時ファイルへ切り出して import する。マーカーより上に駆動部の副作用がない
+// ことは、args 未注入でこの import 自体が成功することで検証される（駆動部が混入すれば
+// agent / phase 等の未定義参照で必ず失敗する）。
+import { test } from 'node:test'
+import assert from 'node:assert/strict'
+import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join, dirname } from 'node:path'
+import { fileURLToPath, pathToFileURL } from 'node:url'
+
+const SCRIPT_PATH = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '..', 'scripts', 'implement-issue-tree.js',
+)
+const DRIVER_MARKER = '__IMPLEMENT_ISSUE_TREE_DRIVER_START__'
+
+const source = readFileSync(SCRIPT_PATH, 'utf8')
+const markerIndex = source.indexOf(DRIVER_MARKER)
+if (markerIndex < 0) {
+  throw new Error(`テスト境界マーカー ${DRIVER_MARKER} が実装スクリプトに存在しない（削除・改名は回帰テストを無効化する）`)
+}
+// マーカー行の行頭までを定義部として切り出す（マーカー行自体は含めない）。
+const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
+const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-defs-'))
+const slicePath = join(sliceDir, 'implement-issue-tree-defs.mjs')
+writeFileSync(slicePath, definitionPart)
+
+// args 未注入の import。駆動部の副作用がマーカーより上に混入していればここで失敗する。
+const mod = await import(pathToFileURL(slicePath).href)
+const {
+  parseExternalChecks,
+  mergeExecutePrompt,
+  classifyMergeExecDispatch,
+  MERGE_EXEC_SCHEMA,
+  MERGE_EXEC_VALID_REASONS,
+} = mod
+
+// mergeExecutePrompt へ渡す最小フィクスチャ（プロンプトは番号のみを参照する）。
+const item = { number: 42 }
+const impl = { prNumber: 123 }
+// 新規マージ経路のコマンド形（手順 5）。この形の有無が「マージを出力するプロンプトか」の判定基準。
+const MERGE_COMMAND = `gh pr merge ${impl.prNumber} --squash --delete-branch --match-head-commit`
+
+// ---------------------------------------------------------------------------
+// 構造ガード（マーカー境界と副作用なし import）
+// ---------------------------------------------------------------------------
+
+test('駆動部マーカーは 1 か所のみ存在し、定義部の import は副作用なく成功する', () => {
+  // マーカーが複数あると切り出し位置が曖昧になるため 1 か所に固定する。
+  assert.equal(source.split(DRIVER_MARKER).length - 1, 1)
+  // import の成功自体は上の top-level await で検証済み。ここでは代表 export の存在を確認する。
+  assert.equal(mod.meta.name, 'implement-issue-tree')
+  assert.equal(typeof parseExternalChecks, 'function')
+  assert.equal(typeof mergeExecutePrompt, 'function')
+  assert.equal(typeof classifyMergeExecDispatch, 'function')
+  // 副作用なしの検証は「args / agent / phase 未注入で top-level import が成功した」こと自体が
+  // 担う（駆動コードが定義部へ混入すれば未定義参照で import が必ず失敗する。関数本体の中に
+  // await agent(...) が現れるのは定義であって副作用ではないため、テキスト走査では判定しない）。
+})
+
+// ---------------------------------------------------------------------------
+// parseExternalChecks（args.externalChecks の決定的パーサ）
+// ---------------------------------------------------------------------------
+
+test('parseExternalChecks: 未指定（undefined / null）は確定不能として undefined を返す', () => {
+  assert.equal(parseExternalChecks(undefined), undefined)
+  assert.equal(parseExternalChecks(null), undefined)
+})
+
+test('parseExternalChecks: [] は「外部チェックなし」の人間による確定として空配列を返す', () => {
+  assert.deepEqual(parseExternalChecks([]), [])
+})
+
+test('parseExternalChecks: app + context（単数）を contexts 配列へ正規化する', () => {
+  assert.deepEqual(parseExternalChecks([{ app: 'cursor', context: 'Cursor Bugbot' }]), [
+    { app: 'cursor', contexts: ['Cursor Bugbot'] },
+  ])
+})
+
+test('parseExternalChecks: app + contexts（複数）は重複排除して保持する', () => {
+  assert.deepEqual(parseExternalChecks([{ app: 'sonarcloud', contexts: ['SonarCloud Code Analysis', 'SonarCloud Code Analysis', 'quality gate'] }]), [
+    { app: 'sonarcloud', contexts: ['SonarCloud Code Analysis', 'quality gate'] },
+  ])
+})
+
+test('parseExternalChecks: 同一 slug の分割宣言は contexts を統合する', () => {
+  assert.deepEqual(
+    parseExternalChecks([
+      { app: 'cursor', context: 'Cursor Bugbot' },
+      { app: 'cursor', contexts: ['Cursor Bugbot', 'other-check'] },
+    ]),
+    [{ app: 'cursor', contexts: ['Cursor Bugbot', 'other-check'] }],
+  )
+})
+
+test('parseExternalChecks: 旧形式（slug のみ）は contexts: [] の fail-closed 入力として受理する', () => {
+  // contexts: [] は externalChecksContextsConfirmed を満たさず、クライアント側自動マージを開かない。
+  assert.deepEqual(parseExternalChecks(['cursor']), [{ app: 'cursor', contexts: [] }])
+})
+
+test('parseExternalChecks: 形式不正はフォールバックせず throw する（fail-closed）', () => {
+  // 非配列
+  assert.throws(() => parseExternalChecks('cursor'), /配列で指定/)
+  // 不正 slug（大文字・記号・39 文字超）
+  assert.throws(() => parseExternalChecks([{ app: 'Cursor!', context: 'x' }]), /App slug/)
+  assert.throws(() => parseExternalChecks([{ app: 'a'.repeat(40), context: 'x' }]), /App slug/)
+  // context / contexts の同時指定（どちらを正とするか判別できない）
+  assert.throws(
+    () => parseExternalChecks([{ app: 'cursor', context: 'a', contexts: ['b'] }]),
+    /同時指定しない/,
+  )
+  // context の形式不正（制御文字・前後空白・空文字）
+  assert.throws(() => parseExternalChecks([{ app: 'cursor', context: 'a\nb' }]), /context/)
+  assert.throws(() => parseExternalChecks([{ app: 'cursor', context: ' padded ' }]), /context/)
+  assert.throws(() => parseExternalChecks([{ app: 'cursor', context: '' }]), /context/)
+  // contexts が文字列配列でない
+  assert.throws(() => parseExternalChecks([{ app: 'cursor', contexts: 'a' }]), /文字列配列/)
+  // 要素の型不正
+  assert.throws(() => parseExternalChecks([42]), /旧形式の slug 文字列/)
+  // 要素数上限（fail-closed の DoS ガード）
+  assert.throws(() => parseExternalChecks(Array.from({ length: 11 }, (_, i) => `app-${i}`)), /要素数が多すぎる/)
+})
+
+// ---------------------------------------------------------------------------
+// mergeExecutePrompt（マージ実行プロンプトの契約）
+// ---------------------------------------------------------------------------
+
+test('mergeExecutePrompt: allowMerge=true かつ contexts 空の宣言が混入したら throw する（多層防御ガード）', () => {
+  assert.throws(
+    () => mergeExecutePrompt(item, impl, true, [{ app: 'cursor', contexts: [] }]),
+    /externalChecksContextsConfirmed/,
+  )
+  // 回復専用経路（allowMerge=false）は新規マージを出力しないため、同じ入力でも throw しない。
+  assert.doesNotThrow(() => mergeExecutePrompt(item, impl, false, [{ app: 'cursor', contexts: [] }]))
+})
+
+test('mergeExecutePrompt: 回復専用経路（allowMerge=false）はマージ実行コマンド形を一切含まない', () => {
+  const prompt = mergeExecutePrompt(item, impl, false, [])
+  assert.ok(!prompt.includes(MERGE_COMMAND))
+  assert.ok(!prompt.includes('--match-head-commit'))
+  // G0（サーバー側強制の実測）は新規マージ経路専用の手順であり、回復専用経路には現れない。
+  assert.ok(!prompt.includes('bypass_actors'))
+  // 回復専用の宣言（マージ実行主体を名乗らない）。
+  assert.ok(prompt.includes('gh pr merge）は一切行わない'))
+})
+
+test('mergeExecutePrompt: 新規マージ経路（allowMerge=true）は G0 の全判定記述とコマンド形を含む', () => {
+  const entries = [{ app: 'cursor', contexts: ['Cursor Bugbot'] }]
+  const prompt = mergeExecutePrompt(item, impl, true, entries)
+  // 手順 5 のコマンド形（--match-head-commit による TOCTOU 防止付き squash merge）。
+  assert.ok(prompt.includes(MERGE_COMMAND))
+  // (i-b) ruleset の bypass 不能性（bypass_actors 空 + Repository ソース）。
+  assert.ok(prompt.includes('bypass_actors'))
+  assert.ok(prompt.includes('"Repository"'))
+  // (i-c) required checks の strict 適用（base 最新化必須）。
+  assert.ok(prompt.includes('strict_required_status_checks_policy'))
+  // (iii) レビュースレッド解消のサーバー側強制。
+  assert.ok(prompt.includes('required_review_thread_resolution'))
+  // (iv) 宣言 context + App ID（integration_id）の組による required 化の照合。
+  // App ID は App ごとに一意な変数（APP_ID_<SLUG>）で束縛される（共有 $APP_ID は使わない）。
+  assert.ok(prompt.includes('(iv)'))
+  assert.ok(prompt.includes(`APP_ID_CURSOR=$(gh api "apps/cursor" --jq '.id')`))
+  assert.ok(prompt.includes('--argjson appid "$APP_ID_CURSOR"'))
+  assert.ok(!prompt.includes('--argjson appid "$APP_ID"'))
+  assert.ok(prompt.includes(`--arg ctx 'Cursor Bugbot'`))
+  // (v) client-only チェックの検出（required に含まれない check-run / commit status の件数照合）。
+  assert.ok(prompt.includes('(v)'))
+  assert.ok(prompt.includes('client-only'))
+  // (v-b) required checks の発行元束縛（integration_id の数値必須 + App 発行 check-run の存在）。
+  assert.ok(prompt.includes('(v-b)'))
+  assert.ok(prompt.includes('integration_id'))
+})
+
+test('mergeExecutePrompt: 複数 App 宣言時は G0 (iv) が App ごとに slug と APP_ID 取得を対で出力する', () => {
+  // 回帰テスト（下流 rust-ai-library PR #456 Bugbot Medium）: 全 context が共有 $APP_ID に
+  // 束縛されると、後続 App の context が先行 App の APP_ID と照合されて正しい ruleset でも
+  // fail する。App ごとに「slug での取得 → その App 専用変数での照合」が対で現れること。
+  const prompt = mergeExecutePrompt(item, impl, true, [
+    { app: 'cursor', contexts: ['Cursor Bugbot'] },
+    { app: 'sonarqubecloud', contexts: ['SonarQubeCloud Code Analysis', 'quality gate'] },
+  ])
+  // App ごとの取得コマンドが slug とセットでインライン出力される。
+  assert.ok(prompt.includes(`APP_ID_CURSOR=$(gh api "apps/cursor" --jq '.id')`))
+  assert.ok(prompt.includes(`APP_ID_SONARQUBECLOUD=$(gh api "apps/sonarqubecloud" --jq '.id')`))
+  // 各 context の照合コマンドが自 App の変数のみを参照する（他 App の変数と混線しない）。
+  const cursorLine = prompt.split('\n').find((l) => l.includes(`--arg ctx 'Cursor Bugbot'`))
+  assert.ok(cursorLine.includes('--argjson appid "$APP_ID_CURSOR"'))
+  for (const ctx of ['SonarQubeCloud Code Analysis', 'quality gate']) {
+    const line = prompt.split('\n').find((l) => l.includes(`--arg ctx '${ctx}'`))
+    assert.ok(line.includes('--argjson appid "$APP_ID_SONARQUBECLOUD"'))
+    assert.ok(!line.includes('$APP_ID_CURSOR'))
+  }
+  // 共有変数 $APP_ID（後続 App が先行 App の値を引きずる形）はどこにも現れない。
+  assert.ok(!prompt.includes('--argjson appid "$APP_ID"'))
+  // slug にハイフンを含む App も一意な変数名（ハイフン→アンダースコア）で束縛される。
+  const hyphenPrompt = mergeExecutePrompt(item, impl, true, [
+    { app: 'my-check-app', contexts: ['my check'] },
+  ])
+  assert.ok(hyphenPrompt.includes(`APP_ID_MY_CHECK_APP=$(gh api "apps/my-check-app" --jq '.id')`))
+  assert.ok(hyphenPrompt.includes('--argjson appid "$APP_ID_MY_CHECK_APP"'))
+})
+
+test('mergeExecutePrompt: G0 の辞退 reason 名は返却スキーマの enum と一致した形でプロンプトに現れる', () => {
+  const prompt = mergeExecutePrompt(item, impl, true, [{ app: 'cursor', contexts: ['Cursor Bugbot'] }])
+  // reason 名の正本は MERGE_EXEC_SCHEMA の enum（共有定数）。テスト側の一覧は enum 所属を
+  // 先に検証してから使い、literal の独立定義がドリフトしても検出できるようにする。
+  for (const reason of ['server-enforcement-missing', 'classic-unsupported', 'issuer-unbound']) {
+    assert.ok(MERGE_EXEC_VALID_REASONS.has(reason), `enum に ${reason} が存在すること`)
+    assert.ok(prompt.includes(reason), `プロンプトに ${reason} が含まれること`)
+  }
+})
+
+test('mergeExecutePrompt: externalChecks なし確定（[]）の新規マージ経路は外部チェック手順 4b を含まない', () => {
+  const prompt = mergeExecutePrompt(item, impl, true, [])
+  assert.ok(!prompt.includes('4b.'))
+  // G0 のサーバー側強制（(i)〜(v-b)）自体は externalChecks の有無と無関係に要求される。
+  assert.ok(prompt.includes('bypass_actors'))
+  assert.ok(prompt.includes(MERGE_COMMAND))
+})
+
+// ---------------------------------------------------------------------------
+// MERGE_EXEC_SCHEMA / MERGE_EXEC_VALID_REASONS（reason enum の契約）
+// ---------------------------------------------------------------------------
+
+test('MERGE_EXEC_VALID_REASONS は schema の reason enum と完全一致する（二重検証の同一性）', () => {
+  const enumValues = MERGE_EXEC_SCHEMA.properties.reason.enum
+  assert.equal(MERGE_EXEC_VALID_REASONS.size, enumValues.length)
+  for (const reason of enumValues) assert.ok(MERGE_EXEC_VALID_REASONS.has(reason))
+})
+
+// ---------------------------------------------------------------------------
+// classifyMergeExecDispatch（execReason → runMergeLoop 状態遷移の写像）
+// ---------------------------------------------------------------------------
+
+test('classifyMergeExecDispatch: G0 辞退系 reason は blocked + quality（再実行で回復可能）へ遷移する', () => {
+  for (const reason of ['server-enforcement-missing', 'classic-unsupported', 'issuer-unbound', 'wrong-target', 'external-review-missing']) {
+    assert.ok(MERGE_EXEC_VALID_REASONS.has(reason), `enum に ${reason} が存在すること`)
+    assert.deepEqual(
+      classifyMergeExecDispatch(reason, 'unrecoverable'),
+      { lastState: 'blocked', lastBlockedReason: 'quality' },
+      `reason ${reason} の遷移`,
+    )
+  }
+})
+
+test('classifyMergeExecDispatch: pr-closed は blocked + unrecoverable（再監視で回復し得ない）へ遷移する', () => {
+  assert.deepEqual(classifyMergeExecDispatch('pr-closed', 'quality'), {
+    lastState: 'blocked',
+    lastBlockedReason: 'unrecoverable',
+  })
+})
+
+test('classifyMergeExecDispatch: 一過性 reason は timeout（再監視）へ遷移し blockedReason を変えない', () => {
+  for (const reason of ['head-moved', 'checks-not-green', 'merge-failed']) {
+    assert.deepEqual(
+      classifyMergeExecDispatch(reason, 'unrecoverable'),
+      { lastState: 'timeout', lastBlockedReason: 'unrecoverable' },
+      `reason ${reason} の遷移`,
+    )
+  }
+})
+
+test('classifyMergeExecDispatch: fix ループ系 reason は専用状態へ遷移し blockedReason を変えない', () => {
+  assert.deepEqual(classifyMergeExecDispatch('unresolved-threads', 'unrecoverable'), {
+    lastState: 'unresolved-comments',
+    lastBlockedReason: 'unrecoverable',
+  })
+  assert.deepEqual(classifyMergeExecDispatch('not-mergeable', 'unrecoverable'), {
+    lastState: 'needs-fix',
+    lastBlockedReason: 'unrecoverable',
+  })
+})
+
+test('classifyMergeExecDispatch: enum 外・欠落 reason は invalid-monitor-result（systemic failure）へ fail-closed で遷移する', () => {
+  for (const reason of ['', 'bogus-reason', undefined, null, 'MERGED']) {
+    assert.deepEqual(
+      classifyMergeExecDispatch(reason, 'unrecoverable'),
+      { lastState: 'invalid-monitor-result', lastBlockedReason: 'unrecoverable' },
+      `reason ${String(reason)} の遷移`,
+    )
+  }
+})
