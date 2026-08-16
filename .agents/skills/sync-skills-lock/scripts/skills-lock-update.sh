@@ -38,8 +38,15 @@ if [[ ! "$REPO_SLUG" =~ ^Fandhe-AI/[A-Za-z0-9._-]+$ ]] \
   exit 1
 fi
 
-# skills-lock.json に source があれば SOURCE_REPO と照合する（誤 upstream 同期防止）
-if command -v jq >/dev/null 2>&1 && [[ -f skills-lock.json ]]; then
+# skills-lock.json に source があれば SOURCE_REPO と照合する（誤 upstream 同期防止）。
+# jq 不在時にこの照合ブロックごと skip すると、lockfile の source 安全弁を経由せず
+# 任意のリポジトリを SOURCE_REPO として通過させられてしまうため、skills-lock.json が
+# 存在するのに jq が無い場合は照合を省略せず fail-closed で中止する。
+if [[ -f skills-lock.json ]]; then
+  if ! command -v jq >/dev/null 2>&1; then
+    echo "エラー: jq が見つかりません。skills-lock.json の source 照合に jq の導入が必要です。中止します。" >&2
+    exit 1
+  fi
   LOCK_SOURCE=$(jq -r ".skills[\"${SKILL_NAME}\"].source // empty" skills-lock.json 2>/dev/null)
   if [[ -n "${LOCK_SOURCE}" ]]; then
     norm_lock="${LOCK_SOURCE#https://github.com/}"; norm_lock="${norm_lock%.git}"
