@@ -39,7 +39,20 @@ if (markerIndex < 0) {
 const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
 const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-rescan-'))
 const slicePath = join(sliceDir, 'implement-issue-tree-defs.mjs')
-writeFileSync(slicePath, definitionPart)
+// 実装スクリプトは Workflow ランタイムの制約により `export const meta` 以外の top-level export を
+// 持てない（他に export があると起動時に SyntaxError: Unexpected keyword 'export' となり
+// スクリプト全体が実行不能になる）。そのため定義部は非 export のまま置き、テスト側で
+// 切り出したスライスへ export 文を付与して module として読み込む。
+const SLICE_EXPORTS = [
+  'parseExternalChecks',
+  'mergeExecutePrompt',
+  'classifyMergeExecDispatch',
+  'planForcedThreadRescan',
+  'reconcileRescueRoundState',
+  'MERGE_EXEC_SCHEMA',
+  'MERGE_EXEC_VALID_REASONS',
+]
+writeFileSync(slicePath, `${definitionPart}\nexport { ${SLICE_EXPORTS.join(', ')} }\n`)
 
 const mod = await import(pathToFileURL(slicePath).href)
 const { planForcedThreadRescan, classifyMergeExecDispatch } = mod

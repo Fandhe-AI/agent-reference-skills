@@ -31,7 +31,20 @@ if (markerIndex < 0) {
 const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
 const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-defs-'))
 const slicePath = join(sliceDir, 'implement-issue-tree-defs.mjs')
-writeFileSync(slicePath, definitionPart)
+// 実装スクリプトは Workflow ランタイムの制約により `export const meta` 以外の top-level export を
+// 持てない（他に export があると起動時に SyntaxError: Unexpected keyword 'export' となり
+// スクリプト全体が実行不能になる）。そのため定義部は非 export のまま置き、テスト側で
+// 切り出したスライスへ export 文を付与して module として読み込む。
+const SLICE_EXPORTS = [
+  'parseExternalChecks',
+  'mergeExecutePrompt',
+  'classifyMergeExecDispatch',
+  'planForcedThreadRescan',
+  'reconcileRescueRoundState',
+  'MERGE_EXEC_SCHEMA',
+  'MERGE_EXEC_VALID_REASONS',
+]
+writeFileSync(slicePath, `${definitionPart}\nexport { ${SLICE_EXPORTS.join(', ')} }\n`)
 
 // args 未注入の import。駆動部の副作用がマーカーより上に混入していればここで失敗する。
 const mod = await import(pathToFileURL(slicePath).href)
@@ -160,8 +173,6 @@ test('mergeExecutePrompt: 新規マージ経路（allowMerge=true）は G0 の�
   // (i-b) ruleset の bypass 不能性（bypass_actors 空 + Repository ソース）。
   assert.ok(prompt.includes('bypass_actors'))
   assert.ok(prompt.includes('"Repository"'))
-  // (i-c) required checks の strict 適用（base 最新化必須）。
-  assert.ok(prompt.includes('strict_required_status_checks_policy'))
   // (iii) レビュースレッド解消のサーバー側強制。
   assert.ok(prompt.includes('required_review_thread_resolution'))
   // (iv) 宣言 context + App ID（integration_id）の組による required 化の照合。
@@ -177,6 +188,25 @@ test('mergeExecutePrompt: 新規マージ経路（allowMerge=true）は G0 の�
   // (v-b) required checks の発行元束縛（integration_id の数値必須 + App 発行 check-run の存在）。
   assert.ok(prompt.includes('(v-b)'))
   assert.ok(prompt.includes('integration_id'))
+})
+
+test('mergeExecutePrompt: G0 は strict 適用を要件にしない（並列ランを止めるため意図的な非要件）', () => {
+  // 回帰テスト: strict_required_status_checks_policy を G0 の合格条件に戻すと、
+  // 1 件マージするたびに他の open PR の base が陳腐化し、parallel >= 2 のランが
+  // 収束しなくなる（全 PR が BLOCKED のまま相互に進めない）。
+  // strict は鮮度制御であって bypass 不能性の制御ではないため、要件から外しても
+  // 「サーバーが同条件で拒否する」という G0 の主張は成立する。
+  // 詳細: references/automerge-design.md「strict を G0 の要件にしない理由」節。
+  const prompt = mergeExecutePrompt(item, impl, true, [{ app: 'cursor', contexts: ['Cursor Bugbot'] }])
+  // jq の合格判定（`... == true`）としては現れないこと。非要件である旨の記述は残るため、
+  // 識別子そのものの不在ではなく「真偽比較による判定」の不在を検査する。
+  assert.ok(!prompt.includes('strict_required_status_checks_policy == true'))
+  assert.ok(!prompt.includes('strict_required_status_checks_policy=true'))
+  // 非要件であることが明示され、後続の読み手が「抜け漏れ」と誤読して復活させないこと。
+  assert.ok(prompt.includes('(i-c)'))
+  assert.ok(prompt.includes('意図的な非要件'))
+  // 不合格理由の列挙からも strict が消えていること（存在しないゲート名を summary に書かせない）。
+  assert.ok(!prompt.includes('(i-c) の strict 適用なし'))
 })
 
 test('mergeExecutePrompt: 複数 App 宣言時は G0 (iv) が App ごとに slug と APP_ID 取得を対で出力する', () => {
@@ -287,4 +317,37 @@ test('classifyMergeExecDispatch: enum 外・欠落 reason は invalid-monitor-re
       `reason ${String(reason)} の遷移`,
     )
   }
+})
+
+// Workflow ランタイムは `export const meta` だけを特別扱いし、残りをスクリプト本体（module では
+// なく async 関数ボディ相当）として評価する。そのため meta 以外の top-level export が 1 つでもあると
+// 起動時に SyntaxError: Unexpected keyword 'export' となり、スキル全体が実行不能になる。
+// この回帰は #239 でテスト用 export を追加した際に混入し、下流 22 リポへ配布されるまで
+// 検知されなかった（起動しない限り誰も踏まないため）。
+//
+// 検査は正規表現による近似ではなく、ランタイムと同じ評価形態での構文解析で行う。行頭以外に
+// 置かれた `const x = 1; export function f() {}` のような形も、近似では取りこぼすが実際には
+// 同じ SyntaxError になるため、パースそのものを契約とする。
+const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor
+
+test('スクリプトが Workflow ランタイムの評価形態で構文解析できる（meta 以外の top-level export 禁止）', () => {
+  // meta 宣言の `export` だけをランタイムと同様に取り除く。残りに export が生きていれば必ず落ちる。
+  const withoutMeta = source.replace(/^export const meta\b/, 'const meta')
+  assert.notEqual(withoutMeta, source, '先頭の `export const meta` 宣言が見つからない')
+
+  // 近似検査。パースが落ちたときに該当行を指し示す診断用で、契約そのものではない。
+  const suspects = withoutMeta
+    .split('\n')
+    .map((line, index) => ({ line, lineNumber: index + 1 }))
+    .filter(({ line }) => /(^|[;{}()]\s*)export\b/.test(line))
+    .map(({ line, lineNumber }) => `${lineNumber}: ${line.trim().slice(0, 80)}`)
+
+  assert.doesNotThrow(
+    () => new AsyncFunction(withoutMeta),
+    (error) => error instanceof SyntaxError,
+    `Workflow ランタイムがスクリプトを受理しない。meta 以外の top-level export を置くと起動時に `
+      + `SyntaxError となりスキルが実行不能になる。テストから使いたい定義は export せずに置き、`
+      + `スライスへ export 文を付与する SLICE_EXPORTS 方式で読み込むこと。`
+      + `疑わしい行: ${suspects.length > 0 ? suspects.join(' / ') : '(検出なし)'}`,
+  )
 })
