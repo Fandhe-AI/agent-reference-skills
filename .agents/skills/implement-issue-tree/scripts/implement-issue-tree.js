@@ -718,6 +718,31 @@ export function classifyMergeExecDispatch(execReason, currentBlockedReason) {
   }
 }
 
+// merge 監視ループ（runMergeLoop）の「強制スレッド再走査のための監視枠確保」判定。純粋関数として
+// 切り出す理由は、監視ループ本体が Workflow ハーネス依存（agent / log の注入）でテストから隔離
+// されているのに対し、この境界条件だけは決定的に回帰検証する必要があるため
+// （tests/merge-loop-rescan.test.mjs）。
+//
+// 呼び出し文脈: merge-exec が reason 'unresolved-threads'（未解決スレッドの「件数」だけを検出）を
+// 返し、かつスレッド内容の一覧が手元にない（unresolvedComments が空）ときに 1 回だけ呼ばれる。
+// このとき runMergeLoop は fix を起動せず forceThreadRescan を立てて次ラウンドの monitor に
+// 手順 5 の強制再走査を指示する（continue）。ところが監視予算（monitorsLeft）はループ先頭で
+// 既に減算済みのため、その回が最後の枠だった場合は while 条件が false になり救済ラウンドが
+// 一度も走らないまま 'unresolved-comments' の blocked 終端へ落ちる（Fandhe-AI/ideas#248 の P1）。
+//
+// 契約:
+//   - 監視枠が尽きている（monitorsLeft < 1）かつ延長未使用のときのみ 1 枠を確保する
+//   - 延長は実行全体で 1 回限り（rescueUsed ラッチ）。merge-exec が空一覧を返し続けても
+//     予算が延び続けず、2 回目以降は従来どおり残り予算のみで進み尽きれば終端する
+//     （ラッチを消費するのは実際に延長した回だけ。残枠がある回はラッチを温存する）
+// 戻り値の monitorsLeft / rescueUsed は呼び出し元の同名変数へそのまま代入して使う。
+export function planForcedThreadRescan(monitorsLeft, rescueUsed) {
+  if (!rescueUsed && monitorsLeft < 1) {
+    return { monitorsLeft: 1, rescueUsed: true, granted: true }
+  }
+  return { monitorsLeft, rescueUsed, granted: false }
+}
+
 // マージ独立確認エージェント（mergeVerifyPrompt）の返却スキーマ（Issue #160）。merge-exec の
 // merged 自己申告を別コンテキストで裏付ける読み取り専用エージェントが gh pr view の取得値のみ
 // を返す。自由文フィールドを意図的に持たせず、未検証文字列がホストのログ・note 合成へ流れる
@@ -3372,6 +3397,10 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
   // 次ラウンドの monitor へ手順 5 の強制再走査を指示し、monitor が unresolved-comments / ready を
   // 返したら解除する。件数・reason のみを根拠に立てる（merge-exec の自由テキストは信頼しない）。
   let forceThreadRescan = false
+  // 強制再走査のための監視枠延長を使い切ったか（while の外で宣言すること。ループ内で宣言すると
+  // 毎ラウンド初期化されラッチが機能せず、merge-exec が空一覧を返し続ける間ループが無限化する）。
+  // 判定は planForcedThreadRescan（純粋関数・回帰テスト対象）に委ねる。
+  let forceThreadRescanBudgetUsed = false
   // 一過性 reason（head-moved / checks-not-green / merge-failed）で merge-exec がマージを見送った
   // 直近の理由（sanitize 済み）。timeout 終端時の note に残し「CI green・理由不明」を防ぐ。
   let lastExecDeferralNote = ''
@@ -3612,7 +3641,13 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
             // フラグは reason enum と一覧の空という決定的事実のみを根拠に立て（自由テキストは
             // 根拠にしない）、次ラウンドの monitor へ手順 5 の強制再走査を指示する。
             forceThreadRescan = true
-            log(`#${item.number}: マージ実行エージェントが未解決スレッドを検出したが内容が未取得のため、fix を起動せず次ラウンドの監視でスレッド再走査を強制する`)
+            // 監視枠はループ先頭で減算済みのため、最後の枠でここへ来ると continue しても while
+            // 条件が false になり救済ラウンドが走らない。1 回限りの延長で枠を確保する
+            // （Fandhe-AI/ideas#248 の P1。2 回目以降は延長せず残り予算で終端させる）。
+            const rescan = planForcedThreadRescan(monitorsLeft, forceThreadRescanBudgetUsed)
+            monitorsLeft = rescan.monitorsLeft
+            forceThreadRescanBudgetUsed = rescan.rescueUsed
+            log(`#${item.number}: マージ実行エージェントが未解決スレッドを検出したが内容が未取得のため、fix を起動せず次ラウンドの監視でスレッド再走査を強制する${rescan.granted ? '（監視枠が尽きていたため再走査用に 1 回だけ延長した）' : ''}`)
             continue
           }
           log(`#${item.number}: マージ実行エージェントが未解決スレッドを検出したため fix ループへ回す`)
