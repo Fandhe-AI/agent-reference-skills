@@ -60,8 +60,15 @@ case "${REPO_SLUG#Fandhe-AI/}" in
     ;;
 esac
 
-# skills-lock.json に source があれば argv の UPSTREAM_REPO と照合する（誤リポ clone 防止）
-if command -v jq >/dev/null 2>&1 && [[ -f skills-lock.json ]]; then
+# skills-lock.json に source があれば argv の UPSTREAM_REPO と照合する（誤リポ clone 防止）。
+# jq 不在時にこの照合ブロックごと skip すると、lockfile の source 安全弁を経由せず
+# 任意のリポジトリを UPSTREAM_REPO として通過させ clone・PR 作成できてしまうため、
+# skills-lock.json が存在するのに jq が無い場合は照合を省略せず fail-closed で中止する。
+if [[ -f skills-lock.json ]]; then
+  if ! command -v jq >/dev/null 2>&1; then
+    echo "エラー: jq が見つかりません。skills-lock.json の source 照合に jq の導入が必要です。中止します。" >&2
+    exit 1
+  fi
   LOCK_SOURCE=$(jq -r ".skills[\"${SKILL_NAME}\"].source // empty" skills-lock.json 2>/dev/null)
   if [[ -n "${LOCK_SOURCE}" ]]; then
     norm_lock="${LOCK_SOURCE#https://github.com/}"; norm_lock="${norm_lock%.git}"
