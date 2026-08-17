@@ -1,3 +1,45 @@
+# 外部ソース（submodule 参照・エージェントスキル）の自動追従ワークフロー。
+#
+# 実装本体は Fandhe-AI/actions の reusable workflow `.github/workflows/update-external.yml`
+# （Fandhe-AI/agent-cli-skills イシュー #259 で reusable 化）。本ファイルはリポジトリ固有の
+# 設定だけを持つ薄い wrapper であり、fail-closed ガード・`persist-credentials`・
+# `source-token`・外部 action の pin・Node / skills CLI の版数は共通側で集中管理される。
+#
+# 移行前は本リポジトリでテンプレートを手管理していた。`.github/workflows/**` は
+# skills-update の配布対象外で上流の強化が届かないため、乖離が固定化していた
+# （Fandhe-AI/agent-cli-skills イシュー #261）。
+#
+# 本リポジトリは 17 リポの一斉移行から唯一除外されていた。移行前ファイルの両ジョブに
+# 「Close superseded update PRs」ステップがあり、上流に同等機能が無かったためである
+# （そのまま wrapper 化すると機能が失われる）。上流 PR #80 で `*-close-superseded`
+# として実装されたため、本ファイルでオプトインして移行する。
+#
+# 参照 SHA の検証記録（2026-08-17 実測）:
+# - 到達性: `gh api repos/Fandhe-AI/actions/compare/main...8dea43ee40a7137f47fa974df2f297d1938ac48c`
+#   → `{"status":"identical","ahead_by":0,"behind_by":0}`。upstream main の祖先であることを
+#   確認した（実測時点では main の tip そのもの）。以後 main が進めば status は behind へ
+#   変わるが、`ahead_by: 0` が保たれる限り祖先である事実は変わらない
+# - コミット: feat(update-external): 古い日次更新 PR の自動 close をオプトインで追加 (#80)
+#   （2026-08-17T06:30:27Z）
+# - 入力契約: 同 SHA の `.github/workflows/update-external.yml` を contents API で取得し
+#   `on.workflow_call` を確認。inputs 11 件（target / runner-json / base-branch /
+#   enable-submodule / enable-skills / submodule-auto-merge{,-allowlist} /
+#   skills-auto-merge{,-allowlist} / submodule-close-superseded / skills-close-superseded）・
+#   secrets 2 件（SUBMODULE_PAT / SKILLS_PAT）で、いずれも required: false。本ファイルの
+#   with / secrets がこの契約の範囲内であることを機械照合した
+# - 権限: 呼び出し先ジョブの permissions は validate-inputs `{}`・submodule / skills が
+#   `contents: read`。reusable workflow の権限は呼び出し側以下である必要があり、本ファイルの
+#   `permissions: contents: read` で充足する
+# - 実行時間上限: 呼び出し先ジョブは validate-inputs 5 分・submodule 10 分・skills 15 分の
+#   `timeout-minutes` を持つ（移行前の各ジョブと同値）。reusable workflow を呼ぶジョブ自身には
+#   `timeout-minutes` を設定できないため、上限は上流のこの契約で担保される
+# - タグ未公開（0 tags / 0 releases）のため SHA 固定が必須で、Dependabot による自動更新は
+#   効かない。上流更新時は本記録ごと手で差し替える
+#
+# runner 選択の根拠（移行前ファイルから引き継ぎ）:
+# 本リポジトリは public のため、組織の runner 方針に従い GitHub ホステッド（ubuntu-latest）を
+# 使う。移行前の submodule / skills 両ジョブとも runs-on: ubuntu-latest だった。
+
 name: Update external sources
 
 on:
@@ -6,7 +48,7 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: '更新対象 (手動実行時のみ有効。schedule は常に all)'
+        description: '更新対象（手動実行時のみ有効。schedule は常に all）'
         type: choice
         required: false
         default: all
@@ -18,162 +60,43 @@ on:
 permissions:
   contents: read
 
+# reusable workflow のトップレベル concurrency は機能しないため呼び出し側で設定する
 concurrency:
   group: update-external
   cancel-in-progress: false
 
 jobs:
-  # --------------------------------------------------
-  # submodule 参照の更新 (Fandhe-AI/actions/submodule-update)
-  # --------------------------------------------------
-  # 現時点で本リポジトリに .gitmodules は無いが、将来 submodule を
-  # 追加した際にそのまま機能するよう team-hub と同一構成で用意する。
-  submodule:
-    name: Update submodule references
-    if: ${{ github.event_name != 'workflow_dispatch' || contains(fromJSON('["all", "submodule"]'), inputs.target) }}
-    runs-on: ubuntu-latest
+  update-external:
+    # Fandhe-AI/actions はタグ未公開のため main 追従の最新コミット SHA に固定する
+    uses: Fandhe-AI/actions/.github/workflows/update-external.yml@8dea43ee40a7137f47fa974df2f297d1938ac48c # main
     permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - name: Checkout
-        # actions/checkout v6.0.3
-        # PAT 未設定時は GITHUB_TOKEN にフォールバック（auto-merge 後の CI 未発火に注意）。
-        # base-branch が main 固定のため、workflow_dispatch を main 以外から実行しても
-        # 常に main をチェックアウトして main 基準で更新を計算する。
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
-        with:
-          ref: main
-          submodules: recursive
-          fetch-depth: 0
-          token: ${{ secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
-
-      - name: Update submodules and open PR
-        # Fandhe-AI/actions はタグ未作成のため最新コミット SHA に固定する。
-        uses: Fandhe-AI/actions/submodule-update@fed9c07d98367f77e5e2b63bca38843f46feee96
-        with:
-          token: ${{ secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
-          base-branch: main
-          branch-prefix: chore/submodule-update
-          commit-message: 'chore: submodule を最新に更新'
-          pr-title: 'chore: submodule を最新に更新'
-          pr-labels: 'dependencies,automated'
-          # auto-merge の ON/OFF。未設定 (null/空) を有効と解釈する非対称設計のため、
-          # 未設定時は明示的に 'false' へフォールバックしオプトイン運用とする。
-          auto-merge: ${{ vars.SUBMODULE_AUTO_MERGE || 'false' }}
-          auto-merge-allowlist: ${{ vars.SUBMODULE_AUTO_MERGE_ALLOWLIST }}
-          auto-merge-strategy: squash
-
-      - name: Warn when PAT is missing
-        # secrets context は steps[*].if で参照できないため、env に写してシェル側で判定する。
-        env:
-          PAT: ${{ secrets.SUBMODULE_PAT }}
-        run: |
-          [ -n "$PAT" ] && exit 0
-          echo "::warning title=SUBMODULE_PAT 未設定::GITHUB_TOKEN で作成した PR は pull_request workflow を発火させず、" \
-            "必須チェックが走らないため auto-merge が BLOCKED のまま停滞します。" \
-            "fine-grained PAT (contents/pull-requests write) を SUBMODULE_PAT に設定してください。"
-
-      - name: Close superseded update PRs
-        # ブランチ名が {prefix}-{YYYYMMDD} で毎日新規作成されるため、マージされずに
-        # 残った過去日付の PR は常に superseded。最新日付の 1 件だけ残して close する。
-        # close は GITHUB_TOKEN で可能（後続 workflow の発火を必要としない）。
-        if: ${{ always() }}
-        env:
-          GH_TOKEN: ${{ secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
-          BRANCH_PREFIX: chore/submodule-update
-        run: |
-          set -euo pipefail
-          # fork 由来 PR の排除 (isCrossRepository)・日付形式の完全一致・jq --arg のデータ渡しで、
-          # 外部から細工したブランチ名により正規 PR を close させられる余地を残さない。
-          prs=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open \
-            --json number,headRefName,isCrossRepository)
-          filter='.[] | select(.isCrossRepository | not)
-            | select(.headRefName | startswith($p) and (.[($p | length):] | test("^[0-9]{8}$")))'
-          newest=$(jq -r --arg p "$BRANCH_PREFIX-" "[$filter | .headRefName] | sort | last // empty" <<<"$prs")
-          [ -z "$newest" ] && exit 0
-          msg="より新しい日次更新 PR (branch: $newest) が最新 main 基準で同内容を再生成しているため close します。"
-          jq -r --arg p "$BRANCH_PREFIX-" --arg newest "$newest" \
-            "$filter | select(.headRefName != \$newest) | .number" <<<"$prs" |
-          while read -r pr; do
-            gh pr close "$pr" --repo "$GITHUB_REPOSITORY" --delete-branch --comment "$msg"
-          done
-
-  # --------------------------------------------------
-  # Skills の更新 (Fandhe-AI/actions/skills-update)
-  # --------------------------------------------------
-  skills:
-    name: Update agent skills
-    if: ${{ github.event_name != 'workflow_dispatch' || contains(fromJSON('["all", "skill"]'), inputs.target) }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - name: Checkout
-        # actions/checkout v6.0.3
-        # PAT 未設定時は GITHUB_TOKEN にフォールバック（auto-merge 後の CI 未発火に注意）。
-        # base-branch が main 固定のため、workflow_dispatch を main 以外から実行しても
-        # 常に main をチェックアウトして main 基準で更新を計算する。
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
-        with:
-          ref: main
-          fetch-depth: 0
-          token: ${{ secrets.SKILLS_PAT || secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
-
-      - name: Setup Node.js
-        # actions/setup-node v6.4.0。skills-update が使う npx skills のため node を固定する。
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
-        with:
-          node-version: '20'
-
-      - name: Update skills and open PR
-        # Fandhe-AI/actions はタグ未作成のため最新コミット SHA に固定する。
-        uses: Fandhe-AI/actions/skills-update@fed9c07d98367f77e5e2b63bca38843f46feee96
-        with:
-          token: ${{ secrets.SKILLS_PAT || secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
-          base-branch: main
-          branch-prefix: chore/skills-update
-          commit-message: 'chore: エージェントスキルを最新に更新'
-          pr-title: 'chore: エージェントスキルを最新に更新'
-          pr-labels: 'dependencies,automated'
-          # auto-merge の ON/OFF。未設定 (null/空) を有効と解釈する非対称設計のため、
-          # 未設定時は明示的に 'false' へフォールバックしオプトイン運用とする。
-          auto-merge: ${{ vars.SKILLS_AUTO_MERGE || 'false' }}
-          auto-merge-allowlist: ${{ vars.SKILLS_AUTO_MERGE_ALLOWLIST }}
-          auto-merge-strategy: squash
-
-      - name: Warn when PAT is missing
-        # secrets context は steps[*].if で参照できないため、env に写してシェル側で判定する。
-        env:
-          PAT: ${{ secrets.SKILLS_PAT || secrets.SUBMODULE_PAT }}
-        run: |
-          [ -n "$PAT" ] && exit 0
-          echo "::warning title=SUBMODULE_PAT 未設定::GITHUB_TOKEN で作成した PR は pull_request workflow を発火させず、" \
-            "必須チェックが走らないため auto-merge が BLOCKED のまま停滞します。" \
-            "fine-grained PAT (contents/pull-requests write) を SUBMODULE_PAT に設定してください (org secret 共有)。"
-
-      - name: Close superseded update PRs
-        # ブランチ名が {prefix}-{YYYYMMDD} で毎日新規作成されるため、マージされずに
-        # 残った過去日付の PR は常に superseded。最新日付の 1 件だけ残して close する。
-        # close は GITHUB_TOKEN で可能（後続 workflow の発火を必要としない）。
-        if: ${{ always() }}
-        env:
-          GH_TOKEN: ${{ secrets.SKILLS_PAT || secrets.SUBMODULE_PAT || secrets.GITHUB_TOKEN }}
-          BRANCH_PREFIX: chore/skills-update
-        run: |
-          set -euo pipefail
-          # fork 由来 PR の排除 (isCrossRepository)・日付形式の完全一致・jq --arg のデータ渡しで、
-          # 外部から細工したブランチ名により正規 PR を close させられる余地を残さない。
-          prs=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open \
-            --json number,headRefName,isCrossRepository)
-          filter='.[] | select(.isCrossRepository | not)
-            | select(.headRefName | startswith($p) and (.[($p | length):] | test("^[0-9]{8}$")))'
-          newest=$(jq -r --arg p "$BRANCH_PREFIX-" "[$filter | .headRefName] | sort | last // empty" <<<"$prs")
-          [ -z "$newest" ] && exit 0
-          msg="より新しい日次更新 PR (branch: $newest) が最新 main 基準で同内容を再生成しているため close します。"
-          jq -r --arg p "$BRANCH_PREFIX-" --arg newest "$newest" \
-            "$filter | select(.headRefName != \$newest) | .number" <<<"$prs" |
-          while read -r pr; do
-            gh pr close "$pr" --repo "$GITHUB_REPOSITORY" --delete-branch --comment "$msg"
-          done
+      contents: read
+    with:
+      # schedule 起動では inputs が null になるため all へフォールバックする
+      target: ${{ inputs.target || 'all' }}
+      # runs-on へ渡す JSON リテラル（素の self-hosted は fromJSON が失敗する）
+      runner-json: '"ubuntu-latest"'
+      # 移行前ファイルの「Close superseded update PRs」ステップを引き継ぐ。日次で
+      # {prefix}-{YYYYMMDD} の新ブランチを作り直す設計のため、マージされずに残った
+      # 過去日付の PR は常に superseded になる。最新日付の 1 件だけ残して close する。
+      #
+      # 上流の既定は 'false'（オプトイン）。有効既定にすると wrapper 無変更で全呼び出し側
+      # リポジトリの PR が自動 close され始めるため、意図した本リポジトリでのみ明示する。
+      #
+      # submodule 側は本リポジトリに .gitmodules が無く、上流の submodule ジョブが存在
+      # 判定で skip するため現状は起動しない。将来 submodule を導入した場合に移行前と
+      # 同じ挙動になるよう、意図として 'true' を明示しておく。
+      submodule-close-superseded: 'true'
+      skills-close-superseded: 'true'
+      # auto-merge はマージ可否を左右する設定のため、組織変数を呼び出し側で解決して渡す。
+      # 未設定（null/空）を有効と解釈する composite action の非対称設計に合わせ、
+      # 明示的に 'false' へフォールバックしオプトイン運用とする。
+      submodule-auto-merge: ${{ vars.SUBMODULE_AUTO_MERGE || 'false' }}
+      submodule-auto-merge-allowlist: ${{ vars.SUBMODULE_AUTO_MERGE_ALLOWLIST }}
+      skills-auto-merge: ${{ vars.SKILLS_AUTO_MERGE || 'false' }}
+      skills-auto-merge-allowlist: ${{ vars.SKILLS_AUTO_MERGE_ALLOWLIST }}
+    secrets:
+      # 未登録の secret は空文字となり、共通側のガードが checkout 前に fail-closed で止める。
+      # SKILLS_PAT 未登録時は共通側が SUBMODULE_PAT へフォールバックする。
+      SUBMODULE_PAT: ${{ secrets.SUBMODULE_PAT }}
+      SKILLS_PAT: ${{ secrets.SKILLS_PAT }}
