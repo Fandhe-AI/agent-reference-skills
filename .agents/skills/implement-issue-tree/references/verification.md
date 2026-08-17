@@ -20,21 +20,75 @@ gh api --paginate "repos/{owner}/{repo}/issues/<phase-parent>/sub_issues?per_pag
 
 Workflow の返却値（`done`・`failures`・`notStarted`）を確認し、`failures` と `notStarted` が空であることを確認する。
 
+### Workflow 起動可否の検証（Issue #277）
+
+`scripts/implement-issue-tree.js` を変更した場合、以下でランタイムに受理される（起動可能である）
+ことを機械検証する。判定ロジックの実装は `tests/lib/workflow-script-contract.mjs` の 1 箇所に
+集約されており、CI（`workflow-loadability.test.mjs`）と本節の手動実測コマンドの双方が同じ実装を
+使う（実装が分岐して片方だけ stale 化する事故を防ぐ）。
+
+```bash
+node --test skills/implement-issue-tree/tests/workflow-loadability.test.mjs
+node skills/implement-issue-tree/tests/lib/workflow-script-contract.mjs \
+  skills/implement-issue-tree/scripts/implement-issue-tree.js
+```
+
+**stale だった旧手順について**: かつて本節には `sed -E 's/^export //' scripts/implement-issue-tree.js`
+で行頭 `export ` を**全件除去**してから `node --check` する手順が記載されていたが、これは
+`export` の混入自体（#239 の回帰そのもの）を検査前に消してしまうため、壊れたスクリプトに対しても
+常に通ってしまう手順だった。**この手順は使用禁止。** 上記の `workflow-script-contract.mjs` は
+meta 宣言の `export` のみを除去し、残りの `export` はランタイムと同じ評価形態（`AsyncFunction`）の
+構文解析にそのまま委ねるため、混入を検出できる。
+
+**ランタイム評価形態の前提（実測に基づく。公式ドキュメント未記載）**: Workflow ランタイムは
+`export const meta` 宣言のみを特別扱いし、残りをモジュールとしてではなく async 関数ボディ相当
+（トップレベル `return`・トップレベル `await` を許容）として評価する。公式ドキュメント
+（`code.claude.com/docs/en/workflows`、および本リポ導入済みの
+`.claude/skills/anthropic-claude-code-extend/references/subagents/workflows.md`）にはこの評価形態も
+サイズ上限も明記がない。この前提が崩れた場合の検知手順は下記の probe を参照。
+
+**サイズ上限**: ハード上限 524,288 B（512 KiB）は PR #241（`efae3ab` → `29b5278` の縮小）の実測に
+基づく値であり、公式ドキュメント由来ではない。運用予算は 500,000 B（ハード上限まで約 24KB の
+余裕）。計測はディスク上のファイルバイト数（`statSync().size`）で行う。
+
+**実ハーネスに対する乖離検知 probe（人手・CI では実行しない）**:
+
+1. `export const meta` のみを持つ最小スクリプトを用意し、Workflow として起動する
+2. 同スクリプトに top-level `export` を 1 つ足して起動し、`SyntaxError` になることを確認する
+3. 起動時は `name` 指定ではなく絶対パスの `scriptPath` を使う（`name` 指定はセッション開始時の
+   キャッシュを参照するため、修正直後は古い版で失敗する）
+4. 結果を下表へバージョン・実施日とともに追記する
+5. 再実行トリガ: Claude Code・Workflow ハーネスのバージョン更新時、またはテストスイートが
+   予測しなかった起動失敗が観測されたとき
+6. 乖離が確認された場合: `tests/lib/workflow-script-contract.mjs` の評価形態
+   （`AsyncFunction` ラップ・`stripMetaExport` の対象）を実測に合わせて更新し、
+   `workflow-loadability.test.mjs` へ対応する変異ケースを追加する
+
+| Claude Code バージョン | 実施日 | 結果 |
+| --- | --- | --- |
+| （未実施） | — | 本 PR（Issue #277）の実装エージェントには Workflow 起動用のツールが提供されておらず未実施。次回バージョン更新時または誰かが実施可能な環境で実施し、この行を更新すること |
+
+**履歴コミットに対する回帰検知能力の実証（一回限りの手動実行。CI テストではない）**:
+
+```bash
+git show efae3ab:skills/implement-issue-tree/scripts/implement-issue-tree.js \
+  | node skills/implement-issue-tree/tests/lib/workflow-script-contract.mjs -
+# 期待: oversize-hard（528,837 B > 524,288）と parse-error の 2 違反、exit 1
+
+git show 1b5a647:skills/implement-issue-tree/scripts/implement-issue-tree.js \
+  | node skills/implement-issue-tree/tests/lib/workflow-script-contract.mjs -
+# 期待: parse-error のみ（379,538 B でサイズは通る）、exit 1
+```
+
+下流 vendoring 先ではこの git 履歴が存在しないため実行できない（`skills/` 配下は下流 22 リポへ
+配布されるが、履歴は配布対象に含まれない）。CI では恒久的な回帰検知能力を
+`workflow-loadability.test.mjs` の変異ケース（現行ソースへの export 注入）で担保している。
+
 ### 非信頼データ境界の適用確認（Issue #87）
 
 `scripts/implement-issue-tree.js` を変更した場合、以下で境界タグ・取り扱い規則が全フェーズに適用されていることを確認する:
 
 ```bash
-# 構文検証（このファイルはトップレベル await・トップレベル export を含む Workflow harness
-# 専用スクリプトのため、単純な node --check では harness 側の実行コンテキストを再現できず
-# 構文エラー扱いになる。async 関数でラップしたうえで検証する。トップレベル export は
-# meta 以外にも parseExternalChecks・MERGE_EXEC_SCHEMA・MERGE_EXEC_VALID_REASONS・
-# classifyMergeExecDispatch・mergeExecutePrompt 等が存在し、関数本体の中に export を
-# 残すと node --check が構文エラーになるため、行頭 "export " を全件除去する）
-sed -E 's/^export //' scripts/implement-issue-tree.js > /tmp/iit-body.js
-{ echo 'async function __wrap(){'; cat /tmp/iit-body.js; echo '}'; } > /tmp/iit-wrapped.mjs
-node --check /tmp/iit-wrapped.mjs
-
 # UNTRUSTED_POLICY が COMMON に組み込まれていることを確認
 grep -n "UNTRUSTED_POLICY" scripts/implement-issue-tree.js
 

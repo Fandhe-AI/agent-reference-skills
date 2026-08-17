@@ -190,7 +190,12 @@ gh pr list --state merged --limit 3 --json headRefOid --jq '.[].headRefOid' \
 
 4. 対象リポジトリの CLAUDE.md・rules・テスト実行規約に従いビルド・lint・テストを通す。テストが失敗した場合は根本原因を調査してから修正する（`.claude/rules/debugging.md` の4フェーズを順に踏む。同一箇所で3回失敗したらアーキテクチャ問題と判断し、該当イシューを `blocked` として記録してユーザーに状況を報告する）
 5. 実装後に OWASP Top 10 観点でセキュリティチェックを実施する（API キーのハードコード・インジェクション等）。問題が見つかった場合は修正してから次へ進む
-6. 実装が完了したら `create-commit` スキルに従い Conventional Commits で**実装コミットを 1 つ**作成する
+6. 実装が完了したら `create-commit` スキルに従い Conventional Commits で**実装コミットを 1 つ**作成する。
+   コミット前に対象リポの commitlint 設定（`commitlint.config.*` / `.commitlintrc*` / `package.json` の
+   `commitlint` フィールド）を**読み取って** `type-enum` / `scope-enum` を確認し、許可された値のみを使う。
+   該当する scope が無ければ scope ごと省略する（`feat: 実装内容`）。**scope にイシュー番号を置かない**
+   （`scope-enum` を設定したリポでは必ず落ち、Review 3 巡を消費した後の push で初めて検出される）。
+   イシューとの紐付けは footer の `Refs #<N>` と PR 本文の `Closes #<N>` で行う
 7. **push・PR 作成はここでは行わない**。ローカルブランチにコミットを積んだ状態で終了し、後続の Review フェーズへ渡す
 
 ```bash
@@ -198,7 +203,14 @@ gh pr list --state merged --limit 3 --json headRefOid --jq '.[].headRefOid' \
 git fetch origin && git checkout -B feat/<N>-<short-name> origin/<base-branch>
 
 # 実装コミット（push しない）
-git commit -m "feat(#<N>): 実装内容"
+# scope はイシュー番号ではなく変更対象のモジュール・ディレクトリ名。
+# 対象リポの commitlint の scope-enum に該当する値が無ければ scope ごと省略する。
+git commit -m "$(cat <<'EOF'
+feat(<module>): 実装内容
+
+Refs #<N>
+EOF
+)"
 # → push・PR 作成は Review 全通過後に行う
 ```
 
@@ -352,13 +364,13 @@ gh api graphql -f query='
 gh pr merge <pr-number> --squash --delete-branch --match-head-commit <検証した HEAD sha>
 ```
 
-CI 失敗・外部チェック指摘・コンフリクト・未解決レビュースレッドがある場合は、修正エージェント（fix）が detached HEAD で対象ブランチを取得して指摘を反映し再 push する。修正エージェントも worktree 隔離で動作するため、他の並列イシューのブランチに干渉しない。fix 対象外と判断したコメントは references/out-of-scope-support.md の「実装対象外（out-of-scope）の扱い」節の手順に従い PR 本文へ記録する（自動フローは記録までで停止し、resolve はどのエージェント・どの経路でも実行しない。resolve は人間が GitHub 上で行い、未解決のまま残ったスレッドは blocked → 最終レポートで issue 化承認・手動 resolve を判断する）。fix エージェントは修正済みの指摘のスレッドも resolve しない（スレッドの解決状態は変更しない）。監視（monitor）は通常予算として最大 7 回まで実行する（後述の「強制スレッド再走査の救済ラウンド（Issue #248・PR #245 / #246）」で 1 回だけ延長されるため、実行全体の絶対上限は初期予算 + 1 の 8 回。詳細は同節を参照）。push なしが 2 回連続したイシューは `blocked` として記録する。監視エージェントが `blocked` を返す場合は `blockedReason`（`quality` / `unrecoverable`）の付与を必須とし、ホスト側でも enum を二重検証する。省略・enum 外は `unrecoverable` として扱う（fail-safe）。`quality`（再監視・再実行で解消し得る）のみ状態ファイルへ `blocked` で終端して次回ランの monitoring 再開対象とし、`unrecoverable`（PR の未マージクローズ等）は `failed` で終端して再開対象から外す。修正（fix）の上限は Review と共有（上限 6）。詳細は Review ステップ参照。
+CI 失敗・外部チェック指摘・コンフリクト・未解決レビュースレッドがある場合は、修正エージェント（fix）が detached HEAD で対象ブランチを取得して指摘を反映し再 push する。修正エージェントも worktree 隔離で動作するため、他の並列イシューのブランチに干渉しない。fix 対象外と判断したコメントは references/out-of-scope-support.md の「実装対象外（out-of-scope）の扱い」節の手順に従い PR 本文へ記録する（自動フローは記録までで停止し、resolve はどのエージェント・どの経路でも実行しない。resolve は人間が GitHub 上で行い、未解決のまま残ったスレッドは blocked → 最終レポートで issue 化承認・手動 resolve を判断する）。fix エージェントは修正済みの指摘のスレッドも resolve しない（スレッドの解決状態は変更しない）。監視（monitor）は通常予算として最大 7 回まで実行する（後述の「強制スレッド再走査の救済ラウンド」で 1 回だけ延長されるため、実行全体の絶対上限は初期予算 + 1 の 8 回。詳細は同節を参照）。push なしが 2 回連続したイシューは `blocked` として記録する。監視エージェントが `blocked` を返す場合は `blockedReason`（`quality` / `unrecoverable`）の付与を必須とし、ホスト側でも enum を二重検証する。省略・enum 外は `unrecoverable` として扱う（fail-safe）。`quality`（再監視・再実行で解消し得る）のみ状態ファイルへ `blocked` で終端して次回ランの monitoring 再開対象とし、`unrecoverable`（PR の未マージクローズ等）は `failed` で終端して再開対象から外す。修正（fix）の上限は Review と共有（上限 6）。詳細は Review ステップ参照。
 
 **修正上限（6 回）到達時の分類（Issue #141）:** 上限到達で `blocked` へ落ちる際は、上限に達した時点で観測していた状態で再開可否を分類する。`unresolved-comments`（未解決スレッドが実在する）は人間の resolve で解消し得るため `quality`（`blocked` 終端・monitoring 再開対象）、`needs-fix`（CI 失敗等）は修正予算が尽きているため `unrecoverable`（`failed` 終端・再開対象外）とする。後者を再開可能にすると、`fixCount` が上限のまま復元されたランが「即 blocked」を毎回繰り返し、`blocked` は halt の連続カウントに乗らないため停止防御も働かない。
 
-**強制スレッド再走査の救済ラウンド（Issue #248・PR #245 / #246）:** merge-exec が `unresolved-threads`（未解決スレッドの「件数」だけを検出）を返し、かつスレッド内容の一覧が手元にない場合、ホストは fix を起動せず `forceThreadRescan` を立てて次ラウンドの monitor に手順 5 の強制再走査を指示する。このとき監視予算がすでに尽きていると救済ラウンドが一度も走らないため、**実行全体で 1 回だけ監視枠を延長する**（2 回目以降は延長せず残り予算で終端する。merge-exec が空一覧を返し続けても監視回数は初期予算 + 1 で有界）。
+**強制スレッド再走査の救済ラウンド:** merge-exec が `unresolved-threads`（未解決スレッドの「件数」だけを検出）を返し、かつスレッド内容の一覧が手元にない場合、ホストは fix を起動せず `forceThreadRescan` を立てて次ラウンドの monitor に手順 5 の強制再走査を指示する。このとき監視予算がすでに尽きていると救済ラウンドが一度も走らないため、**実行全体で 1 回だけ監視枠を延長する**（2 回目以降は延長せず残り予算で終端する。merge-exec が空一覧を返し続けても監視回数は初期予算 + 1 で有界）。
 
-延長した救済ラウンドは残り予算ゼロで走るため、その回の結果がそのまま終端になる。救済ラウンドがスレッド内容を観測できないまま `timeout` に終わった場合は、fix 分岐へ入れず即座に監視ループを抜け、**終端 status のみ `blocked`（halt 非カウント・次回ランの monitoring 再開対象）に分類する**。救済は「未解決スレッドの内容を取り直すための追加試行」であり、観測に失敗しても「未解決スレッドが残っている」という元の品質ブロックの事実は変わらないため。`lastState` は `timeout` のまま残す（実際に観測できなかったことは終端理由の記録として正しい）。`ready` / `needs-fix` 等の有意な結果が得られた場合は通常の分岐処理へ進む。
+延長した救済ラウンドは残り予算ゼロで走るため、その回の結果がそのまま終端になる。救済ラウンドの終端分類は、ラウンド末尾での即時判定ではなく**監視ループ退出後の単一地点で 1 回だけ**評価する。分類対象は監視エージェント自身が返した `timeout` に加え、**同一救済ラウンドの merge-exec 由来の `timeout` 写像**（`head-moved` / `checks-not-green` / `merge-failed`）も含む。旧実装はラウンド末尾（monitor 結果の直後）で救済ラウンドの判定フラグを消費していたため、同じラウンド内で merge-exec がこれらの reason を返して `lastState` を `timeout` へ上書きするケースを判定が見逃し、`failed`（halt カウント・再開対象外）に落ちていた。救済ラウンドがスレッド内容を観測できないまま `timeout` で終端した場合は、**終端 status のみ `blocked`（halt 非カウント・次回ランの monitoring 再開対象）に分類する**。救済は「未解決スレッドの内容を取り直すための追加試行」であり、観測に失敗しても「未解決スレッドが残っている」という元の品質ブロックの事実は変わらないため。`lastState` は `timeout` のまま残す（実際に観測できなかったことは終端理由の記録として正しい）。`ready` / `needs-fix` 等の有意な結果が得られた場合は通常の分岐処理へ進む。
 
 **対象外コメントの省略件数（Issue #133・#141）:** `outOfScopeLog` は本体 20 件 + 省略マーカー行（`（他 N 件省略）`）1 件の最大 21 件で永続化する。マーカーは配列全体で 1 行だけを使い、後続の fix ラウンド・中断再開を跨いで N を累積更新する。あわせて、対象外と申告済みの threadId 集合を `outOfScopeSeen` として状態ファイルへ保存し、再開時に復元する（省略されて `outOfScopeLog` に本文が残らなかった threadId を失うと、再開後の同一スレッド再申告が省略件数へ重複加算されるため）。
 
@@ -407,6 +419,7 @@ open のサブイシューが残っている場合、または受入基準が未
 | 状態ファイルが壊れたまま再実行して重複 PR を作成する | パースエラー時は即停止。`cat _/issue-trees/<N>.json` で確認してから再実行する |
 | 中断後に手動で worktree を削除してから再実行する | 再実行時に Recover phase が自動処理するため手動削除は不要。手動削除してしまうと Recover が残骸なしと判定し、中断前の作業を引き継がずに Plan から新規実行する |
 | レビュースレッドを自動フローで resolve する | resolve mutation はどのエージェント・どの経路にも存在しない（自動 resolve 機能は全面撤去）。修正済み・対象外を問わず、resolve は常に人間が GitHub 上で行う。自動フローは記録までで停止し blocked → 最終レポートへ（人間操作ゲート） |
+| 実装コミットの scope にイシュー番号を置く（例: `feat` の scope に `42` を入れる） | `scope-enum` を持つリポでは commitlint が必ず落ちる。Review 3 巡を消費した後の push で初めて検出され、`--no-verify` は禁止のため回避もできない。scope はモジュール・ディレクトリ名にするか省略し、イシューの紐付けは `Refs #<N>` / `Closes #<N>` で行う |
 | P0/P1 相当・セキュリティ指摘を対象外扱いにする | fix エージェントは単独で対象外と判定して記録のみで済ませてはならない。修正するか、ユーザーまたは指摘者の承認を得るまで `blocked` として扱う（安全側ガード） |
 
 ## モデル / effort 割り当て
