@@ -43,8 +43,20 @@ const SLICE_EXPORTS = [
   'reconcileRescueRoundState',
   'MERGE_EXEC_SCHEMA',
   'MERGE_EXEC_VALID_REASONS',
+  'implementPrompt',
+  'fixPrompt',
+  'recoverImplementPrompt',
 ]
-writeFileSync(slicePath, `${definitionPart}\nexport { ${SLICE_EXPORTS.join(', ')} }\n`)
+// fixPrompt は boundaryNonce()（未信頼データの境界トークン生成）を内部で使う。本番では
+// ensureBoundaryNonceSeed() が agent() 経由で乱数 seed を注入してから呼ばれるが、agent は
+// このスライスに未注入のため、テスト専用の setter を同一モジュールスコープへ追記して
+// 非 export の module-scope let（boundaryNonceSeed）へ疑似乱数値を直接注入する。
+const TEST_ONLY_SETTER =
+  'export function __setBoundaryNonceSeedForTest(v) { boundaryNonceSeed = v }\n'
+writeFileSync(
+  slicePath,
+  `${definitionPart}\nexport { ${SLICE_EXPORTS.join(', ')} }\n${TEST_ONLY_SETTER}`,
+)
 
 // args 未注入の import。駆動部の副作用がマーカーより上に混入していればここで失敗する。
 const mod = await import(pathToFileURL(slicePath).href)
@@ -54,6 +66,9 @@ const {
   classifyMergeExecDispatch,
   MERGE_EXEC_SCHEMA,
   MERGE_EXEC_VALID_REASONS,
+  implementPrompt,
+  fixPrompt,
+  recoverImplementPrompt,
 } = mod
 
 // mergeExecutePrompt へ渡す最小フィクスチャ（プロンプトは番号のみを参照する）。
@@ -319,35 +334,44 @@ test('classifyMergeExecDispatch: enum 外・欠落 reason は invalid-monitor-re
   }
 })
 
-// Workflow ランタイムは `export const meta` だけを特別扱いし、残りをスクリプト本体（module では
-// なく async 関数ボディ相当）として評価する。そのため meta 以外の top-level export が 1 つでもあると
-// 起動時に SyntaxError: Unexpected keyword 'export' となり、スキル全体が実行不能になる。
-// この回帰は #239 でテスト用 export を追加した際に混入し、下流 22 リポへ配布されるまで
-// 検知されなかった（起動しない限り誰も踏まないため）。
-//
-// 検査は正規表現による近似ではなく、ランタイムと同じ評価形態での構文解析で行う。行頭以外に
-// 置かれた `const x = 1; export function f() {}` のような形も、近似では取りこぼすが実際には
-// 同じ SyntaxError になるため、パースそのものを契約とする。
-const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor
+// Workflow ランタイムがスクリプトを受理できるか（meta 以外の top-level export 禁止・
+// サイズ上限）の起動可否契約は workflow-loadability.test.mjs へ集約した（Issue #277）。
+// 判定ロジックの実装は lib/workflow-script-contract.mjs の単一箇所に置き、CI テストと
+// 履歴実測 CLI（references/verification.md 参照）の双方がそれを使う。本ファイルでは
+// パーステストを重複させない。
 
-test('スクリプトが Workflow ランタイムの評価形態で構文解析できる（meta 以外の top-level export 禁止）', () => {
-  // meta 宣言の `export` だけをランタイムと同様に取り除く。残りに export が生きていれば必ず落ちる。
-  const withoutMeta = source.replace(/^export const meta\b/, 'const meta')
-  assert.notEqual(withoutMeta, source, '先頭の `export const meta` 宣言が見つからない')
+// ---------------------------------------------------------------------------
+// commitlint 事前確認指示（Issue #290: scope にイシュー番号を置くと commitlint の
+// scope-enum で必ず落ちる問題への対策）。実装コミット・fix コミット双方のプロンプトが
+// 同じ確認手順を出力することを軽量に固定する回帰テスト。
+// ---------------------------------------------------------------------------
 
-  // 近似検査。パースが落ちたときに該当行を指し示す診断用で、契約そのものではない。
-  const suspects = withoutMeta
-    .split('\n')
-    .map((line, index) => ({ line, lineNumber: index + 1 }))
-    .filter(({ line }) => /(^|[;{}()]\s*)export\b/.test(line))
-    .map(({ line, lineNumber }) => `${lineNumber}: ${line.trim().slice(0, 80)}`)
+const COMMITLINT_MARKERS = ['commitlint', 'scope-enum', 'scope にイシュー番号を置かない', 'Refs #']
 
-  assert.doesNotThrow(
-    () => new AsyncFunction(withoutMeta),
-    (error) => error instanceof SyntaxError,
-    `Workflow ランタイムがスクリプトを受理しない。meta 以外の top-level export を置くと起動時に `
-      + `SyntaxError となりスキルが実行不能になる。テストから使いたい定義は export せずに置き、`
-      + `スライスへ export 文を付与する SLICE_EXPORTS 方式で読み込むこと。`
-      + `疑わしい行: ${suspects.length > 0 ? suspects.join(' / ') : '(検出なし)'}`,
-  )
+test('implementPrompt: commitlint 事前確認の指示（scope にイシュー番号を置かない）を含む', () => {
+  const prompt = implementPrompt(item, { steps: ['noop'] })
+  for (const marker of COMMITLINT_MARKERS) {
+    assert.ok(prompt.includes(marker), `implementPrompt に "${marker}" が含まれない`)
+  }
+})
+
+test('recoverImplementPrompt: commitlint 事前確認の指示を含む', () => {
+  const prompt = recoverImplementPrompt(item, { done: [], remaining: [], broken: [] }, 'fix/42-noop')
+  for (const marker of COMMITLINT_MARKERS) {
+    assert.ok(prompt.includes(marker), `recoverImplementPrompt に "${marker}" が含まれない`)
+  }
+})
+
+test('fixPrompt: pushAfterFix の両分岐で commitlint 事前確認の指示を含む', () => {
+  // fixPrompt は boundaryNonce() を内部で使うため、テスト専用 setter で seed を注入する
+  // （本番では ensureBoundaryNonceSeed() がラン開始時に 1 回だけ行う）。
+  mod.__setBoundaryNonceSeedForTest('a'.repeat(64))
+  const finding = { summary: 'テスト用の指摘', unresolvedComments: [] }
+  const implWithBranch = { ...impl, branch: 'fix/42-noop' }
+  const pushPrompt = fixPrompt(item, implWithBranch, finding, true)
+  const noPushPrompt = fixPrompt(item, implWithBranch, finding, false)
+  for (const marker of COMMITLINT_MARKERS) {
+    assert.ok(pushPrompt.includes(marker), `pushAfterFix=true の fixPrompt に "${marker}" が含まれない`)
+    assert.ok(noPushPrompt.includes(marker), `pushAfterFix=false の fixPrompt に "${marker}" が含まれない`)
+  }
 })
