@@ -81,12 +81,13 @@ closed 親の下に残置されている open issue を、対応する open Phas
 ISSUE_ID=$(gh api "repos/{owner}/{repo}/issues/${ISSUE_NUMBER}" --jq '.id')
 
 # 既存の親から外す（sub_issues API の DELETE）
+# 単複が非対称: 削除は単数形 sub_issue のみ有効。複数形 sub_issues を渡すと 404 になる
 gh api \
   --method DELETE \
-  "repos/{owner}/{repo}/issues/${OLD_PARENT}/sub_issues" \
+  "repos/{owner}/{repo}/issues/${OLD_PARENT}/sub_issue" \
   -F "sub_issue_id=${ISSUE_ID}"
 
-# 新しい親へ紐付ける
+# 新しい親へ紐付ける（追加は複数形 sub_issues のまま）
 gh api \
   --method POST \
   "repos/{owner}/{repo}/issues/${NEW_PARENT}/sub_issues" \
@@ -262,6 +263,12 @@ gh api "repos/{owner}/{repo}/issues/${PHASE_NUMBER}/sub_issues" \
   --jq '.[] | {number: .number, labels: [.labels[].name]}'
 ```
 
+## よくある失敗
+
+| 問題 | 回避策 |
+|------|--------|
+| 付け替えの DELETE が 404 になり、続く POST が 422 で失敗する | 削除のパスだけ単数形 `sub_issue`。複数形 `sub_issues` は 404 になり、旧親から外れないまま POST するため `Sub issue may only have one parent` で必ず失敗する |
+
 ## 注意事項
 
 - **棚卸し前に変更内容をユーザーに提示して確認を取る**（Step 2 参照）
@@ -271,5 +278,5 @@ gh api "repos/{owner}/{repo}/issues/${PHASE_NUMBER}/sub_issues" \
 - **`gh issue create` は `--json` 非対応**。issue URL を stdout に出力するため、`| grep -oE '[0-9]+$'` で末尾の番号を抽出する
 - **sub_issues API（POST / DELETE）の `sub_issue_id` は issue 番号ではなく database id**（GitHub 仕様）。`gh api "repos/{owner}/{repo}/issues/<number>" --jq '.id'` で id を取得してから渡す。番号をそのまま渡すと誤った issue を操作する／404 になる
 - 孤児 issue の Phase が判断できない場合は推測せずにユーザーへ確認する
-- sub_issues の DELETE API で付け替えを行う際、操作対象の issue 番号を必ず確認してから実行する
+- sub_issues の DELETE API（付け替え時に旧親から外す操作）はパスが単数形 `sub_issue` である点に注意し、操作対象の issue 番号を必ず確認してから実行する
 - ツリー更新後は implement-issue-tree が post-order DFS で正しく消化できる構造になっているか確認する
