@@ -94,3 +94,10 @@ reusable workflow を SHA 固定で呼び出す wrapper）は、PR の base コ�
   haiku は機械的チェックという配分（`CLAUDE.md`）と整合させる
 - **コミット規約（P2）**: 日本語 Conventional Commits。`--no-verify` の使用を促す・
   前提とする記述は P1
+
+## Fandhe-AI/actions の参照方式（@latest）
+
+2026-08-18・オーナー判断。`Fandhe-AI/actions`（組織内の上流リポジトリ）への `uses:` 参照は
+可変タグ `@latest` を使う。本書の「SHA 固定」に関する観点は**第三者 action にのみ**適用し、
+`Fandhe-AI/actions` への `@latest` 参照・SHA pin の除去を指摘しない。`latest` は上流の
+`.github/workflows/move-latest-tag.yml` が main への push ごとに付け替える。

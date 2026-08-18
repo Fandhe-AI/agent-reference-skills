@@ -1,6 +1,6 @@
 name: Codex PR review
 
-# Fandhe-AI/actions の codex-review reusable workflow を SHA 固定で呼び出す
+# Fandhe-AI/actions の codex-review reusable workflow を @latest で呼び出す
 # 薄い wrapper（fandhe-backend の同名 wrapper と同型、イシュー #122。
 # public リポジトリ向けテンプレート codex-review/templates/codex-review.public.yml 準拠）。
 # 実装本体・多層防御の設計コメントは Fandhe-AI/actions の
@@ -25,8 +25,7 @@ concurrency:
 
 jobs:
   codex-review:
-    # <SHA> は Fandhe-AI/actions のコミット SHA で固定する（@main 不可）
-    uses: Fandhe-AI/actions/.github/workflows/codex-review.yml@7cb2c6029ef9b00faab9718738a763f48cd66289 # main
+    uses: Fandhe-AI/actions/.github/workflows/codex-review.yml@latest
     permissions:
       contents: read
       pull-requests: write
