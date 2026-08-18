@@ -236,30 +236,47 @@ test('救済ラウンドの pending は granted のときだけ立つ', () => {
   assert.match(branchBody, /if \(rescan\.granted\) rescueRoundPending = true/)
 })
 
-// brace 走査で監視ループの閉じ位置を求める。コメント文字列（「即座にループを抜けて」等）へ
-// 依存すると、コメント編集だけで回帰検知が黙って無効化されるため、構造そのものを走査する。
-function findMatchingBraceEnd(text, openBraceIndex) {
-  let depth = 0
-  for (let i = openBraceIndex; i < text.length; i++) {
-    if (text[i] === '{') depth++
-    else if (text[i] === '}') {
-      depth--
-      if (depth === 0) return i
-    }
-  }
-  return -1
+// 監視ループの範囲は実装側に置いたマーカー対で切り出す（Issue #336）。
+//
+// 経緯: 当初は波括弧の深さを数えて閉じ位置を求めていたが、文字列・テンプレートリテラル・
+// コメント内の片側波括弧で境界がずれるため字句走査（手書きレキサー）へ置き換えた。しかし
+// レキサーは正規表現/除算の判別・ASI・Unicode 識別子・ラベル付き break といった JS 文法の
+// 全域を相手にすることになり、テストヘルパーとしては見合わない大きさと不確かさを抱えた。
+// 実装スクリプトは自分たちが所有しているため、境界そのものをソースへ書き込むほうが確実で
+// 小さい。既に同じファイルで __IMPLEMENT_ISSUE_TREE_DRIVER_START__ が同じ方式を採っている。
+//
+// 「コメントに依存する」点は当初の問題（「即座にループを抜けて」等の説明文＝**偶発的な散文**へ
+// の依存。文面を書き換えるだけで回帰検知が黙って無効化される）とは別物である。マーカーは
+// 単一目的の固定文字列で、出現回数を下のテストが 1 回に固定し、消えれば読み込み時点で throw
+// する。黙って無効化される経路が無い。
+const LOOP_START_MARKER = ['__MERGE', 'MONITOR', 'LOOP', 'START__'].join('_')
+const LOOP_END_MARKER = ['__MERGE', 'MONITOR', 'LOOP', 'END__'].join('_')
+
+const loopStartMarkerIndex = driverPart.indexOf(LOOP_START_MARKER)
+const loopEndMarkerIndex = driverPart.indexOf(LOOP_END_MARKER)
+if (loopStartMarkerIndex === -1 || loopEndMarkerIndex === -1) {
+  throw new Error(`監視ループの境界マーカー（${LOOP_START_MARKER} / ${LOOP_END_MARKER}）が実装スクリプトに存在しない（削除・改名は回帰テストを無効化する）`)
 }
 
 const WHILE_HEADER = 'while (!merged && monitorsLeft > 0) {'
-const whileIndex = driverPart.indexOf(WHILE_HEADER)
-if (whileIndex === -1) {
-  throw new Error('監視ループの while が見つからない（構造変更時は本テストも更新すること）')
+const whileIndex = driverPart.indexOf(WHILE_HEADER, loopStartMarkerIndex)
+if (whileIndex === -1 || whileIndex > loopEndMarkerIndex) {
+  throw new Error('監視ループの while が開始マーカーと終了マーカーの間に見つからない（構造変更時はマーカーも一緒に動かすこと）')
 }
 const loopOpenBraceIndex = whileIndex + WHILE_HEADER.length - 1
-const loopEndIndex = findMatchingBraceEnd(driverPart, loopOpenBraceIndex)
-if (loopEndIndex === -1) {
-  throw new Error('監視ループの閉じ括弧が見つからない（brace 不整合）')
+// 終了マーカーは閉じ括弧の直後の行に置く規約のため、マーカーから後ろ向きに最初の `}` が
+// ループの閉じ括弧そのものになる。波括弧の対応付けを一切行わないため、文字列・コメント・
+// テンプレートリテラル内の片側波括弧の影響を原理的に受けない。
+const loopEndIndex = driverPart.lastIndexOf('}', loopEndMarkerIndex)
+if (loopEndIndex === -1 || loopEndIndex < loopOpenBraceIndex) {
+  throw new Error('監視ループの閉じ括弧が終了マーカーの直前に見つからない（マーカー配置の規約違反）')
 }
+
+test('監視ループの境界マーカーは実装スクリプト内にそれぞれ 1 か所のみ存在する', () => {
+  // 複数あると切り出し位置が曖昧になる。driverPart ではなくスクリプト全体（source）で数える。
+  assert.equal(source.split(LOOP_START_MARKER).length - 1, 1, `${LOOP_START_MARKER} は 1 か所だけでなければならない`)
+  assert.equal(source.split(LOOP_END_MARKER).length - 1, 1, `${LOOP_END_MARKER} は 1 か所だけでなければならない`)
+})
 
 test('救済ラウンドの終端分類はループ退出後・単一地点で 1 回だけ評価される', () => {
   // reconcileRescueRoundState の呼び出しは driverPart 内でちょうど 1 回。呼び出し形（引数名）を
@@ -377,5 +394,93 @@ for (const reason of ['head-moved', 'checks-not-green', 'merge-failed']) {
       rescueTimeoutQualityBlock: reconciled.qualityBlock,
     })
     assert.equal(terminalStatus, 'failed')
+  })
+}
+
+// ---------------------------------------------------------------------------
+// 片側波括弧混入時の境界不変性（Issue #336 受け入れ条件 1・2）
+//
+// 上流 Fandhe-AI/brain-training-app #81 の codex-review 指摘: 旧実装は文字列・コメント・
+// テンプレートリテラルの区別なくすべての `{`/`}` をカウントしていたため、対象ループ（テンプレート
+// リテラル・日本語コメントを多用する）に片側だけの波括弧を含む文字列・コメントが 1 行入るだけで
+// loopEndIndex が実体と乖離し得た。
+//
+// マーカー方式では境界計算が波括弧の対応付けを一切行わないため、この乖離は原理的に起きない。
+// それでもフィクスチャを残すのは、将来この境界計算が波括弧カウントへ戻された場合に**必ず落ちる**
+// ようにするためである（各フィクスチャは波括弧の収支が片側に偏っており、深さを数える実装では
+// 結果が必ずずれる）。テストの teeth はここにある。
+// ---------------------------------------------------------------------------
+
+test('境界計算に依存しない不変条件: 監視ループの閉じ括弧はインデント2の行頭にある', () => {
+  assert.equal(driverPart.slice(loopEndIndex - 3, loopEndIndex + 1), '\n  }')
+})
+
+// 注入位置はループ本体内でなければならない。裸の indexOf('monitorsLeft--') はループより前の
+// 出現に当たり得てオフセット計算が非自明な理由で狂うため、fromIndex 付きで探す
+// （293〜299 行の構造アサーションと同じ探索パターン）。
+const MONITORS_LEFT_DECR = 'monitorsLeft--'
+const braceInjectionPos = driverPart.indexOf(MONITORS_LEFT_DECR, loopOpenBraceIndex) + MONITORS_LEFT_DECR.length
+assert.ok(
+  braceInjectionPos > loopOpenBraceIndex && braceInjectionPos < loopEndIndex,
+  '注入位置はループ本体内でなければならない',
+)
+
+// 4 キャリア（行コメント・ブロックコメント・シングルクォート文字列・テンプレートリテラル）×
+// 2 フィクスチャ（正味 } が 1 個多い / 正味 { が 1 個多い）。`{` と `}` を両方入れて相殺すると
+// naive 走査も偶然一致してしまい負のコントロールが無意味化するため、各キャリアは片側のみを含む。
+// 波括弧以外の典型的な lexer トラップ（コメント内アポストロフィ・ブロックコメント内の裸クォート・
+// テンプレートの `${...}` ネスト）も同梱する。
+const BRACE_INJECTION_CARRIERS = [
+  {
+    name: '行コメント',
+    a: "\n      // don't crash on apostrophe; 片側の閉じ括弧のみ }\n",
+    b: '\n      // 片側の開き括弧のみ {\n',
+  },
+  {
+    name: 'ブロックコメント',
+    a: '\n      /* ブロックコメント内の裸のクォート " と閉じ括弧のみ } */\n',
+    b: '\n      /* ブロックコメント内の裸のクォート " と開き括弧のみ { */\n',
+  },
+  {
+    name: 'シングルクォート文字列',
+    a: "\n      const _injStr = '}' // 文字列キャリア\n",
+    b: "\n      const _injStr = '{' // 文字列キャリア\n",
+  },
+  {
+    name: 'テンプレートリテラル',
+    a: '\n      const _injTpl = `${JSON.stringify({ a: 1 })} と文字列としての }`\n',
+    b: '\n      const _injTpl = `${JSON.stringify({ a: 1 })} と文字列としての {`\n',
+  },
+]
+
+/**
+ * 変異後のソースに対して、この test ファイルが本番で使うのと同じ手順で境界を求め直す。
+ * 実装が波括弧カウントへ戻された場合にここが必ずずれるよう、フィクスチャは波括弧の収支を
+ * 片側へ偏らせる。
+ */
+function locateLoopEnd(text) {
+  const endMarkerIndex = text.indexOf(LOOP_END_MARKER)
+  assert.notEqual(endMarkerIndex, -1, '変異後も終了マーカーは残っていなければならない')
+  return text.lastIndexOf('}', endMarkerIndex)
+}
+
+function assertBraceInjectionInvariant(injected) {
+  const braceDelta = injected.split('{').length - injected.split('}').length
+  assert.notEqual(braceDelta, 0, '注入文字列は片側の波括弧のみを含み、相殺してはならない（波括弧カウント実装への退行を必ず検出するため）')
+  const mutated = driverPart.slice(0, braceInjectionPos) + injected + driverPart.slice(braceInjectionPos)
+  const got = locateLoopEnd(mutated)
+  // (a) 正: 挿入長ぶんだけずれた「同じ閉じ括弧」を指す。
+  assert.equal(got, loopEndIndex + injected.length, '境界は挿入長ぶんだけずれた同じ閉じ括弧を指さなければならない')
+  // (b) 境界計算に依存しない錨: 変異後の結果もインデント 2 の閉じ括弧行に着地する。
+  assert.equal(mutated.slice(got - 3, got + 1), '\n  }', '変異後もインデント2の閉じ括弧行に着地しなければならない')
+}
+
+for (const carrier of BRACE_INJECTION_CARRIERS) {
+  test(`片側波括弧の混入（${carrier.name}・正味 } が1個多い）でも境界判定は不変`, () => {
+    assertBraceInjectionInvariant(carrier.a)
+  })
+
+  test(`片側波括弧の混入（${carrier.name}・正味 { が1個多い）でも境界判定は不変`, () => {
+    assertBraceInjectionInvariant(carrier.b)
   })
 }
