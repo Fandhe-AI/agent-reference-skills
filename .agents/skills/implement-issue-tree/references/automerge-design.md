@@ -35,7 +35,7 @@ opt-in ランのクライアント側マージは、PR #182 / PR #222 codex P0�
 
 より強い保証が必要な運用では、opt-in を使わず対象ブランチへのサーバー側 branch protection（第三者=非 author 承認必須・dismiss stale・required checks 等）+ 人間マージ、または下記のサーバー側 auto-merge workflow への委譲を選択すること。本 SKILL.md の他所に「クライアント側では自動マージを行わない」旨の記述が残っている場合、本節と `autoMerge` 引数の説明を正とする。
 
-**auto-merge のサーバー側委譲（upstream の `docs/implement-issue-tree/auto-merge-sample.yml`）**: auto-merge のサンプル workflow は**意図的に vendored 配布しない**（skills/ 配下ではなく upstream（Fandhe-AI/agent-cli-skills）の `docs/implement-issue-tree/auto-merge-sample.yml` に置かれ、`npx skills add` で消費リポジトリへ自動コピーされない）。各リポジトリの runner 方針・信頼 author・opt-in variable は相反し得るため（public は GitHub ホステッド必須 / private は self-hosted 必須 等）、導入する場合は upstream（Fandhe-AI/agent-cli-skills）の `https://github.com/Fandhe-AI/agent-cli-skills/blob/main/docs/implement-issue-tree/auto-merge-sample.yml` を参照し、自リポジトリの方針に合わせて runner（`AUTOMERGE_RUNNER`）・信頼 author（`TRUSTED_AUTHOR`）・opt-in variable（`AUTOMERGE_OPTIN`）を設定した上で `.github/workflows/auto-merge.yml` へ**手動配置**する。この workflow は **`schedule`（cron。既定 15 分間隔）+ `workflow_dispatch` のみ**をトリガーとする **cron スイープ方式**で動作し、リポジトリ設定変数 **`TRUSTED_AUTHOR`**（PR 作成専用 automation identity の login。未設定なら何もせず終了）の open PR をサーバー側 REST API（`--paginate` 全ページ列挙 + `user.login` 完全一致選別。`--limit` 固定だと上限超過分が恒久的に漏れるため — PR #208 codex P2 対応）から列挙し、各 PR に対して arm（`GITHUB_TOKEN` での `gh pr merge --auto --squash` 実行）の前に**認可ゲートと絞り込みの 2 段判定**を行う。**PR イベント系トリガー（`pull_request` / `pull_request_target`）を一切使わない理由（消費リポ codex ラウンド P0/P1 対応）**: `pull_request` は same-repo PR で **PR head 側の workflow ファイルを secrets 付きで実行する**ため `AUTOMERGE_RULESET_TOKEN` 窃取経路になり、`pull_request_target`（PR #207 Bugbot High 対応で一度採用）も checkout 禁止を守る限り窃取は防げるものの「PR という PR 作成主体が起こせる事象を契機に secrets（`AUTOMERGE_RULESET_TOKEN`・write 権限 `GITHUB_TOKEN`）を持つジョブが起動する」構造自体が残り、組織 CI 規約（secrets 露出トリガーの追加は P0/P1）に抵触し将来の保守変更で未信頼 PR データが混入する余地も残る。cron スイープでは**実行契機・実行コンテキストのいずれにも PR 由来の値が一切含まれず**（イベント payload に PR が存在しない）、この問題クラス自体が構造的に排除される。arm の遅延は最大でポーリング間隔に収まる。workflow 内では**リポジトリのコードを一切 checkout・実行しない**（`actions/checkout` の追加禁止。サンプルは `gh api` / `gh pr list` / `gh pr view` の読み取り呼び出しと jq の判定のみで構成し、`runs-on: ${{ vars.AUTOMERGE_RUNNER }}`（runner は repo variable で指定し**フォールバックなし** — 消費リポ codex P1 対応。runner 方針は public / private で正反対のため既定値の直書きはどちらかの規約に必ず違反する。public リポはリポジトリ設定変数 `AUTOMERGE_RUNNER=ubuntu-latest`、Fandhe-AI の private リポ（GitHub ホステッド指定が CI 規約違反の組織方針）は `AUTOMERGE_RUNNER=self-hosted` を設定し、未設定では job が起動しない = fail-closed）+ `timeout-minutes: 10` を明示し、さらに job レベルの明示 opt-in ゲート `if: ${{ vars.AUTOMERGE_OPTIN == 'true' }}` を置く（消費リポ codex P0 対応。repo variable は admin のみ設定可能で PR 作成主体には偽造不能なサーバー側 opt-in シグナルとなり、設定しない限り workflow は何もしない）。**認可ゲート（PR #207 codex ラウンド2 P0 対応）**: author 一致・命名規則ブランチ・`Closes #N` マーカーは、いずれも共有 `gh` 認証を持つ PR 作成主体（プロンプトインジェクションを受けたエージェント含む）が自ら満たせる**偽造可能な provenance であり、認可根拠にならない**。そこで workflow 自身が arm 前にベースブランチの branch protection / ruleset を GitHub API で**実測検証**し、(G1) **required status checks が 1 件以上**構成済み、(G2) **required approving review count >= 1** 構成済み（GitHub は PR author の自己承認をサーバー側で拒否するため、これが「PR 作成主体が生成できない非 author 承認」という偽造不能シグナルになる）、(G3) **dismiss stale reviews（承認後 HEAD 更新で承認失効）が有効**、(G4) **ベースブランチに適用される全 ruleset の bypass actor がゼロ**（PR #207 codex ラウンド3 P0 対応。`bypass_actors` が 1 件でもあればその actor による merge が G1〜G3 の保護を迂回できるため、まず ruleset の列挙が完全であること — 実効ルール全要素に数値 `ruleset_id` と既知の `ruleset_source_type`（Repository / Organization）があり、ルールがあるのに ID が 0 件という不整合がないこと — を検証した上で、ソース種別ごとに詳細取得先をルーティング（Repository → `repos/{owner}/{repo}/rulesets/{id}`、Organization → `orgs/{org}/rulesets/{id}` — 消費リポ Bugbot High 対応。org 継承 ruleset の ID を repo 側エンドポイントで引くと 404 になり、repo 側のみの実装では org ruleset 適用ブランチが恒久的に検証不能 = 一切 arm されなかった）し、各 ruleset 詳細の `bypass_actors` が**配列型かつ空**であることを確認する。ID 欠落・非配列・null・未知ソース種別・取得失敗はすべて arm しない（org ruleset の詳細取得には token に組織レベルの Administration: read が別途必要で、無い場合も fail-closed だが原因をログで明示する）。ruleset 詳細の `bypass_actors` は Administration: read 権限がないと応答に含まれず、workflow の `GITHUB_TOKEN`（contents / pull-requests write のみ）では取得できないため — PR #207 Bugbot High 対応。`GITHUB_TOKEN` のままでは推奨構成の ruleset 保護下で G4 が常に検証不能となり一切 arm されない — G4 の詳細取得**のみ**リポジトリ secret **`AUTOMERGE_RULESET_TOKEN`**（fine-grained PAT / GitHub App token。必要権限は **Administration: read のみで write 不要**。arm 実行は従来どおり `GITHUB_TOKEN` が行う権限分離構成）で行う。token を要求するのは **ruleset 由来の実効ルールが 1 件以上あるときのみ**で、適用 ruleset が 0 件（classic branch protection のみで G1〜G3 充足）なら G4 は検証対象なしの空充足として token 不要で通過する（PR #207 Bugbot Medium 対応。ただし実効ルール API の取得自体に失敗した場合は「0 件」と区別して arm しない）。ruleset が 1 件以上あるのに secret 未構成（空）の場合は G4 を検証不能とみなし arm しない）、(G5) **required conversation resolution（レビュースレッド全解消の必須化）が有効**（PR #207 codex ラウンド4 P1 対応。無効だと任意 check 1 件 + 承認 1 件でレビュースレッド未解消のまま即時マージが成立し得る。classic は `required_conversation_resolution`、ruleset は pull_request ルールの `required_review_thread_resolution` で判定）、(G6) **workflow 冒頭の設定変数 `REQUIRED_EXTERNAL_CHECKS`（`<check context 名>:<App ID>` のカンマ区切り。既定例は `Cursor Bugbot:1210556` = Cursor Bugbot の App ID）に列挙した各組が、required status checks に「context 名 + App ID」の完全一致で App 束縛付きにすべて存在する**（PR #207 codex ラウンド4 P1 / ラウンド5 P1 + Bugbot Medium 対応。args の `externalChecks` 契約が要求する Cursor 等の外部レビュー到着を、サーバー側マージ条件（required checks）として担保するための検証。context 名の存在だけでは同名 check を別 App や same-repo の Actions workflow が作成して偽装できるため、classic は `.checks[].app_id`、ruleset は `integration_id` との組で検証し、`app_id` / `integration_id` が null・欠落のエントリ — App 束縛のない legacy `contexts` を含む — は充足根拠として受理しない。設定値の書式不正も arm しない。空文字は外部チェック不使用の明示選択として通過するが、その場合外部レビュー到着はサーバー側で一切担保されない）、(G7) **classic branch protection を認可入力に採用する場合、`enforce_admins` 有効に加えて明示 bypass 経路が存在しない**こと（消費リポ codex ラウンド P0 対応。`required_pull_request_reviews.bypass_pull_request_allowances` に登録された users / teams / apps は `enforce_admins` が有効でも PR レビュー要件（G2/G3）を明示的に迂回でき、automation App / user が登録された構成では非 author 承認なしの即時マージが成立し得る。実 API 仕様では未設定の表現が「キー欠落」と「キーありで値 null」の 2 形態を取り（`restrictions` は未設定時に `null` を返すのが正常応答 — 消費リポ Bugbot High 対応。null を unsafe 扱いすると classic-only リポで G1〜G6 が恒久 fail する）、「キー欠落または null = 未設定として通過」「object 型 = users / teams / apps がすべて配列型かつ空の場合のみ通過」とし、非 object・非配列・要素ありは classic を認可入力から除外して ruleset 側のみで判定する）、(G8) **required status checks の strict 適用（マージ前の base 最新化 = up-to-date 必須）が有効**（消費リポ codex P1 対応。strict でないと base ブランチがチェック完了後に更新されても古い base に対して成功した HEAD の auto-merge がそのまま成立し得る — arm は「要件が揃った時点で自動マージ」であり base 更新後のチェック再実行を保証しない。classic は `required_status_checks.strict`、ruleset は required_status_checks ルールの `strict_required_status_checks_policy` で判定し、無効・取得不能は arm しない。クライアント側 G0 の (i-c) / (ii) strict 検査と対をなすサーバー側の同一ゲート）、の**すべて**を満たす場合のみ arm し、1 つでも欠ければその PR は arm せずスキップして次の PR へ進む（**fail-closed**。classic branch protection API と ruleset 実効ルール API `GET /rules/branches/{branch}` の両方に対応し、取得・解析失敗も「保護なし」側へ倒す。判定は jq で真偽値のみ取り出し、base ブランチ名は jq の `@uri` で URL エンコードしてから API パスへ展開する — Bugbot Medium 対応。`release/1.0` 等の `/` 入りブランチ名を生のまま展開すると 404 → fail-closed で本来 arm 可能な PR が永遠に arm されない）。この構造では、偽造 PR が仮に arm されてもサーバー側で非 author の人間承認と required checks が揃わない限りマージされず、人間の承認境界を迂回できない。**これらの branch protection がマージの実強制であり、arm は「承認とチェックが揃った時点で自動的にマージが完了する」利便性だけを担う**。**絞り込み条件（認可根拠ではない。誤爆防止の対象限定のみ。3 条件の AND）**: (1) **PR author がこのスキルの PR 作成専用 automation identity（bot / machine user。リポジトリ設定変数 `TRUSTED_AUTHOR` に `your-automation-bot[bot]` 等の login を設定）に完全一致**すること（REST API の `--paginate` 全ページ列挙 + `user.login` 完全一致選別。draft は除外）。**人間の個人アカウント（リポジトリ owner 含む）の指定は禁止**（その人物が手作業で作る通常 PR まで arm 対象になるため。専用 identity が未整備なら workflow を配置せず人間マージ運用に留める）。(2) head ブランチがこのスキルの命名規約 `<type>/<N>-<short-name>` にアンカー付き正規表現で**厳密一致**すること。(3) PR 本文にこのスキルの PR Create フェーズが必ず書き込む生成物マーカー **`Closes #<N>`（N はブランチ名のイシュー番号と同一）が行として存在**すること。permissions は `contents: write` + `pull-requests: write` の最小構成（pull-requests: write は auto-merge の有効化、contents: write はマージ実行権限として `enablePullRequestAutoMerge` / マージコミット作成に必要 — PR #208 Bugbot High 対応: contents を read に落とすと arm が常に権限エラーで失敗し、スイープが per-PR skip の green 終了になるため auto-merge が黙って一切成立しなくなる。checkout・push は行わないためこれ以上は要求しない）で、PR タイトル・本文等の未信頼テキストは run スクリプトへ一切展開しない（シェルが参照するのは整数検証済みの PR 番号・リポジトリ名・正規表現一致確認済みの head ブランチ名・URL エンコード済みの base ブランチ名のみ。本文マーカーは `gh pr view --json body --jq` の test() で真偽値だけを取り出して判定する）。この方式では arm の実行主体がエージェントと権限・実行環境を共有しない GitHub Actions であり、クライアント側の subagent には arm 経路が存在せず、arm しても保護未構成ならマージに至らないため、PR #206 の認可欠陥は構造的に発生しない。ランは従来どおり PR をマージ可能状態（`blocked`）まで進めて停止し、監視中にサーバー側 auto-merge によって PR が MERGED になった場合は monitor の手順 1 が検出して already-merged 経路で正常完了する。
+**auto-merge のサーバー側委譲（upstream の `docs/implement-issue-tree/auto-merge-sample.yml`）**: auto-merge のサンプル workflow は**意図的に vendored 配布しない**（skills/ 配下ではなく upstream（Fandhe-AI/agent-cli-skills）の `docs/implement-issue-tree/auto-merge-sample.yml` に置かれ、`npx skills add` で消費リポジトリへ自動コピーされない）。各リポジトリの runner 方針・信頼 author・opt-in variable は相反し得るため（public は GitHub ホステッド必須 / private は self-hosted 必須 等）、導入する場合は upstream（Fandhe-AI/agent-cli-skills）の `https://github.com/Fandhe-AI/agent-cli-skills/blob/main/docs/implement-issue-tree/auto-merge-sample.yml` を参照し、自リポジトリの方針に合わせて runner（`AUTOMERGE_RUNNER`）・信頼 author（`TRUSTED_AUTHOR`）・opt-in variable（`AUTOMERGE_OPTIN`）を設定した上で `.github/workflows/auto-merge.yml` へ**手動配置**する。この workflow は **`schedule`（cron。既定 15 分間隔）+ `workflow_dispatch` のみ**をトリガーとする **cron スイープ方式**で動作し、リポジトリ設定変数 **`TRUSTED_AUTHOR`**（PR 作成専用 automation identity の login。未設定なら何もせず終了）の open PR をサーバー側 REST API（`--paginate` 全ページ列挙 + `user.login` 完全一致選別。`--limit` 固定だと上限超過分が恒久的に漏れるため — PR #208 codex P2 対応）から列挙し、各 PR に対して arm（`GITHUB_TOKEN` での `gh pr merge --auto --squash` 実行）の前に**認可ゲートと絞り込みの 2 段判定**を行う。**PR イベント系トリガー（`pull_request` / `pull_request_target`）を一切使わない理由（消費リポ codex ラウンド P0/P1 対応）**: `pull_request` は same-repo PR で **PR head 側の workflow ファイルを secrets 付きで実行する**ため `AUTOMERGE_RULESET_TOKEN` 窃取経路になり、`pull_request_target`（PR #207 Bugbot High 対応で一度採用）も checkout 禁止を守る限り窃取は防げるものの「PR という PR 作成主体が起こせる事象を契機に secrets（`AUTOMERGE_RULESET_TOKEN`・write 権限 `GITHUB_TOKEN`）を持つジョブが起動する」構造自体が残り、組織 CI 規約（secrets 露出トリガーの追加は P0/P1）に抵触し将来の保守変更で未信頼 PR データが混入する余地も残る。cron スイープでは**実行契機・実行コンテキストのいずれにも PR 由来の値が一切含まれず**（イベント payload に PR が存在しない）、この問題クラス自体が構造的に排除される。arm の遅延は最大でポーリング間隔に収まる。workflow 内では**リポジトリのコードを一切 checkout・実行しない**（`actions/checkout` の追加禁止。サンプルは `gh api` / `gh pr list` / `gh pr view` の読み取り呼び出しと jq の判定のみで構成し、`runs-on: ${{ vars.AUTOMERGE_RUNNER }}`（runner は repo variable で指定し**フォールバックなし** — 消費リポ codex P1 対応。runner 方針は public / private で正反対のため既定値の直書きはどちらかの規約に必ず違反する。public リポはリポジトリ設定変数 `AUTOMERGE_RUNNER=ubuntu-latest`、Fandhe-AI の private リポ（GitHub ホステッド指定が CI 規約違反の組織方針）は `AUTOMERGE_RUNNER=self-hosted` を設定し、未設定では job が起動しない = fail-closed）+ `timeout-minutes: 10` を明示し、さらに job レベルの明示 opt-in ゲート `if: ${{ vars.AUTOMERGE_OPTIN == 'true' }}` を置く（消費リポ codex P0 対応。repo variable は admin のみ設定可能で PR 作成主体には偽造不能なサーバー側 opt-in シグナルとなり、設定しない限り workflow は何もしない）。**認可ゲート（PR #207 codex ラウンド2 P0 対応）**: author 一致・命名規則ブランチ・`Closes #N` マーカーは、いずれも共有 `gh` 認証を持つ PR 作成主体（プロンプトインジェクションを受けたエージェント含む）が自ら満たせる**偽造可能な provenance であり、認可根拠にならない**。そこで workflow 自身が arm 前にベースブランチの branch protection / ruleset を GitHub API で**実測検証**し、(G1) **required status checks が 1 件以上**構成済み、(G2) **required approving review count >= 1** 構成済み（GitHub は PR author の自己承認をサーバー側で拒否するため、これが「PR 作成主体が生成できない非 author 承認」という偽造不能シグナルになる）、(G3) **dismiss stale reviews（承認後 HEAD 更新で承認失効）が有効**、(G4) **ベースブランチに適用される全 ruleset の bypass actor がゼロ**（PR #207 codex ラウンド3 P0 対応。`bypass_actors` が 1 件でもあればその actor による merge が G1〜G3 の保護を迂回できるため、まず ruleset の列挙が完全であること — 実効ルール全要素に数値 `ruleset_id` と既知の `ruleset_source_type`（Repository / Organization）があり、ルールがあるのに ID が 0 件という不整合がないこと — を検証した上で、ソース種別ごとに詳細取得先をルーティング（Repository → `repos/{owner}/{repo}/rulesets/{id}`、Organization → `orgs/{org}/rulesets/{id}` — 消費リポ Bugbot High 対応。org 継承 ruleset の ID を repo 側エンドポイントで引くと 404 になり、repo 側のみの実装では org ruleset 適用ブランチが恒久的に検証不能 = 一切 arm されなかった）し、各 ruleset 詳細の `bypass_actors` が**配列型かつ空**であることを確認する。ID 欠落・非配列・null・未知ソース種別・取得失敗はすべて arm しない（org ruleset の詳細取得には token に組織レベルの Administration: read が別途必要で、無い場合も fail-closed だが原因をログで明示する）。ruleset 詳細の `bypass_actors` は Administration: read 権限がないと応答に含まれず、workflow の `GITHUB_TOKEN`（contents / pull-requests write のみ）では取得できないため — PR #207 Bugbot High 対応。`GITHUB_TOKEN` のままでは推奨構成の ruleset 保護下で G4 が常に検証不能となり一切 arm されない — G4 の詳細取得**のみ**リポジトリ secret **`AUTOMERGE_RULESET_TOKEN`**（fine-grained PAT / GitHub App token。必要権限は **Administration: read のみで write 不要**。arm 実行は従来どおり `GITHUB_TOKEN` が行う権限分離構成）で行う。token を要求するのは **ruleset 由来の実効ルールが 1 件以上あるときのみ**で、適用 ruleset が 0 件（classic branch protection のみで G1〜G3 充足）なら G4 は検証対象なしの空充足として token 不要で通過する（PR #207 Bugbot Medium 対応。ただし実効ルール API の取得自体に失敗した場合は「0 件」と区別して arm しない）。ruleset が 1 件以上あるのに secret 未構成（空）の場合は G4 を検証不能とみなし arm しない）、(G5) **required conversation resolution（レビュースレッド全解消の必須化）が有効**（PR #207 codex ラウンド4 P1 対応。無効だと任意 check 1 件 + 承認 1 件でレビュースレッド未解消のまま即時マージが成立し得る。classic は `required_conversation_resolution`、ruleset は pull_request ルールの `required_review_thread_resolution` で判定）、(G6) **workflow 冒頭の設定変数 `REQUIRED_EXTERNAL_CHECKS`（`<check context 名>:<App ID>` のカンマ区切り。既定例は `Cursor Bugbot:1210556` = Cursor Bugbot の App ID）に列挙した各組が、required status checks に「context 名 + App ID」の完全一致で App 束縛付きにすべて存在する**（PR #207 codex ラウンド4 P1 / ラウンド5 P1 + Bugbot Medium 対応。args の `externalChecks` 契約が要求する Cursor 等の外部レビュー到着を、サーバー側マージ条件（required checks）として担保するための検証。context 名の存在だけでは同名 check を別 App や same-repo の Actions workflow が作成して偽装できるため、classic は `.checks[].app_id`、ruleset は `integration_id` との組で検証し、`app_id` / `integration_id` が null・欠落のエントリ — App 束縛のない legacy `contexts` を含む — は充足根拠として受理しない。設定値の書式不正も arm しない。空文字は外部チェック不使用の明示選択として通過するが、その場合外部レビュー到着はサーバー側で一切担保されない）、(G7) **classic branch protection を認可入力に採用する場合、`enforce_admins` 有効に加えて明示 bypass 経路が存在しない**こと（消費リポ codex ラウンド P0 対応。`required_pull_request_reviews.bypass_pull_request_allowances` に登録された users / teams / apps は `enforce_admins` が有効でも PR レビュー要件（G2/G3）を明示的に迂回でき、automation App / user が登録された構成では非 author 承認なしの即時マージが成立し得る。実 API 仕様では未設定の表現が「キー欠落」と「キーありで値 null」の 2 形態を取り（`restrictions` は未設定時に `null` を返すのが正常応答 — 消費リポ Bugbot High 対応。null を unsafe 扱いすると classic-only リポで G1〜G6 が恒久 fail する）、「キー欠落または null = 未設定として通過」「object 型 = users / teams / apps がすべて配列型かつ空の場合のみ通過」とし、非 object・非配列・要素ありは classic を認可入力から除外して ruleset 側のみで判定する）、(G8) は**撤回済み（欠番）**であり arm 条件に含めない（required status checks の strict 適用（`strict_required_status_checks_policy` / classic の `strict`）は鮮度の制御であって bypass 不能性の制御ではなく、G1〜G7 が担う認可の強度は strict の有無で変わらない。strict = true は 1 件マージするたびに他の open PR を up-to-date でなくし、`implement-issue-tree` の並列ランを構造的に停止させるため要件から外した。後述の「strict を G0 の要件にしない理由」節。クライアント側 G0 の (i-c) も同じ理由で意図的な非要件である）、の **G1〜G7 すべて**を満たす場合のみ arm し、1 つでも欠ければその PR は arm せずスキップして次の PR へ進む（**fail-closed**。classic branch protection API と ruleset 実効ルール API `GET /rules/branches/{branch}` の両方に対応し、取得・解析失敗も「保護なし」側へ倒す。判定は jq で真偽値のみ取り出し、base ブランチ名は jq の `@uri` で URL エンコードしてから API パスへ展開する — Bugbot Medium 対応。`release/1.0` 等の `/` 入りブランチ名を生のまま展開すると 404 → fail-closed で本来 arm 可能な PR が永遠に arm されない）。この構造では、偽造 PR が仮に arm されてもサーバー側で非 author の人間承認と required checks が揃わない限りマージされず、人間の承認境界を迂回できない。**これらの branch protection がマージの実強制であり、arm は「承認とチェックが揃った時点で自動的にマージが完了する」利便性だけを担う**。**絞り込み条件（認可根拠ではない。誤爆防止の対象限定のみ。3 条件の AND）**: (1) **PR author がこのスキルの PR 作成専用 automation identity（bot / machine user。リポジトリ設定変数 `TRUSTED_AUTHOR` に `your-automation-bot[bot]` 等の login を設定）に完全一致**すること（REST API の `--paginate` 全ページ列挙 + `user.login` 完全一致選別。draft は除外）。**人間の個人アカウント（リポジトリ owner 含む）の指定は禁止**（その人物が手作業で作る通常 PR まで arm 対象になるため。専用 identity が未整備なら workflow を配置せず人間マージ運用に留める）。(2) head ブランチがこのスキルの命名規約 `<type>/<N>-<short-name>` にアンカー付き正規表現で**厳密一致**すること。(3) PR 本文にこのスキルの PR Create フェーズが必ず書き込む生成物マーカー **`Closes #<N>`（N はブランチ名のイシュー番号と同一）が行として存在**すること。permissions は `contents: write` + `pull-requests: write` の最小構成（pull-requests: write は auto-merge の有効化、contents: write はマージ実行権限として `enablePullRequestAutoMerge` / マージコミット作成に必要 — PR #208 Bugbot High 対応: contents を read に落とすと arm が常に権限エラーで失敗し、スイープが per-PR skip の green 終了になるため auto-merge が黙って一切成立しなくなる。checkout・push は行わないためこれ以上は要求しない）で、PR タイトル・本文等の未信頼テキストは run スクリプトへ一切展開しない（シェルが参照するのは整数検証済みの PR 番号・リポジトリ名・正規表現一致確認済みの head ブランチ名・URL エンコード済みの base ブランチ名のみ。本文マーカーは `gh pr view --json body --jq` の test() で真偽値だけを取り出して判定する）。この方式では arm の実行主体がエージェントと権限・実行環境を共有しない GitHub Actions であり、クライアント側の subagent には arm 経路が存在せず、arm しても保護未構成ならマージに至らないため、PR #206 の認可欠陥は構造的に発生しない。ランは従来どおり PR をマージ可能状態（`blocked`）まで進めて停止し、監視中にサーバー側 auto-merge によって PR が MERGED になった場合は monitor の手順 1 が検出して already-merged 経路で正常完了する。
 
 **merge-guard hook（`scripts/merge-guard-hook.sh`）— 導入は任意**: 入れると subagent（monitor 等）からのマージ系コマンドを deny する多層防御の一層になる。PreToolUse hook の deny は `bypassPermissions` でも迂回できない。ただし前述のとおりこれは承認境界ではなく、間接実行や未知のスペリングは防げない。
 
@@ -104,6 +104,228 @@ deny 判定は 2 段構えである。**最前段（raw コマンドに対する
 **セキュリティ上の要件ではないため（設計上の理由）**: G0 の主張は「共有 `gh` 認証のどのエージェントが直接 `gh pr merge` を試みても、サーバーが同条件で拒否する」ことである。strict は **鮮度**（チェックが現在の base に対して走ったか）の制御であって、**bypass 不能性**（誰がマージ条件を迂回できるか）の制御ではない。strict = false でもサーバーの受理集合とクライアントの受理集合は一致し、G0 の主張は成立する。strict を外すことで通るようになるマージは、サーバー側でも同様に通るマージだけである。
 
 **strict = false で残るリスクと補い方**: 「古い base に対して成功したチェック結果のままマージされ、マージ後の base が壊れ得る」（意味的コンフリクト）。テキストコンフリクトは merge-exec の手順 1 が `mergeable` を自己取得して `CONFLICTING` を検出し `not-mergeable` で終端するため、この経路では通らない。意味的コンフリクトについては、**ラン完了後にベースブランチの CI が green であることを確認する**運用で補う（本スキルの前提条件「マージ先ブランチが CI green」は次のランの入力条件でもある）。
+
+**補償策の成立確認（base CI プローブ）**
+
+上記の補償策は「マージ先ブランチへの push で CI が起動する」ことに暗黙依存している。push トリガの workflow が無い、`on.pull_request` 相当の `paths` フィルタで該当 head では起動しない、または**起動した push run が意味的コンフリクトを検出できない workflow（常時起動する軽量ドキュメント用 workflow 等）に限られ、本来必要なテスト workflow が含まれない**リポジトリでは、この依存が満たされず補償策が構造的に成立しない。「push イベントの run が 1 件でもあれば green」という判定は、後者のケース（必要な workflow が起動せず、無関係な軽量 workflow のみ成功）を green と誤判定してしまうため、判定は **push run の存在だけでなく、意味的コンフリクト検出に必須な workflow 集合が実際に起動し尽くしたことの被覆確認**を要件に含める。
+
+- **双方向で検証不能になること**: 前提条件「マージ先ブランチが CI green」はランの入口条件でもあるため、push CI が無いリポでは*ラン前の前提確認*も*ラン後の補償確認*も同じ理由で成立しない。「実行されていない」を「green」と読み替えてはならない。
+- **必須 workflow 集合の決め方**: 呼び出し側が事前に対象リポジトリの `.github/workflows/*.yml` と `.github/workflows/*.yaml`（GitHub Actions は両拡張子を等しく認識する。`*.yml` のみの確認だと `.yaml` 拡張子の workflow を見落とし必須集合が過小になり得る）を確認し、`on.push` を持ち意味的コンフリクトを検出できる workflow（ビルド・テスト等のジョブを含む workflow。常時起動するだけの軽量ドキュメント用 workflow は含めない）の**ファイル先頭 `name:` の値**（Actions UI・`gh run list --json workflowName` の `workflowName` に表示される workflow レベルの名前であり、workflow 内の個々の job 名ではない。yaml のファイル名でもない）を必須集合として列挙する。この列挙はプローブが自動導出しない（`paths` フィルタの評価はプローブの外で人間または呼び出し側が行う）。必須集合が空・未指定のリポジトリはプローブ対象外とし判定不能として扱う。
+- **`workflowName` は同名衝突があり得る識別子**: GitHub Actions は複数の workflow ファイルが同一の `name:` を持つことを許容する仕様のため、`workflowName` のみで必須集合と観測結果を突き合わせると、必須 workflow とは無関係な同名の軽量 workflow が成功しただけで `required_missing` が空になり green と誤判定し得る（本来必須の workflow が `paths` フィルタ等で未起動でも検出できない）。そのためプローブは判定の直前に**対象リポジトリの全 active workflow を `name` → `path` で列挙し、必須集合の各名前がちょうど 1 つの `path` にのみ対応することを確認する**。対応する `path` が 0 件（該当名の active workflow が存在しない）でも複数件（同名衝突）でも、`workflowName` による同定が意味をなさない点は同じであるため、いずれも判定不能として扱う（fail-closed。0 件の復旧は必須集合の名前指定を見直すこと、複数件の復旧は該当 workflow の `name:` を一意な値へ変更すること）。ただしこの 1:1 検証は「現在の active workflow 構成において名前が曖昧でない」ことしか保証しない。run 側の突き合わせを引き続き `workflowName` の文字列一致だけで行うと、対象 workflow が過去に無効化・改名され、無効化前は同じ名前を持っていた**別の**workflow の run（現在は active workflow 一覧に存在しない）まで一致してしまい得る（なりすまし）。そのためプローブは 1:1 検証で確定した名前を対応する `id`（workflow データベース ID。改名を跨いでも同一 workflow を指す安定な識別子）へ解決し、run 側は `workflowDatabaseId` との id 一致で同定する（後述のプローブ手順・スクリプト参照）。
+- **`--paginate` と `--jq` の併用は 1 回の `jq` 呼び出しに集約する**: `gh api --paginate --jq '<filter>'` は `--jq` のフィルタを**ページごとに独立して適用**し、結果を JSON 値として連結出力する仕様のため、`group_by(.name)` のようにページを跨いで集約する必要がある処理をそのまま渡すと、同名 workflow が別ページに分かれた場合に検出できない（ページ内でしか重複を見ない）。そのため、workflow 一覧の取得は `--paginate --slurp` で全ページの生レスポンスを 1 つの配列へ集約し、その**生 JSON を外部の `jq` へパイプ**して `.[].workflows[]` を展開する。`gh api` は `--slurp` と `--jq` の併用を拒否する（`the --slurp option is not supported with --jq or --template`）ため、`--paginate --slurp --jq '<filter>'` と書くと 1 リポも判定できない。`2>/dev/null` でエラーを捨てていると全リポが判定不能へ倒れ、fail-closed なので危険側ではないものの補償策が丸ごと無効化される。外部 `jq` に依存するため、実行前に `command -v jq` で存在確認して不在なら判定不能とする（同じ制約と対処は `../SKILL.md` の「(B) 人間の診断専用」ブロックにも記載がある）。
+- **プローブ手順**: 既定ブランチは `gh repo view --json defaultBranchRef` で解決する（`main` 決め打ち禁止）。ブランチ名は `jq -sRr '@uri'` でエンコードしてから API パスへ展開する（`release/1.0` 等の `/` 対策）。head sha の存在確認は終了コードではなく HTTP status で行う（`gh api` はエラーも stdout に出すため）。続いて `gh api repos/<repo>/actions/workflows --paginate --slurp | jq '[.[].workflows[] | select(.state == "active") | {name, path, id}]'` で全ページを集約した active workflow の `name`→`path`→`id` 対応を取得し（`--slurp` と `--jq` は併用不可のため外部 `jq` へパイプする。`jq` 不在時は判定不能。**パイプの終了ステータスも確認する**。`set -o pipefail` 下でも、代入結果を使う前に明示チェックしないと、先行ページだけで有効な JSON 配列が生成された場合に後続ページの取得失敗を見逃し、ページを跨ぐ同名 workflow を検出できないまま通過し得る）、必須集合の各名前について対応する `path` の件数を数える。1 件ちょうどでない名前（0 件・複数件のいずれも）が 1 つでもあればその時点で判定不能として次のリポへ進む（`gh run list` を呼ぶ前に fail-closed）。1 件に確定した名前は対応する `id`（workflow データベース ID）へ解決し、以降の run 突き合わせの同定根拠として使う（`workflowName` の文字列一致のみだと、無効化・改名された別 workflow が過去に同じ名前を持っていた場合の run まで拾い得るため — 詳細は次項）。次に `gh run list -R <repo> -c <head> -L 100 --json workflowName,workflowDatabaseId,status,conclusion,event,headBranch` を取得し、応答が配列であることを検証したうえで**配列長が取得上限 100 件に到達していないことも検証する**（到達時は取得できた分だけを集計すると取得範囲外の失敗・未完了 run を見落とすため、判定不能として扱う。件数を上げる場合もこの上限チェック自体は必須のまま残す）。`gh run list -c <head>` は commit SHA のみで絞り込み、headBranch を見ないため、同じ SHA を指す feature branch・別ブランチ・tag への push run も混入し得る（feature branch 上で必須 workflow が成功した後、その SHA が base へ fast-forward されても base push が paths 条件等で起動しなかった場合、feature-branch 側の run だけで required_missing が空かつ全件 success となり、base CI 未実行にもかかわらず green と誤判定される）。そのため push run の絞り込みは **`event == "push"` かつ `headBranch == <既定ブランチ名>`** を必須条件とし、この 2 条件を満たす run について**必須 workflow の充足は `workflowDatabaseId` を前段で解決した `id` と突き合わせて判定する**（`workflowName` は表示・ログ用の補助情報に留め、同定根拠には使わない。値はシェルへ展開せず jq 内の比較に閉じる。比較対象は呼び出し側が `--arg` で渡す必須集合の文字列と、そこから解決した `id` の JSON のみ）。**集計の直前に既定ブランチの head sha を再取得し、プローブ冒頭で取得した head と一致することを確認する**（workflow 一覧取得・run list 取得の間に base が更新されると、古い head の run がすべて成功していても現在の base に未検証の新しいコミットがある状態を green と誤判定し得るため。不一致は判定不能として次のリポへ進む。取り直して再測はしない — その場で再取得すると同じ競合が再発し得るため、呼び出し側が改めてプローブを実行する）。`while` / `for` ループはインライン実行不可の環境があるため 1 ファイルにしてから `bash <file> <repo>:<workflow1>,<workflow2>...` で実行する（`ruleset-policy.md` 手順 A / 手順 B と同型）。1 リポの判定不能で全体を止めない（`exit` ではなく `continue` で次のリポへ進む）。
+
+  ```bash
+  #!/usr/bin/env bash
+  # base CI プローブ: 既定ブランチ head で「意味的コンフリクト検出に必須な workflow 集合」
+  # が push イベントで起動し尽くし、かつ全件が失敗・未完了・判定不能なしで完了しているかを
+  # 判定する。引数は "owner/repo:workflowName1,workflowName2" の並び（コロンの後に必須
+  # workflow の name: 値をカンマ区切り・空白なしで列挙する。必須集合は呼び出し側が
+  # .github/workflows/*.yml と *.yaml の両方を事前確認して決め打つ — 常時起動する軽量ドキュメント用
+  # workflow のみを根拠に green 判定しないため）。1 リポの判定不能で全体を止めない
+  # （continue で継続）。
+  set -uo pipefail
+
+  # 外部 jq への依存を先に確認する。本スクリプトは workflow 一覧の集約に
+  # `gh api --paginate --slurp | jq` を使う（gh は --slurp と --jq を併用できない）。
+  # jq が無いと全リポが「判定不能」になり、補償策が丸ごと無効化されたことに
+  # 気づけないため、ここで止める（SKILL.md の (B) 診断コマンドと同じ扱い）。
+  command -v jq >/dev/null || { echo "jq が見つからないためプローブを中断する" >&2; exit 1; }
+
+  for entry in "$@"; do
+    repo="${entry%%:*}"
+    required_csv="${entry#*:}"
+    if [ "${required_csv}" = "${entry}" ] || [ -z "${required_csv}" ]; then
+      echo "${repo}: 判定不能 — 必須 workflow 集合が未指定（\"owner/repo:name1,name2\" 形式で明示すること）"; continue
+    fi
+
+    db=$(gh repo view "${repo}" --json defaultBranchRef --jq '.defaultBranchRef.name' 2>/dev/null)
+    case "${db}" in
+      ""|*" "*) echo "${repo}: 判定不能 — defaultBranchRef を取得できない"; continue ;;
+    esac
+    db_enc=$(printf '%s' "${db}" | jq -sRr '@uri')
+
+    code=$(gh api -i "repos/${repo}/commits/${db_enc}" 2>/dev/null | awk 'NR==1{print $2}')
+    if [ "${code}" != "200" ]; then
+      echo "${repo}: 判定不能 (HTTP ${code:-?}) — head sha を取得できない"; continue
+    fi
+    head=$(gh api "repos/${repo}/commits/${db_enc}" --jq '.sha' 2>/dev/null)
+    if ! printf '%s' "${head}" | grep -Eq '^[0-9a-f]{40}$'; then
+      echo "${repo}: 判定不能 — head sha が 40 桁 hex でない"; continue
+    fi
+
+    # workflowName は同名衝突があり得る識別子（複数 workflow ファイルが同一 name: を
+    # 持てる仕様）。必須集合の各名前が active workflow のちょうど 1 path に対応する
+    # ことを確認する（0 件・複数件のいずれも run list の workflowName 突き合わせが
+    # 同定根拠にならないため fail-closed）。--paginate と --jq を素朴に組み合わせると
+    # jq フィルタがページ単位で適用され、ページを跨いだ同名重複を検出できない
+    # （group_by(.name) がページ内でしか集約されない）。そのため --slurp で全ページの
+    # 生レスポンスを 1 配列に集約してから 1 回の jq 呼び出しで展開する。
+    # --slurp は --jq と併用できない（gh が
+    # "the --slurp option is not supported with --jq or --template" で拒否する）ため、
+    # gh 側は生 JSON を出すだけにして外部の jq へパイプする。併用形のまま
+    # 2>/dev/null を付けると全リポが「判定不能」へ倒れ、fail-closed ではあるが
+    # 補償策そのものが無効化される。
+    # `pipefail` はパイプの非ゼロ終了をコマンド全体の終了ステータスへ伝えるが、
+    # 代入した後に終了ステータスを確認しないと効果がない。先行ページだけで
+    # 有効な JSON 配列が返るとページ跨ぎの取得失敗を素通しし、後続ページにある
+    # 同名 workflow を見落として「ちょうど1 path」判定を誤らせ得るため、
+    # 代入自体を if で囲んで fail-closed にする。
+    if ! workflows=$(gh api "repos/${repo}/actions/workflows" --paginate --slurp 2>/dev/null \
+                  | jq '[.[].workflows[] | select(.state == "active") | {name, path, id}]' 2>/dev/null); then
+      echo "${repo}: 判定不能 — workflow 一覧の取得が失敗（ページ取得の途中失敗を含む）"; continue
+    fi
+    if ! printf '%s' "${workflows}" | jq -e 'type == "array"' >/dev/null 2>&1; then
+      echo "${repo}: 判定不能 — workflow 一覧を取得できない"; continue
+    fi
+    bad_hit=$(printf '%s' "${workflows}" | jq -r --arg req "${required_csv}" '
+      ($req | split(",") | map(gsub("^\\s+|\\s+$";""))) as $required |
+      (group_by(.name) | map({name: .[0].name, count: length})) as $counts |
+      [
+        $required[] | . as $n |
+        (([$counts[] | select(.name == $n) | .count][0]) // 0) as $c |
+        select($c != 1) | "\($n):\($c)"
+      ] | join(",")')
+    if [ -n "${bad_hit}" ]; then
+      echo "${repo}: 判定不能 — 必須 workflow 名が active workflow のちょうど1 path に対応しない（0件=未存在 / 複数件=同名衝突）: ${bad_hit}"; continue
+    fi
+
+    # 必須集合の各名前を、直前の1:1検証で確定した active workflow の `id`
+    # （workflow データベース ID。path 変更・名前変更を跨いでも同一 workflow を指す
+    # 安定な識別子）に解決しておく。run 側の突き合わせを workflowName の文字列一致
+    # のみに頼ると、対象 workflow が無効化・改名された後に残る過去の run（無効化
+    # 前は同じ名前で存在した別 workflow の run を含む）まで拾い、その run が
+    # たまたま成功していれば green を偽装できてしまう（同名だが別 workflow という
+    # なりすまし）。id 束縛によりこの偽装経路を塞ぐ。
+    required_map=$(printf '%s' "${workflows}" | jq -c --arg req "${required_csv}" '
+      . as $wfs |
+      ($req | split(",") | map(gsub("^\\s+|\\s+$";""))) as $required |
+      [ $required[] | . as $n | { name: $n, id: ($wfs[] | select(.name == $n) | .id) } ]')
+
+    runs=$(gh run list -R "${repo}" -c "${head}" -L 100 \
+            --json workflowName,workflowDatabaseId,status,conclusion,event,headBranch 2>/dev/null)
+    if ! printf '%s' "${runs}" | jq -e 'type == "array"' >/dev/null 2>&1; then
+      echo "${repo}: 判定不能 — run list の応答が配列でない"; continue
+    fi
+    total_count=$(printf '%s' "${runs}" | jq 'length' 2>/dev/null)
+    if ! printf '%s' "${total_count}" | grep -Eq '^[0-9]+$'; then
+      echo "${repo}: 判定不能 — 取得件数を数値として読めない"; continue
+    fi
+    if [ "${total_count}" -ge 100 ]; then
+      echo "${repo}: 判定不能 — run list が取得上限 100 件に到達（切り捨ての可能性。ページングで全件取得するか件数を上げて再測する）"; continue
+    fi
+
+    # workflow 一覧取得・run list 取得の間に base が更新され得るため、集計直前に
+    # head sha を再取得して冒頭で取得した head と一致するか確認する。不一致のまま
+    # 集計すると、古い head の run が全件成功していても現在の base に未検証の
+    # 新しいコミットがある状態を green と誤判定する（strict=false が前提にする
+    # 「ラン完了後の base CI green」補償策そのものを無効化する）。ここでは
+    # continue で次のリポへ進むのみとし、その場での取り直しはしない
+    # （同じ競合が再発し得るため、呼び出し側が改めてプローブ全体を再実行する）。
+    # 再取得自体が認証切れ・ネットワーク断・レート制限で失敗した場合、stderr を
+    # 捨てたままだと recheck が空文字や非 SHA になり得る。それを head と単純比較
+    # すると API 障害を「base head 更新のレース」と誤分類し、運用者を再測定へ
+    # 誘導してしまう（実際の障害の是正から遠ざける）。そこで冒頭の head 取得と
+    # 同様に HTTP status での成否確認 → 40 桁 hex 形式の検証を先に行い、
+    # 「API 障害」と「実際の SHA 不一致」を別メッセージで区別する。
+    recheck_code=$(gh api -i "repos/${repo}/commits/${db_enc}" 2>/dev/null | awk 'NR==1{print $2}')
+    if [ "${recheck_code}" != "200" ]; then
+      echo "${repo}: 判定不能 — 集計中の head 再取得に失敗（HTTP ${recheck_code:-?}）。base 更新のレースと区別できないため判定不能とする"; continue
+    fi
+    recheck=$(gh api "repos/${repo}/commits/${db_enc}" --jq '.sha' 2>/dev/null)
+    if ! printf '%s' "${recheck}" | grep -Eq '^[0-9a-f]{40}$'; then
+      echo "${repo}: 判定不能 — 集計中の head 再取得が 40 桁 hex を返さない（API 応答異常）"; continue
+    fi
+    if [ "${recheck}" != "${head}" ]; then
+      echo "${repo}: 判定不能 — 集計中に base head が更新された（旧: ${head:0:8} / 新: ${recheck:0:8}）"; continue
+    fi
+
+    # -c で 1 リポ 1 行にする（複数リポを並べたときに目視で差分を追えるようにするため）。
+    # `gh run list -c "${head}"` は commit SHA のみで絞り込み、headBranch を見ない
+    # ため、同じ SHA を指す feature branch・別ブランチ・tag への push run も
+    # 混入し得る（feature branch 上で必須 workflow が成功した後、その SHA が
+    # base へ fast-forward されても base push が paths 条件等で起動しなかった
+    # 場合、feature-branch 側の run だけで required_missing==[] かつ全件 success
+    # となり、base CI 未実行にもかかわらず green と誤判定される）。そのため
+    # push run の絞り込みは `.headBranch == $b`（既定ブランチ）を必須条件に含める。
+    # 必須 workflow の充足判定は `workflowName` の文字列一致ではなく
+    # `workflowDatabaseId` を `required_map` の `id`（直前で 1:1 検証済みの active
+    # workflow に解決済み）と突き合わせる。名前一致のみだと、無効化・改名された
+    # 別 workflow の過去 run が同じ `workflowName` を持っていた場合にそれを本物と
+    # 誤認し得る（なりすまし）。id 束縛によりこの経路を塞ぐ。
+    printf '%s' "${runs}" | jq -c --arg r "${repo}" --arg b "${db}" --arg h "${head:0:8}" --argjson reqmap "${required_map}" '
+      [.[] | select(.event == "push" and .headBranch == $b)] as $p |
+      ($p | map(.workflowDatabaseId)) as $seen_ids |
+      ($reqmap | map(select(([.id] - $seen_ids) | length > 0) | .name)) as $missing |
+      {
+        repo: $r, branch: $b, head: $h,
+        push_total: ($p | length),
+        required_missing: $missing,
+        incomplete: ([$p[] | select(.status != "completed")] | length),
+        failed:     ([$p[] | select(.status == "completed" and .conclusion != null
+                       and ((.conclusion | IN("failure","cancelled","timed_out","action_required","startup_failure","stale")))
+                     )] | length),
+        unknown:    ([$p[] | select(.status == "completed"
+                       and ((.conclusion // "") | IN("success",
+                            "failure","cancelled","timed_out","action_required","startup_failure","stale") | not)
+                     )] | length)
+      }'
+  done
+  ```
+
+  実行例（`Fandhe-AI/agent-cli-skills` で実測。本リポは `.github/workflows/ci.yml` のみが `on.push` を持ち、workflow レベルの `name:` は `CI` の1本のため必須集合は `CI`）:
+
+  ```
+  $ bash probe.sh "Fandhe-AI/agent-cli-skills:CI"
+  {"repo":"Fandhe-AI/agent-cli-skills","branch":"main","head":"0f946618","push_total":1,"required_missing":[],"incomplete":0,"failed":0,"unknown":0}
+  ```
+
+  fail-closed 経路も同じスクリプトで実測している（`gh run list` へ到達する前に打ち切られる）:
+
+  ```
+  $ bash probe.sh "Fandhe-AI/agent-cli-skills:NoSuchWorkflow"
+  Fandhe-AI/agent-cli-skills: 判定不能 — 必須 workflow 名が active workflow のちょうど1 path に対応しない（0件=未存在 / 複数件=同名衝突）: NoSuchWorkflow:0
+
+  $ bash probe.sh "Fandhe-AI/agent-cli-skills"
+  Fandhe-AI/agent-cli-skills: 判定不能 — 必須 workflow 集合が未指定（"owner/repo:name1,name2" 形式で明示すること）
+  ```
+
+  集計直前の head 再確認による判定不能も実測している（`recheck` を強制的に不一致させたスクリプトで検証。実運用ではこの分岐は base head が本当に更新された場合にのみ通る）:
+
+  ```
+  $ bash probe_forced_mismatch.sh "Fandhe-AI/agent-cli-skills:CI"
+  Fandhe-AI/agent-cli-skills: 判定不能 — 集計中に base head が更新された（旧: 0f946618 / 新: deadbeef）
+  ```
+
+  判定は以下の表に従う。
+
+  各行は上から順に評価し、最初に条件が一致した行の判定を採用する（下の行の条件は
+  「それより上のすべての行の条件が成立しなかった」ことを前提とする。特に `red` 行は
+  `required_missing != []` の場合には成立せず、その場合は下の「補償策不成立」行が
+  先に一致するため、`required_missing` が空でない状態のまま `red` 判定になることはない。
+  同様に `failed >= 1` は `unknown` の値によらず `red` 行が先に一致する — `unknown` 行を
+  `failed` 行より先に置くと、両方が正の場合に実測された失敗（`failed`）が「合否不明」に
+  丸められ、実際に壊れている base を「再測すればよい」判定不能へ誤分類してしまうため、
+  `failed`（実測された不合格）を `unknown`（合否に分類できない conclusion）より優先して
+  評価する — Bugbot 指摘対応）。
+
+  | 条件（上から順に評価） | 判定 | 意味 |
+  |------|------|------|
+  | `push_total == 0` | 補償策不成立 | push トリガ workflow が無い / `paths` フィルタで除外された |
+  | 取得件数が 100 件に到達 | 判定不能 | 取得範囲外に失敗・未完了 run がある可能性を排除できない |
+  | 権限・API 障害で判定に到達できない | 判定不能 | 記録して再測する（green にも不成立にも倒さない） |
+  | `push_total >= 1` かつ `required_missing != []` | 補償策不成立 | push run はあるが必須 workflow の一部が起動していない（軽量 workflow のみ成功等）。`failed`/`incomplete`/`unknown` の値によらずこの行が優先し、green にも red にも倒さない |
+  | `push_total >= 1` かつ `required_missing == []` かつ `incomplete >= 1` | 未完了 | 完了を待って再測する（green と扱わない） |
+  | `push_total >= 1` かつ `required_missing == []` かつ `incomplete == 0` かつ `failed >= 1` | red | 必須 workflow は全件起動しており補償策は成立するが、base が壊れている。`unknown` が同時に正でもこの行が優先する（実測された失敗を合否不明へ丸めない） |
+  | `push_total >= 1` かつ `required_missing == []` かつ `incomplete == 0` かつ `failed == 0` かつ `unknown >= 1` | 判定不能 | 合否に分類できない conclusion が混在し、かつ実測された失敗はない。green へ倒さない |
+  | `push_total >= 1` かつ `required_missing == []` かつ `failed == 0` かつ `incomplete == 0` かつ `unknown == 0` | green | 必須 workflow が全件起動し尽くし、かつ全件が健全に完了。補償策が成立し base は健全 |
+
+  `failed` は `cancelled` / `timed_out` / `action_required` / `startup_failure` / `stale` を失敗側に数える。**合格（green への算入）は `success` のみに限定する**。`neutral` / `skipped` は失敗側にも算入しないが合格側にも入れず `unknown` 側へ計上する（意味的コンフリクト検出の補償策としては「本当に実行され成功した」ことの確認が目的であり、`neutral`/`skipped` は「実行されたが判定不能」を意味するため green へ倒さない。SKILL.md の CI 全 green 判定が任意チェックの `skipped`/`neutral` を許容するのとは前提が異なる — こちらは必須 workflow の健全完了を確認する補償策であるため厳格側に倒す）。`required_missing` は必須集合の各 workflow を、実際に push イベントで観測された run の `workflowDatabaseId` 集合と id 突き合わせした結果、対応する run が見つからなかった名前の一覧であり、空配列であることは「必須 workflow（同定済みの id が一致する run に限る）が全件起動した」ことの直接証拠になる（個々の workflow ごとの conclusion 追跡は不要 — 全体の `failed`/`incomplete`/`unknown` が 0 であれば、起動した必須 workflow を含む push run 全件が `success` で完了したことを意味する）。
+- **不成立時の扱い（3 択・順に推奨）**:
+  1. マージ先ブランチへ push トリガの最低限のビルド/テストを追加する（`paths` フィルタで除外されないことをプローブで実測確認する）。これが本則。
+  2. `autoMerge: true` を使わない（マージ可能状態で停止し人間がマージする）。補償策不成立のリポでは既定の非 opt-in 運用を推奨とする。
+  3. やむを得ず `autoMerge: true` を使う場合は「補償策 適用外」であることを記録したうえで、ラン完了後に **base を最新化した状態での検証を最低 1 回** 実施する（例: マージ後の base から一時ブランチを切って PR CI を 1 回起動し、意味的コンフリクトの有無を確認する）。実施も記録もしない運用は選択肢に含めない。
+- **実測記録の陳腐化に関する注意**: リポジトリ構成は変わるため、判断は測定日付とセットで記録し、`autoMerge` 運用を開始・再開するたびに再測する。
 
 サーバー側 auto-merge 運用ではさらに **repo 設定で auto-merge を許可**する（Settings → General → Allow auto-merge）。なお upstream（Fandhe-AI/agent-cli-skills）の `https://github.com/Fandhe-AI/agent-cli-skills/blob/main/docs/implement-issue-tree/auto-merge-sample.yml`（`docs/implement-issue-tree/auto-merge-sample.yml`）は上記のうち **required checks >= 1・非 author 必須承認 >= 1・dismiss stale reviews・適用全 ruleset の bypass actor ゼロ・required conversation resolution 有効・`REQUIRED_EXTERNAL_CHECKS`（外部レビュー App の check context 名 + App ID の組）の required checks への App 束縛付き包含、の 6 点を arm 前に API で実測検証し、未構成・検証不能なら arm しない（fail-closed）**（strict 適用を検証していた G8 は撤回済み。前節「strict を G0 の要件にしない理由」参照）。classic branch protection は `enforce_admins` が有効かつ明示 bypass 経路（`bypass_pull_request_allowances` / `restrictions` の users / teams / apps）が存在しない場合のみ認可入力として採用し（G7。キー欠落または null = 未設定の正常応答のため通過（`restrictions` は未設定時 null が正常応答）、object は全リストが空配列の場合のみ通過）、また読み取り API が管理者権限を要求し workflow の `GITHUB_TOKEN` では読めないことがあるため、**ruleset での構成（bypass actor なし）を推奨**する（実効ルール API は読み取り権限で取得できる）。ruleset 運用ではさらにリポジトリ secret **`AUTOMERGE_RULESET_TOKEN`**（Administration: read のみの fine-grained PAT / GitHub App token。write 不要。org 継承 ruleset を使う場合は組織レベルの Administration: read も併せて付与）の設定が必要で、ruleset が 1 件以上適用されるのに未構成だと G4（ruleset 詳細の bypass actor 検証）が検証不能となり一切 arm されない（fail-closed）。適用 ruleset が 0 件（classic のみで G1〜G3 充足。enforce_admins 必須）の運用ではこの secret は不要（G4 は空充足で通過）。なお workflow のトリガーは `schedule`（cron）+ `workflow_dispatch` のみの cron スイープ方式とし、`pull_request` / `pull_request_target` は使わない（PR イベントを契機に secrets 付きジョブを起動する構造自体を排除する。「自動マージのサーバー側委譲と merge-guard hook」節参照）。加えてリポジトリ設定変数 **`TRUSTED_AUTHOR`**（automation identity の login。未設定ならスイープは何もしない）・**`AUTOMERGE_OPTIN`**（文字列 `true` を設定しない限り job ごとスキップされる明示 opt-in ゲート）・**`AUTOMERGE_RUNNER`**（runner ラベル。フォールバックなしのため未設定では job が起動しない）の 3 つの設定が必要で、いずれか未設定なら動かない（fail-closed）。workflow 内でリポジトリのコードを checkout・実行してはならない。
 

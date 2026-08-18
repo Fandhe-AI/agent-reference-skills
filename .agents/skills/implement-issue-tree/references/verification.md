@@ -25,12 +25,34 @@ Workflow の返却値（`done`・`failures`・`notStarted`）を確認し、`fai
 `scripts/implement-issue-tree.js` を変更した場合、以下でランタイムに受理される（起動可能である）
 ことを機械検証する。判定ロジックの実装は `tests/lib/workflow-script-contract.mjs` の 1 箇所に
 集約されており、CI（`workflow-loadability.test.mjs`）と本節の手動実測コマンドの双方が同じ実装を
-使う（実装が分岐して片方だけ stale 化する事故を防ぐ）。
+使う（実装が分岐して片方だけ stale 化する事故を防ぐ）。`workflow-loadability.test.mjs` が
+CI で実行されるのは上流リポジトリ（`Fandhe-AI/agent-cli-skills`）の `js-tests` ジョブ
+（`node --test "skills/**/*.test.mjs"`）に限られる契約であり、下流の vendoring 先には
+配布物として同梱されるのみで CI 登録は行わない（下流で新規に CI ジョブを設定する必要はない）。
+
+スキルの配置は導入形態で 3 レイアウトに分かれる（詳細は `../SKILL.md` の「使い方」参照）。
+以下のコマンドは配置を優先順位付きで解決してから実行するため、いずれのレイアウトでもそのまま
+使える:
 
 ```bash
-node --test skills/implement-issue-tree/tests/workflow-loadability.test.mjs
-node skills/implement-issue-tree/tests/lib/workflow-script-contract.mjs \
-  skills/implement-issue-tree/scripts/implement-issue-tree.js
+# スキルディレクトリを導入形態非依存に解決する（優先順位: skills/ → .agents/skills/ → .claude/skills/）。
+# 上流リポジトリでは skills/ と .claude/skills/（symlink）の両方が存在し得るため、
+# 複数一致時も中止せず先勝ちで解決する。
+IIT_SKILL_DIR=""
+for CANDIDATE in "skills/implement-issue-tree" ".agents/skills/implement-issue-tree" ".claude/skills/implement-issue-tree"; do
+  if [ -f "${CANDIDATE}/tests/lib/workflow-script-contract.mjs" ]; then
+    IIT_SKILL_DIR="${CANDIDATE}"
+    break
+  fi
+done
+if [ -z "${IIT_SKILL_DIR}" ]; then
+  echo "エラー: implement-issue-tree のスキルディレクトリが見つからない（skills/ / .agents/skills/ / .claude/skills/ のいずれにも存在しない）" >&2
+  exit 1
+fi
+
+node --test "${IIT_SKILL_DIR}/tests/workflow-loadability.test.mjs"
+node "${IIT_SKILL_DIR}/tests/lib/workflow-script-contract.mjs" \
+  "${IIT_SKILL_DIR}/scripts/implement-issue-tree.js"
 ```
 
 **stale だった旧手順について**: かつて本節には `sed -E 's/^export //' scripts/implement-issue-tree.js`
@@ -70,13 +92,18 @@ meta 宣言の `export` のみを除去し、残りの `export` はランタイ�
 
 **履歴コミットに対する回帰検知能力の実証（一回限りの手動実行。CI テストではない）**:
 
+**上流リポジトリ専用。** `git show <sha>:skills/...` は上流リポジトリの git 履歴を参照するコマンドで
+あり、下流の vendoring 先には git 履歴が配布されないため実行できない。下流では実行しないこと。
+パイプ先は上記の解決スニペットで束縛した `IIT_SKILL_DIR` を使う（本ブロック単独で実行する場合は先に
+上記スニペットを実行して `IIT_SKILL_DIR` を束縛しておくこと）。
+
 ```bash
 git show efae3ab:skills/implement-issue-tree/scripts/implement-issue-tree.js \
-  | node skills/implement-issue-tree/tests/lib/workflow-script-contract.mjs -
+  | node "${IIT_SKILL_DIR}/tests/lib/workflow-script-contract.mjs" -
 # 期待: oversize-hard（528,837 B > 524,288）と parse-error の 2 違反、exit 1
 
 git show 1b5a647:skills/implement-issue-tree/scripts/implement-issue-tree.js \
-  | node skills/implement-issue-tree/tests/lib/workflow-script-contract.mjs -
+  | node "${IIT_SKILL_DIR}/tests/lib/workflow-script-contract.mjs" -
 # 期待: parse-error のみ（379,538 B でサイズは通る）、exit 1
 ```
 
@@ -191,4 +218,47 @@ grep -vE '^\s*#' scripts/merge-guard-hook.sh | grep -nE -- "--auto --squash|carv
 ```
 
 期待結果: `bash -n` が終了コード 0。手順 2 で hook に allow 経路（grant 照合・`expectedCommand`・完全一致）が **1 件も残っていない**こと。手順 3 で js から grant / canary / branch-protection 関連シンボルが（コメントの経緯言及を除き）**撤去されている**こと。手順 4 で `boundaryNonce` / `ensureBoundaryNonceSeed`（fix / state フェーズの未信頼データ境界トークン用）は**残存**していること。手順 5 で `recoveryOnly` が `lastState === 'ready' && !(autoMergeEnabled && externalChecksConfirmed && externalChecksContextsConfirmed)` であること（opt-out・externalChecks 未確定・信頼済み context 未宣言では merge-exec が `gh pr merge` を出力しない回復専用経路に固定され、opt-in + 確定 + 全 App の context 宣言のときのみマージ経路が開く。マージ経路は monitor の出力を入力に取らず、merge-exec の自己取得 sha による `--match-head-commit` と G0（`server-enforcement-missing` 辞退）を伴うこと — `grep -n "server-enforcement-missing" scripts/implement-issue-tree.js` が schema・プロンプト・終端分岐にヒットし、`grep -n "sanitizeSha(m?.headSha)" scripts/implement-issue-tree.js` が 0 件であることで確認する。さらに G0 の classic 経路がクライアント側自動マージ非対応として無条件で fail-closed 辞退すること（classic の bypass 不能性 — enforce_admins・bypass allowance・実行主体ロール・カスタムロールの bypass 権限 — は write 権限の実行トークンから証明できず、検証に必要な protection 読取自体が admin 権限を要求するため。下流 sync PR #2007 codex P0 / PR #236 Bugbot High 対応）— `grep -n "classic-unsupported" scripts/implement-issue-tree.js` が reason enum・reason 契約記述・手順 2b (ii) のプロンプト・終端分岐にヒットする — と、classic protection API・classic 判定式が G0 から撤去されていること — `grep -n "protection/required_status_checks\|protection/enforce_admins\|required_conversation_resolution\|bypass_pull_request_allowances\|collaborators/" scripts/implement-issue-tree.js` が **0 件** — と、required checks の strict 適用（マージ前の base 最新化必須）を ruleset 経路で検査すること — `grep -n "strict_required_status_checks_policy" scripts/implement-issue-tree.js` が手順 2b (i-c) のプロンプトと reason 契約記述にヒットする — も確認する）。手順 5b で G0 (iv) の外部チェック照合が宣言 context + App ID の組（`integration_id` + `context`）の**完全一致**であること（`select(.integration_id == $appid and .context == $ctx)` が手順 2b (iv) のプロンプトにヒットし、App ID 単独の `select(.integration_id == $appid)]` 照合と classic 側の `select(.app_id ==` 照合が **0 件**であること — classic 経路は G0 (ii) で非対応辞退するため照合式を持たない）、G0 (v) の client-only チェック照合（`client-only` が手順 2b (v) のプロンプト・reason 契約・終端文言にヒット）と、G0 (v-b) の required checks 発行元束縛照合（integration_id が数値でない required check・宣言 integration_id と一致する App 発行の check-run を欠く required context を fail-closed で辞退。required context と同名の成功 commit status による required condition 偽装の遮断 — fandhe-backend sync PR #627 codex P0 対応。`grep -n "issuer-unbound" scripts/implement-issue-tree.js` が reason enum・reason 契約記述・手順 2b (v-b) のプロンプト・終端分岐にヒットし、`grep -nF 'any(.n == $r.context and .a == $r.integration_id)' scripts/implement-issue-tree.js` が手順 2b (v-b) の束縛照合 jq 式にヒットする）と、ホスト側ゲート `externalChecksContextsConfirmed`（args パース・recoveryOnly 判定・返却値にヒット）が存在することも確認する。手順 6 で PR #206 のクライアント側 arm（precheck / arm エージェント・hook carve-out）の残骸が **0 件**であること（upstream の `docs/implement-issue-tree/auto-merge-sample.yml` はサーバー側 workflow のため対象外）。hook テストは `bash -n` に加え、deny 専用ケース群（subagent の全マージ系スペリング → deny、`gh pr merge <n> --auto --squash` を含むあらゆる `gh pr merge` → deny、`gh pr comment @cursor review`・読み取り系・main スレッド → 許可）で判定を確認する。
+
+### Review の diff 比較基準（Issue #315）
+
+`reviewPrompt()`（push 前 Review）または `fixPrompt()` の push 前分岐（Review ループの修正）を変更した場合、比較基準が `origin/<base-branch>`（remote-tracking ref）の 3 点ドット diff に統一されていること・3 拠点（SKILL.md / reviewPrompt / fixPrompt push 前分岐）が乖離していないことを確認する。ローカル base ref を比較基準にすると、ローカルが origin より遅れているだけで無関係な祖先コミットの差分までレビュー対象に混入する（#297 実測: diff 417 行中 387 行がノイズとなり 3 巡で収束失敗）。3 点ドット `A...HEAD` は `merge-base(A, HEAD)` からの差分のため、`A` に `origin/<base-branch>` を渡すと比較点はブランチの分岐点に固定され、ラン中に origin が進んでも fetch なしで比較点が動かない。
+
+```bash
+# 1. script 内の比較・分岐点操作系 git コマンドで ${baseBranch} を使う箇所が全て origin/ 付きであること
+#    （git fetch origin ${baseBranch} は origin/${baseBranch} を「更新する」側の正当な未修飾形の
+#    ため、比較・分岐点操作の対象になり得る動詞（diff/merge/checkout/rebase/rev-parse）だけに
+#    絞ってから、origin/ 付きヒットを除外した残りが 0 件であることを確認する）
+grep -nE 'git (diff|merge|checkout|rebase|rev-parse)[^`]*\$\{baseBranch\}' skills/implement-issue-tree/scripts/implement-issue-tree.js | grep -vF 'origin/${baseBranch}'
+# → 出力 0 件（`fetch` は上記の動詞集合に含めないため、正常運用の `git fetch origin ${baseBranch}` を
+#   誤検出しない。何かヒットした場合はローカル base 基準への revert）
+
+# 2. SKILL.md の <base-branch> プレースホルダも同様に origin/ 付きであること
+grep -n '<base-branch>\|<base>' skills/implement-issue-tree/SKILL.md
+# → git コマンド位置の <base-branch> が全て origin/<base-branch> であること
+
+# 3. サイズ確認（Workflow 起動可否の実測は Issue #277 節を参照）
+wc -c skills/implement-issue-tree/scripts/implement-issue-tree.js
+
+# 4. 決定的回帰テスト（群 A: reviewPrompt 契約 / 群 B: SKILL.md ↔ script の乖離防止（fixPrompt 含む）/ 群 C: git セマンティクス / 群 D: base 最新化契約（Issue #361））
+node --test skills/implement-issue-tree/tests/review-diff-base.test.mjs
+```
+
+実測シナリオ（一時 git リポジトリ。ネットワークは使わずローカルパスの bare リポジトリを remote とする）:
+
+| 観測 | 状況 | `--name-only` の結果 |
+|---|---|---|
+| A | ローカル base 基準（旧・#297 再現） | `feature.txt`, **`unrelated.yml`**（無関係な変更が混入） |
+| B | `origin/<base>` 基準（修正後） | `feature.txt` のみ |
+| C | 先行マージで origin が進行後・**fetch 前** | `feature.txt` のみ（比較点は分岐点で固定） |
+| D | 先行マージ後・**fetch 後**（`origin/<base>` が別 sha へ更新済み） | `feature.txt` のみ（merge-base は不変） |
+
+群 D の実測シナリオ（`remote.origin.fetch` を持たない remote を作って挙動差を測る）:
+
+| 観測 | 状況 | 結果 |
+|---|---|---|
+| D-1 | `git fetch origin <base>`（保存先を省いた refspec） | `FETCH_HEAD` は書かれるが `refs/remotes/origin/<base>` は**作られない** |
+| D-2 | `git fetch origin <base>:refs/remotes/origin/<base>` | `refs/remotes/origin/<base>` が作られる |
+| D-3 | 既存 ref がある状態で origin が進行後に D-2 を再実行 | ref が前進する（「ref があるので fetch しない」旧挙動では据え置かれる） |
+
+期待結果: 手順 1 のコマンド出力が 0 件（比較・分岐点操作系動詞（diff/merge/checkout/rebase/rev-parse）で `${baseBranch}` を使う箇所が全て `origin/${baseBranch}` を伴うことを意味する。`git fetch origin ${baseBranch}` は動詞集合の対象外のため誤検出しない）。手順 2 は「`<base-branch>` の全出現が `origin/<base-branch>` を伴う」こと（目視確認。プレースホルダの生出現自体は 0 件にはならない）。手順 3 が 500,000 B 未満。手順 4 の `node --test` が全 pass・fail 0（群 A の「origin/ なし」負のアサーションでハードコード回帰を、群 B で SKILL.md との乖離を、群 C で A〜D のシナリオを実測固定する）。base 最新化の失敗時（レビュー直前に**無条件で**実行する `git fetch origin <base-branch>:refs/remotes/origin/<base-branch>` が失敗した場合、またはその後も `refs/remotes/origin/<base-branch>` を解決できない場合。既存 ref が残っていても安全とみなさない）は Review を実施せず `state: "blocked"` / `highestSeverity: "none"` で fail-closed 終端し、summary に理由を明記すること（`grep -n "比較基準 origin" skills/implement-issue-tree/scripts/implement-issue-tree.js` でプロンプト文言にヒットすることを確認する）。`state: "blocked"` はコード指摘（needs-fix）と区別される専用状態で、呼び出し元は fix エージェントを起動せず即座に終端する（`grep -n "r?.state === 'blocked'" skills/implement-issue-tree/scripts/implement-issue-tree.js` でループ制御にヒットすることを確認する）。
 

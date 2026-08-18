@@ -907,13 +907,16 @@ const REVIEW_SCHEMA = {
   type: 'object',
   required: ['state', 'summary', 'highestSeverity'],
   properties: {
-    state: { type: 'string', enum: ['ok', 'needs-fix'] },
+    // blocked: レビュー対象コードではなく環境（比較基準 ref の解決失敗等）に起因して
+    // レビューを実施できなかった場合の専用状態。needs-fix（コード指摘）とは呼び出し元の
+    // 扱いが異なり、fix エージェントを起動せず即座に fail-closed 終端する（Issue #315）。
+    state: { type: 'string', enum: ['ok', 'needs-fix', 'blocked'] },
     highestSeverity: {
       type: 'string',
       enum: ['none', 'low', 'medium', 'high', 'critical'],
-      description: '全指摘のうち最も高い重要度。指摘なし（state=ok）は none。最終 Review ラウンドで low/none なら通過扱いにするため必須。',
+      description: '全指摘のうち最も高い重要度。指摘なし（state=ok）は none。blocked の場合も none。最終 Review ラウンドで low/none なら通過扱いにするため必須。',
     },
-    summary: { type: 'string', description: 'ok の場合は確認内容の要約。needs-fix の場合は全指摘を重要度付きで列挙' },
+    summary: { type: 'string', description: 'ok の場合は確認内容の要約。needs-fix の場合は全指摘を重要度付きで列挙。blocked の場合は解決できなかった理由' },
     // Review は読み取り専用（判定のみ）で worktree に成果物を残さないため、
     // 呼び出し元が返却直後に削除する。impl / fix の worktree（未 push の実装コミットを
     // 保持する唯一の場所）とは扱いが異なる点に注意。
@@ -1630,19 +1633,51 @@ function planPrompt(item) {
 // 独立 Review フェーズのプロンプト（push 前ローカル diff レビュー版）。worktree は .git を
 // 共有するため impl のローカルブランチを detach で参照できる。判定のみで修正は fix へ委譲。
 // Low 含む指摘が 1 件でもあれば needs-fix（安全側）。impl.branch は sanitizeBranch 検証済みを渡す。
+//
+// 比較基準は origin/<base>（remote-tracking ref）の 3 点ドット diff で固定する（Issue #315）。
+// 3 点ドット `A...HEAD` は merge-base(A, HEAD) からの差分のため、A に origin/<base> を渡すと
+// 比較点はブランチの分岐点に固定され、**ラン中に origin が進んでも動かない**。
+// ただしこの安定性が成り立つのは remote-tracking ref が分岐点を含む程度に新しい場合に限る。
+// ref が古いと merge-base が実際の分岐点より手前に落ち、base 側の無関係なコミットが再び
+// レビュー対象へ混入する（Issue #361。特に 0b-b のリモートブランチ回復経路は対象ブランチ
+// だけを fetch するため base が取り残されやすい）。そのため「一度取得済みなら以後 fetch 不要」
+// ではなく、**レビュー直前に毎回 base を取得する**。取得は保存先を明示した refspec で行う
+// — `git fetch origin <base>` のように取得元だけを与えた形は FETCH_HEAD を更新するだけで、
+// refs/remotes/origin/<base> の作成・更新を保証しない（remote.origin.fetch が既定でない
+// クローン・single-branch クローンで実際に作られず、fetch 成功後の解決に失敗して
+// 実施可能なレビューを blocked で落とす）。ローカル base ref を比較基準にすると、ローカルが origin より遅れているだけで
+// 無関係な祖先コミットの差分までレビュー対象に混入する（#297 で diff 417 行中 387 行がノイズ
+// となり収束失敗した実例）。ブランチ作成時点の SHA を固定する代替案は、push 後の fix 経路で
+// `git merge origin/<base>` により base を正当に取り込んだ場合に、その取り込み分を再びノイズ
+// として検出してしまうため採らない（3 点ドットは merge-base が前進するため自動的に正しくなる）。
 function reviewPrompt(item, impl) {
   const branch = sanitizeBranch(impl.branch)
   return [
     `イシュー #${item.number}（ブランチ ${branch}）のコードレビュー担当エージェント（push 前ローカル diff レビュー）。`,
     COMMON,
     '本エージェントは判定のみを行い、コードの変更・コミット・push は行わない。',
-    'push 前の段階であり origin に対象ブランチはまだ存在しない。git fetch は不要。',
+    '対象ブランチは push 前のため origin には存在しない。base の remote-tracking ref はレビュー直前に毎回取得し直す。',
     '手順:',
     `1. git checkout --detach ${branch} でローカルブランチを detached HEAD として取得する。`,
     `   （ブランチが別 worktree で checkout 済みでも detach なら衝突しない）`,
     `   （ブランチ名は ${JSON.stringify(branch)} — 変数展開不要、そのまま使用する）`,
-    `2. implement-review スキルに従い、git diff ${baseBranch}...HEAD のローカル diff を対象に品質・セキュリティレビューを実施する。`,
-    `   （origin/${baseBranch} ではなくローカルの ${baseBranch} ブランチと比較する。fetch 不要）`,
+    `   比較基準の最新化（必須・ref の存在有無で分岐しない）:`,
+    `   git fetch origin ${baseBranch}:refs/remotes/origin/${baseBranch} を 1 回実行する。`,
+    `   （保存先（コロン以降の refs/remotes/... 部分）を省いてはならない。取得元のブランチ名だけを`,
+    `   与えた形は FETCH_HEAD を更新するだけで refs/remotes/origin/${baseBranch} の作成・更新を`,
+    `   保証しないため、fetch が成功しても続く解決に失敗し得る）`,
+    `   fetch が失敗した場合、および fetch 後に`,
+    `   git rev-parse --verify --quiet refs/remotes/origin/${baseBranch} が解決できない場合は、`,
+    `   既存 ref を安全とみなさずレビューを実施せず state: "blocked" / highestSeverity: "none" とし、`,
+    `   summary に「比較基準 origin/${baseBranch} を解決できない」と明記して終端する（fail-closed）。`,
+    `   （既存 ref が古いまま残っていると merge-base が実際の分岐点より手前に落ち、base 側の`,
+    `   無関係なコミットがレビュー対象へ混入する。ref があることは新しいことを意味しない）`,
+    `   （state: "blocked" は環境要因でレビュー自体が実施不能だったことを表す専用状態。`,
+    `   コード指摘を表す needs-fix とは呼び出し元の扱いが異なり、fix エージェントは起動されず`,
+    `   即座に終端する。needs-fix / highestSeverity: critical は使わない — 無関係なコードへの`,
+    `   修正試行を誘発するため）。`,
+    `2. implement-review スキルに従い、git diff origin/${baseBranch}...HEAD のローカル diff を対象に品質・セキュリティレビューを実施する。`,
+    `   （origin/${baseBranch}（直前に取得し直した remote-tracking ref）基準。3 点ドットのため比較点はブランチの分岐点に固定され、以降ラン中に origin が進んでも比較点は不変）`,
     '   レビュー観点:',
     '   - 実装品質（設計・可読性・エッジケース・テストカバレッジ）',
     '   - OWASP Top 10 セキュリティ（インジェクション・認証・秘密情報露出等）',
@@ -1653,7 +1688,7 @@ function reviewPrompt(item, impl) {
     '   重要: 重要度は厳密に判定すること。Low は「動作に影響しない様式・命名・重複・行数・コメント等の改善提案」に限る。',
     '   実バグ・誤った挙動・セキュリティ・認可・データ不整合・エッジケースの欠落は最低でも medium とする（最終ラウンドで Low のみは通過扱いになるため）。',
     '5. pwd の結果を worktreePath として返す（呼び出し元がラン終了時の残骸一覧に記録するため。自動削除はされない）。',
-    '返却: state（"ok" または "needs-fix"）/ highestSeverity / summary / worktreePath（pwd の結果）。',
+    '返却: state（"ok" / "needs-fix" / "blocked"）/ highestSeverity / summary / worktreePath（pwd の結果）。',
   ].join('\n')
 }
 
@@ -1715,6 +1750,10 @@ function implementPrompt(item, plan) {
     `      ブランチ名は命名規約に一致するもの（<type>/${item.number}-<short-name> の形式）のみを対象とする。`,
     `      — セキュリティ注意: git ls-remote の出力をそのままシェルに展開しない。ブランチ名は isValidBranchName の規則（英数字・ハイフン・アンダースコア・スラッシュ・ドットのみ）に適合するものだけを使用すること。`,
     `      リモートブランチが見つかった場合: git fetch origin <branch> && git checkout -B <branch> origin/<branch> でブランチを取得する。`,
+    `      あわせて git fetch origin ${baseBranch}:refs/remotes/origin/${baseBranch} も実行し、base の remote-tracking ref を最新化する。`,
+    `      （この経路は手順 2 の git fetch origin をスキップするため、base だけが古いまま残る。`,
+    `      その状態で後続の Review が git diff origin/${baseBranch}...HEAD を取ると、base 側の無関係な`,
+    `      コミットが差分へ混入する。Issue #361）`,
     `      これは「前回 push 成功・PR 作成失敗」で残ったブランチの回復を目的とする（origin/${baseBranch} から新規作成し直さない）。`,
     `      push 済みコミットをそのまま引き継いで計画と照合し、未実装部分があれば補って実装を続行する。`,
     `      branch としてそのブランチ名を返す（prNumber は 0 のまま。PR 作成は後続の PR Create フェーズが行う）。`,
@@ -2159,13 +2198,16 @@ function fixPrompt(item, impl, finding, pushAfterFix = true) {
   // push しない Review fix では detach で取得し、修正コミット後に `git branch -f` で先端更新する。
   const checkoutInstructions = pushAfterFix
     ? [
-        `1. 本エージェントは隔離された git worktree 内で動作する。ブランチ ${branch} は他の worktree で checkout 済みの可能性があるため、git fetch origin && git checkout --detach origin/${branch} で detached HEAD として取得して作業する。マージコンフリクトの解消が必要な場合は git merge origin/${baseBranch} を実行して解消する。`,
+        `1. 本エージェントは隔離された git worktree 内で動作する。ブランチ ${branch} は他の worktree で checkout 済みの可能性があるため、git fetch origin && git checkout --detach origin/${branch} で detached HEAD として取得して作業する。マージコンフリクトの解消が必要な場合は git fetch origin ${baseBranch}:refs/remotes/origin/${baseBranch} で base を最新化してから git merge origin/${baseBranch} を実行して解消する（保存先を明示した refspec を使う。Issue #361）。`,
       ]
     : [
         `1. 本エージェントは隔離された git worktree 内で動作する。push 前のローカル修正のため fetch は不要。`,
         `   git checkout --detach ${branch} でローカルブランチを detached HEAD として取得する。`,
         `   （ブランチが別 worktree で checkout 済みでも detach なら衝突しない）`,
-        `   マージコンフリクトの解消が必要な場合は git merge ${baseBranch}（ローカル）を実行して解消する。`,
+        `   マージコンフリクトの解消が必要な場合は git fetch origin ${baseBranch}:refs/remotes/origin/${baseBranch} で base を最新化してから git merge origin/${baseBranch} を実行して解消する（Issue #361）`,
+        `   （ローカルの ${baseBranch} ではなく origin/${baseBranch} を使う。ローカル base が origin より`,
+        `   進んでいる場合にローカル限定コミットがブランチへ混入し、次ラウンドの Review がそれを`,
+        `   ブランチの変更として誤検出する再発経路を防ぐため。Issue #315）。`,
       ]
   // fix commit も impl commit と同じ commitlint 制約を受けるため、コミット前チェックの
   // 文言を pushAfterFix の両分岐で共通化する（Issue #290: scope-enum リポでの落ちを防ぐ）。
@@ -2334,7 +2376,7 @@ function recoverPrompt(item, branch, oldWorktree) {
                 `   - 解決失敗（worktree 実在・HEAD 不定）の場合はこの手順を飛ばすこと。`,
               ]
             : []),
-          `   a. git fetch origin ${baseBranch} で origin/${baseBranch} を最新化する。`,
+          `   a. git fetch origin ${baseBranch}:refs/remotes/origin/${baseBranch} で origin/${baseBranch} を最新化する（保存先を明示した refspec を使う。Issue #361）。`,
           `   b. 対象ブランチと origin/${baseBranch} の差分を読む:`,
           `      git diff origin/${baseBranch}...${oldWorktree ? '<解決した対象ブランチ名>' : branchJson} を実行する。`,
           `      （--quiet で差分が空か確認してから diff を取得する。差分がない場合は空 branch と判断）`,
@@ -3224,6 +3266,15 @@ async function runImplement(item) {
         log(`#${item.number}: Review 通過 — ${sanitize(r.summary ?? '')}`)
         break
       }
+      if (r?.state === 'blocked') {
+        // 環境要因（比較基準 ref の解決失敗等）でレビュー自体が実施不能だった。コード指摘では
+        // ないため fix エージェントを起動せず（無関係なコードへの修正試行で修正予算を消費させ
+        // ないため）、即座に fail-closed 終端する（Issue #315）。push 前のため pr: 0。
+        const reason = `Review が環境要因でブロックされた: ${sanitize(r.summary ?? '')}`
+        await updateState(item.number, { status: 'blocked', pr: 0, fixCount, note: reason })
+        recordFailure({ issue: item.number, reason, status: 'blocked' })
+        return false
+      }
       // needs-fix または r が無効（安全側に倒して fix 相当とみなす）
       lastReviewSummary = r?.summary ?? 'review エージェントが異常終了した'
       log(`#${item.number}: Review 指摘あり（残り ${reviewsLeft} 回）: ${sanitize(lastReviewSummary)}`)
@@ -3513,6 +3564,9 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
     })
     return false
   }
+  // __MERGE_MONITOR_LOOP_START__ — merge-loop-rescan.test.mjs が監視ループ本体を切り出す境界。
+  // このマーカー対は回帰検査の走査境界であり、削除・改名するとテストが明示的に throw する
+  // （出現回数もテストで 1 回に固定している）。ループを移動する場合はマーカーも一緒に動かす。
   while (!merged && monitorsLeft > 0) {
     monitorsLeft--
     // 予約されていた救済ラウンドを「今ラウンド」へ移す（予約は必ず消費する）。判定自体は
@@ -3976,6 +4030,7 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
     }
     // timeout は次ラウンドで再監視する
   }
+  // __MERGE_MONITOR_LOOP_END__
   if (!merged) {
     // routing error は専用の基底 note を使う。追跡情報の合成・保存は failMergeTerminal に
     // 一本化済みのため、どちらの基底 reason でも契約を満たす。
