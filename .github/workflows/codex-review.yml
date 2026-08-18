@@ -26,7 +26,7 @@ concurrency:
 jobs:
   codex-review:
     # <SHA> は Fandhe-AI/actions のコミット SHA で固定する（@main 不可）
-    uses: Fandhe-AI/actions/.github/workflows/codex-review.yml@4c93891e1a6d7f86dee8fd4336b2fb9446fdab57 # main
+    uses: Fandhe-AI/actions/.github/workflows/codex-review.yml@7cb2c6029ef9b00faab9718738a763f48cd66289 # main
     permissions:
       contents: read
       pull-requests: write
@@ -34,6 +34,10 @@ jobs:
     # codex 専用 runner を使う。これは組織 runner 方針で認められた唯一の例外であり、
     # fork PR では workflow 側が fail-closed で実行を拒否する。ここでは指定しない。
     with:
+      # update-external.yml が生成する日次同期 PR は上流の取り込みそのもので、
+      # codex の指摘があってもこの PR では直せない（修正先は取り込み元の上流リポジトリ）。
+      # 判定は上流の sync-gate ジョブが変更ファイル集合を実測して行う。
+      skip-sync-pr-review: true
       # post-feedback-runner-label の既定値は self-hosted であり、public リポジトリでは
       # 組織 runner 方針（public は GitHub ホステッド）に反する。資格情報に触れない
       # コメント投稿ジョブなので、必ず ubuntu-latest を明示的に渡すこと。
