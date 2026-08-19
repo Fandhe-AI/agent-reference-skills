@@ -23,32 +23,135 @@ staged がない場合は `git diff` も確認してユーザーに staging を�
 
 コミット実行前に、staged 差分へ秘密情報が含まれていないことを確認する。
 
+検査は **(a) 機械照合** と **(b) 目視レビュー** の 2 段構えである。(a) だけでは不十分であり、
+**(b) は (a) が何も検出しなかった場合でも必ず実施する**（理由は後述の「機械照合の限界」）。
+
+#### (a) 機械照合
+
+**パターンは変数へ一度だけ定義し、自己テストと本検査で同じ文字列を使う。** `grep` の実装差
+（BSD grep / GNU grep / ugrep）で BRE の `\+` の解釈が割れ、正規表現が構文エラーになることがある。
+エラーになった `grep` は非ゼロで終わるため、`... || echo "検出なし"` の形だと**秘密情報があっても
+「検出なし」と報告される**（fail-open）。これは検出側（`grep -E`）だけでなく**除外側（`grep -vE`）も
+同じ**で、除外パターンが壊れると一致済みの行が消えて「検出なし」になる。自己テストは除外側まで
+含めて実行する。
+
+定義と検査を別のコードブロックに分けてはならない。コードブロックはそれぞれ独立したシェルで
+実行され得るため変数が引き継がれず、かつ「テストされていない正規表現」が生まれる余地を作る。
+以下は 1 ブロックで完結させる。
+
 ```bash
-# 認証情報ファイルの検出（.env・秘密鍵等）。追加・変更（--diff-filter=ACMR）のみを対象とし、
+# ---- パターン定義（自己テストと本検査で共有する。変更はここだけで行う）----
+
+# 認証情報ファイル名と、テンプレート・公開鍵の除外
+RE_CREDFILE='(^|/)\.env(\..+)?$|(^|/)(id_rsa|id_ed25519)(\..+)?$|\.(pem|p12|pfx|key)$'
+RE_CREDFILE_OK='\.(example|sample|template|pub)$'
+
+# 高信頼パターン: ベンダー固有のトークン形式・秘密鍵ヘッダー・JWT（3 セグメント）・
+# 認証情報を埋め込んだ接続文字列（scheme://user:pass@host）
+RE_HIGH='sk-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]+|AIza[0-9A-Za-z_-]{35}|BEGIN (RSA |EC |OPENSSH |PGP )?PRIVATE KEY|eyJ[A-Za-z0-9_=-]{8,}\.eyJ[A-Za-z0-9_=-]{8,}\.[A-Za-z0-9_=-]{8,}|[a-zA-Z][a-zA-Z0-9+.-]*://[^[:space:]/@]+:[^[:space:]/@]+@'
+
+# 代入形パターン: 「鍵名 + 区切り + 値」。`[a-z_]*token` は `-i` と併せて GITHUB_TOKEN /
+# GH_TOKEN / access_token / auth_token / csrf_token を一括で拾う。鍵名を個別に列挙すると
+# 必ず取りこぼすため、token 系は接頭辞を問わない形にしておく（誤検知は (b) で捌く）
+RE_ASSIGN='(password|passwd|secret|client_secret|api_?key|[a-z_]*token|aws_secret_access_key|private_?key)[[:space:]]*[:=][[:space:]]*[^[:space:]]{8,}'
+# 代入形の除外: 環境変数参照・プレースホルダ・例示値
+RE_ASSIGN_OK='\$\{|\$\(|%[A-Za-z_]+%|process\.env|os\.environ|ENV\[|getenv|<[A-Za-z_][A-Za-z0-9_-]*>|\*\*\*|REDACTED|redacted|CHANGEME|changeme|placeholder|PLACEHOLDER|dummy|DUMMY|xxxx|XXXX|example\.com|your[-_]?(password|secret|key|token)'
+
+# ---- 自己テスト（1 つでも外したら以降の検査結果は信用できない）----
+# 除外側は「実値が生き残ること」を先に確かめる。この向きでないと、除外パターンの構文エラーで
+# grep が非ゼロ終了した場合に「除外された」と区別できず、テスト自体が fail-open する
+{
+  printf '+++ b/x\n+password: Hunter2Hunter2Hunter2\n' \
+    | grep -E '^\+' | grep -vE '^\+\+\+' | grep -qiE "${RE_ASSIGN}" \
+  && tok="notarealvalue""0123456789abcdef" \
+  && printf '+GITHUB_TOKEN=%s\n' "${tok}" | grep -qiE "${RE_ASSIGN}" \
+  && printf '+GITHUB_TOKEN=%s\n' "${tok}" | grep -vE "${RE_ASSIGN_OK}" | grep -q . \
+  && printf '+db: postgres://u:p@h:5432/d\n' | grep -qE "${RE_HIGH}" \
+  && printf '+t: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dBjftJeZ4CVPmB92K27u\n' \
+    | grep -qE "${RE_HIGH}" \
+  && printf '.env\n' | grep -E "${RE_CREDFILE}" | grep -vE "${RE_CREDFILE_OK}" | grep -q . \
+  && [ -z "$(printf '.env.example\n' | grep -E "${RE_CREDFILE}" | grep -vE "${RE_CREDFILE_OK}")" ] \
+  && printf '+password: Hunter2Hunter2Hunter2\n' | grep -vE "${RE_ASSIGN_OK}" | grep -q . \
+  && [ -z "$(printf '+password: ${DB_PASSWORD}\n' | grep -vE "${RE_ASSIGN_OK}")" ]
+} || { echo "エラー: シークレット検査の正規表現が機能していない（grep 実装差の可能性）。コミットを中止する" >&2; exit 1; }
+
+# ---- 検査 ----
+
+# 1. 認証情報ファイルの検出（.env・秘密鍵等）。追加・変更（--diff-filter=ACMR）のみを対象とし、
 # 削除コミット（漏洩した .env の除去等の是正コミット）はブロックしない。
-# .env.example 等のテンプレートと公開鍵（.pub）は除外する。
 git diff --staged --name-only --diff-filter=ACMR \
-  | grep -E '(^|/)\.env(\..+)?$|(^|/)(id_rsa|id_ed25519)(\..+)?$|\.(pem|p12|pfx|key)$' \
-  | grep -vE '\.(example|sample|template|pub)$' || echo "認証情報ファイル: 検出なし"
+  | grep -E "${RE_CREDFILE}" \
+  | grep -vE "${RE_CREDFILE_OK}" || echo "認証情報ファイル: 検出なし"
 
-# 差分本文中のシークレットパターンの検出。追加行（^+。ファイルヘッダ +++ は除外）のみを対象とし、
+# 2. 高信頼パターンの検出。追加行（^+。ファイルヘッダ +++ は除外）のみを対象とし、
 # 漏洩済みシークレットの削除（- 行）を妨げない。
+# 一致したら誤検知の可能性が低いため、原則そのまま中止する。
 git diff --staged --diff-filter=ACMR \
-  | grep -E '^\+' | grep -v '^\+\+\+' \
-  | grep -E 'sk-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|xox[baprs]-[A-Za-z0-9-]+|AIza[0-9A-Za-z_-]{35}|BEGIN (RSA |EC |OPENSSH |PGP )?PRIVATE KEY' \
-  || echo "シークレットパターン: 検出なし"
+  | grep -E '^\+' | grep -vE '^\+\+\+' \
+  | grep -E "${RE_HIGH}" || echo "高信頼パターン: 検出なし"
 
-# 認証情報ファイルのリネームの検出。上記の名前照合はリネーム後の新パスにしか働かないため、
+# 3. 代入形パターンの検出。値の形式は問わないため誤検知が出やすく、
+# 環境変数参照・プレースホルダは除外したうえで、残ったものを**ユーザーへ提示して確認**する。
+# （除外側を広く取っているため、ここでの「検出なし」は不在の証明にはならない。(b) を必ず行う）
+git diff --staged --diff-filter=ACMR \
+  | grep -E '^\+' | grep -vE '^\+\+\+' \
+  | grep -iE "${RE_ASSIGN}" \
+  | grep -vE "${RE_ASSIGN_OK}" || echo "代入形パターン: 検出なし"
+
+# 4. 認証情報ファイルのリネームの検出。上記の名前照合はリネーム後の新パスにしか働かないため、
 # 旧パスが認証情報パターンに一致するリネーム（例: .env → config.txt）を別途検出する。
-# .env の中身（KEY=VALUE 形式）は上記のシークレットパターンに一致しないことが多く、
+# .env の中身（KEY=VALUE 形式）は高信頼パターンに一致しないことが多く、
 # 名前照合が主防御線であるため、名前を変えて内容が残るケースを見逃さない。
 git diff --staged --name-status --diff-filter=R \
   | cut -f2 \
-  | grep -E '(^|/)\.env(\..+)?$|(^|/)(id_rsa|id_ed25519)(\..+)?$|\.(pem|p12|pfx|key)$' \
-  | grep -vE '\.(example|sample|template|pub)$' || echo "認証情報ファイルのリネーム: 検出なし"
+  | grep -E "${RE_CREDFILE}" \
+  | grep -vE "${RE_CREDFILE_OK}" || echo "認証情報ファイルのリネーム: 検出なし"
 ```
 
-いずれかが検出された場合は**コミットを中止**し、ユーザーに警告して該当ファイルの unstage・該当行の除去を案内する。例示値・プレースホルダ等の誤検知と判断できる場合のみ、ユーザーの明示確認を得てから続行する。リネームが検出された場合は、シークレットの内容が新しいファイル名の下に残っていないかを確認し、残っている場合は中止する。削除のみのコミット（`.env` の削除・漏洩キーの除去）は検出対象外でありそのまま続行してよいが、**認証情報ファイルの削除（D）と別名ファイルの追加（A）が同一コミットに含まれる場合**は、内容が別名で追加し直されていないか（実質的なリネームでないか）を差分で確認してから続行する。
+1・2・4 のいずれかが検出された場合は**コミットを中止**し、ユーザーに警告して該当ファイルの
+unstage・該当行の除去を案内する。例示値・プレースホルダ等の誤検知と判断できる場合のみ、
+ユーザーの明示確認を得てから続行する。
+
+3 が検出された場合は中止せず、**該当行をユーザーへ提示して実値かどうかを確認**したうえで
+判断する（実値ならコミットを中止する）。3 は誤検知率が構造的に高いため自動中止にはしない。
+
+リネーム（4）が検出された場合は、シークレットの内容が新しいファイル名の下に残っていないかを
+確認し、残っている場合は中止する。削除のみのコミット（`.env` の削除・漏洩キーの除去）は
+検出対象外でありそのまま続行してよいが、**認証情報ファイルの削除（D）と別名ファイルの追加（A）が
+同一コミットに含まれる場合**は、内容が別名で追加し直されていないか（実質的なリネームでないか）を
+差分で確認してから続行する。
+
+#### (b) 目視レビュー（機械照合が「検出なし」でも必須）
+
+```bash
+# 追加行のみを対象に、秘密情報の観点で staged 差分を読む
+git diff --staged --diff-filter=ACMR | grep -E '^\+' | grep -vE '^\+\+\+'
+```
+
+追加行を読み、次の観点で秘密情報が含まれていないかを判断する。
+
+| 観点 | 例 |
+|------|-----|
+| 任意名の認証情報 | `dbPass`・`clientKey`・`token2` 等、上記の鍵名リストに無い変数名 |
+| 構造化ファイル内の実値 | `config.yml` / `settings.json` / `*.tf` / k8s manifest に直接書かれたパスワード |
+| 高エントロピー文字列 | 用途不明の長いランダム文字列（base64・hex） |
+| 接続情報の断片 | ホスト名・ポート・ユーザー名と値がセットで並んでいる箇所 |
+| バイナリ・エンコード済み | base64 でエンコードされた認証情報（k8s Secret の `data:` 等） |
+
+秘密情報と判断した、または判断が付かない場合は**コミットを中止**し、ユーザーへ該当箇所を提示して確認する。
+
+#### 機械照合の限界（この手順の契約）
+
+(a) はパターン照合であり、**網羅的な検出ではない**。次のものは原理的に検出できない。
+
+- 任意の変数名に代入された認証情報（鍵名リストに載っていないもの）
+- 値の形式に規則性が無い認証情報（多くの自社発行トークン・DB パスワード）
+- 3 の除外パターンに偶然一致してしまう実値
+
+したがって Step 2 の契約は「(a) が検出しなければ安全」ではなく、
+**「(a) で明白なものを機械的に落とし、(b) で残りを人が判断する」**である。
+組織側で GitHub の secret scanning / push protection を有効化している場合、それは
+push 時点の**追加の**防御線であり、この手順の代替にはならない（ローカルコミット時点では働かない）。
 
 ### Step 3: Conventional Commits type を決定する
 

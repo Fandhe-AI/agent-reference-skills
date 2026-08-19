@@ -30,7 +30,7 @@ init-claude [対象リポジトリのパス]
 
 - `gh` CLI がインストールされ、認証済みであること（`gh auth status` で確認）
 - 対象リポジトリで `git` が初期化済みであること
-- `npx` が使用できること（`npx skills add` によるスキル導入に使用）
+- `npx` が使用できること（`npx skills add` によるスキル導入に使用）。`skills` CLI は固定版（`SKILLS_CLI_VERSION`）で実行する。値と更新手順は「skills CLI のバージョン固定と更新手順」節を参照
 - `readlink` コマンドが使用できること（workflow js symlink の stale/dangling 判定に使用。`command -v readlink` で事前確認し、利用できない環境では該当処理を中断する）
 
 ## フロー
@@ -292,7 +292,14 @@ EOF
 
 ```bash
 cd <target-repo>
-npx skills add Fandhe-AI/agent-cli-skills
+# skills CLI (vercel-labs/skills) は固定版でのみ実行する（未固定 npx はレジストリ
+# 乗っ取り時の任意コード実行経路になる）。正の定義箇所・更新手順は下記
+# 「skills CLI のバージョン固定と更新手順」節を参照。
+SKILLS_CLI_VERSION="1.5.23"   # 正の定義箇所。更新手順は下記節を参照
+npx --yes "skills@${SKILLS_CLI_VERSION}" add Fandhe-AI/agent-cli-skills || {
+  echo "エラー: skills@${SKILLS_CLI_VERSION} の実行が失敗しました（該当版の不存在・レジストリ障害等、原因は問わない）。未固定 npx skills add へのフォールバックは行わない。原因を確認してから再実行する。" >&2
+  exit 1
+}
 ```
 
 `skills-lock.json` が生成されることを確認する。
@@ -422,6 +429,26 @@ fi
 - implement-issue-tree の動作前提の充足状況
 - ユーザーへの次のアクション案内（PostToolUse hooks の追加・Agent のカスタマイズなど）
 
+## skills CLI のバージョン固定と更新手順
+
+**Why**: `npx skills add` をバージョン未固定で実行すると、npx はローカルキャッシュに無い場合レジストリのその時点の最新版を確認なしで即時取得・実行する。`skills`（vercel-labs/skills）パッケージが乗っ取られた場合、これは任意コード実行の経路になる。exact 版（`X.Y.Z`。dist-tag・`^`/`~` レンジは禁止）への固定が信頼アンカーになる。
+
+**固定版の決め方**:
+1. `npm view skills version` で現在の latest を確認する
+2. `npm view skills repository.url` が `vercel-labs/skills` であることを確認する
+3. `npm view skills time --json` 等で公開日時が不自然でないことを確認する
+
+**更新手順**:
+1. Step 3-5 フェンス内の `SKILLS_CLI_VERSION` を更新する（このスキル内での正の定義箇所はここ 1 箇所のみ）
+2. `node --test skills/init-claude/tests/*.mjs` で exact semver・実行行の固定を検証する
+3. 1 リポジトリで実際に実行し、差分が正常であることを確認する
+4. `chore(init-claude): skills CLI を X.Y.Z へ更新` でコミットする
+5. 同じ `skills` CLI を固定する `update-claude` / `sync-skills-lock` の同名節も同時更新することを推奨する（値の同期は必須ではないが、乖離した場合はどちらかの節にその旨を記録する）
+
+**既知の乖離（記録）**: 本節の `SKILLS_CLI_VERSION` の値（`1.5.23`）は、`sync-skills-lock/SKILL.md`・`sync-skills-lock/scripts/skills-lock-update.sh` が固定する `SKILLS_CLI_VERSION` の値（`1.5.22`）と異なる（`update-claude` は本節と同一の値で同期済み）。各スキルは独立した固定版として運用しており同期は必須ではないため、意図的な乖離として記録する。次回いずれかを更新する際は、この乖離が解消したか維持されたかを本行で更新する。
+
+**fail-closed**: 固定版が解決できない場合（該当版の不存在・レジストリ障害等どの原因でも）は `npx` が非ゼロ終了し停止する。未固定 `npx skills add` へのフォールバック再試行は行わない。
+
 ## 検証
 
 ```bash
@@ -457,5 +484,6 @@ fi
 - `settings.json` の `command` にトークン・シークレットをハードコードしない
 - `--no-verify` を含むコマンドを hooks に仕込まない
 - `npx skills add` が失敗した場合はエラーメッセージを表示してユーザーに手動手順を案内する
+- `skills` CLI は固定版で実行する。固定版の決め方・更新手順は「skills CLI のバージョン固定と更新手順」節を参照
 - 言語別 PostToolUse 整形フック（rustfmt / biome / prettier / ruff）は対象リポのツール存在確認後に提案する
 - Agent の `tools` リストは最小権限原則に従い必要なもののみ列挙する

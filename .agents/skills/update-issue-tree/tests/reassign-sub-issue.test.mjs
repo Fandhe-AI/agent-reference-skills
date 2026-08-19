@@ -27,7 +27,9 @@ function run(args, fixture) {
   let stderr = ''
   try {
     stdout = execFileSync(SCRIPT_PATH, args, {
-      env: { ...process.env, ...stub.env },
+      // RECOVERY_RECHECK_DELAY_SEC=0: 補償復旧の反映遅延再確認（Issue #352 追加分）が
+      // 挟む sleep をテストではゼロにし、決定性・速度を保つ（本番既定値は変えない）
+      env: { ...process.env, ...stub.env, RECOVERY_RECHECK_DELAY_SEC: '0' },
       encoding: 'utf8',
     })
   } catch (err) {
@@ -113,13 +115,19 @@ test('ケース6: DELETE が非ゼロ（404） → exit 3、POST は 1 件も呼
   assert.ok(!c.some((l) => l.includes('--method POST')), 'POST は 1 件も呼ばれていないこと')
 })
 
-test('ケース7: POST が非ゼロ（一般エラー） → exit 4', () => {
+test('ケース7: DELETE 後の POST が非ゼロ（一般エラー）→ 補償復旧ルーチンへ入り、実測で既に旧親配下（補償 POST 不要）→ exit 10 restored（Issue #352。旧 exit 4 の契約から変更）', () => {
+  // fixture で parentAfter を省略すると parentBefore（旧親）を継続するスタブの既定挙動により、
+  // 復旧のための再取得 GET は「実測で既に旧親配下」を返す。この場合は補償 POST を撃たずに
+  // 復旧成立として終端する（3.1 節の「親 == OLD_PARENT」分岐）
   const r = run(['--issue', '14', '--old-parent', '5', '--new-parent', '7'], {
     parentBefore: '5',
     postExit: 1,
     postBody: '500 Internal Server Error',
   })
-  assert.equal(r.status, 4)
+  assert.equal(r.status, 10)
+  assert.match(r.stdout.trim(), /^result=restored issue=14 new_parent=7 old_parent=5$/)
+  const c = calls(r.logPath)
+  assert.equal(c.filter((l) => l.includes('--method POST')).length, 1, '補償 POST は撃たれていないこと（1 回目の POST のみ）')
 })
 
 test('ケース8: 事後確認 GET で対象が新親配下に見えない → exit 5', () => {
@@ -137,17 +145,311 @@ test('ケース9: 事前 GET 自体が失敗（前提不備）→ exit 2', () =>
   assert.equal(r.status, 2)
 })
 
-test('ケース10: DELETE 後の POST が "only have one parent" → exit 8（部分変更を無変更と誤認させない）', () => {
-  // DELETE は成功しているため旧親からは外れている。無変更を意味する exit 6 / 7 と
-  // 同じコードにすると、呼び出し側が「触っていない」と誤認して復旧を誤る（PR #314 Bugbot Medium）
+test('ケース10: DELETE 後の POST が "only have one parent" → 補償復旧ルーチンで実測すると第三者が別の親を設定済み → exit 11 で fail-closed 停止（補償 POST を撃たない。Issue #352。旧 exit 8 の契約から変更）', () => {
+  // DELETE は成功しているため旧親からは外れている。エラーメッセージの文字列だけでは
+  // 「第三者に取られた」のか「一時的な障害」なのか判別できないため、実測（再取得 GET）で
+  // 確定させる。実測で第三者が別の親（#9）を設定済みなら、承認外の親子関係を壊さないため
+  // 補償 POST を撃たずに書き込みなしで停止する（PR #314 Bugbot Medium の懸念を「無変更と
+  // 誤認させない」から一歩進め、実測ベースで安全側に倒す）
   const r = run(['--issue', '17', '--old-parent', '5', '--new-parent', '7'], {
     parentBefore: '5',
+    parentAfter: '9',
     postExit: 1,
     postBody: 'Validation Failed: Sub issue may only have one parent',
   })
-  assert.equal(r.status, 8)
+  assert.equal(r.status, 11)
+  assert.match(r.stderr, /reason=third-party-parent/)
+  assert.match(r.stderr, /issues\/9/)
   const c = calls(r.logPath)
   assert.ok(c.some((l) => l.includes('--method DELETE')), 'DELETE は実行済みであること')
+  assert.equal(c.filter((l) => l.includes('--method POST')).length, 1, '補償 POST が呼ばれていないこと（1 回目の POST のみ）')
+})
+
+test('ケース28: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST 成功 → exit 10 restored（Issue #352 の補償復旧成功。受入基準の核）', () => {
+  const r = run(['--issue', '30', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '', // 復旧のための再取得 GET は孤児を返す
+    parentAfter2: '5', // 補償 POST 後の事後確認 GET は旧親配下を返す
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+  })
+  assert.equal(r.status, 10)
+  assert.match(r.stdout.trim(), /^result=restored issue=30 new_parent=7 old_parent=5$/)
+  const posts = calls(r.logPath).filter((l) => l.includes('--method POST'))
+  assert.equal(posts.length, 2, '1 回目（新親）と 2 回目（補償・旧親）の POST が呼ばれていること')
+  assert.match(posts[1], /issues\/5\/sub_issues/, '2 回目の POST の宛先パスが旧親 #5 であること')
+})
+
+test('ケース29: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST も失敗（多重障害）→ exit 8 reason=compensation-post-failed（Issue #352。孤児のまま終端）', () => {
+  const r = run(['--issue', '31', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '',
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+    compPostExit: 1,
+    compPostBody: '503 Service Unavailable',
+  })
+  assert.equal(r.status, 8)
+  assert.match(r.stderr, /reason=compensation-post-failed/)
+  const posts = calls(r.logPath).filter((l) => l.includes('--method POST'))
+  assert.equal(posts.length, 2, '補償 POST も試みられていること')
+})
+
+test('ケース29b: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST も失敗 → 失敗後の実状態再取得 GET も失敗 → exit 8 reason=recovery-state-unknown（孤児か否か未測定のまま reason=compensation-post-failed を出さない。cursor[bot] Medium 指摘 PR #391）', () => {
+  const r = run(['--issue', '31', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '',
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+    compPostExit: 1,
+    compPostBody: '503 Service Unavailable',
+    thirdGetFail: true,
+  })
+  assert.equal(r.status, 8)
+  assert.match(r.stderr, /reason=recovery-state-unknown/)
+  assert.doesNotMatch(r.stderr, /reason=compensation-post-failed(?!-third-party-parent)/)
+})
+
+test('ケース30: DELETE 後の POST 失敗 → 復旧のための実状態再取得 GET も失敗（状態不明）→ exit 8 reason=recovery-state-unknown、補償 POST は撃たれない（Issue #352）', () => {
+  const r = run(['--issue', '32', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+    verifyGetFail: true, // 対象 issue の 2 回目 GET（=復旧のための再取得）を失敗させる
+  })
+  assert.equal(r.status, 8)
+  assert.match(r.stderr, /reason=recovery-state-unknown/)
+  const c = calls(r.logPath)
+  assert.equal(c.filter((l) => l.includes('--method POST')).length, 1, '補償 POST は撃たれていないこと（1 回目の POST のみ）')
+})
+
+test('ケース31: DELETE 後の POST 失敗（偽陰性）→ 実測すると既に新親配下 → exit 0 reassigned（Issue #352。通常の成功終端と同じ扱い）', () => {
+  const r = run(['--issue', '33', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '7', // 復旧のための再取得 GET は既に新親配下を返す（POST は実は成立していた）
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+  })
+  assert.equal(r.status, 0)
+  assert.match(r.stdout.trim(), /^result=reassigned issue=33 new_parent=7 old_parent=5$/)
+  const c = calls(r.logPath)
+  assert.equal(c.filter((l) => l.includes('--method POST')).length, 1, '補償 POST は撃たれていないこと（1 回目の POST のみ）')
+})
+
+test('ケース31b: DELETE 後の POST 失敗 → 復旧のための実状態再取得 GET は新親配下を返すが、反映遅延の再確認では不安定（別状態）と判明 → 1 回の読み取りだけで reassigned 確定しない → exit 8 reason=recovery-state-unknown（codex-review P1 指摘 PR #391。ケース31 の成功判定経路にも安定確認を適用する回帰）', () => {
+  const r = run(['--issue', '33', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '7', // 復旧のための再取得 GET は新親配下に見える（過渡状態の可能性）
+    parentAfter2: '', // 反映遅延を考慮した再確認では実は孤児だった（不安定）
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+  })
+  assert.equal(r.status, 8)
+  assert.match(r.stderr, /reason=recovery-state-unknown/)
+  const c = calls(r.logPath)
+  assert.equal(c.filter((l) => l.includes('--method POST')).length, 1, '補償 POST は撃たれていないこと（1 回目の POST のみ）')
+})
+
+test('ケース32: 孤児経路（DELETE なし）の POST が非ゼロ（一般エラー）→ exit 4、復旧ルーチンは発動しない（Issue #352。無変更のため補償対象外。経路の非対称固定）', () => {
+  // DELETE を 1 度も撃っていない孤児経路は、DELETE 成功後の POST 失敗と異なり孤児化リスク
+  // 自体が無い（対象は元から孤児）。補償復旧ルーチンは DELETE 経路の POST 失敗ブロックにのみ
+  // 存在し、孤児経路のブロックからは呼ばれないため、追加の GET/POST は一切発生しない
+  const r = run(['--issue', '29', '--new-parent', '7'], {
+    parentBefore: '',
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+  })
+  assert.equal(r.status, 4)
+  const c = calls(r.logPath)
+  assert.equal(c.filter((l) => l.startsWith('api') && !l.includes('--method')).length, 2, '対象 issue の事前 GET + 新親の事前検証 GET の 2 件のみであること（復旧のための追加 GET が無いこと）')
+  assert.equal(c.filter((l) => l.includes('--method POST')).length, 1, '補償 POST は撃たれていないこと（1 回目の POST のみ）')
+  assert.ok(!c.some((l) => l.includes('--method DELETE')), 'DELETE が 1 件も呼ばれていないこと')
+})
+
+test('ケース33: DELETE 後の POST 失敗 → 復旧の再取得では旧親配下に見えるが、反映遅延の再確認で実は孤児だった → 復旧成立とみなさず exit 8 reason=recovery-state-unknown（Issue #352 codex-review 追加指摘 PR #391。1 回の読み取りだけで restored 確定しないことの回帰）', () => {
+  const r = run(['--issue', '40', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    // 2 回目 GET（復旧のための再取得）は旧親配下、3 回目 GET（反映遅延の再確認）では
+    // 実は孤児だったことが判明する、という過渡状態を再現する
+    parentAfter: '5',
+    parentAfter2: '',
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+  })
+  assert.equal(r.status, 8)
+  assert.match(r.stderr, /reason=recovery-state-unknown/)
+  const c = calls(r.logPath)
+  assert.equal(c.filter((l) => l.includes('--method POST')).length, 1, '補償 POST は撃たれていないこと（1 回目の POST のみ。復旧成立と誤認して即終端していないことの裏返し）')
+})
+
+test('ケース34: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST も失敗 → 失敗後の再取得で実は第三者が別の親を設定済み → exit 8 reason=compensation-post-failed-third-party-parent（cursor[bot] Medium 指摘 PR #391）', () => {
+  const r = run(['--issue', '41', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '', // 復旧のための再取得 GET は孤児を返す
+    parentAfter2: '9', // 補償 POST 失敗後の再取得 GET は第三者が設定した親 #9 を返す
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+    compPostExit: 1,
+    compPostBody: '503 Service Unavailable',
+  })
+  assert.equal(r.status, 8)
+  assert.match(r.stderr, /reason=compensation-post-failed-third-party-parent/)
+  assert.match(r.stderr, /#9/)
+  const posts = calls(r.logPath).filter((l) => l.includes('--method POST'))
+  assert.equal(posts.length, 2, '補償 POST は試みられていること（1 回目の新親 POST + 補償 POST）')
+})
+
+test('ケース35: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST も失敗 → 失敗後の再取得で実は「別リポジトリ」の第三者親が設定済み → exit 8 reason=compensation-post-failed-third-party-parent（codex-review P1 指摘 PR #391。同一リポジトリ判定を親の存在判定から分離する回帰）', () => {
+  const r = run(['--issue', '42', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '', // 復旧のための再取得 GET は孤児を返す
+    parentAfter2: '9', // 補償 POST 失敗後の再取得 GET は第三者が設定した親を返す
+    parentRepoAfter2: 'other/repo', // 別リポジトリの親（cross-repository third-party）
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+    compPostExit: 1,
+    compPostBody: '503 Service Unavailable',
+  })
+  assert.equal(r.status, 8, '別リポジトリの親でも「実測でも孤児」ではなく third-party-parent として exit 8 になること')
+  assert.match(r.stderr, /reason=compensation-post-failed-third-party-parent/)
+  assert.match(r.stderr, /別リポジトリ/)
+  assert.match(r.stderr, /other\/repo/)
+})
+
+test('ケース36: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST がエラー応答（実は成立していた偽陰性）→ 失敗後の再取得で旧親配下に復旧済みと判明 → exit 10 restored（cursor[bot] Medium 指摘 PR #391。third-party-parent への誤ラベルの回帰）', () => {
+  const r = run(['--issue', '43', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '', // 復旧のための再取得 GET は孤児を返す
+    parentAfter2: '5', // 補償 POST 失敗後の再取得 GET は実は旧親 #5 配下（偽陰性）
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+    compPostExit: 1,
+    compPostBody: '503 Service Unavailable',
+  })
+  assert.equal(r.status, 10, '旧親配下への復旧が実測で確認できた場合は third-party-parent ではなく restored 扱いになること')
+  assert.match(r.stdout.trim(), /^result=restored issue=43 new_parent=7 old_parent=5$/)
+  assert.doesNotMatch(r.stderr, /reason=compensation-post-failed-third-party-parent/)
+})
+
+test('ケース36b: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST がエラー応答 → 失敗後の再取得では旧親配下に見えるが、反映遅延を考慮した再確認では実は孤児だった → 1 回の読み取りだけで restored 確定しない（codex-review P1 指摘 PR #391。偽陰性経路にも再確認を必須化する回帰）', () => {
+  const r = run(['--issue', '46', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '', // 復旧のための再取得 GET は孤児を返す
+    parentAfter2: '5', // 補償 POST 失敗後の再取得 GET は旧親 #5 配下に見える（過渡状態の可能性）
+    parentAfter3: '', // 反映遅延を考慮した再確認では実は孤児のまま（過渡状態だった）
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+    compPostExit: 1,
+    compPostBody: '503 Service Unavailable',
+  })
+  assert.notEqual(r.status, 10, '1 回の読み取りだけで restored を確定しないこと')
+  assert.equal(r.status, 8)
+  assert.match(r.stderr, /reason=recovery-state-unknown/)
+  assert.doesNotMatch(r.stdout, /result=restored/, '再確認で不安定と判明した場合は result=restored を出力しないこと')
+})
+
+test('ケース39: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST も失敗 → 失敗後の再取得で実は本来の新親 #7 に既に付いていた（元の POST の偽陰性）→ 反映遅延の再確認でも安定 → exit 0 reassigned（cursor[bot] Medium 指摘 PR #391「New parent misread as failure」の回帰。third-party-parent へ誤ラベルしない）', () => {
+  const r = run(['--issue', '50', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '', // 復旧のための再取得 GET は孤児を返す
+    parentAfter2: '7', // 補償 POST 失敗後の再取得 GET は本来の新親 #7 配下（元の POST の偽陰性）
+    parentAfter3: '7', // 反映遅延を考慮した再確認でも同じく新親 #7 配下（安定）
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+    compPostExit: 1,
+    compPostBody: '503 Service Unavailable',
+  })
+  assert.equal(r.status, 0, '実測が本来の新親であれば third-party-parent（exit 8）ではなく通常の成功終端になること')
+  assert.match(r.stdout.trim(), /^result=reassigned issue=50 new_parent=7 old_parent=5$/)
+  assert.doesNotMatch(r.stderr, /reason=compensation-post-failed-third-party-parent/)
+})
+
+test('ケース40: DELETE 後の POST 失敗 → 実測で旧親配下に見える → 反映遅延の再確認では実は本来の新親 #7 に付いていた（元の POST の偽陰性が再確認で初めて見える）→ exit 0 reassigned（cursor[bot] Medium 指摘 PR #391「New parent misread as failure」の回帰）', () => {
+  const r = run(['--issue', '51', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '5', // 復旧のための再取得 GET は旧親 #5 配下に見える → 反映遅延の再確認へ進む
+    parentAfter2: '7', // 反映遅延を考慮した再確認では実は本来の新親 #7 配下だった
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+  })
+  assert.equal(r.status, 0, '再確認で本来の新親が実測されれば third-party-parent 誤報や recovery-state-unknown にしないこと')
+  assert.match(r.stdout.trim(), /^result=reassigned issue=51 new_parent=7 old_parent=5$/)
+  const c = calls(r.logPath)
+  assert.equal(c.filter((l) => l.includes('--method POST')).length, 1, '補償 POST は撃たれていないこと（旧親配下に見えた分岐は補償 POST 前に確定する）')
+})
+
+test('ケース41: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST 成功 → 事後確認では旧親ではなく本来の新親 #7 に付いていた → exit 0 reassigned（cursor[bot] Medium 指摘 PR #391「New parent misread as failure」の回帰。rv_parent の third-party 誤ラベルを避ける）', () => {
+  const r = run(['--issue', '52', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '', // 復旧のための再取得 GET は孤児を返す
+    parentAfter2: '7', // 補償 POST 成功後の確認では実は本来の新親 #7 配下だった
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+  })
+  assert.equal(r.status, 0)
+  assert.match(r.stdout.trim(), /^result=reassigned issue=52 new_parent=7 old_parent=5$/)
+  assert.doesNotMatch(r.stderr, /reason=recovery-state-unknown/)
+})
+
+test('ケース41b: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST 成功 → 事後確認では本来の新親 #7 に付いているように見えるが、反映遅延の再確認では不安定（別状態）と判明 → 1 回の読み取りだけで reassigned 確定しない → exit 8 reason=recovery-state-unknown（codex-review P1 指摘 PR #391。ケース41 の成功判定経路にも安定確認を適用する回帰）', () => {
+  const r = run(['--issue', '52', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '', // 復旧のための再取得 GET は孤児を返す
+    parentAfter2: '7', // 補償 POST 成功後の確認では本来の新親 #7 配下に見える（過渡状態の可能性）
+    parentAfter3: '', // 反映遅延を考慮した再確認では実は孤児だった（不安定）
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+  })
+  assert.equal(r.status, 8)
+  assert.match(r.stderr, /reason=recovery-state-unknown/)
+})
+
+test('ケース42: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST も失敗 → 失敗後の再取得では旧親 #5 配下に見えるが、反映遅延の再確認では実は本来の新親 #7 に付いていた → exit 0 reassigned（cursor[bot] Medium 指摘 PR #391「New parent misread as failure」の回帰。偽陰性確認の再確認自体で新親が判明する経路）', () => {
+  const r = run(['--issue', '53', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '', // 復旧のための再取得 GET は孤児を返す
+    parentAfter2: '5', // 補償 POST 失敗後の再取得 GET は旧親 #5 配下に見える（過渡状態の可能性）
+    parentAfter3: '7', // 反映遅延を考慮した再確認では実は本来の新親 #7 配下だった
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+    compPostExit: 1,
+    compPostBody: '503 Service Unavailable',
+  })
+  assert.equal(r.status, 0)
+  assert.match(r.stdout.trim(), /^result=reassigned issue=53 new_parent=7 old_parent=5$/)
+  assert.doesNotMatch(r.stderr, /reason=compensation-post-failed-third-party-parent/)
+})
+
+test('ケース37: DELETE 後の POST 失敗 → 補償 POST 成功後の確認 GET で「別リポジトリ」の第三者親が実測される → exit 8 reason=recovery-state-unknown、「実測 parent=なし」と誤報しない（cursor[bot] Medium 指摘 PR #391。compensation-verify の same-repo 判定を親の存在判定から分離する回帰）', () => {
+  const r = run(['--issue', '44', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '', // 復旧のための再取得は孤児 → 補償 POST を撃つ
+    parentAfter2: '9',
+    parentRepoAfter2: 'other/repo', // 補償 POST 成功後の確認では実は別リポジトリの第三者親配下
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+  })
+  assert.equal(r.status, 8)
+  assert.match(r.stderr, /reason=recovery-state-unknown/)
+  assert.match(r.stderr, /別リポジトリの.*other\/repo.*issues\/9/, '別リポジトリの第三者親であることが stderr から読み取れること')
+  assert.doesNotMatch(r.stderr, /parent=なし/, 'cross-repo の実測親を「parent=なし」（孤児）と誤報しないこと')
+})
+
+test('ケース38: DELETE 後の POST 失敗 → 復旧の再取得では旧親配下に見えるが、反映遅延の再確認では「別リポジトリ」の第三者親が実測される → exit 8 reason=recovery-state-unknown、「実測 parent=なし」と誤報しない（cursor[bot] Medium 指摘 PR #391。delayed-recheck の same-repo 判定を親の存在判定から分離する回帰）', () => {
+  const r = run(['--issue', '45', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '5', // 復旧のための再取得は旧親配下に見える → 反映遅延の再確認へ進む
+    parentAfter2: '9',
+    parentRepoAfter2: 'other/repo', // 再確認では実は別リポジトリの第三者親配下
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+  })
+  assert.equal(r.status, 8)
+  assert.match(r.stderr, /reason=recovery-state-unknown/)
+  assert.match(r.stderr, /別リポジトリの.*other\/repo.*issues\/9/, '別リポジトリの第三者親であることが stderr から読み取れること')
+  assert.doesNotMatch(r.stderr, /parent=なし/, 'cross-repo の実測親を「parent=なし」（孤児）と誤報しないこと')
+  const c = calls(r.logPath)
+  assert.equal(c.filter((l) => l.includes('--method POST')).length, 1, '補償 POST は撃たれていないこと（recheck 分岐は復旧成立済みとみなした場合のみ通る経路のため）')
 })
 
 test('ケース15: 孤児経路の POST が "only have one parent" → exit 7（DELETE 未実行で無変更）', () => {

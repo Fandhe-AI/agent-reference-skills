@@ -96,7 +96,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Sync project status
-        uses: Fandhe-AI/actions/project-sync@a85f9d283bfdbe7ff76823d2ca766222a268ee10 # main
+        uses: Fandhe-AI/actions/project-sync@latest
         with:
           project-number: '<number>'
           project-owner: '<owner>'
@@ -131,7 +131,7 @@ jobs:
           owner: '<owner>'
 
       - name: Sync project status
-        uses: Fandhe-AI/actions/project-sync@a85f9d283bfdbe7ff76823d2ca766222a268ee10 # main
+        uses: Fandhe-AI/actions/project-sync@latest
         with:
           project-number: '<number>'
           project-owner: '<owner>'
@@ -144,7 +144,7 @@ Status オプション名がデフォルト（Todo / In Progress / In Review / D
 
 ```yaml
       - name: Sync project status
-        uses: Fandhe-AI/actions/project-sync@a85f9d283bfdbe7ff76823d2ca766222a268ee10 # main
+        uses: Fandhe-AI/actions/project-sync@latest
         with:
           project-number: '<number>'
           project-owner: '<owner>'
@@ -276,7 +276,7 @@ gh project item-add <number> \
 - **プライベートリポジトリ:** org の Settings → Actions → General でプライベートリポジトリからの Action 共有を許可する必要あり
 - 手動補正モードは同期前に必ずユーザーの確認を得る
 - DraftIssue タイプのアイテムは同期対象外（実 Issue が存在しないため）
-- sandbox 環境では実行できない（後述の「sandbox 環境での実行」節を参照）
+- ネットワークを要する（主に API 経由。後述の「sandbox 環境での実行」節を参照）
 - **action は必ずコミット SHA で固定する**: `@main` / `@vN` 等の可動参照は生成しない。上流のタグ付け替え・ブランチ改変が未検証のまま流れ込むサプライチェーンリスクを避けるため（SHA 更新時は差分を確認してから更新する）
 - **permissions は最小権限で明示する**: workflow レベルで `contents: read` を明示する。同期処理自体は `PROJECT_TOKEN` / GitHub App トークン側の権限で動作するため、`GITHUB_TOKEN` への追加権限は不要
 
@@ -311,4 +311,4 @@ gh project item-list <number> --owner <owner> --format json --limit 999
 
 ## sandbox 環境での実行
 
-このスキルは sandbox 環境では実行できない。ネットワークアクセス・ファイルシステムへの書き込みが必要なため、通常の Claude Code セッションで実行すること。
+このスキルはネットワーク越しの GitHub 操作（同期 workflow のコミット・プッシュ、`gh project item-edit` 等の一括補正）を必須とする。該当コマンドはコマンド単位で sandbox 無効にして実行する。ネットワーク遮断を解除できない環境では実行できない。

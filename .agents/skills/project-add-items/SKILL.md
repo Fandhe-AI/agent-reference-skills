@@ -120,7 +120,7 @@ gh project item-edit \
 - ソースの形式が不明な場合はユーザーに確認する
 - フィールド値がプロジェクトのオプションに一致しない場合はスキップして警告する
 - GitHub API レート制限に注意し、必要に応じてバッチサイズを調整する
-- sandbox 環境では実行できない（後述の「sandbox 環境での実行」節を参照）
+- ネットワークを要する（主に API 経由。後述の「sandbox 環境での実行」節を参照）
 
 ## 検証
 
@@ -134,4 +134,4 @@ gh project item-list <number> --owner <owner> --format json --limit 999
 
 ## sandbox 環境での実行
 
-このスキルは sandbox 環境では実行できない。ネットワークアクセス・ファイルシステムへの書き込みが必要なため、通常の Claude Code セッションで実行すること。
+このスキルはネットワーク越しの GitHub 操作（`gh project item-create` / `item-edit`）を必須とする。該当コマンドはコマンド単位で sandbox 無効にして実行する。ネットワーク遮断を解除できない環境では実行できない。

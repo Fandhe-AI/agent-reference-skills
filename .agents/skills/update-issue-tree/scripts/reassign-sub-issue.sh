@@ -157,6 +157,381 @@ emit_result() {
   echo "result=${state} issue=${ISSUE} new_parent=${NEW_PARENT} old_parent=${old_parent_out}"
 }
 
+# 実測で期待した親配下に見えた場合でも、DELETE/POST の反映遅延による過渡状態を見ている
+# 可能性を排除できない。短い間隔を空けて再取得し、2 回連続で同じ結果が得られて初めて
+# 安定した状態として確定する（codex-review P1 指摘 PR #391）。呼び出し文脈が異なる複数箇所
+# （補償 POST 失敗直後の確認 / 実測で既に旧親配下だった場合の確認 / 新親への偽陰性確認）で
+# 同一ロジックが必要になるため共通化した。期待どおりで安定確認できれば戻り値 0（stdout
+# 出力なし）。
+# 期待値とは異なるが実測が本来の新親 #NEW_PARENT だった場合は戻り値 2 とし、情報行のみ
+# stderr へ出す（呼び出し元はこれを「元の POST が偽陰性で実際には成功していた」ことを
+# 意味する成功終端として扱う。cursor[bot] Medium 指摘 PR #391 — 旧親への復旧確認・偽陰性
+# 確認のいずれでも、実測が新親であることを第三者による割り込みと誤ラベルしていた）。
+# それ以外の不一致（第三者の別親・孤児への転落）は戻り値 1 とし、原因を stderr へ出力する
+# （呼び出し元は exit 8 で終端する）。
+# 引数 $1: ログメッセージに使う文脈ラベル（例: "補償復旧後の確認"） 引数 $2: 期待する親 issue 番号
+confirm_stable_parent() {
+  local label="$1"
+  local expected="$2"
+  # 待機秒数は使用前に非負整数へ検証し、sleep の失敗も捕捉する — set -e 下で無条件実行すると、
+  # 不正値・実行失敗の非 0 終了が呼び出し元の exit 8 / reason=recovery-state-unknown への変換より
+  # 先にスクリプトを即終了させ、終了コード契約外の exit 1 になるため（codex-review P1 指摘
+  # PR #391）。検証・実行の失敗は状態不明（return 1）として既存の fail-closed 経路へ流す
+  # 上限 60 秒: 非負整数の検証だけでは、継承環境の極端な値（例: 999999999）で sleep が
+  # 事実上停止し、DELETE 済みの部分変更状態を報告できないまま処理が止まる（codex-review
+  # P1 指摘 PR #391 第 4 ラウンド）。再確認待機に 60 秒超の値は運用上あり得ないため、
+  # 範囲外は状態不明（return 1）の fail-closed 経路へ流す
+  # 検証は算術比較ではなく文字列表現（最大 2 桁）で行う — `18446744073709551616` のような
+  # 巨大な数字列は Bash の算術比較で整数オーバーフローし `> 60` の上限検証を素通りするため
+  # （codex-review P1 指摘 PR #391 第 5 ラウンド）。2 桁以内へ字句で制限すればオーバーフロー
+  # 経路そのものが存在しない
+  local recheck_delay="${RECOVERY_RECHECK_DELAY_SEC:-2}"
+  if ! [[ "${recheck_delay}" =~ ^[0-9]{1,2}$ ]] || (( recheck_delay > 60 )); then
+    echo "エラー: RECOVERY_RECHECK_DELAY_SEC が 0〜60 の整数でない（値: ${recheck_delay}）。${label}を実施できず状態不明のまま終端する" >&2
+    return 1
+  fi
+  if ! sleep "${recheck_delay}"; then
+    echo "エラー: ${label}のための待機（sleep ${recheck_delay}）に失敗した。状態不明のまま終端する" >&2
+    return 1
+  fi
+  local recheck_json
+  if ! recheck_json=$(gh api "repos/${REPO_PATH}/issues/${ISSUE}" 2>"${GH_ERR_FILE}"); then
+    echo "エラー: ${label}のための再取得に失敗した。#${ISSUE} が #${expected} 配下で安定しているか未確認のまま終端する" >&2
+    cat "${GH_ERR_FILE}" >&2
+    return 1
+  fi
+  # 同一リポジトリ判定は「親の存在判定」から分離する（cursor[bot] Medium 指摘 PR #391。
+  # cross-repo 判定時のみ recheck_parent を空にすると、実際には別リポジトリの
+  # 第三者親配下にあるのに「実測 parent=なし」＝孤児と誤報する）
+  local recheck_parent_url recheck_parent recheck_same_repo=1
+  # jq 解析は set -e で即終了させず明示捕捉する — GET が終了コード 0 でも空・不正 JSON を
+  # 返した場合、素の代入だと契約外の exit 1 で終端するため（codex-review P1 指摘 PR #391）
+  if ! recheck_parent_url=$(printf '%s' "${recheck_json}" | jq -r '.parent_issue_url // empty'); then
+    echo "エラー: ${label}の応答 JSON を解析できない。#${ISSUE} が #${expected} 配下で安定しているか未確認のまま終端する" >&2
+    return 1
+  fi
+  recheck_parent=""
+  if [[ -n "${recheck_parent_url}" ]]; then
+    recheck_parent=$(printf '%s' "${recheck_parent_url}" | grep -oE '[0-9]+$' || true)
+    # 「URL なし（孤児）」と「URL はあるが番号を抽出できない（解析不能）」を区別する。
+    # 後者を空のまま通すと孤児と誤認され、実際には親が存在し得る状態で後続の書き込みを
+    # 許してしまう（codex-review P1 指摘 PR #391。fail-open）
+    if [[ -z "${recheck_parent}" ]]; then
+      echo "エラー: ${label}の parent_issue_url から親 issue 番号を抽出できない（解析不能な応答形式）。#${ISSUE} の親子状態は未確認のまま終端する" >&2
+      return 1
+    fi
+    if [[ "${recheck_parent_url%/issues/*}" != "${SELF_REPO_URL}" ]]; then
+      recheck_same_repo=0
+    fi
+  fi
+  if [[ "${recheck_same_repo}" -eq 1 && "${recheck_parent}" == "${expected}" ]]; then
+    return 0
+  fi
+  if [[ "${expected}" != "${NEW_PARENT}" && "${recheck_same_repo}" -eq 1 && "${recheck_parent}" == "${NEW_PARENT}" ]]; then
+    echo "情報: ${label}で期待した #${expected} ではなく本来の新親 #${NEW_PARENT} 配下にあることが判明した（元の POST が偽陰性で実際には成功していた可能性）" >&2
+    return 2
+  fi
+  if [[ -n "${recheck_parent}" ]]; then
+    local recheck_scope
+    if [[ "${recheck_same_repo}" -eq 1 ]]; then
+      recheck_scope="同一リポジトリの #${recheck_parent}"
+    else
+      recheck_scope="別リポジトリの ${recheck_parent_url}"
+    fi
+    echo "エラー: ${label}で期待した #${expected} 配下ではなく ${recheck_scope} 配下だった（第三者が付け替えた可能性）。復旧成立とはみなさず停止する" >&2
+  else
+    echo "エラー: ${label}で期待した #${expected} 配下から外れていた（実測 parent=なし）。直前の読み取りは反映前の過渡状態だった可能性が高く、復旧成立とはみなさず停止する" >&2
+  fi
+  return 1
+}
+
+# DELETE 成功後の POST 失敗（旧親から外れ新親にも付かない部分変更）に対する補償復旧
+# （Issue #352）。#333 は「事前に判定できる拒否条件」を DELETE 前に潰したが、DELETE と
+# POST の間のレース・一時的な 5xx は事前判定できない残余として残っていた。ここで諦めて
+# exit すると孤児化が確定するため、実状態を再取得してから安全に判断できる範囲でのみ
+# 旧親へ戻す。呼び出し元（DELETE 経路の POST 失敗ブロック）は必ず ISSUE / NEW_PARENT /
+# CURRENT_PARENT / ISSUE_ID / REPO_PATH / SELF_REPO_URL / GH_ERR_FILE / POST_OUT を
+# 設定済みの状態でこの関数を呼ぶ。関数は必ず exit するため呼び出し元へは戻らない
+recover_after_post_failure() {
+  if printf '%s' "${POST_OUT}" | grep -qi "only have one parent"; then
+    # メッセージ文字列は GitHub 側の表現変更に追随できず脆いため、分岐の根拠にはしない。
+    # 「第三者による付け替えの可能性が高い」というヒントに格下げし、実測値で確定させる
+    echo "情報: エラーメッセージから第三者による付け替えの可能性が示唆されている（実測値で確定させる）" >&2
+  fi
+
+  if ! RECOVERY_JSON=$(gh api "repos/${REPO_PATH}/issues/${ISSUE}" 2>"${GH_ERR_FILE}"); then
+    echo "エラー: 復旧のための実状態再取得に失敗した。#${ISSUE} は #${CURRENT_PARENT} から外れたまま孤児で残っている可能性がある" >&2
+    cat "${GH_ERR_FILE}" >&2
+    # 状態不明のまま補償 POST を撃つと、実は既に別の親が付いている場合に承認外の
+    # 親子関係を壊しかねない。fail-closed のため補償を試みずに終端する
+    echo "reason=recovery-state-unknown" >&2
+    exit 8
+  fi
+
+  local recovery_parent_url recovery_parent recovery_same_repo=1
+  # jq 解析失敗は状態不明として exit 8 へ統一する（codex-review P1 指摘 PR #391。素の代入だと
+  # set -e で契約外の exit 1 になり、DELETE 済みの部分変更が残ったことが呼び出し元へ伝わらない）
+  if ! recovery_parent_url=$(printf '%s' "${RECOVERY_JSON}" | jq -r '.parent_issue_url // empty'); then
+    echo "エラー: 復旧のための実状態応答 JSON を解析できない。#${ISSUE} の親子状態は未確認" >&2
+    echo "reason=recovery-state-unknown" >&2
+    exit 8
+  fi
+  recovery_parent=""
+  if [[ -n "${recovery_parent_url}" ]]; then
+    recovery_parent=$(printf '%s' "${recovery_parent_url}" | grep -oE '[0-9]+$' || true)
+    # 非空 URL から番号を抽出できない場合は孤児と誤認せず状態不明で停止する（codex-review
+    # P1 指摘 PR #391。空のまま通すと孤児分岐へ入り、実際には親が存在し得る状態で旧親への
+    # 補償 POST という承認外の書き込みを実行してしまう fail-open）
+    if [[ -z "${recovery_parent}" ]]; then
+      echo "エラー: parent_issue_url から親 issue 番号を抽出できない（解析不能な応答形式: ${recovery_parent_url}）。#${ISSUE} の親子状態は未確認" >&2
+      echo "reason=recovery-state-unknown" >&2
+      exit 8
+    fi
+    if [[ "${recovery_parent_url%/issues/*}" != "${SELF_REPO_URL}" ]]; then
+      recovery_same_repo=0
+    fi
+  fi
+
+  if [[ "${recovery_same_repo}" -eq 1 && "${recovery_parent}" == "${NEW_PARENT}" ]]; then
+    # POST は偽陰性だった可能性がある（応答は失敗扱いでも実際には成立していたかも
+    # しれない）。ただしこの 1 回の読み取りだけでは DELETE/POST の反映遅延による
+    # 過渡状態を見ている可能性を排除できない。他の成功判定経路と非対称に即時確定
+    # させず、共通関数で安定確認してから成功終端する（codex-review P1 指摘 PR #391。
+    # CI 失敗の直接原因）
+    local rfp_rc=0
+    confirm_stable_parent "復旧確認での新親偽陰性確認" "${NEW_PARENT}" || rfp_rc=$?
+    if [[ "${rfp_rc}" -eq 0 ]]; then
+      # 本来の目的（新親への付け替え）は達成済みのため、通常の成功終端と同じ扱いにする
+      emit_result "reassigned" "${CURRENT_PARENT}"
+      exit 0
+    fi
+    echo "reason=recovery-state-unknown" >&2
+    exit 8
+  fi
+
+  if [[ "${recovery_same_repo}" -eq 1 && -z "${recovery_parent}" ]]; then
+    # 実測でも孤児（想定どおり DELETE のみ成立し POST が未達）。承認済みの操作の
+    # 逆操作（旧親へ戻す）は承認範囲内であるため、ここでのみ補償 POST を撃つ
+    if ! COMP_POST_OUT=$(gh api --method POST "repos/${REPO_PATH}/issues/${CURRENT_PARENT}/sub_issues" -F "sub_issue_id=${ISSUE_ID}" 2>&1); then
+      echo "エラー: 旧親 #${CURRENT_PARENT} への補償復旧 POST が失敗した" >&2
+      echo "${COMP_POST_OUT}" >&2
+      # 補償 POST が失敗したことだけを根拠に「孤児のまま」と断定しない。失敗している間に
+      # 第三者が別の親を設定した可能性があるため、実状態を再取得してから正確な内容を
+      # 報告する（cursor[bot] Medium 指摘 PR #391。再取得自体が失敗した場合は状態不明の
+      # まま孤児と断定せず reason=compensation-post-failed のみで終端する）
+      if COMP_FAIL_JSON=$(gh api "repos/${REPO_PATH}/issues/${ISSUE}" 2>"${GH_ERR_FILE}"); then
+        # リポジトリ一致は「同一リポジトリの親か」の判定にのみ使い、「親が存在するか」の
+        # 判定からは分離する。空でない parent_issue_url は同一・別リポジトリを問わず
+        # 「孤児ではない」ことを意味するため、別リポジトリという理由だけで comp_fail_parent
+        # を空にすると third-party-parent を見逃し「実測でも孤児」と誤報告してしまう
+        # （codex-review P1 指摘 PR #391。CI 失敗の直接原因）
+        local comp_fail_parent_url comp_fail_parent comp_fail_same_repo=1
+        # jq 解析失敗は状態不明として exit 8 へ統一する（codex-review P1 指摘 PR #391）
+        if ! comp_fail_parent_url=$(printf '%s' "${COMP_FAIL_JSON}" | jq -r '.parent_issue_url // empty'); then
+          echo "エラー: 補償 POST 失敗後の実状態応答 JSON を解析できない。#${ISSUE} が孤児のままかは未確認" >&2
+          echo "reason=recovery-state-unknown" >&2
+          exit 8
+        fi
+        comp_fail_parent=""
+        if [[ -n "${comp_fail_parent_url}" ]]; then
+          comp_fail_parent=$(printf '%s' "${comp_fail_parent_url}" | grep -oE '[0-9]+$' || true)
+          # 非空 URL の番号抽出不能は孤児と誤認せず状態不明で停止する（codex-review P1
+          # 指摘 PR #391）
+          if [[ -z "${comp_fail_parent}" ]]; then
+            echo "エラー: parent_issue_url から親 issue 番号を抽出できない（解析不能な応答形式: ${comp_fail_parent_url}）。#${ISSUE} が孤児のままかは未確認" >&2
+            echo "reason=recovery-state-unknown" >&2
+            exit 8
+          fi
+          if [[ "${comp_fail_parent_url%/issues/*}" != "${SELF_REPO_URL}" ]]; then
+            comp_fail_same_repo=0
+          fi
+        fi
+        if [[ -n "${comp_fail_parent}" && "${comp_fail_same_repo}" -eq 1 && "${comp_fail_parent}" == "${NEW_PARENT}" ]]; then
+          # 補償 POST はエラー応答だったが、実測では本来の新親 #NEW_PARENT に既に付いている。
+          # これは元の POST（新親への付け替え）が偽陰性で実際には成功していたことを意味し、
+          # 第三者の割り込みではない。下の third-party-parent 分岐で誤ラベルしないよう、
+          # 先にこの成功ケースを判定する（cursor[bot] Medium 指摘 PR #391 「New parent
+          # misread as failure」）。1 回の読み取りだけでは過渡状態の可能性を排除できないため
+          # 共通関数で再確認してから確定する
+          echo "情報: 旧親 #${CURRENT_PARENT} への補償復旧 POST はエラー応答だったが、実測では本来の新親 #${NEW_PARENT} に既に付いていた（元の POST が偽陰性だった可能性。反映遅延を考慮し再確認する）" >&2
+          local nfp_rc=0
+          confirm_stable_parent "補償 POST 失敗後の新親偽陰性確認" "${NEW_PARENT}" || nfp_rc=$?
+          if [[ "${nfp_rc}" -eq 0 ]]; then
+            emit_result "reassigned" "${CURRENT_PARENT}"
+            exit 0
+          fi
+          echo "reason=recovery-state-unknown" >&2
+          exit 8
+        fi
+        if [[ -n "${comp_fail_parent}" && "${comp_fail_same_repo}" -eq 1 && "${comp_fail_parent}" == "${CURRENT_PARENT}" ]]; then
+          # 補償 POST はエラー応答だったが、実測では既に旧親 #CURRENT_PARENT 配下にある
+          # （応答が偽陰性だった、または反映が追いついた）。この場合を third-party-parent
+          # として報告すると、実際には承認済みの復旧が成立しているのに誤って部分変更・
+          # 要確認扱いにしてしまう（cursor[bot] Medium 指摘 PR #391 の逆方向ケース）。
+          # ただしこの 1 回の読み取りだけでは、DELETE の反映が遅延しているだけの過渡状態を
+          # 見ている可能性を排除できない。その場合、少し後には実際に孤児化するにも
+          # かかわらずここで「復旧済み」と確定させると誤報になる（codex-review P1 指摘
+          # PR #391。通常の DELETE 経路（下の recovery_parent 分岐）と同じ安定確認を
+          # 共通関数で適用し、2 回連続で旧親配下が観測できて初めて確定する）
+          echo "情報: 旧親 #${CURRENT_PARENT} への補償復旧 POST はエラー応答だったが、実測では既に旧親配下に復旧していた（応答が偽陰性だった可能性。反映遅延を考慮し再確認する）" >&2
+          local cfp_rc=0
+          confirm_stable_parent "補償 POST 失敗後の偽陰性確認" "${CURRENT_PARENT}" || cfp_rc=$?
+          if [[ "${cfp_rc}" -eq 0 ]]; then
+            echo "result=restored issue=${ISSUE} new_parent=${NEW_PARENT} old_parent=${CURRENT_PARENT}"
+            exit 10
+          elif [[ "${cfp_rc}" -eq 2 ]]; then
+            # 反映遅延の再確認で、実は本来の新親 #NEW_PARENT に付いていたことが判明した
+            # （元の POST の偽陰性がここで初めて見える経路。cursor[bot] Medium 指摘 PR #391）
+            emit_result "reassigned" "${CURRENT_PARENT}"
+            exit 0
+          fi
+          echo "reason=recovery-state-unknown" >&2
+          exit 8
+        fi
+        if [[ -n "${comp_fail_parent}" ]]; then
+          local comp_fail_scope
+          if [[ "${comp_fail_same_repo}" -eq 1 ]]; then
+            comp_fail_scope="同一リポジトリの #${comp_fail_parent}"
+          else
+            comp_fail_scope="別リポジトリの ${comp_fail_parent_url}"
+          fi
+          echo "エラー: #${ISSUE} は孤児ではなく、実測では ${comp_fail_scope} 配下にある（補償 POST 失敗の間に第三者が付け替えた可能性）。承認外の親子関係を壊さないためこのまま停止する" >&2
+          echo "reason=compensation-post-failed-third-party-parent" >&2
+          exit 8
+        fi
+        echo "エラー: #${ISSUE} は実測でも孤児のまま残っている" >&2
+        echo "reason=compensation-post-failed" >&2
+        exit 8
+      fi
+      # 再取得自体が失敗した場合、孤児か否かを一切測定できていない。この分岐を
+      # reason=compensation-post-failed で終端すると、呼び出し元が「親子関係を
+      # 確認済みの孤児」と誤認しうる（cursor[bot] Medium 指摘 PR #391）。
+      # 上の JSON 解析失敗パスと同じ reason=recovery-state-unknown に統一する
+      echo "エラー: 補償復旧 POST 失敗後の実状態再取得にも失敗した。#${ISSUE} が孤児のままかは未確認" >&2
+      cat "${GH_ERR_FILE}" >&2
+      echo "reason=recovery-state-unknown" >&2
+      exit 8
+    fi
+
+    # 補償 POST の成功応答だけを信頼しない。事後確認は必ず取り直す（#295 の設計哲学を
+    # 復旧経路にも一貫させる）
+    if ! RECOVERY_VERIFY_JSON=$(gh api "repos/${REPO_PATH}/issues/${ISSUE}" 2>"${GH_ERR_FILE}"); then
+      echo "エラー: 補償復旧後の確認取得に失敗した" >&2
+      cat "${GH_ERR_FILE}" >&2
+      echo "reason=recovery-state-unknown" >&2
+      exit 8
+    fi
+    # 同一リポジトリ判定は「親の存在判定」から分離する（cursor[bot] Medium 指摘 PR #391。
+    # comp_fail_parent と同じ欠陥がここにもあった: cross-repo 判定時のみ rv_parent を
+    # 空にすると、実際には別リポジトリの第三者親配下にあるのに「実測 parent=なし」と
+    # 誤報し、孤児と紐付いていない状態を「孤児」として報告してしまう）
+    local rv_parent_url rv_parent rv_same_repo=1
+    # jq 解析失敗は状態不明として exit 8 へ統一する（codex-review P1 指摘 PR #391）
+    if ! rv_parent_url=$(printf '%s' "${RECOVERY_VERIFY_JSON}" | jq -r '.parent_issue_url // empty'); then
+      echo "エラー: 補償復旧後の確認応答 JSON を解析できない。#${ISSUE} の親子状態は未確認" >&2
+      echo "reason=recovery-state-unknown" >&2
+      exit 8
+    fi
+    rv_parent=""
+    if [[ -n "${rv_parent_url}" ]]; then
+      rv_parent=$(printf '%s' "${rv_parent_url}" | grep -oE '[0-9]+$' || true)
+      # 非空 URL の番号抽出不能は孤児と誤認せず状態不明で停止する（codex-review P1
+      # 指摘 PR #391）
+      if [[ -z "${rv_parent}" ]]; then
+        echo "エラー: parent_issue_url から親 issue 番号を抽出できない（解析不能な応答形式: ${rv_parent_url}）。#${ISSUE} の親子状態は未確認" >&2
+        echo "reason=recovery-state-unknown" >&2
+        exit 8
+      fi
+      if [[ "${rv_parent_url%/issues/*}" != "${SELF_REPO_URL}" ]]; then
+        rv_same_repo=0
+      fi
+    fi
+    if [[ "${rv_same_repo}" -eq 1 && "${rv_parent}" == "${NEW_PARENT}" ]]; then
+      # 補償 POST は成功応答だったが、事後確認では旧親ではなく本来の新親 #NEW_PARENT に
+      # 付いていた。旧親への補償 POST と競合するタイミングで、元の POST の偽陰性が遅れて
+      # 反映された可能性がある。第三者の割り込みではなく本来の目的が達成された状態のため、
+      # third-party 誤ラベルを避けて成功終端する（cursor[bot] Medium 指摘 PR #391）。
+      # ただしこの 1 回の読み取りだけでは反映遅延による過渡状態を排除できないため、他の
+      # 成功判定経路と同様に共通関数で安定確認してから確定する（codex-review P1 指摘
+      # PR #391。CI 失敗の直接原因）
+      echo "情報: 補償復旧後の確認で旧親ではなく本来の新親 #${NEW_PARENT} 配下にあることが判明した（元の POST が偽陰性で実際には成功していた可能性。反映遅延を考慮し再確認する）" >&2
+      local pvfp_rc=0
+      confirm_stable_parent "補償 POST 成功後の新親偽陰性確認" "${NEW_PARENT}" || pvfp_rc=$?
+      if [[ "${pvfp_rc}" -eq 0 ]]; then
+        emit_result "reassigned" "${CURRENT_PARENT}"
+        exit 0
+      fi
+      echo "reason=recovery-state-unknown" >&2
+      exit 8
+    fi
+    if [[ "${rv_same_repo}" -ne 1 || "${rv_parent}" != "${CURRENT_PARENT}" ]]; then
+      if [[ -n "${rv_parent}" ]]; then
+        local rv_scope
+        if [[ "${rv_same_repo}" -eq 1 ]]; then
+          rv_scope="同一リポジトリの #${rv_parent}"
+        else
+          rv_scope="別リポジトリの ${rv_parent_url}"
+        fi
+        echo "エラー: 補償復旧後の確認で旧親 #${CURRENT_PARENT} 配下ではなく ${rv_scope} 配下だった（補償復旧と前後して第三者が付け替えた可能性）。状態を手で確認する" >&2
+      else
+        echo "エラー: 補償復旧後の確認で旧親 #${CURRENT_PARENT} 配下に見つからない（実測 parent=なし）。状態を手で確認する" >&2
+      fi
+      echo "reason=recovery-state-unknown" >&2
+      exit 8
+    fi
+
+    # 補償 POST の成功応答 + 直後の GET 1 回だけでは、DELETE の反映遅延で旧親配下に
+    # 見えている過渡状態を排除できない。直後に孤児化または新親への遅延反映が起きても
+    # restored と誤報するため、他の成功判定経路（補償 POST 失敗後・POST 偽陰性・補償不要）
+    # と同じ共通関数で安定確認してから確定する（codex-review P1 指摘 PR #391。成功応答
+    # 経路だけ契約が非対称だった）
+    local pvr_rc=0
+    confirm_stable_parent "補償復旧後の安定確認" "${CURRENT_PARENT}" || pvr_rc=$?
+    if [[ "${pvr_rc}" -eq 2 ]]; then
+      # 安定確認中に本来の新親 #NEW_PARENT への遅延反映が見えた（元の POST の偽陰性）
+      emit_result "reassigned" "${CURRENT_PARENT}"
+      exit 0
+    elif [[ "${pvr_rc}" -ne 0 ]]; then
+      echo "reason=recovery-state-unknown" >&2
+      exit 8
+    fi
+    echo "情報: #${ISSUE} を旧親 #${CURRENT_PARENT} へ補償復旧した（本来の目的だった #${NEW_PARENT} への付け替えは未達。反映遅延を考慮し再確認済み）" >&2
+    echo "result=restored issue=${ISSUE} new_parent=${NEW_PARENT} old_parent=${CURRENT_PARENT}"
+    exit 10
+  fi
+
+  if [[ "${recovery_same_repo}" -eq 1 && "${recovery_parent}" == "${CURRENT_PARENT}" ]]; then
+    # 実測で既に旧親配下（DELETE が実は不成立だった、または応答後に反映が追いついた等）。
+    # ただしこの 1 回の読み取りだけでは、DELETE の反映が遅延しているだけの過渡状態を
+    # 見ている可能性を排除できない。その場合、少し後には実際に孤児化するにもかかわらず
+    # ここで「復旧済み」と確定させると誤報になる（codex-review P1 指摘 PR #391）。
+    # 短い間隔を空けて再取得し、2 回連続で同じ結果（旧親配下）が得られて初めて安定した
+    # 状態として確定する（共通関数化。上の補償 POST 失敗後の偽陰性確認と同一ロジック）
+    local sop_rc=0
+    confirm_stable_parent "反映遅延を考慮した再確認" "${CURRENT_PARENT}" || sop_rc=$?
+    if [[ "${sop_rc}" -eq 2 ]]; then
+      # 再確認で、実は本来の新親 #NEW_PARENT に付いていたことが判明した（元の POST の
+      # 偽陰性がここで初めて見える経路。cursor[bot] Medium 指摘 PR #391）
+      emit_result "reassigned" "${CURRENT_PARENT}"
+      exit 0
+    elif [[ "${sop_rc}" -ne 0 ]]; then
+      echo "reason=recovery-state-unknown" >&2
+      exit 8
+    fi
+    echo "情報: #${ISSUE} は実測で既に旧親 #${CURRENT_PARENT} 配下にあった（補償 POST は不要。反映遅延を考慮し再確認済み）" >&2
+    echo "result=restored issue=${ISSUE} new_parent=${NEW_PARENT} old_parent=${CURRENT_PARENT}"
+    exit 10
+  fi
+
+  # 実測で第三者が別の親を設定済み（同一リポジトリの別 issue、または別リポジトリへの
+  # 転送）。承認外の親子関係を壊さないため、旧親へ戻すことも新親へ POST し直すことも
+  # せず書き込みなしで停止する（fail-closed）
+  echo "エラー: DELETE 後の POST 失敗を受けて実状態を再取得したところ、第三者が別の親を設定済みだった（parent_issue_url=${recovery_parent_url}）。承認外の親子関係を壊さないため補償せず停止する" >&2
+  echo "対処: 実測した親をユーザーへ提示して承認を得たうえで再実行する" >&2
+  echo "reason=third-party-parent" >&2
+  exit 11
+}
+
 # JSON を jq でパースする GET 呼び出しは stdout/stderr を分離して取得する（2>&1 で
 # マージすると、gh が stderr へ何か出力しただけで JSON パースが壊れ、本来成功している
 # 呼び出しが偽陽性で中断する。エラー本文の表示用途は err ファイル側に閉じ込める）
@@ -325,15 +700,10 @@ else
   if ! POST_OUT=$(gh api --method POST "repos/${REPO_PATH}/issues/${NEW_PARENT}/sub_issues" -F "sub_issue_id=${ISSUE_ID}" 2>&1); then
     echo "エラー: 新親 #${NEW_PARENT} への紐付けに失敗した" >&2
     echo "${POST_OUT}" >&2
-    if printf '%s' "${POST_OUT}" | grep -qi "only have one parent"; then
-      # DELETE と POST の間に第三者が親を付け替えた等のレース。**DELETE は成功済み**のため
-      # ツリーは部分変更（旧親から外れ、新親にも付いていない）。無変更を意味する
-      # exit 6 / exit 7 と混同すると誤った復旧をされるため専用コードにする
-      echo "エラー: DELETE 後の POST 時点で別の親が付いていた（レース）。#${ISSUE} は #${CURRENT_PARENT} から外れた状態で残っている" >&2
-      echo "対処: 実状態を確認し、必要なら手で紐付け直す。同一コマンドの再実行では回復しない" >&2
-      exit 8
-    fi
-    exit 4
+    # DELETE は既に成立済みのため、ここで即終端すると孤児化が確定してしまう。
+    # 実状態を再取得してから安全に判断できる範囲でのみ旧親へ戻す（Issue #352）。
+    # 関数は必ず exit する（0 / 8 / 10 / 11 のいずれか）ため、この if ブロックには戻らない
+    recover_after_post_failure
   fi
 fi
 

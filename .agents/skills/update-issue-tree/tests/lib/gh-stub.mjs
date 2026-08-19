@@ -30,15 +30,28 @@ function shQuote(value) {
  * @param {boolean} [fixture.authFail] gh auth status を失敗させる
  * @param {boolean} [fixture.getFail] 事前 GET（1 回目）を失敗させる
  * @param {boolean} [fixture.verifyGetFail] 事後 GET（2 回目）を失敗させる
+ * @param {boolean} [fixture.thirdGetFail] 3 回目の GET（補償 POST 後の事後確認、または補償
+ *   POST 失敗後の実状態再取得）を失敗させる
  * @param {string} [fixture.issueId] GET が返す database id
  * @param {string} [fixture.parentBefore] 事前 GET が返す現在の親 issue 番号（'' = 親なし）
- * @param {string} [fixture.parentAfter] 事後 GET が返す親 issue 番号（未指定なら parentBefore を継続）
+ * @param {string} [fixture.parentAfter] 対象 issue の 2 回目 GET（成功経路の事後確認 / 失敗経路の
+ *   補償復旧のための実状態再取得のいずれか。両者は排他的なシナリオのため 1 フィールドで足りる）
+ *   が返す親 issue 番号（未指定なら parentBefore を継続）
+ * @param {string} [fixture.parentAfter2] 対象 issue の 3 回目の GET（補償復旧 POST 後の事後
+ *   確認、または補償 POST 失敗後の実状態確認）が返す親 issue 番号（未指定なら parentAfter を継続）
+ * @param {string} [fixture.parentAfter3] 対象 issue の 4 回目以降の GET（Issue #352 の
+ *   confirm_stable_old_parent が撃つ反映遅延の再確認・偽陰性の再確認）が返す親 issue 番号
+ *   （未指定なら parentAfter2 を継続）
  * @param {string} [fixture.parentRepo] 事前 GET が返す親の owner/repo（既定 'o/r' = 対象 issue と同一）
- * @param {string} [fixture.parentRepoAfter] 事後 GET が返す親の owner/repo（未指定なら parentRepo を継続）
+ * @param {string} [fixture.parentRepoAfter] 事後 GET（2 回目）が返す親の owner/repo（未指定なら parentRepo を継続）
+ * @param {string} [fixture.parentRepoAfter2] 3 回目の GET が返す親の owner/repo（未指定なら parentRepoAfter を継続）
+ * @param {string} [fixture.parentRepoAfter3] 4 回目以降の GET が返す親の owner/repo（未指定なら parentRepoAfter2 を継続）
  * @param {number} [fixture.deleteExit] DELETE の終了コード
  * @param {string} [fixture.deleteBody] DELETE 失敗時に stderr へ出す本文
- * @param {number} [fixture.postExit] POST の終了コード
- * @param {string} [fixture.postBody] POST 失敗時に stderr へ出す本文（"only have one parent" 判定に使う）
+ * @param {number} [fixture.postExit] 1 回目の POST（新親への付け替え）の終了コード
+ * @param {string} [fixture.postBody] 1 回目の POST 失敗時に stderr へ出す本文（"only have one parent" 判定に使う）
+ * @param {number} [fixture.compPostExit] 2 回目以降の POST（Issue #352 の補償復旧で旧親へ戻す POST）の終了コード
+ * @param {string} [fixture.compPostBody] 2 回目以降の POST 失敗時に stderr へ出す本文
  * @param {boolean} [fixture.newParentGetFail] 新親 GET を非ゼロ終了させる（存在しない番号の再現）
  * @param {string} [fixture.newParentRepo] 新親の repository_url の owner/repo（既定 'o/r' = 対象 issue と同一。'other/repo' で転送済み issue を再現）
  * @param {boolean} [fixture.newParentIsPullRequest] 新親 GET のレスポンスへ `.pull_request` を含める（issues API が PR も返す仕様の再現）
@@ -48,17 +61,24 @@ export function createGhStub(fixture = {}) {
     authFail: false,
     getFail: false,
     verifyGetFail: false,
+    thirdGetFail: false,
     issueId: '999',
     parentBefore: '',
     parentAfter: undefined,
+    parentAfter2: undefined,
+    parentAfter3: undefined,
     // 親が属するリポジトリ。既定は対象 issue と同一（repository_url の o/r と一致）。
     // 'other/repo' 等を渡すと cross-repository sub-issue を再現できる
     parentRepo: 'o/r',
     parentRepoAfter: undefined,
+    parentRepoAfter2: undefined,
+    parentRepoAfter3: undefined,
     deleteExit: 0,
     deleteBody: '',
     postExit: 0,
     postBody: '',
+    compPostExit: 0,
+    compPostBody: '',
     newParentGetFail: false,
     newParentRepo: 'o/r',
     // issues API は PR も返す（issue と PR は番号空間を共有する）。true にすると
@@ -69,18 +89,25 @@ export function createGhStub(fixture = {}) {
   }
   if (f.parentAfter === undefined) f.parentAfter = f.parentBefore
   if (f.parentRepoAfter === undefined) f.parentRepoAfter = f.parentRepo
+  if (f.parentAfter2 === undefined) f.parentAfter2 = f.parentAfter
+  if (f.parentRepoAfter2 === undefined) f.parentRepoAfter2 = f.parentRepoAfter
+  if (f.parentAfter3 === undefined) f.parentAfter3 = f.parentAfter2
+  if (f.parentRepoAfter3 === undefined) f.parentRepoAfter3 = f.parentRepoAfter2
 
   const dir = mkdtempSync(join(tmpdir(), 'reassign-gh-stub-'))
   const ghPath = join(dir, 'gh')
   const logPath = join(dir, 'calls.log')
   const getCountPath = join(dir, 'get_count')
+  const postCountPath = join(dir, 'post_count')
   const targetPathPath = join(dir, 'target_path')
   writeFileSync(getCountPath, '0')
+  writeFileSync(postCountPath, '0')
   writeFileSync(targetPathPath, '')
 
   const authBranch = f.authFail ? 'exit 1' : 'exit 0'
   const getFailBranch = f.getFail ? "echo 'stub: get failed' >&2; exit 1" : ':'
   const verifyGetFailBranch = f.verifyGetFail ? "echo 'stub: verify get failed' >&2; exit 1" : ':'
+  const thirdGetFailBranch = f.thirdGetFail ? "echo 'stub: third get failed' >&2; exit 1" : ':'
   const newParentGetFailBranch = f.newParentGetFail
     ? "echo 'stub: new parent get failed' >&2; exit 1"
     : ':'
@@ -116,8 +143,19 @@ if [[ "\${path}" == *"/sub_issue" && "\${method}" == "DELETE" ]]; then
 fi
 
 if [[ "\${path}" == *"/sub_issues" && "\${method}" == "POST" ]]; then
-  printf '%s' ${shQuote(f.postBody)} >&2
-  exit ${f.postExit}
+  # 1 回目 = 新親への付け替え POST、2 回目以降 = Issue #352 の補償復旧 POST（旧親へ戻す）。
+  # 呼び出し先の issue 番号ではなく呼び出し順で分岐する（宛先はテスト側で calls.log の
+  # パスを直接 assert する）
+  post_count=$(cat ${shQuote(postCountPath)})
+  post_count=$((post_count + 1))
+  echo "\${post_count}" > ${shQuote(postCountPath)}
+  if [[ "\${post_count}" -eq 1 ]]; then
+    printf '%s' ${shQuote(f.postBody)} >&2
+    exit ${f.postExit}
+  else
+    printf '%s' ${shQuote(f.compPostBody)} >&2
+    exit ${f.compPostExit}
+  fi
 fi
 
 # 対象 issue のパスをまだ記録していなければ、この GET が対象 issue の GET（スクリプトは
@@ -136,7 +174,11 @@ if [[ "\${path}" != "\${target_path}" ]]; then
   exit 0
 fi
 
-# 対象 issue の GET（1 回目=事前確認・2 回目以降=事後確認）
+# 対象 issue の GET（1 回目=事前確認・2 回目=事後確認 or 補償復旧のための実状態再取得・
+# 3 回目=補償復旧 POST 後の事後確認 or 補償 POST 失敗後の実状態確認・4 回目以降=
+# confirm_stable_old_parent（Issue #352）が撃つ反映遅延・偽陰性の再確認。2 回目は
+# 成功経路の事後確認と失敗経路の復旧再取得の両方を兼ねる（両シナリオは排他的なため
+# verifyGetFail / parentAfter を共用できる）
 count=$(cat ${shQuote(getCountPath)})
 count=$((count + 1))
 echo "\${count}" > ${shQuote(getCountPath)}
@@ -145,10 +187,17 @@ if [[ "\${count}" -eq 1 ]]; then
   ${getFailBranch}
   parent=${shQuote(f.parentBefore)}
   prepo=${shQuote(f.parentRepo)}
-else
+elif [[ "\${count}" -eq 2 ]]; then
   ${verifyGetFailBranch}
   parent=${shQuote(f.parentAfter)}
   prepo=${shQuote(f.parentRepoAfter)}
+elif [[ "\${count}" -eq 3 ]]; then
+  ${thirdGetFailBranch}
+  parent=${shQuote(f.parentAfter2)}
+  prepo=${shQuote(f.parentRepoAfter2)}
+else
+  parent=${shQuote(f.parentAfter3)}
+  prepo=${shQuote(f.parentRepoAfter3)}
 fi
 
 if [[ -n "\${parent}" ]]; then
