@@ -140,5 +140,4 @@ const { error, files } = await build({
 ## Related
 
 - [installation.md](./installation.md)
-- [configure.md](./configure.md)
 - [troubleshooting.md](./troubleshooting.md)

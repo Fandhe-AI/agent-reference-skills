@@ -22,7 +22,7 @@ export default function Page() {
 
 ## Notes
 
-- Only works when [Cache Components](../../config/next-config-js/cacheComponents.md) (`cacheComponents`) is enabled.
+- Only works when [Cache Components](../../config/caching.md) (`cacheComponents`) is enabled.
 - Cannot be used in Client Components — throws an error.
 - Triggers validation at every shared layout boundary in the route; errors appear in the dev overlay and identify the blocking component (fix by caching with `"use cache"` or wrapping in `<Suspense>`).
 - Global default behavior is tuned via `experimental.instantInsights.validationLevel` (`'warning'` validates every Page/Default segment; `'manual-warning'` validates only segments with an explicit `instant`).

@@ -108,4 +108,3 @@ No。KubbはOpenAPI/Swagger REST APIのみを対象とする。
 
 - [installation.md](./installation.md)
 - [quick-start.md](./quick-start.md)
-- [configure.md](./configure.md)

@@ -59,6 +59,5 @@ export default defineConfig({
 ## Related
 
 - [@kubb/plugin-fetch](./plugin-fetch.md)
-- [@kubb/plugin-client](./plugin-client.md)
 - [@kubb/plugin-ts](./plugin-ts.md)
 - [@kubb/plugin-zod](./plugin-zod.md)

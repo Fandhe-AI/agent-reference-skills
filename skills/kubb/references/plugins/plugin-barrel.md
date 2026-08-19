@@ -43,4 +43,3 @@ export { getPost, Post } from './api/post'
 
 - [@kubb/plugin-axios](./plugin-axios.md)
 - [@kubb/plugin-fetch](./plugin-fetch.md)
-- [@kubb/plugin-client](./plugin-client.md)
