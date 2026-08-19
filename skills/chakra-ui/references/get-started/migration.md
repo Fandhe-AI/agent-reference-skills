@@ -61,5 +61,4 @@ Remove these dependencies from your project:
 ## Related
 
 - [Installation](./installation.md)
-- [AI Rules](./ai-rules.md)
 - [AI LLMs](./ai-llms.md)

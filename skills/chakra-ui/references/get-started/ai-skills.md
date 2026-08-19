@@ -60,5 +60,4 @@ Provides review-only assessment or full refactoring with explanations depending 
 
 - [AI MCP Server](./ai-mcp-server.md)
 - [AI LLMs](./ai-llms.md)
-- [AI Rules](./ai-rules.md)
 - [Installation](./installation.md)

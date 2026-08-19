@@ -154,5 +154,5 @@ kubb generate --debug
 ## Related
 
 - [installation.md](./installation.md)
-- [configure.md](./configure.md)
+- [quick-start.md](./quick-start.md)
 - [telemetry.md](./telemetry.md)

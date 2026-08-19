@@ -65,4 +65,4 @@ import { URLPath } from '@kubb/core'
 
 ## 設定の型
 
-`build()` は `UserConfig` 型のオブジェクトを受け取る。詳細は [configure](../getting-started/configure.md) を参照。
+`build()` は `UserConfig` 型のオブジェクトを受け取る。詳細は [quick-start](../getting-started/quick-start.md) を参照。
