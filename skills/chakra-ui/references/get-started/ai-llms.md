@@ -35,5 +35,4 @@ See [Windsurf memories and rules documentation](https://docs.codeium.com/windsur
 ## Related
 
 - [AI MCP Server](./ai-mcp-server.md)
-- [AI Rules](./ai-rules.md)
 - [Migration](./migration.md)

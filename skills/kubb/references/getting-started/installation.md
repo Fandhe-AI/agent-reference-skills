@@ -96,4 +96,3 @@ npx kubb --version
 
 - [introduction.md](./introduction.md)
 - [quick-start.md](./quick-start.md)
-- [configure.md](./configure.md)

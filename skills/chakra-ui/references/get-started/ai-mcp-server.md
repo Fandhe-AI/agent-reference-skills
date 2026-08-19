@@ -152,5 +152,4 @@ Once configured, `list_component_templates` and `get_component_templates` become
 ## Related
 
 - [AI LLMs](./ai-llms.md)
-- [AI Rules](./ai-rules.md)
 - [CLI](./cli.md)
