@@ -4,7 +4,7 @@ description: >
   実装タスクの計画を `_/local-plans/<plan-name>.md` に作成する。「計画立てて」「設計して」「実装方針を考えて」「タスク分解して」で使用。
   Explore Agent でコードベースを先に調査し、検証可能な粒度・並列実行可能な単位で記述する。
   plan-verifier Agent で検証可能な標準フォーマット（背景・現状・設計・ファイル構成ツリー・実装ステップ・検証方法）に従う。
-  実装消化は implement-issue、Issue 化は create-issue-tree を参照。
+  実装消化は implement-issue、Issue 化は create-issue-tree（未導入なら create-issue）を参照。
 model: opus
 ---
 

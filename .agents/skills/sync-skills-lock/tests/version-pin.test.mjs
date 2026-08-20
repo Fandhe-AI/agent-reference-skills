@@ -80,6 +80,29 @@ test('SKILL.md に未固定の npx skills add が残っていない', () => {
   }
 })
 
+// Issue #410: `npx skills add` の書き込みスコープを `.agents/skills/<name>/` +
+// `skills-lock.json` に限定する一次防御。`--agent universal` を落として個別 agent
+// 指定や無指定へ退行すると、他エージェントツリー（`.claude/skills/` 等）へ書き込み
+// うる状態に静かに戻るため、両ファイルの npx 実行行を静的に検査する
+// （version pin と同型のドリフト検知。実行時の振る舞い検証は scope-guard.test.mjs）。
+test('scripts/skills-lock-update.sh の npx skills 実行行は --agent universal を含む', () => {
+  const content = readFileSync(SCRIPT_PATH, 'utf8')
+  const execLines = extractExecLines(content).filter((line) => /\bskills\b/.test(line))
+  assert.ok(execLines.length > 0, 'npx skills 実行行が見つからない（抽出ロジックの破損の可能性）')
+  for (const line of execLines) {
+    assert.match(line, /--agent universal/, `--agent universal を含まない npx 実行: ${line}`)
+  }
+})
+
+test('SKILL.md の npx skills 実行行は --agent universal を含む', () => {
+  const content = readFileSync(SKILL_MD_PATH, 'utf8')
+  const execLines = extractExecLines(content).filter((line) => /\bskills\b/.test(line))
+  assert.ok(execLines.length > 0, 'npx skills 実行行が見つからない（抽出ロジックの破損の可能性）')
+  for (const line of execLines) {
+    assert.match(line, /--agent universal/, `--agent universal を含まない npx 実行: ${line}`)
+  }
+})
+
 test('scripts/skills-lock-update.sh は SKILLS_CLI_VERSION の形式ガードを持つ（fail-closed）', () => {
   const content = readFileSync(SCRIPT_PATH, 'utf8')
   assert.match(

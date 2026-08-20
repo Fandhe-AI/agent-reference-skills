@@ -160,9 +160,11 @@ emit_result() {
 # 実測で期待した親配下に見えた場合でも、DELETE/POST の反映遅延による過渡状態を見ている
 # 可能性を排除できない。短い間隔を空けて再取得し、2 回連続で同じ結果が得られて初めて
 # 安定した状態として確定する（codex-review P1 指摘 PR #391）。呼び出し文脈が異なる複数箇所
-# （補償 POST 失敗直後の確認 / 実測で既に旧親配下だった場合の確認 / 新親への偽陰性確認）で
-# 同一ロジックが必要になるため共通化した。期待どおりで安定確認できれば戻り値 0（stdout
-# 出力なし）。
+# （補償 POST 前の孤児観測の安定確認 / 補償 POST 失敗直後の確認 / 実測で既に旧親配下だった
+# 場合の確認 / 新親への偽陰性確認）で同一ロジックが必要になるため共通化した。孤児観測の
+# 安定確認は expected="" を渡すことで「2 回連続で親なしが観測できるか」を同じ関数で判定
+# する（cursor[bot] Medium 指摘「Orphan restore skips stability check」）。期待どおりで
+# 安定確認できれば戻り値 0（stdout 出力なし）。
 # 期待値とは異なるが実測が本来の新親 #NEW_PARENT だった場合は戻り値 2 とし、情報行のみ
 # stderr へ出す（呼び出し元はこれを「元の POST が偽陰性で実際には成功していた」ことを
 # 意味する成功終端として扱う。cursor[bot] Medium 指摘 PR #391 — 旧親への復旧確認・偽陰性
@@ -310,8 +312,31 @@ recover_after_post_failure() {
   fi
 
   if [[ "${recovery_same_repo}" -eq 1 && -z "${recovery_parent}" ]]; then
-    # 実測でも孤児（想定どおり DELETE のみ成立し POST が未達）。承認済みの操作の
-    # 逆操作（旧親へ戻す）は承認範囲内であるため、ここでのみ補償 POST を撃つ
+    # 実測でも孤児（想定どおり DELETE のみ成立し POST が未達）に見える。ただしこの
+    # 1 回の読み取りだけでは DELETE/POST の反映遅延による過渡状態を見ている可能性を
+    # 排除できず、他の分岐（新親偽陰性確認・旧親配下の再確認）は書き込み前に必ず
+    # confirm_stable_parent で安定確認しているのに対し、ここだけは単発の観測を信頼して
+    # 即座に補償 POST という書き込みを実行していた（cursor[bot] Medium 指摘「Orphan
+    # restore skips stability check」）。expected="" は「親なし（孤児）」を表し、
+    # confirm_stable_parent は 2 回連続で親なしが観測できて初めて 0 を返す
+    local orc_rc=0
+    confirm_stable_parent "孤児観測の安定確認（補償 POST 前）" "" || orc_rc=$?
+    if [[ "${orc_rc}" -eq 2 ]]; then
+      # 安定確認中に本来の新親 #NEW_PARENT への遅延反映が見えた（元の POST の偽陰性が
+      # ここで確定した。cursor[bot] Medium 指摘 PR #391 と同種の経路）
+      emit_result "reassigned" "${CURRENT_PARENT}"
+      exit 0
+    elif [[ "${orc_rc}" -ne 0 ]]; then
+      # 安定確認できない（第三者が別親を設定・応答解析不能・再取得失敗等）。孤児と
+      # 断定して補償 POST という書き込みを行うと、実際には別の親が付いている場合に
+      # 承認外の親子関係を壊しかねないため、書き込まずに状態不明として終端する
+      # （fail-closed）
+      echo "reason=recovery-state-unknown" >&2
+      exit 8
+    fi
+
+    # 実測でも孤児（想定どおり DELETE のみ成立し POST が未達）と安定確認できた。
+    # 承認済みの操作の逆操作（旧親へ戻す）は承認範囲内であるため、ここでのみ補償 POST を撃つ
     if ! COMP_POST_OUT=$(gh api --method POST "repos/${REPO_PATH}/issues/${CURRENT_PARENT}/sub_issues" -F "sub_issue_id=${ISSUE_ID}" 2>&1); then
       echo "エラー: 旧親 #${CURRENT_PARENT} への補償復旧 POST が失敗した" >&2
       echo "${COMP_POST_OUT}" >&2

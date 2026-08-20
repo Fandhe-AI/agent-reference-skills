@@ -243,7 +243,13 @@ echo "==> upstream を clone 中..."
 gh repo clone "${UPSTREAM_REPO}" "${WORKDIR}/upstream"
 cd "${WORKDIR}/upstream"
 
-DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||')
+# origin/HEAD が未設定の clone では git symbolic-ref が非ゼロ終了する。
+# `set -euo pipefail` 下では、パイプライン全体の失敗が変数代入の失敗として
+# 即座にスクリプトを終了させてしまい、直後の ${DEFAULT_BRANCH:-main} という
+# フォールバックへ到達できない（代入式は $(...) 内コマンドの終了ステータスを
+# そのまま引き継ぐため、set -e が働く）。`|| true` でパイプライン失敗を
+# 吸収し、DEFAULT_BRANCH が空文字のまま後続のフォールバックへ委ねる。
+DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||' || true)
 echo "    デフォルトブランチ: ${DEFAULT_BRANCH:-main}"
 
 # REPO_SLUG は冒頭の安全弁ブロックで正規化・検証済み（OWNER/REPO 形式）のためここでは再正規化しない

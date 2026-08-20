@@ -39,6 +39,7 @@ const SLICE_EXPORTS = [
   'DEFAULT_MAX_RESIDUAL_WORKTREE_BYTES',
   'EPHEMERAL_KIND_MAX',
   'EPHEMERAL_RESERVE_PER_NEW_START',
+  'BYTE_RESERVE_CANDIDATE_BUDGET_DIVISOR',
   'projectResidualBytes',
   'clampPerWorktreeByteReserve',
 ]
@@ -53,6 +54,7 @@ const {
   DEFAULT_MAX_RESIDUAL_WORKTREE_BYTES,
   EPHEMERAL_KIND_MAX,
   EPHEMERAL_RESERVE_PER_NEW_START,
+  BYTE_RESERVE_CANDIDATE_BUDGET_DIVISOR,
   projectResidualBytes,
   clampPerWorktreeByteReserve,
 } = mod
@@ -188,6 +190,13 @@ test('バイト軸はラン開始時の残置 0 件でもメイン worktree 測�
   // クランプ適用を確認する（Issue #348 codex-review High 対応: mainKib の過大評価で
   // 1 件目着手候補が予約のみで恒久停止する回帰を防ぐ）。
   assert.match(source, /perWorktreeByteReserve = clampPerWorktreeByteReserve\(/)
+  // Issue #406 回帰防止: クランプ関数内部の分母が `reservePerNewStart` 単独の旧式へ
+  // 巻き戻っていないことをソースレベルで確認する（この bare 形は 42 件の projection 系
+  // テストを素通りしたまま復活し得るため、テストの green だけでは検知できない）。
+  assert.doesNotMatch(
+    source,
+    /Math\.floor\(maxResidualWorktreeBytes \/ reservePerNewStart\)/,
+  )
 })
 
 test('measureMainWorktreeContentBytes はメイン worktree 全体から .git を差し引いた working tree 相当を返す構造になっている（.git object store の過大予約防止）', () => {
@@ -341,13 +350,21 @@ test('projectResidualBytes: baselineLedgerCount が ledgerLength を上回って
 // 重い回帰）。クランプがこの経路を塞ぐことと、正当な圧迫時には引き続き latch することの
 // 両方を固定する。
 
-test('clampPerWorktreeByteReserve: 上限超過時は maxResidualWorktreeBytes / reservePerNewStart へ切り詰める', () => {
+// PR #406 対応: クランプの分母に BYTE_RESERVE_CANDIDATE_BUDGET_DIVISOR を掛けるようになった
+// （旧式 `maxResidualWorktreeBytes / reservePerNewStart` のままだと、1 件の新規着手候補の
+// speculative 予約だけで budget を丸ごと使い切る値になり、baselineBytes が正の値になった
+// 以降の新規着手が恒久停止する回帰があった。下の「クランプ後も baseline が正の場合」テスト群で
+// この回帰そのものを固定する）。
+test('clampPerWorktreeByteReserve: 上限超過時は maxResidualWorktreeBytes / (reservePerNewStart × BYTE_RESERVE_CANDIDATE_BUDGET_DIVISOR) へ切り詰める', () => {
   const maxResidualWorktreeBytes = 2 * 1024 * 1024 * 1024 // 既定 2 GiB
   const reservePerNewStart = EPHEMERAL_RESERVE_PER_NEW_START // 既定 6
   // 27 GB のメイン worktree（node_modules 等の gitignored 成果物込み）を模す実測値。
   const rawValue = 27 * 1024 * 1024 * 1024
   const clamped = clampPerWorktreeByteReserve(rawValue, maxResidualWorktreeBytes, reservePerNewStart)
-  assert.equal(clamped, Math.floor(maxResidualWorktreeBytes / reservePerNewStart))
+  assert.equal(
+    clamped,
+    Math.floor(maxResidualWorktreeBytes / (reservePerNewStart * BYTE_RESERVE_CANDIDATE_BUDGET_DIVISOR)),
+  )
   assert.ok(clamped < rawValue)
 })
 
@@ -407,6 +424,82 @@ test('クランプ後も正当な容量圧迫（baseline が既に上限近傍�
   assert.ok(
     projectedBytes > maxResidualWorktreeBytes,
     'baseline が既に上限近傍のケースまでクランプで通してしまうと、実容量圧迫時の fail-closed が壊れる',
+  )
+})
+
+// --- Issue #406 回帰（Cursor Bugbot High "Byte reserve clamp blocks later starts"）---
+// 旧クランプ式（maxResidualWorktreeBytes / reservePerNewStart）は、1 件の新規着手候補の
+// speculative 予約（reservePerNewStart × クランプ値）だけで budget を丸ごと使い切る値になる。
+// baselineBytes が 0 の 1 件目着手には正しく収まるが、baselineBytes が正の値になった以降
+// （残置が既に存在する・ラン中実測し直しで基準が更新された等、実運用では通常の状態）は
+// projectResidualBytes の結果が baselineBytes 分だけ必ず上限を超え、2 件目以降の新規着手が
+// 恒久停止していた。BYTE_RESERVE_CANDIDATE_BUDGET_DIVISOR で分母を増やし、budget の一部
+// （既定 1/2）のみを候補予約に割り当て、残りを baselineBytes の headroom として空ける。
+
+test('BYTE_RESERVE_CANDIDATE_BUDGET_DIVISOR は 2 のまま固定（値そのものは運用判断だが回帰の意図せぬ変更を検知する）', () => {
+  assert.equal(BYTE_RESERVE_CANDIDATE_BUDGET_DIVISOR, 2)
+})
+
+test('回帰証明（Issue #406）: baseline が正でも小さければ、クランプ済み候補予約は依然として着手可能（恒久停止の再発防止）', () => {
+  const maxResidualWorktreeBytes = 2 * 1024 * 1024 * 1024
+  const reservePerNewStart = EPHEMERAL_RESERVE_PER_NEW_START
+  const rawPerWorktreeByteReserve = 27 * 1024 * 1024 * 1024 // 過大なメイン worktree 実測値
+  const perWorktreeByteReserve = clampPerWorktreeByteReserve(
+    rawPerWorktreeByteReserve,
+    maxResidualWorktreeBytes,
+    reservePerNewStart,
+  )
+  // 残置が既に存在する・ラン中実測し直しで基準が更新された等、実運用で普通に起こる
+  // 「baseline が 0 ではないが小さい」状態を模す（200 MiB ≪ 2 GiB 上限）。
+  const baselineBytes = 200 * 1024 * 1024
+  const projectedBytes = projectResidualBytes({
+    baselineBytes,
+    ledgerLength: 0,
+    baselineLedgerCount: 0,
+    reservedUnits: 0,
+    extraReserveUnits: reservePerNewStart,
+    perWorktreeByteReserve,
+  })
+  assert.ok(
+    projectedBytes <= maxResidualWorktreeBytes,
+    `baseline=${baselineBytes} で 2 件目以降の新規着手が恒久停止する回帰が再発している: ` +
+      `projected=${projectedBytes} / limit=${maxResidualWorktreeBytes}`,
+  )
+})
+
+test('境界回帰（Issue #406）: baseline が候補予約差し引き後の残余以内なら着手可、超えると latch する', () => {
+  const maxResidualWorktreeBytes = 2 * 1024 * 1024 * 1024
+  const reservePerNewStart = EPHEMERAL_RESERVE_PER_NEW_START
+  const rawPerWorktreeByteReserve = 27 * 1024 * 1024 * 1024
+  const perWorktreeByteReserve = clampPerWorktreeByteReserve(
+    rawPerWorktreeByteReserve,
+    maxResidualWorktreeBytes,
+    reservePerNewStart,
+  )
+  const candidateTerm = reservePerNewStart * perWorktreeByteReserve
+  const boundaryBaseline = maxResidualWorktreeBytes - candidateTerm
+
+  const atBoundary = projectResidualBytes({
+    baselineBytes: boundaryBaseline,
+    ledgerLength: 0,
+    baselineLedgerCount: 0,
+    reservedUnits: 0,
+    extraReserveUnits: reservePerNewStart,
+    perWorktreeByteReserve,
+  })
+  assert.ok(atBoundary <= maxResidualWorktreeBytes, `境界 baseline=${boundaryBaseline} では着手できるべき: projected=${atBoundary}`)
+
+  const overBoundary = projectResidualBytes({
+    baselineBytes: boundaryBaseline + 1,
+    ledgerLength: 0,
+    baselineLedgerCount: 0,
+    reservedUnits: 0,
+    extraReserveUnits: reservePerNewStart,
+    perWorktreeByteReserve,
+  })
+  assert.ok(
+    overBoundary > maxResidualWorktreeBytes,
+    `境界+1 baseline=${boundaryBaseline + 1} は latch すべき: projected=${overBoundary}`,
   )
 })
 
@@ -517,10 +610,11 @@ test('実測し直しは検証不可（空パス）エントリが台帳に残�
     fnBody,
     /const unverifiedEphemeralCount = ephemeralWorktrees\.filter\(/,
   )
-  // 未検証エントリが 1 件でもあれば measureResidualWorktreeBytes を呼ばず kib は null
+  // 未検証エントリが 1 件でもあり、かつ物理一覧フォールバック（Issue #404）も失敗した場合のみ
+  // measureResidualWorktreeBytes を呼ばず kib は null（フォールバック成立時は実測を継続する）
   assert.match(
     fnBody,
-    /const kib =\s*\n?\s*unverifiedEphemeralCount > 0 \? null : /,
+    /const kib = measurementFailed \? null : /,
   )
   // kib===null の早期 return より前で byteBaselineLedgerCount への代入が起きないこと
   // （成功時の代入 `byteBaselineLedgerCount = ephemeralWorktrees.length` は kib===null 分岐の

@@ -143,7 +143,7 @@ EOF
 ```
 
 4. **既存 Issue がない場合: 新規起票する**
-   `create-issue-tree`（既存ルートへの紐付けは `--root <ルートissue番号>`）または `create-issue` を使用して、適切な親 Issue 配下に起票する。タイトルは Conventional Commits 形式とする。
+   `create-issue-tree` が導入されていればそれを使用（既存ルートへの紐付けは `--root <ルートissue番号>`）、未導入なら `create-issue` を使用して、適切な親 Issue 配下に起票する。タイトルは Conventional Commits 形式とする。
 
 5. **PR 本文・レビューレポートに明記する**
    out-of-scope 項目はレビュー中（Step 4〜5）に収集し Step 6 のレポートに含める。Issue への書き込み操作は承認後に行う。Step 6 のレビューレポートおよび Step 7 の GitHub レビューコメントには「対象外とした項目」と対応案を記載する。切り出し先 Issue 番号は承認後の起票で確定するため、レポート時点では 'TBD' とし、起票後に確定番号を GitHub コメントで追記する。
