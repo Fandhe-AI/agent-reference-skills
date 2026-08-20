@@ -169,7 +169,9 @@ test('ケース28: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST
   const r = run(['--issue', '30', '--old-parent', '5', '--new-parent', '7'], {
     parentBefore: '5',
     parentAfter: '', // 復旧のための再取得 GET は孤児を返す
-    parentAfter2: '5', // 補償 POST 後の事後確認 GET は旧親配下を返す
+    // parentAfter2 は未指定（既定で parentAfter を継続 = ''）: 補償 POST を撃つ前の
+    // 孤児観測の安定確認 GET（Issue #352 追加分）は 2 回連続で親なしが観測できる
+    parentAfter3: '5', // 補償 POST 後の事後確認 GET は旧親配下を返す
     postExit: 1,
     postBody: '500 Internal Server Error',
   })
@@ -178,6 +180,35 @@ test('ケース28: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST
   const posts = calls(r.logPath).filter((l) => l.includes('--method POST'))
   assert.equal(posts.length, 2, '1 回目（新親）と 2 回目（補償・旧親）の POST が呼ばれていること')
   assert.match(posts[1], /issues\/5\/sub_issues/, '2 回目の POST の宛先パスが旧親 #5 であること')
+})
+
+test('ケース28b: DELETE 後の POST 失敗 → 実測では孤児に見えるが安定確認で旧親配下に戻っていた（過渡状態）→ 補償 POST を撃たずに exit 8 reason=recovery-state-unknown（Cursor Bugbot Medium 指摘「Orphan restore skips stability check」の回帰。単発の孤児観測だけを信頼して復旧 POST という書き込みを行わないこと）', () => {
+  const r = run(['--issue', '54', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '', // 復旧のための再取得 GET は孤児に見える（DELETE 反映直後の過渡状態）
+    parentAfter2: '5', // 孤児観測の安定確認 GET では実は旧親 #5 配下のまま（不安定）
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+  })
+  assert.equal(r.status, 8)
+  assert.match(r.stderr, /reason=recovery-state-unknown/)
+  const posts = calls(r.logPath).filter((l) => l.includes('--method POST'))
+  assert.equal(posts.length, 1, '孤児観測が不安定と判明した場合、補償 POST（書き込み）を撃たないこと（1 回目の新親 POST のみ）')
+  assert.doesNotMatch(r.stdout, /result=restored/, '安定確認前に result=restored を出力しないこと')
+})
+
+test('ケース28c: DELETE 後の POST 失敗 → 実測では孤児に見えるが安定確認では実は本来の新親 #7 に付いていた（元の POST の偽陰性）→ 補償 POST を撃たずに exit 0 reassigned（Cursor Bugbot Medium 指摘「Orphan restore skips stability check」の回帰。孤児観測の安定確認にも新親偽陰性検知を適用する）', () => {
+  const r = run(['--issue', '55', '--old-parent', '5', '--new-parent', '7'], {
+    parentBefore: '5',
+    parentAfter: '', // 復旧のための再取得 GET は孤児に見える
+    parentAfter2: '7', // 孤児観測の安定確認 GET では実は本来の新親 #7 配下だった
+    postExit: 1,
+    postBody: '500 Internal Server Error',
+  })
+  assert.equal(r.status, 0)
+  assert.match(r.stdout.trim(), /^result=reassigned issue=55 new_parent=7 old_parent=5$/)
+  const posts = calls(r.logPath).filter((l) => l.includes('--method POST'))
+  assert.equal(posts.length, 1, '本来の新親へ既に付いていたと判明した場合、補償 POST（書き込み）を撃たないこと（1 回目の新親 POST のみ）')
 })
 
 test('ケース29: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST も失敗（多重障害）→ exit 8 reason=compensation-post-failed（Issue #352。孤児のまま終端）', () => {
@@ -195,7 +226,10 @@ test('ケース29: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST
   assert.equal(posts.length, 2, '補償 POST も試みられていること')
 })
 
-test('ケース29b: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST も失敗 → 失敗後の実状態再取得 GET も失敗 → exit 8 reason=recovery-state-unknown（孤児か否か未測定のまま reason=compensation-post-failed を出さない。cursor[bot] Medium 指摘 PR #391）', () => {
+test('ケース29b: DELETE 後の POST 失敗 → 実測で孤児（安定確認も成立）→ 補償 POST も失敗 → 失敗後の実状態再取得 GET も失敗 → exit 8 reason=recovery-state-unknown（孤児か否か未測定のまま reason=compensation-post-failed を出さない。cursor[bot] Medium 指摘 PR #391）', () => {
+  // parentAfter2 は未指定（既定で parentAfter を継続 = ''）: 補償 POST 前の孤児観測の
+  // 安定確認 GET（3 回目）は 2 回連続で親なしが観測できて成立し、補償 POST まで進む。
+  // 失敗させたいのは補償 POST 失敗後の実状態再取得（4 回目）のため fourthGetFail を使う
   const r = run(['--issue', '31', '--old-parent', '5', '--new-parent', '7'], {
     parentBefore: '5',
     parentAfter: '',
@@ -203,11 +237,13 @@ test('ケース29b: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POS
     postBody: '500 Internal Server Error',
     compPostExit: 1,
     compPostBody: '503 Service Unavailable',
-    thirdGetFail: true,
+    fourthGetFail: true,
   })
   assert.equal(r.status, 8)
   assert.match(r.stderr, /reason=recovery-state-unknown/)
   assert.doesNotMatch(r.stderr, /reason=compensation-post-failed(?!-third-party-parent)/)
+  const posts = calls(r.logPath).filter((l) => l.includes('--method POST'))
+  assert.equal(posts.length, 2, '安定確認が成立し補償 POST は試みられていること（1 回目の新親 POST + 補償 POST）')
 })
 
 test('ケース30: DELETE 後の POST 失敗 → 復旧のための実状態再取得 GET も失敗（状態不明）→ exit 8 reason=recovery-state-unknown、補償 POST は撃たれない（Issue #352）', () => {
@@ -286,7 +322,9 @@ test('ケース34: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST
   const r = run(['--issue', '41', '--old-parent', '5', '--new-parent', '7'], {
     parentBefore: '5',
     parentAfter: '', // 復旧のための再取得 GET は孤児を返す
-    parentAfter2: '9', // 補償 POST 失敗後の再取得 GET は第三者が設定した親 #9 を返す
+    // parentAfter2 は未指定（既定で parentAfter を継続 = ''）: 補償 POST 前の孤児観測の
+    // 安定確認 GET は 2 回連続で親なしが観測できる
+    parentAfter3: '9', // 補償 POST 失敗後の再取得 GET は第三者が設定した親 #9 を返す
     postExit: 1,
     postBody: '500 Internal Server Error',
     compPostExit: 1,
@@ -303,8 +341,10 @@ test('ケース35: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST
   const r = run(['--issue', '42', '--old-parent', '5', '--new-parent', '7'], {
     parentBefore: '5',
     parentAfter: '', // 復旧のための再取得 GET は孤児を返す
-    parentAfter2: '9', // 補償 POST 失敗後の再取得 GET は第三者が設定した親を返す
-    parentRepoAfter2: 'other/repo', // 別リポジトリの親（cross-repository third-party）
+    // parentAfter2 は未指定（既定で parentAfter を継続 = ''）: 補償 POST 前の孤児観測の
+    // 安定確認 GET は 2 回連続で親なしが観測できる
+    parentAfter3: '9', // 補償 POST 失敗後の再取得 GET は第三者が設定した親を返す
+    parentRepoAfter3: 'other/repo', // 別リポジトリの親（cross-repository third-party）
     postExit: 1,
     postBody: '500 Internal Server Error',
     compPostExit: 1,
@@ -320,7 +360,9 @@ test('ケース36: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST
   const r = run(['--issue', '43', '--old-parent', '5', '--new-parent', '7'], {
     parentBefore: '5',
     parentAfter: '', // 復旧のための再取得 GET は孤児を返す
-    parentAfter2: '5', // 補償 POST 失敗後の再取得 GET は実は旧親 #5 配下（偽陰性）
+    // parentAfter2 は未指定（既定で parentAfter を継続 = ''）: 補償 POST 前の孤児観測の
+    // 安定確認 GET は 2 回連続で親なしが観測できる
+    parentAfter3: '5', // 補償 POST 失敗後の再取得 GET は実は旧親 #5 配下（偽陰性）
     postExit: 1,
     postBody: '500 Internal Server Error',
     compPostExit: 1,
@@ -335,8 +377,10 @@ test('ケース36b: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POS
   const r = run(['--issue', '46', '--old-parent', '5', '--new-parent', '7'], {
     parentBefore: '5',
     parentAfter: '', // 復旧のための再取得 GET は孤児を返す
-    parentAfter2: '5', // 補償 POST 失敗後の再取得 GET は旧親 #5 配下に見える（過渡状態の可能性）
-    parentAfter3: '', // 反映遅延を考慮した再確認では実は孤児のまま（過渡状態だった）
+    // parentAfter2 は未指定（既定で parentAfter を継続 = ''）: 補償 POST 前の孤児観測の
+    // 安定確認 GET は 2 回連続で親なしが観測できる
+    parentAfter3: '5', // 補償 POST 失敗後の再取得 GET は旧親 #5 配下に見える（過渡状態の可能性）
+    parentAfter4: '', // 反映遅延を考慮した再確認では実は孤児のまま（過渡状態だった）
     postExit: 1,
     postBody: '500 Internal Server Error',
     compPostExit: 1,
@@ -352,8 +396,10 @@ test('ケース39: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST
   const r = run(['--issue', '50', '--old-parent', '5', '--new-parent', '7'], {
     parentBefore: '5',
     parentAfter: '', // 復旧のための再取得 GET は孤児を返す
-    parentAfter2: '7', // 補償 POST 失敗後の再取得 GET は本来の新親 #7 配下（元の POST の偽陰性）
-    parentAfter3: '7', // 反映遅延を考慮した再確認でも同じく新親 #7 配下（安定）
+    // parentAfter2 は未指定（既定で parentAfter を継続 = ''）: 補償 POST 前の孤児観測の
+    // 安定確認 GET は 2 回連続で親なしが観測できる
+    parentAfter3: '7', // 補償 POST 失敗後の再取得 GET は本来の新親 #7 配下（元の POST の偽陰性）
+    parentAfter4: '7', // 反映遅延を考慮した再確認でも同じく新親 #7 配下（安定）
     postExit: 1,
     postBody: '500 Internal Server Error',
     compPostExit: 1,
@@ -395,8 +441,10 @@ test('ケース41b: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POS
   const r = run(['--issue', '52', '--old-parent', '5', '--new-parent', '7'], {
     parentBefore: '5',
     parentAfter: '', // 復旧のための再取得 GET は孤児を返す
-    parentAfter2: '7', // 補償 POST 成功後の確認では本来の新親 #7 配下に見える（過渡状態の可能性）
-    parentAfter3: '', // 反映遅延を考慮した再確認では実は孤児だった（不安定）
+    // parentAfter2 は未指定（既定で parentAfter を継続 = ''）: 補償 POST 前の孤児観測の
+    // 安定確認 GET は 2 回連続で親なしが観測できる
+    parentAfter3: '7', // 補償 POST 成功後の確認では本来の新親 #7 配下に見える（過渡状態の可能性）
+    parentAfter4: '', // 反映遅延を考慮した再確認では実は孤児だった（不安定）
     postExit: 1,
     postBody: '500 Internal Server Error',
   })
@@ -408,8 +456,10 @@ test('ケース42: DELETE 後の POST 失敗 → 実測で孤児 → 補償 POST
   const r = run(['--issue', '53', '--old-parent', '5', '--new-parent', '7'], {
     parentBefore: '5',
     parentAfter: '', // 復旧のための再取得 GET は孤児を返す
-    parentAfter2: '5', // 補償 POST 失敗後の再取得 GET は旧親 #5 配下に見える（過渡状態の可能性）
-    parentAfter3: '7', // 反映遅延を考慮した再確認では実は本来の新親 #7 配下だった
+    // parentAfter2 は未指定（既定で parentAfter を継続 = ''）: 補償 POST 前の孤児観測の
+    // 安定確認 GET は 2 回連続で親なしが観測できる
+    parentAfter3: '5', // 補償 POST 失敗後の再取得 GET は旧親 #5 配下に見える（過渡状態の可能性）
+    parentAfter4: '7', // 反映遅延を考慮した再確認では実は本来の新親 #7 配下だった
     postExit: 1,
     postBody: '500 Internal Server Error',
     compPostExit: 1,
@@ -424,8 +474,10 @@ test('ケース37: DELETE 後の POST 失敗 → 補償 POST 成功後の確認 
   const r = run(['--issue', '44', '--old-parent', '5', '--new-parent', '7'], {
     parentBefore: '5',
     parentAfter: '', // 復旧のための再取得は孤児 → 補償 POST を撃つ
-    parentAfter2: '9',
-    parentRepoAfter2: 'other/repo', // 補償 POST 成功後の確認では実は別リポジトリの第三者親配下
+    // parentAfter2 は未指定（既定で parentAfter を継続 = ''）: 補償 POST 前の孤児観測の
+    // 安定確認 GET は 2 回連続で親なしが観測できる
+    parentAfter3: '9',
+    parentRepoAfter3: 'other/repo', // 補償 POST 成功後の確認では実は別リポジトリの第三者親配下
     postExit: 1,
     postBody: '500 Internal Server Error',
   })

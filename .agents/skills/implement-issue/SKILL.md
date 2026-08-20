@@ -142,7 +142,7 @@ EOF
 ```
 
 4. **既存 Issue がない場合: 新規起票する**
-   `create-issue-tree`（既存ルートへの紐付けは `--root <ルートissue番号>`）または `create-issue` を使用して、適切な親 Issue 配下に起票する。タイトルは Conventional Commits 形式とする。
+   `create-issue-tree` が導入されていればそれを使用（既存ルートへの紐付けは `--root <ルートissue番号>`）、未導入なら `create-issue` を使用して、適切な親 Issue 配下に起票する。タイトルは Conventional Commits 形式とする。
 
 5. **PR 本文・Issue コメントに明記する**
    元の PR 本文または出力レポートに「対象外とした項目」と「切り出し先 Issue 番号」を記載する（コミット作成後でよい）。

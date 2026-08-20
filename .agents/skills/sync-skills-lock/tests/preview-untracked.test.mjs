@@ -138,16 +138,22 @@ exit 0
 // 実 git へ委譲する `git` ラッパーを PATH 先頭の binDir へ追加する。
 // pathspec 一致等の粗い偽装ではなく `--others` の有無で判定することで、スクリプトが
 // 未追跡ファイル列挙にだけ `git ls-files` を使っている実装を維持したまま、
-// 意図した呼び出し箇所だけを的確に失敗させる。
+// 意図した呼び出し箇所だけを的確に失敗させる。`--ignored` を伴う呼び出し
+// （npx 実行前の既存 ignored 列挙・リバート時の新規 ignored 選別）は未追跡
+// プレビューとは別経路のため、失敗対象から除外して実 git へ委譲する。
 function addGitLsFilesFailure(binDir) {
   const gitWrapper = `#!/usr/bin/env bash
 if [[ "\${1:-}" == "ls-files" ]]; then
+  has_others=0
+  has_ignored=0
   for a in "\$@"; do
-    if [[ "\${a}" == "--others" ]]; then
-      echo "fatal: simulated git ls-files failure (index corrupt)" >&2
-      exit 128
-    fi
+    if [[ "\${a}" == "--others" ]]; then has_others=1; fi
+    if [[ "\${a}" == "--ignored" ]]; then has_ignored=1; fi
   done
+  if [[ "\${has_others}" -eq 1 && "\${has_ignored}" -eq 0 ]]; then
+    echo "fatal: simulated git ls-files failure (index corrupt)" >&2
+    exit 128
+  fi
 fi
 exec "${REAL_GIT}" "\$@"
 `

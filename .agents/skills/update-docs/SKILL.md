@@ -77,117 +77,130 @@ symlink エントリを除外してしまうため `-L` が必須）。`-exec te
 N に含めるかどうかはこの内訳で決まる（系統 B という区分自体がカウントの可否を
 決めるわけではない）。
 
+分類は「`.claude/skills/<name>` 自身が symlink か」「`.agents/skills/<name>` 自身が symlink
+先か」といった symlink の**位置**では判定しない。`.claude/skills` ディレクトリ自体が
+`.agents/skills` を指す symlink であるレイアウト（親 symlink 型）では、配下の
+`.claude/skills/<name>` は symlink ではなく実ディレクトリに見える（親越しに見える実体）ため、
+symlink の有無を見る判定はこのレイアウトで成立しない。そこで判定基準を「`.claude/skills/<name>`
+から `cd -P && pwd -P` で物理解決した先が、`skills/<name>` または `.agents/skills/<name>` の
+物理解決先と一致するか」に置き換える。この方式は親 symlink 型・子 symlink 型（`.claude/skills/<name>`
+自身が symlink）・実ディレクトリ型のいずれでも同じロジックで判定できる。
+
 | 区分 | 実体の所在 | N に含めるか | 記載先 |
 |------|-----------|------------|--------|
-| B1 | `skills/<name>/`（`.claude/skills/<name>` は symlink で、解決先が `skills/<name>` の実パスと一致することを検証済み） | 含める（系統 A の列挙で既に計上済み。B1 を理由に N を増減させない） | `## Current Skills (N)` |
-| B2 | `.claude/skills/<name>/` が `SKILL.md` を持つ実ディレクトリで、`skills/<name>/` にも `skills-lock.json` にも該当しない | 含めない | 「リポジトリ管理スキル（.claude/skills/ に配置）」 |
-| B3 | `.agents/skills/<name>/` が `SKILL.md` を持つ実体で、`.claude/skills/<name>` がその実体を指す symlink であることを検証済み | 含めない | 「参照スキル（.claude/skills/ に配置）」 |
-| B4 | 誤配置・判定不能（`skills-lock.json` 掲載の実ディレクトリ、symlink 先不一致・非 symlink、`jq` 不在でタイブレーク未実施 等） | 含めない | CLAUDE.md には記載しない（stderr へ警告のみ。手動対応が必要な構成問題として扱う） |
+| B1 | `skills/<name>/`（`.claude/skills/<name>` の物理解決先が `skills/<name>` の物理解決先と一致することを検証済み） | 含める（系統 A の列挙で既に計上済み。B1 を理由に N を増減させない） | `## Current Skills (N)` |
+| B2 | `.claude/skills/<name>/` が `SKILL.md` を持つ実体で、`skills/<name>/` にも `.agents/skills/<name>/` にも該当せず、`skills-lock.json` にも掲載されていない | 含めない | 「リポジトリ管理スキル（.claude/skills/ に配置）」 |
+| B3 | `.agents/skills/<name>/` が `SKILL.md` を持つ実体で、`.claude/skills/<name>` の物理解決先が `.agents/skills/<name>` の物理解決先と一致することを検証済み（`.claude/skills/<name>` 自身が symlink である子 symlink 型・`.claude/skills` 自体が symlink である親 symlink 型のいずれも該当） | 含めない | 「参照スキル（.claude/skills/ に配置）」 |
+| B4 | 誤配置・判定不能（`skills-lock.json` 掲載の実ディレクトリ、物理解決先の不一致・到達不能、別ターゲットへの symlink、`jq` 不在でタイブレーク未実施 等） | 含めない | CLAUDE.md には記載しない（stderr へ警告のみ。手動対応が必要な構成問題として扱う） |
 
 B1・B2・B3 の抽出コマンド（シェル関数として定義する。「検証」節でも**同一の関数**を呼び出すため、
-コマンド本体はここに一度だけ記述する）。いずれも「注意事項」のタイブレークを関数自体に組み込んだ
-自己完結スクリプトとし、抽出コマンドと注意事項の記述が食い違わないようにする。全コマンドとも
-**判定できない・条件を満たさないケースは B1/B2/B3 から除外して stderr へ警告する（fail-closed）**。
-除外分は B4 として扱い、下記の件数整合式で回収する:
+コマンド本体はここに一度だけ記述する）。分類の核は単一の分類器 `classify_b`（名前ごとに排他的な
+1 分類を出力する）に集約し、`extract_b1`・`extract_b2`・`extract_b3` はその出力を区分でフィルタする
+薄いラッパーとして定義する。既存の呼び出しインターフェース（Step 3・検証節で
+`extract_b1`/`extract_b2`/`extract_b3` をそのまま呼び出す形）はこの変更後も変わらない。
+いずれも「注意事項」のタイブレークを `classify_b` 自体に組み込んだ自己完結スクリプトとし、
+分類ロジックと注意事項の記述が食い違わないようにする。**判定できない・条件を満たさないケースは
+B1/B2/B3 から除外して stderr へ警告する（fail-closed）**。除外分は B4 として扱い、下記の件数整合式で
+回収する:
 
 ```bash
-# B1: 配布スキル（.claude/skills/<name> が skills/<name> を指す symlink であることを検証）
-# タイブレーク: 1) .claude/skills/<name> が symlink でない → B1 に含めない（symlink 化されて
-#                  いない、または実ディレクトリ配置。B2 側の判定に委ねる。警告なし）
-#               2) symlink の解決先（`cd -P` で正規化した絶対パス）が skills/<name> の実パスと
-#                  一致する → B1 として出力
-#               3) symlink だが解決先が一致しない（例: .agents/skills/ 等への誤配置）→
-#                  除外し stderr へ警告（B4 扱い）
-extract_b1() {
-  ls -d skills/*/SKILL.md 2>/dev/null | sed -E 's#skills/##; s#/SKILL\.md##' | sort -u |
+# 物理パス正規化ヘルパー。symlink（子 symlink 型・親 symlink 型）・実ディレクトリの
+# いずれの経路で見えるエントリも `cd -P` で辿った物理パスへ正規化することで、
+# symlink の位置に依存しない解決先ベースの判定を可能にする。
+# 到達不能（エントリ不在・broken symlink）の場合は空文字列を返す。
+resolve() { cd -P -- "$1" 2>/dev/null && pwd -P; }
+
+# classify_b: 系統 B の各名前を B1/B2/B3 のいずれか 1 分類（該当しなければ B4 警告のみ）へ
+# 排他的に振り分ける単一分類器。「名前ごとに 1 回だけ判定する」構造で排他性を保証する。
+# 出力は "<区分>\t<名前>" 形式（B1/B2/B3 のみ。B4 は stdout に出さず stderr へ WARN する）。
+#
+# 候補集合: -L 付き全列挙（SKILL.md を持つディレクトリのみ）。「SKILL.md を持たない
+# エントリは対象外（B4 にも計上しない）」の既存挙動は、この候補集合の構築自体で維持される。
+#
+# 判定順序（上から順・排他）:
+#   1. .claude/skills/<n> の物理解決先が空（エントリ不在・broken symlink）→ B4 警告
+#   2. skills/<n> の物理解決先が非空 かつ 一致 → B1
+#   3. skills/<n> の物理解決先が非空 かつ 不一致 → B4 警告（配布実体と解決先不一致）
+#   4. .agents/skills/<n> の物理解決先が非空 かつ 一致 → B3
+#      （親 symlink 型・子 symlink 型の双方をこの 1 条件で吸収する）
+#   5. .agents/skills/<n> の物理解決先が非空 かつ 不一致 → B4 警告（参照実体と解決先不一致）
+#   6. .claude/skills/<n> の物理解決先が .claude/skills 自体の物理解決先直下（.claude/skills/<n>
+#      と等価）→ B2 候補 → skills-lock.json タイブレーク（jq 不在→B4／jq exit 0→掲載あり
+#      誤配置として B4／exit 1→B2／それ以外→解析失敗として B4。既存の B2 タイブレークをそのまま踏襲）
+#   7. 上記いずれにも該当しない（別ターゲットへの symlink 等）→ B4 警告
+classify_b() {
+  find -L .claude/skills .agents/skills -mindepth 1 -maxdepth 1 -type d \
+    -exec test -f '{}/SKILL.md' ';' -print 2>/dev/null \
+    | sed -E 's#.*/##' | sort -u |
     while read -r n; do
-      [ -L ".claude/skills/${n}" ] || continue
-      actual=$(cd ".claude/skills/${n}" 2>/dev/null && pwd -P)
-      expected=$(cd "skills/${n}" 2>/dev/null && pwd -P)
-      if [ -n "${actual}" ] && [ "${actual}" = "${expected}" ]; then
-        printf '%s\n' "${n}"
+      p=$(resolve ".claude/skills/${n}")
+      if [ -z "${p}" ]; then
+        echo "WARN: .claude/skills/${n} から実体へ到達できない（未配置・broken symlink 等。B4 扱い）" >&2
         continue
       fi
-      echo "WARN: .claude/skills/${n} は symlink だがリンク先が skills/${n} と一致しない（B4 扱い）" >&2
+
+      s=$(resolve "skills/${n}")
+      if [ -n "${s}" ]; then
+        if [ "${p}" = "${s}" ]; then
+          printf 'B1\t%s\n' "${n}"
+        else
+          echo "WARN: .claude/skills/${n} の解決先が skills/${n} と一致しない（B4 扱い）" >&2
+        fi
+        continue
+      fi
+
+      a=$(resolve ".agents/skills/${n}")
+      if [ -n "${a}" ]; then
+        if [ "${p}" = "${a}" ]; then
+          printf 'B3\t%s\n' "${n}"
+        else
+          echo "WARN: .claude/skills/${n} の解決先が .agents/skills/${n} と一致しない（B4 扱い）" >&2
+        fi
+        continue
+      fi
+
+      c=$(resolve ".claude/skills")
+      if [ -n "${c}" ] && [ "${p}" = "${c}/${n}" ]; then
+        if [ -f skills-lock.json ]; then
+          if ! command -v jq >/dev/null 2>&1; then
+            echo "WARN: jq が見つからないため ${n} の skills-lock.json タイブレークを判定できない（B4 扱い。jq を導入するか手動確認する）" >&2
+            continue
+          fi
+          jq -e --arg n "${n}" '.skills[$n] != null' skills-lock.json >/dev/null 2>&1
+          jq_status=$?
+          # jq の終了ステータスは 0=真（掲載あり）/ 1=偽（掲載なし）/ それ以外=実行時
+          # エラー（不正な JSON 等）の3値。0/1 以外を「掲載なし」と誤読すると
+          # 壊れた skills-lock.json のときに誤配置スキルが素通りして B2 に混入する
+          # ため、エラーは fail-closed で B4 に倒す（jq 不在時と同じ扱い）。
+          if [ "${jq_status}" = "0" ]; then
+            echo "WARN: ${n} は .claude/skills/ が実ディレクトリのまま skills-lock.json に掲載されている（symlink 化検討対象。B4 扱い）" >&2
+            continue
+          elif [ "${jq_status}" != "1" ]; then
+            echo "WARN: skills-lock.json の解析に失敗した（jq exit=${jq_status}）ため ${n} のタイブレークを判定できない（B4 扱い）" >&2
+            continue
+          fi
+        fi
+        printf 'B2\t%s\n' "${n}"
+        continue
+      fi
+
+      echo "WARN: ${n} は skills/ にも .agents/skills/ にも対応する実体がなく、.claude/skills 直下の実体でもない（別ターゲットへの symlink 等。B4 扱い）" >&2
     done
 }
 
-# B2: リポジトリ管理スキル
-# タイブレーク: 1) .claude/skills/<name>/SKILL.md が無い → スキルではない（対象外。full 集合にも
-#                  含まれないため B4 にも計上しない）
-#               2) skills/<name> に実体がある → 除外（配布スキル。B1 側で計上済み）
-#               3) skills-lock.json があるのに jq が使えない → 判定不能。除外し stderr へ警告
-#                  （fail-closed。誤って B2 に含めない。B4 として扱う）
-#               4) jq の終了ステータスで判定: 0=掲載あり→symlink 化されていない誤配置として
-#                  B4 扱い（update-docs は構成を変更しない）／1=掲載なし→B2 継続／
-#                  0・1 以外=jq 実行時エラー（不正な JSON 等）→判定不能として B4 扱い
-#                  （0/1 以外を「掲載なし」と誤読しないことが fail-closed の要）
-#               5) 残った実ディレクトリのみを B2 として出力
-extract_b2() {
-  find .claude/skills -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sed -E 's#.*/##' | sort |
-    while read -r n; do
-      if [ ! -f ".claude/skills/${n}/SKILL.md" ]; then
-        echo "WARN: .claude/skills/${n} に SKILL.md が無くスキルではない（対象外。B4 にも計上しない）" >&2
-        continue
-      fi
-      [ -d "skills/${n}" ] && continue
-      if [ -f skills-lock.json ]; then
-        if ! command -v jq >/dev/null 2>&1; then
-          echo "WARN: jq が見つからないため ${n} の skills-lock.json タイブレークを判定できない（B4 扱い。jq を導入するか手動確認する）" >&2
-          continue
-        fi
-        jq -e --arg n "${n}" '.skills[$n] != null' skills-lock.json >/dev/null 2>&1
-        jq_status=$?
-        # jq の終了ステータスは 0=真（掲載あり）/ 1=偽（掲載なし）/ それ以外=実行時
-        # エラー（不正な JSON 等）の3値。0/1 以外を「掲載なし」と誤読すると
-        # 壊れた skills-lock.json のときに誤配置スキルが素通りして B2 に混入する
-        # ため、エラーは fail-closed で B4 に倒す（jq 不在時と同じ扱い）。
-        if [ "${jq_status}" = "0" ]; then
-          echo "WARN: ${n} は .claude/skills/ が実ディレクトリのまま skills-lock.json に掲載されている（symlink 化検討対象。B4 扱い）" >&2
-          continue
-        elif [ "${jq_status}" != "1" ]; then
-          echo "WARN: skills-lock.json の解析に失敗した（jq exit=${jq_status}）ため ${n} のタイブレークを判定できない（B4 扱い）" >&2
-          continue
-        fi
-      fi
-      printf '%s\n' "${n}"
-    done
-}
-
-# B3: 参照スキル
-# タイブレーク: 1) .agents/skills/<name>/SKILL.md が無い → スキルではない（対象外。full 集合にも
-#                  含まれないため B4 にも計上しない）
-#               2) skills/<name> に実体がある → 除外（配布スキル。B1 側で計上済み）
-#               3) .claude/skills/<name> が symlink で、その解決先が .agents/skills/<name> と
-#                  一致する → B3 として出力
-#               4) symlink でない、または解決先が一致しない → 除外し stderr へ警告（B4 扱い）
-extract_b3() {
-  find .agents/skills -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sed -E 's#.*/##' | sort |
-    while read -r n; do
-      if [ ! -f ".agents/skills/${n}/SKILL.md" ]; then
-        echo "WARN: .agents/skills/${n} に SKILL.md が無くスキルではない（対象外。B4 にも計上しない）" >&2
-        continue
-      fi
-      [ -d "skills/${n}" ] && continue
-      if [ -L ".claude/skills/${n}" ]; then
-        actual=$(cd ".claude/skills/${n}" 2>/dev/null && pwd -P)
-        expected=$(cd ".agents/skills/${n}" 2>/dev/null && pwd -P)
-        if [ -n "${actual}" ] && [ "${actual}" = "${expected}" ]; then
-          printf '%s\n' "${n}"
-          continue
-        fi
-        echo "WARN: .claude/skills/${n} は symlink だがリンク先が .agents/skills/${n} と一致しない（B4 扱い）" >&2
-      else
-        echo "WARN: .agents/skills/${n} に実体があるが .claude/skills/${n} が symlink ではない（B4 扱い）" >&2
-      fi
-    done
-}
+extract_b1() { classify_b | awk -F'\t' '$1 == "B1" { print $2 }'; }
+extract_b2() { classify_b | awk -F'\t' '$1 == "B2" { print $2 }'; }
+extract_b3() { classify_b | awk -F'\t' '$1 == "B3" { print $2 }'; }
 
 ```
 
-このブロックは `extract_b1`・`extract_b2`・`extract_b3` の**関数定義のみ**を含み、
-実行は含まない（「検証」節がこのブロックをそのまま `source` する前提のため。関数呼び出しを
-ここに含めると、source した時点で listing の副作用が走り、検証時の出力と混同される）。
+このブロックは `resolve`・`classify_b`・`extract_b1`・`extract_b2`・`extract_b3` の
+**関数定義のみ**を含み、実行は含まない（「検証」節がこのブロックをそのまま `source` する前提の
+ため。関数呼び出しをここに含めると、source した時点で listing の副作用が走り、検証時の出力と
+混同される）。`extract_b1`/`extract_b2`/`extract_b3` はそれぞれ呼び出しのたびに `classify_b`
+（内部で候補集合の走査を行う）を独立に実行するため、複数回呼び出すと stderr の `WARN:` 行も
+その回数分出力される（人間向けの理由説明として許容する。件数算出は「検証」節の名前集合差分で
+行い、stderr の行数には依存しない）。
 Step 3 でのカウント用途には、このブロックを読み込んだ**別のシェル**で
 `extract_b2` と `extract_b3` を呼び出す（標準出力がそのまま各セクションの掲載一覧になる）:
 
@@ -281,12 +294,15 @@ ls -d skills/*/SKILL.md | wc -l
 
 系統 B（B2・B3）を更新した場合は、以下も**新規実行**して確認する（既存ログ・前回結果の
 流用は不可。`.claude/rules/verification.md` の 5 段階ゲートに従う）。`extract_b1`・`extract_b2`・
-`extract_b3` は「Step 3」で定義した関数と**同一のもの**を呼び出す（コマンドの重複記載による
-食い違いを避けるため、ここでは関数本体を再掲せず、Step 3 の bash ブロックを事前に
-source またはコピーしてから以下を実行する）。stderr（`WARN:` 行）は人間向けの理由説明として
+`extract_b3` は「Step 3」で定義した `classify_b` ベースの関数と**同一のもの**を呼び出す
+（コマンドの重複記載による食い違いを避けるため、ここでは関数本体を再掲せず、Step 3 の bash
+ブロックを事前に source またはコピーしてから以下を実行する）。排他性は `classify_b` が
+「名前ごとに 1 回だけ判定する」構造で保証するが、`comm -12` の排他性チェックは実装ミスに
+対する回帰検出として引き続き実行する。stderr（`WARN:` 行）は人間向けの理由説明として
 保持しつつ、B4 の**件数**は次の名前集合の差分で算出する（stderr の行数を数えない。
-同一名が B2・B3 双方の理由で除外されると行数は二重計上され、逆にどちらのループの走査対象
-にもならない別ターゲット symlink は 1 行も出ないため取りこぼす）。各変数は `sed '/^$/d'` で
+`extract_b1`/`extract_b2`/`extract_b3` は呼び出しのたびに `classify_b` を独立実行するため、
+同一名の WARN が複数回の呼び出しにまたがって重複出力されることがあり、行数はそもそも件数の
+根拠にならない）。各変数は `sed '/^$/d'` で
 空行を必ず除去してから保持する（`comm` は空文字列の変数を「空行 1 件を含む集合」として
 比較するため、空行を残したまま `comm -12` にかけると、双方が空集合のケースで空行同士が
 一致し「重複あり」の誤検出になる）:
@@ -332,18 +348,20 @@ comm -12 <(printf '%s\n' "${b2}" | sed '/^$/d') <(printf '%s\n' "${b3}" | sed '/
 - `CLAUDE.md` のみが更新対象。個別スキルの `SKILL.md` や `references/` は対象外
 - 自動生成ファイルは更新対象外
 - `_/.last-update-docs` が `.gitignore` に追加されているか確認する
-- **`.claude/skills/` の実ディレクトリ抽出（用途が異なる点に注意）**: `find .claude/skills -maxdepth 1 -mindepth 1 -type d`（`-L` を付けない）は「symlink ではない実ディレクトリ = そのリポジトリ固有の管理スキル」だけを狙って抽出するコマンドであり、上記「系統 B」の全列挙（`-L` 付き）とは目的が異なる。全列挙が必要な場面では必ず `-L` 付きの版を使う。symlink を除外することがこの抽出の条件そのものであり、両者は矛盾ではなく用途の使い分けである
-- **`github-docs` 等の扱い**: `find -type d`（`-L` なし）はシンボリックリンクを除外するため、`github-docs`・`anthropic-claude-code` 等は「リポジトリ管理スキル」節の対象からは自動的に外れる。ただしこれは B2 からの除外であって `CLAUDE.md` からの除外ではない。これらは系統 B の内訳では B3（参照スキル）に分類され、「参照スキル（.claude/skills/ に配置）」節に記載する
-- **実ディレクトリ型リポジトリでの振る舞い**: `.claude/skills/<name>` が symlink ではなく実ディレクトリで配置されているリポジトリ（`.claude/skills` が実ディレクトリ運用の消費側リポジトリ等）では、`-L` 無しの抽出が外部取り込みスキルまで拾ってしまい「リポジトリ管理スキル」節が過大になり得る。実ディレクトリか否かだけで判定せず、次の順でタイブレークする（B2 抽出コマンドはこのタイブレークを実装済み）:
-  1. 実体が `skills/<name>/` にもある → 配布スキル（系統 A・B1）。リポジトリ管理スキルではない
-  2. `skills-lock.json` があるのに `jq` が使えない → 判定不能。`jq` 不在時にタイブレーク自体をスキップして誤って B2 に含めることは fail-closed 原則に反するため、B4（判定不能）として除外し stderr へ警告する
-  3. `skills-lock.json` の `skills` キーに名前がある → 外部から取り込んだスキルが symlink 化されていない誤配置。リポジトリ管理スキルではなく、symlink 化を検討すべき構成上の問題として B4 で報告する（update-docs 自身は構成を変更しない）
-  4. 上記いずれにも該当しない実ディレクトリのみをリポジトリ管理スキル（B2）として扱う
-- **B3 の symlink 検証**: `.agents/skills/<name>` に実体があるだけでは B3 に分類しない。
-  `.claude/skills/<name>` が symlink であり、かつその解決先（`cd -P` で正規化した絶対パス）が
-  `.agents/skills/<name>` の解決先と一致することまで確認する。symlink でない・別の場所を指す
-  symlink・symlink 自体が存在しない場合は「参照スキルとして未リンク／誤配置」であり B4 として
-  除外し stderr へ警告する（誤って B3 に含めない）
+- **`.claude/skills/` の実ディレクトリ抽出（用途が異なる点に注意）**: `find .claude/skills -maxdepth 1 -mindepth 1 -type d`（`-L` を付けない）は「symlink ではない実ディレクトリ = そのリポジトリ固有の管理スキル」を狙った抽出コマンドだが、**`.claude/skills` 自体が `.agents/skills` を指す symlink であるレイアウト（親 symlink 型）では、配下の全エントリが symlink ではなく実ディレクトリに見えるため、このコマンドは常に空を返し B2 判定には使えない。** 系統 B の分類は `classify_b`（`resolve` による物理解決先の比較）を基準とし、`-L` 無し find は用途を持たない。全列挙が必要な場面では必ず `-L` 付きの版（上記 `classify_b` の候補集合構築コマンド）を使う
+- **`github-docs` 等の扱い**: `.claude/skills/github-docs`（子 symlink 型なら symlink、親 symlink 型なら実ディレクトリに見える）の物理解決先が `.agents/skills/github-docs` の物理解決先と一致するため、`classify_b` は `github-docs`・`anthropic-claude-code` 等を B3（参照スキル）に分類する。これは B2 からの除外であって `CLAUDE.md` からの除外ではなく、「参照スキル（.claude/skills/ に配置）」節に記載する
+- **実ディレクトリ型リポジトリでの振る舞い**: `.claude/skills/<name>` が実ディレクトリで配置されているリポジトリ（`.claude/skills` が実ディレクトリ運用の消費側リポジトリ等）では、実体が `.claude/skills/<name>` 直下にあるかどうかだけで判定すると外部取り込みスキルまで拾ってしまい「リポジトリ管理スキル」節が過大になり得る。`classify_b` は物理解決先の一致を優先することで、実ディレクトリか symlink かに関わらず次の順でタイブレークする:
+  1. 物理解決先が `skills/<name>/` の物理解決先と一致する → 配布スキル（系統 A・B1）。リポジトリ管理スキルではない
+  2. 物理解決先が `.agents/skills/<name>/` の物理解決先と一致する → 参照スキル（B3）
+  3. `skills-lock.json` があるのに `jq` が使えない → 判定不能。`jq` 不在時にタイブレーク自体をスキップして誤って B2 に含めることは fail-closed 原則に反するため、B4（判定不能）として除外し stderr へ警告する
+  4. `skills-lock.json` の `skills` キーに名前がある → 外部から取り込んだスキルが symlink 化されていない誤配置。リポジトリ管理スキルではなく、symlink 化を検討すべき構成上の問題として B4 で報告する（update-docs 自身は構成を変更しない）
+  5. 上記いずれにも該当しない実体のみをリポジトリ管理スキル（B2）として扱う
+- **B3 の解決先検証**: `.agents/skills/<name>` に実体があるだけでは B3 に分類しない。
+  `.claude/skills/<name>` の物理解決先（`cd -P` で正規化した絶対パス）が `.agents/skills/<name>`
+  の物理解決先と一致することまで確認する（親 symlink 型では `.claude/skills/<name>` 自身は
+  symlink ではないため、「symlink であること」は要求条件にしない）。解決先が不一致・
+  `.claude/skills/<name>` から実体へ到達できない場合は「参照スキルとして未リンク／誤配置」で
+  あり B4 として除外し stderr へ警告する（誤って B3 に含めない）
 - **空出力の扱い**: `2>/dev/null` はディレクトリ不在（例: `.agents/skills` が無いリポジトリ）を許容する目的に限る。空出力を即座に「0 件」と判断せず、対象ディレクトリ自体の存在を先に確認する
 
 ## コード内コメントの観点（任意）

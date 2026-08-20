@@ -294,8 +294,12 @@ fi
 WORKDIR="$(dirname "${SCRIPT_UPSTREAM_DIR}")"
 cd "${SCRIPT_UPSTREAM_DIR}"
 
-# デフォルトブランチを取得する（Step 8 の gh pr create --base で使用）
-DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||')
+# デフォルトブランチを取得する（Step 8 の gh pr create --base で使用）。
+# origin/HEAD 未設定時に symbolic-ref が非ゼロ終了する。set -e 下（本コマンドを
+# skills-contribute.sh 同様の厳格モードで実行する場合）では ${DEFAULT_BRANCH:-main}
+# フォールバックへ到達できなくなるため `|| true` で吸収する
+# （skills-contribute.sh:246 と同一の修正、参照: コミット履歴の同一 fix）。
+DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||' || true)
 echo "デフォルトブランチ: ${DEFAULT_BRANCH:-main}"
 ```
 
