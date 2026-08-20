@@ -204,7 +204,69 @@ for (const { label, block } of cases) {
       rmSync(tmp, { recursive: true, force: true })
     }
   })
+
+  // --- Cursor Bugbot 指摘「Exit 10 aborts full reassign loop」の回帰 ---
+  // 終了コード表（233〜234 行）は exit 10 / 11 を「要確認事項へ記載（件数へは計上しない）」と
+  // 定めており、ループを止める理由がない。旧実装はこれを fatal 扱いにして即 exit していた。
+
+  test(`${label}: exit 10（補償復旧成功）→ 中断せず 0 で完走し要確認事項へ記録する`, () => {
+    const tmp = mkdtempSync(join(tmpdir(), 'update-issue-tree-block-'))
+    try {
+      makeStub(tmp, 10, 'result=restored issue=123 new_parent=2 old_parent=1')
+      const r = runBlock(block, tmp)
+      assert.equal(r.status, 0, 'exit 10 は fatal ではなくループを継続しなければならない')
+      assert.match(r.stderr, /要確認事項/)
+      assert.match(r.stderr, /exit=10 restored/)
+    } finally {
+      rmSync(tmp, { recursive: true, force: true })
+    }
+  })
+
+  test(`${label}: exit 11（第三者が別親を設定済み）→ 中断せず 0 で完走し要確認事項へ記録する`, () => {
+    const tmp = mkdtempSync(join(tmpdir(), 'update-issue-tree-block-'))
+    try {
+      makeStub(tmp, 11, 'エラー: reason=third-party-parent')
+      const r = runBlock(block, tmp)
+      assert.equal(r.status, 0, 'exit 11 は fatal ではなくループを継続しなければならない')
+      assert.match(r.stderr, /要確認事項/)
+      assert.match(r.stderr, /exit=11 third-party-parent/)
+      assert.match(r.stderr, /再実行禁止/)
+    } finally {
+      rmSync(tmp, { recursive: true, force: true })
+    }
+  })
 }
+
+// exit 10 で 1 件目が止まらず、残りの計画配列が処理されることを呼び出し回数で実測する
+// （Cursor Bugbot 指摘の核心: 「exit 10 aborts full reassign loop」）。
+test('Step3: exit 10（補償復旧成功）を挟んでも残りの件が処理される', () => {
+  const tmp = mkdtempSync(join(tmpdir(), 'update-issue-tree-block-'))
+  try {
+    const counter = join(tmp, 'calls.txt')
+    makeStubScript(
+      tmp,
+      `#!/usr/bin/env bash\n`
+        + `issue=""\n`
+        + `while [[ $# -gt 0 ]]; do\n`
+        + `  case "$1" in --issue) issue="$2"; shift 2 ;; *) shift ;; esac\n`
+        + `done\n`
+        + `printf '%s\\n' "\${issue}" >> ${JSON.stringify(counter)}\n`
+        + `if [[ "\${issue}" == "111" ]]; then\n`
+        + `  printf '%s\\n' "result=restored issue=111 new_parent=2 old_parent=1"\n`
+        + `  exit 10\n`
+        + `fi\n`
+        + `exit 0\n`,
+    )
+    const r = runBlock(step3, tmp, { plan: ['111 1 2', '222 1 2', '333 1 2'] })
+    assert.equal(r.status, 0)
+    const calls = readFileSync(counter, 'utf8').trim().split('\n')
+    assert.deepEqual(calls, ['111', '222', '333'], 'exit 10 の 1 件目で停止せず 3 件すべて呼ばれること')
+    assert.match(r.stderr, /要確認事項/)
+    assert.match(r.stderr, /exit=10 restored/)
+  } finally {
+    rmSync(tmp, { recursive: true, force: true })
+  }
+})
 
 // 複数件のループが実際に「対象外は飛ばして次へ進む」ことを、呼び出し回数で実測する。
 // 単一件のテストでは「1 件目で止まった」と「1 件目を飛ばして完走した」を区別できない。

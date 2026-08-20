@@ -166,13 +166,14 @@ require_plan_array REASSIGN_PLAN || exit 1
 # (a) 解消可能な前提不備は原因解消まで中断する」を実際に実現するのはこのループである。
 # ISSUE_NUMBER / OLD_PARENT / NEW_PARENT は Step 2 で構築した REASSIGN_PLAN から供給する。
 SKIPPED=()
+NEEDS_REVIEW=()
 for ENTRY in "${REASSIGN_PLAN[@]}"; do
   # ENTRY は "<issue> <old-parent> <new-parent>" 形式。
   # zsh は未クォートの展開を単語分割しないため、read で明示的に分割する
   IFS=' ' read -r ISSUE_NUMBER OLD_PARENT NEW_PARENT <<< "${ENTRY}"
   # `if reassign_one ...; then ... fi` の形にしてはならない。条件が偽で else が無い場合、
   # `fi` の直後の $? は 0 になり（実測済み）、失敗が「成功」として読まれて
-  # (a)/(b) の判定も中断もすべて素通りする。`|| status=$?` で明示的に退避する。
+  # (a)/(b)/(c) の判定も中断もすべて素通りする。`|| status=$?` で明示的に退避する。
   status=0
   reassign_one --issue "${ISSUE_NUMBER}" \
                --old-parent "${OLD_PARENT}" \
@@ -185,22 +186,57 @@ for ENTRY in "${REASSIGN_PLAN[@]}"; do
     SKIPPED+=("${ISSUE_NUMBER}")
     continue
   fi
-  # (a) を含むそれ以外は握り潰さず中断する。原因を解消してから再実行する
+  if (( status == 10 )); then
+    # (c) 補償復旧が成功し旧親へ復帰済み（本来の付け替えは未達）。fatal にせず要確認事項へ
+    # 記録して次の 1 件へ進む。exit 10 を中断扱いにすると残りの REASSIGN_PLAN が未処理のまま
+    # 中断し、Step 4 の孤児処理・Step 9 の報告経路自体がスキップされてしまう
+    NEEDS_REVIEW+=("#${ISSUE_NUMBER}: exit=10 restored — 旧親 #${OLD_PARENT} へ復帰済み。新親 #${NEW_PARENT} への付け替えは未達")
+    continue
+  fi
+  if (( status == 11 )); then
+    # (c) DELETE 後、第三者が別親を設定済みのため補償せず見送り。同一コマンドでの再実行禁止を
+    # 記録に残したうえで、fatal にせず次の 1 件へ進む
+    NEEDS_REVIEW+=("#${ISSUE_NUMBER}: exit=11 third-party-parent — 旧親 #${OLD_PARENT} から DELETE 済み、第三者が別親を設定済み。同じコマンドで再実行禁止。stderr の実測親を確認しユーザー承認のうえ再実行すること")
+    continue
+  fi
+  # (a) それ以外（exit 1-8。9・10・11 を除く）は握り潰さず中断する。原因を解消してから再実行する
   echo "エラー: #${ISSUE_NUMBER} の付け替えが exit ${status} で失敗した。中断する" >&2
   exit "${status}"
 done
 if (( ${#SKIPPED[@]} > 0 )); then
   echo "対象外（cross-repository 親）: ${SKIPPED[*]}" >&2
 fi
+if (( ${#NEEDS_REVIEW[@]} > 0 )); then
+  echo "要確認事項（Step 9 のレポートへ転記すること）:" >&2
+  printf '  %s\n' "${NEEDS_REVIEW[@]}" >&2
+fi
 ```
 
 `reassign_one` は**1 件分の呼び出し**であり、非ゼロ終了は**当該 1 件の失敗**として
 関数の返り値へ伝播する。判定に必要な stderr は関数内で捕捉したうえで必ず再出力するため、
-診断情報は失われない。呼び出し側ループは Step 9 の要確認事項へ記録したうえで、exit 2 は
-**(a) 解消可能な前提不備**（`gh`/`jq` 不在・未認証・issue 取得失敗）のみ原因解消まで中断し、
-**(b) 恒久的な対象外**（cross-repository 親等）は要確認事項へ記載して棚卸し対象から除外し、
-次の 1 件の呼び出しへ進む（終了コード表を参照）。(a)/(b) の判定は stderr に
-`reason=cross-repository-parent` が出ているかで機械的に行う（無ければ (a)）。
+診断情報は失われない。呼び出し側ループは Step 9 の要確認事項へ記録したうえで、次の 3 通りに
+振り分ける。**(a) 解消可能な前提不備**（exit 2 のうち `gh`/`jq` 不在・未認証・issue 取得失敗等。
+9・10・11 を除く exit 1〜8 全般）は原因解消まで中断する。**(b) 恒久的な対象外**
+（cross-repository 親。exit 9）は要確認事項へ記載して棚卸し対象から除外し、次の 1 件の
+呼び出しへ進む。**(c) 部分的に変更済みだが処理は継続してよいもの**（exit 10 = DELETE 後の
+補償復旧が成功し旧親へ復帰済み・exit 11 = DELETE 後に第三者が別親を設定済みで補償を見送り）は
+要確認事項へ記録したうえで、fatal にせず次の 1 件へ進む。exit 10 / 11 を即 `exit` で中断すると
+残りの `REASSIGN_PLAN` が未処理のまま止まり、Step 4 の孤児処理・Step 9 の報告経路自体が
+スキップされる欠陥になるため、この 2 コードはループを止めない（終了コード表を参照）。
+(a)/(b) の判定は stderr に `reason=cross-repository-parent` が出ているかで機械的に行う
+（無ければ (a)）。(c) は返り値がそのまま 10 / 11 であるため、判定に stderr のマーカーは不要。
+
+**(c) だけを継続対象にする理由（exit 3/4/5/7/8 は継続しない）**: 終了コード表を見ると
+exit 3・4・5・7・8 も「呼び出し側の扱い」欄に「要確認事項へ記載」と書かれており、一見
+(c) と同じに見える。しかし止める・止めないの分岐点は「要確認事項へ記載するか」ではなく
+**当該 1 件の終端状態が実測で確定しているか**である。exit 10 / 11 は補償復旧ルーチンが
+実状態を再取得した末に「旧親配下」「第三者親配下」という**確定した終端状態**へ着地しており、
+次の 1 件へ進んでも新たな破壊は生じない。対して exit 3（DELETE 失敗）・4（POST 失敗）・
+5（事後確認不一致）・7（POST 時点のレース）・8（補償も失敗し状態不明/孤児）は、無変更・
+孤児化・状態不明のいずれかであり、原因（`gh` 認証切れ・API 障害・レース条件）が
+**後続の全件に共通して波及する可能性が高い**ため、1 件で切り上げて原因究明を優先する。
+この境界線は Cursor Bugbot 指摘への対応として exit 10 / 11 に限定して導入したものであり、
+3/4/5/7/8 へ安易に拡張しない。
 
 **引数**
 
@@ -248,9 +284,13 @@ stdout 最終行が `result=<state> issue=<n> new_parent=<n> old_parent=<n|->` �
 孤児のまま滞留させていた。新方式は POST 失敗を検知した時点で**対象 issue の実状態を再取得**
 してから分岐する（実測を先に確定させてから動くのは #333 の 3.3 節と同じ処理順序）:
 - 実測の親が新親 → POST は偽陰性だった。通常の成功終端（`exit 0` / `result=reassigned`）と同じ扱い
-- 実測で孤児 → 承認済み操作の逆操作（旧親へ戻す）は承認範囲内のため補償 POST を撃つ。
-  成功なら事後確認を取り直し `exit 10` / `result=restored`。補償 POST 自体が失敗する多重障害、
-  または再取得・事後確認が失敗する状態不明ケースは孤児のまま `exit 8` で終端する
+- 実測で孤児 → 1 回の読み取りだけでは DELETE/POST の反映遅延による過渡状態を見ている
+  可能性を排除できないため、補償 POST という書き込みを行う前に短い間隔を空けて再取得し、
+  2 回連続で親なしが観測できて初めて安定した孤児として確定する（cursor[bot] Medium 指摘
+  「Orphan restore skips stability check」）。安定確認できれば、承認済み操作の逆操作
+  （旧親へ戻す）は承認範囲内のため補償 POST を撃つ。成功なら事後確認を取り直し
+  `exit 10` / `result=restored`。補償 POST 自体が失敗する多重障害、または再取得・事後確認・
+  安定確認が失敗する状態不明ケースは書き込まずに `exit 8` で終端する
 - 実測で第三者が別の親（別リポジトリを含む）を設定済み → **補償 POST を撃たず** `exit 11` で
   fail-closed 停止する。第三者が確定させた親子関係を上書きしない
 
@@ -319,6 +359,7 @@ source "${REASSIGN_LIB}" || exit 1
 require_plan_array ORPHAN_PLAN || exit 1
 
 SKIPPED_ORPHANS=()
+NEEDS_REVIEW_ORPHANS=()
 for ENTRY in "${ORPHAN_PLAN[@]}"; do
   # ENTRY は "<orphan-issue> <phase-parent>" 形式
   IFS=' ' read -r ORPHAN_NUMBER PHASE_NUMBER <<< "${ENTRY}"
@@ -332,18 +373,34 @@ for ENTRY in "${ORPHAN_PLAN[@]}"; do
     SKIPPED_ORPHANS+=("${ORPHAN_NUMBER}")
     continue
   fi
+  if (( status == 10 )); then
+    # Step 3 と同じ (c) 扱い。孤児経路は --old-parent を渡さないため通常は起こり得ないが、
+    # ループ構造を Step 3 と非対称にしないため同じ分岐を持つ
+    NEEDS_REVIEW_ORPHANS+=("#${ORPHAN_NUMBER}: exit=10 restored — 補償復旧が発生。Phase 親 #${PHASE_NUMBER} への紐付けは未達。実状態を確認すること")
+    continue
+  fi
+  if (( status == 11 )); then
+    NEEDS_REVIEW_ORPHANS+=("#${ORPHAN_NUMBER}: exit=11 third-party-parent — 第三者が別親を設定済み。同じコマンドで再実行禁止。stderr の実測親を確認しユーザー承認のうえ再実行すること")
+    continue
+  fi
   echo "エラー: #${ORPHAN_NUMBER} の再配置が exit ${status} で失敗した。中断する" >&2
   exit "${status}"
 done
 if (( ${#SKIPPED_ORPHANS[@]} > 0 )); then
   echo "対象外（cross-repository 親）: ${SKIPPED_ORPHANS[*]}" >&2
 fi
+if (( ${#NEEDS_REVIEW_ORPHANS[@]} > 0 )); then
+  echo "要確認事項（Step 9 のレポートへ転記すること）:" >&2
+  printf '  %s\n' "${NEEDS_REVIEW_ORPHANS[@]}" >&2
+fi
 ```
 
-Step 3 と同一の関数・同一のループ構造であり、exit 2 の扱いも同じ
-（(a) 解消可能な前提不備のみ原因解消まで中断、(b) 恒久的な対象外は要確認事項へ記載して
-次の 1 件へ進む。判定は関数が捕捉した stderr の `reason=cross-repository-parent` マーカーで
-機械的に行い、返り値 9 として呼び出し側へ伝える。終了コード表を参照）。
+Step 3 と同一の関数・同一のループ構造であり、終了コードの扱いも同じ
+（(a) 解消可能な前提不備のみ原因解消まで中断、(b) 恒久的な対象外（exit 9）は要確認事項へ記載して
+次の 1 件へ進む、(c) 部分的に変更済みだが継続してよいもの（exit 10 / 11）も要確認事項へ記録して
+fatal にせず次の 1 件へ進む。(b) の判定は関数が捕捉した stderr の
+`reason=cross-repository-parent` マーカーで機械的に行い、返り値 9 として呼び出し側へ伝える。
+終了コード表を参照）。
 
 ### Step 5: 必要に応じて新 Phase 親を新設する
 
@@ -489,17 +546,27 @@ EOF
 `reassign-sub-issue.sh` を呼んだ回数分の `result=` 行（`reassigned` / `posted-only`）から集計する。
 **すべての非ゼロ終了**（exit 1〜8・10・11。今後コードが増えた場合も含む）は 1 件も件数へ含めず、
 必ず「要確認事項」へ理由付きで記載する。とくに exit 8 は**部分変更が残っている**ため、
-報告を漏らすと壊れたツリーが放置される。exit 10（補償復旧成功）も本来の付け替えは未達のため
-件数へは計上せず要確認事項へ記載する。
+報告を漏らすと壊れたツリーが放置される。exit 10（補償復旧成功）・exit 11（第三者が別親を設定済み）
+も本来の付け替えは未達のため件数へは計上せず要確認事項へ記載する。**exit 9・10・11 は Step 3 /
+Step 4 のループ自体が fatal 扱いせず継続する**ため（終了コード表・上記ループを参照）、
+これらは計画配列の残り全件を処理し終えたうえで Step 9 に到達する。Step 3 / Step 4 が stderr へ
+出力する `SKIPPED` / `NEEDS_REVIEW`（および `SKIPPED_ORPHANS` / `NEEDS_REVIEW_ORPHANS`）の内容を
+そのままこの節へ転記する。
 
 ## 検証
 
 - ルート issue 本文の Phase 別表が更新されていることを確認する
-- closed Phase 親の下に open issue が残置されていないことを確認する
-- Step 3 / Step 4 で呼んだ `reassign-sub-issue.sh` の各回について、`echo "exit=${REASSIGN_STATUS}"`
+- closed Phase 親の下に open issue が残置されていないことを確認する。**ただし exit 10
+  （補償復旧成功）で要確認事項へ記録された issue は、承認範囲内の逆操作として旧親（closed）
+  配下へ意図的に復帰しているため、この確認の例外として扱う。** 単独では「残置」に見えるので、
+  Step 9 の要確認事項の記録と突き合わせて exit 10 由来であることを確認する
+- Step 3 / Step 4 で呼んだ `reassign-sub-issue.sh` の各回について、`echo "exit=${status}"`
   の値と `result=` 行を確認する。非ゼロ終了があれば Step 9 の要確認事項へ反映されているか確認する。
-  加えて、非ゼロ時はコードブロック自体の終了ステータスが非ゼロで返ること（`echo` を最後の
-  コマンドにして握り潰していないこと）も確認する
+  加えて、**exit 1〜8（9・10・11 を除く）**の fatal 系はコードブロック自体の終了ステータスが
+  非ゼロで返ること（`echo` を最後のコマンドにして握り潰していないこと）を確認する。
+  **exit 9・10・11**は fatal ではなくループ継続の契約であるため、コードブロックはそのまま
+  正常終了（終了ステータス 0）で最後の `SKIPPED*` / `NEEDS_REVIEW*` echo まで到達すること、
+  かつ `REASSIGN_PLAN` / `ORPHAN_PLAN` の残り全件が処理されていることを確認する
 
 ```bash
 # 全 sub-issues の state を確認
