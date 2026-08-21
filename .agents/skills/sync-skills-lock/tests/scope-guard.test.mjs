@@ -364,6 +364,15 @@ if [[ "\${TEST_NPX_SCENARIO:-}" == "ignored-delete-success" ]]; then
   rm ".agents/skills/${SKILL_NAME}/.DS_Store"
 fi
 
+if [[ "\${TEST_NPX_SCENARIO:-}" == "ignored-restore-failure-on-success" ]]; then
+  # npx 自体は成功するが、実行前から存在した ignored ファイル（.DS_Store）を
+  # 同名のディレクトリへ置換する（symlink は使わない。実行後の許可先配下 symlink
+  # 走査には現れず、restore_preexisting_ignored 内の os.unlink がディレクトリに
+  # 対して IsADirectoryError で失敗する経路だけを単離して再現する）。
+  rm ".agents/skills/${SKILL_NAME}/.DS_Store"
+  mkdir -p ".agents/skills/${SKILL_NAME}/.DS_Store"
+fi
+
 if [[ "\${TEST_NPX_SCENARIO:-}" == "config-lock-residue" ]]; then
   # 永続 lock の残置を再現する（.git/*.lock のワイルドカード prune では署名から
   # 漏れていたケース。index.lock のみの完全一致 prune で検出できることを検証）。
@@ -570,7 +579,8 @@ exec "${realGit}" "\$@"
     scenario === 'ignored-residue-on-failure' ||
     scenario === 'ignored-overwrite-success' ||
     scenario === 'ignored-overwrite-on-failure' ||
-    scenario === 'ignored-delete-success'
+    scenario === 'ignored-delete-success' ||
+    scenario === 'ignored-restore-failure-on-success'
   ) {
     writeFileSync(join(repoDir, '.gitignore'), '*.log\n.DS_Store\n')
     writeFileSync(
@@ -1555,6 +1565,43 @@ test('ケース25: npx が既存 ignored ファイルを削除した場合もバ
   }
 })
 
+test('ケース24b: npx 成功後に既存 ignored ファイルの復元自体が失敗した場合、' +
+  'スコープ内（skills-lock.json / .agents/skills/<name>/）もリバートされる' +
+  '（Bugbot Medium 指摘: revert_in_scope を呼ばずに exit 1 するだけだと、npx 成功分の' +
+  '書き込みが worktree に残置され、次回実行時の実行前 clean ガードに引っかかって' +
+  'skip され続ける）', () => {
+  const ctx = setupRepo('ignored-restore-failure-on-success')
+  try {
+    assert.throws(
+      () => runScript(ctx),
+      (err) => {
+        assert.notEqual(err.status, 0, '非ゼロ終了すること（fail-closed）')
+        const combined = `${err.stdout ?? ''}${err.stderr ?? ''}`
+        assert.match(
+          combined,
+          /実行前から存在した ignored ファイルの復元に失敗しました/,
+          'restore_preexisting_ignored の失敗メッセージが出ること',
+        )
+        return true
+      },
+    )
+
+    // npx 自体は成功しているため、revert_in_scope を呼ばないまま exit 1 すると
+    // skills-lock.json / .agents/skills/<name>/SKILL.md の更新が worktree に残る。
+    // 修正後はスコープ内がリバートされ clean であること。
+    const lockDiff = sh('git status --porcelain -- skills-lock.json', ctx.repoDir).trim()
+    assert.equal(lockDiff, '', 'skills-lock.json はリバートされ clean であること')
+    const treeDiff = sh(
+      `git status --porcelain -- ".agents/skills/${SKILL_NAME}/"`,
+      ctx.repoDir,
+    ).trim()
+    assert.equal(treeDiff, '', '.agents/skills/<name>/ はリバートされ clean であること')
+  } finally {
+    rmSync(ctx.repoDir, { recursive: true, force: true })
+    rmSync(ctx.binDir, { recursive: true, force: true })
+  }
+})
+
 test('ケース26: npx が永続 lock（.git/config.lock）を残した場合、シグネチャ比較で検出する' +
   '（PR #412 codex P1 の回帰。.git/*.lock のワイルドカード prune では検出不能だった）', () => {
   const ctx = setupRepo('config-lock-residue')
@@ -1875,6 +1922,45 @@ test('ケース33: .git が実体ディレクトリへの symlink の構成で�
       existsSync(ctx.argvLogFile),
       false,
       'npx が一度も実行されていないこと（所在検証が npx より前に走る）',
+    )
+  } finally {
+    rmSync(ctx.repoDir, { recursive: true, force: true })
+    rmSync(ctx.binDir, { recursive: true, force: true })
+  }
+})
+
+test('ケース33b: 作業ツリールート以外のサブディレクトリから実行すると npx を呼ぶ前に' +
+  '拒否して非ゼロ終了する（Bugbot Medium 指摘: GIT_DIR が <toplevel>/.git であることは' +
+  '確認するが、cwd が toplevel であることは確認していなかったため、repo_state_signature の' +
+  '走査起点（cwd）から .git が外れて npx による改変を検出できなくなっていた）', () => {
+  const ctx = setupRepo('edit-only')
+  const subDir = join(ctx.repoDir, '.agents')
+  try {
+    assert.throws(
+      () => runScript(ctx, subDir),
+      (err) => {
+        assert.notEqual(err.status, 0, '非ゼロ終了すること（fail-closed）')
+        const combined = `${err.stdout ?? ''}${err.stderr ?? ''}`
+        assert.match(
+          combined,
+          /カレントディレクトリ.*が作業ツリールート.*と一致しません/,
+          'カレントディレクトリが作業ツリールートでない旨のエラーメッセージが出ること',
+        )
+        assert.match(
+          combined,
+          /作業ツリールートで実行し直して/,
+          '復旧手順（作業ツリールートでの再実行）が案内されること',
+        )
+        return true
+      },
+    )
+
+    // npx が実行されていないこと（実行されると argv ログが必ず書かれる）。
+    // cwd 検証は許可先経路の lstat 検証より前、npx 実行前に走る。
+    assert.equal(
+      existsSync(ctx.argvLogFile),
+      false,
+      'npx が一度も実行されていないこと（cwd 検証が npx より前に走る）',
     )
   } finally {
     rmSync(ctx.repoDir, { recursive: true, force: true })
