@@ -28,7 +28,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, writeFileSync, chmodSync, mkdirSync, rmSync } from 'node:fs'
+import { mkdtempSync, writeFileSync, chmodSync, mkdirSync, rmSync, existsSync, readFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -342,9 +342,16 @@ test('ケース6: upstream が新規サブディレクトリごとファイル�
 })
 
 test('ケース7: git ls-files が失敗した場合、fail-open で「なし」と誤表示せずスクリプトが' +
-  '非ゼロ終了する', () => {
+  '非ゼロ終了し、tracked 分（skills-lock.json / SKILL.md）はリバートされるが、' +
+  '未追跡ファイル（NEW_FILE.md）は destructive な git clean -fd を経ずに保全される' +
+  '（codex P0 指摘の再修正: git ls-files が失敗している以上「何が npx の新規作成物か」' +
+  'を安全に確定できないため、この状態で git clean -fd を実行すると checker / npx が' +
+  '作成した唯一のコピーであり得る未追跡ファイルをバックアップなしで削除しデータ喪失に' +
+  'なり得る。列挙が壊れている経路では削除系操作を一切行わず、tracked のみの非破壊的な' +
+  '復元 + 手動復旧の案内に留める）', () => {
   const ctx = setupRepo('new-file')
   addGitLsFilesFailure(ctx.binDir)
+  const newFile = join(ctx.repoDir, '.agents', 'skills', SKILL_NAME, 'NEW_FILE.md')
   try {
     assert.throws(
       () => runScript(ctx),
@@ -362,8 +369,58 @@ test('ケース7: git ls-files が失敗した場合、fail-open で「なし」
           '実際には未追跡ファイルが存在するのに「なし」と誤表示しないこと' +
             '（process substitution の終了コードが検査されない fail-open 回帰の再現）',
         )
+        assert.match(
+          combined,
+          /git clean は実行していません/,
+          '未追跡集合を安全に列挙できなかったため destructive cleanup をスキップした旨が' +
+            '案内されること',
+        )
+        assert.match(
+          combined,
+          /git status --porcelain/,
+          '手動確認手順（git status --porcelain 等）が案内されること',
+        )
         return true
       },
+    )
+
+    // 未追跡ファイル（NEW_FILE.md。npx が新規作成したもの）は git clean -fd を経由しない
+    // ため削除されず、内容もそのまま残ること（データ喪失防止が本修正の主眼）。
+    assert.ok(
+      existsSync(newFile),
+      'git ls-files 失敗時は git clean -fd を実行しないため、未追跡ファイルが削除されず' +
+        '残ること（destructive cleanup のスキップ）',
+    )
+    assert.equal(
+      readFileSync(newFile, 'utf8'),
+      'brand new upstream file\n',
+      '残された未追跡ファイルの内容が変化していないこと',
+    )
+
+    // tracked 分（skills-lock.json の computedHash 更新・SKILL.md の上書き）は
+    // git checkout --（tracked のみが対象で未追跡には触れない）でリバートされること。
+    const lockDiff = sh('git status --porcelain -- skills-lock.json', ctx.repoDir).trim()
+    assert.equal(lockDiff, '', 'skills-lock.json は tracked のためリバートされ clean であること')
+    const skillMdDiff = sh(
+      `git status --porcelain -- ".agents/skills/${SKILL_NAME}/SKILL.md"`,
+      ctx.repoDir,
+    ).trim()
+    assert.equal(
+      skillMdDiff,
+      '',
+      'SKILL.md は tracked のためリバートされ clean であること',
+    )
+
+    // ディレクトリ全体としては、削除されず残った未追跡の NEW_FILE.md 分だけ非 clean
+    // であること（destructive cleanup をスキップした結果として正しい状態）。
+    const treeStatus = sh(
+      `git status --porcelain -- ".agents/skills/${SKILL_NAME}/"`,
+      ctx.repoDir,
+    ).trim()
+    assert.equal(
+      treeStatus,
+      `?? .agents/skills/${SKILL_NAME}/NEW_FILE.md`,
+      '未追跡の NEW_FILE.md のみが残り、他は clean であること',
     )
   } finally {
     rmSync(ctx.repoDir, { recursive: true, force: true })

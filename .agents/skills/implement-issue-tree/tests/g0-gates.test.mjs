@@ -46,6 +46,9 @@ const SLICE_EXPORTS = [
   'implementPrompt',
   'fixPrompt',
   'recoverImplementPrompt',
+  'monitorPrompt',
+  'mergeVerifyPrompt',
+  'FIX_SCHEMA',
 ]
 // fixPrompt は boundaryNonce()（未信頼データの境界トークン生成）を内部で使う。本番では
 // ensureBoundaryNonceSeed() が agent() 経由で乱数 seed を注入してから呼ばれるが、agent は
@@ -69,6 +72,9 @@ const {
   implementPrompt,
   fixPrompt,
   recoverImplementPrompt,
+  monitorPrompt,
+  mergeVerifyPrompt,
+  FIX_SCHEMA,
 } = mod
 
 // mergeExecutePrompt へ渡す最小フィクスチャ（プロンプトは番号のみを参照する）。
@@ -374,4 +380,65 @@ test('fixPrompt: pushAfterFix の両分岐で commitlint 事前確認の指示�
     assert.ok(pushPrompt.includes(marker), `pushAfterFix=true の fixPrompt に "${marker}" が含まれない`)
     assert.ok(noPushPrompt.includes(marker), `pushAfterFix=false の fixPrompt に "${marker}" が含まれない`)
   }
+})
+
+// ---------------------------------------------------------------------------
+// レビュースレッド resolve の実行主体（Issue #119 の全経路禁止からの方針転換の回帰テスト）
+// resolve mutation を出力してよいのは Merge ループの fix（pushAfterFix=true）のみで、
+// monitor / merge-exec / merge-verify / Review ループの fix には現れないことを固定する。
+// ---------------------------------------------------------------------------
+
+// resolveReviewThread mutation の指示行の有無が「resolve 実行主体か」の判定基準。
+const RESOLVE_MUTATION_MARKER = 'resolveReviewThread'
+
+test('fixPrompt: pushAfterFix=true は push 成功後の resolveReviewThread mutation 指示と resolvedThreadIds 報告を含む', () => {
+  mod.__setBoundaryNonceSeedForTest('a'.repeat(64))
+  const finding = { summary: 'テスト用の指摘', unresolvedComments: [{ threadId: 'PRRT_abc123', text: '指摘テキスト' }] }
+  const prompt = fixPrompt(item, { ...impl, branch: 'fix/42-noop' }, finding, true)
+  assert.ok(prompt.includes(RESOLVE_MUTATION_MARKER), 'pushAfterFix=true の fixPrompt に resolveReviewThread mutation の指示がない')
+  assert.ok(
+    prompt.includes(`gh api graphql -f query='mutation($tid:ID!){resolveReviewThread(input:{threadId:$tid}){thread{id isResolved}}}' -F tid=<threadId>`),
+    'resolve mutation のコマンド形が期待どおりでない',
+  )
+  assert.ok(prompt.includes('resolvedThreadIds'), 'resolve 済み threadId の報告フィールド（resolvedThreadIds）の指示がない')
+  // push 成功が前提であること・対象を monitor 由来の一覧へ限定することを文言として固定する。
+  assert.ok(prompt.includes('push が成功した場合のみ'), 'resolve が push 成功後に限定されていない')
+  assert.ok(prompt.includes('スレッド一覧を自分で再取得して対象を広げることは禁止'), 'resolve 対象の一覧限定（自前再取得の禁止）がない')
+})
+
+test('fixPrompt: pushAfterFix=false（Review ループ）は resolveReviewThread mutation を含まない', () => {
+  mod.__setBoundaryNonceSeedForTest('a'.repeat(64))
+  const finding = { summary: 'テスト用の指摘', unresolvedComments: [{ threadId: 'PRRT_abc123', text: '指摘テキスト' }] }
+  const prompt = fixPrompt(item, { ...impl, branch: 'fix/42-noop' }, finding, false)
+  assert.ok(!prompt.includes(RESOLVE_MUTATION_MARKER), 'push 前の Review ループ fix に resolve mutation の指示が混入している')
+  assert.ok(!prompt.includes('resolvedThreadIds'), 'push 前の Review ループ fix に resolvedThreadIds の返却指示が混入している')
+})
+
+test('monitorPrompt / mergeExecutePrompt / mergeVerifyPrompt は resolve 実行指示を含まない（実行主体は fix のみ）', () => {
+  const monitor = monitorPrompt(item, impl, [], true, true)
+  const execAllow = mergeExecutePrompt(item, impl, true, [{ app: 'cursor', contexts: ['Cursor Bugbot'] }])
+  const execRecover = mergeExecutePrompt(item, impl, false, [])
+  const verify = mergeVerifyPrompt(item, impl)
+  for (const [name, prompt] of [
+    ['monitorPrompt', monitor],
+    ['mergeExecutePrompt(allowMerge=true)', execAllow],
+    ['mergeExecutePrompt(allowMerge=false)', execRecover],
+    ['mergeVerifyPrompt', verify],
+  ]) {
+    assert.ok(!prompt.includes(RESOLVE_MUTATION_MARKER), `${name} に resolveReviewThread mutation の指示が混入している`)
+  }
+  // monitor / merge-verify には resolve 禁止の権限境界文言が残っていることも固定する。
+  assert.ok(monitor.includes('resolve mutation は理由を問わず実行しない'), 'monitorPrompt の resolve 禁止文言がない')
+  assert.ok(verify.includes('レビュースレッドの resolve も一切行わない'), 'mergeVerifyPrompt の resolve 禁止文言がない')
+})
+
+test('FIX_SCHEMA: resolvedThreadIds は maxItems 20・要素 maxLength 100 の string 配列として定義される', () => {
+  const prop = FIX_SCHEMA.properties.resolvedThreadIds
+  assert.ok(prop, 'FIX_SCHEMA に resolvedThreadIds がない')
+  assert.equal(prop.type, 'array')
+  assert.equal(prop.maxItems, 20)
+  assert.equal(prop.items.type, 'string')
+  assert.equal(prop.items.maxLength, 100)
+  // resolve 報告は任意フィールド（Review ループの fix は返さない）のため required に含めない。
+  assert.ok(!FIX_SCHEMA.required.includes('resolvedThreadIds'))
 })
