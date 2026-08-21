@@ -160,6 +160,22 @@ if [[ "${GIT_DIR_PHYS}" != "${TOPLEVEL_PHYS}/.git" ]] \
   exit 1
 fi
 
+# カレントディレクトリが作業ツリールートであることの検証（Bugbot Medium 指摘）:
+# 上のブロックは GIT_DIR が <toplevel>/.git であることまでしか確認しない。
+# repo_state_signature は path_state の起点を「.」（cwd）にしているため、
+# サブディレクトリから実行すると .git（hooks・refs・config・objects）が起点の
+# 走査対象から外れ、上の worktree 検証をすべて満たしたまま npx による .git 改変を
+# 検出できなくなる。pwd -P を toplevel と同じ手法で物理パス化し、厳密一致しない
+# 場合は npx 未実行のまま中止する。
+if ! CWD_PHYS="$(pwd -P)"; then
+  echo "エラー: カレントディレクトリの物理パス解決（pwd -P）に失敗しました。作業ツリールートでの実行と確認できないため中止します（fail-closed）。" >&2
+  exit 1
+fi
+if [[ "${CWD_PHYS}" != "${TOPLEVEL_PHYS}" ]]; then
+  echo "エラー: カレントディレクトリ（${CWD_PHYS}）が作業ツリールート（${TOPLEVEL_PHYS}）と一致しません。repo_state_signature はカレントディレクトリを起点に走査するため、サブディレクトリから実行すると .git（hooks・refs・config・objects）が署名対象外になり npx による改変を検出できません。作業ツリールートで実行し直してください（fail-closed）。" >&2
+  exit 1
+fi
+
 # 許可先経路の実体検証（PR #412 P0 指摘）: スコープ外検査（porcelain 比較・状態
 # シグネチャ比較）は .agents/skills/${SKILL_NAME} を「パス文字列」で走査除外する。
 # この経路上のいずれかの要素が実行前から symlink だと、npx がリンク先（リポジトリ外を
@@ -206,8 +222,15 @@ fi
 # (台帳: .agents/skills/LOCAL-PATCHES.md)、commit 済み patch は上の clean ガードを
 # 通過してしまうため、npx より前に repository-owned checker(check mode)を必須にする。
 # checker 非 0、および台帳があるのに checker が無い状態は、fail-closed で npx を
-# 実行しない(同期を開始しない)
+# 実行しない(同期を開始しない)。LOCAL_PATCH_GUARD は checker の存在確認より後の
+# 全失敗経路で restore_contract_scope 呼び出しの条件に使う sticky フラグであり、
+# scripts/skills-lock-update.sh と同じ変数名・同じ用途で揃える（Bugbot Medium 指摘:
+# `-f scripts/check-skill-local-patches.sh` を毎回再チェックすると、npx や checker
+# 自身がそのパスを消した場合に「checker は存在した（このフラグは true のまま）」を
+# 見失い、契約範囲の復元が働かなくなる）。
+LOCAL_PATCH_GUARD=false
 if [[ -f scripts/check-skill-local-patches.sh ]]; then
+  LOCAL_PATCH_GUARD=true
   # checker は導入先リポジトリが配置する実行可能コードであり、「存在するだけ」で実行しては
   # ならない(未信頼な checkout・未レビュー PR の任意コードが、差分提示・承認より前に
   # ユーザー権限で走る経路になる)。実行前に次のすべてを満たすことを確認する(fail-closed):
@@ -261,6 +284,41 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
   fi
   echo "CHECKER_EXEC=${CHECKER_EXEC}  # 実行対象(承認済み blob の取り出し先)。Step 5.5 まで同一 shell で保持する(失われたら承認済み hash から再作成する)"
 
+  # checker を実行する唯一の経路（codex P1 指摘: CHECKER_EXEC はただの一時ファイルで
+  # あり、直前の実行〔特に apply は checker 自身のコードを実行するため自己書換えも
+  # 可能〕による置換・改変〔TOCTOU〕が、検証されないまま次の実行へ紛れ込み得る。
+  # 起動時に1度取り出した後は再検証せず bash に渡していたため、同期前 check の直後に
+  # CHECKER_EXEC が残置・置換された場合、承認済み blob と異なるコードが Step 5.5 の
+  # apply・最終検証で実行される経路が残っていた）。呼び出しごとに毎回
+  # `git hash-object` でハッシュを再検証し、不一致・不在なら承認済み blob から
+  # 無条件に書き直してから実行する。検証と実行を1関数に閉じ込めることで、呼び出し
+  # 箇所（同期前 check・Step 5.5 の apply・最終検証）が増えても検証漏れが構造的に
+  # 起きないようにする。Step 5.5 で shell セッションが切れて本関数が失われている
+  # 場合は、他の Step 4 定義関数（outside_state 等）と同様にこの定義を再実行してから
+  # 使う。戻り値の扱い: 「取り出し・検証自体の失敗」と「checker が実行された結果の
+  # 非ゼロ終了」を呼び出し元が区別できるよう、前者は CHECKER_RUN_VERIFY_FAILED=1 を
+  # 立ててから非ゼロを返す（checker 自身の exit code と衝突しない専用シグナル）。
+  run_checker() {
+    CHECKER_RUN_VERIFY_FAILED=0
+    if [[ -z "${CHECKER_EXEC:-}" || ! -f "${CHECKER_EXEC}" \
+      || "$(git hash-object -- "${CHECKER_EXEC}" 2>/dev/null || echo missing)" != "${CHECKER_APPROVED_HASH}" ]]; then
+      # 置換前の一時ファイルを明示的に削除してから再代入する（Bugbot Medium / codex
+      # P2 指摘: 再代入するだけだと旧一時ファイルが /tmp に残る。checker の apply に
+      # よる自己書換えという通常ケースでもこの分岐は毎回通るため、mktemp の直前に
+      # 確実に削除する）。
+      [[ -z "${CHECKER_EXEC:-}" ]] || rm -f "${CHECKER_EXEC}"
+      CHECKER_EXEC="$(mktemp)"
+      if ! git cat-file blob "${CHECKER_APPROVED_HASH}" > "${CHECKER_EXEC}" \
+        || [[ ! -s "${CHECKER_EXEC}" ]] \
+        || [[ "$(git hash-object -- "${CHECKER_EXEC}")" != "${CHECKER_APPROVED_HASH}" ]]; then
+        echo "エラー: 承認済み checker blob(${CHECKER_APPROVED_HASH})の取り出し・検証に失敗しました(fail-closed)。"
+        CHECKER_RUN_VERIFY_FAILED=1
+        return 1
+      fi
+    fi
+    bash "${CHECKER_EXEC}" "$@"
+  }
+
   # durable patch 置き場は承認時に directory ごと stage し、却下時に index からの復元 +
   # git clean の対象になるため、未 stage の WIP・未追跡ファイルが残っていると巻き込まれて
   # 失われる。staged のみの変更(= 本ループ内で承認済みに積み上がった分)は許容する。
@@ -286,17 +344,60 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
   # ユーザーによる checker 内容レビュー + blob hash 承認である。本検証はその上に
   # 重ねる best-effort の追加防御(defense-in-depth)として扱うこと
   OUTSIDE_PATHSPEC=(. ":(exclude)skills-lock.json" ":(exclude).agents/skills/${SKILL_NAME}" ":(exclude)scripts/local-patches")
+  # 内部コマンド（git read-tree / git add / git write-tree / git ls-files / git
+  # hash-object）はいずれも `local` 代入・`$(...)` 経由で呼ぶため、失敗しても
+  # `set -e` が必ずこの関数の呼び出し元（`$(outside_state)` を `[[ ]]` の条件式内で
+  # 使う verify_outside_and_checker 等）まで伝播するとは限らない（`[[ ]]` の条件式は
+  # errexit の伝播対象外であり、内部でコマンドが早期に失敗して空文字のまま関数を
+  # 抜けても、その非ゼロ終了は握り潰されて文字列比較にしか使われない）。空 digest
+  # 同士が偶然一致すると「契約範囲外の変更なし」と誤判定し得るため（Bugbot Medium
+  # 指摘）、失敗時は他の呼び出し・他の成功時 digest と絶対に一致しない一意な
+  # エラーマーカーを出力したうえで明示的に非ゼロを返す。PID（$BASHPID。呼び出しごとに
+  # 新しいサブシェルが fork されるため呼び出し間で重複しない）とナノ秒時刻を組み合わせ、
+  # date が使えない環境向けに $RANDOM を二重フォールバックにする。
+  # git ls-files | git hash-object のような素のパイプラインは、このフェンスが
+  # pipefail を有効化していない限り末尾コマンドの終了状態しか見ない（Bugbot
+  # Medium / codex P1 指摘）。git ls-files だけが失敗しても空 stdin が正常に
+  # hash 化されて rc=0 のままになり、上の fail-closed 分岐（エラーマーカー）を
+  # 通らない。scripts/skills-lock-update.sh はファイル先頭の `set -euo pipefail`
+  # で保護されているため同型の記述でも安全だが、このフェンス単体では保証がないため、
+  # パイプラインを使わず producer（git ls-files）の出力を一時ファイルへ書き出して
+  # から終了コードを個別に検査し、その後 git hash-object をファイル入力で実行する
+  # 形に分離する。
   outside_state() {
-    local tmp_index_dir wt_tree idx_digest
-    tmp_index_dir="$(mktemp -d)"
-    GIT_INDEX_FILE="${tmp_index_dir}/index" git read-tree HEAD
-    GIT_INDEX_FILE="${tmp_index_dir}/index" git add -A -- "${OUTSIDE_PATHSPEC[@]}"
-    wt_tree="$(GIT_INDEX_FILE="${tmp_index_dir}/index" git write-tree)"
+    local tmp_index_dir wt_tree idx_digest idx_list_file rc=0
+    tmp_index_dir="$(mktemp -d)" || rc=1
+    if [[ "${rc}" -eq 0 ]] && ! GIT_INDEX_FILE="${tmp_index_dir}/index" git read-tree HEAD; then
+      rc=1
+    fi
+    if [[ "${rc}" -eq 0 ]] && ! GIT_INDEX_FILE="${tmp_index_dir}/index" git add -A -- "${OUTSIDE_PATHSPEC[@]}"; then
+      rc=1
+    fi
+    if [[ "${rc}" -eq 0 ]]; then
+      wt_tree="$(GIT_INDEX_FILE="${tmp_index_dir}/index" git write-tree)" || rc=1
+    fi
     rm -rf "${tmp_index_dir}"
-    idx_digest="$(git ls-files -s -z -- "${OUTSIDE_PATHSPEC[@]}" | git hash-object --stdin)"
+    idx_list_file=""
+    if [[ "${rc}" -eq 0 ]]; then
+      idx_list_file="$(mktemp)" || rc=1
+    fi
+    if [[ "${rc}" -eq 0 ]] && ! git ls-files -s -z -- "${OUTSIDE_PATHSPEC[@]}" > "${idx_list_file}"; then
+      rc=1
+    fi
+    if [[ "${rc}" -eq 0 ]]; then
+      idx_digest="$(git hash-object --stdin < "${idx_list_file}")" || rc=1
+    fi
+    [[ -z "${idx_list_file}" ]] || rm -f "${idx_list_file}"
+    if [[ "${rc}" -ne 0 ]]; then
+      echo "(outside-state-error:${BASHPID:-$$}:$(date +%s%N 2>/dev/null || echo "${RANDOM}${RANDOM}"))"
+      return 1
+    fi
     echo "${wt_tree}:${idx_digest}"
   }
-  PRE_OUTSIDE="$(outside_state)"
+  if ! PRE_OUTSIDE="$(outside_state)"; then
+    echo "エラー: 契約範囲外の基準 digest（PRE_OUTSIDE）の取得に失敗しました。以後の範囲外書き込み検出ができないため同期を開始しません(fail-closed。checker は未実行です)。"
+    exit 1
+  fi
   echo "PRE_OUTSIDE=${PRE_OUTSIDE}  # 範囲外検証の基準 digest。Step 5.5 まで同一 shell で保持する(失われたら再設定に使う)"
 
   # checker の「初回実行より前」に index snapshot を取得する。同期前 check(check mode)も
@@ -314,10 +415,27 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
   # tracked ファイルは契約パス内に限り index・worktree から取り除かれる。契約範囲内の
   # 未追跡ファイルは git clean で即削除せず一時ディレクトリへ退避する(checker が契約
   # ディレクトリ内へ移動・新規作成したファイルの唯一のコピーであり得るため、削除は
-  # データ喪失になる。退避先を案内し、削除の判断は人間へ委ねる)
+  # データ喪失になる。退避先を案内し、削除の判断は人間へ委ねる)。退避自体に失敗した
+  # 場合は worktree 復元を行わず index のみへ降格して fail-closed で停止する(Issue #418)
   restore_contract_scope() {
     : "${PRE_SYNC_TREE:?同期開始前 snapshot が未設定のため復元できません}"
     local restore_targets=(--staged --worktree) untracked_list moved=0 p
+    # 退避(mkdir -p / mv)自体の失敗を検査するためのフラグ。呼び出し文は全箇所
+    # `restore_contract_scope || true` の形であり、bash の仕様上 `||` の右辺・左辺の
+    # コマンド文脈で呼ばれた関数内では set -e が抑止される(この関数内の mkdir/mv の
+    # 失敗は自動では中断にならない)。検査なしに git restore --worktree へ進むと、
+    # checker が未追跡化・新規作成した「唯一のコピー」が退避されないまま
+    # PRE_SYNC_TREE の内容で無音に上書きされ、データ喪失になる(Issue #418)。退避対象を
+    # 1 件ずつ処理し、失敗があれば worktree 復元を行わず index のみへ降格する
+    # (revert_in_scope の非破壊モードと同じ判断)
+    local backup_failed=0 failed_paths=()
+    # Issue #422: backup_failed のうち「列挙自体（mktemp / git ls-files / mktemp -d）が
+    # 失敗し 1 件も退避していない」モードだけを区別するフラグ。個別ファイルの mv 失敗
+    # （enum_failed=0 のまま backup_failed=1 になる）とは異なり、この場合は「未追跡集合が
+    # 何か」自体が不明なため git clean は依然として行えないが、「worktree の現状自体は
+    # 壊れていない」ため revert_in_scope が cp 退避を挟んで tracked の checkout を
+    # 救済できる（revert_in_scope 側の CONTRACT_UNTRACKED_ENUM_FAILED 分岐参照）
+    local enum_failed=0
     # npx 実行後検証が許可先経路・skills-lock.json の妥協(symlink 化等)を検出している場合、
     # worktree への書き込み・未追跡退避のパス走査がリンク先(リポジトリ外を含む)へ向かい得る
     # ため index のみ復元する(worktree 側は revert_in_scope が手動復旧を案内済み)。
@@ -326,26 +444,80 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
       restore_targets=(--staged)
       echo "許可先経路または skills-lock.json の妥協を検出しているため、契約範囲の復元は index のみ行います。worktree 側は案内済みの手順で手動復旧してください。"
     else
-      untracked_list="$(mktemp)"
+      if ! untracked_list="$(mktemp)"; then
+        echo "エラー: 未追跡ファイル列挙用の一時ファイル作成に失敗しました。退避の完全性を確認できないため index のみ復元します。"
+        backup_failed=1
+        enum_failed=1
+      fi
       # skills-lock.json も退避対象に含める。通常は tracked のため列挙されないが、checker が
       # git rm --cached 等で未追跡化して内容変更した後に失敗すると、退避なしの git restore が
       # その唯一の内容を上書きしてしまう
-      if ! git ls-files -z --others --exclude-standard -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-patches/ > "${untracked_list}"; then
-        echo "警告: 契約範囲内の未追跡ファイル列挙に失敗しました。未追跡分は退避できていない可能性があるため、復元後に git status で確認してください。"
+      if [[ "${backup_failed}" -eq 0 ]] \
+        && ! git ls-files -z --others --exclude-standard -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-patches/ > "${untracked_list}"; then
+        # 列挙自体が失敗した場合、退避の完全性を確認できないまま worktree 復元へ
+        # 進むと未列挙の未追跡ファイルが無音に上書きされ得るため、警告に留めず
+        # 失敗として扱う(revert_in_scope 導入時と同じ fail-closed 判断)
+        echo "エラー: 契約範囲内の未追跡ファイル列挙に失敗しました。退避の完全性を確認できないため index のみ復元します。"
+        backup_failed=1
+        enum_failed=1
       fi
-      CONTRACT_UNTRACKED_BACKUP_DIR="$(mktemp -d)"
-      while IFS= read -r -d '' p; do
-        mkdir -p "${CONTRACT_UNTRACKED_BACKUP_DIR}/$(dirname "${p}")"
-        mv -- "${p}" "${CONTRACT_UNTRACKED_BACKUP_DIR}/${p}"
-        moved=1
-      done < "${untracked_list}"
-      rm -f "${untracked_list}"
+      if [[ "${backup_failed}" -eq 0 ]]; then
+        if ! CONTRACT_UNTRACKED_BACKUP_DIR="$(mktemp -d)"; then
+          echo "エラー: 未追跡ファイルの退避先ディレクトリ作成に失敗しました。index のみ復元します。"
+          backup_failed=1
+          enum_failed=1
+        fi
+      fi
+      if [[ "${backup_failed}" -eq 0 ]]; then
+        while IFS= read -r -d '' p; do
+          if ! mkdir -p "${CONTRACT_UNTRACKED_BACKUP_DIR}/$(dirname "${p}")" \
+            || ! mv -- "${p}" "${CONTRACT_UNTRACKED_BACKUP_DIR}/${p}"; then
+            # 退避に失敗したファイルはスキップし、残りのファイルの退避は継続する
+            # (保全できるコピーを最大化する)。1 件でも失敗すれば worktree 復元は
+            # 行わない
+            backup_failed=1
+            failed_paths+=("${p}")
+            continue
+          fi
+          moved=1
+        done < "${untracked_list}"
+      fi
+      rm -f "${untracked_list:-}"
       if [[ "${moved}" -eq 1 ]]; then
         echo "契約範囲内の未追跡ファイルは削除せず ${CONTRACT_UNTRACKED_BACKUP_DIR} に相対パス構造で退避しました。内容を確認し、不要なら手動で削除してください。"
-      else
+      elif [[ -n "${CONTRACT_UNTRACKED_BACKUP_DIR:-}" ]]; then
+        # backup_failed=1 かつ moved=0(退避先ディレクトリ作成には成功したが最初の
+        # ファイルの mkdir/mv で失敗した)場合も、空のまま残る退避先ディレクトリを掃除する。
+        # CONTRACT_UNTRACKED_BACKUP_DIR は mktemp -d 自体が失敗した経路(未追跡ファイル
+        # 列挙用の一時ファイル作成失敗・git ls-files 失敗・mktemp -d 失敗)では未設定の
+        # ままのため、set -u 下での unbound variable エラーを避けるため -n で存在確認
+        # してから参照する
         rmdir "${CONTRACT_UNTRACKED_BACKUP_DIR}" 2>/dev/null || true
       fi
+      if [[ "${backup_failed}" -eq 1 ]]; then
+        # 退避の完全性を確認できない以上、worktree への git restore は行わない
+        # (未退避の唯一のコピーを上書きするおそれがあるため)。index のみ復元へ降格する
+        restore_targets=(--staged)
+        echo "エラー: 契約範囲内の未追跡ファイルの退避に失敗しました。worktree の復元は行いません(fail-closed)。"
+        if [[ "${#failed_paths[@]}" -gt 0 ]]; then
+          echo "退避できなかったパス: ${failed_paths[*]}"
+        fi
+        if [[ "${moved}" -eq 1 ]]; then
+          echo "退避済み分は ${CONTRACT_UNTRACKED_BACKUP_DIR} に残しています。"
+        fi
+        echo "未退避のファイルを手動で退避してから、git restore --worktree --source=${PRE_SYNC_TREE} -- <path> で契約範囲の worktree を復旧してください。"
+      fi
     fi
+    # revert_in_scope（この関数の直後に必ず呼ばれる）が backup_failed を検知できる
+    # よう、global へも反映する。backup_failed=1 のとき restore_targets は
+    # (--staged) へ降格して worktree には触れないが、`git restore --staged` 自体は
+    # tracked な契約パスの index を PRE_SYNC_TREE へ戻すため、この後 revert_in_scope
+    # が無条件に `git checkout -- <契約パス>` を実行すると、その index を worktree へ
+    # 書き戻して未退避の worktree 内容を上書きしてしまう（Bugbot 指摘: Index restore
+    # enables later overwrite）。revert_in_scope 側でこの global を見て checkout /
+    # clean を丸ごとスキップし、退避が失敗した worktree を意図的に未復元のまま残す。
+    CONTRACT_UNTRACKED_BACKUP_FAILED="${backup_failed}"
+    CONTRACT_UNTRACKED_ENUM_FAILED="${enum_failed}"
     # 複数パスを 1 コマンドへ渡すと pathspec 不一致 1 件で全体が失敗するため 1 コマンド
     # 1 パスで分離する。pathspec は index に対しても照合されるため、PRE_SYNC_TREE 取得後に
     # 新規作成・stage されたファイルは tree に無くても no-overlay で index(・worktree)から
@@ -364,7 +536,12 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
     # (scripts/local-patches/ で許容している「staged のみの変更」)が復元完了後も常に
     # 非空として現れ、PRE_SYNC_TREE と完全一致した正しい復元を誤報してしまう
     local verify_ok=1
-    if ! git diff --cached --quiet "${PRE_SYNC_TREE}" -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-patches/; then
+    if [[ "${backup_failed}" -eq 1 ]]; then
+      # 退避に失敗している以上、index 側が PRE_SYNC_TREE と一致していても
+      # 「復元完了」ではない(worktree は意図的に未復元のまま残しているため)。
+      # 無条件の成功メッセージを出さず、常に fail-closed の非ゼロで終了する
+      verify_ok=0
+    elif ! git diff --cached --quiet "${PRE_SYNC_TREE}" -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-patches/; then
       verify_ok=0
     elif [[ "${restore_targets[*]}" == *--worktree* ]]; then
       if ! git diff --quiet "${PRE_SYNC_TREE}" -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-patches/ \
@@ -374,8 +551,19 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
     fi
     if [[ "${verify_ok}" -eq 1 ]]; then
       echo "契約範囲を同期開始前(PRE_SYNC_TREE=${PRE_SYNC_TREE})へ復元しました(範囲外 path の index・worktree には触れていません)。"
+    elif [[ "${backup_failed}" -eq 1 ]]; then
+      echo "エラー: 未追跡ファイルの退避に失敗したため、契約範囲の復元は index のみで停止しました(worktree は未復元。fail-closed)。"
+      # 呼び出し元が失敗を検知できるよう非ゼロを返す（Bugbot Medium 指摘: 従来は
+      # echo するだけで成功扱いのまま返っていたため、呼び出し元が fail-closed に
+      # 分岐できなかった）。呼び出し文は `restore_contract_scope || true` の形で
+      # この非ゼロを吸収し、set -e/pipefail の下で本関数の呼び出し文自体が
+      # 呼び出し元の revert_in_scope・案内 echo をスキップして異常終了する
+      # （cleanup が一部欠落する回帰）ことを防ぐ。継続後の可否判定が必要な
+      # 呼び出し元（Step 4 npx 失敗経路）は戻り値を明示的に変数へ拾う。
+      return 1
     else
       echo "エラー: 契約範囲の復元後検証で差分が残っています。git diff --cached ${PRE_SYNC_TREE} -- <契約パス> / git diff ${PRE_SYNC_TREE} -- <契約パス> / git ls-files --others -- <契約パス> で残留を確認し、git restore --staged --worktree --source=${PRE_SYNC_TREE} -- <path> で手動復旧してください(fail-closed。復元完了とは扱いません)。"
+      return 1
     fi
   }
 
@@ -389,7 +577,18 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
       echo "エラー: checker 自身が書き換えられました(symlink 化を含む)。未承認の状態のため以後実行しません(fail-closed)。"
       return 1
     fi
-    if [[ "$(outside_state)" != "${PRE_OUTSIDE}" ]]; then
+    # outside_state の失敗は「変化なしと確認できない」であって「変化なし」ではない
+    # ため、戻り値を明示的に検査する（[[ ]] の条件式内で `$(outside_state)` を直接
+    # 使うと、内部コマンドの失敗による非ゼロ終了が握り潰され空文字列同士の比較に
+    # 落ちてしまう。関数自体が一意なエラーマーカーを返す設計にしてあるためこの
+    # 比較でも安全側に倒れるが、ここでは戻り値も明示的に見て二重に fail-closed を
+    # 担保する）。
+    local outside_now
+    if ! outside_now="$(outside_state)"; then
+      echo "エラー: 契約範囲外の digest 取得に失敗しました。変化なしと確認できないため、範囲外書き込みありとして扱います(fail-closed)。"
+      return 1
+    fi
+    if [[ "${outside_now}" != "${PRE_OUTSIDE}" ]]; then
       echo "エラー: checker が契約範囲外の path を変更しました(fail-closed)。"
       echo "git status --porcelain で範囲外の変更を特定し、tracked は git restore -- <path> / index は git restore --staged -- <path> で手動復旧してください(契約範囲用の却下手順では範囲外は戻りません)。checker 側の修正も必要です。"
       return 1
@@ -399,15 +598,21 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
 
   echo "==> 同期前の local patch 検証(check)"
   pre_check_rc=0
-  # 実行対象は worktree のファイルではなく、承認済み blob を取り出した CHECKER_EXEC
-  bash "${CHECKER_EXEC}" || pre_check_rc=$?
+  # 実行対象は worktree のファイルではなく、承認済み blob を毎回再検証してから取り出す
+  # CHECKER_EXEC（run_checker）
+  run_checker || pre_check_rc=$?
+  if [[ "${CHECKER_RUN_VERIFY_FAILED}" -eq 1 ]]; then
+    restore_contract_scope || true
+    echo "(npx は実行していません)"
+    exit 1
+  fi
   if ! verify_outside_and_checker; then
-    restore_contract_scope
+    restore_contract_scope || true
     echo "(npx は実行していません)"
     exit 1
   fi
   if [[ "${pre_check_rc}" -ne 0 ]]; then
-    restore_contract_scope
+    restore_contract_scope || true
     echo "エラー: 同期前の local patch 検証に失敗しました。修復してから再実行してください(fail-closed。npx は実行していません)。"
     exit 1
   fi
@@ -908,30 +1113,149 @@ PYEOF
 # 想定外実体（ディレクトリ等）は rm -f で除去できず checkout も安全に働かないため、
 # 一切触らず手動復旧を案内する。
 # SKILL_NAME はループの現在値を呼び出し時に参照する。
-revert_in_scope() {
-  if [[ "${LOCK_FILE_COMPROMISED}" -ne 0 ]]; then
+# 第1引数（既定 0）を 1 にすると git clean -fd / remove_new_ignored_in_scope を
+# 一切実行しない「非破壊モード」になる（codex P0 指摘: preview_untracked の
+# git ls-files 失敗時など、未追跡集合を安全に列挙できなかった状態でこの関数を
+# 呼ぶと、checker / npx が作成した「唯一のコピーであり得る」未追跡ファイルを
+# バックアップなしで git clean -fd が削除してしまう。列挙が壊れている以上、
+# 何を消してよいか判定できないため、削除系操作は一切行わず手動復旧の案内に
+# 留める）。checkout（tracked のみが対象で未追跡ファイルには触れない）と
+# restore_preexisting_ignored（npx 実行前バックアップからの復元。列挙ではなく
+# 実行前に確定済みの一覧を使うため安全）はこのモードでも従来どおり実行する。
+#
+# Issue #422: 未追跡集合の「列挙自体」（git ls-files --others 等）が失敗し、1 件も
+# 退避できていない（＝何が未退避か分からない）モードに限り、checkout が上書きし得る
+# worktree の現状を git 非依存の cp でまるごと保全してから tracked の checkout を
+# 行えるようにするための下ごしらえ。壊れている git には一切頼らず、ファイルシステム
+# 操作（cp -p / cp -RP）のみで skills-lock.json と .agents/skills/${SKILL_NAME}/ を
+# mktemp -d 先へ複製する。呼び出し元（revert_in_scope）は、この関数が成功した場合に
+# 限り checkout を実行し、失敗した場合は従来どおり checkout ごと丸ごとスキップする
+# （fail-closed。cp が失敗した状態で checkout すると、退避されていない worktree
+# 内容が無音に上書きされ得るため）。
+contract_worktree_backup() {
+  local dir
+  if ! dir="$(mktemp -d)"; then
+    echo "エラー: worktree 保全用の退避先ディレクトリ作成に失敗しました。" >&2
+    return 1
+  fi
+  local ok=1
+  if [[ -e "skills-lock.json" ]]; then
     if [[ -L "skills-lock.json" ]]; then
-      rm -f skills-lock.json
+      # symlink はリンク先（リポジトリ外を含む）を辿らないよう対象外にする
+      # （SCOPE_PATH_COMPROMISED / LOCK_FILE_COMPROMISED と同じ fail-closed 判断。
+      # 呼び出し元はこれらのフラグが 0 のときのみこの関数を呼ぶため通常到達しないが、
+      # 二重の防御として保持する）。
+      echo "エラー: skills-lock.json がシンボリックリンクのため保全できません。" >&2
+      ok=0
+    elif [[ -f "skills-lock.json" ]]; then
+      cp -p -- "skills-lock.json" "${dir}/skills-lock.json" || ok=0
+    fi
+  fi
+  if [[ "${ok}" -eq 1 && -e ".agents/skills/${SKILL_NAME}" ]]; then
+    if [[ -L ".agents/skills/${SKILL_NAME}" ]]; then
+      echo "エラー: .agents/skills/${SKILL_NAME}/ がシンボリックリンクのため保全できません。" >&2
+      ok=0
+    elif [[ -d ".agents/skills/${SKILL_NAME}" ]]; then
+      # -RP: シンボリックリンクを辿らずリンク自体を複製する（配下に symlink が
+      # 混在していてもリンク先へは書き込み・読み取りしない）
+      if ! mkdir -p "${dir}/.agents/skills"; then
+        ok=0
+      elif ! cp -RP -- ".agents/skills/${SKILL_NAME}" "${dir}/.agents/skills/${SKILL_NAME}"; then
+        ok=0
+      fi
+    fi
+  fi
+  if [[ "${ok}" -eq 1 ]]; then
+    CONTRACT_WORKTREE_BACKUP_DIR="${dir}"
+    return 0
+  fi
+  # 部分コピーが残っている場合はデータ保全を優先し、削除せず退避先を保全する。
+  # 何もコピーされていない（空のまま）場合のみ退避先ディレクトリを掃除する。
+  if [[ -z "$(find "${dir}" -mindepth 1 -print -quit 2>/dev/null)" ]]; then
+    rmdir "${dir}" 2>/dev/null || true
+  else
+    echo "エラー: worktree の保全が一部失敗しましたが、退避できた分は ${dir} に残しています。" >&2
+  fi
+  return 1
+}
+
+revert_in_scope() {
+  local skip_clean="${1:-0}"
+  # 呼び出し元が「実際に checkout / clean が走ったか」を判定できるよう、この
+  # 呼び出し内で保全のため checkout・clean をスキップした場合のみ 1 を立てる
+  # （Bugbot Medium 指摘・Issue #418 系: post-npx の呼び出し元がこの値を見ずに
+  # 「スコープ内の変更はリバートしました」と無条件表示すると、worktree に未退避の
+  # 変更が残っているのに復元済みと誤認させる。codex P1 指摘・PR #420: 個別の原因
+  # フラグの寄せ集めで表示分岐すると SCOPE_PATH_COMPROMISED 経路のような変種を
+  # 取りこぼすため、スキップの有無はこの単一フラグへ一元化する。呼び出しごとに
+  # 0 へ戻し、checkout / clean / 復元のいずれかをスキップした経路で必ず 1 にする）。
+  REVERT_IN_SCOPE_SKIPPED=0
+  if [[ "${CONTRACT_UNTRACKED_BACKUP_FAILED:-0}" -eq 1 ]]; then
+    # restore_contract_scope が契約範囲内の未追跡ファイル退避に失敗し、fail-closed で
+    # index のみ復元（worktree は意図的に未復元）へ降格した直後の呼び出し。ここで
+    # 通常どおり `git checkout -- <契約パス>` を実行すると、その index（すでに
+    # PRE_SYNC_TREE へ戻されている）を worktree へ書き戻し、restore_contract_scope が
+    # 守ろうとした未退避の worktree 内容（checker / npx が作成した唯一のコピーで
+    # あり得る）を無音に上書きしてしまう（Bugbot 指摘: Index restore enables later
+    # overwrite / Issue #418 の再発）。既存 ignored の復元だけは untracked backup の
+    # 失敗と無関係（別のバックアップ機構）のため、このブロックの外側で従来どおり実行する。
+    #
+    # Issue #422: ただし「未追跡集合の列挙自体」が失敗し 1 件も退避できていない
+    # モード（個別 mv 失敗と異なり、何が未退避か分からないだけで worktree の現状
+    # 自体は破損していない）に限り、checkout 前に git 非依存の cp で worktree を
+    # まるごと保全できれば、tracked 分（skills-lock.json / .agents/skills 配下）の
+    # checkout は行ってよい。これにより checker が無いリポジトリ（preview_untracked
+    # ケース7）と同じ「tracked はリバートされる」挙動に揃える。妥協検出
+    # （SCOPE_PATH_COMPROMISED / LOCK_FILE_COMPROMISED）がある場合は、checkout 先の
+    # パス自体の信頼性が崩れているため、この救済経路には進まない。
+    if [[ "${CONTRACT_UNTRACKED_ENUM_FAILED:-0}" -eq 1 \
+      && "${SCOPE_PATH_COMPROMISED:-0}" -eq 0 \
+      && "${LOCK_FILE_COMPROMISED:-0}" -eq 0 ]] \
+      && contract_worktree_backup; then
+      # 1 コマンド 1 パスで分離する理由は他の checkout 呼び出しと同じ
+      # （revert_in_scope 冒頭のコメント参照）。git clean は未追跡集合が依然
+      # 不明なままのため、この経路でも実行しない。
       git checkout -- skills-lock.json 2>/dev/null || true
-    elif [[ -e "skills-lock.json" && ! -f "skills-lock.json" ]]; then
-      echo "警告: skills-lock.json が想定外の実体（ディレクトリ等）に置換されているため自動復元しません。実体を確認・除去してから git checkout -- skills-lock.json で復元してください。" >&2
+      git checkout -- ".agents/skills/${SKILL_NAME}/" 2>/dev/null || true
+      echo "警告: 契約範囲内の未追跡ファイル列挙が失敗したため、checkout 前の worktree 内容を ${CONTRACT_WORKTREE_BACKUP_DIR} へ複製してから skills-lock.json / .agents/skills/${SKILL_NAME}/ の tracked 分のみ checkout しました（git clean は実行していません）。git status --porcelain -- skills-lock.json \".agents/skills/${SKILL_NAME}/\" で残留未追跡を確認し、必要なら手動で後始末してください（fail-closed。完全復元ではありません）。" >&2
+    else
+      echo "警告: 契約範囲内の未追跡ファイル退避が失敗したため、skills-lock.json / .agents/skills/${SKILL_NAME}/ の checkout・git clean は行いません（index のみ復元済みの worktree を上書きしないための保全）。git status --porcelain -- skills-lock.json \".agents/skills/${SKILL_NAME}/\" で内容を確認し、必要なら手動で復旧してください（fail-closed）。" >&2
+    fi
+    REVERT_IN_SCOPE_SKIPPED=1
+  else
+    if [[ "${LOCK_FILE_COMPROMISED}" -ne 0 ]]; then
+      if [[ -L "skills-lock.json" ]]; then
+        rm -f skills-lock.json
+        git checkout -- skills-lock.json 2>/dev/null || true
+      elif [[ -e "skills-lock.json" && ! -f "skills-lock.json" ]]; then
+        echo "警告: skills-lock.json が想定外の実体（ディレクトリ等）に置換されているため自動復元しません。実体を確認・除去してから git checkout -- skills-lock.json で復元してください。" >&2
+        # skills-lock.json の復元をスキップしたため完全復元ではない
+        REVERT_IN_SCOPE_SKIPPED=1
+      else
+        git checkout -- skills-lock.json 2>/dev/null || true
+      fi
     else
       git checkout -- skills-lock.json 2>/dev/null || true
     fi
-  else
-    git checkout -- skills-lock.json 2>/dev/null || true
-  fi
-  if [[ "${SCOPE_PATH_COMPROMISED}" -ne 0 ]]; then
-    # symlink 越しの走査を避けるため既存 ignored の復元も行わない。復元素材を
-    # 失わないよう、バックアップ dir は削除せず保全して手動復旧に委ねる。
-    IGNORED_BACKUP_KEEP=1
-    echo "警告: 許可先経路またはその配下が symlink 等へ置換・作成されているため、.agents/skills/${SKILL_NAME}/ への checkout・git clean・ignored 削除・既存 ignored の復元は行いません（リンク先への削除・書き込みを避けるため）。symlink の指す先と許可先の内容を手動確認し、symlink を除去してから復旧してください。既存 ignored ファイルのバックアップは ${IGNORED_BACKUP_DIR} に相対パス構造で残っています。" >&2
-    return 0
-  fi
-  git checkout -- ".agents/skills/${SKILL_NAME}/" 2>/dev/null || true
-  if [[ -d ".agents/skills/${SKILL_NAME}/" ]]; then
-    git clean -fd -- ".agents/skills/${SKILL_NAME}/" || true
-    remove_new_ignored_in_scope || true
+    if [[ "${SCOPE_PATH_COMPROMISED}" -ne 0 ]]; then
+      # symlink 越しの走査を避けるため既存 ignored の復元も行わない。復元素材を
+      # 失わないよう、バックアップ dir は削除せず保全して手動復旧に委ねる。
+      IGNORED_BACKUP_KEEP=1
+      echo "警告: 許可先経路またはその配下が symlink 等へ置換・作成されているため、.agents/skills/${SKILL_NAME}/ への checkout・git clean・ignored 削除・既存 ignored の復元は行いません（リンク先への削除・書き込みを避けるため）。symlink の指す先と許可先の内容を手動確認し、symlink を除去してから復旧してください。既存 ignored ファイルのバックアップは ${IGNORED_BACKUP_DIR} に相対パス構造で残っています。" >&2
+      # codex P1 指摘（PR #420）: この経路は CONTRACT_UNTRACKED_BACKUP_FAILED が
+      # 0 のまま checkout・clean をスキップして return するため、ここでも必ず立てる
+      REVERT_IN_SCOPE_SKIPPED=1
+      return 0
+    fi
+    git checkout -- ".agents/skills/${SKILL_NAME}/" 2>/dev/null || true
+    if [[ "${skip_clean}" == "1" ]]; then
+      echo "警告: 未追跡ファイル一覧を安全に取得できなかったため、.agents/skills/${SKILL_NAME}/ 配下の git clean は実行していません（checker / npx が作成した未追跡ファイルを誤って削除しないための保全。データ喪失防止を優先）。npx / checker による書き込み・未追跡ファイルが残っている可能性があるため、次を手動で確認してください: git status --porcelain -- \".agents/skills/${SKILL_NAME}/\"（内容を確認したうえで不要なもののみ git clean -fd \".agents/skills/${SKILL_NAME}/\" で削除する）。" >&2
+      # git clean をスキップし未追跡が残り得るため完全復元ではない
+      REVERT_IN_SCOPE_SKIPPED=1
+    elif [[ -d ".agents/skills/${SKILL_NAME}/" ]]; then
+      git clean -fd -- ".agents/skills/${SKILL_NAME}/" || true
+      remove_new_ignored_in_scope || true
+    fi
   fi
   # 既存 ignored の変更・削除はここでバックアップから戻す（checkout / clean /
   # remove_new_ignored_in_scope はいずれも既存 ignored に触れないため、この復元が
@@ -941,6 +1265,12 @@ revert_in_scope() {
   if ! restore_preexisting_ignored; then
     IGNORED_RESTORE_FAILED=1
     IGNORED_BACKUP_KEEP=1
+    # codex P1 指摘（PR #420・3 巡目）: 復元失敗もフラグ契約の「復元をスキップした
+    # （完全実行できなかった）経路」に含まれる。ここで立てないと status 取得失敗の
+    # 呼び出し元が、既存 ignored が未復元のまま「変更はリバートしました」と表示して
+    # しまう（IGNORED_RESTORE_FAILED はループ停止の判定用で、表示分岐はこの単一
+    # フラグに一元化する）
+    REVERT_IN_SCOPE_SKIPPED=1
     echo "エラー: 実行前から存在した ignored ファイルの復元に失敗しました。バックアップは ${IGNORED_BACKUP_DIR} に相対パス構造で残っています。手動で復旧してください。" >&2
   fi
 }
@@ -1126,8 +1456,24 @@ fi
 # （Issue #410 CI 失敗指摘）。TEE_STATUS が非ゼロなら、その不完全な NPX_OUTPUT_FILE
 # を前提にした「Invalid agents」no-op 判定を信頼せず、NPX_STATUS を強制的に失敗へ
 # 倒して以降の失敗経路（事後スコープ外検査・スコープ内リバート・skip）へ合流させる。
+# errexit の無効化（scripts/skills-lock-update.sh と同じ理由）: このフェンスが
+# `set -e`/`pipefail` の下で実行される場合、npx が非ゼロ終了すると tee との
+# パイプライン全体が失敗し、次行の PIPE_EXIT_SNAPSHOT 取得より前にシェルが
+# その場で終了してしまう。そうなると事後のスコープ外検査・スコープ内リバート
+# （下の NPX_STATUS 分岐）に到達できず、`skills-lock.json` / スキルツリーの
+# 部分書き込みが検査もリバートもされないまま残置される（Bugbot High 指摘）。
+# npx 行の前後だけ errexit を無効化し、pipeline の終了コードを PIPESTATUS から
+# 読んでから元の状態（`$-`）を保存し、元々有効だった場合のみ戻す。本フェンスは
+# scripts/skills-lock-update.sh と異なり、errexit が無効なエージェント対話シェルへ
+# コピペ実行され得る。無条件 `set -e` で復元すると呼び出し元シェルへ errexit を
+# 新規に有効化してしまい、同一シェルで後続する Step 6 却下コマンド等がガードの
+# 無い非ゼロ終了で途中 abort し得るため、元々有効だった場合のみ再有効化する
+# （Issue #417）。
+case $- in *e*) ERREXIT_WAS_ON=1 ;; *) ERREXIT_WAS_ON=0 ;; esac
+set +e
 npx --yes "skills@${SKILLS_CLI_VERSION}" add "${SOURCE}" --skill "${SKILL_NAME}" --agent universal --yes 2>&1 | tee "${NPX_OUTPUT_FILE}"
 PIPE_EXIT_SNAPSHOT=("${PIPESTATUS[@]}")
+if [[ "${ERREXIT_WAS_ON}" -eq 1 ]]; then set -e; fi
 NPX_STATUS="${PIPE_EXIT_SNAPSHOT[0]}"
 TEE_STATUS="${PIPE_EXIT_SNAPSHOT[1]}"
 
@@ -1210,16 +1556,25 @@ if [[ "${NPX_STATUS}" -ne 0 ]]; then
     echo "エラー: npx 実行後の状態シグネチャ取得に失敗しました。変化なしと確認できないため、スコープ外残置ありとして扱います（fail-closed）。" >&2
     REPO_STATE_AFTER="(signature-error)"
   fi
+  # 成功経路の多層防御（下記の判定表・NPX_STATUS -eq 0 の分岐）と同じ検出基準を
+  # 失敗経路にも適用する。ここで検出したら NPX_STATUS_OUT_OF_SCOPE_DIRT=1 を立てて
+  # 下の exit 1 判定に合流させる（Bugbot High 指摘: 検出しても continue するだけでは
+  # 未リバートのスコープ外差分が「元から存在した dirty 状態」と誤認され得る。
+  # `scripts/skills-lock-update.sh` はこの検出を単に「変化なし」ではないため
+  # ループ全体を止める理由に含めており、このフェンスも同じ停止経路を取る）。
+  NPX_STATUS_OUT_OF_SCOPE_DIRT=0
   if ! cmp -s "${SNAP_FILTERED_BEFORE}" "${SNAP_FILTERED_AFTER}" \
     || [[ "${REPO_STATE_BEFORE}" != "${REPO_STATE_AFTER}" ]]; then
     echo "エラー: 失敗した npx 実行がスコープ外へも書き込んだ可能性があります。以下を確認してください（削除はしていません）:" >&2
     while IFS= read -r -d '' rec; do printf '  %s\n' "${rec}" >&2; done < "${SNAP_FILTERED_AFTER}"
     echo "  （ディレクトリの chmod 等、git status に現れない変化は上記一覧に載りません。状態シグネチャの不一致として検出されています）" >&2
+    NPX_STATUS_OUT_OF_SCOPE_DIRT=1
   fi
   # 次スキルの `git add skills-lock.json`（Step 7）が
   # この残置変更を承認済みの変更と一緒に stage してしまわないよう、Step 6 の却下時と
   # 同じ手順で当該スキル分のみを即座にリバートしてから skip する。
-  if [[ -f scripts/check-skill-local-patches.sh ]]; then
+  CONTRACT_RESTORE_VERIFY_FAILED=0
+  if [[ "${LOCAL_PATCH_GUARD}" == true ]]; then
     # checker を持つリポジトリでは、同期前 check(check mode)が契約範囲(durable patch 含む)を
     # 変更・stage している可能性があり、index からの worktree 復元しか行わない
     # revert_in_scope だけでは同期開始前へ戻らない。契約パス限定の restore_contract_scope で
@@ -1229,8 +1584,14 @@ if [[ "${NPX_STATUS}" -ne 0 ]]; then
     # git clean -fd を先に走らせると、restore_contract_scope が退避するはずの契約範囲内の
     # 未追跡ファイル(checker が移動・新規作成した唯一のコピーであり得る)が削除される。
     # 復元後の revert_in_scope は契約パスの checkout / clean が実質 no-op になり、ignored
-    # ファイルの選別削除・既存 ignored の復元・妥協検出時の保全案内だけが働く
-    restore_contract_scope
+    # ファイルの選別削除・既存 ignored の復元・妥協検出時の保全案内だけが働く。
+    # 戻り値を明示的に拾う（Bugbot Medium 指摘: この分岐は他の失敗経路と異なり
+    # 条件次第で continue し得るため、restore_contract_scope の復元後検証が失敗した
+    # 場合に「契約範囲が半端に復元されたまま次スキルの npx へ進む」ことを防ぐには、
+    # 下の exit 1 判定へ明示的に合流させる必要がある）。
+    if ! restore_contract_scope; then
+      CONTRACT_RESTORE_VERIFY_FAILED=1
+    fi
   fi
   revert_in_scope
   rm -f "${SNAP_BEFORE}" "${SNAP_AFTER}" "${SNAP_FILTERED_BEFORE}" "${SNAP_FILTERED_AFTER}" "${NPX_OUTPUT_FILE}" "${SCOPE_INVENTORY_FILE}" "${IGNORED_BASELINE_FILE}"
@@ -1242,7 +1603,12 @@ if [[ "${NPX_STATUS}" -ne 0 ]]; then
   # 既存 ignored の復元失敗（IGNORED_RESTORE_FAILED）も手動復旧を要するため停止する
   # （バックアップ dir は revert_in_scope が保全済み）。skills-lock.json の置換
   # （LOCK_FILE_COMPROMISED）もリンク先への書き込み有無の手動確認を要するため停止する。
-  if [[ "${NPX_NOOP_DETECTED}" -eq 1 || "${SCOPE_PATH_COMPROMISED}" -eq 1 || "${LOCK_FILE_COMPROMISED}" -eq 1 || "${IGNORED_RESTORE_FAILED}" -eq 1 ]]; then
+  # スコープ外書き込みの検出（NPX_STATUS_OUT_OF_SCOPE_DIRT）も、上のスコープ外書き込み
+  # 検出（多層防御）と同じ停止経路であり、continue（skip）ではなくループ全体を止める。
+  # 契約範囲の復元後検証失敗（CONTRACT_RESTORE_VERIFY_FAILED）も同様: 半端に復元された
+  # 契約範囲のまま次スキルの npx を続けると、その npx が汚染された前提状態の上で動く
+  # ため continue せずループ全体を止める（Bugbot Medium 指摘）。
+  if [[ "${NPX_NOOP_DETECTED}" -eq 1 || "${SCOPE_PATH_COMPROMISED}" -eq 1 || "${LOCK_FILE_COMPROMISED}" -eq 1 || "${IGNORED_RESTORE_FAILED}" -eq 1 || "${NPX_STATUS_OUT_OF_SCOPE_DIRT}" -eq 1 || "${CONTRACT_RESTORE_VERIFY_FAILED}" -eq 1 ]]; then
     exit 1
   fi
   echo "警告: 固定版を外した再実行はせず、当該スキルの変更をリバートして skip します。"
@@ -1267,13 +1633,20 @@ if ! git -c status.renames=false status --porcelain -z -uall > "${SNAP_AFTER}"; 
     # して案内する（fail-closed。green 側へ倒さない）。
     echo "エラー: 実行後の状態シグネチャ取得にも失敗しました。スコープ外残置の可能性を排除できません。git status / git diff で手動確認してください（fail-closed）。" >&2
   fi
-  if [[ -f scripts/check-skill-local-patches.sh ]]; then
+  if [[ "${LOCAL_PATCH_GUARD}" == true ]]; then
     # 同期前 check の staged 契約変更を残さない(fail-closed 契約)。git clean -fd による
     # 未追跡削除より先に退避を効かせるため revert_in_scope より前に呼ぶ(NPX_STATUS 分岐と同じ)
-    restore_contract_scope
+    restore_contract_scope || true
   fi
   revert_in_scope
-  echo "スコープ内（skills-lock.json / .agents/skills/${SKILL_NAME}/）の変更はリバートしました。" >&2
+  # revert_in_scope が CONTRACT_UNTRACKED_BACKUP_FAILED を検知して checkout・clean を
+  # 保全のためスキップした場合、worktree には未退避の変更が残っている（「リバート
+  # しました」は虚偽になる）。REVERT_IN_SCOPE_SKIPPED で分岐し、その場合は
+  # revert_in_scope 自身が案内済みの警告と重複させず、完了を意味する文言は出さない
+  # （Bugbot Medium 指摘: Stale revert success after backup skip / Issue #418 系）。
+  if [[ "${REVERT_IN_SCOPE_SKIPPED:-0}" -ne 1 ]]; then
+    echo "スコープ内（skills-lock.json / .agents/skills/${SKILL_NAME}/）の変更はリバートしました。" >&2
+  fi
   rm -f "${SNAP_BEFORE}" "${SNAP_AFTER}" "${SNAP_FILTERED_BEFORE}" "${SNAP_FILTERED_AFTER}" "${NPX_OUTPUT_FILE}" "${SCOPE_INVENTORY_FILE}" "${IGNORED_BASELINE_FILE}"
   if [[ "${IGNORED_BACKUP_KEEP}" -eq 0 ]]; then rm -rf "${IGNORED_BACKUP_DIR}"; fi
   exit 1
@@ -1315,10 +1688,10 @@ if ! cmp -s "${SNAP_FILTERED_BEFORE}" "${SNAP_FILTERED_AFTER}" \
   echo "  git checkout -- <path>   （変更前が clean だった追跡ファイルの場合）" >&2
   echo "  git clean -fd <path>     （変更前に存在しなかった未追跡ファイルの場合）" >&2
   echo "を実行してください。" >&2
-  if [[ -f scripts/check-skill-local-patches.sh ]]; then
+  if [[ "${LOCAL_PATCH_GUARD}" == true ]]; then
     # 同期前 check の staged 契約変更を残さない(fail-closed 契約)。git clean -fd による
     # 未追跡削除より先に退避を効かせるため revert_in_scope より前に呼ぶ(NPX_STATUS 分岐と同じ)
-    restore_contract_scope
+    restore_contract_scope || true
   fi
   revert_in_scope
   rm -f "${SNAP_BEFORE}" "${SNAP_AFTER}" "${SNAP_FILTERED_BEFORE}" "${SNAP_FILTERED_AFTER}" "${NPX_OUTPUT_FILE}" "${SCOPE_INVENTORY_FILE}" "${IGNORED_BASELINE_FILE}"
@@ -1335,11 +1708,19 @@ fi
 if ! restore_preexisting_ignored; then
   IGNORED_BACKUP_KEEP=1
   echo "エラー: 実行前から存在した ignored ファイルの復元に失敗しました。バックアップは ${IGNORED_BACKUP_DIR} に相対パス構造で残っています。手動で復旧してください。" >&2
-  if [[ -f scripts/check-skill-local-patches.sh ]]; then
+  if [[ "${LOCAL_PATCH_GUARD}" == true ]]; then
     # 失敗終端では同期前 check の staged 契約変更も残さない(fail-closed 契約。
     # npx の同期結果ごと同期開始前へ戻し、部分状態のまま Step 7 の git add へ進む経路を断つ)
-    restore_contract_scope
+    restore_contract_scope || true
   fi
+  # 他の post-npx 失敗経路と同じくスコープ内をリバートする。checker が無い
+  # リポジトリでは、ここで revert_in_scope を呼ばないと npx による skills-lock.json /
+  # .agents/skills/${SKILL_NAME}/ への書き込みが worktree に残ったまま停止し、
+  # 次回実行時の「実行前 clean」ガードに引っかかって当該スキルが skip され続ける。
+  # revert_in_scope は内部で restore_preexisting_ignored を再試行するが、失敗が
+  # 続いても IGNORED_BACKUP_KEEP=1 で警告するだけで非ゼロ終了はしない
+  # （呼び出し元のこの分岐がすでに exit 1 を担保しているため）。
+  revert_in_scope
   rm -f "${SNAP_BEFORE}" "${SNAP_AFTER}" "${SNAP_FILTERED_BEFORE}" "${SNAP_FILTERED_AFTER}" "${NPX_OUTPUT_FILE}" "${SCOPE_INVENTORY_FILE}" "${IGNORED_BASELINE_FILE}"
   exit 1
 fi
@@ -1389,6 +1770,18 @@ UNTRACKED_LIST_FILE="$(mktemp)"
 trap 'rm -f "${UNTRACKED_LIST_FILE}"' EXIT
 if ! git ls-files -z --others --exclude-standard -- ".agents/skills/${SKILL_NAME}/" > "${UNTRACKED_LIST_FILE}"; then
   echo "エラー: git ls-files が失敗し、未追跡ファイルの一覧化を確認できません。中止します。" >&2
+  # scripts/skills-lock-update.sh の同一経路（preview_untracked）と揃える（Bugbot
+  # Medium 指摘: 従来はここで exit 1 するだけで、npx が成功させた契約範囲（tracked 分）
+  # の復元も行われなかった）。ただし git ls-files が壊れている以上「何が npx の新規
+  # 作成物か」を安全に確定できないため、破壊的な git clean -fd は行わない（codex P0
+  # 指摘の再発防止）。tracked 分の非破壊的な復元（restore_contract_scope || true →
+  # revert_in_scope 1〔非破壊モード。git clean -fd / remove_new_ignored_in_scope を
+  # スキップする〕）だけを行い、未追跡ファイルは手動確認へ委ねる。
+  if [[ "${LOCAL_PATCH_GUARD}" == true ]]; then
+    restore_contract_scope || true
+  fi
+  revert_in_scope 1
+  echo "エラー: 未追跡ファイルの一覧化ができなかったため、.agents/skills/${SKILL_NAME}/ 配下の破壊的な後始末（git clean -fd）はスキップしました。npx / checker の書き込み・未追跡ファイルが残っている可能性があります。git status --porcelain -- \".agents/skills/${SKILL_NAME}/\" で確認し、内容を確認したうえで不要なもののみ手動で git clean -fd \".agents/skills/${SKILL_NAME}/\" してください（fail-closed）。" >&2
   exit 1
 fi
 while IFS= read -r -d '' f; do
@@ -1443,8 +1836,8 @@ fi
 ```bash
 if [[ -f scripts/check-skill-local-patches.sh ]]; then
   # Step 4 と同一 shell セッションの前提を機械検証する。セッションが切れて失われた場合は、
-  # outside_state / verify_outside_and_checker / restore_contract_scope(いずれも Step 4 で
-  # 定義した関数)を Step 4 のとおり再定義し、
+  # outside_state / verify_outside_and_checker / restore_contract_scope / run_checker
+  # (いずれも Step 4 で定義した関数)を Step 4 のとおり再定義し、
   # PRE_OUTSIDE / CHECKER_APPROVED_HASH には Step 4 が表示・承認した値を設定してから進む。
   # 値が不明なまま進んではならない(fail-closed で中止し、Step 6 の却下手順で戻す)
   : "${PRE_OUTSIDE:?Step 4 で表示された基準 digest を設定してから実行する}"
@@ -1461,58 +1854,57 @@ if [[ -f scripts/check-skill-local-patches.sh ]]; then
   # そのまま使う(ここで取り直すと、同期前 check 以降の範囲外変更が基準へ取り込まれてしまう)
 
   # 実行対象は worktree の checker ではなく、承認済み blob(CHECKER_APPROVED_HASH)を
-  # 取り出した一時ファイル。shell セッションを跨いで CHECKER_EXEC が失われていても、
-  # 承認済み hash から決定的に再作成できる(worktree の checker 差し替えの影響を受けない)。
-  # 取り出しは Step 4 と同じ fail-closed: cat-file の失敗を成功扱いすると空の一時ファイル
-  # が残り、bash の exit 0 no-op が「検証成功」に化ける。終了コードに加えて、取り出した
-  # 内容の hash が承認済み hash と一致することまで確認し、失敗時は npx 上書き後の状態を
-  # 残さないよう契約範囲を復元してから停止する
-  if [[ -z "${CHECKER_EXEC:-}" || ! -f "${CHECKER_EXEC}" ]]; then
-    CHECKER_EXEC="$(mktemp)"
-    if ! git cat-file blob "${CHECKER_APPROVED_HASH}" > "${CHECKER_EXEC}" \
-      || [[ ! -s "${CHECKER_EXEC}" ]] \
-      || [[ "$(git hash-object -- "${CHECKER_EXEC}")" != "${CHECKER_APPROVED_HASH}" ]]; then
-      echo "エラー: 承認済み checker blob(${CHECKER_APPROVED_HASH})の取り出しに失敗しました。契約範囲を復元して停止します(fail-closed)。"
-      restore_contract_scope
-      exit 1
-    fi
-  fi
+  # 毎回再検証してから取り出す一時ファイル(run_checker。Step 4 で定義済み)。checker
+  # の各実行（同期前 check・apply・最終検証）の直前に必ずハッシュを再検証するため
+  # （codex P1 指摘: verify-then-execute の隣接。apply は checker 自身のコードを実行
+  # するため一時ファイルを自己書換えし得るが、直後の最終検証は run_checker が再検証
+  # してから承認済み blob へ書き戻すので、書き換えられた内容がそのまま実行されることは
+  # ない）、ここで個別に取り出し・検証するコードは不要（呼び出しごとに run_checker が
+  # 行う）。
 
   # local patch の再適用(--3way fallback や index 復元により、patch 対象 file や durable patch が
   # stage されることがある)
   apply_rc=0
-  bash "${CHECKER_EXEC}" apply || apply_rc=$?
+  run_checker apply || apply_rc=$?
+  if [[ "${CHECKER_RUN_VERIFY_FAILED}" -eq 1 ]]; then
+    restore_contract_scope || true
+    exit 1
+  fi
   if ! verify_outside_and_checker; then
     # 範囲外の破壊は verify_outside_and_checker の案内どおり手動復旧として残しつつ、
     # 契約範囲(部分適用された patch・checker 由来の index 変更)は Step 4 で定義済みの
     # restore_contract_scope で自動復元してから終了する(「すべての失敗経路で同期開始前へ
     # 戻す」契約。以下の 3 失敗分岐も同じ。shell セッションが切れて関数が失われている
     # 場合は Step 4 のとおり再定義してから実行する)
-    restore_contract_scope
+    restore_contract_scope || true
     exit 1
   fi
   if [[ "${apply_rc}" -ne 0 ]]; then
     echo "エラー: local patch の再適用に失敗しました。stage・commit へ進まないでください(fail-closed)。"
-    restore_contract_scope
+    restore_contract_scope || true
     exit 1
   fi
 
   # 再適用後の最終検証(worktree / index / durable patch)
   check_rc=0
-  bash "${CHECKER_EXEC}" || check_rc=$?
+  run_checker || check_rc=$?
+  if [[ "${CHECKER_RUN_VERIFY_FAILED}" -eq 1 ]]; then
+    restore_contract_scope || true
+    exit 1
+  fi
   if ! verify_outside_and_checker; then
-    restore_contract_scope
+    restore_contract_scope || true
     exit 1
   fi
   if [[ "${check_rc}" -ne 0 ]]; then
     echo "エラー: 再適用後の最終検証に失敗しました。stage・commit へ進まないでください(fail-closed)。"
-    restore_contract_scope
+    restore_contract_scope || true
     exit 1
   fi
 fi
 ```
 
-いずれかが非 0 の場合は **fail-closed で停止**し、Step 6・7(承認・stage)へ進まない。**local patch が欠けた状態を承認済みとして stage してはならない**。すべての失敗分岐は `restore_contract_scope` が契約範囲(当該スキル・`skills-lock.json`・`scripts/local-patches/`)の index + worktree を同期開始前へ自動復元してから終了する(契約範囲内の未追跡ファイルは削除せず一時ディレクトリへ退避して案内する)。範囲外 path の破壊が報告された場合のみ、`verify_outside_and_checker` の案内に従って範囲外を手動復旧してから原因を調査する。
+いずれかが非 0 の場合は **fail-closed で停止**し、Step 6・7(承認・stage)へ進まない。**local patch が欠けた状態を承認済みとして stage してはならない**。すべての失敗分岐は `restore_contract_scope` が契約範囲(当該スキル・`skills-lock.json`・`scripts/local-patches/`)の index + worktree を同期開始前へ自動復元してから終了する(契約範囲内の未追跡ファイルは削除せず一時ディレクトリへ退避して案内する。退避自体に失敗した場合は worktree を復元せず index のみで停止する)。範囲外 path の破壊が報告された場合のみ、`verify_outside_and_checker` の案内に従って範囲外を手動復旧してから原因を調査する。
 
 #### Step 6: ユーザーに当該スキルの承認を求める
 
@@ -1531,7 +1923,10 @@ git diff HEAD -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-
 # 名前の列挙だけでなく内容(git diff --no-index / バイナリは種別・サイズ・hash)まで提示する
 ```
 
-**却下された場合**は当該スキルのみ即座にリバートして**次スキルへ continue**する（全体を中止しない）:
+**却下された場合**は当該スキルのみ即座にリバートして**次スキルへ continue**する（全体を中止しない）。
+ただし直後の検証でリバート未完了を検出した場合は、この skip 継続の対象外としてループ全体を
+`exit 1` で停止する（fail-closed。未完了のまま次スキルへ進むと、残留した却下対象の変更が
+次スキルの承認時に一緒に stage され得るため。Issue #417）:
 
 ```bash
 # 当該スキルの変更のみをリバート（追跡ファイル）。
@@ -1542,11 +1937,75 @@ git diff HEAD -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-
 # 「追跡対象なし」（初回具現化・untracked のみの書き込み時）で pathspec エラーになると
 # コマンド全体が失敗し、もう一方（skills-lock.json）も復元されない。必ず1コマンド1パスで
 # 分離し、一方の失敗が他方の復元を阻害しないようにする。
-git checkout -- skills-lock.json
+
+# skills-lock.json は初回生成（未追跡）だと pathspec エラーで非ゼロ終了するため、
+# revert_in_scope（行 1046-1084）と同じく || true で吸収する。errexit 有効シェルで
+# 実行された場合でもここで途中 abort しない（Issue #417。復元の成否はこの直後の
+# 検証ブロックで確認する — || true は成功扱いではなく確認を先送りするだけ）
+git checkout -- skills-lock.json 2>/dev/null || true
 git checkout -- ".agents/skills/${SKILL_NAME}/" 2>/dev/null || true
-# npx が新規作成した未追跡ファイルも削除（Step 4 の clean ガードで実行前は clean を保証済み）
-# ${SKILL_NAME} は kebab-case 検証済みのため、対象は当該スキルディレクトリ配下に限定される
-git clean -fd ".agents/skills/${SKILL_NAME}/"
+# skills-lock.json が npx の初回生成で未追跡のまま残っている場合、上の checkout は
+# 「追跡対象なし」で何もせず(|| true が吸収)ファイルは削除されない。Step 4 の事前
+# clean ガードにより実行前の未追跡 skills-lock.json は無いことが保証されているため、
+# ここで未追跡のまま見つかる skills-lock.json は今回の npx が生成したものに限られ、
+# 安全に削除できる。削除しないと直後の検証(git ls-files --others)が必ず残留を検出し、
+# 「却下時は当該スキルのみリバートして次スキルへ continue」という契約を満たせないまま
+# 必ず exit 1 になる(Issue #417 P1 指摘)。
+# この経路は checker を持たない(このフェンスは checker 非経由の単純リバート専用)ため、
+# 未追跡 skills-lock.json の唯一の出所は npx の初回生成であり削除して問題ない。checker
+# を持つリポジトリ向けの却下フェンス（下記「checker を持つリポジトリの却下は次を使う」節）が
+# 同種のファイルを削除せず一時ディレクトリへ退避するのは、checker（apply）が既存内容を
+# 書き換えた唯一のコピーである可能性があるためで、事情が異なる（この経路にはその可能性がない）。
+# `[[ -n "$(cmd)" ]]` は cmd の終了コードを見ず出力の空/非空だけを見るため、権限・index
+# 異常等で cmd 自体が失敗して空出力になった場合「残留なし」と誤判定し得る（Issue #417
+# P0 指摘）。command substitution は if の条件式として実行し、失敗時は変数を空のまま
+# fail-closed で停止してから、内容の空・非空を判定する
+if ! LOCK_UNTRACKED_CHECK="$(git ls-files -z --others --exclude-standard -- skills-lock.json)"; then
+  echo "エラー: skills-lock.json の未追跡判定(git ls-files)に失敗しました。空出力を「未追跡なし」と誤判定しないため停止します(fail-closed)。権限・index 異常等の原因を解消してから再実行してください。" >&2
+  exit 1
+fi
+if [[ -n "${LOCK_UNTRACKED_CHECK}" ]]; then
+  rm -f skills-lock.json
+fi
+# npx が新規作成した未追跡ファイルも削除（Step 4 の clean ガードで実行前は clean を保証済み）。
+# ${SKILL_NAME} は kebab-case 検証済みのため、対象は当該スキルディレクトリ配下に限定される。
+# git clean はディレクトリが存在しない場合に非ゼロ終了するため、revert_in_scope と同じく
+# 存在確認してから呼ぶ（errexit 有効シェルでの途中 abort 防止。Issue #417）
+if [[ -d ".agents/skills/${SKILL_NAME}" ]]; then
+  git clean -fd -- ".agents/skills/${SKILL_NAME}/"
+fi
+# 上記 || true / 存在確認ガードは失敗を握り潰し得るため、却下リバートが実際に完了したかを
+# ここで実測してから次スキルへ進む。スキルディレクトリ配下が clean（porcelain 空）かつ
+# skills-lock.json が clean（tracked/untracked 双方）でなければ fail-closed でループ全体を
+# 停止する。
+# - `git diff --quiet` は worktree vs index の比較（他スキルの承認済み stage 分には影響
+#   されない）であり、tracked な残留変更を検出する
+# - ただし `git diff --quiet` は untracked ファイルを無視するため、これだけでは
+#   skills-lock.json が初回生成（未追跡）のまま残置されたケースを見逃す（`|| true` が
+#   吸収する pathspec エラーと同じ穴。Bugbot 指摘）。`git ls-files --others` で untracked
+#   の残留も別途検出する
+# 却下リバートが未完了のまま次スキルへ進むと、残留した却下対象の変更が次スキルの承認時に
+# 一緒に stage され得るため、warning のみで継続してはならない（Issue #417。checker を
+# 持つリポジトリ向けの却下フェンス（同期開始前 snapshot からの復元）と同じ fail-closed
+# 扱いに揃える）
+# `[[ -n "$(git status ...)" ]]` / `[[ -n "$(git ls-files ...)" ]]` は command substitution
+# の終了コードを見ないため、権限・index 異常等でコマンド自体が失敗して空出力になった場合
+# 「残留なし」と誤判定し得る（Issue #417 P0 指摘。CI codex-review 指摘と同一の穴）。
+# 各出力を個別代入し、取得失敗を明示的に検知してから内容判定へ進む
+if ! FINAL_STATUS_OUT="$(git status --porcelain -- ".agents/skills/${SKILL_NAME}/")"; then
+  echo "エラー: ${SKILL_NAME} 配下の残留確認(git status)に失敗しました。空出力を「残留なし」と誤判定しないため停止します(fail-closed)。原因を解消してから再実行してください。" >&2
+  exit 1
+fi
+if ! FINAL_LOCK_UNTRACKED_OUT="$(git ls-files -z --others --exclude-standard -- skills-lock.json)"; then
+  echo "エラー: skills-lock.json の未追跡残留確認(git ls-files)に失敗しました。空出力を「残留なし」と誤判定しないため停止します(fail-closed)。原因を解消してから再実行してください。" >&2
+  exit 1
+fi
+if [[ -n "${FINAL_STATUS_OUT}" ]] \
+  || ! git diff --quiet -- skills-lock.json \
+  || [[ -n "${FINAL_LOCK_UNTRACKED_OUT}" ]]; then
+  echo "エラー: 却下リバートが完了していません（${SKILL_NAME} 配下の残留変更、または skills-lock.json の worktree 差分・未追跡残留）。git status を確認し、手動復旧してから再実行してください（fail-closed。次スキルへは進めません）。" >&2
+  exit 1
+fi
 ```
 
 Step 4 の clean ガードにより `npx` 実行前の当該ディレクトリは clean（未追跡含む）であることが保証されているため、`git clean` で削除される未追跡ファイルは `npx` が作成したものに限られる。`git clean` の対象は kebab-case 検証済みの `${SKILL_NAME}` 配下のみに限定されており、リポジトリ全体には影響しない。
@@ -1562,40 +2021,93 @@ Step 4 の clean ガードにより `npx` 実行前の当該ディレクトリ�
 
 # npx・apply が新規作成した未追跡ファイルは git clean で即削除せず一時ディレクトリへ退避する
 # (checker が契約ディレクトリ内へ移動・新規作成したファイルの唯一のコピーであり得るため。
-# 退避先を確認し、不要と判断してから手動で削除する)
-CONTRACT_UNTRACKED_BACKUP_DIR="$(mktemp -d)"
+# 退避先を確認し、不要と判断してから手動で削除する)。退避(mktemp -d / git ls-files / mkdir /
+# mv)自体の失敗を検査せず git restore --worktree へ進むと、退避されなかった「唯一の
+# コピー」が PRE_SYNC_TREE の内容で無音に上書きされ、データ喪失になる(Issue #418)。
+# このフェンスはループ外側でユーザーが直接実行する手動手順のため、mktemp -d /
+# git ls-files の失敗は復元へ一切進まず即座に停止する（自動復元経路(Step 4 の
+# restore_contract_scope)のような「index のみへ降格して継続」は行わない）
+if ! CONTRACT_UNTRACKED_BACKUP_DIR="$(mktemp -d)"; then
+  echo "エラー: 未追跡ファイルの退避先ディレクトリ作成に失敗しました。復元の完全性を確認できないため、git restore には一切進みません(fail-closed)。原因を解消してから再実行してください。"
+  exit 1
+fi
 # skills-lock.json も対象に含める(checker が git rm --cached 等で未追跡化して内容変更した
-# 場合、その唯一の内容を退避せずに restore で上書きしないため。通常は tracked で列挙されない)
-git ls-files -z --others --exclude-standard -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-patches/ \
-  | while IFS= read -r -d '' p; do
-      mkdir -p "${CONTRACT_UNTRACKED_BACKUP_DIR}/$(dirname "${p}")"
-      mv -- "${p}" "${CONTRACT_UNTRACKED_BACKUP_DIR}/${p}"
-    done
+# 場合、その唯一の内容を退避せずに restore で上書きしないため。通常は tracked で列挙されない)。
+# パイプ経由の while はサブシェルで実行され git ls-files 自体の失敗が不可視になるため、
+# 一時ファイルへ書き出してから読む
+untracked_list="$(mktemp)"
+if ! git ls-files -z --others --exclude-standard -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-patches/ > "${untracked_list}"; then
+  echo "エラー: 契約範囲内の未追跡ファイル列挙に失敗しました。復元の完全性を確認できないため、git restore には一切進みません(fail-closed)。原因を解消してから再実行してください。"
+  rm -f "${untracked_list}"
+  exit 1
+fi
+backup_failed=0
+failed_paths=()
+moved=0
+while IFS= read -r -d '' p; do
+  if ! mkdir -p "${CONTRACT_UNTRACKED_BACKUP_DIR}/$(dirname "${p}")" \
+    || ! mv -- "${p}" "${CONTRACT_UNTRACKED_BACKUP_DIR}/${p}"; then
+    # 退避に失敗したファイルはスキップし、残りのファイルの退避は継続する
+    # (保全できるコピーを最大化する)。1 件でも失敗すれば worktree 復元は行わない
+    backup_failed=1
+    failed_paths+=("${p}")
+    continue
+  fi
+  moved=1
+done < "${untracked_list}"
+rm -f "${untracked_list}"
 echo "未追跡ファイルの退避先: ${CONTRACT_UNTRACKED_BACKUP_DIR}"
 
-# 契約パス限定で index + worktree を同期開始前へ復元する。この同期(pre-check・npx・apply)で
-# 生じた契約範囲の stage だけが取り除かれ、承認済みの他スキル分・範囲外 path の index は
-# 一切変更されない。git restore は no-overlay が既定のため、同期開始前 tree に無い tracked
-# ファイルは契約パス内に限り index・worktree から取り除かれる(pathspec は index にも照合
-# されるため、snapshot 後に新規作成・stage されたファイルも取り除かれる)。tree にも index
-# にも無い pathspec の不一致エラーのみ復元対象なしとして無視できるが、真の失敗と区別が
-# 付かないため path ごとに分離したうえで、成功可否は下の復元後検証で判定する
-git restore --staged --worktree --source="${PRE_SYNC_TREE}" -- skills-lock.json 2>/dev/null || true
-git restore --staged --worktree --source="${PRE_SYNC_TREE}" -- ".agents/skills/${SKILL_NAME}/" 2>/dev/null || true
-git restore --staged --worktree --source="${PRE_SYNC_TREE}" -- scripts/local-patches/ 2>/dev/null || true
+# 契約パス限定で index (+ 退避が全件成功していれば worktree も) を同期開始前へ復元する。
+# この同期(pre-check・npx・apply)で生じた契約範囲の stage だけが取り除かれ、承認済みの
+# 他スキル分・範囲外 path の index は一切変更されない。git restore は no-overlay が既定の
+# ため、同期開始前 tree に無い tracked ファイルは契約パス内に限り index・worktree から
+# 取り除かれる(pathspec は index にも照合されるため、snapshot 後に新規作成・stage された
+# ファイルも取り除かれる)。tree にも index にも無い pathspec の不一致エラーのみ復元対象
+# なしとして無視できるが、真の失敗と区別が付かないため path ごとに分離したうえで、成功
+# 可否は下の復元後検証で判定する
+restore_targets=(--staged --worktree)
+if [[ "${backup_failed}" -eq 1 ]]; then
+  # 退避の完全性を確認できない以上、worktree への git restore は行わない
+  # (未退避の唯一のコピーを上書きするおそれがあるため)。index のみ復元へ降格する
+  restore_targets=(--staged)
+  echo "エラー: 契約範囲内の未追跡ファイルの退避に失敗しました。worktree の復元は行いません(fail-closed)。"
+  echo "退避できなかったパス: ${failed_paths[*]}"
+  if [[ "${moved}" -eq 1 ]]; then
+    echo "退避済み分は ${CONTRACT_UNTRACKED_BACKUP_DIR} に残しています。"
+  fi
+fi
+git restore "${restore_targets[@]}" --source="${PRE_SYNC_TREE}" -- skills-lock.json 2>/dev/null || true
+git restore "${restore_targets[@]}" --source="${PRE_SYNC_TREE}" -- ".agents/skills/${SKILL_NAME}/" 2>/dev/null || true
+git restore "${restore_targets[@]}" --source="${PRE_SYNC_TREE}" -- scripts/local-patches/ 2>/dev/null || true
+
+if [[ "${backup_failed}" -eq 1 ]]; then
+  echo "エラー: 未追跡ファイルの退避に失敗したため、契約範囲の復元は index のみで停止しました(worktree は未復元)。未退避のファイルを手動で退避してから、git restore --worktree --source=${PRE_SYNC_TREE} -- <path> で契約範囲の worktree を復旧し、再実行してください(fail-closed。この却下は完了とは扱わず、ループ全体を停止します)。"
+  exit 1
+fi
 
 # 復元後検証(fail-closed): 契約パスの index・worktree が同期開始前(PRE_SYNC_TREE)と一致し、
 # 未追跡も残っていない(未追跡は上で退避済み)ことを実測してから完了と扱う。判定基準は
 # HEAD ではなく PRE_SYNC_TREE(HEAD 基準の git status --porcelain だと、同期前から存在した
-# 正当な staged 変更が復元完了後も非空として現れ、正しい復元を誤報する)
-git diff --cached --quiet "${PRE_SYNC_TREE}" -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-patches/ \
+# 正当な staged 変更が復元完了後も非空として現れ、正しい復元を誤報する)。
+# 検証に失敗した場合はループ全体を exit 1 で停止する（Bugbot Medium 指摘: 従来はここで
+# echo するだけで完了扱いのまま次スキルへ continue していたため、「却下時は fail-closed」
+# というコメント上の意図に反し、半端に復元された契約範囲（skills-lock.json・当該スキル・
+# durable patch のいずれかに raw upstream + 同期前 check の stage が混在した状態）のまま
+# 次スキルの npx が走り得た）。この却下フェンスは Step 4・5.5 の自動失敗経路と異なり
+# ループの外側でユーザーが実行する手動手順のため、`revert_in_scope` の「次スキルへ
+# continue」という既定動作とは切り離し、検証失敗時だけ明示的に停止する。
+if git diff --cached --quiet "${PRE_SYNC_TREE}" -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-patches/ \
   && git diff --quiet "${PRE_SYNC_TREE}" -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-patches/ \
-  && [[ -z "$(git ls-files --others --exclude-standard -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-patches/)" ]] \
-  && echo "復元完了(検証済み)" \
-  || echo "エラー: 復元後検証で契約範囲に差分が残っています。git diff --cached ${PRE_SYNC_TREE} -- <契約パス> / git diff ${PRE_SYNC_TREE} -- <契約パス> / git ls-files --others -- <契約パス> で残留を確認し、git restore --staged --worktree --source=${PRE_SYNC_TREE} -- <path> で手動復旧してください(fail-closed)。"
+  && [[ -z "$(git ls-files --others --exclude-standard -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-patches/)" ]]; then
+  echo "復元完了(検証済み)"
+else
+  echo "エラー: 復元後検証で契約範囲に差分が残っています。git diff --cached ${PRE_SYNC_TREE} -- <契約パス> / git diff ${PRE_SYNC_TREE} -- <契約パス> / git ls-files --others -- <契約パス> で残留を確認し、git restore --staged --worktree --source=${PRE_SYNC_TREE} -- <path> で手動復旧してから再実行してください(fail-closed。この却下は完了とは扱わず、ループ全体を停止します)。"
+  exit 1
+fi
 ```
 
-対象は kebab-case 検証済みの当該スキルディレクトリ配下・`skills-lock.json`・durable patch（`scripts/local-patches/`）のみで、承認済みの他スキルの stage にも範囲外 path の index にも影響しない。Step 4・5.5 の**失敗経路**では同じ復元を `restore_contract_scope` が自動実行するため、この手動フェンスはユーザー却下時にのみ使う。
+対象は kebab-case 検証済みの当該スキルディレクトリ配下・`skills-lock.json`・durable patch（`scripts/local-patches/`）のみで、承認済みの他スキルの stage にも範囲外 path の index にも影響しない。Step 4・5.5 の**失敗経路**では同じ復元を `restore_contract_scope` が自動実行するため、この手動フェンスはユーザー却下時にのみ使う。却下の復元後検証（上記フェンス）が失敗した場合は、この却下自体を完了扱いにせずループ全体を `exit 1` で停止する（「却下された場合は次スキルへ continue する」という上記の既定動作は、復元後検証が成功した場合にのみ成立する）。未追跡ファイルの退避（`mktemp -d` / `git ls-files` / `mkdir` / `mv`）に失敗した場合は worktree への `git restore` を一切行わず fail-closed で停止する（退避されていない唯一のコピーを無音で上書きしないため。Issue #418）。
 
 #### Step 7: 承認されたスキルを stage する（ループ内で積み上げる）
 
@@ -1644,7 +2156,7 @@ EOF
 4. 1 スキルで実際に実行し、差分が正常であること・書き込みが `.agents/skills/<name>/` と `skills-lock.json` のみに限定されていること（`git status --porcelain` に `.claude/` 等の他ツリーが現れないこと）を確認する
 5. `chore(sync-skills-lock): skills CLI を X.Y.Z へ更新` でコミットする
 
-**fail-closed**: 固定版が解決できない場合（該当版の不存在・レジストリ障害）は `npx` が非ゼロ終了する。黙って最新版へフォールバックする経路は存在せず、dist-tag・レンジ指定への書き換えも禁止する。`npx` の失敗経路でも成功経路と同じスコープ外書き込み検査（後述の「多層防御」）を必ず実行する。停止範囲は実行経路によって異なる: `scripts/skills-lock-update.sh` を単体実行した場合、`npx` 行だけ errexit を無効化して終了コードを保存し、成功・失敗いずれの経路でも事後のスコープ外検査を実行したうえでスクリプト全体を `exit 1` で停止する（この行の前後だけ `set +e`/`set -e` を挟む理由は同スクリプト内のコメント参照）。一方、本ファイルの Step 4 フェンス（複数スキルをループで処理する経路）では、`npx` の失敗を検出したら事後検査のうえ Step 6 の却下時と同じ手順（`git checkout --` / `git clean -fd`）で当該スキル分の部分書き込みをリバートしてから skip（`continue`）して次スキルへ進む — Step 1/3 の他の skip 分岐と同じ制御フローであり、ループ全体を停止させるものではない。事後検査・リバートを挟まずに skip すると、失敗が部分書き込み後に発生した場合の残置変更（スコープ内は次スキルの `git add`（Step 7）が承認済み変更と一緒に stage してしまう、スコープ外は後続処理から「元から存在した dirty 状態」と誤認され得る）を防げないため、両方とも必須の手順である。**スコープ外書き込みの検出（`exit 1`）はこれとは別の停止経路であり、`continue` ではなくループ全体を止める**（詳細は次項「書き込みスコープの制限」を参照）。
+**fail-closed**: 固定版が解決できない場合（該当版の不存在・レジストリ障害）は `npx` が非ゼロ終了する。黙って最新版へフォールバックする経路は存在せず、dist-tag・レンジ指定への書き換えも禁止する。`npx` の失敗経路でも成功経路と同じスコープ外書き込み検査（後述の「多層防御」）を必ず実行する。両実行経路とも、`npx` 行だけ errexit を無効化（`set +e`/`set -e`）して終了コードを `PIPESTATUS` から保存し、成功・失敗いずれの経路でも事後のスコープ外検査を必ず実行する（`set -e`/`pipefail` の下でこの無効化を欠くと、`npx` の非ゼロ終了でパイプラインごとその場で異常終了し、事後検査・リバートに到達できないまま部分書き込みが残置される。Bugbot High 指摘）。ただし復元方法は経路ごとに異なる: 本ファイルの Step 4 フェンス側は呼び出し元シェルの errexit 状態（`$-`）を保存し、元々有効だった場合のみ `set -e` で再有効化する条件付き復元であり、無条件 `set -e` は行わない（このフェンスは errexit が無効なエージェント対話シェルへコピペ実行され得るため、無条件復元だと呼び出し元シェルへ errexit を新規有効化してしまい、同一シェルで後続する Step 6 却下コマンド等がガードの無い非ゼロ終了で途中 abort し得る。Issue #417）。一方 `scripts/skills-lock-update.sh` はファイル先頭で `set -euo pipefail` を自ら宣言しており errexit 常時有効の前提が成立するため、同スクリプト側は無条件 `set -e` 復元のままで正しい（詳細は同スクリプト内コメント参照）。`scripts/skills-lock-update.sh` を単体実行した場合はスクリプト全体を `exit 1` で停止する（この行の前後だけ `set +e`/`set -e` を挟む理由は同スクリプト内のコメント参照）。一方、本ファイルの Step 4 フェンス（複数スキルをループで処理する経路）では、`npx` の失敗を検出したら事後検査のうえ Step 6 の却下時と同じ手順（`git checkout --` / `git clean -fd`）で当該スキル分の部分書き込みをリバートしてから skip（`continue`）して次スキルへ進む — Step 1/3 の他の skip 分岐と同じ制御フローであり、ループ全体を停止させるものではない。事後検査・リバートを挟まずに skip すると、失敗が部分書き込み後に発生した場合の残置変更（スコープ内は次スキルの `git add`（Step 7）が承認済み変更と一緒に stage してしまう、スコープ外は後続処理から「元から存在した dirty 状態」と誤認され得る）を防げないため、両方とも必須の手順である。**スコープ外書き込みの検出（`exit 1`）はこれとは別の停止経路であり、`continue` ではなくループ全体を止める**（詳細は次項「書き込みスコープの制限」を参照）。この停止経路は成功経路（`NPX_STATUS -eq 0`）だけでなく `npx` **失敗**経路にも及ぶ: 失敗後の事後検査でスコープ外差分・状態シグネチャ不一致を検出した場合も、成功経路と同じ判定基準で `NPX_STATUS_OUT_OF_SCOPE_DIRT=1` を立ててループ全体を `exit 1` で停止し、`continue` で次スキルへ進まない（そのまま skip すると未リバートのスコープ外差分が「元から存在した dirty 状態」と誤認され得るため。Bugbot High 指摘）。
 
 ## 書き込みスコープの制限（`--agent universal` とスコープ外検出）
 
