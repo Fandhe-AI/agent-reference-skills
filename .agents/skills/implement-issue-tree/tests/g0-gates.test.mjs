@@ -391,7 +391,7 @@ test('fixPrompt: pushAfterFix の両分岐で commitlint 事前確認の指示�
 // resolveReviewThread mutation の指示行の有無が「resolve 実行主体か」の判定基準。
 const RESOLVE_MUTATION_MARKER = 'resolveReviewThread'
 
-test('fixPrompt: pushAfterFix=true は push 成功後の resolveReviewThread mutation 指示と resolvedThreadIds 報告を含む', () => {
+test('fixPrompt: pushAfterFix=true はリモート head 反映済み前提の resolveReviewThread mutation 指示と resolvedThreadIds 報告を含む', () => {
   mod.__setBoundaryNonceSeedForTest('a'.repeat(64))
   const finding = { summary: 'テスト用の指摘', unresolvedComments: [{ threadId: 'PRRT_abc123', text: '指摘テキスト' }] }
   const prompt = fixPrompt(item, { ...impl, branch: 'fix/42-noop' }, finding, true)
@@ -401,9 +401,11 @@ test('fixPrompt: pushAfterFix=true は push 成功後の resolveReviewThread mut
     'resolve mutation のコマンド形が期待どおりでない',
   )
   assert.ok(prompt.includes('resolvedThreadIds'), 'resolve 済み threadId の報告フィールド（resolvedThreadIds）の指示がない')
-  // push 成功が前提であること・対象を monitor 由来の一覧へ限定することを文言として固定する。
-  assert.ok(prompt.includes('push が成功した場合のみ'), 'resolve が push 成功後に限定されていない')
-  assert.ok(prompt.includes('スレッド一覧を自分で再取得して対象を広げることは禁止'), 'resolve 対象の一覧限定（自前再取得の禁止）がない')
+  // resolve の前提条件: (a) 今回 push 成功、または (b) ホストが決定的に算出した許可リスト
+  // （resolveProof。Issue #430）。fix 自身の反映確認・一覧再取得での対象拡大は禁止する文言を
+  // 固定する。詳細は resolve-pushed-head.test.mjs を参照。
+  assert.ok(prompt.includes('許可リスト'), 'resolve (b) の許可リストに関する文言がない')
+  assert.ok(prompt.includes('一覧の自前再取得での対象拡大は禁止'), 'resolve 対象の一覧限定（自前再取得の禁止）がない')
 })
 
 test('fixPrompt: pushAfterFix=false（Review ループ）は resolveReviewThread mutation を含まない', () => {
