@@ -2021,11 +2021,11 @@ Step 4 の clean ガードにより `npx` 実行前の当該ディレクトリ�
 
 # npx・apply が新規作成した未追跡ファイルは git clean で即削除せず一時ディレクトリへ退避する
 # (checker が契約ディレクトリ内へ移動・新規作成したファイルの唯一のコピーであり得るため。
-# 退避先を確認し、不要と判断してから手動で削除する)。退避(mktemp -d / git ls-files / mkdir /
-# mv)自体の失敗を検査せず git restore --worktree へ進むと、退避されなかった「唯一の
+# 退避先を確認し、不要と判断してから手動で削除する)。退避(mktemp -d / mktemp /
+# git ls-files / mkdir / mv)自体の失敗を検査せず git restore --worktree へ進むと、退避されなかった「唯一の
 # コピー」が PRE_SYNC_TREE の内容で無音に上書きされ、データ喪失になる(Issue #418)。
 # このフェンスはループ外側でユーザーが直接実行する手動手順のため、mktemp -d /
-# git ls-files の失敗は復元へ一切進まず即座に停止する（自動復元経路(Step 4 の
+# mktemp / git ls-files の失敗は復元へ一切進まず即座に停止する（自動復元経路(Step 4 の
 # restore_contract_scope)のような「index のみへ降格して継続」は行わない）
 if ! CONTRACT_UNTRACKED_BACKUP_DIR="$(mktemp -d)"; then
   echo "エラー: 未追跡ファイルの退避先ディレクトリ作成に失敗しました。復元の完全性を確認できないため、git restore には一切進みません(fail-closed)。原因を解消してから再実行してください。"
@@ -2034,11 +2034,20 @@ fi
 # skills-lock.json も対象に含める(checker が git rm --cached 等で未追跡化して内容変更した
 # 場合、その唯一の内容を退避せずに restore で上書きしないため。通常は tracked で列挙されない)。
 # パイプ経由の while はサブシェルで実行され git ls-files 自体の失敗が不可視になるため、
-# 一時ファイルへ書き出してから読む
-untracked_list="$(mktemp)"
+# 一時ファイルへ書き出してから読む。mktemp 自体の失敗も検査する(検査しないと、errexit
+# オフのシェルでは空パスへのリダイレクトが後続で誤解を招くエラーになり、set -e 下では
+# fail-closed メッセージも退避先の掃除もないまま即中断する。Issue #418 と同型)
+if ! untracked_list="$(mktemp)"; then
+  echo "エラー: 未追跡ファイル列挙用の一時ファイル作成に失敗しました。復元の完全性を確認できないため、git restore には一切進みません(fail-closed)。原因を解消してから再実行してください。"
+  # この時点で退避先はまだ空(mv 前)のため、空ディレクトリのみ削除して片付ける
+  rmdir "${CONTRACT_UNTRACKED_BACKUP_DIR}" 2>/dev/null || true
+  exit 1
+fi
 if ! git ls-files -z --others --exclude-standard -- skills-lock.json ".agents/skills/${SKILL_NAME}/" scripts/local-patches/ > "${untracked_list}"; then
   echo "エラー: 契約範囲内の未追跡ファイル列挙に失敗しました。復元の完全性を確認できないため、git restore には一切進みません(fail-closed)。原因を解消してから再実行してください。"
   rm -f "${untracked_list}"
+  # この時点でも退避先はまだ空(mv 前)のため、空ディレクトリのみ削除して片付ける
+  rmdir "${CONTRACT_UNTRACKED_BACKUP_DIR}" 2>/dev/null || true
   exit 1
 fi
 backup_failed=0
@@ -2107,7 +2116,7 @@ else
 fi
 ```
 
-対象は kebab-case 検証済みの当該スキルディレクトリ配下・`skills-lock.json`・durable patch（`scripts/local-patches/`）のみで、承認済みの他スキルの stage にも範囲外 path の index にも影響しない。Step 4・5.5 の**失敗経路**では同じ復元を `restore_contract_scope` が自動実行するため、この手動フェンスはユーザー却下時にのみ使う。却下の復元後検証（上記フェンス）が失敗した場合は、この却下自体を完了扱いにせずループ全体を `exit 1` で停止する（「却下された場合は次スキルへ continue する」という上記の既定動作は、復元後検証が成功した場合にのみ成立する）。未追跡ファイルの退避（`mktemp -d` / `git ls-files` / `mkdir` / `mv`）に失敗した場合は worktree への `git restore` を一切行わず fail-closed で停止する（退避されていない唯一のコピーを無音で上書きしないため。Issue #418）。
+対象は kebab-case 検証済みの当該スキルディレクトリ配下・`skills-lock.json`・durable patch（`scripts/local-patches/`）のみで、承認済みの他スキルの stage にも範囲外 path の index にも影響しない。Step 4・5.5 の**失敗経路**では同じ復元を `restore_contract_scope` が自動実行するため、この手動フェンスはユーザー却下時にのみ使う。却下の復元後検証（上記フェンス）が失敗した場合は、この却下自体を完了扱いにせずループ全体を `exit 1` で停止する（「却下された場合は次スキルへ continue する」という上記の既定動作は、復元後検証が成功した場合にのみ成立する）。未追跡ファイルの退避（`mktemp -d` / `mktemp` / `git ls-files` / `mkdir` / `mv`）に失敗した場合は worktree への `git restore` を一切行わず fail-closed で停止する（退避されていない唯一のコピーを無音で上書きしないため。Issue #418）。
 
 #### Step 7: 承認されたスキルを stage する（ループ内で積み上げる）
 

@@ -165,6 +165,30 @@ test('SKILL.md: Step 6 却下フェンス（checker 経由・PRE_SYNC_TREE 復�
   )
 })
 
+test('SKILL.md: Step 6 却下フェンス（checker 経由）は untracked_list の mktemp 失敗をガードし退避先を掃除して fail-closed する（Bugbot 指摘の回帰ピン留め）', () => {
+  const content = readFileSync(SKILL_MD_PATH, 'utf8')
+  const fence = findStep6CheckerRejectFence(extractBashFences(content))
+  assert.ok(fence, 'Step 6 却下フェンス（checker 経由・PRE_SYNC_TREE 復元）が見つからない')
+  const lines = fence.split('\n')
+  // bare な `untracked_list="$(mktemp)"` が残っていないこと（errexit オフでは空パスへの
+  // リダイレクトが後続の誤解を招くエラーになり、set -e 下ではメッセージなしで即中断する）
+  const bareIdx = lines.findIndex((l) => /^untracked_list="\$\(mktemp\)"\s*$/.test(l))
+  assert.equal(bareIdx, -1, 'untracked_list の mktemp が失敗チェックなし（bare）のまま残っている')
+  // CONTRACT_UNTRACKED_BACKUP_DIR / restore_contract_scope と同形式の if ! ガードであること
+  const guardIdx = lines.findIndex((l) => /^if ! untracked_list="\$\(mktemp\)"; then$/.test(l))
+  assert.notEqual(guardIdx, -1, 'untracked_list の mktemp に if ! ガードがない')
+  const fiIdx = lines.findIndex((l, i) => i > guardIdx && /^fi\s*$/.test(l))
+  assert.notEqual(fiIdx, -1, 'mktemp ガードの fi が見つからない')
+  const guardBody = lines.slice(guardIdx, fiIdx + 1).join('\n')
+  assert.match(guardBody, /fail-closed/, 'mktemp 失敗分岐に fail-closed メッセージがない')
+  assert.match(
+    guardBody,
+    /rmdir "\$\{CONTRACT_UNTRACKED_BACKUP_DIR\}"/,
+    'mktemp 失敗分岐が直前に作成した退避先ディレクトリを掃除していない'
+  )
+  assert.match(guardBody, /exit 1/, 'mktemp 失敗分岐が exit 1 で停止していない')
+})
+
 test('挙動: Step 4 フェンスの保存・条件付き復元は呼び出し元の errexit 状態を変えない', () => {
   const content = readFileSync(SKILL_MD_PATH, 'utf8')
   const fence = findStep4Fence(extractBashFences(content))
