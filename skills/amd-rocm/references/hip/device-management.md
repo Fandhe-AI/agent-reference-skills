@@ -21,7 +21,7 @@ hipGetDeviceProperties(&prop, 0);
 | `hipGetDevice(int* deviceId)` | Returns the current default device for this thread |
 | `hipDeviceSynchronize()` | Blocks the host thread until all commands on the current device complete |
 | `hipDeviceReset()` | Discards device state, deleting all associated streams, memory allocations, and events |
-| `hipGetDeviceProperties(hipDeviceProp_t* prop, int deviceId)` | Populates a struct with device properties (note: HIP-Clang always returns 0 for `maxThreadsPerMultiProcessor` and related fields) |
+| `hipGetDeviceProperties(hipDeviceProp_t* prop, int deviceId)` | Populates a struct with device properties (note: HIP-Clang always returns 0 for `maxThreadsPerMultiProcessor` and related fields — query them via `hipDeviceGetAttribute` with `hipDeviceAttributeMaxThreadsPerMultiProcessor` etc. instead) |
 | `hipDeviceGetAttribute(int* value, hipDeviceAttribute_t attr, int deviceId)` | Queries a single device attribute |
 | `hipChooseDevice(int* device, const hipDeviceProp_t* prop)` | Selects a device matching the given property criteria |
 | `hipDeviceGetDefaultMemPool` / `hipDeviceSetMemPool` | Get/set the device's default memory pool (Beta); used with `hipMallocAsync` |
