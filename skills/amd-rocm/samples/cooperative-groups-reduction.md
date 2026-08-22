@@ -9,7 +9,9 @@ Use `cooperative_groups::thread_block` and `tiled_partition<>()` to express a re
 using namespace cooperative_groups;
 
 // Sums val across every thread in group g, using x as scratch shared
-// memory. Works for any thread_group (a whole block or a tiled partition).
+// memory. Works for any thread_group (a whole block or a tiled partition)
+// whose size is a power of two: the loop halves the group each step and
+// drops any remainder, so other sizes silently produce a wrong sum.
 __device__ unsigned int reduce_sum(thread_group g, unsigned int* x, unsigned int val)
 {
     const unsigned int group_thread_id = g.thread_rank();
@@ -56,6 +58,7 @@ __global__ void vector_reduce_kernel(const unsigned int* d_vector,
 ## Notes
 
 - `cooperative_groups` gives a single `reduce_sum` implementation that works identically whether `g` is the whole `thread_block` or a `tiled_partition<PartitionSize>` sub-group — the group's own `.size()`, `.thread_rank()`, and `.sync()` abstract over the difference.
+- `reduce_sum` requires `g.size()` to be a power of two: the loop starts at `g.size() / 2` and halves it each step, so with any other size the remainder threads are never added and the result is silently wrong. The official sample launches 64-thread blocks with 16-thread tiles; keep both the block size and `PartitionSize` powers of two when reusing this pattern.
 - `tiled_partition<PartitionSize>` splits a parent group into disjoint fixed-size tiles; `group_offset` computes each tile's private slice of the shared `workspace` array so tiles don't clobber each other.
 - `g.sync()` on a `thread_group` only synchronizes the threads that belong to that group, unlike `__syncthreads()` which always synchronizes the entire block.
 - This is the HIP API (`hip/hip_cooperative_groups.h`, `cooperative_groups::thread_block`) for AMD GPUs, not the CUDA API of the same shape; the CUDA equivalent is covered by the separate nvidia-cuda skill's `cooperative-groups-reduction.md`.
