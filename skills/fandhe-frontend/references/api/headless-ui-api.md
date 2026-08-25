@@ -14,8 +14,8 @@ state::Disclosure       // 開閉状態機械（dispatch: "open" / "close" / "to
 state::SingleSelect      // 単一選択状態機械
 state::TextInput         // 自由入力文字列状態機械
 
-// 位置決め
-fn compute_position(anchor: Rect, floating: Size, viewport: Size, config: &PositioningConfig, has_arrow: bool) -> ResolvedPosition
+// 位置決め（positioning モジュール、fandhe-frontend-headless-ui 0.28.0 で確認）
+fn positioning::compute_position(anchor: Rect, floating: Size, viewport: Size, config: &PositioningConfig, has_arrow: bool) -> ResolvedPosition
 ```
 
 ## コンポーネント一覧（主要抜粋）

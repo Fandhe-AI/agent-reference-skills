@@ -52,8 +52,11 @@ pub fn clear_timeout_once(key: &str)
 - ハンドル保持は `thread_local!` レジストリで行い、複数回呼び出しでのリーク蓄積を回避する
 - エラー・ログに内部パス・状態値等の機微情報を含めない
 - イシュー #403 の追記: `hydrate` の本体は `wire_hydrate_targets(registry_key: &str, root: &Element)` として共有 Rust API に切り出され、`wasm-full` からの遷移後再配線でも利用される。シグネチャ・挙動は不変
+- `fandhe-frontend-wasm-client` は `keyed_diff`（keyed list の差分操作を計画する純粋関数層）と `binding`（`bind_text`/`bind_attr_token`/`bind_class_token` マーカーの解決）も提供する。既存の DOM 再構築なし方式（`hydrate`/`wire_hydrate_targets`）とは別レイヤー。詳細は [keyed_list API](./keyed-list-api.md) / [束縛 (binding) API](./binding-api.md) を参照
 
 ## Related
 
 - [状態管理 API](./interactive-api.md)
 - [ハイドレーション状態フォーマット](./hydration-state-format.md)
+- [keyed_list API](./keyed-list-api.md)
+- [束縛 (binding) API](./binding-api.md)

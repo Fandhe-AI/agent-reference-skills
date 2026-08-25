@@ -47,6 +47,8 @@ skills/fandhe-frontend/
       pre-styled-ui-api.md
       pre-styled-recipe-api.md
       server-api.md
+      keyed-list-api.md
+      binding-api.md
     primitives/                    # fandhe-frontend-headless-ui（Rust, unstyled）
       form/                        # 22 ページ
         README.md
@@ -186,7 +188,7 @@ skills/fandhe-frontend/
 | --- | --- | --- |
 | fandhe-frontend とは何か、特徴・設計思想を知りたい / `fw new` での最短経路 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | マクロ非依存のコンポーネント記述 / 既存 HTML への埋め込み / View Transitions 有効化 / NPM 静的アセット取り込み | guides | [references/guides/README.md](references/guides/README.md) |
-| `el`/`text`/`render`/`raw_html` などコア API、App/Loader/Router API、Hydration API・状態フォーマット、headless-ui/pre-styled-ui の公開 API・slot recipe | api | [references/api/README.md](references/api/README.md) |
+| `el`/`text`/`render`/`raw_html` などコア API、App/Loader/Router API、Hydration API・状態フォーマット、headless-ui/pre-styled-ui の公開 API・slot recipe、keyed list diff（`keyed`/`keyed_diff`）、属性・テキスト・class バインディング（`bind`/`binding`） | api | [references/api/README.md](references/api/README.md) |
 | クライアント JS ゼロの SSG 構成での制約・代替パターン、`fandhe-frontend-server` の SSG API（`generate`/`generate_with`/`generate_pages`/`generate_assets`） | guides / api | [references/guides/README.md](references/guides/README.md) / [references/api/README.md](references/api/README.md) |
 | Checkbox, Slider, Color Picker などフォーム系 Primitives（unstyled）API を知りたい | primitives/form | [references/primitives/form/README.md](references/primitives/form/README.md) |
 | Combobox, Select, Tree View などコレクション系 Primitives（unstyled）API を知りたい | primitives/collections | [references/primitives/collections/README.md](references/primitives/collections/README.md) |

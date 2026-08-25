@@ -60,8 +60,10 @@ fn demo() -> Result<(), RouterError> {
 
 - v1 スコープ外: ワイルドカード、パーセントデコード、HTTP メソッド別ディスパッチ、ネストレイアウト、優先度規則の高度化
 - セキュリティ不変条件: パストラバーサル耐性、DoS 耐性、panic 非発生。エスケープ処理はルーター非経由（呼び出し元の責務）
+- `fandhe-frontend-app` の `routes` モジュール（イシュー #407）は本ページの `Router<H>` を共通マッチングエンジンとして利用し、以前 `server` の `ssr.rs` と `wasm-full` の `nav.rs` に別々に存在していたルート定義を `AppRoute`/`resolve`/`title` へ一本化した。詳細は [fandhe-frontend-app API](./app-api.md) を参照
 
 ## Related
 
 - [ハイドレーション状態フォーマット](./hydration-state-format.md)
 - [fandhe-frontend-headless-ui API](./headless-ui-api.md)
+- [fandhe-frontend-app API](./app-api.md)
