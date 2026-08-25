@@ -54,6 +54,14 @@ pub fn diff_keys(old_keys: &[String], new_keys: &[String]) -> Vec<KeyedOp>
 ## Notes
 
 - `keyed_list` は `fandhe-frontend-core`（crates.io 公開版 0.2.0）、`KeyedOp` / `diff_keys` は `fandhe-frontend-wasm-client`（crates.io 公開版 0.3.0）で確認（docs.rs 該当バージョンページ、2026-08-25 時点）
+  - 出典:
+    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/keyed/index.html
+    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/keyed/fn.keyed_list.html
+    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/keyed/enum.KeyedListError.html
+    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/keyed/constant.BIND_LIST_ATTR.html
+    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/keyed/constant.KEY_ATTR.html
+    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/keyed_diff/enum.KeyedOp.html
+    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/keyed_diff/fn.diff_keys.html
 - `keyed_diff` は DOM に一切依存しない純粋な差分計画層。実際に DOM へ差分を適用する処理（`apply_keyed_list` 等）は GitHub `main` ブランチの `keyed_apply`/`keyed_dom` モジュールで開発中・crates.io 未反映（2026-08 時点）
 - 公式ドキュメントサイト（`fandhe-ai.github.io/fandhe-frontend/`）のナビゲーションには未掲載（2026-08-25 時点）、crates.io 公開済み API
 - `hydrate()` / `wire_hydrate_targets` の DOM 再構築なしハイドレーション経路とは別レイヤーとして提供される

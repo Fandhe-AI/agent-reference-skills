@@ -13,12 +13,13 @@ use fandhe_frontend_pre_styled_ui::dialog::OpenState;
 use fandhe_frontend_pre_styled_ui::Size;
 
 let css = stylesheet();
+let state = OpenState::Open; // 全 part で共有する単一の state（trigger の aria-expanded とも整合させる）
 let ids = ContentIds { id: Some("dlg-1"), labelledby: Some("dlg-1-title"), describedby: Some("dlg-1-desc") };
-let node = root(Size::Md, OpenState::Open, vec![], vec![
-    trigger(OpenState::Closed, Some("dlg-1"), vec![], vec![]),
-    backdrop(OpenState::Open, vec![], vec![]),
-    positioner(OpenState::Open, vec![], vec![
-        content(OpenState::Open, DialogRole::Dialog, true, ids, vec![], vec![
+let node = root(Size::Md, state, vec![], vec![
+    trigger(state, Some("dlg-1"), vec![], vec![]),
+    backdrop(state, vec![], vec![]),
+    positioner(state, vec![], vec![
+        content(state, DialogRole::Dialog, true, ids, vec![], vec![
             title(Some("dlg-1-title"), vec![], vec![]),
             description(Some("dlg-1-desc"), vec![], vec![]),
             close_trigger(vec![], vec![]),
@@ -45,12 +46,12 @@ root
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `root(size, state, attrs, children)` | `Size`, `OpenState` | `Size::Md` | `size` に応じたクラスを付与する唯一のパーツ。実体は headless `root` へ委譲 |
-| `trigger(state, controls, attrs, children)` | `OpenState`, `controls: Option<&str>` | `controls: None` | `type="button"`/`aria-haspopup="dialog"` 固定。`controls` が `Some` のとき `aria-controls` を `content` の `id` と対にする |
-| `backdrop(state, attrs, children)` / `positioner(state, attrs, children)` | `OpenState` | — | closed 時に `hidden`/非表示化 |
-| `content(state, role_kind, modal, ids, attrs, children)` | `OpenState`, `DialogRole`, `modal: bool`, `ids: ContentIds` | `role_kind: DialogRole::Dialog` | `role`/`aria-modal`/closed 時の hidden を付与。`ContentIds` が `Some` のフィールドから `id`/`aria-labelledby`/`aria-describedby` を出力 |
-| `title(id, attrs, children)` / `description(id, attrs, children)` | `id: Option<&str>` | `id: None` | `id` が `Some` のとき `content` の `labelledby`/`describedby` と対にする |
-| `close_trigger(attrs, children)` | — | — | `type="button"` 固定 |
+| `root(size, state, attrs, children)` | `Size`, `OpenState` | `Size::Md` | 本モジュール（`pre-styled-ui::dialog`）で再定義される唯一のパーツ。`size` に応じたクラスを付与し、実体は headless `root` へ委譲 |
+| `trigger(state, controls, attrs, children)` | `OpenState`, `controls: Option<&str>` | `controls: None` | headless `dialog::trigger` の選択的 `pub use` 再エクスポート（本モジュールでの再定義ではない）。`type="button"`/`aria-haspopup="dialog"` 固定。`controls` が `Some` のとき `aria-controls` を `content` の `id` と対にする |
+| `backdrop(state, attrs, children)` / `positioner(state, attrs, children)` | `OpenState` | — | headless `dialog` の同名関数の選択的 `pub use` 再エクスポート。closed 時に `hidden`/非表示化 |
+| `content(state, role_kind, modal, ids, attrs, children)` | `OpenState`, `DialogRole`, `modal: bool`, `ids: ContentIds` | `role_kind: DialogRole::Dialog` | headless `dialog::content` の選択的 `pub use` 再エクスポート。`role_kind`/`modal`/`ids` は headless 側がもともと取る引数（styled 側の追加ではない）。`role`/`aria-modal`/closed 時の hidden を付与。`ContentIds` が `Some` のフィールドから `id`/`aria-labelledby`/`aria-describedby` を出力 |
+| `title(id, attrs, children)` / `description(id, attrs, children)` | `id: Option<&str>` | `id: None` | headless `dialog` の同名関数の選択的 `pub use` 再エクスポート。`id` が `Some` のとき `content` の `labelledby`/`describedby` と対にする |
+| `close_trigger(attrs, children)` | — | — | headless `dialog::close_trigger` の選択的 `pub use` 再エクスポート。`type="button"` 固定 |
 | `stylesheet()` | — | — | 既定 CSS 全量を返す。`size` variant は root スコープの CSS custom property（`--fandhe-dialog-content-padding` 等）で `content`/`title` へ伝播 |
 
 `ContentIds<'a>`（`dialog::ContentIds`）: `{ id: Option<&'a str>, labelledby: Option<&'a str>, describedby: Option<&'a str> }`。`content` の引数が 8 個になる clippy 対策で `id`/`labelledby`/`describedby` を束ねた構造体（`id` は `trigger` の `controls` と対応、`labelledby`/`describedby` はそれぞれ `title`/`description` の `id` と対応）。
@@ -63,7 +64,7 @@ root
 - headless 自由関数 `root` と headless `Dialog` 型は再エクスポートしない（`size` クラス非付与の事故防止）
 - `backdrop`/`positioner` は `z-index: 1000`/`1001` で最前面固定。closed 時の `positioner[hidden]` は `display: none` を明示上書き
 - `color-palette` 軸は持たない
-- `trigger`/`backdrop`/`positioner`/`content`/`title`/`description`/`close_trigger` は headless `dialog` の同名関数をそのまま再エクスポートしたものではなく、`state`/`ids`/`role_kind`/`modal` 等の引数を取る styled 側固有の実装（`state` を明示的に受け取る点は headless 版と共通）
+- 本モジュール（`pre-styled-ui::dialog`）で再定義される styled 固有パーツは `root`（`size` クラス付与のため）のみ。`trigger`/`backdrop`/`positioner`/`content`/`title`/`description`/`close_trigger` は選択的 `pub use fandhe_frontend_headless_ui::dialog::{...}` による headless の同名関数のそのままの再エクスポートで、`state`/`ids`/`role_kind`/`modal`/`id` はいずれも headless 側の元々のシグネチャが持つ引数（styled 側が追加したものではない）
 
 ## Related
 

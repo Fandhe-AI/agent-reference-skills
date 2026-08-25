@@ -80,6 +80,22 @@ pub fn unresolved_binding_specs<S: BindingSource>(node: &Node, source: &S) -> Ve
 ## Notes
 
 - `bind_text`/`bind_attr_token`/`bind_class_token` は `fandhe-frontend-core`（crates.io 公開版 0.2.0）、`binding` モジュール一式は `fandhe-frontend-wasm-client`（crates.io 公開版 0.3.0）で確認（docs.rs 該当バージョンページ、2026-08-25 時点）
+  - 出典:
+    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/fn.bind_text.html
+    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/fn.bind_attr_token.html
+    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/fn.bind_class_token.html
+    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/constant.BIND_TEXT_ATTR.html
+    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/constant.BIND_ATTR_ATTR.html
+    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/constant.BIND_CLASS_ATTR.html
+    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/struct.BindingSpec.html
+    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/enum.BindingKind.html
+    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/enum.BoundValue.html
+    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/trait.BindingSource.html
+    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/fn.collect_binding_specs.html
+    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/fn.element_binding_specs.html
+    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/fn.parse_binding_tokens.html
+    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/fn.parse_class_binding_tokens.html
+    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/fn.unresolved_binding_specs.html
 - `fandhe-frontend-core` には本ページ記載分に加え複数トークンをまとめて処理する `bind_attr_tokens`/`bind_class_tokens` も公開されている（docs.rs で存在確認済み、詳細シグネチャは未検証）
 - 公式ドキュメントサイト（`fandhe-ai.github.io/fandhe-frontend/`）のナビゲーションには未掲載（2026-08-25 時点）、crates.io 公開済み API
 - `hydrate()` の DOM 再構築なしハイドレーション経路とは別レイヤー。`BindingSource` の参照実装は `fandhe_frontend_interactive::AppState`（`counter`/`draft` フィールドのみ対応、キー付きリスト構造は別経路で更新）
