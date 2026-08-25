@@ -1,3 +1,7 @@
+---
+source: https://docs.rs/fandhe-ai-autodiff/0.3.0/fandhe_ai_autodiff/
+---
+
 # autodiff
 
 dynamic-tape 方式の自動微分を提供するクレート。`Tensor<f32>` の演算はテープを構築しないが、`Var` の演算はテープを構築するという型分離で微分対象を明示する設計。

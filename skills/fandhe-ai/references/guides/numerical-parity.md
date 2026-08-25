@@ -1,3 +1,7 @@
+---
+source: https://fandhe-ai.github.io/rust-ai-library/guides/numerical-parity/
+---
+
 # 数値一致契約
 
 CPU・CUDA・Metal の各バックエンド間で計算結果が一致することを保証するための契約。GPU 実装は精度低下を前提とするため、全バックエンドペアに複合判定を適用する。

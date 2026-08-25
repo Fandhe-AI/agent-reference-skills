@@ -1,3 +1,7 @@
+---
+source: https://fandhe-ai.github.io/rust-ai-library/guides/interop/
+---
+
 # ONNX・safetensors 相互運用
 
 ONNX・safetensors フォーマットとの相互運用層の設計と、現時点でのサポート境界。

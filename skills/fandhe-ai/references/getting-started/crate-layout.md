@@ -1,3 +1,7 @@
+---
+source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/README.md
+---
+
 # クレート構成
 
 `fandhe-ai` は 10 個の内部クレートに分かれた構成の facade（composition root）で、リポジトリ内のパスは `crates/facade` だが公開クレート名は `fandhe-ai`。公式ドキュメントは「`fandhe-ai` クレートのみがサポートされる公開 API 面であり、他クレートへの直接依存・直接利用はサポート対象外」と明言している。

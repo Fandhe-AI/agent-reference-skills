@@ -1,3 +1,7 @@
+---
+source: https://fandhe-ai.github.io/rust-ai-library/guides/backends/
+---
+
 # バックエンド構成
 
 CPU・CUDA・Metal の 3 バックエンドを Cargo feature ではなく `cfg`（`target_os` 等の条件付きコンパイル）で切り替える構成。CPU（rayon）は無条件依存の既定で、CUDA（cudarc）は動的ロード対応のため非搭載環境でもビルド可能、Metal（objc2 系）は macOS 環境のみ依存が分離される。

@@ -51,7 +51,7 @@ cargo test -p fandhe-ai-backend-metal --release -- --ignored --nocapture
 ## 静的検査
 
 ```sh
-cargo clippy -D warnings
+cargo clippy -- -D warnings
 cargo fmt --all --check
 ```
 

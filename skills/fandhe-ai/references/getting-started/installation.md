@@ -1,3 +1,7 @@
+---
+source: https://fandhe-ai.github.io/rust-ai-library/getting-started/
+---
+
 # インストール
 
 crates.io に v0.3.0（2026-08-23 公開）として公開済み。Rust の `stable` チャンネルを前提とする。

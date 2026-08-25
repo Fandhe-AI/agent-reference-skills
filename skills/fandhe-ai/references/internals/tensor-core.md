@@ -1,3 +1,7 @@
+---
+source: https://docs.rs/fandhe-ai-tensor-core/0.3.0/fandhe_ai_tensor_core/
+---
+
 # tensor-core
 
 `fandhe-ai` の全バックエンド共通のテンソル表現・デバイス抽象・メモリ管理を提供する基盤クレート。

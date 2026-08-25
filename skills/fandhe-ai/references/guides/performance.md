@@ -1,3 +1,7 @@
+---
+source: https://fandhe-ai.github.io/rust-ai-library/guides/performance/
+---
+
 # 性能の考え方
 
 「一発で理想的な性能を出す」ことを目標にせず、段階的な下限を確定させながら積み上げる方針（REQ-8 段階的下限）を採る。パフォーマンス目標は `docs/performance-targets.md`、最適化の測定記録は `docs/perf/` に蓄積される。

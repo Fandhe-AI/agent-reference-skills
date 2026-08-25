@@ -1,3 +1,7 @@
+---
+source: https://docs.rs/fandhe-ai-backend-cpu/0.3.0/fandhe_ai_backend_cpu/
+---
+
 # backend-cpu
 
 `tensor-core` の計算グラフノードを CPU カーネルへ変換して実行するバックエンド。Rayon による並列化を利用する。

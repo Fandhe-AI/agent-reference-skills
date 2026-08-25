@@ -1,3 +1,7 @@
+---
+source: https://docs.rs/fandhe-ai-backend-metal/0.3.0/fandhe_ai_backend_metal/
+---
+
 # backend-metal
 
 `tensor-core` の計算グラフノードを Metal カーネルとして実行する macOS 専用バックエンド。`wgpu` のような抽象層を経由せず `objc2-metal` を直接バインドする。

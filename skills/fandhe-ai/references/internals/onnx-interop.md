@@ -1,3 +1,7 @@
+---
+source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/onnx-interop/src/lib.rs
+---
+
 # onnx-interop
 
 ONNX / safetensors 相互運用層。未公開クレート（crates.io 未リリース）。

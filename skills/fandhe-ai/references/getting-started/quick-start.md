@@ -1,3 +1,7 @@
+---
+source: https://fandhe-ai.github.io/rust-ai-library/getting-started/
+---
+
 # クイックスタート
 
 `compat::array`（numpy `np.array` 慣習のテンソル生成）と `compat::Sequential`（Keras `Sequential` 慣習のレイヤー積み上げ）を使うと、数行でモデルを組み立てて推論できる。

@@ -1,3 +1,7 @@
+---
+source: https://docs.rs/fandhe-ai-backend-cuda/0.3.0/fandhe_ai_backend_cuda/
+---
+
 # backend-cuda
 
 `tensor-core` の計算グラフノードを NVRTC 経由でコンパイルした CUDA カーネルとして実行するバックエンド。

@@ -1,3 +1,7 @@
+---
+source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/bench-harness/src/lib.rs
+---
+
 # bench-harness
 
 CPU/CUDA/Metal 各バックエンドの性能計測・回帰検出を担うベンチマーク基盤。未公開クレート（crates.io 未リリース）。

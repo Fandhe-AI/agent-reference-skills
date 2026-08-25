@@ -1,3 +1,7 @@
+---
+source: https://docs.rs/fandhe-ai-tensor-core/0.3.0/fandhe_ai_tensor_core/
+---
+
 # tensor-core-fusion
 
 `tensor-core` 内の kernel fusion（複数演算を 1 カーネルに融合する）ためのグラフ表現。`BackendOps` を非破壊拡張する `run_fused` に渡すオペークハンドル。
