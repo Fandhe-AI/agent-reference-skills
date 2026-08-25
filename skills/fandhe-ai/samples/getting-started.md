@@ -32,7 +32,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ## Notes
 
-- `fandhe_ai::compat`（`array` / `Sequential`）が唯一のサポートされる公開 API 面で、内部クレートの直接利用は非サポート
+- サポート対象の公開 API 面は `fandhe-ai` crate（facade）全体。`fandhe_ai::compat`（`array` / `Sequential`）はその簡易入口の一つで、`tape()` / `tape_for()` / `Tape` / `Var` / `Tensor` も同じ公開面に含まれる。内部クレート（tensor-core / autodiff / backend-*）の直接利用は非サポート
 - `Sequential::add_linear` は `in_features == 0` を拒否するため `Result` を返す（`?` で連鎖する）
 - `Sequential::predict` は内部で `fandhe_ai::tape()` を構築して forward するだけの薄い入口
 - 本番コードでは `unwrap()` / `expect()` を避け、`main` は `Result` を返し `?` で伝播する

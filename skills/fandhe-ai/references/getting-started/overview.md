@@ -6,6 +6,18 @@ source: https://fandhe-ai.github.io/rust-ai-library/
 
 Rust 製 AI/ML ライブラリ。Burn 等の既存フレームワークに依存せず、テンソル・autodiff・演算グラフ／カーネル融合機構・計算カーネル・バックエンド抽象層を完全自作コアとして実装している。
 
+## Signature / Usage
+
+利用者が触れる入口は `fandhe-ai` クレート一つで、`compat::array` / `compat::Sequential` からモデルを組み立てる。
+
+```rust
+use fandhe_ai::compat::{array, Sequential};
+
+let input = array(vec![vec![0.1_f32, 0.2, 0.3, 0.4]])?;
+let model = Sequential::new().add_linear(4, 2, /* seed = */ 42)?;
+let output = model.predict(&input)?;
+```
+
 ## このライブラリの構成
 
 内部は 10 個のクレートに分かれているが、利用者が直接触れるのは `fandhe-ai` クレートだけ。

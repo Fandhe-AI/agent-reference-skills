@@ -6,6 +6,20 @@ source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/README.
 
 `fandhe-ai` は 10 個の内部クレートに分かれた構成の facade（composition root）で、リポジトリ内のパスは `crates/facade` だが公開クレート名は `fandhe-ai`。公式ドキュメントは「`fandhe-ai` クレートのみがサポートされる公開 API 面であり、他クレートへの直接依存・直接利用はサポート対象外」と明言している。
 
+## Signature / Usage
+
+依存すべきは `fandhe-ai` クレートのみで、他クレート（`fandhe-ai-tensor-core` 等）への直接依存は不要。
+
+```toml
+[dependencies]
+fandhe-ai = "0.3.0"
+```
+
+```rust
+// サポートされる入口はこの3系統のみ（内部クレートへの直接 import は不要）
+use fandhe_ai::{tape, tape_for, compat::{array, Sequential}};
+```
+
 ## 公開クレート（6、docs.rs で公開、いずれも v0.3.0）
 
 | クレート | 役割 |

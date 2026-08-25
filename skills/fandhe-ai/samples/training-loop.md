@@ -115,6 +115,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ## Notes
 
-- `fandhe_ai_autodiff::optim::{Sgd, AdamW}` は `facade` の公開面に含まれない内部 API のため、この例は `compat::Sequential` と `Tape` / `Var` / `Tensor` の公開面だけで `param - lr * grad` を自前計算する手動 SGD
+- **workspace 内部専用の例**: 乱数生成に内部クレート `bench_harness::rng::Xorshift64Star` を直接 import している（`crates/facade/examples/training_loop.rs` の verbatim。`bench-harness` は未公開 crate で facade の dev-dependency）。`fandhe-ai` だけを依存に追加した外部プロジェクトではこの行はコンパイルできないため、`rand` 等の任意の固定シード RNG に置き換える。学習ループ本体（モデル構築・forward・backward・パラメータ更新）は公開 API のみで構成されている
+- `fandhe_ai_autodiff::optim::{Sgd, AdamW}` は `facade` の公開面に含まれない内部 API のため、この例は `compat::Sequential` と `Tape` / `Var` / `Tensor` の公開 API で `param - lr * grad` を自前計算する手動 SGD
 - `Sequential::bind` が返す `SequentialVars` は `&model` / `&tape` を借用するため、`apply_parameters`（`&mut model`）を呼ぶ前に必ずスコープを抜けて借用を解放する
 - 重み初期化・データ生成はいずれも固定シードで駆動し再現可能にする

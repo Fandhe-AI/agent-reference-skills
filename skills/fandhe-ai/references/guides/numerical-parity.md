@@ -6,6 +6,18 @@ source: https://fandhe-ai.github.io/rust-ai-library/guides/numerical-parity/
 
 CPU・CUDA・Metal の各バックエンド間で計算結果が一致することを保証するための契約。GPU 実装は精度低下を前提とするため、全バックエンドペアに複合判定を適用する。
 
+## Signature / Usage
+
+ライブラリ提供の関数ではなく、統一複合判定（相対誤差 1e-3 未満 **または** 絶対誤差 1e-5 未満）を素の Rust でそのまま表現した例。ゼロ近傍では `rel_err` が `inf`/`NaN` になり `< 1e-3` を満たさなくなるが、その場合は `abs_err < 1e-5` 側の条件が補完する。
+
+```rust
+fn is_parity_ok(actual: f32, reference: f32) -> bool {
+    let abs_err = (actual - reference).abs();
+    let rel_err = abs_err / reference.abs();
+    rel_err < 1e-3 || abs_err < 1e-5
+}
+```
+
 ## Options / Props
 
 | 項目 | 内容 |
