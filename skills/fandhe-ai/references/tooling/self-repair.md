@@ -9,6 +9,8 @@ source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/
 ## Signature / Usage
 
 ```bash
+# 使い捨てコンテナ / 専用 VM 内の、秘密情報を持たない一時 clone に対して実行する
+# （sandbox clone は作業ツリー分離のみ。プロセス・権限・ファイルシステムは隔離されない）
 self-repair run \
   --kind bug-fix \
   --log repair.jsonl \
@@ -28,7 +30,7 @@ self-repair verify-log --log repair.jsonl
 | Name | Type / Default | Description |
 | --- | --- | --- |
 | `--kind <bug-fix\|feature-addition>` | 必須 | 修復カテゴリ。この 2 値のみ受理。`perf-regression` は `RepairKind` 型には存在するが CLI では受理せず usage error（exit `2`）で拒否される |
-| `--repo <path>` | `.` | 対象リポジトリルート。ループは隔離された sandbox 上で実行し、`Adopted` 判定のみ `--repo` へ反映される |
+| `--repo <path>` | `.` | 対象リポジトリルート。ループは sandbox clone（作業ツリー・index の分離のみ。プロセス・権限・ファイルシステム全体は隔離されない）上で実行し、`Adopted` 判定のみ `--repo` へ反映される。候補コードはホスト権限で動くため、使い捨てコンテナ / VM 内の一時 clone を指定する |
 | `--max-attempts <N>` | `5`（`NonZeroU32`） | 修復試行回数の上限 |
 | `--log <path>` | 必須 | JSON Lines ログの出力先。append モードで、末尾状態を読んで再開する |
 | `--config <guardrail.toml>` | 省略可 | 判定しきい値（guardrail と共有） |

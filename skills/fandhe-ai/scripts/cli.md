@@ -57,8 +57,15 @@ exit code: `0`（内部エラーなし）/ `1`（内部エラー）/ `30`（評�
 
 ## self-repair run — 検出から取り込み判断までの1ループ実行
 
+> **警告**: `self-repair run` は `--allow-candidate-exec` により信頼できない修正候補コードを**ホスト権限で**実行する。CLI が内部で作る sandbox clone はファイルシステム上の作業ツリー・index の分離のみで、プロセス・権限・ファイルシステム全体の隔離は行わない（`crates/self-repair/src/cli.rs` / `sandbox.rs` の注記）。`--isolate-network` はネットワーク namespace の分離だけで、単独では sandbox にならない。**必ず使い捨てコンテナまたは専用 VM の中で、秘密情報（`~/.ssh`、`~/.cargo/credentials.toml`、`.env` 等）を持たない一時 clone に対して実行する**。ホストの作業リポジトリ（`--repo .` を実運用ツリーで指定）や本番リポジトリでの実行は避け、ネットワーク隔離が利用できない環境では実行を中止する（CLI 自体も `unshare` の利用可否を事前 probe し、利用不可なら fail-closed で失敗する）。
+
 ```sh
+# 使い捨てコンテナ / 専用 VM の中で実行する前提。ホストの作業リポジトリでは実行しない
+git clone --depth 1 https://github.com/<org>/<repo>.git /tmp/self-repair-work
+cd /tmp/self-repair-work
+
 self-repair run \
+  --repo . \
   --kind bug-fix \
   --log repair.jsonl \
   --candidates candidates.json \
@@ -66,9 +73,7 @@ self-repair run \
   --workload-source workload-a \
   --isolate-network \
   --allow-candidate-exec
-```
-
-> **警告**: `--allow-candidate-exec` は修正候補コードの実行を明示許可するフラグ。信頼できない候補コードを実行し得るため、必ず `--isolate-network` と併用し、ネットワーク隔離（`unshare --user --map-current-user --net`）が利用できない環境では実行を中止する（CLI 自体も利用可否を事前 probe し、利用不可なら fail-closed で失敗する）。サンドボックス化されていない環境や本番リポジトリでの無条件実行は避ける。指定しない場合、他の必須引数を満たしていても usage エラー（exit code `2`）になる。
+```指定しない場合、他の必須引数を満たしていても usage エラー（exit code `2`）になる。
 
 主なオプション:
 
