@@ -1,3 +1,7 @@
+---
+source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/facade/examples/array_shapes.rs
+---
+
 # Array Shapes
 
 `fandhe_ai::compat::array` に 1 次元・2 次元の `Vec` を渡し、それぞれの shape を確認する。

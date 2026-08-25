@@ -1,3 +1,7 @@
+---
+source: https://fandhe-ai.github.io/rust-ai-library/getting-started/, https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/facade/Cargo.toml
+---
+
 # install
 
 `fandhe-ai` crate を Cargo プロジェクトに導入するコマンド集。

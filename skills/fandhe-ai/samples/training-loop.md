@@ -1,3 +1,7 @@
+---
+source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/facade/examples/training_loop.rs
+---
+
 # Training Loop
 
 `compat::Sequential` と手動 SGD で最小の学習ループを回し、loss が減少することを確認する。

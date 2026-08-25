@@ -1,3 +1,7 @@
+---
+source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/facade/examples/getting_started.rs
+---
+
 # Getting Started
 
 `fandhe_ai::compat` の `array` と `Sequential` だけで最小のニューラルネットワーク推論を行う。

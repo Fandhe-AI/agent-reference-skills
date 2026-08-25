@@ -1,3 +1,7 @@
+---
+source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/guardrail/src/cli.rs, https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/self-repair/src/cli.rs, https://fandhe-ai.github.io/rust-ai-library/api/cli/
+---
+
 # cli
 
 `guardrail` / `self-repair` バイナリのコマンド集。両 crate は crates.io 未公開のため、フラグ名は `crates/guardrail/src/cli.rs` / `crates/self-repair/src/cli.rs`（`std::env::args` ベースの自作パーサ、clap 不使用）と `crates/guardrail/src/main.rs` / `crates/self-repair/src/main.rs` のソースから確認した。公式ドキュメント（`/api/cli/`）には exit code とフラグの概要のみ記載され、個別コマンド例は掲載されていない。
@@ -60,10 +64,11 @@ self-repair run \
   --candidates candidates.json \
   --bench-bin ./bench-runner \
   --workload-source workload-a \
+  --isolate-network \
   --allow-candidate-exec
 ```
 
-> **警告**: `--allow-candidate-exec` は修正候補コードの実行を明示許可するフラグ。信頼できない候補コードを実行し得るため、サンドボックス化されていない環境や本番リポジトリでの無条件実行は避ける。指定しない場合、他の必須引数を満たしていても usage エラー（exit code `2`）になる。
+> **警告**: `--allow-candidate-exec` は修正候補コードの実行を明示許可するフラグ。信頼できない候補コードを実行し得るため、必ず `--isolate-network` と併用し、ネットワーク隔離（`unshare --user --map-current-user --net`）が利用できない環境では実行を中止する（CLI 自体も利用可否を事前 probe し、利用不可なら fail-closed で失敗する）。サンドボックス化されていない環境や本番リポジトリでの無条件実行は避ける。指定しない場合、他の必須引数を満たしていても usage エラー（exit code `2`）になる。
 
 主なオプション:
 

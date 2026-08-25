@@ -1,3 +1,7 @@
+---
+source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/README.md, https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/Makefile
+---
+
 # dev
 
 `fandhe-ai` workspace（クローン済みリポジトリ）でのビルド・実行・テストコマンド集。

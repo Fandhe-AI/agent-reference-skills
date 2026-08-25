@@ -1,3 +1,7 @@
+---
+source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/facade/examples/backend_switching.rs
+---
+
 # Backend Switching
 
 `fandhe_ai::tape_for(Device)` でバックエンドを明示指定し、失敗時は CPU にフォールバックする。

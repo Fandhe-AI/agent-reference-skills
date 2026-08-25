@@ -1,3 +1,7 @@
+---
+source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/facade/examples/inference.rs
+---
+
 # Inference
 
 `compat::Sequential` の推論 2 経路（`predict()` と、明示 `Tape` + `forward()`）が同一結果を返すことを確認する。

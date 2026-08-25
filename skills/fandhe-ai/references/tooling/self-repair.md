@@ -15,6 +15,7 @@ self-repair run \
   --candidates candidates.json \
   --bench-bin my-bench \
   --workload-source benches/workload.rs \
+  --isolate-network \
   --allow-candidate-exec
 
 self-repair verify-log --log repair.jsonl

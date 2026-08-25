@@ -1,3 +1,7 @@
+---
+source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/facade/examples/gemm_bench.rs
+---
+
 # GEMM Bench
 
 `Var::matmul`（GEMM）の実行時間を `std::time::Instant` で簡易計測し、GFLOP/s を算出する。
