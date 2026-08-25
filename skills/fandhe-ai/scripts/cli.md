@@ -73,7 +73,9 @@ self-repair run \
   --workload-source workload-a \
   --isolate-network \
   --allow-candidate-exec
-```指定しない場合、他の必須引数を満たしていても usage エラー（exit code `2`）になる。
+```
+
+`--allow-candidate-exec` を指定しない場合、他の必須引数を満たしていても usage エラー（exit code `2`）になる。
 
 主なオプション:
 
