@@ -25,7 +25,7 @@ let output = model.predict(&input)?;
 // 訓練時: bind でパラメータをテープ登録
 let tape = fandhe_ai::tape();
 let vars = model.bind(&tape);
-let out = vars.forward(&tape, &[input_var])?;
+let out = vars.forward(&tape, &input_var)?;
 let loss = out.mse_loss(&target_var)?;
 let grads = tape.backward(&loss)?;
 let param_grads = vars.trainable_grads(&grads)?;
@@ -45,7 +45,7 @@ let param_grads = vars.trainable_grads(&grads)?;
 | `bind<'m, 't>(&'m self, tape: &'t Tape) -> SequentialVars<'m, 't>` | メソッド | 全 `Linear` 層の weight/bias を leaf ノードとして登録し `SequentialVars` を返す |
 | `trainable_parameters(&self) -> Vec<&Tensor<f32>>` | メソッド | レイヤー順（weight → bias）でパラメータ参照を返す |
 | `apply_parameters(&mut self, updated: Vec<Tensor<f32>>) -> Result<(), AutodiffError>` | メソッド | 更新後のパラメータを反映する |
-| `SequentialVars::forward(&self, tape: &'t Tape, input: &[Var<'t>]) -> Result<Var<'t>, AutodiffError>` | メソッド | 訓練モード順伝播。bind 済み `LinearVars` を使用し活性化層は各モジュールに委譲 |
+| `SequentialVars::forward(&self, tape: &'t Tape, input: &Var<'t>) -> Result<Var<'t>, AutodiffError>` | メソッド | 訓練モード順伝播。bind 済み `LinearVars` を使用し活性化層は各モジュールに委譲 |
 | `SequentialVars::trainable_vars(&self) -> Vec<&Var<'t>>` | メソッド | `trainable_parameters` と同順序（weight → bias）で変数参照を返す |
 | `SequentialVars::trainable_grads<'g>(&self, grads: &'g Gradients) -> Result<Vec<&'g Tensor<f32>>, AutodiffError>` | メソッド | `trainable_vars` と同順序で勾配参照を収集。いずれかのパラメータに勾配がない場合は `InvalidArgument`（fail-closed） |
 
