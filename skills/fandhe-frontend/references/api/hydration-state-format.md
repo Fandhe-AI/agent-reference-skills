@@ -28,7 +28,7 @@ fn restore_state<C: Hydrate>(attrs: &[(String, String)]) -> Result<C, HydrateErr
 - U+001F は HTML 属性内で素通し（ブラウザはそのまま保持する）
 - 属性値は改ざん可能な信頼できないクライアント入力として扱う
 - `HydrateError` 発生時は初期状態への CSR 再描画へフォールバックする
-- 巨大属性値の上限（DoS 耐性）は別タスクで検討中
+- 巨大属性値の上限（DoS 耐性）: `fandhe-frontend-wasm-full` 0.7.1 で `hydration::MAX_ATTR_VALUE_LEN: usize = 65_536`（64 KiB）として実装済み。上限超過の属性値は `filter_hydration_attrs` により欠損扱いとしてフィルタされ、`restore_state` は当該フィールド欠損として扱われる（panic ではなく CSR 再描画へのフォールバックに合流する）
 - JSON 等の追加依存は導入しない。エラーメッセージは英語で内部情報を含めない
 - ネスト構造等の複雑な状態一般化はイシュー #163 でスコープ外
 

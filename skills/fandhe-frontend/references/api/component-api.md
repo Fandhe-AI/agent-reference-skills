@@ -59,8 +59,11 @@ assert_eq!(render(&node), r#"<div class="card"><p>hello</p></div>"#);
 - URL 属性値は `is_safe_url` 検証パスを経由し、`on*` イベントハンドラは一律出力しない
 - ハイドレーション支援 API・状態管理（`fandhe-frontend-interactive`）・イベントハンドラ API はスコープ外
 - 本ページが記す API は「凍結」表記だが、これは初期リリース時点の API 表面の安定性を指す。`el_owned`/`json_ld`/`attr_if`/`attr_if_value` はその後の追加であり、既存シグネチャの変更は伴わない
+- `fandhe-frontend-core` は `keyed`（`keyed_list()`/`KeyedListError`/`BIND_LIST_ATTR`/`KEY_ATTR`。構造変化を伴うリストを表現する唯一の経路）と `bind`（`bind_text`/`bind_attr_token`/`bind_class_token` 等、部分再描画向けの束縛点マーカー）も提供する。詳細は [keyed_list API](./keyed-list-api.md) / [束縛 (binding) API](./binding-api.md) を参照
 
 ## Related
 
 - [fandhe-frontend-app API](./app-api.md)
 - [状態管理 API](./interactive-api.md)
+- [keyed_list API](./keyed-list-api.md)
+- [束縛 (binding) API](./binding-api.md)

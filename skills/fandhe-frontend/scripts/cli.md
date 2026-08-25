@@ -35,10 +35,10 @@ fw structure --project <dir>
 ## 検証ゲートの一括実行（fw gate）
 
 ```sh
-fw gate --project <dir>
+fw gate --project <dir> --verbose
 ```
 
-型チェック（`cargo check`）・既定エスケープ検査・lint（`cargo clippy`）・テスト（`cargo test`）・依存ポリシー（`cargo deny`）を一括実行し、結果を JSON で標準出力へ返す。終了コードは `0`（PASS）/ `1`（BLOCKED）/ `2`（使用法エラー）。
+型チェック（`cargo check`）・既定エスケープ検査・lint（`cargo clippy`）・テスト（`cargo test`）・依存ポリシー（`cargo deny`）を一括実行し、結果を JSON で標準出力へ返す。`--project` 省略時はカレントディレクトリ。`--verbose` を付けない場合はパスしたテストの出力を要約し、付けた場合はフル出力を表示する（JSON 構造自体は変わらない）。終了コードは `0`（PASS）/ `1`（BLOCKED、チェック失敗）/ `2`（使用法エラー）/ `3`（ERROR、環境エラー。ツール未導入など）。
 
 ## 変更影響分析（fw impact）
 
