@@ -18,7 +18,7 @@ cat _/issue-trees/42.json
 | `pending` | 未着手 | 最初から実行 |
 | `planning` | 計画立案中（中断） | **Recover phase が残骸 worktree / branch の有無を確認**。残骸あり → continue（Implement で継続）/ discard（掃除して Plan から新規）に分岐。残骸なし → Plan から通常実行。PR 未作成のため重複 PR は発生しない |
 | `implementing` | 実装中（中断） | **Recover phase が残骸 worktree / branch の有無を確認**。残骸あり → continue（Implement で継続）/ discard（掃除して Plan から新規）に分岐。残骸なし → Plan から通常実行。PR 未作成のため重複 PR は発生しない |
-| `reviewing` | レビュー中（中断） | **Recover phase が残骸 worktree / branch の有無を確認**。残骸あり → continue（Implement で継続）/ discard（掃除して Plan から新規）に分岐。残骸なし → Plan から通常実行。push 前 review フローのため PR 未作成。impl 手順 0b-a で open PR を検索し、0b-b でリモートブランチ（push 成功・PR 作成失敗ケース）を検出して回復する |
+| `reviewing` | レビュー中（中断） | **Recover phase が残骸 worktree / branch の有無を確認**。残骸あり → continue（Implement で継続）/ discard（掃除して Plan から新規）に分岐。残骸なし → Plan から通常実行（impl 手順 0b-a で open PR を検索し、0b-b でリモートブランチを検出して回復する）。push 前 review フローのため PR 未作成 |
 | `monitoring` | 監視中（中断） | **impl をスキップし monitor ループから再開**（PR 番号・ブランチ・fixCount を引き継ぐ） |
 | `merged` | マージ済み | スキップ（完了扱い） |
 | `closed` | クローズ済み | スキップ（完了扱い） |
@@ -28,7 +28,7 @@ cat _/issue-trees/42.json
 
 `monitoring` 中断、および `pr` 保存済みの `blocked` からの再開では、保存された `pr`（PR 番号）・`branch`・`fixCount`（修正済み回数）を引き継いで monitor ループから再開する。`fixCount` の上限（6 回）は引き継いだ値に基づいて判定される。
 
-`planning` / `implementing` / `reviewing` からの再開では、まず Recover phase が残骸 worktree / branch の有無を確認する。**残骸がある場合**は Recover が「途中作業を継続できるか」を判断し、continue なら既存 branch を checkout して Implement で継続、discard なら worktree と branch を掃除して Plan から新規実行する。**残骸がない場合**は通常の Plan → Implement から再実行する。いずれの経路でも push 前 review フローのため PR 未作成の状態で中断している。impl 手順 0b-a が既存 open PR のブランチを検出して続きから作業し、その PR 番号は PR Create フェーズが `--head <branch>` の再検出で引き継ぐ（重複 PR も `gh pr create` の失敗も起こさない）。「push 成功・PR 作成失敗」のケース（状態 `failed`・`branch` 保存済み）では impl 手順 0b-b がリモートブランチを検出して push 済みコミットを保持したまま回復する。
+`planning` / `implementing` / `reviewing` からの再開では、まず Recover phase が残骸 worktree / branch の有無を確認する。**残骸がある場合**は Recover が「途中作業を継続できるか」を判断し、continue なら既存 branch を checkout して Implement で継続、discard なら worktree と branch を掃除して Plan から新規実行する。**残骸がない場合**は通常の Plan → Implement から再実行する。いずれの経路でも push 前 review フローのため PR 未作成の状態で中断している。impl 手順 0b-a が既存 open PR のブランチを検出して続きから作業し、その PR 番号は PR Create フェーズが `--head <branch>` の再検出で引き継ぐ（重複 PR も `gh pr create` の失敗も起こさない）。「push 成功・PR 作成失敗」のケース（状態 `failed`・`branch` 保存済み）は `branch` が残骸として Recover phase を起動するため impl 手順 0b には到達しない。continue の回復 Implement は手順 2 で既存 branch を checkout した後、`git fetch origin <branch>:refs/remotes/origin/<branch>` → `git merge --ff-only refs/remotes/origin/<branch>` でローカルをリモート tip へ追従させ、push 済みの base 取り込みコミット（PR Create が detached HEAD から push しローカル ref を更新しないもの）を保持したまま回復する。ff 不能な真の diverged は続行し、次の PR 作成の (iv) が fail-closed で止める。
 
 **重要遷移の書き込み検証と副作用の分離:** `reviewing`（branch / worktree の記録）と `monitoring`（`pr` の記録）への遷移は、失敗すると重複実装・重複 PR につながるため書き込み成功を検証し、1 回リトライしても失敗する場合は先へ進まず終端する。この検証は通常経路だけでなく Recover の continue 経路（回復 Implement 後の `reviewing` 遷移）にも同じ契約で適用される。このとき **worktree 削除を同じ `updateState` 呼び出しに載せない**（Issue #143）。`updateState` は「JSON マージ」と「掃除」の AND を 1 つの `ok` として返すため、状態書き込みは成功して削除だけが失敗した場合（worktree が locked、Recover の discard で既に削除済み等）でも書き込み失敗と誤認され、正常に実装できたイシューが `failed` 終端になる。旧 worktree の削除は書き込み成功後に別呼び出し（`preserveWorktreeField: true`）で非致命的に行い、失敗はラン終了時の最終スイープに委ねる。同様に、Low 指摘の PR コメント投稿は `monitoring` 遷移（`pr` の永続化）より**後**に、かつ try/catch 付きで行う（Issue #136。投稿失敗・例外で PR 番号が未保存のまま `failed` 終端になると、次回実行が monitoring 再開経路へ入れず既存 PR を放置したまま重複 PR を作りうる）。
 
