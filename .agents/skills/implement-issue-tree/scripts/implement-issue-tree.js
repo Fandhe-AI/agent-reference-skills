@@ -537,13 +537,18 @@ const COMMON = [
 ].join('\n')
 
 // impl / recover / fix の各コミットが共通で受ける commitlint 制約（Issue #290: scope-enum リポでの落ちを防ぐ）。
-const commitlintCheckInstruction = `   コミット前に対象リポの commitlint 設定（commitlint.config.* / .commitlintrc* / package.json の commitlint フィールド）を読み取り、type-enum / scope-enum に適合する値のみを使う。該当する scope が無ければ scope を省略する。scope にイシュー番号を置かない（scope-enum を持つリポでは必ず失敗する）。イシューの紐付けは footer の Refs #<N> と PR 本文の Closes #<N> で行う。`
+const commitlintCheckInstruction = `   コミット前に対象リポの commitlint 設定（commitlint.config.* / .commitlintrc* / package.json の commitlint フィールド。extends でプリセットを継承し rule が上書きされていなければプリセット側の rule も同じ規則で読む）を読み取り、rule を [severity, when, value] の tuple として解釈する: severity 0 の rule は無視する。type-enum / scope-enum は when が always なら列挙値が許可リスト（その中の値のみ使う）、never なら列挙値は拒否リスト（列挙値を使わない。never の列挙値を候補にしない）。type は変更内容に合う Conventional Commits 標準 type（feat / fix / docs / refactor / perf / test / style / build / ci / chore / revert）のうち許可されるもの（always なら列挙値に含まれる値、never なら列挙値に含まれない値）を選ぶ。always で標準 type が 1 つも許可されなければ、type-enum の列挙値を先頭から順に探索し ^[A-Za-z0-9_-]{1,64}$ を満たす最初のものを使う（先頭だけを見て諦めない）。never で全て拒否されたら change → update の順で拒否リストに無いものを使う。いずれでも決まらなければ type を決定できないとして下記の fail-closed 返却に従う。scope-empty は [*, "never"]（severity > 0）なら scope 必須、[*, "always"] なら scope 禁止（付けない）、severity 0・未設定なら任意（該当する scope が無ければ scope を省略する）。scope 必須のときは、scope-enum が always なら ^[A-Za-z0-9_-]{1,64}$ を満たす列挙値だけを順に探索し（変更内容に最も近いものを優先。判断できなければ先頭から）、該当する列挙値が 1 つも無ければ scope を決定できないとして fail-closed にする（直前コミットの scope や base ブランチ名由来の値は always の許可リストに含まれる保証が無いため使わない）。scope-enum が未設定 / never の場合に限り、同ブランチで既に hook を通過した直前コミットの scope（never の禁止値・上記正規表現に不適合な値は除外）、それも無ければ base ブランチ名の英数字以外を - に置換した値（同様に検証）の順で決める。決定できなければコミットせず「commitlint の scope-empty が scope を要求するが決定できない」を理由に fail-closed で返す。fail-closed 返却の形式（ホストが失敗として検出できる既存形式に限る。summary の文言だけでは検出されない）: implement / recover 経路は branch を空文字にし summary に理由を書く（ホストは branch が空のとき summary を理由に failed 終端する）。fix 経路は pushed: false・commitFailed: true・summary に理由を書く（ホストは commitFailed を失敗終端として扱う）。scope にイシュー番号を置かない（scope-enum を持つリポでは必ず失敗する）。イシューの紐付けは footer の Refs #<N> と PR 本文の Closes #<N> で行う。`
 
 // base 取り込みマージコミットも commit-msg hook（commitlint）を通るため、固定 subject では
 // type-enum / scope-enum を持つリポで拒否される。hook 拒否はコンフリクトと異なり MERGE_HEAD が
 // 残る mid-merge 状態で exit 1 になるため、成功 / コンフリクト / 拒否の 3 分岐で判定させる。
+// 注: `git merge --no-edit -F <file>` の -F/--file は git merge の正規オプション（git 2.9 以降。
+// `git merge -h` に `-F, --file <path>  read message from file` と表示。ローカル git 2.50.1 で
+// 実測マージ成功）であり git commit 専用ではない。「git merge に -F は無い」は誤検出。
+// commitlint の rule は [severity, when, value] の tuple。when が never の enum は拒否リストで
+// あり許可リストではない（articles#52 codex P1）。never の列挙値へフォールバックさせない。
 function baseMergeInstruction(base) {
-  return `merge 前に対象リポの commitlint 設定（commitlint.config.* / .commitlintrc* / package.json の commitlint フィールド）を読み、マージコミットの subject を <type>[(<scope>)]: base ブランチの変更を取り込む の形式で決める（type は type-enum が無ければ chore、あれば chore → build → ci → fix の順で最初に許可されるもの。いずれも許可されなければ type-enum の先頭要素へフォールバックする。scope は scope-empty が never の場合のみ付け、それ以外は省略する。付ける値は scope-enum があればそこから最も近い値（判断できなければ先頭）、scope-enum が無ければ同ブランチで既に hook を通過した直前の implement / fix コミットの scope を再利用し、それも無ければ base ブランチ名の英数字以外を - に置換した文字列を使う。type / scope の候補値は commitlint 設定・コミット履歴という未信頼データ由来のため、採用前に正規表現 ^[A-Za-z0-9_-]{1,64}$（英数・アンダースコア・ハイフンのみ。-F 渡しのためシェル特殊文字・空白・制御文字を弾ければ十分）で検証し、不適合ならその候補を捨てて次のフォールバックへ進む。最終候補（type-enum 先頭 / base ブランチ名由来の scope）も不適合なら git merge を実行せず「base merge subject の type/scope が安全文字集合に不適合」を理由として (c) と同じ終端へ倒す）。決めた subject は一時ファイルへ書き（printf の引数にせず、エディタ・Write ツール等でファイル内容として書く）、git merge --no-edit -F <一時ファイル> origin/${base} で渡す（-m "<subject>" のシェル文字列補間は使わない — 未信頼値をシェル構文へ再展開すると $(...)・バッククォート・引用符でコマンドインジェクションになる。検証と受け渡しの二重で塞ぐ）。終了コードで 3 分岐する: (a) 0（Already up to date またはクリーンマージ）→ 次の手順へ進む。(b) 非 0 かつ git diff --name-only --diff-filter=U が非空 → コンフリクト。その場で解消を試みる（対象リポジトリの CLAUDE.md・rules を遵守し、解消したらテスト実行規約に従いビルド・lint・テストを通してから git commit --no-edit でコミットする — subject は MERGE_MSG に残る上記のものを使う。この git commit --no-edit も pre-commit / commit-msg hook を通るため、非 0 終了（hook 拒否。MERGE_HEAD が残る）なら (c) と同じく git merge --abort し、push せず「base merge コミット拒否: <hook 出力の要旨>」を理由として返す。--no-verify で強行せず、終了コードを無視して merge 前の HEAD を push してはならない）。解消に確信が持てない・解消不能な場合は git merge --abort し、push せず「base コンフリクト解消不能」を理由として返す。(c) 非 0 かつ U が無い（MERGE_HEAD が残る = commit-msg hook 拒否等）→ git merge --abort し、push せず「base merge コミット拒否: <hook 出力の要旨>」を理由として返す（fail-closed。--no-verify で強行しない。exit 1 を無視して push すると base 未取り込みの HEAD が push されゲートを迂回する）。`
+  return `merge 前に対象リポの commitlint 設定（commitlint.config.* / .commitlintrc* / package.json の commitlint フィールド）を読み、マージコミットの subject を <type>[(<scope>)]: base ブランチの変更を取り込む の形式で決める。rule は [severity, when, value] の tuple として解釈する（severity 0 の rule は無視。when が always の enum は列挙値が許可リスト、never の enum は列挙値が拒否リスト。extends でプリセットを継承し rule が上書きされていなければプリセット側の rule（例: @commitlint/config-conventional の type-enum は always）を同じ規則で読む）。type は type-enum が無ければ chore、あれば chore → build → ci → fix → feat → docs → refactor → perf → test → style → revert の順で最初に許可されるもの（always なら列挙値に含まれる値、never なら列挙値に含まれない値）。always で全候補が不許可なら type-enum の列挙値を先頭から順に探索し、後述の正規表現を満たす最初の値へフォールバックする（先頭要素だけを見ない。1 つも無ければ git merge を実行せず「base merge subject の type を commitlint 設定から決定できない」を理由として (c) と同じ終端へ倒す。この列挙値探索は always に限る。never の列挙値は禁止値であり、never の列挙値へフォールバックしない）。never で全候補が拒否されたら列挙外の決定的候補 merge → sync の順で拒否リストに無く ^[A-Za-z0-9_-]{1,64}$ を満たすものを採り、それも拒否されたときだけ git merge を実行せず「base merge subject の type を commitlint 設定から決定できない」を理由として (c) と同じ終端へ倒す。scope は scope-empty が [*, "never"]（scope 必須）の場合のみ付け、[*, "always"]（scope 禁止）・severity 0・未設定なら省略する。付ける値は scope-enum が always なら後述の正規表現を満たす列挙値だけを順に探索し（最も近い値を優先。判断できなければ先頭から）、該当する列挙値が無ければ git merge を実行せず「base merge subject の scope を commitlint 設定から決定できない」を理由として (c) と同じ終端へ倒す（直前コミットの scope や base ブランチ名由来の値は always の許可リストに含まれる保証が無いため使わない）。scope-enum が無い / never の場合に限り、同ブランチで既に hook を通過した直前の implement / fix コミットの scope（never の禁止値は除外）を再利用し、それも無ければ base ブランチ名の英数字以外を - に置換した文字列を使う（これも never の禁止値に該当すれば使わず、git merge を実行せず「base merge subject の scope を commitlint 設定から決定できない」を理由として (c) と同じ終端へ倒す）。type / scope の候補値は commitlint 設定・コミット履歴という未信頼データ由来のため、採用前に正規表現 ^[A-Za-z0-9_-]{1,64}$（英数・アンダースコア・ハイフンのみ。-F 渡しのためシェル特殊文字・空白・制御文字を弾ければ十分）で検証し、不適合ならその候補を捨てて同じ連鎖内の次の候補へ進む（always の scope-enum では次の列挙値へ。連鎖をまたいで直前コミット / ブランチ名へは落ちない）。最終候補（type-enum 先頭 / base ブランチ名由来の scope）も不適合なら git merge を実行せず「base merge subject の type/scope が安全文字集合に不適合」を理由として (c) と同じ終端へ倒す）。決めた subject は一時ファイルへ書き（printf の引数にせず、エディタ・Write ツール等でファイル内容として書く）、git merge --no-edit -F <一時ファイル> origin/${base} で渡す（-m "<subject>" のシェル文字列補間は使わない — 未信頼値をシェル構文へ再展開すると $(...)・バッククォート・引用符でコマンドインジェクションになる。検証と受け渡しの二重で塞ぐ）。終了コードで 3 分岐する: (a) 0（Already up to date またはクリーンマージ）→ 次の手順へ進む。(b) 非 0 かつ git diff --name-only --diff-filter=U が非空 → コンフリクト。その場で解消を試みる（対象リポジトリの CLAUDE.md・rules を遵守し、解消したらテスト実行規約に従いビルド・lint・テストを通してから git commit --no-edit でコミットする — subject は MERGE_MSG に残る上記のものを使う。この git commit --no-edit も pre-commit / commit-msg hook を通るため、非 0 終了（hook 拒否。MERGE_HEAD が残る）なら (c) と同じく git merge --abort し、push せず「base merge コミット拒否: <hook 出力の要旨>」を理由として返す。--no-verify で強行せず、終了コードを無視して merge 前の HEAD を push してはならない）。解消に確信が持てない・解消不能な場合は git merge --abort し、push せず「base コンフリクト解消不能」を理由として返す。(c) 非 0 かつ U が無い（MERGE_HEAD が残る = commit-msg hook 拒否等）→ git merge --abort し、push せず「base merge コミット拒否: <hook 出力の要旨>」を理由として返す（fail-closed。--no-verify で強行しない。exit 1 を無視して push すると base 未取り込みの HEAD が push されゲートを迂回する）。`
 }
 
 // マージ実行・マージ独立確認専用の最小共通指示。COMMON のファイル読取系指示は未信頼テキストを
@@ -821,6 +826,15 @@ const FIX_SCHEMA = {
       description:
         'worktree が別リポ（submodule 等）に誤配置されていて修正不能な場合 true。'
         + 'true のとき pushed は false。push 不要（修正済み）と区別するための専用シグナル。',
+    },
+    // commitlint の type / scope 決定不能・hook 拒否等で修正コミットを作成できなかった場合の
+    // 専用シグナル。summary の文言はホストが読まないため、これが無いと「push 不要（修正済み）」
+    // と区別できず pushed: false のまま続行してしまう（PR #438 Bugbot）。
+    commitFailed: {
+      type: 'boolean',
+      description:
+        '修正コミットを作成できなかった（base fetch 失敗・base merge の解消不能 / hook 拒否・commitlint の type / scope 決定不能等）場合 true。'
+        + 'true のとき pushed は false。ホストは失敗終端として扱う。コミットできた場合は省略。',
     },
     // 対応不能・スコープ外と判断した指摘の構造化記録（summary 本文に埋め込ませない）。
     // この分類は未信頼の外部入力を読んだ fix エージェント自身の未検証な判断のため、次ラウンドの
@@ -1564,7 +1578,7 @@ const sweepEligiblePaths = new Set()
 const confirmedRemovedPaths = new Set()
 
 // 本ランで新規作成された worktree の記録簿（残置上限ゲートの「本ラン積み増し」実測）。
-// 使い捨て（review / pr-create）・fix-routing-error・実装 worktree（implement）を記録する。
+// 使い捨て（review / pr-create）・fix-terminal（routingError / commitFailed）・実装 worktree（implement）を記録する。
 // fix の worktree は記録しない — 旧 worktree cleanup とペアの「置換」で純増せず、記録すると
 // fix 連鎖のたびに実測が単調増加して過剰停止する（cleanup 失敗の残骸は次ラン観測が捕捉）。
 // { issue, kind, path } を追記し、ラン終了時に一覧をログ出力する（削除は行わない）。
@@ -1574,17 +1588,18 @@ const ephemeralWorktrees = []
 // 予約定数の乖離防止）。予約計上（EPHEMERAL_RESERVE_PER_NEW_START）はこの合計から導出するため、
 // recordEphemeralWorktree の呼び出し箇所を追加・変更するときは必ずここへ kind と最大数を
 // 宣言する（未宣言 kind は警告。記録自体は行い実測 latch は機能し続ける）。
-// implement: 1 回 / review: 最大 3 回 / pr-create: 1 回 / fix-routing-error: 最大 1 回
-// （検出と同時に即終端のため同一ラン内で複数回記録しない）。fix は置換のため宣言しない。
-const EPHEMERAL_KIND_MAX = Object.freeze({ implement: 1, review: 3, 'pr-create': 1, 'fix-routing-error': 1 })
+// implement: 1 回 / review: 最大 3 回 / pr-create: 1 回 / fix-terminal: 最大 1 回
+// （fix の routingError / commitFailed 終端。いずれも検出と同時に即終端し互いに排他のため同一ラン内で
+// 複数回記録しない）。fix は置換のため宣言しない。
+const EPHEMERAL_KIND_MAX = Object.freeze({ implement: 1, review: 3, 'pr-create': 1, 'fix-terminal': 1 })
 // 新規着手 1 イシューが本ランで積み増しうる使い捨て worktree の最大総数（全 kind 合計）。
 // dispatch ループの予約計上（newStartActive）で参照する。
 const EPHEMERAL_RESERVE_PER_NEW_START = Object.values(EPHEMERAL_KIND_MAX).reduce((a, b) => a + b, 0)
 // monitoring 再開 1 イシューが積み増しうる最大数。再開は review / pr-create を経ないが、
-// fix の routingError 終端で fix-routing-error を最大 1 件記録し得るため別枠で見込む。
-const EPHEMERAL_RESERVE_PER_MONITORING_RESUME = EPHEMERAL_KIND_MAX['fix-routing-error']
+// fix の routingError / commitFailed 終端で fix-terminal を最大 1 件記録し得るため別枠で見込む。
+const EPHEMERAL_RESERVE_PER_MONITORING_RESUME = EPHEMERAL_KIND_MAX['fix-terminal']
 
-// 使い捨て worktree（review / pr-create）・fix-routing-error・実装 worktree を記録する。
+// 使い捨て worktree（review / pr-create）・fix-terminal・実装 worktree を記録する。
 // **この関数は削除をしない**（Issue #142）。worktreePath は所有権をホスト側で照合できない
 // 自己申告値のため、自動削除は別イシューの未コミット成果を消す経路になり復活させない
 // （「推測に基づく削除をしない」方針）。使い捨て worktree は最終スイープ対象にも構造的に
@@ -2345,7 +2360,7 @@ function fixPrompt(item, impl, finding, pushAfterFix = true, permittedNoPushReso
         // 破棄で失われる（この手順を作業前に置くのはそれを避けるため。Issue #435）。取り込み
         // 自体は必須実行とし、「必要な場合は」の条件文にしない — 兄弟イシューの PR が先に
         // マージされて base が動いているケースを、修正作業の前に必ず検出する。
-        `   push 前 base 最新化ゲート（必須）: git fetch origin ${baseBranch}:refs/remotes/origin/${baseBranch}（保存先を明示した refspec。Issue #361）で base を取得する。この base fetch の終了コードを必ず確認し、非ゼロ終了（通信・認証・refspec エラー等）の場合は merge も push も行わず、pushed: false / routingError なしで「base fetch 失敗」（エラー内容の要旨を添える）を理由に返す（fail-closed。fetch 失敗を無視して進むと、以前の処理が残した stale な origin/${baseBranch} を merge したまま push でき、本ゲートを迂回してしまう。この時点ではまだ修正コミットを作っていないため作業を破棄しても損失はない）。fetch 成功後、base を取り込む（detached HEAD のまま行ってよい。手順 4 で push するのは HEAD:refs/heads/${branch} 形式のためローカルブランチ ref の更新は不要）: ${baseMergeInstruction(baseBranch)} 分岐 (a) ならその状態を merge 済みとして記憶し（後述の手順 4 の分岐判定に使う）手順 2 へ進む。分岐 (b) で解消コミットを作った場合はそれが base 取り込みの結果であることを記憶しておく。分岐 (b) の解消不能・分岐 (c) の拒否で返すときは pushed: false / routingError なしで上記理由を返す（まだ修正のコミットを作っていないため作業を破棄しても損失はない）。`,
+        `   push 前 base 最新化ゲート（必須）: git fetch origin ${baseBranch}:refs/remotes/origin/${baseBranch}（保存先を明示した refspec。Issue #361）で base を取得する。この base fetch の終了コードを必ず確認し、非ゼロ終了（通信・認証・refspec エラー等）の場合は merge も push も行わず、pushed: false・commitFailed: true・routingError なしで summary に「base fetch 失敗」（エラー内容の要旨を添える）を書いて返す（fail-closed。修正コミット未作成のためホストは commitFailed で失敗終端する。fetch 失敗を無視して進むと、以前の処理が残した stale な origin/${baseBranch} を merge したまま push でき、本ゲートを迂回してしまう。この時点ではまだ修正コミットを作っていないため作業を破棄しても損失はない）。fetch 成功後、base を取り込む（detached HEAD のまま行ってよい。手順 4 で push するのは HEAD:refs/heads/${branch} 形式のためローカルブランチ ref の更新は不要）: ${baseMergeInstruction(baseBranch)} 分岐 (a) ならその状態を merge 済みとして記憶し（後述の手順 4 の分岐判定に使う）手順 2 へ進む。分岐 (b) で解消コミットを作った場合はそれが base 取り込みの結果であることを記憶しておく。分岐 (b) の解消不能・分岐 (c) の拒否（hook 拒否・type / scope 決定不能を含む）で返すときは pushed: false・commitFailed: true・routingError なしで summary に上記理由を書いて返す（修正コミット未作成のためホストは commitFailed で失敗終端する。pushed: false だけでは「修正済み・push 不要」と区別されず no-push ラウンドとして消費される。まだ修正のコミットを作っていないため作業を破棄しても損失はない）。`,
       ]
     : [
         `1. 本エージェントは隔離された git worktree 内で動作する。push 前のローカル修正のため fetch は不要。`,
@@ -2413,7 +2428,7 @@ function fixPrompt(item, impl, finding, pushAfterFix = true, permittedNoPushReso
         ]
       : []),
     `${pushAfterFix ? '7' : '5'}. pwd の結果を worktreePath として返す（worktree の絶対パスを記録するため）。`,
-    `返却: pushed / summary（作業内容の要約。対象外コメントのマーカーは埋め込まない） / outOfScopeComments（対象外コメントがある場合のみ、{ threadId, reason } の配列）${pushAfterFix ? ' / resolvedThreadIds（手順 5 で resolve に成功した threadId の配列。該当がなければ省略可）' : ''} / worktreePath（pwd の結果）/ routingError（手順 0 で worktree 誤配置を検出した場合のみ true。その際 pushed は false。誤配置でなければ省略可）。`,
+    `返却: pushed / summary（作業内容の要約。対象外コメントのマーカーは埋め込まない） / outOfScopeComments（対象外コメントがある場合のみ、{ threadId, reason } の配列）${pushAfterFix ? ' / resolvedThreadIds（手順 5 で resolve に成功した threadId の配列。該当がなければ省略可）' : ''} / worktreePath（pwd の結果）/ routingError（手順 0 で worktree 誤配置を検出した場合のみ true。その際 pushed は false。誤配置でなければ省略可）/ commitFailed（修正コミットを作成できなかった場合のみ true — base fetch 失敗・base merge の解消不能 / hook 拒否・commitlint の type / scope 決定不能を含む。その際 pushed は false。コミットできれば省略可）。`,
   ].join('\n')
 }
 
@@ -3685,8 +3700,20 @@ async function runImplement(item) {
         // 自己申告パスは自動削除しない（別 worktree の未コミット変更を破壊し得る）。
         const reason = 'worktree routing error: Review fix worktree が別リポに誤配置（修正不能）。実装リポの worktree への再配置が必要'
         log(`イシュー #${item.number} の Review 修正エージェントが worktree routing error を報告、即停止する`)
-        recordEphemeralWorktree(item.number, fReview?.worktreePath, 'fix-routing-error')
+        recordEphemeralWorktree(item.number, fReview?.worktreePath, 'fix-terminal')
         await updateState(item.number, { status: 'failed', pr: 0, fixCount, note: reason, worktree: oldWorktreePathReview })
+        recordFailure({ issue: item.number, reason })
+        return false
+      }
+      if (fReview.commitFailed === true) {
+        // 修正コミット未作成（commitlint 決定不能・hook 拒否・base fetch / base merge 失敗）。summary
+        // だけでは検出できないため専用シグナルで failed 終端する（再試行しても同じ結果になる）。
+        // fix worktree は残留するため routingError と同じく台帳へ記録してから終端する（ディスク
+        // ゲートの in-run 残留予測を過小にしない）。
+        const reason = `Review fix がコミットを作成できず修正未反映: ${sanitize(fReview.summary ?? '')}`
+        log(`⚠️ issue #${item.number}: ${reason}`)
+        recordEphemeralWorktree(item.number, fReview?.worktreePath, 'fix-terminal')
+        await updateState(item.number, { status: 'failed', pr: 0, fixCount, note: reason })
         recordFailure({ issue: item.number, reason })
         return false
       }
@@ -4286,13 +4313,22 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
         // へ渡すと別 worktree の未コミット変更を破壊できてしまう）。
         routingErrorDetected = true
         log(`PR #${impl.prNumber} の修正エージェントが worktree routing error を報告、即 failed 終端（halt カウント対象）とする`)
-        recordEphemeralWorktree(item.number, f?.worktreePath, 'fix-routing-error')
+        recordEphemeralWorktree(item.number, f?.worktreePath, 'fix-terminal')
         await updateState(item.number, { worktree: oldWorktreePath })
         lastState = 'blocked'
         // routingErrorDetected が終端 status を 'failed' に確定させるため分類は結果に影響しないが、
         // 意味としては自動では回復し得ない（worktree の手動再配置が必要）。
         lastBlockedReason = 'unrecoverable'
         break
+      }
+      if (f.commitFailed === true) {
+        // 修正コミット未作成の専用シグナル（Review ループと同じ。base fetch / base merge 失敗・hook
+        // 拒否・commitlint 決定不能を含む。pushed: false の「修正済み・push 不要」と区別し、
+        // noPushRounds の消費を待たず失敗終端する）。routingError と同じく台帳へ記録してから終端する。
+        const reason = `fix がコミットを作成できず修正未反映: ${sanitize(f.summary ?? '')}`
+        log(`⚠️ issue #${item.number}: ${reason}`)
+        recordEphemeralWorktree(item.number, f?.worktreePath, 'fix-terminal')
+        return await failMergeTerminal(reason)
       }
       fixCount++
       // 次ラウンドの resolve (b) 観測入力（Issue #430）。
