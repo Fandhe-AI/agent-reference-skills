@@ -1,12 +1,12 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/onnx-interop/src/lib.rs
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/onnx-interop/src/lib.rs
 ---
 
 # onnx-interop
 
 ONNX / safetensors 相互運用層。未公開クレート（crates.io 未リリース）。
 
-- crate 名: `onnx-interop`（`crates/onnx-interop`。GitHub `Fandhe-AI/rust-ai-library` の `main` ブランチソースから直接読む）
+- crate 名: `onnx-interop`（`crates/onnx-interop`。GitHub `Fandhe-AI/fandhe-ai` の `main` ブランチソースから直接読む）
 - `safetensors` はワイヤフォーマットの読み書きのみに用い、`tensor-core::Tensor<f32>` へのマッピングは自作。ONNX protobuf デコードは `prost` を使うが `prost-build`（`protoc` へのビルド時依存）は使わず手書き derive で取り込む
 
 ## Signature / Usage

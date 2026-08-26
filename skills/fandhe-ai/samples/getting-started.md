@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/facade/examples/getting_started.rs
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/facade/examples/getting_started.rs
 ---
 
 # Getting Started

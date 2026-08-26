@@ -1,5 +1,5 @@
 ---
-source: https://fandhe-ai.github.io/rust-ai-library/guides/numerical-parity/
+source: https://fandhe-ai.github.io/fandhe-ai/guides/numerical-parity/
 ---
 
 # 数値一致契約

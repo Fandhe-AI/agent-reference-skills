@@ -1,5 +1,5 @@
 ---
-source: https://fandhe-ai.github.io/rust-ai-library/guides/backends/
+source: https://fandhe-ai.github.io/fandhe-ai/guides/backends/
 ---
 
 # バックエンド構成

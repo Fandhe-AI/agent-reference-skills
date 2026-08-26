@@ -18,7 +18,7 @@ fandhe-ai は Rust 製 AI/ML ライブラリ。Burn / candle / tch などの既�
 
 **他スキルとの使い分け** — `Device::Cuda` / `Device::Metal` を含むバックエンド抽象は fandhe-ai 独自の Rust API であり、CUDA C++ / PTX / CUTLASS を調べる場合は `nvidia-cuda`、MSL / MPSGraph / MLX を調べる場合は `apple-silicon`、HIP / ROCm を調べる場合は `amd-rocm` を参照すること。`Tensor` / autodiff / tape も同様に fandhe-ai 独自の Rust API であり、`apple-ml` の `MLMultiArray`、`apple-silicon`（MLX）の `mx.array` とは別物。fandhe-ai は `fandhe-frontend`（Rust 製フロントエンドフレームワーク）・`fandhe-backend`（Rust 製バックエンド HTTP サーバーフレームワーク）とは同じ Fandhe-AI org の別ライブラリで、API・対象領域とも無関係。
 
-公式ドキュメント: https://fandhe-ai.github.io/rust-ai-library/ / リポジトリ: https://github.com/Fandhe-AI/rust-ai-library
+公式ドキュメント: https://fandhe-ai.github.io/fandhe-ai/ / リポジトリ: https://github.com/Fandhe-AI/fandhe-ai
 
 ## ディレクトリ構成
 

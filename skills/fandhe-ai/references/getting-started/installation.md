@@ -1,5 +1,5 @@
 ---
-source: https://fandhe-ai.github.io/rust-ai-library/getting-started/
+source: https://fandhe-ai.github.io/fandhe-ai/getting-started/
 ---
 
 # インストール
@@ -17,14 +17,14 @@ fandhe-ai = "0.3.0"
 
 ```toml
 [dependencies]
-fandhe-ai = { git = "https://github.com/Fandhe-AI/rust-ai-library" }
+fandhe-ai = { git = "https://github.com/Fandhe-AI/fandhe-ai" }
 ```
 
 リポジトリを clone してワークスペース内から利用する場合は path 依存でも参照できる。
 
 ```toml
 [dependencies]
-fandhe-ai = { path = "../rust-ai-library/crates/facade" }
+fandhe-ai = { path = "../fandhe-ai/crates/facade" }
 ```
 
 ## Notes
