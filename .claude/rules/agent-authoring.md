@@ -69,7 +69,7 @@ description の書き方の詳細（トリガー語・略語・YAML 落とし穴
 
 これに加えて、**Agent ごとに調査対象ライブラリの公式ドメインを許可リストへ明示して追加できる**（例: `docs.rs`・`developer.android.com`・`reactrouter.com` 等）。追加するドメインは対象ライブラリの公式ドキュメントサイトに限定し、Agent 本文の許可ドメイン一覧に列挙する。
 
-- プライベート IP（`localhost`・`127.x`・`10.x`・`192.168.x`）へのアクセスは禁止。
+- 内部ネットワーク・特殊用途アドレス（RFC 1918 全域・loopback・link-local・IPv6 ULA・クラウドメタデータエンドポイント）へのアクセスは禁止。範囲の詳細と、名前解決後の IP・リダイレクト先へ同じ拒否を適用する方針は `./security.md` の SSRF 節に従う。
 
 外部 WebFetch より先に、リポ内に公式仕様参照スキル（`anthropic-claude-code`・`anthropic-claude-code-extend` 等）を導入している場合はその `references/` を一次情報として優先参照する。未導入の場合は Anthropic 公式ドキュメントを直接参照する。
 
