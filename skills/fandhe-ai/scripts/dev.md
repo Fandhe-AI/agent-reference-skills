@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/README.md, https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/Makefile
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/README.md, https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/Makefile
 ---
 
 # dev

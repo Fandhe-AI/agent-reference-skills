@@ -1,5 +1,5 @@
 ---
-source: https://fandhe-ai.github.io/rust-ai-library/guides/interop/
+source: https://fandhe-ai.github.io/fandhe-ai/guides/interop/
 ---
 
 # ONNX・safetensors 相互運用

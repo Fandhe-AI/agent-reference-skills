@@ -1,5 +1,5 @@
 ---
-source: https://fandhe-ai.github.io/rust-ai-library/guides/performance/
+source: https://fandhe-ai.github.io/fandhe-ai/guides/performance/
 ---
 
 # 性能の考え方

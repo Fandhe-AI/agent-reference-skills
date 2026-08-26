@@ -1,5 +1,5 @@
 ---
-source: https://fandhe-ai.github.io/rust-ai-library/
+source: https://fandhe-ai.github.io/fandhe-ai/
 ---
 
 # fandhe-ai 概要

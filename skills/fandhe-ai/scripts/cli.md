@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/guardrail/src/cli.rs, https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/self-repair/src/cli.rs, https://fandhe-ai.github.io/rust-ai-library/api/cli/
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/guardrail/src/cli.rs, https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/self-repair/src/cli.rs, https://fandhe-ai.github.io/fandhe-ai/api/cli/
 ---
 
 # cli

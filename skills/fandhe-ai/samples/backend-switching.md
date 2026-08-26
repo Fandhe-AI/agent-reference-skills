@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/facade/examples/backend_switching.rs
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/facade/examples/backend_switching.rs
 ---
 
 # Backend Switching

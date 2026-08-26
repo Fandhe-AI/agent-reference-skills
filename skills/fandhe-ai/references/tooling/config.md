@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/docs/guardrail-self-repair-cli.md, https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/guardrail/src/cli.rs
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/docs/guardrail-self-repair-cli.md, https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/guardrail/src/cli.rs
 ---
 
 # guardrail / self-repair 設定ファイル

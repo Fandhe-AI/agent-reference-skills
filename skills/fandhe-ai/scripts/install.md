@@ -1,5 +1,5 @@
 ---
-source: https://fandhe-ai.github.io/rust-ai-library/getting-started/, https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/facade/Cargo.toml
+source: https://fandhe-ai.github.io/fandhe-ai/getting-started/, https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/facade/Cargo.toml
 ---
 
 # install
@@ -19,7 +19,7 @@ fandhe-ai = "0.3.0"
 
 ```toml
 [dependencies]
-fandhe-ai = { git = "https://github.com/Fandhe-AI/rust-ai-library" }
+fandhe-ai = { git = "https://github.com/Fandhe-AI/fandhe-ai" }
 ```
 
 crates.io 版より新しい未リリース変更を試す場合に使う。
@@ -28,7 +28,7 @@ crates.io 版より新しい未リリース変更を試す場合に使う。
 
 ```toml
 [dependencies]
-fandhe-ai = { path = "../rust-ai-library/crates/facade" }
+fandhe-ai = { path = "../fandhe-ai/crates/facade" }
 ```
 
 リポジトリのディレクトリ名は `crates/facade` だが公開 crate 名は `fandhe-ai`。

@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/README.md
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/README.md
 ---
 
 # クレート構成

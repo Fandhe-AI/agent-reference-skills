@@ -1,12 +1,12 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/rust-ai-library/main/crates/bench-harness/src/lib.rs
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/bench-harness/src/lib.rs
 ---
 
 # bench-harness
 
 CPU/CUDA/Metal 各バックエンドの性能計測・回帰検出を担うベンチマーク基盤。未公開クレート（crates.io 未リリース）。
 
-- crate 名: `bench-harness`（`crates/bench-harness`。GitHub `Fandhe-AI/rust-ai-library` の `main` ブランチソースから直接読む）
+- crate 名: `bench-harness`（`crates/bench-harness`。GitHub `Fandhe-AI/fandhe-ai` の `main` ブランチソースから直接読む）
 - 実機（DGX Spark GB10・Metal 実機）依存のベンチは `#[ignore]` で分離。ベンチ本体は `criterion`（`dev-dependencies` 限定）
 
 ## Signature / Usage

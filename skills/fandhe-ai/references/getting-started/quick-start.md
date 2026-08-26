@@ -1,5 +1,5 @@
 ---
-source: https://fandhe-ai.github.io/rust-ai-library/getting-started/
+source: https://fandhe-ai.github.io/fandhe-ai/getting-started/
 ---
 
 # クイックスタート
