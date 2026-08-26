@@ -36,6 +36,37 @@ jobs:
         run: bash .github/scripts/check-skill-structure.sh
 
   # --------------------------------------------------
+  # skill-tests（vendored スキルの node:test 回帰テスト）
+  # --------------------------------------------------
+  # .agents/skills/*/tests/*.test.mjs（vendored スキルの回帰テスト）を実行する。
+  # skills/（リファレンススキル）はドキュメントのみでテスト対象外。
+  # ubuntu-latest には Node.js が同梱されるため setup-node の追加
+  # （新規 action の SHA 固定管理）は不要。
+  skill-tests:
+    name: Skill tests (node:test)
+    runs-on: ubuntu-latest
+    # 静的ファイル検査と gh スタブでの挙動テストのみのため軽量。structure job と
+    # 同じ 5 分では implement-issue-tree の大規模テスト群が収まらないため 10 分とする。
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        # actions/checkout v5.0.1
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+        with:
+          persist-credentials: false
+
+      - name: Run node:test
+        # `shopt -s failglob` でグロブが 1 件もマッチしない場合にシェルを即エラー
+        # 終了させる。failglob なしだとグロブが展開されずリテラル文字列のまま
+        # node --test に渡り、0 tests・終了コード 0 で「成功」してしまう
+        # （回帰テストゲートが無自覚に無効化される fail-open）。
+        run: |
+          shopt -s failglob
+          node --test .agents/skills/*/tests/*.test.mjs
+
+  # --------------------------------------------------
   # lint-docs（ドキュメント／設定ファイル系 lint）
   # --------------------------------------------------
   # npx 直呼びの個別実装から Fandhe-AI/actions の lint-docs reusable workflow
