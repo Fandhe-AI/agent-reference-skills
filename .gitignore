@@ -8,3 +8,6 @@
 .mcp.json
 
 _/
+
+# Codex CLI local config (contains local MCP settings)
+.codex/
