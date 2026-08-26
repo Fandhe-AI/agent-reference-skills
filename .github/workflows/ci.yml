@@ -61,10 +61,12 @@ jobs:
         # `shopt -s failglob` でグロブが 1 件もマッチしない場合にシェルを即エラー
         # 終了させる。failglob なしだとグロブが展開されずリテラル文字列のまま
         # node --test に渡り、0 tests・終了コード 0 で「成功」してしまう
-        # （回帰テストゲートが無自覚に無効化される fail-open）。
+        # （回帰テストゲートが無自覚に無効化される fail-open）。globstar で
+        # tests/ 配下のサブディレクトリも再帰探索する（`**` は 0 階層にも
+        # マッチするため tests/ 直下も引き続き対象。agent-cli-skills#447 の横展開）。
         run: |
-          shopt -s failglob
-          node --test .agents/skills/*/tests/*.test.mjs
+          shopt -s globstar failglob
+          node --test .agents/skills/*/tests/**/*.test.mjs
 
   # --------------------------------------------------
   # lint-docs（ドキュメント／設定ファイル系 lint）
