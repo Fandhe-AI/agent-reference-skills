@@ -36,51 +36,9 @@ npx skills add Fandhe-AI/agent-reference-skills --skill react-router-v7 -g
 
 ## リポジトリ構成
 
-```text
-.claude/
-  agents/                    ← 用途別サブエージェント
-    research/                ← reference-researcher / reference-updater / skill-coverage-analyzer
-    author/                  ← skill-author / description-optimizer / readme-indexer / sample-curator / script-collector
-    quality/                 ← skill-structure-validator / reference-linter / plan-verifier
-  rules/                     ← 強制ルール（delegation / skill-anatomy / reference-template ほか）
-  skills/                    ← 本リポジトリ開発用のワークフロースキル
-    create-skill/            ← 新スキル作成のオーケストレーション
-    update-skill/            ← 既存スキルを最新ドキュメントへ追従
-    create-commit/           ← Conventional Commits 形式でコミット
-    create-pr/               ← PR 作成
-    create-issue/            ← Issue 作成（sub-issues 対応）
-    create-issue-tree/       ← Phase 分割した Issue ツリーを起票
-    update-issue-tree/       ← 既存 Issue ツリーの棚卸し・更新
-    create-plan/             ← 実装計画作成
-    implement-issue/         ← Issue 実装
-    implement-issue-tree/    ← Issue ツリーを worktree で並列実装
-    implement-review/        ← コードレビュー
-    implement-review-pr/     ← PR レビュー
-    update-docs/             ← CLAUDE.md 更新
-    init-claude/             ← 対象リポジトリへ .claude/ 体系を初期セットアップ
-    update-claude/           ← 既存 .claude/ 体系の診断・追補
-    project-init/            ← GitHub Project v2 のセットアップ
-    project-add-items/       ← プロジェクトアイテムの一括作成
-    project-create-issues/   ← ドラフトアイテムを Issue へ変換
-    project-update-items/    ← アイテムのフィールド値を一括更新
-    project-view-status/     ← 進捗レポート生成
-    project-sync-issues/     ← Issue/PR とプロジェクト Status の同期
-    project-archive-done/    ← 完了アイテムのアーカイブ
-    contribute-skill/        ← upstream リポジトリへスキルを PR 投稿
-    sync-skills-lock/        ← skills-lock.json の computedHash 同期
-skills/
-  <library-name>/
-    SKILL.md                 ← エントリーポイント（YAML frontmatter + 探索手順）
-    references/              ← カテゴリ別 API リファレンス（「何か」）
-      <category>/
-        README.md            ← インデックステーブル
-        <page>.md            ← 個別 API / コンセプト
-    samples/                 ← (任意) 動く実例・典型ワークフロー（「どう使うか」）
-    scripts/                 ← (任意) 実行可能コマンド集（「どう実行するか」）
-    rules/                   ← (任意) 適用ルール
-```
+詳細なディレクトリ構成（`.claude/` の Agent・Rule・ワークフロースキル、`skills/` のスキル構造）は [CLAUDE.md](CLAUDE.md) の「Repository Structure」を参照。
 
-## スキル一覧（全 110 スキル）
+## スキル一覧（全 111 スキル）
 
 ### Apple プラットフォーム
 
@@ -295,3 +253,11 @@ main エージェントは「対話・計画・委譲・報告」に徹し、tok
 6. `update-docs` が新スキルを CLAUDE.md / README.md に反映
 
 既存スキルを最新ドキュメントへ追従させる場合は `/update-skill <library> [check|apply]`（`reference-updater` が駆動）を実行する。
+
+## 関連リポジトリ
+
+| リポジトリ | 概要 |
+| ---------- | ---- |
+| [agent-cli-skills](https://github.com/Fandhe-AI/agent-cli-skills) | 開発ワークフロースキル集（コミット・PR・Issue・レビュー自動化） |
+| [agent-util-skills](https://github.com/Fandhe-AI/agent-util-skills) | ユーティリティスキル集（レポート生成・ホスティングセットアップ等） |
+| [template-skills](https://github.com/Fandhe-AI/template-skills) | スキルリポジトリの共通テンプレート。新しいスキルリポジトリはこのテンプレートから作成する |

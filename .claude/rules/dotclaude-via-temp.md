@@ -2,6 +2,10 @@
 paths:
   - ".claude/**/*"
   - ".claude/*"
+description: >
+  .claude 配下のファイル作成・編集を直接行わず、_/dotclaude/ に一時作成してから
+  mv でまとめて配置する運用ルール。パス対応表・移動コマンド例・後片付け手順
+  （rm -rf 禁止、rmdir のみ許可）を規定する。
 ---
 
 # .claude ディレクトリ操作ルール
