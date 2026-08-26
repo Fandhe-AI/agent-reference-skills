@@ -63,10 +63,14 @@ for skill_md in skills/*/SKILL.md; do
   # 空値や `yes` / `on` 等の YAML 真偽値もどきが素通りし、消費側 (スキル読み込み) の
   # 挙動が不定になるため、値を true / false の 2 値に限定する
   # (キー不在は上のループでエラー済みのため、ここではキーがある場合のみ判定する)。
+  # YAML は値の後ろに「空白 + #」のインラインコメントを許容する
+  # (例: `user-invocable: true # CLI から利用可`) ため、クォートで始まらない値に限り
+  # 空白 + '#' 以降を除去してから前後空白を trim して判定する (クォートで始まる値は
+  # true / false と一致せずどのみち不正判定になるため、コメント除去の対象外でよい)。
   if printf '%s\n' "${fm}" | grep -qE '^user-invocable:'; then
     ui_value="$(printf '%s\n' "${fm}" \
       | grep -E '^user-invocable:' | head -n 1 \
-      | sed -E 's/^user-invocable:[[:space:]]*//; s/[[:space:]]*$//' || true)"
+      | sed -E 's/^user-invocable:[[:space:]]*//; /^["'"'"']/! s/[[:space:]]+#.*$//; s/[[:space:]]*$//' || true)"
     if [ "${ui_value}" != "true" ] && [ "${ui_value}" != "false" ]; then
       err "${skill_md}: user-invocable の値 '${ui_value}' が不正 (true / false のみ許容)"
     fi
