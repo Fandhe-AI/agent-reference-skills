@@ -68,11 +68,20 @@ for skill_md in skills/*/SKILL.md; do
   # 空白 + '#' 以降を除去してから前後空白を trim して判定する (クォートで始まる値は
   # true / false と一致せずどのみち不正判定になるため、コメント除去の対象外でよい)。
   if printf '%s\n' "${fm}" | grep -qE '^user-invocable:'; then
-    ui_value="$(printf '%s\n' "${fm}" \
-      | grep -E '^user-invocable:' | head -n 1 \
-      | sed -E 's/^user-invocable:[[:space:]]*//; /^["'"'"']/! s/[[:space:]]+#.*$//; s/[[:space:]]*$//' || true)"
-    if [ "${ui_value}" != "true" ] && [ "${ui_value}" != "false" ]; then
-      err "${skill_md}: user-invocable の値 '${ui_value}' が不正 (true / false のみ許容)"
+    # 値の検証は `head -n 1` で最初の 1 件しか見ないため、キーが重複していると
+    # 2 個目以降の不正値 (例: 1 個目 true・2 個目 yes) が素通りし、重複キーを後勝ちで
+    # 解釈する消費側では不正値が有効になる。先に出現回数を数え、1 件超はエラーにする
+    # (キー存在は確認済みのため、ここの grep -c は必ず 1 以上を返す)。
+    ui_count="$(printf '%s\n' "${fm}" | grep -cE '^user-invocable:')"
+    if [ "${ui_count}" -gt 1 ]; then
+      err "${skill_md}: user-invocable キーが重複 (${ui_count} 件。1 件のみ許容)"
+    else
+      ui_value="$(printf '%s\n' "${fm}" \
+        | grep -E '^user-invocable:' | head -n 1 \
+        | sed -E 's/^user-invocable:[[:space:]]*//; /^["'"'"']/! s/[[:space:]]+#.*$//; s/[[:space:]]*$//' || true)"
+      if [ "${ui_value}" != "true" ] && [ "${ui_value}" != "false" ]; then
+        err "${skill_md}: user-invocable の値 '${ui_value}' が不正 (true / false のみ許容)"
+      fi
     fi
   fi
 
