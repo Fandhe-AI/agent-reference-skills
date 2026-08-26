@@ -388,7 +388,7 @@ test('base merge の subject は固定 chore ではなく commitlint 設定か�
     assert.ok(mergeIdx >= 0, `${label}: subject をファイル経由で渡す merge 指示がない`)
     const lintIdx = prompt.indexOf('merge 前に対象リポの commitlint 設定')
     assert.ok(lintIdx >= 0 && lintIdx < mergeIdx, `${label}: merge 前に commitlint 設定を読む指示がない`)
-    const section = prompt.slice(lintIdx, lintIdx + 2400)
+    const section = prompt.slice(lintIdx, lintIdx + 3500)
     assert.ok(section.includes('git diff --name-only --diff-filter=U'), `${label}: コンフリクト有無を U で判定する指示がない`)
     const rejectIdx = section.indexOf('base merge コミット拒否')
     assert.ok(rejectIdx >= 0, `${label}: hook 拒否時の理由文言がない`)
@@ -429,9 +429,9 @@ test('base merge の subject 決定は候補外 type-enum と scope-enum 無し�
   ]) {
     const lintIdx = prompt.indexOf('merge 前に対象リポの commitlint 設定')
     assert.ok(lintIdx >= 0, `${label}: base merge の commitlint 読み取り指示がない`)
-    const section = prompt.slice(lintIdx, lintIdx + 700)
-    assert.ok(section.includes('type-enum の先頭要素へフォールバック'), `${label}: 候補 type が全て不許可のときの type-enum 先頭へのフォールバックがない`)
-    assert.ok(section.includes('scope-enum が無ければ') && section.includes('直前の implement / fix コミットの scope を再利用'), `${label}: scope-enum 無しで scope 必須のときの決定手順（直前コミットの scope 再利用）がない`)
+    const section = prompt.slice(lintIdx, lintIdx + 1700)
+    assert.ok(section.includes('type-enum の列挙値を先頭から順に探索し'), `${label}: 候補 type が全て不許可のときの type-enum 列挙値順探索フォールバックがない`)
+    assert.ok(section.includes('scope-enum が無い / never の場合に限り') && section.includes('直前の implement / fix コミットの scope（never の禁止値は除外）を再利用'), `${label}: scope-enum 無しで scope 必須のときの決定手順（直前コミットの scope 再利用）がない`)
     assert.ok(section.includes('base ブランチ名'), `${label}: 直前コミットにも scope が無いときの base ブランチ名フォールバックがない`)
   }
 })
@@ -448,13 +448,36 @@ test('base merge の subject は安全文字集合で検証し -F ファイル�
   ]) {
     const lintIdx = prompt.indexOf('merge 前に対象リポの commitlint 設定')
     assert.ok(lintIdx >= 0, `${label}: base merge の commitlint 読み取り指示がない`)
-    const section = prompt.slice(lintIdx, lintIdx + 1400)
+    const section = prompt.slice(lintIdx, lintIdx + 2500)
     assert.ok(section.includes('^[A-Za-z0-9_-]{1,64}$'), `${label}: type / scope の安全文字集合（正規表現）検証がない`)
-    assert.ok(section.includes('不適合ならその候補を捨てて次のフォールバックへ進む'), `${label}: 不適合候補を捨てて次へ進む指示がない`)
+    assert.ok(section.includes('不適合ならその候補を捨てて同じ連鎖内の次の候補へ進む'), `${label}: 不適合候補を捨てて同じ連鎖内の次へ進む指示がない`)
     assert.ok(section.includes('base merge subject の type/scope が安全文字集合に不適合'), `${label}: 最終候補も不適合なときの fail-closed 理由文言がない`)
     assert.ok(section.includes('git merge --no-edit -F <一時ファイル>'), `${label}: -F による受け渡し指示がない`)
     assert.ok(!section.includes('git merge --no-edit -m'), `${label}: -m へのシェル文字列補間が実行コマンドとして残っている`)
   }
+})
+
+test('fixPrompt(pushAfterFix: true): base fetch 失敗・base merge 分岐 (b)/(c) の失敗返却は commitFailed: true を伴う（prCreate 経路は prNumber: 0 のまま）', () => {
+  // codex P1（articles#52）+ Bugbot（baby-tasks-app#31 / actions#109 / pronunciation-vocab-app#25）:
+  // ホストは commitFailed だけで「コミット失敗」と「修正済みで push 不要」を区別する。base merge の
+  // 失敗が pushed: false のみで返ると no-push ラウンドとして消費され fail-closed 終端を通らない。
+  mod.__setBoundaryNonceSeedForTest('a'.repeat(64))
+  const finding = { summary: 'テスト用の指摘', unresolvedComments: [] }
+  const prompt = fixPrompt(item, impl, finding, true)
+  const fetchIdx = prompt.indexOf('「base fetch 失敗」')
+  assert.ok(fetchIdx >= 0, 'base fetch 失敗の返却指示がない')
+  assert.ok(prompt.slice(Math.max(0, fetchIdx - 120), fetchIdx).includes('pushed: false・commitFailed: true'), 'base fetch 失敗の返却に commitFailed: true がない')
+  const bcIdx = prompt.indexOf('分岐 (b) の解消不能・分岐 (c) の拒否')
+  assert.ok(bcIdx >= 0, '分岐 (b)/(c) の失敗返却指示がない')
+  const bc = prompt.slice(bcIdx, bcIdx + 260)
+  assert.ok(bc.includes('pushed: false・commitFailed: true'), '分岐 (b)/(c) の失敗返却に commitFailed: true がない')
+  assert.ok(bc.includes('ホストは commitFailed で失敗終端する'), 'commitFailed でホストが失敗終端する旨がない')
+  assert.ok(!/pushed: false \/ routingError なしで/.test(prompt), '旧契約（pushed: false / routingError なしのみ）が残っている')
+  const returnIdx = prompt.indexOf('返却: pushed / summary')
+  assert.ok(returnIdx >= 0 && prompt.slice(returnIdx).includes('commitFailed（修正コミットを作成できなかった場合のみ true — base fetch 失敗・base merge の解消不能 / hook 拒否'), '返却行の commitFailed に base merge 失敗が含まれていない')
+  // prCreate 経路は prNumber: 0 の既存契約のまま（commitFailed は FIX_SCHEMA 専用）
+  const pr = prCreatePrompt(item, impl, [])
+  assert.ok(pr.includes('prNumber: 0') && !pr.includes('commitFailed'), 'prCreate 経路に commitFailed が混入している')
 })
 
 test('monitorPrompt: 手順 1c の UNKNOWN リトライ途中で CONFLICTING に確定した場合も needs-fix 経路へ回す', () => {
