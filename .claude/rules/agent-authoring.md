@@ -37,12 +37,17 @@ description の書き方の詳細（トリガー語・略語・YAML 落とし穴
 
 ### tools 最小権限
 
-| Agent カテゴリ | 許可ツール |
+許可ツールは**カテゴリではなく責務**で決める。カテゴリごとの基本形は以下のとおり:
+
+| Agent カテゴリ | 基本の許可ツール |
 |-------------|-----------|
-| 読み取り専用（research/・quality/） | `Read`・`Glob`・`Grep` |
+| 調査（research/）— 基本は読み取り専用 | `Read`・`Glob`・`Grep` |
+| 品質・検証（quality/）— 読み取り専用 | `Read`・`Glob`・`Grep` |
 | 作成・編集（author/） | 上記 + `Edit`・`Write`・`Bash` |
 
-読み取り専用 Agent は `Edit`・`Write`・`Bash` を **tools リストに含めない**。
+ただし **資料収集の成果物をスキルファイルへ書き込む責務を持つ調査 Agent**（例: `reference-researcher`・`reference-updater`。公式ドキュメントを収集して `skills/<name>/references/` 等を作成・更新する）は、research/ 配下でも `Write`・`Edit` を保持してよい。この場合も `Bash` は責務に不要な限り付与しない。
+
+書き込み責務を持たない読み取り専用 Agent は `Edit`・`Write`・`Bash` を **tools リストに含めない**。
 
 #### 例外: Bash を許可する読み取り専用 Agent
 
@@ -55,12 +60,15 @@ description の書き方の詳細（トリガー語・略語・YAML 落とし穴
 
 このような例外 Agent は本文内に「Bash は〇〇コマンドの診断目的のみ（破壊的操作禁止）」と明記すること。
 
-#### WebFetch / WebSearch を許可する読み取り専用 Agent
+#### WebFetch / WebSearch を許可する調査 Agent
 
-調査系 Agent（research/）が WebFetch を使用する場合、本文内に **許可ドメイン一覧** を明示すること:
+調査系 Agent（research/）が WebFetch を使用する場合、本文内に **許可ドメイン一覧** を明示すること。共通の許可ドメインは以下のとおり:
 
-- `docs.anthropic.com` / `code.claude.com`（Claude Code 公式）
+- `platform.claude.com` / `code.claude.com`（Claude Code / Claude API 公式）
 - `github.com` / `cli.github.com` / `docs.github.com`（GitHub 公式）
+
+これに加えて、**Agent ごとに調査対象ライブラリの公式ドメインを許可リストへ明示して追加できる**（例: `docs.rs`・`developer.android.com`・`reactrouter.com` 等）。追加するドメインは対象ライブラリの公式ドキュメントサイトに限定し、Agent 本文の許可ドメイン一覧に列挙する。
+
 - プライベート IP（`localhost`・`127.x`・`10.x`・`192.168.x`）へのアクセスは禁止。
 
 外部 WebFetch より先に、リポ内に公式仕様参照スキル（`anthropic-claude-code`・`anthropic-claude-code-extend` 等）を導入している場合はその `references/` を一次情報として優先参照する。未導入の場合は Anthropic 公式ドキュメントを直接参照する。

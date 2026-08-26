@@ -70,8 +70,11 @@ GitHub の secret scanning / push protection を有効化している場合、�
 
 悪い例:
 ```bash
-git commit -m "$user_input"   # インジェクション可能
+git commit -m $user_input                # 未クォート展開。単語分割・グロブ展開が起き、オプション注入が可能
+bash -c "git commit -m '$user_input'"    # コマンド文字列の組み立て。シングルクォートを閉じる入力で任意コマンドを注入可能
 ```
+
+なお、クォート済み展開（`git commit -m "$user_input"`）は単一引数として渡されシェルで再評価されないためコマンドインジェクションにはならないが、信頼できない内容をそのまま受け入れないための妥当性検証は別論点として必要になる。
 
 良い例:
 ```bash
