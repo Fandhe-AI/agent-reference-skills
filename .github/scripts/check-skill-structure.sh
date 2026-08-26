@@ -7,6 +7,7 @@
 # 検証内容:
 #   1. 各 skills/<name>/SKILL.md が frontmatter (--- 始まり) を持つ
 #   2. frontmatter に name / description / user-invocable キーがある
+#      (user-invocable の値は true / false のみ許容)
 #   3. name の値がディレクトリ名と一致する
 #   4. .claude/skills/<name> 配下の symlink がリンク切れでない (実ディレクトリは対象外)
 #   5. skills-lock.json が存在し妥当な JSON である
@@ -57,6 +58,19 @@ for skill_md in skills/*/SKILL.md; do
       err "${skill_md}: frontmatter に '${key}:' が無い"
     fi
   done
+
+  # user-invocable はキーの存在だけでなく値も検証する。キー存在のみの検証では
+  # 空値や `yes` / `on` 等の YAML 真偽値もどきが素通りし、消費側 (スキル読み込み) の
+  # 挙動が不定になるため、値を true / false の 2 値に限定する
+  # (キー不在は上のループでエラー済みのため、ここではキーがある場合のみ判定する)。
+  if printf '%s\n' "${fm}" | grep -qE '^user-invocable:'; then
+    ui_value="$(printf '%s\n' "${fm}" \
+      | grep -E '^user-invocable:' | head -n 1 \
+      | sed -E 's/^user-invocable:[[:space:]]*//; s/[[:space:]]*$//' || true)"
+    if [ "${ui_value}" != "true" ] && [ "${ui_value}" != "false" ]; then
+      err "${skill_md}: user-invocable の値 '${ui_value}' が不正 (true / false のみ許容)"
+    fi
+  fi
 
   # name の値がディレクトリ名と一致するか検証。
   # name: が無い場合 grep が非ゼロ終了するが、pipefail + set -e で全体を中断させず

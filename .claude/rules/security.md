@@ -38,8 +38,15 @@ applies_to: create-pr, implement-issue, implement-review, implement-review-pr, s
 # なるため、必ず `-E` を付けて `grep -vE '^\+\+\+'` と書く。
 # 鍵名は `[a-z_]*token` のように接頭辞を問わない形にする。`access_?token` 等を個別に
 # 列挙すると `GITHUB_TOKEN` / `GH_TOKEN`（上のチェック対象に明記した名前）を取りこぼす
-git diff --staged --diff-filter=ACMR | grep -E '^\+' | grep -vE '^\+\+\+' \
-  | grep -iE '(password|passwd|secret|client_secret|api_?key|[a-z_]*token|aws_secret_access_key|private_?key)[[:space:]]*[:=][[:space:]]*[^[:space:]]{8,}'
+#
+# マッチ行をそのまま stdout へ出すと、検出した秘密値そのものがセッションログ・レポート・
+# CI ログへ流出する（検出器が漏洩経路になる）。最終段は行を出力せず `grep -c` の件数と
+# 終了コードだけで判定し、内容の確認は `git diff --staged` の目視レビューに委ねる。
+hits="$(git diff --staged --diff-filter=ACMR | grep -E '^\+' | grep -vE '^\+\+\+' \
+  | grep -ciE '(password|passwd|secret|client_secret|api_?key|[a-z_]*token|aws_secret_access_key|private_?key)[[:space:]]*[:=][[:space:]]*[^[:space:]]{8,}' || true)"
+if [ "${hits:-0}" -gt 0 ]; then
+  echo "秘密情報の可能性がある追加行を ${hits} 件検出（内容は表示しない）。git diff --staged を目視確認せよ"
+fi
 
 git status --short | grep -E '\.env'
 ```
@@ -48,7 +55,9 @@ git status --short | grep -E '\.env'
 除外側が構文エラーになると、検出済みの行が消えたうえで非ゼロ終了し「検出なし」になる。
 **検出側・除外側の双方を既知サンプルで自己テストしてから本検査を走らせる**（実装は
 `.agents/skills/create-commit/SKILL.md` Step 2 (a)。パターンは変数へ一度だけ定義し、自己テストと
-本検査で同じ文字列を共有する）。
+本検査で同じ文字列を共有する）。自己テストの期待値もマッチ行の出力ではなく、
+**件数（`grep -c`）と終了コード**で確認する（検出ありサンプルで件数 >= 1・
+検出なしサンプルで件数 0。マッチ行そのものを期待出力にしない）。
 
 **パターン照合は網羅的な検出ではない。** 任意の変数名に代入された認証情報、値の形式に規則性が
 無い自社発行トークン、除外パターンに偶然一致する実値は原理的に拾えない。したがって
