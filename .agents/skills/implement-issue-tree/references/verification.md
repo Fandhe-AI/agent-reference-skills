@@ -277,3 +277,26 @@ node --test skills/implement-issue-tree/tests/review-diff-base.test.mjs
 
 期待結果: 手順 1 のコマンド出力が 0 件（比較・分岐点操作系動詞（diff/merge/checkout/rebase/rev-parse）で `${baseBranch}` を使う箇所が全て `origin/${baseBranch}` を伴うことを意味する。`git fetch origin ${baseBranch}` は動詞集合の対象外のため誤検出しない）。手順 2 は「`<base-branch>` の全出現が `origin/<base-branch>` を伴う」こと（目視確認。プレースホルダの生出現自体は 0 件にはならない）。手順 3 が 500,000 B 未満。手順 4 の `node --test` が全 pass・fail 0（群 A の「origin/ なし」負のアサーションでハードコード回帰を、群 B で SKILL.md との乖離を、群 C で A〜D のシナリオを実測固定する）。base 最新化の失敗時（レビュー直前に**無条件で**実行する `git fetch origin <base-branch>:refs/remotes/origin/<base-branch>` が失敗した場合、またはその後も `refs/remotes/origin/<base-branch>` を解決できない場合。既存 ref が残っていても安全とみなさない）は Review を実施せず `state: "blocked"` / `highestSeverity: "none"` で fail-closed 終端し、summary に理由を明記すること（`grep -n "比較基準 origin" skills/implement-issue-tree/scripts/implement-issue-tree.js` でプロンプト文言にヒットすることを確認する）。`state: "blocked"` はコード指摘（needs-fix）と区別される専用状態で、呼び出し元は fix エージェントを起動せず即座に終端する（`grep -n "r?.state === 'blocked'" skills/implement-issue-tree/scripts/implement-issue-tree.js` でループ制御にヒットすることを確認する）。
 
+### 依存ブロックの再判定（Issue #442）
+
+`classifyDispatchReadiness` / `selectPrereqProbeTargets` / `applyPrereqTransitions` / `probePrereqCompletion` またはスケジューラ（dispatch ループ・cascade）を変更した場合、blocked の即時確定が dispatch ループ内へ復活していないこと・確定が唯一の choke point（cascade）に一元化されていることを確認する。
+
+```bash
+# 1. markBlockedByDeps(item, failedDeps) の呼び出しは駆動部で 1 箇所のみ（cascade）であること
+#    （境界マーカーより下のみを対象にする。マーカーより上は同名のヘルパー関数定義のみで
+#    呼び出しは含まない）
+awk '/__IMPLEMENT_ISSUE_TREE_DRIVER_START__/,0' skills/implement-issue-tree/scripts/implement-issue-tree.js | grep -c "await markBlockedByDeps(item, failedDeps)"
+# → 1
+
+# 2. プローブ agent 呼び出しが存在すること
+grep -n "label: 'prereq:probe'" skills/implement-issue-tree/scripts/implement-issue-tree.js
+
+# 3. サイズ確認（Workflow 起動可否の実測は Issue #277 節を参照）
+wc -c skills/implement-issue-tree/scripts/implement-issue-tree.js
+
+# 4. 決定的回帰テスト（純粋関数 5 種 + 受入条件 3 の直接固定 + 駆動部配線の source-scan）
+node --test skills/implement-issue-tree/tests/dep-reeval.test.mjs
+```
+
+期待結果: 手順 1 の出力が `1`（dispatch ループ内での即時確定が復活すると 2 以上、または cascade 側が壊れると 0 になる）。手順 2 がヒットする。手順 3 が 500,000 B 未満。手順 4 の `node --test` が全 pass・fail 0（受入条件 3「前提 merged への遷移 → 下流の再判定」を含む）。
+

@@ -2,6 +2,7 @@
 name: create-issue
 description: GitHub Issue を親子構造 (sub-issues) で作成する。`gh issue create` で親・子 Issue を生成し、`gh api .../sub_issues` で親子関係を紐付ける。タイトルは Conventional Commits 形式 (`feat:`, `fix:` 等) を推奨。「Issue 作って」「タスクを分解して Issue 化」などで使用。
 model: sonnet
+user-invocable: true
 ---
 
 # create-issue

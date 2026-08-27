@@ -6,6 +6,7 @@ description: >
   plan-verifier Agent で検証可能な標準フォーマット（背景・現状・設計・ファイル構成ツリー・実装ステップ・検証方法）に従う。
   実装消化は implement-issue、Issue 化は create-issue-tree（未導入なら create-issue）を参照。
 model: opus
+user-invocable: true
 ---
 
 # 実装計画の作成

@@ -103,13 +103,17 @@ test('bytesAxisDisabled が true でも利用者が明示指定した値は上�
   assert.equal(parseMaxResidualWorktrees(0, true), 0)
 })
 
-test('EPHEMERAL_RESERVE_PER_NEW_START は EPHEMERAL_KIND_MAX の合計から導出され 6 のまま不変', () => {
+test('EPHEMERAL_RESERVE_PER_NEW_START は EPHEMERAL_KIND_MAX の合計から導出され 9 のまま不変（base-merge 追加後・Issue #441/PR #443）', () => {
+  // base-merge kind（maxBaseMerges 既定 3）が EPHEMERAL_KIND_MAX に追加されたことで
+  // 合計は旧 6 から 9 へ増える（implement 1 + review 3 + pr-create 1 + fix-terminal 1 +
+  // base-merge 3）。ここは EPHEMERAL_KIND_MAX の内訳変更に追随して固定値を更新する
+  // 想定のテストであり、テスト側は常に導出値との一致のみを主張する。
   const expected = Object.values(EPHEMERAL_KIND_MAX).reduce((a, b) => a + b, 0)
   assert.equal(EPHEMERAL_RESERVE_PER_NEW_START, expected)
-  assert.equal(EPHEMERAL_RESERVE_PER_NEW_START, 6)
+  assert.equal(EPHEMERAL_RESERVE_PER_NEW_START, 9)
 })
 
-test('キャパシティ算術: 既定値・最悪積み増し 6 件/イシューでも 10 イシュー以上/ランに着手できる', () => {
+test('キャパシティ算術: 既定値・最悪積み増し 9 件/イシューでも 10 イシュー以上/ランに着手できる', () => {
   // 受け入れ条件（Issue #348）: 開始時残置 0 の前提で、既定設定のまま 10 件以上のツリーを
   // 1 ランで消化できること。この床の算術を回帰として固定する。
   const capacity = Math.floor(parseMaxResidualWorktrees(undefined) / EPHEMERAL_RESERVE_PER_NEW_START)

@@ -2,6 +2,7 @@
 name: project-sync-issues
 description: Issue/PR の状態とプロジェクト Status の自動同期を設定する。モード A は `Fandhe-AI/actions/project-sync` Composite Action を使う `.github/workflows/project-sync.yml` を生成 (PAT または GitHub App トークン)。モード B は既存の不整合を一括補正。「自動同期セットアップ」「PR レビュー時に In Review 化」「ボードと Issue の状態を同期」などで使用。
 model: sonnet
+user-invocable: true
 ---
 
 # project-sync-issues

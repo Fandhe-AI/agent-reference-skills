@@ -330,11 +330,13 @@ test('monitorPrompt: 手順 1 の取得フィールドに mergeable が含まれ
   assert.ok(prompt.includes('--json state,headRefOid,mergeable'), '手順 1 の --json に mergeable が含まれない')
 })
 
-test('monitorPrompt: CONFLICTING を検出したら state: OPEN 限定で needs-fix へルーティングし、UNKNOWN を CONFLICTING と扱わない', () => {
+test('monitorPrompt: CONFLICTING を検出したら state: OPEN 限定で conflicting へルーティングし、UNKNOWN を CONFLICTING と扱わない', () => {
   const prompt = monitorPrompt(item, impl, [], true, true)
   assert.ok(prompt.includes('CONFLICTING'), 'CONFLICTING 判定の記述がない')
   assert.ok(prompt.includes('state が OPEN の場合のみ判定する'), 'OPEN 限定の判定条件がない（MERGED/CLOSED との混線防止）')
-  assert.ok(prompt.includes('needs-fix'), 'CONFLICTING 検出時の needs-fix ルーティングがない')
+  // Issue #441: CONFLICTING は品質問題ではないため fix 予算を消費しない conflicting へ回す
+  // （needs-fix ではない）。
+  assert.ok(prompt.includes('state: conflicting'), 'CONFLICTING 検出時の conflicting ルーティングがない')
   assert.ok(
     prompt.includes('UNKNOWN を CONFLICTING と扱って fix 予算を空費しない'),
     'UNKNOWN を CONFLICTING と誤判定しない旨の指示がない',
@@ -480,7 +482,7 @@ test('fixPrompt(pushAfterFix: true): base fetch 失敗・base merge 分岐 (b)/(
   assert.ok(pr.includes('prNumber: 0') && !pr.includes('commitFailed'), 'prCreate 経路に commitFailed が混入している')
 })
 
-test('monitorPrompt: 手順 1c の UNKNOWN リトライ途中で CONFLICTING に確定した場合も needs-fix 経路へ回す', () => {
+test('monitorPrompt: 手順 1c の UNKNOWN リトライ途中で CONFLICTING に確定した場合も conflicting 経路へ回す', () => {
   // Bugbot Medium 3 巡目（PR #436 discussion_r3837954196）の回帰テスト: 手順 1c の UNKNOWN
   // リトライは state 変化しか書いておらず、リトライ途中で mergeable が CONFLICTING に確定した
   // ケースの needs-fix 経路が欠落していた（3e には明示があり「1c と同じ扱い」の相互参照とも
@@ -500,7 +502,7 @@ test('monitorPrompt: 手順 1c の UNKNOWN リトライ途中で CONFLICTING に
   const midConflictIdx = section1c.indexOf('リトライの途中で state が OPEN のまま mergeable が "CONFLICTING" に確定した場合')
   assert.ok(midConflictIdx >= 0, '手順 1c にリトライ途中の CONFLICTING 確定ケースの終端動作が未規定')
   const afterMidConflict = section1c.slice(midConflictIdx)
-  assert.ok(afterMidConflict.includes('needs-fix'), '手順 1c のリトライ途中 CONFLICTING 確定が needs-fix 経路へ回されない')
+  assert.ok(afterMidConflict.includes('state: conflicting'), '手順 1c のリトライ途中 CONFLICTING 確定が conflicting 経路へ回されない')
   assert.ok(afterMidConflict.includes('reviewThreads 走査'), '手順 1c のリトライ途中 CONFLICTING 確定経路に reviewThreads 走査の指示がない')
 })
 
@@ -528,7 +530,7 @@ test('monitorPrompt: 手順 3e は 10 分待機の後にも mergeable を再判�
   assert.ok(unknownIdx > rematchIdx && unknownIdx < blockedIdx, 'UNKNOWN の扱いが再判定〜blocked の間に現れない')
 })
 
-test('monitorPrompt: 手順 3e の UNKNOWN リトライ途中で CONFLICTING に確定した場合も needs-fix 経路へ回す', () => {
+test('monitorPrompt: 手順 3e の UNKNOWN リトライ途中で CONFLICTING に確定した場合も conflicting 経路へ回す', () => {
   // Cursor Bugbot Medium 2 巡目（PR #436 discussion_r3837621385）の回帰テスト: 待機後再判定の
   // UNKNOWN リトライ分岐に「途中で CONFLICTING に確定した場合」の終端動作が未規定だと、この
   // 修正が狙う経路そのもの（兄弟 PR マージ直後の base 移動）が needs-fix に乗らず blocked /
@@ -544,6 +546,6 @@ test('monitorPrompt: 手順 3e の UNKNOWN リトライ途中で CONFLICTING に
   const midConflictIdx = retryBranch.indexOf('リトライの途中で state が OPEN のまま mergeable が "CONFLICTING" に確定した場合')
   assert.ok(midConflictIdx >= 0, 'UNKNOWN リトライ途中の CONFLICTING 確定ケースの終端動作が未規定')
   const afterMidConflict = retryBranch.slice(midConflictIdx)
-  assert.ok(afterMidConflict.includes('needs-fix'), 'リトライ途中の CONFLICTING 確定が needs-fix 経路へ回されない')
+  assert.ok(afterMidConflict.includes('state: conflicting'), 'リトライ途中の CONFLICTING 確定が conflicting 経路へ回されない')
   assert.ok(afterMidConflict.includes('reviewThreads 走査'), 'リトライ途中の CONFLICTING 確定経路に reviewThreads 走査（unresolvedComments 収集）の指示がない')
 })
