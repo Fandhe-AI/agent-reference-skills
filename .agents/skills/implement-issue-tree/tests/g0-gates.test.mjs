@@ -324,8 +324,10 @@ test('classifyMergeExecDispatch: fix ループ系 reason は専用状態へ遷�
     lastState: 'unresolved-comments',
     lastBlockedReason: 'unrecoverable',
   })
+  // not-mergeable は fix ループ（needs-fix）ではなく base 取り込み専用の conflicting へ写像する
+  // （Issue #441: fix 予算を消費しない base 取り込み経路へ回す）。
   assert.deepEqual(classifyMergeExecDispatch('not-mergeable', 'unrecoverable'), {
-    lastState: 'needs-fix',
+    lastState: 'conflicting',
     lastBlockedReason: 'unrecoverable',
   })
 })

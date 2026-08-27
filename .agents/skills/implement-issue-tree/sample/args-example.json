@@ -11,6 +11,8 @@
     "true": "externalChecks 明示（全 App の信頼済み context 宣言込み。なしの場合は []）と組み合わせた opt-in ランに限り、merge-exec の自己取得再検証 + G0（サーバー側強制の実測）+ --match-head-commit + merge-verify の独立確認を経てクライアント側 squash merge を実行する。externalChecks 未確定・context 未宣言（slug のみの旧形式）では fail-closed でマージせず blocked 停止する。サーバー側 workflow（upstream の docs/implement-issue-tree/auto-merge-sample.yml）+ branch protection への委譲も可。監視中にサーバー側 auto-merge が PR をマージした場合は already-merged 経路で正常完了する",
     "boolean 以外": "エラーで停止する（誤記を黙って読み替えない）"
   },
+  "_maxBaseMerges": "PR が base とコンフリクト（mergeable: CONFLICTING）した際に自動起動する base 取り込み専用エージェントの回数上限（0〜10 の整数。省略時 3）。fixCount（レビュー指摘対応）とは独立の予算軸で、品質問題ではないため fixCount を消費しない（Issue #441）。0 は自動 base 取り込みを無効化し、コンフリクト検出時点で即 blocked にする。ただし repo が未指定のランでは maxBaseMerges の値によらず起動しない（repo の形式不正は起動時エラーで停止しラン自体が始まらない。PR #443 codex P0）",
+  "_repo": "base 取り込み（maxBaseMerges > 0）の worktree routing ガードが期待する owner/repo（例: \"Fandhe-AI/agent-cli-skills\"）。人間が明示するホスト側入力のみを使い、エージェントの自己申告値は使わない（PR #443 codex P0）。未指定は base 取り込みを起動せず conflicting を即 blocked+quality にする。形式不正（owner/repo でない）は起動時にエラーで停止する（誤記の黙読み替え禁止）",
   "examples": [
     {
       "description": "親イシュー #42 の配下を main へ、並列度 3（既定）で実行（Cursor Bugbot 導入済みリポ。マージ可能状態まで自動で進み、マージは人間が行う）",
@@ -43,6 +45,10 @@
     {
       "description": "externalChecks を省略した場合。観測結果にかかわらずマージ直前に blocked で停止する（実装・PR 作成・CI までは進む）",
       "args": { "parent": 42 }
+    },
+    {
+      "description": "並列度を上げて base コンフリクトが起きやすい構成のため base 取り込み予算を既定の 3 から 5 へ引き上げ、対象リポジトリを repo で明示して base 取り込みの自動起動を有効化する（PR #443 codex P0: repo を明示しない限り base 取り込みは起動せず conflicting は即 blocked+quality）",
+      "args": { "parent": 42, "parallel": 5, "maxBaseMerges": 5, "repo": "Fandhe-AI/agent-cli-skills", "externalChecks": [{ "app": "cursor", "context": "Cursor Bugbot" }] }
     }
   ]
 }

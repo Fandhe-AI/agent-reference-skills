@@ -11,6 +11,7 @@
       "branch": "feat/43-add-auth-api",
       "worktree": "",
       "fixCount": 1,
+      "baseMergeCount": 0,
       "note": "CI 失敗を 1 回修正して squash merge 完了。対象外と判断されたコメント: threadId: PRRT_kwDOAbc123 / reason: 命名リファクタは別 issue の対象範囲のため今回は見送り",
       "outOfScopeLog": [
         "threadId: PRRT_kwDOAbc123 / reason: 命名リファクタは別 issue の対象範囲のため今回は見送り"
@@ -25,7 +26,8 @@
       "branch": "feat/44-add-user-profile",
       "worktree": "/path/to/repo/.git/worktrees/impl-44",
       "fixCount": 0,
-      "note": ""
+      "baseMergeCount": 1,
+      "note": "並列ランで兄弟イシューの PR が先にマージされ base とコンフリクト、base 取り込みエージェントが 1 回解消して監視を継続中"
     },
     "45": {
       "type": "implement",
@@ -34,6 +36,7 @@
       "branch": "feat/45-add-payment",
       "worktree": "/path/to/repo/.git/worktrees/impl-45",
       "fixCount": 6,
+      "baseMergeCount": 0,
       "note": "マージに到達できなかった（最終状態: blocked）: fixCount 上限（6 回）に達した。最終観測時点の未解決コメント: reviewer が支払い失敗時のロールバック処理漏れを指摘。対象外と判断されたコメント: threadId: PRRT_kwDOxyz789 / reason: ログフォーマット変更は今回のスコープ外のため対応見送り",
       "outOfScopeLog": [
         "threadId: PRRT_kwDOxyz789 / reason: ログフォーマット変更は今回のスコープ外のため対応見送り"
@@ -55,6 +58,7 @@
       "branch": "",
       "worktree": "",
       "fixCount": 0,
+      "baseMergeCount": 0,
       "note": ""
     }
   }

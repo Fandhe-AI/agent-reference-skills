@@ -5,6 +5,7 @@ description: >
   新スキル追加時、.claude/agents/ や .claude/rules/ の変更時、「ドキュメント更新して」「CLAUDE.md を更新して」などで使用。
   コード内コメント・ドキュメンテーションコメントの補強を依頼された場合にも参照する指針を含む。
 model: haiku
+user-invocable: true
 ---
 
 # update-docs
