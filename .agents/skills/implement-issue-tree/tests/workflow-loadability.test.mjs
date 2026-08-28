@@ -13,6 +13,11 @@
 //
 // CI では実 Workflow ハーネスを起動しない（runner にランタイム・認証情報が存在しないため）。
 // 実起動の確認は references/verification.md 記載の人手 probe が担う。
+//
+// 検証対象はランタイムへ渡される**実行ファイル**（implement-issue-tree.js。開発ファイル
+// implement-issue-tree.src.js から build-workflow.mjs がコメント除去して生成する配布物）で
+// あり、開発ファイルではない。サイズ予算はコメント込みの開発ファイルではなく実行ファイルに
+// 課す。生成物の鮮度（開発ファイルとの同期）は build-workflow.test.mjs が検証する。
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, statSync } from 'node:fs'

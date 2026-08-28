@@ -22,6 +22,12 @@ Workflow の返却値（`done`・`failures`・`notStarted`）を確認し、`fai
 
 ### Workflow 起動可否の検証（Issue #277）
 
+前提: スクリプトの編集は開発ファイル `scripts/implement-issue-tree.src.js` に対して行い、
+`node skills/implement-issue-tree/scripts/build-workflow.mjs` で実行ファイル
+`scripts/implement-issue-tree.js`（コメント除去済みの生成物。Workflow へ渡すのはこちら）を
+再生成してから本節の検証を実行する。生成物と開発ファイルの同期は
+`tests/build-workflow.test.mjs`（鮮度ゲート）が CI で検証する。
+
 `scripts/implement-issue-tree.js` を変更した場合、以下でランタイムに受理される（起動可能である）
 ことを機械検証する。判定ロジックの実装は `tests/lib/workflow-script-contract.mjs` の 1 箇所に
 集約されており、CI（`workflow-loadability.test.mjs`）と本節の手動実測コマンドの双方が同じ実装を

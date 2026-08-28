@@ -20,7 +20,7 @@ import { execFileSync } from 'node:child_process'
 
 const SCRIPT_PATH = join(
   dirname(fileURLToPath(import.meta.url)),
-  '..', 'scripts', 'implement-issue-tree.js',
+  '..', 'scripts', 'implement-issue-tree.src.js',
 )
 const SKILL_MD_PATH = join(
   dirname(fileURLToPath(import.meta.url)),

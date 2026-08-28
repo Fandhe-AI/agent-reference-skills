@@ -32,7 +32,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const SCRIPT_PATH = join(
   dirname(fileURLToPath(import.meta.url)),
-  '..', 'scripts', 'implement-issue-tree.js',
+  '..', 'scripts', 'implement-issue-tree.src.js',
 )
 // マーカー文字列はソース中に 1 回しか現れてはならない（g0-gates.test.mjs が出現回数を固定して
 // いる）ため、リテラルを直接書かず分割して組み立てる。
@@ -421,7 +421,7 @@ test('駆動部: プローブ呼び出しが通常 dispatch の後・running.siz
 // （`for (const item of work) {` を囲む `if (!halted) {`）は halt の意味論（新規着手停止）を
 // 維持するため変更しない。
 test('駆動部: プローブ起動ゲートに !halted が含まれない（halt 後もプローブ・状態記録を継続する）', () => {
-  const probeGateStart = driverPart.indexOf('running.size === 0 || Date.now() - prereqProbeLastAt >= PREREQ_RECHECK_MIN_MS')
+  const probeGateStart = driverPart.indexOf('running.size === 0 || prereqProbeElapsedMs >= PREREQ_RECHECK_MIN_MS')
   assert.ok(probeGateStart >= 0, 'プローブ起動ゲートの条件式が見つからない')
   const probeGateCondStart = driverPart.lastIndexOf('if (', probeGateStart)
   const probeGateCondEnd = driverPart.indexOf(') {', probeGateStart) + ') {'.length
@@ -442,6 +442,42 @@ test('駆動部: Promise.race 後に必ず clearTimeout が存在する（tick t
   assert.ok(raceIdx >= 0, '通常経路の Promise.race(running.values()) が見つからない')
   const clearTimeoutIdx = driverPart.indexOf('clearTimeout(')
   assert.ok(clearTimeoutIdx >= 0, 'clearTimeout 呼び出しが見つからない（tick timer が張りっぱなしになる回帰）')
+})
+
+// PR #451 codex P1（threadId PRRT_kwDORuXFg86c-3PM）の回帰固定: tick timer を Promise.race の
+// 負け（タスク完了先着）のたびに clearTimeout で破棄すると、タスク完了が tick 間隔より短い
+// 周期で連続する間 prereqProbeElapsedMs が一切加算されず、実時間が PREREQ_RECHECK_MIN_MS を
+// 大幅に超えてもプローブが drain まで無期限に飢餓する。timer を pendingPrereqTick として
+// 周回間で維持し、経過の加算は満了コールバック内（latch）で行うことをソース走査で固定する。
+test('駆動部: tick timer は race 負けで破棄せず周回間維持し、経過加算は満了コールバック内で行う', () => {
+  const tickSetupIdx = driverPart.indexOf('if (!pendingPrereqTick) {')
+  assert.ok(tickSetupIdx >= 0, 'pendingPrereqTick の維持ガードが見つからない（race ごとに timer を張り直す回帰）')
+  const raceIdx = driverPart.indexOf('await Promise.race([...running.values(), pendingPrereqTick.promise])')
+  assert.ok(raceIdx >= 0, 'tick 経路の Promise.race が pendingPrereqTick.promise を参照していない')
+  // race の直後（finished の消費処理まで）に clearTimeout が無い = タスク完了先着でも timer を
+  // 破棄せず待機実績を維持していることを確認する
+  const consumeIdx = driverPart.indexOf('running.delete(finished.number)', raceIdx)
+  assert.ok(consumeIdx > raceIdx, 'race 後の finished 消費処理が見つからない')
+  const afterRace = driverPart.slice(raceIdx, consumeIdx)
+  assert.ok(!afterRace.includes('clearTimeout'), 'race 直後に clearTimeout がある（タスク完了先着で待機実績が消えプローブが飢餓する回帰）')
+  // 加算は満了コールバック内（満了 = 実時間経過の確定時点でのみ計上する）
+  const setTimeoutIdx = driverPart.indexOf('tick.timer = setTimeout(', tickSetupIdx)
+  assert.ok(setTimeoutIdx >= 0, '維持ガード内の setTimeout が見つからない')
+  const cbSection = driverPart.slice(setTimeoutIdx, setTimeoutIdx + 300)
+  assert.ok(cbSection.includes('prereqProbeElapsedMs += tickDelayMs'), '満了コールバックが prereqProbeElapsedMs を加算していない')
+})
+
+// latch 方式の対になる過大計上防止: プローブ実行でカウンタを 0 に戻すとき、プローブ前からの
+// 待機分を含む維持中 timer をそのままにすると満了時の加算がリセット後の経過として二重計上され、
+// MIN_MS 下限（有界化契約の下限側）が破れる。リセットと同時に timer を破棄することを固定する。
+test('駆動部: プローブ実行時に pendingPrereqTick を破棄する（プローブ前待機分の二重計上防止）', () => {
+  const resetIdx = driverPart.indexOf('prereqProbeElapsedMs = 0')
+  assert.ok(resetIdx >= 0, 'プローブ実行時のカウンタリセットが見つからない')
+  const resetSection = driverPart.slice(resetIdx, resetIdx + 400)
+  assert.ok(
+    resetSection.includes('clearTimeout(pendingPrereqTick.timer)'),
+    'カウンタリセット時に維持中の tick timer を破棄していない（過大計上で MIN_MS 下限が破れる回帰）'
+  )
 })
 
 // PR #444 Bugbot Medium (Tick delay collapses recheck interval) の回帰: 今回の周回で
