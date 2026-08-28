@@ -97,11 +97,28 @@ claude project purge --all      # purge every project, including history.jsonl
 
 > **警告**: Removing `~/.claude`, `~/.claude.json`, the project's `.claude/`, and `.mcp.json` deletes all settings, allowed tools, MCP configuration, and session history. Not reversible. These four paths are only safe to delete as part of an explicit uninstall (per setup.md's Notes) — during normal operation, manually deleting `~/.claude.json`, `~/.claude/settings.json`, or `~/.claude/plugins/` is explicitly discouraged (claude-directory.md).
 
-Uninstalling requires removing the binary/version files first, then optionally the four paths below:
+Uninstalling requires removing the binary/version files first, then optionally the four paths below. Do not run a blanket recursive delete on these paths: list each target, verify it is the real file/directory you expect, and move it into a timestamped backup directory so the operation stays reversible.
 
 ```bash
-rm -rf ~/.claude ~/.claude.json   # user settings, OAuth, MCP config, session history
-rm -rf .claude .mcp.json           # project-side config (run at the target repository root)
+# 1. List the targets and verify each one is a regular file/directory (not a symlink to somewhere else)
+for p in ~/.claude ~/.claude.json; do
+  [ -e "$p" ] && ls -ld "$p"
+done
+
+# 2. Move (not delete) the user-level paths into a timestamped backup
+backup="$HOME/claude-uninstall-backup-$(date +%Y%m%d%H%M%S)"
+mkdir -p "$backup"
+[ -e ~/.claude ]      && mv ~/.claude      "$backup/dot-claude"          # user settings, OAuth, MCP config, session history
+[ -e ~/.claude.json ] && mv ~/.claude.json "$backup/dot-claude.json"
+
+# 3. Project-side config: run only at the target repository root after confirming the location
+cd /path/to/target-repo
+git rev-parse --show-toplevel                                            # must print the directory you intend to clean
+[ -e .claude ]    && mv .claude    "$backup/project-dot-claude"
+[ -e .mcp.json ]  && mv .mcp.json  "$backup/project-mcp.json"
+
+# 4. Only after confirming Claude Code no longer needs anything in "$backup", remove it explicitly:
+#    rm -r -- "$backup"
 ```
 
 > **Note**: The official docs do not document a command for removing the native binary/version files themselves — the location differs by install method (native installer / Homebrew / WinGet / npm) and isn't specified.
