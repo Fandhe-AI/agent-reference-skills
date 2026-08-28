@@ -30,7 +30,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const SCRIPT_PATH = join(
   dirname(fileURLToPath(import.meta.url)),
-  '..', 'scripts', 'implement-issue-tree.js',
+  '..', 'scripts', 'implement-issue-tree.src.js',
 )
 // マーカー文字列はソース中に 1 回しか現れてはならない（g0-gates.test.mjs が出現回数を固定して
 // いる）ため、リテラルを直接書かず分割して組み立てる。

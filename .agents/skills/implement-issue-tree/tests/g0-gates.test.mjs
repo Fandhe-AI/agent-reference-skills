@@ -18,7 +18,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const SCRIPT_PATH = join(
   dirname(fileURLToPath(import.meta.url)),
-  '..', 'scripts', 'implement-issue-tree.js',
+  '..', 'scripts', 'implement-issue-tree.src.js',
 )
 const DRIVER_MARKER = '__IMPLEMENT_ISSUE_TREE_DRIVER_START__'
 
