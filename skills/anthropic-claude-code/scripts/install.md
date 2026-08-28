@@ -97,7 +97,7 @@ claude project purge --all      # purge every project, including history.jsonl
 
 > **警告**: Removing `~/.claude`, `~/.claude.json`, the project's `.claude/`, and `.mcp.json` deletes all settings, allowed tools, MCP configuration, and session history. Not reversible. These four paths are only safe to delete as part of an explicit uninstall (per setup.md's Notes) — during normal operation, manually deleting `~/.claude.json`, `~/.claude/settings.json`, or `~/.claude/plugins/` is explicitly discouraged (claude-directory.md).
 
-Uninstalling requires removing the binary/version files first, then optionally the four paths below. Do not run a blanket recursive delete on these paths. Save the following as a script (for example `uninstall-claude-config.sh`) and run it with the target repository as its argument: it verifies the repository root first, creates a fresh exclusive backup directory, preflights all four paths (no symlinks, no pre-existing destination, writable parent) before touching anything, then moves (never deletes) each path — and if any move fails, it rolls back the moves already made so the live configuration is never left half-removed.
+Uninstalling requires removing the binary/version files first, then optionally the four paths below. Do not run a blanket recursive delete on these paths. Save the following as a script (for example `uninstall-claude-config.sh`) and run it with the target repository as its argument: it verifies the repository root first, creates a fresh exclusive backup directory, preflights all four paths (no symlinks, no pre-existing destination, writable parent) before touching anything, then moves (never deletes) each path — and if any move fails or the script is interrupted (Ctrl+C / SIGTERM), it rolls back the moves already made so the live configuration is never left half-removed.
 
 ```bash
 #!/usr/bin/env bash
@@ -140,20 +140,25 @@ for i in "${!sources[@]}"; do
   fi
 done
 
-# 4. Move with rollback: if any mv fails, everything moved so far is put back in reverse order
+# 4. Move with rollback: if any mv fails, or the script is interrupted (Ctrl+C / SIGTERM),
+#    everything moved so far is put back in reverse order
 moved_src=(); moved_dest=()
 rollback() {
   local i
-  echo "a move failed; restoring already-moved paths" >&2
+  echo "move aborted; restoring already-moved paths" >&2
   for (( i = ${#moved_src[@]} - 1; i >= 0; i-- )); do
-    if mv -- "${moved_dest[$i]}" "${moved_src[$i]}"; then
+    if [ -e "${moved_src[$i]}" ]; then
+      echo "ROLLBACK SKIPPED: ${moved_src[$i]} exists again; check ${moved_dest[$i]} manually" >&2
+    elif mv -- "${moved_dest[$i]}" "${moved_src[$i]}"; then
       echo "restored ${moved_src[$i]}" >&2
     else
       echo "ROLLBACK FAILED: restore ${moved_dest[$i]} -> ${moved_src[$i]} manually" >&2
     fi
   done
 }
+on_signal() { trap - ERR INT TERM; rollback; exit 130; }
 trap rollback ERR
+trap on_signal INT TERM
 for i in "${!sources[@]}"; do
   src="${sources[$i]}"; dest="${backup}/${names[$i]}"
   [ -e "${src}" ] || continue
@@ -161,7 +166,7 @@ for i in "${!sources[@]}"; do
   moved_src+=("${src}"); moved_dest+=("${dest}")
   echo "moved ${src} -> ${dest}"
 done
-trap - ERR
+trap - ERR INT TERM
 
 # 5. Nothing has been deleted. Remove the backup explicitly once you are sure it is no longer needed:
 echo "done. To discard the backup later, run: rm -r -- \"${backup}\""
