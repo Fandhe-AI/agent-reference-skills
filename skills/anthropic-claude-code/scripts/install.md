@@ -97,28 +97,53 @@ claude project purge --all      # purge every project, including history.jsonl
 
 > **警告**: Removing `~/.claude`, `~/.claude.json`, the project's `.claude/`, and `.mcp.json` deletes all settings, allowed tools, MCP configuration, and session history. Not reversible. These four paths are only safe to delete as part of an explicit uninstall (per setup.md's Notes) — during normal operation, manually deleting `~/.claude.json`, `~/.claude/settings.json`, or `~/.claude/plugins/` is explicitly discouraged (claude-directory.md).
 
-Uninstalling requires removing the binary/version files first, then optionally the four paths below. Do not run a blanket recursive delete on these paths: list each target, verify it is the real file/directory you expect, and move it into a timestamped backup directory so the operation stays reversible.
+Uninstalling requires removing the binary/version files first, then optionally the four paths below. Do not run a blanket recursive delete on these paths. Save the following as a script (for example `uninstall-claude-config.sh`) and run it with the target repository as its argument: it creates a fresh, exclusive backup directory, refuses symlinks, verifies it is at the repository root before touching project files, and moves (never deletes) each path so the operation stays reversible.
 
 ```bash
-# 1. List the targets and verify each one is a regular file/directory (not a symlink to somewhere else)
-for p in ~/.claude ~/.claude.json; do
-  [ -e "$p" ] && ls -ld "$p"
-done
+#!/usr/bin/env bash
+# Usage: bash uninstall-claude-config.sh /path/to/target-repo
+set -euo pipefail
 
-# 2. Move (not delete) the user-level paths into a timestamped backup
-backup="$HOME/claude-uninstall-backup-$(date +%Y%m%d%H%M%S)"
-mkdir -p "$backup"
-[ -e ~/.claude ]      && mv ~/.claude      "$backup/dot-claude"          # user settings, OAuth, MCP config, session history
-[ -e ~/.claude.json ] && mv ~/.claude.json "$backup/dot-claude.json"
+target="${1:?usage: $0 /path/to/target-repo}"
 
-# 3. Project-side config: run only at the target repository root after confirming the location
-cd /path/to/target-repo
-git rev-parse --show-toplevel                                            # must print the directory you intend to clean
-[ -e .claude ]    && mv .claude    "$backup/project-dot-claude"
-[ -e .mcp.json ]  && mv .mcp.json  "$backup/project-mcp.json"
+# 1. Create an exclusive, fresh backup directory (mktemp fails instead of reusing an existing one)
+backup="$(mktemp -d "${HOME}/claude-uninstall-backup-XXXXXX")"
+echo "backup directory: ${backup}"
 
-# 4. Only after confirming Claude Code no longer needs anything in "$backup", remove it explicitly:
-#    rm -r -- "$backup"
+# move_into_backup <path> <destination-name>: refuse symlinks, refuse to overwrite, then move
+move_into_backup() {
+  local src="$1" dest="${backup}/$2"
+  if [ -L "${src}" ]; then
+    echo "refusing to move symlink: ${src}" >&2
+    exit 1
+  fi
+  [ -e "${src}" ] || return 0
+  if [ -e "${dest}" ]; then
+    echo "backup destination already exists: ${dest}" >&2
+    exit 1
+  fi
+  mv -- "${src}" "${dest}"
+  echo "moved ${src} -> ${dest}"
+}
+
+# 2. Validate the target before moving anything: it must be an existing git repository root
+cd -- "${target}"
+toplevel="$(git rev-parse --show-toplevel)"
+if [ "${toplevel}" != "$(pwd -P)" ]; then
+  echo "not at a repository root: $(pwd -P) (git top-level: ${toplevel})" >&2
+  exit 1
+fi
+
+# 3. User-level paths: settings, OAuth, MCP config, session history
+move_into_backup "${HOME}/.claude"      "dot-claude"
+move_into_backup "${HOME}/.claude.json" "dot-claude.json"
+
+# 4. Project-side paths (we are at the verified repository root)
+move_into_backup ".claude"   "project-dot-claude"
+move_into_backup ".mcp.json" "project-mcp.json"
+
+# 5. Nothing has been deleted. Remove the backup explicitly once you are sure it is no longer needed:
+echo "done. To discard the backup later, run: rm -r -- \"${backup}\""
 ```
 
 > **Note**: The official docs do not document a command for removing the native binary/version files themselves — the location differs by install method (native installer / Homebrew / WinGet / npm) and isn't specified.
