@@ -97,7 +97,7 @@ claude project purge --all      # purge every project, including history.jsonl
 
 > **警告**: Removing `~/.claude`, `~/.claude.json`, the project's `.claude/`, and `.mcp.json` deletes all settings, allowed tools, MCP configuration, and session history. Not reversible. These four paths are only safe to delete as part of an explicit uninstall (per setup.md's Notes) — during normal operation, manually deleting `~/.claude.json`, `~/.claude/settings.json`, or `~/.claude/plugins/` is explicitly discouraged (claude-directory.md).
 
-Uninstalling requires removing the binary/version files first, then optionally the four paths below. Do not run a blanket recursive delete on these paths. Save the following as a script (for example `uninstall-claude-config.sh`) and run it with the target repository as its argument: it creates a fresh, exclusive backup directory, refuses symlinks, verifies it is at the repository root before touching project files, and moves (never deletes) each path so the operation stays reversible.
+Uninstalling requires removing the binary/version files first, then optionally the four paths below. Do not run a blanket recursive delete on these paths. Save the following as a script (for example `uninstall-claude-config.sh`) and run it with the target repository as its argument: it verifies the repository root first, creates a fresh exclusive backup directory, preflights all four paths (no symlinks, no pre-existing destination, writable parent) before touching anything, then moves (never deletes) each path — and if any move fails, it rolls back the moves already made so the live configuration is never left half-removed.
 
 ```bash
 #!/usr/bin/env bash
@@ -106,27 +106,7 @@ set -euo pipefail
 
 target="${1:?usage: $0 /path/to/target-repo}"
 
-# 1. Create an exclusive, fresh backup directory (mktemp fails instead of reusing an existing one)
-backup="$(mktemp -d "${HOME}/claude-uninstall-backup-XXXXXX")"
-echo "backup directory: ${backup}"
-
-# move_into_backup <path> <destination-name>: refuse symlinks, refuse to overwrite, then move
-move_into_backup() {
-  local src="$1" dest="${backup}/$2"
-  if [ -L "${src}" ]; then
-    echo "refusing to move symlink: ${src}" >&2
-    exit 1
-  fi
-  [ -e "${src}" ] || return 0
-  if [ -e "${dest}" ]; then
-    echo "backup destination already exists: ${dest}" >&2
-    exit 1
-  fi
-  mv -- "${src}" "${dest}"
-  echo "moved ${src} -> ${dest}"
-}
-
-# 2. Validate the target before moving anything: it must be an existing git repository root
+# 1. Validate the target before touching anything: it must be an existing git repository root
 cd -- "${target}"
 toplevel="$(git rev-parse --show-toplevel)"
 if [ "${toplevel}" != "$(pwd -P)" ]; then
@@ -134,13 +114,54 @@ if [ "${toplevel}" != "$(pwd -P)" ]; then
   exit 1
 fi
 
-# 3. User-level paths: settings, OAuth, MCP config, session history
-move_into_backup "${HOME}/.claude"      "dot-claude"
-move_into_backup "${HOME}/.claude.json" "dot-claude.json"
+# 2. Create an exclusive, fresh backup directory (mktemp fails instead of reusing an existing one)
+backup="$(mktemp -d "${HOME}/claude-uninstall-backup-XXXXXX")"
+echo "backup directory: ${backup}"
 
-# 4. Project-side paths (we are at the verified repository root)
-move_into_backup ".claude"   "project-dot-claude"
-move_into_backup ".mcp.json" "project-mcp.json"
+# The four paths, user-level first, then project-side (we are at the verified repository root)
+sources=("${HOME}/.claude" "${HOME}/.claude.json" "${PWD}/.claude" "${PWD}/.mcp.json")
+names=(dot-claude dot-claude.json project-dot-claude project-mcp.json)
+
+# 3. Preflight every path BEFORE any move: refuse symlinks, refuse to overwrite, require a writable parent
+for i in "${!sources[@]}"; do
+  src="${sources[$i]}"; dest="${backup}/${names[$i]}"
+  if [ -L "${src}" ]; then
+    echo "refusing to move symlink: ${src}" >&2
+    exit 1
+  fi
+  [ -e "${src}" ] || continue
+  if [ -e "${dest}" ]; then
+    echo "backup destination already exists: ${dest}" >&2
+    exit 1
+  fi
+  if [ ! -w "$(dirname -- "${src}")" ]; then
+    echo "cannot move ${src}: parent directory is not writable" >&2
+    exit 1
+  fi
+done
+
+# 4. Move with rollback: if any mv fails, everything moved so far is put back in reverse order
+moved_src=(); moved_dest=()
+rollback() {
+  local i
+  echo "a move failed; restoring already-moved paths" >&2
+  for (( i = ${#moved_src[@]} - 1; i >= 0; i-- )); do
+    if mv -- "${moved_dest[$i]}" "${moved_src[$i]}"; then
+      echo "restored ${moved_src[$i]}" >&2
+    else
+      echo "ROLLBACK FAILED: restore ${moved_dest[$i]} -> ${moved_src[$i]} manually" >&2
+    fi
+  done
+}
+trap rollback ERR
+for i in "${!sources[@]}"; do
+  src="${sources[$i]}"; dest="${backup}/${names[$i]}"
+  [ -e "${src}" ] || continue
+  mv -- "${src}" "${dest}"
+  moved_src+=("${src}"); moved_dest+=("${dest}")
+  echo "moved ${src} -> ${dest}"
+done
+trap - ERR
 
 # 5. Nothing has been deleted. Remove the backup explicitly once you are sure it is no longer needed:
 echo "done. To discard the backup later, run: rm -r -- \"${backup}\""
