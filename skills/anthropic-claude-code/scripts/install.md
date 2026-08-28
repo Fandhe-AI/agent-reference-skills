@@ -143,17 +143,26 @@ done
 # 4. Move with rollback: if any mv fails, or the script is interrupted (Ctrl+C / SIGTERM),
 #    everything moved so far is put back in reverse order
 moved_src=(); moved_dest=()
+pending_src=""; pending_dest=""   # the move in flight (bash runs traps only after it finishes)
+restore_one() {
+  if [ -e "$1" ]; then
+    echo "ROLLBACK SKIPPED: $1 exists again; check $2 manually" >&2
+  elif [ ! -e "$2" ]; then
+    :   # never moved
+  elif mv -- "$2" "$1"; then
+    echo "restored $1" >&2
+  else
+    echo "ROLLBACK FAILED: restore $2 -> $1 manually" >&2
+  fi
+}
 rollback() {
   local i
   echo "move aborted; restoring already-moved paths" >&2
+  if [ -n "${pending_src}" ]; then
+    restore_one "${pending_src}" "${pending_dest}"
+  fi
   for (( i = ${#moved_src[@]} - 1; i >= 0; i-- )); do
-    if [ -e "${moved_src[$i]}" ]; then
-      echo "ROLLBACK SKIPPED: ${moved_src[$i]} exists again; check ${moved_dest[$i]} manually" >&2
-    elif mv -- "${moved_dest[$i]}" "${moved_src[$i]}"; then
-      echo "restored ${moved_src[$i]}" >&2
-    else
-      echo "ROLLBACK FAILED: restore ${moved_dest[$i]} -> ${moved_src[$i]} manually" >&2
-    fi
+    restore_one "${moved_src[$i]}" "${moved_dest[$i]}"
   done
 }
 on_signal() { trap - ERR INT TERM; rollback; exit 130; }
@@ -162,8 +171,10 @@ trap on_signal INT TERM
 for i in "${!sources[@]}"; do
   src="${sources[$i]}"; dest="${backup}/${names[$i]}"
   [ -e "${src}" ] || continue
+  pending_src="${src}"; pending_dest="${dest}"
   mv -- "${src}" "${dest}"
   moved_src+=("${src}"); moved_dest+=("${dest}")
+  pending_src=""; pending_dest=""
   echo "moved ${src} -> ${dest}"
 done
 trap - ERR INT TERM
