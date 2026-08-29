@@ -97,11 +97,13 @@ sudo apk add --no-cache bash curl
 setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.alpine.XXXXXX")" \
   && curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.alpine.sh' -o "${setup}" \
   && cat "${setup}" \
-  || { rm -f -- "${setup:-}"; echo "download failed; nothing was executed" >&2; }
+  || { rm -f -- "${setup:-}"; unset setup; echo "download failed; nothing was executed" >&2; false; }
 
-# Step 2 - only after you have read the script above and decided to proceed, run it as root yourself:
-sudo -E bash "${setup}"; rm -f -- "${setup}"
-sudo apk add lefthook
+# Step 2 - only after you have read the script above and decided to proceed, run it as root yourself.
+# The temp file is removed afterwards and the setup script's own exit status is preserved;
+# the package install below runs only if the repository setup succeeded.
+[ -s "${setup:-}" ] && sudo -E bash "${setup}"; status=$?; rm -f -- "${setup:-}"; [ "${status}" -eq 0 ] \
+  && sudo apk add lefthook
 ```
 
 ## Debian / Ubuntu (apt)
@@ -112,11 +114,13 @@ sudo apk add lefthook
 setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.deb.XXXXXX")" \
   && curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' -o "${setup}" \
   && cat "${setup}" \
-  || { rm -f -- "${setup:-}"; echo "download failed; nothing was executed" >&2; }
+  || { rm -f -- "${setup:-}"; unset setup; echo "download failed; nothing was executed" >&2; false; }
 
-# Step 2 - only after you have read the script above and decided to proceed, run it as root yourself:
-sudo -E bash "${setup}"; rm -f -- "${setup}"
-sudo apt install lefthook
+# Step 2 - only after you have read the script above and decided to proceed, run it as root yourself.
+# The temp file is removed afterwards and the setup script's own exit status is preserved;
+# the package install below runs only if the repository setup succeeded.
+[ -s "${setup:-}" ] && sudo -E bash "${setup}"; status=$?; rm -f -- "${setup:-}"; [ "${status}" -eq 0 ] \
+  && sudo apt install lefthook
 ```
 
 ## CentOS / Fedora (yum)
@@ -127,11 +131,13 @@ sudo apt install lefthook
 setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.rpm.XXXXXX")" \
   && curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.rpm.sh' -o "${setup}" \
   && cat "${setup}" \
-  || { rm -f -- "${setup:-}"; echo "download failed; nothing was executed" >&2; }
+  || { rm -f -- "${setup:-}"; unset setup; echo "download failed; nothing was executed" >&2; false; }
 
-# Step 2 - only after you have read the script above and decided to proceed, run it as root yourself:
-sudo -E bash "${setup}"; rm -f -- "${setup}"
-sudo yum install lefthook
+# Step 2 - only after you have read the script above and decided to proceed, run it as root yourself.
+# The temp file is removed afterwards and the setup script's own exit status is preserved;
+# the package install below runs only if the repository setup succeeded.
+[ -s "${setup:-}" ] && sudo -E bash "${setup}"; status=$?; rm -f -- "${setup:-}"; [ "${status}" -eq 0 ] \
+  && sudo yum install lefthook
 ```
 
 ## Mise

@@ -14,10 +14,12 @@ CentOS / Fedora 等の RPM ベースのディストリビューションに Left
 setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.rpm.XXXXXX")" \
   && curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.rpm.sh' -o "${setup}" \
   && cat "${setup}" \
-  || { rm -f -- "${setup:-}"; echo "download failed; nothing was executed" >&2; }
+  || { rm -f -- "${setup:-}"; unset setup; echo "download failed; nothing was executed" >&2; false; }
 
-# Step 2 - only after you have read the script above and decided to proceed, run it as root yourself:
-sudo -E bash "${setup}"; rm -f -- "${setup}"
+# Step 2 - only after you have read the script above and decided to proceed, run it as root yourself.
+# The temp file is removed afterwards and the setup script's own exit status is preserved.
+[ -s "${setup:-}" ] && sudo -E bash "${setup}"; status=$?; rm -f -- "${setup:-}"; [ "${status}" -eq 0 ] \
+  || { echo "repository setup did not complete (exit ${status})" >&2; false; }
 ```
 
 ### 2. パッケージのインストール

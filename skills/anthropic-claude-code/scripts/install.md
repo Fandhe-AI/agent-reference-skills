@@ -15,10 +15,12 @@ Install, verify, update, and uninstall Claude Code across macOS, Linux, WSL, and
 installer="$(mktemp "${TMPDIR:-/tmp}/claude-install.XXXXXX")" \
   && curl -fsSL https://claude.ai/install.sh -o "${installer}" \
   && cat "${installer}" \
-  || { rm -f -- "${installer:-}"; echo "download failed; nothing was executed" >&2; }
+  || { rm -f -- "${installer:-}"; unset installer; echo "download failed; nothing was executed" >&2; false; }
 
-# Step 2 - only after you have read the script above and decided to proceed, run it yourself:
-bash "${installer}"; rm -f -- "${installer}"
+# Step 2 - only after you have read the script above and decided to proceed, run it yourself.
+# The temp file is removed afterwards and the installer's own exit status is preserved.
+[ -s "${installer:-}" ] && bash "${installer}"; status=$?; rm -f -- "${installer:-}"; [ "${status}" -eq 0 ] \
+  || { echo "installer did not complete (exit ${status})" >&2; false; }
 ```
 
 ## Homebrew（macOS）
