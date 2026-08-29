@@ -21,7 +21,11 @@ setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.alpine.XXXXXX")" \
   && curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.alpine.sh' -o "${setup}" \
   && cat "${setup}" \
   || { rm -f -- "${setup:-}"; unset setup; echo "download failed; nothing was executed" >&2; false; }
+```
 
+上で表示されたスクリプトの内容を確認する。次のブロックは、内容を読んで実行すると判断した場合にのみ実行する（上のブロックをコピーしただけでは何も実行されないよう、手順を分けている）。
+
+```bash
 # Step 2 - only after you have read the script above and decided to proceed, run it as root yourself.
 # The temp file is removed afterwards; the final status is the setup script's own exit status.
 if [ -s "${setup:-}" ]; then

@@ -16,7 +16,11 @@ installer="$(mktemp "${TMPDIR:-/tmp}/claude-install.XXXXXX")" \
   && curl -fsSL https://claude.ai/install.sh -o "${installer}" \
   && cat "${installer}" \
   || { rm -f -- "${installer:-}"; unset installer; echo "download failed; nothing was executed" >&2; false; }
+```
 
+Read the script printed above. Run the next block only if you have reviewed it and decided to proceed — it is a separate step so that copying the block above never executes anything.
+
+```bash
 # Step 2 - only after you have read the script above and decided to proceed, run it yourself.
 # The temp file is removed afterwards; the final status is the installer's own exit status.
 if [ -s "${installer:-}" ]; then

@@ -98,7 +98,11 @@ setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.alpine.XXXXXX")" \
   && curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.alpine.sh' -o "${setup}" \
   && cat "${setup}" \
   || { rm -f -- "${setup:-}"; unset setup; echo "download failed; nothing was executed" >&2; false; }
+```
 
+Read the script printed above. Run the next block only if you have reviewed it and decided to proceed — it is a separate step so that copying the block above never executes anything.
+
+```sh
 # Step 2 - only after you have read the script above and decided to proceed, run it as root yourself.
 # The temp file is removed afterwards; the final status is the setup script's own exit status;
 # the package install below runs only if the repository setup succeeded.
@@ -119,7 +123,11 @@ setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.deb.XXXXXX")" \
   && curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' -o "${setup}" \
   && cat "${setup}" \
   || { rm -f -- "${setup:-}"; unset setup; echo "download failed; nothing was executed" >&2; false; }
+```
 
+Read the script printed above. Run the next block only if you have reviewed it and decided to proceed — it is a separate step so that copying the block above never executes anything.
+
+```sh
 # Step 2 - only after you have read the script above and decided to proceed, run it as root yourself.
 # The temp file is removed afterwards; the final status is the setup script's own exit status;
 # the package install below runs only if the repository setup succeeded.
@@ -140,7 +148,11 @@ setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.rpm.XXXXXX")" \
   && curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.rpm.sh' -o "${setup}" \
   && cat "${setup}" \
   || { rm -f -- "${setup:-}"; unset setup; echo "download failed; nothing was executed" >&2; false; }
+```
 
+Read the script printed above. Run the next block only if you have reviewed it and decided to proceed — it is a separate step so that copying the block above never executes anything.
+
+```sh
 # Step 2 - only after you have read the script above and decided to proceed, run it as root yourself.
 # The temp file is removed afterwards; the final status is the setup script's own exit status;
 # the package install below runs only if the repository setup succeeded.
