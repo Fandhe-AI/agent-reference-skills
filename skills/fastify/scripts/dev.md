@@ -1,5 +1,5 @@
 ---
-source: https://github.com/fastify/fastify-cli/blob/main/README.md, https://raw.githubusercontent.com/fastify/fastify-cli/v8.0.0/args.js, https://raw.githubusercontent.com/fastify/fastify-cli/v8.0.0/start.js
+source: https://github.com/fastify/fastify-cli/blob/v8.0.0/README.md, https://raw.githubusercontent.com/fastify/fastify-cli/v8.0.0/args.js, https://raw.githubusercontent.com/fastify/fastify-cli/v8.0.0/start.js
 ---
 
 # dev

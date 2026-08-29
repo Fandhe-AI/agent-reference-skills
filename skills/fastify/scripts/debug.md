@@ -1,5 +1,5 @@
 ---
-source: https://github.com/fastify/fastify-cli/blob/main/README.md
+source: https://github.com/fastify/fastify-cli/blob/v8.0.0/README.md
 ---
 
 # debug

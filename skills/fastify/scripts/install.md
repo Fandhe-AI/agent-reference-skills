@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/fastify/fastify/v5.12.1/docs/Guides/Getting-Started.md, https://raw.githubusercontent.com/fastify/fastify/v5.12.1/docs/Reference/TypeScript.md, https://github.com/fastify/fastify-cli/blob/main/README.md, https://raw.githubusercontent.com/fastify/fastify-type-provider-typebox/main/README.md
+source: https://raw.githubusercontent.com/fastify/fastify/v5.12.1/docs/Guides/Getting-Started.md, https://raw.githubusercontent.com/fastify/fastify/v5.12.1/docs/Reference/TypeScript.md, https://github.com/fastify/fastify-cli/blob/v8.0.0/README.md, https://raw.githubusercontent.com/fastify/fastify-type-provider-typebox/v6.1.0/README.md
 ---
 
 # install
