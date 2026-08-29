@@ -35,8 +35,8 @@ const errorCodes = require('fastify').errorCodes
 | `FST_ERR_CTP_BODY_TOO_LARGE` | The request body is larger than the provided limit. | Increase the limit in the Fastify server instance setting: [bodyLimit](../server/factory-options.md) | [#1168](https://github.com/fastify/fastify/pull/1168) |
 | `FST_ERR_CTP_INVALID_MEDIA_TYPE` | The received media type is not supported (i.e. there is no suitable `Content-Type` parser for it). | Use a different content type. | [#1168](https://github.com/fastify/fastify/pull/1168) |
 | `FST_ERR_CTP_INVALID_CONTENT_LENGTH` | Request body size did not match `Content-Length`. | Check the request body size and the `Content-Length` header. | [#1168](https://github.com/fastify/fastify/pull/1168) |
-| `FST_ERR_CTP_EMPTY_JSON_BODY` | Body is not valid JSON but content-type is set to `application/json`. | Check if the request body is valid JSON. | [#5925](https://github.com/fastify/fastify/pull/5925) |
-| `FST_ERR_CTP_INVALID_JSON_BODY` | Body cannot be empty when content-type is set to `application/json`. | Check the request body. | [#1253](https://github.com/fastify/fastify/pull/1253) |
+| `FST_ERR_CTP_EMPTY_JSON_BODY` | Body cannot be empty when content-type is set to `application/json`. | Check the request body. | [#1253](https://github.com/fastify/fastify/pull/1253) |
+| `FST_ERR_CTP_INVALID_JSON_BODY` | Body is not valid JSON but content-type is set to `application/json`. | Check if the request body is valid JSON. | [#5925](https://github.com/fastify/fastify/pull/5925) |
 | `FST_ERR_CTP_INSTANCE_ALREADY_STARTED` | Fastify is already started. | - | [#4554](https://github.com/fastify/fastify/pull/4554) |
 | `FST_ERR_INSTANCE_ALREADY_LISTENING` | Fastify instance is already listening. | - | [#4554](https://github.com/fastify/fastify/pull/4554) |
 | `FST_ERR_DEC_ALREADY_PRESENT` | A decorator with the same name is already registered. | Use a different decorator name. | [#1168](https://github.com/fastify/fastify/pull/1168) |
@@ -121,6 +121,7 @@ const errorCodes = require('fastify').errorCodes
 - Every code is a subclass of `Error` reachable via `Fastify.errorCodes.<CODE_NAME>` for `instanceof` matching (see [error-handling](./error-handling.md)).
 - Several codes are logger-configuration guards introduced for the v5 `logger` / `loggerInstance` split (`FST_ERR_LOG_INVALID_LOGGER_INSTANCE`, `FST_ERR_LOG_INVALID_LOGGER_CONFIG`, `FST_ERR_LOG_LOGGER_AND_LOGGER_INSTANCE_PROVIDED`) — see [logging](./logging.md) `## Notes` for the v4 → v5 change.
 - `FST_ERR_ERROR_HANDLER_ALREADY_SET`'s upstream "How to solve" text on `docs/Reference/Errors.md` ("By default, `setErrorHandler` can only be called once per encapsulation context") does not match `docs/Reference/Server.md`'s `allowErrorHandlerOverride` section, which states the factory default is `true` (multiple calls allowed) and the restrictive behavior only applies when it is explicitly set to `false`. The table cell above has been corrected to match the verified `Server.md` default rather than the outdated `Errors.md` wording.
+- The upstream `Errors.md` table (v5.12.1) lists the descriptions of `FST_ERR_CTP_EMPTY_JSON_BODY` and `FST_ERR_CTP_INVALID_JSON_BODY` swapped; this page follows the messages defined in `lib/errors.js`.
 
 ## Related
 
