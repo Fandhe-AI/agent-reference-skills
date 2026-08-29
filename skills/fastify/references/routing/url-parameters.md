@@ -16,11 +16,11 @@ fastify.get('/example/:userId', function (request, reply) {
   const { userId } = request.params;
   // your code here
 })
-fastify.get('/example/:userId/:secretToken', function (request, reply) {
+fastify.get('/example/:userId/:postId', function (request, reply) {
   // curl ${app-url}/example/12345/abc.zHi
   // userId === '12345'
-  // secretToken === 'abc.zHi'
-  const { userId, secretToken } = request.params;
+  // postId === 'abc.zHi'
+  const { userId, postId } = request.params;
   // your code here
 })
 
@@ -86,6 +86,7 @@ fastify.post('/name::verb') // will be interpreted as /name:verb
 
 - Having a route with multiple parameters may negatively affect performance. Prefer a single parameter approach, especially on routes on the hot path of the application (see find-my-way).
 - Security: Fastify (via find-my-way) percent-decodes route parameters and wildcards before they reach the handler. Encoded separators in a segment are decoded in the parameter value: for a route `/download/:file`, a request to `/download/..%2fsecret.txt` yields `request.params.file === '../secret.txt'`. Parameters are untrusted input — do not pass them to `path.join`, `fs` APIs, template engines, or redirects without validation or path containment. To serve files from a directory root, use `@fastify/static` instead of joining `request.params` into a filesystem path directly. See also Request.
+- The upstream example names the second segment `secretToken`; it is renamed here because credentials must not travel in URL paths (they leak into access logs, proxies, and browser history) — carry them in the `Authorization` header or a validated cookie instead.
 
 ## Related
 

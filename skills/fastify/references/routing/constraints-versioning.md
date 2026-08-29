@@ -58,7 +58,7 @@ RegExp `host` constraints can also be specified, allowing constraining to hosts 
 fastify.route({
   method: 'GET',
   url: '/',
-  constraints: { host: /.*\.fastify\.example/ }, // will match any subdomain of fastify.dev
+  constraints: { host: /^.+\.fastify\.example$/ }, // will match any subdomain of fastify.example
   handler: function (request, reply) {
     reply.send('hello world from ' + request.headers.host)
   }
@@ -113,6 +113,7 @@ const secret = {
   ```
 - When using asynchronous constraints, avoid returning errors inside the callback; if unavoidable, provide a custom `frameworkErrors` handler, otherwise route selection may break or expose sensitive information.
 - **v4 → v5**: the signature for route versioning constraints changed. The `version` and `versioning` options have been removed; use the `constraints` option instead. `FSTDEP008` (route-level `{version: "..."}`) → use `{constraints: {version: "..."}}`. `FSTDEP009` (server-level `{versioning: "..."}`) → use `{constraints: {version: "..."}}`.
+- Anchor host-constraint regexes (`^...$`); the upstream example's unanchored `/.*\.fastify\.example/` also matches `foo.fastify.example.attacker.test`, so a tenant/admin routing constraint could be bypassed.
 
 ## Related
 
