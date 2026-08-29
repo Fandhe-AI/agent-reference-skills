@@ -56,7 +56,7 @@ const fastify = Fastify({
         return {
           method: req.method,
           url: req.url,
-          headers: req.headers,
+          headers: { 'user-agent': req.headers['user-agent'] },
           host: req.host,
           remoteAddress: req.ip,
           remotePort: req.socket.remotePort
@@ -104,6 +104,7 @@ fastify.listen({ port: 3000 })
 - If a route `logLevel` is invalid, Fastify throws `FST_ERR_ROUTE_LOG_LEVEL_INVALID` during route registration.
 - Setting `logLevel` at the plugin level also affects `setNotFoundHandler` and `setErrorHandler`.
 - The custom log level applies only to routes, not to the global Fastify logger accessible with `fastify.log`.
+- Do not log `req.headers` wholesale — it contains `Authorization` / `Cookie`; the upstream example is narrowed here. Prefer Pino `redact` for anything sensitive that must be logged.
 
 ## Related
 

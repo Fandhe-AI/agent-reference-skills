@@ -7,6 +7,8 @@ source: https://fastify.dev/docs/latest/Reference/Errors/
 Register a custom global error handler with `setErrorHandler` to pass through expected client errors and mask unexpected server errors.
 
 ```js
+const app = require('fastify')()
+
 app.setErrorHandler(function (error, request, reply) {
   if (error.validation || (error.statusCode && error.statusCode < 500)) {
     return reply.send(error)

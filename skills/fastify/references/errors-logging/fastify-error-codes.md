@@ -32,7 +32,7 @@ const errorCodes = require('fastify').errorCodes
 | `FST_ERR_CTP_EMPTY_TYPE` | `Content-Type` is an empty string. | `Content-Type` cannot be an empty string. | [#1168](https://github.com/fastify/fastify/pull/1168) |
 | `FST_ERR_CTP_INVALID_HANDLER` | Invalid handler for the content type. | Use a different handler. | [#1168](https://github.com/fastify/fastify/pull/1168) |
 | `FST_ERR_CTP_INVALID_PARSE_TYPE` | The provided parse type is not supported. | Accepted values are `string` or `buffer`. | [#1168](https://github.com/fastify/fastify/pull/1168) |
-| `FST_ERR_CTP_BODY_TOO_LARGE` | The request body is larger than the provided limit. | Increase the limit in the Fastify server instance setting: [bodyLimit](./logging.md) | [#1168](https://github.com/fastify/fastify/pull/1168) |
+| `FST_ERR_CTP_BODY_TOO_LARGE` | The request body is larger than the provided limit. | Increase the limit in the Fastify server instance setting: [bodyLimit](../server/factory-options.md) | [#1168](https://github.com/fastify/fastify/pull/1168) |
 | `FST_ERR_CTP_INVALID_MEDIA_TYPE` | The received media type is not supported (i.e. there is no suitable `Content-Type` parser for it). | Use a different content type. | [#1168](https://github.com/fastify/fastify/pull/1168) |
 | `FST_ERR_CTP_INVALID_CONTENT_LENGTH` | Request body size did not match `Content-Length`. | Check the request body size and the `Content-Length` header. | [#1168](https://github.com/fastify/fastify/pull/1168) |
 | `FST_ERR_CTP_EMPTY_JSON_BODY` | Body is not valid JSON but content-type is set to `application/json`. | Check if the request body is valid JSON. | [#5925](https://github.com/fastify/fastify/pull/5925) |

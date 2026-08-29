@@ -7,6 +7,8 @@ source: https://fastify.dev/docs/latest/Reference/Validation-and-Serialization/
 Validate request body and querystring against JSON Schema definitions attached to a route's `schema` option (compiled with Ajv).
 
 ```js
+const fastify = require('fastify')()
+
 const bodyJsonSchema = {
   type: 'object',
   required: ['name'],

@@ -11,7 +11,7 @@ const fastify = require('fastify')({
   logger: true
 })
 
-fastify.get('/', options, function (request, reply) {
+fastify.get('/', function (request, reply) {
   request.log.info('Some info about the current request')
   reply.send({ hello: 'world' })
 })

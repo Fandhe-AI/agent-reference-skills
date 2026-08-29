@@ -7,6 +7,8 @@ source: https://fastify.dev/docs/latest/Reference/Decorators/
 Extend the Fastify server, request, and reply instances with custom properties/methods using `decorate`, `decorateRequest`, and `decorateReply`.
 
 ```js
+const fastify = require('fastify')()
+
 fastify.decorate('utility', function () {
   // Something very useful
 })

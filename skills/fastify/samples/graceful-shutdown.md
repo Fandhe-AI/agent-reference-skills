@@ -24,16 +24,24 @@ const delay = (routes) =>
     done()
   }
 
-async function setup(fastify) {
+// replace with your real client
+const provider = {
+  thirdPartyMagicKeyGenerator: () => Promise.resolve('example-key')
+}
+
+async function setup (fastify) {
+  fastify.decorate('magicKey', null)
+
   fastify.server.on('listening', () => {
-    provider.thirdPartyMagicKeyGenerator(5000)
+    provider.thirdPartyMagicKeyGenerator()
+      .then((key) => {
+        fastify.magicKey = key
+      })
       .catch((error) => {
         fastify.log.error({ error })
         fastify.close(() => process.exit(1))
       })
   })
-
-  fastify.decorate('magicKey')
 }
 
 module.exports = {
@@ -55,5 +63,7 @@ app.addHook('onRequest', async (request, reply) => {
 ## Notes
 
 - The upstream guide's example passes milliseconds to `Retry-After` and calls `next()` unconditionally after sending the 503, which double-sends/triggers "Reply was already sent"; this sample corrects both — `Retry-After` is in seconds (RFC 9110), `reply.send(...)` returns early, and `next()` runs only on the success path.
+- The upstream guide also leaves `provider` undefined and never assigns the generated key to `fastify.magicKey`, so requests would 503 forever; this sample adds a minimal self-contained `provider` stub (replace with your real client) and assigns the resolved key with `fastify.magicKey = key` so the server starts accepting requests once ready.
+- `fastify.decorate('magicKey', null)` gives an explicit non-reference initial value (Fastify v5 requires decorators to be initialized rather than left `undefined`); the `onRequest` guard treats `null` the same as "not ready yet".
 - `fastify.close(callback)` triggers the shutdown lifecycle (running `onClose` hooks) when initialization irrecoverably fails.
 - Listening for `close` on `request.raw` and checking `request.raw.aborted` detects a client disconnecting before the response was sent, so handlers can skip unnecessary work.

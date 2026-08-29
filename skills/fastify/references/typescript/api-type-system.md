@@ -129,12 +129,12 @@ All hook handler types share the generics `<RawServer, RawRequest, RawReply, Req
 
 | Name | Order | Description |
 |------|-------|-------------|
-| `fastify.onRequestHookHandler` | 1 | First hook; `request.body` is always `null` here |
-| `fastify.preParsingHookHandler` | 2 | `request.body` still `null`; returned stream should carry `receivedEncodedLength` |
+| `fastify.onRequestHookHandler` | 1 | First hook; `request.body` is always `undefined` here |
+| `fastify.preParsingHookHandler` | 2 | `request.body` still `undefined`; returned stream should carry `receivedEncodedLength` |
 | `fastify.preValidationHookHandler` | 3 | Runs before schema validation |
 | `fastify.preHandlerHookHandler` | 4 | Runs before the route handler |
 | `fastify.preSerializationHookHandler<PreSerializationPayload, ...>` | 5 | Not called if payload is a string, Buffer, stream, or null |
-| `fastify.onSendHookHandler<OnSendPayload, ...>` | 6 | May only change payload to a string, Buffer, stream, or null |
+| `fastify.onSendHookHandler<OnSendPayload, ...>` | 6 | May only change payload to a string, Buffer, stream, `ReadableStream`, `Response`, or null |
 | `fastify.onResponseHookHandler` | 7 (last) | Runs after the response is sent; cannot send more data to the client |
 | `fastify.onErrorHookHandler` | — | For logging/headers on error only; not for changing the error; runs before the custom error handler |
 | `fastify.onRouteHookHandler` | — | Synchronous; fires when a route is registered, receives `RouteOptions & { path, prefix }` |
@@ -146,6 +146,8 @@ All hook handler types share the generics `<RawServer, RawRequest, RawReply, Req
 - `FastifyPlugin` (unparameterized) is deprecated; use `FastifyPluginCallback` or `FastifyPluginAsync` instead, since `FastifyPlugin` cannot correctly infer types for async functions.
 - `FastifyRequestContext` / `FastifyReplyContext` are documented upstream as potentially incomplete.
 - `onErrorHookHandler`'s `done` callback does not accept an error argument, unlike the other lifecycle hooks.
+- `Request`'s constructor (`lib/request.js`) initializes `this.body = undefined`; `onRequest`/`preParsing` see `request.body` as `undefined`, not `null`.
+- `Reference/TypeScript.md`'s prose for `onSendHookHandler` lists only `string, Buffer, stream, or null`; `Reference/Hooks.md`'s `onSend` section additionally allows `ReadableStream` and `Response`. The table above follows the fuller `Hooks.md` list since `OnSendPayload` itself is an unconstrained generic (`unknown` by default) and the allowed set is a documentation-level (not type-level) constraint.
 
 ## Related
 

@@ -12,7 +12,6 @@ Configuration options accepted by the Fastify factory function (`require('fastif
 const fastify = require('fastify')({
   logger: true,
   bodyLimit: 1048576,
-  trustProxy: true,
   ajv: {
     customOptions: {
       removeAdditional: 'all'
@@ -45,7 +44,7 @@ const fastify = require('fastify')({
 | `requestIdHeader` | `false` | Header name used to read the request id. `true` uses `"request-id"`; empty string forces `false`. |
 | `requestIdLogLabel` | `'reqId'` | **Deprecated**, use `logController`. Label for request identifier in logs. |
 | `genReqId` | increasing integer or `request-id` header | `(rawReq) => id` function generating request ids. Not called if `requestIdHeader` value is present. |
-| `trustProxy` | `false` | Trust `X-Forwarded-*` headers: `true`/`false`, IP/CIDR string or array, or `(address, hop) => boolean`. Affects `request.ip`/`ips`/`host`/`protocol`. |
+| `trustProxy` | `false` | Trust `X-Forwarded-*` headers: `true`/`false`, IP/CIDR string or array, or `(address, hop) => boolean`. Affects `request.ip`/`ips`/`host`/`protocol`. Only enable behind a trusted reverse proxy — otherwise these headers can be spoofed by any client to bypass IP-based auth/rate limiting; prefer an explicit IP/CIDR list over `true`. |
 | `pluginTimeout` | `10000` | Max ms for a plugin to load (avvio `timeout`). `0` disables. |
 | `exposeHeadRoutes` | `true` | Auto-creates a sibling `HEAD` route for each `GET` route (define custom `HEAD` first to override). |
 | `return503OnClosing` | `true` | Requests arriving after `close()` get `503` + `Connection: close`; `false` processes them normally but still closes the connection. |

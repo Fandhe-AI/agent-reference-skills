@@ -7,16 +7,21 @@ source: https://fastify.dev/docs/latest/Reference/Hooks/
 Use the `preHandler` hook to run authentication logic before the route handler executes, short-circuiting the request on failure.
 
 ```js
-fastify.addHook('preHandler', (request, reply, done) => {
-  // some code
-  done()
-})
-```
+const fastify = require('fastify')()
 
-```js
+// replace with your real token/session verification (e.g. JWT verify, session store lookup)
+async function verifyToken (token) {
+  return token === 'valid-token'
+}
+
 fastify.addHook('preHandler', async (request, reply) => {
-  // Some code
-  await asyncMethod()
+  const authHeader = request.headers.authorization || ''
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
+
+  if (!token || !(await verifyToken(token))) {
+    reply.code(401)
+    throw new Error('Unauthorized')
+  }
 })
 ```
 
@@ -29,6 +34,7 @@ fastify.addHook('preHandler', (request, reply, done) => {
 
 ## Notes
 
-- Passing an `Error` to `done()` (or throwing/rejecting in an `async` hook) stops the request lifecycle and triggers the error handler.
-- Set `reply.code()` before calling `done(new Error(...))` so the intended status code is used.
+- Throwing (or rejecting) inside an `async` `preHandler` hook is equivalent to calling `done(new Error(...))` in the callback style — both stop the request lifecycle and trigger the error handler.
+- `verifyToken` is a stub; replace it with real token/session verification (JWT signature check, session store lookup, etc.) before using this pattern in production.
+- Set `reply.code()` before throwing/calling `done(new Error(...))` so the intended status code is used.
 - `preHandler` hooks can be scoped per-route via the route options `{ preHandler: fn }` instead of applying globally with `addHook`.

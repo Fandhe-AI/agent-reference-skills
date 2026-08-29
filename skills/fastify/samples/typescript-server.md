@@ -29,11 +29,20 @@ const bodyJsonSchema = {
   }
 }
 
+// replace with your real credential check (e.g. a DB lookup + password hash compare)
+async function verifyCredentials (username: string, password: string): Promise<boolean> {
+  return username === 'demo' && password === 'demo-password'
+}
+
 server.post<{
   Body: IBody,
   Reply: IReply
 }>('/auth', { schema: { body: bodyJsonSchema } }, async (request, reply) => {
   const { username, password } = request.body
+  const ok = await verifyCredentials(username, password)
+  if (!ok) {
+    return reply.code(401).send({ error: 'Unauthorized' })
+  }
   reply.code(200).send({ success: true })
 })
 
@@ -50,5 +59,6 @@ server.listen({ port: 8080 }, (err, address) => {
 
 - Generic parameters (`Querystring`, `Body`, `Params`, `Reply`, `Headers`) give `request`/`reply` typed access, but only the `schema` option performs runtime validation (see `validation-json-schema.md`).
 - Credentials must never be carried in `Querystring`/`Params` (they end up in URLs, access logs, and browser history) — this sample adapts the upstream `TypeScript.md` `Querystring` example into a `POST` + `Body` + JSON Schema form for that reason.
+- `verifyCredentials` is a stub for demonstrating the generic types; replace it with a real check (hashed password comparison, DB/session lookup) — never compare plaintext passwords like this in production.
 - For schema-driven type inference (validation + types from one source), prefer a type provider — see `type-provider-typebox.md`.
-- `reply.code(200).send(...)` payload shape is checked against the declared `Reply` interface.
+- `reply.code(200).send(...)` / `reply.code(401).send(...)` payload shapes are checked against the declared `Reply` interface.

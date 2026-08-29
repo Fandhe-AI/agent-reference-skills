@@ -10,23 +10,24 @@ Encapsulate a database client as a `fastify-plugin`, decorating the instance wit
 const fp = require('fastify-plugin')
 const mysql = require('mysql2/promise')
 
-function fastifyMysql(fastify, options, done) {
-  const connection = mysql.createConnection(options)
+async function fastifyMysql (fastify, options) {
+  const connection = await mysql.createConnection(options)
 
   if (!fastify.mysql) {
     fastify.decorate('mysql', connection)
   }
 
-  fastify.addHook('onClose', (fastify, done) => connection.end().then(done).catch(done))
-
-  done()
+  fastify.addHook('onClose', async (instance) => {
+    await instance.mysql.end()
+  })
 }
 
-export default fp(fastifyMysql, { name: 'fastify-mysql-example' })
+module.exports = fp(fastifyMysql, { name: 'fastify-mysql-example' })
 ```
 
 ## Notes
 
 - Wrapping with `fastify-plugin` (`fp`) exposes `fastify.mysql` on the parent instance instead of encapsulating it inside the plugin's own context.
-- The `onClose` hook ensures the connection is closed cleanly when `fastify.close()` runs, avoiding dangling connections during shutdown.
+- Fastify plugins may be `async function (fastify, options)`; no `done` callback is needed and the returned promise is awaited before the next plugin registers.
+- `mysql2/promise`'s `createConnection()` returns a promise, so it must be `await`-ed before decorating; the `onClose` hook likewise `await`s `instance.mysql.end()` (a promise-based connection has no synchronous `.end()`), ensuring the connection closes cleanly when `fastify.close()` runs.
 - Guarding with `if (!fastify.mysql)` prevents double-decoration if the plugin is accidentally registered twice.

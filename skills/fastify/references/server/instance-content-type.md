@@ -9,7 +9,9 @@ Methods for inspecting, adding, and removing content-type parsers on a Fastify i
 ## Signature / Usage
 
 ```js
-fastify.addContentTypeParser('text/json', { asString: true }, fastify.getDefaultJsonParser('ignore', 'ignore'))
+// 'error' matches the default onProtoPoisoning/onConstructorPoisoning behavior;
+// only pass 'ignore' if you understand it disables prototype-poisoning protection
+fastify.addContentTypeParser('text/json', { asString: true }, fastify.getDefaultJsonParser('error', 'error'))
 fastify.hasContentTypeParser('text/json')
 fastify.removeContentTypeParser('application/json')
 ```

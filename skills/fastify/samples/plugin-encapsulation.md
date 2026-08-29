@@ -20,14 +20,14 @@ fastify.register(fp(async function sharedContext (childServer) {
   })
 }))
 
-await fastify.ready()
-
-console.log(fastify.foo) // 'foo'
-console.log(fastify.bar) // undefined
+fastify.ready().then(() => {
+  console.log(fastify.foo) // 'foo'
+  console.log(fastify.bar) // undefined
+})
 ```
 
 ## Notes
 
 - Wrapping the outer plugin with `fastify-plugin` breaks encapsulation for that plugin, exposing `foo` on the root instance.
 - The nested `register()` call still creates its own encapsulated context, so `bar` is only visible inside `encapsulatedContext` and its children.
-- Always call `fastify.ready()` (or `listen()`) before inspecting decorators added asynchronously by plugins.
+- `fastify.ready()` returns a promise; this sample uses `.then()` instead of top-level `await` because the file is CommonJS (`require`), where top-level `await` is not available.

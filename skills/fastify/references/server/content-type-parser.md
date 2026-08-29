@@ -53,7 +53,7 @@ fastify.addContentTypeParser('*', function (request, payload, done) {
   done()
 })
 
-app.post('/hello', (request, reply) => {
+fastify.post('/hello', (request, reply) => {
   reply.send(request.raw)
 })
 ```

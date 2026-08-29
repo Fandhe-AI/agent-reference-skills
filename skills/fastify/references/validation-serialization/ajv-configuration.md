@@ -50,10 +50,10 @@ fastify.setValidatorCompiler(({ schema, method, url, httpPart }) => {
 
 ```js
 const schemaCompilers = {
-  body: new Ajv({ removeAdditional: false, coerceTypes: false, allErrors: true }),
-  params: new Ajv({ removeAdditional: false, coerceTypes: true, allErrors: true }),
-  querystring: new Ajv({ removeAdditional: false, coerceTypes: true, allErrors: true }),
-  headers: new Ajv({ removeAdditional: false, coerceTypes: true, allErrors: true })
+  body: new Ajv({ removeAdditional: false, coerceTypes: false, allErrors: false }),
+  params: new Ajv({ removeAdditional: false, coerceTypes: true, allErrors: false }),
+  querystring: new Ajv({ removeAdditional: false, coerceTypes: true, allErrors: false }),
+  headers: new Ajv({ removeAdditional: false, coerceTypes: true, allErrors: false })
 }
 
 server.setValidatorCompiler(req => {
