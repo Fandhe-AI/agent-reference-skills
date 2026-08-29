@@ -12,7 +12,7 @@ CentOS / Fedora 等の RPM ベースのディストリビューションに Left
 setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.rpm.XXXXXX")"   # exclusive temp file: never overwrites an existing file
 trap 'rm -f -- "${setup}"' EXIT                                      # clean up even if a step fails
 curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.rpm.sh' -o "${setup}"   # download first; do not pipe curl into sudo bash
-less "${setup}"                                                       # review before running with root privileges
+cat "${setup}"                                                        # review before running with root privileges (cat needs no extra package)
 sudo -E bash "${setup}"
 ```
 

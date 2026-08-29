@@ -83,8 +83,9 @@ git pull origin main
 
 # 2. feature ブランチに切り替え、push 時の照合用にリモートの現在位置を記録
 git checkout feature-branch
-git fetch origin feature-branch
-before_rebase="$(git rev-parse origin/feature-branch)"
+# 明示的な refspec で追跡 ref を更新する（`git fetch origin feature-branch` だけでは FETCH_HEAD しか更新されない）
+git fetch origin refs/heads/feature-branch:refs/remotes/origin/feature-branch
+before_rebase="$(git rev-parse refs/remotes/origin/feature-branch)"
 
 # 3. rebase を開始
 git rebase main
@@ -99,12 +100,13 @@ git rebase --continue
 # 6. rebase を中止する場合
 git rebase --abort
 
-# 7. リモートに push（手順開始前に承認を得た場合のみ）
-#    rebase 後の通常 push は non-fast-forward として拒否される。手順 2 で記録した位置と
-#    リモートが一致する場合だけ更新する lease 付き push を使い、他の作業者の push を
-#    上書きしない（不一致で拒否されたら fetch して状況を確認し、再度承認を得る）
-git push --force-with-lease="refs/heads/feature-branch:${before_rebase}" origin feature-branch
+# 7. リモートへの反映は履歴の強制更新を伴うため、ここでは自動実行しない（下記参照）
 ```
+
+rebase 後の通常 push は non-fast-forward として拒否される。リモートへの反映は、手順開始前に得た承認の
+もとで手動で行い、手順 2 で記録した `before_rebase` を照合値にした
+`--force-with-lease=refs/heads/feature-branch:${before_rebase}` 付きの 1 回の push で更新する。照合値と
+リモートが一致しない（他の作業者が push した）場合は拒否されるので、fetch して状況を確認し、再度承認を得る。
 
 ## コンフリクトマーカー
 

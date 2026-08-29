@@ -13,7 +13,7 @@ Install, verify, update, and uninstall Claude Code across macOS, Linux, WSL, and
 installer="$(mktemp "${TMPDIR:-/tmp}/claude-install.XXXXXX")"   # exclusive temp file: never overwrites an existing file
 trap 'rm -f -- "${installer}"' EXIT                                # clean up even if a step fails
 curl -fsSL https://claude.ai/install.sh -o "${installer}"          # download first; do not pipe curl into bash
-less "${installer}"                                                # review the script before running it
+cat "${installer}"                                                 # review the script before running it (cat needs no extra package)
 bash "${installer}"
 ```
 

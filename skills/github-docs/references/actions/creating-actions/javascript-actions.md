@@ -231,14 +231,15 @@ git add action.yml dist/ package.json package-lock.json
 git commit -m "Initial release"
 git tag -a v1.0.0 -m "Release v1.0.0"
 git tag -fa v1 -m "Update v1 tag"   # メジャーバージョンタグを更新
-git push origin main --follow-tags
-# メジャーバージョンタグ v1 の付け替えは、v1 を参照している全ワークフローの実行内容を
-# 書き換える操作。影響範囲を提示して明示的な承認を得てから、削除→再 push のような
-# タグが消える期間を作らず、競合も検出できる lease 付きの単一更新で行う
-# （リモートの v1 が記録した SHA と異なっていれば拒否される）
-old_v1="$(git ls-remote --tags origin refs/tags/v1 | cut -f1)"   # 現在リモートが指す v1
-git push --force-with-lease="refs/tags/v1:${old_v1}" origin refs/tags/v1
+git push origin main --follow-tags   # 新しい v1.0.0 タグを通常の push で公開
 ```
+
+既存のメジャーバージョンタグ `v1` を新しいコミットへ付け替える操作は、`v1` を参照している全ワークフローの
+実行内容を書き換えるうえ、リモートのタグ参照の強制更新を伴う。そのため本リファレンスでは自動実行する
+コマンドとして掲載しない。影響範囲を提示して明示的な承認を得たうえで手動で行う場合は、削除→再 push の
+ようにタグが消える期間を作る手順を避け、リモートの現在の `v1` が指すコミット SHA（annotated tag の場合は
+`git ls-remote origin 'refs/tags/v1^{}'` で得られる peeled SHA）を照合値にした
+`--force-with-lease=refs/tags/v1:<旧 SHA>` 付きの 1 回の push で更新する（照合値が一致しなければ拒否される）。
 
 ユーザーは以下のように参照する:
 - `uses: owner/my-action@v1` -- メジャーバージョン（推奨）
