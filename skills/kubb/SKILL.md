@@ -2,10 +2,11 @@
 name: kubb
 description: >
   Kubb (OpenAPI / Swagger コードジェネレーター) リファレンス。
-  kubb.config.ts、OpenAPI から TypeScript 型・TanStack Query フック・
+  kubb.config.ts、OpenAPI から TypeScript 型・TanStack Query フックを生成するコード生成プラグイン・
   Zod スキーマ・MSW モック・Faker・Axios / SWR / React Query クライアント生成。
   プラグインベース、モノレポ対応。
   parser-ts / parser-md パーサー、adapter-oas アダプター、Kit API・diagnostics。
+  TanStack Query 本体の API は tanstack-query スキル。
 user-invocable: false
 model: sonnet
 ---
