@@ -1,10 +1,10 @@
 ---
-source: https://github.com/fastify/fastify-cli/blob/main/README.md
+source: https://github.com/fastify/fastify-cli/blob/main/README.md, https://raw.githubusercontent.com/fastify/fastify-cli/v8.0.0/args.js, https://raw.githubusercontent.com/fastify/fastify-cli/v8.0.0/start.js
 ---
 
 # dev
 
-`fastify-cli` 8.0.0 時点（main ブランチ README.md、2026-08-29 取得）の `start` コマンドで開発・運用時にサーバーを起動するコマンド集。
+`fastify-cli` 8.0.0 時点（main ブランチ README.md、および `v8.0.0` タグの `args.js` / `start.js`、2026-08-29 取得）の `start` コマンドで開発・運用時にサーバーを起動するコマンド集。
 
 ## 基本起動
 
@@ -66,7 +66,7 @@ fastify start --body-limit 1048576 -T 10000 -x /api plugin.js
 fastify start -g 5000 plugin.js
 ```
 
-`-g` / `--close-grace-delay` で強制クローズまでの最大遅延を指定する（単位は要確認）。
+`-g` / `--close-grace-delay` は `number` 型・デフォルト `500`（`args.js` の `DEFAULT_ARGUMENTS.closeGraceDelay` および `number` 配列に定義）。`start.js` で `closeWithGrace({ delay: opts.closeGraceDelay }, ...)` として `close-with-grace` の `delay` にそのまま渡され、`close-with-grace` の `delay` はミリ秒単位。したがって `-g 5000` は 5000 ミリ秒（5秒）の猶予を設定する。
 
 ## trust proxy の設定
 
@@ -90,4 +90,12 @@ fastify start -s /tmp/fastify.sock plugin.js
 fastify start -c config.json plugin.js
 ```
 
-`-c` / `--config` で設定ファイルパスを指定する。`-o` / `--options` はカスタムオプションの使用を有効にするフラグ（値の受け渡し形式は要確認）。
+`-c` / `--config` で設定ファイルパスを指定する。
+
+## アプリファイルがエクスポートする options の読み込み
+
+```sh
+fastify start -o plugin.js
+```
+
+`-o` / `--options` は `boolean` 型・デフォルト `false`（値を取らないフラグ）。有効化すると、`start.js` が `opts.options && file.options` を条件に、起動対象ファイルが `module.exports.options` としてエクスポートした Fastify オプションを `deepmerge` でマージして適用する。
