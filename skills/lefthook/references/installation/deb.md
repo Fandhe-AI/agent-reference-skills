@@ -9,11 +9,16 @@ Debian / Ubuntu 系ディストリビューションで APT パッケージを�
 ### 1. リポジトリのセットアップ
 
 ```bash
-setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.deb.XXXXXX")"   # exclusive temp file: never overwrites an existing file
-trap 'rm -f -- "${setup}"' EXIT                                      # clean up even if a step fails
-curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' -o "${setup}"   # download first; do not pipe curl into sudo bash
-cat "${setup}"                                                        # review before running with root privileges (cat needs no extra package)
-sudo -E bash "${setup}"
+# Run as one subshell: set -e stops at the first failure (a failed download is never executed as root),
+# and the EXIT trap removes the temp file when the subshell ends, success or failure
+(
+  set -euo pipefail
+  setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.deb.XXXXXX")"   # exclusive temp file: never overwrites an existing file
+  trap 'rm -f -- "${setup}"' EXIT
+  curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' -o "${setup}"   # download first; do not pipe curl into sudo bash
+  cat "${setup}"                                                        # review before running with root privileges (cat needs no extra package)
+  sudo -E bash "${setup}"
+)
 ```
 
 ### 2. パッケージのインストール

@@ -10,11 +10,16 @@ Install, verify, update, and uninstall Claude Code across macOS, Linux, WSL, and
 ## ネイティブインストーラー（macOS / Linux / WSL）
 
 ```bash
-installer="$(mktemp "${TMPDIR:-/tmp}/claude-install.XXXXXX")"   # exclusive temp file: never overwrites an existing file
-trap 'rm -f -- "${installer}"' EXIT                                # clean up even if a step fails
-curl -fsSL https://claude.ai/install.sh -o "${installer}"          # download first; do not pipe curl into bash
-cat "${installer}"                                                 # review the script before running it (cat needs no extra package)
-bash "${installer}"
+# Run as one subshell: set -e stops at the first failure (a failed download is never executed),
+# and the EXIT trap removes the temp file when the subshell ends, success or failure
+(
+  set -euo pipefail
+  installer="$(mktemp "${TMPDIR:-/tmp}/claude-install.XXXXXX")"   # exclusive temp file: never overwrites an existing file
+  trap 'rm -f -- "${installer}"' EXIT
+  curl -fsSL https://claude.ai/install.sh -o "${installer}"          # download first; do not pipe curl into bash
+  cat "${installer}"                                                 # review the script before running it (cat needs no extra package)
+  bash "${installer}"
+)
 ```
 
 ## Homebrew（macOS）

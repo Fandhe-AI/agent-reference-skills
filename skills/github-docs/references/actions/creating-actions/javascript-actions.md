@@ -237,8 +237,8 @@ git push origin main --follow-tags   # 新しい v1.0.0 タグを通常の push 
 既存のメジャーバージョンタグ `v1` を新しいコミットへ付け替える操作は、`v1` を参照している全ワークフローの
 実行内容を書き換えるうえ、リモートのタグ参照の強制更新を伴う。そのため本リファレンスでは自動実行する
 コマンドとして掲載しない。影響範囲を提示して明示的な承認を得たうえで手動で行う場合は、削除→再 push の
-ようにタグが消える期間を作る手順を避け、リモートの現在の `v1` が指すコミット SHA（annotated tag の場合は
-`git ls-remote origin 'refs/tags/v1^{}'` で得られる peeled SHA）を照合値にした
+ようにタグが消える期間を作る手順を避け、`git ls-remote origin refs/tags/v1` が返す tag ref 自体の object ID
+（annotated tag では tag object の ID。`^{}` で得られる peeled commit SHA は照合値にならない）を照合値にした
 `--force-with-lease=refs/tags/v1:<旧 SHA>` 付きの 1 回の push で更新する（照合値が一致しなければ拒否される）。
 
 ユーザーは以下のように参照する:
