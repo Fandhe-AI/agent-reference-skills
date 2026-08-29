@@ -11,7 +11,7 @@ Route methods (`.get`, `.post`, `.route`, etc.) accept a generic object `RouteGe
 ```typescript
 interface IQuerystring {
   username: string;
-  password: string;
+  page: number;
 }
 
 interface IHeaders {
@@ -29,7 +29,7 @@ server.get<{
   Headers: IHeaders,
   Reply: IReply
 }>('/auth', async (request, reply) => {
-  const { username, password } = request.query
+  const { username, page } = request.query
   const customerHeader = request.headers['h-Custom']
 
   // chaining .code with .send allows type narrowing
@@ -62,7 +62,7 @@ server.get<{
   Reply: IReply
 }>('/auth', {
   preValidation: (request, reply, done) => {
-    const { username, password } = request.query
+    const { username, page } = request.query
     done(username !== 'admin' ? new Error('Must be admin') : undefined)
   }
 }, async (request, reply) => {
@@ -71,6 +71,7 @@ server.get<{
 })
 ```
 - Omitted generic properties default to `unknown`.
+- The upstream TypeScript guide demonstrates these generics with a `password` query parameter on GET `/auth`; that example is adapted here to a non-credential query because credentials must not travel in URLs (they leak into access logs, browser history, and proxies). Use a POST body with a full JSON Schema for authentication.
 
 ## Related
 
