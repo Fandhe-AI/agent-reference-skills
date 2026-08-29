@@ -92,48 +92,45 @@ snap install --classic lefthook
 
 ```sh
 sudo apk add --no-cache bash curl
-# Run as one subshell: set -e stops at the first failure (a failed download is never executed as root),
-# and the EXIT trap removes the temp file when the subshell ends, success or failure
-(
-  set -eu   # POSIX sh compatible (no pipes here); -e stops at the first failure, -u rejects unset variables
-  setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.alpine.XXXXXX")"   # exclusive temp file: never overwrites an existing file
-  trap 'rm -f -- "${setup}"' EXIT
-  curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.alpine.sh' -o "${setup}"   # download first; do not pipe curl into sudo bash
-  cat "${setup}"                                                        # review before running with root privileges (cat needs no extra package)
-  sudo -E bash "${setup}"
-)
+# Step 1 - download to an exclusive temp file and print it for review. Nothing is executed here;
+# if any step fails the temp file is removed and the chain stops.
+setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.alpine.XXXXXX")" \
+  && curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.alpine.sh' -o "${setup}" \
+  && cat "${setup}" \
+  || { rm -f -- "${setup:-}"; echo "download failed; nothing was executed" >&2; }
+
+# Step 2 - only after you have read the script above and decided to proceed, run it as root yourself:
+sudo -E bash "${setup}"; rm -f -- "${setup}"
 sudo apk add lefthook
 ```
 
 ## Debian / Ubuntu (apt)
 
 ```sh
-# Run as one subshell: set -e stops at the first failure (a failed download is never executed as root),
-# and the EXIT trap removes the temp file when the subshell ends, success or failure
-(
-  set -eu   # POSIX sh compatible (no pipes here); -e stops at the first failure, -u rejects unset variables
-  setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.deb.XXXXXX")"   # exclusive temp file: never overwrites an existing file
-  trap 'rm -f -- "${setup}"' EXIT
-  curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' -o "${setup}"   # download first; do not pipe curl into sudo bash
-  cat "${setup}"                                                        # review before running with root privileges (cat needs no extra package)
-  sudo -E bash "${setup}"
-)
+# Step 1 - download to an exclusive temp file and print it for review. Nothing is executed here;
+# if any step fails the temp file is removed and the chain stops.
+setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.deb.XXXXXX")" \
+  && curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' -o "${setup}" \
+  && cat "${setup}" \
+  || { rm -f -- "${setup:-}"; echo "download failed; nothing was executed" >&2; }
+
+# Step 2 - only after you have read the script above and decided to proceed, run it as root yourself:
+sudo -E bash "${setup}"; rm -f -- "${setup}"
 sudo apt install lefthook
 ```
 
 ## CentOS / Fedora (yum)
 
 ```sh
-# Run as one subshell: set -e stops at the first failure (a failed download is never executed as root),
-# and the EXIT trap removes the temp file when the subshell ends, success or failure
-(
-  set -eu   # POSIX sh compatible (no pipes here); -e stops at the first failure, -u rejects unset variables
-  setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.rpm.XXXXXX")"   # exclusive temp file: never overwrites an existing file
-  trap 'rm -f -- "${setup}"' EXIT
-  curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.rpm.sh' -o "${setup}"   # download first; do not pipe curl into sudo bash
-  cat "${setup}"                                                        # review before running with root privileges (cat needs no extra package)
-  sudo -E bash "${setup}"
-)
+# Step 1 - download to an exclusive temp file and print it for review. Nothing is executed here;
+# if any step fails the temp file is removed and the chain stops.
+setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.rpm.XXXXXX")" \
+  && curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.rpm.sh' -o "${setup}" \
+  && cat "${setup}" \
+  || { rm -f -- "${setup:-}"; echo "download failed; nothing was executed" >&2; }
+
+# Step 2 - only after you have read the script above and decided to proceed, run it as root yourself:
+sudo -E bash "${setup}"; rm -f -- "${setup}"
 sudo yum install lefthook
 ```
 
