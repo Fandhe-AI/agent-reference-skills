@@ -77,7 +77,7 @@ fastify.route({
 ## Notes
 
 - The documentation for `onRequest`, `preParsing`, `preValidation`, `preHandler`, `preSerialization`, `onSend`, and `onResponse` is detailed in Hooks. To send a response before the request is handled by the `handler`, see "Respond to a request from a hook" in Hooks.
-- `Router` / `route` は `hono`（Web Standards JS）・`go-echo`（Go）・`fandhe-backend`（Rust）・`react-router` / `tanstack-router`（クライアント側）とは別物。ここは Fastify の find-my-way ベースのサーバールーティング。
+- Fastify's `route` / routing here is the server-side find-my-way router, distinct from `hono` (Web Standards JS), `go-echo` (Go), `fandhe-backend` (Rust), and the client-side routers `react-router` / `tanstack-router`.
 
 ## Related
 
