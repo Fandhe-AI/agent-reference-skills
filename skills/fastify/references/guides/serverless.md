@@ -20,7 +20,10 @@ function init() {
 
 if (require.main === module) {
   init().listen({ port: 3000 }, (err) => {
-    if (err) console.error(err)
+    if (err) {
+      console.error(err)
+      process.exit(1)
+    }
   })
 } else {
   module.exports = init

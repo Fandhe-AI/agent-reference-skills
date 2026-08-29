@@ -18,7 +18,10 @@ function init() {
 
 if (require.main === module) {
   init().listen({ port: 3000 }, (err) => {
-    if (err) console.error(err);
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
     console.log('server listening on 3000');
   });
 } else {
@@ -39,5 +42,6 @@ exports.handler = proxy;
 ## Notes
 
 - `require.main === module` lets `app.js` double as both a standalone server (`node app.js`) and a module exporting the app factory for `lambda.js`.
+- On a `listen()` error, `process.exit(1)` stops execution so the "server listening" log line is not printed on failure — same pattern as `basic-server.md`.
 - `@fastify/aws-lambda` adapts the API Gateway/ALB event format to a Fastify `inject()`-style request under the hood.
 - Cold-start optimizations (disabling unused plugins, `logger: false`) are recommended for production Lambda deployments.

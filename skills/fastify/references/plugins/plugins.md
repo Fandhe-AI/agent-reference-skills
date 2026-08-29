@@ -124,7 +124,10 @@ fastify.register(require('my-plugin'))
 fastify.after(err => console.log(err))
 fastify.ready(err => console.log(err))
 fastify.listen({ port: 3000 }, (err, address) => {
-  if (err) console.log(err)
+  if (err) {
+    console.error(err)
+    process.exit(1)
+  }
 })
 ```
 
