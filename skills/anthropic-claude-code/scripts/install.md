@@ -10,7 +10,25 @@ Install, verify, update, and uninstall Claude Code across macOS, Linux, WSL, and
 ## ネイティブインストーラー（macOS / Linux / WSL）
 
 ```bash
-curl -fsSL https://claude.ai/install.sh | bash
+# Step 1 - download to an exclusive temp file and print it for review. Nothing is executed here;
+# if any step fails the temp file is removed and the chain stops.
+installer="$(mktemp "${TMPDIR:-/tmp}/claude-install.XXXXXX")" \
+  && curl -fsSL https://claude.ai/install.sh -o "${installer}" \
+  && cat "${installer}" \
+  || { rm -f -- "${installer:-}"; unset installer; echo "download failed; nothing was executed" >&2; false; }
+```
+
+Read the script printed above. Run the next block only if you have reviewed it and decided to proceed — it is a separate step so that copying the block above never executes anything.
+
+```bash
+# Step 2 - only after you have read the script above and decided to proceed, run it yourself.
+# The temp file is removed afterwards; the final status is the installer's own exit status.
+if [ -s "${installer:-}" ]; then
+  bash "${installer}"; status=$?; rm -f -- "${installer}"; unset installer
+else
+  echo "no downloaded installer to run (Step 1 failed or was not run)" >&2; status=1
+fi
+(exit "${status}")
 ```
 
 ## Homebrew（macOS）
@@ -108,9 +126,12 @@ target="${1:?usage: $0 /path/to/target-repo}"
 
 # 1. Validate the target before touching anything: it must be an existing git repository root
 cd -- "${target}"
-toplevel="$(git rev-parse --show-toplevel)"
-if [ "${toplevel}" != "$(pwd -P)" ]; then
-  echo "not at a repository root: $(pwd -P) (git top-level: ${toplevel})" >&2
+# --show-prefix is empty exactly at the repository root. Assigning it (rather than testing the
+# substitution inline) lets set -e abort when this is not a git repository at all, and avoids
+# comparing path spellings, which differ between git and pwd on Windows / symlinked paths
+prefix="$(git rev-parse --show-prefix)"
+if [ -n "${prefix}" ]; then
+  echo "not at a repository root: $(pwd) is inside $(git rev-parse --show-toplevel)" >&2
   exit 1
 fi
 

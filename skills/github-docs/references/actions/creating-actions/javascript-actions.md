@@ -230,10 +230,17 @@ my-action/
 git add action.yml dist/ package.json package-lock.json
 git commit -m "Initial release"
 git tag -a v1.0.0 -m "Release v1.0.0"
-git tag -fa v1 -m "Update v1 tag"   # メジャーバージョンタグを更新
-git push origin main --follow-tags
-git push origin v1 --force           # メジャーバージョンタグを強制更新
+git tag -a v1 -m "v1"                # 初回リリース時のみ（既存 v1 の付け替えは下記参照。-f は使わない）
+git push origin main --follow-tags   # 新しいタグを通常の push で公開
 ```
+
+既存のメジャーバージョンタグ `v1` を新しいコミットへ付け替える操作は、`v1` を参照している全ワークフローの
+実行内容を書き換えるうえ、ローカル（`git tag -fa v1`）とリモートの双方でタグ参照の強制更新を伴う。そのため
+本リファレンスでは自動実行するコマンドとして掲載しない（上のブロックにも含めない）。影響範囲を提示して
+明示的な承認を得たうえで手動で行う場合は、まずリモートの現在の照合値を取得し、次にローカルの `v1` を
+`git tag -fa v1 -m "v1" <新しいコミット>` で付け替え、削除→再 push のようにタグが消える期間を作る手順を避け、`git ls-remote origin refs/tags/v1` が返す tag ref 自体の object ID
+（annotated tag では tag object の ID。`^{}` で得られる peeled commit SHA は照合値にならない）を照合値にした
+`--force-with-lease=refs/tags/v1:<旧 SHA>` 付きの 1 回の push で更新する（照合値が一致しなければ拒否される）。
 
 ユーザーは以下のように参照する:
 - `uses: owner/my-action@v1` -- メジャーバージョン（推奨）

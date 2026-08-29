@@ -92,22 +92,76 @@ snap install --classic lefthook
 
 ```sh
 sudo apk add --no-cache bash curl
-curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.alpine.sh' | sudo -E bash
-sudo apk add lefthook
+# Step 1 - download to an exclusive temp file and print it for review. Nothing is executed here;
+# if any step fails the temp file is removed and the chain stops.
+setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.alpine.XXXXXX")" \
+  && curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.alpine.sh' -o "${setup}" \
+  && cat "${setup}" \
+  || { rm -f -- "${setup:-}"; unset setup; echo "download failed; nothing was executed" >&2; false; }
+```
+
+Read the script printed above. Run the next block only if you have reviewed it and decided to proceed — it is a separate step so that copying the block above never executes anything.
+
+```sh
+# Step 2 - only after you have read the script above and decided to proceed, run it as root yourself.
+# The temp file is removed afterwards; the final status is the setup script's own exit status;
+# the package install below runs only if the repository setup succeeded.
+if [ -s "${setup:-}" ]; then
+  sudo -E bash "${setup}"; status=$?; rm -f -- "${setup}"; unset setup
+else
+  echo "no downloaded setup script to run (Step 1 failed or was not run)" >&2; status=1
+fi
+(exit "${status}") && sudo apk add lefthook
 ```
 
 ## Debian / Ubuntu (apt)
 
 ```sh
-curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' | sudo -E bash
-sudo apt install lefthook
+# Step 1 - download to an exclusive temp file and print it for review. Nothing is executed here;
+# if any step fails the temp file is removed and the chain stops.
+setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.deb.XXXXXX")" \
+  && curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' -o "${setup}" \
+  && cat "${setup}" \
+  || { rm -f -- "${setup:-}"; unset setup; echo "download failed; nothing was executed" >&2; false; }
+```
+
+Read the script printed above. Run the next block only if you have reviewed it and decided to proceed — it is a separate step so that copying the block above never executes anything.
+
+```sh
+# Step 2 - only after you have read the script above and decided to proceed, run it as root yourself.
+# The temp file is removed afterwards; the final status is the setup script's own exit status;
+# the package install below runs only if the repository setup succeeded.
+if [ -s "${setup:-}" ]; then
+  sudo -E bash "${setup}"; status=$?; rm -f -- "${setup}"; unset setup
+else
+  echo "no downloaded setup script to run (Step 1 failed or was not run)" >&2; status=1
+fi
+(exit "${status}") && sudo apt install lefthook
 ```
 
 ## CentOS / Fedora (yum)
 
 ```sh
-curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.rpm.sh' | sudo -E bash
-sudo yum install lefthook
+# Step 1 - download to an exclusive temp file and print it for review. Nothing is executed here;
+# if any step fails the temp file is removed and the chain stops.
+setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.rpm.XXXXXX")" \
+  && curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.rpm.sh' -o "${setup}" \
+  && cat "${setup}" \
+  || { rm -f -- "${setup:-}"; unset setup; echo "download failed; nothing was executed" >&2; false; }
+```
+
+Read the script printed above. Run the next block only if you have reviewed it and decided to proceed — it is a separate step so that copying the block above never executes anything.
+
+```sh
+# Step 2 - only after you have read the script above and decided to proceed, run it as root yourself.
+# The temp file is removed afterwards; the final status is the setup script's own exit status;
+# the package install below runs only if the repository setup succeeded.
+if [ -s "${setup:-}" ]; then
+  sudo -E bash "${setup}"; status=$?; rm -f -- "${setup}"; unset setup
+else
+  echo "no downloaded setup script to run (Step 1 failed or was not run)" >&2; status=1
+fi
+(exit "${status}") && sudo yum install lefthook
 ```
 
 ## Mise
