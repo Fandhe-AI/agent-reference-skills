@@ -18,9 +18,13 @@ installer="$(mktemp "${TMPDIR:-/tmp}/claude-install.XXXXXX")" \
   || { rm -f -- "${installer:-}"; unset installer; echo "download failed; nothing was executed" >&2; false; }
 
 # Step 2 - only after you have read the script above and decided to proceed, run it yourself.
-# The temp file is removed afterwards and the installer's own exit status is preserved.
-[ -s "${installer:-}" ] && bash "${installer}"; status=$?; rm -f -- "${installer:-}"; [ "${status}" -eq 0 ] \
-  || { echo "installer did not complete (exit ${status})" >&2; false; }
+# The temp file is removed afterwards; the final status is the installer's own exit status.
+if [ -s "${installer:-}" ]; then
+  bash "${installer}"; status=$?; rm -f -- "${installer}"; unset installer
+else
+  echo "no downloaded installer to run (Step 1 failed or was not run)" >&2; status=1
+fi
+(exit "${status}")
 ```
 
 ## Homebrew（macOS）

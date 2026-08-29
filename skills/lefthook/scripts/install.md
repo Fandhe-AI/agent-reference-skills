@@ -100,10 +100,14 @@ setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.alpine.XXXXXX")" \
   || { rm -f -- "${setup:-}"; unset setup; echo "download failed; nothing was executed" >&2; false; }
 
 # Step 2 - only after you have read the script above and decided to proceed, run it as root yourself.
-# The temp file is removed afterwards and the setup script's own exit status is preserved;
+# The temp file is removed afterwards; the final status is the setup script's own exit status;
 # the package install below runs only if the repository setup succeeded.
-[ -s "${setup:-}" ] && sudo -E bash "${setup}"; status=$?; rm -f -- "${setup:-}"; [ "${status}" -eq 0 ] \
-  && sudo apk add lefthook
+if [ -s "${setup:-}" ]; then
+  sudo -E bash "${setup}"; status=$?; rm -f -- "${setup}"; unset setup
+else
+  echo "no downloaded setup script to run (Step 1 failed or was not run)" >&2; status=1
+fi
+(exit "${status}") && sudo apk add lefthook
 ```
 
 ## Debian / Ubuntu (apt)
@@ -117,10 +121,14 @@ setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.deb.XXXXXX")" \
   || { rm -f -- "${setup:-}"; unset setup; echo "download failed; nothing was executed" >&2; false; }
 
 # Step 2 - only after you have read the script above and decided to proceed, run it as root yourself.
-# The temp file is removed afterwards and the setup script's own exit status is preserved;
+# The temp file is removed afterwards; the final status is the setup script's own exit status;
 # the package install below runs only if the repository setup succeeded.
-[ -s "${setup:-}" ] && sudo -E bash "${setup}"; status=$?; rm -f -- "${setup:-}"; [ "${status}" -eq 0 ] \
-  && sudo apt install lefthook
+if [ -s "${setup:-}" ]; then
+  sudo -E bash "${setup}"; status=$?; rm -f -- "${setup}"; unset setup
+else
+  echo "no downloaded setup script to run (Step 1 failed or was not run)" >&2; status=1
+fi
+(exit "${status}") && sudo apt install lefthook
 ```
 
 ## CentOS / Fedora (yum)
@@ -134,10 +142,14 @@ setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.rpm.XXXXXX")" \
   || { rm -f -- "${setup:-}"; unset setup; echo "download failed; nothing was executed" >&2; false; }
 
 # Step 2 - only after you have read the script above and decided to proceed, run it as root yourself.
-# The temp file is removed afterwards and the setup script's own exit status is preserved;
+# The temp file is removed afterwards; the final status is the setup script's own exit status;
 # the package install below runs only if the repository setup succeeded.
-[ -s "${setup:-}" ] && sudo -E bash "${setup}"; status=$?; rm -f -- "${setup:-}"; [ "${status}" -eq 0 ] \
-  && sudo yum install lefthook
+if [ -s "${setup:-}" ]; then
+  sudo -E bash "${setup}"; status=$?; rm -f -- "${setup}"; unset setup
+else
+  echo "no downloaded setup script to run (Step 1 failed or was not run)" >&2; status=1
+fi
+(exit "${status}") && sudo yum install lefthook
 ```
 
 ## Mise

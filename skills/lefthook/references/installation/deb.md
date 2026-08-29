@@ -17,9 +17,13 @@ setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.deb.XXXXXX")" \
   || { rm -f -- "${setup:-}"; unset setup; echo "download failed; nothing was executed" >&2; false; }
 
 # Step 2 - only after you have read the script above and decided to proceed, run it as root yourself.
-# The temp file is removed afterwards and the setup script's own exit status is preserved.
-[ -s "${setup:-}" ] && sudo -E bash "${setup}"; status=$?; rm -f -- "${setup:-}"; [ "${status}" -eq 0 ] \
-  || { echo "repository setup did not complete (exit ${status})" >&2; false; }
+# The temp file is removed afterwards; the final status is the setup script's own exit status.
+if [ -s "${setup:-}" ]; then
+  sudo -E bash "${setup}"; status=$?; rm -f -- "${setup}"; unset setup
+else
+  echo "no downloaded setup script to run (Step 1 failed or was not run)" >&2; status=1
+fi
+(exit "${status}")
 ```
 
 ### 2. パッケージのインストール
