@@ -146,6 +146,7 @@ const dbClient = require('db-client')
 
 function dbPlugin (fastify, opts, done) {
   dbClient.connect(opts.url, (err, conn) => {
+    if (err) return done(err)
     fastify.decorate('db', conn)
     done()
   })
@@ -163,6 +164,7 @@ const dbClient = require('db-client')
 
 function dbPlugin (fastify, opts, done) {
   dbClient.connect(opts.url, (err, conn) => {
+    if (err) return done(err)
     fastify.decorate('db', conn)
     done()
   })
@@ -224,6 +226,7 @@ warning.emit('MP_ERROR_CODE')
 ## Notes
 
 - Real-world example plugins referenced by the guide: `@fastify/view`, `@fastify/mongodb`, `@fastify/multipart`, `@fastify/helmet`.
+- The upstream guide's `dbPlugin` snippet ignores the `err` argument; it is adapted here to propagate connection errors through `done(err)` so a failed connection fails the boot instead of decorating `undefined`.
 
 ## Related
 

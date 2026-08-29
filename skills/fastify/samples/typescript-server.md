@@ -18,6 +18,7 @@ interface IBody {
 
 interface IReply {
   200: { success: boolean };
+  401: { error: string };
 }
 
 const bodyJsonSchema = {
@@ -61,4 +62,4 @@ server.listen({ port: 8080 }, (err, address) => {
 - Credentials must never be carried in `Querystring`/`Params` (they end up in URLs, access logs, and browser history) — this sample adapts the upstream `TypeScript.md` `Querystring` example into a `POST` + `Body` + JSON Schema form for that reason.
 - `verifyCredentials` is a stub for demonstrating the generic types; replace it with a real check (hashed password comparison, DB/session lookup) — never compare plaintext passwords like this in production.
 - For schema-driven type inference (validation + types from one source), prefer a type provider — see `type-provider-typebox.md`.
-- `reply.code(200).send(...)` / `reply.code(401).send(...)` payload shapes are checked against the declared `Reply` interface.
+- `IReply` declares every status code the handler actually sends (`200` and `401`), matching the upstream `Reply: { 200: {...}; 302: {...}; '4xx': {...} }` per-status-code pattern — both `reply.code(200).send(...)` and `reply.code(401).send(...)` payload shapes are type-checked against it.
