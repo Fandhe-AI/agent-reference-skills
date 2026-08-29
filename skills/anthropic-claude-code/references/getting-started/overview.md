@@ -8,7 +8,9 @@ Claude Code is an agentic coding tool that reads your codebase, edits files, run
 
 ```bash
 # Terminal (native install)
-curl -fsSL https://claude.ai/install.sh | bash
+curl -fsSL https://claude.ai/install.sh -o claude-install.sh   # download first; do not pipe curl into bash
+less claude-install.sh                                          # review the script before running it
+bash claude-install.sh
 cd your-project
 claude
 ```

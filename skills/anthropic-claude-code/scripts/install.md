@@ -10,7 +10,9 @@ Install, verify, update, and uninstall Claude Code across macOS, Linux, WSL, and
 ## ネイティブインストーラー（macOS / Linux / WSL）
 
 ```bash
-curl -fsSL https://claude.ai/install.sh | bash
+curl -fsSL https://claude.ai/install.sh -o claude-install.sh   # download first; do not pipe curl into bash
+less claude-install.sh                                          # review the script before running it
+bash claude-install.sh
 ```
 
 ## Homebrew（macOS）
@@ -108,9 +110,12 @@ target="${1:?usage: $0 /path/to/target-repo}"
 
 # 1. Validate the target before touching anything: it must be an existing git repository root
 cd -- "${target}"
-toplevel="$(git rev-parse --show-toplevel)"
-if [ "${toplevel}" != "$(pwd -P)" ]; then
-  echo "not at a repository root: $(pwd -P) (git top-level: ${toplevel})" >&2
+# --show-prefix is empty exactly at the repository root. Assigning it (rather than testing the
+# substitution inline) lets set -e abort when this is not a git repository at all, and avoids
+# comparing path spellings, which differ between git and pwd on Windows / symlinked paths
+prefix="$(git rev-parse --show-prefix)"
+if [ -n "${prefix}" ]; then
+  echo "not at a repository root: $(pwd) is inside $(git rev-parse --show-toplevel)" >&2
   exit 1
 fi
 

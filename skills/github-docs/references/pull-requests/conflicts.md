@@ -93,8 +93,12 @@ git rebase --continue
 # 6. rebase を中止する場合
 git rebase --abort
 
-# 7. リモートに push（rebase 後はフォースプッシュが必要）
-git push --force-with-lease origin feature-branch
+# 7. リモートに push
+#    rebase は履歴を書き換えるため、rebase 後の通常 push はリモートに拒否される。
+#    force push は自動実行せず、対象ブランチと影響範囲（同ブランチの他の作業者）を提示して
+#    明示的なユーザー承認を得たうえで手動で行う。承認を得ずに進める場合は rebase ではなく
+#    `git merge main` でコンフリクトを解決し、通常の push で完結させる
+git push origin feature-branch
 ```
 
 ## コンフリクトマーカー

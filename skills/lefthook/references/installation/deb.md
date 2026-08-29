@@ -9,7 +9,9 @@ Debian / Ubuntu 系ディストリビューションで APT パッケージを�
 ### 1. リポジトリのセットアップ
 
 ```bash
-curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' | sudo -E bash
+curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' -o lefthook-setup.deb.sh   # download first; do not pipe curl into sudo bash
+less lefthook-setup.deb.sh                                  # review before running with root privileges
+sudo -E bash lefthook-setup.deb.sh
 ```
 
 ### 2. パッケージのインストール

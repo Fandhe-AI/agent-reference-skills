@@ -232,7 +232,11 @@ git commit -m "Initial release"
 git tag -a v1.0.0 -m "Release v1.0.0"
 git tag -fa v1 -m "Update v1 tag"   # メジャーバージョンタグを更新
 git push origin main --follow-tags
-git push origin v1 --force           # メジャーバージョンタグを強制更新
+# メジャーバージョンタグ v1 の付け替えは、v1 を参照している全ワークフローの実行内容を
+# 書き換える操作。影響範囲を提示して明示的な承認を得てから、force push ではなく
+# リモートのタグを削除→再 push の手順で行う
+git push origin :refs/tags/v1        # リモートの v1 タグを削除
+git push origin v1                   # 更新した v1 タグを push
 ```
 
 ユーザーは以下のように参照する:

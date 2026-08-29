@@ -9,7 +9,9 @@ CentOS / Fedora 等の RPM ベースのディストリビューションに Left
 ### 1. リポジトリのセットアップ
 
 ```
-curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.rpm.sh' | sudo -E bash
+curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.rpm.sh' -o lefthook-setup.rpm.sh   # download first; do not pipe curl into sudo bash
+less lefthook-setup.rpm.sh                                  # review before running with root privileges
+sudo -E bash lefthook-setup.rpm.sh
 ```
 
 ### 2. パッケージのインストール

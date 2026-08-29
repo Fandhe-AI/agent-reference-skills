@@ -8,7 +8,9 @@ System requirements, platform-specific installation, version management, and uni
 
 ```bash
 # macOS, Linux, WSL
-curl -fsSL https://claude.ai/install.sh | bash
+curl -fsSL https://claude.ai/install.sh -o claude-install.sh   # download first; do not pipe curl into bash
+less claude-install.sh                                          # review the script before running it
+bash claude-install.sh
 
 # Homebrew
 brew install --cask claude-code        # stable channel
