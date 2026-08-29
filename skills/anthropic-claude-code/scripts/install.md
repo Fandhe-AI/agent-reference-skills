@@ -97,11 +97,90 @@ claude project purge --all      # purge every project, including history.jsonl
 
 > **警告**: Removing `~/.claude`, `~/.claude.json`, the project's `.claude/`, and `.mcp.json` deletes all settings, allowed tools, MCP configuration, and session history. Not reversible. These four paths are only safe to delete as part of an explicit uninstall (per setup.md's Notes) — during normal operation, manually deleting `~/.claude.json`, `~/.claude/settings.json`, or `~/.claude/plugins/` is explicitly discouraged (claude-directory.md).
 
-Uninstalling requires removing the binary/version files first, then optionally the four paths below:
+Uninstalling requires removing the binary/version files first, then optionally the four paths below. Do not run a blanket recursive delete on these paths. Save the following as a script (for example `uninstall-claude-config.sh`) and run it with the target repository as its argument: it verifies the repository root first, creates a fresh exclusive backup directory, preflights all four paths (no symlinks, no pre-existing destination, writable parent) before touching anything, then moves (never deletes) each path — and if any move fails or the script is interrupted (Ctrl+C / SIGTERM), it rolls back the moves already made so the live configuration is never left half-removed.
 
 ```bash
-rm -rf ~/.claude ~/.claude.json   # user settings, OAuth, MCP config, session history
-rm -rf .claude .mcp.json           # project-side config (run at the target repository root)
+#!/usr/bin/env bash
+# Usage: bash uninstall-claude-config.sh /path/to/target-repo
+set -euo pipefail
+
+target="${1:?usage: $0 /path/to/target-repo}"
+
+# 1. Validate the target before touching anything: it must be an existing git repository root
+cd -- "${target}"
+toplevel="$(git rev-parse --show-toplevel)"
+if [ "${toplevel}" != "$(pwd -P)" ]; then
+  echo "not at a repository root: $(pwd -P) (git top-level: ${toplevel})" >&2
+  exit 1
+fi
+
+# 2. Create an exclusive, fresh backup directory (mktemp fails instead of reusing an existing one)
+backup="$(mktemp -d "${HOME}/claude-uninstall-backup-XXXXXX")"
+echo "backup directory: ${backup}"
+
+# The four paths, user-level first, then project-side (we are at the verified repository root)
+sources=("${HOME}/.claude" "${HOME}/.claude.json" "${PWD}/.claude" "${PWD}/.mcp.json")
+names=(dot-claude dot-claude.json project-dot-claude project-mcp.json)
+
+# 3. Preflight every path BEFORE any move: refuse symlinks, refuse to overwrite, require a writable parent
+for i in "${!sources[@]}"; do
+  src="${sources[$i]}"; dest="${backup}/${names[$i]}"
+  if [ -L "${src}" ]; then
+    echo "refusing to move symlink: ${src}" >&2
+    exit 1
+  fi
+  [ -e "${src}" ] || continue
+  if [ -e "${dest}" ]; then
+    echo "backup destination already exists: ${dest}" >&2
+    exit 1
+  fi
+  if [ ! -w "$(dirname -- "${src}")" ]; then
+    echo "cannot move ${src}: parent directory is not writable" >&2
+    exit 1
+  fi
+done
+
+# 4. Move with rollback: if any mv fails, or the script is interrupted (Ctrl+C / SIGTERM),
+#    everything moved so far is put back in reverse order
+moved_src=(); moved_dest=()
+pending_src=""; pending_dest=""   # the move in flight (bash runs traps only after it finishes)
+restore_one() {
+  if [ -e "$1" ]; then
+    echo "ROLLBACK SKIPPED: $1 exists again; check $2 manually" >&2
+  elif [ ! -e "$2" ]; then
+    :   # never moved
+  elif mv -- "$2" "$1"; then
+    echo "restored $1" >&2
+  else
+    echo "ROLLBACK FAILED: restore $2 -> $1 manually" >&2
+  fi
+}
+rollback() {
+  local i
+  echo "move aborted; restoring already-moved paths" >&2
+  if [ -n "${pending_src}" ]; then
+    restore_one "${pending_src}" "${pending_dest}"
+  fi
+  for (( i = ${#moved_src[@]} - 1; i >= 0; i-- )); do
+    restore_one "${moved_src[$i]}" "${moved_dest[$i]}"
+  done
+}
+on_signal() { trap - ERR INT TERM; rollback; exit 130; }
+trap rollback ERR
+trap on_signal INT TERM
+for i in "${!sources[@]}"; do
+  src="${sources[$i]}"; dest="${backup}/${names[$i]}"
+  [ -e "${src}" ] || continue
+  pending_src="${src}"; pending_dest="${dest}"
+  mv -- "${src}" "${dest}"
+  moved_src+=("${src}"); moved_dest+=("${dest}")
+  pending_src=""; pending_dest=""
+  echo "moved ${src} -> ${dest}"
+done
+trap - ERR INT TERM
+
+# 5. Nothing has been deleted. Remove the backup explicitly once you are sure it is no longer needed:
+echo "done. To discard the backup later, run: rm -r -- \"${backup}\""
 ```
 
 > **Note**: The official docs do not document a command for removing the native binary/version files themselves — the location differs by install method (native installer / Homebrew / WinGet / npm) and isn't specified.
