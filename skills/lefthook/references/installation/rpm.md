@@ -12,7 +12,7 @@ CentOS / Fedora 等の RPM ベースのディストリビューションに Left
 # Run as one subshell: set -e stops at the first failure (a failed download is never executed as root),
 # and the EXIT trap removes the temp file when the subshell ends, success or failure
 (
-  set -euo pipefail
+  set -eu   # POSIX sh compatible (no pipes here); -e stops at the first failure, -u rejects unset variables
   setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.rpm.XXXXXX")"   # exclusive temp file: never overwrites an existing file
   trap 'rm -f -- "${setup}"' EXIT
   curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.rpm.sh' -o "${setup}"   # download first; do not pipe curl into sudo bash
