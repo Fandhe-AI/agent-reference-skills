@@ -5,6 +5,7 @@ description: >
   loader, action, middleware, routes.ts、hooks (useLoaderData, useActionData, useFetcher, useNavigate, useNavigation, useParams, useSearchParams)、
   コンポーネント (Form, Link, NavLink, Outlet, Route, Routes, Await)、SSR / SPA / Static、
   ErrorBoundary, redirect, defer, session, matchPath, matchRoutes, type-safe routing。
+  TanStack Router (@tanstack/react-router) とは別ライブラリ。
 user-invocable: false
 model: sonnet
 ---
