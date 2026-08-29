@@ -8,9 +8,11 @@ System requirements, platform-specific installation, version management, and uni
 
 ```bash
 # macOS, Linux, WSL
-curl -fsSL https://claude.ai/install.sh -o claude-install.sh   # download first; do not pipe curl into bash
-less claude-install.sh                                          # review the script before running it
-bash claude-install.sh
+installer="$(mktemp "${TMPDIR:-/tmp}/claude-install.XXXXXX")"   # exclusive temp file: never overwrites an existing file
+trap 'rm -f -- "${installer}"' EXIT                                # clean up even if a step fails
+curl -fsSL https://claude.ai/install.sh -o "${installer}"          # download first; do not pipe curl into bash
+less "${installer}"                                                # review the script before running it
+bash "${installer}"
 
 # Homebrew
 brew install --cask claude-code        # stable channel

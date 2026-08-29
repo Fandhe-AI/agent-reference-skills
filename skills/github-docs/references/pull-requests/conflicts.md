@@ -72,13 +72,19 @@ git push origin feature-branch
 
 ### rebase を使用する場合
 
+公開済み feature ブランチの rebase は履歴を書き換えるため、push 時にリモートの強制更新が必要になる。
+**開始前に**対象ブランチと影響範囲（同ブランチの他の作業者）を提示して明示的な承認を得る。承認が得られない場合は
+本手順を使わず、上記「merge を使用する場合」で解決する（通常の push で完結する）。
+
 ```bash
 # 1. base ブランチの最新を取得
 git checkout main
 git pull origin main
 
-# 2. feature ブランチに切り替え
+# 2. feature ブランチに切り替え、push 時の照合用にリモートの現在位置を記録
 git checkout feature-branch
+git fetch origin feature-branch
+before_rebase="$(git rev-parse origin/feature-branch)"
 
 # 3. rebase を開始
 git rebase main
@@ -93,12 +99,11 @@ git rebase --continue
 # 6. rebase を中止する場合
 git rebase --abort
 
-# 7. リモートに push
-#    rebase は履歴を書き換えるため、rebase 後の通常 push はリモートに拒否される。
-#    force push は自動実行せず、対象ブランチと影響範囲（同ブランチの他の作業者）を提示して
-#    明示的なユーザー承認を得たうえで手動で行う。承認を得ずに進める場合は rebase ではなく
-#    `git merge main` でコンフリクトを解決し、通常の push で完結させる
-git push origin feature-branch
+# 7. リモートに push（手順開始前に承認を得た場合のみ）
+#    rebase 後の通常 push は non-fast-forward として拒否される。手順 2 で記録した位置と
+#    リモートが一致する場合だけ更新する lease 付き push を使い、他の作業者の push を
+#    上書きしない（不一致で拒否されたら fetch して状況を確認し、再度承認を得る）
+git push --force-with-lease="refs/heads/feature-branch:${before_rebase}" origin feature-branch
 ```
 
 ## コンフリクトマーカー

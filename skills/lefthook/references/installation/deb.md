@@ -9,9 +9,11 @@ Debian / Ubuntu 系ディストリビューションで APT パッケージを�
 ### 1. リポジトリのセットアップ
 
 ```bash
-curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' -o lefthook-setup.deb.sh   # download first; do not pipe curl into sudo bash
-less lefthook-setup.deb.sh                                  # review before running with root privileges
-sudo -E bash lefthook-setup.deb.sh
+setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.deb.XXXXXX")"   # exclusive temp file: never overwrites an existing file
+trap 'rm -f -- "${setup}"' EXIT                                      # clean up even if a step fails
+curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' -o "${setup}"   # download first; do not pipe curl into sudo bash
+less "${setup}"                                                       # review before running with root privileges
+sudo -E bash "${setup}"
 ```
 
 ### 2. パッケージのインストール

@@ -15,9 +15,11 @@ sudo apk add --no-cache bash curl
 ### 2. リポジトリのセットアップ
 
 ```bash
-curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.alpine.sh' -o lefthook-setup.alpine.sh   # download first; do not pipe curl into sudo bash
-less lefthook-setup.alpine.sh                                  # review before running with root privileges
-sudo -E bash lefthook-setup.alpine.sh
+setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.alpine.XXXXXX")"   # exclusive temp file: never overwrites an existing file
+trap 'rm -f -- "${setup}"' EXIT                                      # clean up even if a step fails
+curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.alpine.sh' -o "${setup}"   # download first; do not pipe curl into sudo bash
+less "${setup}"                                                       # review before running with root privileges
+sudo -E bash "${setup}"
 ```
 
 ### 3. パッケージのインストール

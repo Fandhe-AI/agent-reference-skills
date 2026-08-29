@@ -92,27 +92,33 @@ snap install --classic lefthook
 
 ```sh
 sudo apk add --no-cache bash curl
-curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.alpine.sh' -o lefthook-setup.alpine.sh   # download first; do not pipe curl into sudo bash
-less lefthook-setup.alpine.sh                                  # review before running with root privileges
-sudo -E bash lefthook-setup.alpine.sh
+setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.alpine.XXXXXX")"   # exclusive temp file: never overwrites an existing file
+trap 'rm -f -- "${setup}"' EXIT                                      # clean up even if a step fails
+curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.alpine.sh' -o "${setup}"   # download first; do not pipe curl into sudo bash
+less "${setup}"                                                       # review before running with root privileges
+sudo -E bash "${setup}"
 sudo apk add lefthook
 ```
 
 ## Debian / Ubuntu (apt)
 
 ```sh
-curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' -o lefthook-setup.deb.sh   # download first; do not pipe curl into sudo bash
-less lefthook-setup.deb.sh                                  # review before running with root privileges
-sudo -E bash lefthook-setup.deb.sh
+setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.deb.XXXXXX")"   # exclusive temp file: never overwrites an existing file
+trap 'rm -f -- "${setup}"' EXIT                                      # clean up even if a step fails
+curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.deb.sh' -o "${setup}"   # download first; do not pipe curl into sudo bash
+less "${setup}"                                                       # review before running with root privileges
+sudo -E bash "${setup}"
 sudo apt install lefthook
 ```
 
 ## CentOS / Fedora (yum)
 
 ```sh
-curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.rpm.sh' -o lefthook-setup.rpm.sh   # download first; do not pipe curl into sudo bash
-less lefthook-setup.rpm.sh                                  # review before running with root privileges
-sudo -E bash lefthook-setup.rpm.sh
+setup="$(mktemp "${TMPDIR:-/tmp}/lefthook-setup.rpm.XXXXXX")"   # exclusive temp file: never overwrites an existing file
+trap 'rm -f -- "${setup}"' EXIT                                      # clean up even if a step fails
+curl -1sLf 'https://dl.cloudsmith.io/public/evilmartians/lefthook/setup.rpm.sh' -o "${setup}"   # download first; do not pipe curl into sudo bash
+less "${setup}"                                                       # review before running with root privileges
+sudo -E bash "${setup}"
 sudo yum install lefthook
 ```
 
