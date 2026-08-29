@@ -113,15 +113,17 @@ const errorCodes = require('fastify').errorCodes
 | `FST_ERR_VALIDATION` | The Request failed the payload validation. | Check the request payload. | [#4824](https://github.com/fastify/fastify/pull/4824) |
 | `FST_ERR_LISTEN_OPTIONS_INVALID` | Invalid listen options. | Check the listen options. | [#4886](https://github.com/fastify/fastify/pull/4886) |
 | `FST_ERR_ERROR_HANDLER_NOT_FN` | Error Handler must be a function | Provide a function to `setErrorHandler`. | [#5317](https://github.com/fastify/fastify/pull/5317) |
-| `FST_ERR_ERROR_HANDLER_ALREADY_SET` | Error Handler already set in this scope. Set `allowErrorHandlerOverride: true` to allow overriding. | By default, `setErrorHandler` can only be called once per encapsulation context. | [PR](https://github.com/fastify/fastify/pull/6098) |
+| `FST_ERR_ERROR_HANDLER_ALREADY_SET` | Error Handler already set in this scope. Set `allowErrorHandlerOverride: true` to allow overriding. | Occurs only when `allowErrorHandlerOverride: false` was set on that scope and `setErrorHandler` is called a second time within it. The factory default is `true` (multiple `setErrorHandler` calls per scope are allowed unless explicitly opted out) — see [`allowErrorHandlerOverride`](../server/factory-options.md). | [PR](https://github.com/fastify/fastify/pull/6098) |
 
 ## Notes
 
 - List reflects the `FST_ERR_*` codes documented on `docs/Reference/Errors.md` at tag `v5.12.1`. Codes are added/removed between minor versions; re-run `/update-skill fastify check` if a code used in application code is missing here.
 - Every code is a subclass of `Error` reachable via `Fastify.errorCodes.<CODE_NAME>` for `instanceof` matching (see [error-handling](./error-handling.md)).
 - Several codes are logger-configuration guards introduced for the v5 `logger` / `loggerInstance` split (`FST_ERR_LOG_INVALID_LOGGER_INSTANCE`, `FST_ERR_LOG_INVALID_LOGGER_CONFIG`, `FST_ERR_LOG_LOGGER_AND_LOGGER_INSTANCE_PROVIDED`) — see [logging](./logging.md) `## Notes` for the v4 → v5 change.
+- `FST_ERR_ERROR_HANDLER_ALREADY_SET`'s upstream "How to solve" text on `docs/Reference/Errors.md` ("By default, `setErrorHandler` can only be called once per encapsulation context") does not match `docs/Reference/Server.md`'s `allowErrorHandlerOverride` section, which states the factory default is `true` (multiple calls allowed) and the restrictive behavior only applies when it is explicitly set to `false`. The table cell above has been corrected to match the verified `Server.md` default rather than the outdated `Errors.md` wording.
 
 ## Related
 
 - [error-handling](./error-handling.md)
 - [logging](./logging.md)
+- [factory-options](../server/factory-options.md)
