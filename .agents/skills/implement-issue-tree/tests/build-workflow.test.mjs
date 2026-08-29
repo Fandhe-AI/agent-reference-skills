@@ -10,8 +10,15 @@
 // 生成物のサイズ・パースゲートは workflow-loadability.test.mjs が担う（対象は実行ファイル）。
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { readFileSync, mkdtempSync, symlinkSync, rmSync } from 'node:fs'
+import { spawnSync } from 'node:child_process'
+import { tmpdir } from 'node:os'
+import { join, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { stripComments, buildArtifact, SRC_PATH, DIST_PATH } from '../scripts/build-workflow.mjs'
+
+const SCRIPT_PATH = fileURLToPath(new URL('../scripts/build-workflow.mjs', import.meta.url))
+const REPO_ROOT = resolve(fileURLToPath(new URL('../../..', import.meta.url)))
 
 // ---------------------------------------------------------------------------
 // (a) lexer 固定ケース
@@ -51,6 +58,152 @@ test('${} 内のオブジェクトリテラル（{} ネスト）でテンプレ�
 
 test('正規表現リテラル内の // をコメントと誤認しない（キーワード直後の regex）', () => {
   const src = 'if (x) return /a[/][/]b/.test(s)\n'
+  assert.equal(stripComments(src), src)
+})
+
+test('. 直後のキーワード同名プロパティ直後の除算に続く trailing コメントを除去する', () => {
+  assert.equal(stripComments('const a = obj.in / 2 // c\n'), 'const a = obj.in / 2\n')
+})
+
+test('. 直後のキーワード同名プロパティ直後の除算行の後続文字列を書き換えない', () => {
+  assert.equal(
+    stripComments("const b = x.return / y + 'http://keep' // c\n"),
+    "const b = x.return / y + 'http://keep'\n",
+  )
+})
+
+test('末尾ドット数値直後のキーワード（1. in /re/）をプロパティ名と誤判定せず regex を保持する', () => {
+  assert.equal(stripComments('const r = 1. in /x[/]y/ // c\n'), 'const r = 1. in /x[/]y/\n')
+})
+
+test('数値へのプロパティアクセス（1 .in）直後の除算行で後続文字列を書き換えず trailing コメントを除去する', () => {
+  assert.equal(
+    stripComments("const a = 1 .in / 2 + 'http://keep' // c\n"),
+    "const a = 1 .in / 2 + 'http://keep'\n",
+  )
+})
+
+// Issue #455（Bugbot 連鎖指摘 5 巡目）の回帰固定: dotAfterDigit が「. の直前 1 文字が数字か」
+// という字句隣接のみで判定していたため、数字終わり識別子（foo1）・完了済み数値リテラル
+// （1e10・0x10）へのプロパティアクセス直後の `.` を末尾ドット数値（`1.`）と誤同一視し、
+// keywordProperty が false になって後続の `/` を regex 開始と誤読していた。
+test('数字終わり識別子直後のプロパティアクセス（foo1.in）を末尾ドット数値と誤同一視しない', () => {
+  assert.equal(
+    stripComments("const a = foo1.in / 2 + 'http://keep' // c\n"),
+    "const a = foo1.in / 2 + 'http://keep'\n",
+  )
+})
+
+test('指数表記リテラル直後のプロパティアクセス（1e10.in）を末尾ドット数値と誤同一視しない', () => {
+  assert.equal(
+    stripComments("const a = 1e10.in / 2 + 'http://keep' // c\n"),
+    "const a = 1e10.in / 2 + 'http://keep'\n",
+  )
+})
+
+test('符号付き指数表記リテラル直後のプロパティアクセス（1e+10.in）を末尾ドット数値と誤同一視しない（Issue #455 Bugbot）', () => {
+  assert.equal(
+    stripComments("const a = 1e+10.in / 2 + 'http://keep' // c\n"),
+    "const a = 1e+10.in / 2 + 'http://keep'\n",
+  )
+})
+
+test('負符号付き指数表記リテラル直後のプロパティアクセス（1e-5.in）を末尾ドット数値と誤同一視しない（Issue #455 Bugbot）', () => {
+  assert.equal(
+    stripComments("const a = 1e-5.in / 2 + 'http://keep' // c\n"),
+    "const a = 1e-5.in / 2 + 'http://keep'\n",
+  )
+})
+
+test('符号付き指数表記リテラル（1e+10）を含む式の除算判定・trailing コメント除去は従来通り機能する', () => {
+  assert.equal(
+    stripComments("const a = 1e+10 / 2 // c\n"),
+    "const a = 1e+10 / 2\n",
+  )
+  assert.equal(
+    stripComments("const b = 1e-5 / 2 // c\n"),
+    "const b = 1e-5 / 2\n",
+  )
+})
+
+test('16 進リテラル直後のプロパティアクセス（0x10.in）を末尾ドット数値と誤同一視しない', () => {
+  assert.equal(
+    stripComments("const a = 0x10.in / 2 + 'http://keep' // c\n"),
+    "const a = 0x10.in / 2 + 'http://keep'\n",
+  )
+})
+
+test('小数リテラル直後のプロパティアクセス（1.5.in）を末尾ドット数値と誤同一視しない', () => {
+  assert.equal(
+    stripComments("const a = 1.5.in / 2 + 'http://keep' // c\n"),
+    "const a = 1.5.in / 2 + 'http://keep'\n",
+  )
+})
+
+test('先頭ドット小数リテラル直後のプロパティアクセス（.5.in）を末尾ドット数値と誤同一視しない', () => {
+  assert.equal(
+    stripComments("const a = .5.in / 2 + 'http://keep' // c\n"),
+    "const a = .5.in / 2 + 'http://keep'\n",
+  )
+})
+
+// Issue #455 codex P1（PR #456 レビュー指摘）の回帰固定: 数字終わり識別子直後の `.` 判定
+// （wordPrevRaw のチェック）が \p{L}\p{Nl}_$ のみを識別子継続文字として認識しており、
+// 結合文字（Mn/Mc。分解形の á = 'a' + U+0301 等）・ZWNJ（U+200C）・ZWJ（U+200D）・
+// 非 BMP 識別子文字（サロゲートペア）を継続文字と判定できず、それらに隣接する数字を
+// 末尾ドット数値（`1.`）と誤同一視していた。誤同一視すると `.` 後続のプロパティアクセス
+// （`in`）が keywordProperty=false になり、後続 `/` が regex と誤読されて閉じ `/` 探索が
+// 文字列リテラル内の `/`（`http://`）を飲み込み、trailing コメントが除去されない
+// （コメント除去契約違反）。
+test('結合文字（分解形 á = a + U+0301）に隣接する数字直後のプロパティアクセスを末尾ドット数値と誤同一視しない', () => {
+  const src = "const x = á1.in / 2 + 'http://keep' // c\n"
+  const expected = "const x = á1.in / 2 + 'http://keep'\n"
+  assert.equal(stripComments(src), expected)
+})
+
+test('ZWNJ（U+200C）に隣接する数字直後のプロパティアクセスを末尾ドット数値と誤同一視しない', () => {
+  const src = "const x = a‌1.in / 2 + 'http://keep' // c\n"
+  const expected = "const x = a‌1.in / 2 + 'http://keep'\n"
+  assert.equal(stripComments(src), expected)
+})
+
+test('ZWJ（U+200D）に隣接する数字直後のプロパティアクセスを末尾ドット数値と誤同一視しない', () => {
+  const src = "const x = a‍1.in / 2 + 'http://keep' // c\n"
+  const expected = "const x = a‍1.in / 2 + 'http://keep'\n"
+  assert.equal(stripComments(src), expected)
+})
+
+test('非 BMP 識別子文字（サロゲートペア。数学用太字大文字 A U+1D400）に隣接する数字直後のプロパティアクセスを末尾ドット数値と誤同一視しない', () => {
+  const src = "const x = \u{1D400}1.in / 2 + 'http://keep' // c\n"
+  const expected = "const x = \u{1D400}1.in / 2 + 'http://keep'\n"
+  assert.equal(stripComments(src), expected)
+})
+
+// Issue #455 codex P1（PR #456 レビュー指摘・2 巡目）の回帰固定: wordPrevRaw は「識別子中に
+// 実際に出現した文字」のみを見ており、ECMAScript の Unicode コードポイントエスケープ
+// （`\u{H...}` / `\uHHHH`）で書かれた識別子文字は認識できなかった。エスケープは `\` `{` `}`
+// を含み isWordChar（ASCII のみ）が単語境界と誤認するため、`\u{1D400}1` の `1` が新規単語
+// 開始と誤認され、直後の `.` が末尾ドット数値と誤同一視されていた（上のサロゲートペア回帰は
+// 実際の非 BMP 文字が直接書かれたソースのみをカバーしており、エスケープ表記は未カバーだった）
+test('Unicode コードポイントエスケープ（\\u{H...}）で書かれた識別子直後の数字とプロパティアクセスを末尾ドット数値と誤同一視しない', () => {
+  const src = "const x = \\u{1D400}1.in / 2 + 'http://keep' // c\n"
+  const expected = "const x = \\u{1D400}1.in / 2 + 'http://keep'\n"
+  assert.equal(stripComments(src), expected)
+})
+
+test('Unicode コードポイントエスケープ（\\uHHHH 固定4桁）で書かれた識別子直後の数字とプロパティアクセスを末尾ドット数値と誤同一視しない', () => {
+  const src = "const x = \\u0041\\u0042" + "1.in / 2 + 'http://keep' // c\n"
+  const expected = "const x = \\u0041\\u0042" + "1.in / 2 + 'http://keep'\n"
+  assert.equal(stripComments(src), expected)
+})
+
+test('Unicode コードポイントエスケープの識別子は {} 深度カウントの対象にならない（エスケープ内の { } はブロック境界ではない）', () => {
+  const src = 'function f() { const \\u{1D400} = 1; return \\u{1D400} }\n'
+  assert.equal(stripComments(src), src)
+})
+
+test('キーワード本体（in）直後の regex は保持される', () => {
+  const src = 'for (const k in /x[/]y/.source) {}\n'
   assert.equal(stripComments(src), src)
 })
 
@@ -111,6 +264,26 @@ test('行末ブロックコメントの置換空白は行末に残らない（tr
   assert.equal(stripComments('const a = 1 /* c */\nconst b = 2\n'), 'const a = 1\nconst b = 2\n')
 })
 
+test('末尾ドット数値直後の除算に続く trailing コメントを除去する', () => {
+  assert.equal(stripComments('const a = 1. / 2 // c\n'), 'const a = 1. / 2\n')
+})
+
+test('末尾ドット数値直後の除算行の後続文字列を書き換えない（regex 誤読でクォートを飲み込まない）', () => {
+  assert.equal(
+    stripComments("const a = 1. / 2 + 'http://keep' // c\n"),
+    "const a = 1. / 2 + 'http://keep'\n",
+  )
+})
+
+test('spread `...` 直後の regex は保持される（末尾ドット数値の除算判定に巻き込まない）', () => {
+  const src = 'const r = [.../a[/]b/.exec(s)]\n'
+  assert.equal(stripComments(src), src)
+})
+
+test('ブロックコメント直後の識別子が直前の単語と連結して keyword 判定を壊さない', () => {
+  assert.equal(stripComments('const b = x/*c*/in /[/]/ // note\n'), 'const b = x in /[/]/\n')
+})
+
 test('冪等性: 除去済みソースへ再適用しても不変', () => {
   const once = stripComments("const a = 1 // c\nconst u = 'http://x'\n")
   assert.equal(stripComments(once), once)
@@ -137,4 +310,31 @@ test('開発ファイルと実行ファイルの行数が一致する（スタ�
   const src = readFileSync(SRC_PATH, 'utf8')
   const dist = readFileSync(DIST_PATH, 'utf8')
   assert.equal(src.split('\n').length, dist.split('\n').length)
+})
+
+// ---------------------------------------------------------------------------
+// (c) CLI ガード（symlink 経由・相対パス起動でも実行部が動くこと）
+// ---------------------------------------------------------------------------
+
+test('symlink 経由で起動しても CLI ガードを通過して --check が実行される（無言 no-op の防止）', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'build-workflow-link-'))
+  try {
+    const link = join(dir, 'build-workflow.mjs')
+    symlinkSync(SCRIPT_PATH, link)
+    const r = spawnSync(process.execPath, [link, '--check'], { encoding: 'utf8' })
+    assert.equal(r.status, 0, r.stderr)
+    assert.match(r.stdout, /鮮度 ok/)
+  } finally {
+    rmSync(dir, { recursive: true, force: true })
+  }
+})
+
+test('相対パスで起動しても CLI ガードを通過して --check が実行される', () => {
+  const r = spawnSync(
+    process.execPath,
+    ['skills/implement-issue-tree/scripts/build-workflow.mjs', '--check'],
+    { cwd: REPO_ROOT, encoding: 'utf8' },
+  )
+  assert.equal(r.status, 0, r.stderr)
+  assert.match(r.stdout, /鮮度 ok/)
 })
