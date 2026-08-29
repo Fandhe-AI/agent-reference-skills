@@ -76,6 +76,7 @@ export const Route = createFileRoute('/_authed')({
 
 - Protect the data/API boundary first: any server function/server route that returns or mutates private data must authorize the request itself; `beforeLoad` is for route UX, not the security boundary.
 - Hosted alternatives mentioned here (Clerk, WorkOS, Better Auth, Auth.js) are compared in Authentication Overview; for Better Auth's own API, refer to the `better-auth` skill.
+- `.validator((data: { email: string; password: string }) => data)` is a type annotation only, not runtime validation; production code should pass a Standard Schema (e.g. zod) to `.validator()` instead — see [Server Functions](../server/server-functions.md).
 
 ## Related
 

@@ -12,13 +12,17 @@ import { createServerFn } from '@tanstack/react-start'
 import { notFound } from '@tanstack/react-router'
 import { z } from 'zod'
 
+const GetUserSchema = z.object({
+  id: z.string().min(1),
+})
+
 const UserSchema = z.object({
   name: z.string().min(1),
   age: z.number().min(0),
 })
 
 export const getUser = createServerFn({ method: 'GET' })
-  .validator((data: { id: string }) => data)
+  .validator(GetUserSchema)
   .handler(async ({ data }) => {
     const user = await db.findUser(data.id)
     if (!user) throw notFound()
@@ -58,7 +62,7 @@ function UserPage() {
 
 ## Notes
 
-- Validation is done with `.validator(schemaOrFn)`, not `.inputValidator()` — accepts a Zod schema or a plain function receiving raw input and returning parsed `data`.
+- Validation is done with `.validator(schemaOrFn)`, not `.inputValidator()` — accepts a Zod schema or a plain function receiving raw input and returning parsed `data`. The upstream guide uses a type-only validator for `getUser` (`(data: { id: string }) => data`); this sample replaces it with the `zod` schema `GetUserSchema` for actual runtime validation.
 - `.handler()` receives `{ data }` as the validated payload; `context` is added when `.middleware([...])` supplies it.
 - `method: 'GET'` is the default and can be omitted; `method: 'POST'` is required for mutations.
 - Throwing `notFound()` / `redirect({ to })` inside `.handler()` propagates to the router on the client.

@@ -152,6 +152,8 @@ function Home() {
 - Project structure after setup: `src/routes/__root.tsx`, `src/router.tsx`, `src/routeTree.gen.ts` (auto-generated on first run).
 - `package.json` needs `"type": "module"` and `dev`/`build` scripts calling `vite dev`/`vite build` (or `rsbuild dev`/`rsbuild build`).
 - Enabling `verbatimModuleSyntax` in `tsconfig.json` can leak server bundles into client bundles.
+- `.validator((d: number) => d)` is a type annotation only, not runtime validation; production code should pass a Standard Schema (e.g. zod) to `.validator()` instead — see [Server Functions](../server/server-functions.md).
+- `readCount()` followed by `writeFile()` is a read-modify-write with no locking, and the local file is not shared across serverless instances or multiple processes; this pattern is only valid for a single-process local demo.
 
 ## Related
 

@@ -8,12 +8,17 @@ Two methods for importing and rendering markdown in TanStack Start: static markd
 
 ## Signature / Usage
 
+```bash
+npm install unified remark-parse remark-gfm remark-rehype rehype-raw rehype-slug rehype-autolink-headings rehype-stringify shiki html-react-parser gray-matter
+```
+
 ```tsx
 // src/utils/markdown.ts
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'
 import remarkGfm from 'remark-gfm'
 import remarkRehype from 'remark-rehype'
+import rehypeRaw from 'rehype-raw'
 import rehypeStringify from 'rehype-stringify'
 
 export async function renderMarkdown(content: string) {
@@ -21,6 +26,7 @@ export async function renderMarkdown(content: string) {
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeRaw) // Process raw HTML in markdown
     .use(rehypeStringify)
     .process(content)
   return String(result)
@@ -73,6 +79,7 @@ export const fetchDocs = createServerFn({ method: 'GET' })
 ## Notes
 
 - Syntax highlighting for code blocks can be added with Shiki (`codeToHtml`) inside the rendering pipeline.
+- `allowDangerousHtml: true` plus `rehype-raw` passes raw HTML embedded in the markdown straight through unescaped. When rendering remote/untrusted markdown (e.g. from GitHub), chain `rehype-sanitize` after `rehype-raw` to prevent XSS; if raw HTML support is not needed, drop `allowDangerousHtml` entirely instead.
 
 ## Related
 

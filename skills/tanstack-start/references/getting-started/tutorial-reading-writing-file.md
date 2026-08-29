@@ -66,6 +66,7 @@ router.invalidate() // re-runs the loader to refresh data
 - `router.invalidate()` (from `useRouter()`) is the standard way to force a loader re-run after a mutation, since there is no `<Form>` API equivalent here.
 - Tutorial scaffolds with `pnpx @tanstack/cli@latest create` and optional `--add-on` flags (Shadcn, Clerk, Convex, TanStack Query).
 - Full code: https://github.com/shrutikapoor08/devjokes
+- `addJoke`'s `.validator()` here does manual ad-hoc checks (`throw new Error(...)`) covering only presence/emptiness of `question`/`answer`; a non-string value (e.g. a number) reaches `.trim()` and throws a `TypeError` instead of a validation error. Pass a Standard Schema (e.g. zod) to `.validator()` instead for type-checked, structured validation — see [Server Functions](../server/server-functions.md).
 
 ## Related
 

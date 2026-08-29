@@ -32,10 +32,16 @@ export function useAppSession() {
 // src/server/auth.ts
 import { createServerFn, createMiddleware } from '@tanstack/react-start'
 import { redirect } from '@tanstack/react-router'
+import { z } from 'zod'
 import { useAppSession } from '../utils/session'
 
+const LoginSchema = z.object({
+  email: z.email(),
+  password: z.string().min(8),
+})
+
 export const loginFn = createServerFn({ method: 'POST' })
-  .validator((data: { email: string; password: string }) => data)
+  .validator(LoginSchema)
   .handler(async ({ data }) => {
     const user = await authenticateUser(data.email, data.password)
     if (!user) return { error: 'Invalid credentials' }
@@ -83,5 +89,5 @@ export const Route = createFileRoute('/_authed')({
 
 - `session.data.userId` is how session state written by `session.update()` is read back on later requests — both go through the same `useSession()`-returned object.
 - `beforeLoad` protects route UX only; every server function/server route that returns or mutates private data must authorize the request itself (the actual security boundary) — here `getCurrentUserFn`'s own `if (!userId) return null` check.
-- Middleware created with `createMiddleware({ type: 'function' })` supports `.client()` / `.validator()` in addition to `.server()`; plain `createMiddleware()` (request middleware) only has `.server()`.
-- `next({ context })` from `.server()` makes `session` available to the downstream `.handler()` via `context` — the middleware itself never redirects; only the route's `beforeLoad` does.
+- Middleware created with `createMiddleware({ type: 'function' })` supports `.client()` / `.validator()` in addition to `.server()` (plain `createMiddleware()` request middleware only has `.server()`); calling `next({ context })` from `.server()` is what makes `session` available to the downstream `.handler()` via `context` — the middleware itself never redirects, only the route's `beforeLoad` does.
+- The upstream guide uses a type-only validator (`(data: { email: string; password: string }) => data`); this sample replaces it with a `zod` schema (`LoginSchema`, using the top-level `z.email()` string-format validator) for actual runtime validation of the credentials payload.
