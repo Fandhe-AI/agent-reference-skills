@@ -1,7 +1,7 @@
 ---
 name: pino
 description: >
-  Pino (高速 JSON 構造化ロガー for Node.js) リファレンス。
+  Pino (高速 JSON 構造化ロガー for Node.js、Fastify 標準ロガー) リファレンス。
   logger, child logger, log levels (info / warn / error / debug / trace)、transport、
   pretty print (pino-pretty)、redaction (機密情報マスキング)、serializers、
   async / sync logging、ファイル出力、structured logging。

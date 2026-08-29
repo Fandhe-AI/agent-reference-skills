@@ -31,14 +31,14 @@ npx skills add Fandhe-AI/agent-reference-skills --all
 `-g` フラグで `~/.claude/skills/` にインストールすると、すべてのプロジェクトで利用できる。
 
 ```bash
-npx skills add Fandhe-AI/agent-reference-skills --skill react-router-v7 -g
+npx skills add Fandhe-AI/agent-reference-skills --skill react-router -g
 ```
 
 ## リポジトリ構成
 
 詳細なディレクトリ構成（`.claude/` の Agent・Rule・ワークフロースキル、`skills/` のスキル構造）は [CLAUDE.md](CLAUDE.md) の「Repository Structure」を参照。
 
-## スキル一覧（全 111 スキル）
+## スキル一覧（全 117 スキル）
 
 ### Apple プラットフォーム
 
@@ -133,7 +133,12 @@ openai-agents は MCP を消費する側、openai-apps-sdk は MCP サーバー�
 | スキル | 説明 |
 | -------- | ------ |
 | [nextjs-app](skills/nextjs-app/) | Next.js App Router — Server Components, Server Actions, ルーティング, キャッシュ, Metadata |
-| [react-router-v7](skills/react-router-v7/) | React Router v7 Framework Mode — loader, action, hooks, middleware, SSR/SPA |
+| [react-router](skills/react-router/) | React Router v8 Framework Mode (RR8) — loader, action, middleware, routes.ts, hooks, SSR/SPA, type-safe routing |
+| [tanstack-router](skills/tanstack-router/) | TanStack Router — 型安全 React ルーター, createFileRoute, loader / beforeLoad, validateSearch, file-based routing, tsr CLI |
+| [tanstack-start](skills/tanstack-start/) | TanStack Start — TanStack Router ベースのフルスタック React, createServerFn, createMiddleware, server routes, SSR / SPA / prerender |
+| [tanstack-query](skills/tanstack-query/) | TanStack Query (React Query) v5 — useQuery, useMutation, useInfiniteQuery, QueryClient, invalidateQueries, SSR / hydration |
+| [tanstack-table](skills/tanstack-table/) | TanStack Table (React Table) v9 — ヘッドレステーブル, useTable, tableFeatures, sorting / filtering / pagination, v8 移行 |
+| [tanstack-virtual](skills/tanstack-virtual/) | TanStack Virtual — React 仮想スクロール, useVirtualizer, useWindowVirtualizer, 動的計測, infinite scroll |
 | [react-hook-form](skills/react-hook-form/) | React Hook Form v7 — useForm, register, Controller, バリデーション |
 | [react-flow](skills/react-flow/) | React Flow — ノード, エッジ, カスタムノード, レイアウト |
 | [chakra-ui](skills/chakra-ui/) | Chakra UI v3 — コンポーネント, テーマ, レシピ, スタイルプロップ |
@@ -145,8 +150,10 @@ openai-agents は MCP を消費する側、openai-apps-sdk は MCP サーバー�
 | [driverjs](skills/driverjs/) | Driver.js — プロダクトツアー, 要素ハイライト, ポップオーバー |
 | [hermes-agent](skills/hermes-agent/) | Hermes Agent — AI CLI エージェント, MCP, Voice Mode, Messaging Gateway |
 | [hono](skills/hono/) | Hono — 軽量 Web フレームワーク, Middleware, Helpers, マルチランタイム |
+| [fastify](skills/fastify/) | Fastify v5 — Node.js 高速 HTTP サーバー, fastify.register / encapsulation / fastify-plugin, decorators, ライフサイクルフック, JSON Schema + Ajv, Type Providers, fastify.inject, fastify-cli |
 | [go-echo](skills/go-echo/) | Echo — Go 製高性能 Web フレームワーク, Routing, Middleware, Binding, Validation |
 | [fandhe-backend](skills/fandhe-backend/) | fandhe-backend — Rust 製バックエンド HTTP サーバーフレームワーク, Server / Router / Handler, Middleware / UpgradeHandler / RequestGate, sans-IO HTTP/1.1, プラグイン |
+| [fandhe-ai](skills/fandhe-ai/) | fandhe-ai — Rust 製 AI/ML ライブラリ, Tensor / dynamic-tape autodiff / kernel fusion, CPU・CUDA・Metal バックエンド, ONNX / safetensors, guardrail / self-repair CLI |
 | [nuqs](skills/nuqs/) | nuqs — URL search params state manager |
 | [inngest](skills/inngest/) | Inngest — イベント駆動 Durable Execution, createFunction, step, フロー制御 |
 

@@ -13,7 +13,7 @@ user-invocable: false
 
 fandhe-backend は Rust 製バックエンド HTTP サーバーフレームワーク。`Server` / `BoundServer` を核に、`Middleware` / `UpgradeHandler` / `RequestGate` / `Interceptor` という 4 つの拡張点で Web サーバーの挙動を組み立てる。sans-IO な HTTP/1.1 パーサー、DoS 上限、graceful shutdown を標準機能として持ち、CORS・圧縮・静的配信・WebSocket・GraphQL・OpenAPI・WebRTC 等はすべて feature フラグで切り出したプラグインとして提供される（pay-for-what-you-use）。
 
-**他スキルとの使い分け** — `Server` / `Router` / `Middleware` / `CORS` / `WebSocket` という語は複数のフレームワークで共通するため誤参照しやすい。`hono` は JS/TS の Web フレームワーク、`go-echo` は Go の Web フレームワークであり、いずれも本スキルとは別物。`fandhe-frontend` は同じ fandhe ファミリーの Rust 製フロントエンド層（SSR / SPA / SSG）であり、Rust 製バックエンド HTTP サーバーを調べる場合は本スキル（`fandhe-backend`）を参照すること。
+**他スキルとの使い分け** — `Server` / `Router` / `Middleware` / `CORS` / `WebSocket` という語は複数のフレームワークで共通するため誤参照しやすい。`hono`（Web Standards JS）・`fastify`（Node.js ネイティブ）・`go-echo`（Go）は別フレームワークであり、いずれも本スキルとは別物。`fandhe-frontend` は同じ fandhe ファミリーの Rust 製フロントエンド層（SSR / SPA / SSG）であり、Rust 製バックエンド HTTP サーバーを調べる場合は本スキル（`fandhe-backend`）を参照すること。
 
 公式ドキュメント: https://fandhe-ai.github.io/fandhe-backend/
 
