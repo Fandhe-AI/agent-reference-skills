@@ -46,6 +46,7 @@ fastify.addContentTypeParser(/^image\/([\w-]+);?/, function (request, payload, d
 - Avoid `await` when registering routes inside a `fastify.register` callback that also calls `addContentTypeParser`, or routes may register before the parser is set.
 - `fastify.getDefaultJsonParser(onProtoPoisoning, onConstructorPoisoning)` and `fastify.defaultTextParser()` can be reused to build custom parsers on top of the built-in ones.
 - A catch-all parser is registered with content type `'*'`; call `removeAllContentTypeParsers()` first if it should run for content types with an existing built-in parser (e.g. `application/json`).
+- In production, validate and size-limit the raw stream before acting on it, and never echo it back to the client unmodified as in the demo below.
 
 ```js
 // Catch-all parser, e.g. for piping the raw request stream
@@ -54,6 +55,7 @@ fastify.addContentTypeParser('*', function (request, payload, done) {
 })
 
 fastify.post('/hello', (request, reply) => {
+  // demo only: echoes the raw body back; never reflect untrusted input in production
   reply.send(request.raw)
 })
 ```

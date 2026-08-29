@@ -10,11 +10,9 @@ The first parameter of the handler function is `Request`. Request is a core Fast
 
 ```js
 fastify.post('/:params', options, function (request, reply) {
-  console.log(request.body)
-  console.log(request.query)
-  console.log(request.params)
-  console.log(request.headers)
-  console.log(request.raw)
+  // Destructure to reference the available properties; avoid logging
+  // request.body / request.headers / request.raw wholesale (see Notes).
+  const { body, query, params, headers } = request
   console.log(request.server)
   console.log(request.id)
   console.log(request.ip)
@@ -34,7 +32,7 @@ fastify.post('/:params', options, function (request, reply) {
   console.log(request.routeOptions.exposeHeadRoute)
   console.log(request.routeOptions.prefixTrailingSlash)
   console.log(request.routeOptions.config)
-  request.log.info('some info')
+  request.log.info({ url: request.url, method: request.method }, 'incoming')
 })
 ```
 
@@ -80,7 +78,7 @@ request.headers = {
 }
 ```
 
-This adds new values accessible via `request.headers.bar`. Standard request headers remain accessible via `request.raw.headers`. For performance reasons, `Symbol('fastify.RequestAcceptVersion')` may be added to headers on `not found` routes.
+This adds new values accessible via `request.headers.foo` (and `request.headers.baz`). Standard request headers remain accessible via `request.raw.headers`. For performance reasons, `Symbol('fastify.RequestAcceptVersion')` may be added to headers on `not found` routes.
 
 ### .getValidationFunction(schema | httpPart)
 
@@ -119,6 +117,8 @@ request.validateInput({ hello: 'world' }, 'query') // false
 
 ## Notes
 
+- The upstream example logs `request.headers` / `request.body` wholesale; it is narrowed here because those carry `Authorization`, `Cookie`, and user data — use Pino `redact` for anything sensitive that must be logged.
+- The upstream doc's prose says the example's `set()` call adds a value "accessible via `request.headers.bar`", but the example assigns `foo` and `baz` keys (not `bar`); this appears to be an inconsistency in the upstream source, so the accessor names in the example above have been corrected to `foo` / `baz`.
 - Security: `request.params`, `request.query`, `request.headers`, and `request.body` are untrusted network input. Route parameter values are percent-decoded before the handler runs, so a segment like `..%2ffile` becomes `../file` in `request.params`. Do not use parameter values as filesystem paths, template names, or redirect targets without validating or containing them. Prefer `@fastify/static` (or `reply.sendFile`) for serving files from a root directory.
 - `request.ip`, `request.ips`, `request.host`, `request.hostname`, `request.port`, and `request.protocol` come from request metadata (socket and/or forwarding headers) and must also be treated as untrusted input if used in security-sensitive decisions.
 - Schema validation may mutate the `request.headers` and `request.raw.headers` objects, causing them to become empty.
