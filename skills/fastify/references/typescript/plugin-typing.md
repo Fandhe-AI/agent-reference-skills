@@ -17,7 +17,7 @@ declare module 'fastify' {
     myPluginProp: string
   }
   interface FastifyReply {
-    myPluginProp: number
+    myPluginProp: string
   }
 }
 
@@ -26,13 +26,13 @@ export interface MyPluginOptions {
 }
 
 const myPluginCallback: FastifyPluginCallback<MyPluginOptions> = (fastify, options, done) => {
-  fastify.decorateRequest('myPluginProp', 'super_secret_value')
+  fastify.decorateRequest('myPluginProp', 'my_request_value')
   fastify.decorateReply('myPluginProp', options.myPluginOption)
   done()
 }
 
 const myPluginAsync: FastifyPluginAsync<MyPluginOptions> = async (fastify, options) => {
-  fastify.decorateRequest('myPluginProp', 'super_secret_value')
+  fastify.decorateRequest('myPluginProp', 'my_request_value')
   fastify.decorateReply('myPluginProp', options.myPluginOption)
 }
 
@@ -72,6 +72,7 @@ serverOne.register(async function (fastify) {
 })
 ```
 - For bound handler functions, use `OmitThisParameter` to strip the `this` type before passing to `decorateReply`.
+- The upstream example declares `FastifyReply.myPluginProp` as `number` while decorating it with the `string` option value; this page declares it as `string` so the declaration matches the value actually set, and uses a neutral placeholder instead of `'super_secret_value'`.
 
 ## Related
 
