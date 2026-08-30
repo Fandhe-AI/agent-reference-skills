@@ -5,6 +5,7 @@ description: >
   PostgreSQL データベース、Auth (Email / OAuth / Magic Link / Phone / SSO)、Storage、
   Edge Functions (Deno)、Realtime (subscriptions / presence / broadcast)、Vector embeddings、
   supabase-js、supabase CLI、RLS (Row Level Security)、migrations。
+  PostgreSQL ベース。SQL Server / node-mssql は別スキル mssql。
 user-invocable: false
 model: sonnet
 ---

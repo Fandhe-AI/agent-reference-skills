@@ -55,6 +55,7 @@ module.exports = fp(knexPlugin, { name: 'fastify-knex-example' })
 - `@fastify/redis` does not close the client connection on server shutdown by default; pass `closeClient: true` to opt in
 - Custom database plugins should be wrapped with `fastify-plugin` and register an `onClose` hook to release the connection
 - Schema migrations are engine-agnostic; the guide uses [Postgrator](https://www.npmjs.com/package/postgrator) (Postgres/MySQL/SQL Server/SQLite) as an example, and [migrate-mongo](https://www.npmjs.com/package/migrate-mongo) for MongoDB
+- For SQL Server connectivity (`mssql` package: `ConnectionPool`, `Request`, tagged-template `sql.query`), see the separate `mssql` skill; note that Fastify's `Request` object and node-mssql's `Request` class are unrelated types that happen to share a name
 
 ## Related
 
