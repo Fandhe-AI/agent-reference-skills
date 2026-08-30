@@ -87,6 +87,15 @@ git checkout feature-branch
 git fetch origin refs/heads/feature-branch:refs/remotes/origin/feature-branch
 before_rebase="$(git rev-parse refs/remotes/origin/feature-branch)"
 
+# リモート先端が HEAD の祖先である（リモートにだけ存在するコミットがない）ことを確認する。ローカルが
+# 遅れた状態で rebase すると、後述の --force-with-lease は照合値（リモート先端）と一致するため拒否されず、
+# そのリモート側コミットが rebase 結果で上書きされて失われる。ローカルが先行している（未 push コミットが
+# ある）だけなら安全なので許可し、リモート側にしかないコミットがある場合のみ中止して取り込む
+if ! git merge-base --is-ancestor "${before_rebase}" HEAD; then
+  echo "リモートにローカル未包含のコミットがある。先に取り込む: git merge refs/remotes/origin/feature-branch" >&2
+  exit 1
+fi
+
 # 3. rebase を開始
 git rebase main
 
@@ -107,6 +116,8 @@ rebase 後の通常 push は non-fast-forward として拒否される。リモ�
 もとで手動で行い、手順 2 で記録した `before_rebase` を照合値にした
 `--force-with-lease=refs/heads/feature-branch:${before_rebase}` 付きの 1 回の push で更新する。照合値と
 リモートが一致しない（他の作業者が push した）場合は拒否されるので、fetch して状況を確認し、再度承認を得る。
+`--force-with-lease` が守るのは「記録時点以降にリモートが動いていないこと」だけであり、記録時点でローカルが
+リモートより遅れていた場合の取りこぼしは検知できない。手順 2 の祖先確認を省略しないこと。
 
 ## コンフリクトマーカー
 
