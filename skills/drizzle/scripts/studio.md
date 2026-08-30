@@ -29,7 +29,7 @@ ssh -L 4983:127.0.0.1:4983 user@remote-host
 # トンネル確立後、ブラウザから https://local.drizzle.studio へアクセス
 ```
 
-（上記 `ssh` コマンドは公式ドキュメント外の一般的な手順。オプションは OpenSSH の仕様に基づく）
+（上記 `ssh` コマンドは Drizzle 公式ドキュメント外。出典: OpenSSH `ssh(1)` の `-L` オプション https://man.openbsd.org/ssh#L ）
 
 ## 全 SQL 文のログ出力
 
