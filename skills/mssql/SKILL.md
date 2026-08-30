@@ -5,6 +5,7 @@ description: >
   tedious / msnodesqlv8 ドライバー、SQL Server / T-SQL / TDS 接続、ConnectionPool、
   `sql.query` タグ付きテンプレート、bulk insert、Table-Valued Parameter (TVP)、
   prepared statement、isolation level、Diagnostics Channel、Azure AD 認証、CLI。
+  Drizzle ORM 経由の SQL Server 利用 (drizzle-orm/mssql-core) は別スキル drizzle が対象。
 user-invocable: false
 ---
 
