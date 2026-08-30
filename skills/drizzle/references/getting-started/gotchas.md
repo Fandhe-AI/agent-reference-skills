@@ -20,6 +20,8 @@ index('my_name').on(sql`lower(${table.email})`) // OK
 
 ## Notes
 
+- Supplementary source for the snippet: https://orm.drizzle.team/docs/faq (`faq.mdx`). This stub page itself has no code.
+
 - As of the current docs source (`gotchas.mdx`), this page contains only the heading and the sentence "This will be a library of `gotchas` with Drizzle use cases" — no gotcha entries have been published yet.
 - No code example exists on this page itself; the snippet above is quoted from `faq.mdx` (see `faq.md` in this category), the closest published "gotcha" entry in the current docs (PostgreSQL indexes with expressions require a manual name, and `push` cannot detect changes to an existing index's expression/where-clause/op-class).
 

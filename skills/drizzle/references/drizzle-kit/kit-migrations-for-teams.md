@@ -15,6 +15,8 @@ npx drizzle-kit check --dialect=postgresql
 
 ## Notes
 
+- Supplementary source for the snippet: https://orm.drizzle.team/docs/drizzle-kit-check (`pg/drizzle-kit-check.mdx`). This stub page itself has no code.
+
 - Stub page as of drizzle-kit 1.0.0-rc.5 — no substantive content beyond a pointer to `github.com/drizzle-team/drizzle-orm/discussions/2832`. Do not infer team-workflow guidance beyond what `drizzle-kit check` (commutativity checking across branches) already documents.
 - The snippet above is quoted from `drizzle-kit-check.mdx` (not from this stub page itself), whose text explicitly says `check` "is extremely useful when you have multiple developers working on the project and altering database schema on different branches" and links back to this "migrations for teams" page.
 
