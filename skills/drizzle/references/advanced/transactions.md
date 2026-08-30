@@ -9,11 +9,12 @@ SQL transaction is a grouping of one or more SQL statements that interact with a
 ## Signature / Usage
 
 ```ts
+// accounts: { id, userId, balance }
 const db = drizzle(...)
 
 await db.transaction(async (tx) => {
-  await tx.update(accounts).set({ balance: sql`${accounts.balance} - 100.00` }).where(eq(users.name, 'Dan'));
-  await tx.update(accounts).set({ balance: sql`${accounts.balance} + 100.00` }).where(eq(users.name, 'Andrew'));
+  await tx.update(accounts).set({ balance: sql`${accounts.balance} - 100.00` }).where(eq(accounts.userId, danId));
+  await tx.update(accounts).set({ balance: sql`${accounts.balance} + 100.00` }).where(eq(accounts.userId, andrewId));
 });
 ```
 
@@ -21,7 +22,7 @@ Nested transactions use `savepoints`:
 
 ```ts
 await db.transaction(async (tx) => {
-  await tx.update(accounts).set({ balance: sql`${accounts.balance} - 100.00` }).where(eq(users.name, 'Dan'));
+  await tx.update(accounts).set({ balance: sql`${accounts.balance} - 100.00` }).where(eq(accounts.userId, danId));
 
   await tx.transaction(async (tx2) => {
     await tx2.update(users).set({ name: "Mr. Dan" }).where(eq(users.name, "Dan"));
@@ -33,14 +34,14 @@ Rollback whenever needed:
 
 ```ts
 await db.transaction(async (tx) => {
-  const [account] = await tx.select({ balance: accounts.balance }).from(accounts).where(eq(users.name, 'Dan'));
+  const [account] = await tx.select({ balance: accounts.balance }).from(accounts).where(eq(accounts.userId, danId));
   if (account.balance < 100) {
     // This throws an exception that rollbacks the transaction.
     tx.rollback()
   }
 
-  await tx.update(accounts).set({ balance: sql`${accounts.balance} - 100.00` }).where(eq(users.name, 'Dan'));
-  await tx.update(accounts).set({ balance: sql`${accounts.balance} + 100.00` }).where(eq(users.name, 'Andrew'));
+  await tx.update(accounts).set({ balance: sql`${accounts.balance} - 100.00` }).where(eq(accounts.userId, danId));
+  await tx.update(accounts).set({ balance: sql`${accounts.balance} + 100.00` }).where(eq(accounts.userId, andrewId));
 });
 ```
 
@@ -48,10 +49,10 @@ Return values from the transaction:
 
 ```ts
 const newBalance: number = await db.transaction(async (tx) => {
-  await tx.update(accounts).set({ balance: sql`${accounts.balance} - 100.00` }).where(eq(users.name, 'Dan'));
-  await tx.update(accounts).set({ balance: sql`${accounts.balance} + 100.00` }).where(eq(users.name, 'Andrew'));
+  await tx.update(accounts).set({ balance: sql`${accounts.balance} - 100.00` }).where(eq(accounts.userId, danId));
+  await tx.update(accounts).set({ balance: sql`${accounts.balance} + 100.00` }).where(eq(accounts.userId, andrewId));
 
-  const [account] = await tx.select({ balance: accounts.balance }).from(accounts).where(eq(users.name, 'Dan'));
+  const [account] = await tx.select({ balance: accounts.balance }).from(accounts).where(eq(accounts.userId, danId));
   return account.balance;
 });
 ```
@@ -81,7 +82,7 @@ Dialect-specific transaction configuration (`PgTransactionConfig`):
 ```ts
 await db.transaction(
   async (tx) => {
-    await tx.update(accounts).set({ balance: sql`${accounts.balance} - 100.00` }).where(eq(users.name, "Dan"));
+    await tx.update(accounts).set({ balance: sql`${accounts.balance} - 100.00` }).where(eq(accounts.userId, danId));
   }, {
     isolationLevel: "read committed",
     accessMode: "read write",
@@ -93,6 +94,7 @@ await db.transaction(
 ## Notes
 
 - Transcribed from `pg/transactions.mdx` (pg is the canonical dialect)
+- Official example references `users.name` without joining `users`; rewritten to filter on `accounts` columns so the snippet executes
 
 ## Related
 

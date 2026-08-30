@@ -16,9 +16,20 @@ npx drizzle-kit studio
 
 ```sh
 npx drizzle-kit studio --port=3000
-npx drizzle-kit studio --host=0.0.0.0
-npx drizzle-kit studio --host=0.0.0.0 --port=3000
+npx drizzle-kit studio --host=127.0.0.1 --port=3000
 ```
+
+## リモートからの閲覧（SSH トンネル経由）
+
+> **警告**: Drizzle Studio には認証機構が無い。`--host=0.0.0.0` で全インターフェースへバインドすると、ネットワーク上の誰でもデータベースを閲覧・操作できる状態になる。隔離済み/使い捨て環境内でのみ使用し、リモートから閲覧したい場合は以下のように SSH トンネル経由でアクセスすること（`--host=0.0.0.0` 自体は使わない）。
+
+```sh
+# ローカル側でトンネルを張り、リモートホストの Studio に 127.0.0.1 経由でアクセスする
+ssh -L 4983:127.0.0.1:4983 user@remote-host
+# トンネル確立後、ブラウザから https://local.drizzle.studio へアクセス
+```
+
+（上記 `ssh` コマンドは公式ドキュメント外の一般的な手順。オプションは OpenSSH の仕様に基づく）
 
 ## 全 SQL 文のログ出力
 
