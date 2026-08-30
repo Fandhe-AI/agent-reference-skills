@@ -5,6 +5,7 @@ description: >
   z.object / z.string / z.number / z.array / z.union / z.enum 等のスキーマ定義、
   parse, safeParse, z.infer (型推論)、refine, transform, pipe、
   default, optional, nullable、エラー処理、Zod 4 移行。
+  createInsertSchema / createSelectSchema (drizzle-zod、Drizzle テーブルからのスキーマ生成) は別スキル drizzle。
 user-invocable: false
 model: sonnet
 ---

@@ -38,7 +38,7 @@ npx skills add Fandhe-AI/agent-reference-skills --skill react-router -g
 
 詳細なディレクトリ構成（`.claude/` の Agent・Rule・ワークフロースキル、`skills/` のスキル構造）は [CLAUDE.md](CLAUDE.md) の「Repository Structure」を参照。
 
-## スキル一覧（全 118 スキル）
+## スキル一覧（全 119 スキル）
 
 ### Apple プラットフォーム
 
@@ -217,6 +217,7 @@ openai-agents は MCP を消費する側、openai-apps-sdk は MCP サーバー�
 | [dayjs](skills/dayjs/) | Day.js — 軽量日付ライブラリ |
 | [pino](skills/pino/) | Pino — JSON ロガー, transport, redaction |
 | [bullmq](skills/bullmq/) | BullMQ — Redis ジョブキュー, Worker, FlowProducer |
+| [drizzle](skills/drizzle/) | Drizzle ORM (drizzle-orm / drizzle-kit v1 RC) — pgTable / mysqlTable / sqliteTable, drizzle(), RQB (db.query) / defineRelations, magic sql, drizzle-kit generate / push / migrate, drizzle-zod / drizzle-seed, Drizzle Studio |
 | [mssql](skills/mssql/) | mssql (node-mssql) — Node.js 向け Microsoft SQL Server クライアント, tedious / msnodesqlv8, ConnectionPool, sql.query タグ付きテンプレート, bulk / TVP, prepared statement, Diagnostics Channel |
 | [github-docs](skills/github-docs/) | GitHub — REST API, Actions, Webhooks, gh CLI |
 | [stripe](skills/stripe/) | Stripe — 決済, Checkout, Subscriptions, Webhooks, Connect, 全商品 API |
