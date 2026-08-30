@@ -27,6 +27,22 @@ Create a `.mssql.json` configuration file (anywhere). Structure of the file is t
 }
 ```
 
+> **Warning**: `.mssql.json` stores the database password in plain text. Protect it as you would any other credential.
+
+Add `.mssql.json` to `.gitignore` so credentials never enter source control:
+
+```sh
+echo '.mssql.json' >> .gitignore
+```
+
+Restrict the file to the owner:
+
+```sh
+chmod 600 .mssql.json
+```
+
+For CI, prefer a secret manager or a short-lived config file written at runtime instead of committing or persisting `.mssql.json`. Avoid passing `--password` on the command line: process arguments are visible to other users on the same machine (for example via `ps`) — use the config file or an environment variable instead.
+
 ## Run a query
 
 ```sh
