@@ -52,6 +52,7 @@ module.exports = function(req, res) {
 
 - Example: in Express applications, a single global pool instance is added to `app.locals` so the application has access to it when needed; the server start is chained inside the `connect()` promise.
 - Route handlers then read the pool from `req.app.locals.db`.
+- `ConnectionPool` / `Pool` / `Connection` here are TDS connection pools to SQL Server — unrelated to the HTTP servers in the `fastify` / `hono` skills or the Redis connections in `upstash` / `bullmq`.
 
 ## Related
 

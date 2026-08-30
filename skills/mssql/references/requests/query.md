@@ -42,6 +42,7 @@ request.query('select 1 as number; select 2 as number', (err, result) => {
 - Errors: `ETIMEOUT` (`RequestError`, request timeout), `EREQUEST` (`RequestError`, message from SQL Server), `ECANCEL` (`RequestError`, cancelled), `ENOCONN` (`RequestError`, no connection is specified for that request), `ENOTOPEN` (`ConnectionError`, connection not yet open), `ECONNCLOSED` (`ConnectionError`, connection is closed), `ENOTBEGUN` (`TransactionError`, transaction has not begun), `EABORT` (`TransactionError`, transaction was aborted by user or because of an error).
 - To get the number of rows affected by the statement(s), see the Affected Rows reference page.
 - `Request#query` is the method form of the same execution path used by the `sql.query` ES6 tagged template literal (`` sql.query`select * from mytable where id = ${value}` ``): both send the command as a parameterized/prepared statement via `sp_executesql`. Values interpolated through the tagged template are automatically sanitized against SQL injection because the statement is rendered as a prepared statement — the same limitations MS SQL imposes on parameters apply (e.g. column names cannot be passed as parameters). When building `command` strings manually for `request.query()`, always use `request.input()` parameters rather than string concatenation to get the same protection.
+- `Request` here is node-mssql's query-execution object — unrelated to the HTTP `Request` in the `fastify` / `hono` / `go-echo` skills; `query` is unrelated to `tanstack-query`.
 
 ## Related
 

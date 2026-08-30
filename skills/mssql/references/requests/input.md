@@ -58,6 +58,7 @@ sql.map.register(Number, sql.BigInt)
 
 - Errors (synchronous): `EARGS` (`RequestError`, invalid number of arguments), `EINJECT` (`RequestError`, SQL injection warning).
 - Do not use parameters `@p{n}` as these are used by the internal drivers and cause a conflict.
+- `Request` here is node-mssql's query-execution object — unrelated to the HTTP `Request` in the `fastify` / `hono` / `go-echo` skills.
 
 ## Related
 

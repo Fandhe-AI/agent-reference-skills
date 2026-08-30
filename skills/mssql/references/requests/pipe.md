@@ -29,6 +29,7 @@ stream.on('finish', () => {
 ## Notes
 
 - Migration (v6 → v7): `Request.pipe` now pipes a true Node.js stream for better backpressure support; requests in stream mode that pipe into other streams no longer pass errors up the stream chain.
+- `Request` here is node-mssql's query-execution object — unrelated to the HTTP `Request` in the `fastify` / `hono` / `go-echo` skills.
 
 ## Related
 

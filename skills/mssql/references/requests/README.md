@@ -1,9 +1,5 @@
 # Requests
 
-対象 mssql (node-mssql) v12.7.0
-
-ここでの `Request` は SQL Server へのクエリ実行オブジェクトで、`fastify` / `hono` / `go-echo` の HTTP Request とは別物。`query` は `tanstack-query` とは無関係。
-
 | Name | Description | Path |
 |------|-------------|------|
 | Request | Executes SQL commands against a pool or transaction; overview + events | [request.md](./request.md) |

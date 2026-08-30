@@ -1,7 +1,5 @@
 # getting-started
 
-対象 mssql (node-mssql) v12.7.0
-
 | Name | Description | Path |
 |------|-------------|------|
 | Installation | npm install for Tedious (default) and MSNodeSQLv8 (optional) drivers | [installation.md](./installation.md) |

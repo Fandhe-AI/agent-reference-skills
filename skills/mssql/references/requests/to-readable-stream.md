@@ -32,6 +32,10 @@ request.query('select * from mytable')
 |------|------|-------------|
 | highWaterMark | number | Buffer size (in rows) for the read stream. Optional. |
 
+## Notes
+
+- `Request` here is node-mssql's query-execution object — unrelated to the HTTP `Request` in the `fastify` / `hono` / `go-echo` skills.
+
 ## Related
 
 - [pipe](./pipe.md)

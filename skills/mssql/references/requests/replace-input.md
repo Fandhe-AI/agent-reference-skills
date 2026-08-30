@@ -25,6 +25,7 @@ request.replaceInput('myval', sql.Int, 2)
 
 - Unlike `input()`, `replaceInput()` requires an explicit SQL type — auto type inference is not supported.
 - Migration (v5 → v6): attempting to add a parameter with the same name to a query/stored procedure via `input()` now throws an error instead of silently overwriting; use `replaceInput()` to change an existing parameter's type/value.
+- `Request` here is node-mssql's query-execution object — unrelated to the HTTP `Request` in the `fastify` / `hono` / `go-echo` skills.
 
 ## Related
 

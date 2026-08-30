@@ -24,6 +24,7 @@ request.replaceOutput('myval', sql.BigInt)
 ## Notes
 
 - Migration (v5 → v6): attempting to add a parameter with the same name via `output()` now throws an error instead of silently overwriting; use `replaceOutput()` to change an existing output parameter's type/value.
+- `Request` here is node-mssql's query-execution object — unrelated to the HTTP `Request` in the `fastify` / `hono` / `go-echo` skills.
 
 ## Related
 

@@ -31,6 +31,7 @@ If your application maintains a large connection pool and you see high volumes o
 ## Notes
 
 - `'socket'` mode falls back to `SELECT 1` behaviour when using the msnodesqlv8 driver.
+- `ConnectionPool` / `Pool` / `Connection` here are TDS connection pools to SQL Server — unrelated to the HTTP servers in the `fastify` / `hono` skills or the Redis connections in `upstash` / `bullmq`.
 
 ## Related
 

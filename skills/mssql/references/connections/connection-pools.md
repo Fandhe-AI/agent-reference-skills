@@ -19,6 +19,7 @@ const pool = new sql.ConnectionPool({ /* config */ })
 - Pooling is used extensively throughout the library; a `ConnectionPool` instance manages a pool of TDS connections reused across `Request` / `Transaction` / `Prepared Statement` operations.
 - Migration (v11 → v12): config objects are no longer cloned by the library — mutating a config object after passing it to a `ConnectionPool` results in undefined behaviour.
 - Migration (v4 → v5): pool library moved from `node-pool` to `tarn.js`; `pool.size`/`pool.available`/`pool.pending`/`pool.borrowed` deprecated in favor of `ConnectionPool.size`/`available`/`pending`/`borrowed`.
+- `ConnectionPool` / `Pool` / `Connection` here are TDS connection pools to SQL Server — unrelated to the HTTP servers in the `fastify` / `hono` skills or the Redis connections in `upstash` / `bullmq`.
 
 ## Related
 

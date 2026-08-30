@@ -4,19 +4,19 @@ source: https://tediousjs.github.io/node-mssql/#cli
 
 # CLI
 
-mssql CLI ツール（`mssql` コマンド）のセットアップと実行例。
+Setup and usage examples for the mssql CLI tool (the `mssql` command).
 
-## CLI ツールのグローバルインストール
+## Install the CLI tool globally
 
 ```sh
 npm install -g mssql
 ```
 
-パスに `mssql` コマンドを追加したい場合はグローバルインストールが必要。
+If you want to add the `mssql` command to your path, you must install it globally.
 
-## 設定ファイル (`.mssql.json`) の作成
+## Create a configuration file (`.mssql.json`)
 
-`.mssql.json` という設定ファイルを任意の場所に作成する。構造は標準の configuration object と同じ。
+Create a `.mssql.json` configuration file (anywhere). Structure of the file is the same as the standard configuration object.
 
 ```json
 {
@@ -27,7 +27,7 @@ npm install -g mssql
 }
 ```
 
-## クエリの実行例
+## Run a query
 
 ```sh
 echo "select * from mytable" | mssql /path/to/config
@@ -39,7 +39,7 @@ Results in:
 [[{"username":"patriksimek","password":"tooeasy"}]]
 ```
 
-複数の recordset をまとめてクエリすることもできる。
+You can also query for multiple recordsets.
 
 ```sh
 echo "select * from mytable; select * from myothertable" | mssql
@@ -51,11 +51,11 @@ Results in:
 [[{"username":"patriksimek","password":"tooeasy"}],[{"id":15,"name":"Product name"}]]
 ```
 
-config path 引数を省略した場合、mssql はカレントワーキングディレクトリから読み込みを試みる。
+If you omit the config path argument, mssql will try to load it from the current working directory.
 
-## 設定値の上書き (Overriding config settings)
+## Overriding config settings
 
-以下の CLI オプションで一部の設定値を上書きできる: `--user`, `--password`, `--server`, `--database`, `--port`
+You can override some config settings via CLI options: `--user`, `--password`, `--server`, `--database`, `--port`
 
 ```sh
 echo "select * from mytable" | mssql /path/to/config --database anotherdatabase

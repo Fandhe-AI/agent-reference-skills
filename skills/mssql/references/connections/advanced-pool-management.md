@@ -65,6 +65,7 @@ async function example() {
 ## Notes
 
 - Similar to the global connection pool, aim to only close a pool when you know it will never be needed by the application again — typically only when the application is shutting down.
+- `ConnectionPool` / `Pool` / `Connection` here are TDS connection pools to SQL Server — unrelated to the HTTP servers in the `fastify` / `hono` skills or the Redis connections in `upstash` / `bullmq`.
 
 ## Related
 

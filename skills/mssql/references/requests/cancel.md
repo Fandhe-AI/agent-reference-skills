@@ -21,6 +21,10 @@ request.query('waitfor delay \'00:00:05\'; select 1 as number', (err, result) =>
 request.cancel()
 ```
 
+## Notes
+
+- `Request` here is node-mssql's query-execution object — unrelated to the HTTP `Request` in the `fastify` / `hono` / `go-echo` skills.
+
 ## Related
 
 - [Request](./request.md)

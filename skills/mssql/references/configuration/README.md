@@ -1,7 +1,5 @@
 # configuration
 
-対象 mssql (node-mssql) v12.7.0
-
 | Name | Description | Path |
 |------|-------------|------|
 | General (same for all drivers) | Configuration options shared across all drivers | [general-options.md](./general-options.md) |

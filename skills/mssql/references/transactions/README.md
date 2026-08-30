@@ -1,9 +1,5 @@
 # transactions
 
-対象 mssql (node-mssql) v12.7.0
-
-これは SQL Server の DB トランザクション / TDS prepared statement であり、`upstash`（Redis `MULTI`）や `stripe` の transaction とは別物。
-
 | Name | Description | Path |
 |------|-------------|------|
 | Transaction | Single-connection SQL Server transaction, Events, Aborted transactions | [transaction.md](./transaction.md) |

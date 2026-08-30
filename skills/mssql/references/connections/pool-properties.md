@@ -30,6 +30,7 @@ console.log(pool.healthy, pool.size, pool.available)
 
 - Migration (v4 → v5): `pool.size`/`pool.available`/`pool.pending`/`pool.borrowed` (nested under `pool.pool`) were deprecated in favor of the top-level `ConnectionPool.size`/`available`/`pending`/`borrowed` properties shown above.
 - Migration (v5 → v6): `ConnectionPool.healthy` was added to report whether the pool is able to create new connections.
+- `ConnectionPool` / `Pool` / `Connection` here are TDS connection pools to SQL Server — unrelated to the HTTP servers in the `fastify` / `hono` skills or the Redis connections in `upstash` / `bullmq`.
 
 ## Related
 

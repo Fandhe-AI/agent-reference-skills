@@ -1,9 +1,5 @@
 # connections
 
-対象 mssql (node-mssql) v12.7.0
-
-`Pool` / `Connection` / `ConnectionPool` は SQL Server への TDS 接続プールであり、`fastify` / `hono` の HTTP サーバー、`upstash` / `bullmq` の Redis 接続とは別物。
-
 | Name | Description | Path |
 |------|-------------|------|
 | Connection Pools | Overview of connection pooling in node-mssql | [connection-pools.md](./connection-pools.md) |

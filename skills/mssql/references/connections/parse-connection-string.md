@@ -21,6 +21,7 @@ const config = sql.ConnectionPool.parseConnectionString('Server=localhost,1433;D
 ## Notes
 
 - Migration (v7 → v8): the internal connection-string parsing library was removed; connection strings are now resolved via this static `ConnectionPool.parseConnectionString` method instead.
+- `ConnectionPool` / `Pool` / `Connection` here are TDS connection pools to SQL Server — unrelated to the HTTP servers in the `fastify` / `hono` skills or the Redis connections in `upstash` / `bullmq`.
 
 ## Related
 

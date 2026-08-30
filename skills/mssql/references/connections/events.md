@@ -23,6 +23,7 @@ const pool = new sql.ConnectionPool({ /* config */ })
 ## Notes
 
 - Not attaching an `error` listener will crash the application on an uncaught error when the connection fails.
+- `ConnectionPool` / `Pool` / `Connection` here are TDS connection pools to SQL Server — unrelated to the HTTP servers in the `fastify` / `hono` skills or the Redis connections in `upstash` / `bullmq`.
 
 ## Related
 

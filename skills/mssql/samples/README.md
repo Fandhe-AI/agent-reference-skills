@@ -1,7 +1,5 @@
 # samples
 
-対象 mssql (node-mssql) v12.7.0
-
 | Name | Description | Path |
 | --- | --- | --- |
 | Config | Minimal connection config object used by `sql.connect()` and `ConnectionPool` | [config.md](./config.md) |

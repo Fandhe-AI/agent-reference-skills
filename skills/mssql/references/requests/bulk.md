@@ -36,6 +36,7 @@ request.bulk(table, (err, result) => {
 - You can also create Table variable from any recordset with `recordset.toTable()`. You can optionally specify table type name in the first argument.
 - Errors: `ENAME` (`RequestError`, table name must be specified for bulk insert), `ETIMEOUT` (`RequestError`, request timeout), `EREQUEST` (`RequestError`, message from SQL Server), `ECANCEL` (`RequestError`, cancelled), `ENOCONN` (`RequestError`, no connection is specified for that request), `ENOTOPEN` (`ConnectionError`, connection not yet open), `ECONNCLOSED` (`ConnectionError`, connection is closed), `ENOTBEGUN` (`TransactionError`, transaction has not begun), `EABORT` (`TransactionError`, transaction was aborted by user or because of an error).
 - Migration (v5 → v6): bulk table inserts will attempt to coerce dates from non-`Date` objects if the column type is expecting a date.
+- `Request` here is node-mssql's query-execution object — unrelated to the HTTP `Request` in the `fastify` / `hono` / `go-echo` skills.
 
 ## Related
 

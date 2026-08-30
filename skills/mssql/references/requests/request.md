@@ -40,6 +40,7 @@ const request = new sql.Request(pool, { requestTimeout: 60000 })
 ## Notes
 
 - When using the global pool, you must still pass `undefined` as the first argument to use options: `new sql.Request(undefined, { requestTimeout: 60000 })`.
+- `Request` here is node-mssql's query-execution object — unrelated to the HTTP `Request` in the `fastify` / `hono` / `go-echo` skills.
 
 ## Related
 

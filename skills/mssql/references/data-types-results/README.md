@@ -1,7 +1,5 @@
 # Data Types & Results
 
-対象 mssql (node-mssql) v12.7.0
-
 | Name | Description | Path |
 |------|-------------|------|
 | Data Types | Full list of SQL Server data types (`sql.VarChar`, `sql.Decimal`, `sql.DateTime2`, etc.) with length/precision/scale usage | [data-types.md](./data-types.md) |

@@ -26,6 +26,7 @@ function runQuery(query) {
 - There can only be one global connection pool connected at a time. Providing a different connection config to `connect()` will not create a new connection if it is already connected.
 - Awaiting or `.then`-ing the pool creation is a safe way to ensure that the pool is always ready, without knowing where it is needed first. Once the pool is created there will be no delay for the next `connect()` call.
 - Do not close the global pool by calling `sql.close()` after a query is executed, because other queries may need to be run against this pool and closing it will add additional overhead. Only close the global pool if you're certain the application is finished (e.g. a CLI tool or a CRON job).
+- `ConnectionPool` / `Pool` / `Connection` here are TDS connection pools to SQL Server — unrelated to the HTTP servers in the `fastify` / `hono` skills or the Redis connections in `upstash` / `bullmq`.
 
 ## Related
 

@@ -1,7 +1,5 @@
 # scripts
 
-対象 mssql (node-mssql) v12.7.0
-
 | Name | Description | Path |
 | --- | --- | --- |
 | Installation | Tedious / MSNodeSQLv8 ドライバーのインストールコマンド集 | [install.md](./install.md) |

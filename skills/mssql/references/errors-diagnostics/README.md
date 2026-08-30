@@ -1,7 +1,5 @@
 # errors-diagnostics
 
-対象 mssql (node-mssql) v12.7.0
-
 | Name | Description | Path |
 |------|-------------|------|
 | Errors | Overview of the 4 error classes (`ConnectionError`, `TransactionError`, `RequestError`, `PreparedStatementError`) and `originalError` / `precedingErrors`. | [errors.md](./errors.md) |

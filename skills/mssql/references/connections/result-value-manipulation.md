@@ -24,6 +24,7 @@ sql.query('SELECT * FROM [example]').then((result) => {
 ## Notes
 
 - `sql.valueHandler.set(type, handler)` registers a per-datatype handler; requires v8.0.0+.
+- `ConnectionPool` / `Pool` / `Connection` here are TDS connection pools to SQL Server — unrelated to the HTTP servers in the `fastify` / `hono` skills or the Redis connections in `upstash` / `bullmq`.
 
 ## Related
 

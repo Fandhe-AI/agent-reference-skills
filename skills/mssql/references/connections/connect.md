@@ -36,6 +36,7 @@ pool.connect(err => {
 - Errors: `EINSTLOOKUP` (`ConnectionError`) — Instance lookup failed.
 - Errors: `ESOCKET` (`ConnectionError`) — Socket error.
 - Migration (v5 → v6): repeat calls to the global connect function (`sql.connect()`) now return the current global connection if it exists, instead of throwing an error. Closing the global connection by reference (e.g. `const conn = sql.connect(); conn.close()`) is now equivalent to `sql.close()`.
+- `ConnectionPool` / `Pool` / `Connection` here are TDS connection pools to SQL Server — unrelated to the HTTP servers in the `fastify` / `hono` skills or the Redis connections in `upstash` / `bullmq`.
 
 ## Related
 

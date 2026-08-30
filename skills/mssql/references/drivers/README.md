@@ -1,7 +1,5 @@
 # drivers
 
-対象 mssql (node-mssql) v12.7.0
-
 | Name | Description | Path |
 |------|-------------|------|
 | Tedious | Default driver, actively maintained, production ready, officially supported by Microsoft | [tedious.md](./tedious.md) |
