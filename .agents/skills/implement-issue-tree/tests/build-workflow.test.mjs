@@ -115,6 +115,32 @@ test('負符号付き指数表記リテラル直後のプロパティアクセ�
   )
 })
 
+test('末尾ドット仮数の符号付き指数表記リテラル直後のプロパティアクセス（1.e+10.in）を末尾ドット数値と誤同一視しない（Bugbot 指摘）', () => {
+  assert.equal(
+    stripComments("const a = 1.e+10.in / 2 + 'http://keep' // c\n"),
+    "const a = 1.e+10.in / 2 + 'http://keep'\n",
+  )
+  assert.equal(
+    stripComments("const a = 1.E-5.in / 2 + 'http://keep' // c\n"),
+    "const a = 1.E-5.in / 2 + 'http://keep'\n",
+  )
+})
+
+test('末尾ドット仮数の符号付き指数表記リテラル（1.e+10）を含む除算行の trailing コメント除去は従来通り機能する', () => {
+  assert.equal(
+    stripComments("const a = 1.e+10 / 2 // c\n"),
+    "const a = 1.e+10 / 2\n",
+  )
+})
+
+test('末尾ドット数値直後の識別子 e へ続く二項 + は指数部符号と扱わず、後続の regex を保持する', () => {
+  // `1. e` は数値リテラルではない（空白を挟む）ため、`e` は識別子。`+` は二項演算子
+  assert.equal(
+    stripComments("const r = 1. e +10. in /x[/]y/ // c\n"),
+    "const r = 1. e +10. in /x[/]y/\n",
+  )
+})
+
 test('符号付き指数表記リテラル（1e+10）を含む式の除算判定・trailing コメント除去は従来通り機能する', () => {
   assert.equal(
     stripComments("const a = 1e+10 / 2 // c\n"),

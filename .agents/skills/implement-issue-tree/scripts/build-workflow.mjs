@@ -386,10 +386,16 @@ export function stripComments(src) {
       // sigWord を温存する（リセットしない）。これにより符号後の桁が sigWord へ地続きで
       // 連結され（`1e` + `10` = `1e10`）、純粋な数字列パターンに一致しなくなるため、符号後の
       // 桁だけを独立した完結済み整数リテラルと誤認しない（Issue #455 Bugbot 指摘）
+      // 末尾ドット仮数（`1.e+10`）: `.` が sigWord を空にするため `e` は単独語として始まり、
+      // 上の「数字列 [小数部] e/E」パターンに一致しない。`e`/`E` 単独語が末尾ドット数値の `.`
+      // に字句隣接して始まっている（wordDotAfterDigit かつ wordPrevRaw が `.`）場合も指数部
+      // として温存する。取りこぼすと符号後の `10` が完結済み整数と誤認され、続く `.in /` が
+      // キーワード + regex と誤判定される（消費リポ同期 PR の Bugbot 指摘・2026-08-29）
       const isExponentSign =
         (c === '+' || c === '-') &&
         /[eE]/.test(rawPrev) &&
-        /^[0-9]+(?:_[0-9]+)*(?:\.[0-9]+(?:_[0-9]+)*)?[eE]$/.test(sigWord)
+        (/^[0-9]+(?:_[0-9]+)*(?:\.[0-9]+(?:_[0-9]+)*)?[eE]$/.test(sigWord) ||
+          (/^[eE]$/.test(sigWord) && wordDotAfterDigit && wordPrevRaw === '.'))
       if (!isExponentSign) {
         sigWord = ''
       }
