@@ -26,10 +26,17 @@ import { sql } from 'drizzle-orm';
 
 const db = drizzle(process.env.NILEDB_URL);
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 function tenantDB<T>(tenantId: string, cb: (tx: any) => T | Promise<T>): Promise<T> {
+  if (tenantId && !UUID_RE.test(tenantId)) {
+    throw new Error('Invalid tenantId');
+  }
   return db.transaction(async (tx) => {
     if (tenantId) {
-      await tx.execute(sql`set local nile.tenant_id = '${sql.raw(tenantId)}'`);
+      // Use set_config() as a bound parameter instead of interpolating
+      // tenantId into the SQL text, so the value is never parsed as SQL.
+      await tx.execute(sql`select set_config('nile.tenant_id', ${tenantId}, true)`);
     }
     return cb(tx);
   }) as Promise<T>;
@@ -46,8 +53,9 @@ const response = await tenantDB(tenantId, async (tx) => {
 ## Notes
 
 - Transcribed from `pg/connect-nile.mdx`.
-- Once the tenant context is set with `set local nile.tenant_id = '...'`, all queries in that transaction apply only to that tenant.
+- Once the tenant context is set, all queries in that transaction apply only to that tenant.
 - `AsyncLocalStorage` can be combined with framework middleware to populate the tenant ID per-request instead of passing it explicitly.
+- Official example does `` sql`set local nile.tenant_id = '${sql.raw(tenantId)}'` ``, interpolating `tenantId` directly into the SQL text via `sql.raw()` (SQL injection if `tenantId` is user-controlled); rewritten to bind it as a `set_config()` parameter plus a UUID-format validation guard for safety.
 
 ## Related
 

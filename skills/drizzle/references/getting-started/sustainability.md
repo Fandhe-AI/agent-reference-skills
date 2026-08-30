@@ -1,5 +1,7 @@
 ---
-source: https://orm.drizzle.team/docs/sustainability
+source:
+  - https://orm.drizzle.team/docs/sustainability
+  - https://orm.drizzle.team/docs/get-started/postgresql-new
 ---
 
 # Drizzle Sustainability

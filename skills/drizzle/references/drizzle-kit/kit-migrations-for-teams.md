@@ -1,5 +1,7 @@
 ---
-source: https://orm.drizzle.team/docs/kit-migrations-for-teams
+source:
+  - https://orm.drizzle.team/docs/kit-migrations-for-teams
+  - https://orm.drizzle.team/docs/drizzle-kit-check
 ---
 
 # Migrations for teams

@@ -1,5 +1,7 @@
 ---
-source: https://orm.drizzle.team/docs/drizzle-kit-studio
+source:
+  - https://orm.drizzle.team/docs/drizzle-kit-studio
+  - https://man.openbsd.org/ssh#L
 ---
 
 # studio

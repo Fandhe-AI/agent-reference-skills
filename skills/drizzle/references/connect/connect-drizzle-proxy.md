@@ -24,15 +24,29 @@ const db = drizzle(async (sql, params, method) => {
 });
 ```
 
+> Local development / trusted-network use only. Exposing this endpoint publicly
+> requires authentication, authorization, a least-privilege DB role, and a
+> request body size limit — none of which the original doc example includes.
+
 ```ts
 // Server side
 import { Client } from 'pg';
 import express from 'express';
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: '100kb' }));
 
-const client = new Client('postgres://postgres:postgres@localhost:5432/postgres');
+// Placeholder auth middleware: verify a bearer token before executing any SQL.
+app.use((req, res, next) => {
+  const token = req.headers.authorization?.replace(/^Bearer\s+/, '');
+  if (!token || !isValidToken(token)) {
+    return res.status(401).send('Unauthorized');
+  }
+  next();
+});
+
+// Use a role scoped to only what the proxy needs (e.g. read-only), not a superuser.
+const client = new Client(process.env.PROXY_DB_URL);
 
 app.post('/query', async (req, res) => {
   const { sql, params, method } = req.body;
@@ -61,6 +75,7 @@ app.listen(3000);
 
 - Transcribed from `pg/connect-drizzle-proxy.mdx`.
 - The async callback must return `{ rows: string[][] }` for `method: 'all'`, or `{ rows: string[] }` for `method: 'execute'`.
+- Official example connects with a hardcoded `postgres:postgres` superuser and exposes `/query` with no authentication or body size limit; rewritten with an env-var connection string (least-privilege role), a bearer-token auth placeholder, and a JSON body size limit for safety.
 
 ## Related
 

@@ -1,5 +1,7 @@
 ---
-source: https://orm.drizzle.team/docs/gotchas
+source:
+  - https://orm.drizzle.team/docs/gotchas
+  - https://orm.drizzle.team/docs/faq
 ---
 
 # Drizzle Gotchas

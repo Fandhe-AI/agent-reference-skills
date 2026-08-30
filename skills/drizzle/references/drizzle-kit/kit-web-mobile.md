@@ -1,5 +1,7 @@
 ---
-source: https://orm.drizzle.team/docs/kit-web-mobile
+source:
+  - https://orm.drizzle.team/docs/kit-web-mobile
+  - https://orm.drizzle.team/docs/get-started/expo-new
 ---
 
 # Drizzle migrations in web and mobile environments
