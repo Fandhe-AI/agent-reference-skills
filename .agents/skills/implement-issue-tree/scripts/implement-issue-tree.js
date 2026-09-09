@@ -753,7 +753,13 @@ const MERGE_EXEC_VALID_REASONS = new Set(MERGE_EXEC_SCHEMA.properties.reason.enu
 
 
 
-function classifyMergeExecDispatch(execReason, currentBlockedReason) {
+
+
+
+
+
+function classifyMergeExecDispatch(execReason, currentBlockedReason, agentOutputMissing = false) {
+  if (agentOutputMissing) return { lastState: 'agent-output-missing', lastBlockedReason: currentBlockedReason }
   switch (execReason) {
     case 'unresolved-threads':
       return { lastState: 'unresolved-comments', lastBlockedReason: currentBlockedReason }
@@ -798,6 +804,34 @@ function reconcileRescueRoundState(lastState, rescueRoundActive, timeoutExecReas
     return { terminate: true, qualityBlock: true, rescuePending: false, timeoutOrigin: 'monitor' }
   }
   return { terminate: false, qualityBlock: false, rescuePending: false, timeoutOrigin: 'merge-exec' }
+}
+
+
+
+
+
+
+
+
+
+
+
+function classifyMergeTerminalStatus({ lastState, lastBlockedReason, routingErrorDetected, mergedButIssueOpen, rescueTimeoutQualityBlock }) {
+  if (routingErrorDetected) return 'failed'
+  const blockedIsRecoverable = lastState === 'blocked' && lastBlockedReason === 'quality'
+  const agentOutputMissing = lastState === 'agent-output-missing'
+  return mergedButIssueOpen || blockedIsRecoverable || lastState === 'unresolved-comments' || rescueTimeoutQualityBlock || agentOutputMissing
+    ? 'blocked'
+    : 'failed'
+}
+
+
+
+
+
+
+function classifyVerifyCloseStatus(v) {
+  return v == null ? 'blocked' : 'failed'
 }
 
 
@@ -2377,7 +2411,13 @@ function prCreatePrompt(item, impl, outOfScope) {
 
 
 
-    `0. push 前 base 最新化ゲート: git fetch origin ${baseBranch}:refs/remotes/origin/${baseBranch}（保存先を明示した refspec。Issue #361 と同形式）で base を取得する。この base fetch の終了コードを必ず確認し、非ゼロ終了（通信・認証・refspec エラー等）の場合は merge も push も行わず prNumber: 0 と「base fetch 失敗」（エラー内容の要旨を添える）を理由として返す（fail-closed。fetch 失敗を無視して進むと、以前の処理が残した stale な origin/${baseBranch} を merge したまま push でき、「必ず最新 base を取り込む」という本ゲートを迂回してしまう）。fetch 成功後、detached HEAD の起点を決める（再入対応: PR 作成失敗後のリトライ等の再入では、初回実行の push によりリモート ${branch} には base 取り込みのマージコミットが既に積まれている一方、ローカルの refs/heads/${branch} は意図的に更新していないため古いままであり、ローカル起点でマージコミットを再作成すると non-fast-forward で push が拒否される）。git fetch origin ${branch}:refs/remotes/origin/${branch} を実行し、結果で分岐する: (i) リモートに ${branch} が存在しない（fetch がその旨で失敗する）場合は初回実行なのでローカル起点 — 本エージェントは隔離 worktree で動作し ${branch} を checkout している保証がないため git checkout --detach ${branch} で detached HEAD として取得する。(ii) リモート追跡 ref が得られ、両 tip が同一 sha（git rev-parse refs/heads/${branch} と git rev-parse refs/remotes/origin/${branch} が一致）の場合は継続する — 取り込む差分が存在せずどちらを起点にしても同一コミットのため安全。git checkout --detach refs/remotes/origin/${branch} として既存のマージコミット（過去の自分の push）の上から継続する。(ii-b) 同一 sha ではなく git merge-base --is-ancestor refs/heads/${branch} refs/remotes/origin/${branch} が成立する（ローカル tip がリモート tip の真の ancestor = remote ahead）場合は fail-closed: この祖先関係は過去の自分の push だけでなく、第三者・別ランが任意コミットを同ブランチへ fast-forward push した場合にも成立し、pr-create 単体の観測では両者を区別できない。リモート起点を採用するとその未レビューコミットを保持したまま base merge・push してしまい、autoMerge opt-in ランでは未レビューの第三者コミットがマージされ得るため、リモートコミットを黙って採用してはならない。merge も push もせず prNumber: 0 と「remote-ahead: 自己の過去 push か第三者 push か判別不能」を理由として返し、summary に両 tip の sha を書く。回復経路: この失敗では branch が保存されるため次回ランは Recover フェーズを起動し、回復 Implement の手順 2 がローカル ${branch} を git merge --ff-only refs/remotes/origin/${branch} でリモート tip へ追従させてから実装・Review を経て push する（自己の過去 push なら ff で追従でき、リモートコミットはそこでレビュー対象に乗る。ff 不能な真の diverged は次の pr-create の (iv) で止まる）。(iii) (ii) が不成立で、逆向きの git merge-base --is-ancestor refs/remotes/origin/${branch} refs/heads/${branch} が成立する（リモート tip がローカル tip の ancestor = local ahead。既存 PR 再利用後に implement / Review でローカルへ新規コミットを積んだ通常の回復フロー）場合はローカル起点 — git checkout --detach ${branch} で継続する（ローカル履歴はリモート履歴を含むため push は fast-forward になる。この向きを diverged 扱いして終端してはならない — 終端すると push・PR 作成が永久に回復しない）。(iv) どちらの向きの ancestor 関係も成立しない（真の diverged — 他者・別ランの push でリモートが書き換わっている等）場合のみ fail-closed: リモート側 sha を無条件に信頼して第三者の変更を取り込んではならないため、merge も push もせず prNumber: 0 と「ローカル ${branch} とリモート origin/${branch} が diverged」を理由として返し、summary に両 tip の sha を書く。起点を checkout したら base を取り込む: ${baseMergeInstruction(baseBranch)} 分岐 (b) の解消不能・分岐 (c) の拒否で返すときは prNumber: 0 と上記理由を返す（ローカルブランチはそのまま保全され、CI 未起動の空 PR を作らずに終わる）。分岐 (a) ならそのまま手順 1 へ進む。ローカルブランチ ref（refs/heads/${branch}）の更新は行わない — 手順 1 は detached HEAD の内容を直接 push するため不要であり、この worktree が ${branch} を checkout している保証がない以上 git branch -f はブランチが別 worktree で checkout 済みの場合に失敗し得る。`,
+
+
+
+
+
+    `0. push 前 base 最新化ゲート: git fetch origin ${baseBranch}:refs/remotes/origin/${baseBranch}（保存先を明示した refspec。Issue #361 と同形式）で base を取得する。この base fetch の終了コードを必ず確認し、非ゼロ終了（通信・認証・refspec エラー等）の場合は merge も push も行わず prNumber: 0 と「base fetch 失敗」（エラー内容の要旨を添える）を理由として返す（fail-closed。fetch 失敗を無視して進むと、以前の処理が残した stale な origin/${baseBranch} を merge したまま push でき、「必ず最新 base を取り込む」という本ゲートを迂回してしまう）。fetch 成功後、detached HEAD の起点を決める（再入対応: PR 作成失敗後のリトライ等の再入では、初回実行の push によりリモート ${branch} には base 取り込みのマージコミットが既に積まれている一方、ローカルの refs/heads/${branch} は意図的に更新していないため古いままであり、ローカル起点でマージコミットを再作成すると non-fast-forward で push が拒否される）。git fetch origin ${branch}:refs/remotes/origin/${branch} を実行し、結果で分岐する: (i) リモートに ${branch} が存在しない（fetch がその旨で失敗する）場合は初回実行なのでローカル起点 — 本エージェントは隔離 worktree で動作し ${branch} を checkout している保証がないため git checkout --detach ${branch} で detached HEAD として取得する。この checkout の終了コードを必ず確認する（非 0 終了はローカルに refs/heads/${branch} が存在しない等を意味する）。加えて checkout 成功後に git rev-parse HEAD と git rev-parse refs/heads/${branch}（実装 worktree 側の implement 手順で作成された実ブランチの実体。同一リポジトリの worktree 間で共有される git 参照）を突き合わせ、両者が一致することを確認する（この worktree に残っていた無関係な直前の HEAD をそのまま base 取り込み・push してしまう事故の直接検知）。checkout の終了コードが非 0、または両 sha が不一致の場合は base merge も push も行わず prNumber: 0 と「ローカルブランチ ${branch} の checkout に失敗、または detached HEAD が refs/heads/${branch} の実体と不一致」を理由として返す（fail-closed。起点確立の検証を欠くと、隔離 worktree に残っていた無関係な HEAD が base の tip のまま push され、push した remote branch の tip が origin/${baseBranch} の tip と一致して gh pr create が失敗し得る）。(ii) リモート追跡 ref が得られ、両 tip が同一 sha（git rev-parse refs/heads/${branch} と git rev-parse refs/remotes/origin/${branch} が一致）の場合は継続する — 取り込む差分が存在せずどちらを起点にしても同一コミットのため安全。git checkout --detach refs/remotes/origin/${branch} として既存のマージコミット（過去の自分の push）の上から継続する。(ii-b) 同一 sha ではなく git merge-base --is-ancestor refs/heads/${branch} refs/remotes/origin/${branch} が成立する（ローカル tip がリモート tip の真の ancestor = remote ahead）場合は fail-closed: この祖先関係は過去の自分の push だけでなく、第三者・別ランが任意コミットを同ブランチへ fast-forward push した場合にも成立し、pr-create 単体の観測では両者を区別できない。リモート起点を採用するとその未レビューコミットを保持したまま base merge・push してしまい、autoMerge opt-in ランでは未レビューの第三者コミットがマージされ得るため、リモートコミットを黙って採用してはならない。merge も push もせず prNumber: 0 と「remote-ahead: 自己の過去 push か第三者 push か判別不能」を理由として返し、summary に両 tip の sha を書く。回復経路: この失敗では branch が保存されるため次回ランは Recover フェーズを起動し、回復 Implement の手順 2 がローカル ${branch} を git merge --ff-only refs/remotes/origin/${branch} でリモート tip へ追従させてから実装・Review を経て push する（自己の過去 push なら ff で追従でき、リモートコミットはそこでレビュー対象に乗る。ff 不能な真の diverged は次の pr-create の (iv) で止まる）。(iii) (ii) が不成立で、逆向きの git merge-base --is-ancestor refs/remotes/origin/${branch} refs/heads/${branch} が成立する（リモート tip がローカル tip の ancestor = local ahead。既存 PR 再利用後に implement / Review でローカルへ新規コミットを積んだ通常の回復フロー）場合はローカル起点 — git checkout --detach ${branch} で継続する。この checkout も (i) と同じ終了コード確認・git rev-parse HEAD と git rev-parse refs/heads/${branch} の一致確認を行い、失敗・不一致なら同じ理由で fail-closed に倒す（ローカル履歴はリモート履歴を含むため push は fast-forward になる。この向きを diverged 扱いして終端してはならない — 終端すると push・PR 作成が永久に回復しない）。(iv) どちらの向きの ancestor 関係も成立しない（真の diverged — 他者・別ランの push でリモートが書き換わっている等）場合のみ fail-closed: リモート側 sha を無条件に信頼して第三者の変更を取り込んではならないため、merge も push もせず prNumber: 0 と「ローカル ${branch} とリモート origin/${branch} が diverged」を理由として返し、summary に両 tip の sha を書く。起点を checkout したら base を取り込む: ${baseMergeInstruction(baseBranch)} 分岐 (b) の解消不能・分岐 (c) の拒否で返すときは prNumber: 0 と上記理由を返す（ローカルブランチはそのまま保全され、CI 未起動の空 PR を作らずに終わる）。分岐 (a) ならそのまま手順 0b へ進む。ローカルブランチ ref（refs/heads/${branch}）の更新は行わない — 手順 1 は detached HEAD の内容を直接 push するため不要であり、この worktree が ${branch} を checkout している保証がない以上 git branch -f はブランチが別 worktree で checkout 済みの場合に失敗し得る。`,
+    `0b. push 前 差分ゼロチェック（必須。fail-closed）: git rev-list --count origin/${baseBranch}..HEAD を実行し、base に対する先行コミット数を数える（手順 0 で base 取り込み・起点確立を終えた後の detached HEAD が対象。base の再 fetch は不要 — 手順 0 で取得済みの refs/remotes/origin/${baseBranch} をそのまま使う）。0 件の場合は push を一切行わず、prNumber: 0 と「base ${baseBranch} との差分が 0 件（push 対象コミットなし）。手順 0 の起点確立が意図通りか要調査」を理由として返す（fail-closed。detached HEAD が誤って base の tip のまま残っている場合の最終防御線。実装 worktree 側は Review 通過済みのため、ここで 0 件になるのは本エージェント側の起点取り違えを意味する）。1 件以上の場合のみ手順 1 へ進む。`,
     `1. git push origin HEAD:refs/heads/${branch} で detached HEAD の内容（手順 0 の base 取り込み・コンフリクト解消を含む）を ${branch} へ push する（Bash の timeout に 600000 を指定）。git push origin ${branch} は使わない — ローカルの refs/heads/${branch} を手順 0 で更新していないため、その形では手順 0 の変更が push されず古い内容のまま push されてしまう。`,
     `   push が失敗した場合は prNumber: 0 と失敗理由を返す。`,
 
@@ -3391,7 +3431,15 @@ function recordFailure(failure) {
 async function runVerifyClose(item) {
 
   await updateState(item.number, { status: 'implementing' })
-  const v = await agent(closePrompt(item), { label: `close:#${item.number}`, phase: 'Merge', model: 'sonnet', effort: 'medium', schema: CLOSE_SCHEMA })
+
+
+
+  let v = null
+  try {
+    v = await agent(closePrompt(item), { label: `close:#${item.number}`, phase: 'Merge', model: 'sonnet', effort: 'medium', schema: CLOSE_SCHEMA })
+  } catch (e) {
+    log(`⚠️ #${item.number}: クローズ検証エージェントが例外終了した（${sanitize(String(e?.message ?? e))}）`)
+  }
   if (v?.closed) {
     results.push({ issue: item.number, status: 'closed', note: v.summary })
     consecutiveFailures = 0
@@ -3400,9 +3448,13 @@ async function runVerifyClose(item) {
     await updateState(item.number, { status: 'closed', note: String(v.summary ?? '') })
     return true
   }
-  const reason = `親イシューのクローズ検証に失敗した: ${sanitize(v?.summary ?? 'agent error')}`
-  await updateState(item.number, { status: 'failed', note: reason })
-  recordFailure({ issue: item.number, reason })
+  const verifyCloseStatus = classifyVerifyCloseStatus(v)
+  const reason =
+    verifyCloseStatus === 'blocked'
+      ? 'クローズ検証エージェントが StructuredOutput を返さず終了した。verify-close は pr/worktree を持たない冪等な検証のため、次回実行時に素のまま再実行する'
+      : `親イシューのクローズ検証に失敗した: ${sanitize(v?.summary ?? 'agent error')}`
+  await updateState(item.number, { status: verifyCloseStatus, note: reason })
+  recordFailure({ issue: item.number, reason, status: verifyCloseStatus })
   return false
 }
 
@@ -4115,10 +4167,23 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
     roundTimeoutExecReason = ''
 
 
-    const m = await agent(monitorPrompt(item, impl, externalCheckApps, externalChecksConfirmed, autoMergeEnabled && externalChecksConfirmed && externalChecksContextsConfirmed, forceThreadRescan, resolveProof.head), { label: `merge:#${item.number}`, phase: 'Merge', model: 'sonnet', effort: 'medium', schema: MERGE_SCHEMA })
 
 
-    lastState = MERGE_VALID_STATES.has(m?.state) ? m.state : 'invalid-monitor-result'
+
+
+    let m = null
+    try {
+      m = await agent(monitorPrompt(item, impl, externalCheckApps, externalChecksConfirmed, autoMergeEnabled && externalChecksConfirmed && externalChecksContextsConfirmed, forceThreadRescan, resolveProof.head), { label: `merge:#${item.number}`, phase: 'Merge', model: 'sonnet', effort: 'medium', schema: MERGE_SCHEMA })
+    } catch (e) {
+      log(`⚠️ #${item.number}: 監視エージェントが例外終了した（${sanitize(String(e?.message ?? e))}）`)
+    }
+
+
+
+
+
+
+    lastState = m == null ? 'agent-output-missing' : MERGE_VALID_STATES.has(m?.state) ? m.state : 'invalid-monitor-result'
 
     resolveProof = applyResolveProofObservation(resolveProof, { headSha: m?.headSha, compareStatus: m?.compareStatus, changedFiles: m?.changedFiles }, lastRoundPushed)
 
@@ -4139,7 +4204,13 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
     let mergeExecSummary = ''
 
 
-    if (lastState === 'unresolved-comments') {
+
+
+
+    if (lastState === 'agent-output-missing') {
+      terminalReasonOverride = `監視エージェントが StructuredOutput を返さず終了した（PR #${impl.prNumber} は既存のため次回実行の monitoring 再開で継続する）`
+      log(`⚠️ #${item.number}: ${terminalReasonOverride}`)
+    } else if (lastState === 'unresolved-comments') {
       const rawInfo =
         Array.isArray(m?.unresolvedComments) && m.unresolvedComments.length > 0
           ? m.unresolvedComments.map(unresolvedCommentText).join(' / ')
@@ -4202,13 +4273,20 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
         }
 
 
-        const x = await agent(mergeExecutePrompt(item, impl, allowMerge, externalCheckEntries), {
-          label: `merge-exec:#${item.number}`,
-          phase: 'Merge',
-          model: 'sonnet',
-          effort: 'medium',
-          schema: MERGE_EXEC_SCHEMA,
-        })
+
+
+        let x = null
+        try {
+          x = await agent(mergeExecutePrompt(item, impl, allowMerge, externalCheckEntries), {
+            label: `merge-exec:#${item.number}`,
+            phase: 'Merge',
+            model: 'sonnet',
+            effort: 'medium',
+            schema: MERGE_EXEC_SCHEMA,
+          })
+        } catch (e) {
+          log(`⚠️ #${item.number}: マージ実行エージェントが例外終了した（${sanitize(String(e?.message ?? e))}）`)
+        }
 
         const execReason = MERGE_EXEC_VALID_REASONS.has(x?.reason) ? x.reason : ''
         const execSummaryText = capText(sanitize(x?.summary ?? ''))
@@ -4222,13 +4300,20 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
 
 
 
-          const v = await agent(mergeVerifyPrompt(item, impl), {
-            label: `merge-verify:#${item.number}`,
-            phase: 'Merge',
-            model: 'sonnet',
-            effort: 'low',
-            schema: MERGE_VERIFY_SCHEMA,
-          })
+
+
+          let v = null
+          try {
+            v = await agent(mergeVerifyPrompt(item, impl), {
+              label: `merge-verify:#${item.number}`,
+              phase: 'Merge',
+              model: 'sonnet',
+              effort: 'low',
+              schema: MERGE_VERIFY_SCHEMA,
+            })
+          } catch (e) {
+            log(`⚠️ #${item.number}: マージ検証エージェントが例外終了した（${sanitize(String(e?.message ?? e))}）`)
+          }
           const verifyStateOk = v?.state === 'MERGED'
           const verifyHeadSha = sanitizeSha(v?.headRefOid)
 
@@ -4403,8 +4488,13 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
           roundTimeoutExecReason = execReason
         } else {
 
+
+
+          if (x == null) {
+            terminalReasonOverride = `マージ実行エージェントが StructuredOutput を返さず終了した（PR #${impl.prNumber} は既存のため次回実行の monitoring 再開で継続する）`
+          }
           log(`⚠️ #${item.number}: マージ実行エージェントが無効な結果を返した`)
-          ;({ lastState, lastBlockedReason } = classifyMergeExecDispatch(execReason, lastBlockedReason))
+          ;({ lastState, lastBlockedReason } = classifyMergeExecDispatch(execReason, lastBlockedReason, x == null))
         }
       }
     }
@@ -4498,11 +4588,20 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
       if (baseMergeAgentError) {
 
 
-        const baseMergeFailReason = `base 取り込みエージェントが例外終了した（${baseMergeCount + 1} 回目。${sanitize(String(baseMergeAgentError?.message ?? baseMergeAgentError))}）`
+
+        const baseMergeFailReason = `base 取り込みエージェントが例外終了した（${baseMergeCount + 1} 回目。PR #${impl.prNumber} は既存のため次回実行の monitoring 再開で継続する。${sanitize(String(baseMergeAgentError?.message ?? baseMergeAgentError))}）`
         log(`⚠️ issue #${item.number}: ${baseMergeFailReason}`)
-        return await failMergeTerminal(baseMergeFailReason)
+        return await failMergeTerminal(baseMergeFailReason, 'blocked')
       }
-      const baseMergeSucceeded = b !== null && b !== undefined && typeof b.pushed === 'boolean'
+      if (b == null) {
+
+
+
+        const baseMergeFailReason = `base 取り込みエージェントが StructuredOutput を返さなかった（${baseMergeCount + 1} 回目。PR #${impl.prNumber} は既存のため次回実行の monitoring 再開で継続する）`
+        log(`⚠️ issue #${item.number}: ${baseMergeFailReason}`)
+        return await failMergeTerminal(baseMergeFailReason, 'blocked')
+      }
+      const baseMergeSucceeded = typeof b.pushed === 'boolean'
       if (!baseMergeSucceeded) {
 
 
@@ -4585,10 +4684,36 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
 
 
       const permittedNoPushResolveIds = computePermittedNoPushResolveIds(resolveProof, finding?.unresolvedComments)
-      const f = await agent(fixPrompt(item, impl, finding, true, permittedNoPushResolveIds), { label: `fix:#${item.number}`, phase: 'Implement', model: 'sonnet', effort: 'medium', schema: FIX_SCHEMA, isolation: 'worktree' })
+
+
+
+      let f = null
+      let fixAgentError = null
+      try {
+        f = await agent(fixPrompt(item, impl, finding, true, permittedNoPushResolveIds), { label: `fix:#${item.number}`, phase: 'Implement', model: 'sonnet', effort: 'medium', schema: FIX_SCHEMA, isolation: 'worktree' })
+      } catch (e) {
+        fixAgentError = e
+      }
+      if (fixAgentError) {
+
+
+
+        recordEphemeralWorktree(item.number, f?.worktreePath, 'fix-terminal')
+        const fixFailReason = `fix エージェントが例外終了した（${fixCount + 1} 回目。PR #${impl.prNumber} は既存のため次回実行の monitoring 再開で継続する。${sanitize(String(fixAgentError?.message ?? fixAgentError))}）`
+        log(`⚠️ issue #${item.number}: ${fixFailReason}`)
+        return await failMergeTerminal(fixFailReason, 'blocked')
+      }
+      if (f == null) {
+
+        recordEphemeralWorktree(item.number, f?.worktreePath, 'fix-terminal')
+        const fixFailReason = `fix エージェントが StructuredOutput を返さなかった（${fixCount + 1} 回目。PR #${impl.prNumber} は既存のため次回実行の monitoring 再開で継続する）`
+        log(`⚠️ issue #${item.number}: ${fixFailReason}`)
+        return await failMergeTerminal(fixFailReason, 'blocked')
+      }
       const newWorktreePath = sanitizeWorktreePath(f?.worktreePath ?? '')
-      const fixSucceeded = f !== null && f !== undefined && typeof f.pushed === 'boolean'
+      const fixSucceeded = typeof f.pushed === 'boolean'
       if (!fixSucceeded) {
+
 
 
         const fixFailReason = `fix エージェントが無効な結果を返した（${fixCount + 1} 回目）`
@@ -4715,7 +4840,7 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
         }
       }
       if (monitorsLeft < 1) monitorsLeft = 1
-    } else if (lastState === 'blocked' || lastState === 'invalid-monitor-result') {
+    } else if (lastState === 'blocked' || lastState === 'invalid-monitor-result' || lastState === 'agent-output-missing') {
 
 
       break
@@ -4752,12 +4877,7 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
 
       log(`#${item.number}: 救済ラウンドの再走査は成立したが merge-exec が見送ったため（${roundTimeoutExecReason}）、品質ブロックへ分類せず failed（halt カウント対象）で終端する`)
     }
-    const blockedIsRecoverable = lastState === 'blocked' && lastBlockedReason === 'quality'
-    const terminalStatus =
-      !routingErrorDetected
-      && (mergedButIssueOpen || blockedIsRecoverable || lastState === 'unresolved-comments' || rescueTimeoutQualityBlock)
-        ? 'blocked'
-        : 'failed'
+    const terminalStatus = classifyMergeTerminalStatus({ lastState, lastBlockedReason, routingErrorDetected, mergedButIssueOpen, rescueTimeoutQualityBlock })
     if (lastState === 'blocked') {
       log(`#${item.number}: blocked 終端の分類 — blockedReason: ${lastBlockedReason} → status: ${terminalStatus}（${terminalStatus === 'blocked' ? '次回実行で monitoring 再開の対象' : '再開対象外。halt カウント対象'}）`)
     }

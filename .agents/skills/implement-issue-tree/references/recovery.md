@@ -23,7 +23,7 @@ cat _/issue-trees/42.json
 | `merged` | マージ済み | スキップ（完了扱い） |
 | `closed` | クローズ済み | スキップ（完了扱い） |
 | `failed` | 失敗 | Recover phase が残骸の有無を確認して再実行（continue / discard に分岐） |
-| `blocked` | 依存失敗・halted・Review/Merge 非収束（未解決レビューコメント・対象外コメント起因を含む、イシュー固有の品質ブロック。halt の連続カウントには乗せない）。監視エージェント由来の blocked はこの状態へ落ちるのが `blockedReason: quality` の場合のみで、`unrecoverable`（PR の未マージクローズ等）は `failed` になる。前提の外部完了（Issue CLOSED / PR MERGED）をラン中に検知した場合は `merged` / `closed` へ遷移し（この遷移自体は halt 後も継続する）、**halt 発生前に限り**下流を同一ラン内で再判定する。halt 後に検知した場合は遷移・状態記録は行われるが下流の同一ラン内再判定は行われず、次回ランで反映される（Issue #442。次回ランを待たずに解消するため本行の再開対象から外れる。この遷移で `merged` / `closed` へ落ちた項目の残置実装 worktree は、終了時 sweep（本節前掲の worktree スイープ）の削除候補になる — 人手マージ済みのため契約上問題ないが、未コミット変更が残る想定は禁物） | **`pr` 保存済み（PR 作成後の Merge 非収束）なら impl をスキップし monitor ループから再開**（PR 番号・ブランチ・fixCount・baseMergeCount を引き継ぐ。人間がレビュースレッドを resolve した後の再実行で既存 PR のマージ監視を続行する）。`pr` なし（依存失敗・push 前の Review 非収束等）は Recover phase が残骸の有無を確認して再実行（continue / discard に分岐）。Review 非収束の `blocked`（push 前のため `pr: 0`）は monitoring 再開ではなく必ずこの経路（Recover → 通常 Implement）から再着手する |
+| `blocked` | 依存失敗・halted・Review/Merge 非収束（未解決レビューコメント・対象外コメント起因を含む、イシュー固有の品質ブロック。halt の連続カウントには乗せない）。監視エージェント由来の blocked はこの状態へ落ちるのが `blockedReason: quality` の場合のみで、`unrecoverable`（PR の未マージクローズ等）は `failed` になる。前提の外部完了（Issue CLOSED / PR MERGED）をラン中に検知した場合は `merged` / `closed` へ遷移し（この遷移自体は halt 後も継続する）、**halt 発生前に限り**下流を同一ラン内で再判定する。halt 後に検知した場合は遷移・状態記録は行われるが下流の同一ラン内再判定は行われず、次回ランで反映される（Issue #442。次回ランを待たずに解消するため本行の再開対象から外れる。この遷移で `merged` / `closed` へ落ちた項目の残置実装 worktree は、終了時 sweep（本節前掲の worktree スイープ）の削除候補になる — 人手マージ済みのため契約上問題ないが、未コミット変更が残る想定は禁物）。Merge ループ中のエージェント呼び出し（monitor / merge-exec / merge-verify / base-merge / fix）が StructuredOutput を返さず終了した場合（例外・null 返却いずれも）も、Merge ループ突入時点で `pr` は必ず保存済みのため `blocked`（次回実行で monitoring 再開）に分類する。`failed`（Recover → 再実装）に倒すと重複 PR を作りうるため（Issue #465。詳細は下記「StructuredOutput 未返却時の fail-safe」節） | **`pr` 保存済み（PR 作成後の Merge 非収束）なら impl をスキップし monitor ループから再開**（PR 番号・ブランチ・fixCount・baseMergeCount を引き継ぐ。人間がレビュースレッドを resolve した後の再実行で既存 PR のマージ監視を続行する）。`pr` なし（依存失敗・push 前の Review 非収束等）は Recover phase が残骸の有無を確認して再実行（continue / discard に分岐）。Review 非収束の `blocked`（push 前のため `pr: 0`）は monitoring 再開ではなく必ずこの経路（Recover → 通常 Implement）から再着手する。ルートノード（verify-close）が StructuredOutput を返さず終了した場合は `pr` / `worktree` の概念がないため `blocked`（halt 非カウント）に分類し、次回実行時に verify-close を素のまま再実行する（冪等なため重複作用はない）。エージェントが応答した上で `closed: false` と判定した場合は従来どおり `failed` |
 | `skipped` | GitHub 側で closed 済み | スキップ（変更なし） |
 
 `monitoring` 中断、および `pr` 保存済みの `blocked` からの再開では、保存された `pr`（PR 番号）・`branch`・`fixCount`（修正済み回数）・`baseMergeCount`（base 取り込み済み回数。Issue #441）を引き継いで monitor ループから再開する。`fixCount` の上限（6 回）・`baseMergeCount` の上限（`args.maxBaseMerges`。既定 3）は、いずれも引き継いだ値に基づいて判定される（独立した 2 つの予算軸）。
@@ -31,6 +31,35 @@ cat _/issue-trees/42.json
 `planning` / `implementing` / `reviewing` からの再開では、まず Recover phase が残骸 worktree / branch の有無を確認する。**残骸がある場合**は Recover が「途中作業を継続できるか」を判断し、continue なら既存 branch を checkout して Implement で継続、discard なら worktree と branch を掃除して Plan から新規実行する。**残骸がない場合**は通常の Plan → Implement から再実行する。いずれの経路でも push 前 review フローのため PR 未作成の状態で中断している。impl 手順 0b-a が既存 open PR のブランチを検出して続きから作業し、その PR 番号は PR Create フェーズが `--head <branch>` の再検出で引き継ぐ（重複 PR も `gh pr create` の失敗も起こさない）。「push 成功・PR 作成失敗」のケース（状態 `failed`・`branch` 保存済み）は `branch` が残骸として Recover phase を起動するため impl 手順 0b には到達しない。continue の回復 Implement は手順 2 で既存 branch を checkout した後、`git fetch origin <branch>:refs/remotes/origin/<branch>` → `git merge --ff-only refs/remotes/origin/<branch>` でローカルをリモート tip へ追従させ、push 済みの base 取り込みコミット（PR Create が detached HEAD から push しローカル ref を更新しないもの）を保持したまま回復する。ff 不能な真の diverged は続行し、次の PR 作成の (iv) が fail-closed で止める。
 
 **重要遷移の書き込み検証と副作用の分離:** `reviewing`（branch / worktree の記録）と `monitoring`（`pr` の記録）への遷移は、失敗すると重複実装・重複 PR につながるため書き込み成功を検証し、1 回リトライしても失敗する場合は先へ進まず終端する。この検証は通常経路だけでなく Recover の continue 経路（回復 Implement 後の `reviewing` 遷移）にも同じ契約で適用される。このとき **worktree 削除を同じ `updateState` 呼び出しに載せない**（Issue #143）。`updateState` は「JSON マージ」と「掃除」の AND を 1 つの `ok` として返すため、状態書き込みは成功して削除だけが失敗した場合（worktree が locked、Recover の discard で既に削除済み等）でも書き込み失敗と誤認され、正常に実装できたイシューが `failed` 終端になる。旧 worktree の削除は書き込み成功後に別呼び出し（`preserveWorktreeField: true`）で非致命的に行い、失敗はラン終了時の最終スイープに委ねる。同様に、Low 指摘の PR コメント投稿は `monitoring` 遷移（`pr` の永続化）より**後**に、かつ try/catch 付きで行う（Issue #136。投稿失敗・例外で PR 番号が未保存のまま `failed` 終端になると、次回実行が monitoring 再開経路へ入れず既存 PR を放置したまま重複 PR を作りうる）。
+
+### StructuredOutput 未返却時の fail-safe（Issue #465）
+
+Merge ループ（`runMergeLoop` = monitor → merge-exec → merge-verify → base-merge → fix の反復）に
+入る時点で、対象イシューの PR は必ず作成済みである（`impl.prNumber` は `runImplement` が PR 作成
+成功後にのみ `runMergeLoop` を呼ぶため、ループ内では常に truthy）。この agent 呼び出しが
+StructuredOutput を返さず終了した（呼び出し先が `null` / `undefined` を返す、または
+`isolation: 'worktree'` 経由の呼び出しが例外で reject する）場合、host 側は例外・null 返却の
+いずれも同じ経路へ合流させたうえで `blocked`（次回実行の monitoring 再開）へ分類する。`failed`
+（Recover → 通常 Implement 経路。再 PR 作成を含む）に倒すと、既に存在する PR に対して重複 PR を
+作りうるため。
+
+対象は「PR が既に存在する Merge ループ内」に限る。**Plan / Implement / Review / Recover /
+PR Create（PR 作成前。`pr: 0`）の失敗分類には一切触れない**。これらは従来どおり `failed`
+（halt カウント対象）のままであり、システミックなモデル障害は依然として「3 イシュー連続失敗で
+新規着手停止」に到達する（halt 防御は弱めていない）。`blocked` はこのランの中で自動リトライを
+一切行わない（`monitorsLeft` の消費は起こるが、ただちに終端する）。効果は「次回実行が
+Recover→再実装ではなく monitoring 再開に入れるようになる」ことだけであり、実行者（人間）の
+トリガーなしに勝手に再試行され続けるものではない。
+
+ルートノード（verify-close）は `pr` / `worktree` の概念を持たない冪等な検証のため、
+StructuredOutput 未返却は `blocked`（halt 非カウント）に分類し、次回実行時に verify-close を
+素のまま再実行する（重複作用は起きない）。エージェントが応答した上で `closed: false` と判定した
+場合（「まだ子イシューが残っている」等の実際の判定）は従来どおり `failed`。
+
+`blockedReason` は状態ファイルへ永続化されるフィールドではない（既存の契約のまま）。
+`isActiveMonitoring()` は `status`（`'monitoring'` または `'blocked'`）と `pr > 0` と `branch`
+の妥当性のみで再開判定しており、`blockedReason` を読まない。同一ラン内のメモリ上変数として
+note・ログ文言の合成にのみ使われる。
 
 **Recover の判断軸は Review とは別**である。Review は「正しいか・マージできるか」を判定するのに対し、Recover は「この途中作業から継続するのが妥当か」を判断する。動かない・未完成でも方向が妥当なら continue（残りは Implement が完成させる）。未 commit 変更は Recover が WIP commit として branch へ退避してから worktree を削除するため、continue / discard どちらの経路でもデータを失わない。worktree の削除は continue / discard いずれでも退避完了を申告・実測の 2 段で検証してから行う（Step 2 の削除ゲート参照）。
 

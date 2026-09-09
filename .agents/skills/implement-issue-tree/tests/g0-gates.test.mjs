@@ -342,6 +342,29 @@ test('classifyMergeExecDispatch: enum 外・欠落 reason は invalid-monitor-re
   }
 })
 
+test('classifyMergeExecDispatch: agentOutputMissing=true は execReason を無視し agent-output-missing へ遷移する（Issue #465）', () => {
+  // 第 3 引数 true は他の判定より優先される（execReason が有効値でも上書きする）。
+  assert.deepEqual(classifyMergeExecDispatch('', 'unrecoverable', true), {
+    lastState: 'agent-output-missing',
+    lastBlockedReason: 'unrecoverable',
+  })
+  assert.deepEqual(classifyMergeExecDispatch('unresolved-threads', 'quality', true), {
+    lastState: 'agent-output-missing',
+    lastBlockedReason: 'quality',
+  })
+})
+
+test('classifyMergeExecDispatch: agentOutputMissing 省略時は既定 false（後方互換）で従来どおり分類する', () => {
+  assert.deepEqual(
+    classifyMergeExecDispatch('unresolved-threads', 'unrecoverable'),
+    { lastState: 'unresolved-comments', lastBlockedReason: 'unrecoverable' },
+  )
+  assert.deepEqual(
+    classifyMergeExecDispatch('unresolved-threads', 'unrecoverable', false),
+    { lastState: 'unresolved-comments', lastBlockedReason: 'unrecoverable' },
+  )
+})
+
 // Workflow ランタイムがスクリプトを受理できるか（meta 以外の top-level export 禁止・
 // サイズ上限）の起動可否契約は workflow-loadability.test.mjs へ集約した（Issue #277）。
 // 判定ロジックの実装は lib/workflow-script-contract.mjs の単一箇所に置き、CI テストと
