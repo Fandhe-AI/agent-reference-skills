@@ -350,7 +350,9 @@ test('救済ラウンドの予約はラウンド先頭（monitorsLeft-- の直�
   const decrIndex = driverPart.indexOf('monitorsLeft--', loopOpenBraceIndex)
   assert.notEqual(decrIndex, -1)
   assert.ok(decrIndex < handoffActiveIndex, '移送は monitorsLeft-- より後でなければならない')
-  const monitorCallIndex = driverPart.indexOf('const m = await agent(monitorPrompt(', loopOpenBraceIndex)
+  // Issue #465: monitor 呼び出しは try/catch で例外を捕捉するため `const m = await agent(...)` の
+  // 単文ではなく `m = await agent(monitorPrompt(` （let 宣言済みの m への代入）になった。
+  const monitorCallIndex = driverPart.indexOf('m = await agent(monitorPrompt(', loopOpenBraceIndex)
   assert.notEqual(monitorCallIndex, -1)
   assert.ok(handoffClearIndex < monitorCallIndex, '移送は monitor 呼び出しより前（ラウンド先頭）でなければならない')
 })
@@ -364,7 +366,9 @@ test('roundTimeoutExecReason はラウンド先頭（monitor 呼び出しより�
   const handoffClearIndex = driverPart.indexOf('rescueRoundPending = false')
   assert.notEqual(handoffClearIndex, -1)
   assert.ok(resetIndex > handoffClearIndex, 'リセットは救済ラウンド予約の移送より後（ラウンド先頭の一部）でなければならない')
-  const monitorCallIndex = driverPart.indexOf('const m = await agent(monitorPrompt(', loopOpenBraceIndex)
+  // Issue #465: monitor 呼び出しは try/catch で例外を捕捉するため `const m = await agent(...)` の
+  // 単文ではなく `m = await agent(monitorPrompt(` （let 宣言済みの m への代入）になった。
+  const monitorCallIndex = driverPart.indexOf('m = await agent(monitorPrompt(', loopOpenBraceIndex)
   assert.notEqual(monitorCallIndex, -1)
   assert.ok(resetIndex < monitorCallIndex, 'リセットは monitor 呼び出しより前でなければならない（漏れ防止）')
   assert.ok(resetIndex > loopOpenBraceIndex && resetIndex < loopEndIndex, 'リセットはループ内でなければならない')
