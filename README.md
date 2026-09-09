@@ -38,7 +38,7 @@ npx skills add Fandhe-AI/agent-reference-skills --skill react-router -g
 
 詳細なディレクトリ構成（`.claude/` の Agent・Rule・ワークフロースキル、`skills/` のスキル構造）は [CLAUDE.md](CLAUDE.md) の「Repository Structure」を参照。
 
-## スキル一覧（全 119 スキル）
+## スキル一覧（全 120 スキル）
 
 ### Apple プラットフォーム
 
@@ -144,6 +144,7 @@ openai-agents は MCP を消費する側、openai-apps-sdk は MCP サーバー�
 | [chakra-ui](skills/chakra-ui/) | Chakra UI v3 — コンポーネント, テーマ, レシピ, スタイルプロップ |
 | [ark-ui](skills/ark-ui/) | Ark UI — headless / unstyled コンポーネント (Chakra v3 の Zag.js 基盤), asChild, RootProvider, collections |
 | [fandhe-frontend](skills/fandhe-frontend/) | fandhe-frontend — Rust 製フロントエンドフレームワーク, SSR/SPA/SSG/View Transitions, hydration, Primitives (headless) / Themes (styled), fw CLI |
+| [fandhe-vector-db](skills/fandhe-vector-db/) | fandhe-vector-db — Rust 製ローカルファースト vector 特化クエリ DB (PostgreSQL wire protocol v3 互換), fandhe-vector-db-engine / fandhe-vector-db-wire-server, USING PLAN / USING OPERATION_ID, precision・recall モード, HNSW / BM25 転置索引 / RRF hybrid / rerank, redb 永続化, tenant・RLS, SIMD / wgpu カーネル, wire_code エラー契約 |
 | [storybook](skills/storybook/) | Storybook — CSF, args, decorators, play function, autodocs |
 | [better-auth](skills/better-auth/) | Better Auth — 認証, OAuth, passkey, twoFactor, プラグイン |
 | [supabase](skills/supabase/) | Supabase — database, auth, storage, edge-functions, realtime, RLS |
