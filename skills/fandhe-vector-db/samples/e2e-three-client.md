@@ -37,6 +37,6 @@ crates/wire-server/tests/
 
 ## Related
 
-- `samples/connect-psql.md`
-- `samples/connect-psycopg.md`
-- `samples/connect-node-pg.md`
+- [connect-psql.md](./connect-psql.md)
+- [connect-psycopg.md](./connect-psycopg.md)
+- [connect-node-pg.md](./connect-node-pg.md)

@@ -122,7 +122,7 @@ impl BatchEngine {
 ## Notes
 
 - `BatchEngine` は `kernel.rs::SearchProvider` を実装せず、単発クエリ経路（`core.rs::EngineCore::search`）から構造的に切り離されている（バッチ専用の別経路）。
-- `ResidentMatrix` は f16 パック（`pack_f16x2` / `unpack_f16x2`）された常駐行列で、`batch-fallback.md` の `GpuReferenceBackend`（`batch_fallback.rs` 定義）が `BatchEngine` を CPU 参照実装として再利用する。
+- `ResidentMatrix` は f16 パック（本ファイルの `pack_f16x2` / `unpack_f16x2`。いずれも `pub fn` で crate 外にも公開）された常駐行列で、`batch-fallback.md` の `GpuReferenceBackend`（`batch_fallback.rs` 定義）が `BatchEngine` を CPU 参照実装として再利用する。`pack_f16x2` / `unpack_f16x2` は `f16.rs`（[f16](./f16.md)、全アイテム `pub(crate)`）の `f32_to_f16_bits` / `f16_bits_to_f32` とは別モジュール・別実装（2 要素同時パックか単一要素かの違いもある）。
 - 全上限定数（`MAX_BATCH_*`）は fail-closed な防御的上限であり、私有 spec の判断値の転記ではなく本ソースの `pub const` をそのまま引用している。
 - `BatchSearchError::TenantMaskViolation` / `PrimaryResultRejected` は GPU バックエンドの出力検証（`batch-fallback.md` 参照）で使われるエラー種別。
 
@@ -131,3 +131,4 @@ impl BatchEngine {
 - [batch-fallback](./batch-fallback.md)
 - [gpu-batch](./gpu-batch.md)
 - [batch-limits](./batch-limits.md)
+- [f16](./f16.md)

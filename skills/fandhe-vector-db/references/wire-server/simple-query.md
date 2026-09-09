@@ -23,7 +23,7 @@ pub(crate) fn execute_and_respond(
 
 ## Notes
 
-- モジュール全体が `pub(crate)`（crate 外非公開）。
+- モジュール自体は `pub mod simple_query`（`lib.rs` 参照）で crate 外にも公開されているが、内部の処理用アイテム（`execute_and_respond`）は `pub(crate)`（crate 外非公開）。
 - SQL の構文解釈・許可リスト判定（`engine::sql::allowlist::validate_sql`）・RLS 適用はすべて engine 側の責務であり、本モジュールでは行わない。
 - `--search-engine` opt-in の解決結果は [search-engine-opt.md](./search-engine-opt.md) を経由して `EngineCore` へ渡される（本モジュール自体は opt-in の解釈を行わない）。
 

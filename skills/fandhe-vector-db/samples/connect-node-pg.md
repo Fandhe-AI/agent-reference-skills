@@ -44,5 +44,5 @@ client
 
 ## Related
 
-- `samples/start-wire-server.md`
-- `samples/connect-psql.md`
+- [start-wire-server.md](./start-wire-server.md)
+- [connect-psql.md](./connect-psql.md)

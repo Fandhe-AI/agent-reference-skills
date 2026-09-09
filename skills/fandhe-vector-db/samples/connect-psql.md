@@ -37,5 +37,5 @@ SELECT id FROM docs ORDER BY hybrid_rrf(embedding, '[1.0,0.0]', body, 'zzz-term-
 
 ## Related
 
-- `samples/start-wire-server.md`
-- `samples/e2e-three-client.md`
+- [start-wire-server.md](./start-wire-server.md)
+- [e2e-three-client.md](./e2e-three-client.md)

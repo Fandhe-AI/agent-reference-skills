@@ -173,6 +173,7 @@ pub fn set_search_mode(&mut self, mode: SearchMode)
 
 ## Notes
 
+- 本ページ Signature/Usage 中の module doc（12〜23 行目）「SQL 表層はプランナー推定の結線を持たない（TASK-77/78 の管轄）ため、そちらは引き続き `resolve_mode`（2 引数版）を呼ぶ」、および `resolve_mode` の doc comment（116〜117 行目）「SQL 表層（`sql/parser.rs::bind_with_session` 等。TASK-77/78 が管轄する `USING PLAN`／`EXPLAIN` 結線までは未実装）」は **TASK-161 時点（`sql::using_plan` / `sql::explain` 新設前）の記述をそのまま verbatim 転記したもの**で、0.1.0 時点では旧時点の記述。現行（0.1.0）は `USING PLAN` 経路が実装済みで、`core.rs::EngineCore::plan_query_with_mode` / `plan_using_plan_expansion` が `sql::mode::resolve_mode_with_planner`（3 引数版。クエリ句 > セッション変数 > プランナー推定 `expansion.mode_hint` > 既定の優先順位解決）を実際に呼び出す（`core.rs` 4600〜4820 行台付近、`crates/engine/src/core.rs` 内 `resolve_mode_with_planner` 呼び出し 2 箇所で確認。うち 1 箇所は `USING PLAN` の I/O フェーズ `plan_using_plan_expansion` 内）。`sql::using_plan::bind_expansion`（[using-plan.md](./using-plan.md) 参照）・`sql::explain::build_explain_result`（[explain.md](./explain.md) 参照）は実行時ディスパッチとして実装済みで、SQL 経由で実際の実行結果を返す。ソースの `//!`/`///` doc comment は TASK 単位の変更履歴を時系列に積み上げる書き方をしており、後続 TASK（TASK-77・TASK-78・TASK-164）が前段の記述を更新していないため、この矛盾はソース自体に存在する（本ページの転記誤りではない）。
 - `ModeSource` / `ResolvedMode` はいずれも `#[non_exhaustive]` — TASK-161 で意図した破壊的変更として導入し、クレート外の網羅的 `match` にワイルドカードアームを要求する（PR #188）。
 - `SessionState` は wire-server の接続ハンドラ（wire-server scope の管轄）が所有する値型として設計され、`EngineCore` 等の複数接続で共有される構造体には置かない。
 - `QueryExpansion` / `query_planner.rs` の実体は本 scope 外（search scope）の管轄のため参照のみ記載する。

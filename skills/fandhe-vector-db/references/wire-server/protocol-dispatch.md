@@ -46,7 +46,7 @@ pub(crate) fn reject_and_close(
 - 対応: TASK-71（WIRE-8）。SQLSTATE `0A000` の応答契約は `docs/spec/04-behavior/error-format.md`（private）を参照。
 - `ExtendedQuery` / `UnsupportedFeature` / `Unknown` はいずれも SQLSTATE `0A000` に統一されるが、メッセージ文言は分類ごとに事実に即した表現へ分ける。
 - 拡張クエリプロトコル（Parse/Bind/Describe/Execute/Sync/Close/Flush）は 0.1.0 時点で未対応。すべて拒否応答＋切断となる。
-- モジュール全体が `pub(crate)`（crate 外非公開）。
+- モジュール自体は `pub mod protocol_dispatch`（`lib.rs` 参照）で crate 外にも公開されているが、内部の処理用アイテム（`FrontendMessageKind`・`classify`・`LINGER_DRAIN_TIMEOUT`・`LINGER_DRAIN_MAX_BYTES`・`reject_and_close`）はすべて `pub(crate)`（crate 外非公開）。
 
 ## Related
 

@@ -4,7 +4,7 @@ source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/core.rs
 
 # core
 
-`engine::core` はプロトコル非依存のコア API 層（TASK-124・対象ビヘイビア: CORE-1）。`wire-server`（pg wire v3）や将来の他プロトコル実装は、本モジュールが定義する `VectorCore` trait のみに依存する。
+`engine::core` はプロトコル非依存のコア API 層（TASK-124・対象ビヘイビア: CORE-1）。`VectorCore` trait は `wire-server`（pg wire v3）や将来の他プロトコル実装が依存すべき最小インターフェースとして設計されている。ただし現行の `wire-server`（`simple_query.rs` / `server.rs`）は実際には `VectorCore` trait ではなく具象型 `EngineCore`（`&EngineCore` / `Arc<EngineCore>`）に直接依存しており、`EngineCore::execute_sql_in_session` 等 `VectorCore` trait に含まれない `EngineCore` 固有メソッドを呼び出している（詳細は `## Notes` 参照）。
 
 ## Signature / Usage
 
@@ -282,7 +282,7 @@ pub enum OpenWithEngineError {
 
 ## Notes
 
-- `VectorCore` trait は 2 メソッド（`search` / `get_row`）のみの object-safe な最小インターフェースで、`wire-server` はこの trait にのみ依存する（プロトコル非依存を構造で担保）。
+- `VectorCore` trait は 2 メソッド（`search` / `get_row`）のみの object-safe な最小インターフェース。設計意図はこの trait のみに `wire-server` を依存させることでプロトコル非依存を構造的に担保することだが、**現行の `wire-server` 実装はこの設計意図どおりにはなっていない**: `wire-server/src/simple_query.rs`（`use engine::core::EngineCore;`・`engine: &EngineCore` 引数）と `wire-server/src/server.rs`（`use engine::core::EngineCore;`・`engine: Arc<EngineCore>` フィールド）はいずれも具象型 `EngineCore` に直接依存しており、`VectorCore` trait には無い `EngineCore::execute_sql_in_session`（SQL 実行、TASK-82・SQL-10）を呼び出している。`VectorCore` trait 経由の疎結合は `EngineCore::search` / `EngineCore::get_row` の 2 メソッドに限った設計上の窓口であり、SQL 表層を含む wire-server の実際の呼び出し経路は `EngineCore` 固有 API に依存している。
 - `execute_sql` は TASK-75（SQL-1〜4）由来の後方互換 API で、セッション変数を持たないため `SET search_mode` 等セッションを要する statement は受理しない。`execute_sql_in_session` は TASK-82（SQL-10）で `INSERT` 実行経路（`execute_insert_sql` への委譲）をセッション経由の SQL 実行に接続したエントリポイントで、直前に doc comment を持たない（private ヘルパー `read_txn_with_schema` の直後に定義されている）。
 - `execute_insert_sql` / `execute_insert_sql_batch` はいずれも `execute_sql` とは独立した固有メソッドで、`VectorCore` trait へは昇格しない（`crates/engine/api/core_api.snapshot` の対象は `VectorCore` trait 本体のみのため、コア API シグネチャ安定性チェックに影響しない）。`execute_insert_sql_batch` は全文がファイル形であることを要求し、行形が 1 件でも混在すると `22000` で拒否する。一括投入上限超過時は redb・インメモリ索引・`operation_id` 台帳のいずれも変更されない（副作用ゼロ契約）。
 - これら 4 メソッドの詳細な実行順序契約（`sql-execution` カテゴリで扱う `sql::exec::execute_statement` / `sql::parser::bind` 等の内部処理）はこのページの対象外。

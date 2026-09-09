@@ -61,7 +61,7 @@ make docker-shell    # docker compose run --rm dev
 make docker-ci       # docker compose run --rm dev make ci
 ```
 
-`compose.yaml` の `dev` サービスはカレントディレクトリを `/work` にマウントし `bash` を起動する開発・CI 用コンテナで、Cargo registry / target 用のキャッシュ volume を持つ。wire-server 用のポート公開は定義されておらず、サーバー起動用途のターゲットではない（サーバー起動は `../run-wire-server.md` の `cargo run` を参照）。
+`compose.yaml` の `dev` サービスはカレントディレクトリを `/work` にマウントし `bash` を起動する開発・CI 用コンテナで、Cargo registry / target 用のキャッシュ volume を持つ。wire-server 用のポート公開は定義されておらず、サーバー起動用途のターゲットではない（サーバー起動は [run-wire-server.md](./run-wire-server.md) の `cargo run` を参照）。
 
 ### ターゲット一覧
 
@@ -77,5 +77,5 @@ make help
 
 ## Related
 
-- `./install.md`
-- `./run-wire-server.md`
+- [install.md](./install.md)
+- [run-wire-server.md](./run-wire-server.md)

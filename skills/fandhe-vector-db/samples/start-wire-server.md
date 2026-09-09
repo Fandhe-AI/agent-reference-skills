@@ -26,4 +26,4 @@ cargo run -p fandhe-vector-db-wire-server -- --users <ユーザーストアの�
 
 ## Related
 
-- 起動フラグの詳細は `skills/fandhe-vector-db/references/wire-server/main-cli.md`（存在する場合）を参照
+- [main-cli.md](../references/wire-server/main-cli.md)

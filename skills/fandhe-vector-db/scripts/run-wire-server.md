@@ -28,4 +28,4 @@ cargo run -p fandhe-vector-db-wire-server -- --users <ユーザーストアの�
 
 ## Related
 
-- `./install.md`
+- [install.md](./install.md)

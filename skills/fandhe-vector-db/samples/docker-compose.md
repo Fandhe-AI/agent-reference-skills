@@ -42,4 +42,4 @@ volumes:
 
 ## Related
 
-- `samples/start-wire-server.md`
+- [start-wire-server.md](./start-wire-server.md)

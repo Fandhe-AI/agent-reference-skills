@@ -4,7 +4,7 @@ source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/sql/spars
 
 # sql::sparse_cache
 
-`sql::exec::execute_statement` が hybrid ランキングかつ metadata / expr フィルタが空のクエリに対してのみ参照する、BM25 疎索引（`SparseIndex`）のテーブル世代整合キャッシュ（Issue #357）。
+`sql::exec::execute_statement_with_cache`（`pub(crate)`）が hybrid ランキングかつ metadata / expr フィルタが空のクエリに対してのみ参照する、BM25 疎索引（`SparseIndex`）のテーブル世代整合キャッシュ（Issue #357）。公開 API `pub fn execute_statement`（6 引数）はキャッシュ引数を持たず常に `None` を渡す薄いラッパーであり、本キャッシュを経由しない（`## Notes` 参照）。
 
 ## Signature / Usage
 
@@ -91,7 +91,8 @@ pub(crate) struct SparseIndexCache {
 
 ## Notes
 
-- `SparseCacheAccess` は `pub`（`sql::exec::execute_statement` が `pub fn` であるため）。main が保存したソースから Read で verbatim 突き合わせ済み（`SparseIndexCache` のフィールドを含む）
+- **現行契約の訂正（PR #204 codex-review P1 対応）**: 上記フェンス内の doc comment は `sql::exec::execute_statement` を rustdoc 原文のまま転記しているが、`exec.rs` の実際のシグネチャでは `Option<SparseCacheAccess<'_>>` を受け取るのは `pub(crate) fn execute_statement_with_cache` のみである。公開 API `pub fn execute_statement`（6 引数）はキャッシュ引数を一切持たず、内部で `execute_statement_with_cache` の 4 つのキャッシュ引数すべてに `None` を渡す薄いラッパー（`exec.md` 参照）。`core.rs::EngineCore::execute_sql` は `execute_statement_with_cache` を直接呼び、その場で `SparseCacheAccess { storage, cache }` を構築する
+- **`pub` visibility の実態**: `SparseCacheAccess` は構造体としては `pub` 宣言だが、`sql.rs` で `pub(crate) mod sparse_cache;` と宣言されているため、この `pub` は crate 外からの到達可能性には寄与しない（外部から見えるのは `pub use sparse_cache::SparseIndexCacheStats;` で再エクスポートされた統計型のみ）。rustdoc の「`execute_statement` が `pub fn` であるのに合わせ、構造体自体も `pub`」という説明は、`execute_statement`／`execute_statement_with_cache` の分割（Issue #357・#363 レビュー指摘対応）以前の名残とみられ、現行コードの実態とは一致しない
 - 関連 ADR: [`sparse-index-cache`](https://raw.githubusercontent.com/Fandhe-AI/vector-db/7022d112e79760dca916480599553fcac256b5fb/docs/design/sparse-index-cache.md)（Issue #357・Accepted。`SparseIndex` のテーブル世代整合キャッシュ = 本モジュールそのものの設計 ADR。`core.rs::PrefilterCache`〔TASK-169〕・`DictionaryCache`〔TASK-109〕と同型）、[`sparse-index-cache-verification`](https://raw.githubusercontent.com/Fandhe-AI/vector-db/7022d112e79760dca916480599553fcac256b5fb/docs/design/sparse-index-cache-verification.md)（Issue #358。疎索引キャッシュ導入後の Recall 非劣化・前後比較検証）
 - Distinct from `mssql` / `drizzle` full-text search indexes: not a SQL engine FTS extension, but a BM25 sparse index cache internal to the engine.
 
