@@ -612,6 +612,46 @@ pub fn validate_insert(
     lookup: &impl TableLookup,
     mode: LedgerMode,
 ) -> Result<ValidatedInsert, SqlSurfaceError>
+
+/// `SELECT` 文のみを受理する後方互換 API（TASK-74・TASK-75 が既に依存している
+/// シグネチャを維持する）。[`validate_sql`]（TASK-161）へ委譲し、`SELECT` 以外
+/// （`SET search_mode` 等）は「このエントリポイントでは受理しない statement 形」
+/// として `42601` で拒否する（`SET` のリテラル値自体が妥当でも、それを保持する
+/// セッションを持たないこのエントリポイントでは意味を持たないため。黙った
+/// no-op にはしない）。
+pub fn validate_statement(
+    sql: &str,
+    lookup: &impl TableLookup,
+) -> Result<ValidatedStatement, SqlSurfaceError> {
+    match validate_sql(sql, lookup)? {
+        Statement::Select(stmt) => Ok(stmt),
+        Statement::SetSearchMode { .. } => Err(SqlSurfaceError::unsupported(
+            "SET is not a query statement (use a session-aware entry point)",
+        )),
+        Statement::CreateFunction { .. } => Err(SqlSurfaceError::unsupported(
+            "CREATE FUNCTION is not a query statement (use a session-aware entry point)",
+        )),
+        // TASK-166（SQL-13）: 集計 SELECT は `ValidatedStatement`（検索 SELECT 専用の
+        // 形）を持たないため、このエントリポイントでは受理しない（`SET`・
+        // `CREATE FUNCTION` と同じ「このエントリポイントでは非対応」の一律 `42601`）。
+        Statement::Aggregate(_) => Err(SqlSurfaceError::unsupported(
+            "aggregate SELECT is not a search query statement (use a session-aware entry point)",
+        )),
+        // TASK-78（SQL-6）: `EXPLAIN` は `ValidatedStatement` を包んで返すものの、
+        // 「検索本体を実行しない」という別の実行契約を持つため、`SET`・
+        // `CREATE FUNCTION`・`Aggregate` と同じくこのセッションなしエントリ
+        // ポイントでは受理しない（一律 `42601`）。
+        Statement::Explain(_) => Err(SqlSurfaceError::unsupported(
+            "EXPLAIN is not a search query statement (use a session-aware entry point)",
+        )),
+        // Issue #454: 広域取得は `ValidatedStatement`（検索 SELECT 専用の形）を
+        // 持たないため、`Aggregate` と同じくこのエントリポイントでは受理しない
+        // （一律 `42601`）。
+        Statement::Scan(_) => Err(SqlSurfaceError::unsupported(
+            "wide-retrieval scan is not a search query statement (use a session-aware entry point)",
+        )),
+    }
+}
 ~~~
 
 ### 許可されている関数・述語名（大文字小文字を区別しない）
@@ -642,7 +682,8 @@ pub fn validate_insert(
 ## Notes
 
 - `LedgerMode` は `crate::recovery::required_op_id::LedgerMode` からの import で、本モジュールでは定義されない（storage/recovery scope の管轄）。`validate_sql` は `LedgerMode` を引数に取らない（`Statement` 全種別で共通）。`validate_insert` のみ `mode: LedgerMode` を取る（書き込み系のみ `operation_id` 必須化判断が必要なため）。
-- `Parser<'a>`（再帰下降パーサー本体）は本ファイル内で完全に非公開（`struct Parser` もそのフィールド・メソッドもすべて非 `pub`）。クレート外に公開される解析エントリポイントは `validate_sql` / `validate_insert` のみ。
+- `Parser<'a>`（再帰下降パーサー本体）は本ファイル内で完全に非公開（`struct Parser` もそのフィールド・メソッドもすべて非 `pub`）。クレート外に公開される解析エントリポイントは `validate_sql` / `validate_insert` / `validate_statement` の 3 つ（前回訂正の「`validate_sql` / `validate_insert` のみ」は誤りで、`validate_statement` を見落としていた）。
+- `validate_statement` は `validate_sql`（TASK-161 追加、`Statement` を返し `SELECT`／`SET search_mode`／`CREATE FUNCTION`／`Aggregate`／`Explain`／`Scan` の全 statement 種別を受理する）とは戻り値が異なる: `validate_statement` は TASK-74・TASK-75 が依存していた**旧シグネチャを維持する後方互換 API**で、`ValidatedStatement`（検索 `SELECT` 専用の構造）のみを返す。内部では `validate_sql` へ委譲し、`Statement::Select` 以外（`SetSearchMode` / `CreateFunction` / `Aggregate` / `Explain` / `Scan`）はすべて `SqlSurfaceError::unsupported`（`42601`、「このエントリポイントでは受理しない statement 形」固定文言）で一律拒否する——値そのものが妥当でも、セッションを持たないこのエントリポイントでは意味を持たないための設計（黙った no-op にはしない）。
 - `BinOp` / `Expr` / `MAX_CALL_ARGS` / `MAX_EXPR_DEPTH` / `MAX_EXPR_NODES` / `MAX_UDF_PARAMS` は `crate::sql::udf_call` からの import（sql-execution scope の管轄）。`OperationId` は `crate::sql::using_operation_id`（本 scope、[using-operation-id.md](./using-operation-id.md) 参照）。`EvaluationOrder` / `Stage` は `crate::sql::plan`（本 scope、[plan.md](./plan.md) 参照）。
 - 許可リストは「拒否リスト」ではなく「既知形状のみ許可」の構造。未知の関数名・述語名は fail-closed に拒否される。
 - spec 側の詳細な意味論的検証ルール一覧（private `vector-db-spec`）は非公開のため未記載。

@@ -129,6 +129,7 @@ impl VectorArena {
 
 ## Notes
 
+- **走査順の訂正**: `VectorArena` の `vectors` フィールド（L51 コードブロック内）・`ids()` メソッド（L112）の doc comment は `arena.rs` からの verbatim 引用で「行 ID 昇順」と記すが、これは実態と異なる旧記述である。`VectorArena::build` 系は `catalog.rs` のテーブルスコープ行ストア（`user_rows/{table_name}`、物理キー `(tenant_id, id)` の複合キー）を `table.iter()` で走査する（`arena.rs` 実装。`storage.rs::ROWS_TABLE`・`catalog.rs::UserRowsTableDef` と同じキー型）。redb のタプルキーは要素順（`tenant_id` 昇順 → `id` 昇順）の全順序であり、複数テナントを含むアリーナでは `ids()` は行 ID 昇順にならない（例: `(tenant-a, 100)`・`(tenant-b, 1)` の 2 行を含むテーブルは `ids() == [100, 1]` になり得る）。この前提に依存する二分探索・昇順マージ等の実装は誤動作するため、`ids()` の戻り値に対しては「テーブル走査順（`(tenant_id, id)` 順）」であることのみを仮定し、「行 ID 昇順」は仮定しないこと。
 - `RlsCaptureFn`・`MAX_ARENA_ROWS`（`1_000_000`）・`MAX_ARENA_TOTAL_BYTES`（`1024 * 1024 * 1024`）・`check_capacity`・`SqlArenaCaptureBuilder`・`validated_vector_dim_in_txn`・`build_filtered_with_rows_in_txn`・`build_filtered_with_rows_in_txn_capturing`・`build_from_cached_rls_rows`・`build_from_cached_rls_rows_subset`・`filter_cached_rls_rows_subset`・`approx_heap_bytes` はすべて `pub(crate)` のためクレート外非公開（`rls.rs::SearchTimeFilter`・`core.rs::PrefilterCache` が同一クレート内から参照する）。
 - `build_filtered_with_rows_and_limits`・`build_filtered_with_limits`（上限値パラメータ化版）は `build`/`build_filtered`/`build_filtered_with_rows` の内部実装であり、`pub(crate)` の可能性が高いが本ページでは公開シグネチャのみを対象とし、実装詳細への言及は上記 3 公開関数の説明に留める。
 - アリーナ容量の上限検証（`check_capacity`）は `predicate`（RLS 段）を通過した可視行のみを対象に、行を追加するたびに逐次行う（テーブル全行数を基準にすると、他テナントの不可視行の量が対象テナントの検索可用性へ干渉するため。codex 指摘・Issue #137 対応）。

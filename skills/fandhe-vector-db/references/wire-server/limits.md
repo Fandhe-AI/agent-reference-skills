@@ -61,6 +61,7 @@ pub fn reject_too_many_connections(mut stream: TcpStream, max: usize)
 
 ## Notes
 
+- **`reject_too_many_connections` 自身はスレッドを生成しない**（doc comment 原文どおり: 呼び出し元 `server::accept_loop_with_limiter` はこの関数を呼ぶ時点でまだ `std::thread::spawn` へ到達していない）。ただし実際の呼び出し経路（`server.rs::accept_loop_inner`）では、通常接続用スレッドは生成しない一方、拒否応答の書き込み自体は `RejectWorkerLimiter`（`MAX_REJECT_WORKERS` で上限管理）が発行する専用ワーカースレッドの中から `reject_too_many_connections` を呼び出す。つまり「（通常接続の）スレッドを生成せずに拒否する」ことと「拒否応答の送出を別枠有界の専用ワーカースレッドへ委譲する」ことは両立する別レイヤーの話であり、矛盾しない。
 - `ConnectionPermit` / `RejectWorkerPermit` はいずれも `Drop` で確実に枠を解放する RAII パターン。
 - `ConnectionLimiter::try_acquire` は CAS ループで競合下でも `max` を超えて確保しない。加算は `checked_add` で行いカウンタのオーバーフローを未定義動作にしない。
 - `RejectWorkerLimiter` は `ConnectionLimiter`（認証済み接続の枠）とは別枠。拒否応答の書き込みを使い捨てスレッドへ委譲する際、無制限に `std::thread::spawn` すると攻撃者が上限到達後の連続接続で OS 資源を無制限消費できる（DoS）ため、別枠の小さい上限で有界化する。上限に達した場合は応答を書かずに即座に接続をクローズする（fail-closed）。
