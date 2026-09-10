@@ -6,6 +6,7 @@ description: >
   @upstash/ratelimit — Fixed Window、Sliding Window、Token Bucket、limit、blockUntilReady。
   QStash — publishJSON、schedules、queues、DLQ、URL Groups、callbacks、flow-control。
   @upstash/vector — upsert、query、ANN、hybrid index、sparse index、embedding models、namespace。
+  Rust 製ローカル vector DB エンジン fandhe-vector-db とは別（こちらはマネージド SaaS の JS SDK）。
   @upstash/workflow — durable execution、serve、context.run/sleep/call/invoke、waitForEvent、parallel steps、agents。
   Upstash Search — search、upsert、fetch、range、filtering、reranking、algorithm、@upstash/search。
   Upstash Box — サンドボックス、agent、filesystem、git、browser（CDP/AI actions/recordings）、network policy、snapshots、schedules。
