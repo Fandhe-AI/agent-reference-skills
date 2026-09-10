@@ -179,3 +179,48 @@ test('フォールバックで得たパスは削除経路（sweepEligiblePaths �
   const fnBody = source.slice(fnStart, fnEnd)
   assert.doesNotMatch(fnBody, /sweepEligiblePaths\.(add|push)/)
 })
+
+// --- implement worktree のみの追加測定（rawPerWorktreeByteReserve 更新用）の失敗が
+// fail-closed に倒れることの固定（PR #468 codex-review P0）---
+//
+// 背景: remeasureResidualBytesNow は全残置パス（targetPaths）の実測（kib）に加え、その内訳のうち
+// implement kind のパスだけを個別に再実測して rawPerWorktreeByteReserve（1 worktree あたりの
+// 容量予約見積り）を成長に合わせて更新する（実測失敗時に古い予約量を流用すると、その後の
+// 実ディスク空き容量ゲート（remeasureFreeDiskNow / projectFreeDiskReserveBytes）が過小な必要量で
+// 判定し続け fail-open になる）。旧実装はこの追加測定（implementKib）が null を返した場合、
+// ログのみで続行し関数末尾で lastByteRemeasureOutcome = { failed: false, ... } を返していた
+// （全件測定 kib が成功していれば、追加測定の失敗を無視して成功扱いになっていた）。本テストは
+// implementKib===null 分岐が kib===null 分岐と同じ fail-closed 形（lastByteRemeasureOutcome を
+// failed: true にし newStartSuppressed を latch して早期 return する）に倒ることを、
+// ソーステキスト固定で確認する（この関数はマーカーより下の駆動部にあり import 不能なため、
+// 上の「配線の dead code 化防止」テスト群と同型のアプローチを取る）。
+test('remeasureResidualBytesNow: implement worktree のみの追加測定が null を返した場合、fail-closed で newStartSuppressed を latch し failed: true を返す（PR #468 codex-review P0）', () => {
+  const fnStart = source.indexOf('async function remeasureResidualBytesNow()')
+  const fnEnd = source.indexOf('async function remeasureFreeDiskNow()', fnStart)
+  assert.ok(fnStart >= 0 && fnEnd > fnStart, 'remeasureResidualBytesNow 本体を remeasureFreeDiskNow 定義の手前までで特定できること')
+  const fnBody = source.slice(fnStart, fnEnd)
+
+  const implementKibBlockStart = fnBody.indexOf('const implementMeasured = await measureResidualWorktreeBytesDetailed(implementPaths)')
+  assert.ok(implementKibBlockStart >= 0, 'implement worktree のみの追加測定呼び出しを特定できること')
+  const nullBranchStart = fnBody.indexOf('if (implementMeasured === null) {', implementKibBlockStart)
+  assert.ok(nullBranchStart >= 0, 'implementMeasured === null 分岐を特定できること')
+  // 分岐本体は成功時処理（rawPerWorktreeByteReserve 更新）の開始行までとする。`} else {` は
+  // 分岐内部（!newStartSuppressed の分岐）にも出現するため、それとは衝突しない一意な
+  // 成功時コードの先頭行を境界に使う。
+  const nullBranchEnd = fnBody.indexOf('kib: implementMeasured.kib,', nullBranchStart)
+  assert.ok(nullBranchEnd > nullBranchStart, 'implementMeasured === null 分岐の終端（成功時処理の開始）を特定できること')
+  const nullBranchBody = fnBody.slice(nullBranchStart, nullBranchEnd)
+
+  // fail-closed 化の核心: ログだけで続行せず、failed: true を確定させ newStartSuppressed を
+  // latch し、関数を早期 return する（呼び出し元は戻り値・newStartSuppressed のいずれからでも
+  // 停止を検知できる）。
+  assert.match(nullBranchBody, /lastByteRemeasureOutcome\s*=\s*\{\s*failed:\s*true,\s*exceeded:\s*false\s*\}/)
+  // latch の設定は latchNewStartSuppressed 経由（未設定チェックの直書きは昇格規則を素通りする
+  // ため廃止済み）。戻り値で「今回停止した / 既に停止済み」を出し分ける形を固定する。
+  assert.match(nullBranchBody, /if\s*\(\s*!latchNewStartSuppressed\(\{/)
+  // この latch は implement 限定（rawPerWorktreeByteReserve は空き容量ゲート専用で、全件測定は
+  // 成功しているため verify-close を止める理由が無い。Bugbot Medium「Reserve update failures
+  // stop verify-close」）。fail-closed の強さ（failed: true + 早期 return）は維持する。
+  assert.match(nullBranchBody, /implementOnly: true/)
+  assert.match(nullBranchBody, /return lastByteRemeasureOutcome/)
+})
