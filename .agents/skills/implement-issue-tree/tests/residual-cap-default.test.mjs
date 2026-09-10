@@ -137,10 +137,10 @@ test('fail-closed 分岐（スキャン失敗時の新規着手抑止）がス�
 // リポジトリ非依存の絶対閾値を独立した第2軸として併用する。検証・既定値・0 の意味・
 // throw 条件は件数軸の parseMaxResidualWorktrees と同型のため、同じ観点で固定する。
 
-test('バイト軸の既定値は 2 GiB（未指定・null のいずれも DEFAULT_MAX_RESIDUAL_WORKTREE_BYTES を返す）', () => {
-  assert.equal(DEFAULT_MAX_RESIDUAL_WORKTREE_BYTES, 2 * 1024 * 1024 * 1024)
-  assert.equal(parseMaxResidualWorktreeBytes(undefined), 2 * 1024 * 1024 * 1024)
-  assert.equal(parseMaxResidualWorktreeBytes(null), 2 * 1024 * 1024 * 1024)
+test('バイト軸の既定値は 50 GiB（未指定・null のいずれも DEFAULT_MAX_RESIDUAL_WORKTREE_BYTES を返す）', () => {
+  assert.equal(DEFAULT_MAX_RESIDUAL_WORKTREE_BYTES, 50 * 1024 * 1024 * 1024)
+  assert.equal(parseMaxResidualWorktreeBytes(undefined), 50 * 1024 * 1024 * 1024)
+  assert.equal(parseMaxResidualWorktreeBytes(null), 50 * 1024 * 1024 * 1024)
 })
 
 test('バイト軸の 0 はこの軸のみの明示オプトアウトとして通り、正の整数はそのまま返る', () => {
@@ -209,12 +209,12 @@ test('measureMainWorktreeContentBytes はメイン worktree 全体から .git �
   assert.match(source, /return Math\.max\(0, totalKib - gitKib\)/)
 })
 
-test('measureResidualWorktreeBytes はプロンプトへ渡す前に sanitizeWorktreePath で全パスを検証し、UNTRUSTED_POLICY を含める（codex-review P0 対応）', () => {
+test('measureResidualWorktreeBytesDetailed はプロンプトへ渡す前に sanitizeWorktreePath で全パスを検証し、UNTRUSTED_POLICY を含める（codex-review P0 対応）', () => {
   assert.match(source, /const sanitizedPaths = paths\.map\(\(p\) => sanitizeWorktreePath/)
   assert.match(source, /if \(sanitizedPaths\.some\(\(p\) => p === ''\)\) {/)
   // measureResidualWorktreeBytes のプロンプト配列に UNTRUSTED_POLICY が直接含まれることを確認する
   // （du -sk の呼び出し指示より前の行に存在する = このプロンプトの一部であることの軽量確認）。
-  const fnStart = source.indexOf('async function measureResidualWorktreeBytes(paths)')
+  const fnStart = source.indexOf('async function measureResidualWorktreeBytesDetailed(paths)')
   const fnBody = source.slice(fnStart, fnStart + 3000)
   assert.match(fnBody, /UNTRUSTED_POLICY,/)
   assert.match(fnBody, /jq -r '\.\[\]'/)
@@ -231,10 +231,10 @@ test('新規着手・monitoring 再開の両方が projectResidualBytes によ�
 
 test('容量軸のラン中再評価: 開始時残置 0 件でも 1 worktree あたりの予約が大きいと件数上限より先に新規着手を止める', () => {
   // 実装の projected バイト計算式（(a) 恒久 latch の単純形。予約 reservedUnits=0 の近似）を
-  // そのまま模倣する。1 worktree ≈ 1.5 GiB（既定 2 GiB 上限に対し数件で到達する大きさ）の
+  // そのまま模倣する。1 worktree ≈ 1.5 GiB（シナリオ上の 2 GiB 上限に対し数件で到達する大きさ）の
   // 配布先で、件数軸だけなら 100/6 ≈ 16 イシュー着手できるはずが、バイト軸により
   // 数イシュー以内で止まることを固定する（Issue #348 codex-review 指摘の核心シナリオ）。
-  const maxResidualWorktreeBytes = DEFAULT_MAX_RESIDUAL_WORKTREE_BYTES // 2 GiB
+  const maxResidualWorktreeBytes = 2 * 1024 * 1024 * 1024 // シナリオ固定値（本番既定値とは独立。本番既定値の固定は別テスト「バイト軸の既定値は...」が担う）
   const perWorktreeByteReserve = 1.5 * 1024 * 1024 * 1024 // 1 worktree ≈ 1.5 GiB
   const residualBytesAtStart = 0 // 開始時残置 0 件（旧実装ではバイト軸が丸ごと不成立になっていたケース）
   let ephemeralCount = 0
@@ -249,7 +249,7 @@ test('容量軸のラン中再評価: 開始時残置 0 件でも 1 worktree あ
   }
   assert.ok(
     suppressedAtIssue !== null && suppressedAtIssue <= 2,
-    `1 worktree ≈1.5GiB のとき 2 GiB 上限は 1〜2 イシュー目で抑止されるべきだが suppressedAtIssue=${suppressedAtIssue}`,
+    `1 worktree ≈1.5GiB のときシナリオ上の 2 GiB 上限は 1〜2 イシュー目で抑止されるべきだが suppressedAtIssue=${suppressedAtIssue}`,
   )
 })
 
@@ -270,7 +270,9 @@ test('実測し直しは残置パス一覧＋台帳パスの合計を測定し�
   const fnEnd = source.indexOf('\nwhile (true) {', fnStart)
   const fnBody = source.slice(fnStart, fnEnd)
   assert.match(fnBody, /residualPathsAtStart, \.\.\.ephemeralWorktrees\.map\(\(e\) => e\.path\)/)
-  assert.match(fnBody, /actualBytes > maxResidualWorktreeBytes && !newStartSuppressed/)
+  // latch の設定は latchNewStartSuppressed 経由へ統一済み（弱い latch が強い latch をブロック
+  // する Bugbot Medium 指摘への対応）。上限超過時にその経路を通ることを固定する。
+  assert.match(fnBody, /if \(actualBytes > maxResidualWorktreeBytes\) \{\n\s*latchNewStartSuppressed\(\{/)
 })
 
 // --- K8Dc 回帰: ラン中実測し直しが以後の projection の基準を更新すること（PR #390 codex-review
@@ -514,11 +516,11 @@ test('境界回帰（Issue #406）: baseline が候補予約差し引き後の�
 // 0 として扱い（missing カウント）、実エラー（du 失敗等）のみを fail-closed 対象とする
 // ことをプロンプト・スキーマの両方でソース確認する。
 
-test('measureResidualWorktreeBytes は存在しないパスを ENOENT 耐性で 0 扱いし、実エラーのみ fail-closed にする', () => {
-  const fnStart = source.indexOf('async function measureResidualWorktreeBytes(paths)')
-  const fnEnd = source.indexOf('\n\n// メイン worktree の', fnStart)
+test('measureResidualWorktreeBytesDetailed は存在しないパスを ENOENT 耐性で 0 扱いし、実エラーのみ fail-closed にする', () => {
+  const fnStart = source.indexOf('async function measureResidualWorktreeBytesDetailed(paths)')
+  const fnEnd = source.indexOf('\n\n// 合計 KiB のみを必要とする', fnStart)
   const fnBody = source.slice(fnStart, fnEnd)
-  assert.ok(fnStart >= 0 && fnEnd > fnStart, 'measureResidualWorktreeBytes の関数境界を検出できない')
+  assert.ok(fnStart >= 0 && fnEnd > fnStart, 'measureResidualWorktreeBytesDetailed の関数境界を検出できない')
   assert.match(fnBody, /\[ ! -e "\$p" \]/)
   assert.match(fnBody, /missing=\$\(\(missing\+1\)\)/)
   assert.match(fnBody, /err=\$\(\(err\+1\)\)/)
@@ -529,9 +531,9 @@ test('measureResidualWorktreeBytes は存在しないパスを ENOENT 耐性で 
   assert.match(fnBody, /Number\.isInteger\(v\?\.err\) && v\.err === 0/)
 })
 
-test('measureResidualWorktreeBytes は du の終了コードと jq の展開失敗を個別に検出する（fail-open 防止）', () => {
-  const fnStart = source.indexOf('async function measureResidualWorktreeBytes(paths)')
-  const fnEnd = source.indexOf('\n\n// メイン worktree の', fnStart)
+test('measureResidualWorktreeBytesDetailed は du の終了コードと jq の展開失敗を個別に検出する（fail-open 防止）', () => {
+  const fnStart = source.indexOf('async function measureResidualWorktreeBytesDetailed(paths)')
+  const fnEnd = source.indexOf('\n\n// 合計 KiB のみを必要とする', fnStart)
   const fnBody = source.slice(fnStart, fnEnd)
   // du | cut のパイプ直結は終了状態が cut のものになる fail-open（PR #390 codex-review P1）。
   // また `duout=$(du ...); durc=$?` の素の代入は errexit 下で失敗時に即終了し err 計上へ到達
@@ -546,8 +548,10 @@ test('measureResidualWorktreeBytes は du の終了コードと jq の展開失�
   assert.match(fnBody, /TOTAL=0 MISSING=0 ERR=1/)
 })
 
-test('ORPHAN_BYTES_SCHEMA は err を必須フィールドとして要求する', () => {
-  assert.match(source, /required: \['kib', 'err'\]/)
+test('ORPHAN_BYTES_SCHEMA は err と missing を必須フィールドとして要求する', () => {
+  // missing は平均算出（computeAveragePerWorktreeBytes）の分母補正に使うため必須
+  // （欠落を 0 とみなすと分母に存在しないパスが残り予約が過小になる。Bugbot Medium 指摘）。
+  assert.match(source, /required: \['kib', 'err', 'missing'\]/)
 })
 
 test('バイト軸は新規着手直前に台帳増分によらず実測し直す（PR #390 P1 第 4 ラウンド）', () => {
@@ -567,8 +571,9 @@ test('バイト軸は新規着手直前に台帳増分によらず実測し直�
   )
 })
 
-test('ORPHAN_BYTES_SCHEMA は missing を任意フィールドとして持ち、成否判定に使わないと明記する', () => {
+test('ORPHAN_BYTES_SCHEMA の missing は整数で、ホスト側が範囲検証したうえで平均の分母から差し引く', () => {
   assert.match(source, /missing: \{\s*type: 'integer'/)
+  assert.match(source, /v\.missing >= 0 && v\.missing <= sanitizedPaths\.length/)
 })
 
 // --- monitoring 再開の実測失敗・超過検出は remeasureResidualBytesNow の戻り値のみで行うこと
@@ -615,10 +620,15 @@ test('実測し直しは検証不可（空パス）エントリが台帳に残�
     /const unverifiedEphemeralCount = ephemeralWorktrees\.filter\(/,
   )
   // 未検証エントリが 1 件でもあり、かつ物理一覧フォールバック（Issue #404）も失敗した場合のみ
-  // measureResidualWorktreeBytes を呼ばず kib は null（フォールバック成立時は実測を継続する）
+  // 測定を呼ばず kib は null（フォールバック成立時は実測を継続する）。測定は詳細版
+  // （kib と missing を返す）で受け、kib はそこから導出する。
   assert.match(
     fnBody,
-    /const kib = measurementFailed \? null : /,
+    /const measured = measurementFailed\n\s*\? null\n/,
+  )
+  assert.match(
+    fnBody,
+    /const kib = measured === null \? null : measured\.kib/,
   )
   // kib===null の早期 return より前で byteBaselineLedgerCount への代入が起きないこと
   // （成功時の代入 `byteBaselineLedgerCount = ephemeralWorktrees.length` は kib===null 分岐の
