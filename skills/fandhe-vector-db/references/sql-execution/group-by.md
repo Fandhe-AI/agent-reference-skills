@@ -4,7 +4,7 @@ source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/sql/group
 
 # sql::group_by
 
-`GROUP BY <TEXT 列>` 集計（複数行結果、TASK-167・SQL-14）の実行本体。`sql::aggregate::execute_aggregate` が `BoundAggregate::group_by` を検出した場合にのみ呼ばれる。
+`GROUP BY <TEXT 列>` 集計（複数行結果、TASK-167・SQL-14）の実行本体。`sql::aggregate::execute_aggregate_with_cache` が `BoundAggregate::group_by` を検出した場合にのみ呼ばれる。
 
 ## Signature / Usage
 
@@ -71,6 +71,7 @@ pub(crate) fn execute_grouped_aggregate(
 ## Notes
 
 - 上記は main が pin SHA（`7022d112e79760dca916480599553fcac256b5fb`）で保存したソース（`src/engine/src/sql/group_by.rs`、全1319行）から Read で verbatim 転記した公開・crate内定数・型・エントリ関数。`is_text_accumulator_budget_error` 以下の private ヘルパー関数（`check_new_group_budget` / `new_accumulators` / `accumulate_row` / `observe_group_enumeration` / `observe_group_slots` / `observe_candidate_slots_grouped` / `observe_candidate_slots_grouped_inner` / `cmp_integer_to_literal` / `having_matches` / `cmp_cell_values` / `order_with_nulls_last` / `has_text_min_max_aggregate`）は内部実装のため掲載していない
+- **`execute_aggregate` は旧名（PR #204 codex-review 第4ラウンド P1 対応）**: 上記フェンス内のモジュール doc comment（14行目相当「責務境界: `crate::sql::aggregate::execute_aggregate` が...」）と `execute_grouped_aggregate` の doc comment（56行目相当「`aggregate.rs::execute_aggregate` の単一行経路と...」）はいずれも `sql::aggregate::execute_aggregate` という関数名を verbatim に含むが、`src/engine/src/sql/aggregate.rs` の `pub` 関数を確認するとこの名前の関数は 0.1.0 に存在しない。実体は `pub(crate) fn execute_aggregate_with_cache`（`GROUP BY` の有無で `sql::group_by::execute_grouped_aggregate` へ分岐する薄い分岐を持つ唯一のエントリ関数）であり、`core.rs::EngineCore` もこれを直接呼ぶ。本文（H1 直下の説明）は現行名 `execute_aggregate_with_cache` へ訂正済み
 - `MAX_GROUPS = 10_000`、`MAX_GROUP_KEY_TOTAL_BYTES` / `MAX_TEXT_ACCUMULATOR_TOTAL_BYTES` はいずれも `16 * 1024 * 1024`（16 MiB）
 - 関連 ADR: [`aggregate-decode-skip`](https://raw.githubusercontent.com/Fandhe-AI/vector-db/7022d112e79760dca916480599553fcac256b5fb/docs/design/aggregate-decode-skip.md)（Issue #350・Accepted。集計経路の embedding 非参照デコードスキップと必要列限定デコード = 行走査ループが `DecodeTier` に応じてデコード範囲を絞る根拠）
 - distinct from `mssql` / `drizzle` GROUP BY: internal streaming aggregation implementation, not a SQL dialect feature

@@ -4,7 +4,7 @@ source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/sql/visib
 
 # sql::visible_cache
 
-`sql::aggregate::execute_aggregate` 専用の可視行テーブル世代整合キャッシュ（Issue #478）。RLS 通過行の `id` 集合のみ（embedding・metadata は含まない）をキャッシュし、`COUNT(*)` 等の集計クエリで走査を省略する。
+`sql::aggregate::execute_aggregate_with_cache` 専用の可視行テーブル世代整合キャッシュ（Issue #478）。RLS 通過行の `id` 集合のみ（embedding・metadata は含まない）をキャッシュし、`COUNT(*)` 等の集計クエリで走査を省略する。
 
 ## Signature / Usage
 

@@ -117,6 +117,7 @@ pub fn decode_scalar_columns(schema: &TableSchema, buf: &[u8]) -> Result<Vec<Val
 ## Notes
 
 - `MAX_TEXT_FIELD_LEN`（`4 * 1024 * 1024`）は `pub(crate)` のためクレート外非公開。`declarative_filter::DeclarativeFilter::bind` がメタデータフィルタのリテラル長上限検査（`54000`）に再利用する（TASK-147・EXT-3、ソース実測）。
+- **`scan_scalar_columns` の「一切ヒープ確保しない」の範囲の訂正**: 上記コードブロックの `scan_scalar_columns` の doc comment（`row_codec.rs` からの verbatim 引用）にある「一切ヒープ確保しない」は、**Text 値本体のコピー（`to_string()` 相当のヒープ確保）を行わない**という意味であり、関数呼び出し全体でヒープ確保がゼロになるわけではない。戻り値の型は `Result<Vec<Option<&'a str>>>` であり、`schema.columns` と同じ長さの結果 `Vec` 自体は呼び出しのたびに確保される（`scan_scalar_columns_masked` の doc comment、上記コードブロック 100〜103 行相当に「`scan_scalar_columns_masked` を呼び `Vec<Option<&str>>` を毎行確保しており」と明記されている）。結果 `Vec` の確保まで含めて完全に省略するのは検証専用版の `validate_scalar_columns`（戻り値 `Result<()>`）のみで、こちらは検証済みの値を呼び出し元へ返さない・保持しないため `Vec` を一切確保しない。まとめると: `scan_scalar_columns`/`scan_scalar_columns_masked` は「Text 本体のコピーは省略、結果 `Vec` の確保は残る」、`validate_scalar_columns` は「結果 `Vec` の確保も省略」という 2 段階の性能契約になる。
 - 本モジュールの行フォーマットは `storage.rs` の行フォーマット v2 とは独立したバイトレイアウト（v1）であり、両者は置き換え関係ではない。
 - 本ページの記述は公開ソース（`raw.githubusercontent.com/Fandhe-AI/vector-db/7022d112e79760dca916480599553fcac256b5fb/crates/engine/src/row_codec.rs`）から検証済み（scratchpad の pin SHA verbatim ソースと突合済み）。
 

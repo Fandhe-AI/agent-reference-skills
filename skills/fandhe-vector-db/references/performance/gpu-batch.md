@@ -248,6 +248,7 @@ impl BatchBackend for GpuI8BatchBackend {
 - `gpu-batch-topk`（ADR）: 全スコア読み戻しから、共有メモリ＋`workgroupBarrier` のみの bitonic 部分ソートによる部分 Top-k 選出への転換を決定。SUBGROUP 非対応時は全量読み戻しへ段階的に縮退させ、決定性・fail-closed・DoS 上限を維持する。本実装は ADR の「候補 B」（subgroup shuffle 併用）ではなく共有メモリのみの「候補 A」に統一している（naga 30.0.1 がバリア・subgroup builtin の一様性を検証しないための安全策。ソース内コメントに明記）。
 - `gpu-batch-f16-arith`（ADR）: f16 対応 GPU アダプタで `vec2<f16>` 常駐・転送しつつ積和を f32 で実行するシェーダを選択可能にする。`select_dot_shader` が振幅上限・非有限・サブノーマルアンダーフロー・往復精度損失のいずれかを検知した場合は fail-closed に unpack 版へ縮退し、`PolicyContext` グループ単位で選択してテナント境界を維持する。
 - `gpu-batch-i8-packed`（ADR）: 行単位対称 SQ8 量子化による i8 4 要素パック常駐（`dot4I8Packed` 整数内積）。テナント境界侵害を避けるため行スケールを独立に導出し、opt-in 専用バックエンド（`GpuI8BatchBackend`）で候補生成のみに限定し、最終スコアは f32 で再計算する。
+- `gpu_batch::packed_i8` の `encode_rows` / `quantize_query` / `dot_i8_packed_ref`（`pub fn`、crate 外にも公開）は [sq8](./sq8.md)（`sq8.rs`、全アイテム `pub(crate)`）を呼び出すラッパーではない。`gpu_batch/packed_i8.rs` のモジュール冒頭コメントに明記の通り、共有 SQ8 モジュール化を狙った Issue #521 が実装当時 OPEN だったため、本サブモジュールは行単位対称量子化・4 要素/u32 パックを行う自前のエンコーダを独立実装している（`sq8.rs` は次元ごとスケールの CPU 内積経路、こちらは行単位スケールの GPU パック経路で量子化の粒度自体が異なる）。#521 が `sq8.rs` へ統合された場合はそちらへ委譲する計画（同ソースコメント）。
 - `GpuBatchBackend` は本番 primary（`FallbackBatchEngine::build_with_gpu` から接続）、`GpuF32ContrastBackend` は CORE-16 の f16 vs f32 A/B 対照専用（本番経路には接続しない）、`GpuI8BatchBackend` は opt-in 専用の別経路（3 者とも本番 primary へ同時に接続することはない）。
 - GPU 未接続・初期化失敗時の縮退経路は `batch-fallback.md` の `FallbackBatchEngine` が担う（本モジュールは primary バックエンドの実装のみを提供する）。
 - This module uses `wgpu` (Vulkan/Metal/DX12 unified compute API) for GPU dispatch, which is unrelated to CUDA C++/PTX/CUTLASS (`nvidia-cuda`), Metal Shading Language/MPS/MLX native APIs (`apple-silicon`), or HIP (`amd-rocm`). No API overlap with `fandhe-ai`'s CUDA/Metal backends (same org, separate library).
@@ -257,3 +258,4 @@ impl BatchBackend for GpuI8BatchBackend {
 - [batch-fallback](./batch-fallback.md)
 - [batch-search](./batch-search.md)
 - [dispatch](./dispatch.md)
+- [sq8](./sq8.md)

@@ -176,6 +176,7 @@ pub(crate) fn observe_candidate_slots(
 ## Notes
 
 - main が pin SHA（`7022d112e79760dca916480599553fcac256b5fb`）で保存したソース（`src/engine/src/sql/aggregate.rs`）から Read で verbatim 転記した（`Accumulator::observe` のシグネチャ・doc comment を含む）
+- **`execute_aggregate` は旧名（PR #204 codex-review 第4ラウンド P1 対応）**: 上記フェンス内のモジュール doc comment（14行目相当「`execute_aggregate` は `BoundAggregate::group_by` の有無で振り分けるだけの薄い分岐を持つ」）は verbatim 引用のため `execute_aggregate` という関数名を含むが、`src/engine/src/sql/aggregate.rs` の `pub` 関数を確認するとこの名前の関数は 0.1.0 に存在しない。実体は本ページの `pub(crate) fn execute_aggregate_with_cache`（`GROUP BY` の有無で `sql::group_by::execute_grouped_aggregate` へ分岐する当該関数そのもの）であり、`core.rs::EngineCore` もこれを直接呼ぶ
 - 関連 ADR: [`aggregate-decode-skip`](https://raw.githubusercontent.com/Fandhe-AI/vector-db/7022d112e79760dca916480599553fcac256b5fb/docs/design/aggregate-decode-skip.md)（Issue #350・Accepted。集計経路の embedding 非参照デコードスキップと必要列限定デコード = `DecodeTier` 設計そのもの）、[`scalar-index-aggregate`](https://raw.githubusercontent.com/Fandhe-AI/vector-db/7022d112e79760dca916480599553fcac256b5fb/docs/design/scalar-index-aggregate.md)（Issue #475。集計・`GROUP BY` 経路をスカラー列二次索引へ結線する設計 = `ensure_scalar_index_snapshot` / `observe_candidate_slots` の根拠）
 - distinct from `mssql` / `drizzle` の集計クエリ（`GROUP BY` / 集約関数の SQL 方言そのものではなく、engine 内部のストリーミング集計実装）
 

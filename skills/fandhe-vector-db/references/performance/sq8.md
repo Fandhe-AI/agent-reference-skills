@@ -104,7 +104,7 @@ pub(crate) fn score_from_int_dot(int_dot: i32, scale_q: f64) -> f32;
 
 ## Notes
 
-- 全アイテムが `pub(crate)`。crate 外に公開される i8 API は `isa.rs` の `I8Kernel` / `dot_i8` 経由のみ。
+- 本モジュール（`sq8.rs`）自体の全アイテムは `pub(crate)`（crate 外には非公開）。crate 外から呼べる i8 関連 API は、本モジュールとは別モジュールが公開するものに限られ、経路が 2 つある: (1) CPU 内積経路 — `isa.rs` の `I8Kernel` / `dot_i8`（本モジュールの `Sq8DimParams` が算出したスケールを使う次元ごと量子化）。(2) GPU パック経路 — `gpu_batch::packed_i8`（[gpu-batch](./gpu-batch.md)）の `pub fn encode_rows` / `quantize_query` / `dot_i8_packed_ref`。後者は本モジュールを呼び出すラッパーではなく、**行単位**対称量子化・4 要素/u32 パックを行う独立した実装（`gpu_batch/packed_i8.rs` のモジュール冒頭コメントに明記: 共有 SQ8 モジュール化を狙った Issue #521 が実装当時 OPEN だったため、`gpu_batch::packed_i8` は自前のエンコーダを持つ。#521 が本モジュールへ統合された場合はそちらへ委譲する計画）。次元ごとスケール（本モジュール）と行単位スケール（`gpu_batch::packed_i8`）は量子化の粒度が異なる点に注意。
 - 量子化は対称（`[-127, 127]`、`i8` の `-128` は不使用）で、qdrant `encoded_vectors_u8` と同じ範囲設計に揃えている（本ソースのコメントに明記された引用）。
 - `prepare_query` はクエリ側を「ノード側の次元ごとスケール空間へ写像 → 単一スケール `s_q` で対称量子化」という二重量子化を行う（`Sq8QueryCodes`）。二重量子化が扱える次元数上限は `I8_DOT_MAX_DIM = 65_536`。
 - `hnsw-sq8-resident`（ADR）は HNSW 索引での SQ8 常駐化ゲート条件を扱う。本ページはビットレベルの量子化・復号のみを収録し、HNSW 側の常駐化判断ロジックは `search/hnsw.md`（search カテゴリ、担当外）を参照。
@@ -114,3 +114,4 @@ pub(crate) fn score_from_int_dot(int_dot: i32, scale_q: f64) -> f32;
 
 - [isa](./isa.md)
 - [f16](./f16.md)
+- [gpu-batch](./gpu-batch.md)

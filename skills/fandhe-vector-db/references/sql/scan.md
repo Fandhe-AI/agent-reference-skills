@@ -71,6 +71,7 @@ pub(crate) fn execute_scan(
 ## Notes
 
 - 束縛型 `BoundScan`（parser.rs 定義、[parser.md](./parser.md) 参照）はこのモジュールが実行時に受け取る入力。構文検証型 `ValidatedScan`（allowlist.rs 定義、[allowlist.md](./allowlist.md) 参照）から `sql::parser::bind_scan` を経て構築される。
+- 上記フェンス内 module doc（12〜13 行目付近）が言及する `crate::sql::aggregate::execute_aggregate` は 0.1.0 ソースの doc comment に残る旧名の verbatim 引用。`Grep 'fn execute_aggregate\b'`（`src/engine/src/sql/aggregate.rs`）で該当なしを確認済みで、現行の実体は `sql::aggregate::execute_aggregate_with_cache`（関数名変更後もコメントが追従していないソース側の記述漏れ。本ページの転記誤りではない）。
 - `VectorArena`（既存の検索 SELECT 実行経路）は意図的に使わない。理由: アリーナはスキーマに `VECTOR` 列が必須で可視行の embedding を全件バッファへ確保するため、`VECTOR` 列を持たないテーブルの広域取得や大規模テーブルの `id`/`TEXT` 列のみの取得には過剰（メモリ）かつ非対応。
 - RLS 適用順序は「デコード前のヘッダ判定 → TABLE-12 のキー/ヘッダ tenant 整合検査 → 必要範囲のみのデコード → SCALAR 段（`WHERE`）→ 可視性の再適用」で、`sql::aggregate` の走査ループ（sql-execution scope）と同一の規約を踏襲する。
 - `PolicyContext` / `QueryResult` / `Cell` / `ColumnMeta` / `ResultRow` / `ExprProgram` / `StackValue` / `ExprValue` / `StorageError` の実体は本 scope 外（security / sql-execution / storage scope）の管轄のため参照のみ記載する。

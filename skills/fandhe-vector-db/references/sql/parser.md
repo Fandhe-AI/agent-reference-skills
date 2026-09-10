@@ -499,7 +499,8 @@ pub(crate) fn bind_scan(
 
 - `MetadataFilter` / `DeclarativeFilter` は `crate::declarative_filter` からの import（`use crate::declarative_filter::{self, DeclarativeFilter, MetadataFilter};`）。定義自体は本 scope 外（extensions scope）の管轄。
 - `ProjectedColumn::Computed` / `BoundExpr` / `ExprProgram` / `UdfRegistry` / `BinOp` の実体は sql-execution scope（`udf_call.rs` / `expr_program.rs`）の管轄。
-- `bind_aggregate` / `bind_scan`（`pub(crate)`）と集計・広域取得向けの `BoundAggregate` / `BoundScan` 型定義は `parser.rs` 内に定義されているため本ページに含めた。これらの実行消費（`AggregateInput` の評価等、`sql::aggregate::execute_aggregate` / `sql::group_by`）は sql-execution scope の管轄。
+- `bind_aggregate` / `bind_scan`（`pub(crate)`）と集計・広域取得向けの `BoundAggregate` / `BoundScan` 型定義は `parser.rs` 内に定義されているため本ページに含めた。これらの実行消費（`AggregateInput` の評価等、`sql::aggregate::execute_aggregate_with_cache` / `sql::group_by`）は sql-execution scope の管轄。
+- 上記フェンス内の doc comment（`AggregateInput`・`BoundAggregate` の verbatim 引用箇所）が言及する `sql::aggregate::execute_aggregate` は 0.1.0 ソースの doc comment に残る旧名の verbatim 引用。`Grep 'fn execute_aggregate\b'`（`src/engine/src/sql/aggregate.rs`）で該当なしを確認済みで、現行の実体は `sql::aggregate::execute_aggregate_with_cache`（関数名変更後もコメントが追従していないソース側の記述漏れ。本ページの転記誤りではない）。
 - `bind_group_by_clause`（`GroupByClause` → `BoundGroupBy` の束縛）は private 関数のためシグネチャのみ本ファイルに存在するが、詳細な実装は今回のフェンスには含めていない（`HAVING`/`ORDER BY` の対象名解決規則に触れる複雑な関数のため、TASK-167・SQL-14 関連の詳細は原文参照）。
 - Distinct from `mssql` (node-mssql, T-SQL client) / `drizzle` (TypeScript ORM) / `supabase` (Postgres): binding here is schema-checked against this engine's own `TableSchema`, not a general relational catalog.
 
