@@ -26,6 +26,7 @@ pub(crate) fn execute_and_respond(
 - モジュール自体は `pub mod simple_query`（`lib.rs` 参照）で crate 外にも公開されているが、内部の処理用アイテム（`execute_and_respond`）は `pub(crate)`（crate 外非公開）。
 - SQL の構文解釈・許可リスト判定（`engine::sql::allowlist::validate_sql`）・RLS 適用はすべて engine 側の責務であり、本モジュールでは行わない。
 - `--search-engine` opt-in の解決結果は [search-engine-opt.md](./search-engine-opt.md) を経由して `EngineCore` へ渡される（本モジュール自体は opt-in の解釈を行わない）。
+- `execute_and_respond` から辿り着く private 関数 `respond_query_result` は応答を `ResponseBuffer`（[response-buffer.md](./response-buffer.md)）へ組み立てる。`RowDescription`／`CommandComplete`／`ReadyForQuery` は `push_frame` 経由（巨大フレームは直送されバッファを経由しない）だが、各 `DataRow` は `result_encoder::encode_data_row_into` でバッファへ直接追記してから閾値を確認する別経路であり、`push_frame` のサイズ保証は適用されない。詳細は [response-buffer.md](./response-buffer.md) の Notes を参照。
 
 ## Related
 

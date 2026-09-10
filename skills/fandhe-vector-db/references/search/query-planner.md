@@ -97,7 +97,7 @@ impl LlmClient for OllamaClient { fn complete(&self, prompt: &str) -> Result<Str
 - SSRF 対策: `OllamaConfig::with_host` は IP リテラル指定時にループバック以外を構築時点で拒否する（codex-review PR #252 P0 指摘）。プロンプトはテナント固有情報を含みうるため、ループバック以外の宛先へ送信しうる構成を許さない。
 - `QueryExpansion`／`PlannedQuery` は `#[non_exhaustive]`（TASK-164 で `mode_hint` 追加時に付与した意図的な破壊的変更）。クレート外の構造体リテラル構築は `QueryExpansion::default()` ＋フィールド代入形式が必須。
 - `parse_expansion` は自前実装の再帰下降 JSON パーサ（`JsonParser`）で JSON 深度・文字列長・コンテナ要素数に上限を設ける（`MAX_JSON_DEPTH`・`MAX_JSON_STRING_CHARS`・`MAX_JSON_CONTAINER_ITEMS`。DoS 対策）。
-- `render_prompt_prefix`／`sanitize_question`／`render_full_prompt` はいずれもバイト数上限（`MAX_PROMPT_PREFIX_BYTES`・`MAX_QUESTION_CHARS`・`MAX_PROMPT_BYTES`）を検証してから文字列を組み立てる。
+- `render_prompt_prefix` は内部ヘルパ `push_bounded` で追加単位（シンボル 1 行・ファイルパス 1 行等）ごとに `out.len() + s.len() > MAX_PROMPT_PREFIX_BYTES` を検証してから追記する事前ガード方式で、超過する直前の追加を打ち切る（切り詰め位置は追加単位の境界に揃う）。`sanitize_question` は制御文字除去後に `.take(MAX_QUESTION_CHARS)` で切り詰める——上限はバイト数ではなく**文字数**。`render_full_prompt` はこれらとは逆に、`prefix`（`render_prompt_prefix` の出力。呼び出し元が `MAX_PROMPT_PREFIX_BYTES` 以内であることを前提とする）と `sanitize_question` 済みの質問を `String` へ`push_str`で連結し**組み立てた後**に `out.len() > MAX_PROMPT_BYTES` を検証する事後チェックであり、巨大な `prefix` を渡された場合のアロケーション自体は防がない（`MAX_PROMPT_BYTES` は `MAX_PROMPT_PREFIX_BYTES + MAX_QUESTION_CHARS` を通常上回らないための独立した防御線であって、事前の確保上限ではない）。呼び出し元は `prefix` を必ず `render_prompt_prefix` の出力（またはそれと同等に有界な文字列）に限定する必要がある。
 - 辞書スナップショット（`dictionary_snapshot`。テナント境界の担保）との結線・`EngineCore` への注入点は `core.rs::EngineCore::with_query_planner`／`plan_query` の管轄で、本モジュールへは持ち込まない。
 - クエリ展開の Recall 回帰は `docs/design/query-planning-recall-regression.md`（TASK-110〜113 関連、詳細は spec 非公開のため未記載）で検証されている。
 

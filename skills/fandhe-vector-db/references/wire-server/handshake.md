@@ -73,7 +73,7 @@ pub fn handle_connection(
 - `PROTOCOL_VERSION_3_0` / `SSL_REQUEST_CODE` / `GSSENC_REQUEST_CODE` / `CANCEL_REQUEST_CODE` はいずれも非公開（`pub` なし）の内部定数。
 - 対応: TASK-67（WIRE-1, WIRE-2, WIRE-3）、TASK-68（正式なフレーミング上限体系。WIRE-4, WIRE-10）。
 - SSLRequest/GSSENCRequest/CancelRequest のコード定数を持つが、TLS 自体は 0.1.0 時点で未実装（[auth.md](./auth.md) の Notes 参照）。
-- `handle_connection_inner`（`pub` ではない共通実装）が StartupMessage 交渉 → cleartext password 認証（`auth::verify`）→ AuthenticationOk・BackendKeyData・ParameterStatus・ReadyForQuery 送出 → 接続単位 `SessionState` の生成 → `post_auth_loop` という流れを担う。認証失敗時は固定メッセージ（`auth::AuthFailure::MESSAGE`）の `ErrorResponse` のみを返し接続は保つ（切断しない）。
+- `handle_connection_inner`（`pub` ではない共通実装）が StartupMessage 交渉 → cleartext password 認証（`auth::verify`）→ AuthenticationOk・BackendKeyData・ParameterStatus・ReadyForQuery 送出 → 接続単位 `SessionState` の生成 → `post_auth_loop` という流れを担う。認証失敗時（`auth::verify` が `Err`）は固定メッセージ（`auth::AuthFailure::MESSAGE`）の `ErrorResponse` を送出したあと `Ok(())` を返して `handle_connection_inner` を抜ける。この関数はローカル変数として `TcpStream` を所有しており、`Ok(())` で関数を抜けるとその `stream` が drop されて接続が終了する（TCP 接続がクローズされる）。**認証失敗後の再試行には新しい接続が必要**であり、同一接続上での ReadyForQuery 経由の再認証はできない（原文の doc comment・コメントには本挙動を明示する記述が無いため、`Read` による実装確認に基づく記述）。
 
 ## Related
 
