@@ -22,10 +22,13 @@ cargo run -p fandhe-vector-db-wire-server -- --users <ユーザーストアの�
 
 ## Notes
 
-- 起動したサーバーには psql・psycopg・node pg から無改造で cleartext password 認証つき接続ができる。ただし README には具体的な接続コマンド例（接続文字列・ユーザー名・DB 名の値）の記載が無いため、本スキルには接続コマンドのページを収録していない
+- 起動したサーバーには psql・psycopg・node pg から無改造で cleartext password 認証つき接続ができる。具体的な接続例は samples/ を参照
 - crates.io 上の公開バイナリ名は `fandhe-vector-db-wire-server` だが、ソース内の `use engine::...` やビルド成果物 `target/release/wire-server` の名前自体は変わらない（README「crates.io への公開」節。`cargo` の `-p`/`--package` に渡す名前だけが公開名になる）
 - `compose.yaml` の `dev` サービスは shell/CI 用の開発コンテナ（`bash` 起動、Cargo registry / target のキャッシュ volume）であり、wire-server 用のポート公開や起動コマンドは定義されていない。Docker 経由でサーバーを起動する README 記載の手順は無い
 
 ## Related
 
 - [install.md](./install.md)
+- [connect-psql.md](../samples/connect-psql.md)
+- [connect-psycopg.md](../samples/connect-psycopg.md)
+- [connect-node-pg.md](../samples/connect-node-pg.md)
