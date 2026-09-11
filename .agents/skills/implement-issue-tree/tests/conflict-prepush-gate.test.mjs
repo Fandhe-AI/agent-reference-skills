@@ -491,8 +491,9 @@ test('monitorPrompt: 手順 1c の UNKNOWN リトライ途中で CONFLICTING に
   const prompt = monitorPrompt(item, impl, [], true, true)
   const idx1c = prompt.indexOf('1c. state が OPEN の場合のみ判定する')
   assert.ok(idx1c >= 0, '手順 1c の記述が見つからない')
-  // 手順 1c の範囲は次の手順（2.）の直前まで。1c 内の文言だけを検査する。
-  const idx2 = prompt.indexOf('2. gh pr checks', idx1c)
+  // 手順 1c の範囲は次の手順（2.）の直前まで。1c 内の文言だけを検査する（手順 2 の冒頭は
+  // Issue #479 で「--watch 前の check-run 総数取得」へ変わったため行頭の番号で位置決めする）。
+  const idx2 = prompt.indexOf('\n2. ', idx1c)
   assert.ok(idx2 > idx1c, '手順 2 の開始位置を特定できない')
   const section1c = prompt.slice(idx1c, idx2)
   assert.ok(

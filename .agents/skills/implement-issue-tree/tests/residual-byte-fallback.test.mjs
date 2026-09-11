@@ -189,12 +189,18 @@ test('フォールバックで得たパスは削除経路（sweepEligiblePaths �
 // 実ディスク空き容量ゲート（remeasureFreeDiskNow / projectFreeDiskReserveBytes）が過小な必要量で
 // 判定し続け fail-open になる）。旧実装はこの追加測定（implementKib）が null を返した場合、
 // ログのみで続行し関数末尾で lastByteRemeasureOutcome = { failed: false, ... } を返していた
-// （全件測定 kib が成功していれば、追加測定の失敗を無視して成功扱いになっていた）。本テストは
-// implementKib===null 分岐が kib===null 分岐と同じ fail-closed 形（lastByteRemeasureOutcome を
-// failed: true にし newStartSuppressed を latch して早期 return する）に倒ることを、
-// ソーステキスト固定で確認する（この関数はマーカーより下の駆動部にあり import 不能なため、
-// 上の「配線の dead code 化防止」テスト群と同型のアプローチを取る）。
-test('remeasureResidualBytesNow: implement worktree のみの追加測定が null を返した場合、fail-closed で newStartSuppressed を latch し failed: true を返す（PR #468 codex-review P0）', () => {
+// （全件測定 kib が成功していれば、追加測定の失敗を無視して成功扱いになっていた）。PR #468 で
+// implementKib===null 分岐を kib===null 分岐と同じ fail-closed 形（failed: true にし
+// newStartSuppressed を latch して早期 return する）に倒す修正が入ったが、Issue #475 4 巡目
+// Bugbot Medium 指摘で「全件測定（kib）自体は成功しているのに failed: true を返すと、既に
+// 容量上限を超過している総量があっても verify-close を止める全 kind latch へ到達しない」
+// cap latch 省略が判明し、failed は false のまま reserveStale: true（予約更新のみ失敗）で
+// 表す形へ是正した（cap latch は全件測定直後に先出しで確定済み。exceeded は
+// exceededAtActualMeasurement をそのまま反映する）。本テストは newStartSuppressed の
+// implement 限定 latch と早期 return は維持されたまま、戻り値の shape だけが是正後の形へ
+// 変わったことを、ソーステキスト固定で確認する（この関数はマーカーより下の駆動部にあり
+// import 不能なため、上の「配線の dead code 化防止」テスト群と同型のアプローチを取る）。
+test('remeasureResidualBytesNow: implement worktree のみの追加測定が null を返した場合、newStartSuppressed を implement 限定で latch し reserveStale: true を返す（PR #468 codex-review P0 / Issue #475 是正）', () => {
   const fnStart = source.indexOf('async function remeasureResidualBytesNow()')
   const fnEnd = source.indexOf('async function remeasureFreeDiskNow()', fnStart)
   assert.ok(fnStart >= 0 && fnEnd > fnStart, 'remeasureResidualBytesNow 本体を remeasureFreeDiskNow 定義の手前までで特定できること')
@@ -211,10 +217,15 @@ test('remeasureResidualBytesNow: implement worktree のみの追加測定が nul
   assert.ok(nullBranchEnd > nullBranchStart, 'implementMeasured === null 分岐の終端（成功時処理の開始）を特定できること')
   const nullBranchBody = fnBody.slice(nullBranchStart, nullBranchEnd)
 
-  // fail-closed 化の核心: ログだけで続行せず、failed: true を確定させ newStartSuppressed を
-  // latch し、関数を早期 return する（呼び出し元は戻り値・newStartSuppressed のいずれからでも
-  // 停止を検知できる）。
-  assert.match(nullBranchBody, /lastByteRemeasureOutcome\s*=\s*\{\s*failed:\s*true,\s*exceeded:\s*false\s*\}/)
+  // fail-closed 化の核心: ログだけで続行せず、newStartSuppressed を implement 限定で latch し、
+  // 関数を早期 return する（呼び出し元は戻り値・newStartSuppressed のいずれからでも停止を検知
+  // できる）。failed は false のまま reserveStale: true にする（Issue #475: 全件測定 kib 自体は
+  // 成功しているため failed: true にすると cap latch 省略〔容量超過確定済みでも全 kind latch へ
+  // 到達しない〕を招く）。
+  assert.match(
+    nullBranchBody,
+    /lastByteRemeasureOutcome\s*=\s*\{\s*failed:\s*false,\s*exceeded:\s*exceededAtActualMeasurement,\s*reserveStale:\s*true\s*\}/,
+  )
   // latch の設定は latchNewStartSuppressed 経由（未設定チェックの直書きは昇格規則を素通りする
   // ため廃止済み）。戻り値で「今回停止した / 既に停止済み」を出し分ける形を固定する。
   assert.match(nullBranchBody, /if\s*\(\s*!latchNewStartSuppressed\(\{/)
