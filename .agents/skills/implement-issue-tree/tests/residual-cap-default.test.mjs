@@ -190,7 +190,9 @@ test('バイト軸はラン開始時の残置 0 件でもメイン worktree 測�
   assert.doesNotMatch(source, /if \(maxResidualWorktreeBytes > 0 && residual\.paths\.length > 0\)/)
   assert.match(source, /if \(maxResidualWorktreeBytes > 0\) {/)
   assert.match(source, /mainWorktreePath \? await measureMainWorktreeContentBytes\(mainWorktreePath\)/)
-  assert.match(source, /rawPerWorktreeByteReserve = Math\.max\(mainKib \* 1024, avgResidualBytes\)/)
+  // Issue #471: 永続化済み高水位（persistedHighWaterBytes）が Math.max の第3引数に加わった
+  // （前回以前のランの実測結果を開始時見積りの下限として使う）。
+  assert.match(source, /rawPerWorktreeByteReserve = Math\.max\(mainKib \* 1024, avgResidualBytes, persistedHighWaterBytes\)/)
   // クランプ適用を確認する（Issue #348 codex-review High 対応: mainKib の過大評価で
   // 1 件目着手候補が予約のみで恒久停止する回帰を防ぐ）。
   assert.match(source, /perWorktreeByteReserve = clampPerWorktreeByteReserve\(/)
@@ -271,8 +273,11 @@ test('実測し直しは残置パス一覧＋台帳パスの合計を測定し�
   const fnBody = source.slice(fnStart, fnEnd)
   assert.match(fnBody, /residualPathsAtStart, \.\.\.ephemeralWorktrees\.map\(\(e\) => e\.path\)/)
   // latch の設定は latchNewStartSuppressed 経由へ統一済み（弱い latch が強い latch をブロック
-  // する Bugbot Medium 指摘への対応）。上限超過時にその経路を通ることを固定する。
-  assert.match(fnBody, /if \(actualBytes > maxResidualWorktreeBytes\) \{\n\s*latchNewStartSuppressed\(\{/)
+  // する Bugbot Medium 指摘への対応）。上限超過時にその経路を通ることを固定する。判定変数
+  // exceededAtActualMeasurement は Issue #475 で全件測定直後へ先出しした cap latch が使う
+  // （予約更新失敗の 2 経路より前に容量超過を確定するため）。
+  assert.match(fnBody, /const exceededAtActualMeasurement = actualBytes > maxResidualWorktreeBytes/)
+  assert.match(fnBody, /if \(exceededAtActualMeasurement\) \{\n\s*latchNewStartSuppressed\(\{/)
 })
 
 // --- K8Dc 回帰: ラン中実測し直しが以後の projection の基準を更新すること（PR #390 codex-review
@@ -587,14 +592,19 @@ test('remeasureResidualBytesNow は全ての exit で構造化された { failed
   const fnEnd = source.indexOf('\nwhile (true) {', fnStart)
   const fnBody = source.slice(fnStart, fnEnd)
   assert.ok(fnStart >= 0 && fnEnd > fnStart, 'remeasureResidualBytesNow 本体を特定できること')
-  // ガード節（無効・未観測）の早期 return
-  assert.match(fnBody, /return \{ failed: false, exceeded: false \}/)
+  // ガード節（無効・未観測）の早期 return（Issue #475 で reserveStale フィールドを追加）。
+  assert.match(fnBody, /return \{ failed: false, exceeded: false, reserveStale: false \}/)
   // 同一周回内 2 回目以降の間引き return は直近周回の結果を返す
   assert.match(fnBody, /return lastByteRemeasureOutcome/)
-  // 測定失敗（kib === null）の return
-  assert.match(fnBody, /lastByteRemeasureOutcome = \{ failed: true, exceeded: false \}/)
-  // 測定成功時の return（超過有無を反映）
-  assert.match(fnBody, /lastByteRemeasureOutcome = \{ failed: false, exceeded: actualBytes > maxResidualWorktreeBytes \}/)
+  // 測定失敗（kib === null）の return（バイト軸そのものが未観測のため failed: true のまま）
+  assert.match(fnBody, /lastByteRemeasureOutcome = \{ failed: true, exceeded: false, reserveStale: false \}/)
+  // 測定成功時の return（超過有無は Step 1-1 で確定済みの exceededAtActualMeasurement を反映。
+  // Issue #475 で cap latch を全件測定直後へ先出ししたため、ここでは重複 latch を呼ばず
+  // reserveStale: false のみ確定する）。
+  assert.match(
+    fnBody,
+    /lastByteRemeasureOutcome = \{ failed: false, exceeded: exceededAtActualMeasurement, reserveStale: false \}/,
+  )
   // 値を返さない bare `return`（改行または `}` が直後に続く形）が本体に残っていないこと。
   // 将来ここへ bare return が再混入すると、呼び出し元の `remeasureOutcome.failed` 参照が
   // `TypeError: Cannot read properties of undefined` になり monitoring 再開ゲートが例外で落ちる。
@@ -645,9 +655,14 @@ test('monitoring 再開ゲートは remeasureResidualBytesNow の戻り値のみ
   const blockEnd = source.indexOf('\n          const recordedByIssue = new Map()', start)
   assert.ok(blockEnd > start, 'ブロック終端（予約計上ロジックの開始）を特定できること')
   const block = source.slice(start, blockEnd)
-  // 戻り値を保持して失敗・超過の両方を判定すること
+  // 戻り値を保持して失敗・超過・予約見積り更新失敗（reserveStale）の全てを判定すること
+  // （Issue #475 codex-review P0 再指摘: reserveStale を defer 条件から外すと、古い
+  // rawPerWorktreeByteReserve のまま monitoring 再開が進み容量枯渇を許し得る）
   assert.match(block, /const remeasureOutcome = await remeasureResidualBytesNow\(\)/)
-  assert.match(block, /if \(remeasureOutcome\.failed \|\| remeasureOutcome\.exceeded\)/)
+  assert.match(
+    block,
+    /if \(remeasureOutcome\.failed \|\| remeasureOutcome\.exceeded \|\| remeasureOutcome\.reserveStale\)/,
+  )
   // 旧実装（identity 比較）が復活していないこと（バグの再発防止の核心的な回帰検出）
   assert.doesNotMatch(block, /suppressedBeforeResumeRemeasure/)
   assert.doesNotMatch(block, /newStartSuppressed !== /)

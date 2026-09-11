@@ -109,6 +109,7 @@ test('resolveUnverifiedImplementPaths: 候補が一意なら物理一覧のパ�
   const r = resolveUnverifiedImplementPaths({
     issues: [100],
     physicalEntries: PHYSICAL,
+    independentCount: PHYSICAL.length,
     claimedPaths: [],
     mainPath: '/repo',
   })
@@ -120,6 +121,7 @@ test('resolveUnverifiedImplementPaths: 候補が 0 件なら解決不能とし�
   const r = resolveUnverifiedImplementPaths({
     issues: [999],
     physicalEntries: PHYSICAL,
+    independentCount: PHYSICAL.length,
     claimedPaths: [],
     mainPath: '/repo',
   })
@@ -135,6 +137,7 @@ test('resolveUnverifiedImplementPaths: 同一イシューに複数候補があ�
   const r = resolveUnverifiedImplementPaths({
     issues: [100],
     physicalEntries: entries,
+    independentCount: entries.length,
     claimedPaths: [],
     mainPath: '/repo',
   })
@@ -146,6 +149,7 @@ test('resolveUnverifiedImplementPaths: 台帳で検証済みのパス（claimedP
   const r = resolveUnverifiedImplementPaths({
     issues: [100],
     physicalEntries: PHYSICAL,
+    independentCount: PHYSICAL.length,
     claimedPaths: ['/tmp/wt-100'],
     mainPath: '/repo',
   })
@@ -161,6 +165,7 @@ test('resolveUnverifiedImplementPaths: 同一パスを 2 イシューへ重複�
   const r = resolveUnverifiedImplementPaths({
     issues: [100, 100],
     physicalEntries: entries,
+    independentCount: entries.length,
     claimedPaths: [],
     mainPath: '/repo',
   })
@@ -177,6 +182,7 @@ test('resolveUnverifiedImplementPaths: メイン worktree・不正パス・不�
   const r = resolveUnverifiedImplementPaths({
     issues: [300],
     physicalEntries: entries,
+    independentCount: entries.length,
     claimedPaths: [],
     mainPath: '/repo',
   })
@@ -195,6 +201,44 @@ test('resolveUnverifiedImplementPaths: 物理一覧が未取得（null）なら�
   assert.deepEqual(r.unresolvedIssues, [100, 200])
 })
 
+test('resolveUnverifiedImplementPaths: 独立カウントと一覧件数が不一致なら候補が一意でも全件解決不能とする（一覧転記脱落の疑いを fail-closed で扱う。Issue #475 4 巡目 Bugbot Medium）', () => {
+  const r = resolveUnverifiedImplementPaths({
+    issues: [100],
+    physicalEntries: PHYSICAL, // 本来なら wt-100 が一意候補
+    independentCount: PHYSICAL.length - 1, // 転記脱落を模した不一致
+    claimedPaths: [],
+    mainPath: '/repo',
+  })
+  assert.deepEqual(r.paths, [])
+  assert.deepEqual(r.unresolvedIssues, [100])
+})
+
+test('resolveUnverifiedImplementPaths: isMain フラグが 0 件なら判定不能として全件解決不能とする', () => {
+  const entries = PHYSICAL.map((e) => ({ ...e, isMain: false }))
+  const r = resolveUnverifiedImplementPaths({
+    issues: [100],
+    physicalEntries: entries,
+    independentCount: entries.length,
+    claimedPaths: [],
+    mainPath: '/repo',
+  })
+  assert.deepEqual(r.paths, [])
+  assert.deepEqual(r.unresolvedIssues, [100])
+})
+
+test('resolveUnverifiedImplementPaths: isMain フラグが複数件なら判定不能として全件解決不能とする', () => {
+  const entries = PHYSICAL.map((e, i) => (i === 1 ? { ...e, isMain: true } : e))
+  const r = resolveUnverifiedImplementPaths({
+    issues: [100],
+    physicalEntries: entries,
+    independentCount: entries.length,
+    claimedPaths: [],
+    mainPath: '/repo',
+  })
+  assert.deepEqual(r.paths, [])
+  assert.deepEqual(r.unresolvedIssues, [100])
+})
+
 test('resolveUnverifiedImplementPaths: 部分一致のブランチ名は帰属させない（アンカー付き一致の維持）', () => {
   const entries = [
     { path: '/repo', branch: 'main', isMain: true },
@@ -203,6 +247,7 @@ test('resolveUnverifiedImplementPaths: 部分一致のブランチ名は帰属�
   const r = resolveUnverifiedImplementPaths({
     issues: [100],
     physicalEntries: entries,
+    independentCount: entries.length,
     claimedPaths: [],
     mainPath: '/repo',
   })
@@ -364,19 +409,46 @@ test('rawPerWorktreeByteReserve を更新できない 2 経路は implement 限�
   assert.ok(unresolvedStart >= 0, '未解決 implement パス分岐を特定できること')
   const unresolvedBranch = fnBody.slice(unresolvedStart, fnBody.indexOf('return lastByteRemeasureOutcome', unresolvedStart))
   assert.match(unresolvedBranch, /implementOnly: true/)
-  assert.match(unresolvedBranch, /lastByteRemeasureOutcome = \{ failed: true, exceeded: false \}/)
+  assert.match(
+    unresolvedBranch,
+    /lastByteRemeasureOutcome = \{ failed: false, exceeded: exceededAtActualMeasurement, reserveStale: true \}/,
+  )
 
   // (2) implement 限定 du の失敗経路
   const measuredNullStart = fnBody.indexOf('if (implementMeasured === null) {')
   assert.ok(measuredNullStart >= 0, 'implement 限定測定の失敗分岐を特定できること')
   const measuredNullBranch = fnBody.slice(measuredNullStart, fnBody.indexOf('return lastByteRemeasureOutcome', measuredNullStart))
   assert.match(measuredNullBranch, /implementOnly: true/)
-  assert.match(measuredNullBranch, /lastByteRemeasureOutcome = \{ failed: true, exceeded: false \}/)
+  assert.match(
+    measuredNullBranch,
+    /lastByteRemeasureOutcome = \{ failed: false, exceeded: exceededAtActualMeasurement, reserveStale: true \}/,
+  )
 
   // 全件測定（kib === null）の latch は全 kind 停止のまま（バイト軸そのものが未観測のため）。
   const kibNullStart = fnBody.indexOf('if (kib === null) {')
   const kibNullBranch = fnBody.slice(kibNullStart, fnBody.indexOf('return lastByteRemeasureOutcome', kibNullStart))
   assert.doesNotMatch(kibNullBranch, /implementOnly/)
+})
+
+test('remeasureResidualBytesNow: 予約更新失敗の 2 経路より前に容量超過判定・全 kind latch を確定する（cap latch 省略の是正・Issue #475）', () => {
+  const fnStart = source.indexOf('async function remeasureResidualBytesNow()')
+  const fnEnd = source.indexOf('async function remeasureFreeDiskNow()', fnStart)
+  assert.ok(fnStart >= 0 && fnEnd > fnStart)
+  const fnBody = source.slice(fnStart, fnEnd)
+
+  const capLatchDefIndex = fnBody.indexOf('const exceededAtActualMeasurement = actualBytes > maxResidualWorktreeBytes')
+  const unresolvedStart = fnBody.indexOf('if (resolution.unresolvedIssues.length > 0) {')
+  const measuredNullStart = fnBody.indexOf('if (implementMeasured === null) {')
+  assert.ok(capLatchDefIndex >= 0, '全 kind cap latch の判定定義を特定できること')
+  assert.ok(unresolvedStart >= 0 && measuredNullStart >= 0, '予約更新失敗の 2 経路を特定できること')
+  assert.ok(
+    capLatchDefIndex < unresolvedStart,
+    '容量超過判定は未解決 implement パス分岐より前に確定していること',
+  )
+  assert.ok(
+    capLatchDefIndex < measuredNullStart,
+    '容量超過判定は implement 限定 du 失敗分岐より前に確定していること',
+  )
 })
 
 test('未検証 implement の帰属解決は解決直前に物理一覧を取り直す（入口のスナップショットを使い回さない。Bugbot Medium「Stale scan latches unverified implements」）', () => {
@@ -387,9 +459,15 @@ test('未検証 implement の帰属解決は解決直前に物理一覧を取り
   assert.ok(blockStart >= 0, '未検証 implement の解決ブロックを特定できること')
   const blockEnd = fnBody.indexOf('const implementPaths = [...implementPathSet]', blockStart)
   const block = fnBody.slice(blockStart, blockEnd)
-  // 解決直前の再スキャン結果を渡すこと（入口の physicalEntries を渡さない）。
-  assert.match(block, /const freshEntries = await scanOrphanWorktrees\(\)/)
+  // 解決直前の再スキャン結果を渡すこと（入口の physicalEntries を渡さない）。独立レコードカウント
+  // （countWorktreeRecords）も同一タイミングで取得し、一覧との照合（fail-closed）に使う
+  // （Issue #475 4 巡目 Bugbot Medium）。
+  assert.match(
+    block,
+    /const \[freshEntries, freshIndependentCount\] = await Promise\.all\(\[scanOrphanWorktrees\(\), countWorktreeRecords\(\)\]\)/,
+  )
   assert.match(block, /physicalEntries: freshEntries,/)
+  assert.match(block, /independentCount: freshIndependentCount,/)
   // 入口のスナップショットを解決へ流用する形（変数名の省略記法）が復活していないこと。
   assert.doesNotMatch(source, /let physicalEntries = null/)
   // 解決要否の判定は削除済みフィルタ前の全件を渡す（B-2）。
