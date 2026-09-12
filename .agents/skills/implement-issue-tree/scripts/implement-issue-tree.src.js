@@ -1670,9 +1670,12 @@ async function persistPerWorktreeByteReserveHighWater(bytes) {
             ` の大きい方へ更新する（縮めない）。`,
           `手順（mktemp で衝突回避）:`,
           `  tmp=$(mktemp "${STATE_FILE}.XXXXXX")`,
-          `  jq --argjson hw ${bytes} 'if (.perWorktreeByteReserveHighWater // 0) < $hw then` +
+          // --arg / --argjson はフィルタより前に置く（フィルタ後に置くと古い jq や読み手が
+          // ファイル名と誤認しうる。下流同期 PR への Bugbot 指摘・#478 の永続化コマンド）。
+          `  jq --argjson hw ${bytes} --arg ts "$(date -u +%FT%TZ)"` +
+            ` 'if (.perWorktreeByteReserveHighWater // 0) < $hw then` +
             ` .perWorktreeByteReserveHighWater = $hw else . end | .updatedAt = $ts'` +
-            ` --arg ts "$(date -u +%FT%TZ)" ${STATE_FILE} > "$tmp" && mv "$tmp" ${STATE_FILE}`,
+            ` ${STATE_FILE} > "$tmp" && mv "$tmp" ${STATE_FILE}`,
           `jq の終了コードで成否を判断し ok（boolean）を返す。.items を含む他のフィールドは一切` +
             `変更しない。`,
         ].join('\n'),
@@ -2825,7 +2828,13 @@ function fixPrompt(item, impl, finding, pushAfterFix = true, permittedNoPushReso
         ]
       : []),
     `${pushAfterFix ? '7' : '5'}. pwd の結果を worktreePath として返す（worktree の絶対パスを記録するため）。`,
-    `返却: pushed / summary（作業内容の要約。対象外コメントのマーカーは埋め込まない） / outOfScopeComments（対象外コメントがある場合のみ、{ threadId, reason } の配列）${pushAfterFix ? ' / resolvedThreadIds（手順 5 で resolve に成功した threadId の配列。該当がなければ省略可）' : ''} / worktreePath（pwd の結果）/ routingError（手順 0 で worktree 誤配置を検出した場合のみ true。その際 pushed は false。誤配置でなければ省略可）/ commitFailed（修正コミットを作成できなかった場合のみ true — base fetch 失敗・base merge の解消不能 / hook 拒否・commitlint の type / scope 決定不能を含む。その際 pushed は false。コミットできれば省略可）。`,
+    // 返却リストは出力契約として扱われるため、手順 4（pushAfterFix: true）の
+    // postPushChecksInstruction が求める checksStarted・mergeableAfterPush をここにも列挙する
+    // （PR #480 / Issue #479 の返却契約への追随。下流同期 PR への Bugbot Medium 指摘）。
+    // 省略するとエージェントがフィールドを返さず、push 後に pendingPushConflict が立たないため
+    // コンフリクト中の PR で monitor ラウンドを 1 回空費する。Review ループ（pushAfterFix: false）は
+    // 手順 4 で観測しないため付けない。
+    `返却: pushed / summary（作業内容の要約。対象外コメントのマーカーは埋め込まない） / outOfScopeComments（対象外コメントがある場合のみ、{ threadId, reason } の配列）${pushAfterFix ? ' / resolvedThreadIds（手順 5 で resolve に成功した threadId の配列。該当がなければ省略可）' : ''} / worktreePath（pwd の結果）${pushAfterFix ? ' / checksStarted・mergeableAfterPush（手順 4 の push 後 CI 起動確認の観測結果。任意・診断と分岐ヒント専用）' : ''}/ routingError（手順 0 で worktree 誤配置を検出した場合のみ true。その際 pushed は false。誤配置でなければ省略可）/ commitFailed（修正コミットを作成できなかった場合のみ true — base fetch 失敗・base merge の解消不能 / hook 拒否・commitlint の type / scope 決定不能を含む。その際 pushed は false。コミットできれば省略可）。`,
   ].join('\n')
 }
 
