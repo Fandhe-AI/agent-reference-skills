@@ -57,8 +57,16 @@ Agent ツールでセキュリティ確認を行う。
 # 非運用ガード: MILESTONE_COUNT が 0 なら手順 3 をスキップして Step 3 へ進む
 MILESTONE_COUNT=$(gh api "repos/{owner}/{repo}/milestones?state=all" --jq 'length')
 
-# close 対象 Issue の milestone 割当状況を確認する
-gh issue view <N> --json milestone --jq '.milestone.title // empty'
+if ! [[ "${MILESTONE_COUNT}" =~ ^[0-9]+$ ]]; then
+  # gh api の失敗等で件数が数値化できない場合は fail-open せず中止して原因を確認する
+  echo "milestone 件数の取得に失敗した。原因を確認してから手順 3 をやり直す" >&2
+  exit 1   # fail-closed: 診断だけ出して PR 作成へ進まない
+elif [ "${MILESTONE_COUNT}" -eq 0 ]; then
+  echo "milestone 非運用リポジトリのためスキップして Step 3 へ進む"
+else
+  # close 対象 Issue の milestone 割当状況を確認する
+  gh issue view <N> --json milestone --jq '.milestone.title // empty'
+fi
 ```
 
 - milestone が既に割当済み → 次の Step へ進む

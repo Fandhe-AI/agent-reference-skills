@@ -341,3 +341,38 @@ test('駆動部: push 直後の観測値は状態ファイルへ永続化され�
     'fix の観測値が updateState で永続化されていない',
   )
 })
+
+// ---------------------------------------------------------------------------
+// (5) 返却リスト（出力契約）の列挙漏れ
+// ---------------------------------------------------------------------------
+// 下流同期 PR（Fandhe-AI/fandhe-ai#1536）への Bugbot Medium 指摘の回帰テスト: 返却リストを
+// 出力契約として扱うエージェントは、そこに列挙されていないフィールドを返さない。fixPrompt の
+// 返却行が checksStarted・mergeableAfterPush を欠くと、push 後に pendingPushConflict が立たず
+// コンフリクト中の PR で monitor ラウンドを 1 回空費する。
+const returnLineOf = (prompt) => {
+  const line = prompt.split('\n').find((l) => l.startsWith('返却:'))
+  assert.ok(line, '返却行が見つからない')
+  return line
+}
+
+test('返却行: prCreatePrompt / fixPrompt(pushAfterFix: true) が push 後観測フィールドを列挙する', () => {
+  const targets = [
+    ['prCreatePrompt', prCreatePrompt(item, impl, [])],
+    ['fixPrompt(pushAfterFix: true)', (() => {
+      mod.__setBoundaryNonceSeedForTest(NONCE)
+      return fixPrompt(item, impl, { summary: 'テスト用の指摘', unresolvedComments: [] }, true)
+    })()],
+  ]
+  for (const [name, prompt] of targets) {
+    const line = returnLineOf(prompt)
+    assert.ok(line.includes('checksStarted'), `${name}: 返却行に checksStarted が列挙されていない`)
+    assert.ok(line.includes('mergeableAfterPush'), `${name}: 返却行に mergeableAfterPush が列挙されていない`)
+  }
+})
+
+test('返却行: fixPrompt(pushAfterFix: false) は push 後観測フィールドを列挙しない', () => {
+  mod.__setBoundaryNonceSeedForTest(NONCE)
+  const line = returnLineOf(fixPrompt(item, impl, { summary: 'テスト用の指摘', unresolvedComments: [] }, false))
+  assert.ok(!line.includes('checksStarted'), 'Review ループの返却行に checksStarted が混入している')
+  assert.ok(!line.includes('mergeableAfterPush'), 'Review ループの返却行に mergeableAfterPush が混入している')
+})
