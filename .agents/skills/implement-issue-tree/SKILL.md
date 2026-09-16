@@ -195,9 +195,9 @@ gh pr list --state merged --limit 3 --json headRefOid --jq '.[].headRefOid' \
    コメント方針（実装時）:
    - コードコメントは「何をするか」より「なぜ存在するか／パッケージ・サービスから見た対象の役割」を書く
    - 後続の読み手（Claude を含む）は渡された情報からしか判断できないため、他ファイル・他サービス・呼び出し元/呼び出し先からの観点を明示する（このシンボルがどこから呼ばれ、どの境界を担うか）
-   - 詳細は対象リポジトリの `.claude/rules/code-comment-style.md`（`init-claude` が配備）に従う
+   - 対象リポジトリに `.claude/rules/code-comment-style.md`（`init-claude` が配備）が存在する場合はそちらの詳細規約に従う。存在しない場合は上記の要点に従う
 
-4. 対象リポジトリの CLAUDE.md・rules・テスト実行規約に従いビルド・lint・テストを通す。テストが失敗した場合は根本原因を調査してから修正する（`.claude/rules/debugging.md` の4フェーズを順に踏む。同一箇所で3回失敗したらアーキテクチャ問題と判断し、該当イシューを `blocked` として記録してユーザーに状況を報告する）
+4. 対象リポジトリの CLAUDE.md・rules・テスト実行規約に従いビルド・lint・テストを通す。テストが失敗した場合は根本原因を調査してから修正する（対象リポジトリに `.claude/rules/debugging.md` が存在する場合はその4フェーズを順に踏む。存在しない場合も同じ方針〔調査→分析→仮説→修正〕を踏む。同一箇所で3回失敗したらアーキテクチャ問題と判断し、該当イシューを `blocked` として記録してユーザーに状況を報告する）
 5. 実装後に OWASP Top 10 観点でセキュリティチェックを実施する（API キーのハードコード・インジェクション等）。問題が見つかった場合は修正してから次へ進む
 6. 実装が完了したら `create-commit` スキルに従い Conventional Commits で**実装コミットを 1 つ**作成する。
    コミット前に対象リポの commitlint 設定（`commitlint.config.*` / `.commitlintrc*` / `package.json` の
@@ -387,7 +387,7 @@ gh pr merge <pr-number> --squash --delete-branch --match-head-commit <検証し�
 # (A) エージェントが実行してよい形。取得成否を先に確定してから「件数」のみを返す。
 # gh api は HTTP エラーの JSON 本文も stdout へ出す仕様のため、パイプ直結だと認証失敗・404・
 # レート制限の出力が uniq -d にヒットせず「重複なし（0）」に化ける
-# （.claude/rules/ruleset-policy.md 手順 B と同じ罠）。
+# （対象リポジトリに .claude/rules/ruleset-policy.md があれば手順 B と同じ罠として記載されている）。
 # そのため (1) 取得を独立させて終了コードを見る (2) 出力の空判定を行う (3) 集計は shell 側で
 # 行う、の 3 段に分ける（--jq はページごとに適用されるため group_by をページ単位で行うと
 # ページ跨ぎの重複を見逃す。名前+結論の一覧をシェル側 awk で全ページ分集約する）
@@ -472,7 +472,7 @@ gh api --paginate --slurp "repos/OWNER/REPO/commits/<sha>/check-runs?per_page=10
   - 前提 1（重複と結論の実測）: (A) が `dup=<D> bad=<B> pend=<P>` を返し、D・B・P を実測する。
     - **D >= 1 かつ P >= 1** の場合: 重複の中に `pending`（未完了）の check-run が残っている。この pending 自体が `mergeStateStatus=BLOCKED` の直接原因になり得るため、「重複はすべて正常な再実行」と断定して原因調査を別方向へ進めてはならない。rerun せず、pending の完了を待って再監視する（判断・実行の主体はラン運用者／ホスト側。原因不明のまま前提 2 の rerun フローへ進めない）。
     - **D >= 1 かつ P = 0 かつ B >= 1** の場合のみ、前提 2（rerun 対象の一意化）へ進む。
-    - **D >= 1 かつ B = 0 かつ P = 0** の場合、重複はすべて正常な再実行（`success`/`neutral`/`skipped` 同士）由来であり「cancel された run の残存 check」ではない。rerun せず、BLOCKED の別原因（required check の context 名不一致・未解決レビュースレッド・ruleset 構成など。`.claude/rules/ruleset-policy.md` の 3 軸スイープ）へ調査を移す。
+    - **D >= 1 かつ B = 0 かつ P = 0** の場合、重複はすべて正常な再実行（`success`/`neutral`/`skipped` 同士）由来であり「cancel された run の残存 check」ではない。rerun せず、BLOCKED の別原因（required check の context 名不一致・未解決レビュースレッド・ruleset 構成など。対象リポジトリに `.claude/rules/ruleset-policy.md` があればその 3 軸スイープ〔strict / bypass_actors / integration_id 残存〕を使う）へ調査を移す。
   - 前提 2（rerun 対象の一意化）: (B) で重複している check 名を確認し、その名前を発行した cancelled run を job 一覧から特定する（下記コマンド）。
     - cancelled run が**複数**見つかり一意に絞り込めない場合: rerun せず `blocked`（quality）として最終レポートへ回す（誤った run を rerun すると無関係な job まで再実行し、原因不明のまま状態を変える）。
     - cancelled run が **0 件**の場合: rerun 対象が存在しない。B >= 1 の残存は cancel ではなく failure / timed_out / action_required / startup_failure / stale 等の非 cancel 由来である。この残存も cancel 残存と同じ masking を受ける点に注意する — `gh pr checks` は同名 check の最新結論のみを表示するため（前掲「原因」節参照）、より新しい success / neutral / skipped の陰に隠れた古い failure / timed_out 等は `gh pr checks` の出力に現れず、通常の可視 CI 失敗としては検知できない。監視フローの needs-fix 経路（`gh pr checks` ベースの CI 失敗検知）に任せると見逃されるため、rerun はせず `blocked`（quality）として最終レポートへ回す。原因調査が必要な場合は (A)/(B) の生の check-runs 出力（`gh pr checks` ではなく）を根拠に、当該 check-run を発行した run をラン運用者が個別に特定・対処する。cancel 起因と決めつけて `gh run rerun` しない。
@@ -493,7 +493,7 @@ gh api --paginate "repos/OWNER/REPO/actions/runs/<cancelled-run-id>/jobs?per_pag
 gh run rerun <run-id> -R OWNER/REPO
 ```
 
-- **完了ゲート整合**: rerun したこと自体は green の証拠にならない。再実行後に改めて全チェックの結論を列挙し、`failure` / `cancelled` / `timed_out` が 0 件・`pending` / `queued` / `in_progress` が 0 件・チェック総数 1 件以上を確認してから合格と判断する（`.claude/rules/verification.md` の 5 段階ゲート）。解消しない場合は推測で進めず `blocked` として最終レポートへ回す。
+- **完了ゲート整合**: rerun したこと自体は green の証拠にならない。再実行後に改めて全チェックの結論を列挙し、`failure` / `cancelled` / `timed_out` が 0 件・`pending` / `queued` / `in_progress` が 0 件・チェック総数 1 件以上を確認してから合格と判断する（対象リポジトリに `.claude/rules/verification.md` があればその 5 段階ゲートに従う）。解消しない場合は推測で進めず `blocked` として最終レポートへ回す。
 
 CI 失敗・外部チェック指摘・未解決レビュースレッドがある場合は、修正エージェント（fix）が detached HEAD で対象ブランチを取得して指摘を反映し再 push する。fix は修正作業（コミット）より前に base を必ず取り込む（`git fetch` → `git merge`）ため、base が動いていても次ラウンドの monitor へ影響しない。修正エージェントも worktree 隔離で動作するため、他の並列イシューのブランチに干渉しない。
 
@@ -538,7 +538,7 @@ open のサブイシューが残っている場合、または受入基準が未
 
 ## 検証
 
-各実装エージェントはテストコマンドを新規実行し、出力全体と終了コードを確認してから完了を宣言する（詳細は `.claude/rules/verification.md`）。「〜のはず」「たぶん通る」等の推測語での完了主張は禁止。テスト出力・終了コードを証拠として引用してから完了を宣言する。
+各実装エージェントはテストコマンドを新規実行し、出力全体と終了コードを確認してから完了を宣言する（対象リポジトリに `.claude/rules/verification.md` が存在する場合はそちらの5段階ゲートに従う）。「〜のはず」「たぶん通る」等の推測語での完了主張は禁止。テスト出力・終了コードを証拠として引用してから完了を宣言する。
 
 最終レポートの「完了イシュー」に全対象イシューが列挙され、「停止イシュー」が空であることを確認する。`scripts/implement-issue-tree.js` を変更した場合の非信頼データ境界・残置 worktree 上限ゲート・merge-guard hook の適用確認手順（grep コマンド・期待結果）は以下を参照。
 
@@ -550,7 +550,7 @@ open のサブイシューが残っている場合、または受入基準が未
 
 | 問題 | 回避策 |
 |------|--------|
-| テスト失敗の原因を調査せず当て推量で修正を繰り返す | `.claude/rules/debugging.md` の4フェーズ（調査→分析→仮説→修正）を踏む。3回失敗したら `blocked` にしてユーザーへ報告 |
+| テスト失敗の原因を調査せず当て推量で修正を繰り返す | 対象リポジトリに `.claude/rules/debugging.md` があればその4フェーズ、無ければ同じ方針（調査→分析→仮説→修正）を踏む。3回失敗したら `blocked` にしてユーザーへ報告 |
 | `gh pr checks --watch` 終了だけで CI 合格と判断する | watch 後に `gh pr checks <pr-number>` で全チェックの結論を列挙して確認する |
 | 仕様準拠を確認せずにコード品質レビューへ移行する | Step 5 のレビューは①仕様準拠→②コード品質の順に実施する |
 | Review 前に push・PR 作成を行う | push・PR 作成は Review 全通過後の Step 5.5 で行う。Review 失敗時に CI を起動させないための設計 |
@@ -615,7 +615,7 @@ open のサブイシューが残っている場合、または受入基準が未
 - レビュースレッドの resolve（解決済み化）を実行するのは Merge ループの fix エージェントのみ: 修正がリモート head に反映済みであることを前提に、(a) push 成功直後は自分が修正対応したスレッド（monitor の構造化出力由来・host 検証済み threadId）、(b) push なしラウンドはホストが決定的に算出した許可リストのみを `resolveReviewThread` mutation で resolve する（Issue #119 の全経路禁止からの転換。(b) の決定的照合は Issue #430、詳細は references/automerge-design.md。ただし (b) は codex-review P0 再指摘により現在恒久的に空リスト = 不成立で、実質 (a) のみが成立する）。monitor / merge-exec / merge-verify / Review ループの fix は実行しない。対象外（out-of-scope）と判断したスレッドは resolve されず PR 本文への記録までで停止するため、未解決のまま blocked → 最終レポートで issue 化承認・手動 resolve を判断する。人間の resolve 後の再実行（または監視継続中の resolve）でマージ条件が再判定される
 - 各 implement / fix は独立した worktree で隔離実行されるが、メイン working copy のブランチ・共有設定などグローバル状態は変更しない
 - 大規模ツリー（数百件）はサブ親単位で複数回に分けて実行する（1 ワークフローのエージェント上限は 1,000）
-- `--no-verify` は絶対に使用しない（pre-commit フック回避禁止。詳細は `.claude/rules/conventional-commits.md`）
+- `--no-verify` は絶対に使用しない（pre-commit フック回避禁止。対象リポジトリに `.claude/rules/conventional-commits.md` があればその規約に従う）
 - シェルコマンドの変数は必ず `"${var}"` でクォートする（コマンドインジェクション対策）。GitHub API から取得した文字列はプロンプト埋め込み前にサニタイズされる
 - 1 イシューの失敗では停止せず次へ進むが、3 イシュー連続失敗で新規着手を停止（halt）する
 - マージ前に **CI は全チェックが success/neutral/skipped で完了（pending/failure 0 件）であること**を明示確認する（`gh pr checks --watch` が終わっただけでは合格にせず、全チェックの結論を列挙して確認する）
@@ -624,7 +624,7 @@ open のサブイシューが残っている場合、または受入基準が未
 - `args.externalChecks` で明示した外部チェック App は、slug を問わず **HEAD sha に対する起動の確認**をマージの必須条件とする（Issue #155。cursor だけでなく sonarcloud 等も検証する）。cursor はレビューが 1 件以上到着し、かつ CHANGES_REQUESTED が 0 件であること（Bugbot は APPROVED を出さないため APPROVED は要求しない。個別指摘は inline レビュースレッドとして投稿されるため「未解決スレッド 0 件」ゲートが内容非依存の機械強制として働く。監視側の needs-fix 判定は修正ループ用 advisory でありマージ可否の入力ではない）、cursor 以外は check-run が 1 件以上ならその全件が許容 conclusion であること（failure・未完了があれば APPROVED レビューが存在しても不合格）、check-run が 0 件のときに限り「APPROVED レビューが 1 件以上かつ CHANGES_REQUESTED / COMMENTED / PENDING が 0 件」であることを条件とする。待機上限（最大 10 分）内に起動を確認できなければ「チェックなし」とみなさず `blocked` で停止する（App の障害・遅延・起動失敗時にゲートを迂回しない fail-closed）。マージ実行エージェント側でも App ごとに件数・状態 enum のみを再取得して独立に検証する
 - マージ前に **レビューコメントが全て解決済みであること**を確認する（未解決コメントがある場合はマージしない）
 - **merged 終端は独立確認を通過した場合のみ**確定する。merge-exec の `merged: true` は `reason`（`merged` / `already-merged`）との整合を必須とし（不整合は systemic failure として `failed` 終端）、さらに読み取り専用の merge-verify エージェントで `state=MERGED` と監視時点 HEAD sha の一致を独立確認できた場合にのみ merged として扱う。確認不能・不一致は `blocked`（quality）で fail-closed し、実際にマージ済みなら次回ランの monitoring 再開（already-merged 経路）で回復する（Issue #160）
-- コミット・PR 作成は Conventional Commits に従う（`.claude/rules/conventional-commits.md`）。セキュリティ問題を検出した場合は修正してから進む（`.claude/rules/security.md`）
+- コミット・PR 作成は Conventional Commits に従う（対象リポジトリに `.claude/rules/conventional-commits.md` があればそちらに従う）。セキュリティ問題を検出した場合は修正してから進む（対象リポジトリに `.claude/rules/security.md` があればそちらの OWASP Top 10 観点に従う。無ければ秘密情報のハードコード・インジェクション・権限過剰の観点で確認する）
 - CI が全 green に見えるのにマージが進まない場合は、cancel された run の残存 check を疑い Step 6 の「全チェックが pass に見えるのにマージが進まない場合」の分岐に従って切り分ける（`mergeStateStatus` は自動フローでは取得していない）
 - **中断・失敗後に手動で worktree を削除したり削除確認に答えたりする必要はない**。再実行時に Recover phase が per-issue で継続可否を判断し、作業のある worktree は continue（Implement で継続）または discard（削除 → Plan から新規）に振り分ける。continue / discard いずれの worktree 削除も WIP 退避の完了を検証できた場合のみ実行され、検証できない場合は残骸を保全して `failed` にする（データ損失より停滞を選ぶ fail-safe）。なお review / pr-create の使い捨て worktree は自動削除しない方針のため、ラン終了時のログ一覧を見て必要に応じ手動で掃除する
 

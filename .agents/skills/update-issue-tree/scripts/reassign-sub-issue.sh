@@ -307,6 +307,193 @@ confirm_stable_parent() {
   return 1
 }
 
+# DELETE 失敗の応答だけを信頼しない補償復旧（articles#119 codex-review P1 指摘・Issue #489）。
+# DELETE がサーバー側で成立した後に応答取得（ネットワーク断・タイムアウト等）だけが失敗すると、
+# gh が非ゼロで返っても対象は既に孤児であり得る。ここで即座に exit 3（無変更）と断定すると、
+# 実際には孤児化しているのに「旧親配下のまま無変更」と誤報する（fail-open）。新親 POST 失敗時の
+# recover_after_post_failure と同じ設計思想（諦めて exit する前に実状態を再取得する）を、
+# DELETE 失敗にも対称に適用する。
+#
+# 契約: 呼び出し元は ISSUE / CURRENT_PARENT / NEW_PARENT / REPO_PATH / SELF_REPO_URL /
+# GH_ERR_FILE を設定済みの状態でこの関数を呼ぶ。
+#   戻り値 0: 実測で孤児であることを安定確認できた（DELETE はサーバー側で成立済み）。
+#             呼び出し元はこの戻り値を受けて POST 工程（新親への付け替え）へ処理を続ける
+#   それ以外: この関数の内部で exit する（3・8・11 のいずれか。安定確認で新親への
+#             偽陰性が判明した場合は 0 / result=reassigned で exit する）
+recover_after_delete_failure() {
+  local delfail_json delfail_parent_url delfail_parent delfail_same_repo=1
+
+  if ! delfail_json=$(gh api "repos/${REPO_PATH}/issues/${ISSUE}" 2>"${GH_ERR_FILE}"); then
+    echo "エラー: DELETE 失敗後の実状態再取得に失敗した。#${ISSUE} が旧親 #${CURRENT_PARENT} 配下のままかは未確認" >&2
+    cat "${GH_ERR_FILE}" >&2
+    # 状態不明のまま「旧親配下のまま無変更」と断定すると、実際には孤児化していた場合に
+    # 呼び出し側が復旧不要と誤判断しかねない。fail-closed のため状態不明として終端する
+    echo "reason=recovery-state-unknown" >&2
+    exit 8
+  fi
+
+  if ! delfail_parent_url=$(extract_parent_url "DELETE 失敗後の実状態再取得" "${delfail_json}"); then
+    echo "エラー: #${ISSUE} の親子状態は未確認のまま終端する（旧親配下のままと断定しない）" >&2
+    echo "reason=recovery-state-unknown" >&2
+    exit 8
+  fi
+
+  delfail_parent=""
+  if [[ -n "${delfail_parent_url}" ]]; then
+    delfail_parent=$(printf '%s' "${delfail_parent_url}" | grep -oE '[0-9]+$' || true)
+    if [[ -z "${delfail_parent}" ]]; then
+      echo "エラー: parent_issue_url から親 issue 番号を抽出できない（解析不能な応答形式: ${delfail_parent_url}）。#${ISSUE} の親子状態は未確認" >&2
+      echo "reason=recovery-state-unknown" >&2
+      exit 8
+    fi
+    if [[ "${delfail_parent_url%/issues/*}" != "${SELF_REPO_URL}" ]]; then
+      delfail_same_repo=0
+    fi
+  fi
+
+  if [[ "${delfail_same_repo}" -eq 1 && "${delfail_parent}" == "${CURRENT_PARENT}" ]]; then
+    # 実測でも旧親配下のまま。この 1 回の読み取りだけでは反映遅延による過渡状態を見ている
+    # 可能性を排除できないため、他の分岐と同じく confirm_stable_parent で安定確認してから
+    # 無変更を確定する
+    local ddo_rc=0
+    confirm_stable_parent "DELETE 失敗後の旧親配下の安定確認" "${CURRENT_PARENT}" || ddo_rc=$?
+    if [[ "${ddo_rc}" -eq 0 ]]; then
+      echo "エラー: 旧親 #${CURRENT_PARENT} からの取り外しに失敗した（実測でも旧親配下のままと安定確認済み）" >&2
+      exit 3
+    elif [[ "${ddo_rc}" -eq 2 ]]; then
+      # 安定確認の途中で実は本来の新親 #NEW_PARENT に付いていたことが判明した
+      # （DELETE→POST が既に成功していた可能性。他の偽陰性確認と同じ扱い）
+      emit_result "reassigned" "${CURRENT_PARENT}"
+      exit 0
+    fi
+    echo "reason=recovery-state-unknown" >&2
+    exit 8
+  fi
+
+  if [[ "${delfail_same_repo}" -eq 1 && -z "${delfail_parent}" ]]; then
+    # 実測で孤児に見える（DELETE がサーバー側で成立していた可能性がある）。1 回の読み取り
+    # だけでは反映遅延の過渡状態を排除できないため、孤児観測の安定確認（既存の補償復旧経路と
+    # 同じ expected="" のロジック）を経てから DELETE 成立済みと確定する
+    local ddn_rc=0
+    confirm_stable_parent "DELETE 失敗後の孤児観測の安定確認" "" || ddn_rc=$?
+    if [[ "${ddn_rc}" -eq 0 ]]; then
+      echo "情報: DELETE はエラー応答だったが実測では孤児であることを安定確認した（DELETE はサーバー側で成立していた可能性）。POST 工程へ進む" >&2
+      return 0
+    elif [[ "${ddn_rc}" -eq 2 ]]; then
+      # 安定確認の途中で実は本来の新親 #NEW_PARENT に付いていたことが判明した
+      emit_result "reassigned" "${CURRENT_PARENT}"
+      exit 0
+    fi
+    echo "reason=recovery-state-unknown" >&2
+    exit 8
+  fi
+
+  if [[ "${delfail_same_repo}" -eq 1 && "${delfail_parent}" == "${NEW_PARENT}" ]]; then
+    # 第三者親（third-party-parent）判定の前に新親一致を判定する（codex-review P2 指摘
+    # PR #491・Issue #489）。この判定が無いと、旧親・孤児で始まり安定確認の途中で新親を
+    # 観測した場合は（上の ddo_rc==2 / ddn_rc==2 経路により）成功終端になるのに、最初の
+    # 読み取りが先に新親を観測しただけの場合は同じ状態（新親配下）にもかかわらず承認外の
+    # 第三者親として exit 11 になってしまう。観測タイミングだけで結果が変わる非対称は、
+    # 承認済みの新親へ並行処理が既に付け替えていた場合に、成功のはずが再承認必須のエラー
+    # へ変わってしまう欠陥になる。DELETE はエラー応答だったが実測では既に新親配下
+    # （DELETE→POST が既に成立していた可能性）であり、1 回の読み取りだけでは反映遅延の
+    # 過渡状態を排除できないため、他の偽陰性確認と同じ confirm_stable_parent で安定確認
+    # してから、既存の成功経路（`result=reassigned`）と同じ結果を返す。CURRENT_PARENT は
+    # 依然として非空（このパスは DELETE 実行対象、すなわち旧親ありの経路でのみ呼ばれる）
+    # であり、`emit_result` の "posted-only" 判定は CURRENT_PARENT が空かどうかで分岐する
+    # ため、"already-attached" 相当ではなく通常の "reassigned" が契約表と整合する
+    local ddp_rc=0
+    confirm_stable_parent "DELETE 失敗後の新親偽陰性確認" "${NEW_PARENT}" || ddp_rc=$?
+    if [[ "${ddp_rc}" -eq 0 ]]; then
+      emit_result "reassigned" "${CURRENT_PARENT}"
+      exit 0
+    fi
+    echo "reason=recovery-state-unknown" >&2
+    exit 8
+  fi
+
+  # 実測で第三者が別の親を設定済み（同一リポジトリの別 issue、または別リポジトリへの転送）。
+  # 承認外の親子関係を壊さないため、旧親へ戻すことも新親へ POST し直すこともせず
+  # 書き込みなしで停止する（fail-closed）
+  echo "エラー: DELETE 失敗を受けて実状態を再取得したところ、第三者が別の親を設定済みだった（parent_issue_url=${delfail_parent_url}）。承認外の親子関係を壊さないため補償せず停止する" >&2
+  echo "対処: 実測した親をユーザーへ提示して承認を得たうえで再実行する" >&2
+  echo "reason=third-party-parent" >&2
+  exit 11
+}
+
+# 孤児経路（DELETE を伴わない）の POST 失敗の応答だけを信頼しない補償復旧（articles#119
+# codex-review P1 指摘・Issue #489）。POST がサーバー側で成立した後に応答取得だけが失敗すると、
+# 対象は既に新親配下であり得る。ここで即座に exit 4（無変更）と断定すると誤報になる。
+# DELETE 経路の recover_after_post_failure と同じ設計を適用するが、この経路には DELETE が
+# 存在せず孤児化リスク自体が無いため、判定のみで完結し補償の書き込みは発生しない。
+#
+# 契約: 呼び出し元は ISSUE / NEW_PARENT / REPO_PATH / SELF_REPO_URL / GH_ERR_FILE を
+# 設定済みの状態でこの関数を呼ぶ。関数は必ず exit する（呼び出し元へは戻らない）
+recover_after_orphan_post_failure() {
+  local opf_json opf_parent_url opf_parent opf_same_repo=1
+
+  if ! opf_json=$(gh api "repos/${REPO_PATH}/issues/${ISSUE}" 2>"${GH_ERR_FILE}"); then
+    echo "エラー: 孤児経路 POST 失敗後の実状態再取得に失敗した。#${ISSUE} が孤児のままかは未確認" >&2
+    cat "${GH_ERR_FILE}" >&2
+    echo "reason=recovery-state-unknown" >&2
+    exit 8
+  fi
+
+  if ! opf_parent_url=$(extract_parent_url "孤児経路 POST 失敗後の実状態再取得" "${opf_json}"); then
+    echo "エラー: #${ISSUE} の親子状態は未確認のまま終端する（孤児のままと断定しない）" >&2
+    echo "reason=recovery-state-unknown" >&2
+    exit 8
+  fi
+
+  opf_parent=""
+  if [[ -n "${opf_parent_url}" ]]; then
+    opf_parent=$(printf '%s' "${opf_parent_url}" | grep -oE '[0-9]+$' || true)
+    if [[ -z "${opf_parent}" ]]; then
+      echo "エラー: parent_issue_url から親 issue 番号を抽出できない（解析不能な応答形式: ${opf_parent_url}）。#${ISSUE} の親子状態は未確認" >&2
+      echo "reason=recovery-state-unknown" >&2
+      exit 8
+    fi
+    if [[ "${opf_parent_url%/issues/*}" != "${SELF_REPO_URL}" ]]; then
+      opf_same_repo=0
+    fi
+  fi
+
+  if [[ "${opf_same_repo}" -eq 1 && "${opf_parent}" == "${NEW_PARENT}" ]]; then
+    # POST は偽陰性だった可能性がある。1 回の読み取りだけでは反映遅延による過渡状態を
+    # 排除できないため、他の成功判定経路と同じ共通関数で安定確認してから確定する
+    local opfn_rc=0
+    confirm_stable_parent "孤児経路 POST 失敗後の新親偽陰性確認" "${NEW_PARENT}" || opfn_rc=$?
+    if [[ "${opfn_rc}" -eq 0 ]]; then
+      emit_result "posted-only" "-"
+      exit 0
+    fi
+    echo "reason=recovery-state-unknown" >&2
+    exit 8
+  fi
+
+  if [[ "${opf_same_repo}" -eq 1 && -z "${opf_parent}" ]]; then
+    # 実測でも孤児のまま。反映遅延による過渡状態を排除するため安定確認してから
+    # 無変更を確定する（DELETE を伴わない経路のため、補償の書き込みは不要）
+    local opfo_rc=0
+    confirm_stable_parent "孤児経路 POST 失敗後の孤児観測の安定確認" "" || opfo_rc=$?
+    if [[ "${opfo_rc}" -eq 0 ]]; then
+      exit 4
+    elif [[ "${opfo_rc}" -eq 2 ]]; then
+      emit_result "posted-only" "-"
+      exit 0
+    fi
+    echo "reason=recovery-state-unknown" >&2
+    exit 8
+  fi
+
+  # 実測で第三者/別リポジトリの親が設定済み。この経路のレース検知は既存の exit 7
+  # （POST エラーメッセージの "only have one parent" 判定）に限定されており、実状態からの
+  # 再判定は本 issue の変更対象外（#489 設計）。安全側の状態不明として終端する
+  echo "エラー: 孤児経路 POST 失敗を受けて実状態を再取得したところ、第三者/別リポジトリの親が設定済みだった（parent_issue_url=${opf_parent_url}）" >&2
+  echo "reason=recovery-state-unknown" >&2
+  exit 8
+}
+
 # DELETE 成功後の POST 失敗（旧親から外れ新親にも付かない部分変更）に対する補償復旧
 # （Issue #352）。#333 は「事前に判定できる拒否条件」を DELETE 前に潰したが、DELETE と
 # POST の間のレース・一時的な 5xx は事前判定できない残余として残っていた。ここで諦めて
@@ -768,7 +955,11 @@ if [[ -z "${CURRENT_PARENT}" ]]; then
       echo "エラー: POST 時点で別の親が付いていた（レース）。DELETE は実行していないためツリーは無変更" >&2
       exit 7
     fi
-    exit 4
+    # POST の応答（gh の非ゼロ終了）だけを信頼しない。応答取得だけが失敗して実際には
+    # 成立している可能性があるため、実状態を再取得して成立済み・無変更・状態不明を
+    # 区別する。関数は必ず exit する（0 / 4 / 8 のいずれか）ため、この if ブロックには
+    # 戻らない（articles#119 codex-review P1 指摘・Issue #489）
+    recover_after_orphan_post_failure
   fi
 else
   # DELETE のパスは単数形 sub_issue（複数形 sub_issues を渡すと 404 になり、旧親から
@@ -777,9 +968,13 @@ else
   if ! DEL_OUT=$(gh api --method DELETE "repos/${REPO_PATH}/issues/${CURRENT_PARENT}/sub_issue" -F "sub_issue_id=${ISSUE_ID}" 2>&1); then
     echo "エラー: 旧親 #${CURRENT_PARENT} からの取り外しに失敗した" >&2
     echo "${DEL_OUT}" >&2
-    # DELETE 失敗時は POST へ絶対に進まない（#295 で「DELETE 失敗検知なしに POST へ進む」と
-    # 指摘された欠陥の回避。fail-closed）
-    exit 3
+    # DELETE の応答（gh の非ゼロ終了）だけを信頼しない。DELETE がサーバー側で成立した後に
+    # 応答取得だけが失敗した場合、実際には既に孤児であり得る。実状態を再取得してから
+    # 成立済み・無変更・状態不明を区別する（articles#119 codex-review P1 指摘・Issue #489）。
+    # 戻り値 0 は「実測で孤児と安定確認できた（DELETE 成立済み）」を意味し、その場合のみ
+    # 呼び出し元（ここ）へ処理が戻り、以降の POST 工程（次のブロック）へ進む。それ以外は
+    # 関数の内部で exit する（fail-closed）
+    recover_after_delete_failure
   fi
 
   if ! POST_OUT=$(gh api --method POST "repos/${REPO_PATH}/issues/${NEW_PARENT}/sub_issues" -F "sub_issue_id=${ISSUE_ID}" 2>&1); then
