@@ -37,11 +37,11 @@ const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-high-water-def
 const slicePath = join(sliceDir, 'implement-issue-tree-high-water-defs.mjs')
 // 実装スクリプトは `export const meta` 以外の top-level export を持てない（Workflow 起動制約）
 // ため、定義部は非 export のまま置き、切り出したスライス側で export 文を付与する。
-const SLICE_EXPORTS = ['computeNextHighWater', 'STATE_LOAD_SCHEMA']
+const SLICE_EXPORTS = ['computeNextHighWater', 'STATE_LOAD_SCHEMA', 'HIGH_WATER_SCHEMA_VERSION']
 writeFileSync(slicePath, `${definitionPart}\nexport { ${SLICE_EXPORTS.join(', ')} }\n`)
 
 const mod = await import(pathToFileURL(slicePath).href)
-const { computeNextHighWater, STATE_LOAD_SCHEMA } = mod
+const { computeNextHighWater, STATE_LOAD_SCHEMA, HIGH_WATER_SCHEMA_VERSION } = mod
 
 // --- 1. 純粋関数（computeNextHighWater）の境界値テスト ---
 
@@ -85,6 +85,14 @@ test('STATE_LOAD_SCHEMA: required に highWaterBytes が含まれる', () => {
   assert.ok(STATE_LOAD_SCHEMA.required.includes('highWaterBytes'))
 })
 
+test('STATE_LOAD_SCHEMA: required に highWaterVersion が含まれる（Issue #496）', () => {
+  assert.ok(STATE_LOAD_SCHEMA.required.includes('highWaterVersion'))
+})
+
+test('HIGH_WATER_SCHEMA_VERSION: 現行値は 2（Issue #496。旧版=1 未満・番兵値 0 と区別する）', () => {
+  assert.equal(HIGH_WATER_SCHEMA_VERSION, 2)
+})
+
 // --- 2. 配線テスト（フルソーステキストに対する文字列走査。driver 部はハーネス依存で import 不能） ---
 
 test('配線: ラン開始時の raw 値確定行が persistedHighWaterBytes を Math.max の第3引数に含む', () => {
@@ -94,11 +102,21 @@ test('配線: ラン開始時の raw 値確定行が persistedHighWaterBytes を
   )
 })
 
-test('配線: ラン開始時の raw 値確定直後に raiseAndPersistHighWater 呼び出しが続く', () => {
+test('配線: ラン開始時の raw 値確定直後に raiseAndPersistHighWater(avgResidualBytes) 呼び出しが続く（Issue #496: 永続化候補を mainKib 項を含まない実測平均へ限定）', () => {
   const idx = source.indexOf('rawPerWorktreeByteReserve = Math.max(mainKib * 1024, avgResidualBytes, persistedHighWaterBytes)')
   assert.ok(idx >= 0)
-  const after = source.slice(idx, idx + 400)
-  assert.match(after, /await raiseAndPersistHighWater\(rawPerWorktreeByteReserve\)/)
+  const after = source.slice(idx, idx + 700)
+  assert.match(after, /await raiseAndPersistHighWater\(avgResidualBytes\)/)
+})
+
+test('配線: raw 値確定より前に decideRunStartHighWater の呼び出しと persistedHighWaterBytes の再代入がある（Issue #496）', () => {
+  const decideIdx = source.indexOf('const highWaterDecision = decideRunStartHighWater(')
+  const rawIdx = source.indexOf('rawPerWorktreeByteReserve = Math.max(mainKib * 1024, avgResidualBytes, persistedHighWaterBytes)')
+  assert.ok(decideIdx >= 0)
+  assert.ok(rawIdx >= 0)
+  assert.ok(decideIdx < rawIdx, 'decideRunStartHighWater の呼び出しは raw 値確定より前になければならない')
+  const between = source.slice(decideIdx, rawIdx)
+  assert.match(between, /persistedHighWaterBytes = highWaterDecision\.effectiveBytes/)
 })
 
 test('配線: remeasureResidualBytesNow 内の rawPerWorktreeByteReserve = avgActualBytes 代入2箇所いずれの直後にも raiseAndPersistHighWater 呼び出しが続く（将来の分岐追加でも抜け漏れを機械的に固定）', () => {
@@ -122,8 +140,15 @@ test('配線: loadState() の初期 JSON テンプレートに perWorktreeByteRe
   assert.match(source, /"perWorktreeByteReserveHighWater":0/)
 })
 
-test('配線: savedItems 取得が loadState() の分割代入へ変更され highWaterBytes を受け取る', () => {
-  assert.match(source, /const \{ items: savedItems, highWaterBytes: loadedHighWaterBytes \} = await loadState\(\)/)
+test('配線: loadState() の初期 JSON テンプレートに perWorktreeByteReserveHighWaterVersion が現行版で含まれる（Issue #496）', () => {
+  assert.match(source, /"perWorktreeByteReserveHighWaterVersion":\$\{HIGH_WATER_SCHEMA_VERSION\}/)
+})
+
+test('配線: savedItems 取得が loadState() の分割代入へ変更され highWaterBytes・highWaterVersion を受け取る', () => {
+  assert.match(
+    source,
+    /const \{\s*items: savedItems,\s*highWaterBytes: loadedHighWaterBytes,\s*highWaterVersion: loadedHighWaterVersion,?\s*\} = await loadState\(\)/,
+  )
 })
 
 test('配線: persistedHighWaterBytes が loadedHighWaterBytes で初期化される', () => {
@@ -139,9 +164,29 @@ test('プロンプト文言: persistPerWorktreeByteReserveHighWater が .items �
   assert.match(fnBody, /\.items には一切触れない/)
 })
 
-test('プロンプト文言: persistPerWorktreeByteReserveHighWater のプロンプトが perWorktreeByteReserveHighWater 用の jq 比較式を含む', () => {
+test('プロンプト文言: persistPerWorktreeByteReserveHighWater のプロンプトが version 条件込みの jq 比較式を含む（Issue #496）', () => {
   const idx = source.indexOf('async function persistPerWorktreeByteReserveHighWater')
   assert.ok(idx >= 0)
-  const fnBody = source.slice(idx, idx + 2500)
-  assert.match(fnBody, /if \(\.perWorktreeByteReserveHighWater \/\/ 0\) < \$hw then/)
+  const fnBody = source.slice(idx, idx + 3000)
+  assert.match(fnBody, /if \(\(\.perWorktreeByteReserveHighWaterVersion \/\/ 0\) != \$v\)/)
+  assert.match(fnBody, /or \(\(\.perWorktreeByteReserveHighWater \/\/ 0\) < \$hw\) then/)
+  assert.match(fnBody, /\.perWorktreeByteReserveHighWater = \$hw \| \.perWorktreeByteReserveHighWaterVersion = \$v/)
+})
+
+test('配線: setPerWorktreeByteReserveHighWater が定義され .items に触れない旨の文言を含む（Issue #496）', () => {
+  const idx = source.indexOf('async function setPerWorktreeByteReserveHighWater')
+  assert.ok(idx >= 0)
+  const fnBody = source.slice(idx, idx + 2000)
+  assert.match(fnBody, /\.items には一切触れない/)
+  assert.match(fnBody, /'\.perWorktreeByteReserveHighWater = \$hw \| \.perWorktreeByteReserveHighWaterVersion = \$v/)
+})
+
+test('配線: ラン開始時の高水位是正（rewriteBytes !== null）が raw 値確定より前に setPerWorktreeByteReserveHighWater を呼ぶ（Issue #496）', () => {
+  const rewriteIdx = source.indexOf('if (highWaterDecision.rewriteBytes !== null) {')
+  const rawIdx = source.indexOf('rawPerWorktreeByteReserve = Math.max(mainKib * 1024, avgResidualBytes, persistedHighWaterBytes)')
+  assert.ok(rewriteIdx >= 0)
+  assert.ok(rawIdx >= 0)
+  assert.ok(rewriteIdx < rawIdx)
+  const between = source.slice(rewriteIdx, rawIdx)
+  assert.match(between, /await setPerWorktreeByteReserveHighWater\(highWaterDecision\.rewriteBytes\)/)
 })

@@ -547,3 +547,212 @@ merge 監視ループ（`runMergeLoop`）は「強制スレッド再走査の救
 **配線（`timeoutExecReason` の受け渡し）**:
 
 `roundTimeoutExecReason`（ループ外で宣言・ラウンド先頭で `''` へリセット）が出所を運ぶ。宣言をループ外に置く理由は `forceThreadRescanBudgetUsed`（延長ラッチ・ラウンドを跨いで**保持する**契約）と同じ「ループ内宣言だと毎ラウンド初期化される」ためではなく、choke point・一過性 reason 分岐・ラウンド先頭リセットの 3 箇所すべてから同一変数を参照・代入する必要があるという JS のスコープ上の都合にすぎない。むしろ意味は逆で、この変数は**ラウンドを跨いで保持してはならない**（リセットを落とすと前ラウンドの merge-exec 由来 reason が今ラウンドの monitor 由来 timeout へ漏れ、`blocked` が静かに `failed` へ化ける）。一過性 reason 分岐（`head-moved` / `checks-not-green` / `merge-failed`）は分岐条件の**リテラル** `execReason` のみを代入し、エージェント自己申告の自由テキスト（`execSummaryText`）は代入しない（A03 インジェクション対策。分類入力に未検証文字列を混入させない）。`tests/merge-loop-rescan.test.mjs` の構造アサーションがリセット位置・代入内容の両方を固定する。
+
+## opt-in テスト実行記録ゲート（Issue #495）
+
+`#[ignore]` 付きテストや opt-in の e2e ターゲットのように既定の CI・テストでは走らないテストを
+受入条件に含むイシューについて、イシュー本文の宣言（`<!-- optin-tests: ... -->`）に基づき、
+実装エージェントへ実行と記録を必須化し、マージ前に PR 本文の pass 記録を確認するゲート。
+宣言が無いイシューでは一切の分岐に入らない（既定無効）。
+
+**ゲートを merge-exec の内部ではなく直前のホスト側 choke point に置く理由**: merge-exec は
+Issue 本文・PR 本文・レビュー本文を一切読まないコンテキスト分離契約を持つ（Issue #145 / #160、
+`MERGE_CONTEXT_COMMON` と冒頭の権限境界段落、本書の「監視とマージ実行の分離」節）。ここに
+`gh pr view --json body` を追加すると、正規化した形であってもこの契約に例外が増え、既存の検証
+項目（`verification.md` の確認事項・回帰テストの群 E）と矛盾する。「マージゲートの合格条件に
+加える」という Issue #495 の要求は、merge-exec に到達する前に同じ合格条件で止めることで実現し、
+`mergeExecutePrompt` / `MERGE_EXEC_SCHEMA` / `classifyMergeExecDispatch` は無変更のまま維持する。
+
+**検証は別コンテキストの読み取り専用エージェント（`optinRecordVerifyPrompt`）が行う**。PR 本文は
+一時ファイルへ落とし、宣言コマンドごとの pass / 非 pass マーカー行数のみを返す（本文テキスト・
+コマンド文字列はコンテキストにも返却値にも含めない）。ホスト側 `classifyOptinRecordGate` が
+「pass 行が 1 件以上、かつ同一コマンドの pass 以外の記録行が 0 件」を合格条件とし、取得失敗・
+件数不一致・非整数・負数はすべて不合格側へ倒す（fail-closed）。
+
+**記録は実装エージェントの自己申告であり、権限境界・品質保証ではない（手続き遵守ゲート）**。
+偽の pass 記録を書くことは原理的に排除できない（PR 本文は write 権限者が編集できるため、
+人間が手元で実行して記録を更新する正規の復旧手順と同一の経路を通る）。マージ可否の実強制は
+従来どおり G0（サーバー側 branch protection の実測）が担い、本ゲートはそれに重ねる手続き上の
+確認にすぎない。
+
+### 記録の HEAD sha 束縛（PR #503 3 巡目 codex P1）
+
+2 巡目までの実装（後述の `optinFixState` 永続化を含む）は、いずれも「PR 本文の pass 記録」を
+どのタイミングで陳腐化させずに保つかという運用面の対処だった。しかし根の問題は別にある:
+**マーカー行自体が「どの HEAD に対する結果か」を一切束縛していなかった**。base 取り込み
+（`baseMergePrompt`）は opt-in テストを再実行しない設計のまま HEAD を進めるため、その後に
+古い pass マーカーが PR 本文に残っていれば、`classifyOptinRecordGate` は件数だけを見て合格に
+してしまう（`optinFixState` による多層防御が効かないケース — 例えば post-push fix を経由せず
+base 取り込みだけで HEAD が進んだラウンド — でも同様に fail-open になり得た）。
+
+対処は「マーカー行に検証対象の HEAD sha を刻む」設計へ変更すること。書式を
+`<!-- optin-test-record: <40 桁 sha> <pass|fail|not-run> <コマンド> -->` に拡張した
+（`optinRecordMarkerLine(sha, result, command)`。sha・result は固定形式で空白を含まないため
+コマンド文字列（空白を含み得る）の前に置き、`grep -cxF` の完全一致だけでパースが一意になる）。
+記録を書くエージェント（`prCreatePrompt` 手順 0d・`optinRecordUpdateInstructions` 手順 a）は
+`git rev-parse HEAD`（＝実際に push した／する HEAD）を自分で取得してマーカーへ埋め込む。
+
+`optinRecordVerifyPrompt` は `gh pr view --json body,headRefOid` を単一呼び出しで取得し、
+headRefOid が 40 桁 sha として取得・検証できなければ `fetchFailed: true` と同じ扱いで全件不合格
+にする。妥当なら、宣言コマンドごとに **その headRefOid に対する** pass / fail / not-run の 3 種類
+を固定文字列 `-cxF` で数える（sha が一致しない行はどの grep にも一致せず自動的に集計から除外
+される）。`classifyOptinRecordGate` はこの headRefOid 自体の検証を主要な合否入力に加えた
+（headRefOid が無効なら `fetchFailed` と同じく全件不合格）。この結果、base 取り込み・fix 前の
+記録・全く別のラウンドで書かれた記録は、現在の HEAD と sha が一致しない限り「存在しないもの」
+として扱われ、pass 以外の判定へ自動的に倒れる。
+
+**TOCTOU 対策として merge-exec へ期待 HEAD sha を渡す**（`mergeExecutePrompt` の新パラメータ
+`expectedHeadSha`）。`optinRecordVerifyPrompt` が確認した headRefOid とマージ実行時点の実際の
+HEAD がずれる（ゲート確認後に別の push が入る）競合を防ぐため、merge-exec は手順 2 で自己取得
+した headRefOid がこの期待値と一致することを追加で確認し、不一致なら既存の `reason: head-moved`
+（このラウンドは再試行され、次ラウンドの monitor が実状態を観測し直す）で辞退する。
+`--match-head-commit` には従来どおり merge-exec 自身の自己取得値のみを使い、`expectedHeadSha`
+は一致条件を**追加**するだけでマージ許可を広げる入力にはならない — 「monitor 出力をマージ経路
+の入力に使わない」という既存の分離原則（PR #222 codex P0）と矛盾しない。宣言テストが無い
+イシューでは `expectedHeadSha` は空文字のまま渡され、`mergeExecutePrompt` の出力（`optin` 文字列
+・`--json body` を含まないコンテキスト分離契約を含む）は完全に不変（R3。回帰テストの群 E で
+`expectedHeadSha` 指定時もこの分離契約が退行しないことを確認している）。
+
+**base 取り込み経路（`baseMergePrompt`）は引き続きテストを再実行しない設計を維持する**。HEAD が
+進むため記録は sha 不一致で自動的に無効になり、次のゲート確認は不合格になる。ホストはこれを
+既存の `blocked` 終端（`blockedReason: quality`）として扱う（fix ループへ自動で回す専用の
+再ディスパッチは実装していない — 既存の停止性・fixCount 予算を変更する追加の状態遷移になり
+リスクが見合わないため。次回実行時に monitoring 再開でゲートを再評価すれば、人間または別ラウンド
+の fix が現在の HEAD で記録を更新した時点で自然に解消する）。
+
+**この「自動で回す専用の再ディスパッチは実装していない」は、PR 本文の記録が単に古い（HEAD が
+進んだだけで `lastFixOptin` の override が働いていない）ケースに限る。** 下記「opt-in 記録
+latch の自動解除」で説明する `lastFixOptin` 由来の override（latch）が原因で gate 不合格に
+なっているケースは、この節の対象外であり、**同一周回で fix 経路へ自動再ディスパッチする**
+（PR #503 4 巡目 codex P1・停止性バグ対応）。両者の違いは `isOptinLatchActive` が判定する:
+override が実際に働いた（latch）場合のみ再ディスパッチし、override が働かず gate 自身が
+（PR 本文のみを理由に）不合格な場合は従来どおり blocked のまま次回実行を待つ。
+
+### post-push fix の実測の永続化（`optinFixState`。PR #503 2 巡目 codex P0 → 3 巡目で headSha を追加）
+
+Merge ループの post-push fix（`pushAfterFix: true`）が opt-in テストを再実行した結果は、
+`lastFixOptin`（プロセスローカルの `let`。`{ runs, headSha }`）として保持し
+`combineOptinRecordGate` で PR 本文ベースの判定と AND する（前掲 Issue #495 Medium 2）。
+3 巡目でマーカー自体に sha を束縛したため、この AND はもはや主たる防御ではなく多層防御であり、
+`fixOptin.headSha` が `optinRecordVerifyPrompt` の検証済み headRefOid と一致する場合のみ働く
+（不一致＝HEAD がさらに進んだ場合は override せず、PR 本文側の sha 束縛判定にそのまま委ねる —
+古い実測で新しい HEAD の PR を永久に止めない可用性上の配慮。安全性は失わない: gate 自身の
+sha 束縛判定はそのまま効くため）。**ただしこれは「headSha を確定できた上で HEAD が進んだ」場合
+限定の可用性配慮であり、「そもそも headSha を確定できなかった」場合は別扱いにする**（セキュリティ
+監査 Medium 指摘。詳細は次段落の `unbound` を参照）。
+
+しかしプロセスローカル変数は monitoring/blocked からの再開（別プロセス起動）で失われて `null`
+に戻るため、post-push fix が非 pass を報告した直後に再開すると、PR 本文更新
+（`optinRecordUpdateInstructions`）が失敗・省略されているケースで古い pass マーカーだけで
+マージ前ゲートを通過し得た（`combineOptinRecordGate(gate, null, gateHeadSha)` は「fix 未実施」
+として `gate` をそのまま返す fail-open 側の既定値だったため）。post-push fix が `pushed: true`
+を報告したラウンドごとに `updateState` で状態ファイルへ
+`optinFixState: { attempted: true, runs: [...], headSha }` を永続化し（`fixCount` /
+`baseMergeCount` と同じ非終端 updateState 呼び出し 1 箇所に相乗り）、monitoring 再開時は
+`restoreOptinFixState` がこれを読んで `runMergeLoop` の `initialFixOptin` として引き継ぐ。
+`attempted: true` なのに `runs` を復元できない（状態ファイル破損・キー欠落）、または `headSha`
+自体が `sanitizeSha` を通らない（未報告・形式不正・旧形式の永続化）場合は宣言コマンド全件を
+`not-run` とみなす合成配列を返し、`unbound: true` を立てる（セキュリティ監査 Medium 指摘）。
+`unbound: true` は `combineOptinRecordGate` の headSha 一致判定そのものをスキップさせ、現在の
+HEAD が何であれ無条件で override して不合格にする（fail-closed）。これは前段落の「headSha が
+確定していて HEAD が進んだために不一致」ケース（override せず PR 本文側へ委ねる）とは別の扱い
+であり、「そもそも headSha を確定できなかった」場合まで同じ「一致し得ないので無介入」にすると
+古い pass 実測がマージ前ゲートで見逃され得る fail-open になる。ライブ実行側（post-push fix が
+`optinHeadSha` を報告しなかった・不正値だった場合）も同じ `unbound: true` 経路を通り、
+`optinFixState` として永続化される値も `unbound` を含むため、復元後も不合格が維持される。
+宣言が無い・`attempted` が無い（post-push fix を一度も実行していない再開）場合は `null` を返して
+従来どおり PR 本文のみで判定する（既定無効の意味を壊さないため）。
+
+**永続化の書込み自体の失敗にも対処する（PR #503 3 巡目 codex P1 / Bugbot Medium）**: 上記の
+`updateState` 呼び出しは戻り値（成否）を確認し、`optinFixStatePatch` が設定されているラウンド
+（宣言テストがあり今回 push した）に限り、失敗時は `cleanupWorktree` を付けずに 1 回再試行する。
+それでも失敗すれば `failMergeTerminal` で `blocked` 終端する（この実測を次回復元できないと、
+PR 本文更新の失敗・省略時に古い記録だけでマージ前ゲートを通過し得るため）。`failMergeTerminal`
+自身の終端 `updateState` にも `lastFixOptin` から合成した `optinFixState` を含めるよう変更した
+（従来この終端書込みは `fixCount` / `baseMergeCount` のみを永続化しており、fix 実行後だが
+monitor 起動前に別経路で終端したラウンドの実測が失われ得た）。復旧手順は
+`references/recovery.md`「opt-in テスト記録不足による blocked からの復旧」節を参照
+（マーカー sha 束縛後は、PR 本文の更新は「現在の HEAD sha で」書き直す必要がある。
+`optinFixState` の実測が残っている場合は、宣言テストが実際に pass する新しいコミットを push
+して置き換えるか、人間が内容を確認して GitHub 上で手動マージする — 状態ファイルの
+`optinFixState` を削除・改変して迂回する手順は存在しない。次節「opt-in 記録 latch は
+fail-closed で停止する」参照）。
+
+### opt-in 記録 latch は fail-closed で停止する（PR #503 4 巡目 codex P1 → 5 巡目 codex P0）
+
+`combineOptinRecordGate` の override（`lastFixOptin` の非 pass・`unbound` による強制不合格）が
+実際に働いている状態を **latch** と呼ぶ。latch は「PR 本文を人間が編集する」「テストを実行して
+同じ args で再実行し、次回 monitoring の再監視を待つ」だけでは解除できない — `lastFixOptin`
+（プロセスローカル）も永続化された `optinFixState` も、現在の HEAD が変わらない限り毎ラウンド
+同じ override 判定を再生産し、`combineOptinRecordGate` 自身は false→true の書き換えを一切
+行わないため gate 自身の再判定でも解除できない（PR #503 4 巡目 codex P1 の停止性指摘）。
+
+**判定は `isOptinLatchActive` が行うが、マージ許可には一切影響させない。** `optinGateHeadSha`
+（このラウンドで `optinRecordVerifyPrompt` が観測した現在の headRefOid）が `sanitizeSha` を
+通らない場合は常に `false` を返す。確定していれば、`lastFixOptin.unbound === true`、または
+`lastFixOptin.headSha` が `optinGateHeadSha` と一致し、かつ `runs` に非 pass が 1 件でもあれば
+latch と判定する。この判定結果は**終端メッセージの出し分けにのみ**使い、latch と判定された
+場合はマーカー編集・再監視を案内する汎用メッセージではなく、latch 固有の説明（下記）を出す。
+それ以外（マージ経路への影響）は一切無い — 常に `blockedReason: quality` の `blocked` で
+終端する。
+
+**latch を自己申告で自動解除する設計は撤去した（PR #503 4 巡目で一度導入 → 5 巡目 codex P0
+指摘で撤去）。** 4 巡目では、latch 検出時に `fixCount` 予算内で同一周回 fix へ再ディスパッチし、
+`pushed: false`（コード変更なし）で終わった場合でも fix 自身の自己申告 `optinTestRuns`/
+`optinHeadSha` を、ホストが別コンテキストで独立観測した head との一致だけを根拠に latch から
+解除する仕組みを入れた。しかし 5 巡目 codex P0 指摘のとおり、**SHA が一致することは「そのテストを
+実際に実行した」ことの証明にはならない**（期待 SHA 自体が fix プロンプトへ提示されるため、
+バグ・悪意いずれの経路でも一致する結果だけを整えて latch を解除し得た）。ホストは fix エージェント
+のテスト実行そのものを直接観測できない以上、no-push 経路からの自動解除は fail-open の余地を
+残す設計であり、オーナー方針としてこの経路自体を撤去した。
+
+**latch は「設計上意図した fail-closed」であり、これが停止性指摘（4 巡目）と自動解除の
+安全性指摘（5 巡目）の両方への回答になる**: ホストが直接観測できないテスト実行結果に依存する
+判定を、観測できないまま自動で緩める経路を作らないことが安全側であり、latch による停止は
+バグではなく意図した挙動である。停止性の懸念（「PR 本文編集や再監視だけでは解除されない」）は
+事実だが、その解決策は「ホストが観測できる形で latch を確実に解除する 2 つの経路」に限定する:
+
+1. **新しいコミットを push する**（既存経路）: Merge ループの post-push fix が宣言テストを
+   再実行して pass し、push が成立すれば、新 HEAD の sha に束縛された記録へ `optinFixState` が
+   置き換わり（`f.pushed === true` 分岐。本節冒頭のとおり不変）、latch は新 HEAD で自動的に
+   解消する。これは元から存在する経路であり、5 巡目の変更でも一切触れていない。
+2. **人間が内容を確認して GitHub 上で手動マージする。**
+
+**状態ファイルの `optinFixState` を手で削除・`attempted: false` へ書き換えて latch を迂回する
+手順は一切存在しない（5 巡目 codex P0 指摘。安全弁の迂回になるため意図的に用意しない）。**
+終端メッセージ・`references/recovery.md`・`SKILL.md` のいずれにもこの手順は書かない。
+
+**宣言コマンドの許可形式を厳格化する理由（A03）と、承認一覧（`args.optinTestCommands`）を
+唯一の実行許可根拠にした理由（PR #503 codex P0）**: 宣言はイシュー本文（非信頼データ）由来
+であり、それを実装エージェントがそのまま実行する構造になる。当初はホスト側
+`parseOptinTestDeclarations` が宣言値そのものへ形式検証（文字集合・パストラバーサル・許可
+ランナー・サブコマンド制約等）を適用していたが、`OPTIN_TEST_RUNNERS` に含まれるランナー
+自体が `make` / `npm run` / `yarn run` / `deno task` のような**任意タスクのディスパッチャー**
+であるため、形式が正しい `make deploy`・`npm run release`・`go test -exec=x ./...` のような
+値も本文だけで通ってしまい、任意タスク起動を構造的に閉じられないという指摘を受けた
+（PR #503 codex P0）。これに対処するため実行許可の根拠を「形式が正しいか」から「ラン起動時に
+人間が明示した承認一覧（`args.optinTestCommands`。最大 20 件）に正規化後の文字列が完全一致で
+含まれているか」へ移した。承認一覧の各要素は起動時に `validateOptinCommandForm`（文字集合・
+改行拒否・`.` に隣接しない `..` 拒否。`hasParentPathTraversal` は `/(^|[^.])\.\.([^.]|$)/` で
+判定する。区切り文字の明示列挙（当初 `/` のみ、次に `[/=,:@]` へ拡張）は `make -C..`・
+`pytest -I../x` のような短オプション接着形がその都度すり抜けたため（PR #503 Bugbot Medium）、
+区切り文字の列挙をやめ「`..` の前後が `.` でなければ拒否」という直接判定へ変更した。
+`go test ./...` は `..` の前後どちらかが必ず `.` になるため誤検出しない・`//` 拒否・先頭
+トークンの許可ランナー・一部ランナーの第 2 トークン制約）で検証し、1 件でも不合格なら**起動
+時エラーで停止**する（`args.externalChecks` と同じ厳格さ。誤記を黙って読み替えない）。`mvn`
+（GAV 形式ゴール指定。`:` を 2 個以上含むトークンを拒否）と `deno`（`npm:` / `jsr:` /
+`http:` / `https:` リモート指定子を拒否）は、第 2 トークン制約だけでは塞げない任意プラグイン
+実行・外部コード取得の迂回経路があるため専用の追加拒否（`hasMavenGavGoal` /
+`hasDenoRemoteSpecifier`）を持つ（Issue #495 セキュリティ監査対応。いずれも
+`validateOptinCommandForm` に集約済みで承認一覧側の検証に一律で効く）。
+
+イシュー本文側 `parseOptinTestDeclarations` は承認一覧を渡された時点で形式検証済みの値
+とだけ照合すればよいため、宣言値の正規化（水平空白の畳み込み）と承認一覧との**文字列完全
+一致**判定のみを行う（形式検証の再実施はしない）。一致しない宣言・承認一覧が未指定 / `[]`
+の状態での宣言・宣言件数上限（10 件）超過はすべて不合格として実装起動前に `blocked` で
+停止する（fail-closed。不合格値を捨てて宣言なし扱いにすると、ゲートが黙って無効化され
+既定無効の裏をかく形で R1 の fail-open になる）。
+
+**自動マージ無効ラン（`recoveryOnly`）ではこのゲート用エージェントを起動しない**（新規マージを
+しない経路にゲートを課しても意味がないため）。宣言がある場合はホストが終端 note へ確認依頼の
+ログを残すのみで、追加のエージェント呼び出しは行わない。

@@ -19,14 +19,14 @@ cat _/issue-trees/42.json
 | `planning` | 計画立案中（中断） | **Recover phase が残骸 worktree / branch の有無を確認**。残骸あり → continue（Implement で継続）/ discard（掃除して Plan から新規）に分岐。残骸なし → Plan から通常実行。PR 未作成のため重複 PR は発生しない |
 | `implementing` | 実装中（中断） | **Recover phase が残骸 worktree / branch の有無を確認**。残骸あり → continue（Implement で継続）/ discard（掃除して Plan から新規）に分岐。残骸なし → Plan から通常実行。PR 未作成のため重複 PR は発生しない |
 | `reviewing` | レビュー中（中断） | **Recover phase が残骸 worktree / branch の有無を確認**。残骸あり → continue（Implement で継続）/ discard（掃除して Plan から新規）に分岐。残骸なし → Plan から通常実行（impl 手順 0b-a で open PR を検索し、0b-b でリモートブランチを検出して回復する）。push 前 review フローのため PR 未作成 |
-| `monitoring` | 監視中（中断） | **impl をスキップし monitor ループから再開**（PR 番号・ブランチ・fixCount・baseMergeCount を引き継ぐ） |
+| `monitoring` | 監視中（中断） | **impl をスキップし monitor ループから再開**（PR 番号・ブランチ・fixCount・baseMergeCount・optinFixState を引き継ぐ。optinFixState は opt-in テスト宣言があるイシューのみ意味を持つ。PR #503 2 巡目 codex P0） |
 | `merged` | マージ済み | スキップ（完了扱い） |
 | `closed` | クローズ済み | スキップ（完了扱い） |
 | `failed` | 失敗 | Recover phase が残骸の有無を確認して再実行（continue / discard に分岐） |
-| `blocked` | 依存失敗・halted・Review/Merge 非収束（未解決レビューコメント・対象外コメント起因を含む、イシュー固有の品質ブロック。halt の連続カウントには乗せない）。監視エージェント由来の blocked はこの状態へ落ちるのが `blockedReason: quality` の場合のみで、`unrecoverable`（PR の未マージクローズ等）は `failed` になる。前提の外部完了（Issue CLOSED / PR MERGED）をラン中に検知した場合は `merged` / `closed` へ遷移し（この遷移自体は halt 後も継続する）、**halt 発生前に限り**下流を同一ラン内で再判定する。halt 後に検知した場合は遷移・状態記録は行われるが下流の同一ラン内再判定は行われず、次回ランで反映される（Issue #442。次回ランを待たずに解消するため本行の再開対象から外れる。この遷移で `merged` / `closed` へ落ちた項目の残置実装 worktree は、終了時 sweep（本節前掲の worktree スイープ）の削除候補になる — 人手マージ済みのため契約上問題ないが、未コミット変更が残る想定は禁物）。Merge ループ中のエージェント呼び出し（monitor / merge-exec / merge-verify / base-merge / fix）が StructuredOutput を返さず終了した場合（例外・null 返却いずれも）も、Merge ループ突入時点で `pr` は必ず保存済みのため `blocked`（次回実行で monitoring 再開）に分類する。`failed`（Recover → 再実装）に倒すと重複 PR を作りうるため（Issue #465。詳細は下記「StructuredOutput 未返却時の fail-safe」節） | **`pr` 保存済み（PR 作成後の Merge 非収束）なら impl をスキップし monitor ループから再開**（PR 番号・ブランチ・fixCount・baseMergeCount を引き継ぐ。人間がレビュースレッドを resolve した後の再実行で既存 PR のマージ監視を続行する）。`pr` なし（依存失敗・push 前の Review 非収束等）は Recover phase が残骸の有無を確認して再実行（continue / discard に分岐）。Review 非収束の `blocked`（push 前のため `pr: 0`）は monitoring 再開ではなく必ずこの経路（Recover → 通常 Implement）から再着手する。ルートノード（verify-close）が StructuredOutput を返さず終了した場合は `pr` / `worktree` の概念がないため `blocked`（halt 非カウント）に分類し、次回実行時に verify-close を素のまま再実行する（冪等なため重複作用はない）。エージェントが応答した上で `closed: false` と判定した場合は従来どおり `failed` |
+| `blocked` | 依存失敗・halted・Review/Merge 非収束（未解決レビューコメント・対象外コメント起因を含む、イシュー固有の品質ブロック。halt の連続カウントには乗せない）。監視エージェント由来の blocked はこの状態へ落ちるのが `blockedReason: quality` の場合のみで、`unrecoverable`（PR の未マージクローズ等）は `failed` になる。前提の外部完了（Issue CLOSED / PR MERGED）をラン中に検知した場合は `merged` / `closed` へ遷移し（この遷移自体は halt 後も継続する）、**halt 発生前に限り**下流を同一ラン内で再判定する。halt 後に検知した場合は遷移・状態記録は行われるが下流の同一ラン内再判定は行われず、次回ランで反映される（Issue #442。次回ランを待たずに解消するため本行の再開対象から外れる。この遷移で `merged` / `closed` へ落ちた項目の残置実装 worktree は、終了時 sweep（本節前掲の worktree スイープ）の削除候補になる — 人手マージ済みのため契約上問題ないが、未コミット変更が残る想定は禁物）。Merge ループ中のエージェント呼び出し（monitor / merge-exec / merge-verify / base-merge / fix）が StructuredOutput を返さず終了した場合（例外・null 返却いずれも）も、Merge ループ突入時点で `pr` は必ず保存済みのため `blocked`（次回実行で monitoring 再開）に分類する。`failed`（Recover → 再実装）に倒すと重複 PR を作りうるため（Issue #465。詳細は下記「StructuredOutput 未返却時の fail-safe」節） | **`pr` 保存済み（PR 作成後の Merge 非収束）なら impl をスキップし monitor ループから再開**（PR 番号・ブランチ・fixCount・baseMergeCount・optinFixState を引き継ぐ。人間がレビュースレッドを resolve した後の再実行で既存 PR のマージ監視を続行する）。`pr` なし（依存失敗・push 前の Review 非収束等）は Recover phase が残骸の有無を確認して再実行（continue / discard に分岐）。Review 非収束の `blocked`（push 前のため `pr: 0`）は monitoring 再開ではなく必ずこの経路（Recover → 通常 Implement）から再着手する。ルートノード（verify-close）が StructuredOutput を返さず終了した場合は `pr` / `worktree` の概念がないため `blocked`（halt 非カウント）に分類し、次回実行時に verify-close を素のまま再実行する（冪等なため重複作用はない）。エージェントが応答した上で `closed: false` と判定した場合は従来どおり `failed` |
 | `skipped` | GitHub 側で closed 済み | スキップ（変更なし） |
 
-`monitoring` 中断、および `pr` 保存済みの `blocked` からの再開では、保存された `pr`（PR 番号）・`branch`・`fixCount`（修正済み回数）・`baseMergeCount`（base 取り込み済み回数。Issue #441）を引き継いで monitor ループから再開する。`fixCount` の上限（6 回）・`baseMergeCount` の上限（`args.maxBaseMerges`。既定 3）は、いずれも引き継いだ値に基づいて判定される（独立した 2 つの予算軸）。
+`monitoring` 中断、および `pr` 保存済みの `blocked` からの再開では、保存された `pr`（PR 番号）・`branch`・`fixCount`（修正済み回数）・`baseMergeCount`（base 取り込み済み回数。Issue #441）を引き継いで monitor ループから再開する。`fixCount` の上限（6 回）・`baseMergeCount` の上限（`args.maxBaseMerges`。既定 3）は、いずれも引き継いだ値に基づいて判定される（独立した 2 つの予算軸）。opt-in テスト宣言があるイシューでは `optinFixState`（`{ attempted: boolean, runs: [...], headSha }`。post-push fix が `pushed: true` を報告したラウンドごとに更新）も引き継ぎ、`restoreOptinFixState` がマージ前ゲート（`combineOptinRecordGate`）の判定材料 `lastFixOptin`（`{ runs, headSha }`）の初期値として復元する（PR #503 2 巡目 codex P0 → 3 巡目で headSha を追加）。`attempted: true` なのに `runs` を復元できない場合は宣言コマンド全件を `not-run` とみなし fail-closed で不合格にする。`headSha` が現在の HEAD の headRefOid と一致する場合のみ `runs` の非 pass がマージ前ゲートを不合格にする（PR 本文のマーカー自体が HEAD sha に束縛されたため、これは多層防御であり主防御ではない）。
 
 `planning` / `implementing` / `reviewing` からの再開では、まず Recover phase が残骸 worktree / branch の有無を確認する。**残骸がある場合**は Recover が「途中作業を継続できるか」を判断し、continue なら既存 branch を checkout して Implement で継続、discard なら worktree と branch を掃除して Plan から新規実行する。**残骸がない場合**は通常の Plan → Implement から再実行する。いずれの経路でも push 前 review フローのため PR 未作成の状態で中断している。impl 手順 0b-a が既存 open PR のブランチを検出して続きから作業し、その PR 番号は PR Create フェーズが `--head <branch>` の再検出で引き継ぐ（重複 PR も `gh pr create` の失敗も起こさない）。「push 成功・PR 作成失敗」のケース（状態 `failed`・`branch` 保存済み）は `branch` が残骸として Recover phase を起動するため impl 手順 0b には到達しない。continue の回復 Implement は手順 2 で既存 branch を checkout した後、`git fetch origin <branch>:refs/remotes/origin/<branch>` → `git merge --ff-only refs/remotes/origin/<branch>` でローカルをリモート tip へ追従させ、push 済みの base 取り込みコミット（PR Create が detached HEAD から push しローカル ref を更新しないもの）を保持したまま回復する。ff 不能な真の diverged は続行し、次の PR 作成の (iv) が fail-closed で止める。
 
@@ -55,6 +55,49 @@ Recover→再実装ではなく monitoring 再開に入れるようになる」�
 StructuredOutput 未返却は `blocked`（halt 非カウント）に分類し、次回実行時に verify-close を
 素のまま再実行する（重複作用は起きない）。エージェントが応答した上で `closed: false` と判定した
 場合（「まだ子イシューが残っている」等の実際の判定）は従来どおり `failed`。
+
+### state 書込みエージェント自身の StructuredOutput 未返却（Issue #493）
+
+Issue #465 の fail-safe は Merge ループ内のエージェント（monitor / merge-exec / merge-verify /
+base-merge / fix）の未返却だけを対象にしており、**状態ファイル書込みを担う state 系エージェント
+自身**（`state:update` / `state:cleanup` / `state:init-all` / `state:high-water` / `state:load`。
+いずれも既定 haiku）の未返却は救えない。下流の複数ランでこのエージェントが StructuredOutput を
+一度も返さず終了する例が常態化し、実装済み・PR 作成済みの item まで catch-all の `failed`
+（halt カウント対象）に落ちていた。
+
+state 系呼び出しは共通ヘルパー `runStateAgent` を経由する。haiku が例外・`null`・schema 不適合
+（StructuredOutput 未返却相当）で終わった場合、**同一プロンプト文字列（バイト一致・patch を
+組み直さない）で 1 回だけ sonnet へフォールバックする**。haiku・sonnet とも失敗した場合のみ
+`outputMissing: true` として呼び出し元へ返す（例外は投げない）。フォールバックのリトライが
+安全な理由は、state 系操作がいずれも冪等（patch の再マージは同値になる・worktree/branch 削除は
+実在確認してから行う・高水位は縮めない・初期化は既存エントリを上書きしない）であるため。
+
+`outputMissing` は次のように終端 status へ写像する（純粋関数 `classifyStateWriteFailureStatus`
+に一元化）:
+
+- state 書込みエージェントが haiku / sonnet とも StructuredOutput を返さなかった
+  （`outputMissing: true`）かつ PR 未作成（`prNumber` が 0 以下）→ **`blocked`**（halt 非
+  カウント）。push 前の遷移（reviewing 遷移・Recover の掃除ゲート）は状態ファイルへ書けなかった
+  可能性があるが、PR がまだ存在しないため再実装しても重複 PR の危険はなく、次回実行時は状態
+  ファイルの既存値（`implementing` 等）から Recover 経由で再開する。
+- `outputMissing: true` かつ PR が既に存在する（`prNumber > 0`。PR 作成後の monitoring 遷移）
+  場合は、この `blocked` 遷移自体の状態ファイルへの永続化（`terminalSaved`）が確認できたときに
+  限り **`blocked`** とする。永続化できていなければ **`failed`**（halt カウント対象）に倒す
+  （Issue #493 の codex レビュー指摘で是正）。永続化されないまま `blocked` として扱うと、状態
+  ファイルに `pr` が残らず次回実行が monitoring を再開できず、通常 dispatch から再実装・PR 再
+  作成に進み得るため。
+- 状態書込みエージェントが応答した上でのシステム的な失敗（`ok: false`。jq 失敗・権限不足等）は
+  従来どおり **`failed`**（halt カウント対象）を維持する。フォールバックで隠さない。
+
+`runOne` の catch-all（想定外の例外）も同様の理由で見直した。PR 作成成功直後・monitoring 再開時
+に issue 番号→PR 番号を記録する `knownPrByIssue` を参照し、PR が既に存在する場合は想定外の例外を
+`blocked`（次回 monitoring 再開）に倒し、PR 未作成の想定外例外は従来どおり `failed` を維持する
+（純粋関数 `classifyUncaughtFailureStatus`）。
+
+`state:load`（Restore フェーズの状態ファイル読込・初期化）が haiku / sonnet とも未返却の場合は
+停止する（fail-closed は維持。壊れた・未永続化の状態で続行すると重複 PR・重複実装の危険がある）。
+ただし文言は「初期化に失敗した」という誤ったメッセージにはせず、未返却専用の案内（ファイル自体の
+破損ではないため、そのまま再実行すればよい旨）にする。
 
 `blockedReason` は状態ファイルへ永続化されるフィールドではない（既存の契約のまま）。
 `isActiveMonitoring()` は `status`（`'monitoring'` または `'blocked'`）と `pr > 0` と `branch`
@@ -111,6 +154,54 @@ git worktree remove <worktree-path>
 git worktree prune
 ```
 
+### 残置 worktree による容量予約の膨張と掃除（Issue #496）
+
+**症状**: 実ディスク空き容量ゲートのログで、1 worktree あたりの予約が不自然に大きく（数十 GiB 単位）、未着手 leaf が一斉に `blocked` になる。実ディスクには十分な空きがあるのに新規着手が全件止まる場合、この症状を疑う。
+
+**原因**: isolation worktree は `<main>/.claude/worktrees/<runId>-N` に、メイン worktree 配下として作られる。前ランの worktree が削除されずに残っていると、その中身（依存関係・ビルド成果物込みで 1 件あたり数〜十数 GiB）がメイン worktree の du に丸ごと含まれ、実際には無関係な二重計上になる（ネストした残置分は別途、残置バイト軸の測定でも個別に計上済みのため、実際の容量が計上から漏れることはない）。加えて、この膨張した見積りが「縮めない」方針の高水位フィールド（`.perWorktreeByteReserveHighWater`）へ永続化されると、worktree を手動で掃除しても次ラン以降に膨張値が引き継がれ続ける。
+
+**自動是正**: 修正後は 2 段構えで自動的に是正される。(1) メイン worktree の内容測定（`measureMainWorktreeContentBytes`）が、メイン worktree 配下にあるネストした linked worktree のパスを検出し、その分を差し引いてから見積りを確定する。(2) ラン開始時に、永続化済みの高水位が旧形式（`perWorktreeByteReserveHighWaterVersion` が現行版と不一致）なら無効化し、現行版でも実測との乖離が大きい（残置実測サンプルが十分にあり、かつ永続化値が直近の見積りを大きく超える）場合は 1 ランあたり最大半減までの段階的引き下げを行う。いずれも自動処理であり、手動リセットは通常不要。
+
+**手動掃除の手順（自動是正では回復しない・実行中のランが無いことを確認してから行う）**:
+
+```bash
+# 1. 対象を確認する
+git worktree list --porcelain
+
+# 2. 削除前に、未 push のコミットや未コミットの変更が無いことを確認する
+#    （worktree パスは前段の出力から。<path> を置き換える）
+git -C <path> status --porcelain
+git -C <path> log @{u}.. --oneline 2>/dev/null   # 未 push コミットの有無
+
+# 3. failed / blocked のイシューが保持する worktree でないことも確認する
+#    （状態ファイルの worktree フィールドと突き合わせる）
+cat _/issue-trees/<親イシュー番号>.json | jq '.items | to_entries[] | {issue: .key, worktree: .value.worktree}'
+
+# 4. 上記いずれの保持理由も無いと確認できたパスのみ削除する
+git worktree remove --force <path>
+git worktree prune
+
+# 5. 未登録の残骸が無いか確認する（git worktree list に載っていないものだけを対象にする）
+du -sh <main>/.claude/worktrees
+ls <main>/.claude/worktrees
+```
+
+**high-water のリセット**（自動是正が効かない・手動で強制的に 0 へ戻したい場合のみ。通常は不要）:
+
+```bash
+tmp=$(mktemp "_/issue-trees/<親イシュー番号>.json.XXXXXX")
+jq '.perWorktreeByteReserveHighWater = 0 | .perWorktreeByteReserveHighWaterVersion = 2' \
+  _/issue-trees/<親イシュー番号>.json > "$tmp" && mv "$tmp" _/issue-trees/<親イシュー番号>.json
+
+# 確認
+jq '{hw: .perWorktreeByteReserveHighWater, v: .perWorktreeByteReserveHighWaterVersion}' \
+  _/issue-trees/<親イシュー番号>.json
+```
+
+**既知の制約**: パス表記の揺れ（シンボリックリンク経由の `/var` と `/private/var` 等）でメイン worktree のパスとネストしたパスの接頭辞が一致しない場合、その linked worktree は除外されず過大見積りのまま残る（安全側にしか倒れない）。
+
+**注意点**: `git worktree remove --force` は未コミットの変更を破棄する。状態ファイルの `.items` フィールドは手動編集の対象にしない（high-water 系のフィールドのみを触る）。
+
 ### 実装エージェントによる既存 PR・リモートブランチの再利用
 
 実装エージェントは着手時に以下の順で回復手順（手順 0b）を実行する。
@@ -150,6 +241,66 @@ rm _/issue-trees/42.json
 rm _/issue-trees/42.json
 # 再実行
 ```
+
+### opt-in テスト記録不足による blocked からの復旧（Issue #495 → PR #503 3 巡目で HEAD sha 束縛）
+
+イシュー本文で opt-in テストを宣言している場合、マージ前ゲートが PR 本文の pass 記録不足を理由に
+`blocked`（`blockedReason: quality`）で停止することがある（新規マージ経路のみ。回復専用経路では
+このゲートは起動しない）。終端理由には不足しているコマンド一覧が記録される。
+
+マーカー行は **現在の HEAD sha に束縛された記録だけがカウントされる**（`<!-- optin-test-record:
+<40 桁 sha> <pass|fail|not-run> <コマンド> -->`）。base 取り込み・別の push で HEAD が変わった
+後は、それより前に書かれた記録（古い sha のもの）は自動的に「存在しないもの」として扱われる
+ため、**PR 本文を書き換えるときは必ず現在の HEAD の sha で書く**。古い sha のまま `pass` へ
+書き換えても、マージ前ゲートの grep はどの行にも一致せず不合格のまま停止する。
+
+復旧手順:
+
+1. 対象 PR のブランチを手元で checkout し、終端理由に挙げられたコマンドを実際に実行する。
+2. `git rev-parse HEAD` で現在の HEAD sha（PR の `headRefOid` と同一のはず。`gh pr view <N>
+   --json headRefOid` で突き合わせて確認するとよい）を控える。
+3. PR 本文の「## opt-in テスト実行記録」節にある該当マーカー行を、手順 2 の sha と実行結果に
+   合わせて `<!-- optin-test-record: <手順 2 の sha> pass <コマンド> -->` へ書き換える
+   （直上の人間可読行 `- opt-in テスト結果: <コマンド> => <result>` も合わせて pass へ直す。
+   `gh pr edit <N> --body-file` 等で更新する。書式は SKILL.md「opt-in テストの宣言」節参照。
+   古い sha のマーカー行は残っていても実害はない — 現在の HEAD と一致しないため無視されるだけ
+   だが、本文の可読性のため削除してもよい）。
+4. 同じ `args` で再実行する（`monitoring` 再開から継続し、マージ前ゲートが更新済みの pass 記録を
+   確認して継続する）。
+
+**PR 本文の更新だけでは不十分な場合（PR #503 2 巡目 codex P0）**: 終端理由が「post-push fix の
+実測」に基づく不合格（状態ファイルの当該イシューエントリに `optinFixState.attempted: true` があり
+`runs` に非 pass が残っている、または `unbound: true` の場合。これを **latch** と呼ぶ）は、
+`combineOptinRecordGate` が状態ファイルの永続化済み実測を PR 本文の pass マーカーより優先する。
+ただしこれは `optinFixState.headSha` が現在の HEAD の headRefOid と**一致する場合、または
+`unbound: true` の場合のみ**働く（PR #503 3 巡目 codex P1・4 巡目セキュリティ監査 Medium）。
+
+**latch は設計上意図した fail-closed であり、手順 1〜4（PR 本文の書き換え）や再実行だけでは
+解除されない（PR #503 4 巡目 codex P1 の停止性指摘 → 5 巡目 codex P0 の対応で確定した方針）。**
+ホストは fix エージェントの自己申告テスト実行を直接観測できないため、latch を自己申告のみで
+自動解除する経路は用意していない（4 巡目で一度導入したが、SHA 一致は実行の証明にならないという
+5 巡目 codex P0 指摘を受けて撤去した。詳細は `automerge-design.md`「opt-in 記録 latch は
+fail-closed で停止する」節を参照）。latch が原因で `blocked` のまま止まっている場合の解消方法は
+次の 2 つに限られる:
+
+1. **宣言テストが実際に pass する新しいコミットを push する。** Merge ループの post-push fix が
+   宣言済み opt-in テストを再実行して pass し、push が成立すれば、新 HEAD の sha に束縛された
+   pass 記録へ `optinFixState` が自動的に置き換わり、latch は新 HEAD で解消する（既存経路。
+   人間の介入は「テストを実際に pass させて push する」ことのみで、状態ファイルの編集は不要）。
+2. **人間が内容を確認したうえで GitHub 上で手動マージする。**
+
+**状態ファイルの `optinFixState` を削除する・`attempted: false` へ書き換える等で latch を
+迂回する手順は存在しない（意図的に用意していない。安全弁の迂回になるため）。** `headSha` が
+現在の HEAD と一致しない（base 取り込み等で HEAD がさらに進んだ・latch ではない通常の陳腐化）
+場合はこの実測は無視されるため、latch には該当せず手順 1〜4 のみで解消する。
+
+宣言そのものが `args.optinTestCommands`（承認一覧）に無いか許可形式外（PR #503 codex P0。
+先頭トークンが許可ランナー外・シェルメタ文字を含む等）で `blocked` になった場合は、実装は
+一切起動していない。イシュー本文の `<!-- optin-tests: ... -->` マーカーを `args.optinTestCommands`
+のいずれかと正規化後に文字列完全一致する値へ修正するか、`args.optinTestCommands` へ当該
+コマンドを追加してから同じ `args` で再実行する（SKILL.md「opt-in テストの宣言」節参照）。
+`args.optinTestCommands` の要素自体が許可形式外の場合はラン起動時にエラーで停止するため
+（実装は起動しない）、`args.optinTestCommands` の当該要素を修正してから再実行する。
 
 ### 状態ファイルについて
 

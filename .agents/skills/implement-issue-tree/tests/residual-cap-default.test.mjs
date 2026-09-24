@@ -189,7 +189,10 @@ test('バイト軸はラン開始時の残置 0 件でもメイン worktree 測�
   // になっていた）。
   assert.doesNotMatch(source, /if \(maxResidualWorktreeBytes > 0 && residual\.paths\.length > 0\)/)
   assert.match(source, /if \(maxResidualWorktreeBytes > 0\) {/)
-  assert.match(source, /mainWorktreePath \? await measureMainWorktreeContentBytes\(mainWorktreePath\)/)
+  assert.match(
+    source,
+    /mainWorktreePath\s*\?\s*await measureMainWorktreeContentBytes\(mainWorktreePath, runStartOrphanEntries\)/,
+  )
   // Issue #471: 永続化済み高水位（persistedHighWaterBytes）が Math.max の第3引数に加わった
   // （前回以前のランの実測結果を開始時見積りの下限として使う）。
   assert.match(source, /rawPerWorktreeByteReserve = Math\.max\(mainKib \* 1024, avgResidualBytes, persistedHighWaterBytes\)/)
@@ -205,10 +208,11 @@ test('バイト軸はラン開始時の残置 0 件でもメイン worktree 測�
   )
 })
 
-test('measureMainWorktreeContentBytes はメイン worktree 全体から .git を差し引いた working tree 相当を返す構造になっている（.git object store の過大予約防止）', () => {
-  assert.match(source, /async function measureMainWorktreeContentBytes\(mainPath\)/)
+test('measureMainWorktreeContentBytes はメイン worktree 全体から .git・ネストした linked worktree を差し引いた working tree 相当を返す構造になっている（.git object store の過大予約防止・Issue #496 のネスト二重計上防止）', () => {
+  assert.match(source, /async function measureMainWorktreeContentBytes\(mainPath, entries\)/)
   assert.match(source, /const gitPath = sanitizeWorktreePath\(`\$\{mainPath\}\/\.git`\)/)
-  assert.match(source, /return Math\.max\(0, totalKib - gitKib\)/)
+  assert.match(source, /const nestedPaths = selectNestedLinkedWorktreePaths\(mainPath, entries\)/)
+  assert.match(source, /return computeMainContentKib\(\{ totalKib, gitKib, nestedKib \}\)/)
 })
 
 test('measureResidualWorktreeBytesDetailed はプロンプトへ渡す前に sanitizeWorktreePath で全パスを検証し、UNTRUSTED_POLICY を含める（codex-review P0 対応）', () => {
@@ -217,7 +221,9 @@ test('measureResidualWorktreeBytesDetailed はプロンプトへ渡す前に san
   // measureResidualWorktreeBytes のプロンプト配列に UNTRUSTED_POLICY が直接含まれることを確認する
   // （du -sk の呼び出し指示より前の行に存在する = このプロンプトの一部であることの軽量確認）。
   const fnStart = source.indexOf('async function measureResidualWorktreeBytesDetailed(paths)')
-  const fnBody = source.slice(fnStart, fnStart + 3000)
+  // Issue #497 で TEMP_FILE_POLICY・case ガード・COUNT 照合の説明文を追加した分、関数本体が
+  // 3000 文字を超えたため window を拡張した（本文自体は変わらず後方に含まれる）。
+  const fnBody = source.slice(fnStart, fnStart + 7500)
   assert.match(fnBody, /UNTRUSTED_POLICY,/)
   assert.match(fnBody, /jq -r '\.\[\]'/)
 })
@@ -532,7 +538,7 @@ test('measureResidualWorktreeBytesDetailed は存在しないパスを ENOENT �
   // ERR>0 の扱いはエージェントの自己申告（旧文言「ERR が 0 より大きい場合は…失敗として報告」）
   // ではなく、観測値をそのまま返させてホスト側の err === 0 検証で fail-closed にする
   // （PR #390 codex-review P1: schema が kib しか必須にしないと部分合計が成功として通る）
-  assert.match(fnBody, /ERR を err として、観測値のまま返す/)
+  assert.match(fnBody, /ERR を err、COUNT を count として、/)
   assert.match(fnBody, /Number\.isInteger\(v\?\.err\) && v\.err === 0/)
 })
 
@@ -553,10 +559,12 @@ test('measureResidualWorktreeBytesDetailed は du の終了コードと jq の�
   assert.match(fnBody, /TOTAL=0 MISSING=0 ERR=1/)
 })
 
-test('ORPHAN_BYTES_SCHEMA は err と missing を必須フィールドとして要求する', () => {
+test('ORPHAN_BYTES_SCHEMA は err・missing・count を必須フィールドとして要求する', () => {
   // missing は平均算出（computeAveragePerWorktreeBytes）の分母補正に使うため必須
   // （欠落を 0 とみなすと分母に存在しないパスが残り予約が過小になる。Bugbot Medium 指摘）。
-  assert.match(source, /required: \['kib', 'err', 'missing'\]/)
+  // count は Issue #497 で追加した件数照合フィールド（一時ファイルの取り違え・空展開による
+  // 0 件正常終了への fail-open を塞ぐ）。
+  assert.match(source, /required: \['kib', 'err', 'missing', 'count'\]/)
 })
 
 test('バイト軸は新規着手直前に台帳増分によらず実測し直す（PR #390 P1 第 4 ラウンド）', () => {
