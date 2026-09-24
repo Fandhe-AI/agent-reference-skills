@@ -27,7 +27,9 @@
       "worktree": "/path/to/repo/.git/worktrees/impl-44",
       "fixCount": 0,
       "baseMergeCount": 1,
-      "note": "並列ランで兄弟イシューの PR が先にマージされ base とコンフリクト、base 取り込みエージェントが 1 回解消して監視を継続中"
+      "note": "並列ランで兄弟イシューの PR が先にマージされ base とコンフリクト、base 取り込みエージェントが 1 回解消して監視を継続中",
+      "_comment_optinFixState": "opt-in テストの宣言があるイシューでのみ意味を持つ（Issue #495 / PR #503 2〜5 巡目 codex P0/P1、セキュリティ監査 Medium）。post-push fix（pushAfterFix: true）が pushed: true を報告したラウンドごとに更新され、次回ラン（monitoring 再開）で restoreOptinFixState が復元して runMergeLoop の lastFixOptin（{ runs, headSha, unbound }）の初期値にする。attempted: true は「post-push fix を少なくとも 1 回実行した」印。headSha は runs を計測した HEAD の sha（git rev-parse HEAD。40 桁小文字 16 進）で、これがマージ前ゲート検証時点の現在の headRefOid と一致する場合のみ、runs の非 pass がマージ前ゲートを不合格にする（fail-closed。headSha が確定していて一致しない＝HEAD がさらに進んだ場合は override せず PR 本文側の sha 束縛判定に委ねる）。headSha 自体が sanitizeSha を通らない（未報告・形式不正）、または runs が欠落・非配列の場合は宣言コマンド全件を not-run とみなし unbound: true を立てる。unbound: true は headSha 一致判定をスキップして現在の HEAD が何であれ無条件で不合格にする（「一致し得ないので無介入」にすると古い pass 実測を見逃す fail-open になるため区別する）。書込みは成否確認・1 回再試行・失敗時 fail-closed 終端の対象（PR #503 3 巡目 codex P1 / Bugbot Medium）。この override が実際に働いている状態を latch と呼ぶ。latch は設計上意図した fail-closed であり（PR #503 5 巡目 codex P0。ホストは fix の自己申告テスト実行を直接観測できないため自動解除しない）、blocked のまま停止して人間の判断を待つ。解消は (a) 宣言テストが実際に pass する新しいコミットを push する、または (b) 人間が内容を確認して GitHub 上で手動マージする、のいずれかのみで、状態ファイルの optinFixState を削除・改変して迂回する手順は存在しない。詳細は references/automerge-design.md「opt-in 記録 latch は fail-closed で停止する」節参照",
+      "optinFixState": { "attempted": true, "runs": [{ "command": "make e2e-three-client", "result": "pass", "detail": "" }], "headSha": "1234567890abcdef1234567890abcdef12345678", "unbound": false }
     },
     "45": {
       "type": "implement",

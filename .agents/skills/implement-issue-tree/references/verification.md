@@ -200,6 +200,42 @@ grep -n "measureResidualWorktreeBytes\|residualGateActive" scripts/implement-iss
 
 ラン中の再測定が失敗した場合（物理一覧フォールバックも成立しない場合を含む `du` 等の失敗）も、projection のみへのフォールバックは floor を超える成長を検知できない fail-open になるため `newStartSuppressed` を設定して新規着手を停止すること（`measureResidualWorktreeBytes` 自体の fail-closed 契約と揃える）。
 
+### メイン worktree への一時ファイル残置防止・未追跡ファイル検査の適用確認（Issue #497）
+
+メイン worktree（リポジトリルート）直下へ空ファイル `.lines` が残置された事故（vector-db #861 ツリー）の
+再発防止策を変更した場合、以下で予防（AC1）・検出（AC2）の両方を確認する:
+
+```bash
+# 1. 一時ファイル配置規則が主要な共通指示・容量測定プロンプトへ挿入されていること
+grep -n "TEMP_FILE_POLICY" scripts/implement-issue-tree.js
+# 2. 残置バイト測定・空きディスク測定のスクリプトが tmpFile リテラルを1回だけ代入し、
+#    以降は "$tf" として二重引用符で参照していること（写し間違いによる相対パス化の防止）
+grep -n 'tf=\${tmpFile}' scripts/implement-issue-tree.src.js
+# 3. 引用なしの変数展開によるリダイレクト（相対パス化の温床）が残っていないこと
+grep -nE '> *\.lines|> *\$[a-zA-Z_]+\.lines[^"'"'"']' scripts/implement-issue-tree.src.js
+# 4. 件数照合（COUNT）による fail-closed 強化（ORPHAN_BYTES_SCHEMA の count 必須化）
+grep -n "COUNT=\$count\|required: \['kib', 'err', 'missing', 'count'\]" scripts/implement-issue-tree.js
+# 5. メイン worktree 未追跡ファイル検査（AC2）が駆動部に配線されていること
+grep -n "worktree:untracked-scan\|mainWorktreeUntracked" scripts/implement-issue-tree.js
+# 6. 新設コードが削除呼び出しを追加していないこと（検出は警告のみ）
+grep -nE "rm -rf|git clean|git worktree remove" scripts/implement-issue-tree.js
+```
+
+期待結果: 手順 1 で `TEMP_FILE_POLICY` が `COMMON` / `MERGE_CONTEXT_COMMON` に加え、残置バイト測定・空き
+ディスク測定・メイン worktree 未追跡ファイル検査の各プロンプトへ個別に挿入されていること。手順 2・3 で、
+一時ファイルの絶対パスリテラルはシェル変数 `tf` への単一代入としてのみ現れ、以降の参照はすべて `"$tf"`
+（引用付き）であること（旧実装はこのリテラルを 5 箇所前後に書き下ろしており、写し間違いが相対パス
+`.lines` の残置につながった）。手順 4 で `ORPHAN_BYTES_SCHEMA` が `count`（処理した行数）を必須化し、
+ホスト側が対象パス数との一致を検証すること（一時ファイルの取り違え・空展開で jq が誤って別集合や
+0 件を読み込んでも、それが「正常な 0 件測定」と区別できず容量ゲートが fail-open するのを塞ぐ）。
+手順 5 で、ラン開始直後（Restore フェーズ・`ensureBoundaryNonceSeed` 前）とラン終了直前（`return` 前）の
+2 回、メイン worktree の `git status --porcelain=v1 --untracked-files=all` を独立に観測し、差分
+（本ラン中に新規出現したパス。ホストの状態ファイル自身は除外するが、その `mktemp` 残骸は書き戻し失敗の
+痕跡として除外しないこと）を最終レポートの `mainWorktreeUntracked` フィールドとログ警告で報告すること。
+手順 6 で、この検出経路が**削除を一切行わない**（自動削除は既存の削除経路〔`sweepClosedWorktrees` 等〕
+のみが担い、本機能は追加しない）ことを確認する。単体テストは
+`tests/temp-file-placement.test.mjs` を参照。
+
 ### merge-guard hook（deny 専用）・クライアント側自動マージ opt-in 経路の適用確認（PR #182 codex P0 / PR #206 撤回 / opt-in 再有効化）
 
 `scripts/merge-guard-hook.sh` または自動マージ経路を変更した場合、以下で「hook が deny 専用（allow 経路・carve-out なし）であること」と「クライアント側の実マージ経路は opt-in（`autoMerge: true` + `externalChecks` 確定 + 全 App の信頼済み context 宣言）のときのみ G0 ゲート（サーバー側強制の実測）付きで開き、opt-out・`externalChecks` 未確定・context 未宣言（slug のみの旧形式）では回復専用（recoveryOnly）に固定されること。arm 経路（auto-merge の予約）は引き続き存在しないこと」を確認する:
@@ -306,3 +342,75 @@ node --test skills/implement-issue-tree/tests/dep-reeval.test.mjs
 
 期待結果: 手順 1 の出力が `1`（dispatch ループ内での即時確定が復活すると 2 以上、または cascade 側が壊れると 0 になる）。手順 2 がヒットする。手順 3 が 500,000 B 未満。手順 4 の `node --test` が全 pass・fail 0（受入条件 3「前提 merged への遷移 → 下流の再判定」を含む）。
 
+
+## opt-in テスト記録ゲートの適用確認（Issue #495）
+
+`scripts/implement-issue-tree.src.js` の opt-in テスト記録ゲート（`validateOptinCommandForm` /
+`parseOptinTestCommands`（`args.optinTestCommands` の起動時検証。PR #503 codex P0） /
+`parseOptinTestDeclarations` / `sanitizeOptinTestRuns` / `restoreOptinFixState`（`optinFixState`
+の状態ファイル復元。`{ runs, headSha }` を返す。PR #503 2 巡目 codex P0 → 3 巡目で headSha を
+追加） / `optinRecordMarkerLine`（sha・result・command の順で束縛。PR #503 3 巡目 codex P1） /
+`renderOptinRecordSection`（`<sha>`/`<result>` プレースホルダのテンプレート） /
+`classifyOptinRecordGate`（headRefOid の検証を含む） / `combineOptinRecordGate`（`fixOptin`・
+`gateHeadSha` の sha 一致判定を含む） / `optinRecordVerifyPrompt`（`--json body,headRefOid` の
+単一取得） / `mergeExecutePrompt` の `expectedHeadSha` パラメータ）を変更した場合の確認手順。
+
+```bash
+# 1. merge-exec のコンテキスト分離契約（Issue #145 / #160）が退行していないこと。
+#    mergeExecutePrompt の関数本体（定義開始行から次のトップレベル function 定義の直前まで）に
+#    本文取得コマンドを含まない（0 件であること）。ファイル全体への grep -c は、契約上は
+#    optin 関連文字列を含んでよい他の関数（fixPrompt 等）にヒットしても検知できず、関数本体の
+#    退行を見逃すため使わない（PR #503 2 巡目 Bugbot Medium）。
+awk '/^function mergeExecutePrompt\(/{f=1;print;next} f&&/^function /{exit} f' \
+  skills/implement-issue-tree/scripts/implement-issue-tree.src.js | grep -c 'optin'
+awk '/^function mergeExecutePrompt\(/{f=1;print;next} f&&/^function /{exit} f' \
+  skills/implement-issue-tree/scripts/implement-issue-tree.src.js | grep -c -- '--json body'
+
+# 2. マージ前ゲートが新規マージ経路（!recoveryOnly）にのみ配線されていること。
+grep -n 'optinRecordVerifyPrompt(' skills/implement-issue-tree/scripts/implement-issue-tree.src.js
+
+# 3. ビルド鮮度・サイズ
+node skills/implement-issue-tree/scripts/build-workflow.mjs
+node skills/implement-issue-tree/scripts/build-workflow.mjs --check
+wc -c skills/implement-issue-tree/scripts/implement-issue-tree.js
+
+# 4. 回帰テスト
+node --test skills/implement-issue-tree/tests/optin-tests-gate.test.mjs
+```
+
+期待結果（手順 1 は本ファイル更新時点で実測済み。関数本体 144 行（PR #503 3 巡目で expectedHeadSha
+の一致チェックを追加し 135→144 行に増加）を抽出し、`optin`・`--json body` いずれも 0 件）: 手順 1
+のいずれのコマンドも出力 `0`（`mergeExecutePrompt` の関数本体に `optin`
+文字列・`--json body` が含まれないこと。コンテキスト分離の非退行）。手順 2 の
+`optinRecordVerifyPrompt(` 呼び出しがドライバ部に 1 箇所のみ。手順 3 のビルドが `--check` 通過・
+500,000 B 未満。手順 4 が全 pass・fail 0（宣言なしイシューでのプロンプト出力完全一致テストを
+含む＝既定無効の確認）。
+
+### state 書込みエージェントの StructuredOutput 未返却 fail-safe（Issue #493）
+
+`runStateAgent` / `updateStateDetailed` / `updateState` / `initAllPending` /
+`persistPerWorktreeByteReserveHighWater` / `loadState`、または `classifyStateWriteFailureStatus` /
+`classifyUncaughtFailureStatus` を変更した場合、state 系 5 ラベル（`state:update` /
+`state:cleanup` / `state:init-all` / `state:high-water` / `state:load`）が `runStateAgent` 経由の
+ままであること・呼び出し元の終端分類が新設純粋関数に一元化されたままであることを確認する。
+
+```bash
+# 1. state 系 5 ラベルはすべて runStateAgent(...) の呼び出しであり、agent(...) の直接呼び出しの
+#    options に現れていないこと（決定的な機械検証は本節 4 の state-write-fallback.test.mjs
+#    「STATE_AGENT_MODEL_CHAIN 以外に state:* 直書きが無い」テストが担う。以下は目視補助）
+grep -n "label:\s*'state:\(update\|cleanup\|init-all\|high-water\|load\)" skills/implement-issue-tree/scripts/implement-issue-tree.js
+grep -n "label: \`state:\(update\|cleanup\):#" skills/implement-issue-tree/scripts/implement-issue-tree.js
+
+# 2. runOne の catch-all・reviewing/monitoring 遷移・Recover の掃除ゲートが新設分類関数を参照
+grep -n "classifyStateWriteFailureStatus\|classifyUncaughtFailureStatus\|knownPrByIssue" skills/implement-issue-tree/scripts/implement-issue-tree.js
+
+# 3. サイズ確認（Workflow 起動可否の実測は Issue #277 節を参照）
+wc -c skills/implement-issue-tree/scripts/implement-issue-tree.js
+
+# 4. 決定的回帰テスト（層1: スタブ agent の振る舞い / 層2: 純粋関数の入出力表 / 層3: 配線の source-scan）
+node --test skills/implement-issue-tree/tests/state-write-fallback.test.mjs
+# 非退行確認（Issue #465 の Merge ループ fail-safe 契約に影響していないこと）
+node --test skills/implement-issue-tree/tests/pr-saved-failsafe.test.mjs
+```
+
+期待結果: 手順 1 の各コマンドが該当箇所にヒットする（`runStateAgent(...)` の呼び出しに渡す label であることは手順 4 の source-scan テストが機械検証する）。手順 2 が `runOne` の catch ブロック・`continueReviewingAttempt` / `reviewingAttempt` / `monitoringAttempt` / `continueCleanupAttempt` / `discardCleanupAttempt` の各箇所にヒットする。手順 3 が 500,000 B 未満。手順 4 の 2 つの `node --test` がいずれも全 pass・fail 0。

@@ -15,6 +15,8 @@ argument-hint: "<要件テキストまたはファイルパス> [--phase <phase�
 要件・タスク一覧から Phase 分割された GitHub Issue ツリーを新規作成する。
 ルート（トラッキング issue）→ Phase 親 issue → issue → sub-issue の 4 階層を構築し、implement-issue-tree が post-order DFS で消化できる構造を維持する。
 
+ルート issue 本文の運用ルール「実行順は sub-issues リスト順が正」は既定では post-order の**優先度**に留まり、並列実行時に後続 Phase が前 Phase を追い越す余地がある。Phase 完了を厳密に順序保証したい場合は implement-issue-tree 実行時に `phaseGate: true` を指定する（Issue #494。implement-issue-tree の SKILL.md 参照）。
+
 ## 使い方
 
 引数としてタスク要件テキストまたはファイルパスを渡す。  
