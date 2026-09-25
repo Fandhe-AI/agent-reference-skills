@@ -2506,6 +2506,10 @@ const HIGH_WATER_DECAY_RATIO = 4
 // ため、前ランの残骸が残っているとメイン worktree の du に丸ごと含まれ、実際には無関係な二重
 // 計上になる。1 件でも検証不能なパスが混在する場合は null を返し観測失敗として扱う
 // （hasUnverifiedResidualPath と同じ fail-closed 方針）。戻り値はメイン自身を含まない。
+// 戻り値は他の採用パスに包含されない最上位のパスのみに限る。呼び出し側
+// （measureMainWorktreeContentBytes）は各パスの du を合算してメインの総量から差し引くため、
+// `/repo/wt` と `/repo/wt/inner` を両方返すと inner を二重に控除し、メイン見積りが過小
+// （空き容量ゲートの予約が不足する危険側）になる。
 function selectNestedLinkedWorktreePaths(mainPath, entries) {
   if (typeof mainPath !== 'string' || mainPath === '') return null
   const list = Array.isArray(entries) ? entries : []
@@ -2518,7 +2522,9 @@ function selectNestedLinkedWorktreePaths(mainPath, entries) {
     if (!p) return null
     if (p !== mainPath && p.startsWith(`${mainPath}/`)) nested.add(p)
   }
-  return [...nested]
+  const paths = [...nested]
+  // 区切りの `/` まで含めて比較し、`/repo/wt` と `/repo/wt2` を包含関係と誤判定しない。
+  return paths.filter((p) => !paths.some((other) => other !== p && p.startsWith(`${other}/`)))
 }
 
 // メイン worktree の「内容」バイト数（KiB）を、全体・.git・ネストした linked worktree の 3 測定
@@ -3432,7 +3438,11 @@ function lowFindingsCommentPrompt(item, prNumber, findings) {
 // 返す（空なら [] — 呼び出し側は '' 相当として扱い、implementPrompt/recoverImplementPrompt の
 // 出力を宣言なしイシューでは完全に不変に保つ。R3）。宣言コマンドはホストで形式検証済みだが
 // イシュー本文由来のため、実行前確認・単一コマンド限定・pass 偽装禁止を明示する。
-function optinTestExecutionLines(item, stepNo) {
+// noFix: true は pr-create（Review 通過後・push 直前）専用。この後にコミット手順が無いため、
+// 失敗を作業ツリー上で直すと修正を含まない HEAD に pass 記録が付く。そこで修正を禁じて
+// fail をそのまま記録させる（修正は既存の fix 経路に委ね、ゲートは fail 記録で不合格になる）。
+// 既定 false の出力は従来とバイト単位で同一に保つ。
+function optinTestExecutionLines(item, stepNo, noFix = false) {
   const commands = Array.isArray(item.optinTests) ? item.optinTests : []
   if (commands.length === 0) return []
   return [
@@ -3440,7 +3450,10 @@ function optinTestExecutionLines(item, stepNo) {
     ...commands.map((c) => `   - ${JSON.stringify(c)}`),
     '   各コマンドについて、実行前にそのコマンドが対象リポジトリで定義されたテスト入口であることを確認する（Makefile のターゲット・package.json の scripts・cargo のテスト名等）。確認できない場合は実行せず result: "not-run" とし、確認できなかった理由を detail に書く。',
     '   実行は worktree ルートで、そのコマンド文字列 1 つを Bash へそのまま渡す形に限る（sh -c・eval での再解釈、他コマンドとの連結・書き換えは禁止）。長時間になり得るため Bash の timeout に 600000 を指定する。',
-    '   失敗（非 0 終了）した場合は通常のテストと同様に原因を調査して pass を目指す。環境要因（依存・サービス・資格情報の不在等）で実行できない場合のみ result: "not-run" とし、具体的な理由を detail に書く。実行していないものを result: "pass" と報告してはならない（偽装禁止）。',
+    (noFix
+      ? '   失敗（非 0 終了）した場合もコードを修正しない（この手順では作業ツリーを変更してはならない）。result: "fail" として記録し（終了コードと失敗の要旨を detail に書く）、そのまま次の手順へ進む。環境要因'
+      : '   失敗（非 0 終了）した場合は通常のテストと同様に原因を調査して pass を目指す。環境要因')
+      + '（依存・サービス・資格情報の不在等）で実行できない場合のみ result: "not-run" とし、具体的な理由を detail に書く。実行していないものを result: "pass" と報告してはならない（偽装禁止）。',
     '   宣言コマンドごとに { command, result, exitCode, detail } を 1 件ずつ optinTestRuns に入れて返す（command は上記の値と完全一致させる）。',
   ]
 }
@@ -3886,7 +3899,7 @@ function prCreatePrompt(item, impl, outOfScope) {
   // 時点（impl.optinTestRuns）の結果をここで literal な値として埋め込んでいたが、本手順 0 の
   // base 取り込みでコードが変わり得るため、Implement 時の結果はもはや push する HEAD に対する
   // 検証にならない。そのため host 側では値を持たず、エージェント自身が手順 0c で再実行した
-  // 結果と push 対象の HEAD sha（手順 0d）で埋めるテンプレート（<sha>/<result> プレースホルダ）
+  // 結果と push 対象の HEAD sha（手順 0b2 で控え手順 0d で一致を確認した期待 SHA）で埋めるテンプレート（<sha>/<result> プレースホルダ）
   // のみを渡す。
   const optinRecordSection = renderOptinRecordSection(item.optinTests)
   return [
@@ -3904,13 +3917,20 @@ function prCreatePrompt(item, impl, outOfScope) {
     // checkout 直後に rev-parse で起点の実体を確認し、手順 0b で base との差分ゼロを最終防御として
     // 検知する。
     `0. push 前 base 最新化ゲート: git fetch origin ${baseBranch}:refs/remotes/origin/${baseBranch}（保存先を明示した refspec。Issue #361 と同形式）で base を取得する。この base fetch の終了コードを必ず確認し、非ゼロ終了（通信・認証・refspec エラー等）の場合は merge も push も行わず prNumber: 0 と「base fetch 失敗」（エラー内容の要旨を添える）を理由として返す（fail-closed。fetch 失敗を無視して進むと、以前の処理が残した stale な origin/${baseBranch} を merge したまま push でき、「必ず最新 base を取り込む」という本ゲートを迂回してしまう）。fetch 成功後、detached HEAD の起点を決める（再入対応: PR 作成失敗後のリトライ等の再入では、初回実行の push によりリモート ${branch} には base 取り込みのマージコミットが既に積まれている一方、ローカルの refs/heads/${branch} は意図的に更新していないため古いままであり、ローカル起点でマージコミットを再作成すると non-fast-forward で push が拒否される）。git fetch origin ${branch}:refs/remotes/origin/${branch} を実行し、結果で分岐する: (i) リモートに ${branch} が存在しない（fetch がその旨で失敗する）場合は初回実行なのでローカル起点 — 本エージェントは隔離 worktree で動作し ${branch} を checkout している保証がないため git checkout --detach ${branch} で detached HEAD として取得する。この checkout の終了コードを必ず確認する（非 0 終了はローカルに refs/heads/${branch} が存在しない等を意味する）。加えて checkout 成功後に git rev-parse HEAD と git rev-parse refs/heads/${branch}（実装 worktree 側の implement 手順で作成された実ブランチの実体。同一リポジトリの worktree 間で共有される git 参照）を突き合わせ、両者が一致することを確認する（この worktree に残っていた無関係な直前の HEAD をそのまま base 取り込み・push してしまう事故の直接検知）。checkout の終了コードが非 0、または両 sha が不一致の場合は base merge も push も行わず prNumber: 0 と「ローカルブランチ ${branch} の checkout に失敗、または detached HEAD が refs/heads/${branch} の実体と不一致」を理由として返す（fail-closed。起点確立の検証を欠くと、隔離 worktree に残っていた無関係な HEAD が base の tip のまま push され、push した remote branch の tip が origin/${baseBranch} の tip と一致して gh pr create が失敗し得る）。(ii) リモート追跡 ref が得られ、両 tip が同一 sha（git rev-parse refs/heads/${branch} と git rev-parse refs/remotes/origin/${branch} が一致）の場合は継続する — 取り込む差分が存在せずどちらを起点にしても同一コミットのため安全。git checkout --detach refs/remotes/origin/${branch} として既存のマージコミット（過去の自分の push）の上から継続する。(ii-b) 同一 sha ではなく git merge-base --is-ancestor refs/heads/${branch} refs/remotes/origin/${branch} が成立する（ローカル tip がリモート tip の真の ancestor = remote ahead）場合は fail-closed: この祖先関係は過去の自分の push だけでなく、第三者・別ランが任意コミットを同ブランチへ fast-forward push した場合にも成立し、pr-create 単体の観測では両者を区別できない。リモート起点を採用するとその未レビューコミットを保持したまま base merge・push してしまい、autoMerge opt-in ランでは未レビューの第三者コミットがマージされ得るため、リモートコミットを黙って採用してはならない。merge も push もせず prNumber: 0 と「remote-ahead: 自己の過去 push か第三者 push か判別不能」を理由として返し、summary に両 tip の sha を書く。回復経路: この失敗では branch が保存されるため次回ランは Recover フェーズを起動し、回復 Implement の手順 2 がローカル ${branch} を git merge --ff-only refs/remotes/origin/${branch} でリモート tip へ追従させてから実装・Review を経て push する（自己の過去 push なら ff で追従でき、リモートコミットはそこでレビュー対象に乗る。ff 不能な真の diverged は次の pr-create の (iv) で止まる）。(iii) (ii) が不成立で、逆向きの git merge-base --is-ancestor refs/remotes/origin/${branch} refs/heads/${branch} が成立する（リモート tip がローカル tip の ancestor = local ahead。既存 PR 再利用後に implement / Review でローカルへ新規コミットを積んだ通常の回復フロー）場合はローカル起点 — git checkout --detach ${branch} で継続する。この checkout も (i) と同じ終了コード確認・git rev-parse HEAD と git rev-parse refs/heads/${branch} の一致確認を行い、失敗・不一致なら同じ理由で fail-closed に倒す（ローカル履歴はリモート履歴を含むため push は fast-forward になる。この向きを diverged 扱いして終端してはならない — 終端すると push・PR 作成が永久に回復しない）。(iv) どちらの向きの ancestor 関係も成立しない（真の diverged — 他者・別ランの push でリモートが書き換わっている等）場合のみ fail-closed: リモート側 sha を無条件に信頼して第三者の変更を取り込んではならないため、merge も push もせず prNumber: 0 と「ローカル ${branch} とリモート origin/${branch} が diverged」を理由として返し、summary に両 tip の sha を書く。起点を checkout したら base を取り込む: ${baseMergeInstruction(baseBranch)} 分岐 (b) の解消不能・分岐 (c) の拒否で返すときは prNumber: 0 と上記理由を返す（ローカルブランチはそのまま保全され、CI 未起動の空 PR を作らずに終わる）。分岐 (a) ならそのまま手順 0b へ進む。ローカルブランチ ref（refs/heads/${branch}）の更新は行わない — 手順 1 は detached HEAD の内容を直接 push するため不要であり、この worktree が ${branch} を checkout している保証がない以上 git branch -f はブランチが別 worktree で checkout 済みの場合に失敗し得る。`,
-    `0b. push 前 差分ゼロチェック（必須。fail-closed）: git rev-list --count origin/${baseBranch}..HEAD を実行し、base に対する先行コミット数を数える（手順 0 で base 取り込み・起点確立を終えた後の detached HEAD が対象。base の再 fetch は不要 — 手順 0 で取得済みの refs/remotes/origin/${baseBranch} をそのまま使う）。0 件の場合は push を一切行わず、prNumber: 0 と「base ${baseBranch} との差分が 0 件（push 対象コミットなし）。手順 0 の起点確立が意図通りか要調査」を理由として返す（fail-closed。detached HEAD が誤って base の tip のまま残っている場合の最終防御線。実装 worktree 側は Review 通過済みのため、ここで 0 件になるのは本エージェント側の起点取り違えを意味する）。1 件以上の場合のみ手順 1 へ進む。`,
+    `0b. push 前 差分ゼロチェック（必須。fail-closed）: git rev-list --count origin/${baseBranch}..HEAD を実行し、base に対する先行コミット数を数える（手順 0 で base 取り込み・起点確立を終えた後の detached HEAD が対象。base の再 fetch は不要 — 手順 0 で取得済みの refs/remotes/origin/${baseBranch} をそのまま使う）。0 件の場合は push を一切行わず、prNumber: 0 と「base ${baseBranch} との差分が 0 件（push 対象コミットなし）。手順 0 の起点確立が意図通りか要調査」を理由として返す（fail-closed。detached HEAD が誤って base の tip のまま残っている場合の最終防御線。実装 worktree 側は Review 通過済みのため、ここで 0 件になるのは本エージェント側の起点取り違えを意味する）。1 件以上の場合のみ手順 ${Array.isArray(item.optinTests) && item.optinTests.length > 0 ? '0b2' : '1'} へ進む。`,
     // opt-in テスト記録ゲート（PR #503 3 巡目 codex P1）: Implement 時点の結果は手順 0 の base
     // 取り込みで陳腐化し得るため、push 前のこの時点（＝これから push する内容そのもの）で
-    // 必ず再実行する。手順 0d で控える SHA と対にして手順 1c・2 の記録節へ書く。
-    ...optinTestExecutionLines(item, '0c'),
+    // 必ず再実行する。テスト前に控える期待 SHA と対にして手順 1c・2 の記録節へ書く。
+    // この後にコミット手順が無いため、0c で作業ツリーを直すと修正を含まない HEAD に pass 記録が
+    // 付く。noFix で修正を禁じる。加えてテスト入口が git commit・reset・checkout 等で HEAD 自体を
+    // 動かすと作業ツリー確認だけでは検知できず、テスト後の HEAD を記録すると未レビュー履歴を
+    // push し得るため、SHA はテスト前に控え、0d で作業ツリー無変更と HEAD 一致の両方を確認する。
     ...(Array.isArray(item.optinTests) && item.optinTests.length > 0
-      ? [`0d. git rev-parse HEAD を実行し、この記録が対象とする HEAD の sha（手順 0c のテスト対象・この後 push する内容と同一）の出力を控える（シェル変数は Bash 呼び出しを跨いで残らないため、値そのものを控える）。手順 1c・2 の記録節に書く <sha> はこの値（40 桁小文字 16 進のまま、省略・短縮しない）、<result> は手順 0c の各コマンドの結果へ実際に置き換える。detail・not-run の理由などの補足は記録節へ書かない（返却値にのみ残す）。`]
+      ? ['0b2. 期待 SHA の取得（必須。手順 0c のテスト実行より前に行う）: git rev-parse HEAD を実行し、終了コード 0 かつ 40 桁小文字 16 進の出力であることを確認して、その値を期待 SHA として控える（シェル変数は Bash 呼び出しを跨いで残らないため、値そのものを控える）。非 0 終了・形式不正の場合は push せず prNumber: 0 と「opt-in テスト実行前の HEAD sha を取得できない」を理由として返す。取得できた場合のみ手順 0c へ進む。']
+      : []),
+    ...optinTestExecutionLines(item, '0c', true),
+    ...(Array.isArray(item.optinTests) && item.optinTests.length > 0
+      ? [`0d. push 前の不変確認（必須。fail-closed）: (1) git status --porcelain を実行し、終了コード 0 かつ出力が空であること、(2) git rev-parse HEAD を実行し、終了コード 0 かつ出力が手順 0b2 で控えた期待 SHA と完全一致すること、の両方を確認する（手順 0c のテスト入口が作業ツリーを変更したり、git commit・git reset・git checkout 等で HEAD を動かしたりしていないことの確認）。いずれかのコマンドが非 0 終了、または出力が空でない・期待 SHA と不一致の場合は push せず prNumber: 0 と「opt-in テスト実行後に作業ツリーまたは HEAD が変更されている（検査コマンドの失敗を含む）」を理由として返す。両方成立した場合のみ手順 1 へ進む。手順 1c・2 の記録節に書く <sha> は期待 SHA（40 桁小文字 16 進のまま、省略・短縮しない）、<result> は手順 0c の各コマンドの結果へ実際に置き換える。detail・not-run の理由などの補足は記録節へ書かない（返却値にのみ残す）。`]
       : []),
     `1. git push origin HEAD:refs/heads/${branch} で detached HEAD の内容（手順 0 の base 取り込み・コンフリクト解消を含む）を ${branch} へ push する（Bash の timeout に 600000 を指定）。git push origin ${branch} は使わない — ローカルの refs/heads/${branch} を手順 0 で更新していないため、その形では手順 0 の変更が push されず古い内容のまま push されてしまう。`,
     `   push が失敗した場合は prNumber: 0 と失敗理由を返す。`,
@@ -3952,7 +3972,7 @@ function prCreatePrompt(item, impl, outOfScope) {
           `   次に opt-in テスト記録節を更新する:`,
           ...optinRecordRewriteLines(
             item.optinTests,
-            '手順 0d で控えた sha（省略・短縮しない）',
+            '手順 0b2 で控えた期待 SHA（手順 0d で HEAD との一致を確認済み。省略・短縮しない）',
             '手順 0c の各コマンドの結果 pass / fail / not-run のいずれか',
             'prNumber: 0 と「opt-in テスト記録節の更新に失敗（grep の終了コード、実測値を記載）」を理由として返す',
           ),

@@ -620,13 +620,11 @@ HEAD がずれる（ゲート確認後に別の push が入る）競合を防ぐ
 リスクが見合わないため。次回実行時に monitoring 再開でゲートを再評価すれば、人間または別ラウンド
 の fix が現在の HEAD で記録を更新した時点で自然に解消する）。
 
-**この「自動で回す専用の再ディスパッチは実装していない」は、PR 本文の記録が単に古い（HEAD が
-進んだだけで `lastFixOptin` の override が働いていない）ケースに限る。** 下記「opt-in 記録
-latch の自動解除」で説明する `lastFixOptin` 由来の override（latch）が原因で gate 不合格に
-なっているケースは、この節の対象外であり、**同一周回で fix 経路へ自動再ディスパッチする**
-（PR #503 4 巡目 codex P1・停止性バグ対応）。両者の違いは `isOptinLatchActive` が判定する:
-override が実際に働いた（latch）場合のみ再ディスパッチし、override が働かず gate 自身が
-（PR 本文のみを理由に）不合格な場合は従来どおり blocked のまま次回実行を待つ。
+**この「自動で回す専用の再ディスパッチは実装していない」は、`lastFixOptin` 由来の override
+（下記「opt-in 記録 latch は fail-closed で停止する」節の latch）が働いているケースにも
+同じく適用される。** `isOptinLatchActive` の判定結果は終端メッセージの出し分けにのみ使い、
+latch が原因でも原因でなくても常に同じ `blocked` 終端へ合流する（同一周回での自動再
+ディスパッチは行わない）。latch 由来の不合格からの復旧経路は同節記載の 2 経路のみに限る。
 
 ### post-push fix の実測の永続化（`optinFixState`。PR #503 2 巡目 codex P0 → 3 巡目で headSha を追加）
 
