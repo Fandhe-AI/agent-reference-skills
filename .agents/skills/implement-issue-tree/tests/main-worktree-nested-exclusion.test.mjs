@@ -129,6 +129,39 @@ test('selectNestedLinkedWorktreePaths: 重複を除去する', () => {
   assert.deepEqual(selectNestedLinkedWorktreePaths(mainPath, entries), ['/repo/.claude/worktrees/wf_x-1'])
 })
 
+// 後段は各パスの du を合算してメインの総量から差し引くため、包含関係にある 2 パスを両方返すと
+// 内側を二重に控除し、メイン見積りが過小（危険側）になる。
+test('selectNestedLinkedWorktreePaths: 包含関係にある nested worktree は最上位のみ返す（二重控除防止）', () => {
+  const mainPath = '/repo'
+  const entries = [
+    { path: mainPath, isMain: true },
+    { path: '/repo/wt/inner', isMain: false },
+    { path: '/repo/wt', isMain: false },
+  ]
+  assert.deepEqual(selectNestedLinkedWorktreePaths(mainPath, entries), ['/repo/wt'])
+})
+
+test('selectNestedLinkedWorktreePaths: /repo/wt と /repo/wt2 は包含関係とみなさず両方返す', () => {
+  const mainPath = '/repo'
+  const entries = [
+    { path: mainPath, isMain: true },
+    { path: '/repo/wt', isMain: false },
+    { path: '/repo/wt2', isMain: false },
+  ]
+  assert.deepEqual(new Set(selectNestedLinkedWorktreePaths(mainPath, entries)), new Set(['/repo/wt', '/repo/wt2']))
+})
+
+test('selectNestedLinkedWorktreePaths: 包含関係のパスがあっても検証不能パスが混在すれば null（fail-closed 不変）', () => {
+  const mainPath = '/repo'
+  const entries = [
+    { path: mainPath, isMain: true },
+    { path: '/repo/wt', isMain: false },
+    { path: '/repo/wt/inner', isMain: false },
+    { path: '../etc/passwd', isMain: false },
+  ]
+  assert.equal(selectNestedLinkedWorktreePaths(mainPath, entries), null)
+})
+
 // --- computeMainContentKib ---
 
 test('computeMainContentKib: いずれか null なら null', () => {

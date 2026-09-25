@@ -170,14 +170,18 @@ git worktree list --porcelain
 
 # 2. 削除前に、未 push のコミットや未コミットの変更が無いことを確認する
 #    （worktree パスは前段の出力から。<path> を置き換える）
+#    pr-create / fix の worktree は detached HEAD や upstream 未設定のブランチのことがあり、
+#    `@{u}` は解決できず失敗する。`--not --remotes` はどちらでも動き、upstream に依存しない
 git -C <path> status --porcelain
-git -C <path> log @{u}.. --oneline 2>/dev/null   # 未 push コミットの有無
+git -C <path> log HEAD --not --remotes --oneline || echo "確認失敗: 削除を中止し原因を調べる"
 
 # 3. failed / blocked のイシューが保持する worktree でないことも確認する
 #    （状態ファイルの worktree フィールドと突き合わせる）
 cat _/issue-trees/<親イシュー番号>.json | jq '.items | to_entries[] | {issue: .key, worktree: .value.worktree}'
 
-# 4. 上記いずれの保持理由も無いと確認できたパスのみ削除する
+# 4. 手順 2 の出力が空、かつ確認コマンドが成功（終了コード 0）した場合のみ次へ進む。
+#    出力が 1 行でもある、またはコマンド自体が失敗した場合は削除しない。
+#    上記いずれの保持理由も無いと確認できたパスのみ削除する
 git worktree remove --force <path>
 git worktree prune
 
