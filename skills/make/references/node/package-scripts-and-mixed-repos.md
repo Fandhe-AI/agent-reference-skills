@@ -21,7 +21,7 @@ build:
 	pnpm run build          # or: turbo run build, if a turbo.json exists at the repo root
 ```
 
-## Package Manager and Lockfile (Source-backed behavior)
+### Package Manager and Lockfile (Source-backed behavior)
 
 - pnpm workspaces are declared in a `pnpm-workspace.yaml` file at the repo root, listing which
   packages belong to the workspace.
@@ -44,7 +44,7 @@ choose pnpm over another package manager on a project's behalf; whichever packag
 repository already commits to (existing lockfile + CI configuration) is the one a Makefile
 target should call. Replacing it is a separate, explicitly-approved decision.
 
-## `package.json` Scripts (Source-backed behavior)
+### `package.json` Scripts (Source-backed behavior)
 
 - `pnpm run <script>` executes the named entry under `package.json`'s `scripts` field; `pnpm
   <script>` is shorthand as long as the name does not collide with a built-in pnpm command.
@@ -60,7 +60,7 @@ target should call. Replacing it is a separate, explicitly-approved decision.
 
 Source: https://pnpm.io/cli/run (pnpm documentation, "run", confirmed 2026-09-26).
 
-## Turborepo Delegation (Source-backed behavior)
+### Turborepo Delegation (Source-backed behavior)
 
 When a Turborepo `turbo.json` already exists at the repo root, dependency ordering and caching
 for Node.js tasks are Turborepo's responsibility, not Make's:
@@ -95,7 +95,7 @@ concern from the `package.json` script naming a `turbo`-task-name collision that
 detects and errors on (see the `turborepo` skill's `messages-error-docs/recursive-turbo-invocations.md`
 for that specific, narrower diagnostic — this page does not restate it).
 
-## Rust + Node.js Mixed Repositories (Design guidance)
+### Rust + Node.js Mixed Repositories (Design guidance)
 
 In a repository that mixes a Cargo workspace and a Node.js workspace (e.g. a Rust engine plus a
 Node.js frontend/tooling package), keep each ecosystem's real work inside that ecosystem:

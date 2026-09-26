@@ -9,6 +9,9 @@ import { resolveRoot, resolvePlanPath } from "./paths.mjs";
 export class PlanError extends Error {}
 
 const VALID_ACTIONS = new Set(["create", "modify", "delete"]);
+// この CLI が解釈できる計画スキーマの版。未知の版（将来版を含む）は検証を通さず、
+// run-checks がそのコマンドを実行しないようにする。
+export const SUPPORTED_PLAN_SCHEMA_VERSIONS = new Set(["1.0.0"]);
 const VALID_EXPECTED_STATES = new Set(["absent", "present", "matches-hash", "any"]);
 
 function isPlainObject(v) {
@@ -76,6 +79,12 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
   }
   if (typeof plan.schemaVersion !== "string") {
     findings.push({ id: "schema", status: "FAIL", detail: "schemaVersion が必要です" });
+  } else if (!SUPPORTED_PLAN_SCHEMA_VERSIONS.has(plan.schemaVersion)) {
+    findings.push({
+      id: "schema",
+      status: "FAIL",
+      detail: `未対応の schemaVersion です: ${plan.schemaVersion}（対応: ${[...SUPPORTED_PLAN_SCHEMA_VERSIONS].join(", ")}）`,
+    });
   }
   if (typeof plan.root !== "string" || plan.root.length === 0) {
     findings.push({ id: "root", status: "FAIL", detail: "root（対象ディレクトリ）が必要です" });

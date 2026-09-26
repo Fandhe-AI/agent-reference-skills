@@ -30,7 +30,9 @@ reported as `FAIL` findings rather than crashing the script.
 
 ### When not to run it
 
-- The plan file doesn't exist yet — draft it first (a JSON object with `schemaVersion`, `root`,
+- The plan file doesn't exist yet — draft it first (a JSON object with `schemaVersion` — only
+  `"1.0.0"` is accepted; any other value is a `FAIL` so `run-checks.mjs` never executes a plan
+  written for a schema it does not understand — `root`,
   `changes[]`, `checks[]`; see `samples/plans/rust-crate-thin-makefile.json` for a fully-worked
   example, including why its committed copy is expected to `FAIL` until `root` is replaced with a
   real path — that's intentional, not a bug).

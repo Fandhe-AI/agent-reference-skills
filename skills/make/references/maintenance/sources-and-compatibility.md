@@ -5,7 +5,23 @@ confirmed at fetch time, and which pages rely on it. Update this table whenever 
 Source-backed behavior is added or re-verified — do not backdate or invent a confirmation date for
 a source that was not actually fetched in this pass.
 
-## Verified sources
+## Signature / Usage
+
+### Verify your local toolchain against this ledger
+
+```bash
+make --version
+bash --version
+cargo --version
+pnpm --version
+```
+
+Compare the reported versions against the "Version / commit" column below before relying on any
+version-gated feature described elsewhere in this skill (e.g. GNU Make 4.x-only special targets).
+
+## Options / Props
+
+### Verified sources
 
 | Source (formal name) | URL | Confirmed on | Version / commit | Related pages | Design decision |
 | --- | --- | --- | --- | --- | --- |
@@ -21,7 +37,7 @@ a source that was not actually fetched in this pass.
 | Lefthook | https://lefthook.dev/ | 2026-09-26 | No version number shown on the page | (reserved for `quality/*` — owned by `quality` scope researcher) | — |
 | GitHub Actions documentation | https://docs.github.com/en/actions | 2026-09-26 | No version/date shown; rolling documentation | (reserved for `samples/ci.md`, `quality/*` — owned by other scope researchers) | — |
 
-## Not yet fetched in this pass
+### Not yet fetched in this pass
 
 The prompt's §11 list of primary sources includes items outside the `maintenance` scope of this
 pass. They are listed here as unfilled ledger rows so the table remains a true all-category
@@ -56,18 +72,6 @@ when the owning category researcher fetches them.
   of these URLs and upgrade the row once confirmed.
 - Do not assume `www.gnu.org/software/make/manual/` and `www.gnu.org/software/bash/manual/`
   document the same edition dates as each other; they are independently versioned GNU projects.
-
-## Verify your local toolchain against this ledger
-
-```bash
-make --version
-bash --version
-cargo --version
-pnpm --version
-```
-
-Compare the reported versions against the "Version / commit" column above before relying on any
-version-gated feature described elsewhere in this skill (e.g. GNU Make 4.x-only special targets).
 
 ## Related
 

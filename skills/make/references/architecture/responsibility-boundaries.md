@@ -6,7 +6,9 @@ source: https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html
 
 How to decide what a `Makefile` in a given repository is *for*, and how to avoid duplicating work that another tool already owns.
 
-## Source-backed behavior
+## Signature / Usage
+
+### Source-backed behavior
 
 GNU Make manual, Edition 0.77 (documents GNU `make` version 4.4.1), confirmed 2026-09-26.
 
@@ -16,11 +18,11 @@ GNU Make manual, Edition 0.77 (documents GNU `make` version 4.4.1), confirmed 20
 
 These two facts together are the basis for the design guidance below: Make's file-target mechanism and Cargo's/Turborepo's own graph mechanisms solve the same class of problem (what is stale, what needs rebuilding) using different bookkeeping, and running both over the same artifacts produces two sources of truth that can disagree.
 
-## Design guidance
+### Design guidance
 
 **Core principle: entry points can be plural, but the definition of the real work is singular.** A developer may reach a task via `make test`, `cargo test` directly, an IDE run button, a Git hook, or CI — but exactly one of these should own the actual command, flags, and environment setup; everything else calls into it.
 
-### Two roles a Makefile can play
+#### Two roles a Makefile can play
 
 | Role | When it fits | What it must not do |
 | --- | --- | --- |
@@ -29,7 +31,7 @@ These two facts together are the basis for the design guidance below: Make's fil
 
 Adoption condition: pick the "thin entry point" role by default for any project that already has Cargo or a JS package manager with scripts; reserve "dependency source-of-truth" for build steps genuinely outside those ecosystems (e.g. a `data/report.pdf: data/report.md pandoc.yaml` pipeline that neither Cargo nor Turborepo knows about). Trade-off: a thin Makefile adds one indirection layer (a `make test` that just shells out) — that overhead is worth it only if it demonstrably reduces the number of commands a contributor has to memorize; if nobody types `make test` and everybody types `cargo test` directly, the Makefile is dead weight and should be deleted rather than maintained in parallel.
 
-### Call direction
+#### Call direction
 
 Design guidance, not a Make or Cargo requirement:
 
@@ -54,12 +56,12 @@ help:
 
 This snippet targets GNU Make 3.81+ (tab-indented recipes, no `.ONESHELL`, no `.RECIPEPREFIX` — both are 4.x-only and not assumed here; see `execution/gnu-posix-bsd-compatibility.md`).
 
-### Do not re-implement what another tool already owns
+#### Do not re-implement what another tool already owns
 
 - Rust: Cargo already resolves the dependency graph and tracks build staleness per crate/target (see Source-backed behavior above). A Makefile wrapping `cargo build`/`cargo test` should not try to declare per-source-file prerequisites that duplicate what `Cargo.lock` and `target/` fingerprints already track.
 - Node.js/monorepo: if Turborepo is already in use, it owns cross-package dependency ordering and remote/local caching; a wrapping Makefile target should call `turbo run <task>` and not attempt to encode package ordering itself.
 
-### Git hooks, CI, and Claude use the same source-of-truth
+#### Git hooks, CI, and Claude use the same source-of-truth
 
 - **Git hooks** exist to give a developer early feedback before a commit/push reaches CI; they should invoke the same public command (`make check`, `cargo test`, etc.) that CI uses — not a hand-rolled subset that can drift out of sync.
 - **CI** is the same source-of-truth run as a required gate. Keep the *pipeline definition* (what commands run, on what triggers) distinct from *server-side merge protection* (which status checks a hosting platform is configured to require before allowing a merge) — this Skill's samples can propose a pipeline definition, but enabling/adjusting branch protection is a separate, higher-privilege operation this Skill does not perform automatically.

@@ -150,7 +150,8 @@ function main() {
     checkResults.push({
       ...base,
       status: execResult.status,
-      executed: true,
+      // cmd.exe 経由で安全に渡せない引数は起動前に BLOCKED になる（executed: false）
+      executed: execResult.executed !== false,
       exitCode: execResult.exitCode,
       signal: execResult.signal,
       timedOut: execResult.timedOut,

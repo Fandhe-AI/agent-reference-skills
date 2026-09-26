@@ -6,13 +6,15 @@ source: https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html
 
 > **Every contract on this page is an Example contract defined within this Skill.** GNU Make, Cargo, and Anthropic do not require any project to expose `help` / `doctor` / `setup` / `check` / `fix` / `test` / `build` / `verify` / `clean`, nor these exact names, scopes, or exit-code conventions. Treat this page as a template to adapt, not a spec to conform to.
 
-## Source-backed behavior
+## Signature / Usage
+
+### Source-backed behavior
 
 GNU Make manual, Edition 0.77 (documents GNU `make` version 4.4.1), confirmed 2026-09-26 (`Phony-Targets.html`): a target declared `.PHONY` always runs its recipe on invocation, "regardless of whether there is a file named [target]" — this is why every contract below that names a command (`help`, `check`, ...) must be backed by a `.PHONY` declaration if it is exposed through a Makefile: an accidental file named `check` or `clean` in the working directory would otherwise silently make that target a no-op.
 
 Everything else in this page — field lists, scope axis, per-command semantics — is Design guidance / Example contract, not sourced from any GNU Make, Cargo, or vendor document.
 
-## Design guidance: scope axis
+### Design guidance: scope axis
 
 A recurring failure mode is a command whose *name* stays the same across entry points but whose *effective scope* silently changes — e.g. `make check` in one script checks the whole workspace, while a Git hook's `make check` (invoked with different `cwd` or arguments) only checks staged files, and CI's `make check` checks yet a third thing. Adoption condition: whenever a command can run at more than one scope, make the scope an explicit argument or environment variable rather than an implicit property of which entry point called it, so `check` means the same thing everywhere it's invoked with the same scope value.
 
@@ -39,11 +41,17 @@ check:
 
 `make check` defaults to `SCOPE=whole`; `make check SCOPE=changed-impact` or `SCOPE=pkg:foo` overrides it explicitly — the scope is always visible in the invocation, never implicit in which entry point called `check`.
 
-## Design guidance: side effects are not binary
+### Design guidance: side effects are not binary
 
 `check` and `verify` must not modify source files or configuration — that is the one hard rule this Skill's contracts enforce. It does **not** follow that they have zero side effects: writing build artifacts (`target/`, `dist/`), populating a compiler/test cache, or emitting a report file (coverage output, lint SARIF) are expected and acceptable outputs of "not source-modifying" commands. Never describe a `check`/`verify` contract as "fully side-effect-free" — describe it as "does not modify source or configuration; may write build artifacts, caches, and reports."
 
-## Example contract: command table
+### Design guidance: no empty success targets
+
+A target whose recipe is `@true` or `@echo "done"` with no real check behind it must not be published under one of these names — an empty `check` that always exits 0 is worse than no `check` target, because callers (CI, hooks, Claude) will trust the exit code.
+
+## Options / Props
+
+### Example contract: command table
 
 | Command | Purpose | Scope | Preconditions | Modifies | Side effects | Interactive? | Exit condition | Recovery on failure |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -57,10 +65,6 @@ check:
 | `clean` | Remove regenerable artifacts of *this* working environment (this crate's/package's `target`/`dist`/build cache) — never a shared directory. | whole / specific package | None. | Deletes files it created (build outputs) only; explicitly never touches other Git worktrees, a shared Cargo `target/` used by other worktrees, shared build/test caches, database data, `.env` files, or credentials. | Frees disk space; nothing else. | No. | 0 = cleaned; non-zero = a path it expected to own was outside its declared scope (fails closed rather than deleting it). | If `clean` reports a path outside its declared scope, investigate why before broadening it — do not add a broad `rm -rf` to make the warning go away. |
 
 `dev` / DB-backed / authentication / E2E / GPU commands are deliberately absent from this table: this Skill does not add them for libraries that have no dev server, database, or GPU dependency. If a target project genuinely needs one, add it as a capability-gated extension of this table (same eight fields), not as a new independent contract shape.
-
-## Design guidance: no empty success targets
-
-A target whose recipe is `@true` or `@echo "done"` with no real check behind it must not be published under one of these names — an empty `check` that always exits 0 is worse than no `check` target, because callers (CI, hooks, Claude) will trust the exit code.
 
 ## Notes
 

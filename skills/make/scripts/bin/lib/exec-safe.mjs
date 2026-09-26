@@ -7,9 +7,14 @@
 // 引数配列を使っていても cmd.exe 側のメタ文字解釈までは防げない（Node 公式ドキュメントが
 // 明記する既知の制約）。ここでは risk を下げる best-effort の実装であり、
 // 「任意の不審なリポジトリを安全に実行できる」ことを意味しない。
+// そのため cmd.exe 経由になる場合は、cmd.exe がコマンド区切り・リダイレクト・変数展開として
+// 再解釈し得る文字を含む引数を実行せず BLOCKED にする（承認したコマンドと異なる処理を走らせない）。
 import { execFileSync } from "node:child_process";
 
 const CMD_LIKE_EXTENSIONS = new Set([".cmd", ".bat"]);
+// cmd.exe が解釈するメタ文字（区切り & |、リダイレクト < >、エスケープ ^、変数展開 % !、
+// 引用・グループ化 " ( )、改行）。これらを含む引数は cmd.exe 経由では実行しない。
+const CMD_META_RE = /[&|<>^%!"()\r\n]/;
 
 /**
  * platform と command から、実際に起動すべき (file, args) の組を決める。
@@ -17,7 +22,8 @@ const CMD_LIKE_EXTENSIONS = new Set([".cmd", ".bat"]);
  * @param {string} platform process.platform 相当（テスト時は差し替え可能）
  * @param {string} command
  * @param {string[]} args
- * @returns {{file: string, args: string[], viaShellWrapper: boolean}}
+ * @returns {{file: string, args: string[], viaShellWrapper: boolean, unsafeReason?: string}}
+ *   unsafeReason がある場合、呼び出し元は実行してはならない（runCheckCommand は BLOCKED を返す）。
  */
 export function resolveExecutionTarget(platform, command, args) {
   if (platform !== "win32") {
@@ -30,11 +36,16 @@ export function resolveExecutionTarget(platform, command, args) {
   }
   // cmd.exe /d /s /c "<command>" arg1 arg2 ...
   // /d: AutoRun 無効化, /s: 引用符処理を素直にする（cmd.exe のドキュメント上の推奨）
-  return {
+  const target = {
     file: "cmd.exe",
     args: ["/d", "/s", "/c", command, ...args],
     viaShellWrapper: true,
   };
+  const unsafe = [command, ...args].find((a) => CMD_META_RE.test(a));
+  if (unsafe !== undefined) {
+    target.unsafeReason = `cmd.exe が再解釈し得る文字を含む引数は .cmd/.bat 経由で実行しません: ${JSON.stringify(unsafe)}`;
+  }
+  return target;
 }
 
 /**
@@ -45,6 +56,18 @@ export function resolveExecutionTarget(platform, command, args) {
  */
 export function runCheckCommand({ platform = process.platform, command, args = [], cwd, timeoutMs = 60000 }) {
   const target = resolveExecutionTarget(platform, command, args);
+  if (target.unsafeReason) {
+    return {
+      status: "BLOCKED",
+      executed: false,
+      exitCode: null,
+      signal: null,
+      timedOut: false,
+      stdoutTail: "",
+      stderrTail: target.unsafeReason,
+      viaShellWrapper: target.viaShellWrapper,
+    };
+  }
   try {
     const stdout = execFileSync(target.file, target.args, {
       cwd,

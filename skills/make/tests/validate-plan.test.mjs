@@ -368,3 +368,17 @@ test("validate-plan: ディレクトリへの modify + matches-hash は例外終
     cleanupTmpDir(dir);
   }
 });
+
+test("validate-plan: 未対応の schemaVersion は FAIL にする", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    const planPath = writePlan(dir, { schemaVersion: "2.0.0", root, changes: [], checks: [] });
+    const r = runCliJson("validate-plan.mjs", ["--plan", planPath]);
+    assert.equal(r.status, 1);
+    assert.ok(r.json.findings.some((f) => f.id === "schema" && f.status === "FAIL" && f.detail.includes("2.0.0")));
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});

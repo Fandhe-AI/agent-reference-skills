@@ -202,3 +202,24 @@ test("run-checks: checks が空の計画は NOT_APPLICABLE（exit 0、失敗に�
     cleanupTmpDir(dir);
   }
 });
+
+test("run-checks: 未対応の schemaVersion の計画は --execute + approved:true でも実行しない（BLOCKED）", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    const marker = join(root, "ran.txt");
+    const planPath = writePlan(dir, {
+      schemaVersion: "9.9.9",
+      root,
+      changes: [],
+      checks: [{ name: "write-marker", command: process.execPath, args: ["-e", `require("fs").writeFileSync(${JSON.stringify(marker)}, "x")`], approved: true }],
+    });
+    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute"]);
+    assert.equal(r.status, 3);
+    assert.equal(r.json.status, "BLOCKED");
+    assert.equal(existsSync(marker), false, "コマンドは起動されない");
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});

@@ -38,3 +38,16 @@ test("exec-safe: shell:true を無条件には使わない（file が直接 cmd.
   const isCmd = resolveExecutionTarget("win32", "run.cmd", []);
   assert.equal(isCmd.file, "cmd.exe");
 });
+
+test("exec-safe: win32 の .cmd/.bat 経由で cmd.exe メタ文字を含む引数は実行せず BLOCKED にする", async () => {
+  const { runCheckCommand } = await import("../scripts/bin/lib/exec-safe.mjs");
+  for (const bad of ["a&calc", "x|y", "%PATH%", "!v!", "q\"uote", "(g)", "a^b", "a>b"]) {
+    const t = resolveExecutionTarget("win32", "pnpm.cmd", ["run", bad]);
+    assert.ok(t.unsafeReason, `${bad} は拒否される`);
+    const r = runCheckCommand({ platform: "win32", command: "pnpm.cmd", args: ["run", bad] });
+    assert.equal(r.status, "BLOCKED");
+    assert.equal(r.executed, false);
+  }
+  assert.equal(resolveExecutionTarget("win32", "pnpm.cmd", ["run", "build"]).unsafeReason, undefined);
+  assert.equal(resolveExecutionTarget("darwin", "make", ["a&b"]).unsafeReason, undefined, "cmd.exe を経由しない場合は対象外");
+});

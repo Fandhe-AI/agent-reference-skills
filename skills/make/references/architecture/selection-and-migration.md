@@ -6,13 +6,15 @@ source: https://doc.rust-lang.org/cargo/reference/workspaces.html
 
 Whether to adopt, keep, shrink, or migrate away from a `Makefile`-based entry point, and how to do so without creating duplicate or circular command definitions.
 
-## Source-backed behavior
+## Signature / Usage
+
+### Source-backed behavior
 
 Cargo Book, `reference/workspaces.html`, confirmed 2026-09-26: "A workspace is a collection of one or more packages, called workspace members, that are managed together." Cargo already provides cross-member commands ("Common commands can run across all workspace members, like `cargo check --workspace`"), a single shared `Cargo.lock`, and a shared output directory. This is the factual basis for treating Cargo — not a hand-written Makefile — as the dependency/build-graph source of truth for any project that is a Cargo workspace.
 
 `cargo-xtask` README (`github.com/matklad/cargo-xtask`, `main` branch, confirmed 2026-09-26): "cargo-xtask is way to add free-form automation to a Rust project, a-la `make`, `npm run` or bespoke bash scripts... It is a way to extend stock, stable cargo with custom commands (xtasks), written in Rust." The README states directly that "cargo-xtask is not an officially recommended workflow, but it is a somewhat common pattern across the ecosystem" and that "this polyfill doesn't need any code, just a particular configuration of a cargo project" (an `xtask` member crate plus a `.cargo/config.toml` alias) — i.e. it is **not** a Cargo built-in subcommand, and treating it as one misrepresents the source.
 
-## Design guidance: decision table
+### Design guidance: decision table
 
 | Existing situation | Recommendation | Why |
 | --- | --- | --- |
@@ -25,13 +27,13 @@ Cargo Book, `reference/workspaces.html`, confirmed 2026-09-26: "A workspace is a
 
 Adoption condition behind every row: introduce Make only where it is the *first* tool to own a given piece of dependency/command-surfacing responsibility in the repository. Trade-off: adding Make anywhere always adds one more file contributors must learn to read (Makefile syntax, tabs-vs-spaces, `.PHONY`) — that cost must be weighed against the specific gap it closes, not treated as free.
 
-## Design guidance: call direction and source-of-truth placement
+### Design guidance: call direction and source-of-truth placement
 
 - The direction of calls established in `responsibility-boundaries.md` — Make → Cargo/xtask/package scripts, never the reverse — is what prevents a migration from creating a cycle. When migrating *toward* Make as a thin entry point, the underlying tool's own commands (`cargo test`, `pnpm test`) must remain independently runnable without going through Make; the Makefile is additive, not a replacement API.
 - When migrating *away* from Make (e.g. a single crate whose Makefile has drifted to just wrap one `cargo` invocation per target), the source-of-truth move is: delete the Makefile target, confirm the equivalent `cargo`/`pnpm` command still exists and is documented (in `SKILL.md`-equivalent onboarding docs, a `README`, or `scripts/`), then remove any Git hook / CI step that referenced the deleted Makefile target directly rather than the underlying command.
 - Never end a migration with two live definitions of the same command (e.g. `make test` computing something subtly different from a CI step's inlined `cargo test --workspace`) — pick one, and have every other entry point call it.
 
-## Design guidance: avoiding circular or duplicate commands
+### Design guidance: avoiding circular or duplicate commands
 
 - **Duplicate**: the same logical check defined twice (once in a Makefile recipe, once inlined in a CI YAML step) is a duplicate even if today they happen to agree — they will silently diverge the next time either one is edited alone. Fix: the CI step should invoke the same command the Makefile target invokes (or vice versa; whichever is closer to being the single source), not maintain a parallel inline definition.
 - **Circular**: a Makefile target that shells out to a script which itself invokes `make <target>` again (directly or via `$(MAKE)`) is a call cycle, not a legitimate recursive-Make use case (that mechanism, `execution/parallel-and-recursive-make.md`, is for a Makefile in one directory invoking Make in a *subdirectory's* Makefile — a different Makefile, not calling back into itself).

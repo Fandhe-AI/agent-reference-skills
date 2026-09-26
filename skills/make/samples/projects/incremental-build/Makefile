@@ -13,27 +13,33 @@
 #                        output under build/, nothing outside it)
 
 SRC_DIR := src
-BUILD_DIR := build
+# `override` keeps a command-line assignment such as
+# `make clean BUILD_DIR=/some/where` from redirecting where the clean
+# recipe deletes; the clean recipe below also names the directory
+# literally for the same reason.
+override BUILD_DIR := build
 
 # Discover fragments and keep them in a stable (sorted) order so the
 # assembled manual.md has a deterministic fragment order regardless of
 # filesystem readdir order.
 #
 # Note: $(wildcard) is evaluated once, when Make reads this Makefile.
-# If you delete a src/*.txt after a previous build, its stale
-# build/*.processed is simply dropped from this run's prerequisite
-# list (not deleted), and build/manual.md will not be considered
-# out-of-date on that basis alone. `make clean` before a full rebuild
-# avoids relying on stale fragments.
+# Deleting a src/*.txt removes it from the prerequisite list, and the
+# remaining fragments may all be older than build/manual.md, so
+# timestamps alone would never rebuild it. build/sources.list records
+# the fragment list of the last build; when the current list differs,
+# it is forced out of date, which in turn rebuilds manual.md.
 SRCS := $(sort $(wildcard $(SRC_DIR)/*.txt))
 PROCESSED := $(patsubst $(SRC_DIR)/%.txt,$(BUILD_DIR)/%.processed,$(SRCS))
+SOURCES_LIST := $(BUILD_DIR)/sources.list
+RECORDED_SRCS := $(strip $(shell cat $(SOURCES_LIST) 2>/dev/null))
 
 .DEFAULT_GOAL := all
 
-# clean is the only target with no corresponding file; everything else
+# all, clean and FORCE have no corresponding file; everything else
 # below is a real file target so Make's timestamp-based dependency
 # checking governs rebuilds.
-.PHONY: all clean
+.PHONY: all clean FORCE
 
 # Without this, a recipe that opens `$@` for writing and then fails
 # partway (e.g. `sed ... $< > $@ && false`) leaves a truncated-but-freshly
@@ -53,7 +59,14 @@ all: $(BUILD_DIR)/manual.md
 # manual.md is reassembled. With no src/*.txt at all, $(PROCESSED) is
 # empty and a bare `cat > $@` would block reading stdin, so the recipe
 # fails explicitly instead.
-$(BUILD_DIR)/manual.md: $(PROCESSED) | $(BUILD_DIR)
+ifneq ($(RECORDED_SRCS),$(strip $(SRCS)))
+$(SOURCES_LIST): FORCE
+endif
+
+$(SOURCES_LIST): | $(BUILD_DIR)
+	echo '$(SRCS)' > $@
+
+$(BUILD_DIR)/manual.md: $(PROCESSED) $(SOURCES_LIST) | $(BUILD_DIR)
 	@if [ -z "$(strip $(PROCESSED))" ]; then echo "error: no $(SRC_DIR)/*.txt fragments found" >&2; exit 1; fi
 	@echo "assembling $@ from $(words $(PROCESSED)) fragment(s)"
 	cat $(PROCESSED) > $@
@@ -70,5 +83,7 @@ $(BUILD_DIR)/%.processed: $(SRC_DIR)/%.txt | $(BUILD_DIR)
 $(BUILD_DIR):
 	mkdir -p $@
 
+FORCE:
+
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf build

@@ -62,7 +62,7 @@ fn run_ci() -> ExitCode {
 }
 ```
 
-## How the Pattern Works (Source-backed behavior, cargo-xtask README)
+### How the Pattern Works (Source-backed behavior, cargo-xtask README)
 
 1. The project is a Cargo workspace with (at least) two members: the main crate(s) and an
    `xtask` binary crate.
@@ -83,7 +83,7 @@ Source: https://github.com/matklad/cargo-xtask (README, the primary write-up of 
 confirmed 2026-09-26). This is a community pattern document, not an official Rust/Cargo
 resource — treat every claim above as attributed to that README, not to the Cargo Book.
 
-## Official Status (explicit non-endorsement)
+### Official Status (explicit non-endorsement)
 
 > cargo-xtask is **not an officially recommended workflow**, though it is used by Cargo itself
 > and is widespread in the ecosystem. The name `xtask` was deliberately chosen to avoid
@@ -95,7 +95,7 @@ subcommand shipped by `cargo` itself. Every reference to it must make clear it i
 convention, (b) implemented by the project's own `xtask` crate, and (c) invoked only through
 the alias the project itself defines.
 
-## Design guidance: when *not* to reach for xtask
+### Design guidance: when *not* to reach for xtask
 
 The cargo-xtask README's own guidance, and this skill's design position, agree: **do not adopt
 xtask by default.**
@@ -113,7 +113,7 @@ crate, workspace member, and `.cargo/config.toml` alias is added surface area (a
 compile, another place bugs can hide, another thing contributors must learn) that is only worth
 it once the gap is real.
 
-## Windows considerations
+### Windows considerations
 
 - The entire motivation for reaching past a `.sh` script into `xtask` is usually "this must run
   the same way on native Windows (cmd.exe/PowerShell) as it does on Unix shells." A Rust binary

@@ -36,7 +36,7 @@ cargo build -p some-member       # one explicit member
 cargo build
 ```
 
-## Crate / Workspace Shapes (Source-backed behavior)
+### Crate / Workspace Shapes (Source-backed behavior)
 
 | Shape | Manifest structure | `cargo build` with no flags targets |
 | --- | --- | --- |
@@ -56,7 +56,7 @@ cargo build
 Source: https://doc.rust-lang.org/cargo/reference/workspaces.html (Cargo Book, "Workspaces",
 confirmed 2026-09-26; version-independent workspace mechanics, not tied to a specific Cargo release).
 
-## fmt / clippy / build / test / doc — what each actually covers
+### fmt / clippy / build / test / doc — what each actually covers
 
 | Command | Scope | Notes |
 | --- | --- | --- |
@@ -71,7 +71,7 @@ https://doc.rust-lang.org/cargo/commands/cargo-doc.html (Cargo Book, confirmed 2
 `fmt`/`clippy` scope statements above are general knowledge of the toolchain's component split,
 not transcribed from the Cargo Book — no Cargo Book URL is claimed for those two rows.
 
-## `cargo test --all-targets` does not include doctests
+### `cargo test --all-targets` does not include doctests
 
 This is the most common false assumption when wiring Make/CI around `cargo test`.
 
@@ -100,7 +100,7 @@ cargo test --doc
 
 Source: https://doc.rust-lang.org/cargo/commands/cargo-test.html (Cargo Book, confirmed 2026-09-26).
 
-## Feature combinations: default features, `--no-default-features`, `--all-features`
+### Feature combinations: default features, `--no-default-features`, `--all-features`
 
 - Cargo activates the `default` feature set unless `--no-default-features` is passed.
 - `--all-features` activates every feature of every package selected on the command line.
@@ -131,7 +131,7 @@ does not mandate one over another, only that the choice is made and recorded in 
 Source: https://doc.rust-lang.org/cargo/reference/features.html (Cargo Book, "Features",
 confirmed 2026-09-26).
 
-## capability gating: no_std, WASM, OS-specific backends
+### capability gating: no_std, WASM, OS-specific backends
 
 Treat `no_std`, WASM targets, and OS/CPU-specific backends (e.g. a crate with a Linux-only
 module gated by `cfg(target_os = "linux")`) as **capabilities to detect**, not defaults to
@@ -144,7 +144,7 @@ assume:
   never silently treated as PASS. See `references/architecture/command-contracts.md` for how
   this skill's own scripts express that distinction (Design guidance — not a Cargo Book rule).
 
-## `Cargo.lock` policy — do not assume "library ⇒ no lockfile"
+### `Cargo.lock` policy — do not assume "library ⇒ no lockfile"
 
 - `cargo new` defaults to tracking `Cargo.lock` in version control regardless of package kind.
 - The Cargo Book states plainly that whether to commit `Cargo.lock` "is dependent on the needs
@@ -163,7 +163,9 @@ the Cargo Book does not state.
 Source: https://doc.rust-lang.org/cargo/faq.html
 (section "Why have `Cargo.lock` in version control?", confirmed 2026-09-26).
 
-## `--locked` / `--offline` / `--frozen`
+## Options / Props
+
+### `--locked` / `--offline` / `--frozen`
 
 | Flag | Effect |
 | --- | --- |

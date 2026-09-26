@@ -5,7 +5,14 @@ Make owns the file dependency graph and incremental rebuild decisions directly, 
 Plain-text fragments in `src/` are transformed and assembled into `build/manual.md`, with per-fragment incremental rebuild driven entirely by Make's own timestamp checking — distinct from the command-aggregation samples (`rust-crate.md`, `node-pnpm.md`, `mixed.md`), where Make delegates to `cargo`/`pnpm` instead of owning the graph itself.
 
 ```makefile
-$(BUILD_DIR)/manual.md: $(PROCESSED) | $(BUILD_DIR)
+ifneq ($(RECORDED_SRCS),$(strip $(SRCS)))
+$(SOURCES_LIST): FORCE
+endif
+
+$(SOURCES_LIST): | $(BUILD_DIR)
+	echo '$(SRCS)' > $@
+
+$(BUILD_DIR)/manual.md: $(PROCESSED) $(SOURCES_LIST) | $(BUILD_DIR)
 	@if [ -z "$(strip $(PROCESSED))" ]; then echo "error: no $(SRC_DIR)/*.txt fragments found" >&2; exit 1; fi
 	@echo "assembling $@ from $(words $(PROCESSED)) fragment(s)"
 	cat $(PROCESSED) > $@
@@ -47,15 +54,16 @@ make clean      # removes build/ entirely
 
 ## Change target / side effects
 
-- Creates `build/` (via an order-only prerequisite, so its own mtime never forces reprocessing of already-current fragments) containing `build/*.processed` and `build/manual.md`.
-- `make clean` deletes `build/` only — nothing under `src/` or elsewhere is touched.
+- Creates `build/` (via an order-only prerequisite, so its own mtime never forces reprocessing of already-current fragments) containing `build/*.processed`, `build/sources.list` (the fragment list of the last build), and `build/manual.md`.
+- `make clean` deletes `build/` only — nothing under `src/` or elsewhere is touched. `BUILD_DIR` is set with `override` and the recipe names `build` literally, so `make clean BUILD_DIR=<other path>` cannot redirect the deletion.
 - `.DELETE_ON_ERROR:` is declared so a recipe that fails partway (e.g. `sed` succeeding but the shell command after it failing) does not leave a stale-but-freshly-timestamped target that a later `make` would treat as up to date.
 
 ## Expected results
 
-- First `make`: prints one `processing ...` line per fragment plus one `assembling ...` line; exit code 0.
+- First `make`: prints one `processing ...` line per fragment, the `echo ... > build/sources.list` line, and one `assembling ...` line; exit code 0.
 - Second `make` (no changes): prints a "Nothing to be done" message for the default goal (exact quoting differs by GNU Make version — GNU Make 3.81 uses `` `all' ``-style quoting); nothing is reprocessed.
 - After editing one `src/*.txt`: only that file's `processing ...` line reappears, followed by the `assembling ...` line — proves the dependency graph is scoped per-fragment, not whole-directory.
+- After deleting one `src/*.txt`: `build/sources.list` is rewritten and `manual.md` is reassembled from the remaining fragments only (without `sources.list`, the remaining older fragments would leave `manual.md` looking up to date and the deleted content would stay in it).
 - `make clean`: no output beyond the `rm -rf build` recipe line; `build/` no longer exists afterward.
 - With no `src/*.txt` at all: the assemble recipe prints `error: no src/*.txt fragments found` and exits non-zero instead of blocking on `cat` reading stdin.
 

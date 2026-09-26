@@ -8,7 +8,14 @@ Design guidance for making `setup` safely re-runnable, ordering setup around
 databases/external services, isolating parallel worktrees, and scoping `clean` so it
 never touches state it does not own.
 
-## Source-backed behavior
+## Signature / Usage
+
+```bash
+# Re-running setup must be idempotent, not merely "usually harmless"
+make setup   # or: ./scripts/setup.sh — same underlying source of truth either way
+```
+
+### Source-backed behavior
 
 GNU Make Manual, "Types of Prerequisites"
 (`https://www.gnu.org/software/make/manual/html_node/Prerequisite-Types.html`,
@@ -39,14 +46,7 @@ ordering into a single script this skill's `setup` target calls — see below.
 Everything else on this page is Design guidance from this Skill; GNU Make does not
 define or require a `setup`/`clean` contract.
 
-## Signature / Usage
-
-```bash
-# Re-running setup must be idempotent, not merely "usually harmless"
-make setup   # or: ./scripts/setup.sh — same underlying source of truth either way
-```
-
-## Design guidance: `setup` re-entrancy and recovery
+### Design guidance: `setup` re-entrancy and recovery
 
 - As established above, sibling-prerequisite listing is not a documented ordering
   contract; either chain prerequisites explicitly (`bootstrap-env: ; ...` then
@@ -71,7 +71,7 @@ make setup   # or: ./scripts/setup.sh — same underlying source of truth either
   its own recovery instructions rather than being silently wrapped in the general
   `setup` target.
 
-## Design guidance: setup ordering with a DB or external service
+### Design guidance: setup ordering with a DB or external service
 
 When a project's `setup` needs a database or other external service (not merely local
 files), order the steps so that:
@@ -93,7 +93,7 @@ files), order the steps so that:
 This is design guidance for **projects that have such a dependency**; do not add DB/
 external-service setup steps to a project (e.g. a pure library) that has none.
 
-## Design guidance: parallel worktree isolation
+### Design guidance: parallel worktree isolation
 
 When multiple worktrees (or multiple clones) of the same repository run `setup`/`dev`/
 `test` concurrently — a common pattern when Claude or a human runs several isolated
@@ -116,7 +116,7 @@ task branches at once — each worktree's setup must not collide with another's:
   actual cross-worktree file locking or a bespoke coordination service is out of scope
   for this skill's guidance.
 
-## Design guidance: `clean` scope and shared directories
+### Design guidance: `clean` scope and shared directories
 
 - `clean` removes only regenerable build outputs that this project's own build/setup
   produced (compiled artifacts, generated config copies, this project's own log/temp

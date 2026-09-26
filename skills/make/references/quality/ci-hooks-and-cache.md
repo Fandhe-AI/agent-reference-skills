@@ -17,7 +17,9 @@ for different reasons. Hooks give a developer fast, local, pre-commit/pre-push f
 the team a mandatory, reproducible check that does not depend on any one machine's state. If the
 two run different logic, they drift, and "passed locally" stops predicting "passes in CI."
 
-## One command contract, two callers
+## Signature / Usage
+
+### One command contract, two callers
 
 Design guidance: define `check` / `verify` (and any narrower `fmt` / `lint` / `test` targets) once,
 as public entry points (see `architecture/command-contracts.md` for the full contract shape), and
@@ -49,7 +51,7 @@ scope), both callers pick it up without editing the hook config or the workflow 
 - If a check is too slow for a hook, do not silently skip it in CI too. Move it to a narrower CI-only
   entry point (e.g. `verify --profile=full`) and say so in the command's own documentation.
 
-## Pipeline definition vs. server-side merge protection
+### Pipeline definition vs. server-side merge protection
 
 These are two different artifacts with two different owners, and this Skill's guidance and
 scripts only ever touch the first one:
@@ -70,7 +72,7 @@ split exists on other hosts (e.g. Azure DevOps branch policies vs. pipeline YAML
 user's own repository-admin action outside this Skill — it is never something `apply` or `verify`
 does automatically.
 
-## Cache inputs vs. external state
+### Cache inputs vs. external state
 
 Design guidance: keep Make's own dependency tracking (mtimes of files it manages) distinct from
 opaque caches owned by other tools (Cargo's `target/`, pnpm/Turborepo's cache, CI's cache action).
@@ -91,7 +93,7 @@ opaque caches owned by other tools (Cargo's `target/`, pnpm/Turborepo's cache, C
   independent worktrees or CI runners at the same physical cache path without understanding the
   underlying tool's own locking (or lack of it).
 
-## Parallel execution and exclusivity
+### Parallel execution and exclusivity
 
 Design guidance:
 
@@ -107,7 +109,7 @@ Design guidance:
   real ordering constraint) at two different layers (Make vs. CI orchestrator) — use whichever
   layer actually owns the resource being protected, not both redundantly.
 
-## Worktree isolation
+### Worktree isolation
 
 Design guidance: a hook commonly runs inside a developer's working tree; CI commonly runs in a
 fresh checkout; but neither is guaranteed to be the *only* tree using shared paths.
@@ -121,7 +123,7 @@ fresh checkout; but neither is guaranteed to be the *only* tree using shared pat
   at a time" — implies it is safe to write to a path shared across worktrees without a lock or a
   per-worktree namespace.
 
-## Secrets
+### Secrets
 
 Design guidance:
 
@@ -138,7 +140,7 @@ Design guidance:
   discovered `.env` or credential file into their JSON output, even if the file's existence is a
   relevant finding.
 
-## OS differences
+### OS differences
 
 Design guidance: a hook runs on whatever OS the developer uses; CI often runs on a different one
 (or a matrix of several). A command contract that only works on the CI runner's OS is not actually
@@ -152,7 +154,7 @@ the underlying Make/shell portability constraints this depends on.
 - Do not assume the CI runner's `make`/shell version matches every developer's local one; see
   `maintenance/troubleshooting.md` for how to detect a version mismatch instead of assuming parity.
 
-## Keeping documentation and implementation from drifting
+### Keeping documentation and implementation from drifting
 
 Design guidance, illustrating one concrete technique this Skill recommends:
 
@@ -166,7 +168,7 @@ Design guidance, illustrating one concrete technique this Skill recommends:
   way should have a corresponding automated check (even a minimal one) that fails when the claim
   and the implementation diverge, rather than relying on manual doc review to catch it.
 
-## Pre-commit auto-fix vs. partial staging
+### Pre-commit auto-fix vs. partial staging
 
 Design guidance, with one source-backed data point:
 

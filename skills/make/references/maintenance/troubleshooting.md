@@ -12,7 +12,9 @@ lives. This page is a triage index, not a duplicate of the option/exit-code refe
 `-n` / `-q` / `--trace` / `--debug` semantics and exit-code meanings, see
 [Diagnostics and Exit Codes](../execution/diagnostics-and-exit-codes.md).
 
-## Diagnose before you act
+## Signature / Usage
+
+### Diagnose before you act
 
 ```sh
 make --version                 # confirm which make/version you actually have (see sources-and-compatibility.md)
@@ -27,7 +29,7 @@ analyzer of an untrusted Makefile — see `.claude/rules/security.md` in the par
 the general principle and [Safety and Portability](../operations/safety-and-portability.md) for
 this skill's own guidance.
 
-## "This target never rebuilds" / "This target rebuilds every time"
+### "This target never rebuilds" / "This target rebuilds every time"
 
 GNU Make decides whether to remake a target by comparing prerequisite timestamps (mtime) against
 the target's timestamp; if any (non order-only) prerequisite is newer, or the target file does
@@ -50,7 +52,7 @@ Common causes when this doesn't behave as expected:
   `make -p | grep '^<varname> ='` which value Make actually resolved, then see
   [Variables and Expansion](../fundamentals/variables-and-expansion.md).
 
-## ".PHONY is being ignored"
+### ".PHONY is being ignored"
 
 GNU Make Manual, Phony Targets node
 (`https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html`):
@@ -83,7 +85,7 @@ For the full list of GNU Make's other special targets (`.DEFAULT_GOAL`, `.DELETE
 [Special Targets and Defaults](../execution/special-targets-and-defaults.md) —
 this page only covers `.PHONY` failure diagnosis.
 
-## "missing separator" / recipe parse errors
+### "missing separator" / recipe parse errors
 
 GNU Make Manual, Error Messages node
 (`https://www.gnu.org/software/make/manual/html_node/Error-Messages.html`). This message means
@@ -97,7 +99,7 @@ the tab/`.RECIPEPREFIX` rules in full.
 Diagnostic step: run `cat -A Makefile | sed -n '<line>p'` (GNU `cat`) on the offending line
 number reported in the error to see whether the leading whitespace is `^I` (tab) or spaces.
 
-## "No rule to make target ..." / circular dependency warnings
+### "No rule to make target ..." / circular dependency warnings
 
 These are two distinct, separately reported conditions in the GNU Make Manual's Error Messages
 node:
@@ -111,7 +113,7 @@ node:
   the point it re-encounters the target and continues, which usually means one of the two rules
   is unintentional and should be removed.
 
-## Parallel and recursive builds behaving unexpectedly
+### Parallel and recursive builds behaving unexpectedly
 
 Not independently re-verified against the manual in this research pass (the `Parallel-Disable`
 and `Parallel-Output` manual pages returned `HTTP 429` on every fetch attempt during this pass —
@@ -121,7 +123,7 @@ see [Sources and Compatibility](./sources-and-compatibility.md)). Do not rely on
 Make Manual sections "Parallel Execution" and "Communicating Options to a Sub-`make`" first-hand,
 before diagnosing a parallel-build issue.
 
-## Recipe or child command failed but the build reported success
+### Recipe or child command failed but the build reported success
 
 This is a shell/recipe-composition issue, not a Make-parsing issue, and is covered in
 [Diagnostics and Exit Codes](../execution/diagnostics-and-exit-codes.md) and

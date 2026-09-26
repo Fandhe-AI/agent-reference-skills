@@ -20,7 +20,7 @@ make -n <target>   # --just-print / --dry-run
 make -q <target>   # --question
 ```
 
-## Source-backed behavior: `-n` / `-q` are not safe static analysis
+### Source-backed behavior: `-n` / `-q` are not safe static analysis
 
 - Source: GNU Make Manual, "9.3 Instead of Executing Recipes"
   (`https://www.gnu.org/software/make/manual/html_node/Instead-of-Execution.html`),
@@ -79,7 +79,9 @@ as equivalent to a text-only static analyzer. The only genuinely side-effect-fre
 inspection of a Makefile is reading its text (grep/cat/an editor), not invoking `make`
 against it at all.
 
-## Operation safety boundaries (design guidance)
+## Options / Props
+
+### Operation safety boundaries (design guidance)
 
 This skill's own auxiliary scripts (`scripts/bin/*.mjs`) and any Make/Cargo/pnpm
 commands they may reference follow these boundaries. They are this skill's design
