@@ -181,7 +181,12 @@ conflict with files already present at `--root`, **before** writing anything.
   re-validated at apply time (so a file that appeared, or changed, after approval fails its
   `create`/`matches-hash` check), and if any file is missing from the plan, has the wrong action,
   or the re-validation fails, **nothing is written** and each reason is reported as a `plan`
-  finding.
+  finding. `--apply` is all-or-nothing on the target side too: if any destination cannot be written
+  (outside `--root`, a symlink, or a same-named directory) or any conflict exists without `--force`
+  — even for a file the plan leaves out — nothing is written and the reason is reported as an
+  `apply` finding. If a write fails midway (e.g. `EACCES`), the remaining files are not written,
+  files created by this run are deleted, files overwritten with `--force` are restored to their
+  original content, and the `write:<file>` finding says whether the rollback succeeded.
 
 ### Input
 
@@ -190,7 +195,7 @@ conflict with files already present at `--root`, **before** writing anything.
 --root <path>     target directory to preview against (required)
 --apply           actually write (default: preview only, no writes); requires --plan
 --plan <path>     approved plan JSON listing every file --apply will write (required with --apply)
---force           with --apply, overwrite conflicting files too (default: skip conflicts)
+--force           with --apply, overwrite conflicting files too (default: abort the whole apply on any conflict)
 --json            emit JSON to stdout (diagnostics go to stderr instead)
 --help            show usage
 ```
@@ -258,15 +263,16 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
   --root <path>     導入予定の対象ディレクトリ（必須）
   --apply           プレビューではなく実際に書き込む（既定はプレビューのみ・書き込まない）
   --plan <path>     --apply 時に必須。書き込む全ファイルを changes に明記した承認済み計画 JSON
-  --force           --apply 時、競合しているファイルも上書きする（既定は競合をスキップ）
+  --force           --apply 時、内容の異なる既存ファイルも上書きする（既定は競合があれば適用を中止）
   --json            結果を JSON で stdout に出力（診断は stderr）
   --help            このヘルプを表示
 
 終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL(競合あり), 2=引数エラー, 3=BLOCKED
 
 実行しない条件: --apply を指定しない限り、対象 root への書き込みは一切行わない。
---apply でも、計画の再検証が失敗した・root が一致しない・書き込むファイルが計画に明記されて
-いない場合は、1 件も書き込まない。
+--apply は全件か無しか。計画の再検証が失敗した・root が一致しない・書き込むファイルが計画に
+明記されていない・書き込めない対象（root 外・symlink・同名ディレクトリ）がある・--force なしで
+競合がある場合は 1 件も書き込まない。書き込み途中で失敗した場合は、この実行で書いたファイルを元に戻す。
 ```
 
 ### Exit codes
@@ -274,7 +280,7 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
 | Code | Meaning |
 | --- | --- |
 | 0 | `PASS` (no conflicts; all conflicting files are byte-identical to the sample; or, with `--apply --force`, every conflicting file was overwritten successfully) |
-| 1 | `FAIL` (an `--apply` whose plan does not cover every written file, points at a different root, or fails re-validation — nothing is written in that case; the sample directory could not be fully enumerated — an unreadable entry, the entry limit, a directory such as `build/`, `dist/`, or `node_modules/` that the scanner skips, or a symlink / special file that is never followed or copied; nothing is previewed or written in that case; a destination file exists with different content and was not overwritten; a destination resolves outside `--root` through `..` or a symlink; or a write failed). `--apply` without `--force` still exits 1 when conflicts were skipped, even though the non-conflicting files were written: the target is only partially applied, and `applied` / `skippedConflicts` in the result say which files are which |
+| 1 | `FAIL` (an `--apply` whose plan does not cover every written file, points at a different root, or fails re-validation — nothing is written in that case; the sample directory could not be fully enumerated — an unreadable entry, the entry limit, a directory such as `build/`, `dist/`, or `node_modules/` that the scanner skips, or a symlink / special file that is never followed or copied; nothing is previewed or written in that case; a destination file exists with different content and was not overwritten; a destination resolves outside `--root` through `..` or a symlink, or is a same-named directory; or a write failed and was rolled back). `--apply` never leaves the sample partially applied: with any conflict and no `--force`, or any unwritable destination, nothing is written (`applied: []`, and `skippedConflicts` lists the conflicting files) |
 | 2 | Argument error (missing `--sample`/`--root`, `--apply` without `--plan`, a `--sample` value that is not a single directory name such as `../plans`, unknown flag) |
 | 3 | not used by this script |
 
@@ -285,11 +291,14 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
   whether to keep it, merge manually, or overwrite; `--force` overwrites unconditionally for
   every conflicting file in the sample, not just the one you reviewed.
 - **`FAIL` finding saying the destination escapes `--root` or is a symlink**: a parent directory
-  or the destination itself inside `--root` is a symlink. That file is never written, even with
+  or the destination itself inside `--root` is a symlink. Nothing is written, even with
   `--apply --force`; resolve the symlink layout with the user first.
-- **`skippedConflicts` in the result after `--apply` without `--force`**: those specific files
-  were left untouched on purpose; report them back to the user rather than silently re-running
-  with `--force`.
+- **`skippedConflicts` in the result after `--apply` without `--force`**: the whole apply was
+  aborted because of those files, and nothing was written; report them back to the user rather
+  than silently re-running with `--force`.
+- **`write:<file>` FAIL after `--apply`**: a write failed midway and this run's writes were rolled
+  back. If the finding says some files could not be restored, check those paths with the user
+  before retrying.
 - Content-comparison uses sha256, and re-validates against the file's current content each time
   the script runs. **This hashing is a change-detection aid only — it is not a sandbox and not a
   security boundary.** It tells you whether bytes match; it says nothing about whether a

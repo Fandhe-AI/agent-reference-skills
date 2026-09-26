@@ -12,7 +12,7 @@
 //   node preview-sample.mjs --sample <name> --root <path> --apply --plan <plan.json> [--force]
 //
 // 終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL, 2=引数エラー, 3=BLOCKED
-import { existsSync, readFileSync, mkdirSync, writeFileSync, statSync, realpathSync } from "node:fs";
+import { existsSync, readFileSync, mkdirSync, writeFileSync, statSync, realpathSync, rmSync, rmdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, relative, dirname, normalize } from "node:path";
 import { parseFlags } from "./lib/args.mjs";
@@ -31,15 +31,16 @@ const HELP = `preview-sample — samples/projects/<name>/ と対象 root の差�
   --root <path>     導入予定の対象ディレクトリ（必須）
   --apply           プレビューではなく実際に書き込む（既定はプレビューのみ・書き込まない）
   --plan <path>     --apply 時に必須。書き込む全ファイルを changes に明記した承認済み計画 JSON
-  --force           --apply 時、競合しているファイルも上書きする（既定は競合をスキップ）
+  --force           --apply 時、内容の異なる既存ファイルも上書きする（既定は競合があれば適用を中止）
   --json            結果を JSON で stdout に出力（診断は stderr）
   --help            このヘルプを表示
 
 終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL(競合あり), 2=引数エラー, 3=BLOCKED
 
 実行しない条件: --apply を指定しない限り、対象 root への書き込みは一切行わない。
---apply でも、計画の再検証が失敗した・root が一致しない・書き込むファイルが計画に明記されて
-いない場合は、1 件も書き込まない。
+--apply は全件か無しか。計画の再検証が失敗した・root が一致しない・書き込むファイルが計画に
+明記されていない・書き込めない対象（root 外・symlink・同名ディレクトリ）がある・--force なしで
+競合がある場合は 1 件も書き込まない。書き込み途中で失敗した場合は、この実行で書いたファイルを元に戻す。
 `;
 
 /**
@@ -82,6 +83,81 @@ function checkApplyPlan(planPath, root, toWrite) {
     }
   }
   return problems;
+}
+
+// 書き込み直前の安全確認で止めた場合の例外（メッセージは固定文で値を含まないため結果へ載せる）
+class ApplyGuardError extends Error {}
+
+/**
+ * toWrite を順に書き込む。途中で 1 件でも失敗したら以降は書き込まず、この実行で作成したファイル・
+ * ディレクトリを削除し、--force で上書きしたファイルを元の内容に戻す（一部だけ導入された状態を残さない）。
+ * 成功した場合は applied に書き込んだ相対パスを積み null を返す。失敗時は {rel, detail} を返し applied は空にする。
+ */
+function writeAll(root, toWrite, applied) {
+  const created = [];
+  const overwritten = [];
+  const createdDirs = [];
+  for (const w of toWrite) {
+    try {
+      // プレビュー時点から親ディレクトリが差し替えられた場合に備え、mkdir の前後で実体を確認する
+      // （mkdir 前の確認がないと、root 外への symlink 越しにディレクトリを作成してしまう）
+      if (!isWithinRoot(root, w.dest) || isSymlink(w.dest)) {
+        throw new ApplyGuardError("書き込み直前の確認で root 外への逸脱を検出しました");
+      }
+      const firstCreated = mkdirSync(dirname(w.dest), { recursive: true });
+      // recursive mkdir は最初に作成したディレクトリだけを返すため、そこから親ディレクトリまでの連鎖を記録する
+      for (let d = dirname(w.dest); firstCreated && d.length >= firstCreated.length; d = dirname(d)) {
+        createdDirs.push(d);
+        if (d === firstCreated) break;
+      }
+      if (!isWithinRoot(root, w.dest) || isSymlink(w.dest)) {
+        throw new ApplyGuardError("書き込み直前の確認で root 外への逸脱を検出しました");
+      }
+      if (existsSync(w.dest)) {
+        overwritten.push({ dest: w.dest, original: readFileSync(w.dest) });
+      } else {
+        created.push(w.dest);
+      }
+      writeFileSync(w.dest, readFileSync(w.src));
+      applied.push(w.rel);
+    } catch (err) {
+      const why = err instanceof ApplyGuardError ? err.message : `書き込みに失敗しました（${err.code ?? "UNKNOWN"}）`;
+      const rollbackErrors = rollback(created, overwritten, createdDirs);
+      applied.length = 0;
+      const tail = rollbackErrors.length === 0
+        ? "この実行で書き込んだファイルは元に戻しました"
+        : `元に戻せなかったファイルがあります（手動で確認してください）: ${rollbackErrors.join(", ")}`;
+      return { rel: w.rel, detail: `${why}。${tail}` };
+    }
+  }
+  return null;
+}
+
+function rollback(created, overwritten, createdDirs) {
+  const errors = [];
+  for (const p of created) {
+    try {
+      rmSync(p, { force: true });
+    } catch (err) {
+      errors.push(`${p} (${err.code ?? "UNKNOWN"})`);
+    }
+  }
+  for (const o of overwritten) {
+    try {
+      writeFileSync(o.dest, o.original);
+    } catch (err) {
+      errors.push(`${o.dest} (${err.code ?? "UNKNOWN"})`);
+    }
+  }
+  // mkdir で新規作成したディレクトリは、空であれば削除する（深い方から）
+  for (const d of [...createdDirs].sort((a, b) => b.length - a.length)) {
+    try {
+      rmdirSync(d);
+    } catch {
+      // 他のファイルが残っている等で空でない場合は残す（中身は上で削除・復元済み）
+    }
+  }
+  return errors;
 }
 
 function listSampleFiles(sampleRoot) {
@@ -187,6 +263,8 @@ function main() {
   const findings = [];
   const plannedWrites = [];
   const conflicts = [];
+  // 書き込めない対象（root 外・symlink・同名ディレクトリ）。1 件でもあれば --apply 全体を中止する
+  const unwritable = [];
 
   for (const sf of sampleFiles) {
     const rel = relative(sampleRoot, sf);
@@ -198,14 +276,16 @@ function main() {
       findings.push({
         id: `file:${rel}`,
         status: STATUS.FAIL,
-        detail: `書き込み先が root 外へ逸脱するか symlink です（${target.reason ?? "symlink"}）。適用対象から除外します`,
+        detail: `書き込み先が root 外へ逸脱するか symlink です（${target.reason ?? "symlink"}）。書き込めません`,
         evidence: rel,
       });
+      unwritable.push(rel);
       continue;
     }
     if (existsSync(dest)) {
       if (!statSync(dest).isFile()) {
         findings.push({ id: `file:${rel}`, status: STATUS.FAIL, detail: "競合: 同名のディレクトリ等が存在します（上書き不可）", evidence: rel });
+        unwritable.push(rel);
         continue;
       }
       if (sha256(sf) === sha256(dest)) {
@@ -230,36 +310,35 @@ function main() {
     } else {
       skippedConflicts.push(...conflicts.map((c) => c.rel));
     }
-    const planProblems = checkApplyPlan(values.plan, root, toWrite);
-    for (const p of planProblems) {
-      findings.push({ id: "plan", status: STATUS.FAIL, detail: `適用を中止（何も書き込んでいません）: ${p}`, evidence: values.plan });
+    // 適用は全件か無しか。サンプルの一部だけを導入した状態を作らないため、書き込み前に
+    // 計画との照合・書き込めない対象・--force なしの競合を確認し、1 件でもあれば何も書き込まない。
+    // id は計画照合の問題を "plan"、書き込み対象側の問題を "apply" として区別する
+    const abortReasons = checkApplyPlan(values.plan, root, toWrite).map((reason) => ({ id: "plan", reason }));
+    if (unwritable.length > 0) {
+      abortReasons.push({ id: "apply", reason: `書き込めない対象があります: ${unwritable.join(", ")}` });
     }
-    if (planProblems.length > 0) toWrite.length = 0;
-    for (const w of toWrite) {
-      try {
-        // プレビュー時点から親ディレクトリが差し替えられた場合に備え、mkdir の前後で実体を確認する
-        // （mkdir 前の確認がないと、root 外への symlink 越しにディレクトリを作成してしまう）
-        if (!isWithinRoot(root, w.dest) || isSymlink(w.dest)) {
-          throw new Error("書き込み直前の確認で root 外への逸脱を検出しました");
+    if (skippedConflicts.length > 0) {
+      abortReasons.push({ id: "apply", reason: `--force なしで内容の異なる既存ファイルがあります: ${skippedConflicts.join(", ")}` });
+    }
+    for (const { id, reason } of abortReasons) {
+      findings.push({ id, status: STATUS.FAIL, detail: `適用を中止（何も書き込んでいません）: ${reason}`, evidence: values.plan });
+    }
+    if (abortReasons.length === 0) {
+      const failure = writeAll(root, toWrite, applied);
+      if (failure) {
+        findings.push({ id: `write:${failure.rel}`, status: STATUS.FAIL, detail: failure.detail, evidence: failure.rel });
+        for (const w of toWrite) {
+          if (w.finding) {
+            w.finding.detail = "競合: 既存ファイルが存在し内容が異なります（適用失敗のため元の内容のまま）";
+          }
         }
-        mkdirSync(dirname(w.dest), { recursive: true });
-        if (!isWithinRoot(root, w.dest) || isSymlink(w.dest)) {
-          throw new Error("書き込み直前の確認で root 外への逸脱を検出しました");
-        }
-        writeFileSync(w.dest, readFileSync(w.src));
-        applied.push(w.rel);
+      } else {
         // --force で上書きした競合は、適用結果として実態（上書き済み）に合わせて報告する
-        if (w.finding) {
-          w.finding.status = STATUS.PASS;
-          w.finding.detail = "競合していた既存ファイルを --force で上書きしました";
-        }
-      } catch (err) {
-        const detail = `書き込みに失敗しました（${err.code ?? "UNKNOWN"}）`;
-        if (w.finding) {
-          w.finding.status = STATUS.FAIL;
-          w.finding.detail = detail;
-        } else {
-          findings.push({ id: `write:${w.rel}`, status: STATUS.FAIL, detail, evidence: w.rel });
+        for (const w of toWrite) {
+          if (w.finding) {
+            w.finding.status = STATUS.PASS;
+            w.finding.detail = "競合していた既存ファイルを --force で上書きしました";
+          }
         }
       }
     }
@@ -270,7 +349,7 @@ function main() {
   if (!values.apply) {
     unresolved.push("--apply を指定していないため、実際の書き込みは行っていません（プレビューのみ）");
   } else if (skippedConflicts.length > 0) {
-    unresolved.push(`--force なしのため競合ファイルはスキップしました: ${skippedConflicts.join(", ")}`);
+    unresolved.push(`--force なしのため競合ファイルがあり、適用全体を中止しました: ${skippedConflicts.join(", ")}`);
   }
 
   const result = buildResult({

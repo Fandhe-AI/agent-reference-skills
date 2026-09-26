@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { writeFileSync, readFileSync, existsSync, symlinkSync, mkdirSync, rmSync, readdirSync } from "node:fs";
+import { writeFileSync, readFileSync, existsSync, symlinkSync, mkdirSync, rmSync, readdirSync, chmodSync } from "node:fs";
 import { join, relative } from "node:path";
 import { createHash } from "node:crypto";
 import { runCli, runCliJson, makeTmpDir, cleanupTmpDir, BIN_DIR } from "./helpers.mjs";
@@ -77,17 +77,63 @@ test("preview-sample: 既存ファイルとの内容差分を競合として表�
   }
 });
 
-test("preview-sample: --apply で計画に明記した新規ファイルのみ書き込み、競合はスキップする", () => {
+test("preview-sample: --apply で --force なしの競合が 1 件でもあれば何も書き込まない（全件か無しか）", () => {
   const dir = makeTmpDir();
   const planDir = makeTmpDir();
   try {
     writeFileSync(join(dir, "Makefile"), "existing different content\n");
     const planPath = writeApplyPlan(planDir, dir, "incremental-build", { skip: ["Makefile"] });
     const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath]);
-    assert.ok(existsSync(join(dir, "src", "01-intro.txt")), "競合していない新規ファイルは書き込まれる");
+    assert.equal(r.status, 1);
+    assert.equal(existsSync(join(dir, "src")), false, "競合していない新規ファイルも書き込まない");
     assert.equal(readFileSync(join(dir, "Makefile"), "utf8"), "existing different content\n", "競合ファイルは --force なしでは上書きしない");
     assert.ok(r.json.skippedConflicts.includes("Makefile"));
+    assert.deepEqual(r.json.applied, []);
+    assert.ok(r.json.findings.some((f) => f.id === "apply" && f.detail.includes("何も書き込んでいません")));
   } finally {
+    cleanupTmpDir(dir);
+    cleanupTmpDir(planDir);
+  }
+});
+
+test("preview-sample: 書き込めない対象（同名ディレクトリ）が 1 件でもあれば計画外でも残りを書き込まない", () => {
+  const dir = makeTmpDir();
+  const planDir = makeTmpDir();
+  try {
+    mkdirSync(join(dir, "Makefile"));
+    const planPath = writeApplyPlan(planDir, dir, "incremental-build", { skip: ["Makefile"] });
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath]);
+    assert.equal(r.status, 1);
+    assert.equal(existsSync(join(dir, "src")), false, "サンプルの一部だけを導入しない");
+    assert.deepEqual(r.json.applied, []);
+    assert.ok(r.json.findings.some((f) => f.id === "apply" && f.detail.includes("書き込めない対象")));
+  } finally {
+    cleanupTmpDir(dir);
+    cleanupTmpDir(planDir);
+  }
+});
+
+test("preview-sample: 書き込み途中で失敗したら、この実行で書いたファイルを元に戻し原因を報告する", { skip: process.platform === "win32" || process.getuid?.() === 0 }, () => {
+  const dir = makeTmpDir();
+  const planDir = makeTmpDir();
+  try {
+    const original = "original makefile\n";
+    writeFileSync(join(dir, "Makefile"), original);
+    mkdirSync(join(dir, "src"));
+    const planPath = writeApplyPlan(planDir, dir, "incremental-build", { modify: ["Makefile"] });
+    chmodSync(join(dir, "src"), 0o555);
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath]);
+    chmodSync(join(dir, "src"), 0o755);
+    assert.equal(r.status, 1);
+    assert.deepEqual(r.json.applied, []);
+    assert.equal(readFileSync(join(dir, "Makefile"), "utf8"), original, "上書きした Makefile は元の内容に戻す");
+    assert.equal(existsSync(join(dir, ".gitignore")), false, "この実行で新規作成したファイルは削除する");
+    assert.deepEqual(readdirSync(join(dir, "src")), []);
+    const failure = r.json.findings.find((f) => f.id.startsWith("write:"));
+    assert.ok(failure.detail.includes("EACCES"));
+    assert.ok(failure.detail.includes("元に戻しました"));
+  } finally {
+    try { chmodSync(join(dir, "src"), 0o755); } catch {}
     cleanupTmpDir(dir);
     cleanupTmpDir(planDir);
   }
