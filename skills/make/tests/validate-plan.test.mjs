@@ -272,3 +272,99 @@ test("validate-plan: 計画ファイルを受け取っただけでは何も実�
     cleanupTmpDir(dir);
   }
 });
+
+test("validate-plan: changes / checks の要素が null でも例外終了せず FAIL として返す", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    const planPath = writePlan(dir, { schemaVersion: "1.0.0", root, changes: [null], checks: [null] });
+    const r = runCliJson("validate-plan.mjs", ["--plan", planPath]);
+    assert.equal(r.status, 1);
+    assert.equal(r.json.status, "FAIL");
+    assert.ok(r.json.findings.some((f) => f.id === "changes[0]" && f.status === "FAIL"));
+    assert.ok(r.json.findings.some((f) => f.id === "checks[0]" && f.status === "FAIL"));
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+test("validate-plan: 配列でない checks は空扱いにせず FAIL にする", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    const planPath = writePlan(dir, { schemaVersion: "1.0.0", root, changes: [], checks: { name: "x" } });
+    const r = runCliJson("validate-plan.mjs", ["--plan", planPath]);
+    assert.equal(r.status, 1);
+    assert.ok(r.json.findings.some((f) => f.id === "checks" && f.status === "FAIL"));
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+test("validate-plan: checks[].args に文字列以外の要素があれば FAIL", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    const planPath = writePlan(dir, {
+      schemaVersion: "1.0.0",
+      root,
+      changes: [],
+      checks: [{ name: "n", command: "node", args: ["--version", 1, { x: 1 }], approved: false }],
+    });
+    const r = runCliJson("validate-plan.mjs", ["--plan", planPath]);
+    assert.equal(r.status, 1);
+    assert.ok(r.json.findings.some((f) => f.id === "checks[0]" && f.detail.includes("文字列")));
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+test("validate-plan: expectedState: absent / present を実際の存在状態と照合する", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    writeFileSync(join(root, "EXISTING.txt"), "x\n");
+    const planPath = writePlan(dir, {
+      schemaVersion: "1.0.0",
+      root,
+      changes: [
+        { path: "EXISTING.txt", action: "modify", expectedState: "absent" },
+        { path: "EXISTING.txt", action: "modify", expectedState: "present" },
+      ],
+      checks: [],
+    });
+    const r = runCliJson("validate-plan.mjs", ["--plan", planPath]);
+    assert.equal(r.status, 1);
+    assert.equal(r.json.status, "FAIL");
+    const c0 = r.json.findings.filter((f) => f.id === "changes[0]");
+    const c1 = r.json.findings.filter((f) => f.id === "changes[1]");
+    assert.ok(c0.some((f) => f.status === "FAIL" && f.detail.includes("expectedState: absent")));
+    assert.ok(c1.every((f) => f.status === "PASS"));
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+test("validate-plan: ディレクトリへの modify + matches-hash は例外終了せず FAIL にする", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(join(root, "sub"), { recursive: true });
+    const planPath = writePlan(dir, {
+      schemaVersion: "1.0.0",
+      root,
+      changes: [{ path: "sub", action: "modify", expectedState: "matches-hash", contentHash: sha256Of("x") }],
+      checks: [],
+    });
+    const r = runCliJson("validate-plan.mjs", ["--plan", planPath]);
+    assert.equal(r.status, 1);
+    assert.equal(r.json.status, "FAIL");
+    assert.ok(r.json.findings.some((f) => f.id === "changes[0]" && f.detail.includes("通常ファイル")));
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});

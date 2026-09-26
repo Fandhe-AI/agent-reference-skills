@@ -50,8 +50,11 @@ all: $(BUILD_DIR)/manual.md
 # only touches its own build/*.processed (pattern rule below), which in
 # turn is the only thing that makes manual.md's prerequisite set
 # out-of-date, so only the affected fragment is reprocessed before
-# manual.md is reassembled.
+# manual.md is reassembled. With no src/*.txt at all, $(PROCESSED) is
+# empty and a bare `cat > $@` would block reading stdin, so the recipe
+# fails explicitly instead.
 $(BUILD_DIR)/manual.md: $(PROCESSED) | $(BUILD_DIR)
+	@if [ -z "$(strip $(PROCESSED))" ]; then echo "error: no $(SRC_DIR)/*.txt fragments found" >&2; exit 1; fi
 	@echo "assembling $@ from $(words $(PROCESSED)) fragment(s)"
 	cat $(PROCESSED) > $@
 

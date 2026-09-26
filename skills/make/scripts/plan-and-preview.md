@@ -22,8 +22,11 @@ to change, added dependencies, risks, alternatives, migration steps, verificatio
 before it is handed to `run-checks.mjs`: JSON well-formedness, `root` existence, each
 `changes[]` entry's action/expectedState validity and path-escape safety, `..`/absolute-path/
 symlink-based escapes out of `root`, `create`-vs-existing-file conflicts, `modify`-vs-missing-
-file mismatches, and each `checks[]` entry's shape (including rejecting shell metacharacters in
-`command`).
+file (or non-regular-file) mismatches, `expectedState` compared against the actual state
+(`absent`/`present` against existence, `matches-hash` against the file's sha256), and each
+`checks[]` entry's shape (including rejecting shell metacharacters in `command` and non-string
+`args` elements). Non-object `changes[]`/`checks[]` elements and a non-array `checks` are
+reported as `FAIL` findings rather than crashing the script.
 
 ### When not to run it
 
@@ -170,7 +173,7 @@ conflict with files already present at `--root`, **before** writing anything.
 ### Input
 
 ```
---sample <name>   name of a directory under samples/projects/ (required)
+--sample <name>   name of a directory directly under samples/projects/ (required)
 --root <path>     target directory to preview against (required)
 --apply           actually write (default: preview only, no writes)
 --force           with --apply, overwrite conflicting files too (default: skip conflicts)
@@ -253,9 +256,9 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
 
 | Code | Meaning |
 | --- | --- |
-| 0 | `PASS` (no conflicts; or all conflicting files are byte-identical to the sample) |
-| 1 | `FAIL` (at least one destination file exists with different content — a real conflict) |
-| 2 | Argument error (missing `--sample`/`--root`, unknown flag) |
+| 0 | `PASS` (no conflicts; all conflicting files are byte-identical to the sample; or, with `--apply --force`, every conflicting file was overwritten successfully) |
+| 1 | `FAIL` (a destination file exists with different content and was not overwritten; a destination resolves outside `--root` through `..` or a symlink; or a write failed) |
+| 2 | Argument error (missing `--sample`/`--root`, a `--sample` value that is not a single directory name such as `../plans`, unknown flag) |
 | 3 | not used by this script |
 
 ### What to do next on failure/conflict
@@ -264,6 +267,9 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
   sample's. Do not pass `--force` reflexively — read the existing file, decide with the user
   whether to keep it, merge manually, or overwrite; `--force` overwrites unconditionally for
   every conflicting file in the sample, not just the one you reviewed.
+- **`FAIL` finding saying the destination escapes `--root` or is a symlink**: a parent directory
+  or the destination itself inside `--root` is a symlink. That file is never written, even with
+  `--apply --force`; resolve the symlink layout with the user first.
 - **`skippedConflicts` in the result after `--apply` without `--force`**: those specific files
   were left untouched on purpose; report them back to the user rather than silently re-running
   with `--force`.

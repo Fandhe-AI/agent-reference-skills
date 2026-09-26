@@ -105,7 +105,7 @@ verify-layout — 適用後構成の help/公開コマンド整合性・Skill �
 | --- | --- |
 | 0 | `PASS`, or `NOT_APPLICABLE` (no Makefile found at `--root`/`--makefile`) |
 | 1 | `FAIL` (a help entry points at a nonexistent target, or a skill-install-path dependency was found) |
-| 2 | Argument error (missing `--root`, unknown flag) |
+| 2 | Argument error (missing `--root`, unknown flag, or a `--makefile` value that resolves outside `--root` via `..`, an absolute path, or a symlink) |
 | 3 | not used by this script |
 
 ### What to do next on failure

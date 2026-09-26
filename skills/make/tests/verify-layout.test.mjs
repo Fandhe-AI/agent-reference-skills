@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { writeFileSync } from "node:fs";
+import { writeFileSync, mkdirSync, symlinkSync } from "node:fs";
 import { join } from "node:path";
 import { runCli, runCliJson, makeTmpDir, cleanupTmpDir } from "./helpers.mjs";
 
@@ -116,5 +116,22 @@ test("verify-layout: recipe 内部の shell 解析は未確認として明示す
     assert.ok(r.json.unresolved.some((u) => u.includes("shell")));
   } finally {
     cleanupTmpDir(dir);
+  }
+});
+
+test("verify-layout: --makefile で root 外（`..`・絶対パス・symlink）を指す値は引数エラー（exit 2）", () => {
+  const parent = makeTmpDir();
+  try {
+    const root = join(parent, "proj");
+    mkdirSync(root);
+    writeFileSync(join(parent, "Makefile"), "all: ## outside\n\t@true\n");
+    symlinkSync(join(parent, "Makefile"), join(root, "Linked.mk"));
+    for (const bad of ["../Makefile", join(parent, "Makefile"), "Linked.mk"]) {
+      const r = runCli("verify-layout.mjs", ["--root", root, "--makefile", bad, "--json"]);
+      assert.equal(r.status, 2, `--makefile ${bad} は拒否される`);
+      assert.equal(r.stdout, "", "引数エラー時は stdout に JSON を出さない");
+    }
+  } finally {
+    cleanupTmpDir(parent);
   }
 });

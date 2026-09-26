@@ -11,6 +11,21 @@ export class PlanError extends Error {}
 const VALID_ACTIONS = new Set(["create", "modify", "delete"]);
 const VALID_EXPECTED_STATES = new Set(["absent", "present", "matches-hash", "any"]);
 
+function isPlainObject(v) {
+  return typeof v === "object" && v !== null && !Array.isArray(v);
+}
+
+// 対象パスの実際の状態を返す。存在しない場合は "absent"、通常ファイルなら "file"、それ以外
+// （ディレクトリ等）は "other"。stat の失敗は例外にせず "error" として finding に変換させる。
+function entryKind(p) {
+  if (!existsSync(p)) return "absent";
+  try {
+    return statSync(p).isFile() ? "file" : "other";
+  } catch {
+    return "error";
+  }
+}
+
 /**
  * plan ファイルを読み込み JSON.parse する。存在しない・壊れている場合は PlanError。
  */
@@ -82,6 +97,11 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
   }
   for (const [i, change] of changes.entries()) {
     const label = `changes[${i}]`;
+    // null・配列・プリミティブを要素に含む計画でも例外終了させず、構造化された FAIL として返す
+    if (!isPlainObject(change)) {
+      findings.push({ id: label, status: "FAIL", detail: "changes の各要素はオブジェクトである必要があります" });
+      continue;
+    }
     if (typeof change.path !== "string" || change.path.length === 0) {
       findings.push({ id: label, status: "FAIL", detail: "path が必要です" });
       continue;
@@ -103,7 +123,12 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
       continue;
     }
 
-    const exists = existsSync(resolved.resolved);
+    const kind = entryKind(resolved.resolved);
+    const exists = kind !== "absent";
+    if (kind === "error") {
+      findings.push({ id: label, status: "FAIL", detail: `対象の状態を確認できません: ${change.path}` });
+      continue;
+    }
     if (change.action === "create" && exists) {
       findings.push({
         id: label,
@@ -116,6 +141,12 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
         status: "FAIL",
         detail: `modify 指定だが元ファイルが存在しません: ${change.path}`,
       });
+    } else if (change.action === "modify" && kind !== "file") {
+      findings.push({
+        id: label,
+        status: "FAIL",
+        detail: `modify 指定だが対象が通常ファイルではありません: ${change.path}`,
+      });
     } else if (change.action === "delete" && !exists) {
       findings.push({
         id: label,
@@ -126,9 +157,24 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
       findings.push({ id: label, status: "PASS", detail: `${change.action} の前提を確認: ${change.path}` });
     }
 
-    // expectedState: "matches-hash" は、元ファイルの実際の内容（sha256）を計画の contentHash と
-    // 突き合わせて初めて意味を持つ。宣言だけ受理して比較しない状態にしない。
-    if (change.expectedState === "matches-hash") {
+    // expectedState は宣言だけ受理して比較しない状態にしない。absent / present は実際の存在状態と、
+    // matches-hash は元ファイルの実際の内容（sha256）と計画の contentHash を突き合わせる。
+    if (change.expectedState === "absent" || change.expectedState === "present") {
+      const actual = exists ? "present" : "absent";
+      if (actual === change.expectedState) {
+        findings.push({
+          id: label,
+          status: "PASS",
+          detail: `expectedState: ${change.expectedState} と実際の状態が一致: ${change.path}`,
+        });
+      } else {
+        findings.push({
+          id: label,
+          status: "FAIL",
+          detail: `expectedState: ${change.expectedState} だが実際は ${actual} です（計画作成時から状態が変わっています）: ${change.path}`,
+        });
+      }
+    } else if (change.expectedState === "matches-hash") {
       if (typeof change.contentHash !== "string" || !/^sha256:[0-9a-f]{64}$/.test(change.contentHash)) {
         findings.push({
           id: label,
@@ -141,15 +187,26 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
           status: "FAIL",
           detail: `matches-hash を指定していますが元ファイルが存在しません: ${change.path}`,
         });
+      } else if (kind !== "file") {
+        findings.push({
+          id: label,
+          status: "FAIL",
+          detail: `matches-hash を指定していますが対象が通常ファイルではありません: ${change.path}`,
+        });
       } else {
-        const actualHash = `sha256:${createHash("sha256").update(readFileSync(resolved.resolved)).digest("hex")}`;
+        let actualHash = null;
+        try {
+          actualHash = `sha256:${createHash("sha256").update(readFileSync(resolved.resolved)).digest("hex")}`;
+        } catch (err) {
+          findings.push({ id: label, status: "FAIL", detail: `元ファイルを読み込めません（${err.code ?? err.message}）: ${change.path}` });
+        }
         if (actualHash === change.contentHash) {
           findings.push({
             id: label,
             status: "PASS",
             detail: `元ファイルの内容が計画の contentHash と一致（変更されていません）: ${change.path}`,
           });
-        } else {
+        } else if (actualHash !== null) {
           findings.push({
             id: label,
             status: "FAIL",
@@ -160,9 +217,17 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
     }
   }
 
+  // checks は省略可（検証なしの計画）。ただし指定されている場合は配列以外を黙って空扱いにしない。
   const checks = Array.isArray(plan.checks) ? plan.checks : [];
+  if (plan.checks !== undefined && !Array.isArray(plan.checks)) {
+    findings.push({ id: "checks", status: "FAIL", detail: "checks は配列である必要があります" });
+  }
   for (const [i, check] of checks.entries()) {
     const label = `checks[${i}]`;
+    if (!isPlainObject(check)) {
+      findings.push({ id: label, status: "FAIL", detail: "checks の各要素はオブジェクトである必要があります" });
+      continue;
+    }
     if (typeof check.name !== "string" || check.name.length === 0) {
       findings.push({ id: label, status: "FAIL", detail: "name が必要です" });
     }
@@ -177,8 +242,13 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
     }
     if (check.args !== undefined && !Array.isArray(check.args)) {
       findings.push({ id: label, status: "FAIL", detail: "args は配列である必要があります" });
+    } else if (Array.isArray(check.args) && !check.args.every((a) => typeof a === "string")) {
+      // execFileSync へそのまま渡すため、数値・オブジェクト等は実行前にここで拒否する
+      findings.push({ id: label, status: "FAIL", detail: "args の各要素は文字列である必要があります" });
     }
-    if (check.cwd !== undefined) {
+    if (check.cwd !== undefined && (typeof check.cwd !== "string" || check.cwd.length === 0)) {
+      findings.push({ id: label, status: "FAIL", detail: "cwd は空でない文字列である必要があります" });
+    } else if (check.cwd !== undefined) {
       const cwdResolved = resolvePlanPath(root, check.cwd);
       if (cwdResolved.escaped) {
         findings.push({

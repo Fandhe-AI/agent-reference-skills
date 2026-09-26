@@ -8,11 +8,11 @@
 //   node preview-sample.mjs --sample <name> --root <path> --apply [--force]   # 明示指定時のみ書き込む
 //
 // 終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL, 2=引数エラー, 3=BLOCKED
-import { existsSync, readFileSync, mkdirSync, writeFileSync, statSync } from "node:fs";
+import { existsSync, readFileSync, mkdirSync, writeFileSync, statSync, realpathSync } from "node:fs";
 import { join, relative, dirname } from "node:path";
 import { createHash } from "node:crypto";
 import { parseFlags } from "./lib/args.mjs";
-import { resolveRoot, getSkillRoot, PathError } from "./lib/paths.mjs";
+import { resolveRoot, getSkillRoot, resolvePlanPath, isWithinRoot, isSymlink, PathError } from "./lib/paths.mjs";
 import { scanTree } from "./lib/scan.mjs";
 import { buildResult, emitResult, aggregateStatus, STATUS, diag } from "./lib/result.mjs";
 
@@ -38,6 +38,10 @@ function listSampleFiles(sampleRoot) {
   const { entries } = scanTree(sampleRoot, { maxDepth: 32, maxEntries: 20000 });
   return entries.filter((e) => e.type === "file").map((e) => e.path);
 }
+
+// サンプル名は samples/projects/ 直下の単一ディレクトリ名に限る（`../` や区切り文字で
+// サンプル領域外を読ませない）。
+const SAMPLE_NAME_RE = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 
 function sha256(path) {
   return createHash("sha256").update(readFileSync(path)).digest("hex");
@@ -71,10 +75,22 @@ function main() {
     process.exit(2);
   }
 
+  if (!SAMPLE_NAME_RE.test(values.sample) || values.sample.includes("..")) {
+    process.stderr.write(`${HELP}\n`);
+    diag(`引数エラー: --sample は samples/projects/ 直下のディレクトリ名のみ指定できます: ${values.sample}`);
+    process.exit(2);
+  }
+
   const skillRoot = getSkillRoot(import.meta.url);
-  const sampleRoot = join(skillRoot, "samples", "projects", values.sample);
+  const projectsRoot = join(skillRoot, "samples", "projects");
+  const sampleRoot = join(projectsRoot, values.sample);
   if (!existsSync(sampleRoot) || !statSync(sampleRoot).isDirectory()) {
     diag(`サンプルが見つかりません: ${sampleRoot}`);
+    process.exit(1);
+  }
+  // 名前の形式に加え、symlink を辿った実体も samples/projects 配下であることを確認する
+  if (realpathSync(sampleRoot) === realpathSync(projectsRoot) || !isWithinRoot(projectsRoot, sampleRoot)) {
+    diag(`サンプルの実体が samples/projects の外にあります: ${sampleRoot}`);
     process.exit(1);
   }
 
@@ -92,45 +108,73 @@ function main() {
   const sampleFiles = listSampleFiles(sampleRoot);
   const findings = [];
   const plannedWrites = [];
+  const conflicts = [];
 
   for (const sf of sampleFiles) {
     const rel = relative(sampleRoot, sf);
-    const dest = join(root, rel);
+    // 書き込み先は symlink を辿った実体まで root 配下であることを確認する。親ディレクトリや
+    // 既存ファイルが root 外への symlink の場合、プレビューでも --apply --force でも書き込まない。
+    const target = resolvePlanPath(root, rel);
+    const dest = target.resolved;
+    if (target.escaped || isSymlink(dest)) {
+      findings.push({
+        id: `file:${rel}`,
+        status: STATUS.FAIL,
+        detail: `書き込み先が root 外へ逸脱するか symlink です（${target.reason ?? "symlink"}）。適用対象から除外します`,
+        evidence: rel,
+      });
+      continue;
+    }
     if (existsSync(dest)) {
-      const sameContent = statSync(dest).isFile() && sha256(sf) === sha256(dest);
-      if (sameContent) {
+      if (!statSync(dest).isFile()) {
+        findings.push({ id: `file:${rel}`, status: STATUS.FAIL, detail: "競合: 同名のディレクトリ等が存在します（上書き不可）", evidence: rel });
+        continue;
+      }
+      if (sha256(sf) === sha256(dest)) {
         findings.push({ id: `file:${rel}`, status: STATUS.PASS, detail: "既存ファイルと内容が一致（差分なし）", evidence: rel });
       } else {
-        findings.push({ id: `file:${rel}`, status: STATUS.FAIL, detail: "競合: 既存ファイルが存在し内容が異なります", evidence: rel });
+        const finding = { id: `file:${rel}`, status: STATUS.FAIL, detail: "競合: 既存ファイルが存在し内容が異なります", evidence: rel };
+        findings.push(finding);
+        conflicts.push({ src: sf, dest, rel, finding });
       }
     } else {
       findings.push({ id: `file:${rel}`, status: STATUS.PASS, detail: "新規導入予定（既存ファイルなし）", evidence: rel });
-      plannedWrites.push({ src: sf, dest, rel });
+      plannedWrites.push({ src: sf, dest, rel, finding: null });
     }
   }
 
-  let applied = [];
-  let skippedConflicts = [];
+  const applied = [];
+  const skippedConflicts = [];
   if (values.apply) {
-    for (const f of findings) {
-      if (f.status === STATUS.FAIL && !values.force) {
-        skippedConflicts.push(f.evidence);
-      }
-    }
     const toWrite = [...plannedWrites];
     if (values.force) {
-      for (const sf of sampleFiles) {
-        const rel = relative(sampleRoot, sf);
-        const dest = join(root, rel);
-        if (existsSync(dest) && !toWrite.some((w) => w.rel === rel)) {
-          toWrite.push({ src: sf, dest, rel });
-        }
-      }
+      toWrite.push(...conflicts);
+    } else {
+      skippedConflicts.push(...conflicts.map((c) => c.rel));
     }
     for (const w of toWrite) {
-      mkdirSync(dirname(w.dest), { recursive: true });
-      writeFileSync(w.dest, readFileSync(w.src));
-      applied.push(w.rel);
+      try {
+        mkdirSync(dirname(w.dest), { recursive: true });
+        // mkdir 後に改めて実体を確認する（プレビュー時点から親ディレクトリが差し替えられた場合に備える）
+        if (!isWithinRoot(root, w.dest) || isSymlink(w.dest)) {
+          throw new Error("書き込み直前の確認で root 外への逸脱を検出しました");
+        }
+        writeFileSync(w.dest, readFileSync(w.src));
+        applied.push(w.rel);
+        // --force で上書きした競合は、適用結果として実態（上書き済み）に合わせて報告する
+        if (w.finding) {
+          w.finding.status = STATUS.PASS;
+          w.finding.detail = "競合していた既存ファイルを --force で上書きしました";
+        }
+      } catch (err) {
+        const detail = `書き込みに失敗しました: ${err.message}`;
+        if (w.finding) {
+          w.finding.status = STATUS.FAIL;
+          w.finding.detail = detail;
+        } else {
+          findings.push({ id: `write:${w.rel}`, status: STATUS.FAIL, detail, evidence: w.rel });
+        }
+      }
     }
   }
 

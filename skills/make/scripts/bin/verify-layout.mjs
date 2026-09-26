@@ -8,9 +8,8 @@
 //
 // 終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL, 2=引数エラー, 3=BLOCKED
 import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
 import { parseFlags } from "./lib/args.mjs";
-import { resolveRoot, PathError } from "./lib/paths.mjs";
+import { resolveRoot, resolvePlanPath, PathError } from "./lib/paths.mjs";
 import { buildResult, emitResult, aggregateStatus, STATUS, diag } from "./lib/result.mjs";
 
 const HELP = `verify-layout — 適用後構成の help/公開コマンド整合性・Skill 固有パス依存を静的確認する
@@ -98,7 +97,14 @@ function main() {
     throw err;
   }
 
-  const makefilePath = join(root, values.makefile);
+  // --makefile は root 配下の相対パスに限る（`..`・絶対パス・root 外への symlink で対象外のファイルを読まない）
+  const makefileTarget = resolvePlanPath(root, values.makefile);
+  if (makefileTarget.escaped) {
+    process.stderr.write(`${HELP}\n`);
+    diag(`引数エラー: --makefile は root 配下の相対パスである必要があります（${makefileTarget.reason}）: ${values.makefile}`);
+    process.exit(2);
+  }
+  const makefilePath = makefileTarget.resolved;
   const findings = [];
   const unresolved = [];
 

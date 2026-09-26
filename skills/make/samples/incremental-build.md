@@ -6,6 +6,7 @@ Plain-text fragments in `src/` are transformed and assembled into `build/manual.
 
 ```makefile
 $(BUILD_DIR)/manual.md: $(PROCESSED) | $(BUILD_DIR)
+	@if [ -z "$(strip $(PROCESSED))" ]; then echo "error: no $(SRC_DIR)/*.txt fragments found" >&2; exit 1; fi
 	@echo "assembling $@ from $(words $(PROCESSED)) fragment(s)"
 	cat $(PROCESSED) > $@
 
@@ -56,6 +57,7 @@ make clean      # removes build/ entirely
 - Second `make` (no changes): prints a "Nothing to be done" message for the default goal (exact quoting differs by GNU Make version — GNU Make 3.81 uses `` `all' ``-style quoting); nothing is reprocessed.
 - After editing one `src/*.txt`: only that file's `processing ...` line reappears, followed by the `assembling ...` line — proves the dependency graph is scoped per-fragment, not whole-directory.
 - `make clean`: no output beyond the `rm -rf build` recipe line; `build/` no longer exists afterward.
+- With no `src/*.txt` at all: the assemble recipe prints `error: no src/*.txt fragments found` and exits non-zero instead of blocking on `cat` reading stdin.
 
 ## Files
 
