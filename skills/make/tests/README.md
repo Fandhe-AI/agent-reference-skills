@@ -23,6 +23,7 @@ node --test skills/make/tests/**/*.test.mjs
 | `sample-plans.test.mjs` | `samples/plans/` 配下の各サンプル計画が `validate-plan.mjs` のスキーマに適合すること。root プレースホルダのままでは FAIL、root を一時ディレクトリに差し替える（modify 対象のダミーファイルも用意する）と PASS になることを確認する |
 | `exec-safe.test.mjs` | Windows `.cmd`/`.bat` 専用処理（`resolveExecutionTarget`）のロジック単体テスト。cmd.exe メタ文字を含む引数の BLOCKED 化と、理由に値ではなく位置だけを書くことを含む。実 Windows 環境がないためロジック判定のみ検証し、cmd.exe の実起動そのものは未検証 |
 | `sample-projects.test.mjs` | `samples/projects/*/Makefile` の recipe が `cargo clean` を `--target-dir target` なしで使わないこと（共有 `CARGO_TARGET_DIR` を消さない）、`samples/ci/github-actions.yml.example` の action が commit SHA 固定で `permissions: contents: read` と `persist-credentials: false` を持つことの静的確認 |
+| `apply.test.mjs` | `lib/apply.mjs`（preview-sample --apply の書き込み処理）の単体テスト。照合後に上書き対象が変わった・新規作成先にファイルが現れた場合に書き込み直前で中止し、他者のファイルを消さずに巻き戻すこと |
 | `help-contract.test.mjs` | 全 CLI の `--help` が実装済みオプションと一致すること、未知フラグが exit 2 になること |
 | `secrets-fixture.test.mjs` | 固定フィクスチャ経由での秘密情報非混入の回帰確認 |
 | `eval-cases.json` | 下記「eval-cases.json について」を参照 |

@@ -206,6 +206,10 @@ conflict with files already present at `--root`, **before** writing anything.
   files and directories created by this run are deleted (directories are created one level at a
   time so that none is missed), files overwritten with `--force` are restored to their
   original content and mode, and the `write:<file>` finding says whether the rollback succeeded.
+  Right before each write the target is checked once more (`scripts/bin/lib/apply.mjs`): an
+  overwrite proceeds only if the file's current sha256 still equals the plan's `contentHash`, and a
+  new file is created exclusively (it is never written over, or deleted during rollback, if a file
+  with that name appeared after the plan check). Either mismatch stops the apply and rolls back.
   File permissions follow the sample: a newly created file gets the sample file's mode (after
   `umask`), so executable scripts such as `rust-crate/scripts/*.sh` stay executable, and an
   overwrite with `--force` adds the sample's execute bits to the existing mode. A destination whose

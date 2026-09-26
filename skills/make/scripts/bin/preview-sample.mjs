@@ -13,13 +13,14 @@
 //   node preview-sample.mjs --sample <name> --root <path> --apply --plan <plan.json> --approve <planDigest> [--force]
 //
 // 終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL, 2=引数エラー, 3=BLOCKED
-import { existsSync, readFileSync, mkdirSync, writeFileSync, statSync, lstatSync, chmodSync, realpathSync, rmSync, rmdirSync } from "node:fs";
+import { existsSync, readFileSync, statSync, realpathSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, relative, dirname, normalize } from "node:path";
 import { parseFlags } from "./lib/args.mjs";
 import { resolveRoot, getSkillRoot, resolvePlanPath, isWithinRoot, isSymlink, PathError } from "./lib/paths.mjs";
 import { readPlanFile, validatePlanShape, planBaseDir, PlanError, PLAN_DIGEST_RE } from "./lib/plan.mjs";
 import { scanTree } from "./lib/scan.mjs";
+import { writeAll, parentsAreDirectories } from "./lib/apply.mjs";
 import { buildResult, emitResult, aggregateStatus, STATUS, diag } from "./lib/result.mjs";
 
 const HELP = `preview-sample — samples/projects/<name>/ と対象 root の差分をプレビューする
@@ -105,96 +106,12 @@ function checkApplyPlan(planPath, root, toWrite, sampleName, approve) {
           ? `書き込む内容が計画の newContentHash と一致しません（承認後にサンプルが変わっています）: ${w.rel}`
           : `計画に newContentHash（書き込む内容の sha256）がありません: ${w.rel}`,
       );
+    } else if (expected === "modify") {
+      // 書き込み直前にもう一度、既存ファイルが承認時の内容のままか確かめるために渡す
+      w.expectedHash = c.contentHash;
     }
   }
   return { problems, approvalMismatch: false };
-}
-
-// 書き込み直前の安全確認で止めた場合の例外（メッセージは固定文で値を含まないため結果へ載せる）
-class ApplyGuardError extends Error {}
-
-/**
- * toWrite を順に書き込む。途中で 1 件でも失敗したら以降は書き込まず、この実行で作成したファイル・
- * ディレクトリを削除し、--force で上書きしたファイルを元の内容に戻す（一部だけ導入された状態を残さない）。
- * 成功した場合は applied に書き込んだ相対パスを積み null を返す。失敗時は {rel, detail} を返し applied は空にする。
- */
-function writeAll(root, toWrite, applied) {
-  const created = [];
-  const overwritten = [];
-  const createdDirs = [];
-  for (const w of toWrite) {
-    try {
-      // プレビュー時点から親ディレクトリが差し替えられた場合に備え、mkdir の前後で実体を確認する
-      // （mkdir 前の確認がないと、root 外への symlink 越しにディレクトリを作成してしまう）
-      if (!isWithinRoot(root, w.dest) || isSymlink(w.dest)) {
-        throw new ApplyGuardError("書き込み直前の確認で root 外への逸脱を検出しました");
-      }
-      // recursive mkdir は途中で失敗すると作成済みの祖先を返さないため、存在しない祖先を浅い方から
-      // 1 段ずつ作成し、作成した直後に記録する（失敗時にも巻き戻し対象から漏れない）
-      for (const d of missingAncestors(root, dirname(w.dest))) {
-        mkdirSync(d);
-        createdDirs.push(d);
-      }
-      if (!isWithinRoot(root, w.dest) || isSymlink(w.dest)) {
-        throw new ApplyGuardError("書き込み直前の確認で root 外への逸脱を検出しました");
-      }
-      // サンプルの実行権限（scripts/*.sh 等）を導入先へ引き継ぐ。新規作成は元ファイルの mode
-      // （umask 適用後）で作り、上書き時は既存の mode に実行ビットだけを加える
-      const srcMode = statSync(w.src).mode & 0o777;
-      if (existsSync(w.dest)) {
-        const originalMode = statSync(w.dest).mode & 0o7777;
-        overwritten.push({ dest: w.dest, original: readFileSync(w.dest), mode: originalMode });
-        writeFileSync(w.dest, w.data);
-        chmodSync(w.dest, originalMode | (srcMode & 0o111));
-      } else {
-        created.push(w.dest);
-        writeFileSync(w.dest, w.data, { mode: srcMode });
-      }
-      applied.push(w.rel);
-    } catch (err) {
-      const why = err instanceof ApplyGuardError ? err.message : `書き込みに失敗しました（${err.code ?? "UNKNOWN"}）`;
-      const rollbackErrors = rollback(created, overwritten, createdDirs);
-      applied.length = 0;
-      const tail = rollbackErrors.length === 0
-        ? "この実行で書き込んだファイルは元に戻しました"
-        : `元に戻せなかったファイルがあります（手動で確認してください）: ${rollbackErrors.join(", ")}`;
-      return { rel: w.rel, detail: `${why}。${tail}` };
-    }
-  }
-  return null;
-}
-
-// symlink を辿らずにエントリの有無を判定する（壊れた symlink も「存在する」として扱う）
-function lexists(p) {
-  try {
-    lstatSync(p);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-// dir から root までの間で存在しないディレクトリを、浅い順に返す（root 自体は含めない）
-function missingAncestors(root, dir) {
-  const missing = [];
-  for (let d = dir; d !== root && d !== dirname(d) && !lexists(d); d = dirname(d)) {
-    missing.unshift(d);
-  }
-  return missing;
-}
-
-// dest の親パスのうち既存のものがすべてディレクトリか（途中にファイル・壊れた symlink 等があると書き込めない）。
-// symlink は lstat で検出し、リンク先がディレクトリとして解決できない場合も書き込めないものとして扱う。
-function parentsAreDirectories(root, dest) {
-  for (let d = dirname(dest); d !== root && d !== dirname(d); d = dirname(d)) {
-    if (!lexists(d)) continue;
-    try {
-      if (!statSync(d).isDirectory()) return false;
-    } catch {
-      return false;
-    }
-  }
-  return true;
 }
 
 // 実行ビットの差（サンプル側が実行可能なのに導入先が実行不可）。Windows では mode の実行ビットを使わないため対象外
@@ -202,34 +119,6 @@ function lacksExecBits(src, dest) {
   if (process.platform === "win32") return false;
   const want = statSync(src).mode & 0o111;
   return want !== 0 && (statSync(dest).mode & want) !== want;
-}
-
-function rollback(created, overwritten, createdDirs) {
-  const errors = [];
-  for (const p of created) {
-    try {
-      rmSync(p, { force: true });
-    } catch (err) {
-      errors.push(`${p} (${err.code ?? "UNKNOWN"})`);
-    }
-  }
-  for (const o of overwritten) {
-    try {
-      writeFileSync(o.dest, o.original);
-      chmodSync(o.dest, o.mode);
-    } catch (err) {
-      errors.push(`${o.dest} (${err.code ?? "UNKNOWN"})`);
-    }
-  }
-  // mkdir で新規作成したディレクトリは、空であれば削除する（深い方から）
-  for (const d of [...createdDirs].sort((a, b) => b.length - a.length)) {
-    try {
-      rmdirSync(d);
-    } catch {
-      // 他のファイルが残っている等で空でない場合は残す（中身は上で削除・復元済み）
-    }
-  }
-  return errors;
 }
 
 function listSampleFiles(sampleRoot) {
@@ -375,6 +264,7 @@ function main() {
     // 書き込む内容はここで 1 回だけ読み、ハッシュ照合と書き込みの両方に同じバイト列を使う
     // （照合後にサンプル側が差し替えられても、承認と異なる内容を書き込まない）
     const data = readFileSync(sf);
+    const mode = statSync(sf).mode & 0o777;
     const newContentHash = `sha256:${createHash("sha256").update(data).digest("hex")}`;
     if (existsSync(dest)) {
       if (!statSync(dest).isFile()) {
@@ -388,19 +278,19 @@ function main() {
         // 内容が同じでも実行権限がなければ、導入後の Makefile から直接呼べないため差分として扱う
         const finding = { id: `file:${rel}`, status: STATUS.FAIL, detail: "競合: 内容は一致するが実行権限がありません（--force で実行ビットを付与）", evidence: rel };
         findings.push(finding);
-        conflicts.push({ src: sf, dest, rel, finding, data, newContentHash });
+        conflicts.push({ src: sf, dest, rel, finding, data, mode, newContentHash });
         proposedChanges.push({ path: rel, action: "modify", expectedState: "matches-hash", contentHash: `sha256:${destHash}`, newContentHash });
       } else if (sameContent) {
         findings.push({ id: `file:${rel}`, status: STATUS.PASS, detail: "既存ファイルと内容が一致（差分なし）", evidence: rel });
       } else {
         const finding = { id: `file:${rel}`, status: STATUS.FAIL, detail: "競合: 既存ファイルが存在し内容が異なります", evidence: rel };
         findings.push(finding);
-        conflicts.push({ src: sf, dest, rel, finding, data, newContentHash });
+        conflicts.push({ src: sf, dest, rel, finding, data, mode, newContentHash });
         proposedChanges.push({ path: rel, action: "modify", expectedState: "matches-hash", contentHash: `sha256:${destHash}`, newContentHash });
       }
     } else {
       findings.push({ id: `file:${rel}`, status: STATUS.PASS, detail: "新規導入予定（既存ファイルなし）", evidence: rel });
-      plannedWrites.push({ src: sf, dest, rel, finding: null, data, newContentHash });
+      plannedWrites.push({ src: sf, dest, rel, finding: null, data, mode, newContentHash });
       proposedChanges.push({ path: rel, action: "create", expectedState: "absent", newContentHash });
     }
   }
