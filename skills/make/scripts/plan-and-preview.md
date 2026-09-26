@@ -182,10 +182,12 @@ conflict with files already present at `--root`, **before** writing anything.
   `create`/`matches-hash` check), and if any file is missing from the plan, has the wrong action,
   or the re-validation fails, **nothing is written** and each reason is reported as a `plan`
   finding. `--apply` is all-or-nothing on the target side too: if any destination cannot be written
-  (outside `--root`, a symlink, or a same-named directory) or any conflict exists without `--force`
+  (outside `--root`, a symlink, a same-named directory, or a path whose parent component is an
+  existing file) or any conflict exists without `--force`
   — even for a file the plan leaves out — nothing is written and the reason is reported as an
   `apply` finding. If a write fails midway (e.g. `EACCES`), the remaining files are not written,
-  files created by this run are deleted, files overwritten with `--force` are restored to their
+  files and directories created by this run are deleted (directories are created one level at a
+  time so that none is missed), files overwritten with `--force` are restored to their
   original content, and the `write:<file>` finding says whether the rollback succeeded.
 
 ### Input
@@ -271,7 +273,7 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
 
 実行しない条件: --apply を指定しない限り、対象 root への書き込みは一切行わない。
 --apply は全件か無しか。計画の再検証が失敗した・root が一致しない・書き込むファイルが計画に
-明記されていない・書き込めない対象（root 外・symlink・同名ディレクトリ）がある・--force なしで
+明記されていない・書き込めない対象（root 外・symlink・同名ディレクトリ・親パスがファイル）がある・--force なしで
 競合がある場合は 1 件も書き込まない。書き込み途中で失敗した場合は、この実行で書いたファイルを元に戻す。
 ```
 
@@ -280,7 +282,7 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
 | Code | Meaning |
 | --- | --- |
 | 0 | `PASS` (no conflicts; all conflicting files are byte-identical to the sample; or, with `--apply --force`, every conflicting file was overwritten successfully) |
-| 1 | `FAIL` (an `--apply` whose plan does not cover every written file, points at a different root, or fails re-validation — nothing is written in that case; the sample directory could not be fully enumerated — an unreadable entry, the entry limit, a directory such as `build/`, `dist/`, or `node_modules/` that the scanner skips, or a symlink / special file that is never followed or copied; nothing is previewed or written in that case; a destination file exists with different content and was not overwritten; a destination resolves outside `--root` through `..` or a symlink, or is a same-named directory; or a write failed and was rolled back). `--apply` never leaves the sample partially applied: with any conflict and no `--force`, or any unwritable destination, nothing is written (`applied: []`, and `skippedConflicts` lists the conflicting files) |
+| 1 | `FAIL` (an `--apply` whose plan does not cover every written file, points at a different root, or fails re-validation — nothing is written in that case; the sample directory could not be fully enumerated — an unreadable entry, the entry limit, a directory such as `build/`, `dist/`, or `node_modules/` that the scanner skips, or a symlink / special file that is never followed or copied; nothing is previewed or written in that case; a destination file exists with different content and was not overwritten; a destination resolves outside `--root` through `..` or a symlink, is a same-named directory, or has an existing file as a parent path component; or a write failed and was rolled back). `--apply` never leaves the sample partially applied: with any conflict and no `--force`, or any unwritable destination, nothing is written (`applied: []`, and `skippedConflicts` lists the conflicting files) |
 | 2 | Argument error (missing `--sample`/`--root`, `--apply` without `--plan`, a `--sample` value that is not a single directory name such as `../plans`, unknown flag) |
 | 3 | not used by this script |
 

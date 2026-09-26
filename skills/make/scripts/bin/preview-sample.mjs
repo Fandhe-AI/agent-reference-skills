@@ -39,7 +39,7 @@ const HELP = `preview-sample — samples/projects/<name>/ と対象 root の差�
 
 実行しない条件: --apply を指定しない限り、対象 root への書き込みは一切行わない。
 --apply は全件か無しか。計画の再検証が失敗した・root が一致しない・書き込むファイルが計画に
-明記されていない・書き込めない対象（root 外・symlink・同名ディレクトリ）がある・--force なしで
+明記されていない・書き込めない対象（root 外・symlink・同名ディレクトリ・親パスがファイル）がある・--force なしで
 競合がある場合は 1 件も書き込まない。書き込み途中で失敗した場合は、この実行で書いたファイルを元に戻す。
 `;
 
@@ -104,11 +104,11 @@ function writeAll(root, toWrite, applied) {
       if (!isWithinRoot(root, w.dest) || isSymlink(w.dest)) {
         throw new ApplyGuardError("書き込み直前の確認で root 外への逸脱を検出しました");
       }
-      const firstCreated = mkdirSync(dirname(w.dest), { recursive: true });
-      // recursive mkdir は最初に作成したディレクトリだけを返すため、そこから親ディレクトリまでの連鎖を記録する
-      for (let d = dirname(w.dest); firstCreated && d.length >= firstCreated.length; d = dirname(d)) {
+      // recursive mkdir は途中で失敗すると作成済みの祖先を返さないため、存在しない祖先を浅い方から
+      // 1 段ずつ作成し、作成した直後に記録する（失敗時にも巻き戻し対象から漏れない）
+      for (const d of missingAncestors(root, dirname(w.dest))) {
+        mkdirSync(d);
         createdDirs.push(d);
-        if (d === firstCreated) break;
       }
       if (!isWithinRoot(root, w.dest) || isSymlink(w.dest)) {
         throw new ApplyGuardError("書き込み直前の確認で root 外への逸脱を検出しました");
@@ -131,6 +131,23 @@ function writeAll(root, toWrite, applied) {
     }
   }
   return null;
+}
+
+// dir から root までの間で存在しないディレクトリを、浅い順に返す（root 自体は含めない）
+function missingAncestors(root, dir) {
+  const missing = [];
+  for (let d = dir; d !== root && d !== dirname(d) && !existsSync(d); d = dirname(d)) {
+    missing.unshift(d);
+  }
+  return missing;
+}
+
+// dest の親パスのうち既存のものがすべてディレクトリか（途中にファイル等があると書き込めない）
+function parentsAreDirectories(root, dest) {
+  for (let d = dirname(dest); d !== root && d !== dirname(d); d = dirname(d)) {
+    if (existsSync(d) && !statSync(d).isDirectory()) return false;
+  }
+  return true;
 }
 
 function rollback(created, overwritten, createdDirs) {
@@ -279,6 +296,11 @@ function main() {
         detail: `書き込み先が root 外へ逸脱するか symlink です（${target.reason ?? "symlink"}）。書き込めません`,
         evidence: rel,
       });
+      unwritable.push(rel);
+      continue;
+    }
+    if (!parentsAreDirectories(root, dest)) {
+      findings.push({ id: `file:${rel}`, status: STATUS.FAIL, detail: "競合: 親パスにディレクトリではない既存ファイル等があります（書き込めません）", evidence: rel });
       unwritable.push(rel);
       continue;
     }

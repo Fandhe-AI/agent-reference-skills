@@ -289,3 +289,46 @@ test("preview-sample: symlink を含むサンプルはリンク先を欠いた�
     cleanupTmpDir(dir);
   }
 });
+
+test("preview-sample: 親パスがファイルの書き込み先があれば、書き込み開始前に中止して何も作らない", () => {
+  const dir = makeTmpDir();
+  const planDir = makeTmpDir();
+  try {
+    writeFileSync(join(dir, "src"), "not a directory\n");
+    const planPath = writeApplyPlan(planDir, dir, "incremental-build");
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath]);
+    assert.equal(r.status, 1);
+    assert.deepEqual(r.json.applied, []);
+    assert.deepEqual(readdirSync(dir).sort(), ["src"], "Makefile 等も書き込まない");
+    assert.ok(r.json.findings.some((f) => f.evidence === join("src", "01-intro.txt") && f.detail.includes("親パス")));
+  } finally {
+    cleanupTmpDir(dir);
+    cleanupTmpDir(planDir);
+  }
+});
+
+test("preview-sample: 巻き戻しでは、この実行で作成した入れ子のディレクトリも削除する", { skip: process.platform === "win32" || process.getuid?.() === 0 }, () => {
+  const dir = makeTmpDir();
+  const planDir = makeTmpDir();
+  const sampleName = `tmp-nested-${process.pid}`;
+  const sampleDir = join(PROJECTS_DIR, sampleName);
+  try {
+    mkdirSync(join(sampleDir, "a", "b", "c"), { recursive: true });
+    writeFileSync(join(sampleDir, "a", "b", "c", "one.txt"), "1\n");
+    mkdirSync(join(sampleDir, "z"), { recursive: true });
+    writeFileSync(join(sampleDir, "z", "two.txt"), "2\n");
+    mkdirSync(join(dir, "z"));
+    const planPath = writeApplyPlan(planDir, dir, sampleName);
+    chmodSync(join(dir, "z"), 0o555);
+    const r = runCliJson("preview-sample.mjs", ["--sample", sampleName, "--root", dir, "--apply", "--plan", planPath]);
+    chmodSync(join(dir, "z"), 0o755);
+    assert.equal(r.status, 1);
+    assert.deepEqual(r.json.applied, []);
+    assert.deepEqual(readdirSync(dir), ["z"], "a/b/c の連鎖も残さない");
+  } finally {
+    try { chmodSync(join(dir, "z"), 0o755); } catch {}
+    rmSync(sampleDir, { recursive: true, force: true });
+    cleanupTmpDir(dir);
+    cleanupTmpDir(planDir);
+  }
+});
