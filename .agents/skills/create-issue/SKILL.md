@@ -143,7 +143,7 @@ gh api "repos/{owner}/{repo}/issues/<親Issue番号>/sub_issues" --jq '.[].numbe
 
 - Issue タイトルは Conventional Commits 形式を推奨
 - 子 Issue は独立して完了できる粒度にする
-- milestone の要否は Step 1.5 で必ずユーザーに確認する（省略しない）。ラベルが必要な場合も別途確認する
+- milestone の要否は Step 1.5 で必ずユーザーに確認する（省略しない。milestone が 1 件も存在しないリポジトリは Step 1.5 のガードによりスキップする）。ラベルが必要な場合も別途確認する
 
 ## sandbox 環境での実行
 

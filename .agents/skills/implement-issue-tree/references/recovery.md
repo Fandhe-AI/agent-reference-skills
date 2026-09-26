@@ -19,18 +19,18 @@ cat _/issue-trees/42.json
 | `planning` | 計画立案中（中断） | **Recover phase が残骸 worktree / branch の有無を確認**。残骸あり → continue（Implement で継続）/ discard（掃除して Plan から新規）に分岐。残骸なし → Plan から通常実行。PR 未作成のため重複 PR は発生しない |
 | `implementing` | 実装中（中断） | **Recover phase が残骸 worktree / branch の有無を確認**。残骸あり → continue（Implement で継続）/ discard（掃除して Plan から新規）に分岐。残骸なし → Plan から通常実行。PR 未作成のため重複 PR は発生しない |
 | `reviewing` | レビュー中（中断） | **Recover phase が残骸 worktree / branch の有無を確認**。残骸あり → continue（Implement で継続）/ discard（掃除して Plan から新規）に分岐。残骸なし → Plan から通常実行（impl 手順 0b-a で open PR を検索し、0b-b でリモートブランチを検出して回復する）。push 前 review フローのため PR 未作成 |
-| `monitoring` | 監視中（中断） | **impl をスキップし monitor ループから再開**（PR 番号・ブランチ・fixCount・baseMergeCount・optinFixState を引き継ぐ。optinFixState は opt-in テスト宣言があるイシューのみ意味を持つ。PR #503 2 巡目 codex P0） |
+| `monitoring` | 監視中（中断） | **impl をスキップし monitor ループから再開**（PR 番号・ブランチ・fixCount・baseMergeCount・optinFixState を引き継ぐ。optinFixState は opt-in テスト宣言があるイシューのみ意味を持つ） |
 | `merged` | マージ済み | スキップ（完了扱い） |
 | `closed` | クローズ済み | スキップ（完了扱い） |
 | `failed` | 失敗 | Recover phase が残骸の有無を確認して再実行（continue / discard に分岐） |
-| `blocked` | 依存失敗・halted・Review/Merge 非収束（未解決レビューコメント・対象外コメント起因を含む、イシュー固有の品質ブロック。halt の連続カウントには乗せない）。監視エージェント由来の blocked はこの状態へ落ちるのが `blockedReason: quality` の場合のみで、`unrecoverable`（PR の未マージクローズ等）は `failed` になる。前提の外部完了（Issue CLOSED / PR MERGED）をラン中に検知した場合は `merged` / `closed` へ遷移し（この遷移自体は halt 後も継続する）、**halt 発生前に限り**下流を同一ラン内で再判定する。halt 後に検知した場合は遷移・状態記録は行われるが下流の同一ラン内再判定は行われず、次回ランで反映される（Issue #442。次回ランを待たずに解消するため本行の再開対象から外れる。この遷移で `merged` / `closed` へ落ちた項目の残置実装 worktree は、終了時 sweep（本節前掲の worktree スイープ）の削除候補になる — 人手マージ済みのため契約上問題ないが、未コミット変更が残る想定は禁物）。Merge ループ中のエージェント呼び出し（monitor / merge-exec / merge-verify / base-merge / fix）が StructuredOutput を返さず終了した場合（例外・null 返却いずれも）も、Merge ループ突入時点で `pr` は必ず保存済みのため `blocked`（次回実行で monitoring 再開）に分類する。`failed`（Recover → 再実装）に倒すと重複 PR を作りうるため（Issue #465。詳細は下記「StructuredOutput 未返却時の fail-safe」節） | **`pr` 保存済み（PR 作成後の Merge 非収束）なら impl をスキップし monitor ループから再開**（PR 番号・ブランチ・fixCount・baseMergeCount・optinFixState を引き継ぐ。人間がレビュースレッドを resolve した後の再実行で既存 PR のマージ監視を続行する）。`pr` なし（依存失敗・push 前の Review 非収束等）は Recover phase が残骸の有無を確認して再実行（continue / discard に分岐）。Review 非収束の `blocked`（push 前のため `pr: 0`）は monitoring 再開ではなく必ずこの経路（Recover → 通常 Implement）から再着手する。ルートノード（verify-close）が StructuredOutput を返さず終了した場合は `pr` / `worktree` の概念がないため `blocked`（halt 非カウント）に分類し、次回実行時に verify-close を素のまま再実行する（冪等なため重複作用はない）。エージェントが応答した上で `closed: false` と判定した場合は従来どおり `failed` |
+| `blocked` | 依存失敗・halted・Review/Merge 非収束（未解決レビューコメント・対象外コメント起因を含む、イシュー固有の品質ブロック。halt の連続カウントには乗せない）。監視エージェント由来の blocked はこの状態へ落ちるのが `blockedReason: quality` の場合のみで、`unrecoverable`（PR の未マージクローズ等）は `failed` になる。前提の外部完了（Issue CLOSED / PR MERGED）をラン中に検知した場合は `merged` / `closed` へ遷移し（この遷移自体は halt 後も継続する）、**halt 発生前に限り**下流を同一ラン内で再判定する。halt 後に検知した場合は遷移・状態記録は行われるが下流の同一ラン内再判定は行われず、次回ランで反映される（次回ランを待たずに解消するため本行の再開対象から外れる。この遷移で `merged` / `closed` へ落ちた項目の残置実装 worktree は、終了時 sweep（本節前掲の worktree スイープ）の削除候補になる — 人手マージ済みのため契約上問題ないが、未コミット変更が残る想定は禁物）。Merge ループ中のエージェント呼び出し（monitor / merge-exec / merge-verify / base-merge / fix）が StructuredOutput を返さず終了した場合（例外・null 返却いずれも）も、Merge ループ突入時点で `pr` は必ず保存済みのため `blocked`（次回実行で monitoring 再開）に分類する。`failed`（Recover → 再実装）に倒すと重複 PR を作りうるため（詳細は下記「StructuredOutput 未返却時の fail-safe」節） | **`pr` 保存済み（PR 作成後の Merge 非収束）なら impl をスキップし monitor ループから再開**（PR 番号・ブランチ・fixCount・baseMergeCount・optinFixState を引き継ぐ。人間がレビュースレッドを resolve した後の再実行で既存 PR のマージ監視を続行する）。`pr` なし（依存失敗・push 前の Review 非収束等）は Recover phase が残骸の有無を確認して再実行（continue / discard に分岐）。Review 非収束の `blocked`（push 前のため `pr: 0`）は monitoring 再開ではなく必ずこの経路（Recover → 通常 Implement）から再着手する。ルートノード（verify-close）が StructuredOutput を返さず終了した場合は `pr` / `worktree` の概念がないため `blocked`（halt 非カウント）に分類し、次回実行時に verify-close を素のまま再実行する（冪等なため重複作用はない）。エージェントが応答した上で `closed: false` と判定した場合は `failed` |
 | `skipped` | GitHub 側で closed 済み | スキップ（変更なし） |
 
-`monitoring` 中断、および `pr` 保存済みの `blocked` からの再開では、保存された `pr`（PR 番号）・`branch`・`fixCount`（修正済み回数）・`baseMergeCount`（base 取り込み済み回数。Issue #441）を引き継いで monitor ループから再開する。`fixCount` の上限（6 回）・`baseMergeCount` の上限（`args.maxBaseMerges`。既定 3）は、いずれも引き継いだ値に基づいて判定される（独立した 2 つの予算軸）。opt-in テスト宣言があるイシューでは `optinFixState`（`{ attempted: boolean, runs: [...], headSha }`。post-push fix が `pushed: true` を報告したラウンドごとに更新）も引き継ぎ、`restoreOptinFixState` がマージ前ゲート（`combineOptinRecordGate`）の判定材料 `lastFixOptin`（`{ runs, headSha }`）の初期値として復元する（PR #503 2 巡目 codex P0 → 3 巡目で headSha を追加）。`attempted: true` なのに `runs` を復元できない場合は宣言コマンド全件を `not-run` とみなし fail-closed で不合格にする。`headSha` が現在の HEAD の headRefOid と一致する場合のみ `runs` の非 pass がマージ前ゲートを不合格にする（PR 本文のマーカー自体が HEAD sha に束縛されたため、これは多層防御であり主防御ではない）。
+`monitoring` 中断、および `pr` 保存済みの `blocked` からの再開では、保存された `pr`（PR 番号）・`branch`・`fixCount`（修正済み回数）・`baseMergeCount`（base 取り込み済み回数）を引き継いで monitor ループから再開する。`fixCount` の上限（6 回）・`baseMergeCount` の上限（`args.maxBaseMerges`。既定 3）は、いずれも引き継いだ値に基づいて判定される（独立した 2 つの予算軸）。opt-in テスト宣言があるイシューでは `optinFixState`（`{ attempted: boolean, runs: [...], headSha }`。post-push fix が `pushed: true` を報告したラウンドごとに更新）も引き継ぎ、`restoreOptinFixState` がマージ前ゲート（`combineOptinRecordGate`）の判定材料 `lastFixOptin`（`{ runs, headSha }`）の初期値として復元する。`attempted: true` なのに `runs` を復元できない場合は宣言コマンド全件を `not-run` とみなし fail-closed で不合格にする。`headSha` が現在の HEAD の headRefOid と一致する場合のみ `runs` の非 pass がマージ前ゲートを不合格にする（PR 本文のマーカー自体が HEAD sha に束縛されているため、これは多層防御であり主防御ではない）。
 
 `planning` / `implementing` / `reviewing` からの再開では、まず Recover phase が残骸 worktree / branch の有無を確認する。**残骸がある場合**は Recover が「途中作業を継続できるか」を判断し、continue なら既存 branch を checkout して Implement で継続、discard なら worktree と branch を掃除して Plan から新規実行する。**残骸がない場合**は通常の Plan → Implement から再実行する。いずれの経路でも push 前 review フローのため PR 未作成の状態で中断している。impl 手順 0b-a が既存 open PR のブランチを検出して続きから作業し、その PR 番号は PR Create フェーズが `--head <branch>` の再検出で引き継ぐ（重複 PR も `gh pr create` の失敗も起こさない）。「push 成功・PR 作成失敗」のケース（状態 `failed`・`branch` 保存済み）は `branch` が残骸として Recover phase を起動するため impl 手順 0b には到達しない。continue の回復 Implement は手順 2 で既存 branch を checkout した後、`git fetch origin <branch>:refs/remotes/origin/<branch>` → `git merge --ff-only refs/remotes/origin/<branch>` でローカルをリモート tip へ追従させ、push 済みの base 取り込みコミット（PR Create が detached HEAD から push しローカル ref を更新しないもの）を保持したまま回復する。ff 不能な真の diverged は続行し、次の PR 作成の (iv) が fail-closed で止める。
 
-**重要遷移の書き込み検証と副作用の分離:** `reviewing`（branch / worktree の記録）と `monitoring`（`pr` の記録）への遷移は、失敗すると重複実装・重複 PR につながるため書き込み成功を検証し、1 回リトライしても失敗する場合は先へ進まず終端する。この検証は通常経路だけでなく Recover の continue 経路（回復 Implement 後の `reviewing` 遷移）にも同じ契約で適用される。このとき **worktree 削除を同じ `updateState` 呼び出しに載せない**（Issue #143）。`updateState` は「JSON マージ」と「掃除」の AND を 1 つの `ok` として返すため、状態書き込みは成功して削除だけが失敗した場合（worktree が locked、Recover の discard で既に削除済み等）でも書き込み失敗と誤認され、正常に実装できたイシューが `failed` 終端になる。旧 worktree の削除は書き込み成功後に別呼び出し（`preserveWorktreeField: true`）で非致命的に行い、失敗はラン終了時の最終スイープに委ねる。同様に、Low 指摘の PR コメント投稿は `monitoring` 遷移（`pr` の永続化）より**後**に、かつ try/catch 付きで行う（Issue #136。投稿失敗・例外で PR 番号が未保存のまま `failed` 終端になると、次回実行が monitoring 再開経路へ入れず既存 PR を放置したまま重複 PR を作りうる）。
+**重要遷移の書き込み検証と副作用の分離:** `reviewing`（branch / worktree の記録）と `monitoring`（`pr` の記録）への遷移は、失敗すると重複実装・重複 PR につながるため書き込み成功を検証し、1 回リトライしても失敗する場合は先へ進まず終端する。この検証は通常経路だけでなく Recover の continue 経路（回復 Implement 後の `reviewing` 遷移）にも同じ契約で適用される。このとき **worktree 削除を同じ `updateState` 呼び出しに載せない**。`updateState` は「JSON マージ」と「掃除」の AND を 1 つの `ok` として返すため、状態書き込みは成功して削除だけが失敗した場合（worktree が locked、Recover の discard で既に削除済み等）でも書き込み失敗と誤認され、正常に実装できたイシューが `failed` 終端になる。旧 worktree の削除は書き込み成功後に別呼び出し（`preserveWorktreeField: true`）で非致命的に行い、失敗はラン終了時の最終スイープに委ねる。同様に、Low 指摘の PR コメント投稿は `monitoring` 遷移（`pr` の永続化）より**後**に、かつ try/catch 付きで行う（投稿失敗・例外で PR 番号が未保存のまま `failed` 終端になると、次回実行が monitoring 再開経路へ入れず既存 PR を放置したまま重複 PR を作りうる）。
 
 ### StructuredOutput 未返却時の fail-safe（Issue #465）
 
@@ -44,9 +44,9 @@ StructuredOutput を返さず終了した（呼び出し先が `null` / `undefin
 作りうるため。
 
 対象は「PR が既に存在する Merge ループ内」に限る。**Plan / Implement / Review / Recover /
-PR Create（PR 作成前。`pr: 0`）の失敗分類には一切触れない**。これらは従来どおり `failed`
+PR Create（PR 作成前。`pr: 0`）の失敗分類には一切触れない**。これらは `failed`
 （halt カウント対象）のままであり、システミックなモデル障害は依然として「3 イシュー連続失敗で
-新規着手停止」に到達する（halt 防御は弱めていない）。`blocked` はこのランの中で自動リトライを
+新規着手停止」に到達する（halt 防御はこの fail-safe の影響を受けない）。`blocked` はこのランの中で自動リトライを
 一切行わない（`monitorsLeft` の消費は起こるが、ただちに終端する）。効果は「次回実行が
 Recover→再実装ではなく monitoring 再開に入れるようになる」ことだけであり、実行者（人間）の
 トリガーなしに勝手に再試行され続けるものではない。
@@ -54,16 +54,15 @@ Recover→再実装ではなく monitoring 再開に入れるようになる」�
 ルートノード（verify-close）は `pr` / `worktree` の概念を持たない冪等な検証のため、
 StructuredOutput 未返却は `blocked`（halt 非カウント）に分類し、次回実行時に verify-close を
 素のまま再実行する（重複作用は起きない）。エージェントが応答した上で `closed: false` と判定した
-場合（「まだ子イシューが残っている」等の実際の判定）は従来どおり `failed`。
+場合（「まだ子イシューが残っている」等の実際の判定）は `failed`。
 
 ### state 書込みエージェント自身の StructuredOutput 未返却（Issue #493）
 
-Issue #465 の fail-safe は Merge ループ内のエージェント（monitor / merge-exec / merge-verify /
+前節の fail-safe は Merge ループ内のエージェント（monitor / merge-exec / merge-verify /
 base-merge / fix）の未返却だけを対象にしており、**状態ファイル書込みを担う state 系エージェント
 自身**（`state:update` / `state:cleanup` / `state:init-all` / `state:high-water` / `state:load`。
-いずれも既定 haiku）の未返却は救えない。下流の複数ランでこのエージェントが StructuredOutput を
-一度も返さず終了する例が常態化し、実装済み・PR 作成済みの item まで catch-all の `failed`
-（halt カウント対象）に落ちていた。
+いずれも既定 haiku）の未返却は救えない。このエージェントが StructuredOutput を返さず終了すると、
+実装済み・PR 作成済みの item まで catch-all の `failed`（halt カウント対象）に落ち得る。
 
 state 系呼び出しは共通ヘルパー `runStateAgent` を経由する。haiku が例外・`null`・schema 不適合
 （StructuredOutput 未返却相当）で終わった場合、**同一プロンプト文字列（バイト一致・patch を
@@ -82,16 +81,16 @@ state 系呼び出しは共通ヘルパー `runStateAgent` を経由する。hai
   ファイルの既存値（`implementing` 等）から Recover 経由で再開する。
 - `outputMissing: true` かつ PR が既に存在する（`prNumber > 0`。PR 作成後の monitoring 遷移）
   場合は、この `blocked` 遷移自体の状態ファイルへの永続化（`terminalSaved`）が確認できたときに
-  限り **`blocked`** とする。永続化できていなければ **`failed`**（halt カウント対象）に倒す
-  （Issue #493 の codex レビュー指摘で是正）。永続化されないまま `blocked` として扱うと、状態
+  限り **`blocked`** とする。永続化できていなければ **`failed`**（halt カウント対象）に倒す。
+  永続化されないまま `blocked` として扱うと、状態
   ファイルに `pr` が残らず次回実行が monitoring を再開できず、通常 dispatch から再実装・PR 再
   作成に進み得るため。
 - 状態書込みエージェントが応答した上でのシステム的な失敗（`ok: false`。jq 失敗・権限不足等）は
-  従来どおり **`failed`**（halt カウント対象）を維持する。フォールバックで隠さない。
+  **`failed`**（halt カウント対象）を維持する。フォールバックで隠さない。
 
-`runOne` の catch-all（想定外の例外）も同様の理由で見直した。PR 作成成功直後・monitoring 再開時
+`runOne` の catch-all（想定外の例外）も同様の理由で分類する。PR 作成成功直後・monitoring 再開時
 に issue 番号→PR 番号を記録する `knownPrByIssue` を参照し、PR が既に存在する場合は想定外の例外を
-`blocked`（次回 monitoring 再開）に倒し、PR 未作成の想定外例外は従来どおり `failed` を維持する
+`blocked`（次回 monitoring 再開）に倒し、PR 未作成の想定外例外は `failed` を維持する
 （純粋関数 `classifyUncaughtFailureStatus`）。
 
 `state:load`（Restore フェーズの状態ファイル読込・初期化）が haiku / sonnet とも未返却の場合は
@@ -99,7 +98,7 @@ state 系呼び出しは共通ヘルパー `runStateAgent` を経由する。hai
 ただし文言は「初期化に失敗した」という誤ったメッセージにはせず、未返却専用の案内（ファイル自体の
 破損ではないため、そのまま再実行すればよい旨）にする。
 
-`blockedReason` は状態ファイルへ永続化されるフィールドではない（既存の契約のまま）。
+`blockedReason` は状態ファイルへ永続化されるフィールドではない。
 `isActiveMonitoring()` は `status`（`'monitoring'` または `'blocked'`）と `pr > 0` と `branch`
 の妥当性のみで再開判定しており、`blockedReason` を読まない。同一ラン内のメモリ上変数として
 note・ログ文言の合成にのみ使われる。
@@ -116,15 +115,15 @@ note・ログ文言の合成にのみ使われる。
 
 **review / pr-create の worktree は自動削除しない（記録のみ）**。この 2 つは `isolation: 'worktree'` で動作するが成果物を保持しない（review は読み取り専用の判定のみ、pr-create は push 完了時点で成果が origin 上に存在する）ため保持価値はない。しかし削除に使えるのはエージェントが返した `worktreePath` だけであり、これは「そのエージェント用に作られた worktree である」ことをホスト側で確認できない自己申告値である。パス検証（`sanitizeWorktreePath`）は文字種を見るだけのため、誤応答や、レビュー対象テキスト（PR 本文・レビューコメント）経由のプロンプトインジェクションで並列実装中の別イシューの worktree パスを返させると、未コミットの実装成果ごと `git worktree remove --force` で失う。
 
-そのため**自動削除は廃止**し、返却されたパスの記録とラン終了時のログ一覧出力のみを行う（Workflow の返却値 `ephemeralWorktrees` でも確認できる）。最終スイープ（`sweepClosedWorktrees`）の削除対象にも入らない（`updateState` の `cleanupWorktree` を経由しないため構造的に候補にならない）。これは「推測に基づく削除をしない」という `sweepEligiblePaths` の設計方針と一貫する。残った worktree は一覧を見て手動で削除する。所有権マーカー（nonce）方式による回収もコミット 2539cbb で意図的に不採用とした（下表参照。nonce は未信頼データを読むエージェント自身に開示済みで所有権証明にならず、削除ロジックを新設すること自体が誤削除リスクを招く）。
+そのため**自動削除は行わず**、返却されたパスの記録とラン終了時のログ一覧出力のみを行う（Workflow の返却値 `ephemeralWorktrees` でも確認できる）。最終スイープ（`sweepClosedWorktrees`）の削除対象にも入らない（`updateState` の `cleanupWorktree` を経由しないため構造的に候補にならない）。これは「推測に基づく削除をしない」という `sweepEligiblePaths` の設計方針と一貫する。残った worktree は一覧を見て手動で削除する。所有権マーカー（nonce）方式による回収も意図的に採用しない（下表参照。nonce は未信頼データを読むエージェント自身に開示済みで所有権証明にならず、削除ロジックを新設すること自体が誤削除リスクを招く）。
 
-**削除しない代わりに、残置総数の上限 + fail-closed 停止でディスク枯渇を防ぐ**（PR #588 codex P1、fail-closed 化とラン中の積み増し再評価は PR #185 codex P1）。使い捨て worktree を削除しないと、ツリー実装を反復するたびに review / pr-create の worktree が単調増加し、無人運用でディスクが枯渇して後続ジョブを失敗させ得る（AGENTS.md「リソース枯渇（DoS）耐性」）。単一ラン内の記録（`ephemeralWorktrees`）はラン開始ごとに空初期化され複数ラン累積を捕捉できないため、**ラン開始時に横断スキャン（`scanOrphanWorktrees`）で過去ラン分も含む worktree の物理総数を観測**（メイン worktree のみ除外。状態ファイル追跡済み＝使用中も数える。以前の追跡済み除外では failed / blocked のまま長期滞留する実装 worktree が何件蓄積しても計上されず「総数の上限」契約に反した。PR #185 codex P1 第 5 ラウンド）し、`maxResidualWorktrees`（既定 100・`0` で無効。旧既定 20 では 1 イシュー消化あたり実測 4〜6 件の積み増しで 1 ラン 3 件着手が頭打ちになったため Issue #348 で引き上げ。「削除しない設計」自体は不変）を**超過**していたら新規イシューの着手を fail-closed で停止する（削除は一切行わない。この恒久停止は既に実行中のイシューの継続を止めない。monitoring 再開の新規開始自体は別途 projected 判定の対象——後述）。観測は未信頼テキストを読まない host 指示専用エージェントが構造化スキーマで返す既存の orphan scan を再利用する。停止時はレポートに残置パス一覧を出し、利用者は `git worktree list` で確認して不要な worktree を `git worktree remove` で手動削除してから再実行する。ラン開始時のスキャン（`runStartOrphanEntries`）が失敗した場合は、ゲート有効（`maxResidualWorktrees > 0`）なら観測不成立を「残置ゼロ＝安全」と誤認せず `newStartSuppressed` を設定して新規イシューの着手を停止する（fail-closed。`maxResidualWorktrees === 0` の明示オプトアウト時のみ観測失敗でも続行。返却値 `residualWorktrees.observed: false`）。スキャン一覧が非空でも観測成功とは扱わない——一覧は LLM エージェントの転記でありスキーマは全レコード返却を保証しないため、ゲート有効時は別エージェントが独立取得したレコード総数（`countWorktreeRecords`）と件数照合し、不一致・カウント取得失敗も観測失敗として同じ fail-closed 停止に倒す（PR #185 codex P1 第 4 ラウンド。転記の一部脱落による過小カウントで新規着手を許す fail-open の防止）。dispatch ループはラン開始時の一度きりの判定に加え、新規着手の直前に毎回「開始時観測 + 本ラン積み増し（`ephemeralWorktrees.length`）」を上限と再評価し、本ランの worktree 新規作成（implement / review / pr-create / fix-routing-error。fix は旧 worktree cleanup とペアの置換で純増しないため台帳外とし、cleanup 失敗の残置は次ラン開始時の物理総数観測が捕捉する）の積み増しで上限を超えた時点でも以降の新規着手を停止する（実行中イシューの継続は止めない。merged 確定時に掃除された implement worktree 分は差し引かないため実測は物理増分の上界＝過大側で安全）。さらに並列投入済みでまだ記録に到達していない分の今後の積み増しを見込み、新規着手イシューごとに `EPHEMERAL_RESERVE_PER_NEW_START`（kind ごとの最大生成数宣言テーブル `EPHEMERAL_KIND_MAX` の合計から導出。現在 implement ×1 + review ×3 + pr-create ×1 + fix-routing-error ×1 = 6。生成経路を追加するときは同テーブルへの宣言が必須で、未宣言 kind の記録は実行時に契約違反として警告される）から、monitoring 再開イシューごとに `EPHEMERAL_RESERVE_PER_MONITORING_RESUME`（= 1。Merge ループの fix-routing-error 分。PR #184 以降は monitoring 再開も積み増し得るため）から、それぞれ実記録数を差し引いた予約を `newStartActive` / `monitoringResumeActive` 経由で計上し、実測 + 予約 + 着手候補分が上限を超える投入を止める（予約起因は defer・実測超過は恒久停止。PR #185 codex P1 第 2 ラウンド）。**monitoring 再開自体もこの予約込み判定の対象**（`item.kind === 'implement'` の再開に限る。verify-close ノードの再開は Merge ループへ入らず予約 0 のため対象外）であり、`isActiveMonitoring` 分岐は `runOne` 起動前に自分自身の `EPHEMERAL_RESERVE_PER_MONITORING_RESUME` を含めた projected 判定を行い、超過が見込まれる場合は当該周回の再開のみ defer する（pet-hub PR #1062 codex-review P1 対応。修正前は無条件で `runOne` を起動しており、monitoring 項目を順次再開し続けると上限を無視して残置数を際限なく増やせた）。ラン終了時は「開始時観測 + 本ラン積み増し」の残置総数と上限比率をレポートし、8 割接近で早期警告を出す（返却値 `residualWorktrees`）。
+**削除しない代わりに、残置総数の上限 + fail-closed 停止でディスク枯渇を防ぐ**（ラン中の積み増しも同じ fail-closed 契約で再評価する）。使い捨て worktree を削除しないと、ツリー実装を反復するたびに review / pr-create の worktree が単調増加し、無人運用でディスクが枯渇して後続ジョブを失敗させ得る（AGENTS.md「リソース枯渇（DoS）耐性」）。単一ラン内の記録（`ephemeralWorktrees`）はラン開始ごとに空初期化され複数ラン累積を捕捉できないため、**ラン開始時に横断スキャン（`scanOrphanWorktrees`）で過去ラン分も含む worktree の物理総数を観測**（メイン worktree のみ除外。状態ファイル追跡済み＝使用中も数える。追跡済みを除外すると failed / blocked のまま長期滞留する実装 worktree が何件蓄積しても計上されず「総数の上限」契約に反するため）し、`maxResidualWorktrees`（既定 100・`0` で無効。1 イシュー消化あたり実測 4〜6 件積み増すため、小さい上限では 1 ランの着手数が頭打ちになる）を**超過**していたら新規イシューの着手を fail-closed で停止する（削除は一切行わない。この恒久停止は既に実行中のイシューの継続を止めない。monitoring 再開の新規開始自体は別途 projected 判定の対象——後述）。観測は未信頼テキストを読まない host 指示専用エージェントが構造化スキーマで返す既存の orphan scan を再利用する。停止時はレポートに残置パス一覧を出し、利用者は `git worktree list` で確認して不要な worktree を `git worktree remove` で手動削除してから再実行する。ラン開始時のスキャン（`runStartOrphanEntries`）が失敗した場合は、ゲート有効（`maxResidualWorktrees > 0`）なら観測不成立を「残置ゼロ＝安全」と誤認せず `newStartSuppressed` を設定して新規イシューの着手を停止する（fail-closed。`maxResidualWorktrees === 0` の明示オプトアウト時のみ観測失敗でも続行。返却値 `residualWorktrees.observed: false`）。スキャン一覧が非空でも観測成功とは扱わない——一覧は LLM エージェントの転記でありスキーマは全レコード返却を保証しないため、ゲート有効時は別エージェントが独立取得したレコード総数（`countWorktreeRecords`）と件数照合し、不一致・カウント取得失敗も観測失敗として同じ fail-closed 停止に倒す（転記の一部脱落による過小カウントで新規着手を許す fail-open の防止）。dispatch ループはラン開始時の一度きりの判定に加え、新規着手の直前に毎回「開始時観測 + 本ラン積み増し（`ephemeralWorktrees.length`）」を上限と再評価し、本ランの worktree 新規作成（implement / review / pr-create / fix-routing-error。fix は旧 worktree cleanup とペアの置換で純増しないため台帳外とし、cleanup 失敗の残置は次ラン開始時の物理総数観測が捕捉する）の積み増しで上限を超えた時点でも以降の新規着手を停止する（実行中イシューの継続は止めない。merged 確定時に掃除された implement worktree 分は差し引かないため実測は物理増分の上界＝過大側で安全）。さらに並列投入済みでまだ記録に到達していない分の今後の積み増しを見込み、新規着手イシューごとに `EPHEMERAL_RESERVE_PER_NEW_START`（kind ごとの最大生成数宣言テーブル `EPHEMERAL_KIND_MAX` の合計から導出。現在 implement ×1 + review ×3 + pr-create ×1 + fix-routing-error ×1 = 6。生成経路を追加するときは同テーブルへの宣言が必須で、未宣言 kind の記録は実行時に契約違反として警告される）から、monitoring 再開イシューごとに `EPHEMERAL_RESERVE_PER_MONITORING_RESUME`（= 1。Merge ループの fix-routing-error 分。monitoring 再開も積み増し得るため）から、それぞれ実記録数を差し引いた予約を `newStartActive` / `monitoringResumeActive` 経由で計上し、実測 + 予約 + 着手候補分が上限を超える投入を止める（予約起因は defer・実測超過は恒久停止）。**monitoring 再開自体もこの予約込み判定の対象**（`item.kind === 'implement'` の再開に限る。verify-close ノードの再開は Merge ループへ入らず予約 0 のため対象外）であり、`isActiveMonitoring` 分岐は `runOne` 起動前に自分自身の `EPHEMERAL_RESERVE_PER_MONITORING_RESUME` を含めた projected 判定を行い、超過が見込まれる場合は当該周回の再開のみ defer する（無条件に `runOne` を起動すると、monitoring 項目を順次再開し続けることで上限を無視して残置数を際限なく増やせるため）。ラン終了時は「開始時観測 + 本ラン積み増し」の残置総数と上限比率をレポートし、8 割接近で早期警告を出す（返却値 `residualWorktrees`）。
 
-**件数上限の既定値引き上げ（20→100）だけでは配布先リポジトリごとのディスク消費差を捉えられない**（codex-review 指摘・PR #390）。件数軸の根拠は本リポジトリ 1 件のみの実測（≈ 3.4 MB/件）であり、追跡ファイル量が大きい配布先では 100 件の既定値でも旧既定比で最大 5 倍のディスクを消費するまで着手を止めない。これを補うため、リポジトリ非依存の絶対閾値である `maxResidualWorktreeBytes`（既定 50 GiB。Issue #348 検討案 B・Issue #467 で 2 GiB から引き上げ）をラン開始時観測の第2軸として併用する。判定は件数軸との OR（どちらか一方でも超過すれば着手を止める＝安全側）。残置パス一覧全件へ `du -sk` を実行して合計し、測定不能（1 件でも失敗）は 0 で補わず観測失敗として fail-closed に倒す（`countResidualWorktrees` の「検証不可」計上と同じ理由）。バイト軸も「新規着手・monitoring 再開の予約計上」を件数軸と同じ形で行う（`item.kind === 'implement'` の monitoring 再開に限り、`projectResidualBytes` が新規着手と同じ直前 projection を毎回再評価する。ただし予約単位は件数軸の離散個数テーブルではなく、`perWorktreeByteReserve`（1 worktree あたりのバイト floor 値）に未確定台帳件数を乗じたバイト量である）。バイト軸のラン開始時観測に失敗した場合（`residualBytesObserved === false`）は、件数軸の観測失敗時と同じ fail-closed 方針を採るが、作用先は 2 つの独立した機構に分かれる: 新規着手は `newStartSuppressed` の latch により当該ラン全体で恒久停止する一方、monitoring 再開は `monitoringResumeGateDeferred` により当該周回の projected 判定のみを defer する（観測不能のまま fix-routing-error worktree の新規作成を許すと容量を確認できないまま超過し得るため）。新規着手側の恒久停止が monitoring 再開側の defer を代替するわけではなく、両者は別々に評価される。`perWorktreeByteReserve`（開始時に確定する容量予約の floor 値。実使用量の上界ではない。ただし `maxResidualWorktreeBytes / EPHEMERAL_RESERVE_PER_NEW_START` を上限にクランプ済み——メイン worktree の測定値に gitignored なビルド成果物・依存関係が含まれ過大評価になった場合でも、残置 0 件・実行中タスク 0 件の 1 件目着手候補が予約のみで恒久停止しないようにするため。クランプは実測ベースの超過検知を弱めない。Issue #348 codex-review High 指摘）だけでは、ビルド成果物等で floor を超えて成長した実消費を検知できないため、`remeasureResidualBytesIfDue` が `BYTE_REMEASURE_LEDGER_INTERVAL` 件の使い捨て worktree 積み増しごとに間引きながら `du` を再実行してラン中の実測し直しを行い、さらに新規着手（implement）の直前には台帳増分によらず必ず実測し直す（`remeasureResidualBytesNow`。台帳が増えない間の worktree 成長を着手判定へ反映するため — PR #390 codex-review P1 第 4 ラウンド。`du` の実行コストは「同一 dispatch 周回内は 1 回」の間引きで有界化する設計判断）。再測定が失敗した場合も projection のみへのフォールバックは fail-open になるため、開始時観測失敗時と同じ fail-closed（`newStartSuppressed` 設定・新規着手停止）に倒す。**ただし全件測定（`du` の kib）自体は成功したが `rawPerWorktreeByteReserve`（実ディスク空き容量ゲート専用の予約見積り）の更新用追加測定だけが失敗した場合は区別する**（Issue #475）: この場合は `lastByteRemeasureOutcome.reserveStale = true` を立てるのみで `failed: true` にはしない。全件測定直後に容量超過の有無（全 kind latch を要する事象）を先出しで確定させているため、予約更新の失敗が後から全 kind latch の発火を妨げることはない。**新規着手側はこれで足りるが、monitoring 再開側は別問題が残った**（fix #2・codex-review P0 再指摘）: `reserveStale` のまま古い（成長を反映しない）`rawPerWorktreeByteReserve` で monitoring 再開を進めると、再開が作る worktree の見積りが過小評価され容量枯渇を許し得る。新規着手は `newStartSuppressed` latch が安全弁として先行確定済みだが、monitoring 再開には同等の安全弁がないため、monitoring 再開の defer 判定は `failed || exceeded || reserveStale` の3条件 OR とし、`reserveStale` も defer を発火させる（この defer は当該周回限りで、次回の予約更新が成功すれば `reserveStale` は false に戻り再評価される。恒久停止ではない）。
+**件数上限だけでは配布先リポジトリごとのディスク消費差を捉えられない**。件数軸の既定値は 1 リポジトリのみの実測（≈ 3.4 MB/件）に基づくため、追跡ファイル量が大きい配布先では 100 件に達するまでに大量のディスクを消費し得る。これを補うため、リポジトリ非依存の絶対閾値である `maxResidualWorktreeBytes`（既定 50 GiB）をラン開始時観測の第2軸として併用する。判定は件数軸との OR（どちらか一方でも超過すれば着手を止める＝安全側）。残置パス一覧全件へ `du -sk` を実行して合計し、測定不能（1 件でも失敗）は 0 で補わず観測失敗として fail-closed に倒す（`countResidualWorktrees` の「検証不可」計上と同じ理由）。バイト軸も「新規着手・monitoring 再開の予約計上」を件数軸と同じ形で行う（`item.kind === 'implement'` の monitoring 再開に限り、`projectResidualBytes` が新規着手と同じ直前 projection を毎回再評価する。ただし予約単位は件数軸の離散個数テーブルではなく、`perWorktreeByteReserve`（1 worktree あたりのバイト floor 値）に未確定台帳件数を乗じたバイト量である）。バイト軸のラン開始時観測に失敗した場合（`residualBytesObserved === false`）は、件数軸の観測失敗時と同じ fail-closed 方針を採るが、作用先は 2 つの独立した機構に分かれる: 新規着手は `newStartSuppressed` の latch により当該ラン全体で恒久停止する一方、monitoring 再開は `monitoringResumeGateDeferred` により当該周回の projected 判定のみを defer する（観測不能のまま fix-routing-error worktree の新規作成を許すと容量を確認できないまま超過し得るため）。新規着手側の恒久停止が monitoring 再開側の defer を代替するわけではなく、両者は別々に評価される。`perWorktreeByteReserve`（開始時に確定する容量予約の floor 値。実使用量の上界ではない。ただし `maxResidualWorktreeBytes / EPHEMERAL_RESERVE_PER_NEW_START` を上限にクランプ済み——メイン worktree の測定値に gitignored なビルド成果物・依存関係が含まれ過大評価になった場合でも、残置 0 件・実行中タスク 0 件の 1 件目着手候補が予約のみで恒久停止しないようにするため。クランプは実測ベースの超過検知を弱めない）だけでは、ビルド成果物等で floor を超えて成長した実消費を検知できないため、`remeasureResidualBytesIfDue` が `BYTE_REMEASURE_LEDGER_INTERVAL` 件の使い捨て worktree 積み増しごとに間引きながら `du` を再実行してラン中の実測し直しを行い、さらに新規着手（implement）の直前には台帳増分によらず必ず実測し直す（`remeasureResidualBytesNow`。台帳が増えない間の worktree 成長を着手判定へ反映するため。`du` の実行コストは「同一 dispatch 周回内は 1 回」の間引きで有界化する設計判断）。再測定が失敗した場合も projection のみへのフォールバックは fail-open になるため、開始時観測失敗時と同じ fail-closed（`newStartSuppressed` 設定・新規着手停止）に倒す。**ただし全件測定（`du` の kib）自体は成功したが `rawPerWorktreeByteReserve`（実ディスク空き容量ゲート専用の予約見積り）の更新用追加測定だけが失敗した場合は区別する**: この場合は `lastByteRemeasureOutcome.reserveStale = true` を立てるのみで `failed: true` にはしない。全件測定直後に容量超過の有無（全 kind latch を要する事象）を先出しで確定させているため、予約更新の失敗が後から全 kind latch の発火を妨げることはない。**新規着手側はこれで足りるが、monitoring 再開側には別途対策が要る**: `reserveStale` のまま古い（成長を反映しない）`rawPerWorktreeByteReserve` で monitoring 再開を進めると、再開が作る worktree の見積りが過小評価され容量枯渇を許し得る。新規着手は `newStartSuppressed` latch が安全弁として先行確定済みだが、monitoring 再開には同等の安全弁がないため、monitoring 再開の defer 判定は `failed || exceeded || reserveStale` の3条件 OR とし、`reserveStale` も defer を発火させる（この defer は当該周回限りで、次回の予約更新が成功すれば `reserveStale` は false に戻り再評価される。恒久停止ではない）。
 
-**実ディスク空き容量ゲート（`df` 実測）にも同様の「実測と判定の間の取りこぼし」対策が入っている**（Issue #475 codex P1）: `remeasureFreeDiskNow` は `df` 実測完了時点の `ephemeralWorktrees.length` を `freeDiskMeasuredAtLedgerCount` として保持し、`projectFreeDiskReserveBytes` はこの値と判定直前の台帳長との差分を「未測定の増分」として必要バイト数へ追加する。`df` の実測値自体は次の実測し直しまでキャッシュされるため、実測完了〜判定までの間に並行タスクが worktree を記録すると、その消費は実測済みの空き容量にも予約にも反映されないまま判定が通り得る——この増分をゲートへ足すことで、その取りこぼしを埋める。
+**実ディスク空き容量ゲート（`df` 実測）にも同様の「実測と判定の間の取りこぼし」対策が入っている**: `remeasureFreeDiskNow` は `df` 実測完了時点の `ephemeralWorktrees.length` を `freeDiskMeasuredAtLedgerCount` として保持し、`projectFreeDiskReserveBytes` はこの値と判定直前の台帳長との差分を「未測定の増分」として必要バイト数へ追加する。`df` の実測値自体は次の実測し直しまでキャッシュされるため、実測完了〜判定までの間に並行タスクが worktree を記録すると、その消費は実測済みの空き容量にも予約にも反映されないまま判定が通り得る——この増分をゲートへ足すことで、その取りこぼしを埋める。
 
-**エージェントの `worktreePath` 省略・空文字による台帳未検証エントリは、実測失敗ではなく物理一覧フォールバックで回復を試みる**（Issue #404）。`recordEphemeralWorktree` はパスを検証できなかった生成も件数の過小評価を防ぐため `path: ''` で台帳へ計上する。旧実装の `remeasureResidualBytesNow` はこの未検証エントリが 1 件でも残っていれば測定を即座に失敗させ、`newStartSuppressed` latch で新規着手全体（worktree を作らない verify-close ノードを含む）を恒久停止させていた——エージェントの自己申告フィールド 1 個の欠落という回復可能な情報欠落が、回復を一切試みないまま恒久停止に直結する設計だった。修正後は未検証エントリが残っているとき、まず `buildPhysicalByteMeasureTargets` でその時点の `git worktree list --porcelain` 物理一覧（メイン worktree を除く全件・独立レコードカウントとの件数照合付き）へ測定対象を差し替えて実測を継続する。「自己申告パス欠落分を per-issue 突き合わせで補完する」方式ではなくこの方式を採る理由は 2 つある: (1) review / pr-create / fix 系 worktree は隔離 worktree 内で `git checkout --detach` するため `git worktree list` 上は detached になり、`branchMatchesIssue` の branch 照合で帰属を特定できない。命名（`wf_<runId>-…`）による突き合わせも、ホストが Workflow ランタイムから `runId` を決定的に取得する手段を持たないため使えない。(2) バイト軸ゲートの目的（ホスト上の残置 worktree の総ディスク消費を測る）に帰属特定は不要——ラン開始時観測（`countResidualWorktrees`）も既に「メイン worktree を除く物理総数・総量」を対象にしており、物理一覧全件の `du` はどの worktree のパス申告が欠けたかに関わらず正しい実測値を与える。物理一覧は並行ラン・手動 worktree も含み得るため過大側（過剰停止側）にしかずれず、安全方向を維持する。フォールバックで得たパスは**測定専用**で、削除経路（`sweepEligiblePaths`・cleanup・`git worktree remove`）には一切流さない（本節冒頭の「自己申告パス由来の削除は所有権を証明できず廃止済み」という方針を変更しない）。フォールバック自体が成立しない（一覧取得不成立・独立カウントとの件数不一致・`sanitizeWorktreePath` を通らないパス混入）場合のみ、従来どおり fail-closed（`newStartSuppressed` を立てて新規着手を停止）に倒す。副次的に、4 エージェントスキーマ（`IMPL_SCHEMA`/`REVIEW_SCHEMA`/`PR_CREATE_SCHEMA`/`FIX_SCHEMA`）の `worktreePath` を `required` 化し、schema 検証のリトライでモデル側の省略自体を減らした（「pwd を確定できない場合のみ空文字」の契約は維持——空文字はこのホスト側フォールバックが受け止めるため required 化しても穴にならない）。
+**エージェントの `worktreePath` 省略・空文字による台帳未検証エントリは、実測失敗ではなく物理一覧フォールバックで回復を試みる**。`recordEphemeralWorktree` はパスを検証できなかった生成も件数の過小評価を防ぐため `path: ''` で台帳へ計上する。未検証エントリが 1 件でも残っているだけで測定を即座に失敗させると、`newStartSuppressed` latch で新規着手全体（worktree を作らない verify-close ノードを含む）が恒久停止し、エージェントの自己申告フィールド 1 個の欠落という回復可能な情報欠落が、回復を一切試みないまま恒久停止に直結する。このため未検証エントリが残っているときは、まず `buildPhysicalByteMeasureTargets` でその時点の `git worktree list --porcelain` 物理一覧（メイン worktree を除く全件・独立レコードカウントとの件数照合付き）へ測定対象を差し替えて実測を継続する。「自己申告パス欠落分を per-issue 突き合わせで補完する」方式ではなくこの方式を採る理由は 2 つある: (1) review / pr-create / fix 系 worktree は隔離 worktree 内で `git checkout --detach` するため `git worktree list` 上は detached になり、`branchMatchesIssue` の branch 照合で帰属を特定できない。命名（`wf_<runId>-…`）による突き合わせも、ホストが Workflow ランタイムから `runId` を決定的に取得する手段を持たないため使えない。(2) バイト軸ゲートの目的（ホスト上の残置 worktree の総ディスク消費を測る）に帰属特定は不要——ラン開始時観測（`countResidualWorktrees`）も既に「メイン worktree を除く物理総数・総量」を対象にしており、物理一覧全件の `du` はどの worktree のパス申告が欠けたかに関わらず正しい実測値を与える。物理一覧は並行ラン・手動 worktree も含み得るため過大側（過剰停止側）にしかずれず、安全方向を維持する。フォールバックで得たパスは**測定専用**で、削除経路（`sweepEligiblePaths`・cleanup・`git worktree remove`）には一切流さない（本節冒頭の「自己申告パス由来の削除は所有権を証明できないため行わない」という方針を変更しない）。フォールバック自体が成立しない（一覧取得不成立・独立カウントとの件数不一致・`sanitizeWorktreePath` を通らないパス混入）場合のみ fail-closed（`newStartSuppressed` を立てて新規着手を停止）に倒す。あわせて、4 エージェントスキーマ（`IMPL_SCHEMA`/`REVIEW_SCHEMA`/`PR_CREATE_SCHEMA`/`FIX_SCHEMA`）は `worktreePath` を `required` とし、schema 検証のリトライでモデル側の省略自体を減らす（「pwd を確定できない場合のみ空文字」の契約は維持——空文字はこのホスト側フォールバックが受け止めるため required でも穴にならない）。
 
 検討して不採用とした代替案:
 
@@ -160,7 +159,7 @@ git worktree prune
 
 **原因**: isolation worktree は `<main>/.claude/worktrees/<runId>-N` に、メイン worktree 配下として作られる。前ランの worktree が削除されずに残っていると、その中身（依存関係・ビルド成果物込みで 1 件あたり数〜十数 GiB）がメイン worktree の du に丸ごと含まれ、実際には無関係な二重計上になる（ネストした残置分は別途、残置バイト軸の測定でも個別に計上済みのため、実際の容量が計上から漏れることはない）。加えて、この膨張した見積りが「縮めない」方針の高水位フィールド（`.perWorktreeByteReserveHighWater`）へ永続化されると、worktree を手動で掃除しても次ラン以降に膨張値が引き継がれ続ける。
 
-**自動是正**: 修正後は 2 段構えで自動的に是正される。(1) メイン worktree の内容測定（`measureMainWorktreeContentBytes`）が、メイン worktree 配下にあるネストした linked worktree のパスを検出し、その分を差し引いてから見積りを確定する。(2) ラン開始時に、永続化済みの高水位が旧形式（`perWorktreeByteReserveHighWaterVersion` が現行版と不一致）なら無効化し、現行版でも実測との乖離が大きい（残置実測サンプルが十分にあり、かつ永続化値が直近の見積りを大きく超える）場合は 1 ランあたり最大半減までの段階的引き下げを行う。いずれも自動処理であり、手動リセットは通常不要。
+**自動是正**: 2 段構えで自動的に是正される。(1) メイン worktree の内容測定（`measureMainWorktreeContentBytes`）が、メイン worktree 配下にあるネストした linked worktree のパスを検出し、その分を差し引いてから見積りを確定する。(2) ラン開始時に、永続化済みの高水位が旧形式（`perWorktreeByteReserveHighWaterVersion` が現行版と不一致）なら無効化し、現行版でも実測との乖離が大きい（残置実測サンプルが十分にあり、かつ永続化値が直近の見積りを大きく超える）場合は 1 ランあたり最大半減までの段階的引き下げを行う。いずれも自動処理であり、手動リセットは通常不要。
 
 **手動掃除の手順（自動是正では回復しない・実行中のランが無いことを確認してから行う）**:
 
@@ -210,7 +209,7 @@ jq '{hw: .perWorktreeByteReserveHighWater, v: .perWorktreeByteReserveHighWaterVe
 
 実装エージェントは着手時に以下の順で回復手順（手順 0b）を実行する。
 
-**0b-a（open PR 検索）**: `gh pr list --state open` でイシュー番号に対応する open PR が既に存在しないかを確認する。既存 PR が見つかった場合は新規 PR を作らず、そのブランチを取得して続きから作業し、そのブランチ名を branch として返す（実装フェーズの `prNumber` はホスト側で常に 0 として扱われるため PR 番号は返さない）。PR 番号の再利用は PR Create フェーズが担い、同じブランチに対する open PR を `gh pr list --state open --head <branch>` で再検出し、base ブランチと head sha の一致を検証したうえでその番号を `prNumber` として返す（Issue #135。検証の詳細は Step 5.5 参照）。これにより中断再開時や monitoring フォールバック時に重複 PR の作成も `gh pr create` の失敗も起きない。
+**0b-a（open PR 検索）**: `gh pr list --state open` でイシュー番号に対応する open PR が既に存在しないかを確認する。既存 PR が見つかった場合は新規 PR を作らず、そのブランチを取得して続きから作業し、そのブランチ名を branch として返す（実装フェーズの `prNumber` はホスト側で常に 0 として扱われるため PR 番号は返さない）。PR 番号の再利用は PR Create フェーズが担い、同じブランチに対する open PR を `gh pr list --state open --head <branch>` で再検出し、base ブランチと head sha の一致を検証したうえでその番号を `prNumber` として返す（検証の詳細は Step 5.5 参照）。これにより中断再開時や monitoring フォールバック時に重複 PR の作成も `gh pr create` の失敗も起きない。
 
 **0b-b（リモートブランチ再利用）**: open PR が見つからない場合、`git ls-remote --heads origin` でイシュー番号を含むリモートブランチ（命名規約 `<type>/<N>-<short-name>`）が残っていないか確認する。「push 成功・PR 作成失敗」で残ったブランチを検出し、`git fetch origin <branch> && git checkout -B <branch> origin/<branch>` でそのブランチを取得して push 済みコミットを保持したまま続きを実装する。`origin/<base>` から新規作成し直さないため、push 済みコミットが孤児化しない。このブランチ名を branch として返し、prNumber は 0 のまま（PR は後続の PR Create フェーズが作成する）。
 
@@ -272,18 +271,17 @@ rm _/issue-trees/42.json
 4. 同じ `args` で再実行する（`monitoring` 再開から継続し、マージ前ゲートが更新済みの pass 記録を
    確認して継続する）。
 
-**PR 本文の更新だけでは不十分な場合（PR #503 2 巡目 codex P0）**: 終端理由が「post-push fix の
+**PR 本文の更新だけでは不十分な場合**: 終端理由が「post-push fix の
 実測」に基づく不合格（状態ファイルの当該イシューエントリに `optinFixState.attempted: true` があり
 `runs` に非 pass が残っている、または `unbound: true` の場合。これを **latch** と呼ぶ）は、
 `combineOptinRecordGate` が状態ファイルの永続化済み実測を PR 本文の pass マーカーより優先する。
 ただしこれは `optinFixState.headSha` が現在の HEAD の headRefOid と**一致する場合、または
-`unbound: true` の場合のみ**働く（PR #503 3 巡目 codex P1・4 巡目セキュリティ監査 Medium）。
+`unbound: true` の場合のみ**働く。
 
 **latch は設計上意図した fail-closed であり、手順 1〜4（PR 本文の書き換え）や再実行だけでは
-解除されない（PR #503 4 巡目 codex P1 の停止性指摘 → 5 巡目 codex P0 の対応で確定した方針）。**
+解除されない。**
 ホストは fix エージェントの自己申告テスト実行を直接観測できないため、latch を自己申告のみで
-自動解除する経路は用意していない（4 巡目で一度導入したが、SHA 一致は実行の証明にならないという
-5 巡目 codex P0 指摘を受けて撤去した。詳細は `automerge-design.md`「opt-in 記録 latch は
+自動解除する経路は用意していない（SHA 一致は実行の証明にならないため。詳細は `automerge-design.md`「opt-in 記録 latch は
 fail-closed で停止する」節を参照）。latch が原因で `blocked` のまま止まっている場合の解消方法は
 次の 2 つに限られる:
 
@@ -291,14 +289,16 @@ fail-closed で停止する」節を参照）。latch が原因で `blocked` の
    宣言済み opt-in テストを再実行して pass し、push が成立すれば、新 HEAD の sha に束縛された
    pass 記録へ `optinFixState` が自動的に置き換わり、latch は新 HEAD で解消する（既存経路。
    人間の介入は「テストを実際に pass させて push する」ことのみで、状態ファイルの編集は不要）。
-2. **人間が内容を確認したうえで GitHub 上で手動マージする。**
+2. **人間が内容を確認したうえで GitHub 上で手動マージする。** 手動マージ後に同じ args で
+   再実行すると、次回実行は opt-in ゲートより前の独立確認によりマージ済みを検出し、opt-in
+   ゲートで再度 `blocked` にはならず、イシュークローズ確認まで自動的に完了する（Issue #509）。
 
 **状態ファイルの `optinFixState` を削除する・`attempted: false` へ書き換える等で latch を
 迂回する手順は存在しない（意図的に用意していない。安全弁の迂回になるため）。** `headSha` が
 現在の HEAD と一致しない（base 取り込み等で HEAD がさらに進んだ・latch ではない通常の陳腐化）
 場合はこの実測は無視されるため、latch には該当せず手順 1〜4 のみで解消する。
 
-宣言そのものが `args.optinTestCommands`（承認一覧）に無いか許可形式外（PR #503 codex P0。
+宣言そのものが `args.optinTestCommands`（承認一覧）に無いか許可形式外（
 先頭トークンが許可ランナー外・シェルメタ文字を含む等）で `blocked` になった場合は、実装は
 一切起動していない。イシュー本文の `<!-- optin-tests: ... -->` マーカーを `args.optinTestCommands`
 のいずれかと正規化後に文字列完全一致する値へ修正するか、`args.optinTestCommands` へ当該

@@ -88,7 +88,7 @@ fi
 |---------|---------|
 | カテゴリ分割 | research / implement / testing / quality / docs のカテゴリ分割があるか |
 | 技術レイヤ別 builder | リポの技術レイヤに対応した builder Agent が存在するか |
-| model 配分 | 実装・調査=sonnet / 機械的=haiku / 横断判断=opus または fable（fable は Opus 上位の最上位 tier）が守られているか |
+| model 配分 | 各 Agent の model が対象リポ CLAUDE.md の model 配分表（最上位 tier / 標準 tier / 軽量 tier → alias の対応）と整合するか。対応表が無ければ gap として記録する |
 | 最小権限 | Agent の `tools` リストが必要最小限か |
 | 委譲 Agent | skill-author / agent-author / rules-author / docs-writer に相当する Agent があるか |
 
@@ -224,10 +224,15 @@ fi
 ---
 name: <name>
 description: "<役割の説明（発火トリガー語を含める）>"
-model: <haiku|sonnet|opus|fable>
+model: <対象リポの model 配分表で確定した tier alias>
 tools: [必要最小限のツール]
 ---
 ```
+
+`model:` には対象リポの CLAUDE.md にある model 配分表（2-1 診断が確認する
+最上位 tier / 標準 tier / 軽量 tier → alias の対応）に従って具体的な alias（`haiku`・`sonnet`・`opus`・`fable` 等、
+導入先が別 alias を採用していればその値）を書く。対応表が無い場合は Step 2 の gap として先に記録し、
+alias を決めてから追加する（対応表に無い alias を frontmatter へ直書きしない）。
 
 frontmatter のキーは Claude Code の subagent 定義仕様に従い `name` を使う
 （`subagent_type` は Agent ツール呼び出し時のパラメータ名であり、定義キーではない）。

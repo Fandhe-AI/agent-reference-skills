@@ -147,7 +147,7 @@ gh pr checks <pr-number>
 
 - ベースブランチはリポジトリの規約に従う
 - セキュリティ問題が未解決の場合は PR 作成を中止する
-- Step 2.5 の milestone 確認は省略しない（Closes 対象がない場合のみスキップ可）
+- Step 2.5 の milestone 確認は省略しない（Closes 対象がない場合は Step 2.5 全体を、milestone 非運用リポジトリでは手順 3 のみをスキップ可）
 - Draft PR を作成する場合は `--draft` フラグを追加する（ユーザーに確認）
 
 ## sandbox 環境での実行

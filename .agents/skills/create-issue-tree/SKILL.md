@@ -15,7 +15,7 @@ argument-hint: "<要件テキストまたはファイルパス> [--phase <phase�
 要件・タスク一覧から Phase 分割された GitHub Issue ツリーを新規作成する。
 ルート（トラッキング issue）→ Phase 親 issue → issue → sub-issue の 4 階層を構築し、implement-issue-tree が post-order DFS で消化できる構造を維持する。
 
-ルート issue 本文の運用ルール「実行順は sub-issues リスト順が正」は既定では post-order の**優先度**に留まり、並列実行時に後続 Phase が前 Phase を追い越す余地がある。Phase 完了を厳密に順序保証したい場合は implement-issue-tree 実行時に `phaseGate: true` を指定する（Issue #494。implement-issue-tree の SKILL.md 参照）。
+ルート issue 本文の運用ルール「実行順は sub-issues リスト順が正」は既定では post-order の**優先度**に留まり、並列実行時に後続 Phase が前 Phase を追い越す余地がある。Phase 完了を厳密に順序保証したい場合は implement-issue-tree 実行時に `phaseGate: true` を指定する（implement-issue-tree の SKILL.md 参照）。
 
 ## 使い方
 
@@ -504,7 +504,6 @@ gh api "repos/{owner}/{repo}/issues/${PHASE_NUMBER}/sub_issues?per_page=100" \
 - `--phase` 指定で部分起票した場合、別 Phase の追加起票では **必ず `--root <既存ルートissue番号>` を渡す**（Step 3 の新規作成をスキップして既存ツリーへ継ぎ足し、Step 6 も全置換せず既存本文へ差分追記する）。起票後は update-issue-tree に同じルート issue 番号を渡して棚卸しする
 - ページネーション: sub-issues が 100 件を超える場合は `per_page=100&page=N` でページングして全件取得する
 - シェルコマンドの変数は必ず `"${var}"` でクォートする（コマンドインジェクション対策）
-- `--no-verify` は絶対に使用しない
 - **`gh issue create` は `--json` 非対応**。issue URL を stdout に出力するため、`| grep -oE '[0-9]+$'` で末尾の番号を抽出して変数に保持する
 - **sub_issues API の `sub_issue_id` は issue 番号ではなく database id**（GitHub 仕様）。`gh api "repos/{owner}/{repo}/issues/<number>" --jq '.id'` で id を取得してから POST する。番号をそのまま渡すと誤った issue を紐付ける／404 になる
 - phase ラベルは Step 4 冒頭の `gh label create "phase:${PHASE}" --color "0075ca"` で issue 作成より前に必ず作成する（作成済みリポジトリでは no-op）

@@ -119,20 +119,60 @@ test('配線: raw 値確定より前に decideRunStartHighWater の呼び出し�
   assert.match(between, /persistedHighWaterBytes = highWaterDecision\.effectiveBytes/)
 })
 
-test('配線: remeasureResidualBytesNow 内の rawPerWorktreeByteReserve = avgActualBytes 代入2箇所いずれの直後にも raiseAndPersistHighWater 呼び出しが続く（将来の分岐追加でも抜け漏れを機械的に固定）', () => {
-  const assignments = []
+test('配線: remeasureResidualBytesNow 内で raiseAndPersistHighWater(avgActualBytes) 呼び出しが厳密に2箇所存在する（Issue #510: raw 代入結果ではなく実測値そのものを渡す）', () => {
+  const needle = 'await raiseAndPersistHighWater(avgActualBytes)'
+  const calls = []
   let searchFrom = 0
-  const needle = 'rawPerWorktreeByteReserve = avgActualBytes'
   for (;;) {
     const idx = source.indexOf(needle, searchFrom)
     if (idx < 0) break
-    assignments.push(idx)
+    calls.push(idx)
     searchFrom = idx + needle.length
   }
-  assert.equal(assignments.length, 2, 'avgActualBytes 代入箇所が2箇所であるという前提が崩れている（実装の作り変えを要確認）')
-  for (const idx of assignments) {
-    const after = source.slice(idx, idx + 200)
-    assert.match(after, /await raiseAndPersistHighWater\(rawPerWorktreeByteReserve\)/)
+  assert.equal(calls.length, 2, 'raiseAndPersistHighWater(avgActualBytes) 呼び出しが2箇所であるという前提が崩れている（実装の作り変えを要確認）')
+})
+
+test('配線: remeasureResidualBytesNow の raiseAndPersistHighWater(avgActualBytes) 呼び出し2箇所いずれも、raw 予約を更新する if (avgActualBytes > rawPerWorktreeByteReserve) ブロックの外側（閉じ括弧より後）にある（Issue #510: raw が増えない周回でも実測平均を永続化する回帰防止）', () => {
+  const callNeedle = 'await raiseAndPersistHighWater(avgActualBytes)'
+  const ifNeedle = 'if (avgActualBytes > rawPerWorktreeByteReserve) {'
+
+  const callIdxs = []
+  let searchFrom = 0
+  for (;;) {
+    const idx = source.indexOf(callNeedle, searchFrom)
+    if (idx < 0) break
+    callIdxs.push(idx)
+    searchFrom = idx + callNeedle.length
+  }
+  assert.equal(callIdxs.length, 2)
+
+  const ifIdxs = []
+  searchFrom = 0
+  for (;;) {
+    const idx = source.indexOf(ifNeedle, searchFrom)
+    if (idx < 0) break
+    ifIdxs.push(idx)
+    searchFrom = idx + ifNeedle.length
+  }
+  assert.equal(ifIdxs.length, 2, 'raw 予約更新の if 分岐が2箇所であるという前提が崩れている（実装の作り変えを要確認）')
+
+  // 各 call の直前にある最も近い if 開始位置を対応する if ブロックとみなし、その if ブロックの
+  // 閉じ括弧（同じインデントの "}" 行）が call より前に来ていることを確認する。これにより
+  // 「call が if ブロックの内側に戻っていない（= raw 増加時のみの実行に後退していない）」ことを
+  // 文字列オフセット比較だけで検証する。
+  for (const callIdx of callIdxs) {
+    const precedingIfIdxs = ifIdxs.filter((i) => i < callIdx)
+    assert.ok(precedingIfIdxs.length > 0, `call (idx ${callIdx}) より前に対応する if 開始が見つからない`)
+    const ifIdx = Math.max(...precedingIfIdxs)
+    // if 開始直後から call 直前までの範囲に、その if ブロックを閉じる行（2箇所の分岐は
+    // ネスト位置が異なり、それぞれ 6・8 スペースインデントの "}" 単独行になる）が
+    // call より前に出現することを確認する。
+    const between = source.slice(ifIdx, callIdx)
+    assert.match(
+      between,
+      /\n {6,8}\}\n/,
+      `if (idx ${ifIdx}) の閉じ括弧が call (idx ${callIdx}) より前に見つからない（call が if ブロック内側に後退している疑い）`,
+    )
   }
 })
 

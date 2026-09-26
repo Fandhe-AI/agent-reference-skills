@@ -972,6 +972,43 @@ test('駆動部: optinRecordVerifyPrompt の判定後に mergeExecutePrompt が�
   assert.ok(verifyIdx >= 0 && execIdx >= 0 && verifyIdx < execIdx)
 })
 
+// ---------------------------------------------------------------------------
+// 群 G 追加: 手動マージ済み PR の回復を opt-in ゲートが止めない配線（Issue #509）
+// ---------------------------------------------------------------------------
+
+test('駆動部: マージ済み独立確認（mergeVerifyPrompt 再利用）が recoveryOnly の後・optinRecordVerifyPrompt より前で呼ばれる（Issue #509）', () => {
+  const recoveryIdx = driverPart.indexOf('const recoveryOnly')
+  const probeIdx = driverPart.indexOf('mergeVerifyPrompt(', recoveryIdx)
+  const verifyIdx = driverPart.indexOf('optinRecordVerifyPrompt(')
+  assert.ok(recoveryIdx >= 0, 'const recoveryOnly が見つからない')
+  assert.ok(probeIdx >= 0, 'recoveryOnly 後に mergeVerifyPrompt の呼び出しが見つからない')
+  assert.ok(verifyIdx >= 0)
+  assert.ok(recoveryIdx < probeIdx && probeIdx < verifyIdx, 'probe は recoveryOnly の後・optinRecordVerifyPrompt の前で呼ばれる必要がある')
+})
+
+test('駆動部: allowMerge の導出に prAlreadyMerged が含まれる（Issue #509）', () => {
+  assert.match(driverPart, /const allowMerge = !recoveryOnly && !prAlreadyMerged/)
+})
+
+test('駆動部: opt-in ゲートの起動条件文（allowMerge && Array.isArray(item.optinTests)）は無変更のまま（Issue #509 で拡げない）', () => {
+  assert.match(driverPart, /allowMerge && Array\.isArray\(item\.optinTests\)/)
+})
+
+test('駆動部: 回復専用の fail-closed 分岐が (recoveryOnly || prAlreadyMerged) へ拡張されている（Issue #509）', () => {
+  assert.match(driverPart, /\(recoveryOnly \|\| prAlreadyMerged\) && execReason && execReason !== 'pr-closed'/)
+})
+
+test('駆動部: probe の返却値代入先変数名が `v` ではない（pr-saved-failsafe.test.mjs の indexOf 前提を壊さない。Issue #509）', () => {
+  // pr-saved-failsafe.test.mjs は `v = await agent(mergeVerifyPrompt(` の最初の出現箇所を
+  // 周辺の try/catch ごと検証している。probe をここで `v` へ代入すると、ソース上より前方に
+  // あるこの呼び出しが先に一致し、本来検証したい既存の merge-verify 呼び出し（merge-exec の
+  // merged 自己申告を裏付ける独立確認）の検証にならなくなる。
+  const firstVAssignIdx = driverPart.indexOf('v = await agent(mergeVerifyPrompt(')
+  assert.ok(firstVAssignIdx >= 0, '既存の merge-verify 呼び出し（v = await agent(mergeVerifyPrompt(...)）が見つからない')
+  const recoveryIdx = driverPart.indexOf('const recoveryOnly')
+  assert.ok(recoveryIdx < firstVAssignIdx, 'v = await agent(mergeVerifyPrompt( の最初の出現は既存の merge-verify 呼び出しのままである必要がある')
+})
+
 test('駆動部: Tree ループで parseOptinTestDeclarations が承認一覧 optinTestCommandsInput 付きで呼ばれる（PR #503 codex P0）', () => {
   assert.match(driverPart, /parseOptinTestDeclarations\(n\.optinTests, optinTestCommandsInput\)/)
 })
