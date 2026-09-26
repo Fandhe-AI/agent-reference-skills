@@ -149,3 +149,25 @@ test("verify-layout: --makefile がディレクトリを指す場合は例外終
     cleanupTmpDir(root);
   }
 });
+
+test("verify-layout: Makefile の行の中身を結果へ転記せず行番号だけを示す", () => {
+  const dir = makeTmpDir();
+  try {
+    const marker = "PLACEHOLDER_LINE_MARKER_not_a_secret";
+    writeFileSync(
+      join(dir, "Makefile"),
+      [
+        ".PHONY: check",
+        `check: ## run checks ${marker}`,
+        `\t@node skills/make/scripts/bin/run-checks.mjs --token ${marker}`,
+        "",
+      ].join("\n"),
+    );
+    const r = runCliJson("verify-layout.mjs", ["--root", dir]);
+    assert.equal(r.stdout.includes(marker), false);
+    assert.ok(r.json.findings.some((f) => f.id === "skill-path-dependency" && f.evidence === "L3"));
+    assert.ok(r.json.findings.some((f) => f.id === "help:check" && f.evidence === "L2"));
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});

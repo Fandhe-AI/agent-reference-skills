@@ -58,3 +58,10 @@ test("exec-safe: win32 の .cmd/.bat 経由で空白を含む引数・空の引�
     assert.ok(t.unsafeReason, `${JSON.stringify(bad)} は拒否される`);
   }
 });
+
+test("exec-safe: BLOCKED の理由には引数の値ではなく位置だけを書く", () => {
+  const t = resolveExecutionTarget("win32", "pnpm.cmd", ["ok", "PLACEHOLDER&MARKER"]);
+  assert.ok(t.unsafeReason.includes("args[1]"));
+  assert.equal(t.unsafeReason.includes("MARKER"), false);
+  assert.ok(resolveExecutionTarget("win32", "my tool.cmd", []).unsafeReason.includes("command"));
+});

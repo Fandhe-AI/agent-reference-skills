@@ -51,8 +51,11 @@ reported as `FAIL` findings rather than crashing the script.
 The plan JSON's `checks[].command` must be a bare executable name with no whitespace or shell
 metacharacters (`| & ; $ > < ` backtick); this is enforced by `validate-plan.mjs` itself (and
 re-enforced independently by `run-checks.mjs`, which never trusts a plan it did not itself
-re-validate — see `verify.md`). Each `checks[]` entry also requires a non-empty `name` string
-(`checks[i]: name が必要です` — "name is required" — is a `FAIL` finding otherwise); this is easy
+re-validate — see `verify.md`). Each `checks[]` entry also requires a non-empty, unique `name` string
+(`checks[i]: name が必要です` — "name is required" — or `name が重複しています` — "duplicate name" —
+is a `FAIL` finding otherwise; `run-checks.mjs` identifies results by `name` alone). Likewise, two
+`changes[]` entries that resolve to the same file are a `FAIL` (`同じ対象が changes に重複しています`),
+since it would be ambiguous which precondition applies. The `name` requirement is easy
 to miss since `name` is not listed among the top-level CLI flags above — it is a required field
 *inside* the plan JSON's `checks[]` array, confirmed against `scripts/bin/lib/plan.mjs`.
 
@@ -271,7 +274,7 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
 | Code | Meaning |
 | --- | --- |
 | 0 | `PASS` (no conflicts; all conflicting files are byte-identical to the sample; or, with `--apply --force`, every conflicting file was overwritten successfully) |
-| 1 | `FAIL` (an `--apply` whose plan does not cover every written file, points at a different root, or fails re-validation — nothing is written in that case; the sample directory could not be fully enumerated — an unreadable entry, the entry limit, or a directory such as `build/`, `dist/`, or `node_modules/` that the scanner skips; nothing is previewed or written in that case; a destination file exists with different content and was not overwritten; a destination resolves outside `--root` through `..` or a symlink; or a write failed). `--apply` without `--force` still exits 1 when conflicts were skipped, even though the non-conflicting files were written: the target is only partially applied, and `applied` / `skippedConflicts` in the result say which files are which |
+| 1 | `FAIL` (an `--apply` whose plan does not cover every written file, points at a different root, or fails re-validation — nothing is written in that case; the sample directory could not be fully enumerated — an unreadable entry, the entry limit, a directory such as `build/`, `dist/`, or `node_modules/` that the scanner skips, or a symlink / special file that is never followed or copied; nothing is previewed or written in that case; a destination file exists with different content and was not overwritten; a destination resolves outside `--root` through `..` or a symlink; or a write failed). `--apply` without `--force` still exits 1 when conflicts were skipped, even though the non-conflicting files were written: the target is only partially applied, and `applied` / `skippedConflicts` in the result say which files are which |
 | 2 | Argument error (missing `--sample`/`--root`, `--apply` without `--plan`, a `--sample` value that is not a single directory name such as `../plans`, unknown flag) |
 | 3 | not used by this script |
 

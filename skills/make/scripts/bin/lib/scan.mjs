@@ -44,7 +44,7 @@ export function isSecretLikeName(name) {
  * @param {object} [opts]
  * @param {number} [opts.maxDepth]
  * @param {number} [opts.maxEntries]
- * @returns {{entries: Array<{path:string, type:"file"|"dir", depth:number}>, truncated: boolean, skippedDirs: string[], errors: Array<{path:string, code:string}>}}
+ * @returns {{entries: Array<{path:string, type:"file"|"dir"|"symlink"|"other", depth:number}>, truncated: boolean, skippedDirs: string[], errors: Array<{path:string, code:string}>}}
  *   errors は読み取れなかったディレクトリ・エントリ。呼び出し元は空でない場合に走査完了扱いにしないこと。
  */
 export function scanTree(root, { maxDepth = DEFAULT_MAX_DEPTH, maxEntries = DEFAULT_MAX_ENTRIES } = {}) {
@@ -93,6 +93,9 @@ export function scanTree(root, { maxDepth = DEFAULT_MAX_DEPTH, maxEntries = DEFA
         walk(full, depth + 1);
       } else if (dirent.isFile()) {
         entries.push({ path: full, type: "file", depth });
+      } else {
+        // FIFO・ソケット・デバイス等も黙って落とさず記録する（呼び出し元が全件扱いにしないため）
+        entries.push({ path: full, type: "other", depth });
       }
     }
   }

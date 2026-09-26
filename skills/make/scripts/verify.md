@@ -66,13 +66,16 @@ Actual run (2026-09-26):
 ```
 verify-layout: PASS (root=<tmp>)
   - [PASS] Makefile を確認 (Makefile)
-  - [PASS] help エントリと target が一致: help (Show this help)
+  - [PASS] help エントリと target が一致: help (L2)
   - [PASS] Skill 固有パスへの依存は検出されませんでした
 ```
 
 Exit code: `0`. Matches the expectation exactly: overall `status: "PASS"`, a `makefile-presence` PASS finding, a
 `help:help` PASS finding (the `help` target both exists and is declared `.PHONY`), and a
-`skill-path-dependency` PASS finding (no `skills/make`-style path referenced) — confirmed via
+`skill-path-dependency` PASS finding (no `skills/make`-style path referenced). Findings point at
+the Makefile by line number only (`evidence: "L2"`); the line's own text (help comment, recipe) is
+never copied into the result, so a token written into a Makefile cannot leak into JSON or CI logs.
+Confirmed via
 `--json`, which also reports `"helpEntryCount": 1`, `"targetCount": 2`, and an `unresolved` array
 with two entries: recipe (tab-indented) shell content is not parsed, and `include`d file contents
 are not expanded.
@@ -239,7 +242,11 @@ approved check actually runs (`executed: true`, `exitCode: 0`) and the overall r
 (`world` here) is neither captured nor printed: `run-checks.mjs` launches checks with
 `stdio: "ignore"` so that a verification command that prints a token or credential cannot leak
 it into the JSON result, CI logs, or a report. Only `exitCode`, `signal`, `timedOut`, and an OS
-`errorCode` (e.g. `ENOENT`) are recorded.
+`errorCode` (e.g. `ENOENT`) are recorded. The plan's own `command`, `args`, and `cwd` are not
+echoed either (an argument may carry a token): each result is identified by `checks[].name`, which
+`validate-plan.mjs` requires to be unique, and the command line itself is reviewed in the plan
+file. A `.cmd`/`.bat` check blocked for `cmd.exe` metacharacters names only the position
+(`command` or `args[i]`) in `reason`, never the offending value.
 
 ### `--help` output
 
@@ -321,16 +328,16 @@ non-leakage, dry-run-by-default, Windows `.cmd`/`.bat` handling logic, etc.).
 Actual run (2026-09-26, repository root, Node v24.13.0):
 
 ```
-ℹ tests 91
+ℹ tests 97
 ℹ suites 0
-ℹ pass 91
+ℹ pass 97
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
 ```
 
-Exit code: `0`. All 91 tests passed, 0 failed, on this run. The exact test count grows as tests
+Exit code: `0`. All 97 tests passed, 0 failed, on this run. The exact test count grows as tests
 are added — re-run this command rather than relying on the count above if it matters to the task
 at hand.
 

@@ -40,13 +40,14 @@ export function loadPlanFile(planPath) {
   try {
     raw = readFileSync(planPath, "utf8");
   } catch (err) {
-    throw new PlanError(`計画ファイルを読み込めません: ${err.message}`);
+    throw new PlanError(`計画ファイルを読み込めません（${err.code ?? "UNKNOWN"}）: ${planPath}`);
   }
   let json;
   try {
     json = JSON.parse(raw);
   } catch (err) {
-    throw new PlanError(`計画ファイルが JSON として不正です: ${err.message}`);
+    // SyntaxError のメッセージは入力の断片（引数の値等）を含み得るため転記しない
+    throw new PlanError(`計画ファイルが JSON として不正です: ${planPath}`);
   }
   return json;
 }
@@ -104,6 +105,7 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
   if (!Array.isArray(plan.changes)) {
     findings.push({ id: "changes", status: "FAIL", detail: "changes は配列である必要があります" });
   }
+  const seenPaths = new Set();
   for (const [i, change] of changes.entries()) {
     const label = `changes[${i}]`;
     // null・配列・プリミティブを要素に含む計画でも例外終了させず、構造化された FAIL として返す
@@ -123,6 +125,14 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
     }
 
     const resolved = resolvePlanPath(root, change.path);
+    // 同じ対象を複数の change で指定すると、どの前提（create / modify / delete）を適用するか曖昧になる
+    if (!resolved.escaped) {
+      if (seenPaths.has(resolved.resolved)) {
+        findings.push({ id: label, status: "FAIL", detail: `同じ対象が changes に重複しています: ${change.path}` });
+        continue;
+      }
+      seenPaths.add(resolved.resolved);
+    }
     if (resolved.escaped) {
       findings.push({
         id: label,
@@ -207,7 +217,7 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
         try {
           actualHash = `sha256:${createHash("sha256").update(readFileSync(resolved.resolved)).digest("hex")}`;
         } catch (err) {
-          findings.push({ id: label, status: "FAIL", detail: `元ファイルを読み込めません（${err.code ?? err.message}）: ${change.path}` });
+          findings.push({ id: label, status: "FAIL", detail: `元ファイルを読み込めません（${err.code ?? "UNKNOWN"}）: ${change.path}` });
         }
         if (actualHash === change.contentHash) {
           findings.push({
@@ -231,6 +241,7 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
   if (plan.checks !== undefined && !Array.isArray(plan.checks)) {
     findings.push({ id: "checks", status: "FAIL", detail: "checks は配列である必要があります" });
   }
+  const seenNames = new Set();
   for (const [i, check] of checks.entries()) {
     const label = `checks[${i}]`;
     if (!isPlainObject(check)) {
@@ -239,6 +250,11 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
     }
     if (typeof check.name !== "string" || check.name.length === 0) {
       findings.push({ id: label, status: "FAIL", detail: "name が必要です" });
+    } else if (seenNames.has(check.name)) {
+      // run-checks の結果は name で識別する（command / args は結果へ転記しない）ため重複を許さない
+      findings.push({ id: label, status: "FAIL", detail: `name が重複しています: ${check.name}` });
+    } else {
+      seenNames.add(check.name);
     }
     if (typeof check.command !== "string" || check.command.length === 0) {
       findings.push({ id: label, status: "FAIL", detail: "command（実行ファイル名）が必要です" });

@@ -43,9 +43,11 @@ export function resolveExecutionTarget(platform, command, args) {
     args: ["/d", "/s", "/c", command, ...args],
     viaShellWrapper: true,
   };
-  const unsafe = [command, ...args].find((a) => a.length === 0 || CMD_META_RE.test(a));
-  if (unsafe !== undefined) {
-    target.unsafeReason = `cmd.exe が再解釈し得る文字を含む引数は .cmd/.bat 経由で実行しません: ${JSON.stringify(unsafe)}`;
+  const isUnsafe = (a) => a.length === 0 || CMD_META_RE.test(a);
+  // 理由には値そのものではなく位置（command / args[i]）だけを書く（引数に含まれ得る秘密値を結果へ転記しない）
+  const where = isUnsafe(command) ? "command" : args.findIndex(isUnsafe) >= 0 ? `args[${args.findIndex(isUnsafe)}]` : null;
+  if (where !== null) {
+    target.unsafeReason = `cmd.exe が再解釈し得る文字・空白・空文字列を含むため .cmd/.bat 経由で実行しません: ${where}`;
   }
   return target;
 }

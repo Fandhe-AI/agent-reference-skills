@@ -87,14 +87,18 @@ function checkApplyPlan(planPath, root, toWrite) {
 function listSampleFiles(sampleRoot) {
   const { entries, truncated, errors, skippedDirs } = scanTree(sampleRoot, { maxDepth: 32, maxEntries: 20000 });
   // 一部を読めなかった・打ち切った・除外規則（build / dist / node_modules 等や深さ制限）で
-  // 走査しなかったディレクトリがあるサンプルを「全ファイル」として扱い、欠けたまま適用しない
-  if (errors.length > 0 || truncated || skippedDirs.length > 0) {
+  // 走査しなかったディレクトリや symlink があるサンプルを「全ファイル」として扱い、欠けたまま適用しない
+  // symlink は辿らず、FIFO 等の特殊ファイルは複製しないため、含むサンプルも欠けたまま「全ファイル」として扱わない
+  const unsupported = entries.filter((e) => e.type !== "file" && e.type !== "dir");
+  if (errors.length > 0 || truncated || skippedDirs.length > 0 || unsupported.length > 0) {
     const why =
       errors.length > 0
         ? errors.map((e) => `${e.path} (${e.code})`).join(", ")
         : truncated
           ? "件数上限で打ち切り"
-          : `走査対象外のディレクトリを含む: ${skippedDirs.join(", ")}`;
+          : skippedDirs.length > 0
+            ? `走査対象外のディレクトリを含む: ${skippedDirs.join(", ")}`
+            : `symlink・特殊ファイルを含む（辿らない・複製しない）: ${unsupported.map((e) => e.path).join(", ")}`;
     throw new Error(`サンプルを完全には走査できませんでした: ${why}`);
   }
   return entries.filter((e) => e.type === "file").map((e) => e.path);
@@ -250,7 +254,7 @@ function main() {
           w.finding.detail = "競合していた既存ファイルを --force で上書きしました";
         }
       } catch (err) {
-        const detail = `書き込みに失敗しました: ${err.message}`;
+        const detail = `書き込みに失敗しました（${err.code ?? "UNKNOWN"}）`;
         if (w.finding) {
           w.finding.status = STATUS.FAIL;
           w.finding.detail = detail;

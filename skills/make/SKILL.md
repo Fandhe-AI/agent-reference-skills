@@ -136,7 +136,7 @@ skills/make/
 | consult | 設計・レビュー中の参照（既定） | なし。references / samples / scripts の文書のみ読む |
 | audit | 利用者が指定した対象の静的診断。書き換え・依存導入・build は行わない | `inspect-repo.mjs`（`--root` 必須） |
 | plan | 適用案・変更対象・検証計画の提示。対象ファイルは変更しない | `validate-plan.mjs`、`preview-sample.mjs`（既定は書き込まない） |
-| apply | 利用者が別途承認した範囲だけの適用。Skill 独自のパッチ適用エンジンではなく通常の編集ツールで行う | なし |
+| apply | 利用者が別途承認した範囲だけの適用。既存ファイルの編集は Skill 独自のパッチ適用エンジンではなく通常の編集ツールで行う | サンプル導入のみ `preview-sample.mjs --apply --plan`（承認済み計画に明記したファイルだけを書き込む） |
 | verify | 承認済みの検証。静的整合性確認と実コマンド実行を分離する | `verify-layout.mjs`、`run-checks.mjs`（既定 dry-run。`--execute` は各 check の `approved:true` かつ利用者承認がある場合のみ） |
 
 ## 安全上の最小ルール

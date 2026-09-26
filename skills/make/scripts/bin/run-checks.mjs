@@ -113,11 +113,10 @@ function main() {
     // 文字列連結ではなく resolvePlanPath を再利用する（validate-plan と同じ root 逸脱判定を通す）。
     // validatePlanShape 側で既に cwd の逸脱は FAIL 済みのはずだが、二重に安全側へ倒す。
     const cwd = check.cwd ? resolvePlanPath(root, check.cwd).resolved : root;
+    // 結果は name で識別し、計画側の command / args / cwd は転記しない（引数にトークン等が含まれる
+    // 検証コマンドでも、結果 JSON・CI ログ・レポートへ値を残さないため。内容は計画ファイル側で確認する）。
     const base = {
       name: check.name,
-      command: check.command,
-      args: check.args ?? [],
-      cwd,
       timeoutMs: check.timeoutMs ?? 60000,
     };
 

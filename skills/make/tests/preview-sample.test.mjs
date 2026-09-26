@@ -225,3 +225,21 @@ test("preview-sample: 走査対象外ディレクトリ（build 等）を含む�
     cleanupTmpDir(dir);
   }
 });
+
+test("preview-sample: symlink を含むサンプルはリンク先を欠いたまま適用せず exit 1", () => {
+  const dir = makeTmpDir();
+  const sampleName = `tmp-symlink-${process.pid}`;
+  const sampleDir = join(PROJECTS_DIR, sampleName);
+  try {
+    mkdirSync(sampleDir, { recursive: true });
+    writeFileSync(join(sampleDir, "Makefile"), "all:\n");
+    symlinkSync("Makefile", join(sampleDir, "GNUmakefile"));
+    const r = runCli("preview-sample.mjs", ["--sample", sampleName, "--root", dir]);
+    assert.equal(r.status, 1);
+    assert.ok(r.stderr.includes("symlink"));
+    assert.equal(existsSync(join(dir, "Makefile")), false, "一部だけを適用しない");
+  } finally {
+    rmSync(sampleDir, { recursive: true, force: true });
+    cleanupTmpDir(dir);
+  }
+});

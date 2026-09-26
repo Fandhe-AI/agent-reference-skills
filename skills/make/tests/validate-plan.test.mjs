@@ -328,12 +328,13 @@ test("validate-plan: expectedState: absent / present を実際の存在状態と
     const root = join(dir, "proj");
     mkdirSync(root);
     writeFileSync(join(root, "EXISTING.txt"), "x\n");
+    writeFileSync(join(root, "OTHER.txt"), "y\n");
     const planPath = writePlan(dir, {
       schemaVersion: "1.0.0",
       root,
       changes: [
         { path: "EXISTING.txt", action: "modify", expectedState: "absent" },
-        { path: "EXISTING.txt", action: "modify", expectedState: "present" },
+        { path: "OTHER.txt", action: "modify", expectedState: "present" },
       ],
       checks: [],
     });
@@ -397,6 +398,32 @@ test("validate-plan: `..` で始まる root 配下の正当なファイル名は
     const r = runCliJson("validate-plan.mjs", ["--plan", planPath]);
     assert.equal(r.status, 0);
     assert.equal(r.json.status, "PASS");
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+test("validate-plan: changes の対象重複と checks の name 重複は FAIL にする", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    const planPath = writePlan(dir, {
+      schemaVersion: "1.0.0",
+      root,
+      changes: [
+        { path: "a.txt", action: "create", expectedState: "absent" },
+        { path: "./a.txt", action: "delete" },
+      ],
+      checks: [
+        { name: "same", command: "make", args: ["check"] },
+        { name: "same", command: "make", args: ["test"] },
+      ],
+    });
+    const r = runCliJson("validate-plan.mjs", ["--plan", planPath]);
+    assert.equal(r.status, 1);
+    assert.ok(r.json.findings.some((f) => f.id === "changes[1]" && f.status === "FAIL" && f.detail.includes("重複")));
+    assert.ok(r.json.findings.some((f) => f.id === "checks[1]" && f.status === "FAIL" && f.detail.includes("重複")));
   } finally {
     cleanupTmpDir(dir);
   }

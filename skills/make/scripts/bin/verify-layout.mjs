@@ -41,10 +41,11 @@ function parseMakefile(text) {
   const helpEntries = [];
   const targets = new Set();
   const phony = new Set();
-  for (const line of lines) {
+  for (const [idx, line] of lines.entries()) {
     const helpMatch = line.match(HELP_LINE_RE);
     if (helpMatch) {
-      helpEntries.push({ target: helpMatch[1], comment: helpMatch[2].trim() });
+      // 結果には行番号だけを載せる（Makefile の行の中身は秘密値を含み得るため JSON・ログへ転記しない）
+      helpEntries.push({ target: helpMatch[1], line: idx + 1 });
     }
     const phonyMatch = line.match(PHONY_LINE_RE);
     if (phonyMatch) {
@@ -157,14 +158,14 @@ function main() {
         id: `help:${entry.target}`,
         status: STATUS.PASS,
         detail: `help エントリと target が一致: ${entry.target}`,
-        evidence: entry.comment,
+        evidence: `L${entry.line}`,
       });
     } else {
       findings.push({
         id: `help:${entry.target}`,
         status: STATUS.FAIL,
         detail: `help エントリが存在しない target を指しています: ${entry.target}`,
-        evidence: entry.comment,
+        evidence: `L${entry.line}`,
       });
     }
   }
@@ -190,7 +191,7 @@ function main() {
   const lines = text.split(/\r\n|\n/);
   lines.forEach((line, idx) => {
     if (SKILL_PATH_PATTERNS.some((re) => re.test(line))) {
-      skillPathHits.push({ line: idx + 1, text: line.trim() });
+      skillPathHits.push({ line: idx + 1 });
     }
   });
   if (skillPathHits.length > 0) {
@@ -199,7 +200,7 @@ function main() {
         id: "skill-path-dependency",
         status: STATUS.FAIL,
         detail: `Skill 自身の設置パスへの依存を検出（対象プロジェクトの Makefile は Skill の配置に依存すべきではない）`,
-        evidence: `L${hit.line}: ${hit.text}`,
+        evidence: `L${hit.line}`,
       });
     }
   } else {

@@ -235,7 +235,7 @@ test("run-checks: 実行したコマンドの stdout / stderr を結果 JSON に
       root,
       changes: [],
       checks: [
-        // args は結果 JSON に含まれるため、marker は子プロセス内で連結して作る（args に完成形を置かない）
+        // marker は子プロセス内で連結して作る（args の値が出力に現れたのか、コマンド出力なのかを区別するため）
         { name: "prints", command: process.execPath, args: ["-e", `const m = ${JSON.stringify(marker.slice(0, 11))} + ${JSON.stringify(marker.slice(11))}; console.log(m); console.error(m); process.exit(3)`], approved: true },
       ],
     });
@@ -244,6 +244,51 @@ test("run-checks: 実行したコマンドの stdout / stderr を結果 JSON に
     assert.equal(r.json.checks[0].exitCode, 3);
     assert.equal(r.stdout.includes(marker), false, "stdout（JSON）にコマンド出力を含めない");
     assert.equal(r.stderr.includes(marker), false, "診断出力にもコマンド出力を流さない");
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+test("run-checks: 計画の command / args / cwd を結果へ転記しない（dry-run・承認不足・実行済みの全経路）", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(join(root, "sub"), { recursive: true });
+    const marker = "PLACEHOLDER_ARG_MARKER_not_a_secret";
+    const planPath = writePlan(dir, {
+      schemaVersion: "1.0.0",
+      root,
+      changes: [],
+      checks: [
+        { name: "approved", command: process.execPath, args: ["-e", "process.exit(0)", marker], cwd: "sub", approved: true },
+        { name: "unapproved", command: process.execPath, args: ["-e", "process.exit(0)", marker] },
+      ],
+    });
+    for (const extra of [[], ["--execute"]]) {
+      const r = runCliJson("run-checks.mjs", ["--plan", planPath, ...extra]);
+      assert.equal(r.stdout.includes(marker), false, `引数の値を出力しない（${extra.join(" ") || "dry-run"}）`);
+      assert.equal(r.stderr.includes(marker), false);
+      for (const c of r.json.checks) {
+        assert.equal("args" in c || "command" in c || "cwd" in c, false, `${c.name} に計画側の値を載せない`);
+      }
+    }
+    const executed = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute"]);
+    assert.equal(executed.json.checks.find((c) => c.name === "approved").status, "PASS");
+    assert.equal(executed.json.checks.find((c) => c.name === "unapproved").status, "BLOCKED");
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+test("run-checks: JSON として壊れた計画でも入力の断片を診断へ出さない", () => {
+  const dir = makeTmpDir();
+  try {
+    const planPath = join(dir, "plan.json");
+    writeFileSync(planPath, '{"checks": [{"args": ["PLACEHOLDER_BROKEN_MARKER" oops]}]}');
+    const r = runCli("run-checks.mjs", ["--plan", planPath]);
+    assert.equal(r.status, 1);
+    assert.equal(r.stderr.includes("PLACEHOLDER_BROKEN_MARKER"), false);
+    assert.equal(r.stdout.includes("PLACEHOLDER_BROKEN_MARKER"), false);
   } finally {
     cleanupTmpDir(dir);
   }
