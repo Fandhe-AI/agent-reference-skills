@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { writeFileSync, readFileSync, existsSync, symlinkSync, mkdirSync, rmSync, readdirSync, chmodSync } from "node:fs";
+import { writeFileSync, readFileSync, existsSync, symlinkSync, mkdirSync, rmSync, readdirSync, chmodSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { createHash } from "node:crypto";
 import { runCli, runCliJson, makeTmpDir, cleanupTmpDir, BIN_DIR } from "./helpers.mjs";
@@ -328,6 +328,60 @@ test("preview-sample: 巻き戻しでは、この実行で作成した入れ子�
   } finally {
     try { chmodSync(join(dir, "z"), 0o755); } catch {}
     rmSync(sampleDir, { recursive: true, force: true });
+    cleanupTmpDir(dir);
+    cleanupTmpDir(planDir);
+  }
+});
+
+test("preview-sample: --apply で新規導入するサンプルの実行権限（scripts/*.sh）を引き継ぐ", { skip: process.platform === "win32" }, () => {
+  const dir = makeTmpDir();
+  const planDir = makeTmpDir();
+  try {
+    const planPath = writeApplyPlan(planDir, dir, "rust-crate");
+    const r = runCliJson("preview-sample.mjs", ["--sample", "rust-crate", "--root", dir, "--apply", "--plan", planPath]);
+    assert.equal(r.status, 0);
+    assert.notEqual(statSync(join(dir, "scripts", "check.sh")).mode & 0o100, 0, "実行可能なまま導入する");
+    assert.equal(statSync(join(dir, "Cargo.toml")).mode & 0o111, 0, "実行権限のないファイルには付けない");
+  } finally {
+    cleanupTmpDir(dir);
+    cleanupTmpDir(planDir);
+  }
+});
+
+test("preview-sample: 内容が同じでも実行権限がなければ競合とし、--force で実行ビットを付与する", { skip: process.platform === "win32" }, () => {
+  const dir = makeTmpDir();
+  const planDir = makeTmpDir();
+  try {
+    const src = join(PROJECTS_DIR, "rust-crate", "scripts", "check.sh");
+    mkdirSync(join(dir, "scripts"));
+    writeFileSync(join(dir, "scripts", "check.sh"), readFileSync(src), { mode: 0o644 });
+    const preview = runCliJson("preview-sample.mjs", ["--sample", "rust-crate", "--root", dir]);
+    assert.equal(preview.status, 1);
+    assert.ok(preview.json.findings.some((f) => f.evidence === join("scripts", "check.sh") && f.detail.includes("実行権限")));
+    const planPath = writeApplyPlan(planDir, dir, "rust-crate", { modify: [join("scripts", "check.sh")] });
+    const r = runCliJson("preview-sample.mjs", ["--sample", "rust-crate", "--root", dir, "--apply", "--force", "--plan", planPath]);
+    assert.equal(r.status, 0);
+    assert.notEqual(statSync(join(dir, "scripts", "check.sh")).mode & 0o100, 0);
+  } finally {
+    cleanupTmpDir(dir);
+    cleanupTmpDir(planDir);
+  }
+});
+
+test("preview-sample: 親パスが壊れた symlink の書き込み先があれば、書き込み開始前に中止する", () => {
+  const dir = makeTmpDir();
+  const planDir = makeTmpDir();
+  try {
+    symlinkSync(join(dir, "missing-target"), join(dir, "src"));
+    const preview = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir]);
+    assert.equal(preview.status, 1, "プレビューの時点で書き込めない対象として報告する");
+    assert.ok(preview.json.findings.some((f) => f.evidence === join("src", "01-intro.txt") && f.status === "FAIL"));
+    const planPath = writeApplyPlan(planDir, dir, "incremental-build");
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath]);
+    assert.equal(r.status, 1);
+    assert.deepEqual(r.json.applied, []);
+    assert.deepEqual(readdirSync(dir), ["src"], "Makefile 等も書き込まない");
+  } finally {
     cleanupTmpDir(dir);
     cleanupTmpDir(planDir);
   }

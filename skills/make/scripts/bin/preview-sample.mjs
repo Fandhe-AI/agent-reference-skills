@@ -12,7 +12,7 @@
 //   node preview-sample.mjs --sample <name> --root <path> --apply --plan <plan.json> [--force]
 //
 // 終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL, 2=引数エラー, 3=BLOCKED
-import { existsSync, readFileSync, mkdirSync, writeFileSync, statSync, realpathSync, rmSync, rmdirSync } from "node:fs";
+import { existsSync, readFileSync, mkdirSync, writeFileSync, statSync, lstatSync, chmodSync, realpathSync, rmSync, rmdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join, relative, dirname, normalize } from "node:path";
 import { parseFlags } from "./lib/args.mjs";
@@ -113,12 +113,18 @@ function writeAll(root, toWrite, applied) {
       if (!isWithinRoot(root, w.dest) || isSymlink(w.dest)) {
         throw new ApplyGuardError("書き込み直前の確認で root 外への逸脱を検出しました");
       }
+      // サンプルの実行権限（scripts/*.sh 等）を導入先へ引き継ぐ。新規作成は元ファイルの mode
+      // （umask 適用後）で作り、上書き時は既存の mode に実行ビットだけを加える
+      const srcMode = statSync(w.src).mode & 0o777;
       if (existsSync(w.dest)) {
-        overwritten.push({ dest: w.dest, original: readFileSync(w.dest) });
+        const originalMode = statSync(w.dest).mode & 0o7777;
+        overwritten.push({ dest: w.dest, original: readFileSync(w.dest), mode: originalMode });
+        writeFileSync(w.dest, readFileSync(w.src));
+        chmodSync(w.dest, originalMode | (srcMode & 0o111));
       } else {
         created.push(w.dest);
+        writeFileSync(w.dest, readFileSync(w.src), { mode: srcMode });
       }
-      writeFileSync(w.dest, readFileSync(w.src));
       applied.push(w.rel);
     } catch (err) {
       const why = err instanceof ApplyGuardError ? err.message : `書き込みに失敗しました（${err.code ?? "UNKNOWN"}）`;
@@ -133,21 +139,44 @@ function writeAll(root, toWrite, applied) {
   return null;
 }
 
+// symlink を辿らずにエントリの有無を判定する（壊れた symlink も「存在する」として扱う）
+function lexists(p) {
+  try {
+    lstatSync(p);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // dir から root までの間で存在しないディレクトリを、浅い順に返す（root 自体は含めない）
 function missingAncestors(root, dir) {
   const missing = [];
-  for (let d = dir; d !== root && d !== dirname(d) && !existsSync(d); d = dirname(d)) {
+  for (let d = dir; d !== root && d !== dirname(d) && !lexists(d); d = dirname(d)) {
     missing.unshift(d);
   }
   return missing;
 }
 
-// dest の親パスのうち既存のものがすべてディレクトリか（途中にファイル等があると書き込めない）
+// dest の親パスのうち既存のものがすべてディレクトリか（途中にファイル・壊れた symlink 等があると書き込めない）。
+// symlink は lstat で検出し、リンク先がディレクトリとして解決できない場合も書き込めないものとして扱う。
 function parentsAreDirectories(root, dest) {
   for (let d = dirname(dest); d !== root && d !== dirname(d); d = dirname(d)) {
-    if (existsSync(d) && !statSync(d).isDirectory()) return false;
+    if (!lexists(d)) continue;
+    try {
+      if (!statSync(d).isDirectory()) return false;
+    } catch {
+      return false;
+    }
   }
   return true;
+}
+
+// 実行ビットの差（サンプル側が実行可能なのに導入先が実行不可）。Windows では mode の実行ビットを使わないため対象外
+function lacksExecBits(src, dest) {
+  if (process.platform === "win32") return false;
+  const want = statSync(src).mode & 0o111;
+  return want !== 0 && (statSync(dest).mode & want) !== want;
 }
 
 function rollback(created, overwritten, createdDirs) {
@@ -162,6 +191,7 @@ function rollback(created, overwritten, createdDirs) {
   for (const o of overwritten) {
     try {
       writeFileSync(o.dest, o.original);
+      chmodSync(o.dest, o.mode);
     } catch (err) {
       errors.push(`${o.dest} (${err.code ?? "UNKNOWN"})`);
     }
@@ -310,7 +340,12 @@ function main() {
         unwritable.push(rel);
         continue;
       }
-      if (sha256(sf) === sha256(dest)) {
+      if (sha256(sf) === sha256(dest) && lacksExecBits(sf, dest)) {
+        // 内容が同じでも実行権限がなければ、導入後の Makefile から直接呼べないため差分として扱う
+        const finding = { id: `file:${rel}`, status: STATUS.FAIL, detail: "競合: 内容は一致するが実行権限がありません（--force で実行ビットを付与）", evidence: rel };
+        findings.push(finding);
+        conflicts.push({ src: sf, dest, rel, finding });
+      } else if (sha256(sf) === sha256(dest)) {
         findings.push({ id: `file:${rel}`, status: STATUS.PASS, detail: "既存ファイルと内容が一致（差分なし）", evidence: rel });
       } else {
         const finding = { id: `file:${rel}`, status: STATUS.FAIL, detail: "競合: 既存ファイルが存在し内容が異なります", evidence: rel };
