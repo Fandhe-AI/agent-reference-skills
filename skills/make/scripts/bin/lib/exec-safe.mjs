@@ -13,8 +13,10 @@ import { execFileSync } from "node:child_process";
 
 const CMD_LIKE_EXTENSIONS = new Set([".cmd", ".bat"]);
 // cmd.exe が解釈するメタ文字（区切り & |、リダイレクト < >、エスケープ ^、変数展開 % !、
-// 引用・グループ化 " ( )、改行）。これらを含む引数は cmd.exe 経由では実行しない。
-const CMD_META_RE = /[&|<>^%!"()\r\n]/;
+// 引用・グループ化 " ( )、空白・改行）。cmd.exe /c は引数を 1 本のコマンド行へ連結して
+// 再解釈するため、空白を含む引数も分割されて承認時と異なる引数になる。これらを含む引数や
+// 空文字列の引数は cmd.exe 経由では実行しない（安全に引用できる保証がないため BLOCKED）。
+const CMD_META_RE = /[&|<>^%!"()\s]/;
 
 /**
  * platform と command から、実際に起動すべき (file, args) の組を決める。
@@ -41,7 +43,7 @@ export function resolveExecutionTarget(platform, command, args) {
     args: ["/d", "/s", "/c", command, ...args],
     viaShellWrapper: true,
   };
-  const unsafe = [command, ...args].find((a) => CMD_META_RE.test(a));
+  const unsafe = [command, ...args].find((a) => a.length === 0 || CMD_META_RE.test(a));
   if (unsafe !== undefined) {
     target.unsafeReason = `cmd.exe が再解釈し得る文字を含む引数は .cmd/.bat 経由で実行しません: ${JSON.stringify(unsafe)}`;
   }

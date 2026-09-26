@@ -1,8 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { writeFileSync, readFileSync, existsSync, symlinkSync } from "node:fs";
+import { writeFileSync, readFileSync, existsSync, symlinkSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
-import { runCli, runCliJson, makeTmpDir, cleanupTmpDir } from "./helpers.mjs";
+import { runCli, runCliJson, makeTmpDir, cleanupTmpDir, BIN_DIR } from "./helpers.mjs";
 
 test("preview-sample: --sample / --root なしは引数エラー（exit 2）", () => {
   const r = runCli("preview-sample.mjs", []);
@@ -103,6 +103,24 @@ test("preview-sample: --apply --force で競合を上書きした場合は実態
     const overwritten = r.json.findings.find((f) => f.evidence === "Makefile");
     assert.ok(overwritten.detail.includes("--force"));
   } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+test("preview-sample: 走査対象外ディレクトリ（build 等）を含むサンプルは欠けたまま適用せず exit 1", () => {
+  const dir = makeTmpDir();
+  const sampleName = `tmp-skipdir-${process.pid}`;
+  const sampleDir = join(BIN_DIR, "..", "..", "samples", "projects", sampleName);
+  try {
+    mkdirSync(join(sampleDir, "build"), { recursive: true });
+    writeFileSync(join(sampleDir, "Makefile"), "all:\n");
+    writeFileSync(join(sampleDir, "build", "keep.txt"), "x\n");
+    const r = runCli("preview-sample.mjs", ["--sample", sampleName, "--root", dir, "--apply"]);
+    assert.equal(r.status, 1);
+    assert.ok(r.stderr.includes("走査対象外"));
+    assert.equal(existsSync(join(dir, "Makefile")), false, "一部だけを適用しない");
+  } finally {
+    rmSync(sampleDir, { recursive: true, force: true });
     cleanupTmpDir(dir);
   }
 });

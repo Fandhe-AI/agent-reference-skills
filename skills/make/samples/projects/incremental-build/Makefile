@@ -31,22 +31,25 @@ override BUILD_DIR := build
 # it is forced out of date, which in turn rebuilds manual.md.
 SRCS := $(sort $(wildcard $(SRC_DIR)/*.txt))
 
-# File names from src/ are expanded into shell recipes ($(SRCS),
-# $(PROCESSED), $<, $@). Make cannot quote them safely, so names that
-# contain whitespace or shell metacharacters are rejected before any
-# recipe runs; only [A-Za-z0-9._-] names are supported. A name with
-# whitespace splits into several words, so every word must still match
-# $(SRC_DIR)/%.txt. `make clean` skips the check so a bad tree can
-# still be cleaned.
-lparen := (
-rparen := )
-comma := ,
-UNSAFE_CHARS := ' " ` $$ ; & | < > \ * ? [ ] ! { } ~ = \# $(lparen) $(rparen) $(comma)
-ifneq ($(MAKECMDGOALS),clean)
-UNSAFE_WORDS := $(filter-out $(SRC_DIR)/%.txt,$(SRCS))
-UNSAFE_SRCS := $(strip $(UNSAFE_WORDS) $(foreach c,$(UNSAFE_CHARS),$(findstring $(c),$(SRCS))))
+# File names from src/ are expanded into shell recipes and rule lines
+# ($(SRCS), $(PROCESSED), $<, $@). Make cannot quote them safely, so
+# only names made of [A-Za-z0-9._-] are accepted (an allowlist: `:`,
+# `%`, quotes, `;`, `$`, whitespace, etc. are all rejected before any
+# rule is parsed or recipe runs). A name with whitespace splits into
+# several words, so every word must also match $(SRC_DIR)/%.txt. For
+# `make clean` the fragment list is emptied instead of failing, so a
+# tree with bad names can still be cleaned.
+SAFE_CHARS := a b c d e f g h i j k l m n o p q r s t u v w x y z \
+A B C D E F G H I J K L M N O P Q R S T U V W X Y Z \
+0 1 2 3 4 5 6 7 8 9 . _ - /
+# $(call strip_chars,text,chars): remove every char in chars from text
+strip_chars = $(if $(2),$(call strip_chars,$(subst $(firstword $(2)),,$(1)),$(wordlist 2,$(words $(2)),$(2))),$(1))
+UNSAFE_SRCS := $(strip $(filter-out $(SRC_DIR)/%.txt,$(SRCS)) $(call strip_chars,$(SRCS),$(SAFE_CHARS)))
 ifneq ($(UNSAFE_SRCS),)
-$(error $(SRC_DIR)/ has file names with whitespace or shell metacharacters; rename them to [A-Za-z0-9._-] only)
+ifeq ($(MAKECMDGOALS),clean)
+SRCS :=
+else
+$(error $(SRC_DIR)/ has file names outside [A-Za-z0-9._-]; rename them before building)
 endif
 endif
 PROCESSED := $(patsubst $(SRC_DIR)/%.txt,$(BUILD_DIR)/%.processed,$(SRCS))

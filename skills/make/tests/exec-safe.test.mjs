@@ -51,3 +51,10 @@ test("exec-safe: win32 の .cmd/.bat 経由で cmd.exe メタ文字を含む引�
   assert.equal(resolveExecutionTarget("win32", "pnpm.cmd", ["run", "build"]).unsafeReason, undefined);
   assert.equal(resolveExecutionTarget("darwin", "make", ["a&b"]).unsafeReason, undefined, "cmd.exe を経由しない場合は対象外");
 });
+
+test("exec-safe: win32 の .cmd/.bat 経由で空白を含む引数・空の引数は分割され得るため BLOCKED にする", () => {
+  for (const bad of ["foo bar", "tab\there", ""]) {
+    const t = resolveExecutionTarget("win32", "pnpm.cmd", ["run", bad]);
+    assert.ok(t.unsafeReason, `${JSON.stringify(bad)} は拒否される`);
+  }
+});

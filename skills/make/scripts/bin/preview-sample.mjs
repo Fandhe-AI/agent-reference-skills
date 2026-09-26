@@ -35,10 +35,16 @@ const HELP = `preview-sample — samples/projects/<name>/ と対象 root の差�
 `;
 
 function listSampleFiles(sampleRoot) {
-  const { entries, truncated, errors } = scanTree(sampleRoot, { maxDepth: 32, maxEntries: 20000 });
-  // 一部を読めなかった・打ち切ったサンプルを「全ファイル」として扱い、欠けたまま適用しない
-  if (errors.length > 0 || truncated) {
-    const why = errors.length > 0 ? errors.map((e) => `${e.path} (${e.code})`).join(", ") : "件数上限で打ち切り";
+  const { entries, truncated, errors, skippedDirs } = scanTree(sampleRoot, { maxDepth: 32, maxEntries: 20000 });
+  // 一部を読めなかった・打ち切った・除外規則（build / dist / node_modules 等や深さ制限）で
+  // 走査しなかったディレクトリがあるサンプルを「全ファイル」として扱い、欠けたまま適用しない
+  if (errors.length > 0 || truncated || skippedDirs.length > 0) {
+    const why =
+      errors.length > 0
+        ? errors.map((e) => `${e.path} (${e.code})`).join(", ")
+        : truncated
+          ? "件数上限で打ち切り"
+          : `走査対象外のディレクトリを含む: ${skippedDirs.join(", ")}`;
     throw new Error(`サンプルを完全には走査できませんでした: ${why}`);
   }
   return entries.filter((e) => e.type === "file").map((e) => e.path);

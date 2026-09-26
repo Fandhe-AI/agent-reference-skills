@@ -177,8 +177,9 @@ reports a check as `FAIL`/non-zero rather than silently working around a missing
 > a best-effort risk reduction, not a guarantee against `cmd.exe`-level metacharacter
 > reinterpretation. To keep an approved check from turning into a different command, any
 > `.cmd`/`.bat` check whose command or `args` contain a `cmd.exe` metacharacter
-> (`& | < > ^ % ! " ( )` or a newline) is reported `BLOCKED` with `executed: false` and is
-> never launched.
+> (`& | < > ^ % ! " ( )`), whitespace (`cmd.exe /c` re-joins and re-splits the command line, so
+> `foo bar` would become two arguments), or an empty argument is reported `BLOCKED` with
+> `executed: false` and is never launched.
 
 ### Example invocation (dry-run, default — safe to run any time a plan exists)
 
@@ -314,16 +315,16 @@ non-leakage, dry-run-by-default, Windows `.cmd`/`.bat` handling logic, etc.).
 Actual run (2026-09-26, repository root, Node v24.13.0):
 
 ```
-ℹ tests 84
+ℹ tests 86
 ℹ suites 0
-ℹ pass 84
+ℹ pass 86
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
 ```
 
-Exit code: `0`. All 84 tests passed, 0 failed, on this run. The exact test count grows as tests
+Exit code: `0`. All 86 tests passed, 0 failed, on this run. The exact test count grows as tests
 are added — re-run this command rather than relying on the count above if it matters to the task
 at hand.
 
