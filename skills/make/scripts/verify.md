@@ -1,7 +1,7 @@
 # verify
 
 `verify-layout.mjs` (static consistency only) and `run-checks.mjs` (real command execution,
-gated behind `--execute` and per-check approval) — the `verify` step of this skill's
+gated behind `--execute`, an out-of-band `--approve <planDigest>`, and per-check approval) — the `verify` step of this skill's
 consult/audit/plan/apply/verify pattern. These two scripts are deliberately separate: **static
 consistency checking and actual command execution are two different steps**, and only
 `run-checks.mjs` ever launches an external process. Reading this page never launches either
@@ -131,7 +131,13 @@ verify-layout — 適用後構成の help/公開コマンド整合性・Skill �
 
 Only after a plan has passed `validate-plan.mjs` **and** the user has explicitly approved
 running its `checks[]` — i.e. actual `verify` with real command execution, as opposed to the
-static-only steps above. `run-checks.mjs` re-validates the entire plan with the same
+static-only steps above. Approval is given **outside** the plan file: the user reviews the plan
+and hands over its `planDigest` (the sha256 of the plan file's exact bytes, printed by
+`validate-plan.mjs` and by a `run-checks.mjs` dry-run), which is passed as
+`--execute --approve <planDigest>`. `approved: true` inside the plan only marks which checks of
+that approved plan may run; on its own it is not approval, because anyone who edits `command` or
+`args` after approval could leave it in place. If the plan file changes by even one byte after
+approval, `--approve` no longer matches and nothing runs. `run-checks.mjs` re-validates the entire plan with the same
 `validate-plan.mjs` logic every time it runs (it does not trust a plan or an earlier approval it
 did not just re-check), and defaults to dry-run.
 
@@ -139,6 +145,9 @@ did not just re-check), and defaults to dry-run.
 
 - Without `--execute`: this is the default and safe to run any time a plan exists — it reports
   what *would* run, without running anything.
+- With `--execute` but without `--approve <planDigest>`: argument error (exit 2), nothing runs.
+  Obtain the digest by reviewing the plan (`validate-plan.mjs` or a dry-run), not by hashing a
+  file you have not read.
 - With `--execute` but without each intended `check.approved === true` already set in the plan
   JSON itself: those specific checks are reported `BLOCKED` and skipped, not force-run.
 - Against a plan whose target files might have changed since it was drafted — `run-checks.mjs`
@@ -154,7 +163,8 @@ did not just re-check), and defaults to dry-run.
 
 ```
 --plan <path.json>   plan JSON file (required; same schema as validate-plan.mjs)
---execute            actually run commands (default: dry-run, nothing executes)
+--execute            actually run commands (default: dry-run, nothing executes); requires --approve
+--approve <digest>   planDigest (sha256:<64 hex>) of the plan the user reviewed and approved
 --json               emit JSON to stdout (diagnostics go to stderr instead)
 --help               show usage
 ```
@@ -193,11 +203,12 @@ node <skill-dir>/scripts/bin/run-checks.mjs --plan /path/to/plan.json --json
 ### Example invocation (real execution, only with explicit per-check approval)
 
 ```sh
-node <skill-dir>/scripts/bin/run-checks.mjs --plan /path/to/approved-plan.json --execute --json
+node <skill-dir>/scripts/bin/run-checks.mjs --plan /path/to/approved-plan.json --execute --approve sha256:<planDigest> --json
 ```
 
 Actual run (2026-09-26), against a plan with two `checks[]` (`echo hello`, unapproved;
-`echo world`, `approved: true`):
+`echo world`, `approved: true`). The transcripts below are abridged to the fields discussed; each
+check result also carries `timeoutMs`:
 
 Dry-run (default, no `--execute`) — `--json`:
 
@@ -206,8 +217,9 @@ Dry-run (default, no `--execute`) — `--json`:
   "status": "SKIPPED",
   "profile": "dry-run",
   "unresolved": [
-    "dry-run のため checks は実行していません。実行するには --execute と各 check の approved:true が必要です"
+    "dry-run のため checks は実行していません。実行するには計画を確認のうえ --execute --approve <planDigest> と各 check の approved:true が必要です"
   ],
+  "planDigest": "sha256:42e441218c14c343e30478c6c0435bf0b8c52f1e1f43f2b5672cd811049f801f",
   "checks": [
     { "name": "unapproved-echo", "status": "SKIPPED", "executed": false, "reason": "dry-run（--execute 未指定）" },
     { "name": "approved-echo",   "status": "SKIPPED", "executed": false, "reason": "dry-run（--execute 未指定）" }
@@ -217,15 +229,18 @@ Dry-run (default, no `--execute`) — `--json`:
 
 Exit code: `0`. This confirms: without `--execute`, every `checks[]` entry is reported
 `status: "SKIPPED"`, `executed: false`, `reason: "dry-run（--execute 未指定）"`, and the overall
-result `status` aggregates to `"SKIPPED"`.
+result `status` aggregates to `"SKIPPED"`. `planDigest` is the value to review and approve (it is
+the same digest `validate-plan.mjs` reports for this file).
 
-With `--execute` (same plan, `unapproved-echo` still lacks `approved: true`) — `--json`:
+With `--execute --approve sha256:42e4…801f` (same plan, `unapproved-echo` still lacks
+`approved: true`) — `--json`:
 
 ```json
 {
   "status": "BLOCKED",
   "profile": "execute",
   "unresolved": ["承認不足で未実行: unapproved-echo"],
+  "planDigest": "sha256:42e441218c14c343e30478c6c0435bf0b8c52f1e1f43f2b5672cd811049f801f",
   "checks": [
     { "name": "unapproved-echo", "status": "BLOCKED", "executed": false,
       "reason": "この check には approved:true がありません（承認不足のため実行しません）" },
@@ -248,6 +263,27 @@ echoed either (an argument may carry a token): each result is identified by `che
 file. A `.cmd`/`.bat` check blocked for `cmd.exe` metacharacters names only the position
 (`command` or `args[i]`) in `reason`, never the offending value.
 
+Then the plan file is edited after approval (`echo world` → `echo changed`, `approved: true`
+left in place) and the same `--execute --approve sha256:42e4…801f` is re-run — `--json`:
+
+```json
+{
+  "status": "BLOCKED",
+  "unresolved": [
+    "承認後に計画が変更されているため checks は一切実行していません（--approve の値は再確認・再承認した計画のものを渡してください）"
+  ],
+  "checks": [
+    { "name": "unapproved-echo", "status": "BLOCKED", "executed": false,
+      "reason": "--approve が現在の計画と一致しません（承認後に計画が変更されています。validate-plan / dry-run で内容を確認し直して再承認してください）" },
+    { "name": "approved-echo", "status": "BLOCKED", "executed": false,
+      "reason": "--approve が現在の計画と一致しません（承認後に計画が変更されています。validate-plan / dry-run で内容を確認し直して再承認してください）" }
+  ]
+}
+```
+
+Exit code: `3`. Nothing is launched, and the result deliberately omits the new `planDigest` so
+that the changed plan is reviewed again instead of being re-approved blindly.
+
 ### `--help` output
 
 Transcribed verbatim from `scripts/bin/run-checks.mjs`'s `HELP` string:
@@ -260,7 +296,8 @@ run-checks — 承認済み計画の検証コマンドのみを実行する（�
 
 オプション:
   --plan <path>   計画 JSON ファイルへのパス（必須。validate-plan と同じスキーマを再検証する）
-  --execute       実際にコマンドを起動する（既定は dry-run。個々の check は approved:true も必要）
+  --execute       実際にコマンドを起動する（既定は dry-run。--approve と各 check の approved:true も必要）
+  --approve <d>   --execute 時に必須。内容を確認して承認した計画の planDigest（sha256:<64桁16進数>）
   --json          結果を JSON で stdout に出力（診断は stderr）
   --help          このヘルプを表示
 
@@ -268,6 +305,8 @@ run-checks — 承認済み計画の検証コマンドのみを実行する（�
 
 実行しない条件:
   - --execute を指定しない限り、常に dry-run（コマンドを起動しない）
+  - --execute 指定時、--approve が現在の計画ファイルの planDigest と一致しない（承認後に計画が
+    変更された）場合は全体を BLOCKED にし何も実行しない
   - --execute 指定時も、個々の check に approved:true がない場合はその check を BLOCKED のまま実行しない
   - 計画の形式検証（validate-plan と同じロジック）に失敗した場合は全体を BLOCKED にし何も実行しない
 
@@ -281,11 +320,15 @@ run-checks — 承認済み計画の検証コマンドのみを実行する（�
 | --- | --- |
 | 0 | `PASS`, `SKIPPED` (dry-run, or no checks defined maps to `NOT_APPLICABLE`) |
 | 1 | `FAIL` (a check command executed and failed, timed out, or exited non-zero) |
-| 2 | Argument error (missing `--plan`, unknown flag) |
-| 3 | `BLOCKED` (plan re-validation failed, or one or more checks lacked `approved: true`) |
+| 2 | Argument error (missing `--plan`, `--execute` without `--approve`, an `--approve` value not in `sha256:<64 hex>` form, unknown flag) |
+| 3 | `BLOCKED` (`--approve` does not match the current plan file, plan re-validation failed, or one or more checks lacked `approved: true`) |
 
 ### What to do next on failure/blocked
 
+- **Exit 3, every check `BLOCKED` with an `--approve` mismatch reason**: the plan file changed
+  after it was approved. Review the current plan again (`validate-plan.mjs`), and pass the new
+  `planDigest` only once the user has re-approved it — never copy a digest from a plan nobody
+  re-read.
 - **Exit 3, whole result `BLOCKED` (plan re-validation failed)**: the plan's target files, or
   the plan JSON itself, changed or were never valid in the first place. Re-run
   `validate-plan.mjs` directly to see the specific finding, fix or re-draft the plan, and get it
@@ -328,16 +371,16 @@ non-leakage, dry-run-by-default, Windows `.cmd`/`.bat` handling logic, etc.).
 Actual run (2026-09-26, repository root, Node v24.13.0):
 
 ```
-ℹ tests 110
+ℹ tests 115
 ℹ suites 0
-ℹ pass 110
+ℹ pass 115
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
 ```
 
-Exit code: `0`. All 110 tests passed, 0 failed, on this run. The exact test count grows as tests
+Exit code: `0`. All 115 tests passed, 0 failed, on this run. The exact test count grows as tests
 are added — re-run this command rather than relying on the count above if it matters to the task
 at hand.
 

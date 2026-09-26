@@ -2,14 +2,15 @@
 // preview-sample — skills/make/samples/projects/<name>/ から選択したサンプルの導入予定ファイルと、
 // 対象 root の既存ファイルとの差分を表示する。既定では対象を書き換えない。
 // 既存ファイルがある場合は競合として表示する。
-// 書き込み（--apply）は承認済み計画（--plan）に結び付ける。書き込む全ファイルが計画の changes に
+// 書き込み（--apply）は承認済み計画（--plan）と、利用者がその計画を確認して渡す --approve <planDigest>
+// （計画ファイルの sha256）に結び付ける。書き込む全ファイルが計画の changes に
 // 対応する action（新規 = create、上書き = modify + matches-hash）で明記され、かつ計画の再検証
 // （対象 root の一致・元ファイル状態の再確認を含む）が通った場合にだけ書き込む。1 件でも差異が
 // あれば何も書き込まない。
 //
 // 使い方:
 //   node preview-sample.mjs --sample <name> --root <path> [--json]
-//   node preview-sample.mjs --sample <name> --root <path> --apply --plan <plan.json> [--force]
+//   node preview-sample.mjs --sample <name> --root <path> --apply --plan <plan.json> --approve <planDigest> [--force]
 //
 // 終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL, 2=引数エラー, 3=BLOCKED
 import { existsSync, readFileSync, mkdirSync, writeFileSync, statSync, lstatSync, chmodSync, realpathSync, rmSync, rmdirSync } from "node:fs";
@@ -17,7 +18,7 @@ import { createHash } from "node:crypto";
 import { join, relative, dirname, normalize } from "node:path";
 import { parseFlags } from "./lib/args.mjs";
 import { resolveRoot, getSkillRoot, resolvePlanPath, isWithinRoot, isSymlink, PathError } from "./lib/paths.mjs";
-import { loadPlanFile, validatePlanShape, planBaseDir, PlanError } from "./lib/plan.mjs";
+import { readPlanFile, validatePlanShape, planBaseDir, PlanError, PLAN_DIGEST_RE } from "./lib/plan.mjs";
 import { scanTree } from "./lib/scan.mjs";
 import { buildResult, emitResult, aggregateStatus, STATUS, diag } from "./lib/result.mjs";
 
@@ -32,14 +33,16 @@ const HELP = `preview-sample — samples/projects/<name>/ と対象 root の差�
   --apply           プレビューではなく実際に書き込む（既定はプレビューのみ・書き込まない）
   --plan <path>     --apply 時に必須。sample と書き込む全ファイル（newContentHash 付き）を明記した
                     承認済み計画 JSON。プレビュー結果の proposedPlan を元に作る
+  --approve <d>     --apply 時に必須。内容を確認して承認した計画の planDigest（validate-plan が表示）
   --force           --apply 時、競合（内容・実行権限の差）のある既存ファイルも上書きする（既定は競合があれば適用を中止）
   --json            結果を JSON で stdout に出力（診断は stderr）
   --help            このヘルプを表示
 
-終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL(競合あり), 2=引数エラー, 3=BLOCKED
+終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL(競合あり), 2=引数エラー, 3=BLOCKED(承認不一致)
 
 実行しない条件: --apply を指定しない限り、対象 root への書き込みは一切行わない。
---apply は全件か無しか。計画の再検証が失敗した・root や sample が一致しない・書き込む
+--approve が現在の計画ファイルの planDigest と一致しない（承認後に計画が変更された）場合は
+BLOCKED とし何も書き込まない。--apply は全件か無しか。計画の再検証が失敗した・root や sample が一致しない・書き込む
 ファイルが計画に明記されていないか内容が newContentHash と異なる・書き込めない対象
 （root 外・symlink・同名ディレクトリ・親パスがファイル）がある・--force なしで競合がある
 場合は 1 件も書き込まない。書き込み途中で失敗した場合は、この実行で書いたファイルを元に戻す。
@@ -50,22 +53,26 @@ const HELP = `preview-sample — samples/projects/<name>/ と対象 root の差�
  * （create は対象が存在しないこと、modify + matches-hash は元ファイルの内容が承認時と
  * 同じことを、この時点のファイル状態で確認する）。加えて計画の sample が --sample と一致し、
  * 各 change の newContentHash が実際に書き込むバイト列の sha256 と一致することを確認する。
- * @returns {string[]} 問題の一覧（空なら書き込んでよい）
+ * まず計画ファイルの planDigest が --approve と一致することを確認する（不一致なら他の照合はしない）。
+ * @returns {{problems: string[], approvalMismatch: boolean}} problems が空で approvalMismatch が false なら書き込んでよい
  */
-function checkApplyPlan(planPath, root, toWrite, sampleName) {
+function checkApplyPlan(planPath, root, toWrite, sampleName, approve) {
   let plan;
+  let digest;
   try {
-    plan = loadPlanFile(planPath);
+    ({ plan, digest } = readPlanFile(planPath));
   } catch (err) {
-    if (err instanceof PlanError) return [err.message];
+    if (err instanceof PlanError) return { problems: [err.message], approvalMismatch: false };
     throw err;
   }
+  // 承認は計画ファイルの外（--approve）で与える。承認後に計画が書き換えられていれば一致しない
+  if (digest !== approve) return { problems: [], approvalMismatch: true };
   const problems = [];
   const { findings, root: planRoot } = validatePlanShape(plan, { baseDir: planBaseDir(planPath) });
   for (const f of findings.filter((x) => x.status === "FAIL")) {
     problems.push(`計画の再検証に失敗: ${f.id}: ${f.detail}`);
   }
-  if (planRoot === null) return problems;
+  if (planRoot === null) return { problems, approvalMismatch: false };
   if (realpathSync(planRoot) !== realpathSync(root)) {
     problems.push(`計画の root（${planRoot}）と --root（${root}）が一致しません`);
   }
@@ -100,7 +107,7 @@ function checkApplyPlan(planPath, root, toWrite, sampleName) {
       );
     }
   }
-  return problems;
+  return { problems, approvalMismatch: false };
 }
 
 // 書き込み直前の安全確認で止めた場合の例外（メッセージは固定文で値を含まないため結果へ載せる）
@@ -262,6 +269,7 @@ function main() {
       apply: { type: "boolean", default: false },
       force: { type: "boolean", default: false },
       plan: { type: "string" },
+      approve: { type: "string" },
       json: { type: "boolean", default: false },
       help: { type: "boolean", default: false },
     }));
@@ -285,6 +293,16 @@ function main() {
   if (values.apply && !values.plan) {
     process.stderr.write(`${HELP}\n`);
     diag("引数エラー: --apply には承認済み計画の --plan が必要です（validate-plan で確認した計画を渡してください）");
+    process.exit(2);
+  }
+  if (values.apply && !values.approve) {
+    process.stderr.write(`${HELP}\n`);
+    diag("引数エラー: --apply には、内容を確認して承認した計画の --approve <planDigest> が必要です（validate-plan の結果に表示されます）");
+    process.exit(2);
+  }
+  if (values.approve !== undefined && !PLAN_DIGEST_RE.test(values.approve)) {
+    process.stderr.write(`${HELP}\n`);
+    diag("引数エラー: --approve は sha256:<64桁16進数> 形式である必要があります");
     process.exit(2);
   }
 
@@ -399,15 +417,24 @@ function main() {
     // 適用は全件か無しか。サンプルの一部だけを導入した状態を作らないため、書き込み前に
     // 計画との照合・書き込めない対象・--force なしの競合を確認し、1 件でもあれば何も書き込まない。
     // id は計画照合の問題を "plan"、書き込み対象側の問題を "apply" として区別する
-    const abortReasons = checkApplyPlan(values.plan, root, toWrite, values.sample).map((reason) => ({ id: "plan", reason }));
+    const { problems, approvalMismatch } = checkApplyPlan(values.plan, root, toWrite, values.sample, values.approve);
+    const abortReasons = problems.map((reason) => ({ id: "plan", reason }));
+    if (approvalMismatch) {
+      // 承認不足は FAIL ではなく BLOCKED（全体 status も BLOCKED、終了コード 3）
+      abortReasons.push({
+        id: "approval",
+        status: STATUS.BLOCKED,
+        reason: "--approve が現在の計画と一致しません（承認後に計画が変更されています。validate-plan で内容を確認し直して再承認してください）",
+      });
+    }
     if (unwritable.length > 0) {
       abortReasons.push({ id: "apply", reason: `書き込めない対象があります: ${unwritable.join(", ")}` });
     }
     if (skippedConflicts.length > 0) {
       abortReasons.push({ id: "apply", reason: `--force なしで競合（内容または実行権限が異なる既存ファイル）があります: ${skippedConflicts.join(", ")}` });
     }
-    for (const { id, reason } of abortReasons) {
-      findings.push({ id, status: STATUS.FAIL, detail: `適用を中止（何も書き込んでいません）: ${reason}`, evidence: values.plan });
+    for (const { id, status = STATUS.FAIL, reason } of abortReasons) {
+      findings.push({ id, status, detail: `適用を中止（何も書き込んでいません）: ${reason}`, evidence: values.plan });
     }
     if (abortReasons.length === 0) {
       const failure = writeAll(root, toWrite, applied);

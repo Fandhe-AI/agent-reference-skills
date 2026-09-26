@@ -89,6 +89,7 @@ Actual run (2026-09-26, from the repository root):
 ```
 validate-plan: FAIL (plan=skills/make/samples/plans/rust-crate-thin-makefile.json)
   - [FAIL] root: root が存在しません: <repo-root>/skills/make/samples/plans/<TARGET_ROOT>
+planDigest: sha256:4148f8793e57254e15f74e3a1503d3481148ef89cf6a23cfae917ada8aa522fd
 ```
 
 Exit code: `1`. This confirms the plan file's own `notice` field and `tests/sample-plans.test.mjs`:
@@ -97,7 +98,11 @@ relative to the plan file's own directory — `skills/make/samples/plans/` — n
 directory: relative `root` values in a plan JSON are always resolved against the directory that
 contains the plan file itself, so the same plan file gives the same result regardless of where
 `validate-plan.mjs`/`run-checks.mjs` are launched from), so it fails on purpose — this is
-intentional, tested behavior, not a bug.
+intentional, tested behavior, not a bug. The last line, `planDigest`, is the sha256 of the plan
+file's exact bytes (also in `--json` as `planDigest`). It is what a user approves: after
+reviewing the plan, they hand this value to `run-checks.mjs --execute --approve <planDigest>` or
+`preview-sample.mjs --apply --approve <planDigest>`, and any later edit to the file makes it stop
+matching. Printing it is not approval; a failing plan like this one should not be approved at all.
 
 Confirmed 2026-09-26: naively substituting a real, empty temp directory for `root` still fails
 — it moves past the `root` finding but then fails on the plan's `changes[]` entries with
@@ -128,6 +133,8 @@ validate-plan — 計画 JSON の形式・root・パス逸脱・衝突・検証�
 実行しない条件: 常に実行しない（このスクリプトはコマンドを一切起動しない）。
 入力: --plan の計画 JSON（schemaVersion, root, changes[], checks[]）。
 root が相対パスの場合、起動時の cwd ではなく計画ファイル自身のディレクトリを基準に解決する。
+結果の planDigest（計画ファイルの sha256）は、内容を確認して承認した計画を run-checks --execute /
+preview-sample --apply に --approve で渡すための値。計画を 1 バイトでも変えると変わる。
 ```
 
 ### Exit codes
@@ -174,7 +181,10 @@ conflict with files already present at `--root`, **before** writing anything.
   not something this script makes for you.
 - With `--apply`/`--force` unless the user has explicitly approved writing to `--root` — the
   default (no `--apply`) never touches the target directory. `--apply` additionally requires
-  `--plan <plan.json>`: an approved plan (checked with `validate-plan` first) whose `root` is the
+  `--plan <plan.json>` and `--approve <planDigest>`: the user reviews the plan with
+  `validate-plan` and approves exactly that file by its `planDigest`; if the plan file is edited
+  afterwards, the digest no longer matches, the result is `BLOCKED` (exit 3), and nothing is
+  written. The plan must be one whose `root` is the
   same directory as `--root`, whose top-level `sample` equals `--sample`, and whose `changes[]`
   lists **every** file that will be written — `action: "create"` for a new file, and
   `action: "modify"` with `expectedState: "matches-hash"` plus the approved `contentHash` for an
@@ -209,6 +219,7 @@ conflict with files already present at `--root`, **before** writing anything.
 --root <path>     target directory to preview against (required)
 --apply           actually write (default: preview only, no writes); requires --plan
 --plan <path>     approved plan JSON naming the sample and every file --apply will write, with newContentHash (required with --apply)
+--approve <d>     planDigest (sha256:<64 hex>) of the plan the user reviewed and approved (required with --apply)
 --force           with --apply, overwrite conflicting files too (default: abort the whole apply on any conflict)
 --json            emit JSON to stdout (diagnostics go to stderr instead)
 --help            show usage
@@ -278,14 +289,16 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
   --apply           プレビューではなく実際に書き込む（既定はプレビューのみ・書き込まない）
   --plan <path>     --apply 時に必須。sample と書き込む全ファイル（newContentHash 付き）を明記した
                     承認済み計画 JSON。プレビュー結果の proposedPlan を元に作る
+  --approve <d>     --apply 時に必須。内容を確認して承認した計画の planDigest（validate-plan が表示）
   --force           --apply 時、競合（内容・実行権限の差）のある既存ファイルも上書きする（既定は競合があれば適用を中止）
   --json            結果を JSON で stdout に出力（診断は stderr）
   --help            このヘルプを表示
 
-終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL(競合あり), 2=引数エラー, 3=BLOCKED
+終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL(競合あり), 2=引数エラー, 3=BLOCKED(承認不一致)
 
 実行しない条件: --apply を指定しない限り、対象 root への書き込みは一切行わない。
---apply は全件か無しか。計画の再検証が失敗した・root や sample が一致しない・書き込む
+--approve が現在の計画ファイルの planDigest と一致しない（承認後に計画が変更された）場合は
+BLOCKED とし何も書き込まない。--apply は全件か無しか。計画の再検証が失敗した・root や sample が一致しない・書き込む
 ファイルが計画に明記されていないか内容が newContentHash と異なる・書き込めない対象
 （root 外・symlink・同名ディレクトリ・親パスがファイル）がある・--force なしで競合がある
 場合は 1 件も書き込まない。書き込み途中で失敗した場合は、この実行で書いたファイルを元に戻す。
@@ -297,8 +310,8 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
 | --- | --- |
 | 0 | `PASS` (no conflicts; all conflicting files are byte-identical to the sample; or, with `--apply --force`, every conflicting file was overwritten successfully) |
 | 1 | `FAIL` (an `--apply` whose plan does not cover every written file, points at a different root, or fails re-validation — nothing is written in that case; the sample directory could not be fully enumerated — an unreadable entry, the entry limit, a directory such as `build/`, `dist/`, or `node_modules/` that the scanner skips, or a symlink / special file that is never followed or copied; nothing is previewed or written in that case; a destination file exists with different content and was not overwritten; a destination resolves outside `--root` through `..` or a symlink, is a same-named directory, or has an existing file or broken symlink as a parent path component; or a write failed and was rolled back). `--apply` never leaves the sample partially applied: with any conflict and no `--force`, or any unwritable destination, nothing is written (`applied: []`, and `skippedConflicts` lists the conflicting files) |
-| 2 | Argument error (missing `--sample`/`--root`, `--apply` without `--plan`, a `--sample` value that is not a single directory name such as `../plans`, unknown flag) |
-| 3 | not used by this script |
+| 2 | Argument error (missing `--sample`/`--root`, `--apply` without `--plan` or `--approve`, an `--approve` value not in `sha256:<64 hex>` form, a `--sample` value that is not a single directory name such as `../plans`, unknown flag) |
+| 3 | `BLOCKED`: with `--apply`, `--approve` does not match the current plan file (it changed after approval); nothing is written |
 
 ### What to do next on failure/conflict
 

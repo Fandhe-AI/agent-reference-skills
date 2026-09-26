@@ -8,7 +8,7 @@
 //
 // 終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL, 2=引数エラー, 3=BLOCKED
 import { parseFlags } from "./lib/args.mjs";
-import { loadPlanFile, validatePlanShape, planBaseDir, PlanError } from "./lib/plan.mjs";
+import { readPlanFile, validatePlanShape, planBaseDir, PlanError } from "./lib/plan.mjs";
 import { buildResult, emitResult, aggregateStatus, diag } from "./lib/result.mjs";
 
 const HELP = `validate-plan — 計画 JSON の形式・root・パス逸脱・衝突・検証定義を検証する（実行しない）
@@ -26,6 +26,8 @@ const HELP = `validate-plan — 計画 JSON の形式・root・パス逸脱・�
 実行しない条件: 常に実行しない（このスクリプトはコマンドを一切起動しない）。
 入力: --plan の計画 JSON（schemaVersion, root, changes[], checks[]）。
 root が相対パスの場合、起動時の cwd ではなく計画ファイル自身のディレクトリを基準に解決する。
+結果の planDigest（計画ファイルの sha256）は、内容を確認して承認した計画を run-checks --execute /
+preview-sample --apply に --approve で渡すための値。計画を 1 バイトでも変えると変わる。
 `;
 
 function main() {
@@ -54,8 +56,9 @@ function main() {
   }
 
   let plan;
+  let planDigest;
   try {
-    plan = loadPlanFile(values.plan);
+    ({ plan, digest: planDigest } = readPlanFile(values.plan));
   } catch (err) {
     if (err instanceof PlanError) {
       diag(`計画読み込みエラー: ${err.message}`);
@@ -82,6 +85,7 @@ function main() {
     scope: { planPath: values.plan, root },
     findings,
     unresolved,
+    extra: { planDigest },
   });
 
   const code = emitResult(result, {
@@ -90,6 +94,7 @@ function main() {
       [
         `validate-plan: ${r.status} (plan=${r.scope.planPath})`,
         ...r.findings.map((f) => `  - [${f.status}] ${f.id}: ${f.detail}`),
+        `planDigest: ${r.planDigest}`,
       ].join("\n"),
   });
   process.exit(code);

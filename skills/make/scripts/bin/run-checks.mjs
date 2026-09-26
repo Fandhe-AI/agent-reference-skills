@@ -1,18 +1,19 @@
 #!/usr/bin/env node
 // run-checks — 承認済みの計画（validate-plan を通過した JSON）にある検証コマンドのみを実行し、
-// 結果を構造化して返す。既定は dry-run。明示的な --execute フラグと、計画内の
-// 各 check.approved === true の両方が揃ったときだけ実際に起動する。
+// 結果を構造化して返す。既定は dry-run。明示的な --execute フラグ、利用者が計画の内容を確認して
+// 渡す --approve <planDigest>（計画ファイルの sha256。承認後に計画が変わっていれば一致しない）、
+// 計画内の各 check.approved === true の 3 つが揃ったときだけ実際に起動する。
 //
 // 任意の文字列を eval/shell 展開しない。実行ファイルと引数配列（execFileSync）を使う。
 // Windows の .cmd/.bat は lib/exec-safe.mjs の専用処理に分離する（shell:true を無条件に使わない）。
 //
 // 使い方:
 //   node run-checks.mjs --plan <path.json> [--json]                # 既定: dry-run
-//   node run-checks.mjs --plan <path.json> --execute [--json]      # 承認済み check のみ実行
+//   node run-checks.mjs --plan <path.json> --execute --approve <planDigest> [--json]  # 承認済み check のみ実行
 //
 // 終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL, 2=引数エラー, 3=BLOCKED
 import { parseFlags } from "./lib/args.mjs";
-import { loadPlanFile, validatePlanShape, planBaseDir, PlanError } from "./lib/plan.mjs";
+import { readPlanFile, validatePlanShape, planBaseDir, PlanError, PLAN_DIGEST_RE } from "./lib/plan.mjs";
 import { resolvePlanPath } from "./lib/paths.mjs";
 import { runCheckCommand } from "./lib/exec-safe.mjs";
 import { buildResult, emitResult, aggregateStatus, STATUS, diag } from "./lib/result.mjs";
@@ -24,7 +25,8 @@ const HELP = `run-checks — 承認済み計画の検証コマンドのみを実
 
 オプション:
   --plan <path>   計画 JSON ファイルへのパス（必須。validate-plan と同じスキーマを再検証する）
-  --execute       実際にコマンドを起動する（既定は dry-run。個々の check は approved:true も必要）
+  --execute       実際にコマンドを起動する（既定は dry-run。--approve と各 check の approved:true も必要）
+  --approve <d>   --execute 時に必須。内容を確認して承認した計画の planDigest（sha256:<64桁16進数>）
   --json          結果を JSON で stdout に出力（診断は stderr）
   --help          このヘルプを表示
 
@@ -32,6 +34,8 @@ const HELP = `run-checks — 承認済み計画の検証コマンドのみを実
 
 実行しない条件:
   - --execute を指定しない限り、常に dry-run（コマンドを起動しない）
+  - --execute 指定時、--approve が現在の計画ファイルの planDigest と一致しない（承認後に計画が
+    変更された）場合は全体を BLOCKED にし何も実行しない
   - --execute 指定時も、個々の check に approved:true がない場合はその check を BLOCKED のまま実行しない
   - 計画の形式検証（validate-plan と同じロジック）に失敗した場合は全体を BLOCKED にし何も実行しない
 
@@ -45,6 +49,7 @@ function main() {
     ({ values } = parseFlags(process.argv.slice(2), {
       plan: { type: "string" },
       execute: { type: "boolean", default: false },
+      approve: { type: "string" },
       json: { type: "boolean", default: false },
       help: { type: "boolean", default: false },
     }));
@@ -65,9 +70,21 @@ function main() {
     process.exit(2);
   }
 
+  if (values.execute && !values.approve) {
+    process.stderr.write(`${HELP}\n`);
+    diag("引数エラー: --execute には、内容を確認して承認した計画の --approve <planDigest> が必要です（dry-run の結果に表示されます）");
+    process.exit(2);
+  }
+  if (values.approve !== undefined && !PLAN_DIGEST_RE.test(values.approve)) {
+    process.stderr.write(`${HELP}\n`);
+    diag("引数エラー: --approve は sha256:<64桁16進数> 形式である必要があります");
+    process.exit(2);
+  }
+
   let plan;
+  let planDigest;
   try {
-    plan = loadPlanFile(values.plan);
+    ({ plan, digest: planDigest } = readPlanFile(values.plan));
   } catch (err) {
     if (err instanceof PlanError) {
       diag(`計画読み込みエラー: ${err.message}`);
@@ -108,6 +125,9 @@ function main() {
 
   const checksDef = Array.isArray(plan.checks) ? plan.checks : [];
   const checkResults = [];
+  // 承認は計画ファイルの外で与える。計画内の approved:true は「承認済み計画のうち実行してよい check」
+  // の印であって、計画そのものの承認ではない（書き換え後も approved を残せば通ってしまうため）。
+  const approvalMismatch = values.execute && values.approve !== planDigest;
 
   for (const check of checksDef) {
     // 文字列連結ではなく resolvePlanPath を再利用する（validate-plan と同じ root 逸脱判定を通す）。
@@ -119,6 +139,16 @@ function main() {
       name: check.name,
       timeoutMs: check.timeoutMs ?? 60000,
     };
+
+    if (approvalMismatch) {
+      checkResults.push({
+        ...base,
+        status: STATUS.BLOCKED,
+        executed: false,
+        reason: "--approve が現在の計画と一致しません（承認後に計画が変更されています。validate-plan / dry-run で内容を確認し直して再承認してください）",
+      });
+      continue;
+    }
 
     if (!values.execute) {
       checkResults.push({
@@ -160,15 +190,22 @@ function main() {
     });
   }
 
-  const status = checkResults.length === 0 ? STATUS.NOT_APPLICABLE : aggregateStatus(checkResults);
+  const status = approvalMismatch
+    ? STATUS.BLOCKED
+    : checkResults.length === 0
+      ? STATUS.NOT_APPLICABLE
+      : aggregateStatus(checkResults);
 
   const unresolved = [];
   if (!values.execute) {
-    unresolved.push("dry-run のため checks は実行していません。実行するには --execute と各 check の approved:true が必要です");
+    unresolved.push("dry-run のため checks は実行していません。実行するには計画を確認のうえ --execute --approve <planDigest> と各 check の approved:true が必要です");
+  }
+  if (approvalMismatch) {
+    unresolved.push("承認後に計画が変更されているため checks は一切実行していません（--approve の値は再確認・再承認した計画のものを渡してください）");
   }
   // BLOCKED の理由を混同しない（承認不足と、承認済みでも安全に起動できず止めたものを分ける）
   const blocked = checkResults.filter((c) => c.status === STATUS.BLOCKED);
-  const unapprovedNames = blocked.filter((c) => !c.unsafeBlocked).map((c) => c.name);
+  const unapprovedNames = approvalMismatch ? [] : blocked.filter((c) => !c.unsafeBlocked).map((c) => c.name);
   const unsafeNames = blocked.filter((c) => c.unsafeBlocked).map((c) => c.name);
   if (unapprovedNames.length > 0) {
     unresolved.push(`承認不足で未実行: ${unapprovedNames.join(", ")}`);
@@ -185,6 +222,8 @@ function main() {
     scope: { planPath: values.plan, root },
     checks: checkResults,
     unresolved,
+    // 不一致時は現在のダイジェストを出さない（確認せずにそのまま再承認させないため）
+    extra: approvalMismatch ? {} : { planDigest },
   });
 
   const code = emitResult(result, {
@@ -193,6 +232,8 @@ function main() {
       [
         `run-checks: ${r.status} (plan=${r.scope.planPath}, profile=${r.profile})`,
         ...r.checks.map((c) => `  - [${c.status}] ${c.name} (executed=${c.executed})`),
+        ...(r.planDigest ? [`planDigest: ${r.planDigest}`] : []),
+        ...r.unresolved.map((u) => `未確認: ${u}`),
       ].join("\n"),
   });
   process.exit(code);

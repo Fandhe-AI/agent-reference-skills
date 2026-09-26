@@ -29,27 +29,42 @@ function entryKind(p) {
   }
 }
 
+// 承認ダイジェストの形式（計画ファイルの生バイト列の sha256）
+export const PLAN_DIGEST_RE = /^sha256:[0-9a-f]{64}$/;
+
 /**
  * plan ファイルを読み込み JSON.parse する。存在しない・壊れている場合は PlanError。
  */
 export function loadPlanFile(planPath) {
+  return readPlanFile(planPath).plan;
+}
+
+/**
+ * plan ファイルを 1 回だけ読み、JSON と承認ダイジェスト（読んだ生バイト列の sha256）を返す。
+ * 承認は計画ファイルの外（--approve <digest>）で与える。計画内の approved:true だけを承認と
+ * みなすと、承認後に command / args 等を書き換えても approved を残せば実行できてしまうため、
+ * 実行・適用する CLI はこのダイジェストと --approve の一致を確認する（同じ読み込みから求めるので
+ * 照合と使用の間に計画が差し替えられても食い違わない）。
+ * @returns {{plan: unknown, digest: string}}
+ */
+export function readPlanFile(planPath) {
   if (!existsSync(planPath)) {
     throw new PlanError(`計画ファイルが存在しません: ${planPath}`);
   }
-  let raw;
+  let bytes;
   try {
-    raw = readFileSync(planPath, "utf8");
+    bytes = readFileSync(planPath);
   } catch (err) {
     throw new PlanError(`計画ファイルを読み込めません（${err.code ?? "UNKNOWN"}）: ${planPath}`);
   }
   let json;
   try {
-    json = JSON.parse(raw);
-  } catch (err) {
+    json = JSON.parse(bytes.toString("utf8"));
+  } catch {
     // SyntaxError のメッセージは入力の断片（引数の値等）を含み得るため転記しない
     throw new PlanError(`計画ファイルが JSON として不正です: ${planPath}`);
   }
-  return json;
+  return { plan: json, digest: `sha256:${createHash("sha256").update(bytes).digest("hex")}` };
 }
 
 /**

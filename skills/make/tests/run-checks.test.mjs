@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { runCli, runCliJson, makeTmpDir, cleanupTmpDir } from "./helpers.mjs";
+import { runCli, runCliJson, makeTmpDir, cleanupTmpDir, approveArgs } from "./helpers.mjs";
 
 function writePlan(dir, plan) {
   const planPath = join(dir, "plan.json");
@@ -56,7 +56,7 @@ test("run-checks: --execute でも approved:true がない check は BLOCKED の
       changes: [],
       checks: [markerCheck(root, false)],
     });
-    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute"]);
+    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute", ...approveArgs(planPath)]);
     assert.equal(r.json.status, "BLOCKED");
     assert.equal(r.status, 3);
     assert.equal(r.json.checks[0].status, "BLOCKED");
@@ -78,7 +78,7 @@ test("run-checks: --execute かつ approved:true なら実行され PASS にな�
       changes: [],
       checks: [markerCheck(root, true)],
     });
-    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute"]);
+    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute", ...approveArgs(planPath)]);
     assert.equal(r.json.status, "PASS");
     assert.equal(r.json.checks[0].executed, true);
     assert.equal(existsSync(join(root, "MARKER.txt")), true);
@@ -106,7 +106,7 @@ test("run-checks: コマンド失敗は成功に変換されない（FAIL のま
         },
       ],
     });
-    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute"]);
+    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute", ...approveArgs(planPath)]);
     assert.equal(r.json.status, "FAIL");
     assert.equal(r.status, 1);
     assert.equal(r.json.checks[0].status, "FAIL");
@@ -135,7 +135,7 @@ test("run-checks: timeout したコマンドは FAIL のまま成功に変換さ
         },
       ],
     });
-    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute"]);
+    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute", ...approveArgs(planPath)]);
     assert.equal(r.json.status, "FAIL");
     assert.equal(r.json.checks[0].timedOut, true);
   } finally {
@@ -153,7 +153,7 @@ test("run-checks: 不正な計画（root 不在）は checks を一切実行せ�
       changes: [],
       checks: [markerCheck(dir, true)],
     });
-    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute"]);
+    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute", ...approveArgs(planPath)]);
     assert.equal(r.json.status, "BLOCKED");
     assert.equal(r.status, 3);
     assert.equal(existsSync(join(dir, "MARKER.txt")), false);
@@ -195,7 +195,7 @@ test("run-checks: checks が空の計画は NOT_APPLICABLE（exit 0、失敗に�
     const root = join(dir, "proj");
     mkdirSync(root);
     const planPath = writePlan(dir, { schemaVersion: "1.0.0", root, changes: [], checks: [] });
-    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute"]);
+    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute", ...approveArgs(planPath)]);
     assert.equal(r.json.status, "NOT_APPLICABLE");
     assert.equal(r.status, 0);
   } finally {
@@ -215,7 +215,7 @@ test("run-checks: 未対応の schemaVersion の計画は --execute + approved:t
       changes: [],
       checks: [{ name: "write-marker", command: process.execPath, args: ["-e", `require("fs").writeFileSync(${JSON.stringify(marker)}, "x")`], approved: true }],
     });
-    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute"]);
+    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute", ...approveArgs(planPath)]);
     assert.equal(r.status, 3);
     assert.equal(r.json.status, "BLOCKED");
     assert.equal(existsSync(marker), false, "コマンドは起動されない");
@@ -239,7 +239,7 @@ test("run-checks: 実行したコマンドの stdout / stderr を結果 JSON に
         { name: "prints", command: process.execPath, args: ["-e", `const m = ${JSON.stringify(marker.slice(0, 11))} + ${JSON.stringify(marker.slice(11))}; console.log(m); console.error(m); process.exit(3)`], approved: true },
       ],
     });
-    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute"]);
+    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute", ...approveArgs(planPath)]);
     assert.equal(r.status, 1);
     assert.equal(r.json.checks[0].exitCode, 3);
     assert.equal(r.stdout.includes(marker), false, "stdout（JSON）にコマンド出力を含めない");
@@ -264,7 +264,7 @@ test("run-checks: 計画の command / args / cwd を結果へ転記しない（d
         { name: "unapproved", command: process.execPath, args: ["-e", "process.exit(0)", marker] },
       ],
     });
-    for (const extra of [[], ["--execute"]]) {
+    for (const extra of [[], ["--execute", ...approveArgs(planPath)]]) {
       const r = runCliJson("run-checks.mjs", ["--plan", planPath, ...extra]);
       assert.equal(r.stdout.includes(marker), false, `引数の値を出力しない（${extra.join(" ") || "dry-run"}）`);
       assert.equal(r.stderr.includes(marker), false);
@@ -272,7 +272,7 @@ test("run-checks: 計画の command / args / cwd を結果へ転記しない（d
         assert.equal("args" in c || "command" in c || "cwd" in c, false, `${c.name} に計画側の値を載せない`);
       }
     }
-    const executed = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute"]);
+    const executed = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute", ...approveArgs(planPath)]);
     assert.equal(executed.json.checks.find((c) => c.name === "approved").status, "PASS");
     assert.equal(executed.json.checks.find((c) => c.name === "unapproved").status, "BLOCKED");
   } finally {
@@ -289,6 +289,56 @@ test("run-checks: JSON として壊れた計画でも入力の断片を診断へ
     assert.equal(r.status, 1);
     assert.equal(r.stderr.includes("PLACEHOLDER_BROKEN_MARKER"), false);
     assert.equal(r.stdout.includes("PLACEHOLDER_BROKEN_MARKER"), false);
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+test("run-checks: --execute に --approve がなければ引数エラー（exit 2）で何も起動しない", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    const planPath = writePlan(dir, { schemaVersion: "1.0.0", root, changes: [], checks: [markerCheck(root, true)] });
+    assert.equal(runCli("run-checks.mjs", ["--plan", planPath, "--execute"]).status, 2);
+    assert.equal(runCli("run-checks.mjs", ["--plan", planPath, "--execute", "--approve", "yes"]).status, 2, "形式不正も拒否");
+    assert.equal(existsSync(join(root, "MARKER.txt")), false);
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+test("run-checks: 承認後に計画の検証コマンドを変更したら approved:true が残っていても実行しない（BLOCKED, exit 3）", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    const approvedCheck = { name: "check", command: process.execPath, args: ["-e", "process.exit(0)"], approved: true };
+    const planPath = writePlan(dir, { schemaVersion: "1.0.0", root, changes: [], checks: [approvedCheck] });
+    const dryRun = runCliJson("run-checks.mjs", ["--plan", planPath]);
+    const approval = approveArgs(planPath);
+    assert.equal(dryRun.json.planDigest, approval[1], "dry-run が承認用の planDigest を示す");
+    // 承認後に args を差し替える（approved:true は残したまま）
+    writePlan(dir, { schemaVersion: "1.0.0", root, changes: [], checks: [{ ...markerCheck(root, true), name: "check" }] });
+    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute", ...approval]);
+    assert.equal(r.status, 3);
+    assert.equal(r.json.status, "BLOCKED");
+    assert.equal(r.json.checks[0].executed, false);
+    assert.equal(existsSync(join(root, "MARKER.txt")), false, "変更後のコマンドは起動しない");
+    assert.equal("planDigest" in r.json, false, "不一致時は再承認用の値を出さない");
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+test("validate-plan: 承認に使う planDigest（計画ファイルの sha256）を結果に含める", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    const planPath = writePlan(dir, { schemaVersion: "1.0.0", root, changes: [], checks: [] });
+    const r = runCliJson("validate-plan.mjs", ["--plan", planPath]);
+    assert.equal(r.json.planDigest, approveArgs(planPath)[1]);
   } finally {
     cleanupTmpDir(dir);
   }

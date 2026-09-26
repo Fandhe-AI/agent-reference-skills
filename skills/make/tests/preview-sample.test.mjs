@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { writeFileSync, readFileSync, existsSync, symlinkSync, mkdirSync, rmSync, readdirSync, chmodSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { createHash } from "node:crypto";
-import { runCli, runCliJson, makeTmpDir, cleanupTmpDir, BIN_DIR } from "./helpers.mjs";
+import { runCli, runCliJson, makeTmpDir, cleanupTmpDir, BIN_DIR, approveArgs } from "./helpers.mjs";
 
 const PROJECTS_DIR = join(BIN_DIR, "..", "..", "samples", "projects");
 
@@ -85,7 +85,7 @@ test("preview-sample: --apply で --force なしの競合が 1 件でもあれ�
   try {
     writeFileSync(join(dir, "Makefile"), "existing different content\n");
     const planPath = writeApplyPlan(planDir, dir, "incremental-build", { skip: ["Makefile"] });
-    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath]);
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath, ...approveArgs(planPath)]);
     assert.equal(r.status, 1);
     assert.equal(existsSync(join(dir, "src")), false, "競合していない新規ファイルも書き込まない");
     assert.equal(readFileSync(join(dir, "Makefile"), "utf8"), "existing different content\n", "競合ファイルは --force なしでは上書きしない");
@@ -104,7 +104,7 @@ test("preview-sample: 書き込めない対象（同名ディレクトリ）が 
   try {
     mkdirSync(join(dir, "Makefile"));
     const planPath = writeApplyPlan(planDir, dir, "incremental-build", { skip: ["Makefile"] });
-    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath]);
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath, ...approveArgs(planPath)]);
     assert.equal(r.status, 1);
     assert.equal(existsSync(join(dir, "src")), false, "サンプルの一部だけを導入しない");
     assert.deepEqual(r.json.applied, []);
@@ -124,7 +124,7 @@ test("preview-sample: 書き込み途中で失敗したら、この実行で書�
     mkdirSync(join(dir, "src"));
     const planPath = writeApplyPlan(planDir, dir, "incremental-build", { modify: ["Makefile"] });
     chmodSync(join(dir, "src"), 0o555);
-    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath]);
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath, ...approveArgs(planPath)]);
     chmodSync(join(dir, "src"), 0o755);
     assert.equal(r.status, 1);
     assert.deepEqual(r.json.applied, []);
@@ -157,7 +157,7 @@ test("preview-sample: 計画に含まれないファイルが 1 件でもあれ�
   const planDir = makeTmpDir();
   try {
     const planPath = writeApplyPlan(planDir, dir, "incremental-build", { skip: ["Makefile"] });
-    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath]);
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath, ...approveArgs(planPath)]);
     assert.equal(r.status, 1);
     assert.ok(r.json.findings.some((f) => f.id === "plan" && f.detail.includes("計画に含まれないファイル: Makefile")));
     assert.deepEqual(r.json.applied, []);
@@ -174,7 +174,7 @@ test("preview-sample: 計画の root が --root と異なれば何も書き込�
   const planDir = makeTmpDir();
   try {
     const planPath = writeApplyPlan(planDir, other, "incremental-build");
-    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath]);
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath, ...approveArgs(planPath)]);
     assert.equal(r.status, 1);
     assert.ok(r.json.findings.some((f) => f.id === "plan" && f.detail.includes("一致しません")));
     assert.equal(existsSync(join(dir, "Makefile")), false);
@@ -192,7 +192,7 @@ test("preview-sample: 上書き対象が計画作成後に変更されていれ�
     writeFileSync(join(dir, "Makefile"), "approved content\n");
     const planPath = writeApplyPlan(planDir, dir, "incremental-build", { modify: ["Makefile"] });
     writeFileSync(join(dir, "Makefile"), "changed after approval\n");
-    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath]);
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath, ...approveArgs(planPath)]);
     assert.equal(r.status, 1);
     assert.equal(readFileSync(join(dir, "Makefile"), "utf8"), "changed after approval\n");
     assert.equal(existsSync(join(dir, "src", "01-intro.txt")), false);
@@ -222,7 +222,7 @@ test("preview-sample: root 内の symlink を経由した root 外への書き�
     // root/src → root 外ディレクトリ への symlink を置く
     symlinkSync(outside, join(dir, "src"));
     const planPath = writeApplyPlan(planDir, dir, "incremental-build");
-    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath]);
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath, ...approveArgs(planPath)]);
     assert.equal(r.status, 1);
     assert.equal(existsSync(join(outside, "01-intro.txt")), false, "root 外には書き込まない");
     const escaped = r.json.findings.find((f) => f.evidence === join("src", "01-intro.txt"));
@@ -243,7 +243,7 @@ test("preview-sample: --apply --force で競合を上書きした場合は実態
   try {
     writeFileSync(join(dir, "Makefile"), "existing different content\n");
     const planPath = writeApplyPlan(planDir, dir, "incremental-build", { modify: ["Makefile"] });
-    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath]);
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath, ...approveArgs(planPath)]);
     assert.equal(r.status, 0);
     assert.equal(r.json.status, "PASS");
     assert.ok(r.json.applied.includes("Makefile"));
@@ -298,7 +298,7 @@ test("preview-sample: 親パスがファイルの書き込み先があれば、�
   try {
     writeFileSync(join(dir, "src"), "not a directory\n");
     const planPath = writeApplyPlan(planDir, dir, "incremental-build");
-    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath]);
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath, ...approveArgs(planPath)]);
     assert.equal(r.status, 1);
     assert.deepEqual(r.json.applied, []);
     assert.deepEqual(readdirSync(dir).sort(), ["src"], "Makefile 等も書き込まない");
@@ -322,7 +322,7 @@ test("preview-sample: 巻き戻しでは、この実行で作成した入れ子�
     mkdirSync(join(dir, "z"));
     const planPath = writeApplyPlan(planDir, dir, sampleName);
     chmodSync(join(dir, "z"), 0o555);
-    const r = runCliJson("preview-sample.mjs", ["--sample", sampleName, "--root", dir, "--apply", "--plan", planPath]);
+    const r = runCliJson("preview-sample.mjs", ["--sample", sampleName, "--root", dir, "--apply", "--plan", planPath, ...approveArgs(planPath)]);
     chmodSync(join(dir, "z"), 0o755);
     assert.equal(r.status, 1);
     assert.deepEqual(r.json.applied, []);
@@ -340,7 +340,7 @@ test("preview-sample: --apply で新規導入するサンプルの実行権限�
   const planDir = makeTmpDir();
   try {
     const planPath = writeApplyPlan(planDir, dir, "rust-crate");
-    const r = runCliJson("preview-sample.mjs", ["--sample", "rust-crate", "--root", dir, "--apply", "--plan", planPath]);
+    const r = runCliJson("preview-sample.mjs", ["--sample", "rust-crate", "--root", dir, "--apply", "--plan", planPath, ...approveArgs(planPath)]);
     assert.equal(r.status, 0);
     assert.notEqual(statSync(join(dir, "scripts", "check.sh")).mode & 0o100, 0, "実行可能なまま導入する");
     assert.equal(statSync(join(dir, "Cargo.toml")).mode & 0o111, 0, "実行権限のないファイルには付けない");
@@ -361,11 +361,11 @@ test("preview-sample: 内容が同じでも実行権限がなければ競合と�
     assert.equal(preview.status, 1);
     assert.ok(preview.json.findings.some((f) => f.evidence === join("scripts", "check.sh") && f.detail.includes("実行権限")));
     const noForcePlan = writeApplyPlan(planDir, dir, "rust-crate", { skip: [join("scripts", "check.sh")] });
-    const aborted = runCliJson("preview-sample.mjs", ["--sample", "rust-crate", "--root", dir, "--apply", "--plan", noForcePlan]);
+    const aborted = runCliJson("preview-sample.mjs", ["--sample", "rust-crate", "--root", dir, "--apply", "--plan", noForcePlan, ...approveArgs(noForcePlan)]);
     const reason = aborted.json.findings.find((f) => f.id === "apply");
     assert.ok(reason.detail.includes("実行権限"), "中止理由も内容差だけと誤表示しない");
     const planPath = writeApplyPlan(planDir, dir, "rust-crate", { modify: [join("scripts", "check.sh")] });
-    const r = runCliJson("preview-sample.mjs", ["--sample", "rust-crate", "--root", dir, "--apply", "--force", "--plan", planPath]);
+    const r = runCliJson("preview-sample.mjs", ["--sample", "rust-crate", "--root", dir, "--apply", "--force", "--plan", planPath, ...approveArgs(planPath)]);
     assert.equal(r.status, 0);
     assert.notEqual(statSync(join(dir, "scripts", "check.sh")).mode & 0o100, 0);
   } finally {
@@ -383,7 +383,7 @@ test("preview-sample: 親パスが壊れた symlink の書き込み先があれ�
     assert.equal(preview.status, 1, "プレビューの時点で書き込めない対象として報告する");
     assert.ok(preview.json.findings.some((f) => f.evidence === join("src", "01-intro.txt") && f.status === "FAIL"));
     const planPath = writeApplyPlan(planDir, dir, "incremental-build");
-    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath]);
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--force", "--plan", planPath, ...approveArgs(planPath)]);
     assert.equal(r.status, 1);
     assert.deepEqual(r.json.applied, []);
     assert.deepEqual(readdirSync(dir), ["src"], "Makefile 等も書き込まない");
@@ -401,7 +401,7 @@ test("preview-sample: 別サンプル用に承認した計画では --apply し�
     const plan = JSON.parse(readFileSync(planPath, "utf8"));
     plan.sample = "rust-crate";
     writeFileSync(planPath, JSON.stringify(plan));
-    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath]);
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath, ...approveArgs(planPath)]);
     assert.equal(r.status, 1);
     assert.deepEqual(readdirSync(dir), []);
     assert.ok(r.json.findings.some((f) => f.id === "plan" && f.detail.includes("sample")));
@@ -420,7 +420,7 @@ test("preview-sample: 書き込む内容が計画の newContentHash と異なれ
     const target = plan.changes.find((c) => c.path === "Makefile");
     target.newContentHash = `sha256:${"0".repeat(64)}`;
     writeFileSync(planPath, JSON.stringify(plan));
-    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath]);
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath, ...approveArgs(planPath)]);
     assert.equal(r.status, 1);
     assert.deepEqual(readdirSync(dir), []);
     assert.ok(r.json.findings.some((f) => f.id === "plan" && f.detail.includes("newContentHash")));
@@ -439,9 +439,43 @@ test("preview-sample: プレビュー結果の proposedPlan から作った計�
     assert.ok(preview.json.proposedPlan.changes.every((c) => /^sha256:[0-9a-f]{64}$/.test(c.newContentHash)));
     const planPath = join(planDir, "plan.json");
     writeFileSync(planPath, JSON.stringify({ schemaVersion: "1.0.0", root: dir, ...preview.json.proposedPlan, checks: [] }));
-    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath]);
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath, ...approveArgs(planPath)]);
     assert.equal(r.status, 0);
     assert.ok(existsSync(join(dir, "Makefile")));
+  } finally {
+    cleanupTmpDir(dir);
+    cleanupTmpDir(planDir);
+  }
+});
+
+test("preview-sample: --apply に --approve がなければ引数エラー（exit 2）で何も書き込まない", () => {
+  const dir = makeTmpDir();
+  const planDir = makeTmpDir();
+  try {
+    const planPath = writeApplyPlan(planDir, dir, "incremental-build");
+    const r = runCli("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath]);
+    assert.equal(r.status, 2);
+    assert.deepEqual(readdirSync(dir), []);
+  } finally {
+    cleanupTmpDir(dir);
+    cleanupTmpDir(planDir);
+  }
+});
+
+test("preview-sample: 承認後に計画を書き換えたら BLOCKED（exit 3）で何も書き込まない", () => {
+  const dir = makeTmpDir();
+  const planDir = makeTmpDir();
+  try {
+    const planPath = writeApplyPlan(planDir, dir, "incremental-build");
+    const approval = approveArgs(planPath);
+    const plan = JSON.parse(readFileSync(planPath, "utf8"));
+    plan.changes = plan.changes.filter((c) => c.path !== ".gitignore");
+    writeFileSync(planPath, JSON.stringify(plan));
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath, ...approval]);
+    assert.equal(r.status, 3);
+    assert.equal(r.json.status, "BLOCKED");
+    assert.deepEqual(readdirSync(dir), []);
+    assert.ok(r.json.findings.some((f) => f.id === "approval" && f.status === "BLOCKED"));
   } finally {
     cleanupTmpDir(dir);
     cleanupTmpDir(planDir);

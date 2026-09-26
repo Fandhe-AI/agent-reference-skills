@@ -8,7 +8,9 @@ Source: [`./plans/rust-crate-thin-makefile.json`](./plans/rust-crate-thin-makefi
 
 ## The existence of a plan file is not approval
 
-Both example files carry an explicit `notice` field stating this in full. Do not treat a sample plan JSON in this directory, or a future `scripts/bin/validate-plan.mjs` successfully validating its shape, as authorization to change anything in a real repository. Applying any change described in a plan requires the target repository's owner to explicitly approve that exact plan content, re-checked against the current state of the target files, in a separate `apply` step — see [`command-contracts.md`](../references/architecture/command-contracts.md).
+Both example files carry an explicit `notice` field stating this in full. Do not treat a sample plan JSON in this directory, or `scripts/bin/validate-plan.mjs` successfully validating its shape, as authorization to change anything in a real repository. Applying any change described in a plan requires the target repository's owner to explicitly approve that exact plan content, re-checked against the current state of the target files, in a separate `apply` step — see [`command-contracts.md`](../references/architecture/command-contracts.md).
+
+For this skill's own helper CLIs, that approval is given outside the plan file: `validate-plan.mjs` prints the plan's `planDigest` (the sha256 of the file's exact bytes), and the user who reviewed that exact file passes it as `run-checks.mjs --execute --approve <planDigest>` or `preview-sample.mjs --apply --approve <planDigest>`. A field inside the plan such as `checks[].approved: true` only marks which checks of an approved plan may run; it is not approval on its own, because an edit made after approval could keep it. Any edit to the file changes the digest, so a changed plan is reported `BLOCKED` until it is reviewed and approved again.
 
 ## Field roles (schema in progress — do not treat this as frozen)
 

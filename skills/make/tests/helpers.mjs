@@ -1,7 +1,8 @@
 // テスト共通ヘルパー。scripts/bin/*.mjs を子プロセスとして起動し、stdout/stderr/exitCode を返す。
 // 一時ディレクトリは os.tmpdir() 配下に作成し、各テストで確実に後始末する。
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, rmSync, readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -42,4 +43,10 @@ export function makeTmpDir(prefix = "make-skill-test-") {
 
 export function cleanupTmpDir(dir) {
   rmSync(dir, { recursive: true, force: true });
+}
+
+// run-checks --execute / preview-sample --apply に渡す承認引数（計画ファイルの現在の planDigest）。
+// テストでは「利用者が今の計画を確認して承認した」状態を再現するために使う。
+export function approveArgs(planPath) {
+  return ["--approve", `sha256:${createHash("sha256").update(readFileSync(planPath)).digest("hex")}`];
 }
