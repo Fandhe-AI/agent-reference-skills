@@ -16,10 +16,10 @@ Upload files directly from the browser to Vercel Blob without routing through yo
 'use client';
 import { upload } from '@vercel/blob/client';
 
-const blob = await upload(file.name, file, {
+// `userId` comes from your app (e.g. the signed-in user passed as a prop)
+const blob = await upload(`avatars/${userId}/${file.name}`, file, {
   access: 'private', // or 'public'
   handleUploadUrl: '/api/avatar/upload',
-  clientPayload: JSON.stringify({ postId: '123' }), // optional
 });
 console.log(blob.url);
 ```
@@ -33,6 +33,13 @@ import { NextResponse } from 'next/server';
 // App-specific auth helper (e.g. Auth.js `auth()`); not part of @vercel/blob
 import { getSession } from '@/lib/auth';
 
+// Expected rejections whose messages are safe to return to the client
+class UploadRejectedError extends Error {
+  constructor(message: string, readonly status: number) {
+    super(message);
+  }
+}
+
 export async function POST(request: Request) {
   const body = (await request.json()) as HandleUploadBody;
 
@@ -40,12 +47,17 @@ export async function POST(request: Request) {
     const jsonResponse = await handleUpload({
       body,
       request,
-      onBeforeGenerateToken: async (pathname, clientPayload) => {
-        // Authenticate and authorize BEFORE issuing a token;
-        // otherwise anyone can upload to your store
+      onBeforeGenerateToken: async (pathname) => {
+        // Authenticate BEFORE issuing a token; otherwise anyone can upload
         const session = await getSession();
         if (!session) {
-          throw new Error('Not authenticated');
+          throw new UploadRejectedError('Not authenticated', 401);
+        }
+
+        // Authorize the destination: users may only write under their own prefix
+        const allowedPrefix = `avatars/${session.userId}/`;
+        if (!pathname.startsWith(allowedPrefix) || pathname.includes('..')) {
+          throw new UploadRejectedError('Forbidden upload path', 403);
         }
 
         return {
@@ -64,11 +76,12 @@ export async function POST(request: Request) {
 
     return NextResponse.json(jsonResponse);
   } catch (error) {
-    // Rejected token requests (e.g. unauthenticated) end up here
-    return NextResponse.json(
-      { error: (error as Error).message },
-      { status: 400 },
-    );
+    if (error instanceof UploadRejectedError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
+    // Do not leak internal error details to the client
+    console.error('Upload failed:', error);
+    return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
   }
 }
 ```
@@ -100,6 +113,7 @@ VERCEL_BLOB_CALLBACK_URL=https://abc123.ngrok-free.app
 - Client uploads have **no data transfer charges** for the upload itself
 - `handleUpload` requires `BLOB_READ_WRITE_TOKEN`; OIDC is not accepted
 - Without authentication in `onBeforeGenerateToken`, your upload route accepts anonymous uploads
+- `pathname` and `clientPayload` are sent by the browser: treat them as untrusted and authorize the destination (and anything `clientPayload` references) before returning a token
 
 ## Related
 

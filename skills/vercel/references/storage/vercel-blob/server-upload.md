@@ -59,7 +59,10 @@ import { put } from '@vercel/blob';
 import { getSession } from '@/lib/auth';
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-const MAX_SIZE_BYTES = 4 * 1024 * 1024;
+// Next.js rejects Server Action bodies over 1 MB by default (including
+// multipart overhead); raise `experimental.serverActions.bodySizeLimit`
+// in next.config to accept larger files
+const MAX_SIZE_BYTES = 1000 * 1024;
 
 export async function uploadAction(formData: FormData) {
   // Server Actions are public endpoints: authenticate inside the action
