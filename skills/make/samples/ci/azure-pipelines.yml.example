@@ -55,6 +55,8 @@ pool:
 
 steps:
   - checkout: self
+    # Do not leave the job access token in the local git config for later steps.
+    persistCredentials: false
 
   - script: make verify
     displayName: 'Run verify'

@@ -6,11 +6,17 @@ Two examples — GitHub Actions and Azure Pipelines — each run a single step (
 
 ```yaml
 # GitHub Actions
+permissions:
+  contents: read
+
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # actions/checkout v5.0.1
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+        with:
+          persist-credentials: false
       - name: Run verify
         run: make verify
 ```
@@ -19,6 +25,7 @@ jobs:
 # Azure Pipelines
 steps:
   - checkout: self
+    persistCredentials: false
   - script: make verify
     displayName: 'Run verify'
 ```
@@ -69,6 +76,14 @@ grep -E '^verify:' <target-project>/Makefile
 ## Change target / side effects
 
 - Copying either file into a target project and committing it under a real CI path (`.github/workflows/verify.yml`, or registering `azure-pipelines.yml`) is the only way either becomes active — this skill's samples directory itself never triggers a CI run.
+- Least privilege is part of the template, not an afterthought: the GitHub Actions file grants
+  only `permissions: contents: read` (so it does not inherit a repository's broader default
+  `GITHUB_TOKEN` permissions), pins `actions/checkout` to a full commit SHA (the one this
+  repository's own CI uses for v5.0.1) instead of a mutable tag, and sets
+  `persist-credentials: false`; the Azure file sets `persistCredentials: false` on `checkout`.
+  Azure's job access token scope is a project-level setting ("Limit job authorization scope"),
+  not something a pipeline file can narrow, so review it host-side. When updating the pinned
+  SHA, audit the new commit first.
 - Adding or changing a project's real CI, or enabling either as a required check, is an `apply`-phase action requiring that project owner's explicit approval; see [`command-contracts.md`](../references/architecture/command-contracts.md).
 
 ## Expected results

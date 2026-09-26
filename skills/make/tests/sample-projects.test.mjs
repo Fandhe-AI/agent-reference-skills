@@ -25,3 +25,14 @@ test("sample-projects: cargo clean は --target-dir で自プロジェクトの 
     assert.match(r.line, /--target-dir\s+target\b/, `${r.sample}: ${r.line}`);
   }
 });
+
+test("sample-projects: GitHub Actions テンプレートは action を commit SHA に固定し権限を contents: read に限定する", () => {
+  const text = readFileSync(join(BIN_DIR, "..", "..", "samples", "ci", "github-actions.yml.example"), "utf8");
+  const uses = [...text.matchAll(/^\s*-?\s*uses:\s*(\S+)/gm)].map((m) => m[1]);
+  assert.ok(uses.length > 0);
+  for (const u of uses) {
+    assert.match(u, /@[0-9a-f]{40}$/, `可変参照ではなく SHA 固定: ${u}`);
+  }
+  assert.match(text, /^permissions:\n {2}contents: read\n/m);
+  assert.match(text, /persist-credentials: false/);
+});

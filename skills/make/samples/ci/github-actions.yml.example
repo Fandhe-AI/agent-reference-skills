@@ -15,6 +15,13 @@
 #      Skill's `references/architecture/command-contracts.md` for the contract shape).
 #      If it only defines `check`, change the `run:` line below to `make check`.
 #   3. Adjust `runs-on` / triggers / job name to that project's conventions.
+#   4. Keep third-party actions pinned to a full commit SHA that the target project has
+#      audited (the tag in the trailing comment is informational only). The SHA below is
+#      the one this repository's own CI pins for actions/checkout v5.0.1; when bumping it,
+#      re-audit the new commit rather than switching to a mutable tag such as `@v5`.
+#   5. Keep `permissions` minimal. `make verify` only needs to read the repository, so the
+#      workflow grants `contents: read` and nothing else, and checkout does not persist
+#      the GITHUB_TOKEN into the local git config (`persist-credentials: false`).
 #
 # What this file is and is not:
 #   - It is a pipeline DEFINITION only (what runs). It does NOT configure server-side
@@ -42,11 +49,17 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      # actions/checkout v5.0.1
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+        with:
+          persist-credentials: false
 
       - name: Run verify
         run: make verify
