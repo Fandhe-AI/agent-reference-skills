@@ -1,0 +1,7 @@
+Setup
+=====
+
+This fragment describes setup steps. Editing only this file must cause
+Make to regenerate build/02-setup.processed and build/manual.md, but
+must NOT cause build/01-intro.processed or build/03-usage.processed to
+be regenerated.

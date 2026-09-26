@@ -1,0 +1,12 @@
+# Defines the `cargo xtask` entry point used throughout this sample.
+#
+# `cargo xtask <task> [-- extra args]` expands to
+# `cargo run --package xtask -- <task> [extra args]`, i.e. it builds and runs
+# the `xtask` binary crate (crates: xtask/) and forwards everything after
+# `xtask` to it. This is the standard cargo-xtask alias shape
+# (https://github.com/matklad/cargo-xtask) — no custom cargo subcommand
+# installation, shell wrapper, or global tool is required. Anyone with a
+# working `cargo` can run it, on any OS `cargo` itself supports, without
+# installing xtask separately.
+[alias]
+xtask = "run --package xtask --"

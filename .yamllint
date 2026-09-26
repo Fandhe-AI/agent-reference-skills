@@ -5,6 +5,10 @@
 # GitHub Actions workflow・本リポジトリの既存慣行と衝突するものだけを緩和する。
 extends: default
 
+# pnpm が生成するロックファイル（skills/make のサンプル同梱）は手編集しないため検査しない
+ignore: |
+  **/pnpm-lock.yaml
+
 rules:
   # GitHub Actions workflow は先頭の `---` を書かない慣行のため要求しない
   document-start: disable

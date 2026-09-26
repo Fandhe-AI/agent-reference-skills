@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.0.0",
+  "note": "これは node:test のスクリプト単体テストとは別物であり、モデル評価そのもの（実際に Claude にこの入力を与えて判定させる評価）はこのファイルの作成だけでは実施していない。ここに書かれているのは、依頼書 §10 が列挙した判断ケースの『入力』と『期待される判断』のペアの記録のみ。README.md も参照。",
+  "cases": [
+    {
+      "id": "variable-question-no-mutation",
+      "input": "この Makefile の VPATH と $(wildcard) の違いを教えて。ついでに動く例も見せて。",
+      "expectedJudgement": "consult として references のみを参照して回答する。対象ファイルの変更・inspect-repo 等の補助スクリプト実行は不要（質問に答えるだけで完結するため audit/plan/apply を強制しない）。"
+    },
+    {
+      "id": "sibling-prerequisite-order",
+      "input": "setup: bootstrap-env install hooks hooks-check という定義がある。この並び順で bootstrap-env → install → hooks → hooks-check の順に実行されると考えていい？",
+      "expectedJudgement": "兄弟 prerequisite の列挙は順序を保証しない（make は同一トリガーの複数 prerequisite の実行順序を規定しない。並列実行 -j では特に顕著）。順序が必要なら依存グラフ化（各ターゲットが前段に直接依存する）か、共通スクリプトに順序を委譲するべきと助言する。"
+    },
+    {
+      "id": "small-rust-crate-no-overengineering",
+      "input": "個人用の 200 行程度の Rust ライブラリ crate に Makefile を導入したい。",
+      "expectedJudgement": "rust-crate サンプル相当の薄い Makefile（help/doctor/check/verify 等の最小限）を提案し、xtask・workspace 分割・cargo-nextest 等の複数 crate 向け仕組みを不要に追加しない。Make なしでも同じ cargo コマンドで到達できることを維持する。"
+    },
+    {
+      "id": "existing-node-monorepo-no-full-replace",
+      "input": "既に pnpm workspace + Turborepo で運用している Node モノレポに Make を入れたい。",
+      "expectedJudgement": "既存の package.json / turbo.json のスクリプト・パイプラインを Make で置き換えない。Make はルートの薄い統合窓口として既存の pnpm/turbo コマンドへ委譲する形にとどめ、package manager の変更（別 manager への置換）も提案しない。"
+    },
+    {
+      "id": "gpu-missing-not-forced-pass",
+      "input": "GPU 実行が必要なテストがあるが、この環境には GPU がない。verify を通したい。",
+      "expectedJudgement": "GPU 不足を検証成功として扱わない。該当チェックは BLOCKED または SKIPPED のまま報告し、PASS に変換しない。GPU 実行を伴う検証は対象環境で確認できていない旨を明示する。"
+    },
+    {
+      "id": "existing-just-task-no-forced-migration",
+      "input": "このプロジェクトは既に just（justfile）で開発コマンドを統一している。Make のリファレンスがあるので Make に移行すべき？",
+      "expectedJudgement": "既存の just/Task 採用を無理に Make へ移行しない。increment-build のように GNU Make の依存関係駆動ビルドが本質的に必要な場面以外では、既存ツールの継続利用を尊重し、Make 採用は利用者の判断に委ねる。"
+    }
+  ]
+}

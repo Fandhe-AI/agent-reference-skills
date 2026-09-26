@@ -1,0 +1,47 @@
+# Virtual workspace: no root package, only members. This lets `crates/core`,
+# `crates/cli`, and `xtask` share one `Cargo.lock` and one `target/` directory
+# without a fake top-level library/binary crate.
+[workspace]
+resolver = "2"
+members = [
+    "crates/core",
+    "crates/cli",
+    "xtask",
+]
+
+# Design decision (documented here per skills/make sample requirements,
+# since this directory intentionally has no README.md — see
+# samples/rust-workspace-xtask.md in the skill for the narrative version):
+#
+# `xtask` IS a workspace member (`workspace.members` above), so it resolves
+# normally for `cargo build -p xtask`, `cargo test -p xtask`, and the
+# `cargo xtask` alias (see .cargo/config.toml) — it shares this workspace's
+# Cargo.lock and target/ directory rather than being a separate crate tree.
+#
+# `xtask` is EXCLUDED from `default-members` below. This means a plain
+# `cargo build` / `cargo test` / `cargo check` run from this workspace root
+# (no `-p` / `--workspace` flag) only touches crates/core and crates/cli —
+# the actual product code — and never builds/tests the xtask automation
+# crate itself. This mirrors the cargo-xtask convention documented at
+# https://github.com/matklad/cargo-xtask : xtask is a build-time tool, not a
+# deliverable, so it should not silently appear in ordinary build/test runs,
+# CI artifact lists, or `cargo publish` (this workspace sets `publish = false`
+# on every member anyway; see workspace.package below).
+#
+# Trade-off: because xtask is excluded from default-members, running
+# `cargo test` at the root will NOT catch a broken xtask. The xtask crate's
+# own correctness is instead exercised indirectly every time someone runs
+# `cargo xtask build/test/check` (this sample's CI / local verification path)
+# and directly via `cargo test -p xtask` / `cargo check -p xtask` if ever
+# needed. For a small, mostly-std xtask like this one, that trade-off is
+# accepted; a project with a large or complex xtask might instead choose to
+# keep it in default-members, at the cost of `cargo test` always compiling
+# the automation crate too.
+default-members = [
+    "crates/core",
+    "crates/cli",
+]
+
+[workspace.package]
+edition = "2021"
+publish = false

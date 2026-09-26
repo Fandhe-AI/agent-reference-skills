@@ -1,0 +1,174 @@
+{
+  "schemaVersion": "1.0.0",
+  "kind": "make-adoption-plan",
+  "planId": "mixed-repo-verify-delegation-sample",
+  "createdAt": "2026-09-26",
+  "notice": "SAMPLE PLAN, for illustration only. The existence of this JSON file, and any script (including scripts/bin/validate-plan.mjs) successfully validating its shape, does NOT constitute approval to apply anything. `root` below is a placeholder (`<TARGET_ROOT>`); until it is replaced with the actual target directory's absolute path, `validate-plan.mjs` returns FAIL on this file — that is intentional, not a defect. Applying any of the changes below to a real repository requires that repository's owner to explicitly approve this exact plan content, re-checked against the current state of the target files, in a separate `apply` step. `checks[].approved` is `false` in this sample for the same reason: the sample's existence is not approval.",
+  "root": "<TARGET_ROOT>",
+  "target": {
+    "root": "<TARGET_ROOT>",
+    "description": "Monorepo with a pnpm + Turborepo-managed apps/packages tree (JS/TS) and a separate Cargo workspace under rust/ producing a native addon consumed by one Node package. Root README currently lists two unrelated blocks of copy-pasted commands ('for the JS side, run X'; 'for the Rust side, run Y') and there is no single command a new contributor or CI can run to validate the whole repo.",
+    "currentState": {
+      "buildSystem": "pnpm + turborepo (JS/TS), cargo (Rust addon)",
+      "workspaceKind": "mixed",
+      "existingEntryPoints": [
+        "pnpm turbo run lint test build (JS/TS side, Turborepo owns caching + task graph)",
+        "cargo test && cargo build --release (Rust side, under rust/)"
+      ],
+      "existingRunners": ["developer shell (two separate README sections)", "GitHub Actions (two separate jobs, no ordering guarantee today)"],
+      "makePresent": false
+    }
+  },
+  "adoptedEntryPoint": {
+    "tool": "make",
+    "role": "root-level integration window only — Make owns neither Turborepo's task graph/cache nor Cargo's dependency graph",
+    "rationale": "Each ecosystem already has a tool that correctly owns its own dependency graph and cache (Turborepo for JS/TS, Cargo for Rust). This plan does not re-implement either. Make is adopted solely at the repository root to express the one real cross-ecosystem ordering constraint that exists today (the Node package's build consumes the compiled Rust addon) and to give both a human and CI one name (`make verify`) instead of two undocumented, unordered command blocks."
+  },
+  "sourceOfTruth": [
+    { "concern": "JS/TS task graph, caching, parallel execution", "owner": "turborepo (existing turbo.json)", "notes": "Unchanged; make delegates to `pnpm turbo run ...`, never re-lists individual package scripts." },
+    { "concern": "Rust compilation, incremental rebuild", "owner": "cargo (existing rust/Cargo.toml workspace)", "notes": "Unchanged; make delegates to `cargo ...` inside rust/, never touches rust/target directly." },
+    { "concern": "cross-ecosystem build order (addon must exist before the Node package that embeds it builds)", "owner": "Makefile (new, root only)", "notes": "The one real gap this plan closes: today this order is only documented in prose, not enforced anywhere." }
+  ],
+  "commandContract": [
+    {
+      "name": "help",
+      "purpose": "List public root commands and what each one delegates to.",
+      "scope": "whole repo",
+      "sideEffects": "none",
+      "entryPoints": { "make": "make help", "direct": "n/a (documentation only)" }
+    },
+    {
+      "name": "check",
+      "purpose": "Fast feedback: lint only, both ecosystems, no builds/tests.",
+      "scope": "whole repo (both ecosystems), or a single changed package via Turborepo's own filtering",
+      "sideEffects": "none",
+      "entryPoints": {
+        "make": "make check",
+        "direct": "(pnpm turbo run lint) and, separately, (cd rust && cargo clippy --all-targets -- -D warnings)"
+      }
+    },
+    {
+      "name": "verify",
+      "purpose": "Full required validation for both ecosystems, in the one order that matters: Rust addon built and tested first, then the JS/TS side (which may depend on the built addon).",
+      "scope": "whole repo",
+      "sideEffects": "writes to rust/target and to Turborepo's own cache directory; no source rewrites",
+      "entryPoints": {
+        "make": "make verify",
+        "direct": "(cd rust && cargo test && cargo build --release) then (pnpm turbo run lint test build)"
+      },
+      "notes": "The ordering (Rust before JS/TS) is the entire reason this target exists; it is expressed as a real Make prerequisite (rust-verify before js-verify below), not as two independently-run README steps a human might reorder by mistake."
+    },
+    {
+      "name": "fix",
+      "purpose": "Auto-fix formatting/lint issues Turborepo and Cargo each already know how to fix.",
+      "scope": "whole repo",
+      "sideEffects": "rewrites source files in place in both ecosystems",
+      "entryPoints": {
+        "make": "make fix",
+        "direct": "(pnpm turbo run fix) and (cd rust && cargo fmt)"
+      }
+    },
+    {
+      "name": "clean",
+      "purpose": "Remove each ecosystem's own regenerable build output via that ecosystem's own clean command.",
+      "scope": "whole repo",
+      "sideEffects": "deletes rust/target and Turborepo/pnpm's own cache and dist output (both are regenerable; nothing under src trees is touched)",
+      "entryPoints": { "make": "make clean", "direct": "(cd rust && cargo clean) and (pnpm turbo run clean, or rm -rf per-package dist/ if no such script exists)" }
+    }
+  ],
+  "changes": [
+    {
+      "path": "Makefile",
+      "action": "create",
+      "expectedState": "absent",
+      "description": "Root-level thin Makefile. `verify` target has a REAL prerequisite edge from a `rust-verify` phony target to a `js-verify` phony target (not sibling prerequisites on one line), so `make -j` cannot start the JS/TS side before the Rust addon exists. `check`/`fix`/`clean` remain unordered (both sides are independent for those)."
+    },
+    {
+      "path": "README.md",
+      "action": "modify",
+      "expectedState": "present",
+      "description": "Replace the two separate 'for the JS side' / 'for the Rust side' command blocks with `make help` at the top, keeping each ecosystem's direct commands as the documented fallback immediately below (per this Skill's requirement that Make stays optional)."
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "action": "modify",
+      "expectedState": "present",
+      "description": "Replace the two independent, unordered jobs with a single job calling `make verify`, so CI enforces the same Rust-before-JS ordering the Makefile now expresses, instead of relying on two jobs that happen to both pass independently of order."
+    }
+  ],
+  "keepExisting": [
+    "turbo.json task graph, pipeline definitions, and remote/local cache configuration are entirely unchanged.",
+    "rust/Cargo.toml workspace layout, members, and feature flags are entirely unchanged.",
+    "pnpm-lock.yaml and pnpm as the package manager are unchanged; this plan does not introduce or evaluate a different package manager."
+  ],
+  "addedDependencies": [
+    {
+      "name": "GNU Make",
+      "kind": "build-time tool, developer machine + CI runner",
+      "reason": "Required only to use the new root `make <target>` convenience entry points; every target has a documented direct fallback (turbo / cargo commands) so neither building the addon, running the JS/TS side, nor contributing to either package requires Make to be installed.",
+      "alreadyPresent": "assumed present on CI's ubuntu-latest image; not assumed present on every contributor machine, hence the retained direct-command fallback in README."
+    }
+  ],
+  "risks": [
+    {
+      "description": "Serializing rust-verify before js-verify removes today's (accidental) job-level parallelism in CI, since the two GitHub Actions jobs currently run concurrently on separate runners.",
+      "likelihood": "medium",
+      "mitigation": "CI wall-clock time may increase; if that becomes a problem, keep the two CI jobs separate but add an explicit `needs:` edge between them at the CI-orchestrator layer instead of merging into one `make verify` job — same ordering guarantee, restores runner-level parallelism with other unrelated jobs. This plan does not decide that trade-off; it is called out here as a documented open question for whoever approves this plan."
+    },
+    {
+      "description": "The rust/target and Turborepo cache directories are currently namespaced per-worktree by convention (not enforced); a root Makefile invoked from two Git worktrees of this repo at once could still collide on either cache if a contributor points both worktrees at a shared cache path.",
+      "likelihood": "low",
+      "mitigation": "Not addressed by this plan (out of scope); flagged for the target repo's own worktree-isolation practice, per this Skill's operations/parallelism-and-recovery.md guidance."
+    }
+  ],
+  "alternatives": [
+    {
+      "name": "No root Makefile; document the required order in README prose only",
+      "description": "Keep today's two command blocks but add a sentence saying 'run the Rust block first'.",
+      "whyNotChosen": "Already tried (implicitly) today via block ordering in the README and it does not prevent a contributor or a future CI edit from running the two independently; a real dependency edge in a Makefile is enforced, prose is not."
+    },
+    {
+      "name": "Move the ordering into Turborepo itself (a turbo.json task depending on a script that shells out to cargo)",
+      "description": "Model the Rust build as a Turborepo task with its own dependsOn edge to the JS build task.",
+      "whyNotChosen": "Would make Turborepo responsible for orchestrating a non-JS toolchain it has no native awareness of (cache invalidation on Rust source changes would need to be hand-modeled as extra turbo.json inputs); the thin root Makefile expresses the one cross-ecosystem edge without asking either tool to model the other's internals. Reconsider if more than this single cross-ecosystem edge accumulates."
+    }
+  ],
+  "migrationSteps": [
+    { "order": 1, "action": "Add root Makefile with rust-verify and js-verify as separate phony targets, each delegating verbatim to today's existing direct commands (no behavior change yet)." },
+    { "order": 2, "action": "Add `verify: rust-verify js-verify` (in this order) as a real prerequisite list, and confirm `make -j2 verify` still runs rust-verify to completion before js-verify starts (Make serializes true prerequisite chains regardless of -j)." },
+    { "order": 3, "action": "Update README to lead with `make help`, retaining both ecosystems' direct commands beneath it." },
+    { "order": 4, "action": "Update .github/workflows/ci.yml to a single job calling `make verify`; explicitly note in the same PR the CI-parallelism trade-off from the risks section above, so reviewers can decide whether to keep the two-job/needs: alternative instead." }
+  ],
+  "verificationPlan": {
+    "staticOnly": [
+      "Confirm no existing root Makefile already exists at the target root (this plan assumes creation, not replacement).",
+      "Confirm turbo.json's existing task names (lint/test/build/fix/clean) actually match the ones this plan's Makefile delegates to; do not assume Turborepo task names without reading turbo.json first."
+    ],
+    "note": "The executable verification commands themselves are the machine-readable `checks` array at the top level of this plan (not duplicated here); see `checks[].name == \"verify\"` and `checks[].name == \"rust-verify\"`."
+  },
+  "checks": [
+    {
+      "name": "verify",
+      "command": "make",
+      "args": ["verify"],
+      "cwd": ".",
+      "timeoutMs": 600000,
+      "approved": false
+    },
+    {
+      "name": "rust-verify",
+      "command": "make",
+      "args": ["rust-verify"],
+      "cwd": ".",
+      "timeoutMs": 600000,
+      "approved": false
+    }
+  ],
+  "status": "PROPOSED",
+  "approval": {
+    "required": true,
+    "approvedBy": null,
+    "approvedAt": null,
+    "approvalMechanism": "Explicit user sign-off on this plan's filesToChange list and on the CI-parallelism trade-off noted under risks, given after re-reading the target files' current state at apply time."
+  }
+}

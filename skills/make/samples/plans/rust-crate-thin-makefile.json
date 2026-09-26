@@ -1,0 +1,172 @@
+{
+  "schemaVersion": "1.0.0",
+  "kind": "make-adoption-plan",
+  "planId": "rust-crate-thin-makefile-sample",
+  "createdAt": "2026-09-26",
+  "notice": "SAMPLE PLAN, for illustration only. The existence of this JSON file, and any script (including scripts/bin/validate-plan.mjs) successfully validating its shape, does NOT constitute approval to apply anything. `root` below is a placeholder (`<TARGET_ROOT>`); until it is replaced with the actual target directory's absolute path, `validate-plan.mjs` returns FAIL on this file — that is intentional, not a defect. Applying any of the changes below to a real repository requires that repository's owner to explicitly approve this exact plan content, re-checked against the current state of the target files, in a separate `apply` step. `checks[].approved` is `false` in this sample for the same reason: the sample's existence is not approval.",
+  "root": "<TARGET_ROOT>",
+  "target": {
+    "root": "<TARGET_ROOT>",
+    "description": "Single Rust library crate (not a workspace). No existing Makefile. Developers and CI currently invoke `cargo fmt`, `cargo clippy`, `cargo test`, and `cargo doc` directly and separately; there is no single command that runs all of them, and CI and the pre-commit hook have drifted (CI runs `--all-features`, the hook does not).",
+    "currentState": {
+      "buildSystem": "cargo",
+      "workspaceKind": "single-crate",
+      "existingEntryPoints": [
+        "cargo fmt --check",
+        "cargo clippy --all-targets -- -D warnings",
+        "cargo test",
+        "cargo doc --no-deps"
+      ],
+      "existingRunners": ["developer shell (README-documented commands)", "GitHub Actions"],
+      "makePresent": false
+    }
+  },
+  "adoptedEntryPoint": {
+    "tool": "make",
+    "role": "thin entry point only — Make does not become the dependency-graph source of truth for compilation",
+    "rationale": "The crate's real incremental build graph (source files, Cargo.lock, feature flags) is already owned by Cargo and re-implementing it in Make would duplicate that graph and risk drifting from it. Make is adopted only to give a single, memorable, OS-portable set of names (`make check`, `make verify`) that both the developer shell, the Git hook, and CI call, instead of three places independently listing the same four cargo invocations."
+  },
+  "sourceOfTruth": [
+    { "concern": "compilation, incremental rebuild, dependency resolution", "owner": "cargo", "notes": "Unchanged by this plan; Make never touches target/ or Cargo.lock directly." },
+    { "concern": "lint rule set (clippy lints, fmt config)", "owner": "cargo + rustfmt.toml/clippy.toml (existing)", "notes": "Unchanged; Make only invokes the existing configuration." },
+    { "concern": "public command names and their scope", "owner": "Makefile (new)", "notes": "The only thing this plan actually centralizes." }
+  ],
+  "commandContract": [
+    {
+      "name": "help",
+      "purpose": "List public commands and how to run each one without Make.",
+      "scope": "whole crate",
+      "sideEffects": "none",
+      "entryPoints": { "make": "make help", "direct": "n/a (documentation only)" }
+    },
+    {
+      "name": "check",
+      "purpose": "Fast local feedback: formatting check + clippy. Does not run tests.",
+      "scope": "whole crate, default feature set",
+      "sideEffects": "none (read-only; writes only to Cargo's own target/ build cache)",
+      "entryPoints": {
+        "make": "make check",
+        "direct": "cargo fmt --check && cargo clippy --all-targets -- -D warnings"
+      }
+    },
+    {
+      "name": "verify",
+      "purpose": "Full required validation: everything in check, plus unit/integration tests and doctests.",
+      "scope": "whole crate, default feature set",
+      "sideEffects": "none to source; writes to target/ build cache",
+      "entryPoints": {
+        "make": "make verify",
+        "direct": "cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test --all-targets && cargo test --doc"
+      },
+      "notes": "cargo test --all-targets does not run doctests; both invocations are required, deliberately not deduplicated by dropping one."
+    },
+    {
+      "name": "fix",
+      "purpose": "Auto-fix formatting only. Never invoked automatically by verify/check.",
+      "scope": "whole crate",
+      "sideEffects": "rewrites source files in place via cargo fmt",
+      "entryPoints": { "make": "make fix", "direct": "cargo fmt" }
+    },
+    {
+      "name": "clean",
+      "purpose": "Remove Cargo's target/ build cache only.",
+      "scope": "whole crate",
+      "sideEffects": "deletes target/ (regenerable build output only, nothing under src/)",
+      "entryPoints": { "make": "make clean", "direct": "cargo clean" }
+    }
+  ],
+  "changes": [
+    {
+      "path": "Makefile",
+      "action": "create",
+      "expectedState": "absent",
+      "description": "New thin Makefile: .PHONY help/check/verify/fix/clean targets, each a one-line delegation to the cargo invocation already listed above. .DEFAULT_GOAL := help (non-destructive default)."
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "action": "modify",
+      "expectedState": "present",
+      "description": "Replace the existing 4 separate `cargo ...` steps with a single `run: make verify` step, so CI and the hook stop drifting. Trigger/job matrix untouched."
+    },
+    {
+      "path": ".lefthook.yml",
+      "action": "modify",
+      "expectedState": "present",
+      "description": "Point the existing pre-commit command at `make check` instead of its current inline `cargo fmt --check` one-liner (clippy was previously missing from the hook; this closes that gap intentionally, called out under risks below)."
+    },
+    {
+      "path": "README.md",
+      "action": "modify",
+      "expectedState": "present",
+      "description": "Replace the four separately-documented cargo commands with a pointer to `make help`, keeping the direct cargo commands as the documented non-Make fallback (per this Skill's requirement that Make never becomes a hard dependency for using the crate)."
+    }
+  ],
+  "keepExisting": [
+    "Cargo.lock is committed and remains the lockfile of record; this plan does not change --locked/--offline policy.",
+    "rustfmt.toml and clippy.toml are unchanged.",
+    "CI continues to run on the same trigger events and runner OS; only the step body is consolidated."
+  ],
+  "addedDependencies": [
+    {
+      "name": "GNU Make",
+      "kind": "build-time tool, developer machine + CI runner",
+      "reason": "Required to use `make <target>`; every target also has a documented direct-cargo fallback so Make is not a hard requirement to build, test, or contribute to the crate.",
+      "alreadyPresent": "assumed present on CI's ubuntu-latest image; must be confirmed on each contributor's machine before relying on `make help` in onboarding docs (see verificationPlan.staticOnly below)."
+    }
+  ],
+  "risks": [
+    {
+      "description": "The pre-commit hook currently only runs `cargo fmt --check`; switching it to `make check` adds clippy to every commit, which is slower and may surface previously-uncaught lint failures on the next commit after this change lands.",
+      "likelihood": "medium",
+      "mitigation": "Call this out explicitly in the PR description introducing the Makefile; do not silently widen hook scope without a heads-up, per this Skill's guidance on hook/CI drift."
+    },
+    {
+      "description": "A contributor's local `make` may be a different implementation/version (e.g. an old GNU Make, or none at all) than assumed.",
+      "likelihood": "low-medium",
+      "mitigation": "README fallback commands remain the source of truth for what each target actually runs; `make` is convenience, not a gate contributors are blocked by."
+    }
+  ],
+  "alternatives": [
+    {
+      "name": "cargo-only, no Makefile",
+      "description": "Keep documenting the four commands in README only, with no single aggregate command.",
+      "whyNotChosen": "Does not solve the observed CI/hook drift (the two already disagree today); a named contract with one definition removes the drift's root cause."
+    },
+    {
+      "name": "cargo xtask",
+      "description": "Add a `cargo xtask verify` binary instead of a Makefile.",
+      "whyNotChosen": "For a single, simple library crate with no cross-platform packaging or multi-step orchestration need, an xtask binary is more machinery (its own crate, its own compile step) than the four-command aggregation actually requires; reconsider if the crate later needs conditional/native-Windows-specific steps beyond what a one-line Makefile recipe expresses."
+    }
+  ],
+  "migrationSteps": [
+    { "order": 1, "action": "Add Makefile with help/check/verify/fix/clean, each delegating to the existing cargo invocations verbatim (no behavior change yet)." },
+    { "order": 2, "action": "Run `make verify` locally and confirm its output matches running the four cargo commands separately (same pass/fail, same warnings)." },
+    { "order": 3, "action": "Update README to document `make help` alongside the existing direct cargo commands (fallback retained, not removed)." },
+    { "order": 4, "action": "Update .github/workflows/ci.yml to call `make verify` in place of the four separate steps; keep the rest of the job unchanged." },
+    { "order": 5, "action": "Update .lefthook.yml to call `make check`; note the widened hook scope (clippy added) in the same PR description." }
+  ],
+  "verificationPlan": {
+    "staticOnly": [
+      "Confirm the target's GNU Make version and platform before assuming .PHONY/tab-recipe syntax used in the drafted Makefile is supported (per this Skill's execution/gnu-posix-bsd-compatibility.md).",
+      "Confirm no existing Makefile already exists at the target root (this plan assumes creation, not replacement)."
+    ],
+    "note": "The executable verification commands themselves are the machine-readable `checks` array at the top level of this plan (not duplicated here); see `checks[].name == \"verify\"`."
+  },
+  "checks": [
+    {
+      "name": "verify",
+      "command": "make",
+      "args": ["verify"],
+      "cwd": ".",
+      "timeoutMs": 600000,
+      "approved": false
+    }
+  ],
+  "status": "PROPOSED",
+  "approval": {
+    "required": true,
+    "approvedBy": null,
+    "approvedAt": null,
+    "approvalMechanism": "Explicit user sign-off on this plan's filesToChange list, given after re-reading the target files' current state at apply time."
+  }
+}
