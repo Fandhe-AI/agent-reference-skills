@@ -65,6 +65,7 @@ make clean      # removes build/ entirely
 - After editing one `src/*.txt`: only that file's `processing ...` line reappears, followed by the `assembling ...` line — proves the dependency graph is scoped per-fragment, not whole-directory.
 - After deleting one `src/*.txt`: `build/sources.list` is rewritten and `manual.md` is reassembled from the remaining fragments only (without `sources.list`, the remaining older fragments would leave `manual.md` looking up to date and the deleted content would stay in it).
 - `make clean`: no output beyond the `rm -rf build` recipe line; `build/` no longer exists afterward.
+- A `src/*.txt` name containing whitespace or a shell metacharacter (quotes, `;`, `$`, backtick, parentheses, etc.): `make` stops at parse time with `src/ has file names with whitespace or shell metacharacters` before any recipe runs, because Make expands file names into recipes unquoted. `make clean` still works.
 - With no `src/*.txt` at all: the assemble recipe prints `error: no src/*.txt fragments found` and exits non-zero instead of blocking on `cat` reading stdin.
 
 ## Files

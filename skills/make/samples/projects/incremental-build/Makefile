@@ -30,6 +30,25 @@ override BUILD_DIR := build
 # the fragment list of the last build; when the current list differs,
 # it is forced out of date, which in turn rebuilds manual.md.
 SRCS := $(sort $(wildcard $(SRC_DIR)/*.txt))
+
+# File names from src/ are expanded into shell recipes ($(SRCS),
+# $(PROCESSED), $<, $@). Make cannot quote them safely, so names that
+# contain whitespace or shell metacharacters are rejected before any
+# recipe runs; only [A-Za-z0-9._-] names are supported. A name with
+# whitespace splits into several words, so every word must still match
+# $(SRC_DIR)/%.txt. `make clean` skips the check so a bad tree can
+# still be cleaned.
+lparen := (
+rparen := )
+comma := ,
+UNSAFE_CHARS := ' " ` $$ ; & | < > \ * ? [ ] ! { } ~ = \# $(lparen) $(rparen) $(comma)
+ifneq ($(MAKECMDGOALS),clean)
+UNSAFE_SRCS := $(strip $(filter-out $(SRC_DIR)/%.txt,$(SRCS)) \
+  $(foreach c,$(UNSAFE_CHARS),$(findstring $(c),$(SRCS))))
+ifneq ($(UNSAFE_SRCS),)
+$(error $(SRC_DIR)/ has file names with whitespace or shell metacharacters; rename them to [A-Za-z0-9._-] only)
+endif
+endif
 PROCESSED := $(patsubst $(SRC_DIR)/%.txt,$(BUILD_DIR)/%.processed,$(SRCS))
 SOURCES_LIST := $(BUILD_DIR)/sources.list
 RECORDED_SRCS := $(strip $(shell cat $(SOURCES_LIST) 2>/dev/null))
