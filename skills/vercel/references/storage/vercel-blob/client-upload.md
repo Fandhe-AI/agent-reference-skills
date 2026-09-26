@@ -30,32 +30,46 @@ console.log(blob.url);
 // app/api/avatar/upload/route.ts
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client';
 import { NextResponse } from 'next/server';
+// App-specific auth helper (e.g. Auth.js `auth()`); not part of @vercel/blob
+import { getSession } from '@/lib/auth';
 
 export async function POST(request: Request) {
   const body = (await request.json()) as HandleUploadBody;
 
-  const jsonResponse = await handleUpload({
-    body,
-    request,
-    onBeforeGenerateToken: async (pathname, clientPayload) => {
-      // REQUIRED: authenticate and authorize user here
-      // const session = await auth();
-      // if (!session) throw new Error('Not authenticated');
+  try {
+    const jsonResponse = await handleUpload({
+      body,
+      request,
+      onBeforeGenerateToken: async (pathname, clientPayload) => {
+        // Authenticate and authorize BEFORE issuing a token;
+        // otherwise anyone can upload to your store
+        const session = await getSession();
+        if (!session) {
+          throw new Error('Not authenticated');
+        }
 
-      return {
-        allowedContentTypes: ['image/jpeg', 'image/png', 'image/webp'],
-        addRandomSuffix: true,
-        tokenPayload: JSON.stringify({ userId: 'user-123' }),
-      };
-    },
-    onUploadCompleted: async ({ blob, tokenPayload }) => {
-      // Called by Vercel Blob when upload finishes
-      // Does NOT fire on localhost; use ngrok for local testing
-      console.log('Upload completed:', blob.url);
-    },
-  });
+        return {
+          allowedContentTypes: ['image/jpeg', 'image/png', 'image/webp'],
+          maximumSizeInBytes: 5 * 1024 * 1024, // 5 MB
+          addRandomSuffix: true,
+          tokenPayload: JSON.stringify({ userId: session.userId }),
+        };
+      },
+      onUploadCompleted: async ({ blob, tokenPayload }) => {
+        // Called by Vercel Blob when upload finishes
+        // Does NOT fire on localhost; use ngrok for local testing
+        console.log('Upload completed:', blob.url);
+      },
+    });
 
-  return NextResponse.json(jsonResponse);
+    return NextResponse.json(jsonResponse);
+  } catch (error) {
+    // Rejected token requests (e.g. unauthenticated) end up here
+    return NextResponse.json(
+      { error: (error as Error).message },
+      { status: 400 },
+    );
+  }
 }
 ```
 
