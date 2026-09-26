@@ -358,6 +358,10 @@ test("preview-sample: 内容が同じでも実行権限がなければ競合と�
     const preview = runCliJson("preview-sample.mjs", ["--sample", "rust-crate", "--root", dir]);
     assert.equal(preview.status, 1);
     assert.ok(preview.json.findings.some((f) => f.evidence === join("scripts", "check.sh") && f.detail.includes("実行権限")));
+    const noForcePlan = writeApplyPlan(planDir, dir, "rust-crate", { skip: [join("scripts", "check.sh")] });
+    const aborted = runCliJson("preview-sample.mjs", ["--sample", "rust-crate", "--root", dir, "--apply", "--plan", noForcePlan]);
+    const reason = aborted.json.findings.find((f) => f.id === "apply");
+    assert.ok(reason.detail.includes("実行権限"), "中止理由も内容差だけと誤表示しない");
     const planPath = writeApplyPlan(planDir, dir, "rust-crate", { modify: [join("scripts", "check.sh")] });
     const r = runCliJson("preview-sample.mjs", ["--sample", "rust-crate", "--root", dir, "--apply", "--force", "--plan", planPath]);
     assert.equal(r.status, 0);

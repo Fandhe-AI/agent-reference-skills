@@ -31,7 +31,7 @@ const HELP = `preview-sample — samples/projects/<name>/ と対象 root の差�
   --root <path>     導入予定の対象ディレクトリ（必須）
   --apply           プレビューではなく実際に書き込む（既定はプレビューのみ・書き込まない）
   --plan <path>     --apply 時に必須。書き込む全ファイルを changes に明記した承認済み計画 JSON
-  --force           --apply 時、内容の異なる既存ファイルも上書きする（既定は競合があれば適用を中止）
+  --force           --apply 時、競合（内容・実行権限の差）のある既存ファイルも上書きする（既定は競合があれば適用を中止）
   --json            結果を JSON で stdout に出力（診断は stderr）
   --help            このヘルプを表示
 
@@ -375,7 +375,7 @@ function main() {
       abortReasons.push({ id: "apply", reason: `書き込めない対象があります: ${unwritable.join(", ")}` });
     }
     if (skippedConflicts.length > 0) {
-      abortReasons.push({ id: "apply", reason: `--force なしで内容の異なる既存ファイルがあります: ${skippedConflicts.join(", ")}` });
+      abortReasons.push({ id: "apply", reason: `--force なしで競合（内容または実行権限が異なる既存ファイル）があります: ${skippedConflicts.join(", ")}` });
     }
     for (const { id, reason } of abortReasons) {
       findings.push({ id, status: STATUS.FAIL, detail: `適用を中止（何も書き込んでいません）: ${reason}`, evidence: values.plan });
@@ -386,7 +386,8 @@ function main() {
         findings.push({ id: `write:${failure.rel}`, status: STATUS.FAIL, detail: failure.detail, evidence: failure.rel });
         for (const w of toWrite) {
           if (w.finding) {
-            w.finding.detail = "競合: 既存ファイルが存在し内容が異なります（適用失敗のため元の内容のまま）";
+            // 競合の種類（内容差・実行権限の欠落）は元の detail のまま残し、未適用であることだけを加える
+            w.finding.detail = `${w.finding.detail}（適用失敗のため元のまま）`;
           }
         }
       } else {

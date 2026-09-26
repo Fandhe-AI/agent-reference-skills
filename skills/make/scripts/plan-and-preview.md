@@ -270,7 +270,7 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
   --root <path>     導入予定の対象ディレクトリ（必須）
   --apply           プレビューではなく実際に書き込む（既定はプレビューのみ・書き込まない）
   --plan <path>     --apply 時に必須。書き込む全ファイルを changes に明記した承認済み計画 JSON
-  --force           --apply 時、内容の異なる既存ファイルも上書きする（既定は競合があれば適用を中止）
+  --force           --apply 時、競合（内容・実行権限の差）のある既存ファイルも上書きする（既定は競合があれば適用を中止）
   --json            結果を JSON で stdout に出力（診断は stderr）
   --help            このヘルプを表示
 
