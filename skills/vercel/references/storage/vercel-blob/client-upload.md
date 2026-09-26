@@ -12,16 +12,30 @@ Upload files directly from the browser to Vercel Blob without routing through yo
 ## Client-Side Code
 
 ```tsx
-// app/avatar/upload/page.tsx
+// app/avatar/upload/avatar-uploader.tsx
 'use client';
 import { upload } from '@vercel/blob/client';
+import type { ChangeEvent } from 'react';
 
-// `userId` comes from your app (e.g. the signed-in user passed as a prop)
-const blob = await upload(`avatars/${userId}/${file.name}`, file, {
-  access: 'private', // or 'public'
-  handleUploadUrl: '/api/avatar/upload',
-});
-console.log(blob.url);
+// Render from a Server Component that passes the signed-in user's ID,
+// e.g. <AvatarUploader userId={session.userId} />
+export function AvatarUploader({ userId }: { userId: string }) {
+  async function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // The server route only issues tokens for paths under avatars/<userId>/
+    const blob = await upload(`avatars/${userId}/${file.name}`, file, {
+      access: 'private', // or 'public'
+      handleUploadUrl: '/api/avatar/upload',
+    });
+    console.log(blob.url);
+  }
+
+  return (
+    <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleChange} />
+  );
+}
 ```
 
 ## Server Route (Route Handler)
