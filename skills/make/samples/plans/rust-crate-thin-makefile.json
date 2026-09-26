@@ -72,7 +72,7 @@
       "purpose": "Remove Cargo's target/ build cache only.",
       "scope": "whole crate",
       "sideEffects": "deletes target/ (regenerable build output only, nothing under src/)",
-      "entryPoints": { "make": "make clean", "direct": "cargo clean" }
+      "entryPoints": { "make": "make clean", "direct": "cargo clean --target-dir target" }
     }
   ],
   "changes": [

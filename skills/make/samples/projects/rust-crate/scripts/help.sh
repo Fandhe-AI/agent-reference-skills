@@ -23,7 +23,7 @@ Make):
   verify   scripts/verify.sh    cargo test --all-targets + cargo test --doc (required verification suite)
   build    cargo build          compile the crate
   test     cargo test           unit + integration tests only (verify.sh also runs doctests separately)
-  clean    cargo clean          remove target/ only (destructive but scoped to build artifacts)
+  clean    cargo clean --target-dir target   remove this crate's ./target only (never a shared CARGO_TARGET_DIR)
 
 `make <target>` runs the same command shown above; Make is a thin,
 optional front door, not a second definition of these operations.

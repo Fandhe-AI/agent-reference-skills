@@ -73,7 +73,7 @@
       "purpose": "Remove each ecosystem's own regenerable build output via that ecosystem's own clean command.",
       "scope": "whole repo",
       "sideEffects": "deletes rust/target and Turborepo/pnpm's own cache and dist output (both are regenerable; nothing under src trees is touched)",
-      "entryPoints": { "make": "make clean", "direct": "(cd rust && cargo clean) and (pnpm turbo run clean, or rm -rf per-package dist/ if no such script exists)" }
+      "entryPoints": { "make": "make clean", "direct": "(cd rust && cargo clean --target-dir target) and (pnpm turbo run clean, or rm -rf per-package dist/ if no such script exists)" }
     }
   ],
   "changes": [

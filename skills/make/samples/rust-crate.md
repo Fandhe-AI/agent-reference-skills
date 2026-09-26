@@ -47,7 +47,7 @@ make check     # cargo fmt --check + cargo clippy; never rewrites source
 make verify    # cargo test --all-targets + cargo test --doc
 make build     # cargo build
 make test      # cargo test
-make clean     # cargo clean
+make clean     # cargo clean --target-dir target (this crate's ./target only)
 ```
 
 Without Make (every target has a direct entry point; `scripts/help.sh` is a hand-maintained, Make-independent listing of the same operations):
@@ -59,7 +59,7 @@ cd projects/rust-crate
 ./scripts/verify.sh   # same as: make verify
 cargo build            # same as: make build
 cargo test              # same as: make test
-cargo clean              # same as: make clean
+cargo clean --target-dir target   # same as: make clean (minus the symlink check)
 ```
 
 ## Change target / side effects
@@ -67,7 +67,7 @@ cargo clean              # same as: make clean
 - `doctor.sh`: read-only; reports found/missing tools, exits non-zero if `cargo`/`rustc`/`rustfmt`/`clippy` is missing. Never installs anything.
 - `check.sh`: `cargo fmt --all -- --check` and `cargo clippy --all-targets -- -D warnings`; neither rewrites source. A formatting or lint failure is reported via non-zero exit, not auto-fixed.
 - `verify.sh`: runs `cargo test --all-targets` (unit + integration, **excludes doctests** — a documented `cargo` behavior) and `cargo test --doc` separately, so doctests are never silently skipped. Writes to `target/` only.
-- `clean`: `cargo clean` — removes `target/` only, nothing under `src/` or `tests/`.
+- `clean`: `cargo clean --target-dir target` — removes this crate's own `./target` only, nothing under `src/` or `tests/`. A bare `cargo clean` would instead empty whatever `CARGO_TARGET_DIR` / `build.target-dir` points at, which can be a directory shared with other worktrees; the explicit `--target-dir target` overrides both (confirmed locally with cargo 1.98.1: a shared `CARGO_TARGET_DIR` was left intact). If `./target` is a symlink (possibly into a shared directory), the recipe refuses and exits non-zero instead of following it.
 - All scripts reject any positional argument (`scripts/lib.sh`'s `reject_args`), exiting 2 (usage error) rather than silently ignoring unknown input.
 
 ## Expected results

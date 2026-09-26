@@ -48,7 +48,7 @@ make check         # cargo check --workspace --locked + pnpm run lint (no genera
 make generate         # cargo run -p codegen -> packages/web/generated/version.json (always re-runs)
 make test               # generate, then cargo test --workspace --locked + pnpm -r run test
 make build                 # generate, then cargo build --workspace --locked + pnpm -r run build
-make clean                    # cargo clean + remove node_modules/, dist/, generated/
+make clean                    # remove ./target (cargo clean --target-dir target) + node_modules/, dist/, generated/
 ```
 
 Without Make (each ecosystem's own direct commands; `generate` has no non-Make Node.js equivalent since it is a Rust-only step whose output is a plain file):
@@ -67,7 +67,7 @@ cargo build --workspace --locked && pnpm -r run build                     # same
 - `setup`: `pnpm install --frozen-lockfile` only; Cargo dependency fetch happens lazily on first `cargo` invocation, not during `setup`.
 - `check`: read-only beyond Cargo's own `target/` build cache; does not run `generate` and does not run tests. `scripts/lint.mjs packages/web` explicitly skips any `generated/` subdirectory when scanning for `*.mjs` files, so `make check` behaves the same whether or not `packages/web/generated/version.json` currently exists.
 - `generate`: overwrites `packages/web/generated/version.json` every invocation — it is intentionally **not** tracked as a Make file target (no rule keyed on that path), so `make test`/`make build` always regenerate it rather than relying on Make's own staleness check for this cross-ecosystem file. See [`package-scripts-and-mixed-repos.md`](../references/node/package-scripts-and-mixed-repos.md) for why a `.PHONY`-to-`.PHONY` ordering edge, not a file-target edge, is this sample's deliberate choice.
-- `clean`: `cargo clean` plus `rm -rf node_modules packages/*/node_modules packages/*/dist packages/web/generated` — destructive but scoped to these regeneratable paths; nothing under `crates/*/src` or `packages/web/src` is touched.
+- `clean`: `cargo clean --target-dir target` (this workspace's own `./target` only — never a shared `CARGO_TARGET_DIR` / `build.target-dir`; a symlinked `./target` is refused) plus `rm -rf node_modules packages/*/node_modules packages/*/dist packages/web/generated` — destructive but scoped to these regeneratable paths; nothing under `crates/*/src` or `packages/web/src` is touched.
 
 ## Expected results
 

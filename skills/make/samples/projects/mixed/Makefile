@@ -32,7 +32,7 @@
 #                          + pnpm -r run test
 #   make build           - generate, then cargo build --workspace --locked
 #                          + pnpm -r run build
-#   make clean           - cargo clean + remove node_modules/, dist/,
+#   make clean           - remove ./target + node_modules/, dist/,
 #                          generated/ (destructive: only these
 #                          regeneratable paths)
 
@@ -47,7 +47,7 @@ help:
 	@echo "  generate  cargo run -p codegen -> packages/web/generated/version.json"
 	@echo "  test      generate, then cargo test + pnpm -r run test"
 	@echo "  build     generate, then cargo build + pnpm -r run build"
-	@echo "  clean     cargo clean + remove node_modules/, dist/, generated/"
+	@echo "  clean     remove ./target (never a shared CARGO_TARGET_DIR) + node_modules/, dist/, generated/"
 
 setup:
 	pnpm install --frozen-lockfile
@@ -67,6 +67,9 @@ build: generate
 	cargo build --workspace --locked
 	pnpm -r run build
 
+# `--target-dir target` keeps `cargo clean` away from a shared CARGO_TARGET_DIR / build.target-dir;
+# a symlinked target/ is refused rather than followed.
 clean:
-	cargo clean
+	@if [ -L target ]; then echo "error: target/ is a symlink (possibly a shared build directory); refusing to clean" >&2; exit 1; fi
+	cargo clean --target-dir target
 	rm -rf node_modules packages/*/node_modules packages/*/dist packages/web/generated

@@ -22,6 +22,7 @@ node --test skills/make/tests/**/*.test.mjs
 | `run-checks.test.mjs` | 引数検証、**既定 dry-run（--execute なしでは実行しない）**、approved:true が無い check の BLOCKED、実行成功/失敗/timeout の区別、不正な計画（root 不在）で全 checks を BLOCKED にし実行しない、checks 空の NOT_APPLICABLE、未対応 schemaVersion の不実行、コマンドの stdout / stderr と計画の command / args / cwd を結果に含めない（全経路）、壊れた JSON の断片を診断に出さない |
 | `sample-plans.test.mjs` | `samples/plans/` 配下の各サンプル計画が `validate-plan.mjs` のスキーマに適合すること。root プレースホルダのままでは FAIL、root を一時ディレクトリに差し替える（modify 対象のダミーファイルも用意する）と PASS になることを確認する |
 | `exec-safe.test.mjs` | Windows `.cmd`/`.bat` 専用処理（`resolveExecutionTarget`）のロジック単体テスト。cmd.exe メタ文字を含む引数の BLOCKED 化と、理由に値ではなく位置だけを書くことを含む。実 Windows 環境がないためロジック判定のみ検証し、cmd.exe の実起動そのものは未検証 |
+| `sample-projects.test.mjs` | `samples/projects/*/Makefile` の recipe が `cargo clean` を `--target-dir target` なしで使わないこと（共有 `CARGO_TARGET_DIR` を消さない）の静的確認 |
 | `help-contract.test.mjs` | 全 CLI の `--help` が実装済みオプションと一致すること、未知フラグが exit 2 になること |
 | `secrets-fixture.test.mjs` | 固定フィクスチャ経由での秘密情報非混入の回帰確認 |
 | `eval-cases.json` | 下記「eval-cases.json について」を参照 |

@@ -35,5 +35,9 @@ build: ## cargo build. Direct: cargo build
 test: ## cargo test (unit + integration only; see verify for doctests too). Direct: cargo test
 	cargo test
 
-clean: ## Remove target/ only (destructive, scoped to build artifacts). Direct: cargo clean
-	cargo clean
+# `cargo clean` alone would wipe CARGO_TARGET_DIR / build.target-dir when that points at a directory
+# shared with other worktrees. `--target-dir target` limits it to this crate's own ./target, and a
+# symlinked target/ is refused rather than followed.
+clean: ## Remove this crate's own target/ only (never a shared CARGO_TARGET_DIR). Direct: cargo clean --target-dir target
+	@if [ -L target ]; then echo "error: target/ is a symlink (possibly a shared build directory); refusing to clean" >&2; exit 1; fi
+	cargo clean --target-dir target
