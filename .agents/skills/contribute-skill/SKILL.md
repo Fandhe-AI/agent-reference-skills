@@ -147,7 +147,7 @@ REPO_SLUG="${REPO_SLUG%.git}"
 # 2) 正規化後の値を厳密検証する: owner は Fandhe-AI 固定、repo は単一セグメントのみ許可する
 #    [A-Za-z0-9._-]+ は '/'・'?'・'#'・空文字を含められないため、
 #    パストラバーサル（../）・余剰パスセグメント・クエリ・フラグメントをすべて拒否できる
-#    （前方一致 case では `Fandhe-AI/../../attacker/repo` のような値が誤って通過していた）
+#    （前方一致では `Fandhe-AI/../../attacker/repo` のような値が通過するため）
 if [[ ! "${REPO_SLUG}" =~ ^Fandhe-AI/[A-Za-z0-9._-]+$ ]]; then
   echo "エラー: source '${SOURCE}' は Fandhe-AI/<repo> 形式ではありません。中止します。"
   exit 1
@@ -203,7 +203,7 @@ fi
 
 ### Step 5: 変更を反映する
 
-`skills-contribute.sh` は upstream の `gh repo clone` から作業ディレクトリ（`WORKDIR`）の作成・反映までを自己完結で行います。手動での事前 clone は不要です（機械可読な `CONTRIBUTE_SKILL_WORKDIR=` 等の出力を Step 6 以降で唯一の正として使う契約に一本化しています）。
+`skills-contribute.sh` は upstream の `gh repo clone` から作業ディレクトリ（`WORKDIR`）の作成・反映までを自己完結で行うため、手動での事前 clone は不要です。Step 6 以降は同スクリプトの機械可読な出力（`CONTRIBUTE_SKILL_WORKDIR=` 等）だけを唯一の正として使います。
 
 **このステップは手順を個別に打鍵せず、必ず本スキル自身のスクリプト（`skills-contribute.sh`）を実行してください。** 同スクリプトには rm -rf 前の symlink 境界検証（TOCTOU 対策込み）が実装されており、以下の断片だけを個別に実行すると検証が欠落します。
 
@@ -211,7 +211,7 @@ fi
 
 `LOCAL_SKILL_DIR` は Step 1 で解決した**貢献対象スキル**（`$ARGUMENTS`）のパスであり、本スキル（contribute-skill）自身の配置とは無関係です。スクリプトの実行パスに `LOCAL_SKILL_DIR` を流用すると、貢献対象が contribute-skill 以外の場合に存在しないパスを参照してしまいます。実行するスクリプト自身の配置は別変数 `CONTRIBUTE_SKILL_DIR` として、本スキル（contribute-skill）自身のインストール場所から解決してください。
 
-`skills-contribute.sh` は呼び出し時のカレントディレクトリを貢献元リポジトリのルートとして `LOCAL_SKILL_DIR`・`skills-lock.json` を探索し、内部で自分自身の `gh repo clone` と `WORKDIR`（clone 先）を新規作成します。手動での事前 clone は不要なため、実行直前にこの Step 内で `ORIG_DIR`（貢献元ローカルリポジトリのルート）を捕捉しておいてください。スクリプトの標準出力最終行群が返す `CONTRIBUTE_SKILL_WORKDIR=<path>` と `CONTRIBUTE_SKILL_UPSTREAM_PATH=<path>` を捕捉し、`WORKDIR` および（後述の参考コードで示す判定ロジックの）`UPSTREAM_SKILL_PATH` はこれらの値のみを唯一の正として採用します（参考コードを個別実行して得た値は使用しません）。これにより Step 6 以降が参照する `${WORKDIR}/upstream` と `${UPSTREAM_SKILL_PATH}` は、スクリプトが実際に使った clone・実際に反映したパスと一致します。
+`skills-contribute.sh` は呼び出し時のカレントディレクトリを貢献元リポジトリのルートとして `LOCAL_SKILL_DIR`・`skills-lock.json` を探索し、内部で自分自身の `gh repo clone` と `WORKDIR`（clone 先）を新規作成します。実行直前にこの Step 内で `ORIG_DIR`（貢献元ローカルリポジトリのルート）を捕捉しておいてください。スクリプトの標準出力最終行群が返す `CONTRIBUTE_SKILL_WORKDIR=<path>` と `CONTRIBUTE_SKILL_UPSTREAM_PATH=<path>` を捕捉し、`WORKDIR` および（後述の参考コードで示す判定ロジックの）`UPSTREAM_SKILL_PATH` はこれらの値のみを唯一の正として採用します（参考コードを個別実行して得た値は使用しません）。これにより Step 6 以降が参照する `${WORKDIR}/upstream` と `${UPSTREAM_SKILL_PATH}` は、スクリプトが実際に使った clone・実際に反映したパスと一致します。
 
 ```bash
 # cd する前にローカルリポジトリのルートを捕捉する（cd - は stdout を汚染するため使用しない）
@@ -298,7 +298,7 @@ cd "${SCRIPT_UPSTREAM_DIR}"
 # origin/HEAD 未設定時に symbolic-ref が非ゼロ終了する。set -e 下（本コマンドを
 # skills-contribute.sh 同様の厳格モードで実行する場合）では ${DEFAULT_BRANCH:-main}
 # フォールバックへ到達できなくなるため `|| true` で吸収する
-# （skills-contribute.sh:246 と同一の修正、参照: コミット履歴の同一 fix）。
+# （skills-contribute.sh の同じ処理と同じ理由）。
 DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||' || true)
 echo "デフォルトブランチ: ${DEFAULT_BRANCH:-main}"
 ```
@@ -468,7 +468,7 @@ Draft PR を作成する場合は `--draft` を付けます（デフォルトは
 
 ## 注意事項
 
-- **SKILL_NAME は kebab-case のみ許可**：`..` のような値によるパストラバーサルを防ぐため、空判定の直後・パス解決の前に `^[a-z][a-z0-9-]+$` で検証する（security.md A03/A01）
+- **SKILL_NAME は kebab-case のみ許可**：`..` のような値によるパストラバーサルを防ぐため、空判定の直後・パス解決の前に `^[a-z][a-z0-9-]+$` で検証する（OWASP A03 / A01）
 - **`skills/`・`.agents/skills/`・`.claude/skills/` の複数に実体が存在する場合は中止**：silently に `skills/` を優先せず、環境変数 `LOCAL_SKILL_DIR` に改修対象パスを指定して再実行を求める。`LOCAL_SKILL_DIR` は `skills/<name>`・`.agents/skills/<name>`・`.claude/skills/<name>` の3パスのみ受理し（末尾要素・中間の親ディレクトリのいずれかが symlink なら実体側パスの指定を要求）、任意パス指定によるパストラバーサルを防ぐ。Step 5 で本スキル自身（contribute-skill）の配置を解決する `CONTRIBUTE_SKILL_DIR` も同じ fail-closed 方針を取り、`${ORIG_DIR}/skills/contribute-skill`・`${ORIG_DIR}/.agents/skills/contribute-skill`・`${ORIG_DIR}/.claude/skills/contribute-skill` の3候補のみ受理する（末尾要素・中間の親ディレクトリのいずれかが symlink なら実体側パスの指定を要求）。3候補のうち複数が存在する場合は silently にどれかを優先せず中止して環境変数 `CONTRIBUTE_SKILL_DIR` での指定を求める（LOCAL_SKILL_DIR とは非対称にしない）
 - **source が Fandhe-AI org 以外の場合は中止**：前方一致（`Fandhe-AI/*` 等）ではなく、正規化（`.git` 除去等）後の `OWNER/REPO` が `^Fandhe-AI/[A-Za-z0-9._-]+$` に完全一致するかで判定する。`../` によるパストラバーサル・クエリ・フラグメント・余剰パスセグメントを含む値、および repo 名が `.`／`..` になる値は中止し、意図しない外部リポジトリへの push を防ぐ
 - **セキュリティ問題が見つかった場合は中止**：修正後に再実行
@@ -478,7 +478,7 @@ Draft PR を作成する場合は `--draft` を付けます（デフォルトは
 
 ## sandbox 環境での実行
 
-このスキルはネットワーク越しの GitHub 操作（fork・`git push`・PR 作成）を必須とする。該当コマンドはコマンド単位で sandbox 無効にして実行する。ネットワーク遮断を解除できない環境では実行できない。
+このスキルはネットワーク越しの GitHub 操作（`gh repo clone`・`git push`・PR 作成）を必須とする。該当コマンドはコマンド単位で sandbox 無効にして実行する。ネットワーク遮断を解除できない環境では実行できない。
 
 ## 検証
 

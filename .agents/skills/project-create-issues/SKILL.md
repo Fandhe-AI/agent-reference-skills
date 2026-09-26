@@ -105,13 +105,15 @@ Issue タイトルは Conventional Commits 形式を推奨: `feat:`, `fix:`, `ch
 親 Issue が指定されている場合、各子 Issue を sub-issue として紐付ける:
 
 ```bash
+# 子 Issue の database id（ノード ID ではない数値 id）を取得する
+child_id=$(gh api "repos/{owner}/{repo}/issues/{child_number}" --jq '.id')
 gh api \
   --method POST \
-  repos/{owner}/{repo}/issues/{parent_number}/sub_issues \
-  -f sub_issue_id={child_node_id}
+  "repos/{owner}/{repo}/issues/{parent_number}/sub_issues" \
+  -F "sub_issue_id=${child_id}"
 ```
 
-> **Note:** `sub_issue_id` には Issue のノード ID が必要。`gh issue view <number> --json id -q '.id'` で取得する。
+> **Note:** `sub_issue_id` には issue 番号でもノード ID でもなく database id（`gh api repos/{owner}/{repo}/issues/<number> --jq '.id'` の数値）を渡す。数値として送るため `-F` を使う。
 
 ### Step 7: 結果を報告する
 
