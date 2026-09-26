@@ -140,10 +140,10 @@ this text matches the shipped script and that an unrecognized flag exits 2.
 
 | Code | Meaning |
 | --- | --- |
-| 0 | `PASS` (scan completed; `SKIPPED`/`NOT_APPLICABLE` also map to 0, but this script never returns them) |
+| 0 | `PASS` (scan completed), or `SKIPPED` (scan stopped at `--max-entries`, so part of the tree is unchecked) |
 | 1 | `FAIL`, or `--root` does not exist / is not a directory |
 | 2 | Argument error (missing `--root`, non-numeric `--max-depth`/`--max-entries`, unknown flag) |
-| 3 | not used by this script |
+| 3 | `BLOCKED` (a directory or entry under `--root` could not be read, e.g. permission denied; reported as `scan-error` findings) |
 
 ## What happens on failure, and what to do next
 
@@ -151,8 +151,11 @@ this text matches the shipped script and that an unrecognized flag exits 2.
   nothing else.
 - **Exit 1, root error**: the given `--root` does not exist or is not a directory — confirm the
   path with the user before retrying; do not create the directory yourself.
-- **`truncated: true` in the result / a `max-entries` note in `unresolved`**: the scan hit
-  `--max-entries` before finishing. Re-run with a larger `--max-entries` only if the user wants a
+- **Exit 3, `scan-error` findings**: part of the tree could not be read (the finding's `detail`
+  carries the error code, e.g. `EACCES`). The scan is not complete; report the unreadable paths
+  instead of treating the result as a full inspection, and do not change permissions yourself.
+- **`truncated: true` in the result / a `max-entries` note in `unresolved`** (overall status
+  `SKIPPED`): the scan hit `--max-entries` before finishing. Re-run with a larger `--max-entries` only if the user wants a
   deeper scan of a large repository; do not silently assume the truncated scan was complete.
 - **`secret-like-file` findings**: these record only a filename match (`.env`, `*.pem`,
   `id_rsa`, `*credentials*`, etc.) and the file's path — never its contents. Do not open or

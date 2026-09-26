@@ -382,3 +382,22 @@ test("validate-plan: 未対応の schemaVersion は FAIL にする", () => {
     cleanupTmpDir(dir);
   }
 });
+
+test("validate-plan: `..` で始まる root 配下の正当なファイル名は逸脱と誤判定しない", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    const planPath = writePlan(dir, {
+      schemaVersion: "1.0.0",
+      root,
+      changes: [{ path: "..config", action: "create", expectedState: "absent" }],
+      checks: [],
+    });
+    const r = runCliJson("validate-plan.mjs", ["--plan", planPath]);
+    assert.equal(r.status, 0);
+    assert.equal(r.json.status, "PASS");
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});

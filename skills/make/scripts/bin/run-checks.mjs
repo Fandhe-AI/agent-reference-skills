@@ -152,6 +152,7 @@ function main() {
       status: execResult.status,
       // cmd.exe 経由で安全に渡せない引数は起動前に BLOCKED になる（executed: false）
       executed: execResult.executed !== false,
+      ...(execResult.executed === false ? { unsafeBlocked: true, reason: execResult.stderrTail } : {}),
       exitCode: execResult.exitCode,
       signal: execResult.signal,
       timedOut: execResult.timedOut,
@@ -167,9 +168,15 @@ function main() {
   if (!values.execute) {
     unresolved.push("dry-run のため checks は実行していません。実行するには --execute と各 check の approved:true が必要です");
   }
-  const blockedNames = checkResults.filter((c) => c.status === STATUS.BLOCKED).map((c) => c.name);
-  if (blockedNames.length > 0) {
-    unresolved.push(`承認不足で未実行: ${blockedNames.join(", ")}`);
+  // BLOCKED の理由を混同しない（承認不足と、承認済みでも安全に起動できず止めたものを分ける）
+  const blocked = checkResults.filter((c) => c.status === STATUS.BLOCKED);
+  const unapprovedNames = blocked.filter((c) => !c.unsafeBlocked).map((c) => c.name);
+  const unsafeNames = blocked.filter((c) => c.unsafeBlocked).map((c) => c.name);
+  if (unapprovedNames.length > 0) {
+    unresolved.push(`承認不足で未実行: ${unapprovedNames.join(", ")}`);
+  }
+  if (unsafeNames.length > 0) {
+    unresolved.push(`cmd.exe が再解釈し得る引数のため未実行（承認済みでも起動しない）: ${unsafeNames.join(", ")}`);
   }
 
   const result = buildResult({

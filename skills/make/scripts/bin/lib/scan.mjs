@@ -44,11 +44,13 @@ export function isSecretLikeName(name) {
  * @param {object} [opts]
  * @param {number} [opts.maxDepth]
  * @param {number} [opts.maxEntries]
- * @returns {{entries: Array<{path:string, type:"file"|"dir", depth:number}>, truncated: boolean, skippedDirs: string[]}}
+ * @returns {{entries: Array<{path:string, type:"file"|"dir", depth:number}>, truncated: boolean, skippedDirs: string[], errors: Array<{path:string, code:string}>}}
+ *   errors は読み取れなかったディレクトリ・エントリ。呼び出し元は空でない場合に走査完了扱いにしないこと。
  */
 export function scanTree(root, { maxDepth = DEFAULT_MAX_DEPTH, maxEntries = DEFAULT_MAX_ENTRIES } = {}) {
   const entries = [];
   const skippedDirs = [];
+  const errors = [];
   let truncated = false;
 
   function walk(dir, depth) {
@@ -60,7 +62,8 @@ export function scanTree(root, { maxDepth = DEFAULT_MAX_DEPTH, maxEntries = DEFA
     let list;
     try {
       list = readdirSync(dir, { withFileTypes: true });
-    } catch {
+    } catch (err) {
+      errors.push({ path: dir, code: err.code ?? "UNKNOWN" });
       return;
     }
     for (const dirent of list) {
@@ -73,7 +76,8 @@ export function scanTree(root, { maxDepth = DEFAULT_MAX_DEPTH, maxEntries = DEFA
       let isSymlink = false;
       try {
         isSymlink = lstatSync(full).isSymbolicLink();
-      } catch {
+      } catch (err) {
+        errors.push({ path: full, code: err.code ?? "UNKNOWN" });
         continue;
       }
       if (isSymlink) {
@@ -94,7 +98,7 @@ export function scanTree(root, { maxDepth = DEFAULT_MAX_DEPTH, maxEntries = DEFA
   }
 
   walk(root, 0);
-  return { entries, truncated, skippedDirs };
+  return { entries, truncated, skippedDirs, errors };
 }
 
 export function statSafe(p) {

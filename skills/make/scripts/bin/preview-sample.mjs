@@ -35,7 +35,12 @@ const HELP = `preview-sample — samples/projects/<name>/ と対象 root の差�
 `;
 
 function listSampleFiles(sampleRoot) {
-  const { entries } = scanTree(sampleRoot, { maxDepth: 32, maxEntries: 20000 });
+  const { entries, truncated, errors } = scanTree(sampleRoot, { maxDepth: 32, maxEntries: 20000 });
+  // 一部を読めなかった・打ち切ったサンプルを「全ファイル」として扱い、欠けたまま適用しない
+  if (errors.length > 0 || truncated) {
+    const why = errors.length > 0 ? errors.map((e) => `${e.path} (${e.code})`).join(", ") : "件数上限で打ち切り";
+    throw new Error(`サンプルを完全には走査できませんでした: ${why}`);
+  }
   return entries.filter((e) => e.type === "file").map((e) => e.path);
 }
 
@@ -105,7 +110,13 @@ function main() {
     throw err;
   }
 
-  const sampleFiles = listSampleFiles(sampleRoot);
+  let sampleFiles;
+  try {
+    sampleFiles = listSampleFiles(sampleRoot);
+  } catch (err) {
+    diag(err.message);
+    process.exit(1);
+  }
   const findings = [];
   const plannedWrites = [];
   const conflicts = [];

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdirSync, writeFileSync, symlinkSync } from "node:fs";
+import { mkdirSync, writeFileSync, symlinkSync, chmodSync } from "node:fs";
 import { join } from "node:path";
 import { runCli, runCliJson, makeTmpDir, cleanupTmpDir } from "./helpers.mjs";
 
@@ -94,6 +94,35 @@ test("inspect-repo: 入口候補（Makefile / package.json / Cargo.toml）を検
     const r = runCliJson("inspect-repo.mjs", ["--root", dir]);
     assert.equal(r.status, 0);
     assert.ok(r.json.findings.some((f) => f.id === "entry:Cargo.toml"));
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+test("inspect-repo: 読み取れないディレクトリがあれば PASS にせず BLOCKED（exit 3）", { skip: process.getuid?.() === 0 ? "root では権限エラーを再現できない" : false }, () => {
+  const dir = makeTmpDir();
+  const locked = join(dir, "locked");
+  try {
+    mkdirSync(locked);
+    chmodSync(locked, 0o000);
+    const r = runCliJson("inspect-repo.mjs", ["--root", dir]);
+    assert.equal(r.status, 3);
+    assert.equal(r.json.status, "BLOCKED");
+    assert.ok(r.json.findings.some((f) => f.id === "scan-error" && f.evidence === "locked"));
+  } finally {
+    chmodSync(locked, 0o755);
+    cleanupTmpDir(dir);
+  }
+});
+
+test("inspect-repo: max-entries で打ち切られた走査は PASS に丸めず SKIPPED", () => {
+  const dir = makeTmpDir();
+  try {
+    for (let i = 0; i < 5; i += 1) writeFileSync(join(dir, `f${i}.txt`), "x");
+    const r = runCliJson("inspect-repo.mjs", ["--root", dir, "--max-entries", "2"]);
+    assert.equal(r.status, 0);
+    assert.equal(r.json.status, "SKIPPED");
+    assert.equal(r.json.truncated, true);
   } finally {
     cleanupTmpDir(dir);
   }

@@ -101,7 +101,9 @@ export function resolvePlanPath(root, relativeOrAbsPath) {
   }
   const resolved = resolve(root, relativeOrAbsPath);
   const rel = relative(root, resolved);
-  if (rel.startsWith("..") || isAbsolute(rel)) {
+  // `..config` のような root 配下の正当な名前を逸脱と誤判定しないよう、親ディレクトリへの
+  // 移動（`..` そのもの、または `..` + 区切り文字で始まる）だけを逸脱とみなす
+  if (rel === ".." || rel.startsWith(`..${sep}`) || isAbsolute(rel)) {
     return { resolved, escaped: true, reason: "dot-dot-escape" };
   }
   if (!isWithinRoot(root, resolved)) {

@@ -259,7 +259,7 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
 | Code | Meaning |
 | --- | --- |
 | 0 | `PASS` (no conflicts; all conflicting files are byte-identical to the sample; or, with `--apply --force`, every conflicting file was overwritten successfully) |
-| 1 | `FAIL` (a destination file exists with different content and was not overwritten; a destination resolves outside `--root` through `..` or a symlink; or a write failed). `--apply` without `--force` still exits 1 when conflicts were skipped, even though the non-conflicting files were written: the target is only partially applied, and `applied` / `skippedConflicts` in the result say which files are which |
+| 1 | `FAIL` (the sample directory could not be fully read — nothing is previewed or written in that case; a destination file exists with different content and was not overwritten; a destination resolves outside `--root` through `..` or a symlink; or a write failed). `--apply` without `--force` still exits 1 when conflicts were skipped, even though the non-conflicting files were written: the target is only partially applied, and `applied` / `skippedConflicts` in the result say which files are which |
 | 2 | Argument error (missing `--sample`/`--root`, a `--sample` value that is not a single directory name such as `../plans`, unknown flag) |
 | 3 | not used by this script |
 

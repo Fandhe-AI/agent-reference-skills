@@ -143,7 +143,18 @@ function main() {
     }
   }
 
-  const { entries, truncated, skippedDirs } = scanTree(root, { maxDepth, maxEntries });
+  const { entries, truncated, skippedDirs, errors: scanErrors } = scanTree(root, { maxDepth, maxEntries });
+
+  // 読み取れなかった領域は「調査済み・問題なし」にしない（権限等の前提不足として BLOCKED）
+  for (const e of scanErrors) {
+    findings.push({
+      id: "scan-error",
+      status: STATUS.BLOCKED,
+      detail: `読み取れないため走査できませんでした（${e.code}）`,
+      evidence: relative(root, e.path) || ".",
+      confidence: "observed",
+    });
+  }
 
   const secretLike = entries.filter((e) => e.type === "file" && isSecretLikeName(basename(e.path)));
   for (const s of secretLike) {
@@ -184,11 +195,15 @@ function main() {
     "設定ファイルの中身は読んでいません（存在確認のみ）。capability の実際の有効性は audit/plan で個別確認してください。",
   );
 
-  const status = findings.some((f) => f.status === STATUS.FAIL)
-    ? STATUS.FAIL
-    : findings.length > 0
-      ? STATUS.PASS
-      : STATUS.PASS; // 何も見つからなくても静的調査自体は完了しているので PASS
+  // 走査が完了した場合のみ PASS。読み取り失敗は BLOCKED、件数上限での打ち切りは SKIPPED
+  // （未確認の領域が残るため PASS に丸めない）。何も見つからなくても走査が完了していれば PASS。
+  const status = findings.some((f) => f.status === STATUS.BLOCKED)
+    ? STATUS.BLOCKED
+    : findings.some((f) => f.status === STATUS.FAIL)
+      ? STATUS.FAIL
+      : truncated
+        ? STATUS.SKIPPED
+        : STATUS.PASS;
 
   const result = buildResult({
     mode: "audit",
