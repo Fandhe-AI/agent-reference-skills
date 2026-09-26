@@ -1,0 +1,12 @@
+[package]
+name = "xtask"
+version = "0.1.0"
+edition.workspace = true
+publish.workspace = true
+
+# No external dependencies: this xtask is intentionally std-only. It shells
+# out to `cargo` via `std::process::Command` rather than linking against a
+# task-runner crate. See src/main.rs for the design rationale (kept
+# minimal on purpose — a real project may add `clap` or similar once the
+# argument surface grows beyond a handful of fixed subcommands).
+[dependencies]

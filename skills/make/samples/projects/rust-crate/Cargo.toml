@@ -1,0 +1,10 @@
+[package]
+name = "make-skill-sample-crate"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Minimal library crate for the skills/make rust-crate sample."
+
+[lib]
+name = "make_skill_sample"
+path = "src/lib.rs"

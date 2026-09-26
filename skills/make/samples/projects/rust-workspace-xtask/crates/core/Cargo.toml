@@ -1,0 +1,10 @@
+[package]
+# Named "wsx-core" rather than bare "core" to avoid any confusion with the
+# Rust standard library's implicit `core` crate (a distinct package name is
+# legal, but avoiding it keeps error messages and `cargo tree` output clear).
+name = "wsx-core"
+version = "0.1.0"
+edition.workspace = true
+publish.workspace = true
+
+[dependencies]

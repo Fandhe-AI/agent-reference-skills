@@ -38,7 +38,7 @@ npx skills add Fandhe-AI/agent-reference-skills --skill react-router -g
 
 詳細なディレクトリ構成（`.claude/` の Agent・Rule・ワークフロースキル、`skills/` のスキル構造）は [CLAUDE.md](CLAUDE.md) の「Repository Structure」を参照。
 
-## スキル一覧（全 120 スキル）
+## スキル一覧（全 121 スキル）
 
 ### Apple プラットフォーム
 
@@ -171,6 +171,7 @@ openai-agents は MCP を消費する側、openai-apps-sdk は MCP サーバー�
 | [lefthook](skills/lefthook/) | Lefthook — Git hooks マネージャー, pre-commit, pre-push |
 | [editorconfig](skills/editorconfig/) | EditorConfig — .editorconfig ファイルフォーマット |
 | [syncpack](skills/syncpack/) | Syncpack — モノレポ依存関係管理, versionGroups, semverGroups |
+| [make](skills/make/) | GNU Make / Makefile — ルール・変数・.PHONY・並列/再帰, Rust / Node / CI 連携設計, 補助 CLI |
 
 ### コード生成 / ドキュメント
 

@@ -1,0 +1,11 @@
+{
+  "name": "@make-sample/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.mjs",
+  "scripts": {
+    "test": "node --test",
+    "build": "node ../../scripts/build.mjs ."
+  }
+}

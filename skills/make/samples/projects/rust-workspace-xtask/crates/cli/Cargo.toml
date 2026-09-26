@@ -1,0 +1,12 @@
+[package]
+name = "wsx-cli"
+version = "0.1.0"
+edition.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "wsx"
+path = "src/main.rs"
+
+[dependencies]
+wsx-core = { path = "../core" }

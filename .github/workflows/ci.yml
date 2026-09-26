@@ -39,7 +39,9 @@ jobs:
   # skill-tests（vendored スキルの node:test 回帰テスト）
   # --------------------------------------------------
   # .agents/skills/*/tests/*.test.mjs（vendored スキルの回帰テスト）を実行する。
-  # skills/（リファレンススキル）はドキュメントのみでテスト対象外。
+  # skills/（リファレンススキル）は原則ドキュメントのみでテスト対象外。例外として
+  # skills/make/ は補助 CLI（scripts/bin/*.mjs）と回帰テスト（tests/）を同梱するため、
+  # 別ステップで対象を skills/make/tests/ に限定して実行する。
   # ubuntu-latest には Node.js が同梱されるため setup-node の追加
   # （新規 action の SHA 固定管理）は不要。
   skill-tests:
@@ -67,6 +69,14 @@ jobs:
         run: |
           shopt -s globstar failglob
           node --test .agents/skills/*/tests/**/*.test.mjs
+
+      - name: Run node:test (skills/make helper scripts)
+        # 補助 CLI の回帰テストのみ。Node 標準ライブラリだけで動き、Rust / pnpm や
+        # ネットワークを要求しない（samples/projects の実ビルド検証は含まない）。
+        # failglob により 0 件マッチはエラー終了する（上のステップと同じ fail-closed）。
+        run: |
+          shopt -s globstar failglob
+          node --test skills/make/tests/**/*.test.mjs
 
   # --------------------------------------------------
   # lint-docs（ドキュメント／設定ファイル系 lint）

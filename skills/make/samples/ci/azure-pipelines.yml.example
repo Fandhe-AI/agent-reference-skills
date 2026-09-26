@@ -1,0 +1,62 @@
+# SAMPLE FOR A TARGET PROJECT — NOT ACTIVE, NOT THIS REPOSITORY'S CI.
+#
+# This file is part of the `make` reference Skill's samples (skills/make/samples/ci/).
+# It is a template for a project that ADOPTS this Skill's `make verify` (or `make check`)
+# command contract — it has nothing to do with, and is never read by, this repository's
+# own CI (this repository does not use Azure Pipelines at all).
+#
+# It is inert by construction: the `.yml.example` extension is not a filename Azure
+# Pipelines looks for, and this path (`skills/make/samples/ci/azure-pipelines.yml.example`)
+# is not registered as any pipeline's YAML file in any Azure DevOps project, so nothing
+# will ever execute it as-is.
+#
+# To use it in a target project:
+#   1. Copy it to that project's chosen pipeline path (commonly `azure-pipelines.yml` at
+#      the repository root), drop `.example`, and register it as a pipeline in Azure
+#      DevOps (Pipelines > New pipeline > Existing Azure Pipelines YAML file).
+#   2. Make sure that project's Makefile actually defines a `verify` target (see this
+#      Skill's `references/architecture/command-contracts.md` for the contract shape).
+#      If it only defines `check`, change the `script:` line below to `make check`.
+#   3. Adjust `trigger` / `pr` branches and `pool.vmImage` to that project's conventions.
+#
+# What this file is and is not:
+#   - It is a pipeline DEFINITION only (what runs). It does NOT configure Azure DevOps
+#     branch policies (whether a run is REQUIRED to complete before merge) — that is a
+#     separate, host-side setting configured under Repos > Branches > Branch policies,
+#     analogous to the GitHub rulesets vs. workflow-file split described in
+#     `references/quality/ci-hooks-and-cache.md`. Registering this pipeline does not, by
+#     itself, make it a required check.
+#   - It assumes GNU Make is already present on the agent image (true for Microsoft-hosted
+#     `ubuntu-latest` agents at the time of writing). If a different agent image or a
+#     self-hosted agent lacks `make`, add an explicit install step before the `make
+#     verify` step and record the required version, per
+#     `references/maintenance/troubleshooting.md`.
+#   - It intentionally calls one existing entry point (`make verify`) rather than
+#     inlining fmt/lint/test/build steps here, so a Git hook, this pipeline, and a
+#     developer's local invocation all resolve to the same definition (see
+#     `references/quality/ci-hooks-and-cache.md`, "One command contract, two callers").
+#
+# This is a sample, not an endorsement to add CI to any specific project. Adding or
+# changing a project's real CI is an `apply`-phase action requiring the project owner's
+# explicit approval — see this Skill's SKILL.md and `references/architecture/command-contracts.md`.
+
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - checkout: self
+    # Do not leave the job access token in the local git config for later steps.
+    persistCredentials: false
+
+  - script: make verify
+    displayName: 'Run verify'

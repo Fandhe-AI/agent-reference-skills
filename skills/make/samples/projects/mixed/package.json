@@ -1,0 +1,15 @@
+{
+  "name": "make-sample-mixed",
+  "version": "0.0.0",
+  "private": true,
+  "description": "make skill sample: Rust (cargo) and Node (pnpm) side by side. Each ecosystem's own tooling stays the ecosystem's source of truth; the root Makefile is only an integration entry point that calls into both and expresses the one real cross-ecosystem hand-off (codegen -> packages/web/generated).",
+  "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "lint": "node scripts/lint.mjs packages/web",
+    "test": "pnpm -r run test",
+    "build": "pnpm -r run build"
+  }
+}

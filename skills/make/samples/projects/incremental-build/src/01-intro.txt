@@ -1,0 +1,5 @@
+Introduction
+============
+
+This fragment introduces the sample document. It is combined with the
+other fragments in src/ to produce build/manual.md.

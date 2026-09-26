@@ -1,0 +1,21 @@
+{
+  "name": "make-sample-node-pnpm",
+  "version": "0.0.0",
+  "private": true,
+  "description": "make skill sample: package.json/pnpm scripts as the source of truth, Makefile as a thin entry point, plus an optional Turborepo delegation example.",
+  "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "lint": "node scripts/lint.mjs packages/core packages/cli",
+    "test": "pnpm -r run test",
+    "build": "pnpm -r run build",
+    "check": "pnpm run lint && pnpm -r run test",
+    "turbo:build": "turbo run build",
+    "turbo:check": "turbo run lint test"
+  },
+  "devDependencies": {
+    "turbo": "2.11.4"
+  }
+}
