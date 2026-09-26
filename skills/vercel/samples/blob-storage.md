@@ -15,10 +15,26 @@ Upload a file (server-side, e.g. Next.js App Router route):
 ```ts
 // app/upload/route.ts
 import { put } from '@vercel/blob';
+// App-specific auth helper (e.g. Auth.js `auth()`); not part of @vercel/blob
+import { getSession } from '@/lib/auth';
+
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_SIZE_BYTES = 4 * 1024 * 1024; // stay under the 4.5 MB body limit
 
 export async function POST(request: Request) {
+  const session = await getSession();
+  if (!session) {
+    return Response.json({ error: 'Not authenticated' }, { status: 401 });
+  }
+
   const form = await request.formData();
-  const file = form.get('file') as File;
+  const file = form.get('file');
+  if (!(file instanceof File)) {
+    return Response.json({ error: 'file is required' }, { status: 400 });
+  }
+  if (!ALLOWED_TYPES.includes(file.type) || file.size > MAX_SIZE_BYTES) {
+    return Response.json({ error: 'Unsupported file type or size' }, { status: 400 });
+  }
 
   const blob = await put(`uploads/${file.name}`, file, {
     access: 'public',          // 'public' or 'private'
