@@ -105,7 +105,7 @@ verify-layout — 適用後構成の help/公開コマンド整合性・Skill �
 | --- | --- |
 | 0 | `PASS`, or `NOT_APPLICABLE` (no Makefile found at `--root`/`--makefile`) |
 | 1 | `FAIL` (a help entry points at a nonexistent target, or a skill-install-path dependency was found) |
-| 2 | Argument error (missing `--root`, unknown flag, or a `--makefile` value that resolves outside `--root` via `..`, an absolute path, or a symlink) |
+| 2 | Argument error (missing `--root`, unknown flag, or a `--makefile` value that is empty, is not a regular file, or resolves outside `--root` via `..`, an absolute path, or a symlink) |
 | 3 | not used by this script |
 
 ### What to do next on failure
@@ -311,16 +311,16 @@ non-leakage, dry-run-by-default, Windows `.cmd`/`.bat` handling logic, etc.).
 Actual run (2026-09-26, repository root, Node v24.13.0):
 
 ```
-ℹ tests 68
+ℹ tests 78
 ℹ suites 0
-ℹ pass 68
+ℹ pass 78
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
 ```
 
-Exit code: `0`. All 68 tests passed, 0 failed, on this run. The exact test count grows as tests
+Exit code: `0`. All 78 tests passed, 0 failed, on this run. The exact test count grows as tests
 are added — re-run this command rather than relying on the count above if it matters to the task
 at hand.
 

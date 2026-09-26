@@ -135,3 +135,17 @@ test("verify-layout: --makefile で root 外（`..`・絶対パス・symlink）�
     cleanupTmpDir(parent);
   }
 });
+
+test("verify-layout: --makefile がディレクトリを指す場合は例外終了せず引数エラー（exit 2）", () => {
+  const root = makeTmpDir();
+  try {
+    mkdirSync(join(root, "sub"));
+    for (const bad of ["sub", "."]) {
+      const r = runCli("verify-layout.mjs", ["--root", root, "--makefile", bad, "--json"]);
+      assert.equal(r.status, 2, `--makefile ${bad} は拒否される`);
+      assert.equal(r.stdout, "");
+    }
+  } finally {
+    cleanupTmpDir(root);
+  }
+});

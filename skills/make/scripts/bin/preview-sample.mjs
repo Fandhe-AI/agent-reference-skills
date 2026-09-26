@@ -154,8 +154,12 @@ function main() {
     }
     for (const w of toWrite) {
       try {
+        // プレビュー時点から親ディレクトリが差し替えられた場合に備え、mkdir の前後で実体を確認する
+        // （mkdir 前の確認がないと、root 外への symlink 越しにディレクトリを作成してしまう）
+        if (!isWithinRoot(root, w.dest) || isSymlink(w.dest)) {
+          throw new Error("書き込み直前の確認で root 外への逸脱を検出しました");
+        }
         mkdirSync(dirname(w.dest), { recursive: true });
-        // mkdir 後に改めて実体を確認する（プレビュー時点から親ディレクトリが差し替えられた場合に備える）
         if (!isWithinRoot(root, w.dest) || isSymlink(w.dest)) {
           throw new Error("書き込み直前の確認で root 外への逸脱を検出しました");
         }
