@@ -20,18 +20,20 @@ function writeApplyPlan(planDir, root, sample, { skip = [], modify = [] } = {}) 
   const changes = listFiles(sampleDir)
     .map((f) => relative(sampleDir, f))
     .filter((rel) => !skip.includes(rel))
-    .map((rel) =>
-      modify.includes(rel)
+    .map((rel) => {
+      const newContentHash = `sha256:${createHash("sha256").update(readFileSync(join(sampleDir, rel))).digest("hex")}`;
+      return modify.includes(rel)
         ? {
             path: rel,
             action: "modify",
             expectedState: "matches-hash",
             contentHash: `sha256:${createHash("sha256").update(readFileSync(join(root, rel))).digest("hex")}`,
+            newContentHash,
           }
-        : { path: rel, action: "create", expectedState: "absent" },
-    );
+        : { path: rel, action: "create", expectedState: "absent", newContentHash };
+    });
   const planPath = join(planDir, "apply-plan.json");
-  writeFileSync(planPath, JSON.stringify({ schemaVersion: "1.0.0", root, changes, checks: [] }, null, 2));
+  writeFileSync(planPath, JSON.stringify({ schemaVersion: "1.0.0", root, sample, changes, checks: [] }, null, 2));
   return planPath;
 }
 
@@ -385,6 +387,61 @@ test("preview-sample: 親パスが壊れた symlink の書き込み先があれ�
     assert.equal(r.status, 1);
     assert.deepEqual(r.json.applied, []);
     assert.deepEqual(readdirSync(dir), ["src"], "Makefile 等も書き込まない");
+  } finally {
+    cleanupTmpDir(dir);
+    cleanupTmpDir(planDir);
+  }
+});
+
+test("preview-sample: 別サンプル用に承認した計画では --apply しない（sample 不一致）", () => {
+  const dir = makeTmpDir();
+  const planDir = makeTmpDir();
+  try {
+    const planPath = writeApplyPlan(planDir, dir, "incremental-build");
+    const plan = JSON.parse(readFileSync(planPath, "utf8"));
+    plan.sample = "rust-crate";
+    writeFileSync(planPath, JSON.stringify(plan));
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath]);
+    assert.equal(r.status, 1);
+    assert.deepEqual(readdirSync(dir), []);
+    assert.ok(r.json.findings.some((f) => f.id === "plan" && f.detail.includes("sample")));
+  } finally {
+    cleanupTmpDir(dir);
+    cleanupTmpDir(planDir);
+  }
+});
+
+test("preview-sample: 書き込む内容が計画の newContentHash と異なれば --apply しない", () => {
+  const dir = makeTmpDir();
+  const planDir = makeTmpDir();
+  try {
+    const planPath = writeApplyPlan(planDir, dir, "incremental-build");
+    const plan = JSON.parse(readFileSync(planPath, "utf8"));
+    const target = plan.changes.find((c) => c.path === "Makefile");
+    target.newContentHash = `sha256:${"0".repeat(64)}`;
+    writeFileSync(planPath, JSON.stringify(plan));
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath]);
+    assert.equal(r.status, 1);
+    assert.deepEqual(readdirSync(dir), []);
+    assert.ok(r.json.findings.some((f) => f.id === "plan" && f.detail.includes("newContentHash")));
+  } finally {
+    cleanupTmpDir(dir);
+    cleanupTmpDir(planDir);
+  }
+});
+
+test("preview-sample: プレビュー結果の proposedPlan から作った計画でそのまま --apply できる", () => {
+  const dir = makeTmpDir();
+  const planDir = makeTmpDir();
+  try {
+    const preview = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir]);
+    assert.equal(preview.json.proposedPlan.sample, "incremental-build");
+    assert.ok(preview.json.proposedPlan.changes.every((c) => /^sha256:[0-9a-f]{64}$/.test(c.newContentHash)));
+    const planPath = join(planDir, "plan.json");
+    writeFileSync(planPath, JSON.stringify({ schemaVersion: "1.0.0", root: dir, ...preview.json.proposedPlan, checks: [] }));
+    const r = runCliJson("preview-sample.mjs", ["--sample", "incremental-build", "--root", dir, "--apply", "--plan", planPath]);
+    assert.equal(r.status, 0);
+    assert.ok(existsSync(join(dir, "Makefile")));
   } finally {
     cleanupTmpDir(dir);
     cleanupTmpDir(planDir);

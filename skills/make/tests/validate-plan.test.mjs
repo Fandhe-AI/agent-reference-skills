@@ -428,3 +428,24 @@ test("validate-plan: changes の対象重複と checks の name 重複は FAIL �
     cleanupTmpDir(dir);
   }
 });
+
+test("validate-plan: sample と newContentHash の形式が不正なら FAIL にする", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    const planPath = writePlan(dir, {
+      schemaVersion: "1.0.0",
+      root,
+      sample: "",
+      changes: [{ path: "a.txt", action: "create", expectedState: "absent", newContentHash: "md5:abc" }],
+      checks: [],
+    });
+    const r = runCliJson("validate-plan.mjs", ["--plan", planPath]);
+    assert.equal(r.status, 1);
+    assert.ok(r.json.findings.some((f) => f.id === "sample" && f.status === "FAIL"));
+    assert.ok(r.json.findings.some((f) => f.id === "changes[0]" && f.status === "FAIL" && f.detail.includes("newContentHash")));
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});

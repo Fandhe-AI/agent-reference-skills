@@ -16,8 +16,8 @@ node --test skills/make/tests/**/*.test.mjs
 | `helpers.mjs` | 各 CLI を子プロセスとして起動する共通ヘルパー（`runCli` / `runCliJson`）、一時ディレクトリ生成・後始末 |
 | `fixtures/dummy-secrets/` | ダミーの `.env`（実際の秘密情報は含まない）。秘密情報非混入テストの固定フィクスチャ |
 | `inspect-repo.test.mjs` | 引数検証、root 不在、秘密情報非混入、node_modules 等の走査除外、symlink 非追跡、入口候補検出 |
-| `validate-plan.test.mjs` | 引数検証、壊れた JSON、`..`・絶対パス・**symlink 経由**の root 外逸脱検出、衝突検出、checks の shell メタ文字拒否、changes の対象重複・checks の name 重複の FAIL、副作用なし（実行しない）の確認 |
-| `preview-sample.test.mjs` | 引数検証、サンプル不在、既定で書き込まない、競合検出、`--apply` の全件か無しか（`--force` なしの競合・書き込めない対象が 1 件でもあれば何も書き込まない、親パスがファイル・壊れた symlink の対象も事前に検出、サンプルの実行権限の引き継ぎと実行ビット欠落の競合検出、書き込み途中の失敗は作成したファイル・入れ子ディレクトリまで巻き戻す）、`--apply` の承認済み計画（`--plan`）への照合（計画外ファイル・root 不一致・matches-hash 不一致で全件中止）、symlink 経由の root 外書き込み拒否、走査除外ディレクトリ・symlink を含むサンプルの不適用 |
+| `validate-plan.test.mjs` | 引数検証、壊れた JSON、`..`・絶対パス・**symlink 経由**の root 外逸脱検出、衝突検出、checks の shell メタ文字拒否、changes の対象重複・checks の name 重複・sample と newContentHash の形式不正の FAIL、副作用なし（実行しない）の確認 |
+| `preview-sample.test.mjs` | 引数検証、サンプル不在、既定で書き込まない、競合検出、`--apply` の全件か無しか（`--force` なしの競合・書き込めない対象が 1 件でもあれば何も書き込まない、親パスがファイル・壊れた symlink の対象も事前に検出、サンプルの実行権限の引き継ぎと実行ビット欠落の競合検出、書き込み途中の失敗は作成したファイル・入れ子ディレクトリまで巻き戻す）、`--apply` の承認済み計画（`--plan`）への照合（計画外ファイル・root 不一致・sample 不一致・newContentHash 不一致・matches-hash 不一致で全件中止、プレビューの `proposedPlan` から作った計画で適用できること）、symlink 経由の root 外書き込み拒否、走査除外ディレクトリ・symlink を含むサンプルの不適用 |
 | `verify-layout.test.mjs` | 引数検証、Makefile 不在時の NOT_APPLICABLE、help/target 整合性、Skill 固有パス依存検出（行の中身を転記せず行番号のみ）、未確認事項の明示 |
 | `run-checks.test.mjs` | 引数検証、**既定 dry-run（--execute なしでは実行しない）**、approved:true が無い check の BLOCKED、実行成功/失敗/timeout の区別、不正な計画（root 不在）で全 checks を BLOCKED にし実行しない、checks 空の NOT_APPLICABLE、未対応 schemaVersion の不実行、コマンドの stdout / stderr と計画の command / args / cwd を結果に含めない（全経路）、壊れた JSON の断片を診断に出さない |
 | `sample-plans.test.mjs` | `samples/plans/` 配下の各サンプル計画が `validate-plan.mjs` のスキーマに適合すること。root プレースホルダのままでは FAIL、root を一時ディレクトリに差し替える（modify 対象のダミーファイルも用意する）と PASS になることを確認する |

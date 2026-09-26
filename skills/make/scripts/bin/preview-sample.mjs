@@ -30,7 +30,8 @@ const HELP = `preview-sample — samples/projects/<name>/ と対象 root の差�
   --sample <name>   skills/make/samples/projects/<name> のサンプル名（必須）
   --root <path>     導入予定の対象ディレクトリ（必須）
   --apply           プレビューではなく実際に書き込む（既定はプレビューのみ・書き込まない）
-  --plan <path>     --apply 時に必須。書き込む全ファイルを changes に明記した承認済み計画 JSON
+  --plan <path>     --apply 時に必須。sample と書き込む全ファイル（newContentHash 付き）を明記した
+                    承認済み計画 JSON。プレビュー結果の proposedPlan を元に作る
   --force           --apply 時、競合（内容・実行権限の差）のある既存ファイルも上書きする（既定は競合があれば適用を中止）
   --json            結果を JSON で stdout に出力（診断は stderr）
   --help            このヘルプを表示
@@ -38,18 +39,20 @@ const HELP = `preview-sample — samples/projects/<name>/ と対象 root の差�
 終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL(競合あり), 2=引数エラー, 3=BLOCKED
 
 実行しない条件: --apply を指定しない限り、対象 root への書き込みは一切行わない。
---apply は全件か無しか。計画の再検証が失敗した・root が一致しない・書き込むファイルが計画に
-明記されていない・書き込めない対象（root 外・symlink・同名ディレクトリ・親パスがファイル）がある・--force なしで
-競合がある場合は 1 件も書き込まない。書き込み途中で失敗した場合は、この実行で書いたファイルを元に戻す。
+--apply は全件か無しか。計画の再検証が失敗した・root や sample が一致しない・書き込む
+ファイルが計画に明記されていないか内容が newContentHash と異なる・書き込めない対象
+（root 外・symlink・同名ディレクトリ・親パスがファイル）がある・--force なしで競合がある
+場合は 1 件も書き込まない。書き込み途中で失敗した場合は、この実行で書いたファイルを元に戻す。
 `;
 
 /**
  * --apply の書き込み予定を承認済み計画に照合する。計画は validatePlanShape で再検証する
  * （create は対象が存在しないこと、modify + matches-hash は元ファイルの内容が承認時と
- * 同じことを、この時点のファイル状態で確認する）。
+ * 同じことを、この時点のファイル状態で確認する）。加えて計画の sample が --sample と一致し、
+ * 各 change の newContentHash が実際に書き込むバイト列の sha256 と一致することを確認する。
  * @returns {string[]} 問題の一覧（空なら書き込んでよい）
  */
-function checkApplyPlan(planPath, root, toWrite) {
+function checkApplyPlan(planPath, root, toWrite, sampleName) {
   let plan;
   try {
     plan = loadPlanFile(planPath);
@@ -66,6 +69,14 @@ function checkApplyPlan(planPath, root, toWrite) {
   if (realpathSync(planRoot) !== realpathSync(root)) {
     problems.push(`計画の root（${planRoot}）と --root（${root}）が一致しません`);
   }
+  // 承認した計画を別サンプルの適用に流用させない（同じ相対パスを持つサンプルは複数ある）
+  if (plan.sample !== sampleName) {
+    problems.push(
+      typeof plan.sample === "string"
+        ? `計画の sample（${plan.sample}）と --sample（${sampleName}）が一致しません`
+        : "計画に sample（適用するサンプル名）がありません",
+    );
+  }
   const changes = new Map(
     (Array.isArray(plan.changes) ? plan.changes : [])
       .filter((c) => c && typeof c.path === "string")
@@ -80,6 +91,13 @@ function checkApplyPlan(planPath, root, toWrite) {
       problems.push(`計画の action が ${c.action} だが実際は ${expected} が必要: ${w.rel}`);
     } else if (expected === "modify" && c.expectedState !== "matches-hash") {
       problems.push(`既存ファイルの上書きには expectedState: matches-hash が必要: ${w.rel}`);
+    } else if (c.newContentHash !== w.newContentHash) {
+      // 書き込む内容そのものを承認済みの内容に結び付ける（パス・action だけの一致では通さない）
+      problems.push(
+        typeof c.newContentHash === "string"
+          ? `書き込む内容が計画の newContentHash と一致しません（承認後にサンプルが変わっています）: ${w.rel}`
+          : `計画に newContentHash（書き込む内容の sha256）がありません: ${w.rel}`,
+      );
     }
   }
   return problems;
@@ -119,11 +137,11 @@ function writeAll(root, toWrite, applied) {
       if (existsSync(w.dest)) {
         const originalMode = statSync(w.dest).mode & 0o7777;
         overwritten.push({ dest: w.dest, original: readFileSync(w.dest), mode: originalMode });
-        writeFileSync(w.dest, readFileSync(w.src));
+        writeFileSync(w.dest, w.data);
         chmodSync(w.dest, originalMode | (srcMode & 0o111));
       } else {
         created.push(w.dest);
-        writeFileSync(w.dest, readFileSync(w.src), { mode: srcMode });
+        writeFileSync(w.dest, w.data, { mode: srcMode });
       }
       applied.push(w.rel);
     } catch (err) {
@@ -312,6 +330,8 @@ function main() {
   const conflicts = [];
   // 書き込めない対象（root 外・symlink・同名ディレクトリ）。1 件でもあれば --apply 全体を中止する
   const unwritable = [];
+  // --apply 用の計画を作るための提案（sample と、各書き込み対象の action・前提・書き込む内容のハッシュ）
+  const proposedChanges = [];
 
   for (const sf of sampleFiles) {
     const rel = relative(sampleRoot, sf);
@@ -334,27 +354,36 @@ function main() {
       unwritable.push(rel);
       continue;
     }
+    // 書き込む内容はここで 1 回だけ読み、ハッシュ照合と書き込みの両方に同じバイト列を使う
+    // （照合後にサンプル側が差し替えられても、承認と異なる内容を書き込まない）
+    const data = readFileSync(sf);
+    const newContentHash = `sha256:${createHash("sha256").update(data).digest("hex")}`;
     if (existsSync(dest)) {
       if (!statSync(dest).isFile()) {
         findings.push({ id: `file:${rel}`, status: STATUS.FAIL, detail: "競合: 同名のディレクトリ等が存在します（上書き不可）", evidence: rel });
         unwritable.push(rel);
         continue;
       }
-      if (sha256(sf) === sha256(dest) && lacksExecBits(sf, dest)) {
+      const destHash = sha256(dest);
+      const sameContent = `sha256:${destHash}` === newContentHash;
+      if (sameContent && lacksExecBits(sf, dest)) {
         // 内容が同じでも実行権限がなければ、導入後の Makefile から直接呼べないため差分として扱う
         const finding = { id: `file:${rel}`, status: STATUS.FAIL, detail: "競合: 内容は一致するが実行権限がありません（--force で実行ビットを付与）", evidence: rel };
         findings.push(finding);
-        conflicts.push({ src: sf, dest, rel, finding });
-      } else if (sha256(sf) === sha256(dest)) {
+        conflicts.push({ src: sf, dest, rel, finding, data, newContentHash });
+        proposedChanges.push({ path: rel, action: "modify", expectedState: "matches-hash", contentHash: `sha256:${destHash}`, newContentHash });
+      } else if (sameContent) {
         findings.push({ id: `file:${rel}`, status: STATUS.PASS, detail: "既存ファイルと内容が一致（差分なし）", evidence: rel });
       } else {
         const finding = { id: `file:${rel}`, status: STATUS.FAIL, detail: "競合: 既存ファイルが存在し内容が異なります", evidence: rel };
         findings.push(finding);
-        conflicts.push({ src: sf, dest, rel, finding });
+        conflicts.push({ src: sf, dest, rel, finding, data, newContentHash });
+        proposedChanges.push({ path: rel, action: "modify", expectedState: "matches-hash", contentHash: `sha256:${destHash}`, newContentHash });
       }
     } else {
       findings.push({ id: `file:${rel}`, status: STATUS.PASS, detail: "新規導入予定（既存ファイルなし）", evidence: rel });
-      plannedWrites.push({ src: sf, dest, rel, finding: null });
+      plannedWrites.push({ src: sf, dest, rel, finding: null, data, newContentHash });
+      proposedChanges.push({ path: rel, action: "create", expectedState: "absent", newContentHash });
     }
   }
 
@@ -370,7 +399,7 @@ function main() {
     // 適用は全件か無しか。サンプルの一部だけを導入した状態を作らないため、書き込み前に
     // 計画との照合・書き込めない対象・--force なしの競合を確認し、1 件でもあれば何も書き込まない。
     // id は計画照合の問題を "plan"、書き込み対象側の問題を "apply" として区別する
-    const abortReasons = checkApplyPlan(values.plan, root, toWrite).map((reason) => ({ id: "plan", reason }));
+    const abortReasons = checkApplyPlan(values.plan, root, toWrite, values.sample).map((reason) => ({ id: "plan", reason }));
     if (unwritable.length > 0) {
       abortReasons.push({ id: "apply", reason: `書き込めない対象があります: ${unwritable.join(", ")}` });
     }
@@ -418,7 +447,7 @@ function main() {
     scope: { sample: values.sample, sampleRoot, root, ...(values.plan ? { plan: values.plan } : {}) },
     findings,
     unresolved,
-    extra: { applied, skippedConflicts },
+    extra: { applied, skippedConflicts, proposedPlan: { sample: values.sample, changes: proposedChanges } },
   });
 
   const code = emitResult(result, {

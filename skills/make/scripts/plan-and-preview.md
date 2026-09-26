@@ -175,9 +175,16 @@ conflict with files already present at `--root`, **before** writing anything.
 - With `--apply`/`--force` unless the user has explicitly approved writing to `--root` — the
   default (no `--apply`) never touches the target directory. `--apply` additionally requires
   `--plan <plan.json>`: an approved plan (checked with `validate-plan` first) whose `root` is the
-  same directory as `--root` and whose `changes[]` lists **every** file that will be written —
-  `action: "create"` for a new file, and `action: "modify"` with `expectedState: "matches-hash"`
-  plus the approved `contentHash` for an existing file overwritten with `--force`. The plan is
+  same directory as `--root`, whose top-level `sample` equals `--sample`, and whose `changes[]`
+  lists **every** file that will be written — `action: "create"` for a new file, and
+  `action: "modify"` with `expectedState: "matches-hash"` plus the approved `contentHash` for an
+  existing file overwritten with `--force` — each with `newContentHash`, the sha256 of the exact
+  content that will be written. This binds the approval to one sample's content: a plan approved
+  for one sample cannot be replayed with another sample that happens to share file paths, and a
+  sample file changed after approval is refused. The source bytes are read once and the same
+  buffer is both hashed and written. A preview run (no `--apply`) returns `proposedPlan`
+  (`sample` plus `changes[]` with `newContentHash`, and `contentHash` for conflicts) in its JSON
+  result as the starting point for that plan; it is a proposal to review, not an approval. The plan is
   re-validated at apply time (so a file that appeared, or changed, after approval fails its
   `create`/`matches-hash` check), and if any file is missing from the plan, has the wrong action,
   or the re-validation fails, **nothing is written** and each reason is reported as a `plan`
@@ -201,7 +208,7 @@ conflict with files already present at `--root`, **before** writing anything.
 --sample <name>   name of a directory directly under samples/projects/ (required)
 --root <path>     target directory to preview against (required)
 --apply           actually write (default: preview only, no writes); requires --plan
---plan <path>     approved plan JSON listing every file --apply will write (required with --apply)
+--plan <path>     approved plan JSON naming the sample and every file --apply will write, with newContentHash (required with --apply)
 --force           with --apply, overwrite conflicting files too (default: abort the whole apply on any conflict)
 --json            emit JSON to stdout (diagnostics go to stderr instead)
 --help            show usage
@@ -269,7 +276,8 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
   --sample <name>   skills/make/samples/projects/<name> のサンプル名（必須）
   --root <path>     導入予定の対象ディレクトリ（必須）
   --apply           プレビューではなく実際に書き込む（既定はプレビューのみ・書き込まない）
-  --plan <path>     --apply 時に必須。書き込む全ファイルを changes に明記した承認済み計画 JSON
+  --plan <path>     --apply 時に必須。sample と書き込む全ファイル（newContentHash 付き）を明記した
+                    承認済み計画 JSON。プレビュー結果の proposedPlan を元に作る
   --force           --apply 時、競合（内容・実行権限の差）のある既存ファイルも上書きする（既定は競合があれば適用を中止）
   --json            結果を JSON で stdout に出力（診断は stderr）
   --help            このヘルプを表示
@@ -277,9 +285,10 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
 終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL(競合あり), 2=引数エラー, 3=BLOCKED
 
 実行しない条件: --apply を指定しない限り、対象 root への書き込みは一切行わない。
---apply は全件か無しか。計画の再検証が失敗した・root が一致しない・書き込むファイルが計画に
-明記されていない・書き込めない対象（root 外・symlink・同名ディレクトリ・親パスがファイル）がある・--force なしで
-競合がある場合は 1 件も書き込まない。書き込み途中で失敗した場合は、この実行で書いたファイルを元に戻す。
+--apply は全件か無しか。計画の再検証が失敗した・root や sample が一致しない・書き込む
+ファイルが計画に明記されていないか内容が newContentHash と異なる・書き込めない対象
+（root 外・symlink・同名ディレクトリ・親パスがファイル）がある・--force なしで競合がある
+場合は 1 件も書き込まない。書き込み途中で失敗した場合は、この実行で書いたファイルを元に戻す。
 ```
 
 ### Exit codes

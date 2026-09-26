@@ -87,6 +87,9 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
       detail: `未対応の schemaVersion です: ${plan.schemaVersion}（対応: ${[...SUPPORTED_PLAN_SCHEMA_VERSIONS].join(", ")}）`,
     });
   }
+  if (plan.sample !== undefined && (typeof plan.sample !== "string" || plan.sample.length === 0)) {
+    findings.push({ id: "sample", status: "FAIL", detail: "sample は空でない文字列である必要があります" });
+  }
   if (typeof plan.root !== "string" || plan.root.length === 0) {
     findings.push({ id: "root", status: "FAIL", detail: "root（対象ディレクトリ）が必要です" });
     return { findings, root: null };
@@ -119,6 +122,9 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
     }
     if (!VALID_ACTIONS.has(change.action)) {
       findings.push({ id: label, status: "FAIL", detail: `action が不正です: ${change.action}` });
+    }
+    if (change.newContentHash !== undefined && (typeof change.newContentHash !== "string" || !/^sha256:[0-9a-f]{64}$/.test(change.newContentHash))) {
+      findings.push({ id: label, status: "FAIL", detail: `newContentHash は "sha256:<64桁16進数>" 形式である必要があります: ${change.path}` });
     }
     if (change.expectedState !== undefined && !VALID_EXPECTED_STATES.has(change.expectedState)) {
       findings.push({ id: label, status: "FAIL", detail: `expectedState が不正です: ${change.expectedState}` });
