@@ -2,17 +2,22 @@
 // preview-sample — skills/make/samples/projects/<name>/ から選択したサンプルの導入予定ファイルと、
 // 対象 root の既存ファイルとの差分を表示する。既定では対象を書き換えない。
 // 既存ファイルがある場合は競合として表示する。
+// 書き込み（--apply）は承認済み計画（--plan）に結び付ける。書き込む全ファイルが計画の changes に
+// 対応する action（新規 = create、上書き = modify + matches-hash）で明記され、かつ計画の再検証
+// （対象 root の一致・元ファイル状態の再確認を含む）が通った場合にだけ書き込む。1 件でも差異が
+// あれば何も書き込まない。
 //
 // 使い方:
 //   node preview-sample.mjs --sample <name> --root <path> [--json]
-//   node preview-sample.mjs --sample <name> --root <path> --apply [--force]   # 明示指定時のみ書き込む
+//   node preview-sample.mjs --sample <name> --root <path> --apply --plan <plan.json> [--force]
 //
 // 終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL, 2=引数エラー, 3=BLOCKED
 import { existsSync, readFileSync, mkdirSync, writeFileSync, statSync, realpathSync } from "node:fs";
-import { join, relative, dirname } from "node:path";
 import { createHash } from "node:crypto";
+import { join, relative, dirname, normalize } from "node:path";
 import { parseFlags } from "./lib/args.mjs";
 import { resolveRoot, getSkillRoot, resolvePlanPath, isWithinRoot, isSymlink, PathError } from "./lib/paths.mjs";
+import { loadPlanFile, validatePlanShape, planBaseDir, PlanError } from "./lib/plan.mjs";
 import { scanTree } from "./lib/scan.mjs";
 import { buildResult, emitResult, aggregateStatus, STATUS, diag } from "./lib/result.mjs";
 
@@ -25,6 +30,7 @@ const HELP = `preview-sample — samples/projects/<name>/ と対象 root の差�
   --sample <name>   skills/make/samples/projects/<name> のサンプル名（必須）
   --root <path>     導入予定の対象ディレクトリ（必須）
   --apply           プレビューではなく実際に書き込む（既定はプレビューのみ・書き込まない）
+  --plan <path>     --apply 時に必須。書き込む全ファイルを changes に明記した承認済み計画 JSON
   --force           --apply 時、競合しているファイルも上書きする（既定は競合をスキップ）
   --json            結果を JSON で stdout に出力（診断は stderr）
   --help            このヘルプを表示
@@ -32,7 +38,51 @@ const HELP = `preview-sample — samples/projects/<name>/ と対象 root の差�
 終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL(競合あり), 2=引数エラー, 3=BLOCKED
 
 実行しない条件: --apply を指定しない限り、対象 root への書き込みは一切行わない。
+--apply でも、計画の再検証が失敗した・root が一致しない・書き込むファイルが計画に明記されて
+いない場合は、1 件も書き込まない。
 `;
+
+/**
+ * --apply の書き込み予定を承認済み計画に照合する。計画は validatePlanShape で再検証する
+ * （create は対象が存在しないこと、modify + matches-hash は元ファイルの内容が承認時と
+ * 同じことを、この時点のファイル状態で確認する）。
+ * @returns {string[]} 問題の一覧（空なら書き込んでよい）
+ */
+function checkApplyPlan(planPath, root, toWrite) {
+  let plan;
+  try {
+    plan = loadPlanFile(planPath);
+  } catch (err) {
+    if (err instanceof PlanError) return [err.message];
+    throw err;
+  }
+  const problems = [];
+  const { findings, root: planRoot } = validatePlanShape(plan, { baseDir: planBaseDir(planPath) });
+  for (const f of findings.filter((x) => x.status === "FAIL")) {
+    problems.push(`計画の再検証に失敗: ${f.id}: ${f.detail}`);
+  }
+  if (planRoot === null) return problems;
+  if (realpathSync(planRoot) !== realpathSync(root)) {
+    problems.push(`計画の root（${planRoot}）と --root（${root}）が一致しません`);
+  }
+  const changes = new Map(
+    (Array.isArray(plan.changes) ? plan.changes : [])
+      .filter((c) => c && typeof c.path === "string")
+      .map((c) => [normalize(c.path), c]),
+  );
+  for (const w of toWrite) {
+    const c = changes.get(normalize(w.rel));
+    const expected = w.finding ? "modify" : "create";
+    if (!c) {
+      problems.push(`計画に含まれないファイル: ${w.rel}`);
+    } else if (c.action !== expected) {
+      problems.push(`計画の action が ${c.action} だが実際は ${expected} が必要: ${w.rel}`);
+    } else if (expected === "modify" && c.expectedState !== "matches-hash") {
+      problems.push(`既存ファイルの上書きには expectedState: matches-hash が必要: ${w.rel}`);
+    }
+  }
+  return problems;
+}
 
 function listSampleFiles(sampleRoot) {
   const { entries, truncated, errors, skippedDirs } = scanTree(sampleRoot, { maxDepth: 32, maxEntries: 20000 });
@@ -66,6 +116,7 @@ function main() {
       root: { type: "string" },
       apply: { type: "boolean", default: false },
       force: { type: "boolean", default: false },
+      plan: { type: "string" },
       json: { type: "boolean", default: false },
       help: { type: "boolean", default: false },
     }));
@@ -83,6 +134,12 @@ function main() {
   if (!values.sample || !values.root) {
     process.stderr.write(`${HELP}\n`);
     diag("引数エラー: --sample と --root は必須です");
+    process.exit(2);
+  }
+
+  if (values.apply && !values.plan) {
+    process.stderr.write(`${HELP}\n`);
+    diag("引数エラー: --apply には承認済み計画の --plan が必要です（validate-plan で確認した計画を渡してください）");
     process.exit(2);
   }
 
@@ -169,6 +226,11 @@ function main() {
     } else {
       skippedConflicts.push(...conflicts.map((c) => c.rel));
     }
+    const planProblems = checkApplyPlan(values.plan, root, toWrite);
+    for (const p of planProblems) {
+      findings.push({ id: "plan", status: STATUS.FAIL, detail: `適用を中止（何も書き込んでいません）: ${p}`, evidence: values.plan });
+    }
+    if (planProblems.length > 0) toWrite.length = 0;
     for (const w of toWrite) {
       try {
         // プレビュー時点から親ディレクトリが差し替えられた場合に備え、mkdir の前後で実体を確認する
@@ -212,7 +274,7 @@ function main() {
     command: "preview-sample",
     status,
     profile: values.apply ? "apply" : "preview",
-    scope: { sample: values.sample, sampleRoot, root },
+    scope: { sample: values.sample, sampleRoot, root, ...(values.plan ? { plan: values.plan } : {}) },
     findings,
     unresolved,
     extra: { applied, skippedConflicts },

@@ -227,15 +227,19 @@ With `--execute` (same plan, `unapproved-echo` still lacks `approved: true`) —
     { "name": "unapproved-echo", "status": "BLOCKED", "executed": false,
       "reason": "この check には approved:true がありません（承認不足のため実行しません）" },
     { "name": "approved-echo", "status": "PASS", "executed": true, "exitCode": 0,
-      "timedOut": false, "stdoutTail": "world\n", "stderrTail": "" }
+      "signal": null, "timedOut": false, "errorCode": null, "viaShellWrapper": false }
   ]
 }
 ```
 
 Exit code: `3`. This confirms: with `--execute` against a check lacking `approved: true`, that
 check is reported `status: "BLOCKED"`, `executed: false` instead of being force-run — while the
-approved check actually runs (`executed: true`, real `stdoutTail`) and the overall result
-`status` is `"BLOCKED"` because at least one check was blocked.
+approved check actually runs (`executed: true`, `exitCode: 0`) and the overall result
+`status` is `"BLOCKED"` because at least one check was blocked. The command's own stdout/stderr
+(`world` here) is neither captured nor printed: `run-checks.mjs` launches checks with
+`stdio: "ignore"` so that a verification command that prints a token or credential cannot leak
+it into the JSON result, CI logs, or a report. Only `exitCode`, `signal`, `timedOut`, and an OS
+`errorCode` (e.g. `ENOENT`) are recorded.
 
 ### `--help` output
 
@@ -284,13 +288,15 @@ run-checks — 承認済み計画の検証コマンドのみを実行する（�
   not approved in the plan JSON. Do not hand-edit the plan JSON to set `approved: true` without
   the repository owner's actual sign-off — that field exists to represent real approval, not to
   be flipped to unblock the script.
-- **Exit 1, a check `FAIL`**: read `stdoutTail`/`stderrTail`/`exitCode`/`timedOut` in the result
-  for that check. A `timedOut: true` result (default `timeoutMs`: 60000ms per check, configurable
+- **Exit 1, a check `FAIL`**: read `exitCode`/`signal`/`timedOut`/`errorCode` in the result for
+  that check. Command output is deliberately not recorded; to see why it failed, ask the user to
+  run that one command directly (or run it yourself once they approve), rather than adding
+  output capture back. A `timedOut: true` result (default `timeoutMs`: 60000ms per check, configurable
   per `checks[].timeoutMs` in the plan) is reported as `FAIL`, not silently retried with a longer
   timeout — raise the timeout in the plan (and re-approve) only if the user agrees the check
   legitimately needs longer.
 - **Missing tool** (e.g. `cargo`/`make`/`pnpm` not on `PATH`): reported as a `FAIL` with a
-  nonzero/`null` exit code and the OS error text in `stderrTail`, not silently converted to
+  `null` exit code and `errorCode: "ENOENT"`, not silently converted to
   `SKIPPED`/`PASS`. Report this to the user as an environment gap rather than installing the
   missing tool yourself.
 - A `BLOCKED`/`SKIPPED` status is never rounded up to `PASS` in the JSON `status` field, whether
@@ -315,16 +321,16 @@ non-leakage, dry-run-by-default, Windows `.cmd`/`.bat` handling logic, etc.).
 Actual run (2026-09-26, repository root, Node v24.13.0):
 
 ```
-ℹ tests 86
+ℹ tests 91
 ℹ suites 0
-ℹ pass 86
+ℹ pass 91
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
 ```
 
-Exit code: `0`. All 86 tests passed, 0 failed, on this run. The exact test count grows as tests
+Exit code: `0`. All 91 tests passed, 0 failed, on this run. The exact test count grows as tests
 are added — re-run this command rather than relying on the count above if it matters to the task
 at hand.
 

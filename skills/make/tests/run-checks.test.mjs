@@ -223,3 +223,28 @@ test("run-checks: 未対応の schemaVersion の計画は --execute + approved:t
     cleanupTmpDir(dir);
   }
 });
+
+test("run-checks: 実行したコマンドの stdout / stderr を結果 JSON に含めない（秘密情報の混入防止）", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    const marker = "PLACEHOLDER_OUTPUT_MARKER_not_a_secret";
+    const planPath = writePlan(dir, {
+      schemaVersion: "1.0.0",
+      root,
+      changes: [],
+      checks: [
+        // args は結果 JSON に含まれるため、marker は子プロセス内で連結して作る（args に完成形を置かない）
+        { name: "prints", command: process.execPath, args: ["-e", `const m = ${JSON.stringify(marker.slice(0, 11))} + ${JSON.stringify(marker.slice(11))}; console.log(m); console.error(m); process.exit(3)`], approved: true },
+      ],
+    });
+    const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute"]);
+    assert.equal(r.status, 1);
+    assert.equal(r.json.checks[0].exitCode, 3);
+    assert.equal(r.stdout.includes(marker), false, "stdout（JSON）にコマンド出力を含めない");
+    assert.equal(r.stderr.includes(marker), false, "診断出力にもコマンド出力を流さない");
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});

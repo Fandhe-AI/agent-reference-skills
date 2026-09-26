@@ -170,14 +170,23 @@ conflict with files already present at `--root`, **before** writing anything.
   selection is a design judgment (see `references/architecture/selection-and-migration.md`),
   not something this script makes for you.
 - With `--apply`/`--force` unless the user has explicitly approved writing to `--root` — the
-  default (no `--apply`) never touches the target directory.
+  default (no `--apply`) never touches the target directory. `--apply` additionally requires
+  `--plan <plan.json>`: an approved plan (checked with `validate-plan` first) whose `root` is the
+  same directory as `--root` and whose `changes[]` lists **every** file that will be written —
+  `action: "create"` for a new file, and `action: "modify"` with `expectedState: "matches-hash"`
+  plus the approved `contentHash` for an existing file overwritten with `--force`. The plan is
+  re-validated at apply time (so a file that appeared, or changed, after approval fails its
+  `create`/`matches-hash` check), and if any file is missing from the plan, has the wrong action,
+  or the re-validation fails, **nothing is written** and each reason is reported as a `plan`
+  finding.
 
 ### Input
 
 ```
 --sample <name>   name of a directory directly under samples/projects/ (required)
 --root <path>     target directory to preview against (required)
---apply           actually write (default: preview only, no writes)
+--apply           actually write (default: preview only, no writes); requires --plan
+--plan <path>     approved plan JSON listing every file --apply will write (required with --apply)
 --force           with --apply, overwrite conflicting files too (default: skip conflicts)
 --json            emit JSON to stdout (diagnostics go to stderr instead)
 --help            show usage
@@ -245,6 +254,7 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
   --sample <name>   skills/make/samples/projects/<name> のサンプル名（必須）
   --root <path>     導入予定の対象ディレクトリ（必須）
   --apply           プレビューではなく実際に書き込む（既定はプレビューのみ・書き込まない）
+  --plan <path>     --apply 時に必須。書き込む全ファイルを changes に明記した承認済み計画 JSON
   --force           --apply 時、競合しているファイルも上書きする（既定は競合をスキップ）
   --json            結果を JSON で stdout に出力（診断は stderr）
   --help            このヘルプを表示
@@ -252,6 +262,8 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
 終了コード: 0=PASS/SKIPPED/NOT_APPLICABLE, 1=FAIL(競合あり), 2=引数エラー, 3=BLOCKED
 
 実行しない条件: --apply を指定しない限り、対象 root への書き込みは一切行わない。
+--apply でも、計画の再検証が失敗した・root が一致しない・書き込むファイルが計画に明記されて
+いない場合は、1 件も書き込まない。
 ```
 
 ### Exit codes
@@ -259,8 +271,8 @@ preview-sample — samples/projects/<name>/ と対象 root の差分をプレビ
 | Code | Meaning |
 | --- | --- |
 | 0 | `PASS` (no conflicts; all conflicting files are byte-identical to the sample; or, with `--apply --force`, every conflicting file was overwritten successfully) |
-| 1 | `FAIL` (the sample directory could not be fully enumerated — an unreadable entry, the entry limit, or a directory such as `build/`, `dist/`, or `node_modules/` that the scanner skips; nothing is previewed or written in that case; a destination file exists with different content and was not overwritten; a destination resolves outside `--root` through `..` or a symlink; or a write failed). `--apply` without `--force` still exits 1 when conflicts were skipped, even though the non-conflicting files were written: the target is only partially applied, and `applied` / `skippedConflicts` in the result say which files are which |
-| 2 | Argument error (missing `--sample`/`--root`, a `--sample` value that is not a single directory name such as `../plans`, unknown flag) |
+| 1 | `FAIL` (an `--apply` whose plan does not cover every written file, points at a different root, or fails re-validation — nothing is written in that case; the sample directory could not be fully enumerated — an unreadable entry, the entry limit, or a directory such as `build/`, `dist/`, or `node_modules/` that the scanner skips; nothing is previewed or written in that case; a destination file exists with different content and was not overwritten; a destination resolves outside `--root` through `..` or a symlink; or a write failed). `--apply` without `--force` still exits 1 when conflicts were skipped, even though the non-conflicting files were written: the target is only partially applied, and `applied` / `skippedConflicts` in the result say which files are which |
+| 2 | Argument error (missing `--sample`/`--root`, `--apply` without `--plan`, a `--sample` value that is not a single directory name such as `../plans`, unknown flag) |
 | 3 | not used by this script |
 
 ### What to do next on failure/conflict

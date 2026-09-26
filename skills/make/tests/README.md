@@ -17,9 +17,9 @@ node --test skills/make/tests/**/*.test.mjs
 | `fixtures/dummy-secrets/` | ダミーの `.env`（実際の秘密情報は含まない）。秘密情報非混入テストの固定フィクスチャ |
 | `inspect-repo.test.mjs` | 引数検証、root 不在、秘密情報非混入、node_modules 等の走査除外、symlink 非追跡、入口候補検出 |
 | `validate-plan.test.mjs` | 引数検証、壊れた JSON、`..`・絶対パス・**symlink 経由**の root 外逸脱検出、衝突検出、checks の shell メタ文字拒否、副作用なし（実行しない）の確認 |
-| `preview-sample.test.mjs` | 引数検証、サンプル不在、既定で書き込まない、競合検出、`--apply` 時の新規ファイルのみ書き込み・競合スキップ |
+| `preview-sample.test.mjs` | 引数検証、サンプル不在、既定で書き込まない、競合検出、`--apply` 時の新規ファイルのみ書き込み・競合スキップ、`--apply` の承認済み計画（`--plan`）への照合（計画外ファイル・root 不一致・matches-hash 不一致で全件中止）、symlink 経由の root 外書き込み拒否 |
 | `verify-layout.test.mjs` | 引数検証、Makefile 不在時の NOT_APPLICABLE、help/target 整合性、Skill 固有パス依存検出、未確認事項の明示 |
-| `run-checks.test.mjs` | 引数検証、**既定 dry-run（--execute なしでは実行しない）**、approved:true が無い check の BLOCKED、実行成功/失敗/timeout の区別、不正な計画（root 不在）で全 checks を BLOCKED にし実行しない、checks 空の NOT_APPLICABLE |
+| `run-checks.test.mjs` | 引数検証、**既定 dry-run（--execute なしでは実行しない）**、approved:true が無い check の BLOCKED、実行成功/失敗/timeout の区別、不正な計画（root 不在）で全 checks を BLOCKED にし実行しない、checks 空の NOT_APPLICABLE、未対応 schemaVersion の不実行、コマンドの stdout / stderr を結果に含めない |
 | `sample-plans.test.mjs` | `samples/plans/` 配下の各サンプル計画が `validate-plan.mjs` のスキーマに適合すること。root プレースホルダのままでは FAIL、root を一時ディレクトリに差し替える（modify 対象のダミーファイルも用意する）と PASS になることを確認する |
 | `exec-safe.test.mjs` | Windows `.cmd`/`.bat` 専用処理（`resolveExecutionTarget`）のロジック単体テスト。cmd.exe メタ文字を含む引数の BLOCKED 化を含む。実 Windows 環境がないためロジック判定のみ検証し、cmd.exe の実起動そのものは未検証 |
 | `help-contract.test.mjs` | 全 CLI の `--help` が実装済みオプションと一致すること、未知フラグが exit 2 になること |

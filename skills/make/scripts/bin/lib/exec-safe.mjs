@@ -54,7 +54,9 @@ export function resolveExecutionTarget(platform, command, args) {
  * 実コマンドを実行する。shell:true は使わない（cmd.exe 経由の場合も file 自体は
  * execFileSync に shell:false のまま渡す — cmd.exe を明示的な実行ファイルとして起動するだけで
  * Node 側で追加の shell 解釈をさせないため）。
- * @returns {{status:"PASS"|"FAIL"|"BLOCKED", exitCode:number|null, signal:string|null, timedOut:boolean, stdoutTail:string, stderrTail:string}}
+ * コマンドの stdout / stderr は収集も表示もしない（stdio: "ignore"）。検証コマンドがトークン等を
+ * 出力しても結果 JSON・ログへ混入させないため。失敗の詳細は利用者がコマンドを直接実行して確認する。
+ * @returns {{status:"PASS"|"FAIL"|"BLOCKED", executed:boolean, exitCode:number|null, signal:string|null, timedOut:boolean, errorCode:string|null, reason?:string, viaShellWrapper:boolean}}
  */
 export function runCheckCommand({ platform = process.platform, command, args = [], cwd, timeoutMs = 60000 }) {
   const target = resolveExecutionTarget(platform, command, args);
@@ -65,46 +67,41 @@ export function runCheckCommand({ platform = process.platform, command, args = [
       exitCode: null,
       signal: null,
       timedOut: false,
-      stdoutTail: "",
-      stderrTail: target.unsafeReason,
+      errorCode: null,
+      reason: target.unsafeReason,
       viaShellWrapper: target.viaShellWrapper,
     };
   }
   try {
-    const stdout = execFileSync(target.file, target.args, {
+    execFileSync(target.file, target.args, {
       cwd,
       timeout: timeoutMs,
       shell: false,
-      stdio: ["ignore", "pipe", "pipe"],
-      encoding: "utf8",
+      stdio: "ignore",
       windowsHide: true,
     });
     return {
       status: "PASS",
+      executed: true,
       exitCode: 0,
       signal: null,
       timedOut: false,
-      stdoutTail: tail(stdout),
-      stderrTail: "",
+      errorCode: null,
       viaShellWrapper: target.viaShellWrapper,
     };
   } catch (err) {
     // Node の execFileSync は timeout 到達時、err.code === "ETIMEDOUT" を設定する
     // （err.killed は Node バージョンによって undefined のことがあるため判定に使わない）。
     const timedOut = err.code === "ETIMEDOUT";
+    // err.message は起動引数を含み得るため結果へ載せず、OS のエラーコード（ENOENT 等）だけを返す
     return {
-      status: timedOut ? "FAIL" : "FAIL",
+      status: "FAIL",
+      executed: true,
       exitCode: typeof err.status === "number" ? err.status : null,
       signal: err.signal ?? null,
       timedOut,
-      stdoutTail: tail(err.stdout?.toString?.() ?? ""),
-      stderrTail: tail(err.stderr?.toString?.() ?? err.message ?? ""),
+      errorCode: typeof err.code === "string" && !timedOut ? err.code : null,
       viaShellWrapper: target.viaShellWrapper,
     };
   }
-}
-
-function tail(text, maxLen = 2000) {
-  if (typeof text !== "string") return "";
-  return text.length > maxLen ? `...(truncated)...${text.slice(-maxLen)}` : text;
 }

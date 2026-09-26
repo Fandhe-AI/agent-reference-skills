@@ -152,12 +152,11 @@ function main() {
       status: execResult.status,
       // cmd.exe 経由で安全に渡せない引数は起動前に BLOCKED になる（executed: false）
       executed: execResult.executed !== false,
-      ...(execResult.executed === false ? { unsafeBlocked: true, reason: execResult.stderrTail } : {}),
+      ...(execResult.executed === false ? { unsafeBlocked: true, reason: execResult.reason } : {}),
       exitCode: execResult.exitCode,
       signal: execResult.signal,
       timedOut: execResult.timedOut,
-      stdoutTail: execResult.stdoutTail,
-      stderrTail: execResult.stderrTail,
+      errorCode: execResult.errorCode,
       viaShellWrapper: execResult.viaShellWrapper,
     });
   }
