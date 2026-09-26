@@ -43,8 +43,8 @@ rparen := )
 comma := ,
 UNSAFE_CHARS := ' " ` $$ ; & | < > \ * ? [ ] ! { } ~ = \# $(lparen) $(rparen) $(comma)
 ifneq ($(MAKECMDGOALS),clean)
-UNSAFE_SRCS := $(strip $(filter-out $(SRC_DIR)/%.txt,$(SRCS)) \
-  $(foreach c,$(UNSAFE_CHARS),$(findstring $(c),$(SRCS))))
+UNSAFE_WORDS := $(filter-out $(SRC_DIR)/%.txt,$(SRCS))
+UNSAFE_SRCS := $(strip $(UNSAFE_WORDS) $(foreach c,$(UNSAFE_CHARS),$(findstring $(c),$(SRCS))))
 ifneq ($(UNSAFE_SRCS),)
 $(error $(SRC_DIR)/ has file names with whitespace or shell metacharacters; rename them to [A-Za-z0-9._-] only)
 endif
