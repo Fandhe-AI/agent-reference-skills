@@ -40,11 +40,14 @@ const SLICE_EXPORTS = [
   'OUT_OF_TREE_STATE_SIG_JQ',
   'outOfTreeStateChecksum',
   'ROOT_ANCESTOR_DEPTH',
+  'ROOT_ANCESTOR_TRUNCATED',
+  'ROOT_ANCESTOR_MAX_ROUNDS',
   'collectOutOfTreeDeps',
   'outOfTreeStatePrompt',
   'rootAncestorsPrompt',
   'collectOutOfTreeStates',
-  'collectRootAncestors',
+  'collectRootAncestorsChunk',
+  'mergeRootAncestorChunk',
   'classifyOutOfTreeDeps',
   'outOfTreeBlockNote',
   'classifyDispatchReadiness',
@@ -56,11 +59,14 @@ const {
   OUT_OF_TREE_STATE_SIG_JQ,
   outOfTreeStateChecksum,
   ROOT_ANCESTOR_DEPTH,
+  ROOT_ANCESTOR_TRUNCATED,
+  ROOT_ANCESTOR_MAX_ROUNDS,
   collectOutOfTreeDeps,
   outOfTreeStatePrompt,
   rootAncestorsPrompt,
   collectOutOfTreeStates,
-  collectRootAncestors,
+  collectRootAncestorsChunk,
+  mergeRootAncestorChunk,
   classifyOutOfTreeDeps,
   outOfTreeBlockNote,
   classifyDispatchReadiness,
@@ -124,37 +130,105 @@ test('collectOutOfTreeStates: null 返却は全件 missing（取得不能 = open
   assert.deepEqual(collectOutOfTreeStates([5, 6], null).missing, [5, 6])
 })
 
-// root=4 → 親 3 → 親 1（最上位）の整合したチェーン。
+// start=4 → 親 3 → 親 1（最上位）の整合したチェーン（ROOT_ANCESTOR_DEPTH に収まる = 打ち切りなし）。
 const chain = [{ number: 4, parent: 3 }, { number: 3, parent: 1 }, { number: 1, parent: 0 }]
 
-test('collectRootAncestors: root から始まり parent が次の number に一致する連鎖なら root を除く祖先の Set を返す', () => {
-  assert.deepEqual([...collectRootAncestors({ fetched: true, chain }, 4)], [3, 1])
-  // 親を持たない root は祖先なし（空集合）。
-  assert.deepEqual([...collectRootAncestors({ fetched: true, chain: [{ number: 4, parent: 0 }] }, 4)], [])
+test('collectRootAncestorsChunk: start から始まり parent が次の number に一致する連鎖なら start を除く祖先の Set と truncatedAt: null を返す', () => {
+  const r = collectRootAncestorsChunk({ fetched: true, chain }, 4)
+  assert.deepEqual([...r.ancestors], [3, 1])
+  assert.equal(r.truncatedAt, null)
+  // 親を持たない start は祖先なし（空集合）。
+  const r2 = collectRootAncestorsChunk({ fetched: true, chain: [{ number: 4, parent: 0 }] }, 4)
+  assert.deepEqual([...r2.ancestors], [])
+  assert.equal(r2.truncatedAt, null)
 })
 
-test('collectRootAncestors: 取得失敗・形式不正は null（祖先除外なし = 待つ側）', () => {
-  assert.equal(collectRootAncestors({ fetched: false, chain }, 4), null)
-  assert.equal(collectRootAncestors(null, 4), null)
-  assert.equal(collectRootAncestors({ fetched: true, chain: [] }, 4), null)
-  assert.equal(collectRootAncestors({ fetched: true, chain: [{ number: 4, parent: 'x' }] }, 4), null)
+test('collectRootAncestorsChunk: 取得失敗・形式不正は null（祖先除外なし = 待つ側）', () => {
+  assert.equal(collectRootAncestorsChunk({ fetched: false, chain }, 4), null)
+  assert.equal(collectRootAncestorsChunk(null, 4), null)
+  assert.equal(collectRootAncestorsChunk({ fetched: true, chain: [] }, 4), null)
+  assert.equal(collectRootAncestorsChunk({ fetched: true, chain: [{ number: 4, parent: 'x' }] }, 4), null)
   const tooLong = Array.from({ length: ROOT_ANCESTOR_DEPTH + 2 }, (_, i) => ({ number: 100 - i, parent: i === ROOT_ANCESTOR_DEPTH + 1 ? 0 : 99 - i }))
-  assert.equal(collectRootAncestors({ fetched: true, chain: tooLong }, 100), null)
+  assert.equal(collectRootAncestorsChunk({ fetched: true, chain: tooLong }, 100), null)
 })
 
-test('collectRootAncestors: 連鎖の不整合（root 不一致・parent と次の number の食い違い・末尾の親の欠落・重複）は null', () => {
-  // root が依頼と異なる
-  assert.equal(collectRootAncestors({ fetched: true, chain }, 5), null)
+test('collectRootAncestorsChunk: 連鎖の不整合（start 不一致・parent と次の number の食い違い・末尾の親の欠落・重複）は null', () => {
+  // start が依頼と異なる
+  assert.equal(collectRootAncestorsChunk({ fetched: true, chain }, 5), null)
   // 途中の parent が次の number と一致しない（誤った祖先 #7 の混入）
-  assert.equal(collectRootAncestors({ fetched: true, chain: [{ number: 4, parent: 3 }, { number: 7, parent: 0 }] }, 4), null)
-  // 末尾の要素が親を持つと申告しているのに次の要素がない（切り詰め）
-  assert.equal(collectRootAncestors({ fetched: true, chain: [{ number: 4, parent: 3 }, { number: 3, parent: 1 }] }, 4), null)
+  assert.equal(collectRootAncestorsChunk({ fetched: true, chain: [{ number: 4, parent: 3 }, { number: 7, parent: 0 }] }, 4), null)
+  // 末尾の要素が親を持つと申告しているのに次の要素がない（切り詰め。かつ最大段数未満なので打ち切りマーカーとしても認めない）
+  assert.equal(collectRootAncestorsChunk({ fetched: true, chain: [{ number: 4, parent: 3 }, { number: 3, parent: 1 }] }, 4), null)
   // 番号の重複（循環）
-  assert.equal(collectRootAncestors({ fetched: true, chain: [{ number: 4, parent: 3 }, { number: 3, parent: 4 }, { number: 4, parent: 0 }] }, 4), null)
+  assert.equal(collectRootAncestorsChunk({ fetched: true, chain: [{ number: 4, parent: 3 }, { number: 3, parent: 4 }, { number: 4, parent: 0 }] }, 4), null)
+})
+
+// ROOT_ANCESTOR_DEPTH + 1 個（1 ラウンドで取得できる最大段数）まで埋まったチェーンを組み立てる。
+// 末尾要素の parent だけ差し替えて、打ち切りマーカーの位置・値に関する不変条件を検証する。
+function fullChain(tailParent) {
+  const c = []
+  let n = 100
+  for (let i = 0; i < ROOT_ANCESTOR_DEPTH; i++) { c.push({ number: n, parent: n - 1 }); n -= 1 }
+  c.push({ number: n, parent: tailParent })
+  return { chain: c, tail: n }
+}
+
+test('collectRootAncestorsChunk: 最大段数まで埋まったチャンクの末尾が ROOT_ANCESTOR_TRUNCATED なら打ち切りとして受理し truncatedAt を返す', () => {
+  const { chain: c, tail } = fullChain(ROOT_ANCESTOR_TRUNCATED)
+  const r = collectRootAncestorsChunk({ fetched: true, chain: c }, 100)
+  assert.ok(r)
+  assert.equal(r.truncatedAt, tail)
+  assert.ok(r.ancestors.has(tail))
+})
+
+test('collectRootAncestorsChunk: 最大段数まで埋まったチャンクの末尾が ROOT_ANCESTOR_TRUNCATED 以外（具体的な親番号・0）を名乗ったら null', () => {
+  const { chain: withNumber } = fullChain(1)
+  assert.equal(collectRootAncestorsChunk({ fetched: true, chain: withNumber }, 100), null)
+  const { chain: withZero } = fullChain(0)
+  assert.equal(collectRootAncestorsChunk({ fetched: true, chain: withZero }, 100), null)
+})
+
+test('collectRootAncestorsChunk: 最大段数に達していないチャンクの末尾が ROOT_ANCESTOR_TRUNCATED を名乗ったら null（逆方向の不整合）', () => {
+  assert.equal(collectRootAncestorsChunk({ fetched: true, chain: [{ number: 4, parent: ROOT_ANCESTOR_TRUNCATED }] }, 4), null)
+})
+
+test('mergeRootAncestorChunk: 通常合流・root 再出現による循環検出・既出番号の再出現による循環検出', () => {
+  const merged = mergeRootAncestorChunk(new Set([1, 2]), { ancestors: new Set([3, 4]) }, 99)
+  assert.deepEqual([...merged].sort((a, b) => a - b), [1, 2, 3, 4])
+  assert.equal(mergeRootAncestorChunk(new Set(), { ancestors: new Set([5, 99]) }, 99), null)
+  assert.equal(mergeRootAncestorChunk(new Set([5]), { ancestors: new Set([5]) }, 99), null)
+  // チャンク自体が null（取得失敗・構造不整合）ならそのまま null を伝播する。
+  assert.equal(mergeRootAncestorChunk(new Set([1]), null, 99), null)
+  // 非破壊: 入力の acc 自体は変更しない。
+  const acc = new Set([1])
+  mergeRootAncestorChunk(acc, { ancestors: new Set([2]) }, 99)
+  assert.deepEqual([...acc], [1])
+})
+
+test('受入条件: ROOT_ANCESTOR_DEPTH を超える祖先も複数ラウンドで確定し、classifyOutOfTreeDeps で通常のツリー外前提から除外される', () => {
+  // ラウンド1: root=100 から 8 段掘って打ち切り（9 番目の要素の parent が ROOT_ANCESTOR_TRUNCATED）。
+  const { chain: round1Chain, tail: truncatedAt } = fullChain(ROOT_ANCESTOR_TRUNCATED)
+  const chunk1 = collectRootAncestorsChunk({ fetched: true, chain: round1Chain }, 100)
+  assert.equal(chunk1.truncatedAt, truncatedAt)
+  let acc = mergeRootAncestorChunk(new Set(), chunk1, 100)
+  assert.ok(acc)
+  // ラウンド2: 打ち切り位置を起点に継ぎ足し、真の終端（parent: 0）に到達する。9 階層目の祖先が新規に確定する。
+  const ninthAncestor = truncatedAt - 1
+  const chunk2 = collectRootAncestorsChunk(
+    { fetched: true, chain: [{ number: truncatedAt, parent: ninthAncestor }, { number: ninthAncestor, parent: 0 }] },
+    truncatedAt,
+  )
+  assert.equal(chunk2.truncatedAt, null)
+  acc = mergeRootAncestorChunk(acc, chunk2, 100)
+  assert.ok(acc && acc.has(ninthAncestor))
+  // classifyOutOfTreeDeps: 確定した 9 階層目の祖先は open のままでもツリー外前提として待たれない。
+  const r = classifyOutOfTreeDeps([ninthAncestor], new Map([[ninthAncestor, 'OPEN']]), acc)
+  assert.deepEqual(r.ancestors, [ninthAncestor])
+  assert.deepEqual(r.open, [])
 })
 
 test('classifyOutOfTreeDeps: 祖先除外はツリー外依存に実際に現れた番号だけに限る', () => {
-  const ancestors = collectRootAncestors({ fetched: true, chain }, 4)
+  const ancestors = collectRootAncestorsChunk({ fetched: true, chain }, 4).ancestors
   const r = classifyOutOfTreeDeps([3, 9], new Map([[9, 'OPEN']]), ancestors)
   assert.deepEqual(r.ancestors, [3])
   assert.deepEqual(r.open, [9])
@@ -187,16 +261,35 @@ test('outOfTreeStatePrompt: state のみを取得する固定コマンドで、�
   assert.throws(() => outOfTreeStatePrompt([5, '6; rm -rf /']), /正の整数/)
 })
 
-test('rootAncestorsPrompt: parent を ROOT_ANCESTOR_DEPTH 段辿る読み取り専用 GraphQL クエリを含む', () => {
+test('rootAncestorsPrompt: parent を ROOT_ANCESTOR_DEPTH 段辿る読み取り専用 GraphQL クエリを含み、has("parent") で打ち切りを区別する', () => {
   const p = rootAncestorsPrompt(4)
   assert.equal((p.match(/parent\{/g) ?? []).length, ROOT_ANCESTOR_DEPTH)
   assert.ok(p.includes('-F n=4 '))
-  assert.ok(p.includes("recurse(.parent // empty) | {number: .number, parent: (.parent.number // 0)}"))
+  assert.ok(p.includes('recurse(.parent // empty) | {number: .number, parent: (if has("parent") then (.parent.number // 0) else -1 end)}'))
+  assert.ok(p.includes('-1'), '打ち切りマーカー -1 の意味を説明文に含む')
   // 実行コマンド行は読み取り専用の query のみ（共通指示の禁止事項の説明文は対象外）。
   const cmd = p.split('\n').find((l) => l.startsWith('gh api graphql '))
   assert.ok(cmd)
   assert.doesNotMatch(cmd, /mutation/)
   assert.throws(() => rootAncestorsPrompt(0), /正の整数/)
+})
+
+test('rootAncestorsPrompt jq 実行: 深さ以内の null（真の終端）と深さが尽きたキー不在（打ち切り）を -1 で区別する', () => {
+  const p = rootAncestorsPrompt(4)
+  const cmd = p.split('\n').find((l) => l.startsWith('gh api graphql '))
+  const m = cmd.match(/--jq '(.+)'$/)
+  assert.ok(m, 'gh api graphql コマンド行から --jq 式を抽出できる')
+  const jqExpr = m[1]
+  // 真の終端: GraphQL がフィールドを返すが値が null（.parent キーは存在する）。
+  const terminal = JSON.parse(execFileSync('jq', ['-c', jqExpr], {
+    input: JSON.stringify({ data: { repository: { issue: { number: 4, parent: { number: 3, parent: null } } } } }),
+  }).toString())
+  assert.deepEqual(terminal, [{ number: 4, parent: 3 }, { number: 3, parent: 0 }])
+  // 打ち切り: 深さが尽きて GraphQL クエリ自体が parent フィールドを要求していない（キー不在）。
+  const truncated = JSON.parse(execFileSync('jq', ['-c', jqExpr], {
+    input: JSON.stringify({ data: { repository: { issue: { number: 4, parent: { number: 3 } } } } }),
+  }).toString())
+  assert.deepEqual(truncated, [{ number: 4, parent: 3 }, { number: 3, parent: -1 }])
 })
 
 test('outOfTreeBlockNote: 待ちの理由のツリー外番号と再実行の案内を含む', () => {
@@ -321,9 +414,26 @@ test('駆動部: ツリー外前提の state 取得は本文宣言の和集合�
   assert.ok(driverPart.indexOf('mergeDeclaredDeps(tree.nodes') < driverPart.indexOf('const outOfTreeDeps = {'))
   assert.match(block, /collectOutOfTreeDeps\(tree\.nodes,/)
   assert.match(block, /schema: OUT_OF_TREE_STATE_SCHEMA/)
-  assert.match(block, /schema: ROOT_ANCESTORS_SCHEMA \}\), parent\)/, '祖先チェーンは root（parent）を渡して連鎖の起点を検証する')
+  assert.match(block, /schema: ROOT_ANCESTORS_SCHEMA \}\), cur\)/, '祖先チェーンはラウンド起点 cur を渡して連鎖の起点を検証する')
   // 状態ファイルの保存値を使わない（close 後の再実行で必ず再評価される）。
   assert.doesNotMatch(block, /savedItems|loadState/)
+})
+
+test('駆動部: 祖先チェーン取得はラウンドループで ROOT_ANCESTOR_DEPTH 超の打ち切りを継ぎ足し、安全上限で蓄積分を破棄せず終端する', () => {
+  const block = treeFetchBlock()
+  // ラウンド数は ROOT_ANCESTOR_MAX_ROUNDS を上限にする（無限ループしない）。
+  assert.match(block, /round <= ROOT_ANCESTOR_MAX_ROUNDS/)
+  // agent() 例外時・チャンク null 時・循環検出時はいずれも mergeRootAncestorChunk が null を返し、acc を破棄する。
+  assert.match(block, /const merged = mergeRootAncestorChunk\(acc, chunk, parent\)/)
+  assert.match(block, /if \(merged === null\) \{\n\s+acc = null\n\s+break\n\s+\}/)
+  // 真の終端（truncatedAt が null）に到達したらラウンドを終える。
+  assert.match(block, /if \(chunk\.truncatedAt === null\) break/)
+  // 安全上限到達時は打ち切り位置を明示した警告を出し、蓄積済みの acc をそのまま採用する（discard しない）。
+  assert.match(block, /round === ROOT_ANCESTOR_MAX_ROUNDS/)
+  const warnIdx = block.search(/round === ROOT_ANCESTOR_MAX_ROUNDS\) \{\n\s+log\(`⚠️[^`]*ROOT_ANCESTOR_MAX_ROUNDS[^`]*`\)/)
+  assert.ok(warnIdx >= 0, '安全上限到達時のログに ROOT_ANCESTOR_MAX_ROUNDS を含む警告がある')
+  assert.match(block, /cur = chunk\.truncatedAt/)
+  assert.match(block, /ancestors = acc/)
 })
 
 test('駆動部: 取得の失敗・契約違反はチャンク単位で 1 回再試行し、throw でランを止めない（open 扱いへ倒す）', () => {

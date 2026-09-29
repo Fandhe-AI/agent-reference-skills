@@ -1348,8 +1348,19 @@ function mergeDeclaredDeps(nodes, declaredByNumber) {
 // ルートの祖先（sub-issues の親チェーン）は子の完了を待つ側のため待たない（ツリー内祖先の除外と同じ理由）。
 // 取得件数の上限。超過分は取得せず open 扱い（fail-closed）にする。
 const OUT_OF_TREE_DEPS_MAX = 200
-// 祖先チェーンの取得深さ（GraphQL の入れ子の段数）。
+// 祖先チェーンの取得深さ（GraphQL の入れ子の段数。1 ラウンド分）。
 const ROOT_ANCESTOR_DEPTH = 8
+// rootAncestorsPrompt の jq が「親フィールドを要求したが値が無い（真の終端）」と区別するための
+// 打ち切りマーカー。実在の issue 番号（正の整数）や「親なし」を表す 0 と衝突しないよう負の値にする。
+// ROOT_ANCESTOR_DEPTH 段の掘り下げがちょうど尽きた最深ノードは GraphQL のクエリ自体が
+// parent フィールドを要求していないため、応答に parent キーが存在しない（has("parent") が false）。
+// このノードを新たな起点として次ラウンドを発行し、祖先チェーンを継ぎ足す（Issue #529）。
+const ROOT_ANCESTOR_TRUNCATED = -1
+// 祖先チェーン確定のためのラウンド数（agent() 呼び出し回数）の安全上限。1 ラウンド =
+// ROOT_ANCESTOR_DEPTH 段分のコスト。上限に達しても打ち切り位置より手前は個別に連鎖整合を検証済みの
+// 実在の祖先であり、除外しても安全性は落ちないため蓄積分は破棄しない（打ち切り位置より先だけを
+// 既存の「取得不能/open なら待つ」という保守的デフォルトへ委ねる。fail-closed の向き）。
+const ROOT_ANCESTOR_MAX_ROUNDS = 5
 // gh issue view --json state が返す値のうち前提充足とみなすもの（番号が PR の場合は MERGED も返る）。
 const OUT_OF_TREE_DONE_STATES = new Set(['CLOSED', 'MERGED'])
 const OUT_OF_TREE_STATE_SCHEMA = {
@@ -1384,7 +1395,7 @@ const ROOT_ANCESTORS_SCHEMA = {
     chain: {
       type: 'array',
       items: { type: 'object', required: ['number', 'parent'], properties: { number: { type: 'number' }, parent: { type: 'number' } } },
-      description: 'コマンド出力の配列（{"number": N, "parent": P} の並び）をそのまま転記',
+      description: 'コマンド出力の配列（{"number": N, "parent": P} の並び）をそのまま転記。P が -1 は取得打ち切り（このチャンクの最深部で親の有無を未確認）を意味する',
     },
   },
 }
@@ -1427,8 +1438,8 @@ function rootAncestorsPrompt(root) {
     'イシューの親チェーン（sub-issues の祖先）を機械取得するタスク（判断・補完はしない）。',
     MERGE_CONTEXT_COMMON,
     '次のコマンドを 1 回だけそのまま実行する:',
-    `gh api graphql -F owner='{owner}' -F name='{repo}' -F n=${root} -f query='query($owner:String!,$name:String!,$n:Int!){repository(owner:$owner,name:$name){issue(number:$n){${sel}}}}' --jq '[.data.repository.issue | recurse(.parent // empty) | {number: .number, parent: (.parent.number // 0)}]'`,
-    '終了コード 0 なら fetched: true・chain に出力の配列をそのまま転記する（要素の順序・number・parent を出力どおりに写す）。非 0 なら fetched: false・chain: [] を返す。',
+    `gh api graphql -F owner='{owner}' -F name='{repo}' -F n=${root} -f query='query($owner:String!,$name:String!,$n:Int!){repository(owner:$owner,name:$name){issue(number:$n){${sel}}}}' --jq '[.data.repository.issue | recurse(.parent // empty) | {number: .number, parent: (if has("parent") then (.parent.number // 0) else -1 end)}]'`,
+    '終了コード 0 なら fetched: true・chain に出力の配列をそのまま転記する（要素の順序・number・parent を出力どおりに写す。parent が -1 はこのコマンドの掘り下げ段数が尽きて親の有無を確認できなかったことを示す機械的な値であり、推測で 0 や具体的な番号に置き換えない）。非 0 なら fetched: false・chain: [] を返す。',
   ].join('\n')
 }
 
@@ -1452,20 +1463,52 @@ function collectOutOfTreeStates(requested, result) {
   return { byNumber, missing: requested.filter((n) => !byNumber.has(n)) }
 }
 
-// 祖先チェーン取得の返却値を検証し、祖先（root を除くチェーンの番号）の Set を返す。誤った祖先で
-// open の前提を待機対象から外す fail-open を避けるため、(number, parent) の連鎖が root から始まり、
-// 各 parent が次の要素の number と一致し、末尾の parent が 0（親なし・取得深さの末端）で、番号の重複が
-// ないことをホストで検証する。取得失敗・不整合は null（祖先除外なし = 待つ側へ倒す）。
-function collectRootAncestors(result, root) {
+// 祖先チェーン取得 1 ラウンド分の返却値を検証する。誤った祖先で open の前提を待機対象から外す
+// fail-open を避けるため、(number, parent) の連鎖が start（このラウンドの起点。初回はツリー
+// ルート issue、以降は前ラウンドの打ち切り位置）から始まり、各 parent が次の要素の number と
+// 一致し、番号の重複がないことをホストで検証する。取得失敗・不整合は null（呼び出し側で
+// 蓄積済み分も含めて破棄し、祖先除外なし = 待つ側へ倒す）。
+//
+// チャンク長が ROOT_ANCESTOR_DEPTH + 1（1 ラウンドで取得できる最大段数まで埋まっている）場合のみ
+// 末尾要素の parent が ROOT_ANCESTOR_TRUNCATED（rootAncestorsPrompt の jq が「親フィールドを
+// 要求していないノード」に付ける値）を名乗ることを許す。それ以外の位置での ROOT_ANCESTOR_TRUNCATED
+// の出現、および最大段数まで埋まったチャンクの末尾が ROOT_ANCESTOR_TRUNCATED 以外を名乗ることは
+// いずれも転記・クエリの不整合として null にする。
+//
+// 戻り値: { ancestors: Set<number>（start 自身を除く、このチャンクで確認できた祖先）,
+//           truncatedAt: number | null（打ち切り位置の番号。null なら真の終端に到達） } | null
+function collectRootAncestorsChunk(result, start) {
   const c = result?.chain
   if (result?.fetched !== true || !Array.isArray(c) || c.length < 1 || c.length > ROOT_ANCESTOR_DEPTH + 1) return null
-  if (c[0]?.number !== root || new Set(c.map((e) => e?.number)).size !== c.length) return null
+  if (c[0]?.number !== start || new Set(c.map((e) => e?.number)).size !== c.length) return null
+  const atMax = c.length === ROOT_ANCESTOR_DEPTH + 1
   for (let i = 0; i < c.length; i++) {
     const { number, parent } = c[i] ?? {}
-    if (!Number.isInteger(number) || number <= 0 || !Number.isInteger(parent) || parent < 0) return null
-    if (parent !== (i + 1 < c.length ? c[i + 1].number : 0)) return null
+    if (!Number.isInteger(number) || number <= 0 || !Number.isInteger(parent)) return null
+    const isTailAtMax = atMax && i === c.length - 1
+    if (isTailAtMax) {
+      if (parent !== ROOT_ANCESTOR_TRUNCATED) return null
+    } else {
+      if (parent < 0) return null
+      if (parent !== (i + 1 < c.length ? c[i + 1].number : 0)) return null
+    }
   }
-  return new Set(c.slice(1).map((e) => e.number))
+  const truncatedAt = atMax ? c[c.length - 1].number : null
+  return { ancestors: new Set(c.slice(1).map((e) => e.number)), truncatedAt }
+}
+
+// ラウンドをまたいで祖先集合を合流する純粋関数。root（ツリールート issue 番号）自身の再出現、または
+// 既に蓄積済みの番号の再出現は、祖先チェーンが循環している（クエリ・転記の不整合、または実データの
+// 循環）とみなし null を返す（呼び出し側は蓄積済み分も含めて全体を破棄する）。非破壊: 新しい Set を
+// 返すか null を返し、acc 自体は変更しない。
+function mergeRootAncestorChunk(acc, chunk, root) {
+  if (!chunk) return null
+  const merged = new Set(acc)
+  for (const n of chunk.ancestors) {
+    if (n === root || merged.has(n)) return null
+    merged.add(n)
+  }
+  return merged
 }
 
 // ツリー外前提を分類する。states に無い番号（取得不能・上限超過）は unknown で、open と同じく待つ。
@@ -5249,11 +5292,33 @@ const outOfTreeDeps = { open: [], unknown: [], closed: [], ancestors: [] }
   const states = new Map()
   let ancestors = null
   if (fetchable.length > 0) {
-    try {
-      ancestors = collectRootAncestors(await agent(rootAncestorsPrompt(parent), { label: 'plan:root-ancestors', phase: 'Tree', model: 'haiku', effort: 'low', schema: ROOT_ANCESTORS_SCHEMA }), parent)
-    } catch (e) {
-      log(`⚠️ ルートの祖先チェーン取得が失敗した: ${sanitize(String(e?.message ?? e))}`)
+    // ROOT_ANCESTOR_DEPTH 段では祖先チェーンを掘り切れない場合（ルートから 9 階層以上離れた
+    // 祖先が実在する場合）、打ち切り位置を起点に追加ラウンドを発行して継ぎ足す（Issue #529）。
+    // 各ラウンドは前ラウンドまでの蓄積を collectRootAncestorsChunk で個別に連鎖検証してから
+    // mergeRootAncestorChunk で合流するため、途中の不整合・循環は蓄積分ごと破棄できる。
+    let cur = parent
+    let acc = new Set()
+    for (let round = 1; round <= ROOT_ANCESTOR_MAX_ROUNDS; round++) {
+      let chunk = null
+      try {
+        chunk = collectRootAncestorsChunk(await agent(rootAncestorsPrompt(cur), { label: `plan:root-ancestors-${round}`, phase: 'Tree', model: 'haiku', effort: 'low', schema: ROOT_ANCESTORS_SCHEMA }), cur)
+      } catch (e) {
+        log(`⚠️ ルートの祖先チェーン取得（ラウンド ${round}）が失敗した: ${sanitize(String(e?.message ?? e))}`)
+      }
+      const merged = mergeRootAncestorChunk(acc, chunk, parent)
+      if (merged === null) {
+        acc = null
+        break
+      }
+      acc = merged
+      if (chunk.truncatedAt === null) break
+      if (round === ROOT_ANCESTOR_MAX_ROUNDS) {
+        log(`⚠️ ルートの祖先チェーン取得が安全上限 ${ROOT_ANCESTOR_MAX_ROUNDS} ラウンド（最大 ${ROOT_ANCESTOR_MAX_ROUNDS * ROOT_ANCESTOR_DEPTH} 段）に達したため #${chunk.truncatedAt} より先の祖先確認を打ち切った。それより先はツリー外前提として通常どおり state を見て待つ`)
+        break
+      }
+      cur = chunk.truncatedAt
     }
+    ancestors = acc
     if (!ancestors) log('⚠️ ルートの祖先チェーンを取得できなかった、または (number, parent) の連鎖が整合しなかったため、祖先の除外なしでツリー外前提を判定する（待つ側へ倒す）')
     const chunks = []
     for (let i = 0; i < fetchable.length; i += DECLARED_DEPS_CHUNK_SIZE) chunks.push(fetchable.slice(i, i + DECLARED_DEPS_CHUNK_SIZE))
