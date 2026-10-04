@@ -104,7 +104,7 @@ vercel deploy --prebuilt
 
 ## Deployment Protection 下での Basic 認証の確認（vercel-ssg）
 
-```sh
+```bash
 read -s -p 'VERCEL_AUTOMATION_BYPASS_SECRET: ' BYPASS_SECRET
 echo
 

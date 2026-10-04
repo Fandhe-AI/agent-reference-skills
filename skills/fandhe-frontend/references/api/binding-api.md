@@ -93,21 +93,21 @@ pub fn unresolved_binding_specs<S: BindingSource>(node: &Node, source: &S) -> Ve
 - 公式 docs サイト（`fandhe-ai.github.io/fandhe-frontend/`）の API Reference 索引に存在しない。`/api/binding-api/` の URL も 404（2026-10-04 確認）で、`site/nav.toml` にも `docs/api/` にも無い。`fandhe-frontend-core` 部分（`bind_text` / `bind_attr_token(s)` / `bind_class_token(s)` / `BIND_*_ATTR`）は core 0.4.3 の crate ソース（`src/bind.rs`）由来で、シグネチャは同ソースと突合済み
 - `fandhe-frontend-wasm-client` の `binding` モジュール一式（`BindingSpec` / `BindingKind` / `BoundValue` / `BindingSource` / `collect_binding_specs` / `element_binding_specs` / `parse_*_binding_tokens` / `unresolved_binding_specs`）は `fandhe-frontend-wasm-client` 0.6.1 の `src/binding.rs` と突合済み(`BindingKind` / `BindingSpec` / `BoundValue` / `BindingSource` のフィールド・variant、`parse_binding_tokens` / `parse_class_binding_tokens`(いずれも `&str -> Vec<(String, String)>`)、`element_binding_specs(Option<&str> x3)`、`collect_binding_specs(&Node)`、`unresolved_binding_specs<S: BindingSource>(&Node, &S)` はいずれも一致。0.6.1 でシグネチャ変更なし)。`binding` モジュールは crate ルートから glob 再エクスポートされ、DOM 適用側の `BindingTable` は `wasm32` 限定で別途公開される
 - 旧記述の出典（core 0.2.0 / wasm-client 0.3.0 の docs.rs、2026-08-25 時点）:
-    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/fn.bind_text.html
-    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/fn.bind_attr_token.html
-    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/fn.bind_class_token.html
-    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/constant.BIND_TEXT_ATTR.html
-    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/constant.BIND_ATTR_ATTR.html
-    - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/constant.BIND_CLASS_ATTR.html
-    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/struct.BindingSpec.html
-    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/enum.BindingKind.html
-    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/enum.BoundValue.html
-    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/trait.BindingSource.html
-    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/fn.collect_binding_specs.html
-    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/fn.element_binding_specs.html
-    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/fn.parse_binding_tokens.html
-    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/fn.parse_class_binding_tokens.html
-    - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/fn.unresolved_binding_specs.html
+  - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/fn.bind_text.html
+  - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/fn.bind_attr_token.html
+  - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/fn.bind_class_token.html
+  - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/constant.BIND_TEXT_ATTR.html
+  - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/constant.BIND_ATTR_ATTR.html
+  - https://docs.rs/fandhe-frontend-core/0.2.0/fandhe_frontend_core/constant.BIND_CLASS_ATTR.html
+  - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/struct.BindingSpec.html
+  - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/enum.BindingKind.html
+  - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/enum.BoundValue.html
+  - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/trait.BindingSource.html
+  - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/fn.collect_binding_specs.html
+  - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/fn.element_binding_specs.html
+  - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/fn.parse_binding_tokens.html
+  - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/fn.parse_class_binding_tokens.html
+  - https://docs.rs/fandhe-frontend-wasm-client/0.3.0/fandhe_frontend_wasm_client/fn.unresolved_binding_specs.html
 - `hydrate()` の DOM 再構築なしハイドレーション経路とは別レイヤー。`BindingSource` の参照実装は `fandhe_frontend_interactive::AppState`（`counter`/`draft` フィールドのみ対応、キー付きリスト構造は別経路で更新）
 
 ## Related
