@@ -48,6 +48,7 @@ root
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/primitives/button-group/
 - `root` は `div` + `role="group"`。WAI-ARIA は `group` ロールへの `aria-orientation` を許可しないため付与せず、向きは `data-orientation` のみで表現する。
 - `separator` は `div` + `role="separator"`、`text` は `div`（固定属性なし）。
 - Toolbar の roving tabindex（矢印キー移動）とは異なる静的グループ。子 `button` のフォーカス順序はネイティブ `Tab` 順序に委ね、独自キーハンドラは持たない。

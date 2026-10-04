@@ -50,6 +50,7 @@ pub enum MapZoom {
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/map/
 - 低忠実度ワイヤーフレーム部品。Primitives / Themes に対応部品は無く、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。実際の地図表示が必要な場合は外部の地図サービスまたは独自実装を使う。
 - 原案差分: `MapZoom` は `alert::Severity` / `tooltip::TooltipSide` / `progress::ProgressShape` と同型の部品ローカル列挙型で、`props.rs` へは昇格していない。CSS 側では街路グリッドのピッチ（`--fw-wire-map-cell`）だけを切り替える。
 - `marker` は `Option<Node>` スロット（§11.4）。`icon` にピン専用グリフが無く、新しいピンアイコンは追加していない（デモでは `icon::house` を代用）。

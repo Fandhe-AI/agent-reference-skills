@@ -26,6 +26,7 @@ counter("99+", Size::Md, Primary(false)); // 省略表記
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/counter/
 - 低忠実度ワイヤーフレーム部品。Themes の `Badge` とは別物で、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。
 - 件数を動的に更新したり、未読数の読み上げのような支援技術向けセマンティクスが必要な場合は Themes の Badge を使う。本部品は `data-*` / `role` / `aria-*` / `tabindex` を一切出力しない。
 - 原案差分: 件数は `u32` ではなく `&str`（`"99+"` / `"1.2k"` 等を呼び出し側が選べる。数値整形は責務外）。空文字列は中身のない丸（ドット状バッジ）として描画される。

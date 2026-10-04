@@ -51,6 +51,7 @@ pub fn legend_with_variant(variant: LegendVariant, props: &FieldsetProps<'_>, at
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/themes/fieldset/
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 - UA 既定の `<fieldset>` / `<legend>` 枠線・padding をリセットする。`orientation` / `colorPalette` 軸は持たない
 - 内側の各 Field（ラベル・入力欄・補助テキスト等）は本部品が所有せず、[Field](./field.md) / [Input](./input.md) 等が担う

@@ -93,6 +93,7 @@ fandhe-frontend-wireframe-ui = "0.52.0"
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/examples/wireframe-ui/
 - 出典は公式 `examples/wireframe-ui`（`src/main.rs` + `src/sections.rs`）。公式は Phase 1〜8・全 49 部品を 1 ページに並べるが、ここでは Phase 1（grid / divider / stack / frame）のみ抜粋。`wire::<関数>(...)` の修飾呼び出しにするのは、core の `text()`（テキストノード生成）と wireframe-ui の `text()`（Text 部品）が衝突するため。
 - `wireframe_css()` を `<style>` へインライン埋め込みしてはいけない。`render` は `Node::Text` を常にエスケープするため、子結合子セレクタの `>` が `&gt;` になり壊れる。別ファイルへ書き出して `<link rel="stylesheet">` で参照する。
 - wireframe-ui は SSR 専用・非インタラクティブな表示専用部品層。wasm 配線も状態遷移も持たず、`fandhe-frontend-server` への依存も不要（`generate_pages` を使わず 1 ページを直接書き出す）。

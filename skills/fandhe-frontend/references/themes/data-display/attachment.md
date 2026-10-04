@@ -57,6 +57,7 @@ let css = attachment::stylesheet();
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/themes/attachment/
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 - `variant` / `state` / `disabled` は headless 層が出力する `data-variant` / `data-state` / `data-disabled` を CSS セレクタとして参照するだけで、class ベースの軸も `ColorPalette` 軸も持たない
 - `image` 形態の `actions` は `@media (hover: hover)` 配下でのみ既定非表示（`root` の hover / focus-within で表示）。hover 機構を持たないタッチ端末では `opacity: 1`（常時表示）のまま残り、操作不能にならない

@@ -26,6 +26,7 @@ tag("removable", Size::Md, Primary(false), Some(icon::x(Size::Md)));
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/tag/
 - 低忠実度ワイヤーフレーム部品。Themes の `Tag` とは別物で、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。操作可能なタグ入力・削除機能が必要な場合は Themes の Tag / Tags Input、または Primitives の Tags Input を使う。
 - 原案差分: 削除「×」は §11.4 の `Option<Node>` スロット規約に従い（`link` の `trailing` と同型）、呼び出し側が `Some(icon::x(size))` を渡したときのみ出力する。
 - `border-radius: 999px` の固定ピル形状。`primary` の反転時は削除アイコンの色を `--fw-wire-ink-muted` ではなく `--fw-wire-fill` に切り替える（コントラスト確保。`annotation` と同じ判断）。

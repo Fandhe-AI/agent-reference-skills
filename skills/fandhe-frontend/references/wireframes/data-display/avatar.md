@@ -26,6 +26,7 @@ avatar(Some(icon::image(Size::Md)), Size::Md, true);    // スロット差し替
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/avatar/
 - 低忠実度ワイヤーフレーム部品。Primitives / Themes の同名 `Avatar` とは別物で、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。
 - 表示専用のため `<img>` は出力せず、画像 URL を受け取る API も持たない。実際に画像を表示する部品が必要な場合は Themes / Primitives の Avatar を使う。
 - 原案差分: `content: None` は人物線画へフォールバックする（`Option<Node>` スロット規約 §11.4 からの意図的な逸脱）。`Some(node)` はそのまま子要素になる（画像アイコンやイニシャルテキストに差し替え可能）。

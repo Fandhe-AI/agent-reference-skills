@@ -41,6 +41,7 @@ rich_text(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/rich-text/
 - 低忠実度ワイヤーフレーム部品。Primitives・Themes に同名の Rich text は無く、本部品は `fandhe-frontend-wireframe-ui` 固有。`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。操作可能なリンク行・ボタンが必要な場合は Themes の Link / Button を使う。
 - 原案差分: `Size` + `Bold` + テキストの 3 点セットと `leading` / `trailing` の `Option<Node>` スロット規約（§11.4）を組み合わせて独立設計。`Orientation` は stack / divider / tabs と共用する既存の共通型（`Horizontal` / `Vertical`）。
 - `Bold` / `Orientation` の CSS は本部品スコープで初めて宣言された（両 class は `props.rs` が class 名のみ定義していた）。

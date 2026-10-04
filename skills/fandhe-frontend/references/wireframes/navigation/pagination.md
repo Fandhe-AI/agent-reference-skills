@@ -34,6 +34,7 @@ pagination(&pages, Some(0), true, true, Size::Md)
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/pagination/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名コンポーネントとは別物。`<nav>` / `<a>` / `href` / `<button>` のいずれも出力しない。ページ送りできる部品が必要な場合は Themes / Primitives の Pagination を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - ルートは `div`。`role` / `aria-*`（アイコン基盤の装飾用 `aria-hidden` を除く）/ `tabindex` / `on*` は出力しない

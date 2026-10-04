@@ -39,6 +39,7 @@ slider(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/slider/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名 Slider とは別物。操作可能なスライダーが必要な場合は Themes / Primitives の Slider を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - ルートは `div`。`role` / `aria-*` / `tabindex` / `style` / `on*`・`<input type="range">` は出力しない

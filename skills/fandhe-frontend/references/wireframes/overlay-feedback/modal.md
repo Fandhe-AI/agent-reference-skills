@@ -38,6 +38,7 @@ modal(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/modal/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名コンポーネントとは別物（名称は Dialog）。開閉状態・フォーカストラップ・Esc 操作などの対話は一切実装しない。操作可能なダイアログが必要な場合は Themes / Primitives の Dialog を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - `actions` は `&[Node]` ではなく `Vec<Node>` の所有渡し（core のノード木 API・他の wireframe-ui 部品と同じ。`&[Node]` だと呼び出し側で不要な `clone()` が必要になるため）

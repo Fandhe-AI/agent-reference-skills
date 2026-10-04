@@ -62,6 +62,7 @@ let css = data_table::stylesheet();
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/themes/data-table/
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 - `ColorPalette` / `Size` 等の見た目 variant は持たない。`data-loading` / `data-empty` / `data-sort` / `data-state` / `data-hidden` は headless 層の出力を CSS セレクタとして参照するだけ
 - 表本体（`<table>` / `<thead>` / `<tbody>` / `<tr>`）は新規に作らず `table` mod を使う。`column_attrs` / `column_header_attrs` / `row_attrs` を `table::column_header` / `table::cell` / `table::row` の attrs へ渡して合成する

@@ -26,6 +26,7 @@ brand(Some(icon::star(Size::Md)), Size::Md);   // スロット差し替え（別
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/brand/
 - 低忠実度ワイヤーフレーム部品。Primitives / Themes のコンポーネントとは別物で、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。
 - 実在ブランドのロゴ・商標を模した SVG は含まない。`icon::brand` は六角形 + 中心円の抽象的なバッジ状図形。
 - 原案差分: `content: None` は `icon::brand` へフォールバック（`Option<Node>` スロット規約 §11.4 からの意図的な逸脱）。`Some(node)` はそのまま子要素になる。

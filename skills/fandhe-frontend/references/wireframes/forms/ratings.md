@@ -27,6 +27,7 @@ ratings(4, Size::Md)
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/ratings/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の Rating Group とは別物。`<input type="radio">` 群・`role="radiogroup"`・ポインタ / キーボード操作は実装しない。操作可能な評価入力が必要な場合は Themes / Primitives の Rating Group を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - 星の総数は `STAR_COUNT = 5` 固定。総数を変える `max` 引数は無い

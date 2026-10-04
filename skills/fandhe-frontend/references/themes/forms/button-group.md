@@ -32,6 +32,7 @@ pub fn text<'a>(attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/themes/button-group/
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 - 先頭・末尾以外の隣接要素の角丸・開始側境界線を無効化して連結表示を作る。対象は Button だけでなく Input / Select trigger / Menu trigger にも及ぶ
 - `role="group"` の静的なグループ。状態機械を持つ [Toolbar](../navigation/toolbar.md) の roving tabindex とは異なり、子ボタンのフォーカス順序はネイティブの Tab 順序に委ねる

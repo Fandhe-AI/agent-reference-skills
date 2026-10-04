@@ -28,6 +28,7 @@ paragraph(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/paragraph/
 - 低忠実度ワイヤーフレーム部品。Themes の `Text` とは別物で、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。スタイル済みの実部品が必要な場合は Themes の Text を使う。
 - 複数行は CSS 表現のみ: `\n` は `<br>` へ変換せず `white-space: pre-line` で描画する。`raw_html` は使わない。
 - ルート要素は `<p>` ではなく `<div>`（docs サイト骨格 CSS `.docs-content p` の詳細度に負けて `Size` 差が消えるため。`annotation` も同様）。

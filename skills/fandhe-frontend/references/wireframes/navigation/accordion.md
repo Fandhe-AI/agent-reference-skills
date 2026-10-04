@@ -31,6 +31,7 @@ accordion(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/accordion/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名コンポーネントとは別物。実際に開閉するアコーディオンが必要な場合は Themes / Primitives の Accordion を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - 独自追加部品: blocks.pm カタログに対応部品を持たない

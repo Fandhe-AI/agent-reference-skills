@@ -24,6 +24,7 @@ list(vec![text("最初の手順"), text("次の手順"), text("最後の手順")
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/list/
 - 低忠実度ワイヤーフレーム部品。Themes の `List` とは別物で、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。操作可能なリストが必要な場合は Themes の List を使う。
 - blocks.pm に対応部品がない wireframe-ui 独自追加部品。
 - `items` は `Vec<Node>`（`grid` / `frame` / `stack` と同じく所有権を受け取る）。`Size` 引数は持たない（子孫へ `--fw-wire-font-size` が意図せず継承されるのを避けるため）。マーカー寸法は継承フォントに合わせた `em` 基準。

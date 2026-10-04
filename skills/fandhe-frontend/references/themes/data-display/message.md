@@ -47,6 +47,7 @@ let css = message::stylesheet();
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/themes/message/
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 - `role` / `align` / `loading` / `error` は headless 層の `data-*` を CSS セレクタとして参照するだけで、class ベースの軸は持たない
 - `group` は連続発言のコンテナ。2 件目以降の `root` は余白が詰まり、`avatar` は `visibility: hidden` で幅を残したまま非表示になる（`display: none` だと先頭行との横位置がずれるため）

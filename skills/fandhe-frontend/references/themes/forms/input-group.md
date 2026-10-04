@@ -51,6 +51,7 @@ pub fn button<'a>(props: &InputGroupProps, attrs: Vec<(&'a str, &'a str)>, child
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/themes/input-group/
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 - Root がコンテナ側の枠線・角丸・`:focus-within` フォーカスリングを所有し、内側の [Input](./input.md) / [Textarea](./textarea.md) / [Native Select](./native-select.md) / [Select](../collections/select.md) は枠線なし・背景透明へリセットされる
 - Native Select / Select は `root` の直接の子として配置した場合のみリセットが効き、内容幅のままインライン配置される

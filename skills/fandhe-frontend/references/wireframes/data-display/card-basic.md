@@ -38,6 +38,7 @@ card_basic(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/card-basic/
 - 低忠実度ワイヤーフレーム部品。Themes の `Card` とは別物で、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。操作可能なカード部品が必要な場合は Themes の Card を使う。
 - 原案差分: 右アイコンは `avatar` / `nav_item` / `tag` / `link` と同じ `Option<Node>` スロット規約（§11.4）へ統一。`menu: bool` 案は不採用。
 - `avatar` は内蔵しない。部品の合成は呼び出し側の選択で、デモでは `Some(avatar(None, size, true))` を `leading` に、`icon::ellipsis` を `trailing` に渡している。

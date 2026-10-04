@@ -70,6 +70,7 @@ button("送信", None, Size::Md, Primary(false), Disabled(false))
 
 ## Notes
 
+- 出典: https://docs.rs/crate/fandhe-frontend-wireframe-ui/0.52.0/source/src/size.rs / https://docs.rs/crate/fandhe-frontend-wireframe-ui/0.52.0/source/src/props.rs
 - Wireframes 専用の独立型。Themes の `recipe::Size` とは段階名（`xs` / `sm` / `md` / `lg` / `xl`）のみ一致し、`SlotRecipe` / `VariantValue` トレイトは実装しない。headless-ui / pre-styled-ui への依存は持たない
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - 型は 2 系統: 視覚修飾（`Bold` / `Primary`）は class を付与し、表示状態（`Active` / `Disabled`）は `data-*` 属性を付与する。対話セマンティクス（`role` / `aria-*` / `tabindex`）に相当する型は意図的に持たない

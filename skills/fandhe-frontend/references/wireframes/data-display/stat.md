@@ -72,6 +72,7 @@ impl<'a> StatDelta<'a> {
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/stat/
 - 低忠実度ワイヤーフレーム部品。Themes の `Stat` とは別物で、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。アクセシブルな統計表示が必要な場合は Themes の Stat を使う。
 - blocks.pm に対応部品がない wireframe-ui 独自追加部品。
 - 原案差分: 増減は `Option<&str>` ではなく `StatDelta { value, trend }`（`menu::MenuItem` と同型）。先頭の `+` / `-` から向きを推測する文字列解析は採らない。

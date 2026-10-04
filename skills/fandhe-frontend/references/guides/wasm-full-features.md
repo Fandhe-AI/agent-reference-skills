@@ -87,6 +87,7 @@ dist-server 最小構成（`WASM_DIST_FEATURES`、6 feature）: `wasm-bindgen-ex
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/guides/wasm-full-features/
 - 2 軸は独立。クリック操作のみで良い部品は当該 scope feature のみ、キーボード操作も使う部品は `keynav` + 当該 scope feature の両方を有効にする。既定はすべて on
 - 常時有効な配線: `events::wire_events`（`data-action` 委譲）、`keynav::wire_readonly_click_guard`（readonly RadioGroup の click capture 保護。`radio-group` を off にしても失われない）、`Runtime::wire_headless`（`MAPPING_TABLE` 全行のクリック dispatch）
 - `overlay` / `tooltip` / `position` / `focus_trap` / `headless_file_upload` / `headless_select` モジュール（`Runtime` を経由せずアプリが直接呼ぶ公開 API）はいずれの feature でもゲートされない。`tooltip` / `select` / `menu` 等の feature 名は同名モジュールと同じ文字列だが、ゲートするのは `MAPPING_TABLE` 行と keynav の match arm のみ

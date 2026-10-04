@@ -25,6 +25,7 @@ emoji("", Size::Md);            // 破線の円プレースホルダー
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/emoji/
 - 低忠実度ワイヤーフレーム部品。Primitives / Themes のコンポーネントとは別物で、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。
 - アクセシブルな絵文字表示（`role="img"` / `aria-label` 付き）や任意ノードの差し込みが必要な場合は、Themes / Primitives 側の部品か `icon` モジュールを使う。
 - 原案差分: `Option<Node>` スロット規約（§11.4）から意図的に逸脱し、`glyph: &str` の 1 引数へ畳み込み。

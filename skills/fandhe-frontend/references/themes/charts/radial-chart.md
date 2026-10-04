@@ -70,6 +70,7 @@ let node = radial_chart(&RadialChartProps::default(), &data, vec![]).unwrap();
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/themes/radial-chart/
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 - ark-ui に対応する headless anatomy が存在しないため、本クレートのみで新規 anatomy `data-scope="radial-chart"` を定義する
 - 入力は `ChartData`（`categories` × `series`）。リング = カテゴリ（index 0 が最内周）、リング内のセグメント = 系列（累積して積み上げ）。角度写像は `θ(v) = start + sweep × v / domain_max`（`domain_max` は全リングの系列値合計の最大値）で、最大リングがちょうど `sweep` を埋める

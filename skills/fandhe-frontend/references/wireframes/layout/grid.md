@@ -35,6 +35,7 @@ grid(vec![cell("A"), cell("B"), cell("C")], 3, Size::Sm)
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/grid/
 - 低忠実度のワイヤーフレーム部品。Primitives / Themes に同名の Grid は無く、本部品は `fandhe-frontend-wireframe-ui` 固有
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - `children` は `Vec<Node>` 所有渡し（`fandhe_frontend_core::div` / `el_owned` と同じ設計、不要な `clone()` を避ける）

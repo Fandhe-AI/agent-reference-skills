@@ -116,6 +116,7 @@ provider
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/primitives/sidebar/
 - `root` は `nav`。`div` への `aria-label` は支援技術に露出しないため、ランドマークが必要な本部品では `label` を必須引数にしている。
 - `group` は `role="group"` を固定出力し、`labelledby` が `Some` のときのみ `aria-labelledby`。`separator` は `hr`（暗黙の separator ロールに委ね `role` を付与しない）。
 - `menu-sub` は開閉状態を持たない静的な `ul`。開閉が必要なら呼び出し側で `collapsible::root` / `trigger` / `content` を合成する（他 scope を内包しない設計）。

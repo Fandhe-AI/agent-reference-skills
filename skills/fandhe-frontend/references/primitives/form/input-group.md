@@ -57,6 +57,7 @@ root
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/primitives/input-group/
 - `root` は `div` で `role="group"` を固定付与。`addon` に `role="group"` は重ねない（入れ子のグループ情報の冗長化を避ける）。
 - `inline-*` は `<input>` の前後、`block-*` は `<textarea>` の上下に addon を置く用途を想定。
 - `button` は `button type="button"` 固定（暗黙 submit 防止）。

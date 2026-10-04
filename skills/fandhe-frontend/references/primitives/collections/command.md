@@ -101,6 +101,7 @@ root
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/primitives/command/
 - `input` は `role="combobox"` + `aria-autocomplete="list"` + `autocomplete="off"` + `aria-controls` を固定付与する。`list` は `role="listbox"`、`item` は `role="option"`、`dialog` は `role="dialog"` + `aria-modal="true"` + `tabindex="-1"`。
 - `item` は `data-highlighted` / `data-state` を出力しない（`combobox` / `listbox` との意図的な差分。`aria-activedescendant` が指すのは確定選択中の item であり、キーボードでハイライト中の行ではない）。
 - `Command` 状態機械は cmdk 意味論に合わせ、入力（`Input`）も選択（`Select`）も dialog を開閉しない。実行フックはアプリケーションロジックで UI 層の範囲外。

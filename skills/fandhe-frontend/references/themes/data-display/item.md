@@ -55,6 +55,7 @@ let css = item::stylesheet();
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/themes/item/
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 - `variant` / `size` は headless 層の `data-variant` / `data-size` を CSS セレクタとして参照するだけで、class ベースの軸は持たない
 - `href` 付き `root` はポインタ・カーソル・下線解除に加えて hover 背景と `:focus-visible` リングが付く。`href` のスキーム検証と `external` の `target` / `rel` 付与は headless 層に委ねる

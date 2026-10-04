@@ -75,6 +75,7 @@ CSS custom property: `--fandhe-sidebar-width`（展開幅）/ `--fandhe-sidebar-
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/themes/sidebar/
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 - `variant` / `collapsible` / `side` は class ベースのバリアント軸を持たず、headless が出力する `data-variant` / `data-collapsible` / `data-side` を CSS 属性セレクタとして参照して見た目を切り替える。全パーツで呼び出し側 `class` は除去される
 - icon 折りたたみ時は `menu-button` のラベルテキストを clip 手法で視覚的に非表示化しつつアクセシブルネームを維持する（WCAG 4.1.2）。`menu_button` は装飾用アイコンを専用の `icon` 引数で受け取り、`children`（ラベル）は非空なら内側の無印 `<span data-fandhe-sidebar-menu-button-label>` に集約される

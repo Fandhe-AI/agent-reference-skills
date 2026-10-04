@@ -26,6 +26,7 @@ link("外部サイトを見る", Some(icon::external(Size::Md)), Size::Md, Bold(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/link/
 - 低忠実度ワイヤーフレーム部品。Primitives / Themes の同名 `Link` とは別物で、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。実際にページ遷移するリンクが必要な場合は Themes / Primitives の Link を使う。
 - ルートは `span`。`a[href]` は出力せず、`href` / `rel` / `target` も出力しない（非インタラクティブ制約）。
 - 原案差分: 末尾アイコンは `trailing: Option<Node>` スロット（§11.4）で表現し、専用型・第 2 の bool 引数・`external_link` 等の便宜ラッパは追加していない。

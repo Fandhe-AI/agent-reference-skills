@@ -147,6 +147,7 @@ vercel deploy --prebuilt --prod
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/examples/vercel-ssg/
 - 出典は公式 `examples/vercel-ssg`（`fandhe-frontend-core` 0.4.3 / `fandhe-frontend-server` 0.2.6）。公式は生成前に固定リテラルの `.vercel/output` だけを削除する `clean_output_dir`（シンボリックリンクは fail-closed で拒否）と、環境変数 `FANDHE_VERCEL_SSG_BASIC_AUTH=1` で有効化する Basic 認証 Routing Middleware（opt-in）も持つ。ここでは最小構成のため省略しており、`main` は公式のものを `generate_pages` → `generate_assets` の流れに簡略化している。
 - `config.json` の `routes` は、先頭でセキュリティヘッダーを付与（`continue: true`）し、`{"handle": "filesystem"}` で実在ファイルに一致させ、一致しなければ 404 ステータスで `/404.html` を返す。`python3 -m http.server -d .vercel/output/static` のような簡易サーバーでは `routes` は効かない。
 - 生成物は `.vercel/output/config.json` と `.vercel/output/static/`（`index.html`・`pages/about/index.html`・`404.html`）。Vercel 側に Rust ツールチェーンは不要で、ローカルまたは CI でビルドした出力を `--prebuilt` で配置するだけでよい。

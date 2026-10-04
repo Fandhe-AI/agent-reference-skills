@@ -25,6 +25,7 @@ chart(&[20, 45, 80, 60], Orientation::Horizontal, Size::Md);        // 横棒
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/chart/
 - 低忠実度ワイヤーフレーム部品。Themes の Bar Chart / Charts とは別物で、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。実データを描画するグラフが必要な場合は Themes の Bar Chart / Charts を使う。
 - 原案差分: `props::Orientation` を再利用（divider / stack / slider に続く 4 例目）。部品ローカルの `ChartKind` 等は新設していない。
 - 5 刻み量子化: 値は 0〜100 へクランプ後に 5 刻みへ丸め、固定 class `fw-wire-chart-value-<q>`（21 種）を付与する。`style` の動的組み立てや `data-value` の出力はしない。例: 42 は 40 に丸まる。

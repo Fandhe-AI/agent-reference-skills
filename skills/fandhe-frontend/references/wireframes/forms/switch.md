@@ -26,6 +26,7 @@ switch(Some("通知"), Size::Md, Active(true), Disabled(false))
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/switch/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名 Switch とは別物。操作可能なスイッチが必要な場合は Themes / Primitives の Switch を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - 共通型 `Active` の意味は部品ごとに異なる。Select 等ではフォーカス風の強調、本部品では ON 状態そのもの

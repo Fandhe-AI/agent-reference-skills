@@ -23,6 +23,7 @@ spinner(Size::Md)
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/spinner/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名コンポーネントとは別物。静的な表示専用で、実際に回転するローディングインジケータとしては動作しない。アクセシブルな読み込み中表示が必要な場合は Themes の Spinner を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - 静的な円弧のみ。`@keyframes` / `animation` / 回転は一切実装しない

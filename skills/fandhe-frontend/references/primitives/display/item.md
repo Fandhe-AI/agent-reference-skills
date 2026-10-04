@@ -71,6 +71,7 @@ group
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/primitives/item/
 - `title` は `div`（見出しレベルは呼び出し側が子ノードで決める）、`description` は `p`。
 - `group` は `role="group"` 固定。shadcn/ui の `ItemGroup` は `role="list"` だが、`a[href]` は WAI-ARIA 上 `listitem` ロールを持てず `list` / `listitem` 対を成立させられないため意図的に差分化している。
 - `separator` は `role="separator"` + 水平固定（`group` は常に縦並びのため）。

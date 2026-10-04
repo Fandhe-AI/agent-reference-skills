@@ -93,6 +93,7 @@ use fandhe_frontend_wasm_full::fandhe_frontend_animation::fandhe_animation::spri
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/guides/animation-core/
 - `fandhe-animation` は外部依存ゼロ・`#![forbid(unsafe_code)]`で、DOM・requestAnimationFrame・Web Animations API には一切触れない。`fandhe-frontend-animation` は `fandhe-frontend-wasm-full` / `-wasm-client` / `-wasm-thin` のいずれにも依存しない
 - `Mat4` の補間は回転を含む場合は正確ではない（180° 回転同士の中点がゼロ行列へ潰れる等）。回転を伴う用途は `Vec3`（translate / scale）+ `Quat` を個別補間してから合成する
 - `AnimationLoop` は戻り値を保持し続けること。変数を drop するとループが止まる

@@ -31,6 +31,7 @@ tabs(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/tabs/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名コンポーネントとは別物。`role="tablist"` / `role="tab"`・`aria-selected`・実際のパネル切り替えのいずれも実装しない。操作可能なタブが必要な場合は Themes / Primitives の Tabs を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - ルートは `div`。`role` / `aria-*` / `tabindex` / `on*` は出力しない

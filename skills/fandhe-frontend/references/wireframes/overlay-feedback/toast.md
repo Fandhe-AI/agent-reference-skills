@@ -26,6 +26,7 @@ toast("保存しました", Some(icon::check(Size::Md)), true, Size::Md)
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/toast/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名コンポーネントとは別物。`role="status"` / `aria-live` / `<button>` のいずれも実装せず、画面隅への固定配置（`position: fixed` / `absolute`）も行わない。操作可能な通知が必要な場合は Themes / Primitives の Toast を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - 引数名は `text` ではなく `message`（`fandhe_frontend_core::text` と同じ値名前空間で衝突するため）

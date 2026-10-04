@@ -27,6 +27,7 @@ wire_text("見出しのダミーテキストです", Size::Md, Bold(false));
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/text/
 - 低忠実度ワイヤーフレーム部品。Themes の `Text` とは別物で、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。スタイル済みの実部品が必要な場合は Themes の Text を使う。
 - 1 行固定 + 省略記号: `\n` は改行として描画されず、`white-space: nowrap` + `overflow: hidden` + `text-overflow: ellipsis` で 1 行に固定される（`white-space: pre-line` の Paragraph と対）。
 - ルート要素は `<span>`（`paragraph` の `<div>` ルートとは異なり、docs サイト骨格 CSS との詳細度競合が無い）。

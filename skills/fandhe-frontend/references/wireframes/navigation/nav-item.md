@@ -45,6 +45,7 @@ nav_item(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/nav-item/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名コンポーネントとは別物。実際に遷移するリンクとしては出力しない（`<a href>` にしない）。操作できるナビゲーションが必要な場合は Themes の Nav list / Navigation menu、Primitives の Nav list を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - アクティブ状態は `data-active` による背景・文字色の反転（`--fw-wire-ink` / `--fw-wire-paper`）。アイコンは `currentColor` で自動追従し、反転時はカウンターの配色も明るいトークンへ切り替わる

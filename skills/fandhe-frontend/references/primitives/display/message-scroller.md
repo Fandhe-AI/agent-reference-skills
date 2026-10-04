@@ -69,6 +69,7 @@ root
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/primitives/message-scroller/
 - 責務境界: 最下部追従・新着検知・スクロール位置の計測や復元は内包しない。SSR は常に「最下部に居る」初期状態（`data-stuck="bottom"`）を決定的に描画し、実行時の計測・自動追従・新着検知は `fandhe-frontend-wasm-full` 側の配線が担う。
 - `jump_to_latest` の可視判定（`stuck=free` かつ `has_new` 等）は呼び出し側または配線層が行う。`hidden` にするのは JS 無効時に「押しても何も起きないボタン」を見せないため。
 - `viewport` は `tabindex="0"` 固定（矢印キー・Page キーでスクロール可能にする WAI 慣行）。Scroll Area の `viewport` と同じ契約を `message-scroller` scope で独立に実装しており `scroll_area` へは委譲しない。カスタムスクロールバーが必要なら `scroll_area::scrollbar` / `scroll_area::thumb` を `viewport` 内に入れ子にできる。

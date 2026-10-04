@@ -48,6 +48,7 @@ root
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/primitives/marker/
 - 会話系部品（message / bubble / attachment / marker）が共有する `data-role` / `data-align` は意図的に持たない。
 - `data-tone` の値語彙は pre-styled-ui の `ColorPalette`（`neutral` / `info` / `warning` / `danger`）の同名 4 値の部分集合で、新しい値語彙は作らない。
 - `divider` / `label` variant の区切り線は本 mod では一切描画しない。描画は pre-styled-ui 側（`separator` パーツの再利用または CSS）が担う。

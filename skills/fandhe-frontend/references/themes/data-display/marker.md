@@ -42,6 +42,7 @@ let css = marker::stylesheet();
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/themes/marker/
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 - `variant` / `tone` は headless 層の `data-variant` / `data-tone` を CSS セレクタとして参照するだけで、class ベースの `ColorPalette` 軸は持たない。`tone` は `ColorPalette` と同名の 4 値
 - 区切り線は疑似要素を使わない。`divider` は DOM を増やさず `root` に `border-bottom` を適用する。`label` は `root` が `children` をスタイル済み Separator（水平・実線、`aria-hidden="true"`）2 個で挟んでから headless 層へ委譲する（短いラベルの前後で `role="separator"` が 2 回読み上げられるのを避けるため）

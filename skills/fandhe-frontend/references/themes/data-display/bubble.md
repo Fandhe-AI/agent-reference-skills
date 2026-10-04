@@ -52,6 +52,7 @@ let css = bubble::stylesheet();
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/themes/bubble/
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 - `variant` / `align` / `group-position` / `selected` / `state` は headless 層の `data-*` を CSS セレクタとして参照するだけで、class ベースの軸は持たない
 - 実際の色調選択は `ColorPalette` 軸ではなく、`root` が公開する custom property `--fandhe-bubble-bg` / `--fandhe-bubble-fg` / `--fandhe-bubble-border` を呼び出し側が上書きするフックで行う。最大幅は `--fandhe-bubble-max-width`（既定 `32rem`）

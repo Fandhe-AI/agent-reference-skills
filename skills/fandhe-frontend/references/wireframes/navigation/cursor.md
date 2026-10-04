@@ -39,6 +39,7 @@ cursor(CursorKind::Arrow, Some("にゃんこ"), Size::Md)
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/cursor/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名コンポーネントとは別物。実際にポインタ追従するカーソルとしては出力しない（追従・hover でバリアントが変わるカスタムカーソルが必要な場合は Blocks の Cursor hover cards（wasm-full の `cursor` feature）を検討）
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - 既存アイコンでは表現できないため `icon::cursor_arrow` / `icon::cursor_hand` の 2 種を新規追加（`icon::ALL` へ登録）。`cursor` は `CursorKind` に応じて内部でどちらか一方を呼ぶ

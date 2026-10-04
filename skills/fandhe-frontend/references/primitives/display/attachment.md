@@ -71,6 +71,7 @@ root
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/primitives/attachment/
 - 会話系部品（message / bubble / attachment / marker）が共有する `data-role` / `data-align` は意図的に持たない。添付ファイルは常に message / bubble の `content` スロット内に置かれ、整列は親から継承する。
 - `media` は画像プレビューまたは種別アイコンを受けるスロットで、独自の `data-variant` は持たない（`[data-variant="image"] [data-part="media"]` の子孫セレクタで分岐する）。
 - `name` / `meta` は整形済み文字列を children で受けるだけのスロット。byte → KB 変換等の整形は行わない。

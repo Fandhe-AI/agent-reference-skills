@@ -80,6 +80,7 @@ Routing Middleware（Basic 認証、vercel-ssg の opt-in）:
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/guides/deployment/
 - 配布形態は 2 通り: 静的出力（`fandhe_frontend_server::ssg::generate_pages` で静的 HTML を書き出し任意の静的ホスティングへ。正本サンプル `examples/ssg-blog`）と、単一実行ファイル（`fandhe-frontend-dist-server` で SSR / 動的処理込みの単一バイナリを Docker で配布。REQ-9。正本サンプル `examples/dist-server-docker`）
 - 案 c は Vercel 側に Rust ツールチェーン不要・Beta 機能に依存しない。案 d はリクエストごとの描画が必要な場合にだけ選び、Beta 依存の影響を SSR 用途に限定する
 - 案 d の注意: Container Images は公式に Beta でチームでの有効化権限が必要な場合がある。`PORT` は **1024 以上**（例 `3100`）を設定（イメージが非 root の `USER 65532:65532` で動くため既定の `80` は使えない）。`Dockerfile.vercel` は `FANDHE_FRONTEND_BIND_ADDR` を設定しない（`PORT` より優先されてしまうため）。`fandhe-frontend-dist-server` 0.3.4 以降を使用。SIGTERM 後は最大 25 秒かけて接続を終える（Vercel の猶予 30 秒以内）。静的アセットと WASM は出荷しない。Vercel 実機での検証は未実施（イシュー #3339）

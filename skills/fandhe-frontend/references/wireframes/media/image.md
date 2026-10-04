@@ -26,6 +26,7 @@ image(Some(icon::image(Size::Md)), Size::Md, false, Primary(false));   // スロ
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/image/
 - 低忠実度ワイヤーフレーム部品。Themes の `Image` とは別物（Primitives に対応部品は無い）で、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。実際に画像を表示する部品が必要な場合は Themes の Image を使う。
 - `<img>` と画像 URL を受け取る API は持たない。ルートは `div` で、`src` / `href` / `style` は出力しない（外部リソース読み込みの経路を作らないため）。
 - バツ印は `background-image` の `linear-gradient` 2 本で描く。線色は `--fw-wire-line`（既定）のグレースケールトークン。

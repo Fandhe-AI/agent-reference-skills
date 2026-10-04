@@ -31,6 +31,7 @@ card_basic(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/
 - Data Display 部品はすべて位置引数の関数で、props 構造体は無い。補助型は `stat::StatTrend` / `stat::StatDelta`、`icon` モジュールの 24 グリフ関数と `icon::ALL` / `icon::IconEntry`
 - Avatar / Icon / List / Stat / Counter は Themes に同名または近い部品（Avatar / Icon / List / Stat / Badge）があるが別物の低忠実度部品。Card basic は Themes の Card に近い別物。`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - `role` / `aria-*` / `tabindex` は付与せず、`<img>` も出力しない（画像 URL を受け取る API は無い）

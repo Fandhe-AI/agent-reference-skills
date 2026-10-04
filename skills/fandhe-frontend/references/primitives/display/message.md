@@ -64,6 +64,7 @@ group
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/primitives/message/
 - この 4 語彙（`data-role` / `data-align` / `data-loading` / `data-error`）は会話系部品（message / bubble / attachment / marker）が共有する共通語彙として `message` mod が最初に確定した。
 - `root` は `role="listitem"`、`group` は `role="list"` を固定付与。会話全体は「発言者ターンごとの `group`（list）の並び」として読み上げられる想定。`group` を介さず `root` 単体で使う場合は呼び出し側が `ul` / `role="list"` コンテナへ置く。
 - `avatar` / `content` はスロット。`avatar` は既存の `avatar` mod を内部で呼ばず、中に `avatar::root` / `avatar::image` / `avatar::fallback` を自由に組み込める。同じ発言者の連続発言は `group` でまとめる（先頭以外の `avatar` を省略する見た目は CSS の責務）。

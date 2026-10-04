@@ -26,6 +26,7 @@ stepper(&steps, 1, Size::Md)
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/stepper/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の Steps とは別物。`<ol>` / `<li>` / `<button>` / `<a href>` は出力しない。操作可能なステップ表示が必要な場合は Themes / Primitives の Steps を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - 状態写像は 3 分岐: `i < active` は完了（部品ローカルの `data-complete`）、`i == active` は現在（共通型 `Active` の再利用、`data-active`）、`i > active` は未着手（属性なし）。完了状態の専用型は無く、`fandhe_frontend_core::attr_if` を部品内で直接呼ぶ

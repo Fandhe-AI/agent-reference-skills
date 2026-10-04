@@ -23,6 +23,7 @@ toast("保存しました", Some(icon::check(Size::Md)), true, Size::Md)
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/
 - Overlay & Feedback 部品はすべて位置引数の関数で、props 構造体は無い。戻り値は `fandhe_frontend_core::Node`
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名コンポーネントとは別物。開閉・フォーカス管理・live region 等が必要な場合は Themes / Primitives を使う。`role` / `aria-*` / `tabindex` / `on*` / `<button>` は出力しない（アイコンの装飾用 `aria-hidden` を除く）
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）

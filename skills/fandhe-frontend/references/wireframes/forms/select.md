@@ -39,6 +39,7 @@ select(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/select/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名 Select とは別物。操作可能な select が必要な場合は Themes / Primitives の Select を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - ルートは `div`。`role` / `aria-*` / `tabindex` / `on*` は出力しない（アイコンの装飾用 `aria-hidden="true"` を除く）

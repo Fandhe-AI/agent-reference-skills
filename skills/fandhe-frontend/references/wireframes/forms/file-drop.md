@@ -31,6 +31,7 @@ file_drop(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/file-drop/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の File Upload とは別物。操作可能なファイルアップロードが必要な場合は Themes / Primitives の File Upload を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - 専用のアップロードアイコンは持たず、`Option<Node>` アイコンスロット規約（`link` と同じ）で任意の既存アイコンを受ける

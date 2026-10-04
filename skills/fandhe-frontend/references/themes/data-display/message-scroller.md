@@ -55,6 +55,7 @@ let css = message_scroller::stylesheet();
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/themes/message-scroller/
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 - `viewport` は `overflow-y: auto` で既定高さ `24rem`（`--fandhe-message-scroller-height` で上書き可）。両端は `mask-image` の既定フェードを持ち、`data-stuck="bottom"` のときは末尾フェードを自動解除して最新メッセージを霞ませない
 - `data-stuck` / `data-has-new` / `data-visible` / `hidden` / `data-loading` / `data-disabled` は headless 層の出力を CSS セレクタとして参照するだけで、class ベースの軸は持たない

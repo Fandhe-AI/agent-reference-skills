@@ -37,6 +37,7 @@ pub fn content<'a>(state: OpenState, disabled: bool, id: Option<&'a str>, attrs:
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/themes/collapsible/
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 - size / variant / colorPalette 軸は持たず、CSS 到達は `[data-scope]` / `[data-part]` 属性セレクタのみに依存する
 - `data-state`（open / closed）と `data-disabled` は、トリガーの文字色強調・インジケータの回転・減光として視覚に反映される

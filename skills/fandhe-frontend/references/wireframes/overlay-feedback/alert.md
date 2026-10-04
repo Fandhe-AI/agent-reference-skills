@@ -58,6 +58,7 @@ alert(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/alert/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名コンポーネントとは別物。`role="alert"` / `aria-live` は出力せず、閉じるボタンも持たない。アクセシブルな alert が必要な場合は Themes の Alert を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - 重要度は色ではなくモノクロの 3 段差（地色・枠の太さ・反転配色）で区別する。Error は背景・枠・文字を反転、Warning は開始辺の枠を太くする

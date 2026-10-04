@@ -49,6 +49,7 @@ pub fn footer<'a>(attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/themes/command/
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 - 呼び出し側 `class` 属性は全パーツで除去される（見た目クラスを付与しない）
 - 選択行は `data-selected` の背景色で表し、hover はその背景色を洗い流さないよう選択行を除外する

@@ -42,6 +42,7 @@ question(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/
 - Forms 部品はすべて位置引数の関数で、props 構造体は無い。戻り値は `fandhe_frontend_core::Node`
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名コンポーネントとは別物。`<button>` / `<input>` / `<select>` 等の対話要素や `role` / `aria-*` / `tabindex` は出力しない（アイコンの装飾用 `aria-hidden="true"` を除く）
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）

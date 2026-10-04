@@ -55,6 +55,7 @@ menu(&basic_items, Some(0), Some("検索..."), Size::Md)
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/menu/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名コンポーネントとは別物。`role="menu"` / `menuitem`・開閉・キーボードナビゲーションは実装しない。操作できるメニューが必要な場合は Themes / Primitives の Menu を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - 項目は固定スロットではなく公開の `MenuItem` 構造体（ラベル + 無効状態、`Copy`）のスライスで受ける。項目数に上限なし

@@ -25,6 +25,7 @@ divider(Some("または"), Size::Md, Orientation::Horizontal)
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/divider/
 - 低忠実度のワイヤーフレーム部品。Primitives / Themes に同名の Divider は無く、本部品は `fandhe-frontend-wireframe-ui` 固有。`role="separator"` + `aria-orientation` 連動のアクセシブルな区切り線が必要な場合は Themes の Separator を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - `hr` は使わず、ルートは `div` + `::before` / `::after` 擬似要素で線を描く（垂直・ラベル付きを表現できないため）。`role="separator"` も付与しない

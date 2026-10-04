@@ -24,6 +24,7 @@ media(Some(icon::image(Size::Md)), Size::Md);  // スロット差し替え（静
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/media/
 - 低忠実度ワイヤーフレーム部品。Primitives / Themes のコンポーネントとは別物で、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。
 - 原案差分: `content: None` は再生グリフへフォールバックする（§11.4 の `None` なら出力しない原則からの意図的な逸脱。`avatar` が先例）。中身の無い枠は `frame` と見分けがつかないため。
 - 動画か静止画かは bool ではなくスロット差し替えで表す（`Some(icon::image(size))` で静止画のメディア枠）。画像プレースホルダー自体は Image 部品の担当。

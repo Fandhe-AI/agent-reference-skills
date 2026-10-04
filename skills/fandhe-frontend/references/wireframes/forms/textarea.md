@@ -36,6 +36,7 @@ textarea("入力中の内容", 3, Size::Md, Active(true), Disabled(false))
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/textarea/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名 Textarea とは別物。操作可能な複数行入力欄が必要な場合は Themes の Textarea を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - ArgRow 表のテキスト引数名は `text` だが、`src/textarea.rs` の実シグネチャでは `text_value`

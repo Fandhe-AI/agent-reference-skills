@@ -24,6 +24,7 @@ breadcrumbs(&["ホーム", "商品", "詳細"], Size::Md)
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/breadcrumbs/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名コンポーネントとは別物。`nav` / `ol` / `li` / `a[href]` / `aria-current` のいずれも実装しない。操作可能なパンくずが必要な場合は Themes / Primitives の Breadcrumb を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - ルートは `div`。`role` / `aria-*` / `tabindex` / `on*` / `href` は出力しない

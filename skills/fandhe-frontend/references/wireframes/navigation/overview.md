@@ -24,6 +24,7 @@ tabs(&["概要", "詳細", "設定"], Some(0), Orientation::Horizontal, Size::Md
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/
 - Navigation 部品はすべて位置引数の関数で、props 構造体は無い。戻り値は `fandhe_frontend_core::Node`
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名コンポーネントとは別物。操作可能な部品が必要な場合は Themes / Primitives を使う。`role` / `aria-*` / `tabindex` / `on*` / `href` は出力しない（アイコンの装飾用 `aria-hidden` を除く）
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）

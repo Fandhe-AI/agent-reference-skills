@@ -44,6 +44,7 @@ tooltip("補足説明", TooltipSide::Top, Size::Md)
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/tooltip/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名コンポーネントとは別物。ホバー・フォーカスで開閉する tooltip としては出力しない。操作できる tooltip が必要な場合は Themes / Primitives の Tooltip を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - `side` は Themes の `side`（Floating UI 相当）と同じ意味で「吹き出しが対象のどちら側に出るか」。矢印は反対側の辺から対象の方を向く

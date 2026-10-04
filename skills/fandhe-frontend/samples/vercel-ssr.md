@@ -89,6 +89,7 @@ vercel deploy --prod
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/examples/vercel-ssr/
 - 出典は公式 `examples/vercel-ssr`。公式の `src/main.rs` は上記に加え、`SIGTERM` / `SIGINT` 受信後に listener を drop し、`hyper_util::server::graceful::GracefulShutdown` で処理中の接続を最大 `DRAIN_TIMEOUT_SECS`（25 秒、Vercel の 30 秒猶予より短い）まで待つ graceful shutdown（`ShutdownSignals` / `drain_within`）と accept ループを持つ。ここでは bind 先解決とレスポンス組み立てのみ抜粋。
 - bind 先の優先順位は `FANDHE_FRONTEND_BIND_ADDR` > `PORT`（`0.0.0.0:$PORT`）> 既定 `127.0.0.1:3100`。`FANDHE_FRONTEND_BIND_ADDR` が設定されていれば `PORT` は検証されない。`PORT` が `1..=65535` 以外なら起動失敗（fail-closed）。
 - Vercel のプロジェクト環境変数 `PORT` に 1024 以上（例 `3100`）の設定が必須。`Dockerfile.vercel` は非 root（`USER 65532:65532`）で実行するため 1024 未満（Container Images 既定の `80`）へ bind できない。`Dockerfile.vercel` が `FANDHE_FRONTEND_BIND_ADDR` を設定しないのは、`PORT` より優先されて Vercel の上書きが効かなくなるため。

@@ -98,6 +98,7 @@ root
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/primitives/questionnaire/
 - 責務境界: 回答値の保持・検証（必須判定）・分岐（次にどの質問へ進むか）・送信はアプリケーション側。部品は「現在位置に応じた質問の表示状態切替と前へ / 次へ / スキップのトリガー」まで。
 - `active` 以外の `question` には `hidden` が付き、タブ操作・支援技術から除外される。`step == count` では `next` / `skip` が無条件で無効化される。`back` は `step == 0` で無効化される。
 - `question` は `fieldset`。`prompt`（`legend`）を先頭子に置く契約で、ネイティブなグループ名が id 配管なしで付く。

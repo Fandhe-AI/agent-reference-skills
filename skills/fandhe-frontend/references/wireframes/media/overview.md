@@ -23,6 +23,7 @@ media(Some(icon::image(Size::Md)), Size::Md);
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/
 - Media 部品はすべて位置引数の関数で、props 構造体は無い。補助型は `map::MapZoom`。`chart` は `Orientation`、`image` は `Primary` を共通型から取る
 - Image / Table は Themes に近い部品（Image / Table / Data table）があるが別物の低忠実度部品。Chart は Themes の Bar Chart / Charts とは別物。Map は実地図が必要なら外部の地図サービスを使う想定。`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - `<img>` / `<video>` / `<iframe>` / `<svg>` / `<canvas>` / `<table>` は出力せず、`src` / `poster` / `href` などの外部リソース引数も持たない

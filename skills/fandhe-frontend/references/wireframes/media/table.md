@@ -39,6 +39,7 @@ table(&HEADERS, &rows, Size::Md);
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/table/
 - 低忠実度ワイヤーフレーム部品。Themes の `Table` / `Data table`、Primitives の `Data table` とは別物で、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。データ表示・並べ替え・行選択が必要な場合は Themes の Table / Data table を使う。
 - `<table>` / `<th>` は使わず `div` / `span` + CSS grid で表現する（プレースホルダーの文言を支援技術へ「データ表」として伝えないため）。
 - ヘッダー有無は bool ではなく `headers.is_empty()` で表す。列数は明示引数にせず、`headers.len()` と各行長の最大値のうち大きい方を `1..=12` へ丸めて導く。行数は `rows.len()` で、`MAX_TABLE_ROWS`（20 行）超は先頭のみを描画する。

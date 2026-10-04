@@ -59,6 +59,7 @@ named view transition の 11 プリセットと `ViewTransitionPreset`:
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/guides/animation/
 - 各機能の最小例（原文より）: scroll-driven は `SlotRecipe::new("card", SLOTS).scroll_reveal("root").parallax("image", ParallaxSpeed::Slow).sticky_progress("progress")`、in-view は `<div data-in-view data-in-view-once="true">` + `[data-in-view] { opacity: 1; transition: opacity var(--fandhe-motion-duration-normal); }`、hover / press は `<button data-fandhe-gesture-hover data-fandhe-gesture-press>` + `[data-fandhe-hover]` / `[data-fandhe-press]`、layout FLIP は `<ul data-fandhe-flip-auto>`、共有レイアウトは `<span data-fandhe-layout-id="indicator"></span>`、SVG path は `<svg><path data-fandhe-svg-path-draw d="..." /></svg>`
 - フォールバック: presence は `@starting-style` 非対応でも `[hidden]` の開閉は動き演出のみ省略。stagger は JS なしでも初期 HTML の `style` による静的遅延が有効（自動追従のみ失われる）。scroll-driven は属性なし・JS なしで静止したまま安全に劣化。in-view は JS なしで CSS 初期状態のまま留まるため、初期状態は「非表示」でなく控えめな表現に留める。View Transitions は `document.startViewTransition` 非対応で通常の即時更新。layout FLIP / 共有レイアウト / SVG path は feature off・属性なしで通常表示
 - stagger の自動書き戻しは `Insert` / `Move` 後の DOM 順位置ベース。`Center` / `Last` 起点はアプリ側が `stagger_index_style` を直接書く責務で対象外

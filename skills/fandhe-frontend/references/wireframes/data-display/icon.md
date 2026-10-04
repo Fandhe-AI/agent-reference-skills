@@ -63,6 +63,7 @@ pub const ALL: &[IconEntry] = &[("plus", plus), ("minus", minus), /* ... */ ("br
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/icon/
 - 低忠実度ワイヤーフレーム部品。Themes の `Icon` とは別物で、`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とも無関係（Rust 製）。ラベル付き・対話可能なアイコンが必要な場合は Themes の Icon を使う。
 - 原案差分: instance swap は `Node` ではなく `fn(Size) -> Node`（関数ポインタ）。`icon(glyph: Node, size)` 形式だとサイズを 2 か所で指定できて誤用を招くため、部品側が `glyph(size)` を 1 回だけ呼ぶ設計にしている。任意の `Node`（例: `avatar` の戻り値）はこのスロットに渡せない。
 - ルートは `<span class="fw-wire-icon fw-wire-size-<段階>">` のみ。`role` / `aria-*` / `tabindex` / `style` / `data-*`（部品側）は付与しない。グリフ SVG 自体は `aria-hidden="true"` / `focusable="false"` で `data-icon` に名前を持つ。

@@ -45,6 +45,7 @@ question(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/question/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の Field とは別物。操作可能な質問項目が必要な場合は Primitives の Field 等を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - コントロール種別は専用 variant を持たず、`control: Node` スロットへ委ねる（`question` 自身がテキストフィールド anatomy を内蔵する案は採用しなかった）

@@ -71,6 +71,7 @@ root
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/primitives/bubble/
 - `data-variant` は shadcn/ui の 7 色調バリアントを「塗り・枠線・無装飾」の 3 形態へ縮約したもの。色調選択は pre-styled-ui の ColorPalette 軸の責務。
 - `data-group-position` は連続発言の角丸連結用の表示状態のみ。「何番目か」の算出は利用者側の責務（部品はリスト全体を受け取らない）。
 - `content` はスロット。Markdown レンダリング結果等は利用者側で用意する。

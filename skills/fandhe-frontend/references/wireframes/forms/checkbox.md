@@ -31,6 +31,7 @@ checkbox(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/checkbox/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名 Checkbox とは別物。操作可能なチェックボックスが必要な場合は Themes / Primitives の Checkbox を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - ルートは `div`。`role` / `aria-checked` / `tabindex` / `on*` は出力しない（チェックグリフの装飾用 `aria-hidden="true"` を除く）

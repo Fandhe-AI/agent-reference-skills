@@ -69,6 +69,7 @@ let server = Server::new().diagnostics(|_event: &DiagnosticEvent<'_>| {});
 
 ## Notes
 
+- 出典: https://docs.rs/crate/fandhe-backend-core/0.4.2/source/src/diagnostics.rs
 - `report` はブロッキング I/O を行ってはならない。accept ループ・rebind の背景 drain タスク上で同期的に呼ばれる（dyn 互換のため同期 API、`Middleware` と同じ規約）。I/O が必要な実装は非同期チャネルへの送信に留め、実際の I/O は別タスクで行う
 - `report` は panic してはならない。コア側は `std::panic::catch_unwind` で境界を守るが、`panic = "abort"` ビルドでは捕捉できず、フェイルクローズの保証にはならない
 - 既定シンク `StderrDiagnostics` は上記の非ブロッキング契約の対象外（後方互換のための意図的な例外）。`DiagnosticEvent` の 4 種はいずれも accept 失敗・grace 超過等の低頻度なエラー・シャットダウン経路限定のイベントで、per-request のホットパスではない

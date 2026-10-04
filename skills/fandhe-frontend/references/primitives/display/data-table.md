@@ -93,6 +93,7 @@ root
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/primitives/data-table/
 - 責務境界: 行の実際の並べ替え（比較関数・安定ソート・多列優先順位）・選択結果の保持・送信・永続化・列定義や列順の永続化・ページサイズに応じたデータ取得や総件数算出はアプリケーション側。行選択集合は状態機械に持たせない。
 - `<table>` / `<thead>` / `<tbody>` / `<tr>` を一切生成しない（`table` / `empty-state` / `skeleton` は pre-styled-ui 側にのみ anatomy があり、headless-ui は上層へ依存できないため）。セル単位の表示状態は node を作らない属性ヘルパ `column_attrs` / `column_header_attrs` / `row_attrs` として公開され、pre-styled `table` の `attrs` へそのまま渡せる。headless 単独経路向けに `column_header`（`th`）/ `select_all`（`th`）/ `select_row`（`td`）のノード生成パーツも持つ。
 - `column_header` / `select_all` は `th` で `scope="col"` 固定。`sort_trigger` は `button type="button"`。

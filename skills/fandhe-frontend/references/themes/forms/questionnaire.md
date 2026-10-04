@@ -50,6 +50,7 @@ pub fn skip<'a>(state: &Questionnaire, disabled: bool, attrs: Vec<(&'a str, &'a 
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/themes/questionnaire/
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 - `size` / `colorPalette` のような見た目クラス軸は持たない。見た目は headless が出力する `data-state`（`active` / `completed` / `upcoming`）・`data-answered` / `data-skipped` / `data-required` / `data-invalid` / `data-disabled` / `data-complete` を CSS セレクタとして参照して切り替わる
 - `question` は非 active（`completed` / `upcoming`）のとき常に `hidden` 属性を伴う。`completed` / `upcoming` の枠色・破線表現が可視化されるのは、アプリケーション側が独自 CSS で `[hidden]` を打ち消して一覧表示する場合（回答レビュー画面等）に限られる

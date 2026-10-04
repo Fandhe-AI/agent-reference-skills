@@ -24,6 +24,7 @@ paragraph("本文のダミーテキストです。\n2 行目です。", Size::Md
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/
 - Text 部品はすべて位置引数の関数で、props 構造体は無い。強調は Text / Paragraph / Link / Rich text が `Bold`、Annotation / Tag が `Primary`（反転色）で表す
 - Link / Paragraph / Tag / Text は Themes に近い部品があるが別物の低忠実度部品。Annotation と Rich text は Primitives・Themes に同名部品が無い（wireframe-ui 固有）。`@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - `role` / `aria-*` / `tabindex` は付与せず、`button` / `a[href]` も出力しない（Link のルートは `span`、Tag の削除「×」は `<button>` ではない）

@@ -29,6 +29,7 @@ frame(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/
 - Layout 部品はすべて位置引数の関数で、props 構造体は無い。`children` は借用ではなく `Vec<Node>` の所有渡し
 - Divider は Themes の Separator、Frame は Themes の Card と用途が近いが別物。Grid / Stack は Primitives / Themes に同名部品が無い（wireframe-ui 固有）
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）

@@ -39,6 +39,7 @@ progress(80, ProgressShape::Bar, Size::Md)
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/progress/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名コンポーネントとは別物。実際に値が変化する進捗表示としては出力しない。操作・更新できる進捗表示が必要な場合は Themes / Primitives の Progress を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - `ProgressShape` は bool 引数ではなく部品ローカルの列挙型（Rust API Guidelines が bool 引数を推奨しないため）

@@ -54,6 +54,7 @@ let css = theme.to_css();
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/guides/pre-styled-ui-motion-feature/
 - 有効化すると `fandhe-animation`（外部依存ゼロ・`forbid(unsafe_code)`）が依存グラフに加わる。`motion` を有効化しなければ crate サイズ・ビルド時間・`Theme::to_css` の処理量・CSS 出力サイズのいずれも変わらない
 - presence（`SlotRecipe::presence_transition`）は `motion` feature 配下ではなく既定出力に無条件で含まれる。共通 `@keyframes`・stagger・カスタムカーソルは feature 配下に実装済み。scroll-driven は採用方針に従い追加時に判断される
 - scroll-driven のフォールバックが進捗値を得るには、対象要素へ `data-fandhe-scroll-progress` を付与し wasm-full の `scroll-driver` feature（既定 on）を配線する。属性なしでは静止したまま安全に劣化する。属性値 `"cover"` / `"contain"` でネイティブと同じ範囲を選べる

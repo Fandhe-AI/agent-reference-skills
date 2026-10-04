@@ -63,6 +63,7 @@ calendar("2026 年 9 月", &SEPTEMBER_WEEKS, Some(18), Size::Md)
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/calendar/
 - 低忠実度のワイヤーフレーム部品であり、Primitives / Themes の同名 Calendar / Date Picker とは別物。月送り・キーボード操作・範囲選択は実装しない。操作可能な日付ピッカーが必要な場合は Themes / Primitives の Calendar / Date Picker を使う
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - ルートは表示状態軸を持たない。選択日セルだけが `Active`（`data-active`）を持ち、新規の `Selected` / `Checked` 型は無い

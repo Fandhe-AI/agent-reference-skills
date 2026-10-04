@@ -33,6 +33,7 @@ frame(
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/wireframes/frame/
 - 低忠実度のワイヤーフレーム部品。Themes の Card（header / body / footer の anatomy を持つ）とは別物で、Frame は境界線と padding のみの単純な配置コンテナ
 - `@ark-ui/react` / `@chakra-ui/react` の JS/TS API とは無関係（Rust 製）
 - `children` は借用の `&[Node]` ではなく所有渡しの `Vec<Node>`（子ツリー全体の `clone()` を避けるため）
