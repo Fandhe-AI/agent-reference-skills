@@ -45,9 +45,12 @@ assert_eq!(render(&greeting), r#"<p class="greeting">hello, world</p>"#);
 - `raw_html()` を使ってよいのは、渡す文字列がフレームワーク利用者コード内の固定リテラル、または別途信頼できるサニタイズ処理を経た文字列である場合のみ。ユーザー入力・外部 API のレスポンス・DB から取得した値をそのまま渡してはいけない
 - `format!("<div>{}</div>", user_input)` のような文字列組み立てによる HTML 生成は既定エスケープの保証が一切効かないため禁止
 - ネスト 3 段を超えたら関数抽出、意味のあるまとまりには中間 `let` 束縛で名前を付けるのが可読性規約。整形は `cargo fmt` に委ねる
+- `href` / `src` 等 URL 属性の値は `is_safe_url` を通過したものだけが出力され（`javascript:` 等は属性ごと省略）、`on*` イベントハンドラ属性は値によらず一律出力されない。`script` / `style` / `iframe` のインライン内容は `text()` を経由するため JS/CSS としては動作せず、外部ファイル参照（`src` / `href`）が推奨。インラインが不可避な場合のみ `raw_html()` をレビュー済みオプトインで使う。JSON-LD の埋め込みには `json_ld()` を使う（[コンポーネント記述 API](../api/component-api.md) 参照）
+- `fandhe-frontend-core` 0.4.3 の `tags` モジュールは 41 のタグヘルパーを提供する（ソースで確認）
 - ハイドレーション・状態管理（`fandhe-frontend-interactive`）は本ガイドの範囲外
 
 ## Related
 
 - [クイックスタート](../getting-started/quickstart.md)
 - [最小埋め込みガイド](./embedding-guide.md)
+- [コンポーネント記述 API](../api/component-api.md)

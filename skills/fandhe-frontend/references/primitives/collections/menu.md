@@ -1,6 +1,6 @@
 # Menu
 
-Trigger-click-opened dropdown action item list (16 anatomy parts). Provides `Menu` (open/close), `MenuCheckboxItem` (checkbox item state), `MenuRadioItemGroup` (exclusive radio item selection).
+Trigger-click-opened dropdown action item list (Root, Trigger, Indicator, Positioner, Content, Arrow, ArrowTip, Item, ItemText, ItemIndicator, ItemGroup, ItemGroupLabel, Separator, TriggerItem, ContextTrigger, CheckboxItem, RadioItemGroup, RadioItem). Provides `Menu` (open/close), `MenuCheckboxItem` (checkbox item state), `MenuRadioItemGroup` (exclusive radio item selection).
 
 ## Signature / Usage
 
@@ -14,6 +14,8 @@ pub fn content<'a>(state: OpenState, id: Option<&'a str>, labelledby: Option<&'a
 pub fn arrow<'a>(attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
 pub fn arrow_tip<'a>(attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
 pub fn item<'a>(value: &'a str, disabled: bool, highlighted: bool, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
+pub fn item_text<'a>(disabled: bool, highlighted: bool, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
+pub fn item_indicator<'a>(checked: bool, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
 pub fn item_group<'a>(labelledby: Option<&'a str>, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
 pub fn item_group_label<'a>(id: Option<&'a str>, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
 pub fn separator<'a>(attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
@@ -58,7 +60,10 @@ root
       item-group
         item-group-label
         item
+          item-text
+          item-indicator
       separator
+      trigger-item / context-trigger / checkbox-item / radio-item-group / radio-item
 ```
 
 ## Options / Props
@@ -72,6 +77,7 @@ root
 
 ## Notes
 
+- ARIA: `trigger` は `type="button"` + `aria-haspopup="menu"` + `aria-expanded`、`content` は `role="menu"`、`item` は `role="menuitem"` + `data-value`（disabled で `aria-disabled` + `data-disabled`）、`checkbox_item` は `role="menuitemcheckbox"`、`radio_item` は `role="menuitemradio"`（いずれも `aria-checked`）、`item_group` / `radio_item_group` は `role="group"`（`labelledby` が `Some` で `aria-labelledby`）、`separator` は `<hr role="separator" aria-orientation="horizontal">`、`item_indicator` は `aria-hidden="true"`（未チェックで `hidden`）、`item_text` は `data-disabled` / `data-highlighted`
 - `trigger_item`（サブメニュートリガー）は `Menu::trigger_item` を呼ぶ際、**親 Menu ではなくサブメニュー側 `Menu` インスタンス**から呼ぶ（`aria-expanded`/`data-state` はサブメニュー自身の状態を反映するため）
 - `context_trigger`（右クリック）は SSR/no-JS で成立しないジェスチャのため ARIA 属性を一切付与しない（`data-*` フックのみ）
 - `checkbox_item`/`radio_item` は `div` ベースでネイティブ `disabled` を持たないため、`aria-disabled` + `data-disabled` の対で無効状態を表現する

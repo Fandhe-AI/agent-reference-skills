@@ -38,6 +38,7 @@ pub fn stylesheet() -> String
 - `Carousel` 状態機械と headless の自由関数 `root` はあえて再エクスポートしない。公開されるのは styled `root` と再エクスポートされた anatomy parts のみ。headless を直接使う場合は `fandhe_frontend_headless_ui::carousel::Carousel` を明示的に import する必要がある
 - `item-group` の transform は headless 層が設定する `--fandhe-carousel-index`（明示的に `0` フォールバック付き）を読む。`data-current` が item/indicator の強調表示を駆動し、`data-disabled` が prev/next トリガーを減光する
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製）
+- `@chakra-ui/react` の JS/TS API とは別物（Rust 製）。
 
 ## Related
 

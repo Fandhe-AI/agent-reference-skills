@@ -3,6 +3,7 @@
 | Name | Description | Path |
 |------|-------------|------|
 | BoundServer | `Server::bind` が返す accept ループ本体 | [bound-server.md](./bound-server.md) |
+| Diagnostics | ライブラリ内部の実行時診断送信先を差し替えるシンク（v0.4.2） | [diagnostics.md](./diagnostics.md) |
 | Extension Points | 4 拡張点・plugin シームの全体フロー | [extension-points.md](./extension-points.md) |
 | GateContext | `RequestGate::check` に渡される接続情報。accept したソケットの実 peer address を gate 実装から参照可能にする | [gate-context.md](./gate-context.md) |
 | Handler | 最終応答を生成する既定ハンドラ拡張点 | [handler.md](./handler.md) |

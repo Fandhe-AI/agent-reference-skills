@@ -38,6 +38,8 @@ apply_exempt.py --suggestions <reviewed.toml> --allowlist <allowlist.toml> [--dr
 - allowlist 解決順は `--allowlist <path>` 明示 → `<project-dir>/allowlist.toml` → 標準雛形 `tools/npm-asset-build/allowlist.toml` の 2 段のみ（それ以上の暗黙探索はしない）
 - `allowlist.toml` はパッケージ + ルール単位の免除機構。ワイルドカード不可・`reason` 必須という fail-closed な設計
 - `apply_exempt.py` は `--suggest-exempt` が出力した雛形を人間がレビュー・編集して保存したファイルのみ受理し、allowlist.toml へ半自動追記する（`check_static_only.py`/`install.sh` からは呼び出されない）
+- `install.sh --dir <project-dir>` の動作: `<package-spec>` 省略時は `package-lock.json` があれば `npm ci --ignore-scripts --no-audit`、無ければ `npm install --ignore-scripts --no-audit`。`<package-spec>` 指定時は `npm install --ignore-scripts --no-audit -- <package-spec>...`。`--ignore-scripts=false` / `--no-ignore-scripts` / `--foreground-scripts` 等のスクリプト再有効化フラグと未知フラグは拒否され（npm は呼び出されない）、非 0 で終了する。`node_modules` が生成されない依存 0 件のプロジェクトでは `check_static_only.py` の自動起動を notice 付きでスキップする
+- `check_static_only.py --suggest-exempt` は `.js` / `.mjs` / `.cjs` / `.node` / `.wasm` のハード拒否対象には雛形の代わりに「免除不可」の注記を出力する。`apply_exempt.py` の終了コードは `0`=適用完了（適用 0 件の冪等成功を含む）/ `1`=エントリ検証で拒否あり / `2`=実行エラー。`reason` が空または `TODO:` で始まる雛形のままのエントリは拒否し、書き込みは検証合格後に一時ファイル経由の `os.replace()` でアトミックに行う。既存と同一（package, rule, ext/file）のエントリは `SKIPPED` で重複追記しない
 - 2 層防御の限界: `install.sh`（`--ignore-scripts`）はインストール時暗黙実行を防ぐが、パッケージ内の明示的な `require()` 呼び出しは防がない。`npm audit` は既知 advisory のみ検出し未知・0-day は検出できない
 - `templates/default/tools/npm-asset-build/` に正本 4 ファイル（`install.sh`/`check_static_only.py`/`apply_exempt.py`/`allowlist.toml`）がバイト同一でコピー同梱されており、ドリフトは CI で機械検証される
 

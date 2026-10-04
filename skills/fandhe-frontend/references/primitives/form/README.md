@@ -3,6 +3,7 @@
 | Name | Description | Path |
 | --- | --- | --- |
 | Angle Slider | 円形の単一角度値スライダー（0..=359 度） | [angle-slider.md](./angle-slider.md) |
+| Button Group | 関連ボタンのグループ化、水平/垂直方向対応 | [button-group.md](./button-group.md) |
 | Checkbox | checked/unchecked/indeterminate を扱うフォームコントロール | [checkbox.md](./checkbox.md) |
 | Checkbox Group | 複数選択可能なチェックボックスグループ | [checkbox-group.md](./checkbox-group.md) |
 | Color Picker | HSV カラーホイール + アルファセレクター | [color-picker.md](./color-picker.md) |
@@ -12,9 +13,11 @@
 | Fieldset | Field 群をまとめるネイティブ `<fieldset>`/`<legend>` | [fieldset.md](./fieldset.md) |
 | File Upload | accept/size バリデーション付きドラッグ&ドロップファイルアップロード | [file-upload.md](./file-upload.md) |
 | Image Cropper | 決定的な整数クロップ矩形の状態機械 | [image-cropper.md](./image-cropper.md) |
+| Input Group | 入力欄の前後 addon（テキスト・アイコン・ボタン）配置 | [input-group.md](./input-group.md) |
 | Number Input | 増減トリガー付き数値入力 | [number-input.md](./number-input.md) |
 | Password Input | 表示/非表示切り替え付きパスワード入力 | [password-input.md](./password-input.md) |
 | Pin Input | PIN/確認コード入力 | [pin-input.md](./pin-input.md) |
+| Questionnaire | 多段質問フロー、選択肢・自由記述・スキップ対応 | [questionnaire.md](./questionnaire.md) |
 | Radio Group | 単一選択のフォームコントロール | [radio-group.md](./radio-group.md) |
 | Rating Group | 星/アイコン形式の評価セレクター | [rating-group.md](./rating-group.md) |
 | Segment Group | スライドインジケーター付きラジオ形式セグメントセレクター | [segment-group.md](./segment-group.md) |

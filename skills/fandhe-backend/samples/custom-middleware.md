@@ -4,9 +4,9 @@
 
 ```toml
 [dependencies]
-fandhe-backend-core = "0.4.0"
-fandhe-backend-http = "0.4.0"
-fandhe-backend-routes = "0.4.0"
+fandhe-backend-core = "0.4.2"
+fandhe-backend-http = "0.4.2"
+fandhe-backend-routes = "0.4.2"
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 ```
 
@@ -54,3 +54,4 @@ async fn main() -> std::io::Result<()> {
 - I/O が必要な場合は `on_request` / `on_response` を非同期チャネル（`tokio::sync::mpsc` 等）への送信に留め、実際のファイル・ネットワーク I/O は別タスクで行う（プロダクション実装は `fandhe-backend-plugin-tracing` の `TracingMiddleware` を参照）
 - `Middleware` は `head` を変更してはならない契約だが、コアは型でこれを強制しない
 - 複数登録した場合、登録順に `on_request` / `on_response` が呼ばれる。委譲が成立した接続（WebSocket 等）では `on_response` は呼ばれない
+- v0.4.2 で `on_response_with_status` が追加された。`Interceptor::map_response` 適用後にクライアントへ実際に送出されたステータスコードを参照できる（ステータス付きアクセスログ用）。既定実装は `on_response` へ委譲するため、`on_response` のみ実装した既存コードは無変更で動作する

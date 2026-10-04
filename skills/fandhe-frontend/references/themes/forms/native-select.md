@@ -5,10 +5,18 @@
 ## Signature / Usage
 
 ```rust
-use fandhe_frontend_pre_styled_ui::native_select::{self, NativeSelectProps};
-use fandhe_frontend_headless_ui::field::FieldProps;
+use fandhe_frontend_pre_styled_ui::native_select::{self, FieldIds, FieldProps, NativeSelectProps};
 
-let node = native_select::native_select(&NativeSelectProps::default(), &FieldProps::default(), vec![], vec![]);
+let field = FieldProps {
+    id: "country",
+    ids: FieldIds::default(),
+    disabled: false,
+    invalid: false,
+    required: false,
+    readonly: false,
+    has_helper_text: false,
+};
+let node = native_select::native_select(&NativeSelectProps::default(), &field, vec![], vec![]);
 ```
 
 `css() -> String` が静的 CSS 全量を返す。`FieldIds`/`FieldProps` は headless-ui `field` からの再エクスポート。

@@ -11,7 +11,7 @@ use fandhe_frontend_pre_styled_ui::{ColorPalette, Size};
 let node = radio_group::root(Size::Md, ColorPalette::Accent, false, None, None, vec![], vec![]);
 ```
 
-`root(size, palette, disabled, orientation: Option<Orientation>, labelled_by: Option<&str>, attrs, children) -> Node`。`stylesheet() -> String` が静的 CSS 全量を返す。`item`/`item_control`/`item_hidden_input`/`item_text`/`label`/`RadioGroup`/`DATA_STATE_CHECKED`/`DATA_STATE_UNCHECKED` は headless-ui からの再エクスポート。
+`root(size, palette, disabled, orientation: Option<Orientation>, labelled_by: Option<&str>, attrs, children) -> Node`。`root_with_props(size, palette, props: &RadioGroupProps, orientation, labelled_by, attrs, children) -> Node` は `readonly`/`invalid`/`required` も root へ反映する（`root` は `disabled` 以外を既定値へ戻す）。`stylesheet() -> String` が静的 CSS 全量を返す。`item`/`item_control`/`item_hidden_input`/`item_text`/`label`/`RadioGroup`/`DATA_STATE_CHECKED`/`DATA_STATE_UNCHECKED` は headless-ui からの再エクスポート。
 
 ## Anatomy
 
@@ -24,6 +24,7 @@ let node = radio_group::root(Size::Md, ColorPalette::Accent, false, None, None, 
 | `size` | `Size`（既定 `Md`） | `root` へクラス付与 |
 | `palette` | `ColorPalette`（既定 `Accent`） | checked 時の色 |
 | `disabled` | `bool` | 全体の無効化 |
+| `props`（`root_with_props` のみ） | `&RadioGroupProps`（`disabled` / `readonly` / `invalid` / `required`: `bool`） | `aria-readonly`/`aria-required`/`data-invalid`/`data-required` を root へ反映 |
 | `orientation` | `Option<Orientation>` | `data-orientation`/`aria-orientation` |
 | `labelled_by` | `Option<&str>` | `aria-labelledby` |
 

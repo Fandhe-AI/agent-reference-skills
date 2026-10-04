@@ -17,7 +17,8 @@ let node = image(&ImageProps::new("/photo.png", "説明"), vec![]);
 | `src` | `&str` | 必須 | 画像 URL |
 | `alt` | `&str` | 必須 | 代替テキスト（アクセシビリティ上必須） |
 | `fit` | `ImageFit` (`Cover`/`Contain`/`Fill`/`ScaleDown`/`NoFit`) | `Cover` | `object-fit` |
-| `aspect_ratio` | `AspectRatio` (`Auto`/`Square`/`Video`) | `Auto` | `aspect-ratio` |
+| `aspect_ratio` | `AspectRatio` (`Auto`/`Square`/`Landscape`/`Portrait`/`Video`) | `Auto` | `aspect-ratio`。`Square` は 1:1、`Landscape` は 4:3、`Portrait` は 3:4、`Video` は 16:9 |
+| `shape` | `ImageShape` (`Square`/`Rounded`/`Circle`) | `Square` | 角丸。`Circle` は `AspectRatio::Square` と組み合わせると真円（非正方形では pill 状） |
 
 ## Notes
 

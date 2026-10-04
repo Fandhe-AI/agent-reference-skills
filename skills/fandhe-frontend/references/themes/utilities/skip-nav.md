@@ -32,6 +32,7 @@ content (div)
 - `fandhe-frontend-docs-site` は hydration を持たないため、本部品の表示切り替えは CSS のみで完結する
 - Themes は Primitives（`fandhe_frontend_headless_ui::skip_nav`）への薄いラッパーであり、既定 CSS のみを追加する
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製）
+- `@chakra-ui/react` の JS/TS API とは別物（Rust 製）。
 
 ## Related
 

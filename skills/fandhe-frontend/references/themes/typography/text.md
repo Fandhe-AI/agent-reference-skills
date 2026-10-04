@@ -20,7 +20,9 @@ let node = text(&TextProps::default(), vec![], vec![/* children */]);
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
-| size | `TextSize` | `Md` | フォントサイズ・行間の視覚サイズ軸（`Xs`/`Sm`/`Md`/`Lg`/`Xl`） |
+| size | `TextSize` | `Md` | フォントサイズ・行間の視覚サイズ軸（`Xs`/`Sm`/`Md`/`Lg`/`Xl`/`Xl2`/`Xl3`/`Xl4`/`Xl5`/`Xl6`） |
+| weight | `TextWeight` | `Normal` | フォントウェイト（`Normal`/`Medium`/`Semibold`/`Bold`） |
+| variant | `TextVariant` | `Plain` | 前景色。`Plain` は継承（色宣言なし）、`Muted` はテーマトークン `fg-muted` へ弱める |
 
 ## Notes
 

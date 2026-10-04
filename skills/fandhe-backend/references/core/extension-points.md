@@ -20,13 +20,14 @@ loop {
       5. Handler::handle（未登録時、または 3.5/4 が None の場合。未登録時は 404）
       5.4. Interceptor::map_response（登録順に逐次適用。gate 拒否・パースエラー・upgrade 失敗のレスポンスは対象外）
       5.5. plugin::finalize_response（レスポンス後処理型プラグイン）
-      6. レスポンス書き込み → Middleware::on_response
+      6. レスポンス書き込み → Middleware::on_response_with_status（送出ステータス付き。既定実装が on_response へ委譲。v0.4.2）
       7. should_keep_alive(head) が false なら接続を閉じる
 }
 ```
 
 ## Notes
 
+- v0.4.2 で `Middleware` に `on_response_with_status(head, status, elapsed)` が追加された（issue #721）。`status` は `Interceptor::map_response` 適用後にクライアントへ実際に送出した値で、コアが呼ぶのはこの新フックのみ（既定実装が `on_response` へ委譲するため既存実装は無変更で動作）。詳細は [Middleware](./middleware.md)
 - `RequestGate` を `UpgradeHandler` より先に評価するのは、将来の hub TenantGate が WebSocket アップグレードも既定拒否でゲートできるようにするため
 - `Interceptor::intercept` を `RequestGate` より後・`UpgradeHandler` より後に評価するのは、ユーザーコードがゲートの既定拒否を迂回できないようにするため（フェイルクローズ維持）
 - 4 拡張点は dyn 互換性のため同期 API として定義される。`Handler::handle` のみ非対称に async 化されている（イシュー #315）。`Interceptor` の実装内でも同期ブロッキング I/O は禁止（実測でスループット最大 25% 劣化）

@@ -11,5 +11,6 @@
 | LineChart | `ChartData` の複数系列を描く SVG 折れ線グラフ | [line-chart.md](./line-chart.md) |
 | PieChart | 単一系列の SVG 円グラフ | [pie-chart.md](./pie-chart.md) |
 | RadarChart | カテゴリを軸、系列をポリゴンとして描く SVG レーダーチャート | [radar-chart.md](./radar-chart.md) |
+| RadialChart | shadcn/ui Charts の Radial 相当の同心リング型グラフ。外部依存ゼロの SVG 実装 | [radial-chart.md](./radial-chart.md) |
 | ScatterChart | `(x, y)` 座標系列を描く SVG 散布図 | [scatter-chart.md](./scatter-chart.md) |
 | Sparkline | 軸・ラベルなしの単一系列縮小面 + 線チャート | [sparkline.md](./sparkline.md) |

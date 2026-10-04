@@ -41,6 +41,7 @@ pub fn link<'a>(
 
 - `root`/`heading`/`list`/`item`/`link` のいずれも `role` を一切付与しない（`menu` と誤読させない設計判断）
 - [NavigationMenu](./navigation-menu.md) との使い分けの軸は role の有無ではなくディスクロージャの有無。単なるリンク集は NavList、開閉するパネルが必要なら NavigationMenu を使う
+- 呼び出し側 `attrs` による固定付与キー（`root` の `aria-label`、`link` の `href` / `aria-current` / `data-current`。`current=false` でも無条件に除去）の上書きは除去される。`heading` の見出しレベルは `h2` 固定、`list` は `ul` 固定
 - キーボードナビゲーション（矢印キーでの項目間移動）は提供しない（通常の Tab 移動のみ）
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製、SSR 向け headless UI）
 

@@ -14,7 +14,7 @@ use fandhe_frontend_pre_styled_ui::floating_panel::{OpenState, Stage};
 let css = stylesheet();
 let node = root(OpenState::Open, Stage::Default, vec![], vec![
     content(OpenState::Open, Stage::Default, Some("fp-1"), Some("fp-1-title"), vec![], vec![
-        header(vec![], vec![title(Some("fp-1-title"), vec![], vec![])]),
+        header(Stage::Default, vec![], vec![title(Some("fp-1-title"), vec![], vec![])]),
     ]),
 ]);
 ```

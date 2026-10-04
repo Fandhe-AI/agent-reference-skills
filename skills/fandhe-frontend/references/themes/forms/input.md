@@ -5,10 +5,18 @@
 ## Signature / Usage
 
 ```rust
-use fandhe_frontend_pre_styled_ui::input::{self, InputProps};
-use fandhe_frontend_headless_ui::field::FieldProps;
+use fandhe_frontend_pre_styled_ui::input::{self, FieldIds, FieldProps, InputProps};
 
-let node = input::input(&InputProps::default(), &FieldProps::default(), vec![]);
+let field = FieldProps {
+    id: "name",
+    ids: FieldIds::default(),
+    disabled: false,
+    invalid: false,
+    required: false,
+    readonly: false,
+    has_helper_text: false,
+};
+let node = input::input(&InputProps::default(), &field, vec![]);
 ```
 
 `css() -> String` が静的 CSS 全量を返す。`error_text`/`FieldIds`/`FieldProps` は headless-ui `field` からの再エクスポート。
@@ -17,8 +25,9 @@ let node = input::input(&InputProps::default(), &FieldProps::default(), vec![]);
 
 | Name | Type | Description |
 |------|------|-------------|
-| `InputProps.variant` | `InputVariant`（`Outline`（既定） \| `Subtle` \| 下線のみ variant） | 見た目 |
+| `InputProps.variant` | `InputVariant`（`Outline`（既定） \| `Subtle` \| `Flushed` \| `SubtleFlushed`） | 見た目。`Subtle` は淡色背景・枠線なし、`Flushed` は下線のみ、`SubtleFlushed` は淡色背景 + 下線のみ |
 | `InputProps.size` | `Size`（既定 `Md`） | サイズ |
+| `InputProps.shape` | `Option<Shape>`（`Pill` \| `Circle`、既定 `None`） | `None` は既定の角丸。`Pill` は両端を最大まで丸める。`Circle` は選択中 `Size` の `height` と同値へ `width` を固定して真円にする。`Flushed` と併用した場合は shape が後勝ち |
 | `field.disabled` / `invalid` / `required` / `readonly` | `bool`（`FieldProps` 経由） | `data-disabled`/`data-invalid` 等を反映 |
 
 ## Notes

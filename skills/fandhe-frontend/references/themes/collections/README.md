@@ -3,6 +3,7 @@
 | Name | Description | Path |
 | --- | --- | --- |
 | Carousel | スタイル付きスライドナビゲーション、size バリアント | [carousel.md](./carousel.md) |
+| Command | cmdk 由来のコマンドパレット（shadcn/ui `Command` 相当）のスタイル済み部品 | [command.md](./command.md) |
 | Combobox | スタイル付きテキストフィルター ARIA combobox | [combobox.md](./combobox.md) |
 | Listbox | スタイル付き常時展開選択リスト | [listbox.md](./listbox.md) |
 | Menu | スタイル付きドロップダウン操作リスト、アンカー位置決め | [menu.md](./menu.md) |

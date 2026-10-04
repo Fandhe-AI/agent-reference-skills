@@ -74,9 +74,12 @@ root
 
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製）。ark-ui の Calendar/DatePicker を参考にしているが、API 形状は自由関数群 + `Calendar` 状態機械であり、ark-ui の React コンポーネント構成とは異なる
 - Data Attributes: `day-trigger` に `data-selected`（選択中）・`data-today`（今日、`aria-current="date"` も同時付与）・`data-outside-month`（表示月外）・`data-disabled`（min/max 範囲外、ネイティブ `disabled` + `aria-disabled` も付与）。`prev-trigger`/`next-trigger` は範囲端到達時に `data-disabled` を付与
-- Accessibility: `table` に `role="grid"`、`table_row` に `role="row"`、`table_head_cell`/`table_cell` に `role="columnheader"`/`role="gridcell"` を固定付与（WAI-ARIA grid パターン）。`table_cell` は選択有無にかかわらず常に `aria-selected="true"`/`"false"` を出力する。`day_trigger` の `aria-label` は ISO 8601 表記（例 `2026-07-15`）を固定付与
+- Accessibility: `table` に `role="grid"`、`table_row` に `role="row"`、`table_head_cell`/`table_cell` に `role="columnheader"`/`role="gridcell"` を固定付与（WAI-ARIA grid パターン）。`table_cell` は選択有無にかかわらず常に `aria-selected="true"`/`"false"` を出力する。`day_trigger` の `aria-label` は ISO 8601 表記（例 `2026-07-15`）を固定付与し、同じ値を `data-value` にも出力する（クリックを `"select"` へ写像する際の payload）
+- `prev_trigger` / `next_trigger` は既定の `aria-label` を持たない。アイコンのみを `children` に置く場合、アクセシブル名（例 `("aria-label", "Previous month")`）は呼び出し側が `attrs` で渡す。ネイティブ `disabled` 時は `aria-disabled` / `data-disabled` も出力する
+- パート名は ark-ui と入れ替わっている（本実装は `thead` = `table-header`、`th` = `table-head-cell`。ark-ui は `thead` を `table-head`、`th` を `table-header` と呼ぶ）。`table` は `heading` の `id` と `labelledby` で `aria-labelledby` を関連付ける
+- 矢印キー（日単位移動）・Home / End・PageUp / PageDown（月移動）のキー配線はクライアント層（wasm-full）で配線済み。本モジュールは SSR 静的出力のみ
 - `prev_trigger`/`next_trigger`/`day_trigger` はネイティブ `<button type="button">` であり、Tab / Space / Enter はブラウザ既定動作で成立する
-- キーボードナビゲーション（矢印キーでの gridcell フォーカス移動）・range mode・複数月表示は本コンポーネントのスコープ外
+- range mode・複数月表示・年 / 月ビュー切替（ark-ui の `view` / `view-control` / `view-trigger` / `range-text` 相当）は本コンポーネントのスコープ外
 
 ## Related
 

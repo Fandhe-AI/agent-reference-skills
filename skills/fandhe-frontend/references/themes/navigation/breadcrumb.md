@@ -21,6 +21,19 @@ use fandhe_frontend_pre_styled_ui::breadcrumb::{self, BreadcrumbVariant};
 use fandhe_frontend_pre_styled_ui::Size;
 
 let node = breadcrumb::root(Size::Md, BreadcrumbVariant::default(), None, vec![], vec![]);
+
+pub fn root<'a>(
+    size: Size,
+    variant: BreadcrumbVariant,
+    aria_label_value: Option<&'a str>,
+    attrs: Vec<(&'a str, &'a str)>,
+    children: Vec<Node>,
+) -> Node
+
+pub use fandhe_frontend_headless_ui::breadcrumb::{
+    current_link, ellipsis, item, link, list, separator, BreadcrumbItem,
+};
+pub fn stylesheet() -> String
 ```
 
 ## Options / Props

@@ -56,8 +56,10 @@ root
 
 | Part | Attribute | Values |
 |------|-----------|--------|
-| root / list / trigger / content | `data-orientation` | `horizontal` \| `vertical` |
+| root / list / trigger / content / indicator | `data-orientation` | `horizontal` \| `vertical` |
 | trigger / content | `data-state` | `active` \| `inactive` |
+| trigger | `data-value` | `TabItem.value`（クリックを `select` アクションへ写像する際の payload） |
+| trigger | `data-disabled` | 存在属性（`TabItem.disabled=true` のとき） |
 | list | `data-activation-mode` | `automatic` \| `manual` |
 | list | `data-loop-focus` | `true` \| `false` |
 | indicator | `data-state` | `active` \| `inactive` |
@@ -66,12 +68,16 @@ root
 
 - `list` に `role="tablist"` + `aria-orientation`
 - `trigger` に `role="tab"` + `aria-selected` + `aria-controls`（対応する `content` id）、roving tabindex（active な非 disabled trigger、無ければ最初の非 disabled trigger に `tabindex="0"`、他は `-1"`）
-- `content` に `role="tabpanel"` + `aria-labelledby`（対応する `trigger` id）
-- `indicator` は装飾要素のため `aria-hidden="true"`
+- `content` に `role="tabpanel"` + `aria-labelledby`（対応する `trigger` id）+ `tabindex="0"`（固定出力）。非 active のとき `hidden`
+- `trigger` は `type="button"`、`disabled` のとき `disabled` + `data-disabled` + `aria-disabled="true"`
+- `indicator` は装飾要素のため `aria-hidden="true"`。active タブが無いときは `hidden` を付与
+- `root` は `id`（`TabsProps.id`）と `data-orientation` を出力する
 - 選択 value が disabled item を指す場合は「未選択」として扱う（全 trigger/content が inactive）
 
 ## Notes
 
+- `tabs_with_root_attrs` の `root_attrs` のうち `id` / `data-orientation`（大文字小文字無視）はフレームワーク側の値が優先され除外される
+- キーボード操作（orientation 別の Arrow、Home/End、disabled スキップ、端での循環）は `data-orientation` / `data-activation-mode` / `data-loop-focus` を読むクライアント層の責務。`dir="rtl"` での Left/Right 反転は未対応
 - クリック/キーボード操作の実挙動・状態機械連携（`SingleSelect` 等）は本モジュールのスコープ外（wasm 層の後続責務）。`tabs()` は静的な選択状態から決定的にマークアップを組み立てるのみ
 - `indicator: true` 時、SSR は `style="--left: 0px; --top: 0px; --width: 0px; --height: 0px"` の初期値のみを出力し、動的な位置・サイズ計測は CSR 層の後続責務
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製）

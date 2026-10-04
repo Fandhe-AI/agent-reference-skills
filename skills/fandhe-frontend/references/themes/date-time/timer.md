@@ -42,6 +42,7 @@ root
 - variant（size 等）ごとのクラス切り替えはスコープ外。`setInterval` による実 tick 駆動は wasm 層のスコープ
 - Themes は Primitives（`fandhe_frontend_headless_ui::timer`）への薄いラッパーであり、既定 CSS のみを追加する
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製）
+- `@chakra-ui/react` の JS/TS API とは別物（Rust 製）。
 
 ## Related
 

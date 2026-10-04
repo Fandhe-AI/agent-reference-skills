@@ -7,4 +7,5 @@
 | LinkOverlay | カード全面クリック化（`div` + `a`） | [link-overlay.md](./link-overlay.md) |
 | NavList | 文書ナビ向け Link リスト（role 非付与） | [nav-list.md](./nav-list.md) |
 | NavigationMenu | トリガー起点で開閉するナビゲーションパネル（状態機械あり） | [navigation-menu.md](./navigation-menu.md) |
+| Sidebar | アプリシェル用サイドバー、展開/折畳状態管理 | [sidebar.md](./sidebar.md) |
 | SkipNav | 「本文へスキップ」リンク（WCAG 2.4.1 Bypass Blocks） | [skip-nav.md](./skip-nav.md) |

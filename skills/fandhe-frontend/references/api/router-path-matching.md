@@ -17,6 +17,13 @@ pub struct RouteMatch<'a, H> {
     pub handler: &'a H,
     pub params: Params,
 }
+
+pub struct Params(/* Vec<(String, String)> */);
+
+impl Params {
+    pub fn get(&self, name: &str) -> Option<&str>;
+    pub fn iter(&self) -> impl Iterator<Item = (&str, &str)>;
+}
 ```
 
 ```rust
@@ -52,12 +59,16 @@ fn demo() -> Result<(), RouterError> {
 
 | エラー | 発生条件 |
 | --- | --- |
-| `RouterError::EmptySegment` | 連続スラッシュ検出 |
-| `RouterError::EmptyParamName` | コロン直後が空 |
-| `RouterError::DuplicateParamName` | パラメータ名重複 |
+| `RouterError::MissingLeadingSlash(String)` | パターンが `/` から始まっていない |
+| `RouterError::EmptySegment(String)` | パターンに連続スラッシュ・末尾スラッシュ等による空セグメントを含む |
+| `RouterError::EmptyParamName(String)` | コロン直後が空（例: `"/items/:"`） |
+| `RouterError::DuplicateParamName { pattern, name }` | 同一パターン内でパラメータ名が重複 |
+
+いずれも `route()` が `Result::Err` として返し、`panic!` しない。`RouterError` は `Display` / `std::error::Error` を実装する。
 
 ## Notes
 
+- `fandhe-frontend-app` 0.2.6 の `router` モジュールで確認。`fandhe_frontend_server::router` からも再エクスポートされる。外部クレートに依存せず、照合は登録ルート数 × セグメント数に比例する線形走査（正規表現・再帰・バックトラックなし）
 - v1 スコープ外: ワイルドカード、パーセントデコード、HTTP メソッド別ディスパッチ、ネストレイアウト、優先度規則の高度化
 - セキュリティ不変条件: パストラバーサル耐性、DoS 耐性、panic 非発生。エスケープ処理はルーター非経由（呼び出し元の責務）
 - `fandhe-frontend-app` の `routes` モジュール（イシュー #407）は本ページの `Router<H>` を共通マッチングエンジンとして利用し、以前 `server` の `ssr.rs` と `wasm-full` の `nav.rs` に別々に存在していたルート定義を `AppRoute`/`resolve`/`title` へ一本化した。詳細は [fandhe-frontend-app API](./app-api.md) を参照

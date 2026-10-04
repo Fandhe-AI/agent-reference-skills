@@ -34,14 +34,15 @@ root
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `root: orientation` | `DataListOrientation` (`Vertical`/`Horizontal`) | `Vertical` | ラベル・値の並び方向。`root` のみへクラス付与 |
+| `DataListProps.orientation` | `DataListOrientation` (`Vertical`/`Horizontal`) | `Vertical` | ラベル・値の並び方向。`root` のみへクラス付与 |
+| `DataListProps.variant` | `DataListVariant` (`Subtle`/`Bold`) | `Subtle` | `Subtle` はラベルを muted 色・通常太字、値を通常色。`Bold` はラベルを通常色・medium 太字、値を muted 色 |
+| `DataListProps.size` | `Size` | `Md` | サイズ variant |
 
 ## Notes
 
 - `item` は `dl` の直下として許容される `<div>` を使う（`dt`/`dd` 以外の要素は使わない）。
 - `item`/`item-label`/`item-value` への variant 伝搬は `root` の CSS custom property（`--fandhe-data-list-item-display` 等）の継承で行う。
 - headless-ui 側に対応する anatomy は存在しない（pre-styled-ui 層のみで新規定義）。`role`/`aria-*` は付与しない。
-- chakra-ui の `variant`（`subtle`/`bold`）・`size` はスコープ外。
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）。
 
 ## Related

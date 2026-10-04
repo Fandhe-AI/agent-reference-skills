@@ -3,6 +3,7 @@
 | Name | Description | Path |
 | --- | --- | --- |
 | Carousel | スライドナビゲーション UI、index 状態機械 | [carousel.md](./carousel.md) |
+| Command | 検索コマンドパレット、絞り込みリスト・グループ・ショートカット | [command.md](./command.md) |
 | Combobox | テキストフィルター候補選択、ARIA 1.2 パターン | [combobox.md](./combobox.md) |
 | Listbox | 常時展開される単一/複数選択リスト | [listbox.md](./listbox.md) |
 | Menu | トリガークリック開閉のドロップダウン操作リスト | [menu.md](./menu.md) |

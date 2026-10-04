@@ -5,14 +5,23 @@
 ## Signature / Usage
 
 ```rust
-use fandhe_frontend_pre_styled_ui::color_picker;
+use fandhe_frontend_pre_styled_ui::color_picker::{self, ColorPickerProps};
 use fandhe_frontend_headless_ui::color_picker::ColorPicker;
 
 let cp = ColorPicker::default();
-let node = color_picker::root(&cp, vec![], vec![]);
+let node = color_picker::root(&cp, &ColorPickerProps::default(), vec![], vec![]);
 ```
 
-`trigger(state, disabled, controls: Option<&str>, attrs, children)`、`area(state, attrs, children)`、`area_background(state, attrs, children)`、`area_thumb(state, disabled, attrs, children)`、`channel_slider(channel: Channel, state, attrs, children)`、`channel_slider_track(channel, state, attrs, children)`、`channel_slider_thumb(channel, state, disabled, attrs, children)`。`css() -> String` が静的 CSS 全量を返す。
+`root(state: &ColorPicker, props: &ColorPickerProps, attrs, children)`、`trigger(state, props, controls: Option<&str>, attrs, children)`、`area(state, props, attrs, children)`、`area_background(state, props, attrs, children)`、`area_thumb(state, props, attrs, children)`、`channel_slider(channel: Channel, state, attrs, children)`、`channel_slider_track(channel, state, attrs, children)`、`channel_slider_thumb(channel, state, props, attrs, children)`。`css() -> String` が静的 CSS 全量を返す。
+
+## Options / Props
+
+| Name | Type | Description |
+|------|------|-------------|
+| `ColorPickerProps.disabled` | `bool` | 無効化状態。各パーツへ `data-disabled` を付与 |
+| `ColorPickerProps.readonly` | `bool` | 読み取り専用。各パーツへ `data-readonly` を付与（disabled と異なり thumb のフォーカス可能性は変えない） |
+| `ColorPickerProps.invalid` | `bool` | 無効入力状態 |
+| `ColorPickerProps.required` | `bool` | 必須状態 |
 
 ## Anatomy
 

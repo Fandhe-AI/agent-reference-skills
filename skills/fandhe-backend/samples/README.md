@@ -12,6 +12,6 @@
 | Interceptor extension point | `Interceptor` 拡張点を自作し `Server::interceptor` で登録する最小例 | [interceptor.md](./interceptor.md) |
 | minimal server | `Server` + `Router` を組み合わせた最小構成の HTTP サーバ | [minimal-server.md](./minimal-server.md) |
 | RequestGate for authorization | `RequestGate` 拡張点でフェイルクローズな認可ゲートを自作し `Server::gate` で登録する例 | [request-gate-auth.md](./request-gate-auth.md) |
-| static file serving | `static` feature の `StaticFilesConfig` + `Server::static_files` による静的配信 | [static-file-serving.md](./static-file-serving.md) |
+| static file serving | `static` feature の `StaticFilesConfig` + `Server::static_files` による静的配信（v0.4.1 パス検証強化込み） | [static-file-serving.md](./static-file-serving.md) |
 | streaming response | `Handler::handle_streaming` + `StreamingResponse` / `BodyWriter` による chunked ストリーミング応答 | [streaming-response.md](./streaming-response.md) |
-| WebSocket message handler | `websocket` feature の `WebSocketConfig::with_handler` によるユーザー定義メッセージハンドラ配線 | [websocket-handler.md](./websocket-handler.md) |
+| WebSocket message handler | `websocket` feature の `WebSocketConfig` 配線（`with_handler` / `with_path_pattern` / `with_handshake_check` / `with_ping_interval`、`on_open` / `on_close`、`WsSender` によるサーバー push） | [websocket-handler.md](./websocket-handler.md) |

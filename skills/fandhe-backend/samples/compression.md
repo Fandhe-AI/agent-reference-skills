@@ -4,10 +4,10 @@
 
 ```toml
 [dependencies]
-fandhe-backend-core = { version = "0.4.0", features = ["compression"] }
-fandhe-backend-http = "0.4.0"
-fandhe-backend-routes = "0.4.0"
-fandhe-backend-plugin-compression = "0.4.0"
+fandhe-backend-core = { version = "0.4.2", features = ["compression"] }
+fandhe-backend-http = "0.4.2"
+fandhe-backend-routes = "0.4.2"
+fandhe-backend-plugin-compression = "0.4.2"
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 ```
 

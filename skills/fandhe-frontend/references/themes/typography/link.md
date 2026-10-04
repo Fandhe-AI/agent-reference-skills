@@ -2,18 +2,20 @@
 
 `fandhe-frontend-headless-ui` の `link::root` を薄くラップした styled Link 部品。`variant` で `text-decoration` を切り替え、`aria-current="page"` 状態を CSS で装飾する。
 
+## Signature / Usage
+
+```rust
+use fandhe_frontend_pre_styled_ui::link::{self, LinkProps};
+
+let node = link::root("/docs", &LinkProps::default(), vec![], vec![/* children */]);
+```
+
+`root(href: &str, props: &LinkProps, attrs, children) -> Node`。`stylesheet() -> String` が静的 CSS 全量を返す。
+
 ## Anatomy
 
 ```
 root (a)
-```
-
-## Signature / Usage
-
-```rust
-use fandhe_frontend_pre_styled_ui::link::{self, LinkVariant};
-
-let node = link::root("/docs", false, false, LinkVariant::default(), vec![], vec![/* children */]);
 ```
 
 ## Options / Props
@@ -21,9 +23,10 @@ let node = link::root("/docs", false, false, LinkVariant::default(), vec![], vec
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | href | `&str` | — | リンク先 URL |
-| external | `bool` | — | `true` なら `target="_blank"` + `rel="noopener noreferrer"` を付与 |
-| current | `bool` | — | `true` なら `aria-current="page"` を出力（headless 層契約） |
-| variant | `LinkVariant` | `Plain` | `Plain`（下線なし） / `Underline`（常時下線） |
+| props.external | `bool` | `false` | `true` なら `target="_blank"` + `rel="noopener noreferrer"` を付与 |
+| props.current | `bool` | `false` | `true` なら `aria-current="page"` を出力（headless 層契約） |
+| props.variant | `LinkVariant` | `Plain` | `Plain`（下線なし） / `Underline`（常時下線） |
+| props.palette | `ColorPalette` | `Accent` | colorPalette 軸 |
 
 ## Notes
 

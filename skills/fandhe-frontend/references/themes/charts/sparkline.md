@@ -26,13 +26,15 @@ let node = sparkline(&SparklineProps::new(&values, "weekly trend"), vec![]).unwr
 | `width` | `f64` | `112.0` | `viewBox` 幅（chakra `w={28}` トークン相当） |
 | `height` | `f64` | `48.0` | `viewBox` 高さ（chakra `h={12}` トークン相当） |
 | `size` | `Size` | `Size::Md` | root の CSS 表示高さ variant |
+| `show_tooltip` | `bool` | `true` | hit-area・`data-index` と `hidden` の SSR ツールチップ DOM を出力 |
+| `range` | `Option<&'a str>` | `None` | `Some(v)` のとき root に `data-range="<v>"` を出力。単一系列専用のため `hidden_series` は持たない |
 
-`SparklineProps::new(values, aria_label)` で既定寸法・`Size::Md` の構成を作れる。`sparkline(props, attrs)` は `Result<Node, ChartError>` を返す。
+`SparklineProps::new(values, aria_label)` で既定寸法・`Size::Md` の構成を作れる。`sparkline(props, attrs)` は `Result<Node, ChartError>` を返す。`stylesheet() -> String` が静的 CSS 全量を返す。定数 `DEFAULT_WIDTH`（`112.0`）/ `DEFAULT_HEIGHT`（`48.0`）。
 
 ## Notes
 
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
-- 複数系列・軸/グリッド/凡例/ツールチップは提供しない（定義上ラベルなしの縮小表示のみ）
+- 複数系列・軸/グリッド/凡例は提供しない（定義上ラベルなしの縮小表示のみ）
 - 内部で合成カテゴリ（インデックス文字列）を使い `ChartData` へ変換して構築する。空データ・非有限値混入は fail-closed で拒否
 - CSS カスタムプロパティ `--fandhe-sparkline-height`（既定 `auto`）で高さを調整可能
 

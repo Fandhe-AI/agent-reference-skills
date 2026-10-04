@@ -27,7 +27,7 @@ root
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `root: size` | `Size` (`Sm`/`Md`/`Lg`) | `Md` | 寸法（`--fandhe-qr-code-size`）。`root` のみへクラス付与 |
+| `root: size` | `Size` (`Xs`/`Sm`/`Md`/`Lg`/`Xl`) | `Md` | 寸法（`--fandhe-qr-code-size`: `Xs` 4rem / `Md` 7.5rem / `Lg` 10rem / `Xl` 12.5rem）。`root` のみへクラス付与 |
 | `encode(data, level)` | `fn(&str, ErrorCorrectionLevel) -> Result<QrMatrix, QrEncodeError>` | — | 文字列を QR 行列へエンコードする純粋関数（headless-ui 由来） |
 | `frame`/`pattern`/`overlay` | 再エクスポート | — | `fandhe_frontend_headless_ui::qr_code::{frame, pattern, overlay}` に委譲 |
 

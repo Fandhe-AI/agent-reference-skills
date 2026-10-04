@@ -19,7 +19,7 @@ let node = color_swatch::color_swatch(&props, vec![], vec![]);
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `value` | `Color` | 不透明の黒 | 表示する色。検証済み `Color` 型のみ |
-| `size` | `Size` (`Sm`/`Md`/`Lg`) | `Md` | サイズ（chakra-ui の 8 段階に対する最小サブセット） |
+| `size` | `Size` (`Xs`/`Sm`/`Md`/`Lg`/`Xl`) | `Md` | サイズ（1rem/1.125rem/1.25rem/1.5rem/1.75rem。chakra-ui の `xs`〜`xl` 実寸に対応） |
 | `shape` | `SwatchShape` (`Square`/`Circle`/`Rounded`) | `Rounded` | 外形 |
 
 ## Notes

@@ -54,8 +54,39 @@ pub enum Value {
     List(Vec<Value>), Map(Vec<(String, Value)>),
 }
 pub const MAX_VALUE_DEPTH: u32 = 32;
+pub enum ValueDecodeError {
+    Empty, UnknownTag(char), InvalidLength, InvalidUtf8, InvalidInt, InvalidBool,
+    InvalidMapKey, UnexpectedEnd, DepthExceeded, TrailingData,
+}
+impl ValueDecodeError {
+    pub fn into_hydrate_error(self, attr: &str) -> HydrateError;
+}
 pub fn encode_value(value: &Value) -> String;
 pub fn decode_value(input: &str) -> Result<Value, ValueDecodeError>;
+```
+
+`Value` / `ValueDecodeError` は `codec` モジュール内の型（`fandhe_frontend_interactive::codec::*`）。`Map` は順序保持の `Vec<(String, Value)>` でキー重複チェックは行わない（アプリ側の責務）。`decode_value` は改ざんされうる属性値を扱うため `MAX_VALUE_DEPTH`（32）超のネストを `DepthExceeded` で拒否する。`into_hydrate_error` は `Hydrate::from_hydration_attrs` 実装内で `?` を使えるよう `HydrateError::InvalidValue` へ変換する。
+
+## AppState / Action（参照実装）
+
+```rust
+pub struct AppState {
+    pub counter: i64,
+    pub draft: String,
+    pub items: Vec<String>,
+    pub dirty: Vec<&'static str>,   // 描画同期メタデータ（PartialEq・ハイドレーション対象外）
+    pub item_ids: Vec<u64>,         // items と同順の keyed list 用安定 id（同上）
+    pub next_item_id: u64,          // 同上
+}
+impl AppState {
+    pub const FIELD_COUNTER: &'static str = "counter";
+    pub const FIELD_DRAFT: &'static str = "draft";
+    pub const FIELD_ITEMS: &'static str = "items";
+    pub const FIELD_ITEM_IDS: &'static str = "item-ids";
+    pub fn new() -> Self;
+}
+
+pub enum Action { Increment, Decrement, Reset, SetDraft(String), AddItem, RemoveItem(u64) }
 ```
 
 ## DirtyTracked（イシュー #341 追記）
@@ -66,11 +97,13 @@ pub trait DirtyTracked: Component {
 }
 ```
 
-直前の `update()` で変更されたフィールドを追跡する、`Component` とは独立したトレイト。
+直前の `update()` で変更されたフィールドを追跡する、`Component` とは別立てのオプトイン・トレイト。`Component::update` のシグネチャは変更しない。実装者が `update()` 冒頭で記録をクリアし、実際に値が変わったフィールド名（`&'static str`）だけを積み上げる契約で、順序は実装依存だが決定的であること。`update()` を経由しない公開フィールドへの直接代入は追跡対象外。
 
 ## Notes
 
-- パッケージ名は `fandhe-frontend-interactive`（`crates/interactive/`、edition 2021）。`#![forbid(unsafe_code)]` + `#![warn(missing_docs)]`、外部クレート依存はゼロ（`fandhe-frontend-core` のみ）
+- パッケージ名は `fandhe-frontend-interactive`（`crates/interactive/`、crate 0.2.7 で確認）。`#![forbid(unsafe_code)]` + `#![warn(missing_docs)]`、外部クレート依存はゼロ（`fandhe-frontend-core` のみ）
+- `AppState` は `Component` / `Hydrate` / `DirtyTracked` を実装する参照実装（カウンター・下書き・動的リスト）。`PartialEq` は `counter` / `draft` / `items` のみを比較する。`decode_action` の対応: `"increment"` → `Increment`、`"decrement"` → `Decrement`、`"reset"` → `Reset`、`"set_draft"` → `SetDraft(payload)`、`"add_item"` → `AddItem`、`"remove_item"` → `RemoveItem(payload を u64 にパース、失敗時は None)`、その他は `None`。`counter` は `saturating_add` / `saturating_sub` で更新され、極端値から復元されても panic しない
+- `render_for_hydration` は `view()` のルートが `Node::Element` でない場合（`Text` / `RawHtml`）、属性を付与せず `view()` の戻り値をそのまま返す（panic しない）
 - `view()` は `Node` のみ返却し、既定エスケープを必ず経由する
 - `decode_action` は文字列変換の単一窓口。未知アクションは `None` を返す
 - `Hydrate` は独立トレイトで、SSR 非対応コンポーネントは `Component` のみ実装可能

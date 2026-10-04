@@ -30,7 +30,7 @@ root
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `root`/`trigger`/`positioner`/`content`/`arrow`/`arrow_tip` | — | — | headless `tooltip` の同名関数をそのまま再エクスポート |
-| `stylesheet()` | — | — | 既定 CSS 全量。`positioner` は `position: absolute; bottom: 100%; left: 0; z-index: 1100`（`dialog` の `positioner`(1001) より前面） |
+| `stylesheet()` | — | — | 既定 CSS 全量。`positioner` は `position: absolute; bottom: 100%; left: 0; z-index: var(--fandhe-z-index-tooltip, 1100)`（`dialog` の `positioner`(1001) より前面） |
 
 ## Notes
 

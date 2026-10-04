@@ -30,7 +30,7 @@ root
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `root`/`trigger`/`positioner`/`content`/`arrow`/`arrow_tip` | — | — | headless `toggle_tip` の同名関数をそのまま再エクスポート |
-| `stylesheet()` | — | — | 既定 CSS 全量。`content` の視覚系は `tooltip` と同一値（背景色・文字色・フォントサイズ等）。`positioner` は `position: absolute; bottom: 100%; left: 0; z-index: 1100` |
+| `stylesheet()` | — | — | 既定 CSS 全量。`content` の視覚系は `tooltip` と同一値（背景色・文字色・フォントサイズ等）。`positioner` は `position: absolute; bottom: 100%; left: 0; z-index: var(--fandhe-z-index-popover, 1100)` |
 
 ## Notes
 

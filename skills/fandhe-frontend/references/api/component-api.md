@@ -5,7 +5,7 @@
 ## Signature / Usage
 
 ```rust
-enum Node { Element { tag, attrs, children }, Text(String), RawHtml(String) }
+enum Node { Element { tag: &'static str, attrs: Vec<(String, String)>, children: Vec<Node> }, Text(String), RawHtml(String) }
 fn el(tag: &'static str, attrs: Vec<(&str, &str)>, children: Vec<Node>) -> Node
 fn text(s: impl Into<String>) -> Node
 fn raw_html(s: impl Into<String>) -> Node
@@ -17,6 +17,13 @@ fn el_owned(tag: &'static str, attrs: Vec<(String, String)>, children: Vec<Node>
 fn json_ld(json: impl Into<String>) -> Node
 fn attr_if(cond: bool, name: &str) -> Option<(String, String)>
 fn attr_if_value(cond: bool, name: &str, value: impl Into<String>) -> Option<(String, String)>
+
+// URL / イベントハンドラ属性の検証（イシュー #373。fandhe-frontend-core 0.4.3 で crate ルートから公開）
+const URL_ATTRS: &[&str]
+fn is_url_attr(name: &str) -> bool
+fn is_event_handler_attr(name: &str) -> bool
+fn is_safe_url(value: &str) -> bool
+fn is_safe_srcset(value: &str) -> bool
 ```
 
 ```rust
@@ -38,6 +45,9 @@ assert_eq!(render(&node), r#"<p class="greeting">hello</p>"#);
 | `json_ld` | fn | JSON-LD を `<script type="application/ld+json">` へ安全に埋め込む。`<`/`>`/`&`/U+2028/U+2029 を `\uXXXX` エスケープした上で内部的に `raw_html` を使う（イシュー #1117） |
 | `attr_if` | fn | `cond` が真の場合のみ真偽値属性（値なし属性）を返す。偽の場合 `None`（属性ごと省略） |
 | `attr_if_value` | fn | `cond` が真の場合のみ任意値の属性を返す。偽の場合 `None` |
+| `URL_ATTRS` / `is_url_attr` | const / fn | URL を値に取る属性（`href` / `src` 等）の判定。該当属性の値は `is_safe_url` を通過したものだけが出力される |
+| `is_safe_url` / `is_safe_srcset` | fn | URL・`srcset` 値の許可スキーム検証。`javascript:` 等の危険スキームは不合格（属性ごと出力から省略） |
+| `is_event_handler_attr` | fn | `on` で始まるイベントハンドラ属性の判定。該当する場合は値によらず出力しない |
 
 ## タグショートカット
 
@@ -53,11 +63,11 @@ assert_eq!(render(&node), r#"<div class="card"><p>hello</p></div>"#);
 
 - テキスト・属性値は `render()` 内で必ず `escape_html` 経由で出力される。エスケープ迂回は `raw_html` のみ（`json_ld` は内部で `raw_html` を使うが、埋め込み前に自前でエスケープ済み）
 - タグ名は `&'static str` 固定＋ホワイトリスト検証、属性名検証でスキップ（panic 回避・注入防止）による多層防御を行う
-- **void 要素（イシュー #1139 で挙動が反転）**: `img`/`br`/`hr`/`input` 等 HTML Standard の void 要素は終了タグを持たず、開始タグのみで自己終端する（`<input ...>` であって `<input ...></input>` ではない）。子ノードは無視される。以前は常に終了タグを出力していたが、SSR/hydration の DOM 不一致バグ対応のため反転した
+- **void 要素（イシュー #1139 で挙動が反転）**: HTML Standard 13.1.2 の 13 void 要素（`area`/`base`/`br`/`col`/`embed`/`hr`/`img`/`input`/`link`/`meta`/`source`/`track`/`wbr`）は終了タグを持たず、開始タグのみで自己終端する（`<input ...>` であって `<input ...></input>` ではない）。子ノードは無視される。以前は常に終了タグを出力していたが、SSR/hydration の DOM 不一致バグ対応のため反転した
 - 大文字タグ名はそのまま出力する（小文字化はフレームワーク責務外）
 - `#![forbid(unsafe_code)]` により `unsafe` を機械的に禁止し、外部依存はゼロ（proc-macro を除く）
 - URL 属性値は `is_safe_url` 検証パスを経由し、`on*` イベントハンドラは一律出力しない
-- ハイドレーション支援 API・状態管理（`fandhe-frontend-interactive`）・イベントハンドラ API はスコープ外
+- ハイドレーション支援 API（`find_attr_values`/`find_nav_targets`、[ハイドレーション API](./hydration-api.md)）・状態管理（`fandhe-frontend-interactive`）・イベントハンドラ API は本設計のスコープ外
 - 本ページが記す API は「凍結」表記だが、これは初期リリース時点の API 表面の安定性を指す。`el_owned`/`json_ld`/`attr_if`/`attr_if_value` はその後の追加であり、既存シグネチャの変更は伴わない
 - `fandhe-frontend-core` は `keyed`（`keyed_list()`/`KeyedListError`/`BIND_LIST_ATTR`/`KEY_ATTR`。構造変化を伴うリストを表現する唯一の経路）と `bind`（`bind_text`/`bind_attr_token`/`bind_class_token` 等、部分再描画向けの束縛点マーカー）も提供する。詳細は [keyed_list API](./keyed-list-api.md) / [束縛 (binding) API](./binding-api.md) を参照
 

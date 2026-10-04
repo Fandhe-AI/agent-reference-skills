@@ -19,8 +19,8 @@ let node = status::root(
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `size` | `Size` (`Sm`/`Md`/`Lg`) | `Md` | ドット直径・フォントサイズ |
-| `palette` | `ColorPalette` (`Accent`/`Info`/`Success`/`Warning`/`Danger`) | `Accent` | セマンティック色 |
+| `size` | `Size` (`Xs`/`Sm`/`Md`/`Lg`/`Xl`) | `Md` | ドット直径・フォントサイズ |
+| `palette` | `ColorPalette` (`Accent`/`Info`/`Success`/`Warning`/`Danger`/`Neutral`) | `Accent` | セマンティック色 |
 
 ## Notes
 

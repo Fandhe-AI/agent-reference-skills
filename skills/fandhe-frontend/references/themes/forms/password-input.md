@@ -5,10 +5,18 @@
 ## Signature / Usage
 
 ```rust
-use fandhe_frontend_pre_styled_ui::password_input::{self, PasswordInputProps};
+use fandhe_frontend_pre_styled_ui::password_input::{self, PasswordAutocomplete, PasswordInputProps};
 use fandhe_frontend_pre_styled_ui::{ColorPalette, Size};
 
-let node = password_input::root(Size::Md, ColorPalette::Accent, false, &PasswordInputProps::default(), vec![], vec![]);
+let props = PasswordInputProps {
+    id: "password",
+    disabled: false,
+    readonly: false,
+    invalid: false,
+    required: false,
+    autocomplete: PasswordAutocomplete::CurrentPassword,
+};
+let node = password_input::root(Size::Md, ColorPalette::Accent, false, &props, vec![], vec![]);
 ```
 
 `stylesheet() -> String` が静的 CSS 全量を返す。`control`/`indicator`/`input`/`label`/`visibility_trigger`/`PasswordAutocomplete`/`PasswordInputProps` は headless-ui からの再エクスポート。

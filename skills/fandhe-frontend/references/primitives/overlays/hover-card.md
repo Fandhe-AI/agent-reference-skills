@@ -52,7 +52,9 @@ root
 
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製、`fandhe-frontend-headless-ui` クレート）
 - `trigger` は `a`（リンクプレビュー用途）で `button` ではない
-- タイマー駆動そのものは JS ランタイム側の責務でスコープ外
+- タイマー駆動そのもの（`data-open-delay` / `data-close-delay` の DOM 読み取り配線）、`interactive`（content 内へのポインタ移動時の open 維持）、位置再計算の対象化は JS ランタイム側の責務でスコープ外
+- `root` / `trigger` / `positioner` / `content` は `data-state` を出力する。`HoverCardDelays` は SSR 静的設定で hydration 属性には含まれない（`HoverCard::from_hydration_attrs` で復元した `delays` は常に既定値）
+- `HoverCard` の利便メソッド: `root(attrs, children)` / `trigger(href, attrs, children)` / `content(id, attrs, children)` / `positioner(attrs, children)`（`arrow` / `arrow_tip` は状態非依存のため無し）。`state()` / `is_open()` / `delays()` あり
 
 ## Related
 

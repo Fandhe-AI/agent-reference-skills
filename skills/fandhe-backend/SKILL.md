@@ -2,10 +2,10 @@
 name: fandhe-backend
 description: >
   Rust 製バックエンド HTTP サーバーフレームワーク fandhe-backend のリファレンス。
-  fandhe-backend-core / -http / -routes。Server, BoundServer, Router, Handler。
-  4 拡張点 Middleware / UpgradeHandler / RequestGate / Interceptor（intercept, map_response）。
-  StreamingResponse, sans-IO HTTP/1.1, graceful shutdown。
-  feature フラグで切り出したプラグイン cors, websocket, graphql, openapi, webrtc 等。
+  fandhe-backend-core / -http / -routes。Server, BoundServer, Router（merge）, Handler。
+  4 拡張点 Middleware（on_response_with_status）/ UpgradeHandler / RequestGate / Interceptor。
+  Diagnostics, StreamingResponse, sans-IO HTTP/1.1, graceful shutdown。
+  プラグイン cors, websocket（WsSender）, graphql, openapi, webrtc 等。
 user-invocable: false
 ---
 
@@ -14,6 +14,8 @@ user-invocable: false
 fandhe-backend は Rust 製バックエンド HTTP サーバーフレームワーク。`Server` / `BoundServer` を核に、`Middleware` / `UpgradeHandler` / `RequestGate` / `Interceptor` という 4 つの拡張点で Web サーバーの挙動を組み立てる。sans-IO な HTTP/1.1 パーサー、DoS 上限、graceful shutdown を標準機能として持ち、CORS・圧縮・静的配信・WebSocket・GraphQL・OpenAPI・WebRTC 等はすべて feature フラグで切り出したプラグインとして提供される（pay-for-what-you-use）。
 
 **他スキルとの使い分け** — `Server` / `Router` / `Middleware` / `CORS` / `WebSocket` という語は複数のフレームワークで共通するため誤参照しやすい。`hono`（Web Standards JS）・`fastify`（Node.js ネイティブ）・`go-echo`（Go）は別フレームワークであり、いずれも本スキルとは別物。`fandhe-frontend` は同じ fandhe ファミリーの Rust 製フロントエンド層（SSR / SPA / SSG）であり、Rust 製バックエンド HTTP サーバーを調べる場合は本スキル（`fandhe-backend`）を参照すること。
+
+対象バージョン: v0.4.2（各ページ内の「vX.Y.Z で追加」は導入バージョンを示す）。
 
 公式ドキュメント: https://fandhe-ai.github.io/fandhe-backend/
 
@@ -50,6 +52,7 @@ skills/fandhe-backend/
       rebind-handle.md
       interceptor.md
       streaming-response.md
+      diagnostics.md
       extension-points.md
     routes/
       README.md
@@ -120,7 +123,10 @@ skills/fandhe-backend/
 | 最小サーバから Middleware 実装までの段階的チュートリアル、feature 別サンプル一覧、4 拡張点の契約・自作手順、ストリーミング送信、graceful shutdown の手順、ガイド群の読み方・対象読者を知りたい | guides | [references/guides/README.md](references/guides/README.md) |
 | `Server` / `BoundServer` / `Handler` / `Middleware` / `RequestGate` / `UpgradeHandler` / `Interceptor` / `StreamingResponse` の型定義・API、`GateContext`（`RequestGate::check` へ渡される接続コンテキスト、peer_addr）、`BoundServer::rebind_handle` / `RebindHandle`（稼働中 listener の無停止差し替え）、4 拡張点・plugin シームの全体フローを知りたい | core | [references/core/README.md](references/core/README.md) |
 | リダイレクト返却・レスポンス差し替え（`Interceptor` の `intercept` / `map_response`）を知りたい | core | [references/core/README.md](references/core/README.md) |
-| `Router` のルーティング規則、`{name}` / `{*name}` パスパターン、`HandlerFuture` 等の公開型エイリアスを知りたい | routes | [references/routes/README.md](references/routes/README.md) |
+| 実行時診断の送信先を差し替えたい（`Diagnostics` trait / `DiagnosticEvent` / `StderrDiagnostics` / `Server::diagnostics`） | core | [references/core/README.md](references/core/README.md) |
+| ステータスコード付きアクセスログを取りたい（`Middleware::on_response_with_status`） | core | [references/core/README.md](references/core/README.md) |
+| `Router` のルーティング規則、`{name}` / `{*name}` パスパターン、`HandlerFuture` 等の公開型エイリアス、`Router::merge` による複数 Router の合成と衝突検出を知りたい | routes | [references/routes/README.md](references/routes/README.md) |
+| WebSocket でサーバーから push したい（`WsSender`）、接続の開閉フック（`on_open` / `on_close` / `CloseReason`）、ハンドシェイク検証（handshake check）、パスパターン、ping keepalive を知りたい | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | sans-IO なリクエスト/レスポンスパーサー、Cookie・クエリ・フォーム・percent-decode、body フレーミング・chunked コーディング、読み取りバッファ、エラーレスポンス、ソケットオプション・keep-alive を知りたい | http | [references/http/README.md](references/http/README.md) |
 | CORS・圧縮・静的配信・トレーシング・WebSocket・GraphQL・OpenAPI・WebRTC（in-process / proxy）・hub 共通配線など、feature 単位のプラグイン API を知りたい | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | 最小サーバ、CRUD ルーティング、Middleware / RequestGate / Interceptor 自作、CORS・WebSocket・GraphQL・ストリーミング・graceful shutdown・静的配信・圧縮の動く配線例、実運用形テンプレートを知りたい | samples | [samples/README.md](samples/README.md) |

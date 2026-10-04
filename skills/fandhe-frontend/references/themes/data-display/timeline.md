@@ -42,12 +42,11 @@ root (ol)
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `root: variant` | `TimelineVariant` (`Solid`/`Subtle`/`Outline`/`Plain`) | `Solid` | indicator の塗り方 |
-| `root: size` | `Size` (`Sm`/`Md`/`Lg`) | `Md` | indicator の寸法・connector の太さ |
-| `root: palette` | `ColorPalette` (`Accent`/`Info`/`Success`/`Warning`/`Danger`) | `Accent` | indicator/separator の色 |
+| `root: size` | `Size` (`Xs`/`Sm`/`Md`/`Lg`/`Xl`) | `Md` | indicator の寸法・connector の太さ |
+| `root: palette` | `ColorPalette` (`Accent`/`Info`/`Success`/`Warning`/`Danger`/`Neutral`) | `Accent` | indicator/separator の色 |
 
 ## Notes
 
-- `xl` size は採用しない（`Size` は Sm/Md/Lg の 3 段階に統一）。
 - 最終 item は `separator` パーツを組み込まないことで非表示にする契約（chakra-ui の `showLastSeparator` 相当は recipe 側で自動制御しない、呼び出し側の責務）。
 - headless-ui 側に対応する anatomy は存在しない（pre-styled-ui 層のみで新規定義）。`<ol>`/`<li>` の意味論のみで追加の `role` は付与しない。
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）。

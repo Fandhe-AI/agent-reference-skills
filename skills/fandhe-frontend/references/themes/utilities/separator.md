@@ -1,6 +1,6 @@
 # Separator
 
-区切り線 `<hr>` 1個のみで構成される、headless 状態機械を持たない静的 styled 部品。`variant`（`solid`/`dashed`）と `orientation`（`horizontal`/`vertical`）の直交する2軸を提供する。
+区切り線 `<hr>` を中心とする、headless 状態機械を持たない静的 styled 部品。`variant`（`solid`/`dashed`/`dotted`）と `orientation`（`horizontal`/`vertical`）の直交する2軸を提供する。ラベル付き区切り線用に pre-styled-only の `group`/`label` パーツを持つ。
 
 ## Signature / Usage
 
@@ -19,18 +19,26 @@ let html_vertical = separator(&vertical, vec![]);
 
 ```rust
 pub fn separator<'a>(props: &SeparatorProps, attrs: Vec<(&'a str, &'a str)>) -> Node;
+pub fn group<'a>(attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node;
+pub fn group_with<'a>(position: SeparatorLabelPosition, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node;
+pub fn label<'a>(attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node;
 ```
+
+`css() -> String` が静的 CSS 全量を返す。
 
 ## Anatomy
 
-- `root`（`<hr>`）— 唯一のパーツ、子ノードを持たない
+- `root`（`<hr>`）— 区切り線本体、子ノードを持たない
+- `group`（`<div>`）— ラベル付き区切り線のレイアウト専用。子は `separator`（horizontal）/ `label` / `separator`（horizontal）の 3 個を横並びで渡す（vertical のラベル付き合成は対象外）
+- `label`（`<span>`）— `group` 内のテキストラベル
 
 ## Options / Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `orientation` | `Orientation` | `Horizontal` | `aria-orientation`/`data-orientation`/variant クラスの3箇所へ連動 |
-| `variant` | `SeparatorVariant` | `Solid` | `solid` \| `dashed` の罫線スタイル |
+| `variant` | `SeparatorVariant` | `Solid` | `solid` \| `dashed` \| `dotted` の罫線スタイル |
+| `group_with: position` | `SeparatorLabelPosition`（`Center` \| `Start`） | `Center` | ラベル位置。`Center` は `group` と同じ出力、`Start` は先頭寄せ（`grid-auto-flow: column`）。呼び出し側 `class` は保持され位置クラスと連結される |
 
 ## Data Attributes
 

@@ -46,6 +46,10 @@ fn disclosure_panel(summary_text: &str, body_text: &str) -> Node {
 - `generate_assets`/`generate_pages` ともに全パスを事前検証してから書き込む fail-closed 戦略（部分書き込みを防ぐ）。`.well-known/` （RFC 8615）は許可、`.git` ディレクトリは拒否される
 - 静的表示部品（heading/text 等）は JS ゼロ構成でも影響を受けない
 
+- `generate_assets` / `generate_pages` のシグネチャは `fandhe-frontend-server` 0.2.6 のソースで確認済み。パス検証エラーは `SsgError::UnsafePagePath`（先頭 `/` 無し・`..` / `.` ・空セグメント・非許可文字）、正規化後に同一出力先を指す重複は `SsgError::DuplicatePagePath`（例: `/a` と `/a/`）
+- 公式ガイドは実装例として `ssg-blog` サンプル（`src/main.rs` の `build_assets` / `main`）を挙げている。本スキルの `samples/README.md` に `ssg-blog` の記載がある
+
 ## Related
 
 - [コンポーネント記述ガイド](./component-authoring.md)
+- [fandhe-frontend-server API](../api/server-api.md)

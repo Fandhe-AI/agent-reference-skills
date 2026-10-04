@@ -5,20 +5,22 @@ headless `combobox`（14 anatomy parts: root, label, control, input, trigger, cl
 ## Signature / Usage
 
 ```rust
-use fandhe_frontend_pre_styled_ui::combobox::{self, OpenState};
+use fandhe_frontend_pre_styled_ui::combobox::{self, ComboboxProps, OpenState};
 use fandhe_frontend_pre_styled_ui::Size;
 
 pub fn root<'a>(
     size: Size,
     state: OpenState,
+    props: &ComboboxProps,
     attrs: Vec<(&'a str, &'a str)>,
     children: Vec<Node>,
 ) -> Node
 
 pub use fandhe_frontend_headless_ui::combobox::{
     clear_trigger, content, control, filter_options, input, item, item_group, item_group_label,
-    item_indicator, item_text, label, positioner, trigger,
+    item_indicator, item_text, label, positioner, trigger, ComboboxProps,
 };
+pub use fandhe_frontend_headless_ui::state::OpenState;
 
 pub fn stylesheet() -> String
 ```
@@ -29,6 +31,7 @@ pub fn stylesheet() -> String
 | --- | --- | --- |
 | size | `Size` (`Sm` \| `Md` \| `Lg`) | `root` の CSS custom property 経由で `control`/`input`/`item`/`content` の padding を制御。既定値 `Md` |
 | state | `OpenState` | headless `root` へそのまま渡す |
+| props | `&ComboboxProps` | `disabled` / `readonly` / `invalid` / `required`（いずれも `bool`）を部品全体へ一律伝播するため、そのまま headless `root` へ透過する。`required` は `label` に `data-required`、`input` にネイティブ `required` を付与する |
 
 ## Notes
 
@@ -38,6 +41,7 @@ pub fn stylesheet() -> String
 - `Combobox` 状態機械と headless の自由関数 `root` は再エクスポートされない（エスケープハッチ: `fandhe_frontend_headless_ui::combobox::Combobox`）
 - headless 側の 14 番目のパーツ `live_region`（動的な状態変化を `role="status"` + `aria-live="polite"` + `aria-atomic="true"` で通知）は本 styled 層では意図的に再エクスポートしない。必要な場合は `fandhe_frontend_headless_ui::combobox::live_region` を直接 import する
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製）
+- `@chakra-ui/react` の JS/TS API とは別物（Rust 製）。
 
 ## Related
 

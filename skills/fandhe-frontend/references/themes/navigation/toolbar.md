@@ -36,6 +36,8 @@ let node = t.root("Toolbar", vec![], vec![
 | `root: label` | `&str` | 空文字 | `aria-label`。空文字のときは省略される |
 | `button: disabled` / `toggle_item: disabled` | `bool` | `false` | `aria-disabled`/`data-disabled` で表現（ネイティブ `disabled` は付与しない） |
 | `toggle_item: pressed` | `bool` | — | `aria-pressed`・`data-state`（`on`/`off`）を決定 |
+| `toggle_item: value` | `&str` | — | `data-value` として出力する識別子 |
+| `link: href` / `link: external` | `&str`, `bool` | — | `Toolbar::link(index, href, external, attrs, children)`。実体は共通の `link` 部品へ完全委譲する（reverse tabnabbing 対策の付与ロジックは再実装しない） |
 
 ## Data Attributes
 

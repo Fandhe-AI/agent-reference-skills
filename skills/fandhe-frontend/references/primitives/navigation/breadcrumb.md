@@ -48,6 +48,8 @@ pub fn breadcrumb<'a>(
 
 - `current_link` は末尾項目（現在ページ）用の非対話要素（`span`）。`aria-current="page"` + `data-current` を常に付与する
 - `separator`/`ellipsis` は `role="presentation"` + `aria-hidden="true"` で装飾扱いとし、スクリーンリーダーの読み上げから除外する
+- `current_link` は `role="link"` / `aria-disabled` を付与しない（非対話 `span` + `aria-current="page"`。WAI-ARIA APG の「現在ページ要素が非リンクの場合 `aria-current` は任意」に準拠）。`ellipsis` の固定テキストは `"…"`
+- 呼び出し側 `attrs` による固定付与キー（`root` の `aria-label`、`link` の `href`、`current_link` の `aria-current` / `data-current`、`separator` / `ellipsis` の `role` / `aria-hidden`）の上書きは除去される
 - `items` が空のときは空の `list` を持つ `root` を返す（panic しない fail-closed）
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製、SSR 向け headless UI）
 
