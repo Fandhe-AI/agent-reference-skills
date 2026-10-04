@@ -127,10 +127,12 @@ Deployment Protection（Vercel Authentication）が有効な間は素の `curl` 
 curl -sI "https://<deployment-url>/"
 
 # 存在しないパスで 404（config.json の 404 フォールバック、vercel-ssg の場合）を確認する
-curl -sI "https://<deployment-url>/does-not-exist"
+# 未認証のままだと Deployment Protection の応答（有効時）や Basic 認証の 401（導入時）が先に返るため、
+# 保護有効時は Bypass ヘッダー、Basic 認証導入時は `-u "<user>"` を付ける（BYPASS_SECRET は前節の `read -s` で読み込む）
+curl -sI -H "x-vercel-protection-bypass: ${BYPASS_SECRET}" -u "<user>" "https://<deployment-url>/does-not-exist"
 
-# 正しい認証情報を付けると 200 になる（`-u "<user>"` のみ指定し、パスワードは対話入力）
-curl -sI -u "<user>" "https://<deployment-url>/"
+# 正しい認証情報を付けると 200 になる（`-u "<user>"` のみ指定し、パスワードは対話入力。保護有効時は Bypass ヘッダーも付ける）
+curl -sI -H "x-vercel-protection-bypass: ${BYPASS_SECRET}" -u "<user>" "https://<deployment-url>/"
 ```
 
 Deployment Protection の有効・無効の確認用。無効化後の期待値は Basic 認証ミドルウェアの有無で変わる（未導入なら認証なしで 200、導入済みなら認証なしで 401、環境変数未設定なら 503）。
