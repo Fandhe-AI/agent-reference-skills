@@ -47,15 +47,16 @@ root
 | --- | --- | --- | --- |
 | `root(state, attrs, children)` | `OpenState` | — | 開閉状態。`data-state` へ反映 |
 | `positioner(state, attrs, children)` | `OpenState` | — | closed のとき `hidden` を付与 |
-| `content(state, label, attrs, children)` | `OpenState`, `&str` | — | `role="toolbar"` + `aria-label(label)` 固定。closed のとき `hidden` |
+| `content(state, label, attrs, children)` | `OpenState`, `&str` | — | `role="dialog"`（非モーダル、`aria-modal` は付与しない）+ `aria-label(label)` + `tabindex="-1"` 固定（呼び出し側 `attrs` に `tabindex` があれば出力しない）。開状態のみ `data-expanded`。closed のとき `hidden` |
 | `selection_trigger(attrs, children)` | — | — | `type="button"` 固定。選択件数テキストは呼び出し側が children で渡す |
 | `separator(attrs, children)` | — | — | `role="separator"` + `aria-orientation="vertical"` 固定 |
-| `close_trigger(attrs, children)` | — | — | `type="button"` 固定 |
-| `ActionBar::new(initial: OpenState)` | — | — | 状態機械。`root`/`positioner`/`content` の利便メソッドを持つ |
+| `close_trigger(attrs, children)` | — | — | `type="button"` 固定。`children` が空かつ呼び出し側 `attrs` に `aria-label` が無いときのみ既定 `aria-label="close"`（`CLOSE_TRIGGER_ARIA_LABEL`）を付与 |
+| `ActionBar::new(initial: OpenState)` | — | — | 状態機械。`root(attrs, children)` / `positioner(attrs, children)` / `content(label, attrs, children)` の利便メソッドを持つ（`state()` / `is_open()` / `data_state()` あり） |
 
 ## Notes
 
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製、`fandhe-frontend-headless-ui` クレート）
+- 属性仕様は chakra-ui ActionBar が再利用する zag.js popover の出力を基準にする（`content` は旧版の `role="toolbar"` から `role="dialog"` へ変更済み。roving tabindex 等の toolbar 要件を満たさないため）。`root` / `positioner` に `data-state`、`positioner` は closed で `hidden`
 - chakra-ui の ActionBar と異なり `open={selection.size > 0}` のような選択件数からの導出は行わない
 - Portal 描画・外側クリックでの閉鎖・アニメーションは JS ランタイム側の責務でスコープ外
 - `placement` variant（`bottom-start`/`bottom-end` 等）は未実装、既定の bottom 中央固定のみ

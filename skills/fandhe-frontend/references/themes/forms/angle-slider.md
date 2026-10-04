@@ -25,8 +25,8 @@ let node = angle_slider::root(Size::Md, ColorPalette::Accent, &s, false, vec![],
 
 | Name | Type | Description |
 |------|------|-------------|
-| `size` | `Size`（`Sm` \| `Md` \| `Lg`、既定 `Md`） | `root` のトラック/thumb 寸法 custom property を切り替える |
-| `palette` | `ColorPalette`（既定 `Accent`） | `Info`/`Success`/`Warning`/`Danger` を含む 5 色 |
+| `size` | `Size`（`Xs` \| `Sm` \| `Md` \| `Lg` \| `Xl`、既定 `Md`） | `root` のトラック/thumb 寸法 custom property を切り替える |
+| `palette` | `ColorPalette`（既定 `Accent`） | `Info`/`Success`/`Warning`/`Danger`/`Neutral` を含む 6 色 |
 | `disabled` | `bool` | `data-disabled` を付与 |
 
 ## Notes

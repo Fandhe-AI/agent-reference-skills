@@ -5,13 +5,13 @@
 ## Signature / Usage
 
 ```rust
-use fandhe_frontend_pre_styled_ui::toggle_group;
+use fandhe_frontend_pre_styled_ui::toggle_group::{self, ToggleGroupVariant};
 use fandhe_frontend_pre_styled_ui::{ColorPalette, Size};
 
-let node = toggle_group::root(Size::Md, ColorPalette::Accent, false, None, None, vec![], vec![]);
+let node = toggle_group::root(Size::Md, ToggleGroupVariant::Outline, ColorPalette::Accent, false, None, None, vec![], vec![]);
 ```
 
-`root(size, palette, disabled, orientation: Option<Orientation>, labelled_by: Option<&str>, attrs, children) -> Node`。`stylesheet() -> String` が静的 CSS 全量を返す。`item`/`ToggleGroup`/`MultiToggleGroup` は headless-ui からの再エクスポート。
+`root(size, variant: ToggleGroupVariant, palette, disabled, orientation: Option<Orientation>, labelled_by: Option<&str>, attrs, children) -> Node`。`root_with_props(size, variant, palette, props: &ToggleGroupProps, labelled_by, attrs, children) -> Node` は `roving_focus` も root へ反映する（`root` は `disabled`/`orientation` 以外を既定値へ戻す）。`stylesheet() -> String` が静的 CSS 全量を返す。`item`/`ToggleGroup`/`MultiToggleGroup`/`ToggleGroupProps` は headless-ui からの再エクスポート。
 
 ## Anatomy
 
@@ -22,7 +22,9 @@ let node = toggle_group::root(Size::Md, ColorPalette::Accent, false, None, None,
 | Name | Type | Description |
 |------|------|-------------|
 | `size` | `Size`（既定 `Md`） | `root` へクラス付与 |
+| `variant` | `ToggleGroupVariant`（`Outline`（既定） \| `Ghost`） | 外観。`Ghost` は背景・輪郭なしの最小装飾（`ToggleVariant` と同じ軸・値） |
 | `palette` | `ColorPalette`（既定 `Accent`） | 選択済み `item` の色 |
+| `props`（`root_with_props` のみ） | `&ToggleGroupProps`（`disabled: bool` / `orientation: Option<Orientation>` / `roving_focus: bool`） | `data-orientation`/`data-disabled`/`tabindex` を一貫して反映 |
 | `disabled` | `bool` | `root`/`item` へ `data-disabled` |
 | `orientation` | `Option<Orientation>` | `data-orientation` |
 | `labelled_by` | `Option<&str>` | `aria-labelledby` |

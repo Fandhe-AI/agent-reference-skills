@@ -26,6 +26,7 @@ pub fn overlay<'a>(href: &'a str, attrs: Vec<(&'a str, &'a str)>, children: Vec<
 
 ## Notes
 
+- 呼び出し側 `attrs` による `overlay` の `href` の上書きは除去される。キーボード操作・ARIA はネイティブ `a[href]`（暗黙の `link` ロール、Tab / Enter）に委ね、`data-*` 状態属性は出力しない
 - `root` は位置決めコンテキスト（styled 層が `position: relative` を当てる前提）
 - `overlay` がフローから外れるため、`root` の高さは `overlay` 以外の子ノード（見出し・画像・説明文等）が確立する契約。`overlay` へはアクセシブルネームのみを `aria-label` 等で与える運用を推奨する
 - `root` 内に複数の対話要素を混在させる場合、`overlay` より前面に出す z-index 調整は呼び出し側の責務（headless 層は既定値を持たない）

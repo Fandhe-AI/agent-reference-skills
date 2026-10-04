@@ -16,13 +16,15 @@ let s = Splitter::new(
 );
 let root = splitter::root(Size::Md, ColorPalette::Accent, &s, false, vec![], vec![]);
 let panel0 = splitter::panel(&s, 0, "panel-a", vec![], vec![]);
-let trigger = splitter::resize_trigger(&s, 0, "panel-a", false, vec![], vec![]);
+let trigger = splitter::resize_trigger(&s, 0, "panel-a", "panel-b", false, vec![], vec![]);
 ```
 
 ```rust
 pub fn root<'a>(size: Size, palette: ColorPalette, state: &Splitter, disabled: bool, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node;
 pub fn panel<'a>(state: &Splitter, panel_index: usize, id: &'a str, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node;
-pub fn resize_trigger<'a>(state: &Splitter, trigger: usize, panel_id: &'a str, disabled: bool, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node;
+pub fn resize_trigger<'a>(state: &Splitter, trigger: usize, leading_id: &'a str, trailing_id: &'a str, disabled: bool, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node;
+
+pub use fandhe_frontend_headless_ui::splitter::{resize_trigger_indicator, PanelSpec, SplitterAction};
 ```
 
 ## Anatomy
@@ -40,6 +42,7 @@ root
 | --- | --- | --- | --- |
 | `root.size` | `Size` | `Md` | `root` へのみクラスを付与し、`--fandhe-splitter-trigger-size`（root スコープ custom property）でトリガーの厚みを切り替える |
 | `root.palette` | `ColorPalette` | `Accent` | `resize-trigger` の強調色を `--fandhe-palette` 経由で切り替える |
+| `resize_trigger.leading_id` / `resize_trigger.trailing_id` | `&str` | — | 隣接 2 パネルの `id`。`aria-controls` を隣接 2 パネルへ拡張した headless 側の変更に追随した引数（旧 `panel_id` 単一引数からの破壊的変更） |
 | `panel.panel_index` | `usize` | — | `Splitter::size` の添字。範囲外は `flex-basis` 出力を省略し `auto` へフォールバック（fail-closed） |
 
 ## Data Attributes
@@ -56,6 +59,7 @@ root
 - pointer ドラッグ・キーボード操作の DOM 配線、collapse/expand、`onResize`/`onCollapse` コールバックはスコープ外
 - Themes は Primitives（`fandhe_frontend_headless_ui::splitter`）への薄いラッパーであり、既定 CSS のみを追加する。状態管理・hydration が必要な場合は Primitives の `Splitter` を直接 import する
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製）
+- `@chakra-ui/react` の JS/TS API とは別物（Rust 製）。
 
 ## Related
 

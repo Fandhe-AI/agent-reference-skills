@@ -6,8 +6,9 @@
 
 ```rust
 use fandhe_frontend_pre_styled_ui::dialog::{
-    root, trigger, backdrop, positioner, content, title, description, close_trigger, stylesheet,
-    ContentIds, DialogRole,
+    root, trigger, backdrop, positioner, content, title, description, close_trigger,
+    close_trigger_with_variant, body, footer, stylesheet, CloseTriggerVariant, ContentIds,
+    DialogRole,
 };
 use fandhe_frontend_pre_styled_ui::dialog::OpenState;
 use fandhe_frontend_pre_styled_ui::Size;
@@ -39,6 +40,8 @@ root
       └─ content
           ├─ title
           ├─ description
+          ├─ body（pre-styled 専用）
+          ├─ footer（pre-styled 専用）
           └─ close-trigger
 ```
 
@@ -52,6 +55,9 @@ root
 | `content(state, role_kind, modal, ids, attrs, children)` | `OpenState`, `DialogRole`, `modal: bool`, `ids: ContentIds` | `role_kind: DialogRole::Dialog` | headless `dialog::content` の選択的 `pub use` 再エクスポート。`role_kind`/`modal`/`ids` は headless 側がもともと取る引数（styled 側の追加ではない）。`role`/`aria-modal`/closed 時の hidden を付与。`ContentIds` が `Some` のフィールドから `id`/`aria-labelledby`/`aria-describedby` を出力 |
 | `title(id, attrs, children)` / `description(id, attrs, children)` | `id: Option<&str>` | `id: None` | headless `dialog` の同名関数の選択的 `pub use` 再エクスポート。`id` が `Some` のとき `content` の `labelledby`/`describedby` と対にする |
 | `close_trigger(attrs, children)` | — | — | headless `dialog::close_trigger` の選択的 `pub use` 再エクスポート。`type="button"` 固定 |
+| `close_trigger_with_variant(variant, attrs, children)` | `CloseTriggerVariant` (`Icon` \| `Text`) | — | headless `dialog::close_trigger_with_variant` の再エクスポート。`close_trigger` に加えて `data-variant` を固定出力し、recipe が見た目を切り替える。`Icon` は content 右上のアイコン専用ゴーストボタン、`Text` は footer 内などで再利用できる平文ボタン。呼び出し側 `attrs` の `data-variant` は除去され `variant` 引数が優先される |
+| `body(attrs, children)` | — | — | pre-styled 専用の `<div>`（headless anatomy に存在しない）。長いコンテンツを縦スクロールさせるレイアウト専用パート。`title` / `description` / `footer` を `content` 内で `body` の外側の兄弟として配置すると、それらを固定したまま `body` だけがスクロールする。オプトイン |
+| `footer(attrs, children)` | — | — | pre-styled 専用の `<div>`（headless anatomy に存在しない）。alert-dialog 構成のアクション列（確認 / キャンセルのボタン群）を横並びに配置するレイアウト専用パート。`attrs` に `("data-subtle", "")` を渡すと淡色背景の帯を敷く（オプトイン）。イベント配線は持たない |
 | `stylesheet()` | — | — | 既定 CSS 全量を返す。`size` variant は root スコープの CSS custom property（`--fandhe-dialog-content-padding` 等）で `content`/`title` へ伝播 |
 
 `ContentIds<'a>`（`dialog::ContentIds`）: `{ id: Option<&'a str>, labelledby: Option<&'a str>, describedby: Option<&'a str> }`。`content` の引数が 8 個になる clippy 対策で `id`/`labelledby`/`describedby` を束ねた構造体（`id` は `trigger` の `controls` と対応、`labelledby`/`describedby` はそれぞれ `title`/`description` の `id` と対応）。
@@ -62,9 +68,9 @@ root
 
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製、`fandhe-frontend-pre-styled-ui` クレート）
 - headless 自由関数 `root` と headless `Dialog` 型は再エクスポートしない（`size` クラス非付与の事故防止）
-- `backdrop`/`positioner` は `z-index: 1000`/`1001` で最前面固定。closed 時の `positioner[hidden]` は `display: none` を明示上書き
+- `backdrop`/`positioner` は それぞれ `z-index: var(--fandhe-z-index-overlay, 1000)` / `var(--fandhe-z-index-modal, 1001)` で最前面固定。closed 時の `positioner[hidden]` は `display: none` を明示上書き
 - `color-palette` 軸は持たない
-- 本モジュール（`pre-styled-ui::dialog`）で再定義される styled 固有パーツは `root`（`size` クラス付与のため）のみ。`trigger`/`backdrop`/`positioner`/`content`/`title`/`description`/`close_trigger` は選択的 `pub use fandhe_frontend_headless_ui::dialog::{...}` による headless の同名関数のそのままの再エクスポートで、`state`/`ids`/`role_kind`/`modal`/`id` はいずれも headless 側の元々のシグネチャが持つ引数（styled 側が追加したものではない）
+- 本モジュール（`pre-styled-ui::dialog`）で定義される styled 固有の関数は `root`（`size` クラス付与のため）と pre-styled 専用レイアウトパート `body` / `footer` のみ。`trigger`/`backdrop`/`positioner`/`content`/`title`/`description`/`close_trigger` は選択的 `pub use fandhe_frontend_headless_ui::dialog::{...}` による headless の同名関数のそのままの再エクスポートで、`state`/`ids`/`role_kind`/`modal`/`id` はいずれも headless 側の元々のシグネチャが持つ引数（styled 側が追加したものではない）
 
 ## Related
 

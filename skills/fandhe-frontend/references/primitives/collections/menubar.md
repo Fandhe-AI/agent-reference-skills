@@ -1,6 +1,6 @@
 # Menubar
 
-Application menu bar arranging multiple [menu](./menu.md) instances horizontally or vertically (11 anatomy parts: Root, Menu, Trigger, Positioner, Content, Item, ItemGroup, ItemGroupLabel, Separator, SubTrigger, SubContent). `Menubar` state machine tracks roving-tabindex focus and which sub-menu is open.
+Application menu bar arranging multiple [menu](./menu.md) instances horizontally or vertically (Root, Menu, Trigger, Positioner, Content, Arrow, ArrowTip, Item, ItemText, ItemIndicator, ItemGroup, ItemGroupLabel, Separator, SubTrigger, SubContent, CheckboxItem, RadioItemGroup, RadioItem). `Menubar` state machine tracks roving-tabindex focus and which sub-menu is open.
 
 ## Signature / Usage
 
@@ -20,7 +20,14 @@ pub fn trigger<'a>(
 ) -> Node
 pub fn positioner<'a>(state: OpenState, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
 pub fn content<'a>(state: OpenState, id: Option<&'a str>, labelledby: Option<&'a str>, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
+pub fn arrow<'a>(attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
+pub fn arrow_tip<'a>(attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
 pub fn item<'a>(value: &'a str, disabled: bool, highlighted: bool, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
+pub fn item_text<'a>(disabled: bool, highlighted: bool, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
+pub fn item_indicator<'a>(checked: bool, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
+pub fn checkbox_item<'a>(checked: bool, value: &'a str, disabled: bool, highlighted: bool, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
+pub fn radio_item_group<'a>(labelledby: Option<&'a str>, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
+pub fn radio_item<'a>(checked: bool, value: &'a str, disabled: bool, highlighted: bool, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
 pub fn item_group<'a>(labelledby: Option<&'a str>, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
 pub fn item_group_label<'a>(id: Option<&'a str>, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
 pub fn separator<'a>(attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
@@ -53,10 +60,16 @@ root
     trigger
     positioner
       content
+        arrow
+          arrow-tip
         item-group
           item-group-label
           item
+            item-text
+            item-indicator
         separator
+        checkbox-item / radio-item-group / radio-item
+        sub-trigger / sub-content
 ```
 
 ## Options / Props
@@ -74,6 +87,7 @@ root
 
 - Tab/Shift+Tab は roving-tabindex（`tabindex="0"` の trigger のみタブ順に含まれる）で移動する。ArrowRight/Left・Home/End・Enter/Space・Escape は wasm ランタイム層の後続責務
 - `MenubarAction::Next`/`Prev` はある Menu が開いていれば、開く Menu も新しい `focused` へ追随する
+- `menu` と同型の `checkbox_item`（`role="menuitemcheckbox"`）/ `radio_item`（`role="menuitemradio"`）/ `radio_item_group`（`role="group"`）、`item_text`（`data-disabled` / `data-highlighted`）、`item_indicator`（`aria-hidden="true"`、未チェックで `hidden`）、`separator`（`<hr role="separator" aria-orientation="horizontal">`）を提供する。`trigger` は `type="button"` を固定付与し、`focused` で `tabindex="0"` / `"-1"`
 - `root` に `role="menubar"` + `aria-orientation`、`menu` に `role="none"`、`trigger` に `role="menuitem"` + `aria-haspopup="menu"` + `aria-expanded`、`content` に `role="menu"` を固定付与する
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製）
 

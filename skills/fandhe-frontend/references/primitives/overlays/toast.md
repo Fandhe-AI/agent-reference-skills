@@ -38,20 +38,21 @@ group (live region)
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `group(placement, label, attrs, children)` | `ToastPlacement`, `&str` | placement: `BottomEnd` | `role="region"` + `aria-label(label)` 必須引数 + `data-placement` |
-| `root(status, attrs, children)` | `ToastStatus` | `Info` | `role="status"` + `aria-atomic="true"` + `aria-live`（status 由来）+ `data-type` |
+| `group(placement, label, attrs, children)` | `ToastPlacement`, `&str` | placement: `BottomEnd` | `role="region"` + `aria-label(label)` 必須引数 + `data-placement` + `tabindex="-1"`（呼び出し側 `attrs` の予約キーは除去） |
+| `root(status, attrs, children)` | `ToastStatus` | `Info` | `role="status"` + `aria-atomic="true"` + `aria-live`（status 由来）+ `data-type`（`info`/`success`/`warning`/`error`）+ `data-state="open"`（固定値のみ。`closed` は発行しない）+ `tabindex="0"`（フォーカス可能性のみでキー処理配線は無い） |
 | `title(attrs, children)` / `description(attrs, children)` | — | — | 装飾用コンテナ |
 | `action_trigger(attrs, children)` | — | — | `type="button"` 固定 |
 | `close_trigger(attrs, children)` | — | — | `type="button"` 固定 |
 | `ToastStatus` | `enum` | `Info` | `Info` / `Success` / `Warning` / `Error`（`Error` のみ `aria-live="assertive"`） |
 | `ToastPlacement` | `enum` | `BottomEnd` | `TopStart` / `Top` / `TopEnd` / `BottomStart` / `Bottom` / `BottomEnd` の6語彙 |
 | `ToastEntry` | `struct` | — | `id: String` / `status: ToastStatus` / `title: String` / `description: String` |
-| `Toaster::new(max, placement)` | `usize`, `ToastPlacement` | `max: DEFAULT_MAX`（24） | 通知キューの状態機械 |
+| `Toaster::new(max, placement)` | `usize`, `ToastPlacement` | `max: DEFAULT_MAX`（24） | 通知キューの状態機械（`max` で有界。超過時は最古を押し出す） |
+| `DEFAULT_GROUP_LABEL` | `&str` | `"Notifications"` | `Toaster::view` が使う既定の group ラベル |
 
 ## Notes
 
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製、`fandhe-frontend-headless-ui` クレート）
-- 自動消去のタイマー駆動はスコープ外
+- 自動消去のタイマー駆動はスコープ外。文字列 dispatch は `"dismiss"` / `"clear"` のみ（`"push"` は受理しない。`Toaster::push` を直接呼ぶ）。Escape・ホットキー・hover/focus での一時停止、promise/loading 対応、`data-state="closed"` は未提供（`MAPPING_TABLE` に toast 行なし）
 - `ToastPlacement` はビューポート角への固定配置（`position: fixed` 前提）であり、Popover/Tooltip 等が使う `positioning::Placement`（アンカー相対）とは別の語彙
 
 ## Related

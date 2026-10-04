@@ -28,7 +28,7 @@ pub fn root<'a>(props: &DownloadTriggerProps, href: &'a str, file_name: Option<&
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `variant` | `ButtonVariant` | `Solid` | 見た目 variant（`crate::button::ButtonVariant` を再利用） |
+| `variant` | `ButtonVariant` | `Solid` | 見た目 variant（`crate::button::ButtonVariant` を再利用: `Solid`/`Outline`/`Ghost`/`Subtle`/`Surface`/`Plain`/`Link`）。`ButtonProps.shape` 相当の軸は持たない |
 | `size` | `Size` | `Md` | サイズ variant |
 | `palette` | `ColorPalette` | `Accent` | colorPalette 軸 |
 | `href` | `&str` | — | ダウンロード対象のリソース URL |

@@ -1,6 +1,6 @@
 # build
 
-ビルド・テスト・WASM ビルド・NPM アセットビルドのコマンド。
+ビルド・テスト・WASM ビルド・NPM アセットビルド・feature 構成の検証コマンド。
 
 ## ビルド・テスト（cargo）
 
@@ -26,6 +26,48 @@ python3 -m http.server 8000 --bind 127.0.0.1 --directory static
 ```
 
 生成した WASM/ES モジュールは `file://` では動作しないため、`static/` を HTTP サーバーで配信して確認する。
+
+## wasm-full の縮小構成の検証（cargo check）
+
+```sh
+cargo check -p fandhe-frontend-wasm-full \
+  --no-default-features \
+  --features wasm-bindgen-exports,collapsible,dialog,popover,tooltip,position \
+  --target wasm32-unknown-unknown --locked
+```
+
+配布 WASM の最小構成（6 feature）を対象にした検証。`wasm32-unknown-unknown` ターゲットが前提（`scripts/install.md` 参照）。`-p fandhe-frontend-wasm-full` を単体で指定すること。`--workspace` を付けて `--no-default-features` / `--features` を指定すると Cargo の解決対象がワークスペース全体に広がり、意図した縮小構成の検証にならない（ガイド記載）。
+
+```sh
+cargo check -p fandhe-frontend-wasm-full \
+  --no-default-features \
+  --features wasm-bindgen-exports,<new-feature> \
+  --target wasm32-unknown-unknown --locked
+```
+
+`fandhe-frontend` リポジトリのワークスペース内で feature を追加する際の単体構成確認（ガイドの新規 feature 追加チェックリスト）。`<new-feature>` は追加した feature 名に置き換える。
+
+## pre-styled-ui の motion feature の検証
+
+```sh
+cargo check  -p fandhe-frontend-pre-styled-ui --no-default-features --all-targets --locked
+cargo clippy -p fandhe-frontend-pre-styled-ui --no-default-features --all-targets --locked -- -D warnings
+cargo check  -p fandhe-frontend-pre-styled-ui --features motion --all-targets --locked
+cargo clippy -p fandhe-frontend-pre-styled-ui --features motion --all-targets --locked -- -D warnings
+cargo test   -p fandhe-frontend-pre-styled-ui --test motion_zero_cost --locked
+cargo test   -p fandhe-frontend-pre-styled-ui --features motion --test motion_zero_cost --locked
+cargo test   -p fandhe-frontend-pre-styled-ui --features motion --test motion_stagger_css --locked
+cargo test   -p fandhe-frontend-pre-styled-ui --features motion --test motion_spring_css --locked
+cargo test   -p fandhe-frontend-pre-styled-ui --features motion --test motion_scroll_reveal_css --locked
+cargo test   -p fandhe-frontend-pre-styled-ui --features motion --test motion_border_beam_css --locked
+cargo test   -p fandhe-frontend-pre-styled-ui --features motion --test motion_parallax_css --test motion_sticky_progress_css --locked
+cargo test   -p fandhe-frontend-pre-styled-ui --features motion --test motion_forms_css --locked
+cargo test   -p fandhe-frontend-pre-styled-ui --features motion --test motion_view_transition_css --locked
+cargo test   -p fandhe-frontend-pre-styled-ui --features motion --test motion_text_reveal_css --locked
+cargo tree   -p fandhe-frontend-pre-styled-ui -e normal --prefix none --locked | grep -c fandhe-animation   # 0
+```
+
+`fandhe-frontend` リポジトリを clone したワークスペース内でのみ実行できる（`fw new` が生成する一般プロジェクトには `-p fandhe-frontend-pre-styled-ui` のテストターゲットは存在しない）。`motion` 無効時のゼロコスト契約（`motion_zero_cost`）と、有効時の各 CSS 出力テストを確認する。最終行はコメントどおり `fandhe-animation` が依存木に現れないこと（0 件）を確認する。
 
 ## NPM アセットビルド（静的アセット限定インストール）
 

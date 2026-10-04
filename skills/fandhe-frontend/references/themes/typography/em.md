@@ -2,18 +2,18 @@
 
 文法的な強勢を表す強調テキスト（`<em>`）を既定スタイルで組み立てる、variant 軸を持たない最小静的部品。
 
-## Anatomy
-
-```
-root (em)
-```
-
 ## Signature / Usage
 
 ```rust
 use fandhe_frontend_pre_styled_ui::em::em;
 
 let node = em(vec![], vec![/* children */]);
+```
+
+## Anatomy
+
+```
+root (em)
 ```
 
 ## Notes

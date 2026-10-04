@@ -32,7 +32,8 @@
 - `mount_csr` が DOM へ反映する内容は `fandhe_frontend_app` のページ関数 → `fandhe_frontend_core::render()` を経由した既定エスケープ済みの HTML のみ。`format!` によるタグ文字列の直接組み立てや、ユーザー入力を直接 `innerHTML` に代入するコードは禁止
 - `fandhe_frontend_core::raw_html()` は既定エスケープを迂回する明示的オプトイン API。信頼できない入力を渡してはいけない（フルスタック構成と同一の制約）
 - 責務境界: フレームワークが安全性を保証するのはフレームワークが管理する `<div>`（マウントポイント）の内側だけ。埋め込みページの残りの部分（素の HTML・他の `<script>` タグ・CSP 設定等）はフレームワークの管理下になく、ページ作者の責務
-- フルスタック構成へ移行する際、呼び出し元が `fandhe-frontend-wasm-client` の `mount_csr` から `fandhe-frontend-server` の SSR/SSG ハンドラに変わるだけで、コンポーネントの記述（`crates/app/src/lib.rs` 相当）を書き直す必要はない
+- フルスタック構成へ移行する際、呼び出し元が `fandhe-frontend-wasm-client` の `mount_csr` から `fandhe-frontend-server` の SSR/SSG エントリに変わるだけで、コンポーネントの記述（`crates/app/src/lib.rs` 相当）を書き直す必要はない。公式ガイド本文は SSR 側を「axum ハンドラ想定」と記すが、実装（server 0.2.6）では axum は採用されず、`fandhe_frontend_server::ssr::respond` が HTTP レスポンス相当（`SsrResponse`）を返す純関数で、ソケット層は `fandhe-frontend-dist-server` が担う（[fandhe-frontend-server API](../api/server-api.md) 参照）
+- `fw new <project-name> --template embed` は `embed.html`（正典テンプレートとバイト一致）と `structure.toml`（`fw gate` が読む静的専用マニフェスト）を生成し、生成直後に `fw gate --project <project-name>` が無編集で PASS する。cargo パッケージを持たない静的単一ファイル構成
 - v1 の共通コアはパスマッチングによる基本的なルート解決までを提供する。ネストレイアウト・データローディング・高度なルーティング等は対象外
 
 ## Related

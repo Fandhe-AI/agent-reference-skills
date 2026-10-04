@@ -40,15 +40,16 @@ root
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `root(state, attrs, children)` | `OpenState` | — | `data-state` へ反映 |
-| `trigger(state, disabled, describedby, attrs, children)` | `OpenState`, `bool`, `Option<&str>` | — | `type="button"` 固定。`describedby` が `Some` のとき `aria-describedby` |
+| `trigger(state, disabled, describedby, attrs, children)` | `OpenState`, `bool`, `Option<&str>` | — | `type="button"` 固定・`data-state`。`describedby` が `Some` のとき `aria-describedby`。`disabled` はネイティブ `disabled` と `data-disabled` の両方へ反映 |
 | `positioner(state, attrs, children)` | `OpenState` | — | closed で `hidden` |
-| `content(state, id, attrs, children)` | `OpenState`, `Option<&str>` | — | `role="tooltip"` を持つ想定（trigger の describedby と対の `id`）。closed で `hidden` |
+| `content(state, id, attrs, children)` | `OpenState`, `Option<&str>` | — | `role="tooltip"` 固定・`data-state`（trigger の describedby と対の `id`）。closed で `hidden` |
 | `arrow(attrs, children)` / `arrow_tip(attrs, children)` | — | — | `aria-hidden="true"` 固定 |
 
 ## Notes
 
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製、`fandhe-frontend-headless-ui` クレート）
 - `openDelay`/`closeDelay`/`interactive`/`closeOnEscape` はクライアントサイド実行時挙動でスコープ外
+- `Tooltip` の利便メソッド: `root(attrs, children)` / `trigger(disabled, describedby, attrs, children)` / `content(id, attrs, children)` / `positioner(attrs, children)`（`arrow` / `arrow_tip` は状態非依存のため無し）。`state()` / `is_open()` / `data_state()` あり。位置計算は `positioner` / `arrow` の `attrs` 経由で `style` / `data-side` / `data-align` を透過する
 
 ## Related
 

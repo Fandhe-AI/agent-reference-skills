@@ -5,26 +5,29 @@
 ## Signature / Usage
 
 ```rust
-use fandhe_frontend_pre_styled_ui::switch;
+use fandhe_frontend_pre_styled_ui::switch::{self, SwitchProps};
 use fandhe_frontend_pre_styled_ui::{ColorPalette, Size};
 
-let node = switch::root(Size::Md, ColorPalette::Accent, false, false, vec![], vec![]);
+let node = switch::root(Size::Md, ColorPalette::Accent, false, &SwitchProps::default(), vec![], vec![]);
 ```
 
-`root(size, palette, checked, disabled, attrs, children) -> Node`。`stylesheet() -> String` が静的 CSS 全量を返す。`control`/`thumb`/`hidden_input`/`label`/`SwitchAction` は headless-ui からの再エクスポート。
+`root(size, palette, checked: bool, props: &SwitchProps, attrs, children) -> Node`。`root_with(size, palette, track: SwitchTrack, checked, props, attrs, children) -> Node` は `track` 軸付き版（`root` は `SwitchTrack::Default` で委譲）。`thumb_icon(checked: bool, show: ThumbIconShow, props: &SwitchProps, attrs, children) -> Node` はつまみ中央に重ねる装飾アイコン slot（`aria-hidden="true"` 固定、`thumb` の子として `Checked`/`Unchecked` 用を 1 個ずつ配置する想定）。`stylesheet() -> String` が静的 CSS 全量を返す。`control`/`thumb`/`hidden_input`/`label`/`SwitchAction` は headless-ui からの再エクスポート。
 
 ## Anatomy
 
 - `root` / `hidden-input` / `control`（`thumb` を内包）/ `label`
+- `thumb-icon` — `thumb` の子に置く on/off アイコン slot
 
 ## Options / Props
 
 | Name | Type | Description |
 |------|------|-------------|
-| `size` | `Size`（`Sm` \| `Md`（既定） \| `Lg`） | トラック/thumb 寸法 |
+| `size` | `Size`（`Xs` \| `Sm` \| `Md`（既定） \| `Lg` \| `Xl`） | トラック/thumb 寸法 |
 | `palette` | `ColorPalette`（既定 `Accent`） | checked 時の色 |
+| `track`（`root_with` のみ） | `SwitchTrack`（`Default` \| `Short`） | `Short` はつまみより細く短いトラックで、つまみがトラックからはみ出す形状。`Default` は `root` と出力一致 |
+| `show`（`thumb_icon` のみ） | `ThumbIconShow`（`Checked` \| `Unchecked`） | どちらの状態でのみ表示するか |
 | `checked` | `bool` | `data-state`（`"checked"`/`"unchecked"`）の源泉 |
-| `disabled` | `bool` | `control`/`root` へ `data-disabled` |
+| `props` | `&SwitchProps`（`disabled` / `readonly` / `invalid` / `required`: `bool`） | `data-disabled`/`data-invalid`/`data-required`/`data-readonly` を全パーツへ一律反映 |
 
 ## Notes
 

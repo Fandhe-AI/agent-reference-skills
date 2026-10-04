@@ -5,19 +5,20 @@
 ## Signature / Usage
 
 ```rust
-use fandhe_frontend_pre_styled_ui::slider;
+use fandhe_frontend_pre_styled_ui::slider::{self, SliderProps};
 use fandhe_frontend_pre_styled_ui::{ColorPalette, Size};
 use fandhe_frontend_headless_ui::slider::Slider;
 
 let s = Slider::default();
-let node = slider::root(Size::Md, ColorPalette::Accent, &s, false, vec![], vec![]);
+let node = slider::root(Size::Md, ColorPalette::Accent, &s, &SliderProps::default(), vec![], vec![]);
 ```
 
-`range(state: &Slider, disabled: bool, attrs) -> Node`、`thumb_styled(state: &Slider, aria_valuetext: Option<&str>, disabled: bool, attrs) -> Node` が `--fandhe-slider-percent` を含む `style` を組み立てる唯一のパーツ。`stylesheet() -> String` が静的 CSS 全量を返す。
+`root(size, palette, state: &Slider, props: &SliderProps, attrs, children) -> Node`。`range(state: &Slider, props: &SliderProps, attrs) -> Node`、`thumb_styled(state: &Slider, aria_valuetext: Option<&str>, props: &SliderProps, attrs) -> Node` が `--fandhe-slider-percent` を含む `style` を組み立てる。`marker_group(attrs, children) -> Node`（状態を持たない目盛りコンテナ）、`marker(state: &Slider, value: f64, disabled: bool, attrs, children) -> Node`（`--fandhe-slider-marker-percent` を `style` で付与する目盛り）。`stylesheet() -> String` が静的 CSS 全量を返す。
 
 ## Anatomy
 
 - `root` / `label` / `control`（`track`/`range`/`thumb` を内包）/ `hidden-input`
+- `marker-group`（`marker` を複数内包）
 
 ## Options / Props
 
@@ -25,7 +26,8 @@ let node = slider::root(Size::Md, ColorPalette::Accent, &s, false, vec![], vec![
 |------|------|-------------|
 | `size` | `Size`（既定 `Md`） | トラック長・thumb 寸法 custom property |
 | `palette` | `ColorPalette`（既定 `Accent`） | `range`/`thumb` の色 |
-| `disabled` | `bool` | `control`/`range`/`root`/`thumb`/`track` へ `data-disabled` を反映 |
+| `props` | `&SliderProps`（`disabled` / `readonly` / `invalid`: `bool`） | `disabled` は `control`/`range`/`root`/`thumb`/`track` へ `data-disabled` を反映 |
+| `marker` の `disabled` | `bool` | `marker` 個別の無効化 |
 
 ## Notes
 

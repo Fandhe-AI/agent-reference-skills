@@ -14,11 +14,15 @@ root
 
 ```rust
 use fandhe_frontend_pre_styled_ui::callout::{root, text, CalloutProps};
-use fandhe_frontend_pre_styled_ui::Size;
 
 let node = root(&CalloutProps::default(), vec![], vec![
-    text(Size::Md, vec![], vec![]),
+    text(vec![], vec![]),
 ]);
+
+pub fn root<'a>(props: &CalloutProps, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
+pub fn icon<'a>(attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
+pub fn text<'a>(attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
+pub fn css() -> String
 ```
 
 ## Options / Props
@@ -32,7 +36,7 @@ let node = root(&CalloutProps::default(), vec![], vec![
 ## Notes
 
 - `root` は `role`/`aria-*` を一切付与しない（本文中の静的な補足情報であり live region ではない）
-- `text` パーツは `root` と同じ `size` を渡す必要がある（`text` slot 用のフォントサイズ variant は `text` 要素自身へのクラス付与を前提とする複合セレクタのため）
+- `text` は `size` 引数を取らない。font-size は `root` の `--fandhe-callout-font-size` custom property から継承して決まる（`root` と `text` へ同じ `size` を渡す必要があった旧設計の揃え漏れを解消）
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 
 ## Related

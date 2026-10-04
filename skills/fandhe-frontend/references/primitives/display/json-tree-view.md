@@ -1,6 +1,6 @@
 # JsonTreeView
 
-JSON 風データ構造のツリー表示 headless コンポーネント。`tree_view`（12 anatomy パーツ・`TreeView` 状態機械）をそのまま再利用しつつ、JSON 固有の `key`/`value` の 2 パーツと変換ロジック `render_json` を追加する。
+JSON 風データ構造のツリー表示 headless コンポーネント。`tree_view`（12 anatomy パーツ・`TreeView` 状態機械）をそのまま再利用しつつ、JSON 固有の `key`/`colon`/`value` の 3 パーツと変換ロジック `render_json` を追加する。
 
 ## Signature / Usage
 
@@ -30,13 +30,15 @@ let node = render_json(&tree, &data);
 
 | Part | Attribute | Values |
 | --- | --- | --- |
-| value | `data-kind` | `null` \| `bool` \| `number` \| `string` \| `array` \| `object` |
+| value | `data-kind` | `null` \| `boolean` \| `number` \| `string` \| `array` \| `object` |
 
-構造部（root/tree/branch/branch-control/branch-indicator/branch-content/branch-indent-guide/item/item-indicator）は `tree_view` の既存 `data-scope="tree-view"` パーツをそのまま使う。`key`/`value` は別スコープ `data-scope="json-tree-view"` に属する。
+構造部（root/tree/branch/branch-control/branch-indicator/branch-content/branch-indent-guide/item/item-indicator）は `tree_view` の既存 `data-scope="tree-view"` パーツをそのまま使う。`key`/`colon`/`value` は別スコープ `data-scope="json-tree-view"` に属する。
 
 ## Notes
 
 - `JsonValue` は `serde_json::Value` 等に依存しない外部依存ゼロの静的 enum。`Object` は挿入順を保持する `Vec<(String, JsonValue)>` で表現し、`render_json` の出力決定性を保証する。
+- `key`（`span`、オブジェクトキー / 配列 index）・`colon`（`span`、`key` と `value` の区切り。子は固定テキスト `": "`、キーを持つノードにのみ出力）・`value`（`span[data-kind]`）は `key` → `colon` → `value` の順で、`tree_view` の `branch_text` / `item_text` の内側に入れ子で描画される。
+- `data-kind` 語彙は `"boolean"`（旧 `"bool"` からの破壊的変更。ark-ui / zag の `JsonNodeType` に合わせた）。`value` の表示テキストは `Null` → `null`、`Bool` → `true`/`false`、`String` → 前後に `"` を付けたプレビュー、`Object`/`Array`（ブランチ要約）→ `Object(N)` / `Array(N)`。
 - ノード識別子には RFC 6901 JSON Pointer 記法を使う（`~0`→`~`・`~1`→`/` の逆写像でエスケープ）。ルートは空文字列 `""`。
 - 構造部の ARIA（`role="tree"`/`role="treeitem"`/`role="group"`、`aria-expanded`/`aria-selected`/`aria-level`/`aria-posinset`/`aria-setsize`）は `tree_view` から継承する。
 - `@ark-ui/react` の `utilities/json-tree-view`（JS/TS API）とは別物（Rust 製）。`collapseStringsAfterLength`/`groupArraysAfterLength`/`showNonenumerable`/lazy loading/rename は提供しない。

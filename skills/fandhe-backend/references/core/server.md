@@ -37,6 +37,7 @@ bound.run().await
 | `read_timeout(d)` | `Duration`（既定 30s） | 1 回の read 待ちタイムアウト |
 | `keep_alive(bool)` | `bool`（既定 `true`） | keep-alive の有効/無効 |
 | `shutdown_grace_period(d)` | `Duration`（既定 30s） | graceful shutdown の in-flight 完了待ち上限 |
+| `diagnostics(sink)` | `impl Diagnostics`（v0.4.2 で追加、既定 `StderrDiagnostics`） | ライブラリ内部の実行時診断（accept 失敗・TCP_NODELAY 設定失敗・graceful shutdown / rebind の grace 超過強制クローズ）の送信先を差し替える。複数回呼ぶと最後の登録が有効（単一シンクのみ保持） |
 | `bind(addr)` | `async fn(impl ToSocketAddrs) -> io::Result<BoundServer>` | TCP リスナーをバインドし `BoundServer` を返す |
 
 feature 限定の登録メソッド（`webrtc-proxy` / `webrtc` / `websocket` / `graphql` / `openapi` / `openapi_with` / `cors` / `compression` / `static_files` / `tracing`）は各プラグインスキルの責務であり、`crates/plugin-*` 側に定義がある。
@@ -46,11 +47,14 @@ feature 限定の登録メソッド（`webrtc-proxy` / `webrtc` / `websocket` / 
 - クレート直下の公開 API は `handle_connection` / `handle_connection_with_peer_addr` / `version()` の3つ。`version() -> &'static str`（`CARGO_PKG_VERSION` を返す）はビルド疎通確認用の最小 API で `Server` の挙動には関与しない。`handle_connection_with_peer_addr(server, stream, peer_addr)`（v0.3.0 で追加、issue #486）はカスタム accept ループから実 peer address を注入する経路で、`handle_connection` は peer address を省略する薄いラッパー
 - `Handler` は非対称設計: 4 拡張点は同期のままだが `Handler::handle` はイシュー #315 で async 化されている
 - `fandhe_backend_routes::Router` は `impl Handler for Router` により `.handler(router)` へそのまま登録できる（`Router::dispatch` への薄いアダプタ）
+- `diagnostics(sink)`（v0.4.2、issue #720）: 未登録時は `StderrDiagnostics` が使われ、従来の `eprintln!` 出力と文言・接頭辞・出力先（stderr）が完全互換。`sink` の `report` は accept ループ・rebind の背景 drain タスク上で同期的に呼ばれるためブロッキング I/O を行ってはならない。クロージャを直接渡せる blanket impl があり、引数の型注釈は必須（`|_| {}` のみでは型推論に失敗する）: `Server::new().diagnostics(|_event: &DiagnosticEvent<'_>| {})`。`Diagnostics` / `DiagnosticEvent`（`#[non_exhaustive]`）/ `StderrDiagnostics` の詳細は [Diagnostics](./diagnostics.md)
+- 挙動変更（v0.4.2）: 最終 graceful shutdown・rebind 旧世代 drain の grace 超過強制クローズでは、診断シンクへの通知を強制クローズの完了後に行う（利用側シンクの異常・遅延がフェイルクローズを妨げないため）
 - `bind` は `addr` に TCP リスナーを張り `BoundServer` を返す。実際の accept ループは `BoundServer::run` / `run_until` が担う
 
 ## Related
 
 - [BoundServer](./bound-server.md)
+- [Diagnostics](./diagnostics.md)
 - [Handler](./handler.md)
 - [Middleware](./middleware.md)
 - [RequestGate](./request-gate.md)

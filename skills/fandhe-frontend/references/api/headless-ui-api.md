@@ -14,8 +14,13 @@ state::Disclosure       // 開閉状態機械（dispatch: "open" / "close" / "to
 state::SingleSelect      // 単一選択状態機械
 state::TextInput         // 自由入力文字列状態機械
 
-// 位置決め（positioning モジュール、fandhe-frontend-headless-ui 0.28.0 で確認）
+// 位置決め（positioning モジュール、クレートルートから再エクスポート。fandhe-frontend-headless-ui 0.69.2 のソースで確認）
 fn positioning::compute_position(anchor: Rect, floating: Size, viewport: Size, config: &PositioningConfig, has_arrow: bool) -> ResolvedPosition
+// 同モジュールの再エクスポート: css_vars_style / data_align / data_side / placement_attrs /
+// Align / ArrowPosition / Placement / PositioningConfig / Rect / ResolvedPosition / Side / Size
+// Rect { x, y, width, height: f64 } / Size { width, height: f64 }
+// PositioningConfig { placement: Placement, offset: f64, flip: bool, shift: bool, same_width: bool }
+// ResolvedPosition { x: f64, y: f64, placement: Placement, arrow: Option<ArrowPosition> }
 ```
 
 ## コンポーネント一覧（主要抜粋）
@@ -40,7 +45,12 @@ fn positioning::compute_position(anchor: Rect, floating: Size, viewport: Size, c
 
 - `color`: RGB/HSL/HSV/HEX相互変換（整数演算のみ、外部依存ゼロ、round half up丸め規則）
 - `date`: `PlainDate`（proleptic Gregorian対応、現在時刻API非使用契約、`PlainDate::new(year, month, day)` は検証付き構築）
-- `format`: `format_byte()` / `format_number()` / `format_time()` / `format_relative_time()`。`Locale` は `En`/`Ja` の値型（Context/Provider非採用）
+- `date` の主要シグネチャ: `PlainDate::add_days(&self, delta: i64) -> Result<PlainDate, DateError>` / `PlainDate::days_until(&self, other: &PlainDate) -> i64` / `PlainDate::parse_iso(s: &str) -> Result<PlainDate, DateError>`（厳密な `YYYY-MM-DD` のみ） / `PlainDate::to_iso_string(&self) -> String` / `month_grid(year: i32, month: u8, week_start: Weekday) -> Result<MonthGrid, DateError>`。現在時刻を一切取得せず、「今日」は呼び出し側が `PlainDate` で渡す。`DateError` は `InvalidDate` / `InvalidFormat` / `OutOfRange`
+- `color` の型: `Rgb` / `Hsl` / `Hsv`（`Hsl::new` / `Hsv::new` は範囲外を構築不能にする fallible コンストラクタ）/ `Color`（RGBA。`parse_hex` は `#rgb` / `#rgba` / `#rrggbb` / `#rrggbbaa` の 4 形式以外を `ColorError::InvalidHex` で拒否、`to_hex_string()` は `#` + 小文字 16 進）/ `ColorError`（`OutOfRange` / `InvalidHex`）
+- `format` の主要シグネチャ: `format_byte(value: f64, options: &FormatByteOptions) -> String` / `format_number(value: f64, options: &FormatNumberOptions) -> String` / `format_time(total_seconds: i64, options: &FormatTimeOptions) -> String` / `format_relative_time(target: i64, base: i64, options: &FormatRelativeTimeOptions) -> String`（`target` / `base` は Unix 秒、`base` は必ず呼び出し側が渡す）。NaN / ±∞ は panic せず `"NaN"` / `"∞"` / `"-∞"` を返す
+- `format`: `format_byte()` / `format_number()` / `format_time()` / `format_relative_time()`。`Locale` は `En`/`Ja` の値型（Context/Provider非採用。`#[non_exhaustive]`、`Locale::tag()` / `Locale::from_tag(tag) -> Option<Locale>`）
+- `Placement`: `Side`（`top`/`bottom`/`left`/`right`）× `Align`（`start`/`center`/`end`）の 12 語彙。`as_str()` / `from_str()` は相互逆写像で、未知の値は `None`（fail-closed）。`PositioningConfig` の `Default` は `bottom-center`・`offset: 0.0`・`flip`/`shift` 有効・`same_width: false`
+- `compute_position()` の手順: `config.placement` で座標算出 → `flip`（主軸の単純反転 1 候補）→ `shift`（交差軸の viewport 内クランプ）→ `has_arrow` が真のときのみ arrow 座標。`NaN`/`Infinity`・負の幅高さ・viewport 寸法 0 等は panic せず `config.placement` のまま座標 `(0.0, 0.0)`・`arrow: None` を返す。実 DOM 計測は `fandhe-frontend-wasm-full` の責務
 - `compute_position()`: CSS変数 `--fandhe-x` / `--fandhe-y` / `--fandhe-reference-width` / `--fandhe-arrow-x` / `--fandhe-arrow-y` を出力。`data-side` / `data-align` は flip適用後の確定値
 
 ## Notes

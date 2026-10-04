@@ -19,7 +19,7 @@ let node = icon(
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `size` | `Size` (`Sm`/`Md`/`Lg`) | `Md` | 寸法（1rem/1.5rem/2rem） |
+| `size` | `Size` (`Xs`/`Sm`/`Md`/`Lg`/`Xl`) | `Md` | 寸法（0.75rem/1rem/1.25rem/1.5rem/1.75rem） |
 | `label` | `Option<&str>` | `None` | アクセシブルネーム。`Some` で `role="img"` + `aria-label`、`None` で `aria-hidden="true"` |
 | `view_box` | `&str` | `"0 0 24 24"` | `viewBox` 属性値 |
 

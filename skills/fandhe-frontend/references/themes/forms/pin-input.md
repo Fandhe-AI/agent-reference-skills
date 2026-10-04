@@ -11,11 +11,11 @@ use fandhe_frontend_pre_styled_ui::Size;
 let node = pin_input::root(Size::Md, false, false, vec![], vec![]);
 ```
 
-`stylesheet() -> String` が静的 CSS 全量を返す。`control`/`input`/`hidden_input`/`label`/`PinInputAction`/`PinInputKind` は headless-ui からの再エクスポート。
+`separator(attrs, children) -> Node` は桁グループ間の区切り（`role="presentation"`・`aria-hidden="true"`）。`stylesheet() -> String` が静的 CSS 全量を返す。`control`/`input`/`hidden_input`/`label`/`PinInputAction`/`PinInputKind` は headless-ui からの再エクスポート。
 
 ## Anatomy
 
-- `root` / `label` / `control`（`input`/`hidden-input` を内包）
+- `root` / `label` / `control`（`input`/`hidden-input` を内包）/ `separator`
 
 ## Options / Props
 

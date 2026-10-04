@@ -48,17 +48,19 @@ root
 | `trigger(state, controls, attrs, children)` | `OpenState`, `Option<&str>` | — | `dialog::trigger` と同一契約 |
 | `backdrop(state, attrs, children)` | `OpenState` | — | `dialog::backdrop` と同一契約 |
 | `positioner(state, placement, attrs, children)` | `OpenState`, `DrawerPlacement` | — | closed で `hidden`、placement を `data-placement` へ反映 |
-| `content(state, placement, modal, ids, attrs, children)` | `OpenState`, `DrawerPlacement`, `bool`, `ContentIds` | — | `role="dialog"` 固定（`Alertdialog` 相当は無し） |
+| `content(state, placement, modal, ids, attrs, children)` | `OpenState`, `DrawerPlacement`, `bool`, `ContentIds` | — | `role="dialog"` 固定（`Alertdialog` 相当は無し）・`aria-modal`・`data-state`・`data-placement`・`tabindex="-1"` 固定 |
 | `title(id, attrs, children)` | `Option<&str>` | — | `dialog::title` と同一契約 |
 | `description(id, attrs, children)` | `Option<&str>` | — | `dialog::description` と同一契約 |
 | `close_trigger(attrs, children)` | — | — | `type="button"` 固定 |
+| `close_trigger_with_variant(variant, attrs, children)` | `dialog::CloseTriggerVariant` | — | `data-variant` を固定出力（`dialog` と同一契約。呼び出し側 `attrs` の `data-variant` は除去） |
 | `DrawerPlacement` | `enum` | `End` | `Start` / `End` / `Top` / `Bottom`（`start`/`end` は論理方向） |
 
 ## Notes
 
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製、`fandhe-frontend-headless-ui` クレート）
 - Grabber / snapPoints / draggable 等のドラッグ操作は JS ランタイムの責務でスコープ外
-- `fandhe-frontend-wasm-full` の `OverlayKind::from_scope` は `"drawer"` を未対応（fail-closed）
+- `fandhe-frontend-wasm-full` の `OverlayKind::from_scope` は `"drawer"` を未対応（fail-closed）。それに加え、part → action 対応表にも `drawer` scope が無く、フォーカストラップも `dialog` scope のみが対象のため、ハイドレーション後の Drawer は現状 inert（trigger / close-trigger の click、Escape・外側クリック閉鎖、フォーカストラップ・復帰のいずれも動作しない）
+- `DrawerPlacement` は `from_str("start"|"end"|"top"|"bottom")` あり。`root` / `positioner` / `content` が `data-placement`（論理方向）を出力する。`backdrop` は `aria-hidden="true"`。`grabber` / `swipe-area` / `indent` パーツ、`data-swipe-direction` 等は未提供
 
 ## Related
 

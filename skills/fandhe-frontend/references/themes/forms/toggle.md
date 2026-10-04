@@ -5,13 +5,13 @@
 ## Signature / Usage
 
 ```rust
-use fandhe_frontend_pre_styled_ui::toggle;
+use fandhe_frontend_pre_styled_ui::toggle::{self, ToggleVariant};
 use fandhe_frontend_pre_styled_ui::{ColorPalette, Size};
 
-let node = toggle::root(Size::Md, ColorPalette::Accent, false, false, vec![], vec![]);
+let node = toggle::root(Size::Md, ToggleVariant::Outline, ColorPalette::Accent, false, false, vec![], vec![]);
 ```
 
-`root(size, palette, pressed, disabled, attrs, children) -> Node`。`stylesheet() -> String` が静的 CSS 全量を返す。`indicator`/`ToggleAction` は headless-ui からの再エクスポート。
+`root(size, variant: ToggleVariant, palette, pressed, disabled, attrs, children) -> Node`。`stylesheet() -> String` が静的 CSS 全量を返す。`indicator`/`ToggleAction` は headless-ui からの再エクスポート。
 
 ## Anatomy
 
@@ -21,7 +21,8 @@ let node = toggle::root(Size::Md, ColorPalette::Accent, false, false, vec![], ve
 
 | Name | Type | Description |
 |------|------|-------------|
-| `size` | `Size`（`Sm` \| `Md`（既定） \| `Lg`） | サイズ |
+| `size` | `Size`（`Xs` \| `Sm` \| `Md`（既定） \| `Lg` \| `Xl`） | サイズ |
+| `variant` | `ToggleVariant`（`Outline`（既定） \| `Ghost`） | 外観。`Ghost` は背景・輪郭なしの最小装飾（`ButtonVariant::Ghost` と同じ意味論） |
 | `palette` | `ColorPalette`（既定 `Accent`） | pressed 時の色 |
 | `pressed` | `bool` | `data-state`（`"on"`/`"off"`）・`data-pressed`・`aria-pressed` の源泉 |
 | `disabled` | `bool` | `data-disabled` |

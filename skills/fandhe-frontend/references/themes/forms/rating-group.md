@@ -5,13 +5,13 @@
 ## Signature / Usage
 
 ```rust
-use fandhe_frontend_pre_styled_ui::rating_group;
+use fandhe_frontend_pre_styled_ui::rating_group::{self, RatingGroupProps};
 use fandhe_frontend_pre_styled_ui::{ColorPalette, Size};
 
-let node = rating_group::root(Size::Md, ColorPalette::Accent, false, false, vec![], vec![]);
+let node = rating_group::root(Size::Md, ColorPalette::Accent, &RatingGroupProps::default(), vec![], vec![]);
 ```
 
-`root(size, palette, disabled, readonly, attrs, children) -> Node`。`stylesheet() -> String` が静的 CSS 全量を返す。`control`/`item`/`hidden_input`/`label`/`RatingGroupAction`/`RatingItemFlags` は headless-ui からの再エクスポート。
+`root(size: Size, palette: ColorPalette, props: &RatingGroupProps, attrs, children) -> Node`。`stylesheet() -> String` が静的 CSS 全量を返す。`control`/`item`/`hidden_input`/`label`/`RatingGroupAction`/`RatingItemFlags` は headless-ui からの再エクスポート。
 
 ## Anatomy
 
@@ -23,8 +23,7 @@ let node = rating_group::root(Size::Md, ColorPalette::Accent, false, false, vec!
 |------|------|-------------|
 | `size` | `Size`（既定 `Md`） | `root` へクラス付与 |
 | `palette` | `ColorPalette`（既定 `Accent`） | 選択済み `item` の色 |
-| `disabled` | `bool` | `data-disabled` |
-| `readonly` | `bool` | `data-readonly` |
+| `props` | `&RatingGroupProps`（`disabled` / `readonly` / `required`: `bool`） | `disabled` は `data-disabled`、`readonly` は `data-readonly` を反映 |
 
 ## Notes
 

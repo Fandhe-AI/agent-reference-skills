@@ -10,7 +10,7 @@ use fandhe_frontend_headless_ui::checkbox::{self, Checkbox, CheckboxFlags, Check
 let cb = Checkbox::new(true);
 
 cb.root(CheckboxFlags::default(), vec![], vec![
-    cb.control(CheckboxFlags::default(), vec![
+    cb.control(CheckboxFlags::default(), vec![], vec![
         cb.indicator(CheckboxFlags::default(), vec![], vec![]),
     ]),
     cb.label(CheckboxFlags::default(), vec![], vec![]),
@@ -33,12 +33,15 @@ cb.root(CheckboxFlags::default(), vec![], vec![
 | Name | Type | Description |
 |------|------|-------------|
 | `CheckboxProps.checked` | `CheckedState`（`Unchecked` \| `Checked` \| `Indeterminate`） | `data-state` / `aria-checked` の唯一の情報源 |
-| `CheckboxProps.disabled` / `invalid` / `required` / `readonly` | `bool` | `data-*` およびネイティブ属性として反映される |
+| `CheckboxProps.disabled` / `invalid` / `required` / `readonly` | `bool`（既定 `false`） | 全パーツに `data-disabled` / `data-invalid` / `data-required` / `data-readonly` として反映。`hidden_input` にはネイティブ `disabled` / `required`、`invalid` のとき `aria-invalid="true"` も付与（ネイティブ `readonly` は付与しない） |
+| `hidden_input.name` / `value` | `&str` | 暗黙の既定値を持たず呼び出し側が明示する |
 | `CheckboxFlags` | struct | `Checkbox` の便利メソッドに渡す `disabled`/`invalid`/`required`/`readonly` の束 |
 
 ## Notes
 
 - `Checkbox`（動的状態機械）は checked/unchecked（2値）のみを追跡する。`Indeterminate` は `CheckboxProps` を介した SSR 専用で、ディスパッチ/ハイドレーション経由では到達不能
+- `hidden_input` は `Checked` のとき `checked` 存在属性、`Indeterminate` のとき `aria-checked="mixed"` を付与する
+- 全パーツに `data-state`（`unchecked` / `checked` / `indeterminate`）を出力する。呼び出し側 `attrs` による固定属性（`data-state` / `data-disabled` / `data-invalid` / `data-required` / `data-readonly`、パーツ別に `aria-hidden` / `hidden` / `type` / `checked` / `name` / `value` 等）の上書きは除去される
 - ディスパッチアクション: `"check"`, `"uncheck"`, `"toggle"`
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製、`fandhe-frontend-headless-ui`）
 

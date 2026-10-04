@@ -29,6 +29,8 @@ withViewTransition(updateCallback);
 
 - `<meta name="view-transition" content="same-origin">` は View Transitions API の実験段階で提案された旧構文で廃止済み。標準化された CSS の `@view-transition` at-rule を採用している
 - 標準テンプレートへの既定同梱: フルスタック標準（SSR/SSG）は `page_shell()` が `<head>` に at-rule を出力。最小埋め込み標準は `templates/embed/embed.html` の `<head>` に同一の at-rule を明示配置（利用者がコピー後に削除してもよい）
+- 標準テンプレートの HTML 骨格は `page_shell()`（Rust 関数）が生成する設計のため、`templates/default/*.html` という静的 HTML 成果物は作成されていない。回帰は SSR/SSG 全出力ファイルを対象とする `crates/server/tests/view_transitions.rs` と、`templates/embed/embed.html` を対象とする `crates/xtask/tests/template_embed_html.rs` で固定され、廃止済み `<meta name="view-transition">` の再導入もテストで検出される
+- 三者の役割分担: クロスドキュメント（at-rule、JS 0 行）／同一文書内の非 WASM 更新（`withViewTransition()`、呼び出し側が明示的に利用）／`wasm-full` の SPA 内遷移（`nav::start_router` 起動後、`data-nav` クリックと `popstate` のたびに自動ラップ）。後二者はいずれも `document.startViewTransition` の機能検出 + 非対応時は同期実行の graceful degradation だが実装は独立している
 - `withViewTransition()`（JS）と `with_view_transition`（Rust/wasm-bindgen）は同一ページで共存する想定はない。選択は WASM を使うか（`wasm-full`）／使わないか（最小埋め込み・`wasm-client`）という既存のクレート選択に従う
 - `@view-transition` at-rule は非対応ブラウザでは単に無視され、通常のナビゲーションにフォールバックする（JS 分岐・feature detection 不要）
 - at-rule の内容はユーザー入力を一切含まない固定リテラルで、`page_shell()` は `el`/`text`（既定エスケープ経路）経由で `<style>` 子ノードとして出力する。`raw_html()` 等のエスケープ迂回 API は使用していない

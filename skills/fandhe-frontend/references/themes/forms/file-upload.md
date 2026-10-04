@@ -5,11 +5,13 @@
 ## Signature / Usage
 
 ```rust
-use fandhe_frontend_pre_styled_ui::file_upload;
+use fandhe_frontend_pre_styled_ui::file_upload::{self, FileUploadProps};
 use fandhe_frontend_pre_styled_ui::Size;
 
-let node = file_upload::root(Size::Md, false, vec![], vec![]);
+let node = file_upload::root(Size::Md, &FileUploadProps::default(), false, vec![], vec![]);
 ```
+
+`root(size: Size, props: &FileUploadProps, dragging: bool, attrs, children) -> Node`。
 
 `stylesheet() -> String` が静的 CSS 全量を返す。`dropzone`/`trigger`/`hidden_input`/`item_group`/`item`/`item_name`/`item_size_text`/`item_delete_trigger`/`clear_trigger`/`label` は headless-ui からの再エクスポート。
 
@@ -25,7 +27,8 @@ let node = file_upload::root(Size::Md, false, vec![], vec![]);
 | Name | Type | Description |
 |------|------|-------------|
 | `size` | `Size`（既定 `Md`） | `root` へクラス付与 |
-| `disabled` | `bool` | `clear-trigger`/`dropzone`/`hidden-input`/`item`/`item-delete-trigger`/`root`/`trigger` へ `data-disabled` を反映 |
+| `props` | `&FileUploadProps`（`disabled` / `readonly` / `invalid` / `required`: `bool`） | `disabled` は `clear-trigger`/`dropzone`/`hidden-input`/`item`/`item-delete-trigger`/`root`/`trigger` へ `data-disabled` を反映 |
+| `dragging` | `bool` | ドラッグ中状態 |
 
 ## Notes
 

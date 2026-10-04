@@ -2,18 +2,18 @@
 
 文中に埋め込む短いインライン引用（`<q>`）を既定スタイルで組み立てる、variant 軸を持たない最小静的部品。
 
-## Anatomy
-
-```
-root (q)
-```
-
 ## Signature / Usage
 
 ```rust
 use fandhe_frontend_pre_styled_ui::quote::quote;
 
 let node = quote(vec![], vec![/* children */]);
+```
+
+## Anatomy
+
+```
+root (q)
 ```
 
 ## Notes

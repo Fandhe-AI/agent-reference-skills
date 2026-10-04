@@ -28,7 +28,10 @@ cargo run   # dist/ に SSG 出力（静的 HTML）を書き出す
 ## Notes
 
 - CSR（WASM）ビルドを試す場合は `rustup target add wasm32-unknown-unknown` と `wasm-bindgen-cli` が追加で必要。`wasm-bindgen-cli` のバージョンは `wasm/Cargo.lock` の `wasm-bindgen` バージョンと完全一致させ、`--locked` 付きで導入する
-- WASM ビルドは `./tools/wasm/build.sh` で実行し、生成物は `static/` を HTTP サーバー（`python3 -m http.server` 等）で配信して確認する（`file://` では ES モジュール/WASM が動作しない）
+- 初回ビルド時は `Cargo.toml` で宣言された fandhe-frontend-core / fandhe-frontend-app を crates.io から取得するため、インターネット接続が必要
+- `cargo run` の出力例は `wrote 5 pages to dist/`。`dist/index.html` をブラウザで開くと記事一覧、リンクから詳細ページへ遷移できる。`cargo test` は既定エスケープがテンプレートのサンプルデータで効いていることを確認する回帰テスト（2 件）
+- `fw`（`fandhe-frontend-cli`）を引数なしで実行するとサブコマンド一覧が出る: `structure`（構造マニフェストの生成・検証）、`gate`（AI 自己保守検証ゲート: type/escape/lint/test/policy）、`impact`（シンボルの変更影響分析）、`new`（テンプレートからの決定的なプロジェクト生成）。`fw new` は生成ファイルパス一覧を JSON 1 行で出力する
+- WASM ビルドは `./tools/wasm/build.sh` で実行する。`wasm-bindgen` のバージョンが一致しない場合は fail-closed で停止し、是正用の `cargo install` 例を標準エラー出力へ表示する。生成物（`static/wasm/`）は `static/` を HTTP サーバーで配信して確認する（`file://` では ES モジュール/WASM が動作しない）。意図しない公開を避けるため `python3 -m http.server 8000 --bind 127.0.0.1 --directory static` のように `127.0.0.1` にバインドし、`http://127.0.0.1:8000/embed.html` を開く
 - 開発版 `fw` を使う場合は `git clone` してソースから `cargo install --path crates/cli` する、または `cargo run -p fandhe-frontend-cli --bin fw -- <サブコマンド>` で都度実行できる
 - 生成したプロジェクトは `fw gate --project .` で型チェック・既定エスケープ検査・lint・テスト・依存ポリシーを一括検証できる。生成直後は無編集で PASS する
 - 最小埋め込み構成を試す場合は `fw new my-embed --template embed` を使う（詳細は最小埋め込みガイド参照）

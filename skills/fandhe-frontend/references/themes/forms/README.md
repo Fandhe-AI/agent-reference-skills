@@ -4,18 +4,23 @@
 | --- | --- | --- |
 | Angle Slider | 円形ダイヤル型の角度スライダー。styled AngleSlider | [angle-slider.md](./angle-slider.md) |
 | Button | `<button type="button">` の単一 recipe styled 部品。IconButton/CloseButton も内包 | [button.md](./button.md) |
+| Button Group | 関連するボタンを角丸・境界線で 1 つの連結表示にまとめるスタイル済み部品 | [button-group.md](./button-group.md) |
 | Checkbox | チェック/未チェック/不確定の 3 状態を扱う styled Checkbox | [checkbox.md](./checkbox.md) |
 | Checkbox Card | カード型の選択 UI。独自 `checkbox-card` anatomy | [checkbox-card.md](./checkbox-card.md) |
 | Checkbox Group | 複数チェックボックスをまとめる styled CheckboxGroup | [checkbox-group.md](./checkbox-group.md) |
 | Color Picker | HSV エリア + 色相/アルファスライダーの styled ColorPicker | [color-picker.md](./color-picker.md) |
 | Editable | インライン編集可能テキストの styled Editable | [editable.md](./editable.md) |
+| Field | ラベル・補助テキスト・エラーテキスト・必須マークの型階層と `root` の余白レイアウト | [field.md](./field.md) |
+| Fieldset | 複数の Field をネイティブ `<fieldset>` / `<legend>` でグループ化 | [fieldset.md](./fieldset.md) |
 | File Upload | ドロップゾーン付きファイルアップロードの styled 部品 | [file-upload.md](./file-upload.md) |
 | Image Cropper | 選択領域付き画像クロッパーの styled 部品 | [image-cropper.md](./image-cropper.md) |
 | Input | `field` scope を共有する styled テキスト入力 | [input.md](./input.md) |
+| Input Group | 入力欄の前後にテキスト・アイコン・ボタンの addon を配置 | [input-group.md](./input-group.md) |
 | Native Select | ネイティブ `<select>` の styled ラッパー | [native-select.md](./native-select.md) |
 | Number Input | 増減トリガー付き数値入力の styled 部品 | [number-input.md](./number-input.md) |
 | Password Input | 表示切替トリガー付きパスワード入力の styled 部品 | [password-input.md](./password-input.md) |
 | Pin Input | 固定桁数の PIN コード入力の styled 部品 | [pin-input.md](./pin-input.md) |
+| Questionnaire | shadcn/ui Questionnaire 相当の多段質問 UI のスタイル済み部品 | [questionnaire.md](./questionnaire.md) |
 | Radio Card | カード型のラジオ選択 UI。独自 `radio-card` anatomy | [radio-card.md](./radio-card.md) |
 | Radio Group | 単一選択のラジオボタン群の styled RadioGroup | [radio-group.md](./radio-group.md) |
 | Rating Group | 星評価等の複数アイテム選択の styled RatingGroup | [rating-group.md](./rating-group.md) |

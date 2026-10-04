@@ -5,10 +5,11 @@
 ## Signature / Usage
 
 ```rust
-use fandhe_frontend_pre_styled_ui::tabs::{self, ActivationMode, Orientation, TabItem, TabsProps};
+use fandhe_frontend_pre_styled_ui::tabs::{self, ActivationMode, Orientation, TabItem, TabsProps, TabsVariant};
 use fandhe_frontend_pre_styled_ui::{ColorPalette, Size};
 
 let node = tabs::tabs(
+    TabsVariant::Line,
     Size::Md,
     ColorPalette::Accent,
     &TabsProps {
@@ -24,7 +25,9 @@ let node = tabs::tabs(
 ```
 
 ```rust
-pub fn tabs(size: Size, palette: ColorPalette, props: &TabsProps<'_>, items: Vec<TabItem<'_>>) -> Node;
+pub fn tabs(variant: TabsVariant, size: Size, palette: ColorPalette, props: &TabsProps<'_>, items: Vec<TabItem<'_>>) -> Node;
+
+pub enum TabsVariant { Line /* 既定 */, Enclosed }
 ```
 
 `TabsProps`/`TabItem`/`ActivationMode`/`Orientation` は headless 層から選択的に再エクスポートされる。未スタイルの headless 自由関数 `tabs`/`tabs_with_root_attrs` が必要な場合は `fandhe_frontend_headless_ui::tabs` を直接 import する。
@@ -43,6 +46,7 @@ root
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
+| `variant` | `TabsVariant` | `Line` | `Line`（下線スタイル。selected trigger の下側を `color-palette` の強調色で下線表示する従来の見た目）/ `Enclosed`（セグメント / ピル型。`list` を角丸の淡色コンテナにし、selected trigger を白背景 + 微小な影で浮き上がらせる）。第1引数 |
 | `size` | `Size` | `Md` | root へのみクラスを付与し、`--fandhe-tabs-trigger-padding`/`-content-padding`（root スコープ custom property、CSS 継承で `trigger`/`content` へ伝播）を切り替える |
 | `palette` | `ColorPalette` | `Accent` | 選択中 trigger の `border-bottom-color` を `--fandhe-palette` 経由で切り替える（tabs のみが対応する第2軸） |
 
@@ -60,6 +64,7 @@ root
 - Tabs は状態機械を持たない（選択状態は `TabsProps.selected` による SSR 静的決定のみ）
 - Themes は Primitives（`fandhe_frontend_headless_ui::tabs`）への薄いラッパーであり、既定 CSS のみを追加する
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製）
+- `@chakra-ui/react` の JS/TS API とは別物（Rust 製）。
 
 ## Related
 

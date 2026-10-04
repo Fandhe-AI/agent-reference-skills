@@ -43,7 +43,7 @@ root
 | `root(state, attrs, children)` / `trigger`/`anchor`/`positioner`/`arrow`/`arrow_tip`/`close_trigger`/`indicator` | `OpenState` | — | いずれも headless `popover` の同名関数をそのまま再エクスポート（`pub use fandhe_frontend_headless_ui::popover::*`）。`trigger` は暗黙 submit 事故防止で `type="button"` 固定 |
 | `content(state, id, labelledby, describedby, attrs, children)` | `OpenState`, `id: Option<&str>`, `labelledby: Option<&str>`, `describedby: Option<&str>` | すべて `None` | headless `popover` の同名関数をそのまま再エクスポート。`id`/`labelledby`/`describedby` が `Some` のときそれぞれ `id`/`aria-labelledby`/`aria-describedby` を出力（dialog と異なり `ContentIds` 構造体は使わず個別引数） |
 | `title(id, attrs, children)` / `description(id, attrs, children)` | `id: Option<&str>` | `id: None` | headless `popover` の同名関数をそのまま再エクスポート。`id` が `Some` のとき `content` の `labelledby`/`describedby` と対にする |
-| `stylesheet()` | — | — | 既定 CSS 全量。`positioner` は `position: absolute; top: 100%; left: 0; z-index: 10` |
+| `stylesheet()` | — | — | 既定 CSS 全量。`positioner` は `position: absolute; top: 100%; left: 0; z-index: var(--fandhe-z-index-popover, 10)` |
 
 ## Notes
 

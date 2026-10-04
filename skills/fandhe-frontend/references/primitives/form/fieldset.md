@@ -17,14 +17,14 @@ fieldset::root(&props, vec![], vec![
 ]);
 ```
 
-フリー関数: `fieldset::root(props: &FieldsetProps, attrs, children)`, `legend`, `helper_text`, `error_text`。加えて `FieldsetProps::merge_field_props(field: FieldProps) -> FieldProps` はネストされた `Field` に `disabled` を OR で伝播する。
+フリー関数: `fieldset::root(props: &FieldsetProps, attrs, children)`, `legend(props, attrs, children)`, `legend_with_variant(variant: LegendVariant, props, attrs, children)`, `helper_text(props, attrs, children)`, `error_text(props, attrs, children)`。加えて `FieldsetProps::merge_field_props(field: FieldProps) -> FieldProps` はネストされた `Field` に `disabled` を OR で伝播する。
 
 ## Anatomy
 
-- `root` — `<fieldset>`、HTML 仕様に従いネイティブ `disabled` がネストされたコントロールへ伝播する
-- `legend` — `<legend>`（`root` 内の先頭に配置必須。`aria-labelledby` 不要でネイティブにアクセシブルネームを提供する）
+- `root` — `<fieldset>`、HTML 仕様に従いネイティブ `disabled` がネストされたコントロールへ伝播する。`invalid` / `has_helper_text` に応じて `aria-describedby`（`invalid` なら error id を先頭に、続けて helper id を空白区切り）を出力
+- `legend` — `<legend id="{id}-legend">`（`root` 内の先頭に配置必須。`aria-labelledby` 不要でネイティブにアクセシブルネームを提供する）。`legend_with_variant` は加えて `data-variant`（`LegendVariant::Legend` = `legend`（既定の大見出し）/ `LegendVariant::Label` = `label`（1 段小さい見出し））を固定出力し、呼び出し側 `attrs` の `data-variant` は除去される。通常の `legend` は `data-variant` を出力しない
 - `helper-text` — `<span>`
-- `error-text` — `<span aria-live="polite">`、`invalid` でなければ `hidden`
+- `error-text` — `<div role="alert" aria-live="polite">`、`invalid` でなければ `hidden`
 
 ## Options / Props
 
@@ -37,6 +37,7 @@ fieldset::root(&props, vec![], vec![
 
 ## Notes
 
+- `disabled` / `invalid` は `root` / `legend` / `helper-text` / `error-text` に `data-disabled` / `data-invalid` として伝播する
 - `merge_field_props` はネストされた `FieldProps` へ `disabled` のみを OR で伝播する（`invalid` は伝播しない）
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製、`fandhe-frontend-headless-ui`）
 

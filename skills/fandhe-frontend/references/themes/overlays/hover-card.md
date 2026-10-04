@@ -31,7 +31,7 @@ root
 | --- | --- | --- | --- |
 | `root`/`trigger`/`positioner`/`content`/`arrow`/`arrow_tip` | — | — | headless `hover_card` の同名関数をそのまま再エクスポート |
 | `HoverCardDelays` | `struct { open_ms, close_ms }` | `open_ms: 600`, `close_ms: 300` | `root` の第2引数（ドキュメント記載の既定値） |
-| `stylesheet()` | — | — | 既定 CSS 全量。`positioner` は `position: absolute; top: 100%; left: 0; z-index: 10` |
+| `stylesheet()` | — | — | 既定 CSS 全量。`positioner` は `position: absolute; top: 100%; left: 0; z-index: var(--fandhe-z-index-popover, 10)` |
 
 ## Notes
 

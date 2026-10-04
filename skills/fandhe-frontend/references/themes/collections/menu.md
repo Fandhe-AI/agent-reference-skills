@@ -1,6 +1,6 @@
 # Menu
 
-headless `menu`（11 anatomy parts: root, trigger, indicator, positioner, content, arrow, arrow-tip, item, item-group, item-group-label, separator）を包む styled wrapper。anchor positioning 駆動の arrow ジオメトリを含む既定 CSS を追加する。
+headless `menu`（18 anatomy parts: root, trigger, indicator, positioner, content, arrow, arrow-tip, item, item-group, item-group-label, separator, trigger-item, context-trigger, checkbox-item, radio-item-group, radio-item, item-text, item-indicator）を包む styled wrapper。anchor positioning 駆動の arrow ジオメトリを含む既定 CSS を追加する。
 
 ## Signature / Usage
 
@@ -17,8 +17,11 @@ pub fn root<'a>(
 
 pub use fandhe_frontend_headless_ui::menu::{
     arrow, arrow_tip, checkbox_item, content, context_trigger, indicator, item, item_group,
-    item_group_label, positioner, radio_item, radio_item_group, separator, trigger, trigger_item,
-    MenuCheckboxItem, MenuRadioItemGroup,
+    item_group_label, item_indicator, item_text, positioner, radio_item, radio_item_group,
+    separator, trigger, trigger_item, MenuCheckboxItem, MenuRadioItemGroup,
+};
+pub use fandhe_frontend_headless_ui::state::{
+    CheckableAction, DisclosureAction, OpenState, SingleSelectAction,
 };
 
 pub fn stylesheet() -> String
@@ -37,6 +40,7 @@ pub fn stylesheet() -> String
 - `item` のハイライトは `data-highlighted`（仮想フォーカス、実 DOM フォーカスは `trigger` に留まる）を使う。`trigger` は `:focus-visible` を受け取る
 - `Menu` 状態機械と headless の自由関数 `root` は再エクスポートされない（エスケープハッチ: `fandhe_frontend_headless_ui::menu::Menu`）。`MenuCheckboxItem`/`MenuRadioItemGroup` はそのまま再エクスポートされる
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製）
+- `@chakra-ui/react` の JS/TS API とは別物（Rust 製）。
 
 ## Related
 

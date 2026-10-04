@@ -2,18 +2,18 @@
 
 テキストハイライト（`<mark>`）を `variant`/`colorPalette` の 2 軸で組み立てる単一 recipe styled 部品。
 
-## Anatomy
-
-```
-root (mark)
-```
-
 ## Signature / Usage
 
 ```rust
 use fandhe_frontend_pre_styled_ui::mark::{mark, MarkProps};
 
 let node = mark(&MarkProps::default(), vec![], vec![/* children */]);
+```
+
+## Anatomy
+
+```
+root (mark)
 ```
 
 ## Options / Props

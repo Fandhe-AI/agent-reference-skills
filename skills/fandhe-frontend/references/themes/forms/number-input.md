@@ -8,8 +8,10 @@
 use fandhe_frontend_pre_styled_ui::number_input;
 use fandhe_frontend_pre_styled_ui::Size;
 
-let node = number_input::root(Size::Md, false, false, vec![], vec![]);
+let node = number_input::root(Size::Md, false, false, false, vec![], vec![]);
 ```
+
+`root(size: Size, disabled: bool, invalid: bool, readonly: bool, attrs, children) -> Node`。
 
 `stylesheet() -> String` が静的 CSS 全量を返す。`control`/`input`/`increment_trigger`/`decrement_trigger`/`label` は headless-ui からの再エクスポート。
 
@@ -24,6 +26,7 @@ let node = number_input::root(Size::Md, false, false, vec![], vec![]);
 | `size` | `Size`（既定 `Md`） | `root` へクラス付与 |
 | `disabled` | `bool` | `root`/`label`/`input`/`control`/`increment-trigger`/`decrement-trigger` へ `data-disabled` を反映 |
 | `invalid` | `bool` | バリデーション失敗状態 |
+| `readonly` | `bool` | 読み取り専用状態 |
 
 ## Notes
 

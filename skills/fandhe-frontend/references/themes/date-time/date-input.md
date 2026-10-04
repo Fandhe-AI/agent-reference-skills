@@ -13,9 +13,14 @@ let node = date_input::root(Size::Md, false, false, vec![], vec![]);
 
 ```rust
 pub fn root<'a>(size: Size, disabled: bool, invalid: bool, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node;
+
+pub use fandhe_frontend_headless_ui::date_input::{
+    control, hidden_input, label, segment, segment_group, DateInputAction, DateInputProps,
+    DateSegment,
+};
 ```
 
-`label`/`control`/`segment_group`/`segment`/`hidden_input`/`DateInputAction`/`DateSegment`/`DateSegmentFlags` は headless 層から選択的に再エクスポートされる。
+`label`/`control`/`segment_group`/`segment`/`hidden_input`/`DateInputAction`/`DateInputProps`/`DateSegment` は headless 層から選択的に再エクスポートされる。styled `root` は `disabled` / `invalid` のみを受け取り、`readonly` / `focused` は既定値（`false`）で headless `root` へ渡す。`label` / `control` / `segment_group` / `segment` は `props: DateInputProps`（`disabled` / `readonly` / `invalid` / `focused`、いずれも `bool`、`Default` は全て `false`）を値渡しで取る。`segment(kind, value, min, max, props, attrs)` は `children` を取らない。
 
 ## Anatomy
 
@@ -52,6 +57,7 @@ root
 - granularity（hour/minute/second）・range 選択・locale 依存整形・キーボード操作の DOM 配線はスコープ外
 - Themes は Primitives への薄いラッパーであり、既定 CSS のみを追加する。状態管理・hydration が必要な場合は Primitives の `DateInput` 状態機械を直接 import する
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製）
+- `@chakra-ui/react` の JS/TS API とは別物（Rust 製）。
 
 ## Related
 

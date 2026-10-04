@@ -5,10 +5,18 @@
 ## Signature / Usage
 
 ```rust
-use fandhe_frontend_pre_styled_ui::textarea::{self, TextareaProps};
-use fandhe_frontend_headless_ui::field::FieldProps;
+use fandhe_frontend_pre_styled_ui::textarea::{self, FieldIds, FieldProps, TextareaProps};
 
-let node = textarea::textarea(&TextareaProps::default(), &FieldProps::default(), false, vec![], vec![]);
+let field = FieldProps {
+    id: "message",
+    ids: FieldIds::default(),
+    disabled: false,
+    invalid: false,
+    required: false,
+    readonly: false,
+    has_helper_text: false,
+};
+let node = textarea::textarea(&TextareaProps::default(), &field, false, vec![], vec![]);
 ```
 
 `css() -> String` が静的 CSS 全量を返す。`FieldIds`/`FieldProps` は headless-ui `field` からの再エクスポート。
@@ -17,7 +25,7 @@ let node = textarea::textarea(&TextareaProps::default(), &FieldProps::default(),
 
 | Name | Type | Description |
 |------|------|-------------|
-| `TextareaProps.variant` | `TextareaVariant`（`Outline`（既定） \| `Subtle` \| 下線のみ variant、`InputVariant` と同じ語彙） | 見た目 |
+| `TextareaProps.variant` | `TextareaVariant`（`Outline`（既定） \| `Subtle` \| `Flushed`。`InputVariant` の `SubtleFlushed` は持たない） | 見た目 |
 | `TextareaProps.size` | `Size`（既定 `Md`） | サイズ |
 | `autoresize` | `bool` | 自動リサイズを有効化するフラグ |
 

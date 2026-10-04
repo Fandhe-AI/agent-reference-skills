@@ -5,7 +5,8 @@
 ## Signature / Usage
 
 ```rust
-use fandhe_frontend_headless_ui::progress::{Progress, Orientation};
+use fandhe_frontend_headless_ui::data_attrs::Orientation;
+use fandhe_frontend_headless_ui::progress::Progress;
 
 let p = Progress::new(0.0, 100.0, Some(40.0), Orientation::Horizontal);
 let node = p.root(
@@ -45,11 +46,13 @@ circle_range
 | root / label / value-text / track / range / circle / circle-track / circle-range | `data-state` | `indeterminate` \| `loading` \| `complete` |
 | root | `data-value` | 数値（indeterminate 時は省略） |
 | root | `data-max` | 数値 |
-| root / track / range | `data-orientation` | `horizontal` \| `vertical`（circle 系には付与しない） |
+| root / label / track / range | `data-orientation` | `horizontal` \| `vertical`（circle 系には付与しない。`label` は呼び出し側 `attrs` で上書き不可） |
 
 ## Notes
 
 - `root` には `role="progressbar"`・`aria-valuemin`/`aria-valuemax`（常に出力）・`aria-valuenow`（determinate のみ）を付与する。
+- `value_text` は `aria-live="polite"` を無条件付与する（呼び出し側 `attrs` で上書き不可）。表示テキストは `children` で呼び出し側が整形する。
+- `label` は装飾用パーツ。ラベルの関連付けは呼び出し側が `id` / `aria-labelledby` を `attrs` 経由で配線する。
 - Circular（`circle`/`circle_track`/`circle_range`）は `--size`/`--thickness` の CSS 変数を参照する固定 `style` を出力し、実サイズは styled 層/呼び出し側の CSS が決める（headless 中立）。呼び出し側が `attrs` に `style` を渡しても無視される（重複属性防止）。
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製）。
 

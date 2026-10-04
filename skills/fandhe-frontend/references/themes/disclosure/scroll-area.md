@@ -7,7 +7,14 @@
 ```rust
 use fandhe_frontend_pre_styled_ui::scroll_area::{root, viewport, content};
 
-let node = root(vec![], viewport(vec![], vec![content(vec![], vec![])]));
+let node = root(vec![], vec![viewport(vec![], vec![content(vec![], vec![])])]);
+
+pub fn root(attrs: Vec<(&str, &str)>, children: Vec<Node>) -> Node
+pub fn viewport(attrs: Vec<(&str, &str)>, children: Vec<Node>) -> Node
+pub fn content(attrs: Vec<(&str, &str)>, children: Vec<Node>) -> Node
+pub fn scrollbar(orientation: Orientation, attrs: Vec<(&str, &str)>, children: Vec<Node>) -> Node
+pub fn thumb(orientation: Orientation, attrs: Vec<(&str, &str)>, children: Vec<Node>) -> Node
+pub fn corner(attrs: Vec<(&str, &str)>, children: Vec<Node>) -> Node
 ```
 
 `root`/`viewport`/`content`/`scrollbar`/`thumb`/`corner` はすべて headless 層 `fandhe_frontend_headless_ui::scroll_area::*` の再エクスポートで、variant 引数を持たない（`pub use ...::*`）。
@@ -32,6 +39,7 @@ root
 - `viewport` はキーボード操作時のみ `:focus-visible` のフォーカスリングを持つ
 - Themes は Primitives（`fandhe_frontend_headless_ui::scroll_area`）への薄いラッパーであり、既定 CSS のみを追加する
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製）
+- `@chakra-ui/react` の JS/TS API とは別物（Rust 製）。
 
 ## Related
 

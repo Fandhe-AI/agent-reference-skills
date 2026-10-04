@@ -49,7 +49,7 @@ root
 | `anchor(attrs, children)` | — | — | 位置決めの代替参照要素（装飾用） |
 | `positioner(state, attrs, children)` | `OpenState` | — | closed で `hidden` |
 | `arrow(attrs, children)` / `arrow_tip(attrs, children)` | — | — | 装飾用のみ（`aria-hidden` 明示なし、anatomy 属性のみ） |
-| `content(state, id, labelledby, describedby, attrs, children)` | `OpenState`, `Option<&str>` ×3 | — | `role="dialog"` 固定。closed で `hidden` |
+| `content(state, id, labelledby, describedby, attrs, children)` | `OpenState`, `Option<&str>` ×3 | — | `role="dialog"` 固定・`tabindex="-1"` 固定（呼び出し側 `attrs` の `tabindex` は除去）。closed で `hidden` |
 | `title(id, attrs, children)` | `Option<&str>` | — | `id` が `Some` のとき `content` の `labelledby` と対 |
 | `description(id, attrs, children)` | `Option<&str>` | — | `id` が `Some` のとき `content` の `describedby` と対 |
 | `close_trigger(attrs, children)` | — | — | `type="button"` 固定 |
@@ -58,6 +58,8 @@ root
 ## Notes
 
 - `@ark-ui/react` の JS/TS API とは別物（Rust 製、`fandhe-frontend-headless-ui` クレート）
+- クライアント層（wasm-full）は `trigger` / `close-trigger` の click を `"toggle"` / `"close"` dispatch へ配線し、Escape・外側クリックで閉鎖する（`content` の `attrs` に `data-close-on-escape="false"` / `data-close-on-interact-outside="false"` を渡すと無効化。`"false"` リテラルのときのみ有効）。フォーカストラップ・`autoFocus`・閉鎖時の trigger へのフォーカス復帰は未実装。`close_trigger` は既定 `aria-label` を持たない（呼び出し側の責務）
+- `Portal`、`data-placement`（`data-side` / `data-align` を `positioner` の `attrs` 経由で代替）、trigger の `data-ownedby` 等は未提供
 - 位置計算自体（Floating UI 相当）は `positioning::compute_position` が担い、`positioner`/`arrow` は `attrs` 経由で `style`/`data-side`/`data-align` を透過するだけの薄いラッパー
 
 ## Related

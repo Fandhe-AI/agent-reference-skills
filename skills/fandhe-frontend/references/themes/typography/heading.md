@@ -21,12 +21,13 @@ let node = heading(HeadingLevel::H1, &HeadingProps::default(), vec![], vec![/* c
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | level | `HeadingLevel` | `H2` | レンダリングする HTML タグ（`H1`〜`H6`）。variant クラスではなくタグ選択そのもの |
-| props.size | `HeadingSize` | `Xl` | 視覚サイズ（`Sm`/`Md`/`Lg`/`Xl`/`Xl2`/`Xl3`/`Xl4`）。`level` とは独立した軸 |
+| props.size | `HeadingSize` | `Xl` | 視覚サイズ（`Xs`/`Sm`/`Md`/`Lg`/`Xl`/`Xl2`/`Xl3`/`Xl4`/`Xl5`/`Xl6`）。`level` とは独立した軸 |
+| props.weight | `HeadingWeight` | `Semibold` | フォントウェイト（`Normal`/`Medium`/`Semibold`/`Bold`） |
 
 ## Notes
 
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）。
-- chakra-ui の Heading は `xs`〜`7xl` の 9 段階だが、テーマトークンの都合で `sm`〜`4xl` の 7 段階へ縮約している（`2xl`/`3xl`/`4xl` は `xl2`/`xl3`/`xl4` 表記）。
+- 視覚サイズは `xs`〜`6xl` の 10 段階（`2xl`〜`6xl` は CSS クラス名の都合で `xl2`〜`xl6` 表記。`Xl5`/`Xl6` はテーマトークン `font-size-5xl`/`6xl` に対応し、`Xl6` が最大）。
 - colorPalette 軸は持たない（前景色トークンを継承する中立部品）。
 
 ## Related

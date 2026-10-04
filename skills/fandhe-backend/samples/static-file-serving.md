@@ -4,10 +4,10 @@
 
 ```toml
 [dependencies]
-fandhe-backend-core = { version = "0.4.0", features = ["static"] }
-fandhe-backend-http = "0.4.0"
-fandhe-backend-routes = "0.4.0"
-fandhe-backend-plugin-static = "0.4.0"
+fandhe-backend-core = { version = "0.4.2", features = ["static"] }
+fandhe-backend-http = "0.4.2"
+fandhe-backend-routes = "0.4.2"
+fandhe-backend-plugin-static = "0.4.2"
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 ```
 
@@ -44,6 +44,7 @@ curl -si --path-as-is http://127.0.0.1:3000/../Cargo.toml # パストラバー�
 
 - `StaticFilesConfig::builder(mount, root)` は `root` を構築時に `canonicalize` し、不在・非ディレクトリを `Err` で早期拒否する
 - パストラバーサル対策は二層防御（I/O 前の字句検証 + `canonicalize` 後の実パスが正規化済み root 配下であることの確認）。シンボリックリンク経由の脱出も拒否する
+- v0.4.1 のパス検証強化（Security 修正）: URL セグメントの字句検証で `:` を拒否し、Windows のドライブ相対パスへの迂回と NTFS ADS 構文を遮断する。あわせて `canonicalize` 後の実パスを root 配下で再検証する `resolved_path_is_safe` を追加し、8.3 短縮ファイル名エイリアスによるドットファイル保護のバイパスも防ぐ。二層防御は ubuntu / macOS / Windows の 3 OS で一貫して機能することがテストで確認されている。利用側のコード変更は不要
 - 先頭が `.` のセグメント（ドットファイル・ドットディレクトリ）は一律拒否するため、`root` 配下に `.env`・`.git/config` 等が誤って置かれていても配信されない
 - ファイル未検出・検証失敗・サイズ超過（`max_file_bytes`、既定 8 MiB）は一律 404（存在オラクルを作らないフェイルクローズ）。ファイル I/O は `tokio::task::spawn_blocking` に閉じ、非同期ランタイムスレッドをブロックしない
 - `Server::static_files` を未登録のまま `static` feature を有効化しても完全にフォールスルーする（opt-in）

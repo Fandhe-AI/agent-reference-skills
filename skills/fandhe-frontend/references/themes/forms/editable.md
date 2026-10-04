@@ -5,15 +5,14 @@
 ## Signature / Usage
 
 ```rust
-use fandhe_frontend_pre_styled_ui::editable;
+use fandhe_frontend_pre_styled_ui::editable::{self, EditableInputFlags};
 use fandhe_frontend_pre_styled_ui::Size;
 use fandhe_frontend_headless_ui::editable::{EditMode, EditableActivationMode, EditableSubmitMode};
 
 let node = editable::root(
     Size::Md,
     EditMode::Preview,
-    false,
-    false,
+    EditableInputFlags::default(),
     EditableActivationMode::default(),
     EditableSubmitMode::default(),
     vec![],
@@ -34,7 +33,7 @@ let node = editable::root(
 |------|------|-------------|
 | `size` | `Size`（既定 `Md`） | フォントサイズ等を切り替え |
 | `mode` | `EditMode`（`Edit` \| `Preview`） | `data-state` の源泉 |
-| `disabled` / `readonly` | `bool` | 各パーツへ `data-disabled` 等を反映 |
+| `flags` | `EditableInputFlags`（`disabled` / `readonly` / `required` / `invalid`: `bool`） | 各パーツへ `data-disabled` 等を反映 |
 | `activation_mode` | `EditableActivationMode` | `data-activation-mode` |
 | `submit_mode` | `EditableSubmitMode` | `data-submit-mode`（Enter/blur トリガー） |
 

@@ -4,13 +4,13 @@
 
 ```toml
 [dependencies]
-fandhe-backend-core = { version = "0.4.0", features = ["cors", "compression", "static", "openapi"] }
-fandhe-backend-http = "0.4.0"
-fandhe-backend-routes = "0.4.0"
-fandhe-backend-plugin-cors = "0.4.0"
-fandhe-backend-plugin-static = "0.4.0"
-fandhe-backend-plugin-compression = "0.4.0"
-fandhe-backend-plugin-openapi = "0.4.0"
+fandhe-backend-core = { version = "0.4.2", features = ["cors", "compression", "static", "openapi"] }
+fandhe-backend-http = "0.4.2"
+fandhe-backend-routes = "0.4.2"
+fandhe-backend-plugin-cors = "0.4.2"
+fandhe-backend-plugin-static = "0.4.2"
+fandhe-backend-plugin-compression = "0.4.2"
+fandhe-backend-plugin-openapi = "0.4.2"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
@@ -92,3 +92,4 @@ curl -si -X OPTIONS http://127.0.0.1:3000/todos \
 - 個々の feature 単体の最小配線は各サンプル（[cors.md](./cors.md)、[compression.md](./compression.md)、[static-file-serving.md](./static-file-serving.md)、[graceful-shutdown.md](./graceful-shutdown.md)）を参照。本サンプルはそれらの組み合わせ配線の雛形
 - `static_files` の mount をファイルパス（例 `/index.html`）に限定し、`/` にしないことで CRUD API 等の他ルートを静的配信が横取りしないようにする
 - `OpenApiDoc::from_json` は手書き JSON を配信する構成。`utoipa::path` からの自動生成を使う場合は `gen-openapi` CLI（`gen-cli` feature）を使う
+- 公式 `templates/app`（v0.4.2 時点）と配線順序・API は一致する。公式側は CRUD（`route_async` / `route_param_async`、`Arc<RwLock<Store>>`）を完全実装し、プラグインを `fandhe_backend_core::plugin_cors` 等の再エクスポート経由で参照し、`PORT` 環境変数で bind ポートを上書きする。本サンプルは配線の骨格に絞るため CRUD 本体を省略し、プラグインは個別クレート直接参照にしている（CRUD は [crud-routing.md](./crud-routing.md) 参照）

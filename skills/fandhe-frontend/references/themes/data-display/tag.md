@@ -15,9 +15,9 @@ let node = tag::root(&TagProps::default(), vec![], vec![text("beta")]);
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `variant` | `TagVariant` (`Solid`/`Subtle`/`Outline`) | `Subtle` | 塗り方 |
-| `size` | `Size` (`Sm`/`Md`/`Lg`) | `Md` | サイズ |
-| `palette` | `ColorPalette` (`Accent`/`Info`/`Success`/`Warning`/`Danger`) | `Accent` | セマンティック色 |
+| `variant` | `TagVariant` (`Solid`/`Subtle`/`Outline`/`Surface`) | `Subtle` | 塗り方。`Surface` は淡色背景 + 輪郭 |
+| `size` | `Size` (`Xs`/`Sm`/`Md`/`Lg`/`Xl`) | `Md` | サイズ |
+| `palette` | `ColorPalette` (`Accent`/`Info`/`Success`/`Warning`/`Danger`/`Neutral`) | `Accent` | セマンティック色 |
 | `close_trigger: action` | `Option<&str>` | `None` | `Some` のとき `data-action` 属性を出力（クリック処理は呼び出し側の wire_events に委ねる） |
 
 ## Notes
