@@ -7,7 +7,7 @@
 fandhe-backend-core = "0.4.2"
 fandhe-backend-http = "0.4.2"
 fandhe-backend-routes = "0.4.2"
-tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal", "sync"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 ```

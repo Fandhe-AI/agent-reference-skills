@@ -8,11 +8,14 @@ fandhe-backend-core = { version = "0.4.2", features = ["websocket"] }
 fandhe-backend-http = "0.4.2"
 fandhe-backend-routes = "0.4.2"
 fandhe-backend-plugin-websocket = "0.4.2"
-tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal", "time"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal", "time", "sync"] }
 ```
 
 ```rust
 use std::time::Duration;
+
+use tokio::sync::mpsc;
+use tokio::time::Instant;
 
 use fandhe_backend_core::Server;
 use fandhe_backend_http::response::Response;
@@ -24,8 +27,11 @@ use fandhe_backend_plugin_websocket::{BoxFuture, WebSocketConfig, WsHandshakeCon
 use fandhe_backend_routes::Router;
 
 /// Text `"ping"` には `"pong"`、`"bye"` にはサーバ起点 Close、それ以外はエコー。
-/// 加えて接続直後から 5 秒ごとにサーバー起点で tick を push する。
-struct RoomHandler;
+/// 加えて接続の 5 秒後から 5 秒ごとにサーバー起点で tick を push する。
+/// 切断ログは有界チャネル経由で別タスクが出力する。
+struct RoomHandler {
+    log: mpsc::Sender<String>,
+}
 
 impl WsMessageHandler for RoomHandler {
     fn name(&self) -> &'static str {
@@ -37,7 +43,9 @@ impl WsMessageHandler for RoomHandler {
         let room = ctx.param("room").unwrap_or("unknown").to_string();
         let sender = ctx.sender().clone();
         tokio::spawn(async move {
-            let mut tick = tokio::time::interval(Duration::from_secs(5));
+            // interval の最初の tick は即時完了するため、interval_at で初回も 5 秒後にする
+            let period = Duration::from_secs(5);
+            let mut tick = tokio::time::interval_at(Instant::now() + period, period);
             let mut n = 0u64;
             loop {
                 tokio::select! {
@@ -71,7 +79,8 @@ impl WsMessageHandler for RoomHandler {
 
     // on_open を呼んだ接続についてのみ、終了時にちょうど 1 回呼ばれる同期フック。
     fn on_close(&self, ctx: &WsConnContext, reason: CloseReason) {
-        eprintln!("ws conn {} closed: {reason:?}", ctx.conn_id());
+        // 同期フックはブロックしない: stderr へは直接書かず、満杯なら捨てて try_send で即返す
+        let _ = self.log.try_send(format!("ws conn {} closed: {reason:?}", ctx.conn_id()));
     }
 }
 
@@ -83,6 +92,14 @@ fn build_router() -> Router {
 
 #[tokio::main(flavor = "multi_thread")]
 async fn main() -> std::io::Result<()> {
+    // 出力は別タスクで行う（on_close は try_send するだけ）
+    let (log_tx, mut log_rx) = mpsc::channel::<String>(64);
+    tokio::spawn(async move {
+        while let Some(line) = log_rx.recv().await {
+            eprintln!("{line}");
+        }
+    });
+
     let ws_config = WebSocketConfig::default()
         // 既定パス /ws の代わりに {name} 付きパターンを登録する
         .with_path_pattern("/ws/{room}")
@@ -101,7 +118,7 @@ async fn main() -> std::io::Result<()> {
                 _ => Err(Response::empty(403)),
             }
         })
-        .with_handler(RoomHandler);
+        .with_handler(RoomHandler { log: log_tx });
 
     let server = Server::new().handler(build_router()).websocket(ws_config);
     let bound = server.bind("127.0.0.1:3000").await?;
@@ -119,7 +136,7 @@ websocat --origin http://localhost:5173 ws://127.0.0.1:3000/ws/lobby
 ping     # -> pong
 hello    # -> hello（エコー）
 bye      # -> サーバから Close
-         # 接続中は 5 秒ごとに "lobby: tick N" が push される
+         # 接続の 5 秒後から 5 秒ごとに "lobby: tick N" が push される
 ```
 
 ## Notes
@@ -134,4 +151,5 @@ bye      # -> サーバから Close
 - WebSocket 配線自体は `Router` の責務範囲外。`Server::websocket(config)` で登録し、HTTP 側のルーティング（`GET /`）と同一 `Server` に共存できる。`WebSocketConfig` のサイズ・アイドルタイムアウトは既定値（1 MiB / 256 KiB / 60 秒）から変更しない限り安全側に倒れる。上限超過は close code 1009 を送出して閉じる（0.4.2 修正）
 - v0.3.0 (issue #499): `on_message` が返す `Future` は shutdown・rebind の drain 処理中、任意の await 点で drop されうる契約。完了保証が必要な副作用（DB 書き込み等）はこの Future の await に依存せず `tokio::spawn` で切り離す。キャンセルされた場合、意図した `WsOutcome::Reply` は送出されない
 - `WebSocketConfig::with_close_grace(Duration)`（既定 10 秒）でクローズハンドシェイクの猶予期間を調整できる。`Duration::ZERO` や既定より大幅に長い値もクランプされずそのまま適用される
-- 公式 `examples/with-websocket` は `PingPongEchoHandler` のみの最小構成（`with_handler` のみ・`PORT` 環境変数・`run_until` + Ctrl-C）。本サンプルはその上位構成で、`on_message` 部分は公式と同一
+- `on_close` は同期フックのため `eprintln!` 等のブロックし得る処理を置かず、有界 `mpsc::Sender::try_send`（満杯時は破棄）で別タスクへ渡す。`tokio::time::interval` の最初の tick は即時完了するため、初回も遅らせたい場合は `interval_at(Instant::now() + period, period)` を使う
+- 公式 `examples/with-websocket` は `PingPongEchoHandler` のみの最小構成（`with_handler` のみ・`PORT` 環境変数・`run_until` + Ctrl-C）。本サンプルはその上位構成で、`on_message` 部分は公式と同一（`on_open` の tick は `interval_at` で初回遅延、`on_close` は `try_send` + 別タスク出力にしており、いずれも公式 example からの変更点ではなく本サンプル独自の構成）
