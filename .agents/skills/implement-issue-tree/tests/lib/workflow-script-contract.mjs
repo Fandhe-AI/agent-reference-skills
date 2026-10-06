@@ -18,9 +18,13 @@ import { pathToFileURL } from 'node:url'
 // ここに残す。この値を超えると起動時に受理されなくなることが #241 で経験的に確認された。
 export const WORKFLOW_SCRIPT_HARD_LIMIT_BYTES = 524288 // 512 KiB
 
-// 運用予算。ハード上限まで約 24KB の余裕を残し、予算超過の時点で CI を fail させることで
-// ハード上限への接近を早期に検知する。
-export const WORKFLOW_SCRIPT_BUDGET_BYTES = 500000
+// 運用予算。ハード上限まで余裕を残し、予算超過の時点で CI を fail させることで
+// ハード上限への接近を早期に検知する。当初は 500000（余裕約 24KB）だったが、状態ファイル読込の
+// 内容照合（state:load-verify・純 JS sha256）と PR・issue の結び付け照合の追加で生成物が約 505KB
+// になり、コメント除去後に残るコード・プロンプト本文からはこれ以上削れないため 512000（余裕 12KiB）
+// へ引き上げた。次に超過したときは引き上げではなく、プロンプト本文の圧縮か生成器
+// （build-workflow.mjs。現状は minify しない設計）の見直しを判断すること。
+export const WORKFLOW_SCRIPT_BUDGET_BYTES = 512000
 
 // Workflow ランタイムが特別扱いする唯一の宣言。行頭（文字列先頭）にのみマッチさせることで、
 // スクリプト本体の途中に紛れ込んだ 2 つ目の `export const meta` 宣言（変異ケース想定）を

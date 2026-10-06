@@ -60,32 +60,41 @@ case "${REPO_SLUG#Fandhe-AI/}" in
     ;;
 esac
 
-# skills-lock.json に source があれば argv の UPSTREAM_REPO と照合する（誤リポ clone 防止）。
-# jq 不在時にこの照合ブロックごと skip すると、lockfile の source 安全弁を経由せず
-# 任意のリポジトリを UPSTREAM_REPO として通過させ clone・PR 作成できてしまうため、
-# skills-lock.json が存在するのに jq が無い場合は照合を省略せず fail-closed で中止する。
-if [[ -f skills-lock.json ]]; then
-  if ! command -v jq >/dev/null 2>&1; then
-    echo "エラー: jq が見つかりません。skills-lock.json の source 照合に jq の導入が必要です。中止します。" >&2
-    exit 1
-  fi
-  LOCK_SOURCE=$(jq -r ".skills[\"${SKILL_NAME}\"].source // empty" skills-lock.json 2>/dev/null)
-  if [[ -n "${LOCK_SOURCE}" ]]; then
-    norm_lock="${LOCK_SOURCE#https://github.com/}"; norm_lock="${norm_lock%.git}"
-    norm_arg="${UPSTREAM_REPO#https://github.com/}"; norm_arg="${norm_arg%.git}"
-    if [[ "${norm_lock}" != "${norm_arg}" ]]; then
-      echo "エラー: 指定された upstream (${UPSTREAM_REPO}) が skills-lock.json の source (${LOCK_SOURCE}) と一致しません。中止します。" >&2
-      exit 1
-    fi
-    # sourceType の安全弁: github 以外（欠落・null 含む）は gh repo clone / gh pr create が
-    # 成立しないため中止する（contribute-skill/SKILL.md Step 2 と同じガード）。
-    # lockfile にエントリが存在する場合のみ検査し、未登録の新規スキル貢献は対象外とする
-    LOCK_SOURCE_TYPE=$(jq -r ".skills[\"${SKILL_NAME}\"].sourceType // empty" skills-lock.json 2>/dev/null)
-    if [[ "${LOCK_SOURCE_TYPE}" != "github" ]]; then
-      echo "エラー: sourceType '${LOCK_SOURCE_TYPE}' は github ではありません。中止します。" >&2
-      exit 1
-    fi
-  fi
+# skills-lock.json の source 照合（誤リポ clone・PR 作成を防ぐ安全弁。fail-closed）。
+# 本スクリプトは lock に登録済みのスキルを upstream へ戻す用途に限る（SKILL.md の前提条件）。
+# lock 不在・未登録・source 欠落・lock 解析失敗のいずれでも照合を省略して続行すると、
+# 上の正規表現を満たす任意の Fandhe-AI/<repo> が投稿先として通ってしまうため、
+# すべて clone より前に中止する。未登録スキルの新規貢献は本スクリプトの対象外。
+if [[ ! -f skills-lock.json ]]; then
+  echo "エラー: skills-lock.json が見つかりません。リポジトリルートから実行し、対象スキルが lock に登録されていることを確認してください。中止します。" >&2
+  exit 1
+fi
+if ! command -v jq >/dev/null 2>&1; then
+  echo "エラー: jq が見つかりません。skills-lock.json の source 照合に jq の導入が必要です。中止します。" >&2
+  exit 1
+fi
+lock_rc=0
+LOCK_SOURCE=$(jq -r --arg n "${SKILL_NAME}" '.skills[$n].source // empty' skills-lock.json) || lock_rc=$?
+if [[ "${lock_rc}" -ne 0 ]]; then
+  echo "エラー: skills-lock.json を解析できません（jq exit ${lock_rc}）。中止します。" >&2
+  exit 1
+fi
+if [[ -z "${LOCK_SOURCE}" ]]; then
+  echo "エラー: スキル '${SKILL_NAME}' が skills-lock.json に登録されていない、または source がありません。未登録スキルの新規貢献は本スクリプトの対象外です。中止します。" >&2
+  exit 1
+fi
+norm_lock="${LOCK_SOURCE#https://github.com/}"; norm_lock="${norm_lock%.git}"
+norm_arg="${UPSTREAM_REPO#https://github.com/}"; norm_arg="${norm_arg%.git}"
+if [[ "${norm_lock}" != "${norm_arg}" ]]; then
+  echo "エラー: 指定された upstream (${UPSTREAM_REPO}) が skills-lock.json の source (${LOCK_SOURCE}) と一致しません。中止します。" >&2
+  exit 1
+fi
+# sourceType の安全弁: github 以外（欠落・null 含む）は gh repo clone / gh pr create が
+# 成立しないため中止する（contribute-skill/SKILL.md Step 2 と同じガード）
+LOCK_SOURCE_TYPE=$(jq -r --arg n "${SKILL_NAME}" '.skills[$n].sourceType // empty' skills-lock.json) || LOCK_SOURCE_TYPE=""
+if [[ "${LOCK_SOURCE_TYPE}" != "github" ]]; then
+  echo "エラー: sourceType '${LOCK_SOURCE_TYPE}' は github ではありません。中止します。" >&2
+  exit 1
 fi
 
 # symlink 境界の共通判定（fail-closed）: 相対経路 rel の全要素を先頭から累積検査し、
@@ -106,6 +115,38 @@ assert_no_symlink_components() {
       return 1
     fi
   done
+  return 0
+}
+
+# コピー元（貢献元の対象スキルディレクトリ）が HEAD と完全に一致することを検査する（fail-closed）。
+# 呼び出し元: Step 3 の直前（主ゲート）と cp -R の直前（clone を挟んだ後の再検査）。
+# 事前レビュー（Step 3）が見せるのはコミット済み差分だけだが、cp -R は作業ツリーの現物を
+# コピーするため、未コミット・未追跡・ignore 対象のファイルがレビューを経ずに upstream PR へ混入し得る。
+# それを入口で止める。
+# - --untracked-files=all を明示する: 省略するとユーザー設定 status.showUntrackedFiles=no で
+#   未追跡が黙って隠れる（fail-open）。
+# - --ignored を付ける: cp -R は ignore 対象（.env 等）もコピーし、upstream 側の .gitignore は
+#   貢献元と異なり得るため、貢献元でだけ ignore されている秘密情報が git add で stage され得る。
+# - git status は clean でも dirty でも終了コード 0 を返すため、判定は出力の非空で行う。
+#   非ゼロ終了（git リポジトリ外など）は clean ではなく検査失敗として中止する。
+# - local 宣言と代入を分ける: local out=$(...) は local の終了コードで git の失敗を隠す。
+# - 表示するのはパスと状態記号のみで、ファイル内容は出さない（検出器を漏洩経路にしない）。
+# 残存する境界: git update-index --assume-unchanged / --skip-worktree を付けたファイルの変更は
+# git status も git diff も検出できない。同一ユーザーが意図的に設定した状態であり対象外とする。
+# 引数 repo_dir: 貢献元リポジトリのルート（Step 3 前は '.'、clone へ cd した後は ORIG_DIR）。
+assert_local_skill_clean() {
+  local repo_dir="$1" out rc=0
+  out=$(git -C "${repo_dir}" status --porcelain=v1 --untracked-files=all --ignored -- "${LOCAL_SKILL_DIR}") || rc=$?
+  if [[ "${rc}" -ne 0 ]]; then
+    echo "エラー: ${LOCAL_SKILL_DIR} の作業ツリー状態を確認できません（git status exit ${rc}）。clean と扱わず中止します。" >&2
+    return 1
+  fi
+  if [[ -n "${out}" ]]; then
+    echo "エラー: ${LOCAL_SKILL_DIR} に最新コミット（HEAD）と一致しないファイルがあります。コミットするか取り除いてから再実行してください。中止します。" >&2
+    echo "  （行頭 '??' = 未追跡 / '!!' = ignore 対象 / それ以外 = 未コミットの変更）" >&2
+    printf '%s\n' "${out}" >&2
+    return 1
+  fi
   return 0
 }
 
@@ -160,6 +201,9 @@ fi
 
 echo "==> contribute-skill: ${SKILL_NAME} → ${UPSTREAM_REPO}"
 echo ""
+
+# コピー元が HEAD と一致しない場合は、mktemp・clone・差分表示より前に中止する
+assert_local_skill_clean . || exit 1
 
 # Step 3: 変更内容を確認する
 echo "--- ローカル変更履歴 ---"
@@ -346,6 +390,10 @@ if [[ -d "${DELETE_PARENT}" ]]; then
     rm -rf -- "${DELETE_LEAF}"
   )
 fi
+# Step 6 の clone（ネットワーク越し）を挟んだ間に貢献元の作業ツリーが変わった場合を拾う再検査
+# （この時点の cwd は clone 側のため ORIG_DIR で貢献元を指す）。中止しても触ったのは
+# 一時 clone 内の宛先削除だけで、貢献元にも upstream にも影響しない
+assert_local_skill_clean "${ORIG_DIR}" || exit 1
 mkdir -p "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}"
 cp -R "${ORIG_DIR}/${LOCAL_SKILL_DIR}/." "${WORKDIR}/upstream/${UPSTREAM_SKILL_PATH}/"
 

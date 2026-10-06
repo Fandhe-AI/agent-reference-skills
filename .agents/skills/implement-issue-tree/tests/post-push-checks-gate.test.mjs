@@ -315,7 +315,7 @@ test('駆動部: seed ラウンドは monitor を起動せず監視枠を消費�
     'seed ラウンドで resolve (b) 観測が抑止されていない（直前 fix の lastRoundPushed を空費する）',
   )
   // monitor エージェント呼び出しは seed でない場合のみ。
-  const callIdx = driverPart.indexOf('m = await agent(monitorPrompt(')
+  const callIdx = driverPart.indexOf('m = await agentRetryOnce(monitorPrompt(')
   assert.notEqual(callIdx, -1, 'monitor 呼び出しが見つからない')
   assert.match(driverPart.slice(Math.max(0, callIdx - 300), callIdx), /if \(seededConflictRound\) \{/, 'monitor 呼び出しが seed 分岐の else 側に置かれていない')
 })
