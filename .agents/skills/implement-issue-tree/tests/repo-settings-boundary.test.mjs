@@ -30,6 +30,7 @@ const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-repo-settings-
 const slicePath = join(sliceDir, 'implement-issue-tree-repo-settings-defs.mjs')
 const SLICE_EXPORTS = [
   'REPO_SETTINGS_POLICY',
+  'LONG_RUNNING_POLICY',
   'COMMON_LINES',
   'COMMON',
   'MERGE_CONTEXT_COMMON',
@@ -72,7 +73,8 @@ test('REPO_SETTINGS_POLICY: 禁止対象・報告先・承認の虚偽記述禁�
 
 test('共通指示: COMMON_LINES の末尾・MERGE_CONTEXT_COMMON・BASE_MERGE_CONTEXT_COMMON がすべて含む', () => {
   // 末尾に置く（BASE_MERGE_CONTEXT_COMMON は COMMON_LINES を index 指定で除外するため、途中挿入で除外対象がずれる）。
-  assert.equal(m.COMMON_LINES.at(-1), m.REPO_SETTINGS_POLICY)
+  assert.equal(m.COMMON_LINES.at(-1), m.LONG_RUNNING_POLICY)
+  assert.ok(m.COMMON_LINES.includes(m.REPO_SETTINGS_POLICY))
   assert.ok(m.COMMON.includes(m.REPO_SETTINGS_POLICY))
   assert.ok(m.MERGE_CONTEXT_COMMON.includes(m.REPO_SETTINGS_POLICY))
   assert.ok(m.BASE_MERGE_CONTEXT_COMMON.includes(m.REPO_SETTINGS_POLICY))

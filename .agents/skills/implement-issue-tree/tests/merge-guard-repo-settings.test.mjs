@@ -63,6 +63,20 @@ const DENY = [
   'gh api --field=name=x repos/o/r/rulesets',
   'gh api --raw-field=name=x repos/o/r/rulesets',
   'gh api -X PATCH /repos/o/r;echo',
+  // 読み取りフィルタ除外の迂回防止（gh api 側のフィールド指定は引き続き deny。Issue #537）
+  `gh api repos/o/r/rulesets -f enforcement=active | grep x`,
+  `gh api repos/o/r/rulesets --jq '.a | .b' -f name=x`,
+  `gh api repos/o/r/rulesets --jq ';' -f name=x`,
+  'gh api repos/o/r/rulesets 2>&1 -f name=x',
+  'echo x | gh api repos/o/r/rulesets -f name=x',
+  'grep -F a=b f | gh api repos/o/r/rulesets -f name=x',
+  'gh api repos/o/r/rulesets | grep -F a=b; gh api repos/o/r/rulesets -f name=x',
+  'echo -f name=x | xargs gh api repos/o/r/rulesets',
+  'gh api repos/o/r/rulesets $(true) | grep -F a=b -f name=x',
+  'gh api repos/o/r/rulesets -f name=x | grep -F a=b',
+  // GraphQL の repository 削除・archive mutation
+  `gh api graphql -f query='mutation{deleteRepository(input:{repositoryId:"x"}){clientMutationId}}'`,
+  `gh api graphql -f query='mutation{archiveRepository(input:{repositoryId:"x"}){clientMutationId}}'`,
 ]
 
 const ALLOW = [
@@ -78,6 +92,13 @@ const ALLOW = [
   // 同名フラグの誤検知回避（grep -F / jq -f は key=value 形ではない）
   'gh api repos/o/r/rulesets | grep -F bypass_actors',
   'gh api repos/o/r/rulesets/1 | jq -f /tmp/filter.jq',
+  // 既定 GET の読み取りのパイプ後段 grep -F key=value は書き込みではない（Issue #537）
+  `gh api repos/o/r/rulesets | grep -F 'enforcement=active'`,
+  'gh api repos/o/r/rulesets | grep -F enforcement=active | head -1',
+  'gh api repos/o/r/rulesets && grep -F enforcement=active out.txt',
+  'gh api repos/o/r/rulesets; grep -F enforcement=active out.txt',
+  'gh api repos/o/r/branches/main/protection | egrep -F strict=false',
+  `gh api repos/o/r/rulesets --jq '.[] | select(.name == "x")' | grep -F enforcement=active`,
   // リポジトリ本体の GET・設定以外への POST
   'gh api repos/o/r --jq .default_branch',
   'gh api repos/o/r/issues/5/comments -f body=hello',

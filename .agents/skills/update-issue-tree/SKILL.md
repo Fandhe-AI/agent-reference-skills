@@ -3,7 +3,7 @@ name: update-issue-tree
 description: >
   既存の GitHub Issue ツリーを棚卸し・更新するスキル。「ツリーを棚卸しして」「イシューツリーを更新して」「トラッキング issue を整理して」で使用。
   ルートのトラッキング issue 番号を受け取り、sub_issues API でツリー全体を再帰取得 → closed 親下の残置 open issue 付け替え・孤児の再配置・新 Phase 親の新設・phase ラベル同期 →
-  ルート issue 本文の Phase 別表・棚卸しセクションを再生成して更新する。
+  ルート issue 本文は既存本文を保持し、Phase 別表・棚卸し履歴の管理ブロックのみ更新する。
   ツリー新規作成は create-issue-tree、実装消化は implement-issue-tree を参照。
 model: opus
 user-invocable: true
@@ -12,7 +12,7 @@ argument-hint: "<ルートトラッキング issue 番号> [--granularity <時�
 
 # update-issue-tree
 
-既存の Issue ツリーを棚卸しし、ルート issue 本文を最新状態に再生成する。
+既存の Issue ツリーを棚卸しし、ルート issue 本文を最新状態へ更新する（管理ブロックのみ。手書きの本文は保持する）。
 closed 親下に残置された open issue の付け替え・孤児の再配置・phase ラベルの同期を実施し、implement-issue-tree が post-order DFS で消化できる構造を維持する。
 
 ## 使い方
@@ -22,8 +22,8 @@ closed 親下に残置された open issue の付け替え・孤児の再配置�
 `2h`・`4h`・`1h` のように正整数+時間単位（`h`）で指定する。優先順位は
 **`--granularity` 明示 > ルート issue 本文の `<!-- granularity: Nh -->` マーカー > 既定 `2h`**
 の順（create-issue-tree と同じ粒度基準・同じマーカー形式）。値は Step 1 で `GRANULARITY`
-として確定し、Step 2・Step 7 の判定に使う。棚卸し後に Step 8 が本文を再生成する際、
-`GRANULARITY` の確定値でマーカー行を保持する。
+として確定し、Step 2・Step 7 の判定に使う。棚卸し後に Step 8 が管理ブロックを更新する際、
+`GRANULARITY` の確定値でマーカー行を先頭に 1 行だけ保持する。
 
 ```
 update-issue-tree 42
@@ -545,48 +545,117 @@ gh api \
   -F "sub_issue_id=${SUB_ID}"
 ```
 
-### Step 8: ルート issue 本文を再生成して更新する
+### Step 8: ルート issue 本文の管理ブロックを更新する（既存本文は保持）
 
-棚卸し後の最新ツリー状態を反映したルート issue 本文を生成し、`gh issue edit` で更新する。
-`GRANULARITY`（Step 1 で確定した値）で `<!-- granularity: Nh -->` マーカー行を再出力し、
-次回以降の update-issue-tree 実行が継承できる状態を保つ（マーカー行を欠落させない）。
+ルート issue 本文のうち**本スキルが管理する範囲だけ**を実ツリーから再生成して差し替える。
+それ以外の本文（概要・運用・手書きの計画や判断根拠・追記）は 1 行も失わない。本文全体を
+固定テンプレートで書き戻してはならない（人が書いた内容が棚卸しのたびに消え、件数・日付の
+プレースホルダーが本文へ到達し得るため。Issue #545）。処理は `scripts/update-root-body.sh`
+に集約されている。
+
+**管理範囲と不変条件**
+
+| 領域 | マーカー（行全体で一致・コードフェンス外のみ有効） | 更新規則 |
+|------|-----------------------------------------------|---------|
+| Phase 別表 | `<!-- update-issue-tree:phase-plan:begin -->` / `<!-- update-issue-tree:phase-plan:end -->` | マーカー間を毎回全置換（ルート直下の sub-issue 全件の表と、直下に open の子を持つ節点の詳細表） |
+| 棚卸し履歴 | `<!-- update-issue-tree:inventory:begin -->` / `<!-- update-issue-tree:inventory:end -->` | 追記専用。既存行は保持し、今回の日付と 5 件数の 1 行を末尾へ足す（直前行と同一なら足さない） |
+| granularity | `<!-- granularity: Nh -->` | 先頭に 1 行だけ維持する。値は `GRANULARITY` の確定値 |
+
+- 既存本文から消してよいのは「phase-plan マーカー間の行」と「granularity マーカー行」だけ
+- `## 概要`・`## 運用` は管理しない。存在すれば逐語で保持し、存在しなくても追加しない
+  （本文が空のときだけ骨格を生成する）
+- 表・件数・日付は実ツリーと検証済み引数からだけ生成する。5 件数の引数は既定値なしの必須で、
+  プレースホルダーが残っていれば API 呼び出し前に exit 1 で止まる
+- issue タイトルは非信頼データ。`|`・改行・`<`・`-->` を無害化して書き込むため、タイトルが管理マーカーを偽装できない
+- マーカーの不整合（片方のみ・重複・逆順・入れ子）と、閉じていないコードフェンスは編集せず exit 4 で止まる
+  （閉じていないフェンスは以降を全部コード扱いにして管理ブロックを二重追記するため）
+
+**マーカーが無い既存本文の移行**（現存するルートはすべてこの状態）: 既存行は捨てない。
+
+- `## Phase 別実装計画` 節があれば、見出し直後へマーカー付きの生成ブロックを挿入する。同節内の
+  見出し直後〜最初の H3 までの先頭部分と `### Phase ` で始まる H3 は旧生成物の候補として
+  **削除せず**、`<details>`（要約に退避日と「確認のうえ不要なら削除」を明記）へ逐語で移す。
+  それ以外の H3（`### 実装ラン (...)` 等）は元の位置・内容のまま残す
+- 節が無ければ本文末尾へ `## Phase 別実装計画` とマーカー付きブロックを追記する
+- 棚卸し履歴は `## 棚卸しで実施した整理（update-issue-tree 実行履歴）` 節を Phase 別実装計画の直前へ挿入する。
+  既存の手書きの棚卸し節には触れない
+- 退避が起きたら stdout 最終行の `migration=phase-plan-archived` を Step 9 の要確認事項へ転記する
+
+**書き込み前の確認と書き込み**: 取得した本文と編集直前に再取得した本文が異なれば並行編集として
+exit 5 で止まる。変更が無ければ `result=unchanged` で編集しない。`--dry-run` を付けると
+マージ後の本文を stdout へ出し、書き込み系の `gh` を一切呼ばない（初回の移行前に推奨）。
+
+**件数変数の確定手順**（各コードフェンスは独立したシェルで実行され得るため、Step 3〜7 のフェンス内の
+変数は Step 8 へ引き継がれない。実績値は会話上で集計し、下記フェンスの先頭へ**数値を直接書いた代入行として
+追記**してから実行する。推測・既定値・プレースホルダーのまま実行しない）:
+
+| 変数 | 確定する値 | 集計元 |
+|------|-----------|--------|
+| `ROOT_NUMBER` | ルート issue 番号 | 引数 |
+| `GRANULARITY` | 粒度（`2h` 等。`Nh` 形式） | 引数の確定値（既定 `2h`） |
+| `REASSIGNED_COUNT` | closed 親下の残置 issue 付け替えの成功件数 | Step 3 で `reassign-sub-issue.sh` が `result=reassigned` / `posted-only` を返した回数 |
+| `ORPHAN_COUNT` | 孤児 issue 再配置の成功件数 | Step 4 で同様に成功した回数 |
+| `LABEL_SYNC_COUNT` | phase ラベル同期の成功件数 | Step 6 で実際にラベルを付与・変更できた issue 数 |
+| `NEW_PHASE_COUNT` | 新設した Phase 親の件数 | Step 5 で作成と紐付けが成功した件数 |
+| `SPLIT_COUNT` | sub-issue 分解の成功件数 | Step 7 で分解（作成と紐付け）まで成功した issue 数 |
+
+- 該当 Step を実行しなかった、または対象が無かった場合は `0` を代入する（未設定のまま放置しない）
+- 失敗・見送り（非ゼロ終了、exit 10 / 11 を含む）は件数へ計上しない（Step 9 の集計規則と同じ）
+- 代入例（値は実績に置き換える）: `ROOT_NUMBER=254 GRANULARITY=2h REASSIGNED_COUNT=1 ORPHAN_COUNT=0 LABEL_SYNC_COUNT=3 NEW_PHASE_COUNT=0 SPLIT_COUNT=0`
+  を `export` 付きでフェンス先頭に置く
+
+各コードフェンスは独立したシェルで実行され得るため、このフェンスは Step 3 / Step 4 と同形に
+スクリプトを 3 レイアウトから自己完結的に解決する。件数の変数が未設定なら起動前に停止する。
 
 ```bash
-gh issue edit "${ROOT_NUMBER}" --body "$(printf '<!-- granularity: %s -->\n' "${GRANULARITY}"; cat <<'EOF'
-## 概要
+# Step 1〜7 の確定値。未設定ならここで停止する（プレースホルダーを本文へ流さない）
+: "${ROOT_NUMBER:?}" "${GRANULARITY:?}" "${REASSIGNED_COUNT:?}" "${ORPHAN_COUNT:?}" \
+  "${LABEL_SYNC_COUNT:?}" "${NEW_PHASE_COUNT:?}" "${SPLIT_COUNT:?}"
 
-全 open issue を Phase 別に 1 ツリーへ整理。各 Phase 親 issue を sub-issues として紐付け。
+UPDATE_ROOT_BODY=""
+for CANDIDATE in \
+  "skills/update-issue-tree/scripts/update-root-body.sh" \
+  ".agents/skills/update-issue-tree/scripts/update-root-body.sh" \
+  ".claude/skills/update-issue-tree/scripts/update-root-body.sh"; do
+  # 存在確認は -f のみ（vendoring で実行ビットが落ちても bash 経由で起動できる）
+  if [[ -f "${CANDIDATE}" ]]; then
+    UPDATE_ROOT_BODY="${CANDIDATE}"
+    break
+  fi
+done
+if [[ -z "${UPDATE_ROOT_BODY}" ]]; then
+  echo "エラー: update-root-body.sh が見つからない（3 レイアウトいずれにも存在しない）" >&2
+  exit 1
+fi
 
-## 棚卸しで実施した整理（YYYY-MM-DD）
-
-- closed 親下の残置 issue の付け替え: N 件
-- 孤児の再配置: N 件
-- phase ラベル同期: N 件
-- 新 Phase 親の新設: N 件
-
-## Phase 別実装計画
-
-| Phase | 親 issue | 直下 | 総 open 件数 |
-|-------|----------|------|-------------|
-| Phase 1 | #<phase1_number> タイトル | N | N |
-| Phase 2 | #<phase2_number> タイトル | N | N |
-
-### Phase 1: タイトル
-
-| Issue | タイトル | 分解 |
-|-------|---------|------|
-| #N | タイトル | - |
-| #N | タイトル | sub-issue あり |
-
-## 運用
-
-- 新規 issue は起票時に Phase 親へ紐付ける
-- 実行順は sub-issues リスト順が正
-- closed 親の下に open issue を残置しない
-- implement-issue-tree が post-order DFS で消化可能な構造を維持する
-EOF
-)"
+# echo を最終コマンドにしない。非ゼロ終了はそのままフェンスの終了ステータスにする
+status=0
+bash "${UPDATE_ROOT_BODY}" \
+  --root "${ROOT_NUMBER}" --granularity "${GRANULARITY}" \
+  --reassigned "${REASSIGNED_COUNT}" --orphans "${ORPHAN_COUNT}" \
+  --labels "${LABEL_SYNC_COUNT}" --new-phases "${NEW_PHASE_COUNT}" \
+  --split "${SPLIT_COUNT}" || status=$?
+if (( status != 0 )); then
+  echo "exit=${status}" >&2
+  exit "${status}"
+fi
 ```
+
+**終了コード**（stdout 最終行は `result=<updated|unchanged|dry-run> root=<n> migration=<none|phase-plan-archived|inserted> phases=<k>`）
+
+| exit | 意味 | 本文の変更 |
+|------|------|-----------|
+| 0 | 成功（updated のみ変更あり） | updated のみ |
+| 1 | 引数エラー（件数のプレースホルダー残りを含む） | なし |
+| 2 | 前提不備（gh / jq 不在・未認証・ルート取得失敗・ルートが PR） | なし |
+| 3 | ツリー取得失敗・深さ超過（8 段）・表の行数不一致・65,536 文字超 | なし |
+| 4 | 管理マーカーの不整合、または本文のコードフェンスが閉じていない | なし |
+| 5 | 並行編集を検知 | なし |
+| 6 | `gh issue edit` が失敗 | 不明（実状態を確認する） |
+| 7 | 事後確認の不一致（再取得した本文全体が送信した本文と一致しない。末尾改行・CR の差は無視） | あり（編集済み） |
+
+非ゼロ終了は握り潰さず Step 9 の要確認事項へ転記する。exit 6 / 7 は本文の実状態を確認する。
+誤って更新した場合は GitHub の本文編集履歴から復元できる。
 
 ### Step 9: 棚卸し結果を報告する
 
@@ -610,8 +679,12 @@ EOF
 |-------|----------|----------|
 | Phase 1 | #N | N 件 |
 
+### ルート本文の更新結果
+- result: updated / unchanged、migration: none / phase-plan-archived / inserted
+
 ### 要確認事項（自動配置できなかった issue）
 - #N: タイトル — 確認理由
+- 退避ブロック（`<details>`）の確認 / Step 8 の exit 5・6・7（該当時）
 ```
 
 「closed 親下の残置 issue 付け替え」「孤児 issue の再配置」の件数は、Step 3 / Step 4 で
@@ -627,7 +700,7 @@ Step 4 のループ自体が fatal 扱いせず継続する**ため（終了コ�
 
 ## 検証
 
-- ルート issue 本文の Phase 別表が更新されていることを確認する
+- ルート issue 本文の Phase 別表が更新されていることを確認する。あわせて**マーカー外の節（概要・運用・手書き節）が更新前後で変わっていない**こと、`YYYY-MM-DD`・`N 件` 等のプレースホルダーが本文に無いことを確認する（初回は `update-root-body.sh ... --dry-run` で出力を確認してから書き込む）
 - closed Phase 親の下に open issue が残置されていないことを確認する。**ただし exit 10
   （補償復旧成功）で要確認事項へ記録された issue は、承認範囲内の逆操作として旧親（closed）
   配下へ意図的に復帰しているため、この確認の例外として扱う。** 単独では「残置」に見えるので、
@@ -659,6 +732,8 @@ gh api "repos/{owner}/{repo}/issues/${PHASE_NUMBER}/sub_issues" \
 | 問題 | 回避策 |
 |------|--------|
 | 付け替えの DELETE が 404 になり、続く POST が 422 で失敗する | 削除のパスだけ単数形 `sub_issue`。複数形 `sub_issues` は 404 になり、旧親から外れないまま POST するため `Sub issue may only have one parent` で必ず失敗する（`reassign-sub-issue.sh` は DELETE 失敗時に POST へ進まないため、この連鎖失敗自体は起きない。手動で `gh api` を直接叩く場合の注意として記載を残す） |
+| 管理ブロック内を手で編集したが次回の棚卸しで上書きされた | マーカー間は毎回再生成される。残したい内容はマーカーの外へ書く |
+| 管理マーカーを片方だけ消して Step 8 が exit 4 になる | 両方を戻すか両方とも消す（マーカーを消すと次回は移行扱いになり、旧ブロックは `<details>` へ退避される） |
 | `--granularity` に `2 h`・`2`・`0h` 等を渡して中断される | 正整数+h 形式（`^[1-9][0-9]*h$`。例: `2h`・`4h`）で指定する |
 
 ## 注意事項
@@ -672,3 +747,4 @@ gh api "repos/{owner}/{repo}/issues/${PHASE_NUMBER}/sub_issues" \
 - sub_issues の DELETE API（付け替え時に旧親から外す操作）はパスが単数形 `sub_issue` である点に注意し、操作対象の issue 番号を必ず確認してから実行する
 - ツリー更新後は implement-issue-tree が post-order DFS で正しく消化できる構造になっているか確認する
 - Step 3 / Step 4 の付け替え処理は `scripts/reassign-sub-issue.sh` を使う。SKILL.md 本文へ素の `gh api` DELETE/POST を書き戻さない（状態変数の受け渡しがコードフェンス境界で壊れるクラスの欠陥に戻るため。詳細は `scripts/reassign-sub-issue.sh` 冒頭コメントを参照）
+- Step 8 は `scripts/update-root-body.sh` を使う。`gh issue edit --body` でルート本文全体を書き戻さない（手書きの本文が消えるため。詳細は `scripts/update-root-body.sh` 冒頭コメントを参照）。誤更新時は GitHub の本文編集履歴から復元できる

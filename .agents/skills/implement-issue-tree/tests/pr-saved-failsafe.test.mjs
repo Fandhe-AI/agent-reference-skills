@@ -211,7 +211,7 @@ test('classifyMergeExecDispatch: agentOutputMissing=true は agent-output-missin
 // ---------------------------------------------------------------------------
 
 test('monitor 呼び出しは try/catch で包まれ、例外は m = null として null 返却と同じ経路へ合流する', () => {
-  const callIdx = driverPart.indexOf('m = await agent(monitorPrompt(')
+  const callIdx = driverPart.indexOf('m = await agentRetryOnce(monitorPrompt(')
   assert.notEqual(callIdx, -1, 'monitor 呼び出しが見つからない')
   const before = driverPart.slice(Math.max(0, callIdx - 300), callIdx)
   assert.match(before, /let m = null/, 'm の let 宣言が呼び出し直前にない')

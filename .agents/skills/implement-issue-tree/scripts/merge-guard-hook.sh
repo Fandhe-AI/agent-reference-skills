@@ -36,7 +36,7 @@
 #   - subagent からのリポジトリ設定変更も無条件 deny（読み取りは許可）:
 #       gh api による rulesets・branches/<b>/protection への書き込み（明示の PUT/PATCH/POST/DELETE、
 #       またはフィールド指定による暗黙の POST）/ repos/<o>/<r> 本体への明示の書き込み /
-#       GraphQL の ruleset・branch protection・updateRepository・(un)archiveRepository mutation /
+#       GraphQL の ruleset・branch protection・updateRepository・deleteRepository・(un)archiveRepository mutation /
 #       gh repo edit・rename・archive・unarchive・delete
 #     機械的に deny するのは上記に限る。variables・secrets・actions permissions・collaborators・
 #     hooks・environments 等の他の設定変更はプロンプト（REPO_SETTINGS_POLICY）上の禁止のみ
@@ -215,13 +215,16 @@ fi
 # 変数間接呼び出し・コマンド置換 $(...) 等）までは文字列照合では防げない（残存リスク。
 # ファイル冒頭コメント・SKILL.md 参照。実強制は「自動マージを行わない」方針とサーバ側
 # branch protection が担う）。
-norm=$(printf '%s\n' "$cmd" \
-  | awk '{ if (sub(/\\$/, "")) printf "%s", $0; else print }' \
-  | tr '\n' ' ' \
-  | sed -e 's/[$]{IFS}/ /g' -e 's/[$]IFS/ /g' \
-  | tr -d "'\"" \
-  | tr -d "\\\\" \
-  | tr -s '[:space:]' ' ')
+norm_of() {
+  printf '%s\n' "$1" \
+    | awk '{ if (sub(/\\$/, "")) printf "%s", $0; else print }' \
+    | tr '\n' ' ' \
+    | sed -e 's/[$]{IFS}/ /g' -e 's/[$]IFS/ /g' \
+    | tr -d "'\"" \
+    | tr -d "\\\\" \
+    | tr -s '[:space:]' ' '
+}
+norm=$(norm_of "$cmd")
 
 # トークン列（空白区切り）の各トークンについて、トークン全体が「非空白プレフィックス + /gh」
 # に一致する場合のみ "gh" へ置き換える（パス修飾起動の basename 正規化。部分削除はしない —
@@ -247,10 +250,101 @@ normalize_gh_tokens() {
 #       等）をトークン境界として分離する（over-deny 設計）
 #   (2) 連続空白の圧縮
 #   (3) トークン単位の basename 正規化（normalize_gh_tokens。トークン全体が */gh の場合のみ）
-tokenized=$(printf '%s' "$norm" \
-  | sed -e 's/[;&|<>(){}`$]/ /g' \
-  | tr -s '[:space:]' ' ')
-tokenized=$(normalize_gh_tokens "$tokenized")
+tokenize_of() {
+  local t
+  t=$(printf '%s' "$1" \
+    | sed -e 's/[;&|<>(){}`$]/ /g' \
+    | tr -s '[:space:]' ' ')
+  normalize_gh_tokens "$t"
+}
+tokenized=$(tokenize_of "$norm")
+
+# --- 暗黙 POST 判定専用の走査対象（scan_norm / scan_tok）--------------------------------
+# 契約（Issue #537）: `gh api repos/o/r/rulesets | grep -F 'enforcement=active'` のように、
+# 既定 GET の読み取りのパイプ後段が `grep -F key=value` を持つと、-F を gh api のフィールド
+# 指定と誤認して deny していた。そこで **暗黙 POST を決めるフィールド指定の照合だけ**を、
+# 読み取りフィルタのセグメントを除いた残りに限定する。マージ系 deny・REST/GraphQL 証拠・
+# explicit_write・パス証拠・GET 免除は従来どおりコマンド全体（norm / tokenized）で判定し、
+# 変更しない（セグメント分割で情報を削ると P0 回帰を出した経緯はファイル冒頭参照。ここは
+# 免除のためだけに使い、判定対象を削る側には使わない）。
+# セグメント化はクォート（'・"・バックスラッシュ）を追跡する awk で非引用符の区切り
+# （; & | と改行。`>&` `<&` `&>` `>|` は区切りにしない）のみを境界とする。引用符内の
+# `|` や `;` で gh api の引数が分断され `-f name=x` が免除側へ落ちる迂回を防ぐため。
+# 免除するのは先頭トークンが既知の読み取りフィルタ（grep egrep fgrep jq head tail sort uniq
+# wc cut tr column cat）と完全一致し、かつ gh トークンを含まないセグメントのみ。awk・sed・
+# xargs・env・未知コマンド・gh 始まりは走査対象に残す（over-deny 側）。
+# 区切りが隠れる・不明な状況（$(・バッククォート・<(・>(・ヒアドキュメント・引用符の閉じ
+# 忘れ・awk 異常終了）はセグメント化せず全体を走査する（fail-closed）。
+# 残存リスク（best-effort の範囲内）: 許可リストのフィルタ自体が gh を間接実行する難読化は
+# 文字列照合では防げない。実強制はサーバー側 ruleset が担う。
+# awk は POSIX 範囲（mawk / gawk / BSD awk 共通）。コマンドは stdin で渡し -v は使わない。
+segment_scan_text() {
+  printf '%s\n' "$1" | awk '
+    BEGIN {
+      n = split("grep egrep fgrep jq head tail sort uniq wc cut tr column cat", a, " ")
+      for (k = 1; k <= n; k++) ok[a[k]] = 1
+      out = ""; seg = ""
+    }
+    { if (sub(/\\$/, "")) text = text $0; else text = text $0 "\n" }
+    function flush(   tmp, w, c, m, j, hasgh) {
+      if (seg ~ /^[ \t\n]*$/) { seg = ""; return }
+      tmp = seg; sub(/^[ \t]+/, "", tmp)
+      split(tmp, w, /[ \t]+/)
+      hasgh = 0
+      if (w[1] in ok) {
+        c = seg
+        gsub("[;&|<>(){}`$\047\"\\\\]", " ", c)
+        m = split(c, w, /[ \t]+/)
+        for (j = 1; j <= m; j++) if (w[j] == "gh" || w[j] ~ /\/gh$/) hasgh = 1
+        if (!hasgh) { seg = ""; return }
+      }
+      out = out " ; " seg
+      seg = ""
+    }
+    END {
+      len = length(text); st = 0
+      for (i = 1; i <= len; i++) {
+        ch = substr(text, i, 1)
+        if (st == 1) { seg = seg ch; if (ch == "\047") st = 0; continue }
+        if (st == 2) {
+          seg = seg ch
+          if (ch == "\\") { i++; seg = seg substr(text, i, 1) }
+          else if (ch == "\"") st = 0
+          continue
+        }
+        if (ch == "\\") { seg = seg ch; i++; seg = seg substr(text, i, 1); continue }
+        if (ch == "\047") { st = 1; seg = seg ch; continue }
+        if (ch == "\"") { st = 2; seg = seg ch; continue }
+        if (ch == "|" && substr(text, i - 1, 1) == ">") { seg = seg ch; continue }
+        if (ch == "&") {
+          if (substr(text, i - 1, 1) == ">" || substr(text, i - 1, 1) == "<" || substr(text, i + 1, 1) == ">") { seg = seg ch; continue }
+        }
+        if (ch == ";" || ch == "|" || ch == "&" || ch == "\n") { flush(); continue }
+        seg = seg ch
+      }
+      if (st != 0) exit 3
+      flush()
+      printf "%s", out
+    }'
+}
+
+scan_src="$cmd"
+case "$cmd" in
+  *'$('*|*'`'*|*'<('*|*'>('*|*'<<'*) scan_src="$cmd" ;;
+  *)
+    if seg_out=$(segment_scan_text "$cmd"); then
+      scan_src="$seg_out"
+    fi
+    ;;
+esac
+scan_norm=$(norm_of "$scan_src")
+scan_tok=$(tokenize_of "$scan_norm")
+
+# 暗黙 POST 用の証拠照合（走査対象のみ。evidence() の scan 版）。
+scan_evidence() {
+  printf '%s' "$scan_norm" | grep -qE "$1" && return 0
+  printf '%s' "$scan_tok" | grep -qE "$1"
+}
 
 # deny 証拠の部分文字列照合。メタ文字を保持した norm とトークン分割済みの tokenized の両方を
 # 照合し、どちらかで成立すれば真（片方の正規化で証拠が変形しても他方で検出する over-deny 合成。
@@ -335,7 +429,7 @@ if contains_subsequence "$all_nf" gh api; then
   implicit_write=0
   if evidence "(^|[[:space:]])(-[A-Za-z]*X|--method)(=|[[:space:]]*)${m_write}([^A-Za-z]|\$)"; then
     explicit_write=1
-  elif evidence '(^|[[:space:]])(-[A-Za-z]*[fF](=|[[:space:]]*)[^[:space:]=-][^[:space:]=]*=|--(raw-)?field([[:space:]]|=)|--input([[:space:]]|=|$))' \
+  elif scan_evidence '(^|[[:space:]])(-[A-Za-z]*[fF](=|[[:space:]]*)[^[:space:]=-][^[:space:]=]*=|--(raw-)?field([[:space:]]|=)|--input([[:space:]]|=|$))' \
     && ! printf '%s' "$norm" | grep -qE '(^|[[:space:]])(-[A-Za-z]*X|--method)(=|[[:space:]]*)[Gg][Ee][Tt]([^A-Za-z]|$)'; then
     implicit_write=1
   fi
@@ -349,8 +443,8 @@ if contains_subsequence "$all_nf" gh api; then
     deny "subagent からのリポジトリ設定の変更（gh api repos/<o>/<r> の書き込み）は禁止（設定変更は人間が行う。要対応事項として報告すること）"
   fi
   # GraphQL のリポジトリ設定系 mutation（ruleset・branch protection・リポジトリ本体・archive）。
-  if evidence '(create|update|delete)(BranchProtectionRule|RepositoryRuleset)|updateRepository|(un)?archiveRepository'; then
-    deny "subagent からの GraphQL リポジトリ設定系 mutation（ruleset・branch protection・updateRepository 等）は禁止"
+  if evidence '(create|update|delete)(BranchProtectionRule|RepositoryRuleset)|updateRepository|deleteRepository|(un)?archiveRepository'; then
+    deny "subagent からの GraphQL リポジトリ設定系 mutation（ruleset・branch protection・updateRepository・deleteRepository 等）は禁止"
   fi
 fi
 

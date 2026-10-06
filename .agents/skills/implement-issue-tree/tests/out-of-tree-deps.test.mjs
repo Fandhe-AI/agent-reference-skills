@@ -475,7 +475,7 @@ test('駆動部: recordFailure は outOfTreeDeps を results へ引き継ぎ、�
 
 // markBlockedByDeps・recordFailure の実体を切り出して実行し、ツリー外前提待ちの記録経路でも
 // 再開情報（PR 番号・再実行の案内）が done（results）と failures の双方に残ることを振る舞いで固定する。
-function runMarkBlockedByDeps({ item, allFailedDeps, outOfTree, monitoringPr }) {
+function runMarkBlockedByDeps({ item, allFailedDeps, outOfTree, monitoringPr, branch, unverified = [] }) {
   const extract = (src, head) => {
     const start = src.indexOf(head)
     assert.ok(start >= 0, `${head} が見つからない`)
@@ -483,6 +483,14 @@ function runMarkBlockedByDeps({ item, allFailedDeps, outOfTree, monitoringPr }) 
   }
   const recordFailureSrc = extract(source, 'function recordFailure(failure)')
   const markSrc = extract(driverPart, 'async function markBlockedByDeps(')
+  // 「作成済み」と断定しない文言ヘルパー（markBlockedByDeps が参照する駆動部の const 1 行）。
+  const prRecordStart = driverPart.indexOf('const PR_RECORD_UNVERIFIED = ')
+  assert.ok(prRecordStart >= 0, 'PR_RECORD_UNVERIFIED が見つからない')
+  const prRecordSrc = driverPart.slice(prRecordStart, driverPart.indexOf('\n', prRecordStart))
+  // pr を 0 でクリアしてよいかの判定（照合できない再開情報を消さない。Codex P1）も同様に 1 行で切り出す。
+  const prClearStart = driverPart.indexOf('const prClearPatch = ')
+  assert.ok(prClearStart >= 0, 'prClearPatch が見つからない')
+  const prClearSrc = driverPart.slice(prClearStart, driverPart.indexOf('\n', prClearStart))
   const ctx = {
     failedSet: new Set(),
     outOfTreeWait: new Set(outOfTree),
@@ -492,7 +500,9 @@ function runMarkBlockedByDeps({ item, allFailedDeps, outOfTree, monitoringPr }) 
     results: [],
     failures: [],
     isActiveMonitoring: () => monitoringPr > 0,
-    savedItems: { [String(item.number)]: { pr: monitoringPr } },
+    savedItems: { [String(item.number)]: { pr: monitoringPr, ...(branch ? { branch } : {}) } },
+    unverifiedIssues: new Set(unverified),
+    branchMatchesIssue: (b, n) => new RegExp(`^[a-z]+/${n}-`).test(b),
     stateUpdates: [],
     log: () => {},
     isValidBranchName: () => false,
@@ -501,10 +511,13 @@ function runMarkBlockedByDeps({ item, allFailedDeps, outOfTree, monitoringPr }) 
   ctx.updateState = async (n, patch) => { ctx.stateUpdates.push({ n, patch }) }
   const factory = new Function('ctx', [
     'const { failedSet, outOfTreeWait, byParent, phaseGateEdgeKeys, outOfTreeBlockNote, results, failures,',
-    '  isActiveMonitoring, savedItems, updateState, log, isValidBranchName, sanitizeWorktreePath } = ctx',
+    '  isActiveMonitoring, savedItems, updateState, log, isValidBranchName, sanitizeWorktreePath,',
+    '  unverifiedIssues, branchMatchesIssue } = ctx',
     'let failureEpoch = 0',
     'let consecutiveFailures = 0',
     'let halted = null',
+    prRecordSrc,
+    prClearSrc,
     recordFailureSrc,
     markSrc,
     'return markBlockedByDeps',
@@ -523,7 +536,9 @@ test('振る舞い: 再開情報が有効なイシューのツリー外前提待
   assert.equal(done.pr, 42)
   assert.deepEqual(done.outOfTreeDeps, [5])
   assert.match(done.note, /ツリー外の前提イシュー #5 が open のため未着手/)
-  assert.match(done.note, /中断時に PR #42 作成済み。同じ引数で再実行すると monitor から再開する/)
+  assert.match(done.note, /状態ファイルに PR #42 の記録あり（未照合）。同じ引数で再実行すると monitor から再開する/)
+  // PR の実在を確かめていない経路では「作成済み」と断定しない。
+  assert.doesNotMatch(done.note, /作成済み/)
   assert.equal(failure.issue, 10)
   assert.equal(failure.status, 'blocked')
   assert.equal(failure.pr, 42)
@@ -551,7 +566,26 @@ test('振る舞い: ツリー内の前提失敗のみなら従来どおり resul
     issue: 12,
     status: 'blocked',
     pr: 42,
-    note: '前提イシューの失敗・ブロックにより未着手: #7（中断時に PR #42 作成済み。同じ引数で再実行すると monitor から再開する）',
+    note: '前提イシューの失敗・ブロックにより未着手: #7（状態ファイルに PR #42 の記録あり（未照合）。同じ引数で再実行すると monitor から再開する）',
   }])
   assert.deepEqual(ctx.stateUpdates, [])
+})
+
+test('振る舞い: branch が別 issue の命名・state-unverified の項目は依存ブロック時に保存済み pr を消さない（Codex P1）', async () => {
+  // isActiveMonitoring は別 issue のブランチを拒否するため false になるが、pr: 0 を書くと次回の
+  // stopUnverified による照合・停止が働かず既存 PR を見失う。
+  const foreign = await runMarkBlockedByDeps({ item: { number: 13 }, allFailedDeps: [7], outOfTree: [], monitoringPr: 0, branch: 'feat/359-foo' })
+  assert.equal(foreign.stateUpdates.length, 1)
+  assert.equal('pr' in foreign.stateUpdates[0].patch, false, 'pr キーを書いてはならない（保存済み pr を保持する）')
+  assert.equal(foreign.stateUpdates[0].patch.status, 'blocked')
+  const unverified = await runMarkBlockedByDeps({ item: { number: 14 }, allFailedDeps: [7], outOfTree: [], monitoringPr: 0, unverified: [14] })
+  assert.equal('pr' in unverified.stateUpdates[0].patch, false)
+  // 本 issue の命名の branch なら従来どおり pr: 0 でクリアする
+  const own = await runMarkBlockedByDeps({ item: { number: 15 }, allFailedDeps: [7], outOfTree: [], monitoringPr: 0, branch: 'feat/15-x' })
+  assert.equal(own.stateUpdates[0].patch.pr, 0)
+})
+
+test('駆動部: 未着手（notStarted）の blocked 記録も prClearPatch で保存済み pr の保持を判定する（Codex P1）', () => {
+  assert.match(driverPart, /await updateState\(n, \{ status: 'blocked', note: notStartedNote, \.\.\.prClearPatch\(n\) \}\)/)
+  assert.doesNotMatch(driverPart, /note: notStartedNote, pr: 0/)
 })
