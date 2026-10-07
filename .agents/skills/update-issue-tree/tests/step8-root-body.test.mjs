@@ -386,6 +386,19 @@ test('k: タイトルの | ・改行・終了マーカー文字列でも表が�
     assert.equal(r2.status, 0, r2.stderr)
   }))
 
+test('k2: タイトルのバックスラッシュを倍化してから | をエスケープし、\\| で表の列が割れない', () =>
+  withEnv((env) => {
+    setRoot(env, '')
+    setSubs(env, 254, [issue(10, 'a\\|b|c', { labels: ['phase:1'], total: 0 })])
+    assert.equal(run(env).status, 0)
+    const rows = edited(env).split('\n').filter((l) => l.startsWith('| Phase '))
+    assert.ok(rows.some((l) => l.includes('a\\\\\\|b\\|c')), rows.join('\n'))
+    for (const row of rows) {
+      // エスケープ済みの \\ と \| を除去した後に残る | だけが列区切り（4 列 = 5 区切り + 外側 = 6 分割）
+      assert.equal(row.replace(/\\\\|\\\|/g, '').split('|').length, 6, row)
+    }
+  }))
+
 test('l: CRLF 本文でも見出し・マーカーを認識し内容を保持する', () =>
   withEnv((env) => {
     setRoot(env, HANDWRITTEN.replace(/\n/g, '\r\n'))

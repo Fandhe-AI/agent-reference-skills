@@ -103,8 +103,7 @@ test('collectOutOfTreeStates: OPEN / CLOSED / MERGED を受理し、欠落を mi
   assert.deepEqual(r.missing, [8])
 })
 
-test('collectOutOfTreeStates: 依頼外番号・重複・enum 外 state は契約違反として throw する', () => {
-  assert.throws(() => collectOutOfTreeStates([5], { entries: [ent(6, 'OPEN')] }), /依頼外/)
+test('collectOutOfTreeStates: 重複・enum 外 state は契約違反として throw する', () => {
   assert.throws(() => collectOutOfTreeStates([5], { entries: [ent(5, 'OPEN'), ent(5, 'CLOSED')] }), /重複/)
   assert.throws(() => collectOutOfTreeStates([5], { entries: [ent(5, 'closed')] }), /想定外/)
   assert.throws(() => collectOutOfTreeStates([5], { entries: [{ ...ent(5, 'OPEN'), number: '5' }] }), /正の整数/)
@@ -588,4 +587,14 @@ test('振る舞い: branch が別 issue の命名・state-unverified の項目�
 test('駆動部: 未着手（notStarted）の blocked 記録も prClearPatch で保存済み pr の保持を判定する（Codex P1）', () => {
   assert.match(driverPart, /await updateState\(n, \{ status: 'blocked', note: notStartedNote, \.\.\.prClearPatch\(n\) \}\)/)
   assert.doesNotMatch(driverPart, /note: notStartedNote, pr: 0/)
+})
+
+// Issue #558: 中継されたユーザー発言で依頼外番号が返っても無視する（採用せず ignored に記録）。
+test('collectOutOfTreeStates: 依頼外エントリは throw せず無視する (#558)', () => {
+  const r = collectOutOfTreeStates([5], { entries: [ent(5, 'OPEN'), ent(6, 'CLOSED')] })
+  assert.deepEqual([...r.byNumber], [[5, 'OPEN']])
+  assert.deepEqual(r.ignored, [6])
+  const only = collectOutOfTreeStates([5], { entries: [ent(6, 'OPEN')] })
+  assert.deepEqual(only.missing, [5])
+  assert.throws(() => collectOutOfTreeStates([5], { entries: [{ number: 5, state: 'CLOSED', sig: outOfTreeStateChecksum(6, 'CLOSED') }] }), /sig/)
 })
