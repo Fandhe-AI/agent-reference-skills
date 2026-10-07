@@ -221,6 +221,7 @@ done < "${WORK}/rootrows.tsv"
 # ---- 管理ブロックの生成 ----
 # issue タイトル・ラベルは非信頼データ。jq 内でデータとして無害化し、シェル展開へ載せない。
 # `<` は `&lt;`、`-->` は `--&gt;` へ置換するため、タイトルがマーカーや HTML 構造を偽装できない。
+# 表セルでは `|` の前にバックスラッシュを倍化する（`a\|b` の `\|` が先行 `\` に食われて列が割れるのを防ぐ）。
 BLOCK_FILE="${WORK}/block.md"
 jq -r -n \
   --arg pb "${PB}" --arg pe "${PE}" \
@@ -229,7 +230,7 @@ jq -r -n \
   --slurpfile ch "${ROOT_CHILDREN}" \
   --arg ru "${ROOT_REPO_URL}" '
   def clean: tostring | gsub("[\r\n]+"; " ") | gsub("<"; "&lt;") | gsub("-->"; "--&gt;");
-  def san: clean | gsub("\\|"; "\\|");
+  def san: clean | gsub("\\\\"; "\\\\") | gsub("\\|"; "\\|");
   def phasex: ([ (.labels // [])[] | (.name? // empty) | select(startswith("phase:")) ]) as $p
     | if ($p | length) == 1 and ($p[0] | ltrimstr("phase:") | test("^[0-9A-Za-z._-]{1,32}$"))
       then ($p[0] | ltrimstr("phase:")) else null end;

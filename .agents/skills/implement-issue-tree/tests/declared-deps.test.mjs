@@ -221,8 +221,7 @@ test('collectDeclaredDeps: 全件返却なら missing は空・欠落は missing
   assert.deepEqual(collectDeclaredDeps([1], null).missing, [1])
 })
 
-test('collectDeclaredDeps: 依頼外番号・非整数・上限超過は throw する', () => {
-  assert.throws(() => collectDeclaredDeps([1], { entries: [e(2, [])] }), /依頼外/)
+test('collectDeclaredDeps: 非整数・deps 非配列・重複・上限超過は throw する', () => {
   assert.throws(() => collectDeclaredDeps([1], { entries: [{ number: 1, deps: ['3'], sig: 0 }] }), /正の整数/)
   assert.throws(() => collectDeclaredDeps([1], { entries: [{ number: 1, sig: 0 }] }), /配列ではない/)
   assert.throws(() => collectDeclaredDeps([1], { entries: [e(1, [42]), e(1, [])] }), /重複/)
@@ -250,4 +249,40 @@ test('駆動部は Tree 検証後・byParent 構築前に抽出結果を取り�
   const byParentIdx = driverPart.indexOf('const byParent = new Map()')
   assert.ok(mergeIdx > 0 && byParentIdx > mergeIdx, 'depsMap の元になる byParent 構築より前に取り込むこと')
   assert.ok(driverPart.includes('本文の依存宣言を抽出できなかったイシューがある'), '欠落時の fail-closed 停止')
+})
+
+// Issue #558: Workflow ハーネスが中継するユーザー発言に複数のイシュー番号があると、抽出エージェントが
+// 依頼外番号まで返す。依頼外エントリは採用せず無視し、ラン開始前停止を起こさない。
+test('collectDeclaredDeps: 依頼外エントリは throw せず無視して ignored に記録する (#558)', () => {
+  const r = collectDeclaredDeps([545], { entries: [e(545, [1]), e(546, [2])] })
+  assert.deepEqual([...r.byNumber.keys()], [545])
+  assert.deepEqual(r.missing, [])
+  assert.deepEqual(r.ignored, [546])
+})
+
+test('collectDeclaredDeps: 依頼外エントリだけの返却は missing に依頼番号が残る（全件照合の fail-closed 維持）', () => {
+  const r = collectDeclaredDeps([545], { entries: [e(546, [])] })
+  assert.equal(r.byNumber.size, 0)
+  assert.deepEqual(r.missing, [545])
+  assert.deepEqual(r.ignored, [546])
+})
+
+test('collectDeclaredDeps: 依頼外エントリは検査対象外・依頼番号側の違反は従来どおり throw する', () => {
+  const many = Array.from({ length: DECLARED_DEPS_MAX_PER_NODE + 1 }, (_, i) => i + 1)
+  assert.doesNotThrow(() => collectDeclaredDeps([1], { entries: [e(1, []), e(2, many), e(2, []), { number: 3, deps: 'x', sig: 0 }] }))
+  assert.throws(() => collectDeclaredDeps([1], { entries: [e(2, []), { number: 1, deps: [2], sig: 0 }] }), /sig/)
+  assert.throws(() => collectDeclaredDeps([1], { entries: [e(2, []), { number: 'x', deps: [], sig: 0 }] }), /正の整数/)
+})
+
+test('collectDeclaredDeps: 依頼外エントリの number を依頼番号へ書き換えても sig 不一致で throw する（化けない）', () => {
+  assert.throws(() => collectDeclaredDeps([545], { entries: [{ number: 545, deps: [], sig: declaredDepsChecksum(546, []) }] }), /sig/)
+})
+
+test('declaredDepsPrompt: 担当範囲（for n in の番号のみ）を明記する (#558)', () => {
+  assert.match(declaredDepsPrompt([1]), /担当は.*番号だけ/)
+})
+
+test('駆動部は ignored を警告ログに出す (#558)', () => {
+  assert.match(driverPart, /collectDeclaredDeps\(pending, result\)/)
+  assert.ok(/ignored\.length > 0/.test(driverPart), 'runChunk が ignored をログに出すこと')
 })
