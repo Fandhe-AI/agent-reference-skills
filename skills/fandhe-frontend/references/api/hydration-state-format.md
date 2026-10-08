@@ -31,7 +31,7 @@ fn restore_state<C: Hydrate>(attrs: &[(String, String)]) -> Result<C, HydrateErr
 - 巨大属性値の上限（DoS 耐性）: `fandhe-frontend-wasm-full` 0.7.1 で `hydration::MAX_ATTR_VALUE_LEN: usize = 65_536`（64 KiB）として実装済み。上限超過の属性値は `filter_hydration_attrs` により欠損扱いとしてフィルタされ、`restore_state` は当該フィールド欠損として扱われる（panic ではなく CSR 再描画へのフォールバックに合流する）
 - JSON 等の追加依存は導入しない。エラーメッセージは英語で内部情報を含めない
 - 公式設計書（`docs/api/hydration-state-format.md`）は対象型を数値・文字列・文字列配列の 3 種に限り、ネスト構造等の一般化をイシュー #163 へ引き継いでいた。`fandhe-frontend-interactive` 0.2.7 では `codec::Value`（`Str` / `Int` / `Bool` / `List` / `Map`）と `encode_value` / `decode_value`（ネスト深さ上限 `MAX_VALUE_DEPTH` = 32、`ValueDecodeError`）が提供されている（[状態管理 API](./interactive-api.md) 参照）。上記の表は 3 種の基本フォーマットを指す
-- `fandhe-frontend-wasm-full` 0.40.4 の `src/hydration.rs` と突合済み: `pub const MAX_ATTR_VALUE_LEN: usize = 64 * 1024`、`read_hydration_attrs(root: &Element) -> Vec<(String, String)>`(`web_sys` 依存側)、`restore_state<C: Hydrate>(attrs: &[(String, String)]) -> Result<C, HydrateError>`(`C::from_hydration_attrs` へ委譲)。`HYDRATE_ATTR_PREFIX` で始まり値長が `MAX_ATTR_VALUE_LEN` 以下の属性のみが `filter_hydration_attrs` を通過し、超過分は列挙結果から除外される(ログには属性名のみ)
+- `fandhe-frontend-wasm-full` 0.46.0 の `src/hydration.rs` と突合済み: `pub const MAX_ATTR_VALUE_LEN: usize = 64 * 1024`、`read_hydration_attrs(root: &Element) -> Vec<(String, String)>`(`web_sys` 依存側)、`restore_state<C: Hydrate>(attrs: &[(String, String)]) -> Result<C, HydrateError>`(`C::from_hydration_attrs` へ委譲)。`HYDRATE_ATTR_PREFIX` で始まり値長が `MAX_ATTR_VALUE_LEN` 以下の属性のみが `filter_hydration_attrs` を通過し、超過分は列挙結果から除外される(ログには属性名のみ)
 
 ## Related
 

@@ -32,11 +32,11 @@ python3 -m http.server 8000 --bind 127.0.0.1 --directory static
 ```sh
 cargo check -p fandhe-frontend-wasm-full \
   --no-default-features \
-  --features wasm-bindgen-exports,collapsible,dialog,popover,tooltip,position \
+  --features wasm-bindgen-exports,collapsible,dialog,popover,tooltip,position,action-keydown \
   --target wasm32-unknown-unknown --locked
 ```
 
-配布 WASM の最小構成（6 feature）を対象にした検証。`wasm32-unknown-unknown` ターゲットが前提（`scripts/install.md` 参照）。`-p fandhe-frontend-wasm-full` を単体で指定すること。`--workspace` を付けて `--no-default-features` / `--features` を指定すると Cargo の解決対象がワークスペース全体に広がり、意図した縮小構成の検証にならない（ガイド記載）。
+配布 WASM の最小構成（7 feature）を対象にした検証。`wasm32-unknown-unknown` ターゲットが前提（`scripts/install.md` 参照）。`-p fandhe-frontend-wasm-full` を単体で指定すること。`--workspace` を付けて `--no-default-features` / `--features` を指定すると Cargo の解決対象がワークスペース全体に広がり、意図した縮小構成の検証にならない（ガイド記載）。
 
 ```sh
 cargo check -p fandhe-frontend-wasm-full \

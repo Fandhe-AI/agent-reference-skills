@@ -32,10 +32,10 @@ Wireframes（`fandhe-frontend-wireframe-ui`）は低忠実度ワイヤーフレ�
 | pre-styled-ui | 0.241.0 |
 | wireframe-ui | 0.52.0 |
 | cli (`fw`) | 0.5.2 |
-| wasm-full | 0.40.4 |
+| wasm-full | 0.46.0 |
 | animation | 0.17.1 |
 
-公式 docs サイトは commit cf5edb9 時点（2026-10-04）。`api/keyed-list-api.md` と `api/binding-api.md` は公式 docs 索引外で、crate ソース由来。
+公式 docs サイトは commit 4c8c7d1 時点（2026-10-08）。`api/keyed-list-api.md` と `api/binding-api.md` は公式 docs 索引外で、crate ソース由来。
 
 ## ディレクトリ構成
 
@@ -59,6 +59,7 @@ skills/fandhe-frontend/
       animation-core.md
       animation.md
       deployment.md
+      docs-site-external-repos.md
     api/
       README.md
       component-api.md
@@ -304,6 +305,7 @@ skills/fandhe-frontend/
 | Calendar, Date Picker, Timer など日時系 Themes（styled）部品を知りたい | themes/date-time | [references/themes/date-time/README.md](references/themes/date-time/README.md) |
 | Separator, SkipNav, VisuallyHidden などユーティリティ系 Themes（styled）部品を知りたい | themes/utilities | [references/themes/utilities/README.md](references/themes/utilities/README.md) |
 | アニメーション（`data-*` 属性機能・`fandhe-animation` コア/Web アダプタ）、`pre-styled-ui` の `motion` feature、`wasm-full` の feature 選択、Vercel デプロイ（SSG / SSR）を知りたい | guides | [references/guides/README.md](references/guides/README.md) |
+| docs サイト生成器（`docs-site`）を外部リポジトリで使う（導入・`nav.toml`・ブランドキー・GitHub Pages 公開） | guides | [references/guides/README.md](references/guides/README.md) |
 | LP・マーケティングサイトの完成済みセクション例（Hero / Pricing / CTA / FAQ / Footer 等）を探す | blocks/marketing | [references/blocks/marketing/README.md](references/blocks/marketing/README.md) |
 | アプリ画面の完成済みセクション例（App Shell / Dashboard / Auth / Settings / Dialog 等）を探す | blocks/application | [references/blocks/application/README.md](references/blocks/application/README.md) |
 | EC の完成済みセクション例（Cart / Checkout / Filter / Category 等）を探す | blocks/ecommerce | [references/blocks/ecommerce/README.md](references/blocks/ecommerce/README.md) |
