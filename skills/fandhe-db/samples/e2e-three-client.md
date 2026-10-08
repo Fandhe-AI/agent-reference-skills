@@ -14,8 +14,8 @@ make e2e-three-client
 
 ```bash
 # make e2e-three-client の実体（Makefile より）
-cargo test -p fandhe-db-wire-server --test three_client_e2e -- --ignored
-cargo test -p fandhe-db-wire-server --test extended_syntax_e2e -- --ignored
+cargo test -p fandhe-vector-db-wire-server --test three_client_e2e -- --ignored
+cargo test -p fandhe-vector-db-wire-server --test extended_syntax_e2e -- --ignored
 ```
 
 ```text

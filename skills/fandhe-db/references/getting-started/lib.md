@@ -4,7 +4,7 @@ source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/lib.rs
 
 # lib (engine crate root)
 
-`engine` crate（crates.io 公開名 `fandhe-db-engine`）のクレートルート。データロード・検索カーネル・認証・RLS 相当のテナント境界・`redb` ベースの永続化を担う。クエリの受付・応答整形など wire プロトコルの詳細は持たない。
+`engine` crate（crates.io 公開名 `fandhe-vector-db-engine`）のクレートルート。データロード・検索カーネル・認証・RLS 相当のテナント境界・`redb` ベースの永続化を担う。クエリの受付・応答整形など wire プロトコルの詳細は持たない。
 
 ## Signature / Usage
 

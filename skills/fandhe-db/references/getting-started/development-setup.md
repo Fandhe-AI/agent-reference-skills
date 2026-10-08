@@ -19,7 +19,7 @@ make setup   # サブモジュール → rustup → lefthook（git hooks）を�
 wire-server の起動（TASK-73）:
 
 ~~~bash
-cargo run -p fandhe-db-wire-server -- --users <ユーザーストアのパス> --db <redb ファイルのパス> \
+cargo run -p fandhe-vector-db-wire-server -- --users <ユーザーストアのパス> --db <redb ファイルのパス> \
   [--bind 127.0.0.1:5432] [--search-engine default|hnsw|hnsw_f16|hnsw_i8] \
   [--hnsw-full-scan-ratio <num>/<den>] \
   [--hnsw-acorn-max-visible-ratio <num>/<den>] \
@@ -57,7 +57,7 @@ crates.io への公開（`.github/workflows/release.yml`）:
 
 | Input | Values |
 |------|------|
-| `crate` | `fandhe-db-engine` / `fandhe-db-wire-server` / `all`（`--workspace` で engine → wire-server の依存順に一括公開。初回公開はこれを使う） |
+| `crate` | `fandhe-vector-db-engine` / `fandhe-vector-db-wire-server` / `all`（`--workspace` で engine → wire-server の依存順に一括公開。初回公開はこれを使う） |
 | `version` | 公開するバージョン。対象クレートの `Cargo.toml` と完全一致が必須 |
 | `mode` | `dry-run-only`（既定。ガード群 + `cargo publish --dry-run` のみ）/ `publish`（実公開） |
 
@@ -65,7 +65,7 @@ crates.io への公開（`.github/workflows/release.yml`）:
 
 - `docs/spec` submodule は private リポジトリのため、アクセス権が無い環境では `make setup` が警告付きで続行する。core のビルド・テストは spec 非依存。
 - `rustup` が未導入の場合、`make setup` は内部で `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable` を実行する（`Makefile` の `rustup` ターゲット。`command -v rustup` 等で未導入と判定した場合のみ）。取得元スクリプトを未検証のまま自動実行する経路であるため、CI・自動化環境ではこの経路を実行手順として案内しない。rustup は公式手順（https://rustup.rs）で事前導入済みであることを前提とし、その場合 `make setup` はこのステップをスキップする。
-- 公開名は `fandhe-db-engine`（`crates/engine`）・`fandhe-db-wire-server`（`crates/wire-server`）。ライブラリ名 `engine`・バイナリ名 `wire-server` は据え置きのため、ソース内の `use engine::...`・`target/release/wire-server` は不変で、`cargo` の `-p`/`--package` に渡す名前だけが公開名になる（例: `cargo test -p fandhe-db-engine`）。
+- 公開名は `fandhe-vector-db-engine`（`crates/engine`）・`fandhe-vector-db-wire-server`（`crates/wire-server`）。ライブラリ名 `engine`・バイナリ名 `wire-server` は据え置きのため、ソース内の `use engine::...`・`target/release/wire-server` は不変で、`cargo` の `-p`/`--package` に渡す名前だけが公開名になる（例: `cargo test -p fandhe-vector-db-engine`）。
 - 公開は `release` workflow の `workflow_dispatch` からのみ行う（タグ push 起点は不採用）。`publish` ジョブは GitHub Environment `crates-io-release` の承認ゲートを通り、secret `CARGO_REGISTRY_TOKEN` を publish ステップにのみ注入する。Environment の required reviewers と secret の設定はオーナー作業。
 - `wire-server` 単体の dry-run は engine の公開版が crates.io に無い間は依存解決で失敗するため、初回は `all` を使う。
 - ライセンスは MIT OR Apache-2.0 のデュアルライセンス（`LICENSE-MIT` / `LICENSE-APACHE`）。

@@ -87,7 +87,7 @@ pub(crate) fn eval<'a>(
 
 ## Notes
 
-- crate 内部 API: 本ファイルの全公開項目は `pub(crate)` であり、`fandhe-db-engine` の公開 API（`fandhe-db` crate）からは到達しない
+- crate 内部 API: 本ファイルの全公開項目は `pub(crate)` であり、`fandhe-vector-db-engine` の公開 API（`fandhe-vector-db` crate）からは到達しない
 - 上記は main が pin SHA（`7022d112e79760dca916480599553fcac256b5fb`）で保存したソース（`src/engine/src/sql/expr_program.rs`）から Read で verbatim 転記した（`ExprStep` / `StackValue` の全バリアントを含む）
 - 関連 ADR: [`expr-step-compilation`](https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/7022d112e79760dca916480599553fcac256b5fb/docs/design/expr-step-compilation.md)（Issue #353。`sql::udf_call::eval` の再帰ツリーウォーク評価をステップ列コンパイル化する設計 = 本モジュールそのものの根拠 ADR）
 - Distinct from `mssql` / `drizzle` expression evaluation: not a SQL dialect expression compiler, but the engine's internal non-recursive expression execution representation.

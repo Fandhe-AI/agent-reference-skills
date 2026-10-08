@@ -4,7 +4,7 @@ source: https://docs.rs/crate/fandhe-vector-db-wire-server/0.1.0/source/src/lib.
 
 # lib
 
-`fandhe-db-wire-server` crate のライブラリ層（`wire_server`）。`src/main.rs`（バイナリ）と `tests/`（結合テスト）の双方から内部モジュールへアクセスできるよう、TASK-66 の stub から lib+bin 構成へ再編された。責務境界はクライアント接続の受け付け・wire プロトコルのパース/応答整形であり、クエリの実処理は `engine` crate（コアロジック層）へ委譲する。
+`fandhe-vector-db-wire-server` crate のライブラリ層（`wire_server`）。`src/main.rs`（バイナリ）と `tests/`（結合テスト）の双方から内部モジュールへアクセスできるよう、TASK-66 の stub から lib+bin 構成へ再編された。責務境界はクライアント接続の受け付け・wire プロトコルのパース/応答整形であり、クエリの実処理は `engine` crate（コアロジック層）へ委譲する。
 
 ## Signature / Usage
 

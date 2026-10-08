@@ -64,7 +64,7 @@ pub(crate) fn finish(&self);
 
 ## Notes
 
-- crate 内部 API: 本ファイルの全公開項目は `pub(crate)` であり、`fandhe-db-engine` の公開 API（`fandhe-db` crate）からは到達しない
+- crate 内部 API: 本ファイルの全公開項目は `pub(crate)` であり、`fandhe-vector-db-engine` の公開 API（`fandhe-vector-db` crate）からは到達しない
 - `SearchProvider` トレイト自体・`HybridError` の詳細は本モジュールでは定義されず（`hybrid.rs` / `core.rs` 側の定義を参照）、この scope では未転記
 - 関連 ADR: [`hnsw-hybrid-iterative-scan`](https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/7022d112e79760dca916480599553fcac256b5fb/docs/design/hnsw-hybrid-iterative-scan.md)（Issue #410。フィルタ付き ANN の境界再取得〔iterative scan 型〕と fail-closed 検証 = 本モジュールの密側再取得ループそのものの設計 ADR。前提 #408・#409）
 - Distinct from `upstash`: not the @upstash/vector hybrid search SaaS client API, but a `SearchProvider` adapter internal to the engine that reuses the HNSW cache.

@@ -4,12 +4,12 @@ source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/7022d112e79760dca9
 
 # run-wire-server
 
-`fandhe-db-wire-server`（PostgreSQL wire protocol v3 互換サーバー）を起動するコマンド（TASK-73）。
+`fandhe-vector-db-wire-server`（PostgreSQL wire protocol v3 互換サーバー）を起動するコマンド（TASK-73）。
 
 ## Usage
 
 ```bash
-cargo run -p fandhe-db-wire-server -- --users <ユーザーストアのパス> --db <redb ファイルのパス> \
+cargo run -p fandhe-vector-db-wire-server -- --users <ユーザーストアのパス> --db <redb ファイルのパス> \
   [--bind 127.0.0.1:5432] [--search-engine default|hnsw|hnsw_f16|hnsw_i8] \
   [--hnsw-full-scan-ratio <num>/<den>] \
   [--hnsw-acorn-max-visible-ratio <num>/<den>] \
@@ -23,7 +23,7 @@ cargo run -p fandhe-db-wire-server -- --users <ユーザーストアのパス> -
 ## Notes
 
 - 起動したサーバーには psql・psycopg・node pg から無改造で cleartext password 認証つき接続ができる。具体的な接続例は samples/ を参照
-- crates.io 上の公開バイナリ名は `fandhe-db-wire-server` だが、ソース内の `use engine::...` やビルド成果物 `target/release/wire-server` の名前自体は変わらない（README「crates.io への公開」節。`cargo` の `-p`/`--package` に渡す名前だけが公開名になる）
+- crates.io 上の公開バイナリ名は `fandhe-vector-db-wire-server` だが、ソース内の `use engine::...` やビルド成果物 `target/release/wire-server` の名前自体は変わらない（README「crates.io への公開」節。`cargo` の `-p`/`--package` に渡す名前だけが公開名になる）
 - `compose.yaml` の `dev` サービスは shell/CI 用の開発コンテナ（`bash` 起動、Cargo registry / target のキャッシュ volume）であり、wire-server 用のポート公開や起動コマンドは定義されていない。Docker 経由でサーバーを起動する README 記載の手順は無い
 
 ## Related

@@ -2,7 +2,7 @@
 
 | Name | Description | Path |
 | --- | --- | --- |
-| Start wire-server | `fandhe-db-wire-server` バイナリの起動と CLI フラグ | [start-wire-server.md](./start-wire-server.md) |
+| Start wire-server | `fandhe-vector-db-wire-server` バイナリの起動と CLI フラグ | [start-wire-server.md](./start-wire-server.md) |
 | Connect with psql | 無改造の psql から wire-server へ接続し C1〜C4 を実行する | [connect-psql.md](./connect-psql.md) |
 | Connect with psycopg | 無改造の Python psycopg から wire-server へ接続する | [connect-psycopg.md](./connect-psycopg.md) |
 | Connect with node pg | 無改造の Node.js pg から wire-server へ接続する | [connect-node-pg.md](./connect-node-pg.md) |

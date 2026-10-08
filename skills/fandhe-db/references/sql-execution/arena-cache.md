@@ -122,7 +122,7 @@ pub(crate) struct ArenaCacheAccess<'a> { /* ... */ }
 
 ## Notes
 
-- `SqlArenaCacheStats` のみ `pub`（`EngineCore::sql_arena_cache_stats` の固有 API として公開）。`SqlArenaSnapshot` / `SqlArenaCache` / `ArenaCacheAccess` はすべて `pub(crate)` であり `fandhe-db-engine` の公開 API（`fandhe-db` crate）からは到達しない
+- `SqlArenaCacheStats` のみ `pub`（`EngineCore::sql_arena_cache_stats` の固有 API として公開）。`SqlArenaSnapshot` / `SqlArenaCache` / `ArenaCacheAccess` はすべて `pub(crate)` であり `fandhe-vector-db-engine` の公開 API（`fandhe-db` crate）からは到達しない
 - `insert` の戻り値が常に `Arc<SqlArenaSnapshot>`（`Option` ではない）である fail-closed 契約は `sql::sparse_cache::SparseIndexCache::insert` と同型
 - 関連 ADR: [`sql-arena-generation-cache`](https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/7022d112e79760dca916480599553fcac256b5fb/docs/design/sql-arena-generation-cache.md)（Issue #363・Accepted。SQL 表層 `VectorArena` のテーブル世代整合キャッシュ化 = 本モジュールそのものの設計 ADR。`core.rs::PrefilterCache`〔TASK-169〕を前提とする）
 - Distinct from `mssql` / `drizzle` / `supabase` connection pools / arena management: not a DB client pool, but a query-scoped table-generation-consistent cache for an RLS-applied arena internal to the engine.

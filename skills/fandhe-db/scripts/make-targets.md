@@ -47,8 +47,8 @@ make e2e-three-client
 ```
 
 ```makefile
-cargo test -p fandhe-db-wire-server --test three_client_e2e -- --ignored
-cargo test -p fandhe-db-wire-server --test extended_syntax_e2e -- --ignored
+cargo test -p fandhe-vector-db-wire-server --test three_client_e2e -- --ignored
+cargo test -p fandhe-vector-db-wire-server --test extended_syntax_e2e -- --ignored
 ```
 
 実 `psql` / `python3`+`psycopg` / `node`+`pg` クライアントを使う統合テスト（TASK-73/WIRE-1・TASK-165・TASK-168）。`ci` には含まれない opt-in ターゲットで、`PSQL_BIN` / `PYTHON_BIN` / `NODE_BIN` 環境変数でバイナリパスを上書きできる。

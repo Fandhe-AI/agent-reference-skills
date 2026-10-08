@@ -4,7 +4,7 @@ source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/7022d112e79760dca9
 
 # crate-layout
 
-`Fandhe-AI/fandhe-db` は Cargo workspace（resolver "2"）で、`fandhe-db-engine`（lib）と `fandhe-db-wire-server`（bin）の 2 crate から構成される。
+`Fandhe-AI/fandhe-db` は Cargo workspace（resolver "2"）で、`fandhe-vector-db-engine`（lib）と `fandhe-vector-db-wire-server`（bin）の 2 crate から構成される。
 
 ## Signature / Usage
 

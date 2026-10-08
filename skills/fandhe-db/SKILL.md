@@ -3,7 +3,7 @@ name: fandhe-db
 description: >
   Rust 製ローカルファースト vector 特化クエリ DB fandhe-db
   (PostgreSQL wire protocol v3 互換) の
-  fandhe-db-engine / fandhe-db-wire-server リファレンス。
+  fandhe-vector-db-engine / fandhe-vector-db-wire-server リファレンス。
   USING PLAN / USING OPERATION_ID 構文、precision・recall モード、
   HNSW / BM25 転置索引 / RRF hybrid / rerank、redb 永続化、
   tenant・RLS、SIMD / wgpu カーネル、wire_code エラー契約。
@@ -12,7 +12,7 @@ user-invocable: false
 
 # fandhe-db
 
-fandhe-db は Rust 製のローカルファースト vector 特化クエリ DB。`fandhe-db-engine`（コアエンジン、SQL 表層・HNSW/BM25/hybrid 検索・redb 永続化・RLS）と `fandhe-db-wire-server`（PostgreSQL wire protocol v3 互換のバイナリ）の 2 crate workspace で構成され、無改造の `psql` / `psycopg` / `pg` クライアントから接続し、`USING PLAN` / `USING OPERATION_ID` 拡張構文を含む SQL を実行できる。対象バージョンは両 crate とも crates.io **0.1.0**（tag / release なし、pin commit SHA `7022d112e79760dca916480599553fcac256b5fb`）。0.1.0 は crates.io に `fandhe-vector-db-engine` / `fandhe-vector-db-wire-server` の名前で公開されており、各ページ frontmatter の docs.rs `source:` もこの名前で参照する（`fandhe-db-engine` / `fandhe-db-wire-server` は 0.2.0 から）。
+fandhe-db は Rust 製のローカルファースト vector 特化クエリ DB。`fandhe-vector-db-engine`（コアエンジン、SQL 表層・HNSW/BM25/hybrid 検索・redb 永続化・RLS）と `fandhe-vector-db-wire-server`（PostgreSQL wire protocol v3 互換のバイナリ）の 2 crate workspace で構成され、無改造の `psql` / `psycopg` / `pg` クライアントから接続し、`USING PLAN` / `USING OPERATION_ID` 拡張構文を含む SQL を実行できる。対象バージョンは両 crate とも crates.io **0.1.0**（tag / release なし、pin commit SHA `7022d112e79760dca916480599553fcac256b5fb`）。0.1.0 の crate 名は `fandhe-vector-db-engine` / `fandhe-vector-db-wire-server` であり、本スキルのコマンド（`cargo run -p` 等）・公開名・各ページ frontmatter の docs.rs `source:` はこの名前で記載する（`fandhe-db-engine` / `fandhe-db-wire-server` への改名は 0.2.0 から）。
 
 公式ドキュメントサイトは存在せず、出典は公開リポジトリ https://github.com/Fandhe-AI/fandhe-db の README・`docs/design/` ADR・crate ソース（docs.rs source view。レンダリング済み rustdoc ページは 404 のため source view のみ）。
 
