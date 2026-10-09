@@ -220,7 +220,7 @@ test('measureResidualWorktreeBytesDetailed はプロンプトへ渡す前に san
   assert.match(source, /if \(sanitizedPaths\.some\(\(p\) => p === ''\)\) {/)
   // measureResidualWorktreeBytes のプロンプト配列に UNTRUSTED_POLICY が直接含まれることを確認する
   // （du -sk の呼び出し指示より前の行に存在する = このプロンプトの一部であることの軽量確認）。
-  const fnStart = source.indexOf('async function measureResidualWorktreeBytesDetailed(paths)')
+  const fnStart = source.indexOf('function buildResidualBytesScript(')
   // Issue #497 で TEMP_FILE_POLICY・case ガード・COUNT 照合の説明文を追加した分、関数本体が
   // 3000 文字を超えたため window を拡張した（本文自体は変わらず後方に含まれる）。
   const fnBody = source.slice(fnStart, fnStart + 7500)
@@ -528,7 +528,7 @@ test('境界回帰（Issue #406）: baseline が候補予約差し引き後の�
 // ことをプロンプト・スキーマの両方でソース確認する。
 
 test('measureResidualWorktreeBytesDetailed は存在しないパスを ENOENT 耐性で 0 扱いし、実エラーのみ fail-closed にする', () => {
-  const fnStart = source.indexOf('async function measureResidualWorktreeBytesDetailed(paths)')
+  const fnStart = source.indexOf('function buildResidualBytesScript(')
   const fnEnd = source.indexOf('\n\n// 合計 KiB のみを必要とする', fnStart)
   const fnBody = source.slice(fnStart, fnEnd)
   assert.ok(fnStart >= 0 && fnEnd > fnStart, 'measureResidualWorktreeBytesDetailed の関数境界を検出できない')
@@ -543,7 +543,7 @@ test('measureResidualWorktreeBytesDetailed は存在しないパスを ENOENT �
 })
 
 test('measureResidualWorktreeBytesDetailed は du の終了コードと jq の展開失敗を個別に検出する（fail-open 防止）', () => {
-  const fnStart = source.indexOf('async function measureResidualWorktreeBytesDetailed(paths)')
+  const fnStart = source.indexOf('function buildResidualBytesScript(')
   const fnEnd = source.indexOf('\n\n// 合計 KiB のみを必要とする', fnStart)
   const fnBody = source.slice(fnStart, fnEnd)
   // du | cut のパイプ直結は終了状態が cut のものになる fail-open（PR #390 codex-review P1）。
@@ -586,7 +586,7 @@ test('バイト軸は新規着手直前に台帳増分によらず実測し直�
 
 test('ORPHAN_BYTES_SCHEMA の missing は整数で、ホスト側が範囲検証したうえで平均の分母から差し引く', () => {
   assert.match(source, /missing: \{\s*type: 'integer'/)
-  assert.match(source, /v\.missing >= 0 && v\.missing <= sanitizedPaths\.length/)
+  assert.match(source, /v\.missing >= 0 && v\.missing <= sentCount/)
 })
 
 // --- monitoring 再開の実測失敗・超過検出は remeasureResidualBytesNow の戻り値のみで行うこと
