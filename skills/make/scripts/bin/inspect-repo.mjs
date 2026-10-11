@@ -9,7 +9,7 @@
 import { readdirSync } from "node:fs";
 import { join, relative, basename } from "node:path";
 import { parseFlags } from "./lib/args.mjs";
-import { resolveRoot, PathError } from "./lib/paths.mjs";
+import { resolveRoot, PathError, isSymlink } from "./lib/paths.mjs";
 import { scanTree, isSecretLikeName, DEFAULT_MAX_DEPTH, DEFAULT_MAX_ENTRIES } from "./lib/scan.mjs";
 import { buildResult, emitResult, STATUS, diag } from "./lib/result.mjs";
 
@@ -119,13 +119,17 @@ function main() {
     dirListingCache.set(dir, names);
     return names;
   }
+  // `.github/workflows` / `.cargo/config.toml` のような入れ子の候補では、途中のディレクトリが
+  // symlink ならその先を readdirSync しない（root 外のリンク先を調べない。symlink 自体は scanTree が
+  // 「辿っていない」finding として報告する）。
   function existsExact(candidatePath) {
     const segments = candidatePath.split("/");
     let dir = root;
-    for (const segment of segments) {
+    for (const [i, segment] of segments.entries()) {
       const names = dirEntryNames(dir);
       if (!names || !names.includes(segment)) return false;
       dir = join(dir, segment);
+      if (i < segments.length - 1 && isSymlink(dir)) return false;
     }
     return true;
   }

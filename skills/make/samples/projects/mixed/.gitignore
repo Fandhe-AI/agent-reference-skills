@@ -2,3 +2,6 @@ target/
 node_modules/
 packages/*/dist/
 packages/web/generated/
+# Cargo.lock is committed (every cargo call here uses --locked). Re-include it
+# even when a parent .gitignore (e.g. a host repo vendoring this skill) ignores it.
+!Cargo.lock

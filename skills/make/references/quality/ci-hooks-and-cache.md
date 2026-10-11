@@ -187,6 +187,16 @@ Design guidance, with one source-backed data point:
   2026-09-26). This Skill's own auto-fix guidance follows the same shape: **re-stage exactly the
   paths that were fixed and were already staged, nothing more**, and treat a failed re-stage as a
   hard failure rather than a silent pass-through.
+- Path scoping alone only keeps *other files* out of the commit. `git add <path>` stages the
+  whole working-tree content of that path, so for a file that is itself partially staged (some
+  hunks staged with `git add -p`, others deliberately left unstaged), re-staging the fixed path
+  also stages the hunks the developer excluded. A fixer that must be safe for partial staging
+  therefore has to keep unstaged hunks out of the working tree while it runs and put them back
+  afterwards (for example `git stash push --keep-index` before fixing and restoring the stash
+  after re-staging, failing loudly if the restore conflicts), or skip auto-fix and fail for
+  partially staged files (those listed by both `git diff --name-only` and
+  `git diff --cached --name-only`) so the developer fixes them by hand. Design guidance; this is
+  not a claim about how Lefthook's `stage_fixed` handles partially staged files.
 - A `fix` entry point that is not run from a hook (a developer invoking `make fix` directly, or a
   CI job in an explicitly-approved auto-fix profile) does not have this constraint in the same way
   — but should still document whether it stages its own changes at all, so callers are not

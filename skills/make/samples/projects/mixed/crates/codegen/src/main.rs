@@ -8,7 +8,8 @@
 //! builder is clearer than a dependency for a sample this size.
 //!
 //! Usage: codegen <output-path>
-//! Exit code: 0 on success, 2 on bad usage or I/O failure.
+//! Exit code: 0 on success, 2 on bad usage (anything other than exactly
+//! one argument) or I/O failure.
 
 use std::env;
 use std::fs;
@@ -44,8 +45,10 @@ fn json_string(value: &str) -> String {
 }
 
 fn main() -> ExitCode {
-    let args: Vec<String> = env::args().collect();
-    let Some(output_path) = args.get(1) else {
+    // Exactly one argument: extra arguments are rejected rather than ignored,
+    // so a typo cannot produce an apparently successful run.
+    let args: Vec<String> = env::args().skip(1).collect();
+    let [output_path] = args.as_slice() else {
         eprintln!("usage: codegen <output-path>");
         return ExitCode::from(2);
     };

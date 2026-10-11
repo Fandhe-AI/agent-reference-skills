@@ -169,24 +169,32 @@ Source: https://doc.rust-lang.org/cargo/faq.html
 
 | Flag | Effect |
 | --- | --- |
-| `--locked` | Asserts `Cargo.lock` is present and matches; errors out instead of silently re-resolving if it would need to change. Used for deterministic CI builds. |
-| `--offline` | Cargo will not touch the network at all; uses only locally cached crates, potentially resolving differently than an online run would. |
-| `--frozen` | Equivalent to `--locked` + `--offline` together. |
+| `--locked` | Asserts the exact dependencies/versions recorded in the existing `Cargo.lock` are used; errors out if `Cargo.lock` is missing or if Cargo would need to change it. Forbids lockfile writes only — it does **not** forbid network access (crates not yet downloaded are still fetched). Used for deterministic CI builds. |
+| `--offline` | Prevents Cargo from accessing the network; uses only locally downloaded crates, potentially resolving differently than an online run would. Forbids network access only — it does **not** forbid creating or updating `Cargo.lock` (resolution still happens, offline). |
+| `--frozen` | Equivalent to `--locked` + `--offline` together: no lockfile change **and** no network access. |
 
-These flags check for change/network access; none of them modify `Cargo.lock` or fetch new
-data, and none of them substitute for actually running `cargo fetch` ahead of an offline step.
+Each flag restricts exactly one thing: lockfile changes (`--locked`) or network access
+(`--offline`). Use `--frozen` when a step must neither write `Cargo.lock` nor touch the network.
+None of them substitutes for actually running `cargo fetch` ahead of an offline step.
 
 Source: https://doc.rust-lang.org/cargo/commands/cargo-metadata.html
 (flags documented for `cargo metadata`; the same three flags carry the same meaning across
-other Cargo subcommands per the Cargo Book's shared option reference; confirmed 2026-09-26).
+other Cargo subcommands per the Cargo Book's shared option reference; confirmed 2026-10-11).
+Local check (cargo 1.98.1, 2026-10-11, a fresh library crate with no `Cargo.lock`): plain
+`cargo metadata --offline` created `Cargo.lock`; `cargo metadata --locked` exited 101 with
+"cannot create the lock file ... because --locked was passed"; `cargo metadata --no-deps` left
+no `Cargo.lock`.
 
 ## Notes
 
-- `cargo metadata` itself is read-only JSON output — it does not write to `Cargo.lock` or any
-  other file — but it can still touch the network to resolve dependencies unless run with
-  `--offline`/`--frozen`. Static repository inspection (as done by this skill's audit scripts)
-  and an actual `cargo metadata` invocation are two different steps; do not conflate "we looked
-  at Cargo.toml" with "we ran cargo metadata" in a report.
+- `cargo metadata` is not inherently read-only. Without `--no-deps` it resolves dependencies,
+  which can create or update `Cargo.lock` and can touch the network. `--locked` blocks the
+  lockfile write, `--offline` blocks the network, and only `--frozen` (or both flags) blocks
+  both. `cargo metadata --format-version=1 --no-deps` (the form shown above) lists workspace
+  members only, without resolving dependencies, so it does not need to write `Cargo.lock`.
+  Static repository inspection (as done by this skill's audit scripts) and an actual
+  `cargo metadata` invocation are two different steps; do not conflate "we looked at
+  Cargo.toml" with "we ran cargo metadata" in a report.
 - Do not assume every environment's `cargo` supports every flag shown here at the same version;
   cross-check against the project's declared `rust-version` / `rust-toolchain.toml` before
   relying on newer flags in a generated command.

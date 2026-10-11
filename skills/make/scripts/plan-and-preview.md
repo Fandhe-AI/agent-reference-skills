@@ -351,7 +351,8 @@ BLOCKED とし何も書き込まない。--apply は全件か無しか。計画�
 
 - [inspect](./inspect.md) — the audit step that usually precedes drafting a plan.
 - [verify](./verify.md) — `run-checks.mjs` re-validates any plan passed to it with the same
-  `validate-plan.mjs` logic before executing anything, and never trusts a plan's approval as
-  applying beyond exactly what `validate-plan.mjs` would currently accept.
+  `validate-plan.mjs` logic before executing anything, except that it checks the target files in
+  their post-apply state (`create`/`modify` present and matching `newContentHash`, `delete` gone)
+  instead of the pre-apply conditions `validate-plan.mjs` checks.
 - [command-contracts](../references/architecture/command-contracts.md) — the design guidance for
   what belongs in a plan's `commandContract`.

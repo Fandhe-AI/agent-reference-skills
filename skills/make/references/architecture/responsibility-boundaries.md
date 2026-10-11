@@ -54,7 +54,7 @@ help:
 	@grep -E '^## ' $(MAKEFILE_LIST) | sed 's/^## //'
 ```
 
-This snippet targets GNU Make 3.81+ (tab-indented recipes, no `.ONESHELL`, no `.RECIPEPREFIX` — both are 4.x-only and not assumed here; see `execution/gnu-posix-bsd-compatibility.md`).
+This snippet targets GNU Make 3.81+ (tab-indented recipes, no `.ONESHELL`, no `.RECIPEPREFIX` — both require GNU Make 3.82+ and are not assumed here; see `execution/gnu-posix-bsd-compatibility.md`).
 
 #### Do not re-implement what another tool already owns
 

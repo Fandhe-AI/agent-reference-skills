@@ -58,3 +58,12 @@ for (const sampleName of SAMPLE_PLANS) {
     }
   });
 }
+
+test("sample plan mixed-repo-verify-delegation.json: 移行手順は兄弟 prerequisite ではなく依存鎖で Rust→JS の順序を保証する", () => {
+  const plan = JSON.parse(readFileSync(join(PLANS_DIR, "mixed-repo-verify-delegation.json"), "utf8"));
+  const step = plan.migrationSteps.find((s) => s.order === 2);
+  // verify: rust-verify js-verify は make -j で並行実行され得るため、依存辺を明示していること
+  assert.match(step.action, /`js-verify: rust-verify`/);
+  assert.match(step.action, /`verify: js-verify`/);
+  assert.doesNotMatch(step.action, /^Add `verify: rust-verify js-verify`/);
+});

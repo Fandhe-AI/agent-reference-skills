@@ -449,3 +449,21 @@ test("validate-plan: sample と newContentHash の形式が不正なら FAIL に
     cleanupTmpDir(dir);
   }
 });
+
+test("validate-plan: 計画 JSON が null・配列・数値でも例外終了せず構造化された FAIL を返す", () => {
+  const dir = makeTmpDir();
+  try {
+    for (const body of ["null", "[]", "42"]) {
+      const planPath = join(dir, "plan.json");
+      writeFileSync(planPath, body);
+      const r = runCliJson("validate-plan.mjs", ["--plan", planPath]);
+      assert.equal(r.status, 1, `${body}: stderr=${r.stderr}`);
+      assert.ok(r.json, `${body}: --json の結果を出力すること`);
+      assert.equal(r.json.status, "FAIL");
+      assert.ok(r.json.findings.some((f) => f.id === "schema" && f.status === "FAIL"));
+      assert.ok(!r.stderr.includes("TypeError"));
+    }
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});

@@ -63,7 +63,8 @@ Each task delegates to exactly one `cargo <subcommand> --workspace --exclude xta
 
 ## Change target / side effects
 
-- `cargo xtask build` / `test` / `check`: writes only to the workspace's own `target/` (shared by all members, since `xtask` is a workspace member sharing one `Cargo.lock`). No source files are rewritten.
+- `cargo xtask build` / `test` / `check`: writes only to the workspace's own `target/` (shared by all members, since `xtask` is a workspace member sharing one `Cargo.lock`).
+- `Cargo.lock` is committed with this sample, and the sample's own `.gitignore` re-includes it (`!Cargo.lock`), so a repository that vendors this skill and ignores `Cargo.lock` at its root still commits the sample's lockfile. No source files are rewritten.
 - `xtask` is a workspace member (so `cargo build -p xtask` / `cargo test -p xtask` work directly) but is **excluded from `default-members`** — a bare `cargo build`/`cargo test`/`cargo check` run from the workspace root (no `-p`/`--workspace` flag) only touches `crates/core` and `crates/cli`, never the xtask crate itself. See the trade-off recorded in `./projects/rust-workspace-xtask/Cargo.toml`'s `[workspace]` comment: this means a plain root `cargo test` will not catch a broken `xtask`; its own correctness is exercised via `cargo xtask build/test/check` and, if needed, `cargo test -p xtask` directly.
 - Exit code propagation: the `xtask` process exits with the delegated `cargo` subprocess's own exit code — never silently maps a failure to success. An unrecognized/missing task exits `2` without invoking `cargo`; failure to launch `cargo` itself exits `127`; a signal-killed child (Unix-only) maps to `1`.
 

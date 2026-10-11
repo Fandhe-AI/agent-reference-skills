@@ -56,7 +56,7 @@
         "make": "make verify",
         "direct": "(cd rust && cargo test && cargo build --release) then (pnpm turbo run lint test build)"
       },
-      "notes": "The ordering (Rust before JS/TS) is the entire reason this target exists; it is expressed as a real Make prerequisite (rust-verify before js-verify below), not as two independently-run README steps a human might reorder by mistake."
+      "notes": "The ordering (Rust before JS/TS) is the entire reason this target exists; it is expressed as a real Make prerequisite chain (`js-verify: rust-verify` and `verify: js-verify` below), not as two independently-run README steps a human might reorder by mistake."
     },
     {
       "name": "fix",
@@ -81,7 +81,7 @@
       "path": "Makefile",
       "action": "create",
       "expectedState": "absent",
-      "description": "Root-level thin Makefile. `verify` target has a REAL prerequisite edge from a `rust-verify` phony target to a `js-verify` phony target (not sibling prerequisites on one line), so `make -j` cannot start the JS/TS side before the Rust addon exists. `check`/`fix`/`clean` remain unordered (both sides are independent for those)."
+      "description": "Root-level thin Makefile. `verify` reaches both sides through a REAL prerequisite chain — `js-verify: rust-verify` and `verify: js-verify` — rather than sibling prerequisites on one line (`verify: rust-verify js-verify` lets `make -j` run both concurrently), so `make -j` cannot start the JS/TS side before the Rust addon exists. `check`/`fix`/`clean` remain unordered (both sides are independent for those)."
     },
     {
       "path": "README.md",
@@ -135,7 +135,7 @@
   ],
   "migrationSteps": [
     { "order": 1, "action": "Add root Makefile with rust-verify and js-verify as separate phony targets, each delegating verbatim to today's existing direct commands (no behavior change yet)." },
-    { "order": 2, "action": "Add `verify: rust-verify js-verify` (in this order) as a real prerequisite list, and confirm `make -j2 verify` still runs rust-verify to completion before js-verify starts (Make serializes true prerequisite chains regardless of -j)." },
+    { "order": 2, "action": "Add the dependency chain `js-verify: rust-verify` and `verify: js-verify` (not the sibling list `verify: rust-verify js-verify`, which `make -j2` may run concurrently), and confirm `make -j2 verify` still runs rust-verify to completion before js-verify starts (Make serializes a real prerequisite chain regardless of -j)." },
     { "order": 3, "action": "Update README to lead with `make help`, retaining both ecosystems' direct commands beneath it." },
     { "order": 4, "action": "Update .github/workflows/ci.yml to a single job calling `make verify`; explicitly note in the same PR the CI-parallelism trade-off from the risks section above, so reviewers can decide whether to keep the two-job/needs: alternative instead." }
   ],
