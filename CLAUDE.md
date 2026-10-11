@@ -60,6 +60,7 @@ Default: symlink into `.claude/skills/`. Use `--copy` for file copies.
     verification.md          ← Completion gate (evidence-based completion claims)
     debugging.md             ← Root-cause debugging conventions
     code-comment-style.md    ← Code comment / doc-comment conventions
+    github-actions.md        ← GitHub Actions キャッシュ方針 (save on main push only; hash the root lockfile only)
   skills/                    ← Workflow skills for this repo's own development
     create-skill/            ← /create-skill — orchestrate new-skill creation
     update-skill/            ← /update-skill — refresh a skill against latest docs
@@ -147,6 +148,7 @@ Read-only agents (`skill-coverage-analyzer`, `skill-structure-validator`, `refer
 | `verification.md` | side-effecting skills/agents | Completion gate — no completion claims without evidence; 5-step verification |
 | `debugging.md` | implementation work | Root-cause-first debugging; escalate after 3 failed fixes |
 | `code-comment-style.md` | implementation work / author agents | Code comment & documentation comment conventions |
+| `github-actions.md` | `.github/workflows/**`, lockfiles under `skills/**` | GitHub Actions キャッシュ方針: 10GB limit & $0 budget, measure before adding, save on main push only, hash the root lockfile only, PR checklist, impact of distributed sample lockfiles on consumers' cache keys |
 
 ## Current Skills (121)
 
