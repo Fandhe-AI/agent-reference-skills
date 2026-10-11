@@ -17,8 +17,10 @@
 #   3. Adjust `runs-on` / triggers / job name to that project's conventions.
 #   4. Keep third-party actions pinned to a full commit SHA that the target project has
 #      audited (the tag in the trailing comment is informational only). The SHA below is
-#      the one this repository's own CI pins for actions/checkout v5.0.1; when bumping it,
-#      re-audit the new commit rather than switching to a mutable tag such as `@v5`.
+#      actions/checkout v5.0.1 as pinned by this skill's source repository
+#      (Fandhe-AI/agent-reference-skills) when the template was written, not necessarily
+#      the pin the target project uses: replace it with the SHA that project has audited,
+#      and re-audit any new commit rather than switching to a mutable tag such as `@v5`.
 #   5. Keep `permissions` minimal. `make verify` only needs to read the repository, so the
 #      workflow grants `contents: read` and nothing else, and checkout does not persist
 #      the GITHUB_TOKEN into the local git config (`persist-credentials: false`).

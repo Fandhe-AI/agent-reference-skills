@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdirSync, writeFileSync, existsSync } from "node:fs";
+import { mkdirSync, writeFileSync, existsSync, symlinkSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { runCli, runCliJson, makeTmpDir, cleanupTmpDir, approveArgs } from "./helpers.mjs";
 
@@ -339,6 +340,129 @@ test("validate-plan: 承認に使う planDigest（計画ファイルの sha256�
     const planPath = writePlan(dir, { schemaVersion: "1.0.0", root, changes: [], checks: [] });
     const r = runCliJson("validate-plan.mjs", ["--plan", planPath]);
     assert.equal(r.json.planDigest, approveArgs(planPath)[1]);
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+// ---- 適用後（post-apply）の状態照合: run-checks は apply 後の verify なので、適用前の前提ではなく
+// 適用結果を確認する（正しく適用した計画ほど BLOCKED になる不具合の回帰テスト）。
+const sha = (text) => `sha256:${createHash("sha256").update(text).digest("hex")}`;
+
+function postApplyCase(setup) {
+  const dir = makeTmpDir();
+  const root = join(dir, "proj");
+  mkdirSync(root);
+  const changes = setup(root);
+  const planPath = writePlan(dir, { schemaVersion: "1.0.0", root, changes, checks: [markerCheck(root, true)] });
+  const r = runCliJson("run-checks.mjs", ["--plan", planPath, "--execute", ...approveArgs(planPath)]);
+  return { dir, root, r };
+}
+
+test("run-checks: create を適用済み（newContentHash と一致）なら衝突扱いせず checks を実行する", () => {
+  const { dir, root, r } = postApplyCase((root) => {
+    writeFileSync(join(root, "Makefile"), "applied\n");
+    return [{ path: "Makefile", action: "create", expectedState: "absent", newContentHash: sha("applied\n") }];
+  });
+  try {
+    assert.equal(r.json.status, "PASS", JSON.stringify(r.json));
+    assert.equal(existsSync(join(root, "MARKER.txt")), true);
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+test("run-checks: modify + matches-hash を適用済みなら元 contentHash と比べず newContentHash で確認して実行する", () => {
+  const { dir, root, r } = postApplyCase((root) => {
+    writeFileSync(join(root, "README.md"), "after\n");
+    return [
+      { path: "README.md", action: "modify", expectedState: "matches-hash", contentHash: sha("before\n"), newContentHash: sha("after\n") },
+    ];
+  });
+  try {
+    assert.equal(r.json.status, "PASS", JSON.stringify(r.json));
+    assert.equal(existsSync(join(root, "MARKER.txt")), true);
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+test("run-checks: newContentHash のない create は存在のみ確認し、内容を照合していないことを unresolved に残す", () => {
+  const { dir, r } = postApplyCase((root) => {
+    writeFileSync(join(root, "Makefile"), "anything\n");
+    return [{ path: "Makefile", action: "create", expectedState: "absent" }];
+  });
+  try {
+    assert.equal(r.json.status, "PASS", JSON.stringify(r.json));
+    assert.ok(r.json.unresolved.some((u) => u.includes("newContentHash")));
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+const blockedCases = [
+  ["create 対象が未適用（存在しない）", () => [{ path: "Makefile", action: "create", expectedState: "absent", newContentHash: sha("applied\n") }]],
+  [
+    "適用後の内容が newContentHash と異なる",
+    (root) => {
+      writeFileSync(join(root, "Makefile"), "tampered\n");
+      return [{ path: "Makefile", action: "create", expectedState: "absent", newContentHash: sha("applied\n") }];
+    },
+  ],
+  [
+    "delete 対象が残っている",
+    (root) => {
+      writeFileSync(join(root, "old.mk"), "x\n");
+      return [{ path: "old.mk", action: "delete" }];
+    },
+  ],
+  [
+    "delete 対象がリンク先の無い symlink として残っている",
+    (root) => {
+      symlinkSync(join(root, "no-such-target"), join(root, "old.mk"));
+      return [{ path: "old.mk", action: "delete" }];
+    },
+  ],
+  ["root 外への逸脱", () => [{ path: "../outside.txt", action: "create", newContentHash: sha("x") }]],
+  [
+    "matches-hash の contentHash が不正な形式",
+    (root) => {
+      writeFileSync(join(root, "README.md"), "after\n");
+      return [{ path: "README.md", action: "modify", expectedState: "matches-hash", contentHash: "md5:x", newContentHash: sha("after\n") }];
+    },
+  ],
+];
+for (const [label, setup] of blockedCases) {
+  test(`run-checks: 適用後の状態が計画と合わない（${label}）なら checks を一切実行せず BLOCKED`, () => {
+    const { dir, root, r } = postApplyCase(setup);
+    try {
+      assert.equal(r.status, 3, JSON.stringify(r.json));
+      assert.equal(r.json.status, "BLOCKED");
+      assert.equal(existsSync(join(root, "MARKER.txt")), false);
+    } finally {
+      cleanupTmpDir(dir);
+    }
+  });
+}
+
+test("run-checks: 適用前の dry-run は BLOCKED（exit 3）で planDigest を出さない（承認用の値は validate-plan から得る）", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    const planPath = writePlan(dir, {
+      schemaVersion: "1.0.0",
+      root,
+      changes: [{ path: "Makefile", action: "create", expectedState: "absent", newContentHash: sha("applied\n") }],
+      checks: [markerCheck(root, true)],
+    });
+    const r = runCliJson("run-checks.mjs", ["--plan", planPath]);
+    assert.equal(r.status, 3);
+    assert.equal(r.json.status, "BLOCKED");
+    assert.equal(r.json.planDigest, undefined);
+    const v = runCliJson("validate-plan.mjs", ["--plan", planPath]);
+    assert.equal(v.json.status, "PASS");
+    assert.match(v.json.planDigest, /^sha256:[0-9a-f]{64}$/);
   } finally {
     cleanupTmpDir(dir);
   }

@@ -13,7 +13,7 @@
     "build": "pnpm -r run build",
     "check": "pnpm run lint && pnpm -r run test",
     "turbo:build": "turbo run build",
-    "turbo:check": "turbo run lint test"
+    "turbo:check": "pnpm run lint && turbo run test"
   },
   "devDependencies": {
     "turbo": "2.11.4"

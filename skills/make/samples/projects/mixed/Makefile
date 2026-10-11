@@ -32,9 +32,10 @@
 #                          + pnpm -r run test
 #   make build           - generate, then cargo build --workspace --locked
 #                          + pnpm -r run build
-#   make clean           - remove ./target + node_modules/, dist/,
-#                          generated/ (destructive: only these
-#                          regeneratable paths)
+#   make clean           - node scripts/clean.mjs (node_modules/, dist/,
+#                          generated/), then cargo clean of ./target
+#                          (destructive: only these regeneratable paths;
+#                          refuses everything if any path is a symlink)
 
 .DEFAULT_GOAL := help
 
@@ -67,9 +68,9 @@ build: generate
 	cargo build --workspace --locked
 	pnpm -r run build
 
-# `--target-dir target` keeps `cargo clean` away from a shared CARGO_TARGET_DIR / build.target-dir;
-# a symlinked target/ is refused rather than followed.
+# scripts/clean.mjs checks every path first (including target/) and deletes nothing if any of them
+# is a symlink or leaves this directory, so a symlinked packages/<name> or target/ aborts the whole
+# clean. `--target-dir target` keeps `cargo clean` away from a shared CARGO_TARGET_DIR / build.target-dir.
 clean:
-	@if [ -L target ]; then echo "error: target/ is a symlink (possibly a shared build directory); refusing to clean" >&2; exit 1; fi
+	node scripts/clean.mjs
 	cargo clean --target-dir target
-	rm -rf node_modules packages/*/node_modules packages/*/dist packages/web/generated

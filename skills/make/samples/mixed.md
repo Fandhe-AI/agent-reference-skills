@@ -34,7 +34,7 @@ Use this shape only when a Rust and a Node.js side genuinely share the same repo
 
 - Verified locally: macOS, GNU Make 3.81, cargo/rustc 1.98.1, pnpm 10.32.1, Node v24.13.0.
 - Linux: expected to work (all four tools are cross-platform) but not verified in this session.
-- Git Bash / native Windows: not verified. The root Makefile's `clean` target uses `rm -rf`, which requires a POSIX-compatible shell (Git Bash provides one; plain `cmd.exe`/PowerShell does not without a wrapper).
+- Git Bash / native Windows: not verified. The root Makefile's `clean` target runs `node scripts/clean.mjs` and `cargo clean`, neither of which needs a POSIX shell, but the other recipes are not verified there either.
 
 ## Usage
 
@@ -48,7 +48,7 @@ make check         # cargo check --workspace --locked + pnpm run lint (no genera
 make generate         # cargo run -p codegen -> packages/web/generated/version.json (always re-runs)
 make test               # generate, then cargo test --workspace --locked + pnpm -r run test
 make build                 # generate, then cargo build --workspace --locked + pnpm -r run build
-make clean                    # remove ./target (cargo clean --target-dir target) + node_modules/, dist/, generated/
+make clean                    # node scripts/clean.mjs (node_modules/, dist/, generated/), then cargo clean --target-dir target
 ```
 
 Without Make (each ecosystem's own direct commands; `generate` has no non-Make Node.js equivalent since it is a Rust-only step whose output is a plain file):
@@ -60,6 +60,7 @@ cargo check --workspace --locked && pnpm run lint                 # same as: mak
 cargo run --locked -p codegen -- packages/web/generated/version.json  # same as: make generate
 cargo test --workspace --locked && pnpm -r run test                     # same as: make test (after generate)
 cargo build --workspace --locked && pnpm -r run build                     # same as: make build (after generate)
+node scripts/clean.mjs && cargo clean --target-dir target                  # same as: make clean
 ```
 
 ## Change target / side effects
@@ -67,7 +68,9 @@ cargo build --workspace --locked && pnpm -r run build                     # same
 - `setup`: `pnpm install --frozen-lockfile` only; Cargo dependency fetch happens lazily on first `cargo` invocation, not during `setup`.
 - `check`: read-only beyond Cargo's own `target/` build cache; does not run `generate` and does not run tests. `scripts/lint.mjs packages/web` explicitly skips any `generated/` subdirectory when scanning for `*.mjs` files, so `make check` behaves the same whether or not `packages/web/generated/version.json` currently exists.
 - `generate`: overwrites `packages/web/generated/version.json` every invocation — it is intentionally **not** tracked as a Make file target (no rule keyed on that path), so `make test`/`make build` always regenerate it rather than relying on Make's own staleness check for this cross-ecosystem file. See [`package-scripts-and-mixed-repos.md`](../references/node/package-scripts-and-mixed-repos.md) for why a `.PHONY`-to-`.PHONY` ordering edge, not a file-target edge, is this sample's deliberate choice.
-- `clean`: `cargo clean --target-dir target` (this workspace's own `./target` only — never a shared `CARGO_TARGET_DIR` / `build.target-dir`; a symlinked `./target` is refused) plus `rm -rf node_modules packages/*/node_modules packages/*/dist packages/web/generated` — destructive but scoped to these regeneratable paths; nothing under `crates/*/src` or `packages/web/src` is touched.
+- `clean`: `node scripts/clean.mjs` removes `node_modules`, `packages/*/node_modules`, `packages/*/dist` and `packages/web/generated`, then `cargo clean --target-dir target` removes this workspace's own `./target` only (never a shared `CARGO_TARGET_DIR` / `build.target-dir`) — destructive but scoped to these regeneratable paths; nothing under `crates/*/src` or `packages/web/src` is touched. Before deleting anything, `scripts/clean.mjs` checks every candidate (and `./target`): if any path component below the sample root is a symlink or resolves outside it — e.g. `packages/<name>` linked to another checkout, where `rm -rf packages/*/dist` would delete the link target's `dist/` — it deletes nothing and exits 1, so `cargo clean` never runs either.
+- `build` (`scripts/build.mjs`): removes and regenerates each package's `dist/`, so a deleted or renamed source file leaves no stale copy. It refuses (exit 2) a package whose real path is outside the sample root (e.g. `packages/<name>` symlinked to another checkout) and a symlinked `dist/`, so the removal never reaches outside the sample.
+- `Cargo.lock` is committed with this sample, and the sample's own `.gitignore` re-includes it (`!Cargo.lock`), so a repository that vendors this skill and ignores `Cargo.lock` at its root still commits the sample's lockfile.
 
 ## Expected results
 
@@ -87,6 +90,8 @@ cargo build --workspace --locked && pnpm -r run build                     # same
 - [`./projects/mixed/packages/web/src/index.mjs`](./projects/mixed/packages/web/src/index.mjs)
 - [`./projects/mixed/packages/web/test/index.test.mjs`](./projects/mixed/packages/web/test/index.test.mjs)
 - [`./projects/mixed/scripts/lint.mjs`](./projects/mixed/scripts/lint.mjs)
+- [`./projects/mixed/scripts/build.mjs`](./projects/mixed/scripts/build.mjs)
+- [`./projects/mixed/scripts/clean.mjs`](./projects/mixed/scripts/clean.mjs)
 
 ## Related
 

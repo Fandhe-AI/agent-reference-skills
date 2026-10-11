@@ -1,1 +1,4 @@
 /target/
+# Cargo.lock is committed with this sample. Re-include it even when a parent
+# .gitignore (e.g. a host repo vendoring this skill) ignores Cargo.lock.
+!Cargo.lock

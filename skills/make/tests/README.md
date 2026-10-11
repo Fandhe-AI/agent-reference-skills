@@ -1,6 +1,6 @@
 # tests
 
-`skills/make/scripts/bin/*.mjs` の回帰テスト。Node 標準の `node:test` のみを使用し、追加の
+`skills/make/scripts/bin/*.mjs` と `samples/` の回帰テスト。Node 標準の `node:test` のみを使用し、追加の
 npm 依存は導入していない。
 
 ## 実行方法
@@ -15,16 +15,17 @@ node --test skills/make/tests/**/*.test.mjs
 | --- | --- |
 | `helpers.mjs` | 各 CLI を子プロセスとして起動する共通ヘルパー（`runCli` / `runCliJson`）、一時ディレクトリ生成・後始末 |
 | `fixtures/dummy-secrets/` | ダミーの `.env`（実際の秘密情報は含まない）。秘密情報非混入テストの固定フィクスチャ |
-| `inspect-repo.test.mjs` | 引数検証、root 不在、秘密情報非混入、node_modules 等の走査除外、symlink 非追跡、入口候補検出 |
-| `validate-plan.test.mjs` | 引数検証、壊れた JSON、`..`・絶対パス・**symlink 経由**の root 外逸脱検出、衝突検出、checks の shell メタ文字拒否、changes の対象重複・checks の name 重複・sample と newContentHash の形式不正の FAIL、承認用 planDigest の出力、副作用なし（実行しない）の確認 |
+| `inspect-repo.test.mjs` | 引数検証、root 不在、秘密情報非混入、node_modules 等の走査除外、symlink 非追跡（`.github/workflows` 等の入れ子の入口候補でも途中の symlink を辿らない）、入口候補検出 |
+| `validate-plan.test.mjs` | 引数検証、壊れた JSON、`..`・絶対パス・**symlink 経由**の root 外逸脱検出、衝突検出、checks の shell メタ文字拒否、changes の対象重複・checks の name 重複・sample と newContentHash の形式不正の FAIL、計画 JSON が null・配列・数値でも構造化された FAIL を返すこと、create 対象のリンク先の無い symlink を衝突として検出すること、承認用 planDigest の出力、副作用なし（実行しない）の確認 |
 | `preview-sample.test.mjs` | 引数検証、サンプル不在、既定で書き込まない、競合検出、`--apply` の全件か無しか（`--force` なしの競合・書き込めない対象が 1 件でもあれば何も書き込まない、親パスがファイル・壊れた symlink の対象も事前に検出、サンプルの実行権限の引き継ぎと実行ビット欠落の競合検出、書き込み途中の失敗は作成したファイル・入れ子ディレクトリまで巻き戻す）、`--apply` の承認済み計画（`--plan`）への照合（`--approve` なしは exit 2、承認後の計画変更は BLOCKED、計画外ファイル・root 不一致・sample 不一致・newContentHash 不一致・matches-hash 不一致で全件中止、プレビューの `proposedPlan` から作った計画で適用できること）、symlink 経由の root 外書き込み拒否、走査除外ディレクトリ・symlink を含むサンプルの不適用 |
 | `verify-layout.test.mjs` | 引数検証、Makefile 不在時の NOT_APPLICABLE、help/target 整合性、Skill 固有パス依存検出（行の中身を転記せず行番号のみ）、未確認事項の明示 |
-| `run-checks.test.mjs` | 引数検証、**既定 dry-run（--execute なしでは実行しない）**、`--execute` に `--approve <planDigest>` 必須・承認後に計画を変更したら approved:true が残っていても実行しない（BLOCKED）、approved:true が無い check の BLOCKED、実行成功/失敗/timeout の区別、不正な計画（root 不在）で全 checks を BLOCKED にし実行しない、checks 空の NOT_APPLICABLE、未対応 schemaVersion の不実行、コマンドの stdout / stderr と計画の command / args / cwd を結果に含めない（全経路）、壊れた JSON の断片を診断に出さない |
-| `sample-plans.test.mjs` | `samples/plans/` 配下の各サンプル計画が `validate-plan.mjs` のスキーマに適合すること。root プレースホルダのままでは FAIL、root を一時ディレクトリに差し替える（modify 対象のダミーファイルも用意する）と PASS になることを確認する |
+| `run-checks.test.mjs` | 引数検証、**既定 dry-run（--execute なしでは実行しない）**、`--execute` に `--approve <planDigest>` 必須・承認後に計画を変更したら approved:true が残っていても実行しない（BLOCKED）、approved:true が無い check の BLOCKED、実行成功/失敗/timeout の区別、不正な計画（root 不在）で全 checks を BLOCKED にし実行しない、checks 空の NOT_APPLICABLE、未対応 schemaVersion の不実行、コマンドの stdout / stderr と計画の command / args / cwd を結果に含めない（全経路）、壊れた JSON の断片を診断に出さない、適用後（post-apply）の状態照合（適用済みの create・modify + matches-hash は元の前提と比べずに newContentHash で確認して実行、newContentHash のない変更は unresolved に明記、未適用の create・newContentHash 不一致・残っている delete（リンク先の無い symlink を含む）・root 外逸脱・contentHash の形式不正は BLOCKED、適用前の dry-run は BLOCKED で planDigest を出さない） |
+| `sample-plans.test.mjs` | `samples/plans/` 配下の各サンプル計画が `validate-plan.mjs` のスキーマに適合すること。root プレースホルダのままでは FAIL、root を一時ディレクトリに差し替える（modify 対象のダミーファイルも用意する）と PASS になることを確認する。`mixed-repo-verify-delegation.json` の移行手順が兄弟 prerequisite ではなく依存鎖（`js-verify: rust-verify` / `verify: js-verify`）で順序を保証すること |
 | `exec-safe.test.mjs` | Windows `.cmd`/`.bat` 専用処理（`resolveExecutionTarget`）のロジック単体テスト。cmd.exe メタ文字を含む引数の BLOCKED 化と、理由に値ではなく位置だけを書くことを含む。実 Windows 環境がないためロジック判定のみ検証し、cmd.exe の実起動そのものは未検証 |
-| `sample-projects.test.mjs` | `samples/projects/*/Makefile` の recipe が `cargo clean` を `--target-dir target` なしで使わないこと（共有 `CARGO_TARGET_DIR` を消さない）、`samples/ci/github-actions.yml.example` の action が commit SHA 固定で `permissions: contents: read` と `persist-credentials: false` を持つことの静的確認 |
+| `sample-projects.test.mjs` | `samples/projects/*/Makefile` の recipe が `cargo clean` を `--target-dir target` なしで使わないこと（共有 `CARGO_TARGET_DIR` を消さない）、`samples/ci/github-actions.yml.example` の action が commit SHA 固定で `permissions: contents: read` と `persist-credentials: false` を持つことの静的確認。recipe がグロブ付きの `rm -r` を使わないこと、Cargo サンプルが `[workspace]` で自身を workspace root にすること、`Cargo.lock` を同梱し親の `.gitignore` が除外しても各サンプルの `.gitignore` で再包含されること（git がある環境のみ） |
+| `sample-scripts.test.mjs` | `samples/projects/{node-pnpm,mixed}/scripts/clean.mjs` が途中のパス要素・対象自体・`target/` の symlink を検出したら何も削除せず exit 1 になること（正常時は再生成可能なパスのみ削除）、`scripts/build.mjs` が削除済みソースの古い成果物を残さず、root 外への symlink の package と symlink の `dist/` を拒否すること、node-pnpm の `turbo:check` がルートの lint を実行し共有 build script をキャッシュ入力に含めること。pnpm / cargo は使わず node で直接起動する |
 | `apply.test.mjs` | `lib/apply.mjs`（preview-sample --apply の書き込み処理）の単体テスト。照合後に上書き対象が変わった・新規作成先にファイルが現れた場合に書き込み直前で中止し、他者のファイルを消さずに巻き戻すこと |
-| `help-contract.test.mjs` | 全 CLI の `--help` が実装済みオプションと一致すること、未知フラグが exit 2 になること |
+| `help-contract.test.mjs` | 全 CLI の `--help` が実装済みオプションと一致すること（`parseFlags` に渡す全オプションがテストの一覧に含まれることも照合する）、未知フラグが exit 2 になること |
 | `secrets-fixture.test.mjs` | 固定フィクスチャ経由での秘密情報非混入の回帰確認 |
 | `eval-cases.json` | 下記「eval-cases.json について」を参照 |
 

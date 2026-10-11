@@ -72,7 +72,9 @@ function main() {
   const status = aggregateStatus(findings);
 
   const unresolved = [];
-  if (!Array.isArray(plan.checks) || plan.checks.length === 0) {
+  // 計画が null・配列・プリミティブでも例外終了させず、validatePlanShape の FAIL を構造化結果で返す
+  const checks = plan !== null && typeof plan === "object" ? plan.checks : undefined;
+  if (!Array.isArray(checks) || checks.length === 0) {
     unresolved.push("checks が定義されていません（verify を行う場合は run-checks 前に定義してください）");
   }
   unresolved.push("このスクリプトは形式・存在確認のみを行い、checks の実コマンドは実行していません（run-checks の役割）");

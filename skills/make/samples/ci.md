@@ -78,8 +78,9 @@ grep -E '^verify:' <target-project>/Makefile
 - Copying either file into a target project and committing it under a real CI path (`.github/workflows/verify.yml`, or registering `azure-pipelines.yml`) is the only way either becomes active — this skill's samples directory itself never triggers a CI run.
 - Least privilege is part of the template, not an afterthought: the GitHub Actions file grants
   only `permissions: contents: read` (so it does not inherit a repository's broader default
-  `GITHUB_TOKEN` permissions), pins `actions/checkout` to a full commit SHA (the one this
-  repository's own CI uses for v5.0.1) instead of a mutable tag, and sets
+  `GITHUB_TOKEN` permissions), pins `actions/checkout` to a full commit SHA (actions/checkout v5.0.1,
+  the pin this skill's source repository Fandhe-AI/agent-reference-skills used when the template
+  was written — replace it with the SHA the target project has audited) instead of a mutable tag, and sets
   `persist-credentials: false`; the Azure file sets `persistCredentials: false` on `checkout`.
   Azure's job access token scope is a project-level setting ("Limit job authorization scope"),
   not something a pipeline file can narrow, so review it host-side. When updating the pinned

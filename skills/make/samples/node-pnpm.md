@@ -2,7 +2,7 @@
 
 A pnpm workspace where `package.json`'s `scripts` field is the source of truth and the Makefile is a thin, non-destructive entry point.
 
-`packages/core` and `packages/cli` each define their own `test`/`build` scripts; the root `package.json` aggregates them (`pnpm -r run test`, `pnpm -r run build`) plus an optional Turborepo delegation (`turbo:build`, `turbo:check`). The Makefile calls `pnpm run <script>` once per target and never re-lists the underlying commands.
+`packages/core` and `packages/cli` each define their own `test`/`build` scripts; the root `package.json` aggregates them (`pnpm -r run test`, `pnpm -r run build`) plus an optional Turborepo delegation (`turbo:build`, `turbo:check`). The Makefile calls `pnpm run <script>` once per target and never re-lists the underlying commands; the one exception is `clean`, which calls `node scripts/clean.mjs` so it works even after `node_modules/` is gone.
 
 ```makefile
 .DEFAULT_GOAL := help
@@ -31,7 +31,7 @@ Use when a Node.js/pnpm workspace wants a memorable `make <target>` alias over c
 
 - Verified locally: macOS, GNU Make 3.81, pnpm 10.32.1, Node v24.13.0.
 - Linux: expected to work (pnpm/Node/Turborepo are all cross-platform CLIs) but not verified in this session.
-- Git Bash / native Windows: pnpm and Node both support Windows natively; the Makefile itself uses no Unix-only shell built-ins besides `rm -rf` in `clean` (GNU `rm` is not available in `cmd.exe`/PowerShell without a POSIX layer). Not verified in this session.
+- Git Bash / native Windows: pnpm and Node both support Windows natively; the Makefile itself uses no Unix-only shell built-ins (`clean` runs `node scripts/clean.mjs`). Not verified in this session.
 
 ## Usage
 
@@ -46,8 +46,8 @@ make test              # pnpm run test  (pnpm -r run test)
 make build               # pnpm run build (pnpm -r run build)
 make check                 # pnpm run check (lint + test)
 make turbo-build             # pnpm run turbo:build (requires setup)
-make turbo-check               # pnpm run turbo:check
-make clean                       # remove node_modules/ and packages/*/dist/
+make turbo-check               # pnpm run turbo:check (pnpm run lint && turbo run test)
+make clean                       # node scripts/clean.mjs: remove node_modules/, packages/*/dist/, .turbo/
 ```
 
 Without Make (identical commands `make` delegates to):
@@ -61,13 +61,16 @@ pnpm run build                          # same as: make build
 pnpm run check                            # same as: make check
 pnpm run turbo:build                        # same as: make turbo-build
 pnpm run turbo:check                          # same as: make turbo-check
+node scripts/clean.mjs                          # same as: make clean
 ```
 
 ## Change target / side effects
 
 - `setup`: `pnpm install --frozen-lockfile` — fails rather than silently updating `pnpm-lock.yaml` if the lockfile is out of sync with `package.json`.
 - `lint`/`test`/`build`/`check`: no filesystem changes beyond each package's own build output (e.g. `packages/*/dist`, written by `scripts/build.mjs`) and Turborepo's own cache directory for the `turbo-*` targets.
-- `clean`: `rm -rf node_modules packages/*/node_modules packages/*/dist .turbo` — destructive, but scoped to these four regeneratable paths only; nothing under `packages/*/src` is touched.
+- `clean`: `node scripts/clean.mjs` removes `node_modules`, `packages/*/node_modules`, `packages/*/dist` and `.turbo` — destructive, but scoped to these regeneratable paths only; nothing under `packages/*/src` is touched. Before deleting anything it checks every candidate: if any path component below the sample root is a symlink or resolves outside it (e.g. `packages/<name>` linked to another checkout, where a plain `rm -rf packages/*/dist` would delete the link target's `dist/`), it deletes nothing and exits 1.
+- `build` (`scripts/build.mjs`): removes and regenerates each package's `dist/`, so a deleted or renamed source file leaves no stale copy. It refuses (exit 2) a package whose real path is outside the sample root (e.g. `packages/<name>` symlinked to another checkout) and a symlinked `dist/`, so the removal never reaches outside the sample.
+- `turbo-check`: `pnpm run lint && turbo run test`. Lint is a root-only script (no package defines `lint`), so it runs through pnpm rather than as a Turborepo task, which would otherwise match no package and silently skip it. `turbo.json` lists `scripts/build.mjs` in `globalDependencies`, because every package's `build` delegates to that shared root script and a change to it must invalidate the cached `dist/`.
 
 ## Expected results
 
@@ -85,6 +88,7 @@ pnpm run turbo:check                          # same as: make turbo-check
 - [`./projects/node-pnpm/packages/cli/package.json`](./projects/node-pnpm/packages/cli/package.json)
 - [`./projects/node-pnpm/scripts/lint.mjs`](./projects/node-pnpm/scripts/lint.mjs)
 - [`./projects/node-pnpm/scripts/build.mjs`](./projects/node-pnpm/scripts/build.mjs)
+- [`./projects/node-pnpm/scripts/clean.mjs`](./projects/node-pnpm/scripts/clean.mjs)
 
 ## Related
 

@@ -133,27 +133,40 @@ Only after a plan has passed `validate-plan.mjs` **and** the user has explicitly
 running its `checks[]` — i.e. actual `verify` with real command execution, as opposed to the
 static-only steps above. Approval is given **outside** the plan file: the user reviews the plan
 and hands over its `planDigest` (the sha256 of the plan file's exact bytes, printed by
-`validate-plan.mjs` and by a `run-checks.mjs` dry-run), which is passed as
+`validate-plan.mjs`, and by a `run-checks.mjs` dry-run once the plan's `changes[]` have been
+applied), which is passed as
 `--execute --approve <planDigest>`. `approved: true` inside the plan only marks which checks of
 that approved plan may run; on its own it is not approval, because anyone who edits `command` or
 `args` after approval could leave it in place. If the plan file changes by even one byte after
 approval, `--approve` no longer matches and nothing runs. `run-checks.mjs` re-validates the entire plan with the same
 `validate-plan.mjs` logic every time it runs (it does not trust a plan or an earlier approval it
-did not just re-check), and defaults to dry-run.
+did not just re-check), and defaults to dry-run. Because `verify` runs after `apply`, that
+re-validation checks the target files in their **post-apply** state: every `create`/`modify`
+target must exist as a regular file (matching `newContentHash` when the plan has one), and every
+`delete` target must be gone. Pre-apply conditions — a `create` target being absent,
+`expectedState`, and the original `contentHash` of a `matches-hash` change — are not compared
+against the tree (a correctly applied plan always breaks them), although their format is still
+validated. A `create`/`modify` without `newContentHash` is checked for existence only, and the
+result's `unresolved` says so.
 
 ### When not to run it
 
-- Without `--execute`: this is the default and safe to run any time a plan exists — it reports
-  what *would* run, without running anything.
+- Without `--execute`: this is the default and never runs anything. After the plan's
+  `changes[]` have been applied it reports what *would* run. Before that (or for any plan whose
+  `changes[]` are not in their post-apply state) it reports the whole result `BLOCKED` (exit 3)
+  with the post-apply findings and no `planDigest` — this is intentional, so that "not applied
+  yet" is never mistaken for a verifiable state. Review a plan before `apply` with
+  `validate-plan.mjs`, which also prints the `planDigest` to approve.
 - With `--execute` but without `--approve <planDigest>`: argument error (exit 2), nothing runs.
   Obtain the digest by reviewing the plan (`validate-plan.mjs` or a dry-run), not by hashing a
   file you have not read.
 - With `--execute` but without each intended `check.approved === true` already set in the plan
   JSON itself: those specific checks are reported `BLOCKED` and skipped, not force-run.
-- Against a plan whose target files might have changed since it was drafted — `run-checks.mjs`
-  re-runs `validate-plan.mjs`'s shape/escape/`matches-hash` checks first, and refuses to run any
-  check (reporting the whole result as `BLOCKED`) if that re-validation fails. Re-plan instead of
-  editing the plan JSON by hand to force it through.
+- Before the plan's `changes[]` have been applied, or when the applied files no longer match the
+  plan — `run-checks.mjs` re-runs `validate-plan.mjs`'s shape/escape checks plus the post-apply
+  state check described above first, and refuses to run any check (reporting the whole result as
+  `BLOCKED`) if that re-validation fails. Re-plan instead of editing the plan JSON by hand to
+  force it through.
 - When a `checks[].command` itself needs dependency/toolchain download or network access (e.g.
   `cargo build` fetching crates, `pnpm install`) — that needs its own explicit user
   authorization beyond "the plan was approved"; see
@@ -194,7 +207,7 @@ reports a check as `FAIL`/non-zero rather than silently working around a missing
 > `foo bar` would become two arguments), or an empty argument is reported `BLOCKED` with
 > `executed: false` and is never launched.
 
-### Example invocation (dry-run, default — safe to run any time a plan exists)
+### Example invocation (dry-run, default — never executes anything)
 
 ```sh
 node <skill-dir>/scripts/bin/run-checks.mjs --plan /path/to/plan.json --json
@@ -309,6 +322,9 @@ run-checks — 承認済み計画の検証コマンドのみを実行する（�
     変更された）場合は全体を BLOCKED にし何も実行しない
   - --execute 指定時も、個々の check に approved:true がない場合はその check を BLOCKED のまま実行しない
   - 計画の形式検証（validate-plan と同じロジック）に失敗した場合は全体を BLOCKED にし何も実行しない
+  - 計画の changes が適用済みでない（create / modify 対象が無い・newContentHash と内容が異なる・
+    delete 対象が残っている）場合も全体を BLOCKED にし何も実行しない。run-checks は適用後の検証
+    なので、create 対象の不存在や matches-hash の元 contentHash など適用前の前提は照合しない
 
 計画内の root が相対パスの場合、起動時の cwd ではなく計画ファイル自身のディレクトリを基準に解決する
 （validate-plan.mjs と同じ解決基準）。checks[].cwd はその解決後の root を基準に解決する。
@@ -329,8 +345,10 @@ run-checks — 承認済み計画の検証コマンドのみを実行する（�
   after it was approved. Review the current plan again (`validate-plan.mjs`), and pass the new
   `planDigest` only once the user has re-approved it — never copy a digest from a plan nobody
   re-read.
-- **Exit 3, whole result `BLOCKED` (plan re-validation failed)**: the plan's target files, or
-  the plan JSON itself, changed or were never valid in the first place. Re-run
+- **Exit 3, whole result `BLOCKED` (plan re-validation failed)**: the plan JSON itself is
+  invalid, or the target files are not in the plan's post-apply state (a `create`/`modify`
+  target is missing or differs from `newContentHash`, or a `delete` target still exists — i.e.
+  the plan was not applied, or the files changed after applying). Re-run
   `validate-plan.mjs` directly to see the specific finding, fix or re-draft the plan, and get it
   re-approved — do not retry `run-checks.mjs --execute` against the same unmodified plan file
   expecting a different result.
@@ -368,19 +386,19 @@ glob ever resolves to nothing, so a broken path does not get reported as "0 test
 contract, `--help`/unknown-flag behavior, root-escape/symlink-escape detection, secret-filename
 non-leakage, dry-run-by-default, Windows `.cmd`/`.bat` handling logic, etc.).
 
-Actual run (2026-09-26, repository root, Node v24.13.0):
+Actual run (2026-10-11, repository root, Node v24.13.0):
 
 ```
-ℹ tests 118
+ℹ tests 156
 ℹ suites 0
-ℹ pass 118
+ℹ pass 156
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
 ```
 
-Exit code: `0`. All 118 tests passed, 0 failed, on this run. The exact test count grows as tests
+Exit code: `0`. All 156 tests passed, 0 failed, on this run. The exact test count grows as tests
 are added — re-run this command rather than relying on the count above if it matters to the task
 at hand.
 

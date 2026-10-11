@@ -8,3 +8,8 @@ description = "Minimal library crate for the skills/make rust-crate sample."
 [lib]
 name = "make_skill_sample"
 path = "src/lib.rs"
+
+# Empty workspace table: makes this crate its own workspace root, so Cargo
+# does not attach it to (and error out on) a parent workspace when the
+# sample is vendored inside another Cargo repository.
+[workspace]

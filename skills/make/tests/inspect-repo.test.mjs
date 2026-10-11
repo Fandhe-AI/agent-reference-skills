@@ -127,3 +127,24 @@ test("inspect-repo: max-entries で打ち切られた走査は PASS に丸めず
     cleanupTmpDir(dir);
   }
 });
+
+test("inspect-repo: 入れ子の入口候補でも途中の symlink を辿らない（.github / .cargo が root 外を指す場合）", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "repo");
+    const outside = join(dir, "outside");
+    mkdirSync(root);
+    mkdirSync(join(outside, "workflows"), { recursive: true });
+    writeFileSync(join(outside, "config.toml"), "");
+    symlinkSync(outside, join(root, ".github"), "dir");
+    symlinkSync(outside, join(root, ".cargo"), "dir");
+    const r = runCliJson("inspect-repo.mjs", ["--root", root]);
+    assert.equal(r.status, 0, r.stderr);
+    const ids = r.json.findings.map((f) => f.id);
+    assert.ok(!ids.includes("entry:.github/workflows"), "リンク先の workflows を入口候補として報告しない");
+    assert.ok(!ids.includes("entry:.cargo/config.toml"), "リンク先の config.toml を入口候補として報告しない");
+    assert.ok(r.json.findings.some((f) => f.id === "symlink" && f.evidence === ".github"), "symlink 自体は辿っていない旨を報告する");
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});

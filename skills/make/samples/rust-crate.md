@@ -69,6 +69,8 @@ cargo clean --target-dir target   # same as: make clean (minus the symlink check
 - `verify.sh`: runs `cargo test --all-targets` (unit + integration, **excludes doctests** — a documented `cargo` behavior) and `cargo test --doc` separately, so doctests are never silently skipped. Writes to `target/` only.
 - `clean`: `cargo clean --target-dir target` — removes this crate's own `./target` only, nothing under `src/` or `tests/`. A bare `cargo clean` would instead empty whatever `CARGO_TARGET_DIR` / `build.target-dir` points at, which can be a directory shared with other worktrees; the explicit `--target-dir target` overrides both (confirmed locally with cargo 1.98.1: a shared `CARGO_TARGET_DIR` was left intact). If `./target` is a symlink (possibly into a shared directory), the recipe refuses and exits non-zero instead of following it.
 - All scripts reject any positional argument (`scripts/lib.sh`'s `reject_args`), exiting 2 (usage error) rather than silently ignoring unknown input.
+- `Cargo.toml` carries an empty `[workspace]` table, so the crate is its own workspace root: copied or vendored under another Cargo workspace, `cargo` does not fail with "current package believes it's in a workspace when it's not".
+- `Cargo.lock` is committed with this sample, and the sample's own `.gitignore` re-includes it (`!Cargo.lock`), so a repository that vendors this skill and ignores `Cargo.lock` at its root still commits the sample's lockfile.
 
 ## Expected results
 

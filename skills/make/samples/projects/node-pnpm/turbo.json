@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["scripts/build.mjs"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -7,9 +8,6 @@
     },
     "test": {
       "dependsOn": ["build"]
-    },
-    "lint": {
-      "outputs": []
     }
   }
 }

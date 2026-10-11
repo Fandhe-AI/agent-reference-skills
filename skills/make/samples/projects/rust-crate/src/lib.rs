@@ -9,10 +9,11 @@
 //! assert_eq!(make_skill_sample::add(2, 3), 5);
 //! ```
 
-/// Adds two `i32` values, wrapping on overflow like `+` would panic in
-/// debug builds; kept intentionally trivial for the sample.
+/// Adds two `i32` values, wrapping on overflow in every build profile
+/// (plain `+` would panic when overflow checks are enabled, e.g. debug
+/// builds); kept intentionally trivial for the sample.
 pub fn add(a: i32, b: i32) -> i32 {
-    a + b
+    a.wrapping_add(b)
 }
 
 #[cfg(test)]
@@ -27,5 +28,10 @@ mod tests {
     #[test]
     fn add_handles_negatives() {
         assert_eq!(add(-1, 1), 0);
+    }
+
+    #[test]
+    fn add_wraps_on_overflow() {
+        assert_eq!(add(i32::MAX, 1), i32::MIN);
     }
 }

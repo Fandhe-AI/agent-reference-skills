@@ -4,13 +4,19 @@
 // Not a bundler. Copies a package's src/ tree verbatim into dist/ and
 // prepends a build banner. This is enough to give the sample a real file
 // output that `make clean` has something to remove, without adding a
-// bundler dependency the sample does not otherwise need.
+// bundler dependency the sample does not otherwise need. dist/ is removed
+// and regenerated on every run, so a source file that was deleted or
+// renamed never leaves a stale built copy behind (which Turborepo would
+// otherwise cache as well).
 //
 // Usage: node <repo>/scripts/build.mjs <package-dir>
-// Exit code: 0 on success, 2 on bad usage or missing src/.
+// Exit code: 0 on success, 2 on bad usage, missing src/, a package outside
+// this sample's root (e.g. packages/<name> symlinked to another checkout),
+// or a symlinked dist/ (refused rather than followed).
 
-import { readdirSync, mkdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { readdirSync, mkdirSync, readFileSync, writeFileSync, statSync, lstatSync, realpathSync, rmSync } from "node:fs";
+import { dirname, join, relative, sep } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const pkgDir = process.argv[2];
 if (!pkgDir) {
@@ -49,6 +55,29 @@ function copyTree(from, to) {
     writeFileSync(dst, banner + contents);
   }
 }
+
+// dist/ is fully regenerated output, so it is removed before copying. That
+// removal must never reach outside this sample: the package's real path must
+// be inside the sample root (resolved from this file's location, like
+// scripts/clean.mjs), which rejects a packages/<name> symlinked elsewhere,
+// and a symlinked dist/ is refused instead of being followed.
+const sampleRoot = realpathSync(join(dirname(fileURLToPath(import.meta.url)), ".."));
+const pkgReal = realpathSync(pkgDir);
+if (pkgReal !== sampleRoot && !pkgReal.startsWith(sampleRoot.endsWith(sep) ? sampleRoot : sampleRoot + sep)) {
+  console.error(`build: ${pkgDir} resolves outside ${sampleRoot}; refusing to replace its dist/`);
+  process.exit(2);
+}
+let distStat = null;
+try {
+  distStat = lstatSync(distDir);
+} catch (err) {
+  if (err.code !== "ENOENT") throw err;
+}
+if (distStat?.isSymbolicLink()) {
+  console.error(`build: ${distDir} is a symlink; refusing to replace it`);
+  process.exit(2);
+}
+rmSync(distDir, { recursive: true, force: true });
 
 copyTree(srcDir, distDir);
 console.log(`build: wrote ${distDir}`);

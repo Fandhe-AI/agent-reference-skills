@@ -6,8 +6,10 @@
 # non-destructive entry point: every target below delegates to a `pnpm run
 # <script>` defined once in package.json (root or per-package), so a
 # contributor without `make` reaches the exact same command directly
-# (see each target's comment for the pnpm-only equivalent). Make does not
-# reimplement pnpm's workspace dependency graph or Turborepo's task graph.
+# (see each target's comment for the pnpm-only equivalent). The one
+# exception is `clean`, which delegates to `node scripts/clean.mjs` so it
+# still works after node_modules/ is gone. Make does not reimplement
+# pnpm's workspace dependency graph or Turborepo's task graph.
 #
 # Verified with GNU Make 3.81, pnpm 10.32.1, Node v24.13.0.
 #
@@ -22,9 +24,11 @@
 #   make build          - pnpm run build           (pnpm -r run build)
 #   make check          - pnpm run check           (lint + test)
 #   make turbo-build     - pnpm run turbo:build     (turbo run build)
-#   make turbo-check     - pnpm run turbo:check     (turbo run lint test)
-#   make clean          - remove node_modules/ and packages/*/dist/
-#                          (destructive: only these regeneratable dirs)
+#   make turbo-check     - pnpm run turbo:check     (lint + turbo run test)
+#   make clean          - node scripts/clean.mjs: remove node_modules/,
+#                          packages/*/{node_modules,dist}/ and .turbo/
+#                          (destructive: only these regeneratable dirs;
+#                          refuses everything if any path is a symlink)
 
 .DEFAULT_GOAL := help
 
@@ -38,8 +42,8 @@ help:
 	@echo "  build        pnpm run build"
 	@echo "  check        pnpm run check (lint + test)"
 	@echo "  turbo-build  pnpm run turbo:build (requires setup)"
-	@echo "  turbo-check  pnpm run turbo:check (requires setup)"
-	@echo "  clean        remove node_modules/ and packages/*/dist/"
+	@echo "  turbo-check  pnpm run turbo:check (lint + turbo run test, requires setup)"
+	@echo "  clean        remove node_modules/ and packages/*/dist/ (refuses symlinked paths)"
 
 setup:
 	pnpm install --frozen-lockfile
@@ -63,4 +67,4 @@ turbo-check:
 	pnpm run turbo:check
 
 clean:
-	rm -rf node_modules packages/*/node_modules packages/*/dist .turbo
+	node scripts/clean.mjs

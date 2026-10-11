@@ -38,6 +38,9 @@ const HELP = `run-checks — 承認済み計画の検証コマンドのみを実
     変更された）場合は全体を BLOCKED にし何も実行しない
   - --execute 指定時も、個々の check に approved:true がない場合はその check を BLOCKED のまま実行しない
   - 計画の形式検証（validate-plan と同じロジック）に失敗した場合は全体を BLOCKED にし何も実行しない
+  - 計画の changes が適用済みでない（create / modify 対象が無い・newContentHash と内容が異なる・
+    delete 対象が残っている）場合も全体を BLOCKED にし何も実行しない。run-checks は適用後の検証
+    なので、create 対象の不存在や matches-hash の元 contentHash など適用前の前提は照合しない
 
 計画内の root が相対パスの場合、起動時の cwd ではなく計画ファイル自身のディレクトリを基準に解決する
 （validate-plan.mjs と同じ解決基準）。checks[].cwd はその解決後の root を基準に解決する。
@@ -95,7 +98,12 @@ function main() {
 
   // 古い承認・改変された計画を信用しない: validate-plan と同じロジックで毎回再検証する。
   // 計画内の相対 root は計画ファイル自身のディレクトリ基準（validate-plan と同じ解決基準）。
-  const { findings: planFindings, root } = validatePlanShape(plan, { baseDir: planBaseDir(values.plan) });
+  // run-checks は適用後の検証なので、対象ファイルは適用前の前提ではなく適用結果として照合する
+  // （適用前の前提のままだと、正しく適用した計画ほど create の衝突・contentHash 不一致で BLOCKED になる）。
+  const { findings: planFindings, root } = validatePlanShape(plan, {
+    baseDir: planBaseDir(values.plan),
+    stateCheck: "post-apply",
+  });
   const planInvalid = planFindings.some((f) => f.status === STATUS.FAIL);
   if (planInvalid) {
     const result = buildResult({
@@ -197,6 +205,14 @@ function main() {
       : aggregateStatus(checkResults);
 
   const unresolved = [];
+  const unboundChanges = (Array.isArray(plan.changes) ? plan.changes : []).filter(
+    (c) => (c.action === "create" || c.action === "modify") && c.newContentHash === undefined,
+  );
+  if (unboundChanges.length > 0) {
+    unresolved.push(
+      `newContentHash のない create / modify が ${unboundChanges.length} 件あり、適用後の内容は照合していません（存在のみ確認）`,
+    );
+  }
   if (!values.execute) {
     unresolved.push("dry-run のため checks は実行していません。実行するには計画を確認のうえ --execute --approve <planDigest> と各 check の approved:true が必要です");
   }

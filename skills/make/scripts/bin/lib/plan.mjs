@@ -1,7 +1,10 @@
 // 計画（plan）JSON の読み込み・形式検証・パス逸脱検出。
 // validate-plan と run-checks の双方から使う（run-checks が独自の緩い読み込みをして
 // 古い/改変された計画を信用しないようにするため、検証ロジックを共有する）。
-import { readFileSync, existsSync, statSync } from "node:fs";
+// 対象ファイルの状態だけは段階で照合内容が異なる: 適用前（validate-plan / preview-sample --apply）は
+// 計画作成時の前提（create 対象の不存在・matches-hash の元 contentHash 等）を、適用後（run-checks）は
+// 適用結果（create / modify 対象の存在と newContentHash、delete 対象の不存在）を確認する。
+import { readFileSync, existsSync, statSync, lstatSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { dirname, resolve } from "node:path";
 import { resolveRoot, resolvePlanPath } from "./paths.mjs";
@@ -13,6 +16,9 @@ const VALID_ACTIONS = new Set(["create", "modify", "delete"]);
 // run-checks がそのコマンドを実行しないようにする。
 export const SUPPORTED_PLAN_SCHEMA_VERSIONS = new Set(["1.0.0"]);
 const VALID_EXPECTED_STATES = new Set(["absent", "present", "matches-hash", "any"]);
+const SHA256_RE = /^sha256:[0-9a-f]{64}$/;
+// validatePlanShape の stateCheck に渡せる値
+export const STATE_CHECKS = new Set(["pre-apply", "post-apply"]);
 
 function isPlainObject(v) {
   return typeof v === "object" && v !== null && !Array.isArray(v);
@@ -20,12 +26,87 @@ function isPlainObject(v) {
 
 // 対象パスの実際の状態を返す。存在しない場合は "absent"、通常ファイルなら "file"、それ以外
 // （ディレクトリ等）は "other"。stat の失敗は例外にせず "error" として finding に変換させる。
+// 存在判定は lstat で行う（existsSync はリンク先の無い symlink を「存在しない」と返すため、
+// 残っている壊れた symlink を delete 済み・create 可能と誤判定しないよう "other" として扱う）。
 function entryKind(p) {
-  if (!existsSync(p)) return "absent";
+  try {
+    lstatSync(p);
+  } catch (err) {
+    return err.code === "ENOENT" || err.code === "ENOTDIR" ? "absent" : "error";
+  }
   try {
     return statSync(p).isFile() ? "file" : "other";
-  } catch {
-    return "error";
+  } catch (err) {
+    return err.code === "ENOENT" ? "other" : "error";
+  }
+}
+
+function sha256OfFile(p) {
+  return `sha256:${createHash("sha256").update(readFileSync(p)).digest("hex")}`;
+}
+
+// expectedState: matches-hash が要求する contentHash（適用前の元ファイルの sha256）の形式確認
+function hasValidContentHash(change) {
+  return typeof change.contentHash === "string" && SHA256_RE.test(change.contentHash);
+}
+
+/**
+ * 適用後の状態を確認する（run-checks 用）。適用前の前提（create 対象の不存在・元 contentHash）は
+ * 正しく適用された後には必ず成り立たなくなるため照合しない。代わりに、計画どおり適用された結果
+ * （create / modify は通常ファイルとして存在し newContentHash があれば一致、delete は不存在）を確認する。
+ * expectedState: matches-hash の contentHash は形式のみ検証する（不正な計画は段階に関係なく通さない）。
+ */
+function checkAppliedState(change, label, target, kind, findings) {
+  if (change.expectedState === "matches-hash" && !hasValidContentHash(change)) {
+    findings.push({
+      id: label,
+      status: "FAIL",
+      detail: `expectedState: matches-hash には "sha256:<64桁16進数>" 形式の contentHash が必要です: ${change.path}`,
+    });
+  }
+  if (change.action === "delete") {
+    if (kind === "absent") {
+      findings.push({ id: label, status: "PASS", detail: `適用後の状態を確認（delete 済み）: ${change.path}` });
+    } else {
+      findings.push({ id: label, status: "FAIL", detail: `delete 指定だが適用後も対象が残っています（未適用か適用に失敗しています）: ${change.path}` });
+    }
+    return;
+  }
+  if (change.action !== "create" && change.action !== "modify") return; // action の不正は FAIL 済み
+  if (kind === "absent") {
+    findings.push({ id: label, status: "FAIL", detail: `${change.action} 指定だが適用後の対象が存在しません（未適用か適用に失敗しています）: ${change.path}` });
+    return;
+  }
+  if (kind !== "file") {
+    findings.push({ id: label, status: "FAIL", detail: `${change.action} 指定だが適用後の対象が通常ファイルではありません: ${change.path}` });
+    return;
+  }
+  if (typeof change.newContentHash !== "string" || !SHA256_RE.test(change.newContentHash)) {
+    // newContentHash の形式不正は FAIL 済み。未指定なら存在のみ確認できたことを明示する
+    if (change.newContentHash === undefined) {
+      findings.push({
+        id: label,
+        status: "PASS",
+        detail: `適用後の存在を確認（newContentHash がないため内容は照合していません）: ${change.path}`,
+      });
+    }
+    return;
+  }
+  let actualHash;
+  try {
+    actualHash = sha256OfFile(target);
+  } catch (err) {
+    findings.push({ id: label, status: "FAIL", detail: `適用後の対象を読み込めません（${err.code ?? "UNKNOWN"}）: ${change.path}` });
+    return;
+  }
+  if (actualHash === change.newContentHash) {
+    findings.push({ id: label, status: "PASS", detail: `適用後の内容が計画の newContentHash と一致: ${change.path}` });
+  } else {
+    findings.push({
+      id: label,
+      status: "FAIL",
+      detail: `適用後の内容が計画の newContentHash と一致しません（承認した内容と異なる状態で検証しません）: ${change.path}`,
+    });
   }
 }
 
@@ -84,9 +165,19 @@ export function planBaseDir(planPath) {
  * @param {string} [opts.baseDir] 計画内の相対 root を解決する基準ディレクトリ（既定: process.cwd()）。
  *   同じ計画ファイルが異なる cwd から起動されても同じ結果になるよう、呼び出し元は
  *   `planBaseDir(値.plan)` の結果を渡すこと（絶対 root はこの基準に関係なくそのまま使われる）。
+ * @param {"pre-apply"|"post-apply"} [opts.stateCheck] 対象ファイルの状態をどの段階として照合するか
+ *   （既定: "pre-apply"）。形式・root・パス逸脱・重複・checks の検証はどちらでも同じ。
+ *   - "pre-apply": 計画作成時の前提（create 対象が無い・modify 対象がある・expectedState /
+ *     matches-hash の元 contentHash が一致する）を確認する。validate-plan / preview-sample --apply 用。
+ *   - "post-apply": 計画を適用した後の状態（create / modify 対象が通常ファイルとして存在し、
+ *     newContentHash があればその内容と一致する・delete 対象が無い）を確認する。expectedState と
+ *     contentHash は適用前の状態の記述なので、形式だけ検証して実ファイルとは照合しない。run-checks 用。
  * @returns {{findings: Array<object>, root: string|null}}
  */
-export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
+export function validatePlanShape(plan, { baseDir = process.cwd(), stateCheck = "pre-apply" } = {}) {
+  if (!STATE_CHECKS.has(stateCheck)) {
+    throw new TypeError(`stateCheck が不正です: ${stateCheck}`);
+  }
   const findings = [];
 
   if (typeof plan !== "object" || plan === null || Array.isArray(plan)) {
@@ -138,7 +229,7 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
     if (!VALID_ACTIONS.has(change.action)) {
       findings.push({ id: label, status: "FAIL", detail: `action が不正です: ${change.action}` });
     }
-    if (change.newContentHash !== undefined && (typeof change.newContentHash !== "string" || !/^sha256:[0-9a-f]{64}$/.test(change.newContentHash))) {
+    if (change.newContentHash !== undefined && (typeof change.newContentHash !== "string" || !SHA256_RE.test(change.newContentHash))) {
       findings.push({ id: label, status: "FAIL", detail: `newContentHash は "sha256:<64桁16進数>" 形式である必要があります: ${change.path}` });
     }
     if (change.expectedState !== undefined && !VALID_EXPECTED_STATES.has(change.expectedState)) {
@@ -167,6 +258,10 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
     const exists = kind !== "absent";
     if (kind === "error") {
       findings.push({ id: label, status: "FAIL", detail: `対象の状態を確認できません: ${change.path}` });
+      continue;
+    }
+    if (stateCheck === "post-apply") {
+      checkAppliedState(change, label, resolved.resolved, kind, findings);
       continue;
     }
     if (change.action === "create" && exists) {
@@ -215,7 +310,7 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
         });
       }
     } else if (change.expectedState === "matches-hash") {
-      if (typeof change.contentHash !== "string" || !/^sha256:[0-9a-f]{64}$/.test(change.contentHash)) {
+      if (!hasValidContentHash(change)) {
         findings.push({
           id: label,
           status: "FAIL",
@@ -236,7 +331,7 @@ export function validatePlanShape(plan, { baseDir = process.cwd() } = {}) {
       } else {
         let actualHash = null;
         try {
-          actualHash = `sha256:${createHash("sha256").update(readFileSync(resolved.resolved)).digest("hex")}`;
+          actualHash = sha256OfFile(resolved.resolved);
         } catch (err) {
           findings.push({ id: label, status: "FAIL", detail: `元ファイルを読み込めません（${err.code ?? "UNKNOWN"}）: ${change.path}` });
         }

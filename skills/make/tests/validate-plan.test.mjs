@@ -449,3 +449,37 @@ test("validate-plan: sample と newContentHash の形式が不正なら FAIL に
     cleanupTmpDir(dir);
   }
 });
+
+test("validate-plan: 計画 JSON が null・配列・数値でも例外終了せず構造化された FAIL を返す", () => {
+  const dir = makeTmpDir();
+  try {
+    for (const body of ["null", "[]", "42"]) {
+      const planPath = join(dir, "plan.json");
+      writeFileSync(planPath, body);
+      const r = runCliJson("validate-plan.mjs", ["--plan", planPath]);
+      assert.equal(r.status, 1, `${body}: stderr=${r.stderr}`);
+      assert.ok(r.json, `${body}: --json の結果を出力すること`);
+      assert.equal(r.json.status, "FAIL");
+      assert.ok(r.json.findings.some((f) => f.id === "schema" && f.status === "FAIL"));
+      assert.ok(!r.stderr.includes("TypeError"));
+    }
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
+
+test("validate-plan: create 対象にリンク先の無い symlink があれば存在するものとして衝突を検出する", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    symlinkSync(join(root, "no-such-target"), join(root, "Makefile"));
+    const planPath = join(dir, "plan.json");
+    writeFileSync(planPath, JSON.stringify({ schemaVersion: "1.0.0", root, changes: [{ path: "Makefile", action: "create" }], checks: [] }));
+    const r = runCliJson("validate-plan.mjs", ["--plan", planPath]);
+    assert.equal(r.status, 1, JSON.stringify(r.json));
+    assert.ok(r.json.findings.some((f) => f.id === "changes[0]" && f.status === "FAIL"));
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});

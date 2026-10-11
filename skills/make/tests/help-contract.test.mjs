@@ -14,9 +14,9 @@ const BIN_DIR = join(HERE, "..", "scripts", "bin");
 const SCRIPTS = [
   { file: "inspect-repo.mjs", options: ["root", "max-depth", "max-entries", "json", "help"] },
   { file: "validate-plan.mjs", options: ["plan", "json", "help"] },
-  { file: "preview-sample.mjs", options: ["sample", "root", "apply", "force", "json", "help"] },
+  { file: "preview-sample.mjs", options: ["sample", "root", "apply", "force", "plan", "approve", "json", "help"] },
   { file: "verify-layout.mjs", options: ["root", "makefile", "json", "help"] },
-  { file: "run-checks.mjs", options: ["plan", "execute", "json", "help"] },
+  { file: "run-checks.mjs", options: ["plan", "execute", "approve", "json", "help"] },
 ];
 
 for (const { file, options } of SCRIPTS) {
@@ -28,6 +28,15 @@ for (const { file, options } of SCRIPTS) {
       assert.ok(source.includes(`"${opt}"`) || source.includes(`${opt}:`), `実装に --${opt} の定義があること`);
       assert.ok(r.stdout.includes(`--${opt}`), `--help に --${opt} が記載されていること: ${file}`);
     }
+  });
+
+  test(`${file}: parseFlags に渡している全オプションが上の一覧に含まれる（一覧の漏れで --help 検査を素通りさせない）`, () => {
+    const source = readFileSync(join(BIN_DIR, file), "utf8");
+    const call = source.match(/parseFlags\(process\.argv\.slice\(2\), \{([\s\S]*?)\n\s*\}\)/);
+    assert.ok(call, `${file}: parseFlags の呼び出しを検出できること`);
+    const declared = [...call[1].matchAll(/^\s*"?([a-z][a-z-]*)"?:\s*\{/gm)].map((m) => m[1]);
+    assert.ok(declared.length > 0);
+    assert.deepEqual([...declared].sort(), [...options].sort());
   });
 
   test(`${file}: --help は正常終了しヘルプ以外の副作用が出力に含まれない`, () => {
