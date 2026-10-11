@@ -127,6 +127,23 @@ for (const sample of NODE_SAMPLES) {
     }
   });
 
+  test(`${sample}/scripts/build.mjs: root 外への symlink の package では dist を削除せず拒否する`, () => {
+    const tmp = makeTmpDir();
+    try {
+      const root = stageScript(tmp, sample, "build.mjs");
+      const outside = join(tmp, "other-checkout");
+      touch(join(outside, "src", "index.mjs"));
+      touch(join(outside, "dist", "keep.mjs"));
+      mkdirSync(join(root, "packages"), { recursive: true });
+      symlinkSync(outside, join(root, "packages", "linked"), "dir");
+      const r = runNode(join(root, "scripts", "build.mjs"), [join(root, "packages", "linked")]);
+      assert.equal(r.status, 2, r.stderr);
+      assert.equal(existsSync(join(outside, "dist", "keep.mjs")), true, "リンク先の dist を削除しない");
+    } finally {
+      cleanupTmpDir(tmp);
+    }
+  });
+
   test(`${sample}/scripts/build.mjs: symlink の dist は置き換えずに拒否する`, () => {
     const tmp = makeTmpDir();
     try {

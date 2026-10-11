@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdirSync, writeFileSync, existsSync } from "node:fs";
+import { mkdirSync, writeFileSync, existsSync, symlinkSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { runCli, runCliJson, makeTmpDir, cleanupTmpDir, approveArgs } from "./helpers.mjs";
@@ -413,6 +413,13 @@ const blockedCases = [
     "delete 対象が残っている",
     (root) => {
       writeFileSync(join(root, "old.mk"), "x\n");
+      return [{ path: "old.mk", action: "delete" }];
+    },
+  ],
+  [
+    "delete 対象がリンク先の無い symlink として残っている",
+    (root) => {
+      symlinkSync(join(root, "no-such-target"), join(root, "old.mk"));
       return [{ path: "old.mk", action: "delete" }];
     },
   ],

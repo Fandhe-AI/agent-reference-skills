@@ -4,7 +4,7 @@
 // 対象ファイルの状態だけは段階で照合内容が異なる: 適用前（validate-plan / preview-sample --apply）は
 // 計画作成時の前提（create 対象の不存在・matches-hash の元 contentHash 等）を、適用後（run-checks）は
 // 適用結果（create / modify 対象の存在と newContentHash、delete 対象の不存在）を確認する。
-import { readFileSync, existsSync, statSync } from "node:fs";
+import { readFileSync, existsSync, statSync, lstatSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { dirname, resolve } from "node:path";
 import { resolveRoot, resolvePlanPath } from "./paths.mjs";
@@ -26,12 +26,18 @@ function isPlainObject(v) {
 
 // 対象パスの実際の状態を返す。存在しない場合は "absent"、通常ファイルなら "file"、それ以外
 // （ディレクトリ等）は "other"。stat の失敗は例外にせず "error" として finding に変換させる。
+// 存在判定は lstat で行う（existsSync はリンク先の無い symlink を「存在しない」と返すため、
+// 残っている壊れた symlink を delete 済み・create 可能と誤判定しないよう "other" として扱う）。
 function entryKind(p) {
-  if (!existsSync(p)) return "absent";
+  try {
+    lstatSync(p);
+  } catch (err) {
+    return err.code === "ENOENT" || err.code === "ENOTDIR" ? "absent" : "error";
+  }
   try {
     return statSync(p).isFile() ? "file" : "other";
-  } catch {
-    return "error";
+  } catch (err) {
+    return err.code === "ENOENT" ? "other" : "error";
   }
 }
 

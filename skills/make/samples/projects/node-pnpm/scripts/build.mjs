@@ -10,11 +10,13 @@
 // otherwise cache as well).
 //
 // Usage: node <repo>/scripts/build.mjs <package-dir>
-// Exit code: 0 on success, 2 on bad usage, missing src/, or a symlinked
-// dist/ (refused rather than followed).
+// Exit code: 0 on success, 2 on bad usage, missing src/, a package outside
+// this sample's root (e.g. packages/<name> symlinked to another checkout),
+// or a symlinked dist/ (refused rather than followed).
 
-import { readdirSync, mkdirSync, readFileSync, writeFileSync, statSync, lstatSync, rmSync } from "node:fs";
-import { join, relative } from "node:path";
+import { readdirSync, mkdirSync, readFileSync, writeFileSync, statSync, lstatSync, realpathSync, rmSync } from "node:fs";
+import { dirname, join, relative, sep } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const pkgDir = process.argv[2];
 if (!pkgDir) {
@@ -54,8 +56,17 @@ function copyTree(from, to) {
   }
 }
 
-// dist/ is fully regenerated output. A symlinked dist/ is refused instead of
-// being removed, so the build never deletes anything outside the package.
+// dist/ is fully regenerated output, so it is removed before copying. That
+// removal must never reach outside this sample: the package's real path must
+// be inside the sample root (resolved from this file's location, like
+// scripts/clean.mjs), which rejects a packages/<name> symlinked elsewhere,
+// and a symlinked dist/ is refused instead of being followed.
+const sampleRoot = realpathSync(join(dirname(fileURLToPath(import.meta.url)), ".."));
+const pkgReal = realpathSync(pkgDir);
+if (pkgReal !== sampleRoot && !pkgReal.startsWith(sampleRoot.endsWith(sep) ? sampleRoot : sampleRoot + sep)) {
+  console.error(`build: ${pkgDir} resolves outside ${sampleRoot}; refusing to replace its dist/`);
+  process.exit(2);
+}
 let distStat = null;
 try {
   distStat = lstatSync(distDir);

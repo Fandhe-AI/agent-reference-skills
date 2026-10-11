@@ -389,16 +389,16 @@ non-leakage, dry-run-by-default, Windows `.cmd`/`.bat` handling logic, etc.).
 Actual run (2026-10-11, repository root, Node v24.13.0):
 
 ```
-ℹ tests 152
+ℹ tests 156
 ℹ suites 0
-ℹ pass 152
+ℹ pass 156
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
 ```
 
-Exit code: `0`. All 152 tests passed, 0 failed, on this run. The exact test count grows as tests
+Exit code: `0`. All 156 tests passed, 0 failed, on this run. The exact test count grows as tests
 are added — re-run this command rather than relying on the count above if it matters to the task
 at hand.
 

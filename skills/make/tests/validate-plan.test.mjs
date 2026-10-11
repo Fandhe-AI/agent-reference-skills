@@ -467,3 +467,19 @@ test("validate-plan: 計画 JSON が null・配列・数値でも例外終了せ
     cleanupTmpDir(dir);
   }
 });
+
+test("validate-plan: create 対象にリンク先の無い symlink があれば存在するものとして衝突を検出する", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    symlinkSync(join(root, "no-such-target"), join(root, "Makefile"));
+    const planPath = join(dir, "plan.json");
+    writeFileSync(planPath, JSON.stringify({ schemaVersion: "1.0.0", root, changes: [{ path: "Makefile", action: "create" }], checks: [] }));
+    const r = runCliJson("validate-plan.mjs", ["--plan", planPath]);
+    assert.equal(r.status, 1, JSON.stringify(r.json));
+    assert.ok(r.json.findings.some((f) => f.id === "changes[0]" && f.status === "FAIL"));
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
