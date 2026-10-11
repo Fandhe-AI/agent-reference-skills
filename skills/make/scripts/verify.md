@@ -133,7 +133,8 @@ Only after a plan has passed `validate-plan.mjs` **and** the user has explicitly
 running its `checks[]` — i.e. actual `verify` with real command execution, as opposed to the
 static-only steps above. Approval is given **outside** the plan file: the user reviews the plan
 and hands over its `planDigest` (the sha256 of the plan file's exact bytes, printed by
-`validate-plan.mjs` and by a `run-checks.mjs` dry-run), which is passed as
+`validate-plan.mjs`, and by a `run-checks.mjs` dry-run once the plan's `changes[]` have been
+applied), which is passed as
 `--execute --approve <planDigest>`. `approved: true` inside the plan only marks which checks of
 that approved plan may run; on its own it is not approval, because anyone who edits `command` or
 `args` after approval could leave it in place. If the plan file changes by even one byte after
@@ -150,8 +151,12 @@ result's `unresolved` says so.
 
 ### When not to run it
 
-- Without `--execute`: this is the default and safe to run any time a plan exists — it reports
-  what *would* run, without running anything.
+- Without `--execute`: this is the default and never runs anything. After the plan's
+  `changes[]` have been applied it reports what *would* run. Before that (or for any plan whose
+  `changes[]` are not in their post-apply state) it reports the whole result `BLOCKED` (exit 3)
+  with the post-apply findings and no `planDigest` — this is intentional, so that "not applied
+  yet" is never mistaken for a verifiable state. Review a plan before `apply` with
+  `validate-plan.mjs`, which also prints the `planDigest` to approve.
 - With `--execute` but without `--approve <planDigest>`: argument error (exit 2), nothing runs.
   Obtain the digest by reviewing the plan (`validate-plan.mjs` or a dry-run), not by hashing a
   file you have not read.
@@ -202,7 +207,7 @@ reports a check as `FAIL`/non-zero rather than silently working around a missing
 > `foo bar` would become two arguments), or an empty argument is reported `BLOCKED` with
 > `executed: false` and is never launched.
 
-### Example invocation (dry-run, default — safe to run any time a plan exists)
+### Example invocation (dry-run, default — never executes anything)
 
 ```sh
 node <skill-dir>/scripts/bin/run-checks.mjs --plan /path/to/plan.json --json
@@ -384,16 +389,16 @@ non-leakage, dry-run-by-default, Windows `.cmd`/`.bat` handling logic, etc.).
 Actual run (2026-10-11, repository root, Node v24.13.0):
 
 ```
-ℹ tests 151
+ℹ tests 152
 ℹ suites 0
-ℹ pass 151
+ℹ pass 152
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
 ```
 
-Exit code: `0`. All 151 tests passed, 0 failed, on this run. The exact test count grows as tests
+Exit code: `0`. All 152 tests passed, 0 failed, on this run. The exact test count grows as tests
 are added — re-run this command rather than relying on the count above if it matters to the task
 at hand.
 

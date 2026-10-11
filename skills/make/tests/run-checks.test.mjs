@@ -437,3 +437,26 @@ for (const [label, setup] of blockedCases) {
     }
   });
 }
+
+test("run-checks: 適用前の dry-run は BLOCKED（exit 3）で planDigest を出さない（承認用の値は validate-plan から得る）", () => {
+  const dir = makeTmpDir();
+  try {
+    const root = join(dir, "proj");
+    mkdirSync(root);
+    const planPath = writePlan(dir, {
+      schemaVersion: "1.0.0",
+      root,
+      changes: [{ path: "Makefile", action: "create", expectedState: "absent", newContentHash: sha("applied\n") }],
+      checks: [markerCheck(root, true)],
+    });
+    const r = runCliJson("run-checks.mjs", ["--plan", planPath]);
+    assert.equal(r.status, 3);
+    assert.equal(r.json.status, "BLOCKED");
+    assert.equal(r.json.planDigest, undefined);
+    const v = runCliJson("validate-plan.mjs", ["--plan", planPath]);
+    assert.equal(v.json.status, "PASS");
+    assert.match(v.json.planDigest, /^sha256:[0-9a-f]{64}$/);
+  } finally {
+    cleanupTmpDir(dir);
+  }
+});
