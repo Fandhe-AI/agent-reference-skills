@@ -53,7 +53,7 @@
       "source": "Fandhe-AI/agent-cli-skills",
       "sourceType": "github",
       "skillPath": "skills/implement-issue-tree/SKILL.md",
-      "computedHash": "bfeacc37cd338ae148d93d0b650ebc94a445e11aab4efce0ac51d4d22ba85d69"
+      "computedHash": "dc321cec54204595fc41201f06842fa8b1946688e7fd6b97cf535333c4207c07"
     },
     "implement-review": {
       "source": "Fandhe-AI/agent-cli-skills",
