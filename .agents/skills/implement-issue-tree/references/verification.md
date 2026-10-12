@@ -9,13 +9,14 @@
 最終レポートの「完了イシュー」に全対象イシューが列挙され、「停止イシュー」が空であることを確認する。
 
 ```bash
-# 親イシューの直下サブイシューが全て closed か確認（--paginate で 100 件超も全ページ自動取得）
-gh api --paginate "repos/{owner}/{repo}/issues/<parent>/sub_issues?per_page=100" \
-  --jq '.[] | {number: .number, state: .state, title: .title}'
+# 全子孫（ひ孫以下を含む）を最下層まで再帰して状態を確認する。
+# preview-tree.sh は 100 件超のページングと循環保護付きで全ノードを辿り、各ノードの [open]/[closed] を表示する。
+bash skills/implement-issue-tree/scripts/preview-tree.sh <parent>
 
-# 孫まで含む全サブイシューの状態確認（再帰が必要な場合は各 Phase 親でも実行）
-gh api --paginate "repos/{owner}/{repo}/issues/<phase-parent>/sub_issues?per_page=100" \
-  --jq '.[] | {number: .number, state: .state}'
+# 手動で確認する場合: 直下を取得し、sub_issues_summary.total > 0 の子について同じ呼び出しを繰り返す
+# （closed の子も辿る。total が 0 のノードだけが leaf）
+gh api --paginate "repos/{owner}/{repo}/issues/<parent>/sub_issues?per_page=100" \
+  --jq '.[] | {number: .number, state: .state, total: .sub_issues_summary.total}'
 ```
 
 Workflow の返却値（`done`・`failures`・`notStarted`）を確認し、`failures` と `notStarted` が空であることを確認する。
@@ -24,7 +25,7 @@ Workflow の返却値（`done`・`failures`・`notStarted`）を確認し、`fai
 
 前提: スクリプトの編集は開発ファイル `scripts/implement-issue-tree.src.js` に対して行い、
 `node skills/implement-issue-tree/scripts/build-workflow.mjs` で実行ファイル
-`scripts/implement-issue-tree.js`（コメント除去済みの生成物。Workflow へ渡すのはこちら）を
+`scripts/implement-issue-tree.js`（コメントとコード行の先頭インデントを除去した生成物。Workflow へ渡すのはこちら）を
 再生成してから本節の検証を実行する。生成物と開発ファイルの同期は
 `tests/build-workflow.test.mjs`（鮮度ゲート）が CI で検証する。
 

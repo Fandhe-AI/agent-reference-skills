@@ -34,9 +34,17 @@ fi
 # post-order DFS でイシュー番号を収集する（子をすべて列挙してから親を追加）
 declare -a POSTORDER=()
 declare -A HAS_CHILDREN=()
+declare -A VISITED=()
 
 collect_postorder() {
   local issue_number="$1"
+
+  # 循環・重複の保険: 訪問済み番号は再帰せず戻る（二重掲載もしない）
+  if [[ -n "${VISITED[${issue_number}]:-}" ]]; then
+    echo "警告: イシュー #${issue_number} を再訪しました（循環または重複）。再帰せずスキップします" >&2
+    return
+  fi
+  VISITED["${issue_number}"]=1
 
   # まず子を再帰取得（post-order: 子が先、親が後）。100 件超はページネーションで全取得する
   local sub_issues=""
