@@ -51,6 +51,7 @@ const SLICE_EXPORTS = [
   'classifyOutOfTreeDeps',
   'outOfTreeBlockNote',
   'classifyDispatchReadiness',
+  'formatIssueList',
   'MERGE_CONTEXT_COMMON',
 ]
 writeFileSync(slicePath, `${definitionPart}\nexport { ${SLICE_EXPORTS.join(', ')} }\n`)
@@ -70,6 +71,7 @@ const {
   classifyOutOfTreeDeps,
   outOfTreeBlockNote,
   classifyDispatchReadiness,
+  formatIssueList,
   MERGE_CONTEXT_COMMON,
 } = await import(pathToFileURL(slicePath).href)
 
@@ -507,11 +509,15 @@ function runMarkBlockedByDeps({ item, allFailedDeps, outOfTree, monitoringPr, br
     isValidBranchName: () => false,
     sanitizeWorktreePath: () => '',
   }
-  ctx.updateState = async (n, patch) => { ctx.stateUpdates.push({ n, patch }) }
+  // Issue #585: blocked の状態書き込みは updateState 直呼びではなく blockedStateBatch へ溜めて一括で書く。
+  // 溜めた patch を従来の stateUpdates の形（{ n, patch }）で観測する。
+  ctx.blockedStateBatch = { push: ({ number, patch }) => { ctx.stateUpdates.push({ n: number, patch }) } }
+  ctx.updateState = async () => { throw new Error('markBlockedByDeps は updateState を直接呼んではならない（一括記録へ溜める）') }
+  ctx.formatIssueList = formatIssueList
   const factory = new Function('ctx', [
     'const { failedSet, outOfTreeWait, childWaitTargets, phaseGateEdgeKeys, outOfTreeBlockNote, results, failures,',
     '  isActiveMonitoring, savedItems, updateState, log, isValidBranchName, sanitizeWorktreePath,',
-    '  unverifiedIssues, branchMatchesIssue } = ctx',
+    '  unverifiedIssues, branchMatchesIssue, blockedStateBatch, formatIssueList } = ctx',
     'let failureEpoch = 0',
     'let consecutiveFailures = 0',
     'let halted = null',
@@ -585,7 +591,9 @@ test('振る舞い: branch が別 issue の命名・state-unverified の項目�
 })
 
 test('駆動部: 未着手（notStarted）の blocked 記録も prClearPatch で保存済み pr の保持を判定する（Codex P1）', () => {
-  assert.match(driverPart, /await updateState\(n, \{ status: 'blocked', note: notStartedNote, \.\.\.prClearPatch\(n\) \}\)/)
+  // Issue #585: 1 件ずつの updateState ではなく blockedStateBatch へ溜めて一括で書く（patch の中身は同一）。
+  assert.match(driverPart, /blockedStateBatch\.push\(\{ number: n, patch: \{ status: 'blocked', note: notStartedNote, \.\.\.prClearPatch\(n\) \} \}\)/)
+  assert.doesNotMatch(driverPart, /updateState\(n, \{ status: 'blocked'/)
   assert.doesNotMatch(driverPart, /note: notStartedNote, pr: 0/)
 })
 

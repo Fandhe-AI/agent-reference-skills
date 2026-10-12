@@ -393,7 +393,8 @@ node --test skills/implement-issue-tree/tests/optin-tests-gate.test.mjs
 `runStateAgent` / `updateStateDetailed` / `updateState` / `initAllPending` /
 `persistPerWorktreeByteReserveHighWater` / `loadState`、または `classifyStateWriteFailureStatus` /
 `classifyUncaughtFailureStatus` を変更した場合、state 系 5 ラベル（`state:update` /
-`state:cleanup` / `state:init-all` / `state:high-water` / `state:load`）が `runStateAgent` 経由の
+`state:cleanup` / `state:init-all` / `state:high-water` / `state:load`）と、blocked の一括記録に使う
+`state:update-batch`（Issue #585。`writeBlockedStateChunk`）が `runStateAgent` 経由の
 ままであること・呼び出し元の終端分類が新設純粋関数に一元化されたままであることを確認する。
 
 ```bash

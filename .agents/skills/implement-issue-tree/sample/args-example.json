@@ -16,6 +16,11 @@
     "true": "opt-in（Issue #494）。ルート（args.parent）直下の子を sub-issues リスト順（siblingIndex）に直列化し、前 Phase の全子孫が merged/closed になるまで次 Phase 配下に着手しない。前回ランで作成済みの次 Phase PR の monitoring 再開にも同じゲートが効く",
     "boolean 以外": "エラーで停止する（誤記を黙って読み替えない）"
   },
+  "_dryRun": {
+    "未指定 / false": "通常実行",
+    "true": "事前見積り（Issue #585）。ツリー取得・依存解決・ツリー外の前提 issue の state 取得だけを行い、状態ファイル・worktree・PR・issue へ一切書かずに、着手見込みの件数・blocked の件数（outOfTree / phaseGate / downstream の内訳）・ツリー外の open な前提 issue を返して終了する",
+    "boolean 以外": "エラーで停止する（誤記を黙って読み替えない）"
+  },
   "_maxBaseMerges": "PR が base とコンフリクト（mergeable: CONFLICTING）した際に自動起動する base 取り込み専用エージェントの回数上限（0〜10 の整数。省略時 3）。fixCount（レビュー指摘対応）とは独立の予算軸で、品質問題ではないため fixCount を消費しない（Issue #441）。0 は自動 base 取り込みを無効化し、コンフリクト検出時点で即 blocked にする。ただし repo が未指定のランでは maxBaseMerges の値によらず起動しない（repo の形式不正は起動時エラーで停止しラン自体が始まらない。PR #443 codex P0）",
   "_optinTestCommands": {
     "未指定 / []": "opt-in テストの承認一覧なし。イシュー本文に <!-- optin-tests: ... --> 宣言があっても全件 invalid として実装起動前に blocked で停止する（fail-closed。本文だけでは新しいコマンドを持ち込めない）",
@@ -63,6 +68,10 @@
     {
       "description": "Phase 分割されたツリー（ルート #860 直下に Phase 0 / Phase 1 / Phase 2 の Phase 親）で、Phase 0 を全件 merged/closed にしてから Phase 1 に着手する厳密な直列化を有効化する（phaseGate: true。Issue #494。並列度は Phase 内では従来どおり有効）",
       "args": { "parent": 860, "phaseGate": true, "autoMerge": true, "externalChecks": [{ "app": "cursor", "context": "Cursor Bugbot" }] }
+    },
+    {
+      "description": "大規模ツリー（数百件）を通常ランの前に見積もる。何も書かずに、着手できる件数・blocked になる件数（ツリー外の前提待ち・phaseGate・下流の内訳）・ツリー外の open な前提 issue を返す（dryRun: true。Issue #585）。結果を見て前提 issue の close や phaseGate の要否を判断してから、dryRun を外して同じ args で実行する",
+      "args": { "parent": 860, "phaseGate": true, "dryRun": true }
     },
     {
       "description": "配下イシューが #[ignore] 付き e2e テストを受入条件に含むため opt-in テストを有効化する。optinTestCommands に承認済みコマンドを列挙しておくと、イシュー本文の <!-- optin-tests: make e2e-three-client --> 宣言のうち一覧と完全一致するものだけがマージ前ゲートの対象になる（PR #503 codex P0）",
