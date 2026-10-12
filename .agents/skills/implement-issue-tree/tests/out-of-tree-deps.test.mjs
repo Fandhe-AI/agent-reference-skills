@@ -493,7 +493,7 @@ function runMarkBlockedByDeps({ item, allFailedDeps, outOfTree, monitoringPr, br
   const ctx = {
     failedSet: new Set(),
     outOfTreeWait: new Set(outOfTree),
-    byParent: new Map(),
+    childWaitTargets: new Map(),
     phaseGateEdgeKeys: new Set(),
     outOfTreeBlockNote,
     results: [],
@@ -509,7 +509,7 @@ function runMarkBlockedByDeps({ item, allFailedDeps, outOfTree, monitoringPr, br
   }
   ctx.updateState = async (n, patch) => { ctx.stateUpdates.push({ n, patch }) }
   const factory = new Function('ctx', [
-    'const { failedSet, outOfTreeWait, byParent, phaseGateEdgeKeys, outOfTreeBlockNote, results, failures,',
+    'const { failedSet, outOfTreeWait, childWaitTargets, phaseGateEdgeKeys, outOfTreeBlockNote, results, failures,',
     '  isActiveMonitoring, savedItems, updateState, log, isValidBranchName, sanitizeWorktreePath,',
     '  unverifiedIssues, branchMatchesIssue } = ctx',
     'let failureEpoch = 0',

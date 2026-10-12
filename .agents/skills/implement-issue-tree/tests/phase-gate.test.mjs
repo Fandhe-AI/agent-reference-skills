@@ -264,10 +264,11 @@ test('駆動部: buildPhaseGateEdges の呼び出しは phaseGateEnabled ブロ�
   assert.ok(buildCallIdx < firstCycleCallIdx, 'buildPhaseGateEdges の呼び出しが findDependencyCycle() の初回呼び出しより後になっている（循環除去がゲート辺を保護できない）')
 })
 
-test('駆動部: 循環除去は selectRemovableCycleEdge 経由で phaseGateEdgeKeys を渡す', () => {
+test('駆動部: 循環除去は selectRemovableCycleEdge 経由で phaseGateEdgeKeys を保護集合に含めて渡す', () => {
+  // closed 貫通辺（closedPierceEdgeKeys）と合成して渡す。貫通辺側の検証は closed-intermediate-deps.test.mjs。
   assert.ok(
-    driverPart.includes('selectRemovableCycleEdge(cycle, byParent, depsMap, phaseGateEdgeKeys)'),
-    '循環除去ループが selectRemovableCycleEdge(cycle, byParent, depsMap, phaseGateEdgeKeys) を呼んでいない',
+    driverPart.includes('selectRemovableCycleEdge(cycle, byParent, depsMap, new Set([...phaseGateEdgeKeys, ...closedPierceEdgeKeys]))'),
+    '循環除去ループが phaseGateEdgeKeys を含む保護集合で selectRemovableCycleEdge を呼んでいない',
   )
 })
 

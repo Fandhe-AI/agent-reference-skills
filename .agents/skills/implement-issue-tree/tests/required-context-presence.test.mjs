@@ -85,6 +85,32 @@ test('monitorPrompt: 手順 7 に 3g 由来の timeout 条件があり既存文�
   assert.ok(s7.includes('checksTotal: 0 の timeout を受理しない'))
 })
 
+test('monitorPrompt: 3g は手順 2 が checksTotal を省略した（取得失敗）経路でも実行され、行き止まりにならない', () => {
+  // 手順 2 は取得失敗時に checksTotal を省略して --watch → 手順 3 へ進む。3g の前提が「手順 2 の
+  // checksTotal が 1 件以上」だと、省略時は文字通りには満たされず 3g が走らない読みが成立し、
+  // 手順 6 の ready 条件（3g の不足 0 件の実測）を満たせないまま ready にも失敗終端にもならない。
+  const p = monitorPrompt(item, impl, [], true, true)
+  const s = p.slice(p.indexOf('3g.'), p.indexOf('\n6. '))
+  const head = s.slice(0, s.indexOf('\n'))
+  assert.ok(!head.includes('手順 2 の checksTotal が 1 件以上のとき'), '3g の前提が手順 2 の checksTotal 限定のまま')
+  assert.ok(head.includes('手順 2 で取得に失敗して checksTotal を省略した場合も'), '3g が checksTotal 省略時も実行される旨がない')
+  assert.ok(head.includes('確定 0 件だけが手順 3e'), '0 件の扱いが手順 3e の確定 0 件に限られる旨がない')
+  // 取得失敗を 0 件・緑扱いへ倒さない（fail-closed）: 総数は手順 3 の実測列挙件数を使う。
+  assert.ok(head.includes('手順 3 の gh pr checks が列挙したチェック件数'), '省略時の総数の出所がない')
+})
+
+test('monitorPrompt: 3g の timeout が返す checksTotal の出所を手順 2 失敗時も含めて定め、手順 7・返却仕様と矛盾しない', () => {
+  const p = monitorPrompt(item, impl, [], true, true)
+  const s3g = p.slice(p.indexOf('3g.'), p.indexOf('\n6. '))
+  assert.ok(s3g.includes('state: timeout（checksTotal は 1 以上'), '3g の timeout の checksTotal が 1 以上と明示されていない')
+  assert.ok(s3g.includes('手順 2 で取得に失敗していれば手順 3 の gh pr checks が列挙した件数'))
+  const tail = p.slice(p.indexOf('\n7. '))
+  const s7 = tail.slice(0, tail.indexOf('\n返却: '))
+  assert.ok(s7.includes('手順 2 で取得に失敗した場合は手順 3 の gh pr checks が列挙した件数'))
+  const ret = tail.slice(tail.indexOf('\n返却: '))
+  assert.ok(ret.includes('timeout を返す場合は 1 以上') && ret.includes('手順 2 で取得に失敗していても'))
+})
+
 test('monitorPrompt(autoMerge 無効): 手順 3g を含まない', () => {
   assert.ok(!monitorPrompt(item, impl, [], false, false).includes('3g.'))
 })
