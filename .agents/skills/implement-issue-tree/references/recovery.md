@@ -62,7 +62,7 @@ StructuredOutput 未返却は `blocked`（halt 非カウント）に分類し、
 
 前節の fail-safe は Merge ループ内のエージェント（monitor / merge-exec / merge-verify /
 base-merge / fix）の未返却だけを対象にしており、**状態ファイル書込みを担う state 系エージェント
-自身**（`state:update` / `state:cleanup` / `state:init-all` / `state:high-water` / `state:load`。
+自身**（`state:update` / `state:update-batch` / `state:cleanup` / `state:init-all` / `state:high-water` / `state:load`。
 いずれも既定 haiku）の未返却は救えない。このエージェントが StructuredOutput を返さず終了すると、
 実装済み・PR 作成済みの item まで catch-all の `failed`（halt カウント対象）に落ち得る。
 
