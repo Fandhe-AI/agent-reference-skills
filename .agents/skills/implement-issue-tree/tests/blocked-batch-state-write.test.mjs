@@ -590,5 +590,5 @@ test('生成物 implement-issue-tree.js にも一括記録と dryRun が存在�
   assert.match(dist, /BLOCKED_STATE_CHUNK_SIZE/)
   assert.match(dist, /state:update-batch:/)
   assert.match(dist, /function estimateDispatch\(/)
-  assert.match(dist, /dryRun: true,/)
+  assert.match(dist, /dryRun:\s*true,/) // 生成物は空白を詰めるため空白の有無に依存しない
 })

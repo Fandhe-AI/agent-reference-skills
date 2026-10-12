@@ -25,8 +25,8 @@ Workflow の返却値（`done`・`failures`・`notStarted`）を確認し、`fai
 
 前提: スクリプトの編集は開発ファイル `scripts/implement-issue-tree.src.js` に対して行い、
 `node skills/implement-issue-tree/scripts/build-workflow.mjs` で実行ファイル
-`scripts/implement-issue-tree.js`（コメントとコード行の先頭インデントを除去した生成物。Workflow へ渡すのはこちら）を
-再生成してから本節の検証を実行する。生成物と開発ファイルの同期は
+`scripts/implement-issue-tree.js`（コメント・コード行の先頭インデント・トークン間の不要な半角スペースを除去した生成物。Workflow へ渡すのはこちら）を
+再生成（生成時にトークン列を開発ファイルと照合し、不一致なら書き込まず中止する）してから本節の検証を実行する。生成物と開発ファイルの同期は
 `tests/build-workflow.test.mjs`（鮮度ゲート）が CI で検証する。
 
 `scripts/implement-issue-tree.js` を変更した場合、以下でランタイムに受理される（起動可能である）

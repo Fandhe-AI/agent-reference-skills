@@ -1418,7 +1418,7 @@ function declaredDepsPrompt(numbers) {
     // HTTP 403 を無条件にレート制限とみなさない: 権限不足・SSO 等の恒久的な 403 で core の復帰まで待って
     // 「一過性」と報告すると、再実行しても同じ 403 で失敗する。レート制限と確認できたときだけ待たせ、
     // それ以外は rateLimited を立てず通常の失敗（再試行・抽出失敗による停止）へ回す。secondary rate limit は
-    // core の reset と無関係なので retry-after（無ければ省略。ホストが 60 秒待つ）を waitSeconds に使う。
+    // core の reset と無関係なので retry-after（無ければ省略。ホストが 60 秒に余裕 5 秒を足して 65 秒待つ）を waitSeconds に使う。
     `標準エラーのメッセージに rate limit・secondary rate limit・RATE_LIMITED がある、または HTTP 403・429 で gh api rate_limit --jq '.resources.core | {remaining, resetAt: (.reset | todate), waitSeconds: ([.reset - now, 0] | max | ceil)}' の remaining が 0 のときだけ rateLimited を true にする。権限・SSO など他の 403 は rateLimited にしない（通常の失敗として扱う）。core の枯渇なら resetAt と waitSeconds を出力どおりに返し、secondary rate limit なら resetAt は省略して waitSeconds に retry-after の秒数を入れる（無ければ省略）。待機はホストが行う。sleep しない。`,
   ].join('\n')
 }
@@ -4430,7 +4430,7 @@ const AGENT_CALLS_PER_ISSUE = { implement: 30, resume: 12, close: 6 }
 // 未追跡検査と HEAD 検査（worktree:head-scan。開始時 1 回は使用済みに入り、終了時 1 回がここ）で、
 // 再測定の再試行を含めても約 20 に収まる。いずれも予算ゲートの対象ではなく無条件に実行される。
 const AGENT_CALLS_TERMINAL_BASE = 20
-const agentBudget = { limit: parseAgentCallLimit(parsedArgs && typeof parsedArgs === 'object' ? parsedArgs.agentCallLimit : undefined), used: 0, enforced: false, stoppedDispatchAt: null, starts: 0, starved: false, neededLimit: null }
+const agentBudget = { limit: parseAgentCallLimit(parsedArgs && typeof parsedArgs === 'object' ? parsedArgs.agentCallLimit : undefined), used: 0, enforced: false, stoppedDispatchAt: null, starts: 0, starved: false, neededLimit: null, held: [] }
 // 上限（budget.limit）を超えても呼び出しは止めない（上のコメント参照）。超えた最初の 1 回だけ warn で知らせる。
 function wrapAgentCounting(raw, budget, warn = () => {}) {
   let warned = false
@@ -4453,8 +4453,56 @@ function wrapAgentCounting(raw, budget, warn = () => {}) {
 function agentBudgetHold(budget, { running, kind, pending }) {
   const remaining = budget.limit - budget.used
   const first = running === 0 && (budget.starts ?? 0) === 0
-  const required = AGENT_CALLS_PER_ISSUE.implement * running + AGENT_CALLS_PER_ISSUE[kind] + AGENT_CALLS_TERMINAL_BASE + (first ? 0 : Math.ceil(Math.max(pending, 0) / BLOCKED_STATE_CHUNK_SIZE))
-  return remaining < required ? { remaining, required } : null
+  const chunks = Math.ceil(Math.max(pending, 0) / BLOCKED_STATE_CHUNK_SIZE)
+  const required = AGENT_CALLS_PER_ISSUE.implement * running + AGENT_CALLS_PER_ISSUE[kind] + AGENT_CALLS_TERMINAL_BASE + (first ? 0 : chunks)
+  // needed: 保留した時点のしきい値そのもの = 保留時の使用量 + required（ゲートが実際に使った必要量。上乗せしない）。
+  // 保留した時点で、上限がこの値以上なら予算検査を通った、という観測事実。chunks は観測値として返す（first では required に入らない）。
+  return remaining < required ? { remaining, required, chunks, needed: budget.used + required } : null
+}
+
+// 終了時に着手・再開できなかったノードの note の停止理由（Issue #600）。止めた理由を「1 つ選ぶ」と、修正のたびに
+// 1 つの組み合わせだけを塞ぎ未テストの組み合わせが残った（#595〜#599）ため、成立している理由をすべて集めて
+// 固定の優先順（halt → 新規着手抑止のラッチ → 再開ゲート → 予算保留）で並べる。note の種別（未着手の result と
+// 状態ファイルへ保存する blocked の note は同じ文字列、monitoring 再開の中断 note）はすべてこの 2 関数を通る。
+// 入力 f はドライバの状態から組んだ 1 ノード分の事実: resume（再開候補か）・kind（implement / verify-close）・
+// halted・latch（newStartSuppressed）・gate（再開ゲートで defer した理由の文字列）・held（予算で保留した記録）。
+// 駆動部の状態を参照しない純粋関数なので、テストが定義部のスライスから全組み合わせを直接実行する。
+// ラッチは新規着手にだけ効く（再開は対象外。implementOnly は implement にだけ効く）ので shouldSkip を通す。
+function stopReasons(f) {
+  const r = []
+  if (f.halted) r.push('halt')
+  if (!f.resume && shouldSkipForNewStartSuppressed(f.latch, f.kind)) r.push('latch')
+  if (f.waiting?.length || f.failedDeps?.length) r.push('dep')
+  if (f.gate) r.push('gate')
+  if (f.held) r.push('budget')
+  return r
+}
+// 予算で保留したノードの案内は、次ランの挙動を予測せず、保留した時点についての事実だけを書く（Issue #600 の追加是正）。
+// 次ランの必要量は開始処理・先に着手するノード・ゲート実測で変わり、note からは決められない。h は保留の記録 { used, required, needed }。
+// needed = used + required = ゲートが実際に使ったしきい値（remaining < required で保留するので、保留である限り limit より大きい）。
+// 「保留した時点では limit が needed 以上なら予算検査を通った」は同じ状態・同じ周回についての事実で、次ランの予測ではない。
+// needed が指定できる上限 AGENT_RUN_LIMIT を超えるのは、既定の上限 1000 で保留に至る普通のラン（完了分は次ランの対象から外れる）でも
+// 常に起きるため、分割の案内は出さず、超えているという事実だけを添える。単独形（予算だけが理由）と併記形は同じ断片。
+// starts は終了時のこのランの着手件数（事実）。
+function budgetHeldText(h, limit, starts) {
+  return `エージェント呼び出し数の予算不足で保留（保留時の使用 ${h.used}/${limit}、必要量 ${h.required}。このランの着手 ${starts} 件）。保留した時点では args.agentCallLimit が ${h.needed} 以上なら予算検査を通った${h.needed > AGENT_RUN_LIMIT ? `（指定できる上限 ${AGENT_RUN_LIMIT} を超える）` : ''}（次ランの必要量は、開始処理・先に着手するノード・ゲート実測で変わる）`
+}
+// b は agentBudget（limit・starts）。理由は成立しているものを並べて示す（他の理由が残るノードも予算の断片は単独形と同じ）。
+// ゲートは予算で保留した周回では評価されない（実測 du・df が自身でエージェントを呼ぶ）ため、held と併存するゲートは必ず前回の評価。
+// 理由が 1 つも成立しないときの既定文も、結果を言い切らない（前提が未完了のノードは dep として理由に数える）。
+// dep は前提を 2 種類に分けて事実として書く: waiting = まだ決着していない前提（done にも failedSet にも無い。待機）、failedDeps = 既に failedSet に
+// 記録された前提（失敗・ブロック、ツリー外で open のままの前提を含む。待っているのではなく決着済みで、完了していない）。
+function stopNote(f, b) {
+  const r = stopReasons(f)
+  if (r.length === 0) return f.resume ? '再実行すると monitor からの再開を試みる' : 'スケジューラ終了時に未着手（キュー未到達）'
+  const part = {
+    halt: `${f.resume ? 'halt のため再開しなかった' : 'halted により未着手'}（理由: ${f.halted?.reason}）`,
+    latch: `残置 worktree 上限ゲートにより新規着手を抑止（理由: ${f.latch?.reason}）`,
+    dep: [f.waiting?.length && `前提 ${formatIssueList(f.waiting)} が未完了のため待機`, f.failedDeps?.length && `前提 ${formatIssueList(f.failedDeps)} は完了していない（失敗・ブロックとして記録済み）`].filter(Boolean).join('。'),
+    gate: f.held ? `${f.gate}（この理由は前回の評価。予算で保留した周回では再評価していない）` : f.gate,
+    budget: f.held ? budgetHeldText(f.held, b.limit, b.starts) : '',
+  }
+  return r.map((k) => part[k].replace(/。$/, '')).join('。')
 }
 
 // 保存済み項目が patch の全キーで既に同じ値なら true（書いても何も変わらない）。status・note だけでなく
@@ -6746,8 +6794,8 @@ const markPrResumable = (n, pr, status, branch) => {
   const e = unmonitoredPrs.get(n)
   if (e && e.pr === pr && (status === 'monitoring' || status === 'blocked') && Number.isInteger(pr) && pr > 0 && isValidBranchName(branch) && branchMatchesIssue(branch, n)) e.resumable = true
 }
-// 予算不足で今回見送った issue（番号 → { kind: 候補の種別, required: 着手に要った残り }）。未着手ノードの note の
-// 出し分けと、終了時の starved 判定・必要な最小値の算出に使う。着手できたら外す。
+// 予算不足で今回見送った issue（番号 → { used: 保留時の使用量, required: agentBudgetHold の必要量, chunks: 未完了数 ÷ 100 の切り上げ, needed: 保留時の観測でこの周回に要った上限の目安 }）。終了時 note の
+// 停止理由（stopReasons の budget）と、starved 判定・必要な最小値の算出に使う。予算を通ったら外す。
 const agentBudgetHeld = new Map()
 let consecutiveFailures = 0
 // consecutiveFailures が最後に 0 へリセットされた「世代」。外部完了回復時の failure 減算は同一
@@ -9079,7 +9127,7 @@ async function markBlockedByDeps(item, allFailedDeps) {
       pr,
       // PR の実在・本 issue との結び付きはここでは確かめていない（照合は runImplement の再開直前）
       // ため「作成済み」と断定しない。
-      note: `${note}（${PR_RECORD_UNVERIFIED(pr)}。同じ引数で再実行すると monitor から再開する）`,
+      note: `${note}（${PR_RECORD_UNVERIFIED(pr)}。再実行すると monitor からの再開を試みる）`,
     })
     log(`#${item.number}: 再開情報を維持する（PR #${pr}）。依存失敗により新規着手はしない`)
     return
@@ -9662,8 +9710,8 @@ while (true) {
           agentBudget.stoppedDispatchAt = agentBudget.used
           log(`⚠️ エージェント呼び出し数が上限 ${agentBudget.limit} に近いため新規着手を停止する（使用 ${agentBudget.used}・残り ${budgetHold.remaining}・#${n} に必要 ${budgetHold.required}）。実行中の issue の完了を優先する`)
         }
-        // 保留時点の使用量も残す（halt 後など終了時の使用量では保留時の必要量を言えない note 用）。
-        agentBudgetHeld.set(n, { kind: item.kind, required: budgetHold.required, used: agentBudget.used })
+        // 保留時に観測した値（使用量・required・chunks・この周回に要った上限の目安 needed）を残す。note・終了ログ・neededLimit・返却値 agentBudget.held の唯一の根拠。
+        agentBudgetHeld.set(n, { used: agentBudget.used, required: budgetHold.required, chunks: budgetHold.chunks, needed: budgetHold.needed })
         // 再開ゲートの理由（monitoringResumeGateDeferred）は消さない。ゲートの実測（du・df）は自身がエージェントを
         // 呼ぶため予算が足りない周回では評価できず、消すと残置 worktree の defer が残るのに予算だけが理由と案内する
         // （Issue #598）。ゲートを通過した周回（下の delete）で消え、予算を通った周回の defer で上書きされる。
@@ -10140,28 +10188,28 @@ const pending = work
   .map((q) => q.number)
 const notStarted = pending.filter((n) => !isActiveMonitoring(n))
 const interrupted = pending.filter((n) => isActiveMonitoring(n))
-const notStartedNoteBase = halted
-  ? `halted により未着手（理由: ${halted.reason}）`
-  : newStartSuppressed
-    ? `残置 worktree 上限ゲートにより新規着手を抑止（理由: ${newStartSuppressed.reason}）`
-    : 'スケジューラ終了時に未着手（キュー未到達）'
-// 予算は最も弱い停止理由: halt・新規着手抑止（残置 worktree 上限等のラッチ）が効いているなら、再実行しても
-// 解けない本当の理由を残す（予算の文言は「再実行すると着手する」と案内するため誤案内になる）。monitoring 再開は
-// 新規着手抑止（ラッチ）の対象外なので、ラッチが効いていても保留の理由は予算になる。
-const budgetOnly = (n) => agentBudgetHeld.has(n) && !halted && !monitoringResumeGateDeferred.has(n) && (isActiveMonitoring(n) || !shouldSkipForNewStartSuppressed(newStartSuppressed, agentBudgetHeld.get(n).kind))
+// 終了時 note の停止理由は成立しているものをすべて集めて並べる（stopReasons / stopNote。Issue #600）。ノードごとの
+// 事実を 1 か所（stopFacts）で組み、note・budgetOnly・starved が同じ理由の集合から導かれるようにする。
+// halt・ラッチ・前提待ち・再開ゲートなど、予算以外の停止理由も記録されているノードは budgetOnly ではない。
+const workKind = new Map(work.map((q) => [q.number, q.kind]))
+const workItem = new Map(work.map((q) => [q.number, q]))
+// 前提は done / failedSet / 未決着（work に居て done でも failedSet でもない）のいずれかに分かれる（ツリー外で open の前提も failedSet に入れてある）。
+const unmetDeps = (n) => [...depsOf(workItem.get(n))].filter((d) => !done.has(d))
+const stopFacts = (n) => ({ resume: isActiveMonitoring(n), kind: workKind.get(n), halted, latch: newStartSuppressed, waiting: unmetDeps(n).filter((d) => !failedSet.has(d)), failedDeps: unmetDeps(n).filter((d) => failedSet.has(d)), gate: monitoringResumeGateDeferred.get(n), held: agentBudgetHeld.get(n) })
+const budgetOnly = (n) => { const r = stopReasons(stopFacts(n)); return r.length === 1 && r[0] === 'budget' }
 // 予算枯渇による停滞（Issue #592・Bugbot 指摘）: このランで 1 件も着手せず、予算だけが理由の保留ノードがある。
 // 着手の可否はループ中にしか分からない（再開ゲートの defer、プローブで ready になったノード）ため、ループ前では
-// 断定せず終了時に判定する。ゲートの理由が残る再開は予算だけが理由ではない（上限を上げても進まない）ので数えない。
-// 同じ引数で再実行しても同じ停滞を繰り返すので、保留の note（状態ファイルにも保存される）は、使用量 + 最初の
-// 1 件に要る量（保留時に実測した required の最小値）を案内する。値は下限: 次ランの開始処理は状態の読み込み
-// （state:load-fill。未照合の項目 5 件ごとに最大 2 巡）が LLM の返した件数で変わり、事前に決められない。
-const starvedHeld = agentBudget.starts === 0 ? pending.filter(budgetOnly) : []
-agentBudget.starved = starvedHeld.length > 0
-if (agentBudget.starved) agentBudget.neededLimit = agentBudget.used + Math.min(...starvedHeld.map((n) => agentBudgetHeld.get(n).required))
-const budgetFloor = '（下限値。保存された状態が大きいと開始処理の分だけさらに要る）'
-const budgetRerun = (act) => agentBudget.starved ? `args.agentCallLimit を少なくとも ${agentBudget.neededLimit} にして再実行すると${act}しうる${budgetFloor}` : `同じ引数で再実行すると${act}する`
+// 断定せず終了時に判定する。neededLimit は着手の有無に関わらず「予算だけが理由の保留ノードの保留時の観測値 needed の最小値」
+// （保留時の観測に基づく目安。次ランの消費は予測しない。ノードごとの文言は budgetHeldText）。
+// held: 予算で保留した全ノード（他の停止理由と併存するものも含む）の観測値の記録。プログラムから読むなら held、人が読むなら note。
+// 次ランの挙動は主張しない。note・終了ログ・neededLimit はこの行と同じ記録（agentBudgetHeld）の値から作る。
+agentBudget.held = pending.filter((n) => agentBudgetHeld.has(n)).sort((a, b) => a - b).map((n) => { const h = agentBudgetHeld.get(n); return { issue: n, kind: workKind.get(n), resume: isActiveMonitoring(n), used: h.used, required: h.required, chunks: h.chunks, needed: h.needed, budgetOnly: budgetOnly(n) } })
+const budgetOnlyHeld = agentBudget.held.filter((h) => h.budgetOnly)
+agentBudget.starved = agentBudget.starts === 0 && budgetOnlyHeld.length > 0
+const neededRow = budgetOnlyHeld.length > 0 ? budgetOnlyHeld.reduce((m, h) => (h.needed < m.needed ? h : m)) : null
+if (neededRow) agentBudget.neededLimit = neededRow.needed
 for (const n of notStarted) {
-  const notStartedNote = budgetOnly(n) ? `エージェント呼び出し数の予算不足により新規着手を停止（使用 ${agentBudget.used}/${agentBudget.limit}。${budgetRerun('着手')}）` : notStartedNoteBase
+  const notStartedNote = stopNote(stopFacts(n), agentBudget)
   results.push({ issue: n, status: 'not-started', note: notStartedNote })
   // notStarted は有効な再開対象ではないため blocked として記録し、stale な PR 番号で次回の
   // isActiveMonitoring が誤って true 判定しないよう pr: 0 でクリアする（prClearPatch。照合できない
@@ -10170,22 +10218,13 @@ for (const n of notStarted) {
 }
 for (const n of interrupted) {
   // 再開情報が有効なため状態を上書きせず、results にも状態ファイルの実際の status で記録する
-  // （monitoring 固定で報告すると blocked 保存分と食い違う）。
+  // （monitoring 固定で報告すると blocked 保存分と食い違う）。理由は未着手と同じ stopNote で合成する
+  // （上限ゲートの defer・halt・予算の保留が併存すれば全部を示す。Issue #598 #600）。
   const { pr, status } = savedItems[String(n)]
-  // 上限ゲートで defer した場合は既定の再開案内が誤りになるため、記録した理由で上書きする。
-  // 予算による見送りはゲート・halt より弱いが、事実は落とさない: 予算でも保留した再開は、ゲートの理由（前回観測）か
-  // halt の文言のあとに予算の不足を足す（Issue #598）。予算の必要量は保留時点の使用量から言う。
-  const gate = monitoringResumeGateDeferred.get(n)
-  const held = agentBudgetHeld.get(n)
-  const heldFact = held ? `エージェント呼び出し数の予算も不足していた（保留時の使用 ${held.used}/${agentBudget.limit}。この周回の使用量では再開に args.agentCallLimit が少なくとも ${held.used + held.required} 要った）` : ''
-  const deferredReason = gate
-    ? (held ? `${gate}（この理由は前回の評価。予算で保留した周回では再評価していない）。${heldFact}` : gate)
-    : held ? (halted ? `halt のため再開しなかった。${heldFact}` : `エージェント呼び出し数の予算不足で monitoring 再開を見送った（使用 ${agentBudget.used}/${agentBudget.limit}）。${budgetRerun(' monitor から再開')}`) : ''
-  const note = deferredReason
-    ? `中断時に ${status}（${PR_RECORD_UNVERIFIED(pr)}）。${deferredReason}`
-    : `中断時に ${status}（${PR_RECORD_UNVERIFIED(pr)}）。同じ引数で再実行すると monitor から再開する`
-  results.push({ issue: n, status, pr, note })
-  log(`#${n}: halt 時も ${status} 状態を維持する（PR #${pr} の再開情報を保持）`)
+  results.push({ issue: n, status, pr, note: `中断時に ${status}（${PR_RECORD_UNVERIFIED(pr)}）。${stopNote(stopFacts(n), agentBudget)}` })
+  // 再開可否はここでは断定しない。同じノードの note（stopNote）は「再実行すると monitor からの再開を試みる」、
+  // 直後の集計ログは「monitor 再開可能な中断」と書く。このランが monitor を再開しなかった事実だけを書く。
+  log(`#${n}: monitor 中断のまま終了（状態 ${status}・PR #${pr} の再開情報を保持）`)
 }
 if (notStarted.length > 0) {
   log(`未着手のまま終了: ${formatIssueList(notStarted)}`)
@@ -10209,12 +10248,12 @@ if (blockedStateWrite.unwritten > 0) {
 // 上限による打ち切りで半端な状態が残っていないかを終了ログに出す（Issue #592）。
 const unmonitoredPrList = [...unmonitoredPrs].map(([issue, e]) => ({ issue, pr: e.pr, resumable: e.resumable }))
 // resumable は照合と pr の保存（updateState の成否確認）が済んだ PR だけ true。それ以外は状態ファイルに pr が無い
-// （または照合未了）ため、再実行しても monitor から再開しない。
+// （または照合未了）ため、再実行しても monitor からの再開の条件を満たさない。
 const unmonitoredFmt = (resumable) => unmonitoredPrList.filter((e) => e.resumable === resumable).map((e) => `#${e.issue}→PR #${e.pr}`).join(', ')
-if (unmonitoredFmt(true)) log(`⚠️ PR 作成済みで未監視（状態ファイルに pr 保存済み）: ${unmonitoredFmt(true)}。同じ引数で再実行すると monitor から再開する`)
+if (unmonitoredFmt(true)) log(`⚠️ PR 作成済みで未監視（状態ファイルに pr 保存済み）: ${unmonitoredFmt(true)}。再実行すると monitor からの再開を試みる（状態ファイルに再開情報がある）`)
 if (unmonitoredFmt(false)) log(`⚠️ PR 作成済みで未監視（状態ファイルに pr が無い／照合未了）: ${unmonitoredFmt(false)}。再実行では monitor から再開しない。GitHub 上で PR を手動確認すること（状態ファイルの unverifiedPr があれば再実行で再照合される）`)
 log(`エージェント呼び出し数: ${agentBudget.used}/${agentBudget.limit}（新規着手停止時点 ${agentBudget.stoppedDispatchAt ?? 'なし'}）`)
-if (agentBudget.starved) log(`⚠️ 予算を使い切り 1 件も着手していない。args.agentCallLimit を少なくとも ${agentBudget.neededLimit} にして再実行すること${budgetFloor}${agentBudget.neededLimit > AGENT_RUN_LIMIT ? `（ランタイムの上限 ${AGENT_RUN_LIMIT} を超えるため対象ツリーを分けて実行する）` : ''}`)
+if (agentBudget.starved) log(`⚠️ 予算不足で 1 件も着手していない。${budgetHeldText(neededRow, agentBudget.limit, agentBudget.starts)}`)
 
 if (halted) log(`中断: ${halted.reason}（直近の停滞イシュー: ${halted.issues.map((n) => `#${n}`).join(', ')}）`)
 

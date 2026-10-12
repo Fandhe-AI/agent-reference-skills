@@ -5,18 +5,28 @@
 // 実行ファイルからコメントを落としてサイズ予算を確保し、開発ファイル側はコメント量の制約から
 // 解放する（設計の経緯は PR #241 → 本分離）。
 //
-// 変換は「コメント除去」と「コード行の先頭インデント除去」の 2 つだけで、これ以外の minify は
-// しない: コメント行は空行化し改行を全て保持するため、生成物と開発ファイルの行番号は完全に
-// 一致する（スタックトレース・エラー行の突き合わせ用）。一方、先頭インデントを落とすため
-// **列番号は一致しない**。テンプレートリテラル内（`${}` 式部分を含む）は一切変更しない
-// （プロンプトに埋め込む bash・YAML 等は継続行のインデントが内容の一部）。インデント除去は
-// 512 KiB 予算（tests/lib/workflow-script-contract.mjs）を行番号一致を保ったまま守るための措置。
+// 変換は「コメント除去」「コード行の先頭インデント除去」「トークン間の不要な半角スペースの
+// 除去」の 3 つだけで、これ以外の minify（識別子短縮・改行除去等）はしない: コメント行は空行化し
+// 改行を全て保持するため、生成物と開発ファイルの行番号は完全に一致する（スタックトレース・
+// エラー行の突き合わせ用）。一方、先頭インデントと空白を落とすため**列番号は一致しない**。
+// テンプレートリテラル内（`${}` 式部分を含む）・文字列リテラル・正規表現リテラルは一切変更しない
+// （プロンプトに埋め込む bash・YAML 等は継続行のインデントが内容の一部）。インデント除去と
+// 空白除去は 512 KiB 予算（tests/lib/workflow-script-contract.mjs）を行番号一致を保ったまま
+// 守るための措置。空白除去は、詰めても同じ 2 トークンに字句解析される隣接の組だけを許可リスト
+// （shouldSqueezeSpace）で詰め、迷う組は詰めない。
+// lexer の `/` 判別（除算と正規表現）は誤り得るため、誤読で文字列・テンプレートの中身が詰められても
+// 気づけるよう、ビルド（生成時と --check の両方）で生成物のトークン列（種類・値・開始行）が開発ファイルの
+// トークン列と一致することを Node 同梱の acorn で照合する（verifyTokenParity）。不一致・acorn を取得
+// できない Node・字句解析の失敗はいずれも生成ファイルを書かずに非ゼロ終了する（fail-closed）。
 // 生成物の鮮度（開発ファイルとの同期）は tests/build-workflow.test.mjs が CI で検証する —
 // 生成物を直接編集したりビルドを忘れたりすると byte 不一致で fail する。
 //
 // 使い方:
 //   node skills/implement-issue-tree/scripts/build-workflow.mjs          # 生成して書き込み
 //   node skills/implement-issue-tree/scripts/build-workflow.mjs --check  # 書き込まず鮮度確認
+//   --src <path> / --dist <path> で入力の開発ファイル・出力（--check では比較対象）の実行ファイルを差し替える
+//   （テスト用。既定はこのディレクトリの implement-issue-tree.src.js / implement-issue-tree.js）
+import { spawnSync } from 'node:child_process'
 import { readFileSync, realpathSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -24,6 +34,7 @@ import { fileURLToPath } from 'node:url'
 const HERE = dirname(fileURLToPath(import.meta.url))
 export const SRC_PATH = join(HERE, 'implement-issue-tree.src.js')
 export const DIST_PATH = join(HERE, 'implement-issue-tree.js')
+export const TOKEN_DIFF_PATH = join(HERE, 'token-diff.cjs')
 
 // 直後の `/` を正規表現リテラルの開始と判定するキーワード。識別子・数値の直後の `/` は
 // 除算として素通しする（標準的な division / regex 判別ヒューリスティック）。
@@ -75,9 +86,57 @@ const matchIdentifierUnicodeEscape = (src, i) => {
   return src.slice(i, i + 6)
 }
 
+// 空白除去で使う文字の分類。ここに無い文字（`/`・非 ASCII・バックスラッシュ・`#`・`@`・改行等）は
+// 分類なし = 空白を詰めない。`/` は除算・正規表現・`//` `/*` の誤生成と判別不能を避けるため、
+// 常に詰めない
+const SQUEEZE_WORD = /[A-Za-z0-9_$]/
+const SQUEEZE_QUOTES = '"\'`' // 文字列・テンプレートリテラルの境界
+const SQUEEZE_DELIMITERS = '()[]{},;' // 他の記号と連結しても別トークンにならない 1 文字記号
+const SQUEEZE_SYMBOLS = '=:?!<>|&*%^+-~.' // 上記以外の記号。記号どうしの連結は合成トークンを作り得る
+
+/**
+ * トークン間の半角スペースを詰めてよいかを、直前トークンの末尾 1 文字 `prev` と直後トークンの
+ * 先頭 1 文字 `next` だけで判定する純粋関数。**詰めてよい組を列挙し、それ以外はすべて残す**
+ * （fail-closed: 想定外の組は詰めない）。字句解析器の状態（直前の単語等）には頼らない。
+ *
+ * 詰めてよい組は、次の「詰めない」条件のどれにも当たらない次のいずれか:
+ * - 単語文字（英数字・`_`・`$`）↔ 単語文字以外の分類ありの文字（記号・括弧・引用符）
+ * - 引用符 ↔ 分類ありの任意の文字
+ * - 記号どうしは、片方が `( ) [ ] { } , ;` のときだけ（`<!--`・`-->`・`++`・`--`・`=>`・`**`・
+ *   `??`・`?.` 等の合成をまとめて防ぐ。`/` は常に対象外なので `//` `/*` も作らない）
+ *
+ * 詰めない条件（上の許可に優先する）:
+ * - どちらかが分類なし、単語文字同士（`a b`）、直前が `.`（`1. a` は `1.a` で構文エラー）
+ * - 直前が数字・`e`・`E` で直後が `+` `-` `.`（`1e +2` → `1e+2`、`1 .toString()`、`1.e + 2`）。
+ *   `1.e` のように末尾ドットで単語が切れる形も隣接 2 文字だけで防ぐ
+ * - 直前が `+` `-` で直後が数字（`1e+ 2` → `1e+2`、符号の後ろの空白）
+ *
+ * lexer が状態から加えて除外する組 — `\u{...}` の直後・同一行に除算の `/` がある行 — は
+ * ここでは判定しない。
+ */
+export function shouldSqueezeSpace(prev, next) {
+  if (typeof prev !== 'string' || typeof next !== 'string' || prev.length !== 1 || next.length !== 1) return false
+  const isWord = (ch) => SQUEEZE_WORD.test(ch)
+  const isQuote = (ch) => SQUEEZE_QUOTES.includes(ch)
+  const isDelimiter = (ch) => SQUEEZE_DELIMITERS.includes(ch)
+  const isSymbol = (ch) => SQUEEZE_SYMBOLS.includes(ch)
+  const classified = (ch) => isWord(ch) || isQuote(ch) || isDelimiter(ch) || isSymbol(ch)
+  if (!classified(prev) || !classified(next)) return false
+  if (prev === '.') return false
+  if (isWord(prev) && isWord(next)) return false
+  if (/[0-9eE]/.test(prev) && (next === '+' || next === '-' || next === '.')) return false
+  if ((prev === '+' || prev === '-') && /[0-9]/.test(next)) return false
+  const prevIsPunct = isSymbol(prev) || isDelimiter(prev)
+  const nextIsPunct = isSymbol(next) || isDelimiter(next)
+  if (prevIsPunct && nextIsPunct) return isDelimiter(prev) || isDelimiter(next)
+  return true
+}
+
 /**
  * JS ソースからコメントとコード行の先頭インデントを除去する（改行はすべて保持し行番号を
- * 維持する。列番号は維持しない）。
+ * 維持する。列番号は維持しない）。`squeezeSpaces` オプションを true にすると、さらに最上位の
+ * コードのトークン間の不要な半角スペースを詰める（`squeezeSpaces()` 経由で使う。lexer の状態
+ * 追跡を共有するため、文字列・テンプレート・正規表現の判定を二重実装しない）。
  *
  * 文字列・テンプレートリテラル（`${}` のネスト含む）・正規表現リテラルを追跡する lexer で、
  * それらの内部にある `//` `/*` をコメントと誤認しない。本スクリプトはプロンプト用の巨大
@@ -89,7 +148,7 @@ const matchIdentifierUnicodeEscape = (src, i) => {
  * ビルド時検証（行数保持・先頭 meta 宣言・冪等性）と tests/build-workflow.test.mjs の
  * 固定ケース + 生成物パースゲートで担保する。
  */
-export function stripComments(src) {
+export function stripComments(src, { squeezeSpaces = false } = {}) {
   let out = ''
   let i = 0
   const n = src.length
@@ -135,6 +194,9 @@ export function stripComments(src) {
   // 'code'（{} 深度つき）と 'template' のネストを管理する。template 内の `${` で code を
   // push し、その code の深度が閉じたら template へ復帰する
   const stack = [{ mode: 'code', depth: 0 }]
+  // 空白除去用: 現在の行に除算（正規表現と判別されなかった `/`）が出たか。除算と誤読した正規表現
+  // リテラルの内部の空白を詰めて壊さないため、その行の残りでは空白を詰めない（改行で解除）
+  let squeezeOff = false
 
   // コメント除去の直前に出力末尾の行内空白を切り詰める。コメントだけの行は空行になり、
   // `code  // c` は `code` になる（.editorconfig の trim_trailing_whitespace 準拠）
@@ -195,6 +257,30 @@ export function stripComments(src) {
       rawPrevContinuesSigWord = false
       i++
       continue
+    }
+
+    // トークン間の空白除去（squeezeSpaces 有効時）: 最上位のコードで行内の空白・タブの連なりを
+    // 丸ごと消費し、詰められる組（shouldSqueezeSpace）なら何も出さず、そうでなければ 1 個に
+    // まとめて出す。行末の空白は対象外（下の通常経路）。字句状態は空白 1 個を出した場合と
+    // 同じに更新するため、regex / 除算判別の結果は変わらない
+    if (squeezeSpaces && (c === ' ' || c === '\t') && stack.length === 1 && !squeezeOff) {
+      let j = i
+      while (src[j] === ' ' || src[j] === '\t') j++
+      const next = src[j]
+      const prev = out[out.length - 1]
+      if (prev !== undefined && prev !== '\n' && next !== undefined && next !== '\n' && next !== '\r') {
+        const squeeze =
+          shouldSqueezeSpace(prev, next) &&
+          // `\u{41}` の閉じ `}` と単語文字を連結すると識別子が地続きになる
+          !(prev === '}' && rawPrevIsIdentEscape && isWordChar(next))
+        if (!squeeze) out += ' '
+        rawPrev2 = rawPrev
+        rawPrev = ' '
+        rawPrevIsIdentEscape = false
+        rawPrevContinuesSigWord = false
+        i = j
+        continue
+      }
     }
 
     const c2 = src[i + 1]
@@ -367,6 +453,8 @@ export function stripComments(src) {
     // 行末に残るケース。文字列・テンプレート内の改行は別経路のため触らない）
     if (c === '\n') trimLineTail()
     out += c
+    if (c === '\n') squeezeOff = false
+    else if (c === '/') squeezeOff = true
     if (isWordChar(c)) {
       // rawPrevIsIdentEscape: 直前が Unicode コードポイントエスケープの末尾（`\u{1D400}1` の
       // `1` 等）で地続きの識別子文字である場合も継続として扱う（Issue #455 codex P1）。
@@ -442,11 +530,20 @@ export function stripComments(src) {
 }
 
 /**
+ * コメント・インデントを除去したうえで、最上位のコードのトークン間の不要な半角スペースを詰める。
+ * 先にコメントを除去してから空白除去の lexer を走らせるため、ブロックコメントの置換空白が
+ * 詰め残しになって冪等性を壊すことはない。冪等（出力へ再適用しても不変）。
+ */
+export function squeezeSpaces(src) {
+  return stripComments(stripComments(src), { squeezeSpaces: true })
+}
+
+/**
  * 開発ファイルのソースから実行ファイルの内容を生成し、変換の安全性を検証して返す。
  * 検証に失敗した場合は throw する（fail-closed: 壊れた生成物を書き出さない）。
  */
 export function buildArtifact(src) {
-  const stripped = stripComments(src)
+  const stripped = squeezeSpaces(src) // コメント・インデント・不要な空白を除去した生成物
   const srcLines = src.split('\n').length
   const outLines = stripped.split('\n').length
   if (srcLines !== outLines) {
@@ -458,11 +555,35 @@ export function buildArtifact(src) {
   if (!/^export const meta\b/.test(stripped)) {
     throw new Error('生成物の先頭が `export const meta` でない（開発ファイル先頭にコメント等が混入）')
   }
-  // 冪等性: コメント除去済みの生成物へ再適用しても不変であること（lexer の自己整合検証）
-  if (stripComments(stripped) !== stripped) {
-    throw new Error('コメント除去が冪等でない（lexer がコメント以外を変更している疑い）')
+  // 冪等性: 生成物へ再適用しても不変であること（lexer の自己整合検証）。空白除去モードの lexer は
+  // コメント・インデント除去も兼ねるため、1 回の再適用でコメント除去・空白除去の双方を検証できる
+  if (stripComments(stripped, { squeezeSpaces: true }) !== stripped) {
+    throw new Error('コメント除去・空白除去が冪等でない（lexer がコメント・空白以外を変更している疑い）')
   }
   return stripped
+}
+
+/**
+ * 生成物のトークン列が開発ファイルのトークン列と一致することを acorn で照合する。lexer
+ * （stripComments）とは独立の字句解析なので、lexer が `/` を誤読して文字列・テンプレート・正規表現の
+ * 中身を変えても検出できる。コメントはトークンに出ないため開発ファイルをそのまま比べる。比較は種類・
+ * 値・開始行で、sourceType は module と script の両方。一致しなければ最初の差の位置（行番号と前後の
+ * トークン）を含めて throw する。acorn を取得できない Node でも黙って飛ばさず throw する。
+ */
+export function verifyTokenParity(src, artifact) {
+  const r = spawnSync(process.execPath, ['--expose-internals', TOKEN_DIFF_PATH], {
+    input: JSON.stringify([{ name: 'build', before: src, after: artifact }]),
+    encoding: 'utf8',
+    maxBuffer: 1 << 28,
+  })
+  if (r.error || r.status !== 0) {
+    throw new Error(
+      'トークン照合を実行できない（acorn を取得できない Node の可能性。検査を省略せず中止する）: ' +
+        `${r.error ? r.error.message : `status ${r.status}`} ${r.stderr ?? ''}`.trim(),
+    )
+  }
+  const [result] = JSON.parse(r.stdout).results
+  if (!result.ok) throw new Error(`生成物のトークン列が開発ファイルと一致しない: ${result.detail}`)
 }
 
 // CLI 実行部（import 時は実行しない）。argv[1] は realpath で比較する — import.meta.url は
@@ -476,21 +597,37 @@ const invokedAs = (() => {
   }
 })()
 if (invokedAs && invokedAs === fileURLToPath(import.meta.url)) {
+  const argValue = (flag, fallback) => {
+    const at = process.argv.indexOf(flag)
+    return at === -1 ? fallback : (process.argv[at + 1] ?? fallback)
+  }
   const checkOnly = process.argv.includes('--check')
-  const src = readFileSync(SRC_PATH, 'utf8')
-  const artifact = buildArtifact(src)
+  const srcPath = argValue('--src', SRC_PATH)
+  const distPath = argValue('--dist', DIST_PATH)
+  const startedAt = Date.now()
+  let src
+  let artifact
+  try {
+    src = readFileSync(srcPath, 'utf8')
+    artifact = buildArtifact(src)
+    verifyTokenParity(src, artifact)
+  } catch (e) {
+    console.error(`ビルド中止（${distPath} は書き込まない）: ${e.message}`)
+    process.exit(1)
+  }
   const srcBytes = Buffer.byteLength(src)
   const outBytes = Buffer.byteLength(artifact)
+  const elapsed = ((Date.now() - startedAt) / 1000).toFixed(2)
   if (checkOnly) {
-    const current = readFileSync(DIST_PATH, 'utf8')
+    const current = readFileSync(distPath, 'utf8')
     if (current !== artifact) {
       console.error('鮮度エラー: 実行ファイルが開発ファイルと同期していない。node build-workflow.mjs で再生成せよ')
       process.exit(1)
     }
-    console.log(`鮮度 ok: ${outBytes} B（src ${srcBytes} B）`)
+    console.log(`鮮度 ok: ${outBytes} B（src ${srcBytes} B・トークン照合 ok・${elapsed}s）`)
   } else {
-    writeFileSync(DIST_PATH, artifact)
-    console.log(`生成完了: ${DIST_PATH}`)
-    console.log(`src ${srcBytes} B → dist ${outBytes} B（-${srcBytes - outBytes} B, -${Math.round(((srcBytes - outBytes) / srcBytes) * 100)}%）`)
+    writeFileSync(distPath, artifact)
+    console.log(`生成完了: ${distPath}`)
+    console.log(`src ${srcBytes} B → dist ${outBytes} B（-${srcBytes - outBytes} B, -${Math.round(((srcBytes - outBytes) / srcBytes) * 100)}%・トークン照合 ok・${elapsed}s）`)
   }
 }
