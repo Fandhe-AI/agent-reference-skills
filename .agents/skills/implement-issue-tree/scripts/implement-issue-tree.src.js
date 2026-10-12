@@ -1385,9 +1385,9 @@ const DECLARED_DEPS_SCHEMA = {
       },
       description: 'コマンド出力の各行（{"number": N, "deps": [...], "sig": S}）をそのまま転記した配列',
     },
-    rateLimited: { type: 'boolean', description: '標準エラーにレート制限（HTTP 403・429・rate limit）が出たら true' },
-    resetAt: { type: 'string', description: 'gh api rate_limit が返した resetAt をそのまま写す' },
-    waitSeconds: { type: 'number', description: 'gh api rate_limit が返した waitSeconds をそのまま写す' },
+    rateLimited: { type: 'boolean', description: 'レート制限と確認できたときだけ true（メッセージに rate limit / secondary rate limit / RATE_LIMITED がある、または core の remaining が 0）。権限・SSO などの 403 は false' },
+    resetAt: { type: 'string', description: 'core の枯渇のとき gh api rate_limit が返した resetAt をそのまま写す（secondary は省略）' },
+    waitSeconds: { type: 'number', description: 'core の枯渇なら gh api rate_limit の waitSeconds、secondary rate limit なら retry-after の秒数。どちらも無ければ省略（ホストが固定の短い待機にする）' },
   },
 }
 
@@ -1415,7 +1415,11 @@ function declaredDepsPrompt(numbers) {
     '標準出力は成功したイシューにつき 1 行の JSON（{"number": N, "deps": [...], "sig": S}）。標準出力の全行を entries 配列へそのまま転記して返す（number・deps〔要素の順序も含む〕・sig を出力どおりに写す。行の省略以外の加工・推測による追加をしない。sig はホストが deps との整合を検査する値）。',
     '標準エラーに FAILED と出たイシューは entries に含めない（ホストが欠落を検出して再試行する）。',
     // REST の core 枠を使う（GraphQL 枠を消費しない）。待機はホストが行うため自分で sleep しない。
-    `標準エラーに HTTP 403・429・rate limit が出たら rateLimited を true にし、gh api rate_limit --jq '.resources.core | {resetAt: (.reset | todate), waitSeconds: ([.reset - now, 0] | max | ceil)}' を 1 回実行して resetAt と waitSeconds を出力どおりに返す（待機はホストが行う。sleep しない）。`,
+    // HTTP 403 を無条件にレート制限とみなさない: 権限不足・SSO 等の恒久的な 403 で core の復帰まで待って
+    // 「一過性」と報告すると、再実行しても同じ 403 で失敗する。レート制限と確認できたときだけ待たせ、
+    // それ以外は rateLimited を立てず通常の失敗（再試行・抽出失敗による停止）へ回す。secondary rate limit は
+    // core の reset と無関係なので retry-after（無ければ省略。ホストが 60 秒待つ）を waitSeconds に使う。
+    `標準エラーのメッセージに rate limit・secondary rate limit・RATE_LIMITED がある、または HTTP 403・429 で gh api rate_limit --jq '.resources.core | {remaining, resetAt: (.reset | todate), waitSeconds: ([.reset - now, 0] | max | ceil)}' の remaining が 0 のときだけ rateLimited を true にする。権限・SSO など他の 403 は rateLimited にしない（通常の失敗として扱う）。core の枯渇なら resetAt と waitSeconds を出力どおりに返し、secondary rate limit なら resetAt は省略して waitSeconds に retry-after の秒数を入れる（無ければ省略）。待機はホストが行う。sleep しない。`,
   ].join('\n')
 }
 
@@ -1493,17 +1497,19 @@ const RATE_LIMIT_MAX_WAITS = 2
 
 // items を最大 limit 並列で処理し、結果を items と同じ順序で返す。1 件でも reject したら新規の起動を止め
 // 最初の reject を伝播する（Promise.all と同じ意味論）。
-async function mapBounded(items, limit, fn) {
+// signal.aborted は reject 時に立つ共有の中止フラグ。新規の起動を止めるだけでは、既に fn の中で sleep 等に
+// 入っているチャンクが目覚めて agent() を呼んでしまう（Issue #593 の Bugbot 指摘）ため、fn 側が
+// sleep の後と agent() の前に確認できるよう呼び出し側から渡す。
+async function mapBounded(items, limit, fn, signal = { aborted: false }) {
   const results = new Array(items.length)
   let next = 0
-  let failed = false
   const worker = async () => {
-    while (!failed && next < items.length) {
+    while (!signal.aborted && next < items.length) {
       const i = next++
       try {
         results[i] = await fn(items[i], i)
       } catch (e) {
-        failed = true
+        signal.aborted = true
         throw e
       }
     }
@@ -1532,6 +1538,9 @@ function parseRateLimit(result) {
 // 上限と長時間コマンド規約に反し、待つ間のトークンも消費する。レート制限による待機は attempt を消費しない
 // （RATE_LIMIT_MAX_WAITS で有界）。sleep が使えない環境では待たずに再開可能時刻つきで停止する。
 async function extractDeclaredDeps(chunks, sleep = typeof setTimeout === 'function' ? (ms) => new Promise((r) => setTimeout(r, ms)) : null) {
+  // 他チャンクが失敗して全体が reject した後は、レート制限の待機から目覚めたチャンクも agent() を呼ばず終える
+  // （戻り値は捨てられる。無駄な呼び出しはエージェント数の予算も消費する）。
+  const signal = { aborted: false }
   const runChunk = async (requested, index) => {
     const merged = new Map()
     let pending = requested
@@ -1539,6 +1548,7 @@ async function extractDeclaredDeps(chunks, sleep = typeof setTimeout === 'functi
     let waits = 0
     let rate = null
     for (let attempt = 1; attempt <= 2 && pending.length > 0;) {
+      if (signal.aborted) return merged
       let result = null
       try {
         result = await agent(declaredDepsPrompt(pending), {
@@ -1551,6 +1561,7 @@ async function extractDeclaredDeps(chunks, sleep = typeof setTimeout === 'functi
       } catch (e) {
         log(`⚠️ 依存宣言の抽出（チャンク ${index + 1}・${attempt} 回目）が失敗した: ${sanitize(String(e?.message ?? e))}`)
       }
+      if (signal.aborted) return merged
       rate = parseRateLimit(result)
       // 契約違反（非整数・上限超過・重複・sig 不一致）はその回の返却全体を破棄して再試行へ回す
       // （部分採用すると転記の誤りを含んだ依存辺を取り込み得るため）。依頼外番号は採用せず無視する（#558）。
@@ -1587,7 +1598,7 @@ async function extractDeclaredDeps(chunks, sleep = typeof setTimeout === 'functi
     return merged
   }
   const declaredByNumber = new Map()
-  for (const m of await mapBounded(chunks, DECLARED_DEPS_CONCURRENCY, runChunk)) {
+  for (const m of await mapBounded(chunks, DECLARED_DEPS_CONCURRENCY, runChunk, signal)) {
     for (const [n, s] of m) declaredByNumber.set(n, s)
   }
   return declaredByNumber
@@ -6736,7 +6747,7 @@ const markPrResumable = (n, pr, status, branch) => {
   if (e && e.pr === pr && (status === 'monitoring' || status === 'blocked') && Number.isInteger(pr) && pr > 0 && isValidBranchName(branch) && branchMatchesIssue(branch, n)) e.resumable = true
 }
 // 予算不足で今回見送った issue の集合（未着手ノードの note の出し分けに使う。着手できたら外す）。
-const agentBudgetHeld = new Set()
+const agentBudgetHeld = new Map()
 let consecutiveFailures = 0
 // consecutiveFailures が最後に 0 へリセットされた「世代」。外部完了回復時の failure 減算は同一
 // 世代のみに限る（Issue #442 codex/Bugbot: 世代を見ない一律デクリメントは別世代の failure で
@@ -9612,6 +9623,32 @@ async function probePrereqCompletion(targets) {
   }
   return appliedCount
 }
+// 予算ゲートの候補の種別（実行中の件数ではなく候補の目安を選ぶ）。ループ内の判定と開始直後の検査で共有する。
+const budgetKindOf = (q) => (isActiveMonitoring(q.number) ? 'resume' : q.kind === 'implement' ? 'implement' : 'close')
+// 開始処理が終わった時点（最初の着手判定の前）の予算検査（Issue #592・Bugbot 指摘）。開始処理の見積り
+// （AGENT_CALLS_START）には依存宣言のチャンク数分の呼び出しが入っておらず、大きなツリーで agentCallLimit が
+// 下限付近だと、開始処理だけで最初の 1 件に要る量（前進保証後も候補の目安 + 終了処理の予備）を割り込む。
+// このとき実行中は 0 で使用量も増えないため、ループに入ると全件が黙って not-started になり、状態ファイルへ
+// 全件 blocked が一括記録される。それを避けて、必要な最小値を示して起動時エラーで停止する（args 検証と同じ
+// 流儀。init-all 以外の状態は書いていないので、値を上げて同じ args で再実行できる）。着手できる候補が 1 件でも
+// あれば（種別ごとの目安が違う）ループに任せる。halt、および新規着手抑止（ラッチ）が止める候補は、その理由が
+// 予算より強いので数えない（monitoring 再開はラッチの対象外）。着手可能な候補が無い（依存待ち等）ときも
+// 予算のせいではない。
+if (agentBudget.enforced && !halted) {
+  const holds = work
+    .filter((q) => !done.has(q.number) && !failedSet.has(q.number) && classifyDispatchReadiness(depsOf(q), done, failedSet) === 'ready')
+    .map((q) => ({ kind: budgetKindOf(q), skipped: shouldSkipForNewStartSuppressed(newStartSuppressed, q.kind) }))
+    .filter(({ kind, skipped }) => kind === 'resume' || !skipped)
+    .map(({ kind }) => agentBudgetHold(agentBudget, { running: 0, kind, pending: 0 }))
+  if (holds.length > 0 && holds.every(Boolean)) {
+    const need = Math.min(...holds.map((h) => h.required))
+    throw new Error(
+      `エージェント呼び出し数の予算が開始処理で足りなくなった（使用 ${agentBudget.used}/${agentBudget.limit}・残り ${agentBudget.limit - agentBudget.used}）。`
+      + `最初の 1 件の着手に ${need} 要るため、args.agentCallLimit を ${agentBudget.used + need} 以上にして同じ args で再実行すること`
+      + `（ランタイムの上限 ${AGENT_RUN_LIMIT} を超える場合は対象ツリーを分けて実行する。このままでは全件が未着手の blocked になるため停止した）`,
+    )
+  }
+}
 while (true) {
   dispatchIterationSeq += 1
   // ラン中に積み増された worktree の実容量を間引き付きで実測し直す（floor 予約の過小評価を補う）
@@ -9642,7 +9679,7 @@ while (true) {
       if (readiness !== 'ready') continue
       // エージェント呼び出し数の予算（Issue #592）。残りが「実行中 + この候補を終える目安 + 終了処理の予備」
       // を下回るなら着手せず、実行中の issue の完了を優先する。非ラッチ（実行中が減れば再び通る）。
-      const budgetKind = isActiveMonitoring(n) ? 'resume' : item.kind === 'implement' ? 'implement' : 'close'
+      const budgetKind = budgetKindOf(item)
       // 数えられていない（enforced: false）ときは used が 0 のままで判定が成り立たないため、ゲートを適用しない。
       const budgetHold = agentBudget.enforced ? agentBudgetHold(agentBudget, { running: running.size, kind: budgetKind, pending: budgetPending }) : null
       if (budgetHold) {
@@ -9650,8 +9687,7 @@ while (true) {
           agentBudget.stoppedDispatchAt = agentBudget.used
           log(`⚠️ エージェント呼び出し数が上限 ${agentBudget.limit} に近いため新規着手を停止する（使用 ${agentBudget.used}・残り ${budgetHold.remaining}・#${n} に必要 ${budgetHold.required}）。実行中の issue の完了を優先する`)
         }
-        agentBudgetHeld.add(n)
-        if (budgetKind === 'resume') monitoringResumeGateDeferred.set(n, `エージェント呼び出し数の予算不足で monitoring 再開を見送った（使用 ${agentBudget.used}/${agentBudget.limit}）。同じ引数で再実行すると monitor から再開する`)
+        agentBudgetHeld.set(n, item.kind)
         continue
       }
       agentBudgetHeld.delete(n)
@@ -10130,7 +10166,10 @@ const notStartedNoteBase = halted
     ? `残置 worktree 上限ゲートにより新規着手を抑止（理由: ${newStartSuppressed.reason}）`
     : 'スケジューラ終了時に未着手（キュー未到達）'
 for (const n of notStarted) {
-  const notStartedNote = agentBudgetHeld.has(n) ? `エージェント呼び出し数の予算不足により新規着手を停止（使用 ${agentBudget.used}/${agentBudget.limit}。同じ引数で再実行すると着手する）` : notStartedNoteBase
+  // 予算は最も弱い停止理由: halt・新規着手抑止（残置 worktree 上限等のラッチ）が効いているなら、再実行しても
+  // 解けない本当の理由を残す（予算の文言は「同じ引数で再実行すると着手する」と案内するため誤案内になる）。
+  const budgetOnly = agentBudgetHeld.has(n) && !halted && !shouldSkipForNewStartSuppressed(newStartSuppressed, agentBudgetHeld.get(n))
+  const notStartedNote = budgetOnly ? `エージェント呼び出し数の予算不足により新規着手を停止（使用 ${agentBudget.used}/${agentBudget.limit}。同じ引数で再実行すると着手する）` : notStartedNoteBase
   results.push({ issue: n, status: 'not-started', note: notStartedNote })
   // notStarted は有効な再開対象ではないため blocked として記録し、stale な PR 番号で次回の
   // isActiveMonitoring が誤って true 判定しないよう pr: 0 でクリアする（prClearPatch。照合できない
@@ -10142,7 +10181,9 @@ for (const n of interrupted) {
   // （monitoring 固定で報告すると blocked 保存分と食い違う）。
   const { pr, status } = savedItems[String(n)]
   // 上限ゲートで defer した場合は既定の再開案内が誤りになるため、記録した理由で上書きする。
+  // 予算による見送りは、再開ゲートの理由や halt より弱いため、それらが無いときにだけ案内する。
   const deferredReason = monitoringResumeGateDeferred.get(n)
+    ?? (agentBudgetHeld.has(n) && !halted ? `エージェント呼び出し数の予算不足で monitoring 再開を見送った（使用 ${agentBudget.used}/${agentBudget.limit}）。同じ引数で再実行すると monitor から再開する` : '')
   const note = deferredReason
     ? `中断時に ${status}（${PR_RECORD_UNVERIFIED(pr)}）。${deferredReason}`
     : `中断時に ${status}（${PR_RECORD_UNVERIFIED(pr)}）。同じ引数で再実行すると monitor から再開する`

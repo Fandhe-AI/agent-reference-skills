@@ -475,3 +475,91 @@ test('extractDeclaredDeps: レート制限の申告があっても全件返却�
   const m = await extractDeclaredDeps([[1, 2]], NO_SLEEP)
   assert.deepEqual([...m.keys()], [1, 2])
 })
+
+// Bugbot B（fandhe-edge-model#537・ideas#447）: HTTP 403 を無条件にレート制限とみなさない。
+test('declaredDepsPrompt: レート制限と判定するのはメッセージに rate limit 系の語がある、または core の remaining が 0 のときに限る (Bugbot B)', () => {
+  const p = declaredDepsPrompt([1])
+  assert.match(p, /rate limit・secondary rate limit・RATE_LIMITED/, 'メッセージ側の判定語')
+  assert.match(p, /remaining/, 'core の残量（remaining）で判定する')
+  assert.match(p, /gh api rate_limit --jq '\.resources\.core \| \{remaining,/, 'remaining を取得するコマンド')
+  assert.match(p, /remaining が 0 のときだけ rateLimited を true/, '条件を限定する')
+  assert.match(p, /権限・SSO など他の 403 は rateLimited にしない/, '権限系の 403 は対象外と明記')
+  assert.match(p, /通常の失敗として扱う/)
+  // 旧文言（403 があれば無条件に rateLimited）が残っていない
+  assert.doesNotMatch(p, /HTTP 403・429・rate limit が出たら/)
+  assert.doesNotMatch(DECLARED_DEPS_SCHEMA.properties.rateLimited.description, /HTTP 403・429・rate limit）が出たら true/)
+})
+
+test('declaredDepsPrompt: secondary rate limit は core の reset と無関係なので retry-after を待ち時間にし、無ければ省略させる (Bugbot B)', () => {
+  const p = declaredDepsPrompt([1])
+  assert.match(p, /secondary rate limit なら resetAt は省略して waitSeconds に retry-after の秒数を入れる（無ければ省略）/)
+  assert.match(DECLARED_DEPS_SCHEMA.properties.waitSeconds.description, /secondary rate limit なら retry-after/)
+})
+
+test('extractDeclaredDeps: 権限系の 403（rateLimited を立てない返却）は待たず通常の失敗として再試行し、一過性と案内せず停止する (Bugbot B)', async () => {
+  let calls = 0
+  // 403 を受けたエージェントが rate_limit の remaining > 0 を確認し、rateLimited を立てずに失敗を返した状況
+  globalThis.agent = async () => { calls++; return { entries: [], rateLimited: false } }
+  const waits = []
+  await assert.rejects(
+    extractDeclaredDeps([[7]], async (ms) => { waits.push(ms) }),
+    (err) => /本文の依存宣言を抽出できなかったイシューがある（#7）/.test(err.message) && !/一過性のため停止/.test(err.message) && !/レート制限により/.test(err.message),
+  )
+  assert.deepEqual(waits, [], 'core の reset まで待たない')
+  assert.equal(calls, 2, '既存の再試行（初回 + 1 回）に回る')
+})
+
+test('extractDeclaredDeps: secondary rate limit は retry-after があればそれ、無ければ固定の短い待機（60 秒 + 余裕）で待つ (Bugbot B)', async () => {
+  const run = async (limited) => {
+    let n = 0
+    globalThis.agent = async (prompt) => (++n === 1 ? { entries: [], rateLimited: true, ...limited } : okEntries(prompt))
+    const waits = []
+    await extractDeclaredDeps([[1]], async (ms) => { waits.push(ms) })
+    return waits
+  }
+  assert.deepEqual(await run({ waitSeconds: 45 }), [50_000], 'retry-after 45 秒 + 余裕 5 秒')
+  assert.deepEqual(await run({}), [65_000], 'retry-after も resetAt も無ければ固定の 60 秒 + 余裕 5 秒（core の reset を待たない）')
+})
+
+// Bugbot C（fandhe-edge-model#537）: 全体が reject した後に、レート制限待機中のチャンクが agent() を呼ばない。
+test('mapBounded: reject 時に共有の中止フラグを立てる', async () => {
+  const signal = { aborted: false }
+  await assert.rejects(mapBounded([1, 2], 2, async (x) => { if (x === 2) throw new Error('boom') }, signal), /boom/)
+  assert.equal(signal.aborted, true)
+})
+
+test('extractDeclaredDeps: 他チャンクが失敗して reject した後、レート制限の待機から目覚めたチャンクは agent() を呼ばない (Bugbot C)', async () => {
+  const labels = []
+  let release
+  const gate = new Promise((r) => { release = r })
+  globalThis.agent = async (prompt, opts) => {
+    labels.push(opts.label)
+    const asked = requestedOf(prompt)
+    if (asked.includes(1)) return { entries: [], rateLimited: true, waitSeconds: 30 } // チャンク 1: レート制限で待機に入る
+    return { entries: [] } // チャンク 2: 常に欠落 → 2 回で失敗して全体が reject
+  }
+  await assert.rejects(extractDeclaredDeps([[1], [2]], () => gate), /本文の依存宣言を抽出できなかったイシューがある（#2）/)
+  const before = labels.length
+  release() // 待機から目覚める
+  await new Promise((r) => setTimeout(r, 10))
+  assert.equal(labels.length, before, `失敗後に agent() が増えていない: ${labels.join(', ')}`)
+  assert.ok(!labels.includes('plan:declared-deps-1-retry'), '待機明けの再試行を起動しない')
+})
+
+test('extractDeclaredDeps: 他チャンクが失敗した後、実行中だったチャンクの返却が不完全でも再試行の agent() を呼ばない (Bugbot C)', async () => {
+  const labels = []
+  let release
+  const gate = new Promise((r) => { release = r })
+  globalThis.agent = async (prompt, opts) => {
+    labels.push(opts.label)
+    if (requestedOf(prompt).includes(1)) {
+      await gate // 実行中のまま他チャンクの失敗を待つ
+      return { entries: [] } // 欠落 → 通常なら再試行する
+    }
+    return { entries: [] }
+  }
+  await assert.rejects(extractDeclaredDeps([[1], [2]], NO_SLEEP), /抽出できなかった/)
+  release()
+  await new Promise((r) => setTimeout(r, 10))
+  assert.deepEqual(labels.filter((l) => l.startsWith('plan:declared-deps-1')), ['plan:declared-deps-1'], 'チャンク 1 の再試行は起動しない')
+})
