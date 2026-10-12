@@ -541,7 +541,7 @@ test('振る舞い: 再開情報が有効なイシューのツリー外前提待
   assert.equal(done.pr, 42)
   assert.deepEqual(done.outOfTreeDeps, [5])
   assert.match(done.note, /ツリー外の前提イシュー #5 が open のため未着手/)
-  assert.match(done.note, /状態ファイルに PR #42 の記録あり（未照合）。同じ引数で再実行すると monitor から再開する/)
+  assert.match(done.note, /状態ファイルに PR #42 の記録あり（未照合）。再実行すると monitor からの再開を試みる/)
   // PR の実在を確かめていない経路では「作成済み」と断定しない。
   assert.doesNotMatch(done.note, /作成済み/)
   assert.equal(failure.issue, 10)
@@ -571,7 +571,7 @@ test('振る舞い: ツリー内の前提失敗のみなら従来どおり resul
     issue: 12,
     status: 'blocked',
     pr: 42,
-    note: '前提イシューの失敗・ブロックにより未着手: #7（状態ファイルに PR #42 の記録あり（未照合）。同じ引数で再実行すると monitor から再開する）',
+    note: '前提イシューの失敗・ブロックにより未着手: #7（状態ファイルに PR #42 の記録あり（未照合）。再実行すると monitor からの再開を試みる）',
   }])
   assert.deepEqual(ctx.stateUpdates, [])
 })
