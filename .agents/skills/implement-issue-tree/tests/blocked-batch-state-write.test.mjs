@@ -466,7 +466,7 @@ test('結合: dryRun は状態ファイル・worktree・実装系のエージェ
   ])
   const { result, calls, logs } = await runScript({ args: { parent: 1, dryRun: true }, nodes })
   const labels = calls.map((c) => c.opts.label)
-  for (const forbidden of [/^state:update/, /^state:cleanup/, /^state:init-all/, /^state:high-water/, /^worktree:(?!untracked-scan)/, /^(plan|impl|review|fix|merge|monitor|pr)[:\-]#/, /^recover:/]) {
+  for (const forbidden of [/^state:update/, /^state:cleanup/, /^state:init-all/, /^state:high-water/, /^worktree:(?!untracked-scan|head-scan)/, /^(plan|impl|review|fix|merge|monitor|pr)[:\-]#/, /^recover:/]) {
     assert.deepEqual(labels.filter((l) => forbidden.test(l)), [], `起動してはならない: ${forbidden}`)
   }
   assert.ok(calls.every((c) => !c.opts.isolation), 'worktree 隔離のエージェントを起動しない')
