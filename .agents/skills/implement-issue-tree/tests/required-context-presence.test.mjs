@@ -94,7 +94,7 @@ test('monitorPrompt: 3g は手順 2 が checksTotal を省略した（取得失�
   const head = s.slice(0, s.indexOf('\n'))
   assert.ok(!head.includes('手順 2 の checksTotal が 1 件以上のとき'), '3g の前提が手順 2 の checksTotal 限定のまま')
   assert.ok(head.includes('手順 2 で取得に失敗して checksTotal を省略した場合も'), '3g が checksTotal 省略時も実行される旨がない')
-  assert.ok(head.includes('確定 0 件だけが手順 3e'), '0 件の扱いが手順 3e の確定 0 件に限られる旨がない')
+  assert.ok(!head.includes('確定 0 件だけが手順 3e'), '0 件の行き先を確定 0 件に限る旧文言が残っている')
   // 取得失敗を 0 件・緑扱いへ倒さない（fail-closed）: 総数は手順 3 の実測列挙件数を使う。
   assert.ok(head.includes('手順 3 の gh pr checks が列挙したチェック件数'), '省略時の総数の出所がない')
 })
@@ -109,6 +109,31 @@ test('monitorPrompt: 3g の timeout が返す checksTotal の出所を手順 2 �
   assert.ok(s7.includes('手順 2 で取得に失敗した場合は手順 3 の gh pr checks が列挙した件数'))
   const ret = tail.slice(tail.indexOf('\n返却: '))
   assert.ok(ret.includes('timeout を返す場合は 1 以上') && ret.includes('手順 2 で取得に失敗していても'))
+})
+
+test('monitorPrompt: 手順 2 失敗かつ列挙 0 件は 3g へ入らず 3e へ回り、0 件では timeout を返さない', () => {
+  // 手順 2 失敗 + gh pr checks が 0 件列挙の経路が 3g の timeout（checksTotal: 0）へ落ちると、
+  // ホストが確定 0 件と読んで conflicting へ再判定してしまう。行き先を 3e に固定する。
+  const p = monitorPrompt(item, impl, [], true, true)
+  const s3g = p.slice(p.indexOf('3g.'), p.indexOf('\n6. '))
+  const head = s3g.slice(0, s3g.indexOf('\n'))
+  assert.ok(head.includes('手順 3 の gh pr checks が列挙した件数が 0 件'), '列挙 0 件の扱いがない')
+  assert.ok(head.includes('本手順へ入らず手順 3e へ進む'), '列挙 0 件が 3e へ回る旨がない')
+  assert.ok(head.includes('timeout は返さない'), '3g 前提に 0 件で timeout を返さない旨がない')
+  assert.ok(head.includes('30 秒間隔で最大 3 回まで再取得する'), '3g 前提の gh pr checks 失敗時の再取得が有界でない')
+  assert.ok(head.includes('なお読めなければ state: blocked / blockedReason: "quality" を返す'), '3g 前提の読めない場合の終端がない')
+  assert.ok(s3g.includes('0 件なら timeout ではなく手順 3e'), '3g の timeout 節に 0 件の除外がない')
+  const tail = p.slice(p.indexOf('\n7. '))
+  const s7 = tail.slice(0, tail.indexOf('\n返却: '))
+  assert.ok(s7.includes('列挙 0 件なら timeout を返さず手順 3e'), '手順 7 に列挙 0 件の除外がない')
+  const ret = tail.slice(tail.indexOf('\n返却: '))
+  assert.ok(ret.includes('列挙 0 件なら timeout を返さず手順 3e'), '返却説明に列挙 0 件の除外がない')
+  const s3e = p.slice(p.indexOf('   e. チェック総数が 0 件'), p.indexOf('   f. '))
+  assert.ok(s3e.includes('手順 3g の前提'), '3e の到達経路に 3g 前提からの到達がない')
+})
+
+test('MERGE_SCHEMA: checksTotal の description が列挙 0 件では timeout を返さず 3e へ倒すと述べる', () => {
+  assert.ok(source.includes('その件数が 0 のときは timeout ではなく手順 3e の判定を返す'))
 })
 
 test('monitorPrompt(autoMerge 無効): 手順 3g を含まない', () => {
