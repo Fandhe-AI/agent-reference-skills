@@ -310,6 +310,81 @@ test('ブロックコメント直後の識別子が直前の単語と連結し�
   assert.equal(stripComments('const b = x/*c*/in /[/]/ // note\n'), 'const b = x in /[/]/\n')
 })
 
+// コード行の先頭インデント除去（サイズ予算確保。改行は触らず行番号を保つ）
+test('インデントされたコード行は先頭の空白が除去される', () => {
+  assert.equal(stripComments('function f() {\n  if (x) {\n    y()\n  }\n}\n'), 'function f() {\nif (x) {\ny()\n}\n}\n')
+})
+
+test('タブインデントも除去される', () => {
+  assert.equal(stripComments('a()\n\t\tb()\n \t c()\n'), 'a()\nb()\nc()\n')
+})
+
+test('コメントだけの行・インデント付きコメントだけの行は完全な空行になる', () => {
+  assert.equal(stripComments('a()\n    // c\n  /* d */\nb()\n'), 'a()\n\n\nb()\n')
+})
+
+test('複数行ブロックコメントは完全な空行になり、閉じ後のコードの先頭にも空白が残らない', () => {
+  assert.equal(stripComments('a()\n  /* x\n     y\n  */ b()\n'), 'a()\n\n\nb()\n')
+})
+
+test('インデント + 行末コメントは先頭・末尾とも空白が残らない', () => {
+  assert.equal(stripComments('    const a = 1  // c\n'), 'const a = 1\n')
+})
+
+test('空白だけの行は完全な空行になる', () => {
+  assert.equal(stripComments('a()\n    \n\t\nb()\n'), 'a()\n\n\nb()\n')
+})
+
+test('複数行テンプレートリテラルの継続行（インデント付き）は 1 バイトも変わらない', () => {
+  const src = 'const p = `\n  line1\n\tline2\n    bash:\n      echo hi\n`\n'
+  assert.equal(stripComments(src), src)
+})
+
+test('テンプレート閉じ直後の行のインデントは除去される（モード復帰）', () => {
+  assert.equal(stripComments('const p = `\n  a\n`\n  next()\n'), 'const p = `\n  a\n`\nnext()\n')
+})
+
+test('テンプレート ${} 内で改行した行頭インデントも保守側で除去しない（テンプレート内は一切不変）', () => {
+  const src = 'const p = `a ${\n    foo(\n      1)\n  } b\n  c`\n  after()\n'
+  assert.equal(stripComments(src), 'const p = `a ${\n    foo(\n      1)\n  } b\n  c`\nafter()\n')
+})
+
+test('ネストしたテンプレートの継続行も不変', () => {
+  const src = 'const p = `x ${cond ? `\n   in\n` : z}\n   tail`\n'
+  assert.equal(stripComments(src), src)
+})
+
+test('エスケープされたバッククォートでテンプレートが閉じたと誤認しない', () => {
+  const src = 'const p = `a \\`\n   still template \\` x\n`\n  after()\n'
+  assert.equal(stripComments(src), 'const p = `a \\`\n   still template \\` x\n`\nafter()\n')
+})
+
+test('シングルクォート文字列内のバッククォートでテンプレートが開いたと誤認しない', () => {
+  assert.equal(stripComments("const a = '`a'\n  b()\n    c()\n"), "const a = '`a'\nb()\nc()\n")
+})
+
+test('文字列リテラルの \\ 改行継続の継続行は除去しない', () => {
+  const src = "const s = 'abc\\\n    def'\n  after()\n"
+  assert.equal(stripComments(src), "const s = 'abc\\\n    def'\nafter()\n")
+})
+
+test('正規表現リテラル直後の行のインデントは除去される', () => {
+  assert.equal(stripComments('const r = /a b/\n    r.test(s)\n'), 'const r = /a b/\nr.test(s)\n')
+})
+
+test('入力と出力の行数（改行数）が同一', () => {
+  const src = [
+    'function f() {', '  // c', '  /* a', '     b */ g()', '  const p = `', '    keep', '  `', '\tx()', '',
+  ].join('\n')
+  const out = stripComments(src)
+  assert.equal(out.split('\n').length, src.split('\n').length)
+})
+
+test('冪等性: インデント除去後の出力へ再適用しても不変', () => {
+  const once = stripComments('f(() => {\n    const t = `\n  a\n`\n  /* c */ g()\n})\n')
+  assert.equal(stripComments(once), once)
+})
+
 test('冪等性: 除去済みソースへ再適用しても不変', () => {
   const once = stripComments("const a = 1 // c\nconst u = 'http://x'\n")
   assert.equal(stripComments(once), once)

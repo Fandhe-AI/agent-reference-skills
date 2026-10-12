@@ -1,7 +1,7 @@
 ---
 name: implement-issue-tree
 description: >
-  親イシュー配下のサブイシュー（孫含む）を依存順を保ちつつ worktree で並列に自動実装・push 前 review・PR 作成・CI 監視・マージ可能状態化まで一括自動化。
+  親イシュー配下のサブイシュー（孫以下の全子孫を含む）を依存順を保ちつつ worktree で並列に自動実装・push 前 review・PR 作成・CI 監視・マージ可能状態化まで一括自動化。
   「イシューツリーを並列実装」「配下のサブイシューをまとめて実装」「ツリー全体を並列で実装して」「イシュー階層を自動開発」で使用。
   per-issue 計画立案（Plan: セッション継承モデル）→実装（Implement: sonnet）の分業。push 前 review（Review 通過後にのみ push・PR 作成して CI を 1 回だけ起動）。
   外部チェック構成は args の externalChecks で明示（{"app", "context"} の組で宣言。[] で「なし」を確定して不要待機なし・未指定なら自動マージ停止・slug のみの旧形式は自動マージ fail-closed）。
@@ -15,7 +15,7 @@ argument-hint: "<親イシュー番号> [マージ先ブランチ（省略時 ma
 
 # implement-issue-tree
 
-親イシュー番号を指定し、配下のサブイシュー（孫含む）を依存順を保ちつつ worktree で並列に自動実装・ローカル diff レビュー・push + PR 作成・CI 監視・マージ可能状態化まで自動化する Workflow を起動する。squash merge は `autoMerge: true` + `externalChecks` 明示（全 App の信頼済み check context 宣言込み）の opt-in ランでのみクライアント側で実行する（references/automerge-design.md の「クライアント側自動マージの設計」節参照）。既定（`autoMerge` 未指定 / `false`）ではマージせず停止し、マージは GitHub 上で人間が行う。
+親イシュー番号を指定し、配下のサブイシュー（孫以下の全子孫を含む）を依存順を保ちつつ worktree で並列に自動実装・ローカル diff レビュー・push + PR 作成・CI 監視・マージ可能状態化まで自動化する Workflow を起動する。squash merge は `autoMerge: true` + `externalChecks` 明示（全 App の信頼済み check context 宣言込み）の opt-in ランでのみクライアント側で実行する（references/automerge-design.md の「クライアント側自動マージの設計」節参照）。既定（`autoMerge` 未指定 / `false`）ではマージせず停止し、マージは GitHub 上で人間が行う。
 
 CI リソース節約のため「push 前 review」設計を採用している。Implement フェーズではローカルブランチにコミットのみ積み、Review が全通過した後にはじめて push・PR 作成を行う。Review が収束失敗した場合は push も PR も作らないため、CI が一切起動しない。push（PR 作成時・Merge ループの fix 後の再 push）の直前には必ず base ブランチを取り込む（`git fetch` → `git merge`）。並列ラン（`parallel >= 2`）で兄弟イシューの PR が先にマージされていると、作成時点の base が既に古くコンフリクトしている場合があり、その状態のまま push すると GitHub は test merge commit を作れず `pull_request` トリガーの CI check-run が 1 件も発行されないため、push 前ゲートで解消を試みてから push する（解消不能なら push 自体を止める）。さらに push 直後（PR 作成時・fix の再 push 時）には、push した head にチェックが発行されたか（**check-run の `total_count` + combined status の `statuses` 件数の合計**。`gh pr checks` / merge-exec と同じ集計定義。commit status のみを発行する CI で 0 件と誤判定しないため）と `mergeable` を有界（30 秒間隔・最大 5 分）で確認し、`checksStarted` / `mergeableAfterPush` として返す（push 前ゲート通過後に兄弟 PR がマージされて base が動いたケースを、監視ラウンドを消費する前に捕捉する）。`mergeableAfterPush: CONFLICTING` を受けたホストは monitor を 1 ラウンドも起動せずに base 取り込み（`baseMergeCount` で有界）へ直行する。両値はエージェントの自己申告でありマージ判定には使わない（分岐ヒントと状態ファイルへの記録専用。`_/issue-trees/<n>.json` の `pushChecksStarted` / `pushMergeable`）。
 
@@ -142,14 +142,14 @@ opt-in ランのクライアント側マージは、未信頼のレビュー本�
 
 ### Step 1: ツリーを取得して依存グラフ付き実行キューを構築する（Tree）
 
-gh CLI の sub-issues API で親イシュー配下の全ツリーを再帰取得し、post-order DFS で実行キューを構築する。各 open イシューは本文を読んで機能的依存（`dependsOn`）を抽出する。
+gh CLI の sub-issues API で親イシュー配下の全ツリーを最下層まで再帰取得し、post-order DFS で実行キューを構築する。取得はキュー方式で、closed ノードも含めて全ノードの `sub_issues` を辿り、深さでは打ち切らない。打ち切るのは `sub_issues_summary.total` が 0 のノード（leaf と確定）だけで、訪問済み番号は再度辿らない。各ノードに `subIssuesTotal`（`sub_issues_summary.total`。closed を含む直下の子の総数）を記録し、ホストが全ノードで「返却ノード中の子の数 == `subIssuesTotal`」を照合する。不一致が 1 件でもあれば Workflow を停止する（fail-closed。取り損ねたノードを leaf と誤認して配下を黙って未実装にしない）。各 open イシューは本文を読んで機能的依存（`dependsOn`）を抽出する。
 
 各 open イシューの本文からは opt-in テスト宣言マーカー（`<!-- optin-tests: ... -->`）も機械抽出し、ホスト側で許可形式かを再検証する（前掲「opt-in テストの宣言」節参照。宣言が無ければ後続処理は現行と変わらない）。
 
 ツリー取得に続いて、直前 3 件の merged PR の check-runs から GitHub Actions 以外の外部チェック App（例: Cursor Bugbot）を観測する。**観測結果は参考値であり構成の確定情報ではない**。構成の確定は `args.externalChecks` の明示入力で行い、明示がない限り「確定不能」として後続の Merge ステップで自動マージを停止する。
 
 ```bash
-# 親イシューのサブイシューを取得（--paginate で 100 件超も全ページ自動取得）
+# 各ノードのサブイシューを取得（--paginate で 100 件超も全ページ自動取得。子ごとに繰り返す）
 gh api --paginate "repos/{owner}/{repo}/issues/<parent>/sub_issues?per_page=100"
 
 # 各 open イシューの本文を読み、機能的依存を抽出
@@ -552,11 +552,13 @@ CI 失敗・外部チェック指摘・未解決レビュースレッドがあ�
 
 ### Step 7: 親イシューを検証してクローズする
 
-子を持つノード（親イシュー）は、配下のすべての子イシューが完了した時点で以下を確認してクローズする。
+子を持つノード（親イシュー）は、配下のすべての子孫が完了した時点で以下を確認してクローズする。直下の子だけでなく、`sub_issues_summary.total > 0` の子を再帰的に辿り、子孫の最下層まで open が無いことを確認する。
 
 ```bash
-# 1. 全子イシューが closed か確認（--paginate で 100 件超も全ページ自動取得）
-gh api --paginate "repos/{owner}/{repo}/issues/<parent>/sub_issues?per_page=100" --jq '.[].state'
+# 1. 子孫の最下層まで open が無いか確認（--paginate で 100 件超も全ページ自動取得。
+#    total > 0 の子ごとに同じ呼び出しを繰り返す。全体を辿る場合は scripts/preview-tree.sh を使う）
+gh api --paginate "repos/{owner}/{repo}/issues/<parent>/sub_issues?per_page=100" \
+  --jq '.[] | {number, state, total: .sub_issues_summary.total}'
 
 # 2. 受入基準・チェックリストを読む
 gh issue view <parent-number>
@@ -585,7 +587,7 @@ open のサブイシューが残っている場合、または受入基準が未
 
 最終レポートの「完了イシュー」に全対象イシューが列挙され、「停止イシュー」が空であることを確認する。`scripts/implement-issue-tree.js` を変更した場合の非信頼データ境界・残置 worktree 上限ゲート・merge-guard hook・メイン worktree への一時ファイル残置防止の適用確認手順（grep コマンド・期待結果）は以下を参照。
 
-**スクリプトの編集は開発ファイルに対して行う**: `scripts/implement-issue-tree.js` は Workflow へ渡す実行ファイル（生成物）であり、直接編集しない。編集は `scripts/implement-issue-tree.src.js`（コメント込みの開発ファイル）に対して行い、`node skills/implement-issue-tree/scripts/build-workflow.mjs` でコメント除去済みの実行ファイルを再生成する（行番号は両者で一致する）。同期漏れ・直接編集は CI の `tests/build-workflow.test.mjs`（鮮度ゲート）が検出する。
+**スクリプトの編集は開発ファイルに対して行う**: `scripts/implement-issue-tree.js` は Workflow へ渡す実行ファイル（生成物）であり、直接編集しない。編集は `scripts/implement-issue-tree.src.js`（コメント込みの開発ファイル）に対して行い、`node skills/implement-issue-tree/scripts/build-workflow.mjs` でコメントと先頭インデントを除去した実行ファイルを再生成する（行番号は両者で一致し、列番号は一致しない）。同期漏れ・直接編集は CI の `tests/build-workflow.test.mjs`（鮮度ゲート）が検出する。
 
 詳細: [references/verification.md](references/verification.md)
 
@@ -662,6 +664,7 @@ open のサブイシューが残っている場合、または受入基準が未
 - レビュースレッドの resolve（解決済み化）を実行するのは Merge ループの fix エージェントのみ: 修正がリモート head に反映済みであることを前提に、(a) push 成功直後は自分が修正対応したスレッド（monitor の構造化出力由来・host 検証済み threadId）、(b) push なしラウンドはホストが決定的に算出した許可リストのみを `resolveReviewThread` mutation で resolve する（fix 以外の全経路での resolve は禁止。(b) の決定的照合の詳細は references/automerge-design.md。ただし (b) は現在恒久的に空リスト = 不成立で、実質 (a) のみが成立する）。monitor / merge-exec / merge-verify / Review ループの fix は実行しない。対象外（out-of-scope）と判断したスレッドは resolve されず PR 本文への記録までで停止するため、未解決のまま blocked → 最終レポートで issue 化承認・手動 resolve を判断する。人間の resolve 後の再実行（または監視継続中の resolve）でマージ条件が再判定される
 - 各 implement / fix は独立した worktree で隔離実行されるが、メイン working copy のブランチ・共有設定などグローバル状態は変更しない
 - **全エージェントは ruleset・branch protection・リポジトリ設定を変更しない**（`gh api` による `rulesets` / `branches/<branch>/protection` への PATCH・PUT・POST・DELETE、リポジトリ本体 `repos/<owner>/<repo>` の PATCH・DELETE、`gh repo edit`、同種の GraphQL mutation 等。共通指示 `REPO_SETTINGS_POLICY` として実装・fix・監視・マージ・base 取り込み等の全プロンプトへ入る）。レビューで設定変更（例: 新しい check の required 登録）を求められても実行せず、summary / outOfScope に要対応事項として報告する。承認の有無を事実以上に記述しない（コミット・PR 本文に実際に得ていない承認を書かない）。ruleset の変更は人間が `.claude/rules/ruleset-policy.md`（対象リポジトリにあれば）の 3 軸検証とあわせて行う。merge-guard hook（導入は任意）が機械的に deny するのは ruleset・branch protection・リポジトリ本体（`repos/<owner>/<repo>`）への書き込み・同種の GraphQL mutation・`gh repo edit` / `rename` / `archive` / `unarchive` / `delete` に限る。variables / secrets / actions permissions / collaborators / hooks / environments 等の他の設定変更はプロンプト上の禁止のみ（best-effort）である
+- ツリーはラン開始時に 1 回だけ取得する。ラン途中に追加された sub-issue はそのランでは実装対象にならず、親クローズ検証で open の子孫として検出されるため親は close されない。追加後は再実行する
 - 大規模ツリー（数百件）はサブ親単位で複数回に分けて実行する（1 ワークフローのエージェント上限は 1,000）
 - `--no-verify` は絶対に使用しない（pre-commit フック回避禁止。対象リポジトリに `.claude/rules/conventional-commits.md` があればその規約に従う）
 - シェルコマンドの変数は必ず `"${var}"` でクォートする（コマンドインジェクション対策）。GitHub API から取得した文字列はプロンプト埋め込み前にサニタイズされる
