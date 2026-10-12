@@ -9662,10 +9662,12 @@ if (agentBudget.stoppedDispatchAt === null) {
 agentBudget.stoppedDispatchAt = agentBudget.used
 log(`⚠️ エージェント呼び出し数が上限 ${agentBudget.limit} に近いため新規着手を停止する（使用 ${agentBudget.used}・残り ${budgetHold.remaining}・#${n} に必要 ${budgetHold.required}）。実行中の issue の完了を優先する`)
 }
-agentBudgetHeld.set(n, { kind: item.kind, required: budgetHold.required })
+
+agentBudgetHeld.set(n, { kind: item.kind, required: budgetHold.required, used: agentBudget.used })
 
 
-monitoringResumeGateDeferred.delete(n)
+
+
 continue
 }
 agentBudgetHeld.delete(n)
@@ -10146,7 +10148,9 @@ const notStartedNoteBase = halted
 
 
 
-const budgetOnly = (n) => agentBudgetHeld.has(n) && !halted && (isActiveMonitoring(n) || !shouldSkipForNewStartSuppressed(newStartSuppressed, agentBudgetHeld.get(n).kind))
+const budgetOnly = (n) => agentBudgetHeld.has(n) && !halted && !monitoringResumeGateDeferred.has(n) && (isActiveMonitoring(n) || !shouldSkipForNewStartSuppressed(newStartSuppressed, agentBudgetHeld.get(n).kind))
+
+
 
 
 
@@ -10154,9 +10158,10 @@ const budgetOnly = (n) => agentBudgetHeld.has(n) && !halted && (isActiveMonitori
 const starvedHeld = agentBudget.starts === 0 ? pending.filter(budgetOnly) : []
 agentBudget.starved = starvedHeld.length > 0
 if (agentBudget.starved) agentBudget.neededLimit = agentBudget.used + Math.min(...starvedHeld.map((n) => agentBudgetHeld.get(n).required))
-const budgetRerun = agentBudget.starved ? `args.agentCallLimit を ${agentBudget.neededLimit} 以上にして再実行` : '同じ引数で再実行'
+const budgetFloor = '（下限値。保存された状態が大きいと開始処理の分だけさらに要る）'
+const budgetRerun = (act) => agentBudget.starved ? `args.agentCallLimit を少なくとも ${agentBudget.neededLimit} にして再実行すると${act}しうる${budgetFloor}` : `同じ引数で再実行すると${act}する`
 for (const n of notStarted) {
-const notStartedNote = budgetOnly(n) ? `エージェント呼び出し数の予算不足により新規着手を停止（使用 ${agentBudget.used}/${agentBudget.limit}。${budgetRerun}すると着手する）` : notStartedNoteBase
+const notStartedNote = budgetOnly(n) ? `エージェント呼び出し数の予算不足により新規着手を停止（使用 ${agentBudget.used}/${agentBudget.limit}。${budgetRerun('着手')}）` : notStartedNoteBase
 results.push({ issue: n, status: 'not-started', note: notStartedNote })
 
 
@@ -10169,8 +10174,13 @@ for (const n of interrupted) {
 const { pr, status } = savedItems[String(n)]
 
 
-const deferredReason = monitoringResumeGateDeferred.get(n)
-?? (agentBudgetHeld.has(n) && !halted ? `エージェント呼び出し数の予算不足で monitoring 再開を見送った（使用 ${agentBudget.used}/${agentBudget.limit}）。${budgetRerun}すると monitor から再開する` : '')
+
+const gate = monitoringResumeGateDeferred.get(n)
+const held = agentBudgetHeld.get(n)
+const heldFact = held ? `エージェント呼び出し数の予算も不足していた（保留時の使用 ${held.used}/${agentBudget.limit}。この周回の使用量では再開に args.agentCallLimit が少なくとも ${held.used + held.required} 要った）` : ''
+const deferredReason = gate
+? (held ? `${gate}（この理由は前回の評価。予算で保留した周回では再評価していない）。${heldFact}` : gate)
+: held ? (halted ? `halt のため再開しなかった。${heldFact}` : `エージェント呼び出し数の予算不足で monitoring 再開を見送った（使用 ${agentBudget.used}/${agentBudget.limit}）。${budgetRerun(' monitor から再開')}`) : ''
 const note = deferredReason
 ? `中断時に ${status}（${PR_RECORD_UNVERIFIED(pr)}）。${deferredReason}`
 : `中断時に ${status}（${PR_RECORD_UNVERIFIED(pr)}）。同じ引数で再実行すると monitor から再開する`
@@ -10204,7 +10214,7 @@ const unmonitoredFmt = (resumable) => unmonitoredPrList.filter((e) => e.resumabl
 if (unmonitoredFmt(true)) log(`⚠️ PR 作成済みで未監視（状態ファイルに pr 保存済み）: ${unmonitoredFmt(true)}。同じ引数で再実行すると monitor から再開する`)
 if (unmonitoredFmt(false)) log(`⚠️ PR 作成済みで未監視（状態ファイルに pr が無い／照合未了）: ${unmonitoredFmt(false)}。再実行では monitor から再開しない。GitHub 上で PR を手動確認すること（状態ファイルの unverifiedPr があれば再実行で再照合される）`)
 log(`エージェント呼び出し数: ${agentBudget.used}/${agentBudget.limit}（新規着手停止時点 ${agentBudget.stoppedDispatchAt ?? 'なし'}）`)
-if (agentBudget.starved) log(`⚠️ 予算を使い切り 1 件も着手していない。${budgetRerun}すること${agentBudget.neededLimit > AGENT_RUN_LIMIT ? `（ランタイムの上限 ${AGENT_RUN_LIMIT} を超えるため対象ツリーを分けて実行する）` : ''}`)
+if (agentBudget.starved) log(`⚠️ 予算を使い切り 1 件も着手していない。args.agentCallLimit を少なくとも ${agentBudget.neededLimit} にして再実行すること${budgetFloor}${agentBudget.neededLimit > AGENT_RUN_LIMIT ? `（ランタイムの上限 ${AGENT_RUN_LIMIT} を超えるため対象ツリーを分けて実行する）` : ''}`)
 
 if (halted) log(`中断: ${halted.reason}（直近の停滞イシュー: ${halted.issues.map((n) => `#${n}`).join(', ')}）`)
 
