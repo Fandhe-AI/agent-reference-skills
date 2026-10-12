@@ -32,8 +32,18 @@ const SLICE_EXPORTS = [
   'declaredDepsPrompt',
   'collectDeclaredDeps',
   'mergeDeclaredDeps',
+  'DECLARED_DEPS_CONCURRENCY',
+  'RATE_LIMIT_MAX_WAIT_S',
+  'RATE_LIMIT_MAX_WAITS',
+  'DECLARED_DEPS_SCHEMA',
+  'mapBounded',
+  'parseRateLimit',
+  'extractDeclaredDeps',
 ]
-writeFileSync(slicePath, `${definitionPart}\nexport { ${SLICE_EXPORTS.join(', ')} }\n`)
+// 修正前の実装には新規宣言が無い。RED 確認時に import 自体は成功させ、各テストの失敗で示すため typeof で包む。
+const optionalExports = SLICE_EXPORTS.map((n) => `const __opt_${n} = typeof ${n} === 'undefined' ? undefined : ${n}`).join('\n')
+const exportList = SLICE_EXPORTS.map((n) => `__opt_${n} as ${n}`).join(', ')
+writeFileSync(slicePath, `${definitionPart}\n${optionalExports}\nexport { ${exportList} }\n`)
 
 const {
   DECLARED_DEPS_JQ,
@@ -43,6 +53,13 @@ const {
   declaredDepsPrompt,
   collectDeclaredDeps,
   mergeDeclaredDeps,
+  DECLARED_DEPS_CONCURRENCY,
+  RATE_LIMIT_MAX_WAIT_S,
+  RATE_LIMIT_MAX_WAITS,
+  DECLARED_DEPS_SCHEMA,
+  mapBounded,
+  parseRateLimit,
+  extractDeclaredDeps,
 } = await import(pathToFileURL(slicePath).href)
 
 // プロンプトに埋め込むのと同じ形（{number, deps}）で jq を実行する。
@@ -175,10 +192,18 @@ test('依存宣言がなければ空配列・body が null でも失敗しない
 
 test('declaredDepsPrompt は整数の対象番号と jq フィルタを単一引用符で埋め込む', () => {
   const p = declaredDepsPrompt([34, 45])
-  assert.match(p, /for n in 34 45; do out=\$\(gh issue view "\$n" --json number,body --jq '/)
+  assert.match(p, /for n in 34 45; do out=\$\(gh api "repos\/\{owner\}\/\{repo\}\/issues\/\$n" --jq '/)
   assert.match(p, /\) && printf '%s\\n' "\$out" \|\| echo "FAILED #\$n" >&2; done/)
   assert.ok(p.includes(DECLARED_DEPS_JQ))
   assert.ok(!DECLARED_DEPS_JQ.includes("'"), 'jq フィルタに単一引用符を含めない（シェル埋め込みが壊れる）')
+})
+
+// Issue #589: 本文の取得は REST（core 枠）で行い、GraphQL 枠をイシュー 1 件ごとに消費しない。
+test('declaredDepsPrompt は gh issue view（GraphQL）を使わず gh api（REST）を指示する (#589)', () => {
+  const p = declaredDepsPrompt([1])
+  assert.ok(!p.includes('gh issue view'), 'GraphQL を使う gh issue view を指示しない')
+  assert.ok(!p.includes('gh repo view'), 'リポジトリ解決で GraphQL を使わない（{owner}/{repo} は gh がローカルで展開する）')
+  assert.match(p, /gh api "repos\/\{owner\}\/\{repo\}\/issues\/\$n"/)
 })
 
 test('declaredDepsPrompt は gh を sandbox 無効で実行する指示を含む', () => {
@@ -248,7 +273,9 @@ test('駆動部は Tree 検証後・byParent 構築前に抽出結果を取り�
   const mergeIdx = driverPart.indexOf('mergeDeclaredDeps(tree.nodes, declaredByNumber)')
   const byParentIdx = driverPart.indexOf('const byParent = new Map()')
   assert.ok(mergeIdx > 0 && byParentIdx > mergeIdx, 'depsMap の元になる byParent 構築より前に取り込むこと')
-  assert.ok(driverPart.includes('本文の依存宣言を抽出できなかったイシューがある'), '欠落時の fail-closed 停止')
+  assert.ok(driverPart.includes('await extractDeclaredDeps(chunks)'), '駆動部は有界並列の抽出関数を呼ぶ')
+  assert.ok(!driverPart.includes('Promise.all(chunks.map(runChunk))'), '全チャンクを無制限に同時起動しない')
+  assert.ok(definitionPart.includes('本文の依存宣言を抽出できなかったイシューがある'), '欠落時の fail-closed 停止')
 })
 
 // Issue #558: Workflow ハーネスが中継するユーザー発言に複数のイシュー番号があると、抽出エージェントが
@@ -282,7 +309,169 @@ test('declaredDepsPrompt: 担当範囲（for n in の番号のみ）を明記す
   assert.match(declaredDepsPrompt([1]), /担当は.*番号だけ/)
 })
 
-test('駆動部は ignored を警告ログに出す (#558)', () => {
-  assert.match(driverPart, /collectDeclaredDeps\(pending, result\)/)
-  assert.ok(/ignored\.length > 0/.test(driverPart), 'runChunk が ignored をログに出すこと')
+test('抽出関数は ignored を警告ログに出す (#558)', () => {
+  assert.match(definitionPart, /collectDeclaredDeps\(pending, result\)/)
+  assert.ok(/ignored\.length > 0/.test(definitionPart), 'runChunk が ignored をログに出すこと')
+})
+
+// ---------------------------------------------------------------------------
+// Issue #589: 有界並列・レート制限の復帰待ち・fail-closed の維持
+// ---------------------------------------------------------------------------
+
+const logs = []
+globalThis.log = (m) => { logs.push(m) }
+const requestedOf = (prompt) => /for n in ([0-9 ]+); do/.exec(prompt)[1].trim().split(' ').map(Number)
+const okEntries = (prompt) => ({ entries: requestedOf(prompt).map((n) => e(n, [])) })
+const chunksOf = (total, size = 3) => Array.from({ length: Math.ceil(total / size) }, (_, i) =>
+  Array.from({ length: Math.min(size, total - i * size) }, (_, j) => i * size + j + 1))
+const NO_SLEEP = async () => { throw new Error('待機してはならない') }
+
+test('mapBounded: 同時実行数は limit を超えず、結果は入力順を保つ', async () => {
+  let active = 0
+  let maxActive = 0
+  const out = await mapBounded([5, 1, 4, 2, 3, 6, 7], 3, async (x, i) => {
+    active++
+    maxActive = Math.max(maxActive, active)
+    await new Promise((r) => setTimeout(r, x))
+    active--
+    return `${i}:${x}`
+  })
+  assert.equal(maxActive, 3)
+  assert.deepEqual(out, ['0:5', '1:1', '2:4', '3:2', '4:3', '5:6', '6:7'])
+})
+
+test('mapBounded: reject したら新規の起動を止め、最初の reject を伝播する', async () => {
+  const started = []
+  await assert.rejects(
+    mapBounded([1, 2, 3, 4, 5, 6], 2, async (x) => {
+      started.push(x)
+      await new Promise((r) => setTimeout(r, 1))
+      if (x === 2) throw new Error('boom')
+    }),
+    /boom/,
+  )
+  assert.ok(started.length < 6, `失敗後に残りを起動しない（起動 ${started.length} 件）`)
+})
+
+test('extractDeclaredDeps: 同時に起動するチャンクは DECLARED_DEPS_CONCURRENCY を超えない (#589)', async () => {
+  assert.equal(DECLARED_DEPS_CONCURRENCY, 3)
+  let active = 0
+  let maxActive = 0
+  let total = 0
+  globalThis.agent = async (prompt) => {
+    active++
+    total++
+    maxActive = Math.max(maxActive, active)
+    await new Promise((r) => setTimeout(r, 3))
+    active--
+    return okEntries(prompt)
+  }
+  const m = await extractDeclaredDeps(chunksOf(42), NO_SLEEP) // 14 チャンク（実測の再現規模）
+  assert.equal(total, 14)
+  assert.ok(maxActive <= DECLARED_DEPS_CONCURRENCY, `最大同時起動 ${maxActive}`)
+  assert.equal(maxActive, DECLARED_DEPS_CONCURRENCY, '上限まで並列に使う')
+  assert.deepEqual([...m.keys()].sort((a, b) => a - b), Array.from({ length: 42 }, (_, i) => i + 1))
+})
+
+test('スキーマ: レート制限の申告フィールドは任意（required は entries のみ）', () => {
+  assert.deepEqual(DECLARED_DEPS_SCHEMA.required, ['entries'])
+  for (const k of ['rateLimited', 'resetAt', 'waitSeconds']) assert.ok(DECLARED_DEPS_SCHEMA.properties[k], k)
+})
+
+test('parseRateLimit: 申告を検証し、不正な waitSeconds・resetAt は採用しない', () => {
+  assert.equal(parseRateLimit({ entries: [] }), null)
+  assert.equal(parseRateLimit({ rateLimited: 'true' }), null)
+  assert.deepEqual(parseRateLimit({ rateLimited: true, waitSeconds: 119.2, resetAt: '2026-10-12T08:26:17Z' }), { waitSeconds: 120, resetAt: '2026-10-12T08:26:17Z' })
+  assert.deepEqual(parseRateLimit({ rateLimited: true, waitSeconds: -1, resetAt: 'あした' }), { waitSeconds: null, resetAt: '' })
+  assert.deepEqual(parseRateLimit({ rateLimited: true, waitSeconds: Infinity }), { waitSeconds: null, resetAt: '' })
+})
+
+test('extractDeclaredDeps: レート制限を返したチャンクは復帰時刻まで待ってから残りだけ再試行する (#589)', async () => {
+  const prompts = []
+  globalThis.agent = async (prompt, opts) => {
+    prompts.push({ prompt, label: opts.label })
+    if (prompts.length === 1) {
+      // 1 件だけ取得できた後にレート制限へ到達した
+      return { entries: [e(1, [9])], rateLimited: true, waitSeconds: 120, resetAt: '2026-10-12T08:26:17Z' }
+    }
+    return okEntries(prompt)
+  }
+  const waits = []
+  const m = await extractDeclaredDeps([[1, 2, 3]], async (ms) => { waits.push(ms) })
+  assert.deepEqual(waits, [125_000], '申告された復帰までの秒数（+ 余裕 5 秒）を待つ')
+  assert.deepEqual(requestedOf(prompts[1].prompt), [2, 3], '取得済みの #1 は再依頼しない')
+  assert.equal(prompts[1].label, 'plan:declared-deps-1-retry')
+  assert.deepEqual([...m.get(1)], [9], '待機前に取得できた分は採用する')
+  assert.deepEqual([...m.keys()].sort(), [1, 2, 3])
+  assert.ok(logs.some((l) => l.includes('レート制限') && l.includes('2026-10-12T08:26:17Z')))
+})
+
+test('extractDeclaredDeps: レート制限による待機は通常の再試行回数（2 回）を消費しない', async () => {
+  let n = 0
+  globalThis.agent = async (prompt) => {
+    n++
+    if (n === 1) return { entries: [], rateLimited: true, waitSeconds: 10 }
+    if (n === 2) return { entries: [] } // 通常の欠落（1 回目の attempt）
+    return okEntries(prompt)
+  }
+  const m = await extractDeclaredDeps([[1]], async () => {})
+  assert.equal(n, 3)
+  assert.deepEqual([...m.keys()], [1])
+})
+
+test('extractDeclaredDeps: 復帰が待ち上限を超えるときは待たず、一過性と再開可能時刻を例外文に含めて停止する (#589)', async () => {
+  globalThis.agent = async () => ({ entries: [], rateLimited: true, waitSeconds: RATE_LIMIT_MAX_WAIT_S + 1, resetAt: '2026-10-12T09:30:00Z' })
+  await assert.rejects(
+    extractDeclaredDeps([[7, 8]], NO_SLEEP),
+    (err) => /一過性/.test(err.message) && err.message.includes('2026-10-12T09:30:00Z') && /#7, #8/.test(err.message),
+  )
+})
+
+test('extractDeclaredDeps: 待ち上限ちょうどの復帰は待つ', async () => {
+  let n = 0
+  globalThis.agent = async (prompt) => (++n === 1 ? { entries: [], rateLimited: true, waitSeconds: RATE_LIMIT_MAX_WAIT_S } : okEntries(prompt))
+  const waits = []
+  await extractDeclaredDeps([[1]], async (ms) => { waits.push(ms) })
+  assert.deepEqual(waits, [(RATE_LIMIT_MAX_WAIT_S + 5) * 1000])
+})
+
+test('extractDeclaredDeps: 復帰待ちは 1 チャンク RATE_LIMIT_MAX_WAITS 回までで、尽きたら再開可能時刻つきで停止する', async () => {
+  let calls = 0
+  globalThis.agent = async () => { calls++; return { entries: [], rateLimited: true, waitSeconds: 30, resetAt: '2026-10-12T08:00:00Z' } }
+  const waits = []
+  await assert.rejects(
+    extractDeclaredDeps([[1]], async (ms) => { waits.push(ms) }),
+    (err) => /一過性/.test(err.message) && err.message.includes('2026-10-12T08:00:00Z'),
+  )
+  assert.equal(waits.length, RATE_LIMIT_MAX_WAITS)
+  assert.equal(calls, RATE_LIMIT_MAX_WAITS + 1, '無限に待たされない')
+})
+
+test('extractDeclaredDeps: 待機手段が無い環境（sleep なし）では待たずに再開可能時刻つきで停止する', async () => {
+  globalThis.agent = async () => ({ entries: [], rateLimited: true, waitSeconds: 30, resetAt: '2026-10-12T08:00:00Z' })
+  await assert.rejects(extractDeclaredDeps([[1]], null), /一過性.*2026-10-12T08:00:00Z/s)
+})
+
+test('extractDeclaredDeps: 復帰を申告しない抽出失敗は従来どおり待たず、残りがあれば着手せず停止する (#589)', async () => {
+  let calls = 0
+  globalThis.agent = async (prompt) => {
+    calls++
+    return { entries: requestedOf(prompt).filter((n) => n !== 2).map((n) => e(n, [])) } // #2 だけ常に欠落
+  }
+  await assert.rejects(extractDeclaredDeps([[1, 2, 3]], NO_SLEEP), /本文の依存宣言を抽出できなかったイシューがある（#2）/)
+  assert.equal(calls, 2, '初回 + 再試行 1 回')
+})
+
+test('extractDeclaredDeps: sig 不一致（契約違反）は部分採用せず破棄し、再試行でも直らなければ停止する', async () => {
+  let calls = 0
+  globalThis.agent = async () => { calls++; return { entries: [{ number: 1, deps: [5], sig: 0 }] } }
+  await assert.rejects(extractDeclaredDeps([[1]], NO_SLEEP), /抽出できなかった/)
+  assert.equal(calls, 2)
+  assert.ok(logs.some((l) => l.includes('契約に違反するため破棄した')))
+})
+
+test('extractDeclaredDeps: レート制限の申告があっても全件返却されていれば待たない', async () => {
+  globalThis.agent = async (prompt) => ({ ...okEntries(prompt), rateLimited: true, waitSeconds: 600 })
+  const m = await extractDeclaredDeps([[1, 2]], NO_SLEEP)
+  assert.deepEqual([...m.keys()], [1, 2])
 })

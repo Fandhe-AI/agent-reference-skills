@@ -407,7 +407,8 @@ test('loadState: 再取得プロンプトには数値キー以外（__proto__・
     return { items: {} }
   })
   await loadState().catch(() => {})
-  assert.ok(fills.every((p) => !p.includes('rm -rf') && !p.includes('__proto__')))
+  // 共通規則（TEMP_FILE_POLICY）自体が「rm -rf の対象にしない」と書くため、注入した値そのもので判定する。
+  assert.ok(fills.every((p) => !p.includes('1; rm -rf x') && !p.includes('__proto__')))
 })
 
 test('loadState: 全件が初回で返れば再取得エージェントは起動しない（回帰）', async () => {
