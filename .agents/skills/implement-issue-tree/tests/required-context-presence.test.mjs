@@ -132,6 +132,27 @@ test('monitorPrompt: 手順 2 失敗かつ列挙 0 件は 3g へ入らず 3e へ
   assert.ok(s3e.includes('手順 3g の前提'), '3e の到達経路に 3g 前提からの到達がない')
 })
 
+test('monitorPrompt: 3g の列挙 0 件 → 3e は手順 2 失敗（checksTotal 省略）経路に限定され、確定値の経路では確定値で 3g を実行する', () => {
+  // 列挙 0 件 → 3e の分岐が経路を限定しないと、手順 2 が 1 件以上と確定している PR まで 3e
+  // （0 件判定 → blocked / quality）へ回り、required context の確認（3g）が飛ぶ（Issue #583）。
+  const p = monitorPrompt(item, impl, [], true, true)
+  const s3g = p.slice(p.indexOf('3g.'), p.indexOf('\n6. '))
+  const head = s3g.slice(0, s3g.indexOf('\n'))
+  assert.ok(
+    head.includes('総数は手順 2 の確定値（1 件以上）とする') &&
+      head.includes('手順 3 の gh pr checks の列挙件数が 0 件でも確定値を総数として本手順を実行し、手順 3e へ回さない'),
+    '確定値の経路で列挙件数にかかわらず確定値で 3g を実行する旨がない',
+  )
+  const failPath = head.slice(head.indexOf('手順 2 で取得に失敗して checksTotal を省略した場合も'))
+  assert.ok(failPath.includes('この経路に限り総数には手順 3 の gh pr checks が列挙したチェック件数を使う'), '列挙件数を総数に使うのが失敗経路限定と読めない')
+  // 列挙 0 件 → 3e と再取得・blocked の各文は、失敗経路の後ろにあり「同経路で」と限定されている。
+  const zero = head.indexOf('同経路で、手順 3 の gh pr checks が列挙した件数が 0 件')
+  const unreadable = head.indexOf('同経路で gh pr checks 自体のコマンド失敗で件数を読めない場合')
+  assert.ok(zero > head.indexOf('手順 2 で取得に失敗して checksTotal を省略した場合も'), '列挙 0 件 → 3e が失敗経路の前にある')
+  assert.ok(zero >= 0 && unreadable > zero, '列挙 0 件・読めない場合の各文が「同経路で」と限定されていない')
+  assert.ok(head.includes('手順 2 の確定 0 件は手順 2 から手順 3e へ直行済みでここへは来ない'), '確定 0 件が 3g に来ない旨がない')
+})
+
 test('MERGE_SCHEMA: checksTotal の description が列挙 0 件では timeout を返さず 3e へ倒すと述べる', () => {
   assert.ok(source.includes('その件数が 0 のときは timeout ではなく手順 3e の判定を返す'))
 })
