@@ -314,10 +314,10 @@ const STATE_FILE=`_/issue-trees/${parent}.json`
 
 function sanitize(str){
 return String(str)
-.replace(/\r?\n/g,' ')
-.replace(/`/g,"'")
-.replace(/\\/g,'/')
-.replace(/\$/g,'\\$')
+.replace(/\r?\n/g, ' ')
+.replace(/`/g, "'")
+.replace(/\\/g, '/')
+.replace(/\$/g, '\\$')
 }
 
 
@@ -369,7 +369,7 @@ TEMP_FILE_POLICY,
 
 
 const hex=String(result?.seedHex??'').trim().toLowerCase()
-if(!/^[0-9a-f]{64}$/.test(hex)){
+if(!/^[0-9a-f]{64}$/.test(hex)) {
 throw new Error(
 `境界トークン用 seed の生成に失敗した（小文字 16 進 64 桁ちょうどを要求・取得長 ${hex.length}）。`+
 `未信頼データの境界を予測可能なトークンで区切ることは避けるため fail-closed で停止する。`,
@@ -409,10 +409,10 @@ return`${pad(h1)}${pad(h2)}${pad(h3)}${pad(h4)}`
 
 function sanitizeBranch(str){
 const s=sanitize(str)
-if(/\.\./.test(s)){
+if(/\.\./.test(s)) {
 throw new Error(`不正なブランチ名（'..' を含む）: ${s}`)
 }
-if(!/^[a-zA-Z0-9][a-zA-Z0-9\-_./]*$/.test(s)){
+if(!/^[a-zA-Z0-9][a-zA-Z0-9\-_./]*$/.test(s)) {
 throw new Error(`不正なブランチ名: ${s}`)
 }
 return s
@@ -451,7 +451,7 @@ const repoArg=parseRepoArg(parsedArgs&&typeof parsedArgs==='object'?parsedArgs.r
 
 function sanitizeThreadId(str){
 const s=String(str??'')
-return /^[A-Za-z0-9_-]{1,100}$/.test(s)?s:''
+return /^[A-Za-z0-9_-]{1,100}$/.test(s) ? s : ''
 }
 
 
@@ -459,7 +459,7 @@ return /^[A-Za-z0-9_-]{1,100}$/.test(s)?s:''
 
 function sanitizeSha(str){
 const s=String(str??'')
-return /^[0-9a-f]{40}$/.test(s)?s:''
+return /^[0-9a-f]{40}$/.test(s) ? s : ''
 }
 
 
@@ -517,7 +517,7 @@ return capText(v,2000)
 
 function sanitizeCommentUrl(str){
 const s=String(str??'')
-return /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/pull\/\d+[A-Za-z0-9#_\/?=-]{0,120}$/.test(s)?s:''
+return /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/pull\/\d+[A-Za-z0-9#_\/?=-]{0,120}$/.test(s) ? s : ''
 }
 
 
@@ -543,7 +543,7 @@ return arr
 .filter((v)=>v&&typeof v==='object')
 .slice(0,20)
 .map((c)=>{
-const threadId=typeof c.threadId==='string'&& /^[A-Za-z0-9_-]{1,100}$/.test(c.threadId)?c.threadId:''
+const threadId=typeof c.threadId==='string'&& /^[A-Za-z0-9_-]{1,100}$/.test(c.threadId) ? c.threadId : ''
 const text=typeof c.text==='string'?c.text.slice(0,320):''
 const url=sanitizeCommentUrl(c.url)
 return{threadId,text,url}
@@ -553,7 +553,7 @@ return{threadId,text,url}
 
 function sanitizeRepoRelPath(str){
 const s=String(str??'')
-return s&&s.length<=300&& !/^\//.test(s)&& !/\.\./.test(s)&& !/[\x00-\x1f\\]/.test(s)?s:''
+return s&&s.length<=300&& !/^\//.test(s) && !/\.\./.test(s) && !/[\x00-\x1f\\]/.test(s) ? s : ''
 }
 
 
@@ -563,7 +563,7 @@ const status=MERGE_SCHEMA.properties.compareStatus.enum.includes(obs?.compareSta
 if(!head||status==='behind'||status==='diverged'||status==='unknown')return{head:head||'',pushHead:'',files:[]}
 if(status==='ahead'&&lastRoundPushed){
 const add=(Array.isArray(obs?.changedFiles)?obs.changedFiles:[]).map(sanitizeRepoRelPath).filter((v)=>v)
-return{head,pushHead:head,files:[...proofState.files,...add].slice(0,200)}
+return{head,pushHead:head,files:[...proofState.files, ...add].slice(0,200)}
 }
 return{head,pushHead:proofState.pushHead,files:proofState.files}
 }
@@ -634,7 +634,7 @@ return{count:paths.length,paths}
 
 
 function untrusted(str,source){
-const body=sanitize(str).replace(/<\/?\s*untrusted-data/gi,'(untrusted-data)')
+const body=sanitize(str).replace(/<\/?\s*untrusted-data/gi, '(untrusted-data)')
 return`<untrusted-data source="${source}">${body}</untrusted-data>`
 }
 
@@ -642,7 +642,7 @@ return`<untrusted-data source="${source}">${body}</untrusted-data>`
 
 
 function untrustedJson(jsonStr,source){
-const body=String(jsonStr).replace(/<\/?\s*untrusted-data/gi,'(untrusted-data)')
+const body=String(jsonStr).replace(/<\/?\s*untrusted-data/gi, '(untrusted-data)')
 return`<untrusted-data source="${source}">${body}</untrusted-data>`
 }
 
@@ -650,8 +650,8 @@ return`<untrusted-data source="${source}">${body}</untrusted-data>`
 
 function sanitizeWorktreePath(p){
 if(typeof p!=='string'||p==='')return''
-if(/\.\./.test(p))return''
-if(!/^\/[a-zA-Z0-9][a-zA-Z0-9\-_./ ]*$/.test(p))return''
+if(/\.\./.test(p)) return ''
+if(!/^\/[a-zA-Z0-9][a-zA-Z0-9\-_./ ]*$/.test(p)) return ''
 return p
 }
 
@@ -746,8 +746,8 @@ if(typeof v!=='string')return{ok:false}
 
 
 
-if(/[\r\n\v\f]/.test(v))return{ok:false}
-const s=v.trim().replace(/[ \t]+/g,' ')
+if(/[\r\n\v\f]/.test(v)) return { ok: false }
+const s=v.trim().replace(/[ \t]+/g, ' ')
 
 
 
@@ -821,11 +821,11 @@ continue
 
 
 
-if(/[\r\n\v\f]/.test(v)){
+if(/[\r\n\v\f]/.test(v)) {
 invalid.push(capText(sanitize(v),300))
 continue
 }
-const s=v.trim().replace(/[ \t]+/g,' ')
+const s=v.trim().replace(/[ \t]+/g, ' ')
 if(!approvedList.includes(s)){
 invalid.push(capText(sanitize(v),300))
 continue
@@ -833,7 +833,7 @@ continue
 if(!commands.includes(s))commands.push(s)
 }
 if(commands.length>OPTIN_TESTS_MAX){
-return{commands:[],invalid:[...invalid,...commands].map((v)=>capText(sanitize(v),300))}
+return{commands:[],invalid:[...invalid, ...commands].map((v)=>capText(sanitize(v),300))}
 }
 return{commands,invalid}
 }
@@ -1075,7 +1075,7 @@ runs.forEach((r,i)=>{
 if(!r||r.result!=='pass')overrideMissing.push(i)
 })
 if(overrideMissing.length===0)return gate
-const missing=Array.from(new Set([...(gate.missing??[]),...overrideMissing])).sort((a,b)=>a-b)
+const missing=Array.from(new Set([...(gate.missing??[]), ...overrideMissing])).sort((a,b)=>a-b)
 return{ok:false,missing}
 }
 
@@ -1526,7 +1526,7 @@ if(result?.rateLimited!==true)return null
 const w=result.waitSeconds
 return{
 waitSeconds:typeof w==='number'&&Number.isFinite(w)&&w>=0?Math.ceil(w):null,
-resetAt:typeof result.resetAt==='string'&& /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(result.resetAt)?result.resetAt:'',
+resetAt:typeof result.resetAt==='string'&& /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(result.resetAt) ? result.resetAt : '',
 }
 }
 
@@ -2156,7 +2156,7 @@ entry.pr>0&&
 Number.isInteger(knownPr)&&
 knownPr>0&&
 entry.pr===knownPr&&
-prBindingProblem(n,knownBranch,{...entry,state:entry.prState})===''
+prBindingProblem(n,knownBranch,{ ...entry,state:entry.prState})===''
 ){
 return'merged'
 }
@@ -2183,7 +2183,7 @@ if(kind===null)continue
 failedSet.delete(issue)
 done.add(issue)
 const pr=kind==='merged'&&Number.isInteger(entry.pr)&&entry.pr>0?entry.pr:undefined
-transitions.push({issue,kind,...(pr?{pr}:{})})
+transitions.push({issue,kind, ...(pr?{pr}:{})})
 }
 return transitions
 }
@@ -2869,7 +2869,7 @@ log(`⚠️ ${opts.label}: StructuredOutput 未返却。同一プロンプトで
 }catch(e){
 log(`⚠️ ${opts.label}: エージェントが例外終了した（${sanitize(String(e?.message ?? e))}）。同一プロンプトで 1 回再試行する`)
 }
-return await agent(prompt+retrySuffix,{...opts,label:`${opts.label}:retry`})
+return await agent(prompt+retrySuffix,{ ...opts,label:`${opts.label}:retry`})
 }
 
 async function runStateAgent(prompt,{label,schema,isValid}){
@@ -2944,7 +2944,7 @@ const SHA256_K=(
 'e49b69c1efbe47860fc19dc6240ca1cc2de92c6f4a7484aa5cb0a9dc76f988da983e5152a831c66db00327c8bf597fc7c6e00bf3d5a7914706ca635114292967'+
 '27b70a852e1b21384d2c6dfc53380d13650a7354766a0abb81c2c92e92722c85a2bfe8a1a81a664bc24b8b70c76c51a3d192e819d6990624f40e3585106aa070'+
 '19a4c1161e376c082748774c34b0bcb5391c0cb34ed8aa4a5b9cca4f682e6ff3748f82ee78a5636f84c878148cc7020890befffaa4506cebbef9a3f7c67178f2'
-).match(/.{8}/g).map((x)=>parseInt(x,16))
+).match(/.{8}/g).map((x) => parseInt(x, 16))
 
 
 
@@ -2988,7 +2988,7 @@ Array.isArray(x)
 :x&&typeof x==='object'
 ?`{${Object.keys(x).sort().map((k) => `${JSON.stringify(k)}:${enc(x[k])}`).join(',')}}`
 :String(JSON.stringify(x)??'null')
-return enc(v).replace(/\x7f/g,'\\u007f')
+return enc(v).replace(/\x7f/g, '\\u007f')
 }
 
 
@@ -3005,7 +3005,7 @@ const dropped=[]
 const loaded=items&&typeof items==='object'&& !Array.isArray(items)?items:{}
 for(const[k,val]of Object.entries(loaded)){
 const h=hashes&&hasOwn(hashes,k)?hashes[k]:''
-if(/^[1-9]\d*$/.test(k)&& /^[0-9a-f]{64}$/.test(h)&&sha256Hex(canonicalJson(val))===h){
+if(/^[1-9]\d*$/.test(k) && /^[0-9a-f]{64}$/.test(h) && sha256Hex(canonicalJson(val)) === h) {
 adopted[k]=val
 }else{
 dropped.push(k)
@@ -3017,8 +3017,8 @@ dropped.push(k)
 
 
 
-const unverified=hashes===null?[]:[...new Set([...Object.keys(loaded),...Object.keys(hashes)])]
-.filter((k)=> /^[1-9]\d*$/.test(k)&& !hasOwn(adopted,k))
+const unverified=hashes===null?[]:[...new Set([...Object.keys(loaded), ...Object.keys(hashes)])]
+.filter((k)=> /^[1-9]\d*$/.test(k) && !hasOwn(adopted, k))
 return{adopted,dropped,unverified,verified:hashes!==null&&unverified.length===0&&dropped.length===0}
 }
 
@@ -3031,8 +3031,8 @@ const h=r?.hashes
 return(
 typeof r?.fileExists==='boolean'&&
 h!==null&&typeof h==='object'&& !Array.isArray(h)&&
-Object.values(h).every((x)=> /^[0-9a-f]{64}$/.test(x))&&
-(r.fileExists? /^[0-9a-f]{64}$/.test(r.keysSha256):r.keysSha256===''&&r.keysCount===0)&&
+Object.values(h).every((x)=> /^[0-9a-f]{64}$/.test(x)) &&
+(r.fileExists? /^[0-9a-f]{64}$/.test(r.keysSha256) : r.keysSha256 === '' && r.keysCount === 0) &&
 isNonNegInt(r.keysCount)&&isNonNegInt(r.highWaterBytes)&&isNonNegInt(r.highWaterVersion)
 )
 }
@@ -3172,7 +3172,7 @@ got.push(...await Promise.all(chunks.slice(b,b+ 2).map((ks)=>runStateAgent(
 {label:'state:load-fill',schema:STATE_FILL_SCHEMA,isValid:isValidStateFillResult},
 ))))
 }
-items={...items}
+items={ ...items}
 got.forEach(({result:r},i)=>chunks[i].forEach((k)=>{if(r&&hasOwn(r.items,k))items[k]=r.items[k]}))
 v=verifyLoadedItems(items,check)
 }
@@ -3677,7 +3677,7 @@ return new RegExp(`^[a-z]+/${issueNumber}-`).test(branch)
 
 
 function isValidBranchName(b){
-return typeof b==='string'&& !/\.\./.test(b)&& /^[a-zA-Z0-9][a-zA-Z0-9\-_./]*$/.test(b)
+return typeof b==='string'&& !/\.\./.test(b) && /^[a-zA-Z0-9][a-zA-Z0-9\-_./]*$/.test(b)
 }
 
 
@@ -4123,8 +4123,8 @@ schema:MAIN_HEAD_SCHEMA,
 },
 )
 if(typeof v?.ref!=='string'||typeof v?.sha!=='string')return{observed:false}
-if(!/^(?:|refs\/[\x21-\x7e]{1,200})$/.test(v.ref))return{observed:false}
-if(!/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/.test(v.sha))return{observed:false}
+if(!/^(?:|refs\/[\x21-\x7e]{1,200})$/.test(v.ref)) return { observed: false }
+if(!/^(?:[0-9a-f]{40}|[0-9a-f]{64})$/.test(v.sha)) return { observed: false }
 return{observed:true,ref:v.ref,sha:v.sha}
 }catch(e){
 log(`⚠️ メイン worktree HEAD 検査（${label}）中に例外が発生した（${e?.message ?? e}）`)
@@ -4246,7 +4246,7 @@ if(sweepEligiblePaths.size===0&&orphanPaths.length===0){
 log('worktree スイープ: 削除を試みた worktree・検出した孤立 worktree がないため削除を行わない')
 return[]
 }
-const candidatesJson=JSON.stringify([...new Set([...sweepEligiblePaths,...orphanPaths])])
+const candidatesJson=JSON.stringify([...new Set([...sweepEligiblePaths, ...orphanPaths])])
 const v=await agent(
 [
 'worktree スイープタスク（ラン終了時の残骸回収）。',
@@ -4502,7 +4502,7 @@ dep:[f.waiting?.length&&`前提 ${formatIssueList(f.waiting)} が未完了のた
 gate:f.held?`${f.gate}（この理由は前回の評価。予算で保留した周回では再評価していない）`:f.gate,
 budget:f.held?budgetHeldText(f.held,b.limit,b.starts):'',
 }
-return r.map((k)=>part[k].replace(/。$/,'')).join('。')
+return r.map((k)=>part[k].replace(/。$/, '')).join('。')
 }
 
 
@@ -5528,7 +5528,7 @@ const branch=sanitizeBranch(impl.branch)
 
 
 
-const hostSubjectSafe= /^[A-Za-z0-9_-]{1,64}(\([A-Za-z0-9_-]{1,64}\))?: base ブランチの変更を取り込む$/.test(hostSubject??'')?hostSubject:''
+const hostSubjectSafe= /^[A-Za-z0-9_-]{1,64}(\([A-Za-z0-9_-]{1,64}\))?: base ブランチの変更を取り込む$/.test(hostSubject ?? '') ? hostSubject : ''
 
 
 
@@ -6358,7 +6358,7 @@ if(visited.has(node.number))return
 visited.add(node.number)
 const children=byParent.get(node.number)??[]
 for(const child of children)visit(child)
-queue.push({...node,kind:children.length>0?'verify-close':'implement'})
+queue.push({ ...node,kind:children.length>0?'verify-close':'implement'})
 }
 const root=tree.nodes.find((n)=>n.number===parent)
 if(!root)throw new Error(`ルートイシュー #${parent} がツリー取得結果に含まれていない`)
@@ -6496,12 +6496,12 @@ const matched=queue.find(
 if(!matched)continue
 const savedEntry=savedItems[String(matched.number)]??{}
 if(savedEntry.worktree)continue
-const patch={worktree:p,...(savedEntry.branch?{}:{branch})}
+const patch={worktree:p, ...(savedEntry.branch?{}:{branch})}
 const ok=await updateState(matched.number,patch)
 if(ok){
 
 
-savedItems[String(matched.number)]={...savedEntry,...patch}
+savedItems[String(matched.number)]={ ...savedEntry, ...patch}
 log(`#${matched.number}: 孤立 worktree を検出し状態ファイルへ記録した（${p}）`)
 }else{
 log(`⚠️ #${matched.number}: 孤立 worktree を検出したが状態ファイルへの記録に失敗した（${p}）`)
@@ -6945,7 +6945,7 @@ let bound=false
 if(!(saved.pr>0)&&Number.isInteger(saved.unverifiedPr)&&saved.unverifiedPr>0){
 const why=await checkPrBinding(item,saved.unverifiedPr,saved.branch)
 if(why)return stopUnverified(`未照合の PR #${saved.unverifiedPr} を本イシューに結び付けられない（${sanitize(why)}）`)
-saved={...saved,pr:saved.unverifiedPr}
+saved={ ...saved,pr:saved.unverifiedPr}
 savedItems[String(item.number)]=saved
 bound=true
 }
@@ -7545,7 +7545,7 @@ recordFailure({issue:item.number,reason})
 return false
 }
 
-impl={...impl,prNumber:prCreateResult.prNumber}
+impl={ ...impl,prNumber:prCreateResult.prNumber}
 
 unmonitoredPrs.set(item.number,{pr:impl.prNumber,resumable:false})
 
@@ -8915,7 +8915,7 @@ branchMatchesIssue(saved.branch,item.number)
 if(item.kind==='verify-close'){
 log(`#${item.number}: 状態ファイルは ${saved.status} だが GitHub では open のため verify-close を再実行する`)
 }else if(resumable){
-savedItems[String(item.number)]={...saved,status:'monitoring'}
+savedItems[String(item.number)]={ ...saved,status:'monitoring'}
 log(`#${item.number}: 状態ファイルは merged だが GitHub では open のため monitor を再実行する（PR #${saved.pr} の MERGED 確認と issue close を再試行）`)
 }else{
 results.push({
@@ -8966,7 +8966,7 @@ return false
 
 
 
-const outOfTreeWait=new Set([...outOfTreeDeps.open,...outOfTreeDeps.unknown])
+const outOfTreeWait=new Set([...outOfTreeDeps.open, ...outOfTreeDeps.unknown])
 for(const d of outOfTreeWait)failedSet.add(d)
 for(const item of queue){
 for(const d of item.dependsOn??[]){
@@ -9032,7 +9032,7 @@ let cycle=findDependencyCycle()
 while(cycle){
 
 
-const edge=selectRemovableCycleEdge(cycle,byParent,depsMap,new Set([...phaseGateEdgeKeys,...closedPierceEdgeKeys]))
+const edge=selectRemovableCycleEdge(cycle,byParent,depsMap,new Set([...phaseGateEdgeKeys, ...closedPierceEdgeKeys]))
 
 if(!edge)throw new Error(`解決不能な循環依存: ${cycle.map((n) => `#${n}`).join(' → ')}`)
 depsMap.get(edge.from).delete(edge.to)
@@ -9141,7 +9141,7 @@ note,
 
 
 
-blockedStateBatch.push({number:item.number,patch:{status:'blocked',note,...prClearPatch(item.number)}})
+blockedStateBatch.push({number:item.number,patch:{status:'blocked',note, ...prClearPatch(item.number)}})
 log(`#${item.number}: ${note}`)
 }
 
@@ -9232,7 +9232,7 @@ byteRemeasureAtIterationSeq=dispatchIterationSeq
 const unverifiedEphemeralCount=ephemeralWorktrees.filter(
 (e)=>typeof e.path!=='string'||e.path===''||e.path.startsWith('(検証不可:'),
 ).length
-let targetPaths=[...residualPathsAtStart,...ephemeralWorktrees.map((e)=>e.path)].filter(
+let targetPaths=[...residualPathsAtStart, ...ephemeralWorktrees.map((e)=>e.path)].filter(
 (p)=>typeof p==='string'&&p!==''&& !p.startsWith('(検証不可:')&& !confirmedRemovedPaths.has(p),
 )
 let fallbackDetail=''
@@ -9620,7 +9620,7 @@ t.kind==='merged'?`PR #${t.pr ?? '?'} MERGED`:'Issue CLOSED'
 const noteSuffix=halted
 ?`。ラン中に外部完了を確認（${detectedFact}）: halt 中のため下流の着手は再開せず、次回ランで反映される`
 :`。ラン中に外部完了を確認（${detectedFact}）: 前提充足として下流を同一ラン内で再判定する`
-const patch={status:t.kind,note:noteSuffix.slice(1),...(t.pr?{pr:t.pr}:{})}
+const patch={status:t.kind,note:noteSuffix.slice(1), ...(t.pr?{pr:t.pr}:{})}
 
 
 
@@ -9646,7 +9646,7 @@ note:`${results[existingIdx].note ?? ''}${noteSuffix}`,
 
 
 
-results.push({issue:t.issue,status:t.kind,...(t.pr?{pr:t.pr}:{}),note:noteSuffix.slice(1)})
+results.push({issue:t.issue,status:t.kind, ...(t.pr?{pr:t.pr}:{}),note:noteSuffix.slice(1)})
 }
 const failuresIdx=failures.findIndex((f)=>f.issue===t.issue)
 if(failuresIdx>=0){
@@ -10214,7 +10214,7 @@ results.push({issue:n,status:'not-started',note:notStartedNote})
 
 
 
-blockedStateBatch.push({number:n,patch:{status:'blocked',note:notStartedNote,...prClearPatch(n)}})
+blockedStateBatch.push({number:n,patch:{status:'blocked',note:notStartedNote, ...prClearPatch(n)}})
 }
 for(const n of interrupted){
 
@@ -10353,7 +10353,7 @@ let residualBytesEndObserved=false
 if(maxResidualWorktreeBytes>0&&residualBytesObserved){
 
 
-const rawEndPaths=[...residualPathsAtStart,...ephemeralWorktrees.map((e)=>e.path)]
+const rawEndPaths=[...residualPathsAtStart, ...ephemeralWorktrees.map((e)=>e.path)]
 const hasUnverifiedEndPath=rawEndPaths.some(
 (p)=>typeof p!=='string'||p===''||p.startsWith('(検証不可:'),
 )
@@ -10420,4 +10420,4 @@ if(headWarning)log(headWarning)
 
 
 
-return{parent,baseBranch,parallel:concurrency,phaseGate:phaseGateEnabled,phaseOrder,autoMerge:autoMergeEnabled&&externalChecksConfirmed&&externalChecksContextsConfirmed,autoMergeRequested:autoMergeEnabled,externalChecks:externalCheckApps,externalCheckContexts:externalCheckEntries.map((e)=>({app:e.app,contexts:e.contexts})),externalChecksConfirmed,externalChecksContextsConfirmed,externalChecksObserved:observedCheckApps,mergeGuard:{hookDenyOnly:true},residualWorktrees:{observed:residualObserved,observedAtStart:residualObservedAtStart,addedThisRun:residualAddedThisRun,limit:maxResidualWorktrees,overLimit:residualOverLimit,suppressed:newStartSuppressed!==null,paths:residualPathsAtStart,bytesObserved:residualBytesObserved,bytesAtStart:residualBytesAtRunStart,bytesLastMeasured:residualBytesAtStart,bytesAtEnd:residualBytesAtEnd,bytesEndObserved:residualBytesEndObserved,bytesLimit:maxResidualWorktreeBytes,perWorktreeByteReserve},total:queue.length,done:results,failures,outOfTreeDeps,notStarted,interrupted,halted,blockedStateWrite,agentBudget:{...agentBudget,reached:agentBudget.used>=agentBudget.limit},unmonitoredPrs:unmonitoredPrList,sweptWorktrees,ephemeralWorktrees:disposableWorktrees,prereqTransitions,mainWorktreeUntracked:{observed:mainUntrackedDiff.observed,baselineCount:mainUntrackedDiff.baselineCount,added:mainUntrackedDiff.added.slice(0,50).map((p)=>sanitize(p))},mainWorktreeHead:{observed:mainHeadDiff.observed,changed:mainHeadDiff.changed,shaChanged:mainHeadDiff.shaChanged,baselineRef:sanitize(mainHeadDiff.baselineRef??''),endRef:sanitize(mainHeadDiff.endRef??'')}}
+return{parent,baseBranch,parallel:concurrency,phaseGate:phaseGateEnabled,phaseOrder,autoMerge:autoMergeEnabled&&externalChecksConfirmed&&externalChecksContextsConfirmed,autoMergeRequested:autoMergeEnabled,externalChecks:externalCheckApps,externalCheckContexts:externalCheckEntries.map((e)=>({app:e.app,contexts:e.contexts})),externalChecksConfirmed,externalChecksContextsConfirmed,externalChecksObserved:observedCheckApps,mergeGuard:{hookDenyOnly:true},residualWorktrees:{observed:residualObserved,observedAtStart:residualObservedAtStart,addedThisRun:residualAddedThisRun,limit:maxResidualWorktrees,overLimit:residualOverLimit,suppressed:newStartSuppressed!==null,paths:residualPathsAtStart,bytesObserved:residualBytesObserved,bytesAtStart:residualBytesAtRunStart,bytesLastMeasured:residualBytesAtStart,bytesAtEnd:residualBytesAtEnd,bytesEndObserved:residualBytesEndObserved,bytesLimit:maxResidualWorktreeBytes,perWorktreeByteReserve},total:queue.length,done:results,failures,outOfTreeDeps,notStarted,interrupted,halted,blockedStateWrite,agentBudget:{ ...agentBudget,reached:agentBudget.used>=agentBudget.limit},unmonitoredPrs:unmonitoredPrList,sweptWorktrees,ephemeralWorktrees:disposableWorktrees,prereqTransitions,mainWorktreeUntracked:{observed:mainUntrackedDiff.observed,baselineCount:mainUntrackedDiff.baselineCount,added:mainUntrackedDiff.added.slice(0,50).map((p)=>sanitize(p))},mainWorktreeHead:{observed:mainHeadDiff.observed,changed:mainHeadDiff.changed,shaChanged:mainHeadDiff.shaChanged,baselineRef:sanitize(mainHeadDiff.baselineRef??''),endRef:sanitize(mainHeadDiff.endRef??'')}}

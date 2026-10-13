@@ -26,7 +26,7 @@ Workflow の返却値（`done`・`failures`・`notStarted`）を確認し、`fai
 前提: スクリプトの編集は開発ファイル `scripts/implement-issue-tree.src.js` に対して行い、
 `node skills/implement-issue-tree/scripts/build-workflow.mjs` で実行ファイル
 `scripts/implement-issue-tree.js`（コメント・コード行の先頭インデント・トークン間の不要な半角スペースを除去した生成物。Workflow へ渡すのはこちら）を
-再生成（生成時にトークン列を開発ファイルと照合し、不一致なら書き込まず中止する）してから本節の検証を実行する。生成物と開発ファイルの同期は
+再生成（生成時に生成物と開発ファイルを acorn のパーサで読み、module とランタイムの評価形〔`export ` を外した本体を script として〕の両方でトークン列を照合し、不一致・パース失敗なら書き込まず中止する。中止になる書き方は `}` の直後の `//` `/*` を含む正規表現、`o?.in / 2` 型、`with` 文など。中止にならず以降のコメントが生成物に残る形もある。詳細は `build-workflow.mjs` 冒頭と SKILL.md）してから本節の検証を実行する。生成物と開発ファイルの同期は
 `tests/build-workflow.test.mjs`（鮮度ゲート）が CI で検証する。
 
 `scripts/implement-issue-tree.js` を変更した場合、以下でランタイムに受理される（起動可能である）
