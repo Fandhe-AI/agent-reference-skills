@@ -14,10 +14,49 @@
 // 空白除去は 512 KiB 予算（tests/lib/workflow-script-contract.mjs）を行番号一致を保ったまま
 // 守るための措置。空白除去は、詰めても同じ 2 トークンに字句解析される隣接の組だけを許可リスト
 // （shouldSqueezeSpace）で詰め、迷う組は詰めない。
-// lexer の `/` 判別（除算と正規表現）は誤り得るため、誤読で文字列・テンプレートの中身が詰められても
-// 気づけるよう、ビルド（生成時と --check の両方）で生成物のトークン列（種類・値・開始行）が開発ファイルの
-// トークン列と一致することを Node 同梱の acorn で照合する（verifyTokenParity）。不一致・acorn を取得
-// できない Node・字句解析の失敗はいずれも生成ファイルを書かずに非ゼロ終了する（fail-closed）。
+// lexer の `/` 判別（除算と正規表現）は、直前のトークンだけでは決まらない箇所がある。決められる範囲
+// （非 ASCII 識別子・`of`・`if` / `for` / `for await` / `while` の括弧の直後・プロパティ名・private 名・
+// 正規表現リテラルの直後）は lexer が直し、決められない範囲（`}` の直後 = ブロックの終わりか
+// オブジェクトリテラルの終わりか）は除算側に倒す。lexer が誤読して文字列・テンプレートの中身を詰めたり
+// コードをコメントとして消したりしても気づけるよう、ビルド（生成時と --check の両方）で、生成物と開発
+// ファイルを Node 同梱の acorn の**パーサ**（acorn.parse の onToken）で読んで、トークン列（種類・値・開始行）が
+// 一致することを照合する（verifyTokenParity）。パーサは文脈（ブロックかオブジェクトか、条件の括弧、
+// for await 等）を決めるので、acorn.tokenizer 単体の比較のように lexer と同じ位置で `/` を誤読して
+// 「同じ誤読」で一致することがない。開発ファイルをパースできない（検査できない）・生成物をパースできない・
+// トークン列が違う・acorn を取得できない Node・照合結果が想定の形でない場合は、いずれも生成ファイルを書かずに
+// 非ゼロ終了する（fail-closed）。
+//
+// 照合は 2 つのゴールで行い、両方で一致を要求する: module（開発ファイルの書き方どおり）と、Workflow
+// ランタイムが実際に評価する形 = 先頭の `export const meta` の `export ` を外した本体を関数本体
+// （AsyncFunction）として評価する script（tests/lib/workflow-script-contract.mjs）。script では `<!--` と
+// 行頭の `-->` が行末までのコメントになるため、module の parse だけだと `r = a <!-- b /*` の後のコードが
+// 消えて実行結果が変わっても通ってしまう。照合を通ったとき保証されるのは、生成物が開発ファイルと同じトークン列
+// （コメントと空白を除く）で、module と script のどちらの読みでも同じであること。
+//
+// ビルドが中止になる開発ファイルの書き方（実測。lexer が決められない・acorn が読めない・照合が止める形）。
+// `/` の読み違えに由来する形の正確な条件は、stripComments の doc コメント（「残る制約」）を正とする
+// （ここでは代表的な形だけを挙げ、条件を別々の場所で言い直さない）:
+// - `}` の直後（ブロックの終わり）に置いた正規表現が `//` か `/*` を含む。普通の `/re/.test(s)`（クォート・
+//   空白・文字クラスを含むものも）は通る
+// - `for (` の括弧の中で変数 `of` を除算に使う行（`i < of / 2`）と同じ行に `//` を含むブロックコメント
+//   （`/* a//b */`）がある。同じ行に `/` を含むテンプレートがあり、その後に複数行のテンプレート等がある場合も
+// - `class A extends /[//]/…` のように `extends` の直後に `//` か `/*` を含む正規表現を置く（`extends` は
+//   正規表現の前置キーワードに含めていないので除算と読み、`//` 以降がコメントとして消える）。括弧で包む
+//   （`extends (/[//]/…)`）か変数に代入すれば通る
+// - `o?.in / 2` のように `?.` の直後のキーワード名プロパティの直後に `/` を置く（同梱 acorn が正規表現と
+//   誤読して開発ファイルをパースできない）。`(o?.in) / 2`・`o?.["in"] / 2`・変数へ代入して使う、で避けられる
+// - `with` 文・行頭の `-->` など module でパースできない構文、`<!--` を行末コメントとして使って後ろに
+//   `/*` を置くなど script と module の読みが分かれる形
+// 回避は、どれも開発ファイル側の書き方を変える（lexer の誤読を直すより単純で、通った生成物は上の保証を満たす）。
+//
+// 中止にはならないが生成物が縮まない形（意味は同じ。実測。正確な条件は stripComments の doc コメントを正とする）:
+// lexer が正規表現と除算を取り違えた結果、その行のコメントや、以降のコメントとインデントが生成物に残る
+// （`// secret comment` のような開発用コメントも配布物に残る）。代表的な形は `}` の直後の `` /`/ ``、
+// `of` の除算の行（行末の `//` コメントが残る。同じ行に `/` を含むテンプレートがあると以降も残る）、
+// メソッド名が `for` の定義の括弧内で `of` を除算に使い `/` を含むテンプレートを書く形
+// （`class A { for(x = of / 2, y = `/`) {…} }`・オブジェクトの `for(…)`・`async for(…)`）、
+// `}` の直後の対にならないクォートを含む正規表現（`/a b['"]x/.test(s)`。その行のコメントが残る）。
+//
 // 生成物の鮮度（開発ファイルとの同期）は tests/build-workflow.test.mjs が CI で検証する —
 // 生成物を直接編集したりビルドを忘れたりすると byte 不一致で fail する。
 //
@@ -25,7 +64,9 @@
 //   node skills/implement-issue-tree/scripts/build-workflow.mjs          # 生成して書き込み
 //   node skills/implement-issue-tree/scripts/build-workflow.mjs --check  # 書き込まず鮮度確認
 //   --src <path> / --dist <path> で入力の開発ファイル・出力（--check では比較対象）の実行ファイルを差し替える
-//   （テスト用。既定はこのディレクトリの implement-issue-tree.src.js / implement-issue-tree.js）
+//   （テスト用。既定はこのディレクトリの implement-issue-tree.src.js / implement-issue-tree.js）。値が無い・
+//   未知の引数は既定値へ戻らず使い方のエラー（exit 2）。トークン照合を差し替える引数は無い（迂回できてしまうため）。
+//   照合の差し替え（テスト用）は runBuild / verifyTokenParity の引数だけで行う
 import { spawnSync } from 'node:child_process'
 import { readFileSync, realpathSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -38,10 +79,23 @@ export const TOKEN_DIFF_PATH = join(HERE, 'token-diff.cjs')
 
 // 直後の `/` を正規表現リテラルの開始と判定するキーワード。識別子・数値の直後の `/` は
 // 除算として素通しする（標準的な division / regex 判別ヒューリスティック）。
+// `of` は for-of 以外では識別子になれる（`x = of / 2`）ため、`for (` の括弧の直下にあるときだけ
+// キーワードとして扱う（下の isDivision）。`of` をこの集合から外さないのは、外すと
+// `for (x of /`/.test(s))` が除算側の誤読（正規表現内のバッククォートでテンプレートの開閉が反転）に
+// なり、正規表現側の誤読より害が大きいため
 const REGEX_PRECEDING_KEYWORDS = new Set([
   'return', 'typeof', 'instanceof', 'in', 'of', 'new', 'delete', 'void',
   'case', 'do', 'else', 'yield', 'await', 'throw',
 ])
+
+// 正規表現リテラルの直後を表す sigWord の目印。キーワードでも識別子でもない値
+const AFTER_REGEX_LITERAL = '/regex/'
+
+// 直後の括弧が「文の頭の条件」になるキーワード。`if (x) /re/` の `)` の直後は正規表現、
+// `f(x) / 2` の `)` の直後は除算になる。括弧を開いた時点の直前の単語で決める（`o.if(x)` の
+// プロパティ名は対象外）。`with` は含めない: `with` 文は strict mode（ES モジュール）で構文エラーであり、
+// トークン照合の module ゴールのパースを通らず、含めても到達しない死にコードになる
+const CONTROL_PAREN_KEYWORDS = new Set(['if', 'for', 'while'])
 
 const isWordChar = (ch) => /[A-Za-z0-9_$]/.test(ch)
 
@@ -60,10 +114,23 @@ const isLowSurrogate = (ch) => ch.length === 1 && ch.charCodeAt(0) >= 0xdc00 && 
 // によっては ID_Continue に含まれない場合がある 2 文字（ECMAScript の IdentifierPart には
 // 含まれる）をそれぞれ捕捉する。ZWNJ/ZWJ はソース中に不可視文字として直接書かず `\u`
 // エスケープで明示し、エディタ・diff ツールでの混入・破損を避ける
+const IDENTIFIER_PART = /[\p{ID_Continue}_$\u200c\u200d]/u
 const isIdentifierContinuationRaw = (prevRaw, prevRaw2) => {
   if (prevRaw === '') return false
   const cp = isLowSurrogate(prevRaw) && isHighSurrogate(prevRaw2) ? prevRaw2 + prevRaw : prevRaw
-  return /[\p{ID_Continue}_$\u200c\u200d]/u.test(cp)
+  return IDENTIFIER_PART.test(cp)
+}
+
+// `src` の位置 `i` のコード単位が識別子文字（ASCII の単語文字・非 ASCII の ID_Continue・ZWNJ/ZWJ）の
+// 一部か。非 BMP の識別子文字はサロゲートペアの 2 単位とも真を返す（高単位は後ろの低単位と、低単位は
+// 前の高単位と組にして判定する）。lexer が「識別子の直後の `/` は除算」と判定するための単語判定で、
+// ASCII しか見ないと `é / 2` を正規表現の開始と誤読する
+const isWordUnitAt = (src, i) => {
+  const ch = src[i]
+  if (isWordChar(ch)) return true
+  if (ch.charCodeAt(0) < 0x80) return false
+  const cp = isLowSurrogate(ch) && isHighSurrogate(src[i - 1] ?? '') ? src.codePointAt(i - 1) : src.codePointAt(i)
+  return IDENTIFIER_PART.test(String.fromCodePoint(cp))
 }
 
 // `\uHHHH`\uff084\u6841\u56fa\u5b9a\uff09/ `\u{H...}`\uff08\u53ef\u5909\u9577\uff09\u5f62\u5f0f\u306e Unicode \u30b3\u30fc\u30c9\u30dd\u30a4\u30f3\u30c8\u30a8\u30b9\u30b1\u30fc\u30d7\u3092
@@ -94,42 +161,65 @@ const SQUEEZE_QUOTES = '"\'`' // 文字列・テンプレートリテラルの�
 const SQUEEZE_DELIMITERS = '()[]{},;' // 他の記号と連結しても別トークンにならない 1 文字記号
 const SQUEEZE_SYMBOLS = '=:?!<>|&*%^+-~.' // 上記以外の記号。記号どうしの連結は合成トークンを作り得る
 
+const squeezeIsWord = (ch) => SQUEEZE_WORD.test(ch)
+const squeezeIsQuote = (ch) => SQUEEZE_QUOTES.includes(ch)
+const squeezeIsDelimiter = (ch) => SQUEEZE_DELIMITERS.includes(ch)
+const squeezeIsSymbol = (ch) => SQUEEZE_SYMBOLS.includes(ch)
+const squeezeClassified = (ch) => squeezeIsWord(ch) || squeezeIsQuote(ch) || squeezeIsDelimiter(ch) || squeezeIsSymbol(ch)
+
+/**
+ * 「詰めない」規則の一覧（prev・next は隣接する 1 文字。`refuses` が真ならその組は詰めない）。
+ * どの規則にも当たらない組だけを詰める（fail-closed）。規則を 1 項ずつ外した版を
+ * tests/build-workflow.test.mjs が作り、外すとトークン列が変わる入力が見つかること（各規則が実際に
+ * 効いていること）を確かめる。
+ */
+export const SQUEEZE_REFUSAL_RULES = [
+  // 分類なし（`/`・非 ASCII・バックスラッシュ・`#`・`@` 等）は判断できない。`/` は除算・正規表現・
+  // `//` `/*` の誤生成を避けるため常に残す
+  { name: 'unclassified', refuses: (prev, next) => !squeezeClassified(prev) || !squeezeClassified(next) },
+  // `1. a` は `1.a` で構文エラーになる
+  { name: 'after-dot', refuses: (prev) => prev === '.' },
+  // 単語どうしは連結すると別の単語になる
+  { name: 'word-word', refuses: (prev, next) => squeezeIsWord(prev) && squeezeIsWord(next) },
+  // `1e +2` → `1e+2`、`1.e + 2` → `1.e+2`（直前が数字・e・E で直後が符号）
+  { name: 'exponent-sign', refuses: (prev, next) => /[0-9eE]/.test(prev) && (next === '+' || next === '-') },
+  // `1e+ 2` → `1e+2`（符号の後ろの空白）
+  { name: 'sign-digit', refuses: (prev, next) => (prev === '+' || prev === '-') && /[0-9]/.test(next) },
+  // 直後が `.` なら詰めない。`1 .toString()` → `1.toString()` は構文エラー（トークン列が変わる）。
+  // `return .5` → `return.5` や `? .5` → `?.5` はトークン列が変わらない（または別規則が守る）が、
+  // 下流の Bugbot が誤検出したため見た目も残す側に倒す
+  { name: 'before-dot', refuses: (prev, next) => next === '.' },
+  // 記号どうしは片方が ( ) [ ] { } , ; のときだけ詰める（`<!--`・`-->`・`++`・`--`・`=>`・`**`・`??` 等の
+  // 合成を防ぐ）
+  {
+    name: 'symbol-symbol',
+    refuses: (prev, next) => {
+      const prevIsPunct = squeezeIsSymbol(prev) || squeezeIsDelimiter(prev)
+      const nextIsPunct = squeezeIsSymbol(next) || squeezeIsDelimiter(next)
+      return prevIsPunct && nextIsPunct && !squeezeIsDelimiter(prev) && !squeezeIsDelimiter(next)
+    },
+  },
+]
+
 /**
  * トークン間の半角スペースを詰めてよいかを、直前トークンの末尾 1 文字 `prev` と直後トークンの
- * 先頭 1 文字 `next` だけで判定する純粋関数。**詰めてよい組を列挙し、それ以外はすべて残す**
- * （fail-closed: 想定外の組は詰めない）。字句解析器の状態（直前の単語等）には頼らない。
- *
- * 詰めてよい組は、次の「詰めない」条件のどれにも当たらない次のいずれか:
+ * 先頭 1 文字 `next` だけで判定する純粋関数。字句解析器の状態（直前の単語等）には頼らない。
+ * `SQUEEZE_REFUSAL_RULES` のどれにも当たらない組だけを詰める（fail-closed: 想定外の組は残す）。
+ * 詰める組の典型:
  * - 単語文字（英数字・`_`・`$`）↔ 単語文字以外の分類ありの文字（記号・括弧・引用符）
  * - 引用符 ↔ 分類ありの任意の文字
- * - 記号どうしは、片方が `( ) [ ] { } , ;` のときだけ（`<!--`・`-->`・`++`・`--`・`=>`・`**`・
- *   `??`・`?.` 等の合成をまとめて防ぐ。`/` は常に対象外なので `//` `/*` も作らない）
+ * - 記号どうしは、片方が `( ) [ ] { } , ;` のときだけ
+ * 詰めない組の典型: 単語どうし、分類なしの文字、直前が `.`、直後が `.`、
+ * 直前が数字・`e`・`E` で直後が `+` `-`、直前が `+` `-` で直後が数字。
  *
- * 詰めない条件（上の許可に優先する）:
- * - どちらかが分類なし、単語文字同士（`a b`）、直前が `.`（`1. a` は `1.a` で構文エラー）
- * - 直前が数字・`e`・`E` で直後が `+` `-` `.`（`1e +2` → `1e+2`、`1 .toString()`、`1.e + 2`）。
- *   `1.e` のように末尾ドットで単語が切れる形も隣接 2 文字だけで防ぐ
- * - 直前が `+` `-` で直後が数字（`1e+ 2` → `1e+2`、符号の後ろの空白）
+ * `rules` は規則一覧の差し替え用（テストが規則を 1 項ずつ外した版を作る）。実行時は既定のまま使う。
  *
  * lexer が状態から加えて除外する組 — `\u{...}` の直後・同一行に除算の `/` がある行 — は
  * ここでは判定しない。
  */
-export function shouldSqueezeSpace(prev, next) {
+export function shouldSqueezeSpace(prev, next, rules = SQUEEZE_REFUSAL_RULES) {
   if (typeof prev !== 'string' || typeof next !== 'string' || prev.length !== 1 || next.length !== 1) return false
-  const isWord = (ch) => SQUEEZE_WORD.test(ch)
-  const isQuote = (ch) => SQUEEZE_QUOTES.includes(ch)
-  const isDelimiter = (ch) => SQUEEZE_DELIMITERS.includes(ch)
-  const isSymbol = (ch) => SQUEEZE_SYMBOLS.includes(ch)
-  const classified = (ch) => isWord(ch) || isQuote(ch) || isDelimiter(ch) || isSymbol(ch)
-  if (!classified(prev) || !classified(next)) return false
-  if (prev === '.') return false
-  if (isWord(prev) && isWord(next)) return false
-  if (/[0-9eE]/.test(prev) && (next === '+' || next === '-' || next === '.')) return false
-  if ((prev === '+' || prev === '-') && /[0-9]/.test(next)) return false
-  const prevIsPunct = isSymbol(prev) || isDelimiter(prev)
-  const nextIsPunct = isSymbol(next) || isDelimiter(next)
-  if (prevIsPunct && nextIsPunct) return isDelimiter(prev) || isDelimiter(next)
-  return true
+  return !rules.some((rule) => rule.refuses(prev, next))
 }
 
 /**
@@ -143,12 +233,57 @@ export function shouldSqueezeSpace(prev, next) {
  * テンプレートリテラル（コード例を含み得る）を多数持つため、行ベースの正規表現置換では
  * 安全に処理できない — 必ずこの lexer を経由すること。
  *
- * 誤判定の安全性: 除算を正規表現と誤読しても出力は素通しで不変。危険なのは正規表現内の
- * `//` を行コメントと誤認して以降を削る方向のみで、それを判別分岐が防ぐ。変換の妥当性は
- * ビルド時検証（行数保持・先頭 meta 宣言・冪等性）と tests/build-workflow.test.mjs の
- * 固定ケース + 生成物パースゲートで担保する。
+ * `/` の判別（除算か正規表現か）:
+ * - 直前が識別子（非 ASCII の識別子文字・サロゲートペアを含む）・数値・文字列・テンプレート・
+ *   `]`・後置 `++` / `--`・正規表現リテラルなら除算。`of` は `for (` の括弧の直下でだけキーワード
+ *   （直後は正規表現）で、それ以外は識別子（直後は除算）
+ * - 直前が `)` のときは、その括弧を開いた直前の単語で決める。`if` / `for` / `while`
+ *   （プロパティ名でない）なら条件の括弧の終わりなので正規表現（`if (x) /re/`）、それ以外は除算
+ *   （`f(x) / 2`・`(a) / b`）
+ * - `for await (` の括弧は `for` の括弧（`await` の直前の単語が `for`）。`await (x) / 2` は除算
+ * - プロパティ名（`obj.if(x)`・private 名 `this.#if(x)`・`this.#in`）はキーワードと同名でも識別子
+ * - 角括弧・波括弧も積むので、`for (x of [of / 2])` の `of` は識別子（括弧の直下でない）
+ * - 決められない箇所は除算側に倒す: `}` の直後（ブロックの終わりなら正規表現、オブジェクト
+ *   リテラルの終わりなら除算）
+ * - 逆に正規表現と読むと決めた箇所が実は除算だった場合に備え、正規表現と読んだ行の残りは
+ *   文字列・テンプレートの中身を詰めない（squeezeOff）
+ *
+ * 残る制約: 上の「除算側に倒す」箇所（`}` の直後）で実際は正規表現のとき、その中にバッククォートが
+ * あると以降のテンプレートの開閉が反転して中身を詰め、`//` `/*` があるとコードをコメントとして消す。
+ * lexer では解かず、ビルド時のトークン照合（verifyTokenParity）が止める — 普通の `/re/.test(s)` は
+ * 素通しで通り、`//` `/*` を含むとき（コードが消える）と、バッククォートで以降のテンプレートの中身が
+ * 変わるときに中止になる。開発ファイル側は、`}` の直後に `//` `/*` バッククォートを含む正規表現を
+ * 置かない（括弧で包む・変数に代入する）。
+ * `for (` の括弧の中で変数 `of` を除算に使う形（`i < of / 2`）は、除算の `/` を正規表現の開始、行内の次の
+ * `/` を閉じと読み、行の残りは詰めない（閉じ `/` が無ければ除算に戻る）。実測した挙動（意味はどれも同じ）:
+ * - 同じ行に `/` を含むテンプレートが無い: 行末の `//` コメントは、次の `/` が `//` の 1 文字目として閉じに
+ *   読まれたときだけ生成物に残る。ほかの `/`（`r += of / 2`）が先にあればそこが閉じになり、後続の `//`
+ *   コメントは消える。`/` を 1 個含むブロックコメント（本文が a/b）も残る。`//` を含むブロックコメント
+ *   （本文が a//b）は閉じのないコメントになって中止する。この行の後に複数行のテンプレートや `//` を含むテンプレートがあっても、
+ *   中止にならず結果も同じ
+ * - 同じ行に `/` を含むテンプレート（`` t = `a/b` ``）がある: 閉じ `/` がテンプレートの開始より前に来て、
+ *   開閉が反転し、lexer はテンプレートモードに入ったままになる。以降が 1 行のテンプレートや通常のコード
+ *   だけなら中止にならず、以降のコメントとインデントが生成物に残る（サイズが縮まない・開発用コメントが配布物に
+ *   残る）。その後に複数行のテンプレート（インデントが詰まる）か `//` を含むテンプレート（パース不能）が
+ *   あると、トークン照合が中止する
+ * 同じ状態は `}` の直後の `` /`/ `` でも起きる: 以降に別のテンプレートが無い、または 1 行のテンプレートだけなら
+ * 通り、以降のコメントとインデントが残る。以降に複数行のテンプレートがあると中止する。`}` の直後の対に
+ * ならないクォートを含む正規表現（`/a b['"]x/.test(s)`）は、クォートが文字列の開始と読まれて行末まで素通しに
+ * なり、その行のコメントが残る。メソッド名が `for` の定義（`class A { for(x = of / 2, y = `/`) {…} }`・
+ * オブジェクトの `for(…)`・`async for(…)`）は `for (` の括弧と同じに扱われ、括弧内の `of` の除算が上と同じ
+ * 取り違えになり、結果は同じで以降のコメントとインデントが残る。`class … extends /[//]/…` のように
+ * `extends` の直後に置いた `//` `/*` 入りの正規表現は除算と読まれ、`//` 以降が消えて中止する。
+ * 後置 `++` / `--` の判定は直前 2 文字が `++` `--` かだけを見るため、空白で離れた `x-- - /re/`（後置 `--` の次の
+ * 二項 `-` の直後の正規表現）や `a - -/re/` も除算と読む。正規表現内に `//` `/*` バッククォートがあれば
+ * コードが消える・開閉が反転するが、ビルド時のトークン照合（パーサ）が止める。
+ *
+ * 誤判定の安全性: 除算を正規表現と読んでも、その行の残りは詰めないのでリテラルの中身は変わらない。
+ * 危険なのは正規表現を除算と読む方向（正規表現内の `//` を行コメントと誤認して以降を削る、バッククォートで
+ * テンプレートの開閉が反転する）で、それは上の判別とビルド時のトークン照合が防ぐ。変換の妥当性は
+ * ビルド時検証（行数保持・先頭 meta 宣言・冪等性・トークン照合）と tests/build-workflow.test.mjs の
+ * 固定ケース + 生成的テスト + 生成物パースゲートで担保する。
  */
-export function stripComments(src, { squeezeSpaces = false } = {}) {
+export function stripComments(src, { squeezeSpaces = false, shouldSqueeze = shouldSqueezeSpace } = {}) {
   let out = ''
   let i = 0
   const n = src.length
@@ -176,6 +311,12 @@ export function stripComments(src, { squeezeSpaces = false } = {}) {
   // sigWord の直前の非空白文字。`.` なら sigWord はプロパティ名であり、キーワードと同名でも
   // 識別子として扱う（`obj.in / 2` を regex と誤読しないため — Bugbot 指摘）
   let wordPrev = ''
+  // sigWord の 1 つ前の単語（sigWord が始まった時点で、まだ句読点に遮られていなかった直前の sigWord）。
+  // `for await (` の `await` の前が `for` であることの判定に使う
+  let wordBefore = ''
+  // wordBefore がプロパティ名・private 名（`obj.for`・`this.#for`）だったか。プロパティ名の `for` は
+  // キーワードではないので、その後に改行を挟んで来る `await (` を `for await (` と読まない
+  let wordBeforeIsProperty = false
   // 直近に出力した `.` が数字と字句的に隣接していたか（`1.` = 数値リテラルの末尾ドット）。
   // `1 .in` のように空白を挟む `.` は数値へのプロパティアクセスなので false。非空白文字の
   // 並びだけでは両者を区別できない（PR #454 codex P1）ため、`.` 出力時点の rawPrev で判定する。
@@ -193,10 +334,18 @@ export function stripComments(src, { squeezeSpaces = false } = {}) {
   let wordDotAfterDigit = false
   // 'code'（{} 深度つき）と 'template' のネストを管理する。template 内の `${` で code を
   // push し、その code の深度が閉じたら template へ復帰する
-  const stack = [{ mode: 'code', depth: 0 }]
+  const stack = [{ mode: 'code', depth: 0, parens: [] }]
   // 空白除去用: 現在の行に除算（正規表現と判別されなかった `/`）が出たか。除算と誤読した正規表現
   // リテラルの内部の空白を詰めて壊さないため、その行の残りでは空白を詰めない（改行で解除）
   let squeezeOff = false
+  // 直近に閉じた `)` の種類（開いた時点の直前の単語: 'if' | 'for' | 'while'、それ以外は 'other'）。
+  // 直後の `/` が `if (x) /re/` の正規表現か `f(x) / 2` の除算かの判別に使う
+  let lastClosedParen = 'other'
+
+  // 直近の単語 sigWord がプロパティ名か（`obj.in`・`x.return`・private 名 `this.#if` の `if`）。
+  // プロパティ名はキーワードと同名でも識別子として扱う。`1. in /re/`（末尾ドット数値の直後の
+  // キーワード）の `.` は演算子の直前なのでプロパティ名ではない。`#` 直後の名前は private 名
+  const isPropertyName = () => (wordPrev === '.' && !wordDotAfterDigit) || wordPrev === '#'
 
   // コメント除去の直前に出力末尾の行内空白を切り詰める。コメントだけの行は空行になり、
   // `code  // c` は `code` になる（.editorconfig の trim_trailing_whitespace 準拠）
@@ -229,7 +378,7 @@ export function stripComments(src, { squeezeSpaces = false } = {}) {
       if (c === '$' && src[i + 1] === '{') {
         out += '${'
         i += 2
-        stack.push({ mode: 'code', depth: 0 })
+        stack.push({ mode: 'code', depth: 0, parens: [] })
         sigCh2 = sigCh
         sigCh = '{'
         sigWord = ''
@@ -270,7 +419,7 @@ export function stripComments(src, { squeezeSpaces = false } = {}) {
       const prev = out[out.length - 1]
       if (prev !== undefined && prev !== '\n' && next !== undefined && next !== '\n' && next !== '\r') {
         const squeeze =
-          shouldSqueezeSpace(prev, next) &&
+          shouldSqueeze(prev, next) &&
           // `\u{41}` の閉じ `}` と単語文字を連結すると識別子が地続きになる
           !(prev === '}' && rawPrevIsIdentEscape && isWordChar(next))
         if (!squeeze) out += ' '
@@ -363,6 +512,8 @@ export function stripComments(src, { squeezeSpaces = false } = {}) {
         if (isWordChar(rawPrev) || rawPrevIsIdentEscape) {
           sigWord += esc
         } else {
+          wordBeforeIsProperty = sigWord !== '' && isPropertyName()
+          wordBefore = sigWord
           sigWord = esc
           wordPrev = sigCh // 新規単語の開始: 直前の非空白文字と、それが `.` なら数字隣接を記録
           wordPrevRaw = rawPrev
@@ -378,6 +529,29 @@ export function stripComments(src, { squeezeSpaces = false } = {}) {
         continue
       }
     }
+    // 括弧の種類の追跡（`/` が除算か正規表現かの判別用）。開いた時点の直前の単語が if / for / while
+    // （プロパティ名でない）なら条件の括弧として記録し、閉じたときにその種類を残す。文字列・正規表現・
+    // コメント・テンプレート本文の括弧はここへ来ないので数えない
+    if (c === '(') {
+      // `for await (` の括弧は `for` の括弧（直下の `of` はキーワード）。`await` が単独の式のとき
+      // （`await (x) / 2`）は対象外なので、直前が実際の `for` キーワードのときだけ（`obj.for` `this.#for` の
+      // プロパティ名の `for` の後に改行を挟んで `await (` が来る形は `for await` ではない）
+      const kind = sigWord === 'await' && wordBefore === 'for' && !wordBeforeIsProperty ? 'for' : sigWord
+      const control = CONTROL_PAREN_KEYWORDS.has(kind) && !isPropertyName()
+      ctx.parens.push(control ? kind : 'other')
+    } else if (c === ')') {
+      const top = ctx.parens.pop() ?? 'other'
+      lastClosedParen = top === '[' || top === '{' ? 'other' : top
+    } else if (c === '[') {
+      // 角括弧・波括弧も積む: `for (x of [of / 2])` の `of` は `for` の括弧の直下ではなく識別子
+      ctx.parens.push('[')
+    } else if (c === ']') {
+      if (ctx.parens[ctx.parens.length - 1] === '[') ctx.parens.pop()
+    } else if (c === '{') {
+      ctx.parens.push('{')
+    } else if (c === '}' && ctx.parens[ctx.parens.length - 1] === '{') {
+      ctx.parens.pop()
+    }
     // code モードの {} 深度（template の `${` からの復帰判定）
     if (c === '{') ctx.depth++
     if (c === '}') {
@@ -389,12 +563,14 @@ export function stripComments(src, { squeezeSpaces = false } = {}) {
       }
       ctx.depth--
     }
-    // 正規表現リテラル: 直前トークンが識別子・数値・閉じ括弧 `)` `]` `}`・後置 `++` / `--`・
-    // リテラル終端なら除算として素通しし、それ以外（演算子・区切り・キーワード直後）は regex
-    // として閉じ `/` まで素通しする — regex 内部の `//` をコメントと誤認しないための分岐。
+    // 正規表現リテラル: 直前トークンが識別子・数値・`]` `}`・後置 `++` / `--`・リテラル終端、または
+    // 条件の括弧以外の閉じ括弧 `)` なら除算として素通しし、それ以外（演算子・区切り・キーワード・
+    // 条件の括弧 `if (x)` `for (…)` `while (x)` の `)` の直後）は regex として閉じ `/` まで素通しする —
+    // regex 内部の `//` をコメントと誤認しないための分岐。
     // `}` はブロック文直後の regex（`if (a) {} /re/`）と曖昧だが除算側へ倒す: regex 側へ
     // 誤読すると閉じ `/` 探索が行内の文字列開始を飲み込み、非コメントを書き換え得る
-    // （PR #452 Bugbot）。除算側の誤りは素通しのため出力を変えない
+    // （PR #452 Bugbot）。除算と読んだ regex の中身は、バッククォート・`//` `/*` を含まなければ素通しで
+    // 出力は変わらない（含むとテンプレートの開閉の反転・コードの消失になり、トークン照合が止める）
     if (c === '/') {
       const postfixIncDec =
         (sigCh === '+' && sigCh2 === '+') || (sigCh === '-' && sigCh2 === '-')
@@ -406,10 +582,15 @@ export function stripComments(src, { squeezeSpaces = false } = {}) {
       // 除算側へ倒す（Bugbot 指摘）。キーワード本体（`return /re/`・`in /re/`）は regex のまま
       // 末尾ドット数値直後のキーワード（`1. in /re/`）はプロパティ名ではない（Bugbot 指摘）。
       // 数値へのプロパティアクセス `1 .in / 2` は字句隣接でないためプロパティ名として除算側
-      const keywordProperty = wordPrev === '.' && !wordDotAfterDigit
+      const keywordProperty = isPropertyName()
+      // `of` は for の括弧の直下でだけキーワード（`for (x of /re/.exec(s))`）。それ以外は識別子
+      const ofIsIdentifier = sigWord === 'of' && ctx.parens[ctx.parens.length - 1] !== 'for'
+      // `if (x) /re/` の `)` は条件の括弧を閉じた直後なので正規表現。`}` の直後はブロックの終わり
+      // （正規表現）とオブジェクトリテラルの終わり（除算）を lexer では決められないため除算側に倒す
+      const closedControlParen = sigCh === ')' && lastClosedParen !== 'other'
       const isDivision =
-        (sigWord !== '' && (!REGEX_PRECEDING_KEYWORDS.has(sigWord) || keywordProperty)) ||
-        /[)\]}]/.test(sigCh) ||
+        (sigWord !== '' && (!REGEX_PRECEDING_KEYWORDS.has(sigWord) || keywordProperty || ofIsIdentifier)) ||
+        (/[)\]}]/.test(sigCh) && !closedControlParen) ||
         sigCh === '"' || sigCh === "'" || sigCh === '`' ||
         postfixIncDec ||
         trailingDotNumber
@@ -437,9 +618,13 @@ export function stripComments(src, { squeezeSpaces = false } = {}) {
         if (closed) {
           out += buf
           i = j
+          // 正規表現と読んだ判定が誤りでも、その行の残りの文字列・テンプレートの中身を詰めない
+          squeezeOff = true
           sigCh2 = sigCh
           sigCh = '/'
-          sigWord = ''
+          // 正規表現リテラルは被演算子なので、直後の `/` は除算（`/a/ / 2`）。単語として扱う目印を置く。
+          // 直後にフラグ（`/a/g`）が続けば通常の単語で置き換わる
+          sigWord = AFTER_REGEX_LITERAL
           rawPrev2 = rawPrev
           rawPrev = '/'
           rawPrevIsIdentEscape = false
@@ -455,14 +640,17 @@ export function stripComments(src, { squeezeSpaces = false } = {}) {
     out += c
     if (c === '\n') squeezeOff = false
     else if (c === '/') squeezeOff = true
-    if (isWordChar(c)) {
+    if (isWordUnitAt(src, i)) {
       // rawPrevIsIdentEscape: 直前が Unicode コードポイントエスケープの末尾（`\u{1D400}1` の
       // `1` 等）で地続きの識別子文字である場合も継続として扱う（Issue #455 codex P1）。
       // rawPrevContinuesSigWord: 直前が数値リテラルの指数部符号（`1e+10` の `+`）で、その
       // 手前の sigWord が指数部途中（`1e`）だった場合も地続きとして扱う（Issue #455 Bugbot）
-      if (isWordChar(rawPrev) || rawPrevIsIdentEscape || rawPrevContinuesSigWord) {
+      // isLowSurrogate(c): 非 BMP 識別子文字の 2 単位目は 1 単位目と同じ単語（isWordUnitAt が組を確認済み）
+      if (isLowSurrogate(c) || isIdentifierContinuationRaw(rawPrev, rawPrev2) || rawPrevIsIdentEscape || rawPrevContinuesSigWord) {
         sigWord += c
       } else {
+        wordBeforeIsProperty = sigWord !== '' && isPropertyName()
+        wordBefore = sigWord
         sigWord = c
         wordPrev = sigCh // 新規単語の開始: 直前の非空白文字と、それが `.` なら数字隣接を記録
         wordPrevRaw = rawPrev // `.` 判定で「単語開始直前が識別子文字か」を見るため生文字も保持
@@ -533,9 +721,10 @@ export function stripComments(src, { squeezeSpaces = false } = {}) {
  * コメント・インデントを除去したうえで、最上位のコードのトークン間の不要な半角スペースを詰める。
  * 先にコメントを除去してから空白除去の lexer を走らせるため、ブロックコメントの置換空白が
  * 詰め残しになって冪等性を壊すことはない。冪等（出力へ再適用しても不変）。
+ * `shouldSqueeze` は詰める組の判定関数の差し替え用（テストが規則を 1 項ずつ外した版を渡す）。
  */
-export function squeezeSpaces(src) {
-  return stripComments(stripComments(src), { squeezeSpaces: true })
+export function squeezeSpaces(src, { shouldSqueeze = shouldSqueezeSpace } = {}) {
+  return stripComments(stripComments(src), { squeezeSpaces: true, shouldSqueeze })
 }
 
 /**
@@ -564,26 +753,132 @@ export function buildArtifact(src) {
 }
 
 /**
- * 生成物のトークン列が開発ファイルのトークン列と一致することを acorn で照合する。lexer
- * （stripComments）とは独立の字句解析なので、lexer が `/` を誤読して文字列・テンプレート・正規表現の
- * 中身を変えても検出できる。コメントはトークンに出ないため開発ファイルをそのまま比べる。比較は種類・
- * 値・開始行で、sourceType は module と script の両方。一致しなければ最初の差の位置（行番号と前後の
- * トークン）を含めて throw する。acorn を取得できない Node でも黙って飛ばさず throw する。
+ * 生成物のトークン列が開発ファイルのトークン列と一致することを、acorn のパーサ（onToken）で照合する。
+ * lexer（stripComments）とは独立の解析で、lexer が `/` を誤読して文字列・テンプレート・正規表現の中身を
+ * 変えたり、コードをコメントとして消したりしても検出できる。パーサは文脈（`/` が除算か正規表現か、
+ * `if (x) /re/` の括弧、ブロックかオブジェクトリテラルか、for await の括弧）を決めるので、tokenizer 単体の
+ * 比較と違い、lexer と同じ位置で `/` を誤読して「同じ誤読」で一致してしまうことがない
+ * （照合の詳細は scripts/token-diff.cjs の mode: "parse"）。比較は種類・値・開始行。
+ *
+ * 次の場合はいずれも throw する（fail-closed。検査を省略して通さない）:
+ * - 開発ファイルをパースできない（検査できない）。tokenizer へのフォールバックはしない
+ * - 生成物をパースできない・トークン列が違う（最初の差の位置の行番号と前後のトークンつき）
+ * - acorn を取得できない Node・照合ヘルパーの異常終了・出力が想定の形でない
+ *
+ * `helperPath` / `execPath` は照合ヘルパーと実行ファイルの差し替え用（テストが照合を実行できない
+ * 状況を作る）。CLI からは渡せない（照合を迂回する口を本番の入口に残さない）。
  */
-export function verifyTokenParity(src, artifact) {
-  const r = spawnSync(process.execPath, ['--expose-internals', TOKEN_DIFF_PATH], {
-    input: JSON.stringify([{ name: 'build', before: src, after: artifact }]),
+export function verifyTokenParity(src, artifact, { helperPath = TOKEN_DIFF_PATH, execPath = process.execPath } = {}) {
+  const r = spawnSync(execPath, ['--expose-internals', helperPath], {
+    input: JSON.stringify([{ name: 'build', mode: 'parse', before: src, after: artifact }]),
     encoding: 'utf8',
     maxBuffer: 1 << 28,
   })
   if (r.error || r.status !== 0) {
     throw new Error(
       'トークン照合を実行できない（acorn を取得できない Node の可能性。検査を省略せず中止する）: ' +
-        `${r.error ? r.error.message : `status ${r.status}`} ${r.stderr ?? ''}`.trim(),
+        `${r.error ? r.error.message : `status ${r.status}${r.signal ? ` signal ${r.signal}` : ''}`} ${r.stderr ?? ''}`.trim(),
     )
   }
-  const [result] = JSON.parse(r.stdout).results
-  if (!result.ok) throw new Error(`生成物のトークン列が開発ファイルと一致しない: ${result.detail}`)
+  // 終了コード 0 でも出力が JSON でない・想定の形でない場合は「一致した」と扱わず中止する
+  // （出力が空・途中で切れた・別のスクリプトが差し込まれた等。通過は ok: true を明示的に受け取ったときだけ）
+  let parsed
+  try {
+    parsed = JSON.parse(r.stdout)
+  } catch (e) {
+    throw new Error(`トークン照合の結果を解釈できない（出力が JSON として読めない。検査を省略せず中止する）: ${e.message}`)
+  }
+  const results = parsed?.results
+  if (!Array.isArray(results) || results.length !== 1 || typeof results[0]?.ok !== 'boolean') {
+    throw new Error('トークン照合の結果を解釈できない（results が 1 件の { ok: boolean } でない。検査を省略せず中止する）')
+  }
+  const [result] = results
+  if (result.ok) return
+  if (result.kind === 'source-unparsable') {
+    // 原因は開発ファイルの構文エラーとは限らない。acorn のエラー本文と位置を先に出し、ヒントは例として添える
+    throw new Error(
+      `開発ファイルをパースできないため照合できない（検査を省略せず中止する）: ${result.detail}。` +
+        '原因の例: 構文エラー、module と script のどちらかのゴールで読めない構文（`with` 文・行頭の `-->`・' +
+        '2 つ目の `export`・`import.meta` 等）、acorn が正当な構文を読めない場合（よくある原因の 1 つ: ' +
+        '`o?.in / 2` のように `?.` の直後のキーワード名プロパティの直後の `/` を acorn が正規表現と誤読する。' +
+        '`(o?.in) / 2` のように括弧で包むと避けられる）',
+    )
+  }
+  throw new Error(`生成物のトークン列が開発ファイルと一致しない: ${result.detail}`)
+}
+
+/**
+ * ビルド本体（CLI が使う関数）。開発ファイルから生成物を作ってトークン照合し、書き込む（`checkOnly` では
+ * 書かず、既存の実行ファイルとの一致だけ確かめる）。標準出力・標準エラーに出す行と終了コードを返し、
+ * 出力と終了は呼び出し側（CLI）が行う。照合に失敗したら生成ファイルは書かない。
+ * `parity` は verifyTokenParity へ渡す差し替え（`helperPath` / `execPath`。テスト専用で、CLI の引数からは渡せない）。
+ */
+export function runBuild({ srcPath = SRC_PATH, distPath = DIST_PATH, checkOnly = false, parity = {} } = {}) {
+  const startedAt = Date.now()
+  let src
+  let artifact
+  try {
+    src = readFileSync(srcPath, 'utf8')
+    artifact = buildArtifact(src)
+    verifyTokenParity(src, artifact, parity)
+  } catch (e) {
+    return { status: 1, stdout: [], stderr: [`ビルド中止（${distPath} は書き込まない）: ${e.message}`], wrote: false }
+  }
+  const srcBytes = Buffer.byteLength(src)
+  const outBytes = Buffer.byteLength(artifact)
+  const elapsed = ((Date.now() - startedAt) / 1000).toFixed(2)
+  if (checkOnly) {
+    let current
+    try {
+      current = readFileSync(distPath, 'utf8')
+    } catch (e) {
+      return { status: 1, stdout: [], stderr: [`鮮度エラー: 実行ファイルを読めない（${distPath}）: ${e.message}`], wrote: false }
+    }
+    if (current !== artifact) {
+      return {
+        status: 1,
+        stdout: [],
+        stderr: ['鮮度エラー: 実行ファイルが開発ファイルと同期していない。node build-workflow.mjs で再生成せよ'],
+        wrote: false,
+      }
+    }
+    return { status: 0, stdout: [`鮮度 ok: ${outBytes} B（src ${srcBytes} B・トークン照合 ok・${elapsed}s）`], stderr: [], wrote: false }
+  }
+  writeFileSync(distPath, artifact)
+  return {
+    status: 0,
+    stdout: [
+      `生成完了: ${distPath}`,
+      `src ${srcBytes} B → dist ${outBytes} B（-${srcBytes - outBytes} B, -${Math.round(((srcBytes - outBytes) / srcBytes) * 100)}%・トークン照合 ok・${elapsed}s）`,
+    ],
+    stderr: [],
+    wrote: true,
+  }
+}
+
+const USAGE = '使い方: node build-workflow.mjs [--check] [--src <path>] [--dist <path>]'
+
+/**
+ * コマンドライン引数を解釈する。未知の引数・値のないオプション（末尾、または次が別のオプション）は
+ * 既定値へ黙って戻らず、使い方のエラーとして `error` を返す。照合を差し替える口は持たない。
+ */
+export function parseArgs(argv) {
+  const out = { checkOnly: false, srcPath: SRC_PATH, distPath: DIST_PATH, error: null }
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i]
+    if (a === '--check') {
+      out.checkOnly = true
+    } else if (a === '--src' || a === '--dist') {
+      const v = argv[i + 1]
+      if (v === undefined || v.startsWith('--')) return { ...out, error: `${a} に値がない` }
+      if (a === '--src') out.srcPath = v
+      else out.distPath = v
+      i++
+    } else {
+      return { ...out, error: `未知の引数: ${a}` }
+    }
+  }
+  return out
 }
 
 // CLI 実行部（import 時は実行しない）。argv[1] は realpath で比較する — import.meta.url は
@@ -597,37 +892,13 @@ const invokedAs = (() => {
   }
 })()
 if (invokedAs && invokedAs === fileURLToPath(import.meta.url)) {
-  const argValue = (flag, fallback) => {
-    const at = process.argv.indexOf(flag)
-    return at === -1 ? fallback : (process.argv[at + 1] ?? fallback)
+  const args = parseArgs(process.argv.slice(2))
+  if (args.error) {
+    console.error(`${args.error}\n${USAGE}`)
+    process.exit(2)
   }
-  const checkOnly = process.argv.includes('--check')
-  const srcPath = argValue('--src', SRC_PATH)
-  const distPath = argValue('--dist', DIST_PATH)
-  const startedAt = Date.now()
-  let src
-  let artifact
-  try {
-    src = readFileSync(srcPath, 'utf8')
-    artifact = buildArtifact(src)
-    verifyTokenParity(src, artifact)
-  } catch (e) {
-    console.error(`ビルド中止（${distPath} は書き込まない）: ${e.message}`)
-    process.exit(1)
-  }
-  const srcBytes = Buffer.byteLength(src)
-  const outBytes = Buffer.byteLength(artifact)
-  const elapsed = ((Date.now() - startedAt) / 1000).toFixed(2)
-  if (checkOnly) {
-    const current = readFileSync(distPath, 'utf8')
-    if (current !== artifact) {
-      console.error('鮮度エラー: 実行ファイルが開発ファイルと同期していない。node build-workflow.mjs で再生成せよ')
-      process.exit(1)
-    }
-    console.log(`鮮度 ok: ${outBytes} B（src ${srcBytes} B・トークン照合 ok・${elapsed}s）`)
-  } else {
-    writeFileSync(distPath, artifact)
-    console.log(`生成完了: ${distPath}`)
-    console.log(`src ${srcBytes} B → dist ${outBytes} B（-${srcBytes - outBytes} B, -${Math.round(((srcBytes - outBytes) / srcBytes) * 100)}%・トークン照合 ok・${elapsed}s）`)
-  }
+  const r = runBuild(args)
+  for (const line of r.stdout) console.log(line)
+  for (const line of r.stderr) console.error(line)
+  process.exit(r.status)
 }
