@@ -411,6 +411,38 @@ test('git worktree remove / unlock と git branch -D の許可形は worktree-re
   for (const f of [...found.worktree, ...found.branch]) assert.ok(GIT_WORKTREE_RM_ALLOWED.test(f.l) || GIT_BRANCH_DELETE_ALLOWED.test(f.l), f.l)
 })
 
+test('git worktree prune は worktree-remove.sh の safe_prune の中の 1 行だけにある（ほかのスクリプト・ほかの位置・ほかの形は拒否する）', () => {
+  const found = []
+  for (const { name, path } of targets()) {
+    for (const { n, l } of codeLines(readFileSync(path, 'utf8'))) if (GIT_SUB('worktree').test(l) && /\bprune\b/.test(l)) found.push({ name, n, l: l.trim() })
+  }
+  assert.deepEqual(found.map((f) => [f.name, f.l]), [['worktree-remove.sh', 'git worktree prune >/dev/null 2>&1 || true']], JSON.stringify(found))
+  const lines = codeLines(readFileSync(targets().find((t) => t.name === 'worktree-remove.sh').path, 'utf8'))
+  const start = lines.findIndex((x) => x.l === 'safe_prune() {')
+  const end = lines.findIndex((x, i) => i > start && x.l === '}')
+  assert.ok(start >= 0 && end > start, 'safe_prune の定義がある')
+  assert.ok(found[0].n > lines[start].n && found[0].n < lines[end].n, `prune は safe_prune の中: ${found[0].n} / ${lines[start].n}-${lines[end].n}`)
+})
+
+test('worktree-remove.sh の check-absent ブロックは読み取り専用: git は worktree list --porcelain だけ、prune・remove・unlock・branch・rm を持たず、emit_remove で必ず exit する。許可形の 3 行列挙は増えない', () => {
+  const src = readFileSync(targets().find((t) => t.name === 'worktree-remove.sh').path, 'utf8')
+  const lines = codeLines(src).map((x) => x.l)
+  const start = lines.findIndex((l) => l === 'if [ "${cmd}" = check-absent ]; then')
+  const end = lines.findIndex((l, i) => i > start && l === 'if [ "${cmd}" = remove ]; then')
+  assert.ok(start >= 0 && end > start, 'check-absent ブロックが remove ブロックの前にある')
+  const block = lines.slice(start, end)
+  assert.equal(block[block.length - 2], '  emit_remove ""', 'ブロックの最後で emit_remove（内部で exit 0）する')
+  const gits = block.filter((l) => /\bgit\b/.test(l))
+  assert.deepEqual(gits.map((l) => l.trim()), ['ca_list=$(git worktree list --porcelain 2>/dev/null) || { ca_ok=0; ca_list=""; }'])
+  // 変数展開（${branch} 等）は語として数えない
+  assert.doesNotMatch(block.join('\n').replace(/\$\{[^}]*\}/g, ''), /\b(prune|unlock|remove|branch|rm|clean|reset|checkout)\b/)
+  // check-absent の純関数（lib）も git・rm・cd 以外の副作用を持たない
+  const lib = readFileSync(targets().find((t) => t.name === 'lib/worktree-remove-lib.sh').path, 'utf8')
+  const body = lib.slice(lib.indexOf('wr_loose_real() {'), lib.indexOf('# 破棄時のブランチの扱い。'))
+  const bodyCode = codeLines(body).map((x) => x.l).join('\n').replace(/2>\/dev\/null/g, '')
+  assert.doesNotMatch(bodyCode, /\bgit\b|\brm\b|>|\bmkdir\b|\btouch\b/)
+})
+
 test('git add / git commit の許可形は recover-prep.sh だけにあり、決まった 1 行（git -C "${path}" の WIP コミット）だけが存在する。フックを回避する綴りを伴わない', () => {
   const found = []
   for (const { name, path } of targets()) {

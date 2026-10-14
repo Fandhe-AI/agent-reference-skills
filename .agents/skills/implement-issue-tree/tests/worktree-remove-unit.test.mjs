@@ -26,15 +26,19 @@ US=$(printf '\\037')
 nl() { printf '%s' "$1" | sed 's/@@/\\
 /g'; }
 i=0
-while IFS="$US" read -r fn a b c d; do
+while IFS="$US" read -r fn a b c d e f g; do
   rc=0
   out=""
   WR_DIRTY=0; WR_SUB_DIRTY=0; WR_REGISTERED=0; WR_MAIN=0; WR_LOCKED=0; WR_LOCK_REASON=""; WR_LOCK_PID=""; WR_LOCK_START=""
   case "$fn" in
     wr_count_status) wr_count_status "$(nl "$a")" ;;
     wr_find_entry) wr_find_entry "$(nl "$a")" "$b" ;;
+    wr_find_detached) wr_find_entry "$(nl "$a")" "$b"; out=$WR_DETACHED ;;
+    wr_find_fold) wr_find_entry "$(nl "$a")" "$b" 1; out=$WR_REGISTERED ;;
+    wr_prune_risk) wr_prune_risk "$(nl "$a")"; out=$WR_PRUNE_RISK ;;
+    wr_holder) wr_branch_holder "$(nl "$a")" "$b"; out=$WR_HOLDER ;;
     wr_lock_pid) out=$(wr_lock_pid "$a" 2>&1) || rc=$?; wr_lock_pid "$a" || true ;;
-    *) out=$("$fn" "$a" "$b" "$c" "$d" 2>&1) || rc=$? ;;
+    *) out=$("$fn" "$a" "$b" "$c" "$d" "$e" "$f" "$g" 2>&1) || rc=$? ;;
   esac
   printf '%s %s [%s] [%s,%s,%s,%s,%s,%s,%s;%s]\\n' "$i" "$rc" "$out" "$WR_DIRTY" "$WR_SUB_DIRTY" "$WR_REGISTERED" "$WR_MAIN" "$WR_LOCKED" "$WR_LOCK_REASON" "$WR_LOCK_PID" "$WR_LOCK_START"
   i=$((i + 1))
@@ -109,17 +113,36 @@ check(
   (g, r) => assert.equal(g.rc, r[1] === 'a'.repeat(40) || r[1] === '0123456789abcdef0123456789abcdef01234567' ? OK : NG, JSON.stringify(r[1])),
 )
 
+// wr_branch_check EXPECT WT_HEAD
+check(
+  'wr_branch_check: 指定なし → ok / 一致 → ok / 違う・detached（WT_HEAD が空）・読めない → retain（ブランチを消すかは判断しない）',
+  [
+    ['wr_branch_check', '', ''], ['wr_branch_check', '', 'feat/x'], ['wr_branch_check', 'feat/x', 'feat/x'],
+    ['wr_branch_check', 'worktree-wf_ab12', 'worktree-wf_ab12'], ['wr_branch_check', 'feat/x', 'feat/y'], ['wr_branch_check', 'feat/x', ''],
+    ['wr_branch_check', 'feat/x', 'feat/x2'], ['wr_branch_check', 'main', 'main'],
+  ],
+  (g, r, i) => assert.equal(g.out, ['ok', 'ok', 'ok', 'ok', 'retain', 'retain', 'retain', 'ok'][i], JSON.stringify(r)),
+)
+
+// --expect-branch の名前検証は --branch と同じ wr_valid_branch。規約外の名前（worktree-wf_…）も base と同名（main）も文字種として妥当なら通る
+check(
+  'wr_valid_branch: --expect-branch に渡す規約外の名前・base と同名は通り、不正な形は拒否する',
+  [['wr_valid_branch', 'worktree-wf_ab12'], ['wr_valid_branch', 'main'], ['wr_valid_branch', '-D'], ['wr_valid_branch', 'a..b'], ['wr_valid_branch', 'a b']],
+  (g, r, i) => assert.equal(g.rc, [OK, OK, NG, NG, NG][i], JSON.stringify(r)),
+)
+
 // wr_head_check EXPECT ACTUAL BRANCH
 const H = 'a'.repeat(40)
 check(
-  'wr_head_check: 指定なし → ok（detached でも）/ ブランチ上で一致 → ok / 違う・読めない → retain / 一致していても detached（BRANCH が空）→ retain-detached',
+  'wr_head_check: 指定なし → ok（detached でも）/ ブランチ上で一致 → ok / 違う → retain / 読めない（実際の sha が空）→ retain-unobservable / 一致していても detached（BRANCH が空）→ retain-detached',
   [
     ['wr_head_check', '', '', ''], ['wr_head_check', '', H, ''], ['wr_head_check', '', H, 'feat/x'],
     ['wr_head_check', H, H, 'feat/x'], ['wr_head_check', H, 'b'.repeat(40), 'feat/x'], ['wr_head_check', H, '', 'feat/x'],
     ['wr_head_check', H, 'A'.repeat(40), 'feat/x'], ['wr_head_check', H, 'a'.repeat(39), 'feat/x'],
     ['wr_head_check', H, H, ''], ['wr_head_check', H, 'b'.repeat(40), ''], ['wr_head_check', H, '', ''],
+    ['wr_head_check', H, '', 'feat/x', '1'], ['wr_head_check', H, '', 'feat/x', '0'], ['wr_head_check', '', '', 'feat/x', '1'],
   ],
-  (g, r, i) => assert.equal(g.out, ['ok', 'ok', 'ok', 'ok', 'retain', 'retain', 'retain', 'retain', 'retain-detached', 'retain', 'retain'][i], JSON.stringify(r)),
+  (g, r, i) => assert.equal(g.out, ['ok', 'ok', 'ok', 'ok', 'retain', 'retain-unobservable', 'retain', 'retain', 'retain-detached', 'retain', 'retain-unobservable', 'retain', 'retain-unobservable', 'ok'][i], JSON.stringify(r)),
 )
 
 check(
@@ -223,14 +246,15 @@ check(
 
 // wr_plan MODE DIRTY SUB_DIRTY SUB_INIT
 check(
-  'wr_plan: superseded は汚れていても force（submodule の未記録の変更・確認不能は保持）、discard は汚れ・初期化済み submodule で保持し --force を使わない',
+  'wr_plan: superseded は汚れていても force（submodule の未記録の変更・確認不能は retain-unobservable で保持）、discard は汚れ・初期化済み submodule で保持し --force を使わない',
   [
     ['wr_plan', 'superseded', '0', '0', '0'], ['wr_plan', 'superseded', '5', '0', '0'], ['wr_plan', 'superseded', '5', '1', '0'], ['wr_plan', 'superseded', '1', '1', '2'],
     ['wr_plan', 'superseded', '0', '0', '3'], ['wr_plan', 'superseded', '-1', '0', '0'],
     ['wr_plan', 'discard', '0', '0', '0'], ['wr_plan', 'discard', '1', '0', '0'], ['wr_plan', 'discard', '0', '0', '1'], ['wr_plan', 'discard', '2', '1', '1'],
     ['wr_plan', 'discard', '-1', '0', '0'], ['wr_plan', 'bogus', '0', '0', '0'], ['wr_plan', '', '0', '0', '0'],
+    ['wr_plan', 'superseded', '-2', '0', '0'], ['wr_plan', 'discard', '-2', '0', '0'],
   ],
-  (g, r, i) => assert.equal(g.out, ['force', 'force', 'retain-submodule', 'retain-submodule', 'force', 'retain-dirty', 'plain', 'retain-dirty', 'retain-submodule', 'retain-dirty', 'retain-dirty', 'retain-dirty', 'retain-dirty'][i], JSON.stringify(r)),
+  (g, r, i) => assert.equal(g.out, ['force', 'force', 'retain-submodule', 'retain-submodule', 'force', 'retain-unobservable', 'plain', 'retain-dirty', 'retain-submodule', 'retain-dirty', 'retain-unobservable', 'retain-dirty', 'retain-dirty', 'retain-broken', 'retain-broken'][i], JSON.stringify(r)),
 )
 
 // wr_count_status TEXT（v2 形式。@@ が改行）→ WR_DIRTY, WR_SUB_DIRTY
@@ -281,9 +305,51 @@ check(
   (g, r, i) => {
     const exp = [
       [1, 1, 0, ''], [1, 0, 0, ''], [1, 0, 1, 'claude agent agent-x (pid 77)'], [0, 0, 0, ''], [1, 0, 1, ''], [1, 0, 0, ''], [1, 0, 0, ''],
-      [0, 0, 0, ''], [0, 0, 0, ''], [0, 0, 0, ''], [0, 0, 0, ''], [1, 0, 0, ''],
+      [0, 0, 0, ''], [1, 0, 0, ''], [0, 0, 0, ''], [0, 0, 0, ''], [1, 0, 0, ''],
     ][i]
     assert.deepEqual([g.reg, g.main, g.locked, g.reason], exp, `${i}: ${JSON.stringify(r.slice(1))}`)
+  },
+)
+
+
+// wr_find_detached LIST TARGET → 対象のエントリが detached か（check-absent が prunable の保全に使う。別のエントリの detached を拾わない）
+check(
+  'wr_find_entry: 対象のエントリが detached のときだけ WR_DETACHED=1（別のエントリの detached・未登録・ブランチ上は 0）',
+  [
+    ['wr_find_detached', LIST(MAIN, W4, W1), '/r/w 4'],
+    ['wr_find_detached', LIST(MAIN, W4, W1), '/r/w1'],
+    ['wr_find_detached', LIST(MAIN, W1, W4), '/r/w1'],
+    ['wr_find_detached', LIST(MAIN, W1, W4), '/r/w 4'],
+    ['wr_find_detached', LIST(MAIN, W1), '/r/none'],
+    ['wr_find_detached', '', '/r/w1'],
+  ],
+  (g, r, i) => assert.equal(g.out, ['1', '0', '0', '1', '0', '0'][i], JSON.stringify(r)),
+)
+
+// wr_absent_word LIST_OK FS REGISTERED MAIN LOCKED DETACHED。不在として扱ってよいのは absent と prunable だけ（ホストが信じる語）
+const FSV = ['exists', 'missing', 'unknown']
+const ABS_ROWS = []
+for (const ok of ['1', '0']) for (const fs of FSV) for (const reg of ['0', '1']) for (const main of ['0', '1']) for (const lock of ['0', '1']) for (const det of ['0', '1']) for (const ci of ['0', '1']) ABS_ROWS.push(['wr_absent_word', ok, fs, reg, main, lock, det, ci])
+function absentExpected([, ok, fs, reg, main, lock, det, ci]) {
+  if (ok !== '1' || fs === 'unknown') return 'unknown'
+  if (main === '1') return 'main'
+  if (fs === 'exists') return reg === '1' ? 'present' : 'unregistered-present'
+  if (reg !== '1') return ci === '1' ? 'unknown' : 'absent'
+  if (lock === '1') return 'prunable-locked'
+  if (det === '1') return 'prunable-detached'
+  return 'prunable'
+}
+check(
+  'wr_absent_word: 全組み合わせの表。登録が無くパスも無い → absent、登録だけ（lock なし・ブランチ上）→ prunable、detached・lock あり・実体あり・main・判定不能は不在扱いにしない',
+  ABS_ROWS,
+  (g, r) => assert.equal(g.out, absentExpected(r), JSON.stringify(r)),
+)
+check(
+  'wr_absent_word: 不在として読める語は absent と prunable の 2 語だけ（wr_ok check-absent が真・wr_retained が偽）。それ以外の語・未知の語は保全側',
+  ['absent', 'prunable', 'prunable-detached', 'prunable-locked', 'present', 'unregistered-present', 'main', 'unknown', '', 'removed', 'bogus'].flatMap((w) => [['wr_ok', 'check-absent', w, 'none'], ['wr_retained', w]]),
+  (g, r) => {
+    const gone = r[r.length - (r[0] === 'wr_ok' ? 2 : 1)] === 'absent' || r[r.length - (r[0] === 'wr_ok' ? 2 : 1)] === 'prunable'
+    assert.equal(g.rc, (r[0] === 'wr_ok' ? gone : !gone && !['removed'].includes(r[1])) ? OK : NG, JSON.stringify(r))
   },
 )
 
@@ -347,3 +413,65 @@ test('wr_retain_list: 保持対象を 1 行 1 パスで返し、値がオブジ�
     rmSync(dir, { recursive: true, force: true })
   }
 })
+
+// wr_norm_path: 連続する / ・途中の /./ ・末尾の / と /. を畳む。.. は解決しない（入力検証が拒否済み）。ファイルシステムには触れない
+check(
+  'wr_norm_path: 末尾の / と /. ・// ・途中の /./ を畳む。ルートはルートのまま、先頭が . の名前や空白は壊さない',
+  [
+    ['wr_norm_path', '/a/b'], ['wr_norm_path', '/a/b/'], ['wr_norm_path', '/a/b/.'], ['wr_norm_path', '/a/b/./'], ['wr_norm_path', '/a//b'], ['wr_norm_path', '/a/./b/./c//'],
+    ['wr_norm_path', '/'], ['wr_norm_path', '/.'], ['wr_norm_path', '//'], ['wr_norm_path', '/a/.hid/'], ['wr_norm_path', '/a b//c/.'], ['wr_norm_path', '/a/.b./c'],
+  ],
+  (g, r, i) => assert.equal(g.out, ['/a/b', '/a/b', '/a/b', '/a/b', '/a/b', '/a/b/c', '/', '/', '/', '/a/.hid', '/a b/c', '/a/.b./c'][i], JSON.stringify(r)),
+)
+
+// HEAD 0000…（ブランチ ref を消した登録）は detached と同じく保全する。大小を区別する照合は fold のときだけ
+const WZ = `worktree /r/wz${NL}HEAD ${'0'.repeat(40)}${NL}branch refs/heads/gone`
+check(
+  'wr_find_entry: HEAD が 0000…（40 桁・64 桁）の登録は WR_DETACHED=1、実在する sha・別のエントリの 0000… は 0',
+  [
+    ['wr_find_detached', LIST(MAIN, WZ), '/r/wz'], ['wr_find_detached', LIST(MAIN, WZ), '/r/main'], ['wr_find_detached', LIST(MAIN, W1, WZ), '/r/w1'],
+    ['wr_find_detached', LIST(MAIN, `worktree /r/w9${NL}HEAD ${'0'.repeat(64)}${NL}branch refs/heads/x`), '/r/w9'], ['wr_find_detached', LIST(MAIN, `worktree /r/w9${NL}HEAD ${'0'.repeat(39)}1${NL}branch refs/heads/x`), '/r/w9'],
+  ],
+  (g, r, i) => assert.equal(g.out, ['1', '0', '0', '1', '0'][i], JSON.stringify(r)),
+)
+check(
+  'wr_find_entry: 大小を区別しない照合（第 3 引数 1）は大小だけ違うパスも登録ありとする。区別する照合では別の場所',
+  [
+    ['wr_find_fold', LIST(MAIN, W1), '/r/W1'], ['wr_find_fold', LIST(MAIN, W1), '/R/w1/'], ['wr_find_fold', LIST(MAIN, W1), '/r/w2'], ['wr_find_fold', LIST(MAIN, W4), '/r/W 4'],
+    ['wr_find_entry', LIST(MAIN, W1), '/r/W1'],
+  ],
+  (g, r, i) => (i < 4 ? assert.equal(g.out, ['1', '1', '0', '1'][i], JSON.stringify(r)) : assert.equal(g.reg, 0, JSON.stringify(r))),
+)
+
+// wr_prune_risk: 全体の prune でコミットの唯一の参照を失い得る登録の数。実体の無い detached・HEAD 0000…（lock なしのメイン以外）だけ。
+// 実体のあるもの・ブランチ上のもの・lock されたものは数えない。prunable 行があれば実体が在っても数える
+const WR_DET_GONE = `worktree /nonexistent/d1${NL}HEAD eeee${NL}detached`
+const WR_DET_LOCKED = `worktree /nonexistent/d2${NL}HEAD eeee${NL}detached${NL}locked portable`
+const WR_DET_EXISTS = `worktree /tmp${NL}HEAD eeee${NL}detached`
+const WR_DET_PRUNABLE = `worktree /tmp${NL}HEAD eeee${NL}detached${NL}prunable gitdir file points to non-existent location`
+const WR_BR_GONE = `worktree /nonexistent/b1${NL}HEAD bbbb${NL}branch refs/heads/b1${NL}prunable gitdir file points to non-existent location`
+const WR_ZERO_GONE = `worktree /nonexistent/z1${NL}HEAD ${'0'.repeat(40)}${NL}branch refs/heads/gone`
+check(
+  'wr_prune_risk: 実体の無い detached と HEAD 0000… だけを数える（ブランチ上・lock・実体あり・メイン・一覧が空は数えない。prunable 行のある detached は数える）',
+  [
+    ['wr_prune_risk', LIST(MAIN, WR_DET_GONE)], ['wr_prune_risk', LIST(MAIN, WR_ZERO_GONE)], ['wr_prune_risk', LIST(MAIN, WR_DET_GONE, WR_ZERO_GONE, WR_BR_GONE)],
+    ['wr_prune_risk', LIST(MAIN, WR_BR_GONE)], ['wr_prune_risk', LIST(MAIN, WR_DET_LOCKED)], ['wr_prune_risk', LIST(MAIN, WR_DET_EXISTS)],
+    ['wr_prune_risk', LIST(MAIN, WR_DET_PRUNABLE)], ['wr_prune_risk', ''], ['wr_prune_risk', LIST(`worktree /nonexistent/m${NL}HEAD ${'0'.repeat(40)}${NL}detached`)],
+    ['wr_prune_risk', LIST(MAIN, WR_BR_GONE, WR_DET_GONE)],
+  ],
+  (g, r, i) => assert.equal(g.out, ['1', '1', '2', '0', '0', '0', '1', '0', '0', '1'][i], JSON.stringify(r)),
+)
+
+// wr_branch_holder: ブランチを持つメイン以外の登録のパス（メイン・別のブランチ・detached・前方一致は拾わない）
+const WR_H1 = `worktree /r/h1${NL}HEAD aaaa${NL}branch refs/heads/feat/3-c`
+const WR_H2 = `worktree /r/h 2${NL}HEAD bbbb${NL}branch refs/heads/feat/3-cc`
+const WR_HD = `worktree /r/hd${NL}HEAD cccc${NL}detached`
+const MAIN_ON_C = `worktree /r/main${NL}HEAD dddd${NL}branch refs/heads/feat/3-c`
+check(
+  'wr_branch_holder: ブランチ名が完全一致するメイン以外の登録のパスを返す（メインが持つ・別名・前方一致・detached・一覧が空は空）',
+  [
+    ['wr_holder', LIST(MAIN, WR_H1), 'feat/3-c'], ['wr_holder', LIST(MAIN, WR_H2, WR_H1), 'feat/3-c'], ['wr_holder', LIST(MAIN, WR_H2), 'feat/3-c'],
+    ['wr_holder', LIST(MAIN_ON_C, WR_HD), 'feat/3-c'], ['wr_holder', LIST(MAIN, WR_HD), 'feat/3-c'], ['wr_holder', '', 'feat/3-c'], ['wr_holder', LIST(MAIN, WR_H2), 'feat/3-cc'],
+  ],
+  (g, r, i) => assert.equal(g.out, ['/r/h1', '/r/h1', '', '', '', '', '/r/h 2'][i], JSON.stringify(r)),
+)
