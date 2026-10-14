@@ -47,6 +47,8 @@
 #       remove_one（同じ確認・同じ許可形の git worktree remove）で 1 件消してからブランチを消す。lock あり・実体の無い detached・HEAD 0000… は消さず保持の語を結果にし、
 #       ブランチも残す（keep）。実体のある別の worktree が持つブランチは触らない（branch -D が失敗する従来どおり）。
 #       後始末の remove_one は unregistered ガード付きで呼ぶ: holder のパスに登録の無い実体が現れていたら retained-unregistered を holder に記録してブランチを残す。
+#       さらに第 6 引数 2 で実体の有無を削除の直前に同じプロセスで読み直す: 確認（実体なし）と削除の間に登録済みの worktree が作り直されていたら retained-present（読めなければ retained-unobservable）を
+#       holder に記録して何も消さず、ブランチも残す。lock の扱いは従来どおり（--require-missing の 1 と違い、pid が死んだ agent の lock は外して消す）。
 #       登録が読み直しで消えて holder_free にするときも、同じプロセスでパスの不在を確かめ、観測できない（retained-unobservable）ときも keep。
 #       この後始末の結果は --path の結果（worktree・dirty・unlocked）を上書きせず、結果の行の holder（removed / retained-… / failed。後始末をしたときだけ出る）に出す。
 #       holder が removed でなければブランチは keep。discard の ok は worktree が無くなり、ブランチも（指定があれば）消えたときだけ true なので、holder が保持・失敗なら false。
@@ -152,7 +154,8 @@ T_DIRTY=0
 T_UNLOCKED=false
 # $1 = モード、$2 = パス、$3 = 結びつけるブランチ（discard の --branch。空 = 結びつけない）、$4 = 結びつける HEAD の sha（discard の --head。空 = 結びつけない）、
 # $5 = 1 のとき、登録が無いのに実体のパスがあるものを retained-unregistered にする（discard の --head / --expect-branch / --require-missing。空 = not-registered のまま）
-# $6 = 1 のとき、実体が無いときだけ消す（discard の --require-missing。実体がある・lock ありは何も消さず、unlock もしない）
+# $6 = 1 のとき、実体が無いときだけ消す（discard の --require-missing。実体がある・lock ありは何も消さず、unlock もしない）。2 のとき（--branch の後始末）は実体の有無の結びつけだけを効かせ、
+#      lock は従来どおり（agent の形で pid が死んでいれば外して消す）
 remove_one() {
   local m=$1 path=$2 expect=${3:-} expect_sha=${4:-} unreg_guard=${5:-0} req_missing=${6:-0} wt_sha wt_head wt_full sr_rc wt_unborn lreal list top real cwd_real plan lockact alive cur_start status_out sub_init gd rc kmsg krc kw pw pself pout prc xw
   T_WT=""
@@ -182,7 +185,7 @@ remove_one() {
     return 0
   fi
   # --require-missing: 確認と削除を同じプロセスで行う。登録があるのに実体が（もう）ある = check-absent のあとに作り直された worktree かもしれないので消さない
-  if [ "${req_missing}" = 1 ]; then
+  if [ "${req_missing}" != 0 ]; then
     case "$(wr_require_missing_check "${path}")" in
       ok) ;;
       unobservable) T_WT='retained-unobservable'; return 0 ;; # 有無を確かめられない（読めない親など）。「無い」と言えないので消さない
@@ -290,7 +293,7 @@ remove_one() {
   fi
 
   # 削除の直前にもう一度実体を読む（上の確認から削除までの間に作り直された場合）
-  if [ "${req_missing}" = 1 ]; then
+  if [ "${req_missing}" != 0 ]; then
     case "$(wr_require_missing_check "${path}")" in
       ok) ;;
       unobservable) T_WT='retained-unobservable'; return 0 ;; # 有無を確かめられない（読めない親など）。「無い」と言えないので消さない
@@ -431,7 +434,7 @@ if [ "${cmd}" = remove ]; then
       keep_wt=${T_WT}
       keep_dirty=${T_DIRTY}
       keep_unlocked=${T_UNLOCKED}
-      remove_one discard "${holder}" "" "" 1
+      remove_one discard "${holder}" "" "" 1 2
       holder_word=${T_WT}
       T_WT=${keep_wt}
       T_DIRTY=${keep_dirty}

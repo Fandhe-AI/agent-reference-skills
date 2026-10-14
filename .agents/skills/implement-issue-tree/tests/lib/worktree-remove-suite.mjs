@@ -1182,6 +1182,27 @@ export function registerWorktreeRemoveTests(bash) {
     assert.ok(existsSync(join(h.path, 'work.txt')), '実体は消えない')
   })
   // ---- 同期 PR の Bugbot 指摘 J〜M・P ----
+  // ---- 同期 PR の Bugbot 指摘 AP: 後始末の remove_one を実体の有無に結びつける（確認と削除の間に登録済みの worktree が作り直された TOCTOU）----
+  test(`${tag} AP: 後始末の remove_one の時点で holder のパスに登録済みの（clean な）worktree が作り直されていたら、holder は retained-present・ブランチは keep・実体は消えない`, () => {
+    const repo = makeRepo()
+    const h = deadBranchHolder(repo, 'apreal')
+    // 2 回目の一覧（remove_one の中）の直前に prune し、同じパス・同じブランチで worktree を作り直す
+    const env = raceGit(repo, 'shim-ap-real', ':', `git worktree add '${h.path}' '${h.branch}' >/dev/null 2>&1;`)
+    const r = run(repo, ['remove', '--mode', 'discard', '--branch', h.branch, '--base', 'main'], { env })
+    assert.deepEqual([r.result.ok, r.result.branch, r.result.holder], [false, 'keep', 'retained-present'], JSON.stringify(r.result))
+    assert.ok(repo.branches().includes(h.branch), 'ブランチは消えない')
+    assert.ok(existsSync(join(h.path, '.git')), '作り直された worktree は消えない')
+    assert.ok(repo.worktrees().includes(h.path), '登録も残る')
+  })
+  test(`${tag} AP: holder の lock の扱いは従来どおり（pid が死んだ agent の lock は外して消し、ブランチも消す）`, () => {
+    const repo = makeRepo()
+    const h = deadBranchHolder(repo, 'apdeadlock')
+    repo.git(repo.main, 'worktree', 'lock', '--reason', lockReason(deadPid()), h.path)
+    const r = run(repo, ['remove', '--mode', 'discard', '--branch', h.branch, '--base', 'main'])
+    assert.deepEqual([r.result.ok, r.result.branch, r.result.holder], [true, 'deleted', 'removed'], JSON.stringify(r.result))
+    assert.ok(!repo.branches().includes(h.branch))
+    assert.ok(!repo.worktrees().includes(h.path))
+  })
   // J: --path の結果は、ブランチを持つ登録の後始末で上書きしない（後始末の結果は holder とブランチの判断にだけ使う）
   test(`${tag} J: --path で消し終えたあと、ブランチを持つ別の登録が lock で保持されても、worktree は removed のまま。holder に保持の語・ブランチは keep・ok は false`, () => {
     const repo = makeRepo()
