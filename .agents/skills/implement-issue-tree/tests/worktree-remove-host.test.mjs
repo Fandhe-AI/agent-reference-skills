@@ -338,6 +338,15 @@ test('Recover discard: Recover が解決した branch が本イシューの命�
   assert.ok(labels(calls).includes('plan:#2'), '新規 Plan へ進む')
 })
 
+test('Recover discard: 解決した branch の文字種が不正（空白・.. ・; など）なときは照合できないので discard を呼ばず、例外にもせず保全（failed）する。規約外でも文字種が妥当な名前だけが --expect-branch に渡る（Bugbot 指摘 Q）', async () => {
+  for (const branch of ['bad name', 'feat/2-x;rm', 'feat/../2-x', '-feat/2-x', 'feat/2-x`id`']) {
+    const { calls, result } = await recoverRun({ decision: 'discard', wipCommitted: true, cleanup: { ok: true, retained: false }, branch })
+    assert.equal(calls.filter((x) => x.opts.label === 'state:cleanup:#2').length, 0, `${branch}: 掃除を呼ばない`)
+    assert.ok(!labels(calls).includes('plan:#2'), `${branch}: Plan へ進まない`)
+    assert.ok(failureOf(result), `${branch}: 保全して failed にする（例外で落ちない）`)
+  }
+})
+
 test('Recover continue: wipCommitted:true なら --mode discard --expect-branch <continue 先>（--branch なし）で旧 worktree だけ掃除して Implement へ。保持なら Implement を起動せず failed。wipCommitted が true でなければ掃除しない', async () => {
   const ok = await recoverRun({ decision: 'continue', wipCommitted: true, cleanup: { ok: true, retained: false } })
   const c = ok.calls.filter((x) => x.opts.label === 'state:cleanup:#2')

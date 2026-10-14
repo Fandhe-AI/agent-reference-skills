@@ -3550,7 +3550,7 @@ return'run'
 }
 
 
-const CLOSED_CLEANUP_RECORDABLE=new Set(['retained-dirty','retained-submodule','retained-head-mismatch','retained-detached','retained-broken'])
+const CLOSED_CLEANUP_RECORDABLE=new Set(['retained-dirty','retained-submodule','retained-head-mismatch','retained-detached','retained-broken','retained-unregistered'])
 function closedCleanupRetainedReason(result,outputMissing){
 return!outputMissing&&result?.retained===true&&CLOSED_CLEANUP_RECORDABLE.has(result?.worktree)?'retained':null
 }
@@ -3902,7 +3902,7 @@ const SCRIPT_SHA256={
 'pr-push.sh':'51a4216cfe7aa0086f4c7319754b2a9212866109c3f1f2d23dc9245fac77e059',
 'state.sh':'83e84cb79e366c52c32f9f24c45befb59eaca64134508f094ef5b90845ba8c1c',
 'merge-gate.sh':'a62ac43722aa0c69b35fc8f744824ed9b62a15c7215255dfdbd1727d74a3c3f0',
-'worktree-remove.sh':'cbd12707388107fd3dd247be81b0b0f8483069b658744e28a4608970e8e81b92',
+'worktree-remove.sh':'8879ae9e24b9da0133a7d087c443b5fa716accb5959ca3eddc510a1ce9c9b1aa',
 'recover-prep.sh':'e1a207c9786c490eb050ceb3410bba2b2817b6d58ff182789d3d90d9b0952a1a',
 }
 
@@ -10802,7 +10802,7 @@ const retainedLedger=[
 ...[...slotRetainedPaths].map(([path,issue])=>({issue,kind:'retained',path})),
 ]
 if(retainedLedger.length>0){
-log(`削除せず保持した worktree を ${retainedLedger.length} 件記録した（理由: 汚れ〔retained-dirty〕・git の対象が worktree 自身でない〔retained-broken〕・git status や HEAD を一過性に観測できなかった〔retained-unobservable〕・lock〔retained-locked〕・submodule の変更〔retained-submodule〕・worktree の HEAD と --branch の不一致〔retained-branch-mismatch〕・マージ済み PR の head との不一致や detached HEAD・実体の無い detached の登録〔retained-head-mismatch / retained-detached〕のいずれか。スイープでも消せなかったものを含む）。中身を確認してから手動で対処すること（未コミットの変更や未マージの成果を失わないよう、確認せずに git worktree remove しない）:`)
+log(`削除せず保持した worktree を ${retainedLedger.length} 件記録した（理由: 汚れ〔retained-dirty〕・git の対象が worktree 自身でない〔retained-broken〕・git status や HEAD を一過性に観測できなかった〔retained-unobservable〕・lock〔retained-locked〕・submodule の変更〔retained-submodule〕・worktree の HEAD と --branch の不一致〔retained-branch-mismatch〕・マージ済み PR の head との不一致や detached HEAD・実体の無い detached の登録〔retained-head-mismatch / retained-detached〕・登録は無いが実体のあるパス〔retained-unregistered〕のいずれか。スイープでも消せなかったものを含む）。中身を確認してから手動で対処すること（未コミットの変更や未マージの成果を失わないよう、確認せずに git worktree remove しない）:`)
 for(const e of retainedLedger)log(`  ${e.issue ? `#${e.issue}` : '(スイープ)'} (${e.kind}): ${e.path || '（パス不明。git worktree list で確認すること）'}`)
 }
 
@@ -10822,13 +10822,22 @@ if(maxResidualWorktreeBytes>0&&residualBytesObserved){
 
 
 const rawEndPaths=[...new Set([...residualPathsAtStart, ...ephemeralWorktrees.map((e)=>e.path), ...slotInheritedPaths])]
-const hasUnverifiedEndPath=slotUnknownLiveCount>0||rawEndPaths.some(
+let hasUnverifiedEndPath=rawEndPaths.some(
 (p)=>typeof p!=='string'||p===''||p.startsWith('(検証不可:'),
 )
+
+
+let endFallbackPaths=null
+if(!hasUnverifiedEndPath&&slotUnknownLiveCount>0){
+const[entries,independentCount]=await Promise.all([scanOrphanWorktrees(),countWorktreeRecords()])
+const fallback=buildPhysicalByteMeasureTargets(entries,independentCount)
+if(fallback.ok)endFallbackPaths=fallback.paths
+else hasUnverifiedEndPath=true
+}
 if(hasUnverifiedEndPath){
 log('⚠️ ラン終了時の測定対象に検証不可な worktree パスが含まれるため測定不成立として扱う（overLimit: true で報告する。fail-closed）')
 }else{
-const endTargetPaths=rawEndPaths.filter((p)=> !confirmedRemovedPaths.has(p))
+const endTargetPaths=endFallbackPaths??rawEndPaths.filter((p)=> !confirmedRemovedPaths.has(p))
 const endKib=endTargetPaths.length>0?await measureResidualWorktreeBytes(endTargetPaths):0
 if(endKib!==null){
 residualBytesAtEnd=endKib*1024
