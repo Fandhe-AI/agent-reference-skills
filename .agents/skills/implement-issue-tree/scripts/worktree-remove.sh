@@ -46,6 +46,8 @@
 # --branch の削除: そのブランチを持つ実体の無い登録が残っていると git branch -D が used by worktree で拒否する。全体の prune には頼らず、その登録だけを
 #       remove_one（同じ確認・同じ許可形の git worktree remove）で 1 件消してからブランチを消す。lock あり・実体の無い detached・HEAD 0000… は消さず保持の語を結果にし、
 #       ブランチも残す（keep）。実体のある別の worktree が持つブランチは触らない（branch -D が失敗する従来どおり）。
+#       後始末の remove_one は unregistered ガード付きで呼ぶ: holder のパスに登録の無い実体が現れていたら retained-unregistered を holder に記録してブランチを残す。
+#       登録が読み直しで消えて holder_free にするときも、同じプロセスでパスの不在を確かめ、観測できない（retained-unobservable）ときも keep。
 #       この後始末の結果は --path の結果（worktree・dirty・unlocked）を上書きせず、結果の行の holder（removed / retained-… / failed。後始末をしたときだけ出る）に出す。
 #       holder が removed でなければブランチは keep。discard の ok は worktree が無くなり、ブランチも（指定があれば）消えたときだけ true なので、holder が保持・失敗なら false。
 #       実体の無いパスは実体のパス（祖先のシンボリックリンクを解決した形）でも照合する。大小だけ違う綴りは一致させない（大小を区別する FS では別の場所を消しかねない）。
@@ -429,7 +431,7 @@ if [ "${cmd}" = remove ]; then
       keep_wt=${T_WT}
       keep_dirty=${T_DIRTY}
       keep_unlocked=${T_UNLOCKED}
-      remove_one discard "${holder}"
+      remove_one discard "${holder}" "" "" 1
       holder_word=${T_WT}
       T_WT=${keep_wt}
       T_DIRTY=${keep_dirty}
@@ -440,7 +442,9 @@ if [ "${cmd}" = remove ]; then
       if [ "${holder_word}" = not-registered ]; then
         if hl_again=$(git worktree list --porcelain 2>/dev/null); then
           wr_branch_holder "${hl_again}" "${branch}"
-          if [ -z "${WR_HOLDER}" ]; then holder_free=1; fi
+          # 登録が無いだけでは足りない: 同じプロセスで holder のパスに何も無い（実体もシンボリックリンクも無い）ことも確かめる。
+          # 登録の無い実体が現れていたら（確認と削除の間の TOCTOU）ブランチを残す
+          if [ -z "${WR_HOLDER}" ] && [ ! -e "${holder}" ] && [ ! -L "${holder}" ] && [ "$(wr_path_state "${holder}")" = missing ]; then holder_free=1; fi
         fi
       fi
     fi

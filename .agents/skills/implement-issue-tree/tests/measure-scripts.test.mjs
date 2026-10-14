@@ -13,7 +13,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { chmodSync, closeSync, existsSync, mkdirSync, mkdtempSync, openSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { chmodSync, closeSync, existsSync, mkdirSync, mkdtempSync, openSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
@@ -131,8 +131,8 @@ for (const bash of BASHES) {
     })
   })
 
-  // AK: 物理パスは文字列として比べる。許可文字に無い * ? [ を含む物理パスへのシンボリックリンクを渡しても、別のパスを重複と誤認して飛ばさない
-  test(`${tag} residual: 名前に * や [ を含む実ディレクトリへのシンボリックリンクと、それに似た名前の別の実体を、どちらも測る（dup=0）`, () => {
+  // AK: * ? [ を含む物理パスは許可文字集合の外なので測らず err に数える。それに似た名前の別の実体（許可内）は別のパスとして測る（dup にしない）
+  test(`${tag} residual: 名前に * や [ を含む実ディレクトリへのシンボリックリンクは err。それに似た名前の別の実体は測る（dup=0・順序に依らない）`, () => {
     withWork((work) => {
       const pairs = [
         ['a*b', 'aXb'],
@@ -146,18 +146,17 @@ for (const bash of BASHES) {
         const lp = join(work, `link-${plain}-plain`)
         symlinkSync(o, lo)
         symlinkSync(pl, lp)
-        // 通常の名前の実体が先、* を含む名前が後（後者が前者を指すパターンになる向き）と、その逆の両方
         for (const order of [[lp, lo], [lo, lp]]) {
           const p = parseEnvelope(run(bash, RESIDUAL, ['--nonce', NONCE], { input: order.join('\n') })).payload
-          assert.deepEqual([p.count, p.dup, p.missing, p.err, p.kib], [2, 0, 0, 0, duKib(o) + duKib(pl)], `${odd} / ${plain}`)
+          assert.deepEqual([p.count, p.dup, p.missing, p.err, p.kib], [2, 0, 0, 1, duKib(pl)], `${odd} / ${plain}`)
         }
       }
     })
   })
 
-  test(`${tag} residual: 物理パスが改行を含む実体は重複と判定せず測る（過大に数える側。別のパスを誤って飛ばさない）`, () => {
+  // AN: 物理パスが許可文字集合を外れる（改行を含む等）ときは測らず err に数える（fail-closed）。dup・seen の特別扱いは要らない
+  test(`${tag} residual: 物理パスが改行を含む実体は測らず err に数える。行に分かれた前半が実在する別のパスでも、そちらは測られ重複扱いされない`, () => {
     withWork((work) => {
-      // 改行を含む物理パス `<work>/has\nnewline` を一覧に記録すると、行に分かれた `<work>/has` が実在する別のディレクトリと一致してしまう
       const nlDir = mkTree(work, 'has\nnewline', 16)
       const plain = mkTree(work, 'has', 8)
       const l1 = join(work, 'l1')
@@ -165,9 +164,74 @@ for (const bash of BASHES) {
       symlinkSync(nlDir, l1)
       symlinkSync(nlDir, l2)
       const p = parseEnvelope(run(bash, RESIDUAL, ['--nonce', NONCE], { input: [l1, plain, l2].join('\n') })).payload
-      assert.deepEqual([p.count, p.dup, p.missing, p.err], [3, 0, 0, 0])
-      assert.equal(p.kib, duKib(plain) + 2 * duKib(nlDir))
+      assert.deepEqual([p.count, p.dup, p.missing, p.err], [3, 0, 0, 2])
+      assert.equal(p.kib, duKib(plain))
     })
+  })
+
+  // AN: コマンド置換は末尾の改行を落とす。名前が改行で終わるディレクトリの物理パスが、短い別の兄弟のパスに化けてはいけない
+  test(`${tag} residual: 名前が改行で終わるディレクトリへのシンボリックリンクは err。同じ綴りの短い名前の兄弟は測られ、dup にならない（どちらの順でも）`, () => {
+    withWork((work) => {
+      const nlDir = mkTree(work, 'sib\n', 16)
+      const sib = mkTree(work, 'sib', 8)
+      const link = join(work, 'link-nl')
+      symlinkSync(nlDir, link)
+      for (const order of [[link, sib], [sib, link]]) {
+        const p = parseEnvelope(run(bash, RESIDUAL, ['--nonce', NONCE], { input: order.join('\n') })).payload
+        assert.deepEqual([p.count, p.dup, p.missing, p.err, p.kib], [2, 0, 0, 1, duKib(sib)], order.join(' | '))
+      }
+      // ファイルの場合（親は許可内・名前が許可外ではなく、親ディレクトリの名前が改行で終わる）
+      const f = join(nlDir, 'f.bin')
+      const viaLink = join(link, 'f.bin')
+      const pf = parseEnvelope(run(bash, RESIDUAL, ['--nonce', NONCE], { input: [viaLink, join(sib, 'f.bin')].join('\n') })).payload
+      assert.deepEqual([pf.count, pf.dup, pf.err], [2, 0, 1], f)
+    })
+  })
+
+  test(`${tag} residual: 物理パスが許可文字集合の外（@ + など）のシンボリックリンクは du に渡さず err に数える。許可内の物理パスは従来どおり測る`, () => {
+    withWork((work) => {
+      const odd = mkTree(work, 'a@b+c', 16)
+      const ok = mkTree(work, 'ok', 8)
+      const l = join(work, 'link-odd')
+      symlinkSync(odd, l)
+      const p = parseEnvelope(run(bash, RESIDUAL, ['--nonce', NONCE], { input: [l, ok].join('\n') })).payload
+      assert.deepEqual([p.count, p.dup, p.missing, p.err, p.kib], [2, 0, 0, 1, duKib(ok)])
+    })
+  })
+
+  // AM: seen_has はリダイレクトしたループの中から return しない。重複の後の行も処理される
+  test(`${tag} residual: 重複行のあとに続く行も処理される（dup を数えてもループが止まらない）。許可外の物理パスの行は err に数えて続行する`, () => {
+    withWork((work) => {
+      const odd = mkTree(work, 'g*', 32)
+      const pl = mkTree(work, 'gx', 16)
+      const tail = mkTree(work, 'tail', 8)
+      const lo = join(work, 'lo')
+      symlinkSync(odd, lo)
+      const input = [pl, `${pl}/.`, lo, `${pl}/./`, tail, `${tail}/.`, join(work, 'gone')].join('\n')
+      const p = parseEnvelope(run(bash, RESIDUAL, ['--nonce', NONCE], { input })).payload
+      assert.deepEqual([p.count, p.dup, p.missing, p.err, p.kib], [7, 3, 1, 1, duKib(pl) + duKib(tail)])
+    })
+  })
+
+  // AM: seen_has は文字列の包含で判定する。* ? [ を含む引数が別のパスに一致しない（スクリプトの関数だけを取り出して直接呼ぶ。
+  // 物理パスの許可文字検査で * ? [ はここまで届かないので、関数単体の契約として確かめる）
+  test(`${tag} residual: seen_has は * ? [ を含む引数を文字どおり比べ、別のパスに一致しない。重複は一致する`, () => {
+    const src = readFileSync(RESIDUAL, 'utf8')
+    const m = src.match(/^seen_has\(\) \{\n[\s\S]*?^\}\n/m)
+    assert.ok(m, 'seen_has が見つかる')
+    const script = [
+      "nl='\n'",
+      m[0],
+      "seen=${nl}/w/aXb${nl}/w/d1${nl}/w/q.z${nl}",
+      'for q in "/w/a*b" "/w/d[1]" "/w/q?z" "/w/*" "/w/aXb" "/w/d1" "/w/q.z" "/w/aX" "/w/a"; do',
+      '  if seen_has "$q"; then echo "hit $q"; else echo "miss $q"; fi',
+      'done',
+    ].join('\n')
+    const r = spawnSync(bash, ['-c', script], { encoding: 'utf8' })
+    assert.equal(r.status, 0, r.stderr)
+    assert.deepEqual(r.stdout.trim().split('\n'), [
+      'miss /w/a*b', 'miss /w/d[1]', 'miss /w/q?z', 'miss /w/*', 'hit /w/aXb', 'hit /w/d1', 'hit /w/q.z', 'miss /w/aX', 'miss /w/a',
+    ])
   })
 
   test(`${tag} residual: シンボリックリンクだけを渡しても、指す実体を測る。ファイルの別の綴り（/./）も 1 回だけ。存在しないパスの別の綴りは従来どおり missing`, () => {
