@@ -307,6 +307,8 @@ test('採用しなかった PR の申告は outOfScope 経由で pr-create の�
   const pr = calls.find((c) => c.opts.label === 'pr-create:#2')
   assert.ok(pr, 'pr-create まで進む')
   assert.ok(pr.prompt.includes('## 対象外（out-of-scope）') && pr.prompt.includes(note), 'PR 本文の対象外節に載る')
+  // 既存 PR を再利用する経路（gh pr edit で本文を更新する側）にも同じ対象外節の追記指示がある
+  assert.match(pr.prompt, /対象外項目は最終レポートの issue 化判断の材料であり、再利用経路でも失われてはならない/)
 })
 
 test('配線: implement の 2 つの受理地点が同じ implBranchViolation を経由し、文字種だけの旧ゲートが残っていない', () => {

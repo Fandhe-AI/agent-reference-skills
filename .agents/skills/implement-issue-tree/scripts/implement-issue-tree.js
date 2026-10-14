@@ -2442,6 +2442,14 @@ return''
 
 
 
+function prBindingValuesFetched(v){
+return v?.isCrossRepository===false&&typeof v.baseRefName==='string'&&v.baseRefName!==''&&typeof v.headRefName==='string'&&v.headRefName!==''&&
+Array.isArray(v.closingIssues)&& !v.closingIssues.includes(-1)
+}
+
+
+
+
 async function checkPrBinding(item,pr,branch){
 return(await fetchPrBinding(item,pr,branch)).problem
 }
@@ -3368,6 +3376,8 @@ const deleteBranchName=deleteBranchValidated&&deleteBranchValidated!==baseBranch
 
 
 const cleanupMode=options.cleanupMode==='discard'||deleteBranchName?'discard':'superseded'
+
+const expectBranchName=cleanupMode==='discard'&&cleanupWorktreePath&& !deleteBranchName&&typeof options.expectBranch==='string'?options.expectBranch:''
 const hasCleanup=Boolean(cleanupWorktreePath||deleteBranchName)
 
 if(cleanupWorktreePath&&cleanupMode==='discard')sweepHeldPaths.add(cleanupWorktreePath)
@@ -3387,7 +3397,7 @@ TEMP_FILE_POLICY,
 `対象は下記コマンドに明記されたパス・ブランチ名のみ。他のパス・ブランチには一切触れない。`,
 `1. 次のコマンドを一字一句そのまま（改変・条件追加・コマンドの組み立て直しをしない）、1 回の Bash 呼び出しで実行する:`,
 '```sh',
-worktreeRemoveCommand(cleanupMode,cleanupWorktreePath,deleteBranchName),
+worktreeRemoveCommand(cleanupMode,cleanupWorktreePath,deleteBranchName,'',expectBranchName),
 '```',
 WORKTREE_NOTE,
 ...(cleanupWorktreePath&&clearWorktreeAfterCleanup
@@ -3403,7 +3413,7 @@ stateCommand('merge','',JSON.stringify([{numbers:[issueNumber],patch:{worktree:'
 `   または review / pr-create の使い捨て worktree を削除した場合が該当する。上書きしないこと）。`,
 ]
 :[]),
-`返却: ok / retained / branchSha（上記のとおり）。`,
+`返却: ok / retained / branchSha / worktree（上記のとおり）。`,
 ].join('\n')
 :''
 
@@ -3529,6 +3539,7 @@ return{pr,worktree,branch:typeof saved.branch==='string'?saved.branch:''}
 const AGENT_CALLS_CLOSED_CLEANUP=6
 
 
+
 const CLOSED_CLEANUP_PER_RUN_MAX=10
 
 
@@ -3539,7 +3550,7 @@ return'run'
 }
 
 
-const CLOSED_CLEANUP_RECORDABLE=new Set(['retained-dirty','retained-submodule','retained-head-mismatch','retained-detached'])
+const CLOSED_CLEANUP_RECORDABLE=new Set(['retained-dirty','retained-submodule','retained-head-mismatch','retained-detached','retained-broken'])
 function closedCleanupRetainedReason(result,outputMissing){
 return!outputMissing&&result?.retained===true&&CLOSED_CLEANUP_RECORDABLE.has(result?.worktree)?'retained':null
 }
@@ -3561,10 +3572,11 @@ return text
 }
 const{problem,bind}=await fetchPrBinding(item,cand.pr,cand.branch)
 
+
 const known=bind?.state==='MERGED'||bind?.state==='CLOSED'
 if(problem){
 const text=`closed 後始末なし（PR #${cand.pr} の結び付きを確認できない: ${problem}）`
-return known?tried('binding',text):text
+return known&&prBindingValuesFetched(bind)?tried('binding',text):text
 }
 if(bind.state!=='MERGED'){
 const text=`closed 後始末なし（PR #${cand.pr} はマージ済みではない: ${sanitize(String(bind.state))}）`
@@ -3586,7 +3598,7 @@ TEMP_FILE_POLICY,
 worktreeRemoveCommand('discard',w,'',head),
 '```',
 WORKTREE_NOTE,
-`返却: ok / retained / branchSha（上記のとおり）。`,
+`返却: ok / retained / branchSha / worktree（上記のとおり）。`,
 ].join('\n')
 let removed=false
 let retainedReason=null
@@ -3883,15 +3895,15 @@ return''
 
 
 const SCRIPT_SHA256={
-'measure-residual-bytes.sh':'ba749ddcc1d244ceffeab8bc590696421678f0cf8de38e17721645faecf72a3c',
-'measure-free-disk.sh':'3707b357a398ff8fedfb1f6d91a7240e1caabc171b99ed9e7b9800777a3d19c2',
-'observe-pr.sh':'9a9169fb9c4373ef28acdcfa4c7b229e4eb1db51b8bcfad93d032c7b3c90280e',
-'base-merge.sh':'f4fc1f1843f245d572b97d14304ed0586e879135f698d0effae2f5c74e5e1fb9',
-'pr-push.sh':'9786b08f84713e80996d7cb304e6ce7d4fe09098f1c0f36a1ea4a63915b2516e',
-'state.sh':'4ce5da0656b13ced1a9a451d84f84d982f84f07186a7a86a028932c948985623',
-'merge-gate.sh':'8817b28bbfb333d60e20b955a5a189924bb27bb72573b30c570906ddbc5dcde1',
-'worktree-remove.sh':'9cfc7ffac2402502282a19b84f02b72cd4ea7f0e97ab47f432553dbf06324b49',
-'recover-prep.sh':'5bd78a6a42ae40262f4b5c5aec750cbd4cf42ec91687add9a8714fd40dc1973d',
+'measure-residual-bytes.sh':'caa5a6657a311c84f9e1d7a5c09cea6eba850fbd7095c0cc5eca74e5d19d6a54',
+'measure-free-disk.sh':'be7e55405d54704b04eb51b707a4bbf34a1701569879c206cba7788f07818174',
+'observe-pr.sh':'810218e1cdfd49bf46b3425a4d52ab440a4fd01fa4b9ef90a7ba98a1527c15ea',
+'base-merge.sh':'b495159d54488965a308d7710de9a318c979dc3d50da3a3e328e0bb879f6d2c7',
+'pr-push.sh':'51a4216cfe7aa0086f4c7319754b2a9212866109c3f1f2d23dc9245fac77e059',
+'state.sh':'83e84cb79e366c52c32f9f24c45befb59eaca64134508f094ef5b90845ba8c1c',
+'merge-gate.sh':'a62ac43722aa0c69b35fc8f744824ed9b62a15c7215255dfdbd1727d74a3c3f0',
+'worktree-remove.sh':'cbd12707388107fd3dd247be81b0b0f8483069b658744e28a4608970e8e81b92',
+'recover-prep.sh':'e1a207c9786c490eb050ceb3410bba2b2817b6d58ff182789d3d90d9b0952a1a',
 }
 
 
@@ -3935,7 +3947,7 @@ function worktreeQuote(v){
 if(typeof v!=='string'|| !/^[A-Za-z0-9._/ -]+$/.test(v)) throw new Error('worktree-remove.sh の引数に使えない文字が含まれる')
 return`'${v}'`
 }
-function worktreeRemoveCommand(mode,path,branch,head=''){
+function worktreeRemoveCommand(mode,path,branch,head='',expectBranch=''){
 const parts=['remove','--mode',mode]
 if(path)parts.push('--path',worktreeQuote(path))
 
@@ -3943,6 +3955,12 @@ if(path)parts.push('--path',worktreeQuote(path))
 if(head){
 if(!/^[0-9a-f]{40}$/.test(head)) throw new Error('worktree-remove.sh の --head は 40 桁の小文字 16 進')
 if(mode==='discard'&&path)parts.push('--head',worktreeQuote(head))
+}
+
+
+if(expectBranch){
+if(!isValidBranchName(expectBranch)||mode!=='discard'|| !path||branch)throw new Error('worktree-remove.sh の --expect-branch は discard・--path つき・妥当なブランチ名・--branch なしのときだけ')
+parts.push('--expect-branch',worktreeQuote(expectBranch))
 }
 if(branch){
 parts.push('--branch',worktreeQuote(branch))
@@ -3958,10 +3976,35 @@ properties:{
 ok:{type:'boolean',description:'結果の行の ok'},
 retained:{type:'boolean',description:'結果の行の retained（worktree が残った = 保持・失敗・メイン）'},
 branchSha:{type:'string',description:'結果の行の branchSha（40 桁の 16 進。無ければ空文字）'},
-worktree:{type:'string',description:'結果の行の worktree の語（removed・retained-dirty 等。結果の行が無い・非 0 終了のときは空文字）'},
+worktree:{type:'string',description:'結果の行の worktree の語（removed・retained-dirty・retained-broken・retained-unobservable 等。結果の行が無い・非 0 終了のときは空文字）'},
 },
 }
 const isWorktreeCleanupValid=(r)=>typeof r?.ok==='boolean'&&typeof r?.retained==='boolean'
+
+
+
+async function confirmWorktreeAbsent(issueNumber,path){
+try{
+const{result,outputMissing}=await runStateAgent(
+[
+`worktree 不在確認タスク（読み取り専用。何も削除・変更しない）。`,
+UNTRUSTED_POLICY,
+TEMP_FILE_POLICY,
+`次のコマンドを一字一句そのまま（改変・条件追加・コマンドの組み立て直しをしない）、1 回の Bash 呼び出しで実行する:`,
+'```sh',
+scriptInvocation('worktree-remove.sh',undefined,` check-absent --path ${worktreeQuote(path)}${mainWorktreePath ? ` --repo-root ${worktreeQuote(mainWorktreePath)}` : ''}`),
+'```',
+WORKTREE_NOTE,
+`返却: ok / retained / worktree（上記のとおり）。`,
+].join('\n'),
+{label:`worktree:absent:#${issueNumber}`,schema:WORKTREE_CLEANUP_SCHEMA,isValid:isWorktreeCleanupValid},
+)
+return!outputMissing&&result?.ok===true&&result?.retained===false&&(result?.worktree==='absent'||result?.worktree==='prunable')
+}catch(e){
+log(`⚠️ #${issueNumber}: worktree の不在確認で想定外の例外（${sanitize(String(e?.message ?? e))}）。不在と見なさない`)
+return false
+}
+}
 
 
 function signedOutputSchema(payloadSchema){
@@ -7299,14 +7342,15 @@ const effectiveBranch=worktreeAlive
 
 
 
-const discardWorktreeOnly=async(what)=>{
-const attempt=await updateStateDetailed(item.number,{worktree:''},{cleanupWorktree:sanitizedRecoverWorktree,cleanupMode:'discard'})
+
+const discardWorktreeOnly=async(what,expectBranch)=>{
+const attempt=await updateStateDetailed(item.number,{worktree:''},{cleanupWorktree:sanitizedRecoverWorktree,cleanupMode:'discard',expectBranch})
 
 if(attempt.ok&&attempt.retained===false)return true
 const status=classifyStateWriteFailureStatus({outputMissing:attempt.outputMissing,terminalSaved:false,prNumber:0})
 const reason=sanitize(
 `discard の worktree 掃除を完了確認できなかった`+
-`（${status === 'blocked' ? 'state 書込みエージェントが StructuredOutput を返さなかった' : attempt.mergeOk && attempt.retained ? '旧 worktree に未コミット変更・初期化済み submodule・lock のいずれかがあり、削除せず保持した' : '状態マージ失敗による掃除スキップ、または掃除エージェント失敗'}）。`+
+`（${status === 'blocked' ? 'state 書込みエージェントが StructuredOutput を返さなかった' : attempt.mergeOk && attempt.retained ? '旧 worktree に未コミット変更・初期化済み submodule・lock のいずれかがある、または HEAD が解決したブランチ上に無く、削除せず保持した' : '状態マージ失敗による掃除スキップ、または掃除エージェント失敗'}）。`+
 `旧 worktree が残ったまま Plan へ進まず、残骸を保全して ${status} にする。${what} を手動確認し、対処後に再実行すること`,
 )
 log(`⚠️ #${item.number}: Recover → discard を保全へ格下げ（${reason}）`)
@@ -7315,6 +7359,12 @@ await updateState(item.number,{status, ...(status==='blocked'?{pr:0}:{}),note:re
 recordFailure({issue:item.number,reason,status})
 return false
 }
+
+
+
+const absentCandidate=recoverDecision==='discard'&& !effectiveBranch&&Boolean(sanitizedRecoverWorktree)&&recoverResult?.worktreeMissing===true&&
+(recoverResult?.branch??'')===''&&(saved.branch??'')===''
+const absentConfirmed=absentCandidate?await confirmWorktreeAbsent(item.number,sanitizedRecoverWorktree):false
 
 if(recoverDecision==='continue'&&effectiveBranch){
 
@@ -7342,7 +7392,8 @@ log(`#${item.number}: Recover → continue（branch: ${sanitize(effectiveBranch)
 const continueCleanupAttempt=await updateStateDetailed(
 item.number,
 {status:'implementing',branch:effectiveBranch,worktree:''},
-sanitizedRecoverWorktree?{cleanupWorktree:sanitizedRecoverWorktree,cleanupMode:'discard'}:{},
+
+sanitizedRecoverWorktree?{cleanupWorktree:sanitizedRecoverWorktree,cleanupMode:'discard',expectBranch:effectiveBranch}:{},
 )
 if(!continueCleanupAttempt.ok){
 
@@ -7356,7 +7407,7 @@ prNumber:0,
 })
 const reason=sanitize(
 `旧 worktree の掃除または implementing 遷移の永続化を完了確認できなかった`+
-`（${continueCleanupStatus === 'blocked' ? 'state 書込みエージェントが StructuredOutput を返さなかった' : continueCleanupAttempt.mergeOk && continueCleanupAttempt.retained ? '旧 worktree に未コミット変更・初期化済み submodule・lock のいずれかがあり、削除せず保持した' : '状態マージ失敗による掃除スキップ、または掃除エージェント失敗'}）。`+
+`（${continueCleanupStatus === 'blocked' ? 'state 書込みエージェントが StructuredOutput を返さなかった' : continueCleanupAttempt.mergeOk && continueCleanupAttempt.retained ? '旧 worktree に未コミット変更・初期化済み submodule・lock のいずれかがある、または HEAD が継続するブランチ上に無く、削除せず保持した' : '状態マージ失敗による掃除スキップ、または掃除エージェント失敗'}）。`+
 `旧 worktree が branch を掴んだままだと新 worktree が同 branch を checkout できないため、`+
 `Implement を起動せず残骸を保全して ${continueCleanupStatus} にする。旧 worktree と branch を手動確認し、対処後に再実行すること`,
 )
@@ -7548,7 +7599,7 @@ recordFailure({issue:item.number,reason})
 return false
 }
 log(`#${item.number}: Recover → discard（解決した branch ${rejectedBranch} は命名規約 <type>/${item.number}-<short-name> に合わない）、旧 worktree のみ掃除して通常 Plan へ。branch は削除せず残す`)
-if(!(await discardWorktreeOnly(`branch ${rejectedBranch} と旧 worktree`)))return false
+if(!(await discardWorktreeOnly(`branch ${rejectedBranch} と旧 worktree`,rejectedBranch)))return false
 
 if(Number.isInteger(saved.pr)&&saved.pr>0)log(`#${item.number}: 保存済みの PR #${saved.pr} を pr: 0 で切り離して新規に実装する`)
 await updateState(item.number,{status:'planning',branch:'',pr:0,worktree:'',note:sanitize(`規約外ブランチ ${rejectedBranch} は削除せず残した`)})
@@ -7559,13 +7610,19 @@ await updateState(item.number,{status:'planning',branch:'',pr:0,worktree:'',note
 
 const reason=sanitize(
 `回復継続の対象 branch ${rejectedBranch} が本イシューの命名規約 <type>/${item.number}-<short-name> に合わないため、その上では継続しない。`+
-`worktree と branch は保全して blocked にする。worktree のブランチを <type>/${item.number}-<short-name> へ改名して再実行すること`,
+`worktree と branch は保全して blocked にする。worktree のブランチを <type>/${item.number}-<short-name> へ改名して再実行するか、`+
+`worktree（${sanitizedRecoverWorktree}）を git worktree remove で削除して再実行すること（削除後は不在を確認できれば新規に実装する）`,
 )
 log(`⚠️ #${item.number}: Recover → continue を保全へ格下げ（${reason}）`)
 await updateState(item.number,{status:'blocked',pr:0,note:reason})
 recordFailure({issue:item.number,reason,status:'blocked'})
 return false
 }
+}else if(absentConfirmed){
+
+
+log(`#${item.number}: Recover → discard（worktree ${sanitize(sanitizedRecoverWorktree)} の不在を確認した。保全対象なし）、記録を捨てて通常 Plan へ`)
+await updateState(item.number,{status:'planning',branch:'',pr:0,worktree:'',note:'worktree の不在を確認して新規に実装する'})
 }else{
 
 
@@ -7574,7 +7631,7 @@ const reason=sanitize(
 recoverDecision==='continue'&& !effectiveBranch
 ?`回復継続には有効な branch が必要だが state にも worktree HEAD からも解決できなかった${resolvedBranchRejected ? '（Recover が解決した branch は本イシューの命名規約 <type>/' + item.number + '-<short-name> に合わない）' : ''}。worktree/branch を保全して failed にする`
 :recoverDecision==='discard'&& !effectiveBranch
-?`discard 指示だが対象ブランチを確定できないため安全に削除できない${resolvedBranchRejected ? '（Recover が解決した branch は本イシューの命名規約に合わない）' : ''}。worktree/branch を保全して failed にする`
+?`discard 指示だが対象ブランチを確定できないため安全に削除できない${resolvedBranchRejected ? '（Recover が解決した branch は本イシューの命名規約に合わない）' : ''}${absentCandidate ? '（worktree の不在も確認できなかった）' : ''}。worktree/branch を保全して failed にする`
 :(recoverResult?.reason??'Recover エージェントが異常終了または不正な decision を返した。worktree/branch を保全して failed にする'),
 )
 log(`#${item.number}: Recover → 保全（decision: ${sanitize(recoverDecision ?? '(null)')}, effectiveBranch: ${sanitize(effectiveBranch || '(空)')}, reason: ${reason}）`)
@@ -10745,7 +10802,7 @@ const retainedLedger=[
 ...[...slotRetainedPaths].map(([path,issue])=>({issue,kind:'retained',path})),
 ]
 if(retainedLedger.length>0){
-log(`削除せず保持した worktree を ${retainedLedger.length} 件記録した（理由: 汚れ〔retained-dirty〕・lock〔retained-locked〕・submodule の変更〔retained-submodule〕・worktree の HEAD と --branch の不一致〔retained-branch-mismatch〕・マージ済み PR の head との不一致や detached HEAD〔retained-head-mismatch / retained-detached〕のいずれか。スイープでも消せなかったものを含む）。中身を確認してから手動で対処すること（未コミットの変更や未マージの成果を失わないよう、確認せずに git worktree remove しない）:`)
+log(`削除せず保持した worktree を ${retainedLedger.length} 件記録した（理由: 汚れ〔retained-dirty〕・git の対象が worktree 自身でない〔retained-broken〕・git status や HEAD を一過性に観測できなかった〔retained-unobservable〕・lock〔retained-locked〕・submodule の変更〔retained-submodule〕・worktree の HEAD と --branch の不一致〔retained-branch-mismatch〕・マージ済み PR の head との不一致や detached HEAD・実体の無い detached の登録〔retained-head-mismatch / retained-detached〕のいずれか。スイープでも消せなかったものを含む）。中身を確認してから手動で対処すること（未コミットの変更や未マージの成果を失わないよう、確認せずに git worktree remove しない）:`)
 for(const e of retainedLedger)log(`  ${e.issue ? `#${e.issue}` : '(スイープ)'} (${e.kind}): ${e.path || '（パス不明。git worktree list で確認すること）'}`)
 }
 

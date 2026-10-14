@@ -19,7 +19,7 @@ const OTHER = 'd'.repeat(40)
 const WT = '/repo/wt/old'
 
 const m = await importDefinitions(
-  ['closedCleanupCandidate', 'closedCleanupGate', 'closedCleanupRetainedReason', 'CLOSED_CLEANUP_PER_RUN_MAX', 'AGENT_CALLS_CLOSED_CLEANUP', 'AGENT_CALLS_TERMINAL_BASE', 'AGENT_CALLS_PER_ISSUE', 'cleanupClosedMergedWorktree', 'worktreeRemoveCommand', 'sweepClosedWorktrees', 'sweepEligiblePaths', 'sweepHeldPaths', 'confirmedRemovedPaths', 'ensureBoundaryNonceSeed', 'sha256Hex', 'canonicalJson'],
+  ['closedCleanupCandidate', 'prBindingValuesFetched', 'closedCleanupGate', 'closedCleanupRetainedReason', 'CLOSED_CLEANUP_PER_RUN_MAX', 'AGENT_CALLS_CLOSED_CLEANUP', 'AGENT_CALLS_TERMINAL_BASE', 'AGENT_CALLS_PER_ISSUE', 'cleanupClosedMergedWorktree', 'worktreeRemoveCommand', 'sweepClosedWorktrees', 'sweepEligiblePaths', 'sweepHeldPaths', 'confirmedRemovedPaths', 'ensureBoundaryNonceSeed', 'sha256Hex', 'canonicalJson'],
   'closed-skip-cleanup',
 )
 globalThis.agent = async (_p, opts) => (opts.label === 'nonce:seed' ? { seedHex: '0'.repeat(64) } : null)
@@ -78,13 +78,24 @@ test('closedCleanupGate: 1 ランの上限と予算不足を表で固定する�
   for (const [input, want] of rows) assert.equal(m.closedCleanupGate(input), want, JSON.stringify(input))
 })
 
+test('prBindingValuesFetched: 4 項目すべてが取得できた値のときだけ true（番兵が 1 つでも混じれば false）', () => {
+  assert.equal(m.prBindingValuesFetched(bindOk), true)
+  assert.equal(m.prBindingValuesFetched({ ...bindOk, closingIssues: [] }), true, '空配列は紐付け無しの正当値')
+  assert.equal(m.prBindingValuesFetched({ ...bindOk, baseRefName: 'dev' }), true, '取得できた値が期待と違うのは実際の不成立')
+  for (const o of [{ isCrossRepository: true }, { isCrossRepository: undefined }, { headRefName: '' }, { baseRefName: '' }, { headRefName: 5 }, { closingIssues: [-1] }, { closingIssues: [2, -1] }, { closingIssues: null }, { closingIssues: undefined }]) {
+    assert.equal(m.prBindingValuesFetched({ ...bindOk, ...o }), false, JSON.stringify(o))
+  }
+  assert.equal(m.prBindingValuesFetched(null), false)
+  assert.equal(m.prBindingValuesFetched(undefined), false)
+})
+
 test('closedCleanupRetainedReason: スクリプトが結果行の固定語で保持を明示したときだけ記録する（結果なし・非 0 終了・launcher 不一致・lock・固定語以外は記録しない）', () => {
   const r = (worktree, extra = {}) => ({ ok: false, retained: true, worktree, ...extra })
-  for (const w of ['retained-dirty', 'retained-submodule', 'retained-head-mismatch', 'retained-detached']) assert.equal(m.closedCleanupRetainedReason(r(w), false), 'retained', w)
+  for (const w of ['retained-dirty', 'retained-submodule', 'retained-head-mismatch', 'retained-detached', 'retained-broken']) assert.equal(m.closedCleanupRetainedReason(r(w), false), 'retained', w)
   // エージェントが非 0 終了・launcher の exit 3 / 4・結果の行なしを ok:false / retained:true / worktree 空で返す
   assert.equal(m.closedCleanupRetainedReason({ ok: false, retained: true, worktree: '' }, false), null)
   assert.equal(m.closedCleanupRetainedReason({ ok: false, retained: true }, false), null)
-  for (const w of ['retained-locked', 'retained-branch-mismatch', 'failed', 'main', 'cwd', 'removed', 'not-registered', 'skipped', 'retained-other', 'RETAINED-DIRTY', 5, null]) assert.equal(m.closedCleanupRetainedReason(r(w), false), null, String(w))
+  for (const w of ['retained-unobservable', 'retained-locked', 'retained-branch-mismatch', 'failed', 'main', 'cwd', 'removed', 'not-registered', 'skipped', 'retained-other', 'RETAINED-DIRTY', 5, null]) assert.equal(m.closedCleanupRetainedReason(r(w), false), null, String(w))
   assert.equal(m.closedCleanupRetainedReason(r('retained-dirty'), true), null, '出力なし')
   assert.equal(m.closedCleanupRetainedReason({ ...r('retained-dirty'), retained: false }, false), null)
   assert.equal(m.closedCleanupRetainedReason(undefined, false), null)
@@ -141,6 +152,8 @@ test('MERGED かつ結び付き成立: --head つきの discard で掃除し、�
   const cleanup = s.calls[1].prompt
   assert.match(cleanup, new RegExp(`worktree-remove\\.sh remove --mode discard --path '${WT}' --head '${SHA}'$`, 'm'))
   assert.doesNotMatch(cleanup, /--branch/, 'ブランチは消さない')
+  // 保持理由の記録は結果行の worktree の語に依る。返却行に明示して省かれないようにする（指摘 F）
+  assert.match(cleanup, /返却: ok \/ retained \/ branchSha \/ worktree（上記のとおり）/)
   assert.doesNotMatch(cleanup, /state\.sh/, '状態の書き込みは掃除エージェントに持たせない')
   const w = s.calls[2].prompt
   assert.match(w, /"status":\s*"merged"/)
@@ -159,7 +172,14 @@ const NO_CHANGE = [
   ['結び付き不成立（head のブランチ名が違う）', (o) => (o.label.startsWith('pr-bind:') ? { ...bindOk, headRefName: 'feat/3-x' } : undefined), /結び付きを確認できない/, 'binding'],
   ['結び付き不成立（別イシューに紐付く）', (o) => (o.label.startsWith('pr-bind:') ? { ...bindOk, closingIssues: [3] } : undefined), /結び付きを確認できない/, 'binding'],
   ['結び付き不成立（base が違う）', (o) => (o.label.startsWith('pr-bind:') ? { ...bindOk, baseRefName: 'dev' } : undefined), /結び付きを確認できない/, 'binding'],
-  ['結び付き不成立（fork）', (o) => (o.label.startsWith('pr-bind:') ? { ...bindOk, isCrossRepository: true } : undefined), /結び付きを確認できない/, 'binding'],
+  // isCrossRepository: true は取得不能の番兵と本物の fork PR が同じ値で区別できないので、記録しない側に倒す
+  ['結び付き不成立（fork。番兵と区別できないので記録しない）', (o) => (o.label.startsWith('pr-bind:') ? { ...bindOk, isCrossRepository: true } : undefined), /結び付きを確認できない/, null],
+  // 部分的にしか取れなかった pr-bind（取得不能の番兵が混じる）は一過性。1 回の部分取得で永久に飛ばさない
+  ['部分取得（headRefName が空の番兵）', (o) => (o.label.startsWith('pr-bind:') ? { ...bindOk, headRefName: '' } : undefined), /結び付きを確認できない/, null],
+  ['部分取得（baseRefName が空の番兵）', (o) => (o.label.startsWith('pr-bind:') ? { ...bindOk, baseRefName: '' } : undefined), /結び付きを確認できない/, null],
+  ['部分取得（closingIssues が [-1] の番兵）', (o) => (o.label.startsWith('pr-bind:') ? { ...bindOk, closingIssues: [-1] } : undefined), /結び付きを確認できない/, null],
+  ['部分取得（番兵が複数。state だけ MERGED）', (o) => (o.label.startsWith('pr-bind:') ? { ...bindOk, headRefName: '', baseRefName: '', closingIssues: [-1], isCrossRepository: true } : undefined), /結び付きを確認できない/, null],
+  ['結び付き不成立（closingIssues が空でも別ブランチ名は取得値による不成立）', (o) => (o.label.startsWith('pr-bind:') ? { ...bindOk, headRefName: 'feat/3-x', closingIssues: [] } : undefined), /結び付きを確認できない/, 'binding'],
   ['PR の取得が null', (o) => (o.label.startsWith('pr-bind:') ? null : undefined), /結び付きを確認できない/, null],
   ['headRefOid が 40 桁でない', (o) => (o.label.startsWith('pr-bind:') ? { ...bindOk, headRefOid: 'abc123' } : undefined), /head を取得できない/, null],
   ['headRefOid に大文字', (o) => (o.label.startsWith('pr-bind:') ? { ...bindOk, headRefOid: 'C'.repeat(40) } : undefined), /head を取得できない/, null],
@@ -198,6 +218,8 @@ const RETAINED = [
   ['非 0 終了・結果行なし（ok:false・retained:true・worktree 空）', () => ({ ok: false, retained: true, worktree: '' }), false],
   ['worktree の語を返さない旧形式の応答', () => ({ ok: false, retained: true }), false],
   ['生きている lock（retained-locked）はセッション終了後に解消し得るので記録しない', () => ({ ok: false, retained: true, worktree: 'retained-locked' }), false],
+  ['.git の破損・git の対象が worktree 自身でない（retained-broken）は決定的なので記録する', () => ({ ok: false, retained: true, worktree: 'retained-broken' })],
+  ['観測の失敗（retained-unobservable: git status コマンドの失敗・--head 指定時の HEAD の一過性の読み取り失敗）は一過性かもしれないので記録せず、次のランで再試行させる', () => ({ ok: false, retained: true, worktree: 'retained-unobservable' }), false],
   ['掃除の結果なし（StructuredOutput 未返却）', () => null, false],
   ['掃除が例外', () => { throw new Error('boom') }, false],
   // 誤転記（ok:false なのに retained:false）は削除成功と見なさず、決定的な保持でもないので記録しない
@@ -331,6 +353,12 @@ test('結合: dryRun は書き込み系を起動せず、後始末の対象見�
   assert.equal(result.dryRun, true)
   assert.deepEqual(result.closedCleanupPending, { count: 1, first: [2], perRunMax: 10, maxAgentCalls: 6 })
   assert.equal(callsOf(calls, /^(pr-bind|state:cleanup|state:update)/).length, 0)
+})
+
+test('結合: retained-unobservable は closedCleanupTried を書かない（retained-dirty は書く）', async () => {
+  const r = await run({ cleanup: { ok: false, retained: true, worktree: 'retained-unobservable' } })
+  assert.equal(triedWrites(r.calls).length, 0)
+  assert.equal(anyStatusWrite(r.calls).length, 0)
 })
 
 test('結合: 保持された結果は status を変えずに試行済みを記録し、結果の closedCleanup に件数を出す。記録のある項目は次の実行で pr-bind すら起動しない', async () => {

@@ -455,7 +455,7 @@ export function registerWorktreeRemoveTests(bash) {
       const w = repo.addWorktree(`broken-${mode}`, { dir: join(repo.main, '.claude', 'worktrees', `broken-${mode}`) })
       rmSync(join(w.path, '.git'))
       const r = mode === 'superseded' ? sup(repo, w.path) : dis(repo, w.path)
-      assert.deepEqual([r.result.worktree, r.result.dirty], ['retained-dirty', -1], mode)
+      assert.deepEqual([r.result.worktree, r.result.dirty], ['retained-broken', -1], mode)
       assert.ok(existsSync(w.path))
     }
   })
@@ -509,6 +509,56 @@ export function registerWorktreeRemoveTests(bash) {
     const r3 = dis(repo, a.path, ['--branch', a.branch, '--base', 'main'])
     assert.deepEqual([r3.result.ok, r3.result.worktree, r3.result.branch], [true, 'removed', 'deleted'])
     assert.ok(!existsSync(a.path) && repo.branches().includes(b.branch))
+  })
+
+  // --expect-branch: --branch と同じ位置・同じ判定で HEAD を照合するだけで、ブランチは消さない（規約外のブランチ名上の worktree の discard 用）
+  test(`${tag} --expect-branch: HEAD が一致すれば worktree だけ消えてブランチは残る。detached・別ブランチ・汚れは保持する`, () => {
+    const repo = makeRepo()
+    // 規約外の名前（worktree-wf_…）の worktree。一致 → removed・branch は none（消さない）・ブランチは残る
+    const a = repo.addWorktree('a', { branch: 'worktree-wf_ab12' })
+    const asha = repo.head(a.path)
+    const r1 = dis(repo, a.path, ['--expect-branch', 'worktree-wf_ab12'])
+    assert.deepEqual(r1.result, { ok: true, mode: 'discard', worktree: 'removed', branch: 'none', branchSha: '', dirty: 0, unlocked: false, retained: false })
+    assert.ok(!existsSync(a.path))
+    assert.ok(repo.branches().includes('worktree-wf_ab12'), 'ブランチは消さない')
+    assert.equal(repo.git(repo.main, 'rev-parse', 'worktree-wf_ab12'), asha)
+
+    // detached: 申告されたブランチ名が実在しても、HEAD がブランチ上に無いので保持する
+    const b = repo.addWorktree('b', { branch: 'worktree-wf_cd34' })
+    repo.git(b.path, 'checkout', '-q', '--detach')
+    const r2 = dis(repo, b.path, ['--expect-branch', 'worktree-wf_cd34'])
+    assert.deepEqual([r2.result.ok, r2.result.worktree, r2.result.branch, r2.result.retained], [false, 'retained-branch-mismatch', 'none', true])
+    assert.ok(existsSync(b.path))
+
+    // 申告されたブランチとは別のブランチにいる worktree: 保持する
+    const c = repo.addWorktree('c', { branch: 'worktree-wf_ef56' })
+    const r3 = dis(repo, c.path, ['--expect-branch', 'worktree-wf_other'])
+    assert.deepEqual([r3.result.ok, r3.result.worktree, r3.result.retained], [false, 'retained-branch-mismatch', true])
+    assert.ok(existsSync(c.path) && repo.branches().includes('worktree-wf_ef56'))
+
+    // 一致していても汚れていれば保持する（--force は使わない）
+    repo.write(c.path, 'u.txt', 'u\n')
+    const r4 = dis(repo, c.path, ['--expect-branch', 'worktree-wf_ef56'])
+    assert.deepEqual([r4.result.ok, r4.result.worktree], [false, 'retained-dirty'])
+    assert.ok(existsSync(c.path))
+
+    // --expect-branch なしの discard は従来どおり HEAD を照合せず消える（detached でも）
+    assert.equal(dis(repo, b.path).result.worktree, 'removed')
+  })
+
+  test(`${tag} --expect-branch: base と同名でも照合だけなので拒否しない（ブランチは消さない）。実体の無い worktree は読めないので従来どおり消える`, () => {
+    const repo = makeRepo()
+    const a = repo.addWorktree('a')
+    // a は main ではない別ブランチ上: 'main' を申告しても HEAD が違うので保持する（usage エラーにならない）
+    const r1 = dis(repo, a.path, ['--expect-branch', 'main'])
+    assert.equal(r1.status, 0, r1.stderr)
+    assert.deepEqual([r1.result.worktree, r1.result.branch], ['retained-branch-mismatch', 'none'])
+    // 実体の無い worktree（dead）
+    const d = repo.addWorktree('d')
+    rmSync(d.path, { recursive: true })
+    const r2 = dis(repo, d.path, ['--expect-branch', d.branch])
+    assert.deepEqual([r2.result.worktree, r2.result.ok, r2.result.branch], ['removed', true, 'none'])
+    assert.ok(repo.branches().includes(d.branch))
   })
 
   test(`${tag} --branch を与えて worktree が detached HEAD: retained-branch-mismatch で保持する。--branch を与えなければ従来どおり消える（superseded も対象外）`, () => {
@@ -581,7 +631,7 @@ export function registerWorktreeRemoveTests(bash) {
     assert.equal(sup(repo, c.path).result.worktree, 'removed')
   })
 
-  test(`${tag} --head: コミットが無い（unborn）worktree は HEAD を読めないので retained-head-mismatch で保持する`, () => {
+  test(`${tag} --head: コミットが無い（unborn）worktree は PR の head と一致し得ないので retained-head-mismatch（恒久の保持。毎ラン再試行させない）で保持する`, () => {
     const repo = makeRepo()
     const dir = join(repo.root, 'wts', 'orph')
     mkdirSync(join(dir, '..'), { recursive: true })
@@ -659,10 +709,36 @@ export function registerWorktreeRemoveTests(bash) {
       ['remove', '--mode', 'discard', '--path', w.path, '--head', 'HEAD'],
       ['remove', '--mode', 'discard', '--path', w.path, '--head', `${'a'.repeat(39)};`],
       ['remove', '--mode', 'discard', '--path', w.path, '--head'],
+      ['remove', '--mode', 'superseded', '--path', w.path, '--expect-branch', 'feat/x'],
+      ['remove', '--mode', 'discard', '--expect-branch', 'feat/x'],
+      ['remove', '--mode', 'discard', '--path', w.path, '--expect-branch'],
+      ['remove', '--mode', 'discard', '--path', w.path, '--expect-branch', ''],
+      ['remove', '--mode', 'discard', '--path', w.path, '--expect-branch', '-D'],
+      ['remove', '--mode', 'discard', '--path', w.path, '--expect-branch', 'a..b'],
+      ['remove', '--mode', 'discard', '--path', w.path, '--expect-branch', 'a b'],
+      ['remove', '--mode', 'discard', '--path', w.path, '--expect-branch', 'feat/x', '--branch', 'feat/x'],
+      ['sweep', '--file', '_/issue-trees/1.json', '--expect-branch', 'feat/x'],
       ['sweep', '--file', '_/issue-trees/1.json', '--head', 'a'.repeat(40)],
       ['remove', '--mode', 'superseded', '--path'],
       ['remove', '--mode', 'superseded', '--path', w.path, '--unknown', 'x'],
+      ['check-absent'],
+      ['check-absent', '--path'],
+      ['check-absent', '--path', 'relative/wt'],
+      ['check-absent', '--path', '/tmp/a;b'],
+      ['check-absent', '--path', '/tmp/../x'],
+      ['check-absent', '--path', w.path, '--mode', 'discard'],
+      ['check-absent', '--path', w.path, '--branch', 'feat/x'],
+      ['check-absent', '--path', w.path, '--base', 'main'],
+      ['check-absent', '--path', w.path, '--head', 'a'.repeat(40)],
+      ['check-absent', '--path', w.path, '--expect-branch', 'feat/x'],
+      ['check-absent', '--path', w.path, '--file', '_/issue-trees/1.json'],
+      ['check-absent', '--path', w.path, '--unknown', 'x'],
+      ['check-absent', '--path', w.path, '--repo-root'],
+      ['check-absent', '--path', w.path, '--repo-root', 'relative'],
+      ['check-absent', '--path', w.path, '--repo-root', ''],
+      ['remove', '--mode', 'superseded', '--path', w.path, '--repo-root', '/tmp/x'],
       ['sweep'],
+      ['sweep', '--file', '_/issue-trees/1.json', '--path', w.path],
       ['sweep', '--file', '/etc/passwd'],
       ['sweep', '--file', '_/issue-trees/0.json'],
       ['sweep', '--file', '_/issue-trees/1.json', '--mode', 'superseded'],
@@ -675,13 +751,482 @@ export function registerWorktreeRemoveTests(bash) {
     assert.ok(existsSync(w.path))
   })
 
+  // ---- check-absent（Issue #637）: 削除を一切しない不在専用の確認 ----
+  // 実行の前後で、登録の一覧・.git/worktrees の中身・全 ref・各パスの有無が同じであること（何も削除・prune・unlock・変更しない）を確かめる
+  const snap = (repo, paths) => ({
+    list: repo.git(repo.main, 'worktree', 'list', '--porcelain'),
+    admin: spawnSync('ls', ['-A', join(repo.main, '.git', 'worktrees')], { encoding: 'utf8' }).stdout,
+    refs: repo.git(repo.main, 'for-each-ref', '--format=%(refname) %(objectname)'),
+    exists: paths.map((p) => existsSync(p)),
+  })
+  const ca = (repo, path, extra = ['--repo-root', repo.main]) => run(repo, ['check-absent', '--path', path, ...extra])
+  const caWord = (repo, path, paths = [path], extra) => {
+    const before = snap(repo, paths)
+    const r = ca(repo, path, extra)
+    assert.equal(r.status, 0, r.stderr)
+    assert.deepEqual(snap(repo, paths), before, '何も削除・変更されない')
+    assert.equal(r.result.mode, 'check-absent')
+    assert.deepEqual([r.result.branch, r.result.branchSha, r.result.dirty, r.result.unlocked], ['none', '', 0, false])
+    return r.result
+  }
+
+  test(`${tag} check-absent: 登録が無くパスも無い → absent（ok・retained=false）。何も変わらない`, () => {
+    const repo = makeRepo()
+    const p = join(repo.root, 'wts', 'never')
+    assert.deepEqual(caWord(repo, p), { ok: true, mode: 'check-absent', worktree: 'absent', branch: 'none', branchSha: '', dirty: 0, unlocked: false, retained: false })
+    // 祖先ごと無いパスも absent
+    assert.equal(caWord(repo, join(repo.root, 'no', 'such', 'dir', 'wt')).worktree, 'absent')
+    // git worktree remove で正規に消した後も absent
+    const a = repo.addWorktree('a')
+    repo.git(repo.main, 'worktree', 'remove', a.path)
+    const r = caWord(repo, a.path)
+    assert.deepEqual([r.ok, r.worktree, r.retained], [true, 'absent', false])
+    assert.ok(repo.branches().includes(a.branch), 'ブランチも触らない')
+  })
+
+  test(`${tag} check-absent: 登録だけ残り実体が無い（rm で手消し）→ lock なし・ブランチ上は prunable（不在扱い）。登録は prune されず残る`, () => {
+    const repo = makeRepo()
+    const a = repo.addWorktree('a')
+    rmSync(a.path, { recursive: true })
+    const r = caWord(repo, a.path)
+    assert.deepEqual([r.ok, r.worktree, r.retained], [true, 'prunable', false])
+    assert.ok(repo.worktrees().includes(a.path), '登録が残る（このモードは prune しない）')
+    assert.ok(repo.branches().includes(a.branch))
+    // 続けて remove を走らせれば従来どおり prune されるが、check-absent 自体は何もしなかった
+  })
+
+  test(`${tag} check-absent: 登録だけ残り detached は prunable-detached、lock ありは prunable-locked（どちらも不在扱いにしない・保全）`, () => {
+    const repo = makeRepo()
+    const d = repo.addWorktree('d')
+    repo.write(d.path, 'q.txt', 'q\n')
+    repo.git(d.path, 'add', 'q.txt')
+    repo.git(d.path, 'checkout', '-q', '--detach')
+    repo.git(d.path, 'commit', '-q', '-m', 'unpushed')
+    const sha = repo.head(d.path)
+    rmSync(d.path, { recursive: true })
+    const rd = caWord(repo, d.path)
+    assert.deepEqual([rd.ok, rd.worktree, rd.retained], [false, 'prunable-detached', true])
+    assert.equal(repo.git(repo.main, 'cat-file', '-t', sha), 'commit', '未 push のコミットが残る')
+    const l = repo.addWorktree('l')
+    repo.git(repo.main, 'worktree', 'lock', '--reason', 'portable', l.path)
+    rmSync(l.path, { recursive: true })
+    const rl = caWord(repo, l.path)
+    assert.deepEqual([rl.ok, rl.worktree, rl.retained], [false, 'prunable-locked', true])
+  })
+
+  test(`${tag} check-absent: 実体がある（clean・detached で未 push・汚れ・lock）→ present。何も消さない`, () => {
+    const repo = makeRepo()
+    const clean = repo.addWorktree('clean')
+    const det = repo.addWorktree('det')
+    repo.git(det.path, 'checkout', '-q', '--detach')
+    repo.write(det.path, 'n.txt', 'n\n')
+    repo.git(det.path, 'add', 'n.txt')
+    repo.git(det.path, 'commit', '-q', '-m', 'unpushed')
+    const detSha = repo.head(det.path)
+    const dirty = repo.addWorktree('dirty')
+    repo.write(dirty.path, 'u.txt', 'u\n')
+    const locked = repo.addWorktree('locked')
+    repo.git(repo.main, 'worktree', 'lock', '--reason', lockReason(process.pid), locked.path)
+    const all = [clean.path, det.path, dirty.path, locked.path]
+    for (const w of all) {
+      const r = caWord(repo, w, all)
+      assert.deepEqual([r.ok, r.worktree, r.retained], [false, 'present', true], w)
+    }
+    assert.equal(repo.head(det.path), detSha)
+    assert.ok(all.every((w) => existsSync(w)))
+  })
+
+  test(`${tag} check-absent: 未登録だがディレクトリだけある・ファイルやシンボリックリンクがある → unregistered-present。メイン worktree → main。何も消さない`, () => {
+    const repo = makeRepo()
+    const stray = join(repo.root, 'stray')
+    mkdirSync(stray)
+    writeFileSync(join(stray, 'keep.txt'), 'k\n')
+    const file = join(repo.root, 'afile')
+    writeFileSync(file, 'x\n')
+    const link = join(repo.root, 'alink')
+    symlinkSync(join(repo.root, 'no-target'), link) // 壊れたシンボリックリンクも「ある」
+    for (const p of [stray, file, link]) {
+      const r = ca(repo, p)
+      assert.deepEqual([r.result.ok, r.result.worktree, r.result.retained], [false, 'unregistered-present', true], p)
+    }
+    assert.ok(existsSync(join(stray, 'keep.txt')))
+    assert.equal(ca(repo, repo.main).result.worktree, 'main')
+    // メイン worktree の中のパス（未登録・存在しない）は absent だが、メイン自身は main
+    assert.equal(ca(repo, join(repo.main, 'sub-never')).result.worktree, 'absent')
+  })
+
+  test(`${tag} check-absent: 祖先がシンボリックリンク経由でも、実体のパスで登録された prunable を absent と誤読しない`, () => {
+    const repo = makeRepo()
+    const a = repo.addWorktree('a')
+    const alias = join(repo.root, 'alias')
+    symlinkSync(join(repo.root, 'wts'), alias)
+    rmSync(a.path, { recursive: true })
+    const r = ca(repo, join(alias, 'a'))
+    assert.equal(r.result.worktree, 'prunable', '字面が alias/a でも登録（wts/a）と突き合わせる')
+    // 登録の無い名前は alias 経由でも absent
+    assert.equal(ca(repo, join(alias, 'other')).result.worktree, 'absent')
+  })
+
+  test(`${tag} check-absent: git worktree list が失敗する（git のリポジトリの外）→ unknown。absent に倒さない`, () => {
+    const repo = makeRepo()
+    const outside = join(repo.root, 'outside')
+    mkdirSync(outside)
+    const r = run(repo, ['check-absent', '--path', join(repo.root, 'wts', 'z'), '--repo-root', repo.main], { cwd: outside })
+    assert.equal(r.status, 0, r.stderr)
+    assert.deepEqual([r.result.ok, r.result.worktree, r.result.retained], [false, 'unknown', true])
+  })
+
+  test(`${tag} check-absent: カレントが対象の中にあっても読み取りだけで結果を返す（cwd として扱わない）`, () => {
+    const repo = makeRepo()
+    const a = repo.addWorktree('a')
+    const before = snap(repo, [a.path])
+    const r = run(repo, ['check-absent', '--path', a.path, '--repo-root', repo.main], { cwd: a.path })
+    assert.equal(r.result.worktree, 'present')
+    assert.deepEqual(snap(repo, [a.path]), before)
+  })
+
+  // ---- 同値な別表記のパス・大小違い・HEAD 0000…・リポジトリ照合・prune のスキップ（Issue #637 の独立レビュー・Issue #641） ----
+  // 登録の種類ごとに、実体を消した登録を作る。word は plain な表記での語
+  const KINDS = {
+    prunable: { word: 'prunable', make: (repo, name) => { const a = repo.addWorktree(name); rmSync(a.path, { recursive: true }); return a } },
+    'prunable-detached': {
+      word: 'prunable-detached',
+      make: (repo, name) => {
+        const a = repo.addWorktree(name)
+        repo.write(a.path, 'q.txt', 'q\n')
+        repo.git(a.path, 'add', 'q.txt')
+        repo.git(a.path, 'checkout', '-q', '--detach')
+        repo.git(a.path, 'commit', '-q', '-m', 'unique')
+        a.sha = repo.head(a.path)
+        rmSync(a.path, { recursive: true })
+        return a
+      },
+    },
+    'prunable-locked': {
+      word: 'prunable-locked',
+      make: (repo, name) => {
+        const a = repo.addWorktree(name)
+        repo.git(repo.main, 'worktree', 'lock', '--reason', 'portable', a.path)
+        rmSync(a.path, { recursive: true })
+        return a
+      },
+    },
+  }
+  for (const [kind, spec] of Object.entries(KINDS)) {
+    test(`${tag} check-absent ${kind}: 末尾 / ・末尾 /. ・// ・途中の /./ の別表記でも同じ語（absent に倒れない）`, () => {
+      const repo = makeRepo()
+      const a = spec.make(repo, 'p3')
+      const dir = join(repo.root, 'wts')
+      for (const form of [`${a.path}/`, `${a.path}/.`, `${a.path}//`, `${dir}//p3`, `${dir}/./p3`, `${dir}/./p3/./`, `${dir}//./p3/.`]) {
+        const r = caWord(repo, form, [a.path])
+        assert.equal(r.worktree, spec.word, form)
+        assert.equal(r.retained, kind !== 'prunable', form)
+      }
+    })
+    test(`${tag} check-absent ${kind}: 大小だけ違うパス（本体・祖先）は登録ありと見なして保全（absent / prunable を返さない）`, () => {
+      const repo = makeRepo()
+      const a = spec.make(repo, 'p3')
+      const dir = join(repo.root, 'wts')
+      for (const form of [join(dir, 'P3'), join(repo.root, 'WTS', 'p3'), join(repo.root, 'WTS', 'P3'), `${join(dir, 'P3')}/`]) {
+        const r = caWord(repo, form, [a.path])
+        assert.ok(!['absent', 'prunable'].includes(r.worktree), `${form}: ${r.worktree}`)
+        assert.equal(r.ok, false, form)
+        assert.equal(r.retained, true, form)
+      }
+      // 大小だけでなく名前が違えば登録なし
+      assert.equal(caWord(repo, join(dir, 'p4'), [a.path]).worktree, 'absent')
+      assert.equal(caWord(repo, join(repo.root, 'WTS', 'p4'), [a.path]).worktree, 'absent')
+    })
+  }
+
+  test(`${tag} check-absent: 末尾 / の present・main は従来どおり`, () => {
+    const repo = makeRepo()
+    const a = repo.addWorktree('a')
+    assert.equal(ca(repo, `${a.path}/`).result.worktree, 'present')
+    assert.equal(ca(repo, `${a.path}/.`).result.worktree, 'present')
+    assert.equal(ca(repo, `${repo.main}/`).result.worktree, 'main')
+    assert.equal(ca(repo, `${repo.main}/.`).result.worktree, 'main')
+  })
+
+  test(`${tag} check-absent: ブランチ ref を update-ref -d で消した登録（HEAD 0000…）は prunable ではなく prunable-detached（保全）`, () => {
+    const repo = makeRepo()
+    const a = repo.addWorktree('z')
+    repo.write(a.path, 'q.txt', 'q\n')
+    repo.git(a.path, 'add', 'q.txt')
+    repo.git(a.path, 'commit', '-q', '-m', 'only-on-branch')
+    repo.git(repo.main, 'update-ref', '-d', `refs/heads/${a.branch}`)
+    rmSync(a.path, { recursive: true })
+    assert.match(repo.git(repo.main, 'worktree', 'list', '--porcelain'), /HEAD 0{40,64}/)
+    const r = caWord(repo, a.path)
+    assert.deepEqual([r.ok, r.worktree, r.retained], [false, 'prunable-detached', true])
+  })
+
+  test(`${tag} check-absent: 別の git リポジトリの中で実行されても absent に倒さない（--repo-root と照合して違えば unknown）`, () => {
+    const repo = makeRepo()
+    const other = makeRepo()
+    const a = KINDS['prunable-detached'].make(repo, 'p3')
+    const r = run(repo, ['check-absent', '--path', a.path, '--repo-root', repo.main], { cwd: other.main })
+    assert.deepEqual([r.result.ok, r.result.worktree, r.result.retained], [false, 'unknown', true])
+    // 同じリポジトリのカレント（別の worktree の中を含む）なら判定できる
+    const w = repo.addWorktree('w')
+    const r2 = run(repo, ['check-absent', '--path', a.path, '--repo-root', repo.main], { cwd: w.path })
+    assert.equal(r2.result.worktree, 'prunable-detached')
+    // --repo-root が無いときは、パスの最寄りの実在する祖先から求める。リポジトリの外の祖先しか無ければ求められず unknown（保全側）
+    const r3 = run(repo, ['check-absent', '--path', a.path], { cwd: repo.main })
+    assert.equal(r3.result.worktree, 'unknown')
+    // メイン worktree の中に置いた worktree は祖先から求められる
+    const inner = repo.addWorktree('inner', { dir: join(repo.main, '.claude', 'worktrees', 'inner') })
+    rmSync(inner.path, { recursive: true })
+    assert.equal(run(repo, ['check-absent', '--path', inner.path], { cwd: repo.main }).result.worktree, 'prunable')
+    assert.equal(run(repo, ['check-absent', '--path', inner.path], { cwd: other.main }).result.worktree, 'unknown')
+    // --repo-root がリポジトリでない・違うリポジトリのとき
+    assert.equal(run(repo, ['check-absent', '--path', a.path, '--repo-root', other.main], { cwd: repo.main }).result.worktree, 'unknown')
+    assert.equal(run(repo, ['check-absent', '--path', a.path, '--repo-root', join(repo.root, 'nope')], { cwd: repo.main }).result.worktree, 'unknown')
+  })
+
+  // 固有コミットを持つ detached の登録（実体は消えている）が、無関係な掃除の全体 prune で消えない
+  const reachable = (repo, sha) => !repo.git(repo.main, 'fsck', '--unreachable', '--no-reflogs').includes(sha)
+  const PRUNE_CASES = [
+    ['remove superseded（消せる別の worktree）', (repo, o) => run(repo, ['remove', '--mode', 'superseded', '--path', o.path]), 'removed'],
+    ['remove superseded（未登録のパス）', (repo) => run(repo, ['remove', '--mode', 'superseded', '--path', join(repo.root, 'wts', 'nope')]), 'not-registered'],
+    ['remove discard（消せる別の worktree）', (repo, o) => run(repo, ['remove', '--mode', 'discard', '--path', o.path]), 'removed'],
+    ['remove discard（未登録のパス）', (repo) => run(repo, ['remove', '--mode', 'discard', '--path', join(repo.root, 'wts', 'nope')]), 'not-registered'],
+  ]
+  for (const [name, exec, word] of PRUNE_CASES) {
+    test(`${tag} prune スキップ: ${name} でも、prunable-detached の登録は残りコミットが到達可能`, () => {
+      const repo = makeRepo()
+      const d = KINDS['prunable-detached'].make(repo, 'keepme')
+      const o = repo.addWorktree('other')
+      assert.equal(reachable(repo, d.sha), true)
+      const r = exec(repo, o)
+      assert.equal(r.status, 0, r.stderr)
+      assert.equal(r.result.worktree, word)
+      assert.ok(repo.worktrees().includes(d.path), '登録が残る')
+      assert.equal(ca(repo, d.path).result.worktree, 'prunable-detached')
+      assert.equal(reachable(repo, d.sha), true, 'コミットが到達不能になっていない')
+      if (word === 'removed') assert.ok(r.result.pruneSkipped >= 1, `スキップを結果に出す: ${JSON.stringify(r.result)}`)
+    })
+  }
+  test(`${tag} prune スキップ: sweep でも prunable-detached と HEAD 0000… の登録は残る`, () => {
+    const repo = makeRepo()
+    const d = KINDS['prunable-detached'].make(repo, 'keepme')
+    const z = repo.addWorktree('zero')
+    repo.write(z.path, 'q.txt', 'q\n')
+    repo.git(z.path, 'add', 'q.txt')
+    repo.git(z.path, 'commit', '-q', '-m', 'zero')
+    const zsha = repo.head(z.path)
+    repo.git(repo.main, 'update-ref', '-d', `refs/heads/${z.branch}`)
+    rmSync(z.path, { recursive: true })
+    const o = repo.addWorktree('other')
+    const s = sweep(repo, [o.path], {})
+    assert.equal(s.status, 0, s.stderr)
+    assert.deepEqual(s.result.removed, [o.path])
+    assert.ok(s.result.pruneSkipped >= 2, JSON.stringify(s.result))
+    assert.ok(repo.worktrees().includes(d.path) && repo.worktrees().includes(z.path))
+    assert.equal(reachable(repo, d.sha), true)
+    // HEAD 0000… の登録のコミットは reflog だけが参照を持つ（--no-reflogs の fsck では常に未到達）。登録の管理ディレクトリごと reflog が残る
+    assert.ok(existsSync(join(repo.main, '.git', 'worktrees', 'zero', 'logs', 'HEAD')))
+    assert.equal(repo.git(repo.main, 'cat-file', '-t', zsha), 'commit')
+  })
+  test(`${tag} prune スキップ: 危険な登録が無ければ従来どおり片づく（ブランチ上の実体なし登録は prune され、pruneSkipped を出さない）`, () => {
+    const repo = makeRepo()
+    const dead = repo.addWorktree('dead')
+    rmSync(dead.path, { recursive: true })
+    const o = repo.addWorktree('other')
+    const r = run(repo, ['remove', '--mode', 'superseded', '--path', o.path])
+    assert.equal(r.result.worktree, 'removed')
+    assert.equal('pruneSkipped' in r.result, false)
+    assert.ok(!repo.worktrees().includes(dead.path), '実体の無いブランチ上の登録は prune される')
+    assert.ok(!repo.worktrees().includes(o.path))
+    // 実体の無い登録そのものを superseded で指しても従来どおり登録が片づく
+    const dead2 = repo.addWorktree('dead2')
+    rmSync(dead2.path, { recursive: true })
+    run(repo, ['remove', '--mode', 'superseded', '--path', dead2.path])
+    assert.ok(!repo.worktrees().includes(dead2.path))
+  })
+
+  test(`${tag} prune スキップ: 何も消さなかった remove（未登録・メイン・保持）は全体の prune を呼ばない（実体の無いブランチ上の登録も触らない）`, () => {
+    const repo = makeRepo()
+    const dead = repo.addWorktree('dead')
+    rmSync(dead.path, { recursive: true })
+    const dirty = repo.addWorktree('dirty')
+    repo.write(dirty.path, 'u.txt', 'u\n')
+    for (const args of [
+      ['remove', '--mode', 'superseded', '--path', join(repo.root, 'wts', 'nope')],
+      ['remove', '--mode', 'discard', '--path', repo.main],
+      ['remove', '--mode', 'discard', '--path', dirty.path],
+    ]) {
+      const r = run(repo, args)
+      assert.ok(['not-registered', 'main', 'retained-dirty'].includes(r.result.worktree), JSON.stringify(r.result))
+      assert.ok(repo.worktrees().includes(dead.path), `prune されない: ${args.join(' ')}`)
+    }
+  })
+
+
+  // ---- 実体の無い登録の扱い（Issue #637 の再レビュー）: 登録 1 件ずつの照合と削除。全体の prune に頼らない ----
+  const deadBranchHolder = (repo, name) => { const a = repo.addWorktree(name); rmSync(a.path, { recursive: true }); return a }
+  const mkDetachedGone = (repo, name) => KINDS['prunable-detached'].make(repo, name)
+
+  test(`${tag} 形 A: ブランチだけの discard。実体の無い登録がブランチを持ち、別に危険な（detached の）実体なし登録があっても、その登録だけを消してブランチを消す`, () => {
+    const repo = makeRepo()
+    const d = mkDetachedGone(repo, 'risk')
+    const h = deadBranchHolder(repo, 'holder')
+    const r = run(repo, ['remove', '--mode', 'discard', '--branch', h.branch, '--base', 'main'])
+    assert.equal(r.status, 0, r.stderr)
+    assert.deepEqual([r.result.ok, r.result.worktree, r.result.branch], [true, 'removed', 'deleted'], JSON.stringify(r.result))
+    assert.ok(!repo.branches().includes(h.branch))
+    assert.ok(!repo.worktrees().includes(h.path), '対象に結び付いた登録は消える')
+    assert.ok(repo.worktrees().includes(d.path), '無関係な危険な登録は残る')
+    assert.equal(reachable(repo, d.sha), true)
+  })
+  test(`${tag} 形 A: 持ち主が lock・detached（HEAD 0000…）のときは登録を消さず、ブランチも消さない（keep 系・保持の語）`, () => {
+    const repo = makeRepo()
+    const l = deadBranchHolder(repo, 'lk')
+    repo.git(repo.main, 'worktree', 'lock', '--reason', 'portable', l.path)
+    const r = run(repo, ['remove', '--mode', 'discard', '--branch', l.branch, '--base', 'main'])
+    assert.deepEqual([r.result.ok, r.result.worktree, r.result.branch, r.result.retained], [false, 'retained-locked', 'keep', true], JSON.stringify(r.result))
+    assert.ok(repo.worktrees().includes(l.path) && repo.branches().includes(l.branch))
+    const z = repo.addWorktree('zz')
+    repo.write(z.path, 'q.txt', 'q\n')
+    repo.git(z.path, 'add', 'q.txt')
+    repo.git(z.path, 'commit', '-q', '-m', 'only-on-branch')
+    repo.git(repo.main, 'update-ref', '-d', `refs/heads/${z.branch}`)
+    rmSync(z.path, { recursive: true })
+    // HEAD 0000… の登録はブランチ ref が無いのでブランチの削除対象にもならないが、登録は消さない
+    const r2 = run(repo, ['remove', '--mode', 'discard', '--branch', z.branch, '--base', 'main'])
+    assert.ok(repo.worktrees().includes(z.path), JSON.stringify(r2.result))
+  })
+  test(`${tag} 形 A: 実体のある別の worktree がブランチを持つなら消さない（登録を勝手に消さず、従来どおり branch failed）`, () => {
+    const repo = makeRepo()
+    const live = repo.addWorktree('live')
+    const r = run(repo, ['remove', '--mode', 'discard', '--branch', live.branch, '--base', 'main'])
+    assert.equal(r.result.ok, false)
+    assert.ok(existsSync(live.path) && repo.worktrees().includes(live.path) && repo.branches().includes(live.branch))
+  })
+
+  const linkRoot = (repo) => {
+    mkdirSync(join(repo.root, 'wts'), { recursive: true })
+    const link = join(repo.root, 'link')
+    symlinkSync(join(repo.root, 'wts'), link)
+    return link
+  }
+  test(`${tag} 形 B: シンボリックリンク経由の綴りで指した実体の無い登録も、実体のパスで照合して消す（not-registered にしない）。ブランチも消える`, () => {
+    const repo = makeRepo()
+    const link = linkRoot(repo)
+    for (const mode of ['superseded', 'discard']) {
+      const a = repo.addWorktree(`s-${mode}`)
+      rmSync(a.path, { recursive: true })
+      const via = join(link, `s-${mode}`)
+      const r = mode === 'superseded' ? sup(repo, via) : dis(repo, via, ['--branch', a.branch, '--base', 'main'])
+      assert.equal(r.status, 0, r.stderr)
+      assert.equal(r.result.worktree, 'removed', `${mode}: ${JSON.stringify(r.result)}`)
+      assert.ok(!repo.worktrees().includes(a.path), mode)
+      if (mode === 'discard') assert.deepEqual([r.result.ok, r.result.branch], [true, 'deleted'])
+    }
+  })
+  test(`${tag} 形 B: 大小だけ違う綴りは remove では一致させない（not-registered・何も消さない）`, () => {
+    const repo = makeRepo()
+    const a = deadBranchHolder(repo, 'cs')
+    const r = sup(repo, join(repo.root, 'WTS', 'cs'))
+    assert.equal(r.result.worktree, 'not-registered')
+    assert.ok(repo.worktrees().includes(a.path))
+  })
+  test(`${tag} 末尾 / ・/. 付きの不在パス: remove でも sweep でも登録と照合できる（正規化を外すと not-registered になる）`, () => {
+    const repo = makeRepo()
+    const a = deadBranchHolder(repo, 'tr')
+    const r = sup(repo, `${a.path}/`)
+    assert.equal(r.result.worktree, 'removed', JSON.stringify(r.result))
+    assert.ok(!repo.worktrees().includes(a.path))
+    const b = deadBranchHolder(repo, 'tr2')
+    const s = sweep(repo, [`${b.path}/.`], {})
+    assert.deepEqual(s.result.removed, [`${b.path}/.`], JSON.stringify(s.result))
+    assert.ok(!repo.worktrees().includes(b.path))
+    // 状態が保持を求める実体の無い worktree は、末尾 / 付きの綴りの候補でも保持と照合される（消さない）
+    const c = deadBranchHolder(repo, 'tr3')
+    const held = sweep(repo, [`${c.path}/`], { 1: { status: 'failed', worktree: c.path } })
+    assert.deepEqual([held.result.removed, held.result.retained], [[], 1], JSON.stringify(held.result))
+    assert.ok(repo.worktrees().includes(c.path))
+  })
+
+  // 実体の無い detached・HEAD 0000… の登録は、登録がコミットの唯一の参照かもしれないので remove も消さない（retained-detached）
+  test(`${tag} 実体の無い detached・HEAD 0000… の登録を superseded / discard / sweep が指しても消さない（retained-detached・コミットは到達可能のまま）`, () => {
+    const repo = makeRepo()
+    const d = mkDetachedGone(repo, 'dd')
+    for (const r of [sup(repo, d.path), dis(repo, d.path), dis(repo, d.path, ['--head', d.sha])]) {
+      assert.deepEqual([r.result.ok === true && r.result.mode === 'superseded', r.result.worktree, r.result.retained], [r.result.mode === 'superseded', 'retained-detached', true], JSON.stringify(r.result))
+    }
+    const s = sweep(repo, [d.path], {})
+    assert.deepEqual([s.result.removed, s.result.retained], [[], 1], JSON.stringify(s.result))
+    assert.ok(repo.worktrees().includes(d.path))
+    assert.equal(reachable(repo, d.sha), true)
+    const z = repo.addWorktree('zr')
+    repo.write(z.path, 'q.txt', 'q\n')
+    repo.git(z.path, 'add', 'q.txt')
+    repo.git(z.path, 'commit', '-q', '-m', 'zero')
+    repo.git(repo.main, 'update-ref', '-d', `refs/heads/${z.branch}`)
+    rmSync(z.path, { recursive: true })
+    assert.equal(sup(repo, z.path).result.worktree, 'retained-detached')
+    assert.ok(repo.worktrees().includes(z.path))
+    // ブランチ上の実体なし登録は従来どおり消える
+    const b = deadBranchHolder(repo, 'onbr')
+    assert.equal(sup(repo, b.path).result.worktree, 'removed')
+  })
+
+  // sweep の prune: 何も消さず・失敗もしなかったとき（候補が未登録・保持）は全体の prune を呼ばない
+  test(`${tag} sweep: 実体の無い候補が消えたときだけ prune する。未登録の候補だけなら、実体の無い別の登録に触れない`, () => {
+    const repo = makeRepo()
+    const bystander = deadBranchHolder(repo, 'bystander')
+    const s = sweep(repo, [join(repo.root, 'wts', 'nope')], {})
+    assert.deepEqual([s.result.removed, s.result.skipped], [[], 1], JSON.stringify(s.result))
+    assert.ok(repo.worktrees().includes(bystander.path), '何も消していないので prune しない')
+    const dead = deadBranchHolder(repo, 'candidate')
+    const s2 = sweep(repo, [dead.path], {})
+    assert.deepEqual(s2.result.removed, [dead.path], JSON.stringify(s2.result))
+    assert.ok(!repo.worktrees().includes(dead.path))
+    assert.ok(!repo.worktrees().includes(bystander.path), '消えたときは全体の prune が走り、実体の無いブランチ上の登録も片づく')
+  })
+
+  // ---- 観測の失敗は保持の語 retained-unobservable（retained-dirty / retained-head-mismatch と区別する） ----
+  const failingGit = (repo, name, cond) => {
+    const shim = join(repo.root, name)
+    mkdirSync(shim)
+    const real = spawnSync('sh', ['-c', 'command -v git'], { encoding: 'utf8' }).stdout.trim()
+    writeFileSync(join(shim, 'git'), `#!/bin/sh\n${cond}\nexec ${real} "$@"\n`, { mode: 0o755 })
+    return { PATH: `${shim}:${process.env.PATH}` }
+  }
+  test(`${tag} git status が失敗: superseded も discard も retained-unobservable で何も消さない（retained-dirty にしない）`, () => {
+    const repo = makeRepo()
+    const env = failingGit(repo, 'shim-status', 'for a in "$@"; do\n  if [ "$a" = status ]; then echo boom >&2; exit 1; fi\ndone')
+    const a = repo.addWorktree('a')
+    for (const mode of ['superseded', 'discard']) {
+      const r = run(repo, ['remove', '--mode', mode, '--path', a.path, ...(mode === 'discard' ? ['--branch', a.branch, '--base', 'main'] : [])], { env })
+      assert.deepEqual([r.result.worktree, r.result.retained, r.result.dirty], ['retained-unobservable', true, -1], mode)
+      assert.ok(existsSync(a.path))
+      assert.ok(repo.branches().includes(a.branch))
+    }
+    const s = sweep(repo, [a.path], {}, { env })
+    assert.deepEqual([s.result.removed, s.result.retained], [[], 1])
+    assert.ok(existsSync(a.path))
+  })
+  test(`${tag} HEAD を読めない（--head 指定時の rev-parse が失敗）: retained-unobservable で何も消さない。sha が違うときは従来どおり retained-head-mismatch`, () => {
+    const repo = makeRepo()
+    const env = failingGit(repo, 'shim-head', 'case "$*" in *"verify"*"HEAD^{commit}"*) exit 1 ;; esac')
+    const a = repo.addWorktree('a')
+    const sha = repo.head(a.path)
+    const r = run(repo, ['remove', '--mode', 'discard', '--path', a.path, '--branch', a.branch, '--base', 'main', '--head', sha], { env })
+    assert.deepEqual([r.result.ok, r.result.worktree, r.result.retained, r.result.branch], [false, 'retained-unobservable', true, 'keep'])
+    assert.ok(existsSync(a.path) && repo.branches().includes(a.branch))
+    assert.equal(dis(repo, a.path, ['--head', 'f'.repeat(40)]).result.worktree, 'retained-head-mismatch')
+    assert.equal(dis(repo, a.path, ['--head', sha]).result.worktree, 'removed')
+  })
+
   // ---- sweep ----
   const stateJson = (items) => JSON.stringify({ items })
-  const sweep = (repo, candidates, items, { raw } = {}) => {
+  const sweep = (repo, candidates, items, { raw, env } = {}) => {
     const file = '_/issue-trees/1.json'
     mkdirSync(join(repo.main, '_', 'issue-trees'), { recursive: true })
     if (items !== null) writeFileSync(join(repo.main, file), raw ?? stateJson(items))
-    return run(repo, ['sweep', '--file', file], { input: typeof candidates === 'string' ? candidates : JSON.stringify(candidates) })
+    return run(repo, ['sweep', '--file', file], { input: typeof candidates === 'string' ? candidates : JSON.stringify(candidates), env })
   }
 
   test(`${tag} sweep: 状態が failed / blocked / monitoring のイシューが記録した worktree は消さず、merged や記録なしの候補は消す`, () => {

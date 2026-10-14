@@ -222,6 +222,8 @@ test('(g3) 書き込みプロンプトと掃除の .worktree クリアは STATE_
     assert.match(p, /jq \/ mv で状態ファイルを自分で書き直して代替しない/)
   }
   assert.match(cleanup, /手順 2 が失敗した場合は掃除全体の ok を false で返す/)
+  // 返却行に worktree（結果行の worktree の語）を明示する。省くと closed 後始末が保持理由を記録できない
+  assert.match(cleanup, /返却: ok \/ retained \/ branchSha \/ worktree（上記のとおり）/)
   assert.match(cleanup, /標準出力の最後の行 WORKTREE_REMOVE_RESULT \{json\} の ok・retained・branchSha をそのまま返す/)
   assert.match(cleanup, /git worktree remove \/ unlock・git branch -D・rm を自分で実行して代替しない/)
   assert.match(cleanup, /run-verified\.sh' \S+ worktree-remove\.sh remove /)
