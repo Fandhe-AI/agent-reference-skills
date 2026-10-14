@@ -112,6 +112,28 @@ test('canonicalJson はキー昇順・空白なし・DEL を \\u007f へエス�
   assert.equal(sha256Hex(canonicalJson(v)), 'e145292f5956db2bc57183b563ea1fc2d14fed1cb5f16f5a1a6eefc68a7e6c2f')
 })
 
+// closedCleanupTried（Issue #632）は項目の中の入れ子オブジェクト。読込スキーマは項目の値を制約せず（additionalProperties: true）、
+// 照合は項目全体を再帰的にキー整列して hash するため、入れ子のキー順が読込側と検証側で違っても一致する（既存挙動の固定）。
+// 期待値は jq 1.8.1 で `echo '<項目>' | jq -jcS . | shasum -a 256` を実行した値。
+const TRIED_ITEM_HASH = '2b5527904fa6d3005874418620ed534f903315c9398a6f3bb46ab16d4462829d'
+const triedItem = (order) => (order === 'asc'
+  ? { branch: 'feat/9-x', closedCleanupTried: { pr: 9, reason: 'retained', worktree: '/r/wt/a' }, pr: 9, status: 'blocked', worktree: '/r/wt/a' }
+  : { status: 'blocked', pr: 9, branch: 'feat/9-x', worktree: '/r/wt/a', closedCleanupTried: { worktree: '/r/wt/a', reason: 'retained', pr: 9 } })
+
+test('closedCleanupTried を持つ項目: 入れ子のキー順に依らず jq -jcS と同じ hash になり、読込・照合で採用される', () => {
+  for (const order of ['asc', 'file']) {
+    assert.equal(sha256Hex(canonicalJson(triedItem(order))), TRIED_ITEM_HASH, order)
+    const r = verifyLoadedItems({ 9: triedItem(order) }, { fileExists: true, hashes: { 9: TRIED_ITEM_HASH } })
+    assert.equal(r.verified, true, order)
+    assert.deepEqual(r.adopted[9].closedCleanupTried, { pr: 9, reason: 'retained', worktree: '/r/wt/a' })
+  }
+  // 読込側が入れ子を落とした項目は hash が合わず採用しない（記録が黙って消えない）
+  const { closedCleanupTried: _dropped, ...stripped } = triedItem('file')
+  const r = verifyLoadedItems({ 9: stripped }, { fileExists: true, hashes: { 9: TRIED_ITEM_HASH } })
+  assert.equal(r.verified, false)
+  assert.deepEqual(r.unverified, ['9'])
+})
+
 test('verifyLoadedItems: 実ファイルと同一の items は全件採用し verified: true', () => {
   const r = verifyLoadedItems(sampleItems, { fileExists: true, hashes: SAMPLE_JQ_HASHES })
   assert.deepEqual(Object.keys(r.adopted).sort(), ['42', '43', '44', '45'])
@@ -283,6 +305,18 @@ test('loadState: 実ファイルと一致する items は採用し、高水位�
       ? loadResult(sampleItems, { highWaterBytes: 4096, highWaterVersion: 2 })
       : { fileExists: true, hashes: SAMPLE_JQ_HASHES, keysSha256: keysOf(SAMPLE_JQ_HASHES), keysCount: 4, highWaterBytes: 4096, highWaterVersion: 1 })
   await assert.rejects(() => loadState(), /成立しなかったため停止した/)
+})
+
+test('loadState: closedCleanupTried を持つ項目（読込側が入れ子のキー順を変えて返す）も採用し verified: true', async () => {
+  const hashes = { 9: TRIED_ITEM_HASH }
+  installAgentStub((opts) =>
+    opts.label === 'state:load'
+      ? loadResult({ 9: triedItem('file') })
+      : { fileExists: true, hashes, keysSha256: keysOf(hashes), keysCount: 1, highWaterBytes: 0, highWaterVersion: 0 })
+  const r = await loadState()
+  assert.equal(r.verified, true)
+  assert.deepEqual(r.unverified, [])
+  assert.deepEqual(r.items[9].closedCleanupTried, { pr: 9, reason: 'retained', worktree: '/r/wt/a' })
 })
 
 test('loadState: 既存ファイルの照合が成立しない（検証が haiku / sonnet とも未返却）ならランを停止する', async () => {

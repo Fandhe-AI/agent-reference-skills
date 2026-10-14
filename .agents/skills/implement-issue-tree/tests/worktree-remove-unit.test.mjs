@@ -99,6 +99,30 @@ check(
 )
 
 check(
+  'wr_valid_head: 40 桁の小文字 16 進だけ（短縮形・大文字・記号・空・HEAD などの名前は不可）',
+  [
+    ['wr_valid_head', 'a'.repeat(40)], ['wr_valid_head', '0123456789abcdef0123456789abcdef01234567'],
+    ['wr_valid_head', ''], ['wr_valid_head', 'a'.repeat(39)], ['wr_valid_head', 'a'.repeat(41)], ['wr_valid_head', 'A'.repeat(40)],
+    ['wr_valid_head', 'g'.repeat(40)], ['wr_valid_head', 'HEAD'], ['wr_valid_head', `${'a'.repeat(39)};`], ['wr_valid_head', `${'a'.repeat(39)} `],
+    ['wr_valid_head', '-'.repeat(40)], ['wr_valid_head', `${'a'.repeat(20)}${'b'.repeat(19)}'`],
+  ],
+  (g, r) => assert.equal(g.rc, r[1] === 'a'.repeat(40) || r[1] === '0123456789abcdef0123456789abcdef01234567' ? OK : NG, JSON.stringify(r[1])),
+)
+
+// wr_head_check EXPECT ACTUAL BRANCH
+const H = 'a'.repeat(40)
+check(
+  'wr_head_check: 指定なし → ok（detached でも）/ ブランチ上で一致 → ok / 違う・読めない → retain / 一致していても detached（BRANCH が空）→ retain-detached',
+  [
+    ['wr_head_check', '', '', ''], ['wr_head_check', '', H, ''], ['wr_head_check', '', H, 'feat/x'],
+    ['wr_head_check', H, H, 'feat/x'], ['wr_head_check', H, 'b'.repeat(40), 'feat/x'], ['wr_head_check', H, '', 'feat/x'],
+    ['wr_head_check', H, 'A'.repeat(40), 'feat/x'], ['wr_head_check', H, 'a'.repeat(39), 'feat/x'],
+    ['wr_head_check', H, H, ''], ['wr_head_check', H, 'b'.repeat(40), ''], ['wr_head_check', H, '', ''],
+  ],
+  (g, r, i) => assert.equal(g.out, ['ok', 'ok', 'ok', 'ok', 'retain', 'retain', 'retain', 'retain', 'retain-detached', 'retain', 'retain'][i], JSON.stringify(r)),
+)
+
+check(
   'wr_valid_file: _/issue-trees/<正の整数>.json だけ',
   [
     ['wr_valid_file', '_/issue-trees/1.json'], ['wr_valid_file', '_/issue-trees/603.json'],
@@ -109,7 +133,7 @@ check(
   (g, r) => assert.equal(g.rc, r[1] === '_/issue-trees/1.json' || r[1] === '_/issue-trees/603.json' ? OK : NG, JSON.stringify(r[1])),
 )
 
-// Claude Code の実物: `claude agent agent-aa14453c88416c114 (pid 72544 start Mon Oct 12 02:48:39 2026)`（照合は
+// Claude Code の書式の例: `claude agent agent-0123456789abcdef0 (pid 12345 start Mon Jan  1 00:00:00 2026)`（照合は
 // /^claude (?:agent|session) .{1,255} \(pid (\d{1,10})(?: start (.{1,255}))?\)$/）。pid はセッション（メインの claude プロセス）の pid
 const START = 'Mon Oct 12 02:48:39 2026'
 const LOCK_ROWS = [
@@ -117,7 +141,7 @@ const LOCK_ROWS = [
   ['claude agent agent-abc123 (pid 4242)', '4242', ''],
   ['claude agent a (pid 1)', '1', ''],
   ['claude agent two words (pid 9)', '9', ''],
-  [`claude agent agent-aa14453c88416c114 (pid 72544 start ${START})`, '72544', START],
+  [`claude agent agent-0123456789abcdef0 (pid 12345 start ${START})`, '12345', START],
   ['claude agent agent-x (pid 5 start Mon Oct  5 02:48:39 2026)', '5', 'Mon Oct  5 02:48:39 2026'],
   ['claude session sess-1 (pid 77)', '77', ''],
   [`claude session sess-1 (pid 78 start ${START})`, '78', START],
@@ -225,8 +249,10 @@ check(
     ['wr_count_status', `# branch.oid abc${NL}1 .M N... 100644 100644 100644 aaaa bbbb a.txt`],
     ['wr_count_status', `${NL}${NL}? x${NL}`],
     ['wr_count_status', '? S-looks-like-submodule.txt'],
+    // read -r なので末尾が \ のパスの行でも次の行と連結されず、行数が保たれる（-r を外すと壊れる）
+    ['wr_count_status', `? a\\${NL}? nested/${NL}? b\\\\`],
   ],
-  (g, r, i) => assert.deepEqual([g.dirty, g.sub], [[0, 0], [1, 0], [3, 0], [1, 1], [2, 1], [1, 0], [1, 0], [1, 1], [1, 0], [1, 0], [1, 0]][i], JSON.stringify(r)),
+  (g, r, i) => assert.deepEqual([g.dirty, g.sub], [[0, 0], [1, 0], [3, 0], [1, 1], [2, 1], [1, 0], [1, 0], [1, 1], [1, 0], [1, 0], [1, 0], [3, 0]][i], JSON.stringify(r)),
 )
 
 const LIST = (...entries) => entries.join(`${NL}${NL}`)
@@ -272,7 +298,7 @@ check(
   (g, r, i) => assert.equal(g.out, ['none', 'keep-base', 'keep', 'absent', 'delete', 'delete', 'keep-base', 'keep', 'absent'][i], JSON.stringify(r)),
 )
 
-const WT = ['removed', 'not-registered', 'skipped', 'main', 'cwd', 'retained-dirty', 'retained-submodule', 'retained-locked', 'retained-branch-mismatch', 'failed']
+const WT = ['removed', 'not-registered', 'skipped', 'main', 'cwd', 'retained-dirty', 'retained-submodule', 'retained-locked', 'retained-branch-mismatch', 'retained-head-mismatch', 'retained-detached', 'failed']
 const BR = ['none', 'deleted', 'absent', 'keep-base', 'keep', 'failed']
 check(
   'wr_ok / wr_retained / wr_wt_gone: superseded は worktree が残っても非致命（main・cwd だけ異常）、discard は worktree が無くなりブランチも無い・消えたときだけ ok',

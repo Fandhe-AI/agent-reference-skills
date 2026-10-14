@@ -176,6 +176,11 @@ test('駆動部: markBlockedByDeps の子イシュー判定が待機先集合を
   assert.doesNotMatch(m[0], /byParent\.get\(item\.number\)/)
 })
 
-test('駆動部: closed ノードを done へ入れる既存処理は変えない', () => {
-  assert.match(driverPart, /if \(item\.state !== 'open'\) \{\n    results\.push\(\{ issue: item\.number, status: 'skipped', note: 'すでに closed' \}\)\n    done\.add\(item\.number\)/)
+test('駆動部: closed ノードを done へ入れる既存処理は変えない（status: skipped・done 入りは後始末の前に確定し、後始末の成否に左右されない）', () => {
+  assert.match(driverPart, /if \(item\.state !== 'open'\) \{\n    const skipEntry = \{ issue: item\.number, status: 'skipped', note: 'すでに closed' \}\n    results\.push\(skipEntry\)\n    done\.add\(item\.number\)\n/)
+  // 後始末（Issue #632）は done 入りのあとで、候補は closedCleanupCandidate で絞る。failedSet には触れない
+  const m = driverPart.match(/const skipEntry = [\s\S]*?\n  \} else \{/)
+  assert.ok(m, '後始末の分岐が見つからない')
+  assert.match(m[0], /closedCleanupCandidate\(item, savedItems/)
+  assert.doesNotMatch(m[0].replace(/^\s*\/\/.*$/gm, ''), /failedSet|done\.delete/)
 })

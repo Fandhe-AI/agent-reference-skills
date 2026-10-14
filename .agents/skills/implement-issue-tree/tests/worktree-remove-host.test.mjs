@@ -275,9 +275,9 @@ const ITEM = { type: 'implement', status: 'failed', pr: 0, branch: 'feat/2-x', w
 const hashes = Object.fromEntries(Object.entries({ 2: ITEM }).map(([k, v]) => [k, m.sha256Hex(m.canonicalJson(v))]))
 const keysSha = m.sha256Hex(m.canonicalJson(Object.keys(hashes).sort()))
 
-function recoverRun({ decision, wipCommitted, cleanup, branch = 'feat/2-x' }) {
+function recoverRun({ decision, wipCommitted, cleanup, branch = 'feat/2-x', argsExtra = {} }) {
   return runScript({
-    args: BASE_ARGS,
+    args: { ...BASE_ARGS, ...argsExtra },
     override: (label, opts, prompt) => {
       if (label === 'state:load') return { ok: true, fileExisted: true, items: { 2: ITEM }, highWaterBytes: 0, highWaterVersion: 0 }
       if (label === 'state:load-verify') return { fileExists: true, hashes, keysSha256: keysSha, keysCount: 1, highWaterBytes: 0, highWaterVersion: 0 }
@@ -320,10 +320,21 @@ test('Recover discard: 掃除が保持した（汚れ・初期化済み submodul
 })
 
 test('Recover discard: 掃除対象のブランチが base と同名でも --mode discard のまま（ブランチは渡さない）。superseded（--force）へ倒れない', async () => {
-  const { calls } = await recoverRun({ decision: 'discard', wipCommitted: true, cleanup: { ok: true, retained: false }, branch: 'main' })
+  // base を本イシューの命名に合う名前にして、ホストの命名ゲートを通したうえで worktree-remove.sh 側の base 同名ガード（ブランチを渡さない）を見る
+  const { calls } = await recoverRun({ decision: 'discard', wipCommitted: true, cleanup: { ok: true, retained: false }, branch: 'feat/2-x', argsExtra: { branch: 'feat/2-x' } })
   const c = calls.filter((x) => x.opts.label === 'state:cleanup:#2' && /--mode discard --path '\/repo\/wt\/old'/.test(x.prompt))
   assert.equal(c.length, 1)
   assert.match(CMD.exec(c[0].prompt)[0], /worktree-remove\.sh remove --mode discard --path '\/repo\/wt\/old'$/)
+})
+
+test('Recover discard: Recover が解決した branch が本イシューの命名に合わない（base と同名の main 等）ときは worktree だけ掃除し、branch は消さない（--branch なし）', async () => {
+  const { calls } = await recoverRun({ decision: 'discard', wipCommitted: true, cleanup: { ok: true, retained: false }, branch: 'main' })
+  const c = calls.filter((x) => x.opts.label === 'state:cleanup:#2' && x.prompt.includes('--mode discard'))
+  assert.equal(c.length, 1)
+  const cmd = CMD.exec(c[0].prompt)[0]
+  assert.match(cmd, /worktree-remove\.sh remove --mode discard --path '\/repo\/wt\/old'$/)
+  assert.ok(!/--branch/.test(cmd), 'branch は消さない')
+  assert.ok(labels(calls).includes('plan:#2'), '新規 Plan へ進む')
 })
 
 test('Recover continue: wipCommitted:true なら --mode discard（--branch なし）で旧 worktree だけ掃除して Implement へ。保持なら Implement を起動せず failed。wipCommitted が true でなければ掃除しない', async () => {
@@ -372,4 +383,17 @@ test('verifyDiscardSafety / DISCARD_SAFETY_SCHEMA / discard-safety は残って�
   assert.match(source, /'worktree-remove\.sh': '@@SCRIPT_SHA256:worktree-remove\.sh@@'/)
   const dist = readFileSync(new URL('../scripts/implement-issue-tree.js', import.meta.url), 'utf8')
   assert.match(dist, /'worktree-remove\.sh':'[0-9a-f]{64}'/)
+})
+
+// ---- closed 後始末（Issue #632）の呼び出し形 ----
+
+test('--head つきの呼び出し形は closed 後始末の 1 か所だけ。updateStateDetailed の掃除（superseded・discard・Recover）は --head を付けない', async () => {
+  const calls = [...source.matchAll(/worktreeRemoveCommand\(([^\n]*)\)/g)].map((x) => x[1]).filter((a) => !a.startsWith('mode, path'))
+  assert.deepEqual(calls, ['cleanupMode, cleanupWorktreePath, deleteBranchName', "'discard', w, '', head"])
+  // updateStateDetailed の経路は head を渡さないので、どのモードでも --head は付かない
+  for (const [o, label] of [[{ cleanupWorktree: '/tmp/wt-40' }, 'superseded'], [{ cleanupWorktree: '/tmp/wt-40', cleanupMode: 'discard' }, 'discard'], [{ cleanupWorktree: '/tmp/wt-40', deleteBranch: true }, 'discard+branch']]) {
+    const c = stub(() => ({ ok: true, retained: false }))
+    await m.updateState(40, { status: 'merged', branch: 'feat/40-x' }, o)
+    assert.doesNotMatch(cleanupCalls(c.calls, 40)[0].prompt, /--head/, label)
+  }
 })

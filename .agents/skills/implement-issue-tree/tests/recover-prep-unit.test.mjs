@@ -120,6 +120,10 @@ const SCAN_ROWS = [
   [`? nested/${NL}? other/${NL}? u.txt`, 2, 0],
   [`1 .M N... 100644 100644 100644 a b a.txt${NL}? nested/${NL}u UU N... 1 1 1 1 a b c c.txt`, 1, 1],
   ['1 .M N... 100644 100644 100644 a b dir/', 0, 0],
+  // read -r なので末尾が \ のパスでも次のレコードと連結されず、後続の入れ子 repo の行（? …/）が隠れない（-r を外すと壊れる）
+  [`? a\\${NL}? nested/`, 1, 0],
+  [`u UU N... 1 1 1 1 a b c x\\${NL}? nested/${NL}? mid\\dle/`, 2, 1],
+  [`? trail\\\\${NL}? nested/`, 1, 0],
 ]
 check(
   'rp_scan_status: 未マージ行（u ）と入れ子の git リポジトリ（未追跡の行で末尾が /）を数える',

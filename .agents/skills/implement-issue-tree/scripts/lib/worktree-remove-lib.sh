@@ -46,6 +46,15 @@ wr_valid_branch() {
   return 0
 }
 
+# コミットの sha（--head）。40 桁の小文字 16 進だけ（短縮形・大文字・空は不可。ホストが GitHub の headRefOid を正規化して渡す）
+wr_valid_head() {
+  [ "${#1}" -eq 40 ] || return 1
+  case "$1" in
+    *[!0-9a-f]*) return 1 ;;
+  esac
+  return 0
+}
+
 # 状態ファイルのパス（_/issue-trees/<正の整数>.json）。書き込みはしないが、sweep が読む先をこの形に限る
 wr_valid_file() {
   local n
@@ -223,9 +232,7 @@ wr_count_status() {
         esac
         ;;
     esac
-  done <<EOF
-$1
-EOF
+  done <<<"$1"
   WR_DIRTY=${n}
   WR_SUB_DIRTY=${s}
 }
@@ -273,9 +280,7 @@ wr_find_entry() {
         fi
         ;;
     esac
-  done <<EOF
-$1
-EOF
+  done <<<"$1"
   WR_REGISTERED=${hit}
   WR_MAIN=${first}
   WR_LOCKED=${locked}
@@ -305,6 +310,24 @@ wr_wt_gone() {
     removed | not-registered | skipped) return 0 ;;
   esac
   return 1
+}
+
+# --head（マージ済み PR の head）との照合。$1 = 指定された sha（空 = 指定なし）、$2 = worktree の HEAD のコミット（読めなければ空）、
+# $3 = worktree が指すブランチ（detached は空）。
+# 標準出力: ok（指定なし、または ブランチ上で一致）/ retain（違う、または読めない）/ retain-detached（一致していても detached）。
+# squash マージでは base との差分で未 push のコミットを見分けられないため、PR の head と worktree の HEAD の一致だけを根拠にする。
+# detached HEAD 上のコミットは worktree を消すと含む ref が無くなり失われる（headRefOid は自己申告で HEAD と同じ値を返し得る）ため、
+# 実装 worktree が常にブランチ上にある前提で、一致していても保持する。sha の照合を先にする（読めない・違うは retain のまま）
+wr_head_check() {
+  if [ -z "$1" ]; then
+    echo ok
+  elif [ -z "$2" ] || [ "$1" != "$2" ]; then
+    echo retain
+  elif [ -z "${3:-}" ]; then
+    echo retain-detached
+  else
+    echo ok
+  fi
 }
 
 # 結果の ok。$1 = モード、$2 = worktree の結果、$3 = ブランチの結果。

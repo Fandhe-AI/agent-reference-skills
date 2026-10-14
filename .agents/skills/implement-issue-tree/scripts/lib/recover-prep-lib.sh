@@ -91,7 +91,7 @@ rp_resolve() {
 
 # `git status --porcelain=v2 -z -uall --ignore-submodules=none` を 1 レコード 1 行にした出力（recover-prep.sh の observe が作る。パスは引用されない）から、未マージ行（`u `）の数を RP_UNMERGED に、独立した入れ子の
 # git リポジトリ（未追跡の行 `? <パス>/` のように末尾が / のもの。中身は親の WIP コミットに入らず、ポインタだけが記録される）の数を
-# RP_NESTED に入れる
+# RP_NESTED に入れる。入力は here-string で渡す。read -r なので末尾が \ のパスでも次の行と連結しない（-r を外すと連結して壊れる。here-string か here-document かは関係しない）
 rp_scan_status() {
   local line u=0 n=0
   while IFS= read -r line; do
@@ -99,9 +99,7 @@ rp_scan_status() {
       'u '*) u=$((u + 1)) ;;
       '? '*/) n=$((n + 1)) ;;
     esac
-  done <<EOF
-$1
-EOF
+  done <<<"$1"
   RP_UNMERGED=${u}
   RP_NESTED=${n}
 }
