@@ -499,12 +499,51 @@ test('ラン終了時の測定（実装スクリプト全体）: 旧が消えて
   assert.ok(afterFix[afterFix.length - 1].includes(FIX_A), '終了時測定の対象に引き継いだ新が入る')
   assert.equal(result.residualWorktrees.bytesEndObserved, true)
 
+  // 新のパスが不明（slotUnknownLiveCount）でも、終了時はラン中の実測と同じく物理一覧へフォールバックして測る（Bugbot 指摘 N）。
+  // 一覧で見つかった新の実体は終了時測定の対象に入り、上限を超えれば overLimit を報告する
+  const PHYS = '/repo/wt/phys-end'
+  const endEvents = []
+  let physical = false
+  const fallbackExtra = (label, opts, prompt) => {
+    if (label === 'worktree:orphan-scan') return { entries: [{ path: '/repo', branch: 'main', isMain: true }, ...(physical ? [{ path: PHYS, branch: 'x', isMain: false }] : [])] }
+    if (label === 'worktree:record-count') return { count: physical ? 2 : 1 }
+    return timeline(endEvents, (input) => (input.includes(PHYS) ? GIB_KIB : 1024))(label, opts, prompt)
+  }
   const unknown = await runScript({
     args: MERGE_ARGS,
     leaves: [2],
-    override: overrides({ oldFixResult: GONE, fixRounds: 1, fixPaths: [''], extra: timeline([], () => 1024) }),
+    override: ((inner) => (label, opts, prompt) => {
+      if (label === 'fix:#2') physical = true
+      return inner(label, opts, prompt)
+    })(overrides({ oldFixResult: GONE, fixRounds: 1, fixPaths: [''], extra: fallbackExtra })),
   })
-  assert.equal(unknown.result.residualWorktrees.bytesEndObserved, false, '新のパスが不明なら終了時の測定は成立させない（fail-closed）')
+  const endMeasures = endEvents.slice(endEvents.indexOf('fix') + 1).filter((e) => e.startsWith('measure:'))
+  assert.equal(unknown.result.residualWorktrees.bytesEndObserved, true, '新のパスが不明でも、物理一覧へのフォールバックが成立すれば終了時の測定は成立する')
+  assert.ok(endMeasures[endMeasures.length - 1]?.includes(PHYS), '終了時測定の対象に物理一覧の新の実体が入る')
+  assert.equal(unknown.result.residualWorktrees.overLimit, true, '物理一覧の実測が上限を超えるので overLimit を報告する')
+
+  // フォールバックが成立しない（一覧が空・件数の不一致）ときだけ測定不能（fail-closed）
+  // （ラン開始時の観測は成立させ、fix のあとの一覧だけ件数が食い違う = 転記脱落の疑いにする）
+  let brokenAfterFix = false
+  const brokenInner = overrides({
+    oldFixResult: GONE,
+    fixRounds: 1,
+    fixPaths: [''],
+    extra: (label, opts, prompt) => {
+      if (label === 'worktree:orphan-scan') return { entries: [{ path: '/repo', branch: 'main', isMain: true }] }
+      if (label === 'worktree:record-count') return { count: brokenAfterFix ? 5 : 1 }
+      return timeline([], () => 1024)(label, opts, prompt)
+    },
+  })
+  const broken = await runScript({
+    args: MERGE_ARGS,
+    leaves: [2],
+    override: (label, opts, prompt) => {
+      if (label === 'fix:#2') brokenAfterFix = true
+      return brokenInner(label, opts, prompt)
+    },
+  })
+  assert.equal(broken.result.residualWorktrees.bytesEndObserved, false, 'フォールバックも成立しなければ終了時の測定は成立させない（fail-closed）')
 })
 
 // Merge ループで fix を 1 回走らせる: 監視が needs-fix を 1 回返し、その後は打ち切る
