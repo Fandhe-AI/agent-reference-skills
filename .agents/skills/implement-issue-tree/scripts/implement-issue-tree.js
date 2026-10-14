@@ -3581,8 +3581,9 @@ async function cleanupClosedMergedWorktree(item,cand,outcome={}){
 const n=item.number
 
 const tried=async(reason,text)=>{
-outcome.settled=true
-if(!(await updateState(n,{closedCleanupTried:{pr:cand.pr,worktree:cand.worktree,reason}})))log(`⚠️ #${n}: closed 後始末の試行済み記録を書けなかった`)
+
+if(await updateState(n,{closedCleanupTried:{pr:cand.pr,worktree:cand.worktree,reason}}))outcome.settled=true
+else log(`⚠️ #${n}: closed 後始末の試行済み記録を書けなかった（試行回数で順番を回す）`)
 return text
 }
 const{problem,bind}=await fetchPrBinding(item,cand.pr,cand.branch)
@@ -3633,9 +3634,10 @@ return retainedReason?tried(retainedReason,text):text
 }
 confirmedRemovedPaths.add(w)
 sweepHeldPaths.delete(w)
-outcome.settled=true
 const ok=await updateState(n,{status:'merged',pr:cand.pr,unverifiedPr:0,worktree:'',note:`PR #${cand.pr} のマージ済みを確認し、closed 後始末で worktree を破棄した`})
-if(!ok){
+
+if(ok)outcome.settled=true
+else{
 log(`⚠️ #${n}: closed 後始末で worktree は破棄したが、状態ファイルの merged 更新に失敗した（次の実行で同じ経路が再試行する）`)
 return`closed 後始末: worktree を破棄した（PR #${cand.pr} はマージ済み）。状態の更新に失敗`
 }
@@ -4628,6 +4630,18 @@ const EPHEMERAL_RESERVE_PER_MONITORING_RESUME=EPHEMERAL_KIND_MAX['fix-terminal']
 
 
 
+
+
+
+
+
+function markWorktreeLive(p){
+confirmedRemovedPaths.delete(p)
+sweepEligiblePaths.delete(p)
+}
+
+
+
 function recordEphemeralWorktree(issueNumber,rawPath,kind){
 
 
@@ -4643,6 +4657,7 @@ log(`⚠️ #${issueNumber}: ${kind} worktree のパスを検証できなかっ�
 ephemeralWorktrees.push({issue:issueNumber,kind,path:''})
 return
 }
+markWorktreeLive(p)
 ephemeralWorktrees.push({issue:issueNumber,kind,path:p})
 log(`#${issueNumber}: ${kind} worktree を記録した（自動削除はしない。${p}）`)
 }
@@ -4703,6 +4718,8 @@ const newPath=sanitizeWorktreePath(rawNewPath??'')
 const plan=planReplacementAccounting({oldPath,oldRemoved,newPath,oldCounted:isWorktreeCounted(oldPath),newCounted:isWorktreeCounted(newPath)})
 if(plan.addRetainedOld)recordRetainedWorktree(issueNumber,oldPath)
 else if(!oldRemoved)noteSlotRetained(issueNumber,oldPath)
+
+if(newPath)markWorktreeLive(newPath)
 if(plan.addReplacement)recordReplacementWorktree(issueNumber,newPath)
 if(plan.inheritPath)slotInheritedPaths.add(plan.inheritPath)
 if(plan.inheritUnknown){
@@ -4718,6 +4735,7 @@ ephemeralWorktrees.push({issue:issueNumber,kind:'replacement',path:''})
 log(`#${issueNumber}: 置換後の worktree のパスを取得できないまま旧 worktree を保持した（件数のみ 1 件計上する。git worktree list で確認すること）`)
 return true
 }
+markWorktreeLive(p)
 if(residualStartPathSet.has(p)||ephemeralWorktrees.some((e)=>e.path===p))return false
 ephemeralWorktrees.push({issue:issueNumber,kind:'replacement',path:p})
 log(`#${issueNumber}: 旧 worktree を保持したため、置換後の worktree も残置の台帳へ載せた（${p}）`)
@@ -7664,6 +7682,8 @@ return false
 log(`#${item.number}: Recover → discard（worktree ${sanitize(sanitizedRecoverWorktree)} の不在を確認した。保全対象なし）、記録を捨てて通常 Plan へ`)
 const absentPatch={status:'planning',branch:'',pr:0,worktree:'',note:'worktree の不在を確認して新規に実装する'}
 if(absentWord==='prunable'){
+
+
 
 
 

@@ -559,3 +559,77 @@ test('結合: 記録される結果（retained-dirty = 試行済み）の候補�
   assert.ok(calls.some((c) => c.opts.label.startsWith('state:update:#3') && c.prompt.includes('"status":"merged"')))
   assert.equal(calls.filter((c) => c.prompt.includes('closedCleanupAttempts')).length, 0)
 })
+
+// ---- Y: settled は書き込みが成功したと分かってから立てる ----
+// 書き込みに失敗した候補は次のランでも候補のまま。settled を先に立てると呼び出し側が試行回数を書かず、未試行の候補と同じ順位で先頭の枠を取り続ける。
+test('settled: 試行済みの記録（closedCleanupTried）の書き込みが成功したときだけ立つ。失敗したら立たず、呼び出し側が試行回数を書く', async () => {
+  for (const [writeOk, expected] of [[true, true], [false, false]]) {
+    stub((opts) => {
+      if (opts.label.startsWith('pr-bind:')) return { ...bindOk, state: 'CLOSED' }
+      return { ok: writeOk }
+    })
+    const outcome = { settled: false }
+    await m.cleanupClosedMergedWorktree(impl, { pr: 77, worktree: WT, branch: 'feat/2-x' }, outcome)
+    assert.equal(outcome.settled, expected, `記録の書き込み ok=${writeOk}`)
+  }
+})
+
+test('settled: merged への更新が成功したときだけ立つ。失敗（worktree は破棄済み）なら立たない', async () => {
+  for (const [writeOk, expected] of [[true, true], [false, false]]) {
+    stub((opts) => {
+      if (opts.label.startsWith('pr-bind:')) return bindOk
+      if (opts.label.startsWith('state:cleanup')) return { ok: true, retained: false }
+      return { ok: writeOk }
+    })
+    const outcome = { settled: false }
+    await m.cleanupClosedMergedWorktree(impl, { pr: 77, worktree: '/repo/wt/y-merged', branch: 'feat/2-x' }, outcome)
+    assert.equal(outcome.settled, expected, `merged の書き込み ok=${writeOk}`)
+  }
+})
+
+// 結合: 書き込み系を種類ごとに失敗させ、どの候補に試行回数が書かれるかを見る
+async function runWithWriteFailure(failWhen, { bind, cleanup }) {
+  const items0 = { 2: manyItem(2), 3: manyItem(3) }
+  const hashes = { 2: m.sha256Hex(m.canonicalJson(items0[2])), 3: m.sha256Hex(m.canonicalJson(items0[3])) }
+  const keysSha = m.sha256Hex(m.canonicalJson(['2', '3']))
+  const nodes = [
+    { number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: 2 },
+    { number: 2, title: 'i2', state: 'closed', parent: 1, siblingIndex: 0, dependsOn: [], subIssuesTotal: 0 },
+    { number: 3, title: 'i3', state: 'closed', parent: 1, siblingIndex: 1, dependsOn: [], subIssuesTotal: 0 },
+  ]
+  return runScript({
+    args: BASE_ARGS,
+    leaves: [2, 3],
+    override: (label, _o, prompt) => {
+      if (label === 'plan:issue-tree') return { nodes }
+      if (label === 'state:load') return { ok: true, fileExisted: true, items: items0, highWaterBytes: 0, highWaterVersion: 0 }
+      if (label === 'state:load-verify') return { fileExists: true, hashes, keysSha256: keysSha, keysCount: 2, highWaterBytes: 0, highWaterVersion: 0 }
+      const b = /^pr-bind:#(\d+)$/.exec(label)
+      if (b) return { state: bind, headRefOid: SHA, headRefName: `feat/${b[1]}-x`, baseRefName: 'main', isCrossRepository: false, closingIssues: [Number(b[1])] }
+      if (/^state:cleanup:#/.test(label)) return cleanup
+      if (/^state:update:#/.test(label) && failWhen(prompt)) return { ok: false }
+      return undefined
+    },
+  })
+}
+const attemptWritesOf = (calls) => calls.filter((c) => c.opts.label.startsWith('state:update:#') && c.prompt.includes('closedCleanupAttempts'))
+const issueOf = (c) => /#(\d+)/.exec(c.opts.label)[1]
+
+test('結合: 試行済みの記録（closedCleanupTried）の書き込みが失敗した候補には試行回数が書かれる（先頭の枠を取り続けない）', async () => {
+  const r = await runWithWriteFailure((p) => p.includes('closedCleanupTried'), { bind: 'CLOSED', cleanup: { ok: true, retained: false } })
+  const w = attemptWritesOf(r.calls)
+  assert.deepEqual(w.map(issueOf).sort(), ['2', '3'])
+  for (const c of w) assert.match(c.prompt, /"closedCleanupAttempts":1/)
+})
+
+test('結合: merged への更新が失敗した候補には試行回数が書かれる', async () => {
+  const r = await runWithWriteFailure((p) => p.includes('"status":"merged"'), { bind: 'MERGED', cleanup: { ok: true, retained: false } })
+  assert.deepEqual(attemptWritesOf(r.calls).map(issueOf).sort(), ['2', '3'])
+})
+
+test('結合: 書き込みが成功した候補には試行回数を書かない（記録済み・merged 済み）', async () => {
+  const r1 = await runWithWriteFailure(() => false, { bind: 'CLOSED', cleanup: { ok: true, retained: false } })
+  assert.equal(attemptWritesOf(r1.calls).length, 0)
+  const r2 = await runWithWriteFailure(() => false, { bind: 'MERGED', cleanup: { ok: true, retained: false } })
+  assert.equal(attemptWritesOf(r2.calls).length, 0)
+})
