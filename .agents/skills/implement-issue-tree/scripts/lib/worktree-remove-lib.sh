@@ -506,6 +506,12 @@ wr_absent_word() {
   fi
 }
 
+# --require-missing の実体の確認。$1 = 正規化済みのパス。標準出力: ok（実体もシンボリックリンクも無い）/ retain（ある）。
+# 空のパスも retain 側（実体の有無を肯定的に「無い」と言えたときだけ ok）
+wr_require_missing_check() {
+  if [ -n "${1:-}" ] && [ ! -e "$1" ] && [ ! -L "$1" ]; then echo ok; else echo retain; fi
+}
+
 # 破棄時のブランチの扱い。$1 = ブランチ名（空 = 指定なし）、$2 = base ブランチ名、$3 = worktree が無くなったか（0/1）、
 # $4 = ブランチが実在するか（0/1）。標準出力: none（指定なし）/ keep-base（base と同名。消さない）/ keep（worktree が残っているので
 # 消さない）/ absent（実在しない）/ delete

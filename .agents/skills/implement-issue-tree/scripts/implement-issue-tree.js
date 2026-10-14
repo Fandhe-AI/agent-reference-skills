@@ -3378,6 +3378,8 @@ const deleteBranchName=deleteBranchValidated&&deleteBranchValidated!==baseBranch
 const cleanupMode=options.cleanupMode==='discard'||deleteBranchName?'discard':'superseded'
 
 const expectBranchName=cleanupMode==='discard'&&cleanupWorktreePath&& !deleteBranchName&&typeof options.expectBranch==='string'?options.expectBranch:''
+
+const requireMissing=options.requireMissing===true&&cleanupMode==='discard'&&Boolean(cleanupWorktreePath)&& !deleteBranchName&& !expectBranchName
 const hasCleanup=Boolean(cleanupWorktreePath||deleteBranchName)
 
 if(cleanupWorktreePath&&cleanupMode==='discard')sweepHeldPaths.add(cleanupWorktreePath)
@@ -3397,7 +3399,7 @@ TEMP_FILE_POLICY,
 `対象は下記コマンドに明記されたパス・ブランチ名のみ。他のパス・ブランチには一切触れない。`,
 `1. 次のコマンドを一字一句そのまま（改変・条件追加・コマンドの組み立て直しをしない）、1 回の Bash 呼び出しで実行する:`,
 '```sh',
-worktreeRemoveCommand(cleanupMode,cleanupWorktreePath,deleteBranchName,'',expectBranchName),
+worktreeRemoveCommand(cleanupMode,cleanupWorktreePath,deleteBranchName,'',expectBranchName,requireMissing),
 '```',
 WORKTREE_NOTE,
 ...(cleanupWorktreePath&&clearWorktreeAfterCleanup
@@ -3550,6 +3552,17 @@ return'run'
 }
 
 
+
+function closedCleanupAttemptCount(saved){
+const v=saved?.closedCleanupAttempts
+return Number.isInteger(v)&&v>0?Math.min(v,1000000):0
+}
+
+function orderClosedCleanupCandidates(entries){
+return entries.map((e,i)=>({e,i})).sort((a,b)=>a.e.attempts-b.e.attempts||a.i-b.i).map((x)=>x.e)
+}
+
+
 const CLOSED_CLEANUP_RECORDABLE=new Set(['retained-dirty','retained-submodule','retained-head-mismatch','retained-detached','retained-broken','retained-unregistered'])
 function closedCleanupRetainedReason(result,outputMissing){
 return!outputMissing&&result?.retained===true&&CLOSED_CLEANUP_RECORDABLE.has(result?.worktree)?'retained':null
@@ -3563,10 +3576,12 @@ return!outputMissing&&result?.retained===true&&CLOSED_CLEANUP_RECORDABLE.has(res
 
 
 
-async function cleanupClosedMergedWorktree(item,cand){
+
+async function cleanupClosedMergedWorktree(item,cand,outcome={}){
 const n=item.number
 
 const tried=async(reason,text)=>{
+outcome.settled=true
 if(!(await updateState(n,{closedCleanupTried:{pr:cand.pr,worktree:cand.worktree,reason}})))log(`⚠️ #${n}: closed 後始末の試行済み記録を書けなかった`)
 return text
 }
@@ -3618,6 +3633,7 @@ return retainedReason?tried(retainedReason,text):text
 }
 confirmedRemovedPaths.add(w)
 sweepHeldPaths.delete(w)
+outcome.settled=true
 const ok=await updateState(n,{status:'merged',pr:cand.pr,unverifiedPr:0,worktree:'',note:`PR #${cand.pr} のマージ済みを確認し、closed 後始末で worktree を破棄した`})
 if(!ok){
 log(`⚠️ #${n}: closed 後始末で worktree は破棄したが、状態ファイルの merged 更新に失敗した（次の実行で同じ経路が再試行する）`)
@@ -3895,15 +3911,15 @@ return''
 
 
 const SCRIPT_SHA256={
-'measure-residual-bytes.sh':'caa5a6657a311c84f9e1d7a5c09cea6eba850fbd7095c0cc5eca74e5d19d6a54',
-'measure-free-disk.sh':'be7e55405d54704b04eb51b707a4bbf34a1701569879c206cba7788f07818174',
-'observe-pr.sh':'810218e1cdfd49bf46b3425a4d52ab440a4fd01fa4b9ef90a7ba98a1527c15ea',
-'base-merge.sh':'b495159d54488965a308d7710de9a318c979dc3d50da3a3e328e0bb879f6d2c7',
-'pr-push.sh':'51a4216cfe7aa0086f4c7319754b2a9212866109c3f1f2d23dc9245fac77e059',
-'state.sh':'83e84cb79e366c52c32f9f24c45befb59eaca64134508f094ef5b90845ba8c1c',
-'merge-gate.sh':'a62ac43722aa0c69b35fc8f744824ed9b62a15c7215255dfdbd1727d74a3c3f0',
-'worktree-remove.sh':'8879ae9e24b9da0133a7d087c443b5fa716accb5959ca3eddc510a1ce9c9b1aa',
-'recover-prep.sh':'e1a207c9786c490eb050ceb3410bba2b2817b6d58ff182789d3d90d9b0952a1a',
+'measure-residual-bytes.sh':'2951958b05e234b0cdc46ad3f6588ffa5e173fa7dddbcd541d28e11ccea82dae',
+'measure-free-disk.sh':'b1129df51c806a1cf154e5a3cacc9084c73fad3e4d9281b0090c20465bea208b',
+'observe-pr.sh':'22dfa93d4422bcf387f23463f424a5aeabfc40024e4cee3906b6cb028b1dbfb7',
+'base-merge.sh':'35f225bee4daabcea42abd25f72fb38878d0c189acf6b6f363cfa3e7f4c4d2a7',
+'pr-push.sh':'817e04e9ea3802df8c5671dfeeb697387e31284edcaf56f6601e5618ba63e0fd',
+'state.sh':'20932f47cb5ef723075726d5e0c0972c76b0be124f4fce631c1dbc829554e02d',
+'merge-gate.sh':'af2d7c5ae05ef008338ae2d3bebb8cc859947c279edcaaffa4e690c815580129',
+'worktree-remove.sh':'e388f9c9469787d096f5598f4f07d2a6b262d5a803e20df32ff7a1e0c95b48f7',
+'recover-prep.sh':'8d58f2a9f6e4a25d95b639011a5d1932d3470a92ee3a519f2da7aed44e77773c',
 }
 
 
@@ -3947,7 +3963,7 @@ function worktreeQuote(v){
 if(typeof v!=='string'|| !/^[A-Za-z0-9._/ -]+$/.test(v)) throw new Error('worktree-remove.sh の引数に使えない文字が含まれる')
 return`'${v}'`
 }
-function worktreeRemoveCommand(mode,path,branch,head='',expectBranch=''){
+function worktreeRemoveCommand(mode,path,branch,head='',expectBranch='',requireMissing=false){
 const parts=['remove','--mode',mode]
 if(path)parts.push('--path',worktreeQuote(path))
 
@@ -3961,6 +3977,11 @@ if(mode==='discard'&&path)parts.push('--head',worktreeQuote(head))
 if(expectBranch){
 if(!isValidBranchName(expectBranch)||mode!=='discard'|| !path||branch)throw new Error('worktree-remove.sh の --expect-branch は discard・--path つき・妥当なブランチ名・--branch なしのときだけ')
 parts.push('--expect-branch',worktreeQuote(expectBranch))
+}
+
+if(requireMissing){
+if(mode!=='discard'|| !path||branch||head||expectBranch)throw new Error('worktree-remove.sh の --require-missing は discard・--path つき・他の結びつけなしのときだけ')
+parts.push('--require-missing')
 }
 if(branch){
 parts.push('--branch',worktreeQuote(branch))
@@ -3983,6 +4004,7 @@ const isWorktreeCleanupValid=(r)=>typeof r?.ok==='boolean'&&typeof r?.retained==
 
 
 
+
 async function confirmWorktreeAbsent(issueNumber,path){
 try{
 const{result,outputMissing}=await runStateAgent(
@@ -3999,10 +4021,10 @@ WORKTREE_NOTE,
 ].join('\n'),
 {label:`worktree:absent:#${issueNumber}`,schema:WORKTREE_CLEANUP_SCHEMA,isValid:isWorktreeCleanupValid},
 )
-return!outputMissing&&result?.ok===true&&result?.retained===false&&(result?.worktree==='absent'||result?.worktree==='prunable')
+return!outputMissing&&result?.ok===true&&result?.retained===false&&(result?.worktree==='absent'||result?.worktree==='prunable')?result.worktree:''
 }catch(e){
 log(`⚠️ #${issueNumber}: worktree の不在確認で想定外の例外（${sanitize(String(e?.message ?? e))}）。不在と見なさない`)
-return false
+return''
 }
 }
 
@@ -6349,6 +6371,23 @@ return{ok:true,paths:uniquePaths}
 
 
 
+function unionMeasurePaths(physicalPaths,ledgerPaths){
+const seen=new Set()
+const out=[]
+for(const p of[...(Array.isArray(physicalPaths)?physicalPaths:[]), ...(Array.isArray(ledgerPaths)?ledgerPaths:[])]){
+if(typeof p!=='string'||p==='')continue
+const key=p.replace(/\/{2,}/g, '/').replace(/(.)\/+$/, '$1')
+if(seen.has(key))continue
+seen.add(key)
+out.push(p)
+}
+return out
+}
+
+
+
+
+
 
 
 
@@ -7364,7 +7403,8 @@ return false
 
 const absentCandidate=recoverDecision==='discard'&& !effectiveBranch&&Boolean(sanitizedRecoverWorktree)&&recoverResult?.worktreeMissing===true&&
 (recoverResult?.branch??'')===''&&(saved.branch??'')===''
-const absentConfirmed=absentCandidate?await confirmWorktreeAbsent(item.number,sanitizedRecoverWorktree):false
+const absentWord=absentCandidate?await confirmWorktreeAbsent(item.number,sanitizedRecoverWorktree):''
+const absentConfirmed=absentWord!==''
 
 if(recoverDecision==='continue'&&effectiveBranch){
 
@@ -7622,7 +7662,19 @@ return false
 
 
 log(`#${item.number}: Recover → discard（worktree ${sanitize(sanitizedRecoverWorktree)} の不在を確認した。保全対象なし）、記録を捨てて通常 Plan へ`)
-await updateState(item.number,{status:'planning',branch:'',pr:0,worktree:'',note:'worktree の不在を確認して新規に実装する'})
+const absentPatch={status:'planning',branch:'',pr:0,worktree:'',note:'worktree の不在を確認して新規に実装する'}
+if(absentWord==='prunable'){
+
+
+
+
+const prunableCleanup=await updateStateDetailed(item.number,absentPatch,{cleanupWorktree:sanitizedRecoverWorktree,cleanupMode:'discard',requireMissing:true})
+if(!(prunableCleanup.ok&&prunableCleanup.retained===false)){
+log(`#${item.number}: 旧登録 ${sanitize(sanitizedRecoverWorktree)} を片づけられなかった（保持・失敗・結果なし。確認のあとに実体が作り直された場合を含み、その実体は消していない）。消えたと確認できないので台帳に載せて新規 Plan へ進む`)
+}
+}else{
+await updateState(item.number,absentPatch)
+}
 }else{
 
 
@@ -9332,6 +9384,7 @@ const failedSet=new Set()
 
 const closedCleanupRun={run:0,'defer-cap':0,'defer-budget':0}
 const queueHasOpenImplement=queue.some((i)=>i.state==='open'&&i.kind==='implement')
+const closedCleanupWork=[]
 for(const item of queue){
 if(item.state!=='open'){
 const skipEntry={issue:item.number,status:'skipped',note:'すでに closed'}
@@ -9339,15 +9392,7 @@ results.push(skipEntry)
 done.add(item.number)
 
 const cleanup=closedCleanupCandidate(item,savedItems[String(item.number)],{dryRun:dryRunEnabled,verified:savedItemsVerified,unverified:unverifiedIssues})
-if(cleanup){
-const gate=closedCleanupGate({limit:agentBudget.limit,used:agentBudget.used,attempted:closedCleanupRun.run,reserveImplement:queueHasOpenImplement})
-closedCleanupRun[gate]++
-if(gate==='run'){
-skipEntry.note=`すでに closed。${await cleanupClosedMergedWorktree(item, cleanup)}`
-}else if(closedCleanupRun[gate]===1){
-log(`#${item.number}: closed 後始末を見送った（${gate === 'defer-cap' ? `1 ランの上限 ${CLOSED_CLEANUP_PER_RUN_MAX} 件` : `エージェント呼び出し数の予算不足${queueHasOpenImplement ? '（着手し得る実装ノード 1 件分を予約済み）' : ''}。使用 ${agentBudget.used}/${agentBudget.limit}`}。以降の見送り件数は結果の closedCleanup に出す。次の実行で再試行する）`)
-}
-}
+if(cleanup)closedCleanupWork.push({item,cleanup,skipEntry,attempts:closedCleanupAttemptCount(savedItems[String(item.number)])})
 }else{
 
 
@@ -9383,6 +9428,25 @@ failedSet.add(item.number)
 log(`⚠️ #${item.number}: 状態ファイルは ${saved.status} だが GitHub では open。再開情報がないため skip し、後続イシューをブロックする（手動確認が必要）`)
 }
 }
+}
+}
+
+for(const{item,cleanup,skipEntry,attempts}of orderClosedCleanupCandidates(closedCleanupWork)){
+const gate=closedCleanupGate({limit:agentBudget.limit,used:agentBudget.used,attempted:closedCleanupRun.run,reserveImplement:queueHasOpenImplement})
+closedCleanupRun[gate]++
+if(gate==='run'){
+const outcome={settled:false}
+skipEntry.note=`すでに closed。${await cleanupClosedMergedWorktree(item, cleanup, outcome)}`
+
+if(!outcome.settled){
+try{
+if(!(await updateState(item.number,{closedCleanupAttempts:attempts+ 1})))log(`⚠️ #${item.number}: closed 後始末の試行回数を書けなかった`)
+}catch(e){
+log(`⚠️ #${item.number}: closed 後始末の試行回数の書き込みが例外終了した（${sanitize(String(e?.message ?? e))}）`)
+}
+}
+}else if(closedCleanupRun[gate]===1){
+log(`#${item.number}: closed 後始末を見送った（${gate === 'defer-cap' ? `1 ランの上限 ${CLOSED_CLEANUP_PER_RUN_MAX} 件。試行の少ない候補から回すので次の実行で順番が回る` : `エージェント呼び出し数の予算不足${queueHasOpenImplement ? '（着手し得る実装ノード 1 件分を予約済み）' : ''}。使用 ${agentBudget.used}/${agentBudget.limit}`}。以降の見送り件数は結果の closedCleanup に出す。次の実行で再試行する）`)
 }
 }
 const work=queue.filter((q)=>q.state==='open'&& !done.has(q.number))
@@ -9703,7 +9767,7 @@ if(fallback.ok){
 
 
 
-targetPaths=fallback.paths
+targetPaths=unionMeasurePaths(fallback.paths,targetPaths)
 log(
 `残置 worktree バイト実測: 台帳に未検証エントリ ${unverifiedEphemeralCount} 件があるため`+
 `物理一覧 ${targetPaths.length} 件へフォールバックして実測する`,
@@ -10831,7 +10895,7 @@ let endFallbackPaths=null
 if(!hasUnverifiedEndPath&&slotUnknownLiveCount>0){
 const[entries,independentCount]=await Promise.all([scanOrphanWorktrees(),countWorktreeRecords()])
 const fallback=buildPhysicalByteMeasureTargets(entries,independentCount)
-if(fallback.ok)endFallbackPaths=fallback.paths
+if(fallback.ok)endFallbackPaths=unionMeasurePaths(fallback.paths,rawEndPaths.filter((p)=> !confirmedRemovedPaths.has(p)))
 else hasUnverifiedEndPath=true
 }
 if(hasUnverifiedEndPath){

@@ -364,7 +364,16 @@ check(
   (g, r, i) => assert.equal(g.out, ['none', 'keep-base', 'keep', 'absent', 'delete', 'delete', 'keep-base', 'keep', 'absent'][i], JSON.stringify(r)),
 )
 
-const WT = ['removed', 'not-registered', 'skipped', 'main', 'cwd', 'retained-dirty', 'retained-submodule', 'retained-locked', 'retained-branch-mismatch', 'retained-head-mismatch', 'retained-detached', 'failed']
+check(
+  'wr_require_missing_check: 実体もシンボリックリンクも無いときだけ ok。ある・空のパス・読めないパスは retain（実体の有無を肯定的に無いと言えたときだけ消せる）',
+  [
+    ['wr_require_missing_check', '/nonexistent-wr-rm/none'], ['wr_require_missing_check', '/'], ['wr_require_missing_check', '/etc/hosts'],
+    ['wr_require_missing_check', ''], ['wr_require_missing_check'],
+  ],
+  (g, r, i) => assert.equal(g.out, ['ok', 'retain', 'retain', 'retain', 'retain'][i], JSON.stringify(r)),
+)
+
+const WT = ['removed', 'not-registered', 'skipped', 'main', 'cwd', 'retained-dirty', 'retained-submodule', 'retained-locked', 'retained-branch-mismatch', 'retained-head-mismatch', 'retained-detached', 'retained-present', 'retained-unregistered', 'failed']
 const BR = ['none', 'deleted', 'absent', 'keep-base', 'keep', 'failed']
 check(
   'wr_ok / wr_retained / wr_wt_gone: superseded は worktree が残っても非致命（main・cwd だけ異常）、discard は worktree が無くなりブランチも無い・消えたときだけ ok',

@@ -546,6 +546,52 @@ test('ラン終了時の測定（実装スクリプト全体）: 旧が消えて
   assert.equal(broken.result.residualWorktrees.bytesEndObserved, false, 'フォールバックも成立しなければ終了時の測定は成立させない（fail-closed）')
 })
 
+// Bugbot 指摘 R: 物理一覧フォールバックは台帳でパスが分かっている項目を置き換えず、和集合で測る。
+// 台帳にあるが git に登録されていない実在ディレクトリ（retained-unregistered 等）が測定から漏れ、bytesEndObserved が true のまま上限判定が甘くなるのを防ぐ
+test('ラン終了時の測定（実装スクリプト全体）: 新のパス不明で物理一覧へフォールバックしても、台帳にあるが未登録のパスは測定の対象に残る（物理一覧 ∪ 台帳）', async () => {
+  const PHYS = '/repo/wt/phys-end-r'
+  const UNREG = '/repo/wt/unregistered-r'
+  const endEvents = []
+  let physical = false
+  const extra = (label, opts, prompt) => {
+    if (label === 'worktree:orphan-scan') return { entries: [{ path: '/repo', branch: 'main', isMain: true }, ...(physical ? [{ path: PHYS, branch: 'x', isMain: false }] : [])] }
+    if (label === 'worktree:record-count') return { count: physical ? 2 : 1 }
+    return timeline(endEvents, (input) => (input.includes(UNREG) ? GIB_KIB : 1024))(label, opts, prompt)
+  }
+  const { result } = await runScript({
+    args: MERGE_ARGS,
+    leaves: [2],
+    override: ((inner) => (label, opts, prompt) => {
+      if (label === 'fix:#2') physical = true
+      return inner(label, opts, prompt)
+    })(overrides({ oldFixResult: GONE, firstFixResult: GONE, fixRounds: 2, fixPaths: ['', UNREG], extra })),
+  })
+  // 物理一覧フォールバックで測った呼び出しは、ラン中の測定（先頭側）とラン終了時の測定（末尾）の両方。どちらも台帳のパスを落とさない
+  const fallbackMeasures = endEvents.filter((e) => e.startsWith('measure:') && e.includes(PHYS))
+  assert.ok(fallbackMeasures.length >= 2, `ラン中とラン終了時の両方がフォールバックで測る: ${fallbackMeasures.length}`)
+  for (const m of fallbackMeasures) assert.ok(m.includes(UNREG), '台帳にあるが物理一覧に無いパスも測る（置き換えない）')
+  assert.equal(result.residualWorktrees.bytesEndObserved, true)
+  assert.equal(result.residualWorktrees.overLimit, true, '未登録の実在ディレクトリの実測が上限を超えるので overLimit を報告する')
+})
+
+test('unionMeasurePaths: 物理一覧と台帳の和集合・連続／末尾スラッシュの正規化で重複除去・空要素と非文字列を捨てる・空同士は空', async () => {
+  const f = await importDefinitions(['unionMeasurePaths'], 'union-measure')
+  assert.deepEqual(f.unionMeasurePaths(['/a/b', '/c'], ['/a/b/', '/a//b', '/d']), ['/a/b', '/c', '/d'])
+  assert.deepEqual(f.unionMeasurePaths([], ['/x']), ['/x'], '物理一覧が空でも台帳のパスを落とさない')
+  assert.deepEqual(f.unionMeasurePaths(['/p'], []), ['/p'])
+  assert.deepEqual(f.unionMeasurePaths(['', null, 5, '/p'], [undefined]), ['/p'])
+  assert.deepEqual(f.unionMeasurePaths([], []), [])
+  assert.deepEqual(f.unionMeasurePaths(null, undefined), [])
+  assert.deepEqual(f.unionMeasurePaths(['/'], ['/']), ['/'], 'ルートだけは末尾スラッシュ除去で空にしない')
+})
+
+test('ラン中の測定も同じ形（和集合）: remeasureResidualBytesNow のフォールバックは targetPaths を置き換えない', () => {
+  const fnStart = source.indexOf('async function remeasureResidualBytesNow()')
+  const fnBody = source.slice(fnStart, source.indexOf('async function remeasureFreeDiskNow()', fnStart))
+  assert.match(fnBody, /targetPaths = unionMeasurePaths\(fallback\.paths, targetPaths\)/)
+  assert.doesNotMatch(fnBody, /targetPaths = fallback\.paths/)
+})
+
 // Merge ループで fix を 1 回走らせる: 監視が needs-fix を 1 回返し、その後は打ち切る
 function mergeLoopFix({ saved, events, fixPath = FIX_A, bytes = () => 1024 }) {
   let monitors = 0
