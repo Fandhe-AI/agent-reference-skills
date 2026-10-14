@@ -11,6 +11,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -22,12 +23,15 @@ const SCRIPT_PATH = join(
 const DRIVER_MARKER = '__IMPLEMENT_ISSUE_TREE_DRIVER_START__'
 
 const source = readFileSync(SCRIPT_PATH, 'utf8')
+// Issue #603: 測定のシェルはプロンプトから scripts/measure-residual-bytes.sh へ移った。字面で固定していた契約は
+// このファイルの文面で引き続き固定し、実行して確かめる検証は measure-scripts.test.mjs が担う
+const residualScript = readFileSync(join(dirname(SCRIPT_PATH), 'measure-residual-bytes.sh'), 'utf8')
 const markerIndex = source.indexOf(DRIVER_MARKER)
 if (markerIndex < 0) {
   throw new Error(`テスト境界マーカー ${DRIVER_MARKER} が実装スクリプトに存在しない（削除・改名は回帰テストを無効化する）`)
 }
 const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
-const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-residual-cap-defs-'))
+const sliceDir = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-residual-cap-defs-')))
 const slicePath = join(sliceDir, 'implement-issue-tree-residual-cap-defs.mjs')
 // 実装スクリプトは `export const meta` 以外の top-level export を持てない（Workflow 起動制約）
 // ため、定義部は非 export のまま置き、切り出したスライス側で export 文を付与する。
@@ -218,14 +222,14 @@ test('measureMainWorktreeContentBytes はメイン worktree 全体から .git・
 test('measureResidualWorktreeBytesDetailed はプロンプトへ渡す前に sanitizeWorktreePath で全パスを検証し、UNTRUSTED_POLICY を含める（codex-review P0 対応）', () => {
   assert.match(source, /const sanitizedPaths = paths\.map\(\(p\) => sanitizeWorktreePath/)
   assert.match(source, /if \(sanitizedPaths\.some\(\(p\) => p === ''\)\) {/)
-  // measureResidualWorktreeBytes のプロンプト配列に UNTRUSTED_POLICY が直接含まれることを確認する
-  // （du -sk の呼び出し指示より前の行に存在する = このプロンプトの一部であることの軽量確認）。
-  const fnStart = source.indexOf('function buildResidualBytesScript(')
-  // Issue #497 で TEMP_FILE_POLICY・case ガード・COUNT 照合の説明文を追加した分、関数本体が
-  // 3000 文字を超えたため window を拡張した（本文自体は変わらず後方に含まれる）。
-  const fnBody = source.slice(fnStart, fnStart + 7500)
-  assert.match(fnBody, /UNTRUSTED_POLICY,/)
-  assert.match(fnBody, /jq -r '\.\[\]'/)
+  // measureResidualBytesOnce のプロンプト配列に UNTRUSTED_POLICY が直接含まれること
+  const fnStart = source.indexOf('async function measureResidualBytesOnce(')
+  const fnEnd = source.indexOf('async function measureResidualWorktreeBytesDetailed(', fnStart)
+  assert.ok(fnStart >= 0 && fnEnd > fnStart)
+  assert.match(source.slice(fnStart, fnEnd), /UNTRUSTED_POLICY,/)
+  // ホストの許可文字集合検証に加えて、スクリプトも許可文字集合外のパスを du へ渡さず err に数える（二重化）
+  assert.match(residualScript, /\*\[!A-Za-z0-9\/_\.\$\{sp\}-\]\*/)
+  assert.match(residualScript, /\*\.\.\*/)
 })
 
 test('新規着手・monitoring 再開の両方が projectResidualBytes による projected バイト判定を持つ', () => {
@@ -528,35 +532,33 @@ test('境界回帰（Issue #406）: baseline が候補予約差し引き後の�
 // ことをプロンプト・スキーマの両方でソース確認する。
 
 test('measureResidualWorktreeBytesDetailed は存在しないパスを ENOENT 耐性で 0 扱いし、実エラーのみ fail-closed にする', () => {
-  const fnStart = source.indexOf('function buildResidualBytesScript(')
-  const fnEnd = source.indexOf('\n\n// 合計 KiB のみを必要とする', fnStart)
-  const fnBody = source.slice(fnStart, fnEnd)
-  assert.ok(fnStart >= 0 && fnEnd > fnStart, 'measureResidualWorktreeBytesDetailed の関数境界を検出できない')
-  assert.match(fnBody, /\[ ! -e "\$p" \]/)
-  assert.match(fnBody, /missing=\$\(\(missing\+1\)\)/)
-  assert.match(fnBody, /err=\$\(\(err\+1\)\)/)
-  // ERR>0 の扱いはエージェントの自己申告（旧文言「ERR が 0 より大きい場合は…失敗として報告」）
-  // ではなく、観測値をそのまま返させてホスト側の err === 0 検証で fail-closed にする
-  // （PR #390 codex-review P1: schema が kib しか必須にしないと部分合計が成功として通る）
-  assert.match(fnBody, /ERR を err、COUNT を count として、/)
-  assert.match(fnBody, /Number\.isInteger\(v\?\.err\) && v\.err === 0/)
+  // 存在しないパスは missing に数えて continue（kib へは 0 として加算）、du の実エラーは err
+  assert.match(residualScript, /if \[ ! -e "\$\{p\}" \]; then\n\s*missing=\$\(\(missing \+ 1\)\)\n\s*continue/)
+  assert.match(residualScript, /err=\$\(\(err \+ 1\)\)/)
+  // ERR>0 の扱いはエージェントの自己申告ではなく、観測値をそのまま返させてホスト側の err === 0 検証で
+  // fail-closed にする（PR #390 codex-review P1: schema が kib しか必須にしないと部分合計が成功として通る）
+  const fnStart = source.indexOf('async function measureResidualBytesOnce(')
+  const fnEnd = source.indexOf('\n// 残置 worktree のディスク使用量（KiB）と、測定時点で既に存在しなかったパス数', fnStart)
+  assert.ok(fnStart >= 0 && fnEnd > fnStart)
+  assert.match(source.slice(fnStart, fnEnd), /SIGNED_OUTPUT_INSTRUCTION,/)
+  assert.match(source, /3 項目を観測値のまま StructuredOutput へ転記する'/)
+  assert.match(source, /'（再計算・補完・修正をしない。ホストが再計算して照合し、不一致なら破棄する）。'/)
+  assert.match(source, /Number\.isInteger\(v\?\.err\) && v\.err === 0/)
 })
 
-test('measureResidualWorktreeBytesDetailed は du の終了コードと jq の展開失敗を個別に検出する（fail-open 防止）', () => {
-  const fnStart = source.indexOf('function buildResidualBytesScript(')
-  const fnEnd = source.indexOf('\n\n// 合計 KiB のみを必要とする', fnStart)
-  const fnBody = source.slice(fnStart, fnEnd)
+test('測定スクリプトは du の終了コードを if の条件式で個別に検出し、入力読み取りの失敗が 0 件の正常測定に化けない（fail-open 防止）', () => {
   // du | cut のパイプ直結は終了状態が cut のものになる fail-open（PR #390 codex-review P1）。
   // また `duout=$(du ...); durc=$?` の素の代入は errexit 下で失敗時に即終了し err 計上へ到達
   // しないため、終了状態は if の条件式で検査する（PR #390 codex-review P1 第 3 ラウンド）
-  assert.match(fnBody, /if duout=\$\(du -sk -- "\$p" 2>\/dev\/null\); then/)
-  assert.match(fnBody, /else err=\$\(\(err\+1\)\); fi;/)
-  assert.doesNotMatch(fnBody, /du -sk -- "\$p" 2>\/dev\/null \| cut/)
-  assert.doesNotMatch(fnBody, /durc=\$\?/)
-  // jq を while ループへ直結すると jq の非 0 終了が「入力 0 件の正常測定」に化ける
-  // （PR #390 codex-review P1）。一時ファイル経由で終了コードを検査し ERR=1 へ倒す
-  assert.match(fnBody, /if ! jq -r/)
-  assert.match(fnBody, /TOTAL=0 MISSING=0 ERR=1/)
+  assert.match(residualScript, /if duout=\$\(du -sk -- "\$\{p\}" 2>\/dev\/null\); then/)
+  assert.match(residualScript, /else\n\s*err=\$\(\(err \+ 1\)\)\n\s*fi/)
+  assert.doesNotMatch(residualScript, /du -sk -- "\$\{p\}" 2>\/dev\/null \| cut/)
+  assert.doesNotMatch(residualScript, /durc=\$\?/)
+  // 旧実装は jq を while ループへ直結すると jq の非 0 終了が「入力 0 件の正常測定」に化けた
+  // （PR #390 codex-review P1）。パス一覧は標準入力の行として直接読み、jq の展開自体を持たない。
+  // 空入力は count=0 で返り、ホストが送った件数との照合（count 不一致 = 転記失敗）で弾く
+  assert.doesNotMatch(residualScript.split('\n').filter((l) => !/^\s*#/.test(l)).join('\n'), /\bjq\b/)
+  assert.match(residualScript, /count=\$\(\(count \+ 1\)\)/)
 })
 
 test('ORPHAN_BYTES_SCHEMA は err・missing・count を必須フィールドとして要求する', () => {
@@ -564,7 +566,7 @@ test('ORPHAN_BYTES_SCHEMA は err・missing・count を必須フィールドと�
   // （欠落を 0 とみなすと分母に存在しないパスが残り予約が過小になる。Bugbot Medium 指摘）。
   // count は Issue #497 で追加した件数照合フィールド（一時ファイルの取り違え・空展開による
   // 0 件正常終了への fail-open を塞ぐ）。
-  assert.match(source, /required: \['kib', 'err', 'missing', 'count'\]/)
+  assert.match(source, /required: \['kib', 'err', 'missing', 'count', 'inputSha256'\]/)
 })
 
 test('バイト軸は新規着手直前に台帳増分によらず実測し直す（PR #390 P1 第 4 ラウンド）', () => {

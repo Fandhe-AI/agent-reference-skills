@@ -12,6 +12,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -29,7 +30,7 @@ if (markerIndex < 0) {
 }
 // マーカー行の行頭までを定義部として切り出す（マーカー行自体は含めない）。
 const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
-const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-defs-'))
+const sliceDir = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-defs-')))
 const slicePath = join(sliceDir, 'implement-issue-tree-defs.mjs')
 // 実装スクリプトは Workflow ランタイムの制約により `export const meta` 以外の top-level export を
 // 持てない（他に export があると起動時に SyntaxError: Unexpected keyword 'export' となり
@@ -176,110 +177,104 @@ test('mergeExecutePrompt: allowMerge=true かつ contexts 空の宣言が混入�
   assert.doesNotThrow(() => mergeExecutePrompt(item, impl, false, [{ app: 'cursor', contexts: [] }]))
 })
 
-test('mergeExecutePrompt: 回復専用経路（allowMerge=false）はマージ実行コマンド形を一切含まない', () => {
+test('mergeExecutePrompt: 回復専用経路（allowMerge=false）はマージ実行コマンド形も検証スクリプトの起動も含まない', () => {
   const prompt = mergeExecutePrompt(item, impl, false, [])
   assert.ok(!prompt.includes(MERGE_COMMAND))
   assert.ok(!prompt.includes('--match-head-commit'))
   // G0（サーバー側強制の実測）は新規マージ経路専用の手順であり、回復専用経路には現れない。
+  assert.ok(!prompt.includes('merge-gate.sh'))
   assert.ok(!prompt.includes('bypass_actors'))
   // 回復専用の宣言（マージ実行主体を名乗らない）。
   assert.ok(prompt.includes('gh pr merge）は一切行わない'))
 })
 
-test('mergeExecutePrompt: 新規マージ経路（allowMerge=true）は G0 の全判定記述とコマンド形を含む', () => {
+// 第 6 弾（#603）: G0・チェック・未解決スレッド・mergeable・外部チェックの検証はプロンプトの gh / jq ではなくスクリプトが行う。
+// 判定の中身（bypass_actors・integration_id・client-only など）は merge-gate-unit.test.mjs / merge-gate.test.mjs が検査する。
+test('mergeExecutePrompt: 新規マージ経路（allowMerge=true）は検証スクリプトの起動とマージのコマンド形を含み、gh api / jq の検証手順を含まない', () => {
   const entries = [{ app: 'cursor', contexts: ['Cursor Bugbot'] }]
-  const prompt = mergeExecutePrompt(item, impl, true, entries)
-  // 手順 5 のコマンド形（--match-head-commit による TOCTOU 防止付き squash merge）。
+  const prompt = mergeExecutePrompt(item, impl, true, entries, '', 'noncex1')
+  // 手順 3 のコマンド形（--match-head-commit による TOCTOU 防止付き squash merge）。
   assert.ok(prompt.includes(MERGE_COMMAND))
-  // (i-b) ruleset の bypass 不能性（bypass_actors 空 + Repository ソース）。
-  assert.ok(prompt.includes('bypass_actors'))
-  assert.ok(prompt.includes('"Repository"'))
-  // (iii) レビュースレッド解消のサーバー側強制。
-  assert.ok(prompt.includes('required_review_thread_resolution'))
-  // (iv) 宣言 context + App ID（integration_id）の組による required 化の照合。
-  // App ID は App ごとに一意な変数（APP_ID_<SLUG>）で束縛される（共有 $APP_ID は使わない）。
-  assert.ok(prompt.includes('(iv)'))
-  assert.ok(prompt.includes(`APP_ID_CURSOR=$(gh api "apps/cursor" --jq '.id')`))
-  assert.ok(prompt.includes('--argjson appid "$APP_ID_CURSOR"'))
-  assert.ok(!prompt.includes('--argjson appid "$APP_ID"'))
-  assert.ok(prompt.includes(`--arg ctx 'Cursor Bugbot'`))
-  // (v) client-only チェックの検出（required に含まれない check-run / commit status の件数照合）。
-  assert.ok(prompt.includes('(v)'))
-  assert.ok(prompt.includes('client-only'))
-  // (v-b) required checks の発行元束縛（integration_id の数値必須 + App 発行 check-run の存在）。
-  assert.ok(prompt.includes('(v-b)'))
-  assert.ok(prompt.includes('integration_id'))
+  // 手順 2 のスクリプト起動（run-verified.sh 経由・nonce・PR・base・外部チェックの宣言）。
+  assert.match(prompt, /bash '[^']+\/scripts\/run-verified\.sh' \S+ merge-gate\.sh --nonce noncex1 --pr 123 --base \S+ --external '\[\{"app":"cursor","contexts":\["Cursor Bugbot"\]\}\]'/)
+  // ok 以外は verdict をそのまま reason にして辞退し、ok のときだけ payload.headSha でマージへ進む。
+  assert.ok(prompt.includes('payload.verdict が ok 以外ならマージせず'))
+  assert.ok(prompt.includes('ok のときだけ手順 3 へ進む'))
+  assert.ok(prompt.includes('payload.headSha'))
+  // 検証の手順（旧 2b〜4b）は文面から消えている。
+  for (const gone of ['bypass_actors', 'required_review_thread_resolution', 'rules/branches', 'integration_id', '--slurp', 'reviewThreads', 'APP_ID_', 'gh pr checks --json state']) {
+    assert.ok(!prompt.includes(gone), `${gone} がプロンプトに残っている`)
+  }
+  // 権限境界: スクリプト以外の gh api / jq による検証の代替を禁じる。
+  assert.ok(prompt.includes('gh api・jq・GraphQL を自分で実行して代替・追加しない'))
 })
 
-test('mergeExecutePrompt: G0 は strict 適用を要件にしない（並列ランを止めるため意図的な非要件）', () => {
+test('mergeExecutePrompt: 期待 HEAD sha（opt-in ゲートの確認値）は --expect-sha としてコマンドに束縛され、無ければ付かない', () => {
+  const SHA = 'c'.repeat(40)
+  assert.ok(mergeExecutePrompt(item, impl, true, [], SHA, 'n1').includes(`--expect-sha ${SHA}`))
+  assert.ok(!mergeExecutePrompt(item, impl, true, [], '', 'n1').includes('--expect-sha'))
+  assert.throws(() => mergeExecutePrompt(item, impl, true, [], 'not-a-sha', 'n1'), /expect-sha/)
+})
+
+test('G0 は strict 適用を要件にしない（並列ランを止めるため意図的な非要件）', () => {
   // 回帰テスト: strict_required_status_checks_policy を G0 の合格条件に戻すと、
   // 1 件マージするたびに他の open PR の base が陳腐化し、parallel >= 2 のランが
-  // 収束しなくなる（全 PR が BLOCKED のまま相互に進めない）。
-  // strict は鮮度制御であって bypass 不能性の制御ではないため、要件から外しても
-  // 「サーバーが同条件で拒否する」という G0 の主張は成立する。
+  // 収束しなくなる（全 PR が BLOCKED のまま相互に進めない）。第 6 弾以降は判定をスクリプトが持つので、
+  // スクリプトと判定ライブラリのコード行（コメントを除く）が strict を読まないことで固定する。
   // 詳細: references/automerge-design.md「strict を G0 の要件にしない理由」節。
-  const prompt = mergeExecutePrompt(item, impl, true, [{ app: 'cursor', contexts: ['Cursor Bugbot'] }])
-  // jq の合格判定（`... == true`）としては現れないこと。非要件である旨の記述は残るため、
-  // 識別子そのものの不在ではなく「真偽比較による判定」の不在を検査する。
-  assert.ok(!prompt.includes('strict_required_status_checks_policy == true'))
-  assert.ok(!prompt.includes('strict_required_status_checks_policy=true'))
-  // 非要件であることが明示され、後続の読み手が「抜け漏れ」と誤読して復活させないこと。
-  assert.ok(prompt.includes('(i-c)'))
-  assert.ok(prompt.includes('意図的な非要件'))
-  // 不合格理由の列挙からも strict が消えていること（存在しないゲート名を summary に書かせない）。
-  assert.ok(!prompt.includes('(i-c) の strict 適用なし'))
+  for (const f of ['merge-gate.sh', join('lib', 'merge-gate-lib.sh')]) {
+    const code = readFileSync(join(dirname(SCRIPT_PATH), f), 'utf8').split('\n').filter((l) => !/^\s*#/.test(l)).join('\n')
+    assert.ok(!/strict/i.test(code), `${f} のコード行が strict に触れている`)
+  }
+  // 非要件であることはスクリプトの先頭コメントに残り、後続の読み手が「抜け漏れ」と誤読して復活させない。
+  const header = readFileSync(join(dirname(SCRIPT_PATH), 'merge-gate.sh'), 'utf8')
+  assert.ok(header.includes('strict_required_status_checks_policy は読まない'))
 })
 
-test('mergeExecutePrompt: 複数 App 宣言時は G0 (iv) が App ごとに slug と APP_ID 取得を対で出力する', () => {
-  // 回帰テスト（下流 rust-ai-library PR #456 Bugbot Medium）: 全 context が共有 $APP_ID に
-  // 束縛されると、後続 App の context が先行 App の APP_ID と照合されて正しい ruleset でも
-  // fail する。App ごとに「slug での取得 → その App 専用変数での照合」が対で現れること。
-  const prompt = mergeExecutePrompt(item, impl, true, [
+test('mergeExecutePrompt: 複数 App 宣言は --external の JSON 1 つにそのまま束縛され、context の引用符も壊れない', () => {
+  const entries = [
     { app: 'cursor', contexts: ['Cursor Bugbot'] },
-    { app: 'sonarqubecloud', contexts: ['SonarQubeCloud Code Analysis', 'quality gate'] },
-  ])
-  // App ごとの取得コマンドが slug とセットでインライン出力される。
-  assert.ok(prompt.includes(`APP_ID_CURSOR=$(gh api "apps/cursor" --jq '.id')`))
-  assert.ok(prompt.includes(`APP_ID_SONARQUBECLOUD=$(gh api "apps/sonarqubecloud" --jq '.id')`))
-  // 各 context の照合コマンドが自 App の変数のみを参照する（他 App の変数と混線しない）。
-  const cursorLine = prompt.split('\n').find((l) => l.includes(`--arg ctx 'Cursor Bugbot'`))
-  assert.ok(cursorLine.includes('--argjson appid "$APP_ID_CURSOR"'))
-  for (const ctx of ['SonarQubeCloud Code Analysis', 'quality gate']) {
-    const line = prompt.split('\n').find((l) => l.includes(`--arg ctx '${ctx}'`))
-    assert.ok(line.includes('--argjson appid "$APP_ID_SONARQUBECLOUD"'))
-    assert.ok(!line.includes('$APP_ID_CURSOR'))
-  }
-  // 共有変数 $APP_ID（後続 App が先行 App の値を引きずる形）はどこにも現れない。
-  assert.ok(!prompt.includes('--argjson appid "$APP_ID"'))
-  // slug にハイフンを含む App も一意な変数名（ハイフン→アンダースコア）で束縛される。
-  const hyphenPrompt = mergeExecutePrompt(item, impl, true, [
+    { app: 'sonarqubecloud', contexts: ['SonarQubeCloud Code Analysis', "it's a 'quote' check"] },
     { app: 'my-check-app', contexts: ['my check'] },
-  ])
-  assert.ok(hyphenPrompt.includes(`APP_ID_MY_CHECK_APP=$(gh api "apps/my-check-app" --jq '.id')`))
-  assert.ok(hyphenPrompt.includes('--argjson appid "$APP_ID_MY_CHECK_APP"'))
+  ]
+  const prompt = mergeExecutePrompt(item, impl, true, entries, '', 'n1')
+  const line = prompt.split('\n').find((l) => l.includes('merge-gate.sh'))
+  // シェルの単一引用符（' は '\'' に置換）を戻して JSON を取り出す。
+  const m = /--external ((?:'(?:[^']|'\\'')*')+)/.exec(line)
+  assert.ok(m, line)
+  const arg = m[1].slice(1, -1).replace(/'\\''/g, "'")
+  assert.deepEqual(JSON.parse(arg), entries)
 })
 
-test('mergeExecutePrompt: G0 の辞退 reason 名は返却スキーマの enum と一致した形でプロンプトに現れる', () => {
-  const prompt = mergeExecutePrompt(item, impl, true, [{ app: 'cursor', contexts: ['Cursor Bugbot'] }])
-  // reason 名の正本は MERGE_EXEC_SCHEMA の enum（共有定数）。テスト側の一覧は enum 所属を
-  // 先に検証してから使い、literal の独立定義がドリフトしても検出できるようにする。
-  for (const reason of ['server-enforcement-missing', 'classic-unsupported', 'issuer-unbound']) {
-    assert.ok(MERGE_EXEC_VALID_REASONS.has(reason), `enum に ${reason} が存在すること`)
-    assert.ok(prompt.includes(reason), `プロンプトに ${reason} が含まれること`)
-  }
-})
-
-test('mergeExecutePrompt: externalChecks なし確定（[]）の新規マージ経路は外部チェック手順 4b を含まない', () => {
-  const prompt = mergeExecutePrompt(item, impl, true, [])
-  assert.ok(!prompt.includes('4b.'))
-  // G0 のサーバー側強制（(i)〜(v-b)）自体は externalChecks の有無と無関係に要求される。
-  assert.ok(prompt.includes('bypass_actors'))
+test('mergeExecutePrompt: externalChecks なし確定（[]）の新規マージ経路は --external を付けない', () => {
+  const prompt = mergeExecutePrompt(item, impl, true, [], '', 'n1')
+  assert.ok(!prompt.includes('--external'))
   assert.ok(prompt.includes(MERGE_COMMAND))
+})
+
+test('merge-gate.sh が返し得る verdict は、すべて merge-exec の返却 reason の enum に含まれる（ok を除く）', () => {
+  // 正本は MERGE_EXEC_SCHEMA の enum。スクリプトが enum 外の語を返すと、ホストは reason を受理できず systemic failure になる。
+  const text = readFileSync(join(dirname(SCRIPT_PATH), 'merge-gate.sh'), 'utf8')
+  const verdicts = new Set([...text.matchAll(/\bstop ([a-z-]+) [a-z0-9-]+ [a-z0-9-]+/g)].map((m) => m[1]))
+  assert.ok(verdicts.size >= 8, `stop の呼び出しから verdict を取り出せていない: ${[...verdicts].join(',')}`)
+  for (const v of verdicts) assert.ok(v === 'ok' || MERGE_EXEC_VALID_REASONS.has(v), `${v} は reason の enum に無い`)
+  for (const must of ['server-enforcement-missing', 'classic-unsupported', 'issuer-unbound', 'checks-not-green', 'unresolved-threads', 'not-mergeable', 'wrong-target', 'head-moved', 'external-review-missing', 'pr-closed']) {
+    assert.ok(verdicts.has(must), `${must} を返す経路がスクリプトに無い`)
+  }
 })
 
 // ---------------------------------------------------------------------------
 // MERGE_EXEC_SCHEMA / MERGE_EXEC_VALID_REASONS（reason enum の契約）
 // ---------------------------------------------------------------------------
+
+test('MERGE_EXEC_SCHEMA.gate.payload は merge-gate.sh が常に出力する全キー（detail と件数 7 種を含む）を必須にする（転記漏れを StructuredOutput で弾く）', () => {
+  const gate = MERGE_EXEC_SCHEMA.properties.gate
+  assert.deepEqual([...gate.required].sort(), ['nonce', 'payload', 'sha256'])
+  const req = [...gate.properties.payload.required].sort()
+  assert.deepEqual(req, ['checks', 'clientOnly', 'detail', 'err', 'headSha', 'inputSha256', 'mode', 'notGreen', 'requiredTotal', 'stage', 'unbound', 'unissued', 'unresolved', 'verdict'])
+  assert.deepEqual(req, Object.keys(gate.properties.payload.properties).sort(), '必須キーと定義済みキーが一致する')
+  assert.ok(!MERGE_EXEC_SCHEMA.required.includes('gate'), 'gate 自体は任意（回復専用経路・辞退では不要）')
+})
 
 test('MERGE_EXEC_VALID_REASONS は schema の reason enum と完全一致する（二重検証の同一性）', () => {
   const enumValues = MERGE_EXEC_SCHEMA.properties.reason.enum

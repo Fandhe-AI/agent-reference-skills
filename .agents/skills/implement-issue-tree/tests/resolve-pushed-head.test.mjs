@@ -33,6 +33,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -52,7 +53,7 @@ if (markerIndex < 0) {
 }
 const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
 const driverPart = source.slice(markerIndex)
-const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-resolve-'))
+const sliceDir = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-resolve-')))
 const slicePath = join(sliceDir, 'implement-issue-tree-defs.mjs')
 // 実装スクリプトは Workflow ランタイムの制約により `export const meta` 以外の top-level export を
 // 持てない。定義部は非 export のまま置き、テスト側でスライスへ export 文を付与して読み込む。

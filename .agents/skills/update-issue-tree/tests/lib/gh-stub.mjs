@@ -19,6 +19,7 @@
 import { mkdtempSync, writeFileSync, chmodSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { trackTmp } from './tmp-track.mjs'
 
 // シェルの単一引用符リテラル内に安全に埋め込むためのエスケープ（ ' → '\'' ）
 function shQuote(value) {
@@ -117,7 +118,8 @@ export function createGhStub(fixture = {}) {
   if (f.parentAfter4 === undefined) f.parentAfter4 = f.parentAfter3
   if (f.parentRepoAfter4 === undefined) f.parentRepoAfter4 = f.parentRepoAfter3
 
-  const dir = mkdtempSync(join(tmpdir(), 'reassign-gh-stub-'))
+  // テストプロセスの終了時に必ず消す（1 回の全実行で 60 個以上が残っていた）
+  const dir = trackTmp(mkdtempSync(join(tmpdir(), 'reassign-gh-stub-')))
   const ghPath = join(dir, 'gh')
   const logPath = join(dir, 'calls.log')
   const getCountPath = join(dir, 'get_count')

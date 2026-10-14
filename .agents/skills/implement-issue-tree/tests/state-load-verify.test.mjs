@@ -16,6 +16,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
 import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -35,7 +36,7 @@ const driverPart = source.slice(markerIndex)
 
 globalThis.args = { parent: 1 }
 
-const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-state-verify-'))
+const sliceDir = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-state-verify-')))
 const slicePath = join(sliceDir, 'implement-issue-tree-state-verify-defs.mjs')
 const SLICE_EXPORTS = [
   'sha256Hex',
@@ -446,8 +447,11 @@ test('mergeVerifyPrompt は headRefName・baseRefName・closingIssuesReferences 
 
 test('monitorPrompt 手順 1 は PR 照合不一致で MERGED でも ready にせず blocked / unbound を返させる', () => {
   const p = monitorPrompt({ number: 365 }, { prNumber: 1366, branch: 'feat/365-bar' }, [], true, false)
-  const step1 = p.slice(p.indexOf('1. まず gh pr view'), p.indexOf('\n', p.indexOf('1. まず gh pr view')))
-  assert.ok(step1.includes('--json state,headRefOid,mergeable,headRefName,baseRefName,closingIssuesReferences,isCrossRepository'))
+  // #603 第 2 弾: 手順 1 の gh pr view は observe-pr.sh --mode pr へ移った（取得項目 headRefName・baseRefName・
+  // closingIssuesReferences・isCrossRepository の照合は observe-pr.test.mjs の 'pr:' テスト群が bound として固定する）
+  const step1 = p.slice(p.indexOf('\n1. ') + 1, p.indexOf('\n1c. '))
+  assert.match(step1, /observe-pr\.sh --nonce \S+ --mode pr --pr 1366 --base main --branch feat\/365-bar --issue 365/)
+  assert.ok(step1.includes('bound が 0'))
   assert.ok(step1.includes('baseRefName が "main" でない'))
   assert.ok(step1.includes('"feat/365-bar" と完全一致しない'))
   assert.ok(step1.includes('#365 を含まない'))
@@ -630,7 +634,7 @@ test('駆動部: stopUnverified と dispatch 前の state-unverified は同じ�
 
 test('駆動部: merged 受理（already-merged を含む）は PR 照合を要求し、opt-in 前の MERGED 確認も照合する', () => {
   assert.match(driverPart, /const verifyBindIssue = prBindingProblem\(item\.number, impl\.branch, v\)/)
-  assert.match(driverPart, /if \(!\(verifyStateOk && verifyHeadOk && !verifyBindIssue\)\) \{/)
+  assert.match(driverPart, /if \(!\(verifyStateOk && verifyHeadOk && !verifyBindIssue && gateCheck\.ok\)\) \{/)
 })
 
 test('駆動部: opt-in 前の MERGED 確認で PR 照合が不一致なら state を問わず blocked で終端する（allowMerge へ fail-open しない）', () => {

@@ -8,6 +8,11 @@
 // ファイル名を生成する箇所）。本テストは、この経路の硬化（変数の単一代入・二重引用符参照・
 // 件数照合）と、再発検出用のメイン worktree 未追跡ファイル検査（AC2）の両方を固定する。
 //
+// Issue #603 第 1 弾で、測定のシェル（一時ファイルと `.lines` を含む）はプロンプトから
+// スキル同梱のスクリプト（scripts/measure-*.sh）へ移った。ここでは「プロンプトも測定スクリプトも
+// 一時ファイルを作らない・削除しない」ことで同じ事故経路が構造的に無いことを固定する
+// （スクリプトを実際に実行した副作用なしの検証は measure-scripts.test.mjs）。
+//
 // 読み込み方式は他の回帰テストと同一: 実装スクリプトは Workflow ハーネス専用文法（トップレベル
 // return・注入グローバル args / agent / log / phase）を含み module として丸ごと import
 // できないため、__IMPLEMENT_ISSUE_TREE_DRIVER_START__ マーカーより上（定義部のみ）を
@@ -17,6 +22,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -33,7 +39,7 @@ if (markerIndex < 0) {
   throw new Error(`テスト境界マーカー ${DRIVER_MARKER} が実装スクリプトに存在しない（削除・改名は回帰テストを無効化する）`)
 }
 const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
-const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-temp-file-placement-defs-'))
+const sliceDir = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-temp-file-placement-defs-')))
 const slicePath = join(sliceDir, 'implement-issue-tree-temp-file-placement-defs.mjs')
 // 実装スクリプトは `export const meta` 以外の top-level export を持てない（Workflow 起動制約）
 // ため、定義部は非 export のまま置き、切り出したスライス側で export 文を付与する。
@@ -107,57 +113,38 @@ function extractFunctionBody(fnSignature, stopSignature) {
   return source.slice(start, end)
 }
 
-test('measureResidualWorktreeBytesDetailed: TEMP_FILE_POLICY を含み、tmpFile リテラルの埋め込みは tf= 代入の1箇所に限られ、以降は "$tf" 参照になる', () => {
-  const body = extractFunctionBody(
-    'function buildResidualBytesScript({ tmpFile, delimiter, pathsJson }) {',
-    'async function measureResidualWorktreeBytes(paths) {',
-  )
+test('measureResidualBytesOnce: プロンプトは TEMP_FILE_POLICY と UNTRUSTED_POLICY を含み、一時ファイルを作らせず、1 回の Bash 呼び出しで実行させる', () => {
+  const body = extractFunctionBody('async function measureResidualBytesOnce(', 'async function measureResidualWorktreeBytesDetailed(')
   assert.match(body, /TEMP_FILE_POLICY/)
-  // tmpFile の JS テンプレートリテラル埋め込みは、ヒアドキュメントの書き出し例と `tf=` 代入の
-  // 2 箇所のみ（旧実装は `.lines` を含めて 5 箇所前後に埋め込んでいた）。
-  const literalEmbeds = countOccurrences(body, '${tmpFile}')
-  assert.ok(literalEmbeds <= 2, `tmpFile リテラルの埋め込み回数は 2 以下であるべき（実際: ${literalEmbeds}）`)
-  // 引用なしの変数展開によるリダイレクト（例: > .lines のような相対パス化の温床）が無いこと。
-  assert.doesNotMatch(body, />\s*\$\{tmpFile\}\.lines(?!['"])/)
-  assert.match(body, /tf=\$\{tmpFile\}/)
-  assert.match(body, /"\$tf\.lines"/)
-  assert.match(body, /rm -f -- "\$tf" "\$tf\.lines"/)
-  // 1 回の Bash 呼び出しで実行する指示を含む（Bash ツールは呼び出し間で変数を保持しないため）。
+  assert.match(body, /UNTRUSTED_POLICY/)
   assert.match(body, /1 回の Bash 呼び出しで実行/)
-  // COUNT による件数照合（fail-closed 強化）。
-  assert.match(body, /COUNT=\$count/)
-  assert.match(body, /v\.count/)
+  // 旧実装の一時ファイル経路（tf 変数・.lines・mktemp・rm）がプロンプト生成に残っていない
+  assert.doesNotMatch(body, /\btf\b|\.lines|mktemp|\brm\b|tmpFile/)
+  // 件数照合は classifyResidualByteReport（下の count 照合テスト）が担う。ここでは封筒の照合を通すこと
+  assert.match(body, /verifySignedOutput\(v, tmpNonce, /)
 })
 
-test('measureResidualWorktreeBytesDetailed: tf が空のとき rm を実行しない（tf="" での `rm -f -- "" "$tf.lines"` はカレント直下の .lines を削除しかねないため）', () => {
-  const body = extractFunctionBody(
-    'function buildResidualBytesScript({ tmpFile, delimiter, pathsJson }) {',
-    'async function measureResidualWorktreeBytes(paths) {',
-  )
-  assert.match(body, /if \[ -n "\$tf" \]; then rm -f -- "\$tf" "\$tf\.lines"/)
-  assert.doesNotMatch(body, /^\s*'   rm -f -- "\$tf"/m)
-})
-
-test('measureFreeDiskKib: tf が空のとき rm を実行しない', () => {
-  const body = extractFunctionBody(
-    'function buildFreeDiskScript({ tmpFile, delimiter, pathsJson }) {',
-    'function findMainWorktreePath(entries) {',
-  )
-  assert.match(body, /if \[ -n "\$tf" \]; then rm -f -- "\$tf" "\$tf\.line"/)
-})
-
-test('measureFreeDiskKib: TEMP_FILE_POLICY を含み、tmpFile リテラルの埋め込みは最小化され "$tf" 参照へ統一されている', () => {
-  const body = extractFunctionBody(
-    'function buildFreeDiskScript({ tmpFile, delimiter, pathsJson }) {',
-    'function findMainWorktreePath(entries) {',
-  )
+test('measureFreeDiskKib: プロンプトは TEMP_FILE_POLICY と UNTRUSTED_POLICY を含み、一時ファイルを作らせず、1 回の Bash 呼び出しで実行させる', () => {
+  const body = extractFunctionBody('async function measureFreeDiskKib(path) {', 'const MAIN_UNTRACKED_SCHEMA = {')
   assert.match(body, /TEMP_FILE_POLICY/)
-  const literalEmbeds = countOccurrences(body, '${tmpFile}')
-  assert.ok(literalEmbeds <= 2, `tmpFile リテラルの埋め込み回数は 2 以下であるべき（実際: ${literalEmbeds}）`)
-  assert.match(body, /tf=\$\{tmpFile\}/)
-  assert.match(body, /"\$tf\.line"/)
-  assert.match(body, /rm -f -- "\$tf" "\$tf\.line"/)
+  assert.match(body, /UNTRUSTED_POLICY/)
   assert.match(body, /1 回の Bash 呼び出しで実行/)
+  assert.doesNotMatch(body, /\btf\b|\.line\b|mktemp|\brm\b|tmpFile/)
+  assert.match(body, /verifySignedOutput\(v, tmpNonce, /)
+})
+
+test('測定スクリプトと launcher は一時ファイルを作らず、ファイルを削除せず、/dev/null と標準エラー以外へリダイレクトしない', () => {
+  const dir = dirname(SCRIPT_PATH)
+  for (const name of ['measure-residual-bytes.sh', 'measure-free-disk.sh', 'run-verified.sh', 'lib/signed-output.sh']) {
+    const code = readFileSync(join(dir, name), 'utf8')
+      .split('\n')
+      .filter((l) => !/^\s*#/.test(l)) // コメント行は対象外
+      .join('\n')
+    assert.doesNotMatch(code, /mktemp|\brm\b|\btouch\b|\btee\b|\bmv\b|\bcp\b/, `${name}: 一時ファイル・削除・コピーのコマンドが無い`)
+    // 許可するリダイレクト: >/dev/null、2>/dev/null、2>&1、>&2。ここを取り除いて `>` が残らないこと
+    const rest = code.replace(/\d?>\s*\/dev\/null/g, '').replace(/\d?>&\d/g, '')
+    assert.doesNotMatch(rest, />/, `${name}: ファイルへのリダイレクトが無い`)
+  }
 })
 
 // --- (c) ORPHAN_BYTES_SCHEMA の count 必須化（fail-closed 強化） ---
@@ -198,28 +185,9 @@ test('measureResidualWorktreeBytesDetailed: count が対象パス数と不一致
   assert.match(body, /count が対象パス数と不一致/)
 })
 
-// PR #501 の Bugbot 指摘（Empty tf path stays silent）の回帰。tf が空（未定義を含む——手順 1 の
-// case ガードを経ずにこのスクリプト断片だけが新規 Bash 呼び出しで実行された場合を含む）のとき、
-// 以前は `:;`（no-op）で ERR=1/COUNT=0 のいずれも出力せずホスト側に失敗シグナルが渡らなかった。
-// コメント「第1段（tf 未定義・不正な接頭辞）でも…ERR=1 かつ COUNT=0 を返し」の主張どおり、
-// tf 未定義（-z 分岐）自体でも明示的に ERR=1 COUNT=0 を返すことを固定する。
-test('measureResidualWorktreeBytesDetailed: tf が空（-z 分岐）のとき no-op ではなく ERR=1 COUNT=0 を明示的に返す', () => {
-  const body = extractFunctionBody(
-    'function buildResidualBytesScript({ tmpFile, delimiter, pathsJson }) {',
-    'async function measureResidualWorktreeBytes(paths) {',
-  )
-  assert.doesNotMatch(body, /if \[ -z "\$tf" \]; then :;/)
-  assert.match(body, /if \[ -z "\$tf" \]; then echo "TOTAL=0 MISSING=0 ERR=1 COUNT=0";/)
-})
-
-test('measureFreeDiskKib: tf が空（-z 分岐）のとき no-op ではなく FREE=0 ERR=1 を明示的に返す（PR #501 Bugbot 指摘の回帰）', () => {
-  const body = extractFunctionBody(
-    'function buildFreeDiskScript({ tmpFile, delimiter, pathsJson }) {',
-    'function findMainWorktreePath(entries) {',
-  )
-  assert.doesNotMatch(body, /if \[ -z "\$tf" \]; then :;/)
-  assert.match(body, /if \[ -z "\$tf" \]; then echo "FREE=0 ERR=1";/)
-})
+// 旧: PR #501 の Bugbot 指摘（tf が空のとき no-op で失敗シグナルが渡らない）の回帰テストは、tf を持つ
+// シェルがプロンプトから消えたため不要になった。「入力が不正なら失敗を明示する」契約は、スクリプトを
+// 実行する measure-scripts.test.mjs（許可文字集合外のパス・相対パスが err に数えられる）で固定する。
 
 // --- (e) diffMainWorktreeUntracked ---
 
@@ -309,10 +277,8 @@ test('formatMainWorktreeUntrackedWarning: バッククォート・$ を含むパ
 test('State/worktree 系の主要プロンプト（loadState・updateState merge/cleanup・state:init-all・state:high-water・sweep・orphan-scan・record-count）は TEMP_FILE_POLICY を個別に含む', () => {
   const labelsAndWindows = [
 ['状態ファイル読み込みタスク。', 600],
-    ['const mergePromptText = [', 400],
+    ['function stateWritePrompt(', 600],
     ["`worktree / branch 掃除タスク（状態ファイルの JSON マージは別エージェントが実施済み）。`", 400],
-    ["状態ファイル更新タスク（トップレベルフィールド perWorktreeByteReserveHighWater・", 400],
-    ["状態ファイル一括初期化タスク。", 400],
     ["'worktree スイープタスク（ラン終了時の残骸回収）。'", 500],
     ["'git worktree 一覧の取得タスク（読み取り専用。削除・変更は一切行わない）。'", 400],
     ["'git worktree レコード総数の取得タスク（読み取り専用。削除・変更は一切行わない）。'", 400],
@@ -325,10 +291,13 @@ test('State/worktree 系の主要プロンプト（loadState・updateState merge
   }
 })
 
-test('worktree:sweep はプロンプトに「1 回の Bash 呼び出しで実行する」旨を含む（retain_file/registered_file/candidates_file を mktemp で手順をまたいで参照するため）', () => {
+test('worktree:sweep はプロンプトに「1 回の Bash 呼び出しで実行する」旨と、worktree-remove.sh sweep の 1 コマンド（候補は nonce 区切りのヒアドキュメント）を含み、手順の本文（retain_file 等の mktemp 連鎖・rm）を持たない', () => {
   const idx = source.indexOf("'worktree スイープタスク（ラン終了時の残骸回収）。'")
-  const section = source.slice(idx, idx + 700)
-  assert.match(section, /1 回の Bash 呼び出しで一連の手順すべてを実行する/)
+  const end = source.indexOf("{ label: 'worktree:sweep'", idx)
+  const section = source.slice(idx, end)
+  assert.match(section, /1 回の Bash 呼び出しで実行する/)
+  assert.match(source.slice(idx - 1800, idx), /worktree-remove\.sh', undefined, ` sweep --file \$\{STATE_FILE\}`/)
+  assert.doesNotMatch(section, /retain_file|registered_file|candidates_file|mktemp|rm -rf/)
 })
 
 // --- (g) scanMainWorktreeUntracked のプロンプトが破壊的操作を含まず例外時に throw しない ---

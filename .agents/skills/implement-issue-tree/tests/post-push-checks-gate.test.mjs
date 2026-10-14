@@ -14,6 +14,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -31,7 +32,7 @@ if (markerIndex < 0) {
 }
 const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
 const driverPart = source.slice(markerIndex)
-const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-post-push-'))
+const sliceDir = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-post-push-')))
 const slicePath = join(sliceDir, 'implement-issue-tree-defs.mjs')
 const SLICE_EXPORTS = [
   'prCreatePrompt',
@@ -68,23 +69,43 @@ const {
 const item = { number: 479, title: 'テストイシュー' }
 const impl = { prNumber: 777, branch: 'fix/479-post-push-checks' }
 const NONCE = 'b'.repeat(64)
+// push 後確認のコマンドが nonce（boundaryNonce）を使うため、seed を注入しておく（prCreatePrompt も使う）
+mod.__setBoundaryNonceSeedForTest(NONCE)
 
 // ---------------------------------------------------------------------------
 // (1) push 直後の CI 起動確認（プロンプト契約）
 // ---------------------------------------------------------------------------
 
-test('prCreatePrompt: CI 起動確認が push 行より後に現れ、check-runs と mergeable を有界に観測する', () => {
+// #603 第 3 弾: push 後の観測は observe-pr.sh --mode push に移った（30 秒間隔・最大 5 分は --attempt 最大 4 回で保つ）。
+// 観測の挙動（HEAD と PR の head の一致待ち・チェック総数・mergeable・取得失敗の扱い）は、スクリプトを実際に走らせる
+// tests/observe-pr-push.test.mjs が固定する。ここはプロンプトが『どのコマンドを実行させ、どの値を返させるか』を固定する。
+const pushCommandOf = (prompt) => /```sh\n(bash '[^\n]*observe-pr\.sh[^\n]* --mode push[^\n]*)\n```/.exec(prompt)?.[1]
+
+test('prCreatePrompt: CI 起動確認が push 行より後に現れ、observe-pr.sh --mode push を有界に実行させる', () => {
   const prompt = prCreatePrompt(item, impl, [])
-  const pushIdx = prompt.indexOf('git push origin HEAD:refs/heads/')
+  const pushIdx = prompt.indexOf('--mode push --origin ' + (prompt.includes('--origin fix') ? 'fix' : 'pr-create'))
   const checkIdx = prompt.indexOf('push 後 CI 起動確認（必須。Issue #479）')
   assert.ok(pushIdx >= 0, 'push 指示が見つからない')
   assert.ok(checkIdx >= 0, 'push 後 CI 起動確認の指示がない')
   assert.ok(pushIdx < checkIdx, 'CI 起動確認が push より前に現れる（push していない head を観測してしまう）')
-  assert.ok(prompt.includes("check-runs --jq '.total_count'"), 'check-run 総数の取得コマンドがない')
-  assert.ok(prompt.includes('--json mergeable --jq .mergeable'), 'mergeable の取得コマンドがない')
-  assert.ok(prompt.includes('30 秒間隔で最大 5 分'), '有界（30 秒間隔・最大 5 分）の待機指示がない')
+  const command = pushCommandOf(prompt)
+  assert.ok(command, 'observe-pr.sh --mode push のコマンドがない')
+  assert.match(command, new RegExp(`observe-pr\\.sh --nonce [0-9a-z]{1,64} --mode push --pr <PR 番号> --base main --branch ${impl.branch} --wait --attempt 1$`))
+  assert.ok(prompt.includes('最大 4 回 = およそ 5 分'), '有界（--attempt 最大 4 回 = およそ 5 分）の待機指示がない')
   assert.ok(prompt.includes('checksStarted'), 'checksStarted の返却指示がない')
   assert.ok(prompt.includes('mergeableAfterPush'), 'mergeableAfterPush の返却指示がない')
+  assert.ok(!prompt.includes("check-runs --jq '.total_count'"), '旧: gh api の組み立てで総数を取る指示が残っている')
+})
+
+// `<PR 番号>` の置換は、コマンドの文字列をエージェントが変えてよい唯一の箇所。何を置換してよいかを 1 か所で限定する。
+test('prCreatePrompt: PR 番号が未確定の push 後確認コマンドは <PR 番号> だけを置換してよいと 1 か所で限定する。fixPrompt は番号を埋め込み置換を許さない', () => {
+  const create = prCreatePrompt(item, impl, [])
+  assert.equal(create.split('<PR 番号>').length - 1, 2, '<PR 番号> はコマンド中と置換の指示の 2 回だけ現れる')
+  assert.ok(create.includes('<PR 番号> だけを手順 1b で作成または再利用した PR 番号（正の整数）に置き換え、他は一字一句そのまま'))
+  mod.__setBoundaryNonceSeedForTest(NONCE)
+  const fix = fixPrompt(item, impl, { summary: 'テスト用の指摘', unresolvedComments: [] }, true)
+  assert.ok(!fix.includes('<PR 番号>'), 'fix は PR 番号が分かっているので置換を求めない')
+  assert.match(pushCommandOf(fix), new RegExp(` --mode push --pr ${impl.prNumber} --base main --branch ${impl.branch} --wait --attempt 1$`))
 })
 
 test('prCreatePrompt: CI 起動確認は PR 番号確定後（手順 3 の後）に置かれ、再利用経路も通る', () => {
@@ -102,7 +123,7 @@ test('prCreatePrompt: CI 起動確認は PR 番号確定後（手順 3 の後）
 test('fixPrompt(pushAfterFix: true): CI 起動確認が push 検証の後に現れる', () => {
   mod.__setBoundaryNonceSeedForTest(NONCE)
   const prompt = fixPrompt(item, impl, { summary: 'テスト用の指摘', unresolvedComments: [] }, true)
-  const pushIdx = prompt.indexOf('git push origin HEAD:refs/heads/')
+  const pushIdx = prompt.indexOf('--mode push --origin ' + (prompt.includes('--origin fix') ? 'fix' : 'pr-create'))
   const checkIdx = prompt.indexOf('push 後 CI 起動確認（必須。Issue #479）')
   assert.ok(pushIdx >= 0, 'push 指示が見つからない')
   assert.ok(checkIdx >= 0, 'push 後 CI 起動確認の指示がない')
@@ -118,16 +139,16 @@ test('fixPrompt(pushAfterFix: false): CI 起動確認を含まない（Review �
 })
 
 test('postPushChecksInstruction: 未確定・観測不能を CONFLICTING へ倒さない（fail-closed は UNKNOWN 側）', () => {
-  const text = postPushChecksInstruction('123')
-  assert.ok(text.includes('UNKNOWN のまま返す'), '上限到達時に UNKNOWN のまま返す指示がない')
-  assert.ok(
-    text.includes('CONFLICTING とみなさず UNKNOWN を返す'),
-    '未確定を CONFLICTING とみなさない（誤って base 取り込みを起動しない）指示がない',
-  )
+  const text = postPushChecksInstruction(123, 'fix/479-x')
+  assert.ok(text.includes('mergeableAfterPush: "UNKNOWN"'), '観測不能時に UNKNOWN を返す指示がない')
+  assert.ok(text.includes('推測で補わない'), 'mergeable を推測で補わない指示がない')
+  assert.ok(text.includes('0 件・CONFLICTING と読み替えない'), '取得失敗を CONFLICTING とみなさない（誤って base 取り込みを起動しない）指示がない')
   assert.ok(
     text.includes('返却値（prNumber / pushed）の判定を変えてはならない'),
     '既存返却値の意味を変えない旨の指示がない',
   )
+  assert.throws(() => postPushChecksInstruction('123', 'fix/479-x'), /PR 番号/, '文字列の PR 番号（旧 API）や不正値は組み立てない')
+  assert.throws(() => postPushChecksInstruction(123, 'a;b'), /branch/, '不正なブランチ名はコマンドへ埋め込まない')
 })
 
 // PR #480 の codex P1 / Bugbot Medium 回帰テスト: 「チェック総数」を check-run の total_count
@@ -141,36 +162,44 @@ const COUNT_TARGETS = [
     mod.__setBoundaryNonceSeedForTest(NONCE)
     return fixPrompt(item, impl, { summary: 'テスト用の指摘', unresolvedComments: [] }, true)
   }],
-  ['monitorPrompt', () => monitorPrompt(item, impl, [], true, true)],
 ]
 
-test('チェック総数は check-run と commit status の合計で数える（PR #480）', () => {
+// #603 第 3 弾: push 後確認の集計定義（check-run の total_count + combined status の件数の合計）は observe-pr.sh --mode push が持つ。
+// 合算と取得失敗の扱いは tests/observe-pr-push.test.mjs が実行して固定する。ここではプロンプトが gh の組み立てを持たず、
+// 取得失敗を 0 件・CONFLICTING に読み替えないことを固定する。
+test('チェック総数の取得は組み立てさせず、取得失敗を 0 件・CONFLICTING に読み替えさせない（PR #480）', () => {
   for (const [name, build] of COUNT_TARGETS) {
     const prompt = build()
-    assert.ok(prompt.includes("check-runs --jq '.total_count'"), `${name}: check-run 総数の取得指示がない`)
-    assert.ok(
-      prompt.includes("/status --jq '.statuses | length'"),
-      `${name}: commit status（combined status）件数の取得指示がない — check-run のみを数えると commit status だけの CI で 0 件と誤判定する`,
-    )
-    assert.ok(prompt.includes('合計'), `${name}: 両者を合算する指示がない`)
+    assert.ok(!prompt.includes("check-runs --jq '.total_count'") && !prompt.includes("/status --jq '.statuses | length'"), `${name}: gh api の組み立て指示が残っている`)
+    assert.ok(prompt.includes('payload.checksStarted が 1 のとき true'), `${name}: checksStarted の読み方の指示がない`)
+    assert.ok(prompt.includes('payload.mergeable（MERGEABLE / CONFLICTING / UNKNOWN）をそのまま返す'), `${name}: mergeable の読み方の指示がない`)
   }
+})
+
+// #603 第 2 弾: monitor の総数取得は observe-pr.sh --mode checks へ移った。集計定義（check-run の total_count + combined status の
+// 件数の合計）と取得失敗の扱い（片方でも失敗なら err=1 で 0 件に倒さない）は、スクリプトを実際に走らせる observe-pr.test.mjs
+// の 'checks:' テスト群が固定する。ここではプロンプトが総数をそのスクリプトから読み、取得失敗を 0 件扱いにしないことだけを固定する。
+test('monitorPrompt: チェック総数は observe-pr.sh の checks（check-run + commit status の合計）から読み、取得失敗を 0 件扱いにしない（PR #480）', () => {
+  const prompt = monitorPrompt(item, impl, [], true, true)
+  const idx2 = prompt.indexOf('\n2. ')
+  const section2 = prompt.slice(idx2, prompt.indexOf('\n3. ', idx2))
+  assert.ok(section2.includes('observe-pr.sh --nonce'), '手順 2 が観測スクリプトを実行していない')
+  assert.match(section2, /--mode checks --pr \d+/, '手順 2 のモードが checks でない')
+  assert.ok(section2.includes('check-run 件数（checkRuns）と commit status 件数（statuses）の合計'), '両者を合算する定義がない')
+  assert.ok(section2.includes('err が 1（どちらか一方でも取得失敗）の場合は取得失敗として扱い'), '片方の取得失敗を取得失敗として扱う指示がない')
+  assert.ok(section2.includes('0 件と同一視すると'), '取得失敗を 0 件と同一視しない旨の指示がない')
+  assert.ok(!prompt.includes("check-runs --jq '.total_count'"), '旧: 総数を gh api の組み立てで取る指示が残っている')
 })
 
 test('チェック総数の取得失敗を 0 件扱いにしない（PR #480 codex P1）', () => {
   for (const [name, build] of COUNT_TARGETS) {
     const prompt = build()
-    assert.ok(
-      prompt.includes('どちらか一方でも失敗した場合は「取得失敗」として扱う'),
-      `${name}: 片方の取得失敗を「取得失敗」として扱う指示がない`,
-    )
-    assert.ok(
-      prompt.includes('0 件と同一視してはならない'),
-      `${name}: 取得失敗を 0 件と同一視しない旨の指示がない`,
-    )
+    assert.ok(prompt.includes('err が 1・非 0 終了・JSON なしは checksStarted: false・mergeableAfterPush: "UNKNOWN"'), `${name}: 取得失敗の扱いの指示がない`)
+    assert.ok(prompt.includes('0 件・CONFLICTING と読み替えない'), `${name}: 取得失敗を 0 件・CONFLICTING と読み替えない旨の指示がない`)
   }
 })
 
-test('monitorPrompt: 取得失敗時は checksTotal を省略し、--watch へ進む（0 件直行させない）', () => {
+test('monitorPrompt: 取得失敗時は checksTotal を省略し、手順 3 の完了待ちへ進む（0 件直行させない）', () => {
   const prompt = monitorPrompt(item, impl, [], true, true)
   const idx2 = prompt.indexOf('\n2. ')
   const section2 = prompt.slice(idx2, prompt.indexOf('\n3. ', idx2))
@@ -179,8 +208,8 @@ test('monitorPrompt: 取得失敗時は checksTotal を省略し、--watch へ�
     '取得失敗時に checksTotal を省略する指示がない（0 を返すとホストが timeout を conflicting へ誤って倒す）',
   )
   assert.ok(
-    section2.includes('取得に失敗した場合は次へ進む'),
-    '取得失敗時に --watch へ進む（0 件直行させない）指示がない',
+    section2.includes('取得に失敗した場合は手順 3 へ進む'),
+    '取得失敗時に手順 3 の完了待ちへ進む（0 件直行させない）指示がない',
   )
 })
 
@@ -221,32 +250,33 @@ test('normalizePushMergeable: enum 完全一致のみ受理し、それ以外は
 // (3) monitor プロンプト（0 件直行・timeout の限定）
 // ---------------------------------------------------------------------------
 
-test('monitorPrompt: 手順 2 は --watch の前に check-run 総数を取得し、0 件なら手順 3e へ直行する', () => {
+test('monitorPrompt: 手順 2 は完了待ち（手順 3）の前に check-run 総数を取得し、0 件なら手順 3e へ直行する', () => {
   const prompt = monitorPrompt(item, impl, [], true, true)
   const idx2 = prompt.indexOf('\n2. ')
   assert.ok(idx2 >= 0, '手順 2 が見つからない')
   const idx3 = prompt.indexOf('\n3. ', idx2)
   assert.ok(idx3 > idx2, '手順 3 の開始位置を特定できない')
   const section2 = prompt.slice(idx2, idx3)
-  const totalIdx = section2.indexOf("check-runs --jq '.total_count'")
-  // 集計定義の説明文にも「gh pr checks」の語が出るため、--watch 実行コマンドで位置決めする。
-  const watchIdx = section2.indexOf(`gh pr checks ${impl.prNumber} --watch`)
+  const totalIdx = section2.indexOf('--mode checks')
+  // 第 8 弾: 完了待ちは手順 3 の --until settled のコマンドへ移った。総数の取得（手順 2）が必ず先で、手順 2 は完了待ちを実行しない。
+  const settleIdx = prompt.indexOf('--mode checks --pr')
+  const settleCmdIdx = prompt.search(/--mode checks[^\n]*--until settled/)
   assert.ok(totalIdx >= 0, '手順 2 に check-run 総数の取得指示がない')
-  assert.ok(watchIdx >= 0, '手順 2 に --watch 監視の指示がない')
-  assert.ok(totalIdx < watchIdx, 'check-run 総数の取得が --watch より後にある（0 件のまま watch へ入ってしまう）')
+  assert.ok(!/--mode checks[^\n]*--until/.test(section2) && !section2.includes('--watch'), '手順 2 が完了待ちを実行している')
+  assert.ok(settleCmdIdx > idx3 && settleIdx < idx3, 'check-run 総数の取得が完了待ち（手順 3）より後にある（0 件のまま待ちへ入ってしまう）')
   assert.ok(section2.includes('手順 3e'), '総数 0 件時に手順 3e へ直行する指示がない')
   assert.ok(section2.includes('checksTotal'), '手順 2 に checksTotal の返却指示がない')
 })
 
-test('monitorPrompt: 手順 2 の再実行枯渇時は timeout を返さず手順 3 の総数確認へ進む', () => {
+test('monitorPrompt: 完了待ちの上限（exhausted）は総数 1 件以上の timeout に限り、0 件は timeout にせず手順 3e へ倒す', () => {
+  // 第 8 弾: 旧「--watch の再実行枯渇時は手順 3 の総数確認へ進む」は、完了待ちが exhausted になった場合に件数で状態を確定する形へ移った。
+  // exhausted は headSha を持つ（pending が残ったまま上限）ときだけ状態 1 で timeout、headSha が空なら取得不能（状態 3）。
   const prompt = monitorPrompt(item, impl, [], true, true)
-  const idx2 = prompt.indexOf('\n2. ')
-  const idx3 = prompt.indexOf('\n3. ', idx2)
-  const section2 = prompt.slice(idx2, idx3)
-  assert.ok(
-    section2.includes('再実行 4 回を使い切っても完了しない場合も、ここで timeout を返さず手順 3 の総数確認へ進む'),
-    '再実行枯渇時の接続（timeout ではなく手順 3 へ）が明記されていない',
-  )
+  const idx3 = prompt.indexOf('\n3. ')
+  const section3 = prompt.slice(idx3, prompt.indexOf('   c. ', idx3))
+  assert.ok(section3.includes('exhausted（headSha あり = pending が残ったまま待機上限）'), 'exhausted の扱い（状態 1 → timeout）が明記されていない')
+  assert.ok(section3.includes('headSha が空のまま exhausted'), '未観測の exhausted を取得不能にする旨がない')
+  assert.ok(section3.includes('state: timeout（手順 7。checksTotal は状態 1 の総数）'), 'timeout の総数の出所がない')
 })
 
 test('monitorPrompt: 手順 7 の timeout はチェック 1 件以上の pending 限定で、0 件は手順 3e へ倒す', () => {
@@ -317,7 +347,7 @@ test('駆動部: seed ラウンドは monitor を起動せず監視枠を消費�
   // monitor エージェント呼び出しは seed でない場合のみ。
   const callIdx = driverPart.indexOf('m = await agentRetryOnce(monitorPrompt(')
   assert.notEqual(callIdx, -1, 'monitor 呼び出しが見つからない')
-  assert.match(driverPart.slice(Math.max(0, callIdx - 300), callIdx), /if \(seededConflictRound\) \{/, 'monitor 呼び出しが seed 分岐の else 側に置かれていない')
+  assert.match(driverPart.slice(Math.max(0, callIdx - 1500), callIdx), /if \(seededConflictRound\) \{/, 'monitor 呼び出しが seed 分岐の else 側に置かれていない')
 })
 
 test('駆動部: checksTotal === 0 の timeout は受理せず conflicting へ再判定する', () => {

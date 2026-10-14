@@ -16,6 +16,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -32,7 +33,7 @@ const markerIndex = source.indexOf(DRIVER_MARKER)
 if (markerIndex < 0) throw new Error(`テスト境界マーカー ${DRIVER_MARKER} が実装スクリプトに存在しない`)
 const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
 const driverPart = source.slice(markerIndex)
-const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-tree-completeness-'))
+const sliceDir = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-tree-completeness-')))
 const slicePath = join(sliceDir, 'implement-issue-tree-defs.mjs')
 writeFileSync(slicePath, `${definitionPart}\nexport { findIncompleteTreeNodes, closePrompt, TREE_SCHEMA }\n`)
 const { findIncompleteTreeNodes, closePrompt, TREE_SCHEMA } = await import(pathToFileURL(slicePath).href)

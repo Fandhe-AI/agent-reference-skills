@@ -10,6 +10,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -26,7 +27,7 @@ const markerIndex = source.indexOf(DRIVER_MARKER)
 if (markerIndex < 0) throw new Error(`テスト境界マーカー ${DRIVER_MARKER} が実装スクリプトに存在しない`)
 const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
 const driverPart = source.slice(markerIndex)
-const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-repo-settings-'))
+const sliceDir = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-repo-settings-')))
 const slicePath = join(sliceDir, 'implement-issue-tree-repo-settings-defs.mjs')
 const SLICE_EXPORTS = [
   'REPO_SETTINGS_POLICY',
@@ -58,6 +59,8 @@ const SLICE_EXPORTS = [
 // seed を注入する（本番では ensureBoundaryNonceSeed() がラン開始時に 1 回だけ行う）。
 const TEST_ONLY_SETTER = 'export function __setBoundaryNonceSeedForTest(v) { boundaryNonceSeed = v }\n'
 writeFileSync(slicePath, `${definitionPart}\nexport { ${SLICE_EXPORTS.join(', ')} }\n${TEST_ONLY_SETTER}`)
+// baseMergePrompt の起動コマンド（scriptInvocation）は args.skillDir を要る。実ランでは起動手順が渡す
+globalThis.args = { skillDir: '/opt/skills/implement-issue-tree' }
 const m = await import(pathToFileURL(slicePath).href)
 m.__setBoundaryNonceSeedForTest('a'.repeat(64))
 
