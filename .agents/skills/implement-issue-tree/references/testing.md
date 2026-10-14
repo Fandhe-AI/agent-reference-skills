@@ -3,7 +3,7 @@
 本書は implement-issue-tree スキルの一部。全体は ../SKILL.md 参照。
 
 `skills/implement-issue-tree/tests/` のテストを速く確かめ、検査が弱くなっていないことを変異で確かめるための手引き。
-テストの本数は多い（2200 件超）が、全体は単独で約 80 秒（Node 24・16 コア）で終わる。
+テストの本数は多い（2800 件超）が、全体は単独で約 105 秒（Node 24・16 コア・2026-10 実測）で終わる。
 
 ## 流し方
 
@@ -35,6 +35,14 @@ ls "$t24" "$t22"   # 空であること（テストが作った一時ディレ�
 node --test --test-reporter=spec skills/implement-issue-tree/tests/*.test.mjs 2>&1 \
   | grep -E '^[✔✖] ' | sed -E 's/^. (.*) \(([0-9.]+)ms\)$/\2\t\1/' | sort -rn | head -30
 ```
+
+壁時計の kill を実際に待つ `observe-pr-inconclusive.test.mjs` は、マシンの高負荷時（load average が数十）にまれに落ちる。落ちたらそのファイルだけを単独で再実行して、負荷由来か本物の退行かを切り分ける。
+
+```bash
+node --test skills/implement-issue-tree/tests/observe-pr-inconclusive.test.mjs
+```
+
+単独でも落ちるなら負荷ではなく退行として扱う（閾値は緩めず、skip もしない）。
 
 ## 速いテストの書き方（このスキルで使っている型）
 

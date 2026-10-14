@@ -11,7 +11,8 @@
 #   superseded  マージ済み・置き換え済み・最終スイープ。汚れていても --force で消す（汚れの行数を結果に記録）。ただし submodule に
 #               未記録の変更があれば保持する。
 #   discard     Recover の破棄・継続。汚れていれば、または初期化済み submodule があれば保持する（--force は使わない）。--branch が
-#               あれば worktree が無くなったあとでブランチも消す（消す前の先頭 sha を結果に出す。base と同名のブランチは消さない）。
+#               あれば worktree が無くなったあとでブランチも消す（消す前の先頭 sha を結果に出す。base と同名のブランチは消さない）。--path と --branch を
+#               両方与えたときは、削除の前に同じプロセスでその worktree の HEAD を読み、--branch と違えば worktree もブランチも消さない。
 #   sweep       ラン終了時の残骸回収。候補ごとに superseded と同じ規則で消す。状態ファイルが failed / blocked / monitoring の
 #               イシューに記録した worktree、登録されていないパス、メイン worktree は消さない。状態ファイルを読めなければ何も消さない。
 # 確認の方法: `git -c core.excludesFile= status --porcelain=v2 -uall --ignore-submodules=none`（利用者の status.showUntrackedFiles や
@@ -29,8 +30,9 @@
 # 出力: 標準出力の最後の 1 行が `WORKTREE_REMOVE_RESULT {json}`。値は固定語彙と件数のみ（パスは sweep の removed だけで、
 #       検証済みの候補のパスに限る）。
 #           main = メイン worktree、cwd = カレントがその worktree の中（どちらも消さない）。
+#           retained-branch-mismatch = discard で --path と --branch を両方与えたとき、worktree の HEAD が --branch と違う（detached を含む。worktree もブランチも消さない）。
 #           branchSha は消す前（または消さなかった）ブランチの先頭 sha で、ブランチの削除に失敗したとき（failed）は空。
-#   remove: {"ok":bool,"mode":"…","worktree":"removed|not-registered|skipped|main|cwd|retained-dirty|retained-submodule|retained-locked|failed",
+#   remove: {"ok":bool,"mode":"…","worktree":"removed|not-registered|skipped|main|cwd|retained-dirty|retained-submodule|retained-locked|retained-branch-mismatch|failed",
 #            "branch":"none|deleted|absent|keep-base|keep|failed","branchSha":"<40 桁 | 空>","dirty":N,"unlocked":bool,"retained":bool}
 #   sweep:  {"ok":true,"mode":"sweep","removed":["…"],"retained":N,"skipped":N,"failed":N,"reason":"…"}
 #           reason は空 / state-unreadable / invalid-input。state-unreadable と invalid-input では何も消さない。
@@ -87,9 +89,9 @@ done
 T_WT=""
 T_DIRTY=0
 T_UNLOCKED=false
-# $1 = モード、$2 = パス
+# $1 = モード、$2 = パス、$3 = 結びつけるブランチ（discard の --branch。空 = 結びつけない）
 remove_one() {
-  local m=$1 path=$2 list top real cwd_real plan lockact alive cur_start status_out sub_init gd rc kmsg krc kw pw pself pout prc xw
+  local m=$1 path=$2 expect=${3:-} wt_head list top real cwd_real plan lockact alive cur_start status_out sub_init gd rc kmsg krc kw pw pself pout prc xw
   T_WT=""
   T_DIRTY=0
   T_UNLOCKED=false
@@ -137,10 +139,13 @@ remove_one() {
   WR_DIRTY=0
   WR_SUB_DIRTY=0
   sub_init=0
+  wt_head=""
   if [ -d "${path}" ]; then
     top=$(git -C "${path}" rev-parse --show-toplevel 2>/dev/null) || top=""
     if [ -n "${top}" ] && [ "$(wr_real "${top}")" = "${real}" ] && status_out=$(git -C "${path}" -c core.excludesFile= status --porcelain=v2 -uall --ignore-submodules=none 2>/dev/null); then
       wr_count_status "${status_out}"
+      # この worktree が実際に指すブランチ（toplevel がこの worktree 自身だと確かめた後に、削除と同じプロセスで読む）
+      wt_head=$(git -C "${path}" symbolic-ref -q --short HEAD 2>/dev/null) || wt_head=""
       # 初期化済み submodule（先頭が - の行は未初期化）と、このworktree専用の modules ディレクトリ（deinit 後もコミットが残り得る）
       sub_init=$(git -C "${path}" submodule status 2>/dev/null | awk 'substr($0,1,1) != "-" && NF > 0 { n++ } END { print n + 0 }') || sub_init=0
       gd=$(git -C "${path}" rev-parse --absolute-git-dir 2>/dev/null) || gd=""
@@ -155,6 +160,9 @@ remove_one() {
     retain-dirty) T_WT='retained-dirty'; return 0 ;;
     retain-submodule) T_WT='retained-submodule'; return 0 ;;
   esac
+  # discard で --branch を結びつけられた worktree は、その HEAD が --branch と一致するときだけ消す（呼び出し側が別のブランチ名を渡しても、
+  # 無関係な worktree とそのブランチを消さない。worktree もブランチも残る）。実体が無い worktree（dead）は読めないので従来どおり
+  if [ "${m}" = discard ] && [ -n "${expect}" ] && [ -d "${path}" ] && [ "${wt_head}" != "${expect}" ]; then T_WT='retained-branch-mismatch'; return 0; fi
 
   rc=0
   if [ "${lockact}" = unlock ]; then
@@ -196,7 +204,7 @@ if [ "${cmd}" = remove ]; then
   [ -z "${file}" ] || usage "--file は sweep 専用"
 
   if [ -n "${path}" ]; then
-    remove_one "${mode}" "${path}"
+    remove_one "${mode}" "${path}" "${branch}"
   else
     T_WT=skipped
   fi

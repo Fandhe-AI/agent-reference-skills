@@ -170,9 +170,11 @@ merged（`already-merged` を含む）の受理にも同じ照合を課し、mon
 の妥当性（issue の命名一致を含む）のみで再開判定しており、`blockedReason` を読まない。同一ラン内のメモリ上変数として
 note・ログ文言の合成にのみ使われる。
 
-**Recover の判断軸は Review とは別**である。Review は「正しいか・マージできるか」を判定するのに対し、Recover は「この途中作業から継続するのが妥当か」を判断する。動かない・未完成でも方向が妥当なら continue（残りは Implement が完成させる）。未 commit 変更は Recover が WIP commit として branch へ退避してから worktree を削除するため、continue / discard どちらの経路でもデータを失わない。worktree の削除は continue / discard いずれでも退避完了を申告・実測の 2 段で検証してから行う（Step 2 の削除ゲート参照）。
+**Recover の判断軸は Review とは別**である。Review は「正しいか・マージできるか」を判定するのに対し、Recover は「この途中作業から継続するのが妥当か」を判断する。動かない・未完成でも方向が妥当なら continue（残りは Implement が完成させる）。未 commit 変更は WIP commit として branch へ退避してから worktree を削除するため、continue / discard どちらの経路でもデータを失わない。worktree の削除は continue / discard いずれでも退避完了を申告・実測の 2 段で検証してから行う（Step 2 の削除ゲート参照）。
 
-状態ファイルの `worktree` フィールドには実装エージェントが動作した worktree の絶対パスが記録される。Recover phase はこのフィールドと `git worktree list --porcelain` を使って残骸を特定する。
+Recover の機械的な部分 — 対象ブランチの解決・WIP commit（フックを通す。`--no-verify` なし）・`origin/<base>` の取得・base との差分の有無 — は `scripts/recover-prep.sh`（`run-verified.sh` 経由。Issue #603 第 9 弾）が決定的に行い、Recover エージェントは結果の行 `RECOVER_PREP_RESULT {…}` の `branch`・`worktreeMissing`・`wipCommitted` を返却へ写して、継続か破棄かの判断と回復ブリーフの作成だけを行う。退避完了（`wipCommitted: true`）の根拠はコミットの終了コードではなく、コミット後の同じ観測（`git -c core.excludesFile= status --porcelain=v2 -uall --ignore-submodules=none`）が空であること。フックの拒否・フックによる書き換え・submodule 内の未コミットの変更・入れ子の git リポジトリ・コンフリクト中・観測不能は `false` で、`failed` で保全される。メイン worktree・未登録のパス・git がそのパス自身を指さない worktree・detached HEAD・base と同名の HEAD は対象を確定せず（`resolved: false`）、何も書かない。base の取得に失敗したときの差分は `unknown`（空とは見なさない）。詳細は `./script-trust-model.md` の第 9 弾。
+
+状態ファイルの `worktree` フィールドには実装エージェントが動作した worktree の絶対パスが記録される。Recover phase はこのフィールドと `git worktree list --porcelain` を使って残骸を特定する（`recover-prep.sh` が一覧との照合まで行う）。
 
 ### worktree の自動削除
 

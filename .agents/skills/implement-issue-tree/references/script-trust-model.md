@@ -17,9 +17,16 @@
 | `scripts/state.sh` | 状態ファイル（`_/issue-trees/<親>.json`）の書き込み（第 5 弾）。モードは `merge` / `init` / `hw-max` / `hw-set`。入力は標準入力の 1 行 JSON と引数。**封筒を使わない**。出力の最後の 1 行は `STATE_RESULT {"ok":…}` |
 | `scripts/merge-gate.sh` | merge-exec のマージ直前の読み取り専用検証（第 6 弾。G0 = サーバー側強制の実測と、チェック・未解決スレッド・mergeable・外部チェックの再検証）。入力は PR 番号・base・期待 sha・外部チェックの宣言（引数）。**封筒を使う**: payload は判定語（`verdict`。merge-exec の reason と同じ語彙）・段階・固定語の detail・整数の件数・40 桁 16 進の HEAD sha だけ。**マージの実行は含まない** |
 | `scripts/worktree-remove.sh` | worktree の破棄・掃除（第 7 弾）。確認と削除を同じプロセスで行う。サブコマンドは `remove --mode superseded|discard`（`--path`・`--branch`・`--base`）と `sweep --file`（候補は標準入力の JSON 配列）。**封筒を使わない**。出力の最後の 1 行は `WORKTREE_REMOVE_RESULT {…}` |
+| `scripts/recover-prep.sh` | Recover の機械的な部分（第 9 弾）。対象ブランチの解決・未コミット変更の WIP コミット・base の取得・base との差分の有無。入力は `--base`（必須）・`--worktree`・`--branch`（引数）。**封筒を使わない**。出力の最後の 1 行は `RECOVER_PREP_RESULT {…}`。判断（continue / discard）と回復ブリーフはエージェントに残る |
 | `scripts/lib/signed-output.sh` | 封筒の組み立て（`so_emit`）。sha256 の入力の定義はここと `verifySignedOutput` が共有する |
 | `scripts/lib/observe-checks-lib.sh` | `observe-pr.sh --mode checks --until settled` の分類（`checks_classify`。check-run と commit status を合格 / 未完了 / 不合格の件数にする純関数。第 8 弾） |
 | `scripts/lib/push-verify.sh` | push の前後でリモート head を突き合わせる共通部（`pv_push_verified`。第 3 弾）。`base-merge.sh` が使い、以降 pr-create の push と fix の push 検証も同じ部品へ移す |
+| `scripts/lib/base-merge-lib.sh` | `base-merge.sh` の入力検証と remote URL の照合の純関数（`is_uint` / `valid_repo` / `url_allowed` / `routing_check_remotes` と許可ホストの定数）。第 3 弾の `base-merge.sh` 本体からロジックを変えずに PR #616 で切り出したもの。`pr-push.sh`・`merge-gate.sh`・`observe-pr.sh` も source する |
+| `scripts/lib/pr-push-lib.sh` | `pr-push.sh` の判定だけの純関数（`pp_*`。起点の決定・既存 PR の分類・PR 番号の取り出し・形式検証。第 4 弾） |
+| `scripts/lib/state-lib.sh` | `state.sh` の入力検証と状態ファイルの書き換え（`st_valid_*`・`st_rewrite` と固定の jq プログラム。書き込み直前の変更検知つきで一時ファイルから `mv` する。第 5 弾） |
+| `scripts/lib/merge-gate-lib.sh` | `merge-gate.sh` の判定だけの純関数（`mg_*`。取得済みの JSON を判定語・件数へ畳む。想定外の形は非ゼロ return で返し、呼び出し側が fail-closed に倒す。第 6 弾） |
+| `scripts/lib/worktree-remove-lib.sh` | `worktree-remove.sh` の判断と入力検証の純関数（`wr_*`。削除・強制削除・保持の判断、lock の扱い、status の読み取り。`recover-prep.sh` も source する。第 7 弾） |
+| `scripts/lib/recover-prep-lib.sh` | `recover-prep.sh` の判断だけの純関数（`rp_*`。対象ブランチの解決・WIP コミットの要否と結果の分類・base との差分の三値判定。第 9 弾） |
 | 生成物 `implement-issue-tree.js` の `SCRIPT_SHA256` | ビルダーが埋め込む期待ハッシュ。開発ファイルには置換前の目印を書き、`build-workflow.mjs` が置換する |
 | `verifySignedOutput`（ホスト） | 転記された封筒を再計算して照合する |
 
@@ -348,6 +355,51 @@ monitor の手順 2〜3 は、HEAD sha のチェックの完了を `gh pr checks
 ### この弾の検証範囲
 
 単体テスト（`checks_classify` の表・偽 `gh` を差し替えたスクリプト全体・ホストの封筒照合・プロンプトの配線）と変異（危険側 19 件）でのみ検証している。**実 GitHub の PR に対する実ランでは未検証**（`gh api --paginate` の `/commits/<sha>/status` が 100 件超の status を複数ページで返すときの合算、実際の check-run の `conclusion` 語彙、40 分規模の実待機を含む）。
+
+## 第 9 弾: Recover の機械手順（`recover-prep.sh`）
+
+### 位置づけ: 機械的な部分だけを移し、判断はエージェントに残す
+
+`recoverPrompt` は、(a) worktree の HEAD からのブランチ解決（`git -C … rev-parse --abbrev-ref HEAD` の結果で dead worktree / detached / 通常を場合分け）、(b) 未コミット変更の WIP コミット（`git add -A` → `git commit`。フック失敗なら `wipCommitted: false`）、(c) `origin/<base>` の取得、(d) base との差分の有無、を文章の手順として持っていた。これを `scripts/recover-prep.sh`（判断は `lib/recover-prep-lib.sh` の純関数。汚れの行数と入力検証は第 7 弾の `lib/worktree-remove-lib.sh` を再利用する）の 1 回の呼び出しに置き換えた。**継続か破棄かの判断と、回復ブリーフ（done / remaining / broken）の作成はエージェントに残る**。スクリプトはブランチの削除・worktree の削除・push・マージをしない（削除は `worktree-remove.sh`）。エージェントは結果の行の `branch`・`worktreeMissing`・`wipCommitted` を返却へ写す。`RECOVER_SCHEMA` は変えていない。
+
+### 封筒を使わない理由（判断）
+
+ホストが `wipCommitted` を**削除の第 1 層のゲート**に使う（`wipCommitted !== true` なら掃除エージェントを起動せず `failed` で保全する）ため、自己申告ではなくスクリプトの出力が根拠になる以上、封筒が要るかを検討した。結論は**不要**:
+
+- 削除の実効のゲートは第 2 層、つまり第 7 弾の `worktree-remove.sh --mode discard` が**削除と同じプロセスで**行う独立観測（`git -c core.excludesFile= status --porcelain=v2 -uall --ignore-submodules=none` が空、初期化済み submodule なし、`--force` なしで削除、lock が生きていれば保持）。`wipCommitted: true` を偽ってもこの層は破れず、未退避の変更があれば `retained-dirty` で保持される。第 1 層は「退避に失敗したと分かっているなら掃除エージェントを起動すらしない」という早期の安全側の打ち切りで、偽の `true` を通しても失うものは無い（第 2 層が止める）。
+- 偽の `false`（本当は退避できているのに `false`）は保全側（`failed`）に倒れるだけで、データは失われない。
+- `branch` と `worktreeMissing` は従来もエージェントの自己申告で、ホストは `isValidBranchName` と `worktreeAlive` の規則で受け取る。ブランチの削除は第 7 弾が「worktree が無くなったあとでだけ・base と同名は消さない」で閉じ、さらに `--path` と `--branch` を両方渡す discard は、**削除の前に同じプロセスで worktree 自身の HEAD（`git symbolic-ref -q --short HEAD`。toplevel がその worktree だと確かめた後）を読み、`--branch` と違えば（detached を含む）`retained-branch-mismatch` で worktree もブランチも消さない**。エージェントが無関係なブランチ名を返しても、その名前のブランチも別の worktree も消えない（結びつけの根拠は申告ではなく削除と同じプロセスの観測）。dead worktree〔実体が無い〕と `--path` なしの残骸は読む HEAD が無いので従来どおり。この弾で新しく採用する値は無い。
+- 封筒を付けても、悪意あるエージェントが `sha256sum` を回して作れる範囲（第 1 弾の「何を防がないか」）に収まり、得られるのは転記ミスの検出だけである。ホストの検証を増やす代わりに、第 2 層を実効のゲートとして据え置くほうが堅い。
+
+なお、ホストが `wipCommitted` を**唯一の**削除条件に使う設計に将来変えるなら、そのときは封筒を付ける（この弾では変えない）。`diff`・`commitsAhead`・`baseSha` などはエージェントの判断材料で、ホストは読まない。
+
+### 結果の行（固定語彙・真偽・件数・40 桁 16 進の sha と検証済みのブランチ名）
+
+`{"resolved","reason","branch","source","worktreeMissing","wip","wipCommitted","dirty","branchExists","branchSha","baseFetched","baseSha","diff","commitsAhead","filesChanged"}`。
+
+- **ブランチ解決（`rp_resolve`）**: live（`git worktree list` に登録済みで、`rev-parse --show-toplevel` の実体が対象のパスと一致）なら worktree の HEAD（`git symbolic-ref -q --short HEAD`）を使う。state のブランチと食い違えば HEAD を優先する（WIP が積まれるのは HEAD 側）。dead（パスが存在しない）と branch だけの残骸は記録されたブランチを使う（無ければ `branch: ""` で確定し、継続不能 = discard。記録されたブランチが base と同名なら live と同じく `base-branch` で確定しない）。**確定しない**（`resolved: false`・何も書かない）: メイン worktree（`main-worktree`）、登録されていないパス（`not-registered`）、パスはあるが git がそのパス自身を指さない（`toplevel-mismatch`。`.git` が壊れて git が親の repo を見る場合に、メインの変更を WIP コミットしてしまうのを防ぐ。実体があるので dead 扱いにもしない）、detached HEAD（`detached`）、HEAD が base と同名（`base-branch`。base に WIP を積むと discard で消せず continue は壊れる）、worktree の一覧を取れない（`list-failed`）。
+- **WIP コミット**: 汚れの観測は第 7 弾と同じ対象の `git -C <worktree> -c core.excludesFile= status --porcelain=v2 -z -uall --ignore-submodules=none`（利用者の `status.showUntrackedFiles`・submodule の ignore 設定・グローバルの除外ファイルに左右されない）。**`-z`（NUL 区切り）で読む**: 区切りなしだとパスが C 引用（非 ASCII・`"`・`\`・タブ・改行）で出て、入れ子の git リポジトリの検出（`? パス/`）が取りこぼし、gitlink だけを WIP コミットして `wipCommitted: true` になっていた。シェル変数は NUL を持てないので、`tr` で改行→`?`・NUL→改行（パス中の改行が行区切りと紛れない）に変えて 1 レコード 1 行にし、rename / copy レコードの直後の元のパスは落とし、git の終了コードは末尾の `GITRC=` の行で受ける。第 7 弾の `worktree-remove.sh` は行数と第 3 フィールドだけを読み、引用はパスの部分にしか影響せず件数・submodule 判定は変わらないので `-z` なしのまま（検出器の取りこぼしは無い）。フックを通す（`--no-verify` なし。stdin は `</dev/null`、フックの出力は標準エラーへ送って標準出力の最後の 1 行を結果に保つ）。**退避完了（`wipCommitted: true`）の根拠はコミットの終了コードではなく、コミット後の同じ観測が空であること**（`rp_wip_after`）。さらに**成功の終了コードでも、HEAD が進んでいない・進んだが前の HEAD との差分が空（フックが commit のあとで `reset --hard` などで変更を捨てた。汚れは無く見える）なら `empty-commit`・`false`**。マージ・cherry-pick・revert・rebase の途中（`MERGE_HEAD` / `CHERRY_PICK_HEAD` / `REVERT_HEAD` / `REBASE_HEAD` と `rebase-merge` などのディレクトリ）は未マージと同じく触らず `in-progress`・`false`。フックが拒否した（`commit-failed`）・フックがファイルを書き換えた／グローバルの除外に載った未追跡ファイルが拾われずに残った（`residual-dirty`。ほかにコミットできる変更があって commit は成功したとき。汚れがその未追跡ファイルだけだと `add -A` が何も拾わず commit が「nothing to commit」で失敗するので、フックが走っていなくても `commit-failed` になる）・submodule 内の未コミットの変更が残った（`submodule`。汚れが submodule だけで commit が失敗した場合も同じ語）・観測できなかった（`unverified`）は `false`。拒否されたときの `git add` は戻さない（staged も worktree-remove.sh が汚れとして保持する）。コンフリクト中（`unmerged`。`add -A` はマーカー入りの内容を確定させてしまう）と入れ子の独立 git リポジトリ（`nested-repo`。`add -A` は中身ではなくポインタだけを記録し、worktree を消すと中身が失われる）は触らず `false`。退避の対象が無い（dead worktree・branch だけの残骸）は `skipped`・`true`。
+- **初期化済み submodule の扱い**: 親の `git add -A` は submodule 内の未コミットの変更を記録しない。そうした変更はコミット後も汚れ（`S` で始まる行）として残るので `wip: submodule`・`wipCommitted: false`。変更が無ければ初期化済みであること自体は WIP の判定に影響しない（`wip: none`・`true`）。discard の可否は第 7 弾の `--mode discard` が「初期化済み submodule があれば保持」で判定する。
+- **base の取得と差分**: `git fetch origin refs/heads/<base>:refs/remotes/origin/<base>`（旧プロンプトと同じ共有の追跡 ref。保存先を明示する。Issue #361）の成否を `baseFetched` に出し、成功したときだけ `git diff --quiet --no-ext-diff --ignore-submodules=none <baseSha>...<branchSha>`（利用者の `diff.ignoreSubmodules` で submodule ポインタだけの変更が `empty` にならないよう固定する）の終了コード（0 = `empty`、1 = `nonempty`、他 = `unknown`）で差分を判定する。**取得に失敗したら `unknown`（`empty` にしない）**: 古い追跡 ref が残っていてもそれで判定しない。`empty` は discard の根拠になるため、プロンプトは `unknown` を「差分が空とは見なさず、branch の内容を直接読んで判断する」と指示する。ブランチが実在しない（`branchExists: false`）ときも `unknown`。`nonempty` のときは先行コミット数（`commitsAhead`）と変更ファイル数（`filesChanged`）も出す。
+- 出力にパス・フックの出力・外部由来の文字列を入れない（ブランチ名は `wr_valid_branch` を通ったものだけ。診断は標準エラーへ）。結果を出せたときは、失敗や未確定を含めて exit 0。使い方の誤りは exit 2（結果の行なし）、git が無ければ exit 3。
+
+### 静的ガード
+
+`git add` / `git commit` が `scripts/` に現れるのはこのスクリプトが初めてで、既存のパターン（`--no-verify`・`git commit -n`・フック無効化）はそのまま効く。さらに第 7 弾の方式で**行単位の許可形**を新設した: `git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "wip(recover): 中断時の未コミット変更を退避" </dev/null >&2 || crc=$?` の 1 行だけを許し、`git -C "${path}"` で対象の worktree を明示しない形（メイン worktree が暗黙の対象になる）・別のパス・メッセージの変更・フラグの追加・引用符つきの `git` / サブコマンドはすべて拒否する。許可形が `recover-prep.sh` にしか無く 1 行だけであることは専用テストで固定する。同じテストで、`recover-prep.sh` にブランチ削除・`reset`・`checkout`・`clean`・`stash`・`push`・`merge`・`update-ref`・`rm` が無く、`git worktree` が `list --porcelain` だけで、`git fetch` が `refs/remotes/origin/` へ保存する 1 形だけであることも固定する。`git fetch` は既存パターンに当たらない（変更なし）。除外リストと `merge-guard-hook.sh` は変えていない。
+
+### 既知の挙動（旧プロンプトとの差）
+
+- **WIP のコミット件名は固定の `wip(recover): …`** のまま。commitlint の `type-enum` がこの type を許さないリポジトリでは `commit-msg` フックが拒否して `commit-failed`（`wipCommitted: false`）になり、`failed` で保全される（旧プロンプトでも同じ結果だった。保全側に倒れる）。
+- **汚れの観測が旧プロンプトより厳しい**: 旧は素の `git status --porcelain`（利用者の設定やグローバルの除外に従う）で、グローバルの除外に載った未追跡ファイルは見えず `wipCommitted: true` になり得たが、第 7 弾の `--mode discard` がそのファイルを汚れとして保持して `failed` になっていた。今は最初から `residual-dirty`・`false` で保全する（結末は同じで、早く止まる）。
+- **メイン worktree・未登録・不一致のパスを渡されたとき**は何も書かずに `resolved: false`。旧プロンプトは `git -C` でそのパスの HEAD を読み、メインや無関係な repo に WIP コミットを積み得た。
+- **lock は見ない（旧プロンプトと同じ）**: 生きた agent の lock が付いた worktree にも WIP コミットを積む。`git worktree list` の `locked` 行は読まない。lock の扱いは削除側が担い、第 7 弾の `worktree-remove.sh --mode discard` が生きたセッションの lock を `retained-locked` で保持する（WIP コミットは lock の有無によらずブランチに残るのでデータは失われない）。この pid はセッション（メインの `claude` プロセス）の pid なので、同じセッション内の再実行では lock が常に生存と判定される。ここで lock を理由に WIP を拒むと同一セッション内の Recover が成り立たなくなるため、この弾では入れない。
+- **ホスト側の引数の検査**: `--base`・`--worktree`・`--branch` はホストの `sanitizeBranch` / `sanitizeWorktreePath`（どちらも `worktreeQuote` の許可文字の部分集合）を通った値で、`worktreeQuote` が例外を投げる経路は無い（`baseBranch` が不正なら起動時の `sanitizeBranch` で既に停止している）。
+- **base の取得は共有の追跡 ref**（`refs/remotes/origin/<base>`）へ書く。並列に走る Recover が同じ ref を更新し得るが、git の ref ロックで直列化され、どちらも最新の base に進むだけで害は無い（`base-merge.sh` / `pr-push.sh` が worktree ごとの ref を使うのは、取り込む側が取得した sha に固定する必要があるため。この弾は読み取りの判定だけで、sha を結果の `baseSha` に固定して使う）。
+- 新しい lib（`lib/recover-prep-lib.sh`）を足したので、**全スクリプトのハッシュが変わる**。同じ時期に別のスクリプトを変更している作業（例: `observe-pr.sh` の修正）は、`SCRIPT_SHA256` の表・生成物・`script-static-guard.test.mjs` で競合する。後からマージする側は再ビルドが要る。
+
+### この弾の検証範囲
+
+単体テスト（判断の表〔`rp_resolve` 19 行・`rp_scan_status`・`rp_wip_plan`・`rp_wip_after`・`rp_wip_ok`・`rp_diff_state`・`rp_is_sha`〕・実 git のサンドボックス〔clean・追跡変更・staged・未追跡・深い階層・混在・ignore のみ・`showUntrackedFiles=no`・グローバルの除外・フックの拒否 / 書き換え・コンフリクト中・入れ子の独立 repo・submodule〔clean・内部の変更・`diff.ignoreSubmodules=all` 下〕・観測不能〔index 破損〕・state との食い違い・dead worktree・branch だけの残骸・ブランチ不在・detached・メイン worktree・未登録パス・`.git` 破損・HEAD が base と同名・差分の件数・打ち消しコミット・base の取得失敗〔古い追跡 ref あり〕・base 不在・引数の誤り・cwd がリポジトリの外・run-verified.sh 経由〕を bash 3.2 と 5 で・ホスト配線〔コマンドの組み立て 3 形・手作業の文章が残っていないこと・第 1 層 / 第 2 層のゲート〕）と変異 25 件でのみ検証している。**実ランの隔離なし（メイン checkout）の Recover エージェントからの `run-verified.sh` 経由の起動は未検証**で、`git fetch` は実 GitHub に対して実行していない（ローカルの bare リポジトリのみ）。フックは `pre-commit` のみ実測し、`commit-msg`（commitlint）・`prepare-commit-msg` は未実測。
 
 ## ハッシュ埋め込みと鮮度
 
