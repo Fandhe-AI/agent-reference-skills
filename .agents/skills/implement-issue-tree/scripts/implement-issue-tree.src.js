@@ -3576,13 +3576,14 @@ function closedCleanupRetainedReason(result, outputMissing) {
 // 削除は worktree-remove.sh remove --mode discard --head <PR の head>: 汚れ・初期化済み submodule・lock は保持し --force を使わず、HEAD が違えば保持する
 // （squash マージは base との差分で未 push のコミットを見分けられないため、PR の head との一致で確かめる）。ブランチは消さない。
 // 戻り値は skip エントリの note に足す文字列。
-// outcome.settled: 試行済みの記録を書いた、または merged まで進んだ（それ以外 = 次のランでも候補のままなので、呼び出し側が試行回数を書く）
+// outcome.settled: 試行済みの記録を書けた、または merged へ書けた（それ以外 = 書き込みの失敗を含め次のランでも候補のままなので、呼び出し側が試行回数を書く）
 async function cleanupClosedMergedWorktree(item, cand, outcome = {}) {
   const n = item.number
   // 成立しなかった結果を記録して次の実行から飛ばす（pr と worktree が同じ間）。status と worktree は変えないので sweep の保持照合から外れない。書けなくても害はない（再試行されるだけ）
   const tried = async (reason, text) => {
-    outcome.settled = true
-    if (!(await updateState(n, { closedCleanupTried: { pr: cand.pr, worktree: cand.worktree, reason } }))) log(`⚠️ #${n}: closed 後始末の試行済み記録を書けなかった`)
+    // settled は記録が書けたと分かってから立てる。書けなかった候補は次のランでも候補のままなので、呼び出し側が試行回数を書いて先頭の枠を譲らせる
+    if (await updateState(n, { closedCleanupTried: { pr: cand.pr, worktree: cand.worktree, reason } })) outcome.settled = true
+    else log(`⚠️ #${n}: closed 後始末の試行済み記録を書けなかった（試行回数で順番を回す）`)
     return text
   }
   const { problem, bind } = await fetchPrBinding(item, cand.pr, cand.branch)
@@ -3633,9 +3634,10 @@ async function cleanupClosedMergedWorktree(item, cand, outcome = {}) {
   }
   confirmedRemovedPaths.add(w)
   sweepHeldPaths.delete(w)
-  outcome.settled = true
   const ok = await updateState(n, { status: 'merged', pr: cand.pr, unverifiedPr: 0, worktree: '', note: `PR #${cand.pr} のマージ済みを確認し、closed 後始末で worktree を破棄した` })
-  if (!ok) {
+  // merged へ書けたときだけ settled。失敗すると状態は blocked / monitoring のままで次のランも候補なので、試行回数を書かせる
+  if (ok) outcome.settled = true
+  else {
     log(`⚠️ #${n}: closed 後始末で worktree は破棄したが、状態ファイルの merged 更新に失敗した（次の実行で同じ経路が再試行する）`)
     return `closed 後始末: worktree を破棄した（PR #${cand.pr} はマージ済み）。状態の更新に失敗`
   }
@@ -4626,6 +4628,18 @@ const EPHEMERAL_RESERVE_PER_NEW_START = Object.values(EPHEMERAL_KIND_MAX).reduce
 // base-merge を最大 maxBaseMerges 件記録し得るため両方を見込む（Issue #441）。
 const EPHEMERAL_RESERVE_PER_MONITORING_RESUME = EPHEMERAL_KIND_MAX['fix-terminal'] + EPHEMERAL_KIND_MAX['base-merge']
 
+// 新しい worktree をこのランの台帳へ記録する入口（recordEphemeralWorktree / recordReplacementWorktree / 置換で引き継ぐパス）が共通で呼ぶ。
+// 同じランで『削除済みと確認した』パスに worktree が作り直された場合、その実体は生きている。削除済みの集合（confirmedRemovedPaths。
+// バイト測定から外れる）と最終スイープの削除候補（sweepEligiblePaths）に旧パスが残ると、生きた実体が測定から漏れ、スイープに --force で消され得る。
+// 外すのは『削除を試みた記録』だけで、削除が増える方向の変更ではない（候補が減るだけ）。保持の照合は状態ファイルの failed / blocked / monitoring の記録が
+// 別に持つ。その実体を後で掃除したときは updateState が改めて候補・削除済みへ載せる。
+// recordRetainedWorktree には入れない: スイープが削除できなかった候補（削除済みと確認済みで not-registered のパスを含む）を渡して呼ぶため、ここで外すと
+// 実体のない確認済みパスが残置として計上される
+function markWorktreeLive(p) {
+  confirmedRemovedPaths.delete(p)
+  sweepEligiblePaths.delete(p)
+}
+
 // 使い捨て worktree・fix-terminal・実装 worktree を記録する。**この関数は削除をしない**
 // （Issue #142）。worktreePath は照合できない自己申告値のため自動削除しない。
 function recordEphemeralWorktree(issueNumber, rawPath, kind) {
@@ -4643,6 +4657,7 @@ function recordEphemeralWorktree(issueNumber, rawPath, kind) {
     ephemeralWorktrees.push({ issue: issueNumber, kind, path: '' })
     return
   }
+  markWorktreeLive(p)
   ephemeralWorktrees.push({ issue: issueNumber, kind, path: p })
   log(`#${issueNumber}: ${kind} worktree を記録した（自動削除はしない。${p}）`)
 }
@@ -4703,6 +4718,8 @@ function applyReplacementAccounting(issueNumber, oldPath, rawNewPath, oldRemoved
   const plan = planReplacementAccounting({ oldPath, oldRemoved, newPath, oldCounted: isWorktreeCounted(oldPath), newCounted: isWorktreeCounted(newPath) })
   if (plan.addRetainedOld) recordRetainedWorktree(issueNumber, oldPath)
   else if (!oldRemoved) noteSlotRetained(issueNumber, oldPath)
+  // 新しい worktree は実在する（台帳の重複排除で載せなくても、削除済み・削除候補の記録は外す）
+  if (newPath) markWorktreeLive(newPath)
   if (plan.addReplacement) recordReplacementWorktree(issueNumber, newPath)
   if (plan.inheritPath) slotInheritedPaths.add(plan.inheritPath)
   if (plan.inheritUnknown) {
@@ -4718,6 +4735,7 @@ function recordReplacementWorktree(issueNumber, rawPath) {
     log(`#${issueNumber}: 置換後の worktree のパスを取得できないまま旧 worktree を保持した（件数のみ 1 件計上する。git worktree list で確認すること）`)
     return true
   }
+  markWorktreeLive(p)
   if (residualStartPathSet.has(p) || ephemeralWorktrees.some((e) => e.path === p)) return false
   ephemeralWorktrees.push({ issue: issueNumber, kind: 'replacement', path: p })
   log(`#${issueNumber}: 旧 worktree を保持したため、置換後の worktree も残置の台帳へ載せた（${p}）`)
@@ -7667,6 +7685,8 @@ async function runImplement(item) {
           // 登録だけ残る旧パス（lock なし・ブランチ上）は、planning へ進む前にその登録だけを片づける（Bugbot 指摘 U の防御）。旧パスを対象にした discard の 1 回
           // （--branch なし = ブランチ ref は残す。--require-missing で『確認と削除を同じプロセスで』行い、確認のあとにパスへ worktree が作り直されていれば消さず retained-present で保持する〔Bugbot 指摘 X の TOCTOU〕。
           // 実体なし・lock なし・ブランチ上の登録だけを許可形の git worktree remove で消し、detached や lock ありも保持する）。
+          // --head / --expect-branch が要らないのは、消すのが実体の無い・ブランチ上の登録だけで、ブランチ ref（コミット）が残るため（detached・HEAD 0000…・lock の登録は保持する）。
+          // 保持されても planning へ進んでよいのは何も消していないため。worktree の記録は状態ファイルが、残った登録は updateStateDetailed の台帳が追跡する。
           // 結果が removed でなくても（保持・失敗・結果なし・例外）planning へは進む。登録が残るだけで、消えたと確認できなければ updateStateDetailed が台帳へ載せる（件数・バイトを過小に数えない）
           const prunableCleanup = await updateStateDetailed(item.number, absentPatch, { cleanupWorktree: sanitizedRecoverWorktree, cleanupMode: 'discard', requireMissing: true })
           if (!(prunableCleanup.ok && prunableCleanup.retained === false)) {

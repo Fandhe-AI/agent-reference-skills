@@ -34,7 +34,7 @@ async function fresh(tag) {
   globalThis.agent = async (_p, opts) => (opts.label === 'nonce:seed' ? { seedHex: '0'.repeat(64) } : null)
   globalThis.log = () => {}
   const mod = await importDefinitions(
-    ['updateStateDetailed', 'sweepClosedWorktrees', 'confirmedRemovedPaths', 'ephemeralWorktrees', 'residualStartPathSet', 'recordEphemeralWorktree', 'ensureBoundaryNonceSeed', 'planReplacementAccounting', 'slotInheritedPaths', 'slotUnknownLiveCount', 'slotRetainedPaths'],
+    ['updateStateDetailed', 'sweepClosedWorktrees', 'confirmedRemovedPaths', 'ephemeralWorktrees', 'residualStartPathSet', 'recordEphemeralWorktree', 'ensureBoundaryNonceSeed', 'planReplacementAccounting', 'slotInheritedPaths', 'slotUnknownLiveCount', 'slotRetainedPaths', 'sweepEligiblePaths', 'sweepHeldPaths', 'recordReplacementWorktree', 'applyReplacementAccounting', 'recordRetainedWorktree'],
     tag,
   )
   await mod.ensureBoundaryNonceSeed()
@@ -632,4 +632,58 @@ test('monitoring 再開で旧 worktree が未登録（手動削除済み）の�
   const { result } = await runScript({ args: MERGE_ARGS, leaves: [2], override: mergeLoopFix({ saved, events }) })
   assert.ok(events.includes('fix'), 'monitoring 再開から fix が走る')
   assert.equal(result.residualWorktrees.addedThisRun, 1, '旧が台帳にも開始時観測にも無いので、新を 1 件計上する（引き継ぎ先が無い）')
+})
+
+// ---- Z: 削除済みと確認したパスに同じランで worktree が作り直されたとき ----
+// 台帳へ新しい worktree を記録する入口（recordEphemeralWorktree・recordReplacementWorktree・置換で引き継ぐパス）は、そのパスを削除済み（バイト測定から外れる）と
+// 最終スイープの削除候補から外す。外すのは『削除を試みた記録』だけなので、スイープが消す対象は増えない。
+const REUSED = '/tmp/reused-wt'
+async function removedPath(tag) {
+  const f = await fresh(tag)
+  stub(cleanupOf(GONE))
+  await f.updateStateDetailed(50, { fixCount: 1 }, { cleanupWorktree: REUSED })
+  assert.ok(f.confirmedRemovedPaths.has(REUSED), '前提: 削除済みと確認した')
+  assert.ok(f.sweepEligiblePaths.has(REUSED), '前提: 削除を試みたのでスイープ候補')
+  return f
+}
+const ENTRIES = [
+  ['recordEphemeralWorktree', (f) => f.recordEphemeralWorktree(51, REUSED, 'implement')],
+  ['recordReplacementWorktree', (f) => f.recordReplacementWorktree(51, REUSED)],
+  ['置換で引き継ぐパス（旧が消えて計上済み）', (f) => {
+    f.ephemeralWorktrees.push({ issue: 51, kind: 'implement', path: '/tmp/old-51' })
+    f.applyReplacementAccounting(51, '/tmp/old-51', REUSED, true)
+  }],
+  ['置換の新パスが台帳に既にある（重複排除で載せない経路でも外す）', (f) => {
+    f.ephemeralWorktrees.push({ issue: 51, kind: 'implement', path: REUSED })
+    f.applyReplacementAccounting(51, '', REUSED, false)
+  }],
+]
+for (const [name, enter] of ENTRIES) {
+  test(`削除済みのパスに worktree が作り直された: ${name} → 削除済みと最終スイープ候補から外れ、バイト測定の対象になる`, async () => {
+    const f = await removedPath(`z-${name.length}`)
+    enter(f)
+    assert.ok(!f.confirmedRemovedPaths.has(REUSED), '削除済みのままだと生きた実体がバイト測定から漏れる')
+    assert.ok(!f.sweepEligiblePaths.has(REUSED), '最終スイープが --force で消し得る')
+    const sw = stub(() => ({ removed: [] }))
+    assert.deepEqual(await f.sweepClosedWorktrees([]), [])
+    assert.ok(sw.calls.every((c) => !c.prompt.includes(REUSED)), 'スイープのエージェントにパスが渡らない')
+  })
+}
+
+test('削除済みのパスを外すだけで他は動かない: 別パスの削除済み・候補は残り、保持の除外（sweepHeldPaths）は増減しない', async () => {
+  const f = await removedPath('z-other')
+  stub(cleanupOf(GONE))
+  await f.updateStateDetailed(52, { fixCount: 1 }, { cleanupWorktree: '/tmp/other-wt' })
+  f.sweepHeldPaths.add('/tmp/held-wt')
+  f.recordEphemeralWorktree(51, REUSED, 'review')
+  assert.ok(f.confirmedRemovedPaths.has('/tmp/other-wt'))
+  assert.ok(f.sweepEligiblePaths.has('/tmp/other-wt'))
+  assert.deepEqual([...f.sweepHeldPaths], ['/tmp/held-wt'])
+})
+
+test('スイープが渡す削除できなかった候補（削除済みと確認済み）は、recordRetainedWorktree で外れず残置に載らない', async () => {
+  const f = await removedPath('z-retained-guard')
+  assert.equal(f.recordRetainedWorktree(0, REUSED), false)
+  assert.ok(f.confirmedRemovedPaths.has(REUSED))
+  assert.equal(retainedEntries(f).length, 0)
 })
