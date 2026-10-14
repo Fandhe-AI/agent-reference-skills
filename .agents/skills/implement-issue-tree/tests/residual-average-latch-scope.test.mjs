@@ -66,7 +66,7 @@ const {
 
 test('computeAveragePerWorktreeBytes: 欠落なしなら送ったパス数で割る', () => {
   assert.equal(
-    computeAveragePerWorktreeBytes({ kib: 3 * 1024 * 1024, sentCount: 3, missing: 0 }),
+    computeAveragePerWorktreeBytes({ kib: 3 * 1024 * 1024, sentCount: 3, missing: 0, dup: 0 }),
     1024 * 1024 * 1024,
   )
 })
@@ -75,22 +75,50 @@ test('computeAveragePerWorktreeBytes: 欠落分を分母から差し引く（希
   // 3 件送って 2 件が並行 cleanup で消えた場合、実在 1 件分の合計を 1 で割る。
   // 分母を 3 のままにすると 1/3 の過小見積りになり空き容量ゲートが fail-open する。
   assert.equal(
-    computeAveragePerWorktreeBytes({ kib: 1024 * 1024, sentCount: 3, missing: 2 }),
+    computeAveragePerWorktreeBytes({ kib: 1024 * 1024, sentCount: 3, missing: 2, dup: 0 }),
     1024 * 1024 * 1024,
   )
 })
 
+// AJ: 同じ実体の別の綴り（dup）は kib に 1 回しか足されないので、分母からも引く。引かないと平均が下がり予約が過小になる
+test('computeAveragePerWorktreeBytes: 同じ実体の 2 つの綴りは平均が 1 実体分になる（重複を分母に残して半分にしない）', () => {
+  // 1 GiB の実体を 2 つの綴りで送った: count=2, dup=1, kib=1 GiB。分母は 2 - 0 - 1 = 1
+  assert.equal(
+    computeAveragePerWorktreeBytes({ kib: 1024 * 1024, sentCount: 2, missing: 0, dup: 1 }),
+    1024 * 1024 * 1024,
+  )
+  // missing と dup が併存しても、kib に足された実体の数（3 - 1 - 1 = 1）で割る
+  assert.equal(
+    computeAveragePerWorktreeBytes({ kib: 1024 * 1024, sentCount: 3, missing: 1, dup: 1 }),
+    1024 * 1024 * 1024,
+  )
+})
+
+test('computeAveragePerWorktreeBytes: dup が欠落・負・非整数なら null（推測で補わない）。分母が 0 以下になる dup も null', () => {
+  assert.equal(computeAveragePerWorktreeBytes({ kib: 10, sentCount: 2, missing: 0 }), null)
+  assert.equal(computeAveragePerWorktreeBytes({ kib: 10, sentCount: 2, missing: 0, dup: -1 }), null)
+  assert.equal(computeAveragePerWorktreeBytes({ kib: 10, sentCount: 2, missing: 0, dup: 0.5 }), null)
+  assert.equal(computeAveragePerWorktreeBytes({ kib: 10, sentCount: 2, missing: 0, dup: 2 }), null)
+})
+
+test('平均を出す 3 か所（ラン開始時・implement のみ・残置全件フォールバック）はすべて dup を渡し、開始時の標本数からも dup を引く', () => {
+  assert.match(source, /missing: residualMeasured\.missing,\n\s*dup: residualMeasured\.dup,/)
+  assert.match(source, /missing: implementMeasured\.missing,\n\s*dup: implementMeasured\.dup,/)
+  assert.match(source, /missing: measured\.missing,\n\s*dup: measured\.dup,/)
+  assert.match(source, /verifiedResidualPaths\.length - residualMeasured\.missing - residualMeasured\.dup/)
+})
+
 test('computeAveragePerWorktreeBytes: 分母が 0 以下なら null（更新スキップの合図。測定失敗ではない）', () => {
-  assert.equal(computeAveragePerWorktreeBytes({ kib: 0, sentCount: 2, missing: 2 }), null)
-  assert.equal(computeAveragePerWorktreeBytes({ kib: 10, sentCount: 1, missing: 3 }), null)
-  assert.equal(computeAveragePerWorktreeBytes({ kib: 10, sentCount: 0, missing: 0 }), null)
+  assert.equal(computeAveragePerWorktreeBytes({ kib: 0, sentCount: 2, missing: 2, dup: 0 }), null)
+  assert.equal(computeAveragePerWorktreeBytes({ kib: 10, sentCount: 1, missing: 3, dup: 0 }), null)
+  assert.equal(computeAveragePerWorktreeBytes({ kib: 10, sentCount: 0, missing: 0, dup: 0 }), null)
 })
 
 test('computeAveragePerWorktreeBytes: 入力が整数でない・負値なら null（推測で補わない）', () => {
-  assert.equal(computeAveragePerWorktreeBytes({ kib: null, sentCount: 2, missing: 0 }), null)
-  assert.equal(computeAveragePerWorktreeBytes({ kib: -1, sentCount: 2, missing: 0 }), null)
-  assert.equal(computeAveragePerWorktreeBytes({ kib: 10, sentCount: 2, missing: undefined }), null)
-  assert.equal(computeAveragePerWorktreeBytes({ kib: 10, sentCount: 1.5, missing: 0 }), null)
+  assert.equal(computeAveragePerWorktreeBytes({ kib: null, sentCount: 2, missing: 0, dup: 0 }), null)
+  assert.equal(computeAveragePerWorktreeBytes({ kib: -1, sentCount: 2, missing: 0, dup: 0 }), null)
+  assert.equal(computeAveragePerWorktreeBytes({ kib: 10, sentCount: 2, missing: undefined, dup: 0 }), null)
+  assert.equal(computeAveragePerWorktreeBytes({ kib: 10, sentCount: 1.5, missing: 0, dup: 0 }), null)
 })
 
 test('ORPHAN_BYTES_SCHEMA: missing は必須フィールド（欠落を 0 とみなすと分母が過大になる）', () => {

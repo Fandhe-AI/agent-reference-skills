@@ -57,7 +57,10 @@ export function signedReply(prompt, payload) {
   const nonce = nonceOf(prompt)
   if (nonce === null) throw new Error('プロンプトに --nonce <nonce> のコマンドが無い')
   const input = commandInputOf(prompt)
-  const full = input !== null && !('inputSha256' in payload) ? { ...payload, inputSha256: inputSha256(input) } : payload
+  let full = input !== null && !('inputSha256' in payload) ? { ...payload, inputSha256: inputSha256(input) } : payload
+  // 残置バイト測定の正直なスクリプトは dup（同じ実体の別の綴りとして測らなかった行数）を必ず出す。重複を伴わない
+  // 既存のスタブは 0 を補う。dup が欠けた・不整合な封筒を試すテストは、これを通さず makeEnvelope で直接作る
+  if ('kib' in full && 'missing' in full && 'count' in full && !('dup' in full)) full = { ...full, dup: 0 }
   return makeEnvelope(nonce, full)
 }
 

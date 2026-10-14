@@ -6,7 +6,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { chmodSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -365,13 +365,38 @@ check(
 )
 
 check(
-  'wr_require_missing_check: 実体もシンボリックリンクも無いときだけ ok。ある・空のパス・読めないパスは retain（実体の有無を肯定的に無いと言えたときだけ消せる）',
+  'wr_require_missing_check: 実体もシンボリックリンクも無いと肯定的に言えたときだけ ok。ある・空のパスは retain',
   [
     ['wr_require_missing_check', '/nonexistent-wr-rm/none'], ['wr_require_missing_check', '/'], ['wr_require_missing_check', '/etc/hosts'],
     ['wr_require_missing_check', ''], ['wr_require_missing_check'],
   ],
   (g, r, i) => assert.equal(g.out, ['ok', 'retain', 'retain', 'retain', 'retain'][i], JSON.stringify(r)),
 )
+
+// 親ディレクトリを検索・読み取りできないとき stat は失敗するだけで「無い」とは言えない（AC）。root は権限が効かないので対象外
+const isRoot = typeof process.getuid === 'function' && process.getuid() === 0
+for (const bash of availableBashes()) {
+  test(`wr_require_missing_check: 読めない親の下は ok にせず unobservable（検索不可・読み取り不可のどちらでも）。root では権限が効かないので省略 [${bash}]`, { skip: isRoot }, () => {
+    const base = mkdtempSync(join(tmpdir(), 'wr-rm-unobs-'))
+    const noX = join(base, 'nox')
+    const noR = join(base, 'nor')
+    mkdirSync(join(noX, 'child'), { recursive: true })
+    mkdirSync(noR)
+    chmodSync(noX, 0o600) // 読めるが検索できない
+    chmodSync(noR, 0o300) // 検索できるが読めない
+    try {
+      const got = table(bash, [
+        ['wr_require_missing_check', join(noX, 'child', 'wt')], ['wr_require_missing_check', join(noR, 'wt')],
+        ['wr_path_state', join(noX, 'child', 'wt')], ['wr_require_missing_check', join(base, 'none')],
+      ])
+      assert.deepEqual(got.map((g) => g.out), ['unobservable', 'unobservable', 'unknown', 'ok'], JSON.stringify(got))
+    } finally {
+      chmodSync(noX, 0o700)
+      chmodSync(noR, 0o700)
+      rmSync(base, { recursive: true, force: true })
+    }
+  })
+}
 
 const WT = ['removed', 'not-registered', 'skipped', 'main', 'cwd', 'retained-dirty', 'retained-submodule', 'retained-locked', 'retained-branch-mismatch', 'retained-head-mismatch', 'retained-detached', 'retained-present', 'retained-unregistered', 'failed']
 const BR = ['none', 'deleted', 'absent', 'keep-base', 'keep', 'failed']

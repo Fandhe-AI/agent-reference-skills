@@ -2909,6 +2909,9 @@ const ORPHAN_COUNT_SCHEMA = {
 //   missing: 測定時点で既に存在しなかったパスの件数。並行 cleanup で消えたパスは 0 として扱い測定失敗に
 //        しない（Bugbot 指摘対応）。呼び出し側は平均算出の分母から差し引くため必須（欠落を 0 とみなすと
 //        存在しないパスが分母に残り 1 worktree あたりの見積りが過小になる fail-open）
+//   dup: 同じ実体の別の綴りとして測らなかった行数（kib・missing・err には足さない）。平均の分母は
+//        count - missing - dup（kib に足された実体の数）。dup を引かないと重複が分母に残り、平均が下がって
+//        空き容量の予約が過小になる fail-open（Bugbot 指摘 AJ）。missing + dup > count は封筒の不整合として拒否する
 //   count: スクリプトが処理した行数。ホストは送った対象パス数との一致を検証する（Issue #497: 入力の
 //        取り違え・空展開で 0 件や別集合を読んでも ERR=0 の正常終了に化けて容量ゲートを素通りする
 //        fail-open を、件数照合で塞ぐ）
@@ -2916,8 +2919,9 @@ const ORPHAN_COUNT_SCHEMA = {
 //        自分の送ったパス列から再計算した値との照合で拒否する（verifySignedOutput。Issue #603）
 const ORPHAN_BYTES_SCHEMA = {
   type: 'object',
-  required: ['kib', 'err', 'missing', 'count', 'inputSha256'],
+  required: ['kib', 'err', 'missing', 'dup', 'count', 'inputSha256'],
   properties: {
+    dup: { type: 'integer', minimum: 0, description: '同じ実体の別の綴りとして測らなかった行数' },
     inputSha256: { type: 'string', description: '標準入力の SHA-256（ホストが送ったパス列と照合する）' },
     kib: { type: 'integer', minimum: 0, description: 'du -sk 第1列の合計（KiB）' },
     err: { type: 'integer', minimum: 0, description: '測定失敗の件数（0 以外は失敗）' },
@@ -3493,7 +3497,7 @@ async function updateStateDetailed(issueNumber, patch, options = {}) {
   // 置換（呼び出し側が replacementWorktree に新パスを渡す。パス不明は空文字）は計上規則を 1 か所にまとめた applyReplacementAccounting が扱う
   // （旧のパスが空でも新しい worktree は実在するため、cleanupWorktreePath の有無に依らず呼ぶ）
   if (typeof options.replacementWorktree === 'string') {
-    applyReplacementAccounting(issueNumber, cleanupWorktreePath, options.replacementWorktree, cleanupWorktreePath !== '' && result?.cleanupRetained === false)
+    applyReplacementAccounting(issueNumber, cleanupWorktreePath, options.replacementWorktree, cleanupWorktreePath !== '' && result?.cleanupRetained === false, cleanupWorktreePath !== '' && cleanupConfirmedRemoved)
   } else if (cleanupWorktreePath && result?.cleanupRetained !== false) {
     recordRetainedWorktree(issueNumber, cleanupWorktreePath)
   }
@@ -4155,7 +4159,7 @@ async function precheckScriptHashes() {
 // 再測定しても結果が変わらないため再測定しない。判定順は 欠落 → count 不一致 → err → 型・範囲。
 function classifyResidualByteReport(v, sentCount) {
   const isObj = v !== null && typeof v === 'object'
-  if (!isObj || [v.kib, v.err, v.missing, v.count].some((x) => x === undefined || x === null)) {
+  if (!isObj || [v.kib, v.err, v.missing, v.dup, v.count].some((x) => x === undefined || x === null)) {
     return { ok: false, retryable: true, reason: 'output-missing' }
   }
   if (!(Number.isInteger(v?.count) && v.count === sentCount)) {
@@ -4166,7 +4170,10 @@ function classifyResidualByteReport(v, sentCount) {
   if (!(Number.isInteger(v?.missing) && v.missing >= 0 && v.missing <= sentCount)) {
     return { ok: false, retryable: false, reason: 'schema' }
   }
-  return { ok: true, kib: v.kib, missing: v.missing }
+  if (!(Number.isInteger(v?.dup) && v.dup >= 0 && v.missing + v.dup <= sentCount)) {
+    return { ok: false, retryable: false, reason: 'schema' }
+  }
+  return { ok: true, kib: v.kib, missing: v.missing, dup: v.dup }
 }
 
 // 転記失敗・agent 例外・出力欠落時の再測定回数上限（合算で初回を含め最大 3 回）。再測定は別エージェント（sonnet）で行う。
@@ -4225,7 +4232,7 @@ async function measureResidualBytesOnce(sanitizedPaths, model) {
 // 差し引くための契約（Bugbot Medium 指摘）。count 不一致（転記失敗）・agent 例外・出力欠落／不完全は
 // 一過性のエージェント失敗として有界に再測定する（Issue #566・#571）。du 実失敗と型・範囲不正は再測定しない。
 async function measureResidualWorktreeBytesDetailed(paths) {
-  if (!Array.isArray(paths) || paths.length === 0) return { kib: 0, missing: 0 }
+  if (!Array.isArray(paths) || paths.length === 0) return { kib: 0, missing: 0, dup: 0 }
   // sanitizeWorktreePath へ強制検証してから渡す構造的防御（PR #390）。1 件でも外れれば全体中止。
   const sanitizedPaths = paths.map((p) => sanitizeWorktreePath(typeof p === 'string' ? p : ''))
   if (sanitizedPaths.some((p) => p === '')) {
@@ -4243,7 +4250,7 @@ async function measureResidualWorktreeBytesDetailed(paths) {
         if (r.missing > 0) {
           log(`残置 worktree ディスク使用量測定: 並行 cleanup 等により ${r.missing} 件のパスが測定時点で既に存在しなかった（0 として扱った）`)
         }
-        return { kib: r.kib, missing: r.missing }
+        return { kib: r.kib, missing: r.missing, dup: r.dup }
       }
       const rv = once.report
       if (r.retryable) {
@@ -4628,7 +4635,7 @@ const EPHEMERAL_RESERVE_PER_NEW_START = Object.values(EPHEMERAL_KIND_MAX).reduce
 // base-merge を最大 maxBaseMerges 件記録し得るため両方を見込む（Issue #441）。
 const EPHEMERAL_RESERVE_PER_MONITORING_RESUME = EPHEMERAL_KIND_MAX['fix-terminal'] + EPHEMERAL_KIND_MAX['base-merge']
 
-// 新しい worktree をこのランの台帳へ記録する入口（recordEphemeralWorktree / recordReplacementWorktree / 置換で引き継ぐパス）が共通で呼ぶ。
+// 新しい worktree をこのランの台帳へ記録する入口（recordEphemeralWorktree / 置換の新パス〔applyReplacementAccounting。新旧が同じパスで削除を確認したときは呼ばない〕）が共通で呼ぶ。
 // 同じランで『削除済みと確認した』パスに worktree が作り直された場合、その実体は生きている。削除済みの集合（confirmedRemovedPaths。
 // バイト測定から外れる）と最終スイープの削除候補（sweepEligiblePaths）に旧パスが残ると、生きた実体が測定から漏れ、スイープに --force で消され得る。
 // 外すのは『削除を試みた記録』だけで、削除が増える方向の変更ではない（候補が減るだけ）。保持の照合は状態ファイルの failed / blocked / monitoring の記録が
@@ -4642,7 +4649,16 @@ function markWorktreeLive(p) {
 
 // 使い捨て worktree・fix-terminal・実装 worktree を記録する。**この関数は削除をしない**
 // （Issue #142）。worktreePath は照合できない自己申告値のため自動削除しない。
-function recordEphemeralWorktree(issueNumber, rawPath, kind) {
+// 第 4 引数 { revive: false } は『同じ呼び出しの流れで直前に updateState が削除を確認したパス』の記録で使う（post-push fix の
+// optinFixState 再試行失敗の終端が該当。reviveAfterCleanup が決める）。既定は live に戻す（Z）。false は削除済み・スイープ候補の記録を残す（台帳には載せる）
+// recordEphemeralWorktree の revive 引数を決める。直前の updateState（cleanupWorktree: oldRawPath）が rawPath と同じパスの削除を確認した
+// （confirmedRemovedPaths にある）ときだけ false（live に戻さない）。別のパス・削除を確認できなかったパスは実体が生きているので true（AE。AD と同じ不変条件）
+function reviveAfterCleanup(rawPath, oldRawPath) {
+  const p = sanitizeWorktreePath(rawPath ?? '')
+  return !(p !== '' && p === sanitizeWorktreePath(oldRawPath ?? '') && confirmedRemovedPaths.has(p))
+}
+
+function recordEphemeralWorktree(issueNumber, rawPath, kind, { revive = true } = {}) {
   // 未宣言 kind は予約を過小にする実装ミスのため警告する。記録は継続する（落とすと実測まで
   // 過小になり上限 latch が弱まる。予約が過小でも実測超過の時点で新規着手は停止する）。
   if (!(kind in EPHEMERAL_KIND_MAX)) {
@@ -4657,7 +4673,7 @@ function recordEphemeralWorktree(issueNumber, rawPath, kind) {
     ephemeralWorktrees.push({ issue: issueNumber, kind, path: '' })
     return
   }
-  markWorktreeLive(p)
+  if (revive) markWorktreeLive(p)
   ephemeralWorktrees.push({ issue: issueNumber, kind, path: p })
   log(`#${issueNumber}: ${kind} worktree を記録した（自動削除はしない。${p}）`)
 }
@@ -4712,14 +4728,19 @@ function planReplacementAccounting({ oldPath, oldRemoved, newPath, oldCounted, n
 }
 
 // 置換の計上を適用する唯一の入口（updateStateDetailed が replacementWorktree つきの呼び出しで使う）。oldPath は掃除を試みた旧のパス（試みなし・不明は ''）、
-// oldRemoved は旧の worktree が無くなったと確認できたか
-function applyReplacementAccounting(issueNumber, oldPath, rawNewPath, oldRemoved) {
+// oldRemoved は旧の worktree が無くなったと確認できたか（件数軸の計上用。ブランチ削除だけが失敗した場合も true）。
+// oldConfirmedRemoved は updateStateDetailed がこの呼び出しで confirmedRemovedPaths へ載せたか（cleanupOk かつ retained:false。省略は oldRemoved）
+function applyReplacementAccounting(issueNumber, oldPath, rawNewPath, oldRemoved, oldConfirmedRemoved = oldRemoved) {
   const newPath = sanitizeWorktreePath(rawNewPath ?? '')
   const plan = planReplacementAccounting({ oldPath, oldRemoved, newPath, oldCounted: isWorktreeCounted(oldPath), newCounted: isWorktreeCounted(newPath) })
   if (plan.addRetainedOld) recordRetainedWorktree(issueNumber, oldPath)
   else if (!oldRemoved) noteSlotRetained(issueNumber, oldPath)
-  // 新しい worktree は実在する（台帳の重複排除で載せなくても、削除済み・削除候補の記録は外す）
-  if (newPath) markWorktreeLive(newPath)
+  // 不変条件: パスは『この呼び出しの流れで削除が確認された（confirmedRemovedPaths に入った）』場合に限り live に戻さない。それ以外で台帳に記録する・
+  // 置換の新パスになるパスは live（削除済み・削除候補から外す）。Review fix と post-push fix は cleanupWorktree と replacementWorktree に同じパスを渡し得る。
+  // 同じパスで削除を確認したときは、削除済みがバイト測定（1 件あたりの平均を下げる）と最終スイープの候補（登録の片づけ）から漏れないよう、削除の記録を残す
+  // （作り直された実体かどうかは同じ呼び出しの中では区別できないので安全側）。同じパスでも保持・掃除せず・状態マージ失敗・結果なし・例外のときは、実体が生きており
+  // superseded の最終スイープに --force で消され得るので live に戻す（AD）
+  if (newPath && (newPath !== oldPath || !oldConfirmedRemoved)) markWorktreeLive(newPath)
   if (plan.addReplacement) recordReplacementWorktree(issueNumber, newPath)
   if (plan.inheritPath) slotInheritedPaths.add(plan.inheritPath)
   if (plan.inheritUnknown) {
@@ -4735,7 +4756,7 @@ function recordReplacementWorktree(issueNumber, rawPath) {
     log(`#${issueNumber}: 置換後の worktree のパスを取得できないまま旧 worktree を保持した（件数のみ 1 件計上する。git worktree list で確認すること）`)
     return true
   }
-  markWorktreeLive(p)
+  // live への戻しは呼び出し元の applyReplacementAccounting が新旧の同一判定つきで行う（ここで戻すと、同じ呼び出しで削除を確認した旧と同じパスの新を live にしてしまう）
   if (residualStartPathSet.has(p) || ephemeralWorktrees.some((e) => e.path === p)) return false
   ephemeralWorktrees.push({ issue: issueNumber, kind: 'replacement', path: p })
   log(`#${issueNumber}: 旧 worktree を保持したため、置換後の worktree も残置の台帳へ載せた（${p}）`)
@@ -6234,15 +6255,16 @@ function shouldSuppressForFreeDisk(freeDiskBytes, requiredFreeDiskBytes) {
 }
 
 // 実測合計から「1 worktree あたりの平均バイト数」を算出する純粋関数（Bugbot Medium 指摘）。
-// sentCount は測定へ送ったパス数、missing はそのうち測定時点で既に存在しなかった件数。分母は
-// 実在が確認できた件数（sentCount - missing）に限る — 並行 cleanup で消えたパスを分母へ残すと
-// 平均が希釈され、実ディスク空き容量ゲートの予約量が過小になる（fail-open）。分母が 0 以下・
+// sentCount は測定へ送ったパス数、missing はそのうち測定時点で既に存在しなかった件数、dup は同じ実体の
+// 別の綴りとして測らなかった件数。分母は kib に足された実体の数（sentCount - missing - dup）に限る —
+// 並行 cleanup で消えたパスや重複の綴りを分母へ残すと平均が希釈され、実ディスク空き容量ゲートの予約量が
+// 過小になる（fail-open）。分母が 0 以下・
 // 入力が不正なら null を返し、呼び出し側は「更新をスキップ」へ倒す（測定対象が無いだけで測定
 // 失敗ではないため latch はしない）。
-function computeAveragePerWorktreeBytes({ kib, sentCount, missing }) {
+function computeAveragePerWorktreeBytes({ kib, sentCount, missing, dup }) {
   if (!Number.isInteger(kib) || kib < 0) return null
-  if (!Number.isInteger(sentCount) || !Number.isInteger(missing)) return null
-  const denominator = sentCount - missing
+  if (!Number.isInteger(sentCount) || !Number.isInteger(missing) || !Number.isInteger(dup) || dup < 0) return null
+  const denominator = sentCount - missing - dup
   if (denominator <= 0) return null
   return Math.ceil((kib * 1024) / denominator)
 }
@@ -6388,7 +6410,8 @@ function buildPhysicalByteMeasureTargets(entries, independentCount) {
 // 物理一覧フォールバックの測定対象 = 物理一覧 ∪ 台帳でパスが分かっている項目（Bugbot 指摘 R）。物理一覧は git に登録された
 // worktree だけなので、置き換えると台帳にあるが未登録の実在ディレクトリ（retained-unregistered 等）が測定から漏れ、
 // bytesEndObserved が true のまま上限判定が甘くなる。重複は連続スラッシュと末尾スラッシュを正規化して除く（先に出た表記を残す）。
-// 測定専用で削除経路へは流さない。パス検証は measure 側（許可文字外は fail-closed）に委ねる
+// 測定専用で削除経路へは流さない。パス検証は measure 側（許可文字外は fail-closed）に委ねる。
+// /./ 混じり・/var と /private/var・シンボリックリンク経由の別綴りは字面では同一にできないので、measure-residual-bytes.sh が物理パスに解決して 1 回だけ測る（AH）
 function unionMeasurePaths(physicalPaths, ledgerPaths) {
   const seen = new Set()
   const out = []
@@ -6942,7 +6965,7 @@ if (!dryRunEnabled) {
         ? null
         : verifiedResidualPaths.length > 0
           ? await measureResidualWorktreeBytesDetailed(verifiedResidualPaths)
-          : { kib: 0, missing: 0 } // 残置 0 件は合計 0 が既知の実測値（agent 呼び出し不要）
+          : { kib: 0, missing: 0, dup: 0 } // 残置 0 件は合計 0 が既知の実測値（agent 呼び出し不要）
       const kib = residualMeasured === null ? null : residualMeasured.kib
 
       const startFailure = classifyStartMeasurementFailure({ mainKib, kib, freeDiskKib })
@@ -6974,12 +6997,13 @@ if (!dryRunEnabled) {
             kib,
             sentCount: verifiedResidualPaths.length,
             missing: residualMeasured.missing,
+            dup: residualMeasured.dup,
           }) ?? 0
         // Issue #496: 永続化済み高水位をそのまま信頼する前に、汚染源（旧版・実測との大幅乖離）を
         // 排除する。decideRunStartHighWater は「旧版なら無効化」「現行版でも実測乖離が大きければ
         // 半減まで引き下げ」を純粋に決定し、rewriteBytes が非 null の場合は書き換えを永続化する
         // （raw 確定より前に完了させることで、書き込み順序が「是正 → 今回の raise」の順になる）。
-        const residualSampleCount = verifiedResidualPaths.length - residualMeasured.missing
+        const residualSampleCount = verifiedResidualPaths.length - residualMeasured.missing - residualMeasured.dup
         const highWaterDecision = decideRunStartHighWater({
           persistedBytes: persistedHighWaterBytes,
           persistedVersion: loadedHighWaterVersion,
@@ -9280,7 +9304,8 @@ async function runMergeLoop(item, impl, initialFixCount, initialWorktreePath, in
         if (!retryOk) {
           const reason = 'post-push fix の opt-in テスト実測（optinFixState）を状態ファイルへ永続化できなかった（再試行後も失敗）。'
             + 'この実測を次回 monitoring 再開時に復元できないと、PR 本文更新の失敗・省略時に古い記録だけでマージ前ゲートを通過し得るため、fail-closed で終端する'
-          recordEphemeralWorktree(item.number, f?.worktreePath, 'fix-terminal')
+          // 直前の updateState（cleanupWorktree: oldWorktreePath）がこのラウンドで削除を確認したパスを fix が返した場合だけ live へ戻さない（AB）。別のパスは戻す（AE）
+          recordEphemeralWorktree(item.number, f?.worktreePath, 'fix-terminal', { revive: reviveAfterCleanup(f?.worktreePath, oldWorktreePath) })
           return await failMergeTerminal(reason, 'blocked')
         }
       }
@@ -9803,7 +9828,7 @@ async function remeasureResidualBytesNow() {
     ? null
     : targetPaths.length > 0
       ? await measureResidualWorktreeBytesDetailed(targetPaths)
-      : { kib: 0, missing: 0 }
+      : { kib: 0, missing: 0, dup: 0 }
   const kib = measured === null ? null : measured.kib
   // 間引きカウンタは測定成否に関わらず進める（失敗のたびに毎周回リトライすると agent コストが
   // 際限なく積み上がる）。失敗が続く間は kib===null 分岐の早期 return で baseline も更新されず
@@ -10003,6 +10028,7 @@ async function remeasureResidualBytesNow() {
         kib: implementMeasured.kib,
         sentCount: implementResidualCount,
         missing: implementMeasured.missing,
+        dup: implementMeasured.dup,
       })
       if (avgActualBytes === null) {
         log(
@@ -10032,6 +10058,7 @@ async function remeasureResidualBytesNow() {
       kib,
       sentCount: targetPaths.length,
       missing: measured.missing,
+      dup: measured.dup,
     })
     if (avgActualBytes === null) {
       log(

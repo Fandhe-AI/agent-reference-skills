@@ -216,7 +216,7 @@ grep -n 'tf=\${tmpFile}' scripts/implement-issue-tree.src.js
 # 3. 引用なしの変数展開によるリダイレクト（相対パス化の温床）が残っていないこと
 grep -nE '> *\.lines|> *\$[a-zA-Z_]+\.lines[^"'"'"']' scripts/implement-issue-tree.src.js
 # 4. 件数照合（COUNT）による fail-closed 強化（ORPHAN_BYTES_SCHEMA の count 必須化）
-grep -n "COUNT=\$count\|required: \['kib', 'err', 'missing', 'count'\]" scripts/implement-issue-tree.js
+grep -n "COUNT=\$count\|required: \['kib', 'err', 'missing', 'dup', 'count'\]" scripts/implement-issue-tree.js
 # 5. メイン worktree 未追跡ファイル検査（AC2）が駆動部に配線されていること
 grep -n "worktree:untracked-scan\|mainWorktreeUntracked" scripts/implement-issue-tree.js
 # 6. 新設コードが削除呼び出しを追加していないこと（検出は警告のみ）
