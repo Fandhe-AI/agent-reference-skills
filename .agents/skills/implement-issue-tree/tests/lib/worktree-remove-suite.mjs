@@ -13,7 +13,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { chmodSync, existsSync, mkdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { chmodSync, existsSync, mkdirSync, renameSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { gitEnv, makeRepo, runScript } from './worktree-sandbox.mjs'
@@ -438,9 +438,10 @@ export function registerWorktreeRemoveTests(bash) {
     const stray = join(repo.root, 'stray')
     mkdirSync(stray)
     writeFileSync(join(stray, 'x'), 'x\n')
-    for (const r of [sup(repo, stray), dis(repo, stray, ['--branch', 'none-such', '--base', 'main'])]) {
-      assert.deepEqual([r.result.worktree, r.result.ok], ['not-registered', true])
-    }
+    assert.deepEqual([sup(repo, stray).result.worktree, sup(repo, stray).result.ok], ['not-registered', true])
+    // --path つきの --branch は登録の無い実体を保持する（#649。ブランチを消す根拠にしない）
+    const withBranch = dis(repo, stray, ['--branch', 'none-such', '--base', 'main'])
+    assert.deepEqual([withBranch.result.worktree, withBranch.result.ok], ['retained-unregistered', false])
     assert.ok(existsSync(join(stray, 'x')))
     const nested = join(repo.main, 'sub-dir')
     mkdirSync(nested)
@@ -1203,6 +1204,72 @@ export function registerWorktreeRemoveTests(bash) {
     assert.ok(!repo.branches().includes(h.branch))
     assert.ok(!repo.worktrees().includes(h.path))
   })
+  // ---- 同期 PR の Bugbot 指摘 AR: 最終確認は唯一の変更コマンド（git worktree remove）の直前に置く（unlock の後）----
+  test(`${tag} AR: 値 2 の後始末で、unlock の直後に同じパスへ worktree が作り直されたら、消さずに retained-present。unlocked=true・ブランチは keep・実体は残る`, () => {
+    const repo = makeRepo()
+    const h = deadBranchHolder(repo, 'arrace')
+    repo.git(repo.main, 'worktree', 'lock', '--reason', lockReason(deadPid()), h.path)
+    // 実際の unlock のあとに、古い登録を prune して同じパス・同じブランチで作り直す（並行するプロセスの再現）
+    const shim = join(repo.root, 'shim-ar')
+    mkdirSync(shim)
+    const real = spawnSync('sh', ['-c', 'command -v git'], { encoding: 'utf8' }).stdout.trim()
+    const body = [
+      '#!/bin/sh',
+      'if [ "$1" = worktree ] && [ "$2" = unlock ]; then',
+      `  ${real} "$@" || exit $?`,
+      `  ${real} worktree prune`,
+      `  ${real} worktree add -q '${h.path}' '${h.branch}' || exit 1`,
+      '  exit 0',
+      'fi',
+      `exec ${real} "$@"`,
+    ].join('\n')
+    writeFileSync(join(shim, 'git'), `${body}\n`, { mode: 0o755 })
+    const r = run(repo, ['remove', '--mode', 'discard', '--branch', h.branch, '--base', 'main'], { env: { PATH: `${shim}:${process.env.PATH}` } })
+    assert.deepEqual([r.result.ok, r.result.branch, r.result.holder, r.result.unlocked], [false, 'keep', 'retained-present', true], JSON.stringify(r.result))
+    assert.ok(repo.branches().includes(h.branch), 'ブランチは消えない')
+    assert.ok(existsSync(join(h.path, '.git')) && repo.worktrees().includes(h.path), '作り直された worktree は消えない')
+  })
+
+  // ---- 同期 PR の Bugbot 指摘 AS: 有無を観測できない登録（親を検索できない）があるとき、全体の prune は登録を落とすのでスキップする ----
+  test(`${tag} AS: 親を検索できず有無を観測できない登録があるとき、remove --path の prune はスキップ（pruneSkipped）。権限を戻せば登録が残っている`, { skip: typeof process.getuid === 'function' && process.getuid() === 0 }, () => {
+    const repo = makeRepo()
+    const holder = join(repo.root, 'holder-as')
+    mkdirSync(holder)
+    const wt = join(holder, 'wt')
+    repo.git(repo.main, 'worktree', 'add', '-q', '-b', 'b-as', wt)
+    const a = repo.addWorktree('as-a')
+    chmodSync(holder, 0o000)
+    let r
+    try {
+      r = sup(repo, a.path)
+    } finally {
+      chmodSync(holder, 0o700)
+    }
+    assert.deepEqual([r.result.worktree, r.result.pruneSkipped], ['removed', 1], JSON.stringify(r.result))
+    assert.ok(repo.worktrees().includes(wt), '観測できない登録は prune で落とさない')
+    assert.ok(existsSync(join(wt, '.git')) && repo.branches().includes('b-as'))
+    // 対照: 権限を戻せば観測できる（実体あり）ので prune はスキップされない
+    const b = repo.addWorktree('as-b')
+    assert.ok(!('pruneSkipped' in sup(repo, b.path).result))
+  })
+  test(`${tag} AS: sweep も、有無を観測できない登録があれば prune をスキップする（候補は消え、登録は残る）`, { skip: typeof process.getuid === 'function' && process.getuid() === 0 }, () => {
+    const repo = makeRepo()
+    const holder = join(repo.root, 'holder-as2')
+    mkdirSync(holder)
+    const wt = join(holder, 'wt')
+    repo.git(repo.main, 'worktree', 'add', '-q', '-b', 'b-as2', wt)
+    const a = repo.addWorktree('as2-a')
+    chmodSync(holder, 0o000)
+    let s
+    try {
+      s = sweep(repo, [a.path], {})
+    } finally {
+      chmodSync(holder, 0o700)
+    }
+    assert.deepEqual([s.result.removed, s.result.pruneSkipped], [[a.path], 1], JSON.stringify(s.result))
+    assert.ok(repo.worktrees().includes(wt), '観測できない登録は prune で落とさない')
+  })
+
   // J: --path の結果は、ブランチを持つ登録の後始末で上書きしない（後始末の結果は holder とブランチの判断にだけ使う）
   test(`${tag} J: --path で消し終えたあと、ブランチを持つ別の登録が lock で保持されても、worktree は removed のまま。holder に保持の語・ブランチは keep・ok は false`, () => {
     const repo = makeRepo()
@@ -1312,6 +1379,38 @@ export function registerWorktreeRemoveTests(bash) {
     assert.deepEqual([gone.result.worktree, gone.result.ok], ['not-registered', true])
     assert.equal(dis(repo, stray).result.worktree, 'not-registered')
     assert.equal(sup(repo, stray).result.worktree, 'not-registered')
+  })
+
+  // #649（Bugbot 指摘 AQ）: --path と --branch を与えた discard でも、登録の無い実体のパスはブランチを消さない根拠にする。
+  // 登録だけが失われた実体（.git ファイルは残り管理ディレクトリが無い）を作る: 退避 → prune → 戻す
+  const orphanDir = (repo, name) => {
+    const a = repo.addWorktree(name)
+    const aside = `${a.path}.aside`
+    renameSync(a.path, aside)
+    repo.git(repo.main, 'worktree', 'prune')
+    renameSync(aside, a.path)
+    return a
+  }
+  test(`${tag} #649: --path P --branch X で P が登録の無い実体なら retained-unregistered・ブランチは keep・ok は false。実体は残る`, () => {
+    const repo = makeRepo()
+    const a = orphanDir(repo, 'unr649')
+    assert.ok(!repo.worktrees().includes(a.path), '登録は無い')
+    const r = dis(repo, a.path, ['--branch', a.branch, '--base', 'main'])
+    assert.deepEqual([r.result.ok, r.result.worktree, r.result.branch, r.result.retained], [false, 'retained-unregistered', 'keep', true], JSON.stringify(r.result))
+    assert.ok(repo.branches().includes(a.branch), 'ブランチは消えない')
+    assert.ok(existsSync(a.path), '実体は消えない')
+  })
+  test(`${tag} #649: 1 回目で保持したあとの 2 回目の --path P --branch X でも、実体がある限りブランチを消さない。実体が無くなれば消す`, () => {
+    const repo = makeRepo()
+    const a = orphanDir(repo, 'unr649b')
+    for (let n = 1; n <= 2; n++) {
+      const r = dis(repo, a.path, ['--branch', a.branch, '--base', 'main'])
+      assert.deepEqual([r.result.ok, r.result.worktree, r.result.branch], [false, 'retained-unregistered', 'keep'], `${n} 回目: ${JSON.stringify(r.result)}`)
+      assert.ok(repo.branches().includes(a.branch), `${n} 回目: ブランチは消えない`)
+    }
+    rmSync(a.path, { recursive: true })
+    const last = dis(repo, a.path, ['--branch', a.branch, '--base', 'main'])
+    assert.deepEqual([last.result.ok, last.result.worktree, last.result.branch], [true, 'not-registered', 'deleted'], JSON.stringify(last.result))
   })
 
   test(`${tag} 形 A: 実体のある別の worktree がブランチを持つなら消さない（登録を勝手に消さず、従来どおり branch failed）`, () => {

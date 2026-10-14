@@ -319,6 +319,23 @@ test('Recover discard: 掃除が保持した（汚れ・初期化済み submodul
   assert.ok(logs.some((l) => /Recover → discard を保全へ格下げ/.test(l)))
 })
 
+test('Recover discard: 掃除が retained-unregistered 等で保持したら、状態の worktree の記録を消さない。次のランも同じ --path と --branch を渡す（#649）', async () => {
+  const runs = []
+  for (let n = 0; n < 2; n++) runs.push(await recoverRun({ decision: 'discard', wipCommitted: true, cleanup: { ok: false, retained: true } }))
+  for (const { calls, result } of runs) {
+    const c = calls.filter((x) => x.opts.label === 'state:cleanup:#2' && /--mode discard/.test(x.prompt))
+    assert.equal(c.length, 1)
+    // 保持の記録（worktree のパス）が残るので、次のランも --path に同じパスを渡し、スクリプトの登録の無い実体の照合が効く
+    assert.match(CMD.exec(c[0].prompt)[0], /worktree-remove\.sh remove --mode discard --path '\/repo\/wt\/old' --branch 'feat\/2-x' --base 'main'$/)
+    // worktree を空にする更新は、掃除エージェントの手順 2（removed / not-registered / skipped のときだけ）にしかない
+    assert.match(c[0].prompt, /結果の worktree が removed \/ not-registered \/ skipped のときだけ（それ以外は実行しない）/)
+    assert.doesNotMatch(c[0].prompt, /retained-unregistered/)
+    for (const u of calls.filter((x) => x.opts.label.startsWith('state:update:#2'))) assert.doesNotMatch(u.prompt, /"worktree":""/, `保持した後の状態更新が worktree を空にしない: ${u.opts.label}`)
+    assert.ok(!calls.some((x) => x.opts.label === 'plan:#2'), 'Plan へ進まない')
+    assert.equal(failureOf(result)?.status, 'failed')
+  }
+})
+
 test('Recover discard: 掃除対象のブランチが base と同名でも --mode discard のまま（ブランチは渡さない）。superseded（--force）へ倒れない', async () => {
   // base を本イシューの命名に合う名前にして、ホストの命名ゲートを通したうえで worktree-remove.sh 側の base 同名ガード（ブランチを渡さない）を見る
   const { calls } = await recoverRun({ decision: 'discard', wipCommitted: true, cleanup: { ok: true, retained: false }, branch: 'feat/2-x', argsExtra: { branch: 'feat/2-x' } })
