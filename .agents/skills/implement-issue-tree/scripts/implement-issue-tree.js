@@ -3917,15 +3917,15 @@ return''
 
 
 const SCRIPT_SHA256={
-'measure-residual-bytes.sh':'b314cc3482601ae66e622b2636e51e4cb1e87d3259422a9ead1d084c72dfa063',
-'measure-free-disk.sh':'6a7da85cbbd84f2237e1caa66764d65ea1cd363983094a94285bb425c6df1b63',
-'observe-pr.sh':'8954fd28f19122434ce589f5d674fa4f667dd0243c0fdbbe5eb963fce3088473',
-'base-merge.sh':'d16dcfdab2373dd719af7641626f0501e4e603ee51c11e0f02847a749bb0a6d3',
-'pr-push.sh':'8cbb01e503047cfae139726862cec24153be75ff4bd3c20ea0b02b92f3e1a58f',
-'state.sh':'86a789c52c97e5218907701d35ff0750824303ec221cb9f762e66ee209d5ed21',
-'merge-gate.sh':'8089a679f53d0905ca1acd03cc5b36f498317f35f1214812e9b9b3c9480b07c4',
-'worktree-remove.sh':'177617b6f1999e8e15901d1137949c6adacefae2a658cc69250c5632cef4d484',
-'recover-prep.sh':'f590a7fe07173da83c3d8744ad7cba909df304cffd133c5ccfabb5f03dead1b6',
+'measure-residual-bytes.sh':'84ecc160fddaaace3425e5549afbfa877763a0760c472bffaa7a5ac3441c6e9f',
+'measure-free-disk.sh':'b19433e233321f827b08faee23af398686203357cc51f635f303df8295bc4b5d',
+'observe-pr.sh':'0d32f5be8432fe22efcec2d5698f5e599278a9853260a60076cb6aa6b06b7389',
+'base-merge.sh':'2cf4a42ca54362ef7c6985047d7e110cbdcc9e08e38d891d65691eb59e29c369',
+'pr-push.sh':'363eb3b9c48a22c5cbc1cbb25f8826f0f2be680649aa049b1038005afd8d5dce',
+'state.sh':'0e7fd36efce540daa8a5e2e0f8db87d7378be1c88369315cda1a1f41290eff65',
+'merge-gate.sh':'b1c8e90c8fbccc54d86c82597cf9ebaf05e6b19ebe3eaa8324e87b5a362e3de8',
+'worktree-remove.sh':'880f45d5d29fc88e030ea4ac9e29879ac4986d891124601a45ad776b25d9f2de',
+'recover-prep.sh':'34f1171f24e80b11696ce408c6066e1c02fd592ef1d583942df69c0fc2d6c657',
 }
 
 

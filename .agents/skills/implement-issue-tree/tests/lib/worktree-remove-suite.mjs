@@ -1195,39 +1195,45 @@ export function registerWorktreeRemoveTests(bash) {
     assert.ok(existsSync(join(h.path, '.git')), '作り直された worktree は消えない')
     assert.ok(repo.worktrees().includes(h.path), '登録も残る')
   })
-  test(`${tag} AP: holder の lock の扱いは従来どおり（pid が死んだ agent の lock は外して消し、ブランチも消す）`, () => {
+  test(`${tag} AW: holder の lock は pid が死んだ agent の形でも外さない（retained-locked を holder に出し、ブランチは keep・lock は残る）`, () => {
     const repo = makeRepo()
     const h = deadBranchHolder(repo, 'apdeadlock')
     repo.git(repo.main, 'worktree', 'lock', '--reason', lockReason(deadPid()), h.path)
     const r = run(repo, ['remove', '--mode', 'discard', '--branch', h.branch, '--base', 'main'])
-    assert.deepEqual([r.result.ok, r.result.branch, r.result.holder], [true, 'deleted', 'removed'], JSON.stringify(r.result))
-    assert.ok(!repo.branches().includes(h.branch))
-    assert.ok(!repo.worktrees().includes(h.path))
+    assert.deepEqual([r.result.ok, r.result.branch, r.result.holder, r.result.unlocked], [false, 'keep', 'retained-locked', false], JSON.stringify(r.result))
+    assert.ok(repo.branches().includes(h.branch), 'ブランチは消えない')
+    assert.ok(repo.worktrees().includes(h.path), '登録は残る')
+    assert.ok(repo.git(repo.main, 'worktree', 'list', '--porcelain').includes('locked'), 'lock は残る')
   })
-  // ---- 同期 PR の Bugbot 指摘 AR: 最終確認は唯一の変更コマンド（git worktree remove）の直前に置く（unlock の後）----
-  test(`${tag} AR: 値 2 の後始末で、unlock の直後に同じパスへ worktree が作り直されたら、消さずに retained-present。unlocked=true・ブランチは keep・実体は残る`, () => {
+  // ---- 同期 PR の Bugbot 指摘 AR→AW: 結びつけ（--require-missing・--branch の後始末）の経路では unlock を一切しない（順序の入れ替えではなく構造で窓を閉じる）----
+  test(`${tag} AW: 後始末の経路で git worktree unlock は一度も呼ばれない（呼び出しの前半で読んだ lock に基づく unlock が、作り直された worktree の lock を外す窓が無い）`, () => {
     const repo = makeRepo()
     const h = deadBranchHolder(repo, 'arrace')
     repo.git(repo.main, 'worktree', 'lock', '--reason', lockReason(deadPid()), h.path)
-    // 実際の unlock のあとに、古い登録を prune して同じパス・同じブランチで作り直す（並行するプロセスの再現）
-    const shim = join(repo.root, 'shim-ar')
+    const shim = join(repo.root, 'shim-aw')
+    const log = join(repo.root, 'unlock.log')
     mkdirSync(shim)
     const real = spawnSync('sh', ['-c', 'command -v git'], { encoding: 'utf8' }).stdout.trim()
     const body = [
       '#!/bin/sh',
       'if [ "$1" = worktree ] && [ "$2" = unlock ]; then',
-      `  ${real} "$@" || exit $?`,
-      `  ${real} worktree prune`,
-      `  ${real} worktree add -q '${h.path}' '${h.branch}' || exit 1`,
-      '  exit 0',
+      `  echo unlock >> '${log}'`,
       'fi',
       `exec ${real} "$@"`,
     ].join('\n')
     writeFileSync(join(shim, 'git'), `${body}\n`, { mode: 0o755 })
     const r = run(repo, ['remove', '--mode', 'discard', '--branch', h.branch, '--base', 'main'], { env: { PATH: `${shim}:${process.env.PATH}` } })
-    assert.deepEqual([r.result.ok, r.result.branch, r.result.holder, r.result.unlocked], [false, 'keep', 'retained-present', true], JSON.stringify(r.result))
-    assert.ok(repo.branches().includes(h.branch), 'ブランチは消えない')
-    assert.ok(existsSync(join(h.path, '.git')) && repo.worktrees().includes(h.path), '作り直された worktree は消えない')
+    assert.deepEqual([r.result.holder, r.result.unlocked], ['retained-locked', false], JSON.stringify(r.result))
+    assert.ok(!existsSync(log), 'unlock は呼ばれない')
+    assert.ok(repo.branches().includes(h.branch))
+  })
+  // 対照: 結びつけの無い呼び出し（superseded・結びつけ無しの discard）は従来どおり、pid が死んだ agent の lock を外して消す
+  test(`${tag} AW: 結びつけの無い discard --path は、pid が死んだ agent の lock を従来どおり外して消す`, () => {
+    const repo = makeRepo()
+    const w = repo.addWorktree('awctl')
+    repo.git(repo.main, 'worktree', 'lock', '--reason', lockReason(deadPid()), w.path)
+    const r = run(repo, ['remove', '--mode', 'discard', '--path', w.path])
+    assert.deepEqual([r.result.worktree, r.result.unlocked], ['removed', true], JSON.stringify(r.result))
   })
 
   // ---- 同期 PR の Bugbot 指摘 AS: 有無を観測できない登録（親を検索できない）があるとき、全体の prune は登録を落とすのでスキップする ----
@@ -1268,6 +1274,28 @@ export function registerWorktreeRemoveTests(bash) {
     }
     assert.deepEqual([s.result.removed, s.result.pruneSkipped], [[a.path], 1], JSON.stringify(s.result))
     assert.ok(repo.worktrees().includes(wt), '観測できない登録は prune で落とさない')
+  })
+
+  // ---- 同期 PR の Bugbot 指摘 AT: detached かつ有無を観測できない登録は、risk と unobservable の両方に当たっても 1 件と数える ----
+  test(`${tag} AT: detached で有無を観測できない登録 1 件のとき pruneSkipped は 1（remove・sweep とも。二重に数えない）`, { skip: typeof process.getuid === 'function' && process.getuid() === 0 }, () => {
+    const repo = makeRepo()
+    const holder = join(repo.root, 'holder-at')
+    mkdirSync(holder)
+    const wt = join(holder, 'wt')
+    repo.git(repo.main, 'worktree', 'add', '-q', '--detach', wt)
+    const a = repo.addWorktree('at-a')
+    const c = repo.addWorktree('at-c')
+    chmodSync(holder, 0o000)
+    let r, s
+    try {
+      r = sup(repo, a.path)
+      s = sweep(repo, [c.path], {})
+    } finally {
+      chmodSync(holder, 0o700)
+    }
+    assert.deepEqual([r.result.worktree, r.result.pruneSkipped], ['removed', 1], JSON.stringify(r.result))
+    assert.deepEqual([s.result.removed, s.result.pruneSkipped], [[c.path], 1], JSON.stringify(s.result))
+    assert.ok(repo.worktrees().includes(wt), '登録は prune で落とさない')
   })
 
   // J: --path の結果は、ブランチを持つ登録の後始末で上書きしない（後始末の結果は holder とブランチの判断にだけ使う）

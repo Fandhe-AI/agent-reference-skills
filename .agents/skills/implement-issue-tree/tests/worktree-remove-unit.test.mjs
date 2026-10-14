@@ -35,7 +35,14 @@ while IFS="$US" read -r fn a b c d e f g; do
     wr_find_entry) wr_find_entry "$(nl "$a")" "$b" ;;
     wr_find_detached) wr_find_entry "$(nl "$a")" "$b"; out=$WR_DETACHED ;;
     wr_find_fold) wr_find_entry "$(nl "$a")" "$b" 1; out=$WR_REGISTERED ;;
-    wr_prune_risk) wr_prune_risk "$(nl "$a")"; out=$WR_PRUNE_RISK ;;
+    wr_prune_scan) wr_prune_scan "$(nl "$a")"; out="$WR_PRUNE_RISK,$WR_PRUNE_UNOBS" ;;
+    wr_prune_scan_stub)
+      # wr_path_state を差し替え（$b = パス=状態 のカンマ区切り。載っていないパスは exists）、呼ばれた回数を数える。サブシェルなので他の行に影響しない
+      out=$( stubfile=$(mktemp); : >"$stubfile"
+        wr_path_state() { local kv; printf '%s\n' "$1" >>"$stubfile"; for kv in $(printf '%s' "$b" | tr ',' ' '); do if [ "\${kv%%=*}" = "$1" ]; then echo "\${kv#*=}"; return 0; fi; done; echo exists; }
+        wr_prune_scan "$(nl "$a")"
+        printf '%s,%s,%s' "$WR_PRUNE_RISK" "$WR_PRUNE_UNOBS" "$(wc -l <"$stubfile" | tr -d ' ')"
+        rm -f "$stubfile" ) ;;
     wr_holder) wr_branch_holder "$(nl "$a")" "$b"; out=$WR_HOLDER ;;
     wr_lock_pid) out=$(wr_lock_pid "$a" 2>&1) || rc=$?; wr_lock_pid "$a" || true ;;
     *) out=$("$fn" "$a" "$b" "$c" "$d" "$e" "$f" "$g" 2>&1) || rc=$? ;;
@@ -477,7 +484,7 @@ check(
   (g, r, i) => (i < 4 ? assert.equal(g.out, ['1', '1', '0', '1'][i], JSON.stringify(r)) : assert.equal(g.reg, 0, JSON.stringify(r))),
 )
 
-// wr_prune_risk: 全体の prune でコミットの唯一の参照を失い得る登録の数。実体の無い detached・HEAD 0000…（lock なしのメイン以外）だけ。
+// wr_prune_scan: 全体の prune でコミットの唯一の参照を失い得る登録の数。実体の無い detached・HEAD 0000…（lock なしのメイン以外）だけ。
 // 実体のあるもの・ブランチ上のもの・lock されたものは数えない。prunable 行があれば実体が在っても数える
 const WR_DET_GONE = `worktree /nonexistent/d1${NL}HEAD eeee${NL}detached`
 const WR_DET_LOCKED = `worktree /nonexistent/d2${NL}HEAD eeee${NL}detached${NL}locked portable`
@@ -486,14 +493,34 @@ const WR_DET_PRUNABLE = `worktree /tmp${NL}HEAD eeee${NL}detached${NL}prunable g
 const WR_BR_GONE = `worktree /nonexistent/b1${NL}HEAD bbbb${NL}branch refs/heads/b1${NL}prunable gitdir file points to non-existent location`
 const WR_ZERO_GONE = `worktree /nonexistent/z1${NL}HEAD ${'0'.repeat(40)}${NL}branch refs/heads/gone`
 check(
-  'wr_prune_risk: 実体の無い detached と HEAD 0000… だけを数える（ブランチ上・lock・実体あり・メイン・一覧が空は数えない。prunable 行のある detached は数える）',
+  'wr_prune_scan: 実体の無い detached と HEAD 0000… だけを数える（ブランチ上・lock・実体あり・メイン・一覧が空は数えない。prunable 行のある detached は数える）',
   [
-    ['wr_prune_risk', LIST(MAIN, WR_DET_GONE)], ['wr_prune_risk', LIST(MAIN, WR_ZERO_GONE)], ['wr_prune_risk', LIST(MAIN, WR_DET_GONE, WR_ZERO_GONE, WR_BR_GONE)],
-    ['wr_prune_risk', LIST(MAIN, WR_BR_GONE)], ['wr_prune_risk', LIST(MAIN, WR_DET_LOCKED)], ['wr_prune_risk', LIST(MAIN, WR_DET_EXISTS)],
-    ['wr_prune_risk', LIST(MAIN, WR_DET_PRUNABLE)], ['wr_prune_risk', ''], ['wr_prune_risk', LIST(`worktree /nonexistent/m${NL}HEAD ${'0'.repeat(40)}${NL}detached`)],
-    ['wr_prune_risk', LIST(MAIN, WR_BR_GONE, WR_DET_GONE)],
+    ['wr_prune_scan', LIST(MAIN, WR_DET_GONE)], ['wr_prune_scan', LIST(MAIN, WR_ZERO_GONE)], ['wr_prune_scan', LIST(MAIN, WR_DET_GONE, WR_ZERO_GONE, WR_BR_GONE)],
+    ['wr_prune_scan', LIST(MAIN, WR_BR_GONE)], ['wr_prune_scan', LIST(MAIN, WR_DET_LOCKED)], ['wr_prune_scan', LIST(MAIN, WR_DET_EXISTS)],
+    ['wr_prune_scan', LIST(MAIN, WR_DET_PRUNABLE)], ['wr_prune_scan', ''], ['wr_prune_scan', LIST(`worktree /nonexistent/m${NL}HEAD ${'0'.repeat(40)}${NL}detached`)],
+    ['wr_prune_scan', LIST(MAIN, WR_BR_GONE, WR_DET_GONE)],
   ],
-  (g, r, i) => assert.equal(g.out, ['1', '1', '2', '0', '0', '0', '1', '0', '0', '1'][i], JSON.stringify(r)),
+  (g, r, i) => assert.equal(g.out, ['1,0', '1,0', '2,0', '0,0', '0,0', '0,0', '1,0', '0,0', '0,0', '1,0'][i], JSON.stringify(r)),
+)
+
+// wr_prune_scan（Issue の AV）: 各登録の有無を 1 回だけ観測し、その 1 回から risk（detached / HEAD 0000… の消える登録）と unobservable（観測できない登録）へ
+// 互いに素に振り分ける。wr_path_state を差し替えて、出力は `risk,unobs,観測の回数`。観測できない（unknown）かつ detached の登録は必ずちょうど 1 件に数え、0 にも 2 にもならない
+const SZ = `HEAD ${'0'.repeat(40)}`
+const S1 = (name, tail) => `worktree /s/${name}${NL}${tail}`
+check(
+  'wr_prune_scan: 1 回の観測から risk と unobservable に互いに素に振り分ける（unknown かつ detached は 1 件・観測は登録ごとに 1 回・lock とメインは観測しない）',
+  [
+    ['wr_prune_scan_stub', LIST(MAIN, S1('a', `HEAD eeee${NL}detached`)), '/s/a=unknown'],
+    ['wr_prune_scan_stub', LIST(MAIN, S1('a', `${SZ}${NL}branch refs/heads/z`)), '/s/a=unknown'],
+    ['wr_prune_scan_stub', LIST(MAIN, S1('a', `HEAD eeee${NL}detached${NL}prunable gone`)), '/s/a=unknown'],
+    ['wr_prune_scan_stub', LIST(MAIN, S1('a', `HEAD bbbb${NL}branch refs/heads/b`)), '/s/a=unknown'],
+    ['wr_prune_scan_stub', LIST(MAIN, S1('a', `HEAD eeee${NL}detached`)), '/s/a=missing'],
+    ['wr_prune_scan_stub', LIST(MAIN, S1('a', `HEAD eeee${NL}detached`)), '/s/a=exists'],
+    ['wr_prune_scan_stub', LIST(MAIN, S1('a', `HEAD bbbb${NL}branch refs/heads/b${NL}prunable gone`)), '/s/a=exists'],
+    ['wr_prune_scan_stub', LIST(MAIN, S1('a', `HEAD eeee${NL}detached${NL}locked x`)), '/s/a=unknown'],
+    ['wr_prune_scan_stub', LIST(MAIN, S1('a', `HEAD eeee${NL}detached`), S1('b', `${SZ}${NL}branch refs/heads/z`), S1('c', `HEAD eeee${NL}detached`), S1('d', `HEAD bbbb${NL}branch refs/heads/b`)), '/s/a=unknown,/s/b=missing,/s/c=exists,/s/d=unknown'],
+  ],
+  (g, r, i) => assert.equal(g.out, ['0,1,1', '0,1,1', '0,1,1', '0,1,1', '1,0,1', '0,0,1', '0,0,1', '0,0,0', '1,2,4'][i], JSON.stringify(r)),
 )
 
 // wr_branch_holder: ブランチを持つメイン以外の登録のパス（メイン・別のブランチ・detached・前方一致は拾わない）

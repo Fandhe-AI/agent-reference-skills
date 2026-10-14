@@ -321,24 +321,33 @@ wr_same_path() {
   fi
 }
 
-# 全体の worktree prune で登録が消えると、コミットの唯一の参照を失い得る登録の数を WR_PRUNE_RISK に入れる。$1 = git worktree list --porcelain の出力。
-# 対象: メイン以外で lock が無く、実体が無い（または porcelain が prunable と言う）登録のうち、detached、または HEAD が 0000…（ブランチ ref が
-# 無く、そのコミットの最後の参照が worktree の HEAD の reflog だけ）のもの。ブランチ上の登録は HEAD をブランチ ref が持つので数えない。
-# lock された登録は git が prune しないので数えない
-wr_prune_risk() {
-  local line cur="" idx=0 head="" det=0 lk=0 pr=0 n=0 on=0
+# 全体の worktree prune で登録が消えると困る登録を、1 回の走査で数える。$1 = git worktree list --porcelain の出力。
+# 各登録のパスの有無を wr_path_state で 1 回だけ観測し、その 1 回の観測から WR_PRUNE_RISK と WR_PRUNE_UNOBS へ互いに素に振り分ける（同じ登録を 2 回観測して
+# 結果がずれる窓、つまり risk に数えられず unobservable にも数えられない登録が出る窓を、構造でなくす）。対象はメイン以外で lock が無い登録だけ
+# （lock された登録は git が prune しないので数えない）:
+#   観測が unknown（親を検索・読み取りできない。prune は stat の失敗を不在と扱ってその登録を落とす）→ WR_PRUNE_UNOBS
+#   そうでなく、git が prunable と言う、または観測が missing（実体が無い）→ detached、または HEAD が 0000…（ブランチ ref が無く、そのコミットの
+#   最後の参照が worktree の HEAD の reflog だけ）のものを WR_PRUNE_RISK。ブランチ上の登録は HEAD をブランチ ref が持つので数えない
+# 合計（スキップの原因になった登録の件数）は WR_PRUNE_RISK + WR_PRUNE_UNOBS で、重複は構造上ない
+wr_prune_scan() {
+  local line cur="" idx=0 head="" det=0 lk=0 pr=0 nr=0 nu=0 on=0 st
   while IFS= read -r line; do
     case "${line}" in
       'worktree '* | '')
-        if [ "${on}" = 1 ] && [ "${idx}" -gt 1 ] && [ "${lk}" = 0 ] && { [ "${pr}" = 1 ] || [ ! -e "${cur}" ]; }; then
-          if [ "${det}" = 1 ]; then
-            n=$((n + 1))
-          else
-            case "${head}" in
-              '') ;;
-              *[!0]*) ;;
-              *) n=$((n + 1)) ;;
-            esac
+        if [ "${on}" = 1 ] && [ "${idx}" -gt 1 ] && [ "${lk}" = 0 ]; then
+          st=$(wr_path_state "${cur}")
+          if [ "${st}" = unknown ]; then
+            nu=$((nu + 1))
+          elif [ "${pr}" = 1 ] || [ "${st}" = missing ]; then
+            if [ "${det}" = 1 ]; then
+              nr=$((nr + 1))
+            else
+              case "${head}" in
+                '') ;;
+                *[!0]*) ;;
+                *) nr=$((nr + 1)) ;;
+              esac
+            fi
           fi
         fi
         on=0
@@ -360,31 +369,8 @@ wr_prune_risk() {
       'prunable' | 'prunable '*) pr=1 ;;
     esac
   done <<<"$1"$'\n'
-  WR_PRUNE_RISK=${n}
-}
-
-# `git worktree list --porcelain` の出力（$1）の非 main 登録のうち、パスの有無を観測できないもの（wr_path_state が unknown。親を検索・読み取りできない）の件数を
-# WR_PRUNE_UNOBS に入れる。git worktree prune は stat の失敗を不在と扱ってその登録を落とすので、1 件でもあれば prune しない（lock 中の登録は prune されないので数えない）
-wr_prune_unobservable() {
-  local line cur="" idx=0 lk=0 n=0 on=0
-  while IFS= read -r line; do
-    case "${line}" in
-      'worktree '* | '')
-        if [ "${on}" = 1 ] && [ "${idx}" -gt 1 ] && [ "${lk}" = 0 ] && [ "$(wr_path_state "${cur}")" = unknown ]; then n=$((n + 1)); fi
-        on=0
-        lk=0
-        case "${line}" in
-          'worktree '*)
-            cur=${line#worktree }
-            idx=$((idx + 1))
-            on=1
-            ;;
-        esac
-        ;;
-      'locked' | 'locked '*) lk=1 ;;
-    esac
-  done <<<"$1"$'\n'
-  WR_PRUNE_UNOBS=${n}
+  WR_PRUNE_RISK=${nr}
+  WR_PRUNE_UNOBS=${nu}
 }
 
 # `git worktree list --porcelain` の出力（$1）から、対象（$2 = 与えられたパス）の登録状況を調べる。実体のパスでも照合する。

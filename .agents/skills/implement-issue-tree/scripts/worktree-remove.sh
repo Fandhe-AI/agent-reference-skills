@@ -47,15 +47,19 @@
 #       remove_one（同じ確認・同じ許可形の git worktree remove）で 1 件消してからブランチを消す。lock あり・実体の無い detached・HEAD 0000… は消さず保持の語を結果にし、
 #       ブランチも残す（keep）。実体のある別の worktree が持つブランチは触らない（branch -D が失敗する従来どおり）。
 #       後始末の remove_one は unregistered ガード付きで呼ぶ: holder のパスに登録の無い実体が現れていたら retained-unregistered を holder に記録してブランチを残す。
-#       さらに第 6 引数 2 で実体の有無を削除の直前に同じプロセスで読み直す: 確認（実体なし）と削除の間に登録済みの worktree が作り直されていたら retained-present（読めなければ retained-unobservable）を
-#       holder に記録して何も消さず、ブランチも残す。lock の扱いは従来どおり（--require-missing の 1 と違い、pid が死んだ agent の lock は外して消す）。
+#       さらに --require-missing と同じ結びつけ（第 6 引数 1）で実体の有無を削除の直前に同じプロセスで読み直す: 確認（実体なし）と削除の間に登録済みの worktree が作り直されていたら retained-present（読めなければ retained-unobservable）を
+#       holder に記録して何も消さず、ブランチも残す。lock があれば pid の生死を問わず unlock せず retained-locked を holder に記録し、ブランチも残す（--require-missing と同じ。
+#       unlock を走らせるのは結びつけの無い呼び出しだけにして、lock の読み取りから unlock までの間に同じパスへ作り直された worktree の lock を外す窓を構造でなくす）。
 #       登録が読み直しで消えて holder_free にするときも、同じプロセスでパスの不在を確かめ、観測できない（retained-unobservable）ときも keep。
 #       この後始末の結果は --path の結果（worktree・dirty・unlocked）を上書きせず、結果の行の holder（removed / retained-… / failed。後始末をしたときだけ出る）に出す。
 #       holder が removed でなければブランチは keep。discard の ok は worktree が無くなり、ブランチも（指定があれば）消えたときだけ true なので、holder が保持・失敗なら false。
 #       実体の無いパスは実体のパス（祖先のシンボリックリンクを解決した形）でも照合する。大小だけ違う綴りは一致させない（大小を区別する FS では別の場所を消しかねない）。
 # 受容する限界（確認と削除の窓）:
 #   1. git には、確認と削除を原子的に行う手段が無い。
-#   2. 最終の観測（--require-missing / 第 6 引数 2 の実体の読み直し）は、唯一の変更コマンド（git worktree remove）の直前にだけ置く（unlock より後）。
+#   2. 最終の観測（--require-missing / --branch の後始末の実体の読み直し）は、唯一の変更コマンド（git worktree remove）の直前に置く。この結びつけがあるときは unlock を一切しない
+#      （lock ありは retained-locked で保持）ので、最終の観測と remove の間に別の変更コマンドは挟まらない。unlock が走るのは結びつけの無い呼び出し（superseded・結びつけ無しの discard・sweep）だけで、
+#      それらは『実体が無い』ことを前提にしない。lock の読み取りから unlock までの窓は、そこで受容する。
+#      （経緯: AL→AO→AP→AQ→AR/AS→AW。unlock の前後に確認を置く順序の入れ替えでは窓が逆側へ移るだけだったので、結びつけの経路から unlock をなくして閉じた）
 #   3. 有無を観測できない登録（親を検索・読み取りできない）があるプロセスでは、全体の prune をしない（prune はその登録を不在と扱って落とす）。
 #   4. 上記以外で、最終の観測と remove の間に残る窓（並行するプロセスがナノ秒単位で作り直すなど）は受容する。
 #   5. --branch の後始末（holder）が登録の無い実体を見つけて保持した結果（holder の retained-unregistered）は、そのプロセスの中でしか効かない。結果の行は固定語彙だけでパスを返さないため、
@@ -66,7 +70,7 @@
 #       何も消さなかったとき（--path なしのブランチだけの discard・not-registered・main・cwd・保持・failed）は呼ばず、呼ぶときも
 #       実体の無い登録のうち detached または HEAD 0000… のもの（コミットの唯一の参照かもしれない・lock なしの prune 対象）が 1 件でもあれば全体をスキップする
 #       （prune は対象を絞れない。登録が残るだけで、結果の語は変わらない）。有無を観測できない登録（wr_path_state が unknown）が 1 件でもあるときも同じくスキップする。
-#       スキップした件数は結果の行の pruneSkipped（0 のときは出さない）。
+#       スキップの原因になった登録の件数（重複なし。同じ登録を 2 つの条件で二重に数えない）は結果の行の pruneSkipped（0 のときは出さない）。
 # 自衛: メイン worktree（porcelain の先頭エントリ・実体のパスの一致）、登録されていないパス、カレントがその中にあるパスは消さない。
 #       rm の再帰削除は持たない（git worktree remove が消せなかったものは保持して報告する）。
 # 出力: 標準出力の最後の 1 行が `WORKTREE_REMOVE_RESULT {json}`。値は固定語彙と件数のみ（パスは sweep の removed だけで、
@@ -164,8 +168,7 @@ T_DIRTY=0
 T_UNLOCKED=false
 # $1 = モード、$2 = パス、$3 = 結びつけるブランチ（discard の --branch。空 = 結びつけない）、$4 = 結びつける HEAD の sha（discard の --head。空 = 結びつけない）、
 # $5 = 1 のとき、登録が無いのに実体のパスがあるものを retained-unregistered にする（discard の --head / --expect-branch / --require-missing。空 = not-registered のまま）
-# $6 = 1 のとき、実体が無いときだけ消す（discard の --require-missing。実体がある・lock ありは何も消さず、unlock もしない）。2 のとき（--branch の後始末）は実体の有無の結びつけだけを効かせ、
-#      lock は従来どおり（agent の形で pid が死んでいれば外して消す）
+# $6 = 1 のとき、実体が無いときだけ消す（discard の --require-missing と --branch の後始末。実体がある・lock ありは何も消さず、unlock もしない。lock は pid の生死を問わず retained-locked）
 remove_one() {
   local m=$1 path=$2 expect=${3:-} expect_sha=${4:-} unreg_guard=${5:-0} req_missing=${6:-0} wt_sha wt_head wt_full sr_rc wt_unborn lreal list top real cwd_real plan lockact alive cur_start status_out sub_init gd rc kmsg krc kw pw pself pout prc xw
   T_WT=""
@@ -235,8 +238,10 @@ remove_one() {
     fi
     lockact=$(wr_lock_action 1 "${WR_LOCK_PID}" "${alive}")
     if [ "${lockact}" = retain ]; then T_WT='retained-locked'; return 0; fi
-    # --require-missing は lock を外さない（check-absent の prunable は lock なしだけ。lock ありの登録は外付けの一時的な未接続かもしれない）
-    if [ "${req_missing}" = 1 ]; then T_WT='retained-locked'; return 0; fi
+    # --require-missing / --branch の後始末（req_missing が 0 でない）は lock を外さない（pid の生死を問わない。check-absent の prunable は lock なしだけ。lock ありの登録は
+    # 外付けの一時的な未接続かもしれない）。呼び出しの前半で取った lock の読み取りに基づく unlock が、その間に同じパスへ作り直された worktree の lock を外す窓を、構造でなくす
+    # （unlock が走るのは req_missing=0 のときだけで、その経路には最終確認が無い）
+    if [ "${req_missing}" != 0 ]; then T_WT='retained-locked'; return 0; fi
   fi
 
   # 実体の無い登録で、detached または HEAD が 0000…（ブランチ ref が無い）ものは、登録がそのコミットの唯一の参照かもしれない（消すと到達不能になる）。
@@ -309,7 +314,7 @@ remove_one() {
     T_UNLOCKED=true
   fi
   # 削除の直前にもう一度実体を読む（上の確認から削除までの間に作り直された場合）。唯一の変更コマンド（下の git worktree remove）の直前に置く
-  # （unlock の後。unlock が間に挟まると、その間に古い登録が prune され同じパスに作り直された worktree を消してしまう）
+  # （この結びつけがあるとき req_missing != 0 は unlock を走らせない（上の lock の節で retained-locked）ので、確認と remove は隣り合う）
   if [ "${req_missing}" != 0 ]; then
     case "$(wr_require_missing_check "${path}")" in
       ok) ;;
@@ -328,16 +333,15 @@ remove_one() {
 
 # 全体の worktree prune。prune はこの 1 か所だけが呼ぶ。実体の無い登録のうち、そのコミットの最後の参照になり得るもの（detached、または HEAD が
 # 0000… = wr_prune_risk）が 1 件でもあるときは、prune しない（登録ごと消えるとコミットが到達不能になる。git worktree prune は対象を絞れない）。
-# スキップした件数は PRUNE_SKIPPED に入り、結果の行に pruneSkipped として出る。スキップしても登録が残るだけで、ほかの結果の語は変わらない。
+# スキップの原因になった登録の件数（重複なし）は PRUNE_SKIPPED に入り、結果の行に pruneSkipped として出る。スキップしても登録が残るだけで、ほかの結果の語は変わらない。
 # 一覧を読めないときも prune しない（保全側）
 PRUNE_SKIPPED=0
 safe_prune() {
   local plist
   PRUNE_SKIPPED=0
   plist=$(git worktree list --porcelain 2>/dev/null) || { PRUNE_SKIPPED=1; return 0; }
-  wr_prune_risk "${plist}"
-  # 有無を観測できない登録（親を検索・読み取りできない）も数える。prune は stat の失敗を不在と扱い、その登録を落とす
-  wr_prune_unobservable "${plist}"
+  # 1 回の走査で、各登録の有無を 1 回だけ観測して risk と unobservable に互いに素に振り分ける（観測できない登録は prune が不在と扱って落とすので数える）
+  wr_prune_scan "${plist}"
   if [ "${WR_PRUNE_RISK}" -gt 0 ] || [ "${WR_PRUNE_UNOBS}" -gt 0 ]; then PRUNE_SKIPPED=$((WR_PRUNE_RISK + WR_PRUNE_UNOBS)); return 0; fi
   git worktree prune >/dev/null 2>&1 || true
 }
@@ -447,7 +451,7 @@ if [ "${cmd}" = remove ]; then
       keep_wt=${T_WT}
       keep_dirty=${T_DIRTY}
       keep_unlocked=${T_UNLOCKED}
-      remove_one discard "${holder}" "" "" 1 2
+      remove_one discard "${holder}" "" "" 1 1
       holder_word=${T_WT}
       T_WT=${keep_wt}
       T_DIRTY=${keep_dirty}
