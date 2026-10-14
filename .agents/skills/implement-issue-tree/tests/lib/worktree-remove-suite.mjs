@@ -1110,7 +1110,7 @@ export function registerWorktreeRemoveTests(bash) {
   // ---- 同期 PR の Bugbot 指摘 AL: ブランチを掴む実体の無い登録の後始末が、並行して登録が消えた（not-registered）ときの扱い ----
   // 呼び出しの順は、1: 一覧（ブランチを持つ登録を探す）→ 2: remove_one の中の一覧 → 3: （not-registered のときだけ）読み直し。
   // 2 回目の直前に実際に登録を prune して『後始末の時点で登録が既に無い』を作り、3 回目の一覧を差し替えて読み直しの分岐を検査する
-  const raceGit = (repo, name, third) => {
+  const raceGit = (repo, name, third, afterPrune = '') => {
     const shim = join(repo.root, name)
     mkdirSync(shim)
     const real = spawnSync('sh', ['-c', 'command -v git'], { encoding: 'utf8' }).stdout.trim()
@@ -1119,7 +1119,7 @@ export function registerWorktreeRemoveTests(bash) {
       '#!/bin/sh',
       'if [ "$1" = worktree ] && [ "$2" = list ]; then',
       `  n=$(cat '${counter}' 2>/dev/null || echo 0); n=$((n + 1)); echo "$n" > '${counter}'`,
-      `  if [ "$n" = 2 ]; then ${real} worktree prune; fi`,
+      `  if [ "$n" = 2 ]; then ${real} worktree prune; ${afterPrune} fi`,
       `  if [ "$n" = 3 ]; then ${third}`,
       '  fi',
       'fi',
@@ -1161,6 +1161,25 @@ export function registerWorktreeRemoveTests(bash) {
     const r = run(repo, ['remove', '--mode', 'discard', '--branch', l.branch, '--base', 'main'])
     assert.deepEqual([r.result.ok, r.result.branch, r.result.holder], [false, 'keep', 'retained-locked'], JSON.stringify(r.result))
     assert.ok(repo.branches().includes(l.branch))
+  })
+  // ---- 同期 PR の Bugbot 指摘 AO: 後始末で、確認と削除の間に holder のパスへ登録の無い実体が現れた（TOCTOU）ときはブランチを残す ----
+  test(`${tag} AO: 後始末の remove_one の時点で holder のパスに登録の無い実体が現れていたら、holder は retained-unregistered・ブランチは keep・実体は残る`, () => {
+    const repo = makeRepo()
+    const h = deadBranchHolder(repo, 'aoreal')
+    const env = raceGit(repo, 'shim-ao-real', ':', `mkdir '${h.path}'; echo keepme > '${h.path}/work.txt';`)
+    const r = run(repo, ['remove', '--mode', 'discard', '--branch', h.branch, '--base', 'main'], { env })
+    assert.deepEqual([r.result.ok, r.result.branch, r.result.holder], [false, 'keep', 'retained-unregistered'], JSON.stringify(r.result))
+    assert.ok(repo.branches().includes(h.branch), 'ブランチは消えない')
+    assert.ok(existsSync(join(h.path, 'work.txt')), '実体は消えない')
+  })
+  test(`${tag} AO: 登録の読み直しのあとに holder のパスへ実体が現れていたら（not-registered）、登録が無くてもブランチを消さない`, () => {
+    const repo = makeRepo()
+    const h = deadBranchHolder(repo, 'aolate')
+    const env = raceGit(repo, 'shim-ao-late', `mkdir '${h.path}'; echo keepme > '${h.path}/work.txt'; `)
+    const r = run(repo, ['remove', '--mode', 'discard', '--branch', h.branch, '--base', 'main'], { env })
+    assert.deepEqual([r.result.ok, r.result.branch, r.result.holder], [false, 'keep', 'not-registered'], JSON.stringify(r.result))
+    assert.ok(repo.branches().includes(h.branch), 'ブランチは消えない')
+    assert.ok(existsSync(join(h.path, 'work.txt')), '実体は消えない')
   })
   // ---- 同期 PR の Bugbot 指摘 J〜M・P ----
   // J: --path の結果は、ブランチを持つ登録の後始末で上書きしない（後始末の結果は holder とブランチの判断にだけ使う）
