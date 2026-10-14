@@ -14,21 +14,32 @@
 //   (e) ビルド時のトークン照合 — lexer の `/` 判別の固定ケースと、判別できない入力・照合ヘルパーの
 //       失敗（実行できない・出力が想定の形でない）でビルドが生成ファイルを書かずに中止すること。
 // 生成物のサイズ・パースゲートは workflow-loadability.test.mjs が担う（対象は実行ファイル）。
-import { test, after } from 'node:test'
+import { test, after, describe } from 'node:test'
 import { stripMetaExport } from './lib/workflow-script-contract.mjs'
 import assert from 'node:assert/strict'
 import { readFileSync, writeFileSync, existsSync, mkdtempSync, symlinkSync, rmSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { spawnSync } from 'node:child_process'
+import { spawnAsync } from './lib/run-async.mjs'
 import { tmpdir } from 'node:os'
-import { join, resolve } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
-  stripComments, squeezeSpaces, shouldSqueezeSpace, buildArtifact, verifyTokenParity, runBuild, parseArgs, SQUEEZE_REFUSAL_RULES, SRC_PATH, DIST_PATH,
+  stripComments, squeezeSpaces, shouldSqueezeSpace, buildArtifact, verifyTokenParity, runBuild, parseArgs, embedScriptHashes, SQUEEZE_REFUSAL_RULES, SRC_PATH, DIST_PATH,
 } from '../scripts/build-workflow.mjs'
 
 const SCRIPT_PATH = fileURLToPath(new URL('../scripts/build-workflow.mjs', import.meta.url))
+// 開発ファイルは目印（スクリプトのハッシュ）を持つため、ビルダーと同じく置換してから比較する
+const readSrcEmbedded = () => embedScriptHashes(readFileSync(SRC_PATH, 'utf8'), dirname(SRC_PATH))
 const REPO_ROOT = resolve(fileURLToPath(new URL('../../..', import.meta.url)))
 const TOKEN_DIFF_HELPER = fileURLToPath(new URL('../scripts/token-diff.cjs', import.meta.url))
+
+// 実物の開発ファイル（約 900 KB）のビルドとトークン照合は 1 回約 7 秒かかる。実物への --check は 1 回だけ、このファイルの読み込み時に
+// 子プロセスで始め（相対パスで起動する形 = 作業ディレクトリがリポジトリルートで、スクリプトを相対パスで渡す）、他のテストを
+// 走らせている間に終わらせる。結果は 2 つのテスト（鮮度ゲートと相対パス起動の CLI ガード）が共有する。
+// --check の判定は『開発ファイルから再生成した結果が実行ファイルと byte 一致し、かつ変換前後のトークン列が一致する』ことなので、
+// 旧テストが同じ再生成をこのプロセスの中で繰り返していた分（鮮度ゲートと symlink 起動で各 7 秒）はここへ集約した。
+const REAL_CHECK = spawnAsync(process.execPath, ['skills/implement-issue-tree/scripts/build-workflow.mjs', '--check'], { cwd: REPO_ROOT, env: process.env })
 
 // ---------------------------------------------------------------------------
 // (a) lexer 固定ケース
@@ -608,6 +619,14 @@ const runTokenDiff = (mode, cases) => {
   assert.equal(results.length, cases.length)
   return results
 }
+// 非同期版: 同じ子プロセスを同時に走らせて待ちを重ねる（変異テスト用。入力・判定は runTokenDiff と同じ）
+const runTokenDiffAsync = async (mode, cases) => {
+  const r = await spawnAsync(process.execPath, ['--expose-internals', TOKEN_DIFF_HELPER], { input: JSON.stringify(cases.map((c) => ({ ...c, mode }))) })
+  assert.equal(r.status, 0, `acorn によるトークン比較の子プロセスが失敗（status ${r.status}）: ${r.stderr}`)
+  const { results } = JSON.parse(r.stdout)
+  assert.equal(results.length, cases.length)
+  return results
+}
 const compareTokensWithTokenizer = (cases) => runTokenDiff('tokenize', cases)
 const compareTokensWithParser = (cases) => runTokenDiff('parse', cases)
 
@@ -650,7 +669,7 @@ test('トークン列一致（acorn）: 固定ケースで変換前後のトー�
 })
 
 test('トークン列一致（acorn）: 実ファイル implement-issue-tree.src.js と生成物の全トークンが一致する', () => {
-  const src = readFileSync(SRC_PATH, 'utf8')
+  const src = readSrcEmbedded()
   const dist = readFileSync(DIST_PATH, 'utf8')
   // before は生の src（acorn はコメントを読み飛ばす）なので、コメント除去・インデント除去・
   // 空白除去の全体が「トークン列と各トークンの開始行を変えない」ことを独立実装で検証する
@@ -986,16 +1005,19 @@ test('変異テスト: 規則表の規則名は重複せず、既定の判定は
   assert.equal(shouldSqueezeSpace('a', 'b', []), true, '規則を全部外すと単語どうしも詰める判定になる（変異が実際に効く前提）')
 })
 
+// 規則ごとの変異は独立で、1 本の大半（約 1.5 秒）は子プロセスでのトークン比較。規則の数だけ同時に走らせる
+describe('変異テスト（規則を 1 項ずつ外す）', { concurrency: 16 }, () => {
 for (const rule of SQUEEZE_REFUSAL_RULES) {
-  test(`変異テスト: 規則 ${rule.name} を外すと、トークン列が変わる入力が見つかる`, () => {
+  test(`変異テスト: 規則 ${rule.name} を外すと、トークン列が変わる入力が見つかる`, async () => {
     const shouldSqueeze = withoutRule(rule)
     const cases = mutationCorpus().map((code) => ({
       name: JSON.stringify(code), before: code, after: squeezeSpaces(code, { shouldSqueeze }), lenient: true,
     }))
-    const failed = compareTokensWithTokenizer(cases).filter((r) => !r.ok)
+    const failed = (await runTokenDiffAsync('tokenize', cases)).filter((r) => !r.ok)
     assert.ok(failed.length > 0, `規則 ${rule.name} を外してもトークン列が変わる入力が無い（規則が効いていないか、入力空間が足りない）`)
   })
 }
+})
 
 test('変異テスト: 規則 before-dot を外すと return .5 が return.5 になる（トークン列は同じだが見た目を残す規則）', () => {
   const mutant = withoutRule(SQUEEZE_REFUSAL_RULES.find((r) => r.name === 'before-dot'))
@@ -1009,16 +1031,15 @@ test('変異テスト: 規則 before-dot を外すと return .5 が return.5 に
 // (b) 鮮度ゲート（リポジトリ実体の検証）
 // ---------------------------------------------------------------------------
 
-test('実行ファイルは開発ファイルからの再生成結果と byte 一致する（ビルド忘れ・直接編集の検出）', () => {
-  const src = readFileSync(SRC_PATH, 'utf8')
-  const dist = readFileSync(DIST_PATH, 'utf8')
-  // buildArtifact は行数保持・先頭 meta 宣言・冪等性の検証込み（失敗時は throw）
-  const rebuilt = buildArtifact(src)
+test('実行ファイルは開発ファイルからの再生成結果と byte 一致する（ビルド忘れ・直接編集の検出）', async () => {
+  // buildArtifact（行数保持・先頭 meta 宣言・冪等性の検証込み）の結果を実行ファイルと byte 比較するのは --check 自身の判定
+  // （runBuild の checkOnly）。読み込み時に始めた実物への --check の結果で確かめる
+  const r = await REAL_CHECK
   assert.ok(
-    rebuilt === dist,
+    r.status === 0 && /鮮度 ok/.test(r.stdout),
     '実行ファイル implement-issue-tree.js が開発ファイル implement-issue-tree.src.js と同期していない。' +
       '編集は .src.js に対して行い、node skills/implement-issue-tree/scripts/build-workflow.mjs で再生成すること' +
-      '（実行ファイルの直接編集は次のビルドで消える）',
+      `（実行ファイルの直接編集は次のビルドで消える）。--check: status ${r.status} / ${r.stdout}${r.stderr}`,
   )
 })
 
@@ -1262,7 +1283,7 @@ const LEXER_SLASH_RESIDUAL = {
 }
 
 const runBuilder = (srcText, extra = []) => {
-  const dir = mkdtempSync(join(tmpdir(), 'build-workflow-parity-'))
+  const dir = trackTmp(mkdtempSync(join(tmpdir(), 'build-workflow-parity-')))
   try {
     const src = join(dir, 'in.src.js')
     const dist = join(dir, 'out.js')
@@ -1622,7 +1643,7 @@ test('buildArtifact: 先頭にコメントがある入力（コメント除去�
 // 変換前だけ・変換後だけが空メッセージの例外で失敗する状況を作り、どちらの側の判定も外れていないことを見る
 // （両側が失敗すると片方の判定が外れても不一致として止まり、見分けがつかない）
 test('token-diff の失敗判定: 例外のメッセージが空文字でも、変換前・変換後それぞれの失敗として扱う', () => {
-  const dir = mkdtempSync(join(tmpdir(), 'token-diff-empty-error-'))
+  const dir = trackTmp(mkdtempSync(join(tmpdir(), 'token-diff-empty-error-')))
   try {
     const stub = join(dir, 'run.cjs')
     writeFileSync(
@@ -1696,7 +1717,7 @@ test('ビルド時のトークン照合: 正常な開発ファイルはビルド
 // 照合ヘルパーの差し替えは verifyTokenParity の引数（helperPath / execPath）と、CLI 本体が使う関数 runBuild の
 // 引数 parity だけで行う（CLI の引数には差し替える口がない — 照合を迂回できてしまうため。下のテスト参照）。
 // 正常終了で一致を示す出力は `{"results":[{"ok":true}]}` の形だけで、それ以外はすべて中止になる。
-const helperDir = mkdtempSync(join(tmpdir(), 'build-workflow-helper-'))
+const helperDir = trackTmp(mkdtempSync(join(tmpdir(), 'build-workflow-helper-')))
 after(() => rmSync(helperDir, { recursive: true, force: true }))
 // 標準入力を読み切ってから body を実行する照合ヘルパー（読まずに終了すると EPIPE で原因が変わる）
 const writeHelper = (name, body) => {
@@ -1706,7 +1727,7 @@ const writeHelper = (name, body) => {
 }
 // CLI 本体が使う runBuild を、一時ファイルの開発ファイルに対して呼ぶ（照合ヘルパーを差し替えられる）
 const runBuildOn = (srcText, { checkOnly = false, parity = {} } = {}) => {
-  const dir = mkdtempSync(join(tmpdir(), 'build-workflow-run-'))
+  const dir = trackTmp(mkdtempSync(join(tmpdir(), 'build-workflow-run-')))
   try {
     const srcPath = join(dir, 'in.src.js')
     const distPath = join(dir, 'out.js')
@@ -1782,7 +1803,7 @@ test('runBuild: --check 相当でも照合ヘルパーが失敗すれば status 
 })
 
 test('runBuild: --check 相当で実行ファイルが読めなければ status 1', () => {
-  const dir = mkdtempSync(join(tmpdir(), 'build-workflow-nodist-'))
+  const dir = trackTmp(mkdtempSync(join(tmpdir(), 'build-workflow-nodist-')))
   try {
     const srcPath = join(dir, 'in.src.js')
     writeFileSync(srcPath, GOOD_SRC)
@@ -1836,24 +1857,32 @@ test('parseArgs: 引数なしは既定の src / dist、--src / --dist / --check 
 // ---------------------------------------------------------------------------
 
 test('symlink 経由で起動しても CLI ガードを通過して --check が実行される（無言 no-op の防止）', () => {
-  const dir = mkdtempSync(join(tmpdir(), 'build-workflow-link-'))
+  // CLI ガードの性質（起動の形によらず実行部が動き、--check の結果を出す）は入力の大きさに依らないので、小さい開発ファイルと
+  // その生成物で確かめる（実物への --check は読み込み時に 1 回だけ。上の REAL_CHECK）
+  const dir = trackTmp(mkdtempSync(join(tmpdir(), 'build-workflow-link-')))
   try {
     const link = join(dir, 'build-workflow.mjs')
     symlinkSync(SCRIPT_PATH, link)
-    const r = spawnSync(process.execPath, [link, '--check'], { encoding: 'utf8' })
+    const src = join(dir, 'in.src.js')
+    const dist = join(dir, 'out.js')
+    writeFileSync(src, GOOD_SRC)
+    writeFileSync(dist, buildArtifact(GOOD_SRC))
+    const r = spawnSync(process.execPath, [link, '--check', '--src', src, '--dist', dist], { encoding: 'utf8' })
     assert.equal(r.status, 0, r.stderr)
     assert.match(r.stdout, /鮮度 ok/)
+    // 対照: 生成物が食い違っていれば、同じ起動の形で鮮度エラーになる（無言で成功を返す no-op ではない）
+    writeFileSync(dist, `${buildArtifact(GOOD_SRC)}// stale\n`)
+    const stale = spawnSync(process.execPath, [link, '--check', '--src', src, '--dist', dist], { encoding: 'utf8' })
+    assert.notEqual(stale.status, 0)
+    assert.match(stale.stderr, /鮮度エラー/)
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }
 })
 
-test('相対パスで起動しても CLI ガードを通過して --check が実行される', () => {
-  const r = spawnSync(
-    process.execPath,
-    ['skills/implement-issue-tree/scripts/build-workflow.mjs', '--check'],
-    { cwd: REPO_ROOT, encoding: 'utf8' },
-  )
+test('相対パスで起動しても CLI ガードを通過して --check が実行される', async () => {
+  // 読み込み時に、作業ディレクトリ = リポジトリルート・スクリプトは相対パスの形で実物へ --check を始めている
+  const r = await REAL_CHECK
   assert.equal(r.status, 0, r.stderr)
   assert.match(r.stdout, /鮮度 ok/)
 })

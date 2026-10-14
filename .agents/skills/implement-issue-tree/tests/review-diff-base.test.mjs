@@ -13,6 +13,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, writeFileSync, mkdtempSync, mkdirSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -52,7 +53,7 @@ if (markerIndex < 0) {
   throw new Error(`テスト境界マーカー ${DRIVER_MARKER} が実装スクリプトに存在しない（削除・改名は回帰テストを無効化する）`)
 }
 const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
-const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-reviewbase-'))
+const sliceDir = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-reviewbase-')))
 const slicePath = join(sliceDir, 'implement-issue-tree-defs.mjs')
 // 実装スクリプトは Workflow ランタイムの制約により `export const meta` 以外の top-level export を
 // 持てない（他に export があると起動時に SyntaxError となりスクリプト全体が実行不能になる）ため、
@@ -136,7 +137,7 @@ function git(cwd, args) {
 // このためローカル main は unrelated.yml の祖先であり、merge-base(ローカル main, feature) が
 // ローカル main 自身になり、3 点ドット diff でも unrelated.yml が混入する。
 function buildFixture() {
-  const root = mkdtempSync(join(tmpdir(), 'implement-issue-tree-diffbase-'))
+  const root = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-diffbase-')))
   const bareDir = join(root, 'origin.git')
   const workDir = join(root, 'work')
   mkdirSync(bareDir)
@@ -198,7 +199,7 @@ test('群C: 先行マージ（別イシューの PR マージ相当）で origin
 
   // parallel >= 2 の別イシューが先に PR をマージし、origin/main がさらに進む（このラン中の
   // 自 worktree は関与しない別プロセスによる更新）。
-  const anotherRoot = mkdtempSync(join(tmpdir(), 'implement-issue-tree-diffbase-another-'))
+  const anotherRoot = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-diffbase-another-')))
   git(anotherRoot, ['clone', bareDir, '.'])
   writeFileSync(join(anotherRoot, 'another-feature.txt'), 'another\n')
   git(anotherRoot, ['add', 'another-feature.txt'])
@@ -280,7 +281,7 @@ test('群D: SKILL.md も保存先明示 refspec と無条件取得を記載す�
 // remote.origin.fetch を持たない remote（custom refspec 設定・手動 remote 追加で実際に起きる）
 // を作り、bare refspec と保存先明示 refspec の挙動差を実測する。
 function buildNoRefspecFixture() {
-  const root = mkdtempSync(join(tmpdir(), 'implement-issue-tree-refspec-'))
+  const root = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-refspec-')))
   const bareDir = join(root, 'origin.git')
   const seedDir = join(root, 'seed')
   const workDir = join(root, 'work')
@@ -330,7 +331,7 @@ test('群D: 古い remote-tracking ref は明示 refspec の再 fetch で前進�
 
   // 別の作業者が origin/main を進める（先行 PR のマージ相当）
   const bareUrl = git(workDir, ['config', '--get', 'remote.origin.url'])
-  const other = mkdtempSync(join(tmpdir(), 'implement-issue-tree-refspec-other-'))
+  const other = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-refspec-other-')))
   git(other, ['clone', bareUrl, '.'])
   writeFileSync(join(other, 'advance.txt'), 'advance\n')
   git(other, ['add', '.'])

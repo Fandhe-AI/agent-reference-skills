@@ -11,6 +11,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -28,7 +29,7 @@ if (markerIndex < 0) {
 }
 const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
 const driverPart = source.slice(markerIndex)
-const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-base-merge-'))
+const sliceDir = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-base-merge-')))
 const slicePath = join(sliceDir, 'implement-issue-tree-defs.mjs')
 const SLICE_EXPORTS = [
   'parseMaxBaseMerges',
@@ -37,12 +38,11 @@ const SLICE_EXPORTS = [
   'MERGE_VALID_STATES',
   'BASE_MERGE_SCHEMA',
   'baseMergePrompt',
-  'baseMergeInstruction',
+  'basePrepareInstruction',
   'monitorPrompt',
   'fixPrompt',
   'isValidRepoSlug',
   'parseRepoArg',
-  'ALLOWED_REMOTE_HOST',
 ]
 // fixPrompt / baseMergePrompt はいずれも sanitize() 経由で item.title を untrusted() タグへ
 // 埋め込む。boundaryNonce() 自体は fixPrompt の finding 埋め込みでのみ使うが、モジュール
@@ -55,6 +55,8 @@ writeFileSync(
   `${definitionPart}\nexport { ${SLICE_EXPORTS.join(', ')} }\n${TEST_ONLY_SETTER}`,
 )
 
+// スクリプトの起動コマンド（scriptInvocation）は args.skillDir を要る。実ランでは起動手順が渡す
+globalThis.args = { skillDir: '/opt/skills/implement-issue-tree' }
 const mod = await import(pathToFileURL(slicePath).href)
 const {
   parseMaxBaseMerges,
@@ -63,12 +65,11 @@ const {
   MERGE_VALID_STATES,
   BASE_MERGE_SCHEMA,
   baseMergePrompt,
-  baseMergeInstruction,
+  basePrepareInstruction,
   monitorPrompt,
   fixPrompt,
   isValidRepoSlug,
   parseRepoArg,
-  ALLOWED_REMOTE_HOST,
 } = mod
 mod.__setBoundaryNonceSeedForTest('b'.repeat(64))
 
@@ -142,144 +143,100 @@ test('BASE_MERGE_SCHEMA: required は pushed/summary/worktreePath のみ', () =>
   assert.ok(!BASE_MERGE_SCHEMA.required.includes('routingError'), 'routingError が required に含まれている（省略可のはず）')
 })
 
-test('BASE_MERGE_SCHEMA.mergeableAfter は MERGEABLE/CONFLICTING/UNKNOWN の enum 完全一致のみ受理する', () => {
-  assert.deepEqual(BASE_MERGE_SCHEMA.properties.mergeableAfter.enum, ['MERGEABLE', 'CONFLICTING', 'UNKNOWN'])
-})
-
-// ---------------------------------------------------------------------------
-// baseMergePrompt: プロンプト契約（fetch < merge < push < mergeable 確認の位置関係、禁止コマンド）
-// ---------------------------------------------------------------------------
-
-test('baseMergePrompt: base fetch → merge → push → mergeable 確認の順で現れる', () => {
-  const prompt = baseMergePrompt(item, impl)
-  // baseBranch 名はテストスライスの parsedArgs 未注入時の既定値（'main'）に依存するため、
-  // 固定文字列ではなく行の並び順で検証する（refspec 保存形式の base fetch 行を特定する）。
-  const baseFetchIdx = prompt.indexOf(':refs/remotes/origin/')
-  const mergeIdx = prompt.indexOf('git merge --no-edit')
-  const abortIdx = prompt.indexOf('git merge --abort')
-  const pushIdx = prompt.indexOf('git push origin HEAD:refs/heads/')
-  const mergeableIdx = prompt.indexOf('--json state,mergeable,headRefOid')
-  assert.ok(baseFetchIdx >= 0, 'base fetch（保存先明示 refspec）の指示がない')
-  assert.ok(mergeIdx >= 0, 'git merge --no-edit の指示がない')
-  assert.ok(abortIdx >= 0, '解消不能時の git merge --abort 指示がない')
-  assert.ok(pushIdx >= 0, 'git push origin HEAD:refs/heads/<branch> の指示がない')
-  assert.ok(mergeableIdx >= 0, 'push 後の mergeable 再取得指示がない')
-  assert.ok(baseFetchIdx < mergeIdx, 'base fetch が merge より前に現れない')
-  assert.ok(mergeIdx < pushIdx, 'merge が push より前に現れない')
-  assert.ok(pushIdx < mergeableIdx, 'push が mergeable 確認より前に現れない')
-})
-
-// PR #443 codex P0（submodule 例外撤去）の回帰テスト: gitlink コンフリクトは双方がポインタを
-// 変更した状態であり、base 側採用（git checkout origin/<base> -- <path> → git add → commit）は
-// PR 側の gitlink 更新を黙って破棄する。旧実装の submodule 自動解消指示が復活していないことと、
-// check-runs 起動確認は維持されていることを固定する。
-test('baseMergePrompt: submodule 自動解消指示を含まず（fail-closed）、check-runs 起動確認を含む', () => {
-  const prompt = baseMergePrompt(item, impl)
-  assert.ok(!prompt.includes('git checkout origin/'), '撤去済みの submodule base 側採用（git checkout origin/<base> -- <path>）指示が復活している')
-  assert.ok(!prompt.includes('git add '), '撤去済みの submodule ポインタ git add 指示が復活している')
-  assert.ok(prompt.includes('check-runs'), 'push 後の check-run 起動確認指示がない')
-  assert.ok(prompt.includes('checksStarted'), 'checksStarted の返却指示がない')
-})
-
-test('baseMergePrompt: commitFailed の返却指示を含む', () => {
-  const prompt = baseMergePrompt(item, impl)
-  assert.ok(prompt.includes('commitFailed: true'), 'commitFailed: true の返却指示がない')
-})
-
-// PR #443 codex P1（PR ブランチ取得の起点で fail-closed が無い問題。skills/implement-issue-tree/
-// scripts/implement-issue-tree.js:2575）の回帰テスト。旧文言 `git fetch origin && git checkout
-// --detach origin/<branch>` は終了コード未確認・失敗時の終端指示が無く、fetch/checkout 失敗時に
-// 隔離 worktree の元の HEAD のまま手順 2 の merge・手順 3 の push へ進み得た。fetch・checkout の
-// 終了コード確認、checkout 後 HEAD が origin/<branch> と一致することの確認、いずれかの失敗時に
-// merge/push を行わず commitFailed: true で即終了する指示になっていることを固定する。
-test('baseMergePrompt: PR ブランチ取得（fetch・checkout・HEAD 一致確認）が fail-closed である', () => {
-  const prompt = baseMergePrompt(item, impl)
-  assert.ok(
-    !prompt.includes('git fetch origin && git checkout --detach origin/'),
-    '旧来の終了コード未確認 fetch && checkout 一文が残っている',
-  )
-  const branchFetchIdx = prompt.indexOf(`git fetch origin ${impl.branch}:refs/remotes/origin/${impl.branch}`)
-  const checkoutIdx = prompt.indexOf(`git checkout --detach origin/${impl.branch}`)
-  const revParseIdx = prompt.indexOf(`git rev-parse origin/${impl.branch}`)
-  const mergeIdx = prompt.indexOf('git merge --no-edit')
-  assert.ok(branchFetchIdx >= 0, '対象ブランチの保存先明示 refspec fetch の指示がない')
-  assert.ok(checkoutIdx >= 0, 'origin/<branch> への detached checkout 指示がない')
-  assert.ok(revParseIdx >= 0, 'checkout 後の HEAD 一致確認（git rev-parse origin/<branch>）の指示がない')
-  assert.ok(branchFetchIdx < checkoutIdx, 'branch fetch が checkout より前に現れない')
-  assert.ok(checkoutIdx < revParseIdx, 'checkout が HEAD 一致確認より前に現れない')
-  assert.ok(revParseIdx < mergeIdx, 'HEAD 一致確認が merge より前に現れない')
-  assert.ok(prompt.includes('branch fetch 失敗'), 'branch fetch 失敗時の fail-closed summary 文言がない')
-  assert.ok(prompt.includes('branch checkout 失敗'), 'checkout 失敗時の fail-closed summary 文言がない')
-  assert.ok(
-    prompt.includes('checkout 後の HEAD が origin/') && prompt.includes('と不一致'),
-    'checkout 後の HEAD 不一致時の fail-closed summary 文言がない',
+test('BASE_MERGE_SCHEMA: ログ専用だった mergeableAfter / checksStarted / headSha を持たない（Issue #603 第 3 弾で撤去。push 後の観測は次ラウンドの monitor が行う）', () => {
+  for (const k of ['mergeableAfter', 'checksStarted', 'headSha']) {
+    assert.ok(!(k in BASE_MERGE_SCHEMA.properties), `${k} が BASE_MERGE_SCHEMA に残っている`)
+  }
+  assert.deepEqual(
+    Object.keys(BASE_MERGE_SCHEMA.properties).sort(),
+    ['commitFailed', 'conflict', 'hookRejected', 'pushed', 'routingError', 'summary', 'worktreePath'],
+    'スキーマのキーは base-merge.sh の結果の JSON のキーと一致する（tests/base-merge.test.mjs が実出力のキーを検査する）',
   )
 })
 
-// PR #443 codex P0（thread PRRT_kwDORuXFg86cbn_T）の回帰テスト: baseMergePrompt は COMMON
-// （CLAUDE.md・.claude/rules を読んで従うよう指示する）を挿入しない。COMMON は PR ブランチが
-// 改変できる未信頼文書を読ませる指示であり、コンフリクト解消コミットを作成して push できる
-// 本エージェントへ挿入すると命令注入経路になる。BASE_MERGE_CONTEXT_COMMON という専用の
-// 最小固定指示（--no-verify 禁止・push timeout・グローバル状態不変更・自動運転モード等の
-// 安全規則を含み、リポジトリ内文書・Issue/PR 本文・レビュー本文は読まない）を使うことを固定する。
+test('実装スクリプト: base-merge 返却のログ専用 3 項目を読む・書く箇所が残っていない（状態ファイル・ログ・返却のいずれも）', () => {
+  assert.ok(!/\bb\.(mergeableAfter|checksStarted|headSha)\b/.test(source), 'b.mergeableAfter / b.checksStarted / b.headSha を参照している箇所が残っている')
+  assert.ok(!/mergeableAfter(?!Push)/.test(source), 'mergeableAfter（mergeableAfterPush 以外）が残っている')
+})
+
+
+// ---------------------------------------------------------------------------
+// baseMergePrompt: プロンプト契約。Issue #603 第 3 弾で、routing ガード・fetch・checkout・マージ・push 検証の手順の文章を
+// スクリプト scripts/base-merge.sh に移した。手順そのものの挙動（位置関係・fail-closed・禁止コマンド・routing 照合）は
+// tests/base-merge.test.mjs が実 git で固定し、ここは『エージェントに何を実行させ、何を返させるか』のプロンプト契約を固定する。
+// ---------------------------------------------------------------------------
+
+const BASE_MERGE_SH = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'scripts', 'base-merge.sh'), 'utf8')
+// コメント行を除いたスクリプト本文（禁止語の検査をコメント中の説明文で誤検出しない）
+const baseMergeCode = BASE_MERGE_SH.split('\n').filter((l) => !/^\s*#/.test(l)).join('\n')
+// 許可ホストの定数と URL 照合の関数は lib/base-merge-lib.sh（スクリプト本体から無変更で切り出したもの。テストが表で単体検査するため）
+const BASE_MERGE_LIB_SH = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'scripts', 'lib', 'base-merge-lib.sh'), 'utf8')
+const baseMergeLibCode = BASE_MERGE_LIB_SH.split('\n').filter((l) => !/^\s*#/.test(l)).join('\n')
+const commandOf = (prompt) => /```sh\n([\s\S]*?)\n```/.exec(prompt)?.[1]
+
+test('baseMergePrompt: base-merge.sh を run-verified.sh 経由の 1 コマンドで起動し、引数は検証済みの値だけを渡す', () => {
+  const prompt = baseMergePrompt(item, impl, 'Fandhe-AI/agent-cli-skills')
+  const command = commandOf(prompt)
+  assert.ok(command, 'sh のコードブロックが無い')
+  assert.equal(command.split('\n').length, 1, 'コマンドは 1 行')
+  assert.equal(
+    command,
+    "bash '/opt/skills/implement-issue-tree/scripts/run-verified.sh' @@SCRIPT_SHA256:base-merge.sh@@ base-merge.sh --pr 999 --branch feat/441-base-merge --base main --repo 'fandhe-ai/agent-cli-skills'",
+  )
+  assert.ok(!command.includes('--nonce'), '封筒を使わないので nonce は付けない（ホストが新たに採用する値が無い）')
+  assert.ok(prompt.includes('一字一句そのまま'), '改変禁止の指示がない')
+  assert.ok(prompt.includes('timeout に 600000'), 'push が長い pre-push hook を持ち得るため timeout の指定がいる')
+})
+
+test('baseMergePrompt: 異常終了の fallback（非 0 終了・結果の行なし）は pushed: false・commitFailed: true で返させ、取り込み直さない', () => {
+  const prompt = baseMergePrompt(item, impl, 'Fandhe-AI/agent-cli-skills')
+  assert.ok(prompt.includes('非 0 終了や該当行が無いとき'), '異常終了の扱いの指示がない')
+  assert.ok(prompt.includes('他の方法で取り込み直さず'), '自己流のやり直しを禁じる指示がない')
+  assert.ok(prompt.includes('pushed: false・commitFailed: true'), 'fallback の返却値の指示がない')
+  assert.ok(prompt.includes('BASE_MERGE_RESULT'), '結果の行の識別子がない')
+})
+
+test('baseMergePrompt: 手順の文章を持たない（fetch / merge / push / routing の手順は base-merge.sh が持つ）', () => {
+  const prompt = baseMergePrompt(item, impl, 'Fandhe-AI/agent-cli-skills')
+  for (const w of ['git fetch origin', 'git merge --no-edit', 'git push origin', 'git checkout --detach', 'remote get-url', 'ls-remote', 'gh pr view', '手順:']) {
+    assert.ok(!prompt.includes(w), `手順の記述「${w}」がプロンプトに残っている`)
+  }
+})
+
+// PR #443 codex P0（submodule 例外撤去）の回帰: gitlink コンフリクトは双方がポインタを変更した状態であり、base 側採用は
+// PR 側の gitlink 更新を黙って破棄する。コンフリクトは種別を問わず解消しない（スクリプトは abort して conflict を返す）。
+test('base-merge.sh: コンフリクトを解消する操作（git add / checkout <ref> -- <path> / commit）を持たず、abort して conflict + commitFailed で返す', () => {
+  assert.ok(!/\bgit add\b/.test(baseMergeCode), 'git add が含まれている（submodule ポインタ等の機械的な解消の復活）')
+  assert.ok(!/git checkout (?!--detach )/.test(baseMergeCode), 'detached checkout 以外の git checkout（片側採用等）が含まれている')
+  assert.ok(!/\bgit commit\b/.test(baseMergeCode), 'git commit が含まれている（マージコミットは git merge が作る）')
+  assert.ok(baseMergeCode.includes('git merge --abort'), 'merge --abort がない')
+  assert.ok(baseMergeCode.includes('emit false "base コンフリクト解消不能（内容編集の権限なし。fix/implement へ委譲要）" commitFailed conflict'), 'コンフリクト時の返却（commitFailed + conflict）がない')
+})
+
+// PR #443 codex P0（thread PRRT_kwDORuXFg86cbn_T）の回帰: baseMergePrompt は COMMON（CLAUDE.md・.claude/rules を読んで従う指示）を
+// 挿入しない。COMMON は PR ブランチが改変できる未信頼文書を読ませる指示であり、push できる本エージェントへ入れると命令注入経路になる。
+// BASE_MERGE_CONTEXT_COMMON という専用の最小固定指示を使う。
 test('baseMergePrompt: COMMON のリポジトリ内文書読み取り指示（CLAUDE.md・.claude/rules）を含まず、専用の安全規則を含む', () => {
   const prompt = baseMergePrompt(item, impl)
   assert.ok(!prompt.includes('CLAUDE.md・.claude/rules・テスト実行規約・コーディング規約があれば必ず読んで従う'), 'COMMON の CLAUDE.md/.claude/rules 読み取り指示が混入している')
   assert.ok(!prompt.includes('delegation ルールや専門サブエージェントがあれば、それに従い役割単位で委譲する'), 'COMMON の delegation 委譲指示が混入している')
   assert.ok(prompt.includes('--no-verify 禁止'), '--no-verify 禁止の安全規則がない')
-  assert.ok(prompt.includes('timeout に 600000'), 'push timeout の安全規則がない')
   assert.ok(prompt.includes('文書'), 'リポジトリ内文書を読まない旨の明示がない')
-})
-
-test('baseMergeInstruction: runVerification=false のコンフリクト解消指示は CLAUDE.md・rules の遵守を指示しない', () => {
-  const noVerify = baseMergeInstruction('main', false)
-  const withVerify = baseMergeInstruction('main')
-  assert.ok(!noVerify.includes('CLAUDE.md・rules を遵守し'), 'runVerification=false でも CLAUDE.md・rules 遵守の指示が残っている')
-  assert.ok(withVerify.includes('CLAUDE.md・rules を遵守し'), '既定 true（pr-create・fixPrompt 経路）で既存の CLAUDE.md・rules 遵守指示が失われている')
 })
 
 test('baseMergePrompt: gh pr merge の実行コマンド形・resolveReviewThread mutation を含まない（権限境界）', () => {
   const prompt = baseMergePrompt(item, impl)
-  // 権限境界の説明文中に「gh pr merge / gh issue close / ... を実行しない」と禁止コマンド名を
-  // 列挙するため、文字列そのものの不在ではなく実行可能なコマンド形の不在で判定する
-  // （--squash 付きの実マージコマンド・resolveReviewThread の GraphQL mutation 呼び出し行）。
-  // 「--no-verify で強行しない」という禁止の明記自体は baseMergeInstruction（fixPrompt / prCreatePrompt
-  // と共用）の既存契約でありこの文字列を含むのが正しいため、ここでは検証しない。
+  // 権限境界の説明文中に「マージ・クローズは行わない」と書くため、実行可能なコマンド形の不在で判定する
   assert.ok(!prompt.includes('--squash --delete-branch --match-head-commit'), 'マージ実行コマンド形が混入している')
   assert.ok(!prompt.includes('mutation($tid:ID!){resolveReviewThread'), 'resolveReviewThread mutation の実行コマンド行が混入している')
 })
 
-// PR #443 codex P0（thread PRRT_kwDORuXFg86cbSqr）の回帰テスト: baseMergePrompt は PR head
-// checkout 後に fmt / lint / build / test 等、PR 由来の未信頼コード実行を指示しない。PR は
-// package scripts・Makefile・テストランナー設定を自由に変更できるため、これらを実行すると
-// 悪意ある PR から任意コード実行 → 本エージェントの push 用 GitHub 認証情報の奪取・外部送信に
-// つながる。
-// PR #443 codex P1（thread PRRT_kwDORuXFg86cck5D）の回帰テスト: 上記 P0 対応（f8701bf）は
-// build/lint/test の実行だけを禁じたが、それでも「git diff --check の conflict marker 確認
-// だけで通常ファイルの内容コンフリクトを編集し push する」余地が残っていた（構文・意味の破損を
-// 検出できないまま無検証で push され得る）。この対応は実行検証を復活させる代わりに、
-// runVerification=false ではコンフリクト解消そのものを行う権限自体を持たせない（当初あった
-// submodule gitlink ポインタの機械的な合わせ込み例外も、base 側採用が PR 側の gitlink 更新を
-// 黙って破棄するため codex P0 指摘で撤去した）。コンフリクトは種別を問わず commitFailed: true
-// で停止し、build/lint/test を正当に実行できる fix/implement 経路（runVerification=true）へ
-// 委ねる。
-// Bugbot High（thread c52cd32b-3157-4fa5-9010-5bc0c92bec7b）の回帰テスト: f8701bf は
-// baseMergePrompt 手順 2 の直接記述からは build/lint/test 実行指示を消したが、同じ手順に
-// 埋め込まれる共有ヘルパー baseMergeInstruction 内には「ビルド・lint・テストを通してから
-// コミットする」という実行命令形が残っていた（呼び出し元の文言だけを直しても、共有ヘルパーが
-// 展開後の合成文字列に実行指示を混入させれば RCE 緩和は不完全になる）。ここでは baseMergePrompt
-// が返す最終合成文字列（テンプレートリテラルの埋め込み展開後の全文）を対象に、
-// build / lint / test / fmt / npm / yarn / make / cargo / pytest / go test 等の実行を命じる
-// 言い回しが一切含まれないこと、かつ内容編集を伴う解消の権限自体が無いことを検査する。
-// 狙い撃ちした部分文字列ではなく合成後の全文が対象なので、baseMergeInstruction 側に実行指示や
-// 内容編集の権限が復活しても本テストは失敗する。
-test('baseMergePrompt: fmt / lint / build / test 等の未信頼コード実行指示を含まず、内容編集を伴う解消の権限も持たない（合成後の全文を検査）', () => {
+// PR #443 codex P0 / P1 の回帰: baseMergePrompt は PR 由来の未信頼コード実行（fmt / lint / build / test 等）を指示せず、
+// 内容編集を伴う解消の権限も持たない。合成後の全文を検査する（共有ヘルパーに実行指示が復活しても失敗する）。
+test('baseMergePrompt: fmt / lint / build / test 等の未信頼コード実行指示を含まない（合成後の全文を検査）', () => {
   const prompt = baseMergePrompt(item, impl)
-  // 旧実装の実行指示そのもの（「〜を通してからコミットする」という命令形）が消えていることを
-  // 固定する。否定文脈での「fmt / lint / build / test」という語の言及自体（実行しない旨の
-  // 説明）は許容するため、語の不在ではなく実行を命じる言い回しの不在で判定する。
   assert.ok(!prompt.includes('を通してからコミットする'), '旧実装の実行命令形（〜を通してからコミットする）が残っている')
-  assert.ok(!prompt.includes('ビルド・lint・テストを通してから'), 'baseMergeInstruction 側の実行命令形（ビルド・lint・テストを通してから）が残っている')
+  assert.ok(!prompt.includes('ビルド・lint・テストを通してから'), '実行命令形（ビルド・lint・テストを通してから）が残っている')
   for (const word of [
     'npm run', 'npm test', 'npm ci', 'yarn ', 'pnpm ', 'make ',
     'cargo test', 'cargo build', 'pytest', 'go test', 'go build',
@@ -287,25 +244,7 @@ test('baseMergePrompt: fmt / lint / build / test 等の未信頼コード実行�
   ]) {
     assert.ok(!prompt.includes(word), `未信頼コード実行コマンド／実行を命じる言い回し「${word}」が混入している`)
   }
-  // PR #443 codex P1 対応の核: 内容コンフリクトは編集せず commitFailed で停止する旨の明示。
-  assert.ok(prompt.includes('内容を編集する') || prompt.includes('内容編集の権限'), '内容編集を伴う解消の権限が無い旨の明示がない')
-  // PR #443 codex P0 対応の核: submodule 例外の撤去（種別を問わず解消しない fail-closed）。
-  assert.ok(prompt.includes('コンフリクト種別を問わず解消しない'), 'コンフリクト種別を問わない fail-closed の明示がない')
-  assert.ok(!prompt.includes('submodule ポインタ差分のみ'), '撤去済みの submodule ポインタ自動解消例外が復活している')
-})
-
-// baseMergeInstruction の runVerification 引数そのものを直接検査する（合成後の baseMergePrompt
-// テストだけでは、呼び出し元が今後増えたときに false 渡し忘れを検出できないため）。
-test('baseMergeInstruction: runVerification=false は実行命令形を含まず内容編集の権限も持たない。既定 true は既存どおり実行指示を含む', () => {
-  const noVerify = baseMergeInstruction('main', false)
-  const withVerify = baseMergeInstruction('main')
-  assert.ok(!noVerify.includes('ビルド・lint・テストを通してから'), 'runVerification=false でも実行命令形が残っている')
-  assert.ok(noVerify.includes('内容を編集する') || noVerify.includes('内容編集の権限'), 'runVerification=false で内容編集権限が無い旨の明示がない')
-  assert.ok(noVerify.includes('commitFailed: true'), 'runVerification=false でコンフリクト時に commitFailed: true を返す明示がない')
-  // PR #443 codex P0: submodule gitlink 例外の撤去（base 側採用は PR 側の gitlink 更新を破棄する）。
-  assert.ok(noVerify.includes('コンフリクト種別を問わず解消しない'), 'runVerification=false でコンフリクト種別を問わない fail-closed の明示がない')
-  assert.ok(!noVerify.includes('git checkout origin/'), 'runVerification=false に撤去済みの submodule base 側採用指示が復活している')
-  assert.ok(withVerify.includes('ビルド・lint・テストを通してから'), '既定 true（pr-create・fixPrompt 経路）で既存の実行指示が失われている')
+  assert.ok(!baseMergeCode.match(/\b(npm|yarn|pnpm|make|cargo|pytest)\b/), 'base-merge.sh がビルド・テストの実行コマンドを含んでいる')
 })
 
 test('baseMergePrompt: レビュー指摘の修正を行わない権限境界の文言を含む', () => {
@@ -318,119 +257,56 @@ test('baseMergePrompt: 動的な未信頼データ境界トークン（UNTRUSTED
   assert.ok(!/UNTRUSTED_[0-9a-f]+_BEGIN/.test(prompt), 'fixPrompt 由来の動的境界トークンが混入している（monitor summary 等の自由文を埋め込まない設計に反する）')
 })
 
-test('baseMergePrompt: worktree routing ガード（remote 確認 + PR 番号・headRefName 照合）を含む', () => {
-  const prompt = baseMergePrompt(item, impl)
-  assert.ok(prompt.includes('git remote get-url origin'), 'worktree routing ガードの remote 確認がない')
-  assert.ok(prompt.includes('gh pr view'), 'PR 番号・headRefName 照合の gh pr view 指示がない')
-  assert.ok(prompt.includes('headRefName'), 'headRefName による照合指示がない')
-  assert.ok(prompt.includes('routingError: true'), 'routing error 時の返却指示がない')
+// 期待 owner/repo は ASCII 小文字化してコマンドへ渡す（owner/repo は case-insensitive。スクリプトも同じ規則で比較する）。
+test('baseMergePrompt: 期待 owner/repo は小文字化して --repo に渡され、大文字小文字違いの入力でプロンプトが変わらない', () => {
+  const mixed = baseMergePrompt(item, impl, 'Fandhe-AI/Agent-CLI-Skills')
+  const lower = baseMergePrompt(item, impl, 'fandhe-ai/agent-cli-skills')
+  assert.equal(mixed, lower, '大文字小文字違いの owner/repo 入力でプロンプト内容が変化している')
+  assert.ok(commandOf(mixed).endsWith("--repo 'fandhe-ai/agent-cli-skills'"))
+  assert.ok(!mixed.includes('Fandhe-AI'), '小文字化されない値が埋め込まれている')
 })
 
-// PR #443 codex P0（thread PRRT_kwDORuXFg86caswK）の回帰テスト: 8dda694 は remote 確認と
-// PR 番号・headRefName 照合を追加したが、比較対象となる期待 owner/repo をプロンプトへ渡して
-// いなかった（PR 番号・headRefName は別リポジトリでも偶然一致し得るため、それだけでは誤配置
-// worktree から別リポジトリの同名ブランチへ push できてしまう）。expectedRepo 引数がホスト
-// 検証済みの owner/repo としてプロンプトへ明示的に埋め込まれ、remote 正規化・一致確認が
-// gh fetch / checkout / merge より前（手順 0）に行われることを固定する。
-test('baseMergePrompt: 期待 owner/repo がプロンプトへ明示的に埋め込まれ、fetch/checkout/merge より前に一致確認する', () => {
-  const prompt = baseMergePrompt(item, impl, 'Fandhe-AI/agent-cli-skills')
-  // codex P1（thread PRRT_kwDORuXFg86cbaJN）の修正により、埋め込み値は ASCII 小文字化される
-  // （owner/repo は case-insensitive に解決されるため、大文字小文字差のみの正当な clone を
-  // 誤配置扱いしない）。埋め込まれる文字列は小文字化後の値であることを固定する。
-  assert.ok(prompt.includes('"fandhe-ai/agent-cli-skills"'), '期待 owner/repo の値が小文字化されてプロンプトへ埋め込まれていない')
-  assert.ok(!prompt.includes('"Fandhe-AI/agent-cli-skills"'), '期待 owner/repo が小文字化されず元の大文字小文字混在のまま埋め込まれている')
-  const remoteIdx = prompt.indexOf('git remote get-url origin')
-  const expectedRepoIdx = prompt.indexOf('"fandhe-ai/agent-cli-skills"')
-  const step1FetchCmd = `git fetch origin ${impl.branch}:refs/remotes/origin/${impl.branch}`
-  const fetchIdx = prompt.indexOf(step1FetchCmd)
-  // 手順 1（対象ブランチ fetch）自体が保存先明示 refspec の ':refs/remotes/origin/' を含むため、
-  // fetchIdx + 1 からの検索では手順 1 自身のマッチ文字列内の ':refs/remotes/origin/' に
-  // 再ヒットしてしまい、手順 2（base fetch）を指さない（Bugbot Low・thread
-  // PRRT_kwDORuXFg86cd8LB）。手順 1 のマッチ文字列全体の終端（fetchIdx + step1FetchCmd.length）
-  // より後を検索することで、手順 2 の base fetch だけを一意に特定する。
-  const baseFetchIdx = prompt.indexOf(':refs/remotes/origin/', fetchIdx + step1FetchCmd.length)
-  const mergeIdx = prompt.indexOf('git merge --no-edit')
-  assert.ok(remoteIdx >= 0, 'git remote get-url origin の指示がない')
-  assert.ok(expectedRepoIdx >= 0, '期待 owner/repo の埋め込みが見つからない')
-  assert.ok(expectedRepoIdx < fetchIdx, '期待 owner/repo の照合指示が git fetch より前に現れない')
-  assert.ok(expectedRepoIdx < baseFetchIdx, '期待 owner/repo の照合指示が base fetch より前に現れない')
-  assert.ok(expectedRepoIdx < mergeIdx, '期待 owner/repo の照合指示が merge より前に現れない')
-  assert.ok(prompt.includes('.git'), '.git 接尾辞の除去指示がない')
-  assert.ok(prompt.includes('ssh://git@'), 'SSH 形式の正規化指示がない')
-  assert.ok(prompt.includes('https://<host>/<owner>/<repo>'), 'HTTPS 形式の正規化指示がない')
-})
-
-// codex P1（thread PRRT_kwDORuXFg86cbaJN）の回帰テスト: routing ガードは args.repo と remote
-// 抽出 slug の比較を大文字小文字区別の完全一致で行っていたため、GitHub 上は同一リポジトリを
-// 指す大文字小文字差のみの正当な clone（例: remote が fandhe-ai/agent-cli-skills.git）を誤配置
-// 扱いし、base 取り込みを failed・halt カウント対象で終端させていた。両 slug を ASCII 小文字へ
-// 正規化してから比較する指示になっていること、かつ異なるリポジトリを拒否する fail-closed 性
-// （不一致なら routingError で終了する指示）が引き続き残っていることを固定する。
-test('baseMergePrompt: 大文字小文字差のみの入力は小文字正規化して比較する指示になる（fail-closed 性は維持）', () => {
-  const promptMixedCase = baseMergePrompt(item, impl, 'Fandhe-AI/Agent-CLI-Skills')
-  const promptLowerCase = baseMergePrompt(item, impl, 'fandhe-ai/agent-cli-skills')
-  // 大文字小文字違いの入力でも、埋め込まれるリテラルは同一の小文字化済み値になる（比較対象が
-  // 揃っていないと、remote 側だけ小文字化しても一致しない）。
-  assert.equal(promptMixedCase, promptLowerCase, '大文字小文字違いの owner/repo 入力でプロンプト内容が変化している（小文字化が両者を揃えていない）')
-  assert.ok(promptMixedCase.includes('小文字'), 'remote 側を小文字化してから比較する指示がない')
-  assert.ok(promptMixedCase.includes('case-insensitive'), '大文字小文字を区別しない理由の説明がない')
-  assert.ok(promptMixedCase.includes('routingError: true'), '不一致時に routingError で終端する fail-closed 指示が失われている')
-})
-
-// PR #443 codex P0（2026-08-26T13:11:07Z レビュー）の回帰テスト: owner/repo だけを remote から
-// 抽出して比較するとホスト名が捨てられ、期待 owner/repo と同じ owner/repo を持つ別ホスト
-// （例: git@evil.example:Fandhe-AI/example.git）が誤って一致とみなされ、別ホストへの
-// fetch/checkout/merge/push を防げない。host を許可ホスト（ALLOWED_REMOTE_HOST = github.com）
-// と完全一致させる指示が owner/repo 比較より前段にあり、host 不一致時の routingError 文言にも
-// ホストが含まれることを固定する。
-test('baseMergePrompt: remote のホスト名を許可ホストと照合する指示を含み、owner/repo のみの一致では通さない', () => {
-  const prompt = baseMergePrompt(item, impl, 'Fandhe-AI/agent-cli-skills')
-  assert.equal(ALLOWED_REMOTE_HOST, 'github.com', 'ALLOWED_REMOTE_HOST が想定値から変更されている（このテストの前提が崩れる）')
-  assert.ok(prompt.includes(`"${ALLOWED_REMOTE_HOST}"`), '許可ホストがプロンプトへ明示的に埋め込まれていない')
-  assert.ok(prompt.includes('host'), 'host を照合する旨の指示が見当たらない')
-  assert.ok(prompt.includes('evil.example'), '別ホストでの誤一致を防ぐ具体例（別ホスト名）が指示に含まれていない')
-  // host の照合指示が owner/repo の照合指示（期待 owner/repo リテラル）より前に現れることを
-  // 固定する（host を検証せず owner/repo だけ先に一致させてしまう順序退行を防ぐ）。
-  const hostIdx = prompt.indexOf(`"${ALLOWED_REMOTE_HOST}"`)
-  const ownerRepoIdx = prompt.indexOf('"fandhe-ai/agent-cli-skills"')
-  assert.ok(hostIdx >= 0 && ownerRepoIdx >= 0, 'host または owner/repo の埋め込みが見つからない')
-  assert.ok(hostIdx < ownerRepoIdx, 'host の照合指示が owner/repo の照合指示より後に現れている（host 未検証のまま owner/repo だけ一致確認できてしまう）')
-  // git fetch（手順 1）より前に host 照合指示が現れることも固定する。
-  const fetchIdx = prompt.indexOf(`git fetch origin ${impl.branch}:refs/remotes/origin/${impl.branch}`)
-  assert.ok(fetchIdx > 0, 'git fetch（手順1）の呼び出し文字列が見つからない')
-  assert.ok(hostIdx < fetchIdx, 'host の照合指示が git fetch より前に現れていない')
-  // 不一致時の routingError 文言に host が含まれる（owner/repo だけの不一致メッセージへ
-  // 後退していない）ことを確認する。
-  assert.ok(prompt.includes(`${ALLOWED_REMOTE_HOST}/`), 'routingError の不一致メッセージにホストが含まれていない')
-})
-
-// 期待 owner/repo が未確定（host 側で isValidRepoSlug を通らなかった／引数省略）の場合、
-// 常に不一致として fail-closed する契約を固定する。空文字を「常に不一致」の番人にするため、
-// 埋め込み値自体が空文字であることと、その旨の分岐説明がプロンプトに含まれることを確認する。
-test('baseMergePrompt: 期待 owner/repo が未確定（省略／不正形式）のとき、常に不一致として fail-closed する指示になる', () => {
-  const promptOmitted = baseMergePrompt(item, impl)
-  const promptInvalid = baseMergePrompt(item, impl, 'not-a-valid-slug-without-slash')
-  const promptEmpty = baseMergePrompt(item, impl, '')
-  for (const [label, prompt] of [['省略', promptOmitted], ['スラッシュなし不正値', promptInvalid], ['空文字', promptEmpty]]) {
-    assert.ok(prompt.includes('""'), `${label}: 期待 owner/repo が空文字として埋め込まれていない（fail-closed の番人が機能しない）`)
-    assert.ok(prompt.includes('空文字は未確定を意味し常に不一致として扱う'), `${label}: 未確定時に常に不一致とする旨の説明がない`)
+// 期待 owner/repo が未確定（省略／不正形式）の場合、空文字を渡す。スクリプトは空の --repo を『未確定』の routingError
+// （常に不一致 = fail-closed）で返す（tests/base-merge.test.mjs の「期待リポジトリが空」）。
+test('baseMergePrompt: 期待 owner/repo が未確定（省略／不正形式）のとき --repo は空文字になり、不正値はそのまま埋め込まれない', () => {
+  for (const [label, repo] of [['省略', undefined], ['スラッシュなし不正値', 'not-a-valid-slug-without-slash'], ['空文字', ''], ['注入', "x/y'; touch pwned #"]]) {
+    const command = commandOf(baseMergePrompt(item, impl, repo))
+    assert.ok(command.endsWith("--repo ''"), `${label}: --repo が空文字になっていない: ${command}`)
+    assert.ok(!command.includes('not-a-valid-slug') && !command.includes('pwned'), `${label}: 不正値がコマンドへ埋め込まれている`)
   }
-  // 不正形式（isValidRepoSlug を通らない値）を渡した場合もそのまま埋め込まれず空文字化される
-  // ことを、有効な値を渡した場合との対比で確認する。
-  assert.ok(!promptInvalid.includes('not-a-valid-slug-without-slash'), '不正形式の値がそのままプロンプトへ埋め込まれている（isValidRepoSlug による検証を経ていない）')
 })
 
-// PR #443 codex P0（thread PRRT_kwDORuXFg86cacPf）の回帰テスト: baseMergePrompt は push まで
-// 許可するエージェントのため item.title（未信頼テキスト）を一切埋め込まない。この固定を外して
-// 再度 untrusted(item.title, ...) を埋め込む変更が入るとこのテストが失敗する。
+test('base-merge.sh: 許可ホストは github.com の固定値で、host / owner-repo / PR の照合が fetch・merge・push より前にある', () => {
+  assert.ok(baseMergeLibCode.includes("ALLOWED_REMOTE_HOST='github.com'"))
+  assert.ok(!baseMergeCode.includes('ALLOWED_REMOTE_HOST='), '許可ホストの定義が lib と本体に二重にある')
+  const guard = baseMergeCode.indexOf('gh pr view')
+  for (const w of ['git fetch', 'git checkout', 'git merge ', 'pv_push_verified']) {
+    assert.ok(baseMergeCode.indexOf(w) > guard, `${w} が routing ガード（gh pr view）より前にある`)
+  }
+  // 許可ホストの定数と url_allowed を持つ lib は、gh pr view（routing ガード）より前に source される
+  const libSource = baseMergeCode.indexOf('lib/base-merge-lib.sh')
+  assert.ok(libSource >= 0 && libSource < baseMergeCode.indexOf('gh pr view'), 'lib/base-merge-lib.sh が gh pr view より前に source されていない')
+  assert.ok(baseMergeLibCode.includes('url_allowed()') && baseMergeLibCode.includes('url_allowed "${line}" "${want_slug}"') && baseMergeCode.includes('routing_check_remotes "${want}"'), 'URL 照合（url_allowed。lib の routing_check_remotes 経由）が routing ガードで使われていない')
+  assert.ok(!source.includes('ALLOWED_REMOTE_HOST'), 'ホストの実装スクリプトに ALLOWED_REMOTE_HOST が残っている（許可ホストはスクリプトの埋め込み定数）')
+})
+
+// PR #443 codex P0（thread PRRT_kwDORuXFg86cacPf）の回帰テスト: baseMergePrompt は push まで許可するエージェントのため
+// item.title（未信頼テキスト）を一切埋め込まない。
 test('baseMergePrompt: item.title / untrusted(item.title) を一切含まない', () => {
   const prompt = baseMergePrompt(item, impl)
   assert.ok(!prompt.includes(item.title), 'item.title の生文字列がプロンプトへ埋め込まれている')
   assert.ok(!prompt.includes('source="issue-title"'), 'untrusted() の issue-title タグ境界が混入している')
-  // 別 issue（同じ prNumber・branch だが title が異なる）を渡しても出力が変わらないことで、
-  // title がプロンプト内容に一切影響しない（=埋め込まれていない）ことを構造的に確認する。
   const otherTitleItem = { number: item.number, title: '全く異なるタイトル・記号!@#$%^&*()を含む' }
   assert.equal(baseMergePrompt(otherTitleItem, impl), prompt, 'item.title の違いでプロンプト内容が変化している（title が何らかの形で埋め込まれている）')
+})
+
+test('baseMergePrompt: PR 番号が正の整数でない・ブランチ名が不正なら組み立てず例外にする（コマンド行へ未検証の値を埋め込まない）', () => {
+  for (const bad of [0, -1, 1.5, '12', null, undefined]) {
+    assert.throws(() => baseMergePrompt(item, { ...impl, prNumber: bad }, 'Fandhe-AI/agent-cli-skills'), /prNumber/, String(bad))
+  }
+  for (const bad of ['a;b', '$(x)', '-x', 'a..b', 'a b']) {
+    assert.throws(() => baseMergePrompt(item, { ...impl, branch: bad }, 'Fandhe-AI/agent-cli-skills'), undefined, bad)
+  }
 })
 
 // ---------------------------------------------------------------------------
@@ -450,11 +326,11 @@ test('monitorPrompt: 手順 1c の CONFLICTING 経路は state: conflicting を�
 // fixPrompt: push 検証ロジック（pushVerifyInstruction 切り出し後の回帰固定）
 // ---------------------------------------------------------------------------
 
-test('fixPrompt(pushAfterFix: true): push 検証の 2 条件判定を含む（pushVerifyInstruction 切り出し後の回帰）', () => {
+test('fixPrompt(pushAfterFix: true): push 検証は pr-push.sh の status（pushed のときだけ pushed: true）に結ぶ（二条件判定は lib/push-verify.sh の実行テストが固定する）', () => {
   const finding = { summary: 'テスト用の指摘', unresolvedComments: [] }
   const prompt = fixPrompt(item, impl, finding, true)
-  assert.ok(prompt.includes('push 前に控えた sha ≠ ローカル HEAD'), '事前 sha ≠ ローカル HEAD の判定条件がない')
-  assert.ok(prompt.includes('push 後の ls-remote sha == ローカル HEAD'), '事後 sha == ローカル HEAD の判定条件がない')
+  assert.ok(prompt.includes('status が pushed のときだけ pushed: true'), 'pushed: true の判定が status に結ばれていない')
+  assert.ok(prompt.includes('push 前後のリモート head をローカル HEAD と突き合わせる判定もスクリプトが行う'), '突き合わせをスクリプトが行う旨がない')
 })
 
 // ---------------------------------------------------------------------------
@@ -654,22 +530,22 @@ test('BASE_MERGE_SCHEMA: conflict は省略可の boolean として定義され�
   assert.ok(!BASE_MERGE_SCHEMA.required.includes('conflict'), 'conflict が required に含まれている（省略可のはず）')
 })
 
-test('baseMergeInstruction: runVerification=false のみコンフリクト時に conflict: true を返す指示を含む', () => {
-  const noVerify = baseMergeInstruction('main', false)
-  const withVerify = baseMergeInstruction('main')
-  assert.ok(noVerify.includes('conflict: true'), 'runVerification=false でコンフリクト時に conflict: true を返す明示がない')
-  // conflict は分岐 (b) 専用: 他の commitFailed 経路（fetch / checkout 失敗・hook 拒否等）では
-  // 付けない旨の限定が無いと、ホストが回復不能クラスまで fix 経路へ回してしまう。
-  assert.ok(noVerify.includes('他の commitFailed 経路では conflict を付けない'), 'conflict を分岐 (b) 限定にする指示がない')
-  // 検証権限を持つ既定 true（pr-create / fixPrompt 経路）はその場で解消するため conflict を返さない。
-  assert.ok(!withVerify.includes('conflict: true'), '既定 true（検証権限あり経路）に conflict: true の返却指示が混入している')
+test('basePrepareInstruction: 検証権限を持つ経路（pr-create・fix）専用で、コンフリクトはその場で解消する。conflict: true / hookRejected の返却指示は含まない', () => {
+  const instr = basePrepareInstruction('pr-create', 'feat/x', 'prNumber: 0 で返す')
+  assert.ok(!instr.includes('conflict: true'), '検証権限あり経路に conflict: true の返却指示が混入している')
+  assert.ok(!instr.includes('hookRejected'), '検証権限あり経路に hookRejected の返却指示が混入している')
+  assert.ok(instr.includes('conflict はマージが途中のまま残っている: CLAUDE.md・rules を遵守して解消し'), 'コンフリクトをその場で解消する指示が失われている')
+  assert.ok(instr.includes('git merge --abort'), 'merge --abort の指示が失われている')
+  assert.equal(basePrepareInstruction.length, 3, '引数は origin・branch・failTail の 3 つ（自動 base 取り込みは base-merge.sh）')
 })
 
-test('baseMergePrompt: 手順 2 と返却行に conflict: true の返却指示を含む（合成後の全文）', () => {
+test('baseMergePrompt: 返却キーに conflict / hookRejected / routingError / commitFailed を列挙する（スクリプトの結果の転記指示）', () => {
   const prompt = baseMergePrompt(item, impl)
-  assert.ok(prompt.includes('conflict: true'), 'conflict: true の返却指示がない')
-  assert.ok(prompt.includes('/ conflict（'), '返却行に conflict フィールドの説明がない')
+  for (const k of ['pushed', 'summary', 'worktreePath', 'routingError', 'commitFailed', 'conflict', 'hookRejected']) {
+    assert.ok(prompt.includes(k), `${k} の転記指示がない`)
+  }
 })
+
 
 test('駆動部: commitFailed + conflict / hookRejected は failMergeTerminal せず needs-fix（fix 経路）へ委譲する', () => {
   const branchIdx = driverPart.indexOf("} else if (lastState === 'conflicting') {")
@@ -710,19 +586,19 @@ test('駆動部: needs-fix 分岐は conflicting チェーンへ else if で連�
 
 // ---------------------------------------------------------------------------
 // PR #443 codex P0（host 固定 subject への転換）の回帰テスト:
-// 読み取り専用 subject 算出エージェント方式はプロンプト指示のみでランタイム強制できないため
-// 撤去した。push 権限を持つ baseMergePrompt は commitlint 設定・コミット履歴という未信頼
-// テキストを一切読まず、subject は host のリテラル固定値 HOST_SUBJECT のみを使う。commitlint
-// がこの固定値を拒否するリポでは分岐 (c) が hookRejected: true で返り、ホストは failed 終端
-// せず fix 経路（runVerification=true の base 最新化ゲート）へ委譲する。
+// 読み取り専用 subject 算出エージェント方式はプロンプト指示のみでランタイム強制できないため撤去した。push 権限を持つ
+// 自動 base 取り込みは commitlint 設定・コミット履歴という未信頼テキストを一切読まず、subject は固定値のみを使う。
+// Issue #603 第 3 弾で、その固定値はホストのリテラルから base-merge.sh の埋め込み定数（run-verified.sh のハッシュで
+// 固定される）に移った。commitlint がこの固定値を拒否するリポでは分岐 (c) が hookRejected: true で返り、ホストは
+// failed 終端せず fix 経路（push 前 base 最新化ゲート）へ委譲する（実 hook での挙動は tests/base-merge.test.mjs）。
 // ---------------------------------------------------------------------------
 
 const HOST_SUBJECT = 'chore: base ブランチの変更を取り込む'
 
 test('baseMergePrompt: commitlint 設定・コミット履歴の読取指示を一切含まない（未信頼読取ゼロ化・合成後の全文）', () => {
   for (const [label, prompt] of [
-    ['hostSubject あり', baseMergePrompt(item, impl, 'Fandhe-AI/agent-cli-skills', HOST_SUBJECT)],
-    ['hostSubject なし（防御的フォールバック）', baseMergePrompt(item, impl)],
+    ['期待リポジトリあり', baseMergePrompt(item, impl, 'Fandhe-AI/agent-cli-skills')],
+    ['期待リポジトリなし', baseMergePrompt(item, impl)],
   ]) {
     assert.ok(!prompt.includes('commitlint.config'), `${label}: commitlint 設定ファイルの読取指示が含まれている`)
     assert.ok(!prompt.includes('.commitlintrc'), `${label}: .commitlintrc の読取指示が含まれている`)
@@ -732,42 +608,13 @@ test('baseMergePrompt: commitlint 設定・コミット履歴の読取指示を�
   }
 })
 
-test('baseMergePrompt: ホスト固定 subject をそのまま使う指示になり、-F 一時ファイル渡しは維持される', () => {
-  const prompt = baseMergePrompt(item, impl, 'Fandhe-AI/agent-cli-skills', HOST_SUBJECT)
-  assert.ok(prompt.includes(HOST_SUBJECT), 'ホスト固定 subject がプロンプトへ埋め込まれていない')
-  assert.ok(prompt.includes('ホスト固定文字列'), 'subject が host 固定値である旨の明示がない')
-  assert.ok(prompt.includes('git merge --no-edit -F'), '-F 一時ファイル渡しの指示が失われている')
-})
-
-test('baseMergePrompt: hostSubject 未指定・テンプレート不一致は subject 未確定の fail-closed へ倒す', () => {
-  for (const [label, prompt] of [
-    ['未指定', baseMergePrompt(item, impl, 'Fandhe-AI/agent-cli-skills')],
-    ['任意文字列', baseMergePrompt(item, impl, 'Fandhe-AI/agent-cli-skills', 'evil $(rm -rf /) subject')],
-    ['type 不正（空白入り）', baseMergePrompt(item, impl, 'Fandhe-AI/agent-cli-skills', 'bad type: base ブランチの変更を取り込む')],
-  ]) {
-    assert.ok(prompt.includes('base merge subject 未確定'), `${label}: subject 未確定の fail-closed 文言がない`)
-  }
-  const evil = baseMergePrompt(item, impl, 'Fandhe-AI/agent-cli-skills', 'evil $(rm -rf /) subject')
-  assert.ok(!evil.includes('evil $(rm -rf /) subject'), 'テンプレート不一致の hostSubject がそのまま埋め込まれている（防御的再検証が働いていない）')
-})
-
-test('baseMergeInstruction: hostSubject あり（false 経路）は subject 決定手順を含まず、3 分岐の終了コード処理は維持する', () => {
-  const withHost = baseMergeInstruction('main', false, HOST_SUBJECT)
-  assert.ok(withHost.includes(HOST_SUBJECT), 'hostSubject が埋め込まれていない')
-  assert.ok(!withHost.includes('commitlint.config'), 'hostSubject ありでも commitlint 設定の読取指示が残っている')
-  assert.ok(!withHost.includes('type-enum'), 'hostSubject ありでも type-enum 解釈手順が残っている')
-  assert.ok(withHost.includes('終了コードで 3 分岐する'), '3 分岐の終了コード処理が失われている')
-  assert.ok(withHost.includes('git merge --abort'), 'merge --abort の指示が失われている')
-  assert.ok(withHost.includes('conflict: true'), 'コンフリクト時の conflict: true 返却が失われている')
-})
-
-test('baseMergeInstruction: false 経路の分岐 (c) は hookRejected: true を返し、true 経路（検証権限あり）は hookRejected を含まない', () => {
-  const withHost = baseMergeInstruction('main', false, HOST_SUBJECT)
-  assert.ok(withHost.includes('hookRejected: true'), 'false 経路の (c) に hookRejected: true の返却指示がない')
-  assert.ok(withHost.includes('分岐 (c) の hook 拒否時のみ付ける'), 'hookRejected を分岐 (c) 限定にする指示がない')
-  assert.ok(withHost.includes('fix 経路へ委譲する'), 'hookRejected が fix 委譲シグナルである旨の明示がない')
-  const withVerify = baseMergeInstruction('main')
-  assert.ok(!withVerify.includes('hookRejected'), '検証権限あり経路（runVerification=true）に hookRejected の返却指示が混入している')
+test('base-merge.sh: マージの subject は埋め込み定数を一時ファイルに書いて -F で渡す。commitlint 設定もコミット履歴も読まない', () => {
+  assert.ok(baseMergeCode.includes(`MERGE_SUBJECT='${HOST_SUBJECT}'`), '埋め込み subject がホスト固定値と違う')
+  assert.ok(/git merge [^\n]*-F "\$\{msgfile\}"/.test(baseMergeCode), '-F 一時ファイル渡しでない（-m の文字列補間は使わない）')
+  assert.ok(!/git merge [^\n]*\s-m\b/.test(baseMergeCode), 'git merge -m を使っている')
+  assert.ok(baseMergeCode.includes('trap cleanup EXIT'), '一時ファイルを trap で消していない')
+  assert.ok(!/commitlint|git log|\.commitlintrc/.test(baseMergeCode), 'commitlint 設定・コミット履歴を読んでいる')
+  assert.ok(!source.includes("const hostSubject = 'chore: base ブランチの変更を取り込む'"), 'ホスト側に subject のリテラルが残っている')
 })
 
 test('BASE_MERGE_SCHEMA: hookRejected は省略可の boolean として定義される', () => {
@@ -777,11 +624,6 @@ test('BASE_MERGE_SCHEMA: hookRejected は省略可の boolean として定義さ
   assert.ok(BASE_MERGE_SCHEMA.properties.hookRejected.description.includes('分岐 (c)'), 'hookRejected の description が分岐 (c) 限定を明示していない')
 })
 
-test('baseMergePrompt: 返却行に hookRejected の説明を含む（合成後の全文）', () => {
-  const prompt = baseMergePrompt(item, impl, 'Fandhe-AI/agent-cli-skills', HOST_SUBJECT)
-  assert.ok(prompt.includes('/ hookRejected（'), '返却行に hookRejected フィールドの説明がない')
-})
-
 test('実装スクリプト: subject 算出エージェント（baseMergeSubjectPrompt / BASE_MERGE_SUBJECT_*）が完全に撤去されている', () => {
   // プロンプト指示のみの読み取り専用契約はランタイム強制されない（Workflow の agent() に権限
   // 制約オプションが無い）ため、未信頼読取を担うエージェント自体が存在してはならない。
@@ -789,21 +631,15 @@ test('実装スクリプト: subject 算出エージェント（baseMergeSubject
   assert.ok(!source.includes('BASE_MERGE_SUBJECT'), 'BASE_MERGE_SUBJECT_* が実装スクリプトに残存している')
 })
 
-test('駆動部: conflicting 分岐は subject をエージェント起動なしの host リテラル固定値で確定し、baseMergePrompt へ渡す', () => {
+test('駆動部: conflicting 分岐は subject を持たず（hostSubject を渡さず）、スクリプト base-merge.sh の埋め込み定数に任せる', () => {
   const branchIdx = driverPart.indexOf("} else if (lastState === 'conflicting') {")
   assert.ok(branchIdx >= 0, 'conflicting 分岐が見つからない')
   const nextBranchIdx = driverPart.indexOf("lastState === 'needs-fix' || lastState === 'unresolved-comments'", branchIdx)
   const branchBody = driverPart.slice(branchIdx, nextBranchIdx)
-  const constIdx = branchBody.indexOf("const hostSubject = 'chore: base ブランチの変更を取り込む'")
-  assert.ok(constIdx >= 0, 'host リテラル固定 subject の定義が見つからない')
-  const bmpIdx = branchBody.indexOf('baseMergePrompt(item, impl, expectedRepo, hostSubject)')
-  assert.ok(bmpIdx > constIdx, '固定 subject が baseMergePrompt 起動より前に確定していない')
-  // 固定値確定後の最初のエージェント起動が baseMergePrompt であり、間に別エージェント起動が
-  // 無い（subject がどのエージェント出力にも依存しない完全な定数であることの構造確認）。
-  const firstAgentIdx = branchBody.indexOf('await agent(', constIdx)
-  assert.ok(firstAgentIdx >= 0, '固定 subject 確定後のエージェント起動が見つからない')
-  assert.ok(branchBody.startsWith('await agent(baseMergePrompt(', firstAgentIdx), '固定 subject の確定と baseMergePrompt 起動の間に別エージェント起動が挟まっている')
+  assert.ok(!branchBody.includes('hostSubject'), 'conflicting 分岐に hostSubject が残っている')
+  assert.ok(branchBody.includes('await agent(baseMergePrompt(item, impl, expectedRepo), '), 'baseMergePrompt は (item, impl, expectedRepo) の 3 引数で起動する')
 })
+
 
 test('駆動部: hookRejected 委譲の finding は hook 拒否の理由を明示し、conflict とログ文言を区別する', () => {
   const branchIdx = driverPart.indexOf("} else if (lastState === 'conflicting') {")

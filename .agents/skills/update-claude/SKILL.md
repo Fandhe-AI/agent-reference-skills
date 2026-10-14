@@ -299,7 +299,7 @@ PostToolUse 自動整形フックは言語のツール存在確認後に提案�
 
 workflow js が存在しない場合の案内:
 
-named workflow（`{name: "implement-issue-tree"}`）として呼ばない場合は `.claude/workflows/` への配置自体が不要で、Workflow ツールの `scriptPath` に `.claude/skills/implement-issue-tree/scripts/implement-issue-tree.js` を直接指定すればよい。
+named workflow（`{name: "implement-issue-tree"}`）として呼ばない場合は `.claude/workflows/` への配置自体が不要で、Workflow ツールの `scriptPath` に `.claude/skills/implement-issue-tree/scripts/implement-issue-tree.js` を直接指定すればよい（どちらの起動でも、切り出したスクリプトの置き場所を示す `args.skillDir`〔このスキルディレクトリの絶対パス。例 `/abs/path/.claude/skills/implement-issue-tree`〕を渡す。dryRun 以外のランで未指定だと起動時エラーになる）。
 
 named workflow として配置する場合は `cp` ではなく**相対 symlink** を使用する。`cp` で配置すると symlink が実体ファイルに置き換わり、`npx skills add` による更新が named workflow に届かなくなる。
 

@@ -20,6 +20,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -41,7 +42,7 @@ const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
 // 配線を検証する。import はできない（Workflow ハーネス依存のため）。
 const driverPart = source.slice(markerIndex)
 
-const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-failsafe-'))
+const sliceDir = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-failsafe-')))
 const slicePath = join(sliceDir, 'implement-issue-tree-defs.mjs')
 const SLICE_EXPORTS = [
   'classifyMergeExecDispatch',
@@ -213,10 +214,11 @@ test('classifyMergeExecDispatch: agentOutputMissing=true は agent-output-missin
 test('monitor 呼び出しは try/catch で包まれ、例外は m = null として null 返却と同じ経路へ合流する', () => {
   const callIdx = driverPart.indexOf('m = await agentRetryOnce(monitorPrompt(')
   assert.notEqual(callIdx, -1, 'monitor 呼び出しが見つからない')
-  const before = driverPart.slice(Math.max(0, callIdx - 300), callIdx)
+  // 観測スクリプトの封筒用 nonce の生成（#603 第 2 弾）が let 宣言と try の間に入るため、窓を広げる
+  const before = driverPart.slice(Math.max(0, callIdx - 1500), callIdx)
   assert.match(before, /let m = null/, 'm の let 宣言が呼び出し直前にない')
   assert.match(before, /try\s*\{/, 'try ブロックで包まれていない')
-  const after = driverPart.slice(callIdx, callIdx + 400)
+  const after = driverPart.slice(callIdx, callIdx + 1200)
   assert.match(after, /catch \(e\)/, 'catch 節が見つからない')
   // lastState の sentinel 分岐（m == null → 'agent-output-missing'）が捕捉直後にある。
   const lastStateIdx = driverPart.indexOf('lastState = m == null', callIdx)

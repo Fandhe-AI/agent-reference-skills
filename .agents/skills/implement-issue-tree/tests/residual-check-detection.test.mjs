@@ -290,6 +290,7 @@ test('群C: success + skipped + neutral の 3 重複も bad=0 で健全と判定
 // 出力（2 形のいずれか）と `gh api` の呼び出し有無を実測する。
 // ---------------------------------------------------------------------------
 import { mkdtempSync, writeFileSync, existsSync, chmodSync, rmSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 
 /**
@@ -318,7 +319,7 @@ const shellSnippet = extractShellSnippet(skillMd)
  * errexit: true なら呼び出し元 shell の `set -e` 有効状態を再現する。
  */
 function runSnippet({ mode = 'success', withAwk = true, errexit = false } = {}) {
-  const dir = mkdtempSync(join(tmpdir(), 'iit-residual-'))
+  const dir = trackTmp(mkdtempSync(join(tmpdir(), 'iit-residual-')))
   const calledMarker = join(dir, 'gh-called')
   const bodies = {
     // 正常系: 重複 1 件（ci/build が cancelled + success）を含む TSV

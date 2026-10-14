@@ -1,5 +1,10 @@
 // Issue #566: 残置 worktree バイト測定がエージェントの転記ミス 1 回で新規着手を全停止する問題の回帰。
 //
+// Issue #603 第 1 弾: 測定はスキル同梱のスクリプト（scripts/measure-*.sh）へ移り、エージェントは封筒
+// {nonce, payload, sha256} を転記する。ここでの agent スタブは平らな測定値を封筒にして返す
+// （wrapAgentReply）。スクリプトを実際に実行する検証は measure-scripts.test.mjs、封筒の照合は
+// signed-output-host.test.mjs。
+//
 // 背景: 旧プロンプトは手順 2 が自然言語の条件（「tf が空でなければ…ヒアドキュメントで書き出す」）
 // で、エージェントが条件を逆に書き起こすと対象パス一覧が書き出されず ERR=1 COUNT=0 になり、
 // ホストは測定失敗（null）として新規着手を止めていた（再測定なし）。本テストは、
@@ -9,11 +14,12 @@
 // を固定する。読み込み方式は state-write-fallback.test.mjs と同じ（駆動部マーカーより上を切り出す）。
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync, writeFileSync, mkdtempSync, mkdirSync, existsSync, rmSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
-import { spawnSync } from 'node:child_process'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { wrapAgentReply, nonceOf, makeEnvelope } from './lib/signed-output.mjs'
 
 const SCRIPT_PATH = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -28,12 +34,10 @@ if (markerIndex < 0) {
 }
 const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
 
-globalThis.args = { parent: 1 }
-const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-residual-retry-'))
+globalThis.args = { parent: 1, skillDir: '/opt/skills/implement-issue-tree' }
+const sliceDir = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-residual-retry-')))
 const slicePath = join(sliceDir, 'defs.mjs')
 const SLICE_EXPORTS = [
-  'buildResidualBytesScript',
-  'buildFreeDiskScript',
   'classifyResidualByteReport',
   'measureResidualWorktreeBytesDetailed',
   'measureFreeDiskKib',
@@ -43,8 +47,6 @@ const SLICE_EXPORTS = [
 writeFileSync(slicePath, `${definitionPart}\nexport { ${SLICE_EXPORTS.join(', ')} }\n`)
 const mod = await import(pathToFileURL(slicePath).href)
 const {
-  buildResidualBytesScript,
-  buildFreeDiskScript,
   classifyResidualByteReport,
   measureResidualWorktreeBytesDetailed,
   measureFreeDiskKib,
@@ -56,15 +58,13 @@ globalThis.agent = async (_p, opts) => (opts.label === 'nonce:seed' ? { seedHex:
 globalThis.log = () => {}
 await ensureBoundaryNonceSeed()
 
-const hasJq = spawnSync('jq', ['--version']).status === 0
-
 // agent スタブ。responses を順に返し、呼び出し（prompt・model・label）を calls へ記録する。
 function stubAgent(responses) {
   const calls = []
   const logs = []
   globalThis.agent = async (prompt, opts) => {
     calls.push({ prompt, model: opts.model, label: opts.label })
-    const r = responses[calls.length - 1]
+    const r = wrapAgentReply(prompt, responses[calls.length - 1])
     if (r instanceof Error) throw r
     return r
   }
@@ -76,106 +76,52 @@ const PATHS = ['/tmp/a-wt', '/tmp/b-wt', '/tmp/c-wt']
 const GOOD = { kib: 300, err: 0, missing: 0, count: 3 }
 const TRANSCRIPTION_FAIL = { kib: 0, err: 1, missing: 0, count: 0 }
 
-// --- 1. 実 sh でのスクリプト実行 ---
+// --- 1. 条件を書かせない構造（プロンプトはコマンドを 1 回実行して封筒を転記させるだけ） ---
 
-test('buildResidualBytesScript: 実 sh で実行すると COUNT が対象件数と一致し ERR=0、一時ファイルは削除される', { skip: !hasJq }, () => {
-  const work = mkdtempSync('/tmp/residual-script-')
-  try {
-    const dirs = ['d1', 'd2'].map((n) => {
-      const d = join(work, n)
-      mkdirSync(d)
-      writeFileSync(join(d, 'f.txt'), 'x'.repeat(8192))
-      return d
-    })
-    const missing = join(work, 'gone')
-    const paths = [...dirs, missing]
-    const tmpFile = join(work, 'paths.json')
-    const script = buildResidualBytesScript({
-      tmpFile,
-      delimiter: 'PATHSEOF_test',
-      pathsJson: JSON.stringify(paths),
-    })
-    const r = spawnSync('/bin/sh', ['-c', script], { encoding: 'utf8', cwd: work })
-    assert.equal(r.status, 0, r.stderr)
-    const m = /TOTAL=(\d+) MISSING=(\d+) ERR=(\d+) COUNT=(\d+)/.exec(r.stdout)
-    assert.ok(m, `出力を解釈できない: ${r.stdout}`)
-    assert.equal(Number(m[4]), 3)
-    assert.equal(Number(m[3]), 0)
-    assert.equal(Number(m[2]), 1)
-    assert.ok(Number(m[1]) > 0)
-    assert.equal(existsSync(tmpFile), false)
-    assert.equal(existsSync(`${tmpFile}.lines`), false)
-  } finally {
-    rmSync(work, { recursive: true, force: true })
-  }
-})
-
-// --- 2. 条件を書かせない構造 ---
-
-test('測定プロンプト: 自然言語の条件文言が無く、ヒアドキュメントは無条件で、JSON は 1 行・nonce 付き終端記号', async () => {
+test('測定プロンプト: 自然言語の条件文言が無く、ヒアドキュメントは無条件で、パスは 1 行 1 件・nonce 付き終端記号', async () => {
   const { calls } = stubAgent([GOOD])
   await measureResidualWorktreeBytesDetailed(PATHS)
   assert.equal(calls.length, 1)
   const p = calls[0].prompt
   assert.doesNotMatch(p, /tf が空でなければ/)
   assert.doesNotMatch(p, /タグの内側/)
-  const m = /cat <<'(PATHSEOF_[0-9a-z]+)' > "\$tf"\n(.*)\n\1\n/.exec(p)
-  assert.ok(m, 'ヒアドキュメントの書き出しがスクリプトに存在する')
-  assert.deepEqual(JSON.parse(m[2]), PATHS)
-  // ヒアドキュメント行は if 等の条件の内側ではなく独立した行である
-  assert.match(p, /\ncat <<'PATHSEOF_/)
+  const nonce = nonceOf(p)
+  assert.ok(nonce, 'コマンドに --nonce がある')
+  // コマンド全体: run-verified.sh 経由・期待ハッシュ・スクリプト名・nonce・ヒアドキュメント（終端記号は nonce 入り）
+  const m = new RegExp(
+    `\\nbash '/opt/skills/implement-issue-tree/scripts/run-verified\\.sh' (\\S+) measure-residual-bytes\\.sh --nonce ${nonce} <<'(PATHSEOF_${nonce})'\\n([\\s\\S]*?)\\n\\2\\n`,
+  ).exec(p)
+  assert.ok(m, 'run-verified.sh 経由のコマンドとヒアドキュメントがある')
+  assert.deepEqual(m[3].split('\n'), PATHS)
   assert.equal(calls[0].model, 'haiku')
+  // 一時ファイル・条件分岐・rm はプロンプトに残らない（スクリプト側へ移った）
+  assert.doesNotMatch(p, /\btf=|\$tf|rm -f|jq -r/)
 })
 
-test('measureFreeDiskKib: 条件文言が無く、ヒアドキュメントは無条件', async () => {
+test('測定プロンプト: 呼び出しごとに nonce が異なる（再測定が前回の出力を流用できない）', async () => {
+  const { calls } = stubAgent([TRANSCRIPTION_FAIL, GOOD])
+  await measureResidualWorktreeBytesDetailed(PATHS)
+  assert.equal(calls.length, 2)
+  assert.notEqual(nonceOf(calls[0].prompt), nonceOf(calls[1].prompt))
+})
+
+test('measureFreeDiskKib: 条件文言が無く、パスは単一引用符で -- の後ろに渡す', async () => {
   const { calls } = stubAgent([{ freeKib: 1000, err: 0 }])
   assert.equal(await measureFreeDiskKib('/tmp/main-wt'), 1000)
-  assert.doesNotMatch(calls[0].prompt, /tf が空でなければ/)
-  assert.match(calls[0].prompt, /\ncat <<'PATHEOF_/)
+  const p = calls[0].prompt
+  assert.doesNotMatch(p, /tf が空でなければ/)
+  const nonce = nonceOf(p)
+  assert.match(
+    p,
+    new RegExp(`\\nbash '/opt/skills/implement-issue-tree/scripts/run-verified\\.sh' \\S+ measure-free-disk\\.sh --nonce ${nonce} -- '/tmp/main-wt'\\n`),
+  )
 })
 
-test('buildFreeDiskScript: 実 sh で FREE と ERR=0 が出る', { skip: !hasJq }, () => {
-  const work = mkdtempSync('/tmp/freedisk-script-')
-  try {
-    const script = buildFreeDiskScript({
-      tmpFile: join(work, 'p.json'),
-      delimiter: 'PATHEOF_test',
-      pathsJson: JSON.stringify([work]),
-    })
-    const r = spawnSync('/bin/sh', ['-c', script], { encoding: 'utf8', cwd: work })
-    assert.equal(r.status, 0, r.stderr)
-    assert.match(r.stdout, /FREE=\d+ ERR=0/)
-  } finally {
-    rmSync(work, { recursive: true, force: true })
-  }
+test('測定プロンプト: 期待ハッシュは SCRIPT_SHA256 の値（開発ファイルでは目印、生成物ではビルダーが 64 桁 16 進に置換する）', async () => {
+  const { calls } = stubAgent([GOOD])
+  await measureResidualWorktreeBytesDetailed(PATHS)
+  assert.match(calls[0].prompt, /run-verified\.sh' @@SCRIPT_SHA256:measure-residual-bytes\.sh@@ measure-residual-bytes\.sh /)
 })
-
-// --- 2b. tmpFile の /tmp 配下ガード（PR #567 codex P1） ---
-
-for (const [name, build] of [
-  ['buildResidualBytesScript', buildResidualBytesScript],
-  ['buildFreeDiskScript', buildFreeDiskScript],
-]) {
-  for (const bad of ['rel-paths.json', './rel-paths.json', '/tmp/../escape-paths.json', '/var/tmp/x.json']) {
-    test(`${name}: tmpFile=${bad} は書き込みも rm も行わず失敗値を出す`, { skip: !hasJq }, () => {
-      const work = mkdtempSync('/tmp/tf-guard-')
-      try {
-        writeFileSync(join(work, 'rel-paths.json'), 'keep')
-        const script = build({ tmpFile: bad, delimiter: 'PATHSEOF_test', pathsJson: JSON.stringify([work]) })
-        const r = spawnSync('/bin/sh', ['-c', script], { encoding: 'utf8', cwd: work })
-        assert.equal(r.status, 0, r.stderr)
-        assert.match(r.stdout, /ERR=1/)
-        assert.equal(readFileSync(join(work, 'rel-paths.json'), 'utf8'), 'keep')
-        assert.equal(existsSync(join(work, 'rel-paths.json.lines')), false)
-        assert.equal(existsSync(join(work, 'rel-paths.json.line')), false)
-        assert.equal(existsSync('/tmp/escape-paths.json'), false)
-        assert.equal(existsSync('/var/tmp/x.json'), false)
-      } finally {
-        rmSync(work, { recursive: true, force: true })
-      }
-    })
-  }
-}
 
 // --- 3. 分類 ---
 
@@ -198,15 +144,13 @@ test('classifyResidualByteReport: 正常・転記失敗・実失敗・スキー�
 
 // --- 4. リトライの振る舞い ---
 
-test('転記失敗 1 回目 → 2 回目 sonnet で正常: 値を返し、tmp パスは 1 回目と異なる', async () => {
+test('転記失敗 1 回目 → 2 回目 sonnet で正常: 値を返す', async () => {
   const { calls } = stubAgent([TRANSCRIPTION_FAIL, GOOD])
   const r = await measureResidualWorktreeBytesDetailed(PATHS)
   assert.deepEqual(r, { kib: 300, missing: 0 })
   assert.equal(calls.length, 2)
   assert.equal(calls[0].model, 'haiku')
   assert.equal(calls[1].model, 'sonnet')
-  const tf = (p) => /^tf=(\S+)$/m.exec(p)[1]
-  assert.notEqual(tf(calls[0].prompt), tf(calls[1].prompt))
 })
 
 test('転記失敗が続くと合計 1+MAX_RETRIES 回で打ち切り null（有界）', async () => {

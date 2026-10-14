@@ -57,6 +57,13 @@
 // （`class A { for(x = of / 2, y = `/`) {…} }`・オブジェクトの `for(…)`・`async for(…)`）、
 // `}` の直後の対にならないクォートを含む正規表現（`/a b['"]x/.test(s)`。その行のコメントが残る）。
 //
+// スクリプトのハッシュ埋め込み（Issue #603）: 開発ファイルが書く「スクリプトハッシュの目印」（`@@` で始まり
+// `SCRIPT_SHA256:<スクリプト名>@@` で終わる文字列。形式は SCRIPT_HASH_PLACEHOLDER_RE が正）を、同じディレクトリの
+// スクリプトのハッシュ（bundleSha256）に置き換えてからコメント除去・トークン照合を行う。置換は開発ファイルの
+// 文字列に対して先に行うので、トークン照合の入力（置換後の開発ファイル）と生成物は同じ値を持つ。生成物には
+// 目印が残らず、スクリプトを書き換えると生成物の内容が変わるため `--check` の鮮度ゲートが検出する。ハッシュを
+// 実行前に照合するのは scripts/run-verified.sh（references/script-trust-model.md）。
+//
 // 生成物の鮮度（開発ファイルとの同期）は tests/build-workflow.test.mjs が CI で検証する —
 // 生成物を直接編集したりビルドを忘れたりすると byte 不一致で fail する。
 //
@@ -68,7 +75,8 @@
 //   未知の引数は既定値へ戻らず使い方のエラー（exit 2）。トークン照合を差し替える引数は無い（迂回できてしまうため）。
 //   照合の差し替え（テスト用）は runBuild / verifyTokenParity の引数だけで行う
 import { spawnSync } from 'node:child_process'
-import { readFileSync, realpathSync, writeFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { readdirSync, readFileSync, realpathSync, statSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -727,6 +735,49 @@ export function squeezeSpaces(src, { shouldSqueeze = shouldSqueezeSpace } = {}) 
   return stripComments(stripComments(src), { squeezeSpaces: true, shouldSqueeze })
 }
 
+// 開発ファイルに書く目印。スクリプト名は scripts/ 直下の `*.sh`（run-verified.sh が受理する名前と同じ形式）。
+// run-verified.sh の名前検査と同じ文字集合に揃えること
+export const SCRIPT_HASH_PLACEHOLDER_RE = /@@SCRIPT_SHA256:([a-z0-9][a-z0-9.-]*\.sh)@@/g
+
+/**
+ * 実行前照合の対象になるハッシュ。`<scriptsDir>/<name>` のバイト列の後ろに、`<scriptsDir>/lib/` 直下の通常ファイルのうち
+ * `.sh` で終わり `.` で始まらないものをバイト順に連結した SHA-256（小文字 16 進 64 桁）。run-verified.sh の照合と同じ定義
+ * （tests/script-launcher.test.mjs が両者の一致を検証する）。スクリプトまたは lib が無ければ throw する。
+ */
+export function bundleSha256(scriptsDir, name) {
+  const parts = [readFileSync(join(scriptsDir, name))]
+  const libDir = join(scriptsDir, 'lib')
+  let libs = []
+  try {
+    libs = readdirSync(libDir)
+  } catch (e) {
+    if (e.code !== 'ENOENT') throw e
+  }
+  for (const f of libs.filter((x) => x.endsWith('.sh') && !x.startsWith('.')).sort()) {
+    if (statSync(join(libDir, f)).isFile()) parts.push(readFileSync(join(libDir, f)))
+  }
+  return createHash('sha256').update(Buffer.concat(parts)).digest('hex')
+}
+
+/**
+ * 開発ファイルの目印を、実在するスクリプトのハッシュへ置き換えた文字列を返す（行数は変わらない）。
+ * 目印が無ければ入力をそのまま返す。スクリプトが無い・目印の形式が不正で置換されずに残った場合は throw する
+ * （壊れた生成物を書かない。ハッシュ未確定の目印を生成物に残すと実行前照合が常に不一致になる）。
+ */
+export function embedScriptHashes(src, scriptsDir) {
+  const out = src.replace(SCRIPT_HASH_PLACEHOLDER_RE, (_m, name) => {
+    try {
+      return bundleSha256(scriptsDir, name)
+    } catch (e) {
+      throw new Error(`スクリプトのハッシュを埋め込めない（${name}、探した場所 ${scriptsDir}）: ${e.message}`)
+    }
+  })
+  if (out.includes('@@SCRIPT_SHA256:')) {
+    throw new Error('スクリプトハッシュの目印が不正な書式のまま残っている（スクリプト名は英小文字・数字・ハイフン・ドットで末尾 .sh）')
+  }
+  return out
+}
+
 /**
  * 開発ファイルのソースから実行ファイルの内容を生成し、変換の安全性を検証して返す。
  * 検証に失敗した場合は throw する（fail-closed: 壊れた生成物を書き出さない）。
@@ -812,13 +863,15 @@ export function verifyTokenParity(src, artifact, { helperPath = TOKEN_DIFF_PATH,
  * 書かず、既存の実行ファイルとの一致だけ確かめる）。標準出力・標準エラーに出す行と終了コードを返し、
  * 出力と終了は呼び出し側（CLI）が行う。照合に失敗したら生成ファイルは書かない。
  * `parity` は verifyTokenParity へ渡す差し替え（`helperPath` / `execPath`。テスト専用で、CLI の引数からは渡せない）。
+ * `scriptsDir` はハッシュを埋め込むスクリプトの置き場の差し替え（テスト専用。既定は開発ファイルと同じディレクトリで、CLI の引数からは渡せない）。
  */
-export function runBuild({ srcPath = SRC_PATH, distPath = DIST_PATH, checkOnly = false, parity = {} } = {}) {
+export function runBuild({ srcPath = SRC_PATH, distPath = DIST_PATH, checkOnly = false, parity = {}, scriptsDir = dirname(srcPath) } = {}) {
   const startedAt = Date.now()
   let src
   let artifact
   try {
-    src = readFileSync(srcPath, 'utf8')
+    // 目印をスクリプトのハッシュへ置換した文字列を、以降の変換とトークン照合の「開発ファイル」として扱う
+    src = embedScriptHashes(readFileSync(srcPath, 'utf8'), scriptsDir)
     artifact = buildArtifact(src)
     verifyTokenParity(src, artifact, parity)
   } catch (e) {

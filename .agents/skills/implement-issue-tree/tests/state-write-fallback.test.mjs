@@ -16,6 +16,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -43,9 +44,9 @@ const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
 const driverPart = source.slice(markerIndex)
 
 // globalThis.args を先に注入してから import する（review-diff-base.test.mjs と同じ前例）。
-globalThis.args = { parent: 1 }
+globalThis.args = { parent: 1, skillDir: '/opt/skills/implement-issue-tree' }
 
-const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-state-fallback-'))
+const sliceDir = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-state-fallback-')))
 const slicePath = join(sliceDir, 'implement-issue-tree-state-defs.mjs')
 // 実装スクリプトは `export const meta` 以外の top-level export を持てない（Workflow 起動制約）
 // ため、定義部は非 export のまま置き、切り出したスライス側で export 文を付与する。
@@ -177,7 +178,7 @@ test('(g) マージは成功、掃除段の haiku が例外 → 掃除段だけ 
   const { calls } = installAgentStub((opts) => {
     if (opts.label?.startsWith?.('state:update')) return { ok: true }
     if (opts.model === 'haiku') throw new Error('cleanup agent crashed')
-    return { ok: true }
+    return { ok: true, retained: false }
   })
   const ok = await updateState(
     107,
@@ -193,6 +194,51 @@ test('(g) マージは成功、掃除段の haiku が例外 → 掃除段だけ 
   for (const c of cleanupCalls) {
     assert.ok(!c.prompt.includes(untrustedMarker), '掃除プロンプトに patch 由来の自由文が混入してはならない（Issue #144 のコンテキスト分離）')
   }
+})
+
+test('(g2) 掃除プロンプトは worktree-remove.sh の 1 コマンドと、worktree が無くなったときだけ行う .worktree のクリア（state.sh merge）から成る。追跡中の worktree と別物を消すとき（preserveWorktreeField・新パス記録済み）はクリアしない', async () => {
+  const run = async (patch, options) => {
+    const { calls } = installAgentStub(() => ({ ok: true, retained: false }))
+    assert.equal(await updateState(108, patch, options), true)
+    return calls.find((c) => c.opts.label.startsWith('state:cleanup:#108')).prompt
+  }
+  const cleared = await run({ status: 'merged' }, { cleanupWorktree: '/tmp/wt-108' })
+  assert.match(cleared, /worktree-remove\.sh remove --mode superseded --path '\/tmp\/wt-108'\n/)
+  assert.match(cleared, /結果の worktree が removed \/ not-registered \/ skipped のときだけ（それ以外は実行しない）/)
+  assert.match(cleared, /state\.sh --file _\/issue-trees\/1\.json merge <<'STATE_EOF'\n\[\{"numbers":\[108\],"patch":\{"worktree":""\}\}\]\nSTATE_EOF\n/)
+  assert.doesNotMatch(cleared, /jq --argjson patch/)
+  assert.doesNotMatch(await run({ status: 'merged', worktree: '/tmp/wt-108-new' }, { cleanupWorktree: '/tmp/wt-108' }), /state\.sh/)
+  assert.doesNotMatch(await run({ status: 'merged' }, { cleanupWorktree: '/tmp/wt-108', preserveWorktreeField: true }), /state\.sh/)
+})
+
+test('(g3) 書き込みプロンプトと掃除の .worktree クリアは STATE_RESULT の ok を返す・自分で書き直さない指示（STATE_NOTE）を含み、掃除は WORKTREE_REMOVE_RESULT の ok / retained / branchSha を返す・自分で消さない指示を含む', async () => {
+  const marker = '標準出力の最後の行 STATE_RESULT {json} の ok を ok として返す'
+  const { calls } = installAgentStub(() => ({ ok: true, retained: false }))
+  assert.equal(await updateState(109, { status: 'merged' }, { cleanupWorktree: '/tmp/wt-109' }), true)
+  const merge = calls.find((c) => c.opts.label.startsWith('state:update:#109')).prompt
+  const cleanup = calls.find((c) => c.opts.label.startsWith('state:cleanup:#109')).prompt
+  for (const p of [merge, cleanup]) {
+    assert.ok(p.includes(marker), 'STATE_RESULT の判定指示')
+    assert.match(p, /jq \/ mv で状態ファイルを自分で書き直して代替しない/)
+  }
+  assert.match(cleanup, /手順 2 が失敗した場合は掃除全体の ok を false で返す/)
+  assert.match(cleanup, /標準出力の最後の行 WORKTREE_REMOVE_RESULT \{json\} の ok・retained・branchSha をそのまま返す/)
+  assert.match(cleanup, /git worktree remove \/ unlock・git branch -D・rm を自分で実行して代替しない/)
+  assert.match(cleanup, /run-verified\.sh' \S+ worktree-remove\.sh remove /)
+  // 共通規則（TEMP_FILE_POLICY）は rm -rf という語を含むので、手順の本文（「対象は」以降）だけを見る
+  const body = cleanup.slice(cleanup.indexOf('対象は下記コマンド'))
+  assert.ok(body.length > 0 && body.length < cleanup.length)
+  assert.doesNotMatch(body, /rm -rf|git worktree list|--force --|main_wt|realpath|pwd -P/, '手順の本文（確認・unlock・フォールバック）はスクリプトに移っている')
+})
+
+test('(h0) initAllPending は open が 0 件のとき state.sh init を呼ばない（空配列は invalid-input の偽失敗になる）', async () => {
+  const { calls, logs } = installAgentStub(() => ({ ok: true }))
+  await initAllPending([])
+  assert.equal(calls.length, 0)
+  assert.equal(logs.filter((l) => /一括初期化/.test(l)).length, 0)
+  await initAllPending([{ number: 3, kind: 'verify-close' }])
+  assert.equal(calls.length, 1)
+  assert.match(calls[0].prompt, /init <<'STATE_EOF_/)
 })
 
 test('(h) initAllPending は haiku・sonnet とも失敗しても reject しない', async () => {

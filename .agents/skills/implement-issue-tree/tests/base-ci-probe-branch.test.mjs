@@ -24,6 +24,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -76,7 +77,7 @@ const scriptBody = codeBlockMatches[0][1]
 // 群 B: シェル構文の健全性 — bash -n
 // ---------------------------------------------------------------------------
 test('群B: 抽出したプローブスクリプトが bash -n を通る（構文エラーがない）', () => {
-  const tmpDir = mkdtempSync(join(tmpdir(), 'base-ci-probe-'))
+  const tmpDir = trackTmp(mkdtempSync(join(tmpdir(), 'base-ci-probe-')))
   const scriptPath = join(tmpDir, 'probe.sh')
   try {
     writeFileSync(scriptPath, scriptBody, 'utf8')
@@ -151,7 +152,7 @@ test('群D: @ の後が空（owner/repo@:["workflow"]）は defaultBranchRef へ
   // 実行レベルでも固定する: この分岐が defaultBranchRef フォールバック（else 節）より
   // 前で continue するため、"owner/repo@:workflow" 系の入力では gh repo view が
   // 一切呼ばれないことをモック gh で検証する（fail-open 退行の直接検出）。
-  const tmpDir = mkdtempSync(join(tmpdir(), 'base-ci-probe-fc-'))
+  const tmpDir = trackTmp(mkdtempSync(join(tmpdir(), 'base-ci-probe-fc-')))
   try {
     const callLog = join(tmpDir, 'gh-calls.log')
     const ghMock = join(tmpDir, 'gh')
@@ -308,7 +309,7 @@ esac
 }
 
 test('群G: カンマ入り workflow 名の green 経路（"Build, Test" が 2 名へ誤分割されない）', { skip: !hasJq() }, () => {
-  const tmpDir = mkdtempSync(join(tmpdir(), 'base-ci-probe-g-green-'))
+  const tmpDir = trackTmp(mkdtempSync(join(tmpdir(), 'base-ci-probe-g-green-')))
   try {
     writeGhMock(tmpDir)
     const scriptPath = join(tmpDir, 'probe.sh')
@@ -335,7 +336,7 @@ test('群G: カンマ入り workflow 名の green 経路（"Build, Test" が 2 �
 })
 
 test('群G: 旧カンマ区切り形式は JSON 不正として fail-closed し gh API を一切呼ばない', { skip: !hasJq() }, () => {
-  const tmpDir = mkdtempSync(join(tmpdir(), 'base-ci-probe-g-legacy-'))
+  const tmpDir = trackTmp(mkdtempSync(join(tmpdir(), 'base-ci-probe-g-legacy-')))
   try {
     const { callLog } = writeGhMock(tmpDir)
     const scriptPath = join(tmpDir, 'probe.sh')
@@ -407,7 +408,7 @@ esac
 }
 
 test('群H: 必須外 workflow の skipped は判定に影響しない（green 維持）', { skip: !hasJq() }, () => {
-  const tmpDir = mkdtempSync(join(tmpdir(), 'base-ci-probe-h-green-'))
+  const tmpDir = trackTmp(mkdtempSync(join(tmpdir(), 'base-ci-probe-h-green-')))
   try {
     writeGhMockWithExtraRun(
       tmpDir,
@@ -444,7 +445,7 @@ test('群H: 必須外 workflow の skipped は判定に影響しない（green �
 })
 
 test('群H: 必須 workflow 自身の skipped は unknown 維持（厳格側の設計を緩めない）', { skip: !hasJq() }, () => {
-  const tmpDir = mkdtempSync(join(tmpdir(), 'base-ci-probe-h-strict-'))
+  const tmpDir = trackTmp(mkdtempSync(join(tmpdir(), 'base-ci-probe-h-strict-')))
   try {
     const callLog = join(tmpDir, 'gh-calls.log')
     const ghMock = join(tmpDir, 'gh')

@@ -16,10 +16,12 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs'
+import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { stripMetaExport } from './lib/workflow-script-contract.mjs'
+import { hashPrecheckReply } from './lib/signed-output.mjs'
 
 const SCRIPT_PATH = process.env.IIT_BLOCKED_BATCH_SCRIPT_PATH ?? join(
   dirname(fileURLToPath(import.meta.url)),
@@ -34,8 +36,8 @@ if (markerIndex < 0) throw new Error(`テスト境界マーカー ${DRIVER_MARKE
 const definitionPart = source.slice(0, source.lastIndexOf('\n', markerIndex))
 const driverPart = source.slice(markerIndex)
 
-globalThis.args = { parent: 1 }
-const sliceDir = mkdtempSync(join(tmpdir(), 'implement-issue-tree-blocked-batch-'))
+globalThis.args = { parent: 1, skillDir: '/opt/skills/implement-issue-tree' }
+const sliceDir = trackTmp(mkdtempSync(join(tmpdir(), 'implement-issue-tree-blocked-batch-')))
 const slicePath = join(sliceDir, 'implement-issue-tree-blocked-batch-defs.mjs')
 // 旧実装（修正前）にはこれらの宣言が無い。RED 確認用に typeof ガードで存在しない名前を undefined にする。
 const SLICE_EXPORTS = [
@@ -187,15 +189,15 @@ test('writeBlockedStateBatch: 同一 patch は numbers へ束ね、PR を持つ�
   assert.equal('pr' in groups[1].patch, false, '保存済み pr を消さない')
 })
 
-test('writeBlockedStateBatch: プロンプトは未信頼範囲の境界・TEMP_FILE_POLICY を含み、jq は --slurpfile で値を渡す', async () => {
+test('writeBlockedStateBatch: プロンプトは state.sh の起動コマンド（nonce 付きの終端のヒアドキュメント）を渡し、jq の手順を書かない', async () => {
   const { calls } = installAgentStub(() => ({ ok: true }))
   await writeBlockedStateBatch(entriesOf(1, 2, BLOCKED), {})
   const p = calls[0].prompt
-  assert.match(p, /UNTRUSTED_[0-9a-z]+_BEGIN/)
-  assert.match(p, /UNTRUSTED_[0-9a-z]+_END/)
+  assert.match(p, /非信頼データの取り扱い規則/)
   assert.match(p, /一時ファイル配置規則/)
-  assert.match(p, /jq --slurpfile groups "\$groups_file"/)
-  assert.match(p, /cat <<'GROUPS_EOF_[0-9a-z]+' > "\$groups_file"/)
+  assert.match(p, /run-verified\.sh' @@SCRIPT_SHA256:state\.sh@@ state\.sh --file _\/issue-trees\/1\.json merge <<'STATE_EOF_[0-9a-z]+'\n/)
+  assert.match(p, /\n\[\{"numbers":\[1,2\],"patch":\{[^\n]*\}\}\]\nSTATE_EOF_[0-9a-z]+\n/)
+  assert.doesNotMatch(p, /jq --|slurpfile|mv "\$tmp"/)
 })
 
 test('writeBlockedStateBatch: haiku が未返却なら同一プロンプトで sonnet へ 1 回フォールバックする（#493 の対象に含まれる）', async () => {
@@ -327,6 +329,7 @@ async function runScript({ args, nodes, saved = null, ootStates = { [OOT]: 'OPEN
   const handler = (prompt, opts) => {
     const label = opts.label
     if (label === 'nonce:seed') return { seedHex: 'b'.repeat(64) }
+    if (label === 'script-hash-precheck') return hashPrecheckReply(prompt)
     if (label === 'worktree:untracked-scan') return { count: 0, paths: [] }
     if (label === 'state:load') {
       return { ok: true, fileExisted: saved !== null, items: saved ?? {}, highWaterBytes: 0, highWaterVersion: saved ? 2 : 0 }
@@ -357,7 +360,8 @@ async function runScript({ args, nodes, saved = null, ootStates = { [OOT]: 'OPEN
     return handler(prompt, opts)
   }
   const fn = new AsyncFunction('args', 'agent', 'log', 'phase', scriptBody)
-  const result = await fn(args, agent, (m) => { logs.push(m) }, () => {})
+  // skillDir は残置バイト軸が有効な通常ランの必須引数（Issue #603）。呼び出し側の指定があればそれを優先する
+  const result = await fn({ skillDir: '/opt/skills/implement-issue-tree', ...args }, agent, (m) => { logs.push(m) }, () => {})
   return { result, calls, logs }
 }
 
