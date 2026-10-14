@@ -56,6 +56,13 @@ const REF_ASSIGN_ALLOWED = /^(base_ref|branch_ref)="refs\/worktree\/[a-z-]+\/(ba
 const refBinding = (line) => REF_NAME.test(line.replace(REF_READ, ''))
 const refBindingRejected = (line) => refBinding(line) && !REF_ASSIGN_ALLOWED.test(line.trim())
 
+// git add / git commit は recover-prep.sh の決まった 1 行だけが使う（旧 worktree の未コミット変更を WIP コミットとして対象ブランチへ退避する。
+// Issue #603 第 9 弾）。必ず `git -C "${path}"` で対象の worktree を明示し（メイン worktree を暗黙の対象にしない）、フックを通す（-n・--no-verify・
+// --no-verify の省略形は別のパターンが拒否する）。コミットメッセージは固定。stdin を閉じ、出力は標準エラーへ送る。ほかの形はすべて拒否する。
+// 許可形がこのファイルにしか無いことは下の専用テストで固定する。引用符付きの git / サブコマンドは許可形ではない
+const GIT_ADD_COMMIT_CALL = new RegExp(`${GIT_SUB('(?:add|commit)').source}`)
+const GIT_WIP_ALLOWED = /^\s*git -C "\$\{path\}" add -A >&2 && git -C "\$\{path\}" commit -q -m "wip\(recover\): 中断時の未コミット変更を退避" <\/dev\/null >&2 \|\| crc=\$\?\s*$/
+
 const PATTERNS = [
   // マージ・クローズ
   re('gh pr merge', /\bgh\b[^\n|;&]*\bpr\b[^\n|;&]*\bmerge\b/),
@@ -113,6 +120,10 @@ const PATTERNS = [
     test: (line) => GIT_UPDATE_REF_CALL.test(line) && !GIT_UPDATE_REF_ALLOWED.test(line),
   },
   {
+    label: 'git add / git commit は許可形（recover-prep.sh の WIP コミットの 1 行）以外を拒否',
+    test: (line) => GIT_ADD_COMMIT_CALL.test(line) && !GIT_WIP_ALLOWED.test(line),
+  },
+  {
     label: 'git push は許可形（git push --no-follow-tags origin "HEAD:refs/heads/${branch}"）以外を拒否',
     test: (line) => GIT_PUSH_CALL.test(line) && !GIT_PUSH_ALLOWED.test(line),
   },
@@ -158,7 +169,7 @@ function codeLines(text) {
 
 test('走査の対象にスクリプト一式（scripts/*.sh と scripts/lib/*.sh）が含まれ、除外は merge-guard-hook.sh だけ', () => {
   const names = targets().map((t) => t.name)
-  for (const must of ['base-merge.sh', 'observe-pr.sh', 'measure-residual-bytes.sh', 'measure-free-disk.sh', 'run-verified.sh', 'preview-tree.sh', 'pr-push.sh', 'merge-gate.sh', 'worktree-remove.sh', 'lib/worktree-remove-lib.sh', 'lib/merge-gate-lib.sh', 'lib/signed-output.sh', 'lib/push-verify.sh', 'lib/base-merge-lib.sh', 'lib/pr-push-lib.sh']) {
+  for (const must of ['base-merge.sh', 'observe-pr.sh', 'measure-residual-bytes.sh', 'measure-free-disk.sh', 'run-verified.sh', 'preview-tree.sh', 'pr-push.sh', 'merge-gate.sh', 'worktree-remove.sh', 'recover-prep.sh', 'lib/worktree-remove-lib.sh', 'lib/recover-prep-lib.sh', 'lib/merge-gate-lib.sh', 'lib/signed-output.sh', 'lib/push-verify.sh', 'lib/base-merge-lib.sh', 'lib/pr-push-lib.sh']) {
     assert.ok(names.includes(must), `${must} が走査の対象にない（${names.join(', ')}）`)
   }
   assert.ok(!names.includes('merge-guard-hook.sh'))
@@ -233,6 +244,16 @@ test('自己検査: 各パターンは悪い例に発火する（パターンが
       'git update-ref -d "${other_ref}"', 'git update-ref -d "${base_ref}"', 'git update-ref -d "${base_ref}" "${old}" >/dev/null 2>&1 || true', 'git update-ref --delete "${base_ref}" >/dev/null 2>&1 || true',
       '"git" update-ref -d "refs/heads/x"', 'git "update-ref" -d "refs/heads/x"', 'git -C x update-ref -d "refs/heads/x"', "git update-ref -d 'refs/heads/x'",
     ],
+    'git add / git commit は許可形（recover-prep.sh の WIP コミットの 1 行）以外を拒否': [
+      // 対象の worktree を明示しない（メイン worktree が暗黙の対象になる）・変数以外のパス・メッセージの変更・フラグの追加・引用符付き
+      'git add -A', 'git add .', 'git add -- a.txt', 'git commit -m x', 'git commit --amend --no-edit', 'git commit -F "${msgfile}"', 'git commit --no-edit',
+      'git -C "${other}" add -A', 'git -C "$path" add -A', 'git -C . add -A', 'git -C "${path}" add --force .', 'git -C "${path}" add -f x', 'git -C "${path}" add -N .',
+      'git -C "${path}" commit -m x', 'git -C "${path}" commit -q -m "別のメッセージ" </dev/null >&2 || crc=$?', 'git -C "${path}" commit -a -m x', 'git -C "${path}" commit --amend',
+      'git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "wip(recover): 中断時の未コミット変更を退避" >&2 || crc=$?',
+      'git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "wip(recover): 中断時の未コミット変更を退避" </dev/null >&2 || true',
+      'git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "wip(recover): 中断時の未コミット変更を退避" </dev/null >&2 || crc=$?; git -C "${path}" add -f x',
+      '"git" -C "${path}" add -A', 'git "add" -A', 'git -C "${path}" "commit" -m x', "git -C x 'add' y", 'git -c user.name=x commit -m x', 'git -c core.hooksPath=/x commit -m x',
+    ],
     'git push の -f 系短縮オプション': ['git push -f origin HEAD', 'git push origin HEAD -f', 'git push -uf origin HEAD'],
     'git push の + refspec': ['git push origin +HEAD:refs/heads/x', 'git push origin "+HEAD:refs/heads/x"'],
     'git push は許可形（git push --no-follow-tags origin "HEAD:refs/heads/${branch}"）以外を拒否': [
@@ -286,9 +307,8 @@ test('自己検査: 正当な行（読み取りの gh api・graphql の query・
     'git config --get remote.origin.url',
     'git config --list',
     'git ls-remote origin "refs/heads/$1"',
-    'git commit -m "x" --amend',
-    'git commit --no-edit',
-    'git commit --no-verbose',
+    'git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "wip(recover): 中断時の未コミット変更を退避" </dev/null >&2 || crc=$?',
+    'git -C "${path}" -c core.excludesFile= status --porcelain=v2 -uall --ignore-submodules=none',
     'gh -R "${repo}" api repos/o/r/commits/x/check-runs',
     'gh -R "${repo}" api graphql -f query="${Q}" -F owner="${o}"',
     'gh --repo o/r api -X GET repos/o/r/x',
@@ -389,6 +409,33 @@ test('git worktree remove / unlock と git branch -D の許可形は worktree-re
   )
   assert.deepEqual(found.branch.map((f) => f.l), ['git branch -D -- "${branch}" >/dev/null 2>&1 || rc=$?'])
   for (const f of [...found.worktree, ...found.branch]) assert.ok(GIT_WORKTREE_RM_ALLOWED.test(f.l) || GIT_BRANCH_DELETE_ALLOWED.test(f.l), f.l)
+})
+
+test('git add / git commit の許可形は recover-prep.sh だけにあり、決まった 1 行（git -C "${path}" の WIP コミット）だけが存在する。フックを回避する綴りを伴わない', () => {
+  const found = []
+  for (const { name, path } of targets()) {
+    for (const { n, l } of codeLines(readFileSync(path, 'utf8'))) if (GIT_ADD_COMMIT_CALL.test(l)) found.push({ name, n, l: l.trim() })
+  }
+  assert.deepEqual(found.map((f) => f.name), ['recover-prep.sh'], JSON.stringify(found))
+  assert.equal(found.length, 1, '許可形は 1 行だけ')
+  assert.ok(GIT_WIP_ALLOWED.test(found[0].l), found[0].l)
+  assert.equal(found[0].l, 'git -C "${path}" add -A >&2 && git -C "${path}" commit -q -m "wip(recover): 中断時の未コミット変更を退避" </dev/null >&2 || crc=$?')
+  // 同じ行がフック回避の綴りを持たない（--no-verify の省略形・-n）。--no-verbose のような別のオプションは --no-verify の検査に誤検出されない
+  for (const p of PATTERNS.filter((x) => x.label === '--no-verify' || x.label.startsWith('git commit -n'))) assert.equal(p.test(found[0].l), false, p.label)
+  assert.equal(PATTERNS.find((x) => x.label === '--no-verify').test('git commit --no-verbose'), false)
+})
+
+test('recover-prep.sh はブランチの削除・reset・checkout・clean・stash・push・マージを持たない（読み取りと WIP コミットと base の fetch だけ）。fetch は refs/remotes/origin/ へ保存する 1 形', () => {
+  const path = targets().find((t) => t.name === 'recover-prep.sh').path
+  const code = codeLines(readFileSync(path, 'utf8')).map((x) => x.l)
+  const joined = code.join('\n')
+  assert.doesNotMatch(joined, /\bgit\b[^\n|;&]*\b(clean|reset|checkout|switch|restore|stash|push|merge|rebase|cherry-pick|branch|update-ref|tag|gc|prune|rm|mv)\b/)
+  assert.doesNotMatch(joined, /\brm\b/)
+  // git worktree は一覧の読み取り（list）だけ
+  const worktreeCalls = code.filter((l) => /\bgit\b[^\n|;&]*\bworktree\b/.test(l)).map((l) => l.trim())
+  assert.ok(worktreeCalls.length >= 1 && worktreeCalls.every((l) => /\bgit worktree list --porcelain\b/.test(l)), JSON.stringify(worktreeCalls))
+  const fetches = code.filter((l) => /\bgit\b[^\n|;&]*\bfetch\b/.test(l)).map((l) => l.trim())
+  assert.deepEqual(fetches, ['if git fetch origin "refs/heads/${base}:refs/remotes/origin/${base}" >/dev/null 2>&1; then'])
 })
 
 test('git update-ref の許可形は base-merge.sh と pr-push.sh の -d だけで、対象の変数 base_ref / branch_ref は refs/worktree/ 配下の固定値だけを持つ', () => {

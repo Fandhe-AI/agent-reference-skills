@@ -475,16 +475,54 @@ export function registerWorktreeRemoveTests(bash) {
     assert.deepEqual([d.result.worktree, d.result.branch, d.result.ok, d.result.branchSha], ['removed', 'keep-base', true, repo.head(repo.main, a.branch)])
     assert.ok(repo.branches().includes(a.branch))
 
-    const b = repo.addWorktree('b')
-    const e = dis(repo, b.path, ['--branch', 'feat/never-existed', '--base', 'main'])
-    assert.deepEqual([e.result.branch, e.result.ok, e.result.branchSha], ['absent', true, ''])
+    // 実在しないブランチ（worktree 指定なし。--path と --branch を両方与える場合は HEAD が一致する必要がある）
+    const e = run(repo, ['remove', '--mode', 'discard', '--branch', 'feat/never-existed', '--base', 'main'])
+    assert.deepEqual([e.result.worktree, e.result.branch, e.result.ok, e.result.branchSha], ['skipped', 'absent', true, ''])
 
     // 別の worktree が使っているブランチは git が消させない
-    const c = repo.addWorktree('c')
     const d2 = repo.addWorktree('d')
-    const f = dis(repo, c.path, ['--branch', d2.branch, '--base', 'main'])
-    assert.deepEqual([f.result.worktree, f.result.branch, f.result.ok, f.result.branchSha], ['removed', 'failed', false, ''], '削除に失敗したときは「削除前の先頭 sha」を出さない')
+    const f = run(repo, ['remove', '--mode', 'discard', '--branch', d2.branch, '--base', 'main'])
+    assert.deepEqual([f.result.worktree, f.result.branch, f.result.ok, f.result.branchSha], ['skipped', 'failed', false, ''], '削除に失敗したときは「削除前の先頭 sha」を出さない')
     assert.ok(repo.branches().includes(d2.branch))
+  })
+
+  // --path と --branch を両方与えたとき、削除の前に同じプロセスでその worktree の HEAD を読み、--branch と違えば worktree もブランチも消さない
+  // （呼び出し側のエージェントが無関係なブランチ名を返しても、別の作業を消さない）
+  test(`${tag} --branch が worktree の HEAD と違う: retained-branch-mismatch・ok:false。worktree もブランチも消さない（clean でも、無関係なブランチ名でも）`, () => {
+    const repo = makeRepo()
+    const a = repo.addWorktree('a')
+    const b = repo.addWorktree('b')
+    repo.write(b.path, 'q.txt', 'q\n')
+    repo.git(b.path, 'add', 'q.txt')
+    repo.git(b.path, 'commit', '-q', '-m', 'q')
+    const bsha = repo.head(b.path)
+    // a の worktree に b のブランチ名を結びつけても、a も b も消えない
+    const r1 = dis(repo, a.path, ['--branch', b.branch, '--base', 'main'])
+    assert.deepEqual([r1.result.ok, r1.result.worktree, r1.result.branch, r1.result.retained, r1.result.branchSha], [false, 'retained-branch-mismatch', 'keep', true, bsha])
+    assert.ok(existsSync(a.path) && existsSync(b.path))
+    assert.ok(repo.branches().includes(a.branch) && repo.branches().includes(b.branch))
+    // 実在しないブランチ名・base 以外の別名でも同じ
+    const r2 = dis(repo, a.path, ['--branch', 'feat/unrelated', '--base', 'main'])
+    assert.deepEqual([r2.result.ok, r2.result.worktree, r2.result.branch], [false, 'retained-branch-mismatch', 'keep'])
+    assert.ok(existsSync(a.path))
+    // 一致すれば消える
+    const r3 = dis(repo, a.path, ['--branch', a.branch, '--base', 'main'])
+    assert.deepEqual([r3.result.ok, r3.result.worktree, r3.result.branch], [true, 'removed', 'deleted'])
+    assert.ok(!existsSync(a.path) && repo.branches().includes(b.branch))
+  })
+
+  test(`${tag} --branch を与えて worktree が detached HEAD: retained-branch-mismatch で保持する。--branch を与えなければ従来どおり消える（superseded も対象外）`, () => {
+    const repo = makeRepo()
+    const a = repo.addWorktree('a')
+    repo.git(a.path, 'checkout', '-q', '--detach')
+    const r1 = dis(repo, a.path, ['--branch', a.branch, '--base', 'main'])
+    assert.deepEqual([r1.result.worktree, r1.result.ok], ['retained-branch-mismatch', false])
+    assert.ok(existsSync(a.path) && repo.branches().includes(a.branch))
+    const r2 = dis(repo, a.path)
+    assert.deepEqual([r2.result.worktree, r2.result.ok, r2.result.branch], ['removed', true, 'none'])
+    const b = repo.addWorktree('b')
+    repo.git(b.path, 'checkout', '-q', '--detach')
+    assert.equal(sup(repo, b.path).result.worktree, 'removed')
   })
 
   test(`${tag} worktree 指定なし（--path 省略）の discard: ブランチだけを消す`, () => {
