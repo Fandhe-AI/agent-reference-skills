@@ -3,7 +3,7 @@
 #
 # 使い方（通常は run-verified.sh 経由。ホストがコマンドを組み立て、掃除エージェントが 1 回実行する）:
 #   bash worktree-remove.sh remove --mode superseded --path <worktree>
-#   bash worktree-remove.sh remove --mode discard [--path <worktree>] [--branch <branch> --base <base>]
+#   bash worktree-remove.sh remove --mode discard [--path <worktree>] [--branch <branch> --base <base>] [--head <40 桁の sha>]
 #   bash worktree-remove.sh sweep --file _/issue-trees/N.json     （標準入力: 削除候補のパスの JSON 配列）
 #
 # 役割: 掃除プロンプトが文章で持っていた「登録の確認 → lock の扱い → 汚れの確認 → 削除 → ブランチ削除」を、固定のコマンド列として
@@ -13,6 +13,8 @@
 #   discard     Recover の破棄・継続。汚れていれば、または初期化済み submodule があれば保持する（--force は使わない）。--branch が
 #               あれば worktree が無くなったあとでブランチも消す（消す前の先頭 sha を結果に出す。base と同名のブランチは消さない）。--path と --branch を
 #               両方与えたときは、削除の前に同じプロセスでその worktree の HEAD を読み、--branch と違えば worktree もブランチも消さない。
+#               --head <sha>（--path が要る）を与えたときは、同じプロセスで worktree の HEAD のコミットを読み、sha と違えば（読めないときも）
+#               消さない。マージ済み PR の head との一致で『未 push のコミットを持たない』ことを確かめる用（squash マージは base との差分で見分けられない）。
 #   sweep       ラン終了時の残骸回収。候補ごとに superseded と同じ規則で消す。状態ファイルが failed / blocked / monitoring の
 #               イシューに記録した worktree、登録されていないパス、メイン worktree は消さない。状態ファイルを読めなければ何も消さない。
 # 確認の方法: `git -c core.excludesFile= status --porcelain=v2 -uall --ignore-submodules=none`（利用者の status.showUntrackedFiles や
@@ -31,8 +33,10 @@
 #       検証済みの候補のパスに限る）。
 #           main = メイン worktree、cwd = カレントがその worktree の中（どちらも消さない）。
 #           retained-branch-mismatch = discard で --path と --branch を両方与えたとき、worktree の HEAD が --branch と違う（detached を含む。worktree もブランチも消さない）。
+#           retained-head-mismatch = discard で --head を与えたとき、worktree の HEAD のコミットが --head と違う（読めないときを含む。worktree もブランチも消さない）。
+#           retained-detached = discard で --head を与えたとき、HEAD が一致していても detached（detached 上の未 push のコミットは消すと失われる）。
 #           branchSha は消す前（または消さなかった）ブランチの先頭 sha で、ブランチの削除に失敗したとき（failed）は空。
-#   remove: {"ok":bool,"mode":"…","worktree":"removed|not-registered|skipped|main|cwd|retained-dirty|retained-submodule|retained-locked|retained-branch-mismatch|failed",
+#   remove: {"ok":bool,"mode":"…","worktree":"removed|not-registered|skipped|main|cwd|retained-dirty|retained-submodule|retained-locked|retained-branch-mismatch|retained-head-mismatch|retained-detached|failed",
 #            "branch":"none|deleted|absent|keep-base|keep|failed","branchSha":"<40 桁 | 空>","dirty":N,"unlocked":bool,"retained":bool}
 #   sweep:  {"ok":true,"mode":"sweep","removed":["…"],"retained":N,"skipped":N,"failed":N,"reason":"…"}
 #           reason は空 / state-unreadable / invalid-input。state-unreadable と invalid-input では何も消さない。
@@ -51,7 +55,7 @@ script_dir=$(cd "$(dirname "$0")" && pwd -P) || exit 3
 . "${script_dir}/lib/worktree-remove-lib.sh" || exit 3
 
 usage() {
-  echo "使い方: worktree-remove.sh remove --mode (superseded|discard) [--path P] [--branch B --base BASE] / sweep --file _/issue-trees/N.json（候補は標準入力）" >&2
+  echo "使い方: worktree-remove.sh remove --mode (superseded|discard) [--path P] [--branch B --base BASE] [--head SHA] / sweep --file _/issue-trees/N.json（候補は標準入力）" >&2
   [ $# -eq 0 ] || echo "worktree-remove: $1" >&2
   exit 2
 }
@@ -67,16 +71,19 @@ mode=""
 path=""
 branch=""
 base=""
+head=""
+head_set=0
 file=""
 while [ $# -gt 0 ]; do
   case "$1" in
-    --mode | --path | --branch | --base | --file)
+    --mode | --path | --branch | --base | --head | --file)
       [ $# -ge 2 ] || usage "$1 に値が無い"
       case "$1" in
         --mode) mode=$2 ;;
         --path) path=$2 ;;
         --branch) branch=$2 ;;
         --base) base=$2 ;;
+        --head) head=$2; head_set=1 ;;
         --file) file=$2 ;;
       esac
       shift 2
@@ -89,9 +96,9 @@ done
 T_WT=""
 T_DIRTY=0
 T_UNLOCKED=false
-# $1 = モード、$2 = パス、$3 = 結びつけるブランチ（discard の --branch。空 = 結びつけない）
+# $1 = モード、$2 = パス、$3 = 結びつけるブランチ（discard の --branch。空 = 結びつけない）、$4 = 結びつける HEAD の sha（discard の --head。空 = 結びつけない）
 remove_one() {
-  local m=$1 path=$2 expect=${3:-} wt_head list top real cwd_real plan lockact alive cur_start status_out sub_init gd rc kmsg krc kw pw pself pout prc xw
+  local m=$1 path=$2 expect=${3:-} expect_sha=${4:-} wt_sha wt_head list top real cwd_real plan lockact alive cur_start status_out sub_init gd rc kmsg krc kw pw pself pout prc xw
   T_WT=""
   T_DIRTY=0
   T_UNLOCKED=false
@@ -140,12 +147,14 @@ remove_one() {
   WR_SUB_DIRTY=0
   sub_init=0
   wt_head=""
+  wt_sha=""
   if [ -d "${path}" ]; then
     top=$(git -C "${path}" rev-parse --show-toplevel 2>/dev/null) || top=""
     if [ -n "${top}" ] && [ "$(wr_real "${top}")" = "${real}" ] && status_out=$(git -C "${path}" -c core.excludesFile= status --porcelain=v2 -uall --ignore-submodules=none 2>/dev/null); then
       wr_count_status "${status_out}"
       # この worktree が実際に指すブランチ（toplevel がこの worktree 自身だと確かめた後に、削除と同じプロセスで読む）
       wt_head=$(git -C "${path}" symbolic-ref -q --short HEAD 2>/dev/null) || wt_head=""
+      wt_sha=$(git -C "${path}" rev-parse -q --verify 'HEAD^{commit}' 2>/dev/null) || wt_sha=""
       # 初期化済み submodule（先頭が - の行は未初期化）と、このworktree専用の modules ディレクトリ（deinit 後もコミットが残り得る）
       sub_init=$(git -C "${path}" submodule status 2>/dev/null | awk 'substr($0,1,1) != "-" && NF > 0 { n++ } END { print n + 0 }') || sub_init=0
       gd=$(git -C "${path}" rev-parse --absolute-git-dir 2>/dev/null) || gd=""
@@ -163,6 +172,16 @@ remove_one() {
   # discard で --branch を結びつけられた worktree は、その HEAD が --branch と一致するときだけ消す（呼び出し側が別のブランチ名を渡しても、
   # 無関係な worktree とそのブランチを消さない。worktree もブランチも残る）。実体が無い worktree（dead）は読めないので従来どおり
   if [ "${m}" = discard ] && [ -n "${expect}" ] && [ -d "${path}" ] && [ "${wt_head}" != "${expect}" ]; then T_WT='retained-branch-mismatch'; return 0; fi
+
+  # --head を結びつけられた worktree は、HEAD のコミットが一致するときだけ消す（マージ済み PR の head に無いコミット = 未 push の作業を守る）。
+  # 実体が無い worktree（dead）は読めない・失う作業も無いので従来どおり
+  if [ "${m}" = discard ] && [ -n "${expect_sha}" ] && [ -d "${path}" ]; then
+    case "$(wr_head_check "${expect_sha}" "${wt_sha}" "${wt_head}")" in
+      ok) ;;
+      retain-detached) T_WT='retained-detached'; return 0 ;;
+      *) T_WT='retained-head-mismatch'; return 0 ;;
+    esac
+  fi
 
   rc=0
   if [ "${lockact}" = unlock ]; then
@@ -201,10 +220,15 @@ if [ "${cmd}" = remove ]; then
     wr_valid_branch "${branch}" || usage "--branch の形が不正"
   fi
   if [ -n "${base}" ]; then wr_valid_branch "${base}" || usage "--base の形が不正"; fi
+  if [ "${head_set}" -eq 1 ]; then
+    [ "${mode}" = discard ] || usage "--head は discard 専用"
+    [ -n "${path}" ] || usage "--head には --path が要る"
+    wr_valid_head "${head}" || usage "--head は 40 桁の小文字 16 進"
+  fi
   [ -z "${file}" ] || usage "--file は sweep 専用"
 
   if [ -n "${path}" ]; then
-    remove_one "${mode}" "${path}" "${branch}"
+    remove_one "${mode}" "${path}" "${branch}" "${head}"
   else
     T_WT=skipped
   fi
@@ -236,7 +260,7 @@ if [ "${cmd}" = remove ]; then
 fi
 
 # --- sweep ---
-[ -z "${mode}${path}${branch}${base}" ] || usage "sweep は --file だけを取る"
+[ -z "${mode}${path}${branch}${base}${head}" ] && [ "${head_set}" -eq 0 ] || usage "sweep は --file だけを取る"
 wr_valid_file "${file}" || usage "--file は _/issue-trees/N.json の形で指定する"
 command -v jq >/dev/null 2>&1 || { echo "worktree-remove: jq が無い" >&2; exit 3; }
 
