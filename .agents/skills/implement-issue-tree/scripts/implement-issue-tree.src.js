@@ -3378,6 +3378,8 @@ async function updateStateDetailed(issueNumber, patch, options = {}) {
   const cleanupMode = options.cleanupMode === 'discard' || deleteBranchName ? 'discard' : 'superseded'
   // expectBranch: ブランチは消さず、worktree の HEAD がそのブランチ上にあるときだけ消させる（discard 専用・規約外ブランチ上の worktree の掃除用）
   const expectBranchName = cleanupMode === 'discard' && cleanupWorktreePath && !deleteBranchName && typeof options.expectBranch === 'string' ? options.expectBranch : ''
+  // requireMissing: パスの実体がまだ無いときだけ消させる（discard 専用・不在確認が prunable と言った旧登録の片づけ用。確認と削除を同じプロセスで行う）
+  const requireMissing = options.requireMissing === true && cleanupMode === 'discard' && Boolean(cleanupWorktreePath) && !deleteBranchName && !expectBranchName
   const hasCleanup = Boolean(cleanupWorktreePath || deleteBranchName)
   // discard の掃除は、削除できたと確認できるまで最終スイープの候補から外しておく（例外・結果なしでも外れたまま）
   if (cleanupWorktreePath && cleanupMode === 'discard') sweepHeldPaths.add(cleanupWorktreePath)
@@ -3397,7 +3399,7 @@ async function updateStateDetailed(issueNumber, patch, options = {}) {
         `対象は下記コマンドに明記されたパス・ブランチ名のみ。他のパス・ブランチには一切触れない。`,
         `1. 次のコマンドを一字一句そのまま（改変・条件追加・コマンドの組み立て直しをしない）、1 回の Bash 呼び出しで実行する:`,
         '```sh',
-        worktreeRemoveCommand(cleanupMode, cleanupWorktreePath, deleteBranchName, '', expectBranchName),
+        worktreeRemoveCommand(cleanupMode, cleanupWorktreePath, deleteBranchName, '', expectBranchName, requireMissing),
         '```',
         WORKTREE_NOTE,
         ...(cleanupWorktreePath && clearWorktreeAfterCleanup
@@ -3548,6 +3550,17 @@ function closedCleanupGate({ limit, used, attempted, reserveImplement }) {
   if (limit - used < AGENT_CALLS_CLOSED_CLEANUP + AGENT_CALLS_TERMINAL_BASE + (reserveImplement ? AGENT_CALLS_PER_ISSUE.implement : 0)) return 'defer-budget'
   return 'run'
 }
+// 試行回数（closedCleanupAttempts）。記録されない結果（OPEN・取得失敗・retained-locked・retained-unobservable 等の一過性）の候補が先頭に 10 件以上あると、
+// キューの先頭から数える上限（CLOSED_CLEANUP_PER_RUN_MAX）で後ろの候補が毎ラン defer-cap になる。試した候補にだけ回数を書き、未試行を先・試行の少ない順に並べて必ず順番が回るようにする
+// （Date.now() が使えないので時刻ではなく回数。status・worktree・pr は書かない）。壊れた値は 0
+function closedCleanupAttemptCount(saved) {
+  const v = saved?.closedCleanupAttempts
+  return Number.isInteger(v) && v > 0 ? Math.min(v, 1000000) : 0
+}
+// entries: [{ attempts, ... }]。試行回数の昇順、同数はキュー順（安定）。入力は変更しない純粋関数
+function orderClosedCleanupCandidates(entries) {
+  return entries.map((e, i) => ({ e, i })).sort((a, b) => a.e.attempts - b.e.attempts || a.i - b.i).map((x) => x.e)
+}
 // 試行済みに記録する保持理由。スクリプトが結果行の worktree で明示した固定語だけ 'retained'、それ以外（結果なし・非 0 終了・launcher の不一致・
 // 固定語以外・retained-locked）は null = 記録しない。retained-locked は生きている lock で、時間が経てば（セッション終了後に）解消し得る一過性のため除く。retained-unobservable（git status コマンドそのものの失敗・--head 指定時の HEAD の一過性の読み取り失敗）は観測の失敗で、汚れや不一致を確認したわけではないため記録せず、次のランで再試行させる。.git の破損・git の対象が worktree 自身でない状態（retained-broken）や unborn の HEAD への --head（retained-head-mismatch）は読み直しても解消しない決定的な状態なので記録し、毎ラン pr-bind と掃除をやり直して defer-cap で後ろの候補が回らなくなるのを防ぐ（一過性かどうか区別できない失敗も、枠を食い続けないよう記録する側へ倒してある）。実体の無い detached の登録（retained-detached）と、登録は無いが実体のあるパス（retained-unregistered。未 push の作業が残るかもしれないので merged にして追跡から外さない）も記録する。純粋関数
 const CLOSED_CLEANUP_RECORDABLE = new Set(['retained-dirty', 'retained-submodule', 'retained-head-mismatch', 'retained-detached', 'retained-broken', 'retained-unregistered'])
@@ -3563,10 +3576,12 @@ function closedCleanupRetainedReason(result, outputMissing) {
 // 削除は worktree-remove.sh remove --mode discard --head <PR の head>: 汚れ・初期化済み submodule・lock は保持し --force を使わず、HEAD が違えば保持する
 // （squash マージは base との差分で未 push のコミットを見分けられないため、PR の head との一致で確かめる）。ブランチは消さない。
 // 戻り値は skip エントリの note に足す文字列。
-async function cleanupClosedMergedWorktree(item, cand) {
+// outcome.settled: 試行済みの記録を書いた、または merged まで進んだ（それ以外 = 次のランでも候補のままなので、呼び出し側が試行回数を書く）
+async function cleanupClosedMergedWorktree(item, cand, outcome = {}) {
   const n = item.number
   // 成立しなかった結果を記録して次の実行から飛ばす（pr と worktree が同じ間）。status と worktree は変えないので sweep の保持照合から外れない。書けなくても害はない（再試行されるだけ）
   const tried = async (reason, text) => {
+    outcome.settled = true
     if (!(await updateState(n, { closedCleanupTried: { pr: cand.pr, worktree: cand.worktree, reason } }))) log(`⚠️ #${n}: closed 後始末の試行済み記録を書けなかった`)
     return text
   }
@@ -3618,6 +3633,7 @@ async function cleanupClosedMergedWorktree(item, cand) {
   }
   confirmedRemovedPaths.add(w)
   sweepHeldPaths.delete(w)
+  outcome.settled = true
   const ok = await updateState(n, { status: 'merged', pr: cand.pr, unverifiedPr: 0, worktree: '', note: `PR #${cand.pr} のマージ済みを確認し、closed 後始末で worktree を破棄した` })
   if (!ok) {
     log(`⚠️ #${n}: closed 後始末で worktree は破棄したが、状態ファイルの merged 更新に失敗した（次の実行で同じ経路が再試行する）`)
@@ -3947,7 +3963,7 @@ function worktreeQuote(v) {
   if (typeof v !== 'string' || !/^[A-Za-z0-9._/ -]+$/.test(v)) throw new Error('worktree-remove.sh の引数に使えない文字が含まれる')
   return `'${v}'`
 }
-function worktreeRemoveCommand(mode, path, branch, head = '', expectBranch = '') {
+function worktreeRemoveCommand(mode, path, branch, head = '', expectBranch = '', requireMissing = false) {
   const parts = ['remove', '--mode', mode]
   if (path) parts.push('--path', worktreeQuote(path))
   // --head: マージ済み PR の head。worktree の HEAD が違えば・detached なら（未 push のコミットがあり得る）スクリプトが保持する。discard で --path があるときだけ
@@ -3961,6 +3977,11 @@ function worktreeRemoveCommand(mode, path, branch, head = '', expectBranch = '')
   if (expectBranch) {
     if (!isValidBranchName(expectBranch) || mode !== 'discard' || !path || branch) throw new Error('worktree-remove.sh の --expect-branch は discard・--path つき・妥当なブランチ名・--branch なしのときだけ')
     parts.push('--expect-branch', worktreeQuote(expectBranch))
+  }
+  // --require-missing: 実体がまだ無いときだけ消させる（確認と削除を同じプロセスで行う）。discard・--path つきで、--branch / --head / --expect-branch と併用しない。外れた指定は落とさず例外にする
+  if (requireMissing) {
+    if (mode !== 'discard' || !path || branch || head || expectBranch) throw new Error('worktree-remove.sh の --require-missing は discard・--path つき・他の結びつけなしのときだけ')
+    parts.push('--require-missing')
   }
   if (branch) {
     parts.push('--branch', worktreeQuote(branch))
@@ -3982,7 +4003,8 @@ const WORKTREE_CLEANUP_SCHEMA = {
 const isWorktreeCleanupValid = (r) => typeof r?.ok === 'boolean' && typeof r?.retained === 'boolean'
 // 不在専用の確認（worktree-remove.sh check-absent。Issue #637）。読み取り専用で、削除・prune・unlock をしない。ラン開始時に特定したメイン worktree があれば --repo-root で渡し、
 // スクリプトがカレントのリポジトリと照合する（違えば unknown = 不在と見なさない）。ホストが信じるのは結果の行の worktree の語のうち
-// absent（登録も実体も無い）と prunable（登録だけ残り、lock なし・ブランチ上）だけ。それ以外・結果なし・例外は不在と見なさない（呼び出し側が保全する）
+// absent（登録も実体も無い）と prunable（登録だけ残り、lock なし・ブランチ上）だけ。それ以外・結果なし・例外は不在と見なさない（呼び出し側が保全する）。
+// 戻り値は確認できた語（'absent' | 'prunable'）。不在と見なせないときは空文字（呼び出し側は prunable のときだけ登録の片づけを足す）
 async function confirmWorktreeAbsent(issueNumber, path) {
   try {
     const { result, outputMissing } = await runStateAgent(
@@ -3999,10 +4021,10 @@ async function confirmWorktreeAbsent(issueNumber, path) {
       ].join('\n'),
       { label: `worktree:absent:#${issueNumber}`, schema: WORKTREE_CLEANUP_SCHEMA, isValid: isWorktreeCleanupValid },
     )
-    return !outputMissing && result?.ok === true && result?.retained === false && (result?.worktree === 'absent' || result?.worktree === 'prunable')
+    return !outputMissing && result?.ok === true && result?.retained === false && (result?.worktree === 'absent' || result?.worktree === 'prunable') ? result.worktree : ''
   } catch (e) {
     log(`⚠️ #${issueNumber}: worktree の不在確認で想定外の例外（${sanitize(String(e?.message ?? e))}）。不在と見なさない`)
-    return false
+    return ''
   }
 }
 
@@ -6345,6 +6367,23 @@ function buildPhysicalByteMeasureTargets(entries, independentCount) {
   return { ok: true, paths: uniquePaths }
 }
 
+// 物理一覧フォールバックの測定対象 = 物理一覧 ∪ 台帳でパスが分かっている項目（Bugbot 指摘 R）。物理一覧は git に登録された
+// worktree だけなので、置き換えると台帳にあるが未登録の実在ディレクトリ（retained-unregistered 等）が測定から漏れ、
+// bytesEndObserved が true のまま上限判定が甘くなる。重複は連続スラッシュと末尾スラッシュを正規化して除く（先に出た表記を残す）。
+// 測定専用で削除経路へは流さない。パス検証は measure 側（許可文字外は fail-closed）に委ねる
+function unionMeasurePaths(physicalPaths, ledgerPaths) {
+  const seen = new Set()
+  const out = []
+  for (const p of [...(Array.isArray(physicalPaths) ? physicalPaths : []), ...(Array.isArray(ledgerPaths) ? ledgerPaths : [])]) {
+    if (typeof p !== 'string' || p === '') continue
+    const key = p.replace(/\/{2,}/g, '/').replace(/(.)\/+$/, '$1')
+    if (seen.has(key)) continue
+    seen.add(key)
+    out.push(p)
+  }
+  return out
+}
+
 // セクション 6: 実行: Restore → Tree → State（状態読込・ツリー取得・外部チェック判定・
 // 依存グラフ/キュー構築・pending 初期化）
 // __IMPLEMENT_ISSUE_TREE_DRIVER_START__（テスト境界マーカー。削除・移動しないこと）
@@ -7364,7 +7403,8 @@ async function runImplement(item) {
       // 不在専用の確認（読み取り専用）で確かめたときだけ、新規の Plan へ進める。実体がある・判定できない・結果なしなら従来どおり保全して止める
       const absentCandidate = recoverDecision === 'discard' && !effectiveBranch && Boolean(sanitizedRecoverWorktree) && recoverResult?.worktreeMissing === true &&
         (recoverResult?.branch ?? '') === '' && (saved.branch ?? '') === ''
-      const absentConfirmed = absentCandidate ? await confirmWorktreeAbsent(item.number, sanitizedRecoverWorktree) : false
+      const absentWord = absentCandidate ? await confirmWorktreeAbsent(item.number, sanitizedRecoverWorktree) : ''
+      const absentConfirmed = absentWord !== ''
 
       if (recoverDecision === 'continue' && effectiveBranch) {
         // --- continue 経路: 旧 worktree のみ掃除し Implement を継続（Plan スキップ）---
@@ -7622,7 +7662,19 @@ async function runImplement(item) {
         // --- 不在確認済みの discard: 実体も登録上の損失もない旧 worktree の記録を捨てて新規に実装する ---
         // 確認は削除を一切しない。ここで状態の worktree を空にし、impl 未設定のまま Plan へ落ちるので旧パスは後続の superseded 掃除へ渡らない（下の fallbackOldWorktree のクリア）
         log(`#${item.number}: Recover → discard（worktree ${sanitize(sanitizedRecoverWorktree)} の不在を確認した。保全対象なし）、記録を捨てて通常 Plan へ`)
-        await updateState(item.number, { status: 'planning', branch: '', pr: 0, worktree: '', note: 'worktree の不在を確認して新規に実装する' })
+        const absentPatch = { status: 'planning', branch: '', pr: 0, worktree: '', note: 'worktree の不在を確認して新規に実装する' }
+        if (absentWord === 'prunable') {
+          // 登録だけ残る旧パス（lock なし・ブランチ上）は、planning へ進む前にその登録だけを片づける（Bugbot 指摘 U の防御）。旧パスを対象にした discard の 1 回
+          // （--branch なし = ブランチ ref は残す。--require-missing で『確認と削除を同じプロセスで』行い、確認のあとにパスへ worktree が作り直されていれば消さず retained-present で保持する〔Bugbot 指摘 X の TOCTOU〕。
+          // 実体なし・lock なし・ブランチ上の登録だけを許可形の git worktree remove で消し、detached や lock ありも保持する）。
+          // 結果が removed でなくても（保持・失敗・結果なし・例外）planning へは進む。登録が残るだけで、消えたと確認できなければ updateStateDetailed が台帳へ載せる（件数・バイトを過小に数えない）
+          const prunableCleanup = await updateStateDetailed(item.number, absentPatch, { cleanupWorktree: sanitizedRecoverWorktree, cleanupMode: 'discard', requireMissing: true })
+          if (!(prunableCleanup.ok && prunableCleanup.retained === false)) {
+            log(`#${item.number}: 旧登録 ${sanitize(sanitizedRecoverWorktree)} を片づけられなかった（保持・失敗・結果なし。確認のあとに実体が作り直された場合を含み、その実体は消していない）。消えたと確認できないので台帳に載せて新規 Plan へ進む`)
+          }
+        } else {
+          await updateState(item.number, absentPatch)
+        }
       } else {
         // --- 保全経路: エージェント異常 / 不正 decision / "unresolved" / ブランチ未確定 ---
         // 残骸は削除せず保全したまま failed にする（次回 Recover が再試行）。削除は明示的な
@@ -9332,6 +9384,7 @@ const failedSet = new Set()
 // closed 後始末の件数（run = 試みた件数・defer-* = 見送った件数。結果の closedCleanup に出す）
 const closedCleanupRun = { run: 0, 'defer-cap': 0, 'defer-budget': 0 }
 const queueHasOpenImplement = queue.some((i) => i.state === 'open' && i.kind === 'implement')
+const closedCleanupWork = []
 for (const item of queue) {
   if (item.state !== 'open') {
     const skipEntry = { issue: item.number, status: 'skipped', note: 'すでに closed' }
@@ -9339,15 +9392,7 @@ for (const item of queue) {
     done.add(item.number)
     // 人手マージで自動 close した実装ノードの後始末（Issue #632）。best-effort で done / failedSet には触れない。予算が足りなければ次の実行へ回す
     const cleanup = closedCleanupCandidate(item, savedItems[String(item.number)], { dryRun: dryRunEnabled, verified: savedItemsVerified, unverified: unverifiedIssues })
-    if (cleanup) {
-      const gate = closedCleanupGate({ limit: agentBudget.limit, used: agentBudget.used, attempted: closedCleanupRun.run, reserveImplement: queueHasOpenImplement })
-      closedCleanupRun[gate]++
-      if (gate === 'run') {
-        skipEntry.note = `すでに closed。${await cleanupClosedMergedWorktree(item, cleanup)}`
-      } else if (closedCleanupRun[gate] === 1) {
-        log(`#${item.number}: closed 後始末を見送った（${gate === 'defer-cap' ? `1 ランの上限 ${CLOSED_CLEANUP_PER_RUN_MAX} 件` : `エージェント呼び出し数の予算不足${queueHasOpenImplement ? '（着手し得る実装ノード 1 件分を予約済み）' : ''}。使用 ${agentBudget.used}/${agentBudget.limit}`}。以降の見送り件数は結果の closedCleanup に出す。次の実行で再試行する）`)
-      }
-    }
+    if (cleanup) closedCleanupWork.push({ item, cleanup, skipEntry, attempts: closedCleanupAttemptCount(savedItems[String(item.number)]) })
   } else {
     // 状態ファイルで merged/closed でも GitHub 上は open で矛盾しているため無条件 skip しない:
     // verify-close は冪等のため再実行 / merged + 再開情報有効は monitoring へ格下げして再投入。
@@ -9383,6 +9428,25 @@ for (const item of queue) {
         log(`⚠️ #${item.number}: 状態ファイルは ${saved.status} だが GitHub では open。再開情報がないため skip し、後続イシューをブロックする（手動確認が必要）`)
       }
     }
+  }
+}
+// 後始末は試行回数の少ない候補から（未試行が先・同数はキュー順）。results の順序は上のキュー順のまま変えない
+for (const { item, cleanup, skipEntry, attempts } of orderClosedCleanupCandidates(closedCleanupWork)) {
+  const gate = closedCleanupGate({ limit: agentBudget.limit, used: agentBudget.used, attempted: closedCleanupRun.run, reserveImplement: queueHasOpenImplement })
+  closedCleanupRun[gate]++
+  if (gate === 'run') {
+    const outcome = { settled: false }
+    skipEntry.note = `すでに closed。${await cleanupClosedMergedWorktree(item, cleanup, outcome)}`
+    // 記録されない結果（一過性）は次のランでも候補のまま。試行回数だけを書き、次のランでは未試行の候補を先に回す。書けなくても後始末は壊さない
+    if (!outcome.settled) {
+      try {
+        if (!(await updateState(item.number, { closedCleanupAttempts: attempts + 1 }))) log(`⚠️ #${item.number}: closed 後始末の試行回数を書けなかった`)
+      } catch (e) {
+        log(`⚠️ #${item.number}: closed 後始末の試行回数の書き込みが例外終了した（${sanitize(String(e?.message ?? e))}）`)
+      }
+    }
+  } else if (closedCleanupRun[gate] === 1) {
+    log(`#${item.number}: closed 後始末を見送った（${gate === 'defer-cap' ? `1 ランの上限 ${CLOSED_CLEANUP_PER_RUN_MAX} 件。試行の少ない候補から回すので次の実行で順番が回る` : `エージェント呼び出し数の予算不足${queueHasOpenImplement ? '（着手し得る実装ノード 1 件分を予約済み）' : ''}。使用 ${agentBudget.used}/${agentBudget.limit}`}。以降の見送り件数は結果の closedCleanup に出す。次の実行で再試行する）`)
   }
 }
 const work = queue.filter((q) => q.state === 'open' && !done.has(q.number))
@@ -9703,7 +9767,7 @@ async function remeasureResidualBytesNow() {
       // 物理一覧は測定専用の差し替えで削除経路へは流さない。confirmedRemovedPaths による除外も
       // 行わない（fallback.paths は今この瞬間の確定スナップショットで、除外は過小評価の
       // fail-open になる。Issue #404）。全パスを測定する。
-      targetPaths = fallback.paths
+      targetPaths = unionMeasurePaths(fallback.paths, targetPaths)
       log(
         `残置 worktree バイト実測: 台帳に未検証エントリ ${unverifiedEphemeralCount} 件があるため` +
           `物理一覧 ${targetPaths.length} 件へフォールバックして実測する`,
@@ -10831,7 +10895,7 @@ if (maxResidualWorktreeBytes > 0 && residualBytesObserved) {
   if (!hasUnverifiedEndPath && slotUnknownLiveCount > 0) {
     const [entries, independentCount] = await Promise.all([scanOrphanWorktrees(), countWorktreeRecords()])
     const fallback = buildPhysicalByteMeasureTargets(entries, independentCount)
-    if (fallback.ok) endFallbackPaths = fallback.paths
+    if (fallback.ok) endFallbackPaths = unionMeasurePaths(fallback.paths, rawEndPaths.filter((p) => !confirmedRemovedPaths.has(p)))
     else hasUnverifiedEndPath = true
   }
   if (hasUnverifiedEndPath) {

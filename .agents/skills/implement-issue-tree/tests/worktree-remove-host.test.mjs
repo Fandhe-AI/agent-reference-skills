@@ -14,7 +14,7 @@ import { importDefinitions, runScript, BASE_ARGS, source } from './lib/stub-run.
 
 globalThis.args = { parent: 1, skillDir: '/opt/skills/implement-issue-tree' }
 const m = await importDefinitions(
-  ['updateStateDetailed', 'updateState', 'sweepClosedWorktrees', 'sweepEligiblePaths', 'sweepHeldPaths', 'confirmedRemovedPaths', 'classifyStateWriteFailureStatus', 'ensureBoundaryNonceSeed', 'sha256Hex', 'canonicalJson'],
+  ['updateStateDetailed', 'updateState', 'worktreeRemoveCommand', 'sweepClosedWorktrees', 'sweepEligiblePaths', 'sweepHeldPaths', 'confirmedRemovedPaths', 'classifyStateWriteFailureStatus', 'ensureBoundaryNonceSeed', 'sha256Hex', 'canonicalJson'],
   'worktree-remove-host',
 )
 globalThis.agent = async (_p, opts) => (opts.label === 'nonce:seed' ? { seedHex: '0'.repeat(64) } : null)
@@ -402,7 +402,7 @@ test('Recover continue: 掃除が HEAD の不一致で保持した（detached・
 
 const BLOCKED = { type: 'implement', status: 'blocked', pr: 0, branch: '', worktree: '/repo/wt/old', fixCount: 0, note: 'x' }
 const bKeysSha = m.sha256Hex(m.canonicalJson(['2']))
-function absentRun({ absent, recover = {}, saved = BLOCKED }) {
+function absentRun({ absent, recover = {}, saved = BLOCKED, cleanup = { ok: true, retained: false } }) {
   const h = { 2: m.sha256Hex(m.canonicalJson(saved)) }
   return runScript({
     args: BASE_ARGS,
@@ -411,7 +411,7 @@ function absentRun({ absent, recover = {}, saved = BLOCKED }) {
       if (label === 'state:load-verify') return { fileExists: true, hashes: h, keysSha256: bKeysSha, keysCount: 1, highWaterBytes: 0, highWaterVersion: 0 }
       if (label === 'recover:#2') return { decision: 'discard', branch: '', wipCommitted: false, worktreeMissing: true, reason: 'test', ...recover }
       if (label === 'worktree:absent:#2') { if (absent instanceof Error) throw absent; return absent }
-      if (label === 'state:cleanup:#2') return { ok: true, retained: false }
+      if (label === 'state:cleanup:#2') { if (cleanup instanceof Error) throw cleanup; return cleanup }
       return undefined
     },
   })
@@ -419,20 +419,63 @@ function absentRun({ absent, recover = {}, saved = BLOCKED }) {
 const absentCalls = (calls) => calls.filter((c) => c.opts.label.startsWith('worktree:absent:#2'))
 const removeCalls = (calls) => calls.filter((c) => c.opts.label.startsWith('state:cleanup:#2') || /worktree-remove\.sh remove/.test(c.prompt))
 
-test('不在確認 absent / prunable: check-absent の 1 コマンドを 1 回だけ呼び、planning へ進む。旧パスの掃除（superseded・discard）は一切呼ばれない', async () => {
-  for (const word of ['absent', 'prunable']) {
-    const { calls, logs } = await absentRun({ absent: { ok: true, retained: false, worktree: word } })
-    const a = absentCalls(calls)
-    assert.equal(a.length, 1, word)
-    assert.match(a[0].prompt, /worktree-remove\.sh check-absent --path '\/repo\/wt\/old' --repo-root '\/repo'\n/) // ラン開始時に特定したメイン worktree を渡し、スクリプトがカレントのリポジトリと照合する
-    assert.doesNotMatch(a[0].prompt, /remove --mode|--force|--branch|--expect-branch|sweep/)
-    assert.ok(labels(calls).includes('plan:#2'), `${word}: 新規 Plan へ進む`)
-    assert.equal(removeCalls(calls).length, 0, `${word}: 旧パスを後続の掃除へ渡さない`)
-    assert.ok(calls.every((c) => !/--mode superseded --path '\/repo\/wt\/old'/.test(c.prompt)))
-    assert.ok(logs.some((l) => /不在を確認した/.test(l)))
-    // 状態: planning・branch/worktree/pr を空にする書き込みがある
-    assert.ok(calls.some((c) => c.opts.label.startsWith('state:update:#2') && /"status":"planning"/.test(c.prompt) && /"worktree":""/.test(c.prompt) && /"branch":""/.test(c.prompt) && /"pr":0/.test(c.prompt)))
+test('不在確認 absent: check-absent の 1 コマンドを 1 回だけ呼び、planning へ進む。旧パスの掃除（superseded・discard）は一切呼ばれない', async () => {
+  const { calls, logs } = await absentRun({ absent: { ok: true, retained: false, worktree: 'absent' } })
+  const a = absentCalls(calls)
+  assert.equal(a.length, 1)
+  assert.match(a[0].prompt, /worktree-remove\.sh check-absent --path '\/repo\/wt\/old' --repo-root '\/repo'\n/) // ラン開始時に特定したメイン worktree を渡し、スクリプトがカレントのリポジトリと照合する
+  assert.doesNotMatch(a[0].prompt, /remove --mode|--force|--branch|--expect-branch|sweep/)
+  assert.ok(labels(calls).includes('plan:#2'), '新規 Plan へ進む')
+  assert.equal(removeCalls(calls).length, 0, '旧パスを後続の掃除へ渡さない')
+  assert.ok(calls.every((c) => !/--mode superseded --path '\/repo\/wt\/old'/.test(c.prompt)))
+  assert.ok(logs.some((l) => /不在を確認した/.test(l)))
+  // 状態: planning・branch/worktree/pr を空にする書き込みがある
+  assert.ok(calls.some((c) => c.opts.label.startsWith('state:update:#2') && /"status":"planning"/.test(c.prompt) && /"worktree":""/.test(c.prompt) && /"branch":""/.test(c.prompt) && /"pr":0/.test(c.prompt)))
+})
+
+// U（Bugbot 指摘・防御）: prunable（登録だけ残る旧パス）は、planning へ進む前にその登録だけを discard の 1 回で片づける。check-absent 自体は読み取り専用のまま。
+// 旧パスを superseded 掃除へ渡さない方針（#637）は崩さない（--force なし・--branch なし = ブランチ ref は残す・--head / --expect-branch なし）。
+// X（Bugbot 指摘・TOCTOU）: 確認と削除は別プロセスなので、確認のあとにパスへ worktree が作り直されても消さないよう --require-missing を必ず付ける
+// （スクリプトが同じプロセスで実体の有無を読み、あれば retained-present で保持する）
+test('不在確認 prunable: check-absent は読み取り専用のまま。planning へ進む前に旧パスを discard の掃除で 1 回だけ片づける（--branch なし・superseded なし）', async () => {
+  const { calls, logs } = await absentRun({ absent: { ok: true, retained: false, worktree: 'prunable' } })
+  const a = absentCalls(calls)
+  assert.equal(a.length, 1)
+  assert.doesNotMatch(a[0].prompt, /remove --mode|--force|--branch|--expect-branch|sweep/, 'check-absent は読み取り専用')
+  const r = removeCalls(calls)
+  assert.equal(r.length, 1, '片づけの掃除はちょうど 1 回')
+  assert.equal(r[0].opts.label, 'state:cleanup:#2')
+  assert.match(r[0].prompt, /worktree-remove\.sh remove --mode discard --path '\/repo\/wt\/old' --require-missing\n/, '--require-missing を必ず渡す（実体が作り直されていたら消さない）')
+  assert.doesNotMatch(r[0].prompt, /--branch|--base|--force|--expect-branch|--head|--mode superseded/, 'ブランチは消さない・照合の引数も付けない')
+  assert.ok(calls.every((c) => !/--mode superseded --path '\/repo\/wt\/old'/.test(c.prompt)), '旧パスを superseded 掃除へ渡さない')
+  // 順序: 不在確認 → 掃除 → Plan（planning へ進む前に片づける）
+  const order = labels(calls)
+  assert.ok(order.indexOf('worktree:absent:#2') < order.indexOf('state:cleanup:#2') && order.indexOf('state:cleanup:#2') < order.indexOf('plan:#2'), order.join(','))
+  assert.ok(logs.some((l) => /不在を確認した/.test(l)))
+  assert.ok(calls.some((c) => c.opts.label.startsWith('state:update:#2') && /"status":"planning"/.test(c.prompt) && /"pr":0/.test(c.prompt)))
+})
+
+test('不在確認 prunable の片づけが removed でない（保持・失敗・結果なし・例外）でも planning へ進む。消えたと確認できない旧登録は残置の台帳に載る', async () => {
+  const cleanups = [
+    { ok: false, retained: true, worktree: 'retained-detached' },
+    { ok: false, retained: true, worktree: 'retained-locked' },
+    { ok: false, retained: true, worktree: 'retained-present' }, // X: 確認のあとに作り直された実体。消さずに保持した
+    { ok: false, retained: true, worktree: 'retained-unregistered' },
+    { ok: false, retained: true, worktree: 'failed' },
+    null,
+    new Error('boom'),
+  ]
+  for (const cleanup of cleanups) {
+    const tag = cleanup instanceof Error ? 'throw' : JSON.stringify(cleanup)
+    const { calls, result, logs } = await absentRun({ absent: { ok: true, retained: false, worktree: 'prunable' }, cleanup })
+    assert.ok(labels(calls).includes('plan:#2'), `${tag}: 登録が残るだけなので Plan へ進む`)
+    assert.ok(removeCalls(calls).some((c) => c.opts.label === 'state:cleanup:#2'), tag)
+    assert.ok(logs.some((l) => /片づけられなかった/.test(l) && /実体が作り直された場合を含み、その実体は消していない/.test(l) && /台帳に載せて/.test(l)), `${tag}: ログに保持の理由と台帳への記録を残す`)
+    assert.ok(result.retainedWorktrees.some((e) => e.path === '/repo/wt/old'), `${tag}: 消えたと確認できない登録は台帳（保持した worktree）に載る`)
   }
+  // 消えたと確認できたときは台帳に載らない
+  const ok = await absentRun({ absent: { ok: true, retained: false, worktree: 'prunable' } })
+  assert.ok(!ok.result.retainedWorktrees.some((e) => e.path === '/repo/wt/old'))
 })
 
 test('不在確認が不在と言わない（実体あり・保全の語・判定不能・ok:false・retained:true・結果なし・例外・schema 不適合）: 何も削除せず failed で止まり、Plan へ進まない', async () => {
@@ -515,7 +558,7 @@ test('verifyDiscardSafety / DISCARD_SAFETY_SCHEMA / discard-safety は残って�
 
 test('--head つきの呼び出し形は closed 後始末の 1 か所だけ。updateStateDetailed の掃除（superseded・discard・Recover）は --head を付けない', async () => {
   const calls = [...source.matchAll(/worktreeRemoveCommand\(([^\n]*)\)/g)].map((x) => x[1]).filter((a) => !a.startsWith('mode, path'))
-  assert.deepEqual(calls, ['cleanupMode, cleanupWorktreePath, deleteBranchName, \'\', expectBranchName', "'discard', w, '', head"])
+  assert.deepEqual(calls, ['cleanupMode, cleanupWorktreePath, deleteBranchName, \'\', expectBranchName, requireMissing', "'discard', w, '', head"])
   // updateStateDetailed の経路は head を渡さないので、どのモードでも --head は付かない
   for (const [o, label] of [[{ cleanupWorktree: '/tmp/wt-40' }, 'superseded'], [{ cleanupWorktree: '/tmp/wt-40', cleanupMode: 'discard' }, 'discard'], [{ cleanupWorktree: '/tmp/wt-40', deleteBranch: true }, 'discard+branch']]) {
     const c = stub(() => ({ ok: true, retained: false }))
@@ -548,4 +591,47 @@ test('--expect-branch: discard + expectBranch のときだけ付き、--branch �
   const c = stub(() => ({ ok: true, retained: false }))
   await assert.rejects(m.updateState(41, { status: 'planning' }, { cleanupWorktree: '/tmp/wt-41', cleanupMode: 'discard', expectBranch: 'a b; rm' }), /--expect-branch/)
   assert.deepEqual(cleanupCalls(c.calls, 41), [])
+})
+
+// ---- 実体がまだ無いときだけ消す（--require-missing。Bugbot 指摘 X）----
+
+test('--require-missing: discard + requireMissing のときだけ付き、--branch / --expect-branch / --head とは併用しない。superseded・他の呼び出しでは付かない。外れた指定は掃除を起動せず失敗にする', async () => {
+  const run = async (o, patch = { status: 'planning' }) => {
+    const c = stub(() => ({ ok: true, retained: false }))
+    const ok = await m.updateState(42, patch, { cleanupWorktree: '/tmp/wt-42', ...o })
+    return { ok, cmds: cleanupCalls(c.calls, 42).map((x) => CMD.exec(x.prompt)?.[0] ?? '') }
+  }
+  const d = await run({ cleanupMode: 'discard', requireMissing: true })
+  assert.equal(d.cmds.length, 1)
+  assert.match(d.cmds[0], /worktree-remove\.sh remove --mode discard --path '\/tmp\/wt-42' --require-missing$/)
+  assert.doesNotMatch(d.cmds[0], /--branch|--head|--expect-branch|--force/)
+  // superseded（既定）では付けない（discard 専用）。指定なし・false・真偽値以外も付けない
+  for (const o of [{ requireMissing: true }, { cleanupMode: 'discard' }, { cleanupMode: 'discard', requireMissing: false }, { cleanupMode: 'discard', requireMissing: 'yes' }]) {
+    assert.doesNotMatch((await run(o)).cmds[0], /--require-missing/, JSON.stringify(o))
+  }
+  // --branch（deleteBranch）・--expect-branch の照合を持つ呼び出しとは併用しない（そちらを優先し、フラグは落とす = 照合つきの削除のまま）
+  const del = (await run({ cleanupMode: 'discard', deleteBranch: true, requireMissing: true }, { status: 'planning', branch: 'feat/42-x' })).cmds[0]
+  assert.match(del, /--branch 'feat\/42-x'/)
+  assert.doesNotMatch(del, /--require-missing/)
+  const exp = (await run({ cleanupMode: 'discard', expectBranch: 'worktree-wf_ab12', requireMissing: true })).cmds[0]
+  assert.match(exp, /--expect-branch 'worktree-wf_ab12'/)
+  assert.doesNotMatch(exp, /--require-missing/)
+  // worktree の指定が無い discard にも付かない
+  const c = stub(() => ({ ok: true, retained: false }))
+  await m.updateState(42, { status: 'planning', branch: 'feat/42-x' }, { cleanupMode: 'discard', deleteBranch: true, requireMissing: true })
+  assert.doesNotMatch(CMD.exec(cleanupCalls(c.calls, 42)[0].prompt)?.[0] ?? '', /--require-missing/)
+})
+
+test('--require-missing の呼び出し形は不在確認 prunable の片づけの 1 か所だけ。worktreeRemoveCommand は外れた組み合わせで例外にする', () => {
+  const sites = [...source.matchAll(/requireMissing: true/g)]
+  assert.equal(sites.length, 1, `requireMissing: true を渡す呼び出しは 1 か所: ${sites.length}`)
+  const around = source.slice(Math.max(0, sites[0].index - 400), sites[0].index + 60)
+  assert.match(around, /absentPatch/)
+  assert.match(around, /cleanupMode: 'discard'/)
+  assert.throws(() => m.worktreeRemoveCommand('superseded', '/tmp/wt-42', '', '', '', true), /--require-missing/)
+  assert.throws(() => m.worktreeRemoveCommand('discard', '', '', '', '', true), /--require-missing/)
+  assert.throws(() => m.worktreeRemoveCommand('discard', '/tmp/wt-42', 'feat/42-x', '', '', true), /--require-missing/)
+  assert.throws(() => m.worktreeRemoveCommand('discard', '/tmp/wt-42', '', 'a'.repeat(40), '', true), /--require-missing/)
+  assert.throws(() => m.worktreeRemoveCommand('discard', '/tmp/wt-42', '', '', 'feat/42-x', true), /--require-missing/)
+  assert.match(m.worktreeRemoveCommand('discard', '/tmp/wt-42', '', '', '', true), /--path '\/tmp\/wt-42' --require-missing/)
 })

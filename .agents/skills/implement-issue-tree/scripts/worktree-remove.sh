@@ -3,7 +3,7 @@
 #
 # 使い方（通常は run-verified.sh 経由。ホストがコマンドを組み立て、掃除エージェントが 1 回実行する）:
 #   bash worktree-remove.sh remove --mode superseded --path <worktree>
-#   bash worktree-remove.sh remove --mode discard [--path <worktree>] [--branch <branch> --base <base>] [--head <40 桁の sha>] [--expect-branch <branch>]
+#   bash worktree-remove.sh remove --mode discard [--path <worktree>] [--branch <branch> --base <base>] [--head <40 桁の sha>] [--expect-branch <branch>] [--require-missing]
 #   bash worktree-remove.sh sweep --file _/issue-trees/N.json     （標準入力: 削除候補のパスの JSON 配列）
 #   bash worktree-remove.sh check-absent --path <worktree> [--repo-root <メイン worktree>]   （読み取り専用: そのパスが不在かだけを観測する。何も削除・変更しない）
 #
@@ -18,6 +18,9 @@
 #               ブランチは消さない（規約外の名前のブランチ上の worktree を片づけるとき、HEAD の照合なしで消さないための引数。base と同名でも照合だけなので拒否しない）。
 #               --head <sha>（--path が要る）を与えたときは、同じプロセスで worktree の HEAD のコミットを読み、sha と違えば（読めないときも）
 #               消さない。マージ済み PR の head との一致で『未 push のコミットを持たない』ことを確かめる用（squash マージは base との差分で見分けられない）。
+#               --require-missing（--path が要る・--branch / --head / --expect-branch とは併用しない）は『そのパスの実体がまだ無いときだけ消す』結びつけ。削除の直前に同じプロセスで実体の有無を読み、
+#               実体がある（登録あり）なら retained-present、登録が無いのに実体があれば retained-unregistered、lock ありなら unlock せず retained-locked、detached・HEAD 0000… なら retained-detached で、何も消さない。
+#               check-absent が prunable と言ったあとにパスへ worktree が作り直された形（確認と削除が別プロセスの TOCTOU）で、実体のある worktree を消さないための引数。
 #   sweep       ラン終了時の残骸回収。候補ごとに superseded と同じ規則で消す。状態ファイルが failed / blocked / monitoring の
 #               イシューに記録した worktree、登録されていないパス、メイン worktree は消さない。保持の照合は、記録も候補も字面の正規化と実在する祖先を実体にした形の
 #               両方で行い、大小を畳んで比べる（remove が実体の無いパスを登録と照合するのと同じ正規化。シンボリックリンク経由の綴りの記録を見落とさない）。状態ファイルを読めなければ何も消さない。
@@ -27,7 +30,7 @@
 #               一致するときは、同じ場所かもしれない（大小を区別しないファイルシステム）として不在と言わず unknown にする。一覧はカレントのリポジトリから取るので、
 #               --repo-root（無ければパスの最寄りの実在する祖先）の属するリポジトリとカレントの共通 git ディレクトリを照合し、違う・求められないときは unknown。
 #               absent = 登録が無くパスも無い / prunable = 登録だけ残り実体が無い（lock なし・ブランチ上〔HEAD が 0000… でない〕。HEAD はブランチ ref が持つので失うものが無い。
-#               登録の掃除はこのモードでしない）。ホストが不在として扱うのはこの 2 語だけ。ほかは保全側: prunable-detached = 登録だけ残り detached、または HEAD が 0000…（ブランチ ref を update-ref -d で消した形）
+#               登録の掃除はこのモードでしない。prunable のときホストが planning の前に remove --mode discard --path <旧パス> を 1 回呼んで登録だけ片づける）。ホストが不在として扱うのはこの 2 語だけ。ほかは保全側: prunable-detached = 登録だけ残り detached、または HEAD が 0000…（ブランチ ref を update-ref -d で消した形）
 #               （登録がコミットの唯一の参照かもしれない）/ prunable-locked = 登録だけ残り lock あり（git は lock を prune しない・外付けの一時的な未接続かも
 #               しれない）/ present = 登録も実体もある / unregistered-present = 登録は無いがパスがある / main / unknown = 一覧・実在を確定できない。
 # 確認の方法: `git -c core.excludesFile= status --porcelain=v2 -uall --ignore-submodules=none`（利用者の status.showUntrackedFiles や
@@ -46,7 +49,7 @@
 #       この後始末の結果は --path の結果（worktree・dirty・unlocked）を上書きせず、結果の行の holder（removed / retained-… / failed。後始末をしたときだけ出る）に出す。
 #       holder が removed でなければブランチは keep。discard の ok は worktree が無くなり、ブランチも（指定があれば）消えたときだけ true なので、holder が保持・失敗なら false。
 #       実体の無いパスは実体のパス（祖先のシンボリックリンクを解決した形）でも照合する。大小だけ違う綴りは一致させない（大小を区別する FS では別の場所を消しかねない）。
-# prune: 全体の `git worktree prune` は safe_prune の 1 か所だけが呼ぶ。remove で実際に何かを消したとき（--path を removed にした、または --branch の後始末で登録を消した）だけ呼ぶ。
+# prune: 全体の `git worktree prune` は safe_prune の 1 か所だけが呼ぶ。remove で実際に何かを消したとき（--path を removed にした、または --branch の後始末で登録を消した）、sweep で候補を 1 件でも消したときだけ呼ぶ（失敗しただけでは呼ばない。失敗した worktree remove は prune で片づく登録を残さない）。
 #       何も消さなかったとき（--path なしのブランチだけの discard・not-registered・main・cwd・保持・failed）は呼ばず、呼ぶときも
 #       実体の無い登録のうち detached または HEAD 0000… のもの（コミットの唯一の参照かもしれない・lock なしの prune 対象）が 1 件でもあれば全体をスキップする
 #       （prune は対象を絞れない。登録が残るだけで、結果の語は変わらない）。スキップした件数は結果の行の pruneSkipped（0 のときは出さない）。
@@ -59,6 +62,7 @@
 #           retained-head-mismatch = discard で --head を与えたとき、worktree の HEAD のコミットが --head と違う（読めないときを含む。worktree もブランチも消さない）。
 #           retained-unregistered = discard で --head か --expect-branch を与えたとき、git に登録されていないのに実体のパスがある（未 push の作業が残るかもしれない。
 #               not-registered〔もう無い〕とは言わず、何も消さない。ホストは決定的な保持として記録する。--branch だけ・superseded・sweep は従来どおり not-registered）。
+#           retained-present = discard で --require-missing を与えたとき、登録も実体もある（check-absent のあとに作り直された worktree かもしれない。何も消さない）。
 #           retained-detached = discard で --head を与えたとき、HEAD が一致していても detached（detached 上の未 push のコミットは消すと失われる）。
 #           retained-unobservable = 観測に失敗した（git status コマンドそのものの失敗・--head 指定時の HEAD のコミットの一過性の読み取り失敗）。何も消さない。
 #               retained-dirty / retained-head-mismatch / retained-broken は観測した結果の保持で、これは観測できなかったという別の語（ホストは前者を恒久の試行済みに記録し、これは次のランで再試行させる）。
@@ -90,7 +94,7 @@ script_dir=$(cd "$(dirname "$0")" && pwd -P) || exit 3
 . "${script_dir}/lib/worktree-remove-lib.sh" || exit 3
 
 usage() {
-  echo "使い方: worktree-remove.sh remove --mode (superseded|discard) [--path P] [--branch B --base BASE] [--head SHA] [--expect-branch B] / sweep --file _/issue-trees/N.json（候補は標準入力）/ check-absent --path P [--repo-root R]" >&2
+  echo "使い方: worktree-remove.sh remove --mode (superseded|discard) [--path P] [--branch B --base BASE] [--head SHA] [--expect-branch B] [--require-missing] / sweep --file _/issue-trees/N.json（候補は標準入力）/ check-absent --path P [--repo-root R]" >&2
   [ $# -eq 0 ] || echo "worktree-remove: $1" >&2
   exit 2
 }
@@ -110,6 +114,7 @@ head=""
 head_set=0
 expect_branch=""
 expect_set=0
+require_missing=0
 file=""
 repo_root=""
 repo_root_set=0
@@ -129,6 +134,10 @@ while [ $# -gt 0 ]; do
       esac
       shift 2
       ;;
+    --require-missing)
+      require_missing=1
+      shift
+      ;;
     *) usage "未知の引数: $1" ;;
   esac
 done
@@ -138,9 +147,10 @@ T_WT=""
 T_DIRTY=0
 T_UNLOCKED=false
 # $1 = モード、$2 = パス、$3 = 結びつけるブランチ（discard の --branch。空 = 結びつけない）、$4 = 結びつける HEAD の sha（discard の --head。空 = 結びつけない）、
-# $5 = 1 のとき、登録が無いのに実体のパスがあるものを retained-unregistered にする（discard の --head / --expect-branch。空 = not-registered のまま）
+# $5 = 1 のとき、登録が無いのに実体のパスがあるものを retained-unregistered にする（discard の --head / --expect-branch / --require-missing。空 = not-registered のまま）
+# $6 = 1 のとき、実体が無いときだけ消す（discard の --require-missing。実体がある・lock ありは何も消さず、unlock もしない）
 remove_one() {
-  local m=$1 path=$2 expect=${3:-} expect_sha=${4:-} unreg_guard=${5:-0} wt_sha wt_head wt_full sr_rc wt_unborn lreal list top real cwd_real plan lockact alive cur_start status_out sub_init gd rc kmsg krc kw pw pself pout prc xw
+  local m=$1 path=$2 expect=${3:-} expect_sha=${4:-} unreg_guard=${5:-0} req_missing=${6:-0} wt_sha wt_head wt_full sr_rc wt_unborn lreal list top real cwd_real plan lockact alive cur_start status_out sub_init gd rc kmsg krc kw pw pself pout prc xw
   T_WT=""
   T_DIRTY=0
   T_UNLOCKED=false
@@ -164,6 +174,8 @@ remove_one() {
     if [ "${m}" = discard ] && [ "${unreg_guard}" = 1 ] && { [ -e "${path}" ] || [ -L "${path}" ]; }; then T_WT='retained-unregistered'; else T_WT='not-registered'; fi
     return 0
   fi
+  # --require-missing: 確認と削除を同じプロセスで行う。登録があるのに実体が（もう）ある = check-absent のあとに作り直された worktree かもしれないので消さない
+  if [ "${req_missing}" = 1 ] && [ "$(wr_require_missing_check "${path}")" != ok ]; then T_WT='retained-present'; return 0; fi
   real=$(wr_real "${path}")
   cwd_real=$(pwd -P)
   case "${cwd_real}/" in
@@ -197,6 +209,8 @@ remove_one() {
     fi
     lockact=$(wr_lock_action 1 "${WR_LOCK_PID}" "${alive}")
     if [ "${lockact}" = retain ]; then T_WT='retained-locked'; return 0; fi
+    # --require-missing は lock を外さない（check-absent の prunable は lock なしだけ。lock ありの登録は外付けの一時的な未接続かもしれない）
+    if [ "${req_missing}" = 1 ]; then T_WT='retained-locked'; return 0; fi
   fi
 
   # 実体の無い登録で、detached または HEAD が 0000…（ブランチ ref が無い）ものは、登録がそのコミットの唯一の参照かもしれない（消すと到達不能になる）。
@@ -262,6 +276,8 @@ remove_one() {
     esac
   fi
 
+  # 削除の直前にもう一度実体を読む（上の確認から削除までの間に作り直された場合）
+  if [ "${req_missing}" = 1 ] && [ "$(wr_require_missing_check "${path}")" != ok ]; then T_WT='retained-present'; return 0; fi
   rc=0
   if [ "${lockact}" = unlock ]; then
     git worktree unlock -- "${path}" >/dev/null 2>&1 || rc=$?
@@ -316,7 +332,7 @@ T_BR=none
 if [ "${repo_root_set}" -eq 1 ] && [ "${cmd}" != check-absent ]; then usage "--repo-root は check-absent 専用"; fi
 # 不在専用の確認。ここで必ず exit する（remove の prune・sweep の処理へ落ちない）。--path 以外の引数は受け付けない
 if [ "${cmd}" = check-absent ]; then
-  [ -z "${mode}${branch}${base}${head}${expect_branch}${file}" ] && [ "${head_set}" -eq 0 ] && [ "${expect_set}" -eq 0 ] || usage "check-absent は --path と --repo-root だけを取る"
+  [ -z "${mode}${branch}${base}${head}${expect_branch}${file}" ] && [ "${head_set}" -eq 0 ] && [ "${expect_set}" -eq 0 ] && [ "${require_missing}" -eq 0 ] || usage "check-absent は --path と --repo-root だけを取る"
   [ -n "${path}" ] && wr_valid_path "${path}" || usage "check-absent には妥当な --path が要る"
   if [ "${repo_root_set}" -eq 1 ]; then
     [ -n "${repo_root}" ] && wr_valid_path "${repo_root}" || usage "--repo-root の形が不正"
@@ -367,12 +383,17 @@ if [ "${cmd}" = remove ]; then
     [ -n "${path}" ] || usage "--head には --path が要る"
     wr_valid_head "${head}" || usage "--head は 40 桁の小文字 16 進"
   fi
+  if [ "${require_missing}" -eq 1 ]; then
+    [ "${mode}" = discard ] || usage "--require-missing は discard 専用"
+    [ -n "${path}" ] || usage "--require-missing には --path が要る"
+    [ -z "${branch}${head}${expect_branch}" ] && [ "${head_set}" -eq 0 ] && [ "${expect_set}" -eq 0 ] || usage "--require-missing は --branch / --head / --expect-branch と併用しない"
+  fi
   [ -z "${file}" ] || usage "--file は sweep 専用"
 
   if [ -n "${path}" ]; then
     unreg_guard=0
-    if [ "${mode}" = discard ] && { [ -n "${head}" ] || [ -n "${expect_branch}" ]; }; then unreg_guard=1; fi
-    remove_one "${mode}" "${path}" "${branch:-${expect_branch}}" "${head}" "${unreg_guard}"
+    if [ "${mode}" = discard ] && { [ -n "${head}" ] || [ -n "${expect_branch}" ] || [ "${require_missing}" -eq 1 ]; }; then unreg_guard=1; fi
+    remove_one "${mode}" "${path}" "${branch:-${expect_branch}}" "${head}" "${unreg_guard}" "${require_missing}"
   else
     T_WT=skipped
   fi
@@ -429,7 +450,7 @@ if [ "${cmd}" = remove ]; then
 fi
 
 # --- sweep ---
-[ -z "${mode}${path}${branch}${base}${head}${expect_branch}" ] && [ "${head_set}" -eq 0 ] && [ "${expect_set}" -eq 0 ] || usage "sweep は --file だけを取る"
+[ -z "${mode}${path}${branch}${base}${head}${expect_branch}" ] && [ "${head_set}" -eq 0 ] && [ "${expect_set}" -eq 0 ] && [ "${require_missing}" -eq 0 ] || usage "sweep は --file だけを取る"
 wr_valid_file "${file}" || usage "--file は _/issue-trees/N.json の形で指定する"
 command -v jq >/dev/null 2>&1 || { echo "worktree-remove: jq が無い" >&2; exit 3; }
 
@@ -489,5 +510,5 @@ EOF
 done <<EOF
 ${candidates}
 EOF
-if [ -n "${removed}" ] || [ "${n_failed}" -gt 0 ]; then safe_prune; fi
+if [ -n "${removed}" ]; then safe_prune; fi
 sweep_result "${removed}" "${n_retained}" "${n_skipped}" "${n_failed}" ""

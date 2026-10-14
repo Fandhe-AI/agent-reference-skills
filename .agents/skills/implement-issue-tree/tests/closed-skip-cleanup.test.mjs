@@ -19,7 +19,7 @@ const OTHER = 'd'.repeat(40)
 const WT = '/repo/wt/old'
 
 const m = await importDefinitions(
-  ['closedCleanupCandidate', 'prBindingValuesFetched', 'closedCleanupGate', 'closedCleanupRetainedReason', 'CLOSED_CLEANUP_PER_RUN_MAX', 'AGENT_CALLS_CLOSED_CLEANUP', 'AGENT_CALLS_TERMINAL_BASE', 'AGENT_CALLS_PER_ISSUE', 'cleanupClosedMergedWorktree', 'worktreeRemoveCommand', 'sweepClosedWorktrees', 'sweepEligiblePaths', 'sweepHeldPaths', 'confirmedRemovedPaths', 'ensureBoundaryNonceSeed', 'sha256Hex', 'canonicalJson'],
+  ['closedCleanupCandidate', 'closedCleanupAttemptCount', 'orderClosedCleanupCandidates', 'prBindingValuesFetched', 'closedCleanupGate', 'closedCleanupRetainedReason', 'CLOSED_CLEANUP_PER_RUN_MAX', 'AGENT_CALLS_CLOSED_CLEANUP', 'AGENT_CALLS_TERMINAL_BASE', 'AGENT_CALLS_PER_ISSUE', 'cleanupClosedMergedWorktree', 'worktreeRemoveCommand', 'sweepClosedWorktrees', 'sweepEligiblePaths', 'sweepHeldPaths', 'confirmedRemovedPaths', 'ensureBoundaryNonceSeed', 'sha256Hex', 'canonicalJson'],
   'closed-skip-cleanup',
 )
 globalThis.agent = async (_p, opts) => (opts.label === 'nonce:seed' ? { seedHex: '0'.repeat(64) } : null)
@@ -412,4 +412,150 @@ test('結合: 1 ランの後始末は上限 10 件で、超えた分は見送っ
   assert.deepEqual(result.closedCleanup, { run: 10, 'defer-cap': 2, 'defer-budget': 0 })
   assert.equal(callsOf(calls, /^pr-bind:#(12|13)$/).length, 0, '後ろの 2 件は次のランへ')
   assert.equal(calls.filter((c) => c.prompt.includes('closedCleanupTried')).length, 10, '試みた 10 件は記録される')
+})
+
+// ---- 4. 一過性の候補が先頭に 10 件以上あっても、後ろの候補に順番が回る（Bugbot 指摘 V）----
+// 記録されない結果（OPEN・取得失敗・retained-locked 等）の候補は次のランでも候補のまま。キューの先頭から 10 件を数える上限では、後ろの候補が毎ラン defer-cap になる。
+// 試した候補へ試行回数（closedCleanupAttempts）だけを書き、未試行を先・試行の少ない順に並べる。
+
+test('closedCleanupAttemptCount: 正の整数だけを試行回数として読む（壊れた値・未記録は 0・上限でクランプ）', () => {
+  assert.equal(m.closedCleanupAttemptCount({ closedCleanupAttempts: 3 }), 3)
+  assert.equal(m.closedCleanupAttemptCount({ closedCleanupAttempts: 1e9 }), 1000000)
+  for (const bad of [undefined, null, {}, { closedCleanupAttempts: 0 }, { closedCleanupAttempts: -2 }, { closedCleanupAttempts: 1.5 }, { closedCleanupAttempts: '3' }, { closedCleanupAttempts: null }, { closedCleanupAttempts: NaN }]) {
+    assert.equal(m.closedCleanupAttemptCount(bad), 0, JSON.stringify(bad))
+  }
+})
+
+test('orderClosedCleanupCandidates: 試行回数の昇順・同数はキュー順（安定）。入力は変えない', () => {
+  const e = (name, attempts) => ({ name, attempts })
+  const input = [e('a', 2), e('b', 0), e('c', 1), e('d', 0), e('e', 2), e('f', 1)]
+  const copy = input.slice()
+  assert.deepEqual(m.orderClosedCleanupCandidates(input).map((x) => x.name), ['b', 'd', 'c', 'f', 'a', 'e'])
+  assert.deepEqual(input, copy)
+  assert.deepEqual(m.orderClosedCleanupCandidates([]), [])
+  // 全部同数ならキュー順のまま
+  assert.deepEqual(m.orderClosedCleanupCandidates([e('x', 1), e('y', 1), e('z', 1)]).map((x) => x.name), ['x', 'y', 'z'])
+})
+
+const MANY = Array.from({ length: 12 }, (_, i) => i + 2) // 2..13 は OPEN の PR（一過性）、14 が MERGED
+const LAST = 14
+const manyItem = (n, extra = {}) => ({ status: 'blocked', branch: `feat/${n}-x`, worktree: `/repo/wt/${n}`, pr: 100 + n, ...extra })
+function runMany(items, { cleanup = { ok: true, retained: false } } = {}) {
+  const numbers = [...MANY, LAST]
+  const hashes = Object.fromEntries(numbers.map((n) => [n, m.sha256Hex(m.canonicalJson(items[n]))]))
+  const keysSha = m.sha256Hex(m.canonicalJson(Object.keys(hashes).sort()))
+  const nodes = [
+    { number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: numbers.length },
+    ...numbers.map((n, i) => ({ number: n, title: `issue ${n}`, state: 'closed', parent: 1, siblingIndex: i, dependsOn: [], subIssuesTotal: 0 })),
+  ]
+  return runScript({
+    args: BASE_ARGS,
+    leaves: numbers,
+    override: (label, _opts, _prompt) => {
+      if (label === 'plan:issue-tree') return { nodes }
+      if (label === 'state:load') return { ok: true, fileExisted: true, items, highWaterBytes: 0, highWaterVersion: 0 }
+      if (label === 'state:load-verify') return { fileExists: true, hashes, keysSha256: keysSha, keysCount: numbers.length, highWaterBytes: 0, highWaterVersion: 0 }
+      const b = /^pr-bind:#(\d+)$/.exec(label)
+      if (b) {
+        const n = Number(b[1])
+        return { state: n === LAST ? 'MERGED' : 'OPEN', headRefOid: SHA, headRefName: `feat/${n}-x`, baseRefName: 'main', isCrossRepository: false, closingIssues: [n] }
+      }
+      if (/^state:cleanup:#/.test(label)) return cleanup
+      return undefined
+    },
+  })
+}
+// 実行 1 回分の書き込みを次のランの状態へ反映する（試行回数の書き込みだけを読む）
+function applyAttempts(items, calls) {
+  const next = Object.fromEntries(Object.entries(items).map(([k, v]) => [k, { ...v }]))
+  for (const c of calls) {
+    const w = /^state:update:#(\d+)/.exec(c.opts.label)
+    const a = w && /"closedCleanupAttempts":(\d+)/.exec(c.prompt)
+    if (a) next[w[1]].closedCleanupAttempts = Number(a[1])
+  }
+  return next
+}
+const prBinds = (calls) => callsOf(calls, /^pr-bind:#/).map((c) => Number(/#(\d+)$/.exec(c.opts.label)[1]))
+
+test('結合: 先頭に一過性（OPEN の PR）の候補が 11 件以上あっても、2 ランで後ろの MERGED の候補に順番が回り、merged へ更新される', async () => {
+  const items0 = Object.fromEntries([...MANY, LAST].map((n) => [n, manyItem(n)]))
+  // ラン 1: キューの先頭から 10 件を試す。OPEN は記録されないが、試した 10 件へ試行回数 1 を書く。後ろの 3 件（12・13・14）は defer-cap
+  const r1 = await runMany(items0)
+  assert.deepEqual(prBinds(r1.calls), MANY.slice(0, 10))
+  assert.deepEqual(r1.result.closedCleanup, { run: 10, 'defer-cap': 3, 'defer-budget': 0 })
+  const attemptWrites = r1.calls.filter((c) => c.opts.label.startsWith('state:update:#') && c.prompt.includes('closedCleanupAttempts'))
+  assert.equal(attemptWrites.length, 10)
+  for (const w of attemptWrites) {
+    assert.match(w.prompt, /"closedCleanupAttempts":1/)
+    // status・worktree・pr は書かない（sweep の保持照合から外れない）。試行回数のパッチだけ
+    assert.doesNotMatch(w.prompt.replace(/"closedCleanupAttempts":1/, ''), /"(status|worktree|pr|closedCleanupTried)"/)
+  }
+  assert.equal(r1.calls.some((c) => c.prompt.includes('"status":"merged"')), false)
+  // ラン 2: 未試行（12・13・14）が先。14 が MERGED なので掃除して merged へ更新する
+  const items1 = applyAttempts(items0, r1.calls)
+  assert.deepEqual(Object.values(items1).filter((v) => v.closedCleanupAttempts === 1).length, 10)
+  const r2 = await runMany(items1)
+  assert.deepEqual(prBinds(r2.calls).slice(0, 3), [12, 13, 14], '未試行の候補が先')
+  assert.equal(prBinds(r2.calls).length, 10)
+  assert.ok(callsOf(r2.calls, /^state:cleanup:#14$/).length === 1, '14 の worktree を掃除する')
+  assert.ok(r2.calls.some((c) => c.opts.label.startsWith('state:update:#14') && c.prompt.includes('"status":"merged"')), '14 を merged へ更新する')
+  // skip エントリの順序は元のキュー順のまま（結果の並びを変えない）
+  assert.deepEqual(r2.result.done.filter((x) => x.status === 'skipped').map((x) => x.issue), [...MANY, LAST])
+})
+
+test('結合: 試行回数の書き込みに失敗・例外でも後始末は壊れない（結果は返り、ほかの候補は進む）', async () => {
+  const items0 = Object.fromEntries([...MANY, LAST].map((n) => [n, manyItem(n)]))
+  const r = await runMany(items0)
+  assert.ok(r.result.closedCleanup.run >= 1)
+  // 書き込み系が失敗を返す環境でも候補は 10 件試される（書き込みの失敗は警告ログのみ）
+  const numbers = [...MANY, LAST]
+  const hashes = Object.fromEntries(numbers.map((n) => [n, m.sha256Hex(m.canonicalJson(items0[n]))]))
+  const keysSha = m.sha256Hex(m.canonicalJson(Object.keys(hashes).sort()))
+  const nodes = [
+    { number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: numbers.length },
+    ...numbers.map((n, i) => ({ number: n, title: `issue ${n}`, state: 'closed', parent: 1, siblingIndex: i, dependsOn: [], subIssuesTotal: 0 })),
+  ]
+  const f = await runScript({
+    args: BASE_ARGS,
+    leaves: numbers,
+    override: (label) => {
+      if (label === 'plan:issue-tree') return { nodes }
+      if (label === 'state:load') return { ok: true, fileExisted: true, items: items0, highWaterBytes: 0, highWaterVersion: 0 }
+      if (label === 'state:load-verify') return { fileExists: true, hashes, keysSha256: keysSha, keysCount: numbers.length, highWaterBytes: 0, highWaterVersion: 0 }
+      const b = /^pr-bind:#(\d+)$/.exec(label)
+      if (b) return { state: 'OPEN', headRefOid: SHA, headRefName: `feat/${b[1]}-x`, baseRefName: 'main', isCrossRepository: false, closingIssues: [Number(b[1])] }
+      if (/^state:update:#/.test(label)) throw new Error('boom')
+      return undefined
+    },
+  })
+  assert.equal(f.result.closedCleanup.run, 10)
+  assert.ok(f.logs.some((l) => /試行回数の書き込みが例外終了した|試行回数を書けなかった/.test(l)))
+})
+
+test('結合: 記録される結果（retained-dirty = 試行済み）の候補には試行回数を書かない。merged になった候補にも書かない', async () => {
+  const items0 = { 2: manyItem(2), 3: manyItem(3) }
+  const hashes = { 2: m.sha256Hex(m.canonicalJson(items0[2])), 3: m.sha256Hex(m.canonicalJson(items0[3])) }
+  const keysSha = m.sha256Hex(m.canonicalJson(['2', '3']))
+  const nodes = [
+    { number: 1, title: 'root', state: 'open', parent: 0, siblingIndex: 0, dependsOn: [], subIssuesTotal: 2 },
+    { number: 2, title: 'i2', state: 'closed', parent: 1, siblingIndex: 0, dependsOn: [], subIssuesTotal: 0 },
+    { number: 3, title: 'i3', state: 'closed', parent: 1, siblingIndex: 1, dependsOn: [], subIssuesTotal: 0 },
+  ]
+  const { calls } = await runScript({
+    args: BASE_ARGS,
+    leaves: [2, 3],
+    override: (label) => {
+      if (label === 'plan:issue-tree') return { nodes }
+      if (label === 'state:load') return { ok: true, fileExisted: true, items: items0, highWaterBytes: 0, highWaterVersion: 0 }
+      if (label === 'state:load-verify') return { fileExists: true, hashes, keysSha256: keysSha, keysCount: 2, highWaterBytes: 0, highWaterVersion: 0 }
+      const b = /^pr-bind:#(\d+)$/.exec(label)
+      if (b) return { state: 'MERGED', headRefOid: SHA, headRefName: `feat/${b[1]}-x`, baseRefName: 'main', isCrossRepository: false, closingIssues: [Number(b[1])] }
+      if (label === 'state:cleanup:#2') return { ok: false, retained: true, worktree: 'retained-dirty' }
+      if (label === 'state:cleanup:#3') return { ok: true, retained: false }
+      return undefined
+    },
+  })
+  assert.ok(calls.some((c) => c.opts.label.startsWith('state:update:#2') && c.prompt.includes('closedCleanupTried')))
+  assert.ok(calls.some((c) => c.opts.label.startsWith('state:update:#3') && c.prompt.includes('"status":"merged"')))
+  assert.equal(calls.filter((c) => c.prompt.includes('closedCleanupAttempts')).length, 0)
 })
