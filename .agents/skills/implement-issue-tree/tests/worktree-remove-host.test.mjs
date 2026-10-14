@@ -460,6 +460,7 @@ test('不在確認 prunable の片づけが removed でない（保持・失敗�
     { ok: false, retained: true, worktree: 'retained-detached' },
     { ok: false, retained: true, worktree: 'retained-locked' },
     { ok: false, retained: true, worktree: 'retained-present' }, // X: 確認のあとに作り直された実体。消さずに保持した
+    { ok: false, retained: true, worktree: 'retained-unobservable' }, // AC: 実体の有無を確かめられない（読めない親など）。「無い」と言えないので消さずに保持した
     { ok: false, retained: true, worktree: 'retained-unregistered' },
     { ok: false, retained: true, worktree: 'failed' },
     null,

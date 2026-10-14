@@ -2914,10 +2914,14 @@ description:'git worktree list --porcelain | grep -c \'^worktree \' の出力数
 
 
 
+
+
+
 const ORPHAN_BYTES_SCHEMA={
 type:'object',
-required:['kib','err','missing','count','inputSha256'],
+required:['kib','err','missing','dup','count','inputSha256'],
 properties:{
+dup:{type:'integer',minimum:0,description:'同じ実体の別の綴りとして測らなかった行数'},
 inputSha256:{type:'string',description:'標準入力の SHA-256（ホストが送ったパス列と照合する）'},
 kib:{type:'integer',minimum:0,description:'du -sk 第1列の合計（KiB）'},
 err:{type:'integer',minimum:0,description:'測定失敗の件数（0 以外は失敗）'},
@@ -3493,7 +3497,7 @@ if(cleanupWorktreePath&&cleanupConfirmedRemoved)confirmedRemovedPaths.add(cleanu
 
 
 if(typeof options.replacementWorktree==='string'){
-applyReplacementAccounting(issueNumber,cleanupWorktreePath,options.replacementWorktree,cleanupWorktreePath!==''&&result?.cleanupRetained===false)
+applyReplacementAccounting(issueNumber,cleanupWorktreePath,options.replacementWorktree,cleanupWorktreePath!==''&&result?.cleanupRetained===false,cleanupWorktreePath!==''&&cleanupConfirmedRemoved)
 }else if(cleanupWorktreePath&&result?.cleanupRetained!==false){
 recordRetainedWorktree(issueNumber,cleanupWorktreePath)
 }
@@ -3913,15 +3917,15 @@ return''
 
 
 const SCRIPT_SHA256={
-'measure-residual-bytes.sh':'2951958b05e234b0cdc46ad3f6588ffa5e173fa7dddbcd541d28e11ccea82dae',
-'measure-free-disk.sh':'b1129df51c806a1cf154e5a3cacc9084c73fad3e4d9281b0090c20465bea208b',
-'observe-pr.sh':'22dfa93d4422bcf387f23463f424a5aeabfc40024e4cee3906b6cb028b1dbfb7',
-'base-merge.sh':'35f225bee4daabcea42abd25f72fb38878d0c189acf6b6f363cfa3e7f4c4d2a7',
-'pr-push.sh':'817e04e9ea3802df8c5671dfeeb697387e31284edcaf56f6601e5618ba63e0fd',
-'state.sh':'20932f47cb5ef723075726d5e0c0972c76b0be124f4fce631c1dbc829554e02d',
-'merge-gate.sh':'af2d7c5ae05ef008338ae2d3bebb8cc859947c279edcaaffa4e690c815580129',
-'worktree-remove.sh':'e388f9c9469787d096f5598f4f07d2a6b262d5a803e20df32ff7a1e0c95b48f7',
-'recover-prep.sh':'8d58f2a9f6e4a25d95b639011a5d1932d3470a92ee3a519f2da7aed44e77773c',
+'measure-residual-bytes.sh':'3090626ac7c029b4c19eb5a1a8d407d802d4af5a12aa356161a8bd41f0236513',
+'measure-free-disk.sh':'9dab806473a31a412a8245924a9addebf025e2eb9b1c935c9171712b3410a94c',
+'observe-pr.sh':'53507dc72d98695aa25c5e7c264c0c87b3a4c30de583f4724370869551b67681',
+'base-merge.sh':'7a2641ce0560072e44f54b989b5ba325af2da4b8621c85b307c9689c3a6ceb53',
+'pr-push.sh':'0cff6b73986002d88b2d716b30f5642aae2e70f8b8540596634d4608b83e105b',
+'state.sh':'209f3d10e652cc0d86767ee90ec698b28441e24ba00852c7dbfc7ae94dea477d',
+'merge-gate.sh':'85e3fd636eaf276877a36eb31a5f1527be73f3921a631af055894359344c804c',
+'worktree-remove.sh':'7137c5dd716d711db95b995efe52d470f78fd77f8feef60d28d191352d32ebfd',
+'recover-prep.sh':'c8dff4a6c84dae35d80280fb4f049bd7eaf95caf8a33381c2ca14c866cc6df4d',
 }
 
 
@@ -4155,7 +4159,7 @@ throw new Error(`スクリプトのハッシュを検査できなかった（${l
 
 function classifyResidualByteReport(v,sentCount){
 const isObj=v!==null&&typeof v==='object'
-if(!isObj||[v.kib,v.err,v.missing,v.count].some((x)=>x===undefined||x===null)){
+if(!isObj||[v.kib,v.err,v.missing,v.dup,v.count].some((x)=>x===undefined||x===null)){
 return{ok:false,retryable:true,reason:'output-missing'}
 }
 if(!(Number.isInteger(v?.count)&&v.count===sentCount)){
@@ -4166,7 +4170,10 @@ if(!(Number.isInteger(v?.kib)&&v.kib>=0))return{ok:false,retryable:false,reason:
 if(!(Number.isInteger(v?.missing)&&v.missing>=0&&v.missing<=sentCount)){
 return{ok:false,retryable:false,reason:'schema'}
 }
-return{ok:true,kib:v.kib,missing:v.missing}
+if(!(Number.isInteger(v?.dup)&&v.dup>=0&&v.missing+v.dup<=sentCount)){
+return{ok:false,retryable:false,reason:'schema'}
+}
+return{ok:true,kib:v.kib,missing:v.missing,dup:v.dup}
 }
 
 
@@ -4225,7 +4232,7 @@ return signed.ok?{report:signed.payload}:{report:null,envelope:signed.reason}
 
 
 async function measureResidualWorktreeBytesDetailed(paths){
-if(!Array.isArray(paths)||paths.length===0)return{kib:0,missing:0}
+if(!Array.isArray(paths)||paths.length===0)return{kib:0,missing:0,dup:0}
 
 const sanitizedPaths=paths.map((p)=>sanitizeWorktreePath(typeof p==='string'?p:''))
 if(sanitizedPaths.some((p)=>p==='')){
@@ -4243,7 +4250,7 @@ if(r.ok){
 if(r.missing>0){
 log(`残置 worktree ディスク使用量測定: 並行 cleanup 等により ${r.missing} 件のパスが測定時点で既に存在しなかった（0 として扱った）`)
 }
-return{kib:r.kib,missing:r.missing}
+return{kib:r.kib,missing:r.missing,dup:r.dup}
 }
 const rv=once.report
 if(r.retryable){
@@ -4642,7 +4649,16 @@ sweepEligiblePaths.delete(p)
 
 
 
-function recordEphemeralWorktree(issueNumber,rawPath,kind){
+
+
+
+
+function reviveAfterCleanup(rawPath,oldRawPath){
+const p=sanitizeWorktreePath(rawPath??'')
+return!(p!==''&&p===sanitizeWorktreePath(oldRawPath??'')&&confirmedRemovedPaths.has(p))
+}
+
+function recordEphemeralWorktree(issueNumber,rawPath,kind,{revive=true}={}){
 
 
 if(!(kind in EPHEMERAL_KIND_MAX)){
@@ -4657,7 +4673,7 @@ log(`⚠️ #${issueNumber}: ${kind} worktree のパスを検証できなかっ�
 ephemeralWorktrees.push({issue:issueNumber,kind,path:''})
 return
 }
-markWorktreeLive(p)
+if(revive)markWorktreeLive(p)
 ephemeralWorktrees.push({issue:issueNumber,kind,path:p})
 log(`#${issueNumber}: ${kind} worktree を記録した（自動削除はしない。${p}）`)
 }
@@ -4713,13 +4729,18 @@ inheritUnknown:false,
 
 
 
-function applyReplacementAccounting(issueNumber,oldPath,rawNewPath,oldRemoved){
+
+function applyReplacementAccounting(issueNumber,oldPath,rawNewPath,oldRemoved,oldConfirmedRemoved=oldRemoved){
 const newPath=sanitizeWorktreePath(rawNewPath??'')
 const plan=planReplacementAccounting({oldPath,oldRemoved,newPath,oldCounted:isWorktreeCounted(oldPath),newCounted:isWorktreeCounted(newPath)})
 if(plan.addRetainedOld)recordRetainedWorktree(issueNumber,oldPath)
 else if(!oldRemoved)noteSlotRetained(issueNumber,oldPath)
 
-if(newPath)markWorktreeLive(newPath)
+
+
+
+
+if(newPath&&(newPath!==oldPath|| !oldConfirmedRemoved))markWorktreeLive(newPath)
 if(plan.addReplacement)recordReplacementWorktree(issueNumber,newPath)
 if(plan.inheritPath)slotInheritedPaths.add(plan.inheritPath)
 if(plan.inheritUnknown){
@@ -4735,7 +4756,7 @@ ephemeralWorktrees.push({issue:issueNumber,kind:'replacement',path:''})
 log(`#${issueNumber}: 置換後の worktree のパスを取得できないまま旧 worktree を保持した（件数のみ 1 件計上する。git worktree list で確認すること）`)
 return true
 }
-markWorktreeLive(p)
+
 if(residualStartPathSet.has(p)||ephemeralWorktrees.some((e)=>e.path===p))return false
 ephemeralWorktrees.push({issue:issueNumber,kind:'replacement',path:p})
 log(`#${issueNumber}: 旧 worktree を保持したため、置換後の worktree も残置の台帳へ載せた（${p}）`)
@@ -6239,10 +6260,11 @@ return freeDiskBytes<requiredFreeDiskBytes
 
 
 
-function computeAveragePerWorktreeBytes({kib,sentCount,missing}){
+
+function computeAveragePerWorktreeBytes({kib,sentCount,missing,dup}){
 if(!Number.isInteger(kib)||kib<0)return null
-if(!Number.isInteger(sentCount)|| !Number.isInteger(missing))return null
-const denominator=sentCount-missing
+if(!Number.isInteger(sentCount)|| !Number.isInteger(missing)|| !Number.isInteger(dup)||dup<0)return null
+const denominator=sentCount-missing-dup
 if(denominator<=0)return null
 return Math.ceil((kib*1024) / denominator)
 }
@@ -6384,6 +6406,7 @@ detail:
 }
 return{ok:true,paths:uniquePaths}
 }
+
 
 
 
@@ -6942,7 +6965,7 @@ const residualMeasured=hasUnverifiedResidualPath
 ?null
 :verifiedResidualPaths.length>0
 ?await measureResidualWorktreeBytesDetailed(verifiedResidualPaths)
-:{kib:0,missing:0}
+:{kib:0,missing:0,dup:0}
 const kib=residualMeasured===null?null:residualMeasured.kib
 
 const startFailure=classifyStartMeasurementFailure({mainKib,kib,freeDiskKib})
@@ -6974,12 +6997,13 @@ computeAveragePerWorktreeBytes({
 kib,
 sentCount:verifiedResidualPaths.length,
 missing:residualMeasured.missing,
+dup:residualMeasured.dup,
 })??0
 
 
 
 
-const residualSampleCount=verifiedResidualPaths.length-residualMeasured.missing
+const residualSampleCount=verifiedResidualPaths.length-residualMeasured.missing-residualMeasured.dup
 const highWaterDecision=decideRunStartHighWater({
 persistedBytes:persistedHighWaterBytes,
 persistedVersion:loadedHighWaterVersion,
@@ -9280,7 +9304,8 @@ const retryOk=await updateState(item.number,optinFixPatchArgs)
 if(!retryOk){
 const reason='post-push fix の opt-in テスト実測（optinFixState）を状態ファイルへ永続化できなかった（再試行後も失敗）。'
 +'この実測を次回 monitoring 再開時に復元できないと、PR 本文更新の失敗・省略時に古い記録だけでマージ前ゲートを通過し得るため、fail-closed で終端する'
-recordEphemeralWorktree(item.number,f?.worktreePath,'fix-terminal')
+
+recordEphemeralWorktree(item.number,f?.worktreePath,'fix-terminal',{revive:reviveAfterCleanup(f?.worktreePath,oldWorktreePath)})
 return await failMergeTerminal(reason,'blocked')
 }
 }
@@ -9803,7 +9828,7 @@ const measured=measurementFailed
 ?null
 :targetPaths.length>0
 ?await measureResidualWorktreeBytesDetailed(targetPaths)
-:{kib:0,missing:0}
+:{kib:0,missing:0,dup:0}
 const kib=measured===null?null:measured.kib
 
 
@@ -10003,6 +10028,7 @@ const avgActualBytes=computeAveragePerWorktreeBytes({
 kib:implementMeasured.kib,
 sentCount:implementResidualCount,
 missing:implementMeasured.missing,
+dup:implementMeasured.dup,
 })
 if(avgActualBytes===null){
 log(
@@ -10032,6 +10058,7 @@ const avgActualBytes=computeAveragePerWorktreeBytes({
 kib,
 sentCount:targetPaths.length,
 missing:measured.missing,
+dup:measured.dup,
 })
 if(avgActualBytes===null){
 log(

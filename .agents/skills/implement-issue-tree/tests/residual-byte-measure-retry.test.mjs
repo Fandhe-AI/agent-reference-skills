@@ -19,7 +19,7 @@ import { trackTmp } from './lib/tmp-track.mjs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { wrapAgentReply, nonceOf, makeEnvelope } from './lib/signed-output.mjs'
+import { wrapAgentReply, nonceOf, makeEnvelope, commandInputOf, inputSha256 } from './lib/signed-output.mjs'
 
 const SCRIPT_PATH = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -126,20 +126,20 @@ test('測定プロンプト: 期待ハッシュは SCRIPT_SHA256 の値（開発
 // --- 3. 分類 ---
 
 test('classifyResidualByteReport: 正常・転記失敗・実失敗・スキーマ不正を分類する', () => {
-  assert.deepEqual(classifyResidualByteReport(GOOD, 3), { ok: true, kib: 300, missing: 0 })
+  assert.deepEqual(classifyResidualByteReport({ ...GOOD, dup: 0 }, 3), { ok: true, kib: 300, missing: 0, dup: 0 })
   const t = classifyResidualByteReport(TRANSCRIPTION_FAIL, 3)
   assert.equal(t.ok, false)
   assert.equal(t.retryable, true)
-  assert.equal(classifyResidualByteReport({ kib: 1, err: 0, missing: 0, count: 2 }, 3).retryable, true)
+  assert.equal(classifyResidualByteReport({ kib: 1, err: 0, missing: 0, dup: 0, count: 2 }, 3).retryable, true)
   assert.equal(classifyResidualByteReport(undefined, 3).retryable, true)
   const o = classifyResidualByteReport({ count: 3, err: 0 }, 3)
   assert.deepEqual([o.ok, o.retryable, o.reason], [false, true, 'output-missing'])
   assert.equal(classifyResidualByteReport(null, 3).reason, 'output-missing')
-  assert.equal(classifyResidualByteReport({ kib: 1, err: -1, missing: 0, count: 3 }, 3).retryable, false)
-  const m = classifyResidualByteReport({ kib: 100, err: 2, missing: 0, count: 3 }, 3)
+  assert.equal(classifyResidualByteReport({ kib: 1, err: -1, missing: 0, dup: 0, count: 3 }, 3).retryable, false)
+  const m = classifyResidualByteReport({ kib: 100, err: 2, missing: 0, dup: 0, count: 3 }, 3)
   assert.deepEqual([m.ok, m.retryable, m.reason], [false, false, 'measure'])
-  assert.equal(classifyResidualByteReport({ kib: 1, err: 0, missing: 4, count: 3 }, 3).retryable, false)
-  assert.equal(classifyResidualByteReport({ kib: 'x', err: 0, missing: 0, count: 3 }, 3).retryable, false)
+  assert.equal(classifyResidualByteReport({ kib: 1, err: 0, missing: 4, dup: 0, count: 3 }, 3).retryable, false)
+  assert.equal(classifyResidualByteReport({ kib: 'x', err: 0, missing: 0, dup: 0, count: 3 }, 3).retryable, false)
 })
 
 // --- 4. リトライの振る舞い ---
@@ -147,7 +147,7 @@ test('classifyResidualByteReport: 正常・転記失敗・実失敗・スキー�
 test('転記失敗 1 回目 → 2 回目 sonnet で正常: 値を返す', async () => {
   const { calls } = stubAgent([TRANSCRIPTION_FAIL, GOOD])
   const r = await measureResidualWorktreeBytesDetailed(PATHS)
-  assert.deepEqual(r, { kib: 300, missing: 0 })
+  assert.deepEqual(r, { kib: 300, missing: 0, dup: 0 })
   assert.equal(calls.length, 2)
   assert.equal(calls[0].model, 'haiku')
   assert.equal(calls[1].model, 'sonnet')
@@ -168,7 +168,7 @@ test('count 一致で err>0（du 実失敗）は再測定せず null', async () 
 
 test('agent が throw → 2 回目 sonnet で正常: 値を返す（Issue #571）', async () => {
   const { calls } = stubAgent([new Error('boom'), GOOD])
-  assert.deepEqual(await measureResidualWorktreeBytesDetailed(PATHS), { kib: 300, missing: 0 })
+  assert.deepEqual(await measureResidualWorktreeBytesDetailed(PATHS), { kib: 300, missing: 0, dup: 0 })
   assert.deepEqual(calls.map((c) => c.model), ['haiku', 'sonnet'])
 })
 
@@ -180,7 +180,7 @@ test('agent の throw が続くと合計 1+MAX_RETRIES 回で打ち切り null�
 
 test('agent が null 返却（StructuredOutput 欠落）→ 再測定で正常。3 回続くと null', async () => {
   const a = stubAgent([null, GOOD])
-  assert.deepEqual(await measureResidualWorktreeBytesDetailed(PATHS), { kib: 300, missing: 0 })
+  assert.deepEqual(await measureResidualWorktreeBytesDetailed(PATHS), { kib: 300, missing: 0, dup: 0 })
   assert.equal(a.calls.length, 2)
   const b = stubAgent([null, null, null, GOOD])
   assert.equal(await measureResidualWorktreeBytesDetailed(PATHS), null)
@@ -189,13 +189,13 @@ test('agent が null 返却（StructuredOutput 欠落）→ 再測定で正常�
 
 test('必須フィールド欠落（kib / missing 欠落）→ 再測定で正常', async () => {
   const { calls } = stubAgent([{ count: 3, err: 0 }, GOOD])
-  assert.deepEqual(await measureResidualWorktreeBytesDetailed(PATHS), { kib: 300, missing: 0 })
+  assert.deepEqual(await measureResidualWorktreeBytesDetailed(PATHS), { kib: 300, missing: 0, dup: 0 })
   assert.equal(calls.length, 2)
 })
 
 test('例外 → 転記失敗 → 正常: 再測定予算を共有し合計 3 回で値を返す', async () => {
   const { calls } = stubAgent([new Error('boom'), TRANSCRIPTION_FAIL, GOOD])
-  assert.deepEqual(await measureResidualWorktreeBytesDetailed(PATHS), { kib: 300, missing: 0 })
+  assert.deepEqual(await measureResidualWorktreeBytesDetailed(PATHS), { kib: 300, missing: 0, dup: 0 })
   assert.equal(calls.length, 3)
 })
 
@@ -210,6 +210,46 @@ for (const [name, bad] of [
     assert.equal(calls.length, 1)
   })
 }
+
+// AJ: 封筒は dup（同じ実体の別の綴りとして測らなかった行数）を持つ。欠落・負・非整数・missing + dup > count は拒否して fail-closed。
+// 検査は harness の dup 補完を通さず makeEnvelope で直接作る（補完が検査を隠さないため）
+test('classifyResidualByteReport: dup 欠落は output-missing（再測定可）、負・非整数・missing + dup > 件数は schema（再測定しない）', () => {
+  const base = { kib: 1, err: 0, missing: 0, count: 3 }
+  const lack = classifyResidualByteReport(base, 3)
+  assert.deepEqual([lack.ok, lack.retryable, lack.reason], [false, true, 'output-missing'])
+  for (const dup of [-1, 1.5, '1', 4]) {
+    const r = classifyResidualByteReport({ ...base, dup }, 3)
+    assert.deepEqual([r.ok, r.retryable, r.reason], [false, false, 'schema'], String(dup))
+  }
+  const sum = classifyResidualByteReport({ ...base, missing: 2, dup: 2 }, 3)
+  assert.deepEqual([sum.ok, sum.reason], [false, 'schema'], 'missing + dup が件数を超える')
+  assert.deepEqual(classifyResidualByteReport({ ...base, missing: 1, dup: 2 }, 3), { ok: true, kib: 1, missing: 1, dup: 2 })
+})
+
+test('measureResidualWorktreeBytesDetailed: 不整合な dup の封筒（missing + dup > 件数）は再測定せず null、整合した dup は返す', async () => {
+  const mk = (prompt, payload) => makeEnvelope(nonceOf(prompt), { ...payload, inputSha256: inputSha256(commandInputOf(prompt)) })
+  const calls = []
+  globalThis.log = () => {}
+  globalThis.agent = async (prompt) => {
+    calls.push(prompt)
+    return mk(prompt, { kib: 300, err: 0, missing: 2, dup: 2, count: 3 })
+  }
+  assert.equal(await measureResidualWorktreeBytesDetailed(PATHS), null)
+  assert.equal(calls.length, 1)
+  globalThis.agent = async (prompt) => mk(prompt, { kib: 300, err: 0, missing: 0, dup: 2, count: 3 })
+  assert.deepEqual(await measureResidualWorktreeBytesDetailed(PATHS), { kib: 300, missing: 0, dup: 2 })
+})
+
+test('dup 欠落の封筒は output-missing として有界に再測定し、使い切れば null', async () => {
+  const calls = []
+  globalThis.log = () => {}
+  globalThis.agent = async (prompt) => {
+    calls.push(prompt)
+    return makeEnvelope(nonceOf(prompt), { kib: 300, err: 0, missing: 0, count: 3, inputSha256: inputSha256(commandInputOf(prompt)) })
+  }
+  assert.equal(await measureResidualWorktreeBytesDetailed(PATHS), null)
+  assert.equal(calls.length, 3)
+})
 
 test('許可文字集合外パスは agent を呼ばず null', async () => {
   const { calls } = stubAgent([GOOD])

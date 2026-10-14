@@ -162,7 +162,7 @@ test('前回の呼び出しの出力の流用（nonce が違う）は拒否さ�
     return first // 2 回目以降は 1 回目の出力をそのまま返す
   })
   // 1 回目は正しい封筒で受理されるので、流用は 2 回目の測定（別の呼び出し）で起きる
-  assert.deepEqual(await measureResidualWorktreeBytesDetailed(PATHS), { kib: 300, missing: 0 })
+  assert.deepEqual(await measureResidualWorktreeBytesDetailed(PATHS), { kib: 300, missing: 0, dup: 0 })
   const second = await measureResidualWorktreeBytesDetailed(PATHS)
   assert.equal(second, null)
   assert.equal(calls.length, 1 + 1 + mod.RESIDUAL_BYTE_MEASURE_MAX_RETRIES)
@@ -180,7 +180,7 @@ test('スクリプトの出力を転記した後に値を書き換える（kib �
 
 test('欠落・不正 JSON 相当（payload 無し・文字列）は拒否される。1 回目だけ不正なら再測定で回復する', async () => {
   const { calls } = stub((prompt, n) => (n === 1 ? { nonce: nonceOf(prompt), sha256: 'a'.repeat(64) } : signedReply(prompt, { count: 3, err: 0, kib: 7, missing: 0 })))
-  assert.deepEqual(await measureResidualWorktreeBytesDetailed(PATHS), { kib: 7, missing: 0 })
+  assert.deepEqual(await measureResidualWorktreeBytesDetailed(PATHS), { kib: 7, missing: 0, dup: 0 })
   assert.deepEqual(calls.map((c) => c.model), ['haiku', 'sonnet'])
   stub(() => 'not json')
   assert.equal(await measureResidualWorktreeBytesDetailed(PATHS), null)
@@ -188,7 +188,7 @@ test('欠落・不正 JSON 相当（payload 無し・文字列）は拒否され
 
 test('件数不一致（封筒は正しいが count が送った件数と違う）は転記失敗として再測定される', async () => {
   const { calls } = stub((prompt, n) => signedReply(prompt, n === 1 ? { count: 2, err: 0, kib: 5, missing: 0 } : { count: 3, err: 0, kib: 9, missing: 1 }))
-  assert.deepEqual(await measureResidualWorktreeBytesDetailed(PATHS), { kib: 9, missing: 1 })
+  assert.deepEqual(await measureResidualWorktreeBytesDetailed(PATHS), { kib: 9, missing: 1, dup: 0 })
   assert.equal(calls.length, 2)
 })
 
@@ -241,7 +241,7 @@ test('結合: 実スクリプトの出力を転記すると受理され、du / d
     const gone = join(work, 'gone')
     stub(runningAgent((env) => env))
     const duKib = (p) => Number(spawnSync('du', ['-sk', '--', p], { encoding: 'utf8' }).stdout.split(/\s/)[0])
-    assert.deepEqual(await measureResidualWorktreeBytesDetailed([...dirs, gone]), { kib: duKib(dirs[0]) + duKib(dirs[1]), missing: 1 })
+    assert.deepEqual(await measureResidualWorktreeBytesDetailed([...dirs, gone]), { kib: duKib(dirs[0]) + duKib(dirs[1]), missing: 1, dup: 0 })
     const free = await measureFreeDiskKib(work)
     assert.ok(Number.isInteger(free) && free > 0, `freeKib=${free}`)
   } finally {

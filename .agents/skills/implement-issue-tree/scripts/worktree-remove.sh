@@ -62,7 +62,9 @@
 #           retained-head-mismatch = discard で --head を与えたとき、worktree の HEAD のコミットが --head と違う（読めないときを含む。worktree もブランチも消さない）。
 #           retained-unregistered = discard で --head か --expect-branch を与えたとき、git に登録されていないのに実体のパスがある（未 push の作業が残るかもしれない。
 #               not-registered〔もう無い〕とは言わず、何も消さない。ホストは決定的な保持として記録する。--branch だけ・superseded・sweep は従来どおり not-registered）。
+#               登録が無く、パスの有無を確かめられない（祖先を検索・読み取りできない）ときは、モードを問わず not-registered ではなく retained-unobservable。
 #           retained-present = discard で --require-missing を与えたとき、登録も実体もある（check-absent のあとに作り直された worktree かもしれない。何も消さない）。
+#               実体の有無を確かめられない（親ディレクトリを検索・読み取りできないなど）ときは retained-unobservable（「無い」と言えないので何も消さない）。
 #           retained-detached = discard で --head を与えたとき、HEAD が一致していても detached（detached 上の未 push のコミットは消すと失われる）。
 #           retained-unobservable = 観測に失敗した（git status コマンドそのものの失敗・--head 指定時の HEAD のコミットの一過性の読み取り失敗）。何も消さない。
 #               retained-dirty / retained-head-mismatch / retained-broken は観測した結果の保持で、これは観測できなかったという別の語（ホストは前者を恒久の試行済みに記録し、これは次のランで再試行させる）。
@@ -170,12 +172,21 @@ remove_one() {
   if [ "${WR_MAIN}" = 1 ]; then T_WT=main; return 0; fi
   if [ "${WR_REGISTERED}" != 1 ]; then
     # 登録は無いが実体のパスがある（登録だけが失われたチェックアウト）。--head / --expect-branch を結びつけられた discard で『登録が無い = もう無い』と返すと、ホストは消えたものとして
-    # 追跡から外す。未 push の作業が残っているかもしれないので、その結びつけがあるときは保持の語（記録対象）で返す。結びつけの無い呼び出し（superseded・sweep・後始末）は従来どおり
+    # 追跡から外す。未 push の作業が残っているかもしれないので、その結びつけがあるときは保持の語（記録対象）で返す。結びつけの無い呼び出し（superseded・sweep・後始末）は従来どおり not-registered。
+    # 実体の有無を確かめられないとき（祖先を検索・読み取りできず stat が失敗する）は、読めない親の下の実体が『無い』ように見える。
+    # 『もう無い』と言えないので、モードを問わず retained-unobservable（何も消さない・追跡から外さない）で返す。判定は check-absent / --require-missing と同じ wr_path_state
+    if [ "$(wr_path_state "${path}")" = unknown ]; then T_WT='retained-unobservable'; return 0; fi
     if [ "${m}" = discard ] && [ "${unreg_guard}" = 1 ] && { [ -e "${path}" ] || [ -L "${path}" ]; }; then T_WT='retained-unregistered'; else T_WT='not-registered'; fi
     return 0
   fi
   # --require-missing: 確認と削除を同じプロセスで行う。登録があるのに実体が（もう）ある = check-absent のあとに作り直された worktree かもしれないので消さない
-  if [ "${req_missing}" = 1 ] && [ "$(wr_require_missing_check "${path}")" != ok ]; then T_WT='retained-present'; return 0; fi
+  if [ "${req_missing}" = 1 ]; then
+    case "$(wr_require_missing_check "${path}")" in
+      ok) ;;
+      unobservable) T_WT='retained-unobservable'; return 0 ;; # 有無を確かめられない（読めない親など）。「無い」と言えないので消さない
+      *) T_WT='retained-present'; return 0 ;;
+    esac
+  fi
   real=$(wr_real "${path}")
   cwd_real=$(pwd -P)
   case "${cwd_real}/" in
@@ -277,7 +288,13 @@ remove_one() {
   fi
 
   # 削除の直前にもう一度実体を読む（上の確認から削除までの間に作り直された場合）
-  if [ "${req_missing}" = 1 ] && [ "$(wr_require_missing_check "${path}")" != ok ]; then T_WT='retained-present'; return 0; fi
+  if [ "${req_missing}" = 1 ]; then
+    case "$(wr_require_missing_check "${path}")" in
+      ok) ;;
+      unobservable) T_WT='retained-unobservable'; return 0 ;; # 有無を確かめられない（読めない親など）。「無い」と言えないので消さない
+      *) T_WT='retained-present'; return 0 ;;
+    esac
+  fi
   rc=0
   if [ "${lockact}" = unlock ]; then
     git worktree unlock -- "${path}" >/dev/null 2>&1 || rc=$?
@@ -310,6 +327,7 @@ safe_prune() {
 # 結果の行に足す holder（--branch を持っていた実体の無い登録の後始末の結果。removed / retained-… / failed。後始末をしなかったときは何も足さない）。
 # worktree・dirty・unlocked は --path の結果のまま保つ。語は remove_one の固定語彙だけなので、そのまま出す
 holder_word=""
+holder_free=0
 holder_field() {
   if [ -n "${holder_word}" ]; then printf ',"holder":"%s"' "${holder_word}"; fi
 }
@@ -417,6 +435,14 @@ if [ "${cmd}" = remove ]; then
       T_DIRTY=${keep_dirty}
       if [ "${keep_unlocked}" = true ] || [ "${T_UNLOCKED}" = true ]; then T_UNLOCKED=true; fi
       if [ "${holder_word}" = removed ]; then did_remove=1; fi
+      # not-registered は『後始末の時点で登録が既に無かった』（並行して消えた）。ブランチを掴むものが無くなった可能性が高いが、語だけでは信じず、
+      # 同じプロセスの中で登録の一覧を読み直し、ブランチを持つ登録が本当に無いことを確かめたときだけ『掴むものは無い』とする。読めない・まだ残るなら keep のまま
+      if [ "${holder_word}" = not-registered ]; then
+        if hl_again=$(git worktree list --porcelain 2>/dev/null); then
+          wr_branch_holder "${hl_again}" "${branch}"
+          if [ -z "${WR_HOLDER}" ]; then holder_free=1; fi
+        fi
+      fi
     fi
   fi
   # 何かを消したあとの登録情報の掃除。--path の worktree を消した、または後始末で登録を消したときだけ prune する（ブランチだけの discard や、
@@ -428,7 +454,7 @@ if [ "${cmd}" = remove ]; then
   if [ -n "${branch}" ]; then
     gone=0
     # 後始末が保持・失敗なら、ブランチはまだ登録が掴んでいるので消さない（keep）
-    { wr_wt_gone "${T_WT}" && { [ -z "${holder_word}" ] || [ "${holder_word}" = removed ]; }; } && gone=1
+    { wr_wt_gone "${T_WT}" && { [ -z "${holder_word}" ] || [ "${holder_word}" = removed ] || [ "${holder_free}" = 1 ]; }; } && gone=1
     exists=0
     if sha=$(git rev-parse --verify -q "refs/heads/${branch}^{commit}" 2>/dev/null); then exists=1; else sha=""; fi
     act=$(wr_branch_action "${branch}" "${base}" "${gone}" "${exists}")
