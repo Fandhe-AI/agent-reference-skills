@@ -36,10 +36,11 @@ Layout XML alternative:
 ## Notes
 
 - The flag may only be set in an activity, never in a service or other app component.
-- Setting the flag programmatically allows clearing it later so the screen can turn off; the XML attribute has no such option.
+- You can use whichever approach is best for your app. The advantage of setting the flag programmatically in your activity is that it gives you the option of programmatically clearing the flag later and thereby allowing the screen to turn off.
 - If an app with the flag goes into the background, the system lets the screen turn off normally; no explicit clear is needed. Clear it when the app no longer needs the screen on.
 - TV: use `FLAG_KEEP_SCREEN_ON` to prevent Ambient Mode during active video playback; without it on the foreground activity, the device enters Ambient Mode after a period of inactivity.
 - Keeping the screen on can drain the battery quickly; do so for as short a time as possible.
+- Source: https://developer.android.com/develop/background-work/background-tasks/awake/screen-on
 
 ## Related
 

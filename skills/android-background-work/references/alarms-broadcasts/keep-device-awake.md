@@ -25,8 +25,9 @@ WorkManager / JobScheduler / DownloadManager   // system or library acquires a w
   - Task scheduling APIs or libraries such as WorkManager, `JobScheduler`, `DownloadManager`: the system or library acquires a wake lock attributed to your app.
   - Media3 ExoPlayer: use `ExoPlayer.setWakeMode()`.
   - Wake-up sensors: use `SensorManager`; check with `Sensor.isWakeUpSensor`.
-  - Scheduling an alarm: the device wakes when the alarm goes off, even if the app is not running.
+  - Scheduling an alarm: the device wakes when the alarm goes off, even if the app is not running. This applies only to the wake-up alarm types (`RTC_WAKEUP` / `ELAPSED_REALTIME_WAKEUP`); `RTC` and `ELAPSED_REALTIME` alarms do not wake the device (see [Alarm types](./alarm-types.md)).
 - Wake locks can quickly drain the battery; use one only if there is no other option, and release it as soon as possible.
+- Source: https://developer.android.com/develop/background-work/background-tasks/awake
 
 ## Related
 
@@ -34,3 +35,4 @@ WorkManager / JobScheduler / DownloadManager   // system or library acquires a w
 - [Identify wake lock use cases](./wakelock-identify-use-cases.md)
 - [Keep the screen on](./keep-screen-on.md)
 - [AlarmManager](./alarmmanager.md)
+- [Alarm types](./alarm-types.md)
