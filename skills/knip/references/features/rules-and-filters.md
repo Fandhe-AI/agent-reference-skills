@@ -12,13 +12,30 @@ knip --include files,dependencies
 knip --include files --exclude enumMembers,duplicates
 ```
 
+`nsExports` and `nsTypes` are off by default: including only those adds them to the default report instead of narrowing it.
+
+`cycles` is also off by default. `--include cycles` (or `"include": ["cycles"]` in configuration) reports only circular dependencies; use it with the cycles reporter for a tree view.
+
 ### Shorthands
 
 | Shorthand | Includes |
 |-----------|----------|
-| `--dependencies` | dependencies, devDependencies, optionalPeerDependencies, unlisted, binaries, unresolved, catalog |
-| `--exports` | exports, types, enumMembers, namespaceMembers, duplicates |
+| `--dependencies` | dependencies, devDependencies, optionalPeerDependencies, unlisted, binaries, unresolved, catalog, catalogReferences |
+| `--exports` | exports, nsExports, types, nsTypes, enumMembers, namespaceMembers, duplicates (per the CLI reference; the Rules & Filters page lists it without `nsExports` / `nsTypes`) |
 | `--files` | files |
+| `--cycles` | cycles (circular dependencies only) |
+
+Combine shorthands to report the default issue types plus circular dependencies:
+
+```sh
+knip --dependencies --exports --files --cycles
+```
+
+Per the CLI reference, `--exports` also includes `nsExports` / `nsTypes`, which are off by default, so this combination may also report namespace issues. To add only circular dependencies to the default report, exclude them explicitly:
+
+```sh
+knip --dependencies --exports --files --cycles --exclude nsExports,nsTypes
+```
 
 ## Rules
 

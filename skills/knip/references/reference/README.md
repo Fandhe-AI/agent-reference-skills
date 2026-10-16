@@ -2,14 +2,14 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| CLI Arguments | 汎用・モード・スコープ・修正系フラグ一覧（--help / --version / --cache / --watch 等）。 | [cli.md](./cli.md) |
-| Configuration | entry / project / paths の基本設定・JSON Schema・ワークスペース設定。 | [configuration.md](./configuration.md) |
-| Configuration Hints | 設定ファイル内の問題検出・改善ヒント（unconfigured projects/workspaces 等）。 | [configuration-hints.md](./configuration-hints.md) |
-| Dynamic Configuration | TypeScript / JavaScript / async 関数ベースの動的設定方法。 | [dynamic-configuration.md](./dynamic-configuration.md) |
-| FAQ | 導入理由・よくある落とし穴・他ツール比較（ESLint / tree-shaking）。 | [faq.md](./faq.md) |
-| Integrations | VS Code 拡張・JetBrains プラグイン・MCP Server・Language Server。 | [integrations.md](./integrations.md) |
-| Issue Types | 検出可能な issue 一覧（unused files / dependencies / exports / types 等）。 | [issue-types.md](./issue-types.md) |
-| JSDoc & TSDoc Tags | @public / @internal / @alias / @beta タグによる例外処理・カスタムタグ。 | [jsdoc-tsdoc-tags.md](./jsdoc-tsdoc-tags.md) |
-| Known Issues | プラグイン読み込み例外・path alias 解決失敗・Nx daemon 問題のワークアラウンド。 | [known-issues.md](./known-issues.md) |
-| Plugins (155) | 155 プラグイン一覧・自動有効化・設定オプション（config / entry）。 | [plugins.md](./plugins.md) |
-| Related Tooling | 補完ツール（ESLint / Biome / oxlint・circular dependencies 検出・technical debt）。 | [related-tooling.md](./related-tooling.md) |
+| CLI Arguments | Every Knip command-line flag, grouped by mode, scope, fix, output and troubleshooting, with shortcuts and exit codes | [cli.md](./cli.md) |
+| Configuration | Every knip.json option, including entry, project, paths, workspaces, plugins, rules, tags, ignores and compilers | [configuration.md](./configuration.md) |
+| Configuration Hints | The configuration hints Knip emits to keep your config tidy, what each one means, and how to resolve it | [configuration-hints.md](./configuration-hints.md) |
+| Dynamic Configuration | Write a typed Knip config in JavaScript or TypeScript, including an async function that returns the config object | [dynamic-configuration.md](./dynamic-configuration.md) |
+| FAQ | Design decisions behind Knip, common pitfalls, how it compares to ESLint and tree-shaking, and how the module graph works | [faq.md](./faq.md) |
+| Integrations | Knip's VS Code extension, JetBrains plugin, MCP server and language server for editor diagnostics and coding agents | [integrations.md](./integrations.md) |
+| Issue Types | Every issue type Knip reports, from unused files and dependencies to unused exports, enum and namespace members, with their filter keys | [issue-types.md](./issue-types.md) |
+| JSDoc & TSDoc Tags | Use JSDoc and TSDoc tags like `@public`, `@internal`, `@alias` and custom tags to include or exclude exports from Knip's report | [jsdoc-tsdoc-tags.md](./jsdoc-tsdoc-tags.md) |
+| Known Issues | Known limitations and workarounds for caching, config file errors, path aliases in config files, and the Nx daemon | [known-issues.md](./known-issues.md) |
+| Plugins (155) | The full list of Knip plugins for frameworks, build tools, test runners and linters, each linking to its reference page | [plugins.md](./plugins.md) |
+| Related Tooling | Tools that complement Knip for things it does not cover, like unused imports and variables, and unused properties of objects and types | [related-tooling.md](./related-tooling.md) |

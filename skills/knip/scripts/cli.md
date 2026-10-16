@@ -44,6 +44,14 @@ NO_COLOR=1 knip
 
 環境変数 `NO_COLOR` を設定することでカラーなし出力になる。
 
+## oxc-parser の raw transfer を無効化（メモリエラー回避）
+
+```sh
+KNIP_DISABLE_RAW_TRANSFER=1 knip
+```
+
+低 RAM のマシンや Node.js 22 以上の Windows で `RangeError: Array buffer allocation failed` が出る場合に使用する。通常のパーサー経路に切り替わる。
+
 ## プログレス表示の無効化
 
 ```sh
@@ -114,6 +122,20 @@ knip --no-config-hints
 knip --treat-config-hints-as-errors
 ```
 
+## タグヒントの非表示
+
+```sh
+knip --no-tag-hints
+```
+
+## タグヒントをエラーとして扱う
+
+```sh
+knip --treat-tag-hints-as-errors
+```
+
+タグヒントがあると exit code `1` で終了する。
+
 ## キャッシュを有効化（連続実行を 10-40% 高速化）
 
 ```sh
@@ -155,6 +177,16 @@ knip --reporter markdown
 ```sh
 knip --reporter compact
 ```
+
+```sh
+knip --reporter sarif
+```
+
+```sh
+knip --reporter cycles
+```
+
+`cycles` レポーターは循環依存をツリー表示する。`knip --cycles --reporter cycles` の形で使う。
 
 ```sh
 knip --reporter json --reporter-options '{"path":"knip-report.json"}'

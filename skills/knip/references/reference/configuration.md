@@ -83,6 +83,25 @@ Filter issue types.
 
 `+` (include, default) / `-` (exclude). `@` prefix optional.
 
+### `preprocessor`
+
+Preprocess the results before providing them to the reporter(s). Single preprocessor or an array; each value is a path to a local file or an npm package name.
+
+```json
+{ "preprocessor": ["./first.ts", "./second.ts"] }
+```
+
+### `preprocessorOptions`
+
+Extra options to pass to the preprocessor.
+
+```json
+{
+  "preprocessor": "./my-preprocessor.ts",
+  "preprocessorOptions": { "key": "value" }
+}
+```
+
 ### `treatConfigHintsAsErrors`
 
 ```json
@@ -119,6 +138,19 @@ Exclude from "Unused files" only (still analyzed for other issues).
 { "ignoreBinaries": ["zip", "docker-compose", "pm2-.+"] }
 ```
 
+### `ignoreGlobalBinaries`
+
+Defaults to `true`, suppressing missing-binary reports for common global commands such as `git` and `docker`. Set to `false` to report them where a project dependency is expected:
+
+```json
+{
+  "ignoreGlobalBinaries": false,
+  "ignoreBinaries": ["git"]
+}
+```
+
+Dependencies providing a referenced binary still count as used, and `ignoreBinaries` still applies. Workspaces inherit the top-level value unless they override it.
+
 ### `ignoreDependencies`
 
 ```json
@@ -149,7 +181,20 @@ Exclude from "Unused files" only (still analyzed for other issues).
 {
   "ignoreIssues": {
     "src/generated/**": ["exports", "types"],
-    "**/*.generated.ts": ["exports", "enumMembers"]
+    "**/*.generated.ts": ["exports", "enumMembers", "namespaceMembers"]
+  }
+}
+```
+
+### `cycles`
+
+Configure circular dependency (`cycles`) detection. `dynamicImports` includes dynamic `import()` edges (excluded by default). `allow` accepts specific cycles by exact path; entries are relative to the project root and omit the closing repeat of the first file.
+
+```json
+{
+  "cycles": {
+    "dynamicImports": true,
+    "allow": [["src/i18n/index.ts", "src/i18n/middleware.ts"]]
   }
 }
 ```
@@ -174,7 +219,7 @@ Fine-grained:
 { "includeEntryExports": true }
 ```
 
-Reports unused exports in entry source files (not config files).
+Reports unused exports in entry source files (not config files). Entry files configured by plugins and entry files discovered only through `package.json` scripts are excluded; add the latter to `entry` to include their exports.
 
 ## Compilers
 

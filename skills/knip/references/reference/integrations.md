@@ -8,7 +8,10 @@ Official extension:
 - Inline warnings for unused dependencies, exports, files
 - Hover information with import/usage locations
 - Tree views for imports/exports
-- Contention detection (circular dependencies)
+- Contention detection: warnings for circular dependencies, ambiguous, shadowed and diamond-shaped import chains
+  - Ambiguous: different bindings compete for the same name, with no winner
+  - Shadowed: an explicit export hides bindings from `export *`
+  - Converged: the same binding arrives through multiple re-export paths
 - Built-in MCP Server
 
 Available on VS Code Marketplace and Open VSX Registry.
