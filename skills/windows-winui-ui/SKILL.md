@@ -2,15 +2,13 @@
 name: windows-winui-ui
 description: >
   Windows アプリ開発 (WinUI 3 / XAML) の UI 基盤リファレンス。
-  レイアウトパネル Grid, StackPanel, Canvas, RelativePanel, SplitView, ScrollViewer、
-  XAML マークアップ x:Bind, x:Name, x:Class, StaticResource, ThemeResource、
-  添付プロパティ, 依存関係プロパティ、
-  スタイル・テーマ Style, ControlTemplate, DataTemplate, VisualStateManager,
-  ResourceDictionary, Acrylic, Mica, SystemBackdrop、
-  データバインディング Binding, INotifyPropertyChanged, ObservableCollection,
-  IValueConverter, DataContext, MVVM、
-  アニメーション Storyboard, DoubleAnimation, EasingFunction, ThemeTransition,
-  ConnectedAnimation, ImplicitAnimation。
+  Grid, StackPanel, Canvas, RelativePanel, SplitView, ScrollViewer、x:Bind, x:Name,
+  x:Class, StaticResource, ThemeResource、添付プロパティ, 依存関係プロパティ、Style,
+  ControlTemplate, DataTemplate, VisualStateManager, ResourceDictionary、Acrylic, Mica,
+  SystemBackdrop, SystemBackdropElement、compact sizing、Binding,
+  INotifyPropertyChanged, ObservableCollection, IValueConverter, DataContext, MVVM、
+  Storyboard, DoubleAnimation, EasingFunction, ThemeTransition, ConnectedAnimation,
+  ImplicitAnimation、XamlOptionalChanges。
 user-invocable: false
 ---
 
@@ -19,6 +17,7 @@ user-invocable: false
 WinUI 3 の XAML UI 基盤に関する公式ドキュメントの主要 API を蒸留したリファレンス。
 レイアウト構築・XAML マークアップ構文・スタイル/テーマ・データバインディング・アニメーションという、コントロール個別 API とは独立した UI 基盤レイヤーを扱う。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+出典は MS Learn en-us（2026-10-16 取得）、Windows App SDK 2.x（stable 2.5.1 時点）。SystemBackdropElement は 2.0 以降、XamlOptionalChanges は 2.3.1 以降が必要。
 
 ## ディレクトリ構成
 
@@ -78,6 +77,7 @@ skills/windows-winui-ui/
       xaml-intrinsic-data-types.md
       xaml-namescopes.md
       xaml-namespaces-and-namespace-mapping.md
+      xaml-optional-changes.md
       xaml-overview.md
       xaml-resource-dictionary.md
       xaml-syntax-guide.md
@@ -87,13 +87,16 @@ skills/windows-winui-ui/
       README.md
       acrylic-material.md
       brushes.md
+      compact-sizing.md
       control-templating-guide.md
       control-template.md
       high-contrast-themes.md
       data-template.md
       data-template-selector.md
       element-theme.md
+      in-app-acrylic.md
       item-container-style.md
+      materials-overview.md
       mica-material.md
       resource-dictionary.md
       shadows.md
@@ -110,6 +113,8 @@ skills/windows-winui-ui/
       binding-markup-extension.md
       collectionviewsource.md
       data-binding-and-mvvm.md
+      data-binding-in-depth.md
+      data-binding-overview.md
       datacontext.md
       dependency-property-registration.md
       data-binding-debugging.md
@@ -163,10 +168,13 @@ skills/windows-winui-ui/
 | Style / ControlTemplate / DataTemplate でコントロールの見た目をカスタマイズしたい | styling-theming | [references/styling-theming/README.md](references/styling-theming/README.md) |
 | VisualStateManager / VisualState でビジュアル状態遷移を実装したい | styling-theming | [references/styling-theming/README.md](references/styling-theming/README.md) |
 | Acrylic / Mica / SystemBackdrop / ハイコントラストテーマで素材・テーマを適用したい | styling-theming | [references/styling-theming/README.md](references/styling-theming/README.md) |
-| Binding / x:Bind でデータバインディングを実装したい | data-binding | [references/data-binding/README.md](references/data-binding/README.md) |
+| コントロールを compact sizing（DensityStyles/Compact.xaml）で高密度表示にしたい | styling-theming | [references/styling-theming/README.md](references/styling-theming/README.md) |
+| Mica / Desktop Acrylic / SystemBackdropElement / in-app AcrylicBrush のどれを使うか選びたい | styling-theming | [references/styling-theming/README.md](references/styling-theming/README.md) |
+| XamlOptionalChanges / XamlChangeId で XAML の optional な動作変更や最適化を opt-in したい、DISABLE_XAML_GENERATED_MAIN で自作 main を書きたい | xaml-markup | [references/xaml-markup/README.md](references/xaml-markup/README.md) |
+| Binding / x:Bind でデータバインディングを実装したい（全体像・チュートリアル・in depth） | data-binding | [references/data-binding/README.md](references/data-binding/README.md) |
 | INotifyPropertyChanged / ObservableCollection / MVVM でデータ変更通知を実装したい | data-binding | [references/data-binding/README.md](references/data-binding/README.md) |
 | IValueConverter / CollectionViewSource でバインディング値の変換・整形をしたい | data-binding | [references/data-binding/README.md](references/data-binding/README.md) |
 | Storyboard / DoubleAnimation / EasingFunction でプロパティアニメーションを実装したい | animation-composition | [references/animation-composition/README.md](references/animation-composition/README.md) |
 | ThemeTransition / ConnectedAnimation / ImplicitAnimation で画面遷移演出を実装したい | animation-composition | [references/animation-composition/README.md](references/animation-composition/README.md) |
 
-このスキルは WinUI 3 の XAML UI 基盤（レイアウト・マークアップ構文・スタイル・データバインド・アニメーション）のみを扱う。同名の Button / Grid / Window / Style 等は apple-swiftui, ark-ui, chakra-ui, fandhe-frontend, android-compose-* とは無関係の別 API。個別コントロールの API は `windows-winui-controls`、アプリライフサイクル・ウィンドウ管理・通知・リソース・配置は `windows-app-sdk` が担当する。
+このスキルは WinUI 3 の XAML UI 基盤（レイアウト・マークアップ構文・スタイル・データバインド・アニメーション）のみを扱う。同名の Button / Grid / Window / Style 等は apple-swiftui, ark-ui, chakra-ui, fandhe-frontend, android-compose-* とは無関係の別 API。個別コントロールの API は `windows-winui-controls`、アプリライフサイクル・ウィンドウ管理・通知・リソース・配置は `windows-app-sdk` が担当する。Fluent のデザイン指針（materials / motion / page transitions の設計ガイダンス）は `windows-design` が担当する。
