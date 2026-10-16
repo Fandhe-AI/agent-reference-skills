@@ -4,9 +4,9 @@
 
 ```toml
 [dependencies]
-fandhe-backend-core = "0.4.2"
-fandhe-backend-http = "0.4.2"
-fandhe-backend-routes = "0.4.2"
+fandhe-backend-core = "0.5.0"
+fandhe-backend-http = "0.5.0"
+fandhe-backend-routes = "0.5.0"
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 ```
 
@@ -57,5 +57,5 @@ curl -si http://127.0.0.1:3000/ -H 'X-Api-Key: secret'        # 200
 - 拒否レスポンス送出後も、登録済み `Middleware` の `on_response` は呼ばれる（観測の一貫性）
 - 複数の `RequestGate` を登録した場合、登録順に評価し最初の `Reject` を優先する
 - 上の例はヘッダの有無のみを見る最小例であり、そのまま認証に使ってはならない。本番実装ではトークン値の定数時間比較（タイミング攻撃対策）・失効管理・有効期限検証が必須
-- プロダクション水準の実例は `fandhe-backend-plugin-hub-wiring` の `TenantGate`（JWT 検証・テナント境界強制）を参照
+- プロダクション水準の実例は `fandhe-backend-plugin-jwt` の `JwtGate`（`Authorization: Bearer` の JWT 検証、[jwt-gate.md](./jwt-gate.md) 参照）、`fandhe-backend-plugin-csrf` の `CsrfGate`（状態変更要求の送信元検査、[csrf-gate.md](./csrf-gate.md) 参照）、`fandhe-backend-plugin-hub-wiring` の `TenantGate`（JWT 検証・テナント境界強制）を参照。0.5.0 の `TenantGateConfig::new` / `from_jwks_json` は `JwtPolicy` が必須引数になっている
 - `RequestGate` は `Allow` / `Reject` の二値判定のみを返せる設計であり、`Location` ヘッダ付きリダイレクトは返せない。リダイレクト用途には v0.2.0 で追加された `Interceptor::intercept` を使う（[interceptor.md](./interceptor.md) 参照）

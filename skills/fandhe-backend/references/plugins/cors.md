@@ -51,6 +51,7 @@ pub fn apply_cors_headers(head: &RequestHead, config: &CorsConfig, response: Res
 
 - これは Rust 製 fandhe-backend の API であり、JS/TS の `hono` や Go の `go-echo` の同名機能（CORS ミドルウェア）とは別物
 - フェイルクローズ設計: 許可オリジンは完全一致のみ、不許可 Origin はヘッダを一切付与しない（実リクエスト）か CORS ヘッダなしの `403`（プリフライト）で拒否理由を返さない
+- v0.5.0（#830）: `Vary: Origin` は `fandhe-backend-http` の `Response::with_vary` 経由で付く。重複せず、`Vary: *` の応答には足さない。公開 API は変わらず、破壊的変更ではない
 - `crates/plugin-cors` 自体は `fandhe-backend-core` に依存しない非循環パターン。コア側が `optional = true` + `dep:` 構文で依存する
 
 ## Related

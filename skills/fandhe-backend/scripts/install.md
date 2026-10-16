@@ -11,7 +11,7 @@ cargo add fandhe-backend-core fandhe-backend-http fandhe-backend-routes
 cargo add tokio --features rt-multi-thread,macros
 ```
 
-`fandhe-backend-core` / `fandhe-backend-http` / `fandhe-backend-routes` が公開対象のコア 3 クレート。通常は `fandhe-backend-core` の feature 経由でプラグインを有効化すれば十分（個別プラグインクレートを直接依存に追加する必要はない）。
+`fandhe-backend-core` / `fandhe-backend-http` / `fandhe-backend-routes` が公開対象のコア 3 クレート。通常は `fandhe-backend-core` の feature 経由でプラグインを有効化すれば十分（個別クレートを直接依存に追加する必要はない）。ただし Gate 型の 3 クレート（hub-wiring / jwt / csrf）は例外で、次節のとおり独立クレートとして追加する。
 
 ## プラグインを feature で有効化する
 
@@ -25,6 +25,17 @@ cargo add fandhe-backend-core --features graphql,openapi,cors
 
 feature を何も指定しない場合、`fandhe-backend-plugin-*` の依存・コードは一切バイナリに含まれない（pay-for-what-you-use）。`fandhe-backend-core` の feature 一覧: `websocket` / `graphql` / `webrtc-proxy` / `webrtc` / `tracing` / `openapi` / `cors` / `compression` / `static`。
 
-## hub-wiring プラグインを導入する
+## Gate 型プラグイン（hub-wiring / jwt / csrf）を導入する
 
-`fandhe-backend-plugin-hub-wiring`（JWT 検証・テナント境界強制）のみ `fandhe-backend-core` の feature ではなく、独立クレートとして直接依存に追加する。
+```sh
+# hub-wiring（テナント境界強制。JWT 検証は jwt クレートへ移動済み）
+cargo add fandhe-backend-plugin-hub-wiring
+
+# JWT 認証ゲート
+cargo add fandhe-backend-plugin-jwt
+
+# CSRF 対策ゲート
+cargo add fandhe-backend-plugin-csrf
+```
+
+Gate 型の `fandhe-backend-plugin-hub-wiring` / `fandhe-backend-plugin-jwt` / `fandhe-backend-plugin-csrf` は `fandhe-backend-core` の feature を持たない独立クレート。直接依存に追加し、`Server::gate` で登録する。`fandhe-backend-plugin-jwt` と `fandhe-backend-plugin-csrf` は 0.5.0 で初公開（CHANGELOG 記載。0.4.2 以前の crates.io には存在しない）。
