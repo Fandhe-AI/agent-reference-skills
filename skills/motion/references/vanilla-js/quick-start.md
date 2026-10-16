@@ -81,6 +81,7 @@ animate(
 - Hardware acceleration is used automatically when a value can be hardware accelerated (`x`, `y`, `opacity`, `filter`, `transform`).
 - The mini HTML/SVG version of `animate()` is 3.2kb.
 - Motion AI Kit (`npx motion-ai` installs its free `/motion` skill) and Motion Studio are development tools; some AI Kit features need Motion+.
+- Source: https://motion.dev/docs/quick-start (fetched 2026-10).
 
 ## Related
 

@@ -50,14 +50,17 @@ Shared element transition (remove an element, add one with a matching `data-layo
 ```
 const firstItem = document.querySelector(".tabs li:first-child")
 const underline = firstItem.querySelector("[data-layout-id='underline']")
-underline.remove()
-
-// Add underline to second item
 const secondItem = document.querySelector(".tabs li:nth-child(2)")
-const newUnderline = document.createElement("div")
-newUnderline.setAttribute("data-layout-id", "underline")
-newUnderline.className = "underline"
-secondItem.appendChild(newUnderline)
+
+animateLayout(() => {
+  underline.remove()
+
+  // Add underline to second item
+  const newUnderline = document.createElement("div")
+  newUnderline.setAttribute("data-layout-id", "underline")
+  newUnderline.className = "underline"
+  secondItem.appendChild(newUnderline)
+})
 ```
 
 Override a shared transition and use controls:
@@ -83,6 +86,7 @@ scroll(controls)
 - Crossfade: leave the initial element in the DOM and add a new element with a matching `data-layout-id`.
 - `animateLayout` is async and returns `AnimationPlaybackControls` like `animate`.
 - In React, one can crossfade back by removing the new element with `<AnimatePresence>`; there is not yet an equivalent for vanilla JS, so this is not yet possible.
+- Upstream example performs the DOM mutation outside animateLayout(); wrapped here so the shared element transition actually runs.
 - Source: https://motion.dev/docs/layout-animations (fetched 2026-10).
 
 ## Related
