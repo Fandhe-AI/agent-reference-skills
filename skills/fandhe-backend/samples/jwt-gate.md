@@ -54,4 +54,5 @@ fn main() -> Result<(), PolicyError> {
 - `JwtPolicy::new(issuer, audiences, allowed_algorithms, token_type)` は 4 引数。0.5.0 では hub-wiring の `TenantGateConfig::new` / `from_jwks_json` も `JwtPolicy` を必須引数に取る
 - `JwtGate::check` は同期・I/O なし。拒否は 401（本文は固定の `{"error":"invalid_token"}`、トークン・`kid`・失敗理由は反映しない）。クレームは `GateOutcome` に載せられないため、ハンドラは `JwtGate::authenticator()` または `Server::gate` へ渡す前に clone した認証器から得る
 - `JwtAuthenticator` の `Clone` は `Arc` 共有で、署名検証結果のキャッシュも共有される
-- Cookie 認証の画面では CSRF ゲートを JWT ゲートより先に登録する（[csrf-gate.md](./csrf-gate.md) 参照）
+- `JwtGate` は `Authorization: Bearer` のみを検査し Cookie は見ない。Cookie だけで認証する画面に `JwtGate` を登録すると正当な要求も 401 になるため、Cookie 認証の画面では `CsrfGate` の後に Cookie セッションを検証する独自ゲートを登録する（[csrf-gate.md](./csrf-gate.md) 参照）
+- `JwtGate` と `CsrfGate` を併用するのは、要求が Bearer 資格情報も送る場合に限る。その場合も CSRF ゲートを先に登録する。ゲートにはパス単位の使い分けが無い
