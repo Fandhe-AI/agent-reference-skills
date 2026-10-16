@@ -2,7 +2,7 @@
 
 Definitions of key terms used throughout the NVIDIA Sync documentation.
 
-## Terms
+## Options / Props
 
 | Name | Type | Description |
 | --- | --- | --- |

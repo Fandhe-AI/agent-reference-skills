@@ -37,6 +37,7 @@ Steps for a cluster:
 - Displays live data and keeps a limited history while its window is open. The data is not saved to disk; closing the window erases the related data.
 - Time plots include a marquee: click and drag to narrow the viewing window, then reset the zoom after selecting a region. A backward-looking time interval can also be specified to skip the marquee.
 - A "Telemetry Unavailable" banner means the flow of data stopped. The resource monitor uses the direct SSH or Tailscale connection to the device, and momentary lags or lapses in that connection interrupt telemetry. Telemetry resumes as long as the connection persists; the corresponding gaps in the plots are times when telemetry was unavailable.
+- Source: https://docs.nvidia.com/sync/latest/resource-monitor.html (retrieved 2026-10-17).
 
 ## Related
 

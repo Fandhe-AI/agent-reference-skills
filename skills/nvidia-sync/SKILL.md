@@ -1,12 +1,13 @@
 ---
 name: nvidia-sync
 description: >
-  NVIDIA Sync デスクトップアプリのリファレンス。DGX Spark, DGX Station,
-  汎用 SSH Linux ホストのリモート接続管理。mDNS 自動検出, 手動 IP,
+  NVIDIA Sync デスクトップアプリ。DGX Spark, DGX Station,
+  SSH Linux ホストのリモート接続管理。mDNS 自動検出, 手動 IP,
   SSH config インポート, Tailscale, 自動ネットワーク切替。
   Cluster Assistant, ConnectX-7 クラスタトポロジ, netplan 検証。
-  Resource Monitor (CPU / GPU / memory utilization), release notes。
-  VS Code, Cursor, NVIDIA AI Workbench 起動, カスタムアプリ, ポートフォワード, SSH トンネル。
+  Resource Monitor (CPU / GPU / memory), release notes。
+  VS Code, VS Code Insiders, Cursor, NVIDIA AI Workbench 起動,
+  カスタムアプリ, ポートフォワード, SSH トンネル。
 user-invocable: false
 ---
 
