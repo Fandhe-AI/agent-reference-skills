@@ -24,6 +24,7 @@ app.post("/create-subscription", async (req, res) => {
     items: [{ price: priceId }],
     payment_behavior: "default_incomplete",
     payment_settings: { save_default_payment_method: "on_subscription" },
+    billing_mode: { type: "flexible" },
     expand: ["latest_invoice.confirmation_secret"],
   });
 
@@ -89,5 +90,7 @@ async function subscribe(email, priceId) {
 
 - `payment_behavior: "default_incomplete"` でサブスクリプションを未完了状態で作成し、フロントエンドで支払いを確定させる
 - `expand: ["latest_invoice.confirmation_secret"]` で `client_secret` を1リクエストで取得できる（Basil API `2025-03-31.basil` 以降は invoice から `payment_intent` が分離されたため、`payment_intent` ではなく `confirmation_secret` を expand する）
+- `billing_mode: { type: "flexible" }` で flexible billing mode を指定する。`billing_mode` の利用には API バージョン `2025-06-30.basil` 以降が必要
+- `2025-09-30.clover` 以降は、API で作成する新規サブスクリプションの既定が `flexible` になる。リクエストの API バージョンがそれより古い場合の既定は `classic`。`classic` を使うには `billing_mode.type` に `classic` を指定する
 - サブスクリプションのプロビジョニングは Webhook の `invoice.paid` イベントで制御する（フロントエンドの `return_url` だけに頼らない）
 - プラン変更時は既存 subscription item の `id` を指定して更新する

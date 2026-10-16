@@ -7,7 +7,7 @@ Stripe assigns an API version to your account on first use. The version controls
 ```sh
 curl https://api.stripe.com/v1/customers \
   -u sk_test_YOUR_KEY: \
-  -H "Stripe-Version: 2024-04-10"
+  -H "Stripe-Version: 2026-09-30.endive"
 ```
 
 ## Options / Props
@@ -36,6 +36,9 @@ The following changes can occur in any release and do not require code updates:
 
 ## Notes
 
+- Latest API version: `2026-09-30.endive` (major release `Endive`; preview `2026-09-30.preview`). The previous API version is `2026-08-26.dahlia` (the Dahlia major release was `2026-03-25.dahlia`). The official upgrade guide uses `2026-09-30.endive` in its `Stripe-Version` examples (cURL, `stripe charges create --stripe-version 2026-09-30.endive`, SDK `apiVersion`).
+- Always pin the API version in code (`Stripe-Version` header or a pinned SDK) rather than relying on the account default. Strongly typed SDKs (Java, Go, .NET) are fixed to the version current at SDK release and do not support overriding it.
+- Breaking changes in `2026-09-30.endive` (28 listed in the changelog) include: `payment_method_types` removed from Checkout Session create and from PaymentIntent / SetupIntent create, update and confirm; PayTo fields removed from PaymentMethod update; `filters.countries` renamed `filters.country` for Financial Connections Sessions; `configurations` removed from Account Links v2.
 - Store Stripe object IDs with up to 255 characters (MySQL: `VARCHAR(255) COLLATE utf8_bin`).
 - Upgrading your account version affects: API calls without the `Stripe-Version` header, Stripe.js method responses, webhook payloads (except endpoints with an explicit version pin), and automatic billing operations.
 - You can roll back to the previous version within 72 hours of upgrading; failed webhooks are retried with the old structure.

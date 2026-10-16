@@ -16,8 +16,7 @@ curl https://api.stripe.com/v1/payment_intents \
   -u "sk_test_...:" \
   -d amount=500 \
   -d currency=usd \
-  -d payment_method=pm_card_visa \
-  -d "payment_method_types[]=card"
+  -d payment_method=pm_card_visa
 ```
 
 ## Options / Props
@@ -62,6 +61,7 @@ Test clocks allow time-based simulation of Billing objects (subscriptions, invoi
 - `stripe listen` outputs a webhook signing secret used to verify signatures locally; this secret differs from the one in the Dashboard.
 - Test clocks automatically clean up associated customers and subscriptions upon deletion (sandbox only).
 - Workbench Shell can run `stripe listen` to view events but cannot forward them to a local endpoint — use Stripe CLI for that.
+- Removed: `-d "payment_method_types[]=card"` was dropped from the PaymentIntent example, matching the official testing guide. The `payment_method_types` parameter returns `400` (`payment_method_types_no_longer_supported`) on API version `2026-09-30.endive`; use `automatic_payment_methods` or `allowed_payment_method_types` instead.
 
 ## Related
 

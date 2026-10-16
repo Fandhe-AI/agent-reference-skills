@@ -10,13 +10,11 @@ Treasury provides three APIs for moving funds out of or into a FinancialAccount,
 | `ReceivedCredit` | Received by FinancialAccount | External push (ACH / wire / Stripe network) — read-only |
 | `CreditReversal` | Reversal of ReceivedCredit | Returns funds to the original sender |
 
----
+## Signature / Usage
 
-## InboundTransfer
+### InboundTransfer
 
 Pulls funds from a PaymentMethod you own into a FinancialAccount via ACH debit.
-
-### Signature / Usage
 
 ```bash
 curl https://api.stripe.com/v1/treasury/inbound_transfers \
@@ -28,31 +26,9 @@ curl https://api.stripe.com/v1/treasury/inbound_transfers \
   -d description="Fund from my bank account"
 ```
 
-### Options / Props
-
-| Name | Type | Description |
-|------|------|-------------|
-| `financial_account` | string | **Required.** Destination FinancialAccount ID |
-| `amount` | integer | **Required.** Amount in cents |
-| `currency` | enum | **Required.** Lowercase ISO 4217 code (e.g., `usd`) |
-| `origin_payment_method` | string | **Required.** PaymentMethod ID to debit |
-| `description` | string | Arbitrary description |
-| `statement_descriptor` | string | Bank statement descriptor (max 10 chars) |
-| `metadata` | object | Key-value pairs |
-
-### Notes
-
-- Requires `inbound_transfers.ach` feature to be `active` on the FinancialAccount.
-- Returns status `processing`; use test helper `POST /v1/test_helpers/treasury/inbound_transfers/:id/succeed` (or `/fail`, `/return`) to simulate transitions.
-- Endpoints: `POST`, `GET /:id`, `GET` (list), `POST /:id/cancel`.
-
----
-
-## OutboundTransfer
+### OutboundTransfer
 
 Sends funds from a FinancialAccount to a PaymentMethod belonging to **the same entity** via ACH or domestic wire.
-
-### Signature / Usage
 
 ```bash
 curl https://api.stripe.com/v1/treasury/outbound_transfers \
@@ -64,7 +40,57 @@ curl https://api.stripe.com/v1/treasury/outbound_transfers \
   -d description="Withdraw to business checking"
 ```
 
-### Options / Props
+### OutboundPayment
+
+Sends funds from a FinancialAccount to an **external** party (third-party bank account or another entity's FinancialAccount).
+
+```bash
+curl https://api.stripe.com/v1/treasury/outbound_payments \
+  -u "YOUR_SECRET_KEY" \
+  -d financial_account=fa_xxx \
+  -d amount=10000 \
+  -d currency=usd \
+  -d customer=cus_xxx \
+  -d destination_payment_method=pm_xxx \
+  -d description="Payment to vendor"
+```
+
+### ReceivedCredit
+
+Read-only. Represents funds pushed **into** a FinancialAccount from an external source (ACH credit, wire, Stripe network payout).
+
+```bash
+curl -G https://api.stripe.com/v1/treasury/received_credits \
+  -u "YOUR_SECRET_KEY" \
+  -d financial_account=fa_xxx \
+  -d limit=3
+```
+
+### CreditReversal
+
+Reverses a `ReceivedCredit`, returning funds to the originating sender. Eligibility depends on the payment network and source flow.
+
+```bash
+curl https://api.stripe.com/v1/treasury/credit_reversals \
+  -u "YOUR_SECRET_KEY" \
+  -d received_credit=rc_xxx
+```
+
+## Options / Props
+
+### InboundTransfer
+
+| Name | Type | Description |
+|------|------|-------------|
+| `financial_account` | string | **Required.** Destination FinancialAccount ID |
+| `amount` | integer | **Required.** Amount in cents |
+| `currency` | enum | **Required.** Lowercase ISO 4217 code (e.g., `usd`) |
+| `origin_payment_method` | string | **Required.** PaymentMethod ID to debit |
+| `description` | string | Arbitrary description |
+| `statement_descriptor` | string | Bank statement descriptor (max 10 chars) |
+| `metadata` | object | Key-value pairs |
+
+### OutboundTransfer
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -78,32 +104,7 @@ curl https://api.stripe.com/v1/treasury/outbound_transfers \
 | `statement_descriptor` | string | Max 10 chars (ACH) or 140 chars (wire); defaults to `"transfer"` |
 | `metadata` | object | Key-value pairs |
 
-### Notes
-
-- Use `OutboundPayment` instead when the destination belongs to a **different** entity.
-- Returns status `processing`. Test helpers: `/fail`, `/post`, `/return`.
-- Endpoints: `POST`, `GET /:id`, `GET` (list), `POST /:id/cancel`.
-
----
-
-## OutboundPayment
-
-Sends funds from a FinancialAccount to an **external** party (third-party bank account or another entity's FinancialAccount).
-
-### Signature / Usage
-
-```bash
-curl https://api.stripe.com/v1/treasury/outbound_payments \
-  -u "YOUR_SECRET_KEY" \
-  -d financial_account=fa_xxx \
-  -d amount=10000 \
-  -d currency=usd \
-  -d customer=cus_xxx \
-  -d destination_payment_method=pm_xxx \
-  -d description="Payment to vendor"
-```
-
-### Options / Props
+### OutboundPayment
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -120,27 +121,7 @@ curl https://api.stripe.com/v1/treasury/outbound_payments \
 | `purpose` | enum | Payment purpose (e.g., `payroll`) |
 | `metadata` | object | Key-value pairs |
 
-### Notes
-
-- Returns status `processing`. Test helpers: `/fail`, `/post`, `/return`.
-- Endpoints: `POST`, `GET /:id`, `GET` (list), `POST /:id/cancel`.
-
----
-
-## ReceivedCredit
-
-Read-only. Represents funds pushed **into** a FinancialAccount from an external source (ACH credit, wire, Stripe network payout).
-
-### Signature / Usage
-
-```bash
-curl -G https://api.stripe.com/v1/treasury/received_credits \
-  -u "YOUR_SECRET_KEY" \
-  -d financial_account=fa_xxx \
-  -d limit=3
-```
-
-### Options / Props (list)
+### ReceivedCredit (list)
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -150,7 +131,7 @@ curl -G https://api.stripe.com/v1/treasury/received_credits \
 | `limit` | integer | 1–100, default 10 |
 | `starting_after` / `ending_before` | string | Pagination cursors |
 
-### Object fields
+### ReceivedCredit (object fields)
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -163,33 +144,14 @@ curl -G https://api.stripe.com/v1/treasury/received_credits \
 | `linked_flows` | object | References to associated flow objects |
 | `reversal_details` | object | Reversal deadline and restrictions |
 
-### Notes
-
-- ReceivedCredits cannot be created via the API (use test helper `POST /v1/test_helpers/treasury/received_credits` for testing).
-- Check `reversal_details` to determine if a ReceivedCredit is eligible for reversal.
-
----
-
-## CreditReversal
-
-Reverses a `ReceivedCredit`, returning funds to the originating sender. Eligibility depends on the payment network and source flow.
-
-### Signature / Usage
-
-```bash
-curl https://api.stripe.com/v1/treasury/credit_reversals \
-  -u "YOUR_SECRET_KEY" \
-  -d received_credit=rc_xxx
-```
-
-### Options / Props
+### CreditReversal
 
 | Name | Type | Description |
 |------|------|-------------|
 | `received_credit` | string | **Required.** ID of the ReceivedCredit to reverse |
 | `metadata` | object | Key-value pairs |
 
-### Object fields
+### CreditReversal (object fields)
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -205,7 +167,35 @@ curl https://api.stripe.com/v1/treasury/credit_reversals \
 | `transaction` | string | Associated Transaction ID |
 | `hosted_regulatory_receipt_url` | string | URL for regulatory receipt |
 
-### Notes
+## Notes
+
+> This page covers the v1 Treasury API, now the legacy path. The official llms.txt recommends Treasury for Platforms (v2, public preview) for new integrations; v1 docs remain available for existing integrations.
+
+### InboundTransfer
+
+- Requires `inbound_transfers.ach` feature to be `active` on the FinancialAccount.
+- Returns status `processing`; use test helper `POST /v1/test_helpers/treasury/inbound_transfers/:id/succeed` (or `/fail`, `/return`) to simulate transitions.
+- Endpoints: `POST`, `GET /:id`, `GET` (list), `POST /:id/cancel`.
+
+### OutboundTransfer
+
+- Use `OutboundPayment` instead when the destination belongs to a **different** entity.
+- Returns status `processing`. Test helpers: `/fail`, `/post`, `/return`.
+- Endpoints: `POST`, `GET /:id`, `GET` (list), `POST /:id/cancel`.
+
+### OutboundPayment
+
+- Returns status `processing`. Test helpers: `/fail`, `/post`, `/return`.
+- Endpoints: `POST`, `GET /:id`, `GET` (list), `POST /:id/cancel`.
+
+### ReceivedCredit
+
+- ReceivedCredits cannot be created via the API (use test helper `POST /v1/test_helpers/treasury/received_credits` for testing).
+- Check `reversal_details` to determine if a ReceivedCredit is eligible for reversal.
+- RTP (`2026-09-30.endive`): funds arriving over The Clearing House's Real-Time Payments network produce a ReceivedCredit with `network: rtp`, and the ABA financial address `supported_networks` includes `rtp` where available. `network` and `supported_networks` are open enums, so handle unknown values. RTP is irrevocable: credit reversals are blocked with `reversal_details.restricted_reason` = `network_restricted`. In test mode pass `network: "rtp"` to the received credits test helper.
+- ACH return codes (`2026-09-30.endive`): v1 OutboundPayments and OutboundTransfers expose raw ACH return codes and reasons under `returned_details.network_details.ach`; v1 InboundTransfers under `failure_details.network_details.ach`. The normalized `returned_details.code` / `failure_details.code` remain.
+
+### CreditReversal
 
 - Reversing creates a new `CreditReversal` object — the original `ReceivedCredit` is not modified.
 - Endpoints: `POST /v1/treasury/credit_reversals`, `GET /:id`, `GET` (list).

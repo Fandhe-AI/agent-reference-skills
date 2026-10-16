@@ -130,4 +130,5 @@ curl -G https://api.stripe.com/v1/crypto/onramp/quotes \
 
 ## Related
 
-- [Crypto Onramp overview](./onramp-overview.md)
+- [Stripe-hosted onramp](./onramp-stripe-hosted.md)
+- [Embedded onramp](./onramp-embedded.md)

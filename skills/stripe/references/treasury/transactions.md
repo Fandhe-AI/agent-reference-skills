@@ -62,6 +62,7 @@ curl -G https://api.stripe.com/v1/treasury/transactions \
 - Transactions are **read-only**. Use `GET /v1/treasury/transactions/:id` or `GET /v1/treasury/transactions` to access them.
 - The `flow_type` field identifies what caused the transaction (e.g., `outbound_payment`, `received_credit`, `inbound_transfer`).
 - `balance_impact` values are signed integers: positive = credit, negative = debit.
+- This page covers the v1 Treasury API, now the legacy path. The official llms.txt recommends Treasury for Platforms (v2, public preview) for new integrations; v1 docs remain available for existing integrations.
 
 ## Related
 

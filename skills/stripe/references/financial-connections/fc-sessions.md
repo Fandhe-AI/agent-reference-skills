@@ -36,7 +36,8 @@ curl https://api.stripe.com/v1/financial_connections/sessions/{SESSION_ID} \
 | `account_holder.account` | string | Conditional | Stripe Account ID (when `type` is `"account"`) |
 | `permissions` | array | Yes | Data access to request: `payment_method`, `balances`, `ownership`, `transactions` |
 | `filters` | object | No | Restrictions on which accounts to collect |
-| `filters.countries` | array | No | ISO 3166-1 alpha-2 country codes to filter accounts |
+| `filters.countries` | array | No | ISO 3166-1 alpha-2 country codes to filter accounts. Removed in `2026-09-30.endive`; use `filters.country` |
+| `filters.country` | string | No | Single country code. Added in `2026-09-30.endive`; defaults to the requesting merchant's country if supported, otherwise US |
 | `filters.account_subcategories` | array | No | Limit to `checking`, `savings`, `mortgage`, `line_of_credit`, or `credit_card` |
 | `prefetch` | array | No | Data to fetch immediately on account creation: `balances`, `ownership`, `transactions` |
 | `return_url` | string | No | Redirect URL after OAuth bank login in webview contexts |
@@ -73,6 +74,8 @@ curl https://api.stripe.com/v1/financial_connections/sessions/{SESSION_ID} \
 - `prefetch` reduces latency by fetching data immediately when accounts are linked; otherwise data is fetched on first explicit refresh.
 - Request only the `permissions` required for your use case to maximize user trust and conversion.
 - For ACH payments, `payment_method` permission is required; it creates a tokenized `us_bank_account` PaymentMethod.
+- `filters.countries` (array) was renamed `filters.country` (single string) in `2026-09-30.endive`. Previously only the first array element was used; passing the old name or an array now returns an error. The Session object's `filters.countries` was removed as well. The `filters[countries][]=US` form in the example above applies to versions before `2026-09-30.endive`; use `filters[country]=US` on that version.
+- `2026-09-30.endive` standardizes Session defaults regardless of account holder type: `limits[accounts]` unlimited; `manual_entry[mode]` `disabled`; `filters[require_payment_method_support]` `none`; `filters[account_subcategories]` all of `checking`, `savings`, `mortgage`, `line_of_credit`, `credit_card`; `filters[country]` as above. Before, some sessions (e.g. created for connected accounts) defaulted to one checking/savings account, required payment method support, enabled manual entry and used the connected account's country. Set these explicitly if you relied on the old behavior; `manual_entry[mode]=automatic` requires `require_payment_method_support` other than `none`.
 
 ## Related
 

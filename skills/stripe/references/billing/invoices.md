@@ -66,6 +66,10 @@ curl -X POST https://api.stripe.com/v1/invoices/in_xxx/pay \
 - Amounts below Stripe's minimum charge threshold are automatically marked `paid` and credited to the customer's credit balance.
 - `create_preview` generates a preview invoice without persisting it — useful for showing proration amounts before a plan change.
 - Voiding preserves an audit trail; deleting (`DELETE`) is only possible while the invoice is a `draft` and not subscription-related.
+- `status_details.uncollectible.reason` (`2026-09-30.endive`): present only when `status` is `uncollectible`. Open enum; documented values are `max_payment_attempts`, `payment_not_received`, `subscription_canceled`, `subscription_paused` and `user_forgiven`. Separate from `status_transitions`, which holds timestamps.
+- Breaking (`2026-09-30.endive`): when automatic tax fails to calculate on finalize, pay or retrieve invoice (also create / update subscription, tax calculations), the error code `failed_tax_calculation` is returned (for example in `Invoice.last_finalization_error` and `PaymentIntent.last_payment_error`). Handle it in strict error-code logic; Stripe says to contact Support.
+- Invoice items (`2026-09-30.endive`): `invoicing_rules` is an array of rules that must all be satisfied before the item is invoiced (`[]` when none). The supported rule is `defer_until_credited_items_resolved`, used to defer subscription credit prorations. Pass `invoicing_rules=""` on update Invoice Item to clear all rules on a pending item (non-empty values are unsupported; clearing on an item already attached to an invoice returns `400`).
+- Invoice items (`2026-09-30.endive`): `proration_details.credited_items` on proration invoice items for subscriptions in classic billing mode references the debit corresponding to a credit proration.
 
 ### Key Webhook Events
 

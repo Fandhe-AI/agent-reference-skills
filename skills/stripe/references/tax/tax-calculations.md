@@ -82,6 +82,9 @@ Returns a paginated list of `tax.calculation_line_item` objects for the given ca
 - `tax_date` can be set up to 48 hours in the past or future to handle back-dating.
 - Expand `line_items.data.tax_breakdown` to get jurisdiction-level rate details per line item.
 - When `taxability_override=reverse_charge`, no tax is assessed (B2B EU scenario).
+- Breaking (`2026-09-30.endive`): when automatic tax fails to calculate on create or preview calculation, the error code `failed_tax_calculation` is returned; handle it in strict error-code logic and contact Stripe Support if it occurs.
+- New `tax_type` values (`2026-09-30.endive`) in `tax_breakdown[].tax_rate_details`: `digital_excise_tax`, `utility_users_tax` and `recycling_fee` (US). `digital_excise_tax` and `utility_users_tax` can also be used when creating a custom Tax Rate or specifying `tax_rate_data` for an invoice line item.
+- Ticket sales (`2026-09-30.endive`): `line_items[].performance_location` identifies the event venue; Stripe Tax uses the venue address and applies supported event-specific taxes. Can also tax in-person sales at a specific location.
 
 ## Related
 

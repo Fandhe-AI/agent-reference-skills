@@ -67,7 +67,7 @@ const { error } = await stripe.confirmPayment({
 
 | Name | Type | Description |
 |------|------|-------------|
-| `layout` | object | `{ type: 'accordion' \| 'tabs', defaultCollapsed, radios, visibleAccordionItemsCount }` |
+| `layout` | object | `{ type: 'accordion' \| 'tabs', defaultCollapsed, radios, visibleAccordionItemsCount }`. `radios` takes `'always'`, `'auto'`, `'if_multiple'` or `'never'`; booleans were removed in `2026-03-25.dahlia` and now throw an integration error. |
 | `defaultValues` | object | Pre-fill billing details: `{ billingDetails: { name, email, phone, address } }` |
 | `fields` | object | Control which fields are collected: `{ billingDetails: 'never' \| object }` |
 | `paymentMethodOrder` | array | Custom ordering of payment methods. Unspecified methods appear after. |
@@ -96,6 +96,7 @@ const { error } = await stripe.confirmPayment({
 | `element.unmount()` | Unmount element from the DOM (preserves state). |
 | `element.destroy()` | Permanently destroy the element. |
 | `element.update(options)` | Update element options after creation. |
+| `elements.update(options)` | Update the Elements object. Returns `Promise<void>` (since `2026-03-25.dahlia`; previously `void`), resolved when the update has been applied to all rendered Elements. The `update-end` event remains available. |
 | `element.focus()` | Programmatically focus the element. |
 | `element.blur()` | Remove focus from the element. |
 | `element.clear()` | Clear the element's value. |
@@ -127,8 +128,17 @@ const { error } = await stripe.confirmPayment({
 - Appearance API supports `theme` values: `'stripe'`, `'night'`, `'flat'`, `'none'`.
 - For RTL languages (Arabic, Hebrew), wrap mounted elements in an HTML element with `dir="rtl"`.
 - `stripe.confirmPayment()` redirects by default; pass `redirect: 'if_required'` to avoid redirects for payment methods that don't require them.
+- Removed in `2026-09-30.endive` (breaking): the `paymentMethodTypes` option when creating Elements without an Intent and in `elements.update()` now throws an integration error. Use `allowedPaymentMethodTypes` or manage payment methods with Dynamic Payment Methods in the Dashboard. Stripe.js versions through Dahlia still support it.
+- Removed in `2026-09-30.endive` (breaking): the Payment Request Button (`elements.create('paymentRequestButton')` and the React `PaymentRequestButtonElement` throw). Use the Express Checkout Element (`'expressCheckout'`); versions through Dahlia still support the old element.
+- Address Element (`2026-03-25.dahlia`, breaking): `state` defaults to Latin-formatted characters in `getValue()` and the address change event. For the browser-localized value call `getValue({ format: 'localized' })`; the change event itself always returns Latin.
+- Removed from Stripe.js in `2026-03-25.dahlia` (breaking; calling them throws): `handleCardPayment`, `confirmPaymentIntent`, `handleFpxPayment` (Payment Intents); `handleCardSetup`, `confirmSetupIntent` (Setup Intents); `createSource`, `retrieveSource` (Sources). Replacements include `confirmCardPayment`, `confirmFpxPayment` and `confirmCardSetup`.
+- Removed in `2025-09-30.clover` (breaking): the deprecated `affirmMessage`, `afterpayClearpayMessage`, `epsBank`, `fpxBank`, `p24Bank` and `idealBank` elements. Use the Payment Method Messaging Element (`'paymentMethodMessaging'`) and the Payment Element.
+- `2025-09-30.clover`: Elements validates the Intent state on creation; reusing a client secret from a PaymentIntent / SetupIntent in `succeeded`, `canceled`, `processing`, `requires_capture` or `requires_action` with a non-detachable payment method (Boleto, knet, Oxxo, us_cash_voucher) produces a validation error. Create a new Intent instead.
+- `2025-09-30.clover`: Elements with Checkout Sessions enables saved payment method collection and redisplay by default when a customer is passed to the Checkout Session or `saved_payment_method_options.payment_method_save` is enabled. Set `enableSave` / `enableRedisplay` to `never` in `elementsOptions.savedPaymentMethod` to opt out.
+- `2025-09-30.clover`: a postal code is no longer collected for card payments in Canada, the United Kingdom and Puerto Rico on Checkout and the Payment Element. Without `automatic_tax`, collect it yourself (custom fields plus `billingDetails.address: 'never'`, or `billing_address_collection: 'required'` on Checkout).
+- `2026-09-30.endive` (breaking): `stripe.handleNextAction` now shows pending-authorization UI for MB WAY, Bizum and BLIK, consistent with `stripe.confirmPayment`. Remove any custom pending-authorization UI to avoid duplicate instructions.
 
 ## Related
 
-- [Checkout Sessions](./checkout-sessions.md)
-- [Payment Links](./payment-links.md)
+- [Checkout Sessions](../checkout/checkout-sessions.md)
+- [Payment Links](../payment-links/payment-links.md)
