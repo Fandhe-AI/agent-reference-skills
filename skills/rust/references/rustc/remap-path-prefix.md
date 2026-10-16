@@ -11,13 +11,13 @@ rustc --remap-path-prefix FROM=TO [--remap-path-prefix FROM2=TO2 ...] INPUT
 `FROM` is a path prefix rewritten to `TO`. `FROM` may itself contain an `=` symbol, but `TO` may not. The replacement is purely textual, with no consideration of the current system's path separator.
 
 ```bash
-rustc --remap-path-prefix "/home/user/project=/redacted"
+rustc --remap-path-prefix "/home/user/project=/redacted" src/main.rs
 ```
 
 Relative paths: some build systems, such as Cargo, compile crates using relative paths (e.g. `src/main.rs`). `rustc` preserves these where possible, but certain inputs (like `#[path = "..."]`) and outputs (such as debug information) may still contain absolute paths. Remap both relative and absolute paths:
 
 ```bash
-rustc --remap-path-prefix "src/=/redacted/src" --remap-path-prefix "/home/user/project=/redacted"
+rustc --remap-path-prefix "src/=/redacted/src" --remap-path-prefix "/home/user/project=/redacted" src/main.rs
 ```
 
 ## Options / Props
@@ -45,7 +45,7 @@ The accepted scopes are not exhaustive: new scopes may be added in future releas
 rustc --remap-path-prefix="${PWD}=/remapped" --remap-path-scope=object main.rs
 ```
 
-The rustc Book example writes `$(PWD)` (Make syntax); in a POSIX shell use the quoted variable `"${PWD}"`.
+The rustc Book example writes `$(PWD)` (Make syntax); in a POSIX shell use the quoted variable `"${PWD}"`. The rustc Book examples omit the input file; `src/main.rs` is added here so the commands run as-is.
 
 ## Scope of Remapping
 
