@@ -64,6 +64,7 @@ dependencies {
 - Version numbers above are the ones shown in the official guide at the time of retrieval (2026-10); check the AndroidX release pages for current versions. Some add-ons are alpha (`lifecycle-viewmodel-navigation3` 2.12.0-alpha04, `adaptive-navigation3` 1.4.0-alpha03).
 - Only the runtime and UI artifacts are required; the other libraries are optional add-ons.
 - This is the Android Navigation 3 (Kotlin, `androidx.navigation3`) API — distinct from the same-named SwiftUI / React Router / Next.js navigation API.
+- Source: https://developer.android.com/guide/navigation/navigation-3/get-started (retrieved 2026-10-17; Navigation 3 1.2.0)
 
 ## Related
 

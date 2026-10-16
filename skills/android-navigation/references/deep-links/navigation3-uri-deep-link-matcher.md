@@ -102,6 +102,7 @@ class LegacyPrefixUriDeepLinkMatcher<T : Any>(
 - Only for hierarchical URIs. For non-hierarchical URIs or custom schemes such as `tel:`, write a custom matcher (see [navigation3-custom-deep-link-matcher](./navigation3-custom-deep-link-matcher.md)).
 - When arguments share a name, path arguments take priority over query, which takes priority over fragment (`matchArguments` merges the maps in that order).
 - Part of the `androidx.navigation3.runtime.deeplink` package, available from `navigation3-runtime` 1.2.0 (see [navigation3-deep-links](./navigation3-deep-links.md)). This is distinct from Navigation Compose's `navDeepLink()` string-pattern API.
+- Source: https://developer.android.com/guide/navigation/navigation-3/deep-links/uri-matcher (retrieved 2026-10-17; Navigation 3 1.2.0); signatures: https://github.com/androidx/androidx/blob/811e8c9c37f4955d520fe0cf7e39d96866066abc/navigation3/navigation3-runtime/src/commonMain/kotlin/androidx/navigation3/runtime/deeplink/DeepLinkMatcher.kt
 
 ## Related
 

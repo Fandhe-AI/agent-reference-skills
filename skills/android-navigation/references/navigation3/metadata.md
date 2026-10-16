@@ -74,6 +74,7 @@ entry<Conversation>(metadata = { key: Conversation ->
 - To build on a base map, use `baseMap + metadata { ... }`.
 - If `[]` indexed access does not compile, import `androidx.navigation3.runtime.get` manually.
 - Package: `androidx.navigation3.runtime`. This is the Android Navigation 3 (Kotlin) API — distinct from the same-named SwiftUI / React Router / Next.js navigation API.
+- Source: https://developer.android.com/guide/navigation/navigation-3/metadata (retrieved 2026-10-17; Navigation 3 1.2.0)
 
 ## Related
 

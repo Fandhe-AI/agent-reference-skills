@@ -93,6 +93,7 @@ class TelMatchResult(
 - If the matcher is wrapped by `withBackStack`, unwrap `WrappedMatchResult` before comparing so precedence is evaluated on the underlying result.
 - `uri.schemeSpecificPart` is available only on Android.
 - Available from `navigation3-runtime` 1.2.0 (see [navigation3-deep-links](./navigation3-deep-links.md)).
+- Source: https://developer.android.com/guide/navigation/navigation-3/deep-links/custom-matchers (retrieved 2026-10-17; Navigation 3 1.2.0); signatures: https://github.com/androidx/androidx/blob/811e8c9c37f4955d520fe0cf7e39d96866066abc/navigation3/navigation3-runtime/src/commonMain/kotlin/androidx/navigation3/runtime/deeplink/DeepLinkMatcher.kt
 
 ## Related
 

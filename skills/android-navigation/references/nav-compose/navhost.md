@@ -52,7 +52,7 @@ NavHost(navController = navController, startDestination = Profile) {
 
 - An overload accepting a pre-built `NavGraph` (created with `NavController.createGraph()`) exists in place of `startDestination` + `builder`.
 - `anim`/XML-style animation blocks are not supported in Compose; use the `enterTransition`/`exitTransition` lambdas instead.
-- The `androidx.navigation` release page states: "This library is in maintenance mode and will only receive critical fixes; new features are not planned" (current stable 2.10.2, September 23, 2026). For new Compose work see Navigation 3 ([navigation-3](../navigation3/navigation-3.md)).
+- The [androidx.navigation release page](https://developer.android.com/jetpack/androidx/releases/navigation) states: "This library is in maintenance mode and will only receive critical fixes; new features are not planned" (current stable 2.10.2, September 23, 2026). For new Compose work see Navigation 3 ([navigation-3](../navigation3/navigation-3.md)).
 - The overload with `predictivePopEnterTransition` / `predictivePopExitTransition` was added in 2.10.0 (first appearing in an alpha of the 2.10.0 line).
 - The 2.10.0 line moved the minimum SDK to API 24 (2.10.0-rc01).
 - Package: `androidx.navigation.compose`.

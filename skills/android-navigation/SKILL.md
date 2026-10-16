@@ -2,9 +2,9 @@
 name: android-navigation
 description: >
   Android アプリ開発 (Kotlin) の画面遷移・Navigation リファレンス。
-  Jetpack Compose, androidx。Navigation 3 (NavDisplay, NavKey, ResultEventBus, DeepLinkMatcher)、
+  Jetpack Compose, androidx。Navigation 3 (stable, NavDisplay, NavKey, ResultEventBus, DeepLinkMatcher)、
   Navigation Compose (NavHost, composable, 型安全ルート)、
-  Fragment (NavHostFragment, Safe Args)、ディープリンク, App Links, assetlinks.json、
+  Fragment ナビゲーション (NavHostFragment, Safe Args)、ディープリンク, App Links, assetlinks.json、
   予測型戻る (OnBackPressedDispatcher)。
 user-invocable: false
 ---

@@ -120,7 +120,8 @@ ResultEffect<ConfirmationResult>(resultKey = "confirm_permission") { confirmatio
 - Remove consumed one-time results with `removeResult` (by key or `removeResult<T>()`) to avoid re-delivery to new observers.
 - Use `conflateAsState` for optional UI modifiers; for primary repository-backed data use `ResultEffect` to update a `ViewModel`.
 - Hoist the bus (`rememberResultEventBus()` passed to the decorator) to use it from non-composable components, DI graphs, or top-level scaffolding.
-- Recipes: android/nav3-recipes `results/event`, `results/state`, `results/serializable`.
+- Recipes (android/nav3-recipes, pinned commit eab7ffd): [results/event](https://github.com/android/nav3-recipes/tree/eab7ffd907ef89975d01ab1e23671dbb38623940/app/src/main/java/com/example/nav3recipes/results/event), [results/state](https://github.com/android/nav3-recipes/tree/eab7ffd907ef89975d01ab1e23671dbb38623940/app/src/main/java/com/example/nav3recipes/results/state), [results/serializable](https://github.com/android/nav3-recipes/tree/eab7ffd907ef89975d01ab1e23671dbb38623940/app/src/main/java/com/example/nav3recipes/results/serializable). `results/serializable` is not in tag 1.1.0, hence the commit pin.
+- Source: https://developer.android.com/guide/navigation/navigation-3/return-results (retrieved 2026-10-17; Navigation 3 1.2.0)
 - Package: `androidx.navigation3.runtime.result`. Android Navigation 3 (Kotlin) API — distinct from the same-named SwiftUI / React Router / Next.js navigation API.
 
 ## Related

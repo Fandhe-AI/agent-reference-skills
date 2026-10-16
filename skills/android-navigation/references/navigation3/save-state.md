@@ -67,11 +67,12 @@ NavDisplay(
 ## Notes
 
 - In Navigation 3 you own the back stack, so there are no strict guidelines for creating or saving it; `rememberNavBackStack` is a convenience that persists across configuration changes and process death.
-- `rememberNavBackStack` returns `NavBackStack<NavKey>`; use a custom remember function (as above) to keep a subtype. For open polymorphism see `NavBackStackSamples` in androidx-main (`navigation3/navigation3-runtime/samples`).
+- `rememberNavBackStack` returns `NavBackStack<NavKey>`; use a custom remember function (as above) to keep a subtype. For open polymorphism see [`NavBackStackSamples.kt`](https://github.com/androidx/androidx/blob/811e8c9c37f4955d520fe0cf7e39d96866066abc/navigation3/navigation3-runtime/samples/src/main/kotlin/androidx/navigation3/runtime/samples/NavBackStackSamples.kt) (pinned commit 811e8c9).
 - Alternative: store the back stack in a `ViewModel`. For process-death persistence you must make keys serializable and manually save/restore the serialized keys (e.g. `SharedPreferences`, database, file).
 - By default a `ViewModel` is scoped to the nearest `ViewModelStoreOwner` (typically `Activity` / `Fragment`). The `androidx.lifecycle:lifecycle-viewmodel-navigation3` decorator provides a `ViewModelStoreOwner` per `NavEntry`, so `viewModel()` inside the entry is created when the entry is added and cleared when it is popped.
 - Steps: add the `lifecycle-viewmodel-navigation3` dependency, add `rememberSaveableStateHolderNavEntryDecorator()` to `entryDecorators`, then add `rememberViewModelStoreNavEntryDecorator()`.
 - This is the Android Navigation 3 (Kotlin, `androidx.navigation3`) API — distinct from the same-named SwiftUI / React Router / Next.js navigation API.
+- Source: https://developer.android.com/guide/navigation/navigation-3/save-state (retrieved 2026-10-17; Navigation 3 1.2.0)
 
 ## Related
 
