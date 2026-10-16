@@ -70,6 +70,7 @@ export const test = base.extend({
 - The official page provides the full fixtures for JS, Java (JUnit), Python (pytest) and .NET (MSTest / NUnit / xUnit / xUnit v3); the app is expected to print `WebView2 initialized` once ready, which the fixtures wait for.
 - In the .NET base classes, WebView2 does lazy cleanups on shutdown, so the user data dir is deleted before the next run rather than after each test.
 - Debugging: right-click inside the control and choose "Inspect", press F12, or call `CoreWebView2.OpenDevToolsWindow`. For test debugging see the Playwright Debugging guide.
+- Source: https://playwright.dev/docs/webview2 (microsoft/playwright v1.64.1 `docs/src/webview2.md`)
 
 ## Related
 

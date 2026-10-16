@@ -116,6 +116,7 @@ Standalone server client config:
 - Playwright bundles the MCP server, runnable with `npx playwright mcp` (v1.62).
 - Full config schema: `config.d.ts` in the microsoft/playwright-mcp repository.
 - This is the MCP (tool-schema, persistent-state) route. For token-efficient, skill-based agent workflows, see the `playwright-cli` page.
+- Source: https://playwright.dev/docs/getting-started-mcp (microsoft/playwright v1.64.1 `docs/src/getting-started-mcp.md`)
 
 ## Related
 

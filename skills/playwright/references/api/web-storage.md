@@ -27,6 +27,7 @@ await page.localStorage.clear();
 
 - All methods are available since v1.61.
 - Operates on the storage of the current origin of the page.
+- Source: https://playwright.dev/docs/api/class-webstorage (microsoft/playwright v1.64.1 `docs/src/api/class-webstorage.md`)
 
 ## Related
 

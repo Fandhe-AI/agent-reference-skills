@@ -73,6 +73,7 @@ await context.tracing.stopHar();
 - Prefer enabling tracing in the Playwright Test config (`trace` test option): `context.tracing` captures browser operations and network activity but not test assertions such as `expect` calls.
 - `group` is marked caution in the docs: use `test.step` instead when available.
 - `snapshots` shape differs by language: JS accepts an object (`dom` / `aria` / `screen`); other languages use `snapshots` plus `ariaSnapshots` / `screenSnapshots`.
+- Source: https://playwright.dev/docs/api/class-tracing (microsoft/playwright v1.64.1 `docs/src/api/class-tracing.md`)
 
 ## Related
 

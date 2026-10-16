@@ -49,6 +49,7 @@ console.log(result.content[0].text); // "42"
 - `callTool` throws when the tool is not registered or its `execute` function throws.
 - `page.webmcp` covers the main frame only; child frames list their tools through their own `frame.webmcp`.
 - This is Playwright's client for the page-side WebMCP API, distinct from MCP servers in other skills.
+- Source: https://playwright.dev/docs/api/class-webmcp (microsoft/playwright v1.64.1 `docs/src/api/class-webmcp.md`)
 
 ## Related
 

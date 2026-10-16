@@ -78,12 +78,14 @@ Important flags:
 ### Dockerfile
 
 ```dockerfile
-FROM node:20-bookworm
+FROM node:24-bookworm
 
 RUN npx -y playwright@1.64.1 install --with-deps
 ```
 
 This installs Node.js, Playwright browsers, and all required system dependencies.
+
+The official docker.md (v1.64.1) example still shows `node:20-bookworm`, which is outside the supported Node.js range (latest 22.x, 24.x or 26.x); the base image here is adjusted accordingly.
 
 ### Untrusted Content
 

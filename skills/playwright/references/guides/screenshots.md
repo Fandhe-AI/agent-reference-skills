@@ -31,6 +31,7 @@ await page.locator('.header').screenshot({ path: 'screenshot.png' });
 
 - The Screenshots API (`page.screenshot`) accepts many more parameters for image format, clip area, quality, etc.; see the Page API reference.
 - For assertion-based screenshot comparison, see the visual testing guide.
+- Source: https://playwright.dev/docs/screenshots (microsoft/playwright v1.64.1 `docs/src/screenshots.md`)
 
 ## Related
 

@@ -82,6 +82,7 @@ await page.screencast.showActions({
 - If a screencast is already active (e.g. started by tracing or video recording), the existing configuration takes precedence for `size`; frame size may exceed the bounds or the option may be ignored.
 - Firefox and WebKit currently capture up to 25 frames per second, so higher `fps` yields no extra distinct frames there. Higher `fps` costs more CPU for encoding.
 - `showActions` `fontSize` is deprecated in favor of `style.title`.
+- Source: https://playwright.dev/docs/api/class-screencast (microsoft/playwright v1.64.1 `docs/src/api/class-screencast.md`)
 
 ## Related
 

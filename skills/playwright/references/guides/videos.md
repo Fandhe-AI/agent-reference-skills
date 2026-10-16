@@ -73,6 +73,7 @@ const path = await page.video().path();
 - The viewport video is placed in the top-left corner of the output video, scaled down if necessary; set the viewport size to match the desired video size.
 - The video is only available (via `page.video().path()`) after the page or browser context is closed.
 - Other languages (Python / Java / .NET) record via the context option (`record_video_dir` / `setRecordVideoDir` / `RecordVideoDir`), optionally with a size option.
+- Source: https://playwright.dev/docs/videos (microsoft/playwright v1.64.1 `docs/src/videos.md`)
 
 ## Related
 

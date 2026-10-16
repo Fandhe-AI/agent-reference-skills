@@ -88,6 +88,7 @@ To import a known credential, supply all four of `id`, `userHandle`, `privateKey
 - Fresh keys are ECDSA P-256 (COSE algorithm `-7`). An omitted `id` or `userHandle` is filled with 16 random bytes.
 - The signature counter starts at `0` and is incremented by one on every successful `navigator.credentials.get()` assertion.
 - Returned credentials include the private key; treat saved files such as `passkey.json` as secrets.
+- Source: https://playwright.dev/docs/api/class-credentials (microsoft/playwright v1.64.1 `docs/src/api/class-credentials.md`)
 
 ## Related
 

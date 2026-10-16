@@ -106,6 +106,7 @@ await page.routeWebSocket('wss://example.com/ws', ws => {
 - The `update` option is the recommended way to record a HAR; with the CLI, `--save-har-glob` limits which requests are saved, and a `.zip` name compresses artifacts into a single zip.
 - Mock before navigating so the route is in place when the page requests the API.
 - See `WebSocketRoute` in the API reference for more WebSocket details.
+- Source: https://playwright.dev/docs/mock (microsoft/playwright v1.64.1 `docs/src/mock.md`)
 
 ## Related
 

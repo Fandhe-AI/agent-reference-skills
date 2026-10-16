@@ -38,6 +38,7 @@ Playwright splits showing a new document into **navigation** and **loading**.
 - There is no way to tell that a modern page is fully "loaded"; Playwright can interact at any moment and auto-waits for target elements to become actionable.
 - Hydration: if an action seemingly does nothing or typed text disappears, the page likely has poor hydration (controls enabled before listeners are attached). To verify, use Chrome DevTools "Slow 3G" network emulation and reload. The recommended fix is to keep interactive controls disabled until hydration completes.
 - Back/Forward Cache (BFCache): Playwright disables BFCache in all browsers by default. Even if explicitly enabled, testing BFCache restorations is not supported: a restore skips the network fetch phase, so `commit`, `domcontentloaded` and `load` do not fire, `Page` state desynchronizes (e.g. after `page.goBack()`), and subsequent interactions time out or fail.
+- Source: https://playwright.dev/docs/navigations (microsoft/playwright v1.64.1 `docs/src/navigations.md`)
 
 ## Related
 
