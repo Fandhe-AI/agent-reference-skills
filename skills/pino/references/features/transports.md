@@ -106,6 +106,42 @@ logger.level gate (enabled methods) ──ThreadStream────┼──> tar
 
 If you need `debug` (or lower) logs to reach targets, set `logger.level` low enough AND set `level` on each target that should receive those messages.
 
+Summary:
+
+- Single `target`/single `pipeline`: only `logger.level` filters messages.
+- Multiple `targets`: `logger.level` is applied first, then each `targets[i].level` is applied.
+- If `targets[i].level` is missing, it defaults to `info`.
+
+#### `formatters.level` with multiple targets
+
+When using `targets`, Pino routes records in the worker thread based on the numeric `level` field in each log line. Because of that, a custom `formatters.level` must not remove, rename, or convert `level` to a string when multiple targets are configured.
+
+Unsupported example:
+
+```js
+const logger = pino({
+  formatters: {
+    level (label) {
+      return { severity: label }
+    }
+  },
+  transport: {
+    targets: [
+      { target: 'pino/file', options: { destination: 1 } },
+      { target: 'pino/file', options: { destination: 2 } }
+    ]
+  }
+})
+```
+
+In this case, Pino cannot apply per-target level filtering correctly. Depending on how the transport is constructed, Pino will either throw or emit a warning.
+
+Supported alternatives:
+
+- Keep the numeric `level` field unchanged when using multiple targets.
+- If you need string labels such as `"info"`, transform the output in a transport pipeline or in a custom transport after routing has already happened.
+- `timestamp` customization still works with multiple targets.
+
 ### Custom Levels with Multiple Transports
 
 Pass custom levels when using more than one transport:
@@ -499,6 +535,7 @@ const log = pino(transport)
 - Always include a `close()` function in custom transports to prevent lost log lines.
 - Use `pino-abstract-transport` when writing custom transports for reliable line parsing.
 - Pipeline transports require a terminating `Writable` stream target.
+- The warning for `formatters.level` with multiple targets was added in PR #2381 (released in v10.4.0).
 
 ## Related
 

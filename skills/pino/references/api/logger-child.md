@@ -24,6 +24,18 @@ child.info('child!')
 
 The `bindings` object may contain any key except for reserved configuration keys `level` and `serializers`.
 
+Do not pass externally supplied objects directly as child bindings. Binding keys are top-level log fields emitted on every log line from the child logger, so user-controlled keys can conflict with Pino fields such as `level`, `time`, or `msg`, as well as application or security fields. If untrusted data must be included in child bindings, place it under an application-controlled key:
+
+```js
+// Avoid: user-controlled keys become top-level fields on every child log line
+const child = logger.child(untrustedObject)
+
+// Prefer: user-controlled keys are contained under a trusted namespace
+const child = logger.child({ untrusted: untrustedObject })
+```
+
+As a matter of good security hygiene, prefer not to log untrusted data at all unless it is necessary. When it is necessary, sanitize and redact it first.
+
 > **`bindings.serializers` (Object) - DEPRECATED**: Use `options.serializers` instead.
 
 ### `options` (Object)

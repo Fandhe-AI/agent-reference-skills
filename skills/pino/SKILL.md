@@ -6,13 +6,14 @@ description: >
   pretty print (pino-pretty)、redaction (機密情報マスキング)、serializers、
   async / sync logging、ファイル出力、structured logging。
 user-invocable: false
-model: sonnet
 ---
 
 # Pino — Super Fast JSON Logger リファレンス
 
 Pino 公式ドキュメントの全 API を網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+対象: pino v10.4.0（GitHub タグ v10.4.0 / 2026-10-02、docs は同タグの docs/*.md と pino.d.ts）。
 
 ## ディレクトリ構成
 
@@ -102,6 +103,9 @@ skills/pino/
 | transport で出力先を切り替えたい、pino-pretty を使いたい | features | [references/features/README.md](references/features/README.md) |
 | 非同期ロギング・ブラウザ対応・diagnostics を調べたい | features | [references/features/README.md](references/features/README.md) |
 | webpack 等でバンドルしたい | features | [references/features/README.md](references/features/README.md) |
+| ブラウザで使えない API（destination / transport / multistream）・isomorphic コード | features | [references/features/README.md](references/features/README.md) |
+| transport のレベルフィルタリング・複数 targets での formatters.level 制約 | features | [references/features/README.md](references/features/README.md) |
+| untrusted なオブジェクトをログに含めたい（トップレベルキー衝突） | api | [references/api/README.md](references/api/README.md) |
 | Fastify / Express との統合方法を知りたい | integrations | [references/integrations/README.md](references/integrations/README.md) |
 | エコシステム・関連パッケージを把握したい | integrations | [references/integrations/README.md](references/integrations/README.md) |
 | ログローテーション・フィルタリング・テストを知りたい | help | [references/help/README.md](references/help/README.md) |

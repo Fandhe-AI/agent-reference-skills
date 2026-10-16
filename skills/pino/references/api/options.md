@@ -87,13 +87,15 @@ logger.info('hello') // Will throw an error saying info is not found in logger o
 
 Default: `5`
 
-Limit stringification at a specific nesting depth when logging circular objects.
+Maximum nesting depth used by Pino's fallback serializer.
+
+Pino uses the fallback serializer, and therefore applies `depthLimit` and `edgeLimit`, only after `JSON.stringify` throws. These options are not general limits on serialization work or output size.
 
 ### `edgeLimit` (Number)
 
 Default: `100`
 
-Limit stringification of properties/elements when logging a specific object/array with circular references.
+Maximum number of properties/elements per object or array used by Pino's fallback serializer.
 
 ### `mixin` (Function)
 
@@ -325,7 +327,7 @@ An object containing functions for formatting the shape of log lines. These func
 
 Changes the shape of the log level. Default shape is `{ level: number }`. Takes two arguments: the label (e.g. `'info'`) and the numeric value (e.g. `30`).
 
-Note: The log level cannot be customized when using multiple transports.
+When using multiple transport targets, the log record must keep a numeric `level` field for per-target routing. Because of that, `formatters.level` cannot be used to replace `level` with a string or rename it in multi-target mode. `timestamp` customization is still supported.
 
 ```js
 const formatters = {
@@ -366,6 +368,8 @@ Default: `{err: pino.stdSerializers.err}`
 An object containing functions for custom serialization of objects. These functions should return a JSONifiable object and should never throw. When logging an object, each top-level property matching the exact key of a serializer will be serialized using the defined serializer.
 
 The `err` serializer is also applied when the object is an instance of `Error` (e.g. `logger.info(new Error('kaboom'))`). See `errorKey` option to change the `err` namespace.
+
+Serializers are also applied to the bindings passed to `logger.child()`. Child bindings are serialized once, when the child logger is created, so a matching serializer runs at that point rather than on every subsequent log call. If a serializer needs to run per log call, pass the value to the log method instead of to `child()`.
 
 ### `msgPrefix` (String)
 

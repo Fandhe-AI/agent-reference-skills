@@ -4,6 +4,8 @@ Static methods and properties available on the exported `pino` function itself (
 
 ## `pino.destination([opts]) => SonicBoom`
 
+**Note:** this is not available in the browser build.
+
 Create a Pino Destination instance: a stream-like object with significantly more throughput than a standard Node.js stream.
 
 ```js
@@ -28,6 +30,8 @@ The method may be passed a file path or a numerical file descriptor. By default,
 A `pino.destination` instance can also be used to reopen closed files (for example, for log rotation scenarios).
 
 ## `pino.transport(options) => ThreadStream`
+
+**Note:** this is not available in the browser build.
 
 Create a stream that routes logs to a worker thread wrapping a Pino Transport.
 
@@ -141,6 +145,8 @@ Any `'error'` event emitted by the transport must be considered fatal and the pr
 ## `pino.multistream(streamsArray, opts) => MultiStreamRes`
 
 Create a stream composed of multiple destination streams. Returns an object implementing the `MultiStreamRes` interface.
+
+**Note:** this is not available in the browser build.
 
 ```js
 var fs = require('node:fs')

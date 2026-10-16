@@ -2,6 +2,46 @@
 
 Pino is compatible with `browserify` for browser-side usage, making it useful for isomorphic/universal JavaScript code. By default, in the browser, Pino uses corresponding Log4j `console` methods (`console.error`, `console.warn`, `console.info`, `console.debug`, `console.trace`) and uses `console.error` for any `fatal` level logs.
 
+## Node.js-only APIs
+
+The browser build (`browser.js`, selected through the `browser` field in `package.json`) does not implement the parts of the API that depend on the file system or on worker threads. Accessing them in the browser throws a `TypeError`, because the export is simply absent:
+
+```js
+const pino = require('pino')
+pino.destination('./my-file') // TypeError: pino.destination is not a function
+```
+
+The following statics are available in Node.js only:
+
+| Static | Why it is Node.js only |
+| --- | --- |
+| `pino.destination()` | Returns a `SonicBoom` instance writing to a file descriptor. |
+| `pino.transport()` | Runs a transport on a worker thread. |
+| `pino.multistream()` | Fans out to multiple destination streams. |
+
+`pino.levels`, `pino.stdSerializers` and `pino.stdTimeFunctions` are available in both environments.
+
+### Methods that are no-ops in the browser
+
+These exist on a browser logger, so calling them is safe, but they do nothing:
+
+- `logger.flush([cb])` — there is no write buffer to flush. A callback passed to it is **not** invoked.
+- Every `EventEmitter` method (`on`, `once`, `emit`, `removeListener`, `listeners`, ...). As a consequence the `level-change` event never fires in the browser.
+
+### Writing isomorphic code
+
+Code shared between a server and a browser bundle should not call the Node.js-only statics unconditionally. Guard the call rather than the environment, so the same branch works under any bundler:
+
+```js
+const pino = require('pino')
+
+const logger = pino.destination
+  ? pino(pino.destination('./my-file')) // Node.js
+  : pino({ browser: { asObject: true } }) // browser
+```
+
+The browser build's `pino()` accepts the options object only. A second `destination` argument is accepted but ignored, so a logger constructed with one still writes to the console rather than failing.
+
 ## Browser Options
 
 Pino can be passed a `browser` object in the options object with the following properties.
@@ -212,6 +252,7 @@ const pino = require('pino')({browser: {disabled: true}})
 
 ## Notes
 
+- Since v10.4.0, redaction is supported in the browser logger (release note: feat(browser): add redaction support, PR #2396); the former "not supported in the browser" note was removed from redaction.md.
 - By default, Pino maps to Log4j-style `console` methods in the browser.
 - `asObject` is automatically `true` when `write` is set.
 - Serializers are ignored by default in the browser but are always applied within `transmit` logEvent objects.

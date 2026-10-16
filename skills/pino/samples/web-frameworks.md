@@ -37,6 +37,7 @@ app.listen(3000)
 ## Notes
 
 - Fastify ships pino as its built-in logger; pass `logger: true` (or a pino options object) to enable it.
-- For Express, Node `http`, Hono, and H3 use the `pino-http` middleware package.
+- For Express, Node `http`, and H3 use the `pino-http` middleware package.
+- For Hono, use `@hono/structured-logger` (not `pino-http`) together with `hono/request-id`: `structuredLogger({ createLogger: (c) => rootLogger.child({ requestId: c.var.requestId }) })`. Install with `npm install pino @hono/structured-logger hono`, then log via `c.var.logger.info('something')`.
 - `pino-http` binds a per-request child logger to `req.log`, including response time and status code automatically.
 - Other adapters: `hapi-pino` (Hapi), `koa-pino-logger` (Koa), `nestjs-pino` (NestJS).
