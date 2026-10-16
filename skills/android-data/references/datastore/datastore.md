@@ -7,7 +7,7 @@ Interface providing type-safe, asynchronous, transactional access to persisted d
 ```kotlin
 package androidx.datastore.core
 
-public expect interface DataStore<T> {
+public interface DataStore<T> {
     public val data: Flow<T>
     public suspend fun updateData(transform: suspend (t: T) -> T): T
 }
@@ -39,7 +39,9 @@ suspend fun incrementCounter(dataStore: DataStore<Preferences>) {
 - If `transform` or the disk write fails, the transaction is aborted and the exception propagates.
 - Generic type `T` must be immutable, or DataStore's guarantees break.
 - Never create more than one `DataStore` instance for the same file within a process.
-- `DataStore.Builder<T>(storage, context)` offers a lower-level construction path (`setCorruptionHandler`, `addMigrations`, `build()`) as an alternative to `DataStoreFactory` / `PreferenceDataStoreFactory`.
+- `DataStore.Builder<T>` (not part of the Signature above) was introduced in 1.3.0-alpha07 and is recommended by the release notes as the replacement for `DataStoreFactory`. It does not exist in stable 1.2.1, where you use `DataStoreFactory` / `PreferenceDataStoreFactory`.
+- Multiple active DataStores for the same file in one process make read / update throw `IllegalStateException`. Do not mix `SingleProcessDataStore` and `MultiProcessDataStore` for the same file.
+- In a Compose app, keep DataStore in the data layer (repository), expose it from the ViewModel as a `StateFlow` via `stateIn(...)`, and read it in composables with `collectAsStateWithLifecycle`. Do not read or write DataStore directly from a composable.
 - Package: `androidx.datastore.core`.
 
 ## Related

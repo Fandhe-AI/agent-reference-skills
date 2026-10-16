@@ -41,6 +41,7 @@ val dataStore: DataStore<Settings> = DataStoreFactory.create(
 - `CorruptionException` is a subclass of `IOException` specifically for data-format corruption; it should not be thrown for transient IO or permission errors.
 - If `ReplaceFileCorruptionHandler` itself throws while replacing the data, the new exception is attached as a suppressed exception to the original and rethrown.
 - Without a `corruptionHandler`, a `CorruptionException` propagates to the caller of `data` / `updateData`.
+- `ReplaceFileCorruptionHandler` has no no-arg constructor (1.2.1 sources); `produceNewData` is required.
 - Package: `androidx.datastore.core` (`CorruptionHandler`, `CorruptionException`), `androidx.datastore.core.handlers` (`ReplaceFileCorruptionHandler`).
 
 ## Related
