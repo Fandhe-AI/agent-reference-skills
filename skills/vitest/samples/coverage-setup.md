@@ -53,4 +53,5 @@ function riskyPath() {
 - `v8` is faster and requires no instrumentation; `istanbul` supports any JS runtime and is more battle-tested
 - `reporter: ['text', 'html']` prints a summary in the terminal and writes an HTML report to `coverage/`
 - `thresholds` fail the run if coverage drops below the specified percentages — useful in CI
+- v5: `include` / `exclude` are matched against each file's path relative to the project root, and a pattern with no glob wildcard is treated as a directory matching everything inside it (`include: ['src']` matches `src/**`, not every path containing "src"). Review the reported file set after upgrading
 - Use `/* v8 ignore ... */` or `/* istanbul ignore ... */` comments to exclude unreachable branches

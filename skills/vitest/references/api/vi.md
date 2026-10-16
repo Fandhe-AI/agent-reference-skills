@@ -84,6 +84,66 @@ expect(spied.simple()).toBe('value')
 expect(spied.simple).toHaveBeenCalled()
 ```
 
+### vi.when() (v5.0.0)
+
+Defines per-argument behaviors on a spy, replacing its implementation for the duration of the `when` chain.
+
+```ts
+interface WhenOptions {
+  onUnmatched?: 'throw' | 'passthrough' | ((...args: unknown[]) => unknown)
+}
+
+interface BehaviorOptions {
+  times?: number
+}
+
+function when(spy: Mock, options?: WhenOptions): When
+```
+
+Call `.calledWith(...args)` on the returned object to specify which call arguments to match, then chain one or more `then*` methods. Arguments are matched with the same deep equality as `toEqual` and support asymmetric matchers such as `expect.any()`.
+
+```ts
+const spy = vi.fn()
+
+vi.when(spy)
+  .calledWith(1)
+  .thenReturn('one')
+  .calledWith(2)
+  .thenReturn('two')
+
+expect(spy(1)).toBe('one')
+expect(spy(2)).toBe('two')
+```
+
+| Method | Description |
+| --- | --- |
+| `thenReturn(value, options?)` | Returns `value`. |
+| `thenReturnOnce(value)` | Returns `value` once, then falls back. |
+| `thenThrow(error, options?)` | Throws `error`. |
+| `thenThrowOnce(error)` | Throws `error` once, then falls back. |
+| `thenResolve(value, options?)` | Returns a resolved `Promise` with `value`. |
+| `thenResolveOnce(value)` | Resolves once, then falls back. |
+| `thenReject(error, options?)` | Returns a rejected `Promise` with `error`. |
+| `thenRejectOnce(error)` | Rejects once, then falls back. |
+
+The optional `times` option limits how many times a behavior applies before being exhausted. Behaviors registered for the same arguments are consumed last-in-first-out. When called with arguments that match no registered behavior, the spy falls through to its original implementation by default; `onUnmatched`: `'passthrough'` (default), `'throw'` (throws an error listing the unmatched arguments), or a function called with the unmatched arguments. The `When` object supports the `toHaveBeenExhausted` assertion. With Explicit Resource Management, `using w = vi.when(spy)...` restores the spy's original implementation when the block exits.
+
+### vi.isWhenChain() (v5.0.0)
+
+```ts
+function isWhenChain(input: object): input is When
+```
+
+Returns `true` if the given value is a `When` chain created by `vi.when`; narrows the type in TypeScript.
+
+```ts
+const spy = vi.fn()
+const w = vi.when(spy).calledWith(1).thenReturn(0)
+
+expect(vi.isWhenChain(w)).toBe(true)
+expect(vi.isWhenChain(spy)).toBe(false)
+```
+
 ## Module Mocking
 
 ### vi.mock()
@@ -208,6 +268,7 @@ vi.useFakeTimers(config?: FakeTimerInstallOpts): void
 | `vi.advanceTimersToNextTimer()` | Advances to the next timer |
 | `vi.advanceTimersToNextTimerAsync()` | Async version |
 | `vi.advanceTimersToNextFrame()` | Advances `requestAnimationFrame` callbacks |
+| `vi.runAllTicks()` | Calls every microtask that was queued by `process.nextTick` (also runs microtasks scheduled by themselves); `function runAllTicks(): Vitest` |
 | `vi.runAllTimers()` | Runs all timers (infinite-loop guard: 10,000 iteration limit) |
 | `vi.runAllTimersAsync()` | Async version |
 | `vi.runOnlyPendingTimers()` | Runs only timers currently in the queue |
@@ -327,9 +388,20 @@ test('is positive', () => {
 })
 ```
 
+## Notes
+
+Vitest 5 changes (source: Migrating to Vitest 5.0, vitest.dev/guide/migration, and the `vi` API page; docs at tag `v5.0.5`):
+
+- `vi.mock`, `vi.unmock`, and `vi.hoisted` called inside a function, block, or `describe` / `test` callback now throw (previously a warning). Move them to the top level of the file. `vi.doMock` and `vi.doUnmock` are not hoisted and can still be called anywhere.
+- Class mocks keep prototype methods: instances created from `vi.fn(Dog)`, `vi.spyOn`, or `mockImplementation(class ...)` chain to the implementation class's prototype and pass `instanceof` checks against the original class. Overriding methods on the mock's prototype still works, and `mockReset` reverts the chain.
+- Browser mode: exports of a `vi.mock` call without a factory return `undefined` by default; pass `{ spy: true }` or provide a factory.
+- Fake timers and `vi.setSystemTime()` also mock `Temporal` (`Temporal.Now`) when it is available globally; `Temporal` is in the default `toFake` set. Keep it native with `vi.useFakeTimers({ toNotFake: ['Temporal'] })`. Without fake timers, `vi.setSystemTime()` mocks only `Date.*` and `Temporal.Now.*`.
+- `clearMocks` defaults to `true`: `vi.clearAllMocks()` runs before each test (see [Config](../guide/config.md)).
+
 ## Related
 
 - [Test API](./test-api.md)
 - [Expect Matchers](./expect.md)
 - [Mocking patterns](../patterns/mocking.md)
+- [Conditional mocking (vi.when)](../recipes/conditional-mocking.md)
 - [Async testing patterns](../patterns/async.md)

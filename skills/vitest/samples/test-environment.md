@@ -25,14 +25,26 @@ test('window is defined', () => {
 ```
 
 ```ts
-// vitest.config.ts — different environments per file pattern
+// vitest.config.ts — different environments per file pattern, via projects
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    environmentMatchGlobs: [
-      ['**/*.dom.test.ts', 'jsdom'],
-      ['**/*.node.test.ts', 'node'],
+    projects: [
+      {
+        test: {
+          name: 'dom',
+          include: ['**/*.dom.test.ts'],
+          environment: 'jsdom',
+        },
+      },
+      {
+        test: {
+          name: 'node',
+          include: ['**/*.node.test.ts'],
+          environment: 'node',
+        },
+      },
     ],
   },
 })
@@ -41,6 +53,7 @@ export default defineConfig({
 ## Notes
 
 - `node` is the default; use `jsdom` or `happy-dom` when testing code that requires browser globals (`window`, `document`)
+- `environmentMatchGlobs` was removed in v4.0 — use `test.projects` with a per-project `environment` instead (v4 migration guide, "Deprecated APIs are Removed"; see the projects guide)
 - `happy-dom` is generally faster than `jsdom` but has lower API coverage
 - `edge-runtime` emulates the Vercel Edge environment (no Node built-ins)
 - Install the required package for each environment: `npm i -D jsdom` / `npm i -D happy-dom`

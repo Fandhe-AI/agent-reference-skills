@@ -50,7 +50,7 @@ projects: [
 ]
 ```
 
-- Config inheritance via `extends`: `extends: true` inherits the root-level config.
+- Config inheritance via `extends`: `extends: true` inherits the root-level config. Since Vitest 5.0 this is the default for inline projects (`extends: false` opts out; arrays such as `setupFiles` are concatenated, not overridden). Projects referenced as config files or directories do not inherit root options. In v4 and earlier, `extends: true` had to be set explicitly.
 
 ```ts
 {
@@ -86,6 +86,10 @@ npm run test -- --project e2e
 npm run test -- --project e2e --project unit
 ```
 
+- Vitest 5 (docs at tag `v5.0.5`):
+  - A referenced config file that declares its own `projects` provides those nested projects. Merging a root config that defines `projects` into a project config can fail at startup; merge a shared config instead (as in the `mergeConfig` example above).
+  - `sharedViteServer` (default `true`; CLI `--sharedViteServer=false`): inline projects that do not change the Vite config reuse the declaring config's Vite server and transform cache. A project gets its own server when it defines Vite options such as `plugins` or `resolve`, has an `extends` that does not point to the declaring config, or sets test options like `alias`, `browser`, `css`, `deps.moduleDirectories`, `deps.optimizer`, `mode`, or `root`. Referenced config files / directories always get their own server. Plugins in a shared config are instantiated once, so their `config` hooks do not see per-project test options. Debug with `DEBUG=vitest:projects`.
+  - The `projects` option is not supported inside an inline project configuration.
 - Options not available in project-level config:
   - `coverage` — process-wide setting only
   - `reporters` — root level only

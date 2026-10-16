@@ -32,6 +32,12 @@ vitest watch
 vitest bench
 ```
 
+v5 で `benchmark.compare` 設定・`--compare` フラグ・`benchmark.outputJson` 設定・`--outputJson` フラグは削除された。ベンチマーク結果の保存は次のコマンドで行う（JSON reporter の各テストケースに `benchmarks` フィールドが含まれる）。
+
+```sh
+vitest bench --reporter=json --outputFile=<path>
+```
+
 ## 型チェックテストの実行
 
 ```sh
@@ -55,6 +61,24 @@ vitest list --json
 ```sh
 vitest list --filesOnly
 ```
+
+v5 以降、`vitest list` はテストファイルを実行せず静的にパースしてテストを収集する。ファイルを実際に実行して収集する場合は `--no-static-parse` を指定する。
+
+```sh
+vitest list --no-static-parse
+```
+
+パースの並行数は既定で `os.availableParallelism()`。`--static-parse-concurrency` で変更できる。
+
+## 環境設定の診断（doctor）
+
+```sh
+vitest doctor
+```
+
+現在の設定に応じた代替構成（`pool` / `isolate` / `maxWorkers` / `environment` など）でテストスイート全体を複数回実行し、どの構成で高速化できるかを計測して推奨設定を表示する。
+
+> **警告**: スイート全体を複数回実行するため、通常実行の数倍の時間がかかる。現在の設定でスイートが失敗する場合は、比較基準が必要なため中断してエラーを表示する。
 
 ## 特定ファイルに関連するテストの実行
 
@@ -88,6 +112,12 @@ vitest run -t "should handle errors"
 
 ```sh
 vitest run --testNamePattern "should handle errors"
+```
+
+v5 では、パターンはスイート名とテスト名を `' > '` で連結したフルネームに対して照合される（例: `math > adds` は `-t 'math > adds'` または `-t adds` にマッチ）。
+
+```sh
+vitest run -t 'math > adds'
 ```
 
 ## 変更ファイルに関連するテストのみ実行
@@ -130,7 +160,19 @@ vitest run --coverage.enabled
 vitest --ui
 ```
 
-ブラウザで `http://localhost:51204/__vitest__/` にアクセスする。
+ブラウザで `http://localhost:51204/__vitest__/` にアクセスする。直接 URL がエラーになる場合は、Vitest がターミナルに表示するトークン付き URL（`http://localhost:51204/__vitest__/?token=...`）を開く。
+
+## JSON / JUnit レポーターの出力
+
+```sh
+vitest run --reporter=json
+```
+
+```sh
+vitest run --reporter=junit
+```
+
+`json` / `junit` / `html` reporter は既定でターミナルではなく `.vitest/` 配下に出力する（`.vitest/json/output.json`、`.vitest/junit/output.xml`、`.vitest/index.html`）。出力先を変える場合は `--outputFile` を指定する。
 
 ## ブラウザモードでの実行
 
