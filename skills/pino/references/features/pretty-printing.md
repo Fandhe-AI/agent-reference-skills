@@ -41,20 +41,14 @@ logger.info('hi')
 
 ## Flush Limitations
 
-The `logger.flush()` method does not work when using `pino-pretty` because:
-
-1. `pino-pretty` runs in a separate worker thread via the transport mechanism.
-2. When `logger.flush()` is called, it flushes the SonicBoom destination in the main thread, but logs remain queued in the thread-stream worker.
-3. The flush operation never propagates through to the worker thread where the pretty printer processes output.
-
-This means formatted logs may not appear immediately even with `logger.flush()`.
+**Note:** `logger.flush()` does not flush the output of `pino-pretty`. See "Flush Limitations with `pino-pretty`" in [Asynchronous logging](./asynchronous.md).
 
 ## Notes
 
 - `pino-pretty` is intended for development environments, not production.
 - Install it as a separate dependency (`npm install pino-pretty`).
 - Use `options.colorize` to enable/disable colored output.
-- `logger.flush()` only ensures the main thread buffer is written, not the formatted output.
+- `logger.flush()` reaches the worker, but `pino-pretty` has no flush primitive, so its output is not flushed (see Asynchronous logging).
 
 ## Related
 

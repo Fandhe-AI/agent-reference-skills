@@ -19,6 +19,18 @@ logger.info({MIX: {IN: true}})
 // {"level":30,"time":1531254555820,"pid":55956,"hostname":"x","MIX":{"IN":true}}
 ```
 
+Do not pass an externally supplied object directly as the `mergingObject`. Top-level keys are written at the root of the log line and can conflict with Pino fields such as `level`, `time`, or `msg`, as well as application or security fields. If untrusted data must be logged, place it under an application-controlled key:
+
+```js
+// Avoid: user-controlled keys become top-level log fields
+logger.info(untrustedObject)
+
+// Prefer: user-controlled keys are contained under a trusted namespace
+logger.info({ untrusted: untrustedObject })
+```
+
+As a matter of good security hygiene, prefer not to log untrusted data at all unless it is necessary. When it is necessary, sanitize and redact it first. The same top-level key guidance applies to `logger.child()` bindings and `logger.setBindings()`.
+
 If the object is of type `Error`, it is wrapped in an object containing a property `err` (`{ err: mergingObject }`), allowing for a unified error handling flow.
 
 Options `serializers` and `errorKey` can be used at instantiation time to change the namespace from `err` to another string.

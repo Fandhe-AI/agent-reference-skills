@@ -27,6 +27,20 @@ To avoid automatically receiving breaking security updates, use the tilde (`~`) 
 | 7.x     | 2021-10-14   | 2023-06-01      | 12, 14, 16           |
 | 6.x     | 2020-03-07   | 2022-04-14      | 10, 12, 14, 16      |
 
+### Supported Node.js versions
+
+Pino follows the Node.js release schedule. A Pino release line is tested against, and supports, every Node.js release line that is in its _current_, _active LTS_, or _maintenance LTS_ phase when the Pino line is released, as described above.
+
+Support for a Node.js version is **only dropped in a new Pino major release**. A published Pino major will never drop a Node.js release line that it originally shipped with, so upgrading within a major line (for example, from `9.1.0` to `9.4.0`) will never remove support for a Node.js version you already run on.
+
+Once a Node.js release line reaches its end-of-life, Pino supports it on a best-effort basis, with the following caveats:
+
+- End-of-life Node.js versions are not exercised in continuous integration.
+- Some fixes and features cannot be backported to the Pino lines that still support them.
+- Dependencies cannot be kept up to date.
+
+To keep running on an end-of-life Node.js version, pin your dependency to the last Pino major line that supported it. The Version Schedule above maps each Pino release line to the Node.js versions it supports; for example, to stay on Node.js 14, install the latest `8.x` release with `"pino": "8.x"`.
+
 ## CI Tested Operating Systems
 
 Pino uses GitHub Actions for CI testing:
@@ -39,7 +53,8 @@ Pino uses GitHub Actions for CI testing:
 
 ## Notes
 
-- Pino 9.x is the current actively supported version
+- npm `latest` is 10.x (v10.4.0), but the official v10.4.0 schedule table still lists 9.x as its newest row and has no 10.x row yet
+- The `TBD` in the 9.x End Of LTS Date cell is verbatim from the upstream v10.4.0 `docs/lts.md`; no end date is published for 9.x
 - Only the latest Node.js release within a given major line is officially supported
 - Breaking changes may appear in minor releases due to the LTS security update policy
 - Use tilde (`~`) version ranges in `package.json` if you need to avoid unexpected breaking security patches

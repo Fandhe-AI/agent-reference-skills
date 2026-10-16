@@ -22,7 +22,9 @@ Synchronous logging can be turned on by passing `sync: true`. In synchronous mod
 
 ## AWS Lambda
 
-Asynchronous logging is disabled by default on AWS Lambda or any other environment that modifies `process.stdout`. If forcefully turned on, call `dest.flushSync()` at the end of each function execution to avoid losing data.
+Asynchronous logging in AWS Lambda functions will tend to cause delayed or lost log messages, as logs may not be written to the destination before the runtime is frozen.
+
+For Lambda deployments, it is recommended to always use a destination with `sync: true`.
 
 ## Caveats
 
@@ -31,22 +33,22 @@ Asynchronous logging is disabled by default on AWS Lambda or any other environme
 
 ## Flush Limitations with `pino-pretty`
 
-The `logger.flush()` method does not work when using `pino-pretty` because:
+`logger.flush()` does not flush the output of `pino-pretty` because:
 
 1. **Transport Architecture**: `pino-pretty` runs in a separate worker thread via the transport mechanism.
-2. **Buffer Flow**: When you call `logger.flush()`, it flushes the SonicBoom destination in the main thread, but the logs remain queued in the thread-stream worker waiting to be processed by `pino-pretty`.
-3. **No Cross-Thread Flush**: The flush operation never propagates through to the worker thread where the pretty printer is processing the output.
+2. **Cross-Thread Flush**: `logger.flush(cb)` does reach the worker. Since thread-stream#198 the worker waits for the shared buffer to be drained, then looks for a flush primitive on the destination the transport returned: `flush`, `flushSync`, or a pending `drain`.
+3. **No Flush Primitive**: The stream `pino-pretty` returns exposes none of those. Its buffered `SonicBoom` is reachable only through the internal `pump`, so the worker has nothing to call and acknowledges the flush right away.
 
-Even with `logger.flush()`, formatted logs may not appear immediately. The flush only ensures the main thread buffer is written, not the formatted output.
+This means that even with `logger.flush()`, formatted logs may not appear immediately. The flush only guarantees that the main thread buffer was written and that the worker drained the shared buffer, not that `pino-pretty` has written its formatted output.
 
 ## Notes
 
 - Asynchronous logging provides the best performance by buffering writes.
 - Use `sync: false` in `pino.destination()` to enable async mode.
 - `minLength` controls the buffer size before flushing to disk.
-- Always call `dest.flushSync()` on AWS Lambda before the function returns.
+- On AWS Lambda, always use a destination with `sync: true` (asynchronous logging tends to delay or lose logs before the runtime is frozen).
 - The most recent buffered messages may be lost on unexpected system failure.
-- `logger.flush()` does not work across worker thread boundaries (e.g. with `pino-pretty`).
+- `logger.flush()` does not flush `pino-pretty` output: the flush reaches the worker, but `pino-pretty` exposes no flush primitive.
 
 ## Related
 

@@ -21,6 +21,8 @@ Adds to the bindings of this logger instance.
 
 **Note:** Does not overwrite bindings. Can potentially result in duplicate keys in log lines.
 
+Do not pass externally supplied objects directly as bindings. Binding keys are top-level log fields and can conflict with Pino fields or application fields. If untrusted data must be added, place it under an application-controlled key, for example `logger.setBindings({ untrusted })`, and sanitize or redact it first.
+
 ## `logger.flush([cb])`
 
 Flushes the content of the buffer when using `pino.destination({ sync: false })`.
@@ -29,7 +31,9 @@ This is an asynchronous, best used as fire-and-forget, operation. If there is a 
 
 The use case is primarily for asynchronous logging, which may buffer log lines while others are being written. `logger.flush` can be used to flush on a long interval (e.g. ten seconds) for an optimum balance between efficient logging at high demand and safer logging at low demand.
 
-**Note:** `flush()` does not work when using `pino-pretty`.
+**Note:** `logger.flush()` does not flush the output of `pino-pretty`. See "Flush Limitations with `pino-pretty`" in the asynchronous logging page.
+
+**Note:** in the browser this method is a no-op and `cb` is never invoked.
 
 ## `logger.level` (String) [Getter/Setter]
 
@@ -98,7 +102,11 @@ Returns the serializers as applied to the current logger instance. If a child lo
 
 ## Event: 'level-change'
 
-The logger instance is also an `EventEmitter`. A listener function can be attached via the `level-change` event.
+The logger instance is also an `EventEmitter`.
+
+**Note:** the `EventEmitter` methods are no-ops in the browser, so this event never fires there.
+
+A listener function can be attached via the `level-change` event.
 
 The listener is passed five arguments:
 
@@ -142,7 +150,8 @@ Exposes the cumulative `msgPrefix` of the logger.
 
 - `setBindings()` adds to existing bindings rather than replacing them, which can lead to duplicate keys.
 - `flush()` is primarily useful for asynchronous logging with `pino.destination({ sync: false })`.
-- `flush()` does not work with `pino-pretty`.
+- `flush()` does not flush `pino-pretty` output.
+- In the browser, `flush()` and the `EventEmitter` methods are no-ops (`cb` is never invoked; `level-change` never fires).
 - The `level-change` event fires on child creation as well as actual level changes.
 - The `levels` object contains both `labels` (number-to-string) and `values` (string-to-number) mappings.
 

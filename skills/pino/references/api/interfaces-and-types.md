@@ -42,6 +42,7 @@ Properties:
   - `level`: Level
   - Returns: MultiStreamRes
   - Returns a cloned object of the current instance but with the provided `level`.
+  - Typed in pino.d.ts v10.4.0 as `clone<const TLevel = Level>(level: TLevel): MultiStreamRes<TLevel>`.
 
 ### `StreamEntry`
 
@@ -138,6 +139,18 @@ logger.error(new Error('test')) // Error: Property 'userId' is missing in type '
 ```
 
 This ensures that all log entries include required context fields, promoting consistent logging practices.
+
+### `pino.transport()` return type and named `default` export
+
+In pino.d.ts v10.4.0, `pino.transport()` returns `ThreadStream`, imported with `import ThreadStream from 'thread-stream'` (previously typed `any`). The namespace also exports `pino` as a named `default` export (PR #2421):
+
+```typescript
+export function transport<TransportOptions = Record<string, any>> (
+  options: TransportSingleOptions<TransportOptions> | TransportMultiOptions<TransportOptions> | TransportPipelineOptions<TransportOptions>
+): ThreadStream
+
+export { pino as default, pino }
+```
 
 ## Notes
 

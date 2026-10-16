@@ -23,6 +23,18 @@ module.exports = {
 
 Every log line from `log` will include `"module":"foo"` automatically.
 
+Child logger bindings are top-level fields on every log line emitted by the child logger. Do not create child loggers from externally supplied objects or user-controlled binding names, because those keys can conflict with Pino fields such as `level`, `time`, or `msg`, as well as application or security fields. If untrusted data must be associated with logs, place it under an application-controlled key:
+
+```js
+// Avoid: user-controlled keys become top-level fields on every child log line
+const child = logger.child(untrustedObject)
+
+// Prefer: user-controlled keys are contained under a trusted namespace
+const child = logger.child({ untrusted: untrustedObject })
+```
+
+As a matter of good security hygiene, prefer not to log untrusted data at all unless it is necessary. When it is necessary, sanitize and redact it first.
+
 ## Cost of Child Logging
 
 Child logger creation is fast:
@@ -81,7 +93,7 @@ The conflict is resolved by taking the last value, which aligns with Bunyan's ch
 
 - Child loggers inherit the parent's configuration (level, serializers, etc.) and add their own bindings.
 - One of Pino's performance tricks is building strings instead of building objects and stringifying them, which is why duplicate keys between parents and children appear in raw output.
-- Be conscious of namespace conflicts with child loggers, especially considering your expected log processing approach.
+- Be conscious of namespace conflicts with child loggers, especially considering your expected log processing approach. This is especially important for untrusted data: do not allow externally supplied objects or user-controlled key names to become child logger bindings.
 - Some JSON parsers may handle duplicate keys differently than `JSON.parse`.
 
 ## Related

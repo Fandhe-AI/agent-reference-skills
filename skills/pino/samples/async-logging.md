@@ -34,4 +34,4 @@ const stdoutLogger = pino(
 - `sync: false` (async mode) delivers the lowest possible logging overhead by writing in batches.
 - There is no 1:1 relationship between `logger.info()` calls and disk writes — a crash before flush may lose the last buffer.
 - On AWS Lambda always use `sync: true` because the runtime may freeze before an async flush completes.
-- `logger.flush()` does not propagate through Worker Thread transports (e.g. `pino-pretty` via `pino.transport()`); use `pino.destination()` directly when flush control is required.
+- `logger.flush()` reaches the transport worker, but does not flush `pino-pretty` output because the stream `pino-pretty` returns exposes no flush primitive (`flush` / `flushSync` / pending `drain`); see references/features/asynchronous.md.

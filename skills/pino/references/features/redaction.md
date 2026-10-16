@@ -127,6 +127,7 @@ The `redact` option is intended as an initialization-time configuration option. 
 
 ## Notes
 
+- As of v10.4.0, redaction also works in the browser logger (feat(browser): add redaction support, PR #2396); the upstream note "Redaction is not supported in the browser #670" was removed.
 - Default censor value is `[Redacted]` when using the array form.
 - Use the object form (`paths`, `censor`, `remove`) for custom censor strings or key removal.
 - Wildcard paths (`*`) are powerful but carry higher overhead than explicit paths.

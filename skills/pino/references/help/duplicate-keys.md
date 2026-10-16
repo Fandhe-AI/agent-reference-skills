@@ -1,10 +1,10 @@
 # Duplicate Keys
 
-子ロガーのバインディングとログ呼び出しのオブジェクトで同名キーが存在する場合の挙動。
+Behavior when a child logger's bindings and a logged object contain the same key.
 
-## 発生条件
+## When It Happens
 
-子ロガーに設定したバインディングと、ログメソッドに渡すオブジェクトに同じキーがあると、JSON 出力に重複キーが含まれる。
+Duplicate keys are possible when a logged object contains a top-level key that collides with a Pino field or a key in the child logger's bindings, or when child logger bindings collide with parent bindings (per help.md in v10.4.0).
 
 ```js
 const pino = require('pino')
@@ -14,30 +14,38 @@ pino(pino.destination('./my-log'))
   .info('howdy')
 ```
 
-出力される JSON:
+Output JSON:
 
 ```json
 {"pid":95469,"hostname":"MacBook-Pro-3.home","level":30,"msg":"howdy","time":1459534114473,"a":"property","a":"prop"}
 ```
 
-2つの `a` キーが存在する。子のプロパティは親のプロパティの後に出力される。
+Two `a` keys are present. The child's property is written after the parent's.
 
-## 解決の挙動
+## Resolution
 
-`JSON.parse` で解析すると、最後に出現した値が採用される:
+`JSON.parse` keeps the last occurrence:
 
 ```sh
 $ cat my-log | node -e "process.stdin.once('data', (line) => console.log(JSON.stringify(JSON.parse(line))))"
 {"pid":95469,"hostname":"MacBook-Pro-3.home","level":30,"msg":"howdy","time":"2016-04-01T18:08:34.473Z","a":"prop"}
 ```
 
-これは Bunyan の子ロガーと同じ挙動（最後の値が勝つ）。
+This matches Bunyan's child logger behavior (last value wins).
+
+## Untrusted Data
+
+Avoid passing externally supplied objects directly to logging methods or child logger bindings. User-controlled top-level keys can conflict with Pino fields such as `level`, `time`, or `msg`, as well as application or security fields. If untrusted data must be logged, place it under an application-controlled key, such as `logger.info({ untrusted })`, and prefer not to log untrusted data at all unless necessary.
+
+```js
+logger.info({ untrusted })
+```
 
 ## Notes
 
-- Pino はパフォーマンスのためにオブジェクトを構築・stringify せず文字列を直接組み立てるため、重複キーが出力される
-- 別の JSON パーサーを使用する場合、重複キーの処理が異なる可能性がある
-- 子ロガー作成時にキー名の衝突に注意すること
+- For performance, Pino builds the output string directly instead of constructing and stringifying an object, so duplicate keys are emitted.
+- Other JSON parsers may handle duplicate keys differently.
+- Watch for key name collisions when creating child loggers.
 
 ## Related
 
