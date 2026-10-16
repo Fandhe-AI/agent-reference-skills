@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/gitlab-ci-cd.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/gitlab-ci-cd.md / last verified: 2026-10-16 -->
 
 # Claude Code GitLab CI/CD
 

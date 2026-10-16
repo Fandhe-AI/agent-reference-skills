@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/github-actions-cloud-providers.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/github-actions-cloud-providers.md / last verified: 2026-10-16 -->
 
 # Use Claude Code GitHub Actions with cloud providers
 

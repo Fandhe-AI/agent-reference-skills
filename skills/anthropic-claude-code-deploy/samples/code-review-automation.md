@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/code-review.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/code-review-customize.md, https://code.claude.com/docs/en/code-review-pull-requests.md / last verified: 2026-10-16 -->
 
 # Tune Code Review with REVIEW.md and parse its check run
 
@@ -17,10 +17,7 @@ most.
 
 ## Cap the nits
 
-Report at most five Nits per review. If you found more, say "plus N
-similar items" in the summary instead of posting them inline. If
-everything you found is a Nit, lead the summary with "No blocking
-issues."
+Report at most five Nits per review.
 
 ## Do not report
 
@@ -42,8 +39,10 @@ gh api repos/OWNER/REPO/check-runs/CHECK_RUN_ID \
 
 ## Notes
 
-- `REVIEW.md` is injected verbatim into every review agent's system prompt at highest priority; `@` import syntax is not expanded, so put rules directly in the file rather than referencing other files.
-- `CLAUDE.md` is also read during review but only produces nit-level findings for newly introduced violations; use `REVIEW.md` for review-only behavior changes.
-- The check run named **Claude Code Review** always completes with a neutral conclusion, so it never blocks merging by itself; gate merges on findings by parsing the severity JSON (e.g. `{"normal": 2, "nit": 1, "pre_existing": 0}`) in your own CI, where `normal` is the Important count.
+- A `REVIEW.md` can also be added in a subdirectory (for example `services/billing/REVIEW.md`) to add checks for changes under that path, on top of the root file.
+- `REVIEW.md` is read from the pull request's base branch or from the default branch, never from the pull request's own changes; merge the `REVIEW.md` change first. Lowering severity, excluding paths, and capping nits are honored only from the root file on a protected default branch (classic rule or ruleset; any other branch needs a ruleset).
+- `CLAUDE.md` is also read during review as project context; a change that violates one of its rules becomes a finding at whichever severity level fits. The local `/code-review` command reads `CLAUDE.md` and not `REVIEW.md`, so put guidance you want in both places in `CLAUDE.md`.
+- The check run named **Claude Code Review** concludes as neutral (or skipped), never as a failure, so it never blocks merging by itself; gate merges by parsing the severity JSON (e.g. `{"nit": 1, "normal": 2, "pre_existing": 0}`) in your own CI, where `normal` is the Important count. The counts include findings from earlier reviews whose threads are still open.
+- If the `bughunter-severity:` line is missing, treat it as no verdict, not as zero findings: failed, timed-out, canceled, or superseded reviews have no such line, and some completed reviews have none either.
 - Find `CHECK_RUN_ID` with `gh api repos/OWNER/REPO/commits/<commit-sha>/check-runs --jq '.check_runs[] | {id, name}'` and take the `Claude Code Review` entry's `id`.
-- Code Review is a managed GitHub App service (Team/Enterprise, not available with Zero Data Retention) distinct from running Claude in your own CI — see `github-actions-workflow.md` and `gitlab-ci.md` for self-hosted alternatives, and the local `/code-review` command for reviewing a diff without installing the app.
+- Code Review is a managed GitHub App service (Team/Enterprise, not available with Zero Data Retention) distinct from running Claude in your own CI — see `github-actions-workflow.md` and `gitlab-ci.md` for self-hosted alternatives.

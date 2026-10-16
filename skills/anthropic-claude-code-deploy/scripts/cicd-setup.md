@@ -1,13 +1,16 @@
-<!-- source: https://code.claude.com/docs/en/github-actions.md / last verified: 2026-08-07 -->
-<!-- source: https://code.claude.com/docs/en/github-actions-cloud-providers.md / last verified: 2026-08-07 -->
-<!-- source: https://code.claude.com/docs/en/github-enterprise-server.md / last verified: 2026-08-07 -->
-<!-- source: https://code.claude.com/docs/en/gitlab-ci-cd.md / last verified: 2026-08-07 -->
-<!-- source: https://code.claude.com/docs/en/code-review.md / last verified: 2026-08-07 -->
-<!-- source: https://code.claude.com/docs/en/slack.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/github-actions.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/github-actions-cloud-providers.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/github-enterprise-server.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/gitlab-ci-cd.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/code-review.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/code-review-local.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/code-review-pull-requests.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/ultrareview.md / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/slack.md / last verified: 2026-10-16 -->
 
 # cicd-setup
 
-Setup commands, workflow examples, and trigger phrases for running Claude Code through GitHub Actions, GitHub Enterprise Server, GitLab CI/CD, Code Review, and Slack.
+Setup commands, workflow examples, and trigger phrases for running Claude Code through GitHub Actions, GitHub Enterprise Server, GitLab CI/CD, Code Review (managed, local, and ultrareview), and Slack.
 
 ## GitHub App のクイックセットアップ
 
@@ -73,6 +76,11 @@ claude --cloud "Add retry logic to the payment webhook handler"
 @claude review once
 ```
 
+- `@claude review` and `@claude review once` start a single review without subscribing the PR to future pushes; `@claude review always` also subscribes the PR to push-triggered reviews.
+- Before a July 2026 update, `@claude review` subscribed the PR to push-triggered reviews. To keep that behavior, comment `@claude review always` instead.
+- Post it as a new top-level pull request comment (not an inline diff comment, not a review body, and editing an earlier comment doesn't count), with the command at the start of the comment and `always` on the same line.
+- The commenter needs write, maintain, or admin permission on the repository. Comments from bots don't start reviews.
+
 ## Code Review のトリガー（ローカル、GitHub App 不要）
 
 ```text
@@ -82,9 +90,82 @@ claude --cloud "Add retry logic to the payment webhook handler"
 /code-review ultra
 ```
 
-`/code-review ultra` escalates to the deeper cloud ultrareview; requires claude.ai auth, unavailable on Bedrock/Vertex/Foundry or with Zero Data Retention.
+`/review` is an alias of `/code-review` (v2.1.223+; before that, `/review` was a separate single-pass, read-only PR review). With no target, the review covers your branch's commits ahead of its upstream plus uncommitted changes. `--fix` applies findings to the working tree through your permission mode; `--comment` posts findings as inline comments on a GitHub PR, or as a single note on a GitLab MR.
 
-## Slack: チャンネルへの招待とメンション
+## ローカルレビューの対象指定
+
+```text
+/code-review HEAD~15..HEAD
+/code-review main...my-feature
+/code-review abc1234^..abc1234
+/code-review 1234
+/code-review src/auth
+```
+
+A target can be a PR number, a branch name, a file or directory path, or a Git revision range (`abc1234` is a commit hash).
+
+## ローカルレビューの effort と上限
+
+```text
+/code-review high
+/code-review --max-findings 50
+/code-review --max-findings all
+/code-review --max-findings default
+```
+
+An effort level (`low` through `max`) trades coverage for confidence; with no level typed, the review reuses the last level you typed. `--max-findings <n|all|default>` requires Claude Code v2.1.288+; the findings-tool limit is 32, and the value typed in a non-interactive `-p` run isn't remembered.
+
+## GitLab MR へのレビュー投稿
+
+```text
+/code-review --comment !123
+```
+
+Requires Claude Code v2.1.257+ and the `glab` CLI (without it, findings are printed in the terminal). Pass the MR as its URL or `!123`; a bare number or branch name is treated as an MR only when the checkout's origin is on `gitlab.com`.
+
+## ultrareview（クラウド、対話）
+
+```text
+/code-review ultra
+/code-review ultra develop
+/code-review ultra 1234
+/code-review ultra 1234 --post
+/code-review ultra --fix
+```
+
+`/code-review ultra` escalates to the deeper cloud ultrareview; `--post` (v2.1.227+) preselects posting the findings to a `github.com` PR as one plain comment from your GitHub account, and the launch dialog still asks before launching. Requires claude.ai auth. Unavailable on Bedrock/Vertex/Foundry, with Zero Data Retention, or with the HIPAA configuration applied (in these cases `/code-review ultra` runs a local review instead). Organizations that use customer-managed encryption keys (CMEK) can't run ultrareview.
+
+## ultrareview（非対話、CI / スクリプト）
+
+```bash
+claude ultrareview
+claude ultrareview 1234
+claude ultrareview origin/main
+claude ultrareview 1234 --json --timeout 30 --post
+```
+
+Syntax: `claude ultrareview [<PR>|<base>] [--json] [--timeout <minutes>] [--post|--no-post]`. Blocks until the remote review finishes and prints findings to stdout (progress goes to stderr).
+
+| Flag | Description |
+| --- | --- |
+| `--json` | Print the raw `bugs.json` payload instead of the formatted findings |
+| `--timeout <minutes>` | Maximum minutes to wait. Defaults to 45 |
+| `--post` | Post findings to a `github.com` PR as one plain comment (v2.1.227+) |
+| `--no-post` | Don't post (default; wins if both are passed; v2.1.227+) |
+
+Exit codes: `0` review completed (with or without findings); `1` failed to launch, stopped, cloud session errored, or timeout elapsed; `130` interrupted with Ctrl-C.
+
+> **警告**: Running the subcommand yourself counts as consent to the usage-credits billing prompt and to the whole-repository fallback when no merge base exists. After the free runs, a review typically bills about $5 to $25 in usage credits. `claude -p '/code-review ultra'` launches the cloud review and exits without the findings, so use `claude ultrareview` in scripts.
+
+## Slack: Claude Tag の接続とチャンネルメンション
+
+```text
+@Claude connect
+```
+
+`@Claude connect` is the command named in the retirement notice that the earlier Claude Code in Slack shows when the workspace is connected to Claude Tag; it is the starting point for connecting the workspace (Claude Tag is available on Team and Enterprise plans), followed by "Set up Claude Tag".
+
+The earlier Claude Code in Slack (documented in `slack.md`) answers channel mentions only from Pro and Max accounts, in workspaces not connected to Claude Tag:
 
 ```text
 /invite @Claude
@@ -133,4 +214,5 @@ Quick setup: add `ANTHROPIC_API_KEY` as a masked CI/CD variable, then add this j
 - Manage run cost with `--max-turns`, workflow/job-level timeouts, and GitHub's/GitLab's concurrency controls.
 - GitHub doesn't trigger workflows on commits made with the default `GITHUB_TOKEN`; use a custom app token if CI must run on Claude's own commits.
 - The Code Review **Claude Code Review** check always completes with a neutral conclusion, so it never blocks merges via branch protection. To gate merges, parse its machine-readable `bughunter-severity` JSON in your own CI via `gh api ... | jq` (the literal API path is elided in the source docs — 要確認).
+- To stop Claude and scheduled tasks from starting `/code-review` on their own, set `skillOverrides` (see `references/cicd/code-review-local.md`).
 - Full inputs and environment variables for each surface: `references/cicd/github-actions.md`, `references/cicd/github-actions-cloud-providers.md`, `references/cicd/github-enterprise-server.md`, `references/cicd/gitlab-ci-cd.md`, `references/cicd/code-review.md`, `references/cicd/slack.md`.
