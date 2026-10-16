@@ -44,6 +44,7 @@ await jumpList.SaveAsync();
 ## Notes
 
 - Namespace: `Windows.UI.StartScreen` (WinRT).
+- The `JumpList` API requires package identity: it works in packaged (MSIX) apps and apps packaged with external location, but is not available in unpackaged apps.
 - On save, the OS reorders items: removed-by-user items are dropped, items sharing a `GroupName` are grouped, system-managed groups float to the top, and the "Tasks" group sinks to the bottom.
 - Handle jump list task activation in `App.OnLaunched` by checking `LaunchActivatedEventArgs.Arguments` against the string passed to `CreateWithArguments`.
 

@@ -35,8 +35,12 @@ if (result.ResponseStatus == WebTokenRequestStatus.Success)
 - Namespace: `Windows.Security.Authentication.Web.Core` (WinRT). This is the low-level WAM broker API; only supports Microsoft accounts and Microsoft Entra ID accounts (not arbitrary third-party OAuth providers — use `WebAuthenticationBroker` for those).
 - Microsoft recommends most new apps use **MSAL.NET with the WAM broker** rather than calling `WebAuthenticationCoreManager` directly; MSAL.NET wraps this API and adds silent SSO, token caching, and Windows Hello–backed device-bound refresh tokens.
 - Desktop apps must supply a window handle (HWND) for UI-showing calls via the corresponding interop APIs, similar to `UserConsentVerifier`.
+- Unlike UWP apps, WinUI 3 desktop apps don't require Store association to use Web Account Manager; they need an app registration with the identity provider instead (per the Web Account Manager guide, 2026-09-10).
+- For providers other than Microsoft / Microsoft Entra ID in desktop apps, `OAuth2Manager` is the recommended approach rather than adding a custom `WebAccountProvider` to the `AccountsSettingsPane`.
 
 ## Related
 
+- [Web Account Manager](./web-account-manager.md)
+- [OAuth2Manager](./oauth2-manager.md)
 - [WebAccountProvider](./web-account-provider.md)
 - [WebAuthenticationBroker](./web-authentication-broker.md)

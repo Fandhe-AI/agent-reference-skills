@@ -36,6 +36,7 @@ var consent = await UserConsentVerifier.RequestVerificationAsync("Confirm this p
 ## Notes
 
 - Namespace: `Windows.Security.Credentials` / `Windows.Security.Credentials.UI` (WinRT). This is the native Windows Hello key-credential model; it is distinct from web-standard WebAuthn/passkeys, which Windows implements at the OS/browser level (native credential UX, FIDO Cross-Device Authentication) rather than exposing as a separate `Windows.Security.Authentication.WebAuthn` WinRT namespace for app developers.
+- Windows 11 also supports a plugin model for third-party passkey providers (plugin credential manager API). The Contoso Passkey Manager demo is in the Windows-classic-samples repo under `Samples/PasskeyManager` (test only, not for production passkeys) and is enabled under Settings > Accounts > Passkeys > Advanced options.
 - Each `KeyCredentialManager` key pair is unique per device; supporting multi-device sign-in requires the backend to store multiple public keys per user account.
 - The private key is never exposed to app code, on either the client or server side — only signing/derive operations are requested through the API.
 - For sign-in with a Microsoft account or Microsoft Entra ID account specifically (as opposed to a custom backend), prefer MSAL.NET with the Web Account Manager (WAM) broker over building a custom `KeyCredentialManager` challenge/response flow — see `WebAuthenticationCoreManager`.

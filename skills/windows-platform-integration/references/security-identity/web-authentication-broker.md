@@ -38,8 +38,10 @@ else if (result.ResponseStatus == WebAuthenticationStatus.ErrorHttp)
 - Namespace: `Windows.Security.Authentication.Web` (WinRT). Requires the `internetClient` app capability declared in the package manifest.
 - Used for general-purpose OAuth 2.0 authorization-code/implicit flows against arbitrary identity providers (Facebook, Google, custom OAuth servers). For Microsoft account / Microsoft Entra ID sign-in specifically, prefer `WebAuthenticationCoreManager` / Web Account Manager (or MSAL.NET with the WAM broker) for silent SSO and Windows Hello–backed tokens instead.
 - Troubleshoot via Event Viewer: **Application and Services Logs > Microsoft > Windows > WebAuth > Operational**.
+- Desktop / WinUI 3 counterpart: `OAuth2Manager` (`Microsoft.Security.Authentication.OAuth`, Windows App SDK). Per the OAuth 2.0 guide it differs from `WebAuthenticationBroker` by using the user's default browser, provides authorization code grant with PKCE only (no implicit or resource owner password credential), and follows RFC 6749, RFC 7636 and RFC 8252. It is currently available only in the Windows App SDK Experimental release channel (prerelease `Microsoft.WindowsAppSDK` with an `-experimental` suffix), not the stable channel.
 
 ## Related
 
+- [OAuth2Manager](./oauth2-manager.md)
 - [WebAuthenticationCoreManager](./web-authentication-core-manager.md)
 - [WebAccountProvider](./web-account-provider.md)

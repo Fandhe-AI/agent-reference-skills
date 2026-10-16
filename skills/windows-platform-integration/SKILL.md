@@ -2,14 +2,12 @@
 name: windows-platform-integration
 description: >
   Windows アプリ開発 (Windows App SDK / WinRT) の OS 統合 API リファレンス。
-  DeviceInformation, DeviceWatcher, センサー (Accelerometer, Gyrometer, Compass,
-  OrientationSensor, Pedometer, ActivitySensor), Bluetooth LE, USB, Serial, HID,
-  Battery, HttpClient, StreamSocket, WebSocket, BackgroundDownloader/Uploader,
-  NetworkInformation, PointerInput, KeyboardInput, FocusManager, DragAndDrop,
-  IME/TextInput, Calendar, DateTimeFormatter, CurrencyFormatter, ResourceLoader
-  (多言語化・地域化), PasswordVault, CryptographicBuffer, WindowsHello/Passkeys,
-  WebAuthenticationBroker, Clipboard, DataTransferManager, Launcher, JumpList,
-  TaskbarManager, SecondaryTile, StartupTask, ProtocolActivation。
+  DeviceInformation, センサー (Accelerometer, Gyrometer, Pedometer), Bluetooth LE, USB,
+  Serial, HID, Battery, HttpClient, StreamSocket, WebSocket, BackgroundDownloader,
+  NetworkInformation, PointerInput, FocusManager, DragAndDrop, IME, ResourceLoader (多言語化),
+  PasswordVault, OAuth2Manager, Web Account Manager (WAM) / MSAL, WindowsHello/Passkeys,
+  Age signals, CryptographicBuffer, Clipboard, DataTransferManager, Launcher, JumpList,
+  TaskbarManager, SecondaryTile, StartupTask, Smart App Control, Phone Link。
 user-invocable: false
 ---
 
@@ -74,6 +72,9 @@ skills/windows-platform-integration/
       stream-web-socket.md
       background-downloader.md
       background-uploader.md
+      background-network-communications.md
+      networking-basics.md
+      which-networking-technology.md
       download-operation.md
       network-information.md
       connection-profile.md
@@ -93,6 +94,7 @@ skills/windows-platform-integration/
       tab-navigation.md
       gesture-recognizer.md
       haptic-feedback.md
+      identify-input-devices.md
       input-activation-listener.md
       input-pointer-source.md
       input-keyboard-source.md
@@ -126,8 +128,10 @@ skills/windows-platform-integration/
       key-credential.md
       user-consent-verifier.md
       user-consent-verification-result.md
+      oauth2-manager.md
       web-authentication-broker.md
       web-authentication-core-manager.md
+      web-account-manager.md
       web-account-provider.md
       cryptographic-buffer.md
       hash-algorithm-provider.md
@@ -138,6 +142,9 @@ skills/windows-platform-integration/
       certificate-enrollment-manager.md
       smart-cards.md
       windows-hello-passkeys.md
+      fingerprint-biometrics.md
+      share-certificates.md
+      age-signals.md
       app-capabilities.md
       appcontainer.md
     windows-integration/
@@ -149,13 +156,17 @@ skills/windows-platform-integration/
       share-sheet-send.md
       share-sheet-receive.md
       share-sheet-contacts.md
+      share-dataformat-reference.md
       default-apps-platform.md
       protocol-file-association.md
       protocol-activation.md
       launcher.md
       cross-device-people-api.md
       cross-device-resume-overview.md
+      cross-device-resume-promoted-install.md
       connected-experiences-overview.md
+      phone-link-notifications.md
+      smart-app-control.md
       jump-list.md
       taskbar-manager.md
       pin-to-taskbar.md
@@ -167,6 +178,7 @@ skills/windows-platform-integration/
       context-menu-extensions.md
       recall.md
       search-providers.md
+      cloud-search-integration.md
       widget-providers.md
       feed-providers.md
       microsoft-copilot-key-provider.md
@@ -190,6 +202,7 @@ skills/windows-platform-integration/
 | HttpClient / WebSocket で HTTP・双方向通信を実装したい | networking | [references/networking/README.md](references/networking/README.md) |
 | StreamSocket / DatagramSocket で TCP/UDP 通信を実装したい | networking | [references/networking/README.md](references/networking/README.md) |
 | BackgroundDownloader / BackgroundUploader でバックグラウンド転送を行いたい | networking | [references/networking/README.md](references/networking/README.md) |
+| ネットワーク技術の選択・バックグラウンド通信 (SocketActivityTrigger / ControlChannelTrigger) を設計したい | networking | [references/networking/README.md](references/networking/README.md) |
 | NetworkInformation / ConnectionProfile で接続状態を判定したい | networking | [references/networking/README.md](references/networking/README.md) |
 | ポインター・キーボード入力をハンドリングしたい | input | [references/input/README.md](references/input/README.md) |
 | FocusManager / XYFocus / タブナビゲーションでフォーカス制御したい | input | [references/input/README.md](references/input/README.md) |
@@ -200,6 +213,9 @@ skills/windows-platform-integration/
 | PasswordVault / 資格情報を安全に保存したい | security-identity | [references/security-identity/README.md](references/security-identity/README.md) |
 | Windows Hello / Passkeys / WebAuthenticationBroker で認証したい | security-identity | [references/security-identity/README.md](references/security-identity/README.md) |
 | CryptographicBuffer / 証明書で暗号化・署名を行いたい | security-identity | [references/security-identity/README.md](references/security-identity/README.md) |
+| サードパーティ IdP へ OAuth 2.0 (PKCE) で認可したい (OAuth2Manager) | security-identity | [references/security-identity/README.md](references/security-identity/README.md) |
+| Microsoft アカウント / Entra ID で WAM・MSAL サインインしたい | security-identity | [references/security-identity/README.md](references/security-identity/README.md) |
+| ユーザーの年齢層・年齢確認状態を取得したい (Age signals) | security-identity | [references/security-identity/README.md](references/security-identity/README.md) |
 | クリップボード・共有 (DataTransferManager) を実装したい | windows-integration | [references/windows-integration/README.md](references/windows-integration/README.md) |
 | JumpList / TaskbarManager / SecondaryTile / スタート画面連携をしたい | windows-integration | [references/windows-integration/README.md](references/windows-integration/README.md) |
 | プロトコルアクティベーション・StartupTask で起動制御をしたい | windows-integration | [references/windows-integration/README.md](references/windows-integration/README.md) |
@@ -207,6 +223,10 @@ skills/windows-platform-integration/
 | Widgets Board のウィジェット・Dashboard フィードを提供したい | windows-integration | [references/windows-integration/README.md](references/windows-integration/README.md) |
 | Recall 連携・Windows Search 提供元・Copilot キー・taskbar ピン留めを実装したい | windows-integration | [references/windows-integration/README.md](references/windows-integration/README.md) |
 | Connected Experiences (People / Resume / Share) 全体像を把握したい | windows-integration | [references/windows-integration/README.md](references/windows-integration/README.md) |
+| Smart App Control に対応した署名・動作確認をしたい | windows-integration | [references/windows-integration/README.md](references/windows-integration/README.md) |
+| Phone Link 通知からデスクトップアプリを起動・インストールさせたい | windows-integration | [references/windows-integration/README.md](references/windows-integration/README.md) |
 
 このスキルは Windows App SDK / WinRT の OS 統合 API（デバイス・ネットワーク・入力・地域化・セキュリティ・シェル連携）のみを扱う。
 コントロール・レイアウト・XAML UI は windows-winui-controls / windows-winui-ui / windows-design、グラフィックス・メディア描画は windows-graphics-media、パッケージング・配布は windows-packaging-publish が担当する。
+Smart App Control の署名手順も windows-packaging-publish が担当し、本スキルは動作・挙動の確認のみを扱う。
+リファレンス本文は learn.microsoft.com en-us を 2026-10-16 に取得した内容に準拠する。
