@@ -2,31 +2,36 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Audio Events | Editor-only events that trigger sound effect playback within animations or user interactions | [audio-events.md](./audio-events.md) |
-| Converters | Transformation nodes that modify a ViewModel property value before it is applied to a binding target | [converters.md](./converters.md) |
-| Data Binding | The system that connects data stored in ViewModels to properties in a Rive scene | [data-binding.md](./data-binding.md) |
-| Binding Data | How to connect a View Model property to a specific element/field in the Rive editor | [data-binding-binding-data.md](./data-binding-binding-data.md) |
-| Controlling Data | Overview of the ways data can be updated from within a Rive file and from application code | [data-binding-controlling-data.md](./data-binding-controlling-data.md) |
-| Lists | A List displays a dynamically generated set of items driven by bound data values | [data-binding-lists.md](./data-binding-lists.md) |
-| Data Binding Migration Guide | Guidance for migrating from State Machine Inputs and runtime Event listeners to Data Binding | [data-binding-migration-guide.md](./data-binding-migration-guide.md) |
-| Property Groups | Local, artboard-level values that can be keyed on a timeline and bound to ViewModel properties | [data-binding-property-groups.md](./data-binding-property-groups.md) |
-| View Model Property Types | A View Model property is a single named, typed data field within a View Model | [data-binding-property-types.md](./data-binding-property-types.md) |
-| Stateful Components | Expose specific View Model properties directly on a nested Component for independent per-instance values | [data-binding-stateful-components.md](./data-binding-stateful-components.md) |
-| Enums | Data types that restrict a ViewModel property to a predefined set of named options | [enums.md](./enums.md) |
-| Events | Signals emitted from within a Rive artboard to notify the runtime that something has happened | [events.md](./events.md) |
-| Inputs | Named values attached to a State Machine that drive transition conditions and blend parameters | [inputs.md](./inputs.md) |
-| Instances | ViewModel Instances are the concrete data containers created from a ViewModel blueprint | [instances.md](./instances.md) |
-| Layers | Independent parallel animation tracks within a single State Machine | [layers.md](./layers.md) |
-| Layout | The Layout configuration controls how a Rive artboard is scaled and positioned within its container | [layout.md](./layout.md) |
-| Layout Animation | Adds interpolated reflow to a Layout container when resizing with a chosen easing curve | [layout-animation.md](./layout-animation.md) |
-| Layout Parameters | Editor-level parameters for Layout containers affecting parent sizing and child arrangement | [layout-parameters.md](./layout-parameters.md) |
-| Layout Styles | Visual styles — fills, strokes, feathers, blend modes — that can be applied to a Layout container | [layout-styles.md](./layout-styles.md) |
-| Layout Tools | Editor tools and workflows for creating and arranging Layout containers | [layout-tools.md](./layout-tools.md) |
-| Listeners | State Machine components that respond to user interactions and internal changes without code | [listeners.md](./listeners.md) |
-| N-Slicing | Extension of 9-slicing that divides artwork into segments so corners stay undistorted while scaling | [n-slicing.md](./n-slicing.md) |
-| Properties | Individual data fields within a ViewModel, each with a name, type, and value | [properties.md](./properties.md) |
-| Scrolling | Two constraints that add scrolling behavior to Layout containers for overflowed content | [scrolling.md](./scrolling.md) |
-| State Machine | A visual framework for connecting animations and defining interactive transition logic | [state-machine.md](./state-machine.md) |
-| States | Nodes in the State Machine graph that represent distinct animation conditions | [states.md](./states.md) |
-| Transitions | Directed connections between states in the State Machine graph defining state movement rules | [transitions.md](./transitions.md) |
-| ViewModels | Reusable data blueprints that define the structure of data used in a Rive scene | [view-models.md](./view-models.md) |
+| Accessibility: Focus | Lets users move through a file with a keyboard or gamepad and controls which element receives input, using focus nodes. | [accessibility-focus.md](./accessibility-focus.md) |
+| Accessibility: Reduced Motion | Pass the user's reduced-motion preference into a Rive file through a data binding property and use it to adapt motion. | [accessibility-reduced-motion.md](./accessibility-reduced-motion.md) |
+| Accessibility: Semantics | Define semantic role, properties, traits, state, and actions on elements so screen readers can describe and navigate Rive content. | [accessibility-semantics.md](./accessibility-semantics.md) |
+| Audio Events | Editor-only events that trigger sound effect playback within animations or in response to user interactions, without requiring runtime developer code. | [audio-events.md](./audio-events.md) |
+| Component Sizing | Controls how a component instance scales, fits, and reflows within its parent, via the Sizing Mode in the Inspector. | [component-sizing.md](./component-sizing.md) |
+| Converters | Transformation nodes that modify a ViewModel property value before it is applied to a binding target. Converters adapt data to match the type or range expected by a scene element, and can be chained sequentially. | [converters.md](./converters.md) |
+| Data Binding | The system that connects data stored in ViewModels to properties in a Rive scene. When data changes, the scene updates automatically; changes in the scene can optionally write back to the data source. | [data-binding.md](./data-binding.md) |
+| Binding Data | How to connect a View Model property to a specific element/field in the Rive editor, including bind direction and precision options. | [data-binding-binding-data.md](./data-binding-binding-data.md) |
+| Controlling Data | Overview of the ways data can be updated: from within a Rive file (editor-driven) and from application code (runtime-driven). | [data-binding-controlling-data.md](./data-binding-controlling-data.md) |
+| Lists | A List displays a dynamically generated set of items driven by bound data values configured in View Models, for menus, product listings, feeds, chat, dropdowns, and similar repeating UI. | [data-binding-lists.md](./data-binding-lists.md) |
+| Data Binding Migration Guide | Guidance for migrating from State Machine Inputs and runtime Event listeners to Data Binding, and choosing between Constraints and Data Binding. | [data-binding-migration-guide.md](./data-binding-migration-guide.md) |
+| Property Groups | Local, artboard-level values that can be keyed on a timeline, animated, and bound to View Model properties — bridging global/shared View Model data with local timelines and state machines. | [data-binding-property-groups.md](./data-binding-property-groups.md) |
+| View Model Property Types | A View Model property is a single named, typed data field within a View Model (comparable to a field in object-oriented programming), addressable from code and bindable to matching-type editor elements or state machine conditions. | [data-binding-property-types.md](./data-binding-property-types.md) |
+| Stateful Components | Expose specific View Model properties directly on a nested Component so each nested instance can have its own values, without requiring a separate View Model instance per instance. | [data-binding-stateful-components.md](./data-binding-stateful-components.md) |
+| Enums | Data types that restrict a ViewModel property to a predefined set of named options. Enums prevent invalid values and make designer intent explicit when a property should only hold a fixed set of states (e.g., game modes, layout variants, animation states). | [enums.md](./enums.md) |
+| Events | Signals emitted from within a Rive artboard to notify the runtime that something has happened. Events originate from timelines, states, transitions, or listeners and are consumed via runtime callbacks or ViewModel property observers. | [events.md](./events.md) |
+| Inputs | Named values attached to a State Machine that drive transition conditions and blend parameters. Inputs are the primary mechanism for controlling a state machine from runtime code or listeners. | [inputs.md](./inputs.md) |
+| Instances | ViewModel Instances are the concrete data containers created from a ViewModel blueprint. Each instance holds its own independent set of property values and can be bound to an artboard or component. | [instances.md](./instances.md) |
+| Layers | Independent parallel animation tracks within a single State Machine. Each layer runs its own graph of states and transitions, allowing multiple animations to play simultaneously on the same artboard. | [layers.md](./layers.md) |
+| Layout | The `Layout` configuration controls how a Rive artboard is scaled and positioned within its host container. It defines the **Fit** mode (scaling strategy) and **Alignment** (anchor position), and optionally constrains the drawing region. | [layout.md](./layout.md) |
+| Layout Animation | Adds interpolated reflow to a Layout container: when a Layout resizes and children must reposition, Layout Animation lets that reflow happen over time with a chosen easing curve instead of snapping instantly. | [layout-animation.md](./layout-animation.md) |
+| Layout Parameters | Editor-level parameters for Layout containers, split into those that affect the parent container itself (sizing, padding, clip, position) and those that affect its child Layouts (row/column, wrap, alignment, gap). | [layout-parameters.md](./layout-parameters.md) |
+| Layout Styles | Visual styles — fills, strokes, feathers, blend modes, and corner radius — that can be applied directly to a Layout container, in addition to it acting as a container for other Rive objects. | [layout-styles.md](./layout-styles.md) |
+| Layout Tools | Editor tools and workflows for creating and arranging Layout containers. | [layout-tools.md](./layout-tools.md) |
+| Listeners | State Machine components that respond to user interactions (pointer events) or internal changes (ViewModel property changes, component events) and translate them into actions — updating data, firing events, or repositioning objects — without requiring runtime code. | [listeners.md](./listeners.md) |
+| N-Slicing | An extension of traditional 9-slicing that lets raster and vector artwork be divided into any number of segments, so corner segments stay undistorted while internal segments scale or tile as the artwork resizes. | [n-slicing.md](./n-slicing.md) |
+| Open URL Events | Events that open a URL at runtime when reported from a timeline, state, transition, or listener. | [open-url-events.md](./open-url-events.md) |
+| Properties | Individual data fields within a ViewModel. Each property has a name, a type, and a value. Properties are bound to scene elements in the editor and read/written at runtime through the ViewModel Instance API. | [properties.md](./properties.md) |
+| Scrolling | Two constraints that add scrolling behavior on top of Layout containers: a Scroll Content constraint for touch-based scrolling of overflowed content, and a Scroll Bar Thumb constraint for a draggable scroll bar. | [scrolling.md](./scrolling.md) |
+| State Machine | A visual framework for connecting animations and defining interactive transition logic within a Rive artboard. Every artboard includes one default state machine; additional state machines can be created as needed. | [state-machine.md](./state-machine.md) |
+| States | Nodes in the State Machine graph that represent distinct animation conditions. Each state holds a timeline animation (or blend of animations) that plays while the state is active. | [states.md](./states.md) |
+| Transitions | Directed connections between states in the State Machine graph that define when and how the machine moves from one state to another. | [transitions.md](./transitions.md) |
+| ViewModels | Reusable data blueprints that define the structure of data used in a Rive scene. A ViewModel defines which properties exist and their types; ViewModel Instances hold the actual values. | [view-models.md](./view-models.md) |

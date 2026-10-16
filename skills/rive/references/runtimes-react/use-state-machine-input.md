@@ -2,7 +2,7 @@
 
 Hook to retrieve a named input from an active state machine, enabling boolean, number, and trigger interactions from React code.
 
-> **Deprecated** — For new projects, prefer [Data Binding](./data-binding.md) with `useViewModelInstance*` hooks.
+> **Deprecated in v4.33.0** — The hook still works and nothing has been removed, but state machine inputs will be removed in a future major version. For new projects, prefer [Data Binding](./data-binding.md) with `useViewModelInstance*` hooks.
 
 ## Signature / Usage
 
@@ -21,7 +21,7 @@ import { useRive, useStateMachineInput } from '@rive-app/react-webgl2';
 export default function Example() {
   const { rive, RiveComponent } = useRive({
     src: 'my-animation.riv',
-    stateMachines: 'State Machine 1',
+    stateMachine: 'State Machine 1',
     autoplay: true,
   });
 
@@ -61,7 +61,9 @@ export default function Example() {
 
 - Returns `null` until the `rive` instance is loaded and the state machine is active.
 - Use `fire()` for trigger-type inputs; set `value` for boolean or number inputs.
-- `useStateMachineInput` is deprecated — new projects should use Data Binding hooks (`useViewModelInstanceBoolean`, `useViewModelInstanceNumber`, `useViewModelInstanceTrigger`, etc.).
+- Playback control: `rive.play()`, `rive.pause()` and `rive.stop()` control the state machine. When paused or stopped it does not advance and the last frame stays visible; play from pause resumes, play from stop restarts from the entry state.
+- Pass `stateMachine` (singular) to `useRive`; the plural `stateMachines` is deprecated.
+- `useStateMachineInput` is deprecated (v4.33.0) — new projects should use Data Binding hooks (`useViewModelInstanceBoolean`, `useViewModelInstanceNumber`, `useViewModelInstanceTrigger`, etc.).
 
 ## Related
 

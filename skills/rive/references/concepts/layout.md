@@ -75,6 +75,9 @@ window.addEventListener("resize", () => {
 - The `layout` property on a live Rive instance is a getter/setter — assign a new `Layout` object to update it without recreating the instance.
 - Layout in the editor (Row/Column-based positioning of child objects) is a separate concept from the runtime `Layout` class described here; the editor layout system controls intra-artboard element positioning.
 
+- Editor use case "Grid and stack layouts": a tutorial building an inventory screen as a Grid of item cards where each card is a Stack (see Layout Parameters for Grid and Stack). Component sizing in layouts is covered on the Component sizing page.
+
 ## Related
 
 - [State Machine](./state-machine.md)
+- [Layout Parameters](./layout-parameters.md)

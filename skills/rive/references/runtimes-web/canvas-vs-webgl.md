@@ -25,6 +25,7 @@ Both packages share the same high-level API — switching packages requires no c
 
 - WebGL has browser limits on concurrent contexts; when rendering many `Rive` instances on one page, set `useOffscreenRenderer: true` to move rendering to a shared offscreen WebGL context.
 - Enabling the draft `WEBGL_shader_pixel_local_storage` extension in Chrome improves WebGL2 rendering performance; without it, Rive falls back to an MSAA-based path.
+- GPU Canvas (3D and shader content) is an experimental `@rive-app/webgl2` 2.42.0+ feature, opt-in per instance via `enableGPUCanvas: true`. The Canvas2D packages (`@rive-app/canvas`, `@rive-app/canvas-lite`) do not support it yet, and `useOffscreenRenderer` must stay `false`. See the GPU Canvas page (`gpu-canvas.md`).
 - `@rive-app/webgl` is deprecated as of v2.37.0; use `@rive-app/webgl2` instead.
 
 ## Related

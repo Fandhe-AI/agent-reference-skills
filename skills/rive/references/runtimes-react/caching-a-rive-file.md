@@ -57,6 +57,7 @@ export default App;
 
 - Caching is useful when reusing the same `.riv` file in multiple parts of an application, or multiple times on the same screen.
 - `.riv` files typically load quickly without manual caching; `useRiveFile` is an optimization for repeated use, not a requirement.
+- `useRiveFile` also accepts `enableGPUCanvas: true` (experimental, `@rive-app/react-webgl2` only). A file created that way cannot be shared across components: GPU Canvas binds a file to a single `<canvas>`, so the first Rive component claims it. Call `useRiveFile` inside each component instead. Sharing will not fail, but the runtime logs a warning and re-imports the file for each additional instance, leaving the shared file unused.
 - Working examples: [web](https://codesandbox.io/p/sandbox/rive-js-caching-a-rive-file-g675my), [React](https://codesandbox.io/p/sandbox/rive-react-caching-a-rive-file-53gmdf).
 
 ## Related

@@ -11,7 +11,7 @@ const r = new Rive({
   src: "scene.riv",
   canvas: document.getElementById("canvas") as HTMLCanvasElement,
   autoplay: true,
-  stateMachines: "Main",
+  stateMachine: "Main",
 });
 
 // Subscribe to Rive events fired from the animation
@@ -112,6 +112,8 @@ The following constructor parameters are shorthand for `on()` calls:
 
 ## Notes
 
+- Deprecated: the whole Rive Events surface is deprecated in favor of Data Binding and is documented for legacy support only. The source page has moved to `/docs/runtimes/web/rive-events`.
+- As of v2.41.0, `automaticallyHandleEvents`, `onLoop` and `onStateChange` are deprecated; subscribing with `EventType.RiveEvent`, `EventType.StateChange` or `EventType.Loop` via `on()` logs a one-time console warning (`off()` never warns).
 - `EventType.RiveEvent` replaces the deprecated general Rive Events system; prefer Data Binding for state communication in new projects.
 - `OpenUrl` events do **not** navigate automatically; you must implement the navigation logic in the callback.
 - Setting `automaticallyHandleEvents: true` in the constructor makes the runtime open URLs for `OpenUrl` events without a manual callback.
