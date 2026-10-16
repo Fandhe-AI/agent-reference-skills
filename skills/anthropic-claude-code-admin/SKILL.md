@@ -3,9 +3,10 @@ name: anthropic-claude-code-admin
 description: >
   Claude Code (code.claude.com) の権限・セキュリティ・企業管理リファレンス。
   permissions (allow / ask / deny), permission modes, auto mode (classifier billing),
-  sandboxing, zero data retention, HIPAA, managed settings (MDM / plist / registry),
-  server-managed settings, managedMcpServers, allowedProviders, SSO, network config,
-  OpenTelemetry monitoring, analytics, costs, communications kit / champion kit。
+  sandboxing, sandbox environments, sandboxed Bash, zero data retention, data usage, HIPAA,
+  managed settings (MDM / plist / registry), server-managed settings, managedMcpServers,
+  allowedProviders, admin setup, authentication (SSO), network config, corporate launcher,
+  OpenTelemetry monitoring, analytics, costs, large codebases, communications kit / champion kit。
 user-invocable: false
 ---
 
