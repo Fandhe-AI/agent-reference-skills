@@ -92,7 +92,7 @@ android {
 - Lint is not normally run by a Studio or command-line build unless using the `build` or `lint` targets; run `gradlew build` or `gradlew lint` in CI (at least nightly).
 - Mitigation options: accept, reject, or mitigate by batching upgrades into smaller sets, investigating, testing, reading source, and changing code. Document the decisions.
 - If a license becomes incompatible: ask the owner to keep the license or dual-license, consult legal, switch to another library, or fork the last compatible version.
-- Source: `developer.android.com/build/version-upgrade-strategies` (local copy fetched 2026-10).
+- Source: https://developer.android.com/build/version-upgrade-strategies (local copy fetched 2026-10).
 
 ## Related
 

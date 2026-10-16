@@ -45,7 +45,7 @@ android {
 - Apply the plugin in `settings.gradle`. The plugin version must be the same as the AGP version declared in `libs.versions.toml` (the source example uses `9.4.0`).
 - Unlike module-level `build.gradle` files, `minSdk` and `targetSdk` are applied in the top-level `android` block of `settings.gradle`.
 - Remove these properties from module-level `build.gradle` files if you want the settings-level versions to apply. Keeping them in a module's `build.gradle` overrides the `settings.gradle` values for that module.
-- Source: `developer.android.com/build/android-settings-plugin` (local copy fetched 2026-10).
+- Source: https://developer.android.com/build/android-settings-plugin (local copy fetched 2026-10).
 
 ## Related
 

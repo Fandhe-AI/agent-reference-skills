@@ -76,7 +76,7 @@ android {
 - Disabling the error check (`includeCompileClasspath` = false) does not add compile-classpath processors to the processor classpath.
 - Setting `includeCompileClasspath` to `true` is not recommended, and the option will be removed in a future update of the Android plugin.
 - The source page also provides Groovy equivalents of every snippet.
-- Source: `developer.android.com/build/annotation-processors` (local copy fetched 2026-10).
+- Source: https://developer.android.com/build/annotation-processors (local copy fetched 2026-10).
 
 ## Related
 

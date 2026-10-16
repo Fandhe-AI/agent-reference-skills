@@ -48,7 +48,7 @@ dependencies {
 - The source page states the app `minSdk` is effectively the highest `minSdk` requested by the app and all its library dependencies; in practice manifest merger reports an error instead of raising it automatically.
 - Gradle scopes (called configurations in the Gradle API) separate dependency sets for different parts of the build, e.g. test libraries such as JUnit only for unit tests. AGP defines `implementation` and `api` to control whether a dependency is exposed to users of your subproject.
 - The source page also provides Groovy equivalents of the snippets.
-- Source: `developer.android.com/build/tool-and-library-dependencies` (local copy fetched 2026-10).
+- Source: https://developer.android.com/build/tool-and-library-dependencies (local copy fetched 2026-10).
 
 ## Related
 

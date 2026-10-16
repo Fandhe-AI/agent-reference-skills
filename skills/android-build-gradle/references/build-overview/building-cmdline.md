@@ -95,7 +95,7 @@ android {
 ```
 
 - Passwords in the build file are visible in plain text; for improved security remove signing information from the build file (the official page's own caveat). With a release signing config, `installRelease` builds, aligns, signs, and installs the release APK.
-- Source: `developer.android.com/build/building-cmdline` (local copy fetched 2026-10).
+- Source: https://developer.android.com/build/building-cmdline (local copy fetched 2026-10).
 
 ## Related
 

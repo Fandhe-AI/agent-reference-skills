@@ -50,7 +50,7 @@ dependencies {
 - Version catalog: only variables actually used in a build file add candidates; unused catalog entries are ignored.
 - BOM: versions of all libraries in the BOM become candidates (also for transitive dependencies), whether or not you use them directly; a higher version requested by another library still wins over the BOM version.
 - Gradle dependency resolution can be customized, but "newest version wins" usually works well.
-- Source: `developer.android.com/build/gradle-dependency-resolution` (local copy fetched 2026-10).
+- Source: https://developer.android.com/build/gradle-dependency-resolution (local copy fetched 2026-10).
 
 ## Related
 
