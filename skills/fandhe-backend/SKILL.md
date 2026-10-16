@@ -3,19 +3,19 @@ name: fandhe-backend
 description: >
   Rust 製バックエンド HTTP サーバーフレームワーク fandhe-backend のリファレンス。
   fandhe-backend-core / -http / -routes。Server, BoundServer, Router（merge）, Handler。
-  4 拡張点 Middleware（on_response_with_status）/ UpgradeHandler / RequestGate / Interceptor。
-  Diagnostics, StreamingResponse, sans-IO HTTP/1.1, graceful shutdown。
-  プラグイン cors, websocket（WsSender）, graphql, openapi, webrtc 等。
+  拡張点 Middleware（on_response_with_status）/ UpgradeHandler / RequestGate / Interceptor。
+  Diagnostics, StreamingResponse, SetCookie session（__Host-）, sans-IO HTTP/1.1, graceful shutdown。
+  プラグイン cors, websocket（WsSender）, graphql, openapi, webrtc, jwt（JwtGate, JwtPolicy）, csrf（CsrfGate）。
 user-invocable: false
 ---
 
 # fandhe-backend
 
-fandhe-backend は Rust 製バックエンド HTTP サーバーフレームワーク。`Server` / `BoundServer` を核に、`Middleware` / `UpgradeHandler` / `RequestGate` / `Interceptor` という 4 つの拡張点で Web サーバーの挙動を組み立てる。sans-IO な HTTP/1.1 パーサー、DoS 上限、graceful shutdown を標準機能として持ち、CORS・圧縮・静的配信・WebSocket・GraphQL・OpenAPI・WebRTC 等はすべて feature フラグで切り出したプラグインとして提供される（pay-for-what-you-use）。
+fandhe-backend は Rust 製バックエンド HTTP サーバーフレームワーク。`Server` / `BoundServer` を核に、`Middleware` / `UpgradeHandler` / `RequestGate` / `Interceptor` という 4 つの拡張点で Web サーバーの挙動を組み立てる。sans-IO な HTTP/1.1 パーサー、DoS 上限、graceful shutdown を標準機能として持ち、CORS・圧縮・静的配信・WebSocket・GraphQL・OpenAPI・WebRTC 等はすべて feature フラグで切り出したプラグインとして提供される（pay-for-what-you-use）。ただし Gate 型の hub-wiring / jwt / csrf は feature を持たない独立クレートで、`Server::gate` で登録する。
 
 **他スキルとの使い分け** — `Server` / `Router` / `Middleware` / `CORS` / `WebSocket` という語は複数のフレームワークで共通するため誤参照しやすい。`hono`（Web Standards JS）・`fastify`（Node.js ネイティブ）・`go-echo`（Go）は別フレームワークであり、いずれも本スキルとは別物。`fandhe-frontend` は同じ fandhe ファミリーの Rust 製フロントエンド層（SSR / SPA / SSG）であり、Rust 製バックエンド HTTP サーバーを調べる場合は本スキル（`fandhe-backend`）を参照すること。
 
-対象バージョン: v0.4.2（各ページ内の「vX.Y.Z で追加」は導入バージョンを示す）。
+対象バージョン: v0.5.0（2026-10-16 crates.io 公開、15 クレート lockstep、git e23b9a2。各ページ内の「vX.Y.Z で追加」は導入バージョンを示す）。
 
 公式ドキュメント: https://fandhe-ai.github.io/fandhe-backend/
 
@@ -65,6 +65,7 @@ skills/fandhe-backend/
       request.md
       response.md
       cookie.md
+      location.md
       query.md
       form.md
       percent.md
@@ -86,6 +87,8 @@ skills/fandhe-backend/
       webrtc.md
       webrtc-proxy.md
       hub-wiring.md
+      jwt.md
+      csrf.md
   samples/
     README.md
     minimal-server.md
@@ -101,6 +104,9 @@ skills/fandhe-backend/
     static-file-serving.md
     compression.md
     full-featured-app.md
+    csrf-gate.md
+    jwt-gate.md
+    session-cookie-see-other.md
   scripts/
     README.md
     install.md
@@ -128,6 +134,8 @@ skills/fandhe-backend/
 | `Router` のルーティング規則、`{name}` / `{*name}` パスパターン、`HandlerFuture` 等の公開型エイリアス、`Router::merge` による複数 Router の合成と衝突検出を知りたい | routes | [references/routes/README.md](references/routes/README.md) |
 | WebSocket でサーバーから push したい（`WsSender`）、接続の開閉フック（`on_open` / `on_close` / `CloseReason`）、ハンドシェイク検証（handshake check）、パスパターン、ping keepalive を知りたい | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | sans-IO なリクエスト/レスポンスパーサー、Cookie・クエリ・フォーム・percent-decode、body フレーミング・chunked コーディング、読み取りバッファ、エラーレスポンス、ソケットオプション・keep-alive を知りたい | http | [references/http/README.md](references/http/README.md) |
-| CORS・圧縮・静的配信・トレーシング・WebSocket・GraphQL・OpenAPI・WebRTC（in-process / proxy）・hub 共通配線など、feature 単位のプラグイン API を知りたい | plugins | [references/plugins/README.md](references/plugins/README.md) |
-| 最小サーバ、CRUD ルーティング、Middleware / RequestGate / Interceptor 自作、CORS・WebSocket・GraphQL・ストリーミング・graceful shutdown・静的配信・圧縮の動く配線例、実運用形テンプレートを知りたい | samples | [samples/README.md](samples/README.md) |
+| セッション Cookie（`SetCookie::session`、`__Host-` / `__Secure-` 接頭辞）、POST 後 303（`Response::see_other` / `SameOriginLocation`）、`Vary` / `no-store`、フォーム上限（`FormLimits`）を知りたい | http | [references/http/README.md](references/http/README.md) |
+| JWT 検証ゲート（`JwtGate` / `JwtPolicy` / JWKS KeySet）、CSRF ゲート（`CsrfGate`、`Sec-Fetch-Site` / `Origin`）を使いたい | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| CORS・圧縮・静的配信・トレーシング・WebSocket・GraphQL・OpenAPI・WebRTC（in-process / proxy）・hub 共通配線・JWT / CSRF ゲートなど、プラグイン API を知りたい | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| 最小サーバ、CRUD ルーティング、Middleware / RequestGate / Interceptor 自作、CORS・WebSocket・GraphQL・ストリーミング・graceful shutdown・静的配信・圧縮・JwtGate・CsrfGate・セッション Cookie + 303 の動く配線例、実運用形テンプレートを知りたい | samples | [samples/README.md](samples/README.md) |
 | クレート導入・feature 有効化コマンド、ビルド・実行・テスト・lint・依存監査コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

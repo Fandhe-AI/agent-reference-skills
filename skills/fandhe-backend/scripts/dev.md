@@ -23,7 +23,7 @@ curl -v http://127.0.0.1:3000/health      # 200 応答
 cargo run
 ```
 
-コピー後は `Cargo.toml` の依存から `path = ...` を外し、`version = "0.4.2"` のみの crates.io 版参照に切り替える。
+コピー後は `Cargo.toml` の依存から `path = ...` を外し、`version = "0.5.0"` のみの crates.io 版参照に切り替える。
 
 ## feature 別サンプルを実行する（fandhe-backend 本体クローン内）
 
@@ -60,9 +60,14 @@ cargo run --example openapi_custom_doc -p fandhe-backend-core --features openapi
 
 # hub-wiring
 cargo run --release -p fandhe-backend-plugin-hub-wiring --example hub_service_demo
+
+# jwt（NFR-6 計測専用の JWT ゲートサーバ。ビルドのみ）
+cargo build --release -p fandhe-backend-plugin-jwt --example jwt_gate_server
 ```
 
-`crates/core/examples/*` は最小 example。`fandhe-backend-plugin-hub-wiring` は `fandhe-backend-core` の feature ではなく独立クレートであり、直接依存として利用する。`openapi_endpoints` は `Cargo.toml` 上 `required-features` の指定がなく feature 無しでもコンパイル・起動できるが（`#[cfg(feature = "openapi")]` が `Server::openapi()` 呼び出し1行のみを覆う）、`GET /openapi.json` を含む本来の動作確認には `--features openapi` を付ける。
+`crates/core/examples/*` は最小 example。`fandhe-backend-plugin-hub-wiring` / `fandhe-backend-plugin-jwt` は `fandhe-backend-core` の feature ではなく独立クレートであり、直接依存として利用する。`openapi_endpoints` は `Cargo.toml` 上 `required-features` の指定がなく feature 無しでもコンパイル・起動できるが（`#[cfg(feature = "openapi")]` が `Server::openapi()` 呼び出し1行のみを覆う）、`GET /openapi.json` を含む本来の動作確認には `--features openapi` を付ける。
+
+`jwt_gate_server` は NFR-6 ベンチ専用で、`tests/fixtures` のテスト専用鍵（本番使用禁止）と `FANDHE_BACKEND_JWT_BENCH_*` 環境変数（`ALG` / `TOKEN_FILE` / `ADDR`）を使う。既定の待受は `127.0.0.1:3103`。
 
 ## feature 不要のサンプルを実行する（fandhe-backend 本体クローン内）
 

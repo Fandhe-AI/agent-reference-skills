@@ -29,7 +29,7 @@ cargo add fandhe-backend-core --features graphql,openapi,cors
 
 ## Notes
 
-- `fandhe-backend-plugin-hub-wiring`（JWT 検証・テナント境界強制）は `crates/core` の feature ではなく、`RequestGate` 拡張点（`TenantGate`）を直接登録して使う独立クレート
+- Gate 型の `fandhe-backend-plugin-hub-wiring`（テナント境界強制、JWT 検証は plugin-jwt に委譲）・`fandhe-backend-plugin-jwt`（`JwtGate`）・`fandhe-backend-plugin-csrf`（`CsrfGate`）は `crates/core` の feature ではなく、feature なしの独立クレートとして直接依存に加え `Server::gate` で登録する（`[features]` 一覧は v0.5.0 でも変わらない）
 - プラグインは大きく 3 パターンに分かれる: `UpgradeHandler` 経由（`websocket`）、`Middleware` 経由（`tracing`）、パスインターセプト型（`graphql` / `openapi` / `static`）、レスポンス後処理型（`cors` / `compression`）
 - feature 無効時は該当プラグインの依存・コード・バイナリ増が一切発生しない（`cargo tree -p fandhe-backend-core` で検証可能）
 

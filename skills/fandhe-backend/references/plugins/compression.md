@@ -77,6 +77,7 @@ pub fn begin_streaming_compression(
 ## Notes
 
 - これは Rust 製 fandhe-backend の API であり、JS/TS の `hono` や Go の `go-echo` の同名機能（圧縮ミドルウェア）とは別物
+- v0.5.0（#830）: `Vary: Accept-Encoding` は `fandhe-backend-http` の `Response::with_vary` 経由で付く。2 行目以降の `Vary` 行にあるトークンや `Vary: *` も見るため行が重複せず、`Vary: *` の応答には足さない。公開 API は変わらず、破壊的変更ではない
 - `matches_content_type(content_type)`（v0.2.0 で公開）: `;` 以降のパラメータ（`; charset=utf-8` 等）を無視し type/subtype 部分のみを大文字小文字無視で比較する。登録パターンが末尾 `/` の場合は type プレフィックス一致、それ以外は完全一致
 - v0.3.0（issue #468）: `apply_compression` は内部的に `plan_compression`（適用可否判定 → `CompressionPlan::Skip`/`Compress`）→ `compress_body`（gzip 圧縮の実行）→ `attach_compressed`（圧縮結果をレスポンスへ付与）の 3 段に分割公開された。`blocking_threshold`（既定 64 KiB）以上の body では `compress_body` の実行先が `tokio::task::spawn_blocking` へオフロードされる。CPU 負荷の高い `compress_body` だけを別タスクへ切り出したい呼び出し側は、この 3 関数を個別に呼び出せる
 - v0.3.0（issue #461）: `compress_streaming(true)` は `Handler::handle_streaming`（chunked レスポンス）にのみ作用し、`begin_streaming_compression` が body 全体をバッファせず `StreamingGzipEncoder` を返す。`encode_chunk` はチャンクごとに即時 flush して圧縮データを返し、`finish` で末尾を確定する。`apply_compression` 経由の通常（非ストリーミング）レスポンスには影響しない

@@ -11,7 +11,11 @@ pub trait IntoResponse {
 
 // impl IntoResponse for Response（恒等変換）
 // impl IntoResponse for HttpError（error_response へ委譲）
+// impl IntoResponse for FormError（v0.5.0。HttpError へ変換して 413 / 400 の JSON エラー応答）
 // impl<T: IntoResponse, E: IntoResponse> IntoResponse for Result<T, E>
+
+// impl From<FormError> for HttpError（v0.5.0）
+//   BodyTooLong / TooManyPairs → 413、InvalidUtf8Body / Decode(_) → 400（固定メッセージのみ）
 
 pub struct HttpError { /* 非公開: status: u16, message: &'static str */ }
 impl HttpError {

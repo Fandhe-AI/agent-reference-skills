@@ -18,6 +18,13 @@
 | `percent` | percent-decode ヘルパー（opt-in） |
 | `form` | `application/x-www-form-urlencoded` ボディパーサー |
 | `error` | エラーレスポンス共通化ヘルパー（`IntoResponse`） |
+| `location` | 同一オリジンに限るリダイレクト先の検証済み型（`SameOriginLocation`、#828）。`Response::see_other` が受け取る |
+
+## Usage
+
+```rust
+use fandhe_backend_http::request::parse_request_head;
+```
 
 ## Notes
 
