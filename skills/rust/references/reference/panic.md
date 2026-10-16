@@ -59,6 +59,7 @@ Catching a foreign unwinding operation (e.g. a C++ exception) with `catch_unwind
 
 ## Notes
 
+- Source: https://doc.rust-lang.org/reference/panic.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/82da570bafd9efed421bdbae0f8603ede8dd308b/src/panic.md)
 - With the `abort` strategy the optimizer may assume unwinding across Rust frames is impossible, which can improve code size and speed.
 - Crates built with the `unwind` strategy can use the `abort` panic handler, but the `abort` strategy cannot use the `unwind` panic handler.
 - Rust code linked against a different instance of the standard library counts as a "foreign exception".

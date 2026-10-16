@@ -143,7 +143,7 @@ match v.first() { Some(&x) if x > 0 => {}, _ => {} }          // match guard, wi
 | `fn ident(…) {…}` | functions |
 | `type Type = Type;` | type aliases |
 | `struct ident {…}`, `enum ident {…}`, `union ident {…}`, `trait ident {…}` | structs, enumerations, unions, traits |
-| `impl Type {…}`, `impl Type for Trait {…}` | implementations |
+| `impl Type {…}`, `impl Trait for Type {…}` | implementations |
 | `const ident = expr;`, `static ident = expr;` | constant items, static items |
 | `extern "C" {…}` | external blocks |
 | `fn ident<…>(…) …`, `struct ident<…> {…}`, `enum ident<…> {…}`, `impl<…> Type<…> {…}` | generic definitions |
@@ -179,7 +179,8 @@ match v.first() { Some(&x) if x > 0 => {}, _ => {} }          // match guard, wi
 ## Notes
 
 - Condensed from the original index: the original links each row to the defining section of the Reference; those cross-links are omitted here. See the corresponding pages in this category.
-- Source: Rust Reference at commit `82da570` (rust-lang/reference).
+- The upstream Syntax Index lists `impl Type for Trait {…}` (order reversed); corrected here to `impl Trait for Type {…}`.
+- Source: https://doc.rust-lang.org/reference/syntax-index.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/82da570bafd9efed421bdbae0f8603ede8dd308b/src/syntax-index.md)
 
 ## Related
 

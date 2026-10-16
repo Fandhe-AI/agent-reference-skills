@@ -63,7 +63,7 @@ let vec = [1, 2, 3].iter().map(|n| n * 2).collect::<Vec<_>>();
 ## Notes
 
 - The original page's ZST section includes a long `assert_eq!(0, size_of::<...>())` example covering each ZST category; it is not reproduced here.
-- Source: Rust Reference at commit `82da570` (rust-lang/reference).
+- Source: https://doc.rust-lang.org/reference/glossary.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/82da570bafd9efed421bdbae0f8603ede8dd308b/src/glossary.md)
 
 ## Related
 

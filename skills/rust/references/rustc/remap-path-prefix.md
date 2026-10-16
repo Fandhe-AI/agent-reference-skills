@@ -42,8 +42,10 @@ The accepted scopes are not exhaustive: new scopes may be added in future releas
 
 ```sh
 # With `object` scope only the build outputs will be remapped, the diagnostics won't be remapped.
-rustc --remap-path-prefix=$(PWD)=/remapped --remap-path-scope=object main.rs
+rustc --remap-path-prefix="${PWD}=/remapped" --remap-path-scope=object main.rs
 ```
+
+The rustc Book example writes `$(PWD)` (Make syntax); in a POSIX shell use the quoted variable `"${PWD}"`.
 
 ## Scope of Remapping
 

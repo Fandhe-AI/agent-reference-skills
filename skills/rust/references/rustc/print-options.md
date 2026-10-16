@@ -35,6 +35,7 @@ my_crate
 
 ## Notes
 
+- Source: https://doc.rust-lang.org/rustc/command-line-arguments/print-options.html (pinned: https://raw.githubusercontent.com/rust-lang/rust/1.99.1/src/doc/rustc/src/command-line-arguments/print-options.md)
 - Specifying an option will usually disable the `--emit` step and only print the requested information.
 - A filepath may optionally be given per kind as `--print KIND=PATH`, just like `--emit`; the information is then written there instead of stdout.
 - `native-static-libs`: if it is the only flag, a full compilation is performed; the note starts with `native-static-libs:` to make it easy to extract.

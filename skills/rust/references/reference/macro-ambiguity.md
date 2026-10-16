@@ -53,7 +53,8 @@ FOLLOW sets for simple NTs:
 
 | Fragment | FOLLOW |
 |----------|--------|
-| `pat` | `=>`, `,`, `=`, `\|`, `if`, `in` |
+| `pat_param` (and `pat` before the 2021 edition) | `=>`, `,`, `=`, `\|`, `if`, `in` |
+| `pat` (2021 edition and later) | `=>`, `,`, `=`, `if`, `in` |
 | `expr`, `expr_2021`, `stmt` | `=>`, `,`, `;` |
 | `ty`, `path` | `{`, `[`, `,`, `=>`, `:`, `=`, `>`, `>>`, `;`, `\|`, `as`, `where`, block nonterminals |
 | `vis` | `,`, any keyword or identifier except a non-raw `priv`; any token that can begin a type; `ident`, `ty`, `path` nonterminals |
@@ -75,7 +76,8 @@ FOLLOW(M) for any other M is the intersection of FOLLOW(t) as t ranges over LAST
 
 - The "tokens that can begin a type" list in the original is explicitly noted as possibly incomplete.
 - Condensed: the original's tree-structured FIRST/LAST worked examples and the justification prose are omitted; see the official page for the full derivation.
-- Source: Rust Reference at commit `82da570` (rust-lang/reference).
+- The formal spec text (from RFC 550) lists `|` in FOLLOW(pat); since Rust 2021 `pat` accepts top-level or-patterns and may not be followed by `|` — see the normative follow-set restrictions in Macros By Example (macros.md).
+- Source: https://doc.rust-lang.org/reference/macro-ambiguity.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/82da570bafd9efed421bdbae0f8603ede8dd308b/src/macro-ambiguity.md)
 
 ## Related
 
