@@ -2,12 +2,11 @@
 
 A lower-level resizing control for custom nodes that gives full control over the resize handle appearance and behaviour. Use `<NodeResizer />` for the standard multi-direction resizer.
 
-## 使用例
+## Signature / Usage
 
 ```tsx
 import { memo } from 'react';
 import { Handle, Position, NodeResizeControl } from '@xyflow/react';
-import { ArrowsPointingOutIcon } from '@heroicons/react/24/outline';
 
 function ResizableNode({ data, id }: { data: any; id: string }) {
   return (
@@ -18,7 +17,7 @@ function ResizableNode({ data, id }: { data: any; id: string }) {
         minHeight={50}
         position="bottom-right"
       >
-        <ArrowsPointingOutIcon style={{ width: 12, height: 12 }} />
+        <span style={{ fontSize: 12 }}>↘</span>
       </NodeResizeControl>
       <Handle type="target" position={Position.Left} />
       <div style={{ padding: 10 }}>{data.label}</div>
@@ -53,14 +52,16 @@ export default memo(ResizableNode);
 | `style` | `CSSProperties` | — | Inline styles applied to the control |
 | `children` | `ReactNode` | — | Custom content inside the control (e.g. an icon) |
 
-## 注意点
+## Notes
 
+- `ControlLinePosition`, `ResizeControlVariant`, `ResizeControlProps`, `ResizeDragEvent`, `ResizeParamsWithDirection` and the `OnResize*` callback types are exported from `@xyflow/react` but have no dedicated page in this skill.
 - Use this component when you need a single custom resize handle (e.g. only bottom-right corner).
 - Use `<NodeResizer />` when you want the full set of resize handles in all directions.
 - `shouldResize` returning `false` cancels the resize for that event.
 - TypeScript users can import `ResizeControlProps` for prop type definitions.
+- Since @xyflow/react 12.12.0 (minor, [xyflow/xyflow#5998](https://github.com/xyflow/xyflow/pull/5998)): `onResizeEnd` always fires after `onResizeStart` ("Always fire onResizeEnd after onResizeStart", [CHANGELOG @xyflow/react@12.12.0](https://github.com/xyflow/xyflow/blob/%40xyflow/react%4012.12.0/packages/react/CHANGELOG.md)).
 
-## 関連
+## Related
 
 - [./NodeResizer.md](./NodeResizer.md)
 - [./Handle.md](./Handle.md)

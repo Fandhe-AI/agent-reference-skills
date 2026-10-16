@@ -2,26 +2,14 @@
 
 Configuration options for React Flow Pro subscription settings, primarily controlling the attribution badge display.
 
-## 型定義
-
-```typescript
-type ProOptions = {
-  account?: string;
-  hideAttribution?: boolean;
-};
-```
-
-## プロパティ
-
-| Name | Type | Description |
-|------|------|-------------|
-| `account` | `string` | Account identifier for Pro subscribers |
-| `hideAttribution` | `boolean` | Whether to hide the React Flow attribution badge |
-
-## 使用例
+## Signature / Usage
 
 ```tsx
-import { ReactFlow } from '@xyflow/react';
+type ProOptions = {
+  account?: string;
+  /** If you hide the attribution, please support our work with a subscription. */
+  hideAttribution: boolean;
+};
 
 <ReactFlow
   nodes={nodes}
@@ -30,8 +18,20 @@ import { ReactFlow } from '@xyflow/react';
 />
 ```
 
-## 注意点
+## Options / Props
 
-- デフォルトでは React Flow のアトリビューションバッジ（プロジェクトへのリンク）がフローの隅に表示される
-- Pro サブスクリプションの有無にかかわらず `hideAttribution: true` でバッジを非表示にできる
-- アトリビューションを削除する前に [removing attribution ガイド](https://reactflow.dev/learn/troubleshooting/remove-attribution) を確認することを推奨
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `account` | `string` | — | Account identifier for Pro subscribers |
+| `hideAttribution` | `boolean` (required) | — | If you hide the attribution, please support our work with a subscription. |
+
+## Notes
+
+- By default the React Flow attribution badge (a link to the project) is shown in a corner of the flow.
+- Official policy: "We can't legally require you to keep the attribution — React Flow is MIT-licensed — but to keep the library MIT, we need your support. Our policy is simple: attribution visible, no subscription needed; no attribution, please subscribe."
+- Since @xyflow/react 12.11.4 ([xyflow/xyflow#5962](https://github.com/xyflow/xyflow/pull/5962)), a one-time `console.warn` is shown in development (`NODE_ENV === 'development'`) when the attribution is hidden (text in [`packages/system/src/utils/attribution.ts`](https://github.com/xyflow/xyflow/blob/%40xyflow/react%4012.12.0/packages/system/src/utils/attribution.ts); [CHANGELOG @xyflow/react@12.12.0](https://github.com/xyflow/xyflow/blob/%40xyflow/react%4012.12.0/packages/react/CHANGELOG.md)).
+- Review the [attribution policy](https://reactflow.dev/remove-attribution) before hiding the attribution.
+
+## Related
+
+- [Remove Attribution](../troubleshooting/remove-attribution.md)
