@@ -58,40 +58,32 @@ public async Task<ObservableCollection<Product>> GetProductsAsync(string connect
        " where Discontinued = 0";
 
     var products = new ObservableCollection<Product>();
-    try
+    using (var conn = new SqlConnection(connectionString))
     {
-        using (var conn = new SqlConnection(connectionString))
+        await conn.OpenAsync();
+        if (conn.State == System.Data.ConnectionState.Open)
         {
-            await conn.OpenAsync();
-            if (conn.State == System.Data.ConnectionState.Open)
+            using (SqlCommand cmd = conn.CreateCommand())
             {
-                using (SqlCommand cmd = conn.CreateCommand())
+                cmd.CommandText = GetProductsQuery;
+                using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                 {
-                    cmd.CommandText = GetProductsQuery;
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    while (await reader.ReadAsync())
                     {
-                        while (await reader.ReadAsync())
-                        {
-                            var product = new Product();
-                            product.ProductID = reader.GetInt32(0);
-                            product.ProductName = reader.GetString(1);
-                            product.QuantityPerUnit = reader.GetString(2);
-                            product.UnitPrice = reader.GetDecimal(3);
-                            product.UnitsInStock = reader.GetInt16(4);
-                            product.CategoryId = reader.GetInt32(5);
-                            products.Add(product);
-                        }
+                        var product = new Product();
+                        product.ProductID = reader.GetInt32(0);
+                        product.ProductName = reader.GetString(1);
+                        product.QuantityPerUnit = reader.GetString(2);
+                        product.UnitPrice = reader.GetDecimal(3);
+                        product.UnitsInStock = reader.GetInt16(4);
+                        product.CategoryId = reader.GetInt32(5);
+                        products.Add(product);
                     }
                 }
             }
         }
-        return products;
     }
-    catch (Exception eSql)
-    {
-        Debug.WriteLine($"Exception: {eSql.Message}");
-    }
-    return null;
+    return products;
 }
 
 public MainWindow()
@@ -164,6 +156,7 @@ MainWindow.xaml:
 ## Notes
 
 - The official tutorial calls the synchronous `GetProducts` from the `MainWindow` constructor; this sample uses an async version (`OpenAsync` / `ExecuteReaderAsync` / `ReadAsync`) awaited from `LoadProductsAsync` to avoid blocking the UI thread until the connection timeout.
+- The official tutorial catches the exception inside `GetProducts`, writes it with `Debug.WriteLine`, and returns `null`. This sample differs: exceptions propagate from `GetProductsAsync` and are handled by the caller (`LoadProductsAsync`), so a failure is not silently turned into a `null` `ItemsSource`.
 - Capabilities (Package.appxmanifest, Capabilities tab): select Enterprise Authentication when using Windows Authentication. Also select Internet (Client & Server), Internet (Client), and Private Networks (Client & Server), regardless of authentication method.
 - `TrustServerCertificate=True` trusts the local SQL Server Express certificate for development only. In production, install a verifiable server certificate and set `TrustServerCertificate=False`. Never hard-code connection strings or secrets; store them in app configuration.
 - Troubleshooting: enable TCP/IP for SQL Server (Computer Management console), then make sure the SQL Server Browser service is running.

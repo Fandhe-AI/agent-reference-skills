@@ -55,6 +55,7 @@ public async Task CosmosSample(string endpoint, string authKey)
 ## Notes
 
 - `client.GetDatabase(...)` returns a proxy to an existing database and does not create it; on a new account, create the database first (for example in the Azure portal) or use `await client.CreateDatabaseIfNotExistsAsync("sample_customers")`, otherwise `CreateContainerIfNotExistsAsync` fails because the database does not exist.
+- `CosmosClient` implements `IDisposable` and is meant to be created once and reused for the lifetime of the app (receive it via DI or a parameter; the owner disposes it at shutdown). Creating a client per call, as this single-shot demo does, should be limited to demos.
 - Build the project after installing the package and confirm no errors.
 - For a complete example including required Cosmos DB setup, see the official "Develop a .NET console application with Azure Cosmos DB for NoSQL" tutorial.
 - Source: https://learn.microsoft.com/en-us/windows/apps/develop/data-access/cosmos-db-data-access
