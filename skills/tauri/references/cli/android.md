@@ -31,7 +31,9 @@ Options:
   -V, --version     Print version
 ```
 
-## android init
+## Options / Props
+
+### android init
 
 Initialize Android target in the project
 
@@ -66,7 +68,7 @@ Options:
 | `--skip-targets-install` | — | Skips installing rust toolchains via rustup |
 | `-c, --config` | `<CONFIG>` | JSON strings or paths to JSON, JSON5 or TOML files to merge with the default configuration file |
 
-## android dev
+### android dev
 
 Run your app in development mode on Android with hot-reloading for the Rust code. It makes use of the `build.devUrl` property from your `tauri.conf.json` file. It also runs your `build.beforeDevCommand` which usually starts your frontend devServer.
 
@@ -152,7 +154,7 @@ Options:
 | `--port` | `<PORT>`, env `TAURI_CLI_PORT` | Port of the built-in dev server. Defaults to 1430 |
 | `--root-certificate-path` | `<ROOT_CERTIFICATE_PATH>`, env `TAURI_DEV_ROOT_CERTIFICATE_PATH` | Certificate file used by your dev server. Required for mobile dev when using HTTPS |
 
-## android build
+### android build
 
 Build your app in release mode for Android and generate APKs and AABs. It makes use of the `build.frontendDist` property from your `tauri.conf.json` file. It also runs your `build.beforeBuildCommand` which usually builds your frontend into `build.frontendDist`.
 
@@ -216,7 +218,7 @@ Options:
 | `--ci` | env `CI=true` | Skip prompting for values |
 | `--ignore-version-mismatches` | — | Do not error out if a version mismatch is detected on a Tauri package |
 
-## android run
+### android run
 
 Run your app in production mode on Android. It makes use of the `build.frontendDist` property from your `tauri.conf.json` file. It also runs your `build.beforeBuildCommand` which usually builds your frontend into `build.frontendDist`.
 

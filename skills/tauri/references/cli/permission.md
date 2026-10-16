@@ -31,7 +31,9 @@ Options:
   -V, --version     Print version
 ```
 
-## permission new
+## Options / Props
+
+### permission new
 
 Create a new permission file
 
@@ -61,7 +63,7 @@ Options:
 | `--format` | `<FORMAT>`, default json | Output file format; possible values: json, toml |
 | `-o, --out` | `<OUT>` | The output file |
 
-## permission add
+### permission add
 
 Add a permission to capabilities
 
@@ -83,7 +85,7 @@ Options:
 | `<IDENTIFIER>` | — | Permission to add |
 | `[CAPABILITY]` | — | Capability to add the permission to |
 
-## permission rm
+### permission rm
 
 Remove a permission file, and its reference from any capability
 
@@ -109,7 +111,7 @@ Options:
 | --- | --- | --- |
 | `<IDENTIFIER>` | — | Permission to remove. To remove all permissions for a given plugin, provide `<plugin-name>:*` |
 
-## permission ls
+### permission ls
 
 List permissions available to your application
 

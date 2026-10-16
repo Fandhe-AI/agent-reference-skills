@@ -31,7 +31,9 @@ Options:
   -V, --version     Print version
 ```
 
-## plugin new
+## Options / Props
+
+### plugin new
 
 Initializes a new Tauri plugin project
 
@@ -91,7 +93,7 @@ Options:
 | `--github-workflows` | — | Generate github workflows |
 | `-t, --tauri-path` | `<TAURI_PATH>` | Path of the Tauri project to use (relative to the cwd) |
 
-## plugin init
+### plugin init
 
 Initialize a Tauri plugin project on an existing directory
 
@@ -141,7 +143,7 @@ Options:
 
 Options are the same as `plugin new`, except `[PLUGIN_NAME]` is optional (inferred from the current directory) and `-d, --directory` has a default (the current working directory at run time).
 
-## plugin android
+### plugin android
 
 Manage the Android project for a Tauri plugin
 
@@ -158,7 +160,7 @@ Options:
   -V, --version     Print version
 ```
 
-### plugin android init
+#### plugin android init
 
 Initializes the Android project for an existing Tauri plugin
 
@@ -180,7 +182,7 @@ Options:
 | `[PLUGIN_NAME]` | — | Name of your Tauri plugin. Must match the current plugin's name; inferred from the current directory if omitted |
 | `-o, --out-dir` | `<OUT_DIR>` | The output directory (default: current working directory) |
 
-## plugin ios
+### plugin ios
 
 Manage the iOS project for a Tauri plugin
 
@@ -197,7 +199,7 @@ Options:
   -V, --version     Print version
 ```
 
-### plugin ios init
+#### plugin ios init
 
 Initializes the iOS project for an existing Tauri plugin
 

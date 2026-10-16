@@ -13,7 +13,9 @@ npm run tauri add <PLUGIN>
 cargo tauri add <PLUGIN>
 ```
 
-## add
+## Options / Props
+
+### add
 
 ```text
 Add a tauri plugin to the project
@@ -42,7 +44,7 @@ Options:
 | `-b, --branch` | `<BRANCH>` | Git branch to use |
 | `--no-fmt` | — | Don't format code with rustfmt |
 
-## remove
+### remove
 
 ```text
 Remove a tauri plugin from the project

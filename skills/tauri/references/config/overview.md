@@ -14,6 +14,7 @@ The Tauri configuration object. It is read from a file where you can define your
 {
   "productName": "tauri-app",
   "version": "0.1.0",
+  "identifier": "com.tauri.example",
   "build": {
     "beforeBuildCommand": "",
     "beforeDevCommand": "",
@@ -66,6 +67,7 @@ Schema defaults for the nested objects:
 
 ## Notes
 
+- The example on the official config reference omits identifier; it is added here because identifier is the only required root property.
 - Platform-specific values by property (from the schema docs):
   - `productName` macOS: names the `.app` bundle and the `.dmg`, and sets `CFBundleDisplayName` and `CFBundleName` (`CFBundleName` can be overridden with `bundle > macOS > bundleName`). Linux: kebab-cased for the Debian and RPM package names, used as the `Name` entry of the desktop file and as the resource directory name under `/usr/lib`. Windows: names the installers, the installation directory, the Start Menu folder and the `HKCU\Software\<publisher>\<product name>` registry key; it also derives the default WiX upgrade code, which can be set explicitly with `bundle > windows > wix > upgradeCode`.
   - `version` macOS: translates to `CFBundleShortVersionString` and is the default `CFBundleVersion` (override with `bundle > macOS > bundleVersion`). iOS: same, override with `bundle > iOS > bundleVersion`; `tauri ios build` has a `--build-number <number>` option to append a build number. Android: version 1.0 is used by default; set a version code with `bundle > android > versionCode`.

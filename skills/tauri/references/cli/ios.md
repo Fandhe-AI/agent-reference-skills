@@ -31,7 +31,9 @@ Options:
   -V, --version     Print version
 ```
 
-## ios init
+## Options / Props
+
+### ios init
 
 Initialize iOS target in the project
 
@@ -68,7 +70,7 @@ Options:
 | `--skip-targets-install` | — | Skips installing rust toolchains via rustup |
 | `-c, --config` | `<CONFIG>` | Config files / JSON strings to merge |
 
-## ios dev
+### ios dev
 
 ```text
 Run your app in development mode on iOS with hot-reloading for the Rust code.
@@ -159,7 +161,7 @@ Options:
 | `--port` | `<PORT>`, env `TAURI_CLI_PORT` | Port of the built-in dev server. Defaults to 1430 |
 | `--root-certificate-path` | `<ROOT_CERTIFICATE_PATH>`, env `TAURI_DEV_ROOT_CERTIFICATE_PATH` | Certificate file used by your dev server. Required for mobile dev when using HTTPS |
 
-## ios build
+### ios build
 
 Build your app in release mode for iOS and generate IPAs. It makes use of the `build.frontendDist` property from your `tauri.conf.json` file. It also runs your `build.beforeBuildCommand` which usually builds your frontend into `build.frontendDist`.
 
@@ -225,7 +227,7 @@ Options:
 | `--export-method` | `<EXPORT_METHOD>` | How Xcode should export the archive; possible values: app-store-connect, release-testing, debugging |
 | `--ignore-version-mismatches` | — | Do not error out if a version mismatch is detected on a Tauri package |
 
-## ios run
+### ios run
 
 Run your app in production mode on iOS. It makes use of the `build.frontendDist` property from your `tauri.conf.json` file. It also runs your `build.beforeBuildCommand` which usually builds your frontend into `build.frontendDist`.
 

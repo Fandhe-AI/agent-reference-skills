@@ -9,8 +9,8 @@ Generate Tauri CLI shell completions for Bash, Zsh, PowerShell or Fish.
 ## Signature / Usage
 
 ```sh
-npm run tauri completions
-cargo tauri completions
+npm run tauri completions -- --shell bash
+cargo tauri completions --shell bash
 ```
 
 ```text
@@ -36,6 +36,7 @@ Options:
 
 ## Notes
 
+- The official page lists the invocation without arguments; --shell is required (see Usage), so the examples pass --shell bash.
 - Usage line normalized from `pnpm-native run build completions`; see overview for details.
 
 ## Related

@@ -29,7 +29,9 @@ Options:
   -V, --version     Print version
 ```
 
-## signer sign
+## Options / Props
+
+### signer sign
 
 Sign a file
 
@@ -75,7 +77,7 @@ Options:
 | `-p, --password` | `<PASSWORD>`, env `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` | Set private key password when signing |
 | `--app-version` | `<APP_VERSION>` | Bind the signature to this app version (embedded in the signed trusted comment) |
 
-## signer generate
+### signer generate
 
 Generate a new signing key to sign files
 
