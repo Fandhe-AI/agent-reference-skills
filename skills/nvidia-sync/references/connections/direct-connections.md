@@ -8,11 +8,13 @@ Connect NVIDIA Sync to remote Linux devices over SSH on the same network (or an 
 Settings > Devices > Add Device
 ```
 
+Open Settings from the gear icon in the top left corner.
+
 Three methods are available to add a device:
 
 1. **mDNS auto-discovery** (DGX Spark/GB10) — devices broadcast their hostname via multicast DNS; select the device from the discovery modal.
 2. **Manual IP address entry** — select "Add a device manually" in the broadcast modal when mDNS is unavailable.
-3. **Import from SSH configuration** — import a pre-configured SSH alias from `~/.ssh/config` (Mac/Linux) or `C:\Users\<user-name>\.ssh/config` (Windows). Requires key-based authentication; verify the SSH alias works before importing.
+3. **Import from SSH configuration** — import a pre-configured SSH alias from `~/.ssh/config` (Mac/Linux) or `C:\Users\<user-name>\.ssh\config` (Windows). Requires key-based authentication; verify the SSH alias works before importing.
 
 ### Connect / Disconnect
 
@@ -43,6 +45,9 @@ Three methods are available to add a device:
 - Direct connections support both password-based and key-based SSH authentication, using standard port 22 (customizable).
 - If connection details are incorrect, the device will not be added.
 - For devices on a different network than your laptop, use the Tailscale integration instead.
+- Release 0.117.3-9: the same host can be added again with a different user account; device discovery no longer lists the local machine; connections over mDNS return authentication errors correctly.
+- Release 0.100.18: tildes are expanded when importing an SSH config; the same device can no longer be added twice under a different name.
+- Release 0.97.6: multiple concurrent connections; renaming a device also updates its SSH alias.
 
 ## Related
 
