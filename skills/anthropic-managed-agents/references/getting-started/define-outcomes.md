@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/managed-agents/define-outcomes / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/managed-agents/define-outcomes / last verified: 2026-10-17 -->
 
 # Define outcomes
 
@@ -40,7 +40,20 @@ client.beta.sessions.events.send(
 )
 ```
 
-You can also pass a single `user.define_outcome` event in `initial_events` at session creation to start work in one call.
+You can also pass a single `user.define_outcome` event in `initial_events` at session creation to start work in one call:
+
+```python
+session = client.beta.sessions.create(
+    agent=agent.id,
+    environment_id=environment.id,
+    initial_events=[{
+        "type": "user.define_outcome",
+        "description": "Build a DCF model for Costco in .xlsx",
+        "rubric": {"type": "text", "content": RUBRIC},
+        "max_iterations": 5,
+    }],
+)
+```
 
 ## Options / Props
 
@@ -67,9 +80,33 @@ You can also pass a single `user.define_outcome` event in `initial_events` at se
 | `failed` | Session transitions to `idle` (rubric doesn't apply, or description/rubric contradict). |
 | `interrupted` | Session interrupted while an outcome was active. |
 
-Only one outcome runs at a time; chain outcomes by sending a new `user.define_outcome` after the prior `span.outcome_evaluation_end`.
+Only one outcome runs at a time; chain outcomes by sending a new `user.define_outcome` after the prior `span.outcome_evaluation_end`. After the final evaluation the session can continue as a conversational session or start a new outcome, and it retains the prior outcome's history.
+
+### Define outcome user event
+
+The `user.define_outcome` event you send is echoed back on receipt, including a `processed_at` timestamp and the server-generated `outcome_id`.
+
+### Outcome evaluation start / ongoing
+
+`span.outcome_evaluation_start` is emitted once the grader starts an evaluation over one iteration loop. `iteration` is a 0-indexed revision counter (`0` is the first evaluation, `1` the re-evaluation after the first revision). `span.outcome_evaluation_ongoing` is a heartbeat while the grader runs; the grader's reasoning is opaque. Both carry `id`, `outcome_id`, `iteration`, and `processed_at`.
+
+### Outcome evaluation end
+
+`span.outcome_evaluation_end` carries `outcome_evaluation_start_id` (the `id` of the matching start event), `outcome_id`, `result`, `explanation`, `iteration`, `usage` (`input_tokens`, `output_tokens`, `cache_creation_input_tokens`, `cache_read_input_tokens`), and `processed_at`. For `interrupted`, if no `outcome_evaluation_start` fired before the interrupt, `outcome_evaluation_start_id` is an empty string.
+
+```json
+{
+  "type": "span.outcome_evaluation_end",
+  "outcome_evaluation_start_id": "sevt_01def...",
+  "outcome_id": "outc_01a...",
+  "result": "satisfied",
+  "iteration": 0
+}
+```
 
 ## Check outcome status
+
+Listen on the event stream for `span.outcome_evaluation_end`, or poll `GET /v1/sessions/{session_id}` and read `outcome_evaluations[].result`. Until an evaluation completes, `result` reports `pending`, `running`, or `evaluating`.
 
 ```python
 session = client.beta.sessions.retrieve(session.id)

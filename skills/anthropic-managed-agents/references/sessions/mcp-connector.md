@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/managed-agents/mcp-connector / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/managed-agents/mcp-connector / last verified: 2026-10-17 -->
 
 # MCP connector
 
@@ -30,9 +30,15 @@ agent = client.beta.agents.create(
 ## Notes
 
 - An agent can declare up to 20 MCP servers; every `mcp_servers` entry must have a matching `mcp_toolset`, and vice versa (dangling entries are rejected).
-- MCP tool output over 100,000 characters (~25k tokens) is auto-written to a sandbox file with a truncated preview returned to the model.
+- MCP tool output handling: output over 100,000 characters (~25k tokens) is auto-written to a file in the sandbox; the model receives a truncated preview with the file path and can read the full content from there.
+- With a `limited` environment, session creation fails with a 400 error when the agent declares an MCP server whose host is not in the environment's `allowed_hosts`. Setting `allow_mcp_servers` to `true` in the environment's networking turns this check off.
 - Authentication is supplied at session creation via `vault_ids`; credentials match by normalized `mcp_server_url` (scheme/host lowercased, default ports and trailing slashes stripped). No match falls back to unauthenticated connection.
-- Session creation does not validate MCP connectivity/credentials up front; failures surface as `session.error` events (`mcp_connection_failed_error` or `mcp_authentication_failed_error`) and retry on the next idle→running transition.
+- Session creation does not validate MCP connectivity/credentials up front (it only checks each declared server's host against the environment's networking, see above); failures surface as `session.error` events and the session still starts. The event carries the affected server's `mcp_server_name` and a `retry_status`; the connection is retried on the next `session.status_idle` to `session.status_running` transition. You can block further interaction, trigger a credential rotation, or let the session continue without that server's tools.
+
+| Error type | Meaning |
+|------------|---------|
+| `mcp_connection_failed_error` | The MCP server could not be reached (network error, timeout, or non-authentication HTTP failure). |
+| `mcp_authentication_failed_error` | Authentication failed: the server rejected the credential from the attached vault, required authentication when no matching credential was configured, or an OAuth token refresh failed. |
 - Scope: MCP connections made from a Managed Agents session. For the Messages API MCP connector, see the anthropic-api-tools-mcp skill.
 
 ## Related

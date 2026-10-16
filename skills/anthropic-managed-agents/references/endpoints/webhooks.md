@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/beta/webhooks.md / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/beta/webhooks.md / last verified: 2026-10-17 -->
 
 # Webhooks
 
@@ -33,7 +33,7 @@ Managed Agents webhooks deliver a `BetaWebhookEvent` payload (`{id, created_at, 
 | `deployment_run` | `deployment_run.started`, `deployment_run.succeeded`, `deployment_run.failed` |
 | `environment` | `environment.created`, `environment.updated`, `environment.archived`, `environment.deleted` |
 | `memory_store` | `memory_store.created`, `memory_store.archived`, `memory_store.deleted` |
-| `session` | `session.created`, `session.updated`, `session.pending`, `session.running`, `session.idled`, `session.requires_action`, `session.archived`, `session.deleted`, `session.outcome_evaluation_ended` |
+| `session` | `session.created`, `session.updated`, `session.pending`, `session.running`, `session.idled`, `session.requires_action`, `session.archived`, `session.deleted`, `session.outcome_evaluation_ended`, `session.budget_reached` |
 | `session` (status, fine-grained) | `session.status_rescheduled`, `session.status_run_started`, `session.status_idled`, `session.status_terminated` |
 | `session` (thread) | `session.thread_created`, `session.thread_idled`, `session.thread_terminated` (each also carries `session_thread_id`) |
 | `vault` | `vault.created`, `vault.archived`, `vault.deleted` |
@@ -54,7 +54,7 @@ Same shape as `BetaWebhookEvent` — the unwrapped form used when a webhook payl
 
 ## Notes
 
-- Beta; requires header `anthropic-beta: managed-agents-2026-04-01` (or a superset covering the resource, e.g. `dreaming-2026-04-21` is not needed here since Dreams has no webhook events) to configure/manage webhook subscriptions via the platform.
+- Beta; requires header `anthropic-beta: managed-agents-2026-04-01` (also for the API that manages webhook subscriptions).
 - No documented sub-endpoints exist under `/api/beta/webhooks/*` for creating/listing webhook subscriptions on this page — the page is purely the event/data-type catalog.
 - All `data` variants are flat (`id`/`organization_id`/`type`/`workspace_id` plus at most one extra ID field); there is no nested resource body in the event payload — fetch the full resource via its REST endpoint (agents.md / deployments.md) if needed.
 

@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/beta/deployments/create.md, https://platform.claude.com/docs/en/api/beta/deployments/list.md, https://platform.claude.com/docs/en/api/beta/deployments/retrieve.md, https://platform.claude.com/docs/en/api/beta/deployments/update.md, https://platform.claude.com/docs/en/api/beta/deployments/archive.md, https://platform.claude.com/docs/en/api/beta/deployments/pause.md, https://platform.claude.com/docs/en/api/beta/deployments/unpause.md, https://platform.claude.com/docs/en/api/beta/deployments/run.md / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/beta/deployments/create.md, https://platform.claude.com/docs/en/api/beta/deployments/list.md, https://platform.claude.com/docs/en/api/beta/deployments/retrieve.md, https://platform.claude.com/docs/en/api/beta/deployments/update.md, https://platform.claude.com/docs/en/api/beta/deployments/archive.md, https://platform.claude.com/docs/en/api/beta/deployments/pause.md, https://platform.claude.com/docs/en/api/beta/deployments/unpause.md, https://platform.claude.com/docs/en/api/beta/deployments/run.md, https://platform.claude.com/docs/en/api/beta/deployment_runs/list.md, https://platform.claude.com/docs/en/api/beta/deployment_runs/retrieve.md / last verified: 2026-10-17 -->
 
 # Deployments API
 
@@ -16,6 +16,8 @@ A `deployment` binds an `agent` to everything needed to run it autonomously: an 
 | POST | `/v1/deployments/{deployment_id}/pause` | Pause Deployment |
 | POST | `/v1/deployments/{deployment_id}/unpause` | Unpause Deployment |
 | POST | `/v1/deployments/{deployment_id}/run` | Run Deployment Now (creates a session immediately, outside the schedule) |
+| GET | `/v1/deployment_runs` | List Deployment Runs (separate top-level resource; across all deployments in the workspace) |
+| GET | `/v1/deployment_runs/{deployment_run_id}` | Retrieve a Deployment Run |
 
 ```http
 curl https://api.anthropic.com/v1/deployments \
@@ -49,6 +51,7 @@ curl https://api.anthropic.com/v1/deployments \
 | `resources` | `optional array<GitHubRepositoryResource \| FileResource \| MemoryStoreResource>` | Mounted into each session's container. Max 500. |
 | `schedule` | `optional {expression, timezone, type:"cron"}` | 5-field POSIX cron (no seconds/year/`L`/`W`/`#`/`?`/`@daily`). `timezone` is an IANA identifier, validated. |
 | `vault_ids` | `optional array<string>` | Stored-credential vaults available to sessions. Max 50. |
+| `budget` | `optional {type:"limit", max_list_cost:{amount, currency}} \| null` | Enforced spend ceiling stamped onto each session created from the deployment, copied at session-creation time. Omit to leave sessions uncapped. The deployment agent's model must have a public list price, or the request is rejected; a multiagent roster is re-validated in full when each fire copies the cap, which fails closed the same way. |
 | `version` (Update only, on `agent` sub-object) | see `agent` | — |
 
 ### `initial_events` variants
@@ -93,9 +96,23 @@ curl https://api.anthropic.com/v1/deployments \
 | `environment_id`, `vault_ids` | `string`, `array<string>` | |
 | `initial_events` | `array<DeploymentInitialEvent>` | Same shape as request. |
 | `metadata` | `map[string]` | |
+| `budget` | `{type:"limit", max_list_cost} \| absent` | Spend ceiling stamped onto each session created from this deployment; absent when no budget is set. |
 | `archived_at`, `created_at`, `updated_at` | `string` (RFC 3339) | |
 
 List endpoint wraps in `{data: array<Deployment>, next_page}`.
+
+### List Deployment Runs query parameters (`GET /v1/deployment_runs`)
+
+| Name | Type | Description |
+|------|------|-------------|
+| `deployment_id` | `optional string` | Filter to one deployment; omit to list across the workspace. A non-existent ID returns 200 with empty data. |
+| `trigger_type` | `optional "schedule" \| "manual"` | Filter by what triggered the run. |
+| `has_error` | `optional boolean` | `true`: runs with non-null `error`; `false`: runs with non-null `session_id`. |
+| `created_at[gt\|gte\|lt\|lte]` | `optional string` | Time-range filters. |
+| `limit` | `optional number` | Default 20, max 1000. |
+| `page` | `optional string` | Opaque cursor; invalid or expired cursors return 400. |
+
+`GET /v1/deployment_runs/{deployment_run_id}` returns one `BetaManagedAgentsDeploymentRun` (same shape as below).
 
 ### Response object `BetaManagedAgentsDeploymentRun` (Run Deployment Now)
 

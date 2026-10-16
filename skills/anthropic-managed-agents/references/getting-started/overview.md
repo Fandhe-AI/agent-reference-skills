@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/managed-agents/overview / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/managed-agents/overview / last verified: 2026-10-17 -->
 
 # Claude Managed Agents overview
 
@@ -23,7 +23,7 @@ Pre-built, configurable agent harness that runs in Anthropic-managed infrastruct
 ## How it works
 
 1. **Create an agent** — define model, system prompt, tools, MCP servers, and skills; reference it by ID across sessions.
-2. **Create an environment** — configure where the agent runs (cloud sandbox or self-hosted sandbox).
+2. **Create an environment** — configure where the agent runs (cloud sandbox or self-hosted sandbox); see Choosing an environment.
 3. **Start a session** — launch a session that references your agent and environment configuration.
 4. **Send events and stream responses** — send user messages as events; Claude autonomously runs tools and streams results back over SSE. Event history is persisted server-side and can be fetched in full.
 5. **Steer or interrupt** — send additional user events to guide the agent mid-execution, or interrupt it to change direction.
@@ -41,7 +41,7 @@ Pre-built, configurable agent harness that runs in Anthropic-managed infrastruct
 
 - Bash: run shell commands in the sandbox
 - File operations: read, write, edit, glob, and grep files in the sandbox
-- Web search and fetch: search the web and retrieve content from URLs
+- Web search and fetch: search the web and retrieve content from URLs, optionally restricted to an allowlist or blocklist of domains
 - MCP servers: connect to external tool providers
 
 ## Beta access
@@ -59,3 +59,5 @@ Claude Managed Agents is in beta. All Managed Agents endpoints require the `mana
 - [Get started with Claude Managed Agents](./quickstart.md)
 - [Define your agent](./agent-setup.md)
 - [Migration](./migration.md)
+- [Choosing an environment](../environments/choosing-an-environment.md)
+- [Reference](../sessions/reference.md) — event types, rate limits, CLI flags, and other lookup tables
