@@ -52,5 +52,6 @@ Optional local cache persistence between runs (alternative to Remote Cache):
 
 - `fetch-depth: 2` is required for `--affected` to detect changes between commits; without Git history, source-diff filtering is unavailable
 - GitHub Actions automatically detects the PR base/head branches for `--affected` comparisons
+- If the PR base branch exists only as a remote-tracking ref in a detached `actions/checkout`, set `futureFlags.githubActionsRemoteBaseRefFallback: true` in `turbo.json` (default `false`) to fall back to `origin/<branch>`
 - `TURBO_TOKEN` is a Vercel scoped access token; `TURBO_TEAM` is the Vercel team slug
 - Use `turbo run <task>` explicitly (not bare `turbo <task>`) to avoid future subcommand name conflicts

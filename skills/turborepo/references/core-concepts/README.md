@@ -2,6 +2,7 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Package and Task Graph | The foundational monorepo structure and task relationships represented as directed acyclic graphs. | [package-and-task-graph.md](./package-and-task-graph.md) |
-| Package Types | Application and library package types with three internal package compilation strategies: JIT, compiled, and publishable. | [package-types.md](./package-types.md) |
-| Remote Caching | Shares task cache artifacts across machines and CI systems to prevent duplicate work. | [remote-caching.md](./remote-caching.md) |
+| Internal Packages | Internal Packages are libraries whose source code lives inside your Workspace. | [internal-packages.md](./internal-packages.md) |
+| Package and Task Graph | Package Graph (package dependencies) and Task Graph (task DAG defined in `turbo.json`). | [package-and-task-graph.md](./package-and-task-graph.md) |
+| Package Types | Turborepo distinguishes two types of packages. | [package-types.md](./package-types.md) |
+| Remote Caching | Shares task cache artifacts across machines and CI… | [remote-caching.md](./remote-caching.md) |

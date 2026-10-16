@@ -2,10 +2,11 @@
 name: turborepo
 description: >
   Turborepo (高速モノレポビルドシステム) リファレンス。
-  turbo.json、turbo run、タスク依存 (dependsOn)、キャッシュ (local / remote)、
-  workspaces (pnpm / npm / yarn / bun)、--filter、Remote Cache (Vercel)、
-  parallel 実行、turbo gen (コード生成)、watch モード、
-  エラーメッセージ診断 (recursive turbo invocations, missing root task, invalid env prefix)。
+  turbo.json、turbo run、dependsOn、task tags、キャッシュ (local / remote)、
+  workspaces (pnpm / npm / yarn / bun / nub / aube)、Rust / Python / Go ワークスペース (実験的)、
+  --filter、turbo query affected、turbo prune、turbo gen、watch、
+  Remote Cache (Vercel / 自前ホスト Remote Cache API)、devEngines.packageManager、
+  エラー診断 (recursive turbo invocations, missing root task)。
 user-invocable: false
 model: sonnet
 ---
@@ -14,6 +15,8 @@ model: sonnet
 
 Turborepo — JavaScript / TypeScript モノレポ向け高性能ビルドシステム。
 turbo.json の設定、タスク管理、キャッシュ、各種ツール統合時に参照する。
+
+対象: Turborepo v2.11.8 (source: vercel/turborepo apps/docs/content/docs @ v2.11.8)
 
 ## ディレクトリ構成
 
@@ -29,6 +32,7 @@ skills/turborepo/
       start-with-an-example.md
     core-concepts/
       README.md
+      internal-packages.md
       package-and-task-graph.md
       package-types.md
       remote-caching.md
@@ -78,6 +82,7 @@ skills/turborepo/
       biome.md
       docker.md
       eslint.md
+      go-experimental.md
       jest.md
       oxc.md
       playwright.md
@@ -105,6 +110,11 @@ skills/turborepo/
       query.md
       run.md
       watch.md
+    remote-cache-api/
+      README.md
+      overview.md
+      artifacts.md
+      events.md
     messages-error-docs/
       README.md
       invalid-env-prefix.md
@@ -149,14 +159,15 @@ skills/turborepo/
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | インストール、既存リポジトリへの導入、create-turbo、エディタ連携、サンプルから開始 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
-| パッケージグラフ、タスクグラフ、DAG、パッケージタイプ、Remote Caching の概念 | core-concepts | [references/core-concepts/README.md](references/core-concepts/README.md) |
+| パッケージグラフ、タスクグラフ、DAG、パッケージタイプ、内部パッケージのコンパイル戦略 (JIT / Compiled / Publishable)、Remote Caching の概念 | core-concepts | [references/core-concepts/README.md](references/core-concepts/README.md) |
 | リポジトリ構造、依存管理、内部パッケージ、タスク設定・実行、キャッシュ、環境変数、開発・Watch モード、CI 構築、バージョンアップ | crafting-your-repository | [references/crafting-your-repository/README.md](references/crafting-your-repository/README.md) |
 | コード生成、タスクスキップ、ライブラリ公開、単一パッケージ、多言語、マイクロフロントエンド、Nx 移行、AI 連携、ランタイム依存の調整 | guides | [references/guides/README.md](references/guides/README.md) |
 | Next.js、Nuxt、SvelteKit、Vite、Rsbuild、フレームワークバインディング | guides-frameworks | [references/guides-frameworks/README.md](references/guides-frameworks/README.md) |
 | GitHub Actions、Vercel、GitLab CI、CircleCI、Buildkite、Travis CI | guides-ci-vendors | [references/guides-ci-vendors/README.md](references/guides-ci-vendors/README.md) |
-| TypeScript、ESLint、Biome、Oxc、Tailwind CSS、Jest、Vitest、Playwright、Storybook、Prisma、Docker、shadcn/ui、Rust / Python (実験的サポート) | guides-tools | [references/guides-tools/README.md](references/guides-tools/README.md) |
-| turbo.json 設定、パッケージ設定 (extends)、システム環境変数 (TURBO_*)、グロブ仕様 | configuration | [references/configuration/README.md](references/configuration/README.md) |
-| turbo run、turbo watch、turbo gen、turbo prune、turbo query、turbo boundaries、その他 CLI コマンド、フラグ一覧 | cli | [references/cli/README.md](references/cli/README.md) |
+| TypeScript、ESLint、Biome、Oxc、Tailwind CSS、Jest、Vitest、Playwright、Storybook、Prisma、Docker、shadcn/ui、Rust / Python / Go (実験的なネイティブワークスペース) | guides-tools | [references/guides-tools/README.md](references/guides-tools/README.md) |
+| turbo.json 設定、タスク tags、deferred input hashing、futureFlags、パッケージ設定 (extends)、システム環境変数 (TURBO_*)、グロブ仕様 | configuration | [references/configuration/README.md](references/configuration/README.md) |
+| turbo run、turbo watch、turbo gen、turbo prune、turbo query (affected の理由 reasons を含む)、turbo boundaries、その他 CLI コマンド、フラグ一覧 | cli | [references/cli/README.md](references/cli/README.md) |
+| セルフホスト Remote Cache サーバー実装、Remote Cache API (OpenAPI)、artifacts / events エンドポイント | remote-cache-api | [references/remote-cache-api/README.md](references/remote-cache-api/README.md) |
 | エラーメッセージの原因・対処法を調べる | messages-error-docs | [references/messages-error-docs/README.md](references/messages-error-docs/README.md) |
 | モノレポセットアップ、タスクパイプライン、フィルタリング、Remote Cache、内部パッケージの典型的な使い方 | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンド、ビルド・デプロイ、キャッシュ管理、コード生成、開発サーバー、構造検査、移行 | scripts | [scripts/README.md](scripts/README.md) |

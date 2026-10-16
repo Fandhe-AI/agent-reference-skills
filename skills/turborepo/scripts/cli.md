@@ -45,6 +45,26 @@ turbo run web#build docs#lint
 turbo run build --filter=./apps/* --filter=!./apps/admin
 ```
 
+## タグによるフィルター
+
+```sh
+turbo run test --filter=tag:ci
+turbo run test --filter=tag:ci --filter='!tag:slow'
+turbo run test --affected --filter=tag:ci
+turbo run test --filter='tag:"ci..."'    # 構文を含むラベルは JSON 文字列で指定
+```
+
+ラベルは大文字小文字を区別する完全一致。`tag:ci{./apps/*}[HEAD^1]` のようにディレクトリ・Git 修飾子と併用できる。
+
+## --affected と --filter の併用
+
+```sh
+turbo run build --affected --filter=web      # affected かつ web
+turbo run build --affected --filter=!docs    # affected から docs を除外
+```
+
+両方の条件を満たすパッケージのみが対象になる（積集合）。
+
 ## turbo run の主要オプション
 
 | オプション | 説明 |
@@ -81,6 +101,7 @@ turbo run build --force                         # キャッシュを無視して
 turbo run build --graph=graph.svg               # タスクグラフを SVG で出力
 turbo run build --summarize                     # 実行サマリーを生成
 turbo run build --concurrency=50%               # CPU 数の 50% を使用
+turbo run build --concurrency=100%              # CPU 数の 100% を使用
 ```
 
 ## ウォッチモード（turbo watch）
@@ -131,7 +152,11 @@ turbo query --schema                                     # GraphQL スキーマ�
 turbo query affected
 turbo query affected --tasks build test
 turbo query affected --base=main --head=HEAD
+turbo query affected --packages                   # タスクではなくパッケージを返す
+turbo query affected --packages my-app --exit-code
 ```
+
+`--exit-code` は影響なしで `0`、影響ありで `1`、エラーで `2` を返す（JSON は引き続き stdout に出力）。チェックアウトが浅いと全パッケージが変更扱いになる。
 
 ## デバッグ情報（turbo info）
 
