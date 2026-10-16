@@ -74,7 +74,6 @@ const r = new Rive({
 | `drawingOptions` | `DrawOptimizationOptions` | `DrawOnChanged` | Rendering optimization mode (e.g., only redraw when the artboard state changes) |
 | `enablePerfMarks` | `boolean` | `false` | Emit `performance.mark` / `performance.measure` entries for profiling |
 | `enableGPUCanvas` | `boolean` | `false` | Experimental (2.42.0+, `@rive-app/webgl2` only). Render GPU Canvas content (3D and shaders). Cannot be combined with `useOffscreenRenderer: true`; ignored when a `riveFile` is passed (the file carries its own mode) |
-| `customDevicePixelRatio` | `number` | — | Optional argument of `resizeDrawingSurfaceToCanvas(customDevicePixelRatio?)`, overriding the device pixel ratio used to size the canvas |
 
 ### Accessibility (experimental)
 
@@ -112,7 +111,7 @@ const r = new Rive({
 - `semanticsMode` / `semanticsOptions` / `enableGPUCanvas` are experimental and may change in a breaking way without a major version bump.
 - Rive Listeners are not set up on the canvas when there is no playing state machine, or when the state machine has no listeners.
 
-- Call `r.resizeDrawingSurfaceToCanvas()` inside `onLoad` to match the canvas's device pixel ratio.
+- Call `r.resizeDrawingSurfaceToCanvas()` inside `onLoad` to match the canvas's device pixel ratio. It accepts an optional `customDevicePixelRatio?: number` argument (e.g. `r.resizeDrawingSurfaceToCanvas(customDevicePixelRatio)`) that overrides the device pixel ratio used to size the canvas; see rive-methods.md.
 - Call `r.cleanup()` when the instance is no longer needed to free WASM memory.
 - Only one artboard can be rendered per `Rive` instance.
 - `load(params: RiveLoadParameters)` replaces the current file/artboard/state machines on an existing `Rive` instance; it accepts a subset of constructor options (`src`/`buffer`/`riveFile`, `autoplay`, `autoBind`, `artboard`, `stateMachine`, `useOffscreenRenderer`, `shouldDisableRiveListeners`, `tabIndex`, `semanticsMode`, `semanticsOptions`, `enableGPUCanvas`) and the deprecated `animations` / `stateMachines`.
