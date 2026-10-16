@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/admin/cost_report, https://platform.claude.com/docs/en/api/admin/cost_report/retrieve / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/beta/organization/cost_report, https://platform.claude.com/docs/en/api/beta/organization/cost_report/retrieve / last verified: 2026-10-16 -->
 
 # Cost Report Admin API
 

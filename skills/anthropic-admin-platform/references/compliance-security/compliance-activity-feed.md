@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/manage-claude/compliance-activity-feed / last verified: 2026-10-16 -->
 
 # Query the Activity Feed
 
@@ -28,7 +28,7 @@ curl --fail-with-body -sS -G \
 
 ## Notes
 
-- Newest first, ties broken by activity ID. Two pagination schemes exist across the Compliance API: Activities and chats use cursor (`after_id`/`before_id`); organizations/users/roles/groups/projects/sessions use page token (`page`/`next_page`).
+- Newest first, ties broken by activity ID. Two pagination schemes exist across the Compliance API: Activities and chats use cursor (`after_id`/`before_id`); organizations/users/roles/groups/projects/sessions use page token (`page`/`next_page`). Local and remote session list endpoints return sessions newest first and messages oldest first by default; they return `next_page` without `has_more`, so stop when `next_page` is `null`.
 - Pass `last_id` as `after_id` to advance to older entries; pass `first_id` as `before_id` to return to newer entries. Stop when `has_more` is `false`.
 - Cursors are safe to reuse on retry: a failed request (5xx/timeout) does not advance your position.
 - The `actor` field is a discriminated union (`user_actor`, `api_actor`, `admin_api_key_actor`, `unauthenticated_user_actor`, `anthropic_actor`, `scim_directory_sync_actor`); build forward-compatible handlers that pass through unrecognized `type`/`actor.type` values.

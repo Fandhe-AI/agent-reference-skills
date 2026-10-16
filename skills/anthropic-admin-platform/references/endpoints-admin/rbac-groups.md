@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/admin/rbac_groups, https://platform.claude.com/docs/en/api/admin/rbac_groups/create, https://platform.claude.com/docs/en/api/admin/rbac_groups/list, https://platform.claude.com/docs/en/api/admin/rbac_groups/retrieve, https://platform.claude.com/docs/en/api/admin/rbac_groups/update, https://platform.claude.com/docs/en/api/admin/rbac_groups/delete, https://platform.claude.com/docs/en/api/admin/rbac_groups/members/create, https://platform.claude.com/docs/en/api/admin/rbac_groups/members/list, https://platform.claude.com/docs/en/api/admin/rbac_groups/members/delete / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/beta/organization/rbac_groups, https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/create, https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/list, https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/retrieve, https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/update, https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/delete, https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/members/add, https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/members/list, https://platform.claude.com/docs/en/api/beta/organization/rbac_groups/members/remove / last verified: 2026-10-16 -->
 
 # RBAC Groups Admin API
 
@@ -10,12 +10,12 @@ Manage RBAC Groups and their membership. Beta, Claude Enterprise only. See also 
 |--------|------|-------------|
 | POST | `/v1/organizations/rbac_groups` | Create RBAC Group |
 | GET | `/v1/organizations/rbac_groups` | List RBAC Groups |
-| GET | `/v1/organizations/rbac_groups/{group_id}` | Get RBAC Group |
-| POST | `/v1/organizations/rbac_groups/{group_id}` | Update RBAC Group |
-| DELETE | `/v1/organizations/rbac_groups/{group_id}` | Delete RBAC Group |
-| POST | `/v1/organizations/rbac_groups/{group_id}/members` | Add RBAC Group Member |
-| GET | `/v1/organizations/rbac_groups/{group_id}/members` | List RBAC Group Members |
-| DELETE | `/v1/organizations/rbac_groups/{group_id}/members/{user_id}` | Remove RBAC Group Member |
+| GET | `/v1/organizations/rbac_groups/{rbac_group_id}` | Get RBAC Group |
+| POST | `/v1/organizations/rbac_groups/{rbac_group_id}` | Update RBAC Group |
+| DELETE | `/v1/organizations/rbac_groups/{rbac_group_id}` | Delete RBAC Group |
+| POST | `/v1/organizations/rbac_groups/{rbac_group_id}/members` | Add RBAC Group Member |
+| GET | `/v1/organizations/rbac_groups/{rbac_group_id}/members` | List RBAC Group Members |
+| DELETE | `/v1/organizations/rbac_groups/{rbac_group_id}/members/{user_id}` | Remove RBAC Group Member |
 
 ```http
 curl https://api.anthropic.com/v1/organizations/rbac_groups \
@@ -65,7 +65,8 @@ curl https://api.anthropic.com/v1/organizations/rbac_groups \
 |------|------|-------------|
 | created_at | string | When the User was added |
 | email | string | User's email |
-| group_id | string | ID of the RBAC Group |
+| rbac_group_id | string | ID of the RBAC Group |
+| group_id | string | Deprecated: use `rbac_group_id`; always the same value |
 | type | `"rbac_group_member"` | Object type |
 | user_id | string | ID of the User |
 

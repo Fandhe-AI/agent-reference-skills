@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/admin/rate_limits, https://platform.claude.com/docs/en/api/admin/rate_limits/list / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/organization/rate_limits, https://platform.claude.com/docs/en/api/organization/rate_limits/list / last verified: 2026-10-16 -->
 
 # Rate Limits Admin API
 
@@ -30,15 +30,19 @@ curl https://api.anthropic.com/v1/organizations/rate_limits \
 
 | Name | Type | Description |
 |------|------|-------------|
-| data | array of `{ id, group_type, limits, models, type }` | One entry per rate-limit group |
+| data | array of `{ type: "rate_limit", id, group, limits, models, group_type }` | One entry per rate-limit group |
+| data[].id | string | Entry ID; stable within the organization, differs between organizations (the group's own ID is `group.id`) |
+| data[].group | discriminated union by `type` | `ModelGroup { type: "model_group", id, display_name }`, `BatchGroup { type: "batch", id }`, `TokenCountGroup { type: "token_count", id }`, `FilesGroup { type: "files", id }`, `SkillsGroup { type: "skills", id }`, `WebSearchGroup { type: "web_search", id }`. `group.id` is an opaque ID (e.g. `rlg_...`) identical across organizations |
 | data[].limits | array of `{ type, value }` | Limiter type (e.g. `requests_per_minute`, `input_tokens_per_minute`) and configured value |
-| data[].models | array of string | Model names/aliases this entry applies to; null when not `model_group` |
-| data[].type | `"rate_limit"` | Object type |
-| next_page | string | Token for next page |
+| data[].models | array of string or null | Model names/aliases this entry applies to; null when `group_type` is not `model_group` |
+| data[].group_type | `"batch"` \| `"files"` \| `"model_group"` \| `"skills"` \| `"token_count"` \| `"web_search"` | Deprecated: use `group.type`; always equal to it |
+| next_page | string or null | Token for next page |
 
 ## Notes
 
 - Requires an Admin API key (`sk-ant-admin...`).
+- The response field `group_type` is deprecated in favor of `group.type` (always the same value; no removal date given). The `group_type` query parameter is not deprecated.
+- When `limit` is omitted, every matching entry is returned in a single page (`next_page` null).
 - Each entry represents the org-wide limit for a group; workspace-level overrides are listed separately via `GET /v1/organizations/workspaces/{workspace_id}/rate_limits` (see `workspaces.md`).
 
 ## Related

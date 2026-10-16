@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/admin/federation_issuers, https://platform.claude.com/docs/en/api/admin/federation_issuers/create, https://platform.claude.com/docs/en/api/admin/federation_issuers/list, https://platform.claude.com/docs/en/api/admin/federation_issuers/retrieve, https://platform.claude.com/docs/en/api/admin/federation_issuers/update, https://platform.claude.com/docs/en/api/admin/federation_issuers/archive / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/organization/federation/issuers, https://platform.claude.com/docs/en/api/organization/federation/issuers/create, https://platform.claude.com/docs/en/api/organization/federation/issuers/list, https://platform.claude.com/docs/en/api/organization/federation/issuers/retrieve, https://platform.claude.com/docs/en/api/organization/federation/issuers/update, https://platform.claude.com/docs/en/api/organization/federation/issuers/archive / last verified: 2026-10-16 -->
 
 # Federation Issuers Admin API
 

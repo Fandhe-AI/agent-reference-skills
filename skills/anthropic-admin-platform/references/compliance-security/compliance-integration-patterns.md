@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/manage-claude/compliance-integration-patterns / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/manage-claude/compliance-integration-patterns / last verified: 2026-10-16 -->
 
 # Design your compliance integration
 
@@ -44,7 +44,7 @@ curl --fail-with-body -sS -G \
 - Cursor-driven: persist `first_id` from the final page (`has_more: false`) and pass as `before_id` next run; persist only after finishing the full loop, not on intermediate pages.
 - Treat the feed as at-least-once delivery; deduplicate on `id`. No `total_count` or checksum is returned — log starting cursor, terminal `last_id`, record count, and `request-id` for completeness attestation.
 - `compliance_api_accessed` activities record who queried compliance data; ingest them for self-audit.
-- Retention horizons: Activity Feed and remote session transcripts 6 years (Anthropic-controlled); chat/file/project content follows your org's claude.ai retention policy; Compliance API hard-deletes are not retained.
+- Retention horizons: Activity Feed and remote session transcripts 6 years (Anthropic-controlled; remote transcripts unless a user deletes the session sooner); local session transcripts (sessions on users' machines) 6 years by default, or your organization's custom conversation retention period when a finite one is set, and 30 days in organizations with HIPAA readiness enabled; chat/file/project content follows your org's claude.ai retention policy; Compliance API hard-deletes are not retained.
 
 ## Related
 

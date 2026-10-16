@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/manage-claude/compliance-api-access / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/manage-claude/compliance-api-access / last verified: 2026-10-16 -->
 
 # Set up the Compliance API
 
@@ -18,7 +18,7 @@ export ANTHROPIC_ADMIN_KEY=sk-ant-admin01-...
 
 | Key type | Created in | Used for | Works with Compliance API? |
 | --- | --- | --- | --- |
-| Compliance Access Key (`sk-ant-api01-...`) | claude.ai > Organization settings > API | Activity Feed, chats, files, projects, Cowork remote sessions, users, org metadata, org settings | Yes (all endpoints) |
+| Compliance Access Key (`sk-ant-api01-...`) | claude.ai > Organization settings > API | Activity Feed, chats, files, projects, sessions (in apps such as Cowork and Claude Code), users, org metadata, org settings | Yes (all endpoints) |
 | Admin API key (`sk-ant-admin01-...`) | Claude Console > Settings > Admin keys | Admin API and Compliance API Activity Feed | Activity Feed only |
 | Analytics API key | claude.ai > Organization settings > API | Claude Enterprise Analytics API | No |
 | Claude API key (`sk-ant-api03-...`) | Claude Console > Settings > API keys | Calling Claude models through Claude API | No |
@@ -28,9 +28,9 @@ Compliance Access Key scopes (select when creating the key):
 | Scope | Grants |
 | --- | --- |
 | `read:compliance_activities` | Read the Activity Feed |
-| `read:compliance_user_data` | Read user chats, messages, files, projects, Cowork remote sessions/transcripts, org users, group members |
+| `read:compliance_user_data` | Read user chats, messages, files, projects, session metadata and transcripts, org users, user preferences, group members |
 | `delete:compliance_user_data` | Delete user chats, files, and projects |
-| `read:compliance_org_data` | Read organization metadata and effective settings (user/group listings need `read:compliance_user_data`) |
+| `read:compliance_org_data` | Read organization metadata and effective settings (user/group listings need `read:compliance_user_data`). With the Plugins API, also reads the organization's plugin and plugin marketplace inventory through the Admin API (including members' personal plugins and their files; the inventory identifies members) |
 
 ## Notes
 

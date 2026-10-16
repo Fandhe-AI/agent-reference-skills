@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/admin/users, https://platform.claude.com/docs/en/api/admin/users/list, https://platform.claude.com/docs/en/api/admin/users/retrieve, https://platform.claude.com/docs/en/api/admin/users/update, https://platform.claude.com/docs/en/api/admin/users/delete / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/organization/users, https://platform.claude.com/docs/en/api/organization/users/list, https://platform.claude.com/docs/en/api/organization/users/retrieve, https://platform.claude.com/docs/en/api/organization/users/update, https://platform.claude.com/docs/en/api/organization/users/remove / last verified: 2026-10-16 -->
 
 # Users Admin API
 

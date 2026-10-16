@@ -1,23 +1,25 @@
 # endpoints-admin
 
-エンドポイントはリソース単位の集約ページ（1 リソース 1 ファイル、計 98 EP）。Admin API キー（sk-ant-admin...）が必要。mcp-tunnels は Deprecated で新 Tunnels API は anthropic-api-tools-mcp を参照。
-
 | Name | Description | Path |
-| --- | --- | --- |
-| Analytics Admin API | Claude Enterprise 環境のアクティビティ・コスト・利用統計 API 集約 | [analytics.md](./analytics.md) |
-| API Keys Admin API | 組織内 API キーの一覧・表示・ステータス更新（secret は非返却） | [api-keys.md](./api-keys.md) |
-| Cost Report Admin API | 組織のコスト時系列集計・workspace / description 別グルーピング | [cost-report.md](./cost-report.md) |
-| External Keys Admin API | 顧客管理暗号化キー（CMEK）設定の AWS KMS / GCP / Azure 対応 | [external-keys.md](./external-keys.md) |
-| Federation Issuers Admin API | Workload Identity Federation に信頼する OIDC issuer 登録 | [federation-issuers.md](./federation-issuers.md) |
-| Federation Rules Admin API | Federation issuer の JWT → service account への OIDC 認可ルール | [federation-rules.md](./federation-rules.md) |
-| Invites Admin API | 組織へ新規ユーザーを招待 | [invites.md](./invites.md) |
-| MCP Tunnels Admin API (deprecated) | MCP Tunnels 管理（deprecated — 新 Tunnels API 推奨） | [mcp-tunnels.md](./mcp-tunnels.md) |
-| Organizations Admin API | 認証キーに紐付く組織情報の取得 | [organizations.md](./organizations.md) |
-| Rate Limits Admin API | 組織・workspace 単位の Messages API rate limit 一覧 | [rate-limits.md](./rate-limits.md) |
-| RBAC Groups Admin API | RBAC グループとメンバーシップの管理（Beta・Claude Enterprise のみ） | [rbac-groups.md](./rbac-groups.md) |
-| RBAC Roles Admin API | RBAC ロール・権限の読み取り専用列挙（Beta・Claude Enterprise のみ） | [rbac-roles.md](./rbac-roles.md) |
-| Service Accounts Admin API | 非人間ワークロード ID と workspace メンバーシップ管理 | [service-accounts.md](./service-accounts.md) |
-| Spend Limits Admin API | ユーザー別支出限度額 / 有効限度額・増額リクエスト管理 | [spend-limits.md](./spend-limits.md) |
-| Usage Report Admin API | Claude Code / Messages API の集約利用メトリクス取得 | [usage-report.md](./usage-report.md) |
-| Users Admin API | 組織内ユーザーの管理 | [users.md](./users.md) |
-| Workspaces Admin API | Workspace・メンバー・rate limit override・service account メンバーシップ | [workspaces.md](./workspaces.md) |
+|------|-------------|------|
+| Analytics Admin API | Organization-wide activity, cost, and usage analytics (mostly Claude Enterprise). | [analytics.md](./analytics.md) |
+| API Keys Admin API | Manage regular API keys within an organization (list, view, update status). | [api-keys.md](./api-keys.md) |
+| Compliance Settings Admin API | Get and update the organization's Compliance Settings singleton. | [compliance-settings.md](./compliance-settings.md) |
+| Cost Report Admin API | Retrieve time-bucketed cost data for an organization. | [cost-report.md](./cost-report.md) |
+| External Keys Admin API | Manage CMEK configs (AWS KMS / GCP Cloud KMS / Azure Key Vault) referenced by Workspaces. | [external-keys.md](./external-keys.md) |
+| Federation Issuers Admin API | Register OIDC issuers Anthropic trusts for workload identity federation. | [federation-issuers.md](./federation-issuers.md) |
+| Federation Rules Admin API | Authorization rules binding an issuer's verified JWTs to a service account. | [federation-rules.md](./federation-rules.md) |
+| Invites Admin API | Invite new Users to an organization. | [invites.md](./invites.md) |
+| MCP Tunnels Admin API (deprecated) | Manage org-scoped MCP Tunnels and their CA certificates. Deprecated. | [mcp-tunnels.md](./mcp-tunnels.md) |
+| Organizations Admin API | Retrieve information about the organization associated with the authenticated key. | [organizations.md](./organizations.md) |
+| Plugin Marketplaces Admin API (Beta) | List and read the plugin marketplaces that Plugins live in. | [plugin-marketplaces.md](./plugin-marketplaces.md) |
+| Plugins Admin API (Beta) | Create and manage organization-owned Plugins and their versions. | [plugins.md](./plugins.md) |
+| Rate Limits Admin API | List Messages API rate limits for an organization. | [rate-limits.md](./rate-limits.md) |
+| RBAC Groups Admin API | Manage RBAC Groups and their membership (Beta, Claude Enterprise only). | [rbac-groups.md](./rbac-groups.md) |
+| RBAC Roles Admin API | Read-only listing of RBAC Roles and the permissions each grants. | [rbac-roles.md](./rbac-roles.md) |
+| Service Accounts Admin API | Manage non-human workload identities (service accounts) and their workspace memberships. | [service-accounts.md](./service-accounts.md) |
+| Spend Limits Admin API | List and set spend limits, and manage spend limit increase requests. | [spend-limits.md](./spend-limits.md) |
+| Telemetry Destinations Admin API (Beta) | Register OpenTelemetry (OTLP/HTTP) destinations and choose the workspaces they cover. | [telemetry-destinations.md](./telemetry-destinations.md) |
+| Usage Report Admin API | Retrieve aggregated usage metrics for Claude Code and the Messages API. | [usage-report.md](./usage-report.md) |
+| Users Admin API | Manage the Users in an organization. | [users.md](./users.md) |
+| Workspaces Admin API | Manage Workspaces, their Members, rate-limit overrides, and Service Account memberships. | [workspaces.md](./workspaces.md) |

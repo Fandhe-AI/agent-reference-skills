@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/admin/external_keys, https://platform.claude.com/docs/en/api/admin/external_keys/create, https://platform.claude.com/docs/en/api/admin/external_keys/list, https://platform.claude.com/docs/en/api/admin/external_keys/retrieve, https://platform.claude.com/docs/en/api/admin/external_keys/update, https://platform.claude.com/docs/en/api/admin/external_keys/delete, https://platform.claude.com/docs/en/api/admin/external_keys/validate / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/organization/external_keys, https://platform.claude.com/docs/en/api/organization/external_keys/create, https://platform.claude.com/docs/en/api/organization/external_keys/list, https://platform.claude.com/docs/en/api/organization/external_keys/retrieve, https://platform.claude.com/docs/en/api/organization/external_keys/update, https://platform.claude.com/docs/en/api/organization/external_keys/delete, https://platform.claude.com/docs/en/api/organization/external_keys/validate / last verified: 2026-10-16 -->
 
 # External Keys Admin API
 

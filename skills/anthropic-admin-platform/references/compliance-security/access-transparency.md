@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/manage-claude/access-transparency / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/manage-claude/access-transparency, https://platform.claude.com/docs/en/manage-claude/access-transparency-log / last verified: 2026-10-16 -->
 
 # Access Transparency
 
@@ -24,11 +24,13 @@ curl --fail-with-body -sS -G \
 | `accessor_department` | string | Anthropic team that performed the access, e.g. `Safeguards` |
 | `reason_code` | enum | `safety_review`, `incident_response`, `policy_violation_investigation`, `csae_report` |
 | `resource_details.type` / `.id` / `.parent` | — | Currently only `message`; `.id` matches the Messages API response `id` |
+| `transparency_log_leaf_index` | integer | Zero-based position of the event in your organization's transparency log (beta). Present whenever the event has a leaf, absent otherwise |
 
 ## Notes
 
 - Two event types on the same feed: `anthropic_access` (human view) and `cmek_preserve` (content preserved outside a CMEK key, whether human- or automation-initiated; same field shape).
 - Covers: Claude API, Claude Code (via API key), Claude Platform on AWS. Does not cover: Batch/Files APIs, Claude for Enterprise/Work seats, Cowork, Claude in Chrome, consumer plans, Workbench, Microsoft Foundry, Bedrock, Google Cloud.
+- Tamper-evident: each event recorded after your organization's transparency log (beta) is created is also committed to that append-only, signed log, which you can verify independently of Anthropic's serving systems (inclusion and consistency proofs). See `access-transparency-log.md`. `workspace_uuid` is not one of the log's leaf fields, so an inclusion proof does not cover it.
 - Automated processing (model serving, safety classifiers) never generates `anthropic_access` events; an empty feed does not mean no automated processing occurred.
 - Delivery is not real-time: events arrive within two business days of the access/preservation.
 - Enabled at the organization level only (no per-workspace enrollment); not guaranteed retroactive to content written before enablement (up to a 2-hour gap after enabling).
@@ -38,5 +40,6 @@ curl --fail-with-body -sS -G \
 
 - [compliance-api.md](./compliance-api.md)
 - [compliance-activity-feed.md](./compliance-activity-feed.md)
+- [access-transparency-log.md](./access-transparency-log.md)
 - [cmek.md](./cmek.md)
 - [api-and-data-retention.md](./api-and-data-retention.md)

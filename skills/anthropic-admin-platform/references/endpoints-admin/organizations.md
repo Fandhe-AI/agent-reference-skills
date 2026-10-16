@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/admin/organizations, https://platform.claude.com/docs/en/api/admin/organizations/me / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/organization/retrieve / last verified: 2026-10-16 -->
 
 # Organizations Admin API
 

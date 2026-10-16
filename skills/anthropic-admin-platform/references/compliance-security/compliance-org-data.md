@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/manage-claude/compliance-org-data / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/manage-claude/compliance-org-data / last verified: 2026-10-16 -->
 
 # List organizations, users, roles, groups, and settings
 
@@ -36,6 +36,7 @@ curl --fail-with-body -sS \
 - The `read:compliance_org_settings` scope was retired June 30, 2026; use `read:compliance_org_data` for the effective-settings endpoint instead.
 - Settings response omits rows the organization's admins cannot control (Anthropic policy or unavailable); a missing row means "not controllable", not "off". `api_keys` array lists every Compliance Access Key for the parent, including deactivated ones.
 - A removed user disappears from the users list immediately, but historical activity remains queryable via the Activity Feed for the full retention window.
+- Plugins and plugin marketplaces belong to the Admin API (Plugins API, see `plugins-api.md`), not the Compliance API, but a Compliance Access Key with `read:compliance_org_data` can call its read endpoints directly: list/retrieve plugins, list/retrieve versions and download a version's files, list installation settings and shares, list/retrieve plugin marketplaces. Send `anthropic-beta: ce-plugins-2026-09-01` on every request (without it these return 404). Each call reads one organization (pass the `organization_id` query parameter, a linked organization's UUID or `org_`-prefixed ID, to read a different one under the same parent). These calls count against the Admin API's rate limits, not the Compliance API's. Creating or changing plugins or marketplace settings needs an Admin API key with `write:plugins`. Of the read calls, only downloading the files of a plugin in a member's personal marketplace records an Activity Feed event (`claude_plugin_archive_accessed`).
 
 ## Related
 
@@ -43,3 +44,4 @@ curl --fail-with-body -sS \
 - [compliance-activity-feed.md](./compliance-activity-feed.md)
 - [compliance-content-data.md](./compliance-content-data.md)
 - [compliance-errors.md](./compliance-errors.md)
+- [plugins-api.md](../admin-api/plugins-api.md)

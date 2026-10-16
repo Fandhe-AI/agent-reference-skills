@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/admin/usage_report, https://platform.claude.com/docs/en/api/admin/usage_report/retrieve_claude_code, https://platform.claude.com/docs/en/api/admin/usage_report/retrieve_messages / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/beta/organization/usage_report, https://platform.claude.com/docs/en/api/beta/organization/usage_report/retrieve_claude_code, https://platform.claude.com/docs/en/api/beta/organization/usage_report/retrieve_messages / last verified: 2026-10-16 -->
 
 # Usage Report Admin API
 
