@@ -2,11 +2,11 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Application Blocks overview | Blocks の Application 区分（26 カテゴリ・124 block）の集約ページ。 | [overview.md](./overview.md) |
+| Application Blocks overview | Blocks の Application 区分（26 カテゴリ・130 block）の集約ページ。 | [overview.md](./overview.md) |
 | Action Panel | Action Panel は、カード内にタイトル・説明文・主操作を置くアクションパネルの合成例 5 件。 | [action-panel.md](./action-panel.md) |
 | AI Chat | AI Chat は、AI チャットの開始画面・コード生成チャット画面・モデル実験プレイグラウンドの合成例 3 件。 | [ai-chat.md](./ai-chat.md) |
 | App Shell | ナビバー・サイドバー・見出し帯・メイン領域を組み合わせたアプリケーション全体の外枠（シェル）の合成例 6 件。 | [app-shell.md](./app-shell.md) |
-| Auth | サインイン・サインアップ・OTP 確認・OAuth 同意の画面（`login-*` / `signup-*` は shadcn/ui Blocks 相当を含む）の合成例 10 件。 | [auth.md](./auth.md) |
+| Auth | サインイン・サインアップ・OTP 確認・OAuth 同意・passkey・TOTP 登録・復旧コード・デバイス認可の画面（`login-*` / `signup-*` は shadcn/ui Blocks 相当を含む）の合成例 16 件。 | [auth.md](./auth.md) |
 | Card | Card は、フォーム入り・メディア付き・情報＋CTA・カーソル追従の各カードの合成例 4 件。 | [card.md](./card.md) |
 | Card Heading | カード・区画の上部見出し（題名のみ〜操作ボタン付き、ツールバー付き）の合成例 2 件。 | [card-heading.md](./card-heading.md) |
 | Chart | Chart は、ランキング横棒・指標サマリー付き面グラフ・折れ線付き統計カードの合成例 3 件。 | [chart.md](./chart.md) |

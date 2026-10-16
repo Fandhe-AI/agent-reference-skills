@@ -56,6 +56,7 @@ headless 層から再エクスポート: `content` / `error_text` / `group` / `h
 - 出典: https://fandhe-ai.github.io/fandhe-frontend/themes/field/
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）
 - コントロール（input / textarea / select）は本部品が所有せず、[Input](./input.md) / [Textarea](./textarea.md) / [Native Select](./native-select.md) が同じ headless-ui `field` scope を共有して提供する
+- コントロールの型付き `autocomplete`（`username webauthn` など）は [Input](./input.md) の `input::input_with_autocomplete` で指定する。`AutocompleteToken` / `AutocompleteField` は `input` mod から再エクスポートされる
 - `data-invalid` / `data-disabled` / `data-required` / `data-readonly` は headless 層が出力する状態を CSS セレクタとして参照するだけで、値の妥当性判定・送信処理は実装しない
 - `data-invalid` のとき Label のテキスト色もエラー色（`--fandhe-color-danger`）になる。エラー内容は ErrorText のテキストで別途伝わる
 - `horizontal`（および 448px 以上の `responsive`）のとき HelperText は `text-wrap: balance` で行長を均す（イシュー #2160。未対応ブラウザでは通常の折り返し）

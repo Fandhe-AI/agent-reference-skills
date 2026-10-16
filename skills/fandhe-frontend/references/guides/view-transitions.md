@@ -27,6 +27,7 @@ withViewTransition(updateCallback);
 
 ## Notes
 
+- `page_shell()` は引き続き at-rule を出力するが、0.2.8 以降は `Document` + `ViewTransitions::InlineStyle` への委譲実装（出力は不変）。`VIEW_TRANSITION_CSS`（`"@view-transition { navigation: auto; }"`）は公開定数になった。厳格な CSP 下では `Document::view_transitions(ViewTransitions::Stylesheet(url))` を使い、配信する CSS に `VIEW_TRANSITION_CSS` を書く（`Document` の既定 `ViewTransitions::Disabled` は何も出さない）
 - `<meta name="view-transition" content="same-origin">` は View Transitions API の実験段階で提案された旧構文で廃止済み。標準化された CSS の `@view-transition` at-rule を採用している
 - 標準テンプレートへの既定同梱: フルスタック標準（SSR/SSG）は `page_shell()` が `<head>` に at-rule を出力。最小埋め込み標準は `templates/embed/embed.html` の `<head>` に同一の at-rule を明示配置（利用者がコピー後に削除してもよい）
 - 標準テンプレートの HTML 骨格は `page_shell()`（Rust 関数）が生成する設計のため、`templates/default/*.html` という静的 HTML 成果物は作成されていない。回帰は SSR/SSG 全出力ファイルを対象とする `crates/server/tests/view_transitions.rs` と、`templates/embed/embed.html` を対象とする `crates/xtask/tests/template_embed_html.rs` で固定され、廃止済み `<meta name="view-transition">` の再導入もテストで検出される

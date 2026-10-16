@@ -2,7 +2,7 @@
 
 | Name | Description | Path |
 | --- | --- | --- |
-| install | fw CLI・WASM ツールチェーン・Vercel CLI の導入、wasm-full / motion の feature 指定 | [install.md](./install.md) |
-| cli | fw new / structure / gate（--only 含む）/ impact サブコマンド | [cli.md](./cli.md) |
-| build | cargo ビルド・テスト・WASM ビルド・wasm-full / motion feature の検証・NPM アセットビルド | [build.md](./build.md) |
-| deploy | fw gate によるデプロイ前検証・Docker ビルド/起動・Vercel デプロイ（vercel-ssg / vercel-ssr） | [deploy.md](./deploy.md) |
+| build | ビルド・テスト・WASM ビルド・NPM アセットビルド・feature 構成の検証コマンド。 | [build.md](./build.md) |
+| cli | `fw` CLI の全サブコマンド（`fandhe-frontend-cli` 0.5.2 の `src/main.rs` /… | [cli.md](./cli.md) |
+| deploy | デプロイ前検証・Docker（`FROM scratch`）配布・Vercel デプロイ（静的配置… | [deploy.md](./deploy.md) |
+| install | `fw` CLI・WASM ビルドに必要なツールチェーン・Vercel CLI・feature フラグ… | [install.md](./install.md) |

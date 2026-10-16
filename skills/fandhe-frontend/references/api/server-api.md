@@ -70,7 +70,8 @@ pub enum SsgError {
 
 ## Notes
 
-- パッケージ名は `fandhe-frontend-server`（`crates/server/`、crate 0.2.6 で確認）。公開モジュールは `router`（`fandhe-frontend-app` のルーターの再エクスポート）/ `ssg` / `ssr` の 3 つ
+- パッケージ名は `fandhe-frontend-server`（`crates/server/`、crate 0.2.8 で確認）。公開モジュールは `router`（`fandhe-frontend-app` のルーターの再エクスポート）/ `ssg` / `ssr` の 3 つ
+- 0.2.6 → 0.2.8 の差分は rustdoc のリンク（非公開アイテムへの intra-doc link を通常のコード表記へ変更）と `fandhe-frontend-app` 依存の 0.2.8 化のみで、API は不変。`respond_with` の body は `page_shell` の出力のままで、`page_shell` は `Document` へ委譲する実装になったが出力は不変
 - `generate_with` は SSR の 200 応答ボディ（`respond_with`）をそのままファイルへ書き出すため SSR/SSG の出力は構造的に一致する。一覧 loader を失敗させるとビルド全体を `SsgError::LoaderError { path: "/" }` で中止する。`Item::id` は英数字・`-`・`_` のみ許可（それ以外は `UnsafeItemId`）
 - `SsgError::UnexpectedStatus` は SSR が 200 以外を返した場合、`LoaderError` は loader 失敗（500 応答を含む）、`RouteNotFound` は `respond` が `None` を返した場合、`DuplicatePagePath` は正規化後に同一出力先（例: `/a` と `/a/` は共に `a/index.html`）を指した場合に返る
 - `app` / `interactive` / `wasm-client` を扱う既存ページとは別クレートである点に注意（`fandhe-frontend-app` 等とは依存方向が逆で、`server` が `app` の `Loader` 実装・`Item` 型を利用する）

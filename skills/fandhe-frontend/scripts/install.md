@@ -48,11 +48,11 @@ cargo install wasm-bindgen-cli --version <確認したバージョン> --locked
 
 ## wasm-full の feature 選択（default-features = false）
 
-`fandhe-frontend-wasm-full` の feature（配線群別 + scope 別）は既定ですべて on。必要な feature だけを選ぶ場合の `Cargo.toml` 記述（`default` 配列と同じ 57 件を明示して従来挙動を維持する形）。
+`fandhe-frontend-wasm-full` の feature（配線群別 + scope 別）は既定ですべて on。必要な feature だけを選ぶ場合の `Cargo.toml` 記述（`default` 配列と同じ 58 件を明示して従来挙動を維持する形）。
 
 ```toml
 [dependencies.fandhe-frontend-wasm-full]
-version = "0.46.0"
+version = "0.48.1"
 default-features = false
 features = [
   "wasm-bindgen-exports",
@@ -65,6 +65,7 @@ features = [
   "splitter",
   "signature-pad",
   "number-input",
+  "pin-input",
   "command",
   "sidebar",
   "chart",
@@ -115,16 +116,16 @@ features = [
 ]
 ```
 
-`entry` 機能を使わないアプリは `wasm-bindgen-exports` を省略できる。`headless_signature_pad::wire_signature_pad_component` を `Runtime::wire_headless` 経由せず直接呼ぶ場合は、上記に加えて `headless::wire_headless_component` を同じ `root` / `component` へ明示的に呼ぶ必要がある（ガイド記載）。配布 WASM（`fandhe-frontend-dist-server`）の最小構成は `wasm-bindgen-exports, collapsible, dialog, popover, tooltip, position, action-keydown` の 7 feature。
+`entry` 機能を使わないアプリは `wasm-bindgen-exports` を省略できる。`headless_signature_pad::wire_signature_pad_component` を `Runtime::wire_headless` 経由せず直接呼ぶ場合は、上記に加えて `headless::wire_headless_component` を同じ `root` / `component` へ明示的に呼ぶ必要がある（ガイド記載）。配布 WASM（`fandhe-frontend-dist-server`）の最小構成は `wasm-bindgen-exports, collapsible, dialog, popover, tooltip, position, action-keydown` の 7 feature。`pin-input` は 0.47.0 で追加された配線群別 feature（`Runtime::wire_pin_input`）。
 
 ## pre-styled-ui の motion feature の有効化
 
 ```toml
 [dependencies]
-fandhe-frontend-pre-styled-ui = { version = "0.241.0", features = ["motion"] }
+fandhe-frontend-pre-styled-ui = { version = "0.245.0", features = ["motion"] }
 ```
 
-`motion` は既定 off。有効化すると `fandhe-animation` が依存グラフに加わる。無効のままなら crate サイズ・ビルド時間・`Theme::to_css` の処理量・CSS 出力は変わらない（ゼロコスト契約）。版数は crates.io 最新版（0.241.0）に更新した表記で、公式ガイド原文の例は motion ガイドが `0.192`、animation ガイドが `0.204`。presence（enter/exit）は `motion` feature 不要で既定出力に含まれる。
+`motion` は既定 off。有効化すると `fandhe-animation` が依存グラフに加わる。無効のままなら crate サイズ・ビルド時間・`Theme::to_css` の処理量・CSS 出力は変わらない（ゼロコスト契約）。版数は crates.io 最新版（0.245.0）に更新した表記で、公式ガイド原文の例は motion ガイドが `0.192`、animation ガイドが `0.204`。presence（enter/exit）は `motion` feature 不要で既定出力に含まれる。
 
 ## Vercel CLI の導入（デプロイ用）
 
