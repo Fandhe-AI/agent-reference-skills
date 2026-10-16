@@ -1,5 +1,7 @@
 # evals
 
+OpenAI API (developers.openai.com) の LLM 評価基盤 — Evals API / ダッシュボード評価 (Datasets) / graders / trace grading / Promptfoo による評価・red teaming。テストランナー全般を扱う vitest 等とは無関係。
+
 | Name | Description | Path |
 |------|-------------|------|
 | Evaluate agent workflows | Decision guide for choosing between trace grading and dataset/eval runs… | [agent-evals.md](./agent-evals.md) |
