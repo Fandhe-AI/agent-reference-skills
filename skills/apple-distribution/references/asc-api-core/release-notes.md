@@ -70,7 +70,7 @@ GET https://developer.apple.com/documentation/appstoreconnectapi/app-store-conne
 - To move an existing integration from the deprecated 4.5.1 media resources, see the "Migrating to the App Asset Library" article.
 - Each version's release notes page recommends updating server-side code to use new features and re-testing against API changes
 - The full OpenAPI specification for the current API version is downloadable from the release notes page
-- Individual version pages (e.g. App Store Connect API 4.4, 4.3.1, 3.0, 1.0; 4.5.1 / 4.5 / 4.4.1 are summarized above) are not mirrored here; consult `developer.apple.com/documentation/appstoreconnectapi/app-store-connect-api-<version>-release-notes` for a specific version's changelog
+- Individual version pages (e.g. App Store Connect API 4.4, 4.3.1, 3.0, 1.0; 4.5.1 / 4.5 / 4.4.1 are summarized above) are not mirrored here; consult https://developer.apple.com/documentation/appstoreconnectapi/app-store-connect-api-release-notes (per-version pages follow the `app-store-connect-api-<version>-release-notes` slug pattern, e.g. https://developer.apple.com/documentation/appstoreconnectapi/app-store-connect-api-4-5-1-release-notes) for a specific version's changelog
 
 ## Related
 

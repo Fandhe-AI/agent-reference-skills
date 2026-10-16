@@ -68,6 +68,7 @@ An `AppEventLocalization` holds the localized name, short description, and long 
 
 - Deprecated in App Store Connect API 4.5.1: the in-app event screenshot and video clip resources and their relationships (`app-event-screenshots`, `app-event-video-clips`). Manage in-app event media with the App Asset Library and placements instead.
 - `AppEventAssetType` is a string type for the asset type of an app event.
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/app-events-and-metadata , https://developer.apple.com/documentation/appstoreconnectapi/app-events
 
 ## Related
 

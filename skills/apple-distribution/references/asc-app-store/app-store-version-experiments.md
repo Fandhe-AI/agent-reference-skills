@@ -50,6 +50,7 @@ GET    https://api.appstoreconnect.apple.com/v1/appStoreVersions/{id}/appStoreVe
 - Deprecated in App Store Connect API 4.5.1: App Store version, custom product page, and experiment treatment media set-based resources (screenshot sets and preview sets). Manage them with the App Asset Library and placements.
 - An experiment is an A/B test comparing two product page variants for an App Store version to see which drives more downloads.
 - Related collections not summarised here: App Store Version Experiment Treatments, Treatment Localizations, and App Store Version Promotions (apply a treatment to the product page or upcoming version).
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/app-store-version-experiments
 
 ## Related
 

@@ -20,6 +20,7 @@ POST https://api.appstoreconnect.apple.com/v1/appStoreVersionReleaseRequests
 
 - Only versions in the Pending Developer Release state can be released this way. For app states, see App and submission statuses in the App Store Connect Help.
 - The exact fields of `AppStoreVersionReleaseRequestCreateRequest.Data` are not documented on this page; see the official App Store Connect API page for the schema.
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/app-store-version-release-requests
 
 ## Related
 

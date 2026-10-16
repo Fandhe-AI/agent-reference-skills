@@ -45,6 +45,7 @@ Read the phased release of a version with `GET /v1/appStoreVersions/{id}/appStor
 - Use `PATCH` to change the state (pause, resume, release to all immediately).
 - `AppStoreVersionPhasedReleaseWithoutIncludesResponse` is a single phased release response without related resources.
 - The exact JSON bodies of the create and update requests are not documented on this page (see the official App Store Connect API pages for the request schemas); `AppStoreVersionPhasedReleaseUpdateRequest.Data` is the `data` element of the request.
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/app-store-version-phased-releases
 
 ## Related
 

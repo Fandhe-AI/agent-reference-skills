@@ -100,6 +100,7 @@ Review image upload (reserve, upload, commit), same shape for `subscriptionImage
 
 - Nested read endpoints on the parent are also deprecated: `GET /v2/inAppPurchases/{id}/inAppPurchaseLocalizations`, `GET /v2/inAppPurchases/{id}/images`, `GET /v1/subscriptions/{id}/subscriptionLocalizations`, `GET /v1/subscriptions/{id}/images`, `GET /v1/subscriptionGroups/{id}/subscriptionGroupLocalizations` (and their `relationships` variants). Read through `/v1/<resource>Versions/{id}/localizations` and `.../images` instead.
 - Unchanged in 4.4.1: `POST /v2/inAppPurchases`, `POST /v1/subscriptions`, `POST /v1/subscriptionGroups` (and GET / PATCH), pricing (`/v1/inAppPurchasePriceSchedules`, `/v1/subscriptionPricePoints`), `/v1/promotedPurchases`, and App Review screenshots (`/v1/inAppPurchaseAppStoreReviewScreenshots`, `/v1/subscriptionAppStoreReviewScreenshots`), which still target the parent product, not the version.
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/working-with-in-app-purchase-versions , https://developer.apple.com/documentation/appstoreconnectapi/working-with-subscription-versions , https://developer.apple.com/documentation/appstoreconnectapi/working-with-subscription-group-versions
 
 ## Related
 

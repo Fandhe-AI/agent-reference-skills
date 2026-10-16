@@ -45,6 +45,15 @@ POST   https://api.appstoreconnect.apple.com/v1/winBackOffers
           "data": { "type": "subscriptionPricePoints", "id": "eyJzIjoiNjQ0NzQ5NzgzMiIsInQiOiJVU0EiLCJwIjoiMTAxMjcifQ" }
         }
       }
+    },
+    {
+      "type": "winBackOfferPrices",
+      "id": "${winbackOfferPrice-1}",
+      "relationships": {
+        "subscriptionPricePoint": {
+          "data": { "type": "subscriptionPricePoints", "id": "eyJzIjoiNjQ0NzQ5NzgzMiIsInQiOiJDQU4iLCJwIjoiMTAxNDIifQ" }
+        }
+      }
     }
   ]
 }
@@ -92,6 +101,7 @@ Endpoints:
 - If a live offer has `promotionIntent` of `USE_AUTO_GENERATED_ASSETS`, delete the offer to remove it from promotion.
 - Promote by URL: `https://apps.apple.com/win-back/{Offer Apple ID}`, using the numeric `id` from the create or list response.
 - Distinct from [Promotional Offers](./promotional-offers.md), which target current or lapsed subscribers through app-side signatures.
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/creating-and-configuring-win-back-offers , https://developer.apple.com/documentation/appstoreconnectapi/winbackoffer
 
 ## Related
 

@@ -123,6 +123,7 @@ Path parameter `id` (required): the `apps` resource ID, obtained from `GET /v1/a
 - `CustomerReview` is available since API version 2.0. `CustomerReviewSummarization` is an AI-generated summary of reviews for an app in a specific territory, introduced at 3.6; its list endpoint is documented as introduced at 4.0.
 - Responses to reviews are managed with the `customerReviewResponses` resource (see customer-review-responses.md); `GET /v1/customerReviews/{id}/response` reads the response for a review.
 - Reviews can be written in the App Store or when your app requests a review.
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/customer-reviews
 
 ## Related
 

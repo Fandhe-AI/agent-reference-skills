@@ -51,6 +51,7 @@ POST   https://api.appstoreconnect.apple.com/v1/endAppAvailabilityPreOrders
 - Pre-order lets customers see your product page and order your app before its initial release; customers are notified on release and the app downloads automatically.
 - For `ICP_NUMBER_INVALID` and `ICP_NUMBER_MISSING`, see the "Availability in China mainland" section of App Store Connect Help (App information).
 - The exact JSON bodies of the create, update, and end-pre-order requests are not documented on this page; see the official App Store Connect API pages for the request body schemas.
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/app-availability , https://developer.apple.com/documentation/appstoreconnectapi/app-pre-orders
 
 ## Related
 

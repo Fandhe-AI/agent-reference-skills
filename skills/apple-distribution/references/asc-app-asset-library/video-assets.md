@@ -87,6 +87,7 @@ Commit after every part is uploaded:
 - Pick a `previewFrameTimeCode` inside the video's duration; the frame is generated asynchronously. The preview frame belongs to the video, not to a placement: changing it changes what every placement of that video displays.
 - The video binary is immutable after commit; upload a new asset and replace placements to change footage. Archiving works only on an approved asset (409 `STATE_ERROR.INVALID_ASSET_STATE` otherwise). Deleting an asset with placements returns 409 `STATE_ERROR.ASSET_HAS_PLACEMENTS`.
 - List filters and sorts match images: `filter[state]`, `filter[category]`, `filter[specId]`, `filter[referenceName]`, `filter[id]`, `sort` by `createdDate` / `lastModifiedDate` / `referenceName`.
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/uploading-and-managing-video-assets , https://developer.apple.com/documentation/appstoreconnectapi/app-asset-library-videos
 
 ## Related
 

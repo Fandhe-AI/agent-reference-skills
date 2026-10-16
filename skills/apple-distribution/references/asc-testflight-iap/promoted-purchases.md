@@ -48,6 +48,7 @@ Endpoints:
 - Request/response objects: `PromotedPurchaseCreateRequest`, `PromotedPurchaseUpdateRequest`, `PromotedPurchaseResponse`, `PromotedPurchasesResponse`, `AppPromotedPurchasesLinkagesRequest`, `AppPromotedPurchasesLinkagesResponse`.
 - The "Promoted Purchase Images" collection (create, commit, and delete images for a promoted In-App Purchase) is a sibling collection under the same Promoted Purchases group; its endpoints are not covered by this page; see the official promoted-purchase-images pages.
 - Win-back offers using App Store promotion require an approved promoted-purchase image (see Win-Back Offers).
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/promoted-purchases , https://developer.apple.com/documentation/appstoreconnectapi/promoted-purchase-images
 
 ## Related
 

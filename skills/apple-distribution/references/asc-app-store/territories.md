@@ -36,6 +36,7 @@ GET https://api.appstoreconnect.apple.com/v1/territories?limit=200&fields[territ
 - `territories` is a read-only resource.
 - The `TerritoryCode` type (for example `USA`, `JPN`) is used in places such as the customer review `filter[territory]` parameter.
 - Response variants: `TerritoriesResponse`, `TerritoriesWithoutIncludesResponse` (without related resources), `TerritoryResponse` (single territory).
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/territories
 
 ## Related
 

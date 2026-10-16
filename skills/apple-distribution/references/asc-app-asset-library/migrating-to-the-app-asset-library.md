@@ -51,6 +51,7 @@ New upload sequence (steps 1-4 once per distinct file, step 5 per place the file
 - Placements can only be created while the parent surface is editable; migrate against an App Store version in `PREPARE_FOR_SUBMISSION`, not an approved one.
 - A partial migration is harmless: uploaded assets without placements can be resumed by creating the missing placements rather than re-uploading.
 - The set-based resources listed above are deprecated (per the official article).
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/migrating-to-the-app-asset-library
 
 ## Related
 

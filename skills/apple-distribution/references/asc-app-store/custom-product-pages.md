@@ -90,6 +90,7 @@ DELETE https://api.appstoreconnect.apple.com/v1/appCustomProductPageLocalization
 - You can update the Promotional Text of a custom product page localization at any time.
 - Screenshot and app preview collections for custom product pages (`appCustomProductPageScreenshotSets`, `appCustomProductPageScreenshots`, `appCustomProductPageAppPreviewSets`, `appCustomProductPageAppPreviews`) are listed in the section index but not summarised here.
 - `AppCustomProductPageLocalizationInlineCreate` and `AppCustomProductPageVersionInlineCreate` are inline objects for creating a localization or version while creating a related resource.
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/custom-product-pages-and-localizations , https://developer.apple.com/documentation/appstoreconnectapi/app-custom-product-pages
 
 ## Related
 

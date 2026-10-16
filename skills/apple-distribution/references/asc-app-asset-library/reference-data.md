@@ -72,6 +72,7 @@ An image specification entry:
 - Each placement type's `acceptsAssetCategories`: `APP_SCREENSHOT` and `IMESSAGE_APP_SCREENSHOT` accept `APP_SCREENSHOTS_AND_PREVIEWS`; creative types such as `EVENT_CARD_ASSET` and `PRODUCT_PAGE_HEADER_ASSET` accept `CREATIVE_ASSETS`. An asset's category is fixed at reservation.
 - `AppAssetLibraryFeature` enumerates more features than the reference data currently returns; iterate over the `features` array received and treat an absent feature as unavailable for the app.
 - `IPHONE_DUO` is listed in the display class enumeration; the App Store Connect source gives no iOS version for it, so none is stated here.
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/discovering-asset-specifications , https://developer.apple.com/documentation/appstoreconnectapi/app-asset-library-reference-data
 
 ## Related
 

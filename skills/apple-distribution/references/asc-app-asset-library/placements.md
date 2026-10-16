@@ -94,6 +94,7 @@ Ordering request:
 - Per-group limits come from reference data `features[].placementPolicies[].groupLimits[].maxCount`; for App Store versions: 10 screenshots, 3 app previews, 1 product page header asset per group. Read the limit before creating placements in a loop.
 - Ordering targets `appStoreVersionLocalization`, `appCustomProductPageLocalization`, or `appStoreVersionExperimentTreatmentLocalization`. In-app event localizations are not orderable (each in-app event placement type allows a single asset per group). Ordering is scoped to one placement group per localization; reorder each group separately. Add `?include=orderedPlacements` to echo the new sequence.
 - Placements go through App Review as part of their parent surface; `state` follows the parent's review state to `PARENT_APPROVED`. If the linked asset is not processed yet, a placement starts in `ASSET_PROCESSING`.
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/placing-assets-on-your-app-store-surfaces , https://developer.apple.com/documentation/appstoreconnectapi/app-asset-library-placements , https://developer.apple.com/documentation/appstoreconnectapi/app-asset-library-placement-ordering-requests
 
 ## Related
 

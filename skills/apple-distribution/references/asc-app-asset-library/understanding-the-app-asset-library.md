@@ -70,6 +70,7 @@ GET https://api.appstoreconnect.apple.com/v1/apps/{id}/assetLibrary
 - Required user role for managing the library via API: `ACCOUNT_HOLDER`, `ADMIN`, or `APP_MANAGER`.
 - Query parameter `fields[appAssetLibraries]` accepts `images`, `videos`.
 - Placement state: `ASSET_PROCESSING` through `PARENT_APPROVED` (see placements page).
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/understanding-the-app-asset-library
 
 ## Related
 

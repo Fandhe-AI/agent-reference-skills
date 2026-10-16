@@ -1,18 +1,21 @@
 ---
 name: apple-distribution
 description: >
-  App Store Connect API 4.5.1 (REST) アプリ配布リファレンス。JWT 認証、API キー、
-  Apps, Builds, Bundle IDs, Certificates, Devices, Provisioning Profiles, Users、
-  TestFlight (Beta Groups / Testers)、App Review, Review Submissions, Customer Reviews,
-  Custom Product Pages, Phased Release、In-App Purchases, Subscriptions, Promotional Offers,
-  Win-back Offers, Sales Reports、App Asset Library (screenshots / app previews)、
-  Webhooks、Xcode Cloud、Alternative Distribution、Game Center、Analytics。
+  App Store Connect API 4.5.1 (REST) アプリ配布リファレンス。JWT 認証、API キー作成・失効、
+  Apps, Builds, Bundle IDs, Bundle ID Capabilities, Certificates, Devices, Provisioning Profiles,
+  Users, User Invitations, Merchant IDs, Pass Type IDs、TestFlight (Beta Groups / Testers)、
+  Sandbox Testers、App Review, Review Submissions, Customer Reviews, Custom Product Pages,
+  Phased Release、In-App Purchases, Subscriptions, Subscription Groups, App Price Points,
+  Promotional Offers, Win-back Offers, Sales Reports、App Asset Library (screenshots / app previews)、
+  Webhooks / Webhook Events / Deliveries、Xcode Cloud (Workflows, Build Runs, Artifacts)、
+  Alternative Distribution (EU マーケットプレイス / Web Distribution)、
+  Game Center (Achievements, Leaderboards, Challenges)、Analytics / 診断レポート。
 user-invocable: false
 ---
 
 本スキルは **App Store Connect API (REST)** を中心としたアプリ配布・収益化のリファレンスです。JWT 認証から TestFlight ベータ配布、In-App Purchases・Subscriptions の管理、売上レポートの取得まで網羅しています。
 
-対象バージョン: App Store Connect API 4.5.1（2026-10-16 取得、Apple DocC JSON 出典）。
+対象バージョン: App Store Connect API 4.5.1（2026-10-16 取得、Apple DocC JSON 出典: https://developer.apple.com/documentation/appstoreconnectapi ）。
 
 ## ディレクトリ構成
 

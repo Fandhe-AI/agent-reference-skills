@@ -56,6 +56,7 @@ DELETE https://api.appstoreconnect.apple.com/v1/appStoreReviewAttachments/{id}
 - Use the attachments resource (`appReviewAttachments` in the overview text) to upload app documentation, demo videos, and other items to help prevent delays during review.
 - App Clip review information is handled separately (App Clip App Store review details).
 - `demoAccountPassword` is a credential; never log or commit it.
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/app-store-review-details , https://developer.apple.com/documentation/appstoreconnectapi/app-store-review-attachments
 
 ## Related
 

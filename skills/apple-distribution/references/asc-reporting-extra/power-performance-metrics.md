@@ -58,7 +58,7 @@ GET /v1/builds/{id}/perfPowerMetrics
 ## Notes
 
 - `GET /v1/apps/{id}/performanceOverviews` (4.5) returns the aggregated performance overview data for a specific app, including the metrics Xcode surfaces in its performance reports; use it to evaluate your app's performance before you release an update.
-- Both endpoints return `200 OK` with MIME type `application/vnd.apple.xcode-metrics+json`.
+- Both `perfPowerMetrics` endpoints (app and build) return `200 OK` with MIME type `application/vnd.apple.xcode-metrics+json`. `performanceOverviews` returns `application/vnd.apple.xcode-overview+json` instead.
 - The app-level endpoint returns metrics for the **most recent app version only**; use the build-level endpoint to inspect a specific build.
 - Allow a few days after releasing your app for Apple to collect and organize logs into reports — the API requires significant app usage before metrics become available, and each metric has a different usage threshold.
 

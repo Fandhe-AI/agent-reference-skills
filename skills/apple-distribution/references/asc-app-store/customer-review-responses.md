@@ -46,6 +46,7 @@ Flow: list reviews with `GET /v1/apps/{id}/customerReviews` (or the app store ve
 - Responses do not appear in the App Store instantly; allow time for publication (`state` is `PENDING_PUBLISH` until then).
 - The `POST` error responses documented: 400, 401, 403, 409 (the provided resource data isn't valid), 422, 429.
 - The exact JSON body of `CustomerReviewResponseV1CreateRequest` is not documented on this page; see the official App Store Connect API page for the request body schema.
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/customer-review-responses
 
 ## Related
 

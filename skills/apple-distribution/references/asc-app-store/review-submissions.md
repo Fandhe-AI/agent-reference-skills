@@ -80,6 +80,7 @@ DELETE https://api.appstoreconnect.apple.com/v1/reviewSubmissionItems/{id}
 - Deprecated: the `appStoreVersionSubmissions` resource (`AppStoreVersionSubmission`, `DELETE /v1/appStoreVersionSubmissions/{id}`), the older equivalent of clicking Submit for Review. Use `reviewSubmissions` and `reviewSubmissionItems` instead.
 - Incomplete submissions (missing required information) return an error when submitted to App Review.
 - The exact JSON bodies of the create and update requests are not documented on this page (see the official App Store Connect API page for the request schema); `ReviewSubmissionCreateRequest.Data` contains the resource type and the app relationship.
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/review-submissions , https://developer.apple.com/documentation/appstoreconnectapi/review-submission-items
 
 ## Related
 

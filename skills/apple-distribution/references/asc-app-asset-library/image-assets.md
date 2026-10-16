@@ -76,6 +76,7 @@ Commit after every part is uploaded:
 - Archiving works only on an approved asset; otherwise 409 `STATE_ERROR.INVALID_ASSET_STATE` ("Only an approved asset can be archived.").
 - Deleting an asset does not cascade: delete its placements first or get 409 `STATE_ERROR.ASSET_HAS_PLACEMENTS`.
 - Success response of POST is `AppAssetLibraryImageResponse` (201); errors 400 / 401 / 403 / 409 / 422 / 429.
+- Source: https://developer.apple.com/documentation/appstoreconnectapi/uploading-and-managing-image-assets , https://developer.apple.com/documentation/appstoreconnectapi/app-asset-library-images
 
 ## Related
 
