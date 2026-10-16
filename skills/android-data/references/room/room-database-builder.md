@@ -34,8 +34,8 @@ val db = Room.inMemoryDatabaseBuilder<AppDatabase>(applicationContext)
 | `fallbackToDestructiveMigrationOnDowngrade()` | method | — | Falls back to destructive migration only when downgrading. |
 | `addColumnTypeConverter(converter)` | method | — | Registers an instance of a `@ProvidedColumnTypeConverter` class (for converters needing manual/DI initialization; renamed from `addTypeConverter()` in Room 3.0). |
 | `setQueryCoroutineContext(context: CoroutineContext)` | method | — | Configures the `CoroutineContext` used for query operations; replaces the Room 2.x `setQueryExecutor()` (executors are not KMP-compatible). Defaults to `Dispatchers.IO` if unset. |
-| `createFromAsset(path)` | method | — | Prepopulates the database from a file bundled in `assets/`. Not supported by `inMemoryDatabaseBuilder`. |
-| `createFromFile(file)` | method | — | Prepopulates the database from a file elsewhere on the device's filesystem; Room copies the file. |
+| `createFromAsset(path)` | method | — | Prepopulates the database from a file bundled in `assets/`. Not supported by `inMemoryDatabaseBuilder`. See [Prepopulate a Room database](./prepopulate.md). |
+| `createFromFile(file)` | method | — | Prepopulates the database from a file elsewhere on the device's filesystem; Room copies the file. See [Prepopulate a Room database](./prepopulate.md). |
 | `enableMultiInstanceInvalidation()` | method | — | Propagates database invalidations across processes in multi-process apps. |
 
 ## Notes
@@ -48,6 +48,7 @@ val db = Room.inMemoryDatabaseBuilder<AppDatabase>(applicationContext)
 - Manual migrations added via `addMigrations` take precedence over automated migrations for the same version.
 - `RoomDatabase.runInTransaction { ... }` (Room 2.x) is replaced by `withWriteTransaction { ... }` / `withReadTransaction { ... }` in Room 3.0.
 - `@TypeConverter` / `@TypeConverters` / `@ProvidedTypeConverter` were renamed to `@ColumnTypeConverter` / `@ColumnTypeConverters` / `@ProvidedColumnTypeConverter` in Room 3.0.
+- Since Room 2.8.5 / 3.0.2, calling a suspending query on a closed database throws `IllegalStateException`.
 
 ## Related
 
@@ -55,3 +56,4 @@ val db = Room.inMemoryDatabaseBuilder<AppDatabase>(applicationContext)
 - [Migration](./migration.md)
 - [Testing](./testing.md)
 - [Migrating to Room 3.0 (androidx.room3)](./room3-migration.md)
+- [Prepopulate a Room database](./prepopulate.md)

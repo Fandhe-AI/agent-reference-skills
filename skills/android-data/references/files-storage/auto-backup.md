@@ -50,8 +50,9 @@ Automatically backs up an app's shared preferences, internal storage files, and 
 
 ## Notes
 
-- Backed up automatically: shared preferences, `getFilesDir()` / `getDir()` files, `SQLiteOpenHelper`/database files, `getExternalFilesDir()` files. Never backed up: `getCacheDir()`, `getCodeCacheDir()`, `getNoBackupFilesDir()`.
+- Backed up automatically: shared preferences, `getFilesDir()` / `getDir()` files, `SQLiteOpenHelper`/database files, `getExternalFilesDir()` files. The Auto Backup guide lists these among the defaults, so no XML is needed to include them; `domain="external"` in an `<include>`/`<exclude>` rule only targets that directory (e.g. to exclude it or restrict the backup set). Never backed up: `getCacheDir()`, `getCodeCacheDir()`, `getNoBackupFilesDir()`.
 - A custom `BackupAgent` (`onBackup`/`onRestore`/`onFullBackup`) is only needed for key-value backup or custom logic beyond what the XML rules express; most apps only need the manifest + XML configuration above.
+- Preferences DataStore (`*.preferences_pb`) and Proto DataStore files live in `files/datastore/` and are included in Auto Backup and device-to-device transfers by default. Keep sensitive data in a separate DataStore file and exclude it in `data_extraction_rules.xml`, e.g. `<exclude domain="file" path="datastore/secure_state.preferences_pb"/>`.
 - Backups run roughly nightly when the device is idle, on Wi-Fi, and ≥24 hours since the last backup — never guaranteed on a fixed schedule.
 - The `android:allowBackup` attribute itself is also listed (without the Auto Backup XML rules) in the android-platform-core skill's `application` element reference.
 

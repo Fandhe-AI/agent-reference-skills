@@ -2,8 +2,9 @@
 name: android-data
 description: >
   Android アプリ開発 (Kotlin) のデータ層リファレンス。Jetpack androidx。
-  Room (Entity, Dao, Query, Migration), DataStore (Preferences/Proto),
-  MediaStore, SharedPreferences, スコープ付きストレージ, Retrofit, OkHttp。
+  Room / Room 3 (androidx.room3) (Entity, Dao, Query, Migration, prepopulate, createFromAsset),
+  DataStore (Preferences/Proto, Direct Boot), MediaStore, SharedPreferences,
+  スコープ付きストレージ, Retrofit, OkHttp。
 user-invocable: false
 ---
 
@@ -37,6 +38,8 @@ skills/android-data/
       room-database-builder.md
       callback-driver.md
       migration.md
+      room3-migration.md
+      prepopulate.md
       type-converter.md
       relation.md
       fts-database-view.md
@@ -107,8 +110,11 @@ skills/android-data/
 | Room で Entity / Dao / Database を定義したい | room | [references/room/README.md](references/room/README.md) |
 | @Query / @Insert / @Update / @Delete / @Upsert で SQL 操作を書きたい | room | [references/room/README.md](references/room/README.md) |
 | Room の Migration / AutoMigration でスキーマを変更したい | room | [references/room/README.md](references/room/README.md) |
+| Room 2.x (androidx.room) から Room 3.0 (androidx.room3) へ移行したい | room | [references/room/README.md](references/room/README.md) |
+| アセット / ファイルの既存 DB で Room を初期データ投入（prepopulate）したい | room | [references/room/README.md](references/room/README.md) |
 | @Relation / @Fts4 / @DatabaseView で関連データや全文検索を扱いたい | room | [references/room/README.md](references/room/README.md) |
 | Preferences DataStore / Proto DataStore でキー値・型付きデータを永続化したい | datastore | [references/datastore/README.md](references/datastore/README.md) |
+| DataStore を Direct Boot（device protected storage）で使いたい | datastore | [references/datastore/README.md](references/datastore/README.md) |
 | SharedPreferences から DataStore へ移行したい | datastore | [references/datastore/README.md](references/datastore/README.md) |
 | 内部/外部ストレージにファイルを保存・読み込みしたい | files-storage | [references/files-storage/README.md](references/files-storage/README.md) |
 | MediaStore / Storage Access Framework / Photo Picker でメディアファイルを扱いたい | files-storage | [references/files-storage/README.md](references/files-storage/README.md) |

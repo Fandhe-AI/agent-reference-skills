@@ -21,6 +21,16 @@ public fun <T> dataStore(
     produceMigrations: (Context) -> List<DataMigration<T>> = { listOf() },
     scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ): ReadOnlyProperty<Context, DataStore<T>>
+
+// androidx.datastore — Direct Boot property delegate (since 1.2.0)
+@RequiresApi(Build.VERSION_CODES.N)
+public fun <T> deviceProtectedDataStore(
+    fileName: String,
+    serializer: Serializer<T>,
+    corruptionHandler: ReplaceFileCorruptionHandler<T>? = null,
+    produceMigrations: (Context) -> List<DataMigration<T>> = { listOf() },
+    scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+): ReadOnlyProperty<Context, DataStore<T>>
 ```
 
 ```kotlin
@@ -61,6 +71,8 @@ val Context.dataStore: DataStore<Settings> by dataStore(
 - `T` must be immutable; mutable types break DataStore's caching/consistency guarantees.
 - Proto DataStore requires a `.proto` schema (Gradle `com.google.protobuf:protobuf-kotlin-lite`) with compile-time code generation. JSON DataStore instead uses a `@Serializable` data class with `kotlinx.serialization`, following the same `Serializer<T>` shape.
 - `dataStore(...)` follows the same single-call-site rule as `preferencesDataStore`: declare once at the top level, reuse the same instance.
+- `deviceProtectedDataStore(...)` creates the DataStore in device protected storage so it can be used during Direct Boot.
+- Encryption via `AeadSerializer` (`datastore-tink`) is planned for 1.3.0 (currently RC).
 - Package: `androidx.datastore.core` (`Serializer`), `androidx.datastore` (`dataStore` delegate).
 
 ## Related
