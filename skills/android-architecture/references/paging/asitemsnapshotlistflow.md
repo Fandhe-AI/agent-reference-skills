@@ -53,6 +53,9 @@ val snapshots: Flow<ItemSnapshotList<User>> =
 - `ItemSnapshotList.get(index)` takes an index that includes placeholders and returns `null` at a placeholder position; it throws `IndexOutOfBoundsException` for an out-of-range index.
 - `ItemSnapshotList` is the snapshot type presented by `AsyncPagingDataDiffer` / `PagingDataAdapter`.
 - Package: `androidx.paging` (paging-common 3.5.3).
+- Source (primary, signatures and KDoc): Google Maven sources jar https://dl.google.com/android/maven2/androidx/paging/paging-common/3.5.3/paging-common-3.5.3-sources.jar (`androidx/paging/ItemSnapshotListFlow.kt`, `androidx/paging/ItemSnapshotList.kt`).
+- Source (usage sample, commit-pinned): https://github.com/androidx/androidx/blob/f04a4f0f3a5e79e65224164614e344c322e1dfe8/paging/samples/src/main/java/androidx/paging/samples/ItemSnapshotListFlowSamples.kt
+- Release notes: https://developer.android.com/jetpack/androidx/releases/paging (3.5.3). The API reference pages on developer.android.com are not fetchable, so the sources jar above is the basis for this page.
 
 ## Related
 
