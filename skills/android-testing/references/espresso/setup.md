@@ -16,6 +16,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
     androidTestImplementation("androidx.test:runner:1.6.1")
     androidTestImplementation("androidx.test:rules:1.6.1")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0") // required for AndroidJUnit4 (see AndroidX Test setup page)
 }
 ```
 
@@ -32,6 +33,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     androidTestImplementation 'androidx.test:runner:1.6.1'
     androidTestImplementation 'androidx.test:rules:1.6.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.3.0' // required for AndroidJUnit4 (see AndroidX Test setup page)
 }
 ```
 
@@ -66,6 +68,7 @@ class HelloWorldEspressoTest {
 
 - To avoid flakiness, turn off system animations on devices used for testing. In Settings > Developer options disable: Window animation scale, Transition animation scale, Animator duration scale.
 - Add the dependencies to the app module's `build.gradle(.kts)` (usually `app/build.gradle` or `app/build.gradle.kts`, not the top-level file).
+- `AndroidJUnit4` comes from `androidx.test.ext:junit`, which the Espresso setup page's dependency list omits; it is listed on https://developer.android.com/training/testing/instrumented-tests/androidx-test-libraries/test-setup
 - The official Kotlin tab shows single-quoted strings, which are not valid Kotlin; use double quotes.
 - The test runner collects analytics (a hash of the package name of the app under test per invocation). Opt out by including the `disableAnalytics` argument in your instrumentation command (fragment as shown in the source; a full invocation also needs `-w <test-package>/androidx.test.runner.AndroidJUnitRunner`, or pass it from Gradle with `-Pandroid.testInstrumentationRunnerArguments.disableAnalytics=true`):
 

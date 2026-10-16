@@ -1,4 +1,4 @@
-# Compose Testing
+# compose-testing
 
 | Name | Description | Path |
 |------|-------------|------|

@@ -1,9 +1,9 @@
 ---
 name: android-testing
 description: >
-  Android アプリ開発 (Kotlin) のテスト。JUnit4, Espresso (チートシート), テストピラミッド, テストダブル, Mockito, MockK, Robolectric。
+  Android アプリ開発 (Kotlin) のテストリファレンス。JUnit4, AndroidJUnit4, Truth, Espresso (チートシート), テストピラミッド, テストダブル, Mockito, MockK, Robolectric。
   coroutines/Flow/ViewModel テスト, ActivityScenario, FragmentScenario, UiAutomator, AndroidTestOrchestrator。
-  createComposeRule, runComposeUiTest, ComposeUiTestConfig, CI, Window Testing (画面サイズ別)。
+  createComposeRule, runComposeUiTest, ComposeUiTestConfig, Compose UI テスト同期, CI, Window Testing (画面サイズ別)。
 user-invocable: false
 ---
 
