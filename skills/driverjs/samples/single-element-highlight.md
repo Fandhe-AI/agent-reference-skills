@@ -23,5 +23,6 @@ driverObj.highlight({
 
 - `highlight()` accepts the same step definition as tour steps but applies to one element only
 - Only the close button is shown by default (no next/previous navigation)
+- Fixed in 1.6.0: the close button on a `highlight()` popover did nothing before; it now closes the popover, respecting `allowClose` and any custom `onCloseClick`
 - Omit `element` to show the popover as a centered modal with no backdrop cutout
 - Use `stagePadding` to control the space between the element edge and the cutout border

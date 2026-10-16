@@ -2,7 +2,9 @@
 
 All methods are called on the driver instance returned by `driver()`.
 
-## Initialization
+## Signature / Usage
+
+Initialization:
 
 ```javascript
 import { driver } from "driver.js";
@@ -14,6 +16,10 @@ const driverObj = driver({
     { element: '#step2', popover: { title: 'Step 2', description: 'Second step' }},
   ],
 });
+
+driverObj.drive();
+driverObj.moveNext();
+driverObj.destroy();
 ```
 
 ## Tour Control
@@ -49,6 +55,7 @@ driverObj.moveTo(0);    // Jump back to the first step
 | `getActiveIndex()` | number | Index of the currently active step |
 | `getActiveStep()` | DriveStep | Currently active step definition |
 | `getPreviousStep()` | DriveStep | Previously active step definition |
+| `getNextStep()` | DriveStep \| undefined | Next step definition, or undefined when there is none (1.5.0) |
 | `getActiveElement()` | Element | Currently highlighted DOM element |
 | `getPreviousElement()` | Element | Previously highlighted DOM element |
 
@@ -102,10 +109,52 @@ window.addEventListener('resize', () => {
 | `destroy()` | End the tour and remove all overlays and popovers |
 
 ```javascript
+// Destroy the tour. The destroy hooks receive `options.reason` "api",
+// or the reason of the user action when called from inside a hook.
 driverObj.destroy();
 ```
+
+## Driver Interface
+
+From `packages/driver/src/driver.ts` (1.10.1):
+
+```typescript
+export interface Driver {
+  isActive: () => boolean;
+  refresh: () => void;
+  drive: (stepIndex?: number) => void;
+  setConfig: (config: Config) => void;
+  setSteps: (steps: DriveStep[]) => void;
+  getConfig: () => Config;
+  getState: (key?: string) => any;
+  getActiveIndex: () => number | undefined;
+  isFirstStep: () => boolean;
+  isLastStep: () => boolean;
+  getActiveStep: () => DriveStep | undefined;
+  getActiveElement: () => Element | undefined;
+  getPreviousElement: () => Element | undefined;
+  getPreviousStep: () => DriveStep | undefined;
+  getNextStep: () => DriveStep | undefined;
+  moveNext: () => void;
+  movePrevious: () => void;
+  moveTo: (index: number) => void;
+  hasNextStep: () => boolean;
+  hasPreviousStep: () => boolean;
+  highlight: (step: DriveStep) => void;
+  destroy: () => void;
+}
+```
+
+## Notes
+
+- `destroy()` on an instance that is not active is a no-op instead of tearing down another instance's tour (1.9.0).
+- `onDestroyed` receives the final tour state (1.5.0).
+- Each `driver()` call returns its own independent instance. You can create as many as you need on the same page, and their configuration, steps, and state never overlap. Only one instance can be on screen at a time, so starting a tour or highlight on one instance closes whichever instance is currently active. The closed instance gets `onDeselected` and `onDestroyed` but not `onDestroyStarted` (1.9.0).
+- Hints and checklists are separate factories (`hints()` from `driver.js/hints`, `checklist()` from `driver.js/checklist`) with their own methods; see the hints and checklists categories.
 
 ## Related
 
 - [Configuration](./configuration.md)
 - [Theming](./theming.md)
+- [Hints methods](../hints/methods.md)
+- [Checklists methods](../checklists/methods.md)

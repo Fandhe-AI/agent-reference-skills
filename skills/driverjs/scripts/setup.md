@@ -2,6 +2,14 @@
 
 driver.js インスタンスの初期化と基本的なセットアップ。
 
+## パッケージのインストール
+
+```sh
+npm install driver.js
+```
+
+pnpm は `pnpm install driver.js`、yarn は `yarn add driver.js`。以降の JS コードは上記インストール後に実行する。
+
 ## 単一要素のハイライト
 
 ```js
