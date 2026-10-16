@@ -118,13 +118,18 @@ On a supported model, send a `system.message` event to give the agent privileged
 client.beta.sessions.events.send(
     session.id,
     events=[
-        {"type": "user.message", "content": [{"type": "text", "text": "..."}]},
-        {"type": "system.message", "content": [{"type": "text", "text": "The user's current timezone is America/New_York."}]},
+        {
+            "type": "system.message",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "The user's current timezone is America/New_York.",
+                },
+            ],
+        },
     ],
 )
 ```
-
-Note: the API reference (`POST /v1/sessions/{id}/events`) requires `system.message` to be the final event and to immediately follow the `user.message`, `user.tool_result`, or `user.custom_tool_result` it accompanies; see `../endpoints/sessions.md`.
 
 ### Supported models
 
@@ -174,6 +179,7 @@ client.beta.sessions.events.send(
 
 ## Notes
 
+- The API reference for POST /v1/sessions/{id}/events states that `system.message` is allowed at most once per request, must be the final event, and must immediately follow the `user.message`, `user.tool_result`, or `user.custom_tool_result` it accompanies; the guide's standalone sample above conflicts with this, so when sending it with a turn, place it after that event.
 - Managed Agents API requests require the `managed-agents-2026-04-01` beta header, except memory store endpoints (`agent-memory-2026-07-22`).
 
 ## Related
