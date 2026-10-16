@@ -129,15 +129,20 @@ The client is constructed on the first property access of `ctx.supabaseAdmin` an
 
 ```ts
 import { pipeline } from '@supabase/middleware'
+import { withRequiredClaims } from '@supabase/server/middleware/required-claims'
 import { withSupabaseAdminClient } from '@supabase/server/middleware/admin-client'
 
 export default {
-  fetch: pipeline([withSupabaseAdminClient()], async (req, ctx) => {
-    await ctx.supabaseAdmin.from('audit_log').insert({ action: 'ping' })
+  fetch: pipeline([withRequiredClaims(), withSupabaseAdminClient()], async (req, ctx) => {
+    await ctx.supabaseAdmin.from('audit_log').insert({ action: 'ping', actor: ctx.jwtClaims.sub })
     return Response.json({ ok: true })
   }),
 }
 ```
+
+The upstream example is a pipeline without a gate; here `withRequiredClaims()` is placed upstream. A `withSupabaseAdminClient` pipeline with no gate allows any caller RLS-bypassing access.
+
+For secret-key callers there is no composable gate. Use `withSupabase({ auth: 'secret' })`, which itself provides `ctx.supabaseAdmin`.
 
 ### withPostgresClient
 
