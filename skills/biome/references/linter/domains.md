@@ -25,7 +25,7 @@
 | ドメイン | 対象 | 説明 |
 |---------|------|------|
 | react | react >= 16.0.0 | React 固有の問題検出（フック、コンポーネント構造） |
-| reactNative | react-native >= 0.60.0 | React Native 向け（`<Text>` 外テキストレンダリング等ランタイム問題検出）。公式の設定例ではキーは `reactnative` |
+| reactNative | react-native >= 0.60.0 | For React Native (detects runtime issues such as text rendered outside `<Text>`). The official configuration example uses the key `reactnative` |
 | next | next >= 14.0.0 | Next.js 向け（非同期クライアントコンポーネント、スクリプト最適化） |
 | vue | vue >= 3.0.0 | Vue 3 テンプレート構文・コンポーネント検証 |
 | svelte | svelte >= 3.0.0 | Svelte フレームワーク固有ルール |

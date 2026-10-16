@@ -1,6 +1,17 @@
 # Language server
 
-Biome は Language Server Protocol (LSP) をファーストクラスでサポート。
+Biome provides first-class support for the Language Server Protocol (LSP).
+
+## Signature / Usage
+
+```shell
+biome lsp-proxy
+```
+
+```shell
+biome start
+echo "console.log('')" | biome format --use-server --stdin-file-path=dummy.js
+```
 
 ## Supported methods
 
@@ -23,14 +34,14 @@ Biome は Language Server Protocol (LSP) をファーストクラスでサポー
 
 ## Extension settings
 
-エディタ拡張の開発者向け設定（ユーザー向けではない）。拡張側で別名・別形式で公開してよい（例: Zed 拡張は `require_configuration` を JSONC の `require_config_file` にマップ）。
+Settings meant for extension developers, not for users. An extension might expose them to users with different names or formats (for example, the Zed extension maps `require_configuration` to `require_config_file`, defined in a JSONC file).
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
-| `require_configuration` | `boolean` | `false` | `true` の場合、プロジェクトルートに `biome.json` が存在するまでパース以外の解析を行わない |
-| `configuration_path` | `string` | `null` | カスタム設定ファイルのパス。`biome.json` / `biome.jsonc` またはそれを含むフォルダー。相対・絶対可。設定がサブフォルダーにある場合に使用 |
-| `inline_config` | `object` | `null` | インライン形式の Biome 設定。ディスク上の `biome.json`（またはデフォルト）の値を上書きする |
-| `go_to_definition` | `boolean` | `false` | Biome の module graph を使った `textDocument/definition` を有効化 |
+| `require_configuration` | `boolean` | `false` | When `true`, Biome won't analyze any file (except for parsing) until there's a `biome.json` file in the root of the project |
+| `configuration_path` | `string` | `null` | Path to a custom configuration file: a `biome.json` / `biome.jsonc` file, or the folder that contains it. Relative or absolute. Use it when the configuration is in a subfolder of your project |
+| `inline_config` | `object` | `null` | Inline version of the Biome configuration. Its options override the options from any `biome.json` read from disk (or the defaults) |
+| `go_to_definition` | `boolean` | `false` | Enables `textDocument/definition` using the Biome module graph |
 
 ```json
 {
@@ -46,25 +57,26 @@ Biome は Language Server Protocol (LSP) をファーストクラスでサポー
 }
 ```
 
-`go_to_definition` の対応範囲:
+`go_to_definition` supports:
 
-- JavaScript / TypeScript / JSX / TSX / HTML 系ファイルで、同一ファイルまたは他ファイルで宣言された変数の定義解決
-- JSX/TSX・HTML 系ファイルで使われる CSS クラスの定義解決
-- JSX/TSX コンポーネント、HTML 系コンポーネントの定義解決
+- Resolving definitions of variables declared in the same file or in another file for JavaScript, TypeScript, JSX, TSX, and HTML-ish files
+- Resolving definitions of CSS classes used in JSX/TSX files and HTML-ish files
+- Resolving definitions of JSX/TSX components
+- Resolving definitions of HTML-ish components
 
-対象外: 依存パッケージ内の変数、プロジェクトで import されていない依存パッケージの変数。
+Out of scope: variables defined in dependencies, and variables defined in dependencies that aren't imported in the project.
 
 ## Integrate Biome in an editor extension
 
 ### Use the LSP proxy
 
-`lsp-proxy` コマンドを実行すると 2 プロセスが起動する: 要求された操作を実行する daemon と、クライアント（エディタ）と daemon の間のプロキシとなるサーバー。エディタが JSON-RPC を送れるなら、このコマンドを実行するよう設定するだけでよい。
+The `lsp-proxy` command spawns two processes: a daemon that executes the requested operations, and a server that functions as a proxy between the client (the editor) and the daemon. If your editor can send JSON-RPC requests to a server, you only need to configure the editor to run that command.
 
 ### Use `stdin`
 
-LSP 非対応のエディタは `biome` バイナリを標準入力経由で呼び出せる。対象コマンド: `format` / `lint` / `check`。結果（変更なしなら元の内容）は stdout、診断は stderr に出力される。`--stdin-file-path` が必須。パスは存在しなくてよいが、正しい拡張子が必要。
+If your editor doesn't support LSP, call the `biome` binary using standard input. The `format`, `lint`, and `check` commands can be called this way. Biome returns the new output (or the original output if no changes occurred) to stdout and the diagnostics to stderr. The `--stdin-file-path` option is required; the path doesn't need to exist, but it must have the correct file extension.
 
-バイナリの解決と呼び出しはエディタ側の責務。npm 配布パッケージ:
+It's the editor's responsibility to locate and resolve the path of the binary. The binaries are shipped to npm per supported architecture and OS:
 
 - `@biomejs/cli-darwin-arm64`
 - `@biomejs/cli-darwin-x64`
@@ -73,26 +85,21 @@ LSP 非対応のエディタは `biome` バイナリを標準入力経由で呼�
 - `@biomejs/cli-win32-arm64`
 - `@biomejs/cli-win32-x64`
 
-バイナリ名は `biome` / `biome.exe`（パッケージのルート直下）。
+The binary name is `biome` or `biome.exe`, found in the root directory of the package.
 
 ### Use the daemon with the binary
 
-CLI で daemon を起動し、各コマンドに `--use-server` を付けて利用する（この方式ではユーザーにログを提供できない）。
-
-```shell
-biome start
-echo "console.log('')" | biome format --use-server --stdin-file-path=dummy.js
-```
+Start a daemon with `biome start`, then add `--use-server` to every command (see Signature / Usage). With this approach you won't be able to provide logs to your users.
 
 ## Language Server logs
 
-daemon のログは `biome-logs` フォルダーに保存される。
+The daemon saves logs in a folder called `biome-logs`:
 
 - Linux: `~/.cache/biome`
 - Windows: `C:\Users\<UserName>\AppData\Local\biomejs\biome\cache`
 - macOS: `/Users/<UserName>/Library/Caches/dev.biomejs.biome`
 
-その他の OS ではシステムの一時ディレクトリ。正確なパスは次で取得し、ログは 1 時間ごとにローテーションされる。
+On other operating systems, the folder is in the system's temporary directory. To obtain the precise path, run the command below. Log files are rotated on an hourly basis.
 
 ```shell
 biome explain daemon-logs
@@ -100,8 +107,8 @@ biome explain daemon-logs
 
 ## Notes
 
-- daemon を自前で使う場合、ゴーストプロセスを避けるため `biome stop` で再起動・終了する責任がある。
-- 出典: biomejs.dev/reference/language-server/（website commit 49293f2）。
+- If you use the daemon, you're responsible for restarting/killing the process with `biome stop`, to avoid ghost processes.
+- Source: https://biomejs.dev/reference/language-server/ (biomejs/website commit 49293f2)
 
 ## Related
 

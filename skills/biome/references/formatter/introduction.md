@@ -8,7 +8,7 @@ Biome はオピニオン型フォーマッターで、複数の言語をサポ�
 
 ## 対応言語
 
-JavaScript, TypeScript, JSX, TSX, JSON, JSONC, CSS, GraphQL, HTML, SVG（SVG と HTML の整形は experimental。`internals/language-support.md` 参照）
+JavaScript, TypeScript, JSX, TSX, JSON, JSONC, CSS, GraphQL, HTML, SVG (SVG and HTML formatting are experimental; see `internals/language-support.md`)
 
 ## CLI での使い方
 

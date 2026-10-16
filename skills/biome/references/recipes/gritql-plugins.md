@@ -1,10 +1,10 @@
 # GritQL Plugin Recipes
 
-## 概要
+## Overview
 
-GritQL プラグインの実用例集。各例は `.grit` ファイルに保存し、`biome.json` の `plugins` に登録して使う。構文の導入は Linter Plugins と GritQL reference を参照。
+Practical GritQL plugin examples. Save each example in a `.grit` file and register it in the `plugins` field of `biome.json`. For an introduction to the syntax, see Linter Plugins and the GritQL reference.
 
-## 登録
+## Registration
 
 ```json
 {
@@ -14,9 +14,9 @@ GritQL プラグインの実用例集。各例は `.grit` ファイルに保存�
 
 ## JavaScript / TypeScript
 
-### `==` を禁止（`null` 比較は除く）
+### Ban `==` (except comparisons against `null`)
 
-`where` で条件を付与。`<:` は match operator、`not` は否定。カンマ区切りの条件はすべて真でマッチ。
+`where` adds conditions. `<:` is the match operator and `not` negates. Comma-separated conditions must all be true for a match.
 
 ```grit
 `$left == $right` where {
@@ -30,9 +30,9 @@ GritQL プラグインの実用例集。各例は `.grit` ファイルに保存�
 }
 ```
 
-### `forEach` を禁止
+### Ban `forEach`
 
-spread metavariable `$...` は 0 個以上の引数にマッチ（束縛しない）。`as $call` でノード全体を束縛。
+The spread metavariable `$...` matches zero or more arguments (without binding them). `as $call` binds the whole node.
 
 ```grit
 `$collection.forEach($...)` as $call where {
@@ -43,9 +43,9 @@ spread metavariable `$...` は 0 個以上の引数にマッチ（束縛しな�
 }
 ```
 
-### 禁止 import
+### Ban specific imports
 
-`or` は子パターンのいずれかにマッチ。`$_` は束縛を作らない anonymous metavariable。
+`or` matches if any child pattern matches. `$_` is an anonymous metavariable that creates no binding.
 
 ```grit
 `import $_ from $source` where {
@@ -57,7 +57,7 @@ spread metavariable `$...` は 0 個以上の引数にマッチ（束縛しな�
 }
 ```
 
-`require()` も同時に拾う場合はトップレベル `or`:
+To also catch `require()`, use a top-level `or`:
 
 ```grit
 or {
@@ -72,9 +72,9 @@ or {
 }
 ```
 
-### `new Date()` の引数付き呼び出しを禁止
+### Ban `new Date()` calls with arguments
 
-`$...` のみなら 0 個以上、`$first, $...` なら 1 個以上の引数が必須。`new Date()` は許可され、`new Date("2024-01-15")` 等は検出される。
+`$...` alone matches zero or more arguments; `$first, $...` requires at least one. `new Date()` is allowed, while `new Date("2024-01-15")` and similar are reported.
 
 ```grit
 `new Date($first, $...)` as $expr where {
@@ -85,9 +85,9 @@ or {
 }
 ```
 
-### `eval()` / `Function()` を禁止
+### Ban `eval()` / `Function()`
 
-トップレベル `or` の各アームで `as $match` と変数名を統一し、共通の `where` を共有。
+Use the same `as $match` variable name in each arm of the top-level `or` so the arms share one `where`.
 
 ```grit
 or {
@@ -101,9 +101,9 @@ or {
 }
 ```
 
-### ネストした三項演算子を禁止
+### Ban nested ternary expressions
 
-Biome の CST ノード（`PascalCase`、例 `JsConditionalExpression`）を直接マッチ。`contains` はサブツリー全体を探索。
+Match Biome CST nodes (`PascalCase`, e.g. `JsConditionalExpression`) directly. `contains` searches the whole subtree.
 
 ```grit
 engine biome(1.0)
@@ -118,9 +118,9 @@ JsConditionalExpression() as $outer where {
 }
 ```
 
-### 関数パラメータ数の制限
+### Limit the number of function parameters
 
-`JsParameters()` と regex でカンマ 3 個以上（4 パラメータ以上）を検出。
+Use `JsParameters()` with a regex to detect three or more commas (four or more parameters).
 
 ```grit
 engine biome(1.0)
@@ -136,9 +136,9 @@ JsParameters() as $params where {
 }
 ```
 
-### 空 catch ブロックを禁止
+### Ban empty catch blocks
 
-CST ノードはフィールド指定でネスト可能。
+CST nodes can be nested by specifying fields.
 
 ```grit
 engine biome(1.0)
@@ -152,9 +152,9 @@ JsCatchClause(body = JsBlockStatement(statements = [])) as $catch where {
 }
 ```
 
-### `any` 型注釈を禁止
+### Ban `any` type annotations
 
-`TsAnyType` は TypeScript 固有ノード。
+`TsAnyType` is a TypeScript-specific node.
 
 ```grit
 engine biome(1.0)
@@ -169,9 +169,9 @@ TsAnyType() as $any where {
 }
 ```
 
-### `let` より `const`
+### Prefer `const` over `let`
 
-`let` はキーワードでノードではないため、`JsVariableStatement()` を regex で絞る。
+`let` is a keyword, not a node, so narrow `JsVariableStatement()` with a regex.
 
 ```grit
 engine biome(1.0)
@@ -187,9 +187,9 @@ JsVariableStatement() as $stmt where {
 }
 ```
 
-### `dangerouslySetInnerHTML` を禁止
+### Ban `dangerouslySetInnerHTML`
 
-スニペットパターンは JSX 内でも動作。
+Snippet patterns also work inside JSX.
 
 ```grit
 `dangerouslySetInnerHTML=$value` as $attr where {
@@ -200,7 +200,7 @@ JsVariableStatement() as $stmt where {
 }
 ```
 
-### inline `style` prop を禁止
+### Ban the inline `style` prop
 
 ```grit
 `style=$value` as $attr where {
@@ -214,9 +214,9 @@ JsVariableStatement() as $stmt where {
 
 ## CSS
 
-### `!important` を禁止
+### Ban `!important`
 
-`.grit` 先頭の `engine biome(1.0)` と `language css` で CSS の構文木に切り替える。
+`engine biome(1.0)` and `language css` at the top of the `.grit` file switch to the CSS syntax tree.
 
 ```grit
 engine biome(1.0)
@@ -231,9 +231,9 @@ CssDeclarationWithSemicolon() as $decl where {
 }
 ```
 
-### ハードコード色を禁止
+### Ban hardcoded colors
 
-regex は `r"..."` 構文でノードのテキストにマッチ。
+Regexes use the `r"..."` syntax and match against the node's text.
 
 ```grit
 language css;
@@ -248,7 +248,7 @@ language css;
 }
 ```
 
-`rgb()` / `hsl()` も対象にする場合は `or` で regex を併記:
+To also cover `rgb()` / `hsl()`, list the regexes inside `or`:
 
 ```grit
 language css;
@@ -267,7 +267,7 @@ language css;
 }
 ```
 
-### 特定プロパティを禁止
+### Ban specific properties
 
 ```grit
 language css;
@@ -285,9 +285,9 @@ or {
 
 ## JSON
 
-### キー命名規則（camelCase）
+### Key naming convention (camelCase)
 
-`language json` と `engine biome(1.0)` を使用。JSON ではメタ変数付きスニペットが使えないため CST ノード `JsonMemberName()` を使う。
+Use `language json` and `engine biome(1.0)`. Snippets with metavariables are not available for JSON, so use the CST node `JsonMemberName()`.
 
 ```grit
 engine biome(1.0)
@@ -305,9 +305,9 @@ JsonMemberName() as $name where {
 
 ## Advanced Patterns
 
-### 複数ルールを 1 ファイルに集約
+### Combine multiple rules in one file
 
-トップレベル `or` の各アームに独立した `where`・severity・message を持たせる。
+Give each arm of the top-level `or` its own `where`, severity, and message.
 
 ```grit
 or {
@@ -334,13 +334,13 @@ or {
 }
 ```
 
-## CST ノード名の調べ方
+## Finding CST node names
 
-1. Biome Playground を開き、対象コードを貼り付ける。
-2. 出力パネルの **Syntax** タブでノード名を確認。
-3. パターンに `NodeName()`、または `NodeName(field = ...)` として使う。
+1. Open the Biome Playground and paste the target code.
+2. Check the node name on the **Syntax** tab of the output panel.
+3. Use it in a pattern as `NodeName()` or `NodeName(field = ...)`.
 
-### JavaScript / TypeScript の代表的ノード
+### Common JavaScript / TypeScript nodes
 
 | Node Name | Matches |
 | --- | --- |
@@ -371,20 +371,20 @@ or {
 | `CssDeclarationWithSemicolon` | `property: value;` |
 | `CssComplexSelector` | `div > .class` |
 
-### ヘッダー directive
+### Header directives
 
 ```grit
 engine biome(1.0)
 language js(typescript, jsx)
 ```
 
-`engine biome(1.0)` で Tree-sitter ではなく Biome の構文木を使用。`language` 未指定時は JavaScript とみなされる。
+`engine biome(1.0)` uses Biome's syntax tree instead of Tree-sitter. When `language` is omitted, JavaScript is assumed.
 
 ## Notes
 
-- CST ノード名は Biome のパーサー固有で、バージョン間で変わる可能性がある。使用バージョンの Playground で確認すること。全ノードは Biome リポジトリ `xtask/codegen` の `.ungram` ファイルに定義。
-- JSON のキーにマッチする regex は引用符を含むノード全文が対象（例 `"user_name"`）。`r".*_.*"` は両側の `.*` が引用符を吸収するため機能する。
-- 各例の Playground リンクは出典ページ（https://biomejs.dev/recipes/gritql-plugins/）を参照。
+- CST node names are specific to Biome's parser and may change between versions. Check them in the Playground for the version you use. All nodes are defined in the `.ungram` files under `xtask/codegen` in the Biome repository.
+- A regex matching a JSON key is applied to the whole node text including the quotes (e.g. `"user_name"`). `r".*_.*"` works because the `.*` on both sides absorbs the quotes.
+- For the Playground link of each example, see the source page: https://biomejs.dev/recipes/gritql-plugins/
 
 ## Related
 

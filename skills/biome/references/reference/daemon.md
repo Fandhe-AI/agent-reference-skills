@@ -1,6 +1,6 @@
 # Daemon requests
 
-Biome daemon は JSON-RPC 2.0 を使用し、エディタ拡張などのサードパーティクライアントから利用できる。`method` は下表のいずれか。
+The Biome daemon uses JSON-RPC 2.0 and can be used by third-party clients such as editor extensions. `method` is one of the values in the table below.
 
 ## Signature / Usage
 
@@ -18,7 +18,7 @@ Biome daemon は JSON-RPC 2.0 を使用し、エディタ拡張などのサー�
 
 ## Methods
 
-型定義は公式の TypeScript interface に基づく。複数メソッドで共有される型（`Configuration` / `Diagnostic` / `FeatureName` / `TextRange` 等）は公式ページでも詳細展開されない。
+Type definitions follow the official TypeScript interfaces. Types shared by several methods (`Configuration`, `Diagnostic`, `FeatureName`, `TextRange`, etc.) are not expanded on the official page either.
 
 | Method | Params | Returns |
 |--------|--------|---------|
@@ -154,10 +154,10 @@ interface RenameParams {
 ## Notes
 
 - These methods aren't part of the semantic versioning contract, and may change without notice.
-- ほとんどのメソッドは `biome/open_project` が返す `projectKey` を要求する。
-- `ScanProjectResult` は `configurationFiles: string[]` / `diagnostics: Diagnostic[]` / `duration: Duration` を返す。`CheckFileSizeResult` は `fileSize` / `limit`。
-- 全 params/returns の完全な interface は公式ページを参照（`update_settings` / `pull_actions` / `process_file` / `search_pattern` 等はここでは省略）。
-- 出典: biomejs.dev/reference/daemon/（website tag release-2.5.15、commit c5cb3eb4）。
+- Most methods require the `projectKey` returned by `biome/open_project`.
+- `ScanProjectResult` returns `configurationFiles: string[]`, `diagnostics: Diagnostic[]`, and `duration: Duration`. `CheckFileSizeResult` returns `fileSize` and `limit`.
+- See the official page for the full params/returns interfaces (`update_settings`, `pull_actions`, `process_file`, `search_pattern`, etc. are omitted here).
+- Source: https://biomejs.dev/reference/daemon/ (biomejs/website commit c5cb3eb4, release 2.5.15)
 
 ## Related
 

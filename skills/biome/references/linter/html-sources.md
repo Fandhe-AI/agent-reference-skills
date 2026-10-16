@@ -1,8 +1,8 @@
-# HTML ルールのソース
+# HTML Rule Sources
 
-HTML（Vue / Svelte / Astro 等のテンプレート含む）の Biome ルールと、他ツールのルールとの対応表。
+Biome rules for HTML (including Vue / Svelte / Astro templates) mapped to the rules of other tools.
 
-## Biome 独自ルール
+## Biome exclusive rules
 
 ```text
 noExcessiveLinesPerFile
@@ -15,17 +15,17 @@ useIframeSandbox
 useVueVapor
 ```
 
-## @eslint-react/eslint-plugin 対応
+## Rules from @eslint-react/eslint-plugin
 
-| @eslint-react/eslint-plugin ルール | Biome ルール |
+| @eslint-react/eslint-plugin rule | Biome rule |
 |-----------------------------------|-------------|
 | dom-no-missing-button-type | useButtonType (inspired) |
 | dom-no-script-url | noScriptUrl |
 | dom-no-unsafe-iframe-sandbox | noUnsafeIframeSandbox (inspired) |
 
-## @html-eslint/eslint-plugin 対応
+## Rules from @html-eslint/eslint-plugin
 
-| @html-eslint/eslint-plugin ルール | Biome ルール |
+| @html-eslint/eslint-plugin rule | Biome rule |
 |----------------------------------|-------------|
 | no-accesskey-attrs | noAccessKey |
 | no-aria-hidden-on-focusable | noAriaHiddenOnFocusable |
@@ -43,41 +43,41 @@ useVueVapor
 | require-lang | useHtmlLang |
 | require-li-container | noMisplacedListElements (inspired) |
 
-## @next/eslint-plugin-next 対応
+## Rules from @next/eslint-plugin-next
 
-| @next/eslint-plugin-next ルール | Biome ルール |
+| @next/eslint-plugin-next rule | Biome rule |
 |-------------------------------|-------------|
 | no-sync-scripts | noSyncScripts |
 
-## @shadcn/lint 対応
+## Rules from @shadcn/lint
 
-| @shadcn/lint ルール | Biome ルール |
+| @shadcn/lint rule | Biome rule |
 |--------------------|-------------|
 | no-raw-colors | noTailwindRawColors (inspired) |
 
-## ESLint 対応
+## Rules from ESLint
 
-| ESLint ルール | Biome ルール |
+| ESLint rule | Biome rule |
 |--------------|-------------|
 | no-script-url | noScriptUrl |
 
-## eslint-plugin-astro 対応
+## Rules from eslint-plugin-astro
 
-| eslint-plugin-astro ルール | Biome ルール |
+| eslint-plugin-astro rule | Biome rule |
 |--------------------------|-------------|
 | missing-client-only-directive-value | useAstroClientOnlyDirectiveValue (inspired) |
 | no-conflict-set-directives | noAstroConflictingSetDirectives |
 | no-set-html-directive | noAstroSetHtmlDirective |
 
-## eslint-plugin-better-tailwindcss 対応
+## Rules from eslint-plugin-better-tailwindcss
 
-| eslint-plugin-better-tailwindcss ルール | Biome ルール |
+| eslint-plugin-better-tailwindcss rule | Biome rule |
 |----------------------------------------|-------------|
 | enforce-shorthand-classes | useTailwindShorthandClasses (inspired) |
 
-## eslint-plugin-jsx-a11y 対応
+## Rules from eslint-plugin-jsx-a11y
 
-| eslint-plugin-jsx-a11y ルール | Biome ルール |
+| eslint-plugin-jsx-a11y rule | Biome rule |
 |-----------------------------|-------------|
 | alt-text | useAltText (inspired) |
 | anchor-ambiguous-text | noAmbiguousAnchorText |
@@ -116,57 +116,57 @@ useVueVapor
 | scope | noHeaderScope (inspired) |
 | tabindex-no-positive | noPositiveTabindex (inspired) |
 
-## eslint-plugin-qwik 対応
+## Rules from eslint-plugin-qwik
 
-| eslint-plugin-qwik ルール | Biome ルール |
+| eslint-plugin-qwik rule | Biome rule |
 |-------------------------|-------------|
 | jsx-a | useValidAnchor (inspired) |
 | jsx-no-script-url | noScriptUrl |
 
-## eslint-plugin-react 対応
+## Rules from eslint-plugin-react
 
-| eslint-plugin-react ルール | Biome ルール |
+| eslint-plugin-react rule | Biome rule |
 |--------------------------|-------------|
 | button-has-type | useButtonType (inspired) |
 | jsx-no-script-url | noScriptUrl |
 
-## eslint-plugin-react-dom 対応
+## Rules from eslint-plugin-react-dom
 
-| eslint-plugin-react-dom ルール | Biome ルール |
+| eslint-plugin-react-dom rule | Biome rule |
 |------------------------------|-------------|
 | no-missing-button-type | useButtonType (inspired) |
 | no-script-url | noScriptUrl |
 | no-unsafe-iframe-sandbox | noUnsafeIframeSandbox (inspired) |
 
-## eslint-plugin-solid 対応
+## Rules from eslint-plugin-solid
 
-| eslint-plugin-solid ルール | Biome ルール |
+| eslint-plugin-solid rule | Biome rule |
 |--------------------------|-------------|
 | jsx-no-script-url | noScriptUrl |
 
-## eslint-plugin-svelte 対応
+## Rules from eslint-plugin-svelte
 
-| eslint-plugin-svelte ルール | Biome ルール |
+| eslint-plugin-svelte rule | Biome rule |
 |---------------------------|-------------|
 | no-at-debug-tags | noSvelteAtDebugTags |
 | no-at-html-tags | noSvelteAtHtmlTags |
 | require-each-key | useSvelteRequireEachKey |
 
-## eslint-plugin-tailwindcss 対応
+## Rules from eslint-plugin-tailwindcss
 
-| eslint-plugin-tailwindcss ルール | Biome ルール |
+| eslint-plugin-tailwindcss rule | Biome rule |
 |--------------------------------|-------------|
 | no-arbitrary-value | noTailwindArbitraryValue |
 
-## eslint-plugin-unicorn 対応
+## Rules from eslint-plugin-unicorn
 
-| eslint-plugin-unicorn ルール | Biome ルール |
+| eslint-plugin-unicorn rule | Biome rule |
 |----------------------------|-------------|
 | no-invalid-file-input-accept | noInvalidFileInputAccept |
 
-## eslint-plugin-vue 対応
+## Rules from eslint-plugin-vue
 
-| eslint-plugin-vue ルール | Biome ルール |
+| eslint-plugin-vue rule | Biome rule |
 |-------------------------|-------------|
 | attribute-hyphenation | useVueHyphenatedAttributes |
 | enforce-style-attribute | useScopedStyles (inspired) |

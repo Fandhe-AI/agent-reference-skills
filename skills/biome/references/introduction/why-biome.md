@@ -1,39 +1,39 @@
 # Why Biome?
 
-Biome は Web プロジェクト向けの高速・簡単セットアップなツールチェーン。2023 年 8 月に Rome の fork として開始。
+Biome is a toolchain for web projects, built to be fast and easy to set up. It started in August 2023 as a fork of Rome, maintained by some of its developers.
 
 ## Usage
 
 ```shell
-biome check --write   # format + lint + assist をまとめて実行
-biome ci              # CI 用。修正が必要ならビルド失敗
-biome init            # biome.json を生成
+biome check --write   # format + lint + assist in one run
+biome ci              # for CI; fails the build if anything needs fixing
+biome init            # create biome.json
 biome migrate eslint
 biome migrate prettier
 ```
 
-## 標準で得られるもの
+## What you get out of the box
 
-- Prettier 互換のフォーマッター（不正なコードでも整形可能）
-- リンター（Biome 独自ルール + ESLint とその主要プラグインからの移植）
-- assist actions（import ソート、オブジェクトキー並べ替え、重複 CSS クラス削除など）
+- A Prettier-compatible formatter that can format code even while it is malformed
+- A linter with Biome's own rules and ports from ESLint and its most popular plugins
+- Assist actions that tidy your code: sorting imports, ordering object keys, removing duplicate CSS classes, and more
 
-## 設計原則
+## Design principles
 
-| 原則 | 内容 |
-|------|------|
-| One package | `@biomejs/biome` 1 つのみ。設定・ignore も共通。ファイルを 1 回だけパースし formatter / linter / assist に共有するため、lint fix と format が互いに矛盾しない |
-| Fast by default | Rust 製（Node.js 非依存）。公式ベンチマークで Prettier の約 25 倍、ESLint の約 15 倍高速 |
-| Zero configuration to start | インストール後すぐ使用可。細かい制御は `biome init` で `biome.json` を作成。formatter は Prettier と同じ option philosophy、linter はルール単位・グループ・domain で個別に有効/無効化 |
-| Informative and actionable | 各ルールは「エラーの説明」「問題である理由」「対処方法」の 3 pillars に基づく |
-| Built for the editor | first-party の language server。VS Code / IntelliJ / Zed の公式拡張。入力中・不正コードでも動作 |
-| Compatible with what you already use | Prettier 出力と 97% 一致。`biome migrate eslint` / `biome migrate prettier` で既存設定から `biome.json` を生成 |
+| Principle | Summary |
+| --- | --- |
+| One package | Only `@biomejs/biome` is needed, with shared configuration and no separate ignore file. Biome parses each file once and hands the same context to the formatter, linter, and assist actions, so a lint fix never produces code that the formatter rewrites, nor vice versa |
+| Fast by default | Written in Rust (no dependency on Node.js). On the official benchmark, Biome formats about 25 times faster than Prettier and lints about 15 times faster than ESLint |
+| Zero configuration to start | Works right after installing. Run `biome init` to create `biome.json` for finer control. The formatter follows the same option philosophy as Prettier; the linter rules can be enabled or disabled individually, by group, or by domain |
+| Informative and actionable | Every lint rule rests on three pillars: explain the error, explain why it is a problem, and tell you what to do about it |
+| Built for the editor | First-party language server, with official extensions for VS Code, IntelliJ, and Zed. Works while you type, even on malformed code |
+| Compatible with what you already use | The formatter matches Prettier's output in 97% of cases. `biome migrate eslint` / `biome migrate prettier` write the equivalent `biome.json` from your existing configuration |
 
 ## Notes
 
-- ルール数は公式ページでは生成コンポーネントにより表示される（本ページには数値を記載しない）
-- ベンチマーク値は公式 benchmark リポジトリ（biomejs/benchmark）の結果に基づく
-- 出典: https://biomejs.dev/introduction/why-biome/
+- The rule count is rendered by a generated component on the official page; no number is recorded here.
+- Benchmark figures come from the official benchmark repository (biomejs/benchmark).
+- Source: https://biomejs.dev/introduction/why-biome/
 
 ## Related
 

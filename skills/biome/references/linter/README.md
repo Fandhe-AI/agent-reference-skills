@@ -8,7 +8,7 @@
 | GraphQL ルール | GraphQL 向け Biome ルールをカテゴリ別（correctness / nursery / style / suspicious）に一覧。 | [graphql-rules.md](./graphql-rules.md) |
 | GraphQL ルールのソース | GraphQL-ESLint・graphql-schema-linter 等の外部ルールとの対応表。 | [graphql-sources.md](./graphql-sources.md) |
 | HTML ルール | HTML 向け Biome ルール一覧。a11y など 6 グループにルールがある。 | [html-rules.md](./html-rules.md) |
-| HTML ルールのソース | HTML（Vue / Svelte / Astro 等のテンプレート含む）の Biome ルールと、他ツールのルールとの対応表。 | [html-sources.md](./html-sources.md) |
+| HTML ルールのソース | Biome HTML rules (including Vue / Svelte / Astro templates) mapped to the rules of other tools. | [html-sources.md](./html-sources.md) |
 | Linter | 複数言語対応の静的解析リンター。`use*` / `no*` の命名規約と code fix。 | [introduction.md](./introduction.md) |
 | JavaScript/TypeScript ルール | Biome は JS/TS 向けに 469 ルールを 8 グループで提供（Biome 2.5.15 時点）。 | [javascript-rules.md](./javascript-rules.md) |
 | JavaScript/TypeScript ルールのソース | Biome ルールと外部ルールの対応関係（Biome 2.5.15 の公式 Rules sources ページ）。 | [javascript-sources.md](./javascript-sources.md) |

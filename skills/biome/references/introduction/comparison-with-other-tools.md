@@ -1,48 +1,48 @@
 # Comparison with other tools
 
-Biome を Prettier / ESLint / Oxc と、互換性・性能・言語サポートの観点で比較する。
+How Biome compares with Prettier, ESLint, and Oxc in compatibility, performance, and language support.
 
 ## Usage
 
 ```shell
-biome migrate prettier   # Prettier 設定 -> biome.json
-biome migrate eslint     # ESLint 設定 -> biome.json
+biome migrate prettier   # Prettier config -> biome.json
+biome migrate eslint     # ESLint config -> biome.json
 ```
 
 ## Biome vs Prettier
 
-| 観点 | 内容 |
-|------|------|
-| 出力 | Prettier 出力と 97% 一致（Prettier challenge に勝利）。意図的な差異は Differences with Prettier ページに記載 |
-| 既定オプション | Biome はタブインデント、Prettier はスペース |
-| 性能 | 公式ベンチマークで約 25 倍高速 |
-| 言語 | 対応言語セットが異なる。Prettier は HTML および Vue / Angular などの HTML 系スーパー言語のサポートが安定しており、コミュニティプラグインも豊富 |
+| Aspect | Summary |
+| --- | --- |
+| Output | Matches Prettier's output in 97% of cases (won the Prettier challenge). Intentional differences are listed on the Differences with Prettier page |
+| Default options | Biome indents with tabs, Prettier with spaces |
+| Performance | About 25 times faster on the official benchmark |
+| Languages | Different sets of supported languages. Prettier has more stable support for HTML and HTML super languages such as Vue and Angular, plus a large ecosystem of community plugins |
 
 ## Biome vs ESLint
 
-| 観点 | 内容 |
-|------|------|
-| 位置づけ | drop-in replacement ではない |
-| ルール | `eslint-plugin-react` / `jsx-a11y` / `import` / `unicorn` 等から移植。由来は Rule sources ページ。名前は `camelCase`（例: ESLint の `eqeqeq` は Biome の `noDoubleEquals`）。オプションが少ない・挙動が微妙に異なるルールがある |
-| 性能 | 公式ベンチマークで約 15 倍高速 |
-| 設定 | `@biomejs/biome` と任意の `biome.json` のみ（ESLint はパーサー・TypeScript プラグイン・`eslint-config-prettier` 等を組み合わせる） |
-| プラグイン | ESLint の JS プラグインは実行不可。Biome のプラグインは GritQL で記述 |
-| Type-aware | 独自の type-aware ルール（`typescript` パッケージ不要）。v2 で追加。ルール数は typescript-eslint より大幅に少ないが拡大中 |
+| Aspect | Summary |
+| --- | --- |
+| Positioning | Not built to be a drop-in replacement |
+| Rules | Most ported from ESLint and popular plugins (`eslint-plugin-react`, `eslint-plugin-jsx-a11y`, `eslint-plugin-import`, `eslint-plugin-unicorn`); origins are on the Rule sources page. Names use `camelCase` (ESLint's `eqeqeq` is Biome's `noDoubleEquals`). Some rules support fewer options or behave slightly differently |
+| Performance | About 15 times faster on the official benchmark |
+| Configuration | Only `@biomejs/biome` and an optional `biome.json` (ESLint setups wire together a parser, the TypeScript plugin, `eslint-config-prettier`, etc.) |
+| Plugins | Cannot run ESLint's JavaScript plugins. Biome plugins are written in GritQL |
+| Type-aware linting | Own type-aware rules that do not depend on the `typescript` package, added in v2. The rule count is considerably smaller than `typescript-eslint`'s, but coverage is growing |
 
 ## Biome vs Oxc
 
-| 観点 | 内容 |
-|------|------|
-| 方針 | Oxc は各ツール（oxlint / oxfmt 等）が既存ツールの drop-in replacement で個別設定。Biome は 1 パッケージ・1 設定で、より opinionated |
-| 性能 | Oxc 公式ベンチマークで Oxc パーサーは Biome の 5 倍、Oxfmt は Biome フォーマッターの 3 倍高速。いずれも Prettier / ESLint よりはるかに高速 |
-| アーキテクチャ | Biome のパーサーは CST を生成し resilient / recoverable。速度を犠牲に不正コードでも format / lint 可能 |
-| 言語 | Oxlint は JS / TS のみ。Biome は CSS / JSON / GraphQL / HTML の lint も対応。Oxfmt は未実装言語に Prettier を同梱するため対応言語が多い。Biome は対応言語をすべてネイティブ実装 |
-| Type-aware | Oxlint は `oxlint-tsgolint`（typescript-go ベース）。Biome は自前で型推論し TypeScript 不要。ルール数は Oxlint より大幅に少ないが拡大中 |
+| Aspect | Summary |
+| --- | --- |
+| Scope | Each Oxc tool (oxlint, oxfmt, ...) is a drop-in replacement for an existing tool with its own configuration. Biome ships in one package with one configuration and is more opinionated |
+| Performance | In Oxc's official benchmark, Oxc's parser is 5 times faster than Biome's and Oxfmt is 3 times faster than Biome's formatter. Both are many times faster than Prettier and ESLint |
+| Architecture | Biome's parser produces a concrete syntax tree and is resilient and recoverable, which costs some speed but lets Biome format and lint malformed code |
+| Languages | Oxlint is scoped to JavaScript and TypeScript only; Biome also lints CSS, JSON, GraphQL, and HTML. Oxfmt supports more languages overall because it bundles Prettier for languages not yet implemented natively; Biome implements every supported language natively |
+| Type-aware linting | Oxlint uses the `oxlint-tsgolint` package (built on `typescript-go`). Biome infers types itself and does not need TypeScript installed; its type-aware rule count is considerably smaller than Oxlint's, but coverage is growing |
 
 ## Notes
 
-- 数値（25 倍 / 15 倍 / 97% / 5 倍 / 3 倍）は各公式ベンチマーク・原文記述による
-- 出典: https://biomejs.dev/introduction/comparison-with-other-tools/
+- The figures (25x / 15x / 97% / 5x / 3x) come from the official benchmarks and the original text.
+- Source: https://biomejs.dev/introduction/comparison-with-other-tools/
 
 ## Related
 

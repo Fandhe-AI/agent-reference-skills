@@ -4,7 +4,7 @@ description: >
   Biome (Rust 製フォーマッター・リンター) リファレンス。
   JavaScript / TypeScript / JSX / CSS / JSON / GraphQL / HTML (Vue, Svelte, Astro) 対応。
   biome.json, biome check / lint / format / ci / migrate / upgrade, linter ルール・preset・domains,
-  GritQL プラグイン, assist (organizeImports), biome-ignore, LSP / VS Code / Zed,
+  GritQL プラグイン, assist (organizeImports), suppressions (biome-ignore), LSP / VS Code / Zed,
   ESLint / Prettier 移行, monorepo, CI。
 user-invocable: false
 ---

@@ -1,5 +1,7 @@
 # Versioning
 
+Source: https://biomejs.dev/internals/versioning/
+
 How Biome is versioned. Biome follows semantic versioning, with its own guide for what counts as a patch, minor, or major change in a toolchain.
 
 ## Signature / Usage
@@ -55,6 +57,7 @@ VS Code does not support pre-release tags for extensions, so Biome uses the vers
 - Fixes to lint rules, formatting layouts, etc. might prevent your scripts from passing; saving the exact version is highly recommended
 - Pinning ensures every team member and CI environment use the same Biome version. Even patch releases can result in slightly different formatting or linting results
 - The `2.5.7` in the snippet is illustrative (the latest version shown on the Changelog page at the time of writing); use the version you actually adopt
+- Source: https://biomejs.dev/internals/versioning/ (biomejs/website commit 49293f2, fetched 2026-10-17)
 
 ## Related
 
