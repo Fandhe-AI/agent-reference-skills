@@ -77,7 +77,8 @@ onboot: 1
 | `scsi[n]` | complex | media=disk | SCSI hard disk or CD-ROM (n: 0–30); supports `iothread`, `ro`, `ssd`, `discard` |
 | `virtio[n]` | complex | — | VirtIO paravirtualised block device (n: 0–15) |
 | `scsihw` | enum | lsi | SCSI controller model: `lsi`, `lsi53c810`, `virtio-scsi-pci`, `virtio-scsi-single`, `megasas`, `pvscsi` |
-| `efidisk0` | complex | efitype=2m | EFI variables disk; `efitype=2m\|4m`, `pre-enrolled-keys=1\|0` |
+| `efidisk0` | complex | efitype=2m | EFI variables disk; `efitype=2m\|4m`, `ms-cert=2011\|2023\|2023k\|2023w` (default `2011`; informational marker of the latest Microsoft UEFI certificates enrolled by Proxmox VE; `2023k` = Microsoft UEFI CA 2023, Windows UEFI CA 2023 and Microsoft Corporation KEK 2K CA 2023 included; `2023` / `2023w` deprecated, compatibility only), `pre-enrolled-keys=1\|0` |
+| `virtiofs[n]` | complex | — | Share a host directory with the guest via Virtio-fs: `[dirid=]<mapping-id>[,cache=<always\|auto\|metadata\|never>][,direct-io=<1\|0>][,expose-acl=<1\|0>][,expose-xattr=<1\|0>]`; `dirid` is the directory mapping ID and also the mount tag inside the VM; `cache` default `auto`; `direct-io` (honor O_DIRECT), `expose-acl` (POSIX ACLs, implies xattr), `expose-xattr` default `0` |
 | `tpmstate0` | complex | version=v1.2 | TPM 2.0 state disk; `version=v1.2\|v2.0` |
 | `cdrom` | volume | — | Alias for `ide2`; specify ISO image or `none,media=cdrom` |
 | `unused[n]` | volume | — | References to detached/unused volumes; managed internally |

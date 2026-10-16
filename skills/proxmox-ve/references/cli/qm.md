@@ -9,7 +9,7 @@ qm <COMMAND> [OPTIONS]
 qm help [<COMMAND>]
 ```
 
-## Subcommands
+### Subcommands
 
 | Subcommand | Description |
 |------------|-------------|
@@ -44,6 +44,8 @@ qm help [<COMMAND>]
 | `guest cmd <vmid> <command>` | Run QEMU Guest Agent command |
 | `guest exec <vmid>` | Execute command via guest agent |
 | `guest passwd <vmid> <username>` | Change guest user password |
+| `enroll-efi-keys <vmid>` | Enroll important updated certificates (currently the UEFI 2023 certificates from Microsoft) to the EFI disk with pre-enrolled-keys; must be called while the VM is shut down |
+| `remote-migrate <vmid> [<target-vmid>] <target-endpoint> --target-bridge <string> --target-storage <string>` | Migrate virtual machine to a remote cluster. Creates a new migration task. EXPERIMENTAL feature! |
 | `import <vmid> <source>` | Import foreign VM (ESXi/OVF) |
 | `importovf <vmid> <manifest>` | Create VM from OVF manifest |
 | `monitor <vmid>` | Access QEMU Monitor interface |
@@ -89,6 +91,7 @@ Key options for `qm create` / `qm set`:
 - `qm stop` is a hard power-off; prefer `qm shutdown` for graceful stops.
 - Cloud-init options (`--ciuser`, `--sshkeys`, etc.) require a cloud-init drive (`--ide[n]` or `--scsi[n]` with `media=cdrom,format=raw`).
 - `--skiplock` should only be used when the lock is stale; misuse can corrupt VM state.
+- `importdisk` (alias for `disk import`), `move-disk`, `resize`, `rescan`, `unlink` and `agent` are aliases of the `disk *` / `guest cmd` forms above.
 - Snapshots require storage that supports them (e.g. qcow2, ZFS, Ceph).
 
 ## Related

@@ -37,6 +37,22 @@ iface bond0 inet manual
 | Bond | `bondN` | NIC teaming / aggregation |
 | VLAN | `eno1.50` | Tagged VLAN sub-interface |
 
+#### Network device naming
+
+Device names can change with a new version of the systemd naming scheme, and even with a pinned scheme version they can still change due to kernel or driver updates.
+
+- Pin a naming scheme version by adding `net.naming-scheme=<version>` to the kernel command line (e.g. `net.naming-scheme=v252`, the latest scheme version for a fresh Proxmox VE 8.0 installation); a reboot is required. Versions are listed in systemd.net-naming-scheme(7).
+- Override a device name with a `.link` file. The `pve-network-interface-pinning` tool generates them and replaces the old name in `/etc/network/interfaces`, `/etc/pve/nodes/<nodename>/host.fw`, `/etc/pve/sdn/controllers.cfg` and `/etc/pve/sdn/fabrics.cfg`. Link files go to `/usr/local/lib/systemd/network`; config files are written alongside with a `.new` suffix (inspect with `diff -y /etc/network/interfaces /etc/network/interfaces.new`; to revert before reboot, delete the `.new` files and the generated link files). `/etc/pve/firewall/cluster.fw` is not updated automatically. A reboot applies the change.
+
+```bash
+pve-network-interface-pinning generate                       # all unpinned NICs, default prefix nic -> nic1, nic2, ...
+pve-network-interface-pinning generate --prefix myprefix
+pve-network-interface-pinning generate --interface enp1s0
+pve-network-interface-pinning generate --interface enp1s0 --target-name if42
+```
+
+- Manual link files: `/etc/systemd/network/<n>-<id>.link` with `n` a priority smaller than 99 (see systemd.link(5)).
+
 ### SDN zone types
 
 | Zone type | Description |
