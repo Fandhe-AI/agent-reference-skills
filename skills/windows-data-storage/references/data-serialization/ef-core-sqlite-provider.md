@@ -43,9 +43,14 @@ public class Note
 - Supported database engine: SQLite 3.46.1 onward.
 - Use `Entity Framework Core` when you want change tracking, LINQ-to-Entities queries, and migrations; use plain `Microsoft.Data.Sqlite` for lightweight direct ADO.NET access (see sqlite-data-access.md) when an ORM's overhead is unnecessary.
 - The connection string points at a file path; place the `.db` file under `ApplicationData.Current.LocalFolder` (or `LocalCacheFolder` for regenerable data) for packaged Windows apps.
+- Per "Connect a WinUI app to a database": a context that stores its database under `Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)` works for both packaged and unpackaged desktop apps (unlike `ApplicationData.Current.LocalFolder`, which is for packaged apps). "Don't write a database into the installed application directory."
+- `Database.EnsureCreatedAsync()` "bypasses migrations and isn't suitable for evolving a production schema in place". Use EF Core migrations when data must survive schema changes, test upgrades from every supported deployed version, and define a recovery strategy for migration failures.
+- `DbContext` isn't thread-safe: create a short-lived `DbContext` per unit of work. Use async APIs and don't block the UI thread with `.Result` or `.Wait()`.
+- Keep provider package versions on a supported servicing release. The EF Core provider model supports SQL Server, SQLite, PostgreSQL, MySQL, MariaDB, Oracle, and other databases; migrations, SQL features, and type behavior can differ by provider.
 - See the SQLite provider's limitations page (`/ef/core/providers/sqlite/limitations`) for known gaps versus other relational providers (e.g. limited `ALTER TABLE` support, some LINQ translations).
 
 ## Related
 
 - [SQLite data access (Microsoft.Data.Sqlite)](./sqlite-data-access.md)
 - [Application data storage locations](./application-data-storage.md)
+- [Connect a WinUI app to a database](./connect-winui-app-to-database.md)

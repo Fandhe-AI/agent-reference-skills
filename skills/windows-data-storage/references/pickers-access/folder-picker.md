@@ -32,14 +32,9 @@ if (folder != null)
 | `CommitButtonText` | `string` | Label text of the commit button. |
 | `SettingsIdentifier` | `string` | Identifier used to persist the picker's UI state. |
 
-## Methods
-
-| Name | Description |
-|------|--------------|
-| `PickSingleFolderAsync()` | Shows the picker so the user can pick a folder; returns a `StorageFolder` or `null` if cancelled. |
-
 ## Notes
 
+- Method: `PickSingleFolderAsync()` shows the picker so the user can pick a folder; returns a `StorageFolder` or `null` if cancelled.
 - Package: `Windows.Storage.Pickers` (UWP APIs, also usable from non-elevated desktop apps). Distinct from `Microsoft.Windows.Storage.Pickers` (Windows App SDK), the WinUI 3-first replacement.
 - Implements `IInitializeWithWindow`; requires `WinRT.Interop.InitializeWithWindow.Initialize(picker, hWnd)` in desktop apps before showing UI. See HWND Initialization for WinRT UI Objects.
 - Picking a folder grants access to that folder and all its subfolder contents for the current app session; use `StorageApplicationPermissions.FutureAccessList` to retain access across launches.

@@ -37,14 +37,9 @@ if (file != null)
 | `CommitButtonText` | `string` | Label text of the commit button. |
 | `EnterpriseId` | `string` | ID specifying the enterprise that owns the file. |
 
-## Methods
-
-| Name | Description |
-|------|--------------|
-| `PickSaveFileAsync()` | Shows the picker so the user can pick the file name, extension, and location; returns a `StorageFile` or `null` if cancelled. |
-
 ## Notes
 
+- Method: `PickSaveFileAsync()` shows the picker so the user can pick the file name, extension, and location; returns a `StorageFile` or `null` if cancelled.
 - Package: `Windows.Storage.Pickers` (UWP APIs, also usable from non-elevated desktop apps). Distinct from `Microsoft.Windows.Storage.Pickers` (Windows App SDK), the WinUI 3-first replacement.
 - Implements `IInitializeWithWindow`; requires `WinRT.Interop.InitializeWithWindow.Initialize(picker, hWnd)` in desktop apps before showing UI. See HWND Initialization for WinRT UI Objects.
 - Doesn't work in elevated (administrator) desktop apps; use `Microsoft.Windows.Storage.Pickers` or the Win32 `IFileSaveDialog` (via CsWin32) instead.

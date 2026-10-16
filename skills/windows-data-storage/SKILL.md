@@ -3,11 +3,12 @@ name: windows-data-storage
 description: >
   Windows アプリ開発 (Windows App SDK / WinRT) のファイル・設定・データ保存リファレンス。
   Windows.Storage の StorageFile, StorageFolder, IStorageItem, FileIO, PathIO,
-  CachedFileManager, DataReader, DataWriter。ApplicationData, ApplicationDataContainer,
-  ApplicationDataCompositeValue によるローカル・ローミング設定。
-  FileOpenPicker, FileSavePicker, FolderPicker, StorageApplicationPermissions,
-  KnownFolders によるファイルアクセスと権限。JsonObject, JsonArray, XmlDocument,
-  SQLite, EF Core によるシリアライズと永続化。
+  CachedFileManager, DataReader, DataWriter, BasicProperties。ApplicationData,
+  ApplicationDataContainer, ApplicationDataCompositeValue のローカル・ローミング設定。
+  FileOpenPicker, FileSavePicker, FolderPicker, KnownFolders,
+  StorageApplicationPermissions (FutureAccessList / MostRecentlyUsedList)。
+  JsonObject, JsonArray, XmlDocument, SQLite, EF Core,
+  Microsoft.Data.SqlClient (SQL Server), Cosmos DB, MySQL, MongoDB 接続。
 user-invocable: false
 ---
 
@@ -42,6 +43,7 @@ skills/windows-data-storage/
       streamed-file-content.md
       access-sd-card.md
       system-io-vs-windows-storage.md
+      file-properties.md
     app-data-settings/
       README.md
       application-data.md
@@ -76,6 +78,21 @@ skills/windows-data-storage/
       query-options.md
       common-file-query.md
       storage-folder-item-query-result.md
+      data-access-overview.md
+      connect-winui-app-to-database.md
+      sql-server-database.md
+      cosmos-db-data-access.md
+      mysql-database.md
+      mongodb-database.md
+  samples/
+    README.md
+    sqlite-local-database.md
+    ef-core-local-database.md
+    sql-server-direct-access.md
+    fast-file-enumeration.md
+  scripts/
+    README.md
+    install.md
 ```
 
 ## 探索手順
@@ -104,5 +121,12 @@ skills/windows-data-storage/
 | SQLite / EF Core でローカルデータベースを構築したい | data-serialization | [references/data-serialization/README.md](references/data-serialization/README.md) |
 | QueryOptions / CommonFileQuery / StorageFileQueryResult でファイルクエリ・キャッシュ戦略を扱いたい | data-serialization | [references/data-serialization/README.md](references/data-serialization/README.md) |
 | StorageFolderQueryResult / StorageItemQueryResult でフォルダー・混在アイテムのクエリ結果を列挙したい | data-serialization | [references/data-serialization/README.md](references/data-serialization/README.md) |
+| SQL Server / Cosmos DB / MySQL / MongoDB に Windows アプリから接続したい | data-serialization | [references/data-serialization/README.md](references/data-serialization/README.md) |
+| 業務アプリ (LOB) の DB アクセス構成（サービス層・EF Core・オフライン同期・資格情報保護）を決めたい | data-serialization | [references/data-serialization/README.md](references/data-serialization/README.md) |
+| ファイルの基本・拡張プロパティを取得、インデクサーで高速取得したい | storage-files | [references/storage-files/README.md](references/storage-files/README.md) |
+| 動作する実装例を見たい | samples | [samples/README.md](samples/README.md) |
+| NuGet パッケージの導入コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
 
-このスキルは Windows App SDK / WinRT のファイル・設定・データ保存 API のみを扱う。コントロール UI は windows-winui-controls、ライフサイクル・ウィンドウ・通知は windows-app-sdk が担当し、いずれもここでは扱わない。
+出典: learn.microsoft.com (en-us) Windows apps docs、2026-10-16 取得。
+
+このスキルは Windows App SDK / WinRT のファイル・設定・データ保存 API のみを扱う。コントロール UI は windows-winui-controls、ライフサイクル・ウィンドウ・通知は windows-app-sdk が担当し、いずれもここでは扱わない。共有業務データの認証付きサービス層（ID / API 呼び出し）もこのスキルの範囲外。
