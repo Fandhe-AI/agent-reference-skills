@@ -1,13 +1,14 @@
 ---
 name: windows-interop-modernize
 description: >
-  Windows アプリ開発 (Win32 / WPF / WinForms 相互運用) の相互運用・近代化リファレンス。
-  Win32 API, CreateWindowExW, WNDPROC, メッセージループ, COM (IUnknown, CoCreateInstance,
-  ComPtr), CsWin32, windows-rs, C++/WinRT (winrt::com_ptr, IAsyncOperation, IDL, ABI 相互運用),
-  C#/WinRT (cswinrt, ComWrappers, AOT/trimming, WindowNative), XAML Islands
-  (DesktopWindowXamlSource, DesktopChildSiteBridge, WindowsXamlManager), WPF/WinForms 相互運用
-  (HwndHost, HwndSource, WindowsFormsHost, ElementHost), UWP から Windows App SDK / WinUI 3 への
-  移行 (namespace mapping, AppWindow, DispatcherQueue, .NET Upgrade Assistant)。
+  Windows アプリ開発 (Win32 / WPF / WinForms 相互運用) の相互運用・近代化。
+  Win32 API (CreateWindowExW, WNDPROC, メッセージループ), COM (IUnknown, CoCreateInstance, ComPtr),
+  CsWin32, windows-rs, C++/WinRT (winrt::com_ptr, IAsyncOperation, IDL, ABI 相互運用),
+  C#/WinRT (cswinrt, ComWrappers, AOT/trimming, WindowNative),
+  XAML Islands (DesktopWindowXamlSource, DesktopChildSiteBridge, WindowsXamlManager),
+  HwndHost, HwndSource, WindowsFormsHost, ElementHost,
+  UWP から Windows App SDK / WinUI 3 への移行 (namespace mapping, AppWindow, DispatcherQueue, .NET Upgrade Assistant)、
+  移行判断 (upgrade / modernize / migrate)、WinForms → WinUI 3 パターン対応、GitHub Copilot upgrade。
 user-invocable: false
 ---
 
@@ -23,6 +24,11 @@ Win32・COM・C++/WinRT・C#/WinRT・XAML Islands・WPF/WinForms・UWP を横断
 skills/windows-interop-modernize/
   SKILL.md
   references/
+    migration-planning/
+      README.md
+      migration-decision-guide.md
+      migration-terminology.md
+      modernize-overview.md
     win32-com/
       README.md
       com-create-instance.md
@@ -47,20 +53,27 @@ skills/windows-interop-modernize/
       windows-rs.md
     cppwinrt/
       README.md
+      advanced-concurrency.md
       agile-objects.md
       async-coroutines.md
       author-apis.md
       author-coclasses.md
+      base-type.md
+      binding-collection.md
       boxing.md
       collections.md
       com-ptr-iinspectable.md
+      completion-source.md
       consume-apis.md
       consume-com.md
+      diag-direct-alloc.md
       error-handling.md
       events-delegates.md
+      extension-points.md
       get-started.md
       init-apartment.md
       interop-abi.md
+      interop-winrt-cx-async.md
       interop-winrt-cx.md
       macros.md
       move-to-winrt-from-csharp.md
@@ -68,11 +81,13 @@ skills/windows-interop-modernize/
       move-to-winrt-from-wrl.md
       naming.md
       native-interop.md
+      natvis.md
       overview.md
       pass-parms-to-abi.md
       projection-headers.md
       std-cpp-data-types.md
       strings.md
+      troubleshooting.md
       use-csharp-component-from-cpp-winrt.md
       weak-references.md
       xaml-binding.md
@@ -105,6 +120,7 @@ skills/windows-interop-modernize/
       windows-xaml-manager.md
     wpf-winforms-interop/
       README.md
+      ai-assisted-wpf-migration.md
       copilot-modernization-guide.md
       dotnet-upgrade-assistant.md
       hwndhost-hwndsource.md
@@ -112,6 +128,7 @@ skills/windows-interop-modernize/
       winforms-application-run.md
       winforms-designer.md
       winforms-form-control.md
+      winforms-patterns-winui3.md
       winrt-apis-in-wpf-winforms.md
       wpf-application.md
       wpf-basic-controls.md
@@ -160,10 +177,13 @@ skills/windows-interop-modernize/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
+| 既存アプリを upgrade / modernize in place / WinUI 3 移行のどれで進めるか判断したい、用語 (upgrade / migrate / port / modernize) を確認したい | migration-planning | [references/migration-planning/README.md](references/migration-planning/README.md) |
+| 既存 WPF / WinForms / Win32 アプリに追加できる Windows 機能と、Windows App SDK・package identity の要否を知りたい | migration-planning | [references/migration-planning/README.md](references/migration-planning/README.md) |
 | CreateWindowExW / WNDPROC / メッセージループで生の Win32 ウィンドウを作成したい | win32-com | [references/win32-com/README.md](references/win32-com/README.md) |
 | COM オブジェクトの初期化・生成・参照カウント管理 (CoInitializeEx, CoCreateInstance, IUnknown, ComPtr) を行いたい | win32-com | [references/win32-com/README.md](references/win32-com/README.md) |
 | C# から CsWin32 / P/Invoke で Win32 API を呼びたい、Rust から windows-rs を使いたい | win32-com | [references/win32-com/README.md](references/win32-com/README.md) |
 | C++ で WinRT ランタイムクラスを消費・作成し、非同期処理やイベントを扱いたい | cppwinrt | [references/cppwinrt/README.md](references/cppwinrt/README.md) |
+| C++/WinRT の高度な非同期 (resume_after / resume_on_signal / completion_source)、C++/CX 非同期相互運用、基底型 override、natvis・直接アロケーション診断・トラブルシューティングを知りたい | cppwinrt | [references/cppwinrt/README.md](references/cppwinrt/README.md) |
 | IDL で API を作成し ABI・ネイティブ相互運用やエラーハンドリングを実装したい | cppwinrt | [references/cppwinrt/README.md](references/cppwinrt/README.md) |
 | C# から WinRT API を呼び出す、TFM 設定・非同期・型マッピングを把握したい | csharp-winrt | [references/csharp-winrt/README.md](references/csharp-winrt/README.md) |
 | ComWrappers / AOT・trimming 対応や WinRT コンポーネントの作成を行いたい | csharp-winrt | [references/csharp-winrt/README.md](references/csharp-winrt/README.md) |
@@ -172,9 +192,10 @@ skills/windows-interop-modernize/
 | WPF / WinForms 既存アプリの基本 API (Window, Application, DependencyProperty, データバインディング) を確認したい | wpf-winforms-interop | [references/wpf-winforms-interop/README.md](references/wpf-winforms-interop/README.md) |
 | HwndHost/HwndSource や WindowsFormsHost/ElementHost で WPF と WinForms・Win32 を相互ホストしたい | wpf-winforms-interop | [references/wpf-winforms-interop/README.md](references/wpf-winforms-interop/README.md) |
 | WPF/WinForms に Windows App SDK を追加し WinRT API を呼びたい | wpf-winforms-interop | [references/wpf-winforms-interop/README.md](references/wpf-winforms-interop/README.md) |
-| UWP アプリを Windows App SDK / WinUI 3 へ移行する全体戦略・名前空間対応を知りたい | uwp-migration | [references/uwp-migration/README.md](references/uwp-migration/README.md) |
+| WinForms のコントロール・レイアウト・バインディング・起動処理を WinUI 3 に対応付けたい、WPF 移行を AI エージェントで進めたい | wpf-winforms-interop | [references/wpf-winforms-interop/README.md](references/wpf-winforms-interop/README.md) |
+| (どの移行パスか未定の場合は migration-planning から) UWP アプリを Windows App SDK / WinUI 3 へ移行する全体戦略・名前空間対応を知りたい | uwp-migration | [references/uwp-migration/README.md](references/uwp-migration/README.md) |
 | ウィンドウ管理・スレッディング・通知・バックグラウンドタスクの UWP 固有 API を移行したい | uwp-migration | [references/uwp-migration/README.md](references/uwp-migration/README.md) |
 | .NET Upgrade Assistant で機械的な移行を進めたい | uwp-migration | [references/uwp-migration/README.md](references/uwp-migration/README.md) |
 | PhotoLab (C#) / Photo Editor (C++/WinRT) の移行事例を参考にしたい、AI コーディングエージェントで移行を自動化したい | uwp-migration | [references/uwp-migration/README.md](references/uwp-migration/README.md) |
 
-このスキルは Win32・COM・C++/WinRT・C#/WinRT・XAML Islands・WPF/WinForms・UWP 間の相互運用と移行手順のみを扱う。WinUI 3 のコントロール API 自体は windows-winui-controls、レイアウト・スタイル・XAML 記法は windows-winui-ui、Windows App SDK のランタイム機能は windows-app-sdk が担当する。
+このスキルは Win32・COM・C++/WinRT・C#/WinRT・XAML Islands・WPF/WinForms・UWP 間の相互運用と移行手順のみを扱う。WinUI 3 のコントロール API 自体は windows-winui-controls、レイアウト・スタイル・XAML 記法は windows-winui-ui、Windows App SDK のランタイム機能は windows-app-sdk が担当する。MSIX packaging / package identity の詳細は windows-packaging-publish、Windows AI Foundry は windows-ai が担当する。

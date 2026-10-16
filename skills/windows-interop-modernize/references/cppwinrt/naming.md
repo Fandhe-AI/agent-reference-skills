@@ -28,9 +28,11 @@ namespace winrt
 - `winrt::impl` is fully reserved — never reference or define anything inside it directly.
 - Lowercase names in `winrt` (e.g. `winrt::make`, `winrt::box_value`) are library-provided but some are documented as safe to overload/specialize (`winrt::is_guid_of` is a named example — see Author COM Components).
 - The `WINRT_*` macro family (`WINRT_ASSERT`, `WINRT_LEAN_AND_MEAN`, `WINRT_NO_MAKE_DETECTION`, etc.) is documented per-macro in Macros — check there before defining or relying on one.
-- Related diagnostic topics in the official docs — native debug visualization (`WINRT_NATVIS`) and diagnosing accidental direct allocation of implementation types (`WINRT_NO_MAKE_DETECTION`) — are covered in Macros rather than duplicated here.
+- Related diagnostic topics in the official docs — native debug visualization (`WINRT_NATVIS`) and diagnosing accidental direct allocation of implementation types (`WINRT_NO_MAKE_DETECTION`) — are covered in detail in `natvis.md` and `diag-direct-alloc.md`; the macro list is in `macros.md`.
 
 ## Related
 
 - [Macros](./macros.md)
+- [Native debug visualization (natvis)](./natvis.md)
+- [Diagnosing direct allocations](./diag-direct-alloc.md)
 - [Author COM Components with C++/WinRT](./author-coclasses.md)

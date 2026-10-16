@@ -19,6 +19,10 @@ using Microsoft.UI;              // WindowId, Win32Interop
 - Supported host application types: WPF, Windows Forms, and Win32 (C++) desktop applications.
 - The general pattern: create a `DesktopWindowXamlSource`, call `Initialize(WindowId)` with the host HWND's `WindowId`, set `Content` to the `UIElement` to host, then use the `SiteBridge` (a `DesktopChildSiteBridge`) to position/resize/show the resulting child HWND within the host window.
 
+- Use WinUI XAML Islands when you need to preserve a substantial WPF, Windows Forms, or Win32 UI while modernizing one area at a time, a new or redesigned surface needs WinUI controls, and the host app can manage a native child window, UI-thread initialization, input, focus, and deployment. Consider a full UI migration instead when most screens need to change, or when maintaining two UI frameworks adds more complexity than it removes (see `migration-decision-guide.md`).
+- Don't combine the APIs or setup instructions of WinUI XAML Islands (`Microsoft.UI.Xaml`) and legacy system XAML Islands (`Windows.UI.Xaml`).
+- Also test per-monitor DPI changes and scaling; resize / minimize / restore / reparenting; high contrast, text scaling, and themes; clipping, scrolling, and z-order with native host content. Don't assume the host's layout engine automatically sizes the WinUI content; the host remains responsible for the island's native bounds.
+
 ## Related
 
 - [DesktopWindowXamlSource](./desktop-window-xaml-source.md)
@@ -29,3 +33,5 @@ using Microsoft.UI;              // WindowId, Win32Interop
 - [DPI and sizing](./dpi-and-sizing.md)
 - [UWP XAML Islands vs WinUI 3 XAML Islands](./uwp-vs-winui3-migration.md)
 - [Limitations and known issues](./limitations.md)
+- [modernize-overview.md](../migration-planning/modernize-overview.md)
+- [migration-decision-guide.md](../migration-planning/migration-decision-guide.md)

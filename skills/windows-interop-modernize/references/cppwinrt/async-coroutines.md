@@ -79,8 +79,12 @@ winrt::fire_and_forget MyClass::MyMediaBinder_OnBinding(MediaBinder const&, Medi
 - Report progress via `co_await winrt::get_progress_token()`, then invoke the token with a progress value; set a provisional result with `progress.set_result(...)`.
 - For safe `this` access inside a class-member coroutine across suspension points, see `weak-references.md`.
 
+- For offloading to the thread pool, `resume_after` / `resume_on_signal` / timeouts (`wait_for`), returning a `com_array` asynchronously, and `resume_foreground` details, see `advanced-concurrency.md`.
+
 ## Related
 
+- [Advanced Concurrency](./advanced-concurrency.md)
+- [Completion Source](./completion-source.md)
 - [Events and Delegates](./events-delegates.md)
 - [Weak References](./weak-references.md)
 - [Error Handling](./error-handling.md)

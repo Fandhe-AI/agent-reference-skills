@@ -63,3 +63,4 @@ winrt::Uri uri_from_cx = from_cx<winrt::Uri>(cx); // C++/CX -> C++/WinRT
 
 - [Move to C++/WinRT from C++/CX](./move-to-winrt-from-cx.md)
 - [Interop with the ABI](./interop-abi.md)
+- [Async interop between C++/WinRT and C++/CX](./interop-winrt-cx-async.md)

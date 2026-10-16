@@ -29,9 +29,12 @@ Preprocessor macros that configure C++/WinRT's generated code (module locking, a
 ## Notes
 
 - All macro settings must be complete before the first C++/WinRT header include, and can't change afterward within the same translation unit.
-- `WINRT_NO_MAKE_DETECTION` is the mechanism referenced elsewhere as "diagnosing direct allocations of implementation types" — leaving it enabled (the default) is what causes the compiler error when you write `MyRuntimeClass x;` instead of `winrt::make<MyRuntimeClass>()`.
+- `WINRT_NO_MAKE_DETECTION` is the mechanism referenced elsewhere as "diagnosing direct allocations of implementation types" — leaving it enabled (the default) is what causes the compiler error when you write `MyRuntimeClass x;` instead of `winrt::make<MyRuntimeClass>()`. See `diag-direct-alloc.md`.
+- For `WINRT_NATVIS` and Visual Studio native debug visualization, see `natvis.md`.
 
 ## Related
 
+- [Diagnosing direct allocations](./diag-direct-alloc.md)
+- [Native debug visualization (natvis)](./natvis.md)
 - [Author APIs and IDL](./author-apis.md)
 - [winrt::init_apartment / winrt::uninit_apartment](./init-apartment.md)
