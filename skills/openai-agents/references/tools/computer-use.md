@@ -24,7 +24,10 @@ Hosted `computer` tool: the model inspects screenshots and returns structured UI
 
 ## Notes
 
-- Deprecated preview tool type `computer_use_preview` used `display_width` / `display_height` / `environment` fields; the current GA `computer` tool batches actions into an `actions[]` array. New integrations should use `computer` with `gpt-5.5`, not `computer_use_preview` — keep the preview path only to maintain older integrations.
+- Deprecated preview tool type `computer_use_preview` used `display_width` / `display_height` / `environment` fields; the current GA `computer` tool batches actions into an `actions[]` array. New integrations should use `computer`, not `computer_use_preview` — keep the preview path only to maintain older integrations; see "Migration from computer-use-preview" in the tools-computer-use-integration guide.
+- For GPT-6 Astra, the official guide recommends code execution; the `computer` tool remains supported as an alternative. The official `computer` tool examples use `gpt-6.1-sol`.
+- In the code-execution path, the `execute_in_sandbox` / `executeInSandbox` helper sends code to your execution environment and returns its observations. It must preserve the browser or desktop session, enforce execution limits, and apply your permission rules.
+- This page is the Responses API / SDK `computer` tool; the Agents API's computer use (OpenAI-managed harness) is a different surface, covered by `agents-api/computer-use.md` in the `agents-api` category.
 - Run the browser/environment isolated, disable extensions, and use disposable containers with resource limits for code execution.
 - Treat screenshots, page text, tool outputs, PDFs, emails, chats, and other third-party content as untrusted input; only user-authored prompt instructions count as valid intent. Require human confirmation immediately before high-risk actions (deleting data, transmitting sensitive information, bypassing security barriers).
 

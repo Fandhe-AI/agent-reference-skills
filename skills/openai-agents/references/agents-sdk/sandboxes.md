@@ -17,7 +17,7 @@ const manifest = new Manifest({
 
 const agent = new SandboxAgent({
   name: "Renewal Packet Analyst",
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions: "Review the workspace before answering.",
   defaultManifest: manifest,
   capabilities: [shell()],
@@ -42,7 +42,7 @@ manifest = Manifest(entries={"account_brief.md": File(content=b"# Northwind Heal
 
 agent = SandboxAgent(
     name="Renewal Packet Analyst",
-    model="gpt-5.6",
+    model="gpt-6-astra",
     instructions="Review the workspace before answering.",
     default_manifest=manifest,
     capabilities=[Shell()],
@@ -83,7 +83,21 @@ result = await Runner.run(
 
 ## Providers
 
-Unix-local and Docker run locally (`UnixLocalSandboxClient`, `DockerSandboxClient`); hosted providers include Blaxel, Cloudflare, Daytona, E2B, Modal, Runloop, and Vercel, each with its own SDK client class. The provider is part of the run configuration, not the agent definition — swap the client while keeping the `SandboxAgent`, manifest, and capabilities stable.
+Start with Unix-local for fast local iteration or Docker for local container isolation; move to a hosted provider when the task needs managed execution, provider-specific isolation, scaling, previews, storage mounts, snapshots, or credentials that live outside your application server.
+
+| Provider | SDK client |
+|---|---|
+| Blaxel | `BlaxelSandboxClient` |
+| Cloudflare | `CloudflareSandboxClient` |
+| Daytona | `DaytonaSandboxClient` |
+| Docker | `DockerSandboxClient` |
+| E2B | `E2BSandboxClient` |
+| Modal | `ModalSandboxClient` |
+| Runloop | `RunloopSandboxClient` |
+| Unix-local | `UnixLocalSandboxClient` |
+| Vercel | `VercelSandboxClient` |
+
+Use each provider's own docs for setup, credentials, isolation, storage, previews, and persistence. The provider is part of the run configuration, not the agent definition — swap the client while keeping the `SandboxAgent`, manifest, and capabilities stable.
 
 ## Resume and state
 
@@ -97,6 +111,9 @@ Resolution order at run time: injected live session > `RunState`-stored session 
 
 ## Notes
 
+- This page covers sandboxes in the Agents SDK, where your application runs the harness (`SandboxAgent`, self-hosted). The Agents API's OpenAI-hosted / self-hosted sandbox (OpenAI-managed harness) is a different thing, covered by the `agents-api` category of this skill.
+- Handle secrets and credentials: treat sandbox credentials as runtime configuration, not prompt content. Do not put them in prompts, agent instructions, task files, committed manifests, or generated artifacts. Prefer provider-native secret systems for hosted providers, scope cloud storage credentials to the mount or provider option that needs them, and use `Manifest.environment` for startup values (mark sensitive or generated entries as ephemeral so they are rebuilt, not persisted).
+- Expose previews and ports: port setup is provider-specific. The agent starts the service in the sandbox, the sandbox client exposes the port, and your application shares or inspects the resulting preview URL.
 - `SandboxAgent` is still an `Agent` — it keeps `instructions`, `prompt`, `tools`, `handoffs`, MCP servers, model settings, structured output, guardrails, and hooks; only the execution boundary changes.
 - A turn is still a model step, not a single shell command or sandbox action.
 - Manifest entry paths are workspace-relative and can't be absolute or escape the workspace with `..`.

@@ -6,7 +6,7 @@ Hosted `file_search` tool: retrieves information from uploaded files through sem
 
 ```javascript
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "What is deep research by OpenAI?",
   tools: [
     {
@@ -22,7 +22,7 @@ Metadata filtering:
 
 ```javascript
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "What is deep research by OpenAI?",
   tools: [
     {

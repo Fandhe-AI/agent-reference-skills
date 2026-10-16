@@ -36,6 +36,9 @@ For HTTP servers, use `--mcp-server-url https://mcp.internal.example.com/mcp` in
 - Supported products: ChatGPT (developer mode), Codex, Responses API, and other OpenAI surfaces that support MCP connectors.
 - Permissions are tunnel-scoped: Read + Manage (create/edit tunnels) and Read + Use (run `tunnel-client` or select tunnels).
 - Enterprise networking features such as outbound proxies and mTLS are supported.
+- Outbound destination: the host running `tunnel-client` needs outbound HTTPS to `api.openai.com:443` (default; paths under `/v1/tunnel/*`), or `mtls.api.openai.com:443` when control-plane mTLS is configured, plus reachability to the private MCP server.
+- Tunnel metadata changes are recorded in the API Platform Audit logs as `tunnel.created`, `tunnel.updated`, and `tunnel.deleted`.
+- Advanced: allowlisted HTTP callouts. `tunnel-client` includes an embedded MCP server, Harpoon, that exposes configured HTTP targets by label and lets callers invoke them through the tunnel with bounded request/response limits. It is not a general-purpose proxy: callers cannot choose arbitrary hosts, and requests are limited to the targets and methods the customer configured.
 
 ## Related
 

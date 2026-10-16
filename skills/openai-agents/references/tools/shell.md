@@ -9,7 +9,7 @@ curl -L 'https://api.openai.com/v1/responses' \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "tools": [
       { "type": "shell", "environment": { "type": "container_auto" } }
     ],
@@ -65,6 +65,7 @@ With hosted shell containers managed by OpenAI (`environment.type: "container_au
 | Name | Type | Description |
 |------|------|-------------|
 | `environment.type` | `"container_auto"` etc. | Hosted container mode, or a local runtime you execute yourself (you handle `shell_call_output`) |
+| `environment.network_policy` | `{ "type": "allowlist", "allowed_domains": string[] }` | Enables outbound network access for a hosted container (e.g. `["pypi.org", "files.pythonhosted.org", "github.com"]`); required in the request in addition to the org allow list |
 | `action.commands` | `string[]` | Commands to run |
 | `action.timeout_ms` | `number` | Timeout hint |
 | `action.max_output_length` | `number` | Output truncation length |
@@ -72,7 +73,7 @@ With hosted shell containers managed by OpenAI (`environment.type: "container_au
 ## Notes
 
 - Hosted containers are Debian 12 based with Python 3.11, Node.js 22.16, Java 17.0, PHP 8.2, Ruby 3.1, Go 1.23 preinstalled. Default working directory `/mnt/data` for downloadable artifacts.
-- Network access is disabled by default; enable outbound connections via domain allowlists (requires org configuration). `domain_secrets` inject credentials as environment variables without exposing raw values to the model.
+- Network access is disabled by default. To enable it, an admin must configure your org allow list in the dashboard, and you must also explicitly set `network_policy` on the container environment in your request. Precedence: the org allow list defines the full set of `allowed_domains`, the request-level `network_policy` further restricts access, and requests fail if `allowed_domains` includes domains outside the org allow list. Allowlisting domains introduces risks such as prompt-injection-driven data exfiltration; only allowlist trusted domains. `domain_secrets` inject credentials as environment variables without exposing raw values to the model.
 - Reusable containers persist across multiple requests (pass `previous_response_id` with a container reference) for multi-turn workflows; skills (versioned tool bundles) can be mounted into containers.
 - Running arbitrary shell commands can be dangerous: always sandbox execution, apply allow/deny lists, and log tool activity for auditing.
 - Operates through the Responses API only (not Chat Completions).

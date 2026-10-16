@@ -26,6 +26,7 @@ tools=[
             "type": "mcp",
             "server_label": "gitmcp",
             "server_url": "https://gitmcp.io/openai/codex",
+            "require_approval": "never",
         }
     )
 ]
@@ -58,6 +59,14 @@ async with MCPServerStdio(
 | `hostedMcpTool` / `HostedMCPTool` | tool factory | For public, remotely-hosted servers where the model calls the remote MCP server through the hosted surface (server-side, no local runtime involvement). |
 | `MCPServerStdio` | class | For local/private MCP servers your runtime launches over stdio and manages connectivity/approvals for. |
 | `mcpServers` / `mcp_servers` | Agent option | Attaches one or more local MCP server connections to an `Agent`. |
+
+## Choose what lives in the SDK
+
+| Need | Start with | Why |
+|------|-----------|-----|
+| Give an agent access to public, remotely hosted MCP tools | Hosted MCP tools in the SDK | The model can call the remote MCP server through the hosted surface |
+| Connect local or private MCP servers from your runtime | SDK-managed MCP servers over stdio or streamable HTTP | Your runtime owns the connection, approvals, and network boundaries |
+| Debug prompts, tools, handoffs, or approvals | Built-in tracing | Traces show the end-to-end record before you formalize evals |
 
 ## Notes
 

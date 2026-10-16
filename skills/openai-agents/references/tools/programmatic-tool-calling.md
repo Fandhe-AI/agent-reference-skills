@@ -80,6 +80,21 @@ Supported tool types for programmatic calling: functions, custom tools, MCP, she
 - Applications must handle the response loop: execute returned client-owned function calls, return results with preserved `caller` metadata, and continue until a final message. With `store: false`, replay all output items; with stored responses, use `previous_response_id`.
 - Design tools to return structured, compact data with a clear `output_schema`; maintain application-level validation and approval gates regardless of caller type.
 
+## Agents API
+
+In the Agents API, Programmatic Tool Calling runs in the OpenAI-managed agent harness and is enabled by default. The harness gives the agent an `exec` tool and makes its existing tools available inside generated JavaScript, so you do not need to wrap them as command-line programs or install them in the sandbox. To disable it, include this entry in `agent.tools`:
+
+```json
+{
+  "type": "programmatic_tool_calling",
+  "enabled": false
+}
+```
+
+- Omitting the entry or its `enabled` field, or a type-only entry `{ "type": "programmatic_tool_calling" }`, leaves it enabled.
+- It also works in conversation-only sessions with `environment.type` set to `none`. Bash (shell), executor MCPs, and other tools that run in a sandbox still require an execution environment.
+- The `allowed_callers` configuration and Responses continuation loop above describe the Responses API integration only.
+
 ## Related
 
 - [Tool Search](./tool-search.md)

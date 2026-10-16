@@ -33,7 +33,7 @@ Custom tool with a Lark grammar (free-form text constrained to a format):
 
 ```javascript
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Use the math_exp tool to add four plus four.",
   tools: [
     {

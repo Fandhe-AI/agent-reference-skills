@@ -15,7 +15,7 @@ write and run code using the python tool to answer the question.
 """
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=[
         {
             "type": "code_interpreter",

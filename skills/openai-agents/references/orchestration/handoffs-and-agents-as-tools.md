@@ -74,6 +74,8 @@ main_agent = Agent(
 - Start with a single agent. Add specialists only when they materially improve capability isolation, policy isolation, prompt clarity, or trace legibility.
 - Keep the routing surface legible: give each specialist a narrow job, and keep `handoffDescription` (TypeScript) / `handoff_description` (Python) short and concrete.
 - Agents-as-tools fits better when the manager should synthesize the final answer, the specialist does a bounded task like summarization or classification, or you want one stable outer workflow with nested specialist calls instead of ownership transfer.
+- After a handoff, the agent that produced the final response is available as `result.lastAgent` (TypeScript) / `result.last_agent` (Python); see Results and state for how it and resumable state affect the next turn.
+- For manager-style workflows, use `agent.asTool()` (TypeScript) / `agent.as_tool()` (Python).
 - Core `Agent` / `Runner` API is covered by the agents-sdk scope; this page covers orchestration decisions only.
 
 ## Related

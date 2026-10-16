@@ -6,7 +6,7 @@ Agent Skills let you upload and reuse versioned bundles of files in hosted and l
 
 ```json
 {
-  "model": "gpt-5.6",
+  "model": "gpt-6-astra",
   "tools": [
     {
       "type": "shell",
@@ -54,6 +54,27 @@ curl -X POST 'https://api.openai.com/v1/skills' \
 - `SKILL.md` matching is case-insensitive; exactly one `skill.md`/`SKILL.md` file per bundle.
 - Front matter validation follows the Agent Skills specification.
 - Max zip upload size 50 MB, max 500 files per version, max 25 MB uncompressed file size.
+
+## Agents API
+
+Agents API sessions do not use the hosted shell's `skill_reference` attachment format. Put the skill directories in the sandbox and register their parent directories in `environment.capability_directories` when creating the session; the harness discovers skills there.
+
+```json
+{
+  "environment": {
+    "type": "self_hosted",
+    "workspace_directory": "/workspace",
+    "capability_directories": [
+      "/workspace/capabilities/legal",
+      "/workspace/capabilities/engineering"
+    ]
+  }
+}
+```
+
+- Paths must point to existing directories inside the sandbox, be absolute and unique, and cannot contain `.` or `..` segments.
+- A session can register up to 32 capability directories.
+- Once the sandbox is available, the harness searches these directories for `SKILL.md` files and adds each discovered skill's name and description to context; the model can then read the full instructions and supporting files.
 
 ## Notes
 
