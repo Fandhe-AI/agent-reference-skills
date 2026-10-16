@@ -2,7 +2,7 @@
 
 Browser-based interface within Figma Dev Mode for connecting design components to code without local CLI installation.
 
-## Usage
+## Signature / Usage
 
 UI procedure page (no code API); steps below replace a code example.
 

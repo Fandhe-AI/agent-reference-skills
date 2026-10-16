@@ -64,7 +64,7 @@ export default {
 
 ```typescript
 const slot = figma.selectedInstance.getSlot('Actions')
-const actions = slot.connectedInstances.map((action) => action.executeTemplate().example)
+const actions = (slot?.connectedInstances ?? []).map((action) => action.executeTemplate().example)
 const example = figma.code`<ActionBar>${actions.flat()}</ActionBar>`
 ```
 
@@ -98,6 +98,8 @@ Parser-based files with variant restrictions (multiple `figma.connect` calls to 
 Set `label` to a temporary value (for example `"TEST"`) in `figma.config.json` and limit `include` to the new files, then `npx figma connect publish --config <path>` and later `npx figma connect unpublish --config <path>`.
 
 ## Notes
+
+- The official example reads slot.connectedInstances directly; an undefined guard is added here because getSlot() returns undefined when the slot property is missing or has no valid reference
 
 - The official `/no-parser/` page was reported identical to this page's source (`/template-files/`) in the update check (same content under a different URL); it was not re-compared in this pass
 - Template files are the only actively maintained way of using Code Connect (since v2.0.0, 2026-08-18)

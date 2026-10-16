@@ -23,6 +23,7 @@ Enables AI agents to create and modify native Figma content (frames, components,
 | File type | Figma Design, FigJam, and Figma Slides |
 | File permission | Edit access to the file |
 | Server | Remote Figma MCP server (supported MCP client required) |
+| Figma seat | Full seat required to write outside your drafts (stated on the Figma MCP server overview page) |
 | Skills | `figma-use` helps the agent use `use_figma` reliably; `figma-spec` reads and writes Figma Specs (open beta) |
 
 ## Notes

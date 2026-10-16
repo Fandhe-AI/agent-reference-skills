@@ -45,7 +45,7 @@ Value returned by `getSlot()`; can be interpolated into `figma.code` to render a
 
 ```javascript
 const slot = figma.selectedInstance.getSlot('Items')
-const items = slot.connectedInstances.map((item) => item.executeTemplate().example)
+const items = (slot?.connectedInstances ?? []).map((item) => item.executeTemplate().example)
 
 const example = figma.code`<Menu>${items}</Menu>`
 ```
@@ -142,6 +142,8 @@ The original Template API is still documented; the API above has nicer ergonomic
 | `properties.children(layerNames)` | Renders children with the given names |
 
 ## Notes
+
+- The official example reads slot.connectedInstances directly; an undefined guard is added here because getSlot() returns undefined when the slot property is missing or has no valid reference
 
 - The official `/template-v2-api/` page was reported identical to this page's source (`/template-api/`) in the update check (same content under a different URL); it was not re-compared in this pass
 - Slots need the latest Code Connect CLI

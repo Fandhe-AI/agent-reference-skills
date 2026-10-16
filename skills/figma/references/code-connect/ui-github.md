@@ -2,7 +2,7 @@
 
 Links a GitHub repository to a Figma library file in Code Connect UI, enabling file path autocomplete and enhanced Figma MCP server context.
 
-## Usage
+## Signature / Usage
 
 UI procedure page (no code API); steps below replace a code example.
 
