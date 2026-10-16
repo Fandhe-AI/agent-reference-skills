@@ -1,5 +1,7 @@
 # Orchestration
 
+Managed Agents のオーケストレーション（deployments / dreams / webhooks / イベントストリーム）。Claude Code CLI の routines / scheduled tasks は anthropic-claude-code-extend を参照。
+
 | Name | Description | Path |
 |------|-------------|------|
 | Dreams | Dreaming is a research preview feature (request access separately) that lets Claude reflect on past sessions to curate an agent's memory. | [dreams.md](./dreams.md) |

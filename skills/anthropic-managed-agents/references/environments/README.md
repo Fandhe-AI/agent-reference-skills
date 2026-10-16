@@ -1,5 +1,7 @@
 # Environments
 
+Managed Agents の実行環境（クラウドサンドボックス / セルフホストサンドボックス / vaults）。Agent SDK 自前ホスティングは anthropic-agent-sdk を参照。
+
 | Name | Description | Path |
 |------|-------------|------|
 | Choosing an agent environment | An environment sets where an agent's tools and code run (in a sandbox). | [choosing-an-environment.md](./choosing-an-environment.md) |

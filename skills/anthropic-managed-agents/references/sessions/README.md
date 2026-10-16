@@ -1,5 +1,7 @@
 # Sessions
 
+Claude Managed Agents のセッション運用ガイド。Agent SDK の sessions は anthropic-agent-sdk、Claude Code のセッションは anthropic-claude-code を参照。skills / tools / mcp-connector ページは Managed Agents からの利用方法で、API 本体は anthropic-api-tools-mcp を参照。
+
 | Name | Description | Path |
 |------|-------------|------|
 | Session budgets | Optional hard spend ceiling set when creating a session, enforced at public list rates. | [budgets.md](./budgets.md) |

@@ -117,11 +117,14 @@ On a supported model, send a `system.message` event to give the agent privileged
 ```python
 client.beta.sessions.events.send(
     session.id,
-    events=[{"type": "system.message", "content": [{"type": "text", "text": "The user's current timezone is America/New_York."}]}],
+    events=[
+        {"type": "user.message", "content": [{"type": "text", "text": "..."}]},
+        {"type": "system.message", "content": [{"type": "text", "text": "The user's current timezone is America/New_York."}]},
+    ],
 )
 ```
 
-Note: the example above sends `system.message` on its own, as in the guide. The API reference (`POST /v1/sessions/{id}/events`) states "At most one per request: it must be the final event and immediately follow the `user.message`, `user.tool_result`, or `user.custom_tool_result` it accompanies". If unsure, send it in the same request right after the `user.message`; see `../endpoints/sessions.md`.
+Note: the API reference (`POST /v1/sessions/{id}/events`) requires `system.message` to be the final event and to immediately follow the `user.message`, `user.tool_result`, or `user.custom_tool_result` it accompanies; see `../endpoints/sessions.md`.
 
 ### Supported models
 
