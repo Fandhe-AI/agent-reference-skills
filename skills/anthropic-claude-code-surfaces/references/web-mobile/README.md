@@ -2,6 +2,7 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Use Claude Code on the web | Move sessions between web and terminal with --cloud and --teleport. | [claude-code-on-the-web.md](./claude-code-on-the-web.md) |
-| Claude Code on mobile | Start, monitor, and steer Claude Code tasks from your phone with the Claude app… | [mobile.md](./mobile.md) |
-| Get started with Claude Code on the web | Run Claude Code in the cloud from your browser or phone at claude.ai/code. | [web-quickstart.md](./web-quickstart.md) |
+| Use Claude Code in the cloud | Run Claude Code sessions in the cloud from your browser, phone, Desktop app, or terminal, move them with `--cloud` and `--teleport`, and auto-fix pull requests. Available on Pro, Max, and Team plans, plus Enterprise users with premium seats or Chat + Claude Code seats. Sessions run on Anthropic-managed infrastructure or on an organization self-hosted environment, and can start from the browser (claude.ai/code), mobile, Desktop (select Cloud), the terminal (`claude --cloud`), or routines. | [claude-code-on-the-web.md](./claude-code-on-the-web.md) |
+| Let Claude coordinate ongoing work with Projects | A project is one ongoing conversation where Claude coordinates a stream of related work, starting a thread (usually a cloud session) for each task. Threads run in parallel, share the project's repositories, instructions, and memory, and can be checked and steered from a phone. | [claude-projects.md](./claude-projects.md) |
+| Claude Code on mobile | Start, monitor, and steer Claude Code tasks from your phone with the Claude app for iOS and Android. The app is a client for sessions rather than a place where code runs; it reaches cloud sessions, a local session via Remote Control, or the Desktop app via Dispatch. | [mobile.md](./mobile.md) |
+| Get started with Claude Code in the cloud | Run Claude Code in the cloud from your browser or phone at claude.ai/code. Connect a GitHub repository, submit a task, and review the PR without local setup. Available on Pro, Max, and Team plans, and for Enterprise users with premium seats or Chat + Claude Code seats. | [web-quickstart.md](./web-quickstart.md) |
