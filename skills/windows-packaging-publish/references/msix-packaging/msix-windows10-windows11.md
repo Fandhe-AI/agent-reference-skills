@@ -28,7 +28,7 @@ Windows 10 alternatives:
 | Shared package containers | Shared Win32 data location (`%ProgramData%`, named pipe) outside the container, or related packages in one bundle |
 | Legacy context menu support | Package Support Framework, or deliver the extension through a separate Win32 installer |
 | Mutable package directories | `ApplicationData.Current.LocalFolder` or a location outside the package |
-| MSIX Persistent Identity | Store data outside the container (`%APPDATA%`, `%LOCALAPPDATA%` outside Packages, `%ProgramData%`) |
+| MSIX Persistent Identity | No documented alternative in the source (publisher bridging is unavailable on Windows 10, so changing the signing certificate changes the package identity) |
 
 ## Notes
 
@@ -36,7 +36,8 @@ Windows 10 alternatives:
 - Windows 10 2004+: signed non-Store MSIX can generally be double-click installed; pre-2004 needs Developer Mode or `AllowAllTrustedApps`. Unsigned packages need extra trust configuration; policy can restrict installs.
 - The source page states that LTSC 2021 (build 19044) is equivalent to 20H2 and lacks flexible virtualization and Start menu groups. Build 19044 is the 21H2 servicing baseline, which conflicts with the page's own "Windows 10 21H1+" row in the table above; verify on the target LTSC image before relying on either statement.
 - Known Windows 10 issue categories: registry virtualization edge cases, App Installer reliability with certain network configurations, Packaging Tool compatibility with some installer types; check open issues in microsoft/msix-packaging.
-- Without Persistent Identity, `LocalState` data is deleted on uninstall.
+- `LocalState` data is deleted on uninstall.
+- Source conflict: this page describes Persistent Identity as surviving uninstall and reinstall, whereas persistent-identity.md defines it as publisher bridging that lets updates continue when the signing certificate changes. Treat the persistent-identity.md definition as authoritative for the feature itself.
 - The page lists MSIX Packaging Tool, Advanced Installer, and Conveyor as packaging tools for Windows 10 targets.
 - Recommendation: avoid Windows 11-only features if `MinVersion` targets Windows 10, test on Windows 10 specifically, and plan a Win10 EOL strategy.
 - Source: https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/msix-windows10-windows11, last updated 2026-05-29 (ms.date).
@@ -45,5 +46,6 @@ Windows 10 alternatives:
 
 - [MSIX Features and Supported Platforms](./supported-platforms.md)
 - [Flexible Virtualization](./flexible-virtualization.md)
+- [Persistent Identity](../package-identity/persistent-identity.md)
 - [Package Support Framework](./package-support-framework.md)
 - [Packaging Overview and Migrating from Legacy Installers](./migrate-from-legacy-installers.md)

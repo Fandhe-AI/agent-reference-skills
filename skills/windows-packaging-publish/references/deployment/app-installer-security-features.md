@@ -9,7 +9,6 @@ Registry policy values under `HKLM:\Software\Policies\Microsoft\Windows\AppInsta
 ```text
 EnableMSAppInstallerProtocol=1
 EnableMsixAllowedZones=1
-HKLM:\Software\Policies\Microsoft\Windows\AppInstaller\MsixAllowedZones  UntrustedSites=1
 ```
 
 ## Options / Props
@@ -30,6 +29,7 @@ HKLM:\Software\Policies\Microsoft\Windows\AppInstaller\MsixAllowedZones  Untrust
 
 ## Notes
 
+- The source's "Allow zone" example sets `UntrustedSites=1` under `MsixAllowedZones`. This lifts the default block on Untrusted Sites and weakens install protection, so it is not recommended as a default configuration. The source documents no value for the blocking direction, so none is given here.
 - Internet warning: App Installer shows a warning banner whenever a package is installed from the internet; verify the source on the dialog is trusted.
 - SmartScreen: before downloading a package from an Internet source, App Installer consults Microsoft SmartScreen's URL Reputation service. On a failure the user can **Cancel** or **Continue** (not recommended); Continue lets App Installer open the package.
 - Blocked URLs show the dialog "Your internet security settings prevented this file from being opened".

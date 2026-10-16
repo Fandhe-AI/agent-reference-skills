@@ -98,15 +98,15 @@ PSF files copied from `Microsoft.PackageSupportFramework.<Version>\bin` to the p
 | PSFLauncher64.exe | PSFLauncher32.exe |
 | PSFRuntime64.dll | PSFRuntime32.dll |
 | PSFRunDll64.exe | PSFRunDll32.exe |
-| FileRedirectionFixup64.dll (write-permission fix only) | listed in the source as FileRedirectionFixup64.dll |
+| FileRedirectionFixup64.dll (write-permission fix only) | FileRedirectionFixup32.dll (the source table wrongly lists FileRedirectionFixup64.dll; see Notes) |
 
 ## Notes
 
 - Tools needed: NuGet client (`nuget.exe install Microsoft.PackageSupportFramework`), Windows 10 SDK (Signing Tools for Desktop Apps, SDK for UWP C++ Apps, UWP Apps Localization), SysInternals Process Monitor (filter: Process Name is `<app>.exe`, Result is not `SUCCESS`).
 - Windows apps redirect application-related directories to `C:\Program Files\WindowsApps`; a subfolder created by the original installer (e.g. `C:\Program Files\Vendor\subfolder`) will not be found at runtime.
 - Set `config.json` values from `AppxManifest.xml`: `id` from `Application Id`, `executable` from the package-relative `Executable` path, `workingDirectory` from its parent folder, `processes.executable` from the file name without path and extension.
-- For the write-permission fix the `dll` is `FileRedirectionFixup64.dll` for x64; the source says to use `FileRedirectionFixup86.dll` for x86 or unknown architecture, while its file table lists `FileRedirectionFixup64.dll` for both.
-- Sources: https://learn.microsoft.com/en-us/windows/msix/psf/psf-current-working-directory, last updated 12/16/2020 (ms.date); https://learn.microsoft.com/en-us/windows/msix/psf/psf-launch-apps-with-parameters, last updated 12/16/2020 (ms.date); https://learn.microsoft.com/en-us/windows/msix/psf/psf-filesystem-writepermission, last updated 07/02/2026 (ms.date).
+- For the write-permission fix the `dll` is `FileRedirectionFixup64.dll` for x64; the source says to use `FileRedirectionFixup86.dll` for x86 or unknown architecture, while its file table lists `FileRedirectionFixup64.dll` for both. Both are wrong: use `FileRedirectionFixup32.dll` for x86 (confirmed in the `bin` folder of the `Microsoft.PackageSupportFramework` NuGet package 1.0.240212.1, which ships `FileRedirectionFixup32.dll` and `FileRedirectionFixup64.dll`).
+- Sources: https://learn.microsoft.com/en-us/windows/msix/psf/psf-current-working-directory, last updated 12/16/2020 (ms.date); https://learn.microsoft.com/en-us/windows/msix/psf/psf-launch-apps-with-parameters, last updated 12/16/2020 (ms.date); https://learn.microsoft.com/en-us/windows/msix/psf/psf-filesystem-writepermission, last updated 07/02/2026 (ms.date); https://www.nuget.org/packages/Microsoft.PackageSupportFramework/1.0.240212.1 (package contents, x86 fixup DLL name).
 
 ## Related
 
