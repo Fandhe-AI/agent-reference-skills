@@ -219,6 +219,8 @@ The PostgreSQL backend maps BullMQ's primitives onto PostgreSQL features:
 - Job-processing throughput is usually lower than Redis (often around ~1.5–2× fewer jobs/s on similar setups), but this is workload-dependent. PostgreSQL performs durable transactional writes by default (WAL + MVCC + `fsync`).
 - Bulk enqueues (`addBulk`, flows) come much closer to Redis, because many jobs are inserted per transaction.
 
+The actual numbers depend heavily on your hardware, your PostgreSQL configuration and where the database lives relative to your workers, so benchmark with your own workload before committing to capacity figures.
+
 ### Indicative numbers
 
 The figures below are a rough illustration measured on an Apple Silicon laptop (M-series, ~12 cores) with PostgreSQL running locally, trivial no-op jobs and default (durable) settings. They exist only to give an order of magnitude; real workloads with meaningful payloads and processors will differ, and the Redis column is the same machine for context, not a formal benchmark.
@@ -243,6 +245,7 @@ The figures below are a rough illustration measured on an Apple Silicon laptop (
 
 ## Notes
 
+- Figures in "Indicative numbers" come from the official BullMQ v6.3.15 docs (docs/gitbook/guide/postgresql.md).
 - Migration (v6.0 → v6.1): automatic migrations on first connect were removed; call `runMigrations` explicitly from a deployment step (see Migrations)
 - The backend implements the full datastore-agnostic API (queues, workers, flows, job schedulers, rate limiting, prioritization, delayed jobs, deduplication, metrics and events), so application code is identical across backends. Redis-specific concerns (Redis Cluster, `maxmemory-policy`, etc.) don't apply; the relevant knob on PostgreSQL is `max_connections`.
 - `getBackend()` always returns the currently configured backend. Redis-only escape hatches (raw Redis `client`, `redisVersion`, and similar) exist only when the backend is Redis.
@@ -255,3 +258,4 @@ The figures below are a rough illustration measured on an Apple Silicon laptop (
 - [Connections](../connections.md)
 - [Migrate from v5 to v6](../migrations/migrate-from-v5-to-v6.md)
 - [Architecture](../architecture.md)
+- [PostgreSQL (official, v6.3.15)](https://docs.bullmq.io/guide/postgresql)

@@ -83,7 +83,7 @@ const queue = new Queue('myqueue', { connection: {} }, myBackendFactory);
 ## Notes
 
 - Prioritized jobs use values from `1` to `2^21 - 1` (2,097,151), where a lower number is always a higher priority. This follows the Unix `nice` convention. A `priority` of `0` means no explicit priority is set, but since those jobs are always processed before any prioritized job, `0` can effectively be seen as the highest priority of all.
-- `active` additionally covers `waiting-children` only for flows; `failed` also results from a job stalling or the processor throwing.
+- `waiting-children` is a separate state used only by flows (`FlowProducer`): the parent job is not processed directly and moves to `wait`, `delayed` or `prioritized` once its last child completes. `failed` also results from a job stalling or the processor throwing.
 - Active jobs hold a lock so other workers do not process the same job; the lock is renewed periodically by the worker (default lock duration 30 seconds).
 - Redis must be configured with `maxmemory-policy=noeviction` (Redis backend).
 - Migration (v5 → v6): the `Connection` class parameter formerly injectable as the third constructor argument was replaced by the optional `BackendFactory` argument (the `connection` option itself still takes `{ host, port }` etc.). APIs exposing Redis internals such as `Queue#client`, `Queue#redisVersion`, `Queue#databaseType`, `Worker#blockingClient` and `FlowProducer#client` were removed; reach the raw Redis client through `getBackend()` (a `RedisQueueBackend`).
@@ -91,5 +91,6 @@ const queue = new Queue('myqueue', { connection: {} }, myBackendFactory);
 ## Related
 
 - [Going to production](./going-to-production.md)
+- [Architecture (official, v6.3.15)](https://docs.bullmq.io/guide/architecture)
 - [Parallelism and concurrency](./parallelism-and-concurrency.md)
 - [Troubleshooting](./troubleshooting.md)
