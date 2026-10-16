@@ -29,6 +29,12 @@ encoder.setRenderPipelineState(pipelineState)
 | `maxTotalThreadsPerThreadgroup` | `Int` | Max threads per threadgroup (tile shaders) |
 | `threadgroupSizeMatchesTileSize` | `Bool` | Whether threadgroup size must match tile size (tile shaders) |
 | `reflection` | `MTLRenderPipelineReflection?` | Reflection metadata, if available |
+| `functionHandle(function:stage:)` | `(any MTLFunctionHandle)?` | Function handle for a function this pipeline state links at the binary level (`MTL4BinaryFunction`) (26.0+) |
+| `functionHandle(withName:stage:)` | `(any MTLFunctionHandle)?` | Function handle for a function this pipeline links at the Metal IR level (26.0+) |
+| `makeRenderPipelineDescriptorForSpecialization()` | `MTL4PipelineDescriptor` | Creates a render pipeline descriptor from this pipeline for use in pipeline specialization with `MTL4Compiler` (26.0+) |
+| `requiredThreadsPerMeshThreadgroup` | `MTLSize` | Required size of every mesh shader threadgroup, set in `MTLMeshRenderPipelineDescriptor` (26.0+) |
+| `requiredThreadsPerObjectThreadgroup` | `MTLSize` | Required size of every object shader threadgroup, set in `MTLMeshRenderPipelineDescriptor` (26.0+) |
+| `requiredThreadsPerTileThreadgroup` | `MTLSize` | Required size of every tile shader threadgroup (26.0+) |
 
 ## Notes
 

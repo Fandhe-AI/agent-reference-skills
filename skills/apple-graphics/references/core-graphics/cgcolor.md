@@ -29,6 +29,7 @@ context.fill(CGRect(x: 0, y: 0, width: 100, height: 100))
 | `init(genericCMYKCyan:magenta:yellow:black:alpha:)` | Generic CMYK color space |
 | `init(colorSpace:components:)` | Arbitrary color space with component array |
 | `init(patternSpace:pattern:components:)` | Pattern-based color |
+| `init?(headroom:colorSpace:red:green:blue:alpha:)` | HDR color with a content headroom: `init?(headroom: Float, colorSpace: CGColorSpace, red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat)` (26.0+) |
 | `copy(alpha:)` | Returns a copy with a substituted alpha value |
 
 ### Properties
@@ -40,6 +41,7 @@ context.fill(CGRect(x: 0, y: 0, width: 100, height: 100))
 | `components` | `[CGFloat]?` | All color components including alpha |
 | `numberOfComponents` | `Int` | Component count including alpha |
 | `pattern` | `CGPattern?` | Pattern (for pattern color spaces only) |
+| `contentHeadroom` | `Float` | Content headroom of the color (26.0+) |
 
 ### Type Properties (System Colors)
 

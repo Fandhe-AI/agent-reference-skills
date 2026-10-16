@@ -79,6 +79,14 @@ view.layer.addSublayer(layer)
 | `rasterizationScale` | `CGFloat` | Scale for rasterized bitmap. |
 | `drawsAsynchronously` | `Bool` | Draw layer content on a background thread. |
 
+### Dynamic Range (HDR, 26.0+)
+
+| Name | Type | Description |
+|------|------|-------------|
+| `preferredDynamicRange` | `CALayer.DynamicRange` | Preferred dynamic range of the layer's content (get/set). |
+| `CALayer.DynamicRange` | struct | Dynamic range value type. |
+| `contentsHeadroom` | `CGFloat` | Headroom of the layer's contents (get/set). |
+
 ### Hierarchy
 
 | Name | Type | Description |
@@ -88,7 +96,7 @@ view.layer.addSublayer(layer)
 | `delegate` | `CALayerDelegate?` | Object receiving layer delegate callbacks. |
 | `name` | `String?` | An optional name for the layer. |
 
-## Key Methods
+### Key Methods
 
 ```swift
 // Hierarchy management
@@ -127,6 +135,7 @@ func model() -> Self
 ## Notes
 
 - iOS 2.0+, iPadOS 2.0+, macOS 10.5+, tvOS 9.0+, visionOS 1.0+, Mac Catalyst 13.1+
+- `wantsExtendedDynamicRangeContent` is deprecated in 26.0 ("Use preferredDynamicRange instead").
 - Set `contentsScale` to `UIScreen.main.scale` when using raster content for correct resolution.
 - Use `presentation()` to read the in-flight animated values; use `model()` to access the model-layer values.
 - Setting `shadowPath` explicitly avoids expensive per-frame path computation and dramatically improves shadow rendering performance.

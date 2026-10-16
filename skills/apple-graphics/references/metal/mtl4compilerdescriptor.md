@@ -25,5 +25,6 @@ descriptor.label = "MyCompiler"
 
 ## Related
 
+- [MTL4Compiler](./mtl4compiler.md)
 - [MTL4RenderPipelineDescriptor](./mtl4renderpipelinedescriptor.md)
 - [MTLLibrary](./mtllibrary.md)

@@ -42,17 +42,26 @@ let outputImage = filter.outputImage
 | `previewImage` | `CIImage?` | Auxiliary image representing a preview of the original image |
 | `scaleFactor` | `Float` | Desired scale factor to draw the output image |
 | `sharpnessAmount` | `Float` | Amount of sharpness to apply to edges |
+| `isHighlightRecoverySupported` | `Bool` | Whether highlight recovery is supported (26.0+) |
+| `isHighlightRecoveryEnabled` | `Bool` | Whether highlight recovery is enabled; get/set (26.0+) |
 
 ### Type Methods
 
 | Method | Description |
 |--------|-------------|
-| `supportedCameraModels(with:)` | Returns `[String]` of supported camera models for a given decoder version |
+| `supportedCameraModels(with:)` | Returns `[String]` of supported camera models for a given decoder version: `class func supportedCameraModels(with version: CIRAWDecoderVersion) -> [String]` (27.0+) |
+
+### Instance Methods
+
+| Method | Description |
+|--------|-------------|
+| `downloadResources(timeout:completionHandler:) -> Progress` | `func downloadResources(timeout: TimeInterval, completionHandler: @escaping ((any Error)?) -> Void) -> Progress` (iOS 27.0+) |
 
 ## Notes
 
 - iOS 15.0+, iPadOS 15.0+, macOS 12.0+, Mac Catalyst 15.0+, tvOS 15.0+, visionOS 1.0+
 - Query `is*Supported` properties (e.g. `isLensCorrectionSupported`, `isDetailSupported`) before enabling the corresponding adjustment, since RAW support varies by camera/decoder.
+- `downloadAllResources(timeout:completionHandler:)` (class method, `-> Progress`) is listed in the 27.2 beta SDK only (beta at the time of retrieval).
 - Inherits from `CIFilter`; use in conjunction with `CIContext` for rendering.
 
 ## Related

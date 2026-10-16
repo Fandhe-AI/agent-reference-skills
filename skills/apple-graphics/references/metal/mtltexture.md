@@ -29,6 +29,9 @@ let texture = device.makeTexture(descriptor: desc)!
 | `usage` | `MTLTextureUsage` | Allowed uses: `.shaderRead`, `.shaderWrite`, `.renderTarget`, etc. |
 | `isFramebufferOnly` | `Bool` | `true` if the texture is only for render-target use |
 | `allowGPUOptimizedContents` | `Bool` | Whether the GPU may store data in a compressed/optimized layout |
+| `minLOD` | `Float` | Lowest mipmap level of detail for the texture, the lower limit of the LOD range that texture operations access (iOS 27.0+) |
+| `newTextureView(with:)` | `MTLTexture?` | Creates a texture sharing the source's storage with different but compatible properties given by a `MTLTextureViewDescriptor` (26.0+) |
+| `sparseTextureTier` | `MTLTextureSparseTier` | Query support tier for sparse textures (26.0+) |
 | `replace(region:mipmapLevel:withBytes:bytesPerRow:)` | `Void` | Copies CPU data into a mipmap level |
 | `getBytes(_:bytesPerRow:from:mipmapLevel:)` | `Void` | Reads a mipmap level back to CPU memory |
 | `makeTextureView(pixelFormat:)` | `MTLTexture?` | Creates a view reinterpreting the texture as a different pixel format |
@@ -38,6 +41,7 @@ let texture = device.makeTexture(descriptor: desc)!
 
 - iOS 8.0+, iPadOS 8.0+, macOS 10.11+, tvOS, visionOS 1.0+, Mac Catalyst 13.1+.
 - Conforms to `MTLResource`.
+- `makeRemoteTextureView(_:)` and `remoteStorageTexture` are deprecated in macOS 27.0 (message: "Not applicable on Apple Silicon").
 - Texture views share storage with the source; writes to a view are visible through the original texture.
 - Set `usage` to include `.renderTarget` when the texture will be used as a render-pass attachment — this can significantly improve performance on tile-based GPUs.
 

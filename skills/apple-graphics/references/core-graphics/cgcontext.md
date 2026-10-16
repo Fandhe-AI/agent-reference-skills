@@ -97,6 +97,21 @@ context.drawLinearGradient(gradient,
 | `clipToMask(_:mask:)` | Sets the clipping region using an image mask |
 | `boundingBoxOfClipPath` | The smallest rectangle enclosing the clipping region |
 
+### HDR & Attributes (26.0+)
+
+| Member | Description |
+|--------|-------------|
+| `contentToneMappingInfo` | `CGContentToneMappingInfo` (get/set) |
+| `CGContext.AuxiliaryInfo` | Struct type |
+| `synchronizeAttributes()` | Method |
+
+### Bitmap Context Initializers
+
+| Initializer | Description |
+|-------------|-------------|
+| `init?(data: UnsafeMutableRawPointer?, width: Int, height: Int, bitsPerComponent: Int, bytesPerRow: Int, space: CGColorSpace?, bitmapInfo: CGBitmapInfo)` | Typed bitmap context (wraps `CGBitmapContextCreate`) |
+| `init?(data:width:height:bitsPerComponent:bytesPerRow:space:bitmapInfo:releaseCallback:releaseInfo:)` | Typed overload with `bitmapInfo: CGBitmapInfo`, `releaseCallback: CGBitmapContextReleaseDataCallback?`, `releaseInfo: UnsafeMutableRawPointer?` |
+
 ### Path Query
 
 | Property | Description |
@@ -109,6 +124,10 @@ context.drawLinearGradient(gradient,
 ## Notes
 
 Available on iOS 2.0+, macOS 10.0+, tvOS 9.0+, watchOS 2.0+, visionOS 1.0+.
+
+PDF tagging (marked content) methods are available on iOS / macOS / visionOS 27.0+ (no tvOS entry): `addStructureTreeRootChild(_:)`, `beginMarkedContentSequence(_:)` / `endMarkedContentSequence()`, `beginNonStructuralMarkedContentSequence(_:)`, `beginObjectReference()` / `endObjectReference()`.
+
+In the iOS 27.2 beta SDK (beta at the time of retrieval), the two `init(data:...space: CGColorSpace, bitmapInfo: UInt32)` overloads are deprecated ("update space parameter to CGColorSpace?, bitmapInfo parameter to CGBitmapInfo"); use the typed overloads listed under Bitmap Context Initializers.
 
 ## Related
 

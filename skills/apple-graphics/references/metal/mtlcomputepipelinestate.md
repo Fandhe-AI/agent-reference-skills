@@ -34,6 +34,10 @@ encoder.endEncoding()
 | `gpuResourceID` | `MTLResourceID` | Unique identifier for use in argument buffers |
 | `supportIndirectCommandBuffers` | `Bool` | Whether encoding into indirect command buffers is supported |
 | `reflection` | `MTLComputePipelineReflection?` | Reflection metadata |
+| `functionHandle(function:)` | `(any MTLFunctionHandle)?` | Function handle for a function this pipeline links at the binary level (`MTL4BinaryFunction`) (26.0+) |
+| `functionHandle(withName:)` | `(any MTLFunctionHandle)?` | Function handle for a function this pipeline links at the Metal IR level, by name (26.0+) |
+| `forwardProgressUsage` | `MTLForwardProgressUsage` | Read-only `MTLForwardProgressUsage` property; no official abstract (27.0+) |
+| `recommendedPersistentThreadgroupsPerGrid(forThreadsPerThreadgroup:)` | `Int` | Method taking an `MTLSize` threads-per-threadgroup and returning an `Int`; no official abstract (27.0+) |
 
 ## Notes
 
@@ -41,6 +45,8 @@ encoder.endEncoding()
 - Conforms to `MTLAllocation` and `Sendable`.
 - Use `threadExecutionWidth` and `maxTotalThreadsPerThreadgroup` to compute optimal threadgroup sizes dynamically.
 - Create via `MTLDevice.makeComputePipelineState(function:)` or `makeComputePipelineState(descriptor:)` (descriptor form supports indirect command buffers and binary functions).
+- `MTLForwardProgressUsage` cases are `automatic` / `simdGroupParallel` / `weak`, and `MTLContentionRelief` cases are `automatic` / `none` (both iOS 27.0+). They are specified through `forwardProgressUsage` / `contentionRelief` on `MTLComputePipelineDescriptor` / `MTL4ComputePipelineDescriptor`. The official pages give no behavioral description for them.
+- Overall compute pipeline setup and GPU compute optimization belong to the apple-silicon skill; this skill covers the pipeline state object itself.
 
 ## Related
 

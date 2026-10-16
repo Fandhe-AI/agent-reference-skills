@@ -32,10 +32,13 @@ commandBuffer.endCommandBuffer()
 ## Notes
 
 - iOS 26.0+, iPadOS 26.0+, Mac Catalyst 26.0+, macOS 26.0+, tvOS 26.0+, visionOS 26.0+.
-- Metal 4 API, distinct from the classic `MTLCommandBuffer`. Requires an explicit `MTL4CommandAllocator` via `beginCommandBuffer(allocator:)`/`endCommandBuffer()`, and is created independently of the command queue rather than via `makeCommandBuffer()`.
+- Metal 4 API, distinct from the classic `MTLCommandBuffer`. Requires an explicit [MTL4CommandAllocator](./mtl4commandallocator.md) via `beginCommandBuffer(allocator:)`/`endCommandBuffer()`, and is created independently of the command queue rather than via `makeCommandBuffer()`.
 
 ## Related
 
 - [MTLCommandBuffer](./mtlcommandbuffer.md)
 - [MTL4CommandQueue](./mtl4commandqueue.md)
 - [MTL4ArgumentTable](./mtl4argumenttable.md)
+- [MTL4CommandAllocator](./mtl4commandallocator.md)
+- [MTL4RenderCommandEncoder](./mtl4rendercommandencoder.md)
+- [MTLResidencySet](./mtlresidencyset.md)
