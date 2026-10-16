@@ -40,7 +40,7 @@ build lib.so : LINK source.o
 
 | Name | Type | Description |
 |------|------|-------------|
-| `ninja.abiFilters` | list | ABIs to build. Valid values: `x86`, `x86-64`, `armeabi-v7a`, `arm64-v8a`. |
+| `ninja.abiFilters` | list | ABIs to build. Valid values: `x86`, `x86_64`, `armeabi-v7a`, `arm64-v8a`. |
 | `ninja.path` | path | C/C++ project file; format is arbitrary. Changes trigger a Gradle sync prompt in Android Studio. |
 | `ninja.configure` | path | Script run by Gradle to configure the C/C++ project (on first build, during Gradle sync, or when configure script inputs change). |
 | `ninja.arguments` | list | Arguments passed to the configure script; may use macros below. |
@@ -62,6 +62,7 @@ build lib.so : LINK source.o
 - AGP and Android Studio need the list of C/C++ source files with Clang flags, and the list of output libraries (`.so`, `.a`, or executable).
 - Best practice: name outputs with `phony` rules (`build curl: phony /path/to/lib.so`) so they can be used in `ninja.targets`; declare an `all` phony target as the default set of libraries built when no targets are specified.
 - To wrap a non-Ninja build system (e.g. MSBuild), add a Ninja output with the `.passthrough` extension (e.g. `build curl.passthrough : MBSUILD_CURL`) defining how AGP invokes the underlying build.
+- The official page lists `x86-64`; the Android NDK ABI identifier is `x86_64`.
 - Not the same as the built-in CMake / ndk-build integration (`externalNativeBuild { cmake { } }`).
 - Source snippet uses Groovy-style `[ ]` lists and is missing a closing brace; adapted to valid Kotlin DSL (`listOf(...)`).
 - The source template ends both `command` lines with an unspecified `{other flags}` placeholder (no concrete flags given); omitted here to keep a minimal example.

@@ -88,6 +88,7 @@ android {
 - The source page states the app `minSdk` is automatically the maximum of all library `minSdk` values; in practice manifest merger reports an error instead.
 - Dependency Guard and Dependency Check are third-party Gradle plugins; the source strongly recommends enabling Dependency verification.
 - Do not upgrade source code or resources while capturing the baseline diff; upgrade dependencies and build changes only.
+- Per the Dependency Guard README (https://github.com/dropbox/dependency-guard), `dependencyGuard` compares against baselines or generates them if they don't exist; use `dependencyGuardBaseline` to intentionally re-baseline. There is no `--baseline` flag.
 - Dependency Guard captures only library dependencies; SDK and JDK versions show up in the VCS diff of your build files.
 - Lint is not normally run by a Studio or command-line build unless using the `build` or `lint` targets; run `gradlew build` or `gradlew lint` in CI (at least nightly).
 - Mitigation options: accept, reject, or mitigate by batching upgrades into smaller sets, investigating, testing, reading source, and changing code. Document the decisions.
