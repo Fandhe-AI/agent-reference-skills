@@ -11,7 +11,7 @@ hipGetDeviceProperties(&props, 0);
 printf("Device: %s\n", props.name);
 printf("Global Memory: %zu\n", props.totalGlobalMem);
 printf("Compute Units: %d\n", props.multiProcessorCount);
-printf("L2 Cache Size: %zu\n", props.l2CacheSize);
+printf("L2 Cache Size: %d\n", props.l2CacheSize);
 ```
 
 ## Options / Props
@@ -37,6 +37,8 @@ Runtime identifiers: `Virtual_XCC_ID` (identifies an XCC instance), `NUM_XCC_IN_
 
 ## Notes
 
+- The upstream snippet prints `l2CacheSize` with `%zu`, but the field is declared `int` in `hip_runtime_api.h`; `%d` is used here.
+- Available compute/memory partition modes vary by GPU and environment; the ROCm 10.1.0 partitioning support matrix (`docs/data/partitioning-support.yaml`, rocm-docs @7a49af89) lists e.g. MI300X bare-metal SPX/NPS1, DPX/NPS2, CPX/NPS4 and MI350X/MI355X bare-metal SPX, DPX, QPX, CPX, and does not list TPX; check the matrix for the target GPU.
 - HIP exposes only aggregate device-level properties. XCC / XCD / NUMA detail is not directly exposed; use HSA APIs or profiling tools.
 - Each compute partition (XCP) appears as an independent HIP device.
 - Approximate partition count via HSA:
