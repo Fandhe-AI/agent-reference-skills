@@ -68,12 +68,14 @@ const App = () => (
 | `closeOnSelect` | `boolean` | Auto-close after selection (default: `true`) |
 | `lazyMount` | `boolean` | Defer mounting of content |
 | `loopFocus` | `boolean` | Cycle through items with keyboard |
+| `hideMode` | `HideMode` (default: `'display-none'`) | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ (5.38.0) |
 
 ## Notes
 
 - Complies with the WAI-ARIA Listbox pattern. Keyboard: Space/Enter to open/select, Arrow keys to navigate, Escape to close, A-Z for typeahead.
 - Data attributes: `[data-scope="select"]`, `[data-part]`, `[data-state="open"|"closed"]`, `[data-disabled]`, `[data-highlighted]`, `[data-invalid]`.
 - Requires a collection built with `createListCollection` (supports grouping via `groupBy`, custom object mapping, async loading).
+- 5.39.3 exports the types `SelectIntlTranslations`, `SelectPositioningOptions`, `SelectScrollToIndexDetails` and `SelectSelectionDetails`.
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
 
 ## Related

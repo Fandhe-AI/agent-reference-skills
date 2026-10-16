@@ -60,6 +60,8 @@ const tour = useTour({ steps: [/* ... */] })
 - Set `box-sizing: border-box` on all elements for accurate target measurement.
 - Ensure `body` has `position: relative`.
 - `wait`-type steps cannot call `show()` but support async operations before advancing.
+- `Tour.Root` also accepts `hideMode` (`'display-none'` default, or `'activity'` with React 19+; 5.38.0).
+- 5.39.3 exports the Tour types, including `TourStepsChangeDetails` for `onStepsChange`, plus flat `Tour*` aliases for the step, action, and callback detail types; `Tour.Spotlight` now keeps its exit animation when the tour closes.
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
 
 ## Related

@@ -1,4 +1,4 @@
-# utilities
+# Utilities
 
 | Name | Description | Path |
 | --- | --- | --- |
@@ -8,10 +8,11 @@
 | Focus Trap | Confine keyboard navigation to a container | [focus-trap.md](./focus-trap.md) |
 | Format Byte | Format byte values with units | [format-byte.md](./format-byte.md) |
 | Format Number | Format numbers to a locale via Intl.NumberFormat | [format-number.md](./format-number.md) |
-| Format Time | Format time values to a locale | [format-time.md](./format-time.md) |
 | Format Relative Time | Format relative time intervals via Intl.RelativeTimeFormat | [format-relative-time.md](./format-relative-time.md) |
+| Format Time | Format time values to a locale | [format-time.md](./format-time.md) |
 | Frame | Render content inside an iframe with size tracking | [frame.md](./frame.md) |
 | Highlight | Emphasizes matching text within a larger body of text | [highlight.md](./highlight.md) |
+| Hotkeys | Register keyboard shortcuts, sequences and scopes, and read them back to build a command palette | [hotkeys.md](./hotkeys.md) |
 | JSON Tree View | Interactive collapsible tree view for JSON data | [json-tree-view.md](./json-tree-view.md) |
 | Locale | Provide locale/direction settings to the application | [locale.md](./locale.md) |
 | Presence | Control mounting/unmounting based on state | [presence.md](./presence.md) |

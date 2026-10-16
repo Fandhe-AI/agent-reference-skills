@@ -22,9 +22,10 @@ export const App = () => (
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | `disabled` | `boolean` | — | Toggles trap functionality on/off |
-| `initialFocus` | `VoidFunction \| FocusTarget` | — | Specifies the element that receives initial focus |
-| `fallbackFocus` | `FocusTarget` | — | Element to focus if no tabbable elements exist |
+| `initialFocus` | `VoidFunction \| FocusTargetOrFalse` | — | Specifies the element that receives initial focus, or `false` for no initially focused element (this also prevents `fallbackFocus` from being used) |
+| `fallbackFocus` | `FocusTarget` | — | Element to focus if no tabbable elements exist (needs a negative `tabindex`) |
 | `returnFocusOnDeactivate` | `boolean` | `true` | Controls whether focus returns to the pre-activation element |
+| `persistentElements` | `(() => Element \| null)[]` | — | Additional elements to treat as part of the trap, for portalled content not discoverable via `aria-controls`/`aria-expanded`; getters resolve lazily (added in 5.38.0) |
 | `onActivate` | `VoidFunction` | — | Callback executed before focus assignment upon activation |
 | `onDeactivate` | `VoidFunction` | — | Callback executed before focus restoration upon deactivation |
 

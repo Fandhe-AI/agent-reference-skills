@@ -42,6 +42,7 @@ import { Field } from '@ark-ui/react/field'
 
 - `Field.Root` distributes context states (`invalid`, `disabled`, `required`, `readOnly`) to child form elements, enabling coordinated validation and interaction across different input types
 - Works with `Fieldset` and most form components (Checkbox, Radio Group, etc.) for enhanced form handling
+- 5.39.3: `Field.ErrorText` is linked via `aria-describedby` instead of `aria-errormessage`, since screen reader support (VoiceOver, Narrator) for `aria-errormessage` is still incomplete. In tests, assert `expect(input).toHaveAccessibleDescription(expect.stringContaining('Error Info'))` instead of `toHaveAccessibleErrorMessage`.
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
 
 ## Related

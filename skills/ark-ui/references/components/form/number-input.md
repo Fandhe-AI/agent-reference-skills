@@ -36,6 +36,8 @@ import { NumberInput } from '@ark-ui/react/number-input'
 | `step` | `number` | Increment/decrement amount, default `1` |
 | `allowMouseWheel` | `boolean` | Enable mouse wheel changes, default `false` |
 | `formatOptions` | `Intl.NumberFormatOptions` | Locale/format options |
+| `largeStep` | `number` | The amount to increment or decrement the value by when the `Shift` key is held, default `10 * step` (added in 5.38.0) |
+| `smallStep` | `number` | The amount to increment or decrement the value by when the `Alt` key is held, default `step / 10` (added in 5.38.0) |
 | `clampValueOnBlur` | `boolean` | Restrict value to min/max on blur, default `true` |
 | `disabled` | `boolean` | Disable the input |
 

@@ -31,6 +31,7 @@ import { Collapsible } from '@ark-ui/react/collapsible'
 | `collapsedHeight` / `collapsedWidth` | `string \| number` | Partial collapse dimensions |
 | `lazyMount` | `boolean` | Delays content mounting until opened |
 | `unmountOnExit` | `boolean` | Removes content from the DOM when closed |
+| `hideMode` | `HideMode` (default: `'display-none'`) | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ (5.38.0) |
 | `onOpenChange` | `function` | Fires when the open state changes |
 
 ## Notes

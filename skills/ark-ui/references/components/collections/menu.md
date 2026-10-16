@@ -47,6 +47,7 @@ const App = () => (
 | `typeahead` | `boolean` | Enable character-based navigation |
 | `positioning` | `object` | Dynamic positioning options |
 | `lazyMount` / `unmountOnExit` | `boolean` | Performance optimizations |
+| `hideMode` | `HideMode` (default: `'display-none'`) | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ (5.38.0) |
 
 ## Notes
 

@@ -40,6 +40,7 @@ import { Slider } from '@ark-ui/react/slider'
 | `max` | `number` | Maximum value, default `100` |
 | `step` | `number` | Increment precision, default `1` |
 | `value` | `number[]` | Controlled value array |
+| `largeStep` | `number` | Step applied when `Shift` is held or `PageUp`/`PageDown` are used, default `10 * step` (added in 5.38.0) |
 | `orientation` | `'horizontal' \| 'vertical'` | Layout direction |
 | `disabled` | `boolean` | Disable interaction |
 | `onValueChange` | `function` | Callback during drag |

@@ -46,11 +46,16 @@ import { Popover } from '@ark-ui/react'
 | autoFocus | boolean | true | Focus first element on open |
 | lazyMount | boolean | false | Defer mounting until opened |
 | portalled | boolean | true | Render content in a portal layer |
+| initialFocusEl | () => HTMLElement \| null \| false | — | Element to focus when the popover opens. May return `false` to skip moving focus (5.39.3) |
+| hideMode | HideMode | 'display-none' | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ |
+| persistentElements | (() => Element \| null)[] | — | Returns the persistent elements that should not have pointer-events disabled and should not trigger the dismiss event |
 | positioning | PositioningOptions | — | Placement configuration, including placement direction and `sameWidth` to match trigger width |
 
 ## Notes
 
 - `positioning` accepts `PositioningOptions` (Floating UI-based), including placement side/alignment and `sameWidth` for matching trigger dimensions.
+- `initialFocusEl` may return `false` to open without moving focus; returning `null` still uses the default (5.39.3). 5.39.3 also fixed `autoFocus={false}` being ignored for modal popovers.
+- The 5.39.3 CHANGELOG added the `false` return value, but the generated types.json still shows `() => HTMLElement | null`; the type above follows the CHANGELOG.
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
 
 ## Related

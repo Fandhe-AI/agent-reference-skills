@@ -36,6 +36,7 @@ import { Tabs } from '@ark-ui/react/tabs'
 | `defaultValue` | `string` | — | Initial tab selection |
 | `lazyMount` | `boolean` | `false` | Renders tab content only when activated |
 | `unmountOnExit` | `boolean` | `false` | Removes content when a tab is deselected |
+| `hideMode` | `HideMode` | `'display-none'` | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ (5.38.0) |
 | `loopFocus` | `boolean` | `true` | Navigation wraps between first/last tabs |
 | `deselectable` | `boolean` | — | Allows deselecting the active tab |
 | `onValueChange` | `function` | — | Fires when the selection changes |
@@ -43,6 +44,7 @@ import { Tabs } from '@ark-ui/react/tabs'
 ## Notes
 
 - `useTabs` hook (with `RootProvider`) exposes methods: `setValue()` / `clearValue()`, `selectNext()` / `selectPrev()`, `setIndicatorRect()`, `getTriggerState()`.
+- 5.39.3 fixed programmatic tab selection triggering link navigation.
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
 
 ## Related

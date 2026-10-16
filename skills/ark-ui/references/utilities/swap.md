@@ -22,6 +22,7 @@ export const App = () => (
 | `swap` | `boolean` | `false` | Controls the "on" state |
 | `lazyMount` | `boolean` | `false` | Enable lazy mounting |
 | `unmountOnExit` | `boolean` | `false` | Unmount when not visible |
+| `hideMode` | `HideMode` | `'display-none'` | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ |
 | `asChild` | `boolean` | — | Use the provided child element as the rendered element |
 | `type` (`Swap.Indicator`) | `'on' \| 'off'` | — | Specifies which state the indicator represents |
 

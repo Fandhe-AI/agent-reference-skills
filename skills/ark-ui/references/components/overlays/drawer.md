@@ -48,6 +48,8 @@ import { Drawer } from '@ark-ui/react'
 | draggable | boolean | true | Enables drag-to-dismiss |
 | closeOnEscape | boolean | true | Allow Escape key to close |
 | closeOnInteractOutside | boolean | true | Allow outside clicks to close |
+| initialFocusEl | () => MaybeElement | — | Element to focus when the drawer opens. May return `false` to skip moving focus (5.39.3) |
+| hideMode | HideMode | 'display-none' | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ |
 
 ## Notes
 
@@ -55,6 +57,8 @@ import { Drawer } from '@ark-ui/react'
 - Supports nested drawers with visual layering via `IndentBackground` / `Indent`.
 - Direction-aware styling is available through the `data-swipe-direction` attribute.
 - Prevents overdrag gaps through CSS pseudo-elements.
+- `initialFocusEl` may return `false` to open without moving focus; returning `null` still uses the default (5.39.3).
+- `data-autofocus` / `data-no-autofocus` (5.38.0, Dialog and Drawer): focus goes to `initialFocusEl`, then `[data-autofocus]`, then the first tabbable element without `[data-no-autofocus]`, then the content root.
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
 
 ## Related

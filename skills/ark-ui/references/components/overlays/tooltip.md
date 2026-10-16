@@ -35,6 +35,7 @@ import { Tooltip } from '@ark-ui/react'
 | interactive | boolean | false | Keep content open while hovering it |
 | positioning | PositioningOptions | — | Placement configuration |
 | disabled | boolean | — | Disable the tooltip |
+| hideMode | HideMode | 'display-none' | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ (5.38.0) |
 
 ## Notes
 
