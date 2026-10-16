@@ -103,6 +103,7 @@ When the drag region is a custom `Window.SetTitleBar` UIElement instead, Navigat
 
 - The official page moved from `/windows/apps/design/controls/navigationview` to `/windows/apps/develop/ui/controls/navigationview` (the Controls docs were moved from Design to Develop); the old URL redirects (confirmed in `.openpublishing.redirection.json`).
 - Package: `Microsoft.UI.Xaml.Controls.NavigationView` (WinUI 3). Distinct from React Router's `<nav>`/route components, Jetpack Compose Navigation's `NavHost`, and Apple SwiftUI's `NavigationSplitView`.
+- `TitleBar.IsBackButtonEnabled` defaults to `true`, so the official sample binds only `IsBackButtonVisible` to `Frame.CanGoBack` (see the TitleBar.IsBackButtonEnabled API reference: https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.titlebar.isbackbuttonenabled).
 
 ## Related
 

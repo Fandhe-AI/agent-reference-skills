@@ -3,7 +3,7 @@ name: windows-design
 description: >
   Windows アプリ開発 (Fluent Design / WinUI 3) のデザインガイドライン。
   layout, alignment, spacing, geometry, elevation, breakpoints, Color, materials, Mica, Acrylic, Smoke,
-  Reveal Focus (旧 Reveal Highlight), typography, Segoe Fluent Icons, app icons,
+  Reveal Focus, Reveal Highlight (非推奨), typography, Segoe Fluent Icons, app icons,
   motion, easing, page transitions, connected animation, parallax, reduce motion, haptics,
   NavigationView, TitleBar, TabView, CommandBar, menus, keyboard accelerators, access keys,
   accessibility, high contrast, globalization, RTL, widgets design。
