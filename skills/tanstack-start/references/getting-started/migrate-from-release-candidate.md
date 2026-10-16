@@ -45,3 +45,11 @@ import { nitro } from 'nitro/vite'
 - `getRequestHeader(name)` returns `''` for a header that is present but empty, and `undefined` only when it is missing.
 - A path with invalid percent-encoding, such as `/%E0%A4%A`, gets `400 Bad Request` before your server entry or middleware runs.
 - When no function middleware sends context, `sendContext` is `undefined` instead of `{}`.
+
+## Related
+
+- [Nitro](../deployment/nitro.md)
+- [Authentication Server Primitives](../auth-data-styling/authentication-server-primitives.md)
+- [Server Entry Point](../rendering/server-entry-point.md)
+- [Server Functions](../server/server-functions.md)
+- [Middleware](../server/middleware.md)

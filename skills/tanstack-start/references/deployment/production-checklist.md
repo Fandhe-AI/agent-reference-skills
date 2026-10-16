@@ -16,7 +16,7 @@ MY_TEST_SECRET=canary-12345 npm run build
 grep -r "canary-12345" dist/client
 ```
 
-## Checklist
+### Checklist
 
 | Area | Check |
 | --- | --- |

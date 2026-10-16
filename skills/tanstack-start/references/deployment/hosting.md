@@ -20,7 +20,7 @@ export default defineConfig({
 })
 ```
 
-## Deployment targets
+### Deployment targets
 
 | Target | Guidance | Page |
 | --- | --- | --- |

@@ -1,5 +1,7 @@
 # samples
 
+Next.js (`nextjs-app`) とは別フレームワークの実例。
+
 | Name | Description | Path |
 | --- | --- | --- |
 | API Route (server.handlers on createFileRoute) | File route exposing a raw HTTP endpoint (GET/POST). | [api-route.md](./api-route.md) |
