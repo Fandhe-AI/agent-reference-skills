@@ -1,4 +1,4 @@
-# getting-started
+# Getting Started
 
 | Name | Description | Path |
 | --- | --- | --- |

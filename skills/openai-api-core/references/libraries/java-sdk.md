@@ -23,7 +23,7 @@ public class Main {
     OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 
     ResponseCreateParams params =
-        ResponseCreateParams.builder().input("Say this is a test").model("gpt-5.6").build();
+        ResponseCreateParams.builder().input("Say this is a test").model("gpt-6-astra").build();
 
     Response response = client.responses().create(params);
     response.output().stream()

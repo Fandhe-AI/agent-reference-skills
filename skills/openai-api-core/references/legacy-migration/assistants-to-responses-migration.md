@@ -1,12 +1,16 @@
 # Assistants to Responses Migration
 
-The Assistants API is deprecated (announced August 26, 2025) with a sunset date of **August 26, 2026**; new and existing integrations should move to the Responses API and Conversations API.
+The Assistants API was officially sunset on **August 26, 2026** and is no longer available (deprecation announced August 26, 2025); integrations must use the Responses API and Conversations API.
 
 ## Signature / Usage
 
 ```python
-# Assistants-era concepts map onto Responses/Conversations primitives.
-# See the mapping table below for the concept-to-concept translation.
+# Assistants-era concepts map onto Responses/Conversations primitives
+# (see the mapping table below). A Run becomes a single Response call:
+response = client.responses.create(
+    model="gpt-6-astra",
+    input="Hello",
+)
 ```
 
 ## Options / Props
@@ -24,6 +28,7 @@ The Assistants API is deprecated (announced August 26, 2025) with a sunset date 
 - Migration is not automated: identify existing Assistants, recreate their instruction/tool configuration as named Prompts in the dashboard, and store the Prompt IDs in version control.
 - For Threads, the recommended approach is to route new conversations through the Conversations API going forward and backfill/convert legacy thread messages into conversation Items only as needed (rather than a bulk one-shot migration).
 - Responses/Conversations unlock capabilities unavailable to Assistants: deep research, MCP (Model Context Protocol) support, and computer use.
+- Reusable prompt objects and `/v1/prompts` are themselves scheduled to shut down on November 30, 2026; the recommended long-term approach is to move prompt content into application code (see [Migrate from Prompt Objects](./migrate-from-prompt-objects.md)). The official pages differ here: the Assistants migration guide still describes recreating Assistants as named prompts in the dashboard, while the deprecations page announces the prompt-object shutdown.
 - Responses API already has Assistant-like and Thread-like objects; see also the general [Migrate Chat Completions to Responses](./migrate-chat-completions-to-responses.md) guide for the underlying Item/streaming/function-calling model shared by both migrations.
 
 ## Related

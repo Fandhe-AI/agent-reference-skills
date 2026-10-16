@@ -22,12 +22,14 @@ def build_support_prompt(customer_name, issue):
     ]
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=build_support_prompt(customer_name="Acme", issue="billing question"),
 )
 ```
 
-## Migration steps
+## Notes
+
+### Migration steps
 
 1. **Move prompt content into source code** so prompt changes go through the same review and release process as product logic.
 2. **Replace prompt variables with function arguments** so dynamic values are explicit and typed in the application.
@@ -35,7 +37,7 @@ response = client.responses.create(
 4. **Move versioning to the repo** using git commits, PR review, and tests or evals instead of `prompt.version`.
 5. **Keep static content first and dynamic content later** in the built message list to preserve prompt caching benefits, since cache hits depend on exact prefix matches.
 
-## Notes
+### Details
 
 - Reusable prompt objects were de-emphasized for creation beginning June 3, 2026, and `/v1/prompts` is scheduled to shut down on November 30, 2026 (see the deprecations schedule).
 - Recommended structure: a small `prompts/` module with each prompt as a named builder function, plus lightweight eval fixtures so prompt changes are reviewed like product logic rather than scattered inline across the codebase.

@@ -4,7 +4,7 @@ Foundational concepts needed before using the OpenAI API: text generation models
 
 ## Text generation models
 
-OpenAI's text generation models (generative pre-trained transformers, "GPT" models), such as `gpt-5.6-sol` and `gpt-5.6-terra`, are trained to understand natural and formal language and produce text output in response to input ("prompts"). Designing a prompt is how you "program" a model — typically by providing instructions or examples of how to complete a task. GPT models are used for content/code generation, summarization, conversation, creative writing, and more.
+OpenAI's text generation models (generative pre-trained transformers, "GPT" models), such as `gpt-6-astra` and `gpt-6.1-sol`, are trained to understand natural and formal language and produce text output in response to input ("prompts"). Designing a prompt is how you "program" a model — typically by providing instructions or examples of how to complete a task. GPT models are used for content/code generation, summarization, conversation, creative writing, and more.
 
 ## Embeddings
 

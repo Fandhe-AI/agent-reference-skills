@@ -1,12 +1,12 @@
 # Reasoning models
 
-Reasoning models (e.g. GPT-5.6) use internal reasoning tokens before producing a response, improving planning, tool use, and multi-step tasks. Work best via the Responses API.
+Reasoning models (e.g. GPT-6 Astra) use internal reasoning tokens before producing a response, improving planning, tool use, and multi-step tasks. Work best via the Responses API.
 
 ## Signature / Usage
 
 ```python
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     reasoning={"effort": "low"},
     input=[{"role": "user", "content": prompt}],
 )
@@ -17,15 +17,17 @@ print(response.output_text)
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| reasoning.effort | `none` \| `minimal` \| `low` \| `medium` \| `high` \| `xhigh` \| `max` | model-dependent (`gpt-5.5` defaults to `medium`) | How much the model thinks before responding; supported values are model-dependent |
-| reasoning.mode | `standard` \| `pro` | `standard` | GPT-5.6 only; `pro` does more model work for harder tasks (higher latency/cost), independent of `effort` |
+| reasoning.effort | `none` \| `minimal` \| `low` \| `medium` \| `high` \| `xhigh` \| `max` | model-dependent (`gpt-5.5` defaults to `medium`) | How much the model thinks before responding; supported values are model-dependent. GPT-6 Astra does not support `none` (HTTP 400); GPT-6.1 Sol supports neither `none` nor `minimal` and defaults to `medium` (GPT-6 Sol and GPT-6 Luna also default to `medium`) |
+| reasoning.mode | `standard` \| `pro` | `standard` | GPT-5.6 and GPT-6 models; `pro` does more model work for harder tasks (higher latency/cost), independent of `effort` |
 | reasoning.context | `auto` \| `current_turn` \| `all_turns` | `auto` (→ model default) | Whether reasoning items from earlier turns are rendered into the next sample; GPT-5.6 defaults to `all_turns`, earlier models to `current_turn` |
 | reasoning.summary | `auto` \| `concise` \| `detailed` | — | Opt in to a summary of the model's reasoning in the `reasoning` output item's `summary` array |
+| `configuration_update` (input item) | `{"type": "configuration_update", "reasoning": {"effort": "high"}}` | — | Place before the next user message (HTTP Responses `input` or WebSocket `response.create`); applies to later responses until another `configuration_update` overrides it. Leave request-level `reasoning.effort` unchanged to preserve the prompt-cache prefix. GPT-6 family, standard single-agent mode only; changes reasoning effort only |
 | max_output_tokens | integer | — | Caps total generated tokens (reasoning + visible + formatting); insufficient budget yields `status: incomplete` with `incomplete_details.reason: max_output_tokens` |
 | phase (per assistant message item) | `commentary` \| `final_answer` | — | GPT-5.5/5.4 only; marks intermediate updates vs the completed answer to avoid early stopping |
 
 ## Notes
 
+- Use the Responses API for function calling: Chat Completions does not support function calling with GPT-6 Astra or GPT-6.1 Sol.
 - Reasoning tokens are billed as output tokens and occupy context window space, but are not returned as raw text (only optional summaries). OpenAI recommends reserving ≥25,000 tokens for reasoning + output when starting out.
 - When function calling with a reasoning model, pass back all reasoning items since the last `user` message (via `previous_response_id`, or by replaying all `output` items) so the model can continue reasoning efficiently.
 - In stateless mode (`store: false` or ZDR orgs), reasoning items include `encrypted_content` by default — replay them to preserve reasoning continuity without server-side storage.

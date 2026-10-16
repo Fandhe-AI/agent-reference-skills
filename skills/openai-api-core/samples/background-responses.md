@@ -9,7 +9,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Write a very long novel about otters in space.",
     background=True,
 )

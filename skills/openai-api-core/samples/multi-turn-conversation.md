@@ -8,13 +8,13 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="tell me a joke",
 )
 print(response.output_text)
 
 second_response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     previous_response_id=response.id,
     input=[{"role": "user", "content": "explain why this is funny."}],
 )

@@ -25,7 +25,7 @@ func main() {
 	client := openai.NewClient()
 
 	resp, err := client.Responses.New(context.TODO(), responses.ResponseNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-6-astra",
 		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Say this is a test")},
 	})
 	if err != nil {

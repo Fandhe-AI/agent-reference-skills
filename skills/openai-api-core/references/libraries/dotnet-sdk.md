@@ -16,7 +16,7 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(key);
 
 ResponseResult response = await client.CreateResponseAsync(
-    "gpt-5.6",
+    "gpt-6-astra",
     "Say 'this is a test.'"
 );
 
