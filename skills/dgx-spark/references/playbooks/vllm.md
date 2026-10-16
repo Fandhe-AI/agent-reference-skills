@@ -12,7 +12,7 @@ docker pull vllm/vllm-openai:v0.28.0
 hf download nvidia/Qwen3.6-35B-A3B-NVFP4
 # Step 4: NVIDIA Sync > Custom > + Add New: Name=vLLM-Qwen3.6-35B-A3B, Port=8000,
 #   paste the 128GB Spark launch script into Launch Script, then Add
-#   (https://raw.githubusercontent.com/NVIDIA/dgx-spark-playbooks/refs/heads/main/nvidia/playbook-vllm/assets/sync-vllm-single-spark-128gb.sh)
+#   (https://raw.githubusercontent.com/NVIDIA/dgx-spark-playbooks/c035e0ac7d211509ec131b79b5b6f0f824a9e421/nvidia/playbook-vllm/assets/sync-vllm-single-spark-128gb.sh)
 # Step 5: click the app name in NVIDIA Sync to start the container and vLLM server;
 #   watch startup with: docker logs --tail 50 --follow vllm-qwen36-35b-a3b
 # Step 6: from a local terminal
@@ -37,7 +37,7 @@ Sync Custom App (Step 4):
 | DGX Spark | 128GB | `vLLM-Qwen3.6-35B-A3B` | `sync-vllm-single-spark-128gb.sh` |
 | DGX Station | 748GB | `vLLM-Nemotron-3-Ultra` | `sync-vllm-single-station.sh` |
 
-Scripts are under `https://raw.githubusercontent.com/NVIDIA/dgx-spark-playbooks/refs/heads/main/nvidia/playbook-vllm/assets/`.
+Scripts are under `https://raw.githubusercontent.com/NVIDIA/dgx-spark-playbooks/c035e0ac7d211509ec131b79b5b6f0f824a9e421/nvidia/playbook-vllm/assets/`.
 
 ## Notes
 

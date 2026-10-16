@@ -106,7 +106,7 @@ class "pxeclients" {
 
 ## Write repacked ISO to a USB drive
 
-> **警告**: `dd` は `$USB` に指定したデバイス上の全データを上書きする破壊的操作。デバイス指定を必ず確認してから実行すること。
+> **Warning**: `dd` overwrites all data on the device given as `$USB`. Double-check the device before running.
 
 ```sh
 sudo dd if=/path/to/repacked.iso of="$USB" bs=4M status=progress conv=fsync
@@ -114,7 +114,7 @@ sudo dd if=/path/to/repacked.iso of="$USB" bs=4M status=progress conv=fsync
 
 ## Create and format an OEMDATA partition on USB
 
-> **警告**: `parted` によるパーティション作成、`mkfs.ext4` によるフォーマットは対象デバイス上のデータを消去する。`$USB` の指定を必ず確認すること。
+> **Warning**: Partitioning with `parted` and formatting with `mkfs.ext4` erase data on the target device. Double-check `$USB` before running.
 
 ```sh
 USB=/dev/sdX
@@ -243,7 +243,7 @@ cd $work_dir
 
 ## Repack a FastOS recovery image with cloud-init
 
-> **警告**: FastOS recovery image での再フラッシュは破壊的操作。対象システムのローカルストレージ（ユーザーデータ・ソフトウェア・設定・ログ）が消去される。事前にバックアップし、イメージと対象システムを確認すること。
+> **Warning**: Reflashing with the FastOS recovery image is destructive. It erases the target system's local storage (user data, software, configuration, logs). Back up first and verify the image and the target system before running.
 
 ```sh
 repack_fastos.sh -f <fastos_tarball> -c <cloud_init_directory>

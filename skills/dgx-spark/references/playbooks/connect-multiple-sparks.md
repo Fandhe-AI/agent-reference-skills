@@ -9,6 +9,7 @@ git clone https://github.com/NVIDIA/dgx-spark-playbooks
 cd dgx-spark-playbooks/nvidia/playbook-connect-multiple-sparks/assets/spark_cluster_setup
 cp config/spark_config_b2b.json config/my-cluster.json   # pick the template for your layout
 chmod 600 config/my-cluster.json
+vim config/my-cluster.json   # edit every device, including the head node: ip_address / port / user / password
 bash spark_cluster_setup.sh -c config/my-cluster.json --pre-validate-only
 bash spark_cluster_setup.sh -c config/my-cluster.json --run-setup
 rm config/my-cluster.json

@@ -18,6 +18,16 @@ Current software versions (DGX Spark Founders Edition):
 | Trusted Platform Module (TPM) | 7.516.1 |
 | System on Chip (SoC) | 2.155.11 |
 
+Apply a release (OS packages and firmware) — from OS and Component Update:
+
+```bash
+sudo apt update
+sudo apt dist-upgrade
+sudo fwupdmgr refresh
+sudo fwupdmgr upgrade
+sudo reboot
+```
+
 ## Releases
 
 ### July 2026
@@ -110,3 +120,4 @@ Fixed Issues:
 
 - [Known Issues](./known-issues.md)
 - [DGX OS](../software/dgx-os.md)
+- [OS and Component Update](../system-update/os-and-component-update.md)
