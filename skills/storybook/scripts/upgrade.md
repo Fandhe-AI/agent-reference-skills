@@ -20,7 +20,7 @@ storybook upgrade --dry-run
 storybook upgrade --yes
 ```
 
-> **警告**: `--yes` フラグはすべてのプロンプトをスキップして自動適用する。事前にドライランで内容を確認すること。フレームワーク移行や experimental feature flag など明示的な選択が必要な migration は実行されない（含めるには `--features` を使う）。
+> **警告**: `--yes` フラグはすべてのプロンプトをスキップして自動適用する。事前にドライランで内容を確認すること。フレームワーク移行や experimental feature flag など明示的な選択が必要な migration は実行されない。experimental feature flag を有効化する automigration は `--features` で事前選択できる（次節）。フレームワーク移行は `--features` の対象外のため、`--yes` を付けずに対話プロンプトで選択するか `storybook automigrate` で実行する。
 
 ## experimental feature flag を有効化するオートマイグレーションを事前選択
 
