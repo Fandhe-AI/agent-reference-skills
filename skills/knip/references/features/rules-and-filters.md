@@ -31,6 +31,12 @@ Combine shorthands to report the default issue types plus circular dependencies:
 knip --dependencies --exports --files --cycles
 ```
 
+Per the CLI reference, `--exports` also includes `nsExports` / `nsTypes`, which are off by default, so this combination may also report namespace issues. To add only circular dependencies to the default report, exclude them explicitly:
+
+```sh
+knip --dependencies --exports --files --cycles --exclude nsExports,nsTypes
+```
+
 ## Rules
 
 Fine-grained control via configuration:
