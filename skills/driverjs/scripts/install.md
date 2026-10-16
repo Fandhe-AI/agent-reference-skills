@@ -52,6 +52,7 @@ Checklist も独立したエントリ。項目がツアーを実行するため 
 
 ```js
 import { checklist } from "driver.js/checklist";
+import "driver.js/dist/driver.css";
 import "driver.js/dist/checklist.css";
 ```
 

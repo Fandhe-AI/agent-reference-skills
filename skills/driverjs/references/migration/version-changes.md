@@ -1,6 +1,6 @@
 # Version Changes (1.5.0 - 1.10.1)
 
-Changelog of Driver.js 1.x releases from 1.5.0 to 1.10.1. For other versions, see the GitHub releases page. For 0.x to 1.x, see [Migrate to 1.x](./migrate-to-1x.md).
+Changelog of Driver.js 1.x releases from 1.5.0 to 1.10.1. For other versions, see the [GitHub releases page](https://github.com/nilbuild/driver.js/releases). For 0.x to 1.x, see [Migrate to 1.x](./migrate-to-1x.md).
 
 ## Signature / Usage
 
@@ -96,6 +96,7 @@ driverObj.drive();
 - The changelog's Unreleased section is empty as of 1.10.1.
 - Only 1.6.0 is flagged Breaking in the changelog (footer button class).
 - Checklists (1.10.0) and hints (1.8.0) are separate entries (`driver.js/checklist`, `driver.js/hints`).
+- Source: https://driverjs.com/docs/changelog (driver.js 1.10.1 docs source, apps/docs/src/content/guides/changelog.mdx at tag 1.10.1).
 
 ## Related
 

@@ -72,7 +72,7 @@ const driverObj = driver({
     {
       popover: {
         title: 'First Step',
-        description: 'This is the first step. Next element will be loaded dynamically.'
+        description: 'This is the first step. Next element will be loaded dynamically.',
         // By passing onNextClick, you can override the default behavior of the next button.
         // This will prevent the driver from moving to the next step automatically.
         // You can then manually call driverObj.moveNext() to move to the next step.
@@ -185,6 +185,8 @@ if (savedStep !== null) {
 - Multi-page pattern works the same for full page loads and client-side routing. On a full load the browser tears everything down anyway; the explicit `destroy()` in the hand-off matters for single-page apps, where the old page's tour would otherwise stay on screen.
 - The saved value above is a hardcoded index for clarity. In a larger tour, compute it with `driverObj.getActiveIndex() + 1`, or store a step id and look up its index when resuming, so reordering steps doesn't break saved progress.
 - If the destination page renders asynchronously, put `waitForElement` on the first resumed step so the tour doesn't fall back to the centered popover while the page hydrates.
+- The upstream 1.10.1 Async Steps example is missing the comma after the first step's `description`; it was added here so the snippet is valid JavaScript.
+- Source: https://driverjs.com/docs/interactive-tours (driver.js 1.10.1 docs source, apps/docs/src/content/guides/interactive-tours.mdx at tag 1.10.1).
 
 ## Related
 
