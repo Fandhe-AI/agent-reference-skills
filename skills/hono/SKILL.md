@@ -3,9 +3,9 @@ name: hono
 description: >
   Hono (軽量・マルチランタイム対応 Web フレームワーク) リファレンス。
   Hono App, Context (c.req / c.json / c.text / c.html), HonoRequest, Routing, HTTPException、
-  Built-in Middleware (JWT, CORS, CSRF, Cache, Logger, Compress, Basic / Bearer Auth)、
+  Built-in Middleware (JWT, CORS, CSRF, Cache, Logger, Compress, Basic / Bearer Auth, Mount)、
   Helpers (Cookie, Streaming, WebSocket, Factory, RPC)、
-  Cloudflare Workers / Deno / Bun / Node.js / AWS Lambda 対応。
+  Cloudflare Workers / Deno / Bun / Node.js / AWS Lambda 対応、@hono/* アダプターパッケージ。
 user-invocable: false
 model: sonnet
 ---
@@ -15,6 +15,8 @@ model: sonnet
 Hono — Web Standards ベースの軽量・高速 Web フレームワーク。
 マルチランタイム（Cloudflare Workers, Deno, Bun, Node.js 等）で動作する。
 API 設計・ミドルウェア選定・ルーティング実装時に参照する。
+
+対象 Hono v4.13.13 / ランタイムアダプター @hono/* 1.0.x（docs: honojs/website 7838d779, 2026-10-13）。
 
 ## ディレクトリ構成
 
@@ -40,6 +42,10 @@ skills/hono/
       nextjs.md
       supabase-functions.md
       service-worker.md
+      ali-function-compute.md
+      cloudflare-workers-vite.md
+      webassembly-wasi.md
+      cloudbase.md
     api/
       README.md
       hono.md
@@ -82,6 +88,9 @@ skills/hono/
       jsx-renderer.md
       combine.md
       ip-restriction.md
+      method-not-allowed.md
+      mount.md
+      third-party.md
     helpers/
       README.md
       accepts.md
@@ -102,7 +111,10 @@ skills/hono/
     guides/
       README.md
       best-practices.md
+      create-hono.md
       examples.md
+      faq.md
+      helpers.md
       jsx.md
       jsx-dom.md
       middleware.md
@@ -143,10 +155,10 @@ skills/hono/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
-| プロジェクト初期セットアップ、ランタイム別の構成、serve 関数 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| プロジェクト初期セットアップ、ランタイム別の構成（Tencent CloudBase 含む）、@hono/* アダプターパッケージ、serve 関数 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | Hono App, HonoRequest, Context, ルーティング, HTTPException, プリセット | api | [references/api/README.md](references/api/README.md) |
 | 設計思想、Web Standards、ミドルウェア概念、ルーター種類、Stacks | concepts | [references/concepts/README.md](references/concepts/README.md) |
-| 認証 (JWT / Basic / Bearer)、CORS、CSRF、Cache、Logger、Compress、ETag 等 | middleware | [references/middleware/README.md](references/middleware/README.md) |
+| 認証 (JWT / Basic / Bearer)、CORS、CSRF、Cache、Logger、Compress、ETag 等、Mount（他フレームワーク製アプリの組み込み。app.mount() は非推奨）、Third-party middleware（バリデーター・OpenAPI・認証・監視） | middleware | [references/middleware/README.md](references/middleware/README.md) |
 | Cookie、Streaming、WebSocket、Proxy、Factory、SSG、Testing、ConnInfo | helpers | [references/helpers/README.md](references/helpers/README.md) |
 | ベストプラクティス、カスタムミドルウェア、JSX、バリデーション、RPC、テスト | guides | [references/guides/README.md](references/guides/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |

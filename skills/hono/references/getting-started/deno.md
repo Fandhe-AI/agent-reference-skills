@@ -18,7 +18,9 @@ Deno.serve({ port: 8787 }, app.fetch)
 ## Notes
 
 - Initialize with `deno init --npm hono --template=deno my-app`
-- Static files: import `serveStatic` from `hono/deno`; options include `root`, `rewriteRequestPath`, `mimes`, `onFound`, `onNotFound`, `precompressed`
+- Static files: import `serveStatic` from the `@hono/deno` package (install with `deno add jsr:@hono/deno`); options include `root`, `rewriteRequestPath`, `mimes`, `onFound`, `onNotFound`, `precompressed`, `allowPercentInPath`
+- Since v4.13.11 `serveStatic` rejects request paths that still contain `%` after decoding; `allowPercentInPath: true` allows file names with a literal `%`
+- `hono/deno` is deprecated since v4.13.10 and will be removed in v5
 - When importing middleware, use the same registry (npm or JSR) throughout to ensure correct TypeScript types
 - Testing: use `Deno.test` with `@std/assert`
 - Default dev command: `deno task start`

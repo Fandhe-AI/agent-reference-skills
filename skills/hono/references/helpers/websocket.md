@@ -5,8 +5,8 @@ Upgrade HTTP connections to WebSocket with a unified event-handler API across ru
 ## Signature / Usage
 
 ```ts
-import { upgradeWebSocket } from 'hono/cloudflare-workers' // or deno / bun adapter
-// For Node.js (v1.14.0+): import { createNodeWebSocket } from '@hono/node-server'
+import { upgradeWebSocket } from '@hono/cloudflare-workers' // or '@hono/deno' / '@hono/bun'
+// Node.js: import { serve, upgradeWebSocket } from '@hono/node-server' + import { WebSocketServer } from 'ws'
 
 app.get(
   '/ws',
@@ -41,7 +41,9 @@ app.get(
 
 ## Notes
 
-- For Node.js, WebSocket support is built into `@hono/node-server` (v1.14.0+). `@hono/node-ws` is deprecated; use `createNodeWebSocket` from `@hono/node-server` directly
+- Runtime adapters (`@hono/cloudflare-workers`, `@hono/deno`, `@hono/bun`) are separate packages
+- On Node.js, WebSocket support is built into `@hono/node-server`. Install `ws` (and `@types/ws` for TypeScript), create a `WebSocketServer` with `{ noServer: true }`, and pass it to `serve()` via the `websocket` option
+- `@hono/node-ws` is deprecated
 - Middleware that mutates response headers (e.g., CORS) can conflict with `upgradeWebSocket` and cause header immutability errors
 - Supports RPC mode for type-safe client connections via `hono/client`
 

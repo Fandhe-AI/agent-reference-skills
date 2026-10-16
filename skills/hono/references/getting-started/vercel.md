@@ -1,19 +1,17 @@
 # Vercel
 
-Deploy Hono to Vercel with zero configuration. Use the `hono/vercel` adapter to export route handlers.
+Deploy Hono to Vercel with zero configuration. Export the Hono application as a default export; no adapter import is needed.
 
 ## Signature / Usage
 
 ```ts
 import { Hono } from 'hono'
-import { handle } from 'hono/vercel'
 
-const app = new Hono().basePath('/api')
+const app = new Hono()
 
-app.get('/hello', (c) => c.json({ message: 'Hello Next.js!' }))
+app.get('/', (c) => c.text('Hello Hono!'))
 
-export const GET = handle(app)
-export const POST = handle(app)
+export default app
 ```
 
 ## Notes
@@ -21,7 +19,8 @@ export const POST = handle(app)
 - Initialize with `npm create hono@latest my-app` and select the `vercel` template
 - Development: `vercel dev` (port `3000`); production: `vercel deploy`
 - Zero-configuration deployment — no extra Vercel config needed
-- For standalone Vercel (not Next.js), export `default app`; Hono handles routing automatically
+- Put the app in `index.ts` or `src/index.ts` as the default export; the `vercel` template already sets this up
+- For Next.js (`handle` from `@hono/vercel`), see [Next.js](./nextjs.md)
 
 ## Related
 

@@ -81,6 +81,46 @@ yarn add @hono/node-server
 bun add @hono/node-server
 ```
 
+## Runtime adapter packages
+
+v4.13.10 以降、ランタイムアダプターは独立パッケージとして公開されている。`hono/<adapter>` の import パスは v4.13.10+ で deprecated、v5 で削除される。
+
+AWS Lambda:
+
+```sh
+npm i hono @hono/aws-lambda
+```
+
+Lambda@Edge:
+
+```sh
+npm i hono @hono/lambda-edge
+```
+
+Bun:
+
+```sh
+bun add @hono/bun
+```
+
+Deno:
+
+```sh
+deno add jsr:@hono/deno
+```
+
+Vercel（Next.js の既存プロジェクト）:
+
+```sh
+npm i @hono/vercel
+```
+
+Service Worker:
+
+```sh
+npm i hono @hono/service-worker
+```
+
 ## Cloudflare Workers 型定義の追加
 
 ```sh

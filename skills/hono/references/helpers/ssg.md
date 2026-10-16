@@ -12,11 +12,11 @@ const result = await toSSG(app, fs, { dir: './dist' })
 // result: { success: boolean; files: string[]; error?: Error }
 ```
 
-Platform-specific exports also available:
+Platform-specific exports are also available, provided by the `@hono/deno` and `@hono/bun` packages:
 
 ```ts
-import { toSSG } from 'hono/deno'  // Deno
-import { toSSG } from 'hono/bun'   // Bun
+import { toSSG } from '@hono/deno'  // Deno
+import { toSSG } from '@hono/bun'   // Bun
 ```
 
 ## Options / Props

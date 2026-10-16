@@ -8,7 +8,7 @@ Embed Hono inside a Next.js application using catch-all routes. Supports both Ap
 
 ```ts
 import { Hono } from 'hono'
-import { handle } from 'hono/vercel'
+import { handle } from '@hono/vercel'
 
 const app = new Hono().basePath('/api')
 
@@ -35,7 +35,8 @@ export default handle(app)
 
 ## Notes
 
-- App Router: import `handle` from `hono/vercel`
+- App Router: import `handle` from `@hono/vercel`
+- `handle` comes from the `@hono/vercel` package, which the starter installs. On an existing project, add it with `npm i @hono/vercel`
 - Pages Router: import `handle` from `@hono/node-server/vercel`; install `@hono/node-server`; set `bodyParser: false`
 - For Pages Router on Vercel, set the environment variable `NODEJS_HELPERS=0` to disable Vercel Node.js helpers
 - Dev server: `http://localhost:3000`

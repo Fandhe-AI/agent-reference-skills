@@ -38,6 +38,7 @@ export const onRequest = handleMiddleware(basicAuth({ username: 'hono', password
 
 ## Notes
 
+- The `hono/cloudflare-pages` adapter is deprecated and will be removed in Hono v5 (deprecated in v4.13.10 with no replacement package); Cloudflare recommends Workers with static assets for new projects, see [Cloudflare Workers + Vite](./cloudflare-workers-vite.md)
 - Dev server runs on `http://localhost:5173` (Vite)
 - Build command for dashboard deployment: `npm run build`; build directory: `dist`
 - Use `handleMiddleware` to apply Hono middleware to Cloudflare Pages Functions

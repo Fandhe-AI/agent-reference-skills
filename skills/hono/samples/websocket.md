@@ -3,28 +3,21 @@
 Upgrading HTTP connections to WebSocket with a unified event-handler API.
 
 ```ts
-// Cloudflare Workers / Deno / Bun
+// Cloudflare Workers — requires @hono/cloudflare-workers
 import { Hono } from 'hono'
-import { upgradeWebSocket } from 'hono/cloudflare-workers'
+import { upgradeWebSocket } from '@hono/cloudflare-workers'
 
 const app = new Hono()
 
 app.get(
   '/ws',
   upgradeWebSocket((c) => ({
-    onOpen(event, ws) {
-      console.log('Client connected')
-      ws.send('Welcome!')
-    },
     onMessage(event, ws) {
-      const msg = event.data as string
-      ws.send(`Echo: ${msg}`)
+      console.log(`Message from client: ${event.data}`)
+      ws.send('Hello from server!')
     },
-    onClose(event, ws) {
-      console.log('Client disconnected')
-    },
-    onError(event) {
-      console.error('WebSocket error', event)
+    onClose: () => {
+      console.log('Connection closed')
     },
   }))
 )
@@ -33,30 +26,55 @@ export default app
 ```
 
 ```ts
-// Node.js — requires @hono/node-ws
-import { serve } from '@hono/node-server'
-import { createNodeWebSocket } from '@hono/node-ws'
+// Bun — requires @hono/bun
 import { Hono } from 'hono'
+import { upgradeWebSocket, websocket } from '@hono/bun'
 
 const app = new Hono()
-const { injectWebSocket, upgradeWebSocket } = createNodeWebSocket({ app })
 
 app.get(
   '/ws',
-  upgradeWebSocket(() => ({
+  upgradeWebSocket((c) => ({
     onMessage(event, ws) {
       ws.send(`Echo: ${event.data}`)
     },
   }))
 )
 
-const server = serve({ fetch: app.fetch, port: 3000 })
-injectWebSocket(server)
+export default {
+  fetch: app.fetch,
+  websocket,
+}
+```
+
+```ts
+// Node.js — built into @hono/node-server, requires ws
+import { serve, upgradeWebSocket } from '@hono/node-server'
+import { Hono } from 'hono'
+import { WebSocketServer } from 'ws'
+
+const app = new Hono()
+
+app.get(
+  '/ws',
+  upgradeWebSocket(() => ({
+    onMessage(event, ws) {
+      ws.send(event.data)
+    },
+  }))
+)
+
+const wss = new WebSocketServer({ noServer: true })
+
+serve({
+  fetch: app.fetch,
+  websocket: { server: wss },
+})
 ```
 
 ## Notes
 
-- `onOpen` is not supported on Cloudflare Workers; use `onMessage` for initialization logic if needed
-- For Node.js, use `@hono/node-ws` (`createNodeWebSocket`) instead of the built-in helper
-- Middleware that mutates response headers (e.g., CORS) can cause header immutability errors when combined with `upgradeWebSocket`
-- Install for Node.js: `npm install @hono/node-ws`
+- Each runtime adapter is a separate package (`@hono/cloudflare-workers`, `@hono/deno`, `@hono/bun`); the old `hono/cloudflare-workers`-style imports are replaced by these
+- Available events: `onOpen` (not supported on Cloudflare Workers), `onMessage`, `onClose`, `onError`
+- On Node.js, install `ws` (and `@types/ws` for TypeScript) and pass a `WebSocketServer` created with `{ noServer: true }` via the `websocket` option of `serve()`; `@hono/node-ws` is deprecated
+- Middleware that modifies headers (e.g., CORS) on a WebSocket route can cause an immutable-headers error because `upgradeWebSocket()` also changes headers internally
