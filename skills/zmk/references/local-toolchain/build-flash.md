@@ -7,45 +7,45 @@ Compile ZMK firmware and flash it to a keyboard. All `west build` commands must 
 ### Basic build (onboard MCU keyboard)
 
 ```bash
-west build -b planck_rev6
+west build -b planck//zmk
 ```
 
 ### Shield + board (add-on MCU)
 
 ```bash
-west build -b proton_c -- -DSHIELD=kyria_left
+west build -b proton_c//zmk -- -DSHIELD=kyria_left
 ```
 
 ### Pristine build (clears existing build artifacts)
 
 ```bash
-west build -p -b nice_nano -- -DSHIELD=kyria_left
+west build -p -b nice_nano//zmk -- -DSHIELD=kyria_left
 ```
 
 ### Split keyboard (build each half separately)
 
 ```bash
-west build -d build/left  -b nice_nano -- -DSHIELD=kyria_left
-west build -d build/right -b nice_nano -- -DSHIELD=kyria_right
+west build -d build/left  -b nice_nano//zmk -- -DSHIELD=kyria_left
+west build -d build/right -b nice_nano//zmk -- -DSHIELD=kyria_right
 ```
 
 ### With Kconfig flags
 
 ```bash
-west build -b planck_rev6 -- -DCONFIG_ZMK_SLEEP=y
+west build -b planck//zmk -- -DCONFIG_ZMK_SLEEP=y
 ```
 
 ### With external modules
 
 ```bash
-west build -b nice_nano -- -DSHIELD=vendor_shield \
+west build -b nice_nano//zmk -- -DSHIELD=vendor_shield \
   -DZMK_EXTRA_MODULES="path/to/module"
 ```
 
 ### With a zmk-config folder
 
 ```bash
-west build -b nice_nano -- -DSHIELD=kyria_left \
+west build -b nice_nano//zmk -- -DSHIELD=kyria_left \
   -DZMK_CONFIG="C:/path/to/config"
 ```
 
@@ -65,6 +65,9 @@ The `.uf2` file can be copied to a USB mass-storage bootloader or flashed via DF
 - Multiple external modules must be separated by semicolons: `-DZMK_EXTRA_MODULES="path/to/mod1;path/to/mod2"`
 - `-DZMK_CONFIG` must point to the nested `config/` folder inside the zmk-config directory, not the root
 - To persist CMake arguments across builds: `west config build.cmake-args -- "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"`
+- Since moving to Zephyr 4.1, board IDs for boards in ZMK must use the ZMK board variants (e.g. `planck//zmk` instead of `planck_rev6`); see https://zmk.dev/blog/2025/12/09/zephyr-4-1#zmk-board-variant
+- Once the build directory exists, `west build -d <build_dir>` reuses the cached arguments and board selection
+- If the zmk-config is also a module, add its root (the folder in which the `zephyr` folder is found) as an external module via `ZMK_EXTRA_MODULES` as well
 - nRF5340 boards require separate network-core firmware setup
 
 ## Related

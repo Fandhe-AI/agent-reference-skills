@@ -8,7 +8,7 @@
 | Hardware Metadata Files | YAML files that provide high-level hardware information for boards and shields. | [hardware-metadata-files.md](./hardware-metadata-files.md) |
 | New Board | Guide for adding a ZMK board definition, covering boards with interconnects and standalone keyboards. | [new-board.md](./new-board.md) |
 | New Shield | Guide for creating a ZMK keyboard shield — a PCB or wired component set. | [new-shield.md](./new-shield.md) |
-| Hardware Integration Overview | Introduction to getting ZMK firmware running on keyboards, covering boards, shields, and… | [overview.md](./overview.md) |
+| Hardware Integration Overview | Introduction to getting ZMK firmware running on keyboards, covering boards, shields, physical layouts, and optional features. | [overview.md](./overview.md) |
 | Physical Layouts | A devicetree entity that aggregates all details about a keyboard layout. | [physical-layouts.md](./physical-layouts.md) |
 | Pin Control (pinctrl) | Configuration of MCU pins for advanced peripherals using SPI, I2C, or UART. | [pinctrl.md](./pinctrl.md) |
 | Shift Registers | Expands GPIO pin count for keyboards with more keys than available MCU pins. | [shift-registers.md](./shift-registers.md) |

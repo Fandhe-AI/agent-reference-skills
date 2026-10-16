@@ -5,10 +5,10 @@ ZMK ファームウェアのデバッグ・ログ確認コマンド（USB ロギ
 ## USB ロギング有効ビルド
 
 ```sh
-west build -b nice_nano -S zmk-usb-logging -- -DSHIELD="corne_left"
+west build -b nice_nano//zmk -S zmk-usb-logging -- -DSHIELD="corne_left"
 ```
 
-`-S zmk-usb-logging` スニペットを指定してビルドすることで USB シリアルにログを出力する。
+`-S zmk-usb-logging` スニペットを指定してビルドすることで USB シリアルにログを出力する。Zephyr 4.1 以降はボード ID に ZMK board variant（`<board>//zmk`）を使う。
 
 ## ログの確認（Linux）
 

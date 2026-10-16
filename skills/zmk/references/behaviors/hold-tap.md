@@ -60,7 +60,8 @@ Sends one behavior when a key is held and a different behavior when it is tapped
 
 - Hold-tap cannot directly bind behaviors requiring multiple parameters (e.g., `&bt BT_SEL 1`); wrap them in a macro first.
 - Key positions are zero-indexed, sequentially numbered from the first key in the keymap.
-- `hold-while-undecided` interacts with combos — combo timeouts must expire before hold activates.
+- If the hold-tap's key position is also used in any combos, `hold-while-undecided` is not immediate on key-down; it waits until all those combo timeouts have expired.
+- `quick-tap-ms` differs from QMK `QUICK_TAP_TERM`: QMK measures from releasing the first key to pressing the second, ZMK from pressing the first to pressing the second. Use a larger `quick-tap-ms` than the QMK value.
 - Common pattern: homerow mods using `balanced` flavor with `hold-trigger-key-positions` and `require-prior-idle-ms`.
 
 ## Related

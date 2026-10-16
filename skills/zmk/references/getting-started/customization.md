@@ -25,6 +25,29 @@ The `build.yaml` file at the repository root specifies which board/shield combin
 
 To manage multiple keyboards in one repository, add entries to `build.yaml` and place each keyboard's `.conf` and `.keymap` files in the `config/` subfolder.
 
+Example `build.yaml` adding a Lily58 shield with nice!nano v2 next to an existing Corne:
+
+```yaml
+include:
+  - board: nice_nano@1//zmk
+    shield: corne_left
+  - board: nice_nano@1//zmk
+    shield: corne_right
+  - board: nice_nano//zmk
+    shield: lily58_left
+  - board: nice_nano//zmk
+    shield: lily58_right
+```
+
+The Lily58 shield files go into the `config` sub-folder inside `zmk-config` together with the Corne files, e.g.:
+
+```
+corne.conf
+corne.keymap
+lily58.conf
+lily58.keymap
+```
+
 ## Notes
 
 - For split keyboards, only the central (left) half needs to be reflashed when updating keymaps.
