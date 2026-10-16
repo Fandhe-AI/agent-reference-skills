@@ -75,7 +75,7 @@ Upload to GitHub Code Scanning (runs even when Knip exits non-zero):
 ```yaml
 - run: pnpm exec knip --reporter sarif > knip.sarif
 - if: always()
-  uses: github/codeql-action/upload-sarif@v4
+  uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee  # v4.39.0
   with:
     sarif_file: knip.sarif
 ```
@@ -139,3 +139,7 @@ Supports local files and npm packages. Can be repeated. Can also be set in the K
 ```json
 { "preprocessor": "./preprocess.ts" }
 ```
+
+## Notes
+
+- Actions are pinned to full commit SHAs here; the upstream docs reference mutable tags (`@v4`)
