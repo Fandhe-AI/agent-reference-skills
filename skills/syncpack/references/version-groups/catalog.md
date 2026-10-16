@@ -28,7 +28,27 @@ Enforce dependencies to be defined in pnpm or Bun catalogs and consumed via the 
 | `packages` | `string[]` | No | Monorepo package names to match (exact or glob). Supports negation. |
 | `severity` | `object` | No | Override alert levels for specific status codes. |
 
+Permitted `severity` keys: `NotUsingCatalog`, `MissingFromCatalog`.
+
+```json
+{
+  "versionGroups": [
+    {
+      "label": "All production deps must come from the catalog",
+      "dependencyTypes": ["prod"],
+      "policy": "catalog",
+      "severity": {
+        "NotUsingCatalog": "error",
+        "MissingFromCatalog": "warn"
+      }
+    }
+  ]
+}
+```
+
 ## Behavior
+
+Catalog definitions live in `pnpm-workspace.yaml` (pnpm) or the root `package.json` at `/catalog`, `/catalogs/{name}`, `/workspaces/catalog` or `/workspaces/catalogs/{name}` (Bun). Members of the group must either be a catalog definition or use `catalog:` / `catalog:{name}` to point at one. For npm, yarn or an unknown package manager there is no catalog system to write to, and instances are flagged `CannotInferCatalogFile`.
 
 Syncpack automatically:
 - Flags dependencies using literal version specifiers instead of catalog references
@@ -38,12 +58,12 @@ Syncpack automatically:
 
 ## Status Codes
 
-| Category | Examples |
-|----------|----------|
-| Valid | Dependencies correctly using catalogs |
-| Fixable | `NotUsingCatalog` — automatically resolvable |
-| Unfixable | `CannotInferCatalogFile` — requires manual intervention |
-| Suspect | `DependsOnMissingCatalogDefinition` |
+| Category | Status codes |
+|----------|--------------|
+| Valid | `IsCatalog`, `IsCatalogDefinition` |
+| Fixable | `NotUsingCatalog`, `MissingFromCatalog` |
+| Unfixable | `NotUsingCatalogAndCatalogUnknown`, `MissingFromCatalogAndNonSemverMismatch`, `CannotInferCatalogFile` |
+| Suspect | `DependsOnMissingCatalogDefinition`, `RefuseToCatalogLocal` |
 
 ## Notes
 

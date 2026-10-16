@@ -1,6 +1,4 @@
-# Commands
-
-syncpack CLI コマンド一覧。
+# commands
 
 | Name | Description | Path |
 |------|-------------|------|

@@ -4,11 +4,22 @@ Source: https://syncpack.dev/version-groups/banned/
 
 Prevent dependencies you've decided should never be used. Flags them as issues requiring removal — useful for enforcing policies against legacy packages, conflicting libraries, or security/licensing violations.
 
-## Activation
+## Usage
 
 Set `isBanned: true` in a version group entry.
 
-## Configuration Properties
+```json
+{
+  "versionGroups": [
+    {
+      "dependencies": ["never-gonna"],
+      "isBanned": true
+    }
+  ]
+}
+```
+
+## Options
 
 | Property | Required | Description |
 |----------|----------|-------------|
@@ -18,10 +29,27 @@ Set `isBanned: true` in a version group entry.
 | `specifierTypes` | No | Filters by version specifier format. Supports negation. Omitting matches all. |
 | `label` | No | Display name in syncpack output. Defaults to `"Version Group N"`. |
 | `packages` | No | Array matching `package.json` `name` properties (exact or glob). Supports negation but not mixing specific and negated patterns. |
+| `severity` | No | Overrides the default severity of status codes this group can produce. Permitted key: `IsBanned`. |
+
+### `severity` example
+
+```json
+{
+  "versionGroups": [
+    {
+      "dependencies": ["never-gonna"],
+      "isBanned": true,
+      "severity": {
+        "IsBanned": "error"
+      }
+    }
+  ]
+}
+```
 
 ### `dependencyTypes` values
 
-`dependencies`, `devDependencies`, `overrides`, `peerDependencies`, `pnpm.overrides`, `resolutions`
+`prod`, `dev`, `peer`, `overrides`, `pnpmOverrides`, `resolutions`, `local`, plus catalog names and custom types (see the dependency-types reference page). `pnpmOverrides` reads `overrides` from `pnpm-workspace.yaml`.
 
 Negation example: `["!dev", "!prod"]`
 
@@ -36,19 +64,6 @@ Negation example: `["!dev", "!prod"]`
 - `["**"]` — all packages
 - `["@my-repo/**"]` — scoped packages
 - `["my-server", "my-client"]` — specific packages
-
-## Configuration Example
-
-```json
-{
-  "versionGroups": [
-    {
-      "dependencies": ["never-gonna"],
-      "isBanned": true
-    }
-  ]
-}
-```
 
 ## Status Codes
 

@@ -28,7 +28,25 @@ Override the default treatment for status codes syncpack assigns to dependencies
 | Conflict | `"error"` |
 | `RefuseToPinLocal` / `RefuseToSnapLocal` | `"warn"` |
 
-`strict: true` escalates unspecified Suspect statuses from `"warn"` to `"error"`. Explicit severity mappings always take precedence.
+`strict: true` escalates unspecified Suspect statuses from `"warn"` to `"error"`. Explicit severity mappings always take precedence. It does not affect Fixable defaults.
+
+```json
+{
+  "strict": true,
+  "versionGroups": [
+    {
+      "dependencies": ["my-pkg"],
+      "dependencyTypes": ["local"],
+      "pinVersion": "1.0.0",
+      "severity": {
+        "RefuseToPinLocal": "warn"
+      }
+    }
+  ]
+}
+```
+
+Here `RefuseToPinLocal` stays `"warn"` even though `strict` is `true`.
 
 ## Usage
 
@@ -51,8 +69,23 @@ Override the default treatment for status codes syncpack assigns to dependencies
 
 | Status | Reason |
 |--------|--------|
-| `DiffersToNpmRegistry` | Controlled via `updateGroups` configuration |
+| `DiffersToNpmRegistry` | Controlled via `updateGroups` configuration; writing it as a severity key fails with `InvalidSeverityKey` |
 | Unfixable conflict statuses | Permanently set to `"error"` to prevent hiding ambiguities |
+
+## Configurable Keys per Group
+
+| Group | Permitted severity keys |
+|-------|-------------------------|
+| Banned | `IsBanned` |
+| Pinned | `DiffersToPin`, `PinOverridesSemverRange`, `PinOverridesSemverRangeMismatch`, `RefuseToPinLocal` |
+| Highest Semver | `SemverRangeMismatch`, `DiffersToLocal`, `DiffersToCatalog`, `DiffersToHighestOrLowestSemver` |
+| Lowest Semver | `SemverRangeMismatch`, `DiffersToLocal`, `DiffersToCatalog`, `DiffersToHighestOrLowestSemver` |
+| Same Range | `SemverRangeMismatch` |
+| Range Only | `SemverRangeMismatch` |
+| Same Minor | `DiffersToHighestOrLowestSemverMinor`, `SemverRangeMismatch`, `SameMinorOverridesSemverRange`, `SameMinorOverridesSemverRangeMismatch` |
+| Snapped To | `DiffersToSnapTarget`, `SemverRangeMismatch`, `RefuseToSnapLocal` |
+| Catalog | `NotUsingCatalog`, `MissingFromCatalog` |
+| Ignored | (none) |
 
 ## Notes
 

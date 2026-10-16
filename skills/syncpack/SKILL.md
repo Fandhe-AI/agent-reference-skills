@@ -15,6 +15,8 @@ model: sonnet
 Syncpack（syncpack.dev）の全ドキュメントを網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
+対象: Syncpack 15.3.3 (GitHub tag `15.3.3`、docs は同タグの `site/src/content/docs`)
+
 ## ディレクトリ構成
 
 ```text
@@ -134,6 +136,6 @@ skills/syncpack/
 | sortAz、sortFirst、sortExports、sortPackages、ソート設定 | config | [references/config/README.md](references/config/README.md) |
 | minimumReleaseAge、maxConcurrentRequests、severity、strict | config | [references/config/README.md](references/config/README.md) |
 | formatBugs、formatRepository、indent 設定 | config | [references/config/README.md](references/config/README.md) |
-| 依存関係型一覧（dev, peer, prod 等）、specifier 型、ステータスコード、用語集 | reference | [references/reference/README.md](references/reference/README.md) |
+| 依存関係型一覧（dev, peer, prod, pnpmCatalog, bunCatalog 等）、specifier 型、ステータスコード、グループ別 severity キー、用語集 | reference | [references/reference/README.md](references/reference/README.md) |
 | 典型的な使い方を知りたい、CI 連携、設定例 | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

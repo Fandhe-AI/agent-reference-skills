@@ -33,6 +33,13 @@ syncpack lint
 syncpack lint --dependency-types prod,dev
 ```
 
+特定のカテゴリ・指定子形式を除外する場合（`!` プレフィックス）:
+
+```sh
+syncpack lint --dependency-types '!peer'
+syncpack lint --specifier-types '!url'
+```
+
 ## バージョン不一致の自動修正
 
 ```sh
@@ -86,7 +93,7 @@ syncpack format --check --source 'packages/pingu/package.json'
 syncpack update --target latest
 ```
 
-> **警告**: npm レジストリへのネットワークアクセスが必要。`package.json` を直接書き換える。実行後は `npm install` / `pnpm install` 等でロックファイルを更新すること。
+> **警告**: npm レジストリへのネットワークアクセスが必要。`package.json`（および存在する場合は `pnpm-workspace.yaml` の catalog エントリ）を直接書き換える。実行後は `npm install` / `pnpm install` 等でロックファイルを更新すること。
 
 更新範囲を制限する場合:
 
@@ -111,6 +118,29 @@ syncpack update --check --dependency-types dev --target patch
 ```sh
 syncpack update --dependencies react
 syncpack update --dependencies '@aws-sdk/**'
+```
+
+対話プロンプトで適用する更新を選ぶ場合:
+
+```sh
+syncpack update --interactive
+syncpack update --interactive --target patch
+syncpack update --interactive --dependencies '@aws-sdk/**'
+```
+
+pnpm catalog（`pnpm-workspace.yaml`）のエントリのみ更新する場合:
+
+```sh
+# デフォルト catalog（pnpm-workspace.yaml の catalog）のみ
+syncpack update --dependency-types pnpmCatalog
+# 名前付き catalog 'react18' のみ
+syncpack update --dependency-types 'pnpmCatalog:react18'
+```
+
+semver range 指定子（`^`, `~` 等）の依存関係のみ更新する場合:
+
+```sh
+syncpack update --specifier-types range
 ```
 
 ## 依存関係情報を JSON で出力
@@ -151,8 +181,8 @@ syncpack lint --help
 | --- | --- |
 | `--config <path>` | 設定ファイルのパスを指定（拡張子必須） |
 | `--dependencies <pattern>` | 依存名を glob でフィルター（`!` プレフィックスで除外） |
-| `--dependency-types <types>` | カテゴリを絞る（`prod`, `dev`, `peer` 等、カンマ区切り） |
-| `--specifier-types <types>` | バージョン指定形式でフィルター（`exact`, `range` 等） |
+| `--dependency-types <types>` | カテゴリを絞る（`prod`, `dev`, `peer` 等、カンマ区切り。`'!peer'` のように `!` で除外） |
+| `--specifier-types <types>` | バージョン指定形式でフィルター（`exact`, `range` 等。`'!url'` のように `!` で除外） |
 | `--source <pattern>` | 対象 `package.json` を glob で指定 |
 | `--source-mode <mode>` | `replace`（デフォルト）または `extend` でソースパターンを制御 |
 | `--log-levels <levels>` | ログ詳細度（`off`, `error`, `warn`, `info`, `debug`） |
