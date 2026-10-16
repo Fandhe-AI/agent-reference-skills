@@ -127,7 +127,7 @@ else
 - The official page writes `std::literals::2s`, which is not valid C++; this page uses `using namespace std::chrono_literals;` and `2s` instead.
 - The official page declares `uint32_t result;` without initializing or assigning it before `co_return result`, which reads an uninitialized value (undefined behavior); this page value-initializes it (`uint32_t result{};`) — assign the computed value inside the loop in real code.
 - Source: https://learn.microsoft.com/en-us/windows/apps/develop/cpp-winrt/concurrency-2 (en-us, fetched 2026-10-16)
-- Source (Notes correction): https://github.com/microsoft/wil/blob/master/include/wil/cppwinrt_helpers.h and https://github.com/microsoft/cppwinrt/blob/master/strings/base_coroutine_system.h
+- Source (Notes correction): https://github.com/microsoft/wil/blob/v1.0.260126.7/include/wil/cppwinrt_helpers.h and https://github.com/microsoft/cppwinrt/blob/3.0.260818.1/strings/base_coroutine_system.h
 
 ## Related
 
