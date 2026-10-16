@@ -87,6 +87,7 @@ let recording: Record<Output, Failure>.Recording                          // The
 
 - iOS 13.0+, iPadOS 13.0+, Mac Catalyst 13.0+, macOS 10.15+, tvOS 13.0+, visionOS 1.0+, watchOS 6.0+ (all five types)
 - The documentation source shows no default value for `completeImmediately`, so none is asserted here.
+- Source: https://developer.apple.com/documentation/combine/just , https://developer.apple.com/documentation/combine/deferred , https://developer.apple.com/documentation/combine/empty , https://developer.apple.com/documentation/combine/fail , https://developer.apple.com/documentation/combine/record (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

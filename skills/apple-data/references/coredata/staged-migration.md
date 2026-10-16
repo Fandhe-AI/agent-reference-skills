@@ -4,13 +4,13 @@ Migrate complex data models containing changes that are incompatible with a sing
 
 ## Signature / Usage
 
-Source example (verbatim; the original is missing a comma after the `NSInferMappingModelAutomaticallyOption` line, and the `addPersistentStore` arguments before `options:` are elided here):
+Source example (`addPersistentStore` arguments before `options:` are elided):
 
 ```swift
 let manager = NSStagedMigrationManager(stages)
 let options = [
     NSMigratePersistentStoresAutomaticallyOption: true,
-    NSInferMappingModelAutomaticallyOption: true
+    NSInferMappingModelAutomaticallyOption: true,
     NSPersistentStoreStagedMigrationManagerOptionKey: manager
 ]
 let store = coordinator.addPersistentStore(
@@ -67,6 +67,8 @@ convenience init(migratingFrom currentModel: NSManagedObjectModelReference, to n
 - `NSMigrationStage` is an abstract base class: don't create instances of it; use a concrete subclass such as `NSLightweightMigrationStage` or `NSCustomMigrationStage`.
 - To access the store being migrated inside a handler, use the `container` property of the migration manager Core Data provides to the handler.
 - The source documentation says to pass the manager through the persistent store's options dictionary with `NSPersistentStoreStagedMigrationManagerOptionKey`.
+- The official NSStagedMigrationManager code listing omits the comma after `NSInferMappingModelAutomaticallyOption: true`; it is added in the snippet above.
+- Source: https://developer.apple.com/documentation/coredata/staged-migrations , https://developer.apple.com/documentation/coredata/nsstagedmigrationmanager (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

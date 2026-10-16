@@ -48,6 +48,7 @@ ResultsSection
 - `SectionedResults` is the result type for sectioned `@Query` properties; iterating it yields sections, and each section is itself a `RandomAccessCollection` of model elements
 - `SectionedResults` conforms to `BidirectionalCollection`, `Collection`, `Equatable`, `RandomAccessCollection`, `Sequence`; `ResultsSection` additionally conforms to `Identifiable`
 - Use `subscript(sectionTitle:)` for O(1) lookup by section title
+- Source: https://developer.apple.com/documentation/swiftdata/sectionedresults , https://developer.apple.com/documentation/swiftdata/resultssection (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

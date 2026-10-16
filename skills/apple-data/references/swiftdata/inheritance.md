@@ -82,6 +82,7 @@ func delete<T>(model: T.Type, where predicate: Predicate<T>? = nil, includeSubcl
 - A flatter alternative to inheritance is an enumeration capturing the kind, e.g. `enum Category: Codable { case personal(Reason); case business(perdiem: Double) }`
 - `ModelContext.delete(model:where:includeSubclasses:)`: iOS 17.0+, macOS 14.0+, visionOS 1.0+, watchOS 10.0+; removal happens during the next save operation. Warning: if you do not provide a predicate, the context removes all models of the specified type from the persistent storage
 - The article's own snippets contain typos and abbreviations (for example `@Model LivingAccommodation { ... }`, `Boolean`); they are reproduced as outlines, not compilable code
+- Source: https://developer.apple.com/documentation/swiftdata/adopting-inheritance-in-swiftdata (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

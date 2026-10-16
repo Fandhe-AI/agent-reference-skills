@@ -82,6 +82,7 @@ let asyncRandom = await generateAsyncRandomNumberFromContinuation()
 - `value` (both variants): iOS 15.0+, iPadOS 15.0+, Mac Catalyst 15.0+, macOS 12.0+, tvOS 15.0+, visionOS 1.0+, watchOS 8.0+
 - Unlike other `Publisher` types that may publish many elements, a `Future` only publishes one element (or fails), which is why it exposes `value` for `async`-`await`.
 - Conforms to `Publisher`.
+- Source: https://developer.apple.com/documentation/combine/future (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

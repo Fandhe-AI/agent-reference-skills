@@ -104,6 +104,7 @@ cancellable2 = pub
 - `ConnectablePublisher`, `connect()`, `autoconnect()`, `makeConnectable()`, `multicast`, `share()`: iOS 13.0+, iPadOS 13.0+, Mac Catalyst 13.0+, macOS 10.15+, tvOS 13.0+, visionOS 1.0+, watchOS 6.0+
 - Use `makeConnectable()` to create a `ConnectablePublisher` from any publisher whose failure type is `Never`.
 - Related articles in the official docs: "Controlling Publishing with Connectable Publishers", "Replacing Foundation Timers with Timer Publishers".
+- Source: https://developer.apple.com/documentation/combine/connectablepublisher , https://developer.apple.com/documentation/combine/controlling-publishing-with-connectable-publishers (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

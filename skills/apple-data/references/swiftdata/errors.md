@@ -52,6 +52,7 @@ DataStoreError (cases, "Getting error codes")
 - DataStoreError: iOS 18.0+, iPadOS 18.0+, Mac Catalyst 18.0+, macOS 15.0+, tvOS 18.0+, visionOS 2.0+, watchOS 10.0+ (as listed verbatim in the official page metadata), Swift 5.9+
 - The official pages list the members above without per-member discussion; semantics beyond the names are not documented there
 - `DataStoreError` is the error type for custom `DataStore` implementations
+- Source: https://developer.apple.com/documentation/swiftdata/swiftdataerror , https://developer.apple.com/documentation/swiftdata/datastoreerror (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

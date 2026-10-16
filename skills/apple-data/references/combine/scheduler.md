@@ -56,6 +56,7 @@ let cancellable = subject
 - iOS 13.0+, iPadOS 13.0+, Mac Catalyst 13.0+, macOS 10.15+, tvOS 13.0+, visionOS 1.0+, watchOS 6.0+
 - `ImmediateScheduler` can only be used for immediate actions. If you attempt to schedule actions after a specific date, it ignores the date and performs them immediately.
 - `ImmediateScheduler` is the only conforming type listed on the `Scheduler` page; other schedulers (such as `RunLoop` and `DispatchQueue`) are not covered by this page.
+- Source: https://developer.apple.com/documentation/combine/scheduler , https://developer.apple.com/documentation/combine/immediatescheduler (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

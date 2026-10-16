@@ -36,6 +36,7 @@ var values: AsyncThrowingPublisher<Self> { get }
 - `Publisher.values` (`AsyncPublisher<Self>`) is available when `Failure` is `Never`; the `AsyncThrowingPublisher<Self>` variant has no such constraint.
 - Availability: iOS 15.0+, iPadOS 15.0+, Mac Catalyst 15.0+, macOS 12.0+, tvOS 15.0+, visionOS 1.0+, watchOS 8.0+
 - For a single value from a `Future`, see `Future.value` (`async` / `async throws`).
+- Source: https://developer.apple.com/documentation/combine/asyncpublisher , https://developer.apple.com/documentation/combine/asyncthrowingpublisher (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

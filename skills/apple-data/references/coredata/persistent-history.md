@@ -90,6 +90,7 @@ if filteredTransactions.isEmpty == false {
 - To access attributes of deleted objects, select "Preserve After Deletion" on the attribute in the data model editor; deleted changes then carry those values in `tombstone`.
 - History transactions take space on disk; define a cleanup strategy with `deleteHistory(before:)` and make sure your app and its clients have consumed the history first. Fetching purged history throws an expired token error.
 - The original article (Consuming relevant store changes) filters transactions for entities relevant to the current view (the example uses `ShoppingItem`) and merges only those.
+- Source: https://developer.apple.com/documentation/coredata/persistent-history , https://developer.apple.com/documentation/coredata/consuming-relevant-store-changes (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

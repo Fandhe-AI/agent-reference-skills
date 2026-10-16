@@ -36,6 +36,7 @@ DataStoreSnapshotCodingKey (the key space to use when implementing custom coders
 - `DefaultStore` conforms to `Copyable`, `DataStore`, `DataStoreBatching`, `Escapable`, `HistoryProviding`
 - `DataStoreSnapshotCodingKey`: iOS 18.0+, macOS 15.0+, visionOS 2.0+, watchOS 11.0+; conforms to `CodingKey`, `CustomDebugStringConvertible`, `CustomStringConvertible`, `Sendable`, `SendableMetatype`
 - The official page gives no descriptions for `name`, `DefaultSnapshot`, or `TokenType` beyond their declarations
+- Source: https://developer.apple.com/documentation/swiftdata/defaultstore (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

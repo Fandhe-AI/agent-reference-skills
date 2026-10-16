@@ -62,6 +62,7 @@ init(for schema: Schema, migrationPlan: (any SchemaMigrationPlan.Type)?, configu
 - Use `.modelContainer(for:)` SwiftUI modifier for the simplest setup
 - Store identifiers are not configuration names; use `storeIdentifier(forConfigurationNamed:)` to filter a `HistoryDescriptor` or interpret `PersistentIdentifier.storeIdentifier` (default configuration name is `"default"`)
 - `mainContext` is suitable for UI reads; create additional contexts for background work
+- Source: https://developer.apple.com/documentation/swiftdata/modelcontainer (fetched 2026-10-16, iOS 27 SDK docs); `deleteAllData()` deprecation: https://developer.apple.com/documentation/swiftdata/modelcontainer/deletealldata()
 
 ## Related
 

@@ -37,6 +37,7 @@ class NSAsynchronousFetchResult<ResultType> where ResultType : NSFetchRequestRes
 - Availability (from the source JSON): iOS 8.0+, iPadOS 8.0+, Mac Catalyst 13.1+, macOS 10.10+, visionOS 1.0+, watchOS 2.0+. tvOS has no `introducedAt` value in the source (listed without a version).
 - `NSAsynchronousFetchRequest` inherits from `NSPersistentStoreRequest`; `NSAsynchronousFetchResult` inherits from `NSPersistentStoreAsynchronousResult`.
 - The initializer's `completionBlock` parameter is optional and defaults to `nil`.
+- Source: https://developer.apple.com/documentation/coredata/nsasynchronousfetchrequest , https://developer.apple.com/documentation/coredata/nsasynchronousfetchresult (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

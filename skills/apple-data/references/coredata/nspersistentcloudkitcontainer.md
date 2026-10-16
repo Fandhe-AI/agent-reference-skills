@@ -68,6 +68,7 @@ Event types:
 - Core Data with CloudKit cannot use existing CloudKit containers: Core Data owns the CloudKit schema created from the Core Data model. If the app already uses CloudKit, add Core Data with CloudKit by synchronizing a store with a new container.
 - Development needs an Apple Developer Program account and an iCloud account. Core Data uses a specific record zone in the CloudKit private database, accessible only to the current user. Apps can be tested in Simulator or on multiple physical devices logged into the same iCloud account.
 - `initializeCloudKitSchema(options:)` creates representative `CKRecord` instances for all CloudKit-using stores and uploads them. After a successful upload the schema is visible in the CloudKit Dashboard and the container deletes the representative records. It also validates the managed object model for CloudKit, so a validation error may be returned.
+- Source: https://developer.apple.com/documentation/coredata/nspersistentcloudkitcontainer , https://developer.apple.com/documentation/coredata/nspersistentcloudkitcontaineroptions (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 
