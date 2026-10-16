@@ -4,9 +4,9 @@ Proxmox VE uses APT. Repositories are configured in `/etc/apt/sources.list` (leg
 
 ## Signature / Usage
 
-```
-File /etc/apt/sources.list.d/proxmox.sources
+File `/etc/apt/sources.list.d/proxmox.sources`:
 
+```
 Types: deb
 URIs: http://download.proxmox.com/debian/pve
 Suites: trixie
@@ -39,9 +39,9 @@ Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg
 
 ### Debian base repository (Proxmox VE 9 / Trixie)
 
-```
-File /etc/apt/sources.list.d/debian.sources
+File `/etc/apt/sources.list.d/debian.sources`:
 
+```
 Types: deb deb-src
 URIs: http://deb.debian.org/debian/
 Suites: trixie trixie-updates
@@ -62,9 +62,9 @@ Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 | `ceph-tentacle` | 2027-11 (v20.2) | recommended | available | available |
 | `ceph-squid` | 2026-09 (v19.2) | available | available | available |
 
-```
-File /etc/apt/sources.list.d/ceph.sources
+File `/etc/apt/sources.list.d/ceph.sources`:
 
+```
 Types: deb
 URIs: https://enterprise.proxmox.com/debian/ceph-tentacle
 Suites: trixie
