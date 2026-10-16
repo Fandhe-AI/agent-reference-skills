@@ -77,6 +77,7 @@ skills/theatrejs/
     README.md
     basic-animation-setup.md
     react-three-fiber-integration.md
+    threejs-vanilla-integration.md
     audio-sync.md
     studio-editing-workflow.md
     html-dom-animation.md
@@ -126,5 +127,6 @@ skills/theatrejs/
 | アセット（画像・テクスチャ）を props に使いたい | manual | [references/manual/README.md](references/manual/README.md) |
 | 音声をアニメーションと同期したい | manual | [references/manual/README.md](references/manual/README.md) |
 | カスタム rafDriver で外部レンダーループと連携したい | manual | [references/manual/README.md](references/manual/README.md) |
+| vanilla THREE.js (R3F なし) にアニメーションを付けたい | samples | [samples/README.md](samples/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
