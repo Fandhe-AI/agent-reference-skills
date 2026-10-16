@@ -69,6 +69,7 @@ subscribe_to = (bpy.types.Object, "location")
 - Changes done from msgbus callbacks are not included in related undo steps, so users can skip their effects with Undo followed by Redo.
 - Unlike property update callbacks, msgbus callbacks are postponed until all operators have finished executing. Per property, the callback fires only once per update cycle even if changed multiple times.
 - All subscribers are cleared on file-load. Re-register on load, see `bpy.app.handlers.load_post`.
+- Source: https://docs.blender.org/api/5.2/bpy.msgbus.html (Blender 5.2 Python API).
 
 ## Related
 

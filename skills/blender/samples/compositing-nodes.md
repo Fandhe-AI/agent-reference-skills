@@ -147,6 +147,8 @@ links.new(rl.outputs['Depth'],    file_out.inputs["depth"])
 
 exr_out = nodes.new('CompositorNodeOutputFile')
 exr_out.location           = (700, -200)
+if hasattr(exr_out.format, 'media_type'):  # Blender 5.0+
+    exr_out.format.media_type = 'MULTI_LAYER_IMAGE'
 exr_out.format.file_format = 'OPEN_EXR_MULTILAYER'
 exr_out.format.color_depth = '32'
 exr_out.format.exr_codec   = 'DWAA'
@@ -178,6 +180,7 @@ print("Compositor tree built:", [n.type for n in tree.nodes])
 - After `nodes.clear()`, always create Render Layers with `nodes.new('CompositorNodeRLayers')` and set `.scene = scene` — default nodes no longer exist.
 - `CompositorNodeRLayers.scene` must point to the scene being rendered, or the node produces no output.
 - **Blender 5.0+ — File Output:** `file_slots`, `layer_slots`, and `base_path` are removed. Use `directory`, `file_name`, and `file_output_items` instead. PART C/D branch on `hasattr(node, 'file_output_items')`; the `.new(socket_type, name)` signature and the socket types (`'RGBA'`, `'FLOAT'`, ...) come from the 5.2 API docs. Input sockets are linked by item name here; the 5.0 release notes show `file_output_items[0].name` replacing `file_slots[0].path` for socket naming. Per the 5.0 compositor release notes (b10d767c4e), the File Output node appends the frame number to the image name only when rendering an animation, and a manual `####` in the name is substituted with the frame number even in single renders.
+- **Blender 5.0+ — media_type:** `ImageFormatSettings.media_type` must be set to an appropriate type (`'MULTI_LAYER_IMAGE'` for `'OPEN_EXR_MULTILAYER'`) before assigning `file_format`; PART D guards it with `hasattr` so 4.x, which has no `media_type`, still works.
 - **Blender 5.0+ — pass names:** many render passes were renamed (e.g. `'Z'` to `'Depth'`, `'DiffCol'` to `'Diffuse Color'`), so Render Layers output sockets use the new names; `rl.outputs['Depth']` above is already the 5.0+ name.
 
 ## Variations

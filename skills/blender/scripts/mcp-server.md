@@ -5,15 +5,15 @@ Blender MCP Server のインストール・起動・設定・テストに使う�
 ## Installation — MCP サーバー（pip）
 
 ```sh
-pip install git+https://projects.blender.org/lab/blender_mcp.git#subdirectory=mcp
+pip install git+https://projects.blender.org/lab/blender_mcp.git@v1.0.3#subdirectory=mcp
 ```
 
 Python 3.10 以上が必要。依存パッケージ: `docutils`, `mcp[cli]>=1.2.0,<2`, `pyyaml`（v1.0.3 の `mcp/pyproject.toml`）。
 
-タグを固定する場合（v1.0.3）:
+代替: デフォルトブランチの最新を追う場合（本スキルが記載する v1.0.3 と差異が出うる）:
 
 ```sh
-pip install git+https://projects.blender.org/lab/blender_mcp.git@v1.0.3#subdirectory=mcp
+pip install git+https://projects.blender.org/lab/blender_mcp.git#subdirectory=mcp
 ```
 
 ## Installation — Blender add-on（Extensions リポジトリ）

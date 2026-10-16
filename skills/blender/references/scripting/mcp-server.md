@@ -23,11 +23,11 @@ Two components communicate over a TCP socket:
 ## Installation
 
 ```bash
-# Install the MCP server package
-pip install git+https://projects.blender.org/lab/blender_mcp.git#subdirectory=mcp
-
-# Optional: pin to the v1.0.3 tag
+# Install the MCP server package (pinned to v1.0.3, the version this page documents)
 pip install git+https://projects.blender.org/lab/blender_mcp.git@v1.0.3#subdirectory=mcp
+
+# Optional: follow the latest default branch (may differ from this page)
+pip install git+https://projects.blender.org/lab/blender_mcp.git#subdirectory=mcp
 ```
 
 Add the Blender Lab Extensions repository and install the MCP add-on:

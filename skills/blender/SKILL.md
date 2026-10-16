@@ -5,7 +5,7 @@ description: >
   bpy.data / bpy.context / bpy.ops / bpy.types / bpy.props / bpy.msgbus / bpy.path コア API。
   Mesh / Modifier / Geometry Nodes / Armature / Keyframe / Driver / Shape Key / NLA、
   Cycles / EEVEE / Shader Nodes / Rigid Body / Cloth / Fluid / Compositor Nodes / AOV、
-  headless CLI レンダリング、add-on 開発、Extensions システム、MCP Server。
+  headless CLI レンダリング、add-on 開発、Extensions システム、MCP Server (Model Context Protocol)。
 user-invocable: false
 ---
 

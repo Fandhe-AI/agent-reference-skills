@@ -40,6 +40,7 @@ safe = bpy.path.clean_name("My Object.001")
 ## Notes
 
 - `is_autoexec` does not check the preference to enable automatic script execution (`bpy.types.PreferencesFilePaths.use_scripts_auto_execute`).
+- Source: https://docs.blender.org/api/5.2/bpy.path.html (Blender 5.2 Python API).
 
 ## Related
 

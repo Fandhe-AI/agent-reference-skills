@@ -156,6 +156,7 @@ Pass names from the `RE_PASSNAME_*` defines in `DNA_scene_enums.h` (v5.2.2):
 - Cryptomatte passes require Cycles or a renderer that supports them; EEVEE support varies by version.
 - AOV type must match the shader AOV Output node's data type (Color vs. Value).
 - The Denoising Data passes (`use_pass_denoising_data`) enable Albedo and Normal inputs for the Denoise compositor node.
+- Source (5.0 changes): https://developer.blender.org/docs/release_notes/5.0/rendering/ and https://developer.blender.org/docs/release_notes/5.0/python_api/
 - **Blender 5.0+:** Access the compositor tree via `scene.compositing_node_group` instead of `scene.node_tree`. See [compositor-nodes.md](./compositor-nodes.md) for the cross-version helper pattern.
 
 ## Related
