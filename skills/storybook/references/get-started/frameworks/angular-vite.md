@@ -32,6 +32,8 @@ Then run `ng run your-project:storybook` and `ng run your-project:build-storyboo
 
 ## Options / Props
 
+The options below are framework options set in `.storybook/main.ts` under `framework.options`.
+
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `builder` | `Record<string, any>` | — | Options for the framework's builder (Vite builder docs). |
@@ -39,7 +41,7 @@ Then run `ng run your-project:storybook` and `ng run your-project:build-storyboo
 | `liveReload` | `boolean` | `false` | Enable live-reload in the AnalogJS plugin. |
 | `tsconfig` | `string` | `./.storybook/tsconfig.json` | TypeScript config path relative to the workspace root. |
 | `inlineStylesExtension` | `string` | `'css'` | File extension for inline component styles. |
-| `compodoc` | `boolean` | `true` | Run Compodoc to generate `documentation.json`. Only effective with `experimentalDocgenServer: false`. |
+| `compodoc` | `boolean` | `true` | With `experimentalDocgenServer: false`, Storybook generates `documentation.json` on each dev / build / Vitest run. Requires `@compodoc/compodoc` as a devDependency and `setCompodocJson(docJson)` (from `@storybook/addon-docs/angular`) in `.storybook/preview`. |
 | `compodocArgs` | `string[]` | `['-e', 'json', '-d', '.']` | Arguments for the Compodoc CLI. Only read with `experimentalDocgenServer` off. |
 | `propsTable` | `'all' \| 'api' \| 'inputs'` | `'api'` | Which members the props table renders: `'all'` (every member), `'api'` (template-facing API; drops `private`, `#` private, and `@internal` members, keeps `protected`), `'inputs'` (inputs only). Tag a member `@ignore` to drop it. |
 
@@ -51,7 +53,7 @@ Builder options also include `zoneless` (default `true`; set `false` for Zone.js
 - Requirements: Angular ≥ 21, Vite ≥ 8. Use `@storybook/angular` (Webpack) for Angular ≤ 20 or Webpack setups you cannot migrate.
 - Authoring surface (stories, `moduleMetadata`, `applicationConfig`, `componentWrapperDecorator`, parameters) is identical to `@storybook/angular`.
 - Builders take no `browserTarget`. Since Storybook 10.6, `@storybook/angular-vite` sets Vite's `resolve.tsconfigPaths: true` by default, so `tsconfig` `paths` aliases resolve in dev and build without a plugin, and `paths` sources take priority over a same-named `node_modules` package (MIGRATION.md, 10.5.x to 10.6.0). To restore the old behavior, set `resolve.tsconfigPaths: false` in `viteFinal`. The framework page's `vite-tsconfig-paths` / `resolve.alias` guidance predates 10.6. SCSS include paths from the app's `build` target are not inherited; set `stylePreprocessorOptions` on the Storybook target or `css.preprocessorOptions.scss.loadPaths` in `viteFinal`.
-- Component docs: `experimentalDocgenServer` is on by default (reads TypeScript sources on the server; Compodoc never runs). Turning it off (Compodoc path) is planned to be deprecated in Storybook 11 and removed in Storybook 12, along with the `compodoc` / `compodocArgs` options and `setCompodocJson`. `npx storybook automigrate` removes obsolete Compodoc wiring.
+- Component docs: `experimentalDocgenServer` is on by default (reads TypeScript sources on the server; Compodoc never runs). Turning it off (Compodoc path) is planned to be deprecated in Storybook 11 and removed in Storybook 12, along with the `compodoc` / `compodocArgs` options and `setCompodocJson`. `npx storybook automigrate` removes obsolete Compodoc wiring. The `compodoc` / `compodocArgs` options on the `angular.json` start-storybook / build-storybook builders are deprecated in 10.6: still accepted but nothing reads them (MIGRATION.md, 10.5.x to 10.6.0). New projects: `storybook init` does not write Compodoc wiring.
 - Known limitations (default path): code snippets do not follow Controls changes; an input typed `T | undefined` falls back to an object control (mark it optional with `?` instead).
 - Vitest: install the addon, and standalone `yarn vitest` runs use `storybookAngularVitest` from `@storybook/angular-vite/vitest` next to `storybookTest`.
 - Migration from `@storybook/angular`: `npx storybook automigrate`; `webpackFinal` must be rewritten as `viteFinal`, and direct `.md` imports need Vite's `?raw` suffix.

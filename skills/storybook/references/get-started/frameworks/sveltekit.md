@@ -57,7 +57,7 @@ Parameters (`sveltekit_experimental` namespace):
 | Name | Type | Description |
 |------|------|-------------|
 | `forms` | `{ enhance: () => void }` | Mocks `$app/forms`; `forms.enhance` is called when a form with `use:enhance` is submitted. |
-| `hrefs` | `Record<string, (to: string, event: MouseEvent) => void \| { callback: (to: string, event: MouseEvent) => void, asRegex?: boolean }>` | Callbacks for `<a href>` clicks matching a key (regex when `asRegex` is true); otherwise an action is logged. |
+| `hrefs` | `Record<string, ((to: string, event: MouseEvent) => void) \| { callback: (to: string, event: MouseEvent) => void, asRegex?: boolean }>` | Callbacks for `<a href>` clicks matching a key (regex when `asRegex` is true); otherwise an action is logged. |
 | `navigation` | See SvelteKit `$app/navigation` | Mocks `goto`, `pushState`, `replaceState`, `invalidate`, `invalidateAll`, and `afterNavigate`; without a function, an action is logged. |
 | `stores` | See SvelteKit `$app/stores` | Mocks `navigating`, `page` (partial stores) and `updated` (boolean; `updated.check()` is a no-op). |
 | `state` | See SvelteKit `$app/state` | Mocks `navigating`, `page`, and `updated` (`{ current: boolean }`). |
@@ -67,6 +67,7 @@ Parameters (`sveltekit_experimental` namespace):
 - Requirements: SvelteKit ≥ 1.0, Vite ≥ 5.
 - Module support: `$app/environment` (supported; `version` is always empty), `$app/paths` (supported, SvelteKit 1.4.0+), `$env/static/public`, `$lib`, `@sveltejs/kit/*` (supported); `$app/forms`, `$app/navigation`, `$app/stores`, `$app/state` (experimental; `$app/state` needs SvelteKit 2.12+); `$env/dynamic/public` (development mode only); `$env/dynamic/private`, `$env/static/private`, `$service-worker` (not supported).
 - Default link-handling behavior logs an action to the Actions panel.
+- The `hrefs` type string on the official page does not parenthesize the function type and is ambiguous; it is written here as the union that the official snippet (sveltekit-mock-links) shows, where each value is either a function or an object.
 - The community Svelte CSF addon (`defineMeta` / `Story`, `legacyTemplate` option) works as described on the `svelte-vite` page.
 - Manual install: install `@storybook/sveltekit`, update `framework`, and remove now-obsolete `@storybook/svelte-vite`, `storybook-builder-vite`, `@storybook/builder-vite`.
 - Disabling `docgen` stops automatic argTypes inference (Controls and docs then need manual `argTypes`).
