@@ -54,7 +54,8 @@ Visual Studio wizard steps: right-click the project, **Store** > **Create App Pa
 ## Notes
 
 - Deployment validates `Name`, `Publisher`, and `Version` of the package at the `Uri` of the main element against the file; if the package manifest `Package/Identity` doesn't match, installation fails.
-- `UpdateUris`, `RepairUris`, and `ShowPrompt` / `UpdateBlocksActivation` require the 2021 schema and Windows 10 version 2004 (build 19041) or later.
+- `UpdateUris` and `RepairUris` require the 2021 schema and Windows 10 version 2004 (build 19041) or later.
+- `ShowPrompt` / `UpdateBlocksActivation` are available from Windows 10 version 1903 (see App installer update settings).
 - App Installer files are supported from Windows 10 version 1709; `HoursBetweenUpdateChecks` from version 1803. Visual Studio: sideloaded auto-update requires Windows 10 version 1803 and Visual Studio 2017 update 15.7; the file is only generated when `TargetPlatformMinVersion` is Windows 10 version 1803 or greater.
 - The `.appinstaller` file can be hosted on an HTTP endpoint or UNC share. For HTTP hosting, configure MIME types, e.g. in IIS `web.config`: `.appx` and `.appxbundle` as `application/vns.ms-appx`, `.appinstaller` as `application/xml` (spelling as in source).
 - Using the `ms-appinstaller` protocol can be controlled by an administrator via the `EnableMSAppInstallerProtocol` policy (Policy CSP - DesktopAppInstaller).
