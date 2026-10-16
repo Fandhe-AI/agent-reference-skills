@@ -11,10 +11,10 @@ const {
 } = useForm({ defaultValues: { test: "" } })
 
 // isDirty: true
-setValue("test", "change", { shouldDirty: true })
+setValue("test", "change")
 
 // isDirty: false because getValues() === defaultValues
-setValue("test", "", { shouldDirty: true })
+setValue("test", "")
 ```
 
 ## Options / Props
@@ -41,7 +41,7 @@ setValue("test", "", { shouldDirty: true })
 
 ## Notes
 
-- Differs from the official example: `shouldDirty: true` added (`setValue` does not update dirty state by default).
+- `setValue` does not update `isDirty` unless `{ shouldDirty: true }` is passed; the official `isDirty` example omits it.
 - Returned `formState` is wrapped with a Proxy to improve render performance and skip extra logic if a specific state is not subscribed to. Invoke or read it before a render in order to enable the state update.
 - `formState` is updated in batch. To subscribe via `useEffect`, put the entire `formState` in the dependency array:
 

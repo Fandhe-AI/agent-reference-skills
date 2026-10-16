@@ -37,6 +37,7 @@ export type UseFormReturn<
 Typing a generic form wrapper with `UseFormReturn`:
 
 ```tsx
+import type { ReactNode } from "react"
 import type { FieldValues, UseFormReturn, SubmitHandler } from "react-hook-form"
 import { useForm } from "react-hook-form"
 

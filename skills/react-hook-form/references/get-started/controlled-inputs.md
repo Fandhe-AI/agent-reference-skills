@@ -28,15 +28,7 @@ function App() {
         name="MyCheckbox"
         control={control}
         rules={{ required: true }}
-        render={({ field }) => (
-          <Checkbox
-            checked={field.value}
-            onChange={(e) => field.onChange(e.target.checked)}
-            onBlur={field.onBlur}
-            name={field.name}
-            inputRef={field.ref}
-          />
-        )}
+        render={({ field }) => <Checkbox {...field} />}
       />
       <input type="submit" />
     </form>
@@ -89,7 +81,7 @@ export default function App() {
 - The official page also shows a shadcn/ui variant using `Form`, `FormField`, `FormControl` from `@/components/ui/form` with `zodResolver(FormSchema)` and `z.output<typeof FormSchema>`. It requires `npm install @hookform/resolvers zod`.
 - If you hit `Cannot find module '@hookform/resolvers/zod'` (or `zod/v4/core`), it is almost always a version mismatch. Using Zod v4 requires `@hookform/resolvers` 5.1.0 or newer (https://github.com/react-hook-form/resolvers/releases/tag/v5.1.0); Zod v3 also works with earlier resolvers versions. Separately, `tsconfig.json` needs `"moduleResolution": "bundler"` (or `"node16"`/`"nodenext"`) so the package's subpath exports resolve. See react-hook-form/resolvers#839.
 - The official page states `@hookform/resolvers` ^3.10 for Zod v4, but the resolvers release notes show Zod 4 support landed in v5.1.0.
-- Differs from the official example: `checked` / `onChange` / `inputRef` wired explicitly so reset and defaultValues reflect in the MUI Checkbox.
+- MUI `Checkbox` is driven by `checked`, not `value`; wire `checked={field.value}`, `onChange={(e) => field.onChange(e.target.checked)}`, `inputRef={field.ref}` so `defaultValues` / `reset` are reflected.
 - Source: https://react-hook-form.com/get-started#IntegratingControlledInputs
 
 ## Related

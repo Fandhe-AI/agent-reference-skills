@@ -9,13 +9,11 @@ import ReactDatePicker from "react-datepicker"
 import { useForm, Controller } from "react-hook-form"
 
 type FormValues = {
-  ReactDatepicker: Date | null
+  ReactDatepicker: string
 }
 
 function App() {
-  const { handleSubmit, control } = useForm<FormValues>({
-    defaultValues: { ReactDatepicker: null },
-  })
+  const { handleSubmit, control } = useForm<FormValues>()
 
   return (
     <form onSubmit={handleSubmit((data) => console.log(data))}>
@@ -75,8 +73,8 @@ Render props return the same `field` / `fieldState` / `formState` objects docume
 
 ## Notes
 
-- `render` is required by the `ControllerProps` type (v7.90.0 `src/types/controller.ts`) although the official props table leaves Required blank.
-- Differs from the official example: field typed as `Date | null` (with `defaultValues: { ReactDatepicker: null }`) to match react-datepicker `selected`.
+- `render` is required by the `ControllerProps` type (https://github.com/react-hook-form/react-hook-form/blob/v7.90.0/src/types/controller.ts) although the official props table leaves Required blank.
+- react-datepicker `selected` expects `Date | null`; type the field as `Date | null` with `defaultValues: { ReactDatepicker: null }` in real code.
 - To simply control a field's value from outside the form, `Controller` is not necessary; use the `values` option of `useForm`.
 - `ref` only enables focus-on-error if the target component forwards refs (`React.forwardRef`) or exposes an equivalent like MUI's `inputRef`.
 - Do not `register` the input again inside `Controller` (`<input {...field} {...register('test')} />` doubles up registration).

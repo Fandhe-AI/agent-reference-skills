@@ -32,6 +32,7 @@ function App() {
 
 ## Notes
 
+- The official snippet omits the `useForm` import; add `import { useForm } from "react-hook-form"` when using it.
 - Source: https://react-hook-form.com/get-started#Integratingwithservices
 
 ## Related

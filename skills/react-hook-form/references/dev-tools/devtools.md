@@ -38,7 +38,7 @@ export default () => {
 };
 ```
 
-## Props
+## Options / Props
 
 | Name | Type | Description |
 |------|------|-------------|
