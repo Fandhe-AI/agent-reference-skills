@@ -4,9 +4,10 @@ An execution context is the scheduling domain for GPU work. It is either the dev
 
 ## Signature / Usage
 
-Four steps: read resources, split the CU resource, bundle into a descriptor, create the context; then create a stream on it.
+Initialize the primary context, read resources, split the CU resource, bundle into a descriptor, create the context; then create a stream on it.
 
 ```cpp
+HIP_CHECK(hipSetDevice(0)); // initialize the primary context before hipGreenCtxCreate
 hipDevResource cu_resources = {};
 HIP_CHECK(hipDeviceGetDevResource(0, &cu_resources, hipDevResourceTypeSm));
 
