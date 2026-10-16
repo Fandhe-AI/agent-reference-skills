@@ -35,6 +35,8 @@ e.Use(middleware.Proxy(middleware.NewRoundRobinBalancer([]*middleware.ProxyTarge
 
 - `NewRoundRobinBalancer` and other balancer constructors implement `ProxyBalancer`; custom balancers can be supplied.
 - `Rewrite`/`RegexRewrite` can be combined for path transformation before forwarding.
+- Since v5.4.0 (v4.16.0), Proxy sets `X-Forwarded-Proto` from `Context#Scheme()` and removes `X-Forwarded-Ssl`, `X-Forwarded-Protocol`, and `X-Url-Scheme` before forwarding. In v5, Proxy also sets `X-Real-IP` from `Context#RealIP()` rather than forwarding a client-supplied value.
+- For a chain such as nginx -> Echo Proxy -> upstream, configure `Echo#SchemeExtractor` for the trusted proxy chain (see Request Scheme and Trusted Proxies) and `Echo#IPExtractor` for the trusted incoming IP header (see IP Address Resolution).
 
 ## Related
 

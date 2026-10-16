@@ -26,15 +26,15 @@ func Hello(c *echo.Context) error {
 | `RouteInfo() RouteInfo` | method | Returns metadata about the matched route |
 | `IsTLS() bool` | method | Reports whether the request came in over TLS |
 | `IsWebSocket() bool` | method | Reports whether the request is a WebSocket upgrade |
-| `Scheme() string` | method | Returns `"http"` or `"https"` for the request |
-| `RealIP() string` | method | Returns the client's real IP; requires `Echo#IPExtractor` to be configured explicitly (see Notes) |
+| `Scheme() string` | method | Returns the protocol scheme in lowercase: `http` or `https` (or `ws` / `wss` when a trusted proxy reports them). Since v5.4.0, `Echo#SchemeExtractor` decides the result; by default `X-Forwarded-Proto` / `X-Forwarded-Protocol` / `X-Forwarded-Ssl` / `X-Url-Scheme` are trusted only from loopback, link-local or private-network peers and unix sockets. The last `X-Forwarded-Proto` value is used, lowercased; an invalid value gives `http`. See [Request Scheme and Trusted Proxies](../getting-started/request-scheme.md) |
+| `RealIP() string` | method | Returns the client's real IP; defaults to the direct peer address (`RemoteAddr`, host portion only) unless `Echo#IPExtractor` is set (see Notes) |
 | `Logger() *slog.Logger` / `SetLogger(l *slog.Logger)` | method | Gets/sets the structured logger used for this request |
 
 ## Notes
 
 - Echo pools `Context` instances: after a request finishes, Echo resets and reuses the struct. Do not retain a `*echo.Context` (or values derived from it) beyond the handler's goroutine/lifetime.
 - Only one goroutine should access a given `Context`; some of its methods are not safe to call concurrently.
-- `RealIP()` falls back to insecure legacy behavior unless `Echo#IPExtractor` is set explicitly to one of `echo.ExtractIPDirect()`, `echo.ExtractIPFromXFFHeader(...)`, or `echo.ExtractIPFromRealIPHeader(...)`. Always configure the outermost proxy to strip client-supplied `X-Forwarded-For` / `X-Real-IP` headers, otherwise a client can forge its IP.
+- Since v5.1.0, `RealIP()` uses the direct peer address by default and ignores client-supplied IP headers. Set `Echo#IPExtractor` (`echo.ExtractIPFromXFFHeader(...)` or `echo.ExtractIPFromRealIPHeader(...)`) only when a trusted proxy supplies the client IP in a header; the old header-trusting behavior is available as `echo.LegacyIPExtractor()` (spoofable). Always configure the outermost proxy to strip client-supplied `X-Forwarded-For` / `X-Real-IP` headers, otherwise a client can forge its IP. See [IP Address Resolution](../getting-started/ip-address.md).
 - In Echo v5, `Context` is a concrete struct rather than the `echo.Context` interface used in Echo v4; the v4 pattern of embedding `echo.Context` in a custom struct to add methods no longer applies. Attach request-scoped custom data via `c.Set()` / `c.Get()` (see [storage.md](./storage.md)) instead.
 
 ## Related

@@ -18,6 +18,7 @@ e.Static("/static", "assets") // /static/js/main.js -> assets/js/main.js
 ## Notes
 
 - These registrations participate in the same radix-tree routing and match-type priority as regular routes (see [Match Types](./match-types.md)).
+- Since v5.4.0, paths with `.`, `..` or empty segments return 404, and non-default escaping in file names needs `Config.EnablePathUnescapingStaticFiles`; see [Static Files](../response/static-files.md).
 - Full options, embedded-filesystem usage (`StaticFS` with `echo.MustSubFS`), and the `Echo#Filesystem` default are documented in [Static Files](../response/static-files.md).
 
 ## Related

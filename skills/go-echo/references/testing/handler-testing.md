@@ -54,6 +54,15 @@ c, rec := cfg.ToContextRecorder(t)
 - Query parameters are not a dedicated `ContextConfig` field; encode them into `Target` using `net/url.Values`.
 - Middleware tests follow the same pattern: wrap a handler, invoke it through the middleware, and assert both the response and any values the middleware set on the context (e.g. via `c.Set`).
 - The Echo repository's own middleware test files are a further source of examples for this pattern.
+- Testing forwarded schemes: `httptest.NewRequest` sets `RemoteAddr` to `192.0.2.1:1234`, which the default scheme extractor does not trust. A test that sets `X-Forwarded-Proto: https` therefore sees `http` unless it also represents a trusted proxy:
+
+  ```go
+  req := httptest.NewRequest(http.MethodGet, "/", nil)
+  req.RemoteAddr = "10.0.0.1:1234" // Trusted private proxy in this test.
+  req.Header.Set(echo.HeaderXForwardedProto, "https")
+  ```
+
+  Alternatively, set `e.SchemeExtractor = echo.LegacySchemeExtractor()` explicitly; use that only to test legacy behavior, and configure trusted proxies in production (see Request Scheme and Trusted Proxies).
 
 ## Related
 
