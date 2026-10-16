@@ -4,7 +4,7 @@
 
 ## Signature / Usage
 
-Flat config (default in ESLint v9, usable from v8.57.0):
+Flat config (default in ESLint v9, usable from v8.57.0). The `defineConfig` / `globalIgnores` helpers imported from `eslint/config` below require ESLint v9.22.0 or later; on v8.57.x or earlier v9 releases, export the config array directly (see Notes):
 
 ```js
 // eslint.config.js
@@ -37,7 +37,7 @@ Legacy `.eslintrc` (ESLint < v9):
 !.storybook
 ```
 
-Flat config equivalent of the `.eslintignore` line:
+Flat config equivalent of the `.eslintignore` line (`globalIgnores` requires ESLint v9.22.0 or later):
 
 ```js
 import { defineConfig, globalIgnores } from 'eslint/config';
@@ -99,6 +99,7 @@ Rules (all prefixed `storybook/`):
 ## Notes
 
 - The `!.storybook` ignore entry makes the plugin lint files inside `.storybook` too (e.g. it can catch mistyped addon names in `main.js|ts`).
+- The `defineConfig` / `globalIgnores` helpers imported from `eslint/config` require ESLint v9.22.0 or later; on v8.57.x or earlier v9 releases, export the config array directly (e.g. `export default [...storybook.configs['flat/recommended'], { files: [...], rules: {...} }];` and use `{ ignores: ['!.storybook'] }` instead of `globalIgnores`).
 - The plugin does not support MDX files.
 - oxlint usage is not described in the v10.6.2 docs source for this page; nothing is stated here about it.
 - Plugin rule docs live in the Storybook repo under `code/lib/eslint-plugin/docs/rules/`.

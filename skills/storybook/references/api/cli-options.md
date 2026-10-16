@@ -135,7 +135,7 @@ storybook[@version] upgrade [options]
 | `-n, --dry-run` | Check upgrades without installing |
 | `-s, --skip-check` | Skip migration check |
 | `--skip-automigrations` | Skip automigrations entirely; only update and install package versions |
-| `-y, --yes` | Skip prompts and auto-upgrade. Migrations requiring deliberate opt-in (framework migrations, experimental feature flags) are not run; use `--features` to include them |
+| `-y, --yes` | Skip prompts and auto-upgrade. Migrations requiring deliberate opt-in (framework migrations, experimental feature flags) are not run. `--features` can preselect only the experimental-feature-flag automigrations; run framework migrations interactively (without `--yes`) or via `storybook automigrate` |
 | `--features <list>` | Preselect the automigrations that enable the listed experimental feature flags (e.g. `--features experimentalReview,experimentalDocgenServer`); other detected automigrations are still offered. Cannot be combined with `--skip-automigrations` |
 | `-f, --force` | Force upgrade, skip autoblockers |
 | `--package-manager` | Package manager |
@@ -259,6 +259,7 @@ storybook[@version] sandbox [framework-filter] [options]
 
 - Telemetry collects anonymous usage data; opt out with `--disable-telemetry` on any command
 - `storybook init` is also available as `create storybook[@version]`
+- The official `upgrade --yes` row says 'use `--features` to include them', but `--features` only covers experimental feature flag automigrations (see the `--features` row and releases/upgrading).
 
 ## Related
 
