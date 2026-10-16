@@ -6,7 +6,7 @@ Prerequisites: Vitest 5.0 requires Vite >= 6.4.0 and Node.js >= 22.12.0. Before 
 
 Migration guides for earlier majors: Migrating to Vitest 4.0 (https://v4.vitest.dev/guide/migration), Migrating to Vitest 3.0 (https://v3.vitest.dev/guide/migration). Changelog: https://github.com/vitest-dev/vitest/releases/tag/v5.0.0
 
-The `###` sections below are in the original order. In code blocks, `// v4` / `// v5` comments mark the removed and the added lines of the original diff.
+The `###` sections below are in the original order. In code blocks, `// v4` / `// v5` comments mark the removed (commented-out) and the added lines of the original diff.
 
 ```bash
 # Yarn only: vite is now a required peer dependency
@@ -139,13 +139,13 @@ In Vitest 4 the `projects` field of a referenced config was silently ignored. Ch
 ```ts
 // packages/app/vitest.config.ts
 import { defineProject, mergeConfig } from 'vitest/config'
-import rootConfig from '../../vitest.config' // v4 (removed)
+// import rootConfig from '../../vitest.config' // v4 (removed)
 import sharedConfig from '../../vitest.shared' // v5 (added)
 
 export default mergeConfig(
   // the root config defines `test.projects`, so merging it
   // would turn this project into a container for those projects
-  rootConfig, // v4 (removed)
+  // rootConfig, // v4 (removed)
   sharedConfig, // v5 (added)
   defineProject({
     test: {
@@ -188,9 +188,9 @@ export default defineConfig({
 
 ```ts
 // v4 (removed): vi.mock inside describe
-describe('calculator', () => {
-  vi.mock('./calculator')
-})
+// describe('calculator', () => {
+//   vi.mock('./calculator')
+// })
 
 // v5 (added): top level
 vi.mock('./calculator')
@@ -360,7 +360,7 @@ Asynchronous assertions, like `resolves`, `rejects` and `toMatchFileSnapshot`, n
 test('unawaited assertion', async () => {
   // v4: prints a warning, the test passes
   // v5: the test fails
-  expect(promise).resolves.toBe(1) // v4 (removed)
+  // expect(promise).resolves.toBe(1) // v4 (removed)
   await expect(promise).resolves.toBe(1) // v5 (added)
 })
 ```
@@ -388,19 +388,19 @@ test.for([{ id: 'a1' }])('case $id', ({ id }) => { /* ... */ })
 Vitest 5.0 removes the deprecated `test.sequential`, `describe.sequential`, and `sequential` test options. Use `concurrent: false` when you need a test or suite to opt out of inherited or globally configured concurrency.
 
 ```ts
-test.sequential('example', async () => { /* ... */ }) // v4 (removed)
+// test.sequential('example', async () => { /* ... */ }) // v4 (removed)
 test('example', { concurrent: false }, async () => { /* ... */ }) // v5
 ```
 
 ```ts
-describe.sequential('suite', () => { /* ... */ }) // v4 (removed)
+// describe.sequential('suite', () => { /* ... */ }) // v4 (removed)
 describe('suite', { concurrent: false }, () => { /* ... */ }) // v5
 ```
 
 The same replacement applies to option objects:
 
 ```ts
-test('example', { sequential: true }, async () => { /* ... */ }) // v4 (removed)
+// test('example', { sequential: true }, async () => { /* ... */ }) // v4 (removed)
 test('example', { concurrent: false }, async () => { /* ... */ }) // v5
 ```
 
@@ -444,8 +444,8 @@ The browser-mode `toHaveTextContent` matcher now validates that an element's tex
 ```ts
 // Partial or regex matches:
 // v4 (removed)
-await expect.element(banner).toHaveTextContent('Error')
-await expect.element(banner).toHaveTextContent(/error/i)
+// await expect.element(banner).toHaveTextContent('Error')
+// await expect.element(banner).toHaveTextContent(/error/i)
 // v5 (added)
 await expect.element(banner).toMatchTextContent('Error')
 await expect.element(banner).toMatchTextContent(/error/i)
@@ -529,7 +529,7 @@ The `originals` map returned by `populateGlobal` now holds property descriptors 
 If you restore them manually in a custom environment, use `Object.defineProperty` instead of an assignment:
 
 ```ts
-originals.forEach((value, key) => (global[key] = value)) // v4 (removed)
+// originals.forEach((value, key) => (global[key] = value)) // v4 (removed)
 originals.forEach((descriptor, key) => Object.defineProperty(global, key, descriptor)) // v5
 ```
 
@@ -552,7 +552,7 @@ export default defineConfig({
     api: { port: 4444 }, // v5 addition
     browser: {
       enabled: true,
-      // v4 (removed): api: { port: 4444 },
+      // api: { port: 4444 }, // v4 (removed)
     },
   },
 })
@@ -659,7 +659,7 @@ Several entry points were marked as deprecated in Vitest 4.1. This release remov
 ## Notes
 
 - Pinned to the `v5.0.5` release tag of `vitest-dev/vitest` (`docs/guide/migration/index.md`); source URL: https://vitest.dev/guide/migration
-- Body is the original text in original section order; site-internal links were reduced to plain text and the `[!code ++]` / `[!code --]` diff markers were replaced with `v4` / `v5` comments.
+- Body is the original text in original section order; site-internal links were reduced to plain text and the `[!code ++]` / `[!code --]` diff markers were replaced with `v4` / `v5` comments; removed (v4) lines are commented out so that only the v5 code is live.
 - Source: https://vitest.dev/guide/migration/ (Vitest v5.0.5)
 
 ## Related

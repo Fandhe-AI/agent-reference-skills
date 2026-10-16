@@ -65,7 +65,7 @@ test('persists a valid user', () => {
 
 ## Notes
 
-- Composes inside any equality check like `expect.any` / `expect.stringMatching`: `toEqual` / `toStrictEqual`, `toMatchObject`, `toContainEqual`, `toThrow`, `toHaveBeenCalledWith`, `toHaveReturnedWith`, `toHaveBeenResolvedWith`.
+- Composes inside any equality check like `expect.any` / `expect.stringMatching`: `toEqual` / `toStrictEqual`, `toMatchObject`, `toContainEqual`, `toThrow`, `toHaveBeenCalledWith`, `toHaveReturnedWith`, `toHaveResolvedWith`. (The official recipe page writes `toHaveBeenResolvedWith`, but the matcher name in api/expect.md is `toHaveResolvedWith`.)
 - Useful for generated fields (UUIDs, timestamps) where the format can be validated without predicting the value.
 - Source: https://vitest.dev/guide/recipes/schema-matching (Vitest v5.0.5)
 

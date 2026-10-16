@@ -172,7 +172,11 @@ vitest run --reporter=json
 vitest run --reporter=junit
 ```
 
-`json` / `junit` / `html` reporter は既定でターミナルではなく `.vitest/` 配下に出力する（`.vitest/json/output.json`、`.vitest/junit/output.xml`、`.vitest/index.html`）。出力先を変える場合は `--outputFile` を指定する。
+`json` / `junit` / `html` reporter は既定でターミナルではなく `.vitest/` 配下に出力する（`.vitest/json/output.json`、`.vitest/junit/output.xml`、`.vitest/index.html`）。`json` / `junit` の出力先は `--outputFile`（または config の `outputFile`）で変更する。`html` reporter は `outputFile` ではなく reporter オプション `outputDir` を使う（既定 `.vitest`、`<outputDir>/index.html` に出力）。
+
+```ts
+reporters: [['html', { outputDir: './html-report' }]]
+```
 
 ## ブラウザモードでの実行
 

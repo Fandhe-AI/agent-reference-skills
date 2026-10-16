@@ -20,6 +20,7 @@ Recommended project split (headless, fixed viewport, `.vrt.test` naming):
 
 ```ts
 import { defaultExclude, defineConfig } from 'vitest/config'
+import { playwright } from '@vitest/browser-playwright'
 
 const vrtPattern = '**/*.vrt.test.[tj]s?(x)'
 
@@ -31,10 +32,13 @@ export default defineConfig({
         test: {
           name: 'vrt',
           browser: {
+            enabled: true,
+            provider: playwright(),
             headless: true,
             instances: [{ browser: '[browser-name]', viewport: { width: 1280, height: 720 } }],
           },
           include: [vrtPattern],
+          // ...other configurations
         },
       },
     ],
@@ -92,6 +96,7 @@ await expect(element).toMatchScreenshot('button', {
 - Not a replacement for behavior tests. Prefer capturing specific elements over the whole page. Mask dynamic content; with the Playwright provider animations are disabled by default (`animations: "disabled"`).
 - Vitest has no default mismatch tolerance. Stable Screenshot Detection retries screenshots until two consecutive ones match or timeout; comparators are called with `createDiff: false` during detection.
 - Chromatic plugin (`@chromatic-com/vitest`, `chromaticPlugin`, `takeSnapshot`, `configure`) requires Vitest 4.0.0+ and `@vitest/browser-playwright`; run `npx chromatic --vitest -t=<YOUR_PROJECT_TOKEN>` after tests. Never commit `PLAYWRIGHT_SERVICE_ACCESS_TOKEN`.
+- The official project-split snippet leaves out `enabled` and `provider` (it is a partial config); they are added above and required for Browser Mode, see browser-config.md.
 - Playwright CI browser install step: `npx --no playwright install --with-deps --only-shell`.
 - Source: https://vitest.dev/guide/browser/visual-regression-testing (Vitest v5.0.5)
 

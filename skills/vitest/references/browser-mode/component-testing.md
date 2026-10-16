@@ -19,7 +19,7 @@ test('shows error message when email format is invalid', async () => {
 Bridging Testing Library output to Vitest locators (for frameworks without an official `vitest-browser-*` package):
 
 ```jsx
-import { render } from '@testing-library/solid'
+import { render } from '@solidjs/testing-library'
 import { page } from 'vitest/browser'
 
 test('Solid component handles user interaction', async () => {
@@ -47,7 +47,8 @@ vi.mock(import('../components/UserCard'), () => ({
 - Use `userEvent` from `vitest/browser`, not `@testing-library/user-event`.
 - Migration from Jest + Testing Library: replace `import { render, screen } from '@testing-library/react'` with `import { render } from 'vitest-browser-react'`.
 - Debugging: set `headless: false` temporarily to use browser dev tools; `page.getByRole('button').all()` with `.element()` exposes native DOM nodes; `.or()` chains locators with auto-retry; Vitest has no `page.locator()`, use the `getBy*` methods.
-- Official packages: `vitest-browser-vue`, `vitest-browser-react`, `vitest-browser-svelte`. Alternatives: `@testing-library/solid`, `@marko/testing-library`, `@testing-library/svelte`, `@testing-library/vue`.
+- Official packages: `vitest-browser-vue`, `vitest-browser-react`, `vitest-browser-svelte`. Alternatives: `@solidjs/testing-library`, `@marko/testing-library`, `@testing-library/svelte`, `@testing-library/vue`.
+- The official component-testing page writes `@testing-library/solid`, while the guide/browser index page lists `@solidjs/testing-library` (the published npm package); this page uses `@solidjs/testing-library`.
 - Source: https://vitest.dev/guide/browser/component-testing (Vitest v5.0.5)
 
 ## Related

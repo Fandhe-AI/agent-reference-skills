@@ -41,12 +41,15 @@ test('compare JSON libraries', async ({ bench }) => {
 - Stored results: files are overwritten on each successful run (not written if the function throws); commit them from a single designated environment (typically CI). Toggle between writing and comparing with an env var (`VITE_WRITE_BENCH=1 vitest bench`):
 
 ```ts
-test('compare against the stored baseline', async ({ bench }) => {
-  const result = await bench.compare(
-    bench('current', { writeResult: './benchmarks/parse.json' }, () => parse(largeInput)),
-    bench.from('previous', './benchmarks/parse.json'),
-  )
-  expect(result.get('current')).toBeFasterThan(result.get('previous'))
+test('compare parser versions', async ({ bench }) => {
+  if (import.meta.env.VITE_WRITE_BENCH) {
+    const baseline = bench('baseline', { writeResult: './my-bench.json' }, () => fn())
+    await baseline.run()
+  }
+  else {
+    const baseline = bench.from('baseline', './my-bench.json')
+    await bench.compare(bench('current', () => fn()), baseline)
+  }
 })
 ```
 
