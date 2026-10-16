@@ -70,7 +70,7 @@ stripe logs tail
 
 ## Notes
 
-- Script installs auto-update within the same major version; disable with `STRIPE_NO_AUTO_UPDATE=1` or `auto_update = false` in `~/.config/stripe/config.toml`.
+- Script installs auto-update within the same major version; disable with `STRIPE_NO_AUTO_UPDATE=1` or `auto_update = false` in `~/.config/stripe/config.toml`. (Source: https://docs.stripe.com/stripe-cli/install)
 - Running `stripe listen` outputs a **webhook signing secret** to use for local signature verification.
 - `stripe listen` forwards all sandbox events by default; use `--events` to filter.
 - Shell in Stripe Workbench is built on the same commands as Stripe CLI but cannot forward events to a local endpoint.

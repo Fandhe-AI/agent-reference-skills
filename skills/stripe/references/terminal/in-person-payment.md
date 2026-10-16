@@ -75,7 +75,7 @@ const { reader, error } = await terminal.connectReader(discoveredReaders[0], {
 - For BBPOS WisePOS E, Stripe Reader S700/S710, and Verifone readers, the server-driven integration (`process_payment_intent` API endpoint) is recommended over the JS SDK
 - Chrome 142+ requires explicit user permission for local network device access
 - Always use reader objects returned by the most recent `discoverReaders` call; do not cache them
-- `payment_method_types` is no longer writable on PaymentIntent create from `2026-09-30.endive` (returns `400` `payment_method_types_no_longer_supported`). On that version specify `card_present` (and `interac_present` for Interac in Canada) in `allowed_payment_method_types` instead; the official Terminal guide still shows `payment_method_types[]=card_present` for earlier API versions.
+- `payment_method_types` is no longer writable on PaymentIntent create from `2026-09-30.endive` (returns `400` `payment_method_types_no_longer_supported`). On that version specify `card_present` (and `interac_present` for Interac in Canada) in `allowed_payment_method_types` instead; the official Terminal guide still shows `payment_method_types[]=card_present` for earlier API versions. (Source: https://docs.stripe.com/changelog/endive/2026-09-30/removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents, https://docs.stripe.com/changelog/endive/2026-09-30/card-present-and-interac-present-enum-values-for-allowed-payment-method-types)
 
 ## Related
 

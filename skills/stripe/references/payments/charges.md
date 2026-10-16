@@ -74,7 +74,7 @@ curl https://api.stripe.com/v1/charges \
 - `outcome.risk_level` values: `normal`, `elevated`, `highest`, `not_assessed`, `unknown` (from Stripe Radar).
 - `capture=false` authorizes the card but does not move funds; call `/capture` later (typically within 7 days).
 - Webhook events: `charge.succeeded`, `charge.failed`, `charge.captured`, `charge.refunded`, `charge.updated`.
-- Breaking (`2026-09-30.endive`): for India recurring card payments, `payment_method_details.card.mandate` returns the mandate ID even when registration failed and the mandate is `inactive` (previously `null`); the same applies to `mandate` on SetupIntents. Check the mandate's status before relying on it, because an off-session payment with an `inactive` mandate fails.
+- Breaking (`2026-09-30.endive`): for India recurring card payments, `payment_method_details.card.mandate` returns the mandate ID even when registration failed and the mandate is `inactive` (previously `null`); the same applies to `mandate` on SetupIntents. Check the mandate's status before relying on it, because an off-session payment with an `inactive` mandate fails. (Source: https://docs.stripe.com/changelog/endive/2026-09-30/surface-india-card-mandate-even-when-inactive)
 
 ## Related
 

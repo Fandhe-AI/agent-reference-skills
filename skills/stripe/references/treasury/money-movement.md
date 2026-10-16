@@ -169,7 +169,7 @@ curl https://api.stripe.com/v1/treasury/credit_reversals \
 
 ## Notes
 
-> This page covers the v1 Treasury API, now the legacy path. The official llms.txt recommends Treasury for Platforms (v2, public preview) for new integrations; v1 docs remain available for existing integrations.
+> This page covers the v1 Treasury API, now the legacy path. The official llms.txt recommends Treasury for Platforms (v2, public preview) for new integrations; v1 docs remain available for existing integrations. (Source: https://docs.stripe.com/llms.txt)
 
 ### InboundTransfer
 
@@ -192,8 +192,8 @@ curl https://api.stripe.com/v1/treasury/credit_reversals \
 
 - ReceivedCredits cannot be created via the API (use test helper `POST /v1/test_helpers/treasury/received_credits` for testing).
 - Check `reversal_details` to determine if a ReceivedCredit is eligible for reversal.
-- RTP (`2026-09-30.endive`): funds arriving over The Clearing House's Real-Time Payments network produce a ReceivedCredit with `network: rtp`, and the ABA financial address `supported_networks` includes `rtp` where available. `network` and `supported_networks` are open enums, so handle unknown values. RTP is irrevocable: credit reversals are blocked with `reversal_details.restricted_reason` = `network_restricted`. In test mode pass `network: "rtp"` to the received credits test helper.
-- ACH return codes (`2026-09-30.endive`): v1 OutboundPayments and OutboundTransfers expose raw ACH return codes and reasons under `returned_details.network_details.ach`; v1 InboundTransfers under `failure_details.network_details.ach`. The normalized `returned_details.code` / `failure_details.code` remain.
+- RTP (`2026-09-30.endive`): funds arriving over The Clearing House's Real-Time Payments network produce a ReceivedCredit with `network: rtp`, and the ABA financial address `supported_networks` includes `rtp` where available. `network` and `supported_networks` are open enums, so handle unknown values. RTP is irrevocable: credit reversals are blocked with `reversal_details.restricted_reason` = `network_restricted`. In test mode pass `network: "rtp"` to the received credits test helper. (Source: https://docs.stripe.com/changelog/endive/2026-09-30/rtp-network-received-credits)
+- ACH return codes (`2026-09-30.endive`): v1 OutboundPayments and OutboundTransfers expose raw ACH return codes and reasons under `returned_details.network_details.ach`; v1 InboundTransfers under `failure_details.network_details.ach`. The normalized `returned_details.code` / `failure_details.code` remain. (Source: https://docs.stripe.com/changelog/endive/2026-09-30/v1-treasury-ach-return-codes)
 
 ### CreditReversal
 

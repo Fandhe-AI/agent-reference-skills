@@ -51,7 +51,7 @@ curl https://api.stripe.com/v1/webhook_endpoints \
 - The endpoint must accept `POST` requests and be publicly accessible over HTTPS (TLS v1.2+).
 - Redirect responses (`3xx`) are not followed — configure the final destination URL directly.
 - Use `stripe listen --forward-to localhost:4242/webhook` (Stripe CLI) for local testing.
-- v2 event destinations, `events_from` (`2026-03-25.dahlia`, breaking): changed from an enum to a nullable array of strings: `@self` (replaces `self`), `@accounts` (replaces `other_accounts`), `@organization_members` (accounts in your organization) and `@organization_members/@accounts` (connected accounts of platform accounts in your organization). The API still accepts the old values on input and converts them (`self` becomes `@self`), so update code that reads the value back.
+- v2 event destinations, `events_from` (`2026-03-25.dahlia`, breaking): changed from an enum to a nullable array of strings: `@self` (replaces `self`), `@accounts` (replaces `other_accounts`), `@organization_members` (accounts in your organization) and `@organization_members/@accounts` (connected accounts of platform accounts in your organization). The API still accepts the old values on input and converts them (`self` becomes `@self`), so update code that reads the value back. (Source: https://docs.stripe.com/changelog/dahlia/2026-03-25/updates-eventsfrom-parameter-on-event-destinations)
 
 ## Related
 

@@ -97,7 +97,7 @@ curl https://api.stripe.com/v1/disputes/du_1MtJUT2eZvKYlo2CNaw2HvEv \
 - Closing a dispute via `/close` accepts the dispute as lost — only do this if you do not intend to contest it.
 - Webhook events: `charge.dispute.created`, `charge.dispute.updated`, `charge.dispute.funds_withdrawn`, `charge.dispute.funds_reinstated`, `charge.dispute.closed`.
 - Visa Compelling Evidence 3.0 (`enhanced_eligibility`) can strengthen cases with prior undisputed transaction data.
-- Breaking (`2026-09-30.endive`): evidence submitted through update Dispute is validated for its estimated compiled page count (text fields plus file uploads). Exceeding the network page limit returns `400` `invalid_request_error` with code `dispute_evidence_page_limit_exceeded`, whether or not `submit` is `true`. Shorten text fields or reduce uploaded pages.
+- Breaking (`2026-09-30.endive`): evidence submitted through update Dispute is validated for its estimated compiled page count (text fields plus file uploads). Exceeding the network page limit returns `400` `invalid_request_error` with code `dispute_evidence_page_limit_exceeded`, whether or not `submit` is `true`. Shorten text fields or reduce uploaded pages. (Source: https://docs.stripe.com/changelog/endive/2026-09-30/page-limit-validation-dispute-evidence)
 
 ## Related
 

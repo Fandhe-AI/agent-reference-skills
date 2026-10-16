@@ -72,7 +72,7 @@ Response includes `client_secret` used by the front-end Stripe.js `ConnectCompon
 - If the user navigates away from the hosted page, redirect them back using `refresh_url` to regenerate a new link.
 - Account Sessions are also short-lived. Create a new session each time an embedded component is rendered; do not persist `client_secret` in your database.
 - `collection_options.fields = "eventually_due"` is recommended to collect all requirements upfront and avoid future interruptions.
-- Account Links v2 (`POST /v2/core/account_links`): the `configurations` parameter under `use_case.account_onboarding` and `use_case.account_update` was removed in `2026-09-30.endive`; Stripe now determines which configurations need onboarding. Requests that include it fail on that version, so remove it before upgrading.
+- Account Links v2 (`POST /v2/core/account_links`): the `configurations` parameter under `use_case.account_onboarding` and `use_case.account_update` was removed in `2026-09-30.endive`; Stripe now determines which configurations need onboarding. Requests that include it fail on that version, so remove it before upgrading. (Source: https://docs.stripe.com/changelog/endive/2026-09-30/removes-configurations-parameter-from-v2-core-account-links-api)
 - `account_onboarding` type should be used for new accounts; `account_update` is for updating information on an existing account.
 
 ## Related

@@ -69,7 +69,7 @@ switch (event.type) {
 - Some actions trigger multiple events (e.g., creating a subscription fires both `customer.subscription.created` and `charge.succeeded`).
 - Log processed event IDs to detect and skip duplicate deliveries.
 - Use `stripe trigger <event-type>` (Stripe CLI) to send test events.
-- Thin events for API v1 resources are generally available (`2026-09-30.endive`, non-breaking). Subscribe with the `v1.` prefix (for example `v1.customer.created` instead of `customer.created`), choose **Thin** as the event format on the event destination, and subscribe to the supported `v1.*` types.
+- Thin events for API v1 resources are generally available (`2026-09-30.endive`, non-breaking). Subscribe with the `v1.` prefix (for example `v1.customer.created` instead of `customer.created`), choose **Thin** as the event format on the event destination, and subscribe to the supported `v1.*` types. (Source: https://docs.stripe.com/changelog/endive/2026-09-30/thin-events-for-api-v1-resources-generally-available)
 - A thin event's `related_object` identifies the affected resource and its API path, which you use to retrieve the resource's latest state. The `snapshot_event` property on a v2 Event identifies the corresponding v1 Snapshot event. When available, `changes` holds the before / after values, equivalent to `previous_attributes` on v1 Events.
 
 ## Related
