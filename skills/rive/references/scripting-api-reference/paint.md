@@ -28,6 +28,7 @@ local outline = self.paint:copy({ style = 'stroke', thickness = 4, join = 'round
 | `blendMode` | [BlendMode](./artboard-events.md) (see paint-enums below) | Compositing mode |
 | `feather` | number | Edge feathering/softening amount |
 | `gradient` | `Gradient?` | Optional gradient applied to the fill; set `false` in a `PaintDefinition` to remove |
+| `gradientTransform` | `Mat2D` | Transform applied to the paint's `gradient` (also a `PaintDefinition` field), e.g. `Paint.with({ gradient = g, gradientTransform = Mat2D.withTranslation(10, 0), style = 'fill' })` |
 | `color` | `Color` | Paint color |
 
 ### PaintStyle

@@ -9,11 +9,11 @@ const r = new Rive({
   src: "https://cdn.rive.app/animations/vehicles.riv",
   canvas: document.getElementById("canvas"),
   autoplay: true,
-  stateMachines: "bumpy",
+  stateMachine: "bumpy",
   onLoad: () => {
     r.resizeDrawingSurfaceToCanvas();
 
-    // Retrieve all inputs for a named state machine
+    // Retrieve all inputs for a named state machine (deprecated API)
     const inputs = r.stateMachineInputs("bumpy");
 
     // Trigger input — fires a one-shot transition
@@ -30,7 +30,7 @@ const r = new Rive({
   },
 });
 
-// Monitor state changes
+// Monitor state changes (EventType.StateChange is deprecated)
 r.on("statechange", (event) => {
   console.log("current state:", event.data[0]);
 });
@@ -38,7 +38,7 @@ r.on("statechange", (event) => {
 
 ## Notes
 
-- `stateMachineInputs(name)` は State Machine がロードされた後（`onLoad` 以降）に呼び出す
-- Trigger は `.fire()` で発火し、状態遷移を一度だけ起こす。Number/Boolean は `.value` プロパティへの代入で制御する
-- 入力名は Rive エディター上で設定した名前と一致させる必要がある（大文字・小文字を区別する）
-- `statechange` イベントで現在のステート名を取得でき、UI との同期やデバッグに使用する
+- `stateMachine`（単数形、web v2.41.0 以降）を使う。複数形 `stateMachines` は v2.41.0 で deprecated
+- `stateMachineInputs()` は deprecated（公式の Deprecated 節で data binding への移行を推奨）。動作はするが、新規は data binding（`web-data-binding.md`）を優先する
+- `stateMachineInputs(name)` は `onLoad` 以降に呼び出す。ロード前は `undefined`。Trigger は `.fire()`、Number / Boolean は `.value` 代入で制御し、入力名は大文字・小文字を区別する
+- `statechange` イベントの購読も v2.41.0 で deprecated（one-time の警告あり）。`on()` 自体は deprecated ではない

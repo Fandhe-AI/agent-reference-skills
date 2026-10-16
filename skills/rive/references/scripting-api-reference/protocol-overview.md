@@ -13,7 +13,9 @@ Protocols are the structured categories of scripts that tell the Editor what you
 | [Transition Condition](./protocol-transition-condition-scripts.md) | Custom state machine transition conditions |
 | [Listener Action](./protocol-listener-action-scripts.md) | Custom side effects when a state machine listener fires |
 | [Test](./protocol-test-scripts.md) | Unit test Util Scripts |
-| [Util](./protocol-util-scripts.md) | Reusable helper modules shared across scripts |
+| [Blank](./protocol-util-scripts.md) | Share helper logic across scripts (the docs now call the Util protocol "Blank"; page name unchanged) |
+| File Format | Read and write a binary file format |
+| Text File Format | Read and write a text file format |
 
 ## Notes
 

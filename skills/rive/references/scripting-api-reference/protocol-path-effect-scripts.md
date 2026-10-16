@@ -32,6 +32,17 @@ end
 | `update(self, path)` | required | Geometry manipulation entry point; receives and returns `PathData` |
 | `advance(self, seconds)` | optional | Called per frame with elapsed time for animated effects |
 
+### Working with PathData
+
+`PathData` provides access to a path's drawing commands: `moveTo`, `lineTo`, `quadTo`, `cubicTo`, `close`. You can read existing commands using indexing, get the command count with `#pathData`, create new paths with `Path.new()` and add commands, and use measurement tools such as `contours()` and `measure()` for advanced operations.
+
+```lua
+function update(self: MyPathEffect, inPath: PathData): PathData
+  local path = Path.new()
+  return path
+end
+```
+
 ## Notes
 
 - For animated effects, call `markNeedsUpdate()` on the effect context from `advance()`; otherwise the effect appears frozen when the source path is unchanged.

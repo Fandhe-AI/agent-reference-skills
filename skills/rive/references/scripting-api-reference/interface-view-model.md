@@ -32,6 +32,8 @@ end
 | `instance(instanceName?) -> ViewModel` | Creates a new instance of the view model, optionally from a named template |
 | `getIndex() -> number` | Numeric index, or `-1` if unavailable |
 
+List properties (`getList`) return a `PropertyList`, which also has `removeAllOf(viewModel: ViewModel)`: removes every list entry that references the given view model instance (alongside `remove(viewModel)` and 1-based `removeAt(index)`). See interface-misc.md.
+
 ## Notes
 
 - All getters return `nil` if the property isn't found — always guard with `if property then ... end`.
