@@ -44,7 +44,7 @@ Bounds: `assert[Width|Height]IsEqualTo`, `assertIsEqualTo`, `assert[Width|Height
 ### Matchers
 
 - General: `has[No]ClickAction`, `hasContentDescription[Exactly]`, `hasImeAction`, `hasProgressBarRangeInfo`, `has[No]ScrollAction`, `hasScrollTo[Index|Key|Node]Action`, `hasSetTextAction`, `hasStateDescription`, `hasTestTag`, `hasText[Exactly]`
-- State: `is[Not]Dialog`, `is[Not]Enabled`, `is[Not]Focused`, `is[Not]Selected`, `isHeading`, `isOff`, `isOn`, `isPopup`, `isSelectable`, `isToggleable`, `isFocusable`, `isRoot`
+- State: `isDialog`, `is[Not]Enabled`, `is[Not]Focused`, `is[Not]Selected`, `isHeading`, `isOff`, `isOn`, `isPopup`, `isSelectable`, `isToggleable`, `isFocusable`, `isRoot`
 - Hierarchical: `hasParent`, `hasAnyChild`, `hasAnySibling`, `hasAnyDescendant`, `hasAnyAncestor`
 
 ### Selectors
@@ -71,6 +71,7 @@ Bounds: `assert[Width|Height]IsEqualTo`, `assertIsEqualTo`, `assert[Width|Height
 
 - The cheat sheet writes `onNode(...).*` as shorthand for chaining finders with assertions/actions.
 - Source is the official cheat sheet image (v1.1.0), published at `goo.gle/compose-testing`; it lists names only, with no signatures. See the linked pages for signatures.
+- The cheat sheet image writes `is[Not]Dialog`, but there is no `isNotDialog()`; use `isDialog()` and negate it with `!isDialog()` (SemanticsMatcher.not).
 - The cheat sheet's page URL is `https://developer.android.com/develop/ui/compose/testing/testing-cheatsheet`.
 
 ## Related

@@ -19,8 +19,8 @@ fun greeterSaysHello() {
 |------|-------------|
 | `espresso-core` | Core and basic `View` matchers, actions, and assertions. |
 | `espresso-web` | Resources for `WebView` support. |
-| `espresso-idling-resource` | Espresso's mechanism for synchronization with background jobs. |
-| `espresso-contrib` | External contributions: `DatePicker`, `RecyclerView` and `Drawer` actions, accessibility checks, and `CountingIdlingResource`. |
+| `espresso-idling-resource` | Espresso's mechanism for synchronization with background jobs. Provides `CountingIdlingResource` (`androidx.test.espresso.idling.CountingIdlingResource`). |
+| `espresso-contrib` | External contributions: `DatePicker`, `RecyclerView` and `Drawer` actions, and accessibility checks. |
 | `espresso-intents` | Extension to validate and stub intents for hermetic testing. |
 | `espresso-remote` | Espresso's multi-process functionality. |
 
@@ -32,6 +32,7 @@ fun greeterSaysHello() {
   - No `AsyncTask` instance is currently executing a task.
   - All developer-defined idling resources are idle.
 - These checks substantially increase the likelihood that only one UI action or assertion occurs at a time.
+- The official page lists `CountingIdlingResource` under `espresso-contrib`; in AndroidX it ships in `androidx.test.espresso:espresso-idling-resource` (see idling-resource.md).
 - Source: https://developer.android.com/training/testing/espresso
 
 ## Related
