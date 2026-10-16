@@ -31,9 +31,10 @@ Stream dotnetStream2 = winrtStream.AsStream();
 
 ## Notes
 
-- A new WinUI 3 project's `Package.appxmanifest` declares `runFullTrust` by default, which grants `System.IO` the same unrestricted file-system access as any other .NET desktop app — it is not sandboxed the way pure UWP apps are.
+- A new WinUI 3 project's `Package.appxmanifest` declares `runFullTrust` by default. Per the files overview, this restricted capability "provides full access to the file system, registry, and other restricted capabilities", so the app has the same file-system access as any other .NET desktop app when using the .NET file APIs — it is not sandboxed the way pure UWP apps are.
+- Representative `System.IO` APIs from the .NET files guide: `FileStream` / `BinaryWriter` / `BinaryReader`, `DirectoryInfo` / `Directory`, `DriveInfo.GetDrives`, and `MemoryStream` + `StreamReader.ReadToEndAsync`.
 - `Windows.Storage` APIs are all asynchronous (`IAsyncOperation`); `System.IO` offers both synchronous and asynchronous members.
-- To bridge the two, use the `AsStream()` / `AsRandomAccessStream()` / `AsInputStream()` / `AsOutputStream()` extension methods (from `System.Runtime.InteropServices.WindowsRuntime` in .NET Framework, or built into WinRT projections in modern .NET) rather than re-reading data through both APIs.
+- To bridge the two, use the `AsStream()` / `AsRandomAccessStream()` / `AsInputStream()` / `AsOutputStream()` extension methods rather than re-reading data through both APIs. For the conversion details, see the .NET docs article "How to: Convert between .NET and Windows Runtime streams" (`/dotnet/standard/io/how-to-convert-between-dotnet-streams-and-winrt-streams`), which the .NET files guide points to.
 - For file/folder pickers in WinUI 3 apps specifically, prefer the newer `Microsoft.Windows.Storage.Pickers` namespace (Windows App SDK 1.8+) over `Windows.Storage.Pickers`; it returns string paths (`PickFileResult`/`PickFolderResult`) instead of `StorageFile`/`StorageFolder`, and integrates with `System.IO` more directly.
 
 ## Related

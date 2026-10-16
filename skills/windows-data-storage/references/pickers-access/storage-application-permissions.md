@@ -28,18 +28,15 @@ StorageFile restoredFile = await StorageApplicationPermissions.FutureAccessList.
 | `FutureAccessList` | `StorageItemAccessList` (static) | List an app maintains to store files/folders and access them again later, keyed by a token string returned from `Add`. |
 | `MostRecentlyUsedList` | `StorageItemMostRecentlyUsedList` (static) | List an app can use to track recently accessed files/folders. |
 
-## Methods
-
-| Name | Description |
-|------|--------------|
-| `GetFutureAccessListForUser(User)` | Scoped future-access list for a specific user (multi-user apps). |
-| `GetMostRecentlyUsedListForUser(User)` | Scoped MRU list for a specific user. |
-
 ## Notes
 
+- Methods: `GetFutureAccessListForUser(User)` returns a scoped future-access list for a specific user (multi-user apps); `GetMostRecentlyUsedListForUser(User)` returns a scoped MRU list for a specific user.
 - Namespace: `Windows.Storage.AccessCache`. Access members statically — the class cannot be instantiated.
-- Both lists have a maximum capacity (`MaximumItemsAllowed`, historically 1000 for `FutureAccessList` and 25 for `MostRecentlyUsedList`); adding beyond capacity evicts the oldest entry.
-- Store the token string returned by `Add` — it's required to retrieve (`GetFileAsync`/`GetFolderAsync`), remove (`Remove`), or check (`ContainsItem`) the entry later.
+- `MostRecentlyUsedList` holds up to 25 items. The platform sorts by last access and, when the limit is reached, automatically removes the item accessed the longest time ago, so you never need to `Remove` before `Add`. All apps have their own MRU.
+- `FutureAccessList` holds up to 1000 items (files and folders). "The platform never removes items from the FutureAccessList for you": once 1000 is reached, you can't `Add` another until you make room with `Remove`.
+- MRU `Add` is overloaded: `Add(IStorageItem)` and `Add(IStorageItem, String)`; the metadata string records the item's purpose (e.g. "profile pic"). `Add` returns a token, which you should persist (e.g. in app data) because it's needed to retrieve the item later.
+- MRU retrieval: `GetFileAsync` (StorageFile), `GetFolderAsync` (StorageFolder), `GetItemAsync` (generic `IStorageItem`). `Entries` returns an `AccessListEntryView`; each `AccessListEntry` has `Token` and `Metadata`.
+- `FutureAccessList` entries are also removed (`Remove`) or checked (`ContainsItem`) by token.
 - Items added via a picker are the common source: the picker itself doesn't persist access automatically — the app must explicitly add the returned `StorageFile`/`StorageFolder` to `FutureAccessList` to survive process restarts.
 - Works for both files and folders (including all subfolder contents when a folder is picked).
 

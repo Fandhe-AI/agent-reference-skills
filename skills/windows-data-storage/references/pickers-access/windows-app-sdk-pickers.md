@@ -34,17 +34,9 @@ if (result != null)
 | `ViewMode` | `PickerViewMode` | Display mode for items. |
 | `CommitButtonText` | `string` | Commit button label. |
 
-## Methods
-
-| Name | Description |
-|------|--------------|
-| `PickSingleFileAsync()` (`FileOpenPicker`) | Returns a `PickFileResult` (with `.Path`) or `null`. |
-| `PickMultipleFilesAsync()` (`FileOpenPicker`) | Returns multiple `PickFileResult` objects. |
-| `PickSaveFileAsync()` (`FileSavePicker`) | Returns a `PickFileResult` for the chosen save path. |
-| `PickSingleFolderAsync()` (`FolderPicker`) | Returns a `PickFolderResult` (with `.Path`) or `null`. |
-
 ## Notes
 
+- Methods: `PickSingleFileAsync()` (`FileOpenPicker`) returns a `PickFileResult` (with `.Path`) or `null`; `PickMultipleFilesAsync()` (`FileOpenPicker`) returns multiple `PickFileResult` objects; `PickSaveFileAsync()` (`FileSavePicker`) returns a `PickFileResult` for the chosen save path; `PickSingleFolderAsync()` (`FolderPicker`) returns a `PickFolderResult` (with `.Path`) or `null`.
 - Namespace: `Microsoft.Windows.Storage.Pickers` (Windows App SDK 1.8+). Distinct from the UWP `Windows.Storage.Pickers` namespace (`FileOpenPicker`/`FileSavePicker`/`FolderPicker`) — the App SDK pickers require **no** `IInitializeWithWindow`/HWND initialization and return lightweight path-based `PickFileResult`/`PickFolderResult` objects instead of `StorageFile`/`StorageFolder`.
 - Primary reason to use this namespace: `Windows.Storage.Pickers` doesn't function when the app is elevated (running as administrator); `Microsoft.Windows.Storage.Pickers` does.
 - Because results are plain file-system paths, integrate with `System.IO` or convert to `StorageFile.GetFileFromPathAsync(path)` if `Windows.Storage` APIs are needed downstream.

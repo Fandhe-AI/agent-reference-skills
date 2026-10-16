@@ -55,12 +55,18 @@ public static class DataAccess
 
 ## Notes
 
-- Call `DataAccess.InitializeDatabase()` once at app startup (e.g. in the `App` constructor) so the schema exists before any query runs.
-- Always use parameterized queries (`Parameters.AddWithValue`) instead of string concatenation to prevent SQL injection.
-- `ApplicationData`-based file access (`LocalFolder`) only works for packaged apps running in an app container; unpackaged apps should use `ApplicationDataManager` or direct file I/O instead.
+- Call `DataAccess.InitializeDatabase()` once at app startup (the tutorial does so in the `App` constructor). Because it is `async void`, the caller cannot await it, so a query can run before the table exists; return `Task` and await completion before querying (see `samples/sqlite-local-database.md`).
+- Always use parameterized queries (`Parameters.AddWithValue`) instead of string concatenation to prevent SQL injection. The tutorial states: "Never concatenate user input into a SQL query string. Always use parameters."
+- Prerequisite in the tutorial: Visual Studio 2026 or later with the WinUI application development workload.
+- "In a production application, connection information such as the database filename should be stored in app configuration rather than hard-coded."
+- Scope: SQLite is for on-device storage. The data-access overview advises: "For enterprise line-of-business apps that access shared data, prefer an authenticated service layer that owns database access ... Don't embed shared database credentials or privileged connection strings in a desktop client."
+- `ApplicationData`-based file access (`LocalFolder`) only works for packaged apps running in an app container. Packaged apps outside an app container (full trust) access `ApplicationData` members via `Windows.Management.Core.ApplicationDataManager`, per the tutorial. Unpackaged apps "do not have access to the system-managed app data stores and should use alternative storage mechanisms such as direct file I/O or registry access" (https://learn.microsoft.com/en-us/windows/apps/develop/data/store-and-retrieve-app-data), so build the database path with `System.IO` instead.
 - For an object-relational mapping layer on top of the same SQLite file, use the EF Core SQLite provider instead of raw `Microsoft.Data.Sqlite` (see ef-core-sqlite-provider.md); EF Core's SQLite provider itself is built on `Microsoft.Data.Sqlite`.
 
 ## Related
 
 - [EF Core SQLite provider](./ef-core-sqlite-provider.md)
 - [Application data storage locations](./application-data-storage.md)
+- [Data access overview](./data-access-overview.md)
+- [Connect a WinUI app to a database](./connect-winui-app-to-database.md)
+- [SQL Server (Microsoft.Data.SqlClient)](./sql-server-database.md)

@@ -31,16 +31,9 @@ StorageFile file = await storageFolder.CreateFileAsync("sample.png", CreationCol
 | `MediaServerDevices` | `StorageFolder` | at least one of `musicLibrary`/`picturesLibrary`/`videosLibrary` | DLNA media server devices. |
 | `Objects3D`, `Playlists`, `CameraRoll`, `SavedPictures`, `AppCaptures`, `RecordedCalls` | `StorageFolder` | varies | Additional well-known content folders. |
 
-## Methods
-
-| Name | Description |
-|------|--------------|
-| `GetFolderAsync(KnownFolderId)` | Retrieves the folder for the specified `KnownFolderId`. |
-| `RequestAccessAsync(KnownFolderId)` | Requests the capability/permission controlling access to the folder at runtime. |
-| `GetFolderForUserAsync(User, KnownFolderId)` / `RequestAccessForUserAsync(User, KnownFolderId)` | User-scoped variants for multi-user apps. |
-
 ## Notes
 
+- Methods: `GetFolderAsync(KnownFolderId)` retrieves the folder for the specified `KnownFolderId`; `RequestAccessAsync(KnownFolderId)` requests the capability/permission controlling access to the folder at runtime; `GetFolderForUserAsync(User, KnownFolderId)` / `RequestAccessForUserAsync(User, KnownFolderId)` are user-scoped variants for multi-user apps.
 - Namespace: `Windows.Storage`. Static class — access properties directly (`KnownFolders.PicturesLibrary`), no instantiation.
 - Each property requires the matching capability declared in the app manifest's `<Capabilities>` section, or access throws `UnauthorizedAccessException`. See File Access Permissions for the full location-to-capability table.
 - `DocumentsLibrary` and `RemovableDevices` additionally require File Type Association declarations naming the specific extensions the app can access.

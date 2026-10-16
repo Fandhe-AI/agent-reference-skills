@@ -34,15 +34,9 @@ if (file != null)
 | `CommitButtonText` | `string` | Label text of the picker's commit button. |
 | `SettingsIdentifier` | `string` | Identifier used to persist the picker's UI state. |
 
-## Methods
-
-| Name | Description |
-|------|--------------|
-| `PickSingleFileAsync()` | Shows the picker so the user can pick one file; returns a `StorageFile` or `null` if cancelled. |
-| `PickMultipleFilesAsync()` | Shows the picker so the user can pick multiple files; returns `IReadOnlyList<StorageFile>` (empty if cancelled). |
-
 ## Notes
 
+- Methods: `PickSingleFileAsync()` shows the picker so the user can pick one file and returns a `StorageFile` or `null` if cancelled; `PickMultipleFilesAsync()` lets the user pick multiple files and returns `IReadOnlyList<StorageFile>` (empty if cancelled).
 - Package: `Windows.Storage.Pickers` (UWP APIs, also usable from desktop apps that do **not** require elevation). Distinct from `Microsoft.Windows.Storage.Pickers` (Windows App SDK), which is the WinUI 3-first replacement.
 - Implements `IInitializeWithWindow`. In a desktop app (WinUI 3, WPF, WinForms), you must call `WinRT.Interop.InitializeWithWindow.Initialize(picker, hWnd)` before showing the picker, or it throws. See HWND Initialization for WinRT UI Objects.
 - The file picker APIs (`Windows.Storage.Pickers`) don't work when the app runs elevated (as administrator); use `Microsoft.Windows.Storage.Pickers` or Win32 `IFileOpenDialog` via CsWin32 instead.

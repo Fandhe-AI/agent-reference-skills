@@ -62,4 +62,5 @@ StorageItemContentProperties properties = file.Properties;
 - [IRandomAccessStream](./irandom-access-stream.md)
 - [StorageItemThumbnail](./storage-item-thumbnail.md)
 - [StorageFile Streamed Content](./streamed-file-content.md)
+- [File properties](./file-properties.md)
 - [System.IO vs Windows.Storage](./system-io-vs-windows-storage.md)
