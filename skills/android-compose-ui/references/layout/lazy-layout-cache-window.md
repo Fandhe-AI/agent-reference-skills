@@ -48,6 +48,8 @@ val cacheWindow = LazyLayoutCacheWindow(ahead = 200.dp, behind = 100.dp)
 - In 1.12.1 a cache window is passed through the experimental `cacheWindow: LazyLayoutCacheWindow` overload of `rememberLazyListState` / `rememberLazyGridState` (see rememberlazyliststate.md).
 - Migration (pre-release): Compose Foundation 1.13.0-alpha01 makes `LazyLayoutCacheWindow` stable and deprecates providing it via `LazyGridState`; 1.13.0-alpha03 deprecates the same for `LazyListState`, in favor of providing it to the composable function (`LazyColumn` / `LazyRow`). None of this applies to stable 1.12.1.
 
+- Source: KDoc in the Compose Foundation 1.12.1 sources jar (https://dl.google.com/android/maven2/androidx/compose/foundation/foundation-android/1.12.1/foundation-android-1.12.1-sources.jar, `commonMain/androidx/compose/foundation/lazy/layout/LazyLayoutCacheWindow.kt`); migration notes from https://developer.android.com/jetpack/androidx/releases/compose-foundation (1.13.0-alpha01 / alpha03).
+
 ## Related
 
 - [rememberLazyListState](./rememberlazyliststate.md)

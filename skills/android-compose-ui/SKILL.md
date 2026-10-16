@@ -13,7 +13,7 @@ user-invocable: false
 Jetpack Compose (androidx.compose) の UI 基盤に関する公式ドキュメントを蒸留したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-対象バージョン: Compose BOM 2026.09.00（compose foundation / foundation-layout / ui / ui-text / runtime 1.12.1、material3.adaptive 1.3.0）。Compose 1.12 は compileSdk 37、AGP 9.2.0 以降が必要。1.13 系（最新 1.13.0-beta01）はプレリリースのため各ページ Notes の 1 行記載のみ。
+対象バージョン: Compose BOM 2026.09.00（compose foundation / foundation-layout / ui / ui-text / runtime 1.12.1、material3.adaptive 1.3.0）。Compose 1.12 は compileSdk 37、AGP 9.2.0 以降が必要。1.13 系（最新 1.13.0-beta01）はプレリリースのため各ページ Notes の 1 行記載のみ（出典: https://developer.android.com/develop/ui/compose/bom/bom-mapping 、取得 2026-10-16）。
 
 ## ディレクトリ構成
 
