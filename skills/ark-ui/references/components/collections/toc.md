@@ -108,6 +108,7 @@ Context API: `activeIds`, `activeItems`, `items`, `setActiveIds(value)`, `scroll
 - Hover-expanding navigation does not work on touch screens; pair it with a pin or disclosure control.
 - `Toc.Context` exposes `activeItems`; `useTocContext().getLinkProps({ item })` can be used to wire links in custom navs such as `TreeView`.
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead of `@ark-ui/react`.
+- Source: https://ark-ui.com/react/docs/components/toc (Ark UI @ark-ui/react 5.39.3)
 
 ## Related
 

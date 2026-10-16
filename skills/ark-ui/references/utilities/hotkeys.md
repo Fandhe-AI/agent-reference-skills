@@ -128,6 +128,7 @@ Takes one object: every field of `UseHotkeysCommand`, plus an optional `store`.
 - Inside a component use `useFormatHotkey` rather than importing `formatHotkey` from `@zag-js/hotkeys`, which reads the platform during render and mismatches on hydration.
 - `conflictBehavior` is fixed when the store is created; switching it requires a new store.
 - A command palette can give its own store and read `useHotkeyRegistrations({ store })` to list only its commands.
+- Source: https://ark-ui.com/react/docs/utilities/hotkeys (Ark UI @ark-ui/react 5.39.3)
 
 ## Related
 

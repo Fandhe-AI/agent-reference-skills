@@ -118,6 +118,8 @@ Context API: `value`, `setValue(value)`, `open`, `isViewportRendered`, `getViewp
 - Large menus: constrain the viewport with `max-height: min(var(--viewport-height), 70vh)` and scroll the content.
 - Use `RootProvider` instead of `Root` when using `useNavigationMenu`; do not use both.
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead of `@ark-ui/react`.
+- The asChild link example is verbatim from the official docs, where `@ark-ui/<framework>/navigation-menu` is a placeholder; in React use `@ark-ui/react/navigation-menu` (as in the basic example).
+- Source: https://ark-ui.com/react/docs/components/navigation-menu (Ark UI @ark-ui/react 5.39.3)
 
 ## Related
 
