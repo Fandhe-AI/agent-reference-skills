@@ -89,6 +89,7 @@ skills/windows-winui-controls/
       message-dialog.md
       flyout.md
       menu-flyout-item.md
+      menus-and-context-menus.md
       command-bar.md
       command-bar-flyout.md
       app-bar-button.md
@@ -148,11 +149,15 @@ skills/windows-winui-controls/
 | Frame / SplitView / BreadcrumbBar でページ遷移・パンくず・折りたたみペインを実装したい | navigation-controls | [references/navigation-controls/README.md](references/navigation-controls/README.md) |
 | MenuBar / PipsPager でメニューバー・ページネーションを実装したい | navigation-controls | [references/navigation-controls/README.md](references/navigation-controls/README.md) |
 | ContentDialog / Flyout / Popup でモーダル・ライトディスミスな UI を表示したい | dialogs-flyouts-commands | [references/dialogs-flyouts-commands/README.md](references/dialogs-flyouts-commands/README.md) |
+| MenuFlyout / MenuFlyoutItem / ToggleMenuFlyoutItem / SplitMenuFlyoutItem (分割メニュー項目) でメニューを実装したい | dialogs-flyouts-commands | [references/dialogs-flyouts-commands/README.md](references/dialogs-flyouts-commands/README.md) |
+| メニューとコンテキストメニューの使い分け (ContextFlyout / Button.Flyout / MenuFlyout vs CommandBarFlyout) を判断したい | dialogs-flyouts-commands | [references/dialogs-flyouts-commands/README.md](references/dialogs-flyouts-commands/README.md) |
 | CommandBar / CommandBarFlyout / AppBarButton でコマンドツールバーを実装したい | dialogs-flyouts-commands | [references/dialogs-flyouts-commands/README.md](references/dialogs-flyouts-commands/README.md) |
 | TeachingTip / InfoBar / InfoBadge / ToolTip で通知・ヒントを表示したい | dialogs-flyouts-commands | [references/dialogs-flyouts-commands/README.md](references/dialogs-flyouts-commands/README.md) |
 | Image / MediaPlayerElement / WebView2 でメディア・Web コンテンツを表示したい | media-misc-controls | [references/media-misc-controls/README.md](references/media-misc-controls/README.md) |
 | CalendarView / DatePicker / TimePicker / ColorPicker で日付・時刻・色を選択したい | media-misc-controls | [references/media-misc-controls/README.md](references/media-misc-controls/README.md) |
 | FontIcon / SymbolIcon / PathIcon / BitmapIcon / ImageIcon でコントロールにアイコンを割り当てたい | media-misc-controls | [references/media-misc-controls/README.md](references/media-misc-controls/README.md) |
 | Expander / AnimatedIcon / SwipeControl / RefreshContainer / TitleBar でその他の UI 挙動を実装したい | media-misc-controls | [references/media-misc-controls/README.md](references/media-misc-controls/README.md) |
+| TitleBar のドラッグ領域 (TitleBar.IsDragRegion / RecomputeDragRegions) を調整したい | media-misc-controls | [references/media-misc-controls/README.md](references/media-misc-controls/README.md) |
+| InkCanvas / InkToolbar でペン入力を実装したい (experimental チャネル限定) | media-misc-controls | [references/media-misc-controls/README.md](references/media-misc-controls/README.md) |
 
 このスキルは WinUI 3 / Windows App SDK 固有のコントロール API のみを扱う。同名の Button / TextBox / NavigationView 等は apple-swiftui, ark-ui, chakra-ui, fandhe-frontend, android-compose-components とは無関係の別 API であり、Windows レイアウト・ウィンドウ管理・データバインディングなど他の windows-* スキルが存在する場合はそちらが担当する。

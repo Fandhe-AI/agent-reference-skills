@@ -11,7 +11,7 @@
 | Expander | A container with a header that is always visible and a content area that can be expanded/collapsed to show or hide secondary content. | [expander.md](./expander.md) |
 | Icon Elements | Base `IconElement` / `IconSource` class family — `FontIcon`, `SymbolIcon`, `PathIcon`, `BitmapIcon`, `ImageIcon` (plus their `*Source` forms) and `IconSourceElement` — used to assign icons via `Icon`/`IconSource` properties across controls. | [icon-elements.md](./icon-elements.md) |
 | Image | A control that displays image content (`Image` element) or paints another object with an image (`ImageBrush`). | [image.md](./image.md) |
-| InkCanvas / InkToolbar | UWP controls for pen/stylus ink input (`InkCanvas`) and an associated toolbar of ink tools (`InkToolbar`). | [inkcanvas-inktoolbar.md](./inkcanvas-inktoolbar.md) |
+| InkCanvas / InkToolbar | Experimental-only (Windows App SDK experimental channel) WinUI 3 ink canvas and ink tool toolbar in `Microsoft.UI.Xaml.Controls`; not available in stable. | [inkcanvas-inktoolbar.md](./inkcanvas-inktoolbar.md) |
 | MediaPlayerElement | A control to display video and image content, with built-in transport controls for play/pause, seek, volume, and captions. | [media-player-element.md](./media-player-element.md) |
 | ParallaxView | A container that associates the scroll position of a foreground element (e.g. a list) with a background element (e.g. an image), creating a 3D depth effect via differing scroll rates. | [parallax-view.md](./parallax-view.md) |
 | PersonPicture | Displays the avatar image for a person if one is available; otherwise displays the person's initials or a generic glyph. | [person-picture.md](./person-picture.md) |
