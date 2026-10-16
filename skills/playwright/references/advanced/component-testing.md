@@ -1,5 +1,7 @@
 # Component Testing
 
+## Signature / Usage
+
 Playwright Test can test the components of your web application in isolation. Since v1.62 a component test is a regular Playwright end-to-end test that runs against a small **story gallery** page served by your own dev server. There is no dedicated component-testing runtime, no bundler integration and no extra npm packages: the built-in `mount` fixture of `@playwright/test` drives it all.
 
 ```ts
@@ -14,7 +16,7 @@ test('click should expand', async ({ mount }) => {
 
 Tests run in Node.js while components run in a real browser: real clicks are triggered, real layout is executed, visual regression is possible. At the same time, tests get everything Playwright Test offers: parallelism, parametrization, retries and post-mortem tracing.
 
-## Why a framework-agnostic approach
+### Why a framework-agnostic approach
 
 The `@playwright/experimental-ct-*` packages let tests write JSX inline (`mount(<Button onClick={spy} />)`). To make that possible, Playwright had to control the entire pipeline: scan the tests for components, compile a bundle with its own copy of Vite and its own config, serve it from its own server, and marshal props and callbacks across the Node.js/browser boundary. That design kept the packages experimental forever:
 
@@ -27,7 +29,7 @@ The replacement inverts the control:
 - **It is framework-agnostic.** The only framework-specific piece is the gallery page, a small module that you own.
 - **It is stable.** Tests import `test` and `expect` from plain `@playwright/test`, and `mount` is a documented built-in fixture.
 
-## How it works
+### How it works
 
 - A **story** is a tiny wrapper component that embeds the component under test in one specific scenario: hard-coded props, mock data, providers, recorded callbacks. Stories live next to the component in `*.story.tsx` (or `.ts`/`.jsx`/`.js`/`.vue`) files; each named export is one story.
 - The **gallery** is a single page, served by your dev server, that exposes `window.mount(params)` and `window.unmount()` functions rendering a story (resolved from your story files) into a `#root` element. It is framework-specific and yours to own.
@@ -35,7 +37,9 @@ The replacement inverts the control:
 
 Everything the component needs is set up inside the story, which runs in the browser. Everything the test asserts is observable through the page: DOM, URL, network.
 
-## mount fixture
+## Options / Props
+
+### mount fixture
 
 `Fixtures.mount` (since v1.62) returns a `Locator`: "Mounts a component story and returns a Locator pointing to the root element the story was rendered into."
 
@@ -234,6 +238,9 @@ Open the gallery URL in a browser and call `await window.mount({ story: 'compone
 - Story ids are strings: renaming or moving a story breaks specs at runtime, not compile time. Per-test JSX is gone: a test that built a different JSX tree per test becomes one story export per composition.
 - Accessing a component's internal methods or its instance within test code is neither recommended nor supported.
 - `mount()` re-navigates and re-creates the DOM of the story gallery, but with `reuseContext: true` the browser context is shared across tests in a worker and its reset is best-effort: permissions granted via `grantPermissions()`, runtime `setGeolocation()` / `setOffline()` / `setExtraHTTPHeaders()` changes, browsing history and `window.name` are not reset (see `../test-runner/configuration.md`).
+- Source: https://playwright.dev/docs/test-components (microsoft/playwright v1.64.1 `docs/src/test-components-js.md`)
+- Source: https://playwright.dev/docs/api/class-testoptions (microsoft/playwright v1.64.1 `docs/src/test-api/class-testoptions.md`, for `reuseContext`)
+- Source: https://playwright.dev/docs/release-notes (microsoft/playwright v1.64.1 `docs/src/release-notes-js.md`, for the `experimental-ct-svelte` removal in v1.59)
 
 ## Legacy packages (experimental-ct-*)
 
@@ -417,3 +424,7 @@ test('changes the image', async ({ mount }) => {
 ### Under the Hood (legacy)
 
 Playwright uses **Vite** to bundle components and serves them from a local static web server. When `mount()` is called, the browser navigates to `/playwright/index.html` and renders the specified component. Vite configuration can be customized via the `ctViteConfig` property in `playwright-ct.config.ts`.
+
+## Related
+
+- [configuration.md](../test-runner/configuration.md)

@@ -56,7 +56,7 @@ Register a passkey with the virtual authenticator in a setup test and save it in
 
 ```typescript
 // tests/passkey.setup.ts
-import { test as setup } from '@playwright/test';
+import { test as setup, expect } from '@playwright/test';
 
 setup('register passkey', async ({ context, page }) => {
   // Install the virtual authenticator before the page touches navigator.credentials
@@ -64,6 +64,10 @@ setup('register passkey', async ({ context, page }) => {
 
   await page.goto('https://example.com/register');
   await page.getByRole('button', { name: 'Create a passkey' }).click();
+
+  // click() does not wait for the async WebAuthn registration. Wait for the app's success signal
+  // (app-specific example: adapt to your UI, or use page.waitForResponse on your registration API)
+  await expect(page.getByText('Passkey created')).toBeVisible();
 
   // Include the virtual WebAuthn credentials (passkeys) in the storage state
   await context.storageState({ path: 'playwright/.auth/passkey-state.json', credentials: true });
@@ -103,6 +107,7 @@ await context.credentials.install();
 - For tests that modify server-side state, use per-worker storage state via `testInfo.parallelIndex`
 - Use `test.use({ storageState: 'path' })` to specify a role-specific auth file per test
 - `credentials.install()` is required: seeding with `credentials.create()` without installing never exposes the credentials to the page. Restoring a storage state that contains credentials installs the virtual authenticator automatically and blocks real authenticators in that context
+- Wait for registration to finish before `storageState()` or `credentials.get()`: the click handler starts an async `navigator.credentials.create()` and server registration call, so without a wait the saved state may lack the passkey
 - `credentials.get()` returns private keys, so treat saved passkey files as secrets. `Credentials.create` accepts `signCount` since v1.64
 - `storageState({ opfs: true })` (v1.63) includes the origin private file system in the snapshot; OPFS is not supported in ephemeral WebKit contexts. `indexedDB: true` (v1.51) includes IndexedDB
 - Since v1.64 the `screen` of a `...devices['Desktop Chrome']` spread is forwarded, so `window.screen` and media queries see the emulated size. Opt out with `screen: undefined` after the spread

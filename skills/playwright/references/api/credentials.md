@@ -90,6 +90,7 @@ To import a known credential, supply all four of `id`, `userHandle`, `privateKey
 - Fresh keys are ECDSA P-256 (COSE algorithm `-7`). An omitted `id` or `userHandle` is filled with 16 random bytes.
 - The signature counter starts at `0` and is incremented by one on every successful `navigator.credentials.get()` assertion.
 - Returned credentials include the private key; treat saved files such as `passkey.json` as secrets.
+- `click()` does not wait for the asynchronous WebAuthn registration (`navigator.credentials.create()`) or the app's server-side registration request to finish. Before calling `credentials.get()` or `storageState()`, wait for the app's success UI or a successful registration API response; otherwise the credential may be `undefined` or missing from the saved state.
 - Source: https://playwright.dev/docs/api/class-credentials (microsoft/playwright v1.64.1 `docs/src/api/class-credentials.md`)
 
 ## Related
