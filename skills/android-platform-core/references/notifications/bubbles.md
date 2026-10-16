@@ -57,7 +57,7 @@ val builder = NotificationCompat.Builder(context, CHANNEL_ID)
     .addPerson(chatPartner)
 ```
 
-Auto-expanded bubble:
+Auto-expanded bubble (fragment; flags only):
 
 ```kotlin
 val bubbleMetadata = NotificationCompat.BubbleMetadata.Builder()
@@ -84,6 +84,9 @@ val bubbleMetadata = NotificationCompat.BubbleMetadata.Builder()
 - The bubble activity must be resizeable and embedded; otherwise the system displays the notification as a normal notification.
 - For multiple bubbles of the same type (e.g. several chats), the activity must be able to launch multiple instances. On Android 10 and lower, set `documentLaunchMode` to `"always"`; from Android 11 the system sets it automatically for all conversations.
 - If targeting Android 11 (API level 30) or higher, the bubble metadata or notification must reference a sharing shortcut, and the notification must meet the conversation requirements to appear as a bubble.
+- The official sending snippet omits `MessagingStyle`. To meet the conversation requirements on Android 11+, the notification needs a `Person` and messages via `NotificationCompat.MessagingStyle` set with `setStyle()` (conversation requirements: https://developer.android.com/guide/topics/ui/conversations). The bubbles page itself only links to the requirements without listing them, so confirm details there.
+- The official snippet uses `PendingIntent.FLAG_IMMUTABLE` for the bubble intent. The PendingIntent mutability guide lists "Placing conversations in bubbles using instances of `PendingIntent`" as a use case that requires `FLAG_MUTABLE` ("A mutable `PendingIntent` object allows the system to apply the correct flags, such as `FLAG_ACTIVITY_MULTIPLE_TASK` and `FLAG_ACTIVITY_NEW_DOCUMENT`"), and recommends an explicit intent with the `ComponentName` filled in for mutable intents. Source: https://developer.android.com/guide/components/intents-filters (PendingIntent mutability section). The bubbles page does not state this, so verify against your target API level.
+- The auto-expanded snippet is a fragment showing only the expand/suppress flags. `Builder()` with no arguments plus `setIntent()` still needs `setIcon()`; use the `Builder(bubbleIntent, IconCompat)` form from the first example or `Builder(shortcutId)`. (Not stated on the official page; based on the AndroidX `BubbleMetadata` builder contract, so verify before relying on it.)
 - If targeting Android 10 (API level 29) or lower, a notification appears as a bubble only if one of: it uses `MessagingStyle` with a `Person`; it comes from `Service.startForeground` with `CATEGORY_CALL` and a `Person`; or the app is in the foreground when it is sent.
 - The first notification that shows a bubble must be in a channel with `IMPORTANCE_MIN` or higher. If the app is in the foreground, importance is ignored and the bubble is always shown unless the user blocks bubbles or notifications.
 - Do not cancel notifications that appear as bubbles: canceling removes the bubble. Opening a bubble hides its associated notification automatically.
@@ -93,6 +96,7 @@ val bubbleMetadata = NotificationCompat.BubbleMetadata.Builder()
 - Best practices: bubble only important notifications; ensure the notification still works as a normal notification when bubbles are disabled; use the `BackHandler` composable with `enabled` tied to UI state so the bubble collapses once the handler disables itself.
 - To clear the unread badge on a collapsed bubble when the user opens the message, update `BubbleMetadata` with `setSuppressNotification()` and set `Notification.Builder.setOnlyAlertOnce(true)` to avoid sound or vibration.
 - Sample app: SociaLite (https://github.com/android/socialite).
+- Source: https://developer.android.com/develop/ui/compose/notifications/bubbles (fetched 2026-10-17)
 
 ## Related
 

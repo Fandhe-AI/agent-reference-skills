@@ -55,7 +55,7 @@ fun MyNewsItemComposable(headline: String) {
 - Composables are not rendered, so clicks cannot be performed — instead, assert on the `Action` attached to a clickable (e.g. that it starts a given activity/service) rather than simulating a tap.
 - Organize composable functions outside the `GlanceAppWidget` class so they can be called directly from `provideComposable` and reused.
 - Matchers include `hasTestTag`, `hasContentDescriptionEqualTo`, `isChecked`; apply `testTag` via `GlanceModifier.semantics { testTag = "..." }` on the composable under test.
-- Version: the official guide snippet shows `1.1.1`; both artifacts are also published at `1.2.0`, which this page uses.
+- Version: the official guide snippet shows `1.1.1`; both artifacts are also published at `1.2.0`, which this page uses (guide: https://developer.android.com/develop/ui/compose/glance/testing; releases: https://developer.android.com/jetpack/androidx/releases/glance).
 - May be combined with Robolectric if a test needs to set a `LocalContext` in a JVM (non-instrumented) test.
 
 ## Related

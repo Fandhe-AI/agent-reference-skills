@@ -46,7 +46,7 @@ class MyAppWidget : GlanceAppWidget() {
 - Use `withContext()` inside `provideGlance` to move long-running data loading off the caller thread.
 - `update(context, id)` re-runs the composition for one widget and pushes the result to `AppWidgetManager`; `updateAll(context)` updates every instance; `updateIf` updates conditionally based on stored state.
 - `providePreview(context, widgetCategory)` (Android 15+, `compileSdk` 35+) renders a single, non-recomposing preview; combine with `GlanceAppWidgetManager.setWidgetPreview()` (rate-limited to ~2 calls/hour) to publish personalized widget-picker previews. Override `previewSizeMode` if elements are missing from the preview at minimum size.
-- Since `androidx.glance` 1.2.0-beta01 the libraries' default `minSdk` moved from API 21 to API 23 (shipped in stable 1.2.0, 2026-08-26). 1.2.0 also deprecates the legacy wear library in favor of `androidx.glance.wear`.
+- Since `androidx.glance` 1.2.0-beta01 the libraries' default `minSdk` moved from API 21 to API 23 (shipped in stable 1.2.0, 2026-08-26; https://developer.android.com/jetpack/androidx/releases/glance). 1.2.0 also deprecates the legacy wear library in favor of `androidx.glance.wear`.
 - Artifact: `androidx.glance:glance-appwidget`.
 - Distinct from mobile Jetpack Compose; a `GlanceAppWidget` composition compiles down to `RemoteViews`, so only Glance-specific composables (not `androidx.compose.*`) can be used inside `provideContent`.
 

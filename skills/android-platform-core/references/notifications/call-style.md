@@ -68,7 +68,9 @@ val builder = NotificationCompat.Builder(context, CHANNEL_ID)
 - The action intents are `PendingIntent` tokens managed by the system; handing one to another app grants permission to perform that operation (e.g. answer or decline) even if the creating app is not running.
 - Starting in Android 14 (API level 34), call notifications can be non-dismissible: use `CallStyle` with `Notification.FLAG_ONGOING_EVENT` via `Notification.Builder#setOngoing(true)`.
 - Compatibility for API 30 and earlier: associate the notification with a foreground service to get the high rank given on API 31+, or approximate it by marking the notification colorized with `setColorized()`.
-- Use the Telecom APIs together with `CallStyle` notifications (see the Telecom framework overview).
+- Use the Telecom APIs together with `CallStyle` notifications (see the Telecom framework overview: https://developer.android.com/develop/connectivity/telecom).
+- The snippet's `Intent()` / request code `0` is for demonstration only (the official code comment says to use well-defined Intents). `PendingIntent`s with the same request code and `Intent.filterEquals`-equal intents resolve to the same token, so in a real app give answer / decline / hangup distinct explicit intents (different action, or different request code) targeting a `BroadcastReceiver` or `Service`. (The identity rule is general PendingIntent behavior, not stated on the call-style page.)
+- Source: https://developer.android.com/develop/ui/compose/notifications/call-style (fetched 2026-10-17)
 
 ## Related
 

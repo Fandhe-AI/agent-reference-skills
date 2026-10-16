@@ -39,7 +39,7 @@ coroutineScope.launch {
 - Check the returned result code rather than assuming success: `SET_WIDGET_PREVIEWS_RESULT_RATE_LIMITED` means the call was rejected by the roughly-two-calls-per-hour rate limit, not that zero categories matched.
 - Call `setWidgetPreviews` at a point where you have real or representative data — first app launch for static/quick-action widgets, after sign-in for account-scoped widgets, or on a periodic schedule for widgets whose content changes over time. Update it again whenever the widget's visual appearance changes.
 - `providePreview` is a single, side-effect-free composition — it does not recompose and is distinct from the widget's normal `provideGlance`/`provideContent` lifecycle.
-- The Glance APIs for generated previews (`GlanceAppWidget.providePreview` and the `GlanceAppWidgetManager` preview setter) were added in `glance-appwidget` 1.2.0-alpha01 and are stable since 1.2.0 (2026-08-26).
+- The Glance APIs for generated previews (`GlanceAppWidget.providePreview` and the `GlanceAppWidgetManager` preview setter) were added in `glance-appwidget` 1.2.0-alpha01 and are stable since 1.2.0 (2026-08-26) (https://developer.android.com/jetpack/androidx/releases/glance).
 - Artifact: `androidx.glance:glance-appwidget`.
 
 ## Related
