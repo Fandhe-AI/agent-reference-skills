@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/quickstart / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/quickstart / last verified: 2026-10-16 -->
 
 # Agent Skills quickstart (API)
 
@@ -33,7 +33,8 @@ response = client.messages.create(
 
 ## Notes
 
-- No beta header and no `betas` / `client.beta` are used; the Skills API is out of beta.
+- No beta header and no `betas` / `client.beta` are used for the Skills API or for Messages requests that load Skills; the Skills API is out of beta.
+- The official quickstart (Step 3, verified 2026-10-16) downloads generated files with the non-beta Files API client (`client.files.download(file_id=...)` in Python, `client.files.download(fileId)` in TypeScript, `ant files download` in the CLI), and its cURL example calls `GET /v1/files/{file_id}/content` with only `x-api-key` and `anthropic-version`, without the `files-api-2025-04-14` beta header. Older pages that use `client.beta.files` describe the earlier beta shape.
 - List Anthropic-managed Skills with `GET /v1/skills?source=anthropic`.
 - Generated files appear in `bash_code_execution_tool_result` → `bash_code_execution_result` → `content[].file_id`; download via the Files API `GET /v1/files/{file_id}/content`.
 - This is the Claude API side of Agent Skills. Claude Code's Skills are covered by `anthropic-claude-code-extend`; Agent SDK usage by `anthropic-agent-sdk`.
