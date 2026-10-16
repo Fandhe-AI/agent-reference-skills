@@ -50,7 +50,7 @@ Team settings, saved as `.claude/settings.json` at the top of the repository and
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/block-rm.sh"
+            "command": "\"${CLAUDE_PROJECT_DIR}\"/.claude/hooks/block-rm.sh"
           }
         ]
       }
@@ -110,6 +110,7 @@ Organization settings, deployed as `managed-settings.json` (or the same JSON thr
 
 ## Notes
 
+- The official settings-example leaves `${CLAUDE_PROJECT_DIR}` unquoted in the team file's hook command; it is quoted here in case the path contains spaces or glob characters (exec form / `args` can also be used).
 - Each example is a plausible file for its reader, not a recommended policy. Every value comes from the key's entry in settings-reference.md, which has its type, default, and where it can be set.
 - The source page shows each file in two tabs: a copyable JSON file and the same file as `jsonc` with a comment above each key. Copy from the JSON version; comments are not accepted in a settings file.
 - Personal file: starts every session on Sonnet 5 (`model`), runs it above its default high level with `modelSettings` (`/effort` saves a level per model; `--effort` sets one for a single session), uses vim keybindings, the colorblind-friendly light theme, a command status line, hides spinner tips, rings the terminal bell for notifications, pre-allows `git diff` and reading `~/.zshrc`, follows the stable update channel, and deletes local session data older than 20 days.
