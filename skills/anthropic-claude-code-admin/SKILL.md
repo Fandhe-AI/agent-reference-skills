@@ -2,10 +2,10 @@
 name: anthropic-claude-code-admin
 description: >
   Claude Code (code.claude.com) の権限・セキュリティ・企業管理リファレンス。
-  permissions (allow / ask / deny), permission modes, auto mode,
-  sandboxing (sandboxed Bash), sandbox environments, zero data retention, data usage,
-  admin setup, server-managed settings, corporate launcher, network config,
-  authentication (SSO), analytics, monitoring (OpenTelemetry), costs, large codebases。
+  permissions (allow / ask / deny), permission modes, auto mode (classifier billing),
+  sandboxing, zero data retention, HIPAA, managed settings (MDM / plist / registry),
+  server-managed settings, managedMcpServers, allowedProviders, SSO, network config,
+  OpenTelemetry monitoring, analytics, costs, communications kit / champion kit。
 user-invocable: false
 ---
 
@@ -19,6 +19,7 @@ analytics / monitoring / costs / large codebases の利用状況管理をカバ�
 CLI 本体の `settings.json` は `anthropic-claude-code`、Agent SDK の permissions は `anthropic-agent-sdk`、
 組織 API（Admin / Usage / Compliance）は `anthropic-admin-platform` を参照（本スキルは Claude Code CLI の
 権限モード・サンドボックス・企業展開設定のみを担当）。
+plugins / mods の組織ポリシー系ページは `anthropic-claude-code-extend` が担当。
 
 ## ディレクトリ構成
 
@@ -38,11 +39,14 @@ skills/anthropic-claude-code-admin/
       zero-data-retention.md
       data-usage.md
       legal-and-compliance.md
+      hipaa-setup.md
+      auto-mode-classifier-billing.md
     enterprise-setup/
       README.md
       admin-setup.md
       authentication.md
       network-config.md
+      managed-settings.md
       server-managed-settings.md
       corporate-launcher.md
       managed-mcp.md
@@ -54,6 +58,10 @@ skills/anthropic-claude-code-admin/
       monitoring-usage.md
       costs.md
       large-codebases.md
+    adoption/
+      README.md
+      communications-kit.md
+      champion-kit.md
 ```
 
 ## 探索手順
@@ -68,6 +76,7 @@ skills/anthropic-claude-code-admin/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
-| 権限ルール（allow / ask / deny）・permission modes・auto mode・サンドボックス環境選択・sandboxed Bash・zero data retention・データ使用ポリシー・脆弱性スキャン（Claude Security）・法的コンプライアンスを知りたい | permissions-security | [references/permissions-security/README.md](references/permissions-security/README.md) |
-| 組織向け導入設定・authentication（SSO / OAuth / API キー）・企業ネットワーク設定（プロキシ / CA / mTLS）・server-managed settings・corporate launcher 経由での運用・組織単位の MCP サーバーアクセス制御（managed MCP）・プラットフォーム別統合を知りたい | enterprise-setup | [references/enterprise-setup/README.md](references/enterprise-setup/README.md) |
+| 権限ルール（allow / ask / deny）・permission modes・auto mode・auto mode classifier 課金通知（CLAUDE_CODE_AUTO_MODE_SERVER）・サンドボックス環境選択・sandboxed Bash・zero data retention・データ使用ポリシー・HIPAA 対応設定（local mode）・脆弱性スキャン（Claude Security）・法的コンプライアンスを知りたい | permissions-security | [references/permissions-security/README.md](references/permissions-security/README.md) |
+| 組織向け導入設定・authentication（SSO / OAuth / API キー）・企業ネットワーク設定（プロキシ / CA / mTLS）・managed settings の配布（MDM / plist / registry / managed-settings.json、managed sources の組み合わせ、policyHelper、managed-only keys）・allowedProviders・server-managed settings・corporate launcher 経由での運用・組織単位の MCP サーバーアクセス制御（managed MCP）・プラットフォーム別統合を知りたい | enterprise-setup | [references/enterprise-setup/README.md](references/enterprise-setup/README.md) |
 | チーム利用状況の analytics・OpenTelemetry monitoring・コスト管理・モノレポ/大規模コードベースでの運用設定を知りたい | usage-analytics | [references/usage-analytics/README.md](references/usage-analytics/README.md) |
+| 社内ロールアウト告知・drip campaign メッセージ・FAQ 返信・champion 向けプレイブック・30 日プランを知りたい | adoption | [references/adoption/README.md](references/adoption/README.md) |
