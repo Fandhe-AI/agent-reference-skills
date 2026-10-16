@@ -8,7 +8,7 @@
 npm install stripe
 ```
 
-TypeScript 型定義はパッケージに同梱されている（`@types/stripe` は不要）。Node.js 18+ (LTS) が必要。
+TypeScript 型定義はパッケージに同梱されている（`@types/stripe` は不要）。Node.js 20+（LTS 版）が必要。
 
 ## Node.js（yarn）
 
@@ -46,10 +46,10 @@ bundle add stripe
 ## Go
 
 ```sh
-go get -u github.com/stripe/stripe-go/v86
+go get -u github.com/stripe/stripe-go/v87
 ```
 
-Go 1.22+ が必要。
+Go 1.24+ が必要。
 
 ## PHP（Composer）
 
@@ -57,12 +57,12 @@ Go 1.22+ が必要。
 composer require stripe/stripe-php
 ```
 
-PHP 7.2.0+ が必要。`curl`、`json`、`mbstring` 拡張が必要（Composer が自動解決）。
+PHP 7.4+ が必要。`curl`、`json`、`mbstring` 拡張が必要（Composer が自動解決）。
 
 ## Java（Gradle）
 
 ```groovy
-implementation "com.stripe:stripe-java:33.0.0"
+implementation "com.stripe:stripe-java:34.0.0"
 ```
 
 `build.gradle` の `dependencies` ブロックに追加する。Java 8, 11, 17, 21, 25 (LTS) に対応。
@@ -73,7 +73,7 @@ implementation "com.stripe:stripe-java:33.0.0"
 <dependency>
   <groupId>com.stripe</groupId>
   <artifactId>stripe-java</artifactId>
-  <version>33.0.0</version>
+  <version>34.0.0</version>
 </dependency>
 ```
 
@@ -97,16 +97,30 @@ nuget install Stripe.net
 Install-Package Stripe.net
 ```
 
+## Stripe CLI（npm / macOS・Linux・Windows 共通）
+
+```sh
+npm install -g @stripe/cli
+```
+
+Node.js 18 以上が必要（stripe-cli v1.53.1 の README 記載）。`PATH` に追加せず一度だけ実行する場合は次の形式を使う。
+
+```sh
+npx @stripe/cli login
+```
+
+## Stripe CLI の自動アップデート無効化
+
+```sh
+export STRIPE_NO_AUTO_UPDATE=1
+```
+
+インストールスクリプトで導入した CLI は自動アップデートが既定で有効（同一メジャーバージョン内）。環境変数 `STRIPE_NO_AUTO_UPDATE=1` のほか、`~/.config/stripe/config.toml` に `auto_update = false` を追加しても無効化できる。
+
 ## Stripe CLI（macOS / Homebrew）
 
 ```sh
 brew install stripe
-```
-
-## Stripe CLI（macOS / npm）
-
-```sh
-npm i -g @stripe/cli
 ```
 
 ## Stripe CLI（Windows / winget）

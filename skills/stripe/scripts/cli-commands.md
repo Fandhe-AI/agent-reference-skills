@@ -19,7 +19,7 @@ stripe login --api-key <YOUR_SECRET_KEY>
 ## プロジェクト別ログイン
 
 ```sh
-stripe login --project-name=<project>
+stripe login --project-name="<project>"
 ```
 
 ## ログアウト
@@ -32,6 +32,88 @@ stripe logout
 
 ```sh
 stripe logout --all
+```
+
+## サンドボックスの作成（メールアドレス指定）
+
+```sh
+stripe sandbox create --email you@example.com
+```
+
+CLI が未ログインの場合、アカウント登録なしでテスト API キー付きの新しいサンドボックスを発行し、キーを現在の CLI プロファイルに保存する。ログイン済みの場合は Dashboard のサンドボックス管理ページを開く。サンドボックスは 7 日で失効する。
+
+## サンドボックスの作成（git config から推定）
+
+```sh
+stripe sandbox create --from-git
+```
+
+`git config user.email` と `git config user.name` からメールアドレスと氏名を推定する。`--email` とは同時に指定できない。`--full-name <name>` で氏名を指定、`--non-interactive` で入力待ちなしに出力できる。
+
+## サンドボックスの引き継ぎ（claim）
+
+```sh
+stripe sandbox claim
+```
+
+有効なサンドボックスの claim URL をブラウザで開く。claim 後は `stripe login` で永続キーを取得する。`--non-interactive` で URL を直接出力する。
+
+## AI コーディングエージェント向けツールのセットアップ
+
+```sh
+stripe agent setup
+```
+
+Claude Code・Codex・Cursor を検出し、Stripe のプラグイン・スキル・MCP サーバーをインストールする。主なフラグ: `--client <client>`（`claude-code` / `codex` / `cursor`）、`--force`、`--json`、`--skills`、`--skills-scope <local|global>`（既定 `local`）、`--status`、`-y, --yes`。
+
+## エージェントツールの導入状況の確認
+
+```sh
+stripe agent setup --status
+```
+
+## ドキュメントページの閲覧
+
+```sh
+stripe docs /payments
+```
+
+docs.stripe.com のページをターミナルで読む。`--no-pager` でページャーを使わず標準出力へ、`--non-interactive` で対話ブラウザなしに出力する。
+
+## API リファレンスの閲覧（パス指定）
+
+```sh
+stripe docs /api/customers
+```
+
+## API リファレンスの検索（リソース名）
+
+```sh
+stripe docs api product
+```
+
+## API リファレンスの検索（HTTP メソッドとパス）
+
+```sh
+stripe docs api GET /v1/products
+```
+
+## API リファレンスの検索（イベントタイプ）
+
+```sh
+stripe docs api charge.succeeded
+```
+
+## ドキュメントのキーワード検索
+
+```sh
+stripe docs search refund
+```
+
+フレーズ検索はクォートで囲む。
+
+```sh
+stripe docs search "dispute evidence"
 ```
 
 ## Webhook イベントのローカル転送
@@ -225,4 +307,5 @@ stripe help <command>
 | `STRIPE_API_KEY` | 使用する API キー |
 | `STRIPE_DEVICE_NAME` | Dashboard に表示されるデバイス名 |
 | `STRIPE_CLI_TELEMETRY_OPTOUT` | `1` または `true` でテレメトリーを無効化 |
+| `STRIPE_NO_AUTO_UPDATE` | `1` で CLI の自動アップデートを無効化（スクリプトでインストールした場合の既定は有効） |
 | `XDG_CONFIG_HOME` | 設定ファイルの場所を上書き |

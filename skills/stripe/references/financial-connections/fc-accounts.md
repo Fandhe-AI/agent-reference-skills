@@ -102,6 +102,7 @@ curl -X POST https://api.stripe.com/v1/financial_connections/accounts/{ACCOUNT_I
 - After `disconnect`, `status` becomes `"disconnected"` and `permissions` is cleared.
 - `refresh` initiates an async job; listen for `financial_connections.account.refreshed_*` webhooks for completion.
 - `subscribe` enables automatic daily refreshes for `transactions`; data is refreshed once per day when the account is active.
+- `account_numbers[].status` (tokenized account numbers) gained `pending` (created but not yet usable for transfers) and `expired` in `2026-09-30.endive`, in addition to `transactable` and `deactivated`. Only `transactable` account numbers can be used for transfers. (Source: https://docs.stripe.com/changelog/endive/2026-09-30/pending-and-expired-status-added-to-financial-connections-account-numbers)
 - Default access (no permission needed): `last4`, account `category`/`subcategory`, and `display_name`.
 
 ## Related

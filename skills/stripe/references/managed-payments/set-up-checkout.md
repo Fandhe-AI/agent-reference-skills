@@ -8,7 +8,7 @@ Step-by-step guide to integrating Managed Payments into a new Stripe Checkout fl
 # Subscription
 curl https://api.stripe.com/v1/checkout/sessions \
   -u "YOUR_SECRET_KEY:" \
-  -d "line_items[0][price]={{PRICE_ID}}" \
+  -d "line_items[0][price]=price_xxx" \
   -d "line_items[0][quantity]=1" \
   -d "managed_payments[enabled]=true" \
   -d mode=subscription \
@@ -17,7 +17,7 @@ curl https://api.stripe.com/v1/checkout/sessions \
 # One-time payment
 curl https://api.stripe.com/v1/checkout/sessions \
   -u "YOUR_SECRET_KEY:" \
-  -d "line_items[0][price]={{PRICE_ID}}" \
+  -d "line_items[0][price]=price_xxx" \
   -d "line_items[0][quantity]=1" \
   -d "managed_payments[enabled]=true" \
   -d mode=payment \

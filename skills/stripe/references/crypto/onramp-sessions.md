@@ -7,7 +7,7 @@ API for creating and managing fiat-to-crypto onramp sessions. Stripe acts as mer
 ```bash
 # Create a session (server-side)
 curl -X POST https://api.stripe.com/v1/crypto/onramp_sessions \
-  -u <<YOUR_SECRET_KEY>>: \
+  -u "<<YOUR_SECRET_KEY>>:" \
   -d "wallet_addresses[ethereum]"="0xB00F0759DbeeF5E543Cc3E3B07A6442F5f3928a2" \
   -d "source_currency"="usd" \
   -d "destination_currency"="eth" \
@@ -101,7 +101,7 @@ window.location.href = standaloneOnramp.getUrl();
 
 ```bash
 curl -G https://api.stripe.com/v1/crypto/onramp/quotes \
-  -u <<YOUR_SECRET_KEY>>: \
+  -u "<<YOUR_SECRET_KEY>>:" \
   -d "source_amount"="200" \
   -d "destination_currencies[]"="eth" \
   -d "destination_networks[]"="ethereum"
@@ -130,4 +130,5 @@ curl -G https://api.stripe.com/v1/crypto/onramp/quotes \
 
 ## Related
 
-- [Crypto Onramp overview](./onramp-overview.md)
+- [Stripe-hosted onramp](./onramp-stripe-hosted.md)
+- [Embedded onramp](./onramp-embedded.md)

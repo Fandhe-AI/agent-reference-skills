@@ -74,6 +74,7 @@ curl https://api.stripe.com/v1/treasury/financial_accounts \
 - Feature status detail codes (e.g., `requirements_past_due`, `restricted_by_platform`) indicate the reason a feature is not `active` and what action (`provide_information`, `remove_restriction`, `contact_stripe`) to take.
 - FDIC insurance covers US balances up to $250,000 USD when `deposit_insurance` feature is active.
 - Endpoints: `POST /v1/treasury/financial_accounts`, `GET /v1/treasury/financial_accounts/:id`, `POST /v1/treasury/financial_accounts/:id` (update), `GET /v1/treasury/financial_accounts` (list).
+- This page covers the v1 Treasury API, now the legacy path. The official llms.txt recommends Treasury for Platforms (v2, public preview) for new integrations; v1 docs remain available for existing integrations. (Source: https://docs.stripe.com/llms.txt)
 
 ## Related
 

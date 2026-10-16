@@ -8,8 +8,9 @@ Command-line tool for building, testing, and managing Stripe integrations in a s
 # Install (macOS)
 brew install stripe
 
-# Install (npm, cross-platform)
-npm i -g @stripe/cli
+# Install (npm, cross-platform; Node.js >= 18)
+npm install -g @stripe/cli
+# docs page form: npm i -g @stripe/cli@latest
 
 # Authenticate
 stripe login
@@ -57,8 +58,19 @@ stripe logs tail
 | `--stripe-version <version>` | Use a specific API version |
 | `--latest` | Use the latest API version |
 
+### Other commands
+
+| Command | Description |
+|---------|-------------|
+| `stripe agent setup` | Detect AI coding clients (Claude Code, Codex, Cursor) and install the Stripe plugin, skills and MCP server. Flags: `--client`, `--force`, `--json`, `--skills`, `--skills-scope local\|global`, `--status`, `-y` |
+| `stripe docs <path>` | Read a docs.stripe.com page (for example `/payments`). Flags: `--no-pager`, `--non-interactive` |
+| `stripe docs api <resource\|METHOD path\|event>` | Look up API reference by resource, HTTP method and path, or event type |
+| `stripe docs search <query>` | Search docs.stripe.com by keyword or phrase |
+| `stripe sandbox create` / `stripe sandbox claim` | Provision a temporary sandbox with test keys (`--email` or `--from-git`); claim it within 7 days |
+
 ## Notes
 
+- Script installs auto-update within the same major version; disable with `STRIPE_NO_AUTO_UPDATE=1` or `auto_update = false` in `~/.config/stripe/config.toml`. (Source: https://docs.stripe.com/stripe-cli/install)
 - Running `stripe listen` outputs a **webhook signing secret** to use for local signature verification.
 - `stripe listen` forwards all sandbox events by default; use `--events` to filter.
 - Shell in Stripe Workbench is built on the same commands as Stripe CLI but cannot forward events to a local endpoint.

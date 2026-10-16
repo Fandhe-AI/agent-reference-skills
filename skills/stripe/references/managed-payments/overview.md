@@ -9,7 +9,7 @@ Enable Managed Payments by setting `managed_payments[enabled]=true` when creatin
 ```bash
 curl https://api.stripe.com/v1/checkout/sessions \
   -u "YOUR_SECRET_KEY:" \
-  -d "line_items[0][price]={{PRICE_ID}}" \
+  -d "line_items[0][price]=price_xxx" \
   -d "line_items[0][quantity]=1" \
   -d "managed_payments[enabled]=true" \
   -d mode=subscription \
@@ -35,7 +35,10 @@ curl https://api.stripe.com/v1/checkout/sessions \
 
 ## Related
 
+- [How Managed Payments works](./how-it-works.md)
 - [Eligibility](./eligibility.md)
 - [Setup with Checkout](./set-up-checkout.md)
+- [Update Checkout](./update-checkout.md)
+- [Set up mobile](./set-up-mobile.md)
 - [Tax Compliance](./tax-compliance.md)
 - [Payment Links](./payment-links.md)

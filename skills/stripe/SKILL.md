@@ -1,13 +1,16 @@
 ---
 name: stripe
 description: >
-  Stripe 決済プラットフォーム全商品のリファレンス。
-  PaymentIntents, Checkout, Payment Links, Elements, Subscriptions, Invoices,
-  Connect, Radar, Terminal, Tax, Issuing, Treasury, Capital,
-  Identity, Financial Connections, Webhooks, Stripe CLI, idempotency,
-  API versioning, pagination, error handling。
+  Stripe 決済プラットフォームリファレンス (API 2026-09-30.endive)。
+  PaymentIntents, Checkout, Payment Links, Elements, Link, Managed Payments,
+  Subscriptions, Invoices, Connect (Accounts v2), Radar, Terminal, Tax,
+  Issuing, Treasury, Capital, Financial Connections, Climate,
+  Revenue Recognition, Crypto Onramp, stablecoin, Identity, Webhooks,
+  Stripe CLI, idempotency, API versioning, pagination, error handling。
 user-invocable: false
 ---
+
+対象 API バージョン 2026-09-30.endive（docs.stripe.com 取得日 2026-10-16）。v2 系（Accounts v2 等）の公式例は `Stripe-Version: 2026-09-30.preview` を使用。
 
 ## ディレクトリ構成
 
@@ -29,6 +32,9 @@ skills/stripe/
       tax-compliance.md
       set-up-checkout.md
       payment-links.md
+      how-it-works.md
+      update-checkout.md
+      set-up-mobile.md
     terminal/
       README.md
       readers.md
@@ -41,6 +47,8 @@ skills/stripe/
       account-links.md
       transfers-payouts.md
       charge-types.md
+      accounts-v2.md
+      connected-account-configuration.md
     radar/
       README.md
       rules.md
@@ -51,6 +59,9 @@ skills/stripe/
       climate-orders.md
       climate-products.md
       climate-suppliers.md
+      climate-commitments.md
+      climate-orders-how-it-works.md
+      climate-orders-webhooks.md
     identity/
       README.md
       verification-sessions.md
@@ -62,6 +73,18 @@ skills/stripe/
     crypto/
       README.md
       onramp-sessions.md
+      stablecoin-payments.md
+      accept-stablecoin-payments.md
+      onramp-stripe-hosted.md
+      onramp-embedded.md
+      onramp-embedded-components.md
+    link/
+      README.md
+      link-payment-integrations.md
+      instant-bank-payments.md
+      link-checkout.md
+      link-payment-element.md
+      link-express-checkout-element.md
     billing/
       README.md
       subscriptions.md
@@ -77,6 +100,9 @@ skills/stripe/
     revenue-recognition/
       README.md
       revenue-recognition-overview.md
+      revenue-recognition-api.md
+      revenue-recognition-reports.md
+      revenue-recognition-rules.md
     sigma/
       README.md
       sigma-queries.md
@@ -94,6 +120,10 @@ skills/stripe/
       cardholders.md
       cards.md
       authorizations.md
+      physical-cards.md
+      digital-wallets.md
+      issuing-elements.md
+      manage-fraud.md
     treasury/
       README.md
       financial-accounts.md
@@ -104,6 +134,9 @@ skills/stripe/
       financing-offers.md
       financing-transactions.md
       financing-summary.md
+      capital-connect-integration.md
+      capital-api-integration.md
+      capital-servicing.md
     payment-links/
       README.md
       payment-links.md
@@ -159,16 +192,21 @@ skills/stripe/
 | 返金・チャージバック・異議申し立てを処理したい | payments | [references/payments/README.md](references/payments/README.md) |
 | Stripe が Merchant of Record となる Managed Payments を使いたい | managed-payments | [references/managed-payments/README.md](references/managed-payments/README.md) |
 | デジタル商品の税コンプライアンスを自動化したい | managed-payments | [references/managed-payments/README.md](references/managed-payments/README.md) |
+| 既存 Checkout・モバイルアプリで Managed Payments に移行したい | managed-payments | [references/managed-payments/README.md](references/managed-payments/README.md) |
 | 対面決済（カードリーダー）を実装したい | terminal | [references/terminal/README.md](references/terminal/README.md) |
 | Terminal リーダーの登録・管理・接続トークンを取得したい | terminal | [references/terminal/README.md](references/terminal/README.md) |
 | マルチパーティ決済・プラットフォーム構築をしたい | connect | [references/connect/README.md](references/connect/README.md) |
 | Connect サブアカウントのオンボーディング・送金・支払いを管理したい | connect | [references/connect/README.md](references/connect/README.md) |
+| Accounts v2 で新規連結アカウントを作成したい（configuration / responsibilities） | connect | [references/connect/README.md](references/connect/README.md) |
 | 不正検知ルール・レビューキュー・早期詐欺警告を管理したい | radar | [references/radar/README.md](references/radar/README.md) |
 | カスタム Radar ルールを作成・更新したい | radar | [references/radar/README.md](references/radar/README.md) |
 | カーボンリムーバル（気候変動対策）の注文を購入したい | climate | [references/climate/README.md](references/climate/README.md) |
+| Climate コミットメント・Climate Orders の Webhook を扱いたい | climate | [references/climate/README.md](references/climate/README.md) |
 | 本人確認（KYC/IDV）のセッションを作成・管理したい | identity | [references/identity/README.md](references/identity/README.md) |
 | 銀行口座リンク（Financial Connections）を実装したい | financial-connections | [references/financial-connections/README.md](references/financial-connections/README.md) |
 | フィアット→暗号資産オンランプを実装したい | crypto | [references/crypto/README.md](references/crypto/README.md) |
+| Stripe ホスト型・エンベッド型・Embedded Components のオンランプを選びたい | crypto | [references/crypto/README.md](references/crypto/README.md) |
+| ステーブルコイン決済を受け付けたい | crypto | [references/crypto/README.md](references/crypto/README.md) |
 
 ### 収益・財務管理
 
@@ -181,6 +219,7 @@ skills/stripe/
 | 消費税・VAT・GST を自動計算・収集したい | tax | [references/tax/README.md](references/tax/README.md) |
 | 税登録（Tax Registration）を国ごとに管理したい | tax | [references/tax/README.md](references/tax/README.md) |
 | ASC 606 / IFRS 15 に準拠した収益認識を自動化したい | revenue-recognition | [references/revenue-recognition/README.md](references/revenue-recognition/README.md) |
+| Revenue Recognition の API・レポート・ルールを使いたい | revenue-recognition | [references/revenue-recognition/README.md](references/revenue-recognition/README.md) |
 | SQL でカスタムレポートを作成したい | sigma | [references/sigma/README.md](references/sigma/README.md) |
 | Stripe データを Snowflake / Redshift / Databricks にエクスポートしたい | data-pipeline | [references/data-pipeline/README.md](references/data-pipeline/README.md) |
 | Delaware C Corp / LLC を設立したい | atlas | [references/atlas/README.md](references/atlas/README.md) |
@@ -192,10 +231,12 @@ skills/stripe/
 | --- | --- | --- |
 | カード発行（仮想・物理）・カードホルダー管理をしたい | issuing | [references/issuing/README.md](references/issuing/README.md) |
 | リアルタイムの与信承認をカスタム制御したい | issuing | [references/issuing/README.md](references/issuing/README.md) |
+| 物理カード・デジタルウォレット・Issuing Elements・不正対策を実装したい | issuing | [references/issuing/README.md](references/issuing/README.md) |
 | Treasury FinancialAccount を作成・資金移動したい | treasury | [references/treasury/README.md](references/treasury/README.md) |
 | InboundTransfer / OutboundPayment / ReceivedCredit を管理したい | treasury | [references/treasury/README.md](references/treasury/README.md) |
 | Connect サブアカウントへの Capital ファイナンシングオファーを管理したい | capital | [references/capital/README.md](references/capital/README.md) |
 | ファイナンシング取引・残高サマリーを取得したい | capital | [references/capital/README.md](references/capital/README.md) |
+| プラットフォーム向け Capital を API で統合・サービシングしたい | capital | [references/capital/README.md](references/capital/README.md) |
 
 ### 構築済みコンポーネント
 
@@ -206,6 +247,7 @@ skills/stripe/
 | Checkout Session の作成・管理・設定オプションを知りたい | checkout | [references/checkout/README.md](references/checkout/README.md) |
 | カスタム UI に Stripe Elements を組み込みたい | elements | [references/elements/README.md](references/elements/README.md) |
 | Payment Element / Card Element の使い方を知りたい | elements | [references/elements/README.md](references/elements/README.md) |
+| Link（Checkout / Payment Element / Express Checkout Element / Instant Bank Payments）を導入したい | link | [references/link/README.md](references/link/README.md) |
 
 ### 開発者ツール（横断）
 

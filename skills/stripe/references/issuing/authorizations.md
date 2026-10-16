@@ -66,7 +66,7 @@ The primary way to approve or decline authorizations is via the `issuing_authori
 | `approved` | boolean | Whether the authorization was approved |
 | `amount` | integer | Total authorized amount in smallest currency unit |
 | `currency` | enum | Transaction currency (e.g., `usd`) |
-| `status` | enum | `pending`, `closed`, or `reversed` |
+| `status` | enum | `pending`, `closed`, `reversed`, or `expired`. `expired` (added in `2025-03-31.basil`) marks an authorization expired by Stripe, which can be captured later; `reversed` marks one reversed by the acquiring business, which can't be captured and whose held funds can be released. |
 | `authorization_method` | enum | `chip`, `contactless`, `keyed_in`, `online`, `swipe` |
 | `card` | object | Expandable Card object |
 | `cardholder` | string | ID of the associated Cardholder |

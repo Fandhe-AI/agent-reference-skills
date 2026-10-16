@@ -65,5 +65,5 @@ console.log(paymentLink.url); // Share this URL with customers
 
 ## Related
 
-- [Checkout Sessions](./checkout-sessions.md)
-- [Stripe Elements](./stripe-elements.md)
+- [Checkout Sessions](../checkout/checkout-sessions.md)
+- [Stripe Elements](../elements/stripe-elements.md)
