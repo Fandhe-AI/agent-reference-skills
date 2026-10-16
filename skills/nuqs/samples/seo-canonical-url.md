@@ -86,3 +86,4 @@ export async function generateMetadata({
 - Use a static `alternates.canonical` without the query string when the query string only holds local UI state.
 - When the query string defines the content, reuse the same parsers to read it (`createLoader`) and to build the canonical URL (`createSerializer`).
 - `createLoader`, `createSerializer`, `SearchParams` and `UrlKeys` are imported from `nuqs/server` so they work in server code such as `generateMetadata`.
+- Source: https://nuqs.dev/docs/seo (nuqs v2.10.2).

@@ -54,3 +54,4 @@ export function Client() {
 - The Next.js error message is `Missing Suspense boundary with useSearchParams` (see nextjs.org/docs/messages/missing-suspense-with-csr-bailout).
 - The `'use client'` page is the immediate fix; the split server/client layout gives better UX by pre-rendering the outer shell and keeping client code low in the tree.
 - The split-file example is the documented recommended steps (server `page.tsx`, separate client file, `<Suspense>` boundary) expressed as code; the official page shows the quick-fix snippet only.
+- Source: https://nuqs.dev/docs/troubleshooting (nuqs v2.10.2).
