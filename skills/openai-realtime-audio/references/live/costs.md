@@ -59,6 +59,7 @@ Total cost = (billable voice seconds / 60 x voice rate per minute) + backend cos
 - Closing saves $0.05 per minute of idle voice time; compare that with reconnection cost and user interruption.
 - Monitor: record voice duration and backend usage separately per session. After `session.close`, keep receiving until `session.closed` and record its final `usage.seconds` once. With Responses delegation, read backend `usage` from nested `response.completed` events delivered via `response.event`, counting each response once by response ID.
 - This is the GPT-Live variant of the cost guide; the Realtime API bills per-Response tokens instead.
+- Source: https://developers.openai.com/api/docs/guides/voice-latency-cost (GPT-Live usage and costs section)
 
 ## Related
 

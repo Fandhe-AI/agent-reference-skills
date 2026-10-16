@@ -132,6 +132,7 @@ Fork startup overrides: WebSocket: `store`, Responses delegation settings, `audi
 - Errors: `error.client_event_id` identifies the failed command. Some moderation events end the session; others cut off the current speech and emit `error` without ending it.
 - Usage: `session.usage.updated` reports cumulative seconds; use the latest value (12 then 15 means 15). Track backend token usage separately from nested Responses events.
 - Graceful close: finish needed Responses work, install the `session.closed` listener, send `session.close`, keep connections open while events drain, read final `usage.seconds` / `reason`, then clean up. `session.close` cancels queued Responses and rejects further commands. Without `session.closed`, final usage is unconfirmed; stored sessions can take longer to finalize.
+- Source: https://developers.openai.com/api/docs/guides/live-conversations
 
 ## Related
 

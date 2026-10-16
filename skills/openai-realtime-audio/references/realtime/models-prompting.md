@@ -27,7 +27,7 @@ Reasoning / Preambles / Tools / Entity Capture / Escalation
 ## Notes
 
 - The official guide (`guides/voice-prompting`, now titled "Prompting Realtime models") still lists `gpt-realtime-2` and `gpt-realtime-1.5` in its "Choose a model" table, so the table above is kept as in the source. Other guides' code examples use `gpt-realtime-2.1`.
-- `gpt-realtime-2.1` was released Jul 6, 2026 (changelog): "an updated realtime reasoning model with improved alphanumeric recognition, silence and noise handling, and interruption behavior". Model page: 128,000 context window, 32,000 max output tokens.
+- `gpt-realtime-2.1` was released Jul 6, 2026 ([changelog](https://developers.openai.com/api/docs/changelog)): "an updated realtime reasoning model with improved alphanumeric recognition, silence and noise handling, and interruption behavior". Model page: 128,000 context window, 32,000 max output tokens.
 - `gpt-realtime-2.1-mini` is a "distilled reasoning model for faster, lower-cost realtime voice interactions" (model page: 128,000 context window, 32,000 max output tokens).
 - Realtime 2 expands the realtime context window from 32k to 128k tokens ("What changed in Realtime 2" table).
 - Prompting for GPT-Live is a separate guide; see [GPT-Live prompting](../live/prompting.md).

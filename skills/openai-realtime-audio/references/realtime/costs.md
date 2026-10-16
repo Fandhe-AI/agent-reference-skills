@@ -34,7 +34,7 @@ How Realtime API billing works (per-Response tokens for voice-agent sessions, du
 - Voice-agent sessions bill per Response (input+output tokens); translation and transcription sessions bill by audio duration instead.
 - Changing instructions/tools mid-session busts the cache for all subsequent turns (they sit at the start of the conversation).
 - The official guide was renamed "Cost optimization" (`guides/voice-latency-cost`). Its first half is new "GPT-Live usage and costs" (voice session costs, WebRTC initialization charges, backend costs; see [GPT-Live costs](../live/costs.md)); the Realtime half starts at "Realtime API costs" and matches this page.
-- The `whisper-1` / `gpt-4o-transcribe` examples for input transcription are deprecated: deprecations "2026-08-26" announces removal on Feb 26, 2027, with `gpt-live-transcribe` or `gpt-transcribe` as replacements.
+- The `whisper-1` / `gpt-4o-transcribe` examples for input transcription are deprecated: [deprecations](https://developers.openai.com/api/docs/deprecations) "2026-08-26" announces removal on Feb 26, 2027, with `gpt-live-transcribe` or `gpt-transcribe` as replacements.
 - Mini-sized realtime speech-to-speech models are cheaper but weaker at instruction-following/function-calling — validate with the full-size model first.
 
 ## Related

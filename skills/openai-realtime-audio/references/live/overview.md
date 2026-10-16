@@ -69,6 +69,7 @@ Connection choices:
 - Sample apps: OpenAI Live Console (`openai/openai-live-console`, local sample); Switchboard OpenAI Live Toolkit (third-party React Native SDK for iOS).
 - Partner integrations: LiveKit, Twilio, Telnyx, Bandwidth, Daily/Pipecat.
 - Distinct from the Realtime API (`/v1/realtime`); `gpt-live-1` does not support that endpoint.
+- Source: https://developers.openai.com/api/docs/guides/live
 
 ## Related
 

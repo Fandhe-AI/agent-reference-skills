@@ -96,6 +96,7 @@ Tool definitions move from Realtime `session.tools` / `response.tools` to `deleg
 - Text agent path: `session.delegation.created` contains an ID and timing, no request text; build agent input from transcripts and task records, record the delegation ID so only one handler starts work, check revision before announcing results. Adapter results are at most 500 tokens.
 - Guardrails: monitor transcripts, block tools and external actions in application code, send `session.instructions.append` to redirect, record the decision. A corrective instruction cannot retract audio already heard; pre-playback checks need your own buffering in the audio path. Choosing Responses delegation does not by itself require a sideband.
 - Validate by comparing representative conversations: actions and confirmations, corrections and duplicate prevention, permissions, guardrail interventions, interruptions, failures and reconnects.
+- Source: https://developers.openai.com/api/docs/guides/live-migration
 
 ## Related
 

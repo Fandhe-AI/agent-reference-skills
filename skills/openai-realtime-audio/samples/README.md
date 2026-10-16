@@ -9,3 +9,4 @@
 | Basic voice agent configuration | Configure a speech-to-speech Realtime session with instructions, an output voice, and a callable function tool, then handle the resulting function call over the data channel / WebSocket. | [voice-agent-basic.md](./voice-agent-basic.md) |
 | WebRTC browser session | Connect a browser to the Realtime API over WebRTC using an ephemeral key, stream microphone audio in, and play model audio out. | [webrtc-browser-session.md](./webrtc-browser-session.md) |
 | WebSocket server connection | Connect a trusted backend server directly to the Realtime API over WebSocket using a standard API key. | [websocket-server-connection.md](./websocket-server-connection.md) |
+</content>

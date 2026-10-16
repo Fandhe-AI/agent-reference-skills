@@ -1,5 +1,7 @@
 # realtime
 
+OpenAI Realtime API (developers.openai.com) — low-latency speech-to-speech, translation, and transcription sessions over WebRTC / WebSocket / SIP. Distinct from Supabase Realtime (an unrelated database pub/sub product); do not confuse the two when searching for "Realtime".
+
 | Name | Description | Path |
 |------|-------------|------|
 | Client secrets (ephemeral keys) | `POST /v1/realtime/client_secrets` mints a short-lived… | [client-secrets.md](./client-secrets.md) |

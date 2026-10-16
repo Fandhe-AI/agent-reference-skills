@@ -52,7 +52,7 @@ ws.on("message", (data) => {
 - `gpt-live-transcribe` never returns word-level timestamps, speaker labels, or confidence scores; use file transcription (scope=audio) or an application-level fallback if needed.
 - `gpt-live-transcribe` does not support `server_vad` or `semantic_vad`: omit `audio.input.turn_detection` or set it to `null`.
 - When `gpt-transcribe` can't make a reliable language prediction, `languages` is an empty array; `gpt-live-transcribe` doesn't return detected-language predictions.
-- Legacy `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`, and `whisper-1` are removed Feb 26, 2027 (deprecations "2026-08-26"; replacements `gpt-live-transcribe` or `gpt-transcribe`).
+- Legacy `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`, and `whisper-1` are removed Feb 26, 2027 ([deprecations](https://developers.openai.com/api/docs/deprecations) "2026-08-26"; replacements `gpt-live-transcribe` or `gpt-transcribe`).
 - Keywords must not contain `<`, `>`, CR, or LF, or the session update is rejected.
 
 ## Related

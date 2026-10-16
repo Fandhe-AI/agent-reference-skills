@@ -86,6 +86,7 @@ GPT-Live session request body (`POST /v1/live/sessions`, channel created with `i
 - Pre-negotiating the data channel needs no origin trial and can reduce the wait for server events even without full WARP.
 - Firefox, Safari, browsers on iOS, and older Chromium builds can support standard WebRTC without supporting full WARP.
 - For SDKs that wrap libwebrtc, pass the field-trial string through the SDK's initialization options, or initialize libwebrtc before the SDK creates its peer connection factory.
+- Source: https://developers.openai.com/api/docs/guides/realtime-webrtc-warp
 
 ## Related
 

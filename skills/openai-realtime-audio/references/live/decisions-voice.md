@@ -108,6 +108,7 @@ Trigger result:
 - If you filter WebRTC events, allow both `session.delegation.created` and `decision.event`; for triggers also allow the matching transcript event (Live only delivers a trigger result when its source transcript event is allowed).
 - Transcript triggers run independently of delegation. Match `source_event_id` to the transcript delta; Live can combine pending deltas and results can arrive out of order, so apply the newest relevant result per direction and drive mouth movement from the audio.
 - Example Responses explanation request in the guide uses model `gpt-6.1-sol` against `https://api.openai.com/v1/responses`.
+- Source: https://developers.openai.com/api/docs/guides/decisions-voice
 
 ## Related
 

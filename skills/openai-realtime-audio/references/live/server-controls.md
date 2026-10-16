@@ -56,6 +56,7 @@ Reflected audio on a sideband (base64 raw mono PCM16LE at 24 kHz regardless of p
 - Checking speech before playback requires your own buffering and output VAD or noise gate; GPT-Live provides none. Buffering adds latency and discarded speech remains in model context.
 - Finish cleanly: register the `session.closed` handler before sending `session.close`, keep the WebRTC connection, data channel, and sideband open while pending work drains, save final usage; if the connection fails first, record finalization as incomplete.
 - Distinct from the Realtime API sideband.
+- Source: https://developers.openai.com/api/docs/guides/voice-server-controls
 
 ## Related
 

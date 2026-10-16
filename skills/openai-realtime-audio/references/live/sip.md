@@ -107,6 +107,7 @@ Sideband events:
 - Keep the sideband open until `session.closed` supplies final usage.
 - Server audio bridge: WebRTC recommended; WebSocket supports raw G.711 mu-law / A-law at 8 kHz, forwardable without PCM conversion when codec, rate, and channel count match. Keep the provider's call/room ID alongside the OpenAI session ID.
 - Distinct from the Realtime API SIP (`/v1/realtime/calls`).
+- Source: https://developers.openai.com/api/docs/guides/voice-sip
 
 ## Related
 

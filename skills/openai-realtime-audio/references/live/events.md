@@ -130,6 +130,7 @@ Server events:
 - `error.client_event_id` identifies the client command that caused the error, when supplied.
 - The sideband page for a WebRTC frontend: attach from your backend to handle events and control the session.
 - This index lists only event names and the examples quoted above; consult the official API reference for the full field schemas of each event.
+- Source: https://developers.openai.com/api/reference/resources/live/primary-websocket (also https://developers.openai.com/api/reference/resources/live/sideband-websocket and https://developers.openai.com/api/reference/resources/live/fork-websocket)
 
 ## Related
 

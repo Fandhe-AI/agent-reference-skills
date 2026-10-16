@@ -119,6 +119,7 @@ Acknowledgements: `session.instructions.appended`, `session.thinking.appended`, 
 - Images: the Live audio frontend does not accept images; send them to a vision-capable backend (Responses image input item via `response.item.create`, or your own backend). `session.input` is text history only.
 - Latency: Live manages persistent WebSocket connections to Responses and reuses prior state when supported; tune `model`, `reasoning.effort`, `service_tier`. For client delegation reuse connections, keep reusable input stable, stream coherent verified chunks. Transcript fragments can drive speculative lookups, guardrails, and UI updates; use a sideband for server-side processing.
 - Track operation IDs and task revisions alongside the delegation ID; verify the backend action and the spoken result separately.
+- Source: https://developers.openai.com/api/docs/guides/live-delegation
 
 ## Related
 

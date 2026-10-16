@@ -67,6 +67,7 @@ Quoted translation requests remain source content; render them once, never perfo
 - Opening greeting: include a `developer` message in `session.input` at session creation (on WebSocket, in `session.start`); startup instructions do not guarantee spoken output.
 - Use `session.commentary.append` for progress updates GPT-Live should say aloud.
 - Your application checks permissions and required confirmations before executing an action.
+- Source: https://developers.openai.com/api/docs/guides/live-prompting
 
 ## Related
 

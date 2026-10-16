@@ -24,7 +24,7 @@ curl https://api.openai.com/v1/audio/voices \
   -F "consent=cons_123abc"
 ```
 
-Use the voice in text to speech by passing `voice` as an object:
+Use the voice in text to speech by passing `voice` as an object (output format corrected to `response_format`; see Notes):
 
 ```bash
 curl https://api.openai.com/v1/audio/speech \
@@ -38,7 +38,7 @@ curl https://api.openai.com/v1/audio/speech \
     },
     "input": "Maple est le meilleur golden retriever du monde entier.",
     "language": "fr",
-    "format": "wav"
+    "response_format": "wav"
   }' \
   --output sample.wav
 ```
@@ -93,6 +93,8 @@ const sessionConfig = JSON.stringify({
   For WebRTC, the application server places this in the JSON `session` field alongside `transport`; for WebSockets, put it in the first `session.start` event.
 - Choose the voice at session creation; start a new session to use a different voice. A deleted or revoked voice, a consent from another project, or missing custom-voice access can appear as a `404`. Malformed audio, a mismatched speaker, or a non-project-scoped key is rejected.
 - Refer to the Text-to-Speech Supplemental Agreement for additional terms of use.
+- The official custom-voices guide example uses `"format": "wav"`; this page uses `response_format`, the parameter documented by the Text to speech API (see [Text to speech](./text-to-speech.md)).
+- Source: https://developers.openai.com/api/docs/guides/custom-voices
 
 ## Related
 

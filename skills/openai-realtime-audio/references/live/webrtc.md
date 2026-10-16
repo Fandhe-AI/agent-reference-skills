@@ -93,6 +93,7 @@ Response (HTTP 201):
 - Keep the API key and session configuration on the trusted server. The example server is local-only; protect `/api/session` with authentication, authorization, request limits, and HTTPS before exposing it.
 - To reduce startup latency, the docs point to a "WebRTC with WARP" guide.
 - This page is the GPT-Live variant; the Realtime API WebRTC flow (`/v1/realtime/calls`) is a different API.
+- Source: https://developers.openai.com/api/docs/guides/voice-webrtc
 
 ## Related
 

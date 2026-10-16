@@ -29,6 +29,7 @@ Daily/Pipecat https://docs.pipecat.ai/api-reference/server/services/s2s/openai-l
 - Follow the partner guide for installation, credentials, and a package version that supports `gpt-live-1`. Check how it handles audio formats, interruptions, session events, backend delegation, and call termination.
 - A Realtime integration is not automatically compatible with GPT-Live.
 - For direct audio connections to GPT-Live, WebRTC is recommended (including from a server); WebSockets are also supported. For phone calls see the telephony and SIP guide.
+- Source: https://developers.openai.com/api/docs/guides/live-partner-integrations
 
 ## Related
 

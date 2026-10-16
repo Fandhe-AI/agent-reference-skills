@@ -37,7 +37,7 @@ await fs.promises.writeFile("speech.mp3", buffer);
 - Voices are optimized for English; language support otherwise follows Whisper's language list.
 - Realtime API voice options differ slightly — see the realtime conversations guide (scope=realtime).
 - Custom voices: the TTS guide now keeps only a short "Custom voices" section pointing to the dedicated guide (eligibility, consent phrases, constraints, use with GPT-Live). Created via `/v1/audio/voice_consents` then `/v1/audio/voices`. See [Custom voices](./custom-voices.md). (The consent-phrase table in that guide lists 16 languages, which matches the former note.)
-- Deprecation (deprecations "2026-10-01: Text-to-speech models"): `tts-1`, `tts-1-hd`, `gpt-4o-mini-tts-2025-03-20`, and `gpt-4o-mini-tts-2025-12-15` are removed from the API on Jan 6, 2027; migrate to `gpt-realtime-2.1-mini`. The TTS guide body still recommends `gpt-4o-mini-tts`, so the guide and the deprecations page disagree.
+- Deprecation ([deprecations](https://developers.openai.com/api/docs/deprecations) "2026-10-01: Text-to-speech models"): `tts-1`, `tts-1-hd`, `gpt-4o-mini-tts-2025-03-20`, and `gpt-4o-mini-tts-2025-12-15` are removed from the API on Jan 6, 2027; migrate to `gpt-realtime-2.1-mini`. The TTS guide body still recommends `gpt-4o-mini-tts`, so the guide and the deprecations page disagree.
 - The source itself is inconsistent about voice count: the intro says "11 built-in voices", while the "Voice options" section says "13 built-in voices" and lists 13. The table above follows the list (13).
 - OpenAI's usage policies require disclosing to end users that TTS voices are AI-generated, not human.
 

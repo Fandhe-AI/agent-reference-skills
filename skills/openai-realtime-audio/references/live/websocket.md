@@ -90,6 +90,7 @@ Events:
 - EOF on the audio source does not end a Live session; send `session.close`.
 - To monitor or control an existing session use a sideband connection (see server-controls). The Responses WebSocket mode is a separate guide for connecting a reasoning backend.
 - Distinct from the Realtime API WebSocket connection.
+- Source: https://developers.openai.com/api/docs/guides/voice-websockets
 
 ## Related
 
