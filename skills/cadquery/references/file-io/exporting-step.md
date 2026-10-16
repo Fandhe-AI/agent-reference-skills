@@ -29,8 +29,8 @@ box.export("/path/to/file/box.step", opt={"write_pcurves": False})
 |------|------|---------|-------------|
 | `fileName` | `str` | — | Output file path |
 | `exportType` | `ExportTypes` | auto-detected | `ExportTypes.STEP`; required when extension is not `.step` |
-| `unit` | `str` | `"MM"` | Internal geometry unit written into the file |
-| `outputUnit` | `str` | same as `unit` | Unit written into the STEP header (display unit); useful to write `MM` geometry but report in `M` |
+| `unit` | `UnitLiterals` (`"MM"`, `"CM"`, `"M"`, `"KM"`, `"INCH"`, `"FT"`, `"MI"`, `"UM"`, `"NM"`) | `"MM"` | Internal geometry unit written into the file |
+| `outputUnit` | `UnitLiterals` (same values) | same as `unit` | Unit written into the STEP header (display unit); useful to write `MM` geometry but report in `M` |
 | `opt` | `dict` | `{}` | Additional STEP-writer options |
 | `opt.write_pcurves` | `bool` | `True` | Write parametric curves on surfaces; set to `False` to reduce file size |
 

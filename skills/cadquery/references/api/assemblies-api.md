@@ -8,7 +8,8 @@ Classes and methods for combining Workplane and Shape objects into hierarchical,
 |----------------|-----------|-------------|
 | `Assembly` | `Assembly(obj=None, loc=None, name=None, color=None, material=None, metadata=None)` | Create a nested assembly of Workplane/Shape objects |
 | `Assembly.add` | `add(obj, loc=None, name=None, color=None, material=None, metadata=None)` | Add a sub-assembly or shape to the assembly |
-| `Assembly.save` | `save(path, exportType=None, mode="default", tolerance=0.1, angularTolerance=0.1, **kwargs)` | Save the assembly to a file |
+| `Assembly.export` | `export(path, exportType=None, mode="default", tolerance=0.1, angularTolerance=0.1, unit="MM", outputUnit=None, **kwargs)` | Save the assembly to a file |
+| `Assembly.save` | `save(path, exportType=None, mode="default", tolerance=0.1, angularTolerance=0.1, **kwargs)` | Deprecated (decorated `@deprecate()` in v2.8.0 source); calls `export` |
 | `Assembly.constrain` | `constrain(q1, q2, kind, param=None)` | Define a constraint between two assembly parts |
 | `Assembly.solve` | `solve(verbosity=0)` | Solve all constraints and update component positions |
 | `Constraint` | `Constraint(subshapes, sublocs, kind, param=None)` | Low-level constraint specification object |
@@ -36,7 +37,7 @@ assy = (
     .solve()
 )
 
-assy.save("assembly.step")
+assy.export("assembly.step")
 ```
 
 ## Options / Props
@@ -63,7 +64,9 @@ assy.save("assembly.step")
 | `material` | `Material \| None` | Material properties |
 | `metadata` | `dict \| None` | Arbitrary metadata dictionary |
 
-### `Assembly.save(path, exportType, mode, tolerance, angularTolerance)`
+### `Assembly.export(path, exportType, mode, tolerance, angularTolerance, unit, outputUnit)`
+
+`Assembly.save` is deprecated and takes the same parameters except `unit` / `outputUnit`; use `export`.
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -72,6 +75,8 @@ assy.save("assembly.step")
 | `mode` | `str` | `"default"` (overwrite), `"append"` |
 | `tolerance` | `float` | Linear tessellation tolerance |
 | `angularTolerance` | `float` | Angular tessellation tolerance |
+| `unit` | `UnitLiterals` | Internal unit of the model's geometry values; STEP only (default `"MM"`) |
+| `outputUnit` | `UnitLiterals \| None` | Unit declared in the STEP header; defaults to `unit` |
 
 ### `Assembly.constrain(q1, q2, kind, param)`
 

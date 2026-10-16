@@ -42,18 +42,18 @@ part = part.box(1, 2, 3)
 part = part.faces(">Z")
 ```
 
-### Direct API
+### Free Function API
 
-Nine classes mirroring BREP topology (`Shape`, `Compound`, `CompSolid`, `Solid`, `Shell`, `Face`, `Wire`, `Edge`, `Vertex`). More verbose but enables bottom-up geometry construction:
+The 9 topological classes (`Shape`, `Compound`, `CompSolid`, `Solid`, `Shell`, `Face`, `Wire`, `Edge`, `Vertex`), their methods and additional free functions compose the free function API. The classes are used to query, select and position shapes; the free functions are used to create and modify shapes. This enables bottom-up geometry construction:
 
 ```python
-circle_wire = Wire.makeCircle(10, Vector(0, 0, 0), Vector(0, 0, 1))
-circular_face = Face.makeFromWires(circle_wire, [])
+circle_wire = wire(circle(1))
+circular_face = face(circle_wire)
 ```
 
 ### Geometry API
 
-Supporting classes for coordinate system and spatial definitions: `Vector`, `Plane`, `Location`. Used by both the Fluent and Direct APIs.
+Supporting classes for coordinate system and spatial definitions: `Vector`, `Plane`, `Location`. Used by both the Fluent and Free Function APIs.
 
 ### OCCT API (lowest level)
 
@@ -67,22 +67,24 @@ from OCP.BRepPrimAPI import BRepPrimAPI_MakeBox
 
 | Conversion | Method |
 |-----------|--------|
-| Fluent → Direct | `.val()` (last object) / `.vals()` (all) / `.findSolid()` |
-| Direct → Fluent | `Workplane(obj=solid)` or `.newObject([shape])` |
-| Direct → OCCT | `.wrapped` attribute on any Direct API shape |
-| OCCT → Direct | `Solid(occt_object)` constructor |
+| Fluent → Free Function | `.val()` (last object) / `.vals()` (all) / `.findSolid()` |
+| Free Function → Fluent | `Workplane(obj=solid)` or `.newObject([shape])` |
+| Free Function → OCCT | `.wrapped` attribute on any free function API shape |
+| OCCT → Free Function | `Solid(occt_object)` constructor |
 
 ```python
-# Fluent → Direct
-box = Workplane().box(10, 5, 5).val()
+# Fluent → Free Function
+from cadquery.func import box
+
+solid = Workplane().box(10, 5, 5).val()
 # type: cadquery.occ_impl.shapes.Solid
 
-# Direct → Fluent
-solid_box = Solid.makeBox(10, 10, 10)
+# Free Function → Fluent
+solid_box = box(10, 10, 10)
 part = Workplane(obj=solid_box).faces(">Z").circle(1).extrude(10)
 
-# Direct → OCCT
-occt_equivalent = Solid.makeBox(10, 5, 5).wrapped  # TopoDS_Solid
+# Free Function → OCCT
+occt_equivalent = box(10, 5, 5).wrapped  # TopoDS_Solid
 ```
 
 ---
@@ -98,11 +100,6 @@ a_sketch.arc((1, 2), (2, 3), (3, 4))
 # Incorrect: keyword arguments break dispatch
 a_sketch.arc(p1=(1, 2), p2=(2, 3), p3=(3, 4))
 ```
-
-## Notes
-
-- Always use positional arguments when calling multimethod-dispatched methods. Keyword arguments for positional parameters will cause dispatch failures.
-- On dispatch error, CadQuery falls back to the first registered multimethod, which may silently produce wrong behavior.
 
 ---
 
@@ -201,6 +198,12 @@ assy1 = (
 
 - `"part1?pt1"` references the tagged geometry on the named component.
 - `.solve()` computes all component locations satisfying the declared constraints.
+
+## Notes
+
+- The "Direct API" section was renamed "Free Function API" in the v2.8.0 docs (former name: Direct API); the paragraph describing the direct API as more verbose was removed.
+- Always use positional arguments when calling multimethod-dispatched methods. Keyword arguments for positional parameters will cause dispatch failures.
+- On dispatch error, CadQuery falls back to the first registered multimethod, which may silently produce wrong behavior.
 
 ## Related
 

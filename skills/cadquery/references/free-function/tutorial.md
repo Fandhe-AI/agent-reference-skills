@@ -37,10 +37,12 @@ result = s.moved((-3*r, 0, 0), (3*r, 0, 0))
 - Placement and pattern creation are achieved via the various overloads of `.moved()` / `.move()` on `Shape`.
 - `cap()` attempts to maintain curvature continuity with respect to the context shape; `fill()` does not.
 - Passing multiple `VectorLike` arguments to `moved()` creates a `Compound` of copies placed at each location.
-- The API is **experimental and may change**.
+- Since v2.8.0 the free function API is no longer considered experimental (the warning was removed from the docs); only the history tracking feature is still marked experimental and may change.
 
 ## Related
 
+- [History](./history.md)
+- [Shape Selection](./shape-selection.md)
 - [Primitives](./primitives.md)
 - [Shape Construction](./shape-construction.md)
 - [Operations](./operations.md)

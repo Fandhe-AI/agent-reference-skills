@@ -17,7 +17,9 @@ podman run -it -v /tmp:/tmp -e DISPLAY=$DISPLAY -v $(pwd):/data \
 
 Or follow the standard [Installation](./installation.md) guide for a local setup.
 
-## Final Result
+## Signature / Usage
+
+Final result:
 
 ```python
 import cadquery as cq
@@ -99,11 +101,49 @@ result.export("result.stl")
 result.export("result.step")
 ```
 
+## Free function equivalent
+
+If the fluent style of modeling does not appeal to you, exactly the same object can be constructed using the free function API.
+
+```python
+from cadquery.func import *
+
+height = 60.0
+width = 80.0
+thickness = 10.0
+diameter = 22.0
+padding = 12.0
+r_hole = 1.2
+r_cbore = 2.2
+d_cbore = thickness / 3
+
+# construct hole locations
+hole_locs = rect(height - padding, width - padding).vertices()
+
+# make the base
+basef = face(
+   rect(height, width),
+   circle(diameter / 2),
+)
+
+# extrude
+base = extrude(basef, (0, 0, thickness))
+
+# fillet
+base = fillet(base, base.edges("|Z"), height / 10)
+
+# add a cbore
+top = base.face(">Z")
+base = prism(base, None, circle(r_cbore).moved(hole_locs).moved(top), -d_cbore, additive=False)
+base = prism(base, None, circle(r_hole).moved(hole_locs).moved(top), None, additive=False)
+```
+
 ## Notes
 
 - Parameters (`height`, `width`, etc.) can be changed to generate different bearing sizes with zero code changes — that is the point of parametric modeling.
 - `show()` from `cadquery.vis` opens an interactive VTK viewer; it is blocking until closed.
 - `show_object(result)` displays the model inside CQ-editor during development.
+- Although the official docs call the free function example "exactly the same object", its dimensions differ from the fluent example: the outer fillet radius is `height / 10` = 6.0 (fluent: 10.0) and the counterbore depth is `thickness / 3` ≈ 3.33 (fluent: 2.1). The hole and counterbore diameters match (`2 * r_hole` = 2.4, `2 * r_cbore` = 4.4).
 
 ## Related
 

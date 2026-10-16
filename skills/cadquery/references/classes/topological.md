@@ -8,7 +8,7 @@ Low-level wrappers around OpenCASCADE topology objects. All inherit from `Shape`
 
 Base class for all geometric objects in CadQuery. Wraps a `TopoDS_Shape` from OpenCASCADE.
 
-### Constructor
+### Signature / Usage
 
 ```python
 cadquery.Shape(obj: TopoDS_Shape)
@@ -28,6 +28,10 @@ cadquery.Shape(obj: TopoDS_Shape)
 | `Solids()` | `List[Solid]` | All solids |
 | `Compounds()` | `List[Compound]` | All compounds |
 | `CompSolids()` | `List[CompSolid]` | All compsolids |
+| `vertices(selector=None)` / `edges(...)` / `wires(...)` / `faces(...)` / `shells(...)` / `solids(...)` | `Shape` | Select sub-shapes; return a shape or a compound |
+| `vertex(selector=None)` / `edge(...)` / `wire(...)` / `face(...)` / `shell(...)` / `solid(...)` | `Vertex` / `Edge` / `Wire` / `Face` / `Shell` / `Solid` | Select a single sub-shape or raise (v2.8.0) |
+| `siblings(ctx, kind, level=1)` / `ancestors(ctx, kind)` | `Compound` | Shapes within `ctx` sharing subshapes of type `kind` with self / containing self |
+| `__and__` (`a & b`) / `__or__` (`a \| b`) / `__mod__` (`a % b`) | `Compound` | Set intersection / union / difference for combining selection results (v2.8.0) |
 
 **Geometry Queries**
 
@@ -81,7 +85,13 @@ cadquery.Shape(obj: TopoDS_Shape)
 ### Notes
 
 - `Shape` is not instantiated directly; use the concrete subclasses.
+- The single-shape selectors (`vertex()` ... `solid()`) and the set operators (`&`, `|`, `%`) are new in v2.8.0 (absent from the v2.7.0 `Shape` source; PR 2038). See the free-function Shape Selection page.
+- `History` and `Op` (`cadquery.occ_impl.shapes`) were added to the class reference in v2.8.0; they record generated, modified and deleted shapes for free function operations. See the free-function History page.
 - Transformations return new `Shape` instances; they do not mutate in-place unless explicitly noted.
+
+### Related
+
+- [topological.md — Vertex, Edge, Wire, Face, Shell, Solid, Compound](./topological.md)
 
 ---
 
@@ -89,7 +99,7 @@ cadquery.Shape(obj: TopoDS_Shape)
 
 A single point in 3D space.
 
-### Constructor
+### Signature / Usage
 
 ```python
 cadquery.Vertex(obj: TopoDS_Shape, forConstruction: bool = False)
@@ -116,7 +126,7 @@ cadquery.Vertex(obj: TopoDS_Shape, forConstruction: bool = False)
 
 A trimmed curve that forms the border of a Face. Inherits `Mixin1D` and `Shape`.
 
-### Constructor
+### Signature / Usage
 
 ```python
 cadquery.Edge(obj: TopoDS_Shape)
@@ -161,7 +171,7 @@ Curve analysis methods inherited from `Mixin1D` are also available.
 
 A series of connected, ordered Edges that typically bounds a Face. Inherits `Mixin1D` and `Shape`.
 
-### Constructor
+### Signature / Usage
 
 ```python
 cadquery.Wire(obj: TopoDS_Shape)
@@ -196,13 +206,18 @@ cadquery.Wire(obj: TopoDS_Shape)
 - A closed wire is required to create a `Face`.
 - `assembleEdges` automatically orders and joins edges.
 
+### Related
+
+- [topological.md — Edge](./topological.md)
+- [topological.md — Face](./topological.md)
+
 ---
 
 ## Face
 
 A bounded surface representing part of the boundary of a solid. Inherits `Mixin3D` and `Shape`.
 
-### Constructor
+### Signature / Usage
 
 ```python
 cadquery.Face(obj: TopoDS_Shape)
@@ -254,7 +269,7 @@ cadquery.Face(obj: TopoDS_Shape)
 
 The outer boundary of a surface, formed from a connected set of Faces.
 
-### Constructor
+### Signature / Usage
 
 ```python
 cadquery.Shell(obj: TopoDS_Shape)
@@ -270,13 +285,18 @@ cadquery.Shell(obj: TopoDS_Shape)
 
 - Shells are rarely created directly; they arise from solid creation operations.
 
+### Related
+
+- [topological.md — Face](./topological.md)
+- [topological.md — Solid](./topological.md)
+
 ---
 
 ## Solid
 
 A single closed 3D volume. Inherits `Mixin3D` and `Shape`.
 
-### Constructor
+### Signature / Usage
 
 ```python
 cadquery.Solid(obj: TopoDS_Shape)
@@ -325,7 +345,7 @@ cadquery.Solid(obj: TopoDS_Shape)
 
 A collection of disconnected shapes (solids, wires, edges, etc.). Inherits `Mixin3D` and `Shape`.
 
-### Constructor
+### Signature / Usage
 
 ```python
 cadquery.Compound(obj: TopoDS_Shape)
@@ -349,13 +369,17 @@ cadquery.Compound(obj: TopoDS_Shape)
 
 - `Compound` is the result type of most multi-shape operations (e.g., arrays, text).
 
+### Related
+
+- [topological.md — Solid](./topological.md)
+
 ---
 
 ## CompSolid
 
 A composite solid — multiple solids sharing boundary faces.
 
-### Constructor
+### Signature / Usage
 
 ```python
 cadquery.CompSolid(obj: TopoDS_Shape)
@@ -365,6 +389,10 @@ cadquery.CompSolid(obj: TopoDS_Shape)
 
 - `CompSolid` is rarely used directly in CadQuery; it maps to `TopoDS_CompSolid` in OpenCASCADE.
 - Arises from some import operations on STEP files with shared topology.
+
+### Related
+
+- [topological.md — Solid](./topological.md)
 
 ---
 
@@ -401,6 +429,11 @@ Mixin class providing parametric curve analysis methods for 1D shapes (`Edge`, `
 - `mode='length'` interprets `d` as arc length; `mode='parameter'` interprets it as the raw OCC parameter.
 - `frame='frenet'` uses Frenet frame; `frame='corrected'` avoids discontinuities on helices.
 
+### Related
+
+- [topological.md — Edge](./topological.md)
+- [topological.md — Wire](./topological.md)
+
 ---
 
 ## Mixin3D
@@ -421,3 +454,8 @@ Mixin class providing post-processing operations for 3D shapes (`Face`, `Shell`,
 
 - `fillet` and `chamfer` operate on `edgeList`; pass `None` to apply to all edges.
 - `hollow` is equivalent to `Workplane.shell()`.
+
+### Related
+
+- [topological.md — Solid](./topological.md)
+- [core.md — Workplane](./core.md)
