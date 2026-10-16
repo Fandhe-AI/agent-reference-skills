@@ -120,6 +120,8 @@ add_output_node(tree, curves.outputs["Image"], location=(750, 0))
 
 Writes multiple passes to separate image files (e.g., EXR layers) for external compositing.
 
+The block below is for Blender versions before 5.0 only. On 5.0+ use `directory` / `file_name` / `file_output_items` and the expanded pass names (see [render-passes.md](./render-passes.md) and samples/compositing-nodes.md PART D).
+
 ```python
 vl = scene.view_layers["ViewLayer"]
 vl.use_pass_diffuse_direct = True
@@ -139,8 +141,8 @@ fileout.file_slots.new("GlossDir")
 fileout.file_slots.new("Depth")
 
 links.new(rl.outputs["Image"],   fileout.inputs["Beauty"])
-links.new(rl.outputs["Diffuse Direct"], fileout.inputs["DiffDir"])   # Render Layers names: 'DiffDir' / 'GlossDir' before 5.0
-links.new(rl.outputs["Glossy Direct"],  fileout.inputs["GlossDir"])
+links.new(rl.outputs["DiffDir"],  fileout.inputs["DiffDir"])   # pre-5.0 names; 5.0+: 'Diffuse Direct' / 'Glossy Direct'
+links.new(rl.outputs["GlossDir"], fileout.inputs["GlossDir"])   # pre-5.0 names; 5.0+: 'Diffuse Direct' / 'Glossy Direct'
 links.new(rl.outputs["Depth"],   fileout.inputs["Depth"])
 ```
 
