@@ -30,6 +30,7 @@ export default nextConfig
 
 - Client Components in the App Router are still prerendered to HTML on the server by default; `ssr: false` on the dynamic import disables this for a true client-only start.
 - Next.js defaults to Turbopack for `next dev`/`next build`; a Vite/Webpack-style setup isn't required to migrate.
+- `import.meta.glob` is supported by Turbopack with no changes needed. Turbopack has no built-in handling of Vite's `?raw` / `?url` queries, so the `as` option (deprecated in Vite 5, e.g. `{ as: 'raw' }`) and its `query` replacement (`{ query: '?raw' }`) need a matching rule in `next.config.ts`, e.g. `turbopack: { rules: { '*': { condition: { query: '?raw' }, type: 'text' } } }` loads any file imported with `?raw` as a string.
 
 ## Related
 

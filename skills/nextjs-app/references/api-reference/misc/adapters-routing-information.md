@@ -6,6 +6,7 @@ The `routing` object passed to `onBuildComplete` provides Next.js's processed ro
 
 ```typescript
 routing.beforeMiddleware // routes applied before middleware (headers/redirects)
+routing.middlewareMatchers // middleware matcher definitions emitted for this build; decide whether middleware should be invoked for a given request
 routing.beforeFiles      // rewrites checked before filesystem route matching
 routing.afterFiles       // rewrites checked after filesystem route matching
 routing.dynamicRoutes    // dynamic matchers generated from [slug] and catch-all segments

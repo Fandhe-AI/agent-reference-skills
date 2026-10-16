@@ -32,8 +32,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ## Notes
 
 - Recommended pattern: fetch data in the root layout (or a parent component), don't `await` it, pass the Promise through a context provider, and unwrap with `use()` in the consuming Client Component — this hoists the request to start on the server early and avoids client waterfalls.
-- SWR 2.3.0+ (with React 19+) supports the same pattern via `<SWRConfig value={{ fallback: { key: getUser() } }}>` combined with `useSWR(key, fetcher)` in Client Components, unchanged from existing SWR code.
-- React Query is also supported on both client and server (see its SSR guide).
+- The SWR and TanStack Query sections moved out of this guide: when a Client Component needs focus revalidation, polling, mutations or request deduplication, use a library such as SWR or TanStack Query. See the Client-side data fetching guides (`client-side-data-fetching.md`, `client-side-data-fetching-swr.md`, `client-side-data-fetching-tanstack-query.md`) for direct browser fetching, providing initial data from a Server Component, and coordinating the library cache with the Next.js server and client caches.
+- The section "Examples" is now "Build common SPA patterns" (use within a Context Provider, rendering components only in the browser, shallow routing on the client, mutating data with Server Actions).
+- Mutating data with Server Actions: call a Server Action inside a transition (`useTransition`) for pending feedback; for list-like state combine `useActionState` with `useOptimistic` using a shared pure reducer (e.g. a `todosReducer` with `add` / `toggle` / `edit` / `delete` actions) so client and server share one copy of the logic. A client data-fetching library can instead coordinate an optimistic browser update around the same Server Action.
+- React 19.3 includes the `browser` API: use `use(browser())` only when a Client Component's first browser render cannot match server-rendered HTML; during prerendering it suspends to the closest `<Suspense>` boundary, so crawlers that do not execute JavaScript see the fallback instead of the component.
 - Use `next/dynamic` with `ssr: false` for browser-only third-party libraries relying on `window`/`document`.
 - Migrating from Create React App or Vite can be incremental; Server Actions can be called directly from Client Components like normal functions, replacing manual API route boilerplate.
 

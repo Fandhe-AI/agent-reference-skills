@@ -52,9 +52,12 @@ async function getProduct(slug: string) {
 
 - A direct visit gets the static shell as HTML (e.g. from a CDN); a client navigation only re-renders below the shared layout, so `<Suspense>` fallbacks above that point don't apply during the transition.
 - With Cache Components enabled, every Page/Default segment is validated in development by default; validation surfaces blocking components and suggests `use cache`, `<Suspense>`, or `instant = false`.
-- `"use cache: private"` results are cached only in the browser (not the server) and cannot be part of the static shell — pairs with runtime prefetching instead.
-- Test both initial page load (`page.goto()`) and client navigation (`<Link>` click) since a `<Suspense>` boundary can cover one without covering the other.
-- Run `next build --debug-prerender` equivalents against `next dev`/`next start` with `exposeTestingApiInProductionBuild` to run `instant()` tests in CI against a production build.
+- Quick start: enable Cache Components and Partial Prefetching (`cacheComponents: true, partialPrefetching: true`), then follow the validation errors that appear. The `next-cache-components-adoption` and `next-partial-prefetching-adoption` skills (and `next-dev-loop`) automate each part with an agent.
+- `"use cache: private"` results are cached only in the browser (not the server) and cannot be part of the static shell — pairs with per-link prefetching (see the Optimizing prefetching guide, `optimizing-prefetching.md`) instead.
+- Prefetch URL data for a link: with Partial Prefetching each visible `<Link>` prefetches the destination's App Shell by default (links to the same route share one App Shell); `prefetch={true}` opts the link into per-link prefetching, which resolves URL data (`params`, `searchParams`, full URL) ahead of the click. First make the route instant with its App Shell; per-link prefetching cannot fix a route that blocks without it.
+- Test both initial page load (`page.goto()`) and client navigation (`<Link>` click) since a `<Suspense>` boundary can cover one without covering the other. For client navigations wait for the destination URL before asserting on its UI.
+- Run `instant()` e2e tests against `next dev` (testing API enabled automatically). For CI against a production build, enable `experimental.exposeTestingApiInProductionBuild` only for the test build (`const exposeTestingApi = process.env.EXPOSE_TESTING_API === '1'`) and set `EXPOSE_TESTING_API=1` when running `next build`; setting it only for `next start` does not add the testing API to an existing build.
+- See the Optimizing the static shell guide (`optimizing-the-static-shell.md`) for patterns to reduce fallback coverage and make more completed UI available immediately.
 
 ## Related
 

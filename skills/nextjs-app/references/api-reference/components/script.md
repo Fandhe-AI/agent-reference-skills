@@ -28,7 +28,7 @@ export default function Dashboard() {
 
 ### `strategy` values
 
-- `beforeInteractive`: injected in the initial server HTML, downloaded before any Next.js module; does not block hydration. Must be placed in the root layout (`app/layout.tsx`). Use only for critical scripts (bot detectors, cookie consent managers).
+- `beforeInteractive`: injected in the initial server HTML, downloaded before any Next.js module; does not block hydration. Must be placed in a root layout (`app/layout.tsx`, or e.g. `app/[locale]/layout.tsx`). Runs once per document load: a client-side navigation does not run it again, even one that only changes a root param (e.g. `/en` to `/fi`), since the root layout stays the same. Use only for critical scripts (bot detectors, cookie consent managers).
 - `afterInteractive` (default): injected client-side, loads after some hydration. Usable in any page/layout. Good for tag managers, analytics.
 - `lazyOnload`: injected client-side during browser idle time, after all resources load. Good for chat widgets, social media widgets.
 - `worker` (experimental, unstable): offloads to a web worker; requires `experimental.nextScriptWorkers` in `next.config.js`; currently only usable in the `pages/` directory, not App Router.

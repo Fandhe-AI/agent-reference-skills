@@ -12,6 +12,25 @@ module.exports = {
 }
 ```
 
+Matching rules:
+
+- Only the `hostname` of the request's `Origin` header is matched (scheme, port, path and query are ignored); write entries the same way, without `https://` and without a port. A no-cors cross-site request (e.g. a script tag loading a dev asset) sends no `Origin`, so the `Referer` hostname is matched instead.
+- `*` stands in for exactly one label of the hostname; `**` for one or more and is only supported at the start of the pattern. Partial replacement (`team-*.local-origin.dev`) is not supported.
+
+| Entry | Matches | Does not match |
+|------|------|------|
+| `local-origin.dev` | `local-origin.dev` | `team.local-origin.dev` |
+| `*.local-origin.dev` | `team.local-origin.dev` | `local-origin.dev`, `team.eu.local-origin.dev` |
+| `**.local-origin.dev` | `team.local-origin.dev`, `team.eu.local-origin.dev` | `local-origin.dev` |
+
+- The dev server already allows `localhost`, its subdomains and the hostname it was started with; any other hostname needs an entry, such as a tunnel for remote development:
+
+```js filename="next.config.js"
+module.exports = {
+  allowedDevOrigins: ['*.tunnel.example.com'],
+}
+```
+
 ## devIndicators
 
 Configures the on-screen indicator that shows context about the current route during development.

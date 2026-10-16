@@ -34,6 +34,7 @@ app.prepare().then(() => {
 
 ## Notes
 
+- Set your own response headers (such as `Set-Cookie`) **before** calling `handle(req, res)`: Next.js begins sending the response inside `handle`, so by the time its promise resolves `res.headersSent` is already `true` and any later `res.setHeader()` call is silently discarded (e.g. `res.setHeader('Set-Cookie', 'sessionId=abc123; Max-Age=2592000')` then `await handle(req, res)`). The same applies when wrapping in Express or Fastify.
 - `server.js`/`server.ts` is **not** processed by the Next.js compiler/bundler — its syntax must be directly compatible with the running Node.js version.
 - Standalone output mode does not trace custom server files (it emits its own minimal `server.js`) — the two cannot be used together.
 - Update `package.json` scripts to run `node server.js` for both `dev` and `start` (with `NODE_ENV=production` for start).

@@ -19,7 +19,7 @@ export default function Page() {
 | `href` | `string` or `object` | Yes | Path or URL to navigate to; object form supports `{ pathname, query }` |
 | `replace` | `boolean` | - | Replace current history state instead of pushing. Default `false` |
 | `scroll` | `boolean` | - | Controls scroll behavior on navigation. Default `true` (maintains/relocates scroll like browser back/forward) |
-| `prefetch` | `boolean` or `null` | - | `"auto"`/`null` (default): full prefetch for static routes, partial (to nearest `loading.js` boundary) for dynamic routes. `true`: always full prefetch. `false`: never prefetch |
+| `prefetch` | `boolean`, `"auto"`, or `null` | - | `"auto"`/`null` (default): full prefetch for static routes, partial (to nearest `loading.js` boundary) for dynamic routes. `true`: always full prefetch; with Partial Prefetching enabled, the App Shell plus cached content that depends on the link's URL data (per-link prefetching). `false`: never prefetch. With `partialPrefetching: true`, `auto` prefetches the per-route App Shell instead of the full page |
 | `onNavigate` | `function` | - | Event handler called during client-side navigation only; receives event with `preventDefault()` to cancel |
 | `transitionTypes` | `string[]` | - | Transition types passed to `React.addTransitionType` for use with `<ViewTransition>` |
 

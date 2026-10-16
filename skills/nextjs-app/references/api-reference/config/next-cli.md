@@ -19,7 +19,7 @@ Running `next` with no command is an alias for `next dev`. With `npm run`, prefi
 | `telemetry` | Enable/disable anonymous telemetry. |
 | `typegen` | Generates route TypeScript definitions without a full build. |
 | `upgrade` | Upgrades the app to the latest (or a specified) Next.js version. |
-| `experimental-analyze` | Analyzes bundle output via Turbopack (no build artifacts produced). |
+| `analyze` | Analyzes bundle output via Turbopack (no build artifacts produced). Documented as `next experimental-analyze` through `v16.3.0`. |
 
 ## Options / Props
 
@@ -44,14 +44,14 @@ Dev builds output to `.next/dev` (not `.next`), so `next dev` and `next build` c
 |------|-------------|
 | `[directory]` | Directory to build (default: cwd). |
 | `--turbopack` / `--webpack` | Choose bundler (Turbopack default). |
+| `--analyze` | Generate bundle analysis data for the interactive analyzer during a Turbopack build. |
 | `-d, --debug` | Verbose build output (rewrites, redirects, headers). |
 | `--profile` | Enables React production profiling. |
-| `--no-lint` | Disables linting (linting is being removed from `next build` in Next 16). |
 | `--no-mangling` | Disables name mangling (debugging only, hurts performance). |
 | `--experimental-app-only` | Builds only App Router routes. |
 | `--experimental-build-mode [mode]` | `"compile"` \| `"generate"` \| default. |
 | `--debug-prerender` | Verbose prerender error debugging (dev-only; do not ship to prod). |
-| `--debug-build-paths=<patterns>` | Build only matching routes/globs, e.g. `"app/**/page.tsx"`. |
+| `--debug-build-paths=<patterns>` | Build only matching routes/globs (comma-separated), e.g. `"app/**/page.tsx"`; prefix a path with `!` to exclude it (e.g. `"app/**/page.tsx,!app/admin/**"`). Paths resolve with or without a `src/` prefix; only matching routes appear in the route table, and selecting an App Router route also includes `/_not-found`. Can be combined with `--debug-prerender`. |
 | `--experimental-cpu-prof` | V8 CPU profiling. |
 
 ### `next start`
@@ -92,25 +92,44 @@ Generates route TypeScript definitions (and `next-env.d.ts`) without a full buil
 | `[directory]` | App directory to upgrade (default: cwd). |
 | `--revision <revision>` | Target version/tag (`latest`, `canary`, `15.0.0`, etc.); defaults to current release channel. |
 | `--verbose` | Verbose upgrade output. |
+| `--agent [type]` | Upgrade with a coding agent using `security`, `latest`, or `experimental-future`. Defaults to `experimental.agentUpgrade`, or `security`. Cannot be combined with `--revision`. |
 
-### `next experimental-analyze`
+### `next analyze`
 
 | Option | Description |
 |------|-------------|
 | `[directory]` | Directory to analyze (default: cwd). |
 | `--no-mangling` | Disables mangling (debug only). |
 | `--profile` | React production profiling. |
-| `-o, --output` | Write static analysis files to `.next/diagnostics/analyze` instead of starting a server. |
+| `-o, --output` | Build and save binary analyzer data and UI files to `<distDir>/diagnostics/analyze` (normally `.next/diagnostics/analyze`) without serving. |
+| `--snapshot <name>` | Save a named snapshot, replacing an earlier capture with the same name. |
 | `--port <port>` | Analyzer server port (default `4000`, env `PORT`). |
 
 Lets you filter bundles by route, switch client/server views, and trace import chains (including server-to-client boundaries and dynamic imports). Produces no build artifacts.
+
+```bash
+npx next analyze --output --snapshot audit-1
+npx next analyze export --snapshot audit-1 > graph.jsonl
+```
+
+### `next analyze export`
+
+Added `v16.4.0`. Streams an existing snapshot as JSON Lines (one JSON object per line); does not run analysis or start the web UI.
+
+| Option | Description |
+|------|-------------|
+| `[directory]` | Application directory containing the saved analysis (default: cwd). |
+| `--snapshot <name>` | Select a saved snapshot by name (default: newest retained snapshot). |
+| `--route <route>` | Restrict export to one route (still includes the full module graph). |
+| `--dist-dir <directory>` | Select an explicit relative or absolute build directory without reading `next.config`. |
 
 ## Notes
 
 - Set `PORT` via env var instead of `.env` — the HTTP server boots before `.env` is loaded.
 - `next dev --experimental-https` uses `mkcert` for a locally-trusted cert; only for development.
 - Node args can be passed via `NODE_OPTIONS`, e.g. `NODE_OPTIONS='--inspect' next dev`.
-- Version history: `next upgrade` and `next experimental-analyze` added in `v16.1.0`; bundle size metrics removed from `next build` output in `v16.0.0`; `next typegen` added in `v15.5.0`; `--debug-prerender` added in `v15.4.0`.
+- The `v16.4.2` docs document only `next analyze` (the former `next experimental-analyze` name appears in the `v16.3.0` docs); the Version History records only `v16.1.0` "Add the `next experimental-analyze` command", so the rename version is not stated. `next build --no-lint` is no longer listed in the `v16.4.2` docs (linting was removed from `next build` in Next 16).
+- Version history: `next upgrade` and `next experimental-analyze` added in `v16.1.0`; `next analyze export` added in `v16.4.0`; bundle size metrics removed from `next build` output in `v16.0.0`; `next typegen` added in `v15.5.0`; `--debug-prerender` added in `v15.4.0`.
 
 ## Related
 

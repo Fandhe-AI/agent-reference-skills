@@ -37,4 +37,4 @@ export default async function Profile({ params }: { params: Promise<{ id: string
 
 - [permanentRedirect](./permanentRedirect.md)
 - [notFound](./not-found.md)
-- [useRouter](./use-router.md)
+- [useRouter](./useRouter.md)

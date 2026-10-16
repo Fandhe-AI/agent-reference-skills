@@ -54,7 +54,9 @@ export default function GlobalNotFound() {
 
 ## Notes
 
-- `not-found.js` returns `200` for streamed responses and `404` for non-streamed responses; renders between `loading.js` and `page.js` in the component hierarchy, wrapped by the segment's `<Suspense>` (loading) and error boundary (error.js).
+- Status code: before streaming starts, Next.js returns `404`. After streaming starts, the status stays `200` and the not-found UI renders in the response. Next.js injects `<meta name="robots" content="noindex" />` in both cases (see loading.js Status codes).
+- Both the root `app/not-found.js` and `app/global-not-found.js` can export a `metadata` object or `generateMetadata` to customize `<title>` / `<meta>` for the 404 page.
+- `not-found.js` renders between `loading.js` and `page.js` in the component hierarchy, wrapped by the segment's `<Suspense>` (loading) and error boundary (error.js).
 - The root `app/not-found.js` (and `app/global-not-found.js`) also handles any unmatched URL across the whole app, not just thrown `notFound()` calls.
 - `global-not-found.js` bypasses normal app rendering — it must return a full `<html>`/`<body>` document and must import its own global styles/fonts; useful when multiple root layouts or top-level dynamic segments make a unified `layout.js` + `not-found.js` 404 impractical. Requires `experimental.globalNotFound` in `next.config.ts`.
 - `not-found.js` is a Server Component by default and can be marked `async` to fetch data; Client Component hooks like `usePathname` require client-side data fetching instead.

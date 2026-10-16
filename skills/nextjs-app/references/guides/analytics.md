@@ -35,7 +35,7 @@ export default function Layout({ children }) {
 
 | Name | Type | Description |
 |------|------|-------------|
-| `useReportWebVitals(callback)` | hook | Reports TTFB, FCP, LCP, FID, CLS, INP metrics via `metric.name`/`metric.value`/`metric.id` |
+| `useReportWebVitals(callback)` | hook | Reports TTFB, FCP, LCP, CLS, INP metrics via `metric.name`/`metric.value`/`metric.id` |
 | `instrumentation-client.js\|ts` | file convention | Runs before the app's frontend code starts; ideal for global analytics/error tracking setup |
 
 ## Notes

@@ -4,12 +4,14 @@ The `use cache` directive marks a route, React component, or function as cacheab
 
 ## Signature / Usage
 
-```tsx
-// File level
-'use cache'
+Cached functions and components must be async.
 
-export default async function Page() {
-  // ...
+```tsx
+// Function level
+export async function getData() {
+  'use cache'
+  const res = await fetch('https://api.example.com/data')
+  return res.json()
 }
 
 // Component level
@@ -17,12 +19,16 @@ export async function MyComponent() {
   'use cache'
   return <></>
 }
+```
 
-// Function level
-export async function getData() {
-  'use cache'
-  const data = await fetch('/api/data')
-  return data
+When used at file level (module), every exported function becomes a cached function and must also be async. `generateMetadata` and `generateStaticParams` must be async in such a file.
+
+```tsx
+// Module (file) level — also valid at the top of a page / layout (route segment)
+'use cache'
+
+export async function getMonthlyTotals(accountId: string) {
+  return db.orders.aggregate({ where: { accountId }, _sum: { amount: true } })
 }
 ```
 
@@ -41,6 +47,12 @@ export default nextConfig
 ## Cache key composition
 
 A cache entry key is derived from: Build ID, a hash of the function's location/signature (Function ID), serializable arguments (including variables captured from outer scope), and (dev only) the HMR refresh hash.
+
+## Cache output
+
+A cached function produces the same output for the same inputs. The first call with a given set of inputs runs the function body and stores its output; every later call with the same inputs reuses that output, within a render pass and across requests, for as long as the entry lasts. Outputs are stored by a cache handler (in memory by default) and last until they revalidate. Nested cached functions get their own entries, keyed by their own inputs; if an inner entry is already filled, its body does not run again and its output becomes part of the outer entry.
+
+With Cache Components, prerendering fills the entry and keeps rendering, so the output contributes to the route's static shell and can contribute to its prefetch. A cache life too short to store safely leaves a hole that resolves at request time instead (see the `cacheLife` prerendering thresholds).
 
 ## Serialization
 
@@ -70,10 +82,12 @@ async function getData() {
 - Cached functions/components cannot directly call `cookies()`, `headers()`, or read `searchParams`; read these outside the cached scope and pass values as arguments.
 - `React.cache` has an isolated scope inside `use cache` boundaries — values set outside are not visible inside.
 - When [Draft Mode](https://nextjs.org/docs/app/guides/draft-mode) is enabled, cached functions re-execute on every request and results are not saved; `draftMode().isEnabled` may be read inside the scope, but `enable()`/`disable()` throw.
-- To prerender an entire route, add `use cache` to both `layout` and `page` files (each segment caches independently).
+- To prerender an entire route, add `use cache` to every segment file it renders: the `page`, the `layout`, and any parallel route slots (`default` / `page`). Each segment is a separate entry point and caches independently. A cached `layout` does not cache the `children` it renders, since slots pass through without affecting its entry.
+- When a cache directive (`use cache`, `use cache: private`, `use cache: remote`) is at the top of a file, you can import its exported functions into a Client Component and call them directly; they run on the server and return the result, like a Server Function. Prefer calling cached functions on the server and passing results down as props.
+- Self-hosted: cache entries persist across requests; control cache size with `cacheMaxMemorySize`. Serverless: entries typically do not persist across requests; build-time caching works normally.
 - If a build hangs ("Filling a cache during prerender timed out"), you are likely passing an uncached/runtime Promise (e.g. from `cookies()`) into a `use cache` scope — await it outside first.
 - Not supported with static export deployment.
-- This is a Cache Components feature, generally available as of v16.0.0 (introduced experimentally in v15.0.0).
+- This is a Cache Components feature. Version history: `v16.0.0` stabilized `use cache` (enabled with Cache Components); `v15.0.0` introduced it experimentally.
 
 ## Related
 

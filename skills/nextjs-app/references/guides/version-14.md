@@ -19,6 +19,7 @@ npm i next@next-14 react@18 react-dom@18 && npm i eslint-config-next@next-14 -D
 ## Notes
 
 - If using TypeScript, also upgrade `@types/react` and `@types/react-dom`.
+- Migration checklist: Node.js 18.17 or later with compatible React 18 dependencies and types; static exports use `output: 'export'` and `next build` instead of `next export`; `ImageResponse` imports use `next/og` instead of `next/server`; font imports use `next/font` instead of `@next/font`; the app does not rely on the removed `next-swc` WASM target; supported checks and affected runtime behavior pass.
 
 ## Related
 

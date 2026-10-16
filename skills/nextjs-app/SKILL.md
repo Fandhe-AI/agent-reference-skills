@@ -1,14 +1,19 @@
 ---
 name: nextjs-app
 description: >
-  Next.js App Router 専用 API リファレンス（Pages Router / getStaticProps 等は非対応）。
-  Server Components, Server Actions, layout/page/loading/error ファイル規約,
-  dynamic routes, parallel/intercepting routes, Metadata API (generateMetadata),
-  use cache, revalidatePath/revalidateTag, next/image・next/font・next/link,
+  Next.js App Router 専用 API リファレンス（Pages Router 非対応）。
+  Server Components, Server Actions, layout/page/loading/error 規約,
+  dynamic / parallel / intercepting routes, Metadata API (generateMetadata),
+  Cache Components, use cache, Partial Prefetching, revalidatePath/revalidateTag/updateTag,
+  catchError, next/root-params, ensureStatic, next/image・next/font・next/link,
   cookies/headers, useRouter, next.config.js, proxy（旧 middleware）。
   プラットフォーム実行基盤・CDN・ISR インフラは vercel スキル参照。
 user-invocable: false
 ---
+
+## 対象バージョン
+
+対象 Next.js v16.4.2（2026-10-15 リリース）。出典: https://nextjs.org/docs/app 、原本 vercel/next.js tag v16.4.2 `docs/01-app/`。
 
 ## 対象範囲
 
@@ -47,46 +52,73 @@ skills/nextjs-app/
       upgrading.md
     guides/
       README.md
+      adopting-partial-prefetching.md
+      agent-upgrade.md
+      ai-agents.md
       analytics.md
       app-router-migration.md
       authentication.md
+      authentication-with-cache-components.md
       backend-for-frontend.md
+      building.md
       caching-without-cache-components.md
+      cdn-caching.md
       ci-build-caching.md
+      client-side-data-fetching.md
+      client-side-data-fetching-swr.md
+      client-side-data-fetching-tanstack-query.md
       codemods.md
       content-security-policy.md
       css-in-js.md
       custom-server.md
       cypress.md
+      data-security.md
       debugging.md
+      deploying-to-platforms.md
       draft-mode.md
       environment-variables.md
       forms.md
       from-create-react-app.md
       from-vite.md
+      how-revalidation-works.md
       incremental-static-regeneration.md
+      incremental-static-regeneration-cache-components.md
+      instant-navigation.md
       instrumentation.md
+      interactive-apps.md
       internationalization.md
       jest.md
       json-ld.md
+      keeping-pages-static.md
       lazy-loading.md
       local-development.md
+      mcp.md
       mdx.md
       memory-usage.md
+      migrating-to-cache-components.md
       multi-tenant.md
       multi-zones.md
+      offline-support.md
       open-telemetry.md
+      optimizing-prefetching.md
+      optimizing-the-static-shell.md
       package-bundling.md
       playwright.md
       ppr-platform-guide.md
       prefetching.md
+      preserving-ui-state.md
+      preventing-flash-before-hydration.md
       production-checklist.md
       progressive-web-apps.md
+      public-static-pages.md
       redirecting.md
+      rendering-philosophy.md
+      runtime-prefetching.md
       sass.md
       scripts.md
       self-hosting.md
       server-actions.md
+      server-and-client-boundary.md
       single-page-applications.md
       static-exports.md
       streaming.md
@@ -97,6 +129,7 @@ skills/nextjs-app/
       version-15.md
       version-16.md
       videos.md
+      view-transitions.md
       vitest.md
     api-reference/
       functions/
@@ -104,6 +137,7 @@ skills/nextjs-app/
         after.md
         cacheLife.md
         cacheTag.md
+        catchError.md
         unstable_catchError.md
         connection.md
         cookies.md
@@ -117,20 +151,25 @@ skills/nextjs-app/
         generateViewport.md
         headers.md
         ImageResponse.md
+        io.md
+        navigation.md
         NextRequest.md
         NextResponse.md
         not-found.md
         permanentRedirect.md
+        prefetch.md
         redirect.md
         refresh.md
         revalidatePath.md
         revalidateTag.md
+        root-params.md
         unauthorized.md
         unstable_cache.md
         unstable_noStore.md
         unstable_rethrow.md
         updateTag.md
         useLinkStatus.md
+        use-offline.md
         use-params.md
         usePathname.md
         useReportWebVitals.md
@@ -173,8 +212,11 @@ skills/nextjs-app/
         route-segment-config/
           README.md
           dynamicParams.md
+          ensureStatic.md
+          instant.md
           maxDuration.md
           preferredRegion.md
+          prefetch.md
           runtime.md
       components/
         README.md
@@ -193,6 +235,7 @@ skills/nextjs-app/
       config/
         README.md
         overview.md
+        agent-features.md
         images.md
         headers-redirects-rewrites.md
         routing.md
@@ -216,6 +259,7 @@ skills/nextjs-app/
         adapters-testing-adapters.md
         adapters-routing-with-next-routing.md
         adapters-implementing-ppr-in-an-adapter.md
+        adapters-immutable-static-assets.md
         adapters-runtime-integration.md
         adapters-invoking-entrypoints.md
         adapters-output-types.md
@@ -272,6 +316,9 @@ skills/nextjs-app/
 | --- | --- | --- |
 | Server Actions でフォームを実装したい、認証・国際化を実装したい | guides | [references/guides/README.md](references/guides/README.md) |
 | ISR・Draft Mode・ストリーミング・PPR を使いたい | guides | [references/guides/README.md](references/guides/README.md) |
+| Cache Components への移行、Partial Prefetching・instant navigation を導入したい（migrating-to-cache-components, adopting-partial-prefetching, instant-navigation, optimizing-prefetching, keeping-pages-static） | guides | [references/guides/README.md](references/guides/README.md) |
+| クライアント側データ取得（SWR / TanStack Query 連携）を実装したい | guides | [references/guides/README.md](references/guides/README.md) |
+| AI コーディングエージェント連携（ai-agents, mcp, agent-upgrade, config の agent-features）を設定したい | guides | [references/guides/README.md](references/guides/README.md) |
 | Jest/Vitest/Playwright/Cypress でテストしたい | guides | [references/guides/README.md](references/guides/README.md) |
 | Pages Router / CRA / Vite からの移行、バージョンアップ手順を知りたい | guides | [references/guides/README.md](references/guides/README.md) |
 | マルチテナント・マルチゾーン構成、本番前チェックリストを確認したい | guides | [references/guides/README.md](references/guides/README.md) |
@@ -281,9 +328,10 @@ skills/nextjs-app/
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
 | `cookies` / `headers` / `redirect` / `notFound` の使い方を知りたい | api-reference/functions | [references/api-reference/functions/README.md](references/api-reference/functions/README.md) |
-| `revalidatePath` / `revalidateTag` / `unstable_cache` でキャッシュ制御したい | api-reference/functions | [references/api-reference/functions/README.md](references/api-reference/functions/README.md) |
+| `revalidatePath` / `revalidateTag` / `updateTag` / `unstable_cache` でキャッシュ制御したい | api-reference/functions | [references/api-reference/functions/README.md](references/api-reference/functions/README.md) |
 | `generateMetadata` / `generateStaticParams` / `generateViewport` を書きたい | api-reference/functions | [references/api-reference/functions/README.md](references/api-reference/functions/README.md) |
 | `useRouter` / `usePathname` / `useSearchParams` / `useParams` を使いたい | api-reference/functions | [references/api-reference/functions/README.md](references/api-reference/functions/README.md) |
+| ランタイム処理の遅延（`navigation` / `prefetch` / `io`）、`catchError`、`next/root-params`、`use-offline` を使いたい | api-reference/functions | [references/api-reference/functions/README.md](references/api-reference/functions/README.md) |
 
 ### ファイル規約
 
@@ -293,7 +341,7 @@ skills/nextjs-app/
 | Dynamic Routes / Route Groups / Parallel Routes / Intercepting Routes を実装したい | api-reference/file-conventions | [references/api-reference/file-conventions/README.md](references/api-reference/file-conventions/README.md) |
 | `route.ts` でカスタム API エンドポイントを作りたい | api-reference/file-conventions | [references/api-reference/file-conventions/README.md](references/api-reference/file-conventions/README.md) |
 | favicon/manifest/robots/sitemap/OG 画像のファイル規約を知りたい | api-reference/file-conventions | [references/api-reference/file-conventions/metadata/README.md](references/api-reference/file-conventions/metadata/README.md) |
-| `dynamicParams` / `runtime` / `preferredRegion` / `maxDuration` を設定したい | api-reference/file-conventions | [references/api-reference/file-conventions/route-segment-config/README.md](references/api-reference/file-conventions/route-segment-config/README.md) |
+| 静的出力を必須にしたい（`ensureStatic` / `instant`）、`prefetch` / `dynamicParams` / `runtime` / `preferredRegion` / `maxDuration` を設定したい | api-reference/file-conventions | [references/api-reference/file-conventions/route-segment-config/README.md](references/api-reference/file-conventions/route-segment-config/README.md) |
 
 ### 組み込みコンポーネント・ディレクティブ
 
@@ -307,7 +355,8 @@ skills/nextjs-app/
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
 | `next.config.js` のオプション（images, headers/redirects/rewrites, routing, caching 等）を調べたい | api-reference/config | [references/api-reference/config/README.md](references/api-reference/config/README.md) |
-| TypeScript / ESLint 設定、`create-next-app` / `next` CLI を使いたい | api-reference/config | [references/api-reference/config/README.md](references/api-reference/config/README.md) |
+| TypeScript / ESLint 設定、`create-next-app` / `next` CLI（設定リファレンス）を調べたい | api-reference/config | [references/api-reference/config/README.md](references/api-reference/config/README.md) |
+| `next` CLI・`create-next-app` の実行コマンドをコピペしたい | scripts | [scripts/README.md](scripts/README.md) |
 | デプロイアダプター（adapters）を作成・設定したい | api-reference/misc | [references/api-reference/misc/README.md](references/api-reference/misc/README.md) |
 | Edge Runtime の制約、Turbopack の設定を知りたい | api-reference/misc | [references/api-reference/misc/README.md](references/api-reference/misc/README.md) |
 

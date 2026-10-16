@@ -35,6 +35,7 @@ module.exports = adapter
 ## Notes
 
 - The `NextAdapter` type can be imported directly from the `next` package.
+- The `routing` object passed to `onBuildComplete` has the shape `{ beforeMiddleware: Array<Route>; middlewareMatchers: Array<Route>; beforeFiles: Array<Route>; afterFiles: Array<Route>; dynamicRoutes: Array<Route>; onMatch: Array<Route>; fallback: Array<Route>; shouldNormalizeNextData: boolean; rsc: RoutesManifest['rsc'] }` (`middlewareMatchers` carries the middleware matcher definitions for the build).
 - `onBuildComplete` context combines routing metadata (see Routing Information) with build outputs (see Output Types).
 
 ## Related

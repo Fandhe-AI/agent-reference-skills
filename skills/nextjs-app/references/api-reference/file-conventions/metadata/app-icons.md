@@ -61,5 +61,5 @@ Dynamic `icon`/`apple-icon` config exports:
 ## Related
 
 - [opengraph-image and twitter-image](./opengraph-image.md)
-- [generateImageMetadata](../../functions/generate-image-metadata.md)
+- [generateImageMetadata](../../functions/generateImageMetadata.md)
 - [Route Segment Config](../route-segment-config.md)

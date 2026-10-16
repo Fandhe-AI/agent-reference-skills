@@ -62,5 +62,5 @@ Dynamic config exports:
 ## Related
 
 - [favicon, icon, and apple-icon](./app-icons.md)
-- [ImageResponse](../../functions/image-response.md)
-- [generateImageMetadata](../../functions/generate-image-metadata.md)
+- [ImageResponse](../../functions/ImageResponse.md)
+- [generateImageMetadata](../../functions/generateImageMetadata.md)

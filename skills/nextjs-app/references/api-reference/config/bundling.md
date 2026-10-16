@@ -47,7 +47,7 @@ const nextConfig: NextConfig = {
 | Option | Description |
 |------|-------------|
 | `root` | Absolute path for the app root (auto-detected from lockfiles by default; set manually for non-workspace layouts or `npm/yarn/pnpm link`). |
-| `rules` | Maps file glob → webpack loader(s) to run under Turbopack; supports advanced `condition` matching (`path`, `content`, `query`, `contentType`, built-ins `browser`/`foreign`/`development`/`production`/`node`/`edge-light`) and module `type` (`asset`, `ecmascript`, `typescript`, `css`, `css-module`, `wasm`, `raw`, `bytes`). |
+| `rules` | Maps file glob → webpack loader(s) to run under Turbopack; supports advanced `condition` matching (`path`, `content`, `query`, `contentType`, built-ins `browser`/`foreign`/`development`/`production`/`node`/`edge-light`) and module `type` (`asset`, `ecmascript`, `typescript`, `css`, `css-module`, `json` (parse and export), `wasm`, `node` (native Node.js addon), `raw` (alias of `text`), `text` (contents as a string), `bytes` (contents as a `Uint8Array`)). |
 | `resolveAlias` | Maps import specifiers to replacement modules (supports `browser` conditional aliasing). |
 | `resolveExtensions` | Overrides resolved file extensions (must include defaults). |
 | `debugIds` | Generates debug IDs in JS bundles/source maps. |
@@ -56,6 +56,143 @@ const nextConfig: NextConfig = {
 - Supported webpack loaders (partial API via `loader-runner`): `babel-loader`, `@svgr/webpack`, `svg-inline-loader`, `yaml-loader`, `string-replace-loader`, `raw-loader`, `sass-loader`, `graphql-tag/loader`. Unsupported: `importModule`/`loadModule`, `emitFile`, most of `fs` (only `fs.readFile`), `version`/`mode`/`target`, `utils`/`resolve`.
 - Per-import loader config via import attributes: `import x from './f.txt' with { turbopackLoader: 'raw-loader', turbopackAs: '*.js' }`.
 - Migrate from `experimental.turbo`: `npx @next/codemod@latest next-experimental-turbo-to-turbopack .`
+- `experimental.turbopackAdditionalRoots` (added `16.4.0`): lets Turbopack follow symbolic links whose targets are outside `turbopack.root` (e.g. `npm link`, pnpm global virtual store). Each key identifies one root, with `path` absolute or relative to where Next.js runs, e.g. `turbopackAdditionalRoots: { linkedPackages: { path: path.join(__dirname, '../packages') } }`. Roots can only be crossed at symlink boundaries (direct relative imports that escape a root are unsupported); the symlink and its target must exist on the build machine before `next dev` / `next build`; on Windows builds need Developer Mode or elevated permissions for symlinks.
+
+## turbopackChunking
+
+**Experimental.** Configures Turbopack's production client JavaScript chunker (`experimental.turbopackChunking`). Defaults:
+
+```ts filename="next.config.ts"
+const nextConfig = {
+  experimental: {
+    turbopackChunking: {
+      minChunkSize: 50000,
+      maxChunkCountPerGroup: 40,
+      maxMergeChunkSize: 200000,
+      minComponentChunkSize: 20000,
+      generateComponentChunks: false,
+    },
+  },
+} satisfies NextConfig
+```
+
+| Option | Default | Description |
+|------|---------|-------------|
+| `minChunkSize` | `50000` | Avoids creating more than one chunk smaller than this by merging small chunks (bytes of uncompressed, unminified code, roughly 5x the compressed minified size). |
+| `maxChunkCountPerGroup` | `40` | Max chunks per chunk group (a route or dynamic import); lower = more merging and fewer requests, higher = smaller chunks and more cache hits on navigation. |
+| `maxMergeChunkSize` | `200000` | A chunk larger than this is never merged with others. |
+| `generateComponentChunks` (App Router) | `false` | Each merged production chunk also emits its constituent component chunks, so the runtime can fetch only the ones it lacks. |
+| `minComponentChunkSize` (App Router) | `20000` | Component chunks smaller than this are folded into a single component. |
+| `clusters` | — | Arrays of `RegExp` of routes commonly visited together; chunks shared within a cluster merge more eagerly. |
+| `firstPageLoadPriority` | — | Number `0`-`1`: weight of merging for a single page load (bounce rate is a good approximation). |
+| `priorityRoutes` | — | `RegExp[]` of routes often landed on first (e.g. homepage); merged more eagerly. |
+| `priorityBoost` | `1.5` | Multiplier on the single-request probability of `priorityRoutes`. |
+| `requestCost` | `200000` | Estimated cost of an additional request in bytes of uncompressed, unminified code; larger biases toward fewer, larger chunks. |
+
+## turbopackGc
+
+**Experimental** (added `v16.4.0`). Enables garbage collection of unreachable work in Turbopack's in-memory and persistent caches, for both `next dev` and `next build` on Turbopack.
+
+```ts filename="next.config.ts"
+const nextConfig: NextConfig = {
+  experimental: { turbopackGc: { minProgressMs: 200, rootTtlMs: 24 * 60 * 60 * 1000 } },
+}
+```
+
+| Value | Description |
+|------|-------------|
+| `false` (default) | Disables garbage collection. |
+| `true` | Enables it with default timings. |
+| `{ minProgressMs?, rootTtlMs? }` | `minProgressMs` (default `100`): minimum time a GC pass runs before honoring an interruption. `rootTtlMs` (default `259200000`, 3 days): time a GC root may stay unanchored before removal. |
+
+- Requires the Turbopack FileSystem Cache (no effect when it is disabled for the current command). In long-running read-write sessions, GC is disabled when `turbopackMemoryEviction` is `false`.
+
+## turbopackLazyDynamicImports
+
+**Experimental** (added `v16.4.0`). Defers compiling client-side dynamic `import()` targets until the browser first requests their chunk during `next dev`.
+
+```ts filename="next.config.ts"
+const nextConfig: NextConfig = {
+  experimental: { turbopackLazyDynamicImports: true },
+}
+```
+
+- Default `false`; affects only Turbopack in `next dev`, not production builds. Errors in a deferred module appear when it is first compiled. Some `next/dynamic` targets are still compiled eagerly.
+
+## turbopackLazyDynamicImportsSSR
+
+**Experimental** (added `v16.4.0`). Defers compiling dynamic imports (for example React `lazy` in Client Components) until server rendering first reaches them during `next dev`.
+
+```ts filename="next.config.ts"
+const nextConfig: NextConfig = {
+  experimental: { turbopackLazyDynamicImportsSSR: true },
+}
+```
+
+- Default `false`; affects only the Node.js runtime with Turbopack in `next dev`. To defer client-side dynamic imports until the browser requests them, use `turbopackLazyDynamicImports`.
+
+## turbopackMemoryEviction
+
+**Experimental** (released in `v16.3.0`). Controls whether Turbopack reclaims memory while the persistent (FileSystem) cache is enabled: after a snapshot is written to disk it can evict in-memory copies and reload them on demand.
+
+```ts filename="next.config.ts"
+const nextConfig: NextConfig = {
+  experimental: { turbopackMemoryEviction: 'auto' },
+}
+```
+
+| Value | Description |
+|------|-------------|
+| `false` | Never evict; data stays in memory for the process lifetime. |
+| `'auto'` (default) | Evict after a snapshot only once enough memory has been allocated since the last eviction, using thresholds and OS memory-pressure feedback. |
+| `'full'` | Evict all possible data every time it saves to disk. |
+
+- Only has an effect in `next dev` sessions with the FileSystem Cache enabled.
+
+## turbopackPluginRuntimeStrategy
+
+**Experimental** (added `v16.4.0`). Chooses whether Turbopack runs Node.js evaluation (webpack loaders, Babel, PostCSS) in child processes or worker threads.
+
+```ts filename="next.config.ts"
+const nextConfig: NextConfig = {
+  experimental: { turbopackPluginRuntimeStrategy: 'workerThreads' },
+}
+```
+
+| Value | Default | Description |
+|------|---------|-------------|
+| `'childProcesses'` | Yes | Pool of child processes communicating over sockets. |
+| `'workerThreads'` | No | Worker threads within the Next.js process; can reduce memory and CPU overhead. |
+| `'forceWorkerThreads'` | No | Uses worker threads even on Node.js versions affected by a worker-thread teardown issue (can abort the process). |
+
+- On Node.js 24.13.1 and newer, a worker-thread teardown issue can abort the process; `'workerThreads'` on an affected version prints a warning and falls back to `'childProcesses'`.
+
+## turbopackRustReactCompiler
+
+**Experimental** (introduced `v16.3.0`). Runs the native Rust port of the React Compiler inside Turbopack instead of the Babel transform.
+
+```ts filename="next.config.ts"
+const nextConfig: NextConfig = {
+  reactCompiler: true,
+  experimental: { turbopackRustReactCompiler: true },
+}
+```
+
+- Requires `reactCompiler` to be enabled (it only selects the implementation); Turbopack only (webpack throws an error); no need to install `babel-plugin-react-compiler`.
+
+## instrumentationClientInject
+
+Introduced `v16.3.0`. A list of modules imported on the client for side effects before the project's `instrumentation-client.{js,ts}` runs, ahead of React hydration. Primarily for `next.config.js` plugins (e.g. `withSentry`); application code should use the `instrumentation-client` file convention directly.
+
+```js filename="next.config.js"
+module.exports = {
+  instrumentationClientInject: ['my-analytics-package', './lib/sentry-client.js'],
+}
+```
+
+- Each entry is a bare npm package name (resolved from `node_modules`) or a path relative to the project root.
+- Run order: each entry in array order, then `instrumentation-client.{js,ts}`, then React hydration.
+- An injected module may export `onRouterTransitionStart` (same signature as in `instrumentation-client`); Next.js composes one hook calling them in array order, with the user file's hook last.
 
 ## turbopackFileSystemCache
 

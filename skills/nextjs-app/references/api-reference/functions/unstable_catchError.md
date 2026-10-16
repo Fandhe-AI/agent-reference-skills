@@ -15,10 +15,12 @@ function ErrorFallback(
   props: { title: string },
   { error, unstable_retry }: ErrorInfo
 ) {
+  const message = error instanceof Error ? error.message : String(error)
+
   return (
     <div>
       <h2>{props.title}</h2>
-      <p>{error.message}</p>
+      <p>{message}</p>
       <button onClick={() => unstable_retry()}>Try again</button>
     </div>
   )
@@ -37,7 +39,7 @@ export default unstable_catchError(ErrorFallback)
 
 | Property | Type | Description |
 | --- | --- | --- |
-| `error` | `Error` | The caught error instance. |
+| `error` | `unknown` | The value that was thrown (typed `unknown` in the current `catchError` docs). Narrow it (for example with `instanceof Error`) before reading `message`. |
 | `unstable_retry` | `() => void` | Re-fetches and re-renders the boundary's children; replaces fallback on success. |
 | `reset` | `() => void` | Resets error state and re-renders without re-fetching (won't recover Server Component errors). |
 

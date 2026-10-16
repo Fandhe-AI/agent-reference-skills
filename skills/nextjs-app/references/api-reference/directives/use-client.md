@@ -25,6 +25,7 @@ Add `'use client'` at the top of the file, before any imports, to mark the clien
 
 ## Notes
 
+- The directive applies to the entire module (a file-wide boundary, since the module is bundled and shipped to the browser); it cannot be placed inside a component or function.
 - Not every file containing Client Components needs the directive — only the files whose components should be usable directly within Server Components.
 - Props passed to Client Components must be [serializable](https://react.dev/reference/rsc/use-client#serializable-types) (e.g. functions passed directly as props are not serializable).
 - Client Components can be nested inside Server Components for composition: Server Components handle static content/data fetching, Client Components handle interactivity.

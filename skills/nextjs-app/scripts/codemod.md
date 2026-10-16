@@ -1,6 +1,6 @@
 # Codemod
 
-`@next/codemod` CLI でメジャー / マイナーアップグレード時のコード自動変換を行うコマンド集。
+`@next/codemod` CLI でメジャー / マイナーアップグレード時のコード自動変換を行うコマンド集。対象 Next.js v16.4.2。
 
 > **警告**: codemod は既定で対象ファイルを直接書き換える。実行前に `--dry --print` で変更内容を確認するか、事前に git commit しておくことを推奨する。
 
@@ -65,6 +65,54 @@ npx @next/codemod upgrade canary
 ```sh
 npx @next/codemod upgrade --verbose
 ```
+
+## React 関連のアップグレード処理をスキップする
+
+```sh
+npx @next/codemod upgrade --skip-react-upgrade
+```
+
+React の依存関係・型・overrides を維持し、React codemod をスキップする。
+
+## ESLint 関連のアップグレード処理をスキップする
+
+```sh
+npx @next/codemod upgrade --skip-eslint-upgrade
+```
+
+`eslint` / `eslint-config-next` / `@next/eslint-plugin-next` を維持し、`next-lint-to-eslint-cli` をスキップする。必要な lint 移行は検証前に手動で完了させる。
+
+## 対話プロンプトをすべて既定値で進める
+
+```sh
+npx @next/codemod upgrade canary --yes
+```
+
+`-y, --yes` は全プロンプトを既定値で受け入れる（React 18 超へのアップグレード、Turbopack 有効化、推奨 codemod の全適用、React 19 codemod の実行）。stdin が TTY でない環境（CI・AI コーディングエージェント）では自動的に有効になる。
+
+## コーディングエージェントにアップグレードを任せる（experimental）
+
+```sh
+npx next@canary upgrade --agent=latest
+```
+
+codemod を実行し残りの移行作業と検証までエージェントに任せる場合は、`@next/codemod upgrade` の代わりにこちらを使う。詳細は `cli.md` を参照。
+
+## Cache Components の検証から全ルートをオプトアウトする（16.3）
+
+```sh
+npx @next/codemod@canary cache-components-instant-false ./app
+```
+
+`{page,layout,default}` ファイルのうち `instant` を export していないものに `export const instant = false` を追加し、`cacheComponents` を有効化したあとルート単位で外せるようにする。Client Component（`"use client"`）と `instant` 宣言済みファイルはスキップする。`src/` プロジェクトでは `./src/app` を渡す（パスを誤ると失敗せず `0 ok` と表示されるため、ファイル数を確認する）。
+
+## Partial Prefetching 有効化後に prefetch = 'partial' を削除する（16.3）
+
+```sh
+npx @next/codemod@canary remove-partial-prefetch ./app
+```
+
+`{page,layout}` ファイルから `export const prefetch = 'partial'` を削除し、`partialPrefetching` をグローバルに有効化したあとの冗長なルート単位 opt-in を外す。`'partial'` 以外の値（`prefetch = 'force-disabled'` など）は残す。`src/` プロジェクトでは `./src/app` を渡す。
 
 ## experimental_ppr の Route Segment Config を削除する（16.0, App Router）
 
@@ -132,4 +180,4 @@ npx @next/codemod@latest next-og-import .
 npx @next/codemod@latest metadata-to-viewport-export .
 ```
 
-Source: https://nextjs.org/docs/app/guides/upgrading/codemods
+Source: https://nextjs.org/docs/app/guides/upgrading/codemods, https://nextjs.org/docs/app/guides/upgrading/agent-upgrade

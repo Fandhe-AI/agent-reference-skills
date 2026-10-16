@@ -38,6 +38,8 @@ export default function Page() {
 | Name | Type | Description |
 |------|------|-------------|
 | `--yes` | flag | Skips prompts using saved preferences or defaults (TypeScript, Tailwind CSS, ESLint, App Router, Turbopack, `@/*` alias, `AGENTS.md`) |
+| Recommended defaults | prompt | "Yes, use recommended defaults": TypeScript, ESLint, No React Compiler, Tailwind CSS, No `src/` directory, App Router, Cache Components, `AGENTS.md` (alternatives: reuse previous settings, or customize) |
+| Cache Components | prompt | "Would you like to use Cache Components?" (customize settings) |
 | TypeScript | prompt | Minimum TypeScript version `v5.1.0`; rename a file to `.ts`/`.tsx` and run `next dev` to auto-configure |
 | Linter | prompt | ESLint or Biome |
 | `src/` directory | prompt | Optional folder to separate app code from config files |
@@ -49,6 +51,7 @@ export default function Page() {
 - `next dev` uses Turbopack by default; run with `--webpack` to use Webpack instead
 - Starting with Next.js 16, `next build` no longer runs the linter automatically; run lint via `package.json` scripts
 - If the root layout is missing, `next dev` automatically creates one
+- Upgrading also updates the documentation bundled inside the `next` package at `node_modules/next/dist/docs/`, so AI coding agents in the project work from the installed version rather than training data. To have a coding agent perform and verify the upgrade, run `npx next@canary upgrade --agent=latest`
 - Manual install requires `next`, `react`, `react-dom`; the App Router uses React canary releases bundled with `next`
 
 ## Related

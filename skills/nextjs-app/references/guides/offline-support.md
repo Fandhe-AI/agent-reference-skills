@@ -47,6 +47,7 @@ export function ConnectivityFallback() {
 - This is an **experimental** feature, not recommended for production.
 - Only applies to soft navigations into prefetched routes and Server Action calls from the current page — a full page reload while offline still fails because the browser needs the network for the HTML (use a service worker / Progressive Web Apps guide for full offline loads).
 - Requests issued directly via client-side `fetch()` or libraries like React Query/SWR are unaffected and follow their own retry policy.
+- If the route also prefetches its per-link URL data ahead of the click (`prefetch={true}`), the destination renders its content from that prefetch immediately, even offline, instead of waiting for the connection to return (see the Optimizing prefetching guide, `optimizing-prefetching.md`, for per-link prefetching).
 - Without Cache Components, a route-level `loading.tsx` gives the same offline behavior at the segment level (the boundary Next.js prefetches as the route's shell).
 - Test with `next build && next start`, not `next dev` — dev mode is not a reliable reference for offline behavior. Use Chrome/Firefox DevTools network throttling or real airplane-mode toggling.
 

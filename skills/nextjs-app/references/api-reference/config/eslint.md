@@ -33,7 +33,9 @@ Notable `@next/eslint-plugin-next` rules (all enabled in the recommended config)
 ## Notes
 
 - **`next lint` and the `eslint` next.config.js option were removed in Next.js 16** in favor of running the ESLint CLI directly; a codemod (`migrate-from-next-lint-to-eslint-cli`) is available to help migrate.
-- Monorepo setups: set `settings.next.rootDir` (path, glob, or array) when Next.js isn't installed at the ESLint root.
+- `eslint-config-next` supports ESLint 9 and ESLint 10. ESLint 10 requires Node.js `^20.19.0`, `^22.13.0`, or `>=24`. Some bundled plugins do not list ESLint 10 in their peer dependencies yet, so your package manager may show peer dependency warnings, or fail when strict peer dependencies are enabled.
+- Starting with `eslint-config-next@16.4.0`, default React version detection works with ESLint 10; a `settings.react.version` override added as a workaround for a `context.getFilename` error can be removed (version history `v16.4.0`: ESLint 10 compatibility).
+- Monorepo setups: set `settings.next.rootDir` (path, glob, or array) when Next.js isn't installed at the ESLint root. When using `@next/eslint-plugin-next` directly in flat config, register it under the plugin key `'@next/next'` (`plugins: { '@next/next': eslintNextPlugin }`).
 - Disable/override individual rules via the `rules` property in your flat config array.
 - Pair with `eslint-config-prettier` (as a later entry in the config array) to avoid conflicts between ESLint formatting rules and Prettier.
 - If you already have conflicting plugins (`react`, `react-hooks`, `jsx-a11y`, `import`) or custom `parserOptions`/resolvers configured, use `@next/eslint-plugin-next` directly instead of spreading `eslint-config-next`.

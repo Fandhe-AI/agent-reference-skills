@@ -1,6 +1,6 @@
 # CLI
 
-`next` CLI で App Router アプリケーションを開発・ビルド・起動・lint・型生成するコマンド集。
+`next` CLI で App Router アプリケーションを開発・ビルド・起動・lint・型生成するコマンド集。対象 Next.js v16.4.2。
 
 > npm 経由でフラグを渡す場合は `npm run dev -- --port 4000` のように `--` を挟む必要がある（pnpm / yarn / bun は不要）。
 
@@ -49,6 +49,14 @@ App Router の各ルートについて static (`○`) / dynamic (`ƒ`) の情報
 ```sh
 next build --turbopack
 ```
+
+## Turbopack ビルド時にバンドル解析データを生成する
+
+```sh
+next build --analyze
+```
+
+インタラクティブアナライザー用の解析データを生成する。`next analyze` の使い方は `bundle-analyzer.md` を参照。
 
 ## verbose なビルドログを出力する
 
@@ -152,6 +160,8 @@ next typegen && tsc --noEmit
 next upgrade
 ```
 
+`--agent` なしではインタラクティブな codemod ワークフローを実行する。
+
 ## 特定バージョン・チャンネルにアップグレードする
 
 ```sh
@@ -160,6 +170,38 @@ next upgrade --revision canary
 
 ```sh
 next upgrade --revision 15.0.0
+```
+
+`--revision` は Next.js のバージョンまたはタグ（`latest` / `canary` / `15.0.0` など）を指定する。省略時は現在インストール済みのリリースチャンネルが対象。
+
+## ディレクトリを指定してアップグレードする
+
+```sh
+next upgrade apps/web
+```
+
+`[directory]` 省略時はカレントディレクトリが対象。
+
+## コーディングエージェントでアップグレードする（experimental）
+
+```sh
+npx next@canary upgrade --agent=latest
+```
+
+```sh
+npx next@canary upgrade --agent=security
+```
+
+```sh
+npx next@canary upgrade --agent=experimental-future
+```
+
+policy は `security`（影響のある stable 版に対し最も早い対象メジャー内の最新の安全なリリース）/ `latest`（npm の `latest` stable、canary アプリは `canary`）/ `experimental-future`（`latest` の後に適用可能な Future Defaults を採用）。`--agent` の値を省略すると `experimental.agentUpgrade` の値、無ければ `security` が使われる。`--revision` とは併用できない。この機能は `version: experimental`（公式ドキュメント上の表記）。詳細は https://nextjs.org/docs/app/guides/upgrading/agent-upgrade。
+
+## verbose 出力でアップグレードする
+
+```sh
+next upgrade --verbose
 ```
 
 ## CPU プロファイルを取得する
@@ -176,6 +218,6 @@ next dev --experimental-cpu-prof
 next start --experimental-cpu-prof
 ```
 
-プロファイルは `.next/cpu-profiles/` に保存され、Chrome DevTools（Performance タブ → Load profile）等で開ける。
+プロファイルは `.next-profiles/` に保存され、Chrome DevTools（Performance タブ → Load profile）等で開ける。
 
-Source: https://nextjs.org/docs/app/api-reference/cli/next, https://nextjs.org/docs/app/api-reference/config/eslint
+Source: https://nextjs.org/docs/app/api-reference/cli/next, https://nextjs.org/docs/app/api-reference/config/eslint, https://nextjs.org/docs/app/guides/upgrading/agent-upgrade

@@ -20,6 +20,8 @@ export default async function Profile({ params }) {
 
 - Throws a `NEXT_HTTP_ERROR_FALLBACK;404` error and terminates rendering of the segment where it's called.
 - Does not require `return notFound()` (uses the TypeScript `never` type).
+- Inside `<Suspense>`: the response has already started streaming before `notFound()` runs, so the status stays `200` and Next.js adds `noindex`. Calling it before streaming starts returns `404`.
+- If `notFound()` is reached during prerendering, the route can remain `○` Static and serve a `404`. A request-time check can run in Proxy before the page renders.
 - Pair with a `not-found.js` file convention to render custom Not Found UI within the segment.
 - Introduced in `v13.0.0`.
 

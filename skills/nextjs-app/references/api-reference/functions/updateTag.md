@@ -32,7 +32,7 @@ updateTag(tag: string): void
 
 ## Notes
 
-- Callable **only** within Server Actions — throws an error in Route Handlers, Client Components, or other contexts; use `revalidateTag` there instead.
+- Callable **only** within Server Actions — throws an error (`updateTag can only be called from within a Server Action`) in Route Handlers, Client Components, or other contexts; use `revalidateTag` there instead.
 - Immediately expires cached data for the tag — the next request waits for fresh data rather than serving stale content.
 - Differs from `revalidateTag`: `revalidateTag` (with `profile="max"`) serves stale content while revalidating in the background; `updateTag` blocks for fresh data, ensuring the acting user sees their own change immediately.
 

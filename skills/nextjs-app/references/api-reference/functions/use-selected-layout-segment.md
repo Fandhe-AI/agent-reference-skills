@@ -19,7 +19,7 @@ export default function ExampleClientComponent() {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `parallelRoutesKey` (optional) | `string` | Reads the active segment within a specific parallel routes slot. |
+| `parallelRouteKey` (optional) | `string` | Reads the active segment within a specific parallel routes slot. |
 
 ## Notes
 

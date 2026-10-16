@@ -22,10 +22,12 @@ export async function createUser(data: { name: string; email: string }) {
 Inline usage inside a Server Component, marking a single function as a Server Function passed to a Client Component:
 
 ```tsx filename="app/posts/[id]/page.tsx"
-export default async function PostPage({ params }: { params: { id: string } }) {
+export default async function PostPage({ params }: PageProps<'/posts/[id]'>) {
+  const { id } = await params // params is a Promise
+
   async function updatePost(formData: FormData) {
     'use server'
-    await savePost(params.id, formData)
+    await savePost(id, formData)
   }
 
   return <EditPost updatePostAction={updatePost} />
@@ -36,6 +38,7 @@ To call a Server Function from a Client Component, define it in a dedicated file
 
 ## Notes
 
+- Place `'use server'` at the top of a file to cover every export, or at the top of a function to cover only that function. Server Functions must be `async` (every export covered by a file-level directive must be `async`). Declare it in server modules, not in a `'use client'` module.
 - Always authenticate/authorize inside the Server Function (read auth from cookies/headers rather than accepting tokens as parameters).
 - Return values are serialized and sent to the client — return only the data the UI needs, not raw database records.
 - For Next.js-specific Server Action behaviors (response model, security, configuration, deployment), see [Server Actions and Mutations](https://nextjs.org/docs/app/guides/server-actions).

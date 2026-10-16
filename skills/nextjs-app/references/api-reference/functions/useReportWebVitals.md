@@ -24,10 +24,14 @@ export function WebVitals() {
 | Property | Description |
 | --- | --- |
 | `id` | Unique identifier for the metric within the current page load. |
-| `name` | Metric name (TTFB, FCP, LCP, FID, CLS, INP). |
+| `name` | Metric name (TTFB, FCP, LCP, CLS, INP). |
 | `delta` | Difference between current and previous value (ms). |
 | `entries` | Array of associated `PerformanceEntry` objects. |
-| `navigationType` | Navigation type that triggered collection (`navigate`, `reload`, `prerender`, `back-forward`, `back-forward-cache`, `restore`). |
+| `navigationType` | Navigation type that triggered collection (`navigate`, `reload`, `prerender`, `back-forward`, `back-forward-cache`, `restore`, `soft-navigation`). |
+| `navigationId` | ID of the navigation for which the metric was measured. |
+| `navigationURL` | URL of the navigation for which the metric was measured; useful for soft navigations because a metric may be reported after the URL has changed again. |
+| `navigationStartTime` | Start time of the navigation for which the metric was measured. |
+| `navigationInteractionId` | For soft navigations, the interaction ID that triggered the navigation. |
 | `rating` | Qualitative rating: `'good'`, `'needs-improvement'`, `'poor'`. |
 | `value` | Actual metric value/duration (ms). |
 

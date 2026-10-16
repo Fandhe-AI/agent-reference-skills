@@ -38,6 +38,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 - `next dev` calls it on navigation; `next build` calls it before generating Layouts/Pages; it is not called again during ISR revalidation.
 - Replaces `getStaticPaths` from the Pages Router.
 - With Cache Components enabled, must return at least one param — empty arrays cause a build error (use a placeholder param + `notFound()` if actual values aren't known at build time).
+- A dynamic route that uses `ensureStatic = 'navigation'` must return at least one params object, and every object must include all dynamic parameters for the route.
 - For multiple dynamic segments in one route, params can be generated bottom-up (child generates all segments) or top-down (parent generates its own, child receives them via its function's argument).
 - A child segment's `generateStaticParams` runs once per param set the parent generates; can only generate params for segments at or below itself in the route.
 - `fetch` calls are automatically memoized across all `generate`-prefixed functions, layouts, pages, and Server Components.

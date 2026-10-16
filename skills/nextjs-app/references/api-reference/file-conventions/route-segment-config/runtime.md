@@ -19,7 +19,7 @@ export const runtime = 'nodejs'
 ## Notes
 
 - The Edge Runtime is deprecated; remove the `runtime` export from route files.
-- `runtime: 'edge'` is not supported for Cache Components.
+- When Cache Components is enabled, remove the `runtime` export entirely, including `runtime = 'nodejs'`: Cache Components uses the default Node.js runtime and does not support the `runtime` route segment config (`runtime: 'edge'` is likewise not supported).
 - This option cannot be used in `proxy.js`.
 - `runtime = 'experimental-edge'` was deprecated in `v15.0.0-RC` — a codemod is available to transform it to `'edge'`.
 

@@ -24,6 +24,7 @@ export async function getData() {
 ## Notes
 
 - Requires the `cacheComponents` flag enabled in `next.config.ts`.
+- Version history: `v16.0.0` stabilized `cacheTag` and deprecated `unstable_cacheTag` (update imports from `unstable_cacheTag` to `cacheTag`).
 - Idempotent — applying the same tag multiple times has no additional effect.
 - A single `cacheTag()` call accepts up to 128 tags, each up to 256 characters; excess/overlong tags are dropped with a console warning.
 - Use `updateTag` inside a Server Function for read-your-own-writes; use `revalidateTag` when stale data is acceptable while revalidation happens in the background.

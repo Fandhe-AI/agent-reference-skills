@@ -21,7 +21,8 @@ Loading UI components do not accept any parameters.
 - Fallback UI is prefetched, making navigation feel immediate; navigation is interruptible and shared layouts stay interactive while new segments load.
 - In the component hierarchy, `loading.js` wraps `not-found.js`, `page.js`, and nested `layout.js` in a `<Suspense>` boundary — it does **not** wrap `layout.js`, `template.js`, or `error.js` in the same segment.
 - If the layout itself accesses uncached/runtime data (`cookies()`, `headers()`, uncached fetch), `loading.js` won't show a fallback for it; with Cache Components, that access must be wrapped in its own `<Suspense>` or a build-time error occurs.
-- Streaming responses always return a `200` status; `notFound()`/`redirect()` communicate outcomes within the streamed content rather than via HTTP status once headers are sent.
+- Status codes: a streamed page response begins with `200`; the initial response headers fix the status for the rest of the response. Next.js can then stream `redirect`, `notFound`, `forbidden` or `unauthorized` outcomes within the content (a streamed 404 page includes `<meta name="robots" content="noindex">`; some crawlers may label these "soft 404s").
+- To return `404` / `403` / `401` for compliance or analytics, run the check before the body starts streaming (for example in Proxy: check the slug, then rewrite to a not-found route or return a `404` response). Keep Proxy checks fast and avoid fetching full content there.
 - Static export does not support `loading.js` streaming (see Platform Support: Node.js server / Docker — yes; Static export — no; Adapters — platform-specific).
 - Introduced in `v13.0.0`.
 

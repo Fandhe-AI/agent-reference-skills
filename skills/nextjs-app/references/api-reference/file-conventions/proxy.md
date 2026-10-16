@@ -17,6 +17,24 @@ export const config = {
 }
 ```
 
+Proxy receives two arguments, `request` and `event`, in that order; declare only the ones you use. `event` is a `NextFetchEvent` whose `waitUntil(promise)` keeps the Proxy invocation alive until the promise settles (background work such as logging or analytics):
+
+```ts filename="proxy.ts"
+import { NextResponse } from 'next/server'
+import type { NextFetchEvent, NextRequest } from 'next/server'
+
+export function proxy(req: NextRequest, event: NextFetchEvent) {
+  event.waitUntil(
+    fetch('https://my-analytics-platform.com', {
+      method: 'POST',
+      body: JSON.stringify({ pathname: req.nextUrl.pathname }),
+    })
+  )
+
+  return NextResponse.next()
+}
+```
+
 ## Options / Props
 
 | Name | Type | Description |
@@ -33,13 +51,14 @@ export const config = {
 - The `runtime` route segment config option is not available in proxy files — setting it throws an error.
 - Execution order: `next.config.js` `headers` → `next.config.js` `redirects` → proxy → `beforeFiles` rewrites → filesystem routes → `afterFiles` rewrites → dynamic routes → `fallback` rewrites. Server Functions are not separate routes in this chain — they're POST requests to the route they're used on, so a matcher excluding a path also skips Server Function calls there.
 - `matcher` values must be constants (statically analyzable at build time); dynamic variables are ignored.
-- Advanced flags: `skipProxyUrlNormalize` (formerly `skipMiddlewareUrlNormalize`) and `skipTrailingSlashRedirect`, set in `next.config.js`.
+- `event: NextFetchEvent` extends the native `FetchEvent` and exposes `waitUntil(promise)`. The `NextProxy` type infers both `request` (`NextRequest`) and `event` (`NextFetchEvent`).
+- Advanced flags (added in `v13.1`): `skipProxyUrlNormalize` (formerly `skipMiddlewareUrlNormalize`) and `skipTrailingSlashRedirect`, set in `next.config.js` (see the routing config page: `config/routing.md`). `skipTrailingSlashRedirect` disables Next.js trailing-slash redirects so Proxy can handle them; `skipProxyUrlNormalize` disables URL normalization so direct visits and client transitions are handled the same.
 - Even when `_next/data` is excluded via a negative matcher, proxy still runs for `_next/data` routes intentionally, to avoid accidentally leaving data routes unprotected.
 - Unit testing is experimental (`v15.1`+) via `next/experimental/testing/server` (`unstable_doesProxyMatch`, `isRewrite`, `getRewrittenUrl`).
 - Static export is not supported for proxy (Node.js server / Docker: yes; Static export: no; Adapters: platform-specific).
 
 ## Related
 
-- [NextRequest](../functions/next-request.md)
-- [NextResponse](../functions/next-response.md)
+- [NextRequest](../functions/NextRequest.md)
+- [NextResponse](../functions/NextResponse.md)
 - [route-segment-config](./route-segment-config.md)

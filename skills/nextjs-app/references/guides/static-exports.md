@@ -28,7 +28,7 @@ module.exports = nextConfig
 ## Notes
 
 - Server Components run at build time (`next build`) like traditional SSG; Client Components can fetch data client-side (e.g. with SWR) for SPA-style behavior.
-- Route Handlers only support `GET` and render to a static file at build time; they cannot read dynamic values from the incoming request.
+- Route Handlers only support `GET` and render to a static file at build time; they cannot read dynamic values from the incoming request. To ensure they are prerendered, you must explicitly mark the handler static with `export const dynamic = 'force-static'` when a static export is enabled, e.g. `export const dynamic = 'force-static'` then `export async function GET() { return Response.json({ name: 'Lee' }) }` in `app/data.json/route.ts` produces `data.json` containing `{ name: 'Lee' }` at `next build`.
 - Unsupported features: Dynamic Routes with `dynamicParams: true` or without `generateStaticParams()`, Request-based Route Handlers, `cookies()`, rewrites/redirects/headers, Proxy, ISR, default `next/image` loader, Draft Mode, Server Actions, Intercepting Routes.
 - Attempting unsupported features errors similarly to `export const dynamic = 'error'`.
 - Deployable to any static file server (e.g. Nginx) using `try_files` rewrites for clean URLs.

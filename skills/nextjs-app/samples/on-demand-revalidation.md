@@ -24,8 +24,8 @@ export async function updateUser(id: string) {
   // Refresh a specific route's cache on next visit
   revalidatePath('/profile')
 
-  // Refresh every fetch tagged 'user' across the app
-  revalidateTag('user')
+  // Mark every fetch tagged 'user' stale (stale-while-revalidate)
+  revalidateTag('user', 'max')
 }
 ```
 
@@ -33,5 +33,6 @@ export async function updateUser(id: string) {
 
 - Both functions can only be called from Server Actions or Route Handlers, never from Client Components.
 - `revalidatePath(path)` invalidates a literal path; pass `revalidatePath('/blog/[slug]', 'page')` to invalidate every page matching a dynamic route pattern.
-- `revalidateTag(tag)` invalidates every cached `fetch` (or `use cache` function) tagged with `next: { tags: [...] }` / `cacheTag(...)`, regardless of which route rendered it.
+- `revalidateTag(tag, profile)` takes a required second argument (`"max"` recommended, or a cacheLife profile / `{ expire }` object). The single-argument form `revalidateTag(tag)` is deprecated and may be removed in a future version.
+- For immediate expiration inside a Server Action (read-your-own-writes), use `updateTag(tag)` instead; `revalidateTag(tag, { expire: 0 })` is for webhooks / Route Handlers called by external systems.
 - Data is not refetched immediately — the cache entry is marked stale and refreshed the next time the affected path/tag is visited.

@@ -85,6 +85,38 @@ module.exports = {
 
 - Disabled by default; specify the metric names (`NextWebVitalsMetric` values) you want attribution for.
 
+## useTypeScriptCli
+
+**Experimental.** By default `next build` runs the project-local `tsc` command for type checking instead of loading the TypeScript JavaScript compiler API. This supports TypeScript 6 and enables TypeScript 7 while its JavaScript API is unavailable. Set `false` to use the compiler API instead (with TypeScript 7 this makes `next build` exit).
+
+```ts filename="next.config.ts"
+const nextConfig: NextConfig = {
+  experimental: {
+    useTypeScriptCli: false, // opt out of the tsc CLI checker (enabled by default)
+  },
+}
+```
+
+- Next.js still generates `next-env.d.ts` and route types and applies its recommended `tsconfig` settings before running the checker.
+- Diagnostics are printed directly from `tsc` (Next.js code frames and error rewriting are not applied). The whole project selected by the `tsconfig` is checked, including test files; `--debug-build-paths` does not limit this set and warns when combined with the CLI checker.
+- `typescript.tsconfigPath` selects the project passed to `tsc`; `typescript.ignoreBuildErrors` skips type checking including the CLI checker.
+
+## exposeTestingApiInProductionBuild
+
+**Experimental** (introduced `v16.2.0`). Includes the Instant Navigation testing API in a production build, used by the `instant()` helper from `@next/playwright` to pause request-time content while an end-to-end test asserts on the immediately available UI. Requires `cacheComponents`; development builds expose the testing API automatically when Cache Components is enabled.
+
+```ts filename="next.config.ts"
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+  experimental: {
+    exposeTestingApiInProductionBuild: process.env.EXPOSE_TESTING_API === '1',
+  },
+}
+```
+
+- Set the condition at build time: `EXPOSE_TESTING_API=1 pnpm build`, then `pnpm start`. Setting it only for `next start` does not add the API to an existing build.
+- `false` or unset (default) excludes the API. Do not enable it for a user-facing production deployment; restrict it to local production builds, previews or other test environments.
+
 ## Related
 
 - [typescript.md](./typescript.md)

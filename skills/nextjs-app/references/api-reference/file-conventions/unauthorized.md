@@ -1,6 +1,6 @@
 # unauthorized.js
 
-Renders UI when the `unauthorized()` function is invoked during authentication, and returns a `401` status code.
+Renders UI when the `unauthorized()` function is invoked. Before streaming starts, Next.js returns a `401` status code; after streaming starts, the status stays `200` and the unauthorized UI renders in the response. Next.js injects `<meta name="robots" content="noindex" />` in both cases.
 
 ## Signature / Usage
 

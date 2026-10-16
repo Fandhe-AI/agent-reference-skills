@@ -1,6 +1,6 @@
 # Install
 
-`create-next-app` CLI で Next.js App Router プロジェクトを作成するコマンド集。
+`create-next-app` CLI で Next.js App Router プロジェクトを作成するコマンド集。対象 Next.js v16.4.2。
 
 ## デフォルト設定で新規プロジェクトを作成する
 
@@ -8,7 +8,7 @@
 npx create-next-app@latest
 ```
 
-対話形式のプロンプトが表示される。推奨デフォルト（TypeScript, ESLint, Tailwind CSS, App Router, AGENTS.md）を選ぶとそのまま作成される。
+対話形式のプロンプトが表示される。推奨デフォルト（TypeScript, ESLint, No React Compiler, Tailwind CSS, No src/ directory, App Router, Cache Components, AGENTS.md, Agent feedback）を選ぶとそのまま作成される。
 
 ## プロジェクト名とオプションを指定して非対話で作成する
 
@@ -17,6 +17,34 @@ npx create-next-app@latest my-app --typescript --tailwind --eslint --app --src-d
 ```
 
 `--app` で App Router を明示的に有効化する。`--yes` で保存済み設定またはデフォルトをすべて採用し、対話プロンプトをスキップする。
+
+## Cache Components を有効にして作成する
+
+```sh
+npx create-next-app@latest my-app --app --cache-components
+```
+
+`--cache-components` は App Router の default。無効にする場合は `--no-cache-components`（`--no-*` による打ち消し）を使う。
+
+## エージェント向けフィードバック準備の有無を指定する
+
+```sh
+npx create-next-app@latest my-app --app --agent-feedback
+```
+
+```sh
+npx create-next-app@latest my-app --app --no-agent-feedback
+```
+
+`--agent-feedback` は匿名化された Next.js フィードバックをレビュー用に準備する。`--no-agent-feedback` で準備しない。プロンプト上の無効化方法は `experimental.agentFeedback: false`。
+
+## AGENTS.md を含めて作成する
+
+```sh
+npx create-next-app@latest my-app --app --agents-md
+```
+
+コーディングエージェント向けの `AGENTS.md` を含める（default）。
 
 ## Biome を linter として使う
 
@@ -85,6 +113,7 @@ npx create-next-app@latest my-app --disable-git
 | `--ts` / `--typescript`, `--js` / `--javascript` | TypeScript (default) / JavaScript |
 | `--tailwind` | Initialize with Tailwind CSS config (default) |
 | `--react-compiler` | Initialize with React Compiler enabled |
+| `--cache-components` | Initialize with Cache Components enabled (default for App Router) |
 | `--eslint` / `--biome` / `--no-linter` | linter 選択 |
 | `--src-dir` | `src/` ディレクトリ配下に生成 |
 | `--turbopack` / `--webpack` | bundler 指定（Turbopack が default） |
@@ -95,7 +124,8 @@ npx create-next-app@latest my-app --disable-git
 | `--reset-preferences` | 保存済み設定をリセット |
 | `--skip-install` | 依存インストールをスキップ |
 | `--disable-git` | git 初期化をスキップ |
-| `--agents-md` | `AGENTS.md` / `CLAUDE.md` を含める（default） |
+| `--agents-md` | `AGENTS.md` を含める（default） |
+| `--agent-feedback` / `--no-agent-feedback` | 匿名化された Next.js フィードバックをレビュー用に準備する / しない |
 | `--yes` | 前回設定またはデフォルトをすべて採用 |
 | `--no-*` | default オプションの打ち消し（例: `--no-ts`） |
 
