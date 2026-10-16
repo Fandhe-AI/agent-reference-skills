@@ -64,6 +64,8 @@ val keyedVm: MyViewModel = provider.get(key = "second")
 - Since 2.11.0-alpha01, `HasDefaultViewModelProviderFactory.defaultViewModelProviderFactory` has a default implementation (`DefaultViewModelProviderFactory`) and `defaultViewModelCreationExtras` defaults to `CreationExtras.Empty`, so implementers no longer need to override them.
 - Since 2.11.0-alpha03, `CreationExtras.Key` has a `toString()` that shows the class name.
 - Package: `androidx.lifecycle` / `androidx.lifecycle.viewmodel` (module `lifecycle-viewmodel`).
+- Source (primary, signatures and KDoc): Google Maven sources jar https://dl.google.com/android/maven2/androidx/lifecycle/lifecycle-viewmodel/2.11.0/lifecycle-viewmodel-2.11.0-sources.jar (`ViewModelStoreOwnerDefaults.kt`, `HasDefaultViewModelProviderFactory.kt`, `ViewModelProvider.kt`).
+- Release notes: https://developer.android.com/jetpack/androidx/releases/lifecycle (2.11.0-alpha01 / alpha02 / alpha03). The API reference pages on developer.android.com are not fetchable, so the sources jar above is the basis for this page.
 
 ## Related
 

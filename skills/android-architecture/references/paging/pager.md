@@ -47,6 +47,8 @@ val userPagingFlow: Flow<PagingData<User>> = Pager(
 - This is the Android Jetpack Paging 3 (Kotlin, `androidx.paging`) `Pager` — distinct from the layout `Pager` composable in `androidx.compose.foundation.pager`.
 - Exposes a `flow: Flow<PagingData<Value>>` property; apply `.cachedIn(scope)` before exposing it from a `ViewModel`.
 - Package: `androidx.paging`.
+- Source (primary, signatures and KDoc): Google Maven sources jar https://dl.google.com/android/maven2/androidx/paging/paging-common/3.5.3/paging-common-3.5.3-sources.jar (`androidx/paging/Pager.kt`).
+- Release notes: https://developer.android.com/jetpack/androidx/releases/paging (3.5.0 / 3.5.2 / 3.5.3). The API reference pages on developer.android.com are not fetchable, so the sources jar above is the basis for this page.
 
 ## Related
 

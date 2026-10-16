@@ -75,6 +75,8 @@ HorizontalPager(state = pagerState) { page ->
 - The `defaultViewModelCreationExtras` / `defaultViewModelProviderFactory` extensions used in the defaults above are described in viewmodelprovider-factory.md.
 - Unlike most scoped owners, the `ViewModelStore` behind `rememberViewModelStoreOwner(provider, key)` is **not** automatically cleared just because that call site leaves the composition — it is cleared only when `ViewModelStoreProvider.clearKey`/`clearAllKeys` runs for that key, gated internally by the parent `Lifecycle` reaching at least `CREATED` (so rotation, which passes through `DESTROYED`, does not clear it, but permanent removal does).
 - Must explicitly re-provide the returned owner via `CompositionLocalProvider(LocalViewModelStoreOwner provides storeOwner) { ... }` for `viewModel()` / `hiltViewModel()` to pick it up in descendants.
+- Source (primary, signatures and KDoc): Google Maven sources jar https://dl.google.com/android/maven2/androidx/lifecycle/lifecycle-viewmodel-savedstate/2.11.0/lifecycle-viewmodel-savedstate-2.11.0-sources.jar (`commonMain/androidx/lifecycle/viewmodel/ViewModelStoreProvider.kt`, `ViewModelStoreOwnerFactory.kt`).
+- Release notes: https://developer.android.com/jetpack/androidx/releases/lifecycle (2.11.0). The API reference pages on developer.android.com are not fetchable, so the sources jar above is the basis for this page.
 
 ## Related
 
