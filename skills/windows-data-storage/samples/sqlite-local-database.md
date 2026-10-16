@@ -132,7 +132,11 @@ public MainWindow()
 ## Notes
 
 - Difference from the official tutorial: it calls `async void InitializeDatabase()` from the `App` constructor without awaiting, so `GetData` can run before the table is created. This sample returns `Task` and awaits it in `OnLaunched` instead.
-- The `ApplicationData` members used here only work for packaged apps running in an app container. All other Windows apps should access `ApplicationData` members via the `ApplicationDataManager` class.
+- Where the database path comes from depends on how the app is deployed:
+  - Packaged app in an app container: `ApplicationData.Current.LocalFolder` works as shown above.
+  - Packaged app outside an app container (full trust): the SQLite tutorial says to access `ApplicationData` members via the `Windows.Management.Core.ApplicationDataManager` class.
+  - Unpackaged app: the app data docs state "Unpackaged apps do not have access to the system-managed app data stores and should use alternative storage mechanisms such as direct file I/O or registry access." Build the database file path with `System.IO` (for example, under `Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)`) instead of `ApplicationData.Current.LocalFolder`.
+  - Sources: https://learn.microsoft.com/en-us/windows/apps/develop/data/store-and-retrieve-app-data and the SQLite tutorial above.
 - Always use parameterized queries. The tutorial: "Never concatenate user input into a SQL query string. Always use parameters."
 - In a production app, keep connection information such as the database filename in app configuration instead of hard-coding it.
 - SQLite is for on-device storage. For shared enterprise data, use an authenticated service layer (see `sql-server-direct-access.md`). For an ORM over the same file, see `ef-core-local-database.md`.

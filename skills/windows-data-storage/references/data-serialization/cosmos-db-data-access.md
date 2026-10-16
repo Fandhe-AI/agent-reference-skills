@@ -49,11 +49,12 @@ public async Task CosmosSample(string endpoint, string authKey)
 | Step | Detail |
 |------|--------|
 | Install package | `Install-Package Microsoft.Azure.Cosmos` (Azure Cosmos DB for NoSQL client library for .NET) |
-| Prerequisite | A Cosmos DB instance (NoSQL database account) created in Azure |
+| Prerequisite | A Cosmos DB for NoSQL account created in Azure, plus a database named `sample_customers` (or your own name) — `GetDatabase` only returns a reference and does not create the database |
 | Customize | Endpoint, auth key, and database name depend on your Cosmos DB instance |
 
 ## Notes
 
+- `client.GetDatabase(...)` returns a proxy to an existing database and does not create it; on a new account, create the database first (for example in the Azure portal) or use `await client.CreateDatabaseIfNotExistsAsync("sample_customers")`, otherwise `CreateContainerIfNotExistsAsync` fails because the database does not exist.
 - Build the project after installing the package and confirm no errors.
 - For a complete example including required Cosmos DB setup, see the official "Develop a .NET console application with Azure Cosmos DB for NoSQL" tutorial.
 - Source: https://learn.microsoft.com/en-us/windows/apps/develop/data-access/cosmos-db-data-access
