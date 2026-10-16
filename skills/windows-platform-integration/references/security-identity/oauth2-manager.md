@@ -39,7 +39,7 @@ TokenRequestResult tokenRequestResult = await OAuth2Manager.RequestTokenAsync(
     new Uri("https://my.server.com/oauth/token"), tokenRequestParams);
 ```
 
-Complete an authorization request from a protocol activation (handle `AppInstance.Activated` when the app has custom redirect logic):
+Complete an authorization request from a protocol activation (official sample, UWP-style OnActivated; see Notes for WinUI 3):
 
 ```csharp
 protected override void OnActivated(IActivatedEventArgs args)
@@ -76,6 +76,7 @@ protected override void OnActivated(IActivatedEventArgs args)
 - Always uses the system (default) browser for the authorization step; differs from `WebAuthenticationBroker`. Follows RFC 6749, RFC 7636, and RFC 8252.
 - Desktop apps are public clients and must not embed client secrets. Use `ClientAuthentication` only in confidential (server-side) components; do the secret-bearing exchange on a backend.
 - For Microsoft accounts or Microsoft Entra ID with silent SSO (no browser prompt), Windows Hello integration, or conditional access, use MSAL.NET with the Web Account Manager broker instead.
+- The official OnActivated snippet is UWP-style; Microsoft.UI.Xaml.Application (WinUI 3) has no OnActivated override. In WinUI 3 / Windows App SDK, read the activation via AppInstance.GetCurrent().GetActivatedEventArgs() (Microsoft.Windows.AppLifecycle; check ExtendedActivationKind.Protocol, Data is ProtocolActivatedEventArgs) and handle AppInstance.Activated for redirected activations.
 - Full WinUI sample: `microsoft/WindowsAppSDK-Samples` (`release/experimental`, `Samples/OAuth2Manager`).
 
 ## Related

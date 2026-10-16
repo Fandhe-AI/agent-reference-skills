@@ -42,7 +42,7 @@ if (ucvAvailability == Windows.Security.Credentials.UI.UserConsentVerifierAvaila
 - Usable from WinUI as well as WPF and WinForms desktop apps (WinRT APIs from the Windows SDK). The page targets packaged apps.
 - Even when the device supports fingerprint authentication, provide a Settings option to enable or disable it.
 - `CheckAvailabilityAsync` returning `Available` does not guarantee a fingerprint reader is present; no API restricts verification to fingerprint.
-- The user must have previously enrolled a fingerprint for verification to work.
+- For fingerprint authentication to work, the user must have previously enrolled a fingerprint; verification with other Windows Hello methods (PIN / face) does not require it.
 - In desktop apps, `RequestVerificationAsync` is called through `UserConsentVerifierInterop.RequestVerificationForWindowAsync` with an HWND (see the UserConsentVerifier page); the how-to snippet above is the UWP-style call.
 
 ## Related
