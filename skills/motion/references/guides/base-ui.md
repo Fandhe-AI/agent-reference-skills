@@ -14,7 +14,7 @@ function Component() {
       <motion.button
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        whilePress={{ scale: 0.9 }}
+        whileTap={{ scale: 0.9 }}
       />
     } />
   )
@@ -60,6 +60,7 @@ function App() {
 - `Portal` stays mounted while Base UI detects animations via `element.getAnimations()`. Motion runs `opacity`, `transform`, `filter` and `clipPath` hardware accelerated, so use at least one of these in the exit animation.
 - Motion+ includes Motion x Base UI examples and an LLM ruleset.
 - Upstream snippets are excerpts; closing tags were added so the example is syntactically complete.
+- The official Base UI guide example uses `whilePress`, which is a Motion for Vue prop; in Motion for React the press gesture prop is `whileTap` (see the React gestures docs: https://motion.dev/docs/react-gestures).
 - Source: https://motion.dev/docs/base-ui (fetched 2026-10).
 
 ## Related

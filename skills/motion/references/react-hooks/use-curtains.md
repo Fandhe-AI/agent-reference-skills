@@ -29,7 +29,7 @@ While the curtain is up and the update is in flight, `isPending` is `true`:
 
 | Name | Type | Description |
 |------|------|-------------|
-| `effect` | effect factory or `[cover, reveal]` tuple | The transition effect. Pass the factory itself for defaults (`effect: iris`) or call it with options (`effect: iris({ origin: { x: 20, y: 80 } })`). Defaults to `fade`. |
+| `effect` | effect factory or `[cover, reveal]` tuple | The transition effect. Pass the factory itself for defaults (`effect: iris`) or call it with options (`effect: iris({ origin: { x: 0.2, y: 0.8 } })`). Defaults to `fade`. |
 | `transition` | transition options or `[cover, reveal]` tuple | Animation timing. A single value times both phases; a tuple times each independently. Accepts `delay: stagger()` for multi-element effects like `pixels`. |
 | `scope` | `Element` | Mounts the curtain inside the element instead of covering the viewport. The element must establish a containing block (`position: relative` or another non-`static` position). |
 
@@ -112,4 +112,5 @@ Each covering element (panel, tile, slat or door) carries the `motion-curtain` c
 - Requires React 19 (transitions and async actions). For a version-independent alternative use the vanilla `curtains()` function.
 - Uses the browser Popover API for full-page overlays (no `z-index` hacks) and respects `prefers-reduced-motion`.
 - Unlike `AnimateView` (built on React `ViewTransition` / View Transition API, which animates the content between before and after states), `useCurtains` never animates content: only the opaque curtain moves while the update runs hidden.
+- The official page's `iris({ origin: { x: 20, y: 80 } })` example contradicts its own definition (numbers are 0 to 1 fractions); fractions are used here.
 - Source: https://motion.dev/docs/react-use-curtains (the rest of the page is for Motion+ members).
