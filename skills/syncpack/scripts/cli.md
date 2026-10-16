@@ -131,7 +131,7 @@ syncpack update --interactive --dependencies '@aws-sdk/**'
 pnpm catalog（`pnpm-workspace.yaml`）のエントリのみ更新する場合:
 
 ```sh
-# すべての pnpm catalog
+# デフォルト catalog（pnpm-workspace.yaml の catalog）のみ
 syncpack update --dependency-types pnpmCatalog
 # 名前付き catalog 'react18' のみ
 syncpack update --dependency-types 'pnpmCatalog:react18'
