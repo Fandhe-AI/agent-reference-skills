@@ -2,6 +2,8 @@
 
 Source: https://lefthook.dev/installation/go
 
+## Signature / Usage
+
 The minimum Go version required is 1.27 and you can install
 
 - as global package

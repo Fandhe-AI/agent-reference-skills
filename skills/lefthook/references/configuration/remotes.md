@@ -7,12 +7,12 @@ Source: https://lefthook.dev/configuration/remotes
 ## 概要
 
 - リモートリポジトリのルートに基づく相対パスで `extends` を使用可能
-- リモート設定で `scripts` を提供する場合、スクリプトの `source_dir` は**リモートリポジトリ**のルートに置く必要がある
+- If you provide `scripts` in a remote config file, the script `source_dir` must also be in the **root of the remote repository**.
 - シンプルさのため、リモート設定のジョブは他のステップから独立させることを推奨
 
 ### マージ優先順位
 
-低 → 高の順（Global Settings の Merge Order と同じ向き。`extends` は Global Settings を参照）:
+Configs are merged in this order:
 
 1. ローカルメイン設定 (`lefthook.yml`)
 2. リモート設定 (`remotes`)

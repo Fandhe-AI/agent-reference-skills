@@ -2,7 +2,7 @@
 
 Source: https://lefthook.dev/configuration
 
-Lefthook のグローバル設定オプション。プロジェクト全体の動作を制御する設定項目をまとめている（集約ページ。各オプションは H2 で個別に記述）。
+Lefthook のグローバル設定オプション。プロジェクト全体の動作を制御する設定項目をまとめている。
 
 ## Signature / Usage
 
@@ -47,9 +47,9 @@ Lefthook は `lefthook-local`（任意のサポート形式）という追加設
 
 ### Editor Support
 
-JSON schema が `https://lefthook.dev/schema.json` で公開されている（v2.2.0 で公開）。エディタの補完・hover ドキュメント・validation に使える。
+The JSON schema for the config is published at `https://lefthook.dev/schema.json`. Point your editor to it to get autocompletion, hover docs, and validation.
 
-YAML（yaml-language-server、例: VS Code YAML 拡張）:
+YAML (with [yaml-language-server](https://github.com/redhat-developer/yaml-language-server), e.g. the VS Code YAML extension):
 
 ```yml
 # yaml-language-server: $schema=https://lefthook.dev/schema.json
@@ -70,7 +70,7 @@ JSON:
 }
 ```
 
-TOML（Taplo）:
+TOML (with [Taplo](https://taplo.tamasfe.dev/)):
 
 ```toml
 #:schema https://lefthook.dev/schema.json
@@ -107,9 +107,9 @@ Source: https://lefthook.dev/configuration/colors
 
 Lefthook のカラー出力を有効/無効にする。`--colors` オプションで上書き可能。カスタムカラーコードも指定できる。
 
-既定の `auto` は、色対応の端末を検出したときのみ有効になる。`on`（または `--colors`）は端末でなくても（CI 等）色を強制的に有効にする。
+With the default `auto` value colors are enabled only when Lefthook detects a color capable terminal. Setting the option (or `--colors`) to `on` forces colors even when the output is not a terminal, e.g. in CI.
 
-色を明示的に有効化すると、lefthook は実行するコマンドに `CLICOLOR_FORCE=1` を設定し、ESLint / Prettier / Cargo 等がパイプ時も色を保つ。既存の `CLICOLOR_FORCE` は上書きしない。
+When colors are enabled explicitly Lefthook also sets `CLICOLOR_FORCE=1` for the commands it runs, so tools like ESLint, Prettier, or Cargo keep their colors when their output is piped. An existing `CLICOLOR_FORCE` is never overwritten.
 
 ### 無効化
 
@@ -257,7 +257,7 @@ output:
 LEFTHOOK_OUTPUT="meta,success,summary" lefthook run pre-commit
 ```
 
-環境変数は config の `output` リストを拡張ではなく上書きする（v2.1.12 で precedence 修正）。
+You can also override this list with the environment variable `LEFTHOOK_OUTPUT`.
 
 エラー以外のすべての出力を無効にするには `output: false` を設定する。
 

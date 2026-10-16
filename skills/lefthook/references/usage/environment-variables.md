@@ -84,7 +84,7 @@ summary: (done in 0.52 seconds)
 ✔️  lint
 ```
 
-この環境変数は config の `output` リストを拡張ではなく上書きする。
+You can also override this list with the environment variable `LEFTHOOK_OUTPUT`.
 
 ### 関連設定
 
@@ -162,7 +162,7 @@ CLICOLOR_FORCE=true
 
 ターミナル環境が通常カラーをサポートしないかどうかに関係なく、lefthook がカラー出力を表示するよう強制する。CI/CD パイプラインやカラーサポートが自動検出されない可能性のある自動化環境で有用。
 
-`colors` を明示的に有効化した場合、lefthook は実行するコマンドに `CLICOLOR_FORCE=1` を設定する（既存の `CLICOLOR_FORCE` は上書きしない。v2.1.15 で追加）。
+When colors are enabled explicitly Lefthook also sets `CLICOLOR_FORCE=1` for the commands it runs, so tools like ESLint, Prettier, or Cargo keep their colors when their output is piped. An existing `CLICOLOR_FORCE` is never overwritten.
 
 ## NO_COLOR
 

@@ -2,6 +2,8 @@
 
 Source: https://lefthook.dev/installation/php
 
+## Signature / Usage
+
 1. Add the package as a dependency
 
 ```sh

@@ -4,7 +4,9 @@ Source: https://lefthook.dev/examples/commitlint
 
 Use lefthook to generate commit messages using commitzen and validate them with commitlint.
 
-## Install dependencies
+## Signature / Usage
+
+### Install dependencies
 
 ```bash
 yarn add -D @commitlint/cli @commitlint/config-conventional
@@ -13,7 +15,7 @@ yarn add -D @commitlint/cli @commitlint/config-conventional
 yarn add -D commitizen cz-conventional-changelog
 ```
 
-## Configure
+### Configure
 
 Setup `commitlint.config.js`. Conventional configuration:
 
@@ -54,7 +56,7 @@ commit-msg:
       run: yarn run commitlint --edit {1}
 ```
 
-## Test it
+### Test it
 
 ```bash
 # You can type it without message, if you are using commitzen

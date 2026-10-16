@@ -2,7 +2,7 @@
 
 Source: https://lefthook.dev/configuration
 
-フックで実行されるコマンドの設定。各コマンドには名前と関連する run オプションがある（集約ページ。各オプションは H2 で個別に記述）。
+フックで実行されるコマンドの設定。各コマンドには名前と関連する run オプションがある。
 
 ## Signature / Usage
 
@@ -197,7 +197,7 @@ Source: https://lefthook.dev/configuration/group
 
 `env`、`root`、`glob`、`exclude`、`files` がグループに定義されると、ジョブレベルで上書きされない限り、すべての配下ジョブに伝播する。
 
-group に設定した `files` コマンドは、`{files}` テンプレートを使う配下ジョブごとに実行される。配下ジョブは独自の `files` で上書きできる。
+A `files` command set on a group is executed for every nested job that uses the `{files}` template. A nested job can define its own `files` to override it.
 
 ```yaml
 # lefthook.yml
@@ -540,7 +540,7 @@ Source: https://lefthook.dev/configuration/stage_fixed
 - `files` オプションが指定されたコマンドの場合、そのコマンドがステージング対象ファイルを取得
 - `files` オプションなしのスクリプトとコマンドでは、`{staged_files}` テンプレートが対象ファイルを決定
 - `glob` と `exclude` のフィルタが適用される
-- `git add` の呼び出しが失敗するとフックも失敗する（修正前の内容のままコミットが通るのを防ぐ。v2.1.12 で変更）
+- If the `git add` call fails, the hook fails too. Otherwise the commit would silently go through with the unfixed content.
 
 ```yaml
 # lefthook.yml

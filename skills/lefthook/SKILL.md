@@ -111,6 +111,6 @@ skills/lefthook/
 | ファイルフィルタリング（glob / staged_files / tags） | examples | [references/examples/README.md](references/examples/README.md) |
 | lefthook-local.yml でのローカルオーバーライド | examples | [references/examples/README.md](references/examples/README.md) |
 | 条件付きスキップ・ブランチ制限 | examples | [references/examples/README.md](references/examples/README.md) |
-| 保護ブランチ（main / master）への直接 push 防止 | examples | [references/examples/README.md](references/examples/README.md) |
+| 現在のブランチが main / master のときの push を pre-push でブロック（push 先 ref は判定しない） | examples | [references/examples/README.md](references/examples/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

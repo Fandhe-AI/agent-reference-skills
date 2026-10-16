@@ -2,6 +2,8 @@
 
 Source: https://lefthook.dev/installation/swift
 
+## Signature / Usage
+
 You can find the Swift wrapper plugin [here](https://github.com/csjones/lefthook-plugin).
 
 Utilize lefthook in your Swift project using Swift Package Manager:

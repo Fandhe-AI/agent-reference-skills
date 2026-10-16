@@ -2,7 +2,7 @@
 
 Source: https://lefthook.dev/configuration
 
-`<source_dir>/<hook-name>/` ディレクトリに配置される独自の実行可能スクリプトの設定。スクリプトはプロジェクトルートから実行される（集約ページ。各オプションは H2 で個別に記述）。
+`<source_dir>/<hook-name>/` ディレクトリに配置される独自の実行可能スクリプトの設定。スクリプトはプロジェクトルートから実行される。
 
 ## Signature / Usage
 
@@ -74,7 +74,7 @@ commit-msg:
 
 ### args
 
-`args` でスクリプトに引数を追加できる。`args` を設定すると Git が渡す引数は省略されるため、保持したい場合は `{0}` テンプレートを使う。
+Use `args` to append arguments to a script. Arguments passed by Git are omitted when `args` is configured, so use the `{0}` template if they should be preserved.
 
 ```yaml
 commit-msg:
@@ -94,7 +94,7 @@ Source: https://lefthook.dev/configuration/script
 
 lefthook ジョブ内で実行するスクリプトファイル名を指定する。ルールは `scripts` と同じ。
 
-`args` でスクリプトに引数を追加できる。`{0}` テンプレートを含めない限り、`args` の設定は Git が渡す引数を置き換える。
+Use `args` to append arguments to the script. Configuring `args` replaces arguments passed by Git unless the `{0}` template is included.
 
 ```yaml
 # lefthook.yml
