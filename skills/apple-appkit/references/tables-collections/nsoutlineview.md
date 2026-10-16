@@ -63,6 +63,7 @@ outlineView.expandItem(nil, expandChildren: false)
 - Passing `nil` as the item argument refers to the root (top-level) of the hierarchy.
 - Each item object must be unique and maintain stable pointer identity across reloads to preserve expansion state.
 - Data source methods may be called before `awakeFromNib()`; return `0` from `numberOfChildrenOfItem:` until initialized.
+- macOS 27.0 adds typed `NotificationCenter.MainActorMessage` structs `NSOutlineView.ItemWillExpandMessage`, `ItemDidExpandMessage`, `ItemWillCollapseMessage`, `ItemDidCollapseMessage`, `SelectionDidChangeMessage`, `SelectionIsChangingMessage`, `ColumnDidMoveMessage`, `ColumnDidResizeMessage`.
 
 ## Related
 

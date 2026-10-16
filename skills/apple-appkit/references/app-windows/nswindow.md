@@ -41,11 +41,20 @@ window.makeKeyAndOrderFront(nil)
 | `backgroundColor` | `NSColor` | Window background color |
 | `hasShadow` | `Bool` | Whether the window casts a shadow |
 | `tabbedWindows` | `[NSWindow]?` | Windows in the same tab group |
+| `beginSheet(content:completionHandler:)` | method (macOS 26.0+) | Presents a SwiftUI view as a sheet on the window. `@discardableResult`; returns `NSWindow.HostingSheetRepresentation<V>` (`V: View`) |
+| `endSheet(_:)` | method (macOS 26.0+) | Ends a SwiftUI hosted sheet; takes the `NSWindow.HostingSheetRepresentation<V>` returned by `beginSheet(content:completionHandler:)` |
+| `NSWindow.HostingSheetRepresentation` | class (macOS 26.0+) | A SwiftUI view hosted in an AppKit sheet |
+| `cascadingReferenceFrame` | `NSRect` | Read-only reference frame for cascading (macOS 15.0+) |
+| `requestSharingOfWindow(_:completionHandler:)` | method (macOS 15.0+) | Requests sharing of a window; completion receives an optional `Error` |
+| `requestSharingOfWindow(usingPreview:title:completionHandler:)` | method (macOS 15.0+) | Requests sharing using a preview `NSImage` and title |
+| `beginDraggingSession(items:event:source:)` | method (macOS 15.0+) | Starts a drag with `[NSDraggingItem]`, an `NSEvent` and an `NSDraggingSource`; returns `NSDraggingSession` |
 
 ## Notes
 
 - macOS 10.0+. `NSWindow` inherits from `NSResponder` but does **not** support `NSCoding`; archiving a window raises an exception.
 - In Swift, always set `isReleasedWhenClosed = false` when holding a strong reference to the window, to avoid double-free.
+- Deprecated in macOS 27.0: `showsToolbarButton` and `drag(_:at:offset:event:pasteboard:source:slideBack:)` (use `beginDraggingSession(items:event:source:)`). `disableScreenUpdatesUntilFlush()` is deprecated in macOS 15.0.
+- macOS 27.0 adds typed `NotificationCenter.MainActorMessage` structs for window notifications (29 in total), e.g. `NSWindow.DidResizeMessage`, `WillCloseMessage`, `DidBecomeKeyMessage`, `DidEnterFullScreenMessage`, `DidMoveMessage`, `WillBeginSheetMessage`.
 - Use `makeKeyAndOrderFront(_:)` to show and focus a window; use `orderOut(_:)` to hide it without releasing it.
 
 ## Related

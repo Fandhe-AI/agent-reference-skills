@@ -50,6 +50,8 @@ menu.addItem(.sectionHeader(title: "Format"))
 | `toolTip` | `String?` | Tooltip shown on hover |
 | `indentationLevel` | `Int` | Visual indent (0–15) |
 | `parent` | `NSMenuItem?` | The item's parent menu item (if in a submenu) |
+| `preferredImageVisibility` | `NSMenuItem.ImageVisibility` | Whether the item's image is shown when the menu is open (macOS 27.0+). Cases `.automatic` (default; AppKit decides from system configuration), `.hidden`, `.visible` (set to always show the image) |
+| `writingToolsItems` | `class var [NSMenuItem]` | Standard Writing Tools menu items (macOS 15.2+). Each call returns newly allocated instances |
 
 ## Notes
 

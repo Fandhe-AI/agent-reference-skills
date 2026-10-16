@@ -31,6 +31,11 @@ scrollView.documentView = contentView
 | `autohidesScrollers` | `Bool` | Hide scrollers automatically when not needed |
 | `verticalScroller` | `NSScroller?` | The vertical scroller object |
 | `horizontalScroller` | `NSScroller?` | The horizontal scroller object |
+| `refreshController` | `NSRefreshController?` | Refresh controller associated with this scroll view, for pull-to-refresh (macOS 27.0+) |
+| `isTouchScrollingEnabled` | `Bool` | Enable touch scrolling (macOS 27.0+) |
+| `minimumNumberOfTouchesForScrolling` | `Int` | Minimum number of touches needed for scrolling (macOS 27.0+) |
+| `maximumNumberOfTouchesForScrolling` | `Int` | Maximum number of touches needed for scrolling (macOS 27.0+) |
+| `scrollGestureForRelationships` | `NSGestureRecognizer` | Gesture recognizer for setting up failure or exclusion relationships against scrolling gestures; get-only (macOS 27.0+) |
 
 ## Notes
 
@@ -39,9 +44,11 @@ scrollView.documentView = contentView
 - `flashScrollers()` briefly shows overlay scroll bars.
 - `magnify(toFit:)` and `setMagnification(_:centeredAt:)` support zoom behavior.
 - `NSTextView` is typically embedded inside `NSScrollView`.
+- macOS 27.0 adds typed `NotificationCenter.MainActorMessage` structs `NSScrollView.WillStartLiveScrollMessage`, `DidLiveScrollMessage`, `DidEndLiveScrollMessage`, `WillStartLiveMagnifyMessage`, `DidEndLiveMagnifyMessage`.
 
 ## Related
 
 - [NSView](./nsview.md)
 - [NSTextView](./nstextview.md)
 - [NSStackView](./nsstackview.md)
+- [NSRefreshController](./nsrefreshcontroller.md)

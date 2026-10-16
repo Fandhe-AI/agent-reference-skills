@@ -28,6 +28,7 @@ NSApplication.shared.mainMenu?.setSubmenu(menu, for: editMenuItem)
 | `autoenablesItems` | `Bool` | When `true`, items are auto-enabled/disabled via `validateMenuItem(_:)` |
 | `supermenu` | `NSMenu?` | The parent menu, if this is a submenu |
 | `isTornOff` | `Bool` | Whether the menu is detached from its parent |
+| `automaticallyInsertsWritingToolsItems` | `Bool` | Whether Writing Tools items are inserted automatically (macOS 15.2+) |
 | `addItem(_:)` | method | Append a prepared `NSMenuItem` |
 | `addItem(withTitle:action:keyEquivalent:)` | method | Create and append a new item |
 | `insertItem(_:at:)` | method | Insert a prepared item at a specific index |
@@ -46,6 +47,7 @@ NSApplication.shared.mainMenu?.setSubmenu(menu, for: editMenuItem)
 
 - macOS 10.0+. The main menu bar is set via `NSApplication.shared.mainMenu`.
 - When `autoenablesItems` is `true` (default), items are enabled/disabled by sending `validateMenuItem(_:)` to the target before display.
+- macOS 27.0 adds typed `NotificationCenter.MainActorMessage` structs: `NSMenu.DidAddItemMessage`, `DidChangeItemMessage`, `DidRemoveItemMessage`, `DidBeginTrackingMessage`, `DidEndTrackingMessage`, `WillSendActionMessage`, `DidSendActionMessage`.
 - Use `NSMenuItem.separator()` to insert a horizontal divider.
 
 ## Related

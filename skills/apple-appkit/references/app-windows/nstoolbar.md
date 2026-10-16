@@ -33,7 +33,9 @@ window.toolbar = toolbar
 | `autosavesConfiguration` | `Bool` | Persist customization to user defaults |
 | `insertItem(withItemIdentifier:at:)` | method | Programmatically add an item |
 | `removeItem(at:)` | method | Remove item at index |
-| `removeItem(identifier:)` | method | Remove all items matching identifier |
+| `removeItem(identifier:)` | method | Remove all items matching identifier (macOS 15.0+; to remove a single space item use `removeItem(at:)`) |
+| `itemIdentifiers` | `[NSToolbarItem.Identifier]` | Identifiers of the current items (macOS 15.0+). Settable: diffs against existing items. Key-value observable. Overrides user customization when `allowsUserCustomization` is on, so use with caution |
+| `allowsDisplayModeCustomization` | `Bool` | Whether the user may change display modes at run time (macOS 15.0+; Mac Catalyst 18.0+). Default `true` for apps linked on macOS 15.0+. Persisted via `identifier` when `autosavesConfiguration` is on |
 | `runCustomizationPalette(_:)` | method | Show the customization sheet |
 | `customizationPaletteIsRunning` | `Bool` | Whether the customization sheet is open |
 | `validateVisibleItems()` | method | Trigger validation of all visible items |
@@ -43,6 +45,9 @@ window.toolbar = toolbar
 - macOS 10.0+. The delegate must implement `toolbar(_:itemForItemIdentifier:willBeInsertedIntoToolbar:)` to vend items and `toolbarAllowedItemIdentifiers(_:)` / `toolbarDefaultItemIdentifiers(_:)` to declare available items.
 - Use `NSToolbarItem.Identifier` constants for standard items such as `.flexibleSpace`, `.space`, and `.print`.
 - Set `autosavesConfiguration = true` to automatically restore the user's toolbar layout on next launch.
+- Deprecated in macOS 27.0: `centeredItemIdentifier` (singular; use `centeredItemIdentifiers`), `sizeMode` and `NSToolbar.SizeMode`.
+- Deprecated in macOS 15.0: `configuration`, `setConfiguration(_:)`, `showsBaselineSeparator`.
+- macOS 27.0 adds typed `NotificationCenter.MainActorMessage` structs `NSToolbar.WillAddItemMessage` and `NSToolbar.DidRemoveItemMessage`.
 
 ## Related
 
