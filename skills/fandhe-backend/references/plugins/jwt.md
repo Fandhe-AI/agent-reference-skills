@@ -6,7 +6,7 @@
 - 拡張点: `RequestGate`（`Server::gate(...)` に登録）
 - 依存方向: プラグイン → コアの一方向。コア側に feature や再エクスポートは追加しない。`#![forbid(unsafe_code)]`
 - `iss`・`aud`・`typ`・許可 `alg` の欠けた構成は型の段階で作れない。`none`・HS 系は `Algorithm` に変種がなく型として表現できない（RFC 8725 3.1・3.8・3.9・3.11・3.12、RFC 9068 4 節）
-- 設計は `docs/design/jwt-verify-plugin.md`
+- 設計は `docs/design/jwt-verify-plugin.md`（https://github.com/fandhe-ai/fandhe-backend/blob/e23b9a2a6b5ee46b50fe142d5b48f123d2c234dd/docs/design/jwt-verify-plugin.md）
 
 ## Signature / Usage
 
@@ -172,6 +172,8 @@ pub trait UnknownKeyNotifier: Send + Sync {
 - `Claims` は `sub` などの識別子を含むためログへ出さないこと（`Debug` は `sub` / `jti` / `client_id` / `scope` / `extra` の値を出さず有無のみ示す）
 - Cookie 認証の画面と併用する場合は CSRF ゲートを先に登録する。`JwtGate` は `Authorization: Bearer` のみを見て Cookie は見ない
 - v0.5.0 の BREAKING CHANGES（CHANGELOG）: `fandhe-backend-plugin-hub-wiring` の JWT 検証部を本クレートへ移した。検証ポリシー（発行者・受信者・許可アルゴリズム・トークン種別）が `TenantGateConfig` の構築に必須となり、旧公開パスの互換層は無い。移行は `TenantGateConfig::from_jwks_json(&jwks_json, policy)?`（旧: `from_jwks_json(&jwks_json)?`）。詳細は [hub-wiring](./hub-wiring.md) を参照
+- 出典: https://docs.rs/crate/fandhe-backend-plugin-jwt/0.5.0/source/src/lib.rs
+- 設計文書: https://github.com/fandhe-ai/fandhe-backend/blob/e23b9a2a6b5ee46b50fe142d5b48f123d2c234dd/docs/design/jwt-verify-plugin.md
 
 ## Related
 

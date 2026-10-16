@@ -2,10 +2,10 @@
 name: fandhe-backend
 description: >
   Rust 製バックエンド HTTP サーバーフレームワーク fandhe-backend のリファレンス。
-  fandhe-backend-core / -http / -routes。Server, BoundServer, Router, Handler。
-  4 拡張点 Middleware / UpgradeHandler / RequestGate / Interceptor。
+  fandhe-backend-core / -http / -routes。Server, BoundServer, Router（merge）, Handler。
+  拡張点 Middleware（on_response_with_status）/ UpgradeHandler / RequestGate / Interceptor。
   Diagnostics, StreamingResponse, SetCookie session（__Host-）, sans-IO HTTP/1.1, graceful shutdown。
-  プラグイン cors, websocket, graphql, openapi, webrtc, jwt（JwtGate, JwtPolicy）, csrf（CsrfGate）等。
+  プラグイン cors, websocket（WsSender）, graphql, openapi, webrtc, jwt（JwtGate, JwtPolicy）, csrf（CsrfGate）。
 user-invocable: false
 ---
 

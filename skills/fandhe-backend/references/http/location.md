@@ -56,6 +56,7 @@ assert!(SameOriginLocation::new("https://evil.com").is_err());
 - 外部入力をデコードする場合は、デコード後の最終値を本型へ通すこと。本型の値を後段でデコードして再利用してはならない（二重デコード禁止）
 - `SameOriginLocationError` は `#[non_exhaustive]`。`Display` は拒否理由のみを出し、入力値は含めない（ログ汚染・機密混入防止）
 - `Response::see_other(location)` は POST 後の 303 See Other を、検証済み `SameOriginLocation` のみを受け取る infallible 構築で行う。`Response::redirect` は別経路で挙動不変であり、外部入力由来の `location` の許可リスト検証は呼び出し元の責務
+- 出典: https://docs.rs/crate/fandhe-backend-http/0.5.0/source/src/location.rs
 
 ## Related
 

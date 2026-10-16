@@ -99,7 +99,8 @@ let _server = Server::new()
 - ブラウザ以外のクライアント（OIDC の token endpoint、Bearer で呼ぶ API 等）は `Sec-Fetch-Site` も `Origin` も送らないため 403 になる。該当パスは `exempt_path`（完全一致）で除外する。除外で飛ばされるのは CSRF の検査だけで、後ろの認証ゲートは評価される
 - 登録順: Cookie 認証の画面では CSRF ゲートを先に、認証ゲート（`JwtGate`・Cookie セッションを検証する利用者独自のゲート等）を後に登録することを推奨。複数ゲートは AND 結合で、順序で変わるのは「どの拒否応答が返るか」と「後ろのゲートが評価されるか」だけ（順序の誤りで CSRF 防御が抜けることはない）。最初の拒否で短絡し後ろの `check` は呼ばれないため、偽造要求が資格情報を評価するゲートの副作用に届かず、署名検証等のコストも払わせない。`GET` / `HEAD` / `OPTIONS` は本ゲートを素通りするためこの利点は及ばない
 - `JwtGate` は `Authorization: Bearer` のみを見て Cookie は見ない。Cookie の画面と Bearer の API を 1 サーバに混在させて `JwtGate` を全体登録すると、Cookie の画面の要求も 401 になる。パス単位の使い分けは現状コアにもゲートにも無い
-- 設計の詳細は `docs/design/plugin-boundary.md` 5.6.6 節
+- 設計の詳細は `docs/design/plugin-boundary.md` 5.6.6 節（https://github.com/fandhe-ai/fandhe-backend/blob/e23b9a2a6b5ee46b50fe142d5b48f123d2c234dd/docs/design/plugin-boundary.md）
+- 出典: https://docs.rs/crate/fandhe-backend-plugin-csrf/0.5.0/source/src/lib.rs
 
 ## Related
 
