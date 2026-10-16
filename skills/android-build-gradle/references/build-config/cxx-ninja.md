@@ -28,9 +28,9 @@ Minimal `build.ninja` template written by the configure script:
 
 ```
 rule COMPILE
-   command = /path/to/ndk/clang -c $in -o $out
+   command = /path/to/ndk/clang -c $in -o $out {other flags}
 rule LINK
-   command = /path/to/ndk/clang $in -o $out
+   command = /path/to/ndk/clang $in -o $out {other flags}
 
 build source.o : COMPILE source.cpp
 build lib.so : LINK source.o
@@ -55,6 +55,7 @@ build lib.so : LINK source.o
 ## Notes
 
 - Experimental: experimental APIs can change in the future or may be removed entirely. Available starting in Android Studio Dolphin | 2021.3.1 Canary 4.
+- `{other flags}` is a placeholder from the source template; for a JNI shared library it must include e.g. `-fPIC` (COMPILE) and `-shared` (LINK), plus `--target`/`--sysroot` for the ABI.
 - Only a Ninja representation of the build is supported.
 - On Windows only, ".bat" is appended to the `ninja.configure` path if not already present, so a pair of scripts (`script` and `script.bat`) keeps `build.gradle` host-agnostic.
 - The source's usage example passes `${ndk.configurationDir}` / `${ndk.moduleNdkVersion}` / `${ndk.minSdkVersion}`, but its macro list only documents `${ndk.buildRoot}` / `${ndk.ndkVersion}` / `${ndk.minPlatform}`. The output folder is `${ndk.buildRoot}` (per the source's build.ninja description). Verify which macro names your AGP version accepts.
