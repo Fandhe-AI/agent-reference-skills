@@ -2,8 +2,10 @@
 
 | Name | Description | Path |
 |------|-------------|------|
+| Auto mode classifier request charges | Explains the Claude Code notice saying a session isn't eligible for auto mode's no-charge classifier requests: what it means, why it appears, and what to do. | [auto-mode-classifier-billing.md](./auto-mode-classifier-billing.md) |
 | Claude Security plugin | Official plugin that runs a multi-agent vulnerability scan of a codebase inside a Claude Code session — maps architecture, builds a threat model, hunts for vulnerabilities, and independently reviews every finding before turning it into a reviewable patch. | [claude-security.md](./claude-security.md) |
 | Data usage | Anthropic's data usage, training, and retention policies for Claude Code. | [data-usage.md](./data-usage.md) |
+| Set up Claude Code (local mode) for a HIPAA-ready organization | Prepare developers' computers to run Claude Code (local mode) under the HIPAA configuration, an organization setting on Claude Enterprise plans for organizations that handle PHI and have a Business Associate Agreement (BAA) with Anthropic. It applies to Claude Code (local mode) and Cowork (local mode). | [hipaa-setup.md](./hipaa-setup.md) |
 | Legal and compliance | Legal agreements, compliance certifications, and security-reporting information for Claude Code. | [legal-and-compliance.md](./legal-and-compliance.md) |
 | Choose a permission mode | Permission modes control how often Claude Code pauses to ask before editing files, running commands, or making network requests. | [permission-modes.md](./permission-modes.md) |
 | Configure permissions | Fine-grained permission rules, modes, and managed policies that control what Claude Code can access and do. | [permissions.md](./permissions.md) |

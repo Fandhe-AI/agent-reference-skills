@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/third-party-integrations.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/third-party-integrations.md / last verified: 2026-10-16 -->
 
 # Enterprise deployment overview
 
@@ -23,16 +23,19 @@ export CLAUDE_CODE_SKIP_BEDROCK_AUTH=1
 | Deployment option | Best for | Authentication |
 | --- | --- | --- |
 | Claude for Teams/Enterprise | Most organizations (recommended) | Claude.ai SSO or email |
-| Anthropic Console | Individual developers | API key |
+| Anthropic Console | Individual developers | API key, or a Console sign-in without one |
 | Amazon Bedrock | AWS-native deployments | API key or AWS credentials |
-| Claude Platform on AWS | AWS Marketplace billing | API key or AWS credentials |
+| Claude Platform on AWS | AWS Marketplace billing with Claude API features | API key or AWS credentials |
 | Google Cloud's Agent Platform | GCP-native deployments | GCP credentials |
 | Microsoft Foundry | Azure-native deployments | API key or Microsoft Entra ID |
 
 ## Notes
 
-- Corporate proxy (`HTTPS_PROXY`/`HTTP_PROXY`) and LLM gateway (`ANTHROPIC_BASE_URL`, `ANTHROPIC_BEDROCK_BASE_URL`, `ANTHROPIC_VERTEX_BASE_URL`, `ANTHROPIC_FOUNDRY_BASE_URL`) are independent configurations that can be combined.
-- Pin model versions for cloud providers via `ANTHROPIC_DEFAULT_OPUS_MODEL`/`ANTHROPIC_DEFAULT_SONNET_MODEL`/`ANTHROPIC_DEFAULT_HAIKU_MODEL`/`ANTHROPIC_DEFAULT_FABLE_MODEL`; without pinning, model aliases resolve to Claude Code's built-in default, which can lag or be unavailable in your account.
+- The options above cover where model inference runs; running cloud sessions on compute your organization operates is a separate topic (self-hosted environments). A Claude apps gateway (self-hosted, adds IdP sign-in in front of Bedrock, Claude Platform on AWS, Agent Platform, Foundry, or the Anthropic API) is another option; for Bedrock and Vertex AI you can also select "3rd-party platform" at the login prompt for an interactive setup wizard.
+- Corporate proxy (`HTTPS_PROXY`/`HTTP_PROXY`) and LLM gateway (`ANTHROPIC_BASE_URL`, `ANTHROPIC_BEDROCK_BASE_URL`, `ANTHROPIC_AWS_BASE_URL`, `ANTHROPIC_VERTEX_BASE_URL`, `ANTHROPIC_FOUNDRY_BASE_URL`) are independent configurations that can be combined. The per-provider environment variables that route Bedrock, Foundry, or Agent Platform through a gateway are documented on the llm-gateway-connect page (covered by the anthropic-claude-code-deploy skill).
+- If your organization uses customer-managed encryption keys (CMEK) and routes Claude Code through an LLM gateway or a custom `ANTHROPIC_BASE_URL`, CMEK doesn't apply to Claude Code's operational telemetry on those sessions; deliver `DISABLE_TELEMETRY` through managed settings to turn it off for every developer.
+- Pin model versions for cloud providers (Amazon Bedrock, Agent Platform, Foundry, Claude Platform on AWS) via `ANTHROPIC_DEFAULT_FABLE_MODEL`/`ANTHROPIC_DEFAULT_OPUS_MODEL`/`ANTHROPIC_DEFAULT_SONNET_MODEL`/`ANTHROPIC_DEFAULT_HAIKU_MODEL`; without pinning, model aliases resolve to Claude Code's built-in default, which can lag or be unavailable in your account.
+- Limit which deployment options a managed machine may use with `allowedProviders` in managed settings (v2.1.285+): e.g. `["bedrock"]` allows Amazon Bedrock and nothing else; a Bedrock fleet that also enables the Mantle endpoint lists `"mantle"` too. The settings reference entry says which endpoint variables also need a managed `env` pin.
 - `/status` verifies proxy/gateway configuration, showing lines like `API provider`, `Bedrock base URL`, `AWS region`, `AWS auth skipped`, and `Proxy`.
 - Best practices: deploy organization-wide CLAUDE.md at system directories, simplify install with a "one click" setup, configure security policies via managed permissions, centralize MCP server config in a checked-in `.mcp.json`.
 

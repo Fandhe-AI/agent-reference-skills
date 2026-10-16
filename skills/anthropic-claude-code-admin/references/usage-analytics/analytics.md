@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/analytics.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/analytics.md / last verified: 2026-10-16 -->
 
 # Track team usage with analytics
 
@@ -25,8 +25,8 @@ Enable contribution metrics: install the Claude GitHub app (`github.com/apps/cla
 ## Notes
 
 - Team/Enterprise dashboard requires Owner/Admin role; contribution metrics require Owner role plus a GitHub admin installing the app, and are unavailable with Zero Data Retention enabled.
-- Attribution matches PR diff lines against Claude Code session output within a window of 21 days before to 2 days after merge; excludes lock files, generated code, build directories, and lines over 1000 characters.
-- Console (API customers) dashboard shows usage/spend metrics only; contribution metrics with GitHub integration are not available there.
+- Attribution matches PR diff lines against Claude Code session output within a window of 21 days before to 2 days after merge; excludes lock files, generated code (Protobuf outputs, build artifacts, minified files), build directories (`dist/`, `build/`, `node_modules/`, `target/`), test fixtures (snapshots, cassettes, mock data), and lines over 1,000 characters.
+- Console (API customers) dashboard shows usage/spend metrics only; contribution metrics with GitHub integration are not available there. Accessing the Console dashboard requires the UsageView permission, granted to the Developer, Billing, Admin, Owner, and Primary Owner roles.
 - On Enterprise, the Claude Enterprise Analytics API (`read:analytics` scope) returns per-user engagement/usage/cost reports across Claude surfaces, not just Claude Code.
 - The organization-wide Claude Code Analytics API is out of scope for this skill; see `anthropic-admin-platform` for the cross-organization Admin/Analytics API surface.
 

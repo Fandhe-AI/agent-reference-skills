@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/security-guidance.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/security-guidance.md / last verified: 2026-10-16 -->
 
 # security-guidance plugin
 
@@ -40,7 +40,9 @@ Custom rule files (additive only, cannot remove built-in checks):
 
 ## Notes
 
-- Prerequisites: Claude Code v2.1.144+, Python 3.7+ (3.10+ for agentic commit review or any third-party provider), a git repository (end-of-turn/commit reviews skip silently otherwise).
+- Prerequisites: Python 3.7+ on PATH (3.10+ for the agentic commit review, and for all model-backed reviews on a third-party provider), a git repository (end-of-turn/commit reviews skip silently otherwise). The page states no minimum Claude Code version. Available on all plans.
+- On first run the plugin creates a virtual environment under `~/.claude/security/` and installs the Claude Agent SDK into it (needs `pip` and network access). If that fails or Python is older than 3.10, the commit review on first-party authentication falls back to a single-shot review; on a third-party provider the model-backed reviews skip.
+- With no Anthropic authentication and no third-party provider configured, the model-backed reviews skip and only the per-edit pattern check runs.
 - None of the layers block writes or commits; findings are fed back to Claude as instructions to fix in-session. Treat as one layer of defense in depth, not a complete solution.
 - Fits into a stack alongside `/security-review` (single-pass, on demand), the Claude Security plugin (multi-agent deep scan), and Code Review (PR-time, Team/Enterprise).
 - Diagnostics: `~/.claude/security/log.txt`.
