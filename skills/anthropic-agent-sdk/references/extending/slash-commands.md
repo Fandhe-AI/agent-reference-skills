@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/slash-commands / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/slash-commands (merged into https://code.claude.com/docs/en/agent-sdk/skills#commands-in-agent-sdk-sessions) / last verified: 2026-10-16 -->
 
 # Slash Commands in the SDK
 
@@ -48,6 +48,11 @@ Fix issue #$0 with priority $1.
 
 ## Notes
 
+- The official slash-commands page was merged into the skills page ("Extend agents with skills", section "Commands in Agent SDK sessions", https://code.claude.com/docs/en/agent-sdk/skills#commands-in-agent-sdk-sessions). Confirmed 2026-10-16: it no longer appears in llms.txt and its URL returns the same content as the skills page. This page is kept for reference.
+- The command surface has four kinds of entries: built-in commands (e.g. `/compact`), bundled skills (`code-review`, `verify`), your skills, and custom command files in `.claude/commands/`. MCP prompts can also appear as commands.
+- A `/<name>` that matches neither a command in the session nor a built-in does not fail the query. Claude Code sends the prompt to Claude as an ordinary message with a note that the command didn't run, spending one model turn. Before v2.1.274 it returned `Unknown command: /<name>` as the result without a model turn.
+- A `/<name>` that matches a built-in not available in the session, such as `/theme`, returns `/theme isn't available in this environment.` as the result without a model turn.
+- `/compact`: a `compact_boundary` message only arrives when compaction ran. If nothing can be summarized, the run still ends with a `success` result and the reason is in the result text (e.g. `Not enough messages to compact.`).
 - `.claude/commands/` is the legacy format; the recommended format is `.claude/skills/<name>/SKILL.md`, which supports the same `/name` invocation plus autonomous invocation.
 - Only commands that work without an interactive terminal are dispatchable through the SDK.
 - A custom command file named after a bundled skill (e.g. `code-review.md`) shadows the bundled skill.

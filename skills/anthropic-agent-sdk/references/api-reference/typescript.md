@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/typescript / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/typescript / last verified: 2026-10-16 -->
 
 # Agent SDK reference - TypeScript
 
@@ -11,6 +11,14 @@ npm install @anthropic-ai/claude-agent-sdk
 ```
 
 The SDK bundles a native Claude Code binary for your platform as an optional dependency; most installs need no separate Claude Code install. The SDK version tracks the bundled Claude Code version (e.g. SDK v0.3.191 bundles Claude Code v2.1.191). If your package manager skips optional dependencies, set `pathToClaudeCodeExecutable` (see `Options` below) to a separately installed `claude` binary.
+
+### Import the `/core` entry when you bundle the Agent SDK
+
+If your application bundles the Agent SDK together with its own dependencies, import from `@anthropic-ai/claude-agent-sdk/core` instead of the package root. The `/core` entry requires TypeScript Agent SDK v0.3.282 or later, and its types require TypeScript 5.0 or later.
+
+`/core` exports the same `query()`, `startup()`, `tool()`, `createSdkMcpServer()`, and `resolveSettings()` as the root entry, along with the functions that rename, tag, and delete sessions, `AbortError`, the runtime constants, and every type. It adds no names of its own. It leaves out some root exports, including `prewarm()`, the `InMemorySessionStore` class, and the helpers that list, read, fork, import, and summarize sessions; use the root entry if you need one of them.
+
+The root entry inlines its own copies of `zod` and `@modelcontextprotocol/sdk`. The `/core` entry imports them from your `node_modules` at the ranges the SDK's `peerDependencies` declare. Import from either the root or `/core` in a given process, not both: they are separate bundles, and loading both gives you two copies of the SDK's classes and state.
 
 ### Compile to a single executable
 
@@ -77,6 +85,32 @@ const warm = await startup({ options: { maxTurns: 3 } });
 for await (const message of warm.query("What files are here?")) {
   console.log(message);
 }
+```
+
+### `prewarm()`
+
+*Alpha.* Starts a Claude Code process as a spare before you know which session it will serve, so you can bind it to a session later with `claim()` (see `SpareProcess`). Use it in an application that boots before the user picks a folder. Requires TypeScript Agent SDK v0.3.282 or later.
+
+```typescript
+function prewarm(params?: {
+  options?: Options;
+  initializeTimeoutMs?: number;
+}): Promise<SpareProcess>;
+```
+
+`prewarm()` completes the same initialize handshake as `startup()`, with the process waiting in `options.cwd` when you set it and otherwise in a private temporary directory under your Claude Code config directory. The session's working directory, its `SessionStart` hooks, its stdio MCP servers, and its CLAUDE.md and git context wait for the claim. A spare holds roughly 230 to 260 MB of memory while it waits. `prewarm()` throws if `options` sets `resume`, `continue`, or `forkSession`. Everything a claim can't set, such as `mcpServers`, `hooks`, `canUseTool`, `settingSources`, `systemPrompt`, and `plugins`, is fixed for the life of the spare.
+
+```typescript
+import { prewarm } from "@anthropic-ai/claude-agent-sdk";
+
+// On application boot, before the session's folder is known
+const spare = await prewarm({ options: { maxTurns: 3 } });
+
+// Later, when the user starts a session in a folder
+const claimedQuery = spare.claim({
+  prompt: "What files are here?",
+  options: { cwd: "/path/to/project" },
+});
 ```
 
 ### `tool()`
@@ -266,7 +300,10 @@ export declare type Options = {
     planModeInstructions?: string;
     allowDangerouslySkipPermissions?: boolean;
     permissionPromptToolName?: string;
+    permissionPrompts?: 'host' | 'none';
     plugins?: SdkPluginConfig[];
+    projectConfigRoot?: string;
+    verbatimPrompts?: boolean;
     promptSuggestions?: boolean;
     agentProgressSummaries?: boolean;
     resume?: string;
@@ -329,6 +366,10 @@ Selected fields (see the source JSDoc for the full description of each — this 
 | `outputFormat` | `OutputFormat` | Structured-output schema configuration |
 | `permissionMode` | `PermissionMode` | `'default' \| 'acceptEdits' \| 'bypassPermissions' \| 'plan' \| 'dontAsk'` |
 | `allowDangerouslySkipPermissions` | `boolean` | Required alongside `permissionMode: 'bypassPermissions'` |
+| `permissionPrompts` | `'host' \| 'none'` | Default `'host'`. Who answers permission prompts: `'host'` routes them to your `canUseTool` callback or the `permissionPromptToolName` tool, and `'none'` denies the calls that would have prompted. Requires Claude Code v2.1.259 or later |
+| `verbatimPrompts` | `boolean` | Default `false`. Deliver every prompt as written: the SDK sends each user message with `client_composed: true`, so Claude Code doesn't expand `@path` / `@server:resource` mentions and doesn't run text starting with `/` as a command. Requires TypeScript Agent SDK v0.3.280+ and Claude Code v2.1.248+ |
+| `projectConfigRoot` | `string` | Absolute path of the trusted checkout that `cwd` is a worktree of. Claude Code reads project settings, `.mcp.json`, and the project's `.claude/` commands, agents, skills, workflows, routines, and output styles from this directory instead of `cwd`, and sets `CLAUDE_PROJECT_DIR` to it. `CLAUDE.md` files and `.claude/rules/` still load from `cwd`. Requires Claude Code v2.1.275 or later |
+| `outputStyle` | — | Not an `Options` field. Set `outputStyle` in the inline `settings` object or a settings file instead |
 | `plugins` | `SdkPluginConfig[]` | Local plugins, e.g. `[{ type: 'local', path: './my-plugin' }]` |
 | `resume` | `string` | Session ID to resume |
 | `sessionId` | `string` | Specific UUID to use for a new session; can't combine with `continue`/`resume` unless `forkSession` is also set |
@@ -374,18 +415,38 @@ interface Query extends AsyncGenerator<SDKMessage, void> {
   setPermissionMode(mode: PermissionMode): Promise<void>;
   setModel(model?: string): Promise<void>;
   setMaxThinkingTokens(maxThinkingTokens: number | null): Promise<void>;
-  applyFlagSettings(settings: { [K in keyof Settings]?: Settings[K] | null }): Promise<void>;
+  applyFlagSettings(settings: {
+    [K in keyof Settings]?: K extends 'effortLevel'
+      ? 'low' | 'medium' | 'high' | 'xhigh' | 'max' | null
+      : Settings[K] | null;
+  }): Promise<void>;
+  updateSettings(
+    source: 'localSettings' | 'userSettings',
+    settings: Record<string, unknown>,
+  ): Promise<void>;
   initializationResult(): Promise<SDKControlInitializeResponse>;
   reinitialize(): Promise<SDKControlInitializeResponse>;
   supportedCommands(): Promise<SlashCommand[]>;
   supportedModels(): Promise<ModelInfo[]>;
   supportedAgents(): Promise<AgentInfo[]>;
   mcpServerStatus(): Promise<McpServerStatus[]>;
-  getContextUsage(): Promise<SDKControlGetContextUsageResponse>;
+  getContextUsage(opts?: {
+    detail?: 'summary' | 'full';
+  }): Promise<SDKControlGetContextUsageResponse>;
+  readFile(
+    path: string,
+    options?: { maxBytes?: number; encoding?: 'utf-8' | 'base64' }
+  ): Promise<SDKControlReadFileResponse | null>;
+  reloadPlugins(options?: {
+    holdOnCacheImpact?: boolean;
+  }): Promise<SDKControlReloadPluginsResponse>;
+  reloadSkills(): Promise<SDKControlReloadSkillsResponse>;
+  reloadOutputStyles(): Promise<SDKControlReloadOutputStylesResponse>;
   accountInfo(): Promise<AccountInfo>;
   reconnectMcpServer(serverName: string): Promise<void>;
   toggleMcpServer(serverName: string, enabled: boolean): Promise<void>;
   setMcpServers(servers: Record<string, McpServerConfig>): Promise<McpSetServersResult>;
+  readMcpResource(serverName: string, uri: string): Promise<SDKControlMcpReadResourceResponse>;
   streamInput(stream: AsyncIterable<SDKUserMessage>): Promise<void>;
   stopTask(taskId: string): Promise<void>;
   close(): void;
@@ -399,6 +460,13 @@ interface Query extends AsyncGenerator<SDKMessage, void> {
 | `setPermissionMode()` | Changes permission mode (streaming input mode only) |
 | `setModel()` | Changes the model (streaming input mode only) |
 | `applyFlagSettings()` | Merges settings into the flag-settings layer at runtime (streaming input mode only) |
+| `updateSettings(source, settings)` | Writes one allowlisted key to a settings file so it persists: `"localSettings"` accepts `outputStyle` (merged into `.claude/settings.local.json`); `"userSettings"` accepts `effortLevel` (saved under `modelSettings` in user settings; passing `max` writes nothing because `max` is session-only; requires SDK v0.3.277+). Requires TypeScript SDK v0.3.257+. Rejects on any other key, over a remote transport, or when `settingSources` exclude the source |
+| `readFile(path, options?)` | Reads a file from the session's filesystem (path resolved against `cwd`); `maxBytes` default 1 MB, ceiling 10 MB; `encoding: 'base64'` for binary. Resolves `SDKControlReadFileResponse`, or `null` on permission denial, missing file, or transport error. Requires TypeScript SDK v0.2.121+ |
+| `reloadPlugins(options?)` | Reloads plugins from disk mid-session; resolves `SDKControlReloadPluginsResponse`. Requires v0.2.85+; `holdOnCacheImpact` requires v0.3.268+ |
+| `reloadSkills()` | Reloads skills from disk mid-session; resolves `SDKControlReloadSkillsResponse`. Requires v0.3.163+ |
+| `reloadOutputStyles()` | Re-reads output styles from disk; resolves `SDKControlReloadOutputStylesResponse`. Requires v0.3.261+ |
+| `toggleMcpServer(serverName, enabled)` | Enables or disables an MCP server; disabling disconnects it and removes its tools. For a stdio/SSE/HTTP server added mid-session with `setMcpServers()`, removing its tools requires Claude Code v2.1.285+; for an in-process server from `createSdkMcpServer()`, v2.1.286+ |
+| `readMcpResource(serverName, uri)` | *Alpha.* Reads one MCP Apps `ui://` resource from a connected MCP server; resolves `SDKControlMcpReadResourceResponse`. Requires TypeScript Agent SDK v0.3.280+ |
 | `initializationResult()` | Returns the full initialization result |
 | `reinitialize()` | Re-sends the initialize control request |
 | `supportedCommands()` | Available slash commands |
@@ -448,6 +516,27 @@ await using (const warm = await startup()) {
 }
 ```
 
+### `SpareProcess`
+
+*Alpha.* Handle returned by `prewarm()`: a started Claude Code process that isn't bound to a session yet and can be claimed once. Requires TypeScript Agent SDK v0.3.282 or later.
+
+```typescript
+interface SpareProcess extends AsyncDisposable {
+  claim(params: {
+    prompt: string | AsyncIterable<SDKUserMessage>;
+    options: ClaimOptions;
+  }): Query;
+  readonly claimed: Promise<{ cwd: string; sessionId: string; parkedMs?: number; sdkMcpSettled: boolean }>;
+  readonly exited: Promise<void>;
+  close(): void;
+}
+```
+
+- `claim({ prompt, options })` binds the spare to a session in `options.cwd` (required) and sends its first message; returns a `Query` synchronously. Can only be called once. A claim can also set `additionalDirectories`, `model`, `permissionMode`, `maxThinkingTokens`, a flag-settings overlay in `settings`, `appendSystemPrompt`, `title`, `agents`, and per-session tokens in `env`.
+- `claimed` resolves once Claude Code accepts the claim. It rejects when Claude Code refuses the claim, when the process exited or was closed first, and, with a message starting with `option_not_applied`, when the session runs without the `model` or `maxThinkingTokens` you asked for.
+- `exited` settles when the process exits, claimed or not. `close()` terminates the process; before a claim it discards the spare and rejects `claimed`.
+- After a refusal (e.g. a folder that doesn't exist, or project settings that set `env`, `agent`, or `model`), a prompt that `claim()` already sent gets an error result whose text starts with `not_claimed`, and the returned query then throws. After any rejection other than `option_not_applied`, your prompt hasn't run, so start the session with `query()` instead.
+
 ### `SDKControlInitializeResponse`
 
 Return type of `initializationResult()`.
@@ -492,12 +581,12 @@ export declare type AgentDefinition = {
     skills?: string[];
     initialPrompt?: string; // auto-submitted as first user turn when this agent is the main thread agent
     maxTurns?: number;
+    autoCompactWindow?: number; // 100000 to 1000000; lowers the auto-compact window when run as a subagent (TS SDK v0.3.296+)
     background?: boolean;
+    omitClaudeMd?: boolean; // leave user/project/local CLAUDE.md out of initial context; managed policy files still load; ignored for the main thread agent (TS SDK v0.3.271+)
     memory?: 'user' | 'project' | 'local';
     effort?: ('low' | 'medium' | 'high' | 'xhigh' | 'max') | number;
     permissionMode?: PermissionMode;
-    observer?: string; // agent type auto-spawned as a background observer whenever this agent runs
-    observerMessage?: string; // supplemental postamble appended to each activity digest sent to the observer
 };
 ```
 
@@ -732,6 +821,9 @@ export declare type AccountInfo = {
 - The rendered docs page and the bundled `sdk.d.ts` type declaration file (`@anthropic-ai/claude-agent-sdk`, ~8,500 lines / ~380 KB) both exceed what WebFetch can hold in a single pass. Two independent narrow re-fetches of the same `SDKResultMessage` section from the rendered docs page returned mutually contradictory field lists — a hallucination, not a truncation — so that content was discarded rather than used. Everything in this file above this Notes section was either (a) captured from the initial full-page fetch before truncation occurred (Functions through `SDKControlInterruptResponse`), or (b) fetched verbatim, character-for-character, directly from the published `sdk.d.ts` source on unpkg (`@anthropic-ai/claude-agent-sdk@0.3.223`), which loads roughly the first half of the file (declarations up to and including the `Query` interface, alphabetically `AbortError` through `Settings`-adjacent names) before truncating — reliably and without fabrication, confirmed by explicit `NOT_PRESENT` responses for names past that point rather than invented content.
 - **Not independently verified and omitted rather than guessed** (declared alphabetically past the reachable window, `S` onward, in `sdk.d.ts`; consult `sdk.d.ts` in the installed package or the rendered docs page directly for these): `SDKMessage` and its variants (`SDKUserMessage`, `SDKAssistantMessage`, `SDKSystemMessage`, `SDKResultMessage`, `SDKTaskProgressMessage`, `SDKControlRequestMessage`, `SDKControlResponseMessage`, `SDKPartialMessage`, `SDKTextDelta`, `SDKThinkingDelta`, `SDKToolUseBlock`, `SDKToolResultBlock`), `Usage`, `SlashCommand`, `RewindFilesResult`, `ResolvedSettings`, `ResolveSettingsOptions`, `Settings`, `SandboxSettings` (TS shape — Python's equivalent is documented in `./python.md`, fields are believed to correspond but were not independently verified for TypeScript), `ThinkingConfig` (full type; the field shape is described inline in the `Options.thinking` JSDoc above), `SdkBeta`, `SdkPluginConfig`, `ToolConfig`, `CallToolResult`, `McpSetServersResult`, `McpServerStatus`, `SdkMcpToolDefinition`, `SDKHookStartedMessage`, `SDKHookProgressMessage`, `SDKHookResponseMessage`, `GetSessionMessagesOptions`, `SessionMessage`, `GetSessionInfoOptions`, `SessionMutationOptions`, `SDKControlGetContextUsageResponse`, `FastModeDisabledReason`, `SpawnOptions`, `SpawnedProcess`.
 - `ToolAnnotations` is re-exported from `@modelcontextprotocol/sdk/types.js`, not redeclared in this SDK; see the MCP SDK's own types for its shape (matches the Python SDK's `ToolAnnotations` fields documented in `./python.md`).
+- `startup_failure_reason` on the `error_during_execution` result (Agent SDK v0.3.274+) names why Claude Code refused to start (`SDKStartupFailureReason`). Newer values: `org_config_required_unavailable` (the organization's policies and managed settings are required before start and couldn't be loaded, e.g. network failure or Anthropic server error) and `org_config_refused` (Anthropic refused to provide them for this sign-in, e.g. expired or revoked sign-in, or the organization doesn't allow Claude Code for this account); both require Agent SDK v0.3.293+. Set `CLAUDE_CODE_STARTUP_FAILURE_RESULTS=1` in `env` to receive this result for every reason value.
+- `outputStyle` is not an `Options` field; set it in the inline `settings` object or a settings file (or persist it with `Query.updateSettings('localSettings', ...)`).
+- Fields added to the `Query` methods above are described from the 2026-10-16 rendered docs page; the `sdk.d.ts` declarations of the `SDKControl*Response` types (`SDKControlReadFileResponse`, `SDKControlReloadPluginsResponse`, `SDKControlReloadSkillsResponse`, `SDKControlReloadOutputStylesResponse`, `SDKControlMcpReadResourceResponse`) are listed by name only here.
 - `typescript-v2-preview` (a separate SDK-v2-preview interface page) was out of scope for this pass per the removed-page instruction and was not created.
 
 ## Related

@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/user-input.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/user-input.md / last verified: 2026-10-16 -->
 
 # Handle approvals and user input
 
@@ -31,6 +31,8 @@ canUseTool: async (toolName, input) => {
 
 - The callback fires only when nothing earlier in the permission evaluation flow resolved the call; auto-approved tools (via allow rule, `acceptEdits`, `bypassPermissions`) never reach it. Use a `PreToolUse` hook for checks that must apply to every call regardless.
 - `AskUserQuestion` triggers the same callback with `toolName === "AskUserQuestion"`; input contains a `questions` array (1-4 questions, 2-4 options each) with `question`, `header` (≤12 chars), `options[].{label,description}`, `multiSelect`.
+- When allowing, `updatedInput` (TypeScript) / `updated_input` (Python) can be omitted: the tool runs with the input Claude requested. Before v2.1.207, Claude Code rejected an allow result that omitted it and denied the call with a validation error.
+- TypeScript: skip the always-allow choice for a request whose canUseTool options carry `suppressAlwaysAllowRule: true`. Requires TypeScript Agent SDK v0.3.268 or later; the Python `context` doesn't carry it.
 - Response to `AskUserQuestion` must include the original `questions` array plus an `answers` object mapping each question text to the selected option label(s); optional `response` field for freeform replies not tied to a specific question.
 - "Approve and remember": echo a `suggestions` entry with `destination: "localSettings"` back as `updatedPermissions` to persist the rule to `.claude/settings.local.json`.
 - In Python, `can_use_tool` requires streaming mode; a finite prompt generator closes the input stream before the callback can run unless a hook or in-process MCP server keeps it open.

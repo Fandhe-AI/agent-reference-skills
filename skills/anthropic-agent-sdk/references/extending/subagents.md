@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/subagents / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/subagents / last verified: 2026-10-16 -->
 
 # Subagents in the SDK
 
@@ -41,7 +41,9 @@ for await (const message of query({
 | `mcpServers` | array | No | MCP servers available to this agent |
 | `initialPrompt` | string | No | Auto-submitted first user turn when run as main thread agent |
 | `maxTurns` | number | No | Max agentic turns before stopping |
+| `autoCompactWindow` | number | No | Lower the auto-compact window for this agent when run as a subagent, `100000` to `1000000`. TypeScript SDK v0.3.296+; not in Python's `AgentDefinition` |
 | `background` | boolean | No | Force non-blocking background execution |
+| `omitClaudeMd` | boolean | No | Leave user/project/local CLAUDE.md out of the agent's initial context (managed policy files still load); ignored for the main thread agent. TypeScript SDK v0.3.271+; not in Python's `AgentDefinition` |
 | `effort` | string\|number | No | Reasoning effort level |
 | `permissionMode` | PermissionMode | No | Permission mode for this agent |
 
@@ -51,6 +53,10 @@ for await (const message of query({
 - Subagents can also be defined as filesystem markdown files in `.claude/agents/`; programmatic `agents` definitions take precedence over filesystem agents with the same name.
 - A subagent's context starts fresh (only the Agent tool's prompt string, its own system prompt, and CLAUDE.md); it does not receive the parent's conversation history or system prompt.
 - By default subagents can spawn subagents up to three layers deep (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`).
+- Subagents run in the background by default: an Agent tool call that omits `run_in_background` launches a background subagent, and Claude sets `run_in_background: false` when it needs the result before continuing. `background: true` forces background execution for a specific agent. Before Claude Code v2.1.198 the default was rolling out gradually and an omitted `run_in_background` could run synchronously.
+- Concurrency limit: `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS` (default `20`). Beyond it, spawning returns `Concurrent subagent limit reached` until the running count drops (sessions with ultracode active are never refused). The spend cap (`maxBudgetUsd` / `max_budget_usd`) also refuses to spawn more subagents with `Budget limit reached` and stops running background subagents.
+- A subagent that has the `SendMessage` tool starts with a list of the other named agents running in the session (added to its first turn automatically; a fork doesn't get the list).
+- For runs that coordinate dozens to hundreds of agents, use the `Workflow` tool (TypeScript Agent SDK v0.3.149 and later); include `Workflow` in `allowedTools` to auto-approve workflow runs.
 - The tool name was renamed from `"Task"` to `"Agent"` in Claude Code v2.1.63; check both when detecting invocation for compatibility.
 - This is Claude Agent SDK (library) subagents, defined programmatically via `agents` or as `.claude/agents/` files. The Claude Code CLI's own subagent feature (same filesystem format, invoked from the terminal) is documented under anthropic-claude-code-extend — this page's filesystem-based approach is that same mechanism accessed through the SDK.
 
