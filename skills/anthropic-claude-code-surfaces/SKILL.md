@@ -1,9 +1,10 @@
 ---
 name: anthropic-claude-code-surfaces
 description: >
-  Claude Code (code.claude.com) サーフェスリファレンス。
-  Desktop app (launch.json, scheduled tasks, WSL)、VS Code / JetBrains / Claude in Chrome、
-  クラウドセッション (--cloud, --teleport)、mobile、
+  Claude Code (code.claude.com) の各サーフェス（Desktop / IDE / Web / mobile / ターミナル UX）リファレンス。
+  Desktop app (launch.json, scheduled tasks, WSL, Linux, iOS simulator)、
+  VS Code / JetBrains / Chrome 拡張 (Claude in Chrome)、
+  claude.ai/code クラウドセッション (--cloud, --teleport, Projects)、mobile、
   interactive mode, fullscreen, /tui, voice dictation, accessibility, computer use, artifacts。
 user-invocable: false
 ---
