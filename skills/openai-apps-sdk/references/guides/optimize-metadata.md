@@ -5,7 +5,7 @@ Guide for tuning tool names, descriptions, and parameter docs so ChatGPT/Codex r
 ## Signature / Usage
 
 ```text
-Golden prompt set -> draft metadata -> evaluate in developer mode -> iterate -> monitor in production
+Golden prompt set -> draft metadata -> evaluate your custom MCP server in ChatGPT -> iterate -> monitor in production
 ```
 
 ## Notes
@@ -17,8 +17,10 @@ Golden prompt set -> draft metadata -> evaluate in developer mode -> iterate -> 
   - **Description**: start with "Use this when…" and call out disallowed cases (e.g. "Do not use for reminders").
   - **Parameter docs**: describe each argument, include examples, and use allowed values for constrained inputs.
   - **Read-only hint**: annotate `readOnlyHint: true` on tools that only retrieve or compute information and never create, update, delete, or send data outside the conversation.
-  - For non-read-only tools: annotate `destructiveHint: false` on tools that do not delete or overwrite user data, and `openWorldHint: false` on tools that do not publish content or reach outside the user's account.
-- Evaluate in developer mode: enable Developer mode in ChatGPT (Settings -> Security and login), register the MCP server at ChatGPT Plugins, run the golden prompt set, and record which tool was selected, what arguments were passed, and whether the component rendered. Track precision (right tool ran?) and recall (tool ran when it should?).
+  - **Destructive hint**: annotate `destructiveHint: false` on tools that do not delete or overwrite user data.
+  - **Open-world hint**: annotate `openWorldHint: true` when a tool accesses the public internet or open-ended external entities, including read-only tools such as web search. Use `false` for a tool limited to a bounded private account or workspace, even when that service is externally hosted.
+- Evaluate your custom MCP server: connect your custom MCP server in ChatGPT and install the resulting plugin, run the golden prompt set, and record which tool was selected, what arguments were passed, and whether the component rendered. Track precision (right tool ran?) and recall (tool ran when it should?).
+- Developer mode: the earlier step "enable Developer mode in ChatGPT (Settings -> Security and login)" was removed from the official docs (fetched 2026-10-17).
 - If the model picks the wrong tool, revise descriptions to emphasize the intended scenario or narrow the tool's scope.
 - Iterate methodically: change one metadata field at a time, log revisions with timestamps and test results, and share diffs with reviewers before deploying.
 - After each revision, repeat the evaluation. Prioritize high precision on negative prompts before chasing marginal recall improvements.

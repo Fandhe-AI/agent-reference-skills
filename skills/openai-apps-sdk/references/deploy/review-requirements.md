@@ -1,6 +1,8 @@
-# MCP Server Review Requirements
+# Remote MCP server review requirements
 
-Requirements that apply when a plugin includes an MCP server: organization verification, management permissions, server requirements, review snapshots, and version maintenance. Submit the complete plugin (skills, MCP server, optional UI) through the plugin submission portal.
+Requirements that apply when a plugin includes a remote MCP server: organization verification, management permissions, server requirements, review snapshots, continuous review, and version maintenance. Submit the complete plugin (skills, MCP server, optional UI) through the plugin submission portal.
+
+Only submit the plugin if you intend it to be publicly available in the countries you define during submission. For private or workspace-only use, use a custom MCP server connection instead.
 
 ## Before you submit the plugin
 
@@ -58,6 +60,10 @@ Projects with EU data residency currently cannot submit plugins with MCP servers
 
 ## Review and approval
 
+### Reviews and checks
+
+OpenAI may perform automated scans or manual reviews to understand how the plugin works and whether it may conflict with policies.
+
 ### Approval, rejection, and appeals
 
 Approved plugins can be published from the submission portal. If rejected or removed because of the MCP server, tools, or UI, feedback on unsuccessful checks is provided; after fixing, resubmit. To appeal, reply to the rejection email with a clear rationale and any new information.
@@ -91,31 +97,39 @@ Approved plugins can be published from the submission portal. If rejected or rem
 
 ### How published MCP metadata versions work
 
-Treat the metadata exposed by the MCP server as a versioned API contract. Scanning stores the discovered metadata with the draft version; submitting sends that snapshot for review. The published plugin uses this metadata snapshot while tool calls and UI resources continue to use the live MCP server.
+Treat the metadata exposed by the MCP server as a versioned API contract. Scanning stores the discovered metadata with the draft version; submitting sends that snapshot for review. After publication, continuous review updates tool definitions without requiring a new plugin version. Tool calls and UI resources continue to use the live MCP server.
+
+### Continuous review and tool updates
+
+OpenAI periodically fetches the MCP server's tools and compares them with the published definitions, including descriptions, schemas, and annotations.
+
+- **Deleted tools**: removed from the published tool list as soon as a scan detects the deletion, without waiting for automated checks.
+- **New tools**: made available after they pass automated checks; until then they are not available to users.
+- **Changed tools**: the previous definition stays live until the updated definition passes automated checks or a scan detects that the tool was removed. Passing updates replace the previous definition automatically.
+
+Each tool passes independently. Example: add `create_note`, change `search` to accept a `folder` parameter, and delete `archive_note`. The next scan removes `archive_note` immediately; if `create_note` passes but the `search` update is held, users get `create_note` and keep the old `search` definition without `folder`.
+
+Keep the server compatible with the live definition while an update is held. OpenAI retains the definition, not a copy of the server implementation. An incomplete check does not approve an update, even if it has no findings.
+
+### Other changes
 
 | Change | Required action | When users see the change |
 |---|---|---|
-| Tool list, names, titles, descriptions, input/output schemas, annotations, tool security schemes, tool `_meta` fields (incl. UI resource references/visibility), or MCP server `instructions` | Deploy, create/update draft version, scan, submit for review, publish after approval | After publishing the approved version |
-| UI resource URI or linked resource metadata, including CSP settings | Deploy, create/update draft version, scan, submit for review, publish after approval | After publishing the approved version |
-| Backward-compatible content update served from the same published UI resource URI | Deploy the content update; no scan/submit/publish needed if URI and contract stay compatible | After deployment (cached resources may persist up to 1 hour) |
-| Server-only fix or change to live tool results, including result `_meta` or business data | Deploy the server change; no scan/submit/publish needed if the published contract is preserved | Through the live endpoint after deployment |
-| MCP server origin (`scheme`, `hostname`, or `port`) | Create a new plugin and complete scan/submission/review/publication; endpoint-path-only changes use the normal new-version flow | After publishing the new plugin or approved version |
+| Tool security schemes, tool `_meta` fields, UI resource references, or linked resource metadata, including CSP settings | Deploy the change; reviewed with the tool definition through continuous review | After the updated tool definition passes automated checks |
+| MCP server `instructions` | Deploy the change; shared instructions are reviewed with the affected tools | After the required checks complete without holding existing tool updates or finding issues in the instructions |
+| Backward-compatible content update served from the same published UI resource URI | Deploy the content update; no scan/submit/publish of a new version needed if URI and published contract stay compatible | After deployment (ChatGPT may serve cached resource contents for up to one hour) |
+| Server-only fix or change to live tool results, including result `_meta` or business data | Deploy the server change; no new version needed if the published contract is preserved | Through the live endpoint after deployment |
+| MCP server origin (`scheme`, `hostname`, or `port`) | Create a new plugin and complete scan, submission, review, publication; endpoint-path-only changes use the normal new-version flow | After publishing the new plugin or approved version |
 
-Breaking changes to a published MCP server contract are unsupported — removing/renaming a tool, an incompatible schema change, or incompatible/removed content at a published UI resource URI can break the current version as soon as it deploys. Instead:
-
-1. Add new tools, fields, or UI resources while honoring published contracts.
-2. Submit the updated metadata as a new version.
-3. Publish the approved version and keep old contracts available.
-
-Server-only fixes that preserve the published contract can deploy without a new version. If a deployment breaks the published version, roll back rather than waiting for a new version's review.
+Server changes take effect before a scan can discover or approve them. Keep existing input schemas and each published UI resource URI working during that gap. If a deployment breaks the live contract, roll back the server change rather than waiting for review.
 
 ### Submitting new versions for review
 
-Once published, the submitted information and reviewed metadata snapshot are locked. To update, create a new draft version and resubmit — each resubmission starts a new review; describe what changed in the release notes. The MCP server origin can't change between versions of the same plugin (submit a new plugin for a new origin); the endpoint path can change in a new version.
+To change submitted plugin information or imported skills, create a new draft version of the existing plugin and resubmit it for review. Continuous tool review does not replace this process. Each resubmission starts a new review; describe what changed in the release notes. The MCP server origin can't change between versions of the same plugin (submit a new plugin for a new origin); the endpoint path can change in a new version. If additional changes are made between submission and approval, cancel the review from the portal and resubmit. Once an update is approved, publishing it replaces the previous version.
 
 ### Changing published metadata versions and removing the plugin
 
-Change the published version by removing the current version from publication and publishing an approved replacement. Remove the plugin from public visibility by unpublishing without republishing. Delete the plugin from the submission portal to remove it from the organization and from ChatGPT/Codex entirely.
+To replace a published version, publish an approved replacement directly from the portal; keep the current version published while the replacement is under review, and no prior removal from publication is needed. Remove the current version from publication only when intending to remove the plugin from public visibility (without a published replacement the plugin becomes unavailable). Delete the plugin from the submission portal to remove it from the organization and from ChatGPT/Codex entirely.
 
 ### Maintenance requirements
 
@@ -124,6 +138,8 @@ Plugins may be removed if inactive, unstable, or non-compliant, at any time and 
 ## Notes
 
 - No estimated review or update timelines are provided; do not contact support to request expedited review.
+- Removed/reworded in the official docs (fetched 2026-10-17): the earlier statement that tool list / names / descriptions / schemas / annotations / security schemes / `_meta` / `instructions` changes always require a new version (deploy, update draft, scan, submit, publish) and the paragraph "Breaking changes to a published MCP server contract are unsupported" with its 3-step list (add new tools while honoring published contracts, submit as new version, publish and keep old contracts). Continuous review now updates tool definitions without a new plugin version. What remains: roll back a deployment that breaks the live contract rather than waiting for review.
+- If the documentation does not answer a question before, during, or after submission, contact OpenAI support and include the ID shown in the plugin submission portal.
 
 ## Related
 

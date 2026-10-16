@@ -1,6 +1,6 @@
 # Connect and Test Your Plugin
 
-Test each capability before testing the complete installed plugin: connect and evaluate the MCP server in developer mode first, then package the plugin with its skills and test the complete experience. Skills-only plugins can skip the MCP section.
+Test each capability before testing the complete installed plugin: connect and evaluate the MCP server in ChatGPT as a custom MCP server first, then package the plugin with its skills and test the complete experience. Skills-only plugins can skip the MCP section. Keep evaluation prompts and results throughout development to compare behavior across releases.
 
 ## Signature / Usage
 
@@ -19,7 +19,7 @@ Confirm that:
 - Tool names, descriptions, schemas, and annotations are present.
 - Authentication discovery works for tools that require an account.
 
-Secure MCP Tunnel connects a private MCP server in developer mode without exposing it publicly. A development tunnel or another HTTPS forwarding service can also provide a local testing endpoint, but these do not replace the public HTTPS endpoint required for plugin submission.
+Use Secure MCP Tunnel to connect a private MCP server in ChatGPT without exposing it to the public internet. A development tunnel or another HTTPS forwarding service can also provide a local testing endpoint, but these do not replace the public HTTPS endpoint required for plugin submission.
 
 ### Inspect the MCP server
 
@@ -27,24 +27,27 @@ Use MCP Inspector to list and call tools directly. Exercise each tool with repre
 
 ### Enable developer mode
 
-In ChatGPT: **Settings** → **Security and login** → turn on **Developer mode**. Availability can depend on account and workspace policy.
+In ChatGPT: **Settings** → **Security and login** → turn on **Developer mode**. Availability can depend on account and workspace policy. (Removed from the current official docs; see Notes.)
 
 ### Add the MCP server
 
+Account and workspace policies apply to adding and using custom MCP servers.
+
 1. Go to ChatGPT Plugins.
-2. Select the plus button.
+2. Select the plus button, then **Add custom MCP server**.
 3. Enter a user-facing name and description.
 4. Under **Connection**, choose the connection method:
    - Public endpoint: enter the MCP server URL, including the `/mcp` path.
    - Secure MCP Tunnel: select **Tunnel**, then choose an available tunnel or enter its `tunnel_id`.
-5. Create the connection.
-6. Review the tools and metadata discovered from the server.
+5. Configure authentication, review the risk warning, and select **I understand and want to continue**.
+6. Select **Create as a plugin**.
+7. Review the tools and metadata discovered from the server.
 
 If ChatGPT cannot connect, verify the public HTTPS endpoint with MCP Inspector, or check the tunnel's workspace association and `tunnel-client` status. Resolve transport, initialization, schema, or authentication errors before continuing.
 
 ### Check tool selection
 
-Start a new conversation, add the MCP connection, and create an evaluation set that includes:
+Install the resulting plugin, then start a new conversation. Type `@` in the prompt box and select the plugin. Create an evaluation set that includes:
 
 - Direct requests that should call a specific tool.
 - Indirect requests that express the same goal.
@@ -68,7 +71,7 @@ After changing tool names, descriptions, schemas, annotations, authentication, o
 4. Confirm that the advertised metadata changed.
 5. Start a new conversation and rerun the affected tests.
 
-This refresh flow applies only to MCP servers connected in developer mode. Published plugins with MCP use reviewed metadata snapshots (see submission.md); to update published metadata, scan the server, submit a new version, and publish the approved version.
+This refresh flow applies to custom MCP servers connected directly in ChatGPT. Published plugins use continuous review for tool updates (see review-requirements.md); changes to submitted plugin information or imported skills still require a new version, review, and publication.
 
 Before packaging the plugin, confirm that:
 
@@ -102,6 +105,7 @@ For plugins with an MCP server, also confirm that skills invoke the right tools,
 ## Notes
 
 - Before submission, confirm: each skill activates for intended requests with consistent behavior; unsupported requests don't activate the plugin; bundled files and references resolve after installation; starter prompts represent completable workflows; and, for plugins with an MCP server, bundled skills and tools work together as intended.
+- Developer mode prerequisite removed from official docs (fetched 2026-10-17): the current page no longer mentions "Developer mode"; the flow is plus button, **Add custom MCP server**, then **Create as a plugin**. The "Enable developer mode" step above is kept for reference only.
 - Maintain evaluation prompts and results throughout development to track behavioral changes across releases.
 
 ## Related

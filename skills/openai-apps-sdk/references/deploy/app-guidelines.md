@@ -124,7 +124,13 @@ No descriptions, titles, tool annotations, or other model-readable fields (tool 
 
 ### Iframes and embedded pages
 
-Plugins with UI can opt in to iframe usage via `frameDomains` in the resource CSP (`_meta.ui.csp.frameDomains`), but this is discouraged. If used: intended only when embedding a third-party experience is essential (notebook, IDE, similar environment); such plugins receive extra manual review and are often not approved for broad distribution; any developer can test `frameDomains` in developer mode, but public-listing approval is limited to trusted scenarios.
+Plugins with UI can embed pages from their MCP server's own registrable domain, including full existing editors and admin interfaces (for example, a server at `https://api.example.com/mcp` can embed `https://app.example.com`; both use the registrable domain `example.com`). Separate tenants on a shared hosting service count as different domains; using the same hosting provider does not establish ownership.
+
+Declare each required iframe origin in the resource CSP using `_meta.ui.csp.frameDomains` (or the legacy `_meta["openai/widgetCSP"].frame_domains`). For third-party domains, iframe embeds should be limited to cases where the embedded experience is essential.
+
+A justification is still required at submission: explain what each embedded page does, why the plugin embeds it, and who controls its domain. Iframe use can require additional review or escalation and may lead to slower approval or rejection if the content cannot be assessed; sharing the MCP server's domain does not guarantee approval. All other plugin requirements (checkout, privacy) still apply to embedded pages.
+
+(The earlier wording "discouraged ... any developer can test `frameDomains` in developer mode, but public-listing approval is limited to trusted scenarios" is no longer in the official page, fetched 2026-10-17.)
 
 ## Privacy
 

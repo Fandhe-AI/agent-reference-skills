@@ -264,7 +264,7 @@ ngrok http <port>
 - `registerAppResource` publishes the `ui://` HTML widget; `registerAppTool` links a tool to it via `_meta.ui.resourceUri`.
 - `StreamableHTTPServerTransport` with `sessionIdGenerator: undefined` runs in stateless mode — a fresh `McpServer` instance is created per request. Todo state lives in a `Map` keyed by the `mcp-session-id` header (`todoStores`) so that clients presenting distinct session IDs don't read or write each other's todos — but this is best-effort, demo-grade isolation only: stateless mode assigns no session ID, so when the header is absent every such client falls into one shared "anonymous" bucket, and a client-supplied header can also be spoofed. Production servers should scope state by a verified user/tenant ID instead (e.g. derived from the OAuth access token), not by this header.
 - The preflight `Access-Control-Allow-Headers` must include `mcp-protocol-version` alongside `content-type` and `mcp-session-id` — a browser-based Streamable HTTP client sends `MCP-Protocol-Version` on requests after initialization, and an incomplete allow-list makes the browser block the request before it reaches the server.
-- Use `ngrok` (or another tunnel) to expose the local server to ChatGPT during development via Settings > Connectors > developer mode.
+- Use `ngrok` (or another tunnel) to expose the local server to ChatGPT during development, then connect it from ChatGPT Plugins (plus button > Add custom MCP server) with the public HTTPS URL plus the `/mcp` path (for example, `https://<subdomain>.ngrok.app/mcp`).
 - This is the ChatGPT-app (server/publisher) side of MCP; consuming MCP servers from the Agents SDK is covered by the `openai-agents` skill.
 
 Source: https://developers.openai.com/plugins/build/app-quickstart

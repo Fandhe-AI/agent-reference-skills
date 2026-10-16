@@ -2,10 +2,10 @@
 name: openai-apps-sdk
 description: >
   OpenAI Apps SDK / ChatGPT plugins (developers.openai.com/plugins) のリファレンス。
-  ChatGPT 内で動くアプリを MCP サーバーとして公開する側の API。
+  ChatGPT 内アプリを MCP サーバーとして公開する側の API。
   window.openai, useOpenAiGlobal, registerAppTool, ui://widget,
-  _meta, openai/outputTemplate, OAuth 認証, Checkout API,
-  接続テスト・審査・申請。
+  _meta, openai/outputTemplate, OAuth, plugin.json / mcp.json (Agent Plugins),
+  MCP Events, Plugin Extensions, Checkout API, 審査・申請。
 user-invocable: false
 ---
 
@@ -33,6 +33,9 @@ skills/openai-apps-sdk/
       build-skills.md
       package-plugin.md
       checkout-monetization.md
+      examples.md
+      mcp-events.md
+      extensions.md
     reference/
       README.md
       window-openai-bridge.md
@@ -51,13 +54,17 @@ skills/openai-apps-sdk/
       submission-errors.md
       troubleshooting.md
       app-guidelines.md
+      desktop-only.md
     guides/
       README.md
       optimize-metadata.md
       security-privacy.md
+      submit-claude-plugin.md
   samples/
     README.md
     minimal-mcp-server.md
+    mcp-events-webhook.md
+    profile-tool.md
     tool-with-ui-resource.md
     window-openai-state.md
     oauth-auth-flow.md
@@ -90,11 +97,16 @@ skills/openai-apps-sdk/
 | ツール定義の契約（read/write, safety annotation）を設計したい | concepts | [references/concepts/README.md](references/concepts/README.md) |
 | MCP サーバーを実装してツール・結果返却・デプロイを作り込みたい | build | [references/build/README.md](references/build/README.md) |
 | MCP Apps ブリッジで UI（iframe / window.openai 拡張）を追加したい | build | [references/build/README.md](references/build/README.md) |
-| OAuth 2.1 認証・plugin.json マニフェスト・課金（checkout）を実装したい | build | [references/build/README.md](references/build/README.md) |
+| OAuth 2.1 認証・ルート plugin.json + mcp.json (Agent Plugins 形式) マニフェスト・課金（checkout）を実装したい | build | [references/build/README.md](references/build/README.md) |
+| MCP サーバーのイベント購読・webhook 配信 (MCP Events) を実装したい | build | [references/build/README.md](references/build/README.md) |
+| ChatGPT のサイドバー・会話パネル・ファイルビューア・composer メンション・拡張フォーム (Plugin Extensions) を使いたい | build | [references/build/README.md](references/build/README.md) |
+| 複数アカウントのプロファイル切替ツール (openai/profile) を実装したい | build | [references/build/README.md](references/build/README.md) |
 | `window.openai` API・`_meta` フィールド・tool annotations の詳細シグネチャを調べたい | reference | [references/reference/README.md](references/reference/README.md) |
 | ファイルアップロード API・ホスト連携ナビゲーションの仕様を調べたい | reference | [references/reference/README.md](references/reference/README.md) |
 | ChatGPT への接続テスト・審査要件・提出フォームを知りたい | deploy | [references/deploy/README.md](references/deploy/README.md) |
 | プラグイン提出時のエラーコード・トラブルシューティングを調べたい | deploy | [references/deploy/README.md](references/deploy/README.md) |
+| ローカル stdio MCP サーバーを持つ desktop-only プラグイン（requires_local_executor）を提出したい | deploy | [references/deploy/README.md](references/deploy/README.md) |
+| Claude Code のプラグイン・コネクタを OpenAI プラグインへ変換・提出したい | guides | [references/guides/README.md](references/guides/README.md) |
 | ツール名・description・パラメータのメタデータを最適化したい | guides | [references/guides/README.md](references/guides/README.md) |
 | セキュリティ・プライバシー・プロンプトインジェクション対策を確認したい | guides | [references/guides/README.md](references/guides/README.md) |
 | 典型的な使い方を知りたい（動く MCP サーバー / UI リソース / OAuth / Checkout の実例） | samples | [samples/README.md](samples/README.md) |

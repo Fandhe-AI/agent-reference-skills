@@ -2,11 +2,13 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| App quickstart | End-to-end tutorial that builds a to-do plugin | [app-quickstart.md](./app-quickstart.md) |
-| Authentication | OAuth 2.1 flow for plugin MCP servers that… | [auth.md](./auth.md) |
-| Build skills | A skill complements a plugin's MCP server… | [build-skills.md](./build-skills.md) |
-| Add UI to your MCP server | Optional custom UI for tools that need… | [chatgpt-ui.md](./chatgpt-ui.md) |
-| Checkout and monetization | How a plugin's widget and MCP server… | [checkout-monetization.md](./checkout-monetization.md) |
-| Examples | The Pizzaz demo bundles several UI components… | [examples.md](./examples.md) |
-| MCP server | The MCP server defines the tools available… | [mcp-server.md](./mcp-server.md) |
-| Package your plugin | Assembles skills and optionally an MCP… | [package-plugin.md](./package-plugin.md) |
+| App quickstart | End-to-end tutorial that builds an MCP server and an optional web UI component for a plugin. | [app-quickstart.md](./app-quickstart.md) |
+| Authentication | Authentication for plugin MCP servers that expose customer-specific data or write actions. | [auth.md](./auth.md) |
+| Build skills | Write skills that teach ChatGPT and Codex to combine MCP tools in repeatable workflows. | [build-skills.md](./build-skills.md) |
+| Add UI to your MCP server | Optional custom UI for tools that need users to inspect, compare, edit, confirm, or navigate data. | [chatgpt-ui.md](./chatgpt-ui.md) |
+| Checkout and monetization | Checkout API reference: external checkout (recommended) and embedded ChatGPT payment sheet (beta). | [checkout-monetization.md](./checkout-monetization.md) |
+| Examples | Pizzaz demo bundle showing the full tool surface with MCP server and UI components. | [examples.md](./examples.md) |
+| Plugin Extensions | OpenAI MCP Extensions for hooking plugins into the ChatGPT sidebar, composer, and file viewers. | [extensions.md](./extensions.md) |
+| MCP Events | Subscribe ChatGPT to MCP server updates such as new messages, comments, or status changes. | [mcp-events.md](./mcp-events.md) |
+| MCP server | Build an MCP server that defines the tools ChatGPT and Codex can call. | [mcp-server.md](./mcp-server.md) |
+| Package your plugin | Assemble skills and optional MCP server connections into an installable plugin package. | [package-plugin.md](./package-plugin.md) |

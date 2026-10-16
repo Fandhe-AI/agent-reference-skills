@@ -56,6 +56,7 @@ registerAppTool(
 | `_meta.ui.resourceUri` | Tool descriptor | string (URI) | None | Standard resource URI for the UI template. |
 | `_meta.ui.visibility` | Tool descriptor | string[] | default `["model", "app"]` | Controls whether a tool is available to the model, the UI, or both. The `app` value is the MCP Apps protocol identifier for UI. |
 | `_meta["openai/outputTemplate"]` | Tool descriptor | string (URI) | None | OpenAI-specific optional/compatibility alias for `_meta.ui.resourceUri` in ChatGPT. |
+| `_meta["openai/profile"]` | Tool descriptor | boolean | Optional; only `true` designates a profile tool | Identifies the authenticated, read-only tool that returns the current profile. Implement it to help users recognize and manage multiple connected accounts. Users can connect multiple accounts without it. See Support multiple accounts in the authentication page (`../build/auth.md`). |
 | `_meta["openai/widgetAccessible"]` | Tool descriptor | boolean | default `false` | OpenAI-specific compatibility field used by existing UI integrations; prefer `_meta.ui.visibility` + `tools/call`. |
 | `_meta["openai/visibility"]` | Tool descriptor | string | `public` (default) or `private` | OpenAI-specific compatibility field used by existing UI integrations; prefer `_meta.ui.visibility`. |
 | `_meta["openai/toolInvocation/invoking"]` | Tool descriptor | string | ≤ 64 chars | Short status text while the tool runs. |
