@@ -1,11 +1,12 @@
 ---
 name: github-docs
 description: >
-  GitHub 公式ドキュメント リファレンス。
-  REST API、GraphQL API、GitHub Actions (workflow, jobs, steps, expressions)、
-  Webhooks、GitHub Apps、gh CLI、認証 (PAT / GITHUB_TOKEN / OAuth Apps)、
-  pull requests, issues, projects (Projects v2), releases, Codespaces, Packages,
-  Copilot API, security (code scanning / secret scanning / Dependabot), activity (events / notifications)。
+  GitHub 公式ドキュメント (docs.github.com) リファレンス。
+  REST API, GraphQL API, GitHub Actions (workflow commands, concurrency, OIDC,
+  artifact attestations, lockfile), Webhooks, GitHub Apps, gh CLI,
+  認証 (PAT / GITHUB_TOKEN), pull requests, issues, Projects v2, immutable releases,
+  Codespaces, Packages, Copilot API (cloud agent), code scanning / secret scanning /
+  Dependabot, Dependency graph / SBOM, Teams, Billing。
 user-invocable: false
 model: sonnet
 ---
@@ -13,6 +14,8 @@ model: sonnet
 # GitHub Docs リファレンス
 
 GitHub 公式ドキュメント (docs.github.com) の主要セクションを網羅したスキル。
+
+出典: docs.github.com Article Body API (free-pro-team@latest)、取得日 2026-10-17。REST は X-GitHub-Api-Version 2026-03-10 で記述（ヘッダー省略時の既定は 2022-11-28）。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
 ## ディレクトリ構成
@@ -23,22 +26,29 @@ skills/github-docs/
   references/
     actions/
       README.md
+      artifact-attestations.md
       artifacts.md
       caching.md
       composite-actions.md
+      concurrency.md
       contexts.md
       environment-variables.md
       events-triggers.md
       expressions.md
+      limits.md
+      lockfiles.md
+      oidc.md
       permissions.md
       reusable-workflows.md
       runners.md
       secrets.md
+      workflow-commands.md
       workflow-syntax.md
       creating-actions/
         README.md
         action-metadata.md
         docker-actions.md
+        immutable-releases.md
         javascript-actions.md
     apps/
       README.md
@@ -94,9 +104,26 @@ skills/github-docs/
       templates.md
     rest-api/
       README.md
+      agent-tasks/
+        README.md
+        agent-tasks.md
+      agents/
+        README.md
+        secrets.md
+        variables.md
+      billing/
+        README.md
+        budgets.md
+        usage.md
+      campaigns/
+        README.md
+        campaigns.md
       actions/
         README.md
         artifacts.md
+        cache.md
+        concurrency-groups.md
+        oidc.md
         secrets.md
         self-hosted-runners.md
         variables.md
@@ -115,9 +142,18 @@ skills/github-docs/
       codespaces/
         codespaces.md
       copilot/
+        README.md
+        cloud-agent-management.md
+        coding-agent-management.md
+        content-exclusion-management.md
         spaces.md
         usage-metrics.md
         user-management.md
+      dependency-graph/
+        README.md
+        dependency-review.md
+        dependency-submission.md
+        sboms.md
       deployments/
         README.md
         deployments.md
@@ -182,11 +218,17 @@ skills/github-docs/
         README.md
         search.md
       security/
+        README.md
         code-scanning.md
         dependabot-alerts.md
+        dependabot-repository-access.md
         dependabot-secrets.md
         secret-scanning.md
         secret-scanning-push-protection.md
+      teams/
+        README.md
+        members.md
+        teams.md
       users/
         README.md
         users.md
@@ -202,9 +244,11 @@ skills/github-docs/
     cache-dependencies.md
     ci-node.md
     composite-action.md
+    concurrency-deploy-queue.md
     deploy-on-push.md
     manual-dispatch.md
     matrix-build.md
+    oidc-aws-deploy.md
     pr-auto-comment.md
     rest-api-call.md
     reusable-workflow-deploy.md
@@ -233,7 +277,9 @@ skills/github-docs/
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | ワークフロー構文・CI/CD 設定、イベントトリガー、シークレット、キャッシュ、アーティファクト | actions | [references/actions/README.md](references/actions/README.md) |
-| カスタムアクション作成（JavaScript・Docker・複合アクション） | actions/creating-actions | [references/actions/creating-actions/README.md](references/actions/creating-actions/README.md) |
+| ワークフローコマンド（::add-mask:: / GITHUB_OUTPUT / ジョブサマリー）、concurrency と queue、Actions の制限値 | actions | [references/actions/README.md](references/actions/README.md) |
+| OIDC クラウド連携（id-token）、lockfile（gh actions-lock）、artifact attestations | actions | [references/actions/README.md](references/actions/README.md) |
+| カスタムアクション作成（JavaScript・Docker・複合アクション）、immutable releases | actions/creating-actions | [references/actions/creating-actions/README.md](references/actions/creating-actions/README.md) |
 | GitHub App 作成・認証・インストール、OAuth Apps との比較 | apps | [references/apps/README.md](references/apps/README.md) |
 | SSH キー・PAT・2FA・SAML SSO・デプロイキー | authentication | [references/authentication/README.md](references/authentication/README.md) |
 | gh コマンド、CLI クイックスタート、CLI 拡張機能 | cli | [references/cli/README.md](references/cli/README.md) |
@@ -247,7 +293,13 @@ skills/github-docs/
 | アクティビティ API（イベント・通知・スター・ウォッチ） | rest-api/activity | [references/rest-api/README.md](references/rest-api/README.md) |
 | チェック API（check-runs・check-suites） | rest-api/checks | [references/rest-api/README.md](references/rest-api/README.md) |
 | Codespaces API | rest-api/codespaces | [references/rest-api/README.md](references/rest-api/README.md) |
-| Copilot API（利用状況メトリクス・ユーザー管理・Spaces） | rest-api/copilot | [references/rest-api/README.md](references/rest-api/README.md) |
+| Copilot API（利用状況メトリクス・ユーザー管理・Spaces・cloud agent 管理・content exclusion） | rest-api/copilot | [references/rest-api/copilot/README.md](references/rest-api/copilot/README.md) |
+| Dependency graph API（dependency review / submission / SBOM） | rest-api/dependency-graph | [references/rest-api/dependency-graph/README.md](references/rest-api/dependency-graph/README.md) |
+| Agent tasks API（Copilot cloud agent タスク） | rest-api/agent-tasks | [references/rest-api/agent-tasks/README.md](references/rest-api/agent-tasks/README.md) |
+| Agents secrets / variables API | rest-api/agents | [references/rest-api/agents/README.md](references/rest-api/agents/README.md) |
+| Security campaigns API | rest-api/campaigns | [references/rest-api/campaigns/README.md](references/rest-api/campaigns/README.md) |
+| Teams API（チーム・メンバー） | rest-api/teams | [references/rest-api/teams/README.md](references/rest-api/teams/README.md) |
+| Billing API（budgets / usage） | rest-api/billing | [references/rest-api/billing/README.md](references/rest-api/billing/README.md) |
 | デプロイ・環境 API | rest-api/deployments | [references/rest-api/README.md](references/rest-api/README.md) |
 | Gist API | rest-api/gists | [references/rest-api/README.md](references/rest-api/README.md) |
 | Git データ API（blobs・commits・refs・tags・trees） | rest-api/git | [references/rest-api/README.md](references/rest-api/README.md) |
@@ -259,7 +311,7 @@ skills/github-docs/
 | PR API（レビュー・レビューコメント・レビューリクエスト） | rest-api/pulls | [references/rest-api/README.md](references/rest-api/README.md) |
 | リポジトリ API（ブランチ・コンテンツ・リリース・Webhook） | rest-api/repos | [references/rest-api/README.md](references/rest-api/README.md) |
 | 検索 API | rest-api/search | [references/rest-api/README.md](references/rest-api/README.md) |
-| セキュリティ API（code scanning・secret scanning・Dependabot alerts/secrets） | rest-api/security | [references/rest-api/README.md](references/rest-api/README.md) |
+| セキュリティ API（code scanning・secret scanning・Dependabot alerts/secrets/repository access） | rest-api/security | [references/rest-api/security/README.md](references/rest-api/security/README.md) |
 | ユーザー API | rest-api/users | [references/rest-api/README.md](references/rest-api/README.md) |
 | Webhook 作成・イベントペイロード・セキュリティ・ベストプラクティス | webhooks | [references/webhooks/README.md](references/webhooks/README.md) |
 | 典型的な Actions ワークフロー・デプロイ・CI パターンを知りたい | samples | [samples/README.md](samples/README.md) |

@@ -2,13 +2,17 @@
 
 GITHUB_TOKEN の自動認証とパーミッションスコープのリファレンス。
 
-公式ドキュメント: https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication
+公式ドキュメント: https://docs.github.com/en/actions/concepts/security/github_token
 
 ---
 
 ## 概要
 
 `GITHUB_TOKEN` は各ワークフロー実行の開始時に自動生成されるトークン。ワークフロー内で GitHub API やリポジトリ操作に使用できる。ジョブ終了時に失効する。
+
+トークンの最大寿命はランナー種別で異なる:
+- GitHub-hosted ランナー: ジョブ最大実行時間が 6 時間のため、最大 6 時間
+- self-hosted ランナー: ジョブ最大 5 日だが、installation access token のリフレッシュは 24 時間まで。24 時間を超えるジョブでは PAT 等の別の認証手段を使う
 
 アクセス方法:
 - コンテキスト: `${{ secrets.GITHUB_TOKEN }}` または `${{ github.token }}`
@@ -26,6 +30,7 @@ GITHUB_TOKEN の自動認証とパーミッションスコープのリファレ�
 | `checks` | チェック実行とチェックスイートの管理 | `read`, `write`, `none` |
 | `code-quality` | コードカバレッジレポートのアップロード | `read`, `write`, `none` |
 | `contents` | リポジトリコンテンツ（コミット、ブランチ、タグ等）の管理 | `read`, `write`, `none` |
+| `copilot-requests` | Copilot リクエストの実行。組織所有リポジトリのワークフローが `GITHUB_TOKEN` で Copilot CLI を使う。組織の billing policy が許可している場合に限る | `write`, `none` |
 | `deployments` | デプロイメントの管理 | `read`, `write`, `none` |
 | `discussions` | ディスカッションの管理 | `read`, `write`, `none` |
 | `id-token` | OIDC トークンのリクエスト | `write`, `none` |
@@ -39,9 +44,13 @@ GITHUB_TOKEN の自動認証とパーミッションスコープのリファレ�
 | `statuses` | コミットステータスの管理 | `read`, `write`, `none` |
 | `vulnerability-alerts` | Dependabot アラートの読み取り | `read`, `none` |
 
+Notes: 現行の公式 permissions 表（workflow-syntax）に `models` と `repository-projects` は記載がない（2026-10-17 確認）。上表の両行は旧版由来のため、利用前に公式ドキュメントで要確認。ページ自体は残している。
+
 ---
 
 ## デフォルトパーミッション
+
+Notes: 現行 docs ではスコープ別デフォルト値（Permissive / Restricted）は表として掲載されていない（2026-10-17 確認）。以下の表は旧版由来であり、実際の既定値はリポジトリ / 組織の Workflow permissions 設定を確認すること。
 
 リポジトリ設定の「Workflow permissions」で 2 つのデフォルトモードから選択可能:
 
@@ -140,6 +149,17 @@ permissions: {}
 | `pull_request` from fork | 読み取り専用（`contents: read` のみ） |
 | `pull_request_target` | デフォルトブランチの権限で実行 |
 | `workflow_call` | 呼び出し元のパーミッション設定を継承（制限のみ可能） |
+
+---
+
+## GITHUB_TOKEN が起こすイベント
+
+`GITHUB_TOKEN` で行った操作が起こすイベントは、原則として新しいワークフロー run を作らない（再帰実行の防止）。例外:
+
+- `workflow_dispatch` と `repository_dispatch` は常に run を作成する
+- `GITHUB_TOKEN` を使うワークフローが作成・更新した PR の `pull_request`（`opened` / `synchronize` / `reopened`）は、approval-required 状態の run を作る。write 権限を持つユーザーが **Approve workflows to run** を選ぶまで実行されない。`labeled` / `edited` / `closed` 等の他のタイプは run を作らない
+- 承認なしで実行したい場合は、GitHub App の installation access token または PAT で PR を作成・更新する
+- `GITHUB_TOKEN` を使うワークフローの push は GitHub Pages の build を起動しない
 
 ---
 
