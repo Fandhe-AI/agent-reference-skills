@@ -15,7 +15,7 @@ containing all the items in the reference pictures.
 """
 
 result = client.images.edit(
-    model="gpt-image-2",
+    model="gpt-image-2.5-sunburst",
     image=[
         open("body-lotion.png", "rb"),
         open("bath-bomb.png", "rb"),
@@ -61,7 +61,7 @@ const images = await Promise.all(
 );
 
 const response = await client.images.edit({
-  model: "gpt-image-2",
+  model: "gpt-image-2.5-sunburst",
   image: images,
   prompt,
 });
@@ -73,6 +73,6 @@ fs.writeFileSync("basket.png", image_bytes);
 
 ## Notes
 
-- Pass `image` as an array of up to 16 files (each PNG/WebP/JPEG under 50 MB) instead of a single file; no `mask` is required.
+- Pass `image` as an array of up to 16 files instead of a single file; no `mask` is required.
 - The model blends elements from all reference images into a single new composition guided by `prompt`.
 - Reference images can also be supplied to the Responses API `image_generation` tool as URLs, base64 data URLs, or File IDs for conversational workflows (see `image-generation-tool.md`).

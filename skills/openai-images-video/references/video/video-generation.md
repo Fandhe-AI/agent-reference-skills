@@ -1,17 +1,8 @@
 # Video Generation with Sora (Videos API)
 
-> **Deprecation notice**: `sora-2`, `sora-2-pro`, and the Videos API are scheduled to shut down on **September 24, 2026**. See `openai-api-core/references/legacy-migration/deprecations.md`; no replacement was announced as of this writing.
+> **Shut down**: The Sora 2 models (`sora-2`, `sora-2-pro`, and snapshots `sora-2-2025-10-06`, `sora-2-2025-12-08`, `sora-2-pro-2025-10-06`) and the Videos API were shut down on **September 24, 2026** and are no longer available; no one-to-one replacement API is available. The official guide is retained for historical reference, and this page is kept for that purpose only. Source: https://developers.openai.com/api/docs/deprecations (section 2026-03-24) and https://developers.openai.com/api/docs/guides/video-generation. See also the `openai-api-core` skill's legacy-migration category (deprecations).
 
 Sora is OpenAI's video generation model; the Videos API exposes programmatic creation, extension, editing, and management of generated videos.
-
-## Models
-
-| Model | Best for |
-|---|---|
-| `sora-2` | Speed and flexibility; quick iteration, concepting, social content. |
-| `sora-2-pro` | Production-quality output; 1080p exports (`1920x1080` / `1080x1920`); slower, more expensive. |
-
-Both support `16`- and `20`-second generations.
 
 ## Signature / Usage
 
@@ -39,6 +30,15 @@ curl -X POST "https://api.openai.com/v1/videos" \
 ```
 
 Response job states: `queued`, `in_progress`, `completed`, `failed`. `video.progress` reports a percentage.
+
+## Models
+
+| Model | Best for |
+|---|---|
+| `sora-2` | Speed and flexibility; quick iteration, concepting, social content. |
+| `sora-2-pro` | Production-quality output; 1080p exports (`1920x1080` / `1080x1920`); slower, more expensive. |
+
+Both support `16`- and `20`-second generations.
 
 ## Options / Props
 

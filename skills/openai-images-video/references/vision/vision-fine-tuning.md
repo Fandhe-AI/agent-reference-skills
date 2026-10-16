@@ -14,7 +14,7 @@ Training examples are JSONL lines with the same message/content shape used for R
     {"role": "system", "content": "You are an assistant that identifies and describes artworks."},
     {"role": "user", "content": "Describe this artwork."},
     {"role": "user", "content": [
-      {"type": "image_url", "image_url": {"url": "https://.../artwork.jpg"}}
+      {"type": "image_url", "image_url": {"url": "https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg"}}
     ]},
     {"role": "assistant", "content": "This appears to be a traditional painted artwork..."}
   ]
@@ -46,7 +46,8 @@ After training, the model is evaluated across 13 safety categories (harassment, 
 
 ## Notes
 
-- This page is specific to image-input SFT; general supervised fine-tuning mechanics (job creation, hyperparameters) are covered by the fine-tuning guide in `openai-api-core` or a dedicated fine-tuning skill, not here.
+- This page is specific to image-input SFT; general supervised fine-tuning mechanics (job creation, hyperparameters) are covered by the `openai-evals-tuning` skill, not here.
+- Self-serve fine-tuning wind-down timeline (official deprecations page): May 7, 2026 — creating fine-tuning jobs or training is not available to organizations that have not previously run fine-tuning; July 2, 2026 — creating jobs is no longer available to organizations that have not run inference on a fine-tuned model in the past 60 days; Jan 6, 2027 — active existing customers can no longer create new fine-tuning jobs. Inference on fine-tuned models is disabled only when the underlying base model is deprecated.
 
 ## Related
 

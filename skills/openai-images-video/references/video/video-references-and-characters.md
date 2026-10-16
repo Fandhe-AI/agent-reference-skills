@@ -1,5 +1,7 @@
 # Video Image References and Characters
 
+> **Shut down**: The Videos API and Sora 2 models were shut down on **September 24, 2026** and are no longer available (no one-to-one replacement). This page is retained for historical reference only. See `video-generation.md`.
+
 Guide a Sora video generation with a starting-frame image, or reuse a consistent non-human subject (character) across multiple generations.
 
 ## Image references (`input_reference`)

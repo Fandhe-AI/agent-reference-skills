@@ -2,6 +2,8 @@
 
 curl collection for Sora video generation API (`/v1/videos/*`): create, status, download, list, delete. See openai-api-core's `scripts/install.md` / `scripts/auth.md` for SDK installation and authentication setup.
 
+> **Note**: The Videos API and the Sora 2 models (`sora-2`, `sora-2-pro` and their dated snapshots) were scheduled for removal on 2026-09-24 and have been shut down. The commands below are kept for historical reference only and no longer work.
+
 ## Create a video (create)
 
 ```bash

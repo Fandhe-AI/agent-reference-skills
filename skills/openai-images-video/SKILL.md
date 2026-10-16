@@ -1,12 +1,11 @@
 ---
 name: openai-images-video
 description: >
-  OpenAI API (developers.openai.com) の画像・動画生成リファレンス。
-  image generation（gpt-image, Images API `images.generate` / `images.edit`）、
-  image edit（mask, reference images）、image generation tool（Responses API 組み込み）、
-  vision（画像入力, image tokens, vision fine-tuning）、
-  video generation（Sora, `sora-2` / `sora-2-pro`, videos エンドポイント）、
-  extend / edits, characters。
+  OpenAI API (developers.openai.com) の画像生成・画像入力リファレンス。
+  GPT Image 2.5 (`gpt-image-2.5-sunburst` / `flare`), Images API `images.generate` / `images.edit`,
+  mask, reference images, quality xhigh / max, image prompting, image_generation tool (Responses API),
+  vision (画像入力, detail, image tokens, cost calculator, vision fine-tuning)。
+  Sora 2 / Videos API は 2026-09-24 終了 (履歴のみ)。
 user-invocable: false
 ---
 
@@ -20,10 +19,12 @@ skills/openai-images-video/
       README.md
       image-generation.md
       image-generation-tool.md
+      image-prompting.md
       moderation-and-errors.md
     vision/
       README.md
       image-input.md
+      image-cost-calculator.md
       image-tokens-and-limitations.md
       vision-fine-tuning.md
     video/
@@ -62,14 +63,20 @@ skills/openai-images-video/
 |--------|---------|------------|
 | テキストから画像生成、`images.generate` / `images.edit` の単体呼び出し | images | [references/images/README.md](references/images/README.md) |
 | mask / reference images を使った画像編集、Responses API の `image_generation` ツール、モデレーション・エラー処理 | images | [references/images/README.md](references/images/README.md) |
+| GPT Image モデル選択（Sunburst / Flare）・プロンプト設計・既存 workflow の移行 | images | [references/images/README.md](references/images/README.md) |
 | 画像入力（vision）を Responses/Chat Completions に渡す、`detail` レベル指定 | vision | [references/vision/README.md](references/vision/README.md) |
-| image token のコスト計算、vision の制約、vision fine-tuning | vision | [references/vision/README.md](references/vision/README.md) |
-| Sora による動画生成、videos エンドポイントのジョブライフサイクル・ポーリング | video | [references/video/README.md](references/video/README.md) |
-| 動画の extend / edits、characters・reference frame、バッチレンダリングとライブラリ管理 | video | [references/video/README.md](references/video/README.md) |
+| image token の仕組み、vision の制約、vision fine-tuning | vision | [references/vision/README.md](references/vision/README.md) |
+| 画像入力トークン・コストの見積もり（calculator、30,000-patch 上限） | vision | [references/vision/README.md](references/vision/README.md) |
+| Sora による動画生成、videos エンドポイントのジョブライフサイクル・ポーリング（2026-09-24 終了済み・履歴参照のみ） | video | [references/video/README.md](references/video/README.md) |
+| 動画の extend / edits、characters・reference frame、バッチレンダリングとライブラリ管理（2026-09-24 終了済み・履歴参照のみ） | video | [references/video/README.md](references/video/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
-| curl で Images / Videos / vision エンドポイントを直接叩きたい | scripts | [scripts/README.md](scripts/README.md) |
+| curl / OpenAI CLI で Images / vision エンドポイントを直接叩きたい（video 系コマンドは 2026-09-24 終了済み・履歴参照のみ） | scripts | [scripts/README.md](scripts/README.md) |
 
 ## Notes
 
+- 出典は developers.openai.com/api/docs の Markdown twin（URL 末尾 `.md`、2026-10-16 取得。サイトに版番号なし）。最新モデルは GPT Image 2.5（`gpt-image-2.5-sunburst-2026-09-08` / `gpt-image-2.5-flare-2026-09-08`、changelog 2026-09-08）
+- GPT Image 旧モデルの終了予定: `gpt-image-1` は 2026-10-23、`gpt-image-1-mini` / `gpt-image-1.5` / `chatgpt-image-latest` は 2026-12-01。代替は `gpt-image-2.5-sunburst` / `gpt-image-2.5-flare`。`/v1/images/variations` は retired
+- Sora 2 / Videos API は 2026-09-24 に終了済み。`references/video/`・video 系 samples / scripts は履歴参照のみ
+- vision fine-tuning の一般的な SFT / DPO / RFT は `openai-evals-tuning` が担当する
 - Responses API の基本的な呼び出し形（入出力・ストリーミング・ツール呼び出しの共通仕様）は `openai-api-core` が担当する
 - built-in tools（web search / file search / code interpreter 等）の全体的な枠組みは `openai-agents` が担当する。本スキルの `image_generation` ツールはその中の画像生成特化ページとして扱う

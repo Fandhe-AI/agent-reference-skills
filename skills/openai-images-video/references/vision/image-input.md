@@ -6,7 +6,7 @@ Give models images as input so they can "see" and understand visual content — 
 
 ```javascript
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -40,18 +40,18 @@ Multiple images can be included in one `content` array in a single request; each
 | `type` | `"input_image"` | Content part type for image input. |
 | `image_url` | string | Fully qualified URL or base64 data URL. |
 | `file_id` | string | File ID from the Files API (`purpose: "vision"`). |
-| `detail` | `low` \| `high` \| `original` \| `auto` | Processing depth (see below). Default: `auto`. |
+| `detail` | `low` \| `high` \| `original` \| `auto` | Processing depth (see below). Supported values depend on the model. Default: `auto` in both the Responses API and the Chat Completions API. |
 
 ## Choose an image detail level
 
 | Detail level | Best for |
 |---|---|
-| `low` | Fast, low-cost understanding; resizes to 512x512. |
-| `high` | Standard high-fidelity understanding when precise coordinates aren't required. |
-| `original` | Large, dense, spatially sensitive, or computer-use images (OCR, bounding boxes, localization); available on `gpt-5.4`+. On the GPT-5.6 family, preserves input dimensions with no patch/pixel-budget resize; on `gpt-5.4`/`gpt-5.5`, dimensions are preserved only up to 10,000 patches or a 6000px max dimension, beyond which the image is resized proportionally (see `image-tokens-and-limitations.md`). |
-| `auto` | Automatic selection; on `gpt-5.5` and GPT-5.6 models, equivalent to `original`. |
+| `low` | Coarse image understanding. Resizing and token use depend on the model; `low` does not always use fewer tokens than `high`. |
+| `high` | Standard high-fidelity image understanding when precise original-image coordinates are not required. |
+| `original` | Large, dense, spatially sensitive, or computer-use images, when supported by the model. |
+| `auto` | Use the model's default sizing behavior, shown in the model sizing table (`image-tokens-and-limitations.md`): `original` on `gpt-5.5` and the `gpt-6-astra` / GPT-5.6 models, `high` on `gpt-5.4` models. |
 
-`low`/`high` may resize the image before analysis, which can obscure small details and cause returned coordinates to no longer match the original image — use `original` for coordinate-sensitive tasks such as computer use. Even `original` is not resize-free on every model: only the GPT-5.6 family guarantees no resizing at any size; `gpt-5.4`/`gpt-5.5` still resize proportionally once the 10,000-patch/6000px budget is exceeded.
+For tasks that require fine visual detail or precise coordinates, such as OCR, small-object detection, or computer use, use `"detail": "original"` when supported. Original detail can still resize images to meet the model's pixel-dimension limit or resizing patch budget (for example, sides over 65,535px on `gpt-6-astra` / GPT-5.6 models; 10,000 patches / 6000px on `gpt-5.4` / `gpt-5.5`), but not to meet the separate 30,000-patch rejection limit. For coordinate-sensitive tasks, resize images to fit those limits before sending them and map returned coordinates back to the original image. Computer use coordinate handling is covered by the `openai-agents` skill.
 
 ## Image input requirements
 
@@ -59,7 +59,8 @@ Multiple images can be included in one `content` array in a single request; each
 |---|---|
 | Supported file types | PNG, JPEG, non-animated GIF, WEBP |
 | Size limits | Up to 512 MB total payload per request; up to 1,500 individual image inputs per request |
-| Other | No watermarks/logos; no NSFW content; must be clear enough for a human to understand |
+| Patch limit | Up to 30,000 patches per image (patch-based inputs, after resizing); images over the limit are rejected, not resized |
+| Other | Clear enough for the model to analyze; image tokens and the rest of the prompt must fit the model's context limit; image use must comply with OpenAI's usage policies |
 
 ## Notes
 
@@ -70,4 +71,5 @@ Multiple images can be included in one `content` array in a single request; each
 ## Related
 
 - [image-tokens-and-limitations.md](./image-tokens-and-limitations.md)
+- [image-cost-calculator.md](./image-cost-calculator.md)
 - [vision-fine-tuning.md](./vision-fine-tuning.md)

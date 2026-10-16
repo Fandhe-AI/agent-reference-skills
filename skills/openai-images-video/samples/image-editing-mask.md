@@ -9,7 +9,7 @@ import base64
 client = OpenAI()
 
 result = client.images.edit(
-    model="gpt-image-2",
+    model="gpt-image-2.5-sunburst",
     image=open("sunlit_lounge.png", "rb"),
     mask=open("mask.png", "rb"),
     prompt="A sunlit indoor lounge area with a pool containing a flamingo",
@@ -29,7 +29,7 @@ import OpenAI, { toFile } from "openai";
 const client = new OpenAI();
 
 const rsp = await client.images.edit({
-  model: "gpt-image-2",
+  model: "gpt-image-2.5-sunburst",
   image: await toFile(fs.createReadStream("fixtures/sunlit_lounge.png"), null, {
     type: "image/png",
   }),
@@ -65,6 +65,6 @@ with open("mask_alpha.png", "wb") as f:
 ## Notes
 
 - The transparent regions of `mask` mark where the model should repaint; opaque regions are preserved from `image`.
-- `image` and `mask` must share the same format and dimensions, and each must be under 50 MB.
+- `image` and `mask` must share the same format and size, and the pair must be under 50 MB (per the official guide's mask requirements).
 - The mask must include an alpha channel; if the source mask is a plain grayscale PNG, add one programmatically before sending it (see snippet above).
 - To composite multiple reference images without a mask, use image editing with reference images instead (see `image-editing-reference.md`).
