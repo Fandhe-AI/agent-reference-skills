@@ -57,9 +57,11 @@ e.HTTPErrorHandler = customHTTPErrorHandler
 - Always check whether the response was already committed (`resp.Committed`) before writing another response from the error handler, since a handler or middleware may have partially written a response before returning the error.
 - Use the centralized handler as the single place to forward errors to external services (Sentry, Elasticsearch, Splunk) instead of relying solely on logging scattered across handlers.
 - Handle `http.MethodHead` requests separately (e.g. `c.NoContent(code)`) since HEAD responses must not include a body.
+- Migration trap (v4 -> v5, API_CHANGES_V5.md): predefined errors such as `echo.ErrNotFound` and `echo.ErrMethodNotAllowed` (returned by the router for unmatched routes) are no longer `*echo.HTTPError`. They are immutable sentinels that only implement `HTTPStatusCoder`, so a v4-style type assertion `err.(*echo.HTTPError)` in a custom error handler stops matching them and turns every 404/405 into a 500. Use `code := echo.StatusCode(err)` instead; it works for `*HTTPError` and the predefined errors, and returns 0 if `err` carries no status.
 
 ## Related
 
+- [Problem Details (RFC 9457)](./problem-details.md)
 - [HTTPError](./http-error.md)
 - [Error Propagation in Middleware](./error-propagation-in-middleware.md)
 - [Customization](../getting-started/customization.md)

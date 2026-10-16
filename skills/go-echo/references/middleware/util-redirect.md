@@ -35,6 +35,8 @@ Available redirect middleware:
 ## Notes
 
 - Use `e.Pre()` so redirects are applied before routing, regardless of route matching.
+- HTTPS redirects use `Context#Scheme()`. Behind a proxy, configure the scheme extractor and trusted proxy ranges (see Request Scheme and Trusted Proxies) so Echo can recognize HTTPS. A public proxy address that has not been trusted can cause a redirect loop (v5.4.0).
+- Since v5.4.0, the trailing slash middlewares and the static directory redirect percent-encode control characters in the redirect path (GHSA-v753-g4cw-jm48).
 
 ## Related
 

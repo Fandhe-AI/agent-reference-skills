@@ -27,6 +27,7 @@ e.Pre(middleware.AddTrailingSlashWithConfig(middleware.AddTrailingSlashConfig{
 ## Notes
 
 - Both middlewares are registered via `Echo#Pre()`, applying before routing.
+- Since v5.4.0, when configured to redirect, the trailing slash middlewares percent-encode control characters in the path before constructing the `Location` header (GHSA-v753-g4cw-jm48).
 
 ## Related
 

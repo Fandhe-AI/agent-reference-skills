@@ -45,5 +45,6 @@ func main() {
 ## Notes
 
 - `c.JSONP(code, callback, i)` wraps the JSON payload in a call to the callback function named by the `callback` query parameter (e.g. `response({...})`).
-- A browser client can request `/jsonp?callback=?` (jQuery-style) to receive the wrapped payload without triggering CORS restrictions.
-- JSONP only works for `GET` requests and is largely superseded by CORS for modern cross-origin needs.
+- Removed from the official cookbook: the JSONP recipe is no longer in the echox cookbook (removed in echox commit `508a246`, 2026-09-30; checked at `94b5f80`); this page is kept as a legacy example.
+- Since v5.4.0, `Context.JSONP` and `Context.JSONPBlob` accept only an empty callback, a JavaScript identifier, or a dot-separated path of identifiers (ASCII letters, digits, `_`, `$`). Any other callback returns a 400 error wrapping `ErrInvalidJSONPCallback` and writes nothing; responses carry `X-Content-Type-Options: nosniff`.
+- JSONP lets any website read the response with the user's cookies, so do not use it for data that needs authentication; prefer the CORS middleware (see the `cors` sample).

@@ -34,8 +34,10 @@ e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 
 - Combining wildcard origin (`"*"`) with `AllowCredentials: true` is a vulnerability: it would reflect any request's `Origin` back in `Access-Control-Allow-Origin`, allowing credentialed cross-origin requests from any site. Echo prevents this configuration by panicking/erroring.
 - For dynamic origin validation use `UnsafeAllowOriginFunc` and validate carefully, since attackers may register deceptive domain names.
+- Source-only (cors.go, v5.3.1 -> v5.4.0; not in the CHANGELOG or docs): a request counts as a preflight only when it is `OPTIONS` and has both `Origin` and `Access-Control-Request-Method` headers. Non-CORS `OPTIONS` requests, and `OPTIONS` without `Origin`, now continue to `next(c)` instead of short-circuiting with 204.
 
 ## Related
 
+- [CORS sample](../../samples/cors.md)
 - [csrf](./security-csrf.md)
 - [secure](./security-secure.md)

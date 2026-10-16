@@ -52,6 +52,7 @@ e.File("/", "public/index.html")
 - By default Echo uses `os.DirFS(".")` rooted at the current working directory; customize via `e.Filesystem = os.DirFS("assets")`.
 - Avoid leading slashes in file paths passed to `Static`/`StaticFS`/`File` when using most `fs.FS` implementations; use relative paths instead.
 - `echo.MustSubFS` roots an `fs.FS` (e.g. an `embed.FS`) at the correct subdirectory before passing it to `StaticFS`.
+- Since v5.4.0 (v4.16.0): paths with `.`, `..`, or empty segments (such as `/assets//app.js`) return 404. File names with non-default escaping (such as `%2C`, `%40`, or lowercase hex) need `Config.EnablePathUnescapingStaticFiles` (v5) for `Echo#Static` / `Echo#StaticFS`, or `StaticConfig.EnablePathUnescaping` for the middleware. These options decode encoded slashes as well, so do not combine them with route-based access control for subdirectories.
 - A dedicated Static middleware is also available for more advanced serving scenarios (e.g. index files, browsing).
 
 ## Related

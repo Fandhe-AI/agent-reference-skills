@@ -33,5 +33,6 @@ e.GET("/metrics", echoprometheus.NewHandler())
 
 ## Related
 
+- [OpenTelemetry](./observability-open-telemetry.md)
 - [request-id](./util-request-id.md)
 - [logger](./util-logger.md)

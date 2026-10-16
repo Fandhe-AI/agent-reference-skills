@@ -1,12 +1,15 @@
 ---
 name: go-echo
 description: >
-  Echo (LabStack) — Go Web framework リファレンス。routing（Group）、echo.Context、
-  Bind、Validator、HTTPError、HTTPErrorHandler、middleware（JWT, CORS, CSRF,
-  BasicAuth, Gzip, Recover, Logger, RateLimiter）、Renderer、WebSocket、SSE、
+  Echo (LabStack) v5 — Go Web framework リファレンス。routing（Group）、echo.Context、
+  Bind、Validator、HTTPError、HTTPErrorHandler、RFC 9457 Problem Details、
+  middleware（JWT, CORS, CSRF, BasicAuth, Gzip, Recover, Logger, RateLimiter）、
+  OpenTelemetry (echo-otel)、IPExtractor、SchemeExtractor、Renderer、WebSocket、SSE、
   AutoTLS 実装例。
 user-invocable: false
 ---
+
+対象: Echo v5.4.0 (公式ドキュメント labstack/echox @94b5f80, 2026-10-07 取得)
 
 ## ディレクトリ構成
 
@@ -20,6 +23,7 @@ skills/go-echo/
       installation.md
       customization.md
       ip-address.md
+      request-scheme.md
     routing/
       README.md
       route-registration.md
@@ -68,6 +72,7 @@ skills/go-echo/
       README.md
       http-error.md
       http-error-handler.md
+      problem-details.md
       returning-errors-from-handlers.md
       error-propagation-in-middleware.md
     middleware/
@@ -97,6 +102,7 @@ skills/go-echo/
       util-method-override.md
       util-session.md
       observability-prometheus.md
+      observability-open-telemetry.md
     testing/
       README.md
       handler-testing.md
@@ -104,6 +110,7 @@ skills/go-echo/
     README.md
     hello-world.md
     crud-api.md
+    cors.md
     jwt-authentication.md
     websocket.md
     server-sent-events.md
@@ -143,13 +150,13 @@ skills/go-echo/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
-| Echo アプリの最小構成・インストール・Validator/Binder/Renderer 差し替え・クライアント実 IP 解決を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| Echo アプリの最小構成・インストール・Validator/Binder/Renderer 差し替え・クライアント実 IP 解決・リクエスト scheme 判定 (SchemeExtractor・信頼プロキシ) を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | ルート登録・Group・path/query parameter・静的ルート・reverse routing を知りたい | routing | [references/routing/README.md](references/routing/README.md) |
 | echo.Context のメソッド・per-request storage・Context 拡張・Cookie の読み書きを知りたい | context | [references/context/README.md](references/context/README.md) |
 | リクエストボディ・path/query/header の Bind、custom binder、Validator 実装を知りたい | request-binding | [references/request-binding/README.md](references/request-binding/README.md) |
 | JSON/XML/HTML/Blob/Stream/File/Template でレスポンスを返したい | response | [references/response/README.md](references/response/README.md) |
-| HTTPError・カスタム HTTPErrorHandler・handler/middleware でのエラー伝播を知りたい | error-handling | [references/error-handling/README.md](references/error-handling/README.md) |
-| JWT/BasicAuth/KeyAuth/Casbin 認証、CORS/CSRF/Secure、Gzip/Recover/Logger/RateLimiter、Prometheus メトリクスなどの middleware を知りたい | middleware | [references/middleware/README.md](references/middleware/README.md) |
+| HTTPError・カスタム HTTPErrorHandler・RFC 9457 Problem Details (ProblemDetailsHTTPErrorHandler)・handler/middleware でのエラー伝播を知りたい | error-handling | [references/error-handling/README.md](references/error-handling/README.md) |
+| JWT/BasicAuth/KeyAuth/Casbin 認証、CORS/CSRF/Secure、Gzip/Recover/Logger/RateLimiter、Prometheus メトリクス、OpenTelemetry (echo-otel) などの middleware を知りたい | middleware | [references/middleware/README.md](references/middleware/README.md) |
 | handler・middleware を httptest / echotest でテストしたい | testing | [references/testing/README.md](references/testing/README.md) |
-| 典型的な使い方を知りたい（CRUD API, JWT 認証, WebSocket, SSE, ファイルアップロード/ダウンロード, graceful shutdown, テンプレートレンダリング, カスタム middleware, Auto TLS, HTTP/2, JSONP, streaming, subdomain routing, reverse proxy, load balancing） | samples | [samples/README.md](samples/README.md) |
+| 典型的な使い方を知りたい（CRUD API, CORS, JWT 認証, WebSocket, SSE, ファイルアップロード/ダウンロード, graceful shutdown, テンプレートレンダリング, カスタム middleware, Auto TLS, HTTP/2, JSONP, streaming, subdomain routing, reverse proxy, load balancing） | samples | [samples/README.md](samples/README.md) |
 | インストール・実行・テスト・AutoTLS/TLS・開発ツールのコマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

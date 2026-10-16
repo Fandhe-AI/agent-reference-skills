@@ -26,8 +26,8 @@ Method sources: `MethodFromHeader`, `MethodFromForm`, `MethodFromQuery`.
 
 ## Notes
 
-- Only `POST` requests may be overridden, for security.
-- Register via `Echo#Pre()` so the overridden method is visible to the router.
+- Only `POST` requests may be overridden, for security. Since v5.4.0, a `POST` cannot be overridden to `GET`, `HEAD`, `OPTIONS`, `TRACE`, or `CONNECT`; the request remains `POST` if one of those methods is requested.
+- Register via `Echo#Pre()` so the overridden method is visible to the router. Register it before routing and the CSRF middleware, so a form or query `_method` value cannot bypass a CSRF check (GHSA-r7w9-592q-9vg4).
 
 ## Related
 

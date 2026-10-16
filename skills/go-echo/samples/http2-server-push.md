@@ -44,6 +44,7 @@ func main() {
 
 ## Notes
 
+- Removed from the official cookbook: the HTTP/2 server push recipe is no longer in the echox cookbook (echox commit `508a246`, 2026-09-30, deleted `cookbook/http2-server-push/`; `94b5f80` keeps only the `http2` recipe); this page is kept as a legacy example. For current HTTP/2 usage see the `http2-server` sample.
 - Server push requires an HTTP/2 connection, which requires TLS (`sc.StartTLS`); a self-signed certificate is enough for local testing.
 - `echo.UnwrapResponse` exposes the underlying `http.ResponseWriter` so it can be type-asserted to `http.Pusher`.
 - If the underlying transport does not support `http.Pusher` (e.g. HTTP/1.1), the type assertion fails silently and clients fall back to requesting assets normally.
