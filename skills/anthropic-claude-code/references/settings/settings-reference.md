@@ -275,6 +275,209 @@ Sections of the official page that hold each key's entry (the Topic column below
 | `worktree.symlinkDirectories` | Symlink large directories into each worktree instead of duplicating them | Agents, sessions, and worktrees | Any file |
 | `wslInheritsWindowsSettings` | Have WSL read managed settings from the Windows policy chain | Enterprise and managed settings | Managed |
 
+### Value types
+
+Type and Default per key, copied from each key's entry on the official page. `unset` means the key has no default value. `taskOutputMaxChars` is removed and has no Type.
+
+| Key | Type / values | Default |
+| --- | --- | --- |
+| `advisorModel` | string: alias `"fable"`, `"opus"`, or `"sonnet"`, or a full model ID such as `"claude-opus-5-5"` | unset (advisor off) |
+| `alwaysThinkingEnabled` | Boolean (`true` no effect; `false` turns extended thinking off) | unset (thinking on) |
+| `availableModels` | array of model aliases or IDs | unset (every model available) |
+| `availableModelsMatch` | string: `"prefix"` or `"exact"` | `"prefix"` |
+| `deniedModels` | array of model aliases or IDs | unset (no model blocked) |
+| `effortLevel` | string: `"low"`, `"medium"`, `"high"`, `"xhigh"` | unset |
+| `enforceAvailableModels` | Boolean | `false` |
+| `fallbackModel` | array of model aliases or IDs; `"default"` expands to the default model | unset |
+| `fastMode` | Boolean | unset (off) |
+| `fastModePerSessionOptIn` | Boolean | `false` |
+| `language` | string, any language name such as `"japanese"`; not validated | unset |
+| `maxEffortLevel` | string: `"low"`, `"medium"`, `"high"`, `"xhigh"`, `"max"` (`"max"` sets no cap) | unset (no cap) |
+| `model` | string, a model alias or full model ID | unset (account default model) |
+| `modelOverrides` | object mapping model ID to provider model ID | unset |
+| `modelPicker` | object with `options` array and optional `replaceBuiltInOptions` Boolean | unset (built-in lineup) |
+| `modelPricing` | object with optional `multiplier` and optional `overrides` map | unset (list price) |
+| `modelSettings` | object mapping a model name to an object with `effortLevel` (`"low"`/`"medium"`/`"high"`/`"xhigh"`), `maxEffortLevel`, `autoCompactWindow` (100000 to 1000000, or `"auto"`; v2.1.288+) | unset |
+| `outputStyle` | string, name of a built-in or custom output style | unset (default style) |
+| `promptCacheTtl` | string: `"5m"` or `"1h"` | unset |
+| `showThinkingSummaries` | Boolean | `false` |
+| `subagentPromptCacheTtl` | string: `"5m"` or `"1h"` | unset |
+| `switchModelsOnFlag` | Boolean | unset (switches automatically, may ask first in interactive sessions) |
+| `ultracode` | Boolean | unset (off) |
+| `allowManagedPermissionRulesOnly` | Boolean | unset |
+| `autoMode` | object with `environment`, `allow`, `soft_deny`, `hard_deny` arrays of prose rules, plus `classifyAllShell` Boolean | unset (built-in rules only) |
+| `autoMode.classifyAllShell` | Boolean | `false` |
+| `disableAutoMode` | the string `"disable"` | unset |
+| `permissions` | object with `allow`, `ask`, `deny`, `additionalDirectories`, `blockReadsOutsideWorkingDirectories`, `defaultMode`, `disableBypassPermissionsMode`, `disableAutoMode` | unset |
+| `useAutoModeDuringPlan` | Boolean | `true` |
+| `permissions.allow` / `.ask` / `.deny` | array of permission rule strings | unset |
+| `permissions.additionalDirectories` | array of directory paths | unset |
+| `permissions.blockReadsOutsideWorkingDirectories` | Boolean | unset (follows permission mode) |
+| `permissions.defaultMode` | string: `"default"`, `"acceptEdits"`, `"plan"`, `"auto"`, `"dontAsk"`, `"bypassPermissions"`, `"manual"` (alias for `"default"`) | unset |
+| `permissions.disableBypassPermissionsMode` | the string `"disable"` | unset |
+| `skipAutoPermissionPrompt` | Boolean | unset (notice appears once) |
+| `skipDangerousModePermissionPrompt` | Boolean | unset (dialog appears) |
+| `sandbox` | object with `enabled`, `failIfUnavailable`, `autoAllowBashIfSandboxed`, `excludedCommands`, `allowUnsandboxedCommands`, `enableWeakerNestedSandbox`, `enableWeakerNetworkIsolation`, `allowAppleEvents`, `bwrapPath`, `socatPath`, `ignoreViolations`, `ripgrep`, plus `filesystem`, `network`, `credentials` objects | unset (no sandbox) |
+| `sandbox.enabled` | Boolean | `false` |
+| `sandbox.failIfUnavailable` | Boolean | `false` |
+| `sandbox.autoAllowBashIfSandboxed` | Boolean | `true` |
+| `sandbox.excludedCommands` | array of command patterns | unset |
+| `sandbox.allowUnsandboxedCommands` | Boolean | `true` |
+| `sandbox.filesystem` | object with `allowWrite`, `denyWrite`, `denyRead`, `allowRead` arrays, plus `allowManagedReadPathsOnly` and `disabled` Booleans | unset |
+| `sandbox.filesystem.allowWrite` / `.denyWrite` / `.denyRead` / `.allowRead` | array of path strings using the sandbox path prefixes | unset |
+| `sandbox.filesystem.allowManagedReadPathsOnly` | Boolean | `false` |
+| `sandbox.filesystem.disabled` | Boolean | `false` (filesystem isolation stays on) |
+| `sandbox.ignoreViolations` | object mapping a command substring to an array of violation substrings | unset |
+| `sandbox.enableWeakerNestedSandbox` | Boolean | `false` |
+| `sandbox.enableWeakerNetworkIsolation` | Boolean | `false` |
+| `sandbox.allowAppleEvents` | Boolean | `false` |
+| `sandbox.ripgrep` | object with `command` (path to ripgrep binary) and optional `args` array | unset |
+| `sandbox.bwrapPath` / `sandbox.socatPath` | string, an absolute path (relative path dropped; falls back to `PATH` lookup) | unset |
+| `sandbox.credentials` | object with `files`, `envVars`, `allowPlaintextInject`, `awsPairs`, `sigv4` | unset |
+| `sandbox.credentials.files` | array of objects with `path` and `mode` of `"deny"` or `"mask"`, plus optional mask fields | unset |
+| `sandbox.credentials.envVars` | array of objects with `name` and `mode` of `"deny"` or `"mask"`, plus optional mask fields | unset |
+| `sandbox.credentials.allowPlaintextInject` | Boolean | `false` |
+| `sandbox.credentials.awsPairs` | array of objects with `accessKeyIdVar`, `secretAccessKeyVar`, optional `sessionTokenVar` | unset |
+| `sandbox.credentials.sigv4` | object with `streaming`, `presigned`, `sigv4a`, each `"deny"` or `"passthrough"` | unset (every form `"deny"`) |
+| `sandbox.network` | object with the sub-keys below | unset |
+| `sandbox.network.allowUnixSockets` | array of strings, each a socket path | unset (macOS sandbox blocks every Unix socket) |
+| `sandbox.network.allowAllUnixSockets` / `.allowLocalBinding` | Boolean | `false` |
+| `sandbox.network.allowMachLookup` | array of service-name strings; trailing `*` matches a prefix, `"*"` alone matches all | unset |
+| `sandbox.network.allowedDomains` / `.deniedDomains` | array of strings: domain, wildcard pattern, or IP literal, optional `:port` suffix | unset |
+| `sandbox.network.strictAllowlist` / `.allowManagedDomainsOnly` | Boolean | `false` |
+| `sandbox.network.httpProxyPort` / `.socksProxyPort` | number, a local TCP port | unset (own proxy) |
+| `sandbox.network.tlsTerminate` | object with optional `caCertPath` and `caKeyPath` strings | unset |
+| `autoCompactEnabled` | Boolean | `true` |
+| `autoCompactWindow` | number of tokens, 100000 to 1000000 (capped at the model's context window) | unset |
+| `autoMemoryDirectory` | string, absolute or `~/`-prefixed directory path | unset (`~/.claude/projects/<project>/memory/`) |
+| `autoMemoryEnabled` | Boolean | `true` |
+| `bashOutputMaxChars` | positive integer, clamped to 4000 to 128000 | unset (up to 30,000 characters inline) |
+| `claudeMd` | string, the text of a CLAUDE.md file (line breaks as `\n`) | unset |
+| `claudeMdExcludes` | array of glob patterns or absolute paths | unset |
+| `env` | object mapping variable names to string values | unset |
+| `fileCheckpointingEnabled` / `idleCompaction` | Boolean | `true` |
+| `plansDirectory` | string, a path relative to the project root | unset (`~/.claude/plans`) |
+| `skillListingBudgetFraction` | number greater than 0 and at most 1 | `0.01` |
+| `skillListingMaxDescChars` | positive integer | `1536` |
+| `askUserQuestionTimeout` | string: `"60s"`, `"5m"`, `"10m"`, `"never"` | `"never"` |
+| `autoContinueAtUsageLimit` / `autoScrollEnabled` | Boolean | `true` |
+| `axScreenReader` | Boolean | unset (off) |
+| `bashEditDiffEnabled` | Boolean | unset |
+| `companyAnnouncements` | array of strings | unset |
+| `defaultShell` | string: `"bash"` or `"powershell"` | `"bash"`, or `"powershell"` on Windows when Bash isn't available |
+| `dialogExpiry` | string: `"60s"`, `"5m"`, `"10m"`, `"never"` (disables the deadline) | `"5m"` |
+| `editorMode` | string: `"normal"` or `"vim"` | `"normal"` |
+| `emojiCompletionEnabled` | Boolean | `true` |
+| `fileSuggestion` | object with `type` (always `"command"`) and `command` | unset |
+| `footerLinksRegexes` | array of objects with `type` `"regex"`, `pattern`, `url` template, optional `label` | unset |
+| `keybindingFlavor` | string: `"classic"` or `"readline"` (deprecated, no effect) | unset |
+| `maxProseWidth` | whole number of terminal columns, minimum 40 (other values ignored) | unset |
+| `prefersReducedMotion` | Boolean | `false` |
+| `promptSuggestionEnabled` / `respectGitignore` / `respondToBashCommands` / `showTurnDuration` | Boolean | `true` |
+| `showClearContextOnPlanAccept` | Boolean | `false` |
+| `spellcheck` | object with `enabled`, `checker` (`"aspell"`, `"hunspell"`, `"ispell"`, `"auto"`), `language`, `color` | unset (off); `checker` defaults to `"auto"` |
+| `spinnerTipsEnabled` | Boolean | `true` |
+| `spinnerTipsOverride` | object with optional `tips`, `tipsFile`, `label`, `excludeDefault` | unset |
+| `spinnerVerbs` | object with `verbs` array of strings and `mode` `"append"` or `"replace"` | unset |
+| `statusLine` | object with `type` `"command"`, `command`, optional `padding`, `refreshInterval` (seconds, min 1), `hideVimModeIndicator` | unset |
+| `subagentStatusLine` | object with `type` `"command"` and `command` | unset |
+| `syntaxHighlightingDisabled` | Boolean | `false` |
+| `terminalProgressBarEnabled` / `terminalTitleFromRename` / `wheelScrollAccelerationEnabled` | Boolean | `true` |
+| `theme` | string: `"auto"`, `"dark"`, `"light"`, `"dark-daltonized"`, `"light-daltonized"`, `"dark-ansi"`, `"light-ansi"`, `"custom:<slug>"`, `"custom:<plugin-name>:<slug>"` | `"dark"` |
+| `timeFormat` | string: `"auto"`, `"12-hour"`, `"24-hour"`, `"24-hour-utc"`, or a strftime pattern containing `%` | `"auto"` |
+| `timeZone` | string, an IANA time zone name | unset (system time zone) |
+| `tui` | string: `"default"` or `"fullscreen"` | unset |
+| `verbose` | Boolean | `false` |
+| `viewMode` | string: `"default"`, `"verbose"`, `"focus"` | unset |
+| `vimInsertModeRemaps` | object mapping a two-character sequence to `"<Esc>"` | unset |
+| `voice` | object with `enabled` Boolean, `autoSubmit` Boolean (hold mode only), `mode` `"hold"` or `"tap"` | unset (off); `"hold"` when `enabled` and `mode` unset |
+| `voiceEnabled` | Boolean | unset |
+| `attribution` | object with `commit` and `pr` strings and `sessionUrl` Boolean, or `false` to hide all (`false` needs v2.1.281+) | unset |
+| `includeCoAuthoredBy` / `includeGitInstructions` | Boolean | `true` |
+| `prUrlTemplate` | string, a URL template | unset |
+| `attribution.commit` / `attribution.pr` | string | unset (standard attribution) |
+| `attribution.sessionUrl` | Boolean | `true` |
+| `allowedHttpHookUrls` | array of URL patterns (`*` wildcard) | unset (any URL allowed) |
+| `allowManagedHooksOnly` / `disableAllHooks` | Boolean | unset |
+| `disableWorkflows` | Boolean | `false` |
+| `enableWorkflows` | Boolean | unset (on unless Pro plan) |
+| `hooks` | object keyed by hook event; each value an array of `{ "matcher", "hooks" }` groups, hook `type` one of `"command"`, `"prompt"`, `"agent"`, `"http"`, `"mcp_tool"` | unset |
+| `httpHookAllowedEnvVars` | array of environment variable names | unset |
+| `workflowKeywordTriggerEnabled` | Boolean | `true` |
+| `workflowSizeGuideline` | string: `"unrestricted"`, `"small"` (< 5 agents), `"medium"` (< 10), `"large"` (< 50) | `"medium"`, or `"small"` on a Pro plan with v2.1.271+ |
+| `disableBundledSkills` / `disableSkillShellExecution` | Boolean | unset |
+| `skillOverrides` | object mapping skill name to `"on"`, `"name-only"`, `"user-invocable-only"`, or `"off"` | unset (every skill `"on"`) |
+| `syncClaudeAiSkills` / `syncClaudeAiPlugins` | Boolean | unset (synced when signed in with claude.ai) |
+| `allowedChannelPlugins` | array of `{ marketplace, plugin }` objects or `"plugin@marketplace"` strings (string form needs v2.1.267+) | unset (default Anthropic allowlist) |
+| `blockedMarketplaces` / `strictKnownMarketplaces` | array of marketplace source objects | unset (`strictKnownMarketplaces`: empty array blocks every source) |
+| `channelsEnabled` | Boolean | unset (plan dependent) |
+| `disableCommandPluginSources` | Boolean | unset (follows `allowManagedHooksOnly`) |
+| `pluginSuggestionMarketplaces` | array of marketplace names | unset |
+| `pluginTrustMessage` | string | unset |
+| `strictPluginOnlyCustomization` | `true`, or an array of `"skills"`, `"agents"`, `"hooks"`, `"mcp"` | unset |
+| `strictPluginOnlyCustomization.skills` / `.agents` / `.hooks` / `.mcp` | the string of that name inside the `strictPluginOnlyCustomization` array | not locked |
+| `enabledPlugins` | object mapping `plugin-name@marketplace-name` to Boolean | unset (follows `defaultEnabled`) |
+| `extraKnownMarketplaces` | object mapping a marketplace name to an object with `source` and optional `autoUpdate` Boolean | unset |
+| `pluginConfigs` | object mapping a plugin ID to an object with `options` and optional `mcpServers` | unset |
+| `prependPlugins` / `appendPlugins` | array of `plugin-name@marketplace-name` strings | unset |
+| `allowAllClaudeAiMcps` / `allowClaudeInChromeWithManagedMcp` / `allowManagedMcpServersOnly` / `disableClaudeAiConnectors` | Boolean | `false` |
+| `allowedMcpServers` / `deniedMcpServers` | array of objects each with exactly one of `serverName`, `serverCommand` (array), `serverUrl` (pattern with `*`) | unset (`allowedMcpServers`: every server allowed, an empty array blocks every server users add; `deniedMcpServers`: no server blocked) |
+| `disabledMcpjsonServers` / `enabledMcpjsonServers` | array of server names as in `.mcp.json` | unset |
+| `enableAllProjectMcpServers` | Boolean | unset (asks to approve each server) |
+| `managedMcpServers` | object keyed by server name, `.mcp.json` shape for `http` or `sse` (required `https://` `url`) | unset |
+| `agent` | string, name of a built-in or custom agent | unset |
+| `crossSessionInbound` | string: `"accept"`, `"hold"`, `"refuse"` | unset (decided per message) |
+| `disableAgentView` / `isolatePeerMachines` | Boolean | unset |
+| `processWrapper` | string, launcher command as an argv prefix | unset |
+| `teammateMode` | string: `"in-process"`, `"auto"`, `"tmux"`, `"iterm2"` | `"in-process"` |
+| `worktree` | object with `baseRef`, `symlinkDirectories`, `sparsePaths`, `bgIsolation` | unset |
+| `worktree.baseRef` | string: `"fresh"` or `"head"` | `"fresh"` |
+| `worktree.symlinkDirectories` / `worktree.sparsePaths` | array of directory paths relative to the repository root | unset |
+| `worktree.bgIsolation` | string: `"worktree"` or `"none"` | `"worktree"` |
+| `worktree.location` | string, an absolute path or one starting with `~/` | unset (worktrees go inside the project) |
+| `agentPushNotifEnabled` / `inputNeededNotifEnabled` / `disableRemoteControl` | Boolean | `false` |
+| `awaySummaryEnabled` | Boolean | unset (recap on) |
+| `disableArtifact` / `enableArtifact` | Boolean | unset (follows account availability) |
+| `disableDeepLinkRegistration` | the string `"disable"` | unset |
+| `disableDesktopLocalSessions` | Boolean; only JSON `true` takes effect | unset |
+| `preferredNotifChannel` | string: `"auto"`, `"terminal_bell"`, `"iterm2"`, `"iterm2_with_bell"`, `"kitty"`, `"ghostty"`, `"notifications_disabled"` | `"auto"` |
+| `remote.defaultEnvironmentId` | string, an environment ID such as `env_...` or `ccpool_...` | unset |
+| `remoteControlAtStartup` | Boolean | unset |
+| `sshConfigs` | array of objects with required `id`, `name`, `sshHost`, optional `sshPort`, `sshIdentityFile` | unset |
+| `sshHostAllowlist` | array of hostname patterns | unset (any host allowed) |
+| `allowedProviders` | array of strings: `"anthropic"`, `"bedrock"`, `"vertex"`, `"foundry"`, `"anthropicAws"`, `"mantle"`, `"customEndpoint"`, `"gateway"` | unset (any provider) |
+| `apiKeyHelper` / `awsAuthRefresh` / `awsCredentialExport` / `gcpAuthRefresh` | string, a shell command line | unset |
+| `otelHeadersHelper` | string, an executable path or shell command line | unset |
+| `forceLoginMethod` | string: `"claudeai"`, `"console"`, `"gateway"` | unset |
+| `forceLoginGatewayUrl` | string, a full URL including the scheme | unset |
+| `forceLoginOrgUUID` | string (one UUID) or array of strings | unset |
+| `gatewayInternalNetworks` | array of at most four IPv4 CIDR blocks, `/8` to `/32`, non-overlapping | unset |
+| `autoUpdatesChannel` | string: `"latest"` or `"stable"` | unset (follows `"latest"`) |
+| `minimumVersion` / `requiredMaximumVersion` / `requiredMinimumVersion` | string version number such as `"2.1.100"` (invalid value ignored) | unset |
+| `browserExternalPageTools` | string `"disabled"` (desktop app also accepts `"disable"`) | unset |
+| `disableBrowserExternalNavigation` / `disableMobileSimulatorTools` | Boolean; only JSON `true` takes effect | unset |
+| `cleanupPeriodDays` | whole number of days, minimum 1 | `30` |
+| `desktopSessionCleanupPeriodDays` | whole number of days, minimum 0 | `0` (no age limit) |
+| `feedbackDrafts` | string: `"notify"`, `"quiet"`, `"off"` | `"notify"` |
+| `feedbackSurveyRate` | number between 0 and 1 | unset (remote rate; 0.005 on Bedrock, Agent Platform, Foundry) |
+| `skipWebFetchPreflight` | Boolean | unset (check runs) |
+| `disableSideloadFlags` / `forceRemoteSettingsRefresh` | Boolean | `false` |
+| `managedSourcesBehavior` | string: `"first-wins"` or `"merge"` | `"first-wins"` |
+| `parentSettingsBehavior` | string: `"first-wins"` or `"merge"` | `"first-wins"` |
+| `policyHelper` | object with `path`, `timeoutMs`, `refreshIntervalMs` | unset |
+| `policyHelper.path` | string, absolute normalized path (Windows: drive-letter or UNC path ending in `.exe`) | none; required when `policyHelper` is set |
+| `policyHelper.timeoutMs` | integer ms, minimum 1000 | `10000` |
+| `policyHelper.refreshIntervalMs` | integer ms: `0` disables refresh, otherwise at least 60000 | unset (runs once at startup) |
+| `wslInheritsWindowsSettings` | Boolean | `false` |
+| `autoConnectIde` | Boolean | `false` |
+| `autoInstallIdeExtension` | Boolean | `true` |
+| `claudeInChromeDefaultEnabled` | Boolean | unset (off) |
+| `copyFullResponse` / `defaultToAgentsView` / `externalEditorContext` | Boolean | `false` |
+| `copyOnSelect` / `leftArrowOpensAgents` / `prStatusFooterEnabled` | Boolean | `true` |
+| `diffTool` | string: `"auto"` or `"terminal"` | `"auto"` |
+| `permissionExplainerEnabled` | Boolean (removed in v2.1.257) | `true` |
+| `teammateDefaultModel` | string (model alias or ID) or `null` (removed in v2.1.234) | unset |
+
 ## Notes
 
 - Global config keys (`autoConnectIde`, `autoInstallIdeExtension`, `claudeInChromeDefaultEnabled`, `copyFullResponse`, `copyOnSelect`, `defaultToAgentsView`, `diffTool`, `externalEditorContext`, `leftArrowOpensAgents`, `prStatusFooterEnabled`, plus removed `permissionExplainerEnabled` and `teammateDefaultModel`) go in `~/.claude.json`, not a settings file; Claude Code ignores them in `settings.json`. Claude Code and `/config` write most of them for you.
@@ -286,7 +489,7 @@ Sections of the official page that hold each key's entry (the Topic column below
 - `enableArtifact`: a `false` in any file turns the Artifact tool off and no file can turn it back on.
 - `forceLoginOrgUUID` is enforced only by a managed source. `remote.defaultEnvironmentId` reads a self-hosted `ccpool_` ID only from user and managed settings and `--settings`.
 - `/config key=value` changes one option directly (see settings.md).
-- The official page is large (about 6,500 lines); this page holds the index and notes only. Fetch the official page's per-key entry for exact type, default, and overrides.
+- The official page is large (about 6,500 lines); this page holds the index, the Value types table (type, allowed values, default), and notes. JSON examples and per-session overrides are on the official page's per-key entry.
 - Per-key entries for the keys not shown in detail here are in the sibling pages where they overlap: env-vars.md for the `env` key's variables, model-config.md for model keys, statusline.md for `statusLine`, keybindings.md for key bindings.
 
 ## Related
