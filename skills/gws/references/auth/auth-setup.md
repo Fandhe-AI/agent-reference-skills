@@ -13,6 +13,7 @@ gws auth setup
 - Requires the `gcloud` CLI to be present on the system.
 - Automates project creation, API enablement, and OAuth login in one flow.
 - After setup, credentials are encrypted at rest (AES-256-GCM) with the key stored in the OS keyring (or `~/.config/gws/.encryption_key` when `GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND=file`).
+- Since v0.22.3, macOS/Windows use the native keychain only, with no `.encryption_key` fallback; a leftover legacy file is deleted on the next successful keychain login. Linux keeps the file fallback for CI/Docker/SSH.
 - For subsequent logins or scope changes, use `gws auth login` instead.
 
 ## Related

@@ -2,8 +2,9 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Command Structure | `gws <service> <resource> <method>` pattern, 19 supported services, helper commands, schema introspection | [command-structure.md](./command-structure.md) |
-| Two-Phase Parsing | How `gws` identifies the service, fetches the Discovery Document, builds a dynamic command tree, and re-parses arguments | [two-phase-parsing.md](./two-phase-parsing.md) |
-| Discovery Cache | 24-hour local cache for Discovery Documents and timezone data; `gws schema` introspection command | [discovery-cache.md](./discovery-cache.md) |
-| Installation | npm, Homebrew, Cargo, Nix, and GitHub Releases install methods; post-install auth setup | [installation.md](./installation.md) |
-| Output Format | JSON for single responses, NDJSON for `--page-all` pagination, stderr for errors, exit codes | [output-format.md](./output-format.md) |
+| Command Structure | Builds the `gws <service> <resource> <method>` surface at runtime. | [command-structure.md](./command-structure.md) |
+| Discovery Cache | Caches each service's Discovery Document locally for 24 hours. | [discovery-cache.md](./discovery-cache.md) |
+| Installation | Installs `gws` from GitHub Releases, npm, Homebrew, Cargo, or Nix. | [installation.md](./installation.md) |
+| Library Crate (google-workspace) | Core Rust library for Google Workspace APIs via the Discovery Service. | [library-crate.md](./library-crate.md) |
+| Output Format | All output is structured JSON; errors go to stderr. | [output-format.md](./output-format.md) |
+| Two-Phase Parsing | Builds the command surface from Discovery in two parsing phases. | [two-phase-parsing.md](./two-phase-parsing.md) |
