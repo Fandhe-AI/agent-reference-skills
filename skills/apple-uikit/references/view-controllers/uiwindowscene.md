@@ -63,6 +63,7 @@ func displayLink(target: Any, selector sel: Selector) -> CADisplayLink?
 - Starting in iOS 27, iPadOS 27, Mac Catalyst 27, tvOS 27 and visionOS 27, apps built with the latest SDK must adopt the scene-based life cycle or they fail to launch.
 - iOS 27.1+: `UISceneSession.Role.windowCameraCaptureAccessory` identifies a scene created from a camera capture accessory registration (a session role for scenes that present content during camera capture).
 - Each window in the scene shares the scene's `traitCollection`.
+- Source: https://developer.apple.com/documentation/uikit/uiwindowscene
 
 ## Related
 

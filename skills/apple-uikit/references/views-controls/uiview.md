@@ -71,7 +71,8 @@ NSLayoutConstraint.activate([
 - Before subclassing, consider using animations, constraints, gesture recognizers, or composition of subviews.
 - iOS 27.1+: `reservedRegions(kind: UIView.ReservedRegion.Kind, options: UIView.ReservedRegion.QueryOptions = []) -> [UIView.ReservedRegion]` returns the regions of the view reserved by hardware, such as the camera or the hinge (kinds `.occlusion` / `.division`).
 - iOS 27.1+: `UIView.LayoutRegion.bar(onEdge:extent:)` reserves a layout region for vertical bar content, in two overloads: `static func bar(onEdge edge: NSDirectionalRectEdge, extent: CGFloat) -> UIView.LayoutRegion` and `static func bar(onEdge edge: UIRectEdge, extent: CGFloat) -> UIView.LayoutRegion`.
-- Core Location / Core Motion: the UIKit updates page states that Core Location and Core Motion sensor data can be aligned with the app's UI orientation by setting a `UIView` as the "body" of a `CLLocationManager` or `CMMotionManager` instance.
+- Core Location / Core Motion: added in the UIKit updates "June 2026" release (iOS 27 SDK); the symbol documentation does not state a separate per-feature availability, so do not assume it applies on earlier OS versions. The UIKit updates page (June 2026, General) states that Core Location and Core Motion sensor data can be aligned with the app's UI orientation by setting a `UIView` as the "body" of a `CLLocationManager` or `CMMotionManager` instance.
+- Source: https://developer.apple.com/documentation/updates/uikit, https://developer.apple.com/documentation/uikit/uiview/reservedregion
 
 ## Related
 

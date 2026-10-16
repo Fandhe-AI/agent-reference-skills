@@ -128,6 +128,7 @@ childVC.removeFromParent()
 - `preferredVerticalBarBehavior`: opt out only for UIs better served by horizontal bars (for example a fullscreen video player with toolbar controls, or a non-scrolling layout such as a calculator). Treat it as a stable choice and do not toggle it as a function of a single view's state. Call `setNeedsUpdateOfVerticalBarConfiguration()` after changing state that affects `preferredVerticalBarBehavior` or `childForPreferredVerticalBarBehavior`.
 - `childForPreferredVerticalBarBehavior`: `UINavigationController` forwards to its top view controller and `UITabBarController` to its selected view controller by default.
 - `registerSceneAccessory(_:)` returns a registration used to monitor the accessory or unregister it; the delegate type defined by the configuration receives all lifecycle events. `unregisterSceneAccessory(_:)` dismisses the accessory if it is currently presented.
+- Source: https://developer.apple.com/documentation/uikit/uiviewcontroller
 
 ## Related
 

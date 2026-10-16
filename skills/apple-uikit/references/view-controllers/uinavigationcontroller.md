@@ -68,6 +68,7 @@ init(navigationBarClass: AnyClass?, toolbarClass: AnyClass?)
 - Set `restorationIdentifier` to preserve the navigation stack across launches.
 - `UINavigationItem.navigationBarMinimization: UIBarMinimization` is available in iOS 27.0+.
 - `UINavigationItem.verticalBarCompressionBehavior: UIVerticalBarCompressionBehavior` (iOS 27.1+, default `.automatic`) controls which items compress first when the tab bar and navigation/toolbar items are rendered together in the vertical bar.
+- Source: https://developer.apple.com/documentation/uikit/uinavigationitem
 
 ## Related
 

@@ -66,6 +66,7 @@ Implement to:
 - Typically used as the root view controller of the app's window.
 - `performBatchUpdates(_:)` (iOS 27.0+): tab changes made inside the block are coalesced into a single animated layout pass, preventing intermediate states.
 - When the tab bar and navigation/toolbar items are both rendered together in the vertical bar (iPhone Duo), `UINavigationItem.verticalBarCompressionBehavior` (iOS 27.1+, `UIVerticalBarCompressionBehavior`: `.automatic` / `.prefersBarItems` / `.prefersTabBar`) controls which items compress first.
+- Source: https://developer.apple.com/documentation/uikit/uitabbarcontroller, https://developer.apple.com/documentation/uikit/uinavigationitem
 
 ## Related
 
