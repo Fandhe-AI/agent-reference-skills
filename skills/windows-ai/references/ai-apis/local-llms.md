@@ -6,6 +6,12 @@ Decision guide for integrating a local LLM into a Windows app, comparing the thr
 
 No API surface — this page is a decision guide linking to the API/CLI surfaces of each option below.
 
+```text
+Ready-to-use, Copilot+ PC (NPU)  -> Phi Silica
+20+ open-source LLMs             -> Foundry Local
+Bring-your-own (Hugging Face)    -> Windows ML
+```
+
 ## Options / Props
 
 | Option | What it is | Supported devices |

@@ -11,7 +11,7 @@ No API surface — this is an FAQ document. Example: check a device's GPU/NPU vi
 | Question | Answer summary |
 |------|-------------|
 | Which Windows AI option should I use? | Windows AI APIs for Copilot+ PC simplicity (no model management); Foundry Local for wider model catalog / non-Copilot+ hardware / OpenAI-compatible API; Windows ML for full ONNX/EP control. |
-| Do I need a Copilot+ PC or NPU? | Windows AI APIs require a Copilot+ PC with NPU; Foundry Local runs on any DirectX 12 GPU (no NPU needed); Windows ML supports a broad CPU/GPU/NPU range. |
+| Do I need a Copilot+ PC or NPU? | Windows AI APIs require a Copilot+ PC with NPU (per the FAQ; some APIs such as Phi Silica on GPU, Speech Recognition and Video Super Resolution also run on non-Copilot+ hardware — see [device-requirements.md](./device-requirements.md)); Foundry Local runs on any DirectX 12 GPU (no NPU needed); Windows ML supports a broad CPU/GPU/NPU range. |
 | Can I use Foundry Local with existing OpenAI SDK code? | Yes — it exposes an OpenAI-compatible REST API; start with `foundry service start` and point the client at the local endpoint. |
 | Is Foundry Local production-ready? | Native SDKs (C#, Python, JS, Rust) are alpha/pre-release; the ONNX Runtime/model-serving core is production-grade — pin package versions. |
 | Does Foundry Local work offline? | Yes, after the model is cached; only the initial download and optional catalog refresh need connectivity; check via `IsCachedAsync`/`is_cached`. |
@@ -20,7 +20,7 @@ No API surface — this is an FAQ document. Example: check a device's GPU/NPU vi
 ## Notes
 
 - `foundry-local` (without `-sdk`) on PyPI is an unrelated third-party package — do not install it expecting Foundry Local.
-- Windows AI APIs process data locally on the NPU; input is not sent to Microsoft servers.
+- Windows AI APIs process data locally on the device (NPU, or GPU/CPU for APIs that support it); input is not sent to Microsoft servers.
 - DirectML is a low-level GPU ML acceleration API on Direct3D 12; ONNX Runtime uses it as an execution provider when CUDA is unavailable.
 
 ## Related

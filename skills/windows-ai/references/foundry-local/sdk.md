@@ -40,7 +40,9 @@ Console.WriteLine($"Endpoint: {manager.Endpoint}, ApiKey: {manager.ApiKey}, Mode
 
 ## Options / Props
 
-`FoundryLocalManager` service properties (available across languages, naming per language convention):
+### FoundryLocalManager service properties
+
+Available across languages, naming per language convention.
 
 | Property / Method | Description |
 |---|---|
@@ -60,7 +62,16 @@ Console.WriteLine($"Endpoint: {manager.Endpoint}, ApiKey: {manager.ApiKey}, Mode
 | `UnloadModelAsync(aliasOrModelId)` / `unloadModel()` / `unload_model(alias_or_model_id, force=False)` | Unloads a model from the inference server. |
 | `ListLoadedModelsAsync()` / `listLoadedModels()` / `list_loaded_models()` | Lists models currently loaded in the service. |
 
-`FoundryModelInfo` / `ModelInfo` fields: `alias`, `id`, `version`, `execution_provider`/`ExecutionProvider`, `device_type`/`DeviceType` (`CPU`/`GPU`/`NPU`), `uri`, `file_size_mb`, `supports_tool_calling`, `prompt_template`, `provider`, `publisher`, `license`, `task`.
+### FoundryModelInfo / ModelInfo fields
+
+| Field | Notes |
+|---|---|
+| `alias`, `id`, `version` | Identity |
+| `execution_provider` / `ExecutionProvider` | Execution provider |
+| `device_type` / `DeviceType` | `CPU` / `GPU` / `NPU` |
+| `uri`, `file_size_mb` | Location and size |
+| `supports_tool_calling`, `prompt_template` | Capabilities |
+| `provider`, `publisher`, `license`, `task` | Metadata |
 
 ## Notes
 

@@ -53,6 +53,7 @@ if (response.Status == LanguageModelResponseStatus.IncompatibleLowRankAdapter)
 - Test trained adapters locally in **AI Dev Gallery** (AI APIs tab > Phi Silica LoRA) before shipping, and export a standalone sample project from there.
 - Fine-tuning risks: poor-quality/biased training data can degrade or bias outputs; overly narrow datasets reduce general robustness; poorly fine-tuned models may regurgitate training data (remove PII before training); fine-tuned model behavior can be less transparent — monitor and audit outputs.
 - Phi Silica is not available in China.
+- Phi Silica is being replaced by Aion Instruct (Windows Insider Preview: November 2026; retail: January 2027, when Phi Silica is removed). Validate with the sideloadable package at https://aka.ms/tryaion and re-train LoRAs using Foundry Toolkit (source: the Phi Silica page; this LoRA page itself is unchanged).
 
 ## Related
 

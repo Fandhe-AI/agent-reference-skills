@@ -38,7 +38,11 @@ winml build ...
 - Converted/quantized models must target the ONNX Runtime version shipped in the Windows ML version your app uses.
 - After conversion, compile the model for the target EP and cache the result — see [Model compilation and caching](./model-compilation.md).
 
+- As of 2026-10-16 the official TOC has no entry for this page and `/windows/ai/new-windows-ml/model-conversion` returns 404. Current conversion guidance lives in "Find or train models" (Option 3 in [Find or train models](./models.md)) and the Windows ML CLI. The page is kept here for the content above.
+
 ## Related
+
+- [Find or train models](./models.md)
 
 - [Model compilation and caching](./model-compilation.md)
 - [Execution providers overview](./execution-providers-overview.md)
