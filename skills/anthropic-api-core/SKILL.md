@@ -19,7 +19,7 @@ prompt caching・structured outputs・Message Batches・vision/PDF・Files API �
 Tool use・Agent Skills (SKILL.md)・MCP connector は `anthropic-api-tools-mcp`、Claude Code 本体は `anthropic-claude-code`、
 Agent SDK は `anthropic-agent-sdk` を参照（本スキルは Claude API 本体の呼び出し方を担当）。
 
-対象: platform.claude.com Markdown twins の取得日 2026-10-16（URL にバージョンが無いため取得日を pin とする）。
+対象: platform.claude.com Markdown twins の取得日 2026-10-16（URL にバージョンが無いため取得日を pin とする）。`scripts/` の `setup.md` / `headers.md` と `curl-endpoints.md` の files エンドポイントは 2026-10-17 に再確認。
 
 ## ディレクトリ構成
 
