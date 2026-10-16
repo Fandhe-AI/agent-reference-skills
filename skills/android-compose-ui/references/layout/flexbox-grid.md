@@ -71,7 +71,7 @@ fun GridSample() {
 | `FlexBoxConfigScope.alignItems(value)` | `FlexAlignItems` | `Start` | Aligns items along the cross axis (like CSS `align-items`). |
 | `FlexBoxConfigScope.alignContent(value)` | `FlexAlignContent` | `Start` | Distributes extra cross-axis space across multiple wrapped lines. |
 | `FlexBoxConfigScope.gap(all)` / `rowGap(value)` / `columnGap(value)` | `Dp` | `0.dp` | Spacing between items and between wrapped lines. |
-| `FlexBoxConfigScope.maxItemsInEachLine(value)` | `Int` | — | Caps the number of items placed on a single line. |
+| `FlexBoxConfigScope.maxItemsInEachLine(value)` | `Int` | — | Pre-release only (added in 1.13.0-alpha01; not in stable 1.12.1). Caps the number of items placed on a single line. |
 | `FlexBoxScope.flex(flexConfig)` | `FlexConfig` or `FlexConfigScope.() -> Unit` | — | Per-item flex properties, set via a `FlexConfigScope` DSL: `grow(Float)`, `shrink(Float)`, `basis(FlexBasis` / `Dp` / `Float)`, `alignSelf(FlexAlignSelf)`, `order(Int)`. |
 | `GridConfigurationScope.column(...)` / `row(...)` | `Dp` / `Fr` / `Float` / `GridTrackSize` | — | Defines a column/row track's fixed size, flexible `Fr` weight, percentage, or explicit `GridTrackSize` (`Fixed`/`Flex`/`Percentage`/`MinMax`/`MinContent`/`MaxContent`/`Auto`). |
 | `GridConfigurationScope.area(areaId, row, column, rowSpan, columnSpan)` | mixed | `rowSpan`/`columnSpan = 1` | Declares a named grid area spanning the given cells, referenced later via `Modifier.gridItem(areaId)`. |
@@ -83,6 +83,8 @@ fun GridSample() {
 - Both APIs are experimental/alpha (require `@OptIn(ExperimentalFlexBoxApi::class)` / `@OptIn(ExperimentalGridApi::class)`) and their surface may change; prefer `FlowRow`/`FlowColumn` or the lazy grids for stable, production layouts today.
 - `FlexBoxConfig` and `FlexConfig` are `fun interface`s configured through a scope-receiver DSL lambda (`FlexBoxConfigScope` / `FlexConfigScope`), not data-class-style named-argument constructors — there is no `FlexBoxConfig(wrap = ..., justifyContent = ...)` constructor, and the enum is `FlexJustifyContent`, not `JustifyContent`.
 - `FlexBox` and `Grid` both compose their `content` eagerly in a single measure/layout pass (no `SubcomposeLayout` or visible-item tracking); neither is a lazy replacement for `LazyVerticalGrid`/`LazyHorizontalGrid` — for large item counts, use `FlowRow`/`FlowColumn` or the lazy grids/lists instead.
+- Compose Foundation 1.12.0-beta01 added Grid named areas (`GridConfigurationScope.area()` + `Modifier.gridItem(area)`) and `then` operators plus combination factories for `FlexBoxConfig` / `FlexConfig` (1.12.1 sources: `infix fun then(other: FlexBoxConfig)`, `FlexBoxConfig(first, second)`, `FlexBoxConfig(vararg configs)`, and the same for `FlexConfig`) for merging and overriding layout configurations.
+- Migration (pre-release): `FlexBox` and its related configuration APIs are promoted to stable in Compose Foundation 1.13.0-alpha01 (`maxItemsInEachLine` is added there too); 1.13.0-alpha02 removes the `ExperimentalFlexBoxApi` annotation, renames the pixel-based properties of `FlexConfigScope` with a `Px` suffix, and promotes the Grid APIs (`Grid`, `GridScope`, `GridConfigurationScope`, `GridFlow`, `Fr`, `GridTrackSize`, `GridTrackSpec`, `Modifier.gridItem`) to stable. In stable 1.12.1 (BOM 2026.09.00) both are still experimental, as described above.
 - Package: `androidx.compose.foundation.layout`.
 
 ## Related

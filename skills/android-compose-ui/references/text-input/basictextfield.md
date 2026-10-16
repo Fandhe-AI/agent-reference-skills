@@ -56,6 +56,10 @@ BasicTextField(state = state, modifier = Modifier.fillMaxWidth())
 - Package: `androidx.compose.foundation.text`.
 - `TextField` and `OutlinedTextField` (material3) wrap `BasicTextField` and add Material decoration.
 - Prefer the `TextFieldState`-based overload for new code; it separates input filtering (`InputTransformation`) from display formatting (`OutputTransformation`) and avoids async state issues inherent to the callback-based overloads.
+- Migration (pre-release): in Compose Foundation 1.13.0-alpha03 the `BasicTextField` overloads that take `value, onValueChange` (`String` / `TextFieldValue`) are deprecated in favor of the `TextFieldState` overload. They are NOT deprecated in stable 1.12.1 (BOM 2026.09.00); there only the binary-compatibility overloads are `@Deprecated(level = DeprecationLevel.HIDDEN)`.
+- Sibling API `BasicSecureTextField` (package `androidx.compose.foundation.text`) takes `textObfuscationMode: TextObfuscationMode = TextObfuscationMode.System`. Values in 1.12.1: `Visible` (no obscuring), `RevealLastTyped` (reveals the last typed character for a short time), `Hidden` (all characters hidden), `System` (platform decides; on Android follows the "Show passwords" setting, mimicking `RevealLastTyped` when set to show, otherwise `Hidden`).
+- Migration (`TextObfuscationMode`, Compose Foundation 1.12.0-beta01 / 1.12.0): `TextObfuscationMode.Default` was renamed to `System`; the default argument of `BasicSecureTextField` is now `System`; `RevealLastTyped` is now an absolute override that always reveals the last typed character.
+- Material `SecureTextField` / `OutlinedSecureTextField` belong to the `android-compose-components` skill.
 
 ## Related
 

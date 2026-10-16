@@ -34,7 +34,7 @@ Button(onClick = {
 |------|------|-------------|
 | `getClipEntry()` | `suspend () -> ClipEntry?` | Reads the current clipboard entry; may contain multiple items/types. Returns `null` if the clipboard is empty. |
 | `setClipEntry(ClipEntry?)` | `suspend (ClipEntry?) -> Unit` | Writes an entry to the clipboard; passing `null` clears it. |
-| `nativeClipboard` | `NativeClipboard` | Deprecated escape hatch to the platform clipboard object; prefer a platform-specific extension instead. |
+| `nativeClipboard` | `NativeClipboard` | Deprecated (`@Deprecated("Use platform-specific extension to get platform reference")`); on Android use the extension `Clipboard.nativeClipboardManager: android.content.ClipboardManager` (`androidx.compose.ui.platform`). |
 | `ClipEntry(clipData: ClipData)` | constructor (Android) | Wraps a `android.content.ClipData` so it can travel through the Compose clipboard API; the clipboard holds only one `ClipEntry` at a time. |
 
 ## Notes
@@ -45,6 +45,8 @@ Button(onClick = {
 - Reading the clipboard on Android triggers a system notification to the user; prefer checking availability instead of reading full contents when only presence matters.
 - Sensitive content (e.g. passwords) can be flagged via `ClipDescription.EXTRA_IS_SENSITIVE` on the underlying `ClipData` so the system omits it from the Android 13+ clipboard preview UI.
 - Pasting rich content (images, etc.) into a text field is handled separately via `Modifier.contentReceiver`/`ReceiveContentListener`, not through `Clipboard` directly.
+- Migration (Compose UI 1.12.0, from 1.12.0-alpha03): the `androidx.compose.ui.platform.NativeClipboard` typealias is deprecated (`@Deprecated("Use direct reference to platform type instead of typealias")`, replace with `android.content.ClipboardManager` directly). The `Clipboard.nativeClipboard` property is replaced by the Android extension `val Clipboard.nativeClipboardManager: android.content.ClipboardManager`, to avoid exposing a platform type into `commonMain` via a typealias; the extension requires the `Clipboard` to be an `AndroidClipboard`. `AndroidClipboard.nativeClipboard` is `@Deprecated` with `ReplaceWith("nativeClipboardManager")`.
+- Testing (Compose UI 1.12.0-beta01): the `AndroidClipboard` interface (`@VisibleForTesting`, member `val clipboardManager: android.content.ClipboardManager`) is exposed so a clipboard implementation can be mocked in tests.
 
 ## Related
 
