@@ -35,7 +35,7 @@ switch (result.Availability)
 }
 ```
 
-Without an App Installer file (after your own server version check):
+Without an App Installer file (after your own server version check; this example forces the running app to shut down):
 
 ```csharp
 PackageManager packagemanager = new PackageManager();
@@ -60,7 +60,8 @@ await packagemanager.AddPackageAsync(
 
 - AppContainer processes are subject to the capability: all UWP apps, and packaged desktop apps with `uap10:TrustLevel="appContainer"`. Processes outside an AppContainer (medium integrity or higher, e.g. most unpackaged and packaged desktop apps) don't need it; user permissions and per-API requirements still apply.
 - If deploying with an App Installer file, code-driven updates must use the App Installer file APIs so regular App Installer updates keep working; check availability with `Package.CheckUpdateAvailabilityAsync`.
-- Without an App Installer file, the update is queued with `AddPackageAsync` and applied the next time the app is shut down (also works for an optional package if the main package is installed).
+- Without an App Installer file, the update is queued with `AddPackageAsync` and, when no forced-shutdown option is used (`DeploymentOptions.None`), applied the next time the app is shut down (also works for an optional package if the main package is installed).
+- `DeploymentOptions.ForceApplicationShutdown` / `AddPackageByAppInstallerOptions.ForceApplicationShutdown` shut down the running target app, so unsaved work can be lost. Before calling, confirm with the user that they have saved and can close the app; for non-UWP apps call `RegisterApplicationRestart` first. The source page's text ("applied the next time your app is shut down") and its `ForceApplicationShutdown` sample are inconsistent.
 - Restart after update: for UWP apps, `AddPackageByAppInstallerOptions.ForceApplicationShutdown` or `AddPackageOptions.ForceTargetAppShutdown` schedules a restart after shutdown plus update. For non-UWP apps call `RegisterApplicationRestart` (kernel32, `RegisterApplicationRestart(string pwzCommandLine, RestartFlags dwFlags)`) before the app begins shutting down.
 - The source page's sample passes `AddPackageOptions.ForceApplicationShutdown`, which does not exist; `AddPackageAsync(Uri, IEnumerable<Uri>, DeploymentOptions)` takes `DeploymentOptions` (`AddPackageOptions` is the options class used with `AddPackageByUriAsync`). `AddPackageOptions.ForceTargetAppShutdown` is a property (`AddPackageOptions.ForceTargetAppShutdown = true`), not an enum value.
 - Flags for `RegisterApplicationRestart`: `NONE = 0`, `RESTART_NO_CRASH = 1`, `RESTART_NO_HANG = 2`, `RESTART_NO_PATCH = 4`, `RESTART_NO_REBOOT = 8`.
