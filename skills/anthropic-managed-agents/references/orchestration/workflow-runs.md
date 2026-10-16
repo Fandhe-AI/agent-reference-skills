@@ -4,8 +4,6 @@
 
 A **workflow** is a program an agent writes to run many agents and combine what they return; a **workflow run** is one execution of it. **Dynamic workflows** is the feature that lets an agent write workflows and start runs, toggled by the `workflows` setting in the agent's `multiagent` block. The server runs a workflow in the background; its agents work in session threads the server creates. Beta header: `managed-agents-2026-04-01`.
 
-## How it works
-
 - **Workflow run:** executed by the server in the background. A session can have several runs open at once.
 - **Phases:** named stages (e.g. "Read the contracts"); follow progress by phase events.
 - **Agent threads:** each agent works in its own session thread on a program-written prompt. An agent is inline (defined by the program) or predefined (listed in `predefined_agents` of `workflows`).

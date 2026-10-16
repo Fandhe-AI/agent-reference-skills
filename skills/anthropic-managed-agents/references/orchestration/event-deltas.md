@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/managed-agents/event-deltas / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/managed-agents/event-deltas / last verified: 2026-10-16 -->
 
 # Preview responses with event deltas
 
@@ -18,6 +18,11 @@ curl --fail-with-body -sS -N \
 ```
 
 ```python
+# Preview snapshots, keyed by event id. accumulate_managed_agents_event folds each
+# event_start / event_delta into an agent.message snapshot; the buffered
+# agent.message replaces it.
+previews: dict[str, BetaManagedAgentsAgentMessageEvent] = {}
+
 with client.beta.sessions.events.stream(
     session.id, event_deltas=["agent.message"]
 ) as stream:
@@ -81,7 +86,7 @@ Preview events:
 
 For `agent.thinking` only `event_start` is emitted (a signal a thinking block started); no `event_delta` follows, and the concluding buffered `agent.thinking` carries no thinking content.
 
-## Accumulate and reconcile
+### Accumulate and reconcile
 
 Hold preview text in a temporary map keyed by `(event_id, index)`; treat the buffered event as the record. Per model request, events arrive in order: `span.model_request_start`, `event_start`, the `event_delta` events, the buffered `agent.message`, `span.model_request_end`.
 

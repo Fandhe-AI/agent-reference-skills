@@ -1,10 +1,8 @@
-<!-- source: https://platform.claude.com/docs/en/managed-agents/session-threads / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/managed-agents/session-threads / last verified: 2026-10-16 -->
 
 # Session threads
 
 In a multiagent session, each agent works in its own **session thread**. This page covers listing, interrupting, and archiving threads, the events they send, and how tool permissions work across them. A workflow run creates session threads too. Beta header: `managed-agents-2026-04-01`.
-
-## Primary thread and session threads
 
 - The session-level event stream (`/v1/sessions/{session_id}/events/stream`) is the **primary thread**: a condensed view of all activity across all threads (start/end of subagent work and blocking events such as tool permission requests).
 - Session threads are where you drill into a specific agent's activity.
@@ -74,7 +72,7 @@ Primary thread events:
 
 Message-direction events are named relative to the thread whose stream they appear on. Advisor consultations emit the same thread events under the reserved name `anthropic.advisor`.
 
-## Tool permissions and custom tools
+### Tool permissions and custom tools
 
 When a subagent needs permission for a tool call or a custom tool result, the event is cross-posted to the primary thread with `session_thread_id` identifying the originating thread:
 
@@ -93,6 +91,8 @@ When a subagent needs permission for a tool call or a custom tool result, the ev
 
 Respond with `user.tool_confirmation` (`tool_use_id`) or `user.custom_tool_result` (`custom_tool_use_id`); the server routes the response to the correct thread. The two copies of the response can have different `id` values: match by `type` and `tool_use_id` / `custom_tool_use_id`, not `id`.
 
+The following example goes inside the event loop of the tool confirmation handler (see Session Event Stream): when the idle event arrives it answers each ID in `stop_reason.event_ids`. For a custom tool ID, send `user.custom_tool_result` (`custom_tool_use_id`) instead of `user.tool_confirmation`; it can be sent as soon as the cross-posted `agent.custom_tool_use` event arrives.
+
 ```python
 for event_id in stop.event_ids:
     client.beta.sessions.events.send(
@@ -107,6 +107,8 @@ for event_id in stop.event_ids:
     )
 ```
 
+Caution: the idle event can arrive before the `agent.tool_use` / `agent.mcp_tool_use` events it lists, and a `user.tool_confirmation` for a not-yet-arrived call can return 400. To avoid that, answer each call whose `evaluated_permission` is `ask` when that call's own event arrives.
+
 ## Notes
 
 - A session can have at most 25 child threads at a time. Idle threads count until archived; the primary thread does not count. Advisor consultation threads and workflow run threads are exempt.
@@ -117,7 +119,6 @@ for event_id in stop.event_ids:
 - A thread's stream does not replay earlier events, and a run thread's event list can be empty right after `session.thread_created`. Open the stream first, then list events, and skip streamed events whose `id` the list returned.
 - A workflow run thread's first `agent.thread_message_received` is the workflow-written prompt; its `from_session_thread_id` is the primary thread's ID and `from_agent_name` is not set. Do not parse the prompt text. No event records the result a thread returned to the workflow.
 - Under `auto` permission, nothing in a subagent's thread counts as your intent; when the server denies a call under `auto`, nothing is cross-posted (it appears only on the subagent's thread stream).
-- A subagent's `session.thread_status_idle` can arrive before the `agent.tool_use` / `agent.mcp_tool_use` events its `stop_reason.event_ids` lists; a `user.tool_confirmation` for a not-yet-arrived call can return 400. Answer each call whose `evaluated_permission` is `ask` when its own event arrives.
 - Beta feature (`managed-agents-2026-04-01`).
 
 ## Related

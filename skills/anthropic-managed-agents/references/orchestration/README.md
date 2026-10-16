@@ -1,12 +1,14 @@
 # Orchestration
 
+Managed Agents のオーケストレーション（deployments / dreams / webhooks / イベントストリーム / session threads / workflow runs / event deltas）。Claude Code CLI の routines / scheduled tasks は anthropic-claude-code-extend を参照。
+
 | Name | Description | Path |
 |------|-------------|------|
-| Dreams | Research preview feature that lets Claude reflect on past sessions to curate an agent's memory store. | [dreams.md](./dreams.md) |
-| Preview responses with event deltas | Opt-in event deltas that render the agent's response text incrementally as a live preview. | [event-deltas.md](./event-deltas.md) |
-| Session Event Stream | Event-based communication: send user events and receive session, span, and agent events. | [events-and-streaming.md](./events-and-streaming.md) |
-| Multiagent orchestration | Coordinate multiple agents in one session via subagents, dynamic workflows, and advisor models. | [multiagent-orchestration.md](./multiagent-orchestration.md) |
-| Scheduled deployments | Start agent sessions autonomously on a predictable cadence via the Deployments API. | [scheduled-deployments.md](./scheduled-deployments.md) |
-| Session threads | Each agent in a multiagent session works in its own session thread; list, interrupt, and archive them. | [session-threads.md](./session-threads.md) |
-| Subscribe to webhooks | Receive notifications of major session and resource state changes without polling. | [webhooks.md](./webhooks.md) |
-| Workflow runs | Dynamic workflows: a program an agent writes to run many agents and combine what they return. | [workflow-runs.md](./workflow-runs.md) |
+| Dreams | Dreaming is a research preview feature (request… | [dreams.md](./dreams.md) |
+| Preview responses with event deltas | Event deltas render the agent's response text… | [event-deltas.md](./event-deltas.md) |
+| Session Event Stream | Communication with Claude Managed Agents is… | [events-and-streaming.md](./events-and-streaming.md) |
+| Multiagent orchestration | Coordinate multiple agents within a single session. | [multiagent-orchestration.md](./multiagent-orchestration.md) |
+| Scheduled deployments | A scheduled deployment lets an agent start sessions… | [scheduled-deployments.md](./scheduled-deployments.md) |
+| Session threads | In a multiagent session, each agent works in its… | [session-threads.md](./session-threads.md) |
+| Subscribe to webhooks | Get notified of major session/resource state… | [webhooks.md](./webhooks.md) |
+| Workflow runs | A workflow is a program an agent writes to run many… | [workflow-runs.md](./workflow-runs.md) |
