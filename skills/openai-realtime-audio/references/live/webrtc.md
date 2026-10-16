@@ -44,6 +44,10 @@ let microphone;
 
 let closeTimeout;
 let ready = false;
+const status = document.createElement("p");
+// cleanup() is omitted here: the official example closes the data channel,
+// peer connection, and microphone tracks in it.
+function cleanup() {}
 const connection = new RTCPeerConnection();
 connection.addEventListener("track", (event) => {
   audio.srcObject = new MediaStream([event.track]);
@@ -57,7 +61,7 @@ for (const track of microphone.getAudioTracks()) {
 events = connection.createDataChannel("oai-events");
 events.addEventListener("message", ({ data }) => {
   const event = JSON.parse(data);
-  if (event.type === "session.started") { ready = true; }
+  if (event.type === "session.started") { ready = true; stop.disabled = false; }
   else if (event.type === "session.closed") { console.log("Final session usage", event.usage); }
 });
 

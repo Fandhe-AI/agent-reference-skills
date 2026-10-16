@@ -11,6 +11,7 @@ import { LiveWS } from "openai/resources/live/ws";
 const ws = new LiveWS(new OpenAI());
 let started = false;
 let closing = false;
+let pendingByte = Buffer.alloc(0);
 
 ws.socket.on("open", () => {
   ws.send({
@@ -38,10 +39,15 @@ ws.socket.on("open", () => {
 
 process.stdin.on("data", (chunk) => {
   if (!started || closing || ws.socket.readyState !== 1) return;
-  ws.send({
-    type: "session.input_audio.append",
-    audio: chunk.toString("base64"),
-  });
+  const bytes = Buffer.concat([pendingByte, chunk]);
+  const completeLength = bytes.length - (bytes.length % 2);
+  pendingByte = bytes.subarray(completeLength);
+  if (completeLength) {
+    ws.send({
+      type: "session.input_audio.append",
+      audio: bytes.subarray(0, completeLength).toString("base64"),
+    });
+  }
 });
 
 ws.on("event", (event) => {
@@ -68,7 +74,7 @@ process.on("SIGINT", () => {
 });
 ```
 
-Abridged from the official example; stdin carries raw mono PCM16 at 24 kHz and the full guide also handles odd-length chunk boundaries and a 15-second close timeout.
+Abridged from the official example; stdin carries raw mono PCM16 at 24 kHz and the full guide also adds a 15-second close timeout.
 
 ## Options / Props
 
