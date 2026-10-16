@@ -4,6 +4,15 @@
 
 Definitions for Claude Code terminology: agentic loop, compaction, CLAUDE.md, hooks, subagents, MCP, and other core concepts.
 
+## Signature / Usage
+
+Two glossary terms expressed as CLI flags (Bare mode, Non-interactive mode):
+
+```bash
+claude --bare
+claude -p "<prompt>"
+```
+
 ## Options / Props
 
 | Term | Definition |

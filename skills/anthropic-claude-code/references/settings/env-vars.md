@@ -43,7 +43,7 @@ How an environment variable interacts with CLI flags and in-session commands var
 
 Numeric variables (timeouts, token budgets, retry counts) accept scientific notation and digit separators (`2e3` = 2000, `64_000` = 64000), except where a row notes plain digits only. Before v2.1.211, these spellings could silently set a much smaller value, such as `1e6` setting a timeout to 1. For on/off variables, `1`/`true`/`yes`/`on` = on, `0`/`false`/`no`/`off` = off (any casing), **except** these which read only "is it set at all" (any non-empty value including `0` turns it on; unset or empty turns it off): `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`, `DISABLE_TELEMETRY`, `DISABLE_ERROR_REPORTING`, `CLAUDE_CODE_TMUX_TRUECOLOR`, `FALLBACK_FOR_ALL_PRIMARY_MODELS`, `IS_DEMO`. `FORCE_HYPERLINK` reads a number; only `0` turns it off.
 
-## Variables
+## Options / Props
 
 Alphabetical reference of every environment variable.
 

@@ -34,6 +34,7 @@ A developer's personal `~/.claude/settings.json`: model and effort, terminal twe
 
 - Scopes: `~/.claude/settings.json` (user, every project), `.claude/settings.json` (shared project, committed), `.claude/settings.local.json` (project local, personal). Team and organization examples: `settings-team.md`, `settings-managed.md`.
 - Precedence, highest to lowest: Managed > Command line (`--settings`) > Project local > Shared project > User. A key at a higher level overrides the same key below it.
+- List keys such as `permissions.allow` combine across files instead of overriding (a few keys such as `fallbackModel`, `modelPicker`, `availableModels` follow their own rules; see `references/settings/settings.md`). An `allow` rule in your local file does not outrank an `ask` rule from a project or managed file.
 - Claude Code watches settings files and applies most edits (including `permissions` and `hooks`) without a restart. `model` is read only at session start; use `/model` to switch mid-session and `/effort` to change effort.
 - The official page's "What each key does" tab uses comments, which Claude Code does not accept in a settings file; copy only the plain JSON.
 - Run `/status` to see which settings sources loaded and `claude doctor` to list rejected entries.

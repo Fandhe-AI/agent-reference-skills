@@ -4,6 +4,16 @@
 
 Runtime error messages Claude Code displays, with what each means and how to recover, plus checks for when responses seem off without an error. For installation errors (`command not found`, TLS failures during setup), see the troubleshoot-install docs instead. Except for Wrapper and IDE errors (printed by the launching program), these apply across the CLI, Desktop app, and Claude Code on the web, since all three wrap the same CLI.
 
+## Signature / Usage
+
+Diagnostic commands referenced throughout this page:
+
+```text
+/doctor        # in-session checks (oversized CLAUDE.md, unused extensions)
+claude doctor  # read-only diagnostics from the shell
+/feedback      # report an error (sends the transcript)
+```
+
 ## Find your error (message → category)
 
 | Message | Category |
@@ -242,7 +252,7 @@ For components this page doesn't cover: MCP connection/auth issues → MCP docs;
 ## Related
 
 - [env-vars.md](./env-vars.md): `CLAUDE_CODE_MAX_RETRIES`, `CLAUDE_CODE_RETRY_WATCHDOG`, `API_TIMEOUT_MS`
-- [../troubleshooting/troubleshoot-install.md](../troubleshooting/troubleshoot-install.md): installation and login errors moved off this page
+- [Troubleshoot installation and login](../troubleshooting/troubleshoot-install.md): installation and login errors moved off this page
 - [auto-mode-config.md](./auto-mode-config.md): the auto mode classifier errors in context
 - [model-config.md](./model-config.md): model-selection errors (`There's an issue with the selected model`, `Model ... is not a recognized model id`, `availableModels` restriction errors)
 - [debug-your-config.md](./debug-your-config.md): `/status`, `/doctor`, and `claude --safe-mode` used throughout this page's fixes

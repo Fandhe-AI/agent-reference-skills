@@ -4,6 +4,14 @@
 
 Compares which Claude Code features are available across Anthropic subscription plans, Anthropic Console, Amazon Bedrock, Claude Platform on AWS, Google Cloud's Agent Platform, and Microsoft Foundry.
 
+## Signature / Usage
+
+Environment variable that changes provider-dependent behavior (see Notes):
+
+```bash
+export ANTHROPIC_BASE_URL=<gateway-or-provider-host>
+```
+
 ## Options / Props
 
 | Requires a Claude subscription (not available via Console API key or 3rd-party provider) |

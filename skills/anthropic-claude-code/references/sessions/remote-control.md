@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/remote-control / last verified: 2026-10-16 -->
+<!-- source: https://code.claude.com/docs/en/remote-control.md / last verified: 2026-10-16 -->
 # Remote Control
 
 Connects claude.ai/code or the Claude mobile app to a Claude Code session running on your machine, so you can start a task at your desk and continue it from your phone or another browser. Claude keeps running locally the entire time — code execution and filesystem access never leave your machine. Research preview, available on all plans (off by default for Team/Enterprise until an Owner enables it).

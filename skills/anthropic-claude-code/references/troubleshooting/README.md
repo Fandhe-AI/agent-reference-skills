@@ -2,5 +2,5 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Troubleshoot installation and login | `command not found`、PATH、パーミッション、ネットワーク、TLS、認証エラーの修正。インストール・ログイン失敗対応 | [troubleshoot-install.md](./troubleshoot-install.md) |
-| Troubleshooting | CPU・メモリ使用率高騰、ハング、auto-compact thrashing、検索問題の修正。Claude Code 実行時の問題対応 | [troubleshooting.md](./troubleshooting.md) |
+| Troubleshoot installation and login | Fixes for `command not found`, PATH, permissions, network, TLS, and authentication errors | [troubleshoot-install.md](./troubleshoot-install.md) |
+| Troubleshooting | Fixes for high CPU and memory usage, hangs, auto-compact thrashing, and search problems | [troubleshooting.md](./troubleshooting.md) |
