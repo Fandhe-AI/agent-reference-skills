@@ -12,15 +12,23 @@ user-invocable: false
 Android Gradle Plugin (AGP) 公式ドキュメントの主要トピックを網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
+対象: Android Gradle Plugin 9.4（docs のスニペットは "9.4.0"、Google Maven の最新安定版は 9.4.1、9.5.0-alpha10 はプレビュー）/ Gradle 9.6.0 / JDK 17 / SDK Build Tools 36.0.0 / 最大 API 37。developer.android.com/build 取得日 2026-10-16（版付き URL なし）。
+
 ## ディレクトリ構成
 
 ```text
 skills/android-build-gradle/
   SKILL.md
   references/
+    build-overview/
+      README.md
+      gradle-build-overview.md
+      android-build-structure.md
+      building-cmdline.md
     build-config/
       README.md
       settings-gradle.md
+      android-settings-plugin.md
       root-build-gradle.md
       module-build-gradle.md
       plugins-block.md
@@ -41,6 +49,7 @@ skills/android-build-gradle/
       native-16kb-page-size.md
       native-dependencies-prefab.md
       native-build-cmake.md
+      cxx-ninja.md
     dependencies/
       README.md
       dependency-configurations.md
@@ -51,14 +60,18 @@ skills/android-build-gradle/
       dependency-exclusion.md
       viewing-dependencies.md
       ksp-vs-kapt.md
+      annotation-processors.md
       migrate-to-catalogs.md
       variant-specific-dependencies.md
       dependency-verification.md
+      gradle-dependency-resolution.md
+      tool-and-library-dependencies.md
     optimize-release/
       README.md
       shrink-code.md
       proguard-rules.md
       r8-troubleshooting.md
+      r8-execution-profiles.md
       shrink-resources.md
       app-bundle.md
       bundle-config.md
@@ -81,10 +94,12 @@ skills/android-build-gradle/
       README.md
       build-speed-optimization.md
       build-cache-configuration-cache.md
+      profile-your-build.md
       migrate-to-ksp.md
       migrate-to-kotlin-dsl.md
       agp-upgrade-assistant.md
       agp-gradle-version-compatibility.md
+      version-upgrade-strategies.md
       jdk-configuration.md
       namespace-migration.md
       manifest-merger-conflicts.md
@@ -94,6 +109,11 @@ skills/android-build-gradle/
       custom-build-logic.md
       sdk-upgrade-assistant.md
       agp-kotlin-d8-r8-compatibility.md
+    releases/
+      README.md
+      agp-9-4-release-notes.md
+      agp-9-3-release-notes.md
+      gradle-plugin-api-updates.md
 ```
 
 ## 探索手順
@@ -108,21 +128,31 @@ skills/android-build-gradle/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
+| Gradle ビルドの基本概念（tasks / plugins）を知りたい | build-overview | [references/build-overview/README.md](references/build-overview/README.md) |
+| Android プロジェクトのファイル・ディレクトリ構造を知りたい | build-overview | [references/build-overview/README.md](references/build-overview/README.md) |
+| `./gradlew` によるコマンドラインビルド・bundletool を使いたい | build-overview | [references/build-overview/README.md](references/build-overview/README.md) |
 | settings.gradle.kts / build.gradle.kts の構成を知りたい | build-config | [references/build-config/README.md](references/build-config/README.md) |
+| settings plugin (com.android.settings) を設定したい | build-config | [references/build-config/README.md](references/build-config/README.md) |
 | android {} ブロック・defaultConfig・buildTypes・productFlavors を設定したい | build-config | [references/build-config/README.md](references/build-config/README.md) |
 | buildFeatures（Compose/ViewBinding）・sourceSets・signingConfigs を設定したい | build-config | [references/build-config/README.md](references/build-config/README.md) |
 | gradle.properties / local.properties / lint 設定を確認したい | build-config | [references/build-config/README.md](references/build-config/README.md) |
+| ネイティブビルド（CMake / Ninja / Prefab / 16KB ページサイズ）を設定したい | build-config | [references/build-config/README.md](references/build-config/README.md) |
 | implementation / api / ksp / kapt などの dependency configuration を使いたい | dependencies | [references/dependencies/README.md](references/dependencies/README.md) |
 | version catalog (libs.versions.toml) や Compose BOM でバージョン管理したい | dependencies | [references/dependencies/README.md](references/dependencies/README.md) |
-| 依存関係の除外・解決や `./gradlew dependencies` の見方を知りたい | dependencies | [references/dependencies/README.md](references/dependencies/README.md) |
+| annotation processor の引数を設定したい | dependencies | [references/dependencies/README.md](references/dependencies/README.md) |
+| 依存関係の除外・バージョン競合の解決や `./gradlew dependencies` の見方を知りたい | dependencies | [references/dependencies/README.md](references/dependencies/README.md) |
 | R8/ProGuard によるコード圧縮・難読化を設定したい | optimize-release | [references/optimize-release/README.md](references/optimize-release/README.md) |
+| R8 execution profiles を使いたい | optimize-release | [references/optimize-release/README.md](references/optimize-release/README.md) |
 | App Bundle / APK splits / baseline profile でリリース最適化したい | optimize-release | [references/optimize-release/README.md](references/optimize-release/README.md) |
 | 署名設定・リリースチェックリストを確認したい | optimize-release | [references/optimize-release/README.md](references/optimize-release/README.md) |
 | Android ライブラリのリリース準備・メタデータを設定したい | publish-library | [references/publish-library/README.md](references/publish-library/README.md) |
 | ライブラリを Maven に publish したい（publication variants / upload） | publish-library | [references/publish-library/README.md](references/publish-library/README.md) |
 | fused library や test fixtures を publish したい | publish-library | [references/publish-library/README.md](references/publish-library/README.md) |
 | ビルド速度・build cache / configuration cache を改善したい | migrate-troubleshoot | [references/migrate-troubleshoot/README.md](references/migrate-troubleshoot/README.md) |
+| gradle-profiler でビルドをプロファイルしたい | migrate-troubleshoot | [references/migrate-troubleshoot/README.md](references/migrate-troubleshoot/README.md) |
 | kapt から KSP へ、Groovy から Kotlin DSL へ移行したい | migrate-troubleshoot | [references/migrate-troubleshoot/README.md](references/migrate-troubleshoot/README.md) |
-| AGP アップグレードやマニフェストマージ・依存関係解決エラーに対処したい | migrate-troubleshoot | [references/migrate-troubleshoot/README.md](references/migrate-troubleshoot/README.md) |
+| AGP アップグレード（戦略・Upgrade Assistant・互換表）やマニフェストマージ・依存関係解決エラーに対処したい | migrate-troubleshoot | [references/migrate-troubleshoot/README.md](references/migrate-troubleshoot/README.md) |
+| AGP 9.4 / 9.3 の新機能を知りたい | releases | [references/releases/README.md](references/releases/README.md) |
+| AGP API の非推奨・削除を確認したい | releases | [references/releases/README.md](references/releases/README.md) |
 
 テストの書き方は `android-testing`、マニフェストとリソースの仕様は `android-platform-core` の担当。

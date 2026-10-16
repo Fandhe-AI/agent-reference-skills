@@ -44,7 +44,7 @@ $ANDROID_HOME/cmdline-tools/latest/bin/retrace \
 - `mapping.txt` is written to `app/build/outputs/mapping/<variant>/mapping.txt` and is automatically bundled with the Android App Bundle for Play Console / Firebase Crashlytics deobfuscation.
 - `retrace` ships in the SDK Command-line Tools package (`cmdline-tools/<version>/bin/retrace`), available standalone since command-line tools v4.0 (Android Studio 4.2).
 - AGP 8.6+ Logcat automatically retraces crash stack traces in Android Studio without a manual `retrace` invocation.
-- The **R8 Configuration Analyzer** (AGP 9.3.0-alpha05+ / R8 9.3.7-dev+) reports which keep rules are overly broad and blocking optimization.
+- The **R8 Configuration Analyzer** (AGP 9.3.0-alpha05+ / R8 9.3.7-dev+) reports which keep rules are overly broad and blocking optimization. AGP 9.3 adds the standalone task `./gradlew :app:analyzeReleaseR8Config`, which generates the report at `app/build/reports/r8/r8-config-analyzer-release.html` without completing APK/Bundle generation; the report is also generated automatically by a full R8 release build (`assembleRelease` / `bundleRelease`). AGP 9.2 and earlier use an older procedure (R8 classpath dependency plus `-Dcom.android.tools.r8.dumpkeepradiushtmltodirectory`).
 - Reflection- and serialization-based access is the most common source of runtime `ClassNotFoundException` / `NoSuchMethodException` after enabling R8; add targeted `-keep` / `-keepclassmembers` rules rather than disabling shrinking wholesale.
 - Avoid reflection-heavy dependencies where possible — they are the primary cause of overly broad keep rules that limit R8 optimization.
 

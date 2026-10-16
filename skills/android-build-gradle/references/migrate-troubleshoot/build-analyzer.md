@@ -18,7 +18,7 @@ Android Studio tool (**Build window > Build Analyzer** tab) that inspects the mo
 - On Windows, Build Analyzer can warn that antivirus software is slowing the build and recommend directory exclusions.
 - Warning types include: **Always Run Tasks** (outputs not declared, or `upToDateWhen` forced false), **Task Setup Issues** (two tasks declaring the same output directory), **Non-Incremental Annotation Processor**, **Configuration Cache** (not enabled — can be enabled directly from this warning), and **Check Jetifier** (`android.enableJetifier=true` still set, safe to remove and improve performance).
 - The official page does not document `--scan` or `--profile` CLI flags; Build Analyzer generates its report automatically on every build without extra flags.
-- Source: `developer.android.com/studio/build/build-analyzer`.
+- Source: https://developer.android.com/studio/build/build-analyzer
 
 ## Related
 
