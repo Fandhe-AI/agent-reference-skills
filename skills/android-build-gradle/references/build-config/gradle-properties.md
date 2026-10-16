@@ -27,7 +27,6 @@ android.enableJetifier=false
 ## Notes
 
 - `gradle.properties` also commonly holds temporary Android-specific feature flags that are added and later removed across AGP releases.
-- `org.gradle.caching` (build cache) and `org.gradle.parallel` are widely referenced Gradle-level flags but were not found with example values on the official Android guides crawled for this category; treat their defaults as unconfirmed until verified against current Gradle/AGP documentation.
 
 ## Related
 

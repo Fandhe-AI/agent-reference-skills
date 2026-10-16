@@ -64,8 +64,6 @@ build lib.so : LINK source.o
 - To wrap a non-Ninja build system (e.g. MSBuild), add a Ninja output with the `.passthrough` extension (e.g. `build curl.passthrough : MBSUILD_CURL`) defining how AGP invokes the underlying build.
 - The official page lists `x86-64`; the Android NDK ABI identifier is `x86_64`.
 - Not the same as the built-in CMake / ndk-build integration (`externalNativeBuild { cmake { } }`).
-- Source snippet uses Groovy-style `[ ]` lists and is missing a closing brace; adapted to valid Kotlin DSL (`listOf(...)`).
-- The source template ends both `command` lines with an unspecified `{other flags}` placeholder (no concrete flags given); omitted here to keep a minimal example.
 - Source: https://developer.android.com/build/cxx-ninja (local copy fetched 2026-10).
 
 ## Related
