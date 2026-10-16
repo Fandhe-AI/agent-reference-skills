@@ -32,6 +32,8 @@ deno add -D vitest
 
 v5 で `vite` は直接依存ではなく必須 peer dependency になった。npm / pnpm / Bun / Deno は peer dependency を自動インストールするが、Yarn は自動インストールしないため `vite` を明示する。
 
+Deno 2.8 未満では CLI でも `npm:` 接頭辞が必要（`deno add -D npm:vitest`）。Deno 2.8 以降は接頭辞なしのパッケージ名を npm パッケージとして扱う（出典: https://docs.deno.com/runtime/reference/cli/add/）。
+
 インストールなしで直接実行する場合は `npx vitest` を使用する。
 
 ## カバレッジプロバイダーのインストール（v8）
