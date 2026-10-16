@@ -13,7 +13,7 @@ A guide for installing Chakra UI with the Next.js App Router (`app/` directory).
 Pre-configured starter templates:
 
 - [Next.js app template](https://github.com/chakra-ui/chakra-ui/tree/main/sandbox/next-app)
-- [Next.js app (streaming)](https://github.com/chakra-ui/chakra-ui/tree/main/sandbox/next-app-streaming)
+- [Next.js app (streaming)](https://github.com/chakra-ui/chakra-ui/tree/2e7517745cff2fcde0b8012f136cf99611ff262a/sandbox/next-app-streaming)
 - [Next.js pages template](https://github.com/chakra-ui/chakra-ui/tree/main/sandbox/next-pages)
 
 ## Installation
@@ -168,7 +168,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
 }
 ```
 
-The [streaming sandbox](https://github.com/chakra-ui/chakra-ui/tree/main/sandbox/next-app-streaming) is a repro you can run cold, not a copy of the layout above.
+The [streaming sandbox](https://github.com/chakra-ui/chakra-ui/tree/2e7517745cff2fcde0b8012f136cf99611ff262a/sandbox/next-app-streaming) is a repro you can run cold, not a copy of the layout above.
 
 ### 7. Hydration errors (Turbopack)
 

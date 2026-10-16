@@ -64,6 +64,10 @@ Use the `divideStyle` prop to add a divider style.
 |------|-------------|----------------|
 | `divideStyle` | `border-style` | — |
 
+## Notes
+
+- Source: https://chakra-ui.com/docs/styling/style-props/divide (docs source: https://github.com/chakra-ui/chakra-ui/blob/2e7517745cff2fcde0b8012f136cf99611ff262a/apps/www/content/docs/styling/style-props/divide.mdx, tag @chakra-ui/react@3.37.0)
+
 ## Related
 
 - [Border Style Props](./border.md)

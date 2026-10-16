@@ -15,7 +15,9 @@ import { DateInput } from "@chakra-ui/react"
   <DateInput.Label />
   <DateInput.Control>
     <DateInput.SegmentGroup>
-      <DateInput.Segment />
+      {dateInput.getSegments().map((segment, index) => (
+        <DateInput.Segment key={index} segment={segment} />
+      ))}
     </DateInput.SegmentGroup>
   </DateInput.Control>
   <DateInput.HiddenInput />
@@ -96,6 +98,8 @@ const formatter = new DateFormatter("en-US", {
 
 ## Notes
 
+- Source: https://chakra-ui.com/docs/components/date-input (docs source: https://github.com/chakra-ui/chakra-ui/blob/2e7517745cff2fcde0b8012f136cf99611ff262a/apps/www/content/docs/components/date-input.mdx, tag @chakra-ui/react@3.37.0)
+- In the first Usage example, `dateInput` is the return value of `useDateInput`, used together with `DateInput.RootProvider`
 - Date values use objects from `@internationalized/date` (timezone-safe, locale-aware); the docs state this will be replaced by the Temporal API when widely supported in browsers
 - `selectionMode="range"`: pass `index` to `DateInput.Segments` and `DateInput.HiddenInput` to target each date in the range
 - `min` / `max` restrict accepted dates; `granularity` set to `hour`, `minute` or `second` shows a time alongside the date
