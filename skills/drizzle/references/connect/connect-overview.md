@@ -17,12 +17,13 @@ const db = drizzle(process.env.DATABASE_URL);
 ## Notes
 
 - Transcribed from `pg/connect-overview.mdx`.
-- PostgreSQL connection docs: PostgreSQL (`get-started-postgresql`), PlanetScale Postgres, Neon, Vercel Postgres, Prisma Postgres, Supabase, Xata, PGLite, Nile, Bun SQL, Effect Postgres, Netlify Database, AWS Data API Postgres, Drizzle HTTP proxy.
+- PostgreSQL connection docs: PostgreSQL (`get-started-postgresql`), PlanetScale Postgres, Neon, Vercel Postgres, Prisma Postgres, Supabase, Xata, PGLite, Nile, Bun SQL, Effect Postgres, Netlify Database, Appwrite Postgres, AWS Data API Postgres, Drizzle HTTP proxy.
 - Every driver page follows the same pattern: install packages, then `drizzle(url)` or `drizzle({ client })` with an existing driver instance.
 
 ## Related
 
 - [PostgreSQL](./get-started-postgresql.md)
+- [Appwrite Postgres](./connect-appwrite-postgres.md)
 - [Drizzle HTTP proxy](./connect-drizzle-proxy.md)
 - [MySQL drivers](./mysql-drivers.md)
 - [SQLite drivers](./sqlite-drivers.md)

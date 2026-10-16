@@ -4,9 +4,9 @@ source: https://orm.drizzle.team/docs/get-started-postgresql
 
 # install
 
-> **警告**: 無印 `npm i drizzle-orm` は現行安定版 v0.45.2 がインストールされ、本スキルが記述する `1.0.0-rc.5` 系のコマンド・設定オプションとは一致しない。本スキルの内容に従う場合は必ず `@rc` タグを付けてインストールする。
+> **警告**: 無印 `npm i drizzle-orm` は現行安定版 v0.45.4（drizzle-kit は 0.31.11）がインストールされ、本スキルが記述する `1.0.0-rc.4` 系のコマンド・設定オプションとは一致しない。本スキルの内容に従う場合は必ず `@rc` タグを付けてインストールする。
 
-Package installation commands for `drizzle-orm` / `drizzle-kit` (1.0.0-rc.5) with each PostgreSQL driver.
+Package installation commands for `drizzle-orm` / `drizzle-kit` (1.0.0-rc.4) with each PostgreSQL driver.
 
 ## node-postgres
 

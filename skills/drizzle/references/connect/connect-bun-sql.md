@@ -31,6 +31,7 @@ const db = drizzle({ client });
 ## Notes
 
 - Transcribed from `pg/connect-bun-sql.mdx`.
+- The MySQL variant uses a separate subpath, `drizzle-orm/bun-sql/mysql` (see the MySQL drivers page).
 
 ## Related
 

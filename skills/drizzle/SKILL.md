@@ -12,9 +12,12 @@ user-invocable: false
 # Drizzle ORM API リファレンス
 
 Drizzle ORM / Drizzle Kit — TypeScript の headless ORM（対象バージョン
-`drizzle-orm` / `drizzle-kit` **1.0.0-rc.5**。npm dist-tag `latest` の `0.45.2` は非対象、
+`drizzle-orm` / `drizzle-kit` **1.0.0-rc.4**（npm dist-tag `rc`、2026-10-16 実測）。npm dist-tag `latest` の
+`drizzle-orm` `0.45.4` / `drizzle-kit` `0.31.11` は非対象、
 `npm i drizzle-orm@rc` / `npm i -D drizzle-kit@rc` でインストールする。`drizzle-kit` は `drizzle-orm` と
-独立バージョニングだが、本スキル対象時点では両者とも `1.0.0-rc.5`）。
+独立バージョニングだが、本スキル対象時点では両者とも `1.0.0-rc.4`。`1.0.0-rc.5` は registry に存在せず、
+dist-tag `rc5` はプレビュービルド `1.0.0-rc.5-5935859` のみ。docs 原本は
+`drizzle-team/drizzle-orm-docs` の commit `6659ce0acdfad9b67d89813cc34ac738674390e9`（2026-10-10）に pin）。
 `pgTable` / `mysqlTable` / `sqliteTable` によるスキーマ宣言、SQL-like クエリビルダーと
 RQB (Relational Queries, `db.query`) の2系統のクエリ API、`drizzle-kit` CLI によるマイグレーション
 （generate / migrate / push / pull）を中核とする API 設計・実装時に参照する。
@@ -77,6 +80,7 @@ skills/drizzle/
       connect-bun-sql.md
       connect-effect-postgres.md
       connect-netlify-db.md
+      connect-appwrite-postgres.md
       connect-aws-data-api-pg.md
       connect-prisma-postgres.md
       connect-planetscale-postgres.md
@@ -195,7 +199,7 @@ skills/drizzle/
 | インストール・クイックスタート・`generate` と `push` の違い・FAQ | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | `pgTable` 等のテーブル宣言、index/constraint、sequence、view、schema 名前空間、RLS、generated column、custom type | schema | [references/schema/README.md](references/schema/README.md) |
 | 方言別カラム型（PostgreSQL / MySQL / SQLite / SingleStore / CockroachDB / MSSQL）を調べたい | column-types | [references/column-types/README.md](references/column-types/README.md) |
-| DB / ホスティング（Neon, Supabase, Vercel, PGlite, Xata, Nile, Bun, Effect, Netlify, AWS Data API, PlanetScale, drizzle-proxy）への接続方法、方言別ドライバー | connect | [references/connect/README.md](references/connect/README.md) |
+| DB / ホスティング（Neon, Supabase, Vercel, PGlite, Xata, Nile, Bun, Effect, Netlify, Appwrite, AWS Data API, PlanetScale, drizzle-proxy）への接続方法、方言別ドライバー（MySQL / SQLite: Turso Database, SQLite Cloud, Cloudflare Durable Objects, Bun SQL (MySQL) を含む） | connect | [references/connect/README.md](references/connect/README.md) |
 | SQL-like な select / insert / update / delete、フィルタ演算子、join、alias、magic `sql` operator | queries | [references/queries/README.md](references/queries/README.md) |
 | `db.query` (RQB)、`defineRelations`、`with` によるネストしたリレーション取得、v1 → v2 移行 | relational-queries | [references/relational-queries/README.md](references/relational-queries/README.md) |
 | `drizzle-kit generate` / `migrate` / `push` / `pull` / `export` / `check` / `up` / `studio`、`drizzle.config.ts` | drizzle-kit | [references/drizzle-kit/README.md](references/drizzle-kit/README.md) |

@@ -32,7 +32,7 @@ export const customersView = pgView("customers_view").as((qb) =>
 | `.as(qb \| sql)` | method | defines the view body via query builder callback, standalone `QueryBuilder` instance, or `sql\`...\`` |
 | `.existing()` | method | marks the view as already present in the DB; drizzle-kit skips `CREATE VIEW` for it |
 | `.with({ checkOption, securityBarrier, securityInvoker, ... })` | method | Postgres `WITH (...)` view options |
-| `.using('btree' \| ...)` | method (materialized view) | access method for the materialized view |
+| `.using('heap' \| ...)` | method (materialized view) | access method for the materialized view |
 | `.tablespace(name)` | method (materialized view) | `TABLESPACE` clause |
 | `.withNoData()` | method (materialized view) | `WITH NO DATA` on creation/refresh |
 
