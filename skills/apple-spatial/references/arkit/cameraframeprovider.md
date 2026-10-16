@@ -28,7 +28,10 @@ func cameraFrameUpdates(for: CameraVideoFormat) -> CameraFrameProvider.CameraFra
 ## Notes
 
 - visionOS 2.0+. Conforms to `DataProvider`.
-- The page body states no entitlement or enterprise requirement. The requirement is gated by `requiredAuthorizations` only (`static var requiredAuthorizations: [ARKitSession.AuthorizationType]`).
+- Main camera access is part of enterprise APIs for visionOS. To use it, you need to apply for the Main Camera Access entitlement (Entitlement key: `com.apple.developer.arkit.main-camera-access.allow`, Boolean, default NO, visionOS 2.0+). The sample project requires a valid license file ("Replace Enterprise.license with your license file"). This is in addition to the user authorization listed in `requiredAuthorizations`.
+- Add an `NSMainCameraUsageDescription` to the app's information property list file. Prior to visionOS 26, `CameraFrameProvider` is only available in an immersive space.
+- Source (entitlement): https://developer.apple.com/documentation/bundleresources/entitlements/com.apple.developer.arkit.main-camera-access.allow
+- Source (article): https://developer.apple.com/documentation/visionos/accessing-the-main-camera
 - `CameraFrame` (struct): the representation of a camera frame.
 - `CameraVideoFormat` (struct): a structure that represents a camera video format.
 - Source: https://developer.apple.com/documentation/arkit/cameraframeprovider (fetched 2026-10 from the DocC JSON).
