@@ -106,7 +106,7 @@ CertificateAuthenticationDefaults.AuthenticationScheme)
  app.UseAuthentication();
  app.UseAuthorization();
 
- app.MapControllers();
+ app.MapControllers().RequireAuthorization(); // Added: the official sample omits this; without it a failed certificate authentication does not block access.
  app.Run();
 ```
 
@@ -123,7 +123,7 @@ CertificateAuthenticationDefaults.AuthenticationScheme)
 
 - No Windows App SDK APIs for managing certificates exist yet; use the WinRT APIs (`Windows.Security.Cryptography.Certificates`) and WinRT storage APIs (`FileOpenPicker` initialized with the window HWND via `InitializeWithWindow`) for the PFX import.
 - This guide's client sample uses .NET `System.Net.Http.HttpClient` with `HttpClientHandler.ClientCertificates`; using .NET here is the guide's choice. With the WinRT `Windows.Web.Http.HttpClient`, the client certificate is supplied through `HttpBaseProtocolFilter.ClientCertificate` (see [HttpBaseProtocolFilter](../networking/http-base-protocol-filter.md)), and when the service requests client authentication Windows queries the certificate store so the user can pick a certificate.
-- `AllowAnyClientCertificate()` and `CertificateTypes.SelfSigned` accept any self-signed certificate at the TLS / middleware layer, so the thumbprint check in `OnCertificateValidated` (which must call `context.Fail("Invalid certificate")` on mismatch) is what actually restricts access.
+- `AllowAnyClientCertificate()` and `CertificateTypes.SelfSigned` accept any self-signed certificate at the TLS / middleware layer. The thumbprint check in `OnCertificateValidated` (which calls `context.Fail("Invalid certificate")` on mismatch) restricts access only when the endpoint requires authentication: `[Authorize]` on `BankController`, `MapControllers().RequireAuthorization()`, or a `FallbackPolicy` requiring an authenticated user. The official sample has none of these, so the snippet above adds `RequireAuthorization()`.
 - The protected endpoint in the official guide is the `BankController` (`[Route("bank")]`, `Login` action).
 - Some certificates are password protected, so provide a way to enter the PFX password.
 - The sample hard-codes allowed thumbprints; load valid thumbprints from a secure location in real code.

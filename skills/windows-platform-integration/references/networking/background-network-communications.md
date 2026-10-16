@@ -4,6 +4,8 @@ Continue network communication while the app is not in the foreground, using bac
 
 ## Signature / Usage
 
+The snippets below are excerpts from the official guide and are not one continuous flow: the registration and transfer examples use a `StreamSocketListener`, while the background task example handles an already-connected `StreamSocket` (as in the SocketActivityStreamSocket sample). See Notes.
+
 Register a `SocketActivityTrigger` task, then enable ownership transfer before binding the socket:
 
 ```csharp
@@ -37,7 +39,7 @@ private async void TransferOwnership(StreamSocketListener tcpListener)
 }
 ```
 
-Handle activation in the background task, returning ownership to the broker afterwards:
+Handle activation in the background task, returning ownership to the broker afterwards (this excerpt assumes a connected `StreamSocket` was transferred, not a listener):
 
 ```csharp
 var deferral = taskInstance.GetDeferral();
@@ -81,6 +83,7 @@ deferral.Complete();
 - With CCT, `ControlChannelTrigger` creation fails if the app is not on the lock screen. Request a slot with `ControlChannelTriggerResourceType.RequestHardwareSlot` and call `WaitForPushEnabled()`; expect `HardwareSlotAllocated` or `SoftwareSlotAllocated`.
 - ControlChannelTrigger with HttpClient: SSL is not currently supported with the network trigger feature. The `HttpClient` cannot be passed to `UsingTransport`; create an `HttpRequestMessage` via `RtcRequestFactory.Create` and pass that. Use a Task for sends (not `await`), and only the blocking read of the whole response in `Run` is supported.
 - ControlChannelTrigger with `IXMLHTTPRequest2`: the object lives for one request/response; create the CCT once and call `UsingTransport` repeatedly with a new `IXMLHTTPRequest2`, deleting the previous one. Make an initial test request first to settle certificates, proxy/server authentication and redirects.
+- If the transferred socket was a `StreamSocketListener`, the task should check `SocketActivityInformation.SocketKind` (`SocketActivityKind`: `None`, `StreamSocketListener`, `DatagramSocket`, `StreamSocket`) and use `SocketActivityInformation.StreamSocketListener` to handle incoming connections. `SocketActivityInformation.StreamSocket` applies only when a connected `StreamSocket` was transferred.
 - Official sample for the socket broker: SocketActivityStreamSocket in the Windows-universal-samples repository.
 
 ## Related
