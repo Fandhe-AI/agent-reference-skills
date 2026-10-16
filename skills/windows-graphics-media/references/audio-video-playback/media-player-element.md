@@ -31,6 +31,7 @@ myMediaPlayerElement.MediaPlayer.Play();
 
 - Namespace: `Microsoft.UI.Xaml.Controls` (Windows App SDK / WinUI 3). Distinct from the legacy UWP `Windows.UI.Xaml.Controls.MediaPlayerElement` and unrelated to Android ExoPlayer's `PlayerView` or Apple `AVPlayerViewController`.
 - Use `MediaPlayerElement.MediaPlayer` to access the full `MediaPlayer` API (events, `PlaybackSession`, `CommandManager`) for imperative control beyond what XAML properties expose.
+- `MediaPlayerElement` is external content: XAML receives an opaque media swap chain handle from the Windows media stack and Windows renders it below the compositor's rendering. XAML content cannot be shown transparently behind it, and an `AcrylicBrush` in front of it cannot blur its video.
 
 ## Related
 

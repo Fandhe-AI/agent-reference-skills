@@ -33,6 +33,7 @@ if (DesktopAcrylicController.IsSupported())
 
 - Namespace: `Microsoft.UI.Composition.SystemBackdrops` (Windows App SDK / WinUI 3 desktop only). Implements `ISystemBackdropController` / `ISystemBackdropControllerWithTargets`.
 - In WinUI 3 XAML apps, prefer setting `Window.SystemBackdrop = new DesktopAcrylicBackdrop()` (`Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop`) unless manual control via `DesktopAcrylicController` is required.
+- `DesktopAcrylicController` (and `DesktopAcrylicBackdrop`) creates external content: an `AcrylicBrush` in front of it cannot see the colors the backdrop draws and blurs transparent black instead, and compositor content cannot be placed behind it. See [Compositor](./compositor.md).
 - Sibling class: [MicaController](./mica-controller.md) for the Mica material.
 
 ## Related
