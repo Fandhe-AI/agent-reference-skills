@@ -43,7 +43,7 @@ npx chakra typegen src/theme.ts --tsconfig ./tsconfig.json
 出力先を指定、または出力ディレクトリを消去してから生成:
 
 ```sh
-npx chakra typegen src/theme.ts --outdir <dir> --clean
+npx chakra typegen src/theme.ts --outdir ./generated-types --clean
 ```
 
 テーマを export するパッケージも指定できる:
