@@ -1,153 +1,97 @@
 # useForm — Form
 
-`Form` コンポーネント（Beta）はフォーム送信を管理するラッパーコンポーネントで、標準の HTML `<form>` 要素と密接に連携する。デフォルトで POST リクエストを FormData で送信する。
+Optional component (Since 7.44.0, currently BETA) that takes care of form submission by closely aligning with the standard native form.
 
-## シグネチャ
-
-```tsx
-<Form
-  control={control}
-  action="/api/endpoint"
-  onSubmit={onSubmitHandler}
-  onSuccess={onSuccessHandler}
-  onError={onErrorHandler}
-  headers={headers}
-  validateStatus={validateStatus}
-  method="post"
-  render={renderProp}
->
-  {children}
-</Form>
-```
-
-## Props
-
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `control` | `Control` | — | `useForm` から取得した `control` オブジェクト。 |
-| `children` | `React.ReactNode` | — | フォームの子要素。 |
-| `render` | `({ submit }) => React.ReactNode` | — | ヘッドレスレンダリング用の render prop。React Native で使用。 |
-| `onSubmit` | `({ formData, data, event }) => void` | — | バリデーション成功後に呼ばれるコールバック。`formData`、パース済み `data`、イベントを受け取る。 |
-| `onSuccess` | `({ response }) => void` | — | サーバーレスポンスが成功した場合のコールバック。 |
-| `onError` | `({ response }) => void` | — | リクエスト失敗時のコールバック。`root.server` エラーが自動的に設定される。 |
-| `headers` | `Record<string, string>` | — | リクエストヘッダー。JSON 送信には `{ 'Content-Type': 'application/json' }` を指定。 |
-| `validateStatus` | `(status: number) => boolean` | — | HTTP ステータスコードの成功/失敗判定関数。 |
-| `action` | `string` | — | サーバーエンドポイントの URL。 |
-| `method` | `string` | `'post'` | HTTP メソッド。 |
-| `encType` | `string` | — | フォームのエンコーディングタイプ。 |
-
-## コード例
-
-### React Web — action prop での使用
+## Signature / Usage
 
 ```tsx
-import { useForm, Form } from "react-hook-form";
+import { useForm, Form } from "react-hook-form"
 
 function App() {
-  const { register, control } = useForm({
-    defaultValues: { name: "", email: "" },
-  });
+  const {
+    control,
+    register,
+    formState: { isSubmitSuccessful, errors },
+  } = useForm({
+    // progressive: true, optional prop for progressive enhancement
+  })
 
   return (
-    <Form
-      action="/api/submit"
-      control={control}
-      onSuccess={() => {
-        alert("送信成功！");
-      }}
-      onError={() => {
-        alert("送信に失敗しました");
-      }}
-    >
-      <input {...register("name")} />
-      <input {...register("email")} />
-      <button type="submit">送信</button>
-    </Form>
-  );
+    <div>
+      {/* Use action prop to make post submission with formData */}
+      <Form
+        action="/api"
+        control={control}
+        onSuccess={() => {
+          alert("Success")
+        }}
+        onError={() => {
+          alert("error")
+        }}
+      >
+        <input {...register("name")} />
+        {isSubmitSuccessful && <p>Form submit successful.</p>}
+        {errors?.root?.server && <p>Form submit failed.</p>}
+        <button>submit</button>
+      </Form>
+      {/* Manual form submission */}
+      <Form
+        onSubmit={async ({ formData, data, formDataJson, event }) => {
+          await fetch("api", {
+            method: "post",
+            body: formData,
+          })
+        }}
+      >
+        <input {...register("test")} /> <button>submit</button>
+      </Form>
+    </div>
+  )
 }
 ```
 
-### React Web — 手動送信
-
-```tsx
-import { useForm, Form } from "react-hook-form";
-
-function App() {
-  const { register, control } = useForm();
-
-  return (
-    <Form
-      onSubmit={async ({ formData, data, event }) => {
-        await fetch("/api/submit", {
-          method: "POST",
-          body: formData,
-        });
-      }}
-    >
-      <input {...register("name")} />
-      <button type="submit">送信</button>
-    </Form>
-  );
-}
-```
-
-### JSON での送信
+React Native:
 
 ```tsx
 <Form
-  action="/api/submit"
+  action="/api"
   control={control}
-  headers={{
-    "Content-Type": "application/json",
-  }}
-  onSuccess={() => console.log("成功")}
->
-  <input {...register("name")} />
-  <button type="submit">送信</button>
-</Form>
+  render={({ submit }) => (
+    <View>
+      {isSubmitSuccessful && <Text>Form submit successful.</Text>}
+      {errors?.root?.server && <Text>Form submit failed.</Text>}
+      <Button onPress={() => submit()} />
+    </View>
+  )}
+/>
 ```
 
-### React Native での使用
+## Options / Props
 
-```tsx
-import { useForm, Form } from "react-hook-form";
-import { View, TextInput, Button } from "react-native";
+`Form: FormProps`. All props are optional.
 
-function App() {
-  const { register, control } = useForm();
+| Name | Type | Description |
+|------|------|-------------|
+| `control` | `Control` | `control` object provided by invoking `useForm`. Optional when using `FormProvider`. |
+| `action` | `string \| (formData: FormData) => unknown` | URL to submit to, or (Since 7.84.0) a function (Server Action style) invoked with the submission's `FormData`. |
+| `method` | `"post" \| "put" \| "delete"` | HTTP method used when `action` is a URL string. `GET` is not supported since submissions are sent as a request body. Defaults to `post`. |
+| `encType` | `"application/x-www-form-urlencoded" \| "multipart/form-data" \| "text/plain" \| "application/json"` | Sets the request's `Content-Type`. By default the submission is sent as `FormData`; set this (or the `headers` prop) to `application/json` to send JSON instead. |
+| `children` | `React.ReactNode` | Form contents. |
+| `render` | `Function` | Render prop function suitable for headless component. |
+| `onSubmit` | `Function` | Function invoked after successful validation. |
+| `onSuccess` | `Function` | Function called after successful request to the server. |
+| `onError` | `Function` | Function called after failed request to the server. `setError` is called to update errors state; `root.server` is used as error key. |
+| `headers` | `Record<string, string>` | Request headers object. |
+| `validateStatus` | `(status: number) => boolean` | Function to validate status code. |
 
-  return (
-    <Form
-      action="/api/submit"
-      control={control}
-      render={({ submit }) => (
-        <View>
-          <TextInput {...register("name")} />
-          <Button title="送信" onPress={() => submit()} />
-        </View>
-      )}
-    />
-  );
-}
-```
+## Notes
 
-### バリデーションステータスのカスタマイズ
+- By default a POST request is sent with the form submission data as `FormData`.
+- Progressively enhanced form; supports both React Web and React Native.
+- To prepare or omit submission data, use `handleSubmit` or `onSubmit`.
+- Progressive enhancement is only applicable to SSR frameworks (`useForm({ progressive: true })`); `<Form action="/api/test" method="post">` then renders `<form action="/api/test" method="post">` with native `required` attributes.
 
-```tsx
-<Form
-  action="/api/submit"
-  control={control}
-  validateStatus={(status) => status >= 200 && status < 300}
->
-  ...
-</Form>
-```
+## Related
 
-## 重要なルール / 注意事項
-
-- デフォルトでは POST メソッドで FormData として送信する。JSON で送信するには `headers` に `Content-Type: application/json` を指定する。
-- `onSubmit` コールバックまたは `handleSubmit` を使用して、送信前にデータを加工または除外できる。
-- プログレッシブエンハンスメントは SSR フレームワークでのみ機能し、`useForm` の `progressive: true` オプションが必要。
-- Beta 機能であるため、API が変更される可能性がある。
-- React Native では `render` prop を使用し、`submit` 関数を明示的に呼び出す。
-- `onError` が呼ばれた場合、`root.server` エラーが自動的に `formState.errors` に設定される。
+- [useForm — handleSubmit](./useform-handlesubmit.md)
+- [useForm](./useform.md)

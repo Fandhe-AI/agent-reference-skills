@@ -1,0 +1,52 @@
+# TypeScript
+
+React Hook Form is built with TypeScript; you can define a `FormData` type to support form values.
+
+## Signature / Usage
+
+```tsx
+import { useForm } from "react-hook-form"
+
+type FormData = {
+  firstName: string
+  lastName: string
+}
+
+export default function App() {
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>()
+  const onSubmit = handleSubmit((data) => console.log(data))
+  // firstName and lastName will have correct type
+
+  return (
+    <form onSubmit={onSubmit}>
+      <label>First Name</label>
+      <input {...register("firstName")} />
+      <label>Last Name</label>
+      <input {...register("lastName")} />
+      <button
+        type="button"
+        onClick={() => {
+          setValue("lastName", "luo") // ✅
+          setValue("firstName", true) // ❌: true is not string
+          errors.bill // ❌: property bill does not exist
+        }}
+      >
+        SetValue
+      </button>
+    </form>
+  )
+}
+```
+
+## Notes
+
+- Source: https://react-hook-form.com/get-started#TypeScript
+
+## Related
+
+- [useForm](../api/useform.md)

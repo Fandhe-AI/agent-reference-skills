@@ -1,150 +1,100 @@
 # useController
 
-制御コンポーネント（React-Select、AntD、MUI など）を React Hook Form と統合するためのカスタムフック。`register` が使えない外部コンポーネントに対して、フォーム状態の接続を提供する。
+Custom hook that powers `Controller`. It shares the same props and methods as `Controller` and is useful for creating reusable controlled inputs.
 
-## シグネチャ
-
-```typescript
-useController(props?: UseControllerProps): {
-  field: UseControllerReturn['field'];
-  fieldState: UseControllerReturn['fieldState'];
-  formState: UseControllerReturn['formState'];
-}
-```
-
-## Props
-
-| Name | Type | Required | Default | Description |
-|------|------|----------|---------|-------------|
-| `name` | `FieldPath` | はい | - | フィールドの一意な名前 |
-| `control` | `Control` | いいえ | - | `useForm` から取得する制御オブジェクト。`FormProvider` 使用時は省略可 |
-| `rules` | `Object` | いいえ | - | バリデーションルール（`required`, `min`, `max`, `minLength`, `maxLength`, `pattern`, `validate`） |
-| `shouldUnregister` | `boolean` | いいえ | `false` | アンマウント時にフィールドを登録解除し、`defaultValues` も削除する |
-| `disabled` | `boolean` | いいえ | `false` | 入力を無効化する。無効時は送信データから値が除外される |
-| `defaultValue` | `unknown` | いいえ | - | フィールドのデフォルト値。`undefined` は不可。フィールドレベルまたはフォームレベルで設定 |
-| `exact` | `boolean` | いいえ | `false` | フィールド名の購読で完全一致を有効にする |
-
-## Return
-
-### field オブジェクト
-
-| Name | Type | Description |
-|------|------|-------------|
-| `onChange` | `(value: any) => void` | 入力値をフォーム状態に送信する |
-| `onBlur` | `() => void` | 入力のインタラクション（タッチ）を報告する |
-| `value` | `unknown` | 制御コンポーネントの現在の値 |
-| `name` | `string` | 登録されたフィールド名 |
-| `ref` | `React.Ref` | フォーカス管理のためのリファレンス（エラー時のフォーカス移動に使用） |
-| `disabled` | `boolean` | 入力の無効状態 |
-
-### fieldState オブジェクト
-
-| Name | Type | Description |
-|------|------|-------------|
-| `invalid` | `boolean` | フィールドのバリデーション状態（エラーがあれば `true`） |
-| `isTouched` | `boolean` | ユーザーがフィールドに触れたかどうか |
-| `isDirty` | `boolean` | フィールドが変更されたかどうか |
-| `error` | `object` | フィールド固有のエラー情報 |
-
-### formState オブジェクト
-
-| Name | Type | Description |
-|------|------|-------------|
-| `isDirty` | `boolean` | フォーム全体の変更状態 |
-| `dirtyFields` | `object` | 変更されたフィールドの一覧 |
-| `touchedFields` | `object` | タッチされたフィールドの一覧 |
-| `defaultValues` | `object` | フォームのデフォルト値 |
-| `isSubmitted` | `boolean` | フォームが送信されたかどうか |
-| `isSubmitSuccessful` | `boolean` | 送信が成功したかどうか |
-| `isSubmitting` | `boolean` | 送信中かどうか |
-| `isLoading` | `boolean` | 非同期 defaultValues のロード中かどうか |
-| `submitCount` | `number` | 送信回数 |
-| `isValid` | `boolean` | バリデーションエラーがないかどうか |
-| `isValidating` | `boolean` | バリデーション実行中かどうか |
-| `validatingFields` | `object` | 非同期バリデーション中のフィールド |
-| `errors` | `object` | フィールドエラーメッセージ |
-| `disabled` | `boolean` | フォームが無効化されているかどうか |
-
-## コード例
-
-### 基本的な使い方
+## Signature / Usage
 
 ```tsx
-import { useController, useForm } from "react-hook-form";
+import { useForm, useController, UseControllerProps } from "react-hook-form"
 
-function TextField({ name, control, rules }) {
-  const {
-    field,
-    fieldState: { invalid, error },
-  } = useController({
-    name,
-    control,
-    rules: { required: true },
-  });
+type FormValues = {
+  FirstName: string
+}
+
+function Input(props: UseControllerProps<FormValues>) {
+  const { field, fieldState } = useController(props)
 
   return (
     <div>
-      <input
-        onChange={field.onChange}
-        onBlur={field.onBlur}
-        value={field.value}
-        name={field.name}
-        ref={field.ref}
-      />
-      {invalid && <p>{error?.message}</p>}
+      <input {...field} placeholder={props.name} />
+      <p>{fieldState.isTouched && "Touched"}</p>
+      <p>{fieldState.isDirty && "Dirty"}</p>
+      <p>{fieldState.invalid ? "invalid" : "valid"}</p>
     </div>
-  );
+  )
 }
 
-function App() {
-  const { handleSubmit, control } = useForm({
-    defaultValues: { firstName: "" },
-  });
+export default function App() {
+  const { handleSubmit, control } = useForm<FormValues>({
+    defaultValues: {
+      FirstName: "",
+    },
+    mode: "onChange",
+  })
+  const onSubmit = (data: FormValues) => console.log(data)
 
   return (
-    <form onSubmit={handleSubmit(console.log)}>
-      <TextField name="firstName" control={control} rules={{ required: true }} />
-      <button type="submit">送信</button>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Input control={control} name="FirstName" rules={{ required: true }} />
+      <input type="submit" />
     </form>
-  );
+  )
 }
 ```
 
-### チェックボックス（配列値）パターン
+## Options / Props
 
-```tsx
-function Checkboxes({ name, control, options }) {
-  const { field } = useController({ control, name });
-  const [value, setValue] = useState(field.value || []);
+`useController: (UseControllerProps) => UseControllerReturn`
 
-  return (
-    <>
-      {options.map((option) => (
-        <label key={option}>
-          <input
-            type="checkbox"
-            value={option}
-            checked={value.includes(option)}
-            onChange={(e) => {
-              const newValue = e.target.checked
-                ? [...value, option]
-                : value.filter((v) => v !== option);
-              setValue(newValue);
-              field.onChange(newValue);
-            }}
-          />
-          {option}
-        </label>
-      ))}
-    </>
-  );
-}
-```
+Arguments:
 
-## 重要なルール
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `name` | `FieldPath` | Yes | Unique name of your input. Reactive: the controller re-subscribes when this changes. |
+| `control` | `Control` | No | `control` object from `useForm`. Optional when using `FormProvider`. |
+| `rules` | `Object` | No | Validation rules in the same format as `register`: `required`, `min`, `max`, `minLength`, `maxLength`, `pattern`, `validate`. |
+| `shouldUnregister` | `boolean = false` | No | Input is unregistered after unmount and defaultValues are removed. Avoid with `useFieldArray`. |
+| `disabled` | `boolean = false` | No | Since 7.46.0. `disabled` is returned from `field`. Controlled input is disabled and its value is omitted from the submission data. |
+| `defaultValue` | `unknown` | No | Cannot be `undefined`. Set at field level or in `useForm`'s `defaultValues` (skip this prop if using `defaultValues`). Provide `defaultValues` to `useForm` if the form invokes `reset` with default values. If `field.value` is `undefined` on first render, the input starts uncontrolled and React warns when it later becomes controlled. |
+| `exact` | `boolean = true` | No | Since 7.68.0. Exact match for input name subscriptions. Since 7.81.0, with `true` the field is also updated when one of its ancestor paths is set (`setValue("users.0", { name: "Jane" })` updates `"users.0.name"`), but not when a nested child path changes. Pass `false` to also receive nested updates. |
 
-1. **二重登録の禁止**: `{...field}` と `{...register()}` を同じフィールドに同時使用しないこと。`useController` がフィールド登録を管理する。
-2. **単一インスタンス**: 1 つのコンポーネントに対して 1 つの `useController` を使用する。複数必要な場合はリネームする。
-3. **defaultValue に `undefined` は不可**: `defaultValue` には `undefined` を使用できない。フォームレベルの `defaultValues` で設定すること。
-4. **dirty 状態の追跡**: `isDirty` を正確に追跡するには、フォームレベルで `defaultValues` を設定する必要がある。
-5. **ローカル状態との併用**: `useState` と組み合わせて UI 状態を管理できる（上記チェックボックス例を参照）。
+Return:
+
+| Object | Name | Type | Description |
+|--------|------|------|-------------|
+| `field` | `onChange` | `(value: any) => void` | Sends the input's value to the library. Assign to the input's `onChange`; value must not be `undefined`. Avoid manually invoking `setValue` or other field-update APIs. |
+| `field` | `onBlur` | `() => void` | Sends the input's blur event to the library. |
+| `field` | `value` | `unknown` | The current value of the controlled component. |
+| `field` | `disabled` | `boolean` | The disabled state of the input. |
+| `field` | `name` | `string` | Input's name being registered. |
+| `field` | `ref` | `React.Ref` | Assign to the component's input ref to allow focusing the error input. |
+| `fieldState` | `invalid` | `boolean` | Invalid state for current input. |
+| `fieldState` | `isTouched` | `boolean` | Touched state for current controlled input. |
+| `fieldState` | `isDirty` | `boolean` | Dirty state for current controlled input. |
+| `fieldState` | `error` | `object` | Since 7.0.0. Error for this specific input. |
+| `formState` | (same as `useForm` formState) | | `isDirty`, `dirtyFields`, `touchedFields`, `defaultValues` (7.37.0), `isSubmitted`, `isSubmitSuccessful`, `isSubmitting`, `isLoading` (7.41.0), `submitCount`, `isValid`, `isValidating`, `validatingFields` (7.51.0), `errors`, `disabled` (7.48.0), `isReady` (7.56.0). |
+
+## Notes
+
+- This differs from `useWatch` and `useFormState`, which both default `exact` to `false`.
+- Each prop's responsibility with external controlled components (MUI, AntD, Chakra UI): `onChange` sends data back to hook form, `onBlur` reports interaction, `value` sets initial/updated value, `ref` allows focusing on error (only works if the component forwards refs, or exposes an equivalent like MUI's `inputRef`; otherwise omit `ref` and handle focus manually), `name` gives a unique name.
+- It's fine to host your own state combined with `useController`:
+
+  ```javascript
+  const { field } = useController({ name: "test" })
+  const [value, setValue] = useState(field.value)
+
+  onChange={(event) => {
+    field.onChange(parseInt(event.target.value)) // data sent back to hook form
+    setValue(event.target.value) // UI state
+  }}
+  ```
+
+- Do not `register` the input again: `<input {...field} />` is correct; `<input {...field} {...register('test')} />` doubles up the registration.
+- Use a single `useController` call per component (each call creates its own subscription). For multiple fields, rename the destructured `field` (`const { field: input } = useController(...)`) or use `Controller`.
+
+## Related
+
+- [Controller](./controller.md)
+- [useForm — control](./useform-control.md)
+- [useFormState](./useformstate.md)

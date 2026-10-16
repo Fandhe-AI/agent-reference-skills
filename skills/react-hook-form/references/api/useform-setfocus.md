@@ -1,86 +1,49 @@
 # useForm — setFocus
 
-`setFocus` メソッドは登録済みの input フィールドにプログラム的にフォーカスを設定する。初期フォーカスや特定操作後のフォーカス移動に使用する。
+Programmatically focus on an input. Make sure the input's ref is registered into the hook form.
 
-## シグネチャ
-
-```typescript
-setFocus: (name: string, options?: { shouldSelect?: boolean }) => void
-```
-
-## 引数
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `name` | `string` | Yes | フォーカスを設定するフィールド名。 |
-| `options` | `{ shouldSelect?: boolean }` | No | フォーカスオプション。 |
-
-## オプション
-
-| Name | Type | Default | Description |
-|------|------|---------|-------------|
-| `shouldSelect` | `boolean` | `false` | `true` にすると、フォーカス時に入力内容を全選択する。 |
-
-## コード例
-
-### 初期フォーカス
+## Signature / Usage
 
 ```tsx
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
 
 type FormValues = {
-  firstName: string;
-  lastName: string;
-};
+  firstName: string
+}
 
-function App() {
-  const { register, handleSubmit, setFocus } = useForm<FormValues>();
+export default function App() {
+  const { register, handleSubmit, setFocus } = useForm<FormValues>()
+  const onSubmit = (data: FormValues) => console.log(data)
 
   useEffect(() => {
-    setFocus("firstName");
-  }, [setFocus]);
+    setFocus("firstName")
+  }, [setFocus])
 
   return (
-    <form onSubmit={handleSubmit(console.log)}>
-      <input {...register("firstName")} placeholder="名" />
-      <input {...register("lastName")} placeholder="姓" />
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input {...register("firstName")} placeholder="First Name" />
       <input type="submit" />
     </form>
-  );
+  )
 }
 ```
 
-### 内容を選択してフォーカス
+## Options / Props
 
-```tsx
-setFocus("firstName", { shouldSelect: true });
-```
+`setFocus: UseFormSetFocus`
 
-### エラー時のフォーカス移動
+| Name | Type | Description |
+|------|------|-------------|
+| `name` | `string` | An input field name to focus |
+| `options.shouldSelect` | `boolean` | Since 7.27.0. Whether to select the input content on focus |
 
-```tsx
-const onError = (errors: FieldErrors) => {
-  const firstErrorField = Object.keys(errors)[0];
-  if (firstErrorField) {
-    setFocus(firstErrorField as keyof FormValues);
-  }
-};
+## Notes
 
-return <form onSubmit={handleSubmit(onSubmit, onError)}>...</form>;
-```
+- This API invokes the focus method from the ref, so it is important to provide `ref` during `register`.
+- Avoid calling `setFocus` right after `reset`, as all input references will be removed by the `reset` API.
 
-### ボタンクリックでフォーカス
+## Related
 
-```tsx
-<button type="button" onClick={() => setFocus("email")}>
-  メール入力にフォーカス
-</button>
-```
-
-## 重要なルール / 注意事項
-
-- `setFocus` は `register` の `ref` を使用して `focus()` メソッドを呼び出す。フィールドが `register` で登録され、`ref` が正しく DOM に接続されている必要がある。
-- `reset` の直後に `setFocus` を呼び出してはならない。`reset` は全入力の参照を削除するため、フォーカスが機能しない。
-- カスタムコンポーネントを使用する場合は、`ref` が内部の input 要素に正しく転送されている必要がある。
-- `shouldFocusError` オプション（`useForm` のオプション）を使用すると、バリデーション失敗時に自動的に最初のエラーフィールドにフォーカスされる。手動でのフォーカス制御が不要な場合はそちらを活用すること。
+- [useForm — register](./useform-register.md)
+- [useForm — reset](./useform-reset.md)
