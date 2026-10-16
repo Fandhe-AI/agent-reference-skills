@@ -39,7 +39,7 @@ Rules set a severity per issue type. Start by setting all types to `"warn"`, the
 | `--production` | CLI flag | Limits analysis to shipped code, deferring tests and tooling. |
 | `--max-issues` | CLI option | Budget: CI fails only when the count exceeds the number (e.g. `knip --max-issues 50`). |
 | `--no-exit-code` | CLI flag | Run report-only while still triaging. |
-| `@lintignore` / `@internal` | JSDoc tags | Tag an export to suppress it with a specific, documented signal. |
+| `@lintignore` / `@internal` | JSDoc tags | Tag an export with `/** @lintignore */` and exclude the tag via `knip --tags=-lintignore` (or `tags` in knip.json); `@internal` exports are only exempted in production mode (`--production`). See JSDoc & TSDoc Tags. |
 | `ignoreExportsUsedInFile` | config option | For internal-only exports. |
 | `ignoreDependencies` | config option | List known exceptions. |
 
@@ -59,3 +59,4 @@ Rules set a severity per issue type. Start by setting all types to `"warn"`, the
 - [Using Knip in CI](./using-knip-in-ci.md)
 - [Configuring Project Files](./configuring-project-files.md)
 - [Handling Issues](./handling-issues.md)
+- [JSDoc & TSDoc Tags](../reference/jsdoc-tsdoc-tags.md)
