@@ -46,9 +46,9 @@ supports_standalone_web_search = true
 - Desktop app: ask for current information in a chat; use the Deep research plugin (Work > Plugins > Deep research) for multi-source reports. Web: deep research via the + menu in Work, if available. Workspace settings can limit search.
 - IDE extension uses the connected Codex host's search mode.
 - Network boundaries for Codex cloud environments are covered by the Internet access page.
+- Source: https://learn.chatgpt.com/docs/web-search (retrieved 2026-10).
 
 ## Related
 
 - [Plugins](./plugins.md)
 - [Browser](./browser.md)
-- Source: https://learn.chatgpt.com/docs/web-search

@@ -60,10 +60,10 @@ Troubleshooting:
 - Restrict inbound access to approved clients, keep database and cache ports private, grant only needed Bedrock permissions, and pin the deployed image by digest. Prompts, source excerpts, and tool results pass through the gateway and may enter its logs; decide retention, access, and redaction first. MCP servers and plugins have separate connections and authentication.
 - Test credential: a LiteLLM virtual key for one test user, restricted to the alias; don't give users the LiteLLM administrative key or embed gateway credentials in `config.toml`. Verification: certificate matches host name; connect one user; run a short prompt, a follow-up, and a read-only tool task; confirm records show identity, alias, and upstream route without exposing credentials; test expiration/revocation and rejection of unauthorized aliases.
 - Reference deployment: pinned LiteLLM on ECS guide in `openai-on-aws/guidance-codex` (commit `eb04fe0`), which uses Bedrock Runtime and refreshes authentication from the ECS task role.
+- Source: https://learn.chatgpt.com/docs/enterprise/bedrock-through-litellm (retrieved 2026-10).
 
 ## Related
 
 - [Use API/provider credentials through a gateway](./connect-to-a-gateway.md)
 - [Roll out a gateway](./roll-out-a-gateway.md)
 - [Gateway compatibility requirements](./gateway-compatibility.md)
-- Source: https://learn.chatgpt.com/docs/enterprise/bedrock-through-litellm

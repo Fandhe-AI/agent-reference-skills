@@ -40,6 +40,7 @@ Qualification checklist (record evidence per client/gateway/model combination): 
 - Prompts, source excerpts, tool arguments, and tool results can pass through the gateway; set logging, retention, redaction, access, and export controls.
 - The model gateway doesn't route every Codex connection: local commands, MCP servers, plugin services, browser and app interactions can have separate network paths and credentials.
 - For gateways that forward ChatGPT workspace requests, see the ChatGPT sign-in page.
+- Source: https://learn.chatgpt.com/docs/enterprise/gateway-compatibility (retrieved 2026-10).
 
 ## Related
 
@@ -47,4 +48,3 @@ Qualification checklist (record evidence per client/gateway/model combination): 
 - [Use API/provider credentials through a gateway](./connect-to-a-gateway.md)
 - [Sign in with ChatGPT through a gateway](./sign-in-with-chatgpt-through-a-gateway.md)
 - [Bedrock through LiteLLM](./bedrock-through-litellm.md)
-- Source: https://learn.chatgpt.com/docs/enterprise/gateway-compatibility

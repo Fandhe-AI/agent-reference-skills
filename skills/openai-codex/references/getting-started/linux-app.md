@@ -45,9 +45,9 @@ sudo pacman -Syu                                             # Arch Linux
 - Installation configures a signed OpenAI package repository; later updates go through the distribution's package manager.
 - Computer Use is available on macOS and Windows but not yet in the Linux preview; a future release will add Linux support.
 - Native Wayland support is experimental. In a Wayland session the app uses XWayland when available. To select native Wayland, fully quit the app and launch it with `chatgpt --ozone-platform=wayland`. Floating windows, window positioning, focus, and keyboard shortcuts may not fully work yet.
+- Source: https://learn.chatgpt.com/docs/linux/linux-app (retrieved 2026-10).
 
 ## Related
 
 - [ChatGPT desktop app](./desktop-app.md)
 - [ChatGPT desktop app for Windows](./windows-app.md)
-- Source: https://learn.chatgpt.com/docs/linux/linux-app

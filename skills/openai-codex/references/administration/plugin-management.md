@@ -140,10 +140,10 @@ Supported files in the selected directory:
 - After a sync, **Completed — N errors** means some plugins couldn't be processed; an invalid update to an existing plugin keeps its last working version. Removing an entry from the repository marks the imported copy **No longer in source** without deleting it; deleting the marketplace in ChatGPT deletes all plugins imported from it.
 - Reconnecting GitHub access: marketplace sync uses the importing admin's GitHub connection; that admin reconnects their account. To transfer ownership, the new admin imports the same marketplace with identical Source, Path, and Branch/tag/commit. Don't delete the marketplace to reconnect or change ownership.
 - Local client marketplaces can instead be configured via cloud-managed or system `config.toml` (see Managed configuration, "Configure plugin marketplaces and defaults").
+- Source: https://learn.chatgpt.com/docs/enterprise/plugin-management (retrieved 2026-10).
 
 ## Related
 
 - [Plugin controls](./plugin-controls.md)
 - [Skill controls](./skill-controls.md)
 - [Managed configuration](./managed-configuration.md)
-- Source: https://learn.chatgpt.com/docs/enterprise/plugin-management

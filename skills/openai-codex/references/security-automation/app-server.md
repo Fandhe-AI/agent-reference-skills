@@ -97,6 +97,7 @@ Key methods (JSON-RPC):
 - `configRequirements/read` returns the effective admin requirements from `requirements.toml` and/or MDM (`null` when none). `windowsSandbox/setupStart` takes `mode` `elevated` or `unelevated` and later emits `windowsSandbox/setupCompleted`.
 - `codex mcp-server` has been removed in favor of app-server; adapt integrations to the JSON-RPC protocol instead of MCP tool calls. External MCP servers are still managed via `codex mcp`.
 - This page is condensed; the official page contains full per-method request/response examples.
+- Source: https://learn.chatgpt.com/docs/app-server (retrieved 2026-10).
 
 ## Related
 
@@ -104,4 +105,3 @@ Key methods (JSON-RPC):
 - [Codex MCP server removal](./agents-sdk-mcp-server.md)
 - [Agent approvals and security](./agent-approvals-security.md)
 - [Sandbox](./sandbox.md)
-- Source: https://learn.chatgpt.com/docs/app-server

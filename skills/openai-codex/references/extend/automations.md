@@ -39,9 +39,9 @@ Check my commits from the last 24h and submit a $recent-code-bugfix.
 - Test the prompt in a regular chat first and review the first few runs.
 - Source notes that GPT-5.5 retires from Codex with ChatGPT sign-in on October 14, 2026 (19:00 UTC); review scheduled tasks using it and choose `gpt-6.1-sol` if your plan provides access. API-key sessions are unaffected.
 - Admins: team-shared recurring work is documented under Team Tasks (enterprise docs, outside this page).
+- Source: https://learn.chatgpt.com/docs/automations (retrieved 2026-10).
 
 ## Related
 
 - [Build skills](./build-skills.md)
 - [Plugins](./plugins.md)
-- Source: https://learn.chatgpt.com/docs/automations

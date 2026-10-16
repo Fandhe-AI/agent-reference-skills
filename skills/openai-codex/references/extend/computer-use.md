@@ -40,9 +40,9 @@ Enable in **Settings > Computer Use**. Installs an Apple authorization plug-in s
 - It cannot automate terminal apps or ChatGPT itself, cannot authenticate as administrator, and cannot approve security and privacy permission prompts.
 - Changes made through desktop apps may not appear in the review pane until saved to disk and tracked by the project.
 - For visual-judgment tasks the source recommends GPT-6 Astra when available in the model selector.
+- Source: https://learn.chatgpt.com/docs/computer-use (retrieved 2026-10).
 
 ## Related
 
 - [Browser](./browser.md)
 - [Record & Replay](./record-and-replay.md)
-- Source: https://learn.chatgpt.com/docs/computer-use

@@ -46,6 +46,7 @@ Environment defaults (Defaults editor, `config.toml` fields): `allow_login_shell
 - Work Cloud: configure **Cloud browser use** and **Cloud network access** under Admin Console > Permissions & roles > Workspace capabilities > Cloud computer capabilities. Work Cloud containers and dots cloud computers use their own execution configuration, not the managed environment bundle. If `enforce_residency` is enabled in any cloud policy, **Allow local computer access** is disabled for both Work and dots.
 - Migration: eligible legacy cloud policies migrate into Global, preserving assignments and ordering. SCIM membership sync and RBAC roles are unchanged.
 - Policy API manages Global settings only; Local and Codex Cloud settings are managed through the Agent Security UI. Existing Global API workflows and Terraform integrations remain available after migration; test them.
+- Source: https://learn.chatgpt.com/docs/enterprise/agent-security (retrieved 2026-10).
 
 ## Related
 
@@ -53,4 +54,3 @@ Environment defaults (Defaults editor, `config.toml` fields): `allow_login_shell
 - [Roles and workspace permissions](./roles-and-workspace-permissions.md)
 - [Governance](./governance.md)
 - [Compliance API](./compliance-api.md)
-- Source: https://learn.chatgpt.com/docs/enterprise/agent-security

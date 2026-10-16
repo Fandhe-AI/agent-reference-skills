@@ -76,6 +76,7 @@ x-portkey-metadata = '{"tool_id":"codex"}'
 - Requires a Codex build that supports managed model-provider requirements (and native gateway OAuth for Option B); older builds may ignore or reject unsupported fields.
 - This route covers model-provider requests only; ChatGPT sign-in, MCP, plugins, and other app connections can use different paths. A generic OpenAI `/v1/models` response is insufficient: Codex expects a `models` array.
 - Voice: this setup does not enable ChatGPT Voice. The experimental `experimental_realtime_webrtc_call_base_url` setting in `~/.codex/config.toml` changes only the HTTP base URL for call creation, not the sideband connection, media, or model requests; verify with OpenAI before use.
+- Source: https://learn.chatgpt.com/docs/enterprise/sign-in-with-chatgpt-through-a-gateway (retrieved 2026-10).
 
 ## Related
 
@@ -83,4 +84,3 @@ x-portkey-metadata = '{"tool_id":"codex"}'
 - [Roll out a gateway](./roll-out-a-gateway.md)
 - [Gateway compatibility requirements](./gateway-compatibility.md)
 - [Managed configuration](./managed-configuration.md)
-- Source: https://learn.chatgpt.com/docs/enterprise/sign-in-with-chatgpt-through-a-gateway

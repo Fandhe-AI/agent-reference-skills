@@ -62,9 +62,9 @@ expected behavior, and actual behavior. Use our team's concise review style.
 - If you ask Codex to apply fixes it finds, your normal sandbox and approval settings apply.
 - Editing pull request descriptions with attached images is not supported in Code Review; edit them in GitHub.
 - Automatic cloud reviews are separate from reviews you start in the pull request's chat.
+- Source: https://learn.chatgpt.com/docs/code-review (retrieved 2026-10).
 
 ## Related
 
 - [Review GitHub pull requests with Codex](./github.md)
 - [Review GitLab merge requests with Codex](./gitlab.md)
-- Source: https://learn.chatgpt.com/docs/code-review

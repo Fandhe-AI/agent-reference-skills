@@ -40,9 +40,9 @@ codex
 - Apple Messages plugin: macOS desktop app only (Apple Silicon build in this release); sends only after approval of message and recipients; not available in web, mobile, Codex CLI, or the IDE extension.
 - Workspace admins can import and sync a GitHub marketplace for their team.
 - Building and distributing plugins is covered at developers.openai.com/plugins (outside this skill's scope); this page is the Codex / ChatGPT consumer side.
+- Source: https://learn.chatgpt.com/docs/plugins (retrieved 2026-10).
 
 ## Related
 
 - [Record & Replay](./record-and-replay.md)
 - [Build skills](./build-skills.md)
-- Source: https://learn.chatgpt.com/docs/plugins

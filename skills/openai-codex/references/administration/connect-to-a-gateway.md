@@ -85,6 +85,7 @@ Reply with exactly: gateway-ok
 - A response doesn't prove which route handled it; ask the administrator to confirm gateway records show your user, model alias, and upstream route. Don't ask the model its name.
 - MCP servers and plugins are configured separately; a gateway credential doesn't authorize access to them.
 - For ChatGPT sign-in with a gateway see the sign-in page; for direct Bedrock without a gateway see Amazon Bedrock docs.
+- Source: https://learn.chatgpt.com/docs/enterprise/connect-to-a-gateway (retrieved 2026-10).
 
 ## Related
 
@@ -92,4 +93,3 @@ Reply with exactly: gateway-ok
 - [Gateway compatibility requirements](./gateway-compatibility.md)
 - [Sign in with ChatGPT through a gateway](./sign-in-with-chatgpt-through-a-gateway.md)
 - [Bedrock through LiteLLM](./bedrock-through-litellm.md)
-- Source: https://learn.chatgpt.com/docs/enterprise/connect-to-a-gateway

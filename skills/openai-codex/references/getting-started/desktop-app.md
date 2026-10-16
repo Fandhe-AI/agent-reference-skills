@@ -21,6 +21,7 @@ Get-started flow (the page has no code; steps are reproduced as a text block):
 - Use the desktop app when you want to coordinate several projects, create and review files, use the browser and your computer, or schedule recurring work (a standalone scheduled task, or a task inside an existing chat).
 - macOS and Windows builds are downloaded from `https://chatgpt.com/download/`; Linux is installed by following the Linux guide (preview).
 - Sample use cases listed on the page: daily work brief, analyzing a data export into interactive visuals, drafting a PRD from sources, cleaning messy CSV/spreadsheet data into a copy, and synthesizing feedback into actions.
+- Source: https://learn.chatgpt.com/docs/app (retrieved 2026-10).
 
 ## Related
 
@@ -28,4 +29,3 @@ Get-started flow (the page has no code; steps are reproduced as a text block):
 - [ChatGPT desktop app for Windows](./windows-app.md)
 - [Codex CLI](./cli.md)
 - [Codex IDE extension](./ide.md)
-- Source: https://learn.chatgpt.com/docs/app

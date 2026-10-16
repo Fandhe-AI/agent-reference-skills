@@ -39,10 +39,10 @@ codex --version
 - **Stuck chat**: check whether Codex is waiting for an approval; open the terminal and run a basic command like `git status`; start a new chat with a smaller prompt.
 - **Stuck terminal**: close the panel, reopen with `Ctrl`+`` ` ``, re-run `pwd` or `git status`; if still stuck, wait until active chats finish and restart the app.
 - The desktop app and Codex CLI can bundle different Codex versions, so features may reach one surface before the other.
+- Source: https://learn.chatgpt.com/docs/reference/troubleshooting (retrieved 2026-10).
 
 ## Related
 
 - [ChatGPT desktop app](./desktop-app.md)
 - [ChatGPT desktop app for Windows](./windows-app.md)
 - [Codex CLI](./cli.md)
-- Source: https://learn.chatgpt.com/docs/reference/troubleshooting

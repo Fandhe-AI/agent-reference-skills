@@ -78,6 +78,7 @@ Admin API tokens:
 - SCIM-managed accounts cannot be renamed or deleted in ChatGPT; the identity provider manages name, group membership, and lifecycle.
 - Disabling or deleting an account revokes all active tokens. Disabled accounts can be re-enabled with new tokens; deletion cannot be undone.
 - On shared or temporary runners use `CODEX_ACCESS_TOKEN` without saving a login.
+- Source: https://learn.chatgpt.com/docs/enterprise/service-accounts (retrieved 2026-10).
 
 ## Related
 
@@ -87,4 +88,3 @@ Admin API tokens:
 - [Groups and provisioning](./groups-and-provisioning.md)
 - [Governance](./governance.md)
 - [Compliance API](./compliance-api.md)
-- Source: https://learn.chatgpt.com/docs/enterprise/service-accounts

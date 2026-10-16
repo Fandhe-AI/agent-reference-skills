@@ -91,10 +91,10 @@ $skill-installer linear
 - To distribute skills, bundle two or more, or ship with a connector, package them as a plugin (developers.openai.com/plugins/build/plugins).
 - Best practices: one job per skill; prefer instructions over scripts unless determinism or external tooling is needed; imperative steps with explicit inputs/outputs; test prompts against the description.
 - These are Codex / ChatGPT skills (`.agents/skills`), distinct from Claude Code Skills (`.claude/skills`, SKILL.md of this repository).
+- Source: https://learn.chatgpt.com/docs/build-skills (retrieved 2026-10).
 
 ## Related
 
 - [Plugins](./plugins.md)
 - [Record & Replay](./record-and-replay.md)
 - [Scheduled tasks](./automations.md)
-- Source: https://learn.chatgpt.com/docs/build-skills

@@ -73,10 +73,10 @@ If Codex does not react or post a review:
 - GitHub-style repository controls in the desktop app, such as **Create pull request**, are not included in this beta.
 - Code review rules guide Codex; they do not replace tests, branch protections, or required approvals. Keep deterministic checks (formatting, lint) in CI.
 - This is the GitLab merge request integration; see the GitHub page for pull requests.
+- Source: https://learn.chatgpt.com/docs/third-party/gitlab (retrieved 2026-10).
 
 ## Related
 
 - [Review GitHub pull requests with Codex](./github.md)
 - [Code review](./code-review.md)
 - [Codex cloud](../getting-started/cloud.md)
-- Source: https://learn.chatgpt.com/docs/third-party/gitlab

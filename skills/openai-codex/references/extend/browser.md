@@ -47,9 +47,9 @@ browser_use_full_cdp_access = false
 - ChatGPT cannot automate file uploads in the built-in browser and asks confirmation before sensitive actions (submitting information, purchases, permission changes, deletion).
 - Treat page content as untrusted; a site permission does not make its content trustworthy.
 - Admins can restrict origins, uploads, downloads, and developer access via managed browser controls.
+- Source: https://learn.chatgpt.com/docs/browser (retrieved 2026-10).
 
 ## Related
 
 - [Computer Use](./computer-use.md)
 - [Plugins](./plugins.md)
-- Source: https://learn.chatgpt.com/docs/browser

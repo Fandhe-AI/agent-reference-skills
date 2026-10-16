@@ -92,6 +92,7 @@ Troubleshooting:
 - Reusing an existing Claude Code gateway: keep gateway product, DNS, TLS, networking, logging, and Bedrock access; add a Codex-facing Responses route, credential, aliases, and `config.toml`. `/v1/messages`, Anthropic headers, and Claude settings don't configure Codex. Codex does not support `apiKeyHelper`; use `env_key` or a command-backed resolver. Migration steps: inventory the Claude path, add a parallel Responses route and aliases, issue one scoped Codex credential, configure one developer, run the connection and full checks, then distribute.
 - Model routing and tool authorization are separate; configure MCP connections and plugin distribution separately. A `/v1/models` response doesn't prove a model supports the required behavior.
 - Reference implementations: the `openai-on-aws/guidance-codex` repository (pinned commit `adbc00f353effbf0252e667ba41eb89c99324c8f` in the source page).
+- Source: https://learn.chatgpt.com/docs/enterprise/roll-out-a-gateway (retrieved 2026-10).
 
 ## Related
 
@@ -100,4 +101,3 @@ Troubleshooting:
 - [Sign in with ChatGPT through a gateway](./sign-in-with-chatgpt-through-a-gateway.md)
 - [Bedrock through LiteLLM](./bedrock-through-litellm.md)
 - [Managed configuration](./managed-configuration.md)
-- Source: https://learn.chatgpt.com/docs/enterprise/roll-out-a-gateway

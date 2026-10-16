@@ -23,9 +23,9 @@ Recommended model and reasoning-effort pairings, as listed on the page:
 - Availability, tools, reasoning settings, and usage limits differ by product and model version. See the models available in ChatGPT and the API model catalog (`https://developers.openai.com/api/docs/models`; GPT-6.1 Sol: `https://developers.openai.com/api/docs/models/gpt-6.1-sol`).
 - The page also embeds an interactive model overview and a model recommender; their content is not present in the markdown source and is not reproduced here.
 - Experiment: consider how often the workflow runs, how quickly you need the result, how the output will be used, and how important quality is. Compare results on the same inputs and keep the lightest setting that meets your quality bar.
+- Source: https://learn.chatgpt.com/docs/model-selection (retrieved 2026-10).
 
 ## Related
 
 - [Models](./models.md)
 - [Codex CLI](./cli.md)
-- Source: https://learn.chatgpt.com/docs/model-selection
