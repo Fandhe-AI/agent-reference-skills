@@ -19,7 +19,7 @@ UniformsUtils.mergeUniforms( uniforms: Array ) : Object
 ## Notes
 
 - Module with static methods (page `module-UniformsUtils`).
-- Source: https://github.com/mrdoob/three.js/blob/r186/src/renderers/shaders/UniformsUtils.js (three.js r186)
+- Source: https://threejs.org/docs/pages/module-UniformsUtils.html (three.js r186, `src/renderers/shaders/UniformsUtils.js`)
 
 ## Related
 

@@ -35,7 +35,7 @@ function animate() {
 
 ## Notes
 
-- 出典は r186 の `webgpu_postprocessing_bloom` 例と Post-Processing with WebGPURenderer マニュアル。例中の `Inspector` / `toInspector()` / MSAA 用 `config` は省略している
+- 出典は r186 の `webgpu_postprocessing_bloom` 例と Post-Processing with WebGPURenderer マニュアル。例のページ https://threejs.org/examples/#webgpu_postprocessing_bloom 、r186 のソース https://github.com/mrdoob/three.js/blob/r186/examples/webgpu_postprocessing_bloom.html 、マニュアル https://github.com/mrdoob/three.js/blob/r186/manual/pages/webgpu-postprocessing.html （公開 URL は https://threejs.org/manual/#en/webgpu-postprocessing ）。例中の `Inspector` / `toInspector()` / MSAA 用 `config` は省略している
 - `RenderPipeline` は `EffectComposer` を置き換える。import は `three/webgpu`（`three` ではない）で、`pass` は `three/tsl`、エフェクトノードは `three/addons/tsl/display/` から読み込む
 - `bloomPass.threshold.value` / `.strength.value` / `.radius.value` で実行時にパラメーターを変更できる
 - `PostProcessing` は r183 で `RenderPipeline` に改名（Migration Guide 182 → 183）。WebGLRenderer 向けは `post-processing-effect-composer` を参照
