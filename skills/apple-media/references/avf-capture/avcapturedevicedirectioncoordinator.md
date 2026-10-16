@@ -66,7 +66,7 @@ final class DirectionObserver {
 - Decide preview mirroring from the direction map, not from `position`: set `automaticallyAdjustsVideoMirroring = false` on the connection before assigning `isVideoMirrored` (assigning while automatic adjustment is on raises an exception). Re-apply after each new map and after connecting a new device.
 - Create a new `AVCaptureDevice.RotationCoordinator` each time you switch cameras.
 - On a single-display iPhone, front cameras arrive in the forward-facing array and back cameras in the backward-facing array; cameras with unspecified position arrive in neither. Directions never change, so the handler fires once.
-- Source article: Choosing a camera by the direction it faces (developer.apple.com/documentation/avkit/choosing-a-camera-by-the-direction-it-faces).
+- Sources: https://developer.apple.com/documentation/avkit/choosing-a-camera-by-the-direction-it-faces , https://developer.apple.com/documentation/avkit/avcapturedevicedirectioncoordinator , https://developer.apple.com/documentation/avkit/avcapturedevicedirectionmap , https://developer.apple.com/documentation/avkit/avcapturedevicedescriptor
 
 ## Related
 

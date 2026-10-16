@@ -39,9 +39,9 @@ registration = registerSceneAccessory(accessory)
 | `UISceneAccessory.cameraCapture(sceneConfiguration:userInfo:)` (27.1+) | `class func cameraCapture(sceneConfiguration: UISceneConfiguration, userInfo: Any) -> Self` | — | Camera capture accessory; `userInfo` is passed to the scene delegate. A variant `cameraCapture(sceneConfiguration:)` without `userInfo` also exists |
 | `registerSceneAccessory(_:)` (UIViewController, 27.0+) | `func registerSceneAccessory(_ accessory: UISceneAccessory) -> UISceneAccessoryRegistration` | — | Registers the accessory on the view controller that shows the capture interface |
 | `unregisterSceneAccessory(_:)` | UIViewController method | — | Call when the app stops offering the content, rather than hiding it |
-| `UISceneAccessoryRegistration` (27.0+) | `@MainActor class` | Hold a strong reference. `isAvailable`: whether the system can present the content (set only by the system). `isEnabled`: whether the content should be displayed (on by default) |
-| `connectionOptions.sceneAccessoryUserInfo` | `UIScene.ConnectionOptions` property | Read the `userInfo` object in `scene(_:willConnectTo:options:)` of the accessory's scene delegate |
-| `UISceneSession.Role.windowCameraCaptureAccessory` (27.1+) | `static let windowCameraCaptureAccessory: UISceneSession.Role` | Role the system assigns to the accessory's scene; compare against it to identify this scene kind |
+| `UISceneAccessoryRegistration` (27.0+) | `@MainActor class` | — | Hold a strong reference. `isAvailable`: whether the system can present the content (set only by the system). `isEnabled`: whether the content should be displayed (on by default) |
+| `connectionOptions.sceneAccessoryUserInfo` | `UIScene.ConnectionOptions` property | — | Read the `userInfo` object in `scene(_:willConnectTo:options:)` of the accessory's scene delegate |
+| `UISceneSession.Role.windowCameraCaptureAccessory` (27.1+) | `static let windowCameraCaptureAccessory: UISceneSession.Role` | — | Role the system assigns to the accessory's scene; compare against it to identify this scene kind |
 
 ## Notes
 
@@ -57,7 +57,7 @@ registration = registerSceneAccessory(accessory)
 - Turning content off via `isEnabled` does not say anything about availability.
 - Simulator has no camera; test on device.
 - General SwiftUI / UIKit scene APIs belong to the apple-swiftui and apple-uikit skills.
-- Source: developer.apple.com/documentation/avfoundation/registering-a-camera-capture-accessory-on-iphone-duo
+- Sources: https://developer.apple.com/documentation/avfoundation/registering-a-camera-capture-accessory-on-iphone-duo , https://developer.apple.com/documentation/swiftui/cameracaptureaccessory , https://developer.apple.com/documentation/uikit/uisceneaccessory
 
 ## Related
 

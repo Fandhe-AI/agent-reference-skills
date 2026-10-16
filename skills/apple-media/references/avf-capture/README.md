@@ -4,7 +4,7 @@
 |------|-------------|------|
 | AVCaptureDevice.DiscoverySession | An object that finds capture devices matching specific criteria such as device type, media type, and position. | [avcapturedevice-discoverysession.md](./avcapturedevice-discoverysession.md) |
 | AVCaptureDevice | An object that represents a hardware or virtual capture device like a camera or microphone. | [avcapturedevice.md](./avcapturedevice.md) |
-| AVCaptureDeviceDirectionCoordinator | An AVKit object that tracks the direction each camera faces relative to a view on multi-display devices (iPhone Duo). | [avcapturedevicedirectioncoordinator.md](./avcapturedevicedirectioncoordinator.md) |
+| AVCaptureDeviceDirectionCoordinator | An AVKit object that tracks the direction each camera faces in relation to one view, so an app on a multi-display device (iPhone Duo) can follow cameras as the device is opened, closed, or turned. | [avcapturedevicedirectioncoordinator.md](./avcapturedevicedirectioncoordinator.md) |
 | AVCaptureDeviceInput | A capture input that provides media from an AVCaptureDevice to a capture session. | [avcapturedeviceinput.md](./avcapturedeviceinput.md) |
 | AVCaptureMetadataOutput | A capture output that intercepts and forwards timed metadata (e.g., QR codes, faces) from a capture session. | [avcapturemetadataoutput.md](./avcapturemetadataoutput.md) |
 | AVCaptureMovieFileOutput | A capture output that records video and audio to QuickTime movie files. | [avcapturemoviefileoutput.md](./avcapturemoviefileoutput.md) |
@@ -14,4 +14,4 @@
 | AVCaptureSession | An object that configures capture behavior and coordinates the flow of data from input devices to capture outputs. | [avcapturesession.md](./avcapturesession.md) |
 | AVCaptureVideoDataOutput | A capture output that records video and provides access to video frames for processing. | [avcapturevideodataoutput.md](./avcapturevideodataoutput.md) |
 | AVCaptureVideoPreviewLayer | A Core Animation layer that displays live video from a camera device. | [avcapturevideopreviewlayer.md](./avcapturevideopreviewlayer.md) |
-| Camera capture accessory (iPhone Duo) | Provide content to the person in front of the camera by registering a scene accessory alongside the capture interface; the system decides whether and where to present it. | [camera-capture-accessory.md](./camera-capture-accessory.md) |
+| Camera capture accessory (iPhone Duo) | Provide content to the person in front of the camera (for example a teleprompter on the outer display) by registering a scene accessory alongside the capture interface. The system decides whether and where to present it. | [camera-capture-accessory.md](./camera-capture-accessory.md) |
