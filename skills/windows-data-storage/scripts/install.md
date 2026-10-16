@@ -17,7 +17,16 @@ dotnet add package Microsoft.EntityFrameworkCore.Sqlite
 1. ソリューションを右クリックし、**Manage NuGet Packages for Solution** を選択
 2. **Browse** タブで **Microsoft.Data.Sqlite** を検索し、最新の安定版をインストール
 
-Windows 同梱の SQLite を使う前提（出典: SQLite data access、https://learn.microsoft.com/en-us/windows/apps/develop/data-access/sqlite-data-access）。特定バージョンの SQLite を使う場合はライブラリをパッケージに含める。
+公式ページ SQLite data access（https://learn.microsoft.com/en-us/windows/apps/develop/data-access/sqlite-data-access）は Windows 同梱の SQLite を使う前提で説明している。ただし `Microsoft.Data.Sqlite` パッケージは標準で `SQLitePCLRaw.bundle_e_sqlite3` に依存し、SQLite ネイティブライブラリ（e_sqlite3）をアプリに同梱する。特定バージョンの SQLite を使う場合はライブラリをパッケージに含める。
+
+OS 同梱の `winsqlite3.dll` を使う場合は、`Microsoft.Data.Sqlite` の代わりに `Microsoft.Data.Sqlite.Core` と `SQLitePCLRaw.bundle_winsqlite3` を導入する。
+
+```sh
+dotnet add package Microsoft.Data.Sqlite.Core
+dotnet add package SQLitePCLRaw.bundle_winsqlite3
+```
+
+出典: Custom SQLite versions（https://learn.microsoft.com/en-us/dotnet/standard/data/sqlite/custom-versions）。
 
 ## SQL Server クライアントの追加（Package Manager Console）
 
