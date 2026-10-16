@@ -1,23 +1,10 @@
 # Remove Attribution
 
-React Flow はデフォルトで画面左下に "React Flow" のアトリビューション（帰属表示）を表示する。このガイドではその削除方法を説明する。
+React Flow shows a "React Flow" attribution at the bottom-right of the pane by default. This guide describes how to hide it via the `proOptions` prop.
 
-## 詳細説明
+## Signature / Usage
 
-React Flow は MIT ライセンスで提供されているが、開発チームは Pro サブスクリプションの収益によってライブラリを維持している。そのため、アトリビューションを削除する前に以下の点を確認すること。
-
-**削除が許可されるケース:**
-
-- React Flow Pro（[https://reactflow.dev/pro](https://reactflow.dev/pro)）を購入している場合
-- 個人プロジェクト（商用利用なし）の場合 ― ただし、バグ報告・スクリーンショットの共有・GitHub へのスター付けで貢献することが求められる
-
-**削除前に検討すること:**
-
-組織で React Flow を使用して収益を得ている場合、Pro サブスクリプションを検討する。将来的に商用利用を開始した際は、アトリビューションを再追加するか Pro プランに加入することが求められる。
-
-## コード例
-
-`proOptions` prop に `hideAttribution: true` を渡す。
+Pass `hideAttribution: true` through the `proOptions` prop.
 
 ```tsx
 import { ReactFlow } from '@xyflow/react';
@@ -38,12 +25,17 @@ function Flow({ defaultNodes, defaultEdges }) {
 }
 ```
 
-## 注意点
+## Notes
 
-- `proOptions` オブジェクトはコンポーネント外またはメモ化して渡すこと（毎レンダーで再生成しない）
-- Pro サブスクリプション未加入で商用利用する場合、アトリビューションは削除しないこと
-- 将来的に商用利用を開始した場合はアトリビューションを再追加するか Pro プランに加入すること
+- React Flow is MIT-licensed, but the maintainers fund the library through Pro subscriptions. Hide the attribution only if you subscribe to React Flow Pro (https://reactflow.dev/pro). Organizations earning revenue with React Flow should consider a Pro subscription; if you start commercial use later, re-add the attribution or subscribe.
+- Define the `proOptions` object outside the component or memoize it (do not recreate it on every render).
+- Removal for personal / non-commercial projects is not stated in the current official documentation.
+- The old URL https://reactflow.dev/learn/troubleshooting/remove-attribution now returns the same content as https://reactflow.dev/remove-attribution (the Pro attribution policy page).
+- Current official policy wording (ProOptions page, llms-full.txt): "attribution visible, no subscription needed; no attribution, please subscribe." The /remove-attribution page says "Subscribing to React Flow Pro permits you to remove the attribution from your flows".
+- Since @xyflow/react 12.11.4 (#5962, "Show log if user hides attribution in development"), hiding the attribution when `NODE_ENV === 'development'` triggers one `console.warn` after about 1 s. Template from `packages/system/src/utils/attribution.ts` (@xyflow/react@12.12.0): `${framework}: It seems like you are hiding the attribution. Please only do this when you are subscribed to ${framework} Pro: https://${library}flow.dev/remove-attr`, followed by `You can ignore this warning if you are subscribed.` Since 12.11.6 (#5997) the warning is also suppressed when the pane is not rendered.
+- The code comment in the Attribution component points to https://reactflow.dev/remove-attribution.
 
-## 関連
+## Related
 
 - [./common-errors.md](./common-errors.md)
+- [../types/ProOptions.md](../types/ProOptions.md)

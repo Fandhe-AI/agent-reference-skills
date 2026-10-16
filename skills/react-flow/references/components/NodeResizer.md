@@ -2,7 +2,7 @@
 
 Renders draggable resize controls around a node to allow resizing in all directions. Must be placed inside a custom node component.
 
-## 使用例
+## Signature / Usage
 
 ```tsx
 import { memo } from 'react';
@@ -44,14 +44,16 @@ export default memo(ResizableNode);
 | `onResize` | `OnResize` | — | Callback invoked on each resize step |
 | `onResizeEnd` | `OnResizeEnd` | — | Callback invoked when resizing ends |
 
-## 注意点
+## Notes
 
+- `ResizeParamsWithDirection`, `ResizeDragEvent`, `OnResizeStart`, `OnResize` and `OnResizeEnd` are exported types from `@xyflow/react` that have no dedicated page in this skill.
 - Place `<NodeResizer />` as the **first** child inside the node component so it renders behind other content.
 - The node must have `style={{ width, height }}` or an explicit size for resizing to work properly.
 - Use `<NodeResizeControl />` for a single custom resize handle instead of the full set.
 - TypeScript users can import `NodeResizerProps` for prop type definitions.
+- Since @xyflow/react 12.12.0 (minor, #5998): onResizeEnd always fires after onResizeStart.
 
-## 関連
+## Related
 
 - [./NodeResizeControl.md](./NodeResizeControl.md)
 - [./Handle.md](./Handle.md)
