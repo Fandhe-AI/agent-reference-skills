@@ -1,7 +1,5 @@
 # Getting started
 
-Claude Code CLI 本体のリファレンス。Skills / MCP / subagents / hooks / plugins の拡張機能は anthropic-claude-code-extend、Agent SDK は anthropic-agent-sdk を参照。
-
 | Name | Description | Path |
 |------|-------------|------|
 | Best practices | Claude Code を最大限に活用するためのパターン: 検証、計画、プロンプティング、環境設定、セッション管理 | [best-practices.md](./best-practices.md) |

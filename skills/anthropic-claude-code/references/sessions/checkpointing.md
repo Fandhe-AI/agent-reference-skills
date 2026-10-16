@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/checkpointing / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/checkpointing / last verified: 2026-10-16 -->
 # Checkpointing
 
 Claude Code automatically captures the state of your code before each user prompt, so you can undo changes or rewind the conversation and code to a previous point with `/rewind`.
@@ -27,7 +27,8 @@ Or press `Esc` twice with an empty prompt input to open the rewind menu. Select 
 - Every user prompt creates a checkpoint; Claude Code keeps snapshots for the 100 most recent checkpoints per session, and checkpoints persist with the conversation across resumes (deleted after `cleanupPeriodDays`, default 30 days).
 - The two code-restore options appear only if the checkpoint has tracked file changes; otherwise the menu offers only conversation restore, summarize options, and Never mind.
 - If you ran `/clear` earlier in the same process, the rewind menu shows a `/resume <session-id> (previous session)` entry to get back to the pre-clear conversation.
-- **Not tracked**: files modified by Bash commands (`rm`, `mv`, `cp`, etc.), most subagent edits (except a foreground-forked skill via `context: fork` with `background: false`), external/manual edits outside the session, and symlinked or hard-linked paths (restore skips these with a `Restored the code, but skipped N files` warning).
+- **Not tracked**: files modified by Bash commands (`rm`, `mv`, `cp`, etc.), most subagent edits (rewinding restores only the files Claude had already edited in your conversation, and the subagent's edits to other files stay, so use git to revert them; this includes a forked skill that runs in the background, the default, and a background `/code-review --fix` run; a foreground-forked skill via `context: fork` with `background: false` edits your working tree during your own turn, so rewinding restores its edits as usual), external/manual edits outside the session, and symlinked or hard-linked paths (restore skips these with a `Restored the code, but skipped N files` warning).
+- Summarize keeps you in the same session and compresses context, like a targeted `/compact`. To branch off and try a different approach while preserving the original session intact, use `/branch` or `claude --continue --fork-session` instead.
 - Checkpointing is session-level recovery, not a replacement for version control — use git for permanent history and collaboration.
 
 ## Related

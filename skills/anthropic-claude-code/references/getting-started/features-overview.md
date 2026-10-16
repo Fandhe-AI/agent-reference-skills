@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/features-overview.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/features-overview.md / last verified: 2026-10-16 -->
 
 # Extend Claude Code
 

@@ -1,4 +1,5 @@
-<!-- source: https://code.claude.com/docs/en/env-vars.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/env-vars.md / last verified: 2026-10-17 -->
+<!-- source: https://code.claude.com/docs/en/model-config.md / last verified: 2026-10-17 -->
 <!-- source: https://code.claude.com/docs/en/settings.md / last verified: 2026-08-07 -->
 <!-- source: https://code.claude.com/docs/en/troubleshoot-install.md / last verified: 2026-08-07 -->
 
@@ -58,10 +59,31 @@ Setting a host other than `api.anthropic.com` disables Remote Control.
 
 ```bash
 export ANTHROPIC_MODEL="claude-sonnet-5"
-export ANTHROPIC_DEFAULT_OPUS_MODEL="claude-opus-4-6"
-export ANTHROPIC_DEFAULT_SONNET_MODEL="claude-sonnet-5"
-export ANTHROPIC_DEFAULT_HAIKU_MODEL="claude-haiku-4-5"
+export ANTHROPIC_DEFAULT_OPUS_MODEL="claude-opus-5-5"
 ```
+
+Aliases point to the recommended version for the provider and update over time. To pin a specific version, use the full model name (for example `claude-opus-5-5`) or set the matching `ANTHROPIC_DEFAULT_*_MODEL` variable. Each value must be a full model name, or the equivalent identifier for the API provider.
+
+## 開始モデルの既定値（新規セッション）
+
+```bash
+export ANTHROPIC_DEFAULT_MODEL="claude-opus-5-5"
+```
+
+Requires Claude Code v2.1.236 or later. Used only when none of `--model`, `ANTHROPIC_MODEL`, a `model` value in any settings file (including the choice saved with `/model`), or an organization default model selects a model. Ignored when set to `default`, `inherit`, `opusplan`, or `haiku`.
+
+## サードパーティ提供先でのモデル固定
+
+```bash
+# Amazon Bedrock
+export ANTHROPIC_DEFAULT_OPUS_MODEL='us.anthropic.claude-opus-4-8'
+# Google Cloud's Agent Platform
+export ANTHROPIC_DEFAULT_OPUS_MODEL='claude-opus-4-8'
+# Microsoft Foundry
+export ANTHROPIC_DEFAULT_OPUS_MODEL='claude-opus-4-8'
+```
+
+Pin model versions before rolling out to users. The same pattern applies to `ANTHROPIC_DEFAULT_FABLE_MODEL`, `ANTHROPIC_DEFAULT_SONNET_MODEL`, and `ANTHROPIC_DEFAULT_HAIKU_MODEL`. Current and legacy model IDs per provider: Models overview on platform.claude.com.
 
 ## HTTP / HTTPS プロキシ
 
@@ -117,7 +139,21 @@ export NODE_EXTRA_CA_CERTS="/path/to/corp-ca.pem"
 
 Use this when hitting `unable to get local issuer certificate`.
 
+## settings の env で shell 由来の変数を空文字にして unset 扱いにする
+
+```json ~/.claude/settings.json
+{
+  "env": {
+    "CLAUDE_CODE_USE_VERTEX": ""
+  }
+}
+```
+
+A settings file can set a variable but cannot remove one. For a variable you cannot unset (such as a stale `CLAUDE_CODE_USE_VERTEX` exported by a shell profile), the empty string makes Claude Code treat it as unset for provider selection. Subprocesses still inherit the empty value.
+
 ## Notes
 
-- When a variable is set in both a settings file `env` block and a shell export, the settings file value takes precedence.
+- When a variable is set in both a settings file `env` block and a shell export, the settings file value applies in most sessions: Claude Code writes each `env` entry into the process environment, replacing the value inherited from the shell. Some sessions keep the inherited value instead, and a few variables are special-cased; see the `env` setting in the settings reference.
+- Between settings files, `env` values follow settings precedence, so a managed settings entry overrides the same variable in user or project settings. Project and local settings cannot set some variables, such as `CLAUDE_CONFIG_DIR` and the OpenTelemetry exporter variables.
+- Shell environment variables are read at startup; `env` entries in settings files are reapplied to a running session when the file changes.
 - The full variable list and precedence rules are covered by `references/settings/env-vars.md`.

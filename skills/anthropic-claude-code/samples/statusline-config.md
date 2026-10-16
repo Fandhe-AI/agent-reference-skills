@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/statusline.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/statusline.md / last verified: 2026-10-17 -->
 
 # Custom Status Line
 

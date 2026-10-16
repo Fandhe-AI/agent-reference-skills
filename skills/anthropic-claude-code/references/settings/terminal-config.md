@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/terminal-config.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/terminal-config.md / last verified: 2026-10-16 -->
 
 # Configure your terminal for Claude Code
 
@@ -6,7 +6,7 @@ Fixes for terminal-specific quirks: Shift+Enter for newlines, terminal bell/noti
 
 ## Enter multiline prompts
 
-Enter submits; Ctrl+J or `\` + Enter always inserts a newline. Shift+Enter works natively in Ghostty/Kitty/iTerm2/WezTerm/Warp/Apple Terminal/Windows Terminal; run `/terminal-setup` once for VS Code/Cursor/Devin Desktop/Alacritty/Zed; not available in gnome-terminal or JetBrains IDEs. `/terminal-setup` also sets `terminal.integrated.gpuAcceleration: "off"` and tunes `mouseWheelScrollSensitivity` in VS Code-family editors. Run it in the host terminal, not inside tmux/screen. Inside tmux, Shift+Enter also needs the tmux config below.
+Enter submits; Ctrl+J or `\` + Enter always inserts a newline. Shift+Enter works natively in Ghostty/Kitty/iTerm2/WezTerm/Warp/Apple Terminal/Windows Terminal, and in other terminals that support the kitty keyboard protocol, such as foot and Alacritty 0.16 or later (requires Claude Code v2.1.269 or later); run `/terminal-setup` once for VS Code/Cursor/Devin Desktop/Alacritty before 0.16/Zed; not available in gnome-terminal or JetBrains IDEs. `/terminal-setup` also sets `terminal.integrated.gpuAcceleration: "off"` and tunes `mouseWheelScrollSensitivity` in VS Code-family editors. Run it in the host terminal, not inside tmux/screen. Inside tmux, Shift+Enter also needs the tmux config below.
 
 ## Enable Option key shortcuts on macOS
 
@@ -39,6 +39,14 @@ iTerm2 requires enabling: Settings → Profiles → Terminal → "Notification C
   }
 }
 ```
+
+## See session status in your terminal
+
+If your terminal implements the OSC 7501 Program Status Protocol, it can show whether each interactive Claude Code session is working, waiting on you, or done. There is nothing to turn on in Claude Code. If your terminal implements the protocol and you see no status, check: Claude Code version (status reporting requires v2.1.295 or later); tmux (inside tmux, Claude Code checks tmux for support instead of your terminal, and `allow-passthrough` has no effect on that; start the session outside tmux); background sessions (they don't report status to your terminal, even while attached; agent view shows it instead); and `CLAUDE_CODE_DISABLE_TERMINAL_TITLE=1` (Claude Code then doesn't check for support or report status).
+
+## Fix Backspace deleting a whole word on Windows
+
+On Windows, Claude Code reads a Backspace that arrives as `^H` as Ctrl+Backspace, which deletes the previous word, except when `TERM_PROGRAM` is `mintty` or `TERM` is `cygwin`. On macOS and Linux it reads it as plain Backspace. If each press of Backspace deletes a whole word, set `CLAUDE_CODE_BS_AS_CTRL_BACKSPACE=0`; if Ctrl+Backspace erases only one character on macOS or Linux because your terminal sends `^H` for it, set it to `1`.
 
 ## Configure tmux
 
@@ -73,6 +81,8 @@ Each custom theme is a JSON file in `~/.claude/themes/`; filename (minus `.json`
 | `overrides` | object | Color-token → value map (unset tokens fall through to `base`) |
 
 Color values: `#rrggbb`, `#rgb`, `rgb(r,g,b)`, `ansi256(n)`, `ansi:<name>` (16 standard ANSI names). Unknown tokens/invalid values are ignored (won't break rendering). Files in `~/.claude/themes/` hot-reload (restart once if the folder didn't exist at startup).
+
+The `effortUltra` token is the `ultracode` tag on the input box border while ultracode is on; overriding it takes effect on Claude Code v2.1.239 or later.
 
 Token groups: text/accent (`claude`, `text`, `inverseText`, `inactive`, `subtle`, `suggestion`, `permission`, `remember`), status (`success`, `error`, `warning`, `merged`), input/mode (`promptBorder`, `planMode`, `autoAccept`, `bashBorder`, `ide`, `fastMode`), diff (`diffAdded`, `diffRemoved`, `diffAddedDimmed`, `diffRemovedDimmed`, `diffAddedWord`, `diffRemovedWord`), fullscreen-only (`userMessageBackground`, `userMessageBackgroundHover`, `bashMessageBackgroundColor`, `memoryBackgroundColor`, `selectionBg`), usage/labels (`rate_limit_fill`, `rate_limit_empty`, `briefLabelYou`, `briefLabelClaude`), plus shimmer pairs (e.g. `claude`/`claudeShimmer`), 8 named subagent colors (`<color>_FOR_SUBAGENTS_ONLY`), and 7 `rainbow_<color>` tokens for the `ultrathink` gradient.
 

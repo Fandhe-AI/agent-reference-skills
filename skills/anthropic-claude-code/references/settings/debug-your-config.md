@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/debug-your-config.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/debug-your-config.md / last verified: 2026-10-16 -->
 
 # Debug your configuration
 
@@ -41,7 +41,7 @@ Precedence: **Managed** first (apart from a few exceptions) > closer scope wins 
 
 - `matcher` must be a single string using `|` (or `,`, v2.1.191+) to match multiple tools, e.g. `"Edit|Write"` — an array value is a schema error that rejects the whole settings file.
 - Misspelled tool name → matches nothing, silently.
-- Edits take effect after a brief file-stability delay; re-run `/hooks` if it still shows the old definition.
+- Edits to `settings.json` take effect in the running session after a brief file-stability delay, even if you create the file or the project's `.claude/` folder itself after the session started; no restart needed. Before v2.1.257, Claude Code didn't detect edits in a `.claude/` folder created after the session started. If `/hooks` still shows the old definition a few seconds after you save, run `/hooks` again to refresh the view.
 
 If `/hooks` shows the hook but it still doesn't fire, run `claude --debug` and trigger the tool call to see matcher evaluation and exit code/output live.
 
@@ -82,8 +82,5 @@ Managed settings still apply (system path outside `~/.claude`). Linux/Windows pr
 ## Related
 
 - [claude-directory.md](./claude-directory.md): every config file location and what reads it
-- [settings.md](./settings.md): precedence order and the full key list
-
-## Notes
-
-This page was retrieved in full (no truncation observed).
+- [settings.md](./settings.md): which file to use and which value Claude Code uses (precedence order)
+- [settings-reference.md](./settings-reference.md): the full key list

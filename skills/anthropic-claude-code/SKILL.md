@@ -2,9 +2,10 @@
 name: anthropic-claude-code
 description: >
   Claude Code (code.claude.com) の CLI 本体リファレンス。
-  CLAUDE.md memory, settings.json, env-vars, model config, keybindings, statusline,
-  terminal config, cli-reference (-p / --continue / --resume), sessions, checkpointing,
-  worktrees, remote control, channels, deep links, troubleshooting。
+  CLAUDE.md memory, settings.json (All settings, settings precedence, managed-settings.json),
+  env-vars, model config, keybindings, statusline, terminal config,
+  cli-reference (-p / --continue / --resume), sessions, checkpointing, worktrees,
+  remote control, channels, deep links, troubleshooting。
 user-invocable: false
 ---
 
@@ -44,6 +45,8 @@ skills/anthropic-claude-code/
     settings/
       README.md
       settings.md
+      settings-reference.md
+      settings-example.md
       env-vars.md
       model-config.md
       keybindings.md
@@ -74,6 +77,8 @@ skills/anthropic-claude-code/
     memory-claude-md.md
     cli-usage.md
     settings-json.md
+    settings-team.md
+    settings-managed.md
     statusline-config.md
     keybindings-terminal.md
   scripts/
@@ -96,8 +101,8 @@ skills/anthropic-claude-code/
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | Claude Code の概要・インストール・quickstart・agentic loop の仕組み・ベストプラクティス・典型ワークフロー・機能一覧・用語集・CLAUDE.md memory・`/goal`・context window・prompt caching を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
-| `settings.json` / 環境変数 / モデル設定・エイリアス・keybindings・statusline・ターミナル設定・`cli-reference`（コマンド・フラグ）・`.claude` ディレクトリ構成・auto mode・fast mode・エラーメッセージを知りたい | settings | [references/settings/README.md](references/settings/README.md) |
+| `settings.json`（全キー索引 All settings・スコープと優先順位・実例ファイル）/ 環境変数 / モデル設定・エイリアス・keybindings・statusline・ターミナル設定・`cli-reference`（コマンド・フラグ）・`.claude` ディレクトリ構成・auto mode・fast mode・エラーメッセージを知りたい | settings | [references/settings/README.md](references/settings/README.md) |
 | セッション管理（resume / branch）・remote control・channels（MCP イベントプッシュ）・deep links・worktree 並行実行・checkpointing（`/rewind`）を扱いたい | sessions | [references/sessions/README.md](references/sessions/README.md) |
 | インストール・ログイン失敗、CPU/メモリ高騰・ハング・auto-compact thrashing などランタイム問題を診断したい | troubleshooting | [references/troubleshooting/README.md](references/troubleshooting/README.md) |
-| 典型的な使い方を知りたい（common workflows, CLAUDE.md `@path` インポート, CLI 起動パターン, settings.json 最小構成, statusline スクリプト, keybindings/tmux 設定） | samples | [samples/README.md](samples/README.md) |
+| 典型的な使い方を知りたい（common workflows, CLAUDE.md `@path` インポート, CLI 起動パターン, settings.json 最小構成・チーム共有・組織 managed-settings.json, statusline スクリプト, keybindings/tmux 設定） | samples | [samples/README.md](samples/README.md) |
 | インストール・バージョン確認・アップデート・アンインストール・`claude` CLI コマンド例・認証/モデル/プロキシ環境変数設定を知りたい | scripts | [scripts/README.md](scripts/README.md) |

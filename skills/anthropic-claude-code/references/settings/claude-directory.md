@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/claude-directory.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/claude-directory.md / last verified: 2026-10-16 -->
 
 # Explore the .claude directory
 
@@ -115,7 +115,8 @@ Beyond authored config, `~/.claude` holds data Claude Code writes during session
 | `file-history/<session>/` | Pre-edit snapshots for checkpoint restore (100 most recent checkpoints) |
 | `plans/` | Plan-mode plan files |
 | `debug/` | Per-session debug logs (`--debug`/`/debug` only) |
-| `paste-cache/`, `image-cache/` | Large pastes and attached images |
+| `paste-cache/` | Large pastes |
+| `image-cache/<session>/` | Attached images saved by Claude Code v2.1.274 and earlier. Later versions save pasted and attached images outside `~/.claude`, in an `images/` directory for each session under the temp directory that `CLAUDE_CODE_TMPDIR` controls. The sweep removes other sessions' leftover directories here, whatever their age |
 | `session-env/` | Per-session environment metadata |
 | `tasks/` | Per-session task lists |
 | `shell-snapshots/` | Aliases/functions/shell options applied to each Bash command; removed on clean exit |
@@ -123,7 +124,15 @@ Beyond authored config, `~/.claude` holds data Claude Code writes during session
 | `feedback-bundles/` | Redacted transcript archives from `/feedback` |
 | `todos/`, `statsig/`, `logs/` | Legacy, no longer written |
 
-`sessions/` (one file per running session, for crash/concurrency detection) is not part of the age-based sweep — removed on session exit instead.
+`skills/.trash/` and `plugins/.trash/` hold skills and plugins that the claude.ai sync removed, until the sweep deletes them. `plugins/installed_plugins.set-aside.<date>.<hash>.json` and `plugins/installed_plugins.unreadable.<date>.<hash>.kept` are dated copies Claude Code makes before rewriting `installed_plugins.json` (install records it dropped, and the contents of a file it couldn't read); nothing reads them back.
+
+Some data follows its own retention rule rather than the age-based sweep:
+
+- `sessions/` (one file per running session, for crash/concurrency detection) is removed on session exit instead; crash leftovers are cleared on the next launch.
+- Auto memory: the sweep doesn't delete the memory files in a project's `projects/<project>/memory/` directory; Claude Code removes that directory only if it has been empty for the whole retention period. Before v2.1.228, the sweep treated folders inside the memory directory as session data and could delete old files beneath it.
+- Claude Desktop and Cowork transcripts: Claude Code keeps the transcript of a session you started or most recently continued in Claude Desktop or Cowork at any age. To give them an age limit, set `desktopSessionCleanupPeriodDays` (requires v2.1.248 or later; earlier versions delete them after `cleanupPeriodDays`).
+
+The age-based sweep is skipped in bare mode (`claude -p` with `--bare`) and in a few other cases (see the official page).
 
 ### Kept until you delete them
 
@@ -137,7 +146,7 @@ Beyond authored config, `~/.claude` holds data Claude Code writes during session
 
 ### Clear local data
 
-`claude project purge [path]` deletes transcripts/memory under `projects/`, per-session `tasks/`/`debug/`/`file-history/`, matching `history.jsonl` lines, and the project's `~/.claude.json` entry. `--dry-run` previews the plan; `--yes` skips confirmation; `--all` purges every project (deletes `history.jsonl` outright); `-i` steps through items one at a time. Never touches `shell-snapshots/` or `backups/` (not project-scoped). Do not manually delete `~/.claude.json`, `~/.claude/settings.json`, or `~/.claude/plugins/` — those hold auth, preferences, and installed plugins.
+`claude purge [path]` (before v2.1.288, the command was `claude project purge`) deletes transcripts/memory under `projects/`, per-session `tasks/`/`debug/`/`file-history/`, matching `history.jsonl` lines, and the project's `~/.claude.json` entry. `--dry-run` previews the plan; `--yes` skips confirmation; `--all` purges every project (deletes `history.jsonl` outright); `-i` steps through items one at a time. Never touches `shell-snapshots/` or `backups/` (not project-scoped). Images pasted or attached in the project's sessions and each session's scratchpad live under Claude Code's temp directory rather than `~/.claude`, so the purge doesn't remove them (the retention sweep still deletes the images once older than `cleanupPeriodDays`; a purged session's scratchpad stays until you delete it or your operating system clears the temp directory). If anyone ran `/heapdump` on the machine, delete the `.heapsnapshot` files it wrote too: a heap snapshot contains the full conversation and any credentials the process held, and neither the sweep nor the purge touches it. Do not manually delete `~/.claude.json`, `~/.claude/settings.json`, or `~/.claude/plugins/` — those hold auth, preferences, and installed plugins.
 
 ## Notes
 
@@ -145,6 +154,7 @@ This page's content is authored as an interactive JS explorer component; the tex
 
 ## Related
 
-- [settings.md](./settings.md): the full `settings.json` key reference and scope precedence
+- [settings.md](./settings.md): settings files and scope precedence
+- [settings-reference.md](./settings-reference.md): the full `settings.json` key reference
 - [debug-your-config.md](./debug-your-config.md): inspection commands (`/context`, `/doctor`, `/hooks`, `/mcp`, `/status`)
 - [keybindings.md](./keybindings.md) and [terminal-config.md](./terminal-config.md): `keybindings.json` and `themes/*.json` detail
