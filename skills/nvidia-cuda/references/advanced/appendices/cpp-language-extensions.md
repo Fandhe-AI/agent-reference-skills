@@ -49,6 +49,7 @@ int main() {
 | `__all_sync(mask, predicate)` / `__any_sync(mask, predicate)` / `__ballot_sync(mask, predicate)` | Warp vote functions restricted to threads in `mask`. |
 | `__shfl_sync` / `__shfl_up_sync` / `__shfl_down_sync` / `__shfl_xor_sync` | Warp shuffle functions exchanging a value between lanes named in `mask`. |
 | `atomicAdd(T*, T)` / `atomicCAS(T*, T, T)` (legacy atomics) | Classic per-address atomic read-modify-write operations. |
+| `__builtin_constant_p(expression)` | `int __builtin_constant_p(expression)` (CPG 13.4): returns 1 if the compiler can determine that `expression` is a compile-time constant, 0 otherwise. The expression is not evaluated, so its side effects do not occur. SIMT device code only; not supported in Tile code. |
 | `__nv_atomic_fetch_add` / `__nv_atomic_compare_exchange_n` (CUDA 12.8+ built-in atomics) | Scoped, memory-ordered atomics taking explicit `order` (`__NV_ATOMIC_RELAXED`/`_ACQUIRE`/`_RELEASE`/`_SEQ_CST`) and `scope` (`__NV_THREAD_SCOPE_BLOCK`/`_DEVICE`/`_SYSTEM`) parameters. |
 
 ## Notes
@@ -57,6 +58,7 @@ int main() {
 - `__managed__` variables have restrictions: their address is not a constant expression, they cannot have reference type, cannot be used during CUDA runtime init/destruction, and cannot be an unparenthesized argument to `decltype()`.
 - All `_sync` warp intrinsics (`__shfl_sync`, `__ballot_sync`, `__all_sync`, etc.) take an explicit thread mask and require participating threads to be convergent — the older non-`_sync` warp intrinsics are legacy and assume full-warp convergence implicitly.
 - Built-in atomics (`__nv_atomic_*`, CUDA 12.8+) generalize legacy atomics (`atomicAdd`, `atomicCAS`) with explicit memory order and thread scope, mirroring `cuda::atomic`'s semantics at the intrinsic level.
+- Built-in functions (CPG 13.4): always available in SIMT device code, but not supported in Tile code (the 13.3 text said "always available in the device code").
 - This page is large (~560 KB) on the official site; the summary above covers execution/memory qualifiers, built-in variables, launch bounds, warp intrinsics, and atomics — consult the official page directly for the full list of vector types, tile (`__tile__`) specifiers, and every warp reduce/match function.
 
 ## Related

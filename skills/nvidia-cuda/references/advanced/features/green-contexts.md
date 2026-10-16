@@ -33,6 +33,7 @@ cudaExecutionCtxStreamCreate(&strm1, my_green_ctx1, cudaStreamDefault, 0);
 | --- | --- |
 | `cudaDeviceGetDevResource` | Retrieves a device's available resources (e.g. `cudaDevResourceTypeSm` for SMs) as a `cudaDevResource`. |
 | `cudaDevSmResourceSplit` | Splits an SM resource into `nbGroups` groups per-group `smCount`/`coscheduledSmCount` requests; a `nullptr` result performs a dry-run to discover the achievable split. |
+| `cudaDevSmResourceGroupParams.flags` / `.localityDomainId` | `flags` supports `0` (default), `cudaDevSmResourceGroupBackfill`, and `cudaDevSmResourceGroupLocalityDomainId` (CPG 13.4). With the locality-domain flag, set `localityDomainId` to a valid locality domain ID for the resource and `cudaDevSmResourceSplit` selects SMs from that domain. |
 | `cudaDevSmResourceSplitByCount` | Simplified split by SM count only. |
 | `cudaDevResourceGenerateDesc` | Packages one or more split resource groups into a `cudaDevResourceDesc_t` for context creation. |
 | `cudaGreenCtxCreate` | Creates a `cudaExecutionContext_t` (green context) restricted to the SMs described by a resource descriptor. |
@@ -43,6 +44,8 @@ cudaExecutionCtxStreamCreate(&strm1, my_green_ctx1, cudaStreamDefault, 0);
 ## Notes
 
 - SM splits are constrained by hardware co-scheduling granularity: requested counts are rounded to platform-specific multiples (e.g. multiples of 8, or of 2 with `cudaDevSmResourceGroupBackfill`/ignore-coscheduling flags), and the actual assigned SM count can differ from the request — see `cudaDevSmResourceSplit`'s output.
+- Locality domain targeting (CPG 13.4): if `cudaDevSmResourceGroupBackfill` is also set, CUDA may fill the group with SMs from outside the requested locality domain after using the target domain first.
+- `coscheduledSmCount` rule (CPG 13.4 wording): a resulting group's SM count must be a multiple of `groupParams[i].coscheduledSmCount` when `cudaDevSmResourceGroupBackfill` is not set, or greater than or equal to it when backfill is set. A failed split with a non-null `result` may report generic errors such as `cudaErrorInvalidResourceConfiguration`; use `CUDA_LOG_FILE` for details during development.
 - Work is launched onto a green context the same way as any other context: create a stream bound to it via `cudaExecutionCtxStreamCreate`, then launch kernels on that stream.
 - Green contexts are a spatial-partitioning tool for latency isolation; they do not change a kernel's own parallelism, only which SMs it is allowed to run on.
 
@@ -50,3 +53,4 @@ cudaExecutionCtxStreamCreate(&strm1, my_green_ctx1, cudaStreamDefault, 0);
 
 - [A Tour of CUDA Features](../core/feature-survey.md)
 - [The CUDA Driver API](../core/driver-api.md)
+- [Locality Domains](./locality-domains.md)

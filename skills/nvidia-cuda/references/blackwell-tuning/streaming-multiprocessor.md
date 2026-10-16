@@ -39,7 +39,7 @@ cudaFuncSetAttribute(
 
 - Larger cluster sizes can reduce the maximum number of active thread blocks resident across the whole GPU, since more shared memory and scheduling resources are reserved per cluster.
 - Non-portable cluster sizes (9–16) are a B200-specific capability; code relying on them will not run unmodified on GPUs that only support the portable maximum of 8.
-- Document version: NVIDIA Blackwell Tuning Guide, revision 1.0 (`https://docs.nvidia.com/cuda/blackwell-tuning-guide/index.html`, CUDA docs build v13.3).
+- Document version: NVIDIA Blackwell Tuning Guide, revision 1.0 (`https://docs.nvidia.com/cuda/blackwell-tuning-guide/index.html`, CUDA docs build v13.4; archived copy `https://docs.nvidia.com/cuda/archive/13.4.2/blackwell-tuning-guide/index.html`).
 
 ## Related
 

@@ -27,7 +27,7 @@ if (canAccess) {
 ## Notes
 
 - NVLink transport is transparent to CUDA: once peer access is enabled, memory transfers between peer GPUs use NVLink automatically when available, without additional API calls beyond the standard peer-access APIs.
-- Document version: NVIDIA Blackwell Tuning Guide, revision 1.0 (`https://docs.nvidia.com/cuda/blackwell-tuning-guide/index.html`, CUDA docs build v13.3).
+- Document version: NVIDIA Blackwell Tuning Guide, revision 1.0 (`https://docs.nvidia.com/cuda/blackwell-tuning-guide/index.html`, CUDA docs build v13.4; archived copy `https://docs.nvidia.com/cuda/archive/13.4.2/blackwell-tuning-guide/index.html`).
 
 ## Related
 

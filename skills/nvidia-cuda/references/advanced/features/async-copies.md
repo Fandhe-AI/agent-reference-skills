@@ -33,6 +33,7 @@ if (tid < 8) {
 - LDGSTS (CC 8.0+) covers global→shared::cta only; TMA (CC 9.0+) additionally supports shared::cluster→shared::cta and bulk global↔global transfers, and is the only mechanism for multi-dimensional tensor tiles.
 - TMA tensor map swizzle patterns (`CU_TENSOR_MAP_SWIZZLE_128B` / `_64B` / `_32B`) trade shared-memory bank-conflict avoidance against alignment constraints — both shared and global memory alignment must satisfy the pattern's requirement (128 bytes for all three listed patterns).
 - A `CUtensorMap` can be created once on the host via `cuTensorMapEncodeTiled` or built/modified on the device via `tensormap_replace_*`, but any device-side modification must be followed by `tensormap_cp_fenceproxy`/`fence_proxy_tensormap_generic` before the modified map is used for a copy.
+- TMA multicast performance (CPG 13.4): a bulk-asynchronous tensor operation within a cluster can be multicast, transferring data from global memory to the shared memory of multiple blocks in the cluster. The multicast feature is optimized for global memory accesses on the current device (not for accesses over NVLink from peer devices) and for certain data-center GPU target architectures documented in the PTX multicast Target ISA notes. It may have significantly reduced performance on other targets, so use it only for access to global memory on the local GPU and only on GPUs with the recommended compute capabilities from those notes. (The 13.3 text singled out `sm_90a`.)
 
 ## Related
 

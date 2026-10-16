@@ -34,8 +34,11 @@ void test_managed() {
 - `cudaStreamAttachMemAsync` with `cudaMemAttachHost` keeps a managed allocation host-visible until explicitly reattached to a stream, useful for multithreaded host programs that must avoid a GPU kernel touching data still being written by the CPU.
 - Windows, WSL, and Tegra have distinct Unified Memory support characteristics from Linux with full hardware coherency support — consult the official page for the current per-platform capability matrix before relying on demand paging behavior.
 - GPU memory oversubscription (allocating more managed memory than physical GPU memory) is supported on devices with full Unified Memory support, relying on migration/eviction rather than failing the allocation.
+- Locality Domains and Unified Memory (CPG 13.4): localizing managed memory allocations is not supported. Locality domains are not a unified memory migration destination; `cudaMemAllocationTypeManaged` cannot be combined with a localized allocation. Applications that require locality domain placement should use a localized pinned-memory pool or a localized VMM allocation instead.
 
 ## Related
+
+- [Locality Domains](./locality-domains.md)
 
 - [Stream-Ordered Memory Allocator](./stream-ordered-memory-allocation.md)
 - [Extended GPU Memory](./extended-gpu-memory.md)
