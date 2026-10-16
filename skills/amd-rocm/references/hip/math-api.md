@@ -23,9 +23,12 @@ __global__ void kernel(float* out, float x) {
 ## Notes
 
 - ULP (units in the last place) is the absolute difference between a HIP math function's result and the corresponding standard-library function's result; check the official per-function ULP table before relying on an intrinsic in numerically sensitive code.
-- Documented against HIP 7.14.x (ROCm 7.x), `rocm.docs.amd.com/projects/HIP/en/latest/` as of 2026-07.
+- Documented against HIP 7.16.0 (ROCm Core SDK 10.1.0), `rocm.docs.amd.com/projects/HIP/en/latest/` as of 2026-10.
 
 ## Related
+
+- [complex-math-api.md](./complex-math-api.md)
+- [low-precision-types.md](./low-precision-types.md)
 
 - [cpp-language-extensions.md](./cpp-language-extensions.md)
 - [kernel-language-cpp-support.md](./kernel-language-cpp-support.md)

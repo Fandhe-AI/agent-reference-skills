@@ -13,11 +13,11 @@ rocminfo | grep -i gfx
 
 | Generation | Document title | URL |
 | --- | --- | --- |
-| RDNA4 | AMD RDNA 4 ISA | https://www.amd.com/content/dam/amd/en/documents/radeon-tech-docs/instruction-set-architectures/rdna4-instruction-set-architecture.pdf |
-| RDNA3.5 | AMD RDNA 3.5 ISA | https://www.amd.com/content/dam/amd/en/documents/radeon-tech-docs/instruction-set-architectures/rdna35_instruction_set_architecture.pdf |
-| RDNA3 | AMD RDNA 3 ISA | https://www.amd.com/system/files/TechDocs/rdna3-shader-instruction-set-architecture-feb-2023_0.pdf |
-| RDNA2 | AMD RDNA 2 ISA | https://www.amd.com/system/files/TechDocs/rdna2-shader-instruction-set-architecture.pdf |
-| RDNA (1) | AMD RDNA ISA | https://www.amd.com/system/files/TechDocs/rdna-shader-instruction-set-architecture.pdf |
+| RDNA4 | AMD RDNA 4 ISA | https://gpuopen.com/download/rdna4-instruction-set-architecture.pdf |
+| RDNA3.5 | AMD RDNA 3.5 ISA | https://gpuopen.com/download/rdna35_instruction_set_architecture.pdf |
+| RDNA3 | AMD RDNA 3 ISA | https://gpuopen.com/download/rdna3-shader-instruction-set-architecture-feb-2023.pdf |
+| RDNA2 | AMD RDNA 2 ISA | https://gpuopen.com/download/rdna2-shader-instruction-set-architecture.pdf |
+| RDNA (1) | AMD RDNA ISA | https://gpuopen.com/download/RDNA_Shader_ISA_25September2020.pdf |
 | CDNA4 | AMD CDNA 4 (Instinct MI350 Series) ISA reference | https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/instruction-set-architectures/amd-instinct-cdna4-instruction-set-architecture.pdf |
 | CDNA3 | AMD CDNA 3 (Instinct MI300 Series) ISA reference | https://www.amd.com/content/dam/amd/en/documents/instinct-tech-docs/instruction-set-architectures/amd-instinct-mi300-cdna3-instruction-set-architecture.pdf |
 | CDNA2 | AMD CDNA 2 (Instinct MI200 Series) ISA reference | https://www.amd.com/system/files/TechDocs/instinct-mi200-cdna2-instruction-set-architecture.pdf |
@@ -27,6 +27,8 @@ rocminfo | grep -i gfx
 
 ## Notes
 
+- As of ROCm Core SDK 10.1.0 the official RDNA ISA reference links point to `gpuopen.com/download/`. Previous locations (no longer linked from the 10.1.0 docs): `www.amd.com/content/dam/amd/en/documents/radeon-tech-docs/instruction-set-architectures/rdna4-instruction-set-architecture.pdf` and `.../rdna35_instruction_set_architecture.pdf` (RDNA4 / RDNA3.5), `www.amd.com/system/files/TechDocs/rdna3-shader-instruction-set-architecture-feb-2023_0.pdf`, `.../rdna2-shader-instruction-set-architecture.pdf`, `.../rdna-shader-instruction-set-architecture.pdf` (RDNA3 / RDNA2 / RDNA 1)
+- The 10.1.0 docs add official "AMD RDNA architecture" (`reference/gpu-arch/rdna`) and "AMD GCN and Vega architectures" (`reference/gpu-arch/gcn-vega`) pages; they list ISA references only and state that detailed microarchitecture documentation is coming soon. The GCN / Vega ISA links (Vega 7nm, Vega MI25, GCN 3) remain on `www.amd.com/system/files/TechDocs/`
 - Source index: `gpuopen.com/amd-gpu-architecture-programming-documentation/` and `rocm.docs.amd.com/en/latest/conceptual/gpu-arch.html`. Whitepapers (higher-level architecture overviews, distinct from the instruction-level ISA PDFs) are listed on the same source pages but are likewise PDF-only and not reproduced here.
 - These PDFs could not be fetched by automated tooling during authoring (connection timeouts on `www.amd.com`); treat the URLs above as the canonical location to open manually, not as content already summarized in this skill.
 - Do not substitute model knowledge of instruction encodings for this page's content — if instruction-level detail is needed, open the PDF or use [machine-readable-isa.md](./machine-readable-isa.md).

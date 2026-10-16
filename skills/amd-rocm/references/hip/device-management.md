@@ -28,14 +28,19 @@ hipGetDeviceProperties(&prop, 0);
 | `hipDeviceSetCacheConfig` / `hipDeviceGetCacheConfig` | Cache configuration hints (not supported on AMD hardware) |
 | `hipDeviceGetLimit` / `hipDeviceSetLimit` | Query/set resource limits such as stack size and heap allocation |
 | `hipExtGetLinkTypeAndHopCount` | Queries link type and hop count between two devices |
+| `hipDeviceGetLuid(char* luid, unsigned int* deviceNodeMask, hipDevice_t device)` | Returns an 8-byte locally unique identifier (LUID) and device node mask that allow the device to be matched with graphics APIs; the LUID is only valid on Windows, other platforms return `hipErrorNotSupported` and leave the outputs unmodified |
+| `hipInitDevice(int device, unsigned int deviceFlags, unsigned int flags)` | Initializes runtime state for the device without making it current for the calling thread (unlike `hipSetDevice`); `flags` must be 0 or `hipInitDeviceFlagsAreValid`, and `deviceFlags` (same values as `hipSetDeviceFlags`) is applied only with `hipInitDeviceFlagsAreValid` |
 
 ## Notes
+
+- `hipDeviceGetLuid` and `hipInitDevice` are new in HIP 7.16.0 (ROCm Core SDK 10.1.0); the device attribute `hipDeviceAttributeHostAllocDmaBufSupported` (device supports host-allocated DMABuf buffer sharing) is now supported
 
 - This is the AMD HIP API (`hip*` prefix), not the CUDA runtime API (`cuda*` prefix). HIP and CUDA are source-portable but not source-identical; see `porting-cuda-to-hip.md` and `hipify.md`. CUDA equivalents are covered by the separate `nvidia-cuda` skill.
 - IPC functions for sharing memory handles/events across processes are also part of this module; see `interop.md`.
 
 ## Related
 
+- [device-properties-cdna.md](./device-properties-cdna.md)
 - [initialization-version.md](./initialization-version.md)
 - [multi-device-peer-to-peer.md](./multi-device-peer-to-peer.md)
 - [stream-ordered-allocator.md](./stream-ordered-allocator.md)

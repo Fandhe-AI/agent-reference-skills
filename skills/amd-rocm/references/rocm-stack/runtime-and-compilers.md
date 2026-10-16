@@ -24,7 +24,10 @@ hipcc mykernel.hip.cpp -o mykernel
 
 ## Notes
 
-- ROCm 7.14.0
+- ROCm Core SDK 10.1.0 (HIP 7.16.0, LLVM 24.0.0, HIPIFY 10.1.0, ROCr Runtime 1.21.0, SPIRV-LLVM-Translator 24.0.0)
+- Package mapping: `amdrocm-llvm` (amdclang++, hipcc, flang) and `amdrocm-runtime` (HIP, ROCR, runtime compilation / comgr); `amdrocm-hipify` (HIPIFY)
+- ROCr Runtime virtual memory management APIs (`hsa_amd_vmem_handle_create`, `hsa_amd_vmem_map`, `hsa_amd_vmem_set_access`) now support CPU memory pools in addition to GPU agents, including inter-process sharing of host-pool and device-pool handles
+- WSL2 support (Technical preview): TheRock artifacts now ship `librocdxg`; the ROCr runtime auto-detects WSL2 via `/dev/dxg`, and `HSA_ENABLE_DXG_DETECTION=0` disables auto-detection (default 1). Targets Ubuntu `.deb` packages and Python wheels; profiling, debugging, and KFD-dependent tooling are not supported
 - HIP is the layer application/library code is written against; ROCr Runtime and LLVM sit underneath it and are not typically called directly by application authors
 - HIPIFY is the standard entry point for porting existing CUDA codebases; the CUDA-side language it translates from belongs to the `nvidia-cuda` skill, not this one
 

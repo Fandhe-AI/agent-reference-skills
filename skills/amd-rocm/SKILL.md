@@ -2,9 +2,10 @@
 name: amd-rocm
 description: >
   AMD ROCm / HIP GPU コンピューティングリファレンス。
-  hipMalloc, hipLaunchKernelGGL, HIP Graph, HIPRTC, hipify,
-  rocBLAS, MIOpen, RCCL, rocprofv3, amd-smi, rocminfo,
-  CDNA1-4 / RDNA1-4, MI300 / MI350, gfx942, Matrix Core, wave32/64。
+  hipMalloc, hipLaunchKernelGGL, HIP Graph, hipGreenCtx, HIPRTC, hipify,
+  rocBLAS, MIOpen, RCCL, hipThreads, libhipcxx, rocprofv3, amd-smi, rocminfo,
+  TheRock / Core SDK 10, CDNA1-4 / RDNA1-4, MI300 / MI350 / MI350P,
+  gfx942, Matrix Core, wave32/64。
 user-invocable: false
 ---
 
@@ -13,6 +14,8 @@ user-invocable: false
 AMD ROCm — Instinct/Radeon GPU 上で汎用並列計算を行うためのソフトウェアスタック。
 HIP プログラミングモデル・ランタイム API によるカーネル記述、rocBLAS/MIOpen/RCCL 等のライブラリ、
 CDNA/RDNA アーキテクチャ向けチューニングをカバーする。
+
+対象: ROCm Core SDK 10.1.0（TheRock, 2026-10-05）/ HIP 7.16.0（baseline 7.14.0 からの更新）。
 
 ## ディレクトリ構成
 
@@ -38,6 +41,8 @@ skills/amd-rocm/
       ai-ecosystem.md
       gpu-systems-infra.md
       toolkits.md
+      threading-libraries.md
+      libhipcxx.md
     hip/
       README.md
       programming-model.md
@@ -76,6 +81,10 @@ skills/amd-rocm/
       env-variables.md
       deprecated-apis.md
       hardware-features.md
+      execution-context.md
+      complex-math-api.md
+      low-precision-types.md
+      device-properties-cdna.md
     gpu-arch/
       README.md
       gpu-architecture-overview.md
@@ -142,10 +151,11 @@ HIP は CUDA API と 1:1 に近い命名を持つため（`hipMalloc` ↔ `cudaM
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | ROCm スタック全体像・Core SDK と Extras の違い・TheRock ビルドシステムを知りたい | rocm-stack | [references/rocm-stack/README.md](references/rocm-stack/README.md) |
-| rocBLAS/MIOpen/RCCL 等の数値計算・通信ライブラリ、プロファイリング/監視ツール（rocprofv3, amd-smi）を調べたい | rocm-stack | [references/rocm-stack/README.md](references/rocm-stack/README.md) |
-| Linux/Windows へのインストール手順・PyTorch/TensorFlow/JAX 導入・GPU/OS 互換性を知りたい | rocm-stack | [references/rocm-stack/README.md](references/rocm-stack/README.md) |
+| rocBLAS/MIOpen/RCCL 等の数値計算・通信ライブラリ、hipThreads（GPU threading）・libhipcxx、メディア/ビジョン（RPP）、プロファイリング/監視ツール（rocprofv3, amd-smi）を調べたい | rocm-stack | [references/rocm-stack/README.md](references/rocm-stack/README.md) |
+| Linux/Windows へのインストール手順（TheRock amdrocm パッケージ、pip / tarball / runfile）・PyTorch/JAX 導入（TensorFlow 2.19.1 は削除）・GPU/OS 互換性を知りたい | rocm-stack | [references/rocm-stack/README.md](references/rocm-stack/README.md) |
 | HIP プログラミングモデル・カーネル記述・C++ 言語拡張・HIPRTC ランタイムコンパイルを調べたい | hip | [references/hip/README.md](references/hip/README.md) |
 | HIP ランタイム API（デバイス/ストリーム/イベント/メモリ管理、HIP Graph、Cooperative Groups）を調べたい | hip | [references/hip/README.md](references/hip/README.md) |
+| HIP 実行コンテキスト（hipGreenCtxCreate, CU パーティショニング）・複素数数学 API・低精度 fp8/fp6/fp4 型・CDNA デバイストポロジ（XCD/XCC）を調べたい | hip | [references/hip/README.md](references/hip/README.md) |
 | CUDA から HIP への移植・hipify によるコード変換・CUDA↔HIP API 対応表を知りたい | hip | [references/hip/README.md](references/hip/README.md) |
 | CDNA/RDNA アーキテクチャ設計・MI100/MI250/MI300 マイクロアーキテクチャ・ISA/性能カウンタを調べたい | gpu-arch | [references/gpu-arch/README.md](references/gpu-arch/README.md) |
 | 典型的な使い方を知りたい（vector add, HIP Graph, rocBLAS GEMM, hipify 変換等） | samples | [samples/README.md](samples/README.md) |

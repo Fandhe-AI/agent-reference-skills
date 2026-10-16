@@ -35,7 +35,7 @@ hipGraphLaunch(exec, stream);
 
 - This is the AMD HIP API (`hip*` prefix), not the CUDA runtime API (`cuda*` prefix). HIP and CUDA are source-portable but not source-identical; see `porting-cuda-to-hip.md` and `hipify.md`. CUDA equivalents are covered by the separate `nvidia-cuda` skill.
 - The `dependencyData` parameter of `hipStreamBeginCaptureToGraph` currently must be `nullptr`.
-- Documented against HIP 7.14.x (ROCm 7.x), `rocm.docs.amd.com/projects/HIP/en/latest/` as of 2026-07.
+- Documented against HIP 7.16.0 (ROCm Core SDK 10.1.0), `rocm.docs.amd.com/projects/HIP/en/latest/` as of 2026-10.
 
 ## Related
 

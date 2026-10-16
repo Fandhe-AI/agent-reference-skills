@@ -23,8 +23,11 @@ hipFreeAsync(ptr, stream);
 | `hipMemPoolSetAttribute(...)` / `hipMemPoolGetAttribute(...)` | Sets/queries pool attributes such as release threshold and reuse policy |
 | `hipMemPoolExportToShareableHandle(...)` / `hipMemPoolImportFromShareableHandle(...)` | Shares a memory pool across processes (IPC) |
 | `hipMemPoolExportPointer(...)` / `hipMemPoolImportPointer(...)` | Shares a single pool allocation across processes |
+| `hipMemGetDefaultMemPool(hipMemPool_t* memPool, hipMemLocation* location, hipMemAllocationType type)` | Returns the default memory pool for a given location and allocation type; currently only `hipMemLocationTypeDevice` is supported for `location`, and only `hipMemAllocationTypePinned` and `hipMemAllocationTypeManaged` for `type`. Added in ROCm 10.0.0 for CUDA parity |
 
 ## Notes
+
+- IPC memory pools: use a device pointer to share a specific allocation, or a shareable handle when the importing process needs to allocate from the shared pool independently. `hipMemPoolExportPointer()` produces a serializable `hipMemPoolPtrExportData` struct that can be written to any IPC channel (for example a named pipe). The shareable handle is a POSIX file descriptor, which is process-local: transfer it with `SCM_RIGHTS` over a Unix domain socket rather than writing its integer value to a pipe
 
 - This is the AMD HIP API (`hip*` prefix), not the CUDA runtime API (`cuda*` prefix). HIP and CUDA are source-portable but not source-identical; see `porting-cuda-to-hip.md` and `hipify.md`. CUDA equivalents are covered by the separate `nvidia-cuda` skill.
 - This API is implemented on Linux and under development on Windows; all functions carry Beta status.

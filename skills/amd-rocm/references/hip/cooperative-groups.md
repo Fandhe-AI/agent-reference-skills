@@ -33,6 +33,8 @@ __global__ void kernel() {
 | `thread_rank(g)` | Returns the calling thread's rank within `[0, num_threads())` |
 | `group_size(g)` | Returns the total number of threads in the group |
 | `is_valid(g)` | Validates group construction constraints |
+| `inclusive_scan(group, val, op)` / `inclusive_scan(group, val)` | Inclusive scan over any cooperative group type with an optional binary operator (default is summation); defined in `cooperative_groups/hip_scan.h`; all threads of the group must participate with the same per-thread value (added in ROCm 10.0.0, CUDA parity) |
+| `exclusive_scan(group, val, op)` / `exclusive_scan(group, val)` | Exclusive scan, same parameters as `inclusive_scan`; the value returned for the first active lane is platform-dependent (on AMD the identity of the operation, for example 0 for `plus`) |
 | `hipLaunchCooperativeKernel(...)` | Launches a kernel enabling grid-wide cooperation/synchronization on one device |
 | `hipLaunchCooperativeKernelMultiDevice(...)` | Launches a cooperative kernel spanning multiple devices |
 | `hipModuleLaunchCooperativeKernel(...)` | Module-API variant of a cooperative kernel launch |

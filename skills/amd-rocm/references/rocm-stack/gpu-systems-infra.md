@@ -20,8 +20,9 @@ lsmod | grep amdgpu
 
 ## Notes
 
-- ROCm 7.14.0. This page summarizes the landing-section scope (driver, cluster management, partitioning, monitoring, virtualization, cloud, containers); detailed per-topic steps live on the linked pages within this scope or in the official docs' GPU Systems section
-- The `amdgpu` kernel driver is the same component installed via `amdgpu-dkms` in the Linux quick-start flow — infrastructure-scale deployment builds on top of the same driver, not a different one
+- ROCm Core SDK 10.1.0. SR-IOV virtualization requires the AMD GPU Virtualization Driver (GIM) 9.3.0.K. Linux driver install docs are pinned at amdgpu-docs 31.60.0 (AMD Instinct Data Center GPU Documentation). GPU partitioning support is unchanged in 10.1.0
+- This page summarizes the landing-section scope (driver, cluster management, partitioning, monitoring, virtualization, cloud, containers); detailed per-topic steps live on the linked pages within this scope or in the official docs' GPU Systems section
+- The `amdgpu` kernel driver is the same component (`amdgpu-dkms`) for infrastructure-scale deployment; in the 10.1.0 package-manager install flow the driver is installed from the AMD GPU Driver docs rather than from the ROCm install page itself
 
 ## Related
 

@@ -1,14 +1,16 @@
 # frameworks
 
-pip installation of ROCm-enabled PyTorch and GPU recognition verification. Source: install-on-linux/pytorch-install
+pip installation of ROCm 10.1.0 PyTorch wheels and GPU recognition verification. Source: ai-ecosystem frameworks/pytorch/install
 
 ## ROCm 版 PyTorch のインストール
 
 ```sh
-pip3 install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/rocm7.2
+python -m pip install --index-url https://stable.repo.amd.com/rocm/whl-next/ "torch[device-all]==2.14.0+rocm10.1.0" "torchvision[device-all]==0.29.0a0+rocm10.1.0" "torchaudio==2.11.0.3+rocm10.1.0"
 ```
 
-`rocm7.2` はインストール済みの ROCm バージョンに応じて読み替える。安定版が必要な場合は nightly ではなく stable のインデックス URL を使う。
+仮想環境内で実行する。特定アーキのみの場合は `device-gfx950` / `device-gfx942` / `device-gfx90a` / `device-gfx1200` 等の extras を `torch[...]` と `torchvision[...]` に指定する（例: `"torch[device-gfx950]==2.14.0+rocm10.1.0"`）。公式は torch 2.13.0 / 2.12.0 の組み合わせも併記している。
+
+ROCm 10.1.0 のフレームワーク対応から TensorFlow 2.19.1 は外れた（release notes）。
 
 ## GPU 認識の確認
 

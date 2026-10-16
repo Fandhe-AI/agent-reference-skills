@@ -28,7 +28,7 @@ hipGetDeviceProperties(&prop, deviceId);
 ## Notes
 
 - Always check `hipDeviceProp_t`/`hipDeviceGetAttribute` at runtime rather than assuming a feature is present, since support varies by architecture generation (see `hardware-implementation.md`).
-- Documented against HIP 7.14.x (ROCm 7.x), `rocm.docs.amd.com/projects/HIP/en/latest/` as of 2026-07.
+- Documented against HIP 7.16.0 (ROCm Core SDK 10.1.0), `rocm.docs.amd.com/projects/HIP/en/latest/` as of 2026-10.
 
 ## Related
 

@@ -5,7 +5,7 @@ Open-source collections of ROCm-accelerated libraries for building high-performa
 ## Signature / Usage
 
 ```text
-Available toolkits (ROCm 7.14.0 landing page):
+Available toolkits (ROCm Core SDK 10.1.0 landing page):
   - ROCm Data Science
   - ROCm Finance
   - ROCm Life Science
@@ -25,7 +25,7 @@ Available toolkits (ROCm 7.14.0 landing page):
 
 ## Notes
 
-- ROCm 7.14.0. Each toolkit is its own open-source library collection layered on top of the Core SDK (math/compute libraries, HIP runtime); this page is a catalog entry point, not a per-toolkit API reference
+- ROCm Core SDK 10.1.0; the toolkit list is unchanged from 7.14.0. The 10.1.0 site navigation also lists ROCm.AI (AMD Skills, Hyperloom, ROCm CLI) as top-level sites, mentioned here by name only. Each toolkit is its own open-source library collection layered on top of the Core SDK (math/compute libraries, HIP runtime); this page is a catalog entry point, not a per-toolkit API reference
 - Toolkit-level API detail is out of scope for `rocm-stack` — the underlying Core SDK libraries each toolkit builds on are covered in [math-compute-libraries.md](./math-compute-libraries.md) and [communication-libraries.md](./communication-libraries.md)
 
 ## Related
