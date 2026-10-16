@@ -25,6 +25,7 @@ crabbox run --provider upstash-box --env-from-profile .env -- pnpm test
 
 ## Notes
 
+- Removed from the official docs (as of 2026-10-17): `/box/guides/crabbox-setup` redirects to `/box/guides/remote-development` and is no longer listed in `llms.txt`. The page is kept here for reference only
 - `warmup` provisions the box ahead of time so it's ready when needed
 - `--env-from-profile .env` loads local environment variables and injects them into the box without persisting them anywhere
 - Works with any package manager or test runner (`npm test`, `bun test`, etc.)
@@ -33,4 +34,5 @@ crabbox run --provider upstash-box --env-from-profile .env -- pnpm test
 ## Related
 
 - [Quickstart](./quickstart.md)
+- [Guides: Remote Development Environment for AI Coding Agents](./guides-remote-development.md)
 - [Guides: Build a Code Review Agent](./guides-code-review-agent.md)

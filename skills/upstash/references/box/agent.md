@@ -69,7 +69,8 @@ Provider-specific `options` shape:
 - Choose `run()` to wait for completion and read the final typed result, or `stream()` for real-time output
 - Python SDK option keys are snake_case (`max_turns`, `max_budget_usd`, `model_reasoning_effort`, `web_search`, `reasoning_effort`)
 - `responseSchema` (Zod v3/v4 or pydantic) parses the result before returning it, so a successful call always yields data in the requested shape
-- To bring your own agent process instead of the built-in harnesses, use a custom agent integration
+- Built-in harnesses verified against the current docs: `Agent.ClaudeCode`, `Agent.Codex`, `Agent.OpenCode`
+- To bring your own agent process instead of the built-in harnesses, use a custom agent integration: create the box with `agent.harness: Agent.Custom` and a `customHarness` command that runs inside the box for every `box.agent.run()` / `box.agent.stream()` call (see custom-agent)
 
 ## Related
 
@@ -77,3 +78,4 @@ Provider-specific `options` shape:
 - [Filesystem](./filesystem.md)
 - [Git](./git.md)
 - [Schedules](./schedules.md)
+- [Custom Agent](./custom-agent.md)
