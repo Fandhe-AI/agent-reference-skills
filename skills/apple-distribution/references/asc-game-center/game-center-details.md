@@ -38,6 +38,21 @@ GET https://api.appstoreconnect.apple.com/v1/gameCenterDetails/{id}
 | PATCH | `/v1/gameCenterDetails/{id}/relationships/gameCenterLeaderboardSetsV2` | Modify the leaderboard sets for a Game Center detail |
 | PATCH | `/v1/gameCenterDetails/{id}/relationships/challengesMinimumPlatformVersions` | Modify the challenges minimum platform version for a Game Center detail |
 
+### Player Moderation (4.5)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/v1/gameCenterDetails/{id}/blockedPlayers` | List the blocked players for a game (query: `fields[gameCenterDetailPlayers]` = `nickname` / `blocked` / `bundleId`, `limit`) |
+| PATCH | `/v1/gameCenterDetailPlayers/{id}` | Block or unblock a player for a game (`GameCenterDetailPlayerUpdateRequest`; `{id}` is the player's game-scoped ID) |
+
+`GameCenterDetailPlayer` attributes:
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `blocked` | boolean | A Boolean value that indicates whether the player is blocked from playing the game |
+| `bundleId` | string | The bundle ID of the app associated with the player |
+| `nickname` | string | The player's nickname |
+
 ### Key Objects
 
 | Object | Purpose |

@@ -31,11 +31,21 @@ GET    /v1/apps/{id}/subscriptionGroups
 |--------|------|-------------|
 | GET | `/v1/subscriptionGroups/{id}/subscriptions` | List all subscriptions in a group |
 | GET | `/v1/subscriptionGroups/{id}/relationships/subscriptions` | List subscription IDs in a group |
-| GET | `/v1/subscriptionGroups/{id}/subscriptionGroupLocalizations` | List all localizations for a group |
-| GET | `/v1/subscriptionGroups/{id}/relationships/subscriptionGroupLocalizations` | List localization IDs for a group |
+| GET | `/v1/subscriptionGroups/{id}/subscriptionGroupLocalizations` | List all localizations for a group (deprecated in 4.4.1) |
+| GET | `/v1/subscriptionGroups/{id}/relationships/subscriptionGroupLocalizations` | List localization IDs for a group (deprecated in 4.4.1) |
+
+### Versions (4.4.1)
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/v1/subscriptionGroupVersions` | Create a subscription group version |
+| GET | `/v1/subscriptionGroupVersions/{id}` | Read a subscription group version |
+| GET | `/v1/subscriptionGroupVersions/{id}/localizations` | List the localizations of a version |
+| GET | `/v1/subscriptionGroups/{id}/versions` | List the versions of a subscription group |
 
 ## Notes
 
+- Since 4.4.1, group localizations attach to a subscription group version; the v1 `subscriptionGroupLocalizations` list endpoints are deprecated and remain available for existing integrations. Submit a version through `POST /v1/reviewSubmissionItems` with a `subscriptionGroupVersion` (the `subscriptionGroupSubmissions` resource is deprecated).
 - A subscription group can only be deleted when it contains no subscriptions.
 - Customers can only subscribe to one subscription at a time within a group; they can upgrade, downgrade, or cross-grade between members.
 

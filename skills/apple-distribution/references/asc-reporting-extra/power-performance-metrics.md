@@ -33,6 +33,20 @@ GET /v1/builds/{id}/perfPowerMetrics
 | `filter[metricType]` | No | [string] | `DISK`, `HANG`, `BATTERY`, `LAUNCH`, `MEMORY`, `ANIMATION`, `TERMINATION`, `STORAGE` |
 | `filter[platform]` | No | [string] | `IOS` |
 
+### Get the performance overview for an app (4.5)
+
+`GET /v1/apps/{id}/performanceOverviews`
+
+| Parameter | Required | Type | Description |
+|-----------|----------|------|-------------|
+| `id` | Yes | string | The app's resource ID (from `GET /v1/apps`) |
+| `filter[deviceType]` | No | [string] | Filter by device type (the official page lists no allowed values) |
+
+| Response | Value | Description |
+|----------|-------|-------------|
+| Status | `200 OK` | MIME type `application/vnd.apple.xcode-overview+json` |
+| `xcodeOverview` | object | The performance overview that Xcode presents for an app, including app metadata, insights, and top performance signatures |
+
 ### `xcodeMetrics` Response
 
 | Field | Type | Description |
@@ -43,6 +57,7 @@ GET /v1/builds/{id}/perfPowerMetrics
 
 ## Notes
 
+- `GET /v1/apps/{id}/performanceOverviews` (4.5) returns the aggregated performance overview data for a specific app, including the metrics Xcode surfaces in its performance reports; use it to evaluate your app's performance before you release an update.
 - Both endpoints return `200 OK` with MIME type `application/vnd.apple.xcode-metrics+json`.
 - The app-level endpoint returns metrics for the **most recent app version only**; use the build-level endpoint to inspect a specific build.
 - Allow a few days after releasing your app for Apple to collect and organize logs into reports — the API requires significant app usage before metrics become available, and each metric has a different usage threshold.
