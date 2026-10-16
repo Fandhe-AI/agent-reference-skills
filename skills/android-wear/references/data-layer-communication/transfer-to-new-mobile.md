@@ -27,19 +27,19 @@ dependencies {
 
 ```kotlin
 class MyWearableListenerService : WearableListenerService() {
-    val dataClient: DataClient = Wearable.getDataClient(this)
+    private val dataClient: DataClient by lazy { Wearable.getDataClient(this) }
 
     private fun shouldHandleDataItem(nodeId: String, dataItem: DataItem): Boolean {
         // Your logic here
         return dataItem.uri.path?.startsWith("/my_feature_path/") == true
     }
 
-    private fun handleDataItem(nodeId: String, dataItem: DataItem) {
+    private suspend fun handleDataItem(nodeId: String, dataItem: DataItem) {
         val data = dataItem.data ?: return
         val path = dataItem.uri.path ?: return
         // Your logic here
-        if (data.toString().startsWith("Please restore")) {
-            dataClient.putDataItem(PutDataRequest.create(path).setData(data))
+        if (data.decodeToString().startsWith("Please restore")) {
+            dataClient.putDataItem(PutDataRequest.create(path).setData(data)).await()
         }
     }
 
@@ -77,8 +77,8 @@ class MyWearableListenerService : WearableListenerService() {
 - Archived items are discarded, not delivered, unless the app is installed on both mobile devices and the package signatures match.
 - Do not run power-demanding or time-consuming work in `onNodeMigrated()` (battery, ANRs); the callback stops automatically after 20 seconds, so delegate longer work to a coroutine or thread.
 - This differs from cloud backup and restore, where the user restores data to a new Wear OS device.
-- The official sample's `data.toString()` returns the array identity (`[B@...`), not its contents, so the `startsWith` check never matches; decode the payload first (e.g. `data.decodeToString()` for a string protocol) or parse it according to your binary format.
-- `putDataItem()` returns a `Task`; the official sample does not wait for it, so the write may not complete or report failure before `onNodeMigrated()` returns. Make `handleDataItem` a `suspend` function and call `.await()` (kotlinx-coroutines-play-services) or otherwise handle the Task's completion and failure.
+- Adapted from the official sample: uses `decodeToString()` instead of `toString()` (which returns the array identity `[B@...`), and awaits the `putDataItem()` Task inside `runBlocking`. `await()` requires `import kotlinx.coroutines.tasks.await` (kotlinx-coroutines-play-services).
+- Adapted from the official sample: `dataClient` is initialized lazily because the base Context is not attached during property initialization of a Service (the official sample initializes it eagerly).
 - Source: https://developer.android.com/training/wearables/data/transfer-to-new-mobile (page last updated 2026-10-14 UTC).
 
 ## Related
