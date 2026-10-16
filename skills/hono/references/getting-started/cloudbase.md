@@ -46,6 +46,7 @@ tcb fn deploy <function-name> --httpFn
 - `scf_bootstrap` must use LF line endings; the Node path must match the function runtime (`/var/lang/node20/bin/node` is for Node.js 20.19)
 - Deploy as an HTTP function (Node.js 20.19); console zip upload is described in the CloudBase Node.js HTTP function quick start
 - Run locally with `npm run dev` and access `http://localhost:9000`
+- Source: https://hono.dev/docs/getting-started/cloudbase (honojs/website@7838d779)
 
 ## Related
 

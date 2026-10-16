@@ -33,3 +33,4 @@ Entries are listed by category in the official page, for example:
 
 - Not bundled with the `hono` package; each entry is installed and versioned separately.
 - Many entries live in the `honojs/middleware` monorepo under `packages/`; others are community repositories or vendor docs.
+- Source: https://hono.dev/docs/middleware/third-party (honojs/website@7838d779)

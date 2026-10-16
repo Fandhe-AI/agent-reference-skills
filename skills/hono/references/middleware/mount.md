@@ -56,6 +56,7 @@ app.all(
 - Register it with `app.all()` on a path that ends with `/*`.
 - By default the mounted application receives a new `Request` with the matched path prefix removed from its URL (`/itty-router/hello` reaches itty-router as `/hello`).
 - The mounted application is called as `handler(request, c.env, c.executionCtx)`, the same arguments as a Cloudflare Workers `fetch` handler.
+- Source: https://hono.dev/docs/middleware/builtin/mount (honojs/website@7838d779); implementation: https://github.com/honojs/hono/blob/v4.13.13/src/middleware/mount/index.ts
 
 ## Related
 
