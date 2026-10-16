@@ -182,7 +182,7 @@ Parsing is done by [`conventional-commits-parser`](https://github.com/convention
 
 #### `presetConfig`
 
-When using a preset such as `conventional-changelog-conventionalcommits`, you can pass `presetConfig` to tweak the preset's behavior without replacing the whole parser configuration. It is commonly used to configure which commit types appear in the generated changelog. Available options differ per preset (see "Preset Configuration" in `conventional-changelog-conventionalcommits`).
+The official docs describe passing `presetConfig` with a preset such as `conventional-changelog-conventionalcommits` to tweak the preset's behavior without replacing the whole parser configuration, commonly to configure which commit types appear in the generated changelog. Available options differ per preset (see "Preset Configuration" in `conventional-changelog-conventionalcommits`). See Notes: `presetConfig` has no runtime effect in commitlint as of v21.2.3.
 
 ```js
 // commitlint.config.js
@@ -203,7 +203,7 @@ export default {
 
 #### Using with semantic-release
 
-[semantic-release](https://github.com/semantic-release/semantic-release) and commitlint can share the same `conventional-changelog-conventionalcommits` preset. Aligning `parserOpts` / `presetConfig` across both tools makes the commits parsed at lint time match semantic-release's version determination and changelog generation.
+The official docs describe sharing the same `conventional-changelog-conventionalcommits` preset between [semantic-release](https://github.com/semantic-release/semantic-release) and commitlint, aligning `parserOpts` / `presetConfig` across both tools so that commits parsed at lint time match semantic-release's version determination and changelog generation. See Notes: the `presetConfig` in the commitlint config below has no runtime effect as of v21.2.3.
 
 ```js
 // commitlint.config.js
@@ -324,3 +324,7 @@ Shareable configs follow these rules:
 - `commitlint-config-` prefix (e.g. `commitlint-config-lerna`)
 - Scoped packages: `@scope/commitlint-config-name`
 - The prefix may be omitted when referenced in `extends` (e.g. `"lerna"` resolves to `commitlint-config-lerna`)
+
+## Notes
+
+- As of v21.2.3, `@commitlint/load` resolves `parserPreset` by name only when it is a string; an object `parserPreset` without `parserOpts` is passed through unchanged (`load-parser-opts.ts`), and `presetConfig` is not read anywhere in `@commitlint/load` or `@commitlint/resolve-extends`. The `ParserPreset` type declares `presetConfig?: unknown` (so TypeScript configs type-check, see upstream issue #4748), but it has no effect on parsing. The `presetConfig` / semantic-release examples above are reproduced from the official docs as published. To change how commitlint parses, use `parserOpts` (inline or via a preset module).
