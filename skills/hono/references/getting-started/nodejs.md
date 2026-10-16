@@ -11,14 +11,13 @@ import { Hono } from 'hono'
 const app = new Hono()
 app.get('/', (c) => c.text('Hello Node.js!'))
 
+// serve(appOrOptions, callback?)
 serve(app)
 // or with options:
 serve({ fetch: app.fetch, port: 8787 })
 ```
 
 ## Options / Props
-
-`serve(appOrOptions, callback?)`
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
@@ -34,6 +33,7 @@ serve({ fetch: app.fetch, port: 8787 })
 - Serve static files with `serveStatic` from `@hono/node-server/serve-static`; prefer `import.meta.url` for reliable path resolution
 - HTTP/2 is supported by passing `createServer` / `createSecureServer` from `node:http2`
 - Graceful shutdown: `serve()` returns a server instance; call `server.close()` on `SIGINT`/`SIGTERM`
+- On Node.js, `serve()` wraps `node:http` and returns the underlying server instance, so closing it is up to you; Bun and Deno serve Fetch handlers natively and manage the server themselves, so their guides have no graceful-shutdown step
 - Default dev port: `3000`
 - WebSocket: `@hono/node-ws` is deprecated. Use `upgradeWebSocket` from `@hono/node-server` with the `websocket` serve option instead (requires `ws` package)
 

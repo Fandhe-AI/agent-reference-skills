@@ -13,15 +13,6 @@ const app = new Hono({ router: new RegExpRouter() })
 const app = new Hono<{ Bindings: Env; Variables: Vars }>()
 ```
 
-## Options / Props
-
-| Name | Type | Description |
-|------|------|-------------|
-| `strict` | `boolean` | Distinguish `/hello` from `/hello/`. Default: `true` |
-| `router` | `Router` | Override the router implementation (e.g. `RegExpRouter`, `TrieRouter`) |
-
-## Methods
-
 ### HTTP routing methods
 
 ```ts
@@ -75,7 +66,17 @@ api.get('/book', (c) => c.text('List'))  // → GET /api/book
 Mount an application built with another framework.
 
 ```ts
+app.mount(path, anotherApp, [options])
 app.mount('/another-app', anotherFrameworkHandler)
+```
+
+By default, `mount()` passes a new `Request` with the mount path removed from its URL. The `replaceRequest` option controls which `Request` is passed to the mounted application: a function, or `false` to pass the original `Request` unchanged.
+
+```ts
+app.mount('/app', handler, {
+  replaceRequest: (originalRequest) => originalRequest,
+})
+app.mount('/app', handler, { replaceRequest: false })
 ```
 
 ### notFound()
@@ -134,13 +135,21 @@ console.log(app.routerName)  // e.g. "SmartRouter"
 
 ### fire() (deprecated)
 
-Automatically adds a global `fetch` event listener for Service Worker environments. Use `fire()` from `hono/service-worker` instead.
+Automatically adds a global `fetch` event listener for Service Worker environments. Use `fire()` from `@hono/service-worker` instead.
+
+## Options / Props
+
+| Name | Type | Description |
+|------|------|-------------|
+| `strict` | `boolean` | Distinguish `/hello` from `/hello/`. Default: `true` |
+| `router` | `Router` | Override the router implementation (e.g. `RegExpRouter`, `TrieRouter`) |
 
 ## Notes
 
 - `strict: false` makes `/hello` and `/hello/` equivalent
 - Generic type parameters `Bindings` and `Variables` enable type-safe `c.env` and `c.var` access
 - `notFound()` and `onError()` are only effective when registered on the top-level app
+- `app.mount()` is deprecated since v4.13.13 (use `mount()` from `hono/mount`, see [mount.md](../middleware/mount.md)); it will be removed in v5
 
 ## Related
 

@@ -2,7 +2,9 @@
 
 Type-safe client-server communication by sharing API specifications through TypeScript types.
 
-## Server Setup
+## Signature / Usage
+
+### Server Setup
 
 Define routes with validators, chain the definitions, and export the app type.
 
@@ -23,7 +25,9 @@ const app = new Hono()
 export type AppType = typeof app
 ```
 
-## Client Setup
+TIP: The Standard Schema Validator (`@hono/standard-validator`) works as well, so any Standard Schema library such as Valibot can be used.
+
+### Client Setup
 
 ```ts
 import type { AppType } from './server'
@@ -128,6 +132,17 @@ const res = await client.user.picture.$put({
 - Status codes explicitly specified in handlers are part of the type system; use them for precise response handling.
 - Large apps may slow down the IDE. Mitigations: compile types at build time, use TypeScript project references, or split the app.
 - Route chaining (`.get().post()...`) on a single `app` instance is required for RPC types to work correctly.
+- A handler that returns a `.then()` chain directly loses its response type and the client infers `unknown` (TypeScript inference limitation). Use `async`/`await`, or annotate `then()` with `TypedResponse` from `hono/types`:
+
+```ts
+import type { TypedResponse } from 'hono/types'
+
+const app = new Hono().get('/', (c) =>
+  Promise.resolve({ hello: 'world' }).then<
+    TypedResponse<{ hello: string }, 200, 'json'>
+  >((d) => c.json(d, 200))
+)
+```
 
 ## Related
 

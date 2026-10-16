@@ -7,7 +7,7 @@ Deploy Hono to AWS Lambda@Edge (Node.js 18+). Functions run at CloudFront edge l
 ```ts
 // lambda/index_edge.ts
 import { Hono } from 'hono'
-import { handle } from 'hono/lambda-edge'
+import { handle } from '@hono/lambda-edge'
 
 const app = new Hono()
 app.get('/', (c) => c.text('Hello Hono on Lambda@Edge!'))
@@ -26,7 +26,8 @@ app.get('/', async (c, next) => {
 
 ## Notes
 
-- Import `handle` from `hono/lambda-edge` (not `hono/aws-lambda`)
+- Import `handle` (and the `Callback` / `CloudFrontRequest` types) from `@hono/lambda-edge` (not `@hono/aws-lambda`)
+- Install with `npm i hono @hono/lambda-edge`; `hono/lambda-edge` is deprecated since v4.13.10 and will be removed in v5
 - Attach the Lambda function to a CloudFront distribution's `VIEWER_REQUEST` event
 - Recommended CDK runtime: `NODEJS_20_X`
 - Use CDK to manage CloudFront distributions, IAM roles, and API Gateway automatically

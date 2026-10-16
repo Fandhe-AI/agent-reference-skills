@@ -61,7 +61,7 @@ Options: `path`, `secure`, `domain`. Returns the deleted cookie value.
 
 ### `getSignedCookie(c, secret, name?, prefix?)` / `setSignedCookie(c, name, value, secret, options?)`
 
-Signed cookies use HMAC SHA-256. `getSignedCookie` returns `false` if the signature was tampered with.
+Signed cookies use HMAC SHA-256. `getSignedCookie` returns `false` if its signature fails verification.
 
 ```ts
 await setSignedCookie(c, 'user', 'alice', 'mysecret', { httpOnly: true })
@@ -80,6 +80,7 @@ const signedStr = await generateSignedCookie('session', 'abc123', 'secret')
 
 ## Notes
 
+- `getSignedCookie` distinguishes two cases: a cookie that has a signature but fails verification returns `false`; a cookie without a valid signature format is treated as not being a signed cookie and returns `undefined` (same as a missing cookie). This applies to single-name and all-cookies retrieval. Both are falsy, so `if (!value)` handles both
 - `maxAge` values greater than 400 days will throw an error per RFC best practices
 - `sameSite` and `priority` options are validated against their allowed values; invalid values throw a `TypeError`
 - Cookie prefix rules: `__Secure-` requires `secure: true`; `__Host-` requires `secure: true`, `path: '/'`, and no `domain`

@@ -36,7 +36,7 @@ export default app
 - The same application code runs on any supported runtime; only the entry point differs
 - Built-in middleware includes JWT, Bearer auth, CORS, and ETag
 - Use `app.use('/admin/*', middleware)` to apply middleware to route groups
-- `upgradeWebSocket` is available from runtime-specific adapters (e.g., `hono/cloudflare-workers`)
+- `upgradeWebSocket` is available from runtime-specific adapters, which are separate packages (e.g., install and import `@hono/cloudflare-workers`)
 
 ## Related
 
