@@ -107,6 +107,7 @@ turbo run [tasks] [options] [-- [args passed to tasks]]
   turbo run build --affected --filter=!docs
   TURBO_SCM_BASE=development turbo run build --affected
   ```
+- The official docs suggest `--filter=blob:none --depth=0`, but Git rejects `--depth=0` (`fatal: depth 0 is not a positive number`). To get full history, omit `--depth` on a fresh `git clone --filter=blob:none`, run `git fetch --unshallow` on an existing shallow checkout, or set `fetch-depth: 0` on `actions/checkout` (a GitHub Actions input, not a Git flag).
 - Advanced filter examples:
   ```bash
   turbo run build --filter={./apps/*}[HEAD^1]      # changed packages in apps

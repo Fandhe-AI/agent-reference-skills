@@ -37,6 +37,7 @@ turbo query --schema                     # print the GraphQL schema
   ```bash
   turbo query affected [flags]
   ```
+- The official docs suggest `--filter=blob:none --depth=0`, but Git rejects `--depth=0` (`fatal: depth 0 is not a positive number`). To get full history, omit `--depth` on a fresh `git clone --filter=blob:none`, run `git fetch --unshallow` on an existing shallow checkout, or set `fetch-depth: 0` on `actions/checkout` (a GitHub Actions input, not a Git flag).
 
   | Flag | Description |
   |---|---|
