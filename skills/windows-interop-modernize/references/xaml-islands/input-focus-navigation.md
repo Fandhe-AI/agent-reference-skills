@@ -40,6 +40,8 @@ xamlSource.NavigateFocus(request);
 - The host must call the native `ContentPreTranslateMessage` function for messages before dispatching them. This is required for a host that uses the Windows App SDK UI stack. The function has no managed projection; the official Windows Forms sample P/Invokes it from Microsoft.UI.Windowing.Core.dll and registers an `IMessageFilter`.
 - Test tab order in both directions, accelerator keys, mnemonics, pointer input, text input, and input method editors (IME). Verify accessibility names, relationships, and focus order across the host and island with an accessibility inspection tool.
 - WPF/WinForms host controls that wrap this pattern typically override the framework's own focus/tab-navigation hooks (e.g. WPF's `HwndHost.TabInto`) to call `NavigateFocus`.
+- Source: https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/host-controls-existing-desktop-apps (en-us, fetched 2026-10-16)
+- Sample ContentPreTranslateMessage P/Invoke and IMessageFilter: https://github.com/microsoft/WindowsAppSDK-Samples/blob/main/Samples/Islands/cs-winforms-unpackaged/WindowsAppSdkHelper.cs
 
 ## Related
 
