@@ -32,6 +32,7 @@ func isGoodCapture(imageURL:URL) async throws -> Bool {
 - Requires a device with A14 Bionic or later, or M1 or later.
 - Naturally blurred objects, long exposure, and motion blur may be categorized as a smudge; use the request on a fixed capture where the device is stable.
 - Creating a request: `init(_ revision: DetectLensSmudgeRequest.Revision?)`.
+- Source: https://developer.apple.com/documentation/vision/detectlenssmudgerequest
 
 ## Related
 

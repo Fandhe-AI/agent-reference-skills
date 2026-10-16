@@ -28,6 +28,7 @@ init(preferredComputeUnitKind: ComputeUnitKind)
 - iOS 27.0+, iPadOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+. Conforms to `Equatable`, `Hashable`, `Sendable`.
 - Passed to `AIModel(contentsOf:options:)`, `AIModel.specialize(...)`, and `AIModelCache` lookup / delete methods.
 - Name distance: this is Core AI, not Core ML's `MLModelConfiguration` / `MLComputeUnits`.
+- Source: https://developer.apple.com/documentation/coreai/specializationoptions
 
 ## Related
 

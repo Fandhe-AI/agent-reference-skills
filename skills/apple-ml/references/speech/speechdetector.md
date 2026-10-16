@@ -35,6 +35,7 @@ Declaration: `final class SpeechDetector` (conforms to `SpeechModule`, `Sendable
 - iOS 26.0+, iPadOS 26.0+, Mac Catalyst 26.0+, macOS 26.0+, tvOS 26.0+, visionOS 26.0+.
 - Important: this module only functions in conjunction with a `SpeechTranscriber` or `DictationTranscriber` module.
 - If the model drops audio that contains speech, there is a trade-off between power saved and lower transcription accuracy. `SensitivityLevel.medium` is recommended for most use cases; the value of these trade-offs is context-specific.
+- Source: https://developer.apple.com/documentation/speech/speechdetector
 
 ## Related
 

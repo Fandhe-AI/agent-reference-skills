@@ -23,6 +23,7 @@ enum CoordinateOrigin {
 - iOS 18.0+ / iPadOS 18.0+ / Mac Catalyst 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - `enum` conforming to `Equatable` and `Hashable`.
 - Vision's normalized coordinates default to a lower-left origin, while UIKit and SwiftUI use an upper-left origin.
+- Source: https://developer.apple.com/documentation/vision/coordinateorigin
 
 ## Related
 

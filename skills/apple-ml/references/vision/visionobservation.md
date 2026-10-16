@@ -32,6 +32,7 @@ func hash(into: inout Hasher)
 - `RequestDescriptor` is an enum that describes the request and revision combination.
 - Conforming types listed in the docs: `AnimalBodyPoseObservation`, `BarcodeObservation`, `ClassificationObservation`, `ContoursObservation`, `CoreMLFeatureValueObservation`, `DetectedDocumentObservation`, `DetectedObjectObservation`, `DocumentObservation`, `FaceObservation`, `FeaturePrintObservation`, `HorizonObservation`, `HumanBodyPose3DObservation`, `HumanBodyPoseObservation`, `HumanHandPoseObservation`, `HumanObservation`, `ImageAestheticsScoresObservation`, `ImageHomographicAlignmentObservation`, `ImageTranslationAlignmentObservation`, `InstanceMaskObservation`, `OpticalFlowObservation`, `PixelBufferObservation`, `RecognizedObjectObservation`, `RecognizedTextObservation`, `RectangleObservation`, `SaliencyImageObservation`, `SmudgeObservation`, `TextObservation`, `TrajectoryObservation`.
 - Modern counterpart of the legacy `VNObservation` class.
+- Source: https://developer.apple.com/documentation/vision/visionobservation
 
 ## Related
 

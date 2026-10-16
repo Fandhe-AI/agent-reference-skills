@@ -52,6 +52,7 @@ for try await (entityID, faces) in analyzer.allFacesByEntityID {
 - `fetchFaces(for:)` and `fetchAssetIDs(for:)` return synchronously from the local store (no `await`).
 - Deleting assets: `deleteAssets(_:)`, `deleteAllAssets()`; afterwards state becomes `stale` if faces remain (existing group assignments remain valid until regrouped). `FaceGroupAnalyzer.purge(workingDirectory:)` permanently deletes all face data, group assignments and metadata.
 - Use the same asset identifier consistently per image; the framework uses it to match new submissions against existing data.
+- Source: https://developer.apple.com/documentation/mediaintelligence/detecting-and-grouping-faces-in-images
 
 ## Related
 

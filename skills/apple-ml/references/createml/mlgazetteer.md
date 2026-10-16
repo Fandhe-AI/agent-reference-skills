@@ -38,6 +38,7 @@ try planetGazetteer.write(toFile: "~/Desktop/PlanetGazetteer.mlmodel")
 - Save to an `.mlmodel` file and add it to the app in Xcode; at runtime the app creates an `NLGazetteer`, which augments an `NLTagger` to tag specific terms with a label
 - A gazetteer file can efficiently store many labels, and many terms for each label
 - Deprecated per the source page: `init(labeledData:textColumn:labelColumn:parameters:)` and `predictions(from:)` taking `MLDataColumn<String>`
+- Source: https://developer.apple.com/documentation/createml/mlgazetteer
 
 ## Related
 

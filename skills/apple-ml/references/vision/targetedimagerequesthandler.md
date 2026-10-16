@@ -29,6 +29,7 @@ func performAll(_: some Collection<any TargetedRequest>) -> some AsyncSequence<V
 - iOS 18.0+ / iPadOS 18.0+ / Mac Catalyst 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - `final class` conforming to `Sendable` and `SendableMetatype`.
 - Sibling handlers: `ImageRequestHandler` (single image) and `VideoProcessor` (video).
+- Source: https://developer.apple.com/documentation/vision/targetedimagerequesthandler
 
 ## Related
 

@@ -41,6 +41,7 @@ struct MLShapedArray<Scalar> where Scalar : MLShapedArrayScalar
 - To inspect a model's multiarray shape and constraints: `MLModel.modelDescription` -> `MLModelDescription.inputDescriptionsByName` / `outputDescriptionsByName` -> `MLFeatureDescription.multiArrayConstraint` -> `MLMultiArrayConstraint.shape` and `shapeConstraint`
 - Conforms to `BidirectionalCollection`, `Collection`, `MutableCollection`, `RandomAccessCollection`, `Sequence`, `ExpressibleByArrayLiteral`, `CustomStringConvertible`, `Decodable`, `Encodable`, `Equatable`, `MLShapedArrayProtocol`, `Sendable`, `Copyable`, `Escapable`, `SendableMetatype`
 - Most methods are available when `Scalar` conforms to `MLShapedArrayScalar`
+- Source: https://developer.apple.com/documentation/coreml/mlshapedarray
 
 ## Related
 

@@ -23,6 +23,7 @@ enum MLBoundingBoxCoordinatesOrigin {
 - Availability: macOS 10.15+ only
 - Conforms to `Equatable`, `Hashable`, `Sendable`, `SendableMetatype`
 - Used as the `origin` argument of `MLObjectDetector.AnnotationType.boundingBox(units:origin:anchor:)`
+- Source: https://developer.apple.com/documentation/createml/mlboundingboxcoordinatesorigin
 
 ## Related
 

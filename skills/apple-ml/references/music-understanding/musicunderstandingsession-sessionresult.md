@@ -32,6 +32,7 @@ let structure: StructureResult?
 - Each property corresponds to one analysis type. A property is `nil` if the session wasn't configured to perform that analysis.
 - Access a session result after the session finishes processing audio to retrieve the data for each configured type.
 - Conforms to `Decodable`, `Encodable`, `Sendable`, `SendableMetatype`.
+- Source: https://developer.apple.com/documentation/musicunderstanding/musicunderstandingsession/sessionresult
 
 ## Related
 

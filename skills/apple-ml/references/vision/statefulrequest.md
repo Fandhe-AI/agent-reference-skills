@@ -23,6 +23,7 @@ var minimumLatencyFrameCount: Int { get }
 - iOS 18.0+ / iPadOS 18.0+ / Mac Catalyst 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - Inherits from `VisionRequest`, `Sendable`, `SendableMetatype`, `Equatable`, `Hashable`, `CustomStringConvertible`; provides default `==` and `hash(into:)` implementations.
 - Conforming types listed in the docs: `DetectHumanBodyPose3DRequest`, `DetectTrajectoriesRequest`, `GeneratePersonSegmentationRequest`, `TrackHomographicImageRegistrationRequest`, `TrackObjectRequest`, `TrackOpticalFlowRequest`, `TrackRectangleRequest`, `TrackTranslationalImageRegistrationRequest`.
+- Source: https://developer.apple.com/documentation/vision/statefulrequest
 
 ## Related
 

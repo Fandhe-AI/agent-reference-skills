@@ -40,6 +40,7 @@ func verticallyFlipped() -> NormalizedPoint
 - iOS 18.0+ / iPadOS 18.0+ / Mac Catalyst 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - `struct` conforming to `CustomStringConvertible`, `Decodable`, `Encodable`, `Equatable`, `Hashable`, `Sendable`, `SendableMetatype`.
 - UIKit and SwiftUI use a top-left origin; convert view coordinates and flip the y-axis (for example with `verticallyFlipped()`) before passing points to Vision requests such as `GenerateIterativeSegmentationRequest`.
+- Source: https://developer.apple.com/documentation/vision/normalizedpoint
 
 ## Related
 

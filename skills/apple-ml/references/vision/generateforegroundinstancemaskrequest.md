@@ -21,6 +21,7 @@ Creating a request: `init(_ revision: GenerateForegroundInstanceMaskRequest.Revi
 
 - iOS 18.0+ / iPadOS 18.0+ / Mac Catalyst 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - Selects salient foreground objects automatically. To isolate an arbitrary object from a tap, box, or scribble use `GenerateIterativeSegmentationRequest`.
+- Source: https://developer.apple.com/documentation/vision/generateforegroundinstancemaskrequest
 
 ## Related
 

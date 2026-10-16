@@ -28,6 +28,7 @@ guard case .ndArray(let ndArrayDescriptor) = valueDescriptor else { ... }
 
 - iOS 27.0+, iPadOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+. Conforms to `Equatable`, `Sendable`.
 - The descriptor holds the expectations for an array passed to an `InferenceFunction`. Most are strict: if `scalarType` is `.float32`, the array you provide must use `.float32`.
+- Source: https://developer.apple.com/documentation/coreai/ndarraydescriptor
 
 ## Related
 

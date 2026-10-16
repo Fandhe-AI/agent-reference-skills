@@ -3,9 +3,12 @@ name: apple-ml
 description: >
   Apple オンデバイス機械学習フレームワークリファレンス。
   Core AI (.aimodel) / Core ML / Create ML / Vision / Natural Language / Speech / Media Intelligence / Music Understanding。
-  AIModel, InferenceFunction, MLModel, MLMultiArray, MLTensor, MLComputeUnits, MLImageClassifier,
-  VNCoreMLRequest, RecognizeTextRequest, NLTagger, NLEmbedding,
-  SpeechAnalyzer, SpeechTranscriber, SFSpeechRecognizer, FaceGroupAnalyzer, MusicUnderstandingSession。
+  AIModel, InferenceFunction, MLModel, MLModelConfiguration, MLMultiArray, MLTensor, MLComputeUnits,
+  MLImageClassifier, MLTextClassifier, MLDataTable,
+  VNCoreMLRequest, VNImageRequestHandler, VNRecognizeTextRequest, RecognizeTextRequest,
+  NLTagger, NLEmbedding, NLLanguageRecognizer,
+  SpeechAnalyzer, SpeechTranscriber, SFSpeechRecognizer, SFSpeechAudioBufferRecognitionRequest, SFTranscription,
+  FaceGroupAnalyzer, MusicUnderstandingSession。
 user-invocable: false
 ---
 

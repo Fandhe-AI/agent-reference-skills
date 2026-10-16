@@ -67,6 +67,7 @@ request.qualityLevel = .accurate
 - Each initializer takes an optional revision; if omitted, the SDK default is used. See `supportedRevisions`.
 - Quality levels: `fast` (low resolution, quickest), `balanced` (default), `accurate` (highest resolution, slowest).
 - Companion sample code: "Segmenting objects using taps, scribbles or rectangles".
+- Source: https://developer.apple.com/documentation/vision/segmenting-objects-with-iterative-refinement
 
 ## Related
 

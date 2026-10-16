@@ -8,7 +8,7 @@ Analyzes spoken audio content in various ways and manages the analysis session. 
 import Speech
 
 // Step 1: Modules
-guard let locale = SpeechTranscriber.supportedLocale(equivalentTo: Locale.current) else {
+guard let locale = await SpeechTranscriber.supportedLocale(equivalentTo: Locale.current) else {
     /* Note unsupported language */
 }
 let transcriber = SpeechTranscriber(locale: locale, preset: .transcription)
@@ -22,24 +22,30 @@ if let installationRequest = try await AssetInventory.assetInstallationRequest(s
 let (inputSequence, inputBuilder) = AsyncStream.makeStream(of: AnalyzerInput.self)
 
 // Step 4: Analyzer
-let audioFormat = await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: [transcriber])
+guard let audioFormat = await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: [transcriber]) else {
+    /* No compatible audio format available */
+}
 let analyzer = SpeechAnalyzer(modules: [transcriber])
 
 // Step 5: Supply audio
 let converter = AnalyzerInputConverter(analyzerFormat: audioFormat)
 Task {
-    while /* audio remains */ {
-        let buffer = /* Get some audio */
-        let inputs = try converter.convert(buffer, at: nil)
+    defer { inputBuilder.finish() }
+    do {
+        while /* audio remains */ {
+            let buffer = /* Get some audio */
+            let inputs = try converter.convert(buffer, at: nil)
+            for input in inputs {
+                inputBuilder.yield(input)
+            }
+        }
+        let inputs = try converter.flush()
         for input in inputs {
             inputBuilder.yield(input)
         }
+    } catch {
+        /* Handle conversion error; e.g. await analyzer.cancelAndFinishNow() */
     }
-    let inputs = try converter.flush()
-    for input in inputs {
-        inputBuilder.yield(input)
-    }
-    inputBuilder.finish()
 }
 
 // Step 7: Act on results
@@ -62,7 +68,7 @@ let lastSampleTime = try await analyzer.analyzeSequence(inputSequence)
 if let lastSampleTime {
     try await analyzer.finalizeAndFinish(through: lastSampleTime)
 } else {
-    try analyzer.cancelAndFinishNow()
+    await analyzer.cancelAndFinishNow()
 }
 ```
 
@@ -102,6 +108,8 @@ Declaration: `final actor SpeechAnalyzer`.
 - The system limits simultaneous analyses; exceeding the limit throws `SFSpeechError.Code.insufficientResources`. Creating the analyzer with `Options.ignoresResourceLimits` set to `true` removes the limit, but excess analyzers may fail with unpredictable errors. Test on a variety of devices.
 - Select an `Options.ModelRetention` option to keep resources cached for later analyzers; `SpeechModels.endRetention()` releases them.
 - Distinct from `SFSpeechRecognizer` (callback / delegate based, older API).
+- Usage snippet adapted from the official overview: added `await` / adjusted `try` to match the declarations (`supportedLocale(equivalentTo:)` is `async`, `cancelAndFinishNow()` is `async` non-throwing); `bestAvailableAudioFormat(compatibleWith:)` returns an Optional, so it is unwrapped with `guard let`; the audio-supply `Task` calls `inputBuilder.finish()` via `defer` and wraps conversion in `do` / `catch` so a thrown conversion error does not leave `analyzeSequence` waiting forever.
+- Source: https://developer.apple.com/documentation/speech/speechanalyzer
 
 ## Related
 
@@ -113,6 +121,6 @@ Declaration: `final actor SpeechAnalyzer`.
 - [AnalyzerInputConverter](./analyzerinputconverter.md)
 - [AssetInputSequenceProvider](./assetinputsequenceprovider.md)
 - [CaptureInputSequenceProvider](./captureinputsequenceprovider.md)
-- [AnalysisContext](./analysiscontext.md)
+- `AnalysisContext`
 - [AssetInventory](./assetinventory.md)
 - [SpeechModels](./speechmodels.md)

@@ -28,6 +28,7 @@ Perform it with any of the `ImageProcessingRequest.perform(on:orientation:)` ove
 - `final class` conforming to `ImageProcessingRequest`, `StatefulRequest`, `TargetedRequest`, `VisionRequest`, `Sendable`, `Equatable`, `Hashable`, `CustomStringConvertible`.
 - The request works at the pixel level, so both images must have the same dimensions to perform it successfully.
 - Important: optical flow requests are very resource intensive; perform only one request at a time and release memory immediately after generating an optical flow.
+- Source: https://developer.apple.com/documentation/vision/trackopticalflowrequest
 
 ## Related
 

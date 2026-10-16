@@ -30,6 +30,7 @@ let expectedFormat = imageDescriptor.pixelFormatType
 - iOS 27.0+, iPadOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+. Conforms to `Equatable`, `Sendable`.
 - A `width` or `height` of `-1` indicates a dynamic dimension.
 - `pixelFormatType` can be compared against the format constants in Core Video.
+- Source: https://developer.apple.com/documentation/coreai/imagedescriptor
 
 ## Related
 

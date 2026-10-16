@@ -36,6 +36,7 @@ default:
 - Conforms to `Sendable`, `SendableMetatype`
 - Nested structs: `MLModelStructure.NeuralNetwork`, `MLModelStructure.Pipeline`, `MLModelStructure.Program`
 - The snippet above is verbatim from the official page (including its `await try` ordering and the missing colon after `case .pipeline(let pipeline)`); correct these when compiling
+- Source: https://developer.apple.com/documentation/coreml/mlmodelstructure-swift.enum
 
 ## Related
 

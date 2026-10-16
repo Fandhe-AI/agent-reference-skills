@@ -30,6 +30,7 @@ let customTool = OCRTool(
 - `struct` in the Vision module (related module: FoundationModels), conforming to the FoundationModels `Tool` protocol, `Sendable`, and `SendableMetatype`.
 - Enable it by configuring a `LanguageModelSession` with an instance of the tool.
 - Not available in Simulator.
+- Source: https://developer.apple.com/documentation/vision/ocrtool
 
 ## Related
 

@@ -48,6 +48,7 @@ func write(to: URL, metadata: MLModelMetadata?) throws
 - Use a custom word tagger to identify content relevant to your app, like product names and points of interest
 - To use it in the Natural Language framework, save it to a model file, import it into an `NLModel`, then add that `NLModel` to an `NLTagger` with `setModels(_:forTagScheme:)`
 - Parameter types for `prediction(from:)`, `predictions(from:)`, `predictionWithConfidence(from:)` and the table-based initializers are not shown in the source page's declaration fragments
+- Source: https://developer.apple.com/documentation/createml/mlwordtagger
 
 ## Related
 

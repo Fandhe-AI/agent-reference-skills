@@ -23,6 +23,7 @@ Creating a request: `init(_ revision: GenerateAttentionBasedSaliencyImageRequest
 - Attention-based saliency; the objectness-based variant is `GenerateObjectnessBasedSaliencyImageRequest`.
 - `SaliencyImageObservation` is a grayscale heat map of important areas across an image.
 - Apple samples: "Implementing saliency-based image cropping in iOS and watchOS", "Generating high-quality thumbnails from videos".
+- Source: https://developer.apple.com/documentation/vision/generateattentionbasedsaliencyimagerequest
 
 ## Related
 

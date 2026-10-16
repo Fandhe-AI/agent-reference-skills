@@ -27,6 +27,7 @@ var errorDescription: String?
 
 - iOS 27.0+, iPadOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+. Conforms to `Error`, `LocalizedError`, `Sendable`.
 - The individual `Kind` cases are not listed on this page.
+- Source: https://developer.apple.com/documentation/coreai/asseterror
 
 ## Related
 

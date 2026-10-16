@@ -21,6 +21,7 @@ Creating a request: `init(_ revision: DetectHorizonRequest.Revision?)`. Perform 
 
 - iOS 18.0+ / iPadOS 18.0+ / Mac Catalyst 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - `HorizonObservation` carries the horizon angle information.
+- Source: https://developer.apple.com/documentation/vision/detecthorizonrequest
 
 ## Related
 

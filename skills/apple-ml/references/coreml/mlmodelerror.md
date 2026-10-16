@@ -45,6 +45,7 @@ Error domain:
 - `MLModelError.Code` conforms to `RawRepresentable` (raw type `Int`), `Equatable`, `Hashable`, `BitwiseCopyable`, `Sendable`, `SendableMetatype`
 - In Objective-C the code enum is `MLModelError : NSInteger` with constants named `MLModelErrorFeatureType`, `MLModelErrorParameters`, `MLModelErrorModelCollection`, `MLModelErrorModelDecryptionKeyFetch`, `MLModelErrorModelDecryption`, `MLModelErrorUpdate`, `MLModelErrorCustomLayer`, `MLModelErrorCustomModel`, `MLModelErrorIO`, `MLModelErrorPredictionCancelled`, `MLModelErrorGeneric`; the domain is `extern NSString * const MLModelErrorDomain`
 - Numeric raw values are not stated on the source pages
+- Source: https://developer.apple.com/documentation/coreml/mlmodelerror-swift.struct
 
 ## Related
 

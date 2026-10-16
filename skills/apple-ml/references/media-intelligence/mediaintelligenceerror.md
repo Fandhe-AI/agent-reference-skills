@@ -28,6 +28,7 @@ do {
 - iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+
 - Conforms to `Equatable`, `Error`, `Hashable`, `LocalizedError`, `Sendable` and `SendableMetatype`.
 - The `catch` pattern above is illustrative; the source page documents only the type and its cases.
+- Source: https://developer.apple.com/documentation/mediaintelligence/mediaintelligenceerror
 
 ## Related
 

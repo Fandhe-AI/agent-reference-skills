@@ -31,6 +31,7 @@ func addExcludedPoint(_: NormalizedPoint) throws
 - Maximum of 13 added points when seeded with a point or scribble, or 11 points when seeded with a box. Adding points past the limit throws.
 - Conforming to `DownloadableAssetsRequest` means the model may need downloading before the request is performed.
 - Initialize with a seed point, seed rectangle, or seed scribble buffer for the initial mask, then add points to refine it.
+- Source: https://developer.apple.com/documentation/vision/generateiterativesegmentationrequest
 
 ## Related
 

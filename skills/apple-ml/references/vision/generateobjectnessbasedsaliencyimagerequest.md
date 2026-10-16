@@ -22,6 +22,7 @@ Creating a request: `init(_ revision: GenerateObjectnessBasedSaliencyImageReques
 - iOS 18.0+ / iPadOS 18.0+ / Mac Catalyst 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - Objectness-based saliency; the attention-based variant is `GenerateAttentionBasedSaliencyImageRequest`.
 - `SaliencyImageObservation` is a grayscale heat map of important areas across an image.
+- Source: https://developer.apple.com/documentation/vision/generateobjectnessbasedsaliencyimagerequest
 
 ## Related
 

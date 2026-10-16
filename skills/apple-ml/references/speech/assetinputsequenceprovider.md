@@ -31,6 +31,7 @@ static func provider(
 - iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+.
 - Pass `analyzerInputs` to `SpeechAnalyzer.analyzeSequence(_:)`, `start(inputSequence:)`, or an analyzer initializer's input-sequence parameter.
 - To end the session after the track is processed, call one of the analyzer's `finish` methods; otherwise the analyzer waits for more input.
+- Source: https://developer.apple.com/documentation/speech/assetinputsequenceprovider
 
 ## Related
 

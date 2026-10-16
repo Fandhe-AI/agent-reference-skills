@@ -49,6 +49,8 @@ let analysisTask = Task {
 analysisTask.cancel()
 ```
 
+- Source: https://developer.apple.com/documentation/mediaintelligence/finding-the-best-moments-in-a-video
+
 ## Related
 
 - [VideoAnalyzer](./videoanalyzer.md)

@@ -31,6 +31,7 @@ Declaration: `final class AssetInventory`.
 - Your app does not work with assets directly; the system derives the relevant assets from the modules' configuration. Modules can be discarded after installation.
 - Once downloaded, assets persist between launches and are shared between apps. The system may unsubscribe your app from assets that have not been used for a while.
 - When a locale is no longer needed, call `release(reservedLocale:)`; the system removes the assets later.
+- Source: https://developer.apple.com/documentation/speech/assetinventory
 
 ## Related
 

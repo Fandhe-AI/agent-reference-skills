@@ -29,6 +29,7 @@ let asset = MediaIntelligenceImageAsset(
 - Conforms to `Sendable` and `SendableMetatype`.
 - Use the same `ID` consistently for a given image. The framework matches new submissions against existing data by this identifier; changing it makes the framework treat the image as a new asset.
 - Only the `.url(_:)` case of `Kind` is shown in the source pages fetched; other cases not confirmed.
+- Source: https://developer.apple.com/documentation/mediaintelligence/mediaintelligenceimageasset
 
 ## Related
 

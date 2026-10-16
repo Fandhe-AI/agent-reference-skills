@@ -23,6 +23,7 @@ Creating a request: `init(_ revision: DetectTextRectanglesRequest.Revision?)`. P
 - iOS 18.0+ / iPadOS 18.0+ / Mac Catalyst 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+
 - `struct` (value type) conforming to `ImageProcessingRequest`, `VisionRequest`, `Sendable`, `Equatable`, `Hashable`, `CustomStringConvertible`.
 - Locates text regions only; to read the text itself use `RecognizeTextRequest`.
+- Source: https://developer.apple.com/documentation/vision/detecttextrectanglesrequest
 
 ## Related
 

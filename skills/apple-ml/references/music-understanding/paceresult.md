@@ -22,6 +22,7 @@ let ranges: [MusicUnderstandingSession.RangedValue<Double>]
 - Parts of a song that feel faster or more energetic have a higher value than slower or less energetic parts. Values represent a perceptual events-per-minute rate.
 - The rate lets you synchronize behaviors with the music's changing energy, independent of the fixed tempo. For example, a song with a high BPM might yield a lower `Pace` value during a sparse breakdown.
 - Conforms to `Decodable`, `Encodable`, `Sendable`, `SendableMetatype`.
+- Source: https://developer.apple.com/documentation/musicunderstanding/paceresult
 
 ## Related
 

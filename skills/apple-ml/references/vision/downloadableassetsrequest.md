@@ -25,6 +25,7 @@ func downloadAssets(progress: consuming Subprogress) async throws
 - iOS 27.0+ / iPadOS 27.0+ / Mac Catalyst 27.0+ / macOS 27.0+ / tvOS 27.0+ / visionOS 27.0+
 - The only conforming type listed in the docs is `GenerateIterativeSegmentationRequest`.
 - Per the iterative-segmentation article, the request throws an error if you perform it before Vision downloads the model.
+- Source: https://developer.apple.com/documentation/vision/downloadableassetsrequest
 
 ## Related
 

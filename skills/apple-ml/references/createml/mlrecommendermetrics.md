@@ -28,6 +28,7 @@ let error: (any Error)?
 
 - Availability: macOS 10.15+ only
 - Deprecated per the source page: `precisionRecall` and `init(precisionRecall:excludingObserved:)`; use `precisionRecallDataFrame`
+- Source: https://developer.apple.com/documentation/createml/mlrecommendermetrics
 
 ## Related
 

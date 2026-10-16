@@ -33,6 +33,7 @@ let assetName = "MyModel.\(arch).aimodelc"
 - Each device needs only its own architecture's variant, so host the compiled assets remotely and download the matching one at runtime; the Background Assets framework can manage downloads, installs, and updates.
 - Load with `AIModel(contentsOf:options:)`, the same API as for `.aimodel`; use default options or options matching the compute units used at compile time.
 - The compiled asset still requires some on-device specialization; how much remains depends on the model and the compute units used.
+- Source: https://developer.apple.com/documentation/coreai/compiling-core-ai-models-ahead-of-time
 
 ## Related
 

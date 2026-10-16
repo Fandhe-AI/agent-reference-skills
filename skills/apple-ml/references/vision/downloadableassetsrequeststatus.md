@@ -31,6 +31,7 @@ case .downloading, .error:
 - iOS 27.0+ / iPadOS 27.0+ / Mac Catalyst 27.0+ / macOS 27.0+ / tvOS 27.0+ / visionOS 27.0+
 - `enum` conforming to `Equatable`, `Sendable`, `SendableMetatype`.
 - The usage snippet above is taken from the "Isolating an object from a tap, box, or scribble" article.
+- Source: https://developer.apple.com/documentation/vision/downloadableassetsrequeststatus
 
 ## Related
 

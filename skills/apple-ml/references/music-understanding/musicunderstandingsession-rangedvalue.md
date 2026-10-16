@@ -28,10 +28,11 @@ func encode(to: any Encoder) throws
 - iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+
 - A container pairing an analysis value with a `CMTimeRange` segment of media time. Music properties like key and pace change over a track; results are expressed as a sequence of contiguous segments covering the full timeline.
 - Conforms to `Decodable`, `Encodable`, `Equatable`, `Sendable`, `SendableMetatype`.
+- Source: https://developer.apple.com/documentation/musicunderstanding/musicunderstandingsession/rangedvalue
 
 ## Related
 
 - [MusicUnderstandingSession.TimedValue](./musicunderstandingsession-timedvalue.md)
 - [KeyResult](./keyresult.md)
 - [PaceResult](./paceresult.md)
-- [AnalysisType](./analysistype.md)
+- `AnalysisType`

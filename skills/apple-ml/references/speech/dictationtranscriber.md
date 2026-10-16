@@ -43,12 +43,13 @@ Declaration: `final class DictationTranscriber` (conforms to `LocaleDependentSpe
 - iOS 26.0+, iPadOS 26.0+, Mac Catalyst 26.0+, macOS 26.0+, visionOS 26.0+ (tvOS is not listed for this class).
 - Uses the same speech-to-text models as system dictation, or as `SFSpeechRecognizer` configured for on-device operation. It does not support languages or locales that `SFSpeechRecognizer` only supports via network access.
 - Improve accuracy: add words to `AnalysisContext.contextualStrings` and set it on the analyzer (initializer or `context`); supply custom vocabulary via `SFSpeechLanguageModel` plus the `ContentHint.customizedLanguage(modelConfiguration:)` hint; use hints such as `farField` for distant speech.
+- Source: https://developer.apple.com/documentation/speech/dictationtranscriber
 
 ## Related
 
 - [SpeechTranscriber](./speechtranscriber.md)
 - [SpeechAnalyzer](./speechanalyzer.md)
-- [AnalysisContext](./analysiscontext.md)
+- `AnalysisContext`
 - [SFSpeechLanguageModel](./sfspeechlanguagemodel.md)
 - [SFSpeechLanguageModel.Configuration](./sfspeechlanguagemodel-configuration.md)
 - [SFSpeechRecognizer](./sfspeechrecognizer.md)

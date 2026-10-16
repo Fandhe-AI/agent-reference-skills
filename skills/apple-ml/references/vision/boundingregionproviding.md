@@ -20,6 +20,7 @@ var boundingRegion: NormalizedRegion { get }
 
 - iOS 26.0+ / iPadOS 26.0+ / Mac Catalyst 26.0+ / macOS 26.0+ / tvOS 26.0+ / visionOS 26.0+ / watchOS 27.0+
 - Conforming types listed in the docs: `DocumentObservation.Container`, `DocumentObservation.Container.DataDetectorMatch`, `DocumentObservation.Container.List`, `DocumentObservation.Container.Table`, `DocumentObservation.Container.Text`.
+- Source: https://developer.apple.com/documentation/vision/boundingregionproviding
 
 ## Related
 

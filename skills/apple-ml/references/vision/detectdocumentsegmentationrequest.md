@@ -23,6 +23,7 @@ Creating a request: `init(_ revision: DetectDocumentSegmentationRequest.Revision
 - `struct` (value type) conforming to `ImageProcessingRequest`, `VisionRequest`, `Sendable`, `Equatable`, `Hashable`, `CustomStringConvertible`.
 - Result type: `DetectedDocumentObservation`.
 - Modern (non-VN-prefixed) request; no configurable properties other than the revision.
+- Source: https://developer.apple.com/documentation/vision/detectdocumentsegmentationrequest
 
 ## Related
 

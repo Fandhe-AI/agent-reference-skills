@@ -53,6 +53,7 @@ Reference-run comparison metrics (default PSNR; colors are metric-aware, green i
 - Start: Product > Profile, choose the Core AI template (or open Instruments directly). Profile on a real device and run the app alone for the most accurate data.
 - Tracks: top track shows all activity; expand for a per-model track, then a per-function track (default function name is `main`).
 - Event order: Specialization (at most one per model; none if fully specialized or cached), Load (only at first load; frequent Load events suggest repeated reloading), Setup (before each inference), Inference.
+- Source: https://developer.apple.com/documentation/coreai/inspecting-debugging-and-profiling-core-ai-models
 
 ## Related
 

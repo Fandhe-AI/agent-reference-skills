@@ -23,6 +23,7 @@ await SpeechModels.endRetention()
 
 - iOS 26.0+, iPadOS 26.0+, Mac Catalyst 26.0+, macOS 26.0+, tvOS 26.0+, visionOS 26.0+.
 - Pairs with `SpeechAnalyzer.Options.ModelRetention`, which caches models for later analyzers.
+- Source: https://developer.apple.com/documentation/speech/speechmodels
 
 ## Related
 

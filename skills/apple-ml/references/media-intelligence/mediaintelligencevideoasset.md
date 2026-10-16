@@ -28,6 +28,7 @@ let asset = MediaIntelligenceVideoAsset(
 - iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+
 - Conforms to `Sendable` and `SendableMetatype`.
 - Use a file URL pointing to the video on disk. Any string that uniquely identifies the video in your app can serve as the ID.
+- Source: https://developer.apple.com/documentation/mediaintelligence/mediaintelligencevideoasset
 
 ## Related
 

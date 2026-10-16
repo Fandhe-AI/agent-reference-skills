@@ -32,6 +32,7 @@ let result = try await VideoAnalyzer.shared.analyze(asset, for: HighlightAnalysi
 - Conforms to `Sendable` and `SendableMetatype`.
 - `analyze(_:for:)` returns a tuple containing one `Swift.Result` per request, in the same order the requests are provided.
 - Concurrent calls are queued and processed serially; no maximum queue depth or timeout. Supports cooperative cancellation via Swift concurrency.
+- Source: https://developer.apple.com/documentation/mediaintelligence/videoanalyzer
 
 ## Related
 

@@ -5,7 +5,7 @@ A speech-to-text transcription module that is appropriate for normal conversatio
 ## Signature / Usage
 
 ```swift
-guard let locale = SpeechTranscriber.supportedLocale(equivalentTo: Locale.current) else {
+guard let locale = await SpeechTranscriber.supportedLocale(equivalentTo: Locale.current) else {
     /* Note unsupported language */
 }
 let transcriber = SpeechTranscriber(locale: locale, preset: .transcription)
@@ -45,6 +45,8 @@ Declaration: `final class SpeechTranscriber` (conforms to `LocaleDependentSpeech
 - Several transcriber instances can share the same backing engine and models if configured similarly.
 - Assets must be installed (see `AssetInventory`) before analysis.
 - Distinct from the older `SFSpeechRecognizer` request/delegate API.
+- Usage snippet adapted from the official overview: added `await` to match the declaration (`supportedLocale(equivalentTo:)` is `async`).
+- Source: https://developer.apple.com/documentation/speech/speechtranscriber
 
 ## Related
 

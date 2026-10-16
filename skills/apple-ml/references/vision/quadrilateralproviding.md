@@ -28,6 +28,7 @@ var bottomRight: NormalizedPoint { get }
 - All four corner properties are protocol requirements.
 - Conforming types listed in the docs: `BarcodeObservation`, `DetectedDocumentObservation`, `RecognizedTextObservation`, `RectangleObservation`, `TextObservation`.
 - `TrackRectangleRequest` takes an observation that is both `QuadrilateralProviding` and `VisionObservation`.
+- Source: https://developer.apple.com/documentation/vision/quadrilateralproviding
 
 ## Related
 

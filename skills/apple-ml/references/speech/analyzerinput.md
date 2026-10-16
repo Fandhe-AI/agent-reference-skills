@@ -27,6 +27,7 @@ inputBuilder.yield(AnalyzerInput(buffer: pcmBuffer))
 - The audio must be in a format supported by the analyzer's modules; the analyzer does not convert. Call `SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith:considering:)` (or variants) to pick a target format.
 - The audio format may differ from one `AnalyzerInput` to the next; if the new format is supported, modules are reconfigured as needed.
 - `buffer` is marked deprecated in the source documentation.
+- Source: https://developer.apple.com/documentation/speech/analyzerinput
 
 ## Related
 

@@ -63,6 +63,7 @@ if await analyzer.state == .stale {
 - The working directory persists between launches; subsequent runs resume where the previous session ended.
 - `FaceGroupAnalyzer.Entity` is "a cluster of faces that belong to the same person".
 - Not related to Vision face APIs (`DetectFaceRectanglesRequest`, `VNDetectFaceRectanglesRequest`): those return per-image observations and do not group faces by person or persist data.
+- Source: https://developer.apple.com/documentation/mediaintelligence/facegroupanalyzer
 
 ## Related
 

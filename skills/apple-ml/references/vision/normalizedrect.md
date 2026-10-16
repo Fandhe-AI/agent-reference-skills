@@ -41,6 +41,7 @@ func verticallyFlipped() -> NormalizedRect
 - iOS 18.0+ / iPadOS 18.0+ / Mac Catalyst 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - `struct` conforming to `CustomStringConvertible`, `Decodable`, `Encodable`, `Equatable`, `Hashable`, `Sendable`, `SendableMetatype`.
 - Used for `ImageProcessingRequest.regionOfInterest` and as the seed box of `GenerateIterativeSegmentationRequest`.
+- Source: https://developer.apple.com/documentation/vision/normalizedrect
 
 ## Related
 

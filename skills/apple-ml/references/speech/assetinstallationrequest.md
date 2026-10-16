@@ -24,6 +24,7 @@ Declaration: `@objc final class AssetInstallationRequest` (inherits `NSObject`; 
 - Do not create instances directly; obtain them from `AssetInventory.assetInstallationRequest(supporting:)`.
 - The system consolidates requests; you may obtain several instances and call `downloadAndInstall()` several times without redundant downloads.
 - Progress is observable through its `ProgressReporting` conformance.
+- Source: https://developer.apple.com/documentation/speech/assetinstallationrequest
 
 ## Related
 

@@ -33,6 +33,7 @@ static func deleteEntry(referencedBy: Data) throws
 
 - iOS 27.0+, iPadOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+. Conforms to `Sendable`, `SendableMetatype`.
 - Each cache entry contains a specialized asset formed from a specific `.aimodel` or `.aimodelc` and `SpecializationOptions` combination.
+- Source: https://developer.apple.com/documentation/coreai/aimodelcache
 
 ## Related
 

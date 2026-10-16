@@ -71,6 +71,7 @@ guard let outputValue = outputs.remove("result"),
 - `NDArray` is read-only by default: write via `mutableView(as:)`, read via `view()`. Swift enforces this at compile time.
 - For images, `ImageDescriptor.width` / `height` of `-1` indicates a dynamic dimension; `pixelFormatType` is an `OSType` comparable to Core Video format constants.
 - Boundary with Core ML model format (`.mlmodel` / `.mlpackage`) is not confirmed in the source; this page does not state one.
+- Source: https://developer.apple.com/documentation/coreai/integrating-on-device-ai-models-in-your-app-with-core-ai
 
 ## Related
 

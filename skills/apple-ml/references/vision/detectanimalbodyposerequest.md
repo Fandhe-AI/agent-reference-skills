@@ -24,6 +24,7 @@ Creating a request: `init(_ revision: DetectAnimalBodyPoseRequest.Revision?)`. P
 - iOS 18.0+ / iPadOS 18.0+ / Mac Catalyst 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+
 - `struct` (value type) conforming to `ImageProcessingRequest`, `VisionRequest`, `Sendable`, `Equatable`, `Hashable`, `CustomStringConvertible`.
 - Sibling pose requests: `DetectHumanBodyPoseRequest`, `DetectHumanBodyPose3DRequest`, `DetectHumanHandPoseRequest`.
+- Source: https://developer.apple.com/documentation/vision/detectanimalbodyposerequest
 
 ## Related
 

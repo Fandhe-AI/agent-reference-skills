@@ -28,6 +28,7 @@ All members below are static and available when `Self` is `_MLTensorRange`.
 - iOS 18.0+, iPadOS 18.0+, Mac Catalyst 18.0+, macOS 15.0+, tvOS 18.0+, visionOS 2.0+, watchOS 11.0+
 - Inherits from `Sendable`, `SendableMetatype`
 - Official guidance: don't use this type directly
+- Source: https://developer.apple.com/documentation/coreml/mltensorrangeexpression
 
 ## Related
 

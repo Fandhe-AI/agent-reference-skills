@@ -24,6 +24,7 @@ Creating a request: `init(_ revision: DetectFaceLandmarksRequest.Revision?)`. Pe
 - By default the request first locates all faces in the input image, then analyzes each for facial features.
 - To analyze only some faces, or faces you already located, set `inputFaceObservations` to `FaceObservation` objects, either from a `DetectFaceRectanglesRequest` or manually created with the bounding boxes of the faces.
 - File name carries the `-modern` suffix to avoid collision with `vndetectfacelandmarksrequest.md` (legacy VN-prefixed API).
+- Source: https://developer.apple.com/documentation/vision/detectfacelandmarksrequest
 
 ## Related
 

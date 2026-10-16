@@ -88,6 +88,7 @@ Deletion APIs:
 - If an `AIModel` instance still uses a cache entry, deletion is deferred until that instance is deallocated.
 - App group caches require the App Groups entitlement (`com.apple.security.application-groups`).
 - The source `.aimodel` plus the options index the cache, so deleting the source file breaks `AIModel(contentsOf:options:)` and `model(for:options:)`; use bookmark data instead. A bookmark does not prevent removal: if the system purges the assets, you delete them, or an OS update invalidates them, resolving fails and you must download and specialize again.
+- Source: https://developer.apple.com/documentation/coreai/managing-model-specialization-and-caching
 
 ## Related
 

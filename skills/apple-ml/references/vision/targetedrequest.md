@@ -14,6 +14,7 @@ protocol TargetedRequest : VisionRequest
 - Inherits from `VisionRequest`, `Sendable`, `SendableMetatype`, `Equatable`, `Hashable`, `CustomStringConvertible`.
 - The docs page lists no members of its own.
 - Conforming types listed in the docs: `TrackHomographicImageRegistrationRequest`, `TrackOpticalFlowRequest`, `TrackTranslationalImageRegistrationRequest`. Used with `TargetedImageRequestHandler`.
+- Source: https://developer.apple.com/documentation/vision/targetedrequest
 
 ## Related
 

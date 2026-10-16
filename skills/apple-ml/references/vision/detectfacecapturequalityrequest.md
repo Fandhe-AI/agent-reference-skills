@@ -24,6 +24,7 @@ Creating a request: `init(_ revision: DetectFaceCaptureQualityRequest.Revision?)
 - Faces with quality closer to `1` are better lit, sharper, and more centrally positioned than faces with quality closer to `0`.
 - If you don't execute the request, or the request fails, `FaceObservation.captureQuality` is `nil`.
 - Apple sample: "Analyzing a selfie and visualizing its content".
+- Source: https://developer.apple.com/documentation/vision/detectfacecapturequalityrequest
 
 ## Related
 

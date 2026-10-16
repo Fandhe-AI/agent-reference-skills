@@ -36,6 +36,7 @@ try wordEmbedding.write(toFile: "~/Desktop/WordEmbedding.mlmodel")
 - Configure with a dictionary keyed by the vocabulary strings; each value is an array of doubles representing a vector. All arrays must be the same length, which determines the number of dimensions
 - Save to an `.mlmodel` file and add it to the Xcode project; at runtime an `NLEmbedding` instance finds similar strings based on the proximity of their vectors
 - A word embedding file can efficiently store many strings and their vectors
+- Source: https://developer.apple.com/documentation/createml/mlwordembedding
 
 ## Related
 

@@ -28,6 +28,7 @@ enum ComputeUnitKind {
 - iOS 27.0+, iPadOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+. Conforms to `Equatable`, `Hashable`, `Sendable`.
 - By default, specialization uses all available compute units on the device.
 - Name distance: Core AI `ComputeUnitKind` (selected via `SpecializationOptions`) is distinct from Core ML `MLComputeUnits` (set via `MLModelConfiguration.computeUnits`).
+- Source: https://developer.apple.com/documentation/coreai/computeunitkind
 
 ## Related
 

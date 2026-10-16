@@ -25,6 +25,7 @@ let ranges: [InstrumentActivityResult.Instrument : [CMTimeRange]]
 - `activity` is a continuous signal per instrument: `0.0` means the instrument isn't present, `1.0` means it is fully active. `ranges` gives discrete time windows of detection. Use both together to determine when an instrument is present and how prominently it features.
 - Individual `Instrument` categories are not enumerated in the source used for this page.
 - Conforms to `Decodable`, `Encodable`, `Sendable`, `SendableMetatype`.
+- Source: https://developer.apple.com/documentation/musicunderstanding/instrumentactivityresult
 
 ## Related
 

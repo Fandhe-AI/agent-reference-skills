@@ -47,6 +47,7 @@ func write(to: URL, metadata: MLModelMetadata?) throws
 - Train with a dataset of a device's motion sensors (for example the accelerometer and gyroscope on an Apple Watch); the saved Core ML model predicts a user's activity from motion-sensor data your app captures
 - Evaluate with a dataset completely distinct from the training and validation datasets, then inspect the returned metrics; if the classifier makes too many mistakes, train another with different parameters or a better training dataset
 - Parameter types for several declarations (train / makeTrainingSession / predictions) are not shown in the source page's declaration fragments
+- Source: https://developer.apple.com/documentation/createml/mlactivityclassifier
 
 ## Related
 

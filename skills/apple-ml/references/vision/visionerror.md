@@ -38,6 +38,7 @@ enum VisionError
 - iOS 18.0+ / iPadOS 18.0+ / Mac Catalyst 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - Conforms to `Error`, `LocalizedError`, `Copyable`, `Escapable`, `Sendable`, `SendableMetatype`.
 - The docs page gives only one-line descriptions per case; no further detail is published there.
+- Source: https://developer.apple.com/documentation/vision/visionerror
 
 ## Related
 

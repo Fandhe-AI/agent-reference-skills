@@ -29,6 +29,7 @@ let shortTerm: [MusicUnderstandingSession.TimedValue<Float>]
 - In `SessionResult`, a single `LoudnessResult` contains all analysis values for the entire song, with `momentary` and `shortTerm` arrays holding the complete set of measurements across the song's duration.
 - In the streaming `loudnessResults` context, the framework delivers multiple results progressively during analysis; each result's `momentary` and `shortTerm` arrays contain only one value representing the measurement at that point in time.
 - Conforms to `Decodable`, `Encodable`, `Sendable`, `SendableMetatype`.
+- Source: https://developer.apple.com/documentation/musicunderstanding/loudnessresult
 
 ## Related
 

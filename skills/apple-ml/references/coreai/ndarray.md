@@ -42,6 +42,7 @@ Nested types: `NDArray.View` (immutable non-owning view), `NDArray.MutableView`,
 - iOS 27.0+, iPadOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+. Conforms to `Escapable`, `InferenceValue.ViewRepresentable`, `InferenceValue.MutableViewRepresentable`, `Sendable`.
 - An `NDArray` is read-only by default; write through `mutableView(as:)`, read through a view.
 - Name distance: Core AI `NDArray` is distinct from `MPSNDArray` (Metal Performance Shaders; see the apple-silicon skill) and from Core ML `MLMultiArray` / `MLTensor`.
+- Source: https://developer.apple.com/documentation/coreai/ndarray
 
 ## Related
 

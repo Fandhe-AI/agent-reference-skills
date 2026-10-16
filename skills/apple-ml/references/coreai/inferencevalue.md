@@ -30,6 +30,7 @@ Nested types: `InferenceValue.Descriptor` (enum: type and shape of a value; case
 
 - iOS 27.0+, iPadOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+.
 - To tell which type an output uses, check the Functions tab in the Xcode model viewer or inspect the `InferenceFunctionDescriptor` at runtime.
+- Source: https://developer.apple.com/documentation/coreai/inferencevalue
 
 ## Related
 

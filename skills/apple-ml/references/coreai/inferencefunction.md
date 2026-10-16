@@ -36,6 +36,7 @@ Supporting types:
 - iOS 27.0+, iPadOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+.
 - `Sendable`: can run concurrently from multiple tasks; the function automatically allocates additional intermediate buffers as needed to support concurrency.
 - Related background-task entitlement: Background Inference (`com.apple.developer.background-tasks.continued-processing.inference`).
+- Source: https://developer.apple.com/documentation/coreai/inferencefunction
 
 ## Related
 

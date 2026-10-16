@@ -33,6 +33,7 @@ var error: (any Error)?
 
 - Availability: macOS 10.14+ only
 - Deprecated per the source page: `precisionRecall` and `confusion` (both `MLDataTable`); use the `DataFrame` variants
+- Source: https://developer.apple.com/documentation/createml/mlwordtaggermetrics
 
 ## Related
 

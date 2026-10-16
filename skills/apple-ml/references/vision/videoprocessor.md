@@ -35,15 +35,15 @@ do {
 
     // Start the analysis.
     videoProcessor.startAnalysis()
+
+    var aestheticsResults: [CMTime: Float] = [:]
+    for try await observation in aestheticsScoreStream {
+        if let timeRange = observation.timeRange {
+            aestheticsResults[timeRange.start] = observation.overallScore
+        }
+    }
 } catch {
     print("Error processing the video: \(error.localizedDescription)")
-}
-
-var aestheticsResults: [CMTime: Float] = [:]
-for try await observation in aestheticsScoreStream {
-    if let timeRange = observation.timeRange {
-        aestheticsResults[timeRange.start] = observation.overallScore
-    }
 }
 ```
 
@@ -63,7 +63,9 @@ for try await observation in aestheticsScoreStream {
 - iOS 18.0+ / iPadOS 18.0+ / Mac Catalyst 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - `final class` conforming to `Sendable` and `SendableMetatype`.
 - Processing every frame gives the most accuracy but is computationally expensive; choose a `Cadence` before starting.
+- Usage snippet combines the official listings into one scope (the result loop sits inside the `do` block so `aestheticsScoreStream` is in scope).
 - The snippet joins the three source code blocks from the overview; the `startAnalysis()` call is written without arguments in the source while the documented signature is `startAnalysis(of: CMTimeRange?)`.
+- Source: https://developer.apple.com/documentation/vision/videoprocessor
 
 ## Related
 

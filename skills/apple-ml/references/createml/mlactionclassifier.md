@@ -49,6 +49,7 @@ func write(to: URL, metadata: MLModelMetadata?) throws
 
 - Availability: macOS 11.0+ only (no iOS / visionOS availability listed on the source page)
 - The source page for this symbol carries no prose overview or code example; the snippet above is assembled from the declarations listed on the page
+- Source: https://developer.apple.com/documentation/createml/mlactionclassifier
 
 ## Related
 

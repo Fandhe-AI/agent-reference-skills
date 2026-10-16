@@ -27,6 +27,7 @@ init(languageModel: URL, vocabulary: URL?, weight: NSNumber?)
 
 - iOS 17.0+, iPadOS 17.0+, Mac Catalyst 17.0+, macOS 14.0+, visionOS 1.0+. Inherits `NSObject`; conforms to `NSCopying`, `NSSecureCoding`, `Sendable`.
 - Pass it to `SFSpeechLanguageModel.prepareCustomLanguageModel(for:configuration:completion:)` to say where the model file is created, and to `SFSpeechRecognitionRequest.customizedLanguageModel` or `DictationTranscriber.ContentHint.customizedLanguage(modelConfiguration:)` to say where the system finds it.
+- Source: https://developer.apple.com/documentation/speech/sfspeechlanguagemodel/configuration
 
 ## Related
 

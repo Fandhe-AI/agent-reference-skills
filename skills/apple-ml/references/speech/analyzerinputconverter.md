@@ -26,6 +26,7 @@ let remaining = try converter.flush()
 
 - iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+.
 - Use it to convert `AVAudioBuffer` audio to `AnalyzerInput` on the fly; call `flush()` when the audio ends.
+- Source: https://developer.apple.com/documentation/speech/analyzerinputconverter
 
 ## Related
 

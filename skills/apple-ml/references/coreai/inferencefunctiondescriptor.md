@@ -39,6 +39,7 @@ guard arrayDescriptor.shape == [3, 4] else {
 - iOS 27.0+, iPadOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+. Conforms to `Sendable`.
 - Obtain one from `AIModel.functionDescriptor(for:)` or the `InferenceFunction.descriptor` property.
 - Useful to verify at runtime that a function accepts the inputs your app provides, or to adapt to inputs and outputs that change between model deployments.
+- Source: https://developer.apple.com/documentation/coreai/inferencefunctiondescriptor
 
 ## Related
 

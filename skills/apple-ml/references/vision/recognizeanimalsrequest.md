@@ -24,6 +24,7 @@ Creating a request: `init(_ revision: RecognizeAnimalsRequest.Revision?)`. Perfo
 - iOS 18.0+ / iPadOS 18.0+ / Mac Catalyst 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - `Animal` is "an identifier for a recognizable animal"; `Identifier` is a separate nested enum (no abstract in the docs).
 - Apple sample: "Classifying images for categorization and search".
+- Source: https://developer.apple.com/documentation/vision/recognizeanimalsrequest
 
 ## Related
 

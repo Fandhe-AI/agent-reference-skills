@@ -21,6 +21,7 @@ var boundingBox: NormalizedRect { get }
 - iOS 18.0+ / iPadOS 18.0+ / Mac Catalyst 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - Inherited by `QuadrilateralProviding`.
 - Conforming types listed in the docs: `BarcodeObservation`, `DetectedDocumentObservation`, `DetectedObjectObservation`, `FaceObservation`, `HumanObservation`, `RecognizedObjectObservation`, `RecognizedTextObservation`, `RectangleObservation`, `TextObservation`.
+- Source: https://developer.apple.com/documentation/vision/boundingboxproviding
 
 ## Related
 

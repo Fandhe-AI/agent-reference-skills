@@ -31,6 +31,7 @@ let mode: KeyResult.Mode
 - A key is the central note that organizes a piece of music. The tonic can be any of the supported enharmonic spellings: A, A♭, A♯, B♭, B, C, C♯, D♭, D, D♯, E♭, E, F, F♯, G, G♭, or G♯. The framework represents the enharmonic equivalents as distinct cases to preserve the original spelling.
 - Individual `Mode` / `Tonic` cases are not enumerated in the source used for this page.
 - Conforms to `Decodable`, `Encodable`, `Sendable`, `SendableMetatype`.
+- Source: https://developer.apple.com/documentation/musicunderstanding/keyresult
 
 ## Related
 

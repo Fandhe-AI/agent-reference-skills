@@ -20,6 +20,7 @@ protocol LocaleDependentSpeechModule : SpeechModule
 
 - iOS 26.0+, iPadOS 26.0+, Mac Catalyst 26.0+, macOS 26.0+, tvOS 26.0+, visionOS 26.0+.
 - Conforming types: `SpeechTranscriber`, `DictationTranscriber`. Locale reservations in `AssetInventory` apply only to modules conforming to this protocol.
+- Source: https://developer.apple.com/documentation/speech/localedependentspeechmodule
 
 ## Related
 

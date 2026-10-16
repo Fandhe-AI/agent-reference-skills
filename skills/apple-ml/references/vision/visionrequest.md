@@ -31,6 +31,7 @@ func setComputeDevice(_: MLComputeDevice?, for: ComputeStage)
 - `VisionResult` is "the result the framework produces by performing a request" (enum).
 - `MLComputeDevice` comes from Core ML; `ComputeStage` is an enum of types that represent the compute stage.
 - Conforming request types include `ClassifyImageRequest`, `CoreMLRequest`, `DetectBarcodesRequest`, `DetectContoursRequest`, `DetectDocumentSegmentationRequest`, `DetectRectanglesRequest`, `GenerateImageFeaturePrintRequest`, `RecognizeTextRequest`, `TrackObjectRequest`, and the others listed on `ImageProcessingRequest`.
+- Source: https://developer.apple.com/documentation/vision/visionrequest
 
 ## Related
 

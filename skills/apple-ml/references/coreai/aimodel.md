@@ -28,6 +28,7 @@ let model = try await AIModel(contentsOf: modelURL)
 - iOS 27.0+, iPadOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+. Conforms to `Sendable` and `SendableMetatype`.
 - The instance is lightweight and does not own weights or intermediate buffers; those belong to the `InferenceFunction`s loaded from it.
 - Use `functionDescriptor(for:)` to inspect a function's inputs and outputs, then load an `InferenceFunction` to run inference.
+- Source: https://developer.apple.com/documentation/coreai/aimodel
 
 ## Related
 

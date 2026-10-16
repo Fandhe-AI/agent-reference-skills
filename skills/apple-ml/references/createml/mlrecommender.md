@@ -40,6 +40,7 @@ func write(to: URL, metadata: MLModelMetadata?) throws
 - Save as an `.mlmodel` file and drag it into the Xcode Project navigator; recommendations then run on-device, keeping user data on the device
 - Deprecated per the source page: `recommendations(fromUsers:maxCount:restrictingToItems:excluding:excludingObserved:)`, `getSimilarItems(fromItems:maxCount:)`, and `MLIdentifier`
 - Parameter types for the table-based declarations are not shown in the source page's declaration fragments
+- Source: https://developer.apple.com/documentation/createml/mlrecommender
 
 ## Related
 

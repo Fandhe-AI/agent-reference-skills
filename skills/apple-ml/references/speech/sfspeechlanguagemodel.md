@@ -31,10 +31,11 @@ class func prepareCustomLanguageModel(
 - iOS 17.0+, iPadOS 17.0+, Mac Catalyst 17.0+, macOS 14.0+, visionOS 1.0+. Inherits `NSObject`.
 - The two `clientIdentifier:` variants are marked deprecated.
 - Use with `DictationTranscriber.ContentHint.customizedLanguage(modelConfiguration:)` or `SFSpeechRecognitionRequest.customizedLanguageModel`.
+- Source: https://developer.apple.com/documentation/speech/sfspeechlanguagemodel
 
 ## Related
 
 - [SFSpeechLanguageModel.Configuration](./sfspeechlanguagemodel-configuration.md)
 - [SFCustomLanguageModelData](./sfcustomlanguagemodeldata.md)
-- [AnalysisContext](./analysiscontext.md)
+- `AnalysisContext`
 - [DictationTranscriber](./dictationtranscriber.md)

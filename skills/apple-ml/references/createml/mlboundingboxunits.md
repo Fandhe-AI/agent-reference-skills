@@ -26,6 +26,7 @@ case boundingBox(units: MLBoundingBoxUnits, origin: MLBoundingBoxCoordinatesOrig
 - Availability: macOS 10.15+ only
 - Conforms to `Equatable`, `Hashable`, `Sendable`, `SendableMetatype`
 - All bounding box annotations in an annotation file must use the same units for their coordinates and size (see `MLObjectDetector.AnnotationType.boundingBox(units:origin:anchor:)`)
+- Source: https://developer.apple.com/documentation/createml/mlboundingboxunits
 
 ## Related
 

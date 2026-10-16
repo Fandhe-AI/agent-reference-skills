@@ -25,6 +25,7 @@ Perform it with any of the `ImageProcessingRequest.perform(on:orientation:)` ove
 - `final class` conforming to `ImageProcessingRequest`, `StatefulRequest`, `TargetedRequest`, `VisionRequest`, `Sendable`, `Equatable`, `Hashable`, `CustomStringConvertible`.
 - `ImageTranslationAlignmentObservation` carries affine transform information. For a perspective warp matrix use `TrackHomographicImageRegistrationRequest`.
 - The page lists a `ComputeStage` type under "Configuring a request" (enum of compute-stage types; no further detail in the source).
+- Source: https://developer.apple.com/documentation/vision/tracktranslationalimageregistrationrequest
 
 ## Related
 

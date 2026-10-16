@@ -33,13 +33,13 @@
 | GenerateIterativeSegmentationRequest | A request that generates a segmentation mask from points… | [generateiterativesegmentationrequest.md](./generateiterativesegmentationrequest.md) |
 | GenerateObjectnessBasedSaliencyImageRequest | A request that generates a heat map identifying object-like parts… | [generateobjectnessbasedsaliencyimagerequest.md](./generateobjectnessbasedsaliencyimagerequest.md) |
 | GeneratePersonInstanceMaskRequest | Produces a mask of individual people found in the input image… | [generatepersoninstancemaskrequest.md](./generatepersoninstancemaskrequest.md) |
-| GeneratePersonSegmentationRequest | Produces a matte image for person/background segmentation… | [generatepersonsegmentationrequest.md](./generatepersonsegmentationrequest.md) |
+| GeneratePersonSegmentationRequest | Produces a matte image (person/background mask) for a person… | [generatepersonsegmentationrequest.md](./generatepersonsegmentationrequest.md) |
 | ImageProcessingRequest | A protocol for image-analysis requests that focus on a specific part… | [imageprocessingrequest.md](./imageprocessingrequest.md) |
 | ImageRequestHandler | Modern async/await replacement for `VNImageRequestHandler`… | [imagerequesthandler.md](./imagerequesthandler.md) |
 | Isolating an object from a tap, box, or scribble | Generate and refine a mask that isolates an object… | [isolating-an-object-from-a-tap-box-or-scribble.md](./isolating-an-object-from-a-tap-box-or-scribble.md) |
 | NormalizedCircle | The center point and radius of a 2D circle in normalized coordinates… | [normalizedcircle.md](./normalizedcircle.md) |
-| NormalizedPoint | A point in a 2D coordinate system, in normalized coordinates… | [normalizedpoint.md](./normalizedpoint.md) |
-| NormalizedRect | The location and dimensions of a rectangle in normalized coordinates… | [normalizedrect.md](./normalizedrect.md) |
+| NormalizedPoint | A point in a 2D coordinate system, expressed in Vision's normalized coordinates… | [normalizedpoint.md](./normalizedpoint.md) |
+| NormalizedRect | The location and dimensions of a rectangle in Vision's normalized coordinates… | [normalizedrect.md](./normalizedrect.md) |
 | NormalizedRegion | A polygon composed of normalized points… | [normalizedregion.md](./normalizedregion.md) |
 | OCRTool | A Foundation Models tool that recognizes text in an image… | [ocrtool.md](./ocrtool.md) |
 | PoseProviding | An observation protocol that provides a collection of joints… | [poseproviding.md](./poseproviding.md) |
