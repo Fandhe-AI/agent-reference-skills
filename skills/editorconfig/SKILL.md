@@ -4,7 +4,8 @@ description: >
   EditorConfig (エディタ設定統一フォーマット) リファレンス。
   .editorconfig ファイル、glob パターン、root、
   indent_style / indent_size / tab_width、end_of_line, charset、
-  trim_trailing_whitespace, insert_final_newline, max_line_length。
+  trim_trailing_whitespace, insert_final_newline, max_line_length,
+  spelling_language。
 user-invocable: false
 model: sonnet
 ---

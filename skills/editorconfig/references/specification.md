@@ -69,7 +69,7 @@ indent_size = 2
 - **値**: 最初の `=` より後の部分（`=` がない場合は空文字列）
 - キーと値の前後の空白はトリム、中間の空白は保持
 - キーは **大文字小文字を区別しない**（パース後に小文字化）
-- 値も **大文字小文字を区別しない**（lowercased after parsing）
+- 値の大文字小文字非区別は `indent_style` / `indent_size` / `end_of_line` / `root` の各キーで規定（詳細は properties.md）
 
 ### 長さ制約
 
