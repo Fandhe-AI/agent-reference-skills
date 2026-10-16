@@ -9,9 +9,9 @@ Guide for migrating a Wear Compose app from Material 2.5 (`androidx.wear.compose
 implementation("androidx.wear.compose:compose-material:1.4.0")
 
 // M3
-implementation("androidx.wear.compose:compose-material3:1.7.0-alpha07")
-implementation("androidx.wear.compose:compose-foundation:1.7.0-alpha07")
-implementation("androidx.wear.compose:compose-navigation:1.7.0-alpha07")
+implementation("androidx.wear.compose:compose-material3:1.7.1")
+implementation("androidx.wear.compose:compose-foundation:1.7.1")
+implementation("androidx.wear.compose:compose-navigation:1.7.1")
 ```
 
 ```kotlin
@@ -52,6 +52,8 @@ MaterialTheme(
 
 ## Notes
 
+- Versions: the stable release is 1.7.1; the migration guide shows `1.8.0-alpha01` (alpha) for `compose-material3` / `compose-foundation` / `compose-navigation`. M2.5 `compose-material` stays at `1.4.0`.
+- Foundation 1.8.0-alpha01 introduced new components designed to work with M3, and `SwipeDismissableNavHost` (Wear Compose Navigation) has an updated animation on Wear OS 6 (API level 36) or higher; the guide suggests updating Foundation and Navigation together with Material 3.
 - Don't run M2.5 (`androidx.wear.compose.material`) and M3 (`androidx.wear.compose.material3`) in one app long term; migrate in a phased approach and also drop Horologist Compose Layout/Material composables in favor of M3 equivalents.
 - `ColorScheme` (M3) has 28 named color roles vs `Colors`' 13 and adds dynamic theming: `dynamicColorScheme(LocalContext.current) ?: myBrandColors`, matching the current watch face.
 - `MaterialTheme` in M3 gains a required `motionScheme: MotionScheme` parameter (`MotionScheme.standard()` / `.expressive()`) not present in M2.5.

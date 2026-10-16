@@ -39,10 +39,13 @@ class MyMessageListenerService : WearableListenerService() {
 
 - No offline support and no persistence: if the destination node is unreachable when `sendMessage` is called, the call fails rather than queuing.
 - Prefers Bluetooth, falling back to Wi-Fi when Bluetooth is unavailable; to conserve battery, only send messages to nearby (directly Bluetooth-connected) nodes rather than any reachable node.
-- For payloads that must persist or arrive later, use `DataClient`; for continuous byte streams (e.g. large files or audio), use `ChannelClient` (not covered here).
+- For payloads that must persist or arrive later, use `DataClient`; for continuous byte streams (e.g. large files or audio), use `ChannelClient` (see `channelclient.md`).
+- `sendMessage()` is best effort and has no built-in retry; if the target device disconnects before the network transfer starts, it returns `TARGET_NODE_NOT_CONNECTED`.
+- Bluetooth is preferred, but messages can use Wi-Fi if it is the only type of connection available (client-types guide).
 
 ## Related
 
+- [ChannelClient](./channelclient.md)
 - [DataClient](./dataclient.md)
 - [WearableListenerService](./wearablelistenerservice.md)
 - [NodeClient](./nodeclient.md)

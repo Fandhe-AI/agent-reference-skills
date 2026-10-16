@@ -72,9 +72,28 @@ Provides padding/space between adjacent elements.
 | `setWidth` / `setHeight` | `SpacerDimension` | Space reserved on each axis. |
 | `setModifiers` | `Modifiers` | Standard modifiers. |
 
+### Spannable / Span / SpanText / SpanImage
+
+A `Spannable` lays out elements similarly to text, so one substring in a larger block of text can have its own style (not possible with a single `Text`). It is filled with `Span` children only.
+
+| Name | Type | Description |
+|------|------|-------------|
+| `Spannable.Builder().addSpan` | `Span` | Adds a child span. Other children and nested `Spannable` instances are not allowed. |
+| `Span` | base type | Child of `Spannable`; two kinds: `SpanText` and `SpanImage`. |
+| `SpanText.Builder()` (`setText`, `setFontStyle`) | `SpanText` | Renders text with a specific style (e.g. `FontStyle.Builder().setItalic(true)`). |
+| `SpanImage.Builder()` (`setWidth`, `setHeight`, `setResourceId`) | `SpanImage` | Renders an image inline with text; the resource ID is registered like an `Image`. |
+
 ### Column / Row
 
-Linear layout containers that arrange children vertically (`Column`) or horizontally (`Row`), analogous to `Box` but along one axis; `mainSlot` content of `primaryLayout` typically composes rows, columns, and button groups. Beyond `addContent`, `setWidth`/`setHeight`, `setModifiers`, and alignment setters shared with `Box`, consult the current `androidx.wear.protolayout.LayoutElementBuilders.Row` / `.Column` API reference for the full setter list, which was not independently re-verified against source for this page.
+Linear layout containers that arrange children vertically (`Column`) or horizontally (`Row`), analogous to `Box` but along one axis.
+
+| Name | Type | Description |
+|------|------|-------------|
+| `Column.Builder().addContent` / `Row.Builder().addContent` | `LayoutElement` | Adds a child in order along the container's axis. |
+| `Column.Builder().setHorizontalAlignment` | `Int` (`HORIZONTAL_ALIGN_*`) / `HorizontalAlignmentProp` | Horizontal alignment of children within the column. |
+| `Row.Builder().setVerticalAlignment` | `Int` (`VERTICAL_ALIGN_*`) / `VerticalAlignmentProp` | Vertical alignment of children within the row. |
+| `setWidth` / `setHeight` | `ContainerDimension` | Container sizing (`dp()`, `expand()`, `wrap()`). |
+| `setModifiers` | `Modifiers` | Standard modifiers. |
 
 ### Arc / ArcLine
 

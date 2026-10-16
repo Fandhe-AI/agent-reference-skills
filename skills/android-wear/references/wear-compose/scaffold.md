@@ -76,6 +76,7 @@ AppScaffold {
 - `ScreenScaffold` has many overloads keyed by scroll-state type (`ScalingLazyListState`, `TransformingLazyColumnState`, `LazyListState`, `ScrollState`, `ScrollInfoProvider`); the `ScrollState` overload does not support the `edgeButton` slot.
 - `HorizontalPagerScaffold` / `VerticalPagerScaffold` take a Wear `androidx.wear.compose.foundation.pager.PagerState`, so pair them with the Wear `HorizontalPager` / `VerticalPager` from that same package, not the mobile `androidx.compose.foundation.pager` one (incompatible `PagerState` type).
 - Package: `androidx.wear.compose.material3` (artifact `androidx.wear.compose:compose-material3`).
+- Next version (alpha, not covered here): Wear Compose 1.8.0-alpha01 adds `AppScaffold` / `ScreenScaffold` overloads without the `timeText` parameter that migrate to the System Status Bar (falling back to the default `TimeText` on builds without it), and a `StatusBarSuppression` helper composable. Existing overloads migrate to the System Status Bar by default unless an explicit custom `timeText` is provided.
 
 ## Related
 
