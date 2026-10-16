@@ -19,7 +19,7 @@ stripe login --api-key <YOUR_SECRET_KEY>
 ## プロジェクト別ログイン
 
 ```sh
-stripe login --project-name=<project>
+stripe login --project-name="<project>"
 ```
 
 ## ログアウト

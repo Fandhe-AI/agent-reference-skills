@@ -10,7 +10,7 @@ curl https://api.stripe.com/v1/capital/financing_offers \
   -u "<<YOUR_SECRET_KEY>>:"
 
 # Mark an offer as delivered after sending the offer email
-curl https://api.stripe.com/v1/capital/financing_offers/financingoffer_abc123/mark_delivered \
+curl -X POST https://api.stripe.com/v1/capital/financing_offers/financingoffer_abc123/mark_delivered \
   -u "<<YOUR_SECRET_KEY>>:"
 
 # Create an application link (use capital_financing_reporting for reporting)
@@ -74,6 +74,7 @@ Transitions: Undelivered to Delivered; Delivered to Accepted; Accepted to Paid o
 - Past-due requirements may appear on the `loans` or `cash_advances` capabilities; they do not affect other capabilities such as `card_payments` or `transfers`. `account.updated` is informational; retrieve capability requirements with `GET /v1/accounts/{id}/capabilities/loans`.
 - Test mode: simulate offer expiry, approval and disbursal, and repayment from the sandbox Capital Dashboard. All webhooks except `capital.financing_offer.canceled` can be simulated. The **Make payment** button can take up to 15 minutes to enable for test offers.
 - Before enabling automatic offers in live mode (Stripe then creates offers daily), confirm connected account email addresses (Comms Center) if using Stripe co-branded no-code offer emails, and contact Stripe to enable live mode access to the financing offers API.
+- The official example for `mark_delivered` omits `-X POST`, but it is a POST endpoint (see financing-offers.md); the example above adds `-X POST`.
 - Refills and reporting/reconciliation are covered by separate Stripe guides.
 - Source: https://docs.stripe.com/capital/api-integration
 
