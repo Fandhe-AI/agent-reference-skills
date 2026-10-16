@@ -5,7 +5,7 @@ description: >
   lefthook.yml 設定、pre-commit / pre-push / commit-msg 等のフック、
   parallel / piped 実行、glob / run / tags フィルタ、staged_files、
   lefthook の ai 設定 (beta)、JSON schema、Composer / npm / pip 等インストール、
-  保護ブランチ、CI スキップ。
+  保護ブランチ、CI スキップ、Husky からの移行。
 user-invocable: false
 ---
 

@@ -63,6 +63,7 @@ security-check:
 - **Claude / Codex / Cursor:** ユーザーが手動で追加したエントリを保持する。`lefthook install` 実行時に lefthook が管理するエントリのみ最新の設定から再生成され、`lefthook uninstall` 実行時は lefthook 管理エントリのみ削除されユーザーエントリは残る
 - **Copilot:** 挙動が異なる。`lefthook install` は `.github/hooks/lefthook.json` を完全に書き換え、`lefthook uninstall` はファイルごと削除する
 - Generated hook commands use the `lefthook` config value when set. Otherwise they use plain `lefthook`, so it must be on `PATH` for the AI tool. If lefthook is installed as a project dependency, set `lefthook` to e.g. `npx lefthook` or `pnpm exec lefthook`. No machine-specific path is written, so the generated files can be committed and shared.
+- This page covers lefthook's `ai:` setting, which generates the hooks config files (e.g. `.claude/settings.json`). The hooks APIs of Claude Code, Codex, Cursor and Copilot themselves are out of scope; see each provider's documentation (Claude Code hooks are covered by the anthropic-claude-code-extend skill).
 
 ## Related
 
