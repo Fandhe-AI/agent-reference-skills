@@ -114,7 +114,9 @@ Each agent's session thread has its own event stream (`/v1/sessions/{session_id}
 
 ```python
 for thread in client.beta.sessions.threads.list(session.id):
-    print(f"[{thread.agent.name}] {thread.status}")
+    agent = thread.agent
+    label = agent.type if agent.type == "advisor" else agent.name
+    print(f"[{label}] {thread.status}")
 ```
 
 ## Dynamic workflows

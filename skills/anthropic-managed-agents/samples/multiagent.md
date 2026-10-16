@@ -50,7 +50,9 @@ List and control threads once the agent has delegated work:
 
 ```python
 for thread in client.beta.sessions.threads.list(session.id):
-    print(f"[{thread.agent.name}] {thread.status}")
+    agent = thread.agent
+    label = agent.type if agent.type == "advisor" else agent.name
+    print(f"[{label}] {thread.status}")
 
 # Interrupt a specific thread (omit session_thread_id to interrupt all)
 client.beta.sessions.events.send(

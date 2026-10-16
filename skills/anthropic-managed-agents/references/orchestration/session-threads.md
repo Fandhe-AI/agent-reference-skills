@@ -91,26 +91,31 @@ When a subagent needs permission for a tool call or a custom tool result, the ev
 
 Respond with `user.tool_confirmation` (`tool_use_id`) or `user.custom_tool_result` (`custom_tool_use_id`); the server routes the response to the correct thread. The two copies of the response can have different `id` values: match by `type` and `tool_use_id` / `custom_tool_use_id`, not `id`.
 
-The following example goes inside the event loop of the tool confirmation handler (see Session Event Stream): when the idle event arrives it answers each ID in `stop_reason.event_ids`. For a custom tool ID, send `user.custom_tool_result` (`custom_tool_use_id`) instead of `user.tool_confirmation`; it can be sent as soon as the cross-posted `agent.custom_tool_use` event arrives.
+Answer a call when its own invoking event (`agent.tool_use` / `agent.mcp_tool_use`) arrives on the primary stream and its `evaluated_permission` is `"ask"`. The idle event can arrive before the events it lists, and a `user.tool_confirmation` for a not-yet-arrived call can return 400. The following example goes inside the event loop of the tool confirmation handler (see Session Event Stream); `decide(event)` is your own function that shows `event.name` / `event.input` to the user and returns `"allow"` or `"deny"`.
 
 ```python
-for event_id in stop.event_ids:
+if (
+    event.type in ("agent.tool_use", "agent.mcp_tool_use")
+    and event.evaluated_permission == "ask"
+):
+    decision = decide(event)  # "allow" or "deny", based on event.name / event.input
     client.beta.sessions.events.send(
         session.id,
         events=[
             {
                 "type": "user.tool_confirmation",
-                "tool_use_id": event_id,
-                "result": "allow",
+                "tool_use_id": event.id,
+                "result": decision,
             }
         ],
     )
 ```
 
-Caution: the idle event can arrive before the `agent.tool_use` / `agent.mcp_tool_use` events it lists, and a `user.tool_confirmation` for a not-yet-arrived call can return 400. To avoid that, answer each call whose `evaluated_permission` is `ask` when that call's own event arrives.
+For a custom tool, send `user.custom_tool_result` (`custom_tool_use_id`) when the cross-posted `agent.custom_tool_use` event arrives.
 
 ## Notes
 
+- The official example allows every ID in `stop_reason.event_ids` unconditionally; the example above instead responds on arrival of each call event with an explicit decision, to avoid the arrival-order 400 and to avoid auto-approving calls that `always_ask` / `auto` asked to confirm.
 - A session can have at most 25 child threads at a time. Idle threads count until archived; the primary thread does not count. Advisor consultation threads and workflow run threads are exempt.
 - Interrupt: omitting `session_thread_id` interrupts every non-archived thread, including the primary. In a session with dynamic workflows an interrupt ends no run, and one naming a run's thread stops nothing.
 - Interrupting a subagent thread blocked on `requires_action` closes each pending tool call with an error tool result and re-emits `session.thread_status_idle` with `stop_reason: end_turn` (no model sampling). On a child idle with `end_turn` or `budget_reached` it is a no-op. Naming a terminated thread returns 400. An interrupted child sends no report to the primary agent.
