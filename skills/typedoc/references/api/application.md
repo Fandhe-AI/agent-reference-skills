@@ -2,7 +2,7 @@
 
 TypeDoc's main entry point. Orchestrates the conversion of TypeScript source files into documentation via the `Converter` and `Renderer`.
 
-## Signature
+## Signature / Usage
 
 ```typescript
 class Application extends AbstractComponent<Application, ApplicationEvents> {
@@ -269,7 +269,7 @@ Output management.
 
 ### EVENT_BOOTSTRAP_END
 
-Fired after plugins are loaded and options are frozen.
+Emitted after plugins have been loaded and options have been read, but before they have been frozen.
 
 ### EVENT_PROJECT_REVIVE
 
@@ -279,15 +279,15 @@ Fired after JSON deserialization.
 
 Fired during validation.
 
-### EVENT_GENERATE_OUTPUTS_BEGIN
+### EVENT_GENERATE_OUTPUTS_BEGIN (v0.28.20+)
 
-Fired immediately before output generation. Used by plugins that need to skip generating auxiliary files when validation warnings exist and `treatWarningsAsErrors` is enabled.
+Fired immediately before output generation (triggered by `generateOutputs`, `generateDocs` and `generateJson`). Used by plugins that need to skip generating auxiliary files when validation warnings exist and `treatWarningsAsErrors` is enabled.
 
-### EVENT_GENERATE_OUTPUTS_END
+### EVENT_GENERATE_OUTPUTS_END (v0.28.20+)
 
-Fired immediately after output generation. Used by plugins that need to skip generating auxiliary files when validation warnings exist and `treatWarningsAsErrors` is enabled.
+Fired immediately after output generation (triggered by `generateOutputs`, `generateDocs` and `generateJson`). Used by plugins that need to skip generating auxiliary files when validation warnings exist and `treatWarningsAsErrors` is enabled.
 
-## Accessors
+## Options / Props
 
 | Accessor | Type | Description |
 |---------|---|------|
@@ -344,6 +344,13 @@ app.on(Application.EVENT_VALIDATE_PROJECT, (project) => {
   console.log(`Validating project: ${project.name}`);
 });
 ```
+
+## Notes
+
+- `EVENT_GENERATE_OUTPUTS_BEGIN` / `EVENT_GENERATE_OUTPUTS_END` exist since v0.28.20 and fire around `generateOutputs`, `generateDocs` and `generateJson`.
+- `files` (`Models.FileRegistry`) is due for deprecation in 0.29; use the reference on `ProjectReflection` instead.
+- `bootstrap()` does not load plugins; use `bootstrapWithPlugins()` for normal use.
+- `convert()` returns `undefined` on error.
 
 ## Related
 

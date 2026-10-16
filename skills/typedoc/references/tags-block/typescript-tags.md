@@ -68,6 +68,14 @@ const config = { /* ... */ };
 - Recognized purely to maintain compatibility with TypeScript's JSDoc support
 - `@satisfies` is supported from TypeScript 5.0 onward
 - Used mainly in JavaScript projects that rely on the TypeScript type system
+- Block and modifier tags cannot be included in comments for `@typedef` / `@callback`, because TypeScript stops parsing at the next non-braced tag. As a special case (v0.28.16+, #2916 / #3050), TypeDoc treats a content-less inline-tag form as a modifier tag. The following is parsed as if `Foo` had a modifier `@interface` tag:
+
+  ```ts
+  /**
+   * @typedef {{ x: string }} Foo Foo docs
+   * {@interface}
+   */
+  ```
 
 ## Related
 

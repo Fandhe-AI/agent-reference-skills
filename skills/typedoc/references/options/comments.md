@@ -20,7 +20,7 @@ TypeDoc options controlling how doc comments are parsed and rendered.
 
 | Option | Type | Default | CLI | Description |
 | --- | --- | --- | --- | --- |
-| `commentStyle` | `"jsdoc" \| "block" \| "line" \| "all"` | `"jsdoc"` | `--commentStyle <style>` | Comment syntax TypeDoc parses. |
+| `commentStyle` | `"jsdoc" \| "block" \| "line" \| "triple-slash" \| "all"` | `"jsdoc"` | `--commentStyle <style>` | Comment syntax TypeDoc parses. |
 | `useTsLinkResolution` | `boolean` | `true` | `--useTsLinkResolution` | Whether `{@link}` tags are resolved using TypeScript's resolution rules. |
 | `preserveLinkText` | `boolean` | `true` | `--preserveLinkText` | Whether `{@link}` tags render the full original link text or only the target reflection name. |
 | `jsDocCompatibility` | `object` | `{ "exampleTag": true, "defaultTag": true, "inheritDocTag": true, "ignoreUnescapedBraces": true }` | `--jsDocCompatibility` / `--jsDocCompatibility.<property>` | Handles conflicts between JSDoc and the TSDoc standard. |
@@ -37,7 +37,7 @@ TypeDoc options controlling how doc comments are parsed and rendered.
 ## Notes
 
 - `jsDocCompatibility` sub-keys: `exampleTag` (code block inference for `@example`), `defaultTag` (code block inference for `@default`), `inheritDocTag` (case handling for `@inheritDoc`), `ignoreUnescapedBraces` (brace-escaping warnings).
-- `commentStyle` values: `jsdoc` (block comments starting with `/**`), `block` (all block comments), `line` (`//` comments), `all` (both block and line). Non-JSDoc comments can degrade VSCode IntelliSense quality.
+- `commentStyle` values: `jsdoc` (block comments starting with `/**`), `block` (all block comments), `line` (`//` comments), `triple-slash` (`///` comments; the comment must have exactly three slashes; added in v0.28.19, #3089), `all` (both block and line). Non-JSDoc comments can degrade VSCode IntelliSense quality.
 - `externalSymbolLinkMappings` supports `.`-separated namespaced names, both `@types` packages and the original module, a special `global` package for global types, and `"#"` to mark a type as resolved without creating a link. Example:
   ```json
   {

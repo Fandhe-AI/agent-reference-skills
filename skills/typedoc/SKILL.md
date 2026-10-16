@@ -6,7 +6,6 @@ description: >
   テーマ (default / markdown)、プラグイン開発、
   TSDoc / JSDoc コメントから HTML / Markdown ドキュメント生成。
 user-invocable: false
-model: sonnet
 ---
 
 # TypeDoc リファレンス

@@ -1,4 +1,4 @@
-# development
+# Development
 
 | Name | Description | Path |
 |------|-------------|------|

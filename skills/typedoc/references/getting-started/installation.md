@@ -132,7 +132,7 @@ TypeDoc has 100+ CLI options. The most commonly used ones:
 | `--watch` | Watch files for changes and rebuild |
 | `--emit` | What to emit: `docs`, `both`, or `none` |
 | `--name` | Project name in the header |
-| `--plugin` | npm plugins to load (omit to load all installed) |
+| `--plugin` | npm plugins or local files to load (none loaded by default) |
 | `--options` | Path to a JSON option file (defaults to `typedoc.json`) |
 | `--showConfig` | Print resolved configuration and exit |
 | `--help` | Print help message |
@@ -267,9 +267,10 @@ TypeDoc has 100+ CLI options. The most commonly used ones:
 ## Notes
 
 - Global installation may cause plugin/theme resolution issues; prefer local installation.
+- TypeScript 6.0 support was added in v0.28.18 (#3084); v0.28.20 declares `peerDependencies.typescript` as `5.0.x || ... || 5.8.x || 5.9.x || 6.0.x`, so 0.28 supports versions beyond the 5.0--5.8 range in the table.
 - TypeDoc reads configuration from `typedoc.json`, `tsconfig.json`, and `package.json` in that order.
 - The `--options` flag specifies a custom JSON config file path (defaults to `typedoc.json` in the current directory).
-- The `--tsconfig` flag specifies a custom `tsconfig.json` path (defaults to `tsconfig.json` in the current directory).
+- The `--tsconfig` flag specifies a custom `tsconfig.json` path (defaults to searching the current and parent directories for `tsconfig.json`, like `tsc`).
 - Using `--excludeNotDocumented` can significantly reduce output for large projects.
 - The `--skipErrorChecking` option can speed up generation but may produce incomplete docs if there are type errors.
 - Indentation-based code blocks in comments will NOT prevent tags from being parsed. Use fenced code blocks (triple backticks) instead.

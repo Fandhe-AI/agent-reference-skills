@@ -233,7 +233,7 @@ export function load(app: Application) {
 
 | Event constant | Description |
 | --- | --- |
-| `Application.EVENT_BOOTSTRAP_END` | Fired after plugins are loaded and options are frozen |
+| `Application.EVENT_BOOTSTRAP_END` | Fired after plugins have been loaded and options have been read, but before they have been frozen |
 | `Application.EVENT_PROJECT_REVIVE` | Fired after JSON deserialization |
 | `Application.EVENT_VALIDATE_PROJECT` | Fired during validation |
 

@@ -161,12 +161,12 @@ export = buildIncompleteTranslation({
 
 ## Notes
 
-- Do not submit machine-translated-only translations for a language you are not fluent in
 - Use `buildIncompleteTranslation` for partial translations
 - Untranslated strings automatically fall back to English
 - The number of placeholders is indicated by the trailing number in the key name
 - Plugin translation keys are added type-safely via declaration merging on `TranslatableStrings`
 - Unit tests verify translation consistency
+- At v0.28.20, `src/lib/internationalization/locales` holds `de.ts`, `en.ts`, `fr.ts`, `ja.ts`, `ko.ts` and `zh.ts`. French translations of the interface and help descriptions were added in v0.28.19.
 
 ## Related
 
