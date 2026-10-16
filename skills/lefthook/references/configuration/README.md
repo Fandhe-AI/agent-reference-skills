@@ -2,7 +2,7 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| AI (Beta) | `lefthook.yml` に直接 LLM エージェントの hooks を宣言できる beta… | [ai.md](./ai.md) |
+| AI (Beta) | Declare LLM agent hooks directly in `lefthook.yml` (beta). | [ai.md](./ai.md) |
 | Command Settings | フックで実行されるコマンドの設定。各コマンドには名前と関連する run オプションがある。 | [command-settings.md](./command-settings.md) |
 | Global Settings | Lefthook のグローバル設定オプション。プロジェクト全体の動作を制御する設定項目をまとめている。 | [global-settings.md](./global-settings.md) |
 | Hook Settings | Git フック（commands、scripts、skip ルールなど）の設定を含む。任意の Git フックまたはカスタムフック（例: `test`）を指定できる。 | [hook-settings.md](./hook-settings.md) |

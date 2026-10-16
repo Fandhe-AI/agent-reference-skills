@@ -84,9 +84,11 @@ summary: (done in 0.52 seconds)
 ✔️  lint
 ```
 
+You can also override this list with the environment variable `LEFTHOOK_OUTPUT`.
+
 ### 関連設定
 
-利用可能な出力値と設定オプションの詳細については、[`output`](../../../configuration/output) 設定ドキュメントを参照。
+利用可能な出力値と設定オプションの詳細については、[`output`](../configuration/global-settings.md) 設定（`## output` 節）を参照。
 
 ## LEFTHOOK_CONFIG
 
@@ -138,7 +140,7 @@ LEFTHOOK_EXCLUDE=ruby,security,lint git commit -am "Skip some tag checks"
 
 ### 関連設定
 
-静的な設定ファイルによる同様の機能については、[`exclude_tags`](../../../configuration/exclude_tags) 設定オプションを参照。
+静的な設定ファイルによる同様の機能については、[`exclude_tags`](../configuration/hook-settings.md) 設定（`## exclude_tags` 節）を参照。
 
 ## CLICOLOR_FORCE
 
@@ -159,6 +161,8 @@ CLICOLOR_FORCE=true
 ### 注意事項
 
 ターミナル環境が通常カラーをサポートしないかどうかに関係なく、lefthook がカラー出力を表示するよう強制する。CI/CD パイプラインやカラーサポートが自動検出されない可能性のある自動化環境で有用。
+
+When colors are enabled explicitly Lefthook also sets `CLICOLOR_FORCE=1` for the commands it runs, so tools like ESLint, Prettier, or Cargo keep their colors when their output is piped. An existing `CLICOLOR_FORCE` is never overwritten.
 
 ## NO_COLOR
 

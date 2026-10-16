@@ -4,6 +4,17 @@ Source: https://lefthook.dev/configuration
 
 フックで実行されるコマンドの設定。各コマンドには名前と関連する run オプションがある。
 
+## Signature / Usage
+
+```yaml
+# lefthook.yml
+
+pre-commit:
+  commands:
+    lint:
+      run: yarn lint
+```
+
 ## Commands
 
 Source: https://lefthook.dev/configuration/Commands
@@ -184,7 +195,24 @@ Source: https://lefthook.dev/configuration/group
 
 ### 継承プロパティ
 
-`env`、`root`、`glob`、`exclude` がグループに定義されると、ジョブレベルで上書きされない限り、すべての配下ジョブに伝播する。
+`env`、`root`、`glob`、`exclude`、`files` がグループに定義されると、ジョブレベルで上書きされない限り、すべての配下ジョブに伝播する。
+
+A `files` command set on a group is executed for every nested job that uses the `{files}` template. A nested job can define its own `files` to override it.
+
+```yaml
+# lefthook.yml
+
+pre-commit:
+  jobs:
+    - glob:
+        - "*.py"
+      files: git diff --name-only master
+      group:
+        jobs:
+          - run: ruff check {files}
+          - run: ruff format --check {files}
+            files: git ls-files
+```
 
 ### 並列実行グループ
 
@@ -512,6 +540,7 @@ Source: https://lefthook.dev/configuration/stage_fixed
 - `files` オプションが指定されたコマンドの場合、そのコマンドがステージング対象ファイルを取得
 - `files` オプションなしのスクリプトとコマンドでは、`{staged_files}` テンプレートが対象ファイルを決定
 - `glob` と `exclude` のフィルタが適用される
+- If the `git add` call fails, the hook fails too. Otherwise the commit would silently go through with the unfixed content.
 
 ```yaml
 # lefthook.yml
@@ -619,3 +648,9 @@ post-checkout:
       runner: ruby
       priority: 2
 ```
+
+## Related
+
+- [Script Settings](./script-settings.md)
+- [Hook Settings](./hook-settings.md)
+- [Global Settings](./global-settings.md)

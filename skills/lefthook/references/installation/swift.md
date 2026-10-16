@@ -1,29 +1,19 @@
-# Swift でのインストール
+# Swift
 
 Source: https://lefthook.dev/installation/swift
 
-## 概要
+## Signature / Usage
 
-Swift での Lefthook の統合はコミュニティのラッパープラグインを通じて提供されています。Swift ラッパープラグインは [こちら](https://github.com/csjones/lefthook-plugin) で公開されています。
+You can find the Swift wrapper plugin [here](https://github.com/csjones/lefthook-plugin).
 
-## インストール方法
-
-### Swift Package Manager
-
-`Package.swift` ファイルに以下の依存関係を追加します。
+Utilize lefthook in your Swift project using Swift Package Manager:
 
 ```swift
-.package(url: "https://github.com/csjones/lefthook-plugin.git", exact: "2.1.4"),
+.package(url: "https://github.com/csjones/lefthook-plugin.git", exact: "2.2.2"),
 ```
 
-### Mint パッケージマネージャー
-
-Mint を使用してプラグインを実行することもできます。
+Or, with [mint](https://github.com/yonaskolb/Mint):
 
 ```bash
 mint run csjones/lefthook-plugin
 ```
-
-## 参考情報
-
-Swift Package Manager または Mint パッケージマネージャーのいずれかを使って、Swift プロジェクトに Lefthook を導入できます。

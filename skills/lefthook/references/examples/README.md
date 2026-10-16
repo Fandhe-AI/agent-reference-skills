@@ -2,9 +2,10 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Commitlint and Commitizen with Lefthook | commitlint（コミットメッセージの検証）と Commitizen を統合する | [commitlint.md](./commitlint.md) |
+| Commitlint and Commitizen with Lefthook | commitlint（コミットメッセージの検証）と Commitizen を Lefthook と統合する | [commitlint.md](./commitlint.md) |
 | Filters（ファイルフィルタリング） | フックに渡されるファイルをフィルタリングするためのオプション | [filters.md](./filters.md) |
 | lefthook-local.yml | メインの設定ファイルをオーバーライド・拡張するローカル設定 | [lefthook-local.md](./lefthook-local.md) |
+| Protect a branch from direct push | Block pushes made while the current local branch is main / master (pre-push; the push target ref is not checked) | [protect-branch.md](./protect-branch.md) |
 | Remotes（リモート設定の共有） | 他の Git リポジトリから設定ファイルを取得・共有する | [remotes.md](./remotes.md) |
 | Skip or Run on Condition（条件付きスキップ・実行） | フックやコマンドを特定の条件に基づいて実行 | [skip.md](./skip.md) |
 | Stage fixed files（修正ファイルの自動ステージング） | リンター修正ファイルを自動的にステージング | [stage-fixed.md](./stage-fixed.md) |

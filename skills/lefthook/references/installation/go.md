@@ -1,33 +1,23 @@
-# Go でのインストール
+# Go
 
 Source: https://lefthook.dev/installation/go
 
-## 前提条件
+## Signature / Usage
 
-Go でのインストールには、Go バージョン 1.26 以上が必要です。
+The minimum Go version required is 1.27 and you can install
 
-## インストール方法
+- as global package
 
-### グローバルインストール
-
-Go パッケージとしてシステム全体にインストールする場合は、以下のコマンドを実行します。
-
-```
-go install github.com/evilmartians/lefthook/v2@v2.1.4
+```bash
+go install github.com/evilmartians/lefthook/v2@v2.2.2
 ```
 
-この方法では、どのプロジェクトからでもツールを使用できるようになります。
+- or as a go tool in your project
 
-### プロジェクトレベルのツールインストール
-
-特定のプロジェクト内にツール依存として追加する場合は、以下のコマンドを使用します。
-
-```
+```bash
 go get -tool github.com/evilmartians/lefthook/v2
 ```
 
-この方法では、プロジェクトのツールチェーンにスコープが限定されます。
+## Notes
 
-## バージョン情報
-
-上記のインストール例では Lefthook v2.1.4 を参照しています。最新バージョンについては [GitHub リリースページ](https://github.com/evilmartians/lefthook/releases/latest) を確認してください。
+- The version `v2.2.2` in the example is the version this reference is pinned to. See the [latest release](https://github.com/evilmartians/lefthook/releases/latest) for the current version.

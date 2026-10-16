@@ -4,6 +4,17 @@ Source: https://lefthook.dev/configuration
 
 `<source_dir>/<hook-name>/` ディレクトリに配置される独自の実行可能スクリプトの設定。スクリプトはプロジェクトルートから実行される。
 
+## Signature / Usage
+
+```yaml
+# lefthook.yml
+
+commit-msg:
+  scripts:
+    "template_checker":
+      runner: bash
+```
+
 ## Scripts
 
 Source: https://lefthook.dev/configuration/Scripts
@@ -61,6 +72,18 @@ commit-msg:
       runner: bash
 ```
 
+### args
+
+Use `args` to append arguments to a script. Arguments passed by Git are omitted when `args` is configured, so use the `{0}` template if they should be preserved.
+
+```yaml
+commit-msg:
+  scripts:
+    "template_checker":
+      runner: bash
+      args: "{0}"
+```
+
 ---
 
 ## script
@@ -71,6 +94,8 @@ Source: https://lefthook.dev/configuration/script
 
 lefthook ジョブ内で実行するスクリプトファイル名を指定する。ルールは `scripts` と同じ。
 
+Use `args` to append arguments to the script. Configuring `args` replaces arguments passed by Git unless the `{0}` template is included.
+
 ```yaml
 # lefthook.yml
 
@@ -78,6 +103,7 @@ pre-commit:
   jobs:
     - script: linter.sh
       runner: bash
+      args: "{staged_files}"
 ```
 
 ```bash
@@ -112,3 +138,9 @@ pre-commit:
 - 同じフック内で異なるスクリプトに異なるランナーを使用可能
 - 一般的なランナー: `node`, `ruby`, `python`, `bash`, `sh`, `go run`
 - ランナーコマンドは実行時にシステムの PATH で利用可能である必要がある
+
+## Related
+
+- [Command Settings](./command-settings.md)
+- [Source Dir](./source-dir.md)
+- [Hook Settings](./hook-settings.md)

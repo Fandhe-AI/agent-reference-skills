@@ -1,82 +1,67 @@
-# Commitlint and Commitizen with Lefthook
+# Commitlint and commitzen
 
 Source: https://lefthook.dev/examples/commitlint
 
-commitlint（コミットメッセージの検証）と Commitizen（対話的なコミットメッセージ生成）を Lefthook と統合する方法を説明します。
+Use lefthook to generate commit messages using commitzen and validate them with commitlint.
 
-## 依存パッケージのインストール
+## Signature / Usage
 
-### commitlint（コミットメッセージのリント）
+### Install dependencies
 
-```
+```bash
 yarn add -D @commitlint/cli @commitlint/config-conventional
-```
 
-### Commitizen（対話的コミットメッセージ生成）
-
-```
+# For commitzen
 yarn add -D commitizen cz-conventional-changelog
 ```
 
-## 設定
+### Configure
 
-### commitlint の設定
-
-`commitlint.config.js` を作成し、Conventional Commits の規約を使用するように設定します:
+Setup `commitlint.config.js`. Conventional configuration:
 
 ```js
-module.exports = {
-  extends: ['@commitlint/config-conventional']
-};
+// commitlint.config.js
+
+module.exports = {extends: ['@commitlint/config-conventional']};
 ```
 
-### Commitizen の設定
-
-`package.json` に Commitizen の設定を追加し、Conventional Changelog アダプターを指定します:
+If you are using commitzen, make sure to add this in `package.json`:
 
 ```json
-{
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
+"config": {
+  "commitizen": {
+    "path": "./node_modules/cz-conventional-changelog"
   }
 }
 ```
 
-### Lefthook の設定
+Configure lefthook:
 
-```yaml
+```yml
 # lefthook.yml
 
+# Build commit messages
 prepare-commit-msg:
   commands:
-    commitizen:
+    commitzen:
       interactive: true
-      run: yarn run cz --hook
+      run: yarn run cz --hook # Or npx cz --hook
       env:
-        LEFTHOOK: 0
+        LEFTHOOK: "0"
 
+# Validate commit messages
 commit-msg:
   commands:
-    commitlint:
+    "lint commit message":
       run: yarn run commitlint --edit {1}
 ```
 
-## フックの説明
+### Test it
 
-### prepare-commit-msg フック
+```bash
+# You can type it without message, if you are using commitzen
+git commit
 
-- **commitizen** コマンドが対話的に実行され、コミットメッセージの生成を支援する
-- `interactive: true` で対話モードを有効化
-- `LEFTHOOK: 0` 環境変数により、Commitizen 実行中の Lefthook の再帰的実行を防止
-
-### commit-msg フック
-
-- **commitlint** コマンドがコミットメッセージを検証する
-- `{1}` はコミットメッセージファイルのパスに展開される
-
-## 使用方法
-
-- **Commitizen を使う場合**: メッセージ引数なしで `git commit` を実行すると、対話的にコミットメッセージを生成できる
-- **commitlint のみ使う場合**: `git commit -m "メッセージ"` で直接メッセージを指定し、commitlint が検証する
+# Or provide a commit message is using only commitlint
+git commit -am 'fix: typo'
+```

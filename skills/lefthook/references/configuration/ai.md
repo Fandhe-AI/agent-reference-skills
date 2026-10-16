@@ -6,6 +6,20 @@ Source: https://lefthook.dev/configuration/ai/
 
 - **型:** Object（プロバイダー名 → イベント名 → lefthook フック名 のマップ）
 
+## Signature / Usage
+
+```yaml
+# lefthook.yml
+
+ai:
+  claude:
+    Stop: validate
+
+validate:
+  jobs:
+    - run: go test ./...
+```
+
 ## サポートされるプロバイダー
 
 | Provider | 生成されるファイル | 対象 |
@@ -48,8 +62,8 @@ security-check:
 - beta 機能であり、今後変更される可能性がある
 - **Claude / Codex / Cursor:** ユーザーが手動で追加したエントリを保持する。`lefthook install` 実行時に lefthook が管理するエントリのみ最新の設定から再生成され、`lefthook uninstall` 実行時は lefthook 管理エントリのみ削除されユーザーエントリは残る
 - **Copilot:** 挙動が異なる。`lefthook install` は `.github/hooks/lefthook.json` を完全に書き換え、`lefthook uninstall` はファイルごと削除する
-- 生成されるコマンドは設定済みの `lefthook` パス、またはインストールを実行したバイナリの絶対パスを使用する。そのため AI ツールが `PATH` 上に `lefthook` を持たなくても動作する
-- このページは lefthook の `ai:` 設定（`.claude/settings.json` 等の hooks 設定ファイルを生成する側）を扱う。Claude Code や Codex 自体の hooks API 仕様は対象外（生成先のドキュメントを参照）
+- Generated hook commands use the `lefthook` config value when set. Otherwise they use plain `lefthook`, so it must be on `PATH` for the AI tool. If lefthook is installed as a project dependency, set `lefthook` to e.g. `npx lefthook` or `pnpm exec lefthook`. No machine-specific path is written, so the generated files can be committed and shared.
+- This page covers lefthook's `ai:` setting, which generates the hooks config files (e.g. `.claude/settings.json`). The hooks APIs of Claude Code, Codex, Cursor and Copilot themselves are out of scope; see each provider's documentation (Claude Code hooks are covered by the anthropic-claude-code-extend skill).
 
 ## Related
 

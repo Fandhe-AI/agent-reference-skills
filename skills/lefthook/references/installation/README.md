@@ -6,12 +6,13 @@
 | Arch Linux でのインストール | Arch User Repository (AUR) の2つのパッケージオプション | [arch.md](./arch.md) |
 | deb パッケージでのインストール | Debian / Ubuntu 系での APT パッケージインストール | [deb.md](./deb.md) |
 | Devbox でのインストール | Nix パッケージから Devbox へのインストール | [devbox.md](./devbox.md) |
-| Go でのインストール | Go v1.26+ からのグローバル・プロジェクトレベルインストール | [go.md](./go.md) |
+| Go でのインストール | Install as a global package or as a go tool in your project (Go 1.27+) | [go.md](./go.md) |
 | Homebrew でのインストール | macOS / Linux での Homebrew でのインストール | [homebrew.md](./homebrew.md) |
 | 手動インストール | GitHub リリースから OS 別バイナリの直接配置 | [manual.md](./manual.md) |
 | mise でのインストール | Mise バージョンマネージャーでのプロジェクト依存インストール | [mise.md](./mise.md) |
 | Node.js (npm) でのインストール | npm / yarn / pnpm での3パッケージオプション | [node.md](./node.md) |
 | インストール概要 | Lefthook の配布形式と主要インストール方法一覧 | [overview.md](./overview.md) |
+| PHP (Composer) でのインストール | Install with composer require --dev and run via vendor/bin/lefthook | [php.md](./php.md) |
 | Python でのインストール | pip / uv / pipx からの複数インストール方法 | [python.md](./python.md) |
 | RPM パッケージでのインストール | CentOS / Fedora 等での yum インストール | [rpm.md](./rpm.md) |
 | Ruby (gem) でのインストール | Gemfile / gem コマンドでのインストール | [ruby.md](./ruby.md) |
