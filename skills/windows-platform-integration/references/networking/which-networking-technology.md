@@ -21,7 +21,7 @@ var socket = new Windows.Networking.Sockets.StreamSocket();
 | HttpClient (`Windows.Web.Http`) | technology | HTTP(S) to web services or servers, small number of smaller file transfers, streaming content. |
 | Background transfer | technology | Reliable large or many-file HTTP(S) upload/download (FTP download only), runs during suspension, resumable, Data Sense and Battery Sense aware, supports post-processing. |
 | `Windows.Networking.Connectivity` (`ConnectionProfile`) | technology | Connectivity, cost and usage information. |
-| `Windows.Networking.ServiceDiscovery.Dnssd` | technology | Advertise a network service via DNS-SD (IETF RFC 2782). |
+| `Windows.Networking.ServiceDiscovery.Dnssd` | technology | Advertise a network service via DNS-SD (RFC 6763). |
 | `Windows.Devices.Bluetooth` | technology | Connect to and transfer data with other devices over Bluetooth. |
 | `Windows.Networking.PushNotifications` | technology | Receive push notifications via Windows Notification Service (WNS). |
 | `Windows.Networking.Proximity` | technology | Near-field communications / tap. |
@@ -39,6 +39,7 @@ var socket = new Windows.Networking.Sockets.StreamSocket();
 - WebSockets: for infrequent data, individual HTTP requests may be simpler. They may not suit very high volume; model and simulate traffic first.
 - `HttpClient`: for large files or many files, or to limit transfers by connection type or resume after interruption, use background transfer. If two devices communicate and neither is an HTTP(S) server, use sockets; do not implement your own HTTP server.
 - Background transfer: for a few small files with no post-processing, `HttpClient` PUT or POST is sufficient; to stream data and use it locally as it arrives, use `HttpClient`.
+- The official page cites IETF RFC 2782 for DNS-SD; RFC 2782 actually defines DNS SRV records, while DNS-SD itself is specified in RFC 6763 (see dnssd.md).
 - Mobile operator APIs are gated by capabilities that Microsoft must approve before publication.
 
 ## Related
