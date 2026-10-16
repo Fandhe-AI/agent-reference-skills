@@ -26,7 +26,9 @@ Value-specific transitions and a `default` fallback:
 />
 ```
 
-## Tween Options (duration-based, default for most values)
+## Options / Props
+
+### Tween Options (duration-based, default for most values)
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -34,7 +36,7 @@ Value-specific transitions and a `default` fallback:
 | `ease` | `string \| number[] \| string[]` | `linear`, `easeIn/Out/InOut`, `circIn/Out/InOut`, `backIn/Out/InOut`, `anticipate`, or cubic-bezier array |
 | `times` | `number[]` | Keyframe positions (0-1) for multi-value animations |
 
-## Spring Options (`type: "spring"`, default for transforms/layout)
+### Spring Options (`type: "spring"`, default for transforms/layout)
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -42,12 +44,12 @@ Value-specific transitions and a `default` fallback:
 | `damping` | `number` | Opposing force; `0` = infinite oscillation (default `10`) |
 | `mass` | `number` | Object mass; higher = more sluggish (default `1`) |
 | `velocity` | `number` | Initial velocity |
-| `bounce` | `number` | Bounciness `0`-`1` (default `0.25`); duration-based mode |
+| `bounce` | `number` | Bounciness `-1` to `1` (default `0.25`); duration-based mode. `0` is critically damped, `1` extremely bouncy; negative values make the spring overdamped (starts quicker, settles more slowly with no overshoot, arriving at the same time as `0`) |
 | `duration` / `visualDuration` | `number` | Spring time; `visualDuration` is easier to tune |
 | `restSpeed` | `number` | End when below this speed (default `0.1`) |
 | `restDelta` | `number` | End when below this distance (default `0.01`) |
 
-## Inertia Options (`type: "inertia"`, used by drag momentum)
+### Inertia Options (`type: "inertia"`, used by drag momentum)
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -57,7 +59,7 @@ Value-specific transitions and a `default` fallback:
 | `min` / `max` | `number` | Boundary constraints with spring bounce |
 | `bounceStiffness` / `bounceDamping` | `number` | Boundary bounce physics |
 
-## Orchestration / Repeat
+### Orchestration / Repeat
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -87,6 +89,7 @@ const container = {
 
 - Spring is the default for `x`, `y`, `scale`, `rotate`, and layout animations; tween is the default for most other values.
 - Higher-specificity transitions replace inherited defaults; add `inherit: true` to merge with a parent `MotionConfig` transition.
+- Negative `bounce` (overdamped springs) was added in 13.5.0 (CHANGELOG: https://github.com/motiondivision/motion/blob/v14.3.0/CHANGELOG.md).
 - `path: arc()` curves motion-value movement along an arc instead of a straight line.
 
 ## Related

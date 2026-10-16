@@ -44,8 +44,17 @@ cancel() // stop tracking
 
 ## Notes
 
+- Behavior changes (CHANGELOG): 13.4.4 removed `ScrollTimeline` support for JS callbacks; 13.4.7 made more `offset`s hardware accelerated via `ViewTimeline`; 13.5.0 uses the main thread for all `offset` animations.
 - When passing an animation, its playback is scrubbed by scroll position rather than time.
 - `offset` strings combine a target edge and a container edge, e.g. `"start end"`.
+
+### Pinning
+
+To use the browser for best performance, perform pinning with `position: sticky`. For section-based full-screen effects, use a larger container element to define the scroll distance and pass it to the `target` option.
+
+```javascript
+scroll(animation, { target: document.getElementById("section") })
+```
 
 ## Related
 

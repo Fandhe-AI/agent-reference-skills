@@ -29,6 +29,7 @@ Detects removal via conditional rendering, `key` prop changes, or list item chan
 | `mode` | "sync" \| "wait" \| "popLayout" | `sync` (default) animates in/out together; `wait` defers entering until exit completes; `popLayout` removes exiting elements from layout to allow reflow |
 | `custom` | any | Dynamic data passed to exiting components, read via `usePresenceData()` |
 | `onExitComplete` | function | Fires when all exit animations finish |
+| `root` | HTMLElement \| ShadowRoot | Root element for injecting `popLayout` styles. Defaults to `document.head`; set a `ShadowRoot` for use within shadow DOM |
 | `propagate` | boolean | When `true`, child exit animations trigger even when this `AnimatePresence` exits a parent one |
 
 ## Notes

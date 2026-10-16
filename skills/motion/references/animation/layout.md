@@ -15,7 +15,7 @@ The `layout` prop animates size/position changes automatically using CSS `transf
 <motion.div layoutId="underline" />
 ```
 
-## Props
+## Options / Props
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -28,7 +28,16 @@ The `layout` prop animates size/position changes automatically using CSS `transf
 | `onLayoutAnimationStart` | `() => void` | Fires when a layout animation starts |
 | `onLayoutAnimationComplete` | `() => void` | Fires when a layout animation completes |
 
-## LayoutGroup
+## Notes
+
+- All layout animations run via the CSS `transform` property for performance (no paint-triggering width/height changes).
+- Stretched/distorted children: apply `layout` to child elements for scale correction.
+- Set `border-radius` and `box-shadow` through the `style` prop so they are scale-corrected.
+- Inline elements won't animate; ensure `display` is not `inline`.
+- Combine with `AnimatePresence` + `layoutId` for smooth enter/exit shared transitions.
+- Use `scrollbar-gutter: stable` to prevent scrollbar-driven layout jumps.
+
+### LayoutGroup
 
 Synchronizes layout animations across components that may not re-render together.
 
@@ -41,7 +50,7 @@ import { LayoutGroup, motion } from "motion/react"
 </LayoutGroup>
 ```
 
-## Transition Customization
+### Transition Customization
 
 Layout uses a dedicated `layout` transition key:
 
@@ -55,14 +64,15 @@ Layout uses a dedicated `layout` transition key:
 />
 ```
 
-## Notes
+### Motion along a path
 
-- All layout animations run via the CSS `transform` property for performance (no paint-triggering width/height changes).
-- Stretched/distorted children: apply `layout` to child elements for scale correction.
-- Set `border-radius` and `box-shadow` through the `style` prop so they are scale-corrected.
-- Inline elements won't animate; ensure `display` is not `inline`.
-- Combine with `AnimatePresence` + `layoutId` for smooth enter/exit shared transitions.
-- Use `scrollbar-gutter: stable` to prevent scrollbar-driven layout jumps.
+By default, layout animations move elements in a straight line. Pass `arc()` to `transition.layout.path` to curve the motion, including for shared `layoutId` transitions. `arc` is imported from `motion/react`.
+
+```tsx
+import { arc, motion } from "motion/react"
+
+<motion.div layout transition={{ layout: { path: arc() } }} />
+```
 
 ## Related
 

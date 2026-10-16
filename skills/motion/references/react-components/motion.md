@@ -35,6 +35,8 @@ There is a `motion` component for every HTML and SVG element (`motion.div`, `mot
 | `dragMomentum` | boolean | Applies inertia after release |
 | `layout` | boolean \| "position" \| "size" | Enables layout animations |
 | `layoutId` | string | Tracks shared element transitions across components |
+| `layoutAnchor` | `{ x: number, y: number }` \| false | Point on the parent used to resolve child layout position (default `{ x: 0, y: 0 }`; each axis is a 0-1 progress, `0.5` = center, `1` = bottom/right). `false` disables relative projection for this element |
+| `propagate` | `{ tap: false }` | Prevents children gestures from propagating to parents. Currently only supports `tap` |
 | `style` | object | Supports motion values and independent transforms |
 | `onAnimationStart` / `onAnimationComplete` | function | Animation lifecycle callbacks |
 

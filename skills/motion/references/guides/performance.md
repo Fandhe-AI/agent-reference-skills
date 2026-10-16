@@ -36,6 +36,9 @@ animate(element, { clipPath: "inset(0 round 50%)" })
 - **Expensive (layout):** `height`, `border-width`, `padding`, `position` — recalculate dimensions of affected elements.
 - **Expensive (paint):** `box-shadow`, `border-radius` — avoid layout but require costly repaints.
 - At 60fps the browser has ~16.7ms per frame; repaints can exceed 100ms.
+- Independent transforms (`x`, `scale`, etc.) are hardware accelerated, just like animating `transform` directly.
+- Animating a CSS variable isn't hardware accelerated, even when the variable is applied to `transform`; animate the transform itself instead.
+- Browsers differ in acceleration rules: until recently, Chrome did not hardware accelerate a `%`-based transform such as `transform: "translateX(100%)"`.
 - Motion uses the Web Animations API to hardware-accelerate animations when the browser supports it; treat it as progressive enhancement, not a requirement.
 - Test on low-powered devices. The value you choose to animate is what you have the most control over.
 

@@ -39,9 +39,18 @@ await animation // resolves on completion
 | `bounce` | number | `0.25` | Spring bounciness (0–1) |
 | `stiffness` | number | `1` | Spring stiffness |
 | `damping` | number | `10` | Spring opposing force |
+| `path` | function | — | Pass `arc()` to curve `x` / `y` movement instead of a straight line (added in 12.40.0). `arc()` accepts `strength`, `peak`, `direction` and `rotate` options |
 | `onUpdate` | function | — | Callback with latest value |
 
+```javascript
+import { animate, arc } from "motion"
+
+animate(".product", { x: 200, y: -120 }, { duration: 0.6, path: arc() })
+```
+
 ## Notes
+
+- Alternative: use CSS `offset-path` to animate along a fixed path by animating `offsetDistance`, e.g. `animate(".product", { offsetDistance: ["0%", "100%"] }, { duration: 2 })`. `arc()` can create curves dynamically.
 
 - Animatable props include CSS styles, independent transforms (`x`, `y`, `z`, `rotate`, `scale`), CSS variables (`"--rotate"`), SVG path props (`pathLength`), colors, and arbitrary numbers.
 - Returns `AnimationControls`:
@@ -55,4 +64,5 @@ await animation // resolves on completion
 - [stagger](./stagger.md)
 - [spring](./spring.md)
 - [timeline](./timeline.md)
+- [arc](./arc.md)
 - [motion-value](./motion-value.md)

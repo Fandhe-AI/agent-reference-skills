@@ -2,34 +2,36 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| AnimateNumber | Motion+ component for beautiful number animations like countdowns, built on Motion's layout animation system and based on Max Barvian's NumberFlow. | [animate-number.md](./animate-number.md) |
-| AnimatePresence | Enables exit animations by wrapping motion components, giving access to the `exit` animation prop when they are removed from the tree. | [animate-presence.md](./animate-presence.md) |
-| Carousel | Motion+ component for performant, accessible, infinitely-scrolling carousels in Vue with pointer, wheel, and keyboard navigation. | [carousel.md](./carousel.md) |
-| Cursor | Motion+ component for building custom cursors and follow-along effects in Vue, auto-adapting to links, text, and buttons. | [cursor.md](./cursor.md) |
-| v-motion | Declarative animation directive for HTML/SVG elements, offering most of the `<motion />` component's power without a wrapper component. | [directive.md](./directive.md) |
-| Gestures | UI gesture recognition — hover, press, pan, drag, and inView — with event listeners and `while-` animation props. | [gestures.md](./gestures.md) |
-| Layout animations | FLIP-powered layout animation for Vue, animating CSS layout changes via the `layout` prop and shared elements via `layoutId`. | [layout-animations.md](./layout-animations.md) |
-| LayoutGroup | Coordinates layout animations between Motion components that don't render together but affect each other's state, and namespaces `layoutId` values. | [layout-group.md](./layout-group.md) |
-| LazyMotion | Reduces initial bundle size by loading animation features synchronously or asynchronously, paired with the lightweight `m` component. | [lazy-motion.md](./lazy-motion.md) |
-| MotionConfig | Configures all child motion components: global transitions, `reducedMotion` preference, and CSP nonce compliance. | [motion-config.md](./motion-config.md) |
-| motion | Drop-in replacement for HTML and SVG elements that adds declarative animation and gesture props to Vue components. | [motion.md](./motion.md) |
-| Motion values | Composable, signal-like values that Motion renders with its optimized DOM renderer, tracking state and velocity without triggering Vue's render cycle. | [motion-value.md](./motion-value.md) |
-| Vue animation overview | Motion for Vue provides multiple approaches to animating UI, from simple property-based animation to orchestration, via the `<motion />` component. | [overview.md](./overview.md) |
-| Reka-UI integration | Guide for combining Motion for Vue's animation capabilities with Reka-UI (formerly Radix Vue) components via the `asChild` prop. | [radix.md](./radix.md) |
-| Reorder | Lightweight drag-to-reorder list components: `Reorder.Group` and `Reorder.Item`. | [reorder.md](./reorder.md) |
-| Scroll animations | Scroll-triggered animation via `whileInView` and scroll-linked animation via `useScroll`, for parallax and progress-bar effects. | [scroll-animations.md](./scroll-animations.md) |
-| Ticker | Motion+ component for infinitely-scrolling marquee-style animations, cloning only the elements needed for the current viewport. | [ticker.md](./ticker.md) |
-| Transitions | The `transition` prop defines animation behavior through time-based (tween) or physics-based (spring) animation. | [transitions.md](./transitions.md) |
-| Typewriter | Motion+ component (1.5kb) for realistic typewriter text animations with human-like typing variance and accessible cursors. | [typewriter.md](./typewriter.md) |
-| useAnimate | Provides an `animate` function scoped to the elements within a component, with manual controls, timelines, and automatic cleanup. | [use-animate.md](./use-animate.md) |
-| useAnimationFrame | Executes a callback on every animation frame, supplying elapsed time and delta for frame-level animation control. | [use-animation-frame.md](./use-animation-frame.md) |
-| useDragControls | Manually initiates drag gestures from any pointer event, rather than only from direct interaction with a draggable component. | [use-drag-controls.md](./use-drag-controls.md) |
-| useInView | Lightweight composable (0.6kb) that monitors when a DOM element becomes visible in the viewport, returning a reactive boolean. | [use-in-view.md](./use-in-view.md) |
-| useMotionTemplate | Generates a reactive motion value from a tagged template string containing other motion values. | [use-motion-template.md](./use-motion-template.md) |
-| useMotionValueEvent | Manages motion value event listeners with automatic cleanup on unmount, wrapping the motion value's underlying `on()` method. | [use-motion-value-event.md](./use-motion-value-event.md) |
-| useReducedMotion | Detects whether a device has Reduced Motion accessibility settings enabled, and reactively updates when the setting changes. | [use-reduced-motion.md](./use-reduced-motion.md) |
-| useScroll | Builds scroll-linked animations such as progress indicators and parallax effects, using the browser's ScrollTimeline API. | [use-scroll.md](./use-scroll.md) |
-| useSpring | Creates a motion value that animates to its latest target using spring physics, settable manually or by tracking another motion value. | [use-spring.md](./use-spring.md) |
-| useTime | Returns a motion value that updates once per frame with the duration, in milliseconds, since it was first created. | [use-time.md](./use-time.md) |
-| useTransform | Creates a new motion value that transforms the output of one or more motion values, via a transform function or value mapping. | [use-transform.md](./use-transform.md) |
-| useVelocity | Accepts a motion value and returns a new one that tracks the rate of change of the original value. | [use-velocity.md](./use-velocity.md) |
+| AnimateNumber | Create beautiful number animations like countdowns with AnimateNumber and Motion. | [animate-number.md](./animate-number.md) |
+| AnimatePresence | Run exit animations on Vue components via the exit prop. | [animate-presence.md](./animate-presence.md) |
+| AnimateView | Animate elements between Vue views with enter, exit, update and shared element animations, powered by the native View Transitions API. | [animate-view.md](./animate-view.md) |
+| Carousel | A performant, accessible, and infinitely scrollable carousel for Vue. | [carousel.md](./carousel.md) |
+| Cursor | Create custom cursors and follow-along effects in Vue with Motion+ Cursor. | [cursor.md](./cursor.md) |
+| v-motion | v-motion adds gestures, layout, and variants to any HTML or SVG element without a wrapper component. | [directive.md](./directive.md) |
+| Gestures | Hover, tap, pan, drag, and inView gestures for Motion for Vue. | [gestures.md](./gestures.md) |
+| Get started with Motion for Vue | Install Motion for Vue and animate elements with springs. | [get-started.md](./get-started.md) |
+| Layout animations | Animate layout changes between elements, including shared element transitions via layoutId. | [layout-animations.md](./layout-animations.md) |
+| LayoutGroup | Coordinate layout animations between Vue components, even when they aren't rendered together. | [layout-group.md](./layout-group.md) |
+| LazyMotion | Load Motion's animation features on demand, shrinking initial bundle size to as low as 6kb. | [lazy-motion.md](./lazy-motion.md) |
+| motion | Animate Vue elements with a declarative API. Supports variants, gestures, and layout animations. | [motion.md](./motion.md) |
+| MotionConfig | Configure default transitions and reduced motion preferences for all child Motion components. | [motion-config.md](./motion-config.md) |
+| Motion values | Composable, animatable values that update styles without re-rendering Vue. | [motion-value.md](./motion-value.md) |
+| Vue animation overview | An overview of animating Vue with motion components, variants, gestures, and keyframes. | [overview.md](./overview.md) |
+| Reka-UI integration | Animate Reka-UI primitives with Motion for Vue. | [radix.md](./radix.md) |
+| Reorder | Drag-to-reorder lists and grids with automatic layout and exit animations. | [reorder.md](./reorder.md) |
+| Scroll animations | Scroll-triggered and scroll-linked animations for Vue, via whileInView and useScroll. | [scroll-animations.md](./scroll-animations.md) |
+| Ticker | Create infinitely-scrolling ticker and marquee effects with Motion for Vue's Ticker component. | [ticker.md](./ticker.md) |
+| Transitions | Control timing with duration, easing, springs, delay, and repeat. | [transitions.md](./transitions.md) |
+| Typewriter | A customizable typewriter animation component for Vue that creates realistic typing animations with human-like variance, stylable cursors and accessibility. | [typewriter.md](./typewriter.md) |
+| useAnimate | Manually start and control animations, scoped to the current Vue component. | [use-animate.md](./use-animate.md) |
+| useAnimationFrame | Run a callback every frame, with elapsed time and delta arguments. | [use-animation-frame.md](./use-animation-frame.md) |
+| useDragControls | Manually start and stop drag gestures, with snap-to-cursor and touch support. | [use-drag-controls.md](./use-drag-controls.md) |
+| useInView | Switch Vue state when an element enters or leaves the viewport. 0.6kb. | [use-in-view.md](./use-in-view.md) |
+| useMotionTemplate | Combine motion values into dynamic, interpolated strings. | [use-motion-template.md](./use-motion-template.md) |
+| useMotionValueEvent | Subscribe to motion value events like change and animationComplete, with auto-cleanup. | [use-motion-value-event.md](./use-motion-value-event.md) |
+| useReducedMotion | Adapt or disable animations based on the device's Reduced Motion setting. | [use-reduced-motion.md](./use-reduced-motion.md) |
+| useScroll | Track scroll progress as motion values, for parallax and progress bars. | [use-scroll.md](./use-scroll.md) |
+| useSpring | A spring-powered motion value. Standalone, or attached to another motion value. | [use-spring.md](./use-spring.md) |
+| useTime | A motion value that returns elapsed time in milliseconds, every frame. | [use-time.md](./use-time.md) |
+| useTransform | Map a motion value's output to a new motion value, with clamp and easing options. | [use-transform.md](./use-transform.md) |
+| useVelocity | A motion value that outputs the velocity of another motion value. | [use-velocity.md](./use-velocity.md) |
