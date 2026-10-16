@@ -1,10 +1,9 @@
 ---
 name: apple-swift
 description: >
-  Swift Standard Library・Concurrency・プロトコル/ジェネリクス・Observation リファレンス。
-  async/await、actor、Sendable、Task、TaskGroup、AsyncSequence、AsyncStream、
-  Equatable、Hashable、Comparable、Codable、Identifiable、Optional、Result、
-  generics、some/any opaque types、Observable、@Observable、ObservationRegistrar。
+  Swift Standard Library・Concurrency・Observation リファレンス。
+  async/await、actor、SerialExecutor、Sendable、Task、TaskGroup、AsyncSequence、AsyncStream、
+  Continuation (CheckedContinuation)、@Observable、Observations、Span、InlineArray、RangeSet、Codable、Result、generics、some/any。
 user-invocable: false
 model: sonnet
 ---
@@ -13,6 +12,9 @@ model: sonnet
 
 Swift 公式ドキュメントの Standard Library・Concurrency・プロトコル/ジェネリクス・Observation を網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+Source: developer.apple.com JSON (fetched 2026-10-16, iOS/macOS 27.0 SDK, Swift 6.4 era). Availability values are the `introducedAt` of each JSON, written as-is.
+Supplementary design docs: swift-evolution pinned at commit `f006bf3cf2594bdd4a972f9126f93bd1743ed524` (no release tags). Used only for usage examples and status, never as the source of signatures.
 
 ## ディレクトリ構成
 
@@ -38,6 +40,15 @@ skills/apple-swift/
       optional.md
       result.md
       keypath.md
+      span.md
+      mutablespan.md
+      rawspan.md
+      mutablerawspan.md
+      outputspan.md
+      utf8span.md
+      inlinearray.md
+      rangeset.md
+      discontiguousslice.md
     concurrency/
       README.md
       task.md
@@ -66,6 +77,20 @@ skills/apple-swift/
       continuousclock.md
       suspendingclock.md
       taskexecutor.md
+      continuation.md
+      withcontinuation.md
+      unsafecontinuation.md
+      withunsafecontinuation.md
+      unsafecurrenttask.md
+      executor.md
+      serialexecutor.md
+      executorjob.md
+      unownedjob.md
+      jobpriority.md
+      unownedserialexecutor.md
+      unownedtaskexecutor.md
+      globalconcurrentexecutor.md
+      withtaskexecutorpreference.md
     protocols-generics/
       README.md
       equatable.md
@@ -93,6 +118,10 @@ skills/apple-swift/
       observationtracked.md
       observationregistrar.md
       withobservationtracking.md
+      observations.md
+      observationtracking.md
+      withcontinuousobservation.md
+      withobservationtracking-options.md
 ```
 
 ## 探索手順
@@ -120,6 +149,11 @@ skills/apple-swift/
 | DiscardingTaskGroup / withDiscardingTaskGroup で結果を破棄する子タスクを構造化したい | concurrency | [references/concurrency/README.md](references/concurrency/README.md) |
 | Clock / Duration / InstantProtocol / ContinuousClock / SuspendingClock で時間計測・スリープを扱いたい | concurrency | [references/concurrency/README.md](references/concurrency/README.md) |
 | TaskExecutor でタスクの実行先を指定したい | concurrency | [references/concurrency/README.md](references/concurrency/README.md) |
+| Continuation (noncopyable) / UnsafeContinuation / withContinuation でコールバック API を橋渡ししたい | concurrency | [references/concurrency/README.md](references/concurrency/README.md) |
+| Executor / SerialExecutor / ExecutorJob / withTaskExecutorPreference でカスタム executor を使いたい | concurrency | [references/concurrency/README.md](references/concurrency/README.md) |
+| UnsafeCurrentTask / タスクキャンセルのシールド / 優先度エスカレーション (JobPriority) を扱いたい | concurrency | [references/concurrency/README.md](references/concurrency/README.md) |
+| Span / MutableSpan / RawSpan / OutputSpan / UTF8Span で連続メモリへ安全にアクセスしたい | standard-library | [references/standard-library/README.md](references/standard-library/README.md) |
+| InlineArray / RangeSet / DiscontiguousSlice を使いたい | standard-library | [references/standard-library/README.md](references/standard-library/README.md) |
 | Equatable / Hashable / Comparable を型に準拠させたい | protocols-generics | [references/protocols-generics/README.md](references/protocols-generics/README.md) |
 | Codable / Encodable / Decodable で JSON シリアライズしたい | protocols-generics | [references/protocols-generics/README.md](references/protocols-generics/README.md) |
 | Identifiable / CaseIterable / RawRepresentable を使いたい | protocols-generics | [references/protocols-generics/README.md](references/protocols-generics/README.md) |
@@ -131,3 +165,4 @@ skills/apple-swift/
 | Observable プロトコルを手動で準拠したい | observation | [references/observation/README.md](references/observation/README.md) |
 | @ObservationIgnored で追跡対象外プロパティを設定したい | observation | [references/observation/README.md](references/observation/README.md) |
 | withObservationTracking で変更通知を受け取りたい | observation | [references/observation/README.md](references/observation/README.md) |
+| Observations / withContinuousObservation で継続的な変更を async sequence として観測したい | observation | [references/observation/README.md](references/observation/README.md) |

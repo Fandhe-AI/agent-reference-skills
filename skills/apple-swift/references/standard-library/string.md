@@ -19,7 +19,7 @@ let multiline = """
     """
 ```
 
-## Key APIs
+## Options / Props
 
 | Name | Description |
 |------|-------------|
@@ -45,6 +45,8 @@ let multiline = """
 | `utf16` | UTF-16 view (`String.UTF16View`) |
 | `unicodeScalars` | Unicode scalar view (`String.UnicodeScalarView`) |
 | `withUTF8(_:)` | Execute a closure over contiguous UTF-8 bytes |
+| `var utf8Span: UTF8Span { get }` | A UTF-8 span over the code units that make up this string (iOS 26.0+) |
+| `init(copying codeUnits: UTF8Span)` | Creates a new string, copying the specified code units; skips UTF-8 validation because the span already holds valid UTF-8; O(n) (iOS 26.0+) |
 
 ## Notes
 
@@ -58,3 +60,4 @@ let multiline = """
 - [Character](./character.md)
 - [Substring](./substring.md)
 - [Unicode](./unicode.md)
+- [UTF8Span](./utf8span.md)
