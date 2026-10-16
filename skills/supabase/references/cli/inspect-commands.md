@@ -1,6 +1,6 @@
 # Supabase CLI: 検査コマンド
 
-## 概要
+## Signature / Usage
 
 `supabase inspect db` コマンド群は、データベースのパフォーマンスや状態を診断するためのツール。リンク済みのリモートプロジェクトに対して実行する。
 
@@ -11,22 +11,27 @@
 | `bloat` | テーブル・インデックスの肥大化を検出 |
 | `blocking` | ブロッキングクエリを表示 |
 | `calls` | 関数/プロシージャの呼び出し回数 |
-| `cache-hit` | キャッシュヒット率を表示 |
-| `db-stats` | データベースの統計情報 |
-| `index-sizes` | インデックスサイズ |
-| `index-usage` | インデックス使用率 |
+| `cache-hit` | キャッシュヒット率を表示（deprecated: `db-stats` を使用） |
+| `db-stats` | キャッシュヒット率・合計サイズ・WAL サイズなどの統計 |
+| `index-stats` | インデックスサイズ・使用率・スキャン回数・未使用状態の統合表示 |
+| `index-sizes` | インデックスサイズ（deprecated: `index-stats` を使用） |
+| `index-usage` | インデックス使用率（deprecated: `index-stats` を使用） |
 | `locks` | 現在のロック一覧 |
 | `long-running-queries` | 長時間実行中のクエリ |
 | `outliers` | 実行時間の外れ値クエリ |
 | `replication-slots` | レプリケーションスロット |
-| `role-connections` | ロールごとの接続数 |
-| `seq-scans` | シーケンシャルスキャンの多いテーブル |
-| `table-index-sizes` | テーブルとインデックスのサイズ |
-| `table-record-counts` | テーブルのレコード数 |
-| `table-sizes` | テーブルサイズ |
-| `total-index-size` | インデックスの合計サイズ |
-| `total-table-size` | テーブルの合計サイズ |
-| `unused-indexes` | 未使用インデックス |
+| `role-stats` | データベースロールの情報 |
+| `role-connections` | ロールごとの接続数（deprecated: `role-stats` を使用） |
+| `role-configs` | ロールの設定（deprecated: `role-stats` を使用） |
+| `seq-scans` | シーケンシャルスキャンの多いテーブル（deprecated: `index-stats` を使用） |
+| `table-stats` | テーブルサイズ・インデックスサイズ・推定行数の統合表示 |
+| `table-index-sizes` | テーブルとインデックスのサイズ（deprecated: `table-stats` を使用、v3 で削除） |
+| `table-record-counts` | テーブルのレコード数（deprecated: `table-stats` を使用） |
+| `table-sizes` | テーブルサイズ（deprecated: `table-stats` を使用） |
+| `total-index-size` | インデックスの合計サイズ（deprecated: `index-stats` を使用、v3 で削除） |
+| `total-table-sizes` | テーブルの合計サイズ（deprecated: `table-stats` を使用、v3 で削除） |
+| `traffic-profile` | ブロック I/O に基づくテーブルの読み書き比率 |
+| `unused-indexes` | 未使用インデックス（deprecated: `index-stats` を使用） |
 | `vacuum-stats` | VACUUM 統計 |
 
 ## 各コマンドの詳細
@@ -87,7 +92,59 @@ supabase inspect db calls
 supabase inspect db db-stats
 ```
 
-### cache-hit — キャッシュヒット率
+キャッシュヒット率・合計サイズ・WAL サイズなどを表示する。
+
+### index-stats — インデックス統合統計
+
+```bash
+supabase inspect db index-stats
+```
+
+インデックスサイズ・使用率・スキャン回数・未使用状態をまとめて表示する。
+
+### role-stats — ロール情報
+
+```bash
+supabase inspect db role-stats
+```
+
+### table-stats — テーブル統合統計
+
+```bash
+supabase inspect db table-stats
+```
+
+テーブルサイズ・インデックスサイズ・推定行数をまとめて表示する。
+
+### traffic-profile — 読み書き比率
+
+```bash
+supabase inspect db traffic-profile
+```
+
+PostgreSQL の `pg_stat_user_tables`（タプル操作）と `pg_statio_user_tables`（ブロック I/O）を組み合わせ、各テーブルのワークロードを分類する。
+
+- **Read-Heavy** - Read operations are more than 5x write operations (e.g., 1:10, 1:50)
+- **Write-Heavy** - Write operations are more than 20% of read operations (e.g., 1:2, 1:4, 2:1, 10:1)
+- **Balanced** - Mixed workload where writes are between 20% and 500% of reads
+- **Read-Only** - Only read operations detected
+- **Write-Only** - Only write operations detected
+
+#### 出力例
+
+```
+SCHEMA │ TABLE        │ BLOCKS READ │ WRITE TUPLES │ BLOCKS WRITE │ ACTIVITY RATIO
+───────┼──────────────┼─────────────┼──────────────┼──────────────┼────────────────────
+public │ user_events  │     450,234 │     9,004,680│       23,450 │ 20:1 (Write-Heavy)
+public │ users        │      89,203 │        12,451│        1,203 │ 7.2:1 (Read-Heavy)
+public │ sessions     │      15,402 │        14,823│        2,341 │ ≈1:1 (Balanced)
+public │ cache_data   │     123,456 │             0│            0 │ Read-Only
+auth   │ audit_logs   │           0 │        98,234│       12,341 │ Write-Only
+```
+
+読み取りと書き込みの両方があったテーブルのみ表示される（I/O の無いテーブルは非表示）。分類の比率しきい値（既定 5:1）が「heavy」と balanced の境界。
+
+### cache-hit — キャッシュヒット率（deprecated）
 
 ```bash
 supabase inspect db cache-hit
@@ -104,7 +161,7 @@ supabase inspect db cache-hit
 
 推奨値: 0.99 以上。これ以下の場合は `shared_buffers` の増加を検討。
 
-### index-sizes — インデックスサイズ
+### index-sizes — インデックスサイズ（deprecated）
 
 ```bash
 supabase inspect db index-sizes
@@ -120,7 +177,7 @@ supabase inspect db index-sizes
  posts_user_id_idx      │ 45 MB
 ```
 
-### index-usage — インデックス使用率
+### index-usage — インデックス使用率（deprecated）
 
 ```bash
 supabase inspect db index-usage
@@ -184,7 +241,7 @@ supabase inspect db replication-slots
 
 Realtime やロジカルレプリケーション用のスロット状態を表示する。
 
-### role-connections — ロールごとの接続数
+### role-connections — ロールごとの接続数（deprecated）
 
 ```bash
 supabase inspect db role-connections
@@ -200,7 +257,7 @@ supabase inspect db role-connections
  supabase_admin│         2  │            100
 ```
 
-### seq-scans — シーケンシャルスキャン
+### seq-scans — シーケンシャルスキャン（deprecated）
 
 ```bash
 supabase inspect db seq-scans
@@ -208,7 +265,7 @@ supabase inspect db seq-scans
 
 シーケンシャルスキャンの多いテーブルを表示。インデックス追加の候補を特定。
 
-### table-sizes — テーブルサイズ
+### table-sizes — テーブルサイズ（deprecated）
 
 ```bash
 supabase inspect db table-sizes
@@ -224,13 +281,13 @@ supabase inspect db table-sizes
  comments          │ 128 MB
 ```
 
-### table-record-counts — レコード数
+### table-record-counts — レコード数（deprecated）
 
 ```bash
 supabase inspect db table-record-counts
 ```
 
-### unused-indexes — 未使用インデックス
+### unused-indexes — 未使用インデックス（deprecated）
 
 ```bash
 supabase inspect db unused-indexes
@@ -279,6 +336,23 @@ supabase inspect report
 supabase inspect report --output-dir ./reports
 ```
 
+### deprecated 詳細（セクションなしのコマンド）
+
+- `role-configs`（deprecated: `role-stats` を使用）
+- `table-index-sizes`（deprecated: `table-stats` を使用、removed in v3）
+- `total-index-size`（deprecated: `index-stats` を使用、removed in v3）
+- `total-table-sizes`（deprecated: `table-stats` を使用、removed in v3）
+
+## Notes
+
+- CLI v2.121.0 時点で、以下は deprecated。公式 CLI リファレンス（llms/cli.txt）にも掲載されなくなった
+  - `cache-hit` -> `db-stats`
+  - `index-sizes` / `index-usage` / `seq-scans` / `unused-indexes` / `total-index-size` -> `index-stats`
+  - `role-connections` / `role-configs` -> `role-stats`
+  - `table-sizes` / `table-record-counts` / `table-index-sizes` / `total-table-sizes` -> `table-stats`
+- `table-index-sizes` / `total-index-size` / `total-table-sizes` は「removed in v3」（コマンド定義の説明文より）
+- 旧一覧の `total-table-size` は v2.121.0 のコマンド名では `total-table-sizes`
+
 ## 共通フラグ
 
 全ての `inspect` コマンドで使用可能。
@@ -289,7 +363,7 @@ supabase inspect report --output-dir ./reports
 | `--db-url <url>` | DB 接続URLを直接指定 |
 | `--password <password>` | DB パスワード |
 
-## 関連
+## Related
 
 - [クエリ最適化](../database/query-optimization.md) — インデックス・パフォーマンス
 - [パフォーマンス](../platform/performance.md) — プラットフォーム最適化

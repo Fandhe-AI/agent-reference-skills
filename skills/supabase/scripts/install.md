@@ -21,6 +21,20 @@ scoop install supabase
 npm install supabase --save-dev
 ```
 
+## yarn でインストール（プロジェクトローカル）
+
+```sh
+NODE_OPTIONS=--no-experimental-fetch yarn add supabase --dev
+```
+
+## pnpm でインストール（プロジェクトローカル）
+
+```sh
+pnpm add supabase --save-dev --allow-build=supabase
+```
+
+`--allow-build=supabase` は pnpm 10 以上で必須。それ以前の pnpm ではフラグを省略する。
+
 ## npm でインストール（グローバル）
 
 ```sh

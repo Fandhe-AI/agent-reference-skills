@@ -2,7 +2,7 @@
 
 OAuth 2.0 / OIDC プロバイダを使ったソーシャルログイン。
 
-## 概要
+## Signature / Usage
 
 Supabase Auth は 19 以上のソーシャルログインプロバイダをサポートしている。`signInWithOAuth()` メソッドでプロバイダの認証ページにリダイレクトし、認証完了後にコールバック URL でセッションを取得する。
 
@@ -46,7 +46,7 @@ https://<project-ref>.supabase.co/auth/v1/callback
 5. アプリケーションの `redirectTo` にリダイレクト
 6. PKCE フローの場合、`exchangeCodeForSession()` でセッション取得
 
-## コード例
+### コード例
 
 ```typescript
 // === 基本的な OAuth サインイン ===
@@ -157,7 +157,7 @@ console.log('Provider token:', session?.provider_token)
 console.log('Provider refresh token:', session?.provider_refresh_token)
 ```
 
-## 注意点
+## Notes
 
 - 各プロバイダの Callback URL を正確に設定すること。形式は `https://<project-ref>.supabase.co/auth/v1/callback`
 - `provider_token` はセッション内に保存されるが、Supabase Auth はプロバイダトークンの更新を行わない
@@ -167,10 +167,12 @@ console.log('Provider refresh token:', session?.provider_refresh_token)
 - `signInWithIdToken()` はネイティブアプリで、プロバイダの SDK から取得した ID トークンを直接使用する場合に使う
 - PKCE フローはサーバーサイドレンダリングで推奨される
 - scopes はプロバイダごとに異なるため、各プロバイダのドキュメントを確認すること
+- 組み込みプロバイダ一覧にない OAuth2 / OIDC 準拠の IdP は Custom OAuth/OIDC Providers として登録できる（OIDC 対応なら issuer URL のみで endpoint を自動解決、非対応の OAuth2 は authorization / token / userinfo の各 URL を明示）。詳細は [カスタム OAuth/OIDC プロバイダ](./custom-oauth-providers.md)
 
-## 関連
+## Related
 
 - [Auth 概要](./overview.md)
 - [ID 管理・アカウントリンク](./identities.md)
 - [SSO / SAML](./sso-saml.md)
+- [カスタム OAuth/OIDC プロバイダ](./custom-oauth-providers.md)
 - [リダイレクト URL](./redirect-urls.md)

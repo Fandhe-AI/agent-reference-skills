@@ -1,5 +1,13 @@
 # Supabase CLI: プロジェクト・その他コマンド
 
+## Signature / Usage
+
+```bash
+supabase <command> [flags]
+```
+
+各コマンドは以下の節に記載する。
+
 ## プロジェクト管理
 
 ### supabase projects list
@@ -68,6 +76,90 @@ supabase projects api-keys --project-ref <ref>
 ───────────┼──────────────────────────────────────────────────
  anon      │ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
  service_role │ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### supabase bootstrap
+
+Bootstrap a Supabase project from a starter template.
+
+```bash
+supabase bootstrap [template] [flags]
+```
+
+## カスタムドメイン
+
+### supabase domains
+
+Manage custom domain names for Supabase projects. Use of custom domains and vanity subdomains is mutually exclusive.
+
+```bash
+# Activate the custom hostname for a project
+supabase domains activate
+
+# Create a custom hostname（CNAME レコードが Supabase プロジェクトのサブドメインを指している前提）
+supabase domains create [flags]
+
+# Get the current custom hostname config
+supabase domains get
+
+# Re-verify the custom hostname config for your project
+supabase domains reverify
+
+# Deletes the custom hostname config for your project
+supabase domains delete
+```
+
+- `activate` は project が custom hostname で応答するよう再構成する。有効化後、third-party auth provider は Supabase 提供のサブドメインでは動作しなくなる（公式: Prepare to activate your domain を参照）
+
+## Postgres 設定
+
+### supabase postgres-config
+
+Manage Postgres database config.
+
+```bash
+# Get the current Postgres database config overrides
+supabase postgres-config get
+
+# Update Postgres database config
+supabase postgres-config update [flags]
+
+# Delete specific Postgres database config overrides
+supabase postgres-config delete [flags]
+```
+
+- `update`: Overriding the default Postgres config could result in unstable database behavior. Custom configuration also overrides the optimizations generated based on the compute add-ons in use.
+- `delete`: Delete specific config overrides, reverting them to their default values.
+
+## サービスバージョン
+
+### supabase services
+
+Show versions of all Supabase services.
+
+```bash
+supabase services
+```
+
+## シェル補完
+
+### supabase completion
+
+Generate the autocompletion script for the specified shell. 対応 shell: `zsh` / `bash` / `fish` / `powershell`。
+
+```bash
+supabase completion zsh [flags]
+supabase completion powershell [flags]
+supabase completion fish [flags]
+supabase completion bash
+```
+
+```bash
+# 現在のシェルセッションで有効化（zsh）
+source <(supabase completion zsh)
+
+# 毎回のセッションで有効化（zsh、1 回実行）
+supabase completion zsh > "${fpath[1]}/_supabase"
 ```
 
 ## 組織管理
@@ -254,8 +346,6 @@ supabase storage rm ss:///avatars/old-avatar.png
 # ディレクトリごと削除
 supabase storage rm -r ss:///avatars/temp/
 ```
-
-## テスト
 
 ## テスト
 
@@ -518,7 +608,7 @@ supabase snippets list
 supabase snippets download <snippet-id>
 ```
 
-## 関連
+## Related
 
 - [Management API プロジェクト](../management-api/projects.md) — API でのプロジェクト管理
 - [Management API シークレット](../management-api/secrets.md) — API でのシークレット管理

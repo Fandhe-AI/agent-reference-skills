@@ -2,10 +2,11 @@
 name: supabase
 description: >
   Supabase (オープンソース Firebase 代替・BaaS) リファレンス。
-  PostgreSQL データベース、Auth (Email / OAuth / Magic Link / Phone / SSO)、Storage、
-  Edge Functions (Deno)、Realtime (subscriptions / presence / broadcast)、Vector embeddings、
-  supabase-js、supabase CLI、RLS (Row Level Security)、migrations。
-  PostgreSQL ベース。SQL Server / node-mssql は別スキル mssql。
+  PostgreSQL、Auth (Email / OAuth / Magic Link / Phone / SSO)、Storage、
+  Edge Functions (Deno)、Realtime (presence / broadcast)、Vector embeddings、
+  supabase-js、@supabase/server (withSupabase)、supabase CLI (supabase stack)、
+  Supabase MCP サーバー、RLS (Row Level Security)、migrations。
+  SQL Server / node-mssql は別スキル mssql。
 user-invocable: false
 model: sonnet
 ---
@@ -14,6 +15,8 @@ model: sonnet
 
 Supabase 公式ドキュメントの全 API を網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+対象バージョン: ドキュメントは supabase.com の Markdown twin (`<page>.md`) と llms/*.txt（取得日 2026-10-16）。Supabase CLI v2.121.0（npm `supabase` latest）、`@supabase/server` 1.9.2（npm latest）。prerelease（supabase 3.0.0-next.x、2.122.0-beta.x、`@supabase/server` の rc / beta / alpha）は対象外。
 
 ## ディレクトリ構成
 
@@ -54,9 +57,12 @@ skills/supabase/
       anonymous-auth.md
       auth-hooks.md
       captcha.md
+      choosing-server-package.md
+      custom-oauth-providers.md
       email-passwordless.md
       error-codes.md
       identities.md
+      jwt-fields.md
       jwts.md
       mfa.md
       oauth-server.md
@@ -200,8 +206,11 @@ skills/supabase/
     local-dev/
       README.md
       declarative-schemas.md
+      diff-engines.md
+      docker-and-native-runtimes.md
       email-templates.md
       overview.md
+      running-multiple-local-projects.md
       seeding.md
       testing.md
     self-hosting/
@@ -223,6 +232,23 @@ skills/supabase/
       logs.md
       metrics.md
       reports.md
+    ai-tools/
+      README.md
+      agent-skills.md
+      byo-mcp.md
+      mcp.md
+      overview.md
+      plugins.md
+    server-sdk/
+      README.md
+      adapters.md
+      errors.md
+      frameworks.md
+      middleware.md
+      migrating-off-adapters.md
+      overview.md
+      primitives.md
+      types.md
   samples/
     README.md
     client-setup.md
@@ -234,6 +260,7 @@ skills/supabase/
     oauth-login.md
     realtime-subscription.md
     row-level-security.md
+    server-sdk-endpoint.md
     vector-search-rag.md
   scripts/
     README.md
@@ -261,7 +288,7 @@ skills/supabase/
 |--------|---------|------------|
 | プロジェクトセットアップ、クイックスタート、API キー、アーキテクチャ概要 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | テーブル操作、RLS、Extensions、クエリ最適化、トリガー、ロール権限、バックアップ、Vault | database | [references/database/README.md](references/database/README.md) |
-| ログイン、サインアップ、OAuth、MFA、セッション、JWT、SSO、匿名認証 | auth | [references/auth/README.md](references/auth/README.md) |
+| ログイン、サインアップ、OAuth、MFA、セッション、JWT、SSO、匿名認証、サーバーパッケージ選択・JWT クレーム・カスタム OAuth/OIDC プロバイダ | auth | [references/auth/README.md](references/auth/README.md) |
 | ファイルアップロード、画像変換、CDN、バケット、S3 互換、Storage Vectors | storage | [references/storage/README.md](references/storage/README.md) |
 | Edge Functions、Deno、デプロイ、バックグラウンドタスク、WebSocket、WASM | functions | [references/functions/README.md](references/functions/README.md) |
 | Broadcast、Presence、Postgres Changes、リアルタイム認可 | realtime | [references/realtime/README.md](references/realtime/README.md) |
@@ -271,12 +298,14 @@ skills/supabase/
 | supabase-js、createClient、select、insert、update、delete、realtime チャンネル | client-js | [references/client-js/README.md](references/client-js/README.md) |
 | Python、Dart、Swift、Kotlin、C# クライアント | client-other | [references/client-other/README.md](references/client-other/README.md) |
 | プロジェクト管理 API、組織、シークレット、Database Branching | management-api | [references/management-api/README.md](references/management-api/README.md) |
-| supabase CLI コマンド、db diff、migration、型生成コマンド | cli | [references/cli/README.md](references/cli/README.md) |
+| supabase CLI コマンド、db diff、migration、型生成コマンド、db schema declarative・migration fetch・inspect db traffic-profile | cli | [references/cli/README.md](references/cli/README.md) |
 | コンピュート、バックアップ、リージョン、課金、リードレプリカ、Database Branching | platform | [references/platform/README.md](references/platform/README.md) |
 | 本番チェックリスト、マイグレーション戦略、環境管理、成熟度モデル | deployment | [references/deployment/README.md](references/deployment/README.md) |
-| ローカル開発、シード、テスト、宣言的スキーマ、メールテンプレート | local-dev | [references/local-dev/README.md](references/local-dev/README.md) |
+| ローカル開発、シード、テスト、宣言的スキーマ、メールテンプレート、ローカル複数プロジェクト (supabase stack)・Docker / ネイティブランタイム・diff エンジン (pg-delta / migra) | local-dev | [references/local-dev/README.md](references/local-dev/README.md) |
 | Docker、セルフホスティング、S3 設定、Kong API ゲートウェイ | self-hosting | [references/self-hosting/README.md](references/self-hosting/README.md) |
 | RLS 詳細、SSL、SOC2、コンプライアンス、ネットワークセキュリティ | security | [references/security/README.md](references/security/README.md) |
 | ログ確認、メトリクス、Grafana、ログドレイン、レポート | telemetry | [references/telemetry/README.md](references/telemetry/README.md) |
+| Supabase MCP サーバー接続、AI コーディングエージェント用プラグイン、Agent Skills、自前 MCP サーバーのデプロイ | ai-tools | [references/ai-tools/README.md](references/ai-tools/README.md) |
+| @supabase/server、withSupabase、ヘッダーベースのサーバー認証、Hono / H3 / Elysia / NestJS 連携、adapter 移行 | server-sdk | [references/server-sdk/README.md](references/server-sdk/README.md) |
 | 典型的な使い方を知りたい、実装例、Next.js SSR、RAG パイプライン | samples | [samples/README.md](samples/README.md) |
 | CLI インストール、ローカル環境起動・停止、型生成、テスト実行コマンド | scripts | [scripts/README.md](scripts/README.md) |

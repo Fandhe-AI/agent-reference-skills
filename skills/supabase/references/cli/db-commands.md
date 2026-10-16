@@ -1,5 +1,13 @@
 # Supabase CLI: データベースコマンド
 
+## Signature / Usage
+
+```bash
+supabase db <command> [flags]
+```
+
+各コマンドは以下の節に記載する。
+
 ## supabase db diff
 
 ローカルデータベースのスキーマ変更を差分として検出し、マイグレーション SQL を生成する。
@@ -139,6 +147,8 @@ supabase db pull
 | フラグ | 説明 |
 |-------|------|
 | `--schema <schemas>` | 対象スキーマ（カンマ区切り） |
+| `--declarative` | schema ファイル（既定 `supabase/schemas/`）を選択した DB から置き換える。migration は作成せず migration history にも触れない |
+| `--diff-engine <pg-delta\|migra>` | 1 回の実行で diff エンジンを切り替える |
 
 ### 使用例
 
@@ -148,7 +158,15 @@ supabase db pull
 
 # 特定スキーマのみ
 supabase db pull --schema public,auth
+
+# 宣言的スキーマのツリーをリモートから更新（pg-delta 前提）
+supabase db pull --declarative
 ```
+
+### Notes
+
+- `--declarative` は `[experimental.pgdelta]` の設定に関係なく実行できるが、pg-delta でのみ使うこと。legacy migra エンジンでは `[db.migrations].schema_paths` が書き換えられ、次回の `db diff` が失敗する（出典: Declarative database schemas ガイド / Diff engines ガイド）
+- migration history が空の初回 pull の挙動は diff エンジンで異なる（pg-delta: 空の shadow DB との diff、migra: `pg_dump`）
 
 ### 動作
 
@@ -229,6 +247,87 @@ supabase db reset --version 20240101000000
 2. `supabase/migrations/` 内の全マイグレーションを順に適用
 3. `supabase/seed.sql` を実行（存在する場合）
 
+## supabase db start
+
+Starts local Postgres database.
+
+```bash
+supabase db start [flags]
+```
+
+ローカル開発スタックは `supabase start` または `supabase db start` で起動する（`db lint` 等の前提として公式 CLI リファレンスに記載）。フラグ表は公式 CLI リファレンスに無く、v2.121.0 のソースでも確認していないため記載しない。
+
+## supabase db schema declarative sync
+
+Generate a new migration from declarative schema.
+
+```bash
+supabase db schema declarative sync [flags]
+```
+
+Generate a new migration by diffing your declarative schema files against the current migration state. When no declarative schema exists yet, the command offers to run `generate` first. After computing the diff, you can optionally name the migration and apply it to the local database.
+
+Requires `--experimental` flag or `[experimental.pgdelta] enabled = true` in config.
+
+### フラグ
+
+| フラグ | 説明 |
+|-------|------|
+| `-s, --schema <schemas>` | Comma separated list of schema to include. |
+| `-f, --file <name>` | Saves schema diff to a new migration file. |
+| `--name <name>` | Name for the generated migration file. |
+| `--apply` | Apply the generated migration to the local database without prompting. |
+| `--no-apply` | Generate the migration file without prompting or applying it to the local database. |
+
+### 使用例
+
+```bash
+supabase db schema declarative sync -f add_age --no-apply
+```
+
+### Notes
+
+- `--apply` と `--no-apply` は排他（ソース上のコメント）。`--apply` / グローバル `--yes` はローカル DB へ適用し、非対話実行はファイルを書いて適用をスキップする
+- under pg-delta, `db diff` は `supabase/schemas/` を baseline に使わない。schema ファイルから migration を作るには `db schema declarative sync` を使う（`db diff` は live DB と migrations の差分を取る）
+- `sync` は schema ファイルと migration history を比較し、live DB は読まない
+
+## supabase db schema declarative generate
+
+Generate declarative schema from a database.
+
+```bash
+supabase db schema declarative generate [flags]
+```
+
+Exports the schema of a live database (local, linked, or custom URL) into SQL files under the declarative schema directory. This is the entrypoint for bootstrapping declarative mode. Requires `--experimental` flag or `[experimental.pgdelta] enabled = true` in config.
+
+### フラグ
+
+| フラグ | 説明 |
+|-------|------|
+| `--overwrite` | Overwrite declarative schema files without confirmation.（既定: false） |
+| `--output-dir <dir>` | Write the generated declarative schema to this directory without changing the configured declarative schema path. |
+| `--reset` | Reset local database before generating (local data will be lost).（既定: false） |
+| `-s, --schema <schemas>` | Comma separated list of schema to include. |
+| `--db-url <url>` | Generates declarative schema from the database specified by the connection string (must be percent-encoded). |
+| `--linked` | Generates declarative schema from the linked project. |
+| `--local` | Generates declarative schema from the local database. |
+| `-p, --password <password>` | Password to your remote Postgres database. |
+
+### 出力レイアウト
+
+- pg-delta engine は schema ごとに 1 ディレクトリを書く（`supabase/schemas/public/tables/users.sql`、`supabase/schemas/public/schema.sql`）
+- どの schema にも属さない cluster レベルのオブジェクトは予約ディレクトリ `_cluster/` 配下（`supabase/schemas/_cluster/roles.sql`）
+- platform 既定 grant（`anon` / `authenticated` / `service_role`）に overlay `REVOKE ALL` が要る場合、schema の `schema.sql` の後に `adp_wipes.sql` を書く（cluster 全体の overlay は `_cluster/adp_wipes.sql`）
+- `_cluster` / `_custom` という名前の schema は先頭のアンダースコアが percent-encode される（`%5Fcluster/`）
+- pg-delta が扱わない手書き SQL は `_custom/` に置く。export は `_custom/` に書かず prune もしない
+
+### Notes
+
+- migration ファイルは作らず、migration history も更新しない。宣言ファイルのみを置き換える
+- 非対話実行では `--local` / `--linked` / `--db-url` のいずれかを明示する
+- 出力 SQL は `db pull` と同じ既定フォーマット（大文字キーワード、indent 2、width 180）。`[experimental.pgdelta] format_options` で変更、`format_options = "null"` で raw statements
+
 ## コマンド使い分けガイド
 
 | シナリオ | コマンド |
@@ -239,8 +338,10 @@ supabase db reset --version 20240101000000
 | ローカルをクリーンな状態に戻す | `supabase db reset` |
 | リモートの完全なスキーマダンプ | `supabase db dump -f schema.sql` |
 | スキーマの問題を検出 | `supabase db lint` |
+| 宣言的スキーマ（pg-delta）から migration 生成 | `supabase db schema declarative sync -f <name> --no-apply` |
+| 本番スキーマを宣言ファイルへ export | `supabase db schema declarative generate --linked` |
 
-## 関連
+## Related
 
 - [migration コマンド](./migration-commands.md) — マイグレーション CLI
 - [マイグレーション戦略](../deployment/database-migrations.md) — マイグレーション運用

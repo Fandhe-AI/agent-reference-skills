@@ -26,25 +26,22 @@ Deno.serve(async (req: Request) => {
 ```
 
 ```typescript
-// supabase/functions/with-db/index.ts — access the database
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+// supabase/functions/with-db/index.ts — authenticated user, RLS-scoped client
+import { withSupabase } from 'npm:@supabase/server@1'
 
-Deno.serve(async (req: Request) => {
-  // Forward the user's JWT to enforce RLS
-  const authHeader = req.headers.get('Authorization')!
-  const supabase = createClient(
-    Deno.env.get('SUPABASE_URL')!,
-    Deno.env.get('SUPABASE_ANON_KEY')!,
-    { global: { headers: { Authorization: authHeader } } }
-  )
+export default {
+  fetch: withSupabase({ auth: 'user' }, async (_req, ctx) => {
+    const { supabase, supabaseAdmin, userClaims, jwtClaims, authMode } = ctx
+    // supabase       — RLS-scoped to the authenticated user
+    // supabaseAdmin  — bypasses RLS (service role)
+    // userClaims     — user identity from JWT (id, email, role)
+    // jwtClaims      — full JWT claims
+    // authMode       — which auth mode matched
 
-  const { data, error } = await supabase.from('todos').select('*')
-  if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500 })
-
-  return new Response(JSON.stringify(data), {
-    headers: { 'Content-Type': 'application/json' },
-  })
-})
+    // your business logic goes here
+    return Response.json({ email: ctx.userClaims?.email })
+  }),
+}
 ```
 
 ```typescript
@@ -66,6 +63,8 @@ Deno.env.get('OPENAI_API_KEY')
 ## Notes
 
 - The function entry point is always `index.ts` inside the function's directory
-- `SUPABASE_URL` and `SUPABASE_ANON_KEY` are automatically injected at runtime; no need to add them as secrets
-- Pass the user's `Authorization` header to the client so RLS policies are enforced inside the function
+- `withSupabase` accepts the `auth` modes `'user'`, `'secret'`, `'publishable'`, and `'none'`; pass an array such as `['user', 'secret']` to combine modes and read `ctx.authMode`
+- `ctx.supabase` applies the caller's RLS policies; `ctx.supabaseAdmin` bypasses RLS, so filter by the caller's ID from `ctx.userClaims` or use `ctx.supabase`
+- For a custom 401 response, use `createSupabaseContext(req, { auth: 'user' })` from `npm:@supabase/server@1` instead of `withSupabase`; it returns `{ data, error }` and `error.status` holds the HTTP status
+- `@supabase/server` reads `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEYS`, `SUPABASE_SECRET_KEYS`, and `SUPABASE_JWKS`, which the platform and CLI provision; no need to add them as secrets
 - Use `supabase functions serve --env-file .env.local` to load local secrets during development
