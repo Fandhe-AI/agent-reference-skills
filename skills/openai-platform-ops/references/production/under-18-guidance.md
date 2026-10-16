@@ -17,11 +17,11 @@ curl https://api.openai.com/v1/responses \
 }'
 ```
 
-## Regulatory standards
+### Regulatory standards
 
 Organizations serving minors must comply with all applicable child protection, safety, and privacy laws, including the Children's Online Privacy Protection Act (COPPA). Do not use OpenAI services to process personal data of children under 13 (or the applicable age of digital consent) without first implementing zero data retention in the API. You are solely responsible for ensuring you and your users use OpenAI services in compliance with applicable law.
 
-## Safety standards
+### Safety standards
 
 Take reasonable steps to ensure content served to minors via the API is safe and age appropriate, in line with the usage policy to "Keep minors safe". This may include:
 
@@ -30,7 +30,7 @@ Take reasonable steps to ensure content served to minors via the API is safe and
 3. Reasonable monitoring and reporting mechanisms, including escalation paths for high-risk interactions.
 4. Where required or otherwise appropriate, age assurance systems so only intended users can access the product.
 
-## Best practices
+### Best practices
 
 - Exercise heightened care when handling minors' data and interactions, and take appropriate action when risks to young users are identified.
 - Use available safety tools and technical safety measures OpenAI provides to tailor experiences for specific user groups, including minors.
@@ -38,6 +38,7 @@ Take reasonable steps to ensure content served to minors via the API is safe and
 
 ## Notes
 
+- Source: https://developers.openai.com/api/docs/guides/safety-checks/under-18-api-guidance (fetched 2026-10-17).
 - OpenAI reserves the right to audit organizations for compliance. Customers who fail to demonstrate compliance may receive warnings and, for repeated or serious noncompliance, suspension or termination of API access.
 
 ## Related

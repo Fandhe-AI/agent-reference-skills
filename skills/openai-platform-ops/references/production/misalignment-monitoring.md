@@ -35,7 +35,7 @@ alert = client.safety.alerts.retrieve("alert_0123456789abcdef0123456789abcdef")
 print(alert.error_type, alert.reason)
 ```
 
-## Request coverage
+### Request coverage
 
 | Requests | Behavior |
 |----------|----------|
@@ -45,7 +45,7 @@ print(alert.error_type, alert.reason)
 
 Configuring an alert webhook does not enable automatic stopping.
 
-## Handling a stopped request
+### Handling a stopped request
 
 When monitoring blocks a request before streaming begins, the API returns HTTP `403`, error type `invalid_request_error`, code `misalignment_policy_violation`. Match the error code rather than the message text. Streaming integrations must also handle errors while consuming the stream, even after receiving output.
 
@@ -55,6 +55,7 @@ When monitoring blocks a request before streaming begins, the API returns HTTP `
 
 ## Notes
 
+- Source: https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring (fetched 2026-10-17).
 - The API provides no general way to resume a conversation stopped by misalignment monitoring.
 - Monitoring is asynchronous: an action may already have completed before a concern is identified, and a stopped request does not undo earlier actions.
 - Webhook setup, signature verification, acknowledgments, retries, and duplicate deliveries follow the Webhooks guide.

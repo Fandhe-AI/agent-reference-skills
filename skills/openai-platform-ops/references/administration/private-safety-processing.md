@@ -75,7 +75,8 @@ Common errors:
 - Validation writes test objects named `csg_validation_<hex suffix>` (no customer content) and attempts an unauthenticated `GET` to check for public access; for AWS it also tests `AssumeRole` without an external ID and with `proj_smoketest-verifier`, both expected to return `AccessDenied`. Do not weaken the trust policy to make probes succeed.
 - Refresh reloads saved status and does not rerun validation. Disconnecting the last storage connection resets the project to the organization default retention policy and may make PSP-required models unavailable; it does not delete cloud storage contents.
 - Customer responsibilities: register and validate storage per project and residency location, retain encrypted records at least 30 days, maintain storage and key access, repair configuration issues after notification, respond to safety-concern notices.
-- Source dated onboarding video: psp-onboarding-2026-10-07 (AWS walkthrough).
+- Source: https://developers.openai.com/api/docs/guides/private-safety-processing (fetched 2026-10-17).
+- Dated onboarding video: psp-onboarding-2026-10-07 (AWS walkthrough).
 
 ## Related
 

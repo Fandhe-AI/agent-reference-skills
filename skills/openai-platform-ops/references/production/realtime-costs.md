@@ -32,14 +32,15 @@ Realtime sessions accrue input/output tokens across text, audio, and image modal
 
 ## Notes
 
-- Source page moved: the official page is now `/api/docs/guides/voice-latency-cost` (Realtime API tab); `/guides/realtime-costs` redirects there (checked 2026-10-17).
+- Source page moved: the official page is now https://developers.openai.com/api/docs/guides/voice-latency-cost (Realtime API tab); `/guides/realtime-costs` redirects there (checked 2026-10-17).
 - Prompt caching is best-effort and not guaranteed. Removing or changing conversation content busts the cache up to the point of the change; changing instructions or tools mid-session lowers the cache rate for subsequent turns.
 - Truncation can be completely disabled (an error is returned when the Conversation is too long to create a Response); useful for managing Conversation size manually. Old items can be removed with `conversation.item.delete`.
 - GPT-Live (per-second voice session billing) is documented on the same official page under a separate tab and is not covered here; session mechanics belong to openai-realtime-audio.
+- The official guide's snippet shows the key as `event`; Realtime client events are identified by `type` (consistent with the Realtime API client event schema), so the example here uses `type`.
 
 ```json
 {
-  "event": "session.update",
+  "type": "session.update",
   "session": {
     "truncation": "disabled"
   }

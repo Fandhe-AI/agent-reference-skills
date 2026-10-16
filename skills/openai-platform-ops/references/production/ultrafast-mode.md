@@ -74,7 +74,7 @@ curl https://api.openai.com/v1/responses \
 | `service_tier` | `"ultrafast"` | Request-level opt-in; set in each `response.create` event on WebSocket |
 | `model` | `"gpt-6-astra"` \| `"gpt-6.1-sol"` | Models with Ultrafast support |
 
-## Default Ultrafast rate limits
+### Default Ultrafast rate limits
 
 GPT-6.1 Sol (tokens per minute):
 
@@ -94,6 +94,7 @@ GPT-6 Astra (tokens per minute):
 
 ## Notes
 
+- Source: https://developers.openai.com/api/docs/guides/ultrafast-mode (fetched 2026-10-17).
 - Available to all API users for GPT-6 Astra and GPT-6.1 Sol.
 - Ultrafast has separate rate limits from Standard and Fast modes. Check the organization's limits before increasing traffic; organizations with an OpenAI account team can contact them to request higher limits.
 - Data residency: GPT-6.1 Sol supports US and EU data residency and global processing. GPT-6 Astra Ultrafast supports US data residency and global processing only.

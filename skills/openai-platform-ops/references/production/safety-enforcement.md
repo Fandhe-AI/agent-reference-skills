@@ -40,14 +40,14 @@ A successful lookup returns HTTP `200`:
 }
 ```
 
-## Events
+### Events
 
 | Event | Notice |
 |-------|--------|
 | `safety.warning_issued` | A warning for a safety identifier in your organization. |
 | `safety.deactivation_issued` | A deactivation for a safety identifier in your organization. |
 
-## Troubleshooting
+### Troubleshooting
 
 | Symptom | What to check |
 |---------|---------------|
@@ -59,6 +59,7 @@ A successful lookup returns HTTP `200`:
 
 ## Notes
 
+- Source: https://developers.openai.com/api/docs/guides/safety-enforcement (fetched 2026-10-17).
 - Use cases: route warning and deactivation notices to trust and safety or support, add case info to an investigation or support ticket, associate a notice with a user through your safety-identifier mapping.
 - Use a stable safety identifier per user, keep your own mapping from identifier to user, and avoid personal information in the identifier. `entity_identifier` in the case represents the affected safety identifier.
 - The event's `id` identifies the webhook event; `data.id` identifies the safety case.

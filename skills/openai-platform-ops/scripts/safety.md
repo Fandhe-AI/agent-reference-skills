@@ -11,7 +11,7 @@ curl "https://api.openai.com/v1/safety/alerts/alert_0123456789abcdef0123456789ab
   -H "Authorization: Bearer ${OPENAI_API_KEY}"
 ```
 
-Source: Misalignment monitoring guide, "Receive project safety alerts".
+Source: [Misalignment monitoring guide](https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring), "Receive project safety alerts".
 
 ## Retrieve a safety case
 
@@ -24,7 +24,7 @@ curl "https://api.openai.com/v1/safety/cases/C-abc123" \
 
 A successful lookup returns HTTP `200` and a case object. Retrieving a case does not change or reverse the enforcement.
 
-Source: Safety enforcement notifications guide, "Retrieve the case".
+Source: [Safety enforcement notifications guide](https://developers.openai.com/api/docs/guides/safety-enforcement), "Retrieve the case".
 
 ## Notes
 

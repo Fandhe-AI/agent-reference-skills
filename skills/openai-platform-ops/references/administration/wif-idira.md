@@ -85,6 +85,7 @@ Service account mapping: set **Key** to `sub` and **Value** to the exact SPIFFE 
 
 ## Notes
 
+- Source: https://developers.openai.com/api/docs/guides/workload-identity-federation/idira (fetched 2026-10-17).
 - Prerequisites: an SWA deployment with a trust domain and attestation policy, access to the SWA Agent's Workload API socket, permission to manage Workload Identity Providers / mappings / projects / service accounts, and an OpenAI SDK that supports workload identity credentials.
 - Retrieve the trust domain's `jwt.discovery_endpoints.oidc_discovery_url` and `jwt.discovery_endpoints.jwks_uri`. The discovery document and JWKS must be reachable by OpenAI over HTTPS without credentials; otherwise upload the public JWKS and update it when SWA rotates keys.
 - SWA defaults to `RS512` signing with a 4096-bit RSA key, which OpenAI's JWT verifier accepts.

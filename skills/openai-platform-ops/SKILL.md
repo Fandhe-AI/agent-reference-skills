@@ -2,13 +2,14 @@
 name: openai-platform-ops
 description: >
   OpenAI API (developers.openai.com) の運用・管理リファレンス。
-  Administration API, admin API keys, RBAC, groups, invites, projects,
-  spend limits, audit logs, usage / costs API, Terraform provider,
+  Administration API, admin API keys, RBAC, roles, groups, invites, projects,
+  spend limits, audit logs, usage / costs API, Terraform provider (openai/openai),
   workload identity federation (WIF, OIDC / SPIFFE / X.509 / Idira),
   moderation API, misalignment monitoring, safety alerts / cases,
-  under-18 guidance, ZDR Private Safety Processing (PSP),
-  production best practices, fast / ultrafast mode, Realtime API costs。
-  rate limits・webhooks は openai-api-core、Codex WIF・管理は openai-codex。
+  safety best practices, under-18 guidance, ZDR Private Safety Processing (PSP),
+  production best practices, deployment checklist, cost / latency optimization,
+  fast / ultrafast mode, Realtime API costs。
+  rate limits・error handling・prompt caching・webhooks は openai-api-core、Codex WIF・管理は openai-codex。
 user-invocable: false
 ---
 
