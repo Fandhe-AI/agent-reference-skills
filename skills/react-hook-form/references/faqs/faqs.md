@@ -18,9 +18,9 @@ React Hook Form は非制御コンポーネントベースで設計されてい�
 
 React Hook Form はフックベースのため、クラスコンポーネントでは直接使用できない。関数コンポーネントでラップし、props 経由でデータを渡す。
 
-## React の `<Activity />` コンポーネントで動作するか
+## Does it work with React's `<Activity />` component?
 
-Since 7.85.0: 動作する。`<Activity mode="hidden">` でフォームを非表示にすると effect とサブスクリプションがアンマウントされ、再表示時に再マウントされる。以前はこれにより復元後の `useWatch` の値や `formState.isSubmitting` が古いままになっていた。現在は React Hook Form が再マウント時に内部サブスクリプションを再同期するため、追加設定なしで `<Activity />` の表示切り替えをまたいで状態が正しく保たれる。
+Since 7.85.0: Yes. Hiding a form with `<Activity mode="hidden">` unmounts its effects and subscriptions, then remounts them when it becomes visible again, which used to leave `useWatch` values and `formState.isSubmitting` stale after restoration. React Hook Form now resyncs its internal subscriptions on remount, so state stays correct across `<Activity />` visibility changes without any extra configuration.
 
 ## フォームリセット方法
 

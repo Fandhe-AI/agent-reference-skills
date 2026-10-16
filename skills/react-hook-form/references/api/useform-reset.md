@@ -33,6 +33,7 @@ export default function App() {
       />
 
       <button
+        type="button"
         onClick={() => {
           reset((formValues) => ({ ...formValues, lastName: "test" }))
         }}
@@ -76,7 +77,7 @@ useEffect(() => {
 
 ## Notes
 
-- Buttons inside a form default to `type="submit"`; add `type="button"` to reset/setValue controls in real code.
+- Adapted from the official example: `type="button"` added to the "Reset partial" button, since buttons inside a form default to `type="submit"`.
 - Always provide `defaultValues` when resetting a form so all inputs, especially controlled components, are restored correctly.
 - Calling `reset` with `values` updates the form's `defaultValues` unless `options.keepDefaultValues` is set. A later `reset()` or `reset({})` resets to the last `values` provided instead of the initial `defaultValues`.
 - With `Controller`, pass values to `reset({ firstName: "bill", lastName: "luo" })`.

@@ -5,7 +5,7 @@ To integrate React Hook Form with a service, use the library's built-in submissi
 ## Signature / Usage
 
 ```javascript
-import { Form } from "react-hook-form"
+import { Form, useForm } from "react-hook-form"
 
 function App() {
   const { register, control } = useForm()
@@ -32,7 +32,7 @@ function App() {
 
 ## Notes
 
-- The official snippet omits the `useForm` import; add `import { useForm } from "react-hook-form"` when using it.
+- Adapted from the official example: the official snippet imports only `Form`; `useForm` was added to the import line.
 - Source: https://react-hook-form.com/get-started#Integratingwithservices
 
 ## Related

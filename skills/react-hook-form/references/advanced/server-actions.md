@@ -11,9 +11,18 @@ Next.js Server Actions and React's [`useActionState`](https://react.dev/referenc
 ```javascript
 "use server"
 
+import { z } from "zod"
+
+const profileSchema = z.object({ name: z.string().min(1) })
+
 export async function updateProfile(previousState, data) {
+  const parsed = profileSchema.safeParse(data)
+  if (!parsed.success) {
+    return { success: false, error: "Invalid input." }
+  }
   try {
-    await db.user.update({ data })
+    // persist only the explicitly allowed fields
+    await db.user.update({ data: { name: parsed.data.name } })
     return { success: true }
   } catch {
     return { success: false, error: "Something went wrong. Please try again." }
@@ -27,7 +36,7 @@ export async function updateProfile(previousState, data) {
 "use client"
 
 import { useForm } from "react-hook-form"
-import { useActionState } from "react"
+import { useActionState, startTransition } from "react"
 import { updateProfile } from "./actions"
 
 export default function ProfileForm() {
@@ -39,7 +48,7 @@ export default function ProfileForm() {
   } = useForm()
 
   return (
-    <form onSubmit={handleSubmit((data) => submitAction(data))}>
+    <form onSubmit={handleSubmit((data) => startTransition(() => submitAction(data)))}>
       <input {...register("name", { required: "Name is required" })} />
       {errors.name && <span role="alert">{errors.name.message}</span>}
 
@@ -68,6 +77,7 @@ useEffect(() => {
 
 ## Notes
 
+- Adapted from the official example (advanced-usage#ServerActionsuseActionState): server-side validation (zod `safeParse`), explicit field selection, and `startTransition` wrapping added.
 - `isPending` and `state` come straight from `useActionState` and are read directly in the JSX, so there's nothing to synchronize: `isPending` replaces a manual loading `useState`, and `state.success` / `state.error` replace a manual result `useState`. The client calls the Server Action only once `handleSubmit` has confirmed the form is valid, but that check is a UX aid and does not protect the server; validate again inside the action.
 - Server Actions can be invoked directly, so validate again on the server (e.g. `schema.safeParse`) and persist only explicitly selected fields.
 - Calling the `useActionState` dispatch outside a transition does not update `isPending`; wrap it as `startTransition(() => submitAction(data))`.

@@ -21,7 +21,7 @@ export default function App() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <input {...register("firstName", { required: true, maxLength: 20 })} />
       <input {...register("lastName", { pattern: /^[A-Za-z]+$/i })} />
-      <input type="number" {...register("age", { min: 18, max: 99 })} />
+      <input type="number" {...register("age", { valueAsNumber: true, min: 18, max: 99 })} />
       <input type="submit" />
     </form>
   )
@@ -44,6 +44,7 @@ Supported validation rules:
 
 ## Notes
 
+- Adapted from the official example: `valueAsNumber: true` added to the `age` register so the submitted value matches the `number` type.
 - Details on each rule are in the `register` API page.
 - Native inputs return strings; use `valueAsNumber` (input) or `setValueAs` (select) when the field type is `number`.
 - Source: https://react-hook-form.com/get-started#Applyvalidation

@@ -9,14 +9,15 @@ import { useForm } from "react-hook-form"
 
 const App = () => {
   const { register, setValue } = useForm({
-    firstName: "",
+    defaultValues: { firstName: "" },
   })
 
   return (
     <form>
       <input {...register("firstName", { required: true })} />
-      <button onClick={() => setValue("firstName", "Bill")}>setValue</button>
+      <button type="button" onClick={() => setValue("firstName", "Bill")}>setValue</button>
       <button
+        type="button"
         onClick={() =>
           setValue("firstName", "Luo", {
             shouldValidate: true,
@@ -57,8 +58,8 @@ setValue("firstName", "Bill", {
 
 ## Notes
 
-- Buttons inside a form default to `type="submit"`; add `type="button"` to reset/setValue controls in real code.
-- The official example passes `firstName` directly to `useForm`; initial values must be set via `defaultValues` (`useForm({ defaultValues: { firstName: "" } })`).
+- Adapted from the official example: initial value moved into `defaultValues` (the official example passes `firstName` directly to `useForm`, which is not a `useForm` option).
+- Adapted from the official example: `type="button"` added to the buttons, since buttons inside a form default to `type="submit"`.
 - `shouldDirty` only guarantees that the target field is marked in `dirtyFields` immediately. Because `isDirty` compares current values against `defaultValues`, a later update to any field can trigger a `dirtyFields` recompute that also surfaces other fields whose value already differs from their default, including ones last written with `shouldDirty: false`.
 - `replace` / `update` from `useFieldArray` unmount and remount the targeted field array; `setValue("array.0.test1", "1")` directly updates the input value.
 - Target the field's name rather than a nested object as the second argument:

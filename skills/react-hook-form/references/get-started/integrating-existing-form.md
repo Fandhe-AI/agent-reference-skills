@@ -56,7 +56,7 @@ const App = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Input label="First Name" register={register} required />
-      <Select label="Age" {...register("Age")} />
+      <Select label="Age" {...register("Age", { setValueAs: (v) => Number(v) })} />
       <input type="submit" />
     </form>
   )
@@ -65,6 +65,7 @@ const App = () => {
 
 ## Notes
 
+- Adapted from the official example: `setValueAs: (v) => Number(v)` added to the `Age` register so the submitted value matches the `number` type.
 - Native inputs return strings; use `valueAsNumber` (input) or `setValueAs` (select) when the field type is `number`.
 - Source: https://react-hook-form.com/get-started#Integratinganexistingform
 
