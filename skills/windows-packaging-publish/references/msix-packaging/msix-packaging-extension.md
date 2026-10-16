@@ -45,7 +45,7 @@ steps:
 - task: MSIX.msix-ci-automation-task-dev.avd-app-attach-publish.AVDAppAttachPublish@0
   displayName: 'Publish MSIX app attach package to AVD'
   inputs:
-    vhdxPath: '$(Build.ArtifactStagingDirectory)/App.vhdx'
+    vhdxPath: '$(Build.ArtifactStagingDirectory)\MyApp.vhdx'
     connectedServiceNameARM: '<service-connection-id>'
     resourceGroupName: 'appattach-test-rg'
     storageAccount: 'appattachteststorage'
@@ -59,7 +59,7 @@ Hand-written YAML pipeline (MSBuild + SignTool):
 
 ```yml
 pool:
-  vmImage: windows-2019
+  vmImage: windows-latest
 
 variables:
   buildPlatform: 'x86'
@@ -90,7 +90,9 @@ steps:
     secureFile: 'certificate.pfx'
   displayName: 'Download Secure PFX File'
 
-- script: '"C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x86\signtool" sign /fd SHA256 /f "$(Agent.TempDirectory)/certificate.pfx" /p <password> "$(Build.ArtifactStagingDirectory)/MsixDesktopApp.msix"'
+- powershell: |
+     $signtool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\signtool.exe" | Sort-Object FullName | Select-Object -Last 1
+     & $signtool.FullName sign /fd SHA256 /f "$(Agent.TempDirectory)/certificate.pfx" /p <password> "$(Build.ArtifactStagingDirectory)/MsixDesktopApp.msix"
   displayName: 'Sign MSIX Package'
 
 - task: PublishBuildArtifacts@1
@@ -126,11 +128,11 @@ Extension tasks:
 
 ## Notes
 
-- The source page breaks the signtool `script:` line right after `$(` in `$(Build.ArtifactStagingDirectory)`; a folded multi-line scalar would turn that into `$( Build...`, so the macro is kept on one line here.
-
+- The source's hand-written pipeline uses `vmImage: windows-2019` and a fixed `signtool` path under SDK `10.0.17763.0`; the `windows-2019` hosted image has been retired, so it is replaced here with `windows-latest` and a PowerShell step that resolves the newest `signtool.exe` under `Windows Kits\10\bin\*\x64` (same `sign` arguments).
+- The source shows the app attach task (`MyApp.vhdx`) and the publish task (`App.vhdx`) in separate snippets; because they are combined into one pipeline here, `vhdxPath` is aligned to the app attach output `MyApp.vhdx`.
 - Do not commit certificates; use Azure DevOps Secure files (enable "Authorize for use in all pipelines"). A password is supported only for the private key, not for a password-protected certificate file. Visual Studio 2019+ no longer generates a temporary certificate in MSIX projects.
 - Set `PackageCertificateThumbprint` to an empty string when signing from a file; a mismatched thumbprint fails with `Certificate does not match supplied signing thumbprint`.
-- The extension runs only on Windows agents (source UI steps use `windows-2019`). Its source is part of the MSIX SDK open source project.
+- The extension runs only on Windows agents (source UI steps use `windows-2019`, a retired hosted image; select a current Windows image instead). Its source is part of the MSIX SDK open source project.
 - `.appinstaller` for non-Store distribution: add it to the packaging project (Package Action `Content`, Copy to Output Directory `Copy if newer`) and update the root and `MainPackage` `Version` with a PowerShell step; during release rewrite both `Uri` attributes. To generate a versioned `.appinstaller` and HTML page, pass `/p:GenerateAppInstallerFile=True /p:AppInstallerUri=... /p:AppInstallerCheckForUpdateFrequency=OnApplicationRun /p:AppInstallerUpdateFrequency=1`.
 - Current status (page "Last reviewed: August 2026"): the `ms-appinstaller:?source=` protocol has been disabled by default since App Installer 1.21.3421.0 (December 12, 2023); enterprises can re-enable it with Group Policy `EnableMSAppInstallerProtocol` set to Enabled (DesktopAppInstaller CSP); link directly to the `.appinstaller` file or publish to the Store instead.
 - Current status: Visual Studio generates `.appinstaller` with the 2017/2 schema, which silently ignores `ShowPrompt` and `UpdateBlocksActivation`; change `xmlns` to `http://schemas.microsoft.com/appx/appinstaller/2021` to use them. The distribution-feature-status page also lists `HoursBetweenUpdateChecks` as unsupported in 2017/2, but the Auto-update and repair page states 2017/2 supports it; treat the Auto-update page as primary.
