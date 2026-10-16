@@ -42,6 +42,7 @@ fun DiceRollScreen(viewModel: DiceRollViewModel = viewModel()) {
 
 ## Notes
 
+- Since Lifecycle 2.11.0 (2.11.0-alpha01), `lifecycle-viewmodel-compose` supports all Kotlin Multiplatform targets. Owner resolution is decoupled from `LocalView`, which remains a fallback on Android.
 - Package: `androidx.lifecycle.viewmodel.compose` (module `lifecycle-viewmodel-compose`).
 - Throws if no `LocalViewModelStoreOwner` is provided and `viewModelStoreOwner` is not passed explicitly.
 - Use `key` to host multiple instances of the same ViewModel class (e.g. per list item).

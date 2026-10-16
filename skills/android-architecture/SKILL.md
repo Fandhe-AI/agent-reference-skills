@@ -15,6 +15,8 @@ user-invocable: false
 Android 公式アーキテクチャガイド（推奨レイヤー構成、ViewModel / Lifecycle、Hilt、Paging 3）を蒸留したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
+対象: Paging 3.5.3 / Lifecycle 2.11.0
+
 ## ディレクトリ構成
 
 ```text
@@ -100,6 +102,7 @@ skills/android-architecture/
       collectaslazypagingitems.md
       itemkey-itemcontenttype.md
       pagingdataadapter.md
+      asitemsnapshotlistflow.md
 ```
 
 ## 探索手順
@@ -124,5 +127,6 @@ skills/android-architecture/
 | HiltViewModel / EntryPoint / Hilt テストの書き方を知りたい | di-hilt | [references/di-hilt/README.md](references/di-hilt/README.md) |
 | Pager / PagingSource / RemoteMediator でページング処理を実装したい | paging | [references/paging/README.md](references/paging/README.md) |
 | collectAsLazyPagingItems / PagingDataAdapter でページングリストを表示したい | paging | [references/paging/README.md](references/paging/README.md) |
+| ページング済みデータを UI 外で ItemSnapshotList として扱いたい / スクロールなしで手動 append・prepend・retry したい | paging | [references/paging/README.md](references/paging/README.md) |
 
 Room / DataStore は android-data、WorkManager / coroutines は android-background-work、画面遷移は android-navigation の担当。

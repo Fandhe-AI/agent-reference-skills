@@ -27,10 +27,12 @@ class MyActivity : ComponentActivity() {
 |------|------|---------|-------------|
 | `lifecycle` | `Lifecycle` | — | The `Lifecycle` object owned by this component. |
 | `lifecycleScope` | `LifecycleCoroutineScope` | — | Extension property; a `CoroutineScope` bound to `Dispatchers.Main.immediate`, canceled when the `Lifecycle` is destroyed. |
+| `LifecycleOwner(lifecycle)` | `public fun LifecycleOwner(lifecycle: Lifecycle): LifecycleOwner` | — | Factory function (Lifecycle 2.11.0+, module `lifecycle-common`, `@JvmName("create")`); creates a `LifecycleOwner` directly backed by the provided `Lifecycle`. |
 
 ## Notes
 
 - In Compose, the current `LifecycleOwner` is exposed via `LocalLifecycleOwner.current`, not through an explicit parameter.
+- The `LifecycleOwner(lifecycle)` factory was added in Lifecycle 2.11.0-alpha02 to reduce boilerplate when composing custom owner components.
 - Package: `androidx.lifecycle` (module `lifecycle-common` / `lifecycle-runtime-ktx` for `lifecycleScope`).
 
 ## Related

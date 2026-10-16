@@ -63,9 +63,11 @@ fun test_items_contain_one_to_ten() = runTest {
 - `List<T>.asPagingSourceFactory()` / `Flow<List<T>>.asPagingSourceFactory()` build a fake `PagingSourceFactory` from an in-memory list for repository fakes in tests.
 - `RemoteMediator.load()` can be called and asserted on directly (returns `RemoteMediator.MediatorResult`) without `TestPager`.
 - `PagingDataAdapter`/`AsyncPagingDataDiffer` are tested by calling `submitData(pagingData)` directly with a `TestDispatcher`/`TestScope`, then asserting on `snapshot()` or `itemCount`.
+- `Flow<PagingData<T>>.asSnapshot()` (paging-testing, a test utility that returns a `List<T>`) is not the same as `Flow<PagingData<T>>.asItemSnapshotListFlow()` (paging-common 3.5.0+, a production operator that returns `Flow<ItemSnapshotList<T>>`).
 
 ## Related
 
+- [asItemSnapshotListFlow / ItemSnapshotList](./asitemsnapshotlistflow.md)
 - [PagingSource](./pagingsource.md)
 - [RemoteMediator](./remotemediator.md)
 - [PagingDataAdapter](./pagingdataadapter.md)

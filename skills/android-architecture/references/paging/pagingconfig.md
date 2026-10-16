@@ -33,6 +33,7 @@ PagingConfig(pageSize = 20, enablePlaceholders = true)
 ## Notes
 
 - Package: `androidx.paging`.
+- Since Paging 3.5.3 (October 12, 2026), when loaded pages exceed `PagingConfig.maxSize`, Paging keeps at least two loaded pages so the viewport stays properly populated (b/565835910).
 
 ## Related
 
