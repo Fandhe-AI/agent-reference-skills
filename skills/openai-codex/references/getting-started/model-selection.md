@@ -28,3 +28,4 @@ Recommended model and reasoning-effort pairings, as listed on the page:
 
 - [Models](./models.md)
 - [Codex CLI](./cli.md)
+- Source: https://learn.chatgpt.com/docs/model-selection

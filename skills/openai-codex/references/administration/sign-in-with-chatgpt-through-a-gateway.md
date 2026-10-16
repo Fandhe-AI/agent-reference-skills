@@ -83,3 +83,4 @@ x-portkey-metadata = '{"tool_id":"codex"}'
 - [Roll out a gateway](./roll-out-a-gateway.md)
 - [Gateway compatibility requirements](./gateway-compatibility.md)
 - [Managed configuration](./managed-configuration.md)
+- Source: https://learn.chatgpt.com/docs/enterprise/sign-in-with-chatgpt-through-a-gateway

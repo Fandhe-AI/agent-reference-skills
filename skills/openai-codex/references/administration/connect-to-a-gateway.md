@@ -92,3 +92,4 @@ Reply with exactly: gateway-ok
 - [Gateway compatibility requirements](./gateway-compatibility.md)
 - [Sign in with ChatGPT through a gateway](./sign-in-with-chatgpt-through-a-gateway.md)
 - [Bedrock through LiteLLM](./bedrock-through-litellm.md)
+- Source: https://learn.chatgpt.com/docs/enterprise/connect-to-a-gateway

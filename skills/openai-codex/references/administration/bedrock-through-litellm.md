@@ -66,3 +66,4 @@ Troubleshooting:
 - [Use API/provider credentials through a gateway](./connect-to-a-gateway.md)
 - [Roll out a gateway](./roll-out-a-gateway.md)
 - [Gateway compatibility requirements](./gateway-compatibility.md)
+- Source: https://learn.chatgpt.com/docs/enterprise/bedrock-through-litellm

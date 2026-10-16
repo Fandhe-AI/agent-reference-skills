@@ -56,6 +56,9 @@ enabled = true
   description = "Project editing with OpenAI API access."
   extends = ":workspace"
 
+  [permissions.project-edit.filesystem]
+  glob_scan_max_depth = 3
+
   [permissions.project-edit.filesystem.":workspace_roots"]
   "**/*.env" = "deny"
 

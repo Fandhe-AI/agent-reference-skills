@@ -75,7 +75,7 @@ CODEX_HOME=$(pwd)/.codex codex exec "List active instruction sources"
 
 ## Troubleshoot discovery issues
 
-- **Nothing loads:** verify you are in the intended repository and that `codex status` reports the workspace root you expect. Codex ignores empty files.
+- **Nothing loads:** verify you are in the intended repository and that running `/status` in an interactive session reports the workspace root you expect. Codex ignores empty files.
 - **Wrong guidance appears:** look for an `AGENTS.override.md` higher in the directory tree or under your Codex home; rename or remove it.
 - **Codex ignores fallback names:** confirm the names are in `project_doc_fallback_filenames` without typos, then restart Codex.
 - **Instructions truncated:** raise `project_doc_max_bytes` or split large files across nested directories.
@@ -83,6 +83,7 @@ CODEX_HOME=$(pwd)/.codex codex exec "List active instruction sources"
 
 ## Notes
 
+- The official guide writes `codex status`; the CLI reference has no top-level `status` subcommand (only `codex login status`), so this page uses the interactive `/status` slash command.
 - If Codex cannot find a project root, it only checks the current directory.
 - Codex stops searching once it reaches your current directory, so place overrides as close to specialized work as possible. Use `~/.codex/AGENTS.override.md` for a temporary global override without deleting the base file.
 - Raise the limit or split instructions across nested directories when you hit the `project_doc_max_bytes` cap. See https://agents.md for the AGENTS.md convention.

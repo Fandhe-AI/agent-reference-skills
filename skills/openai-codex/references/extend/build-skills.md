@@ -75,7 +75,9 @@ Restart Codex after changing `~/.codex/config.toml`.
 
 ## Install curated skills
 
-```bash
+Send this in the Codex composer (it is a skill invocation, not a shell command):
+
+```text
 $skill-installer linear
 ```
 
@@ -95,3 +97,4 @@ $skill-installer linear
 - [Plugins](./plugins.md)
 - [Record & Replay](./record-and-replay.md)
 - [Scheduled tasks](./automations.md)
+- Source: https://learn.chatgpt.com/docs/build-skills

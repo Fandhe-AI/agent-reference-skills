@@ -104,3 +104,4 @@ Key methods (JSON-RPC):
 - [Codex MCP server removal](./agents-sdk-mcp-server.md)
 - [Agent approvals and security](./agent-approvals-security.md)
 - [Sandbox](./sandbox.md)
+- Source: https://learn.chatgpt.com/docs/app-server

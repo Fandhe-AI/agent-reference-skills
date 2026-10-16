@@ -79,3 +79,4 @@ If Codex does not react or post a review:
 - [Review GitHub pull requests with Codex](./github.md)
 - [Code review](./code-review.md)
 - [Codex cloud](../getting-started/cloud.md)
+- Source: https://learn.chatgpt.com/docs/third-party/gitlab

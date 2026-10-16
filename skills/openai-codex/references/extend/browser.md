@@ -52,3 +52,4 @@ browser_use_full_cdp_access = false
 
 - [Computer Use](./computer-use.md)
 - [Plugins](./plugins.md)
+- Source: https://learn.chatgpt.com/docs/browser

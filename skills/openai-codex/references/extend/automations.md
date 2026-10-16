@@ -44,3 +44,4 @@ Check my commits from the last 24h and submit a $recent-code-bugfix.
 
 - [Build skills](./build-skills.md)
 - [Plugins](./plugins.md)
+- Source: https://learn.chatgpt.com/docs/automations

@@ -47,3 +47,4 @@ Qualification checklist (record evidence per client/gateway/model combination): 
 - [Use API/provider credentials through a gateway](./connect-to-a-gateway.md)
 - [Sign in with ChatGPT through a gateway](./sign-in-with-chatgpt-through-a-gateway.md)
 - [Bedrock through LiteLLM](./bedrock-through-litellm.md)
+- Source: https://learn.chatgpt.com/docs/enterprise/gateway-compatibility

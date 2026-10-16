@@ -51,3 +51,4 @@ supports_standalone_web_search = true
 
 - [Plugins](./plugins.md)
 - [Browser](./browser.md)
+- Source: https://learn.chatgpt.com/docs/web-search

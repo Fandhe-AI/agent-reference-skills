@@ -45,3 +45,4 @@ codex --version
 - [ChatGPT desktop app](./desktop-app.md)
 - [ChatGPT desktop app for Windows](./windows-app.md)
 - [Codex CLI](./cli.md)
+- Source: https://learn.chatgpt.com/docs/reference/troubleshooting

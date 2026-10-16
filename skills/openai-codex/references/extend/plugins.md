@@ -45,3 +45,4 @@ codex
 
 - [Record & Replay](./record-and-replay.md)
 - [Build skills](./build-skills.md)
+- Source: https://learn.chatgpt.com/docs/plugins

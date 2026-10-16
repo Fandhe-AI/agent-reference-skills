@@ -191,6 +191,7 @@ model_provider = "openaidr"
 [model_providers.openaidr]
 name = "OpenAI Data Residency"
 base_url = "https://us.api.openai.com/v1" # Replace 'us' with domain prefix
+requires_openai_auth = true # per authentication contract; not in the official snippet
 ```
 
 ## Model reasoning, verbosity, and limits
@@ -378,6 +379,7 @@ Handler ID is the final segment of the table header: 1–64 characters, starting
 
 ## Notes
 
+- The official data-residency snippet omits authentication; per the authentication docs a custom provider without `env_key` or `requires_openai_auth = true` is treated as requiring no auth, so this page adds `requires_openai_auth = true` (alternatively set `env_key = "OPENAI_API_KEY"`).
 - For the full config key table (all sections above condensed into one searchable list), see [Configuration Reference](./config-reference.md).
 
 ## Related

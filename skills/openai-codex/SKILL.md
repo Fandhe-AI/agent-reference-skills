@@ -2,10 +2,12 @@
 name: openai-codex
 description: >
   OpenAI Codex (CLI / IDE / cloud / ChatGPT desktop app) リファレンス。
-  GPT-6 系, Fast / Ultrafast mode, codex exec, スラッシュコマンド, AGENTS.md, rules, subagents,
-  approvals, sandbox, config.toml, MCP 設定, GitHub Action, Codex SDK, App Server (JSON-RPC),
-  Codex skills (.agents/skills), plugins, scheduled tasks, Browser, Computer Use, worktree,
-  GitHub / GitLab / Linear / Slack 連携, administration, LLM gateway, Codex Security (SARIF)。
+  GPT-6 系, Fast / Ultrafast mode, codex exec, スラッシュコマンド, prompting, AGENTS.md, rules, subagents,
+  approvals, auto-review, sandbox, permission profiles, profiles, config.toml, 環境変数, roles, MCP 設定,
+  GitHub Action, Codex SDK, App Server (JSON-RPC), Agents SDK 連携, Codex skills (.agents/skills), plugins,
+  scheduled tasks, Browser, Computer Use, git worktrees, Record & Replay, cloud 委譲,
+  GitHub / GitLab / Linear / Slack 連携, administration, provisioning, analytics API, compliance API, LLM gateway,
+  Codex Security (SARIF), deep scan, triage, findings, threat model, security hardening。
 user-invocable: false
 ---
 

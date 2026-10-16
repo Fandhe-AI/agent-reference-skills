@@ -50,3 +50,4 @@ sudo pacman -Syu                                             # Arch Linux
 
 - [ChatGPT desktop app](./desktop-app.md)
 - [ChatGPT desktop app for Windows](./windows-app.md)
+- Source: https://learn.chatgpt.com/docs/linux/linux-app

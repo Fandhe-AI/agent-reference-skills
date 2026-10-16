@@ -67,3 +67,4 @@ expected behavior, and actual behavior. Use our team's concise review style.
 
 - [Review GitHub pull requests with Codex](./github.md)
 - [Review GitLab merge requests with Codex](./gitlab.md)
+- Source: https://learn.chatgpt.com/docs/code-review

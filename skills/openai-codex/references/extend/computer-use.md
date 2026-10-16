@@ -45,3 +45,4 @@ Enable in **Settings > Computer Use**. Installs an Apple authorization plug-in s
 
 - [Browser](./browser.md)
 - [Record & Replay](./record-and-replay.md)
+- Source: https://learn.chatgpt.com/docs/computer-use

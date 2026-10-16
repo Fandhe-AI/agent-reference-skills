@@ -146,3 +146,4 @@ Supported files in the selected directory:
 - [Plugin controls](./plugin-controls.md)
 - [Skill controls](./skill-controls.md)
 - [Managed configuration](./managed-configuration.md)
+- Source: https://learn.chatgpt.com/docs/enterprise/plugin-management

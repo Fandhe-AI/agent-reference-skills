@@ -28,3 +28,4 @@ Get-started flow (the page has no code; steps are reproduced as a text block):
 - [ChatGPT desktop app for Windows](./windows-app.md)
 - [Codex CLI](./cli.md)
 - [Codex IDE extension](./ide.md)
+- Source: https://learn.chatgpt.com/docs/app

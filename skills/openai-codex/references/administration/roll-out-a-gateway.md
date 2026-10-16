@@ -100,3 +100,4 @@ Troubleshooting:
 - [Sign in with ChatGPT through a gateway](./sign-in-with-chatgpt-through-a-gateway.md)
 - [Bedrock through LiteLLM](./bedrock-through-litellm.md)
 - [Managed configuration](./managed-configuration.md)
+- Source: https://learn.chatgpt.com/docs/enterprise/roll-out-a-gateway

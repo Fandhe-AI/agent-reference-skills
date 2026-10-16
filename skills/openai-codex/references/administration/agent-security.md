@@ -4,6 +4,12 @@ Admin Console area for managing Codex/Work policies and configuration. Replaces 
 
 ## Signature / Usage
 
+Managed networking path in the Admin Console:
+
+```text
+Admin Console > Agent Security > <policy> > Global | Local | Codex Cloud > Requirements > Manage Networking
+```
+
 Orchestrator controls (Global only) and their `requirements.toml` fields:
 
 | Control | `requirements.toml` fields |
@@ -47,3 +53,4 @@ Environment defaults (Defaults editor, `config.toml` fields): `allow_login_shell
 - [Roles and workspace permissions](./roles-and-workspace-permissions.md)
 - [Governance](./governance.md)
 - [Compliance API](./compliance-api.md)
+- Source: https://learn.chatgpt.com/docs/enterprise/agent-security

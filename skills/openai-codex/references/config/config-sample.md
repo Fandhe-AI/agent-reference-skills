@@ -111,7 +111,7 @@ web_search = "cached"  # disabled | cached | indexed | live (live with --yolo / 
 # [skills]
 # max_context_tokens = 2000        # default 2% of context window; capped at 10000
 
-[[skills.config]]
+# [[skills.config]]
 # path = "/path/to/skill/SKILL.md"
 # enabled = false
 
@@ -451,6 +451,7 @@ sandbox = "elevated"
 
 ## Notes
 
+- The official sample leaves the `[[skills.config]]` header uncommented with its keys commented out; it is commented out here so copying the sample does not create an entry without `path`.
 - Root keys must appear before tables in TOML.
 - Optional keys that default to "unset" are shown commented out with notes.
 - MCP servers, profile files, and model providers in the sample are illustrative — remove or edit for your setup.
