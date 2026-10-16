@@ -95,6 +95,7 @@ public class StringFormatter : Microsoft.UI.Xaml.Data.IValueConverter
 
 ## Notes
 
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/data-binding/data-binding-overview (page updated 2026-09-10)
 - Package: `Microsoft.UI.Xaml.Data` (WinUI 3, Windows App SDK). Distinct from WPF `System.Windows.Data.Binding`.
 - Tutorial project: WinUI Blank App (Packaged) C#, named "Quickstart".
 - Collections: `ObservableCollection<T>` implements `INotifyCollectionChanged` and notifies bindings on add/remove. Due to a known WinUI Release-mode bug with .NET 8 and later, `List<T>` may be needed in some scenarios, especially for static collections; with `List<T>` you may not get collection change notifications. Use `ObservableCollection<T>` when the UI must update at runtime. Items must implement `INotifyPropertyChanged` for property-change updates.

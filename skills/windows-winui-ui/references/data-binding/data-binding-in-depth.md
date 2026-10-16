@@ -40,12 +40,14 @@ public class HostViewModel : INotifyPropertyChanged
 <!-- {x:Bind}: Path is rooted at the Window; Mode overrides the OneTime default -->
 <Button Content="{x:Bind Path=ViewModel.NextButtonText, Mode=OneWay}" ... />
 
-<!-- {Binding}: Path is resolved against DataContext; default Mode is OneWay -->
+<!-- {Binding}: Path is resolved against DataContext (set on the root element; WinUI 3 Window has no DataContext); default Mode is OneWay -->
 <Window xmlns:viewmodel="using:DataBindingInDepth" ... >
-    <Window.DataContext>
-        <viewmodel:HostViewModel x:Name="viewModelInDataContext"/>
-    </Window.DataContext>
-    <Button Content="{Binding Path=NextButtonText}" ... />
+    <Grid>
+        <Grid.DataContext>
+            <viewmodel:HostViewModel x:Name="viewModelInDataContext"/>
+        </Grid.DataContext>
+        <Button Content="{Binding Path=NextButtonText}" ... />
+    </Grid>
 </Window>
 ```
 
@@ -84,7 +86,7 @@ Grouped data through `CollectionViewSource` ("has-a-group" pattern):
 |---------|----------|-----------|-------|
 | Path default property | `{x:Bind a.b.c}` | `{Binding a.b.c}` | |
 | Path | `{x:Bind Path=a.b.c}` | `{Binding Path=a.b.c}` | In `x:Bind`, `Path` is rooted at the Window by default, not the DataContext. |
-| Indexer | `{x:Bind Groups[2].Title}` | `{Binding Groups[2].Title}` | Only integer-based indexes are supported. |
+| Indexer | `{x:Bind Groups[2].Title}` | `{Binding Groups[2].Title}` | Binds to the specified item in the collection. Path supports both integer (`Groups[2]`) and string (`Players['John Smith']`) indexers; the official comparison table says integer-only, but the same page's Path description lists integer and string indexers. |
 | Attached properties | `{x:Bind Button22.(Grid.Row)}` | `{Binding Button22.(Grid.Row)}` | Specified using parentheses; prefix with an XML namespace if not in a XAML namespace. |
 | Casting | `{x:Bind groups[0].(data:SampleDataGroup.Title)}` | Not needed | Casts use parentheses. |
 | Converter | `{x:Bind IsShown, Converter={StaticResource BoolToVisibility}}` | same form | Declare converters at the root of the Window, Control, ResourceDictionary, or in App.xaml. |
@@ -112,6 +114,9 @@ Grouped data through `CollectionViewSource` ("has-a-group" pattern):
 
 ## Notes
 
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/data-binding/data-binding-in-depth (page updated 2026-09-29)
+- The official page's sample sets `Window.DataContext`, but the WinUI 3 `Window` does not derive from `FrameworkElement` and has no `DataContext`; set it on the root `Grid` / `Page` instead (see datacontext.md).
+- String indexers require `IDictionary<string,T>` / `IMap<string,T>` (see x-bind-markup-extension.md).
 - Package: `Microsoft.UI.Xaml.Data` (WinUI 3, Windows App SDK). Distinct from WPF `System.Windows.Data.Binding`.
 - Modes: one-time (value that doesn't change at run-time), one-way (observe source, read-only data), two-way (user changes in the UI are pushed back to the source). `{x:Bind}` and `{Binding}` can be mixed in one app, even on the same element.
 - Observability: derive from `DependencyObject` and expose a `DependencyProperty`, or implement `INotifyPropertyChanged` (lighter, necessary for classes with an existing base class). Raising `PropertyChanged` with `String.Empty` or `null` re-reads all non-indexer properties; `"Item[indexer]"` or `"Item[]"` signals indexer changes.

@@ -57,6 +57,7 @@ grid.Background = myBrush;
 
 ## Notes
 
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/ui/in-app-acrylic
 - In WinUI 3, `AcrylicBrush` provides in-app acrylic only: it blurs and tints XAML content within the app window, not the desktop behind it. The UWP `BackgroundSource` property (`HostBackdrop`) is not available in WinUI 3.
 - For window-level acrylic that shows the desktop, set `Window.SystemBackdrop` to a `DesktopAcrylicBackdrop`. To apply Mica or Acrylic from the OS compositor to a specific element, use `SystemBackdropElement`.
 - Define the brush for dark, light, and high contrast themes. In high contrast, use a `SolidColorBrush` with the same `x:Key` as the dark/light `AcrylicBrush`.

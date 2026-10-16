@@ -25,6 +25,7 @@ Window.SystemBackdrop = new DesktopAcrylicBackdrop();
 
 ## Notes
 
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/ui/materials
 - `AcrylicBrush` is in-app acrylic only: it blurs XAML content within the app window and does not show the desktop or other windows. For desktop-see-through effects use `Window.SystemBackdrop` or `SystemBackdropElement`.
 - No material (default): the window background is a solid color from the active light or dark theme.
 - Mica: `MicaKind.Base` (default) or `MicaKind.BaseAlt` (lighter, for secondary surfaces). Windows 11 only; falls back to a solid theme color on Windows 10.

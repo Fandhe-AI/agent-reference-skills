@@ -51,6 +51,7 @@ MyPanel.Resources.MergedDictionaries.Remove(compactDict);
 
 ## Notes
 
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/compact-sizing
 - Applies to common interactive controls such as `Button`, `CheckBox`, `ComboBox`, `TextBox`, `Slider`, and others.
 - Placing the dictionary in a page's `Resources` affects all controls on the page; placing it in a panel's `Resources` scopes it to that panel.
 - In `App.xaml`, merge the compact dictionary after `XamlControlsResources` so it correctly overrides the default size values.
