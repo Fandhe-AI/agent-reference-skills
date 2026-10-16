@@ -6,7 +6,8 @@ description: >
   MSIX サイドローディング, version adaptive。LoggingChannel / ETW, WPT, WPA, プロファイリング,
   GC, 起動性能, XAML 最適化, ListView/GridView 仮想化。UI Automation, AutomationProperties,
   automation peers, キーボード操作性, ハイコントラスト, Narrator。DispatcherQueue,
-  DispatcherQueueTimer, async/await, ConfigureAwait, バックグラウンドタスク, スレッドプール, STA/MTA。
+  DispatcherQueueTimer, WinRT 非同期パターン, async/await, ConfigureAwait, スレッドプール, STA/MTA,
+  デッドロック回避, バックグラウンドタスク。
 user-invocable: false
 ---
 
