@@ -38,7 +38,7 @@ Two main requirements for a framework-dependent packaged app:
 
 ## Notes
 
-- Windows App SDK 2.0 (stable 2.0.1, 04/29/2026) is the first release on Semantic Versioning 2.0.0: the SDK version equals the NuGet package version, with no separate date-based build number (e.g. `<PackageDependency Name="Microsoft.WindowsAppSDK" Version="2.0.1" />`). The sample above still shows the 1.x style `1.8.260209005` as on the official page. The package family name now follows the major version instead of the minor version (the next side-by-side release is 3.0.0); breaking changes are allowed only across major versions.
+- Windows App SDK 2.0 (stable 2.0.1, 04/29/2026) is the first release on Semantic Versioning 2.0.0: the SDK version equals the NuGet package version, with no separate date-based build number (e.g. `<PackageDependency Name="Microsoft.WindowsAppSDK" Version="2.0.1" />`, as shown verbatim in the 2.0 release notes). The sample above still shows the 1.x style `1.8.260209005` as on the official page. The package family name now follows the major version instead of the minor version (the next side-by-side release is 3.0.0); breaking changes are allowed only across major versions.
 - Upgrading an existing C++ project to 2.0 (nuget transitive reference refactoring): remove the existing Windows App SDK package reference with `nuget.exe` or Visual Studio and add the new one, to avoid upgrade issues in packages.config-based projects.
 - Only packaged apps that are full trust, or that declare the `packageManagement` restricted capability, may use the Deployment API to install Main/Singleton package dependencies.
 - Stable-channel Framework package deployment differs from preview: preview versions are deployed at build time as a NuGet dependency.

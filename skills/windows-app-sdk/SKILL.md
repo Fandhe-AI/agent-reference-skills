@@ -2,11 +2,11 @@
 name: windows-app-sdk
 description: >
   Windows アプリ開発 (WinUI 3 / Windows App SDK 2.x) のライフサイクル・ウィンドウ・
-  通知・リソース・ウィジェット・配置。AppInstance, RichActivation, PowerManager、
-  AppWindow, OverlappedPresenter, タイトルバー, DisplayArea、AppNotification,
-  Toast, PushNotificationManager、ResourceManager, MRT, PRI, ローカライズ、
-  WidgetProvider, WidgetManager、MSIX, 自己完結型, DeploymentManager, PackageVolume,
-  IPackageValidator (パッケージ検証), RuntimeCompatibilityOptions, SemVer, サポート期間。
+  通知・リソース・ウィジェット・配置。AppInstance, 単一インスタンス化, RichActivation, PowerManager、
+  AppWindow, AppWindowPresenter, OverlappedPresenter, タイトルバー, DisplayArea, Win32 相互運用、
+  AppNotification, Toast, PushNotificationManager, バッジ通知、ResourceManager, MRT, PRI, ローカライズ、
+  WidgetProvider, WidgetManager, アダプティブカード、MSIX, 自己完結型, DeploymentManager, PackageVolume,
+  IPackageValidator (パッケージ検証), RuntimeCompatibilityOptions, SemVer, サポート期間, リリースチャネル。
 user-invocable: false
 ---
 

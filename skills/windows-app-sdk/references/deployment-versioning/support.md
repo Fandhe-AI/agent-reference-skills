@@ -41,6 +41,7 @@ Windows Server servicing end-dates:
 - Each Windows version continues to be supported by the Windows App SDK until the latest applicable Windows servicing end-date for that version.
 - Servicing categories: GA servicing channel (Home, Pro: shortest servicing; Enterprise: short servicing), LTSC Mainstream (long servicing, Enterprise), LTSC Extended (longest servicing).
 - Dates in the table above are copied from the page as of its 2026-09-24 revision and may change. Individual APIs can require newer Windows builds than the SDK baseline (for example, `Microsoft.Windows.Management.Deployment` APIs need Windows 10 version 2004 or later).
+- The Server 2022 Max end-date (2032-01-13) is copied verbatim from the official Windows Server table; that it is later than the LTSC Extended date (2031-10-14) is as published.
 - Source: https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/support
 
 ## Related
