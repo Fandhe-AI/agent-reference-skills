@@ -58,3 +58,5 @@ export const useFieldset = () => useContext(FieldsetContext);
 - TypeDoc 独自のタグ（TSDoc 標準にはない）
 - プロジェクト内で上記の統一名を使用する
 - 1 つのシンボルに複数の `@category` を指定可能
+- 関連する TypeDoc タグ: 親リフレクションに置く `@categoryDescription`（1 行目がカテゴリ名、以降が説明）、モディファイアの `@showCategories` / `@hideCategories`（`navigation.includeCategories` の個別切替）
+- eslint-plugin-tsdoc の未定義タグ警告を避けるには、`tsdoc.json` で `typedoc/tsdoc.json` を `extends` する

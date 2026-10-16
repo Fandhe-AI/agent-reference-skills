@@ -50,3 +50,6 @@
 - `{@linkcode}` はコードフォント（`<code>`）で表示される — 関数名や変数名に適している
 - `{@linkplain}` はプレーンテキストで表示される
 - `@see` や `@deprecated` の説明文内で使用することが多い
+- `{@linkcode}` / `{@linkplain}` は TSDoc 標準外の JSDoc タグ。TypeDoc が認識し、`@link` と同じ方式で解決する。eslint-plugin-tsdoc で使うには `tsdoc.json` で `typedoc/tsdoc.json` を `extends` する
+- パイプ無しの `{@link Foo.Bar click here}` は TSDoc 非準拠（TypeDoc だけが受け付ける）。表示名は必ず `|` で区切る
+- TypeDoc は既定（`--useTsLinkResolution`）で TypeScript のスコープ解決を使い、解決できない場合は declaration references にフォールバックする
