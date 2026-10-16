@@ -11,12 +11,15 @@ name: AppPackageAutoUpdate
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'release/package.msix'
 
 jobs:
   build:
     runs-on: windows-latest
+    environment: production
 
     steps:
       - name: Checkout repository
@@ -56,8 +59,8 @@ msstore submission publish <Store product Id>
 | Item | Detail |
 |---|---|
 | Repository secrets | `AZURE_AD_APPLICATION_CLIENT_ID`, `AZURE_AD_APPLICATION_SECRET`, `AZURE_AD_TENANT_ID`, `SELLER_ID` |
-| MSIX package trigger | push to `release/package.msix` -> `msstore publish <file> -id <Store product Id>` |
-| MSIX metadata trigger | push to `metadata/metadata.json` -> `submission updateMetadata` + `submission publish` |
+| MSIX package trigger | push to `release/package.msix` on the release branch (main) -> `msstore publish <file> -id <Store product Id>` |
+| MSIX metadata trigger | push to `metadata/metadata.json` on the release branch (main) -> `submission updateMetadata` + `submission publish` |
 | MSI/EXE package flow | `msstore submission get <Partner center Id>` -> `release/package.json` -> `msstore submission update <Partner center Id> $updatedPackage` -> `msstore submission publish <Partner center Id>` |
 | MSI/EXE metadata flow | `msstore submission get <Partner center Id> -m <module name>` -> `metadata/metadata.json` -> `submission updateMetadata` -> `submission publish` |
 
@@ -71,6 +74,7 @@ msstore submission publish <Store product Id>
 - The `<Store product Id>` / `<Partner center Id>` placeholders are as written in the source for MSIX and MSI/EXE respectively.
 - The source expands `${{ secrets.* }}` directly inside `run:`. The secrets are passed via `env:` instead so secret values are not expanded into shell source.
 - Third-party actions are pinned to commit SHAs (`actions/checkout` v4, `microsoft/microsoft-store-apppublisher` v1.1) with the original tag in a trailing comment; the source uses the mutable tags `@v4` / `@v1.1`.
+- The source triggers on `push.paths` only, so a push to any branch would publish with the repository secrets; the example restricts it to `branches: [main]` and a protected `environment` (configure required reviewers on the `production` environment to require approval) so unmerged packages are never submitted.
 - Source: https://learn.microsoft.com/en-us/windows/apps/publish/msstore-dev-cli/github-actions, last updated 2026-08-30 (ms.date).
 
 ## Related
