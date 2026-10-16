@@ -9,9 +9,9 @@ import base64
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Generate an image of gray tabby cat hugging an otter with an orange scarf",
-    tools=[{"type": "image_generation"}],
+    tools=[{"type": "image_generation", "model": "gpt-image-2.5-sunburst"}],
 )
 
 image_generation_calls = [
@@ -31,10 +31,10 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
-  tools: [{ type: "image_generation" }],
+  tools: [{ type: "image_generation", model: "gpt-image-2.5-sunburst" }],
 });
 
 const imageData = response.output
@@ -52,7 +52,7 @@ Refine the same image across turns by passing back the prior `image_generation_c
 
 ```python
 response_fwup = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -63,13 +63,14 @@ response_fwup = client.responses.create(
             "id": image_generation_calls[0].id,
         },
     ],
-    tools=[{"type": "image_generation"}],
+    tools=[{"type": "image_generation", "model": "gpt-image-2.5-sunburst"}],
 )
 ```
 
 ## Notes
 
 - Generated images arrive base64-encoded in `output` items of type `image_generation_call`, under the `.result` field.
+- The top-level `model` is a mainline Responses model; the image model is set separately in the tool's `model` field (`gpt-image-2.5-sunburst` for precise editing, `gpt-image-2.5-flare` for fast, high-quality generation).
 - Multi-turn editing works via either `previous_response_id` (chain full context) or by passing the prior `image_generation_call` id back in `input` (reference a specific image).
-- `size`, `quality`, and `background` accept `auto` so the model can pick the best option for the prompt; set `partial_images` (1-3) on a streaming request to receive progressive previews via `response.image_generation_call.partial_image` events.
+- `size`, `quality`, and `background` accept `auto` so the model can pick the best option for the prompt; `quality` also accepts `xhigh` and `max` on `gpt-image-2.5-sunburst` / `gpt-image-2.5-flare` only (not on earlier GPT Image models). Set `partial_images` (1-3) on a streaming request to receive progressive previews via `response.image_generation_call.partial_image` events.
 - This tool is distinct from the direct Images API (`client.images.generate` / `client.images.edit`) — use it when image generation should happen as part of a broader conversational agent turn. The base Responses API request/response shape is covered by the `openai-api-core` skill; this tool config is images-specific.

@@ -8,7 +8,7 @@ import OpenAI from "openai";
 const openai = new OpenAI();
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -40,7 +40,7 @@ def encode_image(image_path):
 base64_image = encode_image("path_to_your_image.jpg")
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",
@@ -76,7 +76,7 @@ async function createFile(filePath) {
 const fileId = await createFile("fixtures/example.jpg");
 
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     {
       role: "user",
@@ -96,6 +96,7 @@ const response = await openai.responses.create({
 ## Notes
 
 - Images can be supplied as a fully qualified URL (`image_url`), a base64 data URL, or a `file_id` from the Files API (upload with `purpose: "vision"`).
-- `detail` controls processing depth: `low` (fast/cheap), `high` (fine detail), `original` (large or spatially sensitive images), `auto` (model picks).
+- `detail` controls image preprocessing: `low`, `high`, `original`, or `auto` (default when omitted); supported values depend on the model. `low` does not always use fewer tokens than `high` — resizing and token use depend on the model.
+- Each image is limited to 30,000 patches after resizing; images that exceed it are rejected, not automatically resized. Reduce the image dimensions and retry.
 - Supported formats: PNG, JPEG, WEBP, non-animated GIF. Requests accept up to 512 MB total payload and up to 1500 images.
 - Vision models may underperform on non-Latin text in images, rotated images, and precise spatial tasks (e.g. chess positions).

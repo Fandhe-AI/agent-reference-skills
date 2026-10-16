@@ -1,5 +1,7 @@
 # Extending and Editing Videos
 
+> **Shut down**: The Videos API and Sora 2 models were shut down on **September 24, 2026** and are no longer available (no one-to-one replacement). This page is retained for historical reference only. See `video-generation.md`.
+
 Continue a completed Sora video (extension) or apply a targeted change to an existing video (edit) without regenerating it from scratch.
 
 ## Extend completed videos

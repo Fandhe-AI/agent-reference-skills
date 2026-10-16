@@ -1,5 +1,7 @@
 # Video Generation with Sora
 
+> **Shut down**: The Videos API and Sora 2 models were shut down on **September 24, 2026** and are no longer available (no one-to-one replacement). This sample is retained for historical reference only.
+
 Start an asynchronous video render job with the Videos API.
 
 ```javascript
@@ -40,7 +42,7 @@ curl -X POST "https://api.openai.com/v1/videos" \
 
 ## Notes
 
-- The `sora-2` / `sora-2-pro` models and the Videos API are scheduled to shut down on September 24, 2026 — see the official deprecations page before starting a new integration.
-- `video.create` returns immediately with `status: "queued"`; poll `GET /videos/{video_id}` (or use `create_and_poll` in Python) until `status` is `completed` or `failed`.
-- `sora-2` favors speed/iteration; `sora-2-pro` favors production quality. Both support 16- or 20-second clips (`seconds` accepts other values per size/model limits).
+- The `sora-2` / `sora-2-pro` models and the Videos API were shut down on September 24, 2026 and are no longer available; no one-to-one replacement is listed on the official deprecations page.
+- `video.create` returned immediately with `status: "queued"`; polling `GET /videos/{video_id}` (or `create_and_poll` in Python) until `status` was `completed` or `failed` was the flow.
+- `sora-2` favored speed/iteration; `sora-2-pro` favored production quality. Both supported 16- or 20-second clips (`seconds` accepted other values per size/model limits).
 - For status polling and downloading the finished MP4, see `video-status-polling-download.md`.

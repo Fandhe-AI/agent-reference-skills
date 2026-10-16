@@ -2,16 +2,7 @@
 
 Content moderation controls and error-handling patterns for image generation and editing requests.
 
-## Content Moderation
-
-All prompts and generated images are filtered per OpenAI's [content policy](https://openai.com/policies/usage-policies/). For GPT Image models, the `moderation` parameter controls strictness:
-
-| Value | Description |
-|-------|-------------|
-| `auto` (default) | Standard filtering; limits certain categories of potentially age-inappropriate content. |
-| `low` | Less restrictive filtering. |
-
-## Handling blocked requests and other errors
+All prompts and generated images are filtered per OpenAI's [content policy](https://openai.com/policies/usage-policies/). For GPT Image models, the `moderation` parameter controls strictness (values in the table under Options / Props).
 
 Handle image generation failures like other API errors: check the HTTP status/SDK exception type, log the request ID, and consult the error-codes guide for auth/quota/rate-limit/server failures. Retry transient `429`/`5xx` errors; do not blindly retry user errors that require changing the request.
 
@@ -36,7 +27,7 @@ User-correctable failures return `error.type = "image_generation_user_error"`. U
 import openai
 
 try:
-    client.images.generate(model="gpt-image-2", prompt="...")
+    client.images.generate(model="gpt-image-2.5-sunburst", prompt="...")
 except openai.BadRequestError as error:
     if error.code != "moderation_blocked":
         raise
@@ -46,6 +37,15 @@ except openai.BadRequestError as error:
 ```
 
 ## Options / Props
+
+`moderation` parameter values:
+
+| Value | Description |
+|-------|-------------|
+| `auto` (default) | Standard filtering; limits certain categories of potentially age-inappropriate content. |
+| `low` | Less restrictive filtering. |
+
+Error fields:
 
 | Name | Type | Description |
 |------|------|-------------|

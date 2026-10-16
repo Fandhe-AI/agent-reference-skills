@@ -1,5 +1,7 @@
 # Video Status Polling and Download
 
+> **Shut down**: The Videos API and Sora 2 models were shut down on **September 24, 2026** and are no longer available (no one-to-one replacement). This sample is retained for historical reference only.
+
 Poll a video render job until completion, then download the MP4.
 
 ```python
@@ -67,8 +69,8 @@ curl -L "https://api.openai.com/v1/videos/video_abc123/content?variant=thumbnail
 
 ## Notes
 
-- The `sora-2` / `sora-2-pro` models and the Videos API are scheduled to shut down on September 24, 2026 — see the official deprecations page before starting a new integration.
-- Poll `video.status` (`queued` -> `in_progress` -> `completed` / `failed`); `video.progress` (0-100) is available for progress bars.
-- Download URLs from `GET /videos/{id}/content` are valid for a maximum of 1 hour after generation; re-fetch if expired.
-- Instead of polling, configure a webhook endpoint to receive `video.completed` / `video.failed` events.
-- `content?variant=` also accepts `thumbnail` and `spritesheet` for supporting assets besides the main `video`.
+- The `sora-2` / `sora-2-pro` models and the Videos API were shut down on September 24, 2026 and are no longer available; no one-to-one replacement is listed on the official deprecations page.
+- Poll `video.status` (`queued` -> `in_progress` -> `completed` / `failed`); `video.progress` (0-100) was available for progress bars.
+- Download URLs from `GET /videos/{id}/content` were valid for a maximum of 1 hour after generation.
+- Instead of polling, a webhook endpoint could receive `video.completed` / `video.failed` events.
+- `content?variant=` also accepted `thumbnail` and `spritesheet` for supporting assets besides the main `video`.

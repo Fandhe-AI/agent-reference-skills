@@ -1,5 +1,7 @@
 # Video Batch Rendering and Library Management
 
+> **Shut down**: The Videos API and Sora 2 models were shut down on **September 24, 2026** and are no longer available (no one-to-one replacement). This page is retained for historical reference only. See `video-generation.md`.
+
 Queue video renders through the Batch API for offline processing, and manage your generated video library (list, delete).
 
 ## Run video jobs through the Batch API
