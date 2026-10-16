@@ -9,7 +9,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 let resp = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a very long novel about otters in space.",
   background: true,
 });
@@ -29,7 +29,7 @@ from openai import OpenAI
 client = OpenAI()
 
 resp = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Write a very long novel about otters in space.",
     background=True,
 )
@@ -53,7 +53,7 @@ Streaming with resume support — track both the response id and the last `seque
 
 ```javascript
 const stream = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Write a very long novel about otters in space.",
   background: true,
   stream: true,
@@ -86,6 +86,7 @@ curl "https://api.openai.com/v1/responses/resp_123?stream=true&starting_after=42
 
 ## Notes
 
+- Limits: background requests can use `store=false`, but response data is still stored temporarily to support asynchronous execution and polling. To cancel a synchronous (non-background) response, terminate the connection.
 - Cancellation via `POST /v1/responses/{id}/cancel` is idempotent — subsequent calls return the final Response object.
 - For Zero Data Retention projects, responses are held in temporary disk storage for approximately 10 minutes to enable polling.
 - Time to first token from a background response is higher than from a synchronous one.

@@ -1,6 +1,6 @@
 # Multi-agent (Responses API)
 
-Hosted orchestration mode where a root agent spawns and coordinates subagents working in parallel, using six hosted orchestration actions on the Responses API.
+Hosted orchestration mode where a root agent spawns and coordinates subagents working in parallel, using six hosted orchestration actions on the Responses API. Beta; available with GPT-6.1 Sol and all GPT-5.6 models (check the model page before enabling). This is a different feature from the Agents API's multi-agent (see the `agents-api` category, `agents-api/multi-agent.md`).
 
 ## Signature / Usage
 
@@ -10,7 +10,7 @@ import OpenAI from "openai";
 const client = new OpenAI();
 
 const response = await client.beta.responses.create({
-  model: "gpt-5.6-sol",
+  model: "gpt-6.1-sol",
   input:
     "Review the pull-request diff below with three agents: one for " +
     "correctness, one for security, and one for missing tests. " +
@@ -30,7 +30,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.beta.responses.create(
-    model="gpt-5.6-sol",
+    model="gpt-6.1-sol",
     input="Review the pull-request diff with three agents in parallel...",
     multi_agent={
         "enabled": True,
@@ -74,7 +74,11 @@ response = client.beta.responses.create(
 - Agents are addressed with hierarchical names, e.g. `/root/researcher/tester`.
 - WebSocket is recommended for tool-heavy or long-running workflows because the persistent connection reduces latency; with HTTP, the response completes once all active agents finish or pause for a function call, and the application submits tool results in a new request.
 - The `/responses/compact` endpoint is not supported when Multi-agent is enabled; `reasoning.summary` and `max_tool_calls` are also unavailable in this mode.
-- Function-call results can be injected mid-stream over WebSocket via a `response.inject` event; injection can fail with `response_already_completed` if the response finished before the injection arrived.
+- Function-call results can be injected mid-stream over WebSocket via a `response.inject` event; injection can fail with `response_already_completed` if the response finished before the injection arrived (take the returned `input` and send it in a new `response.create` that continues from the completed response), or with `response_not_found` if the server cannot find the response identified by `response_id` (use the ID from `response.created`). A request that does not conform to the `response.inject` schema gets a generic `400` error and the WebSocket connection is closed.
+- Beta SDK calls: use `client.beta.responses.create` with `betas=["responses_multi_agent=v1"]`. For raw HTTP and WebSocket, pass the header `OpenAI-Beta: responses_multi_agent=v1`; the WebSocket connectors do not yet accept the `betas` argument. WebSocket is exposed as `client.beta.responses.connect` (Python) and `ResponsesWS` (TypeScript). Item schemas may change while in beta.
+- When `multi_agent.enabled` is `true`, automatic server-side compaction is enabled implicitly, even without `context_management`, and is applied independently to the root agent and each subagent. Override with an explicit `context_management.compact_threshold`.
+- The `fork_turns` parameter (seen in `spawn_agent` arguments, e.g. `"fork_turns":"all"`) controls how much context the root or a parent agent propagates to a subagent.
+- New output item types: `multi_agent_call` (a hosted action such as `spawn_agent`), `multi_agent_call_output` (its result, linked by `call_id`), and `agent_message` (an encrypted message from one agent to another; `author` / `recipient` give the direction). Do not execute `multi_agent_call` items or submit outputs for them; preserve them if you need replay or tracing.
 
 ## Related
 

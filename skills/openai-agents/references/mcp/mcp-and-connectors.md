@@ -21,7 +21,8 @@ The API retrieves available tools via the `mcp_list_tools` output item before th
 | Name | Type | Description |
 |------|------|-------------|
 | `server_url` | string | Required for remote MCP servers (any public Model Context Protocol server). |
-| `connector_id` | string | Used instead of `server_url` for OpenAI-maintained connectors (Dropbox, Gmail, Google Calendar, Google Drive, Microsoft Teams, Outlook Calendar, Outlook Email, SharePoint). |
+| `tunnel_id` | string | Used instead of `server_url` to connect to a local MCP server through Secure MCP Tunnel. |
+| `connector_id` | string | Deprecated for models released after September 1, 2026 (use `server_url` for remote MCP or `tunnel_id` for local MCP via Secure MCP Tunnel). Existing models retain connector support. Used instead of `server_url` for OpenAI-maintained connectors (Dropbox, Gmail, Google Calendar, Google Drive, Microsoft Teams, Outlook Calendar, Outlook Email, SharePoint). |
 | `authorization` | string | OAuth access token. Required by some remote servers and all connectors. Not stored by the Responses API. |
 | `require_approval` | `"never"` \| `"always"` \| object | Controls when tool calls need explicit approval. `"always"` requires an `mcp_approval_response` for every call; a filtered object can exempt specific tools. |
 | `allowed_tools` | string[] | Restricts which tools the model can access, reducing cost/latency for servers exposing many functions. |
@@ -29,7 +30,9 @@ The API retrieves available tools via the `mcp_list_tools` output item before th
 
 ## Notes
 
-- Eight built-in connectors are available: Dropbox, Gmail, Google Calendar, Google Drive, Microsoft Teams, Outlook Calendar, Outlook Email, SharePoint. Each requires a `connector_id` and an OAuth access token.
+- Legacy connectors: built-in connectors remain supported for existing models, but `connector_id` is deprecated for models released after September 1, 2026. The official legacy-connector examples use `gpt-5.2`, which predates the cutoff.
+- Eight built-in (legacy, deprecated for post-2026-09-01 models) connectors are available: Dropbox, Gmail, Google Calendar, Google Drive, Microsoft Teams, Outlook Calendar, Outlook Email, SharePoint. Each requires a `connector_id` and an OAuth access token.
+- For Agents API sessions, MCP connections (from the managed service or from your sandbox) are covered in the `agents-api` category, not here.
 - To prevent leakage of sensitive tokens, the Responses API does not store the value passed in `authorization`.
 - A malicious server can exfiltrate sensitive data from anything that enters the model's context. Only connect to official, trusted servers, require approvals for sensitive actions, and log/review data shared with third-party servers.
 - Verify URL domains before using them from tool outputs; treat user-provided content as a prompt-injection risk.

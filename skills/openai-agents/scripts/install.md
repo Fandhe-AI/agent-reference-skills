@@ -36,6 +36,22 @@ pip install 'openai-agents[voice]'
 
 音声エージェント (`agents.voice`) を使う場合に必要な追加依存を含める。
 
+## Agents API 用 SDK (Python)
+
+```sh
+pip install --upgrade openai
+```
+
+Agents API quickstart の記載どおり `openai` パッケージを使う。Agents SDK の `openai-agents` / `@openai/agents` とは別パッケージ。
+
+## Agents API 用 SDK (JavaScript)
+
+```sh
+npm install openai
+```
+
+Agents API quickstart の記載どおり `openai` パッケージを使う。Agents SDK の `@openai/agents` とは別パッケージ。
+
 ## TypeScript プロジェクトの初期化
 
 ```sh

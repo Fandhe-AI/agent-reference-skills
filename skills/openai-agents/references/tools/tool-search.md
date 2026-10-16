@@ -78,6 +78,8 @@ Client-executed discovery output items:
 
 ## Notes
 
+- Agents API: function definitions are loaded eagerly by default. To defer selected functions, include `{ "type": "tool_search" }` in `agent.tools` and set `defer_loading: true` on each function you want discovered on demand; adding `tool_search` alone does not defer every function. Mixing eager and deferred functions in a session is supported but generally not recommended.
+- Agents API, MCP and plugin tools: MCP tools use automatic discovery when the model and provider support tool search; the runtime defers MCP tools and adds tool search when searchable deferred tools are available (remote MCPs, executor MCPs, and MCP tools supplied by plugins). You do not need to add `tool_search` just for MCP tools or set a function-level `defer_loading` on an MCP server, and the Responses API configuration on this page does not apply to Agents API MCP servers.
 - Prefer namespaces or MCP servers over many individual deferred functions — models are primarily trained to search those surfaces, and token savings are more material there.
 - Keep namespaces focused (fewer than 10 functions) with clear namespace descriptions; put rich detail in the per-function descriptions that load on demand.
 - Tools load at the end of the context window in both modes, preserving prompt cache across requests.

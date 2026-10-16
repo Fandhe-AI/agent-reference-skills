@@ -28,6 +28,8 @@ pip install openai-agents
 | Safety and approvals | Tool-specific approvals; build broader controls yourself | Input/output/tool guardrails plus resumable approval flows |
 | Debugging and tracing | Response objects and API logs | Built-in traces across model calls, tools, agents, guardrails, handoffs |
 
+The official docs now compare three runtimes ("Compare agent runtime options"): the Agents SDK runs inside your application, while the Agents API has OpenAI run a managed Codex harness on its own service. See [Choose a runtime](./choose-runtime.md).
+
 Choose the Responses API when you want direct control over model interactions, output items, tools, state, and orchestration. Choose the Agents SDK when different specialists need different instructions/tools/policies and you want the SDK to run the loop, sessions, tracing, guardrails, and resumable approval flows.
 
 ## Reading order
@@ -42,9 +44,12 @@ Choose the Responses API when you want direct control over model interactions, o
 - This is the official OpenAI Agents SDK (developers.openai.com), unrelated to Nous Research's `hermes-agent` (a third-party AI CLI). Do not confuse the `Agent` class here with that project.
 - Built-in tools (web search, file search, computer use, code interpreter, MCP) are covered by the `tools` and `mcp` scopes of this skill, not here.
 - Multi-agent orchestration (handoffs, agents-as-tools), guardrails, human review, and tracing are covered by the `orchestration` scope.
+- The two-way "Agents SDK vs. Responses API" table above is moved to the Agents overview (3-way comparison: Agents API / Agents SDK / Responses API) in the current official docs; it is kept here as a quick SDK-vs-Responses contrast.
+- The Agents API (OpenAI-managed Codex harness, hosted or self-hosted sandbox) is covered by the `agents-api` category of this skill, not by this SDK page.
 
 ## Related
 
+- [Choose a runtime](./choose-runtime.md)
 - [Quickstart](./quickstart.md)
 - [Agent definitions](./define-agents.md)
 - [Models and providers](./models-and-providers.md)

@@ -1,15 +1,15 @@
 # Image Generation
 
-Hosted `image_generation` tool: generates or edits images from a text prompt (and optional image inputs) using GPT Image models (`gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`, `gpt-image-1-mini`). The model automatically optimizes text inputs for improved performance.
+Hosted `image_generation` tool: generates or edits images from a text prompt (and optional image inputs) using GPT Image models: `gpt-image-2.5-sunburst` (precise editing), `gpt-image-2.5-flare` (fast, high-quality generation), `gpt-image-2`, `gpt-image-1.5`, `gpt-image-1`, and `gpt-image-1-mini`. The model automatically optimizes text inputs for improved performance. Set the `image_generation` tool's `model` to pick the GPT Image model; use a supported mainline model in the top-level Responses `model` field.
 
 ## Signature / Usage
 
 ```javascript
 const response = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input:
     "Generate an image of gray tabby cat hugging an otter with an orange scarf",
-  tools: [{ type: "image_generation" }],
+  tools: [{ type: "image_generation", model: "gpt-image-2.5-sunburst" }],
 });
 
 const imageData = response.output
@@ -23,10 +23,10 @@ Streaming partial images:
 
 ```javascript
 const stream = await openai.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: "Draw a river made of white owl feathers ...",
   stream: true,
-  tools: [{ type: "image_generation", partial_images: 2 }],
+  tools: [{ type: "image_generation", model: "gpt-image-2.5-sunburst", partial_images: 2 }],
 });
 
 for await (const event of stream) {
@@ -43,10 +43,10 @@ for await (const event of stream) {
 | Name | Type | Description |
 |------|------|-------------|
 | `size` | e.g. `"1024x1024"`, `"1024x1536"`, `"auto"` | Image dimensions |
-| `quality` | `"low" \| "medium" \| "high" \| "auto"` | Rendering quality |
+| `quality` | `"low" \| "medium" \| "high" \| "auto"` (also `"xhigh"` / `"max"`) | Rendering quality; `xhigh` and `max` are accepted only by `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, not earlier GPT Image models. Default `auto` |
 | `format` | string | Output file format |
 | `compression` | `0`–`100` | Compression level for JPEG/WebP |
-| `background` | `"transparent" \| "opaque" \| "auto"` | `gpt-image-2` does not support transparent backgrounds |
+| `background` | `"transparent" \| "opaque" \| "auto"` | For `gpt-image-2`, transparent backgrounds are available in preview: set `background: "transparent"` and use `png` (the default) or `webp`; `jpeg` is not supported with transparent backgrounds |
 | `action` | `"auto" \| "generate" \| "edit"` | Whether the model chooses, generates, or edits; default `auto` |
 | `partial_images` | `1`–`3` | Number of streamed partial images |
 

@@ -19,6 +19,8 @@ await withTrace("Joke workflow", async () => {
 ```
 
 ```python
+import asyncio
+
 from agents import Agent, Runner, trace
 
 agent = Agent(
@@ -26,9 +28,20 @@ agent = Agent(
     instructions="Tell funny jokes.",
 )
 
-with trace("Joke workflow"):
-    first = await Runner.run(agent, "Tell me a joke")
-    second = await Runner.run(agent, f"Rate this joke: {first.final_output}")
+
+async def main() -> None:
+    with trace("Joke workflow"):
+        first = await Runner.run(agent, "Tell me a joke")
+        second = await Runner.run(
+            agent,
+            f"Rate this joke: {first.final_output}",
+        )
+        print(first.final_output)
+        print(second.final_output)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
 
 ## Notes
@@ -38,6 +51,8 @@ with trace("Joke workflow"):
 - A trace covers: the overall run/workflow, each individual model call, tool execution and outputs, handoffs, guardrails, and any custom spans wrapped explicitly (as with `withTrace` / `trace`).
 - Wrap multiple related `run` calls in a single `withTrace` (TypeScript) / `trace` (Python) block to group them under one workflow trace instead of one trace per run.
 - Traces serve two purposes: debugging a single workflow run, and feeding stabilized examples into evaluation systems.
+- To reduce tracing, use the SDK-level or per-run tracing controls rather than removing all observability from the workflow.
+- Agents API session traces (OTLP JSON export) are a separate surface, covered by `agents-api/tracing.md` in the `agents-api` category.
 - MCP integration details (hosted vs. local MCP servers) live in the `mcp` scope, not here.
 
 ## Related

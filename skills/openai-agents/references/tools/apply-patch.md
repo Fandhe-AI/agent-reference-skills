@@ -6,7 +6,7 @@
 
 ```python
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=RESPONSE_INPUT,
     tools=[{"type": "apply_patch"}],
 )

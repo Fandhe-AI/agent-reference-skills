@@ -24,6 +24,22 @@ setx OPENAI_API_KEY "<your-api-key>"
 
 `setx` は永続化されるが、設定は新しいセッションから有効になる。現在のセッションのみで使う場合は `set "OPENAI_API_KEY=<your-api-key>"` を使う。
 
+## Agents API の API キー設定
+
+```sh
+export OPENAI_API_KEY="your-api-key"
+```
+
+OpenAI Platform project で作成した application API key に `api.agents.read` と `api.agents.write`（session 操作）、加えて `api.responses.write`（モデル推論）の権限を付与する。key は agent の sandbox の外に置く。
+
+## Agents API を cURL で呼ぶときのヘッダー
+
+```sh
+-H "OpenAI-Beta: agents=v1"
+```
+
+Agents API のリクエストには `OpenAI-Beta: agents=v1` ヘッダーが必須。OpenAI SDK は自動付与するが、cURL では明示的に指定する。
+
 ## OpenAI 互換エンドポイントの指定
 
 ```sh

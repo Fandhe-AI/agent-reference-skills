@@ -18,7 +18,7 @@ const generalAgent = new Agent({
   instructions: "Handle support questions carefully.",
 });
 
-const runner = new Runner({ model: "gpt-5.6" });
+const runner = new Runner({ model: "gpt-6-astra" });
 
 await runner.run(fastAgent, "Summarize ticket 123.");
 const result = await runner.run(generalAgent, "Investigate the billing issue on account 456.");
@@ -41,7 +41,7 @@ await Runner.run(fast_agent, "Summarize ticket 123.")
 result = await Runner.run(
     general_agent,
     "Investigate the billing issue on account 456.",
-    run_config=RunConfig(model="gpt-5.6"),
+    run_config=RunConfig(model="gpt-6-astra"),
 )
 ```
 
@@ -54,7 +54,7 @@ result = await Runner.run(
 | One workflow-level override | A run-level default (`Runner`/`RunConfig`) | Swap models for a script/worker/environment without editing every agent |
 | Different model sizes across a workflow | Mix per-agent models | A fast triage agent and a slower deep specialist can coexist |
 
-Start with `gpt-5.6` for most new workflows, moving to a smaller variant only when latency or cost justifies it.
+For most new SDK workflows, start with `gpt-6-astra` and move to a smaller variant only when latency or cost matters enough to justify it.
 
 ## Providers and transport
 
@@ -75,6 +75,7 @@ Start with `gpt-5.6` for most new workflows, moving to a smaller variant only wh
 
 ## Notes
 
+- Current guidance: for most new SDK workflows, start with `gpt-6-astra`; the platform-wide "Model guidance" page has current model-selection advice.
 - Keep the model contract close to the agent definition when intrinsic to that specialist; move it to a workflow-level default only when a group of agents should share the same runtime choice.
 - Provider/transport detail beyond the OpenAI default path is language-specific SDK material, not duplicated here.
 
