@@ -10,7 +10,9 @@ let v = [1, 2, 3].iter().map(|n| n * 2).collect::<Vec<_>>(); // closures, turbof
 match v.first() { Some(&x) if x > 0 => {}, _ => {} }          // match guard, wildcard
 ```
 
-## Keywords
+## Options / Props
+
+### Keywords
 
 | Keyword | Use |
 |---------|-----|
@@ -46,7 +48,7 @@ match v.first() { Some(&x) if x > 0 => {}, _ => {} }          // match guard, wi
 | `where` | where clauses |
 | reserved | `abstract`, `become`, `box`, `do`, `final`, `gen`, `macro`, `override`, `priv`, `try`, `typeof`, `unsized`, `virtual`, `yield` |
 
-## Operators and punctuation
+### Operators and punctuation
 
 | Symbol | Name | Use |
 |--------|------|-----|
@@ -77,7 +79,7 @@ match v.first() { Some(&x) if x > 0 => {}, _ => {} }          // match guard, wi
 | `?` | Question | try propagation expressions, relaxed trait bounds, macro Kleene matcher |
 | `~` | Tilde | unused since before Rust 1.0, token may still be used |
 
-## Comments
+### Comments
 
 | Comment | Use |
 |---------|-----|
@@ -88,7 +90,7 @@ match v.first() { Some(&x) if x > 0 => {}, _ => {} }          // match guard, wi
 | `/*!…*/` | inner block doc comment |
 | `/**…*/` | outer block doc comment |
 
-## Other tokens
+### Other tokens
 
 | Token | Use |
 |-------|-----|
@@ -100,7 +102,7 @@ match v.first() { Some(&x) if x > 0 => {}, _ => {} }          // match guard, wi
 | `'…'` / `b'…'` | character literals / byte literals |
 | `c"…"` / `cr"…"`, `cr#"…"#` | C string literals / raw C string literals |
 
-## Macros and attributes
+### Macros and attributes
 
 | Syntax | Use |
 |--------|-----|
@@ -111,7 +113,7 @@ match v.first() { Some(&x) if x > 0 => {}, _ => {} }          // match guard, wi
 | `#[meta]` | outer attribute |
 | `#![meta]` | inner attribute |
 
-## Expressions
+### Expressions
 
 | Expression | Use |
 |------------|-----|
@@ -134,7 +136,7 @@ match v.first() { Some(&x) if x > 0 => {}, _ => {} }          // match guard, wi
 | `&raw const expr`, `&raw mut expr` | raw borrow expressions |
 | `*expr`, `expr?`, `-expr`, `!expr`, `expr as Type` | dereference, try propagation, negation, bitwise/logical NOT, type cast |
 
-## Items
+### Items
 
 | Item | Use |
 |------|-----|
@@ -148,7 +150,7 @@ match v.first() { Some(&x) if x > 0 => {}, _ => {} }          // match guard, wi
 | `extern "C" {…}` | external blocks |
 | `fn ident<…>(…) …`, `struct ident<…> {…}`, `enum ident<…> {…}`, `impl<…> Type<…> {…}` | generic definitions |
 
-## Type expressions
+### Type expressions
 
 | Type | Use |
 |------|-----|
@@ -164,7 +166,7 @@ match v.first() { Some(&x) if x > 0 => {}, _ => {} }          // match guard, wi
 | `fn(…) -> Type` | function pointer types |
 | `_`, `'_`, `!` | inferred type / inferred const, placeholder lifetime, never type |
 
-## Patterns
+### Patterns
 
 | Pattern | Use |
 |---------|-----|

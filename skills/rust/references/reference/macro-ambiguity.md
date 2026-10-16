@@ -14,7 +14,9 @@ macro_rules! i_am_an_mbe {
 
 (The original marks this example `compile_fail`; it is illustrative of the terminology only.)
 
-## Definitions
+## Options / Props
+
+### Definitions
 
 | Term | Meaning |
 |------|---------|
@@ -33,21 +35,7 @@ macro_rules! i_am_an_mbe {
 
 Only a complex NT can match the empty fragment; `vis` can too, so `$v:vis` is treated as `$($v:vis)?`.
 
-## Matcher invariants
-
-For a matcher to be valid:
-
-1. For successive token tree sequences `M = ... tt uu ...` with `uu ...` nonempty: FOLLOW(`... tt`) ∪ {ε} ⊇ FIRST(`uu ...`).
-2. For a separated complex NT `$(tt ...) SEP OP`: `SEP` ∈ FOLLOW(`tt ...`).
-3. For an unseparated complex NT `$(tt ...) OP` with OP `*` or `+`: FOLLOW(`tt ...`) ⊇ FIRST(`tt ...`).
-
-The third invariant is currently unenforced due to historical oversight and significant reliance on the behaviour; macros that do not respect it may become invalid in a future edition of Rust (tracking issue rust-lang/rust#56575).
-
-## FIRST, LAST, FOLLOW
-
-- FIRST(M): tokens potentially used first when matching M. LAST(M): tokens potentially used last. FOLLOW(M): tokens allowed to follow immediately after a fragment matched by M. FIRST and LAST may contain ε; FOLLOW never does. ANYTOKEN is the set of all tokens (including simple NTs).
-- FIRST(empty) = { ε }; FIRST(token t ...) = { t }; for a complex NT, FIRST(M) = (FIRST(`tt ...`) \ {ε}) ∪ SEP_SET(M) ∪ ALPHA_SET(M), where ALPHA_SET(M) = FIRST(α) for OP `*` or `?`, and {} for `+`.
-- LAST is defined by case analysis (empty, token, `*`, `+`, `?`, delimited sequence, sequence).
+### FOLLOW sets
 
 FOLLOW sets for simple NTs:
 
@@ -62,7 +50,30 @@ FOLLOW sets for simple NTs:
 
 FOLLOW(M) for any other M is the intersection of FOLLOW(t) as t ranges over LAST(M) \ {ε}.
 
-## Examples of valid and invalid matchers
+## Notes
+
+- The "tokens that can begin a type" list in the original is explicitly noted as possibly incomplete.
+- Condensed: the original's tree-structured FIRST/LAST worked examples and the justification prose are omitted; see the official page for the full derivation.
+- The formal spec text (from RFC 550) lists `|` in FOLLOW(pat); since Rust 2021 `pat` accepts top-level or-patterns and may not be followed by `|` — see the normative follow-set restrictions in Macros By Example (macros.md).
+- Source: https://doc.rust-lang.org/reference/macro-ambiguity.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/82da570bafd9efed421bdbae0f8603ede8dd308b/src/macro-ambiguity.md)
+
+### Matcher invariants
+
+For a matcher to be valid:
+
+1. For successive token tree sequences `M = ... tt uu ...` with `uu ...` nonempty: FOLLOW(`... tt`) ∪ {ε} ⊇ FIRST(`uu ...`).
+2. For a separated complex NT `$(tt ...) SEP OP`: `SEP` ∈ FOLLOW(`tt ...`).
+3. For an unseparated complex NT `$(tt ...) OP` with OP `*` or `+`: FOLLOW(`tt ...`) ⊇ FIRST(`tt ...`).
+
+The third invariant is currently unenforced due to historical oversight and significant reliance on the behaviour; macros that do not respect it may become invalid in a future edition of Rust (tracking issue rust-lang/rust#56575).
+
+### FIRST, LAST, FOLLOW
+
+- FIRST(M): tokens potentially used first when matching M. LAST(M): tokens potentially used last. FOLLOW(M): tokens allowed to follow immediately after a fragment matched by M. FIRST and LAST may contain ε; FOLLOW never does. ANYTOKEN is the set of all tokens (including simple NTs).
+- FIRST(empty) = { ε }; FIRST(token t ...) = { t }; for a complex NT, FIRST(M) = (FIRST(`tt ...`) \ {ε}) ∪ SEP_SET(M) ∪ ALPHA_SET(M), where ALPHA_SET(M) = FIRST(α) for OP `*` or `?`, and {} for `+`.
+- LAST is defined by case analysis (empty, token, `*`, `+`, `?`, delimited sequence, sequence).
+
+### Examples of valid and invalid matchers
 
 - `($ty:ty < foo ,)`: illegal, FIRST(`< foo ,`) = { `<` } is not within FOLLOW(`ty`).
 - `($ty:ty , foo <)`: legal.
@@ -71,13 +82,6 @@ FOLLOW(M) for any other M is the intersection of FOLLOW(t) as t ranges over LAST
 - `($ty:ty $(; not sep)* -)`: illegal.
 - `($($ty:ty)-+)`: illegal, separator `-` is not in FOLLOW(`ty`).
 - `($($e:expr)*)`: illegal, expr NTs are not in FOLLOW(expr NT).
-
-## Notes
-
-- The "tokens that can begin a type" list in the original is explicitly noted as possibly incomplete.
-- Condensed: the original's tree-structured FIRST/LAST worked examples and the justification prose are omitted; see the official page for the full derivation.
-- The formal spec text (from RFC 550) lists `|` in FOLLOW(pat); since Rust 2021 `pat` accepts top-level or-patterns and may not be followed by `|` — see the normative follow-set restrictions in Macros By Example (macros.md).
-- Source: https://doc.rust-lang.org/reference/macro-ambiguity.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/82da570bafd9efed421bdbae0f8603ede8dd308b/src/macro-ambiguity.md)
 
 ## Related
 

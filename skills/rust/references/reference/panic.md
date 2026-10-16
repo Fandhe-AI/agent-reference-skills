@@ -29,7 +29,14 @@ fn panic(info: &PanicInfo) -> ! {
 
 (`Sink` and its `fmt::Write` impl are elided here; the original example hides them with `#` lines.)
 
-## Standard behavior
+## Notes
+
+- Source: https://doc.rust-lang.org/reference/panic.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/82da570bafd9efed421bdbae0f8603ede8dd308b/src/panic.md)
+- With the `abort` strategy the optimizer may assume unwinding across Rust frames is impossible, which can improve code size and speed.
+- Crates built with the `unwind` strategy can use the `abort` panic handler, but the `abort` strategy cannot use the `unwind` panic handler.
+- Rust code linked against a different instance of the standard library counts as a "foreign exception".
+
+### Standard behavior
 
 `std` provides two different panic handlers:
 
@@ -38,17 +45,17 @@ fn panic(info: &PanicInfo) -> ! {
 
 Not all targets may provide the `unwind` handler. The handler used when linking with `std` can be set with the `-C panic` CLI flag (default for most targets is `unwind`). Runtime behavior can be modified with `std::panic::set_hook`. Linking a `no_std` binary, dylib, cdylib, or staticlib requires specifying your own panic handler.
 
-## Panic strategy
+### Panic strategy
 
 The panic strategy defines the kind of panic behavior that a crate is built to support, chosen with `-C panic`. When generating a binary, dylib, cdylib, or staticlib and linking with `std`, the flag also influences which panic handler is used.
 
-## Unwinding
+### Unwinding
 
 - The `unwind` handler unwinds Rust frames until the panic reaches the point of recovery (e.g. a thread boundary); live objects implementing `Drop` have their `drop` methods called.
 - `unwind` does not guarantee all panics are recoverable, only that panicking via `panic!` and similar standard library mechanisms is.
 - The standard library provides `std::panic::catch_unwind` (recovery within the panicking thread) and `std::thread::spawn` (sets up panic recovery for the spawned thread).
 
-### Unwinding across FFI boundaries
+#### Unwinding across FFI boundaries
 
 Unwinding across FFI boundaries is possible with an appropriate ABI declaration (e.g. `extern "C-unwind"`). Unwinding with the wrong ABI is undefined behavior:
 
@@ -56,13 +63,6 @@ Unwinding across FFI boundaries is possible with an appropriate ABI declaration 
 - Calling a Rust `extern` function that unwinds from code that does not support unwinding (e.g. GCC/Clang with `-fno-exceptions`).
 
 Catching a foreign unwinding operation (e.g. a C++ exception) with `catch_unwind`, `JoinHandle::join`, or by letting it propagate beyond `main()` or the thread root either aborts the process or returns a `Result::Err` containing an opaque type; which one is unspecified. There are no guarantees about a foreign runtime disposing of or rethrowing a Rust panic payload.
-
-## Notes
-
-- Source: https://doc.rust-lang.org/reference/panic.html (pinned: https://raw.githubusercontent.com/rust-lang/reference/82da570bafd9efed421bdbae0f8603ede8dd308b/src/panic.md)
-- With the `abort` strategy the optimizer may assume unwinding across Rust frames is impossible, which can improve code size and speed.
-- Crates built with the `unwind` strategy can use the `abort` panic handler, but the `abort` strategy cannot use the `unwind` panic handler.
-- Rust code linked against a different instance of the standard library counts as a "foreign exception".
 
 ## Related
 

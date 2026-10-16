@@ -45,17 +45,19 @@ The accepted scopes are not exhaustive: new scopes may be added in future releas
 rustc --remap-path-prefix="${PWD}=/remapped" --remap-path-scope=object main.rs
 ```
 
+## Notes
+
 The rustc Book example writes `$(PWD)` (Make syntax); in a POSIX shell use the quoted variable `"${PWD}"`. The rustc Book examples omit the input file; `src/main.rs` is added here so the commands run as-is.
 
-## Scope of Remapping
+### Scope of Remapping
 
 Remapping covers (per scope above): diagnostics, debug information, coverage information, `file!()` macro expansions, and (only with `all`, best effort) `rustc` metadata.
 
-### Metadata impact
+#### Metadata impact
 
 Scopes do not apply to `rustc` generated metadata, because local paths are required there for correctness. Artifacts that contain `rustc` metadata (`.rmeta`, `.rlib`, dylib, proc-macro) retain the local paths. Only the `all` scope applies path remapping to `rustc` metadata (best effort). For reproducible builds including metadata, use `all` or omit `--remap-path-scope` entirely.
 
-## Caveats and Limitations
+### Caveats and Limitations
 
 - Linker-generated paths: on platforms such as `x86_64-pc-windows-msvc` the linker may embed absolute host paths and compiler arguments into debug info files (`.pdb`) independently of `rustc`. On Apple platforms, linkers generate OSO entries that are not remapped by the compiler and must be remapped manually with `-oso_prefix`. `--remap-path-prefix` does not affect these.
 - Textual replacement only: separator conventions are not accounted for; take care on Windows, where both `/` and `\` may appear.
