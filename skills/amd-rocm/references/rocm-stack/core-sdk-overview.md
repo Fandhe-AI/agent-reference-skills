@@ -5,11 +5,17 @@ The ROCm Core SDK is the foundational layer of the stack: math and compute libra
 ## Signature / Usage
 
 ```bash
-# Core SDK install (Ubuntu, package-manager based; all supported GPUs)
+# ROCm Base (runtime only; official quick install), all supported GPUs
 sudo apt install amdrocm10.1
 
-# or per GPU architecture (smaller install), e.g. CDNA3
+# or per GPU architecture, e.g. CDNA3
 sudo apt install amdrocm10.1-gfx942
+
+# full Core SDK (runtimes, compilers, dev tools): ROCm Full Suite
+sudo apt install amdrocm-core-sdk10.1
+
+# compilers / headers only: ROCm Developer Essentials
+sudo apt install amdrocm-core-dev10.1
 ```
 
 ## Options / Props

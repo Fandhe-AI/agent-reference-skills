@@ -26,7 +26,7 @@ sudo apt update
 # 2. Kernel driver (Instinct / Radeon): install the AMD GPU Driver (amdgpu) per the
 #    AMD Instinct Data Center GPU Documentation (amdgpu-docs 31.60.0), then reboot
 
-# 3. ROCm Core SDK: all supported GPUs, or one architecture
+# 3. ROCm packages (ROCm Base = runtime); for development use amdrocm-core-dev10.1 or amdrocm-core-sdk10.1 (see meta package table)
 sudo apt install amdrocm10.1
 sudo apt install amdrocm10.1-gfx942
 
