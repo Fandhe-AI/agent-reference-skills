@@ -18,6 +18,8 @@ val callback = object : ConnectivityManager.NetworkCallback() {
         super.onLost(network)
         // Called when a network disconnects or otherwise no longer satisfies this request
         // or callback.
+        // Not in the official sample: unbind so traffic is not pinned to a lost network.
+        connectivityManager.bindProcessToNetwork(null)
     }
 }
 
@@ -66,6 +68,7 @@ context.startActivity(intent)
 - Defer nonessential networking (analytics, log collection) until Bluetooth or Wi-Fi is re-established rather than LTE/metered.
 - No Wear OS-specific APIs for network access or FCM. FCM works well with Doze and is the recommended way to notify a watch: collect the device registration token at runtime and include it when your server calls the FCM REST endpoint.
 - Notifications are bridged from phone to watch by default; a standalone Wear OS app plus a phone app can show duplicates for one FCM notification. Prevent with the bridging APIs.
+- The official sample leaves onLost() empty; this page adds bindProcessToNetwork(null) there because a process stays bound to a network that has been lost, so other traffic fails until it is unbound. Alternatively, bind only specific sockets with Network.socketFactory / Network.bindSocket() instead of the whole process.
 - Source: https://developer.android.com/training/wearables/data/network-communication (page last updated 2026-09-22 UTC).
 
 ## Related
