@@ -47,6 +47,7 @@ toaster.success({
 - Toasts are created via `toaster.create()` or shorthand methods (`toaster.success()`, `toaster.error()`, etc.), configured by a `createToaster()` engine and rendered through `Toaster`.
 - Avoid calling toast methods directly inside React effects; wrap in `queueMicrotask()` to prevent `flushSync` warnings.
 - Supports promise handling via `toaster.promise()` for async operations.
+- 5.39.3: `Toaster` now forwards `dir` and `getRootNode` to the group machine, and the toast region's `aria-label` is settable through a `label` prop (forwarded to `getGroupProps`).
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
 
 ## Related

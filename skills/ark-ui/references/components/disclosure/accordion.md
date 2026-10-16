@@ -34,6 +34,7 @@ import { Accordion } from '@ark-ui/react/accordion'
 | `collapsible` | `boolean` (default: `false`) | Whether an accordion item can be closed after expansion |
 | `defaultValue` | `string[]` | Initial value of expanded items (uncontrolled) |
 | `disabled` | `boolean` | Whether accordion items are disabled |
+| `hideMode` | `HideMode` (default: `'display-none'`) | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ (5.38.0) |
 | `id` | `string` | Unique machine identifier |
 | `ids` | `Partial<object>` | Custom element IDs for composition |
 | `lazyMount` | `boolean` (default: `false`) | Defer content rendering until expanded |

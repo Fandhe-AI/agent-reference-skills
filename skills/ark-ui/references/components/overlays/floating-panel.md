@@ -54,6 +54,8 @@ import { FloatingPanel } from '@ark-ui/react'
 | minSize / maxSize | Size | — | Resize constraints |
 | lazyMount | boolean | false | Defer rendering until opened |
 | closeOnEscape | boolean | true | Close on Escape key |
+| initialFocusEl | function | — | Element to focus when the panel opens. May return `false` to skip moving focus (5.39.3) |
+| hideMode | HideMode | 'display-none' | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ |
 | allowOverflow | boolean | true | Allow the panel to overflow viewport boundaries |
 | getAnchorPosition | function | — | Custom initial positioning |
 | onOpenChange / onPositionChange / onSizeChange | function | — | Event callbacks |
@@ -64,6 +66,7 @@ import { FloatingPanel } from '@ark-ui/react'
 - Exposes CSS custom properties for positioning: `--x`, `--y`, `--width`, `--height`.
 - Data attributes reflect states such as dragging, minimized, maximized, and topmost.
 - Context hook available: `useFloatingPanelContext`.
+- `initialFocusEl` may return `false` to open without moving focus; returning `null` still uses the default (5.39.3).
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
 
 ## Related

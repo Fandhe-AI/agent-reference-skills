@@ -57,6 +57,7 @@ const App = () => (
 | `open` / `defaultOpen` | `boolean` | Dropdown visibility |
 | `selectionBehavior` | `"clear" \| "replace" \| "preserve"` | Behavior of input value on selection |
 | `openOnChange` / `openOnClick` / `openOnKeyPress` | `boolean` | Opening triggers |
+| `hideMode` | `HideMode` (default: `'display-none'`) | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ (5.38.0) |
 | `onValueChange` / `onInputValueChange` / `onHighlightChange` / `onOpenChange` | `function` | State change callbacks |
 
 ## Notes

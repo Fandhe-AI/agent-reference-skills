@@ -34,6 +34,7 @@ import { HoverCard } from '@ark-ui/react'
 | openDelay | number | 600 | Milliseconds before the hover card opens |
 | closeDelay | number | 300 | Milliseconds before the hover card closes |
 | disabled | boolean | — | Disables the component |
+| hideMode | HideMode | 'display-none' | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ (5.38.0) |
 | positioning | PositioningOptions | — | Controls placement and distance from trigger |
 
 ## Notes

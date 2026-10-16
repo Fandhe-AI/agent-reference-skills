@@ -91,6 +91,7 @@ const App = () => (
 | `checkedValue` / `defaultCheckedValue` | `string[]` | Checkbox mode state |
 | `lazyMount` | `boolean` | Render content only when expanded |
 | `unmountOnExit` | `boolean` | Unmount content when collapsed |
+| `hideMode` | `HideMode` (default: `'display-none'`) | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ (5.38.0) |
 | `loadChildren` | `function` | Async loader for child nodes |
 | `onExpandedChange` / `onSelectionChange` / `onCheckedChange` | `function` | Event callbacks |
 | `canRename` / `onRenameComplete` | `function` | Enable inline node renaming |

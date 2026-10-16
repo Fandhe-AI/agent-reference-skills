@@ -49,13 +49,20 @@ const App = () => (
 | `siblingCount` | `number` | `1` | Pages displayed beside active page |
 | `boundaryCount` | `number` | `1` | Pages shown at start/end |
 | `type` | `"button" \| "link"` | `"button"` | Render mode; `"link"` enables SEO-friendly anchors |
+| `getPageUrl` | `(details: PageUrlDetails) => string` | — | Function to generate href attributes for pagination links. Only used when `type` is set to `"link"` |
 
 ## Notes
 
 - Controlled pagination via `page` prop with `onPageChange` callback.
 - `RootProvider` + `usePagination` hook allows accessing state/methods from anywhere in the tree.
 - `slice()` method segments a data array based on current page and page size; `setPageSize()` / `pageSize` / `onPageSizeChange` control items per page.
-- `type="link"` with `getPageUrl` generates `href` attributes for link-based navigation.
+- `type="link"` with `getPageUrl` generates `href` attributes for link-based navigation. Items and triggers render as anchors carrying the generated `href`:
+
+  ```tsx
+  <Pagination.Root count={100} pageSize={10} type="link" getPageUrl={({ page }) => `/page=${page}`}>
+  ```
+
+- API additions in 5.39.3: `api.type` (`"button" | "link"`, the type of the pagination controls) and `api.getPageUrl(page)` (`(page: number) => string | undefined`, returns the url for the given page, or `undefined` when `getPageUrl` is not provided), so custom parts can tell buttons from links and build a page's URL.
 - Programmatic access via `Pagination.Context` or `usePaginationContext`: `page`, `totalPages`, `pageRange`, `goToNextPage()`, `goToPrevPage()`, `goToFirstPage()`, `goToLastPage()`, `slice()`.
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
 

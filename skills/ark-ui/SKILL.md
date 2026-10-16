@@ -3,14 +3,17 @@ name: ark-ui
 description: >
   Ark UI headless / unstyled コンポーネントライブラリ。Zag.js ベース、Chakra UI v3 基盤。
   React / Solid / Vue / Svelte 対応。asChild, RootProvider, createListCollection,
-  createTreeCollection, data-* セレクタ。Tour, Signature Pad, Image Cropper,
-  Floating Panel, Angle Slider 等のコンポーネント API。
+  createTreeCollection, Presence hideMode, useHotkey / useHotkeys, data-* セレクタ。
+  Navigation Menu, TOC, Tour, Signature Pad, Image Cropper, Floating Panel,
+  Angle Slider 等のコンポーネント API。
 user-invocable: false
 ---
 
 # Ark UI
 
 Ark UI は Zag.js を基盤とする headless / unstyled コンポーネントライブラリで、Chakra UI v3 のヘッドレス実装基盤でもある。React / Solid / Vue / Svelte に対応する。
+
+対象: `@ark-ui/react` 5.39.3 (2026-10-05)。6.0.0-next.0 はプレリリースのため対象外。
 
 **Ark UI と Chakra UI の使い分け** — Ark UI はスタイル無しの振る舞い・アクセシビリティのみを提供するプリミティブ（`asChild` で任意の要素・デザインシステムに接続する）、Chakra UI v3 は同じ Zag.js 基盤の上に構築された styled 実装。既存デザインシステムに手動でスタイルを当て込みたい場合は本スキル、Chakra のスタイルシステムをそのまま使いたい場合は `skills/chakra-ui/` を参照。
 
@@ -73,6 +76,8 @@ skills/ark-ui/
         carousel.md
         pagination.md
         steps.md
+        navigation-menu.md
+        toc.md
       overlays/
         README.md
         dialog.md
@@ -117,6 +122,7 @@ skills/ark-ui/
       format-relative-time.md
       frame.md
       highlight.md
+      hotkeys.md
       json-tree-view.md
       locale.md
       presence.md
@@ -155,11 +161,11 @@ skills/ark-ui/
 | スタイリング規約（data-scope/data-part/data-state）/ asChild による composition / コンポーネント状態管理 / アニメーション / フォーム統合 / ref の取得 | guides | [references/guides/README.md](references/guides/README.md) |
 | `createListCollection` / `createTreeCollection` でデータを構築したい / 非同期リスト・選択状態フックを使いたい | collections（データ） | [references/collections/README.md](references/collections/README.md) |
 | Checkbox, Slider, Number Input, Tags Input, File Upload, Color Picker などフォーム系コンポーネント API を知りたい | components/form | [references/components/form/README.md](references/components/form/README.md) |
-| Select, Combobox, Tree View, Menu, Carousel, Pagination, Steps などコレクション系コンポーネント API を知りたい | components/collections | [references/components/collections/README.md](references/components/collections/README.md) |
+| Select, Combobox, Tree View, Menu, Carousel, Pagination, Steps, Navigation Menu, TOC などコレクション系コンポーネント API を知りたい | components/collections | [references/components/collections/README.md](references/components/collections/README.md) |
 | Dialog, Drawer, Popover, Tooltip, Toast, Tour, Floating Panel などオーバーレイ系コンポーネント API を知りたい | components/overlays | [references/components/overlays/README.md](references/components/overlays/README.md) |
 | Accordion, Tabs, Toggle, Splitter, Scroll Area などディスクロージャー系コンポーネント API を知りたい | components/disclosure | [references/components/disclosure/README.md](references/components/disclosure/README.md) |
 | Date Picker, Date Input, Timer など日時系コンポーネント API を知りたい | components/date-time | [references/components/date-time/README.md](references/components/date-time/README.md) |
 | Avatar, Progress, QR Code, Clipboard, Marquee など表示系コンポーネント API を知りたい | components/display | [references/components/display/README.md](references/components/display/README.md) |
-| EnvironmentProvider, LocaleProvider, フォーマットユーティリティ（format-number 等）、Focus Trap, Presence, Highlight, JSON Tree View を使いたい | utilities | [references/utilities/README.md](references/utilities/README.md) |
+| EnvironmentProvider, LocaleProvider, フォーマットユーティリティ（format-number 等）、Focus Trap, Presence（hideMode / onEnterComplete）, Highlight, Hotkeys（useHotkey / useHotkeys / コマンドパレットのショートカット）, JSON Tree View を使いたい | utilities | [references/utilities/README.md](references/utilities/README.md) |
 | 典型的な使い方・実例（Provider Setup, Panda/Tailwind スタイリング, RootProvider による外部状態制御, React Hook Form 統合等）を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・MCP Server セットアップ・llms.txt 取得コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

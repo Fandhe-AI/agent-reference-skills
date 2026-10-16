@@ -113,6 +113,7 @@ export const Basic = () => (
 | `outsideDaySelectable` | `boolean` | `false` | Allow selecting adjacent-month dates |
 | `inline` | `boolean` | — | Render calendar inline, without popup |
 | `positioning` | `PositioningOptions` | — | Popup positioning configuration (Floating UI based) |
+| `hideMode` | `HideMode` | `'display-none'` | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ (5.38.0) |
 | `id` | `string` | — | Unique identifier |
 | `ids` | `Partial<Record<string, string>>` | — | Custom IDs for sub-parts |
 
@@ -126,6 +127,7 @@ export const Basic = () => (
 - `positioning` follows the shared Floating-UI-based positioning options used across popup components (Combobox, Menu, Select, etc.).
 - Data attributes: `[data-scope="date-picker"]`, `[data-part]`, `[data-state="open"|"closed"]`, `[data-disabled]`, `[data-readonly]`, `[data-view]`, `[data-invalid]`.
 - Keyboard: Arrow keys navigate dates, Home/End jump to month boundaries, PageUp/PageDown move month, Enter selects, Escape closes.
+- `translations` is `Partial` (5.38.2): override a single message and the rest fall back to the defaults.
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
 
 ## Related

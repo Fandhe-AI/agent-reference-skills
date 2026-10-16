@@ -40,6 +40,7 @@ Nested objects/arrays inside `data` (e.g. `address.coordinates`) are expanded re
 | `maxPreviewItems` | `number` | Limit the number of items shown in collapsed previews |
 | `collapseStringsAfterLength` | `number` | Truncate long string values |
 | `groupArraysAfterLength` | `number` | Group large arrays instead of listing every item |
+| `hideMode` | `HideMode` (default: `'display-none'`) | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ |
 | `arrow` (on `Tree`) | `ReactElement` | Icon used for the expand/collapse indicator |
 | `indentGuide` (on `Tree`) | `boolean \| ReactElement` | Visual guide line for indentation |
 | `renderValue` (on `Tree`) | `(node: JsonNodeHastElement) => ReactNode` | Custom renderer for leaf values |

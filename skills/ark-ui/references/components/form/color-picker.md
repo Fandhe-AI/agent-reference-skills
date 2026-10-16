@@ -57,6 +57,7 @@ import { ColorPicker } from '@ark-ui/react/color-picker'
 | `disabled` | `boolean` | Disable user interaction |
 | `inline` | `boolean` | Render without popover |
 | `closeOnSelect` | `boolean` | Auto-close after swatch selection |
+| `hideMode` | `HideMode` (default: `'display-none'`) | How to hide content when mounted but not present. `'display-none'`: HTML `hidden` attribute, effects stay alive. `'activity'`: React 19 `<Activity mode="hidden">`, effects pause, requires React 19+ (5.38.0) |
 | `onValueChange` | `function` | Fires when color changes |
 | `onOpenChange` | `function` | Fires when popover open state changes |
 | `onFormatChange` | `function` | Fires when format changes |
@@ -65,6 +66,7 @@ import { ColorPicker } from '@ark-ui/react/color-picker'
 
 - Keyboard: Enter opens picker or confirms selection, Arrow keys navigate color area and sliders, Esc closes the picker
 - Can integrate with `Field` for form accessibility
+- `initialFocusEl` may return `false` to open without moving focus; returning `null` still uses the default (5.39.3).
 - When used via Chakra UI v3, import from `@chakra-ui/react` instead; Chakra adds `size` / `variant` / `colorPalette` props.
 
 ## Related
