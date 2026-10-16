@@ -27,7 +27,7 @@ public fun interface OutputTransformation {
 ```kotlin
 // InputTransformation: reject non-digit input, cap at 10 chars
 val digitsOnly = InputTransformation.maxLength(10).then {
-    if (!asCharSequence().isDigitsOnly()) revertAllChanges()
+    if (!asCharSequence().all { it.isDigit() }) revertAllChanges()
 }
 
 // OutputTransformation: format as (123) 456-7890 without altering stored digits
@@ -58,7 +58,10 @@ TextField(
 ## Notes
 
 - `VisualTransformation` lives in `androidx.compose.ui.text.input`; `InputTransformation`/`OutputTransformation` live in `androidx.compose.foundation.text.input`.
+- The official user-input guide writes the digit check as `asCharSequence().isDigitsOnly()`, which is the `androidx.core.text` extension (not Kotlin stdlib); the snippet uses the stdlib `all { it.isDigit() }` instead to avoid the extra dependency.
 - Prefer `InputTransformation`/`OutputTransformation` (state-based fields) over `VisualTransformation` (value-based fields) in new code — they separate what is stored from what is shown and avoid manual offset-mapping.
+- Migration (pre-release): Compose Foundation 1.13.0-alpha03 deprecates `VisualTransformation` together with `BasicTextField(value, onValueChange)` (it is only exposed through that flavor); existing transformations should migrate to `OutputTransformation`. Neither is deprecated in stable 1.12.1 (BOM 2026.09.00).
+- Migration (pre-release): Compose Foundation 1.13.0-alpha03 deprecates `InputTransformation.maxLength` in favor of the new `InputTransformation.maxLengthTrim` (truncates excess input characters) and `InputTransformation.maxLengthReject` (rejects input that exceeds `maxLength`). In stable 1.12.1 `InputTransformation.maxLength(maxLength: Int)` remains the API, as in the snippet above.
 
 ## Related
 

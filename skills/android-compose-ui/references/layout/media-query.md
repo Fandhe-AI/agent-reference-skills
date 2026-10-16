@@ -5,9 +5,12 @@ Experimental, declarative API for adapting UI to its environment (window size, f
 ## Signature / Usage
 
 ```kotlin
+@ExperimentalMediaQueryApi
 @Composable
-fun mediaQuery(query: UiMediaScope.() -> Boolean): Boolean
+@ReadOnlyComposable
+inline fun <T> mediaQuery(query: UiMediaScope.() -> T): T
 
+@ExperimentalMediaQueryApi
 @Composable
 fun <T> derivedMediaQuery(query: UiMediaScope.() -> T): State<T>
 
@@ -52,6 +55,8 @@ val narrowerThanMedium by derivedMediaQuery {
 - For Preview/testing, override `LocalUiMediaScope` with a `CompositionLocalProvider` wrapping an object that delegates to the current scope via `by currentUiMediaScope` and overrides individual properties (e.g. forcing `windowPosture = UiMediaScope.Posture.Tabletop`).
 - Complements `WindowSizeClass`-based adaptive layout: window-size queries are typically expressed against `WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND` / `WIDTH_DP_EXPANDED_LOWER_BOUND` breakpoints rather than raw pixel thresholds.
 - Package: `androidx.compose.ui`.
+- Migration (Compose UI 1.12.0): `mediaQuery` became an `inline` function in 1.12.0-alpha01; `mediaQuery` and `derivedMediaQuery` return a generic type `T` instead of `Boolean` since 1.12.0-alpha02. The older signature was `fun mediaQuery(query: UiMediaScope.() -> Boolean): Boolean`. Opt-in annotation is `@ExperimentalMediaQueryApi`.
+- 1.12.1 sources also contain non-composable variants: `inline fun <T> CompositionLocalAccessorScope.mediaQuery(...)` and `inline fun <T> CompositionLocalConsumerModifierNode.mediaQuery(...)`, both `@ExperimentalMediaQueryApi`.
 
 ## Related
 
