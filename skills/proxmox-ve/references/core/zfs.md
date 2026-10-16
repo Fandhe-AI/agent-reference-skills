@@ -151,3 +151,4 @@ zpool upgrade <pool>
 - [host-bootloader.md](./host-bootloader.md)
 - [storage.md](./storage.md)
 - [storage-replication.md](./storage-replication.md)
+- Official docs: https://pve.proxmox.com/pve-docs/chapter-sysadmin.html#chapter_zfs

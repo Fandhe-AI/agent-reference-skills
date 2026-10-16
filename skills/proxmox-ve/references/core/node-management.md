@@ -115,3 +115,4 @@ qm set <vmid> --allow-ksm 0       # disable for one VM
 - [certificates.md](./certificates.md)
 - [vm-qemu.md](./vm-qemu.md)
 - [cluster.md](./cluster.md)
+- Official docs: https://pve.proxmox.com/pve-docs/chapter-sysadmin.html#_time_synchronization , #external_metric_server , #disk_health_monitoring , #proxmox_node_management , #kernel_samepage_merging (all on chapter-sysadmin.html)

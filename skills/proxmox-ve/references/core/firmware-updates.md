@@ -58,3 +58,4 @@ apt full-upgrade
 
 - [package-repositories.md](./package-repositories.md)
 - [ha.md](./ha.md)
+- Official docs: https://pve.proxmox.com/pve-docs/chapter-sysadmin.html#chapter_firmware_updates

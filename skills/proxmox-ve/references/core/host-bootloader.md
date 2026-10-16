@@ -114,3 +114,4 @@ mokutil --import /var/lib/dkms/mok.pub
 - [zfs.md](./zfs.md)
 - [lvm-btrfs.md](./lvm-btrfs.md)
 - [installation.md](./installation.md)
+- Official docs: https://pve.proxmox.com/pve-docs/chapter-sysadmin.html#sysboot

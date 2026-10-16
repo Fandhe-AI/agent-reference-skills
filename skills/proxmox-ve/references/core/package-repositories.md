@@ -98,3 +98,4 @@ For no-subscription / test use `URIs: http://download.proxmox.com/debian/ceph-te
 - [ceph.md](./ceph.md)
 - [firmware-updates.md](./firmware-updates.md)
 - [installation.md](./installation.md)
+- Official docs: https://pve.proxmox.com/pve-docs/chapter-sysadmin.html#sysadmin_package_repositories , https://pve.proxmox.com/pve-docs/chapter-sysadmin.html#system_software_updates

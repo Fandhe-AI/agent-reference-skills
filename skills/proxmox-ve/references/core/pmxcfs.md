@@ -78,3 +78,4 @@ mv /etc/pve/nodes/node1/qemu-server/100.conf /etc/pve/nodes/node2/qemu-server/
 - [cluster.md](./cluster.md)
 - [ha.md](./ha.md)
 - [certificates.md](./certificates.md)
+- Official docs: https://pve.proxmox.com/pve-docs/chapter-pmxcfs.html

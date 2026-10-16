@@ -65,3 +65,4 @@ pvenode acme account register default example@proxmox.com
 - [node-management.md](./node-management.md)
 - [pmxcfs.md](./pmxcfs.md)
 - [cluster.md](./cluster.md)
+- Official docs: https://pve.proxmox.com/pve-docs/chapter-sysadmin.html#sysadmin_certificate_management

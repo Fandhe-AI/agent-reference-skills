@@ -81,3 +81,4 @@ Object types: Datacenter (cluster-wide settings), Node, Guest (VMs, containers, 
 - [pmxcfs.md](./pmxcfs.md)
 - [user-access.md](./user-access.md)
 - [cluster.md](./cluster.md)
+- Official docs: https://pve.proxmox.com/pve-docs/chapter-pve-gui.html

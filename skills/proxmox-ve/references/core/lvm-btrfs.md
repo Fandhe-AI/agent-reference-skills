@@ -86,3 +86,4 @@ btrfs: local-btrfs
 - [storage.md](./storage.md)
 - [zfs.md](./zfs.md)
 - [host-bootloader.md](./host-bootloader.md)
+- Official docs: https://pve.proxmox.com/pve-docs/chapter-sysadmin.html#chapter_lvm , https://pve.proxmox.com/pve-docs/chapter-sysadmin.html#chapter_btrfs
