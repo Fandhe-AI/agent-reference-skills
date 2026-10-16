@@ -45,9 +45,16 @@ try
 catch (Exception ex)
 {
     StatusText.Text = $"Model init failed: {ex.Message}";
+    return;
 }
 
 // Later, when sending a prompt:
+if (_languageModel == null)
+{
+    StatusText.Text = "Model is not ready.";
+    return;
+}
+
 var result = await _languageModel.GenerateResponseAsync(fullPrompt);
 ResponseText.Text = result.Text;
 ```
