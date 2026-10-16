@@ -139,6 +139,7 @@ int wmain(int argc, wchar_t** argv)
 ## Notes
 
 - Experimental: the Windows ML Runtime APIs are not supported for production and apps using them should not be published to the Microsoft Store. This is distinct from the ONNX Runtime based Windows ML APIs.
+- Official pages differ on the `LoadModelFromFile` arity: this tutorial passes 4 arguments (path, nullptr, nullptr, out model), while the concepts, speech-recognition and text-generation pages pass 3 (path, nullptr, out model). Check the header of the installed experimental package.
 - Complete "Set up a C++ project for the Windows ML Runtime API" (runtime/get-started) first. Run with `.\x64\Release\RuntimeApp.exe C:\models\model.onnx`.
 - The helper assumes a model with one fixed-shape `FLOAT32` input; bind concrete dimensions for free dimensions and create matching storage for other data types.
 - Pass the same execution target to `AddModelStage` and the tensor factory. The pointer from `GetData` is valid only while `outputLock` is alive.

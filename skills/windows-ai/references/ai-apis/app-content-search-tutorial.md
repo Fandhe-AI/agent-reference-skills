@@ -52,7 +52,7 @@ IReadOnlyList<ImageQueryMatch> imageMatches = query.GetNextMatches(5);
 
 ## Notes
 
-- Requires package identity (packaged apps, including those with external locations). To enable semantic indexing and Text Recognition (OCR), the app must also declare the `systemaimodels` capability.
+- Requires package identity (packaged apps, including those with external locations). To enable semantic indexing and Text Recognition (OCR), the app must also declare the `systemAIModels` capability (`<systemai:Capability Name="systemAIModels"/>`, which requires the `systemai` namespace declaration; see get-started.md).
 - `QueryMatch` has only `ContentId` and `TextOffset`/`TextLength`, not the matching text; the app must keep the original text. Indexing is asynchronous, so queries may run on partial data.
 - Only content is indexed, not files; the indexer does not monitor file changes, so the app must update the index when content changes.
 - RAG: use the user prompt as the query text, include matched snippets in the augmented prompt sent to the language model. The page's `Helpers.GetUserPrompt()` / `Helpers.GetResponseFromChatAgent()` are placeholders, not real functions.

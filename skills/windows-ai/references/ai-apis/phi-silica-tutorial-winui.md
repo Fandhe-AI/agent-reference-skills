@@ -18,14 +18,36 @@ if (access.Status != LimitedAccessFeatureStatus.Available &&
     return;
 }
 
-var readyState = LanguageModel.GetReadyState();
-if (readyState == AIFeatureReadyState.NotReady)
+try
 {
-    var ensureResult = await LanguageModel.EnsureReadyAsync();
-    if (ensureResult.ExtendedError != null) { return; }
+    var readyState = LanguageModel.GetReadyState();
+    if (readyState == AIFeatureReadyState.NotReady)
+    {
+        var ensureResult = await LanguageModel.EnsureReadyAsync();
+        if (ensureResult.ExtendedError != null)
+        {
+            StatusText.Text = $"Model installation failed: {ensureResult.ExtendedError.Message}";
+            return;
+        }
+    }
+    else if (readyState == AIFeatureReadyState.NotSupportedOnCurrentSystem)
+    {
+        StatusText.Text = "Phi Silica is not supported on this device.";
+        return; // the page also shows a Foundry Local pointer in ResponseText
+    }
+
+    // Re-check: proceed only when the feature is Ready (e.g. not DisabledByUser)
+    readyState = LanguageModel.GetReadyState();
+    if (readyState != AIFeatureReadyState.Ready) { return; }
+
+    _languageModel = await LanguageModel.CreateAsync();
+}
+catch (Exception ex)
+{
+    StatusText.Text = $"Model init failed: {ex.Message}";
 }
 
-_languageModel = await LanguageModel.CreateAsync();
+// Later, when sending a prompt:
 var result = await _languageModel.GenerateResponseAsync(fullPrompt);
 ResponseText.Text = result.Text;
 ```
@@ -59,6 +81,7 @@ Get-AppxPackage | Where-Object {$_.Name -like "*PhiSilicaChat*"} | Select-Object
 ## Notes
 
 - Phi Silica runs on Copilot+ PCs (NPU) and on non-Copilot+ Windows 11 devices with a supported GPU. If neither applies, Foundry Local is the alternative named by the page. Phi Silica features are not available in China.
+- Proceed to `CreateAsync` only when the ready state is `Ready`. `DisabledByUser` and other non-Ready states should disable the feature or fall back (see device-requirements.md).
 - Prerequisites: Windows 11 build 26100 or later (24H2), Developer Mode, Visual Studio 2022 with the Windows application development workload, Windows App SDK 1.8 experimental NuGet package `Microsoft.WindowsAppSDK` version `1.8.250410001-experimental1` (check "Include prerelease"), and a Phi Silica LAF unlock token.
 - Project: "Blank App, Packaged (WinUI 3 in Desktop)" named `PhiSilicaChat`, build configuration ARM64, launch profile `PhiSilicaChat (Package)` (the `LanguageModel` API only works in a packaged MSIX app; the unpackaged profile makes `GetReadyState()` fail with a COM error).
 - If `MinVersion` is lower than 10.0.26100.0, Windows silently ignores `systemai:Capability` and `GetReadyState()` throws "Not declared by app". `xmlns:systemai` must be in the `<Package>` opening tag, otherwise an "undeclared prefix" parse error occurs.

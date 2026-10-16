@@ -89,6 +89,7 @@ THROW_IF_FAILED(pipeline->ResetExecutionState());
 ## Notes
 
 - Experimental and **not supported** for production use.
+- Official pages differ on the `LoadModelFromFile` arity: the concepts, speech-recognition and text-generation pages pass 3 arguments (path, nullptr, out model), while the tutorial and get-started pages pass 4 (path, nullptr, nullptr, out model). Check the header of the installed experimental package.
 - Every method returns `HRESULT`; interface pointers follow COM reference counting. Optional capabilities are discovered with `QueryInterface`; an unavailable capability returns `E_NOINTERFACE`.
 - Model loading verifies only that the artifact is recognized and structurally readable; target compatibility is committed when `Build` succeeds. A successful load does not guarantee every target can execute every operator.
 - Free dimensions in a declared schema are represented by `UINT64_MAX`; a concrete `IWinMLTensor` always has resolved dimensions. Fixed or bounded shapes are the optimized design center.

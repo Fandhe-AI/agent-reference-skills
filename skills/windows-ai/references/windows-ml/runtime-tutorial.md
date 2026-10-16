@@ -84,6 +84,7 @@ Build and run:
 ## Notes
 
 - Experimental and **not supported** for production use.
+- Official pages differ on the `LoadModelFromFile` arity: this tutorial and the get-started page pass 4 arguments (path, nullptr, nullptr, out model), while the concepts, speech-recognition and text-generation pages pass 3 (path, nullptr, out model). Check the header of the installed experimental package.
 - Prerequisite: complete the C++ project setup page. You need an ONNX model whose input contract you understand.
 - The model can be anywhere the app can read; pass an absolute or relative path to `LoadModelFromFile`.
 - The helper assumes one fixed-shape `FLOAT32` input (not a product limitation). For free dimensions, bind concrete tensor dimensions per run; for other data types, create matching input storage. The full source rejects dimension 0, `UINT64_MAX`, and overflow, and throws `E_INVALIDARG` / `E_BOUNDS`; the snippet above elides that loop (see the official page).
