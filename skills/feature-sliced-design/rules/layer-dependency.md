@@ -36,6 +36,11 @@ import { Product } from "features/product";      // features → features (NG: �
 import { User } from "entities/user";            // shared → entities (NG: 上位)
 ```
 
+## Notes
+
+- 公式は Widgets レイヤーの使用を非推奨としている（2026-07）。Processes は deprecated（steiger `fsd/no-processes` が使用を警告）。上の `widgets/header` の例は import 方向の説明用
+- steiger の対応ルール: `fsd/forbidden-imports`（上位レイヤーからの import と同一レイヤーの cross-import を禁止、既定で有効）
+
 ## Why
 
 一方向の依存関係により:

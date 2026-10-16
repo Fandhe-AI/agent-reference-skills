@@ -1,108 +1,52 @@
 # Public API
 
-スライス（またはセグメント）とコードベースの他の部分との間の**契約**。外部コードは指定されたエントリーポイントのみからインポートでき、内部ファイルパスからは直接インポートしない。
+A public API is a contract between a group of modules, like a slice, and the code that uses it. It also acts as a gate, only allowing access to certain objects, and only through that public API.
 
-## なぜ重要か
+## Signature / Usage
 
-1. **構造変更からの保護** — スライス内部のリファクタリングがアプリの他の部分を壊さない
-2. **振る舞い変更の明示** — スライスの振る舞いに対する破壊的変更は Public API の変更を必要とする
-3. **露出の最小化** — 必要な表面のみをエクスポートし、実装詳細は非公開に
+Usually implemented as an index file with re-exports:
 
-## 実装: index ファイル
-
-スライスルートの `index.ts`（または `index.js`）で、公開する表面のみを re-export する:
-
-```ts
-// pages/auth/index.ts
+```js
+// pages/auth/index.js
 export { LoginPage } from "./ui/LoginPage";
 export { RegisterPage } from "./ui/RegisterPage";
 ```
 
-利用側はスライスルートからインポートし、内部パスからインポートしない:
-
-```ts
-// Good
-import { LoginPage } from "pages/auth";
-
-// Bad — 内部パスからのインポート
-import { LoginPage } from "pages/auth/ui/LoginPage";
-```
-
-### アンチパターン: ワイルドカード re-export
-
-`export *` を避ける — 実際のインターフェースが不明瞭になり、内部詳細を意図せず公開する:
-
-```ts
-// Bad
-export * from "./ui/Comment";
-
-// Good
-export { Comment } from "./ui/Comment";
-export type { CommentProps } from "./ui/Comment";
-```
-
-## @x 記法（クロススライス Public API）
-
-正当なクロススライス依存（主に `entities`）には `@x` ディレクトリで専用 API を作成:
+Cross-import public API (`@x` notation): entity A declares a separate public API just for entity B.
 
 ```text
 entities/
-  user/
+  A/
     @x/
-      post.ts    ← entities/post 専用の公開 API
-    index.ts     ← 汎用の公開 API
+      B.ts      ← special public API just for code inside entities/B/
+    index.ts    ← regular public API
 ```
 
 ```ts
-// entities/user/@x/post.ts
-export { UserAvatar } from "../ui/Avatar";
-
-// entities/post/ui/PostCard.tsx
-import { UserAvatar } from "entities/user/@x/post";
+import type { EntityA } from "entities/A/@x/B";
 ```
 
-## よくある問題と解決策
+Separate index file per component in `shared/ui`:
 
-### 循環インポート
-
-相対インポートと絶対インポートの混在から発生しやすい。2 つのルールで防止:
-
-- 同一スライス内では**相対インポート**（完全な内部パス）
-- スライス境界を越える場合は**絶対インポート**
-
-### ツリーシェイキング / バンドル肥大化
-
-`shared/ui` の単一 index ファイルが、すべての利用側バンドルに全エクスポートを含めてしまう。
-
-解決策: コンポーネントごとに個別の index ファイルを作成:
-
-```text
-shared/
-  ui/
-    button/
-      index.ts     ← Button のみエクスポート
-    input/
-      index.ts     ← Input のみエクスポート
+```js
+import { Button } from '@/shared/ui/button';
+import { TextField } from '@/shared/ui/text-field';
 ```
 
-```ts
-import { Button } from "shared/ui/button";
-import { Input } from "shared/ui/input";
-```
+## Notes
 
-### IDE の自動インポート違反
+- A good public API: (1) protects the rest of the app from structural changes such as refactoring, (2) changes when slice behavior changes in ways that break previous expectations, (3) exposes only the necessary parts.
+- Avoid wildcard re-exports (`export * from "./ui/Comment"`): they hurt discoverability of the slice interface and may accidentally expose module internals, making refactoring difficult.
+- `@x`: the notation `A/@x/B` is read as "A crossed with B". Keep cross-imports to a minimum and only use this notation on the Entities layer, where eliminating cross-imports is often unreasonable.
+- Environment-specific public APIs: a slice's public API should generally be `index.ts` and freely customizing it is not recommended. When modules in one slice run in different environments and a single `index.ts` breaks the environment boundary or makes the bundler include code that should not be bundled together, add files that match the runtime environment (see "Server and client public APIs" in the Next.js usage guide).
+- Circular imports: occur easily with index files, e.g. `HomePage` importing `loadUserStatistics` from `"../"` (the slice index). Prevent with two principles: in the same slice always use relative imports with the full path; across slices always use absolute imports (e.g., with an alias).
+- Large bundles / broken tree-shaking in Shared: `shared/ui` and `shared/lib` are collections of unrelated things, so a single index re-exporting everything can bloat bundles. Use a separate index file for each component or library.
+- No real protection against side-stepping the public API (IDE auto-imports may import directly). Use Steiger, the architectural linter with an FSD ruleset, to catch this automatically.
+- Worse bundler performance on large projects (see TkDodo, "Please Stop Using Barrel Files"): (1) separate index files per component/library in `shared/ui` and `shared/lib`; (2) avoid index files in segments on layers that have slices (if `features/comments/index.js` exists, no `features/comments/ui/index.js`); (3) split a very big project into several big chunks, e.g., a monorepo where each package is a separate FSD root with its own set of layers.
+- Source: https://fsd.how/docs/reference/public-api (documentation repository commit 3a5a3a3).
 
-IDE は最も近いファイルから自動インポートし、Public API を迂回することがある。Steiger 等の linter で CI で検出する。
+## Related
 
-### 大規模プロジェクトでのパフォーマンス問題
-
-大規模プロジェクトでは単一の barrel ファイルにより開発サーバーが低速化することがある。対策:
-
-- セグメントレベルの index ファイルを避け、コンポーネントごとの粒度で個別 index を作成する
-- 極端に大規模なコードベースではモノレポアーキテクチャへの分割を検討する
-
-## 注意点
-
-- Public API ルールはスライスのないレイヤー（`app`, `shared`）のセグメントにも適用される
-- `@x` 記法は意図的なエスケープハッチであり、一般パターンではない — 可能なら上位レイヤーでの再構成を優先
-- 新しいスライスを作るときは、利用側を書く前に必ず `index.ts` を定義する
+- [Layers](./layers.md)
+- [Slices & Segments](./slices-segments.md)
+- [Import Rules](./import-rules.md)

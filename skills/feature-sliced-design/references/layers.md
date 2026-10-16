@@ -1,78 +1,10 @@
 # Layers
 
-FSD の第 1 階層。コードを責務に応じた 6 つの標準レイヤーに分割する。
+Layers are the first level of organisational hierarchy in FSD. They separate code by how much responsibility it needs and how many other modules it depends on. There are **7 layers** in total (Processes is deprecated), arranged from most responsibility and dependency to least.
 
-## レイヤー一覧（上位 → 下位）
+## Signature / Usage
 
-### `app`
-
-アプリケーション全体の技術的・ビジネス的な関心事。**スライスなし** — セグメントのみ。
-
-| セグメント | 目的 |
-| --- | --- |
-| `routes` | ルーター設定 |
-| `store` | グローバル状態管理のセットアップ |
-| `styles` | グローバルスタイル |
-| `entrypoint` | フレームワーク固有のエントリーポイント |
-
-### `pages`
-
-画面やアクティビティ。各ルートに対応するスライスを持つ。
-
-- ページレイアウトと UI（`ui`）
-- ローディング状態とエラーバウンダリ（`ui`）
-- データ取得とミューテーション（`api`）
-- 通常は 1 ルート = 1 スライス
-- 他で再利用されないコードはここに留める（`widgets` への早期移動を避ける）
-
-### `widgets`
-
-entities と features で構成される大規模な自己完結型 UI ブロック。
-
-- 複数ページで使用される複合 UI セクション
-- 単一ページ内の主要な独立セクション（ネストルーティング / レイアウトで有用）
-- ページ固有で再利用されないコンポーネントは含めない
-
-### `features`
-
-ビジネスエンティティを伴い、複数ページで再利用されるユーザー向けインタラクション。
-
-- インタラクション UI（フォーム、副作用を伴うボタン）（`ui`）
-- 必要な API 呼び出し（`api`）
-- バリデーションとローカル状態（`model`）
-- フィーチャーフラグ（`config`）
-- 何でも feature にしない — 乱用すると意味が薄れる
-- 「このインタラクションは複数箇所で再利用される」ことを示すシグナル
-
-### `entities`
-
-現実世界のビジネス概念: `User`, `Post`, `Product` 等。
-
-- データストレージとバリデーションスキーマ（`model`）
-- エンティティ関連の API 関数（`api`）
-- 上位レイヤーで再利用される視覚表現コンポーネント（`ui`）
-- エンティティ **間** のインタラクションは上位レイヤー（features, widgets, pages）に配置
-- クロスエンティティ参照は `@x` 記法を使用
-
-### `shared`
-
-基盤レイヤー。外部システム（バックエンド、ライブラリ、環境）への接続を確立。**スライスなし** — セグメントのみ。
-
-| セグメント | 目的 |
-| --- | --- |
-| `api` | バックエンドクライアントとリクエスト関数 |
-| `ui` | UI キットコンポーネント（ビジネス非依存） |
-| `lib` | 内部ライブラリ（日付、色、テキスト等） |
-| `config` | 環境変数とフィーチャーフラグ |
-| `routes` | ルートパターン定数 |
-| `i18n` | 翻訳セットアップ |
-
-- ビジネスロジックを含めない
-- コードベース全体で再利用されるインフラストラクチャのみ
-
-## ディレクトリ構造
-
-フォルダ名は**小文字**:
+Layers are lowercase folders:
 
 ```text
 src/
@@ -84,14 +16,60 @@ src/
   shared/
 ```
 
-## `processes` レイヤー（非推奨）
+Import rule on layers: a module (file) in a slice can only import other slices when they are located on layers strictly below.
 
-複数ページにまたがる複雑なシナリオを扱うレイヤーとして存在していたが、現在は**非推奨**。
-`features` と `app` へ移行する。
+Layer definitions (top to bottom):
 
-## 注意点
+| Layer | Description |
+| --- | --- |
+| `app` | App-wide matters, both technical (e.g., context providers) and business (e.g., analytics). Usually no slices, only segments: `routes` (router configuration), `store` (global store configuration), `styles` (global styles), `entrypoint` (framework-specific entrypoint). |
+| `processes` | Deprecated. Escape hatch for multi-page interactions. |
+| `pages` | Screens / activities that make up the app. One page usually corresponds to one slice. `ui` holds page UI, loading states and error boundaries; `api` holds data fetching and mutating requests. |
+| `widgets` | Reusable UI blocks composed from multiple UI elements. The guide discourages using this layer. |
+| `features` | Main user interactions, usually involving business entities and reused on several pages. `ui` (form), `api`, `model` (validation, internal state), `config` (feature flags). |
+| `entities` | Real-world concepts the project works with (User, Post, Group). `model` (data storage, validation schemas), `api`, `ui` (visual representation). |
+| `shared` | Foundation: connections to the external world (backends, third-party libraries, environment) and highly contained libraries. No slices. |
 
-- 独自レイヤーを追加しない — 標準セットはチーム間で共通の意味を持つ
-- `features` レイヤーは新メンバーの主要な発見ポイント — 意味のある状態を保つ
-- スライス名はドメイン固有で可変、レイヤー名は固定
-- 全レイヤーが必須ではない。ほとんどのフロントエンドアプリは `shared`, `pages`, `app` の最小構成から開始できる
+Segments typically found in `shared`:
+
+- `api` — the API client and potentially functions to make requests to specific backend endpoints.
+- `ui` — the application's UI kit; no business logic, but business-themed content (company logo, page layout) is OK.
+- `lib` — a collection of internal libraries, each with one documented area of focus (dates, colors, text manipulation), not a helpers/utilities dump.
+- `config` — environment variables, global feature flags, other global configuration.
+- `routes` — route constants or patterns for matching routes.
+- `i18n` — setup code for translations, global translation strings.
+
+Entity relationships via `@x`:
+
+```ts
+// entities/artist/model/artist.ts
+import type { Song } from "entities/song/@x/artist";
+
+export interface Artist {
+  name: string;
+  songs: Array<Song>;
+}
+
+// entities/song/@x/artist.ts
+export type { Song } from "../model/song.ts";
+```
+
+## Notes
+
+- You don't have to use every layer; add them only if they bring value. Typically most frontend projects have at least Shared, Pages, and App.
+- Adding new layers is not recommended because their semantics are standardized.
+- App and Shared are exceptions to the import rule: each is both a layer and a slice. Shared has no business domains and App combines all of them, so they consist of segments, and segments can import each other freely.
+- Entities are slices and by default cannot know about each other. Business logic of entity interactions is preferably kept in higher layers (Features or Pages). When one entity's data object contains another's, make the connection explicit with the `@x` notation.
+- Features: not everything needs to be a feature; being reused on several pages is a good indicator. If there are too many features, the important ones are drowned out. Optimize for a newcomer discovering large important areas of code.
+- Pages: no limit on page slice size as long as the team finds it easy to navigate. A UI block that is not reused can stay inside the page slice. It is not common for a page to have a dedicated data model.
+- Widgets: this guide discourages the Widgets layer (documentation #933). In real frontend code, UI blocks often include data fetching, state management, and event handling, so the responsibilities of Features (user flows) and Widgets (UI blocks) overlap and the boundary becomes unclear.
+- Not creating a widget does not mean simply moving the UI block elsewhere: screen-specific compositions stay in `pages`; user actions reused across pages (with the UI needed to perform them) go to `features`; UI without business context goes to `shared`; app-wide layouts go to `app`.
+- Processes: deprecated. The current spec recommends avoiding it and moving its contents to `features` and `app`. Most applications should keep router-level and server-level logic in App.
+- Segment names should describe the purpose of the content, not its essence; `components`, `hooks`, and `types` are bad segment names.
+- Source: https://fsd.how/docs/reference/layers (documentation repository commit 3a5a3a3).
+
+## Related
+
+- [Slices & Segments](./slices-segments.md)
+- [Public API](./public-api.md)
+- [Import Rules](./import-rules.md)

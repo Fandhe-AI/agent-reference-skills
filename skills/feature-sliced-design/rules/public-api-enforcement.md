@@ -54,3 +54,13 @@ Public API を強制することで:
 - 公開するインターフェースが明示的に管理される
 - `export *` の回避により、意図しないエクスポートを防止する
 - IDE の自動インポートが内部ファイルを選択した場合に Steiger 等で検出できる
+
+## Steiger の対応ルール
+
+- `fsd/public-api` — スライス（および Shared のようにスライスのないレイヤーのセグメント）に Public API 定義を要求
+- `fsd/no-public-api-sidestep` — スライスの Public API を迂回した内部モジュールへの直接 import を禁止
+- `fsd/no-wildcard-exports` — Public API の `export * from` / `export * as ns from` を禁止（plugin 0.8.0 で追加、**既定で無効**。`index.client.ts` / `index.server.ts` も対象）。`export *` 禁止ルールを自動化するにはこのルールを有効化する（`rules: { 'fsd/no-wildcard-exports': 'error' }`）
+
+## 例外
+
+環境別 Public API（Next.js の `index.server.ts` など）は、実行環境の境界が壊れる問題が実際に起きたときにだけ追加する。通常はスライスの `index.ts` のみで公開する。
