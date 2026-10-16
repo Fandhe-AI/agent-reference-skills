@@ -40,6 +40,7 @@ WorkManager.getInstance(context).enqueue(uploadWorkRequest)
 | `Builder.addTag(tag: String)` | `(String) -> B` | — | Adds a searchable/cancelable tag. |
 | `Builder.setInputMerger(inputMerger: Class<out InputMerger>)` (`OneTimeWorkRequest.Builder` only) | `(Class<out InputMerger>) -> Builder` | `OverwritingInputMerger` | Controls how parent outputs merge into this worker's input. |
 | `Builder.keepResultsForAtLeast(duration, timeUnit)` | `(Long, TimeUnit) -> B` (also `Duration` overload) | — | Minimum retention time for results/output data. |
+| `Builder.setBackoffForSystemInterruptions()` | `() -> B` | off | `@ExperimentalWorkRequestBuilderApi`, since 2.11.0-alpha01. "Specifies that the backoff policy (as specified via setBackoffCriteria) will be applied when work is interrupted by the system without the app requesting it. This might happen when the ListenableWorker runs longer than it should, or when constraints defined for a given ListenableWorker are unmet." |
 | `Builder.build()` | `() -> W` | — | Builds the immutable request. |
 
 ## Notes

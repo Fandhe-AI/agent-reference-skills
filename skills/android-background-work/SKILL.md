@@ -30,6 +30,7 @@ skills/android-background-work/
       custom-configuration.md
       data.md
       debugging.md
+      event-listeners.md
       existingworkpolicy.md
       foreground-work.md
       listenableworker-threading.md
@@ -46,6 +47,7 @@ skills/android-background-work/
       update-work.md
       workcontinuation.md
       worker-factory.md
+      work-analytics.md
       worker.md
       workinfo.md
       workmanager.md
@@ -78,6 +80,8 @@ skills/android-background-work/
       exact-alarm-permissions.md
       implicit-broadcast-restrictions.md
       jobscheduler.md
+      keep-device-awake.md
+      keep-screen-on.md
       pendingintent.md
       registering-receivers.md
       sending-broadcasts.md
@@ -122,12 +126,14 @@ skills/android-background-work/
 | WorkRequest / PeriodicWorkRequest / Constraints で実行条件・スケジュールを組みたい | workmanager | [references/workmanager/README.md](references/workmanager/README.md) |
 | WorkContinuation でワークをチェーンしたい、WorkInfo で状態を監視したい | workmanager | [references/workmanager/README.md](references/workmanager/README.md) |
 | expedited work / OutOfQuotaPolicy を使いたい、WorkManager をテストしたい | workmanager | [references/workmanager/README.md](references/workmanager/README.md) |
+| WorkManager の実行履歴・メトリクス (work-analytics) を収集したい、実行/スケジュールイベントを監視したい | workmanager | [references/workmanager/README.md](references/workmanager/README.md) |
 | Service のライフサイクル・onStartCommand の戻り値を実装したい | services | [references/services/README.md](references/services/README.md) |
 | フォアグラウンドサービスと foregroundServiceType / 起動制限 / 時間制限を扱いたい | services | [references/services/README.md](references/services/README.md) |
 | バウンドサービス・Messenger・AIDL でプロセス間通信 (IPC) をしたい | services | [references/services/README.md](references/services/README.md) |
 | AlarmManager で時刻指定・正確なアラームをスケジュールしたい | alarms-broadcasts | [references/alarms-broadcasts/README.md](references/alarms-broadcasts/README.md) |
 | PendingIntent / BroadcastReceiver でブロードキャストを送受信したい | alarms-broadcasts | [references/alarms-broadcasts/README.md](references/alarms-broadcasts/README.md) |
 | Doze / App Standby / JobScheduler / BOOT_COMPLETED を扱いたい | alarms-broadcasts | [references/alarms-broadcasts/README.md](references/alarms-broadcasts/README.md) |
+| 端末をスリープさせない API の選択・画面点灯維持 (FLAG_KEEP_SCREEN_ON) を行いたい | alarms-broadcasts | [references/alarms-broadcasts/README.md](references/alarms-broadcasts/README.md) |
 | Kotlin コルーチン (launch, async, Job, Dispatchers) の基本を知りたい | coroutines-flow | [references/coroutines-flow/README.md](references/coroutines-flow/README.md) |
 | Flow / StateFlow / SharedFlow / Channel でリアクティブなデータストリームを扱いたい | coroutines-flow | [references/coroutines-flow/README.md](references/coroutines-flow/README.md) |
 | コルーチンの例外処理・キャンセル・テストを行いたい | coroutines-flow | [references/coroutines-flow/README.md](references/coroutines-flow/README.md) |

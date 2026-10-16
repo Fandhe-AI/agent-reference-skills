@@ -10,6 +10,9 @@ public class Data {
     public fun getInt(key: String, defaultValue: Int): Int
     public fun getLong(key: String, defaultValue: Long): Long
     public fun getBoolean(key: String, defaultValue: Boolean): Boolean
+    public fun getNullableStringArray(key: String): Array<String?>?
+    @Deprecated("Use getNullableStringArray(key) instead.", ReplaceWith("getNullableStringArray(key)"))
+    public fun getStringArray(key: String): Array<String>?
     // ...and array variants for each supported type
 
     public class Builder {
@@ -50,6 +53,8 @@ override fun doWork(): Result {
 |------|------|---------|-------------|
 | `Data.Builder.putAll(values: Map<String, Any?>)` | `(Map) -> Builder` | — | Bulk-adds key/value pairs of supported types (String, primitives, and their arrays). |
 | `getString(key)` / `getInt(key, default)` / etc. | `(String[, default]) -> T` | type default | Typed accessors for stored values. |
+| `getNullableStringArray(key)` | `(String) -> Array<String?>?` | `null` | New in 2.12.0. Returns the String array for the key; the array may contain `null` elements. |
+| `getStringArray(key)` | `(String) -> Array<String>?` | `null` | `@Deprecated` in 2.12.0: "Use getNullableStringArray(key) instead. This method does not correctly handle String arrays which may contain null elements." |
 | `MAX_DATA_BYTES` | `Int` (const) | `10 * 1024` | Maximum serialized size (10 KB) for a `Data` instance; exceeding it throws at enqueue time. |
 | `InputMerger.merge(inputs: List<Data>)` | `(List<Data>) -> Data` | — | Abstract; combines parent outputs (order unspecified) into one `Data` used as the child's input. |
 | `OverwritingInputMerger` | class | default merger | On key conflicts the later value overwrites the earlier one. |
@@ -61,6 +66,7 @@ override fun doWork(): Result {
 
 - `workDataOf(vararg pairs: Pair<String, Any?>)` is the idiomatic Kotlin shortcut for building `Data` from key-value pairs.
 - The list of inputs passed to `merge()` is in unspecified order — do not assume ordering.
+- Since 2.12.0: `getStringArray(key)` is deprecated in favor of `getNullableStringArray(key)` (`ReplaceWith("getNullableStringArray(key)")`), because it does not correctly handle arrays containing `null` elements.
 - Package: `androidx.work`.
 
 ## Related

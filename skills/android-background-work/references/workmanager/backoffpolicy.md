@@ -31,6 +31,7 @@ val myWorkRequest = OneTimeWorkRequestBuilder<MyWork>()
 - Minimum backoff delay is `WorkRequest.MIN_BACKOFF_MILLIS` (10 seconds); maximum is `WorkRequest.MAX_BACKOFF_MILLIS` (5 hours).
 - Default policy is `EXPONENTIAL` with a 30 second initial delay (`WorkRequest.DEFAULT_BACKOFF_DELAY_MILLIS`).
 - Only the failed request in a chain is retried; parallel/unrelated work is unaffected. If retries are exhausted or `Result.failure()` is returned, the request and its dependents are marked `FAILED`.
+- `setBackoffForSystemInterruptions()` (experimental, since 2.11.0) applies the configured backoff policy to system-initiated interruptions as well.
 - Package: `androidx.work`.
 
 ## Related

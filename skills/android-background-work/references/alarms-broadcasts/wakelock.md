@@ -11,7 +11,7 @@ PowerManager.WakeLock newWakeLock(int levelAndFlags, String tag)
 ```kotlin
 val wakeLock: PowerManager.WakeLock =
     (getSystemService(POWER_SERVICE) as PowerManager).run {
-        newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyApp:MyWakelockTag").apply {
+        newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyClassName::MyWakelockTag").apply {
             acquire(WAKELOCK_TIMEOUT)
         }
     }
@@ -49,3 +49,5 @@ try {
 - [AlarmManager](./alarmmanager.md)
 - [BroadcastReceiver](./broadcastreceiver.md)
 - [Doze and App Standby](./doze-app-standby.md)
+- [Keep the device awake](./keep-device-awake.md)
+- [Keep the screen on](./keep-screen-on.md)
