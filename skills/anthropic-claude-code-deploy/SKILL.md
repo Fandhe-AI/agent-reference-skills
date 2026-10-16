@@ -1,12 +1,15 @@
 ---
 name: anthropic-claude-code-deploy
 description: >
-  Claude Code (code.claude.com) のデプロイ・CI/CD リファレンス。
-  Amazon Bedrock / Google Cloud Agent Platform (Vertex AI) / Microsoft Foundry /
-  Claude Platform on AWS 経由、Claude apps gateway、LLM gateway (protocol / rollout)、
+  Claude Code (code.claude.com) デプロイ・CI/CD リファレンス。
+  Amazon Bedrock / Google Cloud Agent Platform (Vertex AI) / Microsoft Foundry / Claude Platform on AWS、
+  Claude apps gateway、LLM gateway (protocol / rollout)、
   GitHub Actions (claude-code-action) / GitLab CI/CD / GitHub Enterprise Server (GHES)、
-  code review 自動化・ultrareview、Slack (Claude Tag)、headless mode、cloud environments、
-  devcontainer、self-hosted environments（runner 構成・identity 検証・本番デプロイ）。
+  Code Review (REVIEW.md・review level・@claude review always・コスト・トラブルシュート)、
+  ローカル /code-review、ultrareview (claude ultrareview)、
+  Slack (Claude Tag、旧 Claude Code in Slack、Pro/Max)、
+  headless mode、cloud environments、devcontainer、
+  self-hosted environments（runner 構成・identity 検証・本番デプロイ）。
 user-invocable: false
 ---
 
@@ -46,6 +49,12 @@ skills/anthropic-claude-code-deploy/
     cicd/
       README.md
       code-review.md
+      code-review-costs.md
+      code-review-customize.md
+      code-review-local.md
+      code-review-pull-requests.md
+      code-review-setup.md
+      code-review-troubleshooting.md
       github-actions.md
       github-actions-cloud-providers.md
       github-enterprise-server.md
@@ -73,6 +82,8 @@ skills/anthropic-claude-code-deploy/
     gitlab-ci.md
     devcontainer.md
     code-review-automation.md
+    code-review-plugin-workflow.md
+    ultrareview-ci.md
     self-hosted-runner-quickstart.md
     self-hosted-runner-image.md
     self-hosted-runner-kubernetes.md
@@ -100,8 +111,12 @@ skills/anthropic-claude-code-deploy/
 | Amazon Bedrock / Google Cloud Agent Platform (Vertex AI) / Microsoft Foundry / Claude Platform on AWS 経由で Claude Code を実行する設定・認証・IAM を知りたい | cloud-platforms | [references/cloud-platforms/README.md](references/cloud-platforms/README.md) |
 | Claude apps gateway（自己ホスト gateway）の設定・デプロイ・AWS/GCP 実例・spend limits を知りたい | apps-gateway | [references/apps-gateway/README.md](references/apps-gateway/README.md) |
 | サードパーティ LLM gateway 経由のルーティング・接続・protocol・組織向けロールアウトを知りたい | llm-gateway | [references/llm-gateway/README.md](references/llm-gateway/README.md) |
-| GitHub Actions（claude-code-action）/ GitHub Enterprise Server / GitLab CI/CD への統合、自動 code review・ultrareview、Slack 連携を知りたい | cicd | [references/cicd/README.md](references/cicd/README.md) |
+| GitHub Actions（claude-code-action）/ GitHub Enterprise Server / GitLab CI/CD への統合を知りたい | cicd | [references/cicd/README.md](references/cicd/README.md) |
+| Code Review の概要、Owner 向けセットアップ（GitHub App・review level・Review runs）、REVIEW.md / CLAUDE.md によるカスタマイズを知りたい | cicd | [references/cicd/README.md](references/cicd/README.md) |
+| PR 上の Code Review findings の読み方・comment command（@claude review always 等）、コストと spend limit、トラブルシュートを知りたい | cicd | [references/cicd/README.md](references/cicd/README.md) |
+| ローカル /code-review、ultrareview（claude ultrareview・--post・非対話実行）を知りたい | cicd | [references/cicd/README.md](references/cicd/README.md) |
+| 旧 Slack 連携（Claude Code in Slack）と Claude Tag への案内を知りたい | cicd | [references/cicd/README.md](references/cicd/README.md) |
 | headless mode でのプログラム実行、cloud environments のペア環境設定、devcontainer 導入を知りたい | headless-environments | [references/headless-environments/README.md](references/headless-environments/README.md) |
 | 自己ホストインフラで Claude Code cloud session を実行する runner 構成・identity 検証・本番デプロイ・end-to-end テストを知りたい | self-hosted-environments | [references/self-hosted-environments/README.md](references/self-hosted-environments/README.md) |
-| 典型的な使い方を知りたい（GitHub Actions ワークフロー、Bedrock/Vertex OIDC 連携、GitLab CI/CD、devcontainer、code review 自動化、self-hosted runner のクイックスタート/イメージ/Kubernetes/Docker Compose） | samples | [samples/README.md](samples/README.md) |
+| 典型的な使い方を知りたい（GitHub Actions ワークフロー、Bedrock/Vertex OIDC 連携、GitLab CI/CD、devcontainer、code review 自動化・code-review plugin ワークフロー・ultrareview の CI 実行、self-hosted runner のクイックスタート/イメージ/Kubernetes/Docker Compose） | samples | [samples/README.md](samples/README.md) |
 | クラウド環境変数・gateway・CI/CD・self-hosted environments のセットアップコマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
