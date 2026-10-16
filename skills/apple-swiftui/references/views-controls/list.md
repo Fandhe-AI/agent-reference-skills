@@ -50,6 +50,9 @@ List(fruits, selection: $selection) { fruit in
 | `listRowBackground(_:)` | Custom row background |
 | `refreshable(action:)` | Pull-to-refresh |
 | `swipeActions(edge:allowsFullSwipe:content:)` | Swipe-action buttons |
+| `swipeActions(edge:allowsFullSwipe:content:onPresentationChanged:)` | iOS 27.0+. Same, plus `onPresentationChanged: (Bool) -> Void` called with `true` when the actions are revealed and `false` when dismissed. See [swipeactions](./swipeactions.md). |
+| `swipeActionsContainer()` | iOS 27.0+. Coordinates swipe-action dismissal and mutual exclusion across rows in a `ScrollView` / `LazyVStack` or similar container; a no-op on `List`, which already does this. |
+| `reorderable()` / `reorderContainer(for:isEnabled:move:)` | iOS 27.0+. Drag-and-drop reordering for list, stack, grid, or custom layout containers. See [reorderable](./reorderable.md). |
 | `onDelete(perform:)` | Delete handler for `ForEach` rows |
 | `onMove(perform:)` | Move handler for `ForEach` rows |
 

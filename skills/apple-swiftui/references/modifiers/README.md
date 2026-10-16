@@ -1,4 +1,4 @@
-# modifiers
+# Modifiers
 
 | Name | Description | Path |
 |------|-------------|------|

@@ -39,6 +39,7 @@ ToolbarItem(id: "share", placement: .primaryAction) {
 | `.bottomBar` | iOS bottom toolbar. |
 | `.topBarLeading` | Leading edge of the top bar. |
 | `.topBarTrailing` | Trailing edge of the top bar. |
+| `.topBarPinnedTrailing` | Pins the item to the trailing edge of the top bar (iOS / iPadOS / Mac Catalyst / visionOS 27.0+; not available on macOS, tvOS, watchOS). Pinned items only move to the overflow menu when search is active and there isn't enough room. |
 | `.keyboard` | Above the keyboard. |
 
 ## Notes
@@ -47,7 +48,11 @@ ToolbarItem(id: "share", placement: .primaryAction) {
 - `navigationBarLeading` / `navigationBarTrailing` are deprecated; use `topBarLeading` / `topBarTrailing` instead.
 - On iOS, tvOS, and macOS, items that don't fit in the visible toolbar area overflow into a menu automatically.
 - Group multiple related items with `ToolbarItemGroup` to ensure correct spacing.
+- `visibilityPriority(_:)` (`ToolbarContent`, takes `ToolbarItemVisibilityPriority`, default `.automatic`): when toolbar space is limited, lower-priority items move into the overflow menu before higher-priority ones. Available iOS 27.0+ (macOS 26.1+).
+- `axisBehavior(_:)` (`ToolbarContent` and `CustomizableToolbarContent` overloads, iOS 27.1+): takes `ToolbarItemAxisBehavior` — `.automatic`, `.horizontalOnly` (item is not shown if no horizontal bar is present), `.verticalPreferred` (prefers the vertical bar when both horizontal and vertical bars are present). Example: `ToolbarItem(placement: .primaryAction) { ... }.axisBehavior(.horizontalOnly)`. See [toolbar-vertical](./toolbar-vertical.md).
 
 ## Related
 
 - [toolbar](./toolbar.md)
+- [toolbar-vertical](./toolbar-vertical.md)
+- [toolbar-overflow](./toolbar-overflow.md)

@@ -31,6 +31,15 @@ Presents a sheet when a binding to a Boolean value is `true`.
 - In vertically compact environments (iPhone landscape), sheets automatically adapt to full-screen covers. Override with `presentationCompactAdaptation(_:)`.
 - In visionOS, sheets appear with a breakthrough effect by default; customize with `presentationBreakthroughEffect(_:)`.
 - Control sheet height with `presentationDetents(_:)` applied inside the sheet content.
+- `NavigationTransition.crossFade` (iOS / iPadOS / Mac Catalyst / tvOS / visionOS / watchOS 27.0+, not macOS): pass it to `navigationTransition(_:)` inside the sheet content to have the sheet fade in over the content instead of moving upwards to cover it.
+
+```swift
+.sheet(isPresented: $showSheet) {
+    Text("Sheet Content")
+        .presentationDetents([.medium])
+        .navigationTransition(.crossFade)
+}
+```
 
 ## Related
 

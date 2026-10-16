@@ -24,6 +24,7 @@ GeometryReader { proxy in
 | `size` | `CGSize` | The size of the container |
 | `safeAreaInsets` | `EdgeInsets` | Safe area insets of the container |
 | `frame(in:)` | `(CoordinateSpace) -> CGRect` | Frame of the container in the given coordinate space |
+| `reservedRegions(kind:options:layoutDirectionBehavior:)` | `(ReservedRegion.Kind, ReservedRegion.QueryOptions = [], LayoutDirectionBehavior = .mirrors) -> [ReservedRegion]` | iOS 27.1+. Returns the reserved regions (areas reserved by an entity such as device hardware) that intersect the view, whether or not currently active. Kinds include `.occlusion` and `.division`. See [reservedregion](../adaptive-layout/reservedregion.md). |
 
 ## Notes
 

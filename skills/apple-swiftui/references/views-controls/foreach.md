@@ -50,6 +50,19 @@ ForEach(items, editActions: [.delete, .move]) { item in
 - `ForEach` is not a scroll container; embed in `List` or `ScrollView` for scrollable output.
 - Attach `.onDelete(perform:)` and `.onMove(perform:)` to `ForEach` (not the enclosing `List`) to enable row editing.
 - Use stable, unique identifiers to avoid unnecessary view recreation during updates.
+- iOS 27.0+ (not tvOS): apply `reorderable()` to the `ForEach` (`DynamicViewContent`) and `reorderContainer(for:isEnabled:move:)` to the parent container to enable drag-and-drop reordering in stacks, grids, and custom layouts, not only `List`. See [reorderable](./reorderable.md).
+
+```swift
+VStack {
+    ForEach(landmarks) { landmark in
+        LandmarkView(landmark)
+    }
+    .reorderable()
+}
+.reorderContainer(for: Landmark.self) { difference in
+    apply(difference: difference)
+}
+```
 
 ## Related
 
