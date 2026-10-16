@@ -78,7 +78,8 @@ The root `package.json`'s `engines` field is now included in the cache hash.
 
 ## Notes
 
-- `devEngines.packageManager` support starts with Turborepo 2.11. The 2.11 release notes ("`devEngines.packageManager` support") say: "Starting with this release, Turborepo respects the `devEngines.packageManager` field in your root `package.json`." The upgrading guide body itself does not distinguish versions.
+- Source: https://turborepo.dev/docs/crafting-your-repository/upgrading (vercel/turborepo tag v2.11.8, `apps/docs/content/docs/crafting-your-repository/upgrading.mdx`).
+- `devEngines.packageManager` support starts with Turborepo 2.11. The 2.11 release notes ("`devEngines.packageManager` support", https://turborepo.dev/blog/2-11#devenginespackagemanager-support, vercel/turborepo tag v2.11.8 `apps/docs/content/blog/2-11.mdx`) say: "Starting with this release, Turborepo respects the `devEngines.packageManager` field in your root `package.json`." The upgrading guide body itself does not distinguish versions.
 - If you use `eslint-config-turbo` (it helps identify environment variables that need to be added to the `env` key), update it to match your major version.
 - `--scope` was deprecated since 1.2 and is removed in 2.0.
 

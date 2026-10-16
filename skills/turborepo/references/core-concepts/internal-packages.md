@@ -17,7 +17,7 @@ Install an Internal Package in `package.json` using your package manager's works
 Then import it like an external package:
 
 ```tsx
-import { Button } from "@repo/ui";
+import { Button } from "@repo/ui/button";
 
 export default function Page() {
   return <Button>Submit</Button>;
@@ -106,6 +106,7 @@ Publishing to the npm registry has the strictest requirements, because consumers
 ## Notes
 
 - Source: https://turborepo.dev/docs/core-concepts/internal-packages (vercel/turborepo tag v2.11.8, `apps/docs/content/docs/core-concepts/internal-packages.mdx`).
+- The upstream page imports from `@repo/ui`; this page uses `@repo/ui/button` to match the `exports` subpaths (`./button`, `./card`) shown in the examples below.
 - Building a Compiled Package from scratch is covered by the "Creating an Internal Package" guide; publishing is covered by the "Publishing packages" guide.
 
 ## Related

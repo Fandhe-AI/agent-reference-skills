@@ -26,8 +26,9 @@ An Application Package installs a Library Package as a workspace dependency (pnp
 
 ## Notes
 
-- This page's source (package-types.mdx) has no code example; the snippet is from internal-packages.mdx (v2.11.8).
-- The internal-package compilation strategies (Just-in-Time, Compiled, Publishable) are documented on the separate Internal Packages page (`/docs/core-concepts/internal-packages`), not here.
+- Source: https://turborepo.dev/docs/core-concepts/package-types (vercel/turborepo tag v2.11.8, `apps/docs/content/docs/core-concepts/package-types.mdx`).
+- This page's source has no code example; the snippet is from https://turborepo.dev/docs/core-concepts/internal-packages (v2.11.8).
+- The internal-package compilation strategies (Just-in-Time, Compiled, Publishable) are documented on the separate Internal Packages page (https://turborepo.dev/docs/core-concepts/internal-packages), not here.
 
 ## Related
 
