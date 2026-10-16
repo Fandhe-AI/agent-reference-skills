@@ -1,12 +1,12 @@
 # Getting Started
 
-commitlint のインストールと基本設定。
+Install and basic setup of commitlint.
 
-> **参照元**: https://commitlint.js.org/guides/getting-started
+> **Source**: https://commitlint.js.org/guides/getting-started
 
-## インストール
+## Installation
 
-`@commitlint/cli` と設定パッケージ `@commitlint/config-conventional` を devDependencies としてインストールする。
+Install `@commitlint/cli` and the config package `@commitlint/config-conventional` as devDependencies.
 
 ```bash
 # npm
@@ -31,42 +31,34 @@ bun add -d @commitlint/cli @commitlint/config-conventional
 ```bash
 # deno
 deno add -D npm:@commitlint/cli npm:@commitlint/config-conventional
+# Deno 2 only: create a local node_modules directory for Node.js module resolution
+deno install --node-modules-dir=auto
 ```
 
-## 設定ファイルの作成
+## Create a configuration file
 
-`@commitlint/config-conventional` を extends する設定ファイルを作成する。
+Create a config file that extends `@commitlint/config-conventional`.
 
 ```bash
 echo "export default { extends: ['@commitlint/config-conventional'] };" > commitlint.config.js
 ```
 
-これにより以下の内容の `commitlint.config.js` が生成される:
+This generates a `commitlint.config.js` with the following content:
 
 ```javascript
 export default { extends: ['@commitlint/config-conventional'] };
 ```
 
-`@commitlint/config-conventional` は [Conventional Commits](https://www.conventionalcommits.org/) の規約に基づいたルールセットを提供する。
+`@commitlint/config-conventional` provides a ruleset based on the [Conventional Commits](https://www.conventionalcommits.org/) specification.
 
-## Node v24 に関する注意
-
-> **Warning**: Node v24 ではモジュールのロード方法が変更されており、commitlint の設定ファイルの読み込みに影響がある。
-
-プロジェクトに `package.json` が存在しない場合、commitlint が設定を読み込めず以下のエラーが発生する可能性がある:
-
-```
-Please add rules to your commitlint.config.js
-```
-
-### 解決策
-
-1. **`package.json` を追加して ES6 モジュールとして宣言する**:
+On Windows, create the file with the node command to avoid encoding issues:
 
 ```bash
-npm init es6
+# Here we use the node command to avoid encoding issue on Windows.
+node -e "fs.writeFileSync('commitlint.config.js', process.argv[1])" "export default { extends: ['@commitlint/config-conventional'] };"
 ```
 
-2. **設定ファイルの拡張子を `.mjs` に変更する**:
+## Notes
 
-`commitlint.config.js` を `commitlint.config.mjs` にリネームする。
+- v21.2.3 removed the Node 24 config-loading workaround (`npm init es6` / renaming to `.mjs`) from the docs; the same release fixed config loading on Node majors above 20 (#4961, #4972).
+- Requirements are Node.js >= 22.12.0 and git >= 2.13.2. These are not on the docs site; the sources are README.md "Version Support and Releases" and `engines` in `@commitlint/cli/package.json`

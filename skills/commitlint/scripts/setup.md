@@ -14,14 +14,6 @@ echo "export default { extends: ['@commitlint/config-conventional'] };" > commit
 node -e "fs.writeFileSync('commitlint.config.js', process.argv[1])" "export default { extends: ['@commitlint/config-conventional'] };"
 ```
 
-## Node v24 対応: package.json を ES6 モジュールとして初期化
-
-```sh
-npm init es6
-```
-
-Node v24 環境で `package.json` がない場合に設定ファイルが読み込まれないエラーを回避する。代替手段として `commitlint.config.js` を `commitlint.config.mjs` にリネームすることも有効。
-
 ## Husky の初期化（npm）
 
 ```sh
@@ -56,7 +48,7 @@ echo "npx --no -- commitlint --edit \$1" > .husky/commit-msg
 
 ## commit-msg フックの設定（Windows PowerShell）
 
-```sh
+```powershell
 echo "npx --no -- commitlint --edit `$1" > .husky/commit-msg
 ```
 
@@ -69,8 +61,12 @@ echo "npm run commitlint \${1}" > .husky/commit-msg
 
 ## npm スクリプトへの commit ショートカット追加
 
-`package.json` の `scripts` に以下を追加する:
+`@commitlint/prompt-cli` のインストールが前提（use-prompt ガイド）。`package.json` に以下を追加する。
 
-```sh
-npm pkg set scripts.commit="commit"
+```json
+{
+  "scripts": {
+    "commit": "commit"
+  }
+}
 ```

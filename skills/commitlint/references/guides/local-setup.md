@@ -1,16 +1,16 @@
 # Local Setup
 
-Husky を使った Git フックによるローカルでのコミットメッセージ検証。
+Validate commit messages locally with Git hooks using Husky.
 
-> **参照元**: https://commitlint.js.org/guides/local-setup
+> **Source**: https://commitlint.js.org/guides/local-setup
 
-ローカルでのリントは即座にフィードバックを得るのに適しているが、容易にバイパスできるため、本番レベルの検証には CI Setup との併用が推奨される。
+Local linting gives immediate feedback, but it is easy to bypass, so pair it with CI Setup for production-grade validation.
 
-## フックの追加
+## Adding a Hook
 
-### Husky v9 を使用する方法
+### Using Husky v9
 
-Husky をインストールし、`commit-msg` フックを設定する。
+Install Husky and configure the `commit-msg` hook.
 
 ```bash
 # npm
@@ -40,30 +40,30 @@ bunx husky init
 echo "npx --no -- commitlint --edit \$1" > .husky/commit-msg
 ```
 
-### Windows での注意事項
+### Notes for Windows
 
-Windows 環境では、すべての Husky ファイルが **UTF-8** エンコーディングであることを確認する。
+On Windows, make sure all Husky files are encoded as **UTF-8**.
 
-PowerShell を使用する場合はエスケープが異なる:
+When using PowerShell, escaping differs:
 
 ```powershell
 echo "npx --no -- commitlint --edit `$1" > .husky/commit-msg
 ```
 
-### npm スクリプトを使った代替方法
+### Alternative using an npm script
 
 ```bash
 npm pkg set scripts.commitlint="commitlint --edit"
 echo "npm run commitlint \${1}" > .husky/commit-msg
 ```
 
-### Git フックを直接使用する方法
+### Using Git hooks directly
 
-Husky を使わずに Git の `commit-msg` フックを直接設定することも可能。詳細は [Git のドキュメント](https://git-scm.com/docs/githooks) を参照。フックのファイル名は `commit-msg` にする必要がある。
+You can also set up the Git `commit-msg` hook directly without Husky. See the [Git documentation](https://git-scm.com/docs/githooks). The hook file must be named `commit-msg`.
 
-## テスト
+## Testing
 
-### commitlint の動作確認
+### Verify commitlint works
 
 ```bash
 # npm
@@ -85,27 +85,32 @@ pnpm commitlint --from HEAD~1 --to HEAD --verbose
 bun commitlint --from HEAD~1 --to HEAD --verbose
 ```
 
-### フックの動作確認
+### Verify the hook works
 
-#### 失敗するコミットの例
+#### Example of a failing commit
 
 ```bash
 git commit -m "foo: this will fail"
 ```
 
-出力:
+Output:
 
 ```
-⧗   input: foo: this will fail
+⧗   --- input ---
+foo: this will fail
 ✖   type must be one of [build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test]
 ✖   found 1 problems, 0 warnings
 husky - commit-msg script failed (code 1)
 ```
 
-#### 成功するコミットの例
+#### Example of a passing commit
 
 ```bash
 git commit -m "chore: lint on commitmsg"
 ```
 
-commitlint は問題がない場合は何も出力しない。確認のための出力が必要な場合は `--verbose` フラグを使用する。
+commitlint prints nothing when there are no problems. Use the `--verbose` flag if you want confirmation output.
+
+## Notes
+
+- Since v21.0.0, commitlint prints the commit message after a line break (EOL) instead of after the colon. The `--legacy-output` flag restores the old output format.

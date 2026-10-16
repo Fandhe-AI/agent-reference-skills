@@ -2,11 +2,11 @@
 
 > Source: https://commitlint.js.org/reference/configuration
 
-commitlint の設定ファイル形式と全オプション。
+Configuration file formats and all options of commitlint.
 
-## 設定ファイル形式
+## Configuration file formats
 
-commitlint は cosmiconfig を使用して設定ファイルを解決する。以下の形式をサポート:
+commitlint resolves configuration files with cosmiconfig. Supported formats:
 
 - `.commitlintrc`（JSON / YAML）
 - `.commitlintrc.json`
@@ -25,7 +25,7 @@ commitlint は cosmiconfig を使用して設定ファイルを解決する。�
 - `commitlint.config.cts`
 - `commitlint.config.mts`
 
-### package.json での定義
+### Defined in package.json
 
 ```json
 {
@@ -35,13 +35,13 @@ commitlint は cosmiconfig を使用して設定ファイルを解決する。�
 }
 ```
 
-### CLI オプションで指定
+### Specified via CLI option
 
 ```bash
 commitlint --config commitlint.config.js
 ```
 
-## 設定オブジェクト（全オプション）
+## Configuration object (all options)
 
 ### JavaScript (ESM)
 
@@ -94,11 +94,11 @@ const Configuration: UserConfig = {
 export default Configuration;
 ```
 
-## 各プロパティの詳細
+## Property details
 
 ### extends
 
-共有設定を解決して読み込む。参照するパッケージはインストール済みである必要がある。
+Resolves and loads shareable configs. The referenced packages must be installed.
 
 ```javascript
 export default {
@@ -109,21 +109,156 @@ export default {
 };
 ```
 
-複数の設定を指定した場合、後のものが前のものを上書きする。
+When multiple configs are given, later ones override earlier ones.
 
 ### parserPreset
 
-コミットメッセージのパースに使用する設定プリセット。node で解決可能なパッケージ ID を指定する。
+A configuration preset that determines how commit messages (type / scope / subject / body / footer, etc.) are parsed ("Parser presets" section of the official docs).
 
-```javascript
+- If no preset is specified, commitlint ships no parser preset and falls back to the defaults of [`conventional-changelog-angular`](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular)
+- Extending `@commitlint/config-conventional` applies the `conventional-changelog-conventionalcommits` preset
+- The `parserPreset` value is one of
+  - string: an npm package or a local file (Node module resolution)
+  - object: an object with a `parserOpts` property for inline configuration
+
+#### Using an npm package
+
+```sh
+npm install --save-dev conventional-changelog-atom
+```
+
+```js
+// commitlint.config.js
 export default {
   parserPreset: "conventional-changelog-atom",
 };
 ```
 
+#### Using a local file
+
+```js
+// commitlint.config.js
+export default {
+  parserPreset: "./parser-preset",
+};
+```
+
+```js
+// parser-preset.js
+export default {
+  parserOpts: {
+    headerPattern: /^(\w*)\((\w*)\)-(\w*)\s(.*)$/,
+    headerCorrespondence: ["type", "scope", "ticket", "subject"],
+  },
+};
+```
+
+#### Inline `parserOpts`
+
+`parserOpts` can be passed directly without a separate file. Suited to small tweaks such as custom issue prefixes.
+
+```js
+// commitlint.config.js
+export default {
+  parserPreset: {
+    parserOpts: {
+      issuePrefixes: ["PROJ-", "JIRA-"],
+    },
+  },
+};
+```
+
+#### Main `parserOpts`
+
+Parsing is done by [`conventional-commits-parser`](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-commits-parser). See that package's documentation for all options.
+
+| Option | Description |
+| --- | --- |
+| `headerPattern` | Regex to match the commit header (type, scope, subject) |
+| `headerCorrespondence` | Array of field names matching the capture groups in headerPattern |
+| `issuePrefixes` | Prefixes to match issue references (e.g. `["#", "PROJ-"]`) |
+| `noteKeywords` | Keywords that mark footer notes (e.g. `["BREAKING CHANGE"]`) |
+| `breakingHeaderPattern` | Regex to detect breaking changes in the header (e.g. the `!` marker) |
+
+#### `presetConfig`
+
+The official docs describe passing `presetConfig` with a preset such as `conventional-changelog-conventionalcommits` to tweak the preset's behavior without replacing the whole parser configuration, commonly to configure which commit types appear in the generated changelog. Available options differ per preset (see "Preset Configuration" in `conventional-changelog-conventionalcommits`). See Notes: `presetConfig` has no runtime effect in commitlint as of v21.2.3.
+
+```js
+// commitlint.config.js
+export default {
+  parserPreset: {
+    name: "conventional-changelog-conventionalcommits",
+    presetConfig: {
+      types: [
+        { type: "feat", section: "Features" },
+        { type: "fix", section: "Bug Fixes" },
+        { type: "docs", section: "Documentation", hidden: false },
+        { type: "chore", hidden: true },
+      ],
+    },
+  },
+};
+```
+
+#### Using with semantic-release
+
+The official docs describe sharing the same `conventional-changelog-conventionalcommits` preset between [semantic-release](https://github.com/semantic-release/semantic-release) and commitlint, aligning `parserOpts` / `presetConfig` across both tools so that commits parsed at lint time match semantic-release's version determination and changelog generation. See Notes: the `presetConfig` in the commitlint config below has no runtime effect as of v21.2.3.
+
+```js
+// commitlint.config.js
+export default {
+  extends: ["@commitlint/config-conventional"],
+  parserPreset: {
+    name: "conventional-changelog-conventionalcommits",
+    presetConfig: {
+      types: [
+        { type: "feat", section: "Features" },
+        { type: "fix", section: "Bug Fixes" },
+        { type: "docs", section: "Documentation", hidden: false },
+      ],
+    },
+  },
+};
+```
+
+```js
+// .releaserc.js
+export default {
+  plugins: [
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        preset: "conventionalcommits",
+        presetConfig: {
+          types: [
+            { type: "feat", section: "Features" },
+            { type: "fix", section: "Bug Fixes" },
+            { type: "docs", section: "Documentation", hidden: false },
+          ],
+        },
+      },
+    ],
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        preset: "conventionalcommits",
+        presetConfig: {
+          types: [
+            { type: "feat", section: "Features" },
+            { type: "fix", section: "Bug Fixes" },
+            { type: "docs", section: "Documentation", hidden: false },
+          ],
+        },
+      },
+    ],
+  ],
+};
+```
+
 ### formatter
 
-検証結果の出力フォーマットを指定する。
+Specifies the output format of lint results.
 
 ```javascript
 export default {
@@ -133,7 +268,7 @@ export default {
 
 ### rules
 
-ルールの定義。`extends` で読み込んだルールを上書きできる。
+Rule definitions. Can override rules loaded via `extends`.
 
 ```javascript
 export default {
@@ -143,11 +278,11 @@ export default {
 };
 ```
 
-詳細は [rules-configuration.md](./rules-configuration.md) および [rules.md](./rules.md) を参照。
+See [rules-configuration.md](./rules-configuration.md) and [rules.md](./rules.md) for details.
 
 ### ignores
 
-commitlint がメッセージをスキップすべきかどうかを判定する関数の配列。
+An array of functions that determine whether commitlint should skip a message.
 
 ```javascript
 export default {
@@ -157,7 +292,7 @@ export default {
 
 ### defaultIgnores
 
-デフォルトの無視パターンを適用するかどうかを制御する boolean 値。デフォルトの無視パターンには、マージコミット、リバート、semver バージョンが含まれる。
+A boolean controlling whether the default ignore patterns apply. The default ignore patterns include merge commits, reverts, and semver versions.
 
 ```javascript
 export default {
@@ -167,7 +302,7 @@ export default {
 
 ### helpUrl
 
-失敗時に表示するカスタム URL。
+A custom URL shown on failure.
 
 ```javascript
 export default {
@@ -177,15 +312,19 @@ export default {
 
 ### prompt
 
-`@commitlint/cz-commitlint` のコマンドラインインタラクションを設定するオブジェクト。
+An object configuring the command-line interaction of `@commitlint/cz-commitlint`.
 
-詳細は [prompt.md](./prompt.md) を参照。
+See [prompt.md](./prompt.md) for details.
 
-## 共有設定 (Shareable Configuration)
+## Shareable Configuration
 
-共有設定は以下のルールに従う:
+Shareable configs follow these rules:
 
-- npm パッケージとして公開可能
-- `commitlint-config-` プレフィックス（例: `commitlint-config-lerna`）
-- スコープ付きパッケージ: `@scope/commitlint-config-name`
-- `extends` で参照する際はプレフィックスを省略可能（例: `"lerna"` → `commitlint-config-lerna`）
+- Can be published as npm packages
+- `commitlint-config-` prefix (e.g. `commitlint-config-lerna`)
+- Scoped packages: `@scope/commitlint-config-name`
+- The prefix may be omitted when referenced in `extends` (e.g. `"lerna"` resolves to `commitlint-config-lerna`)
+
+## Notes
+
+- As of v21.2.3, `@commitlint/load` resolves `parserPreset` by name only when it is a string; an object `parserPreset` without `parserOpts` is passed through unchanged (`load-parser-opts.ts`), and `presetConfig` is not read anywhere in `@commitlint/load` or `@commitlint/resolve-extends`. The `ParserPreset` type declares `presetConfig?: unknown` (so TypeScript configs type-check, see upstream issue #4748), but it has no effect on parsing. The `presetConfig` / semantic-release examples above are reproduced from the official docs as published. To change how commitlint parses, use `parserOpts` (inline or via a preset module).

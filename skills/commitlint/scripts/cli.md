@@ -14,6 +14,14 @@ echo "feat: add feature" | npx commitlint
 npx commitlint --last --verbose
 ```
 
+## v21 以前の 1 行形式で出力
+
+```sh
+npx commitlint --last --verbose --legacy-output
+```
+
+v21 で `input` の表示が新しい形式（入力を改行して表示）に変わった。`--legacy-output` は従来の 1 行形式（`input: ...`）で出力する。移行用のフラグで、将来のメジャーリリースで削除される予定（release-v21.0.0）。
+
 ## コミット範囲を指定して検証
 
 ```sh
@@ -35,6 +43,14 @@ npx commitlint --config commitlint.config.js
 ```
 
 設定ファイルが見つからない場合はリザルトコード 9 で終了する。
+
+## 設定ファイルなしで組み込みデフォルト設定を使って検証
+
+```sh
+echo "feat: add new feature" | npx commitlint --default-config
+```
+
+rules が見つからない場合のみ、組み込みのデフォルト設定（@commitlint/config-conventional）にフォールバックする。rules を持つ設定ファイルが常に優先される。`--extends` で渡した設定はフォールバック適用時も保持され、デフォルト設定を上書きする。
 
 ## 共有設定を拡張して実行
 

@@ -17,7 +17,6 @@ echo "bad message" | npx commitlint             # non-zero exit: proves the conf
 ## Notes
 
 - `@commitlint/config-conventional` provides the Conventional Commits ruleset out of the box
-- Do not test with `--default-config`: it ignores the project config file, so the test passes even if `commitlint.config.js` is missing or broken
-- Without a `package.json` declaring `"type": "module"`, rename config to `commitlint.config.mjs` (required for Node v24+)
+- Do not test with `--default-config`: when the config file is missing or yields no rules, commitlint silently falls back to `@commitlint/config-conventional`, so the test can pass even though the setup is broken (a config with rules always takes precedence over the fallback)
 - A non-zero exit code means the commit message failed validation; exit 0 means it passed
 - Run `npx commitlint --print-config` to inspect the resolved configuration
