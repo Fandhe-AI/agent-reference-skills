@@ -76,3 +76,4 @@ val availableCameraInfos: List<CameraInfo>
 - [CameraSelector](./camera-selector.md)
 - [UseCaseGroup and ViewPort](./use-case-group-viewport.md)
 - [CameraController](./camera-controller.md)
+- [CameraX architecture](./camerax-architecture.md)

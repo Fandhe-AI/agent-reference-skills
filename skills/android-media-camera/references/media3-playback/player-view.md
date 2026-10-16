@@ -44,3 +44,5 @@ player.prepare()
 
 - [Compose UI (PlayerSurface, ContentFrame)](./compose-ui.md)
 - [Player](./player.md)
+- [Surface types](./surface-types.md)
+- [Android TV](./android-tv.md)

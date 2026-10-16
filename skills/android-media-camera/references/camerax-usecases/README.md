@@ -2,20 +2,22 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Camera permissions | CAMERA/RECORD_AUDIO manifest declarations for CameraX. | [camera-permissions.md](./camera-permissions.md) |
-| CameraController | Simplified high-level API bundling common use cases and gestures. | [camera-controller.md](./camera-controller.md) |
-| CameraEffect | Injecting a custom GPU effect into the CameraX pipeline. | [camera-effect.md](./camera-effect.md) |
-| Compose viewfinder | Displaying camera preview in Jetpack Compose via CameraXViewfinder or AndroidView. | [camera-compose-viewfinder.md](./camera-compose-viewfinder.md) |
-| CameraSelector | Requirements/priorities for selecting which camera to use. | [camera-selector.md](./camera-selector.md) |
-| ImageAnalysis | Use case providing CPU-accessible frames for analysis/ML. | [image-analysis.md](./image-analysis.md) |
-| ImageCapture | Use case for taking photos to memory, file, or MediaStore. | [image-capture.md](./image-capture.md) |
-| MlKitAnalyzer | An `ImageAnalysis.Analyzer` implementation that runs ML Kit `Detector`s on each frame. | [mlkit-analyzer.md](./mlkit-analyzer.md) |
-| Orientation and rotation | Mapping display/sensor rotation to correctly-oriented output. | [orientation-rotation.md](./orientation-rotation.md) |
-| Preview | Use case streaming camera frames to a surface for display. | [preview.md](./preview.md) |
-| PreviewView | View that renders the Preview stream with scaling/rotation handling. | [preview-view.md](./preview-view.md) |
-| ProcessCameraProvider | Singleton entry point binding use cases to a LifecycleOwner. | [process-camera-provider.md](./process-camera-provider.md) |
-| Recording / PendingRecording | Configuring and controlling an active video recording. | [recording.md](./recording.md) |
-| Transform output | How to apply output transformation and map coordinates between use cases. | [transform-output.md](./transform-output.md) |
-| UseCaseGroup and ViewPort | Binding multiple use cases with a shared crop rect. | [use-case-group-viewport.md](./use-case-group-viewport.md) |
-| VideoCapture | Use case + Recorder for recording video/audio. | [video-capture.md](./video-capture.md) |
-| Zero-Shutter Lag (ZSL) | Experimental capture mode that minimizes shutter latency by buffering and reprocessing. | [zero-shutter-lag.md](./zero-shutter-lag.md) |
+| Compose viewfinder | Displaying the CameraX preview in Jetpack Compose… | [camera-compose-viewfinder.md](./camera-compose-viewfinder.md) |
+| CameraController / LifecycleCameraController | A high-level, simplified alternative to manual… | [camera-controller.md](./camera-controller.md) |
+| CameraEffect | Injects a custom GPU effect (e.g. a portrait effect)… | [camera-effect.md](./camera-effect.md) |
+| Camera permissions | Manifest declarations and the runtime permissions… | [camera-permissions.md](./camera-permissions.md) |
+| CameraSelector | A set of requirements and priorities used to select… | [camera-selector.md](./camera-selector.md) |
+| Migrate Camera1 to CameraX | Guide for migrating from deprecated Camera1 to CameraX… | [camera1-to-camerax.md](./camera1-to-camerax.md) |
+| CameraX architecture | Overview of CameraX structure (use cases), the API… | [camerax-architecture.md](./camerax-architecture.md) |
+| ImageAnalysis | A use case providing CPU-accessible camera frames… | [image-analysis.md](./image-analysis.md) |
+| ImageCapture | A use case for taking a picture, saved to file or… | [image-capture.md](./image-capture.md) |
+| MlKitAnalyzer | An `ImageAnalysis.Analyzer` implementation that runs… | [mlkit-analyzer.md](./mlkit-analyzer.md) |
+| Orientation and rotation | How CameraX maps display and sensor rotation to… | [orientation-rotation.md](./orientation-rotation.md) |
+| PreviewView | A `View` that displays the camera feed for `Preview`… | [preview-view.md](./preview-view.md) |
+| Preview | A use case that provides a camera preview stream… | [preview.md](./preview.md) |
+| ProcessCameraProvider | Singleton used to bind the lifecycle of cameras… | [process-camera-provider.md](./process-camera-provider.md) |
+| Recording / PendingRecording | `PendingRecording` configures a recording before… | [recording.md](./recording.md) |
+| Transform output | Every CameraX use case delivers output as a buffer… | [transform-output.md](./transform-output.md) |
+| UseCaseGroup and ViewPort | Bind multiple use cases together so CameraX… | [use-case-group-viewport.md](./use-case-group-viewport.md) |
+| VideoCapture | A use case that provides a camera stream suitable… | [video-capture.md](./video-capture.md) |
+| Zero-Shutter Lag (ZSL) | An experimental `ImageCapture` capture mode… | [zero-shutter-lag.md](./zero-shutter-lag.md) |
