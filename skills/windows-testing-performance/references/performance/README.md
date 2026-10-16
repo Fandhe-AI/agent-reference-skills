@@ -16,6 +16,7 @@
 | Optimize Windows Runtime interop cost | Interop boundary cost between managed and WinRT code | [optimize-winrt-interop.md](./optimize-winrt-interop.md) |
 | Optimize XAML layout | Panel nesting reduction, single-cell grids, border properties | [optimize-xaml-layout.md](./optimize-xaml-layout.md) |
 | Optimize XAML loading | XAML parse time and memory via x:Load and resource scoping | [optimize-xaml-loading.md](./optimize-xaml-loading.md) |
+| Planning for performance | Specifying measurable time, fluidity, and efficiency goals and instrumenting for them with LoggingChannel | [planning-for-performance.md](./planning-for-performance.md) |
 | Power consumption improvements | Reducing CPU wakes and vsync waits to improve battery life | [power.md](./power.md) |
 | Tools for profiling and performance | Overview of VS diagnostics, WPT, and .NET diagnostic tools | [profiling-tools.md](./profiling-tools.md) |
 | Responsive interactions and latency measurement | Measuring interaction latency using interaction-class goals | [responsive.md](./responsive.md) |
