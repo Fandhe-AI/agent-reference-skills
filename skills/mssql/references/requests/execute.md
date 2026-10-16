@@ -35,7 +35,8 @@ request.execute('procedure_name', (err, result) => {
 
 ## Notes
 
-- Errors: `EREQUEST` (`RequestError`, message from SQL Server), `ECANCEL` (`RequestError`, cancelled), `ETIMEOUT` (`RequestError`, request timeout), `ENOCONN` (`RequestError`, no connection is specified for that request), `ENOTOPEN` (`ConnectionError`, connection not yet open), `ECONNCLOSED` (`ConnectionError`, connection is closed), `ENOTBEGUN` (`TransactionError`, transaction has not begun), `EABORT` (`TransactionError`, transaction was aborted by user or because of an error).
+- Errors: `EREQUEST` (`RequestError`, message from SQL Server), `ECANCEL` (`RequestError`, cancelled), `ETIMEOUT` (`RequestError`, request timeout), `ENOCONN` (`RequestError`, no connection is specified for that request), `ENOTOPEN` (`ConnectionError`, connection not yet open), `ECONNCLOSED` (`ConnectionError`, connection is closed), `ENOTBEGUN` (`TransactionError`, transaction has not begun), `EABORT` (`TransactionError`, transaction was aborted by user or because of an error), `EPARAM` (`RequestError`, a parameter value is not valid for its type), `EINJECT` (`RequestError`, procedure name or parameter type is not a valid identifier), `EREQINPROG` (`TransactionError`, can't acquire connection for the request; there is another request in progress).
+- Procedure name rules (v12.7.9): a name may be qualified with a server, database and schema and quoted with brackets or double quotes; the numbered `procedure;1` form is rejected. Both drivers validate the name the same way. See identifier-rules.md.
 - `Request` here is node-mssql's query-execution object — unrelated to the HTTP `Request` in the `fastify` / `hono` / `go-echo` skills.
 
 ## Related
@@ -43,3 +44,4 @@ request.execute('procedure_name', (err, result) => {
 - [Request](./request.md)
 - [input](./input.md)
 - [output](./output.md)
+- [Identifier rules](../errors-diagnostics/identifier-rules.md)

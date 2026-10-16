@@ -2,9 +2,10 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Errors | Overview of the 4 error classes (`ConnectionError`, `TransactionError`, `RequestError`, `PreparedStatementError`) and `originalError` / `precedingErrors`. | [errors.md](./errors.md) |
-| Error Codes | Name / Code / Message table for all known error codes. | [error-codes.md](./error-codes.md) |
-| Detailed SQL Errors | Additional `RequestError` (`EREQUEST`) properties: `number`, `state`, `class`, `lineNumber`, `serverName`, `procName`. | [detailed-sql-errors.md](./detailed-sql-errors.md) |
-| Informational messages | Receiving `PRINT` / `RAISERROR` output via the `info` event. | [informational-messages.md](./informational-messages.md) |
-| SQL injection | Built-in SQL injection protection via parameters / tagged template literals. | [sql-injection.md](./sql-injection.md) |
-| Diagnostics Channel | Node.js `diagnostics_channel` telemetry: TracingChannels, point-event channels, OpenTelemetry Spans example. | [diagnostics-channel.md](./diagnostics-channel.md) |
+| Detailed SQL Errors | SQL errors (`RequestError`, `EREQUEST`) carry extra detail fields. | [detailed-sql-errors.md](./detailed-sql-errors.md) |
+| Diagnostics Channel | node-mssql publishes telemetry through Node.js `diagnostics_channel` for APM tools. | [diagnostics-channel.md](./diagnostics-channel.md) |
+| Error Codes | Each known error has `name`, `code` and `message` properties. | [error-codes.md](./error-codes.md) |
+| Errors | node-mssql exposes 4 error classes, all extending the internal `MSSQLError`. | [errors.md](./errors.md) |
+| Identifier Rules | Parameter, column and procedure names are validated; unsafe ones are rejected with `EINJECT`. | [identifier-rules.md](./identifier-rules.md) |
+| Informational messages | Receive `PRINT` / `RAISERROR` messages via the `info` event on a `Request`. | [informational-messages.md](./informational-messages.md) |
+| SQL injection | Built-in SQL injection protection; always pass values via parameters or tagged templates. | [sql-injection.md](./sql-injection.md) |

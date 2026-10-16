@@ -71,3 +71,4 @@ function processRows() {
 - Set `request.stream = true` before calling `.query()` / `.execute()`; event listeners must be attached before the query completes (they may be attached while in-flight)
 - `'error'` may fire multiple times per request; `'done'` is always the final event
 - `request.pause()` / `request.resume()` prevent memory exhaustion when consuming very large result sets
+- Nothing is emitted while the request is paused: `row`, `recordset`, `info`, `error`, `rowsaffected` and `done` events wait until it is resumed. The msnodesqlv8 driver reads rows 50 at a time and only stops reading at the end of a full batch, so the rows it reads before then are held until the request is resumed. A paused request that is cancelled does not wait to be resumed: it drops the rows it holds, emits the other events it holds, and completes with an `error` (`ECANCEL`) and `done` (see cancel).

@@ -11,7 +11,7 @@ user-invocable: false
 
 # mssql API リファレンス
 
-mssql (node-mssql) — tediousjs 製の Node.js 向け Microsoft SQL Server クライアント（対象バージョン v12.7.0）。
+mssql (node-mssql) — tediousjs 製の Node.js 向け Microsoft SQL Server クライアント（対象バージョン v12.7.9）。
 tedious / msnodesqlv8 ドライバー、ConnectionPool、Request / Transaction / PreparedStatement による
 T-SQL 実行、データ型・エラー処理・診断を中核とする API 設計・実装時に参照する。
 
@@ -93,6 +93,7 @@ skills/mssql/
       detailed-sql-errors.md
       informational-messages.md
       sql-injection.md
+      identifier-rules.md
       diagnostics-channel.md
     migration/
       README.md
@@ -145,6 +146,7 @@ skills/mssql/
 | SQL Server データ型・TVP・JSON/Geography 結果を扱いたい | data-types-results | [references/data-types-results/README.md](references/data-types-results/README.md) |
 | クエリ結果の recordset / rowsAffected / metadata を調べたい | data-types-results | [references/data-types-results/README.md](references/data-types-results/README.md) |
 | エラークラス・エラーコード・SQL インジェクション対策を知りたい | errors-diagnostics | [references/errors-diagnostics/README.md](references/errors-diagnostics/README.md) |
+| パラメーター名・列名・型名・プロシージャ名の識別子検証 (EINJECT) を知りたい | errors-diagnostics | [references/errors-diagnostics/README.md](references/errors-diagnostics/README.md) |
 | Diagnostics Channel での OpenTelemetry トレーシングを知りたい | errors-diagnostics | [references/errors-diagnostics/README.md](references/errors-diagnostics/README.md) |
 | 旧バージョンからの破壊的変更を確認したい | migration | [references/migration/README.md](references/migration/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |

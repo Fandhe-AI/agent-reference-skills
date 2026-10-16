@@ -35,20 +35,23 @@ class RequestError extends MSSQLError {
 | `ConnectionError` | `ECONNCLOSED` | Connection is closed. |
 | `TransactionError` | `ENOTBEGUN` | Transaction has not begun. |
 | `TransactionError` | `EALREADYBEGUN` | Transaction has already begun. |
-| `TransactionError` | `EREQINPROG` | Can't commit/rollback transaction. There is a request in progress. |
+| `TransactionError` | `EREQINPROG` | Can't commit/rollback transaction or acquire connection for the request. There is a request in progress. |
 | `TransactionError` | `EABORT` | Transaction has been aborted. |
+| `TransactionError` | `ENOCONN` | No connection is specified for that transaction. |
 | `RequestError` | `EREQUEST` | Message from SQL Server. Error object contains additional details. |
 | `RequestError` | `ECANCEL` | Cancelled. |
 | `RequestError` | `ETIMEOUT` | Request timeout. |
 | `RequestError` | `EARGS` | Invalid number of arguments. |
-| `RequestError` | `EINJECT` | SQL injection warning. |
+| `RequestError` | `EINJECT` | Parameter name, column name or type is not a valid identifier. |
 | `RequestError` | `ENOCONN` | No connection is specified for that request. |
 | `PreparedStatementError` | `EARGS` | Invalid number of arguments. |
-| `PreparedStatementError` | `EINJECT` | SQL injection warning. |
+| `PreparedStatementError` | `EINJECT` | Parameter name is not a valid identifier. |
 | `PreparedStatementError` | `EALREADYPREPARED` | Statement is already prepared. |
 | `PreparedStatementError` | `ENOTPREPARED` | Statement is not prepared. |
+| `PreparedStatementError` | `ENOCONN` | No connection is specified for that prepared statement. |
 
 ## Related
 
+- [identifier-rules.md](./identifier-rules.md)
 - [errors.md](./errors.md)
 - [detailed-sql-errors.md](./detailed-sql-errors.md)

@@ -71,7 +71,7 @@ ps.prepare('select @param as value', err => {
 
 ## Notes
 
-- Errors: `ENOTPREPARED` (`PreparedStatementError`) - Statement is not prepared. `ETIMEOUT` (`RequestError`) - Request timeout. `EREQUEST` (`RequestError`) - Message from SQL Server. `ECANCEL` (`RequestError`) - Cancelled
+- Errors: `ENOTPREPARED` (`PreparedStatementError`) - Statement is not prepared. `ETIMEOUT` (`RequestError`) - Request timeout. `EREQUEST` (`RequestError`) - Message from SQL Server. `EPARAM` (`RequestError`) - A parameter value is not valid for its type. `ECANCEL` (`RequestError`) - Cancelled
 - To learn more about how the number of affected rows works, see the Affected Rows reference page
 - This is a SQL Server / TDS prepared statement execution, unrelated to Redis (`upstash`) or Stripe (`stripe`) transaction concepts
 

@@ -34,6 +34,9 @@ request.query('select * from mytable')
 
 ## Notes
 
+- The readable stream is destroyed with the request's first error. Later errors are still emitted on the request, but not on the stream.
+- If the readable stream is destroyed before the request finishes (for example because a later stream in the pipeline failed), the request still runs to the end and the rows it has left are discarded. Call `request.cancel()` to stop it early.
+- With msnodesqlv8 before 5.6 that cancel does not stop it. The request is resumed as soon as its stream is destroyed, so that it does not keep its connection, and those versions can only cancel a paused request.
 - `Request` here is node-mssql's query-execution object — unrelated to the HTTP `Request` in the `fastify` / `hono` / `go-echo` skills.
 
 ## Related
