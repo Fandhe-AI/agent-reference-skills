@@ -33,6 +33,7 @@ The three Windows App SDK release channels — Stable, Preview, and Experimental
 
 - Starting with 2.0 (stable GA 04/29/2026, `2.0.1`), releases use SemVer-style versions (`2.5.1`, `2.4.0`, ...); 1.x versions used the `1.x.<yyMMdd><nnn>` build-style patch numbers (e.g. `1.8.260921001`). The lifecycle table lists the whole 2.x line as one row ("2.0").
 - App Content Search entered the Stable channel in 2.5.1 as a Limited Access Feature (apps must obtain a token); it is not available in Preview.
+- The source table (last updated 2026-09-29) still lists 1.8 as Maintenance although its End of servicing date 09/24/2026 had already passed; as of the fetch date (2026-10-16) treat 1.8 as past its servicing end (no further fixes expected) and plan migration to 2.x. The status column is transcribed as published.
 - All release-channel quality is the same — only the servicing time frame differs between Current and Maintenance.
 - Windows App SDK is governed by the Microsoft Modern Lifecycle; supported only on Windows releases still in support, even though it's backward compatible to Windows 10 version 1809.
 - Support requires the latest Windows App SDK patch and a supported OS.
