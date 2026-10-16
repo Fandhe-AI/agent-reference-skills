@@ -33,7 +33,8 @@ if output.hasNewPixelBuffer(forItemTime: currentTime) {
 
 | Initializer | Description |
 |-------------|-------------|
-| `init(pixelBufferAttributes:)` | Create with `CVPixelBufferAttributes` dictionary |
+| `init(pixelBufferAttributes:)` | Create with `CVPixelBufferAttributes` dictionary. The dictionary form `init(pixelBufferAttributes: [String : any Sendable]? = nil)` is deprecated in 27.0: "Use init(pixelBufferAttributes: CVPixelBuffer.Attributes) instead" |
+| `init(pixelBufferAttributes:)` | `convenience init(pixelBufferAttributes: CVPixelBufferAttributes)`; typed replacement (26.0+) |
 | `init(outputSettings:)` | Create with output settings dictionary |
 
 | Method | Signature | Description |
@@ -54,6 +55,7 @@ if output.hasNewPixelBuffer(forItemTime: currentTime) {
 - iOS 6.0+, iPadOS 6.0+, macOS 10.8+, tvOS 9.0+, visionOS 1.0+, Mac Catalyst 13.1+
 - Must be added to an `AVPlayerItem` via `add(_:)` before use; remove with `remove(_:)` when done.
 - Drive frame retrieval from a `CADisplayLink` or `MTKView` render loop synchronized to the display refresh rate.
+- The snippet uses the dictionary form of `init(pixelBufferAttributes:)`, which is deprecated in 27.0.
 - `copyPixelBuffer(forItemTime:itemTimeForDisplay:)` is deprecated; prefer `pixelBufferAndDisplayTime(forItemTime:)`.
 
 ## Related

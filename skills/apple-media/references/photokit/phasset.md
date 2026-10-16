@@ -46,6 +46,9 @@ PHPhotoLibrary.shared().performChanges({
 
 iOS 8.0+, iPadOS 8.0+, macOS 10.13+, tvOS 10.0+, visionOS 1.0+. Assets hold only metadata; use `PHImageManager` to retrieve image/video data. Use `playbackStyle` to determine how to present an asset (photo, video, Live Photo).
 
+- Spatial media assets are identified by adding `PHAssetMediaSubtype.spatialMedia` to the fetch-options predicate (per the PhotoKit updates page). The symbol page lists iOS 16.0+, macOS 13.0+, visionOS 1.0+ (recorded as given).
+- `PHAssetResource.originalFilename` is deprecated in iOS/macOS/tvOS/visionOS 27.0 ("Use filename instead"); the replacement is `var filename: String? { get }` (27.0+).
+
 ## Related
 
 - [PHFetchResult](./phfetchresult.md)

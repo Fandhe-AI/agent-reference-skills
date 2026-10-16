@@ -19,7 +19,9 @@ let item = AVPlayerItem(asset: asset)
 item.addObserver(self, forKeyPath: "status", options: .new, context: nil)
 
 // Seek within item
-item.seek(to: time, toleranceBefore: .zero, toleranceAfter: .zero) { finished in }
+item.seek(to: time, toleranceBefore: .zero, toleranceAfter: .zero) { finished in
+    print("seek finished: \(finished)")
+}
 
 // Listen for playback end
 NotificationCenter.default.addObserver(
@@ -56,8 +58,11 @@ NotificationCenter.default.addObserver(
 | `step(byCount:)` | `(Int)` | Advance/retreat by frame count |
 | `cancelPendingSeeks()` | `()` | Cancel in-flight seek operations |
 | `add(_ output:)` / `remove(_ output:)` | methods | Attach/detach `AVPlayerItemOutput` instances |
-| `accessLog()` | `() -> AVPlayerItemAccessLog?` | Network access log |
-| `errorLog()` | `() -> AVPlayerItemErrorLog?` | Playback error log |
+| `accessLog()` | `() -> AVPlayerItemAccessLog?` | Network access log. Deprecated in 27.0: "Use fetchAccessLogWithCompletionHandler:" |
+| `errorLog()` | `() -> AVPlayerItemErrorLog?` | Playback error log. Deprecated in 27.0: "Use fetchErrorLogWithCompletionHandler:" |
+| `fetchAccessLog(completionHandler:)` | method; async form `var accessLog: AVPlayerItemAccessLog? { get async }` | Fetches the network access log (27.0+ on all platforms) |
+| `fetchErrorLog(completionHandler:)` | method; async form `var errorLog: AVPlayerItemErrorLog? { get async }` | Fetches the playback error log (27.0+ on all platforms) |
+| `integratedTimeline` | `AVPlayerItemIntegratedTimeline` | Simplifies handling of interstitial content (iOS 18.0+, macOS 15.0+, tvOS 18.0+, visionOS 2.0+, watchOS 11.0+) |
 
 ## Notes
 
@@ -65,6 +70,7 @@ NotificationCenter.default.addObserver(
 - Marked `@MainActor`.
 - An `AVPlayerItem` can only be associated with one `AVPlayer` at a time.
 - Key notifications: `.AVPlayerItemDidPlayToEndTime`, `.AVPlayerItemFailedToPlayToEndTime`, `.AVPlayerItemPlaybackStalled`.
+- `AVPlayerItemRenderedLegibleOutput` (iOS 18.0+, macOS 15.0+) provides rendered captions.
 - Prefer `AVPlayerItem(asset:automaticallyLoadedAssetKeys:)` to control which asset keys are preloaded before status becomes `.readyToPlay`.
 
 ## Related

@@ -36,6 +36,7 @@ mixer.outputVolume = 0.8
 - iOS 8.0+, macOS 10.10+, tvOS 9.0+, watchOS 2.0+, visionOS 1.0+
 - `AVAudioEngine.mainMixerNode` is a built-in singleton mixer; attach a custom `AVAudioMixerNode` when you need separate sub-mix control
 - Conforms to `AVAudioMixing`, `AVAudio3DMixing`, and `AVAudioStereoMixing` for per-input volume, pan, and 3D positioning
+- `AVAudioEngine.connect(_:to:format:)`, used in the snippet, is deprecated in 27.0; use `try engine.connectNode(_:to:format:)` on 27.0+
 - Efficiently upmixes or downmixes inputs to match the output channel count
 
 ## Related

@@ -30,7 +30,9 @@ playerNode.play()
 ## Notes
 
 - iOS 8.0+, macOS 10.10+, tvOS 9.0+, watchOS 2.0+, visionOS 1.0+
-- Call `attach(_:)` before connecting a node; call `connect(_:to:format:)` to wire nodes together
+- Call `attach(_:)` before connecting a node; call `connectNode(_:to:format:)` (27.0+) or `connect(_:to:format:)` (earlier) to wire nodes together
+- Deprecated in iOS/iPadOS/macOS/tvOS/visionOS/watchOS 27.0 (no message): `connect(_:to:format:)`, `connect(_:to:fromBus:toBus:format:)`, `connect(_:to:fromBus:format:)`. Replacements, available 27.0+ on all platforms: `connectNode(_:to:format:)`, `connectNode(_:to:fromBus:toBus:format:)`, `connectNode(_:to:fromBus:format:)`, all `throws` (e.g. `func connectNode(_ node1: AVAudioNode, to node2: AVAudioNode, format: AVAudioFormat?) throws`)
+- The snippet above still works for pre-27 targets. On 27.0+ use `try engine.connectNode(playerNode, to: engine.mainMixerNode, format: audioFile.processingFormat)` and `try playerNode.playAudio()` (`play()` is also deprecated in 27.0)
 - `start()` throws; always call inside a `do-catch` block
 - Removing nodes with differing channel counts during runtime can break the graph; prefer reconnecting only upstream of a mixer
 - Enable `enableManualRenderingMode(_:format:maximumFrameCount:)` for offline or faster-than-real-time rendering

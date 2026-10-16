@@ -17,10 +17,10 @@ let devices = session.devices
 
 ## Options / Props
 
-| Name | Type | Description |
-|------|------|-------------|
-| `devices` | `[AVCaptureDevice]` | Devices matching the session's search criteria (KVO-observable) |
-| `supportedMultiCamDeviceSets` | `[Set<AVCaptureDevice>]` | Device combinations usable simultaneously in a multi-camera session |
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `devices` | `[AVCaptureDevice]` | — | Devices matching the session's search criteria (KVO-observable) |
+| `supportedMultiCamDeviceSets` | `[Set<AVCaptureDevice>]` | — | Device combinations usable simultaneously in a multi-camera session |
 
 ### `init(deviceTypes:mediaType:position:)` parameters
 
@@ -35,6 +35,7 @@ let devices = session.devices
 - iOS 10.0+, iPadOS 10.0+, macOS 10.15+, Mac Catalyst 14.0+, tvOS 17.0+, visionOS 2.1+
 - Prefer this over the deprecated `AVCaptureDevice.devices()` class methods.
 - Key-value observe the `devices` property to react to cameras being connected or disconnected at runtime.
+- On iPhone Duo, discovering `builtInWideAngleCamera` / `builtInUltraWideCamera` with position `.front` returns the virtual front camera. It streams from the camera above the display the app appears on, and `isVirtualDevice == true`; read `activePrimaryConstituent` to see which physical camera is streaming. To capture from the physical cameras, use the new types `builtInOuterUltraWideCamera` / `builtInInnerUltraWideCamera` (iOS 27.1+).
 - Use `supportedMultiCamDeviceSets` to determine valid device combinations for `AVCaptureMultiCamSession`.
 
 ## Related

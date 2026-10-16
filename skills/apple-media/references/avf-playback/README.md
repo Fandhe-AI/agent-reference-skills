@@ -1,4 +1,4 @@
-# avf-playback
+# AVFoundation
 
 | Name | Description | Path |
 |------|-------------|------|

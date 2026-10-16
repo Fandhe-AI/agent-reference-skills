@@ -28,6 +28,7 @@ session.startRunning()
 | `controls` | `[AVCaptureControl]` | Controls for configuring the camera from hardware |
 | `supportsControls` | `Bool` | Whether the session supports controls |
 | `maxControlsCount` | `Int` | Maximum number of supported controls |
+| `configuresApplicationAudioSessionToMixWithOthers` | `Bool` | Keeps background audio playing during capture (iOS/iPadOS/Mac Catalyst/tvOS 18.0+; not macOS) |
 
 ## Notes
 
