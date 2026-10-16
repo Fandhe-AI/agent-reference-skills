@@ -36,7 +36,10 @@ This is the highest-priority auth method and bypasses credential file resolution
 ## Notes
 
 - Auth precedence (highest to lowest): `GOOGLE_WORKSPACE_CLI_TOKEN` → `GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE` → encrypted credentials from `gws auth login` → plaintext `~/.config/gws/credentials.json`.
+- On Docker / CI with interactive-login credentials, set `GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND=file` (source doc comment: "Use .encryption_key file only (for Docker/CI/headless)"). On macOS/Windows runners the default keychain mode fails hard when the keychain is unavailable (v0.22.3+).
 - Store `credentials.json` as a CI secret; never commit it to source control.
+- Source: https://github.com/googleworkspace/cli/blob/v0.22.5/crates/google-workspace-cli/src/credential_store.rs
+- Source: https://github.com/googleworkspace/cli/blob/v0.22.5/CHANGELOG.md#0223
 
 ## Related
 

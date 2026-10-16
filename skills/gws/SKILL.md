@@ -11,6 +11,8 @@ description: >
 user-invocable: false
 ---
 
+対象: Google Workspace CLI (gws) v0.22.5（GitHub release tag, 2026-03-31。npm `@googleworkspace/cli` / crates.io `google-workspace-cli` / `google-workspace` 同版）
+
 ## ディレクトリ構成
 
 ```text
@@ -23,6 +25,7 @@ skills/gws/
       two-phase-parsing.md
       discovery-cache.md
       installation.md
+      library-crate.md
       output-format.md
     auth/
       README.md
@@ -90,7 +93,8 @@ skills/gws/
 |--------|---------|------------|
 | コマンド構造・サービス一覧を知りたい | core | [references/core/README.md](references/core/README.md) |
 | Discovery Document のキャッシュ・`gws schema` を使いたい | core | [references/core/README.md](references/core/README.md) |
-| インストール方法を調べたい | core | [references/core/README.md](references/core/README.md) |
+| インストール方法（GitHub Releases バイナリ推奨 / npm 等）を調べたい | core | [references/core/README.md](references/core/README.md) |
+| Rust から google-workspace ライブラリ crate を直接使いたい | core | [references/core/README.md](references/core/README.md) |
 | 出力形式（JSON / NDJSON / exit code）を確認したい | core | [references/core/README.md](references/core/README.md) |
 | 初回 OAuth 認証セットアップをしたい | auth | [references/auth/README.md](references/auth/README.md) |
 | サービスアカウントで認証したい | auth | [references/auth/README.md](references/auth/README.md) |

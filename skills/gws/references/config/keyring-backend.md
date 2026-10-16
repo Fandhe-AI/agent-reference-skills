@@ -1,25 +1,32 @@
 # Keyring Backend
 
-gws stores encrypted OAuth credentials using a keyring. By default it uses the native OS keyring. In environments where the OS keyring is unavailable, a file-based backend can be used instead.
+gws stores encrypted OAuth credentials using an encryption key kept in a keyring. By default (`keyring`) it uses the native OS keyring. In environments where the OS keyring is unavailable, a file-based backend can be used instead.
 
-## Configuration
+## Signature / Usage
 
 ```sh
 GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND=file
 ```
 
-When set to `file`, the encryption key is stored at:
+## Options / Props
 
-```
-~/.config/gws/.encryption_key
-```
+| Value | Behavior |
+| --- | --- |
+| `keyring` (default; also when unset or empty) | macOS / Windows: native keychain only (Keychain / Credential Manager). Linux: keyring plus `~/.config/gws/.encryption_key` as a synced backup and fallback. |
+| `file` | `<config_dir>/.encryption_key` only, on every platform. The keyring is not touched. |
 
 ## Notes
 
-- Default (no variable set): OS keyring (e.g. macOS Keychain, GNOME Keyring, Windows Credential Manager).
-- `file` backend is useful in headless environments or containers where no OS keyring daemon is available.
-- Only `file` is a documented alternative value; other backend values are not confirmed by official documentation.
+- Matching is case-insensitive. Any other value prints `Warning: unknown GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND="...", defaulting to "keyring". Valid values: "keyring", "file".` to stderr and falls back to `keyring`.
+- The selected backend is logged to stderr as `Using keyring backend: <name>`.
+- macOS / Windows with `keyring`: the key lives only in the native keychain (keyring crate features `apple-native` / `windows-native`). No `.encryption_key` is written, and a legacy `~/.config/gws/.encryption_key` is deleted after a successful keychain read or key generation.
+- macOS / Windows keychain errors are fatal: `OS keyring failed: ... Set GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND=file to use file storage.`
+- Linux with `keyring`: `.encryption_key` is kept as a synced backup, and keyring errors fall back to the file. A source comment notes that on Linux the keyring uses a mock store by default without C DBus dependencies, so the file fallback is kept for reliability.
+- `file` backend is useful in headless environments or containers (source doc comment: "for Docker/CI/headless").
 - The `~/.config/gws/` path can be changed via `GOOGLE_WORKSPACE_CLI_CONFIG_DIR`.
+- Changed in v0.22.3: macOS/Windows no longer write the `.encryption_key` fallback file (CHANGELOG 80bd150, closes #623).
+- Source: https://github.com/googleworkspace/cli/blob/v0.22.5/crates/google-workspace-cli/src/credential_store.rs
+- Source: https://github.com/googleworkspace/cli/blob/v0.22.5/CHANGELOG.md#0223
 
 ## Related
 
