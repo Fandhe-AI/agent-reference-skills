@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/ruby / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/ruby / last verified: 2026-10-17 -->
 
 # Ruby SDK
 
@@ -18,7 +18,7 @@ anthropic = Anthropic::Client.new(
 message = anthropic.messages.create(
   max_tokens: 1024,
   messages: [{role: "user", content: "Hello, Claude"}],
-  model: :"claude-opus-5"
+  model: :"claude-opus-5-5"
 )
 
 message.content.each do |block|
@@ -32,7 +32,7 @@ Streaming:
 stream = anthropic.messages.stream(
   max_tokens: 1024,
   messages: [{role: :user, content: "Say hello there!"}],
-  model: :"claude-opus-5"
+  model: :"claude-opus-5-5"
 )
 stream.text.each { |text| print(text) }
 ```
@@ -48,7 +48,7 @@ class Calculator < Anthropic::BaseTool
 end
 
 anthropic.beta.messages.tool_runner(
-  model: "claude-opus-5",
+  model: "claude-opus-5-5",
   max_tokens: 1024,
   messages: [{role: "user", content: "What's 15 * 7?"}],
   tools: [Calculator.new]
@@ -73,7 +73,7 @@ Error mapping: HTTP 400 `BadRequestError`, 401 `AuthenticationError`, 403 `Permi
 - `Anthropic::Client` instances are threadsafe but only fork-safe with no in-flight requests.
 - File uploads accept raw contents, `Pathname`, `StringIO`, or `Anthropic::FilePart`.
 - Auto-paginating iterators via `#auto_paging_each`, or manual `#next_page?` / `#next_page`.
-- Platform integrations: `Anthropic::VertexClient` (requires `googleauth`), `Anthropic::BedrockMantleClient` / `Anthropic::BedrockClient` (legacy), `Anthropic::AWSClient` (beta, part of main gem); Foundry is not currently supported.
+- Platform integrations: `Anthropic::VertexClient` (requires `googleauth`), `Anthropic::BedrockMantleClient` / `Anthropic::BedrockClient` (legacy), `Anthropic::AWSClient` (beta, part of main gem; requires the `aws-sdk-core` gem; pass `workspace_id:` or set `ANTHROPIC_AWS_WORKSPACE_ID`); Foundry is not currently supported.
 
 ## Related
 

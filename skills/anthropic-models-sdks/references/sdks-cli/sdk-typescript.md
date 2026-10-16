@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/typescript / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/typescript / last verified: 2026-10-17 -->
 
 # TypeScript SDK
 
@@ -18,7 +18,7 @@ const client = new Anthropic({
 const message = await client.messages.create({
   max_tokens: 1024,
   messages: [{ role: "user", content: "Hello, Claude" }],
-  model: "claude-opus-5"
+  model: "claude-opus-5-5"
 });
 
 for (const block of message.content) {
@@ -30,7 +30,7 @@ Streaming with helpers:
 
 ```typescript
 const stream = anthropic.messages
-  .stream({ model: "claude-opus-5", max_tokens: 1024, messages: [{ role: "user", content: "Say hello there!" }] })
+  .stream({ model: "claude-opus-5-5", max_tokens: 1024, messages: [{ role: "user", content: "Say hello there!" }] })
   .on("text", (text) => console.log(text));
 
 const message = await stream.finalMessage();
@@ -50,7 +50,7 @@ const weatherTool = betaZodTool({
 });
 
 const finalMessage = await anthropic.beta.messages.toolRunner({
-  model: "claude-opus-5",
+  model: "claude-opus-5-5",
   max_tokens: 1000,
   messages: [{ role: "user", content: "What is the weather in San Francisco?" }],
   tools: [weatherTool]
@@ -72,7 +72,7 @@ Error codes: 400 `BadRequestError`, 401 `AuthenticationError`, 403 `PermissionDe
 
 ## Notes
 
-- TypeScript >= 4.9. Requires Node.js 20 LTS+, Deno 1.28+, Bun 1.0+, Cloudflare Workers, Vercel Edge Runtime; React Native is not supported.
+- TypeScript >= 5.0. Supported runtimes: Node.js 20 LTS or later (non-EOL), Deno v1.28.0+, Bun 1.0+, Cloudflare Workers, Vercel Edge Runtime, Jest 28+ with the `"node"` environment (`"jsdom"` not supported), Nitro v2.6+; web browsers are disabled by default (set `dangerouslyAllowBrowser` to `true`). React Native is not supported.
 - ToolError thrown from a tool `run` function can carry structured content (images, etc.) back to the model, unlike a plain `Error`.
 - MCP helpers (`@anthropic-ai/sdk/helpers/beta/mcp`): `mcpTools`, `mcpMessages`, `mcpResourceToContent`, `mcpResourceToFile` convert MCP types to Claude API types for local MCP servers; the native `mcp_servers` request parameter is for remote MCP servers by URL.
 - File uploads accept `File`, `fetch` `Response`, `fs.ReadStream`, or the `toFile` helper's return value.

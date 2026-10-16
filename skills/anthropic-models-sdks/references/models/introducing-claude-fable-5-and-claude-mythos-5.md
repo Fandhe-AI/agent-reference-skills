@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5 / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5 (now redirects) ; current: https://platform.claude.com/docs/en/models/fable-5/overview / last verified: 2026-10-17 -->
 
 # Introducing Claude Fable 5 and Claude Mythos 5
 
@@ -42,6 +42,9 @@ Effort; task budgets (beta: `task-budgets-2026-03-13` header); the memory tool; 
 
 ## Notes
 
+- Claude Fable 5 is now Legacy (status: Active (legacy); Released June 9, 2026; retirement not sooner than June 9, 2027). The current Fable model is Claude Fable 5.1 (`claude-fable-5-1`); the current Mythos model is Claude Mythos 5.1 (`claude-mythos-5-1`). The official source URL redirects to the Fable 5 model card (`/docs/en/models/fable-5/overview`).
+- Claude Mythos 5 status is "Active (verification required)": available only to organizations verified through Anthropic's verification programs (e.g. the Cyber Verification Program). Released June 9, 2026; retirement not sooner than June 9, 2027.
+- The Fable 5 model card lists cache read at $1 / MTok.
 - Access to Claude Fable 5 and Claude Mythos 5 was restored after a prior interruption (see Anthropic's "redeploying-fable-5" statement).
 - Migration: from Claude Mythos Preview, see the migration guide's Mythos Preview section; from Claude Opus 4.8, see the migration guide's Opus 4.8 section.
 

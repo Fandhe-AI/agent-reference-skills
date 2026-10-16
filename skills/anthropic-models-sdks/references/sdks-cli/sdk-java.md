@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/java / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/java / last verified: 2026-10-17 -->
 
 # Java SDK
 
@@ -8,7 +8,7 @@ Install and configure the Anthropic Java SDK with builder patterns and async sup
 
 ```kotlin
 // Gradle
-implementation("com.anthropic:anthropic-java:2.52.0")
+implementation("com.anthropic:anthropic-java:2.73.0")
 ```
 
 ```java
@@ -23,7 +23,7 @@ AnthropicClient client = AnthropicOkHttpClient.fromEnv();
 MessageCreateParams params = MessageCreateParams.builder()
   .maxTokens(1024L)
   .addUserMessage("Hello, Claude")
-  .model(Model.CLAUDE_OPUS_5)
+  .model(Model.CLAUDE_OPUS_5_5)
   .build();
 
 Message message = client.messages().create(params);

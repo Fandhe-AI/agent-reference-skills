@@ -1,10 +1,12 @@
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/overview / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/overview / last verified: 2026-10-17 -->
 
 # SDK install
 
 Claude API 公式クライアント SDK 7 言語のインストールコマンドと最小初期化スニペット。
 
 ## Python
+
+Python 3.10 以降が必要。
 
 ```bash
 pip install anthropic
@@ -20,7 +22,7 @@ client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 message = client.messages.create(
     max_tokens=1024,
     messages=[{"role": "user", "content": "Hello, Claude"}],
-    model="claude-opus-5",
+    model="claude-opus-5-5",
 )
 ```
 
@@ -38,7 +40,7 @@ const client = new Anthropic({
 const message = await client.messages.create({
   max_tokens: 1024,
   messages: [{ role: "user", content: "Hello, Claude" }],
-  model: "claude-opus-5"
+  model: "claude-opus-5-5"
 });
 ```
 
@@ -46,7 +48,7 @@ const message = await client.messages.create({
 
 ```kotlin
 // Gradle
-implementation("com.anthropic:anthropic-java:2.52.0")
+implementation("com.anthropic:anthropic-java:2.73.0")
 ```
 
 ```java
@@ -60,7 +62,7 @@ AnthropicClient client = AnthropicOkHttpClient.fromEnv();
 MessageCreateParams params = MessageCreateParams.builder()
   .maxTokens(1024L)
   .addUserMessage("Hello, Claude")
-  .model(Model.CLAUDE_OPUS_5)
+  .model(Model.CLAUDE_OPUS_5_5)
   .build();
 
 client.messages().create(params);
@@ -92,7 +94,7 @@ func main() {
 		Messages: []anthropic.MessageParam{
 			anthropic.NewUserMessage(anthropic.NewTextBlock("What is a quaternion?")),
 		},
-		Model: anthropic.ModelClaudeOpus5,
+		Model: anthropic.ModelClaudeOpus5_5,
 	})
 	if err != nil {
 		panic(err.Error())
@@ -115,7 +117,7 @@ anthropic = Anthropic::Client.new(
 message = anthropic.messages.create(
   max_tokens: 1024,
   messages: [{role: "user", content: "Hello, Claude"}],
-  model: :"claude-opus-5"
+  model: :"claude-opus-5-5"
 )
 ```
 
@@ -135,7 +137,7 @@ MessageCreateParams parameters = new()
 {
     MaxTokens = 1024,
     Messages = [ new() { Role = Role.User, Content = "Hello, Claude" } ],
-    Model = Model.ClaudeOpus5,
+    Model = Model.ClaudeOpus5_5,
 };
 
 var message = await client.Messages.Create(parameters);
@@ -153,7 +155,7 @@ $client = new Client();
 $message = $client->messages->create(
   maxTokens: 1024,
   messages: [['role' => 'user', 'content' => 'Hello, Claude']],
-  model: 'claude-opus-5',
+  model: 'claude-opus-5-5',
 );
 ```
 
