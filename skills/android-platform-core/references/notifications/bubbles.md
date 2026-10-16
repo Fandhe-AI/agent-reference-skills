@@ -55,14 +55,18 @@ val builder = NotificationCompat.Builder(context, CHANNEL_ID)
     .setBubbleMetadata(bubbleData)
     .setShortcutId(shortcutId)
     .addPerson(chatPartner)
+    .setStyle(
+        NotificationCompat.MessagingStyle(chatPartner)
+            .addMessage("Hello", System.currentTimeMillis(), chatPartner)
+    )
 ```
 
-Auto-expanded bubble (fragment; flags only):
+Auto-expanded bubble:
 
 ```kotlin
-val bubbleMetadata = NotificationCompat.BubbleMetadata.Builder()
+val bubbleMetadata = NotificationCompat.BubbleMetadata.Builder(bubbleIntent,
+    IconCompat.createWithResource(context, R.drawable.ic_logo))
     .setDesiredHeight(600)
-    .setIntent(bubbleIntent)
     .setAutoExpandBubble(true)
     .setSuppressNotification(true)
     .build()
@@ -84,9 +88,9 @@ val bubbleMetadata = NotificationCompat.BubbleMetadata.Builder()
 - The bubble activity must be resizeable and embedded; otherwise the system displays the notification as a normal notification.
 - For multiple bubbles of the same type (e.g. several chats), the activity must be able to launch multiple instances. On Android 10 and lower, set `documentLaunchMode` to `"always"`; from Android 11 the system sets it automatically for all conversations.
 - If targeting Android 11 (API level 30) or higher, the bubble metadata or notification must reference a sharing shortcut, and the notification must meet the conversation requirements to appear as a bubble.
-- The official sending snippet omits `MessagingStyle`. To meet the conversation requirements on Android 11+, the notification needs a `Person` and messages via `NotificationCompat.MessagingStyle` set with `setStyle()` (conversation requirements: https://developer.android.com/guide/topics/ui/conversations). The bubbles page itself only links to the requirements without listing them, so confirm details there.
+- Difference from the official snippet: it has no `MessagingStyle`, but `setStyle(MessagingStyle)` is added here to meet the Android 11+ conversation requirements (source: https://developer.android.com/guide/topics/ui/conversations). The user passed to `MessagingStyle` is the chat partner `Person` for brevity; use the sending user's `Person` in real code.
 - The official snippet uses `PendingIntent.FLAG_IMMUTABLE` for the bubble intent. The PendingIntent mutability guide lists "Placing conversations in bubbles using instances of `PendingIntent`" as a use case that requires `FLAG_MUTABLE` ("A mutable `PendingIntent` object allows the system to apply the correct flags, such as `FLAG_ACTIVITY_MULTIPLE_TASK` and `FLAG_ACTIVITY_NEW_DOCUMENT`"), and recommends an explicit intent with the `ComponentName` filled in for mutable intents. Source: https://developer.android.com/guide/components/intents-filters (PendingIntent mutability section). The bubbles page does not state this, so verify against your target API level.
-- The auto-expanded snippet is a fragment showing only the expand/suppress flags. `Builder()` with no arguments plus `setIntent()` still needs `setIcon()`; use the `Builder(bubbleIntent, IconCompat)` form from the first example or `Builder(shortcutId)`. (Not stated on the official page; based on the AndroidX `BubbleMetadata` builder contract, so verify before relying on it.)
+- Difference from the official snippet: the official auto-expand snippet uses a no-argument `Builder()` plus `setIntent()`, but `build()` fails without an icon, so it is replaced here with `Builder(PendingIntent, IconCompat)` (per the AndroidX `BubbleMetadata.Builder` contract).
 - If targeting Android 10 (API level 29) or lower, a notification appears as a bubble only if one of: it uses `MessagingStyle` with a `Person`; it comes from `Service.startForeground` with `CATEGORY_CALL` and a `Person`; or the app is in the foreground when it is sent.
 - The first notification that shows a bubble must be in a channel with `IMPORTANCE_MIN` or higher. If the app is in the foreground, importance is ignored and the bubble is always shown unless the user blocks bubbles or notifications.
 - Do not cancel notifications that appear as bubbles: canceling removes the bubble. Opening a bubble hides its associated notification automatically.
