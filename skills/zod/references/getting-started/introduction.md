@@ -47,6 +47,8 @@ Zod is also available as `@zod/zod` on [jsr.io](https://jsr.io/@zod/zod):
 npx jsr add @zod/zod
 ```
 
+Zod provides an MCP server that can be used by agents to search Zod's docs; to add it to your editor, follow the instructions at https://share.inkeep.com/zod/mcp. Zod also provides an llms.txt file at https://zod.dev/llms.txt.
+
 ## Requirements
 
 Zod is tested against **TypeScript v5.5** and later. Older versions may work but are not officially supported.

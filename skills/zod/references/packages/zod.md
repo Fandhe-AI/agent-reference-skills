@@ -2,7 +2,7 @@
 
 The flagship Zod package, balancing developer experience and bundle size for the vast majority of applications.
 
-## Overview
+## Signature / Usage
 
 `zod/v4` provides a schema API that maps one-to-one to TypeScript's type system, using a concise, chainable, autocomplete-friendly method API.
 
@@ -52,6 +52,12 @@ const asyncResult = await mySchema.parseAsync(data);
 
 // async safe parsing — returns { success, data?, error? }
 const asyncSafe = await mySchema.safeParseAsync(data);
+
+// boolean validation — never builds an error, narrows the input type (4.6+)
+if (mySchema.validate(data)) {
+  data; // string
+}
+await mySchema.validateAsync(data); // for async refinements/transforms
 ```
 
 ## Refinement
@@ -255,6 +261,19 @@ z.string().optional().isOptional();  // true
 
 z.string().isNullable();  // false
 z.string().nullable().isNullable();  // true
+```
+
+## Notes
+
+- Since 4.6, eight metadata members on a Zod Classic schema (`.format`, `.minLength`, `.maxLength`, `.minValue`, `.maxValue`, `.isInt`, `.minDate`, `.maxDate`) are prototype getters that materialize as own properties on first read. `Object.keys(schema)` and `Object.assign({}, schema)` therefore only include members that have been read. The values reflect the folded (tighter) bound across chained checks:
+
+```typescript
+const s = z.string().min(3).max(9);
+
+Object.keys(s); // 4.5: ["def", "type", "format", "minLength", "maxLength"] — 4.6: ["def", "type"]
+s.minLength;    // 3 in both
+
+z.string().min(8).length(5).minLength; // 4.5: 5 — 4.6: 8
 ```
 
 ## Related

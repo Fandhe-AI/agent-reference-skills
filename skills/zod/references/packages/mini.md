@@ -16,6 +16,16 @@ npm install zod@^4.0.0
 import * as z from "zod/mini";
 ```
 
+The same API is published as a standalone package, `@zod/mini`, that re-exports `zod/mini` from a peer dependency on `zod`. Its version tracks `zod`.
+
+```sh
+npm install zod @zod/mini
+```
+
+```typescript
+import * as z from "@zod/mini";
+```
+
 ## Functional vs Method API
 
 In regular Zod, schemas expose chainable methods. In Zod Mini, you use functions and wrappers instead:
@@ -255,9 +265,16 @@ By default, the `message` property of all issues will read `"Invalid input"`. To
 
 ```typescript
 import * as z from "zod/mini";
+import { en } from "zod/locales";
 
-z.config(z.locales.en());
+z.config(en());
 ```
+
+## Notes
+
+- Recursive schemas with cyclical inputs require a memoizer in Zod Mini (for bundle size reasons), registered before schemas are defined: `z.config({ memoizer: z.memoizer() })`
+- Use the top-level `z.validate(schema, data)` for boolean validation (the method form `.validate()` is on Zod Classic schemas)
+- Bundle size with the compiler (gzipped, four-key object schema): Zod Mini 4.6 KB without, 13.2 KB with `z.compile()` / `zod/compile` (a bundle that never uses the compiler pays nothing)
 
 ## Related
 

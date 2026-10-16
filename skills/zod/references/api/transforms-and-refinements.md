@@ -2,6 +2,12 @@
 
 Refinements, superRefine, codecs, pipes, transforms, defaults, catch, brand, readonly, and apply in Zod.
 
+## Signature / Usage
+
+```typescript
+schema.refine((val) => boolean)
+```
+
 ## `.refine()`
 
 Perform custom validation that Zod does not provide a native API for:
@@ -228,6 +234,17 @@ import { z } from "zod";
 z.encode(stringToDate, new Date("2024-01-15")); // => "2024-01-15T00:00:00.000Z"
 ```
 
+### `z.invertCodec()`
+
+Derive a new codec with the input and output schemas swapped (and the `decode` / `encode` transforms swapped). It only inverts the codec passed in, not codecs nested inside another schema:
+
+```typescript
+const dateToString = z.invertCodec(stringToDate);
+
+z.decode(dateToString, new Date("2024-01-15")); // => string
+z.encode(dateToString, "2024-01-15T00:00:00.000Z"); // => Date
+```
+
 ## `.pipe()`
 
 Chain schemas together into pipes. Primarily useful with transforms:
@@ -239,6 +256,21 @@ const stringToLength = z.string().pipe(z.transform(val => val.length));
 
 stringToLength.parse("hello"); // => 5
 ```
+
+### `z.input()` and `z.output()`
+
+Runtime counterparts to the type-level `z.input<T>` / `z.output<T>` (added in 4.5): they replace every pipe in a schema with its input or output side. Useful for reaching codecs nested inside objects, records, or maps, where `.in` / `.out` can't.
+
+```typescript
+const Event = z.object({ name: z.string(), at: stringToDate });
+
+z.input(Event).parse({ name: "launch", at: "2024-01-01T00:00:00Z" }); // passes
+z.output(Event).parse({ name: "launch", at: new Date() });            // passes
+```
+
+Only codecs have two real sides. `z.output()` on a one-way transform returns the transform, which validates nothing; `z.input()` on a `z.preprocess()` returns the schema the preprocessor feeds.
+
+A wrapper's stored value survives only on the side it belongs to, so with a codec underneath, `z.input()` drops a `.default()` or `.catch()` and `z.output()` drops a `.prefault()`.
 
 ## `z.transform()` / `.transform()`
 
@@ -467,6 +499,19 @@ schema.parse(101);  // throws ZodError
 schema.parse(null); // => null
 ```
 
+Additional arguments are passed through to the function:
+
+```typescript
+function withDefault<T extends z.ZodType>(schema: T, value: z.output<T>) {
+  return schema.nullish().transform((val) => val ?? value);
+}
+
+const schema = z.string().apply(withDefault, "anonymous");
+
+schema.parse(undefined);  // => "anonymous"
+schema.parse("sandwich"); // => "sandwich"
+```
+
 ## Notes
 - `.refine()` generates a single issue with a `"custom"` error code
 - `.superRefine()` is deprecated -- use `.check()` instead for new code
@@ -478,6 +523,8 @@ schema.parse(null); // => null
 - `.catch()` returns the fallback value on any validation error
 - `.brand<>()` is static-only -- it does not affect runtime behavior
 - `.readonly()` calls `Object.freeze()` on the parsed result
+- `z.input()` / `z.output()` (runtime) and extra arguments to `.apply()` were added in 4.5. The version that introduced `z.invertCodec()` is not stated in the official docs
+- 4.6.2 preserves `undefined` prefault outputs and object keys (#6587)
 
 ## Related
 - [Primitives](../api/primitives.md)

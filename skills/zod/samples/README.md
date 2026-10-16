@@ -2,6 +2,7 @@
 
 | Name | Description | Path |
 |------|-------------|------|
+| AOT Compile | Compile a schema ahead of time into a flat, loop-free validator for hot validation paths. | [aot-compile.md](./aot-compile.md) |
 | Basic Schema | Define a schema, parse data, and infer TypeScript types. | [basic-schema.md](./basic-schema.md) |
 | Custom Refinement | Add custom validation logic beyond built-in checks using `.refine()` and `.superRefine()`. | [custom-refinement.md](./custom-refinement.md) |
 | Discriminated Union | Model tagged variant types with a shared discriminator key for efficient parsing and TypeScript narrowing. | [discriminated-union.md](./discriminated-union.md) |

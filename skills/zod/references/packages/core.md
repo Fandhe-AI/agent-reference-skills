@@ -243,6 +243,8 @@ await z.parseAsync(schema, "hello");
 await z.safeParseAsync(schema, "hello");
 ```
 
+Note: the Zod 4.6 announcement lists standalone boolean validation, `z.validate(schema, data)`, as available in Zod, Zod Mini, and Zod Core. The core package page itself lists only the four parse functions above.
+
 ## Checks
 
 Every Zod schema contains an array of checks that perform post-parsing refinements (and occasionally mutations) without affecting the inferred type.

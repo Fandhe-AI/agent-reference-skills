@@ -2,6 +2,12 @@
 
 String validation, transforms, and format schemas in Zod.
 
+## Signature / Usage
+
+```typescript
+z.string(): ZodString
+```
+
 ## String Validations
 
 ```typescript
@@ -16,6 +22,14 @@ z.string().endsWith("zzz");
 z.string().includes("---");
 z.string().uppercase();
 z.string().lowercase();
+```
+
+Length is measured in Unicode code points, not UTF-16 code units. Emoji outside the Basic Multilingual Plane count as one, and combining marks and ZWJ sequences count as several.
+
+```typescript
+z.string().length(1).parse("😀"); // one code point, two UTF-16 units
+z.string().length(2).parse("é"); // "é" — an e plus a combining acute
+z.string().length(3).parse("🧑‍🍼"); // person + ZWJ + baby bottle
 ```
 
 All validation APIs support the `error` parameter for customizing the error message:
@@ -63,6 +77,9 @@ z.mac();
 z.cidrv4();         // ipv4 CIDR block
 z.cidrv6();         // ipv6 CIDR block
 z.hash("sha256");   // or "sha1", "sha384", "sha512", "md5"
+z.creditCard();     // 12-19 digits + Luhn checksum
+z.currencyCode();   // ISO 4217 three-letter code
+z.iban();           // electronic-format IBAN + MOD 97-10 checksum
 z.iso.date();
 z.iso.time();
 z.iso.datetime();
@@ -146,13 +163,22 @@ const schema = z.url({ hostname: /^example\.com$/ });
 const schema = z.url({ protocol: /^https$/ });
 ```
 
-For validating web URLs specifically:
+For validating web URLs specifically, use `z.httpUrl()`:
 
 ```typescript
-const httpUrl = z.url({
+z.httpUrl();
+
+// equivalent to
+z.url({
   protocol: /^https?$/,
   hostname: z.regexes.domain
 });
+```
+
+This restricts the protocol to `http`/`https` and ensures the hostname is a valid domain name with the `z.regexes.domain` regular expression:
+
+```typescript
+/^(?=.{1,253}$)([a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,63}$/
 ```
 
 To normalize URLs with the `normalize` flag:
@@ -186,11 +212,49 @@ z.iso.datetime({ offset: true });
 
 // allow unqualified (timezone-less) datetimes
 z.iso.datetime({ local: true });
+```
 
-// constrain time precision
-z.iso.datetime({ precision: -1 }); // minute precision (no seconds)
-z.iso.datetime({ precision: 0 });  // second precision only
-z.iso.datetime({ precision: 3 });  // millisecond precision only
+Unqualified datetimes with `local: true` may omit seconds; a `Z` or an offset requires them:
+
+```typescript
+const schema = z.iso.datetime({ local: true });
+schema.parse("2020-01-01T06:15:01");  // passes
+schema.parse("2020-01-01T06:15");     // passes (seconds optional)
+schema.parse("2020-01-01T06:15:00Z"); // passes
+schema.parse("2020-01-01T06:15Z");    // fails (a `Z` requires seconds)
+```
+
+To constrain the allowable time `precision`. By default, seconds are required and sub-second precision is arbitrary. RFC 3339 mandates the seconds wherever a `Z` or an offset is present, so only the unqualified form `local` adds may omit them.
+
+```typescript
+const a = z.iso.datetime();
+a.parse("2020-01-01T06:15Z");        // fails (seconds required)
+a.parse("2020-01-01T06:15:00Z");     // passes
+a.parse("2020-01-01T06:15:00.123Z"); // passes
+
+const b = z.iso.datetime({ precision: -1 }); // minute precision (no seconds)
+b.parse("2020-01-01T06:15Z");        // passes
+b.parse("2020-01-01T06:15:00Z");     // fails
+b.parse("2020-01-01T06:15:00.123Z"); // fails
+
+const c = z.iso.datetime({ precision: 0 }); // second precision only
+c.parse("2020-01-01T06:15Z");        // fails
+c.parse("2020-01-01T06:15:00Z");     // passes
+c.parse("2020-01-01T06:15:00.123Z"); // fails
+
+const d = z.iso.datetime({ precision: 3 }); // millisecond precision only
+d.parse("2020-01-01T06:15Z");        // fails
+d.parse("2020-01-01T06:15:00Z");     // fails
+d.parse("2020-01-01T06:15:00.123Z"); // passes
+```
+
+To accept minute precision alongside the rest, union the two; no single `precision` covers both:
+
+```typescript
+const mixed = z.union([z.iso.datetime(), z.iso.datetime({ precision: -1 })]);
+mixed.parse("2020-01-01T06:15Z");        // passes
+mixed.parse("2020-01-01T06:15:00.123Z"); // passes
+mixed.parse("2020-01-01T06:15");         // fails (still qualified-only)
 ```
 
 ### ISO Dates
@@ -293,6 +357,47 @@ const dashMac = z.mac({ delimiter: "-" });
 dashMac.parse("00-1A-2B-3C-4D-5E"); // passes
 ```
 
+### Credit card numbers
+
+Validate a card number: 12 to 19 digits with a valid Luhn checksum. The issuer is not identified, so cards from any scheme are accepted.
+
+```typescript
+const card = z.creditCard();
+card.parse("4111111111111111");     // passes
+card.parse("4111 1111 1111 1111");  // passes (single spaces)
+card.parse("4111-1111-1111-1111");  // passes (single hyphens)
+card.parse("4111  1111 1111 1111"); // fails (no repeated separators)
+card.parse(" 4111111111111111");    // fails (no surrounding whitespace)
+card.parse("4111.1111.1111.1111");  // fails (spaces and hyphens only)
+card.parse("4111111111111112");     // fails (failed checksum)
+```
+
+### Currency codes
+
+The `z.currencyCode()` method validates three-letter ISO 4217 currency codes.
+
+```typescript
+const currency = z.currencyCode();
+
+currency.parse("USD"); // passes
+currency.parse("usd"); // fails
+currency.parse("ANG"); // fails (withdrawn from ISO 4217)
+```
+
+### IBANs
+
+Validate an International Bank Account Number (IBAN): 2-letter country code, 2 check digits, and 11 to 30 alphanumeric characters with a valid ISO 7064 MOD 97-10 checksum. The country registry is not consulted, so any country code is accepted and no country's own account length is enforced. Electronic format only.
+
+```typescript
+const iban = z.iban();
+iban.parse("DE89370400440532013000");      // passes
+iban.parse("NO9386011117947");             // passes
+iban.parse("DE89 3704 0044 0532 0130 00"); // fails (no spaces)
+iban.parse("de89370400440532013000");      // fails (uppercase only)
+iban.parse("DE89370400440532013001");      // fails (failed checksum)
+iban.parse("DE00000000000000000066");      // fails (check digits are always 02-98)
+```
+
 ### JWTs
 
 ```typescript
@@ -373,6 +478,14 @@ Any schema with an inferred type assignable to `string | number | bigint | boole
 - `z.hash()` expects hexadecimal encoding by default
 - `z.e164()` validates E.164 phone numbers (leading `+`, non-zero country code, 7-15 digits total)
 - Template literals are new in Zod 4
+- Email regex: the pattern shown by the docs is the pre-4.6 form. Since 4.6 `z.email()` dropped its two lookaheads and expresses the no-empty-segment rule structurally; accepted/rejected inputs are unchanged. `z.regexes.email` now has no capture groups, `issue.pattern` on a failed `z.email()` and the `pattern` emitted by `z.toJSONSchema()` changed (no lookahead), and in a template literal the no-consecutive-dots rule no longer applies to the rest of the string
+- Zod 4.5: `z.iso.datetime()` (and with `offset: true`) requires seconds; `"2020-01-01T06:15Z"` is rejected (accepted in 4.4). `local: true` still admits `"2020-01-01T06:15"`
+- Zod 4.5: `.min()` / `.max()` / `.length()` count Unicode code points instead of UTF-16 code units. `.max()` only loosens; `.min()` and `.length()` tighten for astral input
+- Zod 4.5 stricter formats: `z.ipv6()` checks the address alphabet directly instead of handing the string to `new URL()`; `z.ulid()` restricts the first character to `0`-`7`; `z.httpUrl()` enforces RFC 1035 host length limits
+- Zod 4.5 adds `z.creditCard()`; `z.iban()` is new in 4.6; `z.currencyCode()` is new in 4.6.4 (per the v4.6.4 release notes)
+- Zod 4.6: `z.emoji()` rejects component-only strings such as `"123"`, `"#"`, `"*"`, or a lone ZWJ / variation selector / skin tone modifier
+- Zod 4.6: the runtime patterns of `z.base64()` / `z.base64url()` are character sets, with length and padding checked in code. In a template literal only the alphabet is checked, not the length. `z.toJSONSchema()` output is unchanged
+- Zod 4.6.4: a bare `z.url()` validates with `URL.canParse()`; with `hostname` / `protocol` / `normalize` it uses `URL.parse()`
 
 ## Related
 - [Primitives](../api/primitives.md)
