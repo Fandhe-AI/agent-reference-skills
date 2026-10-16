@@ -59,7 +59,7 @@ Environment variables:
 - Yield-loops deadlock unconditionally; prefer `hip::spin_mutex` / `hip::spin_condition_variable` over `pseudo_` variants when a yield-loop is possible (`spin_` variants busy-wait; `pseudo_` variants busy-wait but periodically call `pseudo_yield`)
 - A `hip::wthread` with static storage duration is undefined behavior. Constructing one inside a `__host__ __device__` function callable from the host is unsupported; use separate host-only and device-only functions
 - Not provided in this release: `std::recursive_mutex`, `timed_mutex`, `recursive_timed_mutex` and timed locking; `shared_mutex` / `shared_lock`; `scoped_lock`, variadic `std::lock` / `try_lock`; `std::condition_variable` bound to `unique_lock<mutex>` (use `hip::condition_variable_any`) and `notify_all_at_thread_exit`; `jthread` / `stop_token`; `future` / `promise` / `packaged_task` / `async`; `latch` / `barrier` / `semaphore`; `thread_local` and exception propagation across threads
-- Source: hipThreads docs at ROCm/rocm-libraries commit `39d8d60365d2272a5366f76ccb3bfba24b219eaf` (`projects/hipthreads/docs`); site version `docs-10.1.0`. The C++ API reference page is not covered here
+- Source: `rocm.docs.amd.com/projects/hipThreads/en/docs-10.1.0/` (ROCm/rocm-libraries `projects/hipthreads/docs`, commit `39d8d60365d2272a5366f76ccb3bfba24b219eaf`: https://github.com/ROCm/rocm-libraries/tree/39d8d60365d2272a5366f76ccb3bfba24b219eaf/projects/hipthreads/docs). The C++ API reference page is not covered here
 
 ## Related
 

@@ -65,7 +65,7 @@ Minimum dialect for some headers:
 - Unsupported (depend on NVIDIA hardware / PTX): `<cuda/latch>`, `<cuda/barrier>`, `<cuda/semaphore>`, `<cuda/pipeline>` and their `cuda::std` equivalents; `cuda::memcpy_async`, `memcpy_async_tx`, `aligned_size_t`; `<cuda/annotated_ptr>`; `cuda::device::warp_shuffle_*`; `<cuda/ptx>`. `cuda::discard_memory` is available but has no effect on AMD GPUs. `cuda::for_each_canceled_block` invokes the function once for the current block on AMD GPUs
 - Install: as of ROCm Core SDK 10.1, libhipcxx ships in the ROCm Core SDK (`amdrocm-core-sdk`). Standalone via the ROCm CCL dev package (`amdrocm-ccl<dev/devel><rocm_version>-<llvm_target>`, includes libhipcxx, rocThrust, hipCUB, rocPRIM): `sudo apt install amdrocm-ccl-dev`, `sudo dnf install amdrocm-ccl-devel`, `sudo zypper install amdrocm-ccl-devel`. Nightly builds come from TheRock
 - CMake does not configure the HIP compiler; enable it separately (e.g. `enable_language(HIP)` or `CMAKE_HIP_COMPILER`). `libhipcxx::libhipcxx` is an interface target that only adds include directories. For non-default installs set `CMAKE_PREFIX_PATH`
-- Source: libhipcxx docs site `docs-10.1.0` (Sphinx sources: index, install, conceptual pages). Standard API / Extended API per-API pages, limitations and conformance pages are not covered here
+- Source: `rocm.docs.amd.com/projects/libhipcxx/en/docs-10.1.0/` (index, install, conceptual pages; Sphinx sources). Standard API / Extended API per-API pages, limitations and conformance pages are not covered here
 
 ## Related
 

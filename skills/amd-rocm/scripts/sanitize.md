@@ -5,10 +5,10 @@ GPU AddressSanitizer build flags and runtime environment for detecting out-of-bo
 ## ASan 有効化ビルド
 
 ```sh
-hipcc -g --offload-arch=gfx90a:xnack+ -fsanitize=address -shared-libsan myapp.hip -o myapp
+hipcc -g --offload-arch=gfx942:xnack+ -fsanitize=address -shared-libsan myapp.hip -o myapp
 ```
 
-`--offload-arch=<gfx>:xnack+` で対象アーキの XNACK を明示的に有効化し、`-fsanitize=address` で計装、`-shared-libsan` で共有ランタイム版の ASan を使用する。
+`--offload-arch=<gfx>:xnack+` で対象アーキの XNACK を明示的に有効化し、`-fsanitize=address` で計装、`-shared-libsan` で共有ランタイム版の ASan を使用する。ROCm 10.1.0 の ASAN パッケージは gfx942 / gfx950 のみ対応のため、MI350 系では `gfx950:xnack+` を指定する（install/asan.rst）。実行環境の GPU とビルド対象を揃えること。
 
 ## 実行時の環境変数設定
 
