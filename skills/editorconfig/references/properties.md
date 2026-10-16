@@ -53,6 +53,9 @@ Limited support (wiki, not in the specification):
 - Wiki note on `end_of_line`: to use native line endings between different operating systems, it is better not to set this option and leave that task to the VCS.
 - The wiki's "Ideas for Domain-Specific Properties" (e.g. `quote_type`, `indent_brace_style`) are not intended to be implemented by EditorConfig.
 - The wiki page itself notes that properties are now known as "declarations" and that the latest specification should be read instead.
+- Sources: specification v0.17.2 https://spec.editorconfig.org/ (tag source https://github.com/editorconfig/specification/blob/v0.17.2/index.rst).
+- Sources: limited-support properties and wiki notes https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties (fetched 2026-10-17).
+- Sources: version comparison for `spelling_language` https://github.com/editorconfig/specification/blob/v0.16.0/index.rst and https://github.com/editorconfig/specification/blob/v0.15.1/index.rst.
 
 ## Related
 
