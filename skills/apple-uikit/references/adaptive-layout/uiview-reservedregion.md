@@ -23,7 +23,6 @@ func reservedRegions(
 | isActive | `Bool` | Whether the region is currently active. |
 | kind | `UIView.ReservedRegion.Kind` | The kind of the region. |
 | margins | `UIEdgeInsets` | The margins included in the frame around the reserved region for interactive content. |
-
 | Kind.occlusion | `static let` `Kind` | A region where an element, such as the Dynamic Island, a camera, or window controls, occludes content. |
 | Kind.division | `static let` `Kind` | A region where content splits into separate regions, such as at the fold of a hinge. |
 | QueryOptions.includeInactive | `UIView.ReservedRegion.QueryOptions` (set-like options struct) | A Boolean value that indicates whether inactive reserved regions are included in a query result. |
