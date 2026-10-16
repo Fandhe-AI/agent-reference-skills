@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/mcp-quickstart.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/mcp-quickstart.md / last verified: 2026-10-17 -->
 
 # Connect to MCP servers
 
@@ -37,7 +37,9 @@ claude mcp remove claude-code-docs
 | `✔ Connected` | Ready to use |
 | `! Connected · tools fetch failed` | Connected but tool listing failed; run `claude mcp get <name>` |
 | `! Needs authentication` | Needs browser sign-in or a `--header` token |
-| `✘ Failed to connect` / `✘ Connection error` | Server didn't respond / threw an error |
+| `✘ Failed to connect` | Server didn't respond; `claude mcp list` and `claude mcp get <name>` show the HTTP status or error code and any error text the server returned (before v2.1.219 only the bare status) |
+| `✘ Connection error` | The connection attempt threw an error; Claude Code appends no detail to this status, so check with curl and the server command |
+| `⊘ Disabled for this project (re-enable via /mcp)` | Turned off for this project by the project's `disabledMcpServers` list; turn it back on from the `/mcp` panel |
 | `⏸ Pending approval (run claude to approve)` | Project-scoped server awaiting approval |
 
 | Scope | File | Available to |

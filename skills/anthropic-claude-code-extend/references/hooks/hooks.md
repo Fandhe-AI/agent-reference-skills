@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/hooks / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/hooks / last verified: 2026-10-17 -->
 
 # Hooks reference
 
@@ -61,13 +61,15 @@ Hook events (cadence: once per session, once per turn, or on every tool call):
 | `WorktreeCreate` / `WorktreeRemove` | Worktree created / removed |
 | `PreCompact` / `PostCompact` | Before / after context compaction |
 | `Elicitation` / `ElicitationResult` | MCP server requests input / user responds |
+| `PreModelSwitch` | Before Claude Code applies a model switch that you or a client requested; can block the switch (v2.1.251+). Matcher is the target's canonical model name; check `to_model` in the input (without a canonical name, every hook runs regardless of matcher) |
+| `PostModelSwitch` | After the session's model changes, including automatic changes such as restoring the model on resume (v2.1.251+); cannot block |
 | `SessionEnd` | Session terminates |
 
 Hook handler types: `command` (shell), `http` (POST to a URL), `mcp_tool` (call a connected MCP server tool), `prompt` (single-turn Claude yes/no eval), `agent` (subagent with tool access, experimental).
 
-Common handler fields: `type` (required), `if` (permission-rule-syntax filter, tool events only), `timeout` (seconds; defaults 600 command/http/mcp_tool, 30 prompt, 60 agent), `statusMessage`, `once` (skill frontmatter only).
+Common handler fields: `type` (required), `if` (permission-rule-syntax filter, tool events only), `timeout` (seconds; defaults 600 command/http/mcp_tool, 30 prompt, 60 agent; the command/http/mcp_tool default is lowered to 30 on `UserPromptSubmit`, `PreModelSwitch` and `PostModelSwitch`, and to 10 on `MessageDisplay`; `SessionEnd` hooks share a 1.5-second budget that rises to match a longer per-hook `timeout`, up to 60 seconds), `statusMessage`, `once` (skill frontmatter only).
 
-Command hook fields: `command`, `args` (exec form — no shell, no quoting needed), `async`, `asyncRewake`, `shell` (`bash`/`powershell`). HTTP hook fields: `url`, `headers`, `allowedEnvVars`. MCP tool hook fields: `server`, `tool`, `input`. Prompt/agent hook fields: `prompt`, `model`.
+Command hook fields: `command`, `args` (exec form — no shell, no quoting needed), `async`, `asyncRewake`, `shell` (`bash`/`powershell`), `onFailure` (`"continue"` default | `"block"`: block the action when the hook fails or times out; v2.1.295+; `command` and `http` hooks). HTTP hook fields: `url`, `headers`, `allowedEnvVars`. MCP tool hook fields: `server`, `tool`, `input`. Prompt/agent hook fields: `prompt`, `model`.
 
 Hook locations and scope:
 
@@ -78,7 +80,8 @@ Hook locations and scope:
 | `.claude/settings.local.json` | Single project | No (gitignored) |
 | Managed policy settings | Organization-wide | Yes |
 | Plugin `hooks/hooks.json` | While plugin enabled | Yes |
-| Skill or agent frontmatter | While component active | Yes |
+| Skill frontmatter | The rest of the session once the skill is invoked | Yes |
+| Subagent frontmatter | While that subagent is running | Yes |
 
 Exit code contract: **0** = success, JSON on stdout is parsed; **2** = blocking error, stderr fed to Claude as the reason (exact effect varies per event — see the event's "can block?" behavior); any other code = non-blocking error, action proceeds, transcript shows a `<hook name> hook error` notice.
 
@@ -92,7 +95,11 @@ JSON output universal fields: `continue` (default `true`), `stopReason`, `suppre
 - Path placeholders: `${CLAUDE_PROJECT_DIR}`, `${CLAUDE_PLUGIN_ROOT}`, `${CLAUDE_PLUGIN_DATA}` — prefer exec form (`args` set) whenever a hook references one, since shell form needs manual quoting.
 - Hooks defined in skill/subagent frontmatter are scoped to the component's lifecycle; for subagents, `Stop` hooks convert to `SubagentStop`.
 - `disableAllHooks: true` disables user/project/local hooks but cannot disable managed-policy hooks from outside managed settings.
-- Stop hooks that block 8 times in a row without progress are overridden automatically; check `stop_hook_active` in the input to avoid loops.
+- Stop hooks that block 8 times in a row without progress are overridden automatically (the count of consecutive continuations resets each time Claude calls a tool); `CLAUDE_CODE_STOP_HOOK_BLOCK_CAP` raises the cap. Check `stop_hook_active` in the input to avoid loops.
+- `allowManagedHooksOnly` (managed settings): user, project, local and plugin hooks are blocked (plugins force-enabled in managed `enabledPlugins` are exempt); `statusLine`, `fileSuggestion` and `subagentStatusLine` narrow to managed settings; plugins with a `command` source (v2.1.229+) and marketplace `headersHelper` commands are blocked unless `disableCommandPluginSources` is explicitly `false`. HTTP hook allowlists apply to every source: `allowedHttpHookUrls` (URL allowlist) and `httpHookAllowedEnvVars` (env vars interpolated into headers).
+- A handler defined identically in several settings files runs once (a plugin's or skill's copy stays separate).
+- Since v2.1.214, an `if` condition such as `Edit(src/**)` matches only the `src` directory in the working directory; write `Edit(**/src/**)` to match `src` at any depth (before v2.1.214 it matched at any depth).
+- Prompt hooks accept `continueOnBlock` (on `ok: false`, feed the reason back to Claude and continue instead of ending the turn) and `impossible` (on `Stop` / `SubagentStop`, lets the turn end); agent hooks have neither field.
 - This is a Claude Code CLI feature. For the Agent SDK equivalent, see anthropic-agent-sdk. For the Claude API (Messages API) Agent Skills / tool use, see anthropic-api-tools-mcp.
 
 ## Related

@@ -2,12 +2,13 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Agent teams | Coordinate multiple Claude Code instances working together: one session acts as team lead… | [agent-teams.md](./agent-teams.md) |
-| Agent view | Dispatch and manage many background Claude Code sessions from a single terminal screen… | [agent-view.md](./agent-view.md) |
-| Run agents in parallel (overview) | Compares the four ways Claude Code takes on multiple tasks at once: subagents, agent… | [agents.md](./agents.md) |
-| Desktop scheduled tasks | Local recurring or one-off tasks configured from the Claude Code Desktop app's… | [desktop-scheduled-tasks.md](./desktop-scheduled-tasks.md) |
-| Trigger a routine via API (/fire) | Start a Claude Code routine session on demand by sending an authenticated POST request… | [routines-fire.md](./routines-fire.md) |
-| Routines | A saved Claude Code configuration (prompt, one or more repositories, connectors) that… | [routines.md](./routines.md) |
-| Scheduled tasks (/loop) | Run a prompt repeatedly on an interval, poll for status, or set a one-time reminder… | [scheduled-tasks.md](./scheduled-tasks.md) |
-| Subagents | Specialized AI assistants that handle specific types of tasks in their own context… | [sub-agents.md](./sub-agents.md) |
-| Dynamic workflows | A JavaScript script that orchestrates subagents at scale (dozens to hundreds per run)… | [workflows.md](./workflows.md) |
+| Agent teams | Coordinate multiple Claude Code instances working together: one session acts as team lead, teammates work independently in their own context windows and communicate directly with each other. Experimental, disabled by default. | [agent-teams.md](./agent-teams.md) |
+| Agent view | Dispatch and manage many background Claude Code sessions from a single terminal screen. Research preview; requires Claude Code v2.1.139+. | [agent-view.md](./agent-view.md) |
+| Run agents in parallel (overview) | Compares the five ways Claude Code takes on multiple tasks at once: subagents, agent view, agent teams, projects, and dynamic workflows. | [agents.md](./agents.md) |
+| Message your other Claude Code sessions | Let Claude list and message your other Claude Code sessions on this machine, and reach your sessions on other machines or in the cloud. A message is plain text one Claude writes to another, never the sender's conversation history or files. Requires Claude Code v2.1.224+ on macOS / Linux (including WSL 2), v2.1.234+ on native Windows. When a session meets the requirements, messaging is on with nothing to enable. | [cross-session-messaging.md](./cross-session-messaging.md) |
+| Desktop scheduled tasks | Local recurring or one-off tasks configured from the Claude Code Desktop app's **Routines** page. A task starts a new session automatically on your machine, with direct access to local files and tools, but only fires while the Desktop app is open and the computer is awake. | [desktop-scheduled-tasks.md](./desktop-scheduled-tasks.md) |
+| Trigger a routine via API (/fire) | Start a Claude Code routine session on demand by sending an authenticated POST request. Experimental endpoint on the Claude Code product surface (not the general Claude Platform API); external HTTP entry point that starts a new run of an existing routine and returns the resulting session ID/URL. | [routines-fire.md](./routines-fire.md) |
+| Routines | A saved Claude Code configuration (prompt, one or more repositories, connectors) that runs automatically on Anthropic-managed cloud infrastructure, triggered on a schedule, via API call, or on GitHub events. Research preview. | [routines.md](./routines.md) |
+| Scheduled tasks (/loop) | Run a prompt repeatedly on an interval, poll for status, or set a one-time reminder within an open Claude Code session, using `/loop` and the cron scheduling tools (`CronCreate`/`CronList`/`CronDelete`). Session-scoped: tasks live in the current conversation and stop when a new one starts. | [scheduled-tasks.md](./scheduled-tasks.md) |
+| Subagents | Specialized AI assistants that handle specific types of tasks in their own context window, with a custom system prompt, tool access, and permissions, then return a summary to the caller. | [sub-agents.md](./sub-agents.md) |
+| Dynamic workflows | A JavaScript script, written by Claude, that orchestrates subagents at scale (dozens to hundreds per run) via a runtime executing in the background while the session stays responsive. Requires Claude Code v2.1.154+. | [workflows.md](./workflows.md) |

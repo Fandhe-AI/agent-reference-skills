@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/scheduled-tasks / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/scheduled-tasks / last verified: 2026-10-17 -->
 
 # Scheduled tasks (/loop)
 
@@ -27,7 +27,7 @@ in 45 minutes, check whether the integration tests passed
 | Tool | Purpose |
 |---|---|
 | `CronCreate` | Schedule a task: 5-field cron expression, prompt, recurring or one-shot |
-| `CronList` | List tasks with IDs, schedules, prompts |
+| `CronList` | List tasks with IDs, schedules, next run times (v2.1.299+), prompts |
 | `CronDelete` | Cancel by 8-char task ID |
 
 | Comparison | Cloud (Routines) | Desktop | `/loop` |
@@ -37,17 +37,25 @@ in 45 minutes, check whether the integration tests passed
 | Requires open session | No | No | Yes |
 | Access to local files | No (fresh clone) | Yes | Yes |
 | Minimum interval | 1 hour | 1 minute | 1 minute |
+| Customizable schedule | Via `/schedule` in the CLI | Yes | Yes |
 
 `loop.md` locations (first found wins): `.claude/loop.md` (project) > `~/.claude/loop.md` (user); replaces the default `/loop` maintenance prompt; ignored when a prompt is given on the command line; truncated beyond 25,000 bytes.
 
 ## Notes
 
 - A session holds up to 50 scheduled tasks. All times interpreted in local timezone.
-- Jitter: recurring tasks fire up to 30 min after scheduled time (or up to half the interval for sub-hourly jobs); one-shot tasks at `:00`/`:30` fire up to 90s early. Pick a non-`:00`/`:30` minute for exact timing.
+- Jitter: a recurring task starts each run late by up to half the gap to the next run, at most 30 minutes, except `*/5 * * * *` (what `/loop 5m` creates), which isn't delayed and starts 15 seconds early (4 min 45 s after the previous run). One-shot tasks scheduled at `:00`/`:30` run up to 90 seconds early; pick another minute for exact timing (e.g. `3 9 * * *`).
+
+  | Schedule | When each run starts |
+  | --- | --- |
+  | Every 5 minutes (`*/5 * * * *`) | 4 minutes 45 seconds after the previous run |
+  | Every 10 minutes | 0 to 5 minutes late |
+  | Every 30 minutes | 0 to 15 minutes late |
+  | Every hour, or less often such as daily | 0 to 30 minutes late |
 - Recurring tasks expire automatically 7 days after creation (fires once more, then deletes itself); for longer-lived scheduling use [Routines](./routines.md) or Desktop scheduled tasks.
-- Tasks only fire while Claude Code is idle (not mid-response); no catch-up for missed fires. Starting a fresh conversation clears session-scoped tasks; `--resume`/`--continue` restores unexpired ones.
+- Tasks only fire while Claude Code is idle (not mid-response); no catch-up for missed fires. Starting a fresh conversation clears session-scoped tasks; `--resume`/`--continue` restores unexpired ones, except one-shot tasks whose scheduled time has passed; a self-paced `/loop` isn't restored (run `/loop` again). Backgrounding the session carries `/loop` tasks over to a background session.
 - Disable entirely with `CLAUDE_CODE_DISABLE_CRON=1`.
-- On Amazon Bedrock / Claude Platform on AWS / Google Cloud's Agent Platform / Microsoft Foundry, a prompt with no interval runs on a fixed 10-minute schedule instead of dynamic, and `loop.md` isn't read.
+- Dynamically chosen intervals and the built-in maintenance prompt work on every provider (Bedrock, Claude Platform on AWS, Google Cloud's Agent Platform, Microsoft Foundry included) and with feature-flag fetching turned off; on those providers, or with fetching off, both require v2.1.248+.
 
 ## Related
 

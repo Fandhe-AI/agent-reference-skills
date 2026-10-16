@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/output-styles / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/output-styles / last verified: 2026-10-17 -->
 
 # Output styles
 
@@ -35,15 +35,16 @@ Frontmatter fields:
 | `keep-coding-instructions` | boolean | `false` | Keep Claude Code's built-in software-engineering instructions alongside the custom instructions |
 | `force-for-plugin` | boolean | `false` | Plugin styles only — auto-apply whenever the plugin is enabled, overriding the user's `outputStyle` setting |
 
-Built-in styles: **Default** (existing system prompt), **Proactive** (executes immediately, assumes reasonable defaults, stronger autonomy than auto mode but still shows permission prompts), **Explanatory** (adds "Insights" between steps), **Learning** (collaborative; adds `TODO(human)` markers for you to fill in).
+Built-in styles (five including Default): **Default** (existing system prompt), **Proactive** (executes immediately, assumes reasonable defaults, stronger autonomy than auto mode but still shows permission prompts), **Concise** (responses lead with the result and drop preamble, narration and recaps; answers a simple question in one to three sentences; safety-related content such as error reports, failing test output, security warnings and destructive-action confirmations stays at full length; v2.1.237+), **Explanatory** (adds "Insights" between steps), **Learning** (collaborative; adds `TODO(human)` markers for you to fill in).
 
 File locations: `~/.claude/output-styles` (user), `.claude/output-styles` (project — loads from every nested directory between cwd and repo root, closest wins on name clash), `.claude/output-styles` under managed policy (org). Plugins ship an `output-styles/` directory.
 
 ## Notes
 
 - Applies to the main conversation only; a subagent runs its own system prompt and isn't affected, except a fork which inherits the parent's full system prompt.
-- Takes effect after `/clear` or a new session — it's read once at session start.
-- The standalone `/output-style` command was removed in v2.1.91; use `/config` or edit `outputStyle` directly.
+- When you switch styles mid-session, the new style applies from your next message (v2.1.251+; before that, `/clear` or a new session was needed).
+- `/output-style [style]` (no argument lists the styles and marks the current one) saves the choice to `.claude/settings.local.json`; the `/config` terminal menu and the VS Code **Output styles** menu (v2.1.257+; creating a custom style file there needs v2.1.261+) do the same. The command also works in `-p`, the Agent SDK and over Remote Control (v2.1.269+; built-in styles only there) and ignores case. The command was removed in v2.1.91 and exists again in the current docs.
+- The `outputStyle` setting value is case-sensitive (`Proactive`, `Concise`, `Explanatory`, `Learning`); a value that doesn't match exactly, such as `explanatory`, falls back to Default.
 - This is a Claude Code CLI feature. For the Agent SDK equivalent, see anthropic-agent-sdk. For the Claude API (Messages API) Agent Skills / tool use, see anthropic-api-tools-mcp.
 
 ## Related
