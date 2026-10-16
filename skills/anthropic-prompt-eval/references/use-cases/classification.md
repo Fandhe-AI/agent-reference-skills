@@ -4,14 +4,6 @@
 
 Guide to building a text classifier with Claude, from use-case exploration to back-end integration. See the [classification cookbook](https://platform.claude.com/cookbook/capabilities-classification-guide) for a worked example.
 
-## When to use Claude for classification
-
-- **Rule-based classes**: classes defined by conditions rather than examples.
-- **Evolving classes**: new or changing domains with shifting class boundaries.
-- **Unstructured inputs**: large volumes of unstructured text of varying length.
-- **Limited labeled examples**: few-shot learning from limited labeled data.
-- **Reasoning requirements**: semantic understanding, context, higher-level reasoning.
-
 ## Signature / Usage
 
 ```text
@@ -43,7 +35,10 @@ Write your analysis inside <category_analysis> tags, your step-by-step reasoning
 
 ## Notes
 
-- Claude Haiku 4.5 is typically ideal for classification due to speed/cost; Sonnet or Opus for tasks needing specialized knowledge or complex reasoning.
+- `{{CATEGORIES}}` and `{{EXAMPLES}}` in the prompt above are intentional template variables to be replaced with your own category definitions and labeled examples; they are not unreplaced placeholders.
+- When to use Claude for classification: rule-based classes (conditions rather than examples); evolving classes (shifting domains and boundaries); unstructured inputs (large volumes of varying-length text); limited labeled examples (few-shot learning); reasoning requirements (semantic understanding, context, higher-level reasoning).
+- Removed: the official page /docs/en/about-claude/use-case-guides/classification returns 404 and is no longer listed in llms.txt or the use-case overview (as of 2026-10-16); retained for reference. Ticket routing covers the classification pattern.
+- At time of last verification (2026-08-07), the page said Claude Haiku 4.5 is typically ideal for classification due to speed/cost; Sonnet or Opus for tasks needing specialized knowledge or complex reasoning. For the current model choice, see ticket-routing (Claude Haiku 5.5 at low effort).
 - Common industry use cases: content moderation and bug prioritization (Tech & IT), intent analysis and support ticket routing (Customer Service), patient triaging and clinical trial screening (Healthcare), fraud detection and credit risk assessment (Finance), legal document categorization (Legal).
 
 ## Related

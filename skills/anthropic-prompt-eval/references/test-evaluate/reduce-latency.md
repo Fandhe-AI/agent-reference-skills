@@ -1,8 +1,8 @@
-<!-- source: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-latency / last verified: 2026-10-17 -->
 
 # Reducing latency
 
-Reduce Claude's response latency by choosing a faster model like Claude Haiku 4.5, trimming prompt and output tokens, and streaming responses.
+Reduce Claude's response latency by choosing a faster model like Claude Haiku 5.5, trimming prompt and output tokens, and streaming responses.
 
 Latency is the time to process a prompt and generate output, influenced by model size, prompt complexity, and infrastructure. Engineer a prompt that works well without model/prompt constraints first, then apply latency reduction — reducing latency prematurely can hide what top performance looks like.
 
@@ -15,14 +15,21 @@ Latency is the time to process a prompt and generate output, influenced by model
 
 ### 1. Choose the right model
 
-Select the model matching speed/quality needs. **Claude Haiku 4.5** offers the fastest response times while maintaining high intelligence:
+Select the model matching speed/quality needs. For speed-critical applications, **Claude Haiku 5.5** offers the fastest response times while maintaining high intelligence. `effort` is its main control for speed and cost; `low` is the cheapest and fastest level. Leave room in `max_tokens` for thinking:
 
 ```python
 message = client.messages.create(
-    model="claude-haiku-4-5",
-    max_tokens=100,
-    messages=[{"role": "user", "content": "Summarize this customer feedback in 2 sentences: [feedback text]"}],
+    model="claude-haiku-5-5",
+    max_tokens=1024,
+    output_config={"effort": "low"},
+    messages=[
+        {
+            "role": "user",
+            "content": "Summarize this customer feedback in 2 sentences: [feedback text]",
+        }
+    ],
 )
+print(next(block.text for block in message.content if block.type == "text"))
 ```
 
 ### 2. Optimize prompt and output length
@@ -30,7 +37,7 @@ message = client.messages.create(
 - Be clear but concise — Claude lacks context on your use case, so unclear instructions won't be filled in correctly by inference.
 - Ask directly for shorter responses; because LLMs count tokens (not words), a paragraph/sentence-count limit is more effective than a word-count request.
 - Set `max_tokens` as a hard output-length cap — note this is a blunt technique: the response is cut off (possibly mid-word) when the limit is reached, so it's best for multiple-choice/short-answer cases where the answer comes right at the start.
-- Experiment with `temperature` — lower values (for example 0.2) can produce more focused, shorter responses; higher values (for example 0.8) more diverse but potentially longer ones.
+- Experiment with `temperature` — lower values (for example 0.2) can produce more focused, shorter responses; higher values (for example 0.8) more diverse but potentially longer ones. Claude 4.7 and later models and Claude Mythos Preview accept only the default `temperature` and return a 400 error for any other value, so on those models lower `effort` instead.
 
 ### 3. Stream responses
 

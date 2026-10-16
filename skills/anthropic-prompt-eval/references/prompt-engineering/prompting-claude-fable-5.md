@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5 / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5 / last verified: 2026-10-17 -->
 
 # Prompting Claude Fable 5
 
@@ -6,9 +6,11 @@ Behavioral differences and prompting patterns for Claude Fable 5 and Claude Myth
 
 Claude Fable 5 handles problems that were previously too complex, long-running, or ambiguous for prior models, and is particularly effective at end-to-end work spanning hours, days, or weeks. Test it against your hardest unsolved problems rather than only simpler workloads. It runs safety classifiers targeting offensive cybersecurity, biology/life-sciences content, and extraction of the model's summarized thinking; benign work in those domains can also trigger declines — configure [server-side or client-side fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback) to Claude Opus 4.8 for automatic re-routing.
 
-## Capability improvements over Claude Opus 4.8
+## Capability improvements
 
-Long-horizon autonomy (multiday goal-directed runs), first-shot correctness on complex well-specified problems, vision (dense technical images, bash/crop tool use for degraded images), enterprise workflows (financial analysis, spreadsheets, slides), code review/debugging (higher bug-finding recall outside cybersecurity domains), navigating ambiguity, and delegation/collaboration (dispatching and sustaining parallel subagents).
+Compared with Claude Opus 4.8, Claude Fable 5 shows improvement in: long-horizon autonomy (multiday goal-directed runs), first-shot correctness on complex well-specified problems, vision (dense technical images, bash/crop tool use for degraded images), enterprise workflows (financial analysis, spreadsheets, slides), code review/debugging (higher bug-finding recall outside cybersecurity domains), navigating ambiguity, and delegation/collaboration (dispatching and sustaining parallel subagents).
+
+Claude Fable 5 is not intended for offensive cybersecurity or biology and life sciences work; requests in those domains can return `stop_reason: "refusal"`.
 
 ## Longer turns by default
 
@@ -91,7 +93,7 @@ For long asynchronous agents, define a client-side `send_to_user` tool (input: `
 - Start at the top of your difficulty range and let Claude Fable 5 scope and execute.
 - Make self-verification explicit for long runs; separate fresh-context verifier subagents outperform self-critique. Instruct periodic verification at a defined interval.
 - Refactor existing prompts/skills — instructions tuned for prior models are often too prescriptive and can degrade output quality.
-- Don't instruct Claude to reproduce its reasoning as response text — this can trigger the `reasoning_extraction` refusal category. Read structured `thinking` blocks instead, or use a send-to-user tool for progress.
+- Don't instruct Claude to reproduce its reasoning as response text — this can trigger the `reasoning_extraction` refusal category. Server-side fallback with `fallbacks: "default"` does not retry requests declined with `reasoning_extraction`; that refusal is returned to you. Read structured `thinking` blocks instead, or use a send-to-user tool for progress. You can still ask for a short explanation of the answer or a summary of the actions taken.
 - Create a send-to-user tool for long asynchronous agents (see above).
 
 ## Notes

@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8 / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8 / last verified: 2026-10-17 -->
 
 # Prompting Claude Opus 4.8
 
@@ -73,6 +73,8 @@ severity so a downstream filter can rank them.
 If self-filtering in a single pass, use concrete criteria ("bugs that could cause incorrect behavior, a test failure, or a misleading result; omit pure style/naming nits") rather than qualitative terms like "important."
 
 ## Computer use
+
+Claude Opus 4.8 supports the `computer_toolset_20260801` toolset (on the Claude API and Google Cloud) and the earlier `computer_20251124` tool version. On the Claude API and Google Cloud, it also supports the browser use tool (`browser_toolset_20260801`) for tasks inside webpages.
 
 [Computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) works up to 2576px / 3.75MP; 1080p balances performance and cost, 720p or 1366×768 lower cost for cost-sensitive workloads.
 

@@ -3,9 +3,9 @@ name: anthropic-prompt-eval
 description: >
   Claude API (platform.claude.com) のプロンプトエンジニアリング・評価リファレンス。
   prompt engineering, XML タグ, few-shot, system prompts,
-  モデル別プロンプティング（Fable 5 / Opus 5 / Sonnet 5）。
+  モデル別プロンプティング（Fable 5.1 / Fable 5 / Opus 5.5 / Opus 5 / Sonnet 5.5 / Sonnet 5 / Haiku 5.5）。
   evals, grading（LLM-graded 等）, jailbreak・prompt leak 対策, hallucination 低減,
-  classification, ticket routing 等ユースケース実装。
+  ticket routing, commerce agent 等ユースケース実装。
 user-invocable: false
 ---
 
@@ -26,10 +26,14 @@ skills/anthropic-prompt-eval/
       README.md
       overview.md
       claude-prompting-best-practices.md
+      prompting-claude-fable-5-1.md
       prompting-claude-fable-5.md
+      prompting-claude-opus-5-5.md
       prompting-claude-opus-5.md
       prompting-claude-opus-4-8.md
+      prompting-claude-sonnet-5-5.md
       prompting-claude-sonnet-5.md
+      prompting-claude-haiku-5-5.md
     test-evaluate/
       README.md
       develop-tests.md
@@ -43,6 +47,7 @@ skills/anthropic-prompt-eval/
       README.md
       overview.md
       classification.md
+      commerce-agents.md
       content-moderation.md
       customer-support-chat.md
       legal-summarization.md
@@ -71,9 +76,9 @@ skills/anthropic-prompt-eval/
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | プロンプト設計の基本技法（明確さ・例示・XML タグ・thinking・agentic systems）を知りたい | prompt-engineering | [references/prompt-engineering/README.md](references/prompt-engineering/README.md) |
-| Fable 5 / Opus 5 / Opus 4.8 / Sonnet 5 のモデル別プロンプティング差異・移行方法を知りたい | prompt-engineering | [references/prompt-engineering/README.md](references/prompt-engineering/README.md) |
+| Fable 5.1 / Fable 5 / Opus 5.5 / Opus 5 / Opus 4.8 / Sonnet 5.5 / Sonnet 5 / Haiku 5.5 のモデル別プロンプティング差異・移行方法を知りたい | prompt-engineering | [references/prompt-engineering/README.md](references/prompt-engineering/README.md) |
 | 成功基準の定義・評価（evals）の構築・code-graded / LLM-graded の使い分けを知りたい | test-evaluate | [references/test-evaluate/README.md](references/test-evaluate/README.md) |
-| streaming refusals の検知・出力一貫性の向上・jailbreak / prompt injection / hallucination / prompt leak / latency への対策を知りたい | test-evaluate | [references/test-evaluate/README.md](references/test-evaluate/README.md) |
-| classification・content moderation・customer support chat・legal summarization・ticket routing の実装ガイドを知りたい | use-cases | [references/use-cases/README.md](references/use-cases/README.md) |
-| claude.ai / iOS / Android アプリのシステムプロンプトのリリースノートを知りたい | use-cases | [references/use-cases/README.md](references/use-cases/README.md) |
+| streaming refusals の検知（stop_details・Haiku 5.5 の fallback 制約を含む）・出力一貫性の向上・jailbreak / prompt injection / hallucination / prompt leak / latency への対策を知りたい | test-evaluate | [references/test-evaluate/README.md](references/test-evaluate/README.md) |
+| classification・content moderation・customer support chat・legal summarization・ticket routing の実装ガイドを知りたい。commerce agent（shopping / merchant agent の blueprint）を知りたい | use-cases | [references/use-cases/README.md](references/use-cases/README.md) |
+| モデル別のリリースノート（claude.ai / iOS / Android）のシステムプロンプトを知りたい | use-cases | [references/use-cases/README.md](references/use-cases/README.md) |
 | 典型的な使い方を知りたい（プロンプトテンプレート構成, classification + eval, 要約, ガードレール, eval rubric, モデル別調整例） | samples | [samples/README.md](samples/README.md) |

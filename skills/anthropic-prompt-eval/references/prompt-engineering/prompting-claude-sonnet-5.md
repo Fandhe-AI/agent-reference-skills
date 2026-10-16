@@ -1,8 +1,8 @@
-<!-- source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5 / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5 / last verified: 2026-10-17 -->
 
 # Prompting Claude Sonnet 5
 
-Behavioral differences and prompting patterns for Claude Sonnet 5, covering effort, adaptive thinking defaults, tool use, and migration from Claude Sonnet 4.6.
+Behavioral differences and prompting patterns for Claude Sonnet 5, covering effort, adaptive thinking defaults, and tool use.
 
 Claude Sonnet 5 has particular strengths in coding and agentic tasks, and performs well out of the box on existing Claude Sonnet 4.6 prompts.
 
@@ -69,7 +69,7 @@ If self-filtering in a single pass, use concrete criteria rather than qualitativ
 
 ## Computer use
 
-Supports the `computer_20251124` tool version. [Computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) works up to 2576px / 3.75MP; 1080p balances performance and cost, 720p or 1366×768 lower cost for cost-sensitive workloads.
+Claude Sonnet 5 supports the `computer_toolset_20260801` toolset (on the Claude API and Google Cloud) and the earlier `computer_20251124` tool version. On the Claude API and Google Cloud, it also supports the browser use tool (`browser_toolset_20260801`) for tasks inside webpages. [Computer use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) works up to 2576px / 3.75MP; 1080p balances performance and cost, 720p or 1366×768 lower cost for cost-sensitive workloads.
 
 ## Notes
 

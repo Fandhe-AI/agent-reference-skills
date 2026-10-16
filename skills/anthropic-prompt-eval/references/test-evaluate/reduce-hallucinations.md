@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations / last verified: 2026-10-17 -->
 
 # Reduce hallucinations
 
@@ -14,7 +14,7 @@ Even advanced models can generate text that is factually incorrect or inconsiste
 
 ## Advanced techniques
 
-- **Chain-of-thought verification** — ask Claude to explain reasoning step-by-step before the final answer, revealing faulty logic or assumptions.
+- **Chain-of-thought verification** — use thinking with `display: "summarized"`, and review the summarized reasoning in the `thinking` blocks when an answer looks wrong; this can reveal faulty logic or assumptions.
 - **Best-of-N verification** — run the same prompt multiple times and compare outputs; inconsistencies can indicate hallucination.
 - **Iterative refinement** — feed Claude's outputs back as input for follow-up prompts asking it to verify or expand on previous statements.
 - **External knowledge restriction** — explicitly instruct Claude to use only information from provided documents, not general knowledge.

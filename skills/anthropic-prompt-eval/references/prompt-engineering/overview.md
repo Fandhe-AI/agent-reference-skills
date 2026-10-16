@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview / last verified: 2026-10-17 -->
 
 # Prompt engineering overview
 
@@ -21,7 +21,7 @@ All prompting techniques (clarity and examples, XML structuring, role prompting,
 
 ## Prompt engineering tutorial
 
-Interactive learners can use the GitHub prompting tutorial (`github.com/anthropics/prompt-eng-interactive-tutorial`) or the lighter-weight Google Sheets prompting tutorial.
+Interactive learners can use the GitHub prompting tutorial (`github.com/anthropics/prompt-eng-interactive-tutorial`) or the lighter-weight Google Sheets prompting tutorial. The GitHub tutorial was written for Claude 3 models, so follow Prompting best practices where the two differ.
 
 ## Notes
 

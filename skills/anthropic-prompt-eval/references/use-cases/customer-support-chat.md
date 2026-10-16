@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/about-claude/use-case-guides/customer-support-chat / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/about-claude/use-case-guides/customer-support-chat / last verified: 2026-10-17 -->
 
 # Customer support agent
 
@@ -36,15 +36,15 @@ class ChatBot:
 | IDENTITY | str | System prompt establishing the assistant's role and persona |
 | TASK_SPECIFIC_INSTRUCTIONS | str | Static context, few-shot examples, and guardrails concatenated into the first user turn |
 | TOOLS | list | Client-side tool definitions (e.g. `get_quote`) the model can call |
-| MODEL | str | Model ID, e.g. `claude-opus-5` |
+| MODEL | str | Model ID, e.g. `claude-opus-5-5` |
 
 ## Notes
 
 - Claude works best with the bulk of prompt content in the first `User` turn rather than the system prompt (the only exception being role prompting).
-- Claude Opus 5 balances intelligence/latency/cost for complex multi-step support conversations; Claude Haiku 4.5 suits latency-sensitive flows with RAG, tool use, or long context.
+- Claude Opus 5.5 balances intelligence/latency/cost, including the most complex support scenarios that need deep reasoning across long, multi-step conversations; Claude Haiku 5.5 may be more suitable to optimize latency in flows with RAG, tool use, or long-context prompts. `effort` is Haiku 5.5's main control for speed: `low` is the fastest level, suited to chat and short tool tasks.
 - For real-time data (account balances, order status), use tool use rather than embedding-based RAG.
 - Advanced techniques: RAG to reduce long-context latency and cost, streaming to reduce perceived response time, a separate intent classifier to route highly varied queries to specialized sub-conversations.
-- Prerequisites: `ANTHROPIC_API_KEY` env var, Python 3.9+, `pip install anthropic streamlit python-dotenv` for the reference Streamlit UI.
+- Prerequisites: `ANTHROPIC_API_KEY` env var, Python 3.10 or later, `pip install anthropic streamlit python-dotenv` for the reference Streamlit UI.
 
 ## Related
 

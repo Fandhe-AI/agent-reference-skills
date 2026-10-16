@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests / last verified: 2026-10-17 -->
 
 # Eval rubric workflow: code-graded and LLM-graded
 
@@ -13,8 +13,8 @@ client = anthropic.Anthropic()
 
 def get_completion(prompt: str):
     message = client.messages.create(
-        model="claude-opus-5",
-        max_tokens=50,
+        model="claude-opus-5-5",
+        max_tokens=1024,
         messages=[{"role": "user", "content": prompt}],
     )
     return next(block.text for block in message.content if block.type == "text")
@@ -49,8 +49,8 @@ def evaluate_likert(model_output, target_tone):
 
     # Generally best practice to use a different model to evaluate than the model used to generate the evaluated output
     response = client.messages.create(
-        model="claude-opus-5",
-        max_tokens=50,
+        model="claude-opus-5-5",
+        max_tokens=2048,
         messages=[{"role": "user", "content": tone_prompt}],
     )
     return int(
@@ -69,8 +69,8 @@ def evaluate_binary(model_output, query_contains_phi):
     Output only 'yes' or 'no'."""
 
     response = client.messages.create(
-        model="claude-opus-5",
-        max_tokens=50,
+        model="claude-opus-5-5",
+        max_tokens=2048,
         messages=[{"role": "user", "content": binary_prompt}],
     )
     return (
@@ -81,7 +81,8 @@ def evaluate_binary(model_output, query_contains_phi):
 
 ## Notes
 
-- "Generally best practice to use a different model to evaluate than the model used to generate the evaluated output" — applies to all LLM-graded functions above.
+- "Generally best practice to use a different model to evaluate than the model used to generate the evaluated output" — applies to all LLM-graded functions above. This sample uses one model ID for brevity; pick a different model for the grader in practice.
+- Official tip for LLM-based grading: use a grader model with thinking on so it reasons before it produces a score; this improves evaluation performance on complex judgments. Grader calls therefore use a larger `max_tokens` (the official grading example uses 2048), and the text block is read by `type`.
 - The page's eval-type table also lists cosine similarity of sentence embeddings (consistency) and ROUGE-L (relevance/coherence for summarization) as further code-graded metrics, alongside an LLM-graded ordinal scale (1-5) for context utilization — same pattern as `evaluate_likert` with a different rubric prompt.
 - Prioritize eval volume over per-question quality: more automated-grading questions beats fewer hand-graded ones.
 - Define success criteria first (specific, measurable, achievable, relevant) before building the eval harness — this is the prerequisite step to prompt engineering itself.
