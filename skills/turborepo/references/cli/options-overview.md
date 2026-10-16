@@ -21,7 +21,8 @@ TURBO_CACHE_DIR=.cache/turbo turbo run build --cache-dir=./my-cache   # flag win
 | Force tasks to run | `--force` | `TURBO_FORCE` | `cache` |
 | Remote Cache timeout | `--remote-cache-timeout` | `TURBO_REMOTE_CACHE_TIMEOUT` | `remoteCache.timeout` |
 | Remote Cache upload timeout | - | `TURBO_REMOTE_CACHE_UPLOAD_TIMEOUT` | `remoteCache.uploadTimeout` |
-| Cache signature key | - | `TURBO_REMOTE_CACHE_SIGNATURE_KEY` | `signature` |
+| Cache signature key | - | `TURBO_REMOTE_CACHE_SIGNATURE_KEY` | - |
+| Enable artifact signing | - | - | `remoteCache.signature` |
 | Preflight request | `--preflight` | `TURBO_PREFLIGHT` | `remoteCache.preflight` |
 | Remote Cache base URL | - | `TURBO_API` | `remoteCache.apiUrl` |
 | Cache sources | `--cache` | `TURBO_CACHE` | - |
@@ -92,6 +93,7 @@ TURBO_CACHE_DIR=.cache/turbo turbo run build --cache-dir=./my-cache   # flag win
 ## Notes
 
 - This page is the flag / `turbo.json` key / environment variable mapping; flag details live in `run.md`, key details in the `turbo.json` reference, and variable details in the system environment variables reference.
+- The official cheat sheet maps the signature key row to `signature`, which is `remoteCache.signature` (a boolean that enables signing); the secret key itself is only read from `TURBO_REMOTE_CACHE_SIGNATURE_KEY` and must not be written in `turbo.json`.
 - In the official table the `--remote-cache-timeout` flag row links to the `remoteCache.timeout` configuration entry.
 
 ## Related

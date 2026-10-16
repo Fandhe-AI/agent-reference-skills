@@ -142,10 +142,14 @@ Task output uses task reasons such as `TaskFileChanged` (e.g. `{"name":"build","
 | `--fallback main` | `--base main` |
 
 ```bash
+set -euo pipefail
 affected=$(turbo query affected --packages my-app)
-count=$(echo "$affected" | jq '.data.affectedPackages.length')
+count=$(printf '%s\n' "$affected" | jq -e '.data.affectedPackages.length')
+case "$count" in ''|*[!0-9]*) echo "could not determine affected packages" >&2; exit 1;; esac
 if [ "$count" -gt 0 ]; then echo "affected, proceeding"; else echo "skipping"; exit 0; fi
 ```
+
+- Adapted from the official turbo-ignore migration example; `set -euo pipefail`, `jq -e`, and a numeric check were added so a failed query does not skip CI. Alternatively use `--exit-code` (2 on errors).
 
 - `turbo query` is not marked Experimental in the v2.11.8 docs (only `ls --output` is); the docs do not state the version it became stable.
 

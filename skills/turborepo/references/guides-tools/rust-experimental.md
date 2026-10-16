@@ -54,7 +54,7 @@ Built-in tasks:
 | Package | Turbo task | Cargo command |
 | --- | --- | --- |
 | Any crate | `turbo build` | `cargo build --package=<crate> --locked` |
-| Entrypoint crate with exactly one binary | `turbo run`, `turbo dev` | `cargo run --package=<crate> --locked` |
+| Entrypoint crate with exactly one binary | `turbo run run`, `turbo dev` | `cargo run --package=<crate> --locked` |
 | Any crate | `turbo test` | `cargo test --package=<crate> --locked` |
 | Any crate | `turbo check` | `cargo check --package=<crate> --locked` |
 | Any crate | `turbo lint` | `cargo clippy --package=<crate> --locked` |
@@ -97,6 +97,7 @@ Your own tasks: enable `experimentalTaskCommand` and set the task's `command` (a
 
 ## Notes
 
+- The official built-in tasks table lists the `run` row as `turbo run`, meaning the `run` task; invoke it as `turbo run run` (bare `turbo run` is the run subcommand with no task).
 - Rust support is experimental and can change at any time; try it in side projects and proof-of-concepts. Feedback goes to the Rust RFC (vercel/turborepo discussion 13415).
 - Zero-configuration hashing uses: the selected crate and a conservative transitive closure of declared local dependency source files (including cycle-closing dev-dependencies); every member crate when verification runs through the workspace package; root Cargo files; relevant Cargo and compiler environment; the resolved external dependency closure from `Cargo.lock`; and the complete `rustc -vV` identity (if it cannot be resolved, tasks stay runnable but implicit caching is disabled with a warning). The built-in `format` also includes `rustfmt.toml`, `.rustfmt.toml`, and `RUSTFMT`; it defaults to uncached because formatting mutates sources.
 - Project-specific inputs must be declared manually: environment variables read by build scripts go in `env`; extra file inputs go in `inputs` (use `$TURBO_DEFAULT$` to keep the defaults).
