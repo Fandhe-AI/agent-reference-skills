@@ -44,6 +44,7 @@ npm i https://kubb.studio/packages/<agent>/<package>.tgz
 
 ## Notes
 
+- 出典: https://kubb.dev/docs/5.x/integrations/ci （kubb@5.11.0 の docs/5.x/integrations/ci.md）
 - スナップショットは 7 日で失効する。push のない期間が 1 週間を超えうる場合はデフォルトブランチ実行をスケジュールする
 - 結果フィールドは原文の reference/commands/studio の「CI agent identity」「Snapshot output」を参照
 

@@ -125,7 +125,7 @@ output: {
 - `mode` は通常指定不要（拡張子ありのパス = 単一ファイル、なし = ディレクトリ）。`group` は推論されたディレクトリモードで動く。明示的な `mode: 'file'` と `group` の併用は `KUBB_INVALID_PLUGIN_OPTIONS` でビルド停止
 - barrel の `index.ts` はデフォルトでは banner なし。plugin が `output.banner` を設定すると `isBarrel: true` で関数が実行される
 - adapter / parser / storage をカスタムする例: `adapterOas({ validate: true })`、`parsers: [parserTs(), parserTsx()]`、`storage: memoryStorage()`（`kubb/kit` から import）
-- 出典: Kubb docs 5.x（kubb@5.11.0 pin）
+- 出典: https://kubb.dev/docs/5.x/reference/configuration （kubb@5.11.0 の docs/5.x/reference/configuration.md）
 
 ## Related
 

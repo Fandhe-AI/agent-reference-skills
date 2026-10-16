@@ -50,6 +50,7 @@ test('registers one generator', () => {
 
 ## Notes
 
+- 出典: https://kubb.dev/docs/5.x/reference/kit/testing （kubb@5.11.0 の docs/5.x/reference/kit/testing.md）
 - It stays separate from `kubb/kit` so importing the authoring toolkit never pulls Vitest into a plugin's runtime dependencies.
 - When setup uses composables, run it inside `kubbContext.run(ctx, …)`. Without it, the composables throw `KUBB_NO_CONTEXT`.
 

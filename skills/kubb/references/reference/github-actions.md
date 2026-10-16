@@ -7,7 +7,7 @@
 ワークフロー全体は integrations の GitHub Actions ページを参照（公式: Publish snapshots from CI）。入力の最小イメージ:
 
 ```yaml
-- uses: kubb-labs/action@v0
+- uses: kubb-labs/action@aabd721980c8e66e78e854d108798665f12333f9 # v0
   with:
     token: ${{ secrets.KUBB_STUDIO_TOKEN }}
 ```
@@ -54,10 +54,11 @@ snapshot が失敗するとエラーがコメントに表示される。
 
 ## Notes
 
+- The official docs use the mutable tag `kubb-labs/action@v0`; pinned to a commit SHA here (confirmed via the GitHub API at the time of writing). Check the tag again when updating
 - action は `kubb studio snapshot` を、リポジトリにインストール済みの Kubb バージョンで実行する。ローカルインストールは Kubb 5.6.2 以降が必要。なければ最新の Kubb 5 release を使う
 - 各 pull request は 1 つの CI agent と 1 つのコメントを再利用する。各ブランチは 1 つの CI agent を再利用しコメントはつかない
 - fork からの pull request はスキップ（GitHub が secrets を隠すため）。pull request のクローズ時にその CI agent を削除する。config ファイルが無い場合は `kubb/init-*` pull request を開いて停止する
-- 出典: Kubb docs 5.x（kubb@5.11.0 pin）。`secrets.KUBB_STUDIO_TOKEN` は説明用のシークレット名で、原文の値ではない
+- 出典: https://kubb.dev/docs/5.x/reference/github-actions （kubb@5.11.0 の docs/5.x/reference/github-actions.md）。`secrets.KUBB_STUDIO_TOKEN` は説明用のシークレット名で、原文の値ではない
 
 ## Related
 

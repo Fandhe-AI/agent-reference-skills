@@ -21,6 +21,7 @@ List `docs` in `files` in `package.json` so npm ships it.
 
 ## Notes
 
+- 出典: https://kubb.dev/docs/5.x/reference/kit/extension-docs （kubb@5.11.0 の docs/5.x/reference/kit/extension-docs.md）
 - The registry ignores other files in `docs/`. It skips a file larger than 256 KiB and reports it.
 - Start each file with a `#` title on its first line. The first paragraph after the title is the description (guide cards, search, meta description). Files have no frontmatter.
 - Name each guide file in kebab case, such as `base-url.md`; the id is the file name without `.md`. Guides appear in file name order, at most 50. A guide without a title, a description, or a kebab-case id is not listed.

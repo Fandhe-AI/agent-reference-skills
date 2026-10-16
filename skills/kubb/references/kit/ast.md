@@ -156,6 +156,7 @@ type PrinterNodes = Partial<{
 
 ## Notes
 
+- 出典: https://kubb.dev/docs/5.x/reference/kit/ast （kubb@5.11.0 の docs/5.x/reference/kit/ast.md）
 - `macroDiscriminatorEnum`, `macroEnumName`, and `macroRenameSchema` read options, so call them to build the macro. Plugins that import another plugin's output compute names from the nodes they see, so register a rename on every plugin that touches the schema (for example pass one shared `macros` array to each plugin).
 - Pass printer overrides through the `overrides` field rather than spreading them into `nodes`, otherwise `this.base` cannot find the original handler. The `printer.nodes` option on `@kubb/plugin-ts`, `@kubb/plugin-zod`, and `@kubb/plugin-faker` feeds this map.
 - Printer handlers run with a `this` context, so write them as regular functions, not arrow functions. `this.transform(node)` recurses through the full handler map, `this.base(node)` runs the built-in handler, `this.options` reads resolved printer options, and `this.import(ast.factory.createImport(...))` declares an import. In your own generator, call `printer.drainImports()` after printing to collect them.

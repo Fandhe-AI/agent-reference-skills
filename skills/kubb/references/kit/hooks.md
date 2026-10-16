@@ -86,6 +86,10 @@ Carry log messages and diagnostics; can fire at any point.
 | `kubb:error` | `{ error, meta }` | An unstructured error, so its stack survives |
 | `kubb:diagnostic` | `{ diagnostic }` | A structured diagnostic (warning, info, or an update notice) |
 
+## Notes
+
+- 出典: https://kubb.dev/docs/5.x/reference/kit/hooks （kubb@5.11.0 の docs/5.x/reference/kit/hooks.md）
+
 ## Related
 
 - [Plugins](./plugins.md)

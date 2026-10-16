@@ -17,7 +17,7 @@ export default defineConfig({
   plugins: [
     pluginTs(),
     pluginZod(),
-    pluginClient({ importPath: '../../../client', validator: 'zod' }),
+    pluginClient({ importPath: '../../client', validator: 'zod' }),
   ],
 })
 ```
@@ -56,6 +56,7 @@ const validatedBody = result && 'value' in result ? result.value : body
 - `validatedBody` を `data` として返すと、値を変換する schema が有効になる。response schema がなければ `validatedBody` は元の `body`
 - `validator: { request: 'zod' }` または `{ response: 'zod' }` で片方向のみ渡せる
 - plugin 一覧に `pluginZod()` がないと、生成はエラーで停止する
+- `importPath` was changed from the upstream guide: the upstream snippet omits `group` but points one directory higher, which assumes `group: { type: 'tag' }` (output in `src/gen/clients/<tag>/`). Without `group`, files go to `src/gen/clients/`, so `../../client` resolves to `src/client.ts` (see plugins/plugin-client.md)
 - Source: https://kubb.dev/extensions/kubb-labs/plugin-client/guides/validate-requests-and-responses （`@kubb/plugin-client@5.5.15`）
 
 ## Related

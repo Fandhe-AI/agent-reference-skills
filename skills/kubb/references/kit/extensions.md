@@ -76,6 +76,7 @@ A function form `dependencies: (options) => ({ ... })` receives the user's optio
 
 ## Notes
 
+- 出典: https://kubb.dev/docs/5.x/reference/kit/extensions （kubb@5.11.0 の docs/5.x/reference/kit/extensions.md）
 - `definePlugin`, `defineParser`, and `createAdapter` are deprecated. Each takes the same definition object as `defineExtension`, without `kind`; pass it to `defineExtension` and add `kind: 'plugin'`, `'parser'`, or `'adapter'`.
 - Read `version` from `package.json` (`import { version } from '../package.json'`). A package shipping `kubb-extension.json` imports `compatibility` from it.
 - Before any plugin runs, Kubb checks each plugin's and parser's `meta.compatibility` against the running `@kubb/core` and Node.js versions. A mismatch fails with `KUBB_INCOMPATIBLE_EXTENSION`. Prerelease versions are compared like regular ones.

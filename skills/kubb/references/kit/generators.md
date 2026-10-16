@@ -77,6 +77,7 @@ const getOnlyGenerator = defineGenerator({
 
 ## Notes
 
+- 出典: https://kubb.dev/docs/5.x/reference/kit/generators （kubb@5.11.0 の docs/5.x/reference/kit/generators.md）
 - A `false` result from `match(node, ctx)` skips that node; omitting `match` runs the generator for every node. `match` does not filter `operations()`.
 
 ## Related

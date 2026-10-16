@@ -89,6 +89,7 @@ type ResolverPatch = {
 
 ## Notes
 
+- 出典: https://kubb.dev/docs/5.x/reference/kit/resolvers （kubb@5.11.0 の docs/5.x/reference/kit/resolvers.md）
 - A top-level `name` replaces on merge, while `file` and each namespace merge per member, so overriding `query.name` keeps the base `query.keyName`.
 - Type a patch with `ResolverPatch<T>` to keep `this` and namespace shapes checked against the target resolver.
 - Methods run with a `this` bound to the full, merged resolver; write them as regular functions, not arrow functions. `this.default.name(name)` always applies Kubb's core `camelCase` default.

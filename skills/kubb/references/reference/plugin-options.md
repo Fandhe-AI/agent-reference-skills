@@ -190,7 +190,7 @@ pluginTs({ macros: [macroUntagged] })
 - `output` を自前で渡すときは `barrel` も再指定する。省略すると `config.output.barrel` にフォールバックする
 - `group` はディレクトリ出力が前提。`output.mode: 'file'` との併用は `KUBB_INVALID_PLUGIN_OPTIONS` でビルド停止
 - client plugin（`@kubb/plugin-fetch` / `@kubb/plugin-axios`）が operation を `exclude` すると、それを土台とする plugin（`@kubb/plugin-react-query` / `@kubb/plugin-vue-query` / `@kubb/plugin-swr` / `@kubb/plugin-mcp`）も同じ operation をスキップする。`returnType` / `output` / `group` の `override` も同様に追従する
-- 出典: Kubb docs 5.x（kubb@5.11.0 pin）
+- 出典: https://kubb.dev/docs/5.x/reference/plugin-options （kubb@5.11.0 の docs/5.x/reference/plugin-options.md）
 
 ## Related
 

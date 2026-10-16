@@ -46,6 +46,7 @@ export const memoryStorage = createStorage(() => {
 
 ## Notes
 
+- 出典: https://kubb.dev/docs/5.x/reference/kit/storage （kubb@5.11.0 の docs/5.x/reference/kit/storage.md）
 - `fsStorage` is the default backend. It writes under `output.path` and creates directories as needed.
 - `memoryStorage` writes nothing to disk, so it suits plugin tests, CI validation, and dry runs.
 - Both go straight into the config's `storage` field.

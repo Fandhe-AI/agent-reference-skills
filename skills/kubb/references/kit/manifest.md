@@ -79,6 +79,7 @@ export const pluginExample = defineExtension({
 
 ## Notes
 
+- 出典: https://kubb.dev/docs/5.x/reference/kit/manifest （kubb@5.11.0 の docs/5.x/reference/kit/manifest.md）
 - Readers ignore unknown top-level keys.
 - Generation does not read the manifest; at runtime Kubb reads the extension's `meta`. Import only `compatibility` so a bundler leaves the rest (including `options`) out of your build.
 - `kubb add` and `kubb update` check `compatibility` before installing.

@@ -69,6 +69,7 @@ export const pluginExample = defineExtension({
 
 ## Notes
 
+- 出典: https://kubb.dev/docs/5.x/reference/kit/plugins （kubb@5.11.0 の docs/5.x/reference/kit/plugins.md）
 - `definePlugin` is deprecated. Use `defineExtension` with `kind: 'plugin'`: rename the call and add `kind: 'plugin'`. The plugin's own `name` is deprecated in favor of `meta.name`.
 - The `Plugin` the factory returns keeps the user's raw options in `plugin.options`.
 - `useKubb()` returns the whole setup context; `tryUseKubb()` returns `undefined` outside setup instead of throwing.

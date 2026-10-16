@@ -23,6 +23,7 @@ kubb/esbuild  kubb/farm  kubb/nuxt  kubb/astro
 
 ## Notes
 
+- 出典: https://kubb.dev/docs/5.x/integrations/overview （kubb@5.11.0 の docs/5.x/integrations/overview.md）
 - Vite・Nuxt・Astro はビルド時のみ生成する。開発サーバーを起動する前に `kubb generate` を実行する
 - バンドラー連携は CLI より適用される既定値が少ない: Markdown パーサーなし、reporters なし、`output.postGenerate` コマンドなし（原文は reference/configuration の Defaults を参照）
 - 本ページはオーバービュー。ビルドツール別ページ（vite / webpack / rollup / rolldown / rspack / esbuild / farm / nuxt / astro）はこのカテゴリには含まれない

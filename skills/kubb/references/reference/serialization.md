@@ -55,7 +55,7 @@ header は `simple`、cookie は `form` スタイルでスタイル固定、`exp
 
 - Query の配列は spec が別途指定しない限り繰り返しキーに展開される。`spaceDelimited` / `pipeDelimited` は `explode: true` だと `form` と同じ繰り返しキーに戻り、区切り文字は `explode: false` のときのみ現れる
 - カスタム serializer・body codec・レスポンスのデコード・バリデーションは plugin-fetch の「Configure serialization」ガイドを参照（`/extensions/kubb-labs/plugin-fetch/guides/serialization`）
-- 出典: Kubb docs 5.x（kubb@5.11.0 pin）
+- 出典: https://kubb.dev/docs/5.x/reference/serialization （kubb@5.11.0 の docs/5.x/reference/serialization.md）
 
 ## Related
 

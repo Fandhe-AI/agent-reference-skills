@@ -89,6 +89,7 @@ throw new Diagnostics.Error({
 
 ## Notes
 
+- 出典: https://kubb.dev/docs/5.x/reference/kit/engine （kubb@5.11.0 の docs/5.x/reference/kit/engine.md）
 - `createKubb` applies the same defaults as `defineConfig`, so a shared config generates the same files from the CLI and from a script. Import it from `@kubb/core` for a bare engine without package defaults.
 - After `safeBuild()`, check `Diagnostics.hasError(diagnostics)` before you process files. Plugins can fail without `safeBuild()` throwing.
 - Use it when orchestrating several builds, inspecting diagnostics, or feeding Kubb output into a larger toolchain.

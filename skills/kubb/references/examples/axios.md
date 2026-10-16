@@ -65,7 +65,7 @@ export default defineConfig(() => {
 
 ## Notes
 
-- Source: `examples/axios` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (kubb.config.ts, package.json). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo.
+- Source: https://github.com/kubb-labs/plugins/tree/@kubb/plugin-client@5.5.15/examples/axios — `examples/axios` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (kubb.config.ts, package.json). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo.
 - This example uses the newer config shape (`kubb/config`, `adapterOas`, `postGenerate`, `barrel`, `@kubb/plugin-axios`), which differs from the older `@kubb/core` + `pluginOas` + `pluginClient` shape shown in `fetch.md`.
 - The package declares `node >=22.12`.
 

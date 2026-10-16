@@ -254,7 +254,7 @@ await renderer.render(
 - 設定後、plugin 内の `.tsx` は `jsx-runtime` / `jsx-dev-runtime` を `kubb/jsx` から自動解決する
 - `Type` の `name` が大文字で始まらないとコンポーネントが throw する
 - JavaScript コンポーネントは `File.Source` 内にネストして `.ts` ファイルへ書き出す
-- 出典: Kubb docs 5.x（kubb@5.11.0 pin）
+- 出典: https://kubb.dev/docs/5.x/reference/jsx （kubb@5.11.0 の docs/5.x/reference/jsx.md）
 
 ## Related
 

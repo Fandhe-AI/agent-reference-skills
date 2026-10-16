@@ -64,6 +64,7 @@ export default defineConfig({
 
 ## Notes
 
+- 出典: https://kubb.dev/docs/5.x/reference/kit/adapters （kubb@5.11.0 の docs/5.x/reference/kit/adapters.md）
 - For OpenAPI 2.0, 3.0, and 3.1 use the official `@kubb/adapter-oas`; Kubb picks it when `defineConfig` is imported from the `kubb` package. Write a custom adapter only for other specs (AsyncAPI, GraphQL, JSON Schema, gRPC).
 - `createAdapter` is deprecated. Use `defineExtension` with `kind: 'adapter'`: rename the call and add `kind: 'adapter'`.
 - Cross-references need no adapter hook: every plugin resolves `$ref` imports through `resolver.imports`, which defaults each ref to its pointer's last segment. An adapter that renames a schema stamps `targetName` on every ref node pointing at it.

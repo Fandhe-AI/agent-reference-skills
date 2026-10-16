@@ -62,6 +62,7 @@ if (!response.ok) throw new Error(`GitLab answered ${response.status}`)
 
 ## Notes
 
+- 出典: https://kubb.dev/docs/5.x/integrations/gitlab （kubb@5.11.0 の docs/5.x/integrations/gitlab.md）
 - 前提: Kubb 5.6.2 以降の `kubb.config.ts`、Kubb Studio 組織と組織 CI API キー（`KUBB_TOKEN`）。インストール用は別の registry キー（詳細は [ci.md](./ci.md)）
 - ノートの書き込みには `api` スコープ付きのプロジェクトアクセストークンを `GITLAB_API_TOKEN` として保存する。`CI_JOB_TOKEN` にはそのスコープがない
 - スナップショットは 7 日で失効する。デフォルトブランチ実行のスケジュールを検討する

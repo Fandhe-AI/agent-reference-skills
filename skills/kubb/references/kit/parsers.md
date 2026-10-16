@@ -65,6 +65,7 @@ export default defineConfig({
 
 ## Notes
 
+- 出典: https://kubb.dev/docs/5.x/reference/kit/parsers （kubb@5.11.0 の docs/5.x/reference/kit/parsers.md）
 - For TypeScript and JavaScript output use the built-in `@kubb/parser-ts`, added by default when `defineConfig` is imported from the `kubb` package. Build a custom parser only for other languages.
 - `defineParser` is deprecated. Use `defineExtension` with `kind: 'parser'`: rename the call and add `kind: 'parser'`.
 - If two parsers register the same extension, the last one in the `parsers` array wins.
