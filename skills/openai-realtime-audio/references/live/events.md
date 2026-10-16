@@ -84,7 +84,7 @@ Endpoints:
 | Endpoint | Path | Notes |
 |----------|------|-------|
 | Primary WebSocket | `WS /v1/live/sessions` | Send audio and control events; send `session.start` first, wait for `session.started` before audio |
-| Sideband WebSocket | `WS /v1/live/sessions/{session_id}/attach` | Attaching does not create a session or replay earlier events; receives reflected input and output audio; do not send `session.start` or `session.input_audio.append`; no required first message; for Responses delegation, tool choice can be updated but the delegation type cannot change |
+| Sideband WebSocket | `WS /v1/live/sessions/{session_id}/attach` | Attaching does not create a session or replay earlier events (general API reference); exception: for SIP calls, the sideband replays call-progress events from the preceding 3 seconds, so attach immediately after creation and deduplicate by `event_id` (see sip.md); receives reflected input and output audio; do not send `session.start` or `session.input_audio.append`; no required first message; for Responses delegation, tool choice can be updated but the delegation type cannot change |
 | Fork WebSocket | `WS /v1/live/sessions/{session_id}/fork` | Starts a new session from stored state; send `session.start` with an overrides object; do not supply a new model; omitted settings (including `store`) are inherited; may override Responses delegation settings, storage, and the new WebSocket audio format; frontend client permissions apply only to WebRTC forks |
 
 Client events (primary and fork list all; sideband omits `session.start`):

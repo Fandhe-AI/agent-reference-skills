@@ -9,6 +9,8 @@ import OpenAI from "openai";
 import { LiveWS } from "openai/resources/live/ws";
 
 const ws = new LiveWS(new OpenAI());
+let started = false;
+let closing = false;
 
 ws.socket.on("open", () => {
   ws.send({
@@ -34,8 +36,17 @@ ws.socket.on("open", () => {
   });
 });
 
+process.stdin.on("data", (chunk) => {
+  if (!started || closing || ws.socket.readyState !== 1) return;
+  ws.send({
+    type: "session.input_audio.append",
+    audio: chunk.toString("base64"),
+  });
+});
+
 ws.on("event", (event) => {
   if (event.type === "session.started") {
+    started = true;
     console.error("Session ready", event.session.id);
   } else if (event.type === "session.output_audio.delta") {
     process.stdout.write(Buffer.from(event.delta, "base64"));
@@ -45,11 +56,19 @@ ws.on("event", (event) => {
   }
 });
 
-// stream microphone audio
-ws.send({ type: "session.input_audio.append", audio: base64Chunk });
-// end the conversation
-ws.send({ type: "session.close" });
+// end the conversation (only after session.started)
+process.on("SIGINT", () => {
+  if (closing) return;
+  if (!started || ws.socket.readyState !== 1) {
+    ws.socket.platformSocket.terminate();
+    return;
+  }
+  closing = true;
+  ws.send({ type: "session.close" });
+});
 ```
+
+Abridged from the official example; stdin carries raw mono PCM16 at 24 kHz and the full guide also handles odd-length chunk boundaries and a 15-second close timeout.
 
 ## Options / Props
 

@@ -101,7 +101,7 @@ Sideband events:
 - GPT-Live SIP support must be enabled for the project and the provider trunk routed to it. SIP signaling uses TLS and call audio requires SRTP. SIP negotiates the audio format, so omit `audio.format`.
 - Assign one handler per side effect so duplicate webhook deliveries or events seen on multiple connections do not run tools twice.
 - Outbound calling must be enabled for the organization and is available through the Live API, not the Realtime API call-creation endpoint. Trunk must support TLS signaling, Opus, and SDES-SRTP. Provider URL must use `sips:` with no credentials, paths, URI headers, or parameters; local hostnames and private/local IPs are rejected.
-- Attach the sideband immediately after creation: it replays only the preceding 3 seconds of events; deduplicate by `event_id`.
+- Attach the sideband immediately after creation: it replays only the preceding 3 seconds of events; deduplicate by `event_id`. This replay is specific to SIP call-progress events; a general sideband attach does not replay earlier events (see events.md; sources: sideband-websocket API reference and the voice-sip guide).
 - Limits: 1 MiB request body; ringing 3 minutes; connected call 2 hours (not configurable). `403 outbound_sip_not_enabled`; transport setup failures can return `502`; initialization timeouts `504`.
 - Each creation request places a new call; `X-Client-Request-Id` does not deduplicate. Do not auto-retry after an ambiguous timeout.
 - Keep the sideband open until `session.closed` supplies final usage.

@@ -31,6 +31,7 @@ response.status(201).json(result);
 Browser (connection core):
 
 ```javascript
+let ready = false;
 const connection = new RTCPeerConnection();
 connection.addEventListener("track", (event) => {
   audio.srcObject = new MediaStream([event.track]);
@@ -44,7 +45,7 @@ for (const track of microphone.getAudioTracks()) {
 events = connection.createDataChannel("oai-events");
 events.addEventListener("message", ({ data }) => {
   const event = JSON.parse(data);
-  if (event.type === "session.started") { /* ready */ }
+  if (event.type === "session.started") { ready = true; }
   else if (event.type === "session.closed") { console.log("Final session usage", event.usage); }
 });
 
@@ -60,8 +61,12 @@ const result = await response.json();
 await connection.setRemoteDescription({ type: "answer", sdp: result.transport.sdp });
 // The HTTP request started this session. Do not send session.start here.
 
-// To end: keep media and events alive until session.closed
-events.send(JSON.stringify({ type: "session.close" }));
+// To end (e.g. from a stop button click handler): keep media and events
+// alive until session.closed
+stop.addEventListener("click", () => {
+  if (!ready || !events || events.readyState !== "open") return;
+  events.send(JSON.stringify({ type: "session.close" }));
+});
 ```
 
 Response (HTTP 201):
