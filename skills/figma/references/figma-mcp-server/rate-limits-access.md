@@ -28,6 +28,7 @@ Education plans have the same limits as Full and Dev seats on the Professional p
 - Figma Weave tools use Weave credits instead of Figma AI credits.
 - Enterprise-managed authorization is supported for Claude through Okta Cross App Access (XAA): members sign in once through Okta and Claude can use the Figma MCP server without a separate Figma sign-in.
 - Permission errors: the MCP server only works with Figma files the account already has access to. Check the link is a Figma Design, FigJam, or Figma Make file; run `whoami` to see the signed-in email, plans, and seats; make sure the account belongs to the plan that owns the file.
+- Source: https://developers.figma.com/docs/figma-mcp-server/rate-limits-access/ (fetched 2026-10-17)
 
 ## Related
 

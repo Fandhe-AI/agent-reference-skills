@@ -45,6 +45,7 @@ Body of the example skill creates styles via `use_figma`:
 - Best practices: write descriptions like routing rules (say when to use and when not to); keep `SKILL.md` focused and move detail to supporting files; make high-risk skills manual only via the client's option such as `disable-model-invocation`.
 - Test on a duplicate or example file. Run with `/<skill-name>` in Claude Code, `/skills` or `$` in Codex, `/` in Cursor Agent chat.
 - Browse shared skills in the Figma Community (`figma.com/community/skills`) and the `figma/community-resources` GitHub repo (`agent_skills`).
+- Source: https://developers.figma.com/docs/figma-mcp-server/create-skills/ (fetched 2026-10-17)
 
 ## Related
 

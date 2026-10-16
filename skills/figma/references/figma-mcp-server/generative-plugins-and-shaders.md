@@ -70,6 +70,7 @@ Rename only: `update_shader({ id, kind: "fill", files: [], metadata: { name: "..
 - Generative plugins: `code.ts` is the only file that can use the Figma Plugin API and opens the panel with `figma.showUI(__html__, …)`; `ui.html` is the only file that can use browser DOM APIs; they communicate only through messages. The panel uses PropsKit `fig-*` elements (`<fig-content>`, `<fig-field>`, `<fig-footer>`, `<fig-slider>`, `<fig-input-number>`, `<fig-button>`, etc.). PropsKit colors are hex and gradient stops 0 to 100, while the Plugin API uses 0 to 1. PropsKit is only for generative plugins.
 - Through the MCP server you also can't create new files, add imports / dependencies / build settings the tools can't deploy, or send only the changed part of a file.
 - Export to code: when a selection includes shader fills or effects, `get_design_context` includes a lightweight shader runtime written as React components. Tell the agent to use the runtime and shader source rather than a CSS approximation, that HTML-in-Canvas is required, and to translate the runtime for non-React frameworks.
+- Source: https://developers.figma.com/docs/figma-mcp-server/generative-plugins-and-shaders/ (fetched 2026-10-17)
 
 PropsKit panel example:
 

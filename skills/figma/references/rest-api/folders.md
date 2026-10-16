@@ -86,6 +86,7 @@ X-Figma-Token: <token>
 - Use GET folder subfolders to traverse below the top-level folders returned by GET team folders.
 - GET folder metadata is the v2 replacement for the project metadata endpoint. `thumbnail_url` may be null if the folder has no files.
 - Paths use `/v2/`, unlike the `/v1/` Projects endpoints.
+- Source: https://developers.figma.com/docs/rest-api/folders-endpoints/ (fetched 2026-10-17)
 
 ## Related
 

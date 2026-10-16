@@ -27,14 +27,18 @@ npx figma connect migrate [options]
 - Testing in Figma: set a temporary `label` and limit `include` in `figma.config.json` so publish / unpublish does not affect existing Code Connect (see below).
 - MCP skill route: with Claude Code and the Figma plugin installed, a component published to a team library, and a Professional, Organization, or Enterprise plan, ask Claude to create a template for a Figma URL, or invoke `/figma-code-connect (url: <figma url>)`. It inspects the component properties, finds the matching code component, confirms the match with you, then writes a `.figma.ts` file alongside existing Code Connect files. Review the output, then run `npx figma connect publish`.
 - Finishing up: delete remaining parser-based files (e.g. `*.figma.tsx` for the React parser) and remove parser-specific fields from `figma.config.json`: `parser`, `importPaths` (React only), `paths` (React only), `imports` (React only), `xcodeprojPath` (SwiftUI only), `sourcePackagesPath` (SwiftUI only), `importMapping` (SwiftUI only).
+- The official migration guide shows the test configuration keys at the top level; in `figma.config.json` they belong under the `codeConnect` object (see [Config File](./config-file.md)).
+- Source: https://developers.figma.com/docs/code-connect/templates-migration-guide/ (fetched 2026-10-17)
 
 Test configuration and publish / unpublish:
 
 ```json
 {
-  "include": ["**/*.figma.ts"],
-  "label": "TEST",
-  "language": "jsx"
+  "codeConnect": {
+    "include": ["**/*.figma.ts"],
+    "label": "TEST",
+    "language": "jsx"
+  }
 }
 ```
 

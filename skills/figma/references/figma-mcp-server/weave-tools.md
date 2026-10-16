@@ -34,6 +34,7 @@ All Weave tools need no Figma file.
 - A Weave link `app.weavy.ai/tool/<id>` or `app.weavy.ai/flow/<id>` gives the tool's `recipeId` as `<id>`, so `weave_list_tools` can be skipped.
 - For published tool runs use `weave_get_tool_run_output`; for model runs use `weave_get_model_run_output`.
 - Media inputs for `weave_run_model` come from `weave_upload_asset`, an earlier run's output, or a public HTTPS link.
+- Source: https://developers.figma.com/docs/figma-mcp-server/tools-and-prompts/ (Figma Weave section; fetched 2026-10-17)
 
 ## Related
 

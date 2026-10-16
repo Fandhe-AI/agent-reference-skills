@@ -19,6 +19,7 @@ npx figma connect publish --batch-size 50
 - Connectivity issues due to proxies or network security software: some proxies or network security software can prevent Code Connect from communicating with Figma's servers. You may need to explicitly allow connections to `https://api.figma.com/`.
 - 413 errors due to too large uploads: rerun with the `--batch-size` parameter.
 - Feedback can be filed as a GitHub issue at `https://github.com/figma/code-connect/issues/new/choose`.
+- Source: https://developers.figma.com/docs/code-connect/common-issues/ (fetched 2026-10-17)
 
 ## Related
 

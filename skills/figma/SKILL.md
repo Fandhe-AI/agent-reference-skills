@@ -1,11 +1,12 @@
 ---
 name: figma
 description: >
-  Figma REST API / Plugin API / Widget API / Code Connect / MCP Server リファレンス
-  OAuth / PAT / Plan Access Token, files, folders, variables, VariableComposedColor, webhooks, SCIM
-  FrameNode, figma.variables, figma.codegen, textWrapStyle, variable fonts, useSyncedState, AutoLayout
-  Code Connect template files (.figma.ts) / legacy parser (React / SwiftUI / Compose / HTML)
-  MCP html_to_figma, generate_image, get_motion_context, generative plugins / shaders, Figma Weave
+  Figma REST API / Plugin API / Widget API / Code Connect / MCP Server / Dev Mode リファレンス
+  OAuth / PAT / Plan Access Token, files, folders, variables, VariableComposedColor, webhooks, SCIM, Dev Resources, activity-logs, library-analytics
+  FrameNode, TextNode, ComponentNode, figma.variables, figma.codegen, figma.ui, textWrapStyle, variable fonts
+  Widget useSyncedState, useSyncedMap, usePropertyMenu, AutoLayout
+  Code Connect template files (.figma.ts) / legacy parser / custom parsers / register / Storybook (React / SwiftUI / Compose / HTML)
+  MCP Code to Canvas, Write to Canvas, html_to_figma, generate_image, get_motion_context, generative plugins / shaders, Figma Weave
 user-invocable: false
 ---
 
