@@ -51,7 +51,7 @@ export default memo(ResizableNode);
 - The node must have `style={{ width, height }}` or an explicit size for resizing to work properly.
 - Use `<NodeResizeControl />` for a single custom resize handle instead of the full set.
 - TypeScript users can import `NodeResizerProps` for prop type definitions.
-- Since @xyflow/react 12.12.0 (minor, #5998): onResizeEnd always fires after onResizeStart.
+- Since @xyflow/react 12.12.0 (minor, [xyflow/xyflow#5998](https://github.com/xyflow/xyflow/pull/5998)): `onResizeEnd` always fires after `onResizeStart` ("Always fire onResizeEnd after onResizeStart", [CHANGELOG @xyflow/react@12.12.0](https://github.com/xyflow/xyflow/blob/%40xyflow/react%4012.12.0/packages/react/CHANGELOG.md)).
 
 ## Related
 

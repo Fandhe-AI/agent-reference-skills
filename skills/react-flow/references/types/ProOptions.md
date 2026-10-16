@@ -29,7 +29,7 @@ type ProOptions = {
 
 - By default the React Flow attribution badge (a link to the project) is shown in a corner of the flow.
 - Official policy: "We can't legally require you to keep the attribution — React Flow is MIT-licensed — but to keep the library MIT, we need your support. Our policy is simple: attribution visible, no subscription needed; no attribution, please subscribe."
-- Since @xyflow/react 12.11.4 (#5962), a one-time `console.warn` is shown in development (`NODE_ENV === 'development'`) when the attribution is hidden (text in `packages/system/src/utils/attribution.ts`).
+- Since @xyflow/react 12.11.4 ([xyflow/xyflow#5962](https://github.com/xyflow/xyflow/pull/5962)), a one-time `console.warn` is shown in development (`NODE_ENV === 'development'`) when the attribution is hidden (text in [`packages/system/src/utils/attribution.ts`](https://github.com/xyflow/xyflow/blob/%40xyflow/react%4012.12.0/packages/system/src/utils/attribution.ts); [CHANGELOG @xyflow/react@12.12.0](https://github.com/xyflow/xyflow/blob/%40xyflow/react%4012.12.0/packages/react/CHANGELOG.md)).
 - Review the [attribution policy](https://reactflow.dev/remove-attribution) before hiding the attribution.
 
 ## Related

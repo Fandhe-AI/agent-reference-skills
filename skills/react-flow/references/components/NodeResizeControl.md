@@ -59,7 +59,7 @@ export default memo(ResizableNode);
 - Use `<NodeResizer />` when you want the full set of resize handles in all directions.
 - `shouldResize` returning `false` cancels the resize for that event.
 - TypeScript users can import `ResizeControlProps` for prop type definitions.
-- Since @xyflow/react 12.12.0 (minor, #5998): onResizeEnd always fires after onResizeStart.
+- Since @xyflow/react 12.12.0 (minor, [xyflow/xyflow#5998](https://github.com/xyflow/xyflow/pull/5998)): `onResizeEnd` always fires after `onResizeStart` ("Always fire onResizeEnd after onResizeStart", [CHANGELOG @xyflow/react@12.12.0](https://github.com/xyflow/xyflow/blob/%40xyflow/react%4012.12.0/packages/react/CHANGELOG.md)).
 
 ## Related
 
