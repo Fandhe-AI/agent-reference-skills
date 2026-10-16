@@ -33,6 +33,7 @@ Requirements:
 
 ## Notes
 
+- The Requirements table is reproduced as-is from the catalog page and applies to the original (Windows 8) effect set; effects added later (e.g. Alpha mask, Cross fade, Tint, HDR tone map, White level adjustment, YCbCr) are declared in d2d1effects_1.h / d2d1effects_2.h and require newer Windows versions. Check each effect's own page for its minimum OS and header.
 - This page lists the CLSIDs only; per-effect property enumerations (e.g. `D2D1_GAUSSIANBLUR_PROP_STANDARD_DEVIATION`) are documented on each effect's own page and are not reproduced here.
 - Built-in effects support effect shader linking, and some may emit colors outside [0, 1]; see the precision page for `ClampOutput` handling.
 - The effects overview page also names the categories "Filtering", "Composition and Blending", "Transparency", "Color", "Lighting and Stylizing", "Transforming and Scaling" and "Sources"; the headings above follow this catalog page.
