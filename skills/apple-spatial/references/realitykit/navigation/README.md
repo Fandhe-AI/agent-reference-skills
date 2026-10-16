@@ -1,7 +1,8 @@
-# navigation
+# Navigation
 
 | Name | Description | Path |
 |------|-------------|------|
-| NavigationComponent | Defines which areas of a navigation mesh an entity can move through | [navigationcomponent.md](./navigationcomponent.md) |
-| NavigationMeshComponent | Supplies the baked navigation mesh resources an entity uses for pathfinding | [navigationmeshcomponent.md](./navigationmeshcomponent.md) |
-| NavigationController | Computes and tracks paths for an entity across a scene's navigation mesh | [navigationcontroller.md](./navigationcontroller.md) |
+| NavigationComponent | A component that defines which areas of a navigation… | [navigationcomponent.md](./navigationcomponent.md) |
+| NavigationController | An interface for finding paths for an entity moving… | [navigationcontroller.md](./navigationcontroller.md) |
+| NavigationMeshComponent | A component that provides the navigation meshes an entity… | [navigationmeshcomponent.md](./navigationmeshcomponent.md) |
+| NavigationMeshResource | A representation of a scene's navigable surfaces that the… | [navigationmeshresource.md](./navigationmeshresource.md) |

@@ -25,7 +25,7 @@ if let path = await controller.computePath(to: targetPosition) {
 
 ## Notes
 
-- Available (beta): iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+
+- Available: iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+
 - `init(entity:)` throws and requires the entity to already carry a `NavigationComponent`.
 - Synchronous/callback style: `requestPath(to:)`, `requestPath(from:to:)`, `stopPathfind()` cancels an in-progress pathfind; read the result from `currentPath`.
 - Async style: `computePath(to:)`, `computePath(from:to:)` return `[NavigationMeshResource.PathNode]?` directly (`nil` on failure).
