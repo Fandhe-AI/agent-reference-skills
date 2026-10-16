@@ -29,7 +29,7 @@ const transition = {
 | `delay` | number | `0` | Seconds before animation starts |
 | `repeat` | number | `0` | Repetition count (`Infinity` for continuous) |
 | `repeatType` | string | `"loop"` | How to repeat: loop, reverse, or mirror |
-| `bounce` | number | `0.25` | Spring bounciness (0-1 range) |
+| `bounce` | number | `0.25` | Spring bounciness (-1 to 1 range; negative values make the spring overdamped: quicker start, slower settle with no overshoot, same arrival time as `0`) |
 | `stiffness` | number | `1` | Spring tension intensity |
 | `damping` | number | `10` | Spring opposing force |
 

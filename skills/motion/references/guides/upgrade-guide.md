@@ -21,6 +21,8 @@ import { motion } from "motion/react"
 
 Breaking changes by major version:
 
+- **14.0** — No breaking changes in Motion for React or JavaScript. Deprecates some internal APIs and introduces stricter versioning between Motion's internal dependencies.
+- **13.0** — No breaking changes for JavaScript users. In Motion for React, the optional dependency `@emotion/is-prop-valid` was removed in favour of explicit injection via `<MotionConfig isValidProp={isPropValid}>` (affects Styled Components / Emotion users).
 - **12.0** — No breaking changes in Motion for React (see the JavaScript upgrade guide for vanilla JS changes).
 - **11.0** — Multiple `MotionValue` updates in the same frame exclude intermediate values from velocity calc. Render scheduling moved from synchronous to microtask; Jest tests must `await nextFrame()` before asserting styles.
 - **10.0** — Removed `IntersectionObserver` fallback for `whileInView`. Deprecated `exitBeforeEnter` now throws; use `mode="wait"`.

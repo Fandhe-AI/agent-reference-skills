@@ -20,8 +20,8 @@ const { value, done } = generator.next(10) // sample at 10ms
 |------|------|---------|-------------|
 | `keyframes` | `[number, number]` | required | Start and end values |
 | `duration` | number | `800` | Duration in milliseconds |
-| `visualDuration` | number | — | Override duration (seconds); when bulk motion completes |
-| `bounce` | number | `0.25` | Bounciness from 0 (none) to 1 (extreme) |
+| `visualDuration` | number | — | Time in seconds the animation takes to visually appear to reach its target; overrides `duration` when set. The bulk of the transition occurs before this time and the "bouncy bit" mostly after |
+| `bounce` | number | `0.25` | Bounciness from -1 to 1. `0` is no bounce (critically damped), `1` is extremely bouncy. Negative values make the spring overdamped: it starts quicker, then settles more slowly into its target with no overshoot, arriving at the same time as `0` (added in 13.5.0) |
 | `stiffness` | number | `1` | Spring stiffness; higher = more sudden |
 | `damping` | number | `10` | Opposing force; 0 = infinite oscillation |
 | `mass` | number | `1` | Mass; higher = more sluggish |

@@ -1,6 +1,6 @@
 # Reorder
 
-Drag-to-reorder lists with automatic layout animations. `Reorder.Group` wraps the list and manages ordering; `Reorder.Item` represents each draggable element.
+Drag-to-reorder lists and grids with automatic layout animations. `Reorder.Group` wraps the list and manages ordering; `Reorder.Item` represents each draggable element.
 
 ## Signature / Usage
 
@@ -31,7 +31,7 @@ function List() {
 |------|------|-------------|
 | `values` | array | The array being reordered; each entry maps to a `Reorder.Item` value |
 | `onReorder` | function | Callback receiving the new order; use it to update state |
-| `axis` | "x" \| "y" | Direction of reorder detection (default `"y"`) |
+| `axis` | "x" \| "y" \| "xy" | Axis used for dragging and reorder detection. Auto-detected by default: `"x"` for a row, `"y"` for a column, `"xy"` for grids and wrapped layouts. Set to override |
 | `as` | string | HTML element to render as (default `"ul"`) |
 
 ### Reorder.Item
@@ -43,6 +43,7 @@ function List() {
 
 ## Notes
 
+- Added in 13.1.0 (CHANGELOG): multidimensional reorder, automatic axis detection, and RTL support.
 - Items automatically animate to new positions when reordered, added, or removed.
 - Pair with `AnimatePresence` for entry/exit effects.
 - Lists inside scrollable containers auto-scroll while dragging.

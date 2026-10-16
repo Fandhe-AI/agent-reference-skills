@@ -24,7 +24,7 @@ const items = ref([0, 1, 2, 3])
 | Component | Name | Default | Description |
 |-----------|------|---------|-------------|
 | `Reorder.Group` | `as` | `"ul"` | Underlying element to render |
-| `Reorder.Group` | `axis` | `"y"` | Direction of reorder detection |
+| `Reorder.Group` | `axis` | auto-detected | Axis of reordering: `"x"`, `"y"` or `"xy"`. Detected from the item layout (`"x"` for rows, `"y"` for columns, `"xy"` for grids or wrapped lists); set to override |
 | `Reorder.Group` | `values` | — | Array of values to reorder |
 | `Reorder.Group` | `onUpdate:values` | — | Callback when items reorder |
 | `Reorder.Item` | `as` | `"li"` | Element for item to render as |

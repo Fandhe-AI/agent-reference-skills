@@ -27,6 +27,13 @@ The first `<li>` waits 0s, the second 0.1s, the third 0.2s, and so on.
 | `from` | `"first" \| "center" \| "last" \| number` | `"first"` | Origin point of the stagger |
 | `ease` | function \| string | `"linear"` | Redistributes delays across total stagger time |
 
+## Notes
+
+- `from` can be set as `"first"`, `"center"`, `"last"`, or a number to specify an index.
+- The `stagger` function doesn't yet support staggered grids; the official physically-aware stagger tutorial explains how this can be calculated dynamically.
+- Setting `stagger` to a negative offset starts animations at staggered mid-points.
+- The motion 14.3.0 CHANGELOG (Added) lists "`stagger`: New `grid`, `from: "edges" | "random"` options". These options and their signatures are not documented on the stagger page, so they are not listed in the table above.
+
 ## Related
 
 - [animate](./animate.md)

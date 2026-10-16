@@ -32,6 +32,7 @@ export default function MyComponent() {
 ## Notes
 
 - Only compatible with React `18.2` and higher.
+- Only `AnimateView` (imported from `motion/react-animate-view`) requires React and React DOM 19.3 or later; all other APIs stay on 18.2 and higher.
 - The package is `motion`; React APIs are imported from `motion/react`.
 - Next.js App Router: add `"use client"` at the top of files that use `motion`. Alternatively import from `motion/react-client` to reduce client-side JavaScript.
 - Vite: no special configuration required.
