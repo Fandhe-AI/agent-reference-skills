@@ -31,6 +31,8 @@ expect(greet('Alice')).toBe('Hello, Alice')
 | `mockResolvedValueOnce(val)` | Returns a resolved promise on the next call only |
 | `mockRejectedValue(err)` | Returns `Promise.reject(err)` |
 | `mockRejectedValueOnce(err)` | Returns a rejected promise on the next call only |
+| `mockThrow(value: unknown): Mock<T>` | Throws `value` whenever the mock is called (v4.1.0+) |
+| `mockThrowOnce(value: unknown): Mock<T>` | Throws `value` on the next call only; chained calls throw consecutively (v4.1.0+) |
 | `mockImplementation(fn)` | Replaces the implementation |
 | `mockImplementationOnce(fn)` | Replaces the implementation for the next call only |
 | `mockClear()` | Resets call history (keeps implementation) |

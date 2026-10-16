@@ -160,6 +160,7 @@ test('without mocked behavior', () => {
 
 ## Notes
 
+- `mockThrow` / `mockThrowOnce` are Mock instance methods since 4.1.0 (see vi.md).
 - The `onUnmatched: 'throw'` error type and message are fixed and cannot be customized. If an `onUnmatched` function throws or returns a rejected promise, the error propagates to the caller.
 - Unmatched calls throw synchronously (even when registered behaviors use `thenResolve`); the official recipe's `.rejects` form does not match the implementation.
 - A `vi.when` chain with no behaviors, or a bare `.calledWith()` with no `then*` action, is never considered exhausted; `toHaveBeenExhausted` always fails for it.

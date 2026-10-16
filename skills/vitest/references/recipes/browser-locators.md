@@ -56,7 +56,7 @@ import type { BrowserPage, Locator } from 'vitest/browser'
 
 locators.extend({
   async clickAndFill(this: BrowserPage | Locator, text: string) {
-    if (this === page) {
+    if (!('click' in this)) {
       throw new TypeError(
         'clickAndFill must be called on a locator, like page.getByRole(\'textbox\').clickAndFill(...)',
       )
@@ -86,7 +86,8 @@ declare module 'vitest/browser' {
 ## Notes
 
 - Prefer returning composed built-in locators over the raw-string form when both can express the query; use the string form only when no chain of built-ins covers it (it bypasses the locator mechanism).
-- `locators.extend` types `this` as `BrowserPage | Locator`. `page` has no `click` / `fill`, so interaction helpers need the `this === page` guard.
+- `locators.extend` types `this` as `BrowserPage | Locator`. `page` has no `click` / `fill`, so interaction helpers need a type guard such as `'click' in this`.
+- The upstream example uses `this === page`, which does not narrow `this` to `Locator` in TypeScript (`BrowserPage` is an object type and stays in the union); this page uses an `in` type guard instead.
 - `locators.extend` is runtime registration only; TypeScript does not know the new methods until `LocatorSelectors` is augmented. `LocatorSelectors` is extended by both `Locator` and `BrowserPage`.
 - Interaction methods do not compose into selectors; use them for action helpers, not query helpers.
 - Source: https://vitest.dev/guide/recipes/browser-locators (Vitest v5.0.5)

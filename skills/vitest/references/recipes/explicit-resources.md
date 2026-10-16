@@ -64,7 +64,8 @@ it('only mocks fetch for the auth call', async () => {
 
 - `using` is block-scoped, so a spy can cover just part of a test; neither `afterEach` nor `onTestFinished` can do that.
 - It avoids enabling the global `restoreMocks: true` config when only a few calls need restoration.
-- Requires TC39 Explicit Resource Management: TypeScript >= 5.2 (with `target: 'es2022'` or higher and the `disposable` lib included by default) and Node.js >= 24 (or Node 22+ with `--harmony`-style flags) for native runtime support.
+- Requires TC39 Explicit Resource Management: TypeScript >= 5.2 with `lib` including `esnext.disposable` (or `esnext`), e.g. `"lib": ["es2022", "esnext.disposable"]` — not included by default for `target: 'es2022'` — and Node.js >= 24 (or Node 22+ with `--harmony`-style flags) for native runtime support.
+- Upstream says the `disposable` lib is "included by default" for `target: 'es2022'`; this page corrects that, since TypeScript needs `esnext.disposable` in `lib`.
 - Fallback when unsupported: `onTestFinished` registers cleanup inline and runs after the test regardless of pass or failure, but cannot tear down a spy mid-test:
 
 ```ts

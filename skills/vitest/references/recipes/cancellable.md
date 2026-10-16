@@ -8,7 +8,7 @@ Use the test context `signal` (since 3.2.0) so resources such as `fetch`, child 
 import { test } from 'vitest'
 
 test('stop request when test times out', async ({ signal }) => {
-  await fetch('/heavy-resource', { signal })
+  await fetch('http://localhost:3000/heavy-resource', { signal })
 }, 2000)
 ```
 
@@ -36,7 +36,8 @@ test('worker becomes ready', async ({ signal }) => {
 ## Notes
 
 - Vitest cancels a test when it exceeds its `timeout`, when another test fails under `--bail`, or on Ctrl+C in the terminal; `signal` fires in all of those cases.
-- Other APIs that accept an `AbortSignal`: `fetch`; `addEventListener` (with `{ signal }` removes the listener on abort); `ReadableStream.pipeTo`; Node.js `fs.readFile`, `child_process.spawn`, `setTimeout` / `setInterval`; any custom code that calls `signal.throwIfAborted()` or listens for `'abort'`.
+- Other APIs that accept an `AbortSignal`: `fetch`; `addEventListener` (with `{ signal }` removes the listener on abort); `ReadableStream.pipeTo`; Node.js `fs.readFile`, `child_process.spawn`, `setTimeout` / `setInterval` from `node:timers/promises` (the callback-style global timers do not accept a signal; clear them with `clearTimeout` / `clearInterval` in an `abort` listener); any custom code that calls `signal.throwIfAborted()` or listens for `'abort'`.
+- The upstream example uses the relative URL `/heavy-resource`, which only resolves in Browser Mode; Node's fetch requires an absolute URL. The upstream text also does not distinguish `node:timers/promises` timers from the global callback timers.
 - Source: https://vitest.dev/guide/recipes/cancellable (Vitest v5.0.5)
 
 ## Related
