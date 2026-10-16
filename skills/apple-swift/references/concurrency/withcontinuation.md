@@ -43,6 +43,7 @@ Return value: the value the continuation is resumed with.
 - The body of the closure executes synchronously on the calling task, and once it returns the calling task is suspended. It is possible to immediately resume the task, or escape the continuation to complete it afterwards.
 - You must invoke the continuation's `resume` method exactly once. Multiple resume calls are prevented at compile time (resuming consumes it); if the continuation is dropped without being resumed, the program traps.
 - SE-0528 mapping: `withCheckedContinuation { ... }` corresponds to `withContinuation(of: T.self) { ... }`; `withCheckedThrowingContinuation { ... }` corresponds to `withContinuation(of: T.self, throwing: (any Error).self) { ... }`.
+- Source: https://developer.apple.com/documentation/swift/withcontinuation(of:_:) ; https://developer.apple.com/documentation/swift/withcontinuation(of:throwing:_:) ; SE-0528, swift-evolution commit f006bf3cf2594bdd4a972f9126f93bd1743ed524
 
 ## Related
 

@@ -51,6 +51,7 @@ _ = withObservationTracking(options: [.willSet, .didSet, .deinit]) {
   case .willSet: print("property will set")
   case .didSet: print("property did set")
   case .deinit: print("an Observable instance deallocated")
+  default: break
   }
 }
 ```
@@ -61,6 +62,7 @@ _ = withObservationTracking(options: [.willSet, .didSet, .deinit]) {
 - Nested `Options`, `Event`, `Event.Kind` and `Token` (and their members) are iOS 27.0+ per the Apple pages; SE-0506 (Implemented in Swift 6.4) promotes `ObservationTracking` from SPI to API.
 - At `.willSet` the new value is not yet stored; at `.didSet` it is. On `.deinit`, weak references are `nil` but the object may or may not be fully deinitialized yet.
 - Token: dropping it or calling `cancel()` unregisters the continuous observation.
+- The event-kind example is from SE-0506; a `default` branch is added because `Event.Kind` is a struct, not an enum.
 - This is an advanced API aimed at middleware and widget-system infrastructure; most code should use `@Observable` and `Observations`.
 - Source: https://developer.apple.com/documentation/observation/observationtracking ; SE-0506, swift-evolution commit f006bf3cf2594bdd4a972f9126f93bd1743ed524
 

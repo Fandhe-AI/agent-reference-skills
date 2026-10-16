@@ -19,7 +19,7 @@ numbers.moveSubranges(negativeSubranges, to: 0)
 // numbers == [-5, -3, -9, 10, 12, 14, 15]
 ```
 
-## Key APIs
+## Options / Props
 
 | Name | Description |
 |------|-------------|
@@ -43,6 +43,7 @@ numbers.moveSubranges(negativeSubranges, to: 0)
 - Available on iOS 18.0+, iPadOS 18.0+, Mac Catalyst 18.0+, macOS 15.0+, tvOS 18.0+, visionOS 2.0+, watchOS 11.0+.
 - Introduced by SE-0270, "Add Collection Operations on Noncontiguous Elements". Subscripting a collection with a `RangeSet` of its indices returns a `DiscontiguousSlice`.
 - Conforms to `Copyable`, `CustomStringConvertible`, `Equatable`, `Escapable`, `Hashable`, `Sendable`, `SendableMetatype` (each conditional on `Bound`).
+- Source: https://developer.apple.com/documentation/swift/rangeset ; SE-0270, swift-evolution commit f006bf3cf2594bdd4a972f9126f93bd1743ed524
 
 ## Related
 

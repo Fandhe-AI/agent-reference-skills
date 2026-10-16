@@ -33,6 +33,7 @@ func runSynchronously(isolatedTo: UnownedSerialExecutor, taskExecutor: UnownedTa
 - **Availability:** iOS 13.0+, iPadOS 13.0+, Mac Catalyst 13.0+, macOS 10.15+, tvOS 13.0+, visionOS 1.0+, watchOS 6.0+
 - Unless you are implementing a scheduler, you do not generally interact with jobs directly.
 - An `UnownedJob` must eventually be run exactly once using `runSynchronously(on:)`. Not doing so effectively leaks and hangs the work that the job represents (e.g. a `Task`).
+- Source: https://developer.apple.com/documentation/swift/unownedjob
 
 ## Related
 

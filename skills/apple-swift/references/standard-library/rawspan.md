@@ -22,7 +22,7 @@ public func unsafeLoadUnaligned<T: BitwiseCopyable>(
 ) -> T
 ```
 
-## Key APIs
+## Options / Props
 
 | Name | Description |
 |------|-------------|
@@ -48,6 +48,7 @@ public func unsafeLoadUnaligned<T: BitwiseCopyable>(
 - `unsafeLoad` operations are not type-safe: the loaded value can be invalid and violate type invariants, and the memory must be properly aligned and initialized to `T` or a layout-compatible type.
 - Conforms to `BitwiseCopyable`, `ContiguousBytes`, `Iterable`, `Sendable`, `SendableMetatype`.
 - Introduced by SE-0447 (status: Implemented, Swift 6.2).
+- Source: https://developer.apple.com/documentation/swift/rawspan ; SE-0447, swift-evolution commit f006bf3cf2594bdd4a972f9126f93bd1743ed524
 
 ## Related
 

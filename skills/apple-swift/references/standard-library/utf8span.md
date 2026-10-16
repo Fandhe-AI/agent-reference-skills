@@ -10,11 +10,11 @@ A borrowed view into contiguous memory that contains validly-encoded UTF-8 code 
 
 ## Usage
 
-A `UTF8Span` is validated at initialization time; encoding errors are diagnosed and thrown. Initializer and `String` bridge from SE-0464:
+A `UTF8Span` is validated at initialization time; encoding errors are diagnosed and thrown. Initializer and `String` bridge from SE-0464, with the error type updated to the SDK declaration:
 
 ```swift
 extension UTF8Span {
-  public init(validating codeUnits: Span<UInt8>) throws(UTF8.EncodingError)
+  public init(validating codeUnits: Span<UInt8>) throws(UTF8.ValidationError)
 }
 
 extension String {
@@ -22,7 +22,7 @@ extension String {
 }
 ```
 
-## Key APIs
+## Options / Props
 
 | Name | Description |
 |------|-------------|
@@ -52,6 +52,7 @@ extension String {
 - `UnicodeScalarIterator` and `CharacterIterator` are non-escapable, so they cannot conform to `IteratorProtocol`.
 - Conforms to `BitwiseCopyable` and `ContiguousBytes`.
 - Introduced by SE-0464 (status: Implemented, Swift 6.2). `String.init(copying:)` creates a `String` from a `UTF8Span` without re-validating.
+- Source: https://developer.apple.com/documentation/swift/utf8span ; SE-0464, swift-evolution commit f006bf3cf2594bdd4a972f9126f93bd1743ed524
 
 ## Related
 

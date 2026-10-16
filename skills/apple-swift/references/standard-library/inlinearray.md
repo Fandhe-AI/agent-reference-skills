@@ -28,7 +28,7 @@ for index in values.indices {
 }
 ```
 
-## Key APIs
+## Options / Props
 
 | Name | Description |
 |------|-------------|
@@ -55,6 +55,7 @@ for index in values.indices {
 - Memory layout: elements are stored contiguously. As a stored property of a class it is allocated on the heap with the class; otherwise generally on the stack. A non-empty `InlineArray`'s size and stride are `count` times the `Element` stride, and its alignment equals the `Element` alignment. An empty one has size zero and stride and alignment of one byte.
 - Introduced by SE-0453 (status: Implemented, Swift 6.2).
 - Conforms to `BitwiseCopyable`, `ContiguousBytes`, `ConvertibleFromBytes`, `ConvertibleToBytes`, `Copyable`, `Escapable`, `Iterable`, `Sendable`, `SendableMetatype` (each conditional on the `Element` conformances).
+- Source: https://developer.apple.com/documentation/swift/inlinearray ; SE-0453, swift-evolution commit f006bf3cf2594bdd4a972f9126f93bd1743ed524
 
 ## Related
 

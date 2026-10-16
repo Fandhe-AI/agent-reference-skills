@@ -48,6 +48,7 @@ Return value: the value returned from the `operation` closure. Throws: if the op
 - Task executors influence where nonisolated asynchronous functions and default actor methods execute. The preferred executor is used whenever possible, rather than hopping to the global concurrent pool.
 - Passing `nil` as executor disables any preference (if it was set); the task hierarchy executes without any executor preference until a different preference is set.
 - Without a task executor preference, `nonisolated async` functions execute on the global concurrent executor; with one, they execute on the preferred task executor. Isolated functions semantically execute on the actor they are isolated to; if that actor does not declare a custom executor (a "default actor") and a preference is present, tasks executing on the actor use the preferred executor as the source of threads while isolated on the actor.
+- Source: https://developer.apple.com/documentation/swift/withtaskexecutorpreference(_:isolation:operation:)
 
 ## Related
 

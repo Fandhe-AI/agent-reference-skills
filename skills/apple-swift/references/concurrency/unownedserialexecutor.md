@@ -23,6 +23,7 @@ func asSerialExecutor() -> (any SerialExecutor)?
 - **Availability:** iOS 13.0+, iPadOS 13.0+, Mac Catalyst 13.0+, macOS 10.15+, tvOS 13.0+, visionOS 1.0+, watchOS 6.0+
 - This is an optimized type used internally by the core scheduling operations. It is an unowned reference to avoid unnecessary reference-counting work even when working with actors abstractly.
 - Extra constraints are imposed on core operations to allow this: keeping an actor alive must also keep the actor's associated executor alive; if they are different objects, the executor must be referenced strongly by the actor.
+- Source: https://developer.apple.com/documentation/swift/unownedserialexecutor
 
 ## Related
 

@@ -18,6 +18,7 @@ group.addTask(executorPreference: globalConcurrentExecutor) { 13 } // child task
 - The executor's implementation is platform dependent. By default it uses a fixed size pool of threads and should not be used for blocking operations which do not guarantee forward progress, as doing so may prevent other tasks from being executed and render the system unresponsive.
 - You may pass this executor explicitly to a `Task` initializer as a task executor preference, to ensure and document that the task is executed on the global executor instead of, e.g., inheriting the enclosing actor's executor. See `withTaskExecutorPreference(_:isolation:operation:)` for a detailed discussion of task executor preferences.
 - Customizing the global concurrent executor is currently not supported.
+- Source: https://developer.apple.com/documentation/swift/globalconcurrentexecutor
 
 ## Related
 

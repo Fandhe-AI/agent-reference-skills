@@ -36,6 +36,7 @@ Conforms to `Equatable`, `Hashable`.
 - **Availability:** `UnsafeCurrentTask` and the synchronous `withUnsafeCurrentTask(body:)`: iOS 13.0+, macOS 10.15+, tvOS 13.0+, watchOS 6.0+, visionOS 1.0+. The async `nonisolated(nonsending)` overload: iOS 18.0+.
 - Get an instance by calling `withUnsafeCurrentTask(body:)`. Do not store an unsafe task reference for use outside that method's closure: storing it does not affect the task's actual life cycle, and the behavior of accessing it outside the closure is not defined.
 - Only APIs on `UnsafeCurrentTask` that are also part of `Task` are safe to invoke from a task other than the task this instance refers to. Calling other APIs from another task is undefined behavior, breaks invariants in other parts of the program running on this task, and may lead to crashes or data loss.
+- Source: https://developer.apple.com/documentation/swift/unsafecurrenttask ; https://developer.apple.com/documentation/swift/withunsafecurrenttask(body:)-6gvhl
 
 ## Related
 

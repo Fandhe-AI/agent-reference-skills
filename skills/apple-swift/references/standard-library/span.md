@@ -18,7 +18,7 @@ for i in mySpan.indices {
 }
 ```
 
-## Key APIs
+## Options / Props
 
 | Name | Description |
 |------|-------------|
@@ -48,6 +48,7 @@ for i in mySpan.indices {
 - Conforms to `BitwiseCopyable`, `ContiguousBytes`, `Iterable` (when `Element` conforms to `Escapable`), `Sendable` and `SendableMetatype` (when `Element` conforms to `Escapable` and `Sendable`).
 - Introduced by SE-0447 (status: Implemented, Swift 6.2). It is intended as the currency type for local processing over contiguous memory, replacing many uses of `Array`, `UnsafeBufferPointer` and `Data` that do not need to escape the owning container.
 - Safe Memory Access family: `RawSpan`, `MutableSpan`, `MutableRawSpan`, `OutputSpan`, `OutputRawSpan`, `UTF8Span`.
+- Source: https://developer.apple.com/documentation/swift/span ; SE-0447, swift-evolution commit f006bf3cf2594bdd4a972f9126f93bd1743ed524
 
 ## Related
 

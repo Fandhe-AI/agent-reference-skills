@@ -45,6 +45,7 @@ func withUnsafeThrowingContinuation<T>(
 - You must invoke the continuation's `resume` method exactly once. Missing to invoke it (eventually) causes the calling task to remain suspended indefinitely (the task hangs and is leaked with no possibility to destroy it).
 - Unlike the "checked" continuation variant, `UnsafeContinuation` does not detect or diagnose misuse: calling `resume` twice or forgetting to call it is not diagnosed.
 - Deprecated: the `isolation:` overloads of `withUnsafeContinuation` and `withUnsafeThrowingContinuation` are marked "Source-compatibility overload"; deprecation message: "Replaced by nonisolated(nonsending) overload".
+- Source: https://developer.apple.com/documentation/swift/withunsafecontinuation(_:) ; https://developer.apple.com/documentation/swift/withunsafethrowingcontinuation(_:)-32nwt
 
 ## Related
 

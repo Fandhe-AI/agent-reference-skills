@@ -26,7 +26,7 @@ extension Array {
 }
 ```
 
-## Key APIs
+## Options / Props
 
 | Name | Description |
 |------|-------------|
@@ -54,6 +54,7 @@ extension Array {
 - Introduced by SE-0485 (status: Implemented, Swift 6.2; the "Extensions to standard library types" such as `Array.init(capacity:initializingWith:)` were listed as pending in the proposal text).
 - `OutputRawSpan` is the untyped counterpart: a reference to a contiguous region of memory which starts with some number of initialized bytes, followed by uninitialized memory, with operations to access, append and remove bytes. It is not given its own page here.
 - Conforms to `ContiguousBytes`, `Iterable` (when `Element` conforms to `Escapable`), `Sendable`, `SendableMetatype`.
+- Source: https://developer.apple.com/documentation/swift/outputspan ; SE-0485, swift-evolution commit f006bf3cf2594bdd4a972f9126f93bd1743ed524
 
 ## Related
 

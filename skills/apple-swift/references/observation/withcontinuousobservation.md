@@ -19,7 +19,9 @@ final class Controller {
   let synchronization: ObservationTracking.Token
 
   init(view: MyView, model: MyObservable) {
-    synchronization = withContinuousObservationTracking(options: [.willSet]) { [view, model] event in
+    self.view = view
+    self.model = model
+    synchronization = withContinuousObservation(options: [.willSet]) { [view, model] event in
       view.label.text = model.someStringValue
     }
   }
@@ -36,6 +38,7 @@ final class Controller {
 ## Notes
 
 - The Apple page has no abstract; the explanation and example come from SE-0506 only. The SE-0506 text spells the function `withContinuousObservationTracking`, while the Apple page and this signature use `withContinuousObservation`; use the Apple spelling.
+- The `Controller` example is adapted from SE-0506: the function name is replaced with the current Apple name `withContinuousObservation`, and `self.view = view` / `self.model = model` are added so the stored properties are initialized.
 - Returns `ObservationTracking.Token`. Observation continues while the token is held; dropping it or calling `cancel()` stops observation and further callbacks.
 - The closure is invoked after the event at the next suspension point of the isolating context: called from `@MainActor`, the closure always runs on the main actor.
 - No default for `options` (the proposal rejected a `.willSet` default); pass options explicitly.

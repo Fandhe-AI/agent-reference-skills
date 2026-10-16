@@ -20,7 +20,7 @@ func storeBytes<T>(of: T, toByteOffset: Int, as: T.Type)
 func storeBytes<T>(repeating: T, count: Int, as: T.Type)
 ```
 
-## Key APIs
+## Options / Props
 
 | Name | Description |
 |------|-------------|
@@ -47,6 +47,7 @@ func storeBytes<T>(repeating: T, count: Int, as: T.Type)
 - The documentation page marks every `extracting(...)` overload as deprecated (same as `MutableSpan`); confirm the replacement in the current SDK.
 - Introduced with `MutableSpan` in SE-0467. Instances derived from a `MutableRawSpan` represent a mutation of the same memory, so the source cannot be accessed while the derived span exists.
 - Conforms to `ContiguousBytes`, `Iterable`, `Sendable`, `SendableMetatype`.
+- Source: https://developer.apple.com/documentation/swift/mutablerawspan ; SE-0467, swift-evolution commit f006bf3cf2594bdd4a972f9126f93bd1743ed524
 
 ## Related
 

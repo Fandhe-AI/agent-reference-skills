@@ -22,6 +22,7 @@ Inherits from `Sendable`, `SendableMetatype`. Inherited by `SerialExecutor`, `Ta
 | `enqueue(_: consuming ExecutorJob)` | Enqueues a job for execution (has default implementations) |
 | `enqueue(_: UnownedJob)` | Overload taking an `UnownedJob` (has default implementations) |
 | `enqueue(_: consuming Job)` | Deprecated overload taking `Job` (has default implementations) |
+- Source: https://developer.apple.com/documentation/swift/executor
 
 ## Related
 

@@ -24,7 +24,7 @@ _ = consume span1 // explicitly end scope for `span1`
 print(array) // [2, 1, 3, 5, 4]
 ```
 
-## Key APIs
+## Options / Props
 
 | Name | Description |
 |------|-------------|
@@ -55,6 +55,7 @@ print(array) // [2, 1, 3, 5, 4]
 - `mutableSpan` is the safe, composable replacement for `withUnsafeMutableBufferPointer`. For copy-on-write types, obtaining a `MutableSpan` starts the mutation and may copy the backing buffer if it is not uniquely referenced.
 - `init(mutating:)` and `init(mutableBytes:)` are available when `Element` conforms to `ConvertibleFromBytes` and `ConvertibleToBytes`; `mutableBytes` has overloads for `BitwiseCopyable` and for `ConvertibleFromBytes` + `ConvertibleToBytes`.
 - Conforms to `ContiguousBytes`, `Iterable` (when `Element` conforms to `Escapable`), `Sendable`, `SendableMetatype`. Does not conform to `Collection`.
+- Source: https://developer.apple.com/documentation/swift/mutablespan ; SE-0467, swift-evolution commit f006bf3cf2594bdd4a972f9126f93bd1743ed524
 
 ## Related
 

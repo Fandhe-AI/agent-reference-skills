@@ -2,8 +2,9 @@
 name: apple-swift
 description: >
   Swift Standard Library・Concurrency・Observation リファレンス。
-  async/await、actor、SerialExecutor、Sendable、Task、TaskGroup、AsyncSequence、AsyncStream、
-  Continuation (CheckedContinuation)、@Observable、Observations、Span、InlineArray、RangeSet、Codable、Result、generics、some/any。
+  プロトコル/ジェネリクス、async/await、actor、SerialExecutor、Sendable、Task、TaskGroup、AsyncSequence、AsyncStream、
+  Continuation (CheckedContinuation)、Observable、@Observable、Observations、ObservationRegistrar、
+  Span、InlineArray、RangeSet、Equatable、Hashable、Comparable、Identifiable、Optional、Codable、Result、generics、some/any。
 user-invocable: false
 model: sonnet
 ---
@@ -14,7 +15,7 @@ Swift 公式ドキュメントの Standard Library・Concurrency・プロトコ�
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
 Source: developer.apple.com JSON (fetched 2026-10-16, iOS/macOS 27.0 SDK, Swift 6.4 era). Availability values are the `introducedAt` of each JSON, written as-is.
-Supplementary design docs: swift-evolution pinned at commit `f006bf3cf2594bdd4a972f9126f93bd1743ed524` (no release tags). Used only for usage examples and status, never as the source of signatures.
+Supplementary design docs: swift-evolution pinned at commit `f006bf3cf2594bdd4a972f9126f93bd1743ed524` (https://github.com/swiftlang/swift-evolution/tree/f006bf3cf2594bdd4a972f9126f93bd1743ed524, no release tags). Used only for usage examples and status, never as the source of signatures.
 
 ## ディレクトリ構成
 

@@ -35,6 +35,7 @@ Resume methods (all `consuming`, so a second resume on the same binding does not
 - If a `Continuation` is destroyed without being resumed, the program traps with a diagnostic message indicating where the continuation was created.
 - Create one by calling `withContinuation(of:throwing:_:)`; it cannot be instantiated directly (SE-0528).
 - SE-0528 (status: Implemented, Swift 6.4): a `Continuation` can be converted into a `CheckedContinuation` / `UnsafeContinuation` when it must be captured by escaping callbacks that are not guaranteed to run exactly once. `CheckedContinuation` and `UnsafeContinuation` are not deprecated.
+- Source: https://developer.apple.com/documentation/swift/continuation ; SE-0528, swift-evolution commit f006bf3cf2594bdd4a972f9126f93bd1743ed524
 
 ## Related
 

@@ -35,6 +35,7 @@ func runSynchronously(isolatedTo: UnownedSerialExecutor, taskExecutor: UnownedTa
 - **Availability:** iOS 17.0+, iPadOS 17.0+, Mac Catalyst 17.0+, macOS 14.0+, tvOS 17.0+, visionOS 1.0+, watchOS 10.0+
 - Unless you are implementing a scheduler, you do not generally interact with jobs directly.
 - The `Job` typealias (struct `Job`, "Deprecated equivalent of `ExecutorJob`") is deprecated; use `ExecutorJob`.
+- Source: https://developer.apple.com/documentation/swift/executorjob
 
 ## Related
 

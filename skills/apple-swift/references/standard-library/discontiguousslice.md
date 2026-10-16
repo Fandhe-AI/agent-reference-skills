@@ -22,7 +22,7 @@ let negativeSubranges = numbers.indices(where: { $0 < 0 })
 // numbers[negativeSubranges].count == 3
 ```
 
-## Key APIs
+## Options / Props
 
 | Name | Description |
 |------|-------------|
@@ -36,6 +36,7 @@ let negativeSubranges = numbers.indices(where: { $0 < 0 })
 - Conforms to `Collection` and `Sequence`, `BidirectionalCollection` (when `Base` does), `Equatable` / `Hashable` (when `Base.Element` does), `Sendable` (when `Base` and `Base.Index` are `Sendable`), `CustomStringConvertible`, `Copyable`, `Escapable`.
 - SE-0270 states that an earlier draft's `MutableCollection` conformance for `DiscontiguousSlice` was removed because of unclear semantics; the documentation page lists a `subscript(_:)` that is available when `Base` conforms to `MutableCollection`.
 - Introduced by SE-0270, "Add Collection Operations on Noncontiguous Elements".
+- Source: https://developer.apple.com/documentation/swift/discontiguousslice ; SE-0270, swift-evolution commit f006bf3cf2594bdd4a972f9126f93bd1743ed524
 
 ## Related
 

@@ -33,14 +33,14 @@ Task.detached {
 | `Iteration` | `enum Iteration` (cases `next(Element)`, `finish`) | Return value of the closure passed to `untilFinished(_:)`. Conforms to `Sendable`. |
 | `Iterator` | `struct Iterator` | The iterator type of the sequence. |
 
-`untilFinished` example from SE-0475 (the proposal spells the terminating case `.finished`; the Apple page lists it as `finish`):
+`untilFinished` example adapted from SE-0475 (the proposal spells the terminating case `.finished`; the current API case is `finish`, used below):
 
 ```swift
 let hosts = Observations.untilFinished { [weak person] in
   if let person {
     .next(person.homePage?.host)
   } else {
-    .finished
+    .finish
   }
 }
 ```

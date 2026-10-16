@@ -28,6 +28,7 @@ init(_: consuming Continuation<T, E>)   // convert a non-copyable continuation
 - Both types have the same interface, so in most circumstances you can replace one with the other without other changes.
 - The `UnsafeThrowingContinuation` typealias is deprecated; use `UnsafeContinuation<T, any Error>` instead.
 - `init(_:)` ("Convert a non-copyable continuation to an `UnsafeContinuation`") is listed under Initializers.
+- Source: https://developer.apple.com/documentation/swift/unsafecontinuation
 
 ## Related
 

@@ -57,6 +57,7 @@ actor MyActor {
 - The `UnownedSerialExecutor` returned by `unownedExecutor` does not retain the executor: ensure the executor's lifetime extends beyond any actor or task using it, otherwise enqueuing work on a released executor may crash. The executor returned by `unownedExecutor` must always be the same object.
 - Existing serial executor implementations such as Dispatch's `DispatchSerialQueue` can also be used.
 - Deprecated: the `enqueue(_: UnownedJob)` and `enqueue(_: consuming Job)` requirements.
+- Source: https://developer.apple.com/documentation/swift/serialexecutor
 
 ## Related
 
