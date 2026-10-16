@@ -61,6 +61,8 @@ MCP-backed plugins additionally require: valid listing URLs; a demo-recording UR
 
 ## Archive errors
 
+Errors for ZIP upload and ZIP structure and limits.
+
 ### ZIP upload errors and warnings
 
 The portal's **Skills only** path accepts skill ZIP packages and approved local MCP plugins (desktop-only submission; approved local MCP plugins don't need to include skills). Errors block the upload; warnings require confirmation.

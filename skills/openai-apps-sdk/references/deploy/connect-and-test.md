@@ -10,6 +10,8 @@ npx @modelcontextprotocol/inspector@latest
 
 ## Test an MCP server (optional)
 
+Steps for connecting and evaluating the MCP server as a custom MCP server in ChatGPT.
+
 ### Prepare the endpoint
 
 Confirm that:

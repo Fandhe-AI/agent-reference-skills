@@ -6,6 +6,8 @@ Only submit the plugin if you intend it to be publicly available in the countrie
 
 ## Before you submit the plugin
 
+Prerequisites: organization verification, submission permissions, and MCP server requirements.
+
 ### Organization verification
 
 Before submitting a plugin with MCP, complete identity verification in the OpenAI Platform Dashboard for the name you plan to publish under.
@@ -60,6 +62,8 @@ Projects with EU data residency currently cannot submit plugins with MCP servers
 
 ## Review and approval
 
+How reviews, approval, rejection, and appeals work.
+
 ### Reviews and checks
 
 OpenAI may perform automated scans or manual reviews to understand how the plugin works and whether it may conflict with policies.
@@ -94,6 +98,8 @@ Approved plugins can be published from the submission portal. If rejected or rem
 - Before any press release or public announcement, contact press@openai.com to coordinate.
 
 ## Ongoing maintenance
+
+Versioning of published MCP metadata, continuous review, and updates after publication.
 
 ### How published MCP metadata versions work
 

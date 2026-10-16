@@ -4,6 +4,8 @@ Developer guidelines covering the MCP server and optional UI in a plugin, and th
 
 ## Plugin fundamentals
 
+Purpose, quality, naming, tools, and authentication guidelines.
+
 ### Purpose and originality
 
 Plugins should serve a clear purpose, reliably do what they promise, and provide functionality/workflows not natively supported by the products' built-in capabilities, meaningfully helping satisfy common user intents. Only use owned or permitted intellectual property. No misleading/copycat designs, impersonation, spam, or static frames with no meaningful interaction. Plugins must not imply they are made or endorsed by OpenAI.
@@ -100,6 +102,8 @@ Plugins must not serve advertisements and must not exist primarily as an adverti
 
 ## Safety
 
+Usage policies, appropriateness, user intent, fair play, third-party content, and iframe guidelines.
+
 ### Usage policies
 
 Do not engage in or facilitate activities prohibited under OpenAI usage policies; avoid high-risk behaviors exposing users to harm, fraud, or misuse. Stay current with evolving policy requirements — previously approved plugins later found in violation may be removed.
@@ -134,6 +138,8 @@ A justification is still required at submission: explain what each embedded page
 
 ## Privacy
 
+Privacy policy, data collection, and transparency guidelines.
+
 ### Privacy policy
 
 Submissions must include a clear, published privacy policy covering at minimum: categories of personal data collected, purposes of use, categories of recipients, data retention timelines, and user controls offered. Follow the policy at all times; users can review it before installing.
@@ -153,6 +159,8 @@ Submissions must include a clear, published privacy policy covering at minimum: 
 - **Preventing data exfiltration**: any action sending data outside the current boundary (posting messages, sending emails, uploading files) must be surfaced as a write action so the client can require confirmation or run in preview mode.
 
 ## Developer verification
+
+Verification and support contact requirements.
 
 ### Verification
 

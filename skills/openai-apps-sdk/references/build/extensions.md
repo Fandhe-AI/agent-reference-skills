@@ -60,14 +60,15 @@ function partSelectionSchema(parts: OpenAIFormOption[]): OpenAIForm {
 | Extended forms | Ask for structured input or let users choose from images, then return the response to your tool. |
 | Plugin onboarding | Guide users through setup in a new or existing conversation. |
 
-Spec anchors (in https://github.com/openai/mcp-extensions/blob/main/docs/spec.md): `#global-entrypoint`, `#thread-entrypoint`, `#structured-settings`, `#file-extension-entrypoint`, `#display-modes`, `#deep-links`, `#uiupdate-model-context-extensions`, `#prompt-target-and-send-behavior`, `#composer-at-mentions`, `#openai-form-elicitation`.
+Spec anchors (in https://github.com/openai/mcp-extensions/blob/node-v0.2.0/docs/spec.md): `#global-entrypoint`, `#thread-entrypoint`, `#structured-settings`, `#file-extension-entrypoint`, `#display-modes`, `#deep-links`, `#uiupdate-model-context-extensions`, `#prompt-target-and-send-behavior`, `#composer-at-mentions`, `#openai-form-elicitation`.
 
 ## Notes
 
 - Plugin extensions on the web are coming soon to ChatGPT Free and Go users. Existing plugin functionality is unaffected. Composer mentions are available only in the ChatGPT desktop app.
 - File entrypoints: the app receives a resource URI for the opened file; follow the file handler guide in the TypeScript SDK README to read it with the app SDK.
 - Extended form options each use `const` and `title`, with an optional `x-openai-thumbnail` icon. OpenAI-registered MCP servers require multi-round-trip requests (MRTR, MCP spec 2026-07-28).
-- Resources: GitHub https://github.com/openai/mcp-extensions (TypeScript SDK, Python SDK for server-side extensions, protocol specification https://github.com/openai/mcp-extensions/blob/main/docs/spec.md). Sample plugin: Bits & Bolts. Examples in the wild: Canva (sidebar tabs), Figma (composer mentions), Adobe (file extension handlers).
+- Resources: GitHub https://github.com/openai/mcp-extensions (TypeScript SDK, Python SDK for server-side extensions, protocol specification https://github.com/openai/mcp-extensions/blob/node-v0.2.0/docs/spec.md). Sample plugin: Bits & Bolts. Examples in the wild: Canva (sidebar tabs), Figma (composer mentions), Adobe (file extension handlers).
+- Spec links are pinned to tag node-v0.2.0 (commit d3a79b765e3ad95eaa03f23b0d3d2f91987b8603), the version used to fill signatures; the official docs page links blob/main.
 - Onboarding extension is documented in the package-plugin page (add an onboarding skill).
 - Once the server is ready, connect and test the plugin, then package it for distribution.
 - Source: https://developers.openai.com/plugins/build/extensions (local .md twin copy, fetched 2026-10-17).
