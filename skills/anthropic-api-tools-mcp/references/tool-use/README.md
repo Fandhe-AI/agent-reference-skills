@@ -2,30 +2,30 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Advisor tool | Beta server tool: pairs a faster/cheaper executor… | [advisor-tool.md](./advisor-tool.md) |
-| Bash tool | Client tool: Claude requests shell commands that your… | [bash-tool.md](./bash-tool.md) |
-| Browser and computer use (SDK toolsets) | Beta SDK toolset classes (Python and TypeScript) that… | [browser-use-sdk.md](./browser-use-sdk.md) |
-| Browser use tool | GA client toolset that lets Claude navigate, read, and… | [browser-use-tool.md](./browser-use-tool.md) |
-| Tutorial: Build a tool-using agent | A guided walkthrough building a calendar-management… | [build-a-tool-using-agent.md](./build-a-tool-using-agent.md) |
-| Code execution tool | Server tool: Claude runs Python/Bash and edits files… | [code-execution-tool.md](./code-execution-tool.md) |
-| Computer use tool | GA client toolset (`computer_toolset_20260801`): one… | [computer-use-tool.md](./computer-use-tool.md) |
-| Define tools | Specify tool schemas, write effective descriptions,… | [define-tools.md](./define-tools.md) |
-| Fine-grained tool streaming | Set `eager_input_streaming: true` on a tool to stream… | [fine-grained-tool-streaming.md](./fine-grained-tool-streaming.md) |
-| Handle tool calls | Parse `tool_use` blocks, format `tool_result` responses… | [handle-tool-calls.md](./handle-tool-calls.md) |
-| How tool use works | Tool use is a contract: you specify available… | [how-tool-use-works.md](./how-tool-use-works.md) |
-| Manage tool context | Choose between tool search, programmatic tool calling,… | [manage-tool-context.md](./manage-tool-context.md) |
-| Memory tool | Client tool: Claude stores and retrieves information… | [memory-tool.md](./memory-tool.md) |
-| Tool use with Claude | Connect Claude to external tools and APIs. Claude… | [overview.md](./overview.md) |
-| Parallel tool use | By default, Claude may return several `tool_use`… | [parallel-tool-use.md](./parallel-tool-use.md) |
-| Programmatic tool calling | Claude writes code that calls your tools programmatically… | [programmatic-tool-calling.md](./programmatic-tool-calling.md) |
-| Server tools | Shared mechanics for Anthropic-executed tools: the… | [server-tools.md](./server-tools.md) |
-| Strict tool use | Set `strict: true` on a tool definition to guarantee… | [strict-tool-use.md](./strict-tool-use.md) |
-| Text editor tool | Client tool named `str_replace_based_edit_tool`: Claude… | [text-editor-tool.md](./text-editor-tool.md) |
-| Tool combinations | Common Anthropic-provided tool pairings for research… | [tool-combinations.md](./tool-combinations.md) |
-| Tool reference | Directory of Anthropic-provided tools (`type` strings,… | [tool-reference.md](./tool-reference.md) |
-| Tool runner (SDK) | SDK helper (beta) that automatically drives the agentic… | [tool-runner.md](./tool-runner.md) |
-| Tool search tool | Server tool: Claude discovers and loads tools on demand… | [tool-search-tool.md](./tool-search-tool.md) |
-| Tool use with prompt caching | Cache tool definitions with `cache_control` and… | [tool-use-with-prompt-caching.md](./tool-use-with-prompt-caching.md) |
-| Troubleshooting tool use | Symptom-to-fix diagnostic tables for the most common… | [troubleshooting-tool-use.md](./troubleshooting-tool-use.md) |
-| Web fetch tool | Server tool: retrieves full content (text/HTML/PDF)… | [web-fetch-tool.md](./web-fetch-tool.md) |
-| Web search tool | Server tool: real-time web search with cited sources;… | [web-search-tool.md](./web-search-tool.md) |
+| Advisor tool | Beta server tool: faster executor paired with a stronger advisor model | [advisor-tool.md](./advisor-tool.md) |
+| Bash tool | Client tool: shell commands run in a persistent bash session you own | [bash-tool.md](./bash-tool.md) |
+| Browser and computer use (SDK toolsets) | Beta SDK toolsets for browser and computer use with your driver | [browser-use-sdk.md](./browser-use-sdk.md) |
+| Browser use tool | GA client toolset for navigating and interacting with webpages | [browser-use-tool.md](./browser-use-tool.md) |
+| Tutorial: Build a tool-using agent | Calendar-management agent built in rings, ending with Tool Runner | [build-a-tool-using-agent.md](./build-a-tool-using-agent.md) |
+| Code execution tool | Server tool: Python/Bash and file editing in a sandboxed container | [code-execution-tool.md](./code-execution-tool.md) |
+| Computer use tool | GA client toolset (`computer_toolset_20260801`) with 17 member tools | [computer-use-tool.md](./computer-use-tool.md) |
+| Define tools | Tool schemas, effective descriptions, `tool_choice` control | [define-tools.md](./define-tools.md) |
+| Fine-grained tool streaming | `eager_input_streaming: true` streams tool input as generated | [fine-grained-tool-streaming.md](./fine-grained-tool-streaming.md) |
+| Handle tool calls | Parse `tool_use`, format `tool_result`, signal errors with `is_error` | [handle-tool-calls.md](./handle-tool-calls.md) |
+| How tool use works | Tool use as a contract: operations and shapes specified up front | [how-tool-use-works.md](./how-tool-use-works.md) |
+| Manage tool context | Tool search, programmatic calling, caching, context editing | [manage-tool-context.md](./manage-tool-context.md) |
+| Memory tool | Client tool: file-based memory under `/memories` across conversations | [memory-tool.md](./memory-tool.md) |
+| Tool use with Claude | Overview of client tools and server tools for external APIs | [overview.md](./overview.md) |
+| Parallel tool use | Several `tool_use` blocks per turn: execution and formatting | [parallel-tool-use.md](./parallel-tool-use.md) |
+| Programmatic tool calling | Claude calls your tools from code inside a sandbox | [programmatic-tool-calling.md](./programmatic-tool-calling.md) |
+| Server tools | Shared mechanics for Anthropic-executed tools (`server_tool_use`) | [server-tools.md](./server-tools.md) |
+| Strict tool use | `strict: true` for schema-conforming tool inputs | [strict-tool-use.md](./strict-tool-use.md) |
+| Text editor tool | Client tool `str_replace_based_edit_tool` for viewing and editing files | [text-editor-tool.md](./text-editor-tool.md) |
+| Tool combinations | Common tool pairings for research, coding, and long-running agents | [tool-combinations.md](./tool-combinations.md) |
+| Tool reference | Directory of Anthropic-provided tools and tool definition properties | [tool-reference.md](./tool-reference.md) |
+| Tool runner (SDK) | Beta SDK helper that drives the agentic loop automatically | [tool-runner.md](./tool-runner.md) |
+| Tool search tool | Server tool: discovers and loads tools on demand from a catalog | [tool-search-tool.md](./tool-search-tool.md) |
+| Tool use with prompt caching | `cache_control` on tool definitions and cache invalidation rules | [tool-use-with-prompt-caching.md](./tool-use-with-prompt-caching.md) |
+| Troubleshooting tool use | Symptom-to-fix tables for common tool-use errors | [troubleshooting-tool-use.md](./troubleshooting-tool-use.md) |
+| Web fetch tool | Server tool: full content (text/HTML/PDF) from URLs in context | [web-fetch-tool.md](./web-fetch-tool.md) |
+| Web search tool | Server tool: real-time web search with cited sources | [web-search-tool.md](./web-search-tool.md) |

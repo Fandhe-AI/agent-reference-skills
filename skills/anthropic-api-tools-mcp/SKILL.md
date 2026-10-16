@@ -2,10 +2,10 @@
 name: anthropic-api-tools-mcp
 description: >
   Claude API (platform.claude.com) の tool use / Agent Skills / MCP。
-  tool definition, tool_use / tool_result, server tools（code execution, web search,
-  web fetch, memory, tool search）, client toolset（computer use, browser use）,
+  tool definition (JSON Schema), tool_use / tool_result, server tools（code execution,
+  web search, web fetch, memory tool, tool search）, client toolset（computer use, browser use）,
   Agent Skills (SKILL.md), Skills API GA (/v1/skills), MCP connector,
-  mcp_servers, mcp_tool_listing, MCP tunnels。
+  mcp_servers, mcp_tool_listing, MCP tunnels, Tunnels API。
 user-invocable: false
 ---
 

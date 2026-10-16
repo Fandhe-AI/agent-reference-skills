@@ -36,10 +36,21 @@ Return one `tool_result` per block, echoing `toolset_name`:
 ```json
 {
   "type": "tool_result",
-  "tool_use_id": "toolu_01UvHU5cDyTZ2vXKf5wCkPqR",
+  "tool_use_id": "toolu_01NRLabsLyVHZPKxbKvkfSMn",
   "toolset_name": "browser",
   "content": [
-    { "type": "text", "text": "link \"Getting started\" [ref_2]\nbutton \"Search\" [ref_4]" }
+    { "type": "text", "text": "Navigated to https://example.com/docs" },
+    {
+      "type": "browser_state",
+      "tabs": [
+        {
+          "tab_id": "tab-1",
+          "title": "Documentation",
+          "url": "https://example.com/docs",
+          "active": true
+        }
+      ]
+    }
   ]
 }
 ```
