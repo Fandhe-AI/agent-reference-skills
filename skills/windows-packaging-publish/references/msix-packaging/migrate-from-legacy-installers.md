@@ -48,7 +48,8 @@ Scenario guidance:
 - Features requiring package identity (full MSIX or external location) include background tasks, push notifications, share targets, custom context menu extensions, manifest-based file type and protocol associations, and Windows AI APIs.
 - Packaging with external location (sparse packages) was introduced in Windows 10 version 2004 (build 19041).
 - Win32 MSI/EXE Store submissions: the Store does not push updates to existing users; the app or installer must handle updates.
-- Complex installers with kernel drivers, services running as SYSTEM, or machine-wide COM registrations unsupported by MSIX: consider external location.
+- Complex installers with kernel drivers, services running as SYSTEM, or machine-wide COM registrations that MSIX doesn't support: consider external location.
+- MSIX itself supports session-0 (per-machine) services under LocalSystem, LocalService, or NetworkService and does not support per-user services or kernel drivers; see Prepare to Package a Desktop App.
 - Run the MSIX Packaging Tool on a clean VM; plan explicit settings/data migration when running MSIX alongside a legacy install, because identity and storage locations differ.
 - Framework-dependent vs self-contained Windows App SDK deployment is independent of the packaging model.
 - Source: https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/packaging/, last updated 2026-08-29 (ms.date).
@@ -59,3 +60,4 @@ Scenario guidance:
 - [MSIX Packaging Tool](./msix-packaging-tool.md)
 - [Package Support Framework](./package-support-framework.md)
 - [MSIX on Windows 10 and Windows 11](./msix-windows10-windows11.md)
+- [Prepare to Package a Desktop App](./prepare-desktop-app-for-packaging.md)

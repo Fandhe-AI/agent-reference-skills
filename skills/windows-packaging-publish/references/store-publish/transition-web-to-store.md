@@ -101,6 +101,7 @@ Migrate file extension / protocol associations (manifest):
 - Packaged app data space is deleted automatically on uninstall; migrating on first launch is highly recommended, not mandatory.
 - The silent install assigns an entitlement to the current Store user, or to the device if no Store account; no toast notifications; progress is monitored via `StatusChanged` / `Completed`.
 - In-app purchases: since June 2021 the Store allows publishers to use their own or third-party commerce platforms in addition to Microsoft's; keep verifying entitlements as in the unpackaged version.
+- This flexibility does not apply to games: in-app purchases of digital goods/services in games (and on Xbox) must use the Microsoft Store in-product purchase API per Store Policy 10.8.1; see Microsoft Store Policies.
 - Paid users of the unpackaged app shouldn't pay again: offer a free/demo version unlockable by license sign-in or key, or set the app paid and distribute promotional (coupon) codes through your own channels.
 - After install, pins in the taskbar / Start menu (and Windows 10 tiles) launch the Store app; the system migrates listed ProgIds to the packaged app after installation.
 - Source: https://learn.microsoft.com/en-us/windows/apps/distribute-through-store/how-to-transition-users-from-your-web-unpackaged-app-to-store-packaged-app, last updated 2024-02-15 (ms.date).
@@ -109,4 +110,5 @@ Migrate file extension / protocol associations (manifest):
 
 - [Microsoft Store Web Installer and Store Badges / Links](./store-web-installer.md)
 - [Distribute a Win32 App](./distribute-win32-app.md)
+- [Microsoft Store Policies](./store-policies.md)
 - [Product Identity Details and App Name Reservations](./product-identity-and-name-management.md)
