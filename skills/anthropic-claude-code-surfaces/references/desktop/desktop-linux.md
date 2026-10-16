@@ -56,6 +56,7 @@ The app checks these requirements once at launch: restart it after installing pa
 - Troubleshooting: `libc6 (>= 2.34)` unmet dependency means the distribution is too old (Ubuntu 20.04 ships `libc6` 2.31; use Ubuntu 22.04+ or Debian 12+). "Running as root without `--no-sandbox` is not supported" means you launched `claude-desktop` as root; launch it as a regular user
 - Install from a downloaded `.deb` if the apt repository is unreachable: look up the newest package in the repo index and `sudo apt install ./claude-desktop_*.deb`; set `CLAUDE_DESKTOP_ADD_REPO="false"` in `/etc/default/claude-desktop` to skip repository registration
 - Not yet available in the Linux beta: Computer Use, voice dictation (use CLI [voice dictation](../terminal-ux/voice-dictation.md) instead), Fedora/RHEL support (Fedora and Arch users should run the CLI). The Quick Entry global hotkey works on X11, and on native Wayland it works when the desktop environment provides the GlobalShortcuts portal
+- The official page writes the `usermod` command with an unquoted user variable; it is quoted here (`"${USER}"`) per this repository's shell-quoting convention, with no change in behavior
 - `E: Unable to locate package claude-desktop` usually means the repository entry wasn't written or the architecture isn't `amd64`/`arm64`
 
 ## Related
