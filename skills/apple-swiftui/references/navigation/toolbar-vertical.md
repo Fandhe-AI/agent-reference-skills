@@ -79,6 +79,7 @@ All three structs conform to `Equatable`, `Hashable`, `Sendable`, `SendableMetat
 - When the value changes the system animates the transition: content reflows to or from the horizontal bars, the status bar changes axis, and the vertical bar's leading or trailing safe area inset is added or removed.
 - `toolbarVerticalEdge` is read-only, determined from locale and device, reflects the preferred edge whether or not a vertical bar is visible, and is `nil` where the system never places a vertical bar.
 - With both horizontal and vertical bars present, an item marked `.verticalPreferred` is preferred in the vertical bar.
+- Source: https://developer.apple.com/documentation/swiftui/toolbarverticalbehavior
 
 ## Related
 

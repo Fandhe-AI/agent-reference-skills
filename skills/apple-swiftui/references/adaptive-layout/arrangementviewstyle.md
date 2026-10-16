@@ -47,6 +47,7 @@ nonisolated func axes(_ axes: Axis.Set) -> OverlayArrangementViewStyle
 - `ArrangementViewStyleConfiguration` ("The properties of an arrangement view used to create its custom style") exposes nested `Primary` / `Secondary` types and the `primary` / `secondary` properties; `ArrangementView.init(_:)` creates a view from it
 - Split arrangement example: `.arrangementViewStyle(.split.axes(.vertical))` splits only into a vertical layout
 - `automatic` (`AutomaticArrangementViewStyle`) is the default style and resolves to a split arrangement
+- Source: https://developer.apple.com/documentation/swiftui/arrangementviewstyle
 
 ## Related
 

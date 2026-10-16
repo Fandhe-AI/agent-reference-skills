@@ -62,6 +62,7 @@ struct DetailsView: View {
     }
 }
 ```
+- Source: https://developer.apple.com/documentation/swiftui/splitarrangementviewstyle
 
 ## Related
 

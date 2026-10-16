@@ -69,6 +69,7 @@ final class TextDocument: Document {
 - For a read-only document, conform only to `ReadableDocument` and use the `viewer` / `makeReadableDocument` initializer of `DocumentGroup`. Set `CFBundleTypeRole` to `Viewer` in Info.plist.
 - The document can be `@MainActor` or nonisolated, `Sendable` or not.
 - `DocumentGroup` opts the app into autosaving, file coordination, undo management, and conflict resolution.
+- Source: https://developer.apple.com/documentation/swiftui/document
 
 ## Related
 

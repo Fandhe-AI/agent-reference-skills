@@ -53,6 +53,7 @@ Related modifier (27.0+): `nonisolated func asyncImageURLSession(_ urlSession: U
 - If an `Image` used as the placeholder does not load, nothing is shown and no error is reported.
 - In iOS 27, macOS 27, watchOS 27, tvOS 27, and visionOS 27 and later, `AsyncImage` caches downloaded image data following the transport protocol. The system creates the cache with a default `URLSessionConfiguration`. To change the cache policy (and timeout interval), set it on the `URLRequest` and pass it to `init(request:scale:transaction:content:)`. To customize downloads in a view hierarchy, use `asyncImageURLSession(_:)`.
 - In the phase initializers, the phase is `empty` while the request is `nil` or before the load completes, then `failure(_:)` (see `error`) or `success(_:)` (see `image`). To add transitions when the `URLRequest` changes, apply an identifier to the `AsyncImage`.
+- Source: https://developer.apple.com/documentation/swiftui/asyncimage
 
 ## Related
 

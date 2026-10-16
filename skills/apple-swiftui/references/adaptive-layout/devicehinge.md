@@ -44,6 +44,7 @@ nonisolated func onHingeChange(isEnabled: Bool = true, _ action: @escaping (Devi
 - The status is determined by the system from the current angle and device orientation
 - `DeviceHinge` conforms to `Equatable`, `Hashable`, `Sendable`; `DeviceHingeContext` to `Equatable`, `Sendable`
 - `DeviceHingeContext.hinge` is optional; show a fallback when the device has no hinge
+- Source: https://developer.apple.com/documentation/swiftui/devicehinge
 
 ## Related
 

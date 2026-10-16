@@ -40,6 +40,7 @@ nonisolated init(isEnabled: Binding<Bool>, @ContentBuilder content: @escaping ()
 - Unlike `ExternalNonInteractiveAccessory`, the content can be interactive
 - Conforms to `SceneAccessoryContent`; attach it with `sceneAccessory`
 - This page covers the SwiftUI accessory only. AVFoundation capture on iPhone Duo is covered by the apple-media skill
+- Source: https://developer.apple.com/documentation/swiftui/cameracaptureaccessory
 
 ## Related
 

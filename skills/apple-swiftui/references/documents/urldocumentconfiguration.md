@@ -50,6 +50,7 @@ coordinator.coordinate(
 - `URLDocumentConfiguration` is `@Observable`; views can track changes to `fileURL` and other properties. It conforms to `Observable`, `Sendable`, `Equatable`, `Hashable`, `CustomStringConvertible`.
 - Inside `read(from:progress:)` and `DocumentWriter.write`, use the `source` / `destination` URL parameter, not `fileURL`. The configuration's URL reflects current state and may differ from the operation's URL after Save As or rename.
 - Call `makeFileCoordinator()` every time to get a new coordinator for each separate read or write; do not reuse coordinators across operations because `NSFileCoordinator` is not `Sendable`. SwiftUI coordinates access for `read` / `write` automatically.
+- Source: https://developer.apple.com/documentation/swiftui/urldocumentconfiguration
 
 ## Related
 

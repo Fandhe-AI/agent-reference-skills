@@ -57,6 +57,7 @@ Other initializers (names only):
 - SwiftUI checks each `DocumentGroup` in the scene body from top to bottom and uses the first one whose document's `readableContentTypes` includes a type the file conforms to. Content types are hierarchical (a group declaring `UTType.plainText` also matches HTML). Declare more specific types first.
 - When creating a new document, the configuration's `fileURL` is `nil`. Do not access the document's contents or metadata through the URL; it can conflict with SwiftUI's file management.
 - Value-type documents are tracked through the document binding; reference-type documents are tracked through changes registered with `EnvironmentValues.undoManager`.
+- Source: https://developer.apple.com/documentation/swiftui/documentgroup
 
 ## Related
 

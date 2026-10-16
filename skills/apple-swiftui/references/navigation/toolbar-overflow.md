@@ -58,6 +58,7 @@ ContentView()
 - `visibilityPriority(_:)` and `ToolbarItemVisibilityPriority`: iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 26.1+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+ (per Apple's metadata).
 - Overflow menu content is placed there regardless of toolbar mode, platform, or customizability. On iOS and visionOS it goes into the overflow menu in the navigation bar.
 - When toolbar space is limited, lower-priority items move into the overflow menu before higher-priority ones.
+- Source: https://developer.apple.com/documentation/swiftui/toolbaroverflowmenu
 
 ## Related
 

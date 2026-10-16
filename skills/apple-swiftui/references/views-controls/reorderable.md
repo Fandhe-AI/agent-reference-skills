@@ -53,6 +53,7 @@ struct ContentView: View {
 - This overload is for a container with a single collection. For multiple collections of reorderable views, use `reorderContainer(for:in:isEnabled:move:)` with a type for collection identifiers and `reorderable(collectionID:)` on the content.
 - Related overloads listed in the same topic group: `reorderContainer(for:itemID:isEnabled:move:)` (key path to identify items), `reorderContainer(for:itemID:in:isEnabled:move:)`, and `DropSession.reorderDestination(for:in:)` / `reorderDestination(for:itemID:in:)`.
 - Official article: "Reordering items in lists, stacks, grids, and custom layouts".
+- Source: https://developer.apple.com/documentation/swiftui/dynamicviewcontent/reorderable()
 
 ## Related
 

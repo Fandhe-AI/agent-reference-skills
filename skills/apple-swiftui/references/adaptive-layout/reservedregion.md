@@ -42,6 +42,7 @@ func reservedRegions(kind: ReservedRegion.Kind, options: ReservedRegion.QueryOpt
 - Reserved regions are typically in a fixed coordinate space (a device camera does not flip with language). By default the system mirrors region geometry for right-to-left layout before giving it to SwiftUI APIs, so a `Layout` needs no direction handling
 - Pass `LayoutDirectionBehavior.fixed` to prevent mirroring when you position content manually
 - Conforms to `Identifiable`, `Equatable`, `Hashable`, `Sendable`
+- Source: https://developer.apple.com/documentation/swiftui/reservedregion
 
 ## Related
 

@@ -67,6 +67,7 @@ struct ExportView: View {
 - The dialog appears only when `document` is non-nil.
 - When the operation finishes, `isPresented` is set to `false` before `onCompletion` is called. On cancel, `isPresented` is set to `false` and `onCancellation` is called.
 - Instead of `String`, the snapshot can be `Data` or any other type.
+- Source: https://developer.apple.com/documentation/swiftui/view/fileexporter(ispresented:document:contenttype:defaultfilename:oncompletion:oncancellation:)
 
 ## Related
 

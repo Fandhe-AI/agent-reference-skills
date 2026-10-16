@@ -78,6 +78,8 @@ Parameters of `read` / `write`:
 - For package documents, navigate the `FileWrapper` hierarchy in the reader closure. `FileWrapper` loads file contents on demand, so a child file may be gone by the time you call `regularFileContents`; always handle errors when reading children of a package.
 - The `FileWrapperDocumentReader` closure does not receive a `Subprogress`. To report progress during reads, use a custom `DocumentReader`.
 - For single-file documents, `FileWrapperDocumentWriter` can ignore the `previous` argument and return a freshly built wrapper.
+- Source: https://developer.apple.com/documentation/swiftui/documentreader
+- Source: https://developer.apple.com/documentation/swiftui/documentwriter
 
 ## Related
 

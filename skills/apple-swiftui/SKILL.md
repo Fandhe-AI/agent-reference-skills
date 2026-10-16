@@ -2,10 +2,11 @@
 name: apple-swiftui
 description: >
   Apple SwiftUI 宣言的 UI フレームワークリファレンス。
-  View, VStack, List, NavigationStack, TabView, toolbar, State, Binding, Bindable,
-  Environment, sheet, modifier, withAnimation, matchedGeometryEffect, PhaseAnimator,
-  swipeActions, reorderable, AsyncImage, DocumentGroup, Document, Liquid Glass,
-  iPhone Duo 対応 (ArrangementView, ReservedRegion, DeviceHinge)。
+  View, VStack, HStack, ZStack, List, NavigationStack, TabView, toolbar, State, Binding,
+  Bindable, Environment, EnvironmentObject, sheet, fullScreenCover, modifier,
+  animation, Animation, withAnimation, Transition, matchedGeometryEffect, PhaseAnimator,
+  KeyframeAnimator, swipeActions, reorderable, AsyncImage, DocumentGroup, Document,
+  Liquid Glass, iPhone Duo 対応 (ArrangementView, ReservedRegion, DeviceHinge)。
 user-invocable: false
 model: sonnet
 ---
@@ -15,7 +16,7 @@ model: sonnet
 SwiftUI 公式ドキュメントの主要 API を網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
-対象: iOS 27 SDK / Xcode 27（iPhone Duo 系 API は iOS 27.1+、FileDocument は iOS 27.2 で deprecated）。出典 developer.apple.com DocC JSON、取得日 2026-10-16。
+対象: iOS 27 SDK / Xcode 27（iPhone Duo 系 API は iOS 27.1+、FileDocument は iOS 27.2 で deprecated）。出典 https://developer.apple.com/documentation/swiftui （DocC JSON https://developer.apple.com/tutorials/data/documentation/swiftui/<path>.json）、取得日 2026-10-16。
 UIKit 側の UIArrangementViewController / UIHingeInteraction は apple-uikit、Duo のカメラ記事は apple-media を参照。
 
 ## ディレクトリ構成

@@ -32,6 +32,7 @@ var editingToolbarItems: some ToolbarContent {
 - `ContentBuilder` serves as the unified replacement for type-specific builders such as `ToolbarContentBuilder` and `CommandsBuilder`. Those two builders are not marked deprecated on their pages (`ToolbarContentBuilder`: iOS 14.0+; `CommandsBuilder`: iOS 14.0+ / macOS 11.0+, no tvOS or watchOS).
 - `ContentBuilder` does not enforce protocol conformance in its build functions; type safety comes from conditional conformances on the produced content types. For example, `TupleContent` conditionally conforms to content types based on the types of its items.
 - As a result, one shared set of initializers on `Group`, `ForEach`, and `Section` serves all content types, instead of a separate overloaded initializer per builder.
+- Source: https://developer.apple.com/documentation/swiftui/contentbuilder
 
 ## Related
 

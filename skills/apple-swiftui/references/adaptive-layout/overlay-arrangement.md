@@ -46,6 +46,7 @@ struct PlayerView: View {
     }
 }
 ```
+- Source: https://developer.apple.com/documentation/swiftui/overlayarrangementviewstyle
 
 ## Related
 

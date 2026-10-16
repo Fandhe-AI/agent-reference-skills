@@ -76,6 +76,7 @@ ScrollView {
 - Actions accumulate for a given edge if the modifier is called multiple times on the same row.
 - `swipeActionsContainer()` ensures only one row's actions are revealed at a time, scrolling dismisses open actions, and tapping outside the active row dismisses its actions.
 - `List` already provides this coordination; applying `swipeActionsContainer()` to a `List` is a no-op. Use it for custom row layouts built with `ScrollView`, `LazyVStack`, or similar.
+- Source: https://developer.apple.com/documentation/swiftui/view/swipeactions(edge:allowsfullswipe:content:onpresentationchanged:)
 
 ## Related
 

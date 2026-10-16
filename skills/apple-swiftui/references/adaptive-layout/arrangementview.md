@@ -45,6 +45,7 @@ ArrangementView {
 }
 .arrangementViewStyle(.overlay)
 ```
+- Source: https://developer.apple.com/documentation/swiftui/arrangementview
 
 ## Related
 

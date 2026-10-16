@@ -143,6 +143,7 @@ Before / After (from `ReferenceFileDocument`):
 - `ReferenceFileDocument` checklist: mark the class `@Observable` and remove `ObservableObject` / `@Published`; same reader / writer / `apply` / `snapshot` split; update the `DocumentGroup` initializer; audit undo registration.
 - The undo manager from the environment in your content view is already connected to the document.
 - Official wording of the "After" `FileWrapperDocumentWriter` closure in the `FileDocument` example omits the second (`previous`) closure parameter, while the `Document` page and the `ReferenceFileDocument` example use two parameters (`snapshot, _` / `snapshot, previous`). The code above uses the two-parameter form.
+- Source: https://developer.apple.com/documentation/swiftui/updating-your-document-based-app
 
 ## Related
 
