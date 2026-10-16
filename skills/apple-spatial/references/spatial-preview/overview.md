@@ -20,7 +20,7 @@ let spatialContentURL = URL(filePath: "/path/to/spatialContent.jpeg")
 try await session.updateContents(url: spatialContentURL)
 ```
 
-Bridging an external OpenUSD runtime: write overrides into a thin edit layer, export it to disk, and copy the changes into USDKit's stage.
+Bridging an external OpenUSD runtime: write overrides into a thin edit layer, export it to disk, and copy the changes into USDKit's stage (verbatim from Apple's "Bridging an external USD runtime to Spatial Preview" article).
 
 ```swift
 @MainActor
@@ -52,6 +52,7 @@ func syncEdits(editLayerPath: String) {
 - USDKit is recommended for Spatial Preview because it works without any additional setup. Apps that use USDKit to access USD data automatically sync their edits with Spatial Preview sessions.
 - With your own USD runtime, the two apps do not share memory or a stage cache. Writing a USD file to disk does not notify USDKit of changes, and edits made on the connected Apple Vision Pro are not automatically visible to your app.
 - Layer stack on the Mac side: Scene export (full scene written by your external runtime, root of the composition that USDKit loads), Wrapper stage (thin USDKit stage that sublayers the scene export and stays open for the session), Edit layer (lightweight layer holding only the overrides used for interchange).
+- The bridging snippet above is quoted verbatim from Apple's article. Per the USDKit reference, `USDLayer.find(identifier:)` only returns an already-loaded layer (or `nil`) and does no I/O, so it neither loads an exchange layer that is not yet open nor picks up changes your external runtime wrote to disk. Open the exchange layer with `USDLayer.open(_:options:)` and call `reload()` (or `importContents(from:)`) on it before copying when re-syncing (see USDLayer).
 - All USDKit edit operations must run on the main actor. Batch edits from an external OpenUSD runtime at a reasonable interval (for example, 30 ms) to avoid locking the main actor.
 - When applying edits read from the Spatial Preview stage to your own stage, do not treat them as new changes; otherwise your app echoes them back and creates an infinite feedback loop.
 - Apps that cannot produce a minimal edit layer can export the complete scene and call `USDStage.reload()` or `USDLayer.reload()`. USDKit diffs the old and new stage and only deltas are synced, but the full scene is exported on every change, which can be slow for large scenes.
