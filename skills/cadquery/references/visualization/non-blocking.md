@@ -54,6 +54,7 @@ class Figure:
 
 ## Notes
 
+- Source: https://github.com/CadQuery/cadquery/blob/v2.8.0/doc/vis.rst (Non-blocking visualization section; rendered at https://cadquery.readthedocs.io/en/latest/vis.html#non-blocking-visualization), https://github.com/CadQuery/cadquery/blob/v2.8.0/cadquery/fig.py
 - Relies on VTK/Trame and opens a web browser window.
 - Unlike `cadquery.vis.show`, which blocks, `cadquery.fig.show` returns without blocking.
 - `Figure` is a singleton (created via `__new__`); the module-level `show`, `clear` and `fit` all operate on that same instance. `Figure.show`, `iso`, `up`, `front`, `side`, `clear` and `pop` return the figure.

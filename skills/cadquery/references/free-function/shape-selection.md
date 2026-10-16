@@ -53,6 +53,7 @@ bottom_or_top = base.faces("<Z") | base.faces(">Z")
 
 ## Notes
 
+- Source: https://github.com/CadQuery/cadquery/blob/v2.8.0/doc/free-func.rst (Shape selection section; rendered at https://cadquery.readthedocs.io/en/latest/free-func.html#shape-selection), https://github.com/CadQuery/cadquery/blob/v2.8.0/cadquery/occ_impl/shapes.py
 - `ancestors` yields shapes of type `kind` within `ctx` that contain `self`.
 - `siblings` yields shapes within `ctx` that share subshapes of type `kind` with `self`.
 - `&`, `|`, `%` combine selection results as sets and return a `Compound`; `%` is the set difference.

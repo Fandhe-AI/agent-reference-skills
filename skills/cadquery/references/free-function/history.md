@@ -85,6 +85,7 @@ Operations accept `history=` (a `History` instance) and `name=` (string used for
 
 ## Notes
 
+- Source: https://github.com/CadQuery/cadquery/blob/v2.8.0/doc/free-func.rst (Boolean operations section, history paragraph; rendered at https://cadquery.readthedocs.io/en/latest/free-func.html#boolean-operations), https://github.com/CadQuery/cadquery/blob/v2.8.0/cadquery/occ_impl/shapes.py (History / Op)
 - The history tracking feature of the free function API is experimental and may change (official warning).
 - Instantiate `cadquery.occ_impl.shapes.History` and pass it to the operations of interest; boolean operations and most modeling operations support it.
 - To use name-based queries (`hist["hollow"]`), specify the `name` parameter when invoking the operation.

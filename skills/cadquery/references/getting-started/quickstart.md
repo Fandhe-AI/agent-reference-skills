@@ -143,6 +143,7 @@ base = prism(base, None, circle(r_hole).moved(hole_locs).moved(top), None, addit
 - Parameters (`height`, `width`, etc.) can be changed to generate different bearing sizes with zero code changes — that is the point of parametric modeling.
 - `show()` from `cadquery.vis` opens an interactive VTK viewer; it is blocking until closed.
 - `show_object(result)` displays the model inside CQ-editor during development.
+- Although the official docs call the free function example "exactly the same object", its dimensions differ from the fluent example: the outer fillet radius is `height / 10` = 6.0 (fluent: 10.0) and the counterbore depth is `thickness / 3` ≈ 3.33 (fluent: 2.1). The hole and counterbore diameters match (`2 * r_hole` = 2.4, `2 * r_cbore` = 4.4).
 
 ## Related
 
