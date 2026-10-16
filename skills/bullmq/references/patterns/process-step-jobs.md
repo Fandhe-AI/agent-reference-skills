@@ -1,10 +1,8 @@
-# Process Step Jobs
+# Process Step jobs
 
-プロセッサ関数をステップに分割し、各ステップの完了状態を保存しながら処理を進めるパターン。障害時に途中のステップから再開できる。
+Break processor functions into small pieces that are processed depending on the previously executed step. One way to handle this is with switch statements. By saving the next step value every time a step completes (here, in the job's data), a job that errors and retries starts from the correct step.
 
-## 基本的なステップ処理
-
-switch 文を使い、ステップごとに処理を分岐する。各ステップ完了時に `job.updateData` で次のステップを保存することで、リトライ時に正しいステップから再開できる。
+## Signature / Usage
 
 ```typescript
 enum Step {
@@ -45,9 +43,9 @@ const worker = new Worker(
 );
 ```
 
-## ステップ間の遅延
+### Delaying
 
-`moveToDelayed` と `DelayedError` を使って、ステップ間に遅延を挿入できる。
+To delay a job while it is being processed, use `moveToDelayed`. While a worker processes a job it keeps a lock on it with a token value; for the TypeScript `moveToDelayed` to work, pass the token so it can unlock without error. Then exit the processor by throwing `DelayedError` (`DelayedException` in .NET) to signal the worker that the job has been delayed, so it does not try to complete or fail it.
 
 ```typescript
 import { DelayedError, Worker } from 'bullmq';
@@ -89,9 +87,9 @@ const worker = new Worker(
 );
 ```
 
-## 子ジョブの待機 (Waiting Children)
+### Waiting Children
 
-ランタイムで子ジョブを追加し、その完了を待つパターン。`moveToWaitingChildren` と `WaitingChildrenError` を使用する。
+A common use case is to add children at runtime and then wait for them to complete. Use `moveToWaitingChildren`, passing the lock token, and exit the processor by throwing `WaitingChildrenError` so the worker knows the job moved to waiting-children and does not complete or fail it.
 
 ```typescript
 import { WaitingChildrenError, Worker } from 'bullmq';
@@ -167,9 +165,9 @@ const worker = new Worker(
 );
 ```
 
-## フローのチェイン
+### Chaining Flows
 
-`FlowProducer` を使ってランタイムでフローを追加し、子ジョブの完了を待つ。
+Add flows at runtime inside the processor and then wait for the children to complete:
 
 ```typescript
 import { FlowProducer, WaitingChildrenError, Worker } from 'bullmq';
@@ -250,15 +248,16 @@ const worker = new Worker(
 );
 ```
 
-## 注意点
+## Notes
 
-- 特殊エラー（`DelayedError`, `RateLimitError`, `WaitingChildrenError`, `WaitingError`）による手動移動は `attemptsMade` をインクリメントしない
-- ジョブの処理開始回数を制御するには `maxStartedAttempts` オプションを使用する
-- 各ステップ完了後に必ず `job.updateData` でステップ情報を保存すること。そうしないとリトライ時に最初から再実行される
+- Manually moving jobs using special errors does not increment `attemptsMade`. That property is incremented on regular job completion or failure (including retries using a backoff strategy). This applies to `DelayedError`, `RateLimitError`, `WaitingChildrenError` and `WaitingError`. To control how many times a job is allowed to start processing, use the `maxStartedAttempts` option.
+- The official page also has .NET, Python and Rust tabs. In .NET, use `job.UpdateDataAsync`; `job.MoveToDelayedAsync(ts)` uses the job's own token automatically when none is given, and `DelayedException` (the counterpart of TypeScript's `DelayedError`) is thrown to signal the delay. The TypeScript `moveToDelayed` still needs the token to unlock.
+- Save the step with `job.updateData` after each step completes; otherwise a retry re-executes from the beginning.
+- BullMQ Pro: this pattern can be handled with observables, in which case the next step does not need to be saved.
 
-## 関連
+## Related
 
-- [Move To Delayed API Reference](https://api.docs.bullmq.io/classes/v5.Job.html#movetodelayed)
-- [Move To Waiting Children API Reference](https://api.docs.bullmq.io/classes/v5.Job.html#movetowaitingchildren)
-- [./flows.md](./flows.md)
-- [./manual-retrying.md](./manual-retrying.md)
+- [Move To Delayed API Reference](https://docs.bullmq.io/api/classes/v6.Job.html#movetodelayed)
+- [Move To Waiting Children API Reference](https://docs.bullmq.io/api/classes/v6.Job.html#movetowaitingchildren)
+- [Flows](./flows.md)
+- [Manual retrying](./manual-retrying.md)

@@ -1,81 +1,77 @@
-# BullMQ — Workers
+# Workers
 
-Worker はキューからジョブを取得して処理するインスタンスである。処理が成功すると completed 状態、例外が発生すると failed 状態に遷移する。複数の Worker を異なるプロセスやマシンで実行可能。
+Workers are the instances that perform jobs added to the queue. A worker is equivalent to a "message" receiver in a traditional message queue. If the process function succeeds, the job moves to "completed"; if it throws, the job automatically moves to "failed". Failed jobs can be automatically retried (see Retrying failing jobs).
 
-## 基本的な Worker
+## Signature / Usage
+
+A worker is instantiated with the `Worker` class; the work is performed in the process function, which is asynchronous (`async` or returning a promise).
 
 ```typescript
 import { Worker, Job } from 'bullmq';
 
 const worker = new Worker(queueName, async (job: Job) => {
-  // ジョブの進捗を報告（任意）
+  // Optionally report some progress
   await job.updateProgress(42);
 
-  // オブジェクトで進捗を報告（任意）
+  // Optionally sending an object as progress
   await job.updateProgress({ foo: 'bar' });
 
-  // ジョブを処理
+  // Do something with job
   return 'some value';
 });
 ```
 
-## キャンセル対応の Worker
+The processor can also receive an optional third parameter for job cancellation support:
 
 ```typescript
 const worker = new Worker(
   queueName,
   async (job: Job, token?: string, signal?: AbortSignal) => {
-    // signal でキャンセルを検出可能
+    // signal can be used to detect when a job has been cancelled
     return 'some value';
   },
 );
 ```
 
-## 自動起動の制御（autorun）
-
-デフォルトではプロセッサは即座に起動する。`autorun: false` で遅延起動が可能。
+When a worker instance is created, it launches the processor immediately. To decide when the processor starts, pass `autorun: false` and call `run()`:
 
 ```typescript
-import { Worker, Job } from 'bullmq';
-
 const worker = new Worker(
   queueName,
   async (job: Job) => {
     await job.updateProgress(42);
-    await job.updateProgress({ foo: 'bar' });
     return 'some value';
   },
   { autorun: false },
 );
 
-// 手動で起動
 worker.run();
 ```
 
-## イベントリスナー
+### Events
 
-### ローカルイベント
+A processor can optionally return a value, retrievable via the job's `returnvalue` property or the `completed` event:
 
 ```typescript
 worker.on('completed', (job: Job, returnvalue: any) => {
-  // 完了時の処理
+  // Do something with the return value.
 });
 
 worker.on('progress', (job: Job, progress: number | object) => {
-  // 進捗更新時の処理
+  // Do something with the progress.
 });
 
 worker.on('failed', (job: Job | undefined, error: Error, prev: string) => {
-  // 失敗時の処理
+  // Do something with the failure.
 });
 
 worker.on('error', err => {
-  // エラーハンドラ（必ず設定すること）
+  // log the error
   console.error(err);
 });
 ```
 
-### グローバルイベント（QueueEvents）
+Global events from any worker are available through `QueueEvents`:
 
 ```typescript
 import { QueueEvents } from 'bullmq';
@@ -83,61 +79,85 @@ import { QueueEvents } from 'bullmq';
 const queueEvents = new QueueEvents('Paint');
 
 queueEvents.on('completed', ({ jobId, returnvalue }) => {
-  // 任意の Worker でジョブが完了した時に呼ばれる
+  // Called every time a job is completed by any worker.
 });
 
 queueEvents.on('failed', ({ jobId, failedReason }) => {
-  // 任意の Worker でジョブが失敗した時に呼ばれる
+  // Called whenever a job is moved to failed by any worker.
 });
 
 queueEvents.on('progress', ({ jobId, data }) => {
-  // 進捗イベントを受信
+  // jobId received a progress event
 });
 ```
 
-## 一時停止と再開
+### Pause and resume
 
 ```typescript
-// ワーカーを一時停止（デフォルトはアクティブなジョブの完了を待つ）
+// Pause the worker (by default waits for active jobs to finish)
 await worker.pause();
 
-// 現在処理中のジョブを待たずに即座に一時停止
+// Pause immediately without waiting for currently processing jobs
 await worker.pause(true);
 
-// ワーカーを再開（v6 以降 Promise<void> を返すため await が必須）
+// Resume the worker (returns Promise<void> since v6, so await it)
 await worker.resume();
 ```
 
-## TypeScript ジェネリクス
+### TypeScript typings
 
-データ型と戻り値の型を指定可能。
+Specify the job data and return value types using generics:
 
 ```typescript
 const worker = new Worker<MyData, MyReturn>(queueName, async (job: Job) => {});
 ```
 
-## 主要オプション
+By default the job progress is typed as `string | boolean | number | object` (v6.2.0+). To report progress with a specific shape, specify a progress type so that `updateProgress` and the `progress` event are type-safe:
+
+```typescript
+import { Worker, RedisQueueBackend } from 'bullmq';
+
+type MyProgress = { percentage: number; message: string };
+
+const worker = new Worker<
+  MyData,
+  MyReturn,
+  string,
+  RedisQueueBackend,
+  MyProgress
+>(queueName, async job => {
+  // progress is checked against MyProgress
+  await job.updateProgress({ percentage: 42, message: 'halfway' });
+});
+
+worker.on('progress', (job, progress) => {
+  console.log(progress.percentage, progress.message);
+});
+```
+
+## Options / Props
+
+Commonly used worker options:
 
 | Name | Type | Description |
 |------|------|-------------|
-| `concurrency` | `number` | 並行処理数（デフォルト: 1） |
-| `autorun` | `boolean` | 自動起動（デフォルト: `true`） |
-| `connection` | `ConnectionOptions` | Redis 接続設定 |
-| `removeOnComplete` | `KeepJobs` | 完了ジョブの自動削除 |
-| `removeOnFail` | `KeepJobs` | 失敗ジョブの自動削除 |
-| `stalledInterval` | `number` | stalled チェックの間隔（ミリ秒） |
-| `maxStalledCount` | `number` | stalled 許容回数 |
-| `lockDuration` | `number` | ジョブロックの有効期間（ミリ秒） |
-| `useWorkerThreads` | `boolean` | Worker Threads を使用するか |
+| `concurrency` | `number` | Number of jobs processed in parallel (default: 1) |
+| `autorun` | `boolean` | Start the processor on creation (default: `true`) |
+| `connection` | `ConnectionOptions` | Redis connection settings |
+| `removeOnComplete` | `KeepJobs` | Automatic removal of completed jobs |
+| `removeOnFail` | `KeepJobs` | Automatic removal of failed jobs |
+| `stalledInterval` | `number` | Interval of the stalled-job check (ms) |
+| `maxStalledCount` | `number` | Allowed number of stalls |
+| `lockDuration` | `number` | Job lock duration (ms) |
+| `useWorkerThreads` | `boolean` | Use worker threads for sandboxed processors |
 
-## 注意点
+## Notes
 
-- `error` イベントリスナーを必ず設定すること。設定しないと、未処理の例外がジョブの処理を停止させる可能性がある
-- プロセッサ関数の戻り値は `returnvalue` プロパティや `completed` イベントで取得可能
-- 進捗は `job.updateProgress()` で数値またはオブジェクトとして報告でき、Worker イベントまたは QueueEvents で受信可能
-- **`Worker#resume()` は v6 以降非同期化され `Promise<void>` を返す。必ず `await` すること**（v5 以前は同期メソッドだった）
+- Always attach an `error` listener to the worker. If the error handler is missing, the worker may stop processing jobs when an error is emitted, because Node.js raises an unhandled exception.
+- The progress type must be JSON-serializable, as progress is persisted in the queue's backend. Sandboxed processors always receive the default progress type, since the value crosses a process boundary.
+- `Worker#resume()` became asynchronous in v6 and returns `Promise<void>`; always `await` it (it was synchronous in v5 and earlier).
 
-## 関連
+## Related
 
 - [Connections](../connections.md)
 - [Concurrency](./concurrency.md)

@@ -1,12 +1,12 @@
 # Going to Production
 
-BullMQ ベースのアプリケーションを本番環境にデプロイする際の重要な考慮事項とベストプラクティスをまとめています。Redis の永続化設定、メモリポリシー、エラーハンドリング、グレースフルシャットダウンなど、堅牢な運用に不可欠な設定を網羅します。
+Crucial considerations and tips for a robust deployment of a BullMQ-based application to production.
 
-## Redis 永続化（Persistence）
+## Signature / Usage
 
-BullMQ は Redis ベースのため、永続化を手動で設定する必要があります。多くのホスティングソリューションではデフォルトで永続化が無効です。
+### Persistence
 
-**推奨設定**: AOF（Append Only File）を有効にする。通常、1 秒ごとの書き込みで十分です。
+Since BullMQ is based on Redis, persistence needs to be configured manually. Many hosting solutions do not offer persistence by default. Enabling AOF (Append Only File) is recommended; usually 1 second per write is enough for most applications. Persistence affects performance, so benchmark it.
 
 ```
 # redis.conf
@@ -14,130 +14,118 @@ appendonly yes
 appendfsync everysec
 ```
 
-## Max Memory Policy
+### Max memory policy
 
-Redis をキャッシュとして使用する場合、メモリ上限に達するとキーが削除されますが、BullMQ ではキーの任意削除は許容されません。
-
-**必須設定**: `maxmemory-policy` を `noeviction` に設定する。これが BullMQ の正常動作を保証する唯一の設定です。
+BullMQ cannot work properly if Redis evicts keys arbitrarily. Configure `maxmemory-policy` to `noeviction`; this is the only setting that guarantees correct behavior of the queues.
 
 ```
 # redis.conf
 maxmemory-policy noeviction
 ```
 
-## 自動再接続
+### Automatic reconnections
 
-本番環境では Redis との接続が切断される可能性があります。IORedis の以下のオプションを適切に設定することが重要です。
+A connection between BullMQ and Redis cannot be guaranteed to stay online; it must recover as fast as possible without human intervention. By default BullMQ uses ioredis, where the most relevant options are `retryStrategy`, `maxRetriesPerRequest` and `enableOfflineQueue`. Operations on the `Queue` class should fail quickly on a temporal disconnection, whereas `Worker`s should wait indefinitely without raising any exception.
 
-| Option | Queue での推奨値 | Worker での推奨値 | Description |
-|--------|-----------------|------------------|-------------|
-| `retryStrategy` | カスタム | カスタム | リトライ間隔の計算関数 |
-| `maxRetriesPerRequest` | デフォルト | `null` | リクエストあたりの最大リトライ回数 |
-| `enableOfflineQueue` | `false` | `true`（デフォルト） | オフラインキューの有効化 |
+`retryStrategy` determines the retry function; retries continue forever until reconnection. For ioredis connections created inside BullMQ the strategy is exponential backoff with a minimum of 1 second and a maximum of 20 seconds, and can be overridden by passing custom ioredis options:
 
-### retryStrategy
-
-BullMQ のデフォルトでは指数バックオフ（最小 1 秒、最大 20 秒）を使用します。
-
-```typescript
+```ts
 retryStrategy: function (times: number) {
   return Math.max(Math.min(Math.exp(times), 20000), 1000);
 }
 ```
 
-### maxRetriesPerRequest
+`maxRetriesPerRequest` limits how many times a failed request is retried. For `Worker`s using ioredis it must be `null`. It defaults to `null` when instantiating a `Worker`, but can be overridden by passing an existing ioredis instance or a different value; in both cases BullMQ outputs a warning that should be addressed.
 
-Worker では必ず `null` に設定します。デフォルトでそう設定されますが、既存の IORedis インスタンスを渡す場合は注意が必要です。
+`enableOfflineQueue`: ioredis has a small offline queue for commands issued while disconnected. Disable it for `Queue` instances so calls fail quickly; leave it enabled for `Worker`s so they wait until reconnection.
 
-### enableOfflineQueue
+#### node-redis or Bun adapters in production
 
-`Queue` では `false` にしてフェイルファストを実現し、`Worker` ではデフォルト（`true`）のままにして再接続まで待機させます。
+With `createNodeRedisClient` or `createBunRedisClient` the same principle applies: producers fail quickly when Redis is unavailable, consumers keep retrying. For node-redis, configure reconnect and request behavior on the raw client (for example `socket.reconnectStrategy`, connect timeout, command timeout). BullMQ's Bun adapter includes automatic reconnect handling with exponential backoff for unexpected disconnects. Test these scenarios before production: Redis unavailable at service startup, transient network disconnect while workers process jobs, graceful shutdown while workers have active jobs.
 
-## エラーログ
+### Log errors
 
-接続問題のデバッグと「unhandled errors」防止のため、error イベントハンドラを設定します。
+Attach an `error` handler to help debug connection issues and prevent "unhandled errors".
 
 ```typescript
-worker.on('error', (err) => {
-  logger.error(err, 'Worker error');
+worker.on('error', err => {
+  // Log your error.
 });
 
-queue.on('error', (err) => {
-  logger.error(err, 'Queue error');
+queue.on('error', err => {
+  // Log your error.
 });
 ```
 
-## グレースフルシャットダウン
+### Monitoring and alerts
 
-サーバー再起動時にストールジョブを最小限にするため、`SIGINT` と `SIGTERM` シグナルをハンドリングします。
+In production you will want to know when jobs start failing, when workers stop, or when jobs pile up faster than workers can process them. Build this with queue and worker events, built-in metrics, Prometheus or OpenTelemetry, or use a dashboard with built-in monitors and alerts. The guide "How to monitor and manage BullMQ queues" (https://bullmq.io/articles/guides/monitoring-bullmq-queues/) compares the options.
+
+### Gracefully shut down workers
+
+Close workers properly on server restart to minimize stalled jobs. If a worker is killed without waiting for its jobs, they are marked stalled and processed automatically when new workers come online (about 30 seconds by default). Listen for both `SIGINT` (Ctrl+C) and `SIGTERM` (sent by system daemons, orchestrators like Kubernetes, or process managers like PM2).
 
 ```typescript
-const gracefulShutdown = async (signal: string) => {
+const gracefulShutdown = async signal => {
   console.log(`Received ${signal}, closing server...`);
   await worker.close();
-  // その他の非同期クリーンアップ
+  // Other asynchronous closings
   process.exit(0);
 };
 
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 ```
 
-| Signal | 説明 |
-|--------|------|
-| `SIGINT` | ターミナルで Ctrl+C が押された場合 |
-| `SIGTERM` | Kubernetes、PM2 などのオーケストレーションツールからの終了要求 |
+### Auto-job removal
 
-## ジョブの自動削除
-
-デフォルトでは完了・失敗したジョブは永遠に保持されます。適切な自動削除を設定してください。
+By default all completed or failed jobs are kept forever. Configure a maximum number of jobs to keep (see Auto removal of jobs):
 
 ```typescript
 const queue = new Queue('myQueue', {
   defaultJobOptions: {
-    removeOnComplete: {
-      count: 100, // 最新100件の完了ジョブを保持
-    },
-    removeOnFail: {
-      count: 5000, // 最新5000件の失敗ジョブを保持
-    },
+    removeOnComplete: { count: 100 },
+    removeOnFail: { count: 5000 },
   },
 });
 ```
 
-## データの保護
+### Unhandled exceptions and rejections
 
-ジョブの data フィールドは平文で Redis に保存されます。
-
-- **推奨**: 機密データをジョブに含めない
-- **やむを得ない場合**: キューに追加する前にデータを暗号化する
-
-## 未処理の例外とリジェクション
-
-NodeJS はデフォルトで未処理の例外でクラッシュします。以下のハンドラを設定してください。
+Node.js breaks on unhandled exceptions by default. Handle them gracefully somewhere in your service:
 
 ```typescript
 process.on('uncaughtException', function (err) {
+  // Handle the error safely
   logger.error(err, 'Uncaught exception');
 });
 
 process.on('unhandledRejection', (reason, promise) => {
+  // Handle the error safely
   logger.error({ promise, reason }, 'Unhandled Rejection at: Promise');
 });
 ```
 
-## 注意点
+## Options / Props
 
-- AOF 永続化はパフォーマンスに影響するため、ベンチマークで許容範囲を確認すること
-- `maxmemory-policy` が `noeviction` 以外だと、ロックキーが期限前に削除される可能性がある
-- Worker の `maxRetriesPerRequest` を `null` 以外にすると、Redis コマンドの例外でワーカーが壊れる
-- グレースフルシャットダウンでもジョブの処理時間がグレース期間を超える場合、ストールは避けられない
-- セキュリティは軽視せず、データ漏洩やビジネスへの経済的損害のリスクを真剣に考慮すること
+| Option | Recommended for Queue | Recommended for Worker | Description |
+|--------|-----------------------|------------------------|-------------|
+| `retryStrategy` | custom | custom | Function computing the retry interval |
+| `maxRetriesPerRequest` | default | `null` | Max retries per failed request |
+| `enableOfflineQueue` | `false` | `true` (default) | Whether commands are queued while offline |
 
-## 関連
+## Notes
 
-- [./architecture.md](./architecture.md)
-- [./troubleshooting.md](./troubleshooting.md)
-- [./rate-limiting.md](./rate-limiting.md)
-- [./redis-compatibility/redis-compatibility.md](./redis-compatibility/redis-compatibility.md)
-- [./redis-hosting/aws-memorydb.md](./redis-hosting/aws-memorydb.md)
+- Persistence has some effect on performance; run benchmarks to be sure it is acceptable.
+- Setting `maxRetriesPerRequest` to anything other than `null` on a Worker can let Redis command exceptions break the worker.
+- Graceful shutdown does not guarantee jobs are never stalled, as a job may take longer than the grace period for the server to restart.
+- The job `data` field is stored in clear text. Avoid storing sensitive data in the job; if unavoidable, encrypt the sensitive part before adding it to the queue.
+
+## Related
+
+- [Architecture](./architecture.md)
+- [Troubleshooting](./troubleshooting.md)
+- [Rate limiting](./rate-limiting.md)
+- [Redis compatibility](./redis-compatibility/redis-compatibility.md)
+- [AWS MemoryDB](./redis-hosting/aws-memorydb.md)

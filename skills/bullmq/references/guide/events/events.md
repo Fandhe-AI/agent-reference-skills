@@ -1,23 +1,17 @@
 # Events
 
-BullMQ のすべてのクラスは `EventEmitter` を継承しており、ジョブのライフサイクルに関するイベントを発行します。Worker のローカルイベントと、`QueueEvents` クラスによるグローバル監視の2種類の方法でイベントをリスンできます。
+All classes in BullMQ emit events that inform on the lifecycles of the jobs running in the queue. Every class is an `EventEmitter` and emits different events.
 
-## ローカル Worker イベント
-
-Worker はローカルで処理したジョブに関するイベントを発行します:
+## Signature / Usage
 
 ```typescript
-import { Queue } from 'bullmq';
+import { Queue, Worker, QueueEvents } from 'bullmq';
 
 const myQueue = new Queue('Paint');
 
 myQueue.on('waiting', (job: Job) => {
   // Job is waiting to be processed.
 });
-```
-
-```typescript
-import { Worker } from 'bullmq';
 
 const myWorker = new Worker('Paint');
 
@@ -34,9 +28,7 @@ myWorker.on('failed', (job: Job) => {
 });
 ```
 
-## グローバルイベント監視（QueueEvents）
-
-すべての Worker からのイベントを一箇所でリスンするには `QueueEvents` クラスを使用します:
+The events above are local to the workers that actually completed the jobs. To listen to all events emitted by all workers in one place, use the `QueueEvents` class:
 
 ```typescript
 import { QueueEvents } from 'bullmq';
@@ -55,40 +47,75 @@ queueEvents.on(
 );
 ```
 
-## 主な Worker イベント
+### Real-time updates
 
-| Event | Description |
-|-------|-------------|
-| waiting | ジョブが処理待ちキューに入った |
-| completed | ジョブが正常に完了した |
-| failed | ジョブがエラーで失敗した |
-| progress | ジョブの進捗が更新された |
-| drained | キューにジョブがなくなった |
-| error | Worker でエラーが発生した |
+Local `Worker` / `Queue` listeners only see events in the current process. `QueueEvents` is the usual building block for real-time updates across workers: dashboards, websockets, SSE, or another service that must react while jobs run.
 
-## Redis Streams ベースの実装
+```typescript
+import { QueueEvents } from 'bullmq';
 
-`QueueEvents` は Redis Streams を使用して実装されており、標準的な pub-sub と異なり、ネットワーク切断時にもイベントが失われない保証があります。
+const queueEvents = new QueueEvents('Paint', { connection });
 
-イベントストリームは自動的にトリミングされ、デフォルトで約10,000件のイベントが保持されます。この上限は `streams.events.maxLen` オプションで変更できます。
+queueEvents.on('completed', ({ jobId, returnvalue }) => {
+  sendToDashboard({ type: 'completed', jobId, returnvalue });
+});
 
-## 手動イベントトリミング
+queueEvents.on('failed', ({ jobId, failedReason }) => {
+  sendToDashboard({ type: 'failed', jobId, failedReason });
+});
+
+queueEvents.on(
+  'progress',
+  ({ jobId, data }: { jobId: string; data: number | object }) => {
+    sendToDashboard({ type: 'progress', jobId, data });
+  },
+);
+```
+
+Publish progress from the worker with `job.updateProgress(...)` (number or object). This pairs well with working with batches when one job represents many items, or when you want a live bar for a long job:
+
+```typescript
+await job.updateProgress({ completed: 3, total: 10 });
+```
+
+Close `QueueEvents` on shutdown so its Redis connection is released:
+
+```typescript
+await queueEvents.close();
+```
+
+### Manual trim events
+
+To trim events manually, use the `trimEvents` method:
 
 ```typescript
 import { Queue } from 'bullmq';
 
 const queue = new Queue('paint');
 
-await queue.trimEvents(10); // 最新10件のイベントのみ残す
+await queue.trimEvents(10); // leaves 10 events
 ```
 
-## 注意点
+## Options / Props
 
-- ローカルイベントは各 Worker が処理したジョブのみ対象です
-- すべての Worker のイベントを一元監視する場合は `QueueEvents` を使用してください
-- イベントストリームのサイズはデフォルトで約10,000件に自動トリミングされます
-- `trimEvents()` で手動トリミングも可能です
+Common events (see the Worker Listener, Queue Listener and QueueEvents Listener API references for the full list):
 
-## 関連
+| Name | Type | Description |
+|------|------|-------------|
+| `waiting` | event | A job is waiting to be processed |
+| `completed` | event | A job completed successfully |
+| `failed` | event | A job failed with an error |
+| `progress` | event | A job's progress was updated |
+| `drained` | event | The queue has no more jobs waiting |
+| `error` | event | An error occurred in the Worker |
 
-- [./create-custom-events.md](./create-custom-events.md) — カスタムイベントの作成
+## Notes
+
+- `QueueEvents` is implemented using Redis streams, which guarantees events are delivered and not lost during disconnections (unlike standard pub-sub).
+- The event stream is auto-trimmed so its size does not grow too much. By default it keeps ~10,000 events; configure with the `streams.events.maxLen` option.
+- For jobs processed with BullMQ Pro batches, worker-local `completed` / `failed` listeners see the wrapper batch job. Use `QueueEvents` / `QueueEventsPro` when you need per-job lifecycle events.
+
+## Related
+
+- [Create custom events](./create-custom-events.md)
+- [Working with batches](../queues/batches.md)

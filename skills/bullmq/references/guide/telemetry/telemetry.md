@@ -1,23 +1,12 @@
 # Telemetry
 
-BullMQ は Telemetry インターフェースを提供しており、OpenTelemetry 仕様をはじめとする外部テレメトリバックエンドと統合できます。大規模アプリケーションでジョブのライフサイクル全体を詳細に把握するために有用です。
+BullMQ provides a Telemetry interface that can be used to integrate it with any external telemetry backend. Currently the OpenTelemetry specification is supported, the de-facto standard for telemetry; the interface is flexible enough to support other backends in the future.
 
-## 概要
+Telemetry is very useful for large applications where you want a detailed and general overview of the system. For BullMQ it helps to gain insight into the different statuses a job may be in during its complete lifecycle, and to track the source of jobs and all the interactions jobs or messages may perform with other parts of the system.
 
-BullMQ の Telemetry インターフェースは、任意のテレメトリバックエンドとの統合を可能にする柔軟な設計です。現在は OpenTelemetry 仕様をサポートしており、これはテレメトリの新しいデファクトスタンダードです。
+## Signature / Usage
 
-## 主な利点
-
-| 利点 | 説明 |
-|------|------|
-| ジョブライフサイクルの可視化 | ジョブが経る各ステータスの詳細な追跡 |
-| ソース追跡 | ジョブの発生元とシステム他部分との相互作用の追跡 |
-| パフォーマンス分析 | 処理時間やボトルネックの特定 |
-| 分散トレーシング | 複数サービスにまたがるジョブフローの追跡 |
-
-## bullmq-otel パッケージ
-
-OpenTelemetry 統合には `bullmq-otel` パッケージを使用します:
+Use the `bullmq-otel` package for OpenTelemetry integration:
 
 ```typescript
 import { Queue } from 'bullmq';
@@ -32,16 +21,15 @@ const queue = new Queue('myQueue', {
 });
 ```
 
-## 注意点
+## Notes
 
-- テレメトリインターフェースは将来的に他のバックエンドもサポートできる柔軟な設計です
-- 現在は `bullmq-otel` パッケージで OpenTelemetry をサポートしています
-- 大規模アプリケーションではトレースとメトリクスの両方を有効にすることを推奨します
+- Since v6, `bullmq-otel` is an optional peer dependency of BullMQ; install it explicitly.
 
-## 関連
+## Related
 
-- [./getting-started.md](./getting-started.md) — セットアップ手順
-- [./traces.md](./traces.md) — 分散トレースの実装
-- [./metrics.md](./metrics.md) — テレメトリメトリクスの収集
-- [./running-jaeger.md](./running-jaeger.md) — Jaeger によるトレース可視化
-- [./running-a-simple-example.md](./running-a-simple-example.md) — サンプル実装
+- [Getting started](./getting-started.md)
+- [Traces](./traces.md)
+- [Metrics](./metrics.md)
+- [Running Jaeger](./running-jaeger.md)
+- [Running a simple example](./running-a-simple-example.md)
+- [How to monitor and manage BullMQ queues](https://bullmq.io/articles/guides/monitoring-bullmq-queues/) (external guide)

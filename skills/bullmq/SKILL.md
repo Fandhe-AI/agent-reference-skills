@@ -1,18 +1,20 @@
 ---
 name: bullmq
 description: >
-  BullMQ (Redis ベースの Node.js ジョブキュー) リファレンス。
-  Queue, Worker, Job, FlowProducer, QueueEvents、レート制限、cron、
-  delayed / repeatable / priority ジョブ、再試行、デッドレター、フロー、メトリクス。
-  Python / Elixir / PHP / Rust マルチ言語対応。
+  BullMQ (Node.js ジョブキュー、Redis / PostgreSQL バックエンド対応) リファレンス。
+  Queue, Worker, Job, FlowProducer, QueueEvents、PostgreSQL backend、
+  createPostgresBackend, withBackend、レート制限、cron、delayed / repeatable / priority ジョブ、
+  再試行、デッドレター、フロー、バッチ処理、メトリクス。Python / Elixir / PHP / Rust 対応。
 user-invocable: false
 model: sonnet
 ---
 
 # BullMQ リファレンス
 
-BullMQ (Redis ベースの Node.js ジョブキューライブラリ) の全ドキュメントを網羅したスキル。
+BullMQ (Node.js ジョブキューライブラリ、Redis / PostgreSQL バックエンド対応) の全ドキュメントを網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+対象: BullMQ v6.3.15（docs/gitbook @ tag v6.3.15）
 
 ## ディレクトリ構成
 
@@ -81,10 +83,14 @@ skills/bullmq/
         README.md
         producers.md
         queue-events-listeners.md
+      postgresql-backend/
+        README.md
+        postgresql-backend.md
       queues/
         README.md
         adding-bulks.md
         auto-removal-of-jobs.md
+        batches.md
         global-concurrency.md
         global-rate-limit.md
         meta.md
@@ -200,12 +206,13 @@ skills/bullmq/
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | アーキテクチャ、Redis 接続設定、本番運用、並列性/並行性、QueueScheduler 廃止、トラブルシューティング | guide | [references/guide/README.md](references/guide/README.md) |
-| キューの設定、バルク追加、グローバル並行数、ジョブ自動削除 | guide/queues | [references/guide/queues/README.md](references/guide/queues/README.md) |
+| キューの設定、バルク追加、バッチ処理の使い分け（addBulk / FlowProducer.addBulk / Pro batches）、グローバル並行数、ジョブ自動削除 | guide/queues | [references/guide/queues/README.md](references/guide/queues/README.md) |
 | ワーカーの並行処理、グレースフルシャットダウン、サンドボックス | guide/workers | [references/guide/workers/README.md](references/guide/workers/README.md) |
 | ジョブの種類（遅延・繰り返し・優先度・FIFO/LIFO）、リトライ、重複排除 | guide/jobs | [references/guide/jobs/README.md](references/guide/jobs/README.md) |
 | ジョブスケジューラ、cron、繰り返し戦略 | guide/job-schedulers | [references/guide/job-schedulers/README.md](references/guide/job-schedulers/README.md) |
 | 親子ジョブ、FlowProducer、依存関係管理 | guide/flows | [references/guide/flows/README.md](references/guide/flows/README.md) |
-| イベントリスニング、QueueEvents、カスタムイベント | guide/events | [references/guide/events/README.md](references/guide/events/README.md) |
+| イベントリスニング、QueueEvents、カスタムイベント、リアルタイム更新（ダッシュボード / SSE） | guide/events | [references/guide/events/README.md](references/guide/events/README.md) |
+| PostgreSQL バックエンド（createPostgresBackend、withBackend、runMigrations によるスキーマ移行、Redis なし運用） | guide/postgresql-backend | [references/guide/postgresql-backend/README.md](references/guide/postgresql-backend/README.md) |
 | メトリクス収集、Prometheus 連携 | guide/metrics | [references/guide/metrics/README.md](references/guide/metrics/README.md) |
 | OpenTelemetry、トレース、Jaeger 連携 | guide/telemetry | [references/guide/telemetry/README.md](references/guide/telemetry/README.md) |
 | Redis 互換性、Dragonfly 対応 | guide/redis-compatibility | [references/guide/redis-compatibility/README.md](references/guide/redis-compatibility/README.md) |
