@@ -1,7 +1,5 @@
 # getting-started
 
-ヘッドレステーブルライブラリのリファレンス。`ark-ui` / `chakra-ui` が提供するスタイル付き Table コンポーネントとは別物（本ライブラリはマークアップ・スタイルを一切提供しない headless ライブラリ）。
-
 | Name | Description | Path |
 | --- | --- | --- |
 | Overview | Headless table library concept, framework adapters, feature set | [overview.md](./overview.md) |

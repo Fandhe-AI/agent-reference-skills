@@ -43,7 +43,9 @@ table.getColumn('status')?.getFacetedUniqueValues()
 table.getColumn('age')?.getFacetedMinMaxValues()
 ```
 
-## Column APIs
+## Options / Props
+
+### Column APIs
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -51,7 +53,7 @@ table.getColumn('age')?.getFacetedMinMaxValues()
 | `getFacetedRowModel` | `() => RowModel` | Row model used to derive this column's facet values (other filters applied, this column's own filter excluded). |
 | `getFacetedUniqueValues` | `() => Map<any, number>` | Unique facet values with occurrence counts. |
 
-## Table APIs
+### Table APIs
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -66,6 +68,7 @@ table.getColumn('age')?.getFacetedMinMaxValues()
 
 - No `TableOptions_*` or `TableState_*` are added by this feature — it only adds row-model helpers and Column/Table APIs on top of `columnFilteringFeature`.
 - `createFacetedRowModel`, `createFacetedUniqueValues`, and `createFacetedMinMaxValues` are row-model helper factories registered as `facetedRowModel` / `facetedUniqueValues` / `facetedMinMaxValues` in `tableFeatures(...)`, as shown in Setup.
+- Since 9.3.1, without `globalFilteringFeature` registered, global facets (`getGlobalFaceted*`) include no columns, the same as the filtered row model.
 - Guide: https://tanstack.com/table/latest/docs/framework/react/guide/column-faceting . Options/APIs source: `packages/table-core/src/features/column-faceting/columnFacetingFeature.types.ts`. React import path shown; table-core APIs are identical across frameworks.
 
 ## Related

@@ -37,7 +37,9 @@ const table = useTable({
 })
 ```
 
-## Table Options
+## Options / Props
+
+### Table Options
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -52,13 +54,13 @@ const table = useTable({
 | `onSortingChange` | `OnChangeFn<SortingState>` | Called with an updater when `state.sorting` changes. |
 | `sortDescFirst` | `boolean` | If `true`, all sorts default to descending as their first toggle state. |
 
-## Table State
+### Table State
 
 | Name | Type | Description |
 |------|------|-------------|
 | `sorting` | `SortingState` | The ordered array of active column sorts. |
 
-## Column APIs
+### Column APIs
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -75,10 +77,11 @@ const table = useTable({
 | `getToggleSortingHandler` | `() => ((event) => void) \| undefined` | Handler that toggles this column's sorting state. |
 | `toggleSorting` | `(desc?: boolean, isMulti?: boolean) => void` | Toggles (or forces) this column's sort state, optionally additive multi-sort. |
 
-## Table APIs
+### Table APIs
 
 | Name | Type | Description |
 |------|------|-------------|
+| `autoResetSorting` | `() => void` | Resets sorting after the table data changes when explicitly enabled. Honors `autoResetAll` and `autoResetSorting`; sorting is preserved by default. Called by the core row model; you rarely need to invoke it yourself. |
 | `resetSorting` | `(defaultState?: boolean) => void` | Resets `sorting` to `initialState.sorting` (or `[]` when `true`). |
 | `setSorting` | `(updater: Updater<SortingState>) => void` | Updates sorting state. |
 | `getPreSortedRowModel` | `() => RowModel` | Row model immediately before sorting. |
@@ -87,6 +90,7 @@ const table = useTable({
 ## Notes
 
 - Built-in sort functions include `sortFn_alphanumeric`, `sortFn_text`, `sortFn_datetime` (registered under `sortFns`), imported alongside `rowSortingFeature`.
+- Added in 9.2.8: `table.autoResetSorting()`.
 - Guide: https://tanstack.com/table/latest/docs/framework/react/guide/sorting . Options/State/APIs source: `packages/table-core/src/features/row-sorting/rowSortingFeature.types.ts`. React import path shown; other frameworks use the same table-core options/state/APIs.
 
 ## Related

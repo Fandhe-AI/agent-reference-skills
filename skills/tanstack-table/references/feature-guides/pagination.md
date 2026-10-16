@@ -52,6 +52,7 @@ table.setPageSize(20)
 - With `pageCount: -1` (unknown total, e.g. cursor pagination), `getCanNextPage()` always returns `true` and `getCanLastPage()` returns `false`; drive a Next button from your own `hasNextPage` signal instead.
 - Do not set the `pagination` slice in more than one of `atoms`, `state`, `initialState` — controlled values override `initialState`.
 - Reset `pageIndex` to `0` yourself when sorting/filtering/page-size changes in a manual (server-side) setup, since `autoResetPageIndex` only fires from client-side row-model recomputation.
+- Since 9.1.0, `pageSize` accepts `Infinity` to place all rows on a single page, and `getCanLastPage()` checks whether a known, finite last page exists.
 - Button/info APIs: `getCanPreviousPage`, `getCanNextPage`, `getCanLastPage`, `previousPage`, `nextPage`, `firstPage`, `lastPage`, `setPageIndex`, `setPageSize`, `getPageCount`, `getRowCount`.
 
 ## Related

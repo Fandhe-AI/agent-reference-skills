@@ -3,9 +3,10 @@ name: tanstack-table
 description: >
   TanStack Table (React Table) v9 ヘッドレステーブル (@tanstack/react-table) の API リファレンス。
   ark-ui / chakra-ui のスタイル付き Table とは別。
-  useTable, tableFeatures, createColumnHelper, flexRender, createCoreRowModel,
-  sorting, column / global / fuzzy filtering, faceting, pagination, row selection, expanding,
-  grouping / aggregation, column / row の ordering・pinning・sizing・visibility, virtualization。
+  useTable, createTableHook, tableFeatures, createColumnHelper, flexRender, createCoreRowModel,
+  table.Subscribe, atoms, React Compiler, custom features, sorting, column / global / fuzzy filtering,
+  faceting, pagination, row selection, expanding, grouping / aggregation,
+  ordering / pinning / sizing / visibility。
   v8 legacy (useReactTable / getCoreRowModel) と v9 移行。
 user-invocable: false
 ---
@@ -14,6 +15,8 @@ user-invocable: false
 
 TanStack Table (`@tanstack/react-table`) v9 の公式ドキュメントを蒸留したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+対象: `@tanstack/react-table` / `@tanstack/table-core` 9.3.1 (2026-10-12)
 
 ## ディレクトリ構成
 
@@ -33,6 +36,12 @@ skills/tanstack-table/
     core-guides/
       README.md
       features.md
+      table-state.md
+      react-compiler.md
+      composable-tables.md
+      table-context.md
+      flex-render.md
+      custom-features.md
       data.md
       client-side-vs-server-side.md
       column-defs.md
@@ -77,15 +86,24 @@ skills/tanstack-table/
       construct-table.md
       table-options-helper.md
       table-features-fn.md
+      table-features-interface.md
+      atoms.md
+      on-change-fn-updater.md
+      debug-options.md
       get-initial-table-state.md
       column.md
       column-def.md
       column-helper.md
       column-meta.md
+      column-def-variants.md
+      accessor-fn-deep-keys.md
       create-column-helper.md
       construct-column.md
       row.md
       row-model.md
+      row-data-cell-data.md
+      expand-rows.md
+      row-model-fns.md
       construct-row.md
       create-core-row-model.md
       create-filtered-row-model.md
@@ -110,6 +128,11 @@ skills/tanstack-table/
       use-table.md
       flex-render.md
       react-table-package.md
+      create-table-hook.md
+      subscribe.md
+      react-table-type.md
+      app-column-helper.md
+      app-cell-header-context.md
     api-features/
       README.md
       cell-selection.md
@@ -129,6 +152,9 @@ skills/tanstack-table/
       row-pinning.md
       row-selection.md
       row-sorting.md
+      filter-fns.md
+      sort-fns.md
+      aggregation-fns.md
     legacy-v8/
       README.md
       useReactTable.md
@@ -176,6 +202,27 @@ skills/tanstack-table/
     editable-cells.md
     server-side.md
     legacy-v8-basic.md
+    basic-use-app-table.md
+    basic-external-state.md
+    basic-external-atoms.md
+    basic-subscribe.md
+    basic-dynamic-columns.md
+    header-groups.md
+    cell-selection.md
+    cell-spanning.md
+    filters-faceted.md
+    column-pinning-sticky.md
+    column-resizing-performant.md
+    row-pinning.md
+    sub-components.md
+    composable-tables.md
+    custom-plugin.md
+    web-worker-row-models.md
+    virtualized-columns.md
+    virtualized-infinite-scrolling.md
+    with-tanstack-query.md
+    with-tanstack-router.md
+    with-tanstack-form.md
 ```
 
 ## 探索手順
@@ -187,7 +234,7 @@ skills/tanstack-table/
 3. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 4. 該当ページの `.md` を Read して詳細を確認する
 
-`feature-guides` と `api-features` はファイル名が重複する（`column-filtering.md` 等）。`feature-guides` は機能の挙動・使い分けの解説、`api-features` は feature 単位の options / state / APIs（`*Feature` 名の実体）を扱う。同様に `api-core` の `create*RowModel` / `flex-render.md`（v9）と `legacy-v8` の `get*RowModel` / `flexRender.md`（v8）も対になる名前だが別 API。
+`feature-guides` と `api-features` はファイル名が重複する（`column-filtering.md` 等）。`feature-guides` は機能の挙動・使い分けの解説、`api-features` は feature 単位の options / state / APIs（`*Feature` 名の実体）を扱う。同様に `api-core` の `create*RowModel` / `flex-render.md`（v9）と `legacy-v8` の `get*RowModel` / `flexRender.md`（v8）も対になる名前だが別 API。`core-guides/flex-render.md`（使い方のガイド）と `api-core/flex-render.md`（API シグネチャ）も同名だが層が異なる。
 
 ## タスク → カテゴリ マッピング
 
@@ -199,6 +246,10 @@ skills/tanstack-table/
 | `row` / `cell` / `header` / `column` オブジェクトの読み方、meta・型ヘルパーを知りたい | core-guides | [references/core-guides/README.md](references/core-guides/README.md) |
 | sorting / filtering（column・global・fuzzy）/ faceting / pagination の挙動・使い分けを知りたい | feature-guides | [references/feature-guides/README.md](references/feature-guides/README.md) |
 | row selection / expanding / grouping・aggregation / column ordering・pinning・sizing・resizing・visibility / row pinning / virtualization の挙動を知りたい | feature-guides | [references/feature-guides/README.md](references/feature-guides/README.md) |
+| React 固有の state・リアクティビティ（`table.Subscribe`、external atoms、React Compiler、`useTableContext`）、`flexRender` の使い方を知りたい | core-guides | [references/core-guides/README.md](references/core-guides/README.md) |
+| `createTableHook` / `useAppTable` / `AppTable` による composable tables、custom features（カスタムプラグイン）の作り方を知りたい | core-guides, api-core | [references/core-guides/README.md](references/core-guides/README.md), [references/api-core/README.md](references/api-core/README.md) |
+| `Atoms` / `OnChangeFn` / `Updater` / `DeepKeys` 型、`Subscribe`、`debug` options を知りたい | api-core | [references/api-core/README.md](references/api-core/README.md) |
+| `filterFns` / `sortFns` / `aggregationFns` のレジストリ、カスタム fn の定義を知りたい | api-features | [references/api-features/README.md](references/api-features/README.md) |
 | `Table` / `Column` / `Row` / `Cell` / `Header` 型、`constructTable` 等の構築関数を知りたい | api-core | [references/api-core/README.md](references/api-core/README.md) |
 | `createColumnHelper` / `createCoreRowModel` 系 row model factory を知りたい | api-core | [references/api-core/README.md](references/api-core/README.md) |
 | React アダプター（`useTable` / `flexRender` / `@tanstack/react-table` のエクスポート一覧）を知りたい | api-core | [references/api-core/README.md](references/api-core/README.md) |
@@ -209,4 +260,7 @@ skills/tanstack-table/
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | sorting / filtering / pagination / row selection / grouping・aggregation の実装例を知りたい | samples | [samples/README.md](samples/README.md) |
 | column resizing / pinning / visibility・ordering / virtualization / editable cells / server-side の実装例を知りたい | samples | [samples/README.md](samples/README.md) |
+| external state / atoms / `Subscribe` / composable tables / custom plugin / web worker row models の実装例を知りたい | samples | [samples/README.md](samples/README.md) |
+| header groups / cell selection・spanning / faceted filters / sticky pinning / row pinning / sub-components / virtualized columns・infinite scrolling の実装例を知りたい | samples | [samples/README.md](samples/README.md) |
+| TanStack Query / Router / Form との連携例を知りたい | samples | [samples/README.md](samples/README.md) |
 | v8 スタイルとの対比実装例を知りたい | samples | [samples/README.md](samples/README.md) |

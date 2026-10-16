@@ -53,7 +53,7 @@ column.getFacetedMinMaxValues() // [min, max] | undefined
 - Key APIs: `column.getFacetedRowModel()`, `column.getFacetedUniqueValues()` (`Map<value, count>`), `column.getFacetedMinMaxValues()` (`[min, max]` or `undefined`).
 - High-cardinality/continuous columns (dates, sizes) are easier to filter when bucketed via `getUniqueValues` returning a bucket key while the column keeps its raw accessor value.
 - For server-side filtering, provide custom `facetedUniqueValues`/`facetedMinMaxValues` factories that read live data (e.g. from `table.options.meta`); factories resolve once per column but their returned function runs on every read.
-- Global faceting (`table.getGlobalFacetedRowModel()`, `getGlobalFacetedUniqueValues()`, `getGlobalFacetedMinMaxValues()`) mirrors column faceting across all globally-filterable columns; custom factories receive the special `__global__` column id.
+- Global faceting (`table.getGlobalFacetedRowModel()`, `getGlobalFacetedUniqueValues()`, `getGlobalFacetedMinMaxValues()`) mirrors column faceting across all globally-filterable columns; custom factories receive the special `__global__` column id. From 9.3.1, global faceting covers no columns unless `globalFilteringFeature` is registered.
 
 ## Related
 

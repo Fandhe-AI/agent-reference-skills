@@ -29,7 +29,9 @@ const table = useTable({
 })
 ```
 
-## Table Options
+## Options / Props
+
+### Table Options
 
 | Name | Type | Description |
 |------|------|-------------|
@@ -39,18 +41,19 @@ const table = useTable({
 | `pageCount` | `number` | Total page count when manually controlling pagination (`-1` if unknown). |
 | `rowCount` | `number` | Total row count when manually controlling pagination; `pageCount` can be derived from this and `pageSize`. |
 
-## Table State
+### Table State
 
 | Name | Type | Description |
 |------|------|-------------|
-| `pagination` | `PaginationState` | `{ pageIndex, pageSize }` describing the current page. |
+| `pagination` | `PaginationState` | `{ pageIndex, pageSize }` describing the current page. `pageSize` is the number of rows per page; set to `Infinity` to place all rows on a single page (since 9.1.0). |
 
-## Table APIs
+### Table APIs
 
 | Name | Type | Description |
 |------|------|-------------|
+| `autoResetPageIndex` | `() => void` | Resets the page index to `0` after page-altering changes such as new data, filtering, sorting, or grouping. Honors `autoResetAll`, `autoResetPageIndex`, and `manualPagination`. Called by the row models; you rarely need to invoke it yourself. |
 | `getCanNextPage` | `() => boolean` | Whether there is a next page. |
-| `getCanLastPage` | `() => boolean` | Whether a last page exists. |
+| `getCanLastPage` | `() => boolean` | Checks whether a known, finite last page exists after the current page. |
 | `getCanPreviousPage` | `() => boolean` | Whether there is a previous page. |
 | `getPageCount` | `() => number` | Total number of pages. |
 | `getRowCount` | `() => number` | Total row count. |
@@ -68,6 +71,8 @@ const table = useTable({
 ## Notes
 
 - Interacts with `row-expanding`'s `paginateExpandedRows` option, which controls whether expanded sub-rows are paginated along with their parents.
+- Added in 9.1.0: `Infinity` is supported as a page size, and `getCanLastPage` was added for detecting whether a finite last page can be reached.
+- Fixed in 9.2.8: the `Table_RowPagination` type previously declared the `autoResetPageIndex` method as `_autoResetPageIndex`.
 - Guide: https://tanstack.com/table/latest/docs/framework/react/guide/pagination . Options/State/APIs source: `packages/table-core/src/features/row-pagination/rowPaginationFeature.types.ts`. React import path shown; table-core options/state/APIs are identical across frameworks.
 
 ## Related

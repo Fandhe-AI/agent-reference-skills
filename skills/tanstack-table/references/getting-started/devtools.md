@@ -52,6 +52,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 - Required packages per framework: React (`@tanstack/react-devtools` + `@tanstack/react-table-devtools`), Preact, Vue, Solid, Angular have equivalents. Octane, Lit, Svelte, Alpine, and vanilla currently ship no dedicated table devtools adapter.
 - By default the live devtools only run in development mode; production builds export no-op implementations unless you import from the `/production` entrypoint (e.g. `@tanstack/react-table-devtools/production`).
+- Since 9.2.8, the devtools Features panel shows measured minified + brotli sizes for every feature, row model, and built-in function, and its total accounts for code that features share.
 - Registering multiple tables shows a selector in the Table panel to switch between them.
 
 ## Related
