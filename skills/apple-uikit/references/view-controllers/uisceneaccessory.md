@@ -53,6 +53,7 @@ class PlayerViewController: UIViewController {
 - `cameraCapture`: content may be presented while the app is in the foreground and has an active camera capture session. The system determines whether and where to present it; the content can be interactive. 27.1+ only (not 27.0).
 - `UISceneSession.Role.windowCameraCaptureAccessory` (27.1+): assigned automatically by the system to scenes created from a camera capture scene accessory registration; clients do not set it directly.
 - Supported on iOS, iPadOS and Mac Catalyst only. Starting in iOS 27 the external display (`windowExternalDisplayNonInteractive`) scene is received only after registering an `externalNonInteractive` accessory.
+- Source: https://developer.apple.com/documentation/uikit/uisceneaccessory
 
 ## Related
 

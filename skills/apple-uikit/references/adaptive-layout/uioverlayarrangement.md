@@ -29,6 +29,7 @@ struct UIOverlayArrangement   // conforms to UIArrangementViewController.Arrange
 - Well-suited to full-screen experiences like media players, where playback controls overlay a video surface.
 - When the environment changes, such as when a foldable device is folded, the overlay arrangement can transition its views from a layered layout into a side-by-side layout. `axes(_:)` controls which axes are supported.
 - Objective-C: `UIOverlayArrangement` is a class created with `[UIOverlayArrangement overlayArrangement]` and an `axes` property.
+- Source: https://developer.apple.com/documentation/uikit/uioverlayarrangement-swift.struct
 
 ## Related
 

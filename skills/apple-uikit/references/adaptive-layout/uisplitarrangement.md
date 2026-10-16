@@ -39,6 +39,7 @@ struct UISplitArrangement   // conforms to UIArrangementViewController.Arrangeme
 - It is the default style of `UIArrangementViewController`. The split adapts its axis based on the available size and size class; `axes(_:)` constrains which axes it supports.
 - Objective-C: `UISplitArrangement` is a class created with `[UISplitArrangement splitArrangement]` and an `axes` property.
 - Distinct from `UISplitViewController`.
+- Source: https://developer.apple.com/documentation/uikit/uisplitarrangement-swift.struct
 
 ## Related
 

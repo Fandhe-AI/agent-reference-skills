@@ -33,6 +33,7 @@ func reservedRegions(
 - Each region describes a frame, margins, active state, and an identifier.
 - The default values of the `reservedRegions(kind:options:)` parameters are not stated in the source page and are not recorded here.
 - The Objective-C counterpart is `UIViewReservedRegion`.
+- Source: https://developer.apple.com/documentation/uikit/uiview/reservedregion
 
 ## Related
 

@@ -103,6 +103,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 - Once the app adopts scenes, UIKit no longer calls the `UIApplicationDelegate` methods above, even if still implemented. Each scene delegate method reflects only that scene's transitions. To track aggregate app state (`UIApplication.applicationState`), use the corresponding `UIApplication` notification, for example `UIApplication.willEnterForegroundNotification`.
 - After migrating, test in Full Screen Apps, Windowed Apps, and Stage Manager on iPad.
 - External display: in iOS 26 and earlier the system connected a `windowExternalDisplayNonInteractive` scene automatically. Beginning in iOS 27 the app receives this scene only after it registers a scene accessory. Remove role-specific logic in `configurationForConnecting` / the scene delegate and register a scene accessory instead (see `uisceneaccessory.md`). The content spans the full screen.
+- Source: https://developer.apple.com/documentation/uikit/transitioning-to-the-uikit-scene-based-life-cycle
 
 ## Related
 

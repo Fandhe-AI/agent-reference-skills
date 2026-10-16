@@ -53,6 +53,7 @@ arrangementVC.updateArrangement(.overlay.axes(.horizontal))
 - The default style is `UISplitArrangement`; the other built-in style is `UIOverlayArrangement`.
 - Inherits from `UIViewController`. In the Swift overlay the placement is `.primary` / `.secondary`; Objective-C uses `setViewController:forPlacement:` with `UIArrangementViewControllerViewPlacementPrimary` / `Secondary`, and `updateArrangement:` / `updateArrangement:animated:`.
 - This page is a container-view-controller reference; it is separate from `UISplitViewController`.
+- Source: https://developer.apple.com/documentation/uikit/uiarrangementviewcontroller
 
 ## Related
 

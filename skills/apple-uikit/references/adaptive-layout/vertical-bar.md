@@ -87,7 +87,7 @@ The bar axis behavior of the item. `enum`, `init?(rawValue: Int)`. The default v
 - `childForPreferredVerticalBarBehavior`: return a child to defer the configuration to it. System container view controllers forward to their active content by default (`UINavigationController` to its top view controller, `UITabBarController` to its selected view controller), so a content view controller's preference flows up to the window of the app or the nearest container.
 - `verticalBarEdge` reflects the system's preferred edge regardless of whether a vertical bar is currently visible; it returns `unspecified` on devices and contexts where the system never places a vertical bar (for example hardware without a vertical bar, or a size class or orientation in which no vertical bar is used).
 - Call `setNeedsUpdateOfVerticalBarConfiguration()` after changes to any state that affects the return values of methods like `preferredVerticalBarBehavior`.
-- Source: the UIKit "Controls on the vertical axis" and "Bar items" sections of the UIKit updates page, plus the symbol pages linked from the URL above.
+- Source: the UIKit "Controls on the vertical axis" and "Bar items" sections of https://developer.apple.com/documentation/updates/uikit, plus the symbol pages https://developer.apple.com/documentation/uikit/uiverticalbarbehavior , https://developer.apple.com/documentation/uikit/uiverticalbaredge and https://developer.apple.com/documentation/uikit/uiverticalbarcompressionbehavior
 
 ## Related
 

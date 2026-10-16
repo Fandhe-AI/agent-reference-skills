@@ -48,6 +48,7 @@ override func viewDidLoad() {
 - Add the interaction to a view to receive hinge state updates. The handler is called when the hinge state changes, or when the interaction moves between hierarchies.
 - The Objective-C name of `Update` is `UIHingeInteractionUpdate`; the initializer is `initWithUpdateHandler:`.
 - `UIHinge` has no separate page in this skill; it is covered here.
+- Source: https://developer.apple.com/documentation/uikit/uihingeinteraction , https://developer.apple.com/documentation/uikit/uihinge
 
 ## Related
 
