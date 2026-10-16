@@ -40,6 +40,7 @@ ElementCompositionPreview.SetElementChildVisual(blurArea, blurSprite);
 - Creation flow: build an effect description (optionally chaining multiple effects) → `Compositor.CreateEffectFactory(effect)` → `CompositionEffectFactory.CreateBrush()` → `SetSourceParameter` for each `CompositionEffectSourceParameter` → assign to a `SpriteVisual.Brush`.
 - Common effect sources are `CompositionBackdropBrush` (blurs/tints whatever is rendered behind the visual) or a [CompositionSurfaceBrush](./composition-surface-brush.md) (blurs/filters a loaded image).
 - Effects are compiled to built-in shaders by the system; custom pixel shaders cannot be supplied.
+- `CompositionBackdropBrush` (including `AcrylicBrush`) samples only the compositor's image; external content areas (`MediaPlayerElement`, `SwapChainPanel`, `WebView2`, Mica / Desktop Acrylic backdrops) are transparent black to it. See [Compositor](./compositor.md).
 - Distinct from three.js post-processing `EffectComposer`/passes and CSS/Compose blur filters — this is the WinRT composition effect-brush pipeline (Win2D effect graph).
 
 ## Related

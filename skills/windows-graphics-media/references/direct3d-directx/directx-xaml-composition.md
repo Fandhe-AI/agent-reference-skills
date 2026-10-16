@@ -41,7 +41,7 @@ panelNative->SetSwapChain(swapChain.Get());
 - Obtain `ISwapChainPanelNative` by casting the `SwapChainPanel` instance to `IInspectable`/`IUnknown` and calling `QueryInterface` — there is no managed API for this step.
 - The swap chain must be created with `IDXGIFactory2::CreateSwapChainForComposition`, `Scaling = DXGI_SCALING_STRETCH`, and a flip-model `SwapEffect` (`DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL`).
 - Microsoft recommends no more than 4 `SwapChainPanel` instances per app, and setting the swap chain's width/height to the panel's current rendered size (accounting for DPI).
-- In WinUI 3, `SwapChainPanel` does not support transparency or `AcrylicBrush`/`CompositionBackdropBrush` effects layered over it.
+- In WinUI 3, `SwapChainPanel` does not support transparency or `AcrylicBrush`/`CompositionBackdropBrush` effects layered over it, because it creates external content (not drawn by the compositor, so the compositor cannot sample it).
 - Namespace: `Windows.UI.Xaml.Media.DXInterop` (native interop header `windows.ui.xaml.media.dxinterop.h`) plus the WinRT `SwapChainPanel` control. Distinct from Windows.Graphics.Capture and from other frameworks' canvas/surface hosting controls.
 
 ## Related

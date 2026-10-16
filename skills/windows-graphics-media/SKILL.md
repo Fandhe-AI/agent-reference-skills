@@ -2,13 +2,14 @@
 name: windows-graphics-media
 description: >
   Windows アプリ開発 (DirectX / WinRT メディア) のグラフィックス・メディア API リファレンス。
-  Direct2D (ID2D1Factory, ID2D1DeviceContext, ID2D1Bitmap1, ID2D1Effect, ID2D1PathGeometry),
+  Direct2D (ID2D1Factory, ID2D1DeviceContext, ID2D1Bitmap1, ID2D1Effect, D2D1 Effects, ID2D1PathGeometry),
   DirectWrite (IDWriteFactory, IDWriteTextLayout, DWriteCore), Direct3D 11/12
-  (D3D11CreateDevice, DXGI SwapChain, HLSL, D3D12 PipelineState), Microsoft.UI.Composition
+  (D3D11CreateDevice, D3D11On12, DXGI SwapChain, HLSL, D3D12 PipelineState, D3D12 DRED),
+  Microsoft.UI.Composition
   (Compositor, Visual, ExpressionAnimation, InteractionTracker, MicaController),
   カメラ・画面キャプチャ (MediaCapture, MediaFrameReader, GraphicsCaptureSession,
-  Windows Studio Effects)、音声・動画再生 (MediaPlayer, MediaPlaybackSession,
-  AudioGraph, MediaTranscoder, AdaptiveMediaSource)。
+  Windows Studio Effects, OpenCV)、音声・動画再生 (MediaPlayer, MediaPlaybackSession, AudioGraph,
+  MediaTranscoder, AdaptiveMediaSource, HLS, DASH, CastingDevicePicker, AudioPlaybackConnection)。
 user-invocable: false
 ---
 
@@ -28,17 +29,25 @@ skills/windows-graphics-media/
   references/
     direct2d-directwrite/
       README.md
+      built-in-effects.md
+      custom-effects.md
       d2d1createfactory.md
       direct2d-direct3d-interop.md
       dwrite-text-metrics.md
       dwritecore.md
+      effect-precision-and-clipping.md
+      effect-shader-linking.md
+      effects-overview.md
       id2d1bitmap1.md
       id2d1bitmapbrush.md
       id2d1commandlist.md
       id2d1device.md
+      id2d1device-versions.md
       id2d1devicecontext.md
+      id2d1devicecontext-versions.md
       id2d1effect.md
       id2d1factory.md
+      id2d1factory-versions.md
       id2d1factory1.md
       id2d1geometry.md
       id2d1geometrysink.md
@@ -66,10 +75,18 @@ skills/windows-graphics-media/
       d3d11-resources.md
       d3d11-sampler-srv.md
       d3d11-shaders-drawing.md
+      d3d11-to-d3d12-changes.md
+      d3d11on12.md
       d3d12-barriers-descriptors.md
+      d3d12-command-lists-bundles.md
+      d3d12-debug-layer-dred.md
       d3d12-enhanced-barriers.md
+      d3d12-memory-residency.md
       d3d12-overview.md
       d3d12-raytracing.md
+      d3d12-render-passes.md
+      d3d12-root-signatures.md
+      d3d12-variable-rate-shading.md
       directcomposition.md
       directx-winui3-integration.md
       directx-xaml-composition.md
@@ -109,6 +126,8 @@ skills/windows-graphics-media/
       camera-capture-ui.md
       camera-profiles.md
       camera-stream-state.md
+      connect-to-remote-cameras.md
+      detect-audio-level-changes.md
       device-enumeration.md
       direct3d11-capture-frame-pool.md
       effects-for-video-capture.md
@@ -119,16 +138,20 @@ skills/windows-graphics-media/
       graphics-capture-picker.md
       graphics-capture-session.md
       handle-device-orientation-with-mediacapture.md
+      launch-camera-settings.md
       low-lag-media-recording.md
       low-lag-photo-capture.md
       media-capture-initialization-settings.md
       media-capture.md
       media-frame-reader.md
       media-frame-source-group.md
+      process-audio-frames-with-mediaframereader.md
+      process-software-bitmaps-with-opencv.md
       scene-analysis-face-detection-effects.md
       set-media-encoding-properties.md
       simple-camera-preview-access.md
       software-bitmap.md
+      use-opencv-with-mediaframereader.md
       variable-photo-sequence.md
       video-device-controller.md
       windows-studio-effects.md
@@ -139,12 +162,16 @@ skills/windows-graphics-media/
       audio-file-input-node.md
       audio-frame-input-node.md
       audio-graph.md
+      audio-playback-connection.md
       audio-state-monitor.md
       custom-video-audio-effects.md
+      dash-profile-support.md
       drm-playready.md
+      hls-tag-support.md
       media-binder.md
       media-break-manager.md
       media-capture-integration.md
+      media-casting.md
       media-clip.md
       media-composition.md
       media-playback-command-manager.md
@@ -186,6 +213,12 @@ skills/windows-graphics-media/
 | Compositor / Visual でカスタム合成ビジュアルツリーを構築したい | composition-visuals | [references/composition-visuals/README.md](references/composition-visuals/README.md) |
 | ExpressionAnimation / InteractionTracker で入力連動アニメーションを実装したい | composition-visuals | [references/composition-visuals/README.md](references/composition-visuals/README.md) |
 | Mica / Acrylic のシステム背景素材を適用したい | composition-visuals | [references/composition-visuals/README.md](references/composition-visuals/README.md) |
+| external content (MediaPlayerElement / SwapChainPanel / WebView2) の合成制約を知りたい | composition-visuals | [references/composition-visuals/README.md](references/composition-visuals/README.md) |
+| Direct2D エフェクトグラフ・組み込みエフェクト・カスタムエフェクトを使いたい | direct2d-directwrite | [references/direct2d-directwrite/README.md](references/direct2d-directwrite/README.md) |
+| ID2D1DeviceContext1〜7 等の新しい版のインターフェース (スプライトバッチ・インク・カラーグリフ・SVG) を使いたい | direct2d-directwrite | [references/direct2d-directwrite/README.md](references/direct2d-directwrite/README.md) |
+| D3D12 のコマンドリスト・ルートシグネチャ・メモリ常駐・デバッグレイヤー/DRED・11on12 を扱いたい | direct3d-directx | [references/direct3d-directx/README.md](references/direct3d-directx/README.md) |
+| ネットワークカメラ接続・音声フレーム処理・OpenCV 連携をしたい | camera-capture | [references/camera-capture/README.md](references/camera-capture/README.md) |
+| HLS/DASH の対応範囲・メディアキャスト・Bluetooth リモート音声再生 (AudioPlaybackConnection) を扱いたい | audio-video-playback | [references/audio-video-playback/README.md](references/audio-video-playback/README.md) |
 | MediaCapture でカメラから写真・動画・音声をキャプチャしたい | camera-capture | [references/camera-capture/README.md](references/camera-capture/README.md) |
 | フォーカス・露出・ズームなどカメラデバイスを制御したい | camera-capture | [references/camera-capture/README.md](references/camera-capture/README.md) |
 | 画面キャプチャ (GraphicsCaptureSession) や Windows Studio Effects を使いたい | camera-capture | [references/camera-capture/README.md](references/camera-capture/README.md) |
