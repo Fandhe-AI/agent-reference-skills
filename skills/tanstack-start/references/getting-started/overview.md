@@ -34,7 +34,7 @@ Use TanStack Router alone only for projects that definitively require no additio
 
 ## Notes
 
-- Status: Release Candidate — feature-complete with stable APIs, not guaranteed bug-free.
+- Status: stable (`@tanstack/react-start` 1.169 is the first stable release). Upgrading from a release candidate: see Migrate from the Release Candidate (`migrate-from-release-candidate.md`).
 - React Server Components are experimentally available.
 - TanStack remains perpetually open source and free, maintained by the bootstrapped, self-funded TanStack LLC.
 - Not related to Next.js (`nextjs-app` skill) — a different full-stack framework. See `comparison.md` and `start-vs-nextjs.md` for the distinction. Routing/loader internals are covered in the TanStack Router skill, not here.

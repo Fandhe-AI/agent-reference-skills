@@ -2,9 +2,9 @@
 source: https://tanstack.com/start/latest/docs/framework/react/guide/authentication-overview
 ---
 
-# Authentication Overview
+# Choose Authentication for React Apps
 
-Architecture and decision guide for authentication in TanStack Start: authentication vs authorization, session management patterns, route protection architecture, and a comparison of partner solutions, OSS libraries, and DIY implementation.
+Once you have chosen an approach, use Implement Authentication in React ([Authentication](./authentication.md)) for the application workflow. Architecture and decision guide for authentication in TanStack Start: authentication vs authorization, session management patterns, route protection architecture, and a comparison of partner solutions, OSS libraries, and DIY implementation.
 
 ## Signature / Usage
 
@@ -51,7 +51,7 @@ export const Route = createFileRoute('/_authed')({
 
 ### DIY Authentication
 
-Build your own using TanStack Start's server functions and session management. Start with the Authentication Server Primitives guide, which covers session cookies (`HttpOnly`/`Secure`/`SameSite`/`__Host-`), session lookup as middleware, OAuth `state` + PKCE, password-reset enumeration defense, CSRF, rate limiting, and session rotation.
+Build your own using TanStack Start's server functions and session management. Session management uses HTTP-only cookies written with `setCookie` and read with `getCookie`. Start with the Authentication Server Primitives guide, which covers session cookies (`HttpOnly`/`Secure`/`SameSite`/`__Host-`), session lookup as middleware, OAuth `state` + PKCE, password-reset enumeration defense, CSRF, rate limiting, and session rotation.
 
 ### Other Options
 

@@ -131,6 +131,8 @@ export const Route = createFileRoute('/')({
 
 ## Notes
 
+- Requirements: React 19+, Vite 8+ or Rsbuild 2+.
+- TanStack Query loader prefetch in the official guide uses `await context.queryClient.query({ ...postQueryOptions(params.postId), staleTime: 'static' })` (not `ensureQueryData`).
 - `renderServerComponent()` produces a plain `Renderable` (no slots); `createCompositeComponent()` produces a `src` used with `<CompositeComponent src={...}>` to compose client content into the server output.
 - Server-composed slots are opaque on the server: `React.Children.map`/`cloneElement` over `props.children` does not work inside `createCompositeComponent` — use render props (`renderX`) to pass server data down to client-rendered content instead.
 - Render-prop arguments must be serializable (crossing the RSC boundary).

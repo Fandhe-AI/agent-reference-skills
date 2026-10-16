@@ -10,18 +10,39 @@ Server-side primitives for DIY authentication: session cookies, session lookup m
 
 ```ts
 // src/server/session.ts
-import { getRequestHeader, setResponseHeader } from '@tanstack/react-start/server'
+import {
+  deleteCookie,
+  getCookie,
+  setCookie,
+} from '@tanstack/react-start/server'
 
 const SESSION_COOKIE = '__Host-session'
 const ONE_DAY = 60 * 60 * 24
 
+const sessionCookieOptions = {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'lax',
+  path: '/',
+} as const
+
 export function setSessionCookie(token: string) {
-  setResponseHeader(
-    'Set-Cookie',
-    [`${SESSION_COOKIE}=${token}`, `HttpOnly`, `Secure`, `SameSite=Lax`, `Path=/`, `Max-Age=${ONE_DAY}`].join('; '),
-  )
+  setCookie(SESSION_COOKIE, token, {
+    ...sessionCookieOptions,
+    maxAge: ONE_DAY,
+  })
+}
+
+export function clearSessionCookie() {
+  deleteCookie(SESSION_COOKIE, sessionCookieOptions)
+}
+
+export function readSessionToken(): string | null {
+  return getCookie(SESSION_COOKIE) ?? null
 }
 ```
+
+Write cookies with `setCookie` (or `appendResponseHeader('set-cookie', serialized)` for a cookie that a library already serialized). Do not use `setResponseHeader('Set-Cookie', ...)`: it replaces every cookie on the outgoing response, including cookies set by other middleware or returned by a handler.
 
 ## Session Cookie Flags
 
@@ -53,7 +74,7 @@ export const authMiddleware = createMiddleware({ type: 'function' }).server(
 
 ## OAuth: state + PKCE
 
-Generate a one-time random `state` and a PKCE `code_verifier`/`code_challenge` pair, store both in a short-lived signed cookie keyed to the attempt, and verify `state` on callback before exchanging the authorization code.
+Generate a one-time random `state` and a PKCE `code_verifier`/`code_challenge` pair, store both in a short-lived signed cookie (written with `setCookie`) keyed to the attempt, and verify `state` on callback before exchanging the authorization code.
 
 ## Password Reset: Defeat User Enumeration
 

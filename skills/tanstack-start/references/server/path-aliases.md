@@ -4,7 +4,7 @@ source: https://tanstack.com/start/latest/docs/framework/react/guide/path-aliase
 
 # Path Aliases
 
-TanStack Start resolves TypeScript `paths` aliases (e.g. `~/*` → `./src/*`) at build time via Vite's built-in `tsconfigPaths` support (Vite 8+) or the `vite-tsconfig-paths` plugin (Vite 7 and earlier), or Rsbuild's `source.tsconfigPath`.
+TanStack Start resolves TypeScript `paths` aliases (e.g. `~/*` → `./src/*`) at build time via Vite's built-in `tsconfigPaths` support (Vite 8) or Rsbuild's `source.tsconfigPath`.
 
 ## Signature / Usage
 
@@ -30,26 +30,6 @@ export default defineConfig({
     // This enables built-in support for path aliases defined in tsconfig.json
     tsconfigPaths: true,
   },
-})
-```
-
-### Vite 7 and earlier
-
-```sh
-npm install -D vite-tsconfig-paths
-```
-
-```ts
-// vite.config.ts
-import { defineConfig } from 'vite'
-import viteTsConfigPaths from 'vite-tsconfig-paths'
-
-export default defineConfig({
-  plugins: [
-    viteTsConfigPaths({
-      projects: ['./tsconfig.json'],
-    }),
-  ],
 })
 ```
 
@@ -79,7 +59,8 @@ import { Input } from '../../../components/ui/input'
 
 ## Notes
 
-- Vite 8 has built-in `tsconfigPaths` support (`resolve.tsconfigPaths: true`); earlier Vite versions need the `vite-tsconfig-paths` plugin.
+- Vite 8 has built-in `tsconfigPaths` support (`resolve.tsconfigPaths: true`).
+- `vite-tsconfig-paths` guidance (Vite 7 and earlier) was removed from the docs in 1.169: Start requires Vite 8 when building with Vite.
 - Rsbuild reads `paths` from the `tsconfigPath` config (defaults to `./tsconfig.json`).
 
 ## Related

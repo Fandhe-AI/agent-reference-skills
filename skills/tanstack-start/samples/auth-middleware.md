@@ -1,85 +1,150 @@
 ---
-source: https://tanstack.com/start/latest/docs/framework/react/guide/authentication
+source: https://tanstack.com/start/latest/docs/framework/react/guide/authentication-server-primitives
 ---
 
-# Auth Middleware (createMiddleware + session)
+# Auth Middleware (createMiddleware + session cookie)
 
-Session-backed login server function, a middleware that loads the session into `context`, and route-level protection with `beforeLoad`.
+Cookie-based session helpers, a `createMiddleware` that loads the session into `context`, a login server function, and route-level protection with `beforeLoad`.
 
-```tsx
-// src/utils/session.ts
-import { useSession } from '@tanstack/react-start/server'
+```ts
+// src/server/session.ts
+import {
+  deleteCookie,
+  getCookie,
+  setCookie,
+} from '@tanstack/react-start/server'
 
-type SessionData = {
-  userId?: string
-  email?: string
+const SESSION_COOKIE = '__Host-session'
+const ONE_DAY = 60 * 60 * 24
+
+const sessionCookieOptions = {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'lax',
+  path: '/',
+} as const
+
+export function setSessionCookie(token: string) {
+  setCookie(SESSION_COOKIE, token, {
+    ...sessionCookieOptions,
+    maxAge: ONE_DAY,
+  })
 }
 
-export function useAppSession() {
-  return useSession<SessionData>({
-    name: 'app-session',
-    password: process.env.SESSION_SECRET!, // at least 32 characters
-    cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      httpOnly: true,
-    },
-  })
+export function clearSessionCookie() {
+  deleteCookie(SESSION_COOKIE, sessionCookieOptions)
+}
+
+export function readSessionToken(): string | null {
+  return getCookie(SESSION_COOKIE) ?? null
 }
 ```
 
-```tsx
-// src/server/auth.ts
-import { createServerFn, createMiddleware } from '@tanstack/react-start'
-import { redirect } from '@tanstack/react-router'
-import { z } from 'zod'
-import { useAppSession } from '../utils/session'
+```ts
+// src/server/auth-middleware.ts
+import { createMiddleware } from '@tanstack/react-start'
+import { readSessionToken } from './session'
 
-const LoginSchema = z.object({
-  email: z.email(),
-  password: z.string().min(8),
-})
-
-export const loginFn = createServerFn({ method: 'POST' })
-  .validator(LoginSchema)
-  .handler(async ({ data }) => {
-    const user = await authenticateUser(data.email, data.password)
-    if (!user) return { error: 'Invalid credentials' }
-
-    const session = await useAppSession()
-    await session.update({ userId: user.id, email: user.email })
-
-    throw redirect({ to: '/dashboard' })
-  })
-
-// Loads the session into `context` for any server function that needs it
-export const sessionMiddleware = createMiddleware({ type: 'function' }).server(
+export const authMiddleware = createMiddleware({ type: 'function' }).server(
   async ({ next }) => {
-    const session = await useAppSession()
+    const token = readSessionToken()
+    const session = token ? await db.sessions.findValid(token) : null
+    if (!session) throw new Error('Unauthorized')
     return next({ context: { session } })
   },
 )
+```
 
-export const getCurrentUserFn = createServerFn({ method: 'GET' })
-  .middleware([sessionMiddleware])
-  .handler(async ({ context }) => {
-    const userId = context.session.data.userId
-    if (!userId) return null
-    return db.findUser(userId)
+```ts
+// src/server/login.functions.ts
+import { createServerFn } from '@tanstack/react-start'
+import { z } from 'zod'
+import { setSessionCookie } from './session'
+
+export const login = createServerFn({ method: 'POST' })
+  .validator(z.object({ email: z.string().email(), password: z.string() }))
+  .handler(async ({ data }) => {
+    const user = await db.users.findByEmail(data.email)
+    // Always run verifyPasswordHash — even when the user doesn't exist —
+    // so the user-not-found branch takes the same time as wrong-password.
+    const hashToCheck = user?.passwordHash ?? DUMMY_PASSWORD_HASH
+    const passwordMatches = await verifyPasswordHash(hashToCheck, data.password)
+    const ok = user != null && passwordMatches
+    if (!ok) throw new Error('Invalid email or password')
+
+    // Rotate: destroy any existing session, then issue fresh.
+    await db.sessions.revokeAllForUser(user.id)
+    const token = await db.sessions.create({ userId: user.id })
+    setSessionCookie(token)
+    return { ok: true }
   })
 ```
 
+```ts
+import { createServerFn } from '@tanstack/react-start'
+import { authMiddleware } from '~/server/auth-middleware'
+
+export const getMyOrders = createServerFn({ method: 'GET' })
+  .middleware([authMiddleware])
+  .handler(async ({ context }) => {
+    return db.orders.findMany({ where: { userId: context.session.userId } })
+  })
+```
+
+Library-based alternative (iron-session, from the official `start-basic-auth` example `src/utils/session.ts`; `useSession` was removed in 1.169):
+
+```ts
+// src/utils/session.ts — import only from server code
+import { getIronSession } from 'iron-session'
+import { getCookie, setCookie } from '@tanstack/react-start/server'
+import type { User } from '@prisma/client'
+
+type SessionUser = {
+  userEmail: User['email']
+}
+
+export function getAppSession() {
+  const password = process.env.SESSION_PASSWORD
+  if (!password || password.length < 32) {
+    throw new Error('Set SESSION_PASSWORD to at least 32 characters')
+  }
+
+  return getIronSession<SessionUser>(
+    { read: getCookie, write: setCookie },
+    {
+      cookieName: 'app-session',
+      password,
+      ttl: 7 * 24 * 60 * 60,
+      cookieOptions: {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        path: '/',
+      },
+    },
+  )
+}
+```
+
+Write with `session.userId = user.id; await session.save()` (field names follow your `SessionData` type) and clear with `session.destroy()`.
+
 ```tsx
-// src/routes/_authed.tsx
+// routes/_authed.tsx - Layout route for protected pages
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { getCurrentUserFn } from '../server/auth'
 
 export const Route = createFileRoute('/_authed')({
   beforeLoad: async ({ location }) => {
     const user = await getCurrentUserFn()
+
     if (!user) {
-      throw redirect({ to: '/login', search: { redirect: location.href } })
+      throw redirect({
+        to: '/login',
+        search: { redirect: location.href },
+      })
     }
+
+    // Pass user to child routes
     return { user }
   },
 })
@@ -87,7 +152,7 @@ export const Route = createFileRoute('/_authed')({
 
 ## Notes
 
-- `session.data.userId` is how session state written by `session.update()` is read back on later requests — both go through the same `useSession()`-returned object.
-- `beforeLoad` protects route UX only; every server function/server route that returns or mutates private data must authorize the request itself (the actual security boundary) — here `getCurrentUserFn`'s own `if (!userId) return null` check.
-- Middleware created with `createMiddleware({ type: 'function' })` supports `.client()` / `.validator()` in addition to `.server()` (plain `createMiddleware()` request middleware only has `.server()`); calling `next({ context })` from `.server()` is what makes `session` available to the downstream `.handler()` via `context` — the middleware itself never redirects, only the route's `beforeLoad` does.
-- The upstream guide uses a type-only validator (`(data: { email: string; password: string }) => data`); this sample replaces it with a `zod` schema (`LoginSchema`, using the top-level `z.email()` string-format validator) for actual runtime validation of the credentials payload.
+- Start does not provide a session API; `useSession` from `@tanstack/react-start/server` is no longer used here. Sessions are your own cookie (opaque session ID looked up in a database, shown above) or a library such as iron-session (see the authentication guide's `getAppSession` example). `db`, `verifyPasswordHash`, `DUMMY_PASSWORD_HASH`, and `getCurrentUserFn` are application-owned placeholders, as in the guide.
+- `beforeLoad` protects route UX only; every server function/server route that returns or mutates private data must authorize the request itself — here `authMiddleware` throws when there is no valid session (the actual security boundary).
+- Write cookies with `setCookie`, not `setResponseHeader('Set-Cookie', ...)`, which replaces every cookie on the outgoing response.
+- The upstream authentication guide validates login input with a type-only validator; this sample uses a `zod` schema for runtime validation. Read cookies and env (`process.env`) inside the request, not at module scope.

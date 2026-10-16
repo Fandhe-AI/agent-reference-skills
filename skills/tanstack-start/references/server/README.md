@@ -1,6 +1,6 @@
 # Server
 
-`createServerFn` / `createServerFileRoute` (server routes) は TanStack Start 独自の RPC / HTTP ハンドラ API であり、Next.js の Server Actions / Route Handlers (`nextjs-app`) や `hono` のルーターとは別 API。
+`createServerFn` / `server.handlers` (server routes) は TanStack Start 独自の RPC / HTTP ハンドラ API であり、Next.js の Server Actions / Route Handlers (`nextjs-app`) や `hono` のルーターとは別 API。
 
 | Name | Description | Path |
 |------|-------------|------|
