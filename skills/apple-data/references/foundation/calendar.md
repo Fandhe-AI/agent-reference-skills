@@ -71,6 +71,7 @@ func dates(
 - Conforms to `Codable`, `Hashable`, `Sendable`.
 - The `dates(...)` methods return a `Sequence`; with a `range`, the sequence terminates when the next result falls outside it (empty if the first result is outside). `direction: .backward` finds matches before the start date. With `wrappingComponents: true`, the component wraps around on overflow without incrementing higher components.
 - `Calendar.Identifier` values include `.gregorian`, `.iso8601`, `.islamic`, `.hebrew`, `.chinese`, etc.
+- Source: https://developer.apple.com/documentation/foundation/calendar , https://developer.apple.com/documentation/foundation/calendar/dates(byadding:startingat:in:wrappingcomponents:) , https://developer.apple.com/documentation/foundation/calendar/dates(bymatching:startingat:in:matchingpolicy:repeatedtimepolicy:direction:) (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

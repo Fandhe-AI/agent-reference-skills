@@ -52,6 +52,7 @@ init(filter: Predicate<Element>? = nil, sort descriptors: [SortDescriptor<Elemen
 - Conforms to `DynamicProperty` — SwiftUI automatically invalidates and re-renders when underlying data changes
 - The `sectionBy` initializers (animation / transaction / filter-sort-order families) are iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+; `Result` is `SectionedResults<Element, String>`
 - Check `fetchError` to surface persistent-store errors in the UI
+- Source: https://developer.apple.com/documentation/swiftdata/query , https://developer.apple.com/documentation/swiftdata/query/init(filter:sort:animation:sectionby:)-35eif , https://developer.apple.com/documentation/swiftdata/query/init(filter:sort:animation:sectionby:)-1sjv1 (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

@@ -91,6 +91,7 @@ let observer = try HistoryObserver(
 - `HistoryObserver`: iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+
 - `HistoryObserver` listens for `ModelContainer.remoteChange` notifications and is `@Observable`, so SwiftUI views can react to `eventCounter` changes directly
 - A custom `DataStore` must additionally conform to `HistoryProviding` to expose transaction history for these types
+- Source: https://developer.apple.com/documentation/swiftdata/historyobserver , https://developer.apple.com/documentation/swiftdata/historyproviding , https://developer.apple.com/documentation/updates/swiftdata (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

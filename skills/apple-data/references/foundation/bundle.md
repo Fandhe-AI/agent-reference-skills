@@ -56,6 +56,7 @@ label.text = String(localized: "Game Over.",
 - `Bundle.main` refers to the `.app` bundle; use `Bundle(for: MyClass.self)` to locate framework or test bundle resources.
 - `#bundle` works whether code executes in an app, app extension, framework, or Swift package (in a package target it provides that target's resource bundle) and back-deploys to earlier OS versions. Foundation updates (June 2025): it is more performant and convenient than `.self` or a bundle identifier, particularly when loading localized strings.
 - Localization tables default to `Localizable.strings` when `table` is `nil`.
+- Source: https://developer.apple.com/documentation/foundation/bundle , https://developer.apple.com/documentation/foundation/bundle() , https://developer.apple.com/documentation/updates/foundation (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

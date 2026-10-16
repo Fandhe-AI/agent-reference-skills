@@ -54,6 +54,7 @@ class RemoteImage {
 - Apply only to stored properties of a `@Model` class; computed properties are always transient
 - `.codable` stores types that conform to `Codable` in a model, including types you don't control directly (SwiftData updates)
 - Use `originalName` together with `SchemaMigrationPlan` for lightweight column renames
+- Source: https://developer.apple.com/documentation/swiftdata/attribute(_:originalname:hashmodifier:) , https://developer.apple.com/documentation/swiftdata/schema/attribute/option/codable , https://developer.apple.com/documentation/updates/swiftdata (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

@@ -76,6 +76,7 @@ let timeZoneToken: NotificationCenter.ObservationToken = NotificationCenter.defa
 - `Notification` is `nonisolated`; the message types (iOS 26.0+) carry isolation information for Swift concurrency. Many system frameworks, including Foundation, UIKit, and AppKit, adopt `MainActorMessage` and `AsyncMessage` so their notifications can be used in concurrency-safe code (official "Notification center messages" article).
 - Observation ends when the returned `ObservationToken` is discarded or after an explicit `removeObserver(_:)`.
 - For inter-process notifications, use `DistributedNotificationCenter`.
+- Source: https://developer.apple.com/documentation/foundation/notificationcenter , https://developer.apple.com/documentation/foundation/notification-center-messages , https://developer.apple.com/documentation/foundation/notificationcenter/mainactormessage , https://developer.apple.com/documentation/foundation/notificationcenter/asyncmessage (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

@@ -49,6 +49,7 @@ Accepts a full `FetchDescriptor<T>` as an alternative to individual parameters.
 - The sectioned overloads in "Additional query macros" (Basic queries / Predicate-based queries, e.g. `Query(filter:sort:animation:sectionBy:)`) take `sectionBy` and return `SectionedResults` (iOS 27.0+)
 - Requires a `ModelContainer` in the SwiftUI environment (set via `.modelContainer(for:)`)
 - The backing type is `Query<Element, Result>`; dynamic filtering requires rebuilding the view with a new predicate
+- Source: https://developer.apple.com/documentation/swiftdata/additionalquerymacros (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

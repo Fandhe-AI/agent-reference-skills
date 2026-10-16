@@ -69,6 +69,7 @@ static let didSave: Notification.Name
 - `enumerate(_:batchSize:allowEscapingMutations:block:)`: `allowEscapingMutations` determines whether the closure can leave the context in a modified state after it completes (default `false`)
 - Specify `object: context` when observing notifications to avoid receiving notifications from other contexts
 - Related model graphs only need the root model inserted; the context handles related objects automatically
+- Source: https://developer.apple.com/documentation/swiftdata/modelcontext , https://developer.apple.com/documentation/swiftdata/modelcontext/delete(model:where:includesubclasses:) , https://developer.apple.com/documentation/swiftdata/modelcontext/enumerate(_:batchsize:allowescapingmutations:block:) (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

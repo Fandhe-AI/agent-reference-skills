@@ -52,6 +52,7 @@ let sectioned = try ResultsObserver<Book, String>(
 - `Observable`, so SwiftUI views can bind directly to `results` or `sections` and update automatically
 - Reacts to local changes in the same context, remote changes from other contexts in the same container, and external changes (other processes / CloudKit sync)
 - Use `Never` as `SectionTitle` for an unsectioned observer, or a `Hashable` section value type (e.g. `String`) with `sectionBy` for grouped results
+- Source: https://developer.apple.com/documentation/swiftdata/resultsobserver , https://developer.apple.com/documentation/swiftdata/resultsobserver/init(fetchdescriptor:modelcontainer:isolation:) (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 
