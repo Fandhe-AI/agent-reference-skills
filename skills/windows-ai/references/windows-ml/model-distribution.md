@@ -45,6 +45,7 @@ return modelPath;
 - Bundling: add the model and dependent files (tokenizer, labels) as content (Build Action **Content**); resolve the path relative to the install location, never a hard-coded absolute path. An optional MSIX package can keep the model out of the base install without custom download logic.
 - Downloading: host over HTTPS with a SHA-256 hash; check for an existing file first; store in a writable app-local folder that survives app updates; verify the hash before use; write atomically (temp file, then rename); handle retries and offline; delete old versions on replacement. The download may run in the installer or on first run.
 - For a library or SDK shared by multiple independent apps that should share one on-disk model copy, use the Windows ML Model Catalog APIs instead of custom download-and-share logic.
+- Source: https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/model-distribution (retrieved 2026-10-16)
 
 ## Related
 

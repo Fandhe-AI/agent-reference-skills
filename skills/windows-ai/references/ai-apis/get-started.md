@@ -75,6 +75,7 @@ var result = await languageModel.GenerateResponseAsync("Provide the molecular fo
 - .NET MAUI: condition the `Microsoft.WindowsAppSDK` package reference (for example `Version="2.5.1"`) on `GetTargetPlatformIdentifier('$(TargetFramework)') == 'windows'`, and put the Windows code in `Platforms/Windows` via partial classes/methods.
 - `GetReadyState` must be called before any call to the model. `EnsureReadyAsync` installs the model in the background; progress is visible under Windows Settings > Windows Update.
 - For APIs with recommended CPU specifications (such as Video Super Resolution), `GetReadyState` alone is not enough; gate availability with `GetReadyState` and quality choices with the CPU check.
+- Source: https://learn.microsoft.com/en-us/windows/ai/apis/get-started (retrieved 2026-10-16)
 
 ## Related
 

@@ -20,6 +20,7 @@ Image Object Erase          Remove objects from images and replace the erased ar
 - API details are in the API reference namespace `Microsoft.Windows.AI.Imaging`; content moderation details are in "Content safety with generative AI APIs".
 - AI Dev Gallery includes interactive samples whose C# source can be exported as a Visual Studio project.
 - Responsible AI: for generated or modified images, provide Content Credentials as specified by the C2PA standards.
+- Source: https://learn.microsoft.com/en-us/windows/ai/apis/imaging (retrieved 2026-10-16)
 
 ## Related
 

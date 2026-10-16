@@ -42,6 +42,7 @@ imageToShow = SoftwareBitmap.Convert(imageToShow, BitmapPixelFormat.Bgra8, Bitma
 - `ImageScaler.MaxSupportedScaleFactor` caps the requested scale.
 - Two ways to show the result: set a `SoftwareBitmapSource` on the native `Microsoft.UI.Xaml.Controls.Image`, or PNG-encode into an `InMemoryRandomAccessStream` and use `ImageSource.FromStream` (keep the stream alive).
 - Run: clone `microsoft/WindowsAppSDK-Samples`, switch to `release/experimental`, open `Samples/WindowsAIFoundry/cs-maui/MauiWindowsAISample.sln` in Visual Studio 2022, target "Windows Machine", press F5.
+- Source: https://learn.microsoft.com/en-us/windows/ai/apis/imaging-tutorial (retrieved 2026-10-16)
 
 ## Related
 

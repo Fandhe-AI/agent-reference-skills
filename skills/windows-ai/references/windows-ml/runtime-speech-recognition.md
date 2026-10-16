@@ -58,6 +58,7 @@ THROW_IF_FAILED(stream->GetResult(result.GetAddressOf()));
 - The result reports the full transcript and a finish reason (end-of-transcript token, cancellation, or error).
 - Native API: `WinMLTasks.h` and `winml/tasks/speech/asr/WhisperAutomaticSpeechRecognition.hpp`; Python: `windowsml.tasks` with `windowsml.runtime`.
 - For on-device speech-to-text with a Microsoft-managed model, use the ready-to-use Speech Recognition API instead.
+- Source: https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/runtime/speech-recognition (retrieved 2026-10-16)
 
 ## Related
 

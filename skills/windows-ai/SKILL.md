@@ -3,10 +3,11 @@ name: windows-ai
 description: >
   Windows アプリ開発 (Windows AI Foundry) の AI/ML 統合リファレンス。
   Windows AI APIs、LanguageModel, TextRecognizer, ImageScaler, ImageObjectExtractor,
-  SemanticSearch, ContentModeration、Phi Silica / Aion Instruct、LoRA、
-  Windows ML、Windows ML Runtime API、ONNX Runtime、execution providers、WebGPU EP、
-  Model Catalog、LearningModel、Foundry Local、MCP サーバー、App Actions、
-  IActionProvider、Agent Launchers、DirectML、NPU。
+  ImageObjectRemover, ImageDescriptionGenerator, SemanticSearch, ContentModeration、
+  Phi Silica / Aion Instruct、LoRA、Windows ML、Windows ML Runtime API、ONNX Runtime、
+  execution providers、WebGPU EP、Model Catalog、LearningModel、
+  Foundry Local (CLI / REST API / SDK)、MCP サーバー、App Actions、IActionProvider、
+  Agent Launchers、DirectML、IDMLDevice、operators、tensors、NPU。
 user-invocable: false
 ---
 

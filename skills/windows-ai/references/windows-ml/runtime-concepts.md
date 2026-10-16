@@ -99,6 +99,7 @@ THROW_IF_FAILED(pipeline->ResetExecutionState());
 - Ahead-of-time compilation is exposed through `IWinMLModelCompiler`; external weights through `IWinMLResourceMapReader`.
 - `IWinMLTokenizer` provides low-level encode/decode; `IWinMLTokenizerDecoder` keeps an incremental-decode cursor per sequence.
 - llama.cpp backend is app-local: when a project opts in, the NuGet package copies the llama.cpp adapter, core, and CPU module next to the app; GPU needs the optional CUDA module built for the same llama.cpp revision. The GGUF tokenizer and conversation formatting come from the GGUF file.
+- Source: https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/runtime/concepts (retrieved 2026-10-16)
 
 ## Related
 

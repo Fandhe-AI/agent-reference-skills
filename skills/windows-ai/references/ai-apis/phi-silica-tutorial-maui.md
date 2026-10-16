@@ -29,6 +29,7 @@ Console.WriteLine(result.Text);
 - The `LanguageModelSkill` enum (`Summarize`, `Rewrite`) is not available in Windows App SDK 2.0 preview. Prepend an instruction to the input text instead; when the Skill API is released, use `new LanguageModelOptions { Skill = LanguageModelSkill.Summarize }`.
 - Run: clone `microsoft/WindowsAppSDK-Samples`, check out `release/experimental`, open `Samples/WindowsAIFoundry/cs-maui/MauiWindowsAISample.sln` in Visual Studio 2022, set "Windows Machine" as target, press F5.
 - Distinct from the WinUI 3 variant of this tutorial, which targets Windows App SDK 1.8 experimental.
+- Source: https://learn.microsoft.com/en-us/windows/ai/apis/phi-silica-tutorial (retrieved 2026-10-16)
 
 ## Related
 

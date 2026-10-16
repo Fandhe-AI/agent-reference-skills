@@ -66,6 +66,7 @@ Get-AppxPackage | Where-Object {$_.Name -like "*PhiSilicaChat*"} | Select-Object
 - LAF token: Microsoft emails a token and an attestation string, both bound to the app's Package Family Name. Do not commit them to a public repository.
 - Troubleshooting: "not supported on this device" (not a Copilot+ PC or build below 26100); namespace not found (check package version and ARM64); `E_ACCESSDENIED` (missing LAF token); `EnsureReadyAsync` fails or hangs (check Settings > Windows Update for model download progress; requires internet).
 - WinUI 3 control names here (`Grid`, `TextBox`, `ComboBox`, `Button`) are `Microsoft.UI.Xaml.Controls`, not WPF or WinForms.
+- Source: https://learn.microsoft.com/en-us/windows/ai/apis/phi-silica-winui-tutorial (retrieved 2026-10-16)
 
 ## Related
 

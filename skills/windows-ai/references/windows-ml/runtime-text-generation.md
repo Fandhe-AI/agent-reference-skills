@@ -70,6 +70,7 @@ The completed result reports the full generated text and token IDs, prompt and g
 - Samples validate the contract against the Qwen2.5-0.5B-Instruct family, exported with a Task-specific graph packing KV cache and sequence position into one state pair. Other decoder-only models with the same contract should also work.
 - Native API: `WinMLTasks.h` and `winml/tasks/text_generation/TextGeneration.hpp`; Python: `windowsml.tasks` with `windowsml.runtime`.
 - For on-device generation with a Microsoft-managed model, use the ready-to-use local LLMs instead.
+- Source: https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/runtime/text-generation (retrieved 2026-10-16)
 
 ## Related
 

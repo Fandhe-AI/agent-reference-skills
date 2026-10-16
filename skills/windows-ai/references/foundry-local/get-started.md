@@ -83,7 +83,7 @@ finally
 }
 ```
 
-Streaming (continues from `chatClient` above):
+Streaming — insert inside the `try` block after step 5 (before `manager.Dispose()` in `finally`):
 
 ```csharp
 using var cts = new CancellationTokenSource();
@@ -97,7 +97,7 @@ await foreach (var chunk in chatClient.CompleteChatStreamingAsync(
 Console.WriteLine();
 ```
 
-Generation parameters:
+Generation parameters — also inside the `try` block, after `GetChatClientAsync` (step 5) and before `CompleteChatAsync`/streaming:
 
 ```csharp
 chatClient.Settings.Temperature = 0.7f;
@@ -162,6 +162,8 @@ model.unload()
 - The `foundry-local` package on PyPI (without `-sdk`) is an unrelated third-party package.
 - Namespace collision: `Microsoft.AI.Foundry.Local.WinML` (Foundry Local's C# client) is distinct from the `windows-ml` category's Windows ML (`LearningModel`, bring-your-own ONNX model) in this skill.
 - Full Foundry Local documentation (CLI, REST API, Python SDK, model management) lives in the Microsoft Foundry documentation, not the Windows AI docs.
+- The official page presents these snippets as continuations of step 5; `chatClient` is scoped to the `try` block and the runtime is disposed in `finally`, so they must run before `Dispose()`.
+- Source: https://learn.microsoft.com/en-us/windows/ai/foundry-local/get-started (retrieved 2026-10-16)
 
 ## Related
 

@@ -32,6 +32,7 @@ private async Task<string> PerformTextRecognition()
 - Key functions: `SelectFile_Click`, `ProcessButton_Click`, `LoadAIModels` (loads `TextRecognizer` and `LanguageModel`), `PerformTextRecognition`, `SummarizeImageText`.
 - Run: clone `microsoft/WindowsAppSDK-Samples`, switch to `release/experimental`, open `Samples/WindowsAIFoundry/cs-winforms-pckg/WindowsAISample.sln` in Visual Studio 2022, set Solution Platform to the device architecture (ARM64 for Copilot+ PCs, x64 for Intel/AMD devices), build, set as startup project, press F5.
 - Hardware and setup prerequisites are in the get-started page.
+- Source: https://learn.microsoft.com/en-us/windows/ai/apis/text-recognition-tutorial (retrieved 2026-10-16)
 
 ## Related
 

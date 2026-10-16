@@ -32,6 +32,7 @@ violence, hate, sexual content, self-harm
 - Recommended practices: benchmark on representative low-end hardware, show progress or stream partial results, implement timeouts and (with user consent) cloud fallbacks, monitor GPU/VRAM use, disclose AI-generated content, avoid logging prompts without consent, provide a kill switch or feature flag, and test fairness and red-team before deployment.
 - Do not use for high-stakes decisions without human oversight; the model can hallucinate and is susceptible to prompt injection that moderation mitigates but does not eliminate.
 - Inference is entirely local; prompts and outputs are not sent to Microsoft or third parties.
+- Source: https://learn.microsoft.com/en-us/windows/ai/apis/phi-silica-transparency-note (retrieved 2026-10-16)
 
 ## Related
 

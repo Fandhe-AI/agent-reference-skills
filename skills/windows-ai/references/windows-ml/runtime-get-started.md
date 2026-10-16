@@ -44,6 +44,7 @@ int wmain()
 - The Windows ML package supplies the Runtime headers, import libraries, and self-contained DLLs.
 - The CPU execution target is the baseline; GPU and NPU availability depends on device, platform capabilities, and installed execution backend.
 - Build for the architecture matching the package assets (for example `Release|x64`); a successful build confirms NuGet restore found the headers and import library and copied the DLLs beside the executable.
+- Source: https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/runtime/get-started (retrieved 2026-10-16)
 
 ## Related
 

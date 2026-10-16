@@ -70,3 +70,4 @@ finally
 - Pass a model alias (`phi-4-mini`), not a full model ID, so Foundry Local picks a compatible CPU / GPU / NPU variant. Catalog aliases can change over time.
 - Phi-4 Mini here is separate from Phi Silica (Windows AI API, Limited Access Feature requiring an unlock token). For non-Windows targets use `Microsoft.AI.Foundry.Local` instead of the `.WinML` package.
 - The SDK runs in the app process; the Foundry Local CLI and REST server are not required.
+- Source: https://learn.microsoft.com/en-us/windows/ai/foundry-local/get-started (retrieved 2026-10-16)

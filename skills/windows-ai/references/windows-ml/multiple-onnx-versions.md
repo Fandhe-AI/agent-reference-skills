@@ -28,6 +28,7 @@ process.WaitForExit();
 - Use when some models require specific ONNX Runtime versions, or the app runs unknown plugins whose developers must control their own ONNX Runtime version.
 - The example builds the `CSharpConsoleDesktop` Windows ML sample (SqueezeNet) from `WindowsAppSDK-Samples` (`Samples/WindowsML/cs/CSharpConsoleDesktop`), which takes an image path on the command line and prints its interpretation.
 - Effective for single-shot invocations with string input and string output. For a persistent AI worker process or non-string data, use Windows interprocess communication mechanisms.
+- Source: https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/multiple-onnx-versions (retrieved 2026-10-16)
 
 ## Related
 

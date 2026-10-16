@@ -54,6 +54,7 @@ else
 - Reusing one execution target expresses same-target affinity; distinct targets make cross-target transfer boundaries explicit. `Build` places each stage on the backend for its target.
 - `CreateCpuExecutionTarget` is equivalent to requesting the CPU kind. `CreateExecutionTargetFromAdapter` and `CreateExecutionTargetFromD3D12` bind a target to a specific DXCore adapter or D3D12 device.
 - The llama.cpp backend for `.gguf` requires at least partial GPU offload to honor a GPU target, and does not support NPU targets or provider pinning.
+- Source: https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/runtime/overview (retrieved 2026-10-16)
 
 ## Related
 

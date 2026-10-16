@@ -142,3 +142,4 @@ int wmain(int argc, wchar_t** argv)
 - Complete "Set up a C++ project for the Windows ML Runtime API" (runtime/get-started) first. Run with `.\x64\Release\RuntimeApp.exe C:\models\model.onnx`.
 - The helper assumes a model with one fixed-shape `FLOAT32` input; bind concrete dimensions for free dimensions and create matching storage for other data types.
 - Pass the same execution target to `AddModelStage` and the tensor factory. The pointer from `GetData` is valid only while `outputLock` is alive.
+- Source: https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/runtime/tutorial (retrieved 2026-10-16)

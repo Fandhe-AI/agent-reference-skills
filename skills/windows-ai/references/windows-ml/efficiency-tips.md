@@ -28,6 +28,7 @@ CPU: opt the process, or preferably the inference threads, into EcoQoS with `Set
 - Currently only NPU EPs act on the `Efficient` signal. It can increase latency when higher-priority accelerator workloads are active. Set it per session; configure each session independently.
 - Avoid vendor-specific knobs (for example QNN `htp_performance_mode`, OpenVINO `PERFORMANCE_HINT`) when `ep.dynamic.workload_type` suffices: they bypass the OS's intent-based scheduling and power management and can conflict with system policies.
 - Verify: check return values of every call (`GetLastError` on zero return). For process-level EcoQoS, confirm via `GetProcessInformation` that the execution-speed flag is in both masks; `GetThreadInformation` can't query `ThreadPowerThrottling`, so check that `SetThreadInformation` succeeds. Treat `SetEpDynamicOptions()` errors as configuration failures. Measure latency, utilization, and power under a representative workload.
+- Source: https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/efficiency-tips (retrieved 2026-10-16)
 
 ## Related
 

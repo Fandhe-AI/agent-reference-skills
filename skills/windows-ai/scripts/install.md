@@ -1,34 +1,36 @@
 # Install
 
-Windows AI 開発環境・Foundry Local・Windows ML (Python) のインストールコマンド集。出典は learn.microsoft.com/windows/ai の各ページ。
+Install commands for the Windows AI development environment, Foundry Local, and Windows ML (Python).
 
-## Windows AI APIs の依存関係の自動インストール
+Source: https://learn.microsoft.com/en-us/windows/ai/apis/get-started, https://learn.microsoft.com/en-us/windows/ai/foundry-local/get-started, https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/distributing-your-app (retrieved 2026-10-16)
 
-> **警告**: 外部 URL の構成ファイルを実行し、Developer Mode の有効化・Visual Studio・Windows App SDK のインストールを行う。実行前に構成ファイルの内容を確認し、使い捨ての検証環境（VM 等）で試すこと。
+## Automatically install Windows AI APIs dependencies
+
+> **Warning**: This runs a configuration file from an external URL that enables Developer Mode and installs Visual Studio and the Windows App SDK. Review the configuration file before running it, and try it in a disposable environment (such as a VM).
 
 ```cmd
 winget configure https://raw.githubusercontent.com/microsoft/winget-dsc/refs/heads/main/samples/Configuration%20files/Learn%20tutorials/Windows%20AI/learn_wcr.winget
 ```
 
-Windows Terminal で実行。OS の最小バージョン確認、Developer Mode 有効化、Visual Studio Community（WinUI 等のワークロード）、Windows App SDK のインストールを行う（apis/get-started より）。
+Run in Windows Terminal. It checks the minimum OS version, enables Developer Mode, and installs Visual Studio Community (with workloads such as WinUI) and the Windows App SDK (from apis/get-started).
 
-## Foundry Local CLI のインストール
+## Install the Foundry Local CLI
 
 ```powershell
 winget install Microsoft.FoundryLocal
 ```
 
-SDK ワークフローには CLI は不要。ターミナルを開き直して `foundry` を PATH に反映する。
+The CLI is not required for the SDK workflow. Reopen the terminal so that `foundry` is picked up on PATH.
 
-## Foundry Local CLI のバージョン確認
+## Check the Foundry Local CLI version
 
 ```bash
 foundry --version
 ```
 
-## Foundry Local の NuGet パッケージ追加 (C#)
+## Add the Foundry Local NuGet package (C#)
 
-`.csproj` の `<PropertyGroup>` に以下を設定する。
+Set the following in the `<PropertyGroup>` of the `.csproj`.
 
 ```xml
 <PropertyGroup>
@@ -45,30 +47,30 @@ dotnet restore
 dotnet add package Microsoft.AI.Foundry.Local.WinML
 ```
 
-NuGet パッケージにネイティブ Windows バイナリが含まれるため、Windows TFM と RuntimeIdentifiers が必要。
+The NuGet package contains native Windows binaries, so a Windows TFM and RuntimeIdentifiers are required.
 
-## Foundry Local の Python SDK インストール
+## Install the Foundry Local Python SDK
 
 ```bash
 pip install foundry-local-sdk-winml   # Windows — includes hardware acceleration (recommended on Windows)
 pip install foundry-local-sdk         # macOS/Linux, or Windows without hardware acceleration
 ```
 
-どちらか一方のみをインストールする。両方は `onnxruntime-core` の依存が衝突する。
+Install only one of the two. Installing both causes a conflict in the `onnxruntime-core` dependency.
 
-## Foundry Local SDK の依存衝突の解消
+## Resolve a Foundry Local SDK dependency conflict
 
 ```bash
 pip uninstall foundry-local-sdk        # if you want the winml (Windows) package
 pip uninstall foundry-local-sdk-winml  # if you want the cross-platform package
 ```
 
-残したい側のパッケージを再インストールする。仮想環境の使用で衝突を回避できる（foundry-local/get-started の FAQ より）。
+Then reinstall the package you want to keep. Using a virtual environment also avoids the conflict (from the FAQ in foundry-local/get-started).
 
-## Windows ML の Python パッケージ (framework-dependent)
+## Windows ML Python packages (framework-dependent)
 
 ```powershell
 pip install wasdk-Microsoft.Windows.AI.MachineLearning[all] wasdk-Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap onnxruntime-windowsml
 ```
 
-`wasdk-` パッケージの版に対応する Windows App SDK Runtime を別途インストールする（new-windows-ml/distributing-your-app より）。
+Separately install the Windows App SDK Runtime that matches the version of the `wasdk-` packages (from new-windows-ml/distributing-your-app).

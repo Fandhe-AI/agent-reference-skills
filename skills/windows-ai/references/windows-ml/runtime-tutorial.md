@@ -90,6 +90,7 @@ Build and run:
 - Pass the same execution target to both `AddModelStage` and the tensor factory to keep model preparation and tensor placement on one target.
 - `Lock` establishes a CPU-access window; the pointer from `GetData` stays valid only while `outputLock` is alive.
 - Interpret the output tensor per the model's output schema; labels, sampling, and preprocessing belong in the app.
+- Source: https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/runtime/tutorial (retrieved 2026-10-16)
 
 ## Related
 

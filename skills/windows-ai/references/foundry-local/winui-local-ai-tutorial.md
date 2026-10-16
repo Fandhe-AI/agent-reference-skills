@@ -65,6 +65,8 @@ _client = await model.GetChatClientAsync().ConfigureAwait(false);
 _client.Settings.MaxTokens = 256;
 _client.Settings.Temperature = 0.2f;
 
+// SummarizeAsync (a separate method in the tutorial; two methods are excerpted back to back here):
+var client = _client ?? throw new InvalidOperationException("Prepare the model first.");
 List<ChatMessage> messages =
 [
     new("system", "Summarize the user's note in up to three concise bullet points. " +
@@ -127,6 +129,7 @@ Verification checks (verify topic):
 - Validation scope per the source: built for ARM64 Debug with the .NET 10 SDK and run with `winapp` on Windows build 26340. Not validated: x64, offline operation, accelerated inference, theme switching, fault injection, signed release distribution.
 - Warm offline inference (model already prepared and loaded) is distinct from offline first-time setup; test both separately.
 - Launch via `winapp run` or the packaged profile, not the raw executable, so the app has package identity.
+- Source: https://learn.microsoft.com/en-us/windows/ai/foundry-local/tutorials/winui-local-ai/intro, https://learn.microsoft.com/en-us/windows/ai/foundry-local/tutorials/winui-local-ai/setup, https://learn.microsoft.com/en-us/windows/ai/foundry-local/tutorials/winui-local-ai/add-ai, https://learn.microsoft.com/en-us/windows/ai/foundry-local/tutorials/winui-local-ai/verify (retrieved 2026-10-16)
 
 ## Related
 

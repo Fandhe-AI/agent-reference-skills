@@ -1,13 +1,15 @@
 # Diagnostics
 
-Windows ML の実行プロバイダー (EP) の状態確認コマンド集。出典は new-windows-ml/versioning。
+Commands to check the state of Windows ML execution providers (EPs).
 
-## インストール済み EP の版確認
+Source: https://learn.microsoft.com/en-us/windows/ai/new-windows-ml/versioning (retrieved 2026-10-16)
+
+## Check installed EP package versions
 
 ```sh
 Get-AppxPackage MicrosoftCorporationII.WinML.*
 ```
 
-開発機にインストールされている Windows ML EP のパッケージ名・版を PowerShell で確認する。QNN EP が入っている場合、`MicrosoftCorporationII.WinML.Qualcomm.QNN.EP.1.8` のようなパッケージが出力される。
+Lists the names and versions of the Windows ML EP packages installed on the development machine, using PowerShell. If the QNN EP is installed, a package such as `MicrosoftCorporationII.WinML.Qualcomm.QNN.EP.1.8` is printed.
 
-> **注記**: 上記は PowerShell コマンドレットであり、PowerShell セッションで実行する（bash / zsh では動作しない）。
+> **Note**: The command above is a PowerShell cmdlet. Run it in a PowerShell session (it does not work in bash / zsh).
