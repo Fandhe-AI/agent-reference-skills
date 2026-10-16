@@ -72,6 +72,13 @@ def stream_session(client: OpenAI, session_id: str, handle_event):
                     if event.turn.subagent_id is None:
                         detail = event.turn.error.message if event.turn.error else ""
                         raise RuntimeError(f"{event.type}: {detail}")
+                case "agent.session.turn.cancelled":
+                    if event.turn.subagent_id is None:
+                        raise RuntimeError("The agent turn was cancelled")
+                case "agent.session.turn.completed":
+                    if event.turn.subagent_id is None:
+                        return
+    raise RuntimeError("Stream closed before a turn ended. Retrieve the saved state.")
 ```
 
 Step 3: continue the session with `sessions.events.create` (Python).

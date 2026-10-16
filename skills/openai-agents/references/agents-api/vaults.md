@@ -5,9 +5,16 @@ A vault stores credentials outside the agent's instructions and configuration. A
 ## Signature / Usage
 
 ```python
+import os
+
 vault = client.beta.agents.vaults.create(
     name="GitHub credentials", metadata={"external_user_id": "user_123"}
 )
+
+# Save the vault ID, then add the token.
+vault_id = vault.id
+mcp_url = "https://api.githubcopilot.com/mcp/"
+access_token = os.environ["GITHUB_TOKEN"]
 
 credential = client.beta.agents.vaults.credentials.create(
     vault_id,
