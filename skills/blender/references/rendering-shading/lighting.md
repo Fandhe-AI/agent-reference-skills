@@ -113,7 +113,7 @@ light.size_y = 0.5  # Y dimension (RECTANGLE/ELLIPSE only)
 import bpy
 
 world = bpy.context.scene.world
-world.use_nodes = True
+# world.use_nodes = True  # Deprecated since 5.0, no effect; worlds.new() creates a default node tree
 
 nodes = world.node_tree.nodes
 links = world.node_tree.links
@@ -136,11 +136,14 @@ For a procedural sky, replace `ShaderNodeTexEnvironment` with `ShaderNodeTexSky`
 
 ```python
 sky = nodes.new('ShaderNodeTexSky')
-sky.sky_type = 'NISHITA'   # 'PREETHAM', 'HOSEK_WILKIE', 'NISHITA'
+sky.sky_type = 'MULTIPLE_SCATTERING'   # 5.2 API: 'SINGLE_SCATTERING' | 'MULTIPLE_SCATTERING' | 'PREETHAM' (Legacy, default) | 'HOSEK_WILKIE' (Legacy)
 ```
 
 ## Notes
 
+- Deprecated (5.0): `world.use_nodes` (removal planned for 6.0); it always returns `True`, setting it has no effect, and `bpy.data.worlds.new()` creates a default node tree (PR#142342)
+- `'NISHITA'` is not a valid `sky_type` value in the 5.2 API; the enum is `'SINGLE_SCATTERING'`, `'MULTIPLE_SCATTERING'`, `'PREETHAM'` (Legacy), `'HOSEK_WILKIE'` (Legacy), default `'PREETHAM'`. The 5.0 rendering notes describe a new multiple scattering mode (PR#140480)
+- Removed (5.0): the `sun_direction`, `turbidity` and `ground_albedo` inputs of the Sky Texture node (ab21755aaf)
 - All energies in Blender use physically based units (Watts, W/m²) — match real-world values for accuracy
 - `use_shadow` disabling on a light skips shadow computation entirely for that light (performance gain in EEVEE)
 - World `Strength` (background node) acts as exposure multiplier for HDRI

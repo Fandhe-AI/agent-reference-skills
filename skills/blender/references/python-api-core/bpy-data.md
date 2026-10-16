@@ -58,6 +58,28 @@ print(bpy.data.filepath)
 | `texts` | `BlendDataTexts` | Text data-blocks |
 | `worlds` | `BlendDataWorlds` | World data-blocks |
 
+### Iterating All IDs and File Paths
+
+| Member | Description |
+|--------|-------------|
+| `all_ids` | Read-only `bpy_prop_collection[ID]` iterating every data-block at once (added 5.2) |
+| `file_path_foreach(visit_path_fn, *, subset=None, visit_types=None, flags={'SKIP_PACKED', 'SKIP_WEAK_REFERENCES'})` | Calls `visit_path_fn(ID, str, BlendDataPathMeta) -> str \| None` for each file path used; a returned `str` replaces the visited path (added 5.0) |
+| `file_path_map(*, subset=None, key_types=None, include_libraries=False)` | Mapping of each ID to the set of file paths it uses |
+| `colorspace` | `BlendFileColorspace` (read-only); `working_space_interop_id` identifies the working space, e.g. `lin_rec709_scene`, `lin_rec2020_scene`, `lin_ap1_scene` (added 5.0) |
+
+```python
+for idb in bpy.data.all_ids:                      # 5.2+
+    print(idb.name)
+
+def visit(idb, path, meta):
+    print(idb.name, path, meta.is_expanded, meta.is_cache, meta.is_readonly)
+    return None                                   # keep the path unchanged
+
+bpy.data.file_path_foreach(visit)
+```
+
+`BlendDataPathMeta` fields `is_expanded` (UDIM tile / sequence frame path), `is_cache` (e.g. texture cache file) and `is_readonly` (path cannot be edited) are provided from 5.2. 5.2 also adds `flags` values `EXPAND_TOKENS` (each UDIM tile path), `EXPAND_SEQUENCES` (each image / volume sequence file) and `EXPAND_CACHES` (cache files such as texture caches) (PR#159159).
+
 ### File Attributes
 
 | Attribute | Type | Description |

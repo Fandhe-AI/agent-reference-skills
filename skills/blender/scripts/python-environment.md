@@ -18,14 +18,14 @@ blender --background --python-expr "import sys; print(sys.version)"
 # PyPI から最新版をインストール（Python バージョンの一致が必要）
 pip install bpy
 
-# バージョンを指定してインストール
-pip install bpy==4.4.0
+# バージョンを指定してインストール（5.2.2 は requires_python ==3.13.*、cp313 wheel のみ）
+pip install bpy==5.2.2
 
-# Blender 公式 PyPI インデックスからアーカイブ版をインストール
+# Blender 公式 PyPI インデックスからアーカイブ版をインストール（レガシー例）
 pip install bpy==3.6.0 --extra-index-url https://download.blender.org/pypi/
 ```
 
-各 Blender リリースは 1 つの Python バージョンにのみ対応する（例: bpy 5.1.x は Python 3.13）。インストール前に Python バージョンの一致を確認すること。
+各 Blender リリースは 1 つの Python バージョンにのみ対応する（例: bpy 5.2.x は Python 3.13）。インストール前に Python バージョンの一致を確認すること。
 
 ## bpy の動作確認
 
@@ -39,10 +39,10 @@ python -c "import bpy; print(bpy.app.version)"
 
 ```sh
 # Linux / macOS — 内蔵 Python の場所を特定して pip でインストール
-/path/to/blender/4.5/python/bin/python3.11 -m pip install numpy
+/path/to/blender/5.2/python/bin/python3.13 -m pip install numpy
 
 # Windows — 内蔵 Python の場所を特定して pip でインストール
-"C:\Program Files\Blender Foundation\Blender 4.5\4.5\python\bin\python.exe" -m pip install numpy
+"C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\bin\python.exe" -m pip install numpy
 ```
 
 Blender の内蔵 Python パスはプラットフォームとバージョンによって異なる。ヘッドレスで確認する場合:
@@ -92,7 +92,7 @@ blender --background --python-use-system-env --python script.py
 
 ```sh
 # PYTHONPATH を venv の site-packages に設定してから起動
-export PYTHONPATH=".venv/lib/python3.11/site-packages:$PYTHONPATH"
+export PYTHONPATH=".venv/lib/python3.13/site-packages:$PYTHONPATH"
 blender --background --python-use-system-env --python script.py
 ```
 

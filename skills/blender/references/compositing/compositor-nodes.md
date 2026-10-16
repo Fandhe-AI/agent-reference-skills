@@ -13,7 +13,7 @@ The compositor API changed between Blender 4.x and 5.0.
 
 **Blender ≤ 4.4:** Enable with `scene.use_nodes = True`; access the tree via `scene.node_tree`.
 
-**Blender 5.0+:** `scene.use_nodes` and the "Use Nodes" checkbox were removed. Create a `CompositorNodeTree` node group and assign it to `scene.compositing_node_group` instead.
+**Blender 5.0+:** `scene.use_nodes` is deprecated (removal planned for 6.0; getting it always returns `True`, setting it has no effect), and `scene.node_tree` was removed. `scene.render.use_compositing` is the actual toggle. Create a `CompositorNodeTree` node group and assign it to `scene.compositing_node_group` instead.
 
 For cross-version scripts, use these two canonical helpers. All code examples in this skill call these helpers rather than duplicating the branching logic.
 
@@ -81,7 +81,7 @@ def add_output_node(tree, source_socket, location=(700, 0)):
 
 | Node | Python Type | Description |
 |------|-------------|-------------|
-| Mix | `CompositorNodeMixRGB` | Blends two images using standard blend modes |
+| Mix | `ShaderNodeMix` | Blends two images using standard blend modes (`CompositorNodeMixRGB` is not present in the 5.2 API; 4.5 deprecated the compositor Mix Color node in favor of the shader-node counterpart, 5.0 removed it) |
 | Alpha Over | `CompositorNodeAlphaOver` | Composites a foreground over a background using alpha |
 | Color Balance | `CompositorNodeColorBalance` | Lift/Gamma/Gain or Offset/Power/Slope (ASC-CDL) color correction |
 | Hue/Saturation/Value | `CompositorNodeHueSat` | Adjusts hue, saturation, and value |
@@ -179,7 +179,8 @@ add_output_node(tree, blur.outputs["Image"], location=(600, 0))
 
 - **Version branching:** Keep all 4.x / 5.0+ branching inside `get_compositor_tree()` and `add_output_node()`. Never duplicate `if hasattr(scene, 'compositing_node_group')` in individual scripts.
 - **Idempotency:** `get_compositor_tree()` reuses an existing `compositing_node_group` rather than calling `bpy.data.node_groups.new()` every time. This prevents orphaned `Compositor.001`, `Compositor.002` … datablocks accumulating in the blend file.
-- **Blender 5.0+:** `scene.use_nodes` and `scene.node_tree` are removed. `CompositorNodeComposite` is also removed; use `NodeGroupOutput` instead. The node group's first Color `OUTPUT` interface socket drives the render result.
+- Renamed (5.0): Z Combine -> Depth Combine (type stays `CompositorNodeZcombine`). Renamed (5.0): Alpha Over inputs -> Background / Foreground. Removed (5.0): the Texture node and the Normal node's Dot output (use Vector Math Dot Product). Added (5.2): `CompositorNodeOutputFile.use_file_extension`.
+- **Blender 5.0+:** `scene.use_nodes` is deprecated (no effect, always `True`; removal planned for 6.0; `scene.render.use_compositing` is the toggle). `scene.node_tree` and `CompositorNodeComposite` are removed; use `NodeGroupOutput` instead. The node group's first Color `OUTPUT` interface socket drives the render result.
 - **Blender ≤ 4.4:** `CompositorNodeComposite` is required; without it, compositing results are not applied to the final render.
 - **After `nodes.clear()`:** All default nodes (Render Layers, Composite) are gone. Always recreate them explicitly with `nodes.new(...)`.
 - Use socket names (`outputs["Image"]`) rather than indices — enabled passes shift socket indices on the Render Layers node.

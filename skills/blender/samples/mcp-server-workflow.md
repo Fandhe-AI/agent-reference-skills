@@ -7,6 +7,8 @@ description: Connect an LLM to a running Blender instance via the Blender MCP se
 
 ## Overview
 
+Targets Blender MCP server v1.0.3 (`lab/blender_mcp`, tag `v1.0.3`); official docs: https://www.blender.org/lab/mcp-server/
+
 The Blender MCP server exposes a natural-language interface to a live Blender session over a two-component architecture:
 
 ```
@@ -218,6 +220,7 @@ The client launches `blender-mcp` as a subprocess over stdio, negotiates MCP too
 - For polygon counts that reflect render-time modifiers, use `bpy.context.evaluated_depsgraph_get()` with the `RENDER` context rather than accessing `obj.data.polygons` directly.
 - `get_blendfile_summary_datablocks` returns counts and workspace info without executing code; prefer it for read-only scene introspection before deciding whether to call `execute_blender_code`.
 - The `_for_cli` tool variants (e.g. `execute_blender_code_for_cli`) open a `.blend` file in a background Blender process and are suitable for batch analysis without a running interactive session.
+- Version pin: the examples above match `mcp/README.md` at tag `v1.0.3`; check the tag's README if a newer release changes tool names or setup.
 
 ## Related
 

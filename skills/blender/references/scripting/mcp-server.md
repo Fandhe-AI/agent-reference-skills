@@ -7,6 +7,8 @@ description: Official MCP server exposing Blender's Python API to LLM assistants
 
 A lightweight MCP (Model Context Protocol) server that provides a natural language interface to Blender's Python API. Allows LLM assistants to inspect scenes, execute code, render, and navigate the Blender interface.
 
+Version: Blender MCP v1.0.3 (add-on manifest `blender_version_min = "5.1.0"`). Official docs: https://www.blender.org/lab/mcp-server/. The MCP server package depends on `mcp[cli]>=1.2.0,<2`; the add-on license is GPL-3.0-or-later.
+
 ## Architecture
 
 ```
@@ -23,6 +25,9 @@ Two components communicate over a TCP socket:
 ```bash
 # Install the MCP server package
 pip install git+https://projects.blender.org/lab/blender_mcp.git#subdirectory=mcp
+
+# Optional: pin to the v1.0.3 tag
+pip install git+https://projects.blender.org/lab/blender_mcp.git@v1.0.3#subdirectory=mcp
 ```
 
 Add the Blender Lab Extensions repository and install the MCP add-on:

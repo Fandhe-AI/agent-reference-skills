@@ -9,7 +9,7 @@ Materials in Blender are data-blocks containing a shader `node_tree`. Node-based
 
 ## Overview
 
-- `Material.use_nodes = True` activates the node tree
+- Since 5.0, `bpy.data.materials.new()` creates a default node tree; `Material.use_nodes` is deprecated (always `True`, setting it has no effect)
 - Nodes are created via `node_tree.nodes.new(type)` and connected via `node_tree.links.new(output, input)`
 - The Principled BSDF node models most real-world materials using the OpenPBR / Disney model
 
@@ -20,7 +20,7 @@ import bpy
 
 # Create a new material
 mat = bpy.data.materials.new(name="MyMaterial")
-mat.use_nodes = True
+# mat.use_nodes = True  # Deprecated since 5.0, no effect; the default node tree already exists
 
 nodes = mat.node_tree.nodes
 links = mat.node_tree.links
@@ -97,7 +97,19 @@ Combines diffuse, specular, transmission, subsurface, coat, and sheen in one nod
 
 ## Notes
 
-- `mat.node_tree` is `None` when `use_nodes` is False
+- Deprecated (5.0): `material.use_nodes`, removal planned for 6.0. It always returns `True` and setting it has no effect; `bpy.data.materials.new()` now creates a default node tree (PR#141278). Release-notes Old/New:
+  ```python
+  # Old way of creating a default material node tree
+  mat = bpy.data.materials.new("My new material")
+  obj.active_material = mat
+  mat.use_nodes = True # Creates a default node tree
+
+  # New way of creating a default material node tree
+  mat = bpy.data.materials.new("My new material") # Creates a default node tree
+  obj.active_material = mat
+  mat.use_nodes = True # Deprecated, has no effect.
+  ```
+- Before 5.0, `mat.node_tree` was `None` when `use_nodes` was False
 - Node type strings use the `bpy.types.*` class name (e.g. `'ShaderNodeBsdfPrincipled'`)
 - Inputs/outputs can be referenced by name (`inputs['Base Color']`) or index (`inputs[0]`)
 - Setting `mat.blend_method = 'BLEND'` and `mat.shadow_method = 'HASHED'` enables alpha transparency in EEVEE

@@ -139,8 +139,8 @@ fileout.file_slots.new("GlossDir")
 fileout.file_slots.new("Depth")
 
 links.new(rl.outputs["Image"],   fileout.inputs["Beauty"])
-links.new(rl.outputs["DiffDir"], fileout.inputs["DiffDir"])
-links.new(rl.outputs["GlossDir"],fileout.inputs["GlossDir"])
+links.new(rl.outputs["Diffuse Direct"], fileout.inputs["DiffDir"])   # Render Layers names: 'DiffDir' / 'GlossDir' before 5.0
+links.new(rl.outputs["Glossy Direct"],  fileout.inputs["GlossDir"])
 links.new(rl.outputs["Depth"],   fileout.inputs["Depth"])
 ```
 
@@ -172,7 +172,8 @@ add_output_node(tree, denoise.outputs["Image"], location=(600, 0))
 
 ## Notes
 
-- **Blender 5.0+:** `scene.use_nodes` / `scene.node_tree` are removed. `CompositorNodeComposite` is also removed. All version branching is handled by `get_compositor_tree()` and `add_output_node()` — do not add `if hasattr(scene, 'compositing_node_group')` in individual setup scripts.
+- **Blender 5.0+:** `scene.use_nodes` is deprecated (no effect, always `True`; removal planned for 6.0) and `scene.node_tree` is removed. `CompositorNodeComposite` is also removed.
+- Renamed (5.0): Render Layers pass sockets use expanded names (`Diffuse Direct`, `Glossy Direct`, ...; see render-passes.md). In 5.0+ the File Output slot name is set via `file_output_items[i].name` (4.5: `file_slots[i].path`). The Alpha Over inputs were renamed Background / Foreground in 5.0 (`inputs[1]` / `inputs[2]` access in the example above is index-based). All version branching is handled by `get_compositor_tree()` and `add_output_node()` — do not add `if hasattr(scene, 'compositing_node_group')` in individual setup scripts.
 - **Blender ≤ 4.4:** `CompositorNodeComposite` is the required final output node; without it, compositing results are not applied to the render.
 - **File Output — Blender 5.0+:** `file_slots`, `layer_slots`, and `base_path` were removed. Use `directory`, `file_name`, and `file_output_items` instead. The exact Python API for `file_output_items` (e.g., `.new()` signature and socket indexing) differs from the `file_slots` pattern shown above; consult the Blender 5.0 release notes for the migration guide.
 - When building trees from Python, call `nodes.clear()` and add all required nodes explicitly to avoid stale links or duplicate nodes.

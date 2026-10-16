@@ -70,6 +70,7 @@ mirror.use_bisect_axis[0] = True
 # Add a Boolean modifier
 bool_mod = obj.modifiers.new(name="Boolean", type='BOOLEAN')
 bool_mod.operation = 'DIFFERENCE'
+bool_mod.solver = 'EXACT'   # 'FLOAT' | 'EXACT' (default) | 'MANIFOLD'
 bool_mod.object = bpy.data.objects["Cutter"]
 ```
 
@@ -119,6 +120,8 @@ sol.offset = -1.0  # grow inward
 
 ## Notes
 
+- Renamed (5.0): Boolean solver `'FAST'` -> `'FLOAT'` (modifier and operator). Valid solver values in the 5.2 API are `'FLOAT'`, `'EXACT'` (default) and `'MANIFOLD'` (Manifold works only on manifold meshes)
+- For setting `NODES` modifier inputs from Python (API changed in 5.2), see [Geometry Nodes](./geometry-nodes.md)
 - Stack order matters: Boolean before Subdivision Surface avoids topology artifacts; Mirror before Subdivision Surface can cause seam issues if the order is reversed
 - `bpy.ops.object.modifier_apply()` requires the object to be active and in Object Mode
 - To apply a modifier without `bpy.ops`, use `obj.to_mesh()` (read-only evaluated mesh) or `bpy.ops.object.convert(target='MESH')` to destructively apply all modifiers

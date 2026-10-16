@@ -110,6 +110,8 @@ for bone in arm_obj.data.bones:
 
 ## Notes
 
+- Removed (5.0): `Bone.select`, `Bone.select_head` and `Bone.select_tail`. Use `EditBone.select` (and its head/tail equivalents) in Edit Mode, and the new `PoseBone.select` in Pose Mode (synced with edit bones when entering/leaving Edit Mode).
+- Changed (5.2 API): `Bone.hide` only affects visibility in Edit Mode; use `PoseBone.hide` to hide bones outside Edit Mode.
 - **Mode switching is required**: edit bones are only available in Edit Mode; pose data is only actionable in Pose Mode.
 - Always call `bpy.ops.object.mode_set(mode='OBJECT')` to finalize edits before accessing `obj.data.bones` or `obj.pose.bones`.
 - The **Armature Modifier** on a mesh uses vertex groups whose names match bone names to drive deformation weights.

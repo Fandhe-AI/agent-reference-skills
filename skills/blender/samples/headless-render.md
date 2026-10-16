@@ -35,7 +35,7 @@ def parse_args():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--output",  default="//render/",  help="Output directory (// = relative to .blend)")
-    parser.add_argument("--engine",  default="BLENDER_EEVEE_NEXT", choices=["CYCLES", "BLENDER_EEVEE_NEXT"])
+    parser.add_argument("--engine",  default="BLENDER_EEVEE", choices=["CYCLES", "BLENDER_EEVEE"])
     parser.add_argument("--samples", default=64, type=int)
     parser.add_argument("--start",   default=1,  type=int)
     parser.add_argument("--end",     default=1,  type=int)
@@ -50,7 +50,7 @@ scene = bpy.context.scene
 scene.render.engine = args.engine
 if args.engine == "CYCLES":
     scene.cycles.samples = args.samples
-elif args.engine == "BLENDER_EEVEE_NEXT":
+elif args.engine == "BLENDER_EEVEE":
     scene.eevee.taa_render_samples = args.samples
 
 # Resolution
@@ -102,11 +102,10 @@ blender -b scene.blend -P render.py -- \
   --start 1 --end 24
 
 # EEVEE, blank file (useful for fully procedural scenes)
-blender -b -P render.py -- --engine BLENDER_EEVEE_NEXT
-
-# Cycles GPU (append after --)
-blender -b scene.blend -P render.py -- --engine CYCLES -- --cycles-device OPTIX
+blender -b -P render.py -- --engine BLENDER_EEVEE
 ```
+
+Cycles GPU is not a `render.py` argument; set it through the add-on preferences inside the script (see Key Points).
 
 ## Key Points
 
@@ -115,6 +114,8 @@ blender -b scene.blend -P render.py -- --engine CYCLES -- --cycles-device OPTIX
 - Use `#` characters in `filepath` when letting Blender name frames automatically (e.g., `"//frames/frame_####"`). Each `#` becomes a zero-padded digit.
 - `bpy.ops.render.render(write_still=True)` renders the current frame and writes to disk; omitting `write_still=True` renders but does not save.
 - For GPU rendering with Cycles, set `bpy.context.preferences.addons['cycles'].preferences.compute_device_type = 'CUDA'` (or `'OPTIX'`, `'METAL'`) before rendering.
+- Blender 5.0+: the EEVEE engine identifier is `BLENDER_EEVEE` (renamed from `BLENDER_EEVEE_NEXT`).
+- Blender 5.0 changed the format of logging output, including background render progress. Add-ons or render farms that parse the output of `blender -b` may need to be updated.
 
 ## Variations
 

@@ -64,6 +64,9 @@ Argument order matters — flags are processed left-to-right. Set `--render-outp
 
 ## Notes
 
+- Changed (5.0): the format of logging output, including background render progress; add-ons or render farms parsing this output may need to be updated.
+- Changed (5.0): `--log-level trace --log "context"` logs all context member access (replaces the previous `bpy.context` logging category).
+- Added (5.2): `gpu.init()` initializes the GPU module for use in `--background` mode (raises `SystemError` on failure).
 - In `--background` mode Blender exits automatically after the render or script completes; explicit `bpy.ops.wm.quit_blender()` is only needed when no render flag is used and the script must force an exit.
 - `sys.exit(code)` can be used inside scripts to set the process exit code for shell pipelines.
 - Stdout/stderr from Python scripts are forwarded to the terminal unchanged; redirect with standard shell operators (`>`, `2>&1`).

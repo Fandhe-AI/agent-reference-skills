@@ -156,6 +156,9 @@ turb = noise.turbulence((1.0, 2.0, 3.0), octaves=4, hard=False)
 
 ## Notes
 
+- Added (5.2): slice step on `Vector` / `Matrix` / `Color` / `Euler`, e.g. `vector[begin:end:step]` (141af3d117); Blender arrays such as `image.pixels[begin:end:step]` also accept a step (5f2f7b0d0f)
+- Changed (5.0): native buffer protocol support for mathutils types. The underlying type of a `Vector` is now float32 (previously float64), and a matrix passed to numpy is exposed as a non-contiguous buffer (previously converted to a contiguous one); scripts may need updating
+- Added (5.0): `mathutils.geometry.intersect_point_line_segment`, like `intersect_point_line` but clamped at the line-segment end-points (44d04ad857)
 - Numeric sequences (tuples, lists) are accepted wherever a Vector is expected
 - Use `.copy()` to obtain a mutable copy; `.freeze()` to make an object hashable
 - Matrix multiplication uses the `@` operator (not `*`)

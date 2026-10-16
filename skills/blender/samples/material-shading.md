@@ -7,7 +7,7 @@ description: Create node-based materials with Principled BSDF and image textures
 
 ## Overview
 
-Blender materials use a node graph. From Python: create the material, enable `use_nodes`, clear the default nodes, then build the graph manually by creating nodes, setting their inputs, and linking outputs to inputs with `node_tree.links.new()`.
+Blender materials use a node graph. From Python: create the material, clear the default nodes if you want a predictable graph, then build it manually by creating nodes, setting their inputs, and linking outputs to inputs with `node_tree.links.new()`. In Blender 5.0+ a new material already has a default node tree; `mat.use_nodes` is a deprecated no-op (always `True`, removal planned for 6.0).
 
 ## Complete Example
 
@@ -16,8 +16,7 @@ import bpy
 
 # ── 1. Basic Principled BSDF material ─────────────────────────────────────────
 def make_principled_material(name, base_color, roughness=0.5, metallic=0.0):
-    mat = bpy.data.materials.new(name=name)
-    mat.use_nodes = True
+    mat = bpy.data.materials.new(name=name)   # 5.0+: default node tree is created here
 
     nodes = mat.node_tree.nodes
     links = mat.node_tree.links
@@ -72,7 +71,6 @@ def add_image_texture(mat, image_path):
 
 # ── 3. Procedural noise material ─────────────────────────────────────────────
 mat_noise = bpy.data.materials.new("NoiseMetal")
-mat_noise.use_nodes = True
 
 nodes = mat_noise.node_tree.nodes
 links = mat_noise.node_tree.links
@@ -118,7 +116,8 @@ print("Materials assigned.")
 
 ## Key Points
 
-- Always set `mat.use_nodes = True` before accessing `mat.node_tree`; without it the tree does not exist.
+- Blender 5.0+: `bpy.data.materials.new()` creates a default node tree, so `mat.node_tree` is available immediately. `mat.use_nodes` is deprecated (always `True`, setting it has no effect, removal planned for 6.0).
+- Blender ≤ 4.4: `mat.use_nodes = True` must be set before accessing `mat.node_tree`; without it the tree does not exist. Setting it is harmless on 5.0+, so scripts targeting both can keep it.
 - `nodes.clear()` removes the default Principled BSDF + Material Output pair — rebuild both explicitly so their positions and names are predictable.
 - Node input values are set via `node.inputs['Input Name'].default_value`; the value type must match (float, tuple for color, etc.).
 - `bpy.data.images.load()` loads from disk and caches in `bpy.data.images`; if the same path is loaded twice, call `bpy.data.images.load(path, check_existing=True)`.
@@ -128,8 +127,7 @@ print("Materials assigned.")
 
 ```python
 # Emission (glowing) material
-mat_emit = bpy.data.materials.new("Glow")
-mat_emit.use_nodes = True
+mat_emit = bpy.data.materials.new("Glow")   # 5.0+: default node tree exists
 nodes = mat_emit.node_tree.nodes
 emit = nodes.new('ShaderNodeEmission')
 emit.inputs['Color'].default_value = (0.0, 0.8, 1.0, 1.0)

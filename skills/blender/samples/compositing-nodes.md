@@ -9,7 +9,7 @@ description: Build a compositor node tree from Python — Render Layers, Glare, 
 
 The compositor node tree API changed significantly between versions. Blender ≤ 4.4 used `scene.use_nodes = True` and `scene.node_tree`. Blender 5.0+ deprecated `scene.use_nodes` and replaced `scene.node_tree` with `scene.compositing_node_group`, using a `NodeGroupOutput` node instead of `CompositorNodeComposite`.
 
-The two canonical helpers below encapsulate all version branching. Copy them at the top of any compositor script; the PART A–D examples call these helpers without further branching.
+The two canonical helpers below encapsulate all version branching. Copy them at the top of any compositor script; the PART A–D examples call these helpers without further branching (except the File Output nodes in PART C/D, which branch on `file_output_items`).
 
 ## Complete Example
 
@@ -111,51 +111,59 @@ links.new(rl.outputs['Depth'], defocus.inputs['Z'])
 # (PART B result feeds into the File Output nodes in PART C/D below)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# PART C — File Output node (multi-pass PNG export, Blender ≤ 4.4 API)
+# PART C — File Output node (multi-pass PNG export)
 # ═══════════════════════════════════════════════════════════════════════════════
 #
-# NOTE — Blender 5.0+ API change:
-#   `file_slots`, `layer_slots`, and `base_path` were removed.
-#   In Blender 5.0+ use `directory`, `file_name`, and `file_output_items` instead.
-#   The `file_output_items` API is not shown here because the exact .new() signature
-#   and socket-connection pattern differ from file_slots and have not been fully
-#   documented with runnable examples at time of writing. See the Blender 5.0
-#   Compositor Migration notes for the authoritative migration guide.
-#   For 5.0+ scripts, replace PART C/D with the file_output_items equivalent.
+# Blender 5.0+: `file_slots`, `layer_slots`, `base_path` were removed; the node has
+# `directory`, `file_name`, and `file_output_items.new(socket_type, name)`.
+# Blender ≤ 4.4: `base_path` + `file_slots.new(name)` (kept in the else branch).
 
 file_out = nodes.new('CompositorNodeOutputFile')
 file_out.location           = (700, 0)
-file_out.base_path          = "//comp_output/"
 file_out.format.file_format = 'PNG'
 file_out.format.color_mode  = 'RGBA'
 file_out.format.color_depth = '16'
 
-# Add named file slots, then link by slot name
-file_out.file_slots.new("combined")
-file_out.file_slots.new("depth")
-file_out.file_slots["combined"].path = "combined_####"
-file_out.file_slots["depth"].path    = "depth_####"
+if hasattr(file_out, 'file_output_items'):
+    # Blender 5.0+
+    file_out.directory = "//comp_output/"
+    file_out.file_name = "combined_####"
+    file_out.file_output_items.new('RGBA', "combined")
+    file_out.file_output_items.new('FLOAT', "depth")
+else:
+    # Blender ≤ 4.4
+    file_out.base_path = "//comp_output/"
+    file_out.file_slots.new("combined")
+    file_out.file_slots.new("depth")
+    file_out.file_slots["combined"].path = "combined_####"
+    file_out.file_slots["depth"].path    = "depth_####"
 
 links.new(glare.outputs['Image'], file_out.inputs["combined"])
 links.new(rl.outputs['Depth'],    file_out.inputs["depth"])
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# PART D — Multi-layer EXR output (all passes in one file, Blender ≤ 4.4 API)
+# PART D — Multi-layer EXR output (all passes in one file)
 # ═══════════════════════════════════════════════════════════════════════════════
-#
-# Same Blender 5.0+ caveat as PART C applies here.
 
 exr_out = nodes.new('CompositorNodeOutputFile')
 exr_out.location           = (700, -200)
-exr_out.base_path          = "//exr_output/"
 exr_out.format.file_format = 'OPEN_EXR_MULTILAYER'
 exr_out.format.color_depth = '32'
 exr_out.format.exr_codec   = 'DWAA'
 
-exr_out.file_slots.new("Image")
-exr_out.file_slots.new("Depth")
-exr_out.file_slots["Image"].path = "frame_####"
-exr_out.file_slots["Depth"].path = "frame_####"
+if hasattr(exr_out, 'file_output_items'):
+    # Blender 5.0+
+    exr_out.directory = "//exr_output/"
+    exr_out.file_name = "frame_####"
+    exr_out.file_output_items.new('RGBA', "Image")
+    exr_out.file_output_items.new('FLOAT', "Depth")
+else:
+    # Blender ≤ 4.4
+    exr_out.base_path = "//exr_output/"
+    exr_out.file_slots.new("Image")
+    exr_out.file_slots.new("Depth")
+    exr_out.file_slots["Image"].path = "frame_####"
+    exr_out.file_slots["Depth"].path = "frame_####"
 
 links.new(glare.outputs['Image'], exr_out.inputs["Image"])
 links.new(rl.outputs['Depth'],    exr_out.inputs["Depth"])
@@ -169,7 +177,8 @@ print("Compositor tree built:", [n.type for n in tree.nodes])
 - `add_output_node()` is the single point of version branching for the output node; individual scripts need no `if hasattr(scene, ...)` checks.
 - After `nodes.clear()`, always create Render Layers with `nodes.new('CompositorNodeRLayers')` and set `.scene = scene` — default nodes no longer exist.
 - `CompositorNodeRLayers.scene` must point to the scene being rendered, or the node produces no output.
-- **Blender 5.0+ — File Output:** `file_slots`, `layer_slots`, and `base_path` are removed. Use `directory`, `file_name`, and `file_output_items` instead. PART C/D above use the Blender ≤ 4.4 API; adapt to `file_output_items` for 5.0+ targets.
+- **Blender 5.0+ — File Output:** `file_slots`, `layer_slots`, and `base_path` are removed. Use `directory`, `file_name`, and `file_output_items` instead. PART C/D branch on `hasattr(node, 'file_output_items')`; the `.new(socket_type, name)` signature and the socket types (`'RGBA'`, `'FLOAT'`, ...) come from the 5.2 API docs. Input sockets are linked by item name here; the 5.0 release notes show `file_output_items[0].name` replacing `file_slots[0].path` for socket naming. Per the 5.0 compositor release notes (b10d767c4e), the File Output node appends the frame number to the image name only when rendering an animation, and a manual `####` in the name is substituted with the frame number even in single renders.
+- **Blender 5.0+ — pass names:** many render passes were renamed (e.g. `'Z'` to `'Depth'`, `'DiffCol'` to `'Diffuse Color'`), so Render Layers output sockets use the new names; `rl.outputs['Depth']` above is already the 5.0+ name.
 
 ## Variations
 
@@ -181,8 +190,8 @@ cb.lift  = (1.0, 0.9, 0.9)   # shadows
 cb.gamma = (1.0, 1.0, 1.0)   # midtones
 cb.gain  = (1.1, 1.0, 0.9)   # highlights
 
-# Lens Distortion
-distort = tree.nodes.new('CompositorNodeLensDist')
+# Lens Distortion (the 5.2 API type name is 'CompositorNodeLensdist')
+distort = tree.nodes.new('CompositorNodeLensdist')
 distort.inputs['Distort'].default_value    = -0.05
 distort.inputs['Dispersion'].default_value = 0.02
 
