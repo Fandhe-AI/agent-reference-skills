@@ -38,6 +38,10 @@ export default function App() {
 }
 ```
 
+## Notes
+
+- Source: https://react-hook-form.com/ts#Control
+
 ## Related
 
 - [UseFormReturn / UseFormProps / ValidateForm](./use-form-return-props.md)

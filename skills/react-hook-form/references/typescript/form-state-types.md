@@ -52,6 +52,7 @@ export type FormStateProxy<TFieldValues extends FieldValues = FieldValues> = {
 ## Notes
 
 - `KeepStateOptions` is accepted by `reset` and by `useForm`'s `resetOptions`, controlling which parts of form state survive the reset.
+- Source: https://react-hook-form.com/ts#FormState, https://react-hook-form.com/ts#KeepStateOptions, https://react-hook-form.com/ts#FormStateProxy
 
 ## Related
 

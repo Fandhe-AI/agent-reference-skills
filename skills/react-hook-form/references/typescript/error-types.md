@@ -30,6 +30,7 @@ export type ErrorOption = {
 ## Notes
 
 - `ErrorOption` is the error object accepted by `setError`.
+- Source: https://react-hook-form.com/ts#FieldError, https://react-hook-form.com/ts#FieldErrors, https://react-hook-form.com/ts#ErrorOption
 
 ## Related
 

@@ -54,6 +54,7 @@ export type RegisterOptions<
 ## Notes
 
 - `pattern` is only allowed when neither `valueAsNumber` nor `valueAsDate` is `true` (discriminated union).
+- Source: https://react-hook-form.com/ts#Mode, https://react-hook-form.com/ts#RegisterOptions
 
 ## Related
 

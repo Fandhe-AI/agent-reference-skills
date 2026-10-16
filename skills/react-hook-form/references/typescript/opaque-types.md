@@ -28,6 +28,7 @@ declare module "react-hook-form" {
 - Without registration, helpers such as `Path<T>` and `DeepPartial<T>` recurse into every property of every object in `TFieldValues`, including internals of third-party classes. On a large or deeply nested form this can trigger an "excessively deep" complexity diagnostic or slow editor type-checking.
 - Registering a type tells the helpers to stop at it and treat it as a single leaf value, the same way `Date` and `FileList` are already handled internally.
 - Added in v7.87.0 (see the v7.87.0 release notes: https://github.com/react-hook-form/react-hook-form/releases/tag/v7.87.0).
+- Source: https://react-hook-form.com/ts#OpaqueTypes
 
 ## Related
 

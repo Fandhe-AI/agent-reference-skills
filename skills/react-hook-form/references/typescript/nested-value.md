@@ -31,6 +31,7 @@ errors?.key4?.message // no type error
 
 - Deprecated at 7.33.0. For a non-primitive value that needs to stay controlled (such as array values), type the field normally in your form values and wire it up with `Controller` instead of wrapping the type in `NestedValue`.
 - In the official example, a cast is required (`e.target.value as number[]`) because `NestedValue<number[]>` bypasses field-level type inference.
+- Source: https://react-hook-form.com/ts#NestedValue
 
 ## Related
 

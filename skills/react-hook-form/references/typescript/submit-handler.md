@@ -75,6 +75,7 @@ export type FormSubmitHandler<TTransformedValues> = (payload: {
 ## Notes
 
 - `FormSubmitHandler` is the type of the `Form` component's `onSubmit` prop. Unlike `SubmitHandler`, the payload includes the raw `FormData` and `formDataJson` from the submission.
+- Source: https://react-hook-form.com/ts#SubmitHandler, https://react-hook-form.com/ts#SubmitErrorHandler, https://react-hook-form.com/ts#FormSubmitHandler
 
 ## Related
 

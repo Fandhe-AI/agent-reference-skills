@@ -118,8 +118,9 @@ export type FormValidateResult<TFormValues> =
 
 ## Notes
 
-- `ValidateForm` is the type of `useForm`'s `validate` option: form-level validation that runs alongside (or instead of) a `resolver`.
+- `ValidateForm` is the type of `useForm`'s `validate` option: form-level validation used instead of a `resolver`; it does not run when a resolver is configured (the two are mutually exclusive, per the useForm docs). The /ts page wording "alongside (or instead of)" conflicts with the useForm page.
 - Return `true` for a valid form. Returning a `string` sets `formState.errors.form`; returning an object keyed by field name sets `formState.errors.form.<fieldName>` for each entry.
+- Source: https://react-hook-form.com/ts#UseFormReturn, https://react-hook-form.com/ts#UseFormProps, https://react-hook-form.com/ts#ValidateForm
 
 ## Related
 

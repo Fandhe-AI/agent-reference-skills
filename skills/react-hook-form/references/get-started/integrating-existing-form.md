@@ -56,7 +56,7 @@ const App = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Input label="First Name" register={register} required />
-      <Select label="Age" {...register("Age")} />
+      <Select label="Age" {...register("Age", { valueAsNumber: true })} />
       <input type="submit" />
     </form>
   )
@@ -65,6 +65,7 @@ const App = () => {
 
 ## Notes
 
+- Differs from the official example: valueAsNumber added so the value matches the declared number type.
 - Source: https://react-hook-form.com/get-started#Integratinganexistingform
 
 ## Related

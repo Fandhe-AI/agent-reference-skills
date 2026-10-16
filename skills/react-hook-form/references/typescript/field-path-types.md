@@ -39,6 +39,7 @@ export type FieldArrayWithId<
 
 - `FieldPath` is useful when you define a custom component's `name` prop; it type-checks against your field paths.
 - `FieldPathByValue` returns a union of all available paths whose value type matches the passed value type.
+- Source: https://react-hook-form.com/ts#Field, https://react-hook-form.com/ts#FieldPath, https://react-hook-form.com/ts#FieldPathByValue, https://react-hook-form.com/ts#FieldValues, https://react-hook-form.com/ts#FieldArrayWithId
 
 ## Related
 

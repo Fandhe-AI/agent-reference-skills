@@ -51,6 +51,7 @@ export default function App() {
 
 - Generic parameters shared by many types: `TContext` is the type of `useForm`'s `context` option, forwarded unchanged to the resolver; `TTransformedValues` is the shape the resolver produces after transforming data (defaults to `TFieldValues`).
 - TypeScript 4.1 or above is required for React Hook Form.
+- Source: https://react-hook-form.com/ts#Resolver
 
 ## Related
 

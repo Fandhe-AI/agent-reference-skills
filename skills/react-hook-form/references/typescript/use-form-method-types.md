@@ -99,10 +99,10 @@ UseFormHandleSubmit:
 export type UseFormHandleSubmit<
   TFieldValues extends FieldValues,
   TTransformedValues = TFieldValues,
-> = (
-  onValid: SubmitHandler<TTransformedValues>,
+> = <TResult>(
+  onValid: SubmitHandler<TTransformedValues, TResult>,
   onInvalid?: SubmitErrorHandler<TFieldValues>
-) => (e?: React.BaseSyntheticEvent) => Promise<void>
+) => (e?: React.BaseSyntheticEvent) => Promise<Awaited<TResult> | undefined>
 ```
 
 UseFormReset:
@@ -284,6 +284,11 @@ export type UseFormTrigger<TFieldValues extends FieldValues> = (
   options?: TriggerConfig
 ) => Promise<boolean>
 ```
+
+## Notes
+
+- `UseFormHandleSubmit` signature taken from react-hook-form v7.90.0 `src/types/form.ts` (https://github.com/react-hook-form/react-hook-form/blob/v7.90.0/src/types/form.ts); the /ts page still shows `Promise<void>`.
+- Source: https://react-hook-form.com/ts#UseFormRegister, https://react-hook-form.com/ts#UseFormRegisterReturn, https://react-hook-form.com/ts#UseFormUnregister, https://react-hook-form.com/ts#UseFormWatch, https://react-hook-form.com/ts#UseFormSubscribe, https://react-hook-form.com/ts#UseFormHandleSubmit, https://react-hook-form.com/ts#UseFormReset, https://react-hook-form.com/ts#UseFormResetField, https://react-hook-form.com/ts#UseFormResetDefaultValues, https://react-hook-form.com/ts#UseFormSetError, https://react-hook-form.com/ts#UseFormClearErrors, https://react-hook-form.com/ts#UseFormSetValue, https://react-hook-form.com/ts#UseFormSetValues, https://react-hook-form.com/ts#UseFormSetFocus, https://react-hook-form.com/ts#UseFormGetValues, https://react-hook-form.com/ts#UseFormGetErrors, https://react-hook-form.com/ts#UseFormGetFieldState, https://react-hook-form.com/ts#UseFormTrigger
 
 ## Related
 

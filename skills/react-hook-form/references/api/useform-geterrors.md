@@ -58,6 +58,7 @@ export default function App() {
 
 - Use `formState.errors` or `useFormState` for reactive error UI.
 - Treat returned errors as read-only. Use `setError` and `clearErrors` to update the form's stored errors.
+- Source: https://react-hook-form.com/docs/useform/geterrors
 
 ## Related
 

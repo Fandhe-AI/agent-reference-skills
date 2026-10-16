@@ -81,6 +81,10 @@ export type FieldArrayProps<
 } & UseFieldArrayProps<TFieldValues, TFieldArrayName, TKeyName>
 ```
 
+## Notes
+
+- Source: https://react-hook-form.com/ts#UseFieldArrayReturn, https://react-hook-form.com/ts#FieldArrayMethodProps, https://react-hook-form.com/ts#UseFieldArrayProps, https://react-hook-form.com/ts#FieldArrayProps
+
 ## Related
 
 - [Field / FieldPath / FieldPathByValue / FieldValues / FieldArrayWithId](./field-path-types.md)

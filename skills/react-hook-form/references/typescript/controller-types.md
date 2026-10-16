@@ -86,6 +86,10 @@ export type ControllerProps<
 } & UseControllerProps<TFieldValues, TName, TTransformedValues>
 ```
 
+## Notes
+
+- Source: https://react-hook-form.com/ts#ControllerRenderProps, https://react-hook-form.com/ts#ControllerFieldState, https://react-hook-form.com/ts#UseControllerReturn, https://react-hook-form.com/ts#UseControllerProps, https://react-hook-form.com/ts#ControllerProps
+
 ## Related
 
 - [FieldError / FieldErrors / ErrorOption](./error-types.md)

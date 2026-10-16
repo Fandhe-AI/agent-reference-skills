@@ -113,6 +113,10 @@ export type FormProps<
   }>
 ```
 
+## Notes
+
+- Source: https://react-hook-form.com/ts#UseWatchProps, https://react-hook-form.com/ts#WatchProps, https://react-hook-form.com/ts#UseFormStateProps, https://react-hook-form.com/ts#FormStateProps, https://react-hook-form.com/ts#FormProviderProps, https://react-hook-form.com/ts#FormProps
+
 ## Related
 
 - [Control](./control.md)
