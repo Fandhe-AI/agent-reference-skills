@@ -31,7 +31,7 @@ code --add-mcp '{"name":"playwright","command":"npx","args":["@playwright/mcp@la
 claude mcp add playwright npx @playwright/mcp@latest
 ```
 
-Cursor: `Cursor Settings` -> `MCP` -> `Add new MCP Server`, command type with `npx @playwright/mcp@latest`. Claude Desktop: use the standard config above. Other clients (Windsurf, Cline, Goose, Kiro, Codex, Copilot CLI, ...) accept the standard config as well.
+Cursor: `Cursor Settings` -> `MCP` -> `Add new MCP Server`, command type with `npx @playwright/mcp@latest`. Claude Desktop: use the standard config above. Other clients: the standard configuration works with most MCP clients, including Windsurf, Cline, Goose, Kiro, Codex, Copilot CLI, and others. Consult your client's MCP documentation for where to place the config.
 
 First interaction:
 
@@ -109,6 +109,7 @@ Standalone server client config:
 
 ## Notes
 
+- The `mcpServers` JSON shape is client-specific; what is common across clients is the server command (`npx`) and args (`@playwright/mcp@latest`). For example, Codex registers MCP servers in `config.toml` under `[mcp_servers.<name>]` or via `codex mcp add` (see the openai-codex skill).
 - Profile modes: persistent (default; stored in `ms-playwright/mcp-{channel}-{workspace-hash}` in the platform cache directory), isolated (`--isolated`), browser extension (`--extension`).
 - Idle timeout: a headless browser launched by the server is closed after an hour without tool calls. Headed browsers and browsers attached over `--cdp-endpoint` or `--extension` are never closed automatically; an explicit timeout on attached browsers only disconnects. With `--isolated`, in-memory cookies and storage are lost on an idle close.
 - `browser_run_code_unsafe` runs arbitrary JavaScript in the Playwright server process and is RCE-equivalent; enable it only for trusted MCP clients.

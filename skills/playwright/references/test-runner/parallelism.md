@@ -190,6 +190,8 @@ test('creates an order', async ({ page }, testInfo) => {
 });
 ```
 
+> `testInfo.testId` is computed from the test file name, test title and project name and is unique within one Playwright session (see `TestCase.id`), but it is the same across separate runs. If several CI runs or machines share the same backend, add a run-specific prefix (for example a CI run ID) to the identifier.
+
 If many tests can share one dataset, create it once per worker instead (see Worker Index & Parallel Index below).
 
 ### Write to a unique file path
