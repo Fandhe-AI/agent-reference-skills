@@ -50,7 +50,7 @@ public class Product : INotifyPropertyChanged
 
 using Microsoft.Data.SqlClient;
 
-public ObservableCollection<Product> GetProducts(string connectionString)
+public async Task<ObservableCollection<Product>> GetProductsAsync(string connectionString)
 {
     const string GetProductsQuery = "select ProductID, ProductName, QuantityPerUnit," +
        " UnitPrice, UnitsInStock, Products.CategoryID " +
@@ -62,15 +62,15 @@ public ObservableCollection<Product> GetProducts(string connectionString)
     {
         using (var conn = new SqlConnection(connectionString))
         {
-            conn.Open();
+            await conn.OpenAsync();
             if (conn.State == System.Data.ConnectionState.Open)
             {
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = GetProductsQuery;
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             var product = new Product();
                             product.ProductID = reader.GetInt32(0);
@@ -97,7 +97,19 @@ public ObservableCollection<Product> GetProducts(string connectionString)
 public MainWindow()
 {
     this.InitializeComponent();
-    InventoryList.ItemsSource = GetProducts((App.Current as App).ConnectionString);
+    _ = LoadProductsAsync();
+}
+
+private async Task LoadProductsAsync()
+{
+    try
+    {
+        InventoryList.ItemsSource = await GetProductsAsync((App.Current as App).ConnectionString);
+    }
+    catch (Exception ex)
+    {
+        Debug.WriteLine($"Exception: {ex.Message}");
+    }
 }
 ```
 
@@ -151,6 +163,7 @@ MainWindow.xaml:
 
 ## Notes
 
+- The official tutorial calls the synchronous `GetProducts` from the `MainWindow` constructor; this sample uses an async version (`OpenAsync` / `ExecuteReaderAsync` / `ReadAsync`) awaited from `LoadProductsAsync` to avoid blocking the UI thread until the connection timeout.
 - Capabilities (Package.appxmanifest, Capabilities tab): select Enterprise Authentication when using Windows Authentication. Also select Internet (Client & Server), Internet (Client), and Private Networks (Client & Server), regardless of authentication method.
 - `TrustServerCertificate=True` trusts the local SQL Server Express certificate for development only. In production, install a verifiable server certificate and set `TrustServerCertificate=False`. Never hard-code connection strings or secrets; store them in app configuration.
 - Troubleshooting: enable TCP/IP for SQL Server (Computer Management console), then make sure the SQL Server Browser service is running.

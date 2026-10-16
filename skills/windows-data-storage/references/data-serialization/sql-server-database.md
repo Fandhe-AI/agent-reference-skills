@@ -7,7 +7,7 @@ Tutorial for connecting a Windows App SDK app directly to a SQL Server database 
 ```csharp
 using Microsoft.Data.SqlClient;
 
-public ObservableCollection<Product> GetProducts(string connectionString)
+public async Task<ObservableCollection<Product>> GetProductsAsync(string connectionString)
 {
     const string GetProductsQuery = "select ProductID, ProductName, QuantityPerUnit," +
        " UnitPrice, UnitsInStock, Products.CategoryID " +
@@ -19,15 +19,15 @@ public ObservableCollection<Product> GetProducts(string connectionString)
     {
         using (var conn = new SqlConnection(connectionString))
         {
-            conn.Open();
+            await conn.OpenAsync();
             if (conn.State == System.Data.ConnectionState.Open)
             {
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = GetProductsQuery;
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
-                        while (reader.Read())
+                        while (await reader.ReadAsync())
                         {
                             var product = new Product();
                             product.ProductID = reader.GetInt32(0);
@@ -60,10 +60,11 @@ public ObservableCollection<Product> GetProducts(string connectionString)
 | Capability: Enterprise Authentication | Select in `Package.appxmanifest` Capabilities tab when using Windows Authentication |
 | Capabilities: network | Also select Internet (Client & Server), Internet (Client), and Private Networks (Client & Server), regardless of Windows Authentication |
 | Connection string (sample) | `Data Source=.\SQLEXPRESS;Initial Catalog=NORTHWIND;Integrated Security=SSPI;Encrypt=True;TrustServerCertificate=True` exposed as `App.ConnectionString` |
-| Bind to UI | `InventoryList.ItemsSource = GetProducts((App.Current as App).ConnectionString);` with a `ListView` whose `DataTemplate` uses `x:Bind` to a `Product` class implementing `INotifyPropertyChanged` |
+| Bind to UI | `InventoryList.ItemsSource = await GetProductsAsync((App.Current as App).ConnectionString);` inside an async method (e.g. `LoadProductsAsync`) started after `InitializeComponent()`, with a `ListView` whose `DataTemplate` uses `x:Bind` to a `Product` class implementing `INotifyPropertyChanged` |
 
 ## Notes
 
+- The official tutorial calls the synchronous `GetProducts` from the `MainWindow` constructor; this page shows an async version (`OpenAsync` / `ExecuteReaderAsync` / `ReadAsync`) to avoid blocking the UI thread until the connection timeout.
 - For enterprise line-of-business apps using shared production data, prefer an authenticated service layer that owns database access (see connect-winui-app-to-database.md).
 - Connection strings and other secrets must never be hard-coded in production; store them in app configuration (e.g. Azure App Configuration).
 - The sample connection string trusts the local SQL Server Express certificate for development. In production, install a verifiable server certificate and set `TrustServerCertificate=False`.

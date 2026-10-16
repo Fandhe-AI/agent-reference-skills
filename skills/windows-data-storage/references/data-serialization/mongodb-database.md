@@ -21,8 +21,11 @@ var document = new BsonDocument
 collection.InsertOne(document);
 long count = collection.CountDocuments(document);
 Console.WriteLine(count);
-IFindFluent<BsonDocument, BsonDocument> document1 = collection.Find(document);
-Console.WriteLine(document1.ToString());
+List<BsonDocument> found = collection.Find(document).ToList();
+foreach (var doc in found)
+{
+    Console.WriteLine(doc);
+}
 ```
 
 ## Options / Props
@@ -35,6 +38,7 @@ Console.WriteLine(document1.ToString());
 ## Notes
 
 - In production, store connection information such as server address and database name in app configuration (e.g. Azure App Configuration) rather than hard-coding it.
+- The official sample calls `ToString()` on the `IFindFluent` returned by `Find(...)`, which only prints the find definition and does not execute the query. It is changed here to run the query with `ToList()` (or `FirstOrDefault()`; `ToListAsync()` / `FirstOrDefaultAsync()` in async code).
 - Source: https://learn.microsoft.com/en-us/windows/apps/develop/data-access/mongodb-database
 
 ## Related
