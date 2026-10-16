@@ -2,7 +2,7 @@
 
 コーディングエージェント向けの `playwright-cli` と Playwright MCP サーバーのセットアップ・起動コマンド。
 
-`@playwright/cli` と `@playwright/mcp` は `@playwright/test` とは別の npm パッケージで、`@latest` を使う（v1.64.1 には固定されない）。どちらも Node.js 20 以上が前提（getting-started-cli.md / getting-started-mcp.md）。
+`@playwright/cli` と `@playwright/mcp` は `@playwright/test` とは別の npm パッケージで、`@latest` を使う（v1.64.1 には固定されない）。どちらも Node.js 20 以上が前提（出典は末尾 `## Notes` の getting-started-cli / getting-started-mcp の Source 行）。
 
 ## playwright-cli のインストール（グローバル）
 
@@ -92,7 +92,7 @@ code --add-mcp '{"name":"playwright","command":"npx","args":["@playwright/mcp@la
 npx @playwright/mcp@latest --config path/to/config.json
 ```
 
-設定ファイルのスキーマは Playwright MCP リポジトリの `config.d.ts` を参照（getting-started-mcp.md）。
+設定ファイルのスキーマは Playwright MCP リポジトリの `config.d.ts` を参照（出典は末尾 `## Notes` の getting-started-mcp の Source 行）。
 
 ## スタンドアロン MCP サーバー（HTTP）
 
@@ -108,4 +108,10 @@ npx @playwright/mcp@latest --port 8931
 npx @playwright/mcp@latest --no-webmcp
 ```
 
-Playwright MCP は v1.64 から WebMCP を既定でサポートし、ページ定義のツールを `webmcp_<tool>` としてエージェントへ提供する。`--no-webmcp` はこれを無効にするオプションで、リリースノート v1.64（release-notes-js.md）にのみ記載されている。
+Playwright MCP は v1.64 から WebMCP を既定でサポートし、ページ定義のツールを `webmcp_<tool>` としてエージェントへ提供する。`--no-webmcp` はこれを無効にするオプションで、リリースノート v1.64（出典は末尾 `## Notes` の release-notes の Source 行）にのみ記載されている。
+
+## Notes
+
+- Source: https://playwright.dev/docs/getting-started-cli (microsoft/playwright v1.64.1 `docs/src/getting-started-cli.md`)
+- Source: https://playwright.dev/docs/getting-started-mcp (microsoft/playwright v1.64.1 `docs/src/getting-started-mcp.md`)
+- Source: https://playwright.dev/docs/release-notes (microsoft/playwright v1.64.1 `docs/src/release-notes-js.md`, v1.64 section, for --no-webmcp)

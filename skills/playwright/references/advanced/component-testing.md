@@ -201,7 +201,7 @@ await expect(component.getByTestId('value')).toHaveText('2');
 
 ### Multiple states and visual comparison
 
-Each `mount()` navigates fresh, so tests are fully isolated. Screenshot the returned root locator, not the page:
+Each `mount()` navigates fresh, so tests are fully isolated and mounting several stories in one test is cheap. Screenshot the returned root locator, not the page:
 
 ```ts
 await expect(await mount('Button/Primary')).toHaveScreenshot('primary.png');
@@ -233,6 +233,7 @@ Open the gallery URL in a browser and call `await window.mount({ story: 'compone
 - Migrate incrementally: while pinned to 1.62, set up the gallery and the `components` project alongside the old CT project, port spec by spec, then drop the `@playwright/experimental-ct-*` dependency along with `playwright/index.html`, `playwright/index.ts` and `playwright/.cache` and upgrade.
 - Story ids are strings: renaming or moving a story breaks specs at runtime, not compile time. Per-test JSX is gone: a test that built a different JSX tree per test becomes one story export per composition.
 - Accessing a component's internal methods or its instance within test code is neither recommended nor supported.
+- `mount()` re-navigates and re-creates the DOM of the story gallery, but with `reuseContext: true` the browser context is shared across tests in a worker and its reset is best-effort: permissions granted via `grantPermissions()`, runtime `setGeolocation()` / `setOffline()` / `setExtraHTTPHeaders()` changes, browsing history and `window.name` are not reset (see `../test-runner/configuration.md`).
 
 ## Legacy packages (experimental-ct-*)
 
