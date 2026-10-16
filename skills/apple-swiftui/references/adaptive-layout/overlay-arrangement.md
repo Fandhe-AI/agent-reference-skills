@@ -12,6 +12,7 @@ var body: some View {
     } secondary: {
         ContentView()
     }
+    .arrangementViewStyle(.overlay)
 }
 ```
 
@@ -35,6 +36,8 @@ nonisolated func axes(_ axes: Axis.Set) -> OverlayArrangementViewStyle   // Over
 
 - Available: iOS 27.1+ (and iPadOS, Mac Catalyst, macOS, tvOS, visionOS, watchOS 27.1+)
 - `overlayArrangementEdge` anchors the view when the overlay layout transitions into a horizontal layout, e.g. `.trailing` moves it to the trailing side
+- The Apple example omits the style; the default automatic style resolves to a split arrangement, so apply `.arrangementViewStyle(.overlay)` for overlay behavior (added above).
+- Example of reading `overlayArrangementZIndex`:
 
 ```swift
 struct PlayerView: View {
