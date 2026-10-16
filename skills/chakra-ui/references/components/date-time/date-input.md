@@ -2,16 +2,14 @@
 
 Used to enter a specific date using segmented keyboard input. Composed of `DateInput.Root`, `DateInput.Label`, `DateInput.Control`, `DateInput.SegmentGroup`, `DateInput.Segment`, and `DateInput.HiddenInput`.
 
-## Import
-
-```tsx
-import { DateInput } from "@chakra-ui/react"
-```
-
 ## Usage
 
 ```tsx
-<DateInput.Root>
+import { DateInput, useDateInput } from "@chakra-ui/react"
+
+const dateInput = useDateInput()
+
+<DateInput.RootProvider value={dateInput}>
   <DateInput.Label />
   <DateInput.Control>
     <DateInput.SegmentGroup>
@@ -21,7 +19,7 @@ import { DateInput } from "@chakra-ui/react"
     </DateInput.SegmentGroup>
   </DateInput.Control>
   <DateInput.HiddenInput />
-</DateInput.Root>
+</DateInput.RootProvider>
 ```
 
 Shortcut: `DateInput.Segments` renders a segment group containing every segment produced by the current `granularity` and `formatter`.
@@ -54,7 +52,7 @@ const formatter = new DateFormatter("en-US", {
 </DateInput.Root>
 ```
 
-## Props (Root)
+## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -99,7 +97,8 @@ const formatter = new DateFormatter("en-US", {
 ## Notes
 
 - Source: https://chakra-ui.com/docs/components/date-input (docs source: https://github.com/chakra-ui/chakra-ui/blob/2e7517745cff2fcde0b8012f136cf99611ff262a/apps/www/content/docs/components/date-input.mdx, tag @chakra-ui/react@3.37.0)
-- In the first Usage example, `dateInput` is the return value of `useDateInput`, used together with `DateInput.RootProvider`
+- The first Usage example passes the return value of `useDateInput` to `DateInput.RootProvider`, so that `getSegments()` and the `Segment` context share the same state. Use `DateInput.Segments` when no customization is needed
+- The Props table above applies to `DateInput.Root`
 - Date values use objects from `@internationalized/date` (timezone-safe, locale-aware); the docs state this will be replaced by the Temporal API when widely supported in browsers
 - `selectionMode="range"`: pass `index` to `DateInput.Segments` and `DateInput.HiddenInput` to target each date in the range
 - `min` / `max` restrict accepted dates; `granularity` set to `hour`, `minute` or `second` shows a time alongside the date

@@ -2,6 +2,15 @@
 
 JSX style props to add dividers between sibling elements.
 
+## Usage
+
+```jsx
+<Box divideY="2px">
+  <Box>Item 1</Box>
+  <Box>Item 2</Box>
+</Box>
+```
+
 ## Props
 
 ### Divide X
