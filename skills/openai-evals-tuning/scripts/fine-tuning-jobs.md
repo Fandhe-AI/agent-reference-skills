@@ -2,6 +2,8 @@
 
 Copy-pasteable `curl` calls for managing fine-tuning jobs via the `/v1/fine_tuning/jobs` endpoint. All examples assume `OPENAI_API_KEY` is exported (SDK install and auth setup are covered by the `openai-api-core` skill).
 
+> **警告**: self-serve fine-tuning は段階的に終了中。2026-07-02 以降は直近 60 日に fine-tuned モデルの推論実績が無い組織はジョブ作成不可、2027-01-06 以降は既存の active 顧客も新規ジョブ作成不可。fine-tuned モデルの推論は基盤モデルの shutdown まで利用可。`gpt-4.1-nano` / `gpt-4.1-nano-2025-04-14` と `ft-gpt-4.1-nano-2025-04-14` は 2026-10-23 に shutdown 予定（公式の substitute: `gpt-5.6-luna`）。
+
 ## Create a fine-tuning job
 
 ```bash
@@ -15,7 +17,6 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 ```
 
 `training_file` must be the `id` of a file previously uploaded with `purpose=fine-tune` (see `training-data-files.md`).
-
 ## List fine-tuning jobs
 
 ```bash

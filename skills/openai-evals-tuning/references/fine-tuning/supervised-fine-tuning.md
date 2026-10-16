@@ -64,7 +64,8 @@ curl https://api.openai.com/v1/responses \
 - All training examples must use the exact same format expected at inference time; keep the distribution of desired behaviors (e.g. refusal rate) matching real inference-time expectations, not skewed.
 - Checkpoints from the last three epochs are made available to counter overfitting/memorization.
 - Fine-tuned models undergo automated safety evaluation across 13 safety categories before deployment; models failing thresholds are blocked.
-- A larger model's outputs can be used to generate training data for fine-tuning a smaller, cheaper model (a distillation-style workflow), though there is no dedicated distillation product page in the current docs.
+- Base model shutdowns (deprecations page): `gpt-4.1-nano-2025-04-14` and `ft-gpt-4.1-nano-2025-04-14` on 2026-10-23 (replacement base `gpt-5.6-luna`); `gpt-4.1-2025-04-14` and `gpt-4.1-mini-2025-04-14` on 2027-01-14 (replacement `gpt-6-luna`), with fine-tuned versions on the same schedule.
+- A larger model's outputs can be used to generate training data for fine-tuning a smaller, cheaper model (a distillation-style workflow), though there is no dedicated distillation product page in the current docs. The SFT guide's "Distilling from a larger model" flow: (1) tune a prompt for a larger model (like `gpt-4.1`) until it performs well against your eval criteria; (2) capture the results (the Responses API stores model responses for 30 days by default); (3) build a dataset from the captured responses that fit your criteria; (4) tune a smaller model (like `gpt-4.1-mini`) on that dataset.
 
 ## Related
 

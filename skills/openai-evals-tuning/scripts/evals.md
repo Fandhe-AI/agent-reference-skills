@@ -1,6 +1,7 @@
 # evals
 
 Copy-pasteable `curl` calls for creating evals, running them, and checking results via the `/v1/evals` endpoint. All examples assume `OPENAI_API_KEY` is exported (SDK install and auth setup are covered by the `openai-api-core` skill).
+> **警告**: Evals platform は廃止予定（2026-06-03 告知）。2026-10-31 に既存 eval が read-only、2026-11-30 に Evals dashboard と API がシャットダウン予定。移行先は `promptfoo.md` を参照。
 
 ## Create an eval
 
@@ -34,7 +35,7 @@ curl https://api.openai.com/v1/evals \
     }'
 ```
 
-A `label_model` grader variant is also supported for `testing_criteria`:
+A `label_model` grader variant is also supported for `testing_criteria`. Note: `o3-mini` (`o3-mini-2025-01-31`) is scheduled to shut down on October 23, 2026 (substitute listed on the official deprecations page: `gpt-5.6-sol`); replace the grader `model` accordingly.
 
 ```bash
 curl https://api.openai.com/v1/evals \
@@ -126,7 +127,7 @@ curl https://api.openai.com/v1/evals/YOUR_EVAL_ID/runs \
         "name": "Categorization text run",
         "data_source": {
             "type": "responses",
-            "model": "gpt-5.6",
+            "model": "gpt-6-astra",
             "input_messages": {
                 "type": "template",
                 "template": [

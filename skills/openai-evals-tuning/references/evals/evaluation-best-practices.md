@@ -35,6 +35,8 @@ Eval workflow (5 steps):
 - Edge cases to cover: input variability (multilingual, non-text formats, images), contextual complexity (multi-intent, typos, long context, ambiguous tool-call data), personalization/jailbreak conflicts.
 - Once evals are mature, use the data to drive reinforcement fine-tuning (see the fine-tuning scope).
 
+- OpenAI is deprecating the Evals platform: existing evals become read-only on 2026-10-31 and the dashboard and API are scheduled to shut down on 2026-11-30. The eval-design principles here still apply with other tools such as Promptfoo (see the "Get started with Promptfoo" guide).
+
 ## Related
 
 - [Working with evals](./working-with-evals.md)

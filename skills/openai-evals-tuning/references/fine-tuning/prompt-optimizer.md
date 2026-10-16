@@ -17,10 +17,12 @@ A dashboard chat interface that rewrites a submitted prompt according to current
 | Dataset rows | Minimum 3 rows, each with a response |
 | Grading | At least one grader result or human annotation per row |
 | Annotation | Good/Bad ratings with detailed, specific critiques; optional custom annotation columns and `output_feedback` text |
+| Inputs used | Annotations (Good/Bad plus custom columns), `output_feedback` text critiques, grader results |
 
 ## Notes
 
 - OpenAI is retiring the dataset-backed prompt optimizer as part of the Evals platform: it becomes read-only on October 31, 2026, and shuts down fully on November 30, 2026. This is a separate deprecation timeline from the fine-tuning platform wind-down.
+- Saved prompts (reusable prompt objects) are deprecated as well: the `v1/prompts` API and reusable prompt objects are scheduled to shut down on 2026-11-30 (deprecations page).
 - Effectiveness depends heavily on grader quality; manually review optimized prompts before production use, since they may underperform the original on specific inputs despite general improvement.
 
 ## Related

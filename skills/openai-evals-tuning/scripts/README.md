@@ -2,6 +2,7 @@
 
 | Name | Description | Path |
 | --- | --- | --- |
-| fine-tuning-jobs | Fine-tuning job curl calls: create, list, retrieve status, cancel, list checkpoints | [fine-tuning-jobs.md](./fine-tuning-jobs.md) |
-| training-data-files | Upload/list/retrieve/delete training and eval data files via the files endpoint | [training-data-files.md](./training-data-files.md) |
-| evals | Evals curl calls: create/list/retrieve/update/delete eval, create/retrieve/cancel eval run | [evals.md](./evals.md) |
+| evals | Copy-pasteable `curl` calls for creating evals, running them, and checking results… | [evals.md](./evals.md) |
+| fine-tuning-jobs | Copy-pasteable `curl` calls for managing fine-tuning jobs via the `/v1/fine_tuning/j… | [fine-tuning-jobs.md](./fine-tuning-jobs.md) |
+| promptfoo | Evals platform の移行先 Promptfoo の CLI コマンド集。Evals dashboard / API は… | [promptfoo.md](./promptfoo.md) |
+| training-data-files | Copy-pasteable `curl` calls for uploading and managing training-data files via the… | [training-data-files.md](./training-data-files.md) |

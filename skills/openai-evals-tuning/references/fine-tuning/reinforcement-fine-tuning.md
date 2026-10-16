@@ -82,6 +82,7 @@ Multi-grader example (weighted combination of graders — see `graders` scope fo
 - Billing is based on training time and tokens consumed during training only, not data prep/validation/queuing/safety evals.
 - To qualify for data-sharing inference pricing, evaluation and fine-tuning data must be shared with OpenAI before job creation.
 - Fine-tuned models undergo the same 13-category safety evaluation before deployment.
+- The only supported base model, `o4-mini-2025-04-16` (`o4-mini`), and `ft-o4-mini-2025-04-16` are scheduled to shut down on 2026-10-23 (recommended replacement `gpt-5.6-terra`). The guide's Supported models list still names only o4-mini; no successor RFT-capable model is documented (not stated, so none is assumed here). The example grader model `gpt-4o-2024-08-06` is scheduled to shut down on 2027-01-14.
 - Subject to the same platform wind-down as other fine-tuning methods (see [model-optimization.md](./model-optimization.md) Notes).
 - Full grader type reference is covered under the `evals`/graders scope of this skill (`graders.md`), not duplicated here.
 
