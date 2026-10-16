@@ -1,119 +1,61 @@
 # Slices & Segments
 
-FSD の第 2・第 3 階層。レイヤーの下にスライスとセグメントが位置する。
+Slices are the second level and segments the third (final) level of the organizational hierarchy in FSD. Slices group code by its meaning for the product, business, or application; segments group code by its technical nature.
 
-## スライス
+## Signature / Usage
 
-**ビジネスドメインの意味**でコードをグループ化する。
+Slice names are not standardized; they are determined by the business domain of the application. For example, a photo gallery might have slices `photo`, `effects`, `gallery-page`; a social network might have `post`, `comments`, `news-feed`.
 
-- 使用するレイヤー: `pages`, `widgets`, `features`, `entities`
-- 使用しないレイヤー: `app`, `shared`（セグメントのみ）
+Standardized segment names:
 
-スライス名はドメイン固有でプロジェクトごとに異なる:
-
-| プロジェクト | スライス例 |
+| Segment | Description |
 | --- | --- |
-| フォトギャラリー | `photo`, `effects`, `gallery-page` |
-| SNS | `post`, `comments`, `news-feed` |
-| EC サイト | `product`, `cart`, `checkout` |
-
-### ゼロ結合・高凝集
-
-同一レイヤーのスライスは**互いに独立**:
-
-- 同一レイヤーのスライス間で直接インポートしない
-- スライスの主要な関心事に関するコードはすべてスライス内に配置する
-
-### スライスグループ
-
-関連スライスを構造的にフォルダでまとめることが可能:
+| `ui` | Everything related to UI display: UI components, date formatters, styles, etc. |
+| `api` | Backend interactions: request functions, data types, mappers, etc. |
+| `model` | The data model: schemas, interfaces, stores, and business logic. |
+| `lib` | Library code that other modules on this slice need. |
+| `config` | Configuration files and feature flags. |
 
 ```text
 features/
-  auth/
-    login/
-    register/
-    reset-password/
+  authenticate-user/       ← slice
+    ui/                    ← segment
+    api/                   ← segment
+    model/                 ← segment
+    index.ts               ← public API
 ```
 
-制約: グループ内のスライスも**完全な分離を維持**する — 兄弟スライス間でコードを共有しない。
-
-## セグメント
-
-スライス（または `app` / `shared`）内で**技術的な目的**でコードをグループ化する。
-
-### 標準セグメント
-
-| セグメント | 内容 |
-| --- | --- |
-| `ui` | UI コンポーネント、フォーマッタ、スタイル |
-| `api` | バックエンド連携、リクエスト関数、レスポンス型 |
-| `model` | データスキーマ、インターフェース、ストア、ビジネスロジック |
-| `lib` | スライスローカルの再利用可能ユーティリティ |
-| `config` | 設定定数、フィーチャーフラグ |
-
-カスタムセグメント名も許可。特に `app` と `shared` で一般的。
-
-### 命名規則
-
-セグメント名はコンテンツの**目的**（purpose）を記述する。技術的な**本質**（essence）ではない。
-
-Bad:
-
-```text
-components/
-hooks/
-types/
-utils/
-```
-
-Good:
-
-```text
-ui/
-model/
-api/
-lib/
-```
-
-## ディレクトリ構造例
-
-```text
-features/
-  authenticate-user/       ← スライス
-    ui/                    ← セグメント
-      LoginForm.tsx
-    api/                   ← セグメント
-      loginMutation.ts
-    model/                 ← セグメント
-      authStore.ts
-      authSchema.ts
-    index.ts               ← Public API
-```
-
-## @x 記法（クロスインポート）
-
-主に `entities` での正当なクロススライス依存に使用:
+Slice group (closely related slices in a folder; see [Slice Groups](./slice-groups.md) for the full description):
 
 ```text
 entities/
+  payment/
+    invoice/
+    receipt/
+    transaction/
   user/
-    @x/
-      post.ts              ← entities/post に公開する API
-    ui/
-      Avatar.tsx
-    index.ts
 ```
+
+Cross-import with `@x` notation (on Entities):
 
 ```ts
-// entities/post/ui/PostCard.tsx
-import { UserAvatar } from "entities/user/@x/post";
+import type { EntityA } from "entities/A/@x/B";
 ```
 
-「user crossed with post」— 明示的で監査可能なクロスエンティティ依存。
+## Notes
 
-## 注意点
+- Slices: the layers Shared and App don't contain slices. Shared should contain no business logic at all, hence has no meaning for the product; App should contain only code that concerns the entire application, so no splitting is necessary.
+- Zero coupling and high cohesion: an ideal slice is independent from other slices on its layer (zero coupling) and contains most of the code related to its primary goal (high cohesion). The independence is enforced by the import rule on layers: a module (file) in a slice can only import other slices when they are located on layers strictly below.
+- Public API rule on slices: every slice (and segment on layers that don't have slices) must contain a public API definition. Modules outside of this slice/segment can only reference the public API, not the internal file structure. Inside a slice, the code can be organized in any way.
+- Slice groups: closely related slices can be structurally grouped in a folder, but they follow the same isolation rules as other slices, so there must be no code sharing in that folder (the official figure shows a `some-shared-code.ts` file in the `post` group crossed out as not allowed). A group is not a slice: it has no segments and no `index.ts`. Details are in [Slice Groups](./slice-groups.md).
+- Segments: you can also create custom segments. The most common places for them are the App and Shared layers, where slices don't make sense. See the Layers page for examples of what each standard segment might be used for on different layers.
+- Segment naming: the name should describe the purpose of the content, not its essence. `components`, `hooks`, and `types` are bad segment names because they aren't that helpful when you're looking for code.
+- `@x`: the notation `A/@x/B` is read as "A crossed with B". Keep cross-imports to a minimum and only use this notation on the Entities layer (see [Public API](./public-api.md)).
+- Source: https://fsd.how/docs/reference/slices-segments (documentation repository commit 3a5a3a3).
 
-- セグメントは単一ファイル（`model.ts`）でもフォルダ（`model/`）でも可 — 内容が増えたらフォルダに
-- 1 ファイルだけのためにセグメントを作らない — 小さなスライスではルート直下のフラットファイルで可
-- `@x` は主に `entities` 向け。他レイヤーでの多用は設計上の問題のサイン
+## Related
+
+- [Layers](./layers.md)
+- [Public API](./public-api.md)
+- [Import Rules](./import-rules.md)
+- [Slice Groups](./slice-groups.md)

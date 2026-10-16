@@ -20,7 +20,7 @@ src/
 │       ├── ui/
 │       │   └── ProfilePage.tsx
 │       └── index.ts
-├── widgets/                # 複数ページで使う複合 UI ブロック
+├── widgets/                # 複数ページで使う複合 UI ブロック（非推奨、Notes 参照）
 │   └── header/
 │       ├── ui/
 │       │   └── Header.tsx
@@ -57,3 +57,6 @@ src/
 - 全レイヤーが必須ではない。最小構成は `shared`, `pages`, `app`
 - 各スライスのルートに `index.ts`（Public API）を必ず作成する
 - フォルダ名はすべて小文字のケバブケース
+- `widgets` レイヤーは公式ガイドで非推奨（このツリーの `widgets/header` は旧来の例）。画面固有の合成は `pages`、複数ページで再利用されるユーザー操作は `features`、ビジネス文脈のない共有 UI は `shared`、アプリ全体のレイアウトは `app` に置く
+- `processes` レイヤーも非推奨（内容は `features` と `app` へ移す）
+- Source: https://fsd.how/docs/reference/layers (documentation repository commit 3a5a3a3)

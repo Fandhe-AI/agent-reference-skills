@@ -2,9 +2,9 @@
 name: feature-sliced-design
 description: >
   Feature-Sliced Design (FSD、フロントエンドアーキテクチャ手法) リファレンスとルール。
-  別名: fsd, feature sliced design, feature-sliced。
-  レイヤー (app / pages / widgets / features / entities / shared)、
-  依存方向、Public API パターン、スライス、セグメント (ui / model / api / lib / config)。
+  別名 fsd / feature-sliced。layers (app / pages / widgets / features / entities / shared)、
+  依存方向、Public API、@x 記法 (cross-import)、slice groups (スライスグループ)、
+  segments (ui / model / api / lib / config)、steiger、Next.js、TanStack Query 連携。
   コードレビュー・リファクタリング時に自動参照。
 user-invocable: false
 model: sonnet
@@ -22,6 +22,7 @@ skills/feature-sliced-design/
     import-rules.md
     layers.md
     public-api.md
+    slice-groups.md
     slices-segments.md
   samples/
     README.md
@@ -62,10 +63,11 @@ skills/feature-sliced-design/
 | インポートルール・依存方向を確認したい | references | [references/README.md](references/README.md) |
 | Public API パターンを理解したい | references | [references/README.md](references/README.md) |
 | スライス・セグメントの定義を知りたい | references | [references/README.md](references/README.md) |
+| スライスグループ（関連スライスのまとめ方）を知りたい | references | [references/README.md](references/README.md) |
 | 典型的な FSD プロジェクト構成の例を見たい | samples | [samples/README.md](samples/README.md) |
 | Next.js / React Query との組み合わせ例を見たい | samples | [samples/README.md](samples/README.md) |
 | @x 記法・クロスエンティティ依存の実例を見たい | samples | [samples/README.md](samples/README.md) |
-| pages / widgets での合成パターンを知りたい | samples | [samples/README.md](samples/README.md) |
+| pages での合成パターン（同一レイヤー間依存の回避）を知りたい | samples | [samples/README.md](samples/README.md) |
 | ツールチェーンのインストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
 | steiger でアーキテクチャ準拠チェックを実行したい | scripts | [scripts/README.md](scripts/README.md) |
 | @feature-sliced/cli でコード生成したい | scripts | [scripts/README.md](scripts/README.md) |
@@ -77,7 +79,7 @@ skills/feature-sliced-design/
 
 ## 必須ルール
 
-- コードは 6 つの標準レイヤーに分割する: `app`, `pages`, `widgets`, `features`, `entities`, `shared`
+- コードは標準レイヤーに分割する: `app`, `pages`, `widgets`, `features`, `entities`, `shared`（`processes` は deprecated）。全レイヤーは必須ではなく、最低限 `shared` / `pages` / `app`。`widgets` は公式が非推奨
 - インポートは**下位レイヤーへの一方向のみ**許可。同一レイヤー内のスライス間インポートは禁止
 - 各スライスは `index.ts` で Public API を定義する。外部からは Public API 経由でのみインポートする
 - `export *` は使用しない。公開するものを明示的に列挙する
@@ -89,7 +91,7 @@ skills/feature-sliced-design/
 ```text
 app        — ルーティング、プロバイダー、グローバル設定（スライスなし）
 pages      — 画面単位のスライス
-widgets    — 複数ページで再利用される大規模 UI ブロック
+widgets    — 複数ページで再利用される大規模 UI ブロック（公式は非推奨）
 features   — ビジネス価値をもたらすユーザーインタラクション
 entities   — ビジネスエンティティ（User, Product 等）
 shared     — 汎用的な再利用可能コード（スライスなし）
@@ -144,9 +146,9 @@ src/
 
 1. **セグメント名に `components/`, `hooks/`, `types/` を使う** → `ui/`, `model/`, `lib/` を使用する
 2. **`export *` でまとめてエクスポートする** → 明示的に `export { Name } from` で列挙する
-3. **同一レイヤーのスライスを直接インポートする** → 上位レイヤーで合成するか、`@x` 記法を使用する
-4. **再利用されないコードを `features` や `widgets` に早期移動する** → まず `pages` に置き、再利用が確定してから昇格する
+3. **同一レイヤーのスライスを直接インポートする** → 上位レイヤーで合成するか、`@x` 記法を使用する（`@x` は `entities` レイヤー限定）
+4. **再利用されないコードを `features` や `widgets` に早期移動する** → まず `pages` に置き、複数ページで再利用されるアクションになったら `features` へ昇格する
 5. **`shared` にビジネスロジックを置く** → ビジネスロジックは `entities` 以上に配置する
-6. **独自レイヤーを追加する** → 標準の 6 レイヤーのみ使用する
+6. **独自レイヤーを追加する** → 標準レイヤーのみ使用する
 7. **Public API なしでスライスを作成する** → 必ず `index.ts` を先に定義する
 8. **型定義を `types/` フォルダにまとめる** → ドメインごとに `model/` セグメント内に配置する

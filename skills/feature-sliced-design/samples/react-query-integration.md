@@ -1,70 +1,78 @@
 # React Query Integration
 
-entities の `api` セグメントにクエリファクトリを置き、pages から利用するパターン。
+TanStack Query のクエリファクトリを `shared/api` に置き、Public API 経由で pages から利用するパターン。
 
 ```ts
-// src/entities/post/api/post.queries.ts — クエリファクトリ
-import { keepPreviousData, queryOptions } from "@tanstack/react-query";
-import { getPosts } from "./get-posts";
-import { getDetailPost } from "./get-detail-post";
+// src/shared/api/post/post.queries.ts — クエリファクトリ
+import { queryOptions } from '@tanstack/react-query';
+import { getPosts } from './get-posts';
+import { getDetailPost, type DetailPostQuery } from './get-detail-post';
 
-export const postQueries = {
-  all: () => ["posts"],
-  lists: () => [...postQueries.all(), "list"],
-  list: (page: number, limit: number) =>
-    queryOptions({
-      queryKey: [...postQueries.lists(), page, limit],
-      queryFn: () => getPosts(page, limit),
-      placeholderData: keepPreviousData,
+export const POST_QUERIES = {
+    all: () => ['posts'],
+    lists: () => [...POST_QUERIES.all(), 'list'],
+    list: (page: number, limit: number) => queryOptions({
+        queryKey: [...POST_QUERIES.lists(), page, limit],
+        queryFn: () => getPosts(page, limit),
+        placeholderData: prev => prev,
     }),
-  detail: (id?: number) =>
-    queryOptions({
-      queryKey: [...postQueries.all(), "detail", id],
-      queryFn: () => getDetailPost({ id }),
-      staleTime: 5000,
+    details: () => [...POST_QUERIES.all(), 'detail'],
+    detail: (query?: DetailPostQuery) => queryOptions({
+        queryKey: [...POST_QUERIES.details(), query?.id],
+        queryFn: () => getDetailPost({ id: query?.id }),
     }),
 };
 ```
 
 ```ts
-// src/pages/post/ui/PostPage.tsx — pages からクエリを利用
-import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { postQueries } from "entities/post/api/post.queries";
+// src/shared/api/post/index.ts — Public API
+export { POST_QUERIES } from './post.queries';
+```
 
-export const PostPage = () => {
-  const { postId } = useParams<{ postId: string }>();
-  const { data: post, isLoading } = useQuery(
-    postQueries.detail(Number(postId))
-  );
+```tsx
+// src/pages/post/ui/post.tsx — Public API 経由でクエリを利用
+import { useParams } from 'react-router';
+import { POST_QUERIES } from '@/shared/api/post';
+import { useQuery } from '@tanstack/react-query';
 
-  if (isLoading) return <div>Loading...</div>;
-  return <div>{post?.title}</div>;
+export const Post = () => {
+    const { postId } = useParams<{ postId: string }>();
+
+    const { data: post, error, isLoading, isError } = useQuery(
+        POST_QUERIES.detail({ id: parseInt(postId ?? '', 10) })
+    );
+
+    if (isLoading) return <div>Loading...</div>;
+    if (isError || !post) return <div>{ error?.message }</div>;
+
+    return <h1>{ post.title }</h1>;
 };
 ```
 
-```ts
-// src/shared/api/query-client.ts — 共有 QueryClient
-import { QueryClient } from "@tanstack/react-query";
+```tsx
+// src/app/providers/query-provider.tsx — QueryClient は app レイヤーで用意する
+import { type ReactNode } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-export const queryClient = new QueryClient({
-  defaultOptions: { queries: { staleTime: 5 * 60 * 1000 } },
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 5 * 60 * 1000,
+            gcTime: 5 * 60 * 1000,
+        },
+    },
 });
-```
 
-```ts
-// src/app/providers/query-provider.tsx — app レイヤーでラップ
-import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "shared/api/query-client";
-
-export const QueryProvider = ({ children }) => (
-  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+export const QueryProvider = ({ children }: { children: ReactNode }) => (
+    <QueryClientProvider client={ queryClient }>{ children }</QueryClientProvider>
 );
 ```
 
 ## Notes
 
-- ミューテーションは `features` の `api` セグメントに `useMutation` フックとして配置する
-- クリアなエンティティ分離がない場合は `shared/api` にクエリをまとめる選択肢もある
-- `QueryClient` は `shared/api` に置き、`app` プロバイダーで注入する
-- entities 間でクエリキーが重複しないよう、`all()` をルートキーとするファクトリパターンを採用する
+- クエリの置き場所は公式に 3 案: `shared/api`（全体）、`shared/api` をコントローラー単位に分割して各々に Public API を置く、`entities/<name>/api`（リクエストが単一 entity に対応する場合に最もクリーン）。entity 間に関連がある場合は `@x` の Public API を使う
+- スライス内部のファイル（`entities/post/api/post.queries` など）を直接インポートせず、スライスの Public API 経由で利用する
+- ミューテーションはクエリと混ぜない。使用箇所に近い `api` セグメントにカスタムフック（例 `pages/example/api/use-update-example.ts`、`features/update-post/api/`）として置くか、`shared` / `entities` の関数を `mutationFn` に渡す
+- `QueryClient` と `QueryClientProvider` は `app` レイヤー（`app/providers`）に置く。`shared/api` には置かない
+- `all()` をルートキーとするファクトリで、キーの重複とリフェッチ時のキー変更を避ける。`queryOptions` は react-query v5 の組み込みユーティリティ
+- Source: https://fsd.how/docs/guides/tech/with-react-query (documentation repository commit 3a5a3a3)

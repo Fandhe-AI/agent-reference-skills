@@ -28,7 +28,7 @@ import { UserAvatar } from "entities/user/@x/post";
 
 export const PostCard = ({ post }) => (
   <div>
-    <UserAvatar userId={post.authorId} />
+    <UserAvatar id={post.authorId} />
     <h2>{post.title}</h2>
   </div>
 );
@@ -37,6 +37,8 @@ export const PostCard = ({ post }) => (
 ## Notes
 
 - `@x` は意図的なエスケープハッチであり、一般パターンではない
-- 可能であれば上位レイヤー（pages, widgets）で合成する方を優先する
+- entity 間のやり取りに関するビジネスロジックは、可能であれば上位レイヤー（features, pages）に置く方を優先する。`widgets` レイヤーは公式ガイドで非推奨
+- 公式: ある entity のデータが別の entity のデータを含む場合は、接続を見逃せなくするため `@x` で明示するのがよい（連携する entity は一緒にリファクタリングされるため）
 - 他のレイヤーで `@x` を多用する場合は設計上の問題のサイン
 - `entities/user/@x/post.ts` は `entities/post` だけに向けた専用 API — 汎用 `index.ts` とは別管理
+- Source: https://fsd.how/docs/reference/public-api and https://fsd.how/docs/guides/issues/cross-imports (documentation repository commit 3a5a3a3)

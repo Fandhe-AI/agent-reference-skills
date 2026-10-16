@@ -1,55 +1,51 @@
 # Slice Groups
 
-関連スライスをフォルダでまとめつつ、スライス間の分離を維持するパターン。
+関連スライスをフォルダでまとめて見通しを良くするパターン。スライス間の分離ルールは変わらない。
 
 ```text
-features/
-  auth/                    ← スライスグループ（フォルダ）
-    login/                 ← スライス
-    register/              ← スライス
-    reset-password/        ← スライス
-```
-
-```text
-features/
-  auth/
-    login/
-      ui/
-        LoginForm.tsx
-      api/
-        loginMutation.ts
+entities/
+  payment/                 ← スライスグループ（フォルダ）
+    invoice/               ← スライス
       model/
-        loginStore.ts
-      index.ts             ← login スライスの Public API
-    register/
       ui/
-        RegisterForm.tsx
-      api/
-        registerMutation.ts
-      index.ts             ← register スライスの Public API
+    receipt/               ← スライス
+      model/
+      ui/
+    transaction/           ← スライス
+      model/
+      ui/
+  user/                    ← グループ化しないスライス
+    model/
+    ui/
+  product/
+    model/
+    ui/
 ```
 
-```ts
-// features/auth/login/index.ts
-export { LoginForm } from "./ui/LoginForm";
-export { useLoginMutation } from "./api/loginMutation";
-
-// features/auth/register/index.ts
-export { RegisterForm } from "./ui/RegisterForm";
-```
-
-```ts
-// グループ内スライス間でのコード共有は禁止
-// Bad — features/auth/register/ui/RegisterForm.tsx
-import { useLoginMutation } from "features/auth/login"; // 兄弟スライス間インポート (NG)
-
-// Good — 共有ロジックは entities または shared に移動する
-import { authApi } from "shared/api";
+```text
+pages/
+  order/                   ← スライスグループ
+    create/
+      ui/
+    detail/
+      ui/
+    list/
+      ui/
+  customer/
+    detail/
+      ui/
+    list/
+      ui/
+  settings/
+    ui/
 ```
 
 ## Notes
 
-- スライスグループはあくまで構造的な整理であり、グループ内の各スライスは完全な独立を維持する
-- 兄弟スライス間でコードを共有する必要が出た場合は、下位レイヤーへの移動を検討する
-- グループ自体の `index.ts` は不要。利用側は各スライスから直接インポートする
-- グループ化はどのレイヤーでも可能（`pages/`, `entities/` など）
+- スライスグループは FSD の必須要素ではなく、スライス数が増えて平坦な構成では探しにくいときに選択的に導入する。スライス間の依存ルールには影響しない
+- グループはスライスではない。`model` / `ui` / `api` などの独自セグメントも `index.ts` などの Public API も持たない。複数スライスで共有するコードをグループに置かない
+- グループに属していても各スライスは独立したまま（スライス間の分離ルールは不変）
+- 導入の目安: 同じビジネスコンテキストのスライスが散在している、名前から同じトピックと分かる、レイヤー内のスライス数が一覧しにくい。名前だけで探せる、自然なグループ基準がない、グループ内のスライスが少なすぎる場合は不要
+- `pages` の例は一例であり、pages レイヤーの標準構成ではない。`user/` のように単体で意味が明確なスライスはグループ化しなくてよい
+- `features` でも可能だが、feature は単一ドメインに縛られず複数 entity をまたぐことが多く、自然な基準を見つけにくい。`features/cart/` のようなグループに DTO や mapper が溜まると、ユースケース単位で分ける原則が弱まる。スライスが 2〜3 個なら平坦で十分で、entities に属すべきコードが混入していないかも確認する
+- Source: https://fsd.how/docs/reference/slice-groups (documentation repository commit 3a5a3a3)

@@ -1,48 +1,36 @@
 # Import Rules
 
-FSD のインポートルールと依存関係の方向を定義する。
+The import rule on layers and the direction of dependencies in FSD.
 
-## 基本ルール
+## Signature / Usage
 
-> スライス内のモジュール（ファイル）は、**厳密に下位のレイヤー**に位置するスライスからのみインポートできる。
+> A module (file) in a slice can only import other slices when they are located on layers strictly below.
 
 ```text
-app      ← pages, widgets, features, entities, shared をインポート可
-pages    ← widgets, features, entities, shared をインポート可
-widgets  ← features, entities, shared をインポート可
-features ← entities, shared をインポート可
-entities ← shared をインポート可
-shared   ← 外部ライブラリのみ（他レイヤーからインポート不可）
+app      ← may import pages, widgets, features, entities, shared
+pages    ← may import widgets, features, entities, shared
+widgets  ← may import features, entities, shared
+features ← may import entities, shared
+entities ← may import shared
+shared   ← external libraries only (no imports from other layers)
 ```
 
-### 例外
-
-- `app` と `shared` はスライスを持たないため、内部セグメント間で自由に相互参照可能
-
-## 同一レイヤー内のルール
-
-同一レイヤーのスライス間で直接インポートは**禁止**:
+Imports between slices on the same layer are forbidden:
 
 ```ts
-// Bad — features 内のスライス間インポート
+// Bad — cross-import between slices in features
 // features/cart/model/cart.ts
 import { Product } from "features/product/model/product";
 
-// Bad — pages 内のスライス間インポート
+// Bad — cross-import between slices in pages
 // pages/home/ui/HomePage.tsx
 import { ProfileCard } from "pages/profile/ui/ProfileCard";
 ```
 
-## クロスインポートの解決策
+Resolving a cross-import by composing in a higher layer (preferred):
 
-同一レイヤーの依存が必要になった場合の対処法:
-
-### 1. 上位レイヤーでの合成
-
-最も推奨される方法。上位レイヤーで組み合わせる:
-
-```ts
-// pages/post/ui/PostPage.tsx（pages レイヤーから features と entities をインポート）
+```tsx
+// pages/post/ui/PostPage.tsx
 import { CommentList } from "features/comment-list";
 import { UserAvatar } from "entities/user";
 
@@ -53,17 +41,7 @@ export const PostPage = () => (
 );
 ```
 
-### 2. `@x` 記法（entities 限定）
-
-エンティティ間の正当な依存に使用:
-
-```text
-entities/
-  user/
-    @x/
-      post.ts    ← entities/post に公開する専用 API
-    index.ts     ← 汎用 Public API
-```
+Resolving with `@x` (entities only):
 
 ```ts
 // entities/user/@x/post.ts
@@ -73,31 +51,22 @@ export { UserAvatar } from "../ui/Avatar";
 import { UserAvatar } from "entities/user/@x/post";
 ```
 
-### 3. スライスの統合
+## Notes
 
-常に一緒に変更されるスライスは 1 つに統合する。
+- Exception: `app` and `shared` have no slices, so their segments can import each other freely.
+- Widgets are discouraged by the official guide (see layers.md); the layer order itself is unchanged.
+- Other ways to resolve a cross-import: merge slices that always change together into one; move shared business logic between features down to entities, and shared utilities between entities down to shared.
+- Import style: within the same slice use relative imports (`"./ui/Button"`); across slice boundaries use absolute imports (`"entities/user"`). This prevents circular imports.
+- Steiger (official FSD architectural linter) detects violations in CI. Related rules (steiger 0.7.0 / plugin 0.8.0):
+  - `fsd/forbidden-imports` — forbids imports from higher layers and cross-imports between slices on the same layer (enabled by default).
+  - `fsd/no-higher-level-imports` / `fsd/no-cross-imports` — granular rules split out of `forbidden-imports` in plugin 0.5.6; both are disabled by default.
+  - `fsd/import-locality` — requires relative imports within a slice and absolute imports between slices (disabled by default).
+  - `fsd/no-public-api-sidestep` — forbids going around a slice's public API to import an internal module directly.
+- Warning signs: depending directly on another slice's store; importing another slice's internal files (bypassing its public API); bidirectional dependencies; frequent breakage from cross-slice changes; generic files such as `types.ts` / `utils.ts` handling multiple domains in one folder (a sign of de-segmentation).
+- Source: https://fsd.how/docs/reference/layers and https://fsd.how/docs/guides/issues/cross-imports (documentation repository commit 3a5a3a3); Steiger rules: https://github.com/feature-sliced/steiger/blob/steiger%400.7.0/README.md and https://github.com/feature-sliced/steiger/blob/steiger%400.7.0/packages/steiger-plugin-fsd/CHANGELOG.md (tag steiger@0.7.0, commit b0fe6c5).
 
-### 4. 共有ロジックの下位レイヤーへの移動
+## Related
 
-features 間で共有されるビジネスロジックは entities に、entities 間で共有されるユーティリティは shared に移動する。
-
-## インポートスタイルのルール
-
-| 状況 | スタイル |
-| --- | --- |
-| 同一スライス内 | 相対インポート（`"./ui/Button"`） |
-| スライス境界を越える | 絶対インポート（`"entities/user"`） |
-
-この使い分けにより循環インポートを防止する。
-
-## Steiger によるルール検証
-
-[Steiger](https://github.com/feature-sliced/steiger) は FSD の公式アーキテクチャ linter。インポートルール違反を CI で自動検出する。
-
-## 警告サイン
-
-- 他スライスのストアに直接依存している
-- 他スライスの内部ファイルをインポートしている（Public API を迂回）
-- 双方向の依存関係が存在する
-- クロススライスの変更で頻繁に破壊が発生する
-- 同一フォルダ内の複数ドメインを扱う汎用ファイル（`types.ts`, `utils.ts` 等）が存在する（デセグメント化の兆候）
+- [Layers](./layers.md)
+- [Public API](./public-api.md)
+- [Slices & Segments](./slices-segments.md)
