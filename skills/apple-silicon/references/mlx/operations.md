@@ -63,6 +63,7 @@ Newer per-op signatures (from `python/src/ops.cpp`, 0.32.4):
   ```
 
 - `minmax`, `searchsorted` and `unique` are new relative to earlier pages of this skill; other ops are only indexed here, see the official per-op pages under `python/_autosummary/` for details.
+- Source: https://ml-explore.github.io/mlx/build/html/python/ops.html (pinned source: https://github.com/ml-explore/mlx/blob/v0.32.4/docs/src/python/ops.rst)
 
 ## Related
 

@@ -1,9 +1,11 @@
 ---
 name: apple-silicon
 description: >
-  Apple Silicon GPU コンピュート／数値計算リファレンス。MSL (TensorOps, cooperative_tensor, matmul2d),
-  threadgroup, indirect command buffer, unified memory, MTLTensor, MTL4MachineLearningCommandEncoder,
-  MPS/MPSGraph, MLX (mx.array, mx.compile, mx.fft, export_function, mlx.nn)。
+  Apple Silicon GPU コンピュート／数値計算リファレンス。MSL (kernel 関数属性, address space,
+  atomic / SIMD-group, TensorOps, cooperative_tensor, matmul2d), threadgroup sizing, argument buffer,
+  indirect command buffer, unified memory, GPU counters, MTLTensor, MTL4MachineLearningCommandEncoder,
+  MPS / MPSGraph, MPSMatrix, MPSNDArray, MPSNNGraph,
+  MLX (mx.array, lazy evaluation, grad / vmap, mx.compile, mx.fft, export_function, mlx.nn, mlx.optimizers, distributed)。
 user-invocable: false
 ---
 

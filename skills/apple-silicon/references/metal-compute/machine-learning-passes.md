@@ -76,6 +76,7 @@ var machineLearningFunctionDescriptor: MTL4FunctionDescriptor? { get set }
 - The Core ML to Metal package conversion tooling (`metal-package-builder`) belongs to apple-ml; beyond the command shown in Apple's page, details such as supported model formats or operator coverage are unverified here.
 - MSL 4 adds tensor types, tensor operators (convolution, matrix multiplication, reduction), cooperative tensors, and operation descriptors, usable in all GPU stages.
 - Compiled via `MTL4Compiler`; the `async throws` overload creates the pipeline state asynchronously.
+- Source (retrieved 2026-10-16): https://developer.apple.com/documentation/metal/machine-learning-passes, https://developer.apple.com/documentation/metal/mtl4machinelearningcommandencoder, https://developer.apple.com/documentation/metal/mtl4machinelearningpipelinestate, https://developer.apple.com/documentation/metal/mtl4machinelearningpipelinedescriptor, https://developer.apple.com/documentation/metal/mtl4machinelearningpipelinereflection, https://developer.apple.com/documentation/metal/running-a-machine-learning-model-on-the-gpu-timeline, https://developer.apple.com/documentation/metal/running-inline-ml-operations-in-a-shader-with-metal-4
 
 ## Related
 

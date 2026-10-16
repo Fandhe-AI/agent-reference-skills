@@ -2,30 +2,29 @@
 
 | Name | Description | Path |
 | --- | --- | --- |
-| array | `mlx.core.array` is MLX's N-dimensional array type — the base object every MLX API operates on, backed by lazy compute graphs and unified memory. | [array.md](./array.md) |
-| Compilation | `mx.compile` optimizes and specializes a function's compute graph ahead of repeated calls, trading a one-time (or per-shape) compile cost for faster subsequent execution. | [compilation.md](./compilation.md) |
-| Data Types | `mlx.core` exposes a fixed set of `Dtype` values, a `DtypeCategory` hierarchy, and helpers (`issubdtype`, `finfo`, `iinfo`) to query them. The default floating point type is `float32` and the default integer type is `int32`. | [data-types.md](./data-types.md) |
-| Devices and Streams | Every MLX operation accepts an optional `stream=` argument selecting which device (and which stream on that device) executes it; without one, the operation runs on the current default stream/device. | [devices-streams.md](./devices-streams.md) |
-| Distributed | `mlx.core.distributed` runs MLX across multiple processes (typically multiple machines/devices) over one of several communication backends (`mpi`, `ring`, `jaccl`, `nccl`), coordinating them as a `Group`. | [distributed.md](./distributed.md) |
-| Environment Variables | MLX reads environment variables to configure compilation, numerical precision, backend behavior and distributed execution. | [environment-variables.md](./environment-variables.md) |
-| Exporting Functions | MLX can export a function (its compute graph) to a `.mlxfn` file and import it in another front-end, for example Python to C++. | [export.md](./export.md) |
-| Fast and Custom Kernels | `mlx.core.fast` provides fused, hand-optimized implementations of performance-critical neural-network ops, plus `metal_kernel`/`cuda_kernel` for writing your own JIT-compiled GPU kernels when the built-in ops aren't enough. | [fast-custom-kernels.md](./fast-custom-kernels.md) |
-| FFT | `mlx.core.fft` provides discrete Fourier transforms (1-D, 2-D, N-D, real-input variants), frequency helpers, shifts, and the short-time transforms `stft` / `istft`. | [fft.md](./fft.md) |
-| Function Transforms | MLX composes automatic differentiation and vectorization as function transforms: `grad`, `vmap`, `vjp`, `jvp` and friends take a function and return a new function, and transforms nest to arbitrary depth. | [function-transforms.md](./function-transforms.md) |
-| Indexing | MLX array indexing follows NumPy conventions for basic and fancy indexing, with two deliberate differences driven by GPU execution: no bounds checking, and limited boolean-mask reads. | [indexing.md](./indexing.md) |
-| KV Cache | Writing a fast KV cache for autoregressive generation: preallocate fixed-size chunks and update in place instead of appending with `concatenate`. | [kv-cache.md](./kv-cache.md) |
-| Lazy Evaluation | MLX operations do not run immediately — each call records a node in a compute graph, and the graph only executes once `mx.eval()` (or an implicit trigger) forces it. | [lazy-evaluation.md](./lazy-evaluation.md) |
-| linalg | `mlx.core.linalg` provides matrix decompositions, solvers, and norms operating on MLX arrays. | [linalg.md](./linalg.md) |
-| Memory Management | `mlx.core` exposes functions to inspect and bound MLX's memory usage — active allocations, cached (reusable) allocations, and configurable limits — useful when working with large models on constrained devices. | [memory-management.md](./memory-management.md) |
-| Metal Backend Utilities | `mlx.core.metal` exposes Metal availability, device info and GPU capture helpers for MLX; `mlx.core.cuda.is_available` is the CUDA counterpart. | [metal-backend.md](./metal-backend.md) |
-| nn Layers | `mlx.nn` provides ready-made `Module` subclasses for the layer types that make up most model architectures — linear, convolutional, normalization, recurrent, attention, and container layers. | [nn-layers.md](./nn-layers.md) |
-| Losses and Activations | `mlx.nn.losses` provides the standard loss functions used to train `nn.Module` models; functional activation forms (as opposed to the layer classes on the nn-layers page) live directly under `mlx.nn`. | [nn-losses-activations.md](./nn-losses-activations.md) |
-| nn.Module | `mlx.nn.Module` is the base class for defining and training neural networks in MLX — a container for parameters and submodules with training-mode state and freezing support. | [nn-module.md](./nn-module.md) |
-| Operations | `mlx.core` operations index (`docs/src/python/ops.rst`, MLX 0.32.4). The official page is an autosummary list of function names; the family grouping below is for readability and is not part of the source. | [operations.md](./operations.md) |
-| Optimizers | `mlx.optimizers` provides gradient-descent-family optimizers plus learning-rate schedulers, for use with `mlx.nn.Module` parameter trees. | [optimizers.md](./optimizers.md) |
-| Numerical Precision | By default MLX may run `float32` matrix-multiplication family operations at reduced precision on hardware with dedicated matrix-multiplication units; two environment variables restore full precision. | [precision.md](./precision.md) |
-| random | `mlx.core.random` samples from common distributions using a splittable, counter-based PRNG (Threefry) — the same design JAX uses — so randomness can be made fully explicit and reproducible via keys, while still defaulting to an implicit global state. | [random.md](./random.md) |
-| Saving and Loading | MLX serializes arrays and parameter dicts to NumPy, safetensors, or GGUF formats; `mx.load` auto-detects the format from the file extension on read. | [saving-loading.md](./saving-loading.md) |
-| Tree Utils | `mlx.utils` provides functions for walking the nested `dict`/`list`/`tuple` trees that MLX uses to represent model parameters and optimizer state, without writing manual recursive traversal. | [tree-utils.md](./tree-utils.md) |
-| Unified Memory Model | MLX is designed around Apple silicon's unified memory architecture: CPU and GPU share the same physical memory pool, so arrays never need to be copied or migrated between devices — only the *operation* that consumes them picks a device, via `stream=`. | [unified-memory-model.md](./unified-memory-model.md) |
-</content>
+| array | `mlx.core.array` is MLX's N-dimensional array type… | [array.md](./array.md) |
+| Compilation | `mx.compile` optimizes and specializes a function's com… | [compilation.md](./compilation.md) |
+| Data Types | `mlx.core` exposes a fixed set of `Dtype` values, a… | [data-types.md](./data-types.md) |
+| Devices and Streams | Every MLX operation accepts an optional `stream=` argum… | [devices-streams.md](./devices-streams.md) |
+| Distributed | `mlx.core.distributed` runs MLX across multiple proces… | [distributed.md](./distributed.md) |
+| Environment Variables | MLX reads environment variables to configure compilation… | [environment-variables.md](./environment-variables.md) |
+| Exporting Functions | MLX can export a function (its compute graph) to a `.m… | [export.md](./export.md) |
+| Fast and Custom Kernels | `mlx.core.fast` provides fused, hand-optimized implement… | [fast-custom-kernels.md](./fast-custom-kernels.md) |
+| FFT | `mlx.core.fft` provides discrete Fourier transforms (1-D,… | [fft.md](./fft.md) |
+| Function Transforms | MLX composes automatic differentiation and vectorizatio… | [function-transforms.md](./function-transforms.md) |
+| Indexing | MLX array indexing follows NumPy conventions for basic a… | [indexing.md](./indexing.md) |
+| KV Cache | Writing a fast KV cache for autoregressive generation: p… | [kv-cache.md](./kv-cache.md) |
+| Lazy Evaluation | MLX operations do not run immediately — each call record… | [lazy-evaluation.md](./lazy-evaluation.md) |
+| linalg | `mlx.core.linalg` provides matrix decompositions, solvers… | [linalg.md](./linalg.md) |
+| Memory Management | `mlx.core` exposes functions to inspect and bound MLX's m… | [memory-management.md](./memory-management.md) |
+| Metal Backend Utilities | `mlx.core.metal` exposes Metal availability, device info… | [metal-backend.md](./metal-backend.md) |
+| nn Layers | `mlx.nn` provides ready-made `Module` subclasses for the… | [nn-layers.md](./nn-layers.md) |
+| Losses and Activations | `mlx.nn.losses` provides the standard loss functions used… | [nn-losses-activations.md](./nn-losses-activations.md) |
+| nn.Module | `mlx.nn.Module` is the base class for defining and train… | [nn-module.md](./nn-module.md) |
+| Operations | `mlx.core` operations index (`docs/src/python/ops.rst`… | [operations.md](./operations.md) |
+| Optimizers | `mlx.optimizers` provides gradient-descent-family optimi… | [optimizers.md](./optimizers.md) |
+| Numerical Precision | By default MLX may run `float32` matrix-multiplication f… | [precision.md](./precision.md) |
+| random | `mlx.core.random` samples from common distributions usin… | [random.md](./random.md) |
+| Saving and Loading | MLX serializes arrays and parameter dicts to NumPy, safet… | [saving-loading.md](./saving-loading.md) |
+| Tree Utils | `mlx.utils` provides functions for walking the nested `d… | [tree-utils.md](./tree-utils.md) |
+| Unified Memory Model | MLX is designed around Apple silicon's unified memory arch… | [unified-memory-model.md](./unified-memory-model.md) |

@@ -5,7 +5,7 @@ MLX reads environment variables to configure compilation, numerical precision, b
 ## Signature / Usage
 
 ```shell
-MLX_ENABLE_TF32=0 MLX_METAL_FAST_SYNCH=1 python my_script.py
+MLX_ENABLE_TF32=0 python my_script.py
 ```
 
 ## Options / Props
@@ -38,7 +38,7 @@ Metal
 | Variable | Default | Description |
 | --- | --- | --- |
 | `MLX_METAL_RESIDENCY_REFRESH_INTERVAL_MS` | `0` (disabled) | Re-request residency for existing wired allocations at this interval (ms); works around macOS releasing residency while the GPU is idle. Nonpositive disables. Requires a Metal 3 GPU on macOS 15 / iOS 18 or later |
-| `MLX_METAL_FAST_SYNCH` | `0` | Enable the faster Metal CPU/GPU synchronization path; requires Metal 3.2+ (macOS 15 / iOS 18 or later) |
+| `MLX_METAL_FAST_SYNCH` | `0` | Enable the faster Metal CPU/GPU synchronization path; requires Metal 3.2+ (macOS 15 / iOS 18 or later). Not reliable: it can deadlock and leave the GPU wedged, so best left unset (see Notes) |
 | `MLX_CONV_WINOGRAD` | `1` | Allow Winograd for 3x3 `conv2d`; `0` uses the GEMM convolution for all inputs |
 
 Advanced tuning (development / diagnostics; behavior may change)
@@ -70,7 +70,8 @@ CUDA
 
 - The NCCL backend also requires `NCCL_HOST_IP` and `NCCL_PORT`; `NCCL_DEBUG=INFO` enables extra bootstrap logging. `CUDA_VISIBLE_DEVICES` selects the local CUDA device and is handled by the CUDA runtime. MLX uses `CUDA_HOME` or `CUDA_PATH` to find CUDA headers for runtime kernel compilation.
 - `MLX_METAL_RESIDENCY_REFRESH_INTERVAL_MS` does not change the wired limit set by `mx.set_wired_limit` or submit GPU work, and can keep memory wired during long idle periods.
-- Source: MLX `v0.32.4` `docs/src/usage/environment_variables.rst` (new in 0.32.4).
+- `MLX_METAL_FAST_SYNCH` is unreliable and can lead to deadlock and leave the GPU wedged (issue #3142); it is best left unset. See the distributed docs for MLX `v0.32.4` (`docs/src/usage/distributed.rst`).
+- Source: https://ml-explore.github.io/mlx/build/html/usage/environment_variables.html (pinned source: https://github.com/ml-explore/mlx/blob/v0.32.4/docs/src/usage/environment_variables.rst; new in 0.32.4). Issue: https://github.com/ml-explore/mlx/issues/3142
 
 ## Related
 

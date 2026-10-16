@@ -48,7 +48,7 @@ mx.metal.stop_capture()
   Then select the `metal_capture` example schema and run.
 - Other `mx.metal.*` memory functions (`get_active_memory`, `set_memory_limit`, `clear_cache`, ...) print a deprecation message in the 0.32.4 binding; use the `mx.*` equivalents (see memory-management.md).
 - This is MLX's own capture API; for Metal compute pipelines and GPU counters written by hand, see this skill's metal-compute pages.
-- Source: MLX `v0.32.4` (`docs/src/python/metal.rst`, `python/cuda.rst`, `dev/metal_debugger.rst`, `python/src/metal.cpp`).
+- Source: https://ml-explore.github.io/mlx/build/html/python/metal.html (pinned sources at tag v0.32.4: https://github.com/ml-explore/mlx/blob/v0.32.4/docs/src/python/metal.rst, https://github.com/ml-explore/mlx/blob/v0.32.4/docs/src/python/cuda.rst, https://github.com/ml-explore/mlx/blob/v0.32.4/docs/src/dev/metal_debugger.rst, https://github.com/ml-explore/mlx/blob/v0.32.4/python/src/metal.cpp)
 
 ## Related
 

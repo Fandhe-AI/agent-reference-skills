@@ -66,7 +66,7 @@ Callback `args` dictionary has a `type` field:
 - Multiple traces of one function go into one file via `with mx.exporter("fun.mlxfn", fun) as exporter: exporter(mx.array(1.0))`, so constant data is saved once.
 - `grad`, `vmap` and `compile` work on imported functions. In C++: `auto fun = mx::import_function("fun.mlxfn");`.
 - `export_to_dot` writes the unevaluated graph of the given output arrays for visualization.
-- Source: MLX `v0.32.4` docs (`usage/export.rst`, `python/export.rst`).
+- Source: https://ml-explore.github.io/mlx/build/html/usage/export.html and https://ml-explore.github.io/mlx/build/html/python/export.html (pinned sources: https://github.com/ml-explore/mlx/blob/v0.32.4/docs/src/usage/export.rst, https://github.com/ml-explore/mlx/blob/v0.32.4/docs/src/python/export.rst)
 
 ## Related
 

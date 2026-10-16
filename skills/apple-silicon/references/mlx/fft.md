@@ -49,6 +49,7 @@ Functions listed in `fft.rst`: `fft`, `ifft`, `fft2`, `ifft2`, `fftn`, `ifftn`, 
 - `stft` splits the last axis of `x` into overlapping frames of length `n_fft`, applies `window`, and takes the Fourier Transform of each frame. The output is always complex with shape `(..., n_freq, n_frames)`.
 - `istft` inverts `stft` by overlap-adding the windowed inverse transform of each frame, normalized by the squared-window envelope; it returns the reconstructed signal.
 - `stft` and `istft` are new in the 0.32.x line (source pinned at tag `v0.32.4`).
+- Source: https://ml-explore.github.io/mlx/build/html/python/fft.html (pinned source: https://github.com/ml-explore/mlx/blob/v0.32.4/docs/src/python/fft.rst)
 
 ## Related
 

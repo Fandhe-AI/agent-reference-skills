@@ -69,7 +69,7 @@ TensorOp template classes:
 
 | Class | Description |
 | --- | --- |
-| `matmul2d<matmul2d_descriptor Desc, typename Scope, class... Args>` | Generalized matrix multiplication `C = A*B + C`. A and B: host-bound, origin-shifted, or shader-allocated tensors. C: those, or a `cooperative_tensor` |
+| `matmul2d<matmul2d_descriptor Desc, typename Scope, class... Args>` | Generalized matrix multiplication: `C = A*B` (mode `multiply`, default) or `C = A*B + C` (mode `multiply_accumulate`). A and B: host-bound, origin-shifted, or shader-allocated tensors. C: those, or a `cooperative_tensor` |
 | `convolution2d<convolution2d_descriptor Desc, typename Scope, typename... ConvArgs>` | 2D convolution (width x height) over a 4D tensor. Only supported scope is `execution_simdgroups<N>` with N = `simdgroups_per_threadgroup` |
 
 `matmul2d_descriptor(int M, int N, int K = dynamic_length_v<int>, bool transpose_left = false, bool transpose_right = false, bool relaxed_precision = false, mode matmul_mode = mode::multiply)`:
@@ -85,7 +85,7 @@ TensorOp template classes:
 
 | Member | Description |
 | --- | --- |
-| `run(left, right, destination)` | Execute `C = A*B` (all arguments `thread` references) |
+| `run(left, right, destination)` | Execute the matmul into destination per `matmul_mode`: `C = A*B` for `multiply`, `C = A*B + C` for `multiply_accumulate` (all arguments `thread` references) |
 | `get_destination_cooperative_tensor<LeftOperandType, RightOperandType, ElementType, CoordType = int>()` | Cooperative tensor that can store the result |
 | `get_row_reduction_destination_cooperative_tensor<...>()` | Cooperative tensor for a row reduction of the result |
 | `get_column_reduction_destination_cooperative_tensor<...>()` | Same for a column reduction. Only valid at `execution_simdgroup` scope. Metal 4 and OS 26.1+ |
@@ -136,7 +136,8 @@ Metal 4.1 (this update): B as `int2b_format` / `uint2b_format` with A `char` / `
 
 ## Notes
 
-- Requires Metal 4 or later (All OS). Spec chapter 7, Metal Shading Language Specification 4.1 (document dated 2026-06-04), pages 349-367. Retrieved 2026-10-17. The spec's class-template table spells `matmul2d` as `matmuld2d`; the code examples use `matmul2d`.
+- Requires Metal 4 or later (All OS). Source: https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf, chapter 7, Metal Shading Language Specification 4.1 (document dated 2026-06-04), pages 349-367. Retrieved 2026-10-17. Sample: https://developer.apple.com/documentation/metal/running-inline-ml-operations-in-a-shader-with-metal-4
+- The spec's class and run tables each show only one of the two formulas, so `matmul_mode` determines the behavior: choose `mode::multiply_accumulate` to accumulate into a nonzero C. The kernel comment "assuming C is initialized to zero" is verbatim from the spec. The spec's class-template table spells `matmul2d` as `matmuld2d`; the code examples use `matmul2d`.
 - All threads in the scope must call `run`, otherwise the result is undefined. For example, with `execution_simdgroup` every thread of the SIMD-group must call it; different SIMD-groups may diverge. A TensorOp may use a barrier at its execution scope, so code must behave correctly if one is used.
 - When a TensorOp writes into a tensor in `device` or `threadgroup` address space, insert a barrier at the matching scope before reading the result (for example `threadgroup_barrier(mem_flags::mem_threadgroup)` for `execution_simdgroups<2>` over threadgroup memory, `simdgroup_barrier(mem_flags::mem_device)` for `execution_simdgroup` over device memory). No barrier is needed for `thread` address space tensors or cooperative tensors.
 - Tensors passed to tensor operations must use an `int` index type (Apple sample note).

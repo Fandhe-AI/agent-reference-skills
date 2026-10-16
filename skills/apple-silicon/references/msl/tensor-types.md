@@ -114,11 +114,12 @@ Kinds of tensor:
 - Conversions from dynamic to static extents are supported (explicit `static_cast`, must match run-time values); static to dynamic is not. `tensor_handle` to `tensor_inline` converts implicitly but can be expensive (allocates and initializes a descriptor in the shader), and copies between `tensor_inline` instances are also expensive; pass tensors by reference.
 - Slicing a format-type tensor requires indices and extents aligned to 32 along dimension 0; for a multiplane tensor they must align with the scale block sizes.
 - `cooperative_tensor` is normally not constructed directly; obtain it from a tensor operation (for example `get_destination_cooperative_tensor()` in `tensor-operations.md`), which chooses an efficient `Layout` for the GPU.
-- This is the MSL (`.metal`) device-side `tensor` type. It is distinct from the host-side Metal 4 tensor objects covered by the separate `apple-graphics` skill, the MPS `MPSNDArray` / MPSGraph tensors in the `mps` category here, and the Core ML `MLMultiArray` in `apple-ml`.
-- Source: Metal Shading Language Specification version 4.1 (document dated 2026-06-04), section 2.22, pages 84-110. Retrieved 2026-10-17.
+- This is the MSL (`.metal`) device-side `tensor` type. It is distinct from the host-side `MTLTensor` / `MTLTensorDescriptor` objects (covered in this skill's `metal-compute/tensors.md`), the MPS `MPSNDArray` / MPSGraph tensors in the `mps` category here, and the Core ML `MLMultiArray` in the separate `apple-ml` skill.
+- Source: https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf (Metal Shading Language Specification version 4.1, document dated 2026-06-04), section 2.22, pages 84-110. Retrieved 2026-10-17.
 
 ## Related
 
 - [data-types.md](./data-types.md)
 - [address-spaces.md](./address-spaces.md)
 - [tensor-operations.md](./tensor-operations.md)
+- [tensors.md](../metal-compute/tensors.md)

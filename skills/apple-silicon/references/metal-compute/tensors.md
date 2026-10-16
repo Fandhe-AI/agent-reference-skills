@@ -83,6 +83,7 @@ id<MTLTensor> tensor = [device newTensorWithDescriptor:tensorDescriptor
 - In the sample, a dimension equal to `-1` (as `NSUInteger`) in a binding marks a dynamic shape; the sample returns early rather than creating a tensor for it.
 - Use `machineLearning` usage for tensors that participate in machine learning passes.
 - Distinct from MPSNDArray (MetalPerformanceShaders, see this skill's `mps` references), from the `MTLBuffer` and `MTL4CommandBuffer` classes documented in apple-graphics, and from Core AI `NDArray` (apple-ml). Tensor equivalence or conversion between these types is not covered by the sources used here.
+- Source (retrieved 2026-10-16): https://developer.apple.com/documentation/metal/mtltensor, https://developer.apple.com/documentation/metal/mtltensordescriptor, https://developer.apple.com/documentation/metal/mtltensorextents, https://developer.apple.com/documentation/metal/mtltensordatatype, https://developer.apple.com/documentation/metal/mtltensorusage, https://developer.apple.com/documentation/metal/mtltensorbinding, https://developer.apple.com/documentation/metal/mtltensorreferencetype, https://developer.apple.com/documentation/metal/running-inline-ml-operations-in-a-shader-with-metal-4
 
 ## Related
 

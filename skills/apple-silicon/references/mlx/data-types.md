@@ -58,6 +58,7 @@ Objects documented on this page:
 - Arrays with type `float64` only work with CPU operations. Using `float64` arrays on the GPU results in an exception.
 - Data types are arranged in a hierarchy; see `DtypeCategory`. Use `issubdtype` to test whether one dtype (or category) is a subtype of another category.
 - `iinfo` is listed in the data types page of MLX 0.32.4 (source pinned at tag `v0.32.4`).
+- Source: https://ml-explore.github.io/mlx/build/html/python/data_types.html (pinned source: https://github.com/ml-explore/mlx/blob/v0.32.4/docs/src/python/data_types.rst)
 
 ## Related
 
