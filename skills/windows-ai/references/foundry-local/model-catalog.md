@@ -13,7 +13,7 @@ foundry model run qwen2.5-0.5b-instruct-generic-cpu   # force a specific CPU var
 
 ## Options / Props
 
-`foundry model list --filter <key>=<value>` keys:
+### `foundry model list --filter <key>=<value>` keys
 
 | Key | Values | Description |
 |---|---|---|
@@ -22,7 +22,19 @@ foundry model run qwen2.5-0.5b-instruct-generic-cpu   # force a specific CPU var
 | `task` | `chat-completion`, `text-generation`, (audio: `automatic-speech-recognition`) | Model's intended task. |
 | `alias` | e.g. `phi4-cpu`, `qwen2.5-coder-0.5b-instruct-generic-cpu` | Filters by alias; supports `*` prefix wildcard. |
 
-Model metadata fields (`GET /foundry/list`, `FoundryModelInfo`/`ModelInfo`): `name`/`id`, `displayName`, `alias`, `providerType`/`publisher`, `uri`, `version`, `modelType` (e.g. ONNX), `promptTemplate` (`system`/`user`/`assistant`/`prompt`), `task`, `runtime.deviceType`, `runtime.executionProvider`, `fileSizeMb`, `supportsToolCalling`, `license`, `licenseDescription`, `parentModelUri`.
+### Model metadata fields (`GET /foundry/list`, `FoundryModelInfo`/`ModelInfo`)
+
+| Field | Notes |
+|---|---|
+| `name` / `id`, `displayName`, `alias` | Identity |
+| `providerType` / `publisher` | Provider |
+| `uri`, `version`, `parentModelUri` | Location and lineage |
+| `modelType` | e.g. ONNX |
+| `promptTemplate` | `system` / `user` / `assistant` / `prompt` |
+| `task` | Intended task |
+| `runtime.deviceType`, `runtime.executionProvider` | Hardware targeting |
+| `fileSizeMb`, `supportsToolCalling` | Size and capability |
+| `license`, `licenseDescription` | License |
 
 ## Notes
 

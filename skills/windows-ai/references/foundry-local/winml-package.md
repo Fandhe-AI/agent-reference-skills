@@ -15,8 +15,7 @@
 ```
 
 ```bash
-dotnet add package Microsoft.AI.Foundry.Local.WinML --version 1.0.0
-dotnet add package Betalgo.Ranul.OpenAI --version 9.1.0
+dotnet add package Microsoft.AI.Foundry.Local.WinML
 ```
 
 ```csharp
@@ -32,7 +31,7 @@ var manager = FoundryLocalManager.Instance;
 try
 {
     var catalog = await manager.GetCatalogAsync();
-    var model = await catalog.GetModelAsync("phi-3.5-mini")
+    var model = await catalog.GetModelAsync("phi-4-mini")
         ?? throw new Exception("Model not found in catalog.");
 
     if (!await model.IsCachedAsync())
@@ -60,13 +59,16 @@ finally
 |---|---|---|
 | `Microsoft.AI.Foundry.Local.WinML` | Windows only | Bundles native Windows binaries; auto-selects QNN NPU / NVIDIA GPU / CPU via WinML + ONNX Runtime. Requires `net9.0-windows10.0.26100.0`+ target and `win-x64`/`win-arm64` runtime identifiers. Requires a DirectX 12–capable GPU (no virtual machines without GPU passthrough). |
 | `Microsoft.AI.Foundry.Local` | Windows, Linux, macOS | Same API; omits Windows-specific hardware acceleration. Use when targeting non-Windows platforms. |
-| `Betalgo.Ranul.OpenAI` | — | Required alongside either package. Provides the `ChatMessage` type and related request/response models used by `CompleteChatAsync`/`CompleteChatStreamingAsync`. |
+| `Betalgo.Ranul.OpenAI` (namespace `Betalgo.Ranul.OpenAI.ObjectModels.RequestModels`) | — | No separate install: the Foundry Local package itself includes `ChatMessage` and related types used by the native chat API (`CompleteChatAsync`/`CompleteChatStreamingAsync`); only the `using` remains. |
 
 Equivalent Python packages: `foundry-local-sdk-winml` (Windows, hardware-accelerated) vs `foundry-local-sdk` (macOS/Linux, or Windows without hardware acceleration) — install only one, since both pin conflicting `onnxruntime-core` versions.
 
 ## Notes
 
 - This is the **current SDK generation** described in Foundry Local SDK's "two SDK generations" note (`Configuration`/`CreateAsync`, `catalog.GetModelAsync`, `model.GetChatClientAsync`) — the WinML package is that same generation's Windows-optimized variant, not a third API shape.
+- Prerequisites: Windows 11 24H2 (build 26100)+, .NET 9 SDK+, an x64 or Arm64 device. A dedicated GPU, NPU, or Copilot+ PC isn't required when the selected model has a compatible CPU variant.
+- The quickstart uses Phi-4 Mini (alias `phi-4-mini`, currently the latest Microsoft Phi model in Foundry Local); aliases and recommended models change as the catalog evolves. Phi-4 Mini is separate from Phi Silica (the Windows AI API model shipped with Windows, a Limited Access Feature), which is scheduled to be replaced by Aion Instruct.
+- `dotnet add package Microsoft.AI.Foundry.Local.WinML` installs the current stable package. The WinUI tutorial uses .NET 10 and pins package versions to be reproducible.
 - Streaming: `await foreach (var chunk in chatClient.CompleteChatStreamingAsync(messages, cancellationToken))`.
 - Tune generation with `chatClient.Settings.Temperature`, `.MaxTokens`, `.TopP`.
 - In a WinUI 3 or WPF app, call `FoundryLocalManager.CreateAsync` once during startup (for example in `App.xaml.cs`/`OnLaunched`) and resolve `FoundryLocalManager.Instance` elsewhere; call `manager.Dispose()` on app exit.

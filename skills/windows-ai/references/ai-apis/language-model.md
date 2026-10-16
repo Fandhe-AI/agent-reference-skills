@@ -48,7 +48,9 @@ Console.WriteLine(result.Text);
 
 - Namespace: `Microsoft.Windows.AI.Text` (Windows App SDK, experimental channel). Requires the Phi Silica Limited Access Feature (LAF) unlock token.
 - There is no separate `GenerateResponseWithProgressAsync` method — `GenerateResponseAsync` itself returns an `IAsyncOperationWithProgress`, exposing per-token progress while `await`-ing the final `LanguageModelResponseResult`.
-- Phi Silica is being replaced by Aion Instruct starting October 2026 (Insider) / November 2026 (retail); plan for this transition.
+- Phi Silica is being replaced by Aion Instruct. Timeline: **November 2026** Aion Instruct begins rolling out to Windows Insider Preview devices (Phi Silica remains present; the active model is controlled by a Windows Controlled Feature Rollout (CFR); side-by-side testing is possible via a Windows registry key); **January 2027** it rolls out to retail devices and Phi Silica is removed.
+- Aion Instruct needs no LAF token. A standalone sideloadable package for testing and LoRA training is available at https://aka.ms/tryaion; re-train LoRAs using Foundry Toolkit.
+- Phi Silica on GPU requires Developer Mode, Windows Insider Experimental Channel build 26300.8553 or later, and Windows App SDK 2.2.2-experimental9 (June 2026 Experimental) or later. The GPU model is not preinstalled: the first `EnsureReadyAsync` downloads it (shown in Settings > System > AI Components as "AI LanguageModel"). Show a consent dialog before calling `EnsureReadyAsync`.
 - Phi Silica is not available in China.
 - On NPU, speculative decoding and prompt compression accelerate generation; both are unavailable when running on GPU.
 - Text Intelligence Skills (`TextSummarizer`, `TextRewriter`, `TextToTableConverter`) wrap a `LanguageModel` instance for summarizing, rewriting (with `TextRewriteTone`), and formatting text-to-table.

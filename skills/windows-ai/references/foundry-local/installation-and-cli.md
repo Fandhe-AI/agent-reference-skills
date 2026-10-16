@@ -18,7 +18,7 @@ foundry model run qwen2.5-0.5b
 
 ## Options / Props
 
-Model commands:
+### Model commands
 
 | Command | Description |
 |---|---|
@@ -32,7 +32,7 @@ Model commands:
 | `foundry model load <model>` | Loads a model into the service. |
 | `foundry model unload <model>` | Unloads a model from the service. |
 
-Service commands:
+### Service commands
 
 | Command | Description |
 |---|---|
@@ -45,7 +45,7 @@ Service commands:
 | `foundry service diag` | Shows service logs. |
 | `foundry service set <options>` | Sets service configuration. |
 
-Cache commands:
+### Cache commands
 
 | Command | Description |
 |---|---|

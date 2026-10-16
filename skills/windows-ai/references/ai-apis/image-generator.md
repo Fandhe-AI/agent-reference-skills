@@ -52,6 +52,8 @@ if (result.Status == ImageGeneratorResultStatus.Success)
 - Namespace: `Microsoft.Windows.AI.Imaging`. Shipping since Windows App SDK 2.0 Experimental.
 - Supported hardware: **NPU (Copilot+ PC) only** — not available on GPU or CPU.
 - Requires Windows 11 version 24H2 (build 26100)+.
+- Model availability and download: the AI Image Generation model is optional even on a Copilot+ PC and is not preinstalled by default (several GB). The first `EnsureReadyAsync` call downloads it in the background through Windows Update; users can monitor progress at Settings > Windows Update and remove it at Settings > System > AI Components. Show a consent dialog before calling `EnsureReadyAsync` (on `NotReady` or `EnsureNeeded`); if the user later removes the model, `GetReadyState` returns `NotReady` or `EnsureNeeded` and the consent + download flow should be repeated.
+- In user-facing strings call it the "image generation model" or "optional AI model", not "SDXL" or "Stable Diffusion".
 - Apps must be packaged as MSIX with the `systemAIModels` capability declared in `Package.appxmanifest`, and `MaxVersionTested` set to a recent Windows version (e.g. `10.0.26226.0`+).
 - Provide Content Credentials (C2PA) for generated/modified images per Responsible AI guidance.
 

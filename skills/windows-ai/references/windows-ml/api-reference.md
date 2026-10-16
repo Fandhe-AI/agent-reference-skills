@@ -22,8 +22,13 @@ with initialize(options=InitializeOptions.ON_NO_MATCH_SHOW_UI):
 - C# uses `Microsoft.ML.OnnxRuntime` for inference; C++ uses the ONNX Runtime C API directly; Python uses the `onnxruntime-windowsml` wheel.
 - Python: registration is separate between native and Python ONNX Runtime environments — register EPs via the Python API directly, not native calls. Also remove the `msvcp140.dll` packed by `pywinrt`'s `winrt-runtime` package to avoid conflicts, and install the missing VC++ redistributable.
 
+- Experimental native Runtime, Text Generation, and Speech Recognition APIs: for native C/C++ scenarios needing explicit runtime, pipeline, stage, and tensor control, plus higher-level workflows for generating text with your own language model and recognizing speech with your own Whisper model. They ship in the `Microsoft.Windows.AI.MachineLearning` NuGet package; Python uses the `windowsml.runtime` and `windowsml.tasks` projections.
+
 ## Related
 
 - [Windows ML walkthrough](./tutorial.md)
 - [ONNX Runtime inference in Windows ML](./onnx-runtime-inference.md)
 - [ExecutionProviderCatalog](./execution-provider-catalog.md)
+- [Windows ML Runtime API overview](./runtime-overview.md)
+- [Text generation with Windows ML Runtime](./runtime-text-generation.md)
+- [Speech recognition with Windows ML Runtime](./runtime-speech-recognition.md)

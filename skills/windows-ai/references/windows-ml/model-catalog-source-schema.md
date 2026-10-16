@@ -33,13 +33,13 @@ A Model Catalog Source is a JSON file (hosted at an `https://` URL or referenced
 
 ## Options / Props
 
-Root object:
+### Root object
 
 | Property | Type | Required | Description |
 |---|---|---|---|
 | `models` | array | Yes | Array of model definitions |
 
-Model object (each entry in `models`):
+### Model object (each entry in `models`)
 
 | Property | Type | Required | Description |
 |---|---|---|---|
@@ -56,7 +56,7 @@ Model object (each entry in `models`):
 | `files` | array | Conditional | File objects — required unless `packages` is used (mutually exclusive with `packages`) |
 | `packages` | array | Conditional | Package objects — required unless `files` is used (mutually exclusive with `files`) |
 
-File object (`files[]`):
+### File object (`files[]`)
 
 | Property | Type | Required | Description |
 |---|---|---|---|
@@ -64,7 +64,7 @@ File object (`files[]`):
 | `uri` | string | No | Download URI; if omitted, derived from the model's base `uri` |
 | `sha256` | string | Yes | 64-hex-char SHA256 hash; used for integrity verification and for de-duping identical files across apps |
 
-Package object (`packages[]`, for MSIX/package-based distribution):
+### Package object (`packages[]`, for MSIX/package-based distribution)
 
 | Property | Type | Required | Description |
 |---|---|---|---|

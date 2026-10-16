@@ -48,7 +48,9 @@ Console.WriteLine($"Transcription: {transcription}");
 - Supported hardware: NPU (Copilot+ PC, preinstalled model) and CPU (downloaded on demand); **not supported on GPU**. Hardware selection is automatic — there is no developer/user opt-in.
 - For a good CPU experience, target 4+ physical cores, 3 GHz+ base clock, 32 MB+ L3 cache; see Video Super Resolution's CPU-spec check sample, which applies the same recommended-spec pattern.
 - Apps must be packaged as MSIX with the `systemAIModels` capability declared in `Package.appxmanifest`, and `MaxVersionTested` set to a recent Windows version (e.g. `10.0.26226.0`+).
-- Requires Windows 11 version 24H2 (build 26100)+ and WinAppSDK 1.7.1+.
+- Requires Windows 11 version 24H2 (build 26100)+ and Windows App SDK 2.2.2-experimental9 (June 2026 Experimental) or later experimental release (previously documented as WinAppSDK 1.7.1+).
+- Important: the Speech Recognition API is currently experimental and **not supported** for use in production environments. Apps trying out this API should not be published to the Microsoft Store.
+- Distinct from the Windows ML Runtime Speech Recognition API (see [runtime-speech-recognition](../windows-ml/runtime-speech-recognition.md)), where the app brings its own Whisper ONNX encoder/decoder; this page's API uses the model provided by the OS.
 
 ## Related
 

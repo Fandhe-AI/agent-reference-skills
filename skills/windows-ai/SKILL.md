@@ -3,10 +3,10 @@ name: windows-ai
 description: >
   Windows アプリ開発 (Windows AI Foundry) の AI/ML 統合リファレンス。
   Windows AI APIs、LanguageModel, TextRecognizer, ImageScaler, ImageObjectExtractor,
-  ImageObjectRemover, ImageDescriptionGenerator, SemanticSearch, ContentModeration,
-  Phi Silica LoRA、Windows ML、ONNX Runtime、execution providers、LearningModel、
-  Foundry Local、CLI、REST API、SDK、model catalog、MCP サーバー、App Actions、
-  IActionProvider、Agent Launchers、DirectML、IDMLDevice、operators、tensors。
+  SemanticSearch, ContentModeration、Phi Silica / Aion Instruct、LoRA、
+  Windows ML、Windows ML Runtime API、ONNX Runtime、execution providers、WebGPU EP、
+  Model Catalog、LearningModel、Foundry Local、MCP サーバー、App Actions、
+  IActionProvider、Agent Launchers、DirectML、NPU。
 user-invocable: false
 ---
 
@@ -16,6 +16,8 @@ Windows AI Foundry を中心とした Windows 上の AI/ML 開発機能の公式
 組み込み AI API、ローカル ONNX 推論 (Windows ML)、ローカルモデルホスティング (Foundry Local)、
 エージェント連携 (MCP / App Actions)、低レベル GPU 推論 (DirectML)、NPU ハードウェア・プロファイリング (Copilot+ PC / WPR / WPA) を扱う。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+対象版: MS Learn 取得日 2026-10-16〜17、Windows ML 2.4.89 (ORT 1.27.1) / Windows ML Runtime API 2.7.2021-experimental (ORT 1.30.0)。
 
 ## ディレクトリ構成
 
@@ -61,8 +63,25 @@ skills/windows-ai/
       text-recognizer.md
       video-scaler.md
       troubleshooting.md
+      get-started.md
+      phi-silica-tutorial-maui.md
+      phi-silica-tutorial-winui.md
+      text-recognition-tutorial.md
+      app-content-search-tutorial.md
+      imaging-tutorial.md
+      imaging-overview.md
+      phi-silica-transparency-note.md
     windows-ml/
       README.md
+      runtime-overview.md
+      runtime-get-started.md
+      runtime-concepts.md
+      runtime-tutorial.md
+      runtime-text-generation.md
+      runtime-speech-recognition.md
+      multiple-onnx-versions.md
+      efficiency-tips.md
+      model-distribution.md
       api-reference.md
       bring-your-own-eps.md
       check-ep-versions.md
@@ -107,6 +126,8 @@ skills/windows-ai/
       rest-api.md
       sdk.md
       winml-package.md
+      get-started.md
+      winui-local-ai-tutorial.md
     mcp-app-actions/
       README.md
       mcp-overview.md
@@ -184,6 +205,16 @@ skills/windows-ai/
       onnxruntime-etw-tracing.md
       task-manager-npu.md
       wpr-wpa-npu-profiling.md
+  samples/
+    README.md
+    first-windows-ai-api-call.md
+    foundry-local-quickstart.md
+    compile-onnx-model-on-first-run.md
+    windows-ml-runtime-api-run-model.md
+  scripts/
+    README.md
+    install.md
+    diagnostics.md
 ```
 
 ## 探索手順
@@ -191,7 +222,7 @@ skills/windows-ai/
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
 1. 下記マッピング表でタスクに対応するカテゴリを探す
-2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
+2. そのカテゴリの `references/<category>/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
 ## タスク → カテゴリ マッピング
@@ -206,6 +237,11 @@ skills/windows-ai/
 | execution providers の選択・登録・インストール・トラブルシューティングをしたい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
 | LearningModel / LearningModelSession でモデルをバインド・評価したい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
 | Windows ML の CLI・診断ログ・WebGPU EP を扱いたい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
+| Windows AI API の開発環境構築・初回呼び出し・Phi Silica / OCR / Imaging / Semantic Search のチュートリアルを進めたい | ai-apis | [references/ai-apis/README.md](references/ai-apis/README.md) |
+| Windows ML Runtime API (experimental, C++/Python) でパイプライン・ステージ・テンソル・GGUF (llama.cpp) を明示制御したい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
+| 自前の LM / Whisper モデルで Text Generation / Speech Recognition (experimental) を使いたい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
+| モデル配布 (同梱 / 別途ダウンロード / アプリ間共有)・推論の効率化・複数 ORT 版の同居を設計したい | windows-ml | [references/windows-ml/README.md](references/windows-ml/README.md) |
+| Foundry Local を WinUI / C# アプリに組み込みたい | foundry-local | [references/foundry-local/README.md](references/foundry-local/README.md) |
 | Foundry Local で LLM をローカルホストしたい | foundry-local | [references/foundry-local/README.md](references/foundry-local/README.md) |
 | Foundry Local の CLI / REST API / SDK / model catalog / キャッシュ管理を使いたい | foundry-local | [references/foundry-local/README.md](references/foundry-local/README.md) |
 | MCP サーバーを実装・登録・テストしたい | mcp-app-actions | [references/mcp-app-actions/README.md](references/mcp-app-actions/README.md) |
@@ -217,6 +253,10 @@ skills/windows-ai/
 | Copilot+ PC / NPU ハードウェア要件を確認したい | npu-devices | [references/npu-devices/README.md](references/npu-devices/README.md) |
 | Task Manager / WPR / WPA / GPUView / ETW で NPU 使用率・推論を計測したい | npu-devices | [references/npu-devices/README.md](references/npu-devices/README.md) |
 | 自前 ONNX モデルを NPU 向けに調達・量子化したい (BYOM) | npu-devices | [references/npu-devices/README.md](references/npu-devices/README.md) |
+| 典型的な使い方 (初回 API 呼び出し・Foundry Local・初回起動時のモデルコンパイル・Runtime API 実行) を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・診断コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
+
+棲み分け: Windows ML Runtime の Speech Recognition / Text Generation (自前モデル持ち込み、experimental) と、Windows AI APIs の SpeechRecognitionModel / LanguageModel (OS 提供モデル) は別物。
 
 このスキルは Windows AI Foundry 配下の AI/ML 機能（組み込み AI API、ローカル推論、エージェント連携、DirectML、NPU ハードウェア・プロファイリング）のみを扱う。
 WinUI コントロールやレイアウト・データバインディングなど UI 実装は windows-winui-controls, windows-winui-ui, windows-app-sdk が担当し、パッケージング・配布は windows-packaging-publish、グラフィックス・メディア描画は windows-graphics-media が担当する。
