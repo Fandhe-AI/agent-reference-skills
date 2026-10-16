@@ -121,7 +121,9 @@ const current = r.globalViewModelInstance("Theme");
 ```ts
 const headingFont = vmi.font("headingFont");
 const res = await fetch("/Orbitron.ttf");
-headingFont.value = await decodeFont(new Uint8Array(await res.arrayBuffer()));
+const font = await decodeFont(new Uint8Array(await res.arrayBuffer()));
+headingFont.value = font;
+font.unref();                         // release after setting
 ```
 
 ### ColorProperty helpers
@@ -192,7 +194,7 @@ assetsFile.init();
 - Nested View Models can be accessed via method chaining or forward-slash path strings.
 - The source no longer uses the `*Property` type names (`ArtboardProperty`, `BooleanProperty`, ...); use the `ViewModelInstance*` names above.
 - Setting a property value does not update bound elements until the state machine or artboard advances; observers fire when changes are applied by an advance.
-- Always call `unref()` on decoded image assets once assigned to free memory.
+- Always call `unref()` on decoded image / font assets once assigned to free memory.
 
 ## Related
 
