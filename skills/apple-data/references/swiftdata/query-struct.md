@@ -32,6 +32,7 @@ struct FilteredList: View {
 | `wrappedValue` | `Result` | Most recent fetch result |
 | `modelContext` | `ModelContext` | Context the query interacts with |
 | `fetchError` | `(any Error)?` | Error from the most recent fetch |
+| `sections` | `SectionedResults<Element, String>` | Sectioned results of a query created with a `sectionBy` initializer. iOS 27.0+ |
 
 ### Key initializers
 
@@ -39,12 +40,17 @@ struct FilteredList: View {
 init(_ descriptor: FetchDescriptor<Element>, animation: Animation?)
 init(filter: Predicate<Element>?, sort: [SortDescriptor<Element>], animation: Animation?)
 init<Value>(filter: Predicate<Element>?, sort: KeyPath<Element, Value>, order: SortOrder, animation: Animation?)
+
+// Sectioned (iOS 27.0+); Element : PersistentModel
+init(filter: Predicate<Element>? = nil, sort descriptors: [SortDescriptor<Element>] = [], animation: Animation, sectionBy sectionKeyPath: KeyPath<Element, String>) where Result == SectionedResults<Element, String>
+init(filter: Predicate<Element>? = nil, sort descriptors: [SortDescriptor<Element>] = [], animation: Animation, sectionBy sectionKeyPath: KeyPath<Element, String?>) where Result == SectionedResults<Element, String>
 ```
 
 ## Notes
 
 - iOS 17.0+, macOS 14.0+, tvOS 17.0+, watchOS 10.0+, visionOS 1.0+
 - Conforms to `DynamicProperty` — SwiftUI automatically invalidates and re-renders when underlying data changes
+- The `sectionBy` initializers (animation / transaction / filter-sort-order families) are iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+; `Result` is `SectionedResults<Element, String>`
 - Check `fetchError` to surface persistent-store errors in the UI
 
 ## Related

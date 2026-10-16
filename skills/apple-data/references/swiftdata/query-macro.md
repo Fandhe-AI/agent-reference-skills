@@ -39,12 +39,14 @@ Common macro overloads (all available as `@Query(...)`):
 | `order` | `SortOrder` | `.forward` or `.reverse` (with KeyPath sort) |
 | `animation` | `Animation?` | Animation for result changes |
 | `transaction` | `Transaction?` | Transaction for result changes |
+| `sectionBy` | `KeyPath<T, String>` or `KeyPath<T, String?>` | Groups results into sections (iOS 27.0+) |
 
 Accepts a full `FetchDescriptor<T>` as an alternative to individual parameters.
 
 ## Notes
 
 - iOS 17.0+, macOS 14.0+, tvOS 17.0+, watchOS 10.0+, visionOS 1.0+
+- The sectioned overloads in "Additional query macros" (Basic queries / Predicate-based queries, e.g. `Query(filter:sort:animation:sectionBy:)`) take `sectionBy` and return `SectionedResults` (iOS 27.0+)
 - Requires a `ModelContainer` in the SwiftUI environment (set via `.modelContainer(for:)`)
 - The backing type is `Query<Element, Result>`; dynamic filtering requires rebuilding the view with a new predicate
 

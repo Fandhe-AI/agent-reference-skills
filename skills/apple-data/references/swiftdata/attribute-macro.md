@@ -44,11 +44,15 @@ class RemoteImage {
 | `.allowsCloudEncryption` | Encrypts the attribute value in CloudKit |
 | `.spotlight` | Includes the value in Spotlight search index |
 | `.preserveValueOnDeletion` | Retains the value in history records after the model is deleted |
+| `.codable` | Uses the property's codable representation to store the property. iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+ |
+| `.ephemeral` | Track changes to this property but do not persist. iOS 17.0+, macOS 14.0+, tvOS 17.0+, watchOS 10.0+, visionOS 1.0+ |
+| `.transformable(by:)` | Transforms the property's value between an in-memory form and a persisted form; overloads take `ValueTransformer.Type` or `String` |
 
 ## Notes
 
 - iOS 17.0+, macOS 14.0+, tvOS 17.0+, watchOS 10.0+, visionOS 1.0+
 - Apply only to stored properties of a `@Model` class; computed properties are always transient
+- `.codable` stores types that conform to `Codable` in a model, including types you don't control directly (SwiftData updates)
 - Use `originalName` together with `SchemaMigrationPlan` for lightweight column renames
 
 ## Related

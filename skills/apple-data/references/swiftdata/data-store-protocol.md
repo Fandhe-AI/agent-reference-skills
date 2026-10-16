@@ -51,6 +51,7 @@ protocol DataStoreBatching : DataStore {
 
 - iOS 18.0+, iPadOS 18.0+, Mac Catalyst 18.0+, macOS 15.0+, tvOS 18.0+, visionOS 2.0+, watchOS 11.0+
 - Implement `DataStore` to back a `ModelContainer` with a custom storage mechanism instead of the default Core Data-based `DefaultStore`
+- The default implementation is `DefaultStore`
 - Conform additionally to `DataStoreBatching` to support efficient batch deletes without fetching snapshots first
 - Conform to `HistoryProviding` alongside `DataStore` to expose change history for the custom store
 
@@ -59,3 +60,5 @@ protocol DataStoreBatching : DataStore {
 - [ModelContainer](./model-container.md)
 - [History tracking](./history-tracking.md)
 - [ModelDocument](./model-document.md)
+- [DefaultStore](./default-store.md)
+- [DataStoreError](./errors.md)

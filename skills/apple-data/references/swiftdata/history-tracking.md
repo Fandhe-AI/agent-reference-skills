@@ -87,7 +87,8 @@ let observer = try HistoryObserver(
 ## Notes
 
 - `HistoryDescriptor`, `HistoryTransaction`, `HistoryToken`, `HistoryChange` (plus `HistoryInsert`/`HistoryUpdate`/`HistoryDelete`/`HistoryTombstone` and their `Default*` implementations): iOS 18.0+, iPadOS 18.0+, Mac Catalyst 18.0+, macOS 15.0+, tvOS 18.0+, visionOS 2.0+, watchOS 11.0+
-- `HistoryObserver` is Beta: iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+
+- `HistoryDescriptor.sortBy` is new in June 2025 (SwiftData updates: "added flexibility in accessing and sorting transaction history")
+- `HistoryObserver`: iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+, watchOS 27.0+
 - `HistoryObserver` listens for `ModelContainer.remoteChange` notifications and is `@Observable`, so SwiftUI views can react to `eventCounter` changes directly
 - A custom `DataStore` must additionally conform to `HistoryProviding` to expose transaction history for these types
 
