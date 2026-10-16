@@ -52,6 +52,7 @@ Using Accounts as customers: any request with a `customer` parameter also accept
 curl https://api.stripe.com/v1/setup_intents \
   -u "<<YOUR_SECRET_KEY>>:" \
   -d customer_account=acct_123 \
+  -d payment_method=pm_card_visa \
   -d "automatic_payment_methods[enabled]=true" \
   -d confirm=true \
   --data-urlencode "return_url=https://example.com/return" \
@@ -77,6 +78,7 @@ Common configurations:
 - Existing platforms can use the v2 API to manage Accounts created with v1 (including assigning the `customer` configuration). Stripe discourages maintaining both versions indefinitely.
 - Use Accounts v1 for: OAuth authentication of connected accounts; signing accounts to a recipient service agreement; requesting or managing `treasury`, `card_issuing_*`, deprecated capabilities (e.g. `legacy_payments`), deprecated payment methods, and certain payment methods in public or private preview.
 - Use Global payouts for cross-border payouts.
+- The official example omits `payment_method`; confirming a SetupIntent with `confirm=true` requires one (`pm_card_visa` above is a test PaymentMethod). Alternatively omit `confirm=true` and collect and confirm the payment method on the client.
 - Source: https://docs.stripe.com/connect/accounts-v2 (retrieved 2026-10).
 
 ## Related

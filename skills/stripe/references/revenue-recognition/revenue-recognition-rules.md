@@ -18,21 +18,29 @@ Example uses of a rule:
 - Recognize revenue after a specific time period to model a future fulfillment schedule.
 - Allocate multiple revenue treatments to a single transaction amount.
 
-## Default rules
+## Options / Props
 
-- Invoice line items with service periods: amount amortizes evenly over the service period. Without a period, the amount is recognized entirely when the invoice finalizes.
-- Other payments not made through an invoice: recognized immediately upon payment if no service period or fulfillment information exists, or by imported service period or fulfillment data.
+### Default rules
 
-## Custom rules
+| Name | Description |
+| --- | --- |
+| Invoice line items with service periods | Amount amortizes evenly over the service period. Without a period, the amount is recognized entirely when the invoice finalizes. |
+| Other payments not made through an invoice | Recognized immediately upon payment if no service period or fulfillment information exists, or by imported service period or fulfillment data. |
 
-Custom rules override default behaviors. Rules can apply to: Products, Customers, Invoice line items, Other payments (charges not associated with invoices), Credit Notes.
+### Custom rules (apply-to targets)
 
-## Rule ordering and hierarchy
-
-Each transaction can have only one rule applied. When a transaction matches multiple rules' "Apply-to" criteria, the higher a rule is ranked in the list, the higher its priority. Reorder with **Change rule order**.
+| Name | Description |
+| --- | --- |
+| Products | Rule applies to products. |
+| Customers | Rule applies to customers. |
+| Invoice line items | Rule applies to invoice line items. |
+| Other payments | Charges not associated with invoices. |
+| Credit Notes | Rule applies to credit notes. |
 
 ## Notes
 
+- Custom rules override default behaviors.
+- Rule ordering and hierarchy: each transaction can have only one rule applied. When a transaction matches multiple rules' "Apply-to" criteria, the higher a rule is ranked in the list, the higher its priority. Reorder with **Change rule order**.
 - Rules are typically applied to reports within 24 hours. A rule successfully applied in the latest report has `active` status; otherwise it remains `processing`.
 - If a new rule's effective period overlaps a closed accounting period, applying it retroactively generates corrections. To prevent this, open the accounting period before adding the rule.
 - Periodically review rules for hierarchy and effective period as billing models and customer types change.

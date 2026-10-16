@@ -13,21 +13,17 @@ https://dashboard.stripe.com/revenue-recognition
 https://dashboard.stripe.com/revenue-recognition/statements
 ```
 
-## Dashboard overview charts
+## Options / Props
 
-Default charts:
+### Dashboard overview charts
 
-- **Recognized revenue**: net recognized revenue.
-- **Deferred revenue**: ending balance of deferred revenue per month.
-- **Booked revenue**: revenue recorded when an invoice is finalized, including monthly totals booked but not necessarily recognized.
+| Name | Description |
+| --- | --- |
+| Recognized revenue | Net recognized revenue. |
+| Deferred revenue | Ending balance of deferred revenue per month. |
+| Booked revenue | Revenue recorded when an invoice is finalized, including monthly totals booked but not necessarily recognized. |
 
-Optional charts (add via **Add**): Top products by net recognized revenue, Top customers by net recognized revenue, Top products by booked revenue, Top customers by booked revenue, AR aging trend.
-
-Customize: **Add** opens the chart catalog; **Edit** enables drag-to-reorder and removal (including defaults); **Reset** restores default order. Selections persist across sessions and can be saved per account.
-
-Other views: recognized revenue breakdown (by source, with adjustments for refunds, disputes, and contra revenue); revenue waterfall (expected recognizable revenue over time, based on historical billings only; does not model future billings).
-
-## Statements
+### Statements
 
 | Report Type | Description |
 | --- | --- |
@@ -38,7 +34,7 @@ Other views: recognized revenue breakdown (by source, with adjustments for refun
 | Accounts receivable aging | Outstanding invoices categorized by age. |
 | Debits and credits | Detailed transaction entries; **Entries** filter shows all transactions or isolates corrections. |
 
-## CSV export formats
+### CSV export formats
 
 | Report format | Description |
 | --- | --- |
@@ -56,6 +52,9 @@ Other views: recognized revenue breakdown (by source, with adjustments for refun
 
 ## Notes
 
+- The table above lists the default overview charts. Optional charts (add via **Add**): Top products by net recognized revenue, Top customers by net recognized revenue, Top products by booked revenue, Top customers by booked revenue, AR aging trend.
+- Dashboard chart customization: **Add** opens the chart catalog; **Edit** enables drag-to-reorder and removal (including defaults); **Reset** restores default order. Selections persist across sessions and can be saved per account.
+- Other Dashboard views: recognized revenue breakdown (by source, with adjustments for refunds, disputes, and contra revenue); revenue waterfall (expected recognizable revenue over time, based on historical billings only; does not model future billings).
 - Expect a 4-hour delay before data displays in the Dashboard.
 - All report information is accessible after data import.
 - By default, exported reports include data for all currencies.

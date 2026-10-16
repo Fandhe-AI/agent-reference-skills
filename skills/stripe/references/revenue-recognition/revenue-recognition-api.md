@@ -28,18 +28,20 @@ curl https://files.stripe.com/v1/files/file_xxx/contents \
   -u "<<YOUR_SECRET_KEY>>:"
 ```
 
-## Report types
+## Options / Props
 
-- `revenue_recognition.debit_credit_summary.1`
-- `revenue_recognition.debit_credit_by_price.1`
-- `revenue_recognition.debit_credit_by_product.1`
-- `revenue_recognition.debit_credit_by_customer.1`
-- `revenue_recognition.debit_credit_by_invoice.1`
-- `revenue_recognition.debit_credit_by_invoice_line_item.1`
+### Report types
 
-## Report Run Parameters
+| Name | Description |
+| --- | --- |
+| `revenue_recognition.debit_credit_summary.1` | Debits and credits summary |
+| `revenue_recognition.debit_credit_by_price.1` | Debits and credits by price |
+| `revenue_recognition.debit_credit_by_product.1` | Debits and credits by product |
+| `revenue_recognition.debit_credit_by_customer.1` | Debits and credits by customer |
+| `revenue_recognition.debit_credit_by_invoice.1` | Debits and credits by invoice |
+| `revenue_recognition.debit_credit_by_invoice_line_item.1` | Debits and credits by invoice line item |
 
-All report types require `interval_start` and `interval_end`.
+### Report run parameters
 
 | Report Type | Optional Run Parameters |
 | --- | --- |
@@ -50,13 +52,22 @@ All report types require `interval_start` and `interval_end`.
 | revenue_recognition.debit_credit_by_invoice.1 | `customer`, `invoice`, `invoice_line_item`, `decimal_format` |
 | revenue_recognition.debit_credit_by_invoice_line_item.1 | `customer`, `invoice`, `invoice_line_item`, `decimal_format` |
 
-## Report Run Columns
+### Report run columns
 
-By default, reports run with the default column set. Customize selection and ordering with the optional `columns` parameter. Columns marked default are included by default.
+#### Common columns (all report types)
 
-Common to all report types (default): `accounting_period` (the accounting period), `open_accounting_period` (entries in open periods are subject to change), `currency` (three-letter ISO code), `debit` (debited account), `credit` (credited account), `amount` (major units of the currency). Non-default in all: `credit_gl_code`, `debit_gl_code`.
+| Name | Default | Description |
+| --- | --- | --- |
+| `accounting_period` | Yes | The accounting period |
+| `open_accounting_period` | Yes | Entries in open periods are subject to change |
+| `currency` | Yes | Three-letter ISO code |
+| `debit` | Yes | Debited account |
+| `credit` | Yes | Credited account |
+| `amount` | Yes | Major units of the currency |
+| `credit_gl_code` | No | — |
+| `debit_gl_code` | No | — |
 
-Additional columns per report type:
+#### Additional columns by report type
 
 | Report type | Additional default columns | Additional optional columns |
 | --- | --- | --- |
@@ -69,6 +80,8 @@ Additional columns per report type:
 
 ## Notes
 
+- All report types require `interval_start` and `interval_end`.
+- By default, reports run with the default column set. Customize selection and ordering with the optional `columns` parameter.
 - Beta feature; data fields might change. Contact revenue-recognition-api-beta@stripe.com for issues.
 - `transaction_model_id` is the Stripe model associated with the change (invoice line item, invoice, invoice item, charge, and so on).
 - `invoice_id` and `price_id` are `null` for standalone charges or invoice items not associated with an invoice or price.
