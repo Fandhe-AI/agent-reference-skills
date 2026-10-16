@@ -1,9 +1,11 @@
 ---
 name: anthropic-agent-sdk
 description: >
-  Claude Agent SDK (TypeScript / Python) リファレンス。query(), ClaudeAgentOptions,
-  custom tools, createSdkMcpServer, hooks, canUseTool, subagents, sessions (resume / fork),
-  streaming, structured outputs, Agent Skills (SKILL.md), hosting。
+  Claude Agent SDK (code.claude.com/docs/en/agent-sdk) の TypeScript / Python リファレンス。
+  query(), ClaudeAgentOptions / Options, fallbackModel, maxTurns, maxBudgetUsd,
+  custom tools (in-process MCP), createSdkMcpServer, hooks, permissions (canUseTool), subagents,
+  sessions (resume / fork), streaming, structured outputs, Agent Skills (SKILL.md),
+  slash commands (/compact, /clear), tool search, hosting / observability。
 user-invocable: false
 ---
 
@@ -18,7 +20,7 @@ Claude Code CLI 本体は `anthropic-claude-code` / `anthropic-claude-code-exten
 `anthropic-api-core`、Claude API 側の tool use / Agent Skills / MCP は `anthropic-api-tools-mcp` を参照
 （本スキルは SDK 経由でエージェントをビルド・運用する側を担当）。
 
-Source: code.claude.com/docs/en/agent-sdk、2026-10-16 取得（その時点の npm `@anthropic-ai/claude-agent-sdk` 0.3.301 / PyPI `claude-agent-sdk` 0.2.168）。
+Source: https://code.claude.com/docs/en/agent-sdk 、2026-10-16 取得（その時点の npm `@anthropic-ai/claude-agent-sdk` 0.3.301 / PyPI `claude-agent-sdk` 0.2.168）。
 
 ## ディレクトリ構成
 

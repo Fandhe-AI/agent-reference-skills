@@ -1,5 +1,7 @@
 # Extending
 
+Claude Agent SDK（ライブラリ組み込み）側の Skills / MCP / subagents / hooks / slash commands。Claude Code CLI 本体の同名機能は anthropic-claude-code-extend、Claude API 側は anthropic-api-tools-mcp を参照。
+
 | Name | Description | Path |
 |------|-------------|------|
 | Custom Tools | Define custom tools with the Agent SDK's in-process MCP server so Claude can call your functions, hit your APIs, and perform domain-specific operations. | [custom-tools.md](./custom-tools.md) |
