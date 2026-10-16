@@ -1,14 +1,18 @@
-# @supabase/server 概要
+# @supabase/server overview
 
-サーバーサイド JavaScript 環境でリクエストを認証するフレームワーク非依存ライブラリ。JWT 検証・API キー解決・設定済み Supabase クライアント生成を単一の `SupabaseContext` に集約する。
+`@supabase/server` is a framework-agnostic library for authenticating requests in server-side JavaScript environments.
 
 ## Signature / Usage
 
-- JWT を検証し、Supabase API キーを解決し、クライアントを事前構成して `SupabaseContext` として公開する。adapter / primitive のどちらで生成しても同一形状
-- Hono / H3 / Elysia / NestJS 向け adapter が同梱される（deprecated、2026-12-01 削除。`adapters.md` / `migrating-off-adapters.md` 参照）。低レベル primitive を直接組み合わせてカスタムフレームワークや edge runtime にも使える
-- Cookie ベースのセッションを使う SSR フレームワークでは `@supabase/server` ではなく `@supabase/ssr` を使う
+It verifies JWTs, resolves Supabase API keys, and creates pre-configured Supabase clients, exposing everything through a single `SupabaseContext` that is identical regardless of which adapter or primitive produced it.
 
-## インストール
+Adapters for Hono, H3, Elysia, and NestJS are included (deprecated, see adapters.md). You can also compose the lower-level primitives directly for custom frameworks or edge runtimes.
+
+For cookie-based sessions in SSR frameworks, use `@supabase/ssr` instead.
+
+### Installing
+
+Install `@supabase/server` via your package manager.
 
 ```sh
 npm install @supabase/server
@@ -22,7 +26,7 @@ yarn add @supabase/server
 pnpm add @supabase/server
 ```
 
-### JSR（Deno / Bun）
+`@supabase/server` is also published to JSR for Deno and Bun environments.
 
 ```sh
 deno add jsr:@supabase/server
@@ -32,11 +36,13 @@ deno add jsr:@supabase/server
 bunx jsr add @supabase/server
 ```
 
-### Deno の optional peer dependency
+#### Optional peer dependencies on Deno
 
-`@supabase/server/middleware/postgres` と `@supabase/server/middleware/postgres-admin` は `pg` を必要とする。Deno は自コードが import した場合のみ optional peer を解決するため、`deno.json` の pin だけでは不十分（`deno check` は通るが起動時に `Could not find package 'pg'` で失敗）。entry module の先頭に bare import を 1 つ置く。別途 `deno add npm:pg` や `package.json` 記載は不要。`deno info` で `npm:/pg@...` が出れば module graph に入っている。
+Some entry points rely on optional peer dependencies. `@supabase/server/middleware/postgres` and `@supabase/server/middleware/postgres-admin` need `pg`. Deno resolves an optional peer only when your own code imports it. A pin in `deno.json` alone is not enough: `deno check` passes and the function fails at startup with `Could not find package 'pg'`.
 
-Deno 2.9 以降は npm パッケージに minimum dependency age が適用される。公開当日のリリースを使うには `deno check` に `--minimum-dependency-age 0` を渡す。
+Add a bare import once, at the top of your entry module. No separate `deno add npm:pg` or `package.json` entry is needed. `deno info` lists `npm:/pg@...` once the package is in the module graph.
+
+Deno 2.9 and later apply a minimum dependency age to npm packages. To use a release published the same day, pass `--minimum-dependency-age 0` to `deno check`.
 
 ```ts
 import 'pg'
@@ -47,13 +53,17 @@ import { withPostgresClient } from '@supabase/server/middleware/postgres'
 deno info index.ts | grep "npm:/pg@"
 ```
 
-## 使用例
+### Usage examples
 
-各例は Fetch handler。Deno / Bun / Supabase Edge Functions は `export default { fetch }` 形をそのまま実行する。Cloudflare Workers は `nodejs_compat` フラグか `env` option が必要（`withSupabase` がプロジェクト URL / キーを読むため）。Node では adapter か primitive をフレームワークと併用する。
+Each example is a Fetch handler. Deno, Bun, and Supabase Edge Functions run the `export default { fetch }` shape as is. Cloudflare Workers also need the `nodejs_compat` flag or the `env` option, so `withSupabase` can read your project's URL and keys. On Node, use an adapter or the primitives with your framework.
 
-### ユーザー JWT でエンドポイントを保護
+#### Protect an endpoint with a user JWT
 
-`auth: 'user'` で handler 実行前に JWT を検証。無効な場合は JSON エラーレスポンスで handler は実行されない。`withSupabase` は全 `OPTIONS` に `204` を返し全レスポンスに CORS ヘッダーを付与する（フレームワーク側で CORS を扱う場合は `cors: 'disabled'`）。`ctx.supabase` は呼び出し元スコープで RLS 適用、`ctx.supabaseAdmin` は RLS をバイパスする。
+`withSupabase` wraps your handler. With `auth: 'user'`, it checks the caller's JWT before your handler runs. A request without valid credentials gets a JSON error response, and your handler never runs.
+
+`withSupabase` also answers every `OPTIONS` request with `204` and adds CORS headers to every response. Set `cors: 'disabled'` when your framework handles CORS.
+
+`ctx.supabase` is scoped to the caller, so Row Level Security policies apply. `ctx.supabaseAdmin` bypasses RLS. Use it only for work that needs full database access.
 
 ```ts
 import { withSupabase } from '@supabase/server'
@@ -66,9 +76,11 @@ export default {
 }
 ```
 
-### 公開エンドポイント
+#### Serve a public endpoint
 
-`auth: 'none'` は全リクエストを通す。`ctx.userClaims` は `null`、`ctx.supabase` は anonymous クライアント。Supabase Edge Functions は既定で全リクエストの JWT を検査するため、`auth: 'none'` / `'publishable'` / `'secret'` の関数では `supabase/config.toml` で無効化する。
+`auth: 'none'` lets every request through. `ctx.userClaims` is `null`, and `ctx.supabase` runs as an anonymous client.
+
+Supabase Edge Functions check for a valid JWT on every request by default. For a function that uses `auth: 'none'`, `auth: 'publishable'`, or `auth: 'secret'`, turn that check off in `supabase/config.toml`. The `auth` setting on `withSupabase` then decides who gets in.
 
 ```ts
 import { withSupabase } from '@supabase/server'
@@ -85,9 +97,11 @@ export default {
 verify_jwt = false
 ```
 
-### Context を自前で構築
+#### Build the context yourself
 
-`createSupabaseContext` は `withSupabase` と同じ認証検査を行い、レスポンスではなく `{ data, error }` を返す。失敗時は `error.status` に返すべき HTTP ステータスが入る。CORS は処理しない。
+`createSupabaseContext` runs the same auth checks as `withSupabase` but returns `{ data, error }` instead of a response. Use it inside a framework route handler, or anywhere you want to shape the error response yourself.
+
+On success, `data` is the same `SupabaseContext` that `withSupabase` passes to your handler. On failure, `error.status` holds the HTTP status to send. `createSupabaseContext` does not handle CORS.
 
 ```ts
 import { createSupabaseContext } from '@supabase/server'
@@ -107,8 +121,8 @@ export default {
 
 ## Notes
 
-- 出典: https://supabase.com/docs/reference/server/introduction （原本 https://supabase.com/llms/server.txt、2026-10 取得）
-- パッケージ選択の判断は https://supabase.com/docs/guides/auth/choosing-a-server-package
+- Source: https://supabase.com/docs/reference/server/introduction (original: https://supabase.com/llms/server.txt, fetched 2026-10)
+- Which package to use: https://supabase.com/docs/guides/auth/choosing-a-server-package
 
 ## Related
 

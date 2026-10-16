@@ -1,18 +1,18 @@
 # Moving off the adapters
 
-`@supabase/server/adapters/*`（Hono / H3 / Elysia / NestJS）から `@supabase/middleware` entry + bridge への移行手順。adapter は deprecated、2026-12-01 削除。
+Migration from `@supabase/server/adapters/*` (Hono / H3 / Elysia / NestJS) to `@supabase/middleware` entries plus a bridge. Adapters are deprecated and will be removed on December 1, 2026.
 
 ## Signature / Usage
 
-adapter は各フレームワーク固有に `SupabaseContext` を構築して handler から届く場所に置いていた。engine がこのモデルを置き換え、middleware は `(handler) => handler` の entry（Web `Request` / `Response` 上の wrapper）になった。`withSupabaseClient()` / `withSupabaseAdminClient()` / `withRequiredClaims()` などは compose 可能な通常の entry。残るのは bridge で、パッケージではなくプロジェクト側が所有する。
+Each adapter solved the same problem in a framework-specific way: build a `SupabaseContext` and stash it where the handler can reach it. That meant a published entry point, a peer dependency range, and a release cycle per framework, all to wrap one call. The engine replaced the model. A middleware is now an entry, a `(handler) => handler` wrapper over the Web `Request` and `Response` pair, and `withSupabaseClient()`, `withSupabaseAdminClient()`, `withRequiredClaims()`, and the rest are ordinary entries you compose. What remains is the bridge, and it belongs in your project, not in a package that has to track your framework's major versions.
 
-adapter は現時点で動作するが 2026-12-01 に削除される。トップレベルの `withSupabase(config, handler)`（`@supabase/server`）はこの変更の対象外。
+The adapters are deprecated. They still work today and will be removed on December 1, 2026. `withSupabase(config, handler)` from `@supabase/server` is not part of this change.
 
-移行で 3 つの変更が生じ、最初の 1 つはエンドポイントを開放し得る。
+Three changes come with the migration. The first can open an endpoint up.
 
-## The auth trap
+### The auth trap
 
-adapter は未認証リクエストを拒否していたが `withClaims()` は拒否しない。`auth: 'user'` のエンドポイントを `withRequiredClaims()` でなく `withClaims()` に移すと 401 が無言の 200 になる。
+The adapters rejected unauthenticated requests. `withClaims()` does not. Migrating an `auth: 'user'` endpoint onto it instead of `withRequiredClaims()` turns a 401 into a silent 200.
 
 ```ts
 // Before: an anonymous request gets 401 and the handler never runs.
@@ -26,40 +26,42 @@ app.use('*', toHono([withClaims(), withSupabaseClient()]))
 app.use('*', toHono([withRequiredClaims(), withSupabaseClient()]))
 ```
 
-`withClaims()` は存在するが無効な token は拒否する。credential が全く無いリクエストはエラーにせず `jwtClaims: null` を提供して通す（匿名パスを許す設計）。何も throw / log されず、RLS が anonymous role に見せる範囲（しばしば空配列）で 200 を返すため、データのバグに見え認証バグとして気付かれにくい。
+`withClaims()` rejects a token that is present and invalid. A request with no credentials at all is not an error to it. It contributes `jwtClaims: null` and falls through, by design, because many pipelines want an anonymous path. Nothing throws and nothing logs. The endpoint returns 200 with whatever Row Level Security lets the anonymous role see, often an empty array. That reads like a data bug, and it can sit in production for a long time before anyone reads it as an auth bug.
 
-`withRequiredClaims()`（`@supabase/server/middleware/required-claims`）は同じ project JWKS で検証し、handler 前に拒否し、非 null の `jwtClaims` を提供する。2 つは排他（両方 `jwtClaims` キーを宣言するため併用はコンパイルエラー）。
+`withRequiredClaims()` from `@supabase/server/middleware/required-claims` is the required-caller counterpart. It verifies against the same project JWKS, rejects before your handler runs, and contributes non-null `jwtClaims`, so gated handlers read `jwtClaims.sub` with no `?.` fallback. The two are mutually exclusive. Both declare the `jwtClaims` key, so composing them is a compile-time conflict, not a fallback.
 
-対象エンドポイントは handler でなく adapter config に書かれているためレビューで見落としやすい。
+Which endpoints are affected is written in the adapter config, not in the handler. That is what makes it easy to miss in review.
 
-| Adapter config               | Rejected before           | Replacement                       |
-| ---------------------------- | ------------------------- | --------------------------------- |
-| `auth: 'user'`, or no config | missing or invalid JWT    | `withRequiredClaims()`            |
-| `auth: 'none'`               | nothing                   | nothing; the client entries alone |
-| `auth: 'publishable'`        | missing or wrong `apikey` | none. Keep `withSupabase`         |
-| `auth: 'secret'`             | missing or wrong `apikey` | none. Keep `withSupabase`         |
+| Adapter config | Rejected before | Replacement |
+| --- | --- | --- |
+| `auth: 'user'`, or no config | missing or invalid JWT | `withRequiredClaims()` |
+| `auth: 'none'` | nothing | nothing; the client entries alone |
+| `auth: 'publishable'` | missing or wrong `apikey` | none. Keep `withSupabase` |
+| `auth: 'secret'` | missing or wrong `apikey` | none. Keep `withSupabase` |
 
-config 無しの `withSupabase()` は `auth: 'user'` で拒否していた。`publishable` / `secret` には compose 可能なゲートが無く、`withSupabase({ auth: 'publishable' })` / `withSupabase({ auth: 'secret' })` のまま残す（変更不要）。キー検査の自作はエンドポイント開放の原因。これらのモードは `apikey` ヘッダーのみ読み `Authorization` は読まないため `Authorization: Bearer <key>` は素の 401。`auth: 'secret:<name>'` は `supabaseAdmin` を `secretKeys['<name>']` に向けるので、そのエントリは本物の Supabase secret key でなければならない。
+A bare `withSupabase()` with no config was `auth: 'user'` and did reject.
 
-`withRequiredClaims` は標準エラー payload を返し、`withSupabase({ auth: 'user' })` と同じ code を使う。
+No composable gate exists for `publishable` or `secret`. Those endpoints stay on `withSupabase({ auth: 'publishable' })` or `withSupabase({ auth: 'secret' })`, which needs no changes. Hand-rolling a key check is how endpoints get opened up. Two details catch people who try. Those modes read the `apikey` header and never `Authorization`, so a caller sending `Authorization: Bearer <key>` gets a bare 401. And `auth: 'secret:<name>'` also points `supabaseAdmin` at `secretKeys['<name>']`, so that entry has to hold a real Supabase secret key.
 
-| Request                                               | Status | `code`                |
-| ----------------------------------------------------- | ------ | --------------------- |
-| No `Authorization` header                             | 401    | `MISSING_CREDENTIALS` |
-| An `sb_*` API key in the `Authorization` slot         | 401    | `UNUSABLE_CREDENTIAL` |
-| A token that fails verification                       | 401    | `INVALID_JWT`         |
-| A token, but the JWKS could not be fetched            | 500    | `JWKS_FETCH_FAILED`   |
-| A token, but no JWKS source and no usable project URL | 500    | `JWKS_NOT_CONFIGURED` |
+`withRequiredClaims` answers with the standard error payload, with the same codes `withSupabase({ auth: 'user' })` returns for the same request.
 
-adapter はこれらの code を出さず各フレームワーク固有の形で拒否した（Hono は `text/plain` の `HTTPException`、H3 は `HTTPError`、Elysia は `onError` 経由の `SupabaseError`、NestJS のみ `HttpException({ message, code }, status)`）。status で分岐するクライアントは問題ないが body を parse するクライアントは再確認が必要。
+| Request | Status | `code` |
+| --- | --- | --- |
+| No `Authorization` header | 401 | `MISSING_CREDENTIALS` |
+| An `sb_*` API key in the `Authorization` slot | 401 | `UNUSABLE_CREDENTIAL` |
+| A token that fails verification | 401 | `INVALID_JWT` |
+| A token, but the JWKS could not be fetched | 500 | `JWKS_FETCH_FAILED` |
+| A token, but no JWKS source and no usable project URL | 500 | `JWKS_NOT_CONFIGURED` |
 
-どちらの entry も CORS preflight に応答せず short-circuit に CORS ヘッダーも付かない。ブラウザ呼び出しでは gate の前に `@supabase/middleware/cors` の `withCors` を compose する（entry を compose しない route には CORS が無い。health check のようなブラウザから呼ぶ公開 route も `withCors` を含む独自配列が必要。`curl` では通常の 200 になりブラウザだけが拒否する）。
+The adapters emitted none of these. Each rejected in its own framework-native shape. Hono threw an `HTTPException`, which renders as `text/plain` with no `code`. H3 threw an `HTTPError`. Elysia surfaced a `SupabaseError` through your `onError` handler. Only the NestJS adapter threw `HttpException({ message, code }, status)`. A client that branches on the 401 status is fine. A client that parses the body needs rechecking.
 
-## Keep `withSupabase` where it fits
+Neither entry answers a CORS preflight, and the short-circuits carry no CORS headers. For browser callers, compose `withCors` from `@supabase/middleware/cors` ahead of the gate. CORS is an entry like any other, so a route that composes no entries has no CORS. A public route a browser calls, such as a health check, needs its own array with `withCors` in it. Under `curl` the response is an ordinary 200; only a browser refuses it.
 
-`withSupabase(config, handler)` は deprecated ではない。fetch handler を wrap するためフレームワークの chain には bridge 経由で入らない。既に素の fetch handler なら `withSupabase()` のままで正当な最終形。`userClaims` / `authMode` を含む完全な `SupabaseContext` を auth gate の背後で得られる唯一の方法でもある。
+### Keep `withSupabase` where it fits
 
-他の entry を周囲に compose するには handler 無しの `withSupabase({ auth: 'user' })` を位置で配置する `pipeline` entry として使う（前の entry は auth gate より先、後ろの entry は完全な `SupabaseContext` を受ける）。`withSupabase(config, entry(handler))` のネストも動く。entry 形は 1.6.0 以降。
+`withSupabase(config, handler)` still does the verify-then-reject work for you, and it is not deprecated. It wraps a fetch handler rather than composing into a framework chain, so it does not slot into a bridge. If an endpoint is already a plain fetch handler, staying on `withSupabase()` is a legitimate end state. It is also the only way to get the full `SupabaseContext`, `userClaims` and `authMode` included, behind an auth gate.
+
+To compose other entries around it, `withSupabase({ auth: 'user' })` with no handler is a `pipeline` entry placed by position. Entries before it run ahead of the auth gate. Entries after it receive the full `SupabaseContext`. Nesting, as in `withSupabase(config, entry(handler))`, still works. The entry form needs 1.6.0 or later.
 
 ```ts
 import { pipeline } from '@supabase/middleware'
@@ -77,11 +79,11 @@ export default {
 }
 ```
 
-`withSupabaseClient()` / `withSupabaseAdminClient()` は設定欠落時に `EnvError` を throw し bridge は catch しない（adapter は clean な 500 にしていた）。`withSupabaseClient()` は entry chain（handler 前）で、`withSupabaseAdminClient()` は lazy 構築で最初の `supabaseAdmin` プロパティアクセス時（handler 内）に throw する。両方をフレームワークの error boundary で処理する。
+`withSupabaseClient()` and `withSupabaseAdminClient()` throw an `EnvError` when configuration is missing, and the bridges do not catch it. The adapters turned it into a clean 500. The two fail at different moments. `withSupabaseClient()` throws from the entry chain, before your handler runs. `withSupabaseAdminClient()` builds lazily and throws on the first `supabaseAdmin` property access, inside your handler. Map both in your framework's error boundary.
 
-## The shape change
+### The shape change
 
-adapter は 1 つのネストした object を公開していたが entry はキーごとにフラットに提供する。
+Adapters exposed one nested object. The entries contribute flat keys, one per middleware.
 
 ```ts
 // Before
@@ -92,42 +94,48 @@ const supabase = c.var.supabase
 const jwtClaims = c.var.jwtClaims
 ```
 
-`supabase` / `supabaseAdmin` は機械的な書き換え。claims は違う: どの entry も `userClaims` を提供せず、`withClaims()` / `withRequiredClaims()` は生の JWT payload である `jwtClaims` を提供し field 名が異なる。
+For `supabase` and `supabaseAdmin` the rewrite is mechanical. For claims it is not. No entry contributes `userClaims`. `withClaims()` and `withRequiredClaims()` both contribute `jwtClaims`, the raw JWT payload, and the field names differ.
 
 | `userClaims` (adapters) | `jwtClaims` (middleware) |
-| ----------------------- | ------------------------ |
-| `.id`                   | `.sub`                   |
-| `.role`                 | `.role`                  |
-| `.email`                | `.email`                 |
-| `.appMetadata`          | `.app_metadata`          |
-| `.userMetadata`         | `.user_metadata`         |
+| --- | --- |
+| `.id` | `.sub` |
+| `.role` | `.role` |
+| `.email` | `.email` |
+| `.appMetadata` | `.app_metadata` |
+| `.userMetadata` | `.user_metadata` |
 
-一括リネームは TypeScript ではコンパイルエラーになるが、plain JavaScript や `as` の背後では `jwtClaims.id` が無言で `undefined` になる（`.id` は行の書き込み値に使われがち）。各読み取りを表に沿って個別に書き換える。
+A blanket rename of `userClaims` to `jwtClaims` fails to compile in TypeScript. In plain JavaScript, or behind an `as`, `jwtClaims.id` is `undefined` with no error, and `.id` is usually the value rows get written with. Rewrite each read against the table.
 
-## Step by step
+### Step by step
 
-順序を守る。auth の棚卸しをコード変更の前に行う（直後のステップがエンドポイントを開放し得るため）。
+Do the steps in order. The auth inventory comes before any code change, because the step that follows it is the one that can open an endpoint up. Follow the steps yourself, or hand them to a coding agent with the prompt at the end of this section.
 
-### 1. Check your versions
+#### 1. Check your versions
 
-bridge は `@supabase/server` 1.6.0 以降と Node 22 以降が必要。response phase（CORS やヘッダー付与など outgoing response を書き換える entry）が必要かも決める（`frameworks.md` の表参照）。`supabase` を handler 内で読むだけなら不要。
+The bridges need `@supabase/server` 1.6.0 or later and Node 22 or later.
+
+Then decide whether you need the response phase: an entry that sees the outgoing response and can rewrite it, which is what CORS and header-stamping middleware do. If you only read `supabase` inside a handler, you do not need it.
 
 ```bash
 npm ls @supabase/server   # 1.6.0 or later
 node --version            # 22 or later
 ```
 
-### 2. Inventory every adapter registration
+#### 2. Inventory every adapter registration
 
-何も編集する前に実施。必要な情報は handler でなく adapter config にあり、import を差し替えると見えなくなる。各 hit について `withSupabase(...)` 呼び出しと `auth` 値を記録する（config 無しは `auth: 'user'` 扱い）。step 7 で照合する。
+Do this before editing anything. What you need is in the adapter config, not in the handlers, and it stops being visible the moment you start swapping imports.
+
+For each hit, find the `withSupabase(...)` call it feeds and write down its `auth` value. A bare `withSupabase()` with no config counts as `auth: 'user'`. Keep that list. Step 7 checks against it.
 
 ```bash
 grep -rn "@supabase/server/adapters" src/
 ```
 
-### 3. Decide what replaces each auth value
+#### 3. Decide what replaces each auth value
 
-上の表に従う。`auth: 'user'` と config 無しは `withRequiredClaims()`、`auth: 'none'` はゲート不要、`auth: 'publishable'` / `'secret'` は compose 可能なゲートが無いため `withSupabase` に残す（未移行のままが良い結果）。ここで `withClaims()` を使わない。
+Use the table in "The auth trap" above. `auth: 'user'` and a bare `withSupabase()` become `withRequiredClaims()`. `auth: 'none'` needs no gate. `auth: 'publishable'` and `auth: 'secret'` have no composable gate: those endpoints stay on `withSupabase`, and leaving them unmigrated is the better outcome.
+
+Do not reach for `withClaims()` here. It lets anonymous requests through by design.
 
 ```ts
 // auth: 'user', or no config
@@ -140,9 +148,9 @@ toHono([withSupabaseClient()])
 // Stop. Keep withSupabase for this endpoint.
 ```
 
-### 4. Copy the bridge for your framework
+#### 4. Copy the bridge for your framework
 
-以後プロジェクト側で所有する 1 ファイル: `src/lib/supabase-middleware.ts`（NestJS は `src/lib/supabase.guard.ts`）。そのままコピーしコメントも残す（Hono の `c.res` clear-then-assign が典型）。
+One file, yours to own from here on: `src/lib/supabase-middleware.ts`, or `src/lib/supabase.guard.ts` for NestJS. Copy it as is. Some lines look redundant and are not. The Hono `c.res` clear-then-assign is the clearest example, and it carries the comment explaining why. Keep the comments.
 
 ```bash
 npm install @supabase/middleware
@@ -151,9 +159,9 @@ curl --fail -o src/lib/supabase-middleware.ts \
   https://raw.githubusercontent.com/supabase/server/main/examples/frameworks/hono/supabase-middleware.ts
 ```
 
-### 5. Swap the registrations
+#### 5. Swap the registrations
 
-step 3 の判断に従い 1 つずつ。`withSupabaseAdminClient()`（`@supabase/server/middleware/admin-client`）は旧コードが `supabaseAdmin` を読んでいた箇所にのみ追加する（secret key が必要）。
+One at a time, using the decision from step 3. Add `withSupabaseAdminClient()` from `@supabase/server/middleware/admin-client` only where the old code read `supabaseAdmin`. It needs the secret key.
 
 ```ts
 // Before
@@ -167,9 +175,11 @@ import { toHono } from './lib/supabase-middleware.js'
 app.use('*', toHono([withRequiredClaims(), withSupabaseClient()]))
 ```
 
-### 6. Rewrite the call sites
+#### 6. Rewrite the call sites
 
-ネストした object からフラットなキーへ。`event.context`（H3）・Elysia の route context・`req`（NestJS）も同じ形。`userClaims` は対象外で、claims の読み取りは上の field 表に沿って書き換える。
+The adapters exposed one nested object. The entries contribute flat keys. The same shape applies to `event.context` (H3), the route context (Elysia), and `req` (NestJS).
+
+`userClaims` is not on that list. No entry contributes it. Rewrite each claims read against the field table in "The shape change" above.
 
 ```text
 c.var.supabaseContext.supabase       ->  c.var.supabase
@@ -181,9 +191,17 @@ c.var.supabaseContext.userClaims.id  ->  c.var.jwtClaims.sub
 grep -rn "supabaseContext" src/    # expect no results
 ```
 
-### 7. Verify
+#### 7. Verify
 
-順に 3 つ。2 番目がこの手順の目的。Types: typecheck。Auth: step 2 で拒否と記録した全エンドポイントが今も拒否することを実証する（typecheck は何も示さない。初回呼び出しの `200` はゲート欠落の失敗を意味する）。Behavior: テストスイートを実行し 1 つの移行済みエンドポイントを E2E で確認（`auth: 'user'` だったものはサインインして `jwtClaims.sub` が user id であることを確認）。status が同じでも拒否 body は変わる。
+Three checks, in this order. The second is what this procedure exists for.
+
+Types: run the typecheck.
+
+Auth: for every endpoint step 2 recorded as rejecting, prove it still rejects. A clean typecheck says nothing about it. A `200` on the first call is the failure this page is arranged around. It means the gate is missing, not that the endpoint is healthy.
+
+Behavior: run your test suite, then exercise one migrated endpoint end to end. If it was behind `auth: 'user'`, sign in and confirm the handler sees the caller: `jwtClaims.sub` is the user id.
+
+The rejection body changed even when the status did not. See the code table in "The auth trap" above.
 
 ```bash
 npx tsc --noEmit
@@ -198,32 +216,32 @@ curl -s -o /dev/null -w "%{http_code}\n" \
   -H "Authorization: Bearer $TOKEN" $BASE/your-endpoint
 ```
 
-### 8. Clean up
+#### 8. Clean up
 
-残りは意図して残したエンドポイント（`publishable` / `secret`）か見落とし。フレームワーク peer dependency は他で使われていない場合のみ削除する。
+Anything left is either an endpoint you kept on purpose (the `publishable` and `secret` cases from step 3) or one you missed. Uninstall the framework peer dependency only if nothing else uses it.
 
 ```bash
 grep -rn "@supabase/server/adapters" src/
 ```
 
-## Call-site cheat sheet
+### Call-site cheat sheet
 
-| Before                                                          | After                                                                |
-| --------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `import { withSupabase } from '@supabase/server/adapters/hono'` | `import { toHono } from './lib/supabase-middleware.js'`              |
-| `app.use('*', withSupabase({ auth: 'user' }))`                  | `app.use('*', toHono([withRequiredClaims(), withSupabaseClient()]))` |
-| `app.use('*', withSupabase({ auth: 'none' }))`                  | `app.use('*', toHono([withSupabaseClient()]))`                       |
-| `c.var.supabaseContext.supabase`                                | `c.var.supabase`                                                     |
-| `c.var.supabaseContext.supabaseAdmin`                           | `c.var.supabaseAdmin`                                                |
-| `c.var.supabaseContext.userClaims.id`                           | `c.var.jwtClaims.sub` (the field names change too; see the table)    |
-| `event.context.supabaseContext.supabase` (H3)                   | `event.context.supabase`                                             |
-| `req.supabaseContext.supabase` (NestJS)                         | `req.supabase`                                                       |
+| Before | After |
+| --- | --- |
+| `import { withSupabase } from '@supabase/server/adapters/hono'` | `import { toHono } from './lib/supabase-middleware.js'` |
+| `app.use('*', withSupabase({ auth: 'user' }))` | `app.use('*', toHono([withRequiredClaims(), withSupabaseClient()]))` |
+| `app.use('*', withSupabase({ auth: 'none' }))` | `app.use('*', toHono([withSupabaseClient()]))` |
+| `c.var.supabaseContext.supabase` | `c.var.supabase` |
+| `c.var.supabaseContext.supabaseAdmin` | `c.var.supabaseAdmin` |
+| `c.var.supabaseContext.userClaims.id` | `c.var.jwtClaims.sub` (the field names change too; see the table) |
+| `event.context.supabaseContext.supabase` (H3) | `event.context.supabase` |
+| `req.supabaseContext.supabase` (NestJS) | `req.supabase` |
 
-adapter の `auth: 'user' | 'publishable' | 'secret' | 'none'` は credential 検証とリクエスト拒否の 2 役を担っていた。compose 可能な entry でその両方を行うのは user mode の `withRequiredClaims()` のみ。書き換え無しで adapter と同じ verify-then-build を求めるなら deprecated でないトップレベル `withSupabase()` を使う（entry として `pipeline` に compose できる）。
+The adapters took `auth: 'user' | 'publishable' | 'secret' | 'none'` and did two jobs with it: verified the credentials, and rejected the request when they were missing or wrong. Of the composable entries, only `withRequiredClaims()` does both, and only for user mode. If you want the adapter's exact verify-then-build behavior with no rewrite, keep the top-level `withSupabase()`. It is not deprecated, and as an entry it composes with `pipeline`.
 
-## Hand it to an agent
+### Hand it to an agent
 
-URL の `hono` を `h3` / `elysia` / `nestjs`（NestJS は `supabase.guard.ts`）に置き換えて貼り付ける。
+Paste this, and replace `hono` in the URL with `h3`, `elysia`, or `nestjs` (`supabase.guard.ts` for NestJS).
 
 ```text
 Migrate this project off @supabase/server's framework adapters
@@ -301,9 +319,9 @@ every file you changed and anything you could not migrate.
 
 ## Notes
 
-- 出典: https://supabase.com/docs/reference/server/frameworks#moving-off-the-adapters （原本 https://supabase.com/llms/server.txt、2026-10 取得）
-- adapter 削除日: 2026-12-01（原文 "December 1, 2026"）
-- 上記 agent prompt 内の `raw.githubusercontent.com/.../main/...` は原文のまま（`main` 参照。pin されていない点に注意）
+- Source: https://supabase.com/docs/reference/server/frameworks#moving-off-the-adapters (original: https://supabase.com/llms/server.txt, fetched 2026-10)
+- Adapter removal date: December 1, 2026.
+- The bridge download URLs (here and in the agent prompt) reference the `main` branch of `supabase/server` as in the official text, so they are not pinned to a release. The `curl --fail -o` only saves the file; review the downloaded bridge before using it.
 
 ## Related
 

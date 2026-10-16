@@ -1,59 +1,59 @@
 # Errors
 
-`@supabase/server` が生成する全エラー型とエラーコード。
+Every error type and error code `@supabase/server` produces.
 
 ## Signature / Usage
 
-全エラーは基底クラス `SupabaseServerError` を継承し、`code` / `message` / `hint` / `docs` / `status` / `toJSON()` を持つ（例から確認できるメンバー）。`message` は `[@supabase/server]` prefix 付き。`withSupabase` は全エラーレスポンスに `ErrorCodeHeader`（ヘッダー）で `code` を載せ、body は `ErrorPayload`（`errors: { detailed: false }` 時は `MinimalErrorPayload`）。
+All errors extend the base class `SupabaseServerError`, which carries `code`, `message`, `hint`, `docs`, `status`, and `toJSON()` (members confirmed from the examples). `withSupabase` sets the `ErrorCodeHeader` response header on every error response, carrying the error `code`; the body is an `ErrorPayload` (a `MinimalErrorPayload` when `errors: { detailed: false }` is set).
 
-### クラス・型
+### Classes and types
 
 | Name | Description |
 | --- | --- |
-| `SupabaseServerError` | 本ライブラリが生成する全エラーの基底。`EnvError` / `AuthError` 等をまとめて catch できる |
-| `SupabaseServerErrorOptions` | `SupabaseServerError` に付く任意の診断情報 |
-| `AuthError` | 認証・認可の失敗。`status` は `401`（credential 起因）または `500`（サーバー誤設定で誰も認証できない） |
-| `EnvError` | 必須環境変数の欠落・不正。常に `status: 500` |
-| `PostgresPoolError` | Postgres pool が接続を渡せない場合。常に `status: 503`（一時的でリトライ可） |
-| `Errors` | 全エラー型の factory map。エラー code 定数をキーに `hint` / `docs` / `details` 付きの `EnvError` / `AuthError` / `PostgresPoolError` を返す |
-| `ErrorSource` | 全エラーに付くパッケージ識別子。各インスタンスの `source`、`withSupabase` の JSON body の `source`、`message` の `[@supabase/server]` prefix として現れる |
-| `ErrorCodeHeader` | `withSupabase` が全エラーレスポンスに設定するヘッダー（`code` を運ぶ） |
-| `ErrorPayload` | `SupabaseServerError` のシリアライズ形。`withSupabase` が失敗時に返す JSON body そのもの |
-| `MinimalErrorPayload` | `errors: { detailed: false }` 時の縮小 body。`message` は prefix を保つ |
-| `ApiKeyFormat` | `apikey` ヘッダー値を public prefix で分類した結果（診断用。キーを echo せずに形式不一致を報告） |
-| `AuthFailureContext` | 失敗した認証試行について認証 pipeline が知る全情報（秘密を除く）。message / hint / `details` 生成用 |
-| `ReceivedCredentials` | request が運んだ credentials の非機密サマリー |
-| `AuthGenericError` | 汎用の認証エラー code |
-| `EnvGenericError` | 汎用の環境エラー code |
+| `SupabaseServerError` | Base class for every error `@supabase/server` produces. Catch this to handle anything originating from this library, regardless of whether it's an `EnvError` or an `AuthError` |
+| `SupabaseServerErrorOptions` | Optional diagnostics attached to a `SupabaseServerError` |
+| `AuthError` | Thrown when authentication or authorization fails. Carries an HTTP `status` (`401` when the request's credentials are at fault, `500` when the server is misconfigured and could not have authenticated anyone) |
+| `EnvError` | Thrown when a required environment variable is missing or malformed. Always `status: 500` |
+| `PostgresPoolError` | Thrown when the Postgres pool cannot hand a query a connection. Always `status: 503`; both conditions are transient, so the request can be retried |
+| `Errors` | Factory map for all error types. Keyed by error code constant, each entry returns a pre-configured `EnvError`, `AuthError`, or `PostgresPoolError` complete with `hint`, `docs`, and `details` |
+| `ErrorSource` | Package identifier stamped on every error this library produces: `source` on each error instance, the `source` field of the JSON body `withSupabase` returns, and a `[@supabase/server]` prefix on every `message` |
+| `ErrorCodeHeader` | Response header `withSupabase` sets on every error response, carrying the error `code` |
+| `ErrorPayload` | Serializable form of a `SupabaseServerError`: the exact JSON body `withSupabase` returns on failure |
+| `MinimalErrorPayload` | Reduced error body produced when `errors: { detailed: false }` is set. `message` keeps its `[@supabase/server]` prefix |
+| `ApiKeyFormat` | How an `apikey` header value was classified by its public prefix. Used in diagnostics so a format mismatch can be reported without echoing the key |
+| `AuthFailureContext` | Everything the auth pipeline knows about a failed attempt, minus anything secret. Used to build messages, hints, and `details` |
+| `ReceivedCredentials` | Non-sensitive summary of the credentials a request carried |
+| `AuthGenericError` | Generic authentication error code |
+| `EnvGenericError` | Generic environment error code |
 
-### エラー code 別エラー
+### Error-code errors
 
-| Name | 意味 |
+| Name | Meaning |
 | --- | --- |
-| `MissingCredentialsError` | `apikey` も `Authorization: Bearer` も無く、許可 auth mode が許さない |
-| `UnusableCredentialError` | credential は届いたがどの許可 mode でも使えない（`Authorization` 内の `sb_*` API key、または誤った scheme / 大文字小文字 / bare 値 / 空 token）。`MissingCredentialsError`（何も届かなかった）と「認証されなかった」空間を正確に二分し、`errors: { detailed: false }` で `hint` / `details` が消えても code が単独で正しい |
-| `InvalidApiKeyError` | `apikey` ヘッダーはあるが許可 auth mode の設定キーのどれにも一致しない |
-| `InvalidJwtError` | `Authorization` の JWT が検証失敗。`details.jwt` と message に具体的理由（expired / bad signature / unknown `kid` / malformed / `sub` 無し / `aud`・`iss` 不一致または欠落 / `nbf` が未来） |
-| `InvalidCredentialsError` | 汎用の credential 失敗。より具体的な code に当てはまらない場合の fallback。v1.5 より前は `withSupabase` が失敗 request に返す唯一の code だった。`MissingCredentialsError` / `InvalidApiKeyError` / `InvalidJwtError` での照合を推奨 |
-| `JwksFetchFailedError` | remote JWKS endpoint を取得できないか使えない値を返した。upstream 起因の `status: 500` |
-| `JwksNotConfiguredError` | auth mode `"user"` で JWT が渡されたが JWKS が未設定で検証不可。サーバー誤設定の `status: 500` |
-| `NoKeysConfiguredError` | `"publishable"` / `"secret"` mode が要求されたが該当種のキーが未設定で一致し得ない。サーバー誤設定の `status: 500` |
-| `UnsupportedRoleError` | 検証済み `role` claim が middleware が assume しない Postgres role（RLS をバイパスする、または未対応）を指す。`withPostgresClient` が `anon` として無言で実行する代わりに返す |
-| `MissingSupabaseURLError` | `SUPABASE_URL` 未設定 |
-| `MissingPublishableKeyError` | 名前付き publishable key が `SUPABASE_PUBLISHABLE_KEYS` に無い |
-| `MissingSecretKeyError` | 名前付き secret key が `SUPABASE_SECRET_KEYS` に無い |
-| `MissingDefaultPublishableKeyError` | default publishable key が無い |
-| `MissingDefaultSecretKeyError` | default secret key が無い |
-| `MissingConnectionStringError` | Postgres 接続文字列が未設定で `withPostgresClient` / `withPostgresAdminClient` が接続できない |
-| `MissingResourceServerError` | `withOAuthProtectedResource` に `resourceServer` が無く導出できない |
-| `MissingAuthorizationServerError` | `withOAuthProtectedResource` に `authorizationServer` が無く導出できない |
-| `CreateSupabaseClientError` | 認証成功後に Supabase client の作成に失敗 |
-| `PostgresPoolBusyError` | チェックアウト待機中ずっと全 pool 接続が busy でクエリが接続を得られなかった。`details.max` は pool サイズ、`details.waitedMs` は待機時間 |
-| `PostgresConnectPausedError` | 接続試行が失敗し pool が新規試行を一時停止しており、新規接続が要るクエリが試行せず拒否された。`cause` が失敗内容、`details.retryAfterMs` が停止の残り時間 |
+| `MissingCredentialsError` | The request carried no credentials at all (neither an `apikey` header nor an `Authorization: Bearer` token) and no accepted auth mode allows that |
+| `UnusableCredentialError` | A credential did arrive, but not one any accepted auth mode can use: an `sb_*` API key in the `Authorization` header, or a header this library cannot read a bearer token out of (wrong scheme, wrong casing, bare value, empty token). Distinct from `MissingCredentialsError` on purpose: the two partition the "nothing authenticated" space exactly, so the code stays true on its own when `errors: { detailed: false }` strips `hint` and `details` |
+| `InvalidApiKeyError` | An `apikey` header was present but matched none of the keys configured for the accepted auth modes |
+| `InvalidJwtError` | A JWT was present in the `Authorization` header but failed verification. `details.jwt` and the message carry the specific reason (expired, bad signature, unknown `kid`, malformed token or claim, no `sub`, mismatched or missing `aud` / `iss`, `nbf` in the future) |
+| `InvalidCredentialsError` | Generic credential failure, retained as the fallback code for cases that don't match a more specific one. Prior to v1.5 this was the only code `withSupabase` ever returned for a failed request. Prefer matching on `MissingCredentialsError`, `InvalidApiKeyError`, `InvalidJwtError` |
+| `JwksFetchFailedError` | The remote JWKS endpoint could not be fetched or returned something unusable. Server-side / upstream failure (`status: 500`) |
+| `JwksNotConfiguredError` | Auth mode `"user"` was requested and a JWT was supplied, but no JWKS is configured, so the token cannot be verified. Server misconfiguration (`status: 500`) |
+| `NoKeysConfiguredError` | A `"publishable"` or `"secret"` auth mode was requested but no keys of that kind are configured, so the mode could never match. Server misconfiguration (`status: 500`) |
+| `UnsupportedRoleError` | The caller's verified `role` claim names a Postgres role the middleware will not assume (one that would bypass RLS, or one it does not support yet). Returned by `withPostgresClient` instead of silently running the query as `anon` |
+| `MissingSupabaseURLError` | `SUPABASE_URL` is not set |
+| `MissingPublishableKeyError` | Named publishable key not found in `SUPABASE_PUBLISHABLE_KEYS` |
+| `MissingSecretKeyError` | Named secret key not found in `SUPABASE_SECRET_KEYS` |
+| `MissingDefaultPublishableKeyError` | No default publishable key found |
+| `MissingDefaultSecretKeyError` | No default secret key found |
+| `MissingConnectionStringError` | No Postgres connection string is configured, so `withPostgresClient` / `withPostgresAdminClient` cannot connect |
+| `MissingResourceServerError` | `withOAuthProtectedResource` has no `resourceServer` and cannot derive one |
+| `MissingAuthorizationServerError` | `withOAuthProtectedResource` has no `authorizationServer` and cannot derive one |
+| `CreateSupabaseClientError` | Failed to create a Supabase client after auth succeeded |
+| `PostgresPoolBusyError` | Every pooled connection stayed busy for the whole checkout wait, so the query could not get one. `details.max` is the pool size and `details.waitedMs` the wait |
+| `PostgresConnectPausedError` | A connection attempt failed and the pool is pausing new attempts, so a query that needed a new connection was refused without trying. `cause` is the failure and `details.retryAfterMs` the time left in the pause |
 
-### コード例
+### Examples
 
-AuthError を捕捉:
+Catching an AuthError:
 
 ```ts
 import { createSupabaseContext } from '@supabase/server'
@@ -65,7 +65,7 @@ if (error) {
 }
 ```
 
-EnvError を捕捉:
+Catching an EnvError:
 
 ```ts
 import { EnvError } from '@supabase/server'
@@ -81,7 +81,7 @@ try {
 }
 ```
 
-ライブラリ由来の全エラーを捕捉:
+Catching any library error:
 
 ```ts
 import { SupabaseServerError } from '@supabase/server'
@@ -97,14 +97,14 @@ try {
 }
 ```
 
-型付きエラーを throw（`Errors` factory）:
+Throwing typed errors (`Errors` factory):
 
 ```ts
 throw Errors[MissingSupabaseURLError]()
 throw Errors[MissingPublishableKeyError]('mobile', ['default', 'web'])
 ```
 
-PostgresPoolError を 503 + Retry-After で返す:
+Answering 503 with a `Retry-After` header:
 
 ```ts
 import { PostgresPoolError } from '@supabase/server'
@@ -125,11 +125,11 @@ try {
 
 ## Notes
 
-- 出典: https://supabase.com/llms/server.txt （Errors 節、2026-10 取得）
-- `ctx.postgres` / `ctx.postgresAdmin` は `PostgresPoolError` を query 呼び出しから throw する。middleware はこれを response に変換しないため handler か host の error handler が応答を決める
-- `EnvError`: `withSupabaseClient()` は handler 前（entry chain）、`withSupabaseAdminClient()` は最初の `supabaseAdmin` アクセス時（handler 内）に throw し、bridge は catch しない
-- 文字列 code 値（`MISSING_CREDENTIALS` / `UNUSABLE_CREDENTIAL` / `INVALID_JWT` / `JWKS_FETCH_FAILED` / `JWKS_NOT_CONFIGURED` / `UNSUPPORTED_ROLE` / `MISSING_SUPABASE_URL` / `MISSING_RESOURCE_SERVER` / `MISSING_AUTHORIZATION_SERVER`）は原文の他節・例で確認できたものに限る。他エラーの文字列 code は原文に記載が無いため書いていない
-- Supabase Auth 本体のエラー（GoTrue の `AuthApiError` 等）とは別系統。そちらは別カテゴリの `auth/error-codes.md` を参照
+- Source: https://supabase.com/llms/server.txt (Errors section, fetched 2026-10)
+- `ctx.postgres` and `ctx.postgresAdmin` throw `PostgresPoolError` from the query call. The middleware do not turn it into a response; the handler or the host's error handler decides how the request answers.
+- `EnvError` timing: `withSupabaseClient()` throws from the entry chain (before the handler); `withSupabaseAdminClient()` throws on the first `supabaseAdmin` access (inside the handler). The bridges do not catch either (see migrating-off-adapters.md).
+- String code values (`MISSING_CREDENTIALS`, `UNUSABLE_CREDENTIAL`, `INVALID_JWT`, `JWKS_FETCH_FAILED`, `JWKS_NOT_CONFIGURED`, `UNSUPPORTED_ROLE`, `MISSING_SUPABASE_URL`, `MISSING_RESOURCE_SERVER`, `MISSING_AUTHORIZATION_SERVER`) are limited to those confirmed elsewhere in the source. String codes for the other errors are not stated in the source and are not written here.
+- Separate from Supabase Auth's own errors (GoTrue `AuthApiError` etc.); see `auth/error-codes.md` in the auth category.
 
 ## Related
 

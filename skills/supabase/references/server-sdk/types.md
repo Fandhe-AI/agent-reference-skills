@@ -1,40 +1,40 @@
 # Types
 
-`@supabase/server` の公開型。auth mode・設定・context・claims など。
+Public types of `@supabase/server`: auth modes, configuration, context, claims, and more.
 
 ## Signature / Usage
 
 | Name | Description |
 | --- | --- |
-| `AuthMode` | request が提供すべき credentials を決める認証 mode |
-| `AuthModeWithKey` | 名前付きキーを指定できる拡張 auth mode |
-| `AuthConfig` | `auth` option の受理形（1 mode または順序付き list） |
-| `CredentialedAuthMode` | credential を要求する auth mode（`"none"` 以外の `AuthModeWithKey`、keyed 形含む） |
-| `AuthResult` | credential 検証の結果。解決済み auth mode・検証済み token（`"user"`）・decode 済み JWT claims・一致したキー名（`"publishable"` / `"secret"`） |
-| `Credentials` | 受信 HTTP request から抽出された生の credentials（`core.extractCredentials` が `Authorization` / `apikey` から生成） |
-| `ClientAuth` | client 作成関数用の auth identity |
-| `CreateAdminClientOptions` | `core.createAdminClient` の options |
-| `CreateContextClientOptions` | `core.createContextClient` の options |
-| `ErrorResponseConfig` | エラーが response body にどこまで載るかの制御（`errors`） |
-| `ShortCircuitConfig` | 自ら request に応答する全 middleware 共通の option（`errors` を自身の response に適用） |
-| `OAuthProtectedResourceConfig` | `withOAuthProtectedResource` の設定。2 option とも固定文字列か request の関数を受け、既定は Edge Functions proxy 経由で到達した request からの導出（そこでは設定不要） |
-| `ResourceMetadataOptions` | `resourceMetadataResponse` の options |
-| `SupabaseContext` | 認証済み request ごとに作られる Supabase context。設定済み Supabase client と呼び出し元 identity を持つ。生成した layer / adapter によらず同一 |
-| `JWTClaims` | RFC 7519 の標準 JWT claims に Supabase 固有 field を加えたもの。生の JWT payload（`UserClaims` が正規化された camelCase 版） |
-| `SupabaseEnv` | 解決済み Supabase 環境設定。project URL・API キー・JWKS を保持。通常 `core.resolveEnv` が環境変数から自動解決するが `env` option で明示指定も可 |
-| `UserClaims` | 認証済みユーザー identity の正規化 camelCase 版（`JWTClaims` から導出）。email 確認状態や providers を含む完全な `User` は context client で `supabase.auth.getUser()` を呼ぶ |
-| `WithSupabaseConfig` | `withSupabase` と `createSupabaseContext` の設定。受理する auth mode・環境 override・CORS 挙動を制御 |
-| `UrlOption` | 設定済み URL: 固定値または request ごとの導出 |
-| `UnauthorizedResponseOptions` | `unauthorizedResponse` の options |
+| `AuthMode` | Authentication mode that determines what credentials a request must provide |
+| `AuthModeWithKey` | Extended auth mode that supports targeting a specific named key |
+| `AuthConfig` | Accepted shape of the `auth` option: one mode, or an ordered list of modes tried left to right |
+| `CredentialedAuthMode` | An auth mode that requires a credential: every `AuthModeWithKey` except `"none"`, keyed forms included |
+| `AuthResult` | Result of credential verification: the resolved auth mode, the verified token (for `"user"` mode), decoded JWT claims, and the matched key name (for `"publishable"` / `"secret"` modes) |
+| `Credentials` | Raw credentials extracted from an incoming HTTP request, produced by `core.extractCredentials` from the `Authorization` and `apikey` headers |
+| `ClientAuth` | Auth identity for client creation functions |
+| `CreateAdminClientOptions` | Options for `core.createAdminClient` |
+| `CreateContextClientOptions` | Options for `core.createContextClient` |
+| `ErrorResponseConfig` | Controls how much of an error goes in the response body (`errors`) |
+| `ShortCircuitConfig` | The option shared by every middleware that answers a request itself; each applies `errors` to its own responses |
+| `OAuthProtectedResourceConfig` | Configuration for `withOAuthProtectedResource`. Both options accept a fixed string or a function of the request, and both default to values derived from the request as it arrives through the Supabase Edge Functions proxy, so no configuration is needed there |
+| `ResourceMetadataOptions` | Options for `resourceMetadataResponse` |
+| `SupabaseContext` | The Supabase context created for each authenticated request. Contains pre-configured Supabase clients and the caller's identity. Identical regardless of which layer or adapter produced it |
+| `JWTClaims` | Standard JWT claims as defined by RFC 7519, extended with Supabase-specific fields. The raw JWT payload; use `UserClaims` for a normalized, camelCase view |
+| `SupabaseEnv` | Resolved Supabase environment configuration: the project URL, API keys, and JWKS. Typically resolved automatically from environment variables by `core.resolveEnv`, but can be passed explicitly via the `env` option |
+| `UserClaims` | Normalized, camelCase view of the authenticated user's identity, derived from `JWTClaims`. For the full Supabase `User` object (including email confirmation status, providers, etc.), call `supabase.auth.getUser()` using the context client |
+| `WithSupabaseConfig` | Configuration for `withSupabase` and `createSupabaseContext`: which auth modes are accepted, environment overrides, and CORS behavior |
+| `UrlOption` | A configured URL: either a fixed value, or derived per request |
+| `UnauthorizedResponseOptions` | Options for `unauthorizedResponse` |
 
 ### AuthMode
 
-- `"none"`: credentials 不要。全 request を受け入れる
-- `"publishable"`: `apikey` ヘッダーに有効な publishable key が必要。`default` キーのみ一致
-- `"secret"`: `apikey` ヘッダーに有効な secret key が必要（timing-safe 比較）。`default` キーのみ一致
-- `"user"`: `Authorization: Bearer <token>` に有効な JWT が必要
+- `"none"`: No credentials required. Every request is accepted.
+- `"publishable"`: Requires a valid publishable key in the `apikey` header. Matches only the `default` key.
+- `"secret"`: Requires a valid secret key in the `apikey` header (timing-safe comparison). Matches only the `default` key.
+- `"user"`: Requires a valid JWT in the `Authorization: Bearer <token>` header.
 
-bare の `"publishable"` / `"secret"` は `SUPABASE_PUBLISHABLE_KEYS` / `SUPABASE_SECRET_KEYS` の `default` キーを解決する。他のキー指定や任意キー許可は `AuthModeWithKey`。
+Bare `"publishable"` / `"secret"` resolve the `default` key from `SUPABASE_PUBLISHABLE_KEYS` / `SUPABASE_SECRET_KEYS`. To target another key or accept any key, see `AuthModeWithKey`.
 
 ```ts
 // Single mode
@@ -49,7 +49,7 @@ withSupabase({ auth: ['user', 'publishable'] }, handler)
 
 ### AuthModeWithKey
 
-コロン構文（`"publishable:web_app"`）で `SUPABASE_PUBLISHABLE_KEYS` / `SUPABASE_SECRET_KEYS` の JSON object から特定の名前付きキーを要求する。`"publishable:*"` / `"secret:*"` は集合内の任意のキーを受理する。コロン無しの bare 形は `default` キーのみ一致。
+Use the colon syntax (`"publishable:web_app"`) to require a specific named key from the `SUPABASE_PUBLISHABLE_KEYS` or `SUPABASE_SECRET_KEYS` JSON object. Use `"publishable:*"` or `"secret:*"` to accept any key in the set. The bare form without a colon (`"publishable"` / `"secret"`) matches only the `default` key.
 
 ```ts
 // Accept only the "mobile" publishable key
@@ -64,7 +64,11 @@ withSupabase({ auth: ['user', 'publishable:web_app'] }, handler)
 
 ### AuthConfig
 
-`auth` option の受理形: 1 つの mode、または左から順に試される mode の順序付き list。`"none"` は全 request を受け入れるため list の最後でのみ意味を持つ（その前が identity を作れる mode で、後ろは到達不能）。単独の `["none"]` は bare `auth: 'none'` と同義で意味が無い。型は `"none"` 単独、または 1 つ以上の credentialed mode の後ろの最終位置のみを受理する。単一 mode は配列で包む必要が無く（`"user"` と `["user"]` は同一設定）、unwrapped 形が union の先頭なのでエディタ補完に出る。
+Accepted shape of the `auth` option: one mode, or an ordered list of modes tried left to right.
+
+`"none"` accepts every request, so it only carries meaning as the last entry of a list: the modes before it are the ones that can produce an identity, and anything after it is unreachable. On its own in a list (`["none"]`) it says nothing that a bare `auth: 'none'` doesn't. So the type accepts `"none"` alone or in final position behind at least one credentialed mode, and nowhere else.
+
+A single mode needs no wrapping array: `"user"` and `["user"]` are the same configuration, and the unwrapped form is the one the union names first, so it is what shows up in editor completions.
 
 ```ts
 withSupabase({ auth: 'user' }, handler)              // one mode
@@ -75,7 +79,7 @@ withSupabase({ auth: 'none' }, handler)              // no credentials required
 
 ### ErrorResponseConfig
 
-`withSupabase` と、request に直接応答する全 middleware（`withClaims` / `withRequiredClaims` / `withPostgresClient` / `withPostgresAdminClient` / `withOAuthProtectedResource`）が `errors` として受け付ける。
+Accepted as `errors` by `withSupabase` and by every middleware that answers a request directly: `withClaims`, `withRequiredClaims`, `withPostgresClient`, `withPostgresAdminClient` and `withOAuthProtectedResource`.
 
 ```ts
 // Full payload: source, code, message, hint, docs, details
@@ -101,16 +105,16 @@ const config: WithSupabaseConfig = {
 const config: WithSupabaseConfig = { auth: 'none', cors: 'disabled' }
 ```
 
-## Deprecated
+### Deprecated
 
-- `Allow`: Deprecated。`AuthMode` を使う。将来の major release で削除予定
-- `AllowWithKey`: Deprecated。`AuthModeWithKey` を使う。将来の major release で削除予定
+- `Allow`: Deprecated. Use `AuthMode` instead. Will be removed in a future major release.
+- `AllowWithKey`: Deprecated. Use `AuthModeWithKey` instead. Will be removed in a future major release.
 
 ## Notes
 
-- 出典: https://supabase.com/llms/server.txt （Types 節、2026-10 取得）。原文は各型のフィールド一覧を示さない（`SupabaseContext` のメンバーは `overview.md` の例で確認できる `supabase` / `supabaseAdmin` / `userClaims` / `jwtClaims` / `authMode` のみ。書かれていないフィールドは載せていない）
-- `Allow` / `AllowWithKey` は deprecated（後継: `AuthMode` / `AuthModeWithKey`）
-- `AuthResult` は `userClaims`（例: `auth.userClaims!.id`）を持つ。bridge の `jwtClaims`（`sub`）とは別の正規化 shape（`migrating-off-adapters.md` の対応表参照）
+- Source: https://supabase.com/llms/server.txt (Types section, fetched 2026-10). The source does not list the fields of each type. The only `SupabaseContext` members confirmed from the examples are `supabase`, `supabaseAdmin`, `userClaims`, `jwtClaims`, `authMode`; no other fields are written here.
+- `Allow` / `AllowWithKey` are deprecated (successors: `AuthMode` / `AuthModeWithKey`).
+- `AuthResult` carries `userClaims` (e.g. `auth.userClaims!.id`), a different normalized shape from the bridge's `jwtClaims` (`sub`); see the mapping table in migrating-off-adapters.md.
 
 ## Related
 

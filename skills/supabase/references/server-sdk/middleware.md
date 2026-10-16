@@ -1,28 +1,28 @@
 # Middleware
 
-`@supabase/server` の middleware / entry 群。`withSupabase` 以外は `pipeline([...], handler)`（`@supabase/middleware`）に compose する。
+`@supabase/server` middleware and entries. Everything except `withSupabase` composes into `pipeline([...], handler)` from `@supabase/middleware`.
 
 ## Signature / Usage
 
 | Name | Import | Contributes / Role |
 | --- | --- | --- |
-| `withSupabase` | `@supabase/server` | 認証 + クライアント生成 + CORS を handler に wrap（deprecated ではない） |
-| `createSupabaseContext` | `@supabase/server` | request から `SupabaseContext` を `{ data, error }` で構築 |
-| `withClaims` | `@supabase/server/middleware/claims` | `ctx.jwtClaims`（token 無しは `null`、gate ではない） |
-| `withRequiredClaims` | `@supabase/server/middleware/required-claims` | 非 null の `ctx.jwtClaims`（user-mode gate） |
-| `withSupabaseClient` | `@supabase/server/middleware/client` | `ctx.supabase`（RLS 適用） |
-| `withSupabaseAdminClient` | `@supabase/server/middleware/admin-client` | `ctx.supabaseAdmin`（RLS バイパス） |
-| `withPostgresClient` | `@supabase/server/middleware/postgres` | `ctx.postgres`（RLS スコープの `pg`） |
-| `withPostgresAdminClient` | `@supabase/server/middleware/postgres-admin` | `ctx.postgresAdmin`（RLS バイパスの `pg`） |
+| `withSupabase` | `@supabase/server` | Wraps a handler with auth, client creation, and CORS handling (not deprecated) |
+| `createSupabaseContext` | `@supabase/server` | Builds a `SupabaseContext` from a request, returns `{ data, error }` |
+| `withClaims` | `@supabase/server/middleware/claims` | `ctx.jwtClaims` (`null` when no token; not a gate) |
+| `withRequiredClaims` | `@supabase/server/middleware/required-claims` | Non-null `ctx.jwtClaims` (user-mode gate) |
+| `withSupabaseClient` | `@supabase/server/middleware/client` | `ctx.supabase` (RLS applies) |
+| `withSupabaseAdminClient` | `@supabase/server/middleware/admin-client` | `ctx.supabaseAdmin` (bypasses RLS) |
+| `withPostgresClient` | `@supabase/server/middleware/postgres` | `ctx.postgres` (RLS-scoped `pg`) |
+| `withPostgresAdminClient` | `@supabase/server/middleware/postgres-admin` | `ctx.postgresAdmin` (`pg` that bypasses RLS) |
 | `withOAuthProtectedResource` | `@supabase/server` | RFC 9728 OAuth Protected Resource |
-| `fromSupabaseUrl` | `@supabase/server` | `authorizationServer` を Supabase Auth issuer に向ける |
-| `ident` | 原文に import 記載なし | Postgres 識別子の quote |
+| `fromSupabaseUrl` | `@supabase/server` | Points `authorizationServer` at a Supabase project's Auth issuer |
+| `ident` | (import not stated in the source) | Quote a Postgres identifier |
 
-Config 型: `WithClaimsConfig` / `WithRequiredClaimsConfig` / `WithSupabaseClientConfig` / `WithSupabaseAdminClientConfig` / `WithPostgresClientConfig` / `WithPostgresAdminClientConfig`（原文はいずれも "Configuration for <name>" のみ。`WithSupabaseClientConfig` は `createContextClient` と同じ env / client options から per-request の auth identity を除いたもの、`WithSupabaseAdminClientConfig` は `createAdminClient` のもの）。`PostgresApi` は `ctx.postgres` / `ctx.postgresAdmin` の形（両者は同一 surface で、前者は claims 注入 + role 降格のトランザクションで wrap、後者はそのまま接続文字列の role で実行）。`PostgresPoolOptions` は両 middleware の pool サイズ設定（同一接続文字列の 2 entry は options が同値の場合のみ pool を共有）。`RequestClaims` は `withPostgresClient` が上流 context に必要とする最小 claims 形状（`role` のみ読み、全体を `request.jwt.claims` にシリアライズ）。
+Config types: `WithClaimsConfig`, `WithRequiredClaimsConfig`, `WithSupabaseClientConfig`, `WithSupabaseAdminClientConfig`, `WithPostgresClientConfig`, `WithPostgresAdminClientConfig` (the source describes each only as "Configuration for <name>"; `WithSupabaseClientConfig` is the same environment and client options `createContextClient` accepts minus the per-request auth identity, `WithSupabaseAdminClientConfig` the same for `createAdminClient`). `PostgresApi` is the shape of `ctx.postgres` and `ctx.postgresAdmin`: both expose the same surface; `withPostgresClient` wraps every query in a transaction that injects the caller's claims and drops to their role, `withPostgresAdminClient` runs it as-is, as the connection-string role. `PostgresPoolOptions` is the pool sizing for both; two entries on the same connection string share a pool only when their options resolve to the same values. `RequestClaims` is the minimal claims shape `withPostgresClient` needs on the upstream context (it only reads `role` and serializes the whole object into `request.jwt.claims`).
 
-## withSupabase
+### withSupabase
 
-Web API の `Request` / `Response` 標準上で、CORS preflight・credential 検証・context 生成・エラーレスポンスを処理して handler を wrap する。handler は認証成功時のみ実行される。
+Wraps a request handler with Supabase auth, client creation, and CORS handling. Built for the Web API `Request`/`Response` standard that all modern runtimes implement natively. Handles CORS preflight, credential verification, context creation, and error responses. Your handler only runs on successful auth.
 
 ```ts
 import { withSupabase } from '@supabase/server'
@@ -35,9 +35,9 @@ export default {
 }
 ```
 
-## createSupabaseContext
+### createSupabaseContext
 
-`withSupabase` ラッパー無しで request から `SupabaseContext` を直接作る。フレームワーク route handler やカスタム middleware 用。`Response` でなく result tuple を返す。
+Creates a SupabaseContext directly from a request. Use this when you need the context without the full withSupabase wrapper, e.g., inside framework route handlers or custom middleware. Returns a result tuple instead of producing a `Response`.
 
 ```ts
 const { data: ctx, error } = await createSupabaseContext(request, { auth: 'user' })
@@ -48,15 +48,17 @@ if (error) {
 const { data } = await ctx.supabase.rpc('get_my_items')
 ```
 
-## withClaims
+### withClaims
 
-project JWKS に対し Bearer token を検証して `ctx.jwtClaims` を提供する（`withSupabase` の `user` mode と同じ検証コア）。`withSupabase` で wrap しない standalone `pipeline([...], handler)` 用。`withSupabase` 内では context が既に `jwtClaims` を持つため不要。
+Contributes `ctx.jwtClaims` by verifying the caller's Bearer token against the project JWKS, the same verification core `withSupabase` uses for its `user` auth mode.
 
-- `Authorization: Bearer` token 無し（またはその位置に `sb_*` API key）: `null` を提供し anonymous として通す
-- token あり・無効: 401 JSON（`{ message, code }`、`withSupabase` と同じ形）で short-circuit
-- token あり・JWKS 未設定: 500 で short-circuit（検証は必須で decode-only mode は無い）
+Use this when composing a standalone `pipeline([...], handler)` that is not wrapped by `withSupabase`, for example a Supabase-agnostic Edge Function that still wants the caller's verified claims available to a downstream middleware such as `withPostgresClient`. Inside `withSupabase`, the context already carries `jwtClaims`, so `withClaims` is unnecessary.
 
-`withClaims` は auth gate ではない。token 無しを決して拒否せず、`[withClaims(), withSupabaseClient()]` は匿名を受け入れ `withSupabase({ auth: 'user' })`（token 無しを 401）の compose 版ではない。認証必須には `withRequiredClaims` を使う。両者は `jwtClaims` キーを共有するので併用はコンパイル時の衝突。
+- No `Authorization: Bearer` token (or an `sb_*` API key in that position): contributes `null`; the request proceeds as anonymous.
+- Token present but invalid: short-circuits with a 401 JSON response (`{ message, code }`, matching `withSupabase`'s error shape).
+- Token present but no JWKS configured: short-circuits with a 500. Verification is not optional; there is no decode-only mode.
+
+`withClaims` is not an auth gate. It never rejects a request that has no token. A pipeline like `[withClaims(), withSupabaseClient()]` accepts anonymous callers and is not the composable form of `withSupabase({ auth: 'user' })`, which rejects token-less requests with a 401. To require an authenticated caller, compose `withRequiredClaims` instead. The two entries share the `jwtClaims` key, so a pipeline picks "claims if present" or "claims required"; composing both is a compile-time conflict.
 
 ```ts
 import { pipeline } from '@supabase/middleware'
@@ -71,16 +73,22 @@ export default {
 }
 ```
 
-## withRequiredClaims
+### withRequiredClaims
 
-user-mode の auth gate。有効な user JWT を要求し非 null の `ctx.jwtClaims` を提供する。検証は `withSupabase` の `user` mode と同じ project JWKS コア。`withClaims` の required-caller 版。short-circuit は標準エラー payload で、同一リクエストに対し `withSupabase({ auth: 'user' })` と同じ code を返す。
+The user-mode auth gate: requires a valid user JWT and contributes non-null `ctx.jwtClaims`. Verification runs against the project JWKS, the same core `withSupabase` uses for its `user` auth mode. This is the required-caller counterpart to `withClaims`.
 
-- `Authorization: Bearer` token 無し: 401 `MISSING_CREDENTIALS`（handler は実行されない）
-- その位置に `sb_*` API key: 401 `UNUSABLE_CREDENTIAL`
-- token あり・無効: 401 `INVALID_JWT`（具体的理由を含む）
-- token あり・JWKS 未設定: 500 `JWKS_NOT_CONFIGURED`
+Every short-circuit uses the standard error payload, with the same code `withSupabase({ auth: 'user' })` returns for an identical request:
 
-contribution が非 null のため gated handler は `ctx.jwtClaims` を fallback 無しで直接読める。`withPostgresClient` のように `jwtClaims` 前提を宣言する下流 entry は追加検証無しで compose できる。401 / 500 の short-circuit に CORS ヘッダーは付かず、素の pipeline は `OPTIONS` preflight に応答しない。ブラウザ向けには gate の前に `withCors`（`@supabase/middleware/cors`）を compose する。`withSupabase` の後ろに置くと context が検証済み `jwtClaims` を既に持つためコンパイル時の衝突になる（その経路のゲートは `withSupabase({ auth: 'user' })`）。
+- No `Authorization: Bearer` token: 401 `MISSING_CREDENTIALS`. The handler never runs.
+- An `sb_*` API key in that position: 401 `UNUSABLE_CREDENTIAL` (a credential arrived, just not a user JWT).
+- Token present but invalid: 401 `INVALID_JWT`, naming the specific reason.
+- Token present but no JWKS configured: 500 `JWKS_NOT_CONFIGURED`; verification is not optional and there is no decode-only mode.
+
+Because the contribution is non-null, gated handlers read `ctx.jwtClaims` directly, with no `?.sub ?? 'anon'` fallbacks. Downstream entries declaring a `jwtClaims` prerequisite, such as `withPostgresClient`, compose with no further verification.
+
+The 401 and 500 short-circuits carry no CORS headers, and a bare pipeline answers no `OPTIONS` preflight. For browser callers, compose `withCors` (`@supabase/middleware/cors`) ahead of the gate: it answers preflight before the gate runs and stamps `Access-Control-*` headers on the short-circuit responses.
+
+After `withSupabase` in a pipeline the context already carries verified `jwtClaims`, so this gate is unnecessary there and placing it after `withSupabase` is a compile-time conflict. Use `withSupabase({ auth: 'user' })` to gate that path.
 
 ```ts
 import { pipeline } from '@supabase/middleware'
@@ -95,9 +103,11 @@ export default {
 }
 ```
 
-## withSupabaseClient
+### withSupabaseClient
 
-呼び出し元の identity でスコープされた `ctx.supabase` を提供する（RLS 適用）。`withSupabase` が内部で compose するのと同じ middleware。standalone では Bearer token（あれば）を未検証のまま付与する（PostgREST が毎クエリ検証）。pipeline 自体が検証済み claims を必要とするなら上流に `withClaims` を compose する。
+Contributes `ctx.supabase`, a Supabase client scoped to the caller's identity, so Row-Level Security policies apply. This is the same middleware `withSupabase` composes internally to build its context.
+
+Standalone, the caller's Bearer token (when present) is attached unverified; PostgREST verifies it on every query. Compose `withClaims` upstream when the pipeline itself needs verified claims.
 
 ```ts
 import { pipeline } from '@supabase/middleware'
@@ -111,9 +121,11 @@ export default {
 }
 ```
 
-## withSupabaseAdminClient
+### withSupabaseAdminClient
 
-secret key で認証された RLS バイパスの `ctx.supabaseAdmin` を提供する。`withSupabase` が内部で compose するのと同じ middleware。client は `ctx.supabaseAdmin` の最初のプロパティアクセス時に構築され request 内で memoize される。アクセスしない handler は secret key 不要。
+Contributes `ctx.supabaseAdmin`, an admin Supabase client that bypasses Row-Level Security, authenticated with a secret key. This is the same middleware `withSupabase` composes internally to build its context.
+
+The client is constructed on the first property access of `ctx.supabaseAdmin` and memoized for the request. A handler that never accesses it requires no secret key.
 
 ```ts
 import { pipeline } from '@supabase/middleware'
@@ -127,9 +139,11 @@ export default {
 }
 ```
 
-## withPostgresClient
+### withPostgresClient
 
-RLS スコープの `pg` client `ctx.postgres` を提供する（「認証して user として query する」の安全版）。`withSupabaseClient` の direct-connection 版で service-role 版は `withPostgresAdminClient`。各 query は PostgREST と同様、呼び出し元の claims を注入し role へ降格する短いトランザクションで実行される。すべて transaction-local のため pool 接続に漏れない。
+Contributes `ctx.postgres`, an RLS-scoped `pg` client, the safe version of "authenticate, then query as the user". This is the direct-connection counterpart to `withSupabaseClient`, and its service-role companion is `withPostgresAdminClient`.
+
+Every query runs in its own short transaction that injects the caller's claims and drops to their role, exactly like PostgREST:
 
 ```sql
 begin;
@@ -139,21 +153,29 @@ set local role "authenticated";                          -- RLS now enforces
 commit;
 ```
 
-- `authenticated` / `anon` のみ想定。他の role（`service_role` を含む）を指す token は 500 `code: 'UNSUPPORTED_ROLE'` で**拒否**され `anon` に降格されない。RLS バイパスは `withPostgresAdminClient` を明示的に compose する
-- カスタム Postgres role（`role` claim）は未対応のため降格でなく拒否
-- `ctx.jwtClaims`（`withSupabase` が検証済みで提供）を読むので pipeline で `withSupabase` の後にそのまま compose 可。standalone では `withClaims` を併用して `ctx.jwtClaims` を先に用意する
-- テーブル権限: `authenticated` / `anon` として実行されるため RLS policy に加えて明示的な table privilege（例 `grant select, insert on <table> to authenticated`）が必要。不足は RLS の前に `permission denied`（SQLSTATE 42501）
-- `pg` は raw TCP が必要なため Node / Deno（Supabase Edge runtime 含む）で動作し、Workers 型 isolate では動かない
+Everything is transaction-local, so nothing leaks onto the pooled connection.
+
+Only `authenticated` and `anon` are assumed. A token naming any other role, including `service_role`, is refused with a 500 and `code: 'UNSUPPORTED_ROLE'`, never silently downgraded to `anon`. Bypassing RLS is a separate, explicit opt-in: compose `withPostgresAdminClient`.
+
+Custom roles: Supabase supports custom Postgres roles via the `role` claim, and RLS still applies to them. They are not supported here yet, so such a token is refused rather than downgraded.
+
+Reads the caller's claims from `ctx.jwtClaims`, which `withSupabase` populates (JWKS-verified), so after `withSupabase` in a pipeline it composes directly. Standalone (no `withSupabase`), pair it with `withClaims` so `ctx.jwtClaims` is present before it runs.
+
+Table grants: queries run as `authenticated` or `anon`, so those roles need explicit table privileges (e.g. `grant select, insert on <table> to authenticated`) in addition to RLS policies. A missing grant fails with `permission denied` (SQLSTATE 42501) before RLS is consulted.
+
+Runtime note: `pg` needs raw TCP, so this runs on Node/Deno (including the Supabase Edge runtime), not on Workers-style isolates.
 
 ```ts
 pipeline([withSupabase({ auth: 'user' }), withPostgresClient()], handler)
 ```
 
-## withPostgresAdminClient
+### withPostgresAdminClient
 
-RLS を**バイパスする** `pg` client `ctx.postgresAdmin` を提供する（全テーブルアクセス用）。`withSupabaseAdminClient` の direct-connection 版で、`withPostgresClient` が強制するガードレールからの意図的な opt-out。query は接続文字列の role のまま実行され、claim 注入・role 切替・wrapping transaction は無い。その role が読めるものは呼び出し元も読める。
+Contributes `ctx.postgresAdmin`, a `pg` client that bypasses RLS, for full-table access. The direct-connection counterpart to `withSupabaseAdminClient`, and the deliberate opt-out from the guardrails `withPostgresClient` enforces.
 
-`withPostgresClient` と異なり上流 prerequisite を宣言せず `ctx.jwtClaims` を見ないため、`auth: 'secret'` / `auth: 'none'` を含む任意の auth mode で compose できる。
+Queries run as-is, as the role in the connection string: no claim injection, no role switching, no wrapping transaction. Whatever that role may read, the caller may read.
+
+Unlike `withPostgresClient` this declares no upstream prerequisite. It never looks at `ctx.jwtClaims`, so it composes in any auth mode, including `auth: 'secret'` and `auth: 'none'`:
 
 ```ts
 import { pipeline } from '@supabase/middleware'
@@ -163,27 +185,30 @@ import { withPostgresAdminClient } from '@supabase/server/middleware/postgres-ad
 pipeline([withSupabase({ auth: 'secret' }), withPostgresAdminClient()], handler)
 ```
 
-両方が必要な handler では両方を compose できる（pool は共有され `ctx.postgres` は RLS スコープのまま）:
+Compose both halves when a handler needs each in turn. They share one pool, and `ctx.postgres` stays RLS-scoped regardless:
 
 ```ts
 pipeline([withSupabase({ auth: 'user' }), withPostgresClient(), withPostgresAdminClient()], handler)
 ```
 
-- RLS は参照されないため user ごとのスコープは自分で `where` 句を書く。user 境界を越える必要がない限り `withPostgresClient` を使う
-- `pg` は raw TCP が必要で Workers 型 isolate では動かない
+Authorization is yours now. RLS is not consulted, so any per-user scoping has to be a `where` clause you write. Reach for `withPostgresClient` unless you specifically need to cross user boundaries. `pg` needs raw TCP, so this runs on Node/Deno (including the Supabase Edge runtime), not on Workers-style isolates.
 
-## withOAuthProtectedResource
+### withOAuthProtectedResource
 
-request handler を OAuth 2.1 Protected Resource（RFC 9728）として wrap する。
+Wraps a request handler with OAuth 2.1 Protected Resource behavior (RFC 9728).
 
-- `GET {resource}/oauth-protected-resource` で OAuth Protected Resource Metadata を返す（`OPTIONS` preflight を含む permissive CORS 付き）
-- inner handler の `401` に `WWW-Authenticate: Bearer resource_metadata="..."` を付加する（handler が既に `WWW-Authenticate` を設定していればそちらが優先）
-- 他の path は inner handler にそのまま通す
-- 既定 URL を導出できない場合は `withSupabase` が設定エラーで返す JSON エラー（`500`、`x-supabase-server-error`）で応答する。設定された `resourceServer` / `authorizationServer` 関数の throw は呼び出し側のものとして伝播する
+- Serves OAuth Protected Resource Metadata at `GET {resource}/oauth-protected-resource` (with permissive CORS, including the `OPTIONS` preflight, so browser-based clients can read it)
+- Enriches a `401` from the inner handler with `WWW-Authenticate: Bearer resource_metadata="..."`, unless the handler already set a `WWW-Authenticate` header (its value wins)
+- Passes any other path through to the inner handler unchanged (composition, not routing, decides what happens to it)
+- Answers a default URL it cannot derive with the JSON error response `withSupabase` returns for its own configuration failures (`500`, `x-supabase-server-error`); a throw from a configured `resourceServer` or `authorizationServer` function is the caller's and propagates
 
-metadata route は path の**末尾**で照合されるため、`/oauth-protected-resource` で終わる **任意の** `GET` / `OPTIONS` が深さに関係なくここで応答され inner handler には届かない。他メソッドは通過。
+The metadata route is matched on the path suffix, so any `GET` or `OPTIONS` ending in `/oauth-protected-resource` is answered here and never reaches the inner handler, at any depth. Other methods pass through.
 
-Supabase Edge Functions ではゼロ設定。それ以外では `resourceServer` が必須で `authorizationServer` は `SUPABASE_URL` にフォールバックする。解決できない場合は `MISSING_RESOURCE_SERVER` / `MISSING_AUTHORIZATION_SERVER`。下流 context に `ctx.oauthProtectedResource`（解決済み metadata URL）を提供する。`withSupabase` の内側にネストする場合は最外の呼び出しが `satisfies FetchHandler` で anchor されると handler の `ctx` に型付けされる。認証情報を要求する auth mode の `withSupabase` の直後に置くとゲートが discovery と preflight に先に応答するため、スタック構築時に compose が拒否される。
+Zero-config on Supabase Edge Functions. Elsewhere `OAuthProtectedResourceConfig.resourceServer` is required and `OAuthProtectedResourceConfig.authorizationServer` falls back to `SUPABASE_URL`; one that cannot be resolved is reported as `MISSING_RESOURCE_SERVER` / `MISSING_AUTHORIZATION_SERVER`.
+
+Contributes `ctx.oauthProtectedResource` (the resolved metadata URL) to the downstream context. Nested under `withSupabase`, the key is typed on the handler's `ctx` when the outermost call is anchored with `satisfies FetchHandler`. Placed directly after `withSupabase` with an auth mode that requires credentials, the composition is refused when the stack is built, since the gate would answer discovery and preflight before this middleware runs.
+
+Supabase Edge Functions, zero config:
 
 ```ts
 import { withOAuthProtectedResource, withSupabase } from '@supabase/server'
@@ -199,6 +224,8 @@ Deno.serve(
 )
 ```
 
+Any other backend:
+
 ```ts
 import { withOAuthProtectedResource, fromSupabaseUrl } from '@supabase/server'
 
@@ -213,7 +240,7 @@ export default {
 }
 ```
 
-非 Supabase の authorization server:
+A non-Supabase authorization server:
 
 ```ts
 withOAuthProtectedResource(
@@ -225,11 +252,11 @@ withOAuthProtectedResource(
 )
 ```
 
-関連 helper: `resourceMetadataResponse`（RFC 9728 の metadata response。URL は Edge Functions 導出が既定で platform 外では throw するため `resource` / `authorizationServers` で上書き。options 型は `ResourceMetadataOptions`）、`unauthorizedResponse`（`WWW-Authenticate: Bearer resource_metadata="..."` 付き `401`。metadata URL は Edge Functions 導出が既定で platform 外では throw するため `resourceMetadataUrl` で上書き）。設定型 `OAuthProtectedResourceConfig` は `types.md` 参照。
+Related helpers: `resourceMetadataResponse` (RFC 9728 OAuth Protected Resource Metadata response; advertises the authorization server, resource URI, and bearer methods supported; URLs default to the Edge Functions derivation and throw off platform, so pass `resource` / `authorizationServers` to override; options type `ResourceMetadataOptions`) and `unauthorizedResponse` (`401` response with a `WWW-Authenticate: Bearer resource_metadata="..."` header (RFC 9728); the metadata URL defaults to the Edge Functions derivation and throws off platform, so pass `resourceMetadataUrl` to override). The config type `OAuthProtectedResourceConfig` is in types.md.
 
-## fromSupabaseUrl
+### fromSupabaseUrl
 
-`authorizationServer` を Supabase プロジェクトの Auth issuer に向ける。アプリ自身の origin が Supabase プロジェクトと無関係で request から issuer を導出できない、Supabase Edge Functions 外で使う。
+Points `authorizationServer` at a Supabase project's Auth issuer. Use this off Supabase Edge Functions, where the app's own origin is unrelated to the Supabase project's, so the issuer cannot be derived from the request.
 
 ```ts
 import { withOAuthProtectedResource, fromSupabaseUrl } from '@supabase/server'
@@ -243,11 +270,13 @@ withOAuthProtectedResource(
 )
 ```
 
-## ident
+### ident
 
-Postgres 識別子（table / column / role 名）を SQL テキストへ安全に補間するために quote する。bind parameter は *値* のみ扱い（`order by $1` は定数文字列 `$1` で並べ替え、`select $1 from t` はカラムでなくリテラルを選ぶ）、識別子は SQL テキストとして届く必要がある。この関数は名前を quote し埋め込み quote を二重化するので結果は常にちょうど 1 つの識別子になる。
+Quote a Postgres identifier (a table, column, or role name) for safe interpolation into SQL text.
 
-**allowlist ではない。** 呼び出し側が与えた名前を quote しても valid な識別子になるだけで許可された識別子にはならない。`ident(req.query.sort)` は SQL injection にならないが、見せるべきでない column を読まれ得る。先に自分で管理する固定集合と照合してから quote する。
+Bind parameters cover values and nothing else: `order by $1` sorts every row by the constant string `$1`, and `select $1 from t` selects a literal, not a column. Identifiers therefore have to reach the server as SQL text, which is the one place string-building is unavoidable. This makes that step safe by quoting the name and doubling any embedded quote, so the result is always exactly one identifier no matter what it contains.
+
+It is not an allowlist. Quoting a caller-supplied name yields a valid identifier, not a permitted one: `ident(req.query.sort)` cannot inject SQL but can still read a column the caller was never meant to see. Check the name against a fixed set you control first, then quote it.
 
 ```ts
 const SORTABLE = new Set(['created_at', 'title'])
@@ -259,9 +288,9 @@ const rows = await ctx.postgres.queryRaw(
 
 ## Notes
 
-- 出典: https://supabase.com/llms/server.txt （Middleware 節、2026-10 取得）。原文は関数シグネチャを示さないため、引数型・戻り値型はここに書いていない
-- `withSupabase` / `createSupabaseContext` / `withClaims` 等は standalone の `pipeline` と `withSupabase` 内部で役割が異なる点に注意（`withSupabase` 内では `jwtClaims` 済みで `withClaims` 不要）
-- Supabase の `@supabase/server` middleware は Hono / H3 等の web フレームワークの middleware 概念とは別物（bridge を介して接続する。`frameworks.md` 参照）
+- Source: https://supabase.com/llms/server.txt (Middleware section, fetched 2026-10). The source does not show function signatures, so argument and return types are not written here.
+- Inside `withSupabase`, `jwtClaims` is already present, so `withClaims` is unnecessary there; standalone pipelines differ.
+- `@supabase/server` middleware is separate from the middleware concept of web frameworks such as Hono / H3 (connected through a bridge; see frameworks.md).
 
 ## Related
 

@@ -1,48 +1,58 @@
 # Framework bridges
 
-`@supabase/server` の middleware を Hono / H3 (Nuxt) / Elysia / NestJS / TanStack Start 内で動かす bridge（プロジェクトにコピーする 1 ファイル）。
+`@supabase/server` middleware runs inside Hono, H3, Elysia, NestJS, and TanStack Start through a bridge: one file you copy into your project.
 
 ## Signature / Usage
 
-- bridge は `@supabase/middleware` の entry 配列をフレームワーク自身の middleware スロットで実行する。route handler は `supabase` / `jwtClaims` などをフレームワークのリクエスト状態から読む
-- 従来の framework adapter（`@supabase/server/adapters/*`）は deprecated、2026-12-01 削除。移行は `migrating-off-adapters.md`
-- 必要: `@supabase/server` 1.6.0 以降、Node 22 以降。`withRequiredClaims` は 1.5.1、`withSupabase` の entry 形は 1.6.0 で追加。1.5.1 未満には `/middleware/*` export が無い
-- bridge ファイルは `@supabase/middleware` を import するため直接依存として追加する（pnpm 等の strict な package manager では transitive dependency を import できない）
-- bridge ファイルは https://github.com/supabase/server/tree/main/examples/frameworks にある。コメント込みでそのままコピーする（冗長に見える行にも理由がある）
+The bridge runs a `@supabase/middleware` entry array in the framework's own middleware slot. Your route handlers then read `supabase`, `jwtClaims`, and any other key the entries contribute from the place your framework keeps per-request state.
 
-### bridge が提供する 3 機能
+The framework adapters (`@supabase/server/adapters/*`) predate the middleware engine. They are deprecated and will be removed on December 1, 2026. The bridges on this page replace them. If you use an adapter today, read "Moving off the adapters" (migrating-off-adapters.md) before you change anything. One step in that migration can open an endpoint up without an error.
 
-- Context: entry が `supabase` / `jwtClaims` などの型付きキーを提供し handler が読む
-- Short-circuit: entry が `Response` を返すと route は実行されない（`withRequiredClaims` の拒否方法）
-- Response phase: `async function*` の entry が `yield` で outgoing response を見て書き換える（`withCors` が必要とする）
+The bridges need `@supabase/server` 1.6.0 or later and Node 22 or later. `withRequiredClaims` shipped in 1.5.1 and the entry form of `withSupabase` in 1.6.0. Releases before 1.5.1 have no `/middleware/*` exports.
 
-| Framework      | Context | Short-circuit | Response phase | Pattern           |
-| -------------- | ------- | ------------- | -------------- | ----------------- |
-| Hono           | Yes     | Yes           | Yes            | middleware slot   |
-| H3 / Nuxt      | Yes     | Yes           | Yes            | middleware slot   |
-| Elysia         | Yes     | Yes           | Yes            | wrap `app.handle` |
-| NestJS         | Yes     | Yes           | No             | guard             |
-| TanStack Start | Yes     | Yes           | Yes            | middleware slot   |
+The bridge file imports `@supabase/middleware`, so add it to your project as a direct dependency. `@supabase/server` depends on it, but a strict package manager such as pnpm does not let your code import a transitive dependency.
 
-handler 内で `supabase` を読むだけなら全行で足りる。bridge は呼び出し時に entry 配列を 1 回だけ fold し、状態は request をまたいで保持される。同じキーを提供する 2 entry や前提 entry 欠落は呼び出し箇所でコンパイルエラーになる。
+The bridge files live in the server repository under `examples/frameworks` (https://github.com/supabase/server/tree/main/examples/frameworks), next to a minimal app for each. Copy the file for your framework as is, comments included. Some lines look redundant and are not. The comments say why.
 
-保護 route group は `withRequiredClaims()`、公開 group は `withClaims()` を使う。両者とも `jwtClaims` を提供するため同一配列には置けない。
+### What a bridge gives you
 
-| Framework      | One array per route group                                                                                     |
-| -------------- | ------------------------------------------------------------------------------------------------------------- |
-| Hono           | One sub-app per array, mounted with `app.route()`. A second `app.use()` statement is not enough.              |
-| H3 / Nuxt      | `app.use('/path', toH3(entries))` before the routes under that path                                           |
-| Elysia         | One Elysia instance per array, each wrapped with `wrapElysia`, behind a fetch handler that dispatches by path |
-| NestJS         | `@UseGuards()` on the controller or the handler                                                               |
-| TanStack Start | `.middleware([...])` on each server function or server route                                                  |
+An entry does three jobs. How many of them survive depends on the framework.
 
-## Hono
+- Context. The entries contribute typed keys such as `supabase` and `jwtClaims`, and your handler reads them.
+- Short-circuit. An entry can return a `Response`, and your route never runs. That is how `withRequiredClaims` rejects a request.
+- Response phase. An entry written as `async function*` can `yield`, see the response on the way out, and rewrite it. `withCors` needs this to stamp headers.
 
-`hono/supabase-middleware.ts` をコピー。`toHono` が Hono middleware を返す。chain で `.use()` し、提供キーは `Env` 宣言なしで `c.var` に型付けされる。ゲートする route より前に登録する（後から追加した route より前の middleware しか効かず、先に追加した route はゲート無しで動く）。
+| Framework | Context | Short-circuit | Response phase | Pattern |
+| --- | --- | --- | --- | --- |
+| Hono | Yes | Yes | Yes | middleware slot |
+| H3 / Nuxt | Yes | Yes | Yes | middleware slot |
+| Elysia | Yes | Yes | Yes | wrap `app.handle` |
+| NestJS | Yes | Yes | No | guard |
+| TanStack Start | Yes | Yes | Yes | middleware slot |
 
-`app.use(...)` と `app.get(...)` を別行にすると型が `c.var` に伝播しない（ゲートは動くので型検査失敗だけが兆候）。別配列の route は別 sub-app にして `app.route()` でマウントする。
+If you only read `supabase` inside a handler, every row works for you. Ignore the response-phase column.
 
-bridge の `c.res` は代入前にクリアされる。response-phase entry が新しい `Response` を返すと Hono の `res` setter が前のヘッダーをコピーし書き換えを戻してしまうため。この行とコメントは残す。Cloudflare Workers では bridge が `c.env` で pipeline を seed するので `getEnv` が binding を読める。
+Each bridge folds the entry array once, when you call it, so entries keep their state across requests. Each bridge also checks the array at compile time. Two entries that contribute the same key, or an entry whose prerequisite is missing, fail to compile at the call site.
+
+A gated group of routes takes `withRequiredClaims()` and a public group takes `withClaims()`. The two cannot share an array, because both contribute `jwtClaims`. Each framework scopes an array to a group of routes in its own way.
+
+| Framework | One array per route group |
+| --- | --- |
+| Hono | One sub-app per array, mounted with `app.route()`. A second `app.use()` statement is not enough. |
+| H3 / Nuxt | `app.use('/path', toH3(entries))` before the routes under that path |
+| Elysia | One Elysia instance per array, each wrapped with `wrapElysia`, behind a fetch handler that dispatches by path |
+| NestJS | `@UseGuards()` on the controller or the handler |
+| TanStack Start | `.middleware([...])` on each server function or server route |
+
+### Hono
+
+Copy `hono/supabase-middleware.ts` into your project. `toHono` returns Hono middleware. Register it with `.use()` in a chain, and the contributed keys type through to `c.var` with no `Env` declaration of your own. Register it before the routes it gates. Hono applies middleware only to routes added after it, so a route added first runs with no gate and no error. `withSupabaseClient()` threads the generic through, so `c.var.supabase` is a `SupabaseClient`.
+
+Hono carries the contributed keys through the return value of a chained call. `app.use(...)` on one line and `app.get(...)` on the next typecheck the middleware but leave `c.var` untyped. The gate still runs, so a failing typecheck is the only signal. A second array for other routes goes in its own sub-app, mounted with `app.route()`. Each sub-app chains its own `.use()` into its routes.
+
+One line in the bridge looks redundant: `c.res` is cleared before it is assigned. When a response-phase entry returns a new `Response`, Hono's `res` setter copies the previous response's headers onto it, which reverts any header the entry rewrote. Clearing first makes the assignment final. Keep the line and its comment.
+
+On Cloudflare Workers the bridge seeds the pipeline with `c.env`, so `getEnv` inside the entries reads your bindings.
 
 ```ts
 import { Hono } from 'hono'
@@ -77,9 +87,11 @@ const feed = new Hono()
 const app = new Hono().route('/me', me).route('/feed', feed)
 ```
 
-## H3 / Nuxt
+### H3 / Nuxt
 
-`h3/supabase-middleware.ts` をコピー。`toH3` が H3 middleware を返す。`event.context` はジェネリックでないため、entry 配列を `const` に切り出し `@supabase/middleware` の `Contributions<typeof entries>` で読む（または小さな型付き accessor を自作）。
+Copy `h3/supabase-middleware.ts` into your project. `toH3` returns H3 middleware. H3 middleware return the response directly, so no workaround is needed.
+
+`event.context` is not generic. Hoist the entry array to a `const` and read the keys through `Contributions<typeof entries>` from `@supabase/middleware`, or wrap that in a small typed accessor of your own.
 
 ```ts
 import { H3 } from 'h3'
@@ -104,13 +116,13 @@ app.get('/todos', async (event) => {
 export default { fetch: app.fetch }
 ```
 
-## Elysia
+### Elysia
 
-`elysia/supabase-middleware.ts` をコピー。Elysia の lifecycle hook は request phase のみで `.resolve()` に `next()` が無く outgoing response を見られない。そこで `wrapElysia` が entry を `app.handle` の周りに compose し、`supabaseCtx()` plugin が context を route に渡す。
+Copy `elysia/supabase-middleware.ts` into your project. Elysia's lifecycle hooks run in the request phase only. A `.resolve()` hook has no `next()` and never sees the outgoing response. So `wrapElysia` composes the entries around `app.handle`, and `supabaseCtx()` is a plugin that hands the context back to your routes per request.
 
-`supabaseCtx<typeof entries>()` で route context を型付けする（`wrapElysia` と同じ tuple 型を渡す）。entry は app 全体を包むため app-wide に効く。別配列が必要なら別 Elysia instance を別々に wrap し、前段の fetch handler で path ごとに振り分ける。
+`supabaseCtx<typeof entries>()` types the route context. Pass the same tuple type that `wrapElysia` receives. Because the entries wrap the whole app, they apply app-wide. A second array for other routes needs its own Elysia instance, wrapped separately, with a fetch handler in front that dispatches by path to the wrapped apps.
 
-2 関数は対で使う。`wrapElysia` 無しで `app.listen()` や `export default app` で提供すると entry が実行されず `supabaseCtx()` が全 route で throw する。
+The two functions work only as a pair. If you serve the app without `wrapElysia`, with `app.listen()` or `export default app`, the entries never run and `supabaseCtx()` throws on every route.
 
 ```ts
 import { Elysia } from 'elysia'
@@ -134,16 +146,11 @@ export default {
 }
 ```
 
-## NestJS
+### NestJS
 
-`nestjs/supabase.guard.ts` をコピー。`toNestGuard` が guard class を返す。guard は context と short-circuit のみ（response phase 不可: interceptor は `Response` でなく controller の戻り値を受けるため `yield` が作用しない）。
+Copy `nestjs/supabase.guard.ts` into your project. `toNestGuard` returns a guard class. A guard covers context and short-circuit. The response phase is not available: Nest's interceptors receive the controller's return value, not a `Response`, so an entry's `yield` has nothing to act on. `withCors` in the array stamps a short-circuit only: the 401 carries the headers and a successful response does not. A preflight never reaches a guard either. Guards run after routing, and no `OPTIONS` route exists, so the preflight 404s. CORS on Nest is `app.enableCors()`. Leave `withCors` out of the guard's array.
 
-- `withCors` を配列に入れても short-circuit（401）にしかヘッダーが付かず成功レスポンスには付かない。preflight は guard に届かず（guard は routing 後で `OPTIONS` route が無いため）404 になる。CORS は `app.enableCors()` を使い、guard の配列に `withCors` を入れない
-- `toNestGuard` は 1 回だけ呼び class を全 route で再利用（pipeline を 1 回だけ fold）。short-circuit 時は entry のヘッダーを response にコピーし、entry の status と `{ message, code }` body で `HttpException` を throw する
-- bridge は Nest の request から headers と method で Web `Request` を作る。**body は転送されない**。body を読む entry は空 body を見て動くため、署名検査・body 監査を配列に置くと何も検査されず通る。これらは Nest middleware に置く
-- Nest request が既に持つプロパティ（`body` / `query` 等）と同名のキーを提供する contribution は上書きせず throw する
-- `Injectable()` は関数呼び出しとして適用するためファイル自体は decorator transform なしで動くが、controller は decorator が必要（swc / ts-node / build step。Node 組み込みの type stripping は `@Controller()` 行を拒否）
-- Nest は `POST` に既定で 201 を返す（他フレームワークは 200）
+Call `toNestGuard` once and reuse the class on every route, so the pipeline folds once. On a short-circuit the guard copies the entry's headers onto the response, then throws an `HttpException` with the entry's status and its `{ message, code }` body. The bridge builds a Web `Request` from Nest's request with the headers and method. The body is not forwarded. An entry that reads it sees an empty body and runs as if that were the payload, so a signature check or a body audit in the array passes with nothing checked. Put those in Nest middleware. A contribution whose key matches a property Nest's request already has, such as `body` or `query`, throws instead of overwriting it. `Injectable()` is applied as a call, so the file works without a decorator transform. The controller does not. Nest is built on decorators, so running the example needs swc, ts-node, or a build step. Node's built-in type stripping rejects the `@Controller()` line. Nest also answers a `POST` with 201 by default, where the other frameworks answer 200.
 
 ```ts
 import { Controller, Get, Req, UseGuards } from '@nestjs/common'
@@ -168,17 +175,21 @@ export class TodosController {
 }
 ```
 
-## TanStack Start
+### TanStack Start
 
-TanStack Start に adapter は存在しなかったため統合ガイダンス。adapter からの移行手順は適用されない。`tanstack-start/supabase-middleware.ts` をコピー。`toTanStackStart` が request middleware を返す。
+TanStack Start never had an adapter, so this section is integration guidance. The migration steps in migrating-off-adapters.md do not apply to it. Copy `tanstack-start/supabase-middleware.ts` into your project. `toTanStackStart` returns a request middleware.
 
-- `request` は既に Web `Request`、`next()` は下流 `Response` を持つ object に解決される
-- `.server<Contributions>` が下流の `context` を型付けする（ジェネリックに制約が無く、省略すると context が `undefined` 型になる）。`<const Entries>` が tuple を保つので `context.*` が型付きのまま
-- engine は context を自分で seed する場合のみ request body を buffer する。bridge は seed するので in place で buffer し、cached reader を同一 object に設置するため entry と handler が同じ body を読める
-- `createMiddleware({ type: 'request' })` を使う（`Response` を返して short-circuit でき、`createServerFn().middleware([...])` が request middleware を受け付ける）
-- server function では Start の fetcher は `application/json` body を status を見ずに値として返す（`response.ok` は non-JSON のときのみ）。`withRequiredClaims()` の 401 が呼び出し側の promise を `{ message, code }` で resolve してしまうため、bridge は server function での short-circuit を `status` と `code` 付き error として rethrow する。server route は `Response` をそのまま返す
-- `.middleware([...])` を呼ぶファイルは client に出荷されるため、参照する entry module は client から到達可能。設定は request ごとに `getEnv` で読み、secret を module scope に置かない
-- Vite dev server は CORS に自前で応答するので `withCors` 無しの route は dev で動き build 後に失敗する。ブラウザから呼ぶ全 route に `withCors` を compose し、production build で preflight を確認する
+`request` is already a Web `Request`, and `next()` resolves to an object carrying the downstream `Response`, so the fit is close. Two details in the bridge carry the typing. `.server<Contributions>` is what types `context` downstream; the generic has no constraint, so leaving it off types the context as `undefined`. And `<const Entries>` keeps the tuple, so every `context.*` read stays typed.
+
+The engine buffers a request body only when it seeds the context itself. The bridge seeds, so it buffers too, and it does so in place. `next()` accepts `context` only, so the bridge cannot hand a different `Request` downstream, and Start gives the route handler the same object the middleware saw. The bridge installs cached readers on that object, and an entry and the handler read the same body.
+
+`createMiddleware({ type: 'request' })` is the right kind here. Its server function may return a `Response`, which is what lets an entry short-circuit, and `createServerFn().middleware([...])` accepts request middleware.
+
+On a server function, Start's fetcher returns any `application/json` body as the call's value without checking the status. It checks `response.ok` only when the body is not JSON. A 401 from `withRequiredClaims()` would resolve the caller's promise with `{ message, code }` where it expects its own result type: the same silent-200 class of failure as the auth trap, one layer further out. So when an entry short-circuits on a server function, the bridge rethrows it as an error carrying `status` and `code`. Server routes get the `Response` back unchanged.
+
+The file that calls `.middleware([...])` ships to the client, so the entry modules it references are client-reachable. Read configuration through `getEnv` per request and keep secrets out of module scope.
+
+Vite's dev server answers CORS on its own. A route with no `withCors` entry works in development and fails once the app is built and served. Compose `withCors` on every route a browser calls, and check the preflight against a production build.
 
 ```ts
 import { createServerFn } from '@tanstack/react-start'
@@ -204,9 +215,9 @@ export const whoAmI = createServerFn()
 
 ## Notes
 
-- 出典: https://supabase.com/docs/reference/server/frameworks （原本 https://supabase.com/llms/server.txt、2026-10 取得）
-- adapter 利用中は先に `migrating-off-adapters.md` の auth trap を読むこと（エラー無しでエンドポイントが開放され得る）
-- TanStack Start の bridge は TanStack Start 側スキルの `createServerFn` / middleware とは別の Supabase 側 bridge 実装
+- Source: https://supabase.com/docs/reference/server/frameworks (original: https://supabase.com/llms/server.txt, fetched 2026-10)
+- If you use an adapter today, read the auth trap in migrating-off-adapters.md first (an endpoint can be opened up without an error).
+- The TanStack Start bridge is a Supabase-side bridge implementation, separate from the `createServerFn` / middleware APIs of the TanStack Start skill.
 
 ## Related
 

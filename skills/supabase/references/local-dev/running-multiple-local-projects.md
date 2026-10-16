@@ -55,6 +55,7 @@ supabase stack destroy --stack test --yes
 - Unsupported `config.toml` settings (start fails naming the setting): `api.tls`; Analytics GCP settings and non-Postgres backends; custom Auth email templates with `content_path`; Storage Analytics and vector buckets; custom `edge_runtime.deno_version`; `db.major_version` other than 15 and 17; `db.orioledb_version` before v2.121.0 and `experimental.s3_*` for OrioleDB in any version.
 - Switching branches switches local projects (the first keeps running). Moving or renaming the app directory creates a new local project.
 - Docker is recommended for several simultaneous local projects; native is for sandboxes / CI.
+- Source: https://supabase.com/docs/guides/local-development/running-multiple-local-projects (fetched 2026-10-17, Supabase CLI v2.121.0; release: https://github.com/supabase/cli/releases/tag/v2.121.0)
 
 ## Related
 

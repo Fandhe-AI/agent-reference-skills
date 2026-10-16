@@ -1,17 +1,15 @@
 # Adapters (deprecated)
 
-`@supabase/server/adapters/*` の framework adapter。deprecated で 2026-12-01 に削除される。原文 API リファレンスに載るのは Elysia adapter の `withSupabase` と `SupabaseError`。
+Framework adapters under `@supabase/server/adapters/*`. Deprecated; removed on December 1, 2026. The API reference lists the Elysia adapter's `withSupabase` and `SupabaseError`.
 
 ## Signature / Usage
 
-- Elysia plugin の `withSupabase` は `SupabaseContext` を作り route handler で使えるようにする。前の plugin が既に context を設定していればスキップする（route 単位の override 用）
-- 認証失敗時は `SupabaseError` を throw する。`.status` は error 上に直接あり、元の `AuthError` は型付き `.cause` として取得できる。`onError` で `code === 'SupabaseError'` で判別する
-- `SupabaseError` は `AuthError` を Elysia 互換エラーとして wrap する。Elysia adapter と同時に削除される
-- 代替: framework integration guide の Elysia bridge（認証失敗を `Response` で返す）
+- `withSupabase` (Elysia plugin) creates a SupabaseContext and makes it available in route handlers. Skips if a previous plugin already set the context, enabling route-level overrides.
+- Throws a `SupabaseError` on auth failure. `.status` is on the error directly; the original `AuthError` is available as the typed `.cause`. Discriminate in `onError` via `code === 'SupabaseError'`.
+- `SupabaseError` wraps an AuthError as an Elysia-compatible error.
+- Replacement: the Elysia bridge from the framework integration guide answers auth failures with a `Response` instead.
 
-## Usage
-
-App 全体の認証（`.use()`）:
+App-wide auth via `.use()`:
 
 ```ts
 import { Elysia } from 'elysia'
@@ -27,7 +25,7 @@ const app = new Elysia()
 app.listen(3000)
 ```
 
-scoped `.use()` による route 単位の認証:
+Per-route auth via scoped `.use()`:
 
 ```ts
 import { Elysia } from 'elysia'
@@ -48,11 +46,11 @@ app.listen(3000)
 
 ## Notes
 
-- 出典: https://supabase.com/llms/server.txt （Adapters 節、2026-10 取得）
-- 原文: "Deprecated. Removed on December 1, 2026."（`SupabaseError` / Elysia `withSupabase` とも）
-- adapter から bridge へ移行する際の認証 trap（`withClaims()` では 401 が無言の 200 になる）は `migrating-off-adapters.md` 参照
-- トップレベルの `withSupabase(config, handler)`（`@supabase/server`）は deprecated ではない
-- adapter 経由の `supabaseContext.userClaims` は bridge 移行後 `jwtClaims`（`.id` は `.sub`）に変わる
+- Source: https://supabase.com/llms/server.txt (Adapters section, fetched 2026-10)
+- Both `SupabaseError` and the Elysia `withSupabase` are marked "Deprecated. Removed on December 1, 2026." in the source.
+- For the auth trap when moving from an adapter to a bridge (`withClaims()` turns a 401 into a silent 200), see migrating-off-adapters.md.
+- The top-level `withSupabase(config, handler)` from `@supabase/server` is not deprecated.
+- `supabaseContext.userClaims` through an adapter becomes `jwtClaims` (`.id` becomes `.sub`) after migrating to a bridge.
 
 ## Related
 

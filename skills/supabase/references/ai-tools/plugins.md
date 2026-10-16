@@ -1,32 +1,32 @@
 # Supabase Plugin for AI Coding Agents
 
-Supabase MCP サーバーと Agent Skills を 1 回のインストールで AI コーディングエージェントに導入するプラグイン。
+One-click setup for Supabase in your AI coding agent.
 
 ## Signature / Usage
+
+The Supabase plugin for AI coding agents bundles the MCP server and agent skills into a single install for your AI coding agent, so your agent can query your database, manage migrations, deploy Edge Functions, and follow Supabase and Postgres best practices without manual configuration.
 
 ```bash
 npx plugins add supabase-community/supabase-plugin
 ```
 
-`plugins` パッケージがインストール済みの AI コーディングエージェントを自動検出し、すべてに一括インストールする。確認プロンプトのスキップは `--yes`。グローバル（全プロジェクト共通）またはプロジェクト単位でインストールできる。
+The `plugins` package auto-detects your installed AI coding agents and installs the Supabase plugin to all of them with one command. Use `--yes` to skip the confirmation prompt.
 
-## What's included
+### What's included
 
-| 内容 | 説明 |
-|------|------|
-| Supabase MCP server | 認証後、エージェントがデータベース照会・マイグレーション管理・Edge Functions デプロイ等を実行 |
-| `supabase` skill | Supabase 製品（Database / Auth / Edge Functions / Storage / Realtime）の中核ガイダンス |
-| `supabase-postgres-best-practices` skill | Postgres のクエリ最適化・スキーマ設計・接続管理・RLS パターン |
+- Supabase MCP server: connects your AI coding agent directly to your Supabase projects. Once authenticated, your agent can query your database, manage migrations, deploy Edge Functions, and more.
+- `supabase`: core guidance for working with Supabase products (Database, Auth, Edge Functions, Storage, Realtime)
+- `supabase-postgres-best-practices`: Postgres query optimization, schema design, connection management, and RLS patterns
 
 ## Notes
 
-- プラグインは MCP servers / Skills / Hooks / Agents / Slash commands の任意の組み合わせを束ねられる汎用パッケージ形式
-- MCP と Skills は個別にインストールすることもできる
-- エージェント別の手動インストール手順は、公式ページ内のエージェント選択 UI で表示される（原本は UI 部分が空のため本スキルには未収録）
-- 出典: https://supabase.com/docs/guides/ai-tools/plugins （取得日 2026-10-17、版の pin なし）
+- Plugins for AI coding agents are packages of AI agent extensions. A single plugin can bundle any combination of MCP servers, Skills, Hooks, Agents, and Slash commands.
+- You can also install the MCP server and agent skills separately. You can install the plugin globally to use it across all your projects, or per project to keep it isolated.
+- Per-agent manual installation steps are rendered by an agent-picker UI on the official page; the fetched source has that part empty, so they are not recorded here.
+- Source: https://supabase.com/docs/guides/ai-tools/plugins (fetched 2026-10-17, no version pin)
 
 ## Related
 
 - [Supabase MCP Server](./mcp.md)
 - [Agent Skills](./agent-skills.md)
-- [AI Tools 概要](./overview.md)
+- [AI Tools](./overview.md)

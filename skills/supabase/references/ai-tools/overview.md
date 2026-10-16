@@ -1,41 +1,43 @@
-# AI Tools 概要
+# AI Tools
 
-AI コーディングエージェントを Supabase に接続する手段の全体像。MCP / Agent Skills / Plugin / Prompts の 4 要素と、並列エージェント向けローカルプロジェクト。
+Connect your AI coding agent to Supabase.
 
-## 概要
+## Signature / Usage
 
-Supabase は AI コーディングエージェント接続のために、プロジェクトへのライブ接続（MCP）、再利用可能な手順書（Agent Skills）、両者を 1 回でインストールする Plugin、上記いずれも使えないツール向けのコピー用 Prompts を提供する。
+Supabase provides everything you need to connect an AI coding agent to your project: a live connection to your database and platform (MCP), portable instructions your agent can reuse (Agent Skills), a one-step bundle of both (Plugin), and copy-paste prompts for tools that don't support any of the above.
 
 ### Key concepts
 
-| 要素 | 内容 |
-|------|------|
-| MCP (Model Context Protocol) | エージェントと実プロジェクトのライブ接続。データ照会・マイグレーション実行・Edge Functions デプロイ等をツール呼び出しで行う |
-| Agent Skills | Supabase / Postgres 固有の手続き知識をエージェントがオンデマンドで読み込む。ライブ接続不要、複数エージェント間で可搬 |
-| Plugin | MCP サーバーと Agent Skills を特定エージェント向けにまとめた 1 回のインストール |
-| Prompts | MCP / Plugin / Skills をネイティブに扱えないエージェント向けに、プロジェクトへコピーする静的プロンプトファイル |
+- **MCP (Model Context Protocol)**: a live connection between your agent and your actual Supabase project. Once connected, your agent can call tools to query data, run migrations, deploy Edge Functions, and more.
+- **Agent Skills**: portable, on-demand instructions your agent loads when it needs Supabase- or Postgres-specific procedural knowledge. Skills don't require a live connection, and work across different agents.
+- **Plugin**: a single install that bundles the MCP server and Agent Skills together for a specific agent.
+- **Prompts**: static prompt files you copy into your project for agents that don't support MCP, plugins, or skills natively.
 
-### エージェント別の案内先（公式ナビゲーション）
+### Pick your agent
 
-- Plugin ページ案内: Antigravity / Claude Code / Codex / Cursor / Gemini CLI / GitHub Copilot / Grok / Kimi Code / omp / VS Code
-- MCP ページ案内: Devin Desktop / Factory / fx / Goose / Kiro / OpenCode / Warp
+- Plugins page (`/docs/guides/ai-tools/plugins`): Antigravity, Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, Grok, Kimi Code, omp, VS Code
+- MCP page (`/docs/guides/ai-tools/mcp`): Devin Desktop, Factory, fx, Goose, Kiro, OpenCode, Warp
 
-### 並列エージェント向けローカルプロジェクト
+### Local projects for parallel agents
 
-別々の git worktree / ブランチで動くエージェントは、それぞれ専用 DB が必要（そうしないと 1 つのタスクのマイグレーション・seed が他に影響する）。実験的な `supabase stack` コマンドを有効にすると、`supabase start` が worktree / ブランチごとに専用ポート・専用データのローカルプロジェクトを起動する。
+Agents that work in separate git worktrees or branches each need their own database. Otherwise migrations and seed data from one task affect another. With the experimental `supabase stack` commands turned on, `supabase start` gives each worktree or branch its own local Supabase project with its own ports and data. Agents that share one checkout and branch share a local project, so give each agent its own worktree. The commands also run without Docker on Linux and on macOS on Apple silicon, which covers agent sandboxes that have no container engine.
 
 ```bash
 supabase start
 ```
 
+### Building AI into your app?
+
+The tools above are for your development workflow. If you're building AI capabilities into your own product:
+
+- Deploy MCP servers: Host your own MCP server on Supabase Edge Functions so your users can connect their AI agents to your product
+- Vectors / Embeddings: Build semantic search, RAG pipelines, and other AI-powered features using pgvector
+
 ## Notes
 
-- 有効化の設定キーは MCP ページで `[experimental] stack` と表記される。overview 本文には設定スニペットが無いため、具体的な書式は Running multiple local projects ページを参照すること（本スキルでは未収録）
-- 同じチェックアウト・ブランチを共有するエージェントは 1 つのローカルプロジェクトを共有する。エージェントごとに worktree を分ける
-- 同コマンドは Linux および Apple silicon の macOS で Docker 無しでも動作する（コンテナエンジンの無いエージェントサンドボックス向け）
-- 公式は Supabase Evals（AI コーディングエージェントの実タスク性能を測るオープンソースベンチマーク）を案内している
-- アプリに AI 機能を組み込む場合は別の導線: 自前の MCP サーバーのホスト（byo-mcp）と、Vectors / Embeddings（pgvector）による semantic search / RAG
-- 出典: https://supabase.com/docs/guides/ai-tools （取得日 2026-10-17、版の pin なし）
+- The enabling config key is written as `[experimental] stack` on the MCP page. The overview has no config snippet; see Running multiple local projects for the exact form.
+- The official page also points to Supabase Evals (https://supabase.com/evals), an open-source benchmark for AI coding agents.
+- Source: https://supabase.com/docs/guides/ai-tools (fetched 2026-10-17, no version pin)
 
 ## Related
 
@@ -43,4 +45,6 @@ supabase start
 - [Supabase Plugin](./plugins.md)
 - [Agent Skills](./agent-skills.md)
 - [Deploy MCP servers](./byo-mcp.md)
-- [RAG パイプライン](../ai/rag.md)
+- [Running multiple local projects](../local-dev/running-multiple-local-projects.md)
+- [Docker and native runtimes](../local-dev/docker-and-native-runtimes.md)
+- [RAG pipelines](../ai/rag.md)

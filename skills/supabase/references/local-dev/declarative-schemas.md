@@ -180,7 +180,7 @@ migra エンジンは view の owner・grants、view の security invoker、mate
 - Warning: pg-delta では `supabase db diff` は live DB を migrations と比較するだけで、`supabase/schemas/` を baseline に使わない。schema ファイルがある状態で `db diff -f` を実行すると CLI は無視した旨を表示し、migrations が空または古いと schema ファイルが既に宣言しているオブジェクトまで含む migration を書き得る。schema ファイルから migration を作るには `db schema declarative sync` を使う
 - Legacy migra で `db pull --declarative` を実行しない（`[db.migrations].schema_paths` が書き換えられ、次回の `db diff` が依存順を解決できず失敗する）。実行済みなら pg-delta に切り替えるか、書き出されたファイルの削除と `schema_paths` の復元で戻す
 - 旧版のこのページは `supabase db diff` を宣言的ワークフローの中心にしていた。現行の公式ガイドは pg-delta 前提の `db schema declarative sync` が中心
-- 出典: Declarative database schemas ガイド / Diff engines ガイド（取得日 2026-10-17）。pg-delta は `[experimental.pgdelta]` 名前空間で提供され pre-1.0
+- 出典: https://supabase.com/docs/guides/local-development/declarative-database-schemas / https://supabase.com/docs/guides/local-development/diff-engines （取得日 2026-10-17）。pg-delta は `[experimental.pgdelta]` 名前空間で提供され pre-1.0
 
 ## Related
 

@@ -1,25 +1,25 @@
 # Primitives
 
-framework 非依存の低レベル関数（`@supabase/server/core`）。カスタムフレームワークや edge runtime で自前に compose する。
+Framework-agnostic low-level functions (`@supabase/server/core`). Compose them yourself for custom frameworks or edge runtimes.
 
 ## Signature / Usage
 
 | Name | Role |
 | --- | --- |
-| `createAdminClient` | RLS バイパスの admin Supabase client（secret key） |
-| `createContextClient` | 呼び出し元スコープの client（publishable key + 任意の JWT、RLS 適用） |
-| `extractCredentials` | `Authorization` / `apikey` ヘッダーの純粋な抽出（検証なし） |
-| `resolveEnv` | 環境変数から Supabase 設定を解決 |
-| `verifyAuth` | 抽出 + 検証を 1 ステップで |
-| `verifyCredentials` | 抽出済み credentials を許可 auth mode に対し検証 |
+| `createAdminClient` | Admin Supabase client that bypasses Row-Level Security (secret key) |
+| `createContextClient` | Supabase client scoped to the caller's context (publishable key and optionally the caller's JWT; RLS applies) |
+| `extractCredentials` | Pure extraction of the `Authorization` / `apikey` headers (no validation) |
+| `resolveEnv` | Resolves Supabase environment configuration from runtime environment variables |
+| `verifyAuth` | Extracts credentials and verifies them in a single step |
+| `verifyCredentials` | Verifies pre-extracted credentials against allowed auth modes |
 
-オプション型: `VerifyAuthOptions`（`verifyAuth` 用）、`VerifyCredentialsOptions`（`verifyCredentials` 用）。`CreateAdminClientOptions` / `CreateContextClientOptions` は `types.md` 参照。
+Option types: `VerifyAuthOptions` (options for `verifyAuth`), `VerifyCredentialsOptions` (options for `verifyCredentials`). `CreateAdminClientOptions` / `CreateContextClientOptions` are in types.md.
 
-## createAdminClient
+### createAdminClient
 
-RLS をバイパスする admin Supabase client を作る。secret key で認証し全データにフルアクセスする。stateless で request ごとに 1 client。
+Creates an admin Supabase client that bypasses Row-Level Security. Uses a secret key for authentication, giving full access to all data. Stateless: one client per request.
 
-使用キー: `auth.keyName` を指定するとその `SUPABASE_SECRET_KEYS` 内の名前付きキーを使い、存在しなければ throw する。省略時は `default` キー、`default` が無ければ集合の最初のキーにフォールバックする。`"secret"` auth mode は `default` のみ照合しフォールバックしない点が異なる（`types.md` の `AuthModeWithKey`）。
+Which key is used: with `auth.keyName` set, that named key from `SUPABASE_SECRET_KEYS` is used, and it throws if the key doesn't exist. With `keyName` omitted, the `default` key is used, falling back to the first key in the set when no `default` exists. This differs from the `"secret"` auth mode, which matches the `default` key only and never falls back (see `AuthModeWithKey` in types.md).
 
 ```ts
 // Uses the `default` secret key (or the first key if no `default` exists)
@@ -31,35 +31,38 @@ const { data } = await supabaseAdmin.from('audit_log').insert({ action: 'user_lo
 const supabaseAdmin = createAdminClient({ auth: { keyName: 'internal' } })
 ```
 
-## createContextClient
+### createContextClient
 
-呼び出し元 context にスコープされた Supabase client を作る。publishable key と（任意で）呼び出し元の JWT で構成され RLS policy が適用される。stateless で request ごとに 1 client。
+Creates a Supabase client scoped to the caller's context. Configured with a publishable key and (optionally) the caller's JWT, so Row-Level Security policies apply. Stateless: one client per request.
 
-使用キー: `auth.keyName` を指定するとその `SUPABASE_PUBLISHABLE_KEYS` 内の名前付きキー（無ければ throw）。省略時は `default`、無ければ最初のキー。`"publishable"` auth mode は `default` のみ照合しフォールバックしない。
+Which key is used: with `auth.keyName` set, that named key from `SUPABASE_PUBLISHABLE_KEYS` is used, and it throws if the key doesn't exist. With `keyName` omitted, the `default` key is used, falling back to the first key in the set when no `default` exists. This differs from the `"publishable"` auth mode, which matches the `default` key only and never falls back.
 
 ```ts
-const { data: auth } = await verifyAuth(request, { auth: 'user' })
+const { data: auth, error } = await verifyAuth(request, { auth: 'user' })
+if (error) {
+  return Response.json(error.toJSON(), { status: error.status })
+}
 const supabase = createContextClient({
   auth: { token: auth.token, keyName: auth.keyName },
 })
 const { data } = await supabase.rpc('get_my_items')
 ```
 
-## extractCredentials
+### extractCredentials
 
-受信 HTTP request から認証 credentials を抽出する。`Authorization: Bearer <token>` を `token`、`apikey: <key>` を `apikey` として読む。検証は行わない純粋な抽出で、結果を `verifyCredentials` に渡して許可 auth mode に対し検証する。
+Extracts authentication credentials from an incoming HTTP request. Reads two headers: `Authorization: Bearer <token>` is extracted as `token`, and `apikey: <key>` as `apikey`. This is a pure extraction step; no validation or verification is performed. Pass the result to `verifyCredentials` to validate against allowed auth modes.
 
 ```ts
 import { extractCredentials } from '@supabase/server/core'
 
 const creds = extractCredentials(request)
-console.log(creds.token)  // "eyJhbGci..." or null
-console.log(creds.apikey) // "sb-abc123-publishable-..." or null
+// Log only whether credentials are present, never the values themselves
+console.log(creds.token !== null, creds.apikey !== null)
 ```
 
-## resolveEnv
+### resolveEnv
 
-実行時の環境変数から Supabase 設定を解決する。`SUPABASE_URL`、キー（`SUPABASE_PUBLISHABLE_KEYS` / `SUPABASE_SECRET_KEYS`）、JWKS source（inline は `SUPABASE_JWKS`、remote は `SUPABASE_JWKS_URL`、または `SUPABASE_PUBLIC_URL` / 解決済み `url` から導出した well-known endpoint）を読む。Deno / Node.js / Bun で動作。Cloudflare Workers では `overrides` か node-compat を使う。
+Resolves Supabase environment configuration from runtime environment variables. Reads `SUPABASE_URL`, keys (`SUPABASE_PUBLISHABLE_KEYS` / `SUPABASE_SECRET_KEYS`), and the JWKS source (`SUPABASE_JWKS` for inline keys, `SUPABASE_JWKS_URL` for a remote endpoint, or the well-known endpoint derived from `SUPABASE_PUBLIC_URL` / the resolved `url`). Works across Deno, Node.js, and Bun. For Cloudflare Workers, use `overrides` or enable node-compat.
 
 ```ts
 const { data: env, error } = resolveEnv()
@@ -69,9 +72,9 @@ if (error) throw error
 const { data: env } = resolveEnv({ url: 'http://localhost:54321' })
 ```
 
-## verifyAuth
+### verifyAuth
 
-request から credentials を抽出して検証までを 1 ステップで行う（`extractCredentials` + `verifyCredentials` の便宜関数）。生の credentials を見る必要が無いときに使う。
+Extracts credentials from a request and verifies them in a single step. This is a convenience function that combines `extractCredentials` and `verifyCredentials`. Use it when you want the full auth flow without needing to inspect the raw credentials.
 
 ```ts
 import { verifyAuth } from '@supabase/server/core'
@@ -87,13 +90,13 @@ if (error) {
 console.log(auth.userClaims!.id) // "d0f1a2b3-..."
 ```
 
-## verifyCredentials
+### verifyCredentials
 
-抽出済み credentials を 1 つ以上の許可 auth mode に対し検証する。mode を順に試し最初の一致が勝つ。mode はその credential が存在する場合のみ試され、JWT が存在して検証に失敗した場合は次の mode にフォールスルーせず `InvalidJwtError` で連鎖を short-circuit する。抽出と検証を一度に行うには `verifyAuth`。
+Verifies pre-extracted credentials against one or more allowed auth modes. Tries each mode in order; first match wins. A mode is only tried when its credential is present; a JWT that is present but fails verification short-circuits the chain with `InvalidJwtError` instead of falling through to the next mode. Use `verifyAuth` to extract and verify in a single call.
 
-全 mode がフォールスルーした場合は実際の原因を示すエラーを返す: request が何も運ばなかったなら `MissingCredentialsError`、`apikey` がどの設定キーにも一致しなければ `InvalidApiKeyError`、サーバー設定上どの request も成功し得ない場合は `500`（`JwksNotConfiguredError` / `NoKeysConfiguredError`）。全エラーは `hint` / `docs` / 非機密の `details` を持つ。
+When every mode falls through, the returned error names the actual cause rather than a generic failure: `MissingCredentialsError` when the request carried nothing, `InvalidApiKeyError` when an `apikey` matched no configured key, or a `500` (`JwksNotConfiguredError`, `NoKeysConfiguredError`) when the server is configured such that no request could ever have succeeded. Every error carries `hint`, `docs`, and non-sensitive `details`.
 
-misconfiguration の `500` は何も一致しなかった後にのみ報告されるため、許可 mode が request の credentials に一致すればそれが優先される（例: `['user', 'secret']` で JWKS 無しでも有効な apikey があれば `secret` として認証される）。Authorization 位置の `sb_*` 値は API key であり user token ではなく caller error のまま。
+A misconfiguration `500` is only reported once nothing has matched, so an allowed mode that does match the request's credentials still wins, e.g. `['user', 'secret']` with no JWKS but a valid apikey authenticates as `secret`. `sb_*` values in the Authorization slot are API keys, not user tokens, and stay a caller error.
 
 ```ts
 const credentials = extractCredentials(request)
@@ -108,8 +111,9 @@ if (error) {
 
 ## Notes
 
-- 出典: https://supabase.com/llms/server.txt （Primitives 節、2026-10 取得）。import 元は原文例の `@supabase/server/core`（`extractCredentials` / `verifyAuth`）のみ確認済み。他 primitive の import パスは原文に記載が無い
-- 原文は関数シグネチャを示さないため、引数・戻り値の型は書いていない（`{ data, error }` tuple を返す形は例から確認）
+- Source: https://supabase.com/llms/server.txt (Primitives section, fetched 2026-10). The import path `@supabase/server/core` is confirmed only for `extractCredentials` / `verifyAuth` (from the source examples); the source does not state import paths for the other primitives.
+- The source does not show function signatures, so argument and return types are not written here (the `{ data, error }` tuple is confirmed from the examples).
+- Differences from the official examples: the `extractCredentials` example in the source logs the raw `creds.token` and `creds.apikey` values; here it logs only whether they are present so that bearer tokens and API keys do not end up in logs. The `createContextClient` example in the source reads `auth.token` without checking `error`; here it uses the same `error` guard as the `verifyCredentials` example, because `auth` is not usable when credentials are missing or invalid.
 
 ## Related
 

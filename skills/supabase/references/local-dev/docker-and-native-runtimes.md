@@ -43,6 +43,7 @@ Native platform support:
 - Native archives come from `supabase/slim-services` GitHub releases (fallback `supabase-cli-artifacts.s3.us-east-1.amazonaws.com`), checksum-verified, extracted with system `tar`. Allowlisted sandboxes: allow the S3 host, or both `github.com` and `release-assets.githubusercontent.com` (`ghcr.io` alone isn't enough). `prepare` creates the local project if missing (visible in `stack list`, removable via `stack destroy`). `stack destroy` leaves the cache; delete `~/.supabase/cache/stack` to reclaim space.
 - If Postgres is slow on a cold start, raise `health_timeout` under `[db]` (both runtimes).
 - CLI v2.121.0+: native runs each `pg_cron` job in a background worker, so a job body can't contain its own `BEGIN` / `COMMIT`. Earlier versions fail every native `pg_cron` job (`connection failed`, or `job startup timeout` on macOS).
+- Source: https://supabase.com/docs/guides/local-development/docker-and-native-runtimes (fetched 2026-10-17, Supabase CLI v2.121.0; release: https://github.com/supabase/cli/releases/tag/v2.121.0)
 
 ## Related
 

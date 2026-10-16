@@ -142,7 +142,9 @@ public │ cache_data   │     123,456 │             0│            0 │ Re
 auth   │ audit_logs   │           0 │        98,234│       12,341 │ Write-Only
 ```
 
-読み取りと書き込みの両方があったテーブルのみ表示される（I/O の無いテーブルは非表示）。分類の比率しきい値（既定 5:1）が「heavy」と balanced の境界。
+公式 docs では両方の活動があったテーブルのみ表示とあるが、同じ出力例に Read-Only / Write-Only の行も含まれる（上流 docs の記述が矛盾。v2.121.0 時点）。
+
+注記: 公式 CLI docs（v2.121.0）の Write-Heavy と Balanced の定義は範囲が重なり、「default 5:1」の説明とも一致しない。実際の判定は CLI の出力で確認すること。
 
 ### cache-hit — キャッシュヒット率（deprecated）
 

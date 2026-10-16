@@ -1,51 +1,59 @@
 # JWT Claims Reference
 
-Supabase Auth が発行する JWT に現れる全クレームのリファレンス。
+Complete reference for claims appearing in JWTs created by Supabase Auth.
 
 ## Signature / Usage
 
-サーバーサイドの JWT 検証・シリアライズ向け。`ref` が予約語になる Rust 等で特に必要。JWT は Header / Payload / Signature の 3 部構成で、Payload にユーザー ID・認証レベル・認可情報のクレームが入る。
+This reference is essential for server-side JWT validation and serialization, especially when implementing authentication in languages like Rust where field names like `ref` are reserved keywords.
 
-### Required claims（常に存在し削除不可）
+Supabase JWTs follow the standard JWT structure with three parts: Header (algorithm and key information), Payload (the claims: user data and metadata), and Signature (cryptographic signature for verification). The payload contains various claims that provide user identity, authentication level, and authorization information.
+
+### Required claims
+
+These claims are always present in Supabase JWTs and cannot be removed:
 
 | Field | Type | Description | Example |
 | --- | --- | --- | --- |
-| `iss` | `string` | Issuer | `"https://project-ref.supabase.co/auth/v1"` |
-| `aud` | `string \| string[]` | Audience | `"authenticated"` or `"anon"` |
-| `exp` | `number` | Expiration Time (Unix) | `1640995200` |
-| `iat` | `number` | Issued At (Unix) | `1640991600` |
-| `sub` | `string` | Subject - user ID (UUID) | `"123e4567-e89b-12d3-a456-426614174000"` |
-| `role` | `string` | Role | `"authenticated"`, `"anon"`, `"service_role"` |
-| `aal` | `string` | Authenticator Assurance Level | `"aal1"`, `"aal2"` |
-| `session_id` | `string` | Session ID | `"session-uuid"` |
-| `email` | `string` | Email | `"user@example.com"` |
-| `phone` | `string` | Phone | `"+1234567890"` |
-| `is_anonymous` | `boolean` | Anonymous Flag | `false` |
+| `iss` | `string` | Issuer - The entity that issued the JWT | `"https://project-ref.supabase.co/auth/v1"` |
+| `aud` | `string \| string[]` | Audience - The intended recipient of the JWT | `"authenticated"` or `"anon"` |
+| `exp` | `number` | Expiration Time - Unix timestamp when the token expires | `1640995200` |
+| `iat` | `number` | Issued At - Unix timestamp when the token was issued | `1640991600` |
+| `sub` | `string` | Subject - The user ID (UUID) | `"123e4567-e89b-12d3-a456-426614174000"` |
+| `role` | `string` | Role - User's role in the system | `"authenticated"`, `"anon"`, `"service_role"` |
+| `aal` | `string` | Authenticator Assurance Level - Authentication strength | `"aal1"`, `"aal2"` |
+| `session_id` | `string` | Session ID - Unique session identifier | `"session-uuid"` |
+| `email` | `string` | Email - User's email address | `"user@example.com"` |
+| `phone` | `string` | Phone - User's phone number | `"+1234567890"` |
+| `is_anonymous` | `boolean` | Anonymous Flag - Whether the user is anonymous | `false` |
 
 ### Optional claims
 
+These claims may be present depending on the authentication context:
+
 | Field | Type | Description | Example |
 | --- | --- | --- | --- |
-| `jti` | `string` | JWT ID | `"jwt-uuid"` |
-| `nbf` | `number` | Not Before (Unix) | `1640991600` |
-| `app_metadata` | `object` | Application-specific user data | `{"provider": "email"}` |
-| `user_metadata` | `object` | User-specific data | `{"name": "John Doe"}` |
-| `amr` | `array` | Authentication Methods Reference | `[{"method": "password", "timestamp": 1640991600}]` |
+| `jti` | `string` | JWT ID - Unique identifier for the JWT | `"jwt-uuid"` |
+| `nbf` | `number` | Not Before - Unix timestamp before which the token is invalid | `1640991600` |
+| `app_metadata` | `object` | App Metadata - Application-specific user data | `{"provider": "email"}` |
+| `user_metadata` | `object` | User Metadata - User-specific data | `{"name": "John Doe"}` |
+| `amr` | `array` | Authentication Methods Reference - List of authentication methods used | `[{"method": "password", "timestamp": 1640991600}]` |
 
 ### Special claims
 
-| Field | Type | Description | Context |
-| --- | --- | --- | --- |
-| `ref` | `string` | Project Reference（例 `"abcdefghijklmnopqrst"`） | Anon/Service role tokens only |
+| Field | Type | Description | Example | Context |
+| --- | --- | --- | --- | --- |
+| `ref` | `string` | Project Reference - Supabase project identifier | `"abcdefghijklmnopqrst"` | Anon/Service role tokens only |
 
-### 値の制約
+### Field value constraints
 
-- `aal`: `"aal1"` = single-factor（password, OAuth 等）/ `"aal2"` = multi-factor（password + TOTP 等）
-- `role`: `"anon"`（RLS 付きの公開アクセス）/ `"authenticated"`（標準ユーザー）/ `"service_role"`（admin 権限、サーバー側専用）
-- `aud`: `"authenticated"` / `"anon"`
+- `aal`: `"aal1"` = single-factor authentication (password, OAuth, etc.); `"aal2"` = multi-factor authentication (password + TOTP, etc.)
+- `role`: `"anon"` = anonymous user (public access with RLS policies); `"authenticated"` = authenticated user (standard user access); `"service_role"` = service role (admin privileges, server-side only)
+- `aud`: `"authenticated"` (for authenticated user tokens); `"anon"` (for anonymous user tokens)
 - `amr.method`: `oauth`, `password`, `otp`, `totp`, `recovery`, `invite`, `sso/saml`, `magiclink`, `email/signup`, `email_change`, `token_refresh`, `anonymous`
 
-### コード例
+### JWT examples
+
+Authenticated user token:
 
 ```json
 {
@@ -76,7 +84,11 @@ Supabase Auth が発行する JWT に現れる全クレームのリファレン�
 }
 ```
 
-Anon / service role トークンは `iss: "supabase"`、`ref`、`role`、`iat`、`exp` のみ。
+Anonymous and service role tokens contain only `iss: "supabase"`, `ref`, `role` (`"anon"` / `"service_role"`), `iat`, and `exp`.
+
+### Language-specific considerations
+
+In Rust, the `ref` field is a reserved keyword. When deserializing JWTs, you'll need to handle this:
 
 ```rust
 use serde::{Deserialize, Serialize};
@@ -92,6 +104,8 @@ struct JwtClaims {
     // ... other claims
 }
 ```
+
+TypeScript/JavaScript:
 
 ```typescript
 interface JwtClaims {
@@ -120,13 +134,13 @@ interface JwtClaims {
 
 ## Notes
 
-- 公式は Python（dataclass）/ Go（struct）の定義例も提示している（原本参照）。Go では `aud` を `interface{}`（string または []string）、任意クレームはポインタ + `omitempty`
-- 検証手順（公式 Validation guidelines）: 必須クレームの存在、型、`exp` が未来、`iss` がプロジェクトと一致、`aud` が期待値、Rust 等では予約語のリネーム
-- セキュリティ（公式）: クレームを信頼する前に署名を必ず検証 / service role トークンをクライアントへ露出しない / 毎リクエスト有効期限を確認 / JWT 送信は HTTPS / JWT secret を定期ローテーション / 不正トークンのエラー処理
-- 出典: https://supabase.com/docs/guides/auth/jwt-fields（取得日 2026-10）
+- The official page also gives Python (dataclass) and Go (struct) definitions. In Go, `aud` is `interface{}` (string or []string) and optional claims are pointers with `omitempty`.
+- Validation guidelines: check that required fields are present, verify field types, check that `exp` is in the future, ensure `iss` matches your Supabase project, validate `aud` matches the expected audience, and use field renaming for languages like Rust.
+- Security considerations: always validate the JWT signature before trusting any claims; never expose service role tokens to client-side code; validate all claims; check token expiration on every request; use HTTPS for all JWT transmission; rotate JWT secrets regularly; implement proper error handling for invalid tokens.
+- Source: https://supabase.com/docs/guides/auth/jwt-fields (fetched 2026-10)
 
 ## Related
 
-- [JWT 構造](./jwts.md)
-- [Auth Hooks](./auth-hooks.md)
-- [サーバーサイド認証（SSR）](./server-side.md)
+- [JWT structure](./jwts.md)
+- [Auth hooks](./auth-hooks.md)
+- [Server-side rendering](./server-side.md)

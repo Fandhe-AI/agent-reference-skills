@@ -76,7 +76,7 @@ supabase inspect db role-stats
 supabase inspect db traffic-profile
 ```
 
-ブロック I/O に基づき各テーブルを Read-Heavy / Write-Heavy / Balanced / Read-Only / Write-Only に分類する。読み書き両方のアクティビティがあるテーブルのみ表示される。
+ブロック I/O に基づき各テーブルを Read-Heavy / Write-Heavy / Balanced / Read-Only / Write-Only に分類する。公式 docs では両方の活動があったテーブルのみ表示とあるが、同じ出力例に Read-Only / Write-Only の行も含まれる（上流 docs の記述が矛盾。v2.121.0 時点）。
 
 ## VACUUM 統計の確認
 

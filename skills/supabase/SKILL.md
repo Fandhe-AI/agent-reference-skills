@@ -2,8 +2,8 @@
 name: supabase
 description: >
   Supabase (オープンソース Firebase 代替・BaaS) リファレンス。
-  PostgreSQL、Auth (Email / OAuth / Magic Link / Phone / SSO)、Storage、
-  Edge Functions (Deno)、Realtime (presence / broadcast)、Vector embeddings、
+  PostgreSQL ベース、Auth (Email / OAuth / Magic Link / Phone / SSO)、Storage、
+  Edge Functions (Deno)、Realtime (subscriptions / presence / broadcast)、Vector embeddings、
   supabase-js、@supabase/server (withSupabase)、supabase CLI (supabase stack)、
   Supabase MCP サーバー、RLS (Row Level Security)、migrations。
   SQL Server / node-mssql は別スキル mssql。

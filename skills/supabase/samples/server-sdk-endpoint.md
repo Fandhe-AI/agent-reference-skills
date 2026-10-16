@@ -57,3 +57,4 @@ export default { fetch: app.fetch }
 - Migrating an adapter `auth: 'user'` endpoint to `withClaims()` instead of `withRequiredClaims()` turns a 401 into a silent 200; use `withRequiredClaims()` to keep rejecting unauthenticated requests
 - `withSupabase` answers `OPTIONS` with `204` and adds CORS headers; set `cors: 'disabled'` when the framework handles CORS
 - In Hono, register the middleware with a chained `.use()` before the routes it gates so `c.var` is typed. For Edge Function auth see `edge-function.md`
+- Source: https://supabase.com/docs/reference/server/introduction (original: https://supabase.com/llms/server.txt, `@supabase/server` 1.9.2, fetched 2026-10)
