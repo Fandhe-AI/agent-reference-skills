@@ -25,12 +25,15 @@ Error codes:
 
 | Code | Meaning / checks |
 | --- | --- |
-| 0x80073CF3 | `ERROR_INSTALL_PACKAGE_DOWNGRADE`: a newer version is already installed. Verify manifest version is higher; uninstall existing if needed. |
+| 0x80073CF3 | `ERROR_INSTALL_RESOLVE_DEPENDENCY_FAILED`: package failed updates, dependency or conflict validation. Check dependency packages are available. |
+| 0x80073D06 | `ERROR_INSTALL_PACKAGE_DOWNGRADE`: a newer version is already installed. Verify manifest version is higher, or allow `-ForceUpdateFromAnyVersion`. |
 | 0x80073CF0 | Package file can't be opened. Check UNC path, distribution point content status, and file corruption. |
 | 0x8007000D | Invalid data / publisher mismatch: manifest `Publisher` doesn't exactly match the signing certificate Subject. Re-sign after correcting. |
 
 ## Notes
 
+- Source: https://learn.microsoft.com/en-us/windows/msix/desktop/managing-your-msix-deployment-configmgr
+- The source page maps 0x80073CF3 to `ERROR_INSTALL_PACKAGE_DOWNGRADE`; per winerror.h 0x80073CF3 is `ERROR_INSTALL_RESOLVE_DEPENDENCY_FAILED` and downgrade is 0x80073D06.
 - Every MSIX must be signed; Windows won't install an unsigned MSIX, even silently via ConfigMgr. Options: a self-signed certificate (domain-managed devices only; trust must be distributed) or Azure Artifact Signing (formerly Trusted Signing), a CA-trusted certificate needing no certificate deployment.
 - Self-signed trust: import the `.cer` into **Public Key Policies** > **Trusted People** with Group Policy, or deploy a ConfigMgr **Trusted CA Certificate** profile with store **Trusted People** to the same collection. Trust must reach devices before the app, otherwise installation can fail with a certificate trust error.
 - Create the application: **Software Library** > **Application Management** > **Applications** > **Create Application**; select **Automatically detect information about this application from installation files**, type **Windows app package (*.appx, *.appxbundle, *.msix, *.msixbundle)**, with the UNC path. Install and detection logic are set automatically.

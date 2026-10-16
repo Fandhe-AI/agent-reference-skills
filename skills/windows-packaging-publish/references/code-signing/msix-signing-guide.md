@@ -78,7 +78,7 @@ MSBuild properties for build-time signing (Windows Application Packaging Project
 
 - The Windows App Development CLI (WinApp CLI) is in public preview and requires Windows 10 with WinGet installed. `--manifest` reads the publisher from `appxmanifest.xml`; `--install` adds the certificate to the local machine trust store.
 - PowerShell + SignTool alternative for self-signed certs: `New-SelfSignedCertificate` (elevated; `Subject` must exactly match the manifest `Publisher`, e.g. `-Type Custom -KeyUsage DigitalSignature -Subject "CN=MyPublisher" -CertStoreLocation "Cert:\CurrentUser\My" -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.3", "2.5.29.19={text}")`), then `Export-PfxCertificate`, `Import-PfxCertificate -CertStoreLocation "Cert:\LocalMachine\TrustedPeople"`, and `SignTool sign /fd SHA256 /a /f .\devcert.pfx /p "YourPassword" MyApp.msix`.
-- Self-signed packages install only where the certificate is trusted. Testers import the `.pfx` (with password, `Import-PfxCertificate`) or the public-key-only `.cer` (`Import-Certificate -CertStoreLocation "Cert:\LocalMachine\TrustedPeople" -FilePath .\devcert.cer`) in an elevated PowerShell. Remove test certificates when no longer needed; use them for testing only.
+- Self-signed packages install only where the certificate is trusted. Distribute to testers only the public-key-only `.cer`, which they trust in an elevated PowerShell with `Import-Certificate -CertStoreLocation "Cert:\LocalMachine\TrustedPeople" -FilePath .\devcert.cer`. The source page also allows sharing the `.pfx` with its password, but a `.pfx` contains the private key and lets the recipient sign packages as the same publisher; keep the `.pfx` on the signing machine (`Import-PfxCertificate` is for the signing environment only). Remove test certificates when no longer needed; use them for testing only.
 - Sideloading is enabled by default on Windows 10 version 2004 and later and Windows 11. On earlier Windows 10 versions, enable **Sideload apps** in Settings > Update & Security > For developers.
 - MSBuild: specify either `PackageCertificateThumbprint` or `PackageCertificateKeyFile`, not both. On a CI agent, prefer installing the certificate to the store and referencing the thumbprint so no password is passed on the command line. In Visual Studio, configure the certificate once on the Package.appxmanifest > Packaging tab; Visual Studio saves the equivalent properties.
 - With Azure Artifact Signing or Azure Key Vault the private key never leaves the service: build unsigned with `/p:AppxPackageSigningEnabled=false`, then sign the produced `.msix` as a post-build step (SignTool with the dlib plugin, or Azure Key Vault signing).
@@ -91,7 +91,7 @@ MSBuild properties for build-time signing (Windows Application Packaging Project
 - Neither Artifact Signing nor OV certificates provide instant SmartScreen trust; reputation builds over time (typically several weeks and hundreds of clean installs for new publishers).
 - Microsoft Store distribution needs no self-signing: the Store signs the package on submission via Partner Center.
 - OV certificates (from CAs such as DigiCert, Sectigo, GlobalSign) typically cost $300-500/year.
-- Source page dated 07/02/2026 (ms.date).
+- Source: https://learn.microsoft.com/en-us/windows/msix/package/sign-msix-package-guide, last updated 07/02/2026 (ms.date).
 
 ## Related
 

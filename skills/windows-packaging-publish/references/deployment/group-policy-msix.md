@@ -9,8 +9,8 @@ Store policy registry values:
 ```text
 HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsStore AutoDownload REG_DWORD
   (enable = 2: apps will not be updated; disable = 4: apps will be automatically updated)
-HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsStoreRemoveWindowsStore REG_DWORD
-HKEY_CURRENT_USER\Software\Policies\Microsoft\WindowsStoreRemoveWindowsStore REG_DWORD
+HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsStore RemoveWindowsStore REG_DWORD
+HKEY_CURRENT_USER\Software\Policies\Microsoft\WindowsStore RemoveWindowsStore REG_DWORD
 ```
 
 ## Options / Props
@@ -29,6 +29,8 @@ Install results on Windows 10 2004 Enterprise (source tables, "PS" = PowerShell;
 
 ## Notes
 
+- Source: https://learn.microsoft.com/en-us/windows/msix/group-policy-msix
+- The source page writes `WindowsStoreRemoveWindowsStore` without a separator; the key is `...\WindowsStore` and the DWORD value is `RemoveWindowsStore`.
 - Group Policy has no native support to install MSIX applications.
 - A Win32 app packaged into MSIX (or built with the Desktop Bridge) has the full trust capability and reads Group Policy registry keys with the same view as other installers. Starting in Windows 10 version 1809, UWP apps can access the same keys. Converting with the MSIX Packaging Tool needs no new work for Group Policy.
 - The Store app triggers updates for third-party and first-party apps; if the Store app is removed, apps on that computer may not update.

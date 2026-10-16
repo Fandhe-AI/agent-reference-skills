@@ -90,9 +90,7 @@ steps:
     secureFile: 'certificate.pfx'
   displayName: 'Download Secure PFX File'
 
-- script: '"C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x86\signtool"
-    sign /fd SHA256 /f $(Agent.TempDirectory)/certificate.pfx /p <password> $(
-    Build.ArtifactStagingDirectory)/MsixDesktopApp.msix'
+- script: '"C:\Program Files (x86)\Windows Kits\10\bin\10.0.17763.0\x86\signtool" sign /fd SHA256 /f "$(Agent.TempDirectory)/certificate.pfx" /p <password> "$(Build.ArtifactStagingDirectory)/MsixDesktopApp.msix"'
   displayName: 'Sign MSIX Package'
 
 - task: PublishBuildArtifacts@1
@@ -127,6 +125,8 @@ Extension tasks:
 | Publish MSIX app attach package to AVD | Uploads the VHDX to a storage account / file share and attaches to host pool, workspace, application group |
 
 ## Notes
+
+- The source page breaks the signtool `script:` line right after `$(` in `$(Build.ArtifactStagingDirectory)`; a folded multi-line scalar would turn that into `$( Build...`, so the macro is kept on one line here.
 
 - Do not commit certificates; use Azure DevOps Secure files (enable "Authorize for use in all pipelines"). A password is supported only for the private key, not for a password-protected certificate file. Visual Studio 2019+ no longer generates a temporary certificate in MSIX projects.
 - Set `PackageCertificateThumbprint` to an empty string when signing from a file; a mismatched thumbprint fails with `Certificate does not match supplied signing thumbprint`.

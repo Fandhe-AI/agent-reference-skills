@@ -12,15 +12,15 @@ MsixPackagingTool.exe create-package --template c:\users\documents\ConversionTem
 MSIXPackagingTool.exe create-package --template c:\users\documents\ConversionTemplate.xml --virtualMachinePassword pswd112893
 ```
 
-Minimal conversion template (sample from the page; `xmlns:V2`-`V5` are needed only when using features from those schemas):
+Minimal conversion template (sample from the page; `xmlns:v2`-`v5` are needed only when using features from those schemas):
 
 ```xml
 <MsixPackagingToolTemplate
     xmlns="http://schemas.microsoft.com/appx/msixpackagingtool/template/2018"
-    xmlns:V2="http://schemas.microsoft.com/msix/msixpackagingtool/template/1904"
-    xmlns:V3="http://schemas.microsoft.com/msix/msixpackagingtool/template/1907"
-    xmlns:V4="http://schemas.microsoft.com/msix/msixpackagingtool/template/1910"
-    xmlns:V5="http://schemas.microsoft.com/msix/msixpackagingtool/template/2001">
+    xmlns:v2="http://schemas.microsoft.com/msix/msixpackagingtool/template/1904"
+    xmlns:v3="http://schemas.microsoft.com/msix/msixpackagingtool/template/1907"
+    xmlns:v4="http://schemas.microsoft.com/msix/msixpackagingtool/template/1910"
+    xmlns:v5="http://schemas.microsoft.com/msix/msixpackagingtool/template/2001">
     <Settings
         AllowTelemetry="true"
         ApplyAllPrepareComputerFixes="true"
@@ -86,11 +86,13 @@ Template parameters:
 
 ## Notes
 
+- The source sample declares `xmlns:V2`-`V5` (uppercase) but uses `v2:` / `v5:` attributes; prefixes are case-sensitive, so they are aligned to lowercase here.
+
 - Generate a template from the tool: in Settings enable "Generate a command line file with each package", then run the Application Package workflow with an installer (an `.exe` needs a silent flag). The template is saved beside the MSIX unless a separate location is set on the Create package page.
 - App-V 5.x conversion is supported through the command line, including capabilities.
 - `Application::Id` is the package-relative app identifier: alphanumeric fields separated by periods, each starting with an ASCII letter; reserved names such as `CON`, `PRN`, `AUX`, `NUL`, `COM1`-`COM9`, `LPT1`-`LPT9` are not allowed as field values.
 - Sample PowerShell and Bash scripts for packaging, signing, managing and distributing MSIX are in the `Scripts` folder of the MSIX Toolkit (GitHub).
-- Source pages last updated 02/11/2019 and 01/28/2020 (ms.date).
+- Source pages last updated 02/11/2019 and 01/28/2020 (ms.date); template sample from https://learn.microsoft.com/en-us/windows/msix/packaging-tool/generate-template-file.
 
 ## Related
 

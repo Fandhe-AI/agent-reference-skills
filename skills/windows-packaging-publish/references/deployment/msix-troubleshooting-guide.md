@@ -18,9 +18,10 @@ Common error codes:
 | Error code | Name | Fix |
 | --- | --- | --- |
 | 0x80073CF0 | `ERROR_INSTALL_OPEN_PACKAGE_FAILED` | Verify the file exists; use a local path, not UNC; run elevated. |
-| 0x80073CF3 | `ERROR_INSTALL_PACKAGE_DOWNGRADE` | Newer version installed: uninstall it or raise the manifest version. |
+| 0x80073CF3 | `ERROR_INSTALL_RESOLVE_DEPENDENCY_FAILED` | Package failed updates, dependency or conflict validation: install dependencies first, e.g. `-DependencyPath`. |
+| 0x80073D06 | `ERROR_INSTALL_PACKAGE_DOWNGRADE` | Newer version installed: raise the manifest version, or use `-ForceUpdateFromAnyVersion`. |
 | 0x80073CF6 | `ERROR_INSTALL_REGISTRATION_FAILURE` | `wsreset -i`, `sfc /scannow`, or Settings repair; check Event Viewer for the inner error. |
-| 0x80073CF9 | `ERROR_INSTALL_PACKAGE_NOT_FOUND` | Install dependencies first, e.g. `Add-AppxPackage main.msix -DependencyPath dep1.msix, dep2.msix`. |
+| 0x80073CF9 | `ERROR_INSTALL_FAILED` | General install failure: check Event Viewer (AppxDeployment-Server) for the inner error. Missing dependencies are installed with e.g. `Add-AppxPackage main.msix -DependencyPath dep1.msix, dep2.msix`. |
 | 0x80073CFA | `ERROR_REMOVE_FAILED` | Close all app instances; inbox apps can't be removed via `Remove-AppxPackage`. |
 | 0x80073CFB | `ERROR_PACKAGE_ALREADY_EXISTS` | `Get-AppxPackage <PackageName> \| Remove-AppxPackage` first. |
 | 0x80073D02 | `ERROR_PACKAGES_IN_USE` | Close running instances (see below). |
@@ -43,6 +44,8 @@ Servicing a package in use (`ERROR_PACKAGES_IN_USE`, `0x80073D02`):
 
 ## Notes
 
+- Source: https://learn.microsoft.com/en-us/windows/msix/msix-troubleshooting-guide
+- The source page maps 0x80073CF3 to `ERROR_INSTALL_PACKAGE_DOWNGRADE` and 0x80073CF9 to `ERROR_INSTALL_PACKAGE_NOT_FOUND`; per winerror.h 0x80073CF3 is `ERROR_INSTALL_RESOLVE_DEPENDENCY_FAILED`, downgrade is 0x80073D06 `ERROR_INSTALL_PACKAGE_DOWNGRADE`, and 0x80073CF9 is `ERROR_INSTALL_FAILED`.
 - Installing from a UNC network share is a common cause of misleading 0x80073CF0 / 0x80070002 errors; copy the package locally first.
 - On Windows 11 version 24H2 and later a package can declare `uap17:UpdateWhileInUse` with value `defer`, which takes precedence over force-shutdown options. Windows App SDK apps can call `PackageDeploymentManager.IsPackageRegistrationPending` (and `IsPackageRegistrationPendingForUser` as an administrator) to detect a deferred registration.
 - `Add-AppxPackage` installs for the current user only; use `Add-AppxProvisionedPackage` for all users. An app missing from Start after a successful install may be a per-user vs per-machine issue, a refresh issue, a missing `VisualElements` / `Square150x150Logo`, or a package family name conflict.

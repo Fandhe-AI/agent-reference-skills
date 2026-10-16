@@ -42,7 +42,7 @@ PackageManager packagemanager = new PackageManager();
 await packagemanager.AddPackageAsync(
     new Uri("https://trial3.azurewebsites.net/HRApp/HRApp.msix"),
     null,
-    AddPackageOptions.ForceApplicationShutdown);
+    DeploymentOptions.ForceApplicationShutdown);
 ```
 
 ## Options / Props
@@ -62,7 +62,9 @@ await packagemanager.AddPackageAsync(
 - If deploying with an App Installer file, code-driven updates must use the App Installer file APIs so regular App Installer updates keep working; check availability with `Package.CheckUpdateAvailabilityAsync`.
 - Without an App Installer file, the update is queued with `AddPackageAsync` and applied the next time the app is shut down (also works for an optional package if the main package is installed).
 - Restart after update: for UWP apps, `AddPackageByAppInstallerOptions.ForceApplicationShutdown` or `AddPackageOptions.ForceTargetAppShutdown` schedules a restart after shutdown plus update. For non-UWP apps call `RegisterApplicationRestart` (kernel32, `RegisterApplicationRestart(string pwzCommandLine, RestartFlags dwFlags)`) before the app begins shutting down.
+- The source page's sample passes `AddPackageOptions.ForceApplicationShutdown`, which does not exist; `AddPackageAsync(Uri, IEnumerable<Uri>, DeploymentOptions)` takes `DeploymentOptions` (`AddPackageOptions` is the options class used with `AddPackageByUriAsync`). `AddPackageOptions.ForceTargetAppShutdown` is a property (`AddPackageOptions.ForceTargetAppShutdown = true`), not an enum value.
 - Flags for `RegisterApplicationRestart`: `NONE = 0`, `RESTART_NO_CRASH = 1`, `RESTART_NO_HANG = 2`, `RESTART_NO_PATCH = 4`, `RESTART_NO_REBOOT = 8`.
+- Source: https://learn.microsoft.com/en-us/windows/msix/non-store-developer-updates
 
 ## Related
 

@@ -25,12 +25,15 @@ Common error codes:
 
 | Error code | Meaning |
 | --- | --- |
-| `0x80073CF3` | `ERROR_INSTALL_PACKAGE_DOWNGRADE` — a newer version is already installed on the device |
+| `0x80073CF3` | `ERROR_INSTALL_RESOLVE_DEPENDENCY_FAILED` — package failed updates, dependency or conflict validation |
+| `0x80073D06` | `ERROR_INSTALL_PACKAGE_DOWNGRADE` — a newer version is already installed on the device |
 | `0x80073CF0` | `ERROR_INSTALL_OPEN_PACKAGE_FAILED` — package corrupted or upload interrupted |
 | `0x80070005` | `E_ACCESSDENIED` — permissions or install-context mismatch (User vs. Device) |
 
 ## Notes
 
+- Source: https://learn.microsoft.com/en-us/windows/msix/desktop/managing-your-msix-deployment-intune
+- The source page maps 0x80073CF3 to `ERROR_INSTALL_PACKAGE_DOWNGRADE`; per winerror.h 0x80073CF3 is `ERROR_INSTALL_RESOLVE_DEPENDENCY_FAILED` and downgrade is 0x80073D06.
 - Intune detects updates by the version number in the MSIX manifest (`.appxmanifest`) — increment it before each release and re-upload to the same app entry.
 - **Microsoft Store for Business and Microsoft Store for Education retired on March 31, 2023** (the earlier "retiring, postponed" wording here was outdated; per the LOB distribution guide updated 2026-10-14). The enterprise association, private store, and offline Store licensing workflow they provided is no longer a distribution path for new LOB apps.
 - Company Portal is the private app repository for organizations that use Intune. Add an internal app directly to Intune as a LOB app, or add an eligible public Microsoft Store app from the Store catalog in Intune.
