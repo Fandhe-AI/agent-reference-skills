@@ -18,49 +18,19 @@ layer.position = CGPoint(x: 200, y: 200)
 CATransaction.commit()
 ```
 
-## Key Methods
+## Options / Props
 
-### Transaction lifecycle
-
-```swift
-class func begin()    // Open a new transaction on the current thread
-class func commit()   // Commit all changes in the current transaction
-class func flush()    // Flush any implicit transaction immediately
-```
-
-### Animation configuration
-
-```swift
-class func animationDuration() -> CFTimeInterval
-class func setAnimationDuration(_ duration: CFTimeInterval)
-
-class func animationTimingFunction() -> CAMediaTimingFunction?
-class func setAnimationTimingFunction(_ function: CAMediaTimingFunction?)
-
-class func disableActions() -> Bool
-class func setDisableActions(_ flag: Bool)   // Suppress implicit animations
-```
-
-### Completion callback
-
-```swift
-class func completionBlock() -> (() -> Void)?
-class func setCompletionBlock(_ block: (() -> Void)?)
-```
-
-### Custom properties
-
-```swift
-class func value(forKey key: String) -> Any?
-class func setValue(_ value: Any?, forKey key: String)
-```
-
-### Concurrency
-
-```swift
-class func lock()    // Acquire a recursive spin-lock for the transaction
-class func unlock()  // Release the spin-lock
-```
+| Name | Type | Description |
+| --- | --- | --- |
+| `begin()` | `class func begin()` | Open a new transaction on the current thread |
+| `commit()` | `class func commit()` | Commit all changes in the current transaction |
+| `flush()` | `class func flush()` | Flush any implicit transaction immediately |
+| `animationDuration()` / `setAnimationDuration(_:)` | `CFTimeInterval` | Get / set the animation duration |
+| `animationTimingFunction()` / `setAnimationTimingFunction(_:)` | `CAMediaTimingFunction?` | Get / set the timing function |
+| `disableActions()` / `setDisableActions(_:)` | `Bool` | Get / set suppression of implicit animations |
+| `completionBlock()` / `setCompletionBlock(_:)` | `(() -> Void)?` | Get / set the completion callback |
+| `value(forKey:)` / `setValue(_:forKey:)` | `Any?` / `String` | Get / set custom transaction properties |
+| `lock()` / `unlock()` | `class func` | Acquire / release the recursive spin-lock for the transaction |
 
 ## Notes
 

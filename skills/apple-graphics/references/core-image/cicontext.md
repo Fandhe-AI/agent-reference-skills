@@ -38,6 +38,17 @@ context.render(ciImage, to: pixelBuffer, bounds: ciImage.extent, colorSpace: col
 | `render(_:to: MTLTexture, commandBuffer:bounds:colorSpace:)` | Render into a Metal texture |
 | `render(_:to: CVPixelBuffer, bounds:colorSpace:)` | Render into a CVPixelBuffer |
 | `draw(_:in:from:)` | Draw into the current CGContext |
+| `createCGImage(_:from:format:colorSpace:deferred:calculateHDRStats:)` | Render to a new CGImage with an option for calculating HDR statistics (26.0+) |
+| `estimateRender(_:from:to:at:) throws -> CIRenderTask` | Returns a task with estimated resource statistics for a render, without executing the render; query `plannedPixelsProcessed`, `plannedPixelsOverdrawn`, `plannedPassCount`, `plannedPeakMemory` on the task (iOS 27.0+) |
+
+### HDR Statistics (26.0+)
+
+| Method | Description |
+|--------|-------------|
+| `calculateHDRStats(for: CIImage) -> CIImage?` | Calculates HDR statistics (content headroom and content average light level) and returns a new image with the values; `nil` if the extent is not finite |
+| `calculateHDRStats(for: CGImage) -> CGImage` | Same for a Core Graphics image; returns a new `CGImage` with the calculated values |
+| `calculateHDRStats(for: CVPixelBuffer)` | Calculates the statistics and stores them in the buffer's attachments; only pixels inside a Clean Aperture rectangle are considered if present |
+| `calculateHDRStats(for: IOSurfaceRef)` | Calculates the statistics and stores them in the surface's attachments; only pixels inside a Clean Aperture rectangle are considered if present |
 
 ### Export Methods
 

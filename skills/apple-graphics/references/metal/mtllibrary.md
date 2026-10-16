@@ -30,6 +30,7 @@ let runtimeLibrary = try device.makeLibrary(source: source, options: nil)
 | `makeFunction(name:)` | `MTLFunction?` | Returns a non-specialized function by name |
 | `makeFunction(name:constantValues:)` | throws `MTLFunction` | Creates a specialized function with constant values |
 | `makeFunction(descriptor:completionHandler:)` | `Void` | Asynchronously creates a function with a descriptor |
+| `reflection(functionName:)` | `MTLFunctionReflection?` | Retrieves reflection information for a function in the library (26.0+) |
 | `functionNames` | `[String]` | Names of all public functions in the library |
 | `device` | `MTLDevice` | The GPU device that created the library |
 | `label` | `String?` | Debug identifier |

@@ -49,6 +49,7 @@ let result = image
 | `pixelBuffer` | `CVPixelBuffer?` | Underlying CVPixelBuffer if available |
 | `properties` | `[String: Any]` | Image metadata dictionary |
 | `isOpaque` | `Bool` | Whether the image is fully opaque |
+| `contentAverageLightLevel` | `Float` | Content average light level of the image; `0.0` if unknown (26.0+) |
 
 ### Key Methods
 
@@ -64,6 +65,9 @@ let result = image
 | `samplingNearest()` | Use nearest-neighbor sampling |
 | `insertingIntermediate(cache:)` | Insert a rendering break point |
 | `autoAdjustmentFilters(options:)` | Get suggested auto-adjustment filters |
+| `settingContentHeadroom(_:)` | Create an image with a changed `contentHeadroom`; alters the behavior of `CIToneMapHeadroom` and `CISystemToneMap` (26.0+) |
+| `settingContentAverageLightLevel(_:)` | Create an image with a changed `contentAverageLightLevel`; alters the behavior of `CIToneMapHeadroom` and `CISystemToneMap` (26.0+) |
+| `insertingTiledIntermediate()` | Insert an intermediate cached in tiles; cacheable even if `cacheIntermediates` is false (26.0+) |
 
 ### Static Color Constants
 

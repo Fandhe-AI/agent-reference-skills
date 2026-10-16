@@ -28,6 +28,8 @@ ptr.pointee.modelMatrix = newMatrix
 | `length` | `Int` | Logical size of the buffer in bytes (read-only) |
 | `gpuAddress` | `MTLGPUAddress` | Direct GPU virtual address of the buffer |
 | `makeTexture(descriptor:offset:bytesPerRow:)` | `MTLTexture?` | Creates a texture that shares storage with this buffer |
+| `makeTensor(descriptor:offset:)` | throws `any MTLTensor` | Creates a single-plane tensor that shares storage with this buffer (26.0+) |
+| `sparseBufferTier` | `MTLBufferSparseTier` | Query support tier for sparse buffers (26.0+) |
 | `didModifyRange(_:)` | `Void` | Notifies Metal of CPU writes for managed-mode buffers |
 | `addDebugMarker(_:range:)` | `Void` | Attaches a debug label to a byte range |
 | `removeAllDebugMarkers()` | `Void` | Removes all debug markers |
@@ -38,11 +40,14 @@ ptr.pointee.modelMatrix = newMatrix
 - Conforms to `MTLResource`, `MTLAllocation`.
 - A buffer can only be used with the `MTLDevice` that created it.
 - For `.storageModeManaged` buffers on macOS, call `didModifyRange(_:)` after every CPU write to synchronize changes to the GPU copy.
+- `makeTensor(descriptor:offset:)` does not create tensors with auxiliary planes; use `MTLDevice.makeTensor(descriptor:attachments:)` for a multi-plane tensor with per-plane buffer backing storage.
+- `makeRemoteBufferView(_:)` and `remoteStorageBuffer` are macOS-only and deprecated in macOS 27.0 (message: "Not applicable on Apple Silicon").
 - `.storageModeShared` is the typical choice on iOS/Apple Silicon; avoid `.storageModeManaged` on those platforms.
 
 ## Related
 
 - [MTLDevice](./mtldevice.md)
 - [MTLTexture](./mtltexture.md)
+- [MTLTensor](./mtltensor.md)
 - [MTLRenderCommandEncoder](./mtlrendercommandencoder.md)
 - [MTLComputeCommandEncoder](./mtlcomputecommandencoder.md)

@@ -33,6 +33,8 @@ commandBuffer.commit()
 | `waitUntilCompleted()` | `Void` | Blocks until the GPU finishes executing the buffer |
 | `addScheduledHandler(_:)` | `Void` | Callback invoked when the GPU schedules the buffer |
 | `addCompletedHandler(_:)` | `Void` | Callback invoked when the GPU finishes the buffer |
+| `useResidencySet(_:)` | `Void` | Applies a residency set to the command buffer (iOS 18.0+) |
+| `useResidencySets(_:)` | `Void` | Applies multiple residency sets (`[any MTLResidencySet]`) to the command buffer (iOS 18.0+) |
 | `status` | `MTLCommandBufferStatus` | Current state: `.notScheduled`, `.scheduled`, `.committed`, `.completed`, `.error` |
 
 ## Notes
@@ -41,6 +43,7 @@ commandBuffer.commit()
 - Only **one encoder can be active at a time**; call `endEncoding()` before creating the next encoder.
 - For multithreaded encoding, call `enqueue()` on a single thread in the desired GPU execution order, then encode on separate threads in parallel.
 - If `enqueue()` is not called explicitly, committing the buffer auto-enqueues it.
+- Each command buffer can maintain a list of up to 32 different residency sets.
 
 ## Related
 
@@ -48,3 +51,4 @@ commandBuffer.commit()
 - [MTLRenderCommandEncoder](./mtlrendercommandencoder.md)
 - [MTLComputeCommandEncoder](./mtlcomputecommandencoder.md)
 - [MTLRenderPassDescriptor](./mtlrenderpassdescriptor.md)
+- [MTLResidencySet](./mtlresidencyset.md)

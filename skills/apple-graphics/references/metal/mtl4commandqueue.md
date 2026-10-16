@@ -28,9 +28,11 @@ commandQueue.commit([commandBuffer], options: nil)
 ## Notes
 
 - iOS 26.0+, iPadOS 26.0+, Mac Catalyst 26.0+, macOS 26.0+, tvOS 26.0+, visionOS 26.0+.
-- Metal 4 API, distinct from the classic `MTLCommandQueue`. Metal 4 moves synchronization (fences, drawable/event waits) and residency-set management onto the queue itself rather than the command buffer.
+- Metal 4 API, distinct from the classic `MTLCommandQueue`. Metal 4 moves synchronization (fences, drawable/event waits) and residency-set management onto the queue itself. Residency sets can be applied on the queue (Metal applies them to command buffers as you commit them) as well as per command buffer via `MTL4CommandBuffer.useResidencySet(_:)`.
 
 ## Related
 
 - [MTLCommandQueue](./mtlcommandqueue.md)
 - [MTL4CommandBuffer](./mtl4commandbuffer.md)
+- [MTL4CommandAllocator](./mtl4commandallocator.md)
+- [MTLResidencySet](./mtlresidencyset.md)

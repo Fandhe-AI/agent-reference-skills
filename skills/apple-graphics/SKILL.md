@@ -1,15 +1,12 @@
 ---
 name: apple-graphics
 description: >
-  Apple グラフィックスフレームワークリファレンス。
-  Metal, Core Animation, Core Graphics, Core Image, SpriteKit, SceneKit。
-  MTLDevice, MTKView, MTLBuffer, MTLTexture,
-  Metal 4 (MTL4CommandQueue, MTL4CommandBuffer, MTL4ArgumentTable),
+  Apple グラフィックス。Metal, Core Animation, Core Graphics, Core Image, SpriteKit, SceneKit。
+  MTLDevice, MTKView, MTLBuffer, MTLTexture, MTLResidencySet, MTLTensor,
+  Metal 4 (MTL4CommandQueue, MTL4CommandBuffer, MTL4CommandAllocator, MTL4ArgumentTable, MTL4RenderCommandEncoder, MTL4Compiler),
   CALayer, CABasicAnimation, CADisplayLink, CAMetalDisplayLink, CAMetalDrawable,
-  CGContext, CGPath, CGImage,
-  CIFilter, CIContext, CIImage, CIRAWFilter, CIWarpKernel, CIBlendKernel,
-  SKScene, SKSpriteNode, SKAction,
-  SCNNode, SCNGeometry, SCNMaterial。
+  CGContext, CGPath, CGImage, CIFilter, CIContext, CIImage, CIRAWFilter, CIWarpKernel, CIBlendKernel,
+  SKScene, SKSpriteNode, SKAction, SCNNode, SCNGeometry, SCNMaterial。
 user-invocable: false
 ---
 
@@ -42,6 +39,13 @@ skills/apple-graphics/
       mtl4compilerdescriptor.md
       mtl4argumenttable.md
       mtl4renderpipelinedescriptor.md
+      mtl4argumenttabledescriptor.md
+      mtl4commandallocator.md
+      mtl4rendercommandencoder.md
+      mtl4compiler.md
+      mtlresidencyset.md
+      mtltensor.md
+      mtltensordescriptor.md
     core-animation/
       README.md
       calayer.md
@@ -163,7 +167,9 @@ skills/apple-graphics/
 | レンダーパイプライン・シェーダーを設定したい | metal | [references/metal/README.md](references/metal/README.md) |
 | バッファ・テクスチャを作成・管理したい | metal | [references/metal/README.md](references/metal/README.md) |
 | MTKView でメタルレンダリングループを構築したい | metal | [references/metal/README.md](references/metal/README.md) |
-| Metal 4 API (MTL4CommandQueue / MTL4ArgumentTable) でコマンドを記録したい | metal | [references/metal/README.md](references/metal/README.md) |
+| Metal 4 API (MTL4CommandQueue / MTL4CommandAllocator / MTL4RenderCommandEncoder / MTL4Compiler / MTL4ArgumentTable) でコマンドを記録・コンパイルしたい | metal | [references/metal/README.md](references/metal/README.md) |
+| リソースの常駐管理 (MTLResidencySet) を行いたい | metal | [references/metal/README.md](references/metal/README.md) |
+| ML 向け多次元リソース (MTLTensor) を作成・読み書きしたい | metal | [references/metal/README.md](references/metal/README.md) |
 | レイヤーにアニメーションを追加したい | core-animation | [references/core-animation/README.md](references/core-animation/README.md) |
 | グラデーション・パーティクル・テキストをレイヤーで描きたい | core-animation | [references/core-animation/README.md](references/core-animation/README.md) |
 | スプリングアニメーション・キーフレームアニメーションを使いたい | core-animation | [references/core-animation/README.md](references/core-animation/README.md) |

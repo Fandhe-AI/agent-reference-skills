@@ -45,12 +45,15 @@ let result = try ThresholdKernel.apply(
 | `apply(withExtent:inputs:arguments:) throws -> CIImage` | Create output from a single extent |
 | `apply(withExtents:inputs:arguments:) throws -> [CIImage]` | Create multiple outputs |
 | `apply(withTiledExtent:inputs:arguments:) throws -> CIImage` | Create tiled output |
+| `apply(tiledExtent:inputs:arguments:) throws -> CIImage` | Create an image from an array of tile extents (`[CIVector]`, each a `CGRect` encoded with `CIVector(cgRect:)`) that together cover the output; the output extent is the union of all tile extents (iOS 27.0+) |
 
 ### Class Methods (Override in Subclass)
 
 | Method | Description |
 |--------|-------------|
 | `process(with:arguments:output:) throws` | Core processing logic — must override |
+| `process(with:arguments:outputs:) throws` | Override instead when the processor produces multiple outputs (2 or more output images; 0, 1, 2 or more inputs) (26.0+) |
+| `outputFormat(at:arguments:) -> CIFormat` | Override when the processor has more than one output and needs a specific supported pixel format per output index (26.0+) |
 | `roi(forInput:arguments:outputRect:) -> CGRect` | Map output rect to input ROI; override when they differ (e.g., blur) |
 | `formatForInput(at:) -> CIFormat` | Pixel format for each input; default `.BGRA8` |
 | `outputFormat -> CIFormat` | Pixel format for the output; default `.BGRA8` |

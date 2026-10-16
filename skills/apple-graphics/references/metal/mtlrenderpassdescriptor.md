@@ -34,6 +34,8 @@ let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor)!
 | `renderTargetArrayLength` | `Int` | Number of active layers for layered rendering |
 | `visibilityResultBuffer` | `MTLBuffer?` | Buffer for GPU-written visibility test results |
 | `defaultRasterSampleCount` | `Int` | Raster sample count when no attachments are configured |
+| `supportColorAttachmentMapping` | `Bool` | Specifies if the render pass should support color attachment mapping (26.0+) |
+| `visibilityResultType` | `MTLVisibilityResultType` | Specifies if Metal accumulates visibility results between render encoders or resets them (26.0+) |
 
 ### Attachment load/store actions
 

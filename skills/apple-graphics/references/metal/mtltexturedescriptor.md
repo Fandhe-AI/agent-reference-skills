@@ -32,6 +32,7 @@ let texture = device.makeTexture(descriptor: desc)!
 | `storageMode` | `MTLStorageMode` | Memory location and access: `.shared`, `.private`, `.managed` |
 | `usage` | `MTLTextureUsage` | Combination of `.shaderRead`, `.shaderWrite`, `.renderTarget`, `.pixelFormatView` |
 | `allowGPUOptimizedContents` | `Bool` | Allows GPU-internal compressed storage (default `true`) |
+| `placementSparsePageSize` | `MTLSparsePageSize` | Page size for a placement sparse texture; a non-zero value creates one, and memory is assigned with a placement-type `MTLHeap`. Default `0` (26.0+) |
 | `swizzle` | `MTLTextureSwizzleChannels` | Remaps RGBA channels when sampling |
 
 ### Convenience Constructors

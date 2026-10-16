@@ -45,6 +45,8 @@ func draw(in view: MTKView) {
 | `enableSetNeedsDisplay` | `Bool` | Enables event-driven drawing via `setNeedsDisplay()` |
 | `currentDrawable` | `CAMetalDrawable?` | The current drawable acquired for this frame |
 | `currentRenderPassDescriptor` | `MTLRenderPassDescriptor?` | Preconfigured render pass descriptor for the current drawable |
+| `currentMTL4RenderPassDescriptor` | `MTL4RenderPassDescriptor?` | Convenience render pass descriptor generated from the current drawable's texture and the view's depth, stencil, and sample buffers and clear values; the view does not use it (26.0+) |
+| `residencySet` | `any MTLResidencySet` | The view's residency set, containing all `MTLTexture`s the view creates (iOS 26.4+) |
 | `depthStencilTexture` | `MTLTexture?` | Auto-created depth/stencil attachment texture |
 | `multisampleColorTexture` | `MTLTexture?` | Auto-created MSAA color texture (when `sampleCount > 1`) |
 | `delegate` | `MTKViewDelegate?` | Object that responds to draw and resize events |
@@ -61,6 +63,7 @@ func draw(in view: MTKView) {
 
 - iOS 9.0+, iPadOS 9.0+, macOS 10.11+, tvOS 9.0+, visionOS 1.0+, Mac Catalyst 13.1+.
 - Acquire `currentDrawable` and `currentRenderPassDescriptor` as late as possible, immediately before encoding — the system has a limited pool of drawables.
+- Use `residencySet` together with the residency set of the view's underlying `CAMetalLayer` to ensure all required `MTLTexture`s are resident before use.
 - Call `releaseDrawables()` to free drawable resources when the app is backgrounded.
 - Implement `MTKViewDelegate` (`mtkView(_:drawableSizeWillChange:)` and `draw(in:)`) rather than subclassing for the recommended pattern.
 
@@ -70,3 +73,4 @@ func draw(in view: MTKView) {
 - [MTLDevice](./mtldevice.md)
 - [MTLCommandBuffer](./mtlcommandbuffer.md)
 - [MTLRenderPassDescriptor](./mtlrenderpassdescriptor.md)
+- [MTLResidencySet](./mtlresidencyset.md)

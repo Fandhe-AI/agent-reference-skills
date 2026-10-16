@@ -21,6 +21,8 @@ guard let commandBuffer = commandQueue.makeCommandBuffer() else { return }
 | `makeCommandBufferWithUnretainedReferences()` | `MTLCommandBuffer?` | Creates a command buffer that does not retain strong references to resources |
 | `addResidencySet(_:)` | `Void` | Attaches a residency set to the queue |
 | `removeResidencySet(_:)` | `Void` | Detaches a residency set from the queue |
+| `addResidencySets(_:)` | `Void` | Attaches multiple residency sets to the queue (iOS 18.0+) |
+| `removeResidencySets(_:)` | `Void` | Detaches multiple residency sets from the queue (iOS 18.0+) |
 | `device` | `MTLDevice` | The GPU device that created this queue |
 | `label` | `String?` | Optional debug identifier |
 
@@ -34,3 +36,4 @@ guard let commandBuffer = commandQueue.makeCommandBuffer() else { return }
 
 - [MTLDevice](./mtldevice.md)
 - [MTLCommandBuffer](./mtlcommandbuffer.md)
+- [MTLResidencySet](./mtlresidencyset.md)

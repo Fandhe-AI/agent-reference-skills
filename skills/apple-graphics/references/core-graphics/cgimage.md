@@ -51,6 +51,9 @@ context.draw(image!, in: CGRect(x: 0, y: 0, width: 100, height: 100))
 | `isMask` | `Bool` | Whether this is an image mask |
 | `shouldInterpolate` | `Bool` | Whether interpolation is applied when scaling |
 | `renderingIntent` | `CGColorRenderingIntent` | How out-of-gamut colors are handled |
+| `contentAverageLightLevel` | `Float` | HDR content average light level (26.0+) |
+| `calculatedContentHeadroom` | `Float` | Calculated HDR content headroom (26.0+) |
+| `calculatedContentAverageLightLevel` | `Float` | Calculated HDR content average light level (26.0+) |
 
 ### Methods
 
@@ -61,6 +64,8 @@ context.draw(image!, in: CGRect(x: 0, y: 0, width: 100, height: 100))
 | `cropping(to:)` | `CGImage?` | Creates a subimage from a rectangle |
 | `masking(_:)` | `CGImage?` | Returns the image masked by another `CGImage` |
 | `copy(maskingColorComponents:)` | `CGImage?` | Masks by color component ranges |
+| `copy(contentAverageLightLevel:)` | `CGImage?` | Copy with the given content average light level (26.0+) |
+| `copyWithCalculatedHDRStats()` | `CGImage?` | Copy with calculated HDR statistics (26.0+) |
 
 ## Notes
 
