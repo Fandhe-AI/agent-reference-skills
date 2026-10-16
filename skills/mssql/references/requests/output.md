@@ -23,10 +23,11 @@ request.output('output_parameter', sql.VarChar(50), 'abc')
 
 ## Notes
 
-- Errors (synchronous): `EARGS` (`RequestError`, invalid number of arguments), `EINJECT` (`RequestError`, SQL injection warning).
+- Errors (synchronous): `EARGS` (`RequestError`, invalid number of arguments), `EINJECT` (`RequestError`, parameter name is not a valid identifier); see identifier-rules.md.
 - `Request` here is node-mssql's query-execution object — unrelated to the HTTP `Request` in the `fastify` / `hono` / `go-echo` skills.
 
 ## Related
 
 - [input](./input.md)
 - [replace-output](./replace-output.md)
+- [Identifier rules](../errors-diagnostics/identifier-rules.md)

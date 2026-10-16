@@ -28,6 +28,8 @@ Note: If you use import into your lib to prepare your request (`const { VarChar 
 | `options.trustedConnection` | boolean | Use Windows Authentication (default: `false`). |
 | `options.useUTC` | boolean | Whether or not to use UTC time for values without time zone offset (default: `true`). |
 
+The default connection strings below are verbatim from the official README. The `#{name}` tokens (`server`, `port`, `database`, `user`, `password`, `trusted`, `instance`) are the driver's own template placeholders, substituted from the config at connect time, not values to type in.
+
 Default connection string when connecting to port:
 
 ```
@@ -43,6 +45,12 @@ Driver={SQL Server Native Client 11.0};Server={#{server}\\#{instance}};Database=
 ## Notes
 
 - Please note that the connection string with this driver is not the same than tedious and use yes/no instead of true/false. You can see more on the [ODBC](https://docs.microsoft.com/fr-fr/dotnet/api/system.data.odbc.odbcconnection.connectionstring?view=dotnet-plat-ext-5.0) documentation.
+- Driver-specific behaviour documented in the v12.7.9 README:
+  - A paused request reads rows 50 at a time and holds them until it is resumed (see the Streaming section; `cancel.md`).
+  - A running request can be cancelled only from msnodesqlv8 5.6 (`cancel.md`, `to-readable-stream.md`).
+  - There is no `abortTransactionOnError`, and server-side rollbacks are not detected (`transaction.md`).
+  - The procedure name is built into the statement, but both drivers validate it the same way (`identifier-rules.md`).
+- Release notes v12.7.3-v12.7.9 list msnodesqlv8 fixes: procedure parameters bound in marker order, output parameter initial values, error propagation (including preceding errors and commit / rollback errors), `ECANCEL` reporting for cancelled requests and paused streams, stream completion under back pressure, and bulk load settling.
 - Migration (v6 → v7): upgraded supported `msnodesqlv8` version to v2.
 - Migration (v3 → v4): drivers are no longer loaded dynamically (Webpack-compatible) — this driver now requires the explicit `require('mssql/msnodesqlv8')` statement shown above.
 

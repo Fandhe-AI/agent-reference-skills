@@ -39,13 +39,13 @@ transaction.begin(err => {
 | pool | `ConnectionPool` | Optional. Pool to acquire the exclusive connection from. Global connection used if omitted |
 | options | `object` | Optional. Per-transaction configuration overrides (e.g. `{ requestTimeout: 60000 }`). Inherited by requests created from this transaction unless overridden at the request level. Applies to data requests only, not to `begin`/`commit`/`rollback` |
 
-## Events
+### Events
 
 - **begin** - Dispatched when transaction begin.
 - **commit** - Dispatched on successful commit.
 - **rollback(aborted)** - Dispatched on successful rollback with an argument determining if the transaction was aborted (by user or because of an error).
 
-## Aborted transactions
+### Aborted transactions
 
 Shows how to correctly handle transaction errors when `abortTransactionOnError` (`XACT_ABORT`) is enabled. Added in 2.0.
 
@@ -84,6 +84,7 @@ transaction.begin(err => {
 ## Notes
 
 - Once you call `begin`, a single connection is acquired from the connection pool and all subsequent requests initialized with the `Transaction` object are executed exclusively on this connection. After `commit` or `rollback`, the connection is released back to the pool
+- The msnodesqlv8 driver has no `abortTransactionOnError` option and can't tell when the server has rolled a transaction back. If you turn `XACT_ABORT` on yourself, or the server rolls the transaction back for another reason (for example, when it picks it as a deadlock victim), the `rollback` event isn't emitted, so the `rollback()` call in the example above fails with a `TransactionError` saying there is no transaction to roll back: the server has already rolled it back.
 - This is a SQL Server database transaction (TDS protocol, ACID commit/rollback over a dedicated connection) — distinct from Redis `MULTI`/`EXEC` transactions (`upstash`) and from Stripe's idempotency/ledger "transaction" concept (`stripe`)
 - Migration (v5 → v6): invalid isolation levels passed to `Transaction`s now throw an error.
 - Migration (v3 → v4): `Transaction` internal queues were removed; `ConnectionPool` no longer emits `connect`/`close` events.

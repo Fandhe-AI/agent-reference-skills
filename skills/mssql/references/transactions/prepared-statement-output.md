@@ -22,7 +22,7 @@ ps.output('output_parameter', sql.VarChar(50))
 
 ## Notes
 
-- Synchronous errors: `EARGS` (`PreparedStatementError`) - Invalid number of arguments. `EINJECT` (`PreparedStatementError`) - SQL injection warning
+- Synchronous errors: `EARGS` (`PreparedStatementError`) - Invalid number of arguments. `EINJECT` (`PreparedStatementError`) - Parameter name is not a valid identifier. See identifier-rules.md (errors-diagnostics category)
 - This is a SQL Server prepared statement parameter, unrelated to Redis (`upstash`) or Stripe (`stripe`) transaction concepts
 
 ## Related
@@ -30,3 +30,4 @@ ps.output('output_parameter', sql.VarChar(50))
 - [prepared-statement](./prepared-statement.md)
 - [prepared-statement-input](./prepared-statement-input.md)
 - [prepare](./prepare.md)
+- [Identifier rules](../errors-diagnostics/identifier-rules.md)

@@ -23,6 +23,8 @@ request.cancel()
 
 ## Notes
 
+- A cancelled stream emits an `error` event with code `ECANCEL`, followed by `done`.
+- With the `msnodesqlv8` driver, a request that is already running can only be cancelled from msnodesqlv8 5.6. Earlier versions can cancel a paused stream, but let any other running request run to the end and complete as if `cancel()` had not been called. A paused stream is cancelled once the driver stops reading, at the end of a batch of 50 rows or the start of the next result set; a query that ends first, or times out, completes as cancelled.
 - `Request` here is node-mssql's query-execution object — unrelated to the HTTP `Request` in the `fastify` / `hono` / `go-echo` skills.
 
 ## Related

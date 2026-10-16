@@ -21,7 +21,7 @@ request.input('input_parameter', sql.Int, value)
 | type | SQL data type | If you omit type, module automatically decide which SQL data type should be used based on JS data type. |
 | value | any | Input parameter value. `undefined` and `NaN` values are automatically converted to `null` values. |
 
-## JS Data Type To SQL Data Type Map
+### JS Data Type To SQL Data Type Map
 
 | JS Data Type | SQL Data Type |
 |---|---|
@@ -56,7 +56,7 @@ sql.map.register(Number, sql.BigInt)
 
 ## Notes
 
-- Errors (synchronous): `EARGS` (`RequestError`, invalid number of arguments), `EINJECT` (`RequestError`, SQL injection warning).
+- Errors (synchronous): `EARGS` (`RequestError`, invalid number of arguments), `EINJECT` (`RequestError`, parameter name is not a valid identifier). The name is given without the leading `@`; see identifier-rules.md.
 - Do not use parameters `@p{n}` as these are used by the internal drivers and cause a conflict.
 - `Request` here is node-mssql's query-execution object — unrelated to the HTTP `Request` in the `fastify` / `hono` / `go-echo` skills.
 
@@ -64,3 +64,4 @@ sql.map.register(Number, sql.BigInt)
 
 - [output](./output.md)
 - [replace-input](./replace-input.md)
+- [Identifier rules](../errors-diagnostics/identifier-rules.md)
