@@ -17,8 +17,7 @@
 ```
 
 ```csharp
-string state = (Window.Current.Bounds.Width > 768) ? "DefaultLayout" : "Below768Layout";
-// e.g. toggle at runtime
+// toggle at runtime (rootGrid is a named FrameworkElement)
 rootGrid.RequestedTheme = ElementTheme.Dark;
 ```
 
@@ -39,6 +38,7 @@ rootGrid.RequestedTheme = ElementTheme.Dark;
 - If the user selects a High Contrast theme in Windows Settings, the system overrides `RequestedTheme` regardless of what the app requests.
 - `FrameworkElement.RequestedTheme` (unlike `Application.RequestedTheme`) can be changed at runtime and applies to that element and its descendants.
 - App-wide accent color can be overridden by redefining the `SystemAccentColor` resource key in `Application.Resources`; accent shades (`SystemAccentColorLight1`/`Dark1`/etc.) are exposed as theme resources.
+- The accent palette theme resources are `SystemAccentColorLight3`, `Light2`, `Light1`, `Dark1`, `Dark2`, `Dark3`. In code, read them with `UISettings.GetColorValue` and the `UIColorType` enum. In C++/WinRT, create a `Color` with `ColorHelper::FromArgb` (C#: `Color.FromArgb`).
 
 ## Related
 

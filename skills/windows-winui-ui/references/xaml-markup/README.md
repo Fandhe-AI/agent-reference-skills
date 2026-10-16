@@ -15,6 +15,7 @@
 | Template settings classes | `*TemplateSettings` classes (e.g. `ComboBoxTemplateSettings`, `ToggleSwitchTemplateSettings`)… | [template-settings-classes.md](./template-settings-classes.md) |
 | {TemplateBinding} markup extension | Links the value of a property in a control template to the value of another exposed property… | [templatebinding-markup-extension.md](./templatebinding-markup-extension.md) |
 | {ThemeResource} markup extension | Provides a value for any XAML attribute by evaluating a reference to a resource, re-resolving… | [themeresource-markup-extension.md](./themeresource-markup-extension.md) |
+| {x:Bind} markup extension | Compile-time ("compiled") data binding, an alternative to `{Binding}`. `{x:Bind}` runs in less… | [x-bind-markup-extension.md](./x-bind-markup-extension.md) |
 | x:Class attribute | Configures XAML compilation to join partial classes between markup and code-behind. The code… | [x-class-attribute.md](./x-class-attribute.md) |
 | x:DataType attribute | Declares the type that a `DataTemplate` (or other `{x:Bind}` scope) binds to, so that… | [x-datatype-attribute.md](./x-datatype-attribute.md) |
 | x:DefaultBindMode attribute | Sets a default binding mode for `{x:Bind}` expressions on an element and its descendants,… | [x-defaultbindmode-attribute.md](./x-defaultbindmode-attribute.md) |
@@ -29,8 +30,8 @@
 | XAML intrinsic data types | Language-level support in XAML for the Windows Runtime for frequently-used primitive types… | [xaml-intrinsic-data-types.md](./xaml-intrinsic-data-types.md) |
 | XAML namescopes | A XAML namescope stores relationships between the XAML-defined names of objects (`x:Name`)… | [xaml-namescopes.md](./xaml-namescopes.md) |
 | XAML namespaces and namespace mapping | Explains the `xmlns` mappings found in the root element of most XAML files, and how to map… | [xaml-namespaces-and-namespace-mapping.md](./xaml-namespaces-and-namespace-mapping.md) |
+| XamlOptionalChanges / XamlChangeId (Microsoft.UI.Xaml.Settings) | Static class that lets an app opt into or out of optional breaking changes before XAML… | [xaml-optional-changes.md](./xaml-optional-changes.md) |
 | XAML overview | XAML (Extensible Application Markup Language) is the declarative markup language used to… | [xaml-overview.md](./xaml-overview.md) |
 | ResourceDictionary and XAML resource references | Explains how to define a `ResourceDictionary` and keyed resources, and how resources are… | [xaml-resource-dictionary.md](./xaml-resource-dictionary.md) |
 | XAML syntax guide | Explains XAML syntax rules and terminology: object element syntax, attribute syntax,… | [xaml-syntax-guide.md](./xaml-syntax-guide.md) |
-| {x:Bind} markup extension | Compile-time ("compiled") data binding, an alternative to `{Binding}`. `{x:Bind}` runs in less… | [x-bind-markup-extension.md](./x-bind-markup-extension.md) |
 | XamlReader.Load | Parses a well-formed XAML fragment string at runtime and creates a corresponding,… | [xamlreader-load.md](./xamlreader-load.md) |
