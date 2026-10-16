@@ -26,6 +26,7 @@ L"string"
 - Remote debugging falls back to a local cache folder (`%TEMP%`) and downloads the `.winmd` from the target if needed.
 - Enable diagnostics via **Tools > Options > Debugging > Output Window > Natvis diagnostic messages**. When a property can't be evaluated, the Watch window shows "<Object uninitialized or information unavailable>".
 - If no metadata is found: `Natvis C++/WinRT: Could not find metadata for Consoso.Controls.Widget`.
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/cpp-winrt/natvis (en-us, fetched 2026-10-16)
 
 ## Related
 

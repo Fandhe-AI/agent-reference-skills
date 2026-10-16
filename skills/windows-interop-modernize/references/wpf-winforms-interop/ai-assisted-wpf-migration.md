@@ -113,7 +113,8 @@ dotnet add package Microsoft.WindowsAppSDK
 - APIs that don't migrate directly (tell the agent to flag these rather than guess): WPF `Adorner` layer (no WinUI 3 equivalent); `FlowDocument` / `DocumentViewer` (use `RichEditBox` for editable content, no viewer equivalent); `Viewport3D` (use Win2D or DirectX interop); air-space / HWND hosting (use `SwapChainPanel` or Win32 interop patterns).
 - This page's `DataGrid` row points to the CommunityToolkit package, whereas `wpf-vs-winui3.md` lists community `WinUI.TableView` / "none built-in"; the sources differ, so verify the package against current Windows App SDK / Toolkit versions before use.
 - Distinct from WPF `System.Windows.*`: after migration no `System.Windows.*` namespaces should remain in new code.
-- Source page `ms.date` 2026-05-13 (learn.microsoft.com en-us, fetched 2026-10). Project-file TFM and SDK version values are verbatim from the source.
+- When replacing `{Binding}` with `{x:Bind}`, set an explicit mode: `x:Bind` defaults to `OneTime`, which doesn't update when a property changes, so add `Mode=OneWay` / `Mode=TwoWay` for properties that change at runtime (see `winforms-patterns-winui3.md` and `../uwp-migration/ai-assisted-migration.md`).
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/ai-assisted/migrate/wpf-to-winui (en-us, fetched 2026-10-16). Source page `ms.date` 2026-05-13. Project-file TFM and SDK version values are verbatim from the source.
 
 ## Related
 

@@ -74,6 +74,7 @@ struct MyDerivedRuntimeClass : MyDerivedRuntimeClassT<MyDerivedRuntimeClass>
 - Extension points include `MeasureOverride`, `OnApplyTemplate`, and `GoToStateCore`; they live on `Control`, `FrameworkElement`, `UIElement`, and `VisualStateManager`.
 - In C#, overridable methods appear as protected virtual methods. In C++/WinRT they are neither virtual nor protected, but you can still override them by providing your own implementation as shown above.
 - If you override one of these overridable methods, the `runtimeclass` IDL must not declare that method.
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/cpp-winrt/base-type (en-us, fetched 2026-10-16)
 
 ## Related
 

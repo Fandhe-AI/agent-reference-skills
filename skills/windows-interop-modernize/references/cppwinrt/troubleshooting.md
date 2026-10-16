@@ -57,6 +57,7 @@ Frequent fix for `make` with an `= delete` default constructor: edit the impleme
 - When porting, you can make temporary progress by commenting or stubbing out non-essential code and paying the debt later.
 - Many remedies defer to the UWP C++/WinRT FAQ, which is not reproduced here.
 - For the VSIX / NuGet package support, see "Visual Studio support for C++/WinRT, and the VSIX".
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/cpp-winrt/troubleshooting (en-us, fetched 2026-10-16)
 
 ## Related
 

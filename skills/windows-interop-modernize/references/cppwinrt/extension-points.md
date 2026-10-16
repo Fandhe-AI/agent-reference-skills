@@ -61,6 +61,7 @@ void example2()
 - `abi_guard` applies only when a method is invoked via the projected interface; calling methods directly on the implementation object bypasses the guards. For a coroutine method, the guard is active only until the `IAsyncXxx` is returned, not until the coroutine completes.
 - The C++/WinRT iterator classes use `abi_enter` to throw an invalid state exception if the underlying collection has changed.
 - UI frameworks often require destruction on the creating UI thread; a coroutine `final_release` that resumes on `ptr->DispatcherQueue()` makes that straightforward.
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/cpp-winrt/details-about-destructors (en-us, fetched 2026-10-16)
 
 ## Related
 

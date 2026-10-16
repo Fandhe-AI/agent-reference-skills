@@ -69,7 +69,7 @@ Maps Windows Forms controls, data-binding patterns, application lifecycle concep
 - Incremental migration steps: identify a bounded workflow; separate business and data-access logic from WinForms controls; add automated tests; rebuild with WinUI layout patterns rather than copying coordinates; test accessibility, text scaling, theming, deployment, failure recovery; decide how old and new components communicate.
 - An AI assistant can inventory designer code and draft mappings, but its output is not a verified control-for-control conversion; build and test it.
 - Distinct from `System.Windows.Forms.*` (WinForms) APIs: WinUI 3 types live in `Microsoft.UI.Xaml.*`. See `winforms-form-control.md` for the WinForms side.
-- Source page `ms.date` 2026-10-13 (learn.microsoft.com en-us, fetched 2026-10).
+- Source: https://learn.microsoft.com/en-us/windows/apps/get-started/line-of-business/migrate-winforms-patterns (en-us, fetched 2026-10-16). Source page `ms.date` 2026-10-13.
 
 ## Related
 

@@ -44,6 +44,7 @@ void Call()
 - `winrt::make` derives from your implementation with a `final` class that provides the override; therefore your implementation can't be `final`, and can't have a private destructor. Marking individual virtual functions `final` is still allowed.
 - An implementation type is not the projected type (`MyStringable` is not an `IStringable`); the implementation provides implicit conversions to the projected types it implements.
 - A `std::shared_ptr` creates a second reference count for the same object, which is incompatible with the intrinsic COM reference count.
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/cpp-winrt/diag-direct-alloc (en-us, fetched 2026-10-16)
 
 ## Related
 

@@ -26,6 +26,7 @@ Common features listed in the source (non-comprehensive): Windows AI Foundry, ba
 
 - Not covered by this page: updating to a newer .NET version or Visual Studio tooling. For .NET start with "GitHub Copilot modernization for .NET"; for C++ start with the "Microsoft C++ porting and upgrading guide".
 - For a larger modernization effort, or new features as separate modules, build new components with WinUI 3 and the Windows App SDK (the recommended path for new development).
+- Source: https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/ (en-us, fetched 2026-10-16).
 - Source is `MicrosoftDocs/windows-dev-docs` at commit `a3812316d9d6678be4e526ffb4b1c4f3958d956d` (`ms.date: 04/27/2026`).
 
 ## Related

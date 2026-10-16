@@ -71,6 +71,7 @@ void MainPage::ClickHandler(IInspectable const&, RoutedEventArgs const&)
 - The code applies to C++/WinRT version 2.0.190530.8 or later. In earlier versions, declare `BookSkus` as `IObservableVector<IInspectable>` in the IDL and use `IInspectable` instead of `BookSku` in the implementation.
 - The topic assumes the project from "XAML controls; bind to a C++/WinRT property" and extends it.
 - `Append` raises an event that causes the `ListBox` to re-query the collection and update its `Items`.
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/cpp-winrt/binding-collection (en-us, fetched 2026-10-16)
 
 ## Related
 

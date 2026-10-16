@@ -53,7 +53,7 @@ Common migration blockers:
 - A C# WinUI 3 app requires modern .NET and can't target .NET Framework: upgrade first (Path 1), then migrate the UI. A C++/WinRT WinUI 3 app doesn't require .NET.
 - Win32 or C++ desktop UI: the docs support modernization in place and selected Windows App SDK adoption, but provide no end-to-end Win32 UI migration guide.
 - Framework entry points: UWP → "Migrate from UWP to the Windows App SDK"; WPF → "Migrate WPF app patterns to WinUI 3"; Windows Forms → "Windows Forms patterns and their WinUI 3 equivalents".
-- Source page last updated 2026-10-14 (fetched 2026-10-17).
+- Source: https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/migrate-to-windows-app-sdk/migration-decision-guide (en-us, fetched 2026-10-16). Source page last updated 2026-10-14.
 
 ## Related
 

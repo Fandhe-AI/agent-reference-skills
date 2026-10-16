@@ -118,6 +118,7 @@ struct App
 - The docs note that a production-ready task completion source implementation is available in the `cpp-async` GitHub repo (`https://github.com/Microsoft/cpp-async`).
 - The listing uses `std::experimental::coroutine_handle` as in the official sample.
 - The examples are meant to be run in a Visual Studio project based on the Windows Console Application (C++/WinRT) template, with `completion_source` pasted into `main.cpp`.
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/cpp-winrt/concurrency-3 (en-us, fetched 2026-10-16)
 
 ## Related
 

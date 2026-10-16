@@ -67,7 +67,7 @@ Interop support with `pplawait.h`:
 | Method returns | Can you `co_await` it? | Can you `co_return` from it? |
 |------|------|------|
 | `task<void>` | Yes | Yes |
-| `task<T>` | No | Yes |
+| `task<T>` | Yes (the official table prints "No", but the same page's prose says you can `co_await` both tasks and `IAsyncXxx` with `pplawait.h`, and its sample `co_await`s `TaskAsync()` returning `task<bool>`) | Yes |
 | `IAsyncXxx^` | Yes | No. Wrap `create_async` around a task that uses `co_return`. |
 | `winrt::IAsyncXxx` | Yes | Yes |
 
@@ -85,6 +85,7 @@ Techniques:
 
 ## Notes
 
+- The official page's interop table lists `task<T>` as not `co_await`able, which contradicts the same page's prose and sample: with `pplawait.h` included, `concurrency::task<T>` can also be `co_await`ed.
 - Gradual porting is not possible for a Windows Runtime component project (port in one pass). For a XAML project, page types must be either all C++/WinRT or all C++/CX at any given time.
 - There is no one-to-one mapping from PPL tasks to coroutines; the recommended approach is to understand the original synchronous intent and insert `co_await` in the appropriate places. A C#-version of the code (which already uses `await`) can make the port cleaner.
 - Do not build until you resolve ambiguity of `byte` (in the Simple3DGameDX case study: comment out `using namespace std;` in `BasicLoader.cpp` and qualify `std::shared_ptr`, `std::vector`, `std::string`).
@@ -92,6 +93,7 @@ Techniques:
 - With C++/CX `IAsyncXxx^`, `TResult` is limited to Windows Runtime types (for example `bool` is allowed; `Platform::Array<byte>^` is not).
 - Porting `GameConstants` delays requires changing the constant type to `std::chrono::duration` (for example `2000ms`) for `winrt::resume_after`.
 - The walkthrough uses the C++/CX version of the Direct3D game sample `Simple3DGameDX`; after porting, call sites that used `ReadDataAsync(...).then(...)` become `auto textureBuffer = co_await m_basicReaderWriter.ReadDataAsync(filename);`.
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/cpp-winrt/interop-winrt-cx-async (en-us, fetched 2026-10-16)
 
 ## Related
 

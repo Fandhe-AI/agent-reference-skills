@@ -36,7 +36,7 @@ Where to start:
 ## Notes
 
 - The activities can be combined: upgrade a WPF app from .NET Framework to .NET 8, then modernize with Windows App SDK features, and later migrate specific views to WinUI 3.
-- Source page last updated 2026-09-02 (fetched 2026-10-17).
+- Source: https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/migrate-to-windows-app-sdk/migration-terminology (en-us, fetched 2026-10-16). Source page last updated 2026-09-02.
 
 ## Related
 
