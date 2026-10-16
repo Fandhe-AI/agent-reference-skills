@@ -17,8 +17,8 @@ knip --exports        # all export-related issues
 knip --files          # unused files only
 knip --cycles         # circular dependencies only
 
-# Default issue types plus circular dependencies (--exports also enables nsExports/nsTypes per the CLI reference; exclude them to keep the default set)
-knip --dependencies --exports --files --cycles --exclude nsExports,nsTypes
+# Default issue types plus circular dependencies
+knip --dependencies --exports --files --cycles
 ```
 
 Configure severity levels per issue type in `knip.json`:
@@ -39,4 +39,5 @@ Configure severity levels per issue type in `knip.json`:
 - `"warn"`: issue is printed in faded color but does not increment the failure count
 - `"off"`: issue is completely suppressed
 - `cycles` is off by default and a warning when enabled; `"cycles": "error"` makes reported cycles cause a non-zero exit code
+- Per the CLI reference, `--exports` also includes `nsExports` / `nsTypes` (off by default), so the combined shorthand may also report namespace issues; to add only circular dependencies to the default set, use `knip --dependencies --exports --files --cycles --exclude nsExports,nsTypes`
 - CLI `--include`/`--exclude` filters are applied on top of `rules`; use `rules` for persistent team-wide configuration
