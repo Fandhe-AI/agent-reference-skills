@@ -5,8 +5,9 @@ Identify keyframes and highlight segments using on-device analysis. `VideoAnalyz
 ## Signature / Usage
 
 ```swift
+let assetID: String // identifier your app persists for this file, e.g. a UUID
 let asset = MediaIntelligenceVideoAsset(
-    id: MediaIntelligenceVideoAsset.ID(videoURL.standardizedFileURL.path(percentEncoded: false)),
+    id: MediaIntelligenceVideoAsset.ID(assetID),
     kind: .url(videoURL)
 )
 
@@ -41,7 +42,7 @@ case .failure(let error):
 - `KeyFrameAnalysisRequest` result `timestamp` is a `CMTime`; use it to seek a player or generate a thumbnail (for example with `AVAssetImageGenerator`).
 - Passing several requests to a single `analyze(_:for:)` call decodes the video once, so it is more efficient. Each request produces its own `Result`, so successes and failures are handled independently.
 - Cancellation is cooperative: cancel the Task calling `analyze(_:for:)`. The analyzer checks periodically and returns early, but because in-progress Neural Engine work must be cancelled the method can take a moment to return.
-- The official sample derives the ID from `videoURL.lastPathComponent`; that collides for same-named files in different directories, so use an identifier that is unique per video and stable across runs.
+- The official sample uses `url.lastPathComponent`, which collides for files with the same name; absolute container paths can change across app updates or restores, so this page uses an identifier the app persists (or a path relative to a managed root).
 - Source: https://developer.apple.com/documentation/mediaintelligence/finding-the-best-moments-in-a-video
 
 ## Related

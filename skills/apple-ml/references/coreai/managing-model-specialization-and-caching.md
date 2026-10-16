@@ -66,8 +66,8 @@ Cache removal conditions:
 | Condition | Description |
 |-----------|-------------|
 | OS update | Specialized assets are tied to the OS version; the system always invalidates them on OS update, regardless of policy |
-| Source model change | If the source `.aimodel` file is modified or deleted, cached assets derived from it become invalid |
-| Storage pressure | The system can reclaim space by deleting assets marked as purgeable |
+| Source model change | Under the default policy, if the source `.aimodel` file is modified or deleted, cached assets derived from it become invalid. With `.persistent`, assets survive source deletion, but they can no longer be found by URL; load them through bookmark data instead. |
+| Storage pressure | The system can reclaim space by deleting assets marked as purgeable (default policy; purgeable assets) |
 
 Deletion APIs:
 

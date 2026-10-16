@@ -17,10 +17,12 @@ try FileManager.default.createDirectory(
 let analyzer = try FaceGroupAnalyzer(workingDirectory: workingDirectory)
 
 // 1. Add images and detect faces.
-let assets = imageURLs.map { url in
+// assetID: identifier your app persists for each file, e.g. a UUID
+let images: [(url: URL, assetID: String)]
+let assets = images.map { image in
     MediaIntelligenceImageAsset(
-        id: MediaIntelligenceImageAsset.ID(url.standardizedFileURL.path(percentEncoded: false)),
-        kind: .url(url)
+        id: MediaIntelligenceImageAsset.ID(image.assetID),
+        kind: .url(image.url)
     )
 }
 let results = try await analyzer.insertOrUpdateAssets(assets)
@@ -52,7 +54,7 @@ for try await (entityID, faces) in analyzer.allFacesByEntityID {
 - `fetchFaces(for:)` and `fetchAssetIDs(for:)` return synchronously from the local store (no `await`).
 - Deleting assets: `deleteAssets(_:)`, `deleteAllAssets()`; afterwards state becomes `stale` if faces remain (existing group assignments remain valid until regrouped). `FaceGroupAnalyzer.purge(workingDirectory:)` permanently deletes all face data, group assignments and metadata.
 - Use the same asset identifier consistently per image; the framework uses it to match new submissions against existing data.
-- The official sample derives the ID from `url.lastPathComponent`; that collides for same-named files in different directories, so use an identifier that is unique per image and stable across runs (e.g. the full standardized path or your own persistent asset ID).
+- The official sample uses `url.lastPathComponent`, which collides for files with the same name; absolute container paths can change across app updates or restores, so this page uses an identifier the app persists (or a path relative to a managed root).
 - Source: https://developer.apple.com/documentation/mediaintelligence/detecting-and-grouping-faces-in-images
 
 ## Related

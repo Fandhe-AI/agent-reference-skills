@@ -7,8 +7,9 @@ A video asset to analyze. Each asset has a unique identifier you assign and a `K
 ```swift
 struct MediaIntelligenceVideoAsset
 
+let assetID: String // identifier your app persists for this file, e.g. a UUID
 let asset = MediaIntelligenceVideoAsset(
-    id: MediaIntelligenceVideoAsset.ID(videoURL.standardizedFileURL.path(percentEncoded: false)),
+    id: MediaIntelligenceVideoAsset.ID(assetID),
     kind: .url(videoURL)
 )
 ```
@@ -28,7 +29,7 @@ let asset = MediaIntelligenceVideoAsset(
 - iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+
 - Conforms to `Sendable` and `SendableMetatype`.
 - Use a file URL pointing to the video on disk. Any string that uniquely identifies the video in your app can serve as the ID.
-- The official sample derives the ID from `videoURL.lastPathComponent`; that collides for same-named files in different directories, so use an identifier that is unique per video and stable across runs.
+- The official sample uses `url.lastPathComponent`, which collides for files with the same name; absolute container paths can change across app updates or restores, so this page uses an identifier the app persists (or a path relative to a managed root).
 - Source: https://developer.apple.com/documentation/mediaintelligence/mediaintelligencevideoasset
 
 ## Related
