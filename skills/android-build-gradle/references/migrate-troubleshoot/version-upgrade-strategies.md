@@ -46,7 +46,7 @@ android {
 
 ## Options / Props
 
-### Upgrade considerations
+**Upgrade considerations**
 
 | Factor | Guidance |
 |--------|----------|
@@ -57,14 +57,14 @@ android {
 | Dedicated team | A build team can analyze and test upgrades before engineers adopt them |
 | Automation tools | They upgrade to the latest versions and do no analysis; always check the results |
 
-### Per-component strategies
+**Per-component strategies**
 
 | Component | Steps |
 |-----------|-------|
 | AGP | Read release notes; upgrade Gradle to at least the listed version; use an Android Studio version that supports the AGP version; check SDK Build Tools, NDK, JDK compatibility; check custom Gradle plugins that use AGP APIs |
 | Kotlin | Read Kotlin release notes. Compose with Kotlin < 2.0.0: use the compatible Compose compiler and update `kotlinCompilerExtensionVersion`. Kotlin >= 2.0.0: set up the Compose Compiler Gradle Plugin with the same version as Kotlin. KSP plugin version must match Kotlin (e.g. Kotlin 2.0.21 -> `2.0.21-1.0.25`); KSP processors rarely need upgrading |
 | Kotlin compiler plugins | Use the matching Kotlin version (plugin version `2.0.21-1.0.25` requires Kotlin `2.0.21`); check plugins have matching releases before upgrading Kotlin |
-| Libraries | Some require a minimum `compileSdk` (build fails otherwise) or minimum Kotlin version; app `minSdk` is automatically the max of all library `minSdk` values |
+| Libraries | Some require a minimum `compileSdk` (build fails otherwise) or minimum Kotlin version; if the app `minSdk` is lower than a library requires, manifest merger fails the build (raise the app `minSdk`, use a compatible library version, or with care `tools:overrideLibrary`) |
 | Gradle | Read release notes; update `gradle/wrapper/gradle-wrapper.properties`; run `./gradlew wrapper --gradle-version latest`; upgrade plugins; upgrade the JDK running Gradle |
 | Gradle plugins | Upgrading a plugin may require a Gradle upgrade; whenever upgrading plugins, upgrade Gradle |
 | Android SDK | Read behavior changes in release notes; `targetSdk` upgrade is required by Play Store, `compileSdk` upgrade is optional; upgrade AGP, Android Studio and AndroidX with it |
@@ -73,23 +73,19 @@ android {
 
 ## Notes
 
-### Risk checklist
-
-- Major version bump (e.g. 1.2.3 -> 2.0.1); experimental API usage raises risk even for minor/patch bumps
-- Nonstable (alpha/dev/experimental) APIs
-- Dynamic behavior (server version dependence)
-- Manifest merging from AARs (new permissions, components)
-- Runtime updates (Play Services, AIDL-bound apps)
-- Number of versions skipped (e.g. 1.2.3 -> 1.34.5)
-- Migration guides, release notes, READMEs (known issues, security)
-- Known vulnerabilities: Play SDK Index, NVD via the third-party Dependency Check Gradle plugin (`./gradlew dependencyCheckAnalyze`, needs an NVD API key, slow)
-- Version conflicts: search for `->` in `./gradlew app:dependencies`
-- License changes, including new transitive dependencies
-- Maintenance and quality (contributors, release frequency, issue backlog, test coverage, docs)
-- Open vs closed source: minimize closed-source dependencies and add tests
-
-### Other notes
-
+- **Risk:** major version bump (e.g. 1.2.3 -> 2.0.1); experimental API usage raises risk even for minor/patch bumps
+- **Risk:** nonstable (alpha/dev/experimental) APIs
+- **Risk:** dynamic behavior (server version dependence)
+- **Risk:** manifest merging from AARs (new permissions, components)
+- **Risk:** runtime updates (Play Services, AIDL-bound apps)
+- **Risk:** number of versions skipped (e.g. 1.2.3 -> 1.34.5)
+- **Risk:** migration guides, release notes, READMEs (known issues, security)
+- **Risk:** known vulnerabilities: Play SDK Index, NVD via the third-party Dependency Check Gradle plugin (`./gradlew dependencyCheckAnalyze`, needs an NVD API key, slow)
+- **Risk:** version conflicts: search for `->` in `./gradlew app:dependencies`
+- **Risk:** license changes, including new transitive dependencies
+- **Risk:** maintenance and quality (contributors, release frequency, issue backlog, test coverage, docs)
+- **Risk:** open vs closed source: minimize closed-source dependencies and add tests
+- The source page states the app `minSdk` is automatically the maximum of all library `minSdk` values; in practice manifest merger reports an error instead.
 - Dependency Guard and Dependency Check are third-party Gradle plugins; the source strongly recommends enabling Dependency verification.
 - Do not upgrade source code or resources while capturing the baseline diff; upgrade dependencies and build changes only.
 - Dependency Guard captures only library dependencies; SDK and JDK versions show up in the VCS diff of your build files.

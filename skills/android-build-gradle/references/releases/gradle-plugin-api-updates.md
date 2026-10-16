@@ -8,8 +8,8 @@ Tracks Android Gradle plugin (AGP) API deprecations and removals, with guidance 
 // AGP 7.2+: instrumentation APIs moved to Component.instrumentation
 androidComponents {
     onVariants(selector().all(), {
-        instrumentation.transformClassesWith(AsmClassVisitorFactoryImpl.class,
-                                             InstrumentationScope.Project) { params ->
+        instrumentation.transformClassesWith(AsmClassVisitorFactoryImpl::class.java,
+                                             InstrumentationScope.PROJECT) { params ->
             params.x = "value"
         }
         instrumentation.setAsmFramesComputationMode(
@@ -43,6 +43,7 @@ extensions.getByType<AndroidComponentsExtension<CommonExtension<*, *, *, *, *, *
 - AGP 8.8: Resource Configurations deprecated, because AGP no longer supports different resource densities and Google Play requires App Bundles. For languages, use the `localeFilters` DSL.
 - AGP 8.0: Transform API removed (all classes in `com.android.build.api.transform`) to improve build performance. No single replacement; use targeted APIs in the `androidComponents {}` block, all available by AGP 7.2: the Instrumentation API for bytecode transforms, the Artifacts API with `MultipleArtifact.ALL_CLASSES_DIRS` to add generated classes, and `Artifacts.forScope` (AGP 7.4) for whole-program transformations (`ScopedArtifacts.Scope.PROJECT` or `ALL`). Whole-program transforms cost much more build time; make them opt-in per build type.
 - AGP 7.2: RenderScript APIs deprecated (still function with warnings, to be removed in future versions).
+- Source snippet uses Java `.class` and `InstrumentationScope.Project`; corrected to Kotlin (`::class.java`, `InstrumentationScope.PROJECT`).
 - Source: https://developer.android.com/build/releases/gradle-plugin-api-updates (fetched 2026-10).
 
 ## Related

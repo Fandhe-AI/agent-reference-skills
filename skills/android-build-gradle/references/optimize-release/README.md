@@ -2,9 +2,9 @@
 
 | Name | Description | Path |
 |------|-------------|------|
+| APK Splits (`splits { }`) | Configures Gradle to build multiple per-ABI (or per-density) APKs, each containing only the resources for that configuration; superseded by the App Bundle for Play Store distribution. | [apk-splits.md](./apk-splits.md) |
 | Android App Bundle | The Android App Bundle (`.aab`) is Google Play's publishing format: Play generates optimized APKs per device from it. | [app-bundle.md](./app-bundle.md) |
 | App Signing | Every release APK/AAB must be digitally signed; covers generating an upload keystore, wiring a `signingConfig` to a release variant, and Google Play App Signing. | [app-signing.md](./app-signing.md) |
-| APK Splits (`splits { }`) | Configures Gradle to build multiple per-ABI (or per-density) APKs, each containing only the resources for that configuration; superseded by the App Bundle for Play Store distribution. | [apk-splits.md](./apk-splits.md) |
 | Baseline Profiles | Baseline Profiles enable Profile Guided Optimization (PGO): ART ahead-of-time-compiles specified startup and navigation code paths at install time. | [baseline-profiles.md](./baseline-profiles.md) |
 | Build Variant-Specific Optimization | R8 shrinking/obfuscation settings (`isMinifyEnabled`, `isShrinkResources`, `proguardFiles`) are declared per build type, so each variant can carry different optimization levels. | [build-variant-optimization.md](./build-variant-optimization.md) |
 | App Bundle Configuration APKs (`bundle { }`) | Configures which device-configuration split APKs Google Play generates from the App Bundle (by language, screen density, and ABI). | [bundle-config.md](./bundle-config.md) |

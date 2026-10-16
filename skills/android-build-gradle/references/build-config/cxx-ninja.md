@@ -8,19 +8,20 @@ For projects not using CMake or ndk-build, AGP can integrate a custom C/C++ buil
 android {
   defaultConfig {
     externalNativeBuild {
-      experimentalProperties["ninja.abiFilters"] = [ "x86", "arm64-v8a" ]
+      experimentalProperties["ninja.abiFilters"] = listOf("x86", "arm64-v8a")
       experimentalProperties["ninja.path"] = "source-file-list.txt"
       experimentalProperties["ninja.configure"] = "configure-ninja"
-      experimentalProperties["ninja.arguments"] = [
-            "\${ndk.moduleMakeFile}",
-            "--variant=\${ndk.variantName}",
-            "--abi=Android-\${ndk.abi}",
-            "--configuration-dir=\${ndk.configurationDir}",
-            "--ndk-version=\${ndk.moduleNdkVersion}",
-            "--min-sdk-version=\${ndk.minSdkVersion}"
-       ]
-     }
-   }
+      experimentalProperties["ninja.arguments"] = listOf(
+        "\${ndk.moduleMakeFile}",
+        "--variant=\${ndk.variantName}",
+        "--abi=Android-\${ndk.abi}",
+        "--configuration-dir=\${ndk.configurationDir}",
+        "--ndk-version=\${ndk.moduleNdkVersion}",
+        "--min-sdk-version=\${ndk.minSdkVersion}"
+      )
+    }
+  }
+}
 ```
 
 Minimal `build.ninja` template written by the configure script:
@@ -62,6 +63,8 @@ build lib.so : LINK source.o
 - Best practice: name outputs with `phony` rules (`build curl: phony /path/to/lib.so`) so they can be used in `ninja.targets`; declare an `all` phony target as the default set of libraries built when no targets are specified.
 - To wrap a non-Ninja build system (e.g. MSBuild), add a Ninja output with the `.passthrough` extension (e.g. `build curl.passthrough : MBSUILD_CURL`) defining how AGP invokes the underlying build.
 - Not the same as the built-in CMake / ndk-build integration (`externalNativeBuild { cmake { } }`).
+- Source snippet uses Groovy-style `[ ]` lists and is missing a closing brace; adapted to valid Kotlin DSL (`listOf(...)`).
+- Source: `developer.android.com/build/cxx-ninja` (local copy fetched 2026-10).
 
 ## Related
 

@@ -64,6 +64,7 @@ android.settings.executionProfile=example-profile
 
 - Profiles are declared in `settings.gradle` (settings plugin), not in a module `build.gradle`.
 - Kotlin DSL declares profiles with `create("name")`; Groovy DSL uses `register("name")`.
+- Source: `developer.android.com/build/r8-execution-profiles` (local copy fetched 2026-10).
 
 ## Related
 

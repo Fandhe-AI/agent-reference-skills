@@ -44,9 +44,11 @@ dependencies {
 - Upgrading one dependency can cascade to many others through transitive dependencies.
 - Semantic versioning (`major.minor.patch`): `major` changes may break API or behavior; `minor` / `patch` should stay compatible. Experimental or opt-in APIs may change even in minor or patch releases.
 - Annotated source (e.g. `@Composable`) needs processing by a compiler plugin, a Kotlin Symbol Processor (KSP), or other annotation-processing tools. Jetpack Room ships a KSP; Jetpack Compose requires the Compose compiler plugin.
-- The effective `minSdk` of your app is the highest `minSdk` requested by your app and all its direct and transitive library dependencies; libraries may also require a minimum `compileSdk`.
+- A library may declare a minimum `minSdk` / `compileSdk`. If the app's `minSdk` is lower than a library requires, manifest merger fails the build; raise the app's `minSdk` explicitly, use a compatible library version, or (with care) override via `tools:overrideLibrary`.
+- The source page states the app `minSdk` is effectively the highest `minSdk` requested by the app and all its library dependencies; in practice manifest merger reports an error instead of raising it automatically.
 - Gradle scopes (called configurations in the Gradle API) separate dependency sets for different parts of the build, e.g. test libraries such as JUnit only for unit tests. AGP defines `implementation` and `api` to control whether a dependency is exposed to users of your subproject.
 - The source page also provides Groovy equivalents of the snippets.
+- Source: `developer.android.com/build/tool-and-library-dependencies` (local copy fetched 2026-10).
 
 ## Related
 

@@ -60,6 +60,7 @@ app/
 - Use a declarative approach: build logic and task definitions should appear only in plugins, so build files are data declarations. Future versions may include an alternative specification such as Declarative Gradle, which will prevent build logic in the files.
 - Best practices evolve; these descriptions may not match a project you inherited or downloaded.
 - Android is a Kotlin-first platform: Java is supported, but new APIs target Kotlin. Kotlin is recommended for all new code and major updates.
+- Source: `developer.android.com/build/android-build-structure` (local copy fetched 2026-10).
 
 ## Related
 

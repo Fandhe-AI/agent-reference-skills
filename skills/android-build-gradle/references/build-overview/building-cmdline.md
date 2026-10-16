@@ -45,8 +45,8 @@ Module ZIP layout (e.g. `base.zip`):
 
 ## Notes
 
-- The wrapper is `gradlew.bat` (Windows) / `gradlew.sh` (Linux, Mac), at the root of each project created with Android Studio.
-- **Build types**: every app has `debug` and `release`. Output must be signed before deployment. Debug is auto-signed with an SDK-provided debug key (insecure; cannot publish to Google Play); release must be signed with your own private key. A custom build type can be signed as debug with `debuggable true`.
+- The wrapper is `gradlew.bat` (Windows) / `gradlew` (Linux, Mac), at the root of each project created with Android Studio (the source page calls the latter `gradlew.sh`).
+- **Build types**: every app has `debug` and `release`. Output must be signed before deployment. Debug is auto-signed with an SDK-provided debug key (insecure; cannot publish to Google Play); release must be signed with your own private key. A custom build type can be debug-signed by assigning `signingConfig = signingConfigs.getByName("debug")` (or `initWith(getByName("debug"))`); `isDebuggable = true` only marks the app debuggable and does not assign a signing config. The source page says including `debuggable true` makes it signed as a debug build.
 - **Task names**: "Debug" in `assembleDebug` / `installDebug` is the camel-case build variant name; e.g. with a `demo` flavor use `assembleDemoDebug`. Run `tasks` to see all build/install/uninstall tasks per variant. The debug APK is signed with the debug key and aligned with `zipalign`.
 - **Emulator**: create an AVD in Android Studio, start it with `emulator -avd avd_name` (`emulator -list-avds` lists names), then install via a Gradle install task or `adb install path/to/your_app.apk`. For an APK built with a developer preview SDK (`targetSdkVersion` is a letter), add `-t` to `install`.
 - **Physical device**: enable USB debugging (Settings > Developer options; on Android 4.2+ tap Build number seven times in About phone to reveal it), then `adb -d install path/to/your_app.apk`.
@@ -95,6 +95,7 @@ android {
 ```
 
 - Passwords in the build file are visible in plain text; for improved security remove signing information from the build file (the official page's own caveat). With a release signing config, `installRelease` builds, aligns, signs, and installs the release APK.
+- Source: `developer.android.com/build/building-cmdline` (local copy fetched 2026-10).
 
 ## Related
 
