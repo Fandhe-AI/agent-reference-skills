@@ -25,7 +25,7 @@ m_fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 | ID3D12Device::CreateCommandList | method | Creates a direct command list or bundle; takes `D3D12_COMMAND_LIST_TYPE`, an `ID3D12CommandAllocator` of the same type, and an initial `ID3D12PipelineState` (NULL uses a default state). |
 | ID3D12Device4::CreateCommandList1 | method | Creates a closed command list directly, avoiding creating a list with an allocator and PSO and immediately closing it. |
 | D3D12_COMMAND_LIST_TYPE | enum | Direct command list, bundle, compute command list, or copy command list. |
-| ID3D12CommandAllocator::Reset | method | Reclaims allocator memory for reuse (size is not reduced). Fails if the GPU is still executing lists associated with it; not free-threaded. |
+| ID3D12CommandAllocator::Reset | method | Reclaims allocator memory for reuse (size is not reduced). Before calling it, the app must make sure the GPU is no longer executing any command lists associated with the allocator (e.g. wait on an `ID3D12Fence`); otherwise the call will fail. Not free-threaded. |
 | ID3D12GraphicsCommandList::Reset | method | Returns a list to the recording state; may be called while the list is still executing. |
 | ID3D12GraphicsCommandList::Close | method | Leaves the recording state; deferred command list errors surface here. |
 | ID3D12CommandQueue::ExecuteCommandLists | method | Submits recorded direct/compute/copy command lists; may be called from multiple threads (runtime serializes in submission order). |

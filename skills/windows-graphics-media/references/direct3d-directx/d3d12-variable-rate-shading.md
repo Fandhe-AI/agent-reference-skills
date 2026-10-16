@@ -5,7 +5,7 @@ Variable-rate shading (coarse pixel shading) lets a group of pixels be shaded as
 ## Signature / Usage
 
 ```cpp
-// Query Tier 1 capability.
+// Query Tier 1 capability (source sample; exact match).
 D3D12_FEATURE_DATA_D3D12_OPTIONS6 options;
 return
     SUCCEEDED(m_device->CheckFeatureSupport(
@@ -40,7 +40,9 @@ m_commandList->RSSetShadingRateImage(screenSpaceImage);
 
 ## Notes
 
-- Tier 1: per-draw rate only, uniform within the render target. Tier 2: per-draw plus per-provoking-vertex (`SV_ShadingRate`) plus screen-space image combined via combiners; image tile size is 16x16 or smaller; requested rate guaranteed delivered; `SV_ShadingRate` PS input supported.
+- Tier 1: per-draw rate only, uniform within the render target. Tier 2: per-draw plus per-provoking-vertex (`SV_ShadingRate`) plus screen-space image combined via combiners; requested rate guaranteed delivered; `SV_ShadingRate` PS input supported.
+- The source's capability sample compares `ShadingRateTier == D3D12_VARIABLE_SHADING_RATE_TIER_1`; Tier 2 also supports the Tier 1 (per-draw) features, so to test for at-least-Tier-1 support use `>= D3D12_VARIABLE_SHADING_RATE_TIER_1`, and gate the screen-space image / `SV_ShadingRate` features on `>= D3D12_VARIABLE_SHADING_RATE_TIER_2`.
+- The source's Tier 2 summary says the image tile size is 16x16 or smaller, but its `ShadingRateImageTileSize` description also lists 32; always size the image and compute tile coordinates from the queried `D3D12_FEATURE_DATA_D3D12_OPTIONS6::ShadingRateImageTileSize`.
 - Screen-space image: `DXGI_FORMAT_R8_UINT`, TEXTURE2D, one mip, no array, sample count 1/quality 0, layout UNKNOWN, no cross-adapter, heap not UPLOAD/READBACK. Allowed flags: NONE, ALLOW_UNORDERED_ACCESS, DENY_SHADER_RESOURCE. Dimensions: `{ ceil(rtWidth / VRSTileSize), ceil(rtHeight / VRSTileSize) }`; reading beyond extents yields 1x1. A resource set as shading rate source cannot be read/written by any shader stage.
 - Defaults: all sources 1x1. `ClearState` resets the pipeline-state rate and the image selection.
 - A PS using `SV_ShadingRate` fails to compile if it also uses sample-based execution (`SV_SampleIndex`, sample interpolation). Depth, stencil, and coverage are always computed at full sample resolution.

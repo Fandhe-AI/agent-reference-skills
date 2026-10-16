@@ -10,7 +10,7 @@ void render_passes(::ID3D12GraphicsCommandList4 * pIGCL4,
     D3D12_CPU_DESCRIPTOR_HANDLE const& dsvCPUDescriptorHandle)
 {
     const float clearColor4[]{ 0.f, 0.f, 0.f, 0.f };
-    CD3DX12_CLEAR_VALUE clearValue{ DXGI_FORMAT_R32G32B32_FLOAT, clearColor4 };
+    CD3DX12_CLEAR_VALUE clearValue{ DXGI_FORMAT_R32G32B32_FLOAT, clearColor4 }; // format must match the bound RTV's format
 
     D3D12_RENDER_PASS_BEGINNING_ACCESS renderPassBeginningAccessClear{ D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_CLEAR, { clearValue } };
     D3D12_RENDER_PASS_ENDING_ACCESS renderPassEndingAccessPreserve{ D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_PRESERVE, {} };
@@ -43,6 +43,7 @@ void render_passes(::ID3D12GraphicsCommandList4 * pIGCL4,
 
 ## Notes
 
+- The clear value's format must match the format of the RTV bound in `D3D12_RENDER_PASS_RENDER_TARGET_DESC`. The source sample uses `DXGI_FORMAT_R32G32B32_FLOAT` for illustration only; render-target support for that format is optional, so substitute the actual RTV format (e.g. `DXGI_FORMAT_R8G8B8A8_UNORM`).
 - Must bind at least one of RTV(s) or DSV. RTVs/DSV are not inherited into the pass and are in an undefined state after it; CPU descriptors are snapped at the `BeginRenderPass` call (like `OMSetRenderTargets`).
 - Render passes cannot be nested and cannot straddle command lists. Suspend/resume across command lists requires the lists to be executed in the same `ExecuteCommandLists` call.
 - A write inside a render pass is not valid to read until a subsequent render pass (exception: implicit reads for depth testing and blending). Non-conformant barriers include RENDER_TARGET / DEPTH_WRITE to a read state on currently-bound RTVs/DSVs, any aliasing barrier, and UAV barriers. Conformant examples: UNORDERED_ACCESS to INDIRECT_ARGUMENT, COPY_DEST to `*_SHADER_RESOURCE`. UAV bindings are inherited into and propagated out of render passes.

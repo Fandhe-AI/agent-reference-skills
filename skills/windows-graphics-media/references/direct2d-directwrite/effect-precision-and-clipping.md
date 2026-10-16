@@ -7,7 +7,7 @@ Direct2D may render parts of an effect graph through intermediate Direct3D textu
 Set the precision of all intermediates through the rendering controls:
 
 ```cpp
-if (Device->IsBufferPrecisionSupported(D2D1_BUFFER_PRECISION_32BPC_FLOAT))
+if (Context->IsBufferPrecisionSupported(D2D1_BUFFER_PRECISION_32BPC_FLOAT))
 {
   D2D1_RENDERING_CONTROLS renderingControls = {};
   Context->GetRenderingControls(&renderingControls);
@@ -20,7 +20,7 @@ if (Device->IsBufferPrecisionSupported(D2D1_BUFFER_PRECISION_32BPC_FLOAT))
 Set minimum precision on a single effect:
 
 ```cpp
-if (Device->IsBufferPrecisionSupported(D2D1_BUFFER_PRECISION_32BPC_FLOAT))
+if (Context->IsBufferPrecisionSupported(D2D1_BUFFER_PRECISION_32BPC_FLOAT))
 {
   hr = Effect->SetValue(D2D1_PROPERTY_PRECISION, D2D1_BUFFER_PRECISION_32BPC_FLOAT);
 }
@@ -58,6 +58,7 @@ Other built-in effects that may output colors beyond [0, 1] in unpremultiplied s
 - Check support with `ID2D1DeviceContext::IsBufferPrecisionSupported` before using high precision. Using a WARP Direct3D device guarantees all buffer precisions regardless of the GPU; recommended e.g. when applying effects to a photo while saving, and on feature level 9.X GPUs.
 - Requested precision is a minimum; Direct2D may use higher, and when sharing intermediates it uses the maximum precision requested.
 - The source prose says the effect-implementation call is `ID2D1RenderInfo::SetOutputPrecision`, while its code sample calls `RenderInfo->SetOutputBuffer(precision, channelDepth)`; the sample code is reproduced above.
+- The source sample calls this on a variable named `Device`; the method exists only on `ID2D1DeviceContext` (and `ID2D1EffectContext`), not on `ID2D1Device`, so the sample above uses the device context.
 - Source: https://learn.microsoft.com/en-us/windows/win32/direct2d/precision-and-clipping-in-effect-graphs (commit `ca8274d`).
 
 ## Related
