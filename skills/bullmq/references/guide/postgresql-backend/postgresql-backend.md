@@ -240,12 +240,13 @@ The figures below are a rough illustration measured on an Apple Silicon laptop (
 
 - Keep the database close: co-locate PostgreSQL and workers (same host / AZ) to minimize round-trip latency.
 - Size the pool (`max`) and the server's `max_connections` for your concurrency, covering all workers, queues and queue-events plus their dedicated `LISTEN` connections.
-- Consider `synchronous_commit = off` (or `local`) if your durability requirements allow it; it removes the per-commit `fsync` wait and can improve processing throughput, at the cost of possibly losing the most recent commits on a crash.
+- Consider `synchronous_commit = off` if your durability requirements allow it; it removes the per-commit WAL flush (`fsync`) wait and can improve processing throughput, at the cost of possibly losing the most recent commits on a crash (no data corruption). `synchronous_commit = local` still waits for the local WAL flush and only skips waiting for synchronous standbys, so it only helps when synchronous replication is configured, and it weakens failover guarantees.
 - Use `removeOnComplete` / `removeOnFail` so finished jobs don't accumulate; large tables mean more index maintenance and vacuum work.
 
 ## Notes
 
 - Figures in "Indicative numbers" come from the official BullMQ v6.3.15 docs ([docs/gitbook/guide/postgresql.md @ v6.3.15](https://github.com/taskforcesh/bullmq/blob/v6.3.15/docs/gitbook/guide/postgresql.md)).
+- The official v6.3.15 guide groups `off` and `local` together as removing the per-commit fsync wait; per the PostgreSQL docs, only `off` skips the local WAL flush, while `local` skips only the synchronous-standby wait ([synchronous_commit](https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT)).
 - Migration (v6.0 → v6.1): automatic migrations on first connect were removed; call `runMigrations` explicitly from a deployment step (see Migrations)
 - The backend implements the full datastore-agnostic API (queues, workers, flows, job schedulers, rate limiting, prioritization, delayed jobs, deduplication, metrics and events), so application code is identical across backends. Redis-specific concerns (Redis Cluster, `maxmemory-policy`, etc.) don't apply; the relevant knob on PostgreSQL is `max_connections`.
 - `getBackend()` always returns the currently configured backend. Redis-only escape hatches (raw Redis `client`, `redisVersion`, and similar) exist only when the backend is Redis.
