@@ -15,7 +15,7 @@ DescRange[3].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV,-1,8, 0,
 DescRange[4].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV,-1,0,1,
                   D3D12_DESCRIPTOR_RANGE_FLAG_DESCRIPTORS_VOLATILE);
                                                             // (t0,space1)-unbounded
-DescRange[5].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV,1,1,
+DescRange[5].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV,1,1, 0,
                   D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC); // b1
 
 CD3DX12_ROOT_PARAMETER1 RP[7];
@@ -68,7 +68,7 @@ CheckHR(pDevice->CreateRootSignature(
 - Order root parameters from most frequently changing to least; changing bindings may make the driver copy some or all root signature state. Keep the root signature as small as needed; use heaps/descriptor heaps for bulk data.
 - Contents of the bound root signature are automatically versioned by the driver between draw/dispatch calls.
 - Namespace: Win32 COM (`d3d12.h`).
-- The official sample uses shorthand identifiers (D3D12_DESCRIPTOR_RANGE_SRV, CD3DX12_STATIC_SAMPLER, 2-argument serialize, CreateRootSignature without nodeMask); the snippet above uses the actual d3d12.h / d3dx12.h signatures.
+- The official sample uses shorthand identifiers (D3D12_DESCRIPTOR_RANGE_SRV, CD3DX12_STATIC_SAMPLER, 2-argument serialize, CreateRootSignature without nodeMask, DescRange[5] passing the flag as the 4th (RegisterSpace) argument); the snippet above uses the actual d3d12.h / d3dx12.h signatures.
 - Source: https://learn.microsoft.com/en-us/windows/win32/direct3d12/root-signatures-overview and https://learn.microsoft.com/en-us/windows/win32/direct3d12/creating-a-root-signature (learn.microsoft.com win32 docs at commit `ca8274d`).
 
 ## Related
