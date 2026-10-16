@@ -52,7 +52,7 @@ Register only for the specific event types the service needs, filtering on path:
 | `com.google.android.gms.wearable.DATA_CHANGED` | `onDataChanged` | `android:scheme="wear" android:host="*" android:path="<data item path>"` |
 | `com.google.android.gms.wearable.MESSAGE_RECEIVED` | `onMessageReceived` | `android:scheme="wear" android:host="*" android:path="<message path>"` |
 | `com.google.android.gms.wearable.CAPABILITY_CHANGED` | `onCapabilityChanged` | `android:scheme="wear" android:host="*" android:path="/<capability name>"` |
-| `com.google.android.gms.wearable.NODE_MIGRATED` | `onNodeMigrated(nodeId: String, archive: DataItemBuffer)` | none in the transfer-to-new-mobile manifest example |
+| `com.google.android.gms.wearable.NODE_MIGRATED` | `onNodeMigrated(nodeId: String, archive: DataItemBuffer)` | `android:scheme="wear" android:host="*"` (no path; per the transfer-to-new-mobile manifest example) |
 | `com.google.android.gms.wearable.CHANNEL_EVENT` (`ChannelClient.ACTION_CHANNEL_EVENT`) | `ChannelClient.ChannelCallback` events such as `onChannelOpened` | see the GMS `WearableListenerService` / `ChannelClient` reference |
 
 ## Notes
