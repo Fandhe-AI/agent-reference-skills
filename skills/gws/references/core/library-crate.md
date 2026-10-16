@@ -35,7 +35,7 @@ async fn main() -> anyhow::Result<()> {
 
 - Dynamic Discovery: the library fetches Google's Discovery Documents at runtime rather than relying on generated client crates. When Google adds or updates an API endpoint, your code picks it up automatically.
 - Licensed under Apache-2.0.
-- Source: `crates/google-workspace/README.md` at tag v0.22.5.
+- Source: https://github.com/googleworkspace/cli/blob/v0.22.5/crates/google-workspace/README.md
 
 ## Related
 
