@@ -26,9 +26,11 @@ for await notification in NotificationCenter.default.notifications(named: .myEve
 }
 
 // Concurrency-safe message API (iOS 26.0+)
-// Store `token` in a property for as long as you intend to observe.
-token = NotificationCenter.default.addObserver(of: TimeZone.self,
-                                               for: .systemTimeZoneDidChange)
+// Store the returned NotificationCenter.ObservationToken (distinct from the
+// NSObjectProtocol token above) in a property for as long as you intend to observe.
+let timeZoneToken: NotificationCenter.ObservationToken = NotificationCenter.default.addObserver(
+    of: TimeZone.self,
+    for: .systemTimeZoneDidChange)
 { message in
     let identifier = message.previousTimeZone?.identifier ?? "(unknown)"
     print("Time zone changed from \(identifier).")

@@ -6,7 +6,7 @@ Use persistent history tracking to determine what changes have occurred in the s
 
 ```swift
 // Pass the data model filename to the container’s initializer.
-let container = PersistentContainer(name: "DataModel")
+let container = NSPersistentContainer(name: "DataModel")
 
 // Get the persistent store description.
 let description = container.persistentStoreDescriptions.first
@@ -18,6 +18,9 @@ description?.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
 description?.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
 
 // Fetch history since the last token, then purge old history.
+// lastToken: a previously saved NSPersistentHistoryToken (nil on first run).
+let lastToken: NSPersistentHistoryToken? = nil
+let sevenDaysAgo = Date(timeIntervalSinceNow: -7 * 24 * 60 * 60)
 let fetchHistoryRequest = NSPersistentHistoryChangeRequest.fetchHistory(after: lastToken)
 let purgeHistoryRequest = NSPersistentHistoryChangeRequest.deleteHistory(before: sevenDaysAgo)
 ```
@@ -25,6 +28,9 @@ let purgeHistoryRequest = NSPersistentHistoryChangeRequest.deleteHistory(before:
 Merge relevant transactions into the view context (from the source article):
 
 ```swift
+// persistentContainer: your NSPersistentContainer (a property of the enclosing type).
+// filteredTransactions: [NSPersistentHistoryTransaction] from a history fetch,
+// filtered to the entities relevant to the current view.
 if filteredTransactions.isEmpty == false {
     // Iterate over filtered transactions and merge the changes in the
     // object ID notification that you specify.
@@ -82,6 +88,7 @@ if filteredTransactions.isEmpty == false {
 
 ## Notes
 
+- The source article uses a sample-specific `PersistentContainer` subclass; `NSPersistentContainer` is used here.
 - Availability (source JSON, all five types): iOS 11.0+, iPadOS 11.0+, Mac Catalyst 13.1+, macOS 10.13+, tvOS 11.0+, visionOS 1.0+, watchOS 4.0+.
 - Persistent history keeps track of every transaction on the store. It solves the case where a batch operation save does not generate a context-save notification, and the case where a background context saves changes that do not affect the current view.
 - Each history transaction automatically includes the originating context name, process, and bundle. Give each context a unique `name` (it becomes the transaction's `contextName`), and optionally set `transactionAuthor` before a save (it becomes the transaction's `author`). Reset `transactionAuthor` to `nil` after saving to prevent misattribution of future transactions.
