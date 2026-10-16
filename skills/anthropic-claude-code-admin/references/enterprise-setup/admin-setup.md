@@ -27,7 +27,7 @@ Server-managed settings (claude.ai admin console) > plist/registry policy > File
 | File-based managed | `managed-settings.json` at OS-specific paths | Medium | All |
 | Windows user registry | `HKCU\SOFTWARE\Policies\ClaudeCode` | Lowest | Windows only |
 
-## Decide what to enforce
+### Decide what to enforce
 
 Each row is a control surface with the setting keys that drive it.
 

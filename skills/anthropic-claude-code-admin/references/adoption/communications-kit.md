@@ -112,7 +112,7 @@ Prompt templates (replace bracketed pieces with files from your repo):
 - Treat everything on the page as draft copy: rewrite in your organization's voice, swap example tasks for real bugs and modules from your codebase, and replace `[bracketed placeholders]` before sending.
 - Permission modes tip describes Shift+Tab cycling: Manual (the `default` setting value), acceptEdits, and plan.
 - Model names and fallback behavior are transcribed as written on the page (retrieved 2026-10-16); the page itself advises verifying version-specific details against the documentation home page before distributing internally.
-- The official copy of the announcement email runs the installer by piping the downloaded script straight into the shell. This page changes that line to a download, inspect, then run sequence (`curl -fsSL https://claude.ai/install.sh -o install.sh`, review it, then `bash install.sh`). Before distributing, test it in your environment, or use your internal distribution channel. See the install page of the anthropic-claude-code skill.
+- The official announcement email installs in one line by piping `curl -fsSL https://claude.ai/install.sh` straight into `bash`; this page's sample replaces that line with a download, inspect, then run sequence (`curl -fsSL https://claude.ai/install.sh -o install.sh`, review it, then `bash install.sh`). Before distributing, test it in your environment, or use your internal distribution channel. See the install page of the anthropic-claude-code skill.
 - This page targets administrators and engineering leads; the individual-engineer counterpart is the champion-kit page.
 
 ## Related

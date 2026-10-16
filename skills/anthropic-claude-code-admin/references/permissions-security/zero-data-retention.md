@@ -25,6 +25,7 @@ Admin capabilities available with ZDR on Claude for Enterprise: per-user cost co
 
 ## Notes
 
+- The official page contains no code examples (ZDR is an account-level enablement, not a configuration snippet); none are added here.
 - ZDR is enabled per-organization; it does not automatically extend to new organizations under the same account.
 - Route traffic to the ZDR org with `forceLoginMethod`/`forceLoginOrgUUID` managed settings — sessions signed in with a personal account or a different org's API key aren't covered.
 - Claude Fable 5.1 and Fable 5 are Covered Models that require data retention by default; whether a ZDR organization or workspace can use them is governed by the Covered Models policies, not by Claude Code. Where unavailable they are absent from or disabled in the `/model` picker and the server rejects requests. Other models remain available; the `best` alias falls back to Opus for organizations where Fable isn't available.

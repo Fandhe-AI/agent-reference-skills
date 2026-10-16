@@ -35,7 +35,7 @@ exec "$@"
 | `CLAUDE_CODE_PROCESS_WRAPPER` | env var | Absolute path to launcher; takes precedence over `processWrapper` setting. Requires v2.1.208+ |
 | `processWrapper` | setting | Same value as a named top-level setting. Requires v2.1.210+ |
 
-## What the launcher covers
+### What the launcher covers
 
 - The background service that `claude agents` and background sessions start on demand.
 - The terminal host and the session inside every agent view row, including warm standby sessions the service keeps ready.

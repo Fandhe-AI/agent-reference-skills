@@ -10,6 +10,10 @@ Choose a platform: CLI (`quickstart`), Desktop, VS Code, JetBrains, Web (`claude
 
 Connect tools: Chrome, GitHub Actions, GitLab CI/CD, Code Review, Slack, Claude Tag, or MCP servers/connectors for anything else.
 
+```bash
+claude remote-control
+```
+
 ## Options / Props
 
 | Platform | Best for | What you get |

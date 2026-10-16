@@ -26,6 +26,7 @@ Claude Code's overall security safeguards and best practices.
 
 ## Notes
 
+- The official page contains no code examples; none are added here.
 - Windows: avoid enabling WebDAV or `\\*` paths — deprecated by Microsoft and a known bypass vector for the permission system.
 - MCP servers are configured in checked-in settings; Anthropic reviews connectors against listing criteria for its Directory but does not security-audit third-party MCP servers.
 - Cloud sessions add: isolated Anthropic-managed per-session VMs, network access controls (limited by default; can be disabled or restricted to specific domains), credential protection (GitHub credentials stored encrypted on Anthropic's servers and never enter the VM; the VM holds a short-lived credential scoped to the session, and GitHub traffic goes through an Anthropic proxy that attaches the credential server-side), push restrictions (the proxy rejects branch deletions and pushes of anything other than a branch, such as a tag; GitHub applies your repository's branch protection rules and rulesets to the connected access, and a rule that access can bypass doesn't block a session's push), audit logging, automatic VM cleanup after inactivity, and session deletion at any time.

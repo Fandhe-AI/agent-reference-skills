@@ -40,14 +40,14 @@ Configure Claude Code for monorepos and large single-tree codebases with nested 
 | Give area-specific procedures loaded on demand | Per-directory `.claude/skills/` |
 | Replace per-directory CLAUDE.md at scale | A plugin in an internal marketplace |
 
-## Choose where to start Claude
+### Choose where to start Claude
 
 | Start from | File access | CLAUDE.md loaded at launch | Use when |
 | --- | --- | --- | --- |
 | Repository root | Every file | Root only; subdirectory files load on demand | Tasks span multiple packages or subsystems |
 | A subdirectory | That subtree only, until you grant more | That directory's plus every ancestor's | Work is scoped to one package or subsystem |
 
-## Per-directory CLAUDE.md vs path-scoped rules
+### Per-directory CLAUDE.md vs path-scoped rules
 
 | Approach | File location | Loads when | Use when |
 | --- | --- | --- | --- |

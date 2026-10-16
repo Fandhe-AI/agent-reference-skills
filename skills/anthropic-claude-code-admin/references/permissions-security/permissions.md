@@ -17,7 +17,7 @@ Fine-grained permission rules, modes, and managed policies that control what Cla
 }
 ```
 
-## Permission system
+### Permission system
 
 | Tool type | Example | Approval required | "Yes, don't ask again" behavior |
 |---|---|---|---|
@@ -30,7 +30,7 @@ Fine-grained permission rules, modes, and managed policies that control what Cla
 - "Yes, don't ask again" for a Bash command or a WebFetch domain saves the rule to `.claude/settings.local.json` at the git repository root (resolved through worktrees); outside a repo it saves to the starting directory.
 - The prompt can also offer "Yes, and switch to auto mode" (not on every prompt).
 
-## Manage permissions
+### Manage permissions
 
 - View/manage with `/permissions`. **Allow** rules skip approval, **Ask** rules always prompt, **Deny** rules block.
 - Evaluation order: deny → ask → allow. First match wins regardless of specificity, so a broad deny (`Bash(aws *)`) blocks even narrower allow matches.

@@ -51,7 +51,7 @@ Allowlist/denylist (policy-based control, in any managed settings source):
 }
 ```
 
-## Choose a pattern
+### Choose a pattern
 
 | Pattern | What it does | Configure |
 | --- | --- | --- |
@@ -79,7 +79,7 @@ Allowlist/denylist (policy-based control, in any managed settings source):
 
 ## Notes
 
-- Deploying `managed-mcp.json` with an empty `{"mcpServers": {}}` disables MCP entirely; users see no servers in `/mcp` and `claude mcp add` fails with an enterprise-policy error.
+- Deploying `managed-mcp.json` with an empty `{"mcpServers": {}}` blocks every MCP server except those that load under exclusive control; `claude mcp add` fails with the enterprise-policy error. Servers provided through `managedMcpServers` and anything else allowed alongside the managed set (e.g. `allowAllClaudeAiMcps`, `allowClaudeInChromeWithManagedMcp`, host-registered in-process servers) still load under an empty map, so leave those keys unset to turn MCP off completely.
 - `managed-mcp.json` is a standalone file and cannot be delivered through server-managed settings — deploy it via MDM/GPO/fleet management or any process with administrator write access to the system path.
 - `managedMcpServers` entry constraints: `type` is `http` or `sse` only (`streamable-http` accepted as an alias for `http`); `url` must be `https://` (plain `http://`, even localhost, is refused); no `command`, `args`, `env`, or `headersHelper` member; no `${VAR}` references (no expansion); server name only letters, numbers, hyphens, underscores, and no control/invisible formatting characters. Entries failing a check are dropped with a notice in `/status`, others still load. Claude Desktop has a same-named managed setting with an array shape, which Claude Code doesn't accept. Header values are readable by anyone who can read the managed settings, so use a credential issued for the whole audience or let each user sign in with OAuth.
 - Provided servers: take precedence over same-named servers in local/project/user scope and over a plugin server or claude.ai connector at the same URL; load together with `managed-mcp.json` (file entry wins on a name clash); keep loading under `strictPluginOnlyCustomization` locking `mcp`; need no `allowedMcpServers` entry; `deniedMcpServers` applies (including a user's own); users can't edit or remove them (`claude mcp remove` reports they are provided by the organization) but can turn them off in `/mcp` (listed under Managed MCPs). `/mcp` and `claude mcp get` show only the host of the URL and header names without values.
