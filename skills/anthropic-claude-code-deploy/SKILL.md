@@ -2,10 +2,14 @@
 name: anthropic-claude-code-deploy
 description: >
   Claude Code (code.claude.com) デプロイ・CI/CD リファレンス。
-  Amazon Bedrock / Vertex AI / Microsoft Foundry / Claude Platform on AWS、
-  Claude apps gateway、LLM gateway、GitHub Actions (claude-code-action) / GitLab CI/CD / GHES、
-  Code Review (REVIEW.md, @claude review)、/code-review、ultrareview、Slack、
-  headless、cloud environments、devcontainer、self-hosted environments。
+  Amazon Bedrock / Google Cloud Agent Platform (Vertex AI) / Microsoft Foundry / Claude Platform on AWS、
+  Claude apps gateway、LLM gateway (protocol / rollout)、
+  GitHub Actions (claude-code-action) / GitLab CI/CD / GitHub Enterprise Server (GHES)、
+  Code Review (REVIEW.md・review level・@claude review always・コスト・トラブルシュート)、
+  ローカル /code-review、ultrareview (claude ultrareview)、
+  Slack (Claude Tag、旧 Claude Code in Slack、Pro/Max)、
+  headless mode、cloud environments、devcontainer、
+  self-hosted environments（runner 構成・identity 検証・本番デプロイ）。
 user-invocable: false
 ---
 
