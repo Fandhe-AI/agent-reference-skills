@@ -58,7 +58,7 @@ inkCanvas.InkPresenter.InputDeviceTypes =
 
 ## Notes
 
-- **Experimental only.** `InkCanvas`, `InkToolbar`, and `InkPresenter` are in `Microsoft.UI.Xaml.Controls` (not the UWP `Windows.UI.Xaml.Controls` namespace). Inking support was added in Windows App SDK 2.4.1-experimental (`InkCanvas` has existed since 2.0 Experimental 1); the current docs describe 2.5.4-experimental. They are not in the stable channel, where XAML use gives `WMC0001 Unknown type`. They might change or be removed; don't use them in production.
+- **Experimental only.** `InkCanvas`, `InkToolbar`, and `InkPresenter` are in `Microsoft.UI.Xaml.Controls` (not the UWP `Windows.UI.Xaml.Controls` namespace). Inking support was added in Windows App SDK 2.4.1-experimental (`InkCanvas` has existed since 2.0 Experimental 1); the current docs describe 2.5.4-experimental. They are not in the stable channel, where XAML use gives `WMC0001 Unknown type`. They might change or be removed; don't use them in production. Sources: [Ink controls](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/ink-controls), [2.4.1-experimental release notes](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-notes/windows-app-sdk-2-0?pivots=experimental#version-24-experimental-241-experimental), [2.5.4-experimental release notes](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-notes/windows-app-sdk-2-0?pivots=experimental#version-25-experimental-254-experimental).
 - `InkCanvas` has no `Background` property. Wrap it in a `Border` and set size and background on the border. Default ink is black.
 - Mouse does not draw ink by default; add `CoreInputDeviceTypes.Mouse` to `InkPresenter.InputDeviceTypes`. `IsInputEnabled = false` stops collecting ink from every device.
 - Project setup: using the APIs gives warnings CS8305 (C#) and WMC1501 (XAML). Suppress them in the .csproj:
@@ -93,6 +93,8 @@ using InkStroke = Windows.UI.Input.Inking.InkStroke;
   - Button flyouts can appear empty, and changing `ButtonFlyoutPlacement` might not change where they open.
 
 ### Changes from 2.4.1-experimental
+
+Source: [Ink controls - Changes from 2.4.1-experimental](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/ink-controls#changes-from-241-experimental), [Windows App SDK 2.5.4-experimental release notes](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-notes/windows-app-sdk-2-0?pivots=experimental#version-25-experimental-254-experimental), [InkToolbar.TargetInkPresenter API](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.inktoolbar.targetinkpresenter?view=windows-app-sdk-2.0-experimental)
 
 | API in 2.4.1-experimental | Change in 2.5.4-experimental |
 | --- | --- |

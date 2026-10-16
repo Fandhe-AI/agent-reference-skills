@@ -42,7 +42,7 @@ Base classes for icons in `Microsoft.UI.Xaml.Controls`. Every icon type has two 
 - Only `SymbolIcon`/`Symbol` names can be set via shortened XAML attribute syntax (`Icon="Send"`); all other icon types require the longer property-element syntax shown above.
 - Bitmap-based icons (`BitmapIcon`, `ImageIcon`) are not recommended when a font, path, or animated alternative is available, since they can blur or pixelate when scaled.
 - Package: `Microsoft.UI.Xaml.Controls` (WinUI 3 / Windows App SDK).
-- Windows App SDK 2.3.1 (2026-07-16): `FontIcon` and `BitmapIcon` avoid inserting an extra `Grid` in their visual tree for apps that opt in with the `IconNoGridOptimization` XamlChangeId through the `XamlOptionalChanges` API (runtime compatibility change `Xaml_IconNoGridOptimization`). This matters to templates or code that walk the visual tree. `XamlOptionalChanges` itself is covered by the windows-winui-ui skill.
+- Windows App SDK 2.3.1 (2026-07-16): `FontIcon` and `BitmapIcon` avoid inserting an extra `Grid` in their visual tree for apps that opt in with the `IconNoGridOptimization` XamlChangeId through the `XamlOptionalChanges` API (runtime compatibility change `Xaml_IconNoGridOptimization`). This matters to templates or code that walk the visual tree. `XamlOptionalChanges` itself is covered by the windows-winui-ui skill. Source: [Windows App SDK 2.0 release notes - 2.3.1](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-notes/windows-app-sdk-2-0#version-231).
 
 ## Related
 

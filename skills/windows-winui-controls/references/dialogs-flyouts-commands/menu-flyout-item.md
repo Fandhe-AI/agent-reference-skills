@@ -45,7 +45,7 @@ private void ChangeColorItem_Click(object sender, RoutedEventArgs e) { /* ... */
 | CommandParameter | object | Parameter passed to `Command` |
 | KeyboardAcceleratorTextOverride | string | Overrides the displayed text for the item's keyboard accelerator |
 
-`SplitMenuFlyoutItem` (derives from `MenuFlyoutItem`; requires Windows App SDK 1.8.6 or later):
+`SplitMenuFlyoutItem` (derives from `MenuFlyoutItem`; requires Windows App SDK 1.8.6 or later; see [Menus - Add a split menu item](https://learn.microsoft.com/en-us/windows/apps/develop/ui/controls/menus#add-a-split-menu-item) and the [SplitMenuFlyoutItem API](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.splitmenuflyoutitem)):
 
 | Name | Type | Description |
 |------|------|-------------|
