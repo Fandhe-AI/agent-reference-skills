@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/go / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/go / last verified: 2026-10-17 -->
 
 # Go SDK
 
@@ -30,7 +30,7 @@ func main() {
 		Messages: []anthropic.MessageParam{
 			anthropic.NewUserMessage(anthropic.NewTextBlock("What is a quaternion?")),
 		},
-		Model: anthropic.ModelClaudeOpus5,
+		Model: anthropic.ModelClaudeOpus5_5,
 	})
 	if err != nil {
 		panic(err.Error())
@@ -46,11 +46,20 @@ func main() {
 Streaming:
 
 ```go
-stream := client.Messages.NewStreaming(context.TODO(), anthropic.MessageNewParams{...})
+stream := client.Messages.NewStreaming(context.TODO(), anthropic.MessageNewParams{
+	MaxTokens: 1024,
+	Messages: []anthropic.MessageParam{
+		anthropic.NewUserMessage(anthropic.NewTextBlock("What is a quaternion?")),
+	},
+	Model: anthropic.ModelClaudeOpus5_5,
+})
 message := anthropic.Message{}
 for stream.Next() {
 	event := stream.Current()
 	_ = message.Accumulate(event)
+}
+if err := stream.Err(); err != nil {
+	panic(err.Error())
 }
 ```
 
@@ -67,14 +76,14 @@ for stream.Next() {
 
 ## Notes
 
-- Go 1.23+ required (Go 1.24+ `omitzero` JSON semantics used for request fields). Required primitive fields serialize even as zero values; optional fields use `param.Opt[T]` (constructors like `anthropic.String(...)`, `anthropic.Int(...)`).
+- Go 1.24+ required (the `omitzero` JSON semantics from the Go 1.24+ `encoding/json` are used for request fields). `param.SetJSON` (re-attaching raw JSON bytes to params reconstructed via `UnmarshalJSON`) requires SDK v1.20.0 or later. Required primitive fields serialize even as zero values; optional fields use `param.Opt[T]` (constructors like `anthropic.String(...)`, `anthropic.Int(...)`).
 - Request unions use `Of`-prefixed struct fields (only one non-zero); response unions are flattened structs with `.AsAny()` / `.AsFooVariant()` to switch on the concrete type.
 - Response structs carry a `.JSON` metadata field; use `.Valid()` to distinguish present vs. absent/null values, and `.JSON.ExtraFields` for undocumented properties.
 - Errors surface as `*anthropic.Error` (has `StatusCode`, `RequestID`, `DumpRequest`/`DumpResponse`); use `errors.As` to unwrap.
 - Non-streaming Messages requests time out after 10 minutes by default via context; other requests have no default timeout. Context timeout does not restart on retry — use `option.WithRequestTimeout()` for per-retry limits.
 - Pagination via `.ListAutoPaging()` iterators or manual `.List()` + `.GetNextPage()`.
 - File uploads use `io.Reader`, typically wrapped with `anthropic.File(reader, filename, contentType)`.
-- Platform integrations: `vertex` (Google Cloud), `bedrock` (Mantle vs `bedrock-runtime`), `aws` (imported as `anthropicaws` to avoid collision, beta); Foundry is not currently supported.
+- Platform integrations: `vertex` (Google Cloud), `bedrock` (Mantle vs `bedrock-runtime`), `aws` (imported as `anthropicaws` to avoid collision, beta); Foundry: `import "github.com/anthropics/anthropic-sdk-go/foundry"`, build a client with `foundry.NewClient(cfg)` and a `foundry.ClientConfig` value (set `APIKey`, or `AzureADTokenProvider` for Microsoft Entra ID, and `Resource` on the config, or the `ANTHROPIC_FOUNDRY_API_KEY` and `ANTHROPIC_FOUNDRY_RESOURCE` environment variables).
 
 ## Related
 

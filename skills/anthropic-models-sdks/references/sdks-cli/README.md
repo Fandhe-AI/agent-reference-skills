@@ -1,18 +1,20 @@
 # SDKs & CLI
 
-Claude API の公式 SDK（Python / TypeScript / Java / Go / Ruby / C# / PHP）と Claude API 用 CLI。Claude Code CLI は anthropic-claude-code を参照。ライブラリ統合・ミドルウェア・OpenAI SDK 互換レイヤーも含む。
+Claude API の公式 SDK（Python / TypeScript / Java / Go / Ruby / C# / PHP）と Claude API 用 CLI（`ant`）。Claude Code CLI は anthropic-claude-code を参照。ライブラリ統合・ミドルウェア・OpenAI SDK 互換レイヤーも含む。
 
 | Name | Description | Path |
-|------|-------------|------|
-| CLI, SDKs, and libraries | Official tools for building with the Claude API: the `ant` CLI, client SDKs in seven languages, and framework-specific libraries. | [overview.md](./overview.md) |
+| --- | --- | --- |
 | Apple Foundation Models | Use Claude on Apple platforms through the Foundation Models framework with the Claude for Foundation Models Swift package. | [apple-foundation-models.md](./apple-foundation-models.md) |
+| Manage resources as code with ant apply | Declare agents, environments, skills, memory stores, deployments, and vaults as files and sync them with `ant apply`. | [cli-apply.md](./cli-apply.md) |
 | CLI authentication options | Authenticate the `ant` CLI with interactive login, API keys, named profiles, and Workload Identity Federation. | [cli-authentication.md](./cli-authentication.md) |
 | CLI quickstart | Install the `ant` command-line tool, authenticate, and send your first request to the Claude API. | [cli-quickstart.md](./cli-quickstart.md) |
-| CLI scripting and automation | Version-control API resources as YAML, chain `ant` CLI commands in scripts, operate on resources from Claude Code, and authenticate `curl` calls with CLI credentials. | [cli-scripting.md](./cli-scripting.md) |
+| CLI scripting and automation | Version-control API resources as files with `ant apply` and chain `ant` commands in scripts. | [cli-scripting.md](./cli-scripting.md) |
+| Connect to a Managed Agents session from your terminal | Attach the `ant` CLI to a Claude Managed Agents session to follow its transcript live. | [cli-sessions-connect.md](./cli-sessions-connect.md) |
 | Using the CLI | Command structure, output formats, GJSON transforms, request bodies, and debugging for the `ant` CLI. | [cli-using.md](./cli-using.md) |
-| SDK middleware | Intercept and modify requests and responses in the Anthropic SDKs. | [middleware.md](./middleware.md) |
-| OpenAI SDK compatibility | A compatibility layer that lets you use the OpenAI SDK to test the Claude API by changing the base URL, API key, and model name. | [openai-sdk-compat.md](./openai-sdk-compat.md) |
-| C# SDK | Install and configure the Anthropic C# SDK for .NET applications with `IChatClient` integration. | [sdk-csharp.md](./sdk-csharp.md) |
+| SDK middleware | Intercept and modify the SDK's requests and responses. | [middleware.md](./middleware.md) |
+| OpenAI SDK compatibility | A compatibility layer that lets you use the OpenAI SDK to test the Claude API. | [openai-sdk-compat.md](./openai-sdk-compat.md) |
+| CLI, SDKs, and libraries | Official tools for building with the Claude API: client SDKs in seven languages, the `ant` CLI, and framework-specific libraries. | [overview.md](./overview.md) |
+| C# SDK | Install and configure the Anthropic C# SDK for .NET applications with IChatClient integration. | [sdk-csharp.md](./sdk-csharp.md) |
 | Go SDK | Install and configure the Anthropic Go SDK with context-based cancellation and functional options. | [sdk-go.md](./sdk-go.md) |
 | Java SDK | Install and configure the Anthropic Java SDK with builder patterns and async support. | [sdk-java.md](./sdk-java.md) |
 | PHP SDK | Install and configure the Anthropic PHP SDK with value objects and builder patterns. | [sdk-php.md](./sdk-php.md) |

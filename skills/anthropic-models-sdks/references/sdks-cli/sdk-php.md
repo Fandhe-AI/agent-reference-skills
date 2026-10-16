@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/php / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/php / last verified: 2026-10-17 -->
 
 # PHP SDK
 
@@ -16,7 +16,7 @@ $client = new Client();
 $message = $client->messages->create(
   maxTokens: 1024,
   messages: [['role' => 'user', 'content' => 'Hello, Claude']],
-  model: 'claude-opus-5',
+  model: 'claude-opus-5-5',
 );
 
 $textBlock = array_find($message->content, static fn ($block): bool => $block->type === 'text');
@@ -29,7 +29,7 @@ Streaming:
 $stream = $client->messages->createStream(
   maxTokens: 1024,
   messages: [['role' => 'user', 'content' => 'Hello, Claude']],
-  model: 'claude-opus-5',
+  model: 'claude-opus-5-5',
 );
 
 foreach ($stream as $event) {
@@ -53,7 +53,7 @@ Error mapping: HTTP 400 `BadRequestException`, 401 `AuthenticationException`, 40
 - Uses PSR-18 for HTTP and auto-discovers any installed PSR-18 client; Guzzle is recommended because the SDK configures it for streaming with no additional setup. Without a streaming-capable client, `createStream()` yields all events at once instead of incrementally.
 - Uses named parameters for optional arguments; value objects are constructed via static `with()` (recommended) or `with...` builder methods.
 - Pagination: `$page->getItems()` for the current page, `$page->pagingEachItem()` to auto-fetch subsequent pages.
-- Platform integrations: `Anthropic\Vertex\Client`, `Anthropic\Bedrock\MantleClient` (new projects) / `Anthropic\Bedrock\Client` (legacy), `Anthropic\Aws\Client` (beta, needs `aws/aws-sdk-php`), `Anthropic\Foundry\Client`.
+- Platform integrations: `Anthropic\Vertex\Client`, `Anthropic\Bedrock\MantleClient` (new projects) / `Anthropic\Bedrock\Client` (legacy), `Anthropic\Aws\Client` (beta, needs `aws/aws-sdk-php`), `Anthropic\Foundry\Client` (use `::withCredentials()`).
 
 ## Related
 

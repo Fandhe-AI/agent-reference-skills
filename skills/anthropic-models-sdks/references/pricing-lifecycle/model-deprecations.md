@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/about-claude/model-deprecations / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/about-claude/model-deprecations / last verified: 2026-10-17 -->
 
 # Model deprecations
 
@@ -19,7 +19,12 @@ Dates on this page apply to Anthropic-operated platforms (Claude API, Claude Pla
 
 | API model name | Current state | Deprecated | Tentative retirement date |
 | --- | --- | --- | --- |
+| claude-fable-5-1 | Active | N/A | Not sooner than September 1, 2027 |
+| claude-mythos-5-1 | Active | N/A | Not sooner than September 1, 2027 |
 | claude-fable-5 | Active | N/A | Not sooner than June 9, 2027 |
+| claude-mythos-5 | Active | N/A | Not sooner than June 9, 2027 |
+| claude-mythos-preview | Deprecated | June 9, 2026 | To be announced |
+| claude-opus-5-5 | Active | N/A | Not sooner than September 22, 2027 |
 | claude-opus-5 | Active | N/A | Not sooner than July 24, 2027 |
 | claude-opus-4-8 | Active | N/A | Not sooner than May 28, 2027 |
 | claude-opus-4-7 | Active | N/A | Not sooner than April 16, 2027 |
@@ -27,33 +32,45 @@ Dates on this page apply to Anthropic-operated platforms (Claude API, Claude Pla
 | claude-opus-4-5-20251101 | Active | N/A | Not sooner than November 24, 2026 |
 | claude-opus-4-1-20250805 | Retired | June 5, 2026 | August 5, 2026 |
 | claude-opus-4-20250514 | Retired | April 14, 2026 | June 15, 2026 |
+| claude-sonnet-5-5 | Active | N/A | Not sooner than September 28, 2027 |
 | claude-sonnet-5 | Active | N/A | Not sooner than June 30, 2027 |
 | claude-sonnet-4-6 | Active | N/A | Not sooner than February 17, 2027 |
-| claude-sonnet-4-5-20250929 | Active | N/A | Not sooner than September 29, 2026 |
+| claude-sonnet-4-5-20250929 | Deprecated | September 30, 2026 | November 30, 2026 |
 | claude-sonnet-4-20250514 | Retired | April 14, 2026 | June 15, 2026 |
 | claude-3-7-sonnet-20250219 | Retired | October 28, 2025 | February 19, 2026 |
+| claude-haiku-5-5 | Active | N/A | Not sooner than October 7, 2027 |
 | claude-haiku-4-5-20251001 | Active | N/A | Not sooner than October 15, 2026 |
 | claude-3-5-haiku-20241022 | Retired | December 19, 2025 | February 19, 2026 |
 | claude-3-haiku-20240307 | Retired | February 19, 2026 | April 20, 2026 |
 
-Claude Mythos Preview (`claude-mythos-preview`) is deprecated; migrate to Claude Mythos 5 (`claude-mythos-5`).
+Claude Mythos Preview (`claude-mythos-preview`) is deprecated (June 9, 2026; retirement date to be announced); migrate to Claude Mythos 5 (`claude-mythos-5`) or its successor Claude Mythos 5.1 (`claude-mythos-5-1`).
+
+The model cards list Claude Fable 5, Claude Opus 5, and Claude Sonnet 5 with the status "Active (legacy)": they remain Active in the table above while being superseded by newer models.
+
+Example of switching off a deprecated model ID (see the history table below):
+
+```python
+# claude-sonnet-4-5-20250929 is deprecated (retires November 30, 2026)
+model = "claude-sonnet-5-5"
+```
 
 ### Deprecation history (most recent first)
 
 | Announced | Retirement date | Deprecated model | Recommended replacement |
 | --- | --- | --- | --- |
+| 2026-09-30 | November 30, 2026 | `claude-sonnet-4-5-20250929` | `claude-sonnet-5-5` |
 | 2026-06-05 | August 5, 2026 | `claude-opus-4-1-20250805` | `claude-opus-4-8` |
-| 2026-04-14 | June 15, 2026 | `claude-sonnet-4-20250514` | `claude-sonnet-4-6` |
+| 2026-04-14 | June 15, 2026 | `claude-sonnet-4-20250514` | `claude-sonnet-5-5` |
 | 2026-04-14 | June 15, 2026 | `claude-opus-4-20250514` | `claude-opus-4-8` |
 | 2026-02-19 | April 20, 2026 | `claude-3-haiku-20240307` | `claude-haiku-4-5-20251001` |
 | 2025-12-19 | February 19, 2026 | `claude-3-5-haiku-20241022` | `claude-haiku-4-5-20251001` |
-| 2025-10-28 | February 19, 2026 | `claude-3-7-sonnet-20250219` | `claude-sonnet-4-6` |
-| 2025-08-13 | October 28, 2025 | `claude-3-5-sonnet-20240620` | `claude-sonnet-4-6` |
-| 2025-08-13 | October 28, 2025 | `claude-3-5-sonnet-20241022` | `claude-sonnet-4-6` |
+| 2025-10-28 | February 19, 2026 | `claude-3-7-sonnet-20250219` | `claude-sonnet-5-5` |
+| 2025-08-13 | October 28, 2025 | `claude-3-5-sonnet-20240620` | `claude-sonnet-5-5` |
+| 2025-08-13 | October 28, 2025 | `claude-3-5-sonnet-20241022` | `claude-sonnet-5-5` |
 | 2025-06-30 | January 5, 2026 | `claude-3-opus-20240229` | `claude-opus-4-8` |
 | 2025-01-21 | July 21, 2025 | `claude-2.0` | `claude-opus-4-8` |
 | 2025-01-21 | July 21, 2025 | `claude-2.1` | `claude-opus-4-8` |
-| 2025-01-21 | July 21, 2025 | `claude-3-sonnet-20240229` | `claude-sonnet-4-6` |
+| 2025-01-21 | July 21, 2025 | `claude-3-sonnet-20240229` | `claude-sonnet-5-5` |
 | 2024-09-04 | November 6, 2024 | `claude-1.0` / `claude-1.1` / `claude-1.2` / `claude-1.3` | `claude-haiku-4-5-20251001` |
 | 2024-09-04 | November 6, 2024 | `claude-instant-1.0` / `claude-instant-1.1` / `claude-instant-1.2` | `claude-haiku-4-5-20251001` |
 
@@ -61,7 +78,9 @@ Claude Mythos Preview (`claude-mythos-preview`) is deprecated; migrate to Claude
 
 | Parameter | Status | Behavior | Recommended replacement |
 | --- | --- | --- | --- |
-| `temperature`, `top_p`, `top_k` | Deprecated (Claude Opus 4.7 and later) | Returns a 400 error when set to a non-default value on Claude 4.7+ models and Claude Mythos Preview | Omit and use prompting to guide model behavior |
+| `temperature`, `top_p`, `top_k` | Deprecated (Claude 4.7 and later models) | Returns a 400 error when set to a non-default value on Claude 4.7 and later models and Claude Mythos Preview | Omit and use prompting to guide model behavior |
+
+Most SDKs keep deprecated parameters in their request types so existing code continues to type-check. The Python SDK (v1.0 and later) removes `temperature`, `top_p`, and `top_k`, so passing them raises a `TypeError`.
 
 ## Notes
 

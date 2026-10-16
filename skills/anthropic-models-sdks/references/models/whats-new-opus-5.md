@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/about-claude/models/whats-new-opus-5 / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/about-claude/models/whats-new-opus-5 (now redirects) ; current: https://platform.claude.com/docs/en/models/opus-5/overview / last verified: 2026-10-17 -->
 
 # What's new in Claude Opus 5
 
@@ -35,10 +35,14 @@ curl https://api.anthropic.com/v1/messages \
 
 ## Options / Props
 
-Effort ladder: `low`, `medium`, `high` (default), `xhigh`, `max`.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `output_config.effort` | `low` \| `medium` \| `high` \| `xhigh` \| `max` | `high` | Effort ladder, from `low` (most efficient) to `max` (maximum capability) |
 
 ## Notes
 
+- Claude Opus 5 is now Legacy (status: Active (legacy); Released July 24, 2026; retirement not sooner than July 24, 2027). The successor is Claude Opus 5.5 (`claude-opus-5-5`); see `whats-new-opus-5-5.md` and `migration-opus-5-5.md`. The official whats-new URL now redirects to the Opus 5 model card.
+- Model card "Good to know": on the Message Batches API, Claude Opus 5 supports up to 300k output tokens with the `output-300k-2026-03-24` beta header; the minimum cacheable prompt length is 512 tokens.
 - **Thinking on by default:** on Claude Opus 4.8, requests run without thinking unless `thinking: {"type": "adaptive"}` is set. On Claude Opus 5, thinking runs by default; the wire value `thinking: {"type": "adaptive"}` remains valid and equivalent to default. Because `max_tokens` is a hard limit on total output (thinking plus response text), revisit it for workloads that ran without thinking on Opus 4.8.
 - **Disabling thinking requires effort `high` or below:** `thinking: {"type": "disabled"}` is accepted only at effort `high` or below; setting it with `xhigh` or `max` returns a 400 error. This is a breaking change from Claude Opus 4.8. With thinking disabled, Claude Opus 5 can occasionally write a tool call into text output instead of a `tool_use` block, or include internal XML tags in visible responses.
 - Model behavior differences from Opus 4.8: longer default responses/deliverables, more frequent progress narration in agentic sessions, more readily delegates to subagents, verifies its own work without being told (remove carried-over "add a verification step" instructions — they cause over-verification).

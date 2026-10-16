@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/cli/authentication / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/cli/authentication / last verified: 2026-10-17 -->
 
 # CLI authentication options
 
@@ -54,6 +54,11 @@ ant profile set workspace_id wrkspc_01... --profile other-ws
 
 ## Notes
 
+- Interactive login stores credentials under `$ANTHROPIC_CONFIG_DIR` (the OS-specific default is described in the WIF reference "Configuration directory"). Interactive login is intended for local development and scripting; for non-interactive workloads such as CI, servers, and containers, use Workload Identity Federation instead.
+- API key: the CLI reads `ANTHROPIC_API_KEY`. To override the key for a single invocation, pass `--api-key`. To point at a different API host, set `ANTHROPIC_BASE_URL` or pass `--base-url`.
+- A key scoped to multiple workspaces (a personal or service account key) requires the workspace to be specified: set `ANTHROPIC_WORKSPACE_ID` (read automatically by the CLI) or pass `--workspace-id`. The value must be a `wrkspc_...` ID. Example: `ant messages create --workspace-id wrkspc_01... --model claude-opus-5-5 --max-tokens 1024 --message '{role: user, content: "Hello, Claude"}'`.
+- `ant auth status` prints the credential source the CLI selected (API key environment variable, OAuth login, federation, or profile), the active profile, the workspace the active token is bound to, and the configuration directory paths. It reports status rather than performing a health check, so don't script against its exit status.
+- Profiles are only consulted when no API key is set; unset `ANTHROPIC_API_KEY` before switching profiles. Setting `workspace_id` with `ant profile set` records the target workspace but does not rebind already-issued credentials; run `ant auth login` again under that profile.
 - Login writes credentials to `credentials/<profile>.json`; the first login for a profile also creates `configs/<profile>.json` and sets it active. `ant auth logout` removes stored credentials (`--all` clears every profile).
 - `org:admin` scope is granted only to organization members with admin, owner, or primary owner role, and grants organization-wide access ignoring any workspace binding.
 - An interactive-login token is bound to a single workspace; use named profiles to work across multiple workspaces.

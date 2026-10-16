@@ -1,7 +1,5 @@
 # Pricing & lifecycle
 
-Claude モデルの価格体系・ライセンス・廃止スケジュール・基本用語をカバーするリファレンス。
-
 | Name | Description | Path |
 |------|-------------|------|
 | Glossary | Brief summary of key LLM/AI terms; these concepts are not unique to Claude. | [glossary.md](./glossary.md) |

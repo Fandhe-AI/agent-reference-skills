@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/libraries/apple-foundation-models / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/libraries/apple-foundation-models / last verified: 2026-10-17 -->
 
 # Apple Foundation Models
 
@@ -65,6 +65,7 @@ let response = try await session.respond(to: "Plan a trip to Tokyo.", generating
 - Not a general-purpose Messages API client — its surface is the Foundation Models provider conformance plus `ClaudeLanguageModel`/`ClaudeModel`/`AuthMode`/`ClaudeServerTool`. For direct Messages API access, use one of the Client SDKs.
 - App Attest ships with no bundled API key and no proxy to operate, but requires a physical device (not available in Simulator) and is unavailable through Amazon Bedrock, Google Cloud, or Microsoft Foundry; tokens are workspace-scoped, expire hourly, and carry no end-user identity.
 - Features with no Foundation Models protocol representation are unavailable: configurable prompt caching (applied automatically, not tunable), stop sequences, batch processing, Files API, token counting, beta headers.
+- Model constants mirror API model IDs (`.opus5` is `claude-opus-5`; the official example uses `ClaudeLanguageModel(name: .opus5_5, auth: auth)`) and carry each model's capabilities. New models ship as new constants in package releases; check `ClaudeModel` in Xcode for the current list.
 - Errors map onto `LanguageModelError` where possible (`.contextSizeExceeded`, `.rateLimited`, `.timeout`); unmapped provider errors surface as `ClaudeError`.
 
 ## Related

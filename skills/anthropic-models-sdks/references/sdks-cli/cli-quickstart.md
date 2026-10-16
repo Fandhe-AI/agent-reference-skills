@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart / last verified: 2026-10-17 -->
 
 # CLI quickstart
 
@@ -15,7 +15,7 @@ Installation:
 brew install anthropics/tap/ant
 
 # curl (Linux/WSL)
-VERSION=1.21.0
+VERSION=1.42.0
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 case $(uname -m) in
   x86_64) ARCH=amd64 ;;
@@ -24,8 +24,11 @@ esac
 curl -fsSL "https://github.com/anthropics/anthropic-cli/releases/download/v${VERSION}/ant_${VERSION}_${OS}_${ARCH}.tar.gz" \
   | sudo tar -xz -C /usr/local/bin ant
 
-# Go (requires Go 1.22+)
+# Go (Go 1.25 or later)
 go install github.com/anthropics/anthropic-cli/cmd/ant@latest
+
+# Check the installation
+ant --version
 ```
 
 Authenticate and send a request:
@@ -34,7 +37,7 @@ Authenticate and send a request:
 ant auth login
 
 ant messages create \
-  --model claude-opus-5 \
+  --model claude-opus-5-5 \
   --max-tokens 1024 \
   --message '{role: user, content: "Hello, Claude"}'
 ```

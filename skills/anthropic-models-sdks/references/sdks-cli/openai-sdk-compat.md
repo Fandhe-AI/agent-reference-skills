@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/libraries/openai-sdk / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/libraries/openai-sdk / last verified: 2026-10-17 -->
 
 # OpenAI SDK compatibility
 
@@ -16,7 +16,7 @@ client = OpenAI(
 )
 
 response = client.chat.completions.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "Who are you?"},
@@ -35,7 +35,7 @@ const openai = new OpenAI({
 
 const response = await openai.chat.completions.create({
   messages: [{ role: "user", content: "Who are you?" }],
-  model: "claude-opus-5"
+  model: "claude-opus-5-5"
 });
 ```
 
@@ -58,6 +58,7 @@ response = client.chat.completions.create(
 | `n` | int | Must be exactly `1` |
 | `temperature` | float | 0–1 inclusive; values above 1 are capped at 1 |
 | `logprobs`, `metadata`, `prediction`, `presence_penalty`, `frequency_penalty`, `seed`, `service_tier`, `audio`, `logit_bias`, `store`, `user`, `modalities`, `top_logprobs`, `reasoning_effort` | — | Ignored |
+| `tool_choice` | — | Supported. `"required"` and named-function values force a tool call; Claude Opus 5.5, Claude Sonnet 5.5, Claude Fable 5.1, and Claude Mythos 5.1 don't support forced tool use and return an error, so use `"auto"` on those models |
 | `model`, `max_tokens`, `max_completion_tokens`, `stream`, `stream_options`, `top_p`, `parallel_tool_calls`, `stop` | — | Fully supported |
 
 ## Notes
