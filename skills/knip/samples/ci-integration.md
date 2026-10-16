@@ -37,9 +37,26 @@ Run both default and production mode in CI:
 - run: npm run knip -- --production --strict
 ```
 
+Optionally upload a SARIF report to GitHub Code Scanning (after installing project dependencies):
+
+```yaml
+permissions:
+  contents: read
+  security-events: write
+
+steps:
+  - uses: actions/checkout@v4
+  - run: pnpm exec knip --reporter sarif > knip.sarif
+  - if: always()
+    uses: github/codeql-action/upload-sarif@v4
+    with:
+      sarif_file: knip.sarif
+```
+
 ## Notes
 
 - Knip exits with code `1` on any detected issue, which fails CI jobs automatically
 - `--no-progress` is applied automatically in CI environments
 - Cache is stored at `./node_modules/.cache/knip`; include this path in CI cache configuration
 - Use `--reporter github-actions` to get inline annotations on pull request diffs
+- The SARIF upload step uses `if: always()` so it runs even when knip exits non-zero; Code Scanning availability for private repositories depends on the repository's GitHub Code Security plan (source: reporters docs)

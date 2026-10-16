@@ -60,6 +60,18 @@ export { Lion, Elephant } from './jungle';
 export { Elephant } from './jungle';
 ```
 
+### Export Assignments
+
+Knip removes individual exported items in export assignments, but does not remove the entire declaration if it's empty (the right-hand side might have side-effects):
+
+```diff
+-export const { a, b  } = fn();
++export const {   } = fn();
+
+-export const [c, d] = [c, d];
++export const [, ] = [c, d];
+```
+
 ### Enum Members
 
 ```typescript
@@ -78,6 +90,18 @@ export enum Directions { North = 1, East = 2 }
 
 // After
 { "dependencies": { "rimraf": "*" } }
+```
+
+### Catalog Entries
+
+`--fix-type catalog` removes unused catalog entries from the catalog file (catalogs in `package.json` are supported as well):
+
+```diff
+ packages:
+   - 'packages/*'
+ catalog:
+   react: ^18.0.0
+-  unused-package: ^1.0.0
 ```
 
 ### CommonJS

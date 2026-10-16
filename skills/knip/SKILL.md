@@ -2,17 +2,17 @@
 name: knip
 description: >
   Knip (TypeScript / JavaScript 未使用コード検出ツール) リファレンス。
-  未使用ファイル・export・依存関係・型・列挙メンバーの検出、
-  auto-fix、monorepo (workspaces) 対応、
-  knip.json / knip.config.ts 設定、プラグイン、ignore 設定、
-  初回クリーンアップ (first cleanup)、内部動作の仕組み (how Knip works)。
+  未使用ファイル・export・依存関係・型・列挙メンバー・循環依存 (circular dependencies / cycles) 検出、
+  auto-fix、monorepo (workspaces)、catalog (pnpm / Yarn / Bun catalogs)、
+  knip.json / knip.config.ts、プラグイン、ignore、reporter (SARIF)、
+  初回クリーンアップ (first cleanup)、段階導入 (adopt gradually)、how Knip works。
 user-invocable: false
-model: sonnet
 ---
 
 # Knip リファレンス
 
 Knip の公式ドキュメント全コアページを網羅したスキル。
+対象: Knip v6（6.41.0 時点の docs、2026-10-16 取得）。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
 ## ディレクトリ構成
@@ -49,6 +49,7 @@ skills/knip/
       source-mapping.md
     guides/
       README.md
+      adopt-gradually.md
       configuring-project-files.md
       contributing.md
       handling-issues.md
@@ -118,9 +119,9 @@ skills/knip/
 | 機能一覧・ゼロ設定の仕組み・初回クリーンアップ後の対応を知りたい | overview | [references/overview/README.md](references/overview/README.md) |
 | エントリーファイル・プラグインの仕組み・内部動作を理解したい | explanations | [references/explanations/README.md](references/explanations/README.md) |
 | 導入理由・他ツールとの比較・移行手順を知りたい | explanations | [references/explanations/README.md](references/explanations/README.md) |
-| auto-fix・production mode・monorepo・reporters を使いたい | features | [references/features/README.md](references/features/README.md) |
+| auto-fix・production mode・monorepo・catalogs・reporters (cycles / SARIF 出力を含む) を使いたい | features | [references/features/README.md](references/features/README.md) |
 | rules / filters・compilers・script parser を設定したい | features | [references/features/README.md](references/features/README.md) |
-| プロジェクトファイル設定・トラブルシューティング・CI 統合 | guides | [references/guides/README.md](references/guides/README.md) |
+| 段階導入 (adopt gradually)・プロジェクトファイル設定・トラブルシューティング・CI 統合 | guides | [references/guides/README.md](references/guides/README.md) |
 | パフォーマンス最適化・CommonJS 対応・namespace imports | guides | [references/guides/README.md](references/guides/README.md) |
 | CLI フラグ・設定オプション・issue types・JSDoc タグ | reference | [references/reference/README.md](references/reference/README.md) |
 | FAQ・プラグイン一覧・統合ツール・既知の問題を調べたい | reference | [references/reference/README.md](references/reference/README.md) |

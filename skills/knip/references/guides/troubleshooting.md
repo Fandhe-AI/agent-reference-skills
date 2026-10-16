@@ -35,4 +35,8 @@ knip --trace-dependency [name]
 
 - Accepts exact strings or regex patterns
 - Use `--workspace [filter]` for filtering
-- Legend: ✓ (contains import), x (not imported), ◯ (entry file)
+- Use `--trace-file` and `--trace-export` together to trace a specific named or default export of a certain file
+- Legend: `✓` (referenced, not reported as unused), `✗` (reported as unused), `⎆` (entry file)
+- Each child node is prefixed with how the export is consumed: `import`, `importAs` (shown as `original → alias`), `importNS`, or a re-export (`reExport`, `reExportAs`, `reExportNS`, `reExportStar`)
+- A `refs:` line lists the references found in that file; a `members:` line shows per-member status for namespaces and enums
+- An `[ambiguous]` line lists the competing definitions when a name reaches the file through more than one `export *`

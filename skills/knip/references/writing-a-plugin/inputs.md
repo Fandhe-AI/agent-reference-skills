@@ -22,11 +22,11 @@ Project patterns. Supports negated and standard globs.
 
 ### toDependency
 
-Dependency in `dependencies` or `devDependencies`.
+Dependency in `dependencies` or `devDependencies`. Use it for package names referenced from configuration, such as a plugin or transformer a tool loads at build time. Knip marks the package as referenced and reports it as unlisted if not listed at all. Such a reference is development-only: in production mode the package is still marked as referenced, but an unlisted one is no longer reported.
 
 ### toProductionDependency
 
-Production dependency in `dependencies`.
+Production dependency in `dependencies`. Unlike `toDependency`, it's also reported as unlisted in production mode.
 
 ### toDeferResolve
 
@@ -38,7 +38,12 @@ Like `toDeferResolve` but restricted to entry files only. Ignores unresolved inp
 
 ### toConfig
 
-Reference config files handled by other plugins. Example: Angular plugin referencing `tsConfig` in `angular.json`.
+Reference config files handled by other plugins. Example: Angular plugin referencing `tsConfig` and `karmaConfig` in `angular.json`:
+
+```ts
+toConfig('typescript', 'tsconfig.app.json');
+toConfig('karma', 'karma.conf.js');
+```
 
 ### toBinary
 
@@ -57,6 +62,10 @@ Assign inputs to different workspaces (e.g., GitHub Actions in root).
 ### optional
 
 Flag dependency as not required (won't report as unlisted if absent).
+
+### isTypeOnly
+
+Use when only the types of a package are used, such as packages listed in `compilerOptions.types`. A `@types/pkg` dependency then satisfies the reference on its own, without `pkg` installed. Don't use it for packages the tool actually loads, even only at build time.
 
 ### allowIncludeExports
 

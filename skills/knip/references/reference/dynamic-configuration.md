@@ -34,7 +34,7 @@ export default config;
 ```typescript
 import type { KnipConfig } from 'knip';
 
-const config = async (): Promise<KnipConfig> => {
+const config: KnipConfig = async () => {
   const items = await fetchRepoInfo();
   return {
     entry: ['src/index.ts', ...items],
@@ -54,4 +54,17 @@ const config = async () => ({
 });
 
 export default config;
+```
+
+## defineConfig
+
+Knip exports a `defineConfig` helper. It returns the configuration unchanged; its only purpose is typing. It accepts an object or a (async) function, in TypeScript and JavaScript config files.
+
+```typescript
+import { defineConfig } from 'knip/config';
+
+export default defineConfig({
+  entry: ['src/index.ts'],
+  project: ['src/**/*.ts'],
+});
 ```

@@ -18,6 +18,8 @@ knip --cache
 
 デフォルトのキャッシュ保存先: `./node_modules/.cache/knip`
 
+設定や path alias の変更後に結果が stale になることがある。その場合は `--cache` なしで実行するか、キャッシュディレクトリ（`node_modules/.cache/knip`、`--cache-location` で変更可）を削除してから再実行する。
+
 ## GitHub Actions アノテーション付き出力
 
 ```sh
@@ -25,6 +27,14 @@ knip --reporter github-actions
 ```
 
 PR 上にインラインアノテーションを表示する。
+
+## SARIF 出力
+
+```sh
+knip --reporter sarif > knip.sarif
+```
+
+SARIF 2.1.0 を出力する。code scanning 連携用。
 
 ## 本番モードとの二重実行
 
@@ -40,6 +50,14 @@ knip --production
 ```sh
 knip --treat-config-hints-as-errors
 ```
+
+## タグヒントをエラーとして扱う
+
+```sh
+knip --treat-tag-hints-as-errors
+```
+
+タグヒントがあると exit code `1` で終了する。
 
 ## GitHub Actions ワークフロー例
 

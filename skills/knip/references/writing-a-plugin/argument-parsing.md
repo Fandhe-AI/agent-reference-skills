@@ -6,6 +6,19 @@ Source: https://knip.dev/writing-a-plugin/argument-parsing
 
 Customize how CLI arguments are processed for tool executables. Uses minimist-compatible options.
 
+```ts
+const args = {
+  args: (args) => args, // modify/filter the array of raw args
+  config: true, // shorthand to add `--config [config file]` (and shortcut `-c`) as a `config` file
+  fromArgs: ['exec'], // re-parse what's behind `exec` as a new script
+};
+
+export default {
+  title: 'my-plugin',
+  args,
+};
+```
+
 ## Configuration Options
 
 ### alias

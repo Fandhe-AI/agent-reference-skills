@@ -15,6 +15,10 @@ knip --include files --exclude enumMembers,duplicates
 knip --dependencies   # all dependency-related issues
 knip --exports        # all export-related issues
 knip --files          # unused files only
+knip --cycles         # circular dependencies only
+
+# Default issue types plus circular dependencies
+knip --dependencies --exports --files --cycles
 ```
 
 Configure severity levels per issue type in `knip.json`:
@@ -24,7 +28,7 @@ Configure severity levels per issue type in `knip.json`:
   "rules": {
     "files": "warn",
     "duplicates": "off",
-    "devDependencies": "warn"
+    "cycles": "error"
   }
 }
 ```
@@ -34,4 +38,5 @@ Configure severity levels per issue type in `knip.json`:
 - `"error"` (default): issue is printed and counted toward the exit code
 - `"warn"`: issue is printed in faded color but does not increment the failure count
 - `"off"`: issue is completely suppressed
+- `cycles` is off by default and a warning when enabled; `"cycles": "error"` makes reported cycles cause a non-zero exit code
 - CLI `--include`/`--exclude` filters are applied on top of `rules`; use `rules` for persistent team-wide configuration

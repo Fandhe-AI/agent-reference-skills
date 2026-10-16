@@ -8,7 +8,7 @@ knip による未使用コード・依存関係・ファイルの検出コマン
 knip
 ```
 
-exit code: `0` (issue なし) / `1` (issue あり) / `2` (例外)
+exit code: `0` (issue なし) / `1` (issue あり) / `2` (bad input・plugin config load error・internal error で実行失敗)
 
 ## issue タイプ別フィルタリング
 
@@ -40,6 +40,16 @@ knip --dependencies
 
 ```sh
 knip --exports
+```
+
+```sh
+knip --cycles
+```
+
+## issue タイプのショートカットの組み合わせ
+
+```sh
+knip --dependencies --exports --files --cycles
 ```
 
 ## タグフィルタリング
@@ -88,4 +98,6 @@ knip --workspace './apps/*' --workspace '@shared/utils'
 
 ## issue タイプ一覧
 
-`files`, `dependencies`, `devDependencies`, `optionalPeerDependencies`, `unlisted`, `binaries`, `unresolved`, `exports`, `nsExports`, `types`, `nsTypes`, `enumMembers`, `namespaceMembers`, `duplicates`, `catalog`
+`files`, `dependencies`, `devDependencies`, `optionalPeerDependencies`, `unlisted`, `binaries`, `unresolved`, `exports`, `nsExports`, `types`, `nsTypes`, `enumMembers`, `namespaceMembers`, `duplicates`, `catalog`, `catalogReferences`, `cycles`
+
+`cycles` は既定では含まれない（`--cycles` または `--include cycles` で有効化）。`rules.cycles` の既定は `warn` で、報告のみでエラーに数えられない。`"rules": { "cycles": "error" }` にすると exit code に反映される。
