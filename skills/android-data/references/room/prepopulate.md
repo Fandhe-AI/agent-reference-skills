@@ -68,7 +68,8 @@ fun createMultiStepDb(appContext: Context) {
 - `createFromAsset` takes a string with a relative path from `assets/` to the prepackaged file.
 - `createFromFile` takes a `File`. Room copies the file rather than opening it directly, so the app needs read permission on it.
 - For both, Room validates that the schema matches the prepackaged database's schema. Export the schema to use as a reference when building the prepackaged file.
-- Prepackaged files are used only in a fallback (destructive) migration. Normally Room drops all tables and creates an empty database for the target version. If a prepackaged file has the same version number as the target version, Room populates the recreated database from it.
+- Initial creation: when the database does not yet exist on the device, Room creates it at initialization from the prepackaged file (`fallbackToDestructiveMigration` is not needed).
+- Migration of an existing database: a prepackaged file is used only in the case of a fallback (destructive) migration. Normally Room drops all tables and creates an empty database for the target version. If a prepackaged file has the same version number as the target version, Room populates the recreated database from it.
 - Fallback example (installed v2, app v3, prepackaged v3, no 2 to 3 path, destructive enabled): Room drops the installed database, recreates it and populates it from the prepackaged file. A prepackaged file on version 2 does not match the target version and is not used.
 - Implemented-migration example (same versions, but `MIGRATION_2_3` is added): Room runs `migrate` and preserves existing data. The prepackaged file is not used.
 - Multi-step example (installed v2, app v4, prepackaged v3, only 3 to 4 migration, destructive enabled): Room performs a destructive fallback, populates from the v3 prepackaged file, then runs `MIGRATION_3_4` to reach v4, preserving the copied data.
