@@ -12,11 +12,15 @@ vgcreate vmdata /dev/sdb1
 
 # LVM-thin pool on top of a volume group
 lvcreate -L 80G -T -n vmstore vmdata
+```
 
-# BTRFS: create, mount, add to Proxmox VE
-mkfs.btrfs -m single -d single -L My-Storage /dev/sdb
+Alternative (separate from the LVM example above): BTRFS on a different unused disk. Do not run it on a disk already used as LVM PV.
+
+```bash
+# BTRFS: create, mount, add to Proxmox VE (destroys all data on /dev/sdc)
+mkfs.btrfs -m single -d single -L My-Storage /dev/sdc
 mkdir /my-storage
-mount /dev/sdb /my-storage
+mount /dev/sdc /my-storage
 pvesm add btrfs my-storage --path /my-storage
 ```
 
@@ -77,6 +81,7 @@ btrfs: local-btrfs
 - The installer installs two bootloaders by default: the first partition has the standard GRUB, the second is an ESP (EFI boot and persistent firmware updates from user space).
 - Before mounting a new LV on `/var/lib/vz`, make sure `/var/lib/vz` is empty (it is not on a default installation). When extending the data pool, the metadata pool must also be extended.
 - BTRFS integration is a technology preview. RAID levels 5/6 are experimental and dangerous. Installer RAID choices: RAID0 (striping, no redundancy), RAID1 (mirroring, at least 2 equal disks), RAID10 (at least 4 disks). The installer also creates the subvolume `/var/lib/pve/local-btrfs` and disables the default `local` storage in favor of it.
+- The official BTRFS example uses `/dev/sdb`; the snippet above uses `/dev/sdc` as a placeholder so it does not collide with the LVM example on `/dev/sdb`.
 - Use the `UUID` printed by `mkfs.btrfs` (or `blkid`) in `/etc/fstab` instead of block-device paths, especially for multi-disk setups.
 - BTRFS does not distinguish snapshots from normal subvolumes; Proxmox VE uses the read-only flag by convention for snapshots of guest disks or subvolumes (changeable later).
 - BTRFS does not compress by default; data written before enabling `compress` stays uncompressed; the fstab change takes effect after reboot. `df` may output confusing values; prefer `btrfs filesystem usage`.
