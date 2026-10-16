@@ -48,7 +48,9 @@ let task = recognizer.recognitionTask(with: request) { result, error in
 
 ## Notes
 
-iOS 10.0+, iPadOS 10.0+, macOS 15.0+, Mac Catalyst 10.0+, visionOS 1.0+. Audio is limited to one minute per task. Network-based recognition is subject to per-device and per-app daily limits. Do not send sensitive data (passwords, health/financial info). Add `NSSpeechRecognitionUsageDescription` to `Info.plist`.
+iOS 10.0+, iPadOS 10.0+, macOS 10.15+, Mac Catalyst 10.0+, visionOS 1.0+. Audio is limited to one minute per task. Network-based recognition is subject to per-device and per-app daily limits. Do not send sensitive data (passwords, health/financial info). Add `NSSpeechRecognitionUsageDescription` to `Info.plist`.
+
+As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Speech Recognition in Objective-C: "Use these classes to perform speech recognition in Objective-C code."). It carries no deprecation marker; it is not deprecated. The modern Swift path is `SpeechAnalyzer` with `SpeechTranscriber` / `DictationTranscriber` (iOS 26.0+).
 
 ## Related
 
@@ -57,3 +59,5 @@ iOS 10.0+, iPadOS 10.0+, macOS 15.0+, Mac Catalyst 10.0+, visionOS 1.0+. Audio i
 - [SFSpeechURLRecognitionRequest](./sfspeechurlrecognitionrequest.md)
 - [SFSpeechRecognitionTask](./sfspeechrecognitiontask.md)
 - [SFSpeechRecognizerAuthorizationStatus](./sfspeechrecognizerauthorizationstatus.md)
+- [SpeechAnalyzer](./speechanalyzer.md)
+- [SpeechTranscriber](./speechtranscriber.md)

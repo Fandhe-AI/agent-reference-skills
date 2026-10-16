@@ -34,6 +34,8 @@ SFSpeechRecognizer.requestAuthorization { status in
 
 iOS 10.0+, iPadOS 10.0+, macOS 10.15+, Mac Catalyst 10.0+, visionOS 1.0+. Always check the status before initiating a recognition task. Add `NSSpeechRecognitionUsageDescription` to `Info.plist`; without it the app will crash when requesting authorization. `restricted` differs from `denied` — the user cannot change a restricted status.
 
+As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Speech Recognition in Objective-C). It carries no deprecation marker; it is not deprecated. The modern counterpart path is `SpeechAnalyzer` with `SpeechTranscriber` / `DictationTranscriber` (iOS 26.0+).
+
 ## Related
 
 - [SFSpeechRecognizer](./sfspeechrecognizer.md)

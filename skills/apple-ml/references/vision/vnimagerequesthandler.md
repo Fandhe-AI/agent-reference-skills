@@ -23,6 +23,7 @@ try handler.perform([request])
 - iOS 11.0+ / macOS 10.13+ / tvOS 11.0+ / visionOS 1.0+
 - **New Swift API (iOS 18+):** Use `ImageRequestHandler` with async/await instead — `try await handler.perform(request)`.
 - Pass multiple requests to a single `perform(_:)` call for efficiency; Vision shares image processing work.
+- As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Original Objective-C and Swift API) in the Vision framework. It carries no deprecation marker; it is not deprecated.
 
 ## Related
 

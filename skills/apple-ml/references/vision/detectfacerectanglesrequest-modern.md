@@ -23,7 +23,7 @@ for face in observations {
 
 ## Notes
 
-- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 11.0+ (beta)
+- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - `struct` (value type), unlike class-based `VNDetectFaceRectanglesRequest`.
 - Results are returned as `FaceObservation`, distinct from the legacy `VNFaceObservation`.
 - File name carries the `-modern` suffix to avoid collision with `vndetectfacerectanglesrequest.md` (legacy VN-prefixed API).

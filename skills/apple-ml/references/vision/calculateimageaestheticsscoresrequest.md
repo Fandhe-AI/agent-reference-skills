@@ -21,7 +21,7 @@ print(observation.overallScore)
 
 ## Notes
 
-- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+ (beta)
+- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - `struct` (value type).
 - No legacy VN-prefixed equivalent; this API has no pre-Swift-concurrency counterpart.
 

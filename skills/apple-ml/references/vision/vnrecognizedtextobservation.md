@@ -31,6 +31,7 @@ if let observations = request.results {
 - Inherits from `VNRectangleObservation` → `VNDetectedObjectObservation` → `VNObservation`.
 - Coordinate system: normalized `[0, 1]` with origin at **lower-left** of the image.
 - **New Swift API (iOS 18+):** `RecognizedTextObservation` replaces this class; `transcript` property provides direct access to the top candidate string.
+- As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Original Objective-C and Swift API) in the Vision framework. It carries no deprecation marker; it is not deprecated. The modern counterpart is `RecognizedTextObservation` (no dedicated page in this skill).
 
 ## Related
 

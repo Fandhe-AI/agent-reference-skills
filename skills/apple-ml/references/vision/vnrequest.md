@@ -28,9 +28,11 @@ let request = VNDetectFaceRectanglesRequest { request, error in
 - Alpha channel is discarded from input images.
 - Use `setComputeDevice(_:for:)` to target a specific compute device per `VNComputeStage`.
 - `cancel()` aborts the request before completion.
+- As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Original Objective-C and Swift API) in the Vision framework. It carries no deprecation marker (only `usesCPUOnly` is marked deprecated, as noted above); the class itself is not deprecated.
 
 ## Related
 
 - [VNImageRequestHandler](./vnimagerequesthandler.md)
 - [VNSequenceRequestHandler](./vnsequencerequesthandler.md)
 - [VNObservation](./vnobservation.md)
+- [VisionRequest](./visionrequest.md)

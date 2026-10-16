@@ -23,7 +23,7 @@ print(tracked.boundingBox)
 
 ## Notes
 
-- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+ (beta)
+- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - `final class` (reference type); conforms to `StatefulRequest`, so the same instance carries tracking state across successive `perform` calls.
 - `init(detectedObject:_:frameAnalysisSpacing:)` accepts the object to track, an optional revision, and an optional `CMTime` frame spacing.
 
@@ -31,3 +31,5 @@ print(tracked.boundingBox)
 
 - [DetectHumanBodyPose3DRequest](./detecthumanbodypose3drequest.md)
 - [ImageRequestHandler](./imagerequesthandler.md)
+- [StatefulRequest](./statefulrequest.md)
+- [TrackRectangleRequest](./trackrectanglerequest.md)

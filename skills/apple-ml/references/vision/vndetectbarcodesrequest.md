@@ -32,8 +32,10 @@ if let barcodes = request.results {
 - Call `try request.supportedSymbologies()` to retrieve the full list of supported symbologies at runtime.
 - Common symbologies: `.qr`, `.aztec`, `.pdf417`, `.ean8`, `.ean13`, `.upce`, `.code128`, `.dataMatrix`.
 - Current revision: `VNDetectBarcodesRequestRevision3`.
+- As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Original Objective-C and Swift API) in the Vision framework. It carries no deprecation marker; it is not deprecated.
 
 ## Related
 
 - [VNRequest](./vnrequest.md)
 - [VNImageRequestHandler](./vnimagerequesthandler.md)
+- [DetectBarcodesRequest (modern)](./detectbarcodesrequest-modern.md)

@@ -1,14 +1,16 @@
-# Natural Language
+# natural-language
 
 | Name | Description | Path |
 |------|-------------|------|
-| NLTokenizer | Segments text into words, sentences, paragraphs, or documents | [nltokenizer.md](./nltokenizer.md) |
-| NLTagger | Tags tokens with part-of-speech, named entities, lemma, language, sentiment, and more | [nltagger.md](./nltagger.md) |
-| NLTag | Constants for token types, lexical classes, and named entity types returned by NLTagger | [nltag.md](./nltag.md) |
-| NLTagScheme | Constants specifying which linguistic information NLTagger extracts | [nltagscheme.md](./nltagscheme.md) |
-| NLLanguageRecognizer | Identifies the dominant language of a text string | [nllanguagerecognizer.md](./nllanguagerecognizer.md) |
-| NLLanguage | Struct of constants for 60+ languages supported by the framework | [nllanguage.md](./nllanguage.md) |
-| NLEmbedding | Maps words or sentences to vectors for semantic similarity and neighbor search | [nlembedding.md](./nlembedding.md) |
-| NLModel | Integrates a custom Core ML model for text classification or word tagging | [nlmodel.md](./nlmodel.md) |
-| NLGazetteer | Lookup table of terms and labels that overrides NLTagger predictions | [nlgazetteer.md](./nlgazetteer.md) |
-| NLContextualEmbedding | BERT-style model for context-sensitive token embedding vectors (iOS 17+) | [nlcontextualembedding.md](./nlcontextualembedding.md) |
+| NLContextualEmbedding | A BERT-style model that computes context-sensitive… | [nlcontextualembedding.md](./nlcontextualembedding.md) |
+| NLContextualEmbeddingKey | This class defines properties that you can filter or… | [nlcontextualembeddingkey.md](./nlcontextualembeddingkey.md) |
+| NLEmbedding | Maps strings to high-dimensional vectors for semantic… | [nlembedding.md](./nlembedding.md) |
+| NLGazetteer | A lookup table of terms and their labels that… | [nlgazetteer.md](./nlgazetteer.md) |
+| NLLanguage | A struct of constants representing the languages… | [nllanguage.md](./nllanguage.md) |
+| NLLanguageRecognizer | Detects the dominant language of a piece of text… | [nllanguagerecognizer.md](./nllanguagerecognizer.md) |
+| NLModel | Integrates a custom Core ML model for text… | [nlmodel.md](./nlmodel.md) |
+| NLScript | The writing scripts that the Natural Language… | [nlscript.md](./nlscript.md) |
+| NLTag | A struct representing a token type, lexical class… | [nltag.md](./nltag.md) |
+| NLTagger | Analyzes natural language text by segmenting into… | [nltagger.md](./nltagger.md) |
+| NLTagScheme | Constants identifying the kind of linguistic… | [nltagscheme.md](./nltagscheme.md) |
+| NLTokenizer | A tokenizer that segments natural language text… | [nltokenizer.md](./nltokenizer.md) |

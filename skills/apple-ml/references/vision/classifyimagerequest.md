@@ -25,7 +25,7 @@ if let imageURL = Bundle.main.url(forResource: "ClassificationImage", withExtens
 
 ## Notes
 
-- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+ (beta)
+- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - `struct` (value type), unlike its class-based predecessor.
 - `perform(on:orientation:)` overloads accept `URL`, `Data`, `CGImage`, `CIImage`, `CVPixelBuffer`, `CMSampleBuffer`.
 - Does not require a user-supplied model; uses Apple's on-device classifier, same as `VNClassifyImageRequest`.
@@ -35,3 +35,4 @@ if let imageURL = Bundle.main.url(forResource: "ClassificationImage", withExtens
 - [VNClassifyImageRequest](./vnclassifyimagerequest.md)
 - [CoreMLRequest](./coremlrequest.md)
 - [ImageRequestHandler](./imagerequesthandler.md)
+- [VisionRequest](./visionrequest.md)

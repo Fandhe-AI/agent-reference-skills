@@ -31,6 +31,8 @@ recognizer.recognitionTask(with: request) { result, error in
 
 iOS 10.0+, iPadOS 10.0+, macOS 10.15+, Mac Catalyst 10.0+, visionOS 1.0+. When `shouldReportPartialResults` is `true`, you receive multiple results with `isFinal == false` before the terminal result where `isFinal == true`. Only the final result is guaranteed to be accurate.
 
+As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Speech Recognition in Objective-C). It carries no deprecation marker; it is not deprecated. The modern counterpart is `SpeechTranscriber.Result` ("a phrase or passage of transcribed speech"), delivered through `SpeechAnalyzer` (iOS 26.0+).
+
 ## Related
 
 - [SFTranscription](./sftranscription.md)

@@ -26,7 +26,7 @@ let observations = try await handler.perform(request)
 
 ## Notes
 
-- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+ (beta)
+- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - `struct` (value type).
 - No legacy VN-prefixed equivalent; this API has no pre-Swift-concurrency counterpart.
 
@@ -34,3 +34,4 @@ let observations = try await handler.perform(request)
 
 - [DetectContoursRequest](./detectcontoursrequest.md)
 - [ImageRequestHandler](./imagerequesthandler.md)
+- [TrackRectangleRequest](./trackrectanglerequest.md)

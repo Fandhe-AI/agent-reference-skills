@@ -25,6 +25,7 @@ let observations = try await handler.perform(request)
 
 ## Notes
 
+- iOS 18.0+ / iPadOS 18.0+ / Mac Catalyst 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - Result type depends on the model output: classifier models → `ClassificationObservation`, image-to-image models → `PixelBufferObservation`, general predictors → `CoreMLFeatureValueObservation`.
 - Vision forwards confidence values from Core ML models as-is; it does not normalize them to `[0, 1]`.
 - Uses `CoreMLModelContainer` instead of `VNCoreMLModel` to wrap the `MLModel`.

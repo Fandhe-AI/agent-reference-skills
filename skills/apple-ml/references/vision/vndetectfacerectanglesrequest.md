@@ -22,9 +22,11 @@ if let faces = request.results {
 - Results type: `[VNFaceObservation]?` — each observation includes `boundingBox`, `roll`, `yaw`, `pitch`.
 - Current revision: `VNDetectFaceRectanglesRequestRevision3`.
 - Does not detect facial landmarks; use `VNDetectFaceLandmarksRequest` for that.
+- As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Original Objective-C and Swift API) in the Vision framework. It carries no deprecation marker; it is not deprecated.
 
 ## Related
 
 - [VNDetectFaceLandmarksRequest](./vndetectfacelandmarksrequest.md)
 - [VNObservation](./vnobservation.md)
 - [VNImageRequestHandler](./vnimagerequesthandler.md)
+- [DetectFaceRectanglesRequest (modern)](./detectfacerectanglesrequest-modern.md)

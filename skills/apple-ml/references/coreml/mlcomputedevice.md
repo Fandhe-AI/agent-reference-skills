@@ -33,10 +33,14 @@ for device in MLComputeDevice.allComputeDevices {
 ## Notes
 
 - iOS 17.0+, iPadOS 17.0+, Mac Catalyst 17.0+, macOS 14.0+, tvOS 17.0+, visionOS 1.0+, watchOS 10.0+
-- Related device types: `MLCPUComputeDevice`, `MLGPUComputeDevice`, `MLNeuralEngineComputeDevice`, `MLComputeDeviceProtocol`
+- Related device types: [MLCPUComputeDevice](./mlcpucomputedevice.md), [MLGPUComputeDevice](./mlgpucomputedevice.md), [MLNeuralEngineComputeDevice](./mlneuralenginecomputedevice.md), [MLComputeDeviceProtocol](./mlcomputedeviceprotocol.md)
 - Used by `MLComputePlan.deviceUsage(for:)` to report which devices a model layer/operation is anticipated to run on
 
 ## Related
 
 - [MLComputePlan](./mlcomputeplan.md)
 - [MLComputeUnits](./mlcomputeunits.md)
+- [MLCPUComputeDevice](./mlcpucomputedevice.md)
+- [MLGPUComputeDevice](./mlgpucomputedevice.md)
+- [MLNeuralEngineComputeDevice](./mlneuralenginecomputedevice.md)
+- [MLComputeDeviceProtocol](./mlcomputedeviceprotocol.md)

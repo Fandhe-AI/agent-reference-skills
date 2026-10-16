@@ -19,7 +19,7 @@ let observation = try await handler.perform(request)
 
 ## Notes
 
-- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+ (beta)
+- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - `struct` (value type).
 - Unlike `GeneratePersonSegmentationRequest`, produces per-instance masks that distinguish multiple people in the same image.
 
@@ -27,3 +27,5 @@ let observation = try await handler.perform(request)
 
 - [GeneratePersonSegmentationRequest](./generatepersonsegmentationrequest.md)
 - [ImageRequestHandler](./imagerequesthandler.md)
+- [GenerateForegroundInstanceMaskRequest](./generateforegroundinstancemaskrequest.md)
+- [GenerateIterativeSegmentationRequest](./generateiterativesegmentationrequest.md)

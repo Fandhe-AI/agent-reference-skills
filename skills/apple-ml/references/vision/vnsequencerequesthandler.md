@@ -29,8 +29,11 @@ All variants accept an optional `orientation: CGImagePropertyOrientation` parame
 - iOS 11.0+ / macOS 10.13+ / tvOS 11.0+ / visionOS 1.0+
 - Designed for stateful tracking requests (`VNStatefulRequest` subclasses) that accumulate evidence across frames.
 - Unlike `VNImageRequestHandler`, the image is not bound at init — reuse the same handler object for every frame.
+- As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Original Objective-C and Swift API) in the Vision framework. It carries no deprecation marker; it is not deprecated.
+- In the modern Swift API, stateful requests conform to `StatefulRequest` ("the protocol for a type that builds evidence of a condition over time"); see [StatefulRequest](./statefulrequest.md). The docs do not name a one-to-one replacement handler for `VNSequenceRequestHandler`.
 
 ## Related
 
 - [VNImageRequestHandler](./vnimagerequesthandler.md)
 - [VNRequest](./vnrequest.md)
+- [StatefulRequest](./statefulrequest.md)

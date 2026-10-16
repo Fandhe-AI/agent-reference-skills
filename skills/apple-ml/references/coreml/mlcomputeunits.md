@@ -27,6 +27,8 @@ config.computeUnits = .cpuAndNeuralEngine  // CPU + ANE, no GPU
 
 iOS 12.0+, macOS 10.14+, tvOS 12.0+, watchOS 5.0+, visionOS 1.0+. The `.all` default is appropriate for most foreground inference tasks. Changing compute units requires reloading the model.
 
+Core AI (iOS 27.0+) has separate types: `ComputeUnitKind` (`cpu` / `gpu` / `neuralEngine`; see [ComputeUnitKind](../coreai/computeunitkind.md)) and `SpecializationOptions` (see [SpecializationOptions](../coreai/specializationoptions.md)). `MLComputeUnits` applies only to Core ML's `MLModelConfiguration`.
+
 ## Related
 
 - [MLModelConfiguration](./mlmodelconfiguration.md)
