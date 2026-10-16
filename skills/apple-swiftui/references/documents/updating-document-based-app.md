@@ -54,7 +54,10 @@ final class TextDocument: Document {
             guard let data = fileWrapper.regularFileContents else {
                 throw CocoaError(.fileReadCorruptFile)
             }
-            return String(decoding: data, as: UTF8.self)
+            guard let string = String(data: data, encoding: .utf8) else {
+                throw CocoaError(.fileReadCorruptFile)
+            }
+            return string
         }
     }
 
@@ -64,6 +67,16 @@ final class TextDocument: Document {
                 regularFileWithContents: Data(snapshot.utf8)
             )
         }
+    }
+
+    @MainActor
+    func setText(_ newValue: String, undoManager: UndoManager?) {
+        let oldValue = text
+        guard oldValue != newValue else { return }
+        undoManager?.registerUndo(withTarget: self) { document in
+            document.setText(oldValue, undoManager: undoManager)
+        }
+        text = newValue
     }
 
     @MainActor
@@ -84,18 +97,16 @@ DocumentGroup { document in
 }
 
 struct TextDocumentView: View {
-    @Bindable var document: TextDocument
+    var document: TextDocument
     @Environment(\.undoManager) private var undoManager
 
     var body: some View {
-        TextEditor(text: $document.text)
-            .onChange(of: document.text) { oldValue, _ in
-                undoManager?.registerUndo(
-                    withTarget: document
-                ) { document in
-                    document.text = oldValue
-                }
-            }
+        TextEditor(
+            text: Binding(
+                get: { document.text },
+                set: { document.setText($0, undoManager: undoManager) }
+            )
+        )
     }
 }
 ```
@@ -148,6 +159,8 @@ Before / After (from `ReferenceFileDocument`):
 - The undo manager from the environment in your content view is already connected to the document.
 - Official wording of the "After" `FileWrapperDocumentWriter` closure in the `FileDocument` example omits the second (`previous`) closure parameter, while the `Document` page and the `ReferenceFileDocument` example use two parameters (`snapshot, _` / `snapshot, previous`). The code above uses the two-parameter form.
 - The Before example adds `init(text:)` relative to Apple's original, which calls `TextDocument()` without a no-argument initializer.
+- Apple's original example uses `String(decoding:as:)`, which replaces invalid UTF-8 with U+FFFD instead of throwing; the example above keeps a failable decode so invalid files are rejected rather than silently rewritten on save.
+- Apple's original registers undo in `onChange(of:)`; that runs after an undo completes, so it records a new undo instead of a redo and clears the redo stack. The example above registers the inverse synchronously from the binding setter.
 - Source: https://developer.apple.com/documentation/swiftui/updating-your-document-based-app
 
 ## Related

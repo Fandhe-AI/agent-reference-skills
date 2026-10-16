@@ -19,7 +19,10 @@ func reader(configuration: sending ReadConfiguration) -> sending FileWrapperDocu
             fileWrapper.regularFileContents else {
             throw CocoaError(.fileReadCorruptFile)
         }
-        return String(decoding: data, as: UTF8.self)
+        guard let string = String(data: data, encoding: .utf8) else {
+            throw CocoaError(.fileReadCorruptFile)
+        }
+        return string
     }
 }
 
@@ -78,6 +81,7 @@ Parameters of `read` / `write`:
 - For package documents, navigate the `FileWrapper` hierarchy in the reader closure. `FileWrapper` loads file contents on demand, so a child file may be gone by the time you call `regularFileContents`; always handle errors when reading children of a package.
 - The `FileWrapperDocumentReader` closure does not receive a `Subprogress`. To report progress during reads, use a custom `DocumentReader`.
 - For single-file documents, `FileWrapperDocumentWriter` can ignore the `previous` argument and return a freshly built wrapper.
+- Apple's original example uses `String(decoding:as:)`, which replaces invalid UTF-8 with U+FFFD instead of throwing; the example above keeps a failable decode so invalid files are rejected rather than silently rewritten on save.
 - Source: https://developer.apple.com/documentation/swiftui/documentreader
 - Source: https://developer.apple.com/documentation/swiftui/documentwriter
 

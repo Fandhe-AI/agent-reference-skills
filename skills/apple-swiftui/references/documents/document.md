@@ -23,7 +23,10 @@ final class TextDocument: Document {
                 fileWrapper.regularFileContents else {
                 throw CocoaError(.fileReadCorruptFile)
             }
-            return String(decoding: data, as: UTF8.self)
+            guard let string = String(data: data, encoding: .utf8) else {
+                throw CocoaError(.fileReadCorruptFile)
+            }
+            return string
         }
     }
 
@@ -69,6 +72,7 @@ final class TextDocument: Document {
 - For a read-only document, conform only to `ReadableDocument` and use the `viewer` / `makeReadableDocument` initializer of `DocumentGroup`. Set `CFBundleTypeRole` to `Viewer` in Info.plist.
 - The document can be `@MainActor` or nonisolated, `Sendable` or not.
 - `DocumentGroup` opts the app into autosaving, file coordination, undo management, and conflict resolution.
+- Apple's original example uses `String(decoding:as:)`, which replaces invalid UTF-8 with U+FFFD instead of throwing; the example above keeps a failable decode so invalid files are rejected rather than silently rewritten on save.
 - Source: https://developer.apple.com/documentation/swiftui/document
 
 ## Related
