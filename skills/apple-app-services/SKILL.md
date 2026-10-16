@@ -1,10 +1,10 @@
 ---
 name: apple-app-services
 description: >
-  Apple アプリサービスリファレンス。StoreKit 2、CloudKit、WidgetKit、ActivityKit、
-  User Notifications、Core Location、MapKit、HealthKit、Sign in with Apple。
-  Product, Transaction, CKRecord, Widget, TimelineProvider, CLLocationManager,
-  Map, HKHealthStore, ASAuthorizationController, UNUserNotificationCenter。
+  Apple アプリサービス。StoreKit 2 / CloudKit / WidgetKit / ActivityKit / User Notifications /
+  Core Location / MapKit / HealthKit / Sign in with Apple。
+  Product, Transaction, CKRecord, Widget, TimelineProvider, UNUserNotificationCenter,
+  CLLocationManager, Map, HKHealthStore, ASAuthorizationController。
 user-invocable: false
 ---
 
@@ -28,6 +28,7 @@ skills/apple-app-services/
       product-subscriptioninfo-status.md
       product-subscriptionrelationship.md
       product.md
+      requestreviewaction.md
       storeview.md
       subscriptionstoreview.md
       transaction.md
@@ -49,6 +50,7 @@ skills/apple-app-services/
       ckquerysubscription.md
       ckasset.md
       ckshare.md
+      ckuseridentity.md
       ckerror.md
       ckrecordzone.md
       cksyncengine.md
@@ -98,6 +100,7 @@ skills/apple-app-services/
     location-maps/
       README.md
       Annotation.md
+      CLAccuracyAuthorization.md
       CLAuthorizationStatus.md
       CLBackgroundActivitySession.md
       CLGeocoder.md
@@ -109,6 +112,7 @@ skills/apple-app-services/
       CLMonitor.md
       CLPlacemark.md
       CLRegion.md
+      CLServiceSession.md
       LookAroundPreview.md
       Map.md
       MapCameraPosition.md
@@ -117,7 +121,9 @@ skills/apple-app-services/
       MapStyle.md
       Marker.md
       MKCoordinateRegion.md
+      MKGeocodingRequest.md
       MKMapItem.md
+      MKReverseGeocodingRequest.md
     health-auth/
       README.md
       asauthorizationappleidcredential.md
@@ -126,6 +132,7 @@ skills/apple-app-services/
       asauthorizationcontroller.md
       asauthorizationcontrollerdelegate.md
       aswebauthenticationsession.md
+      authorizationcontroller.md
       hkauthorizationstatus.md
       hkhealthstore.md
       hkobjecttype.md
@@ -159,10 +166,12 @@ skills/apple-app-services/
 | StoreKit UI（StoreView / SubscriptionStoreView）を使いたい | storekit | [references/storekit/README.md](references/storekit/README.md) |
 | Transaction の検証・権利確認を行いたい | storekit | [references/storekit/README.md](references/storekit/README.md) |
 | プロモーション表示・購入エラーハンドリング・関連サブスクリプション判定を行いたい | storekit | [references/storekit/README.md](references/storekit/README.md) |
+| App Store の評価・レビューを依頼したい（SwiftUI requestReview / RequestReviewAction） | storekit | [references/storekit/README.md](references/storekit/README.md) |
 | CloudKit でレコードを読み書き・クエリしたい | cloudkit | [references/cloudkit/README.md](references/cloudkit/README.md) |
 | iCloud データをデバイス間で同期したい | cloudkit | [references/cloudkit/README.md](references/cloudkit/README.md) |
 | CloudKit のプッシュ通知サブスクリプションを設定したい | cloudkit | [references/cloudkit/README.md](references/cloudkit/README.md) |
 | CKSyncEngine で継続的な双方向同期を実装したい | cloudkit | [references/cloudkit/README.md](references/cloudkit/README.md) |
+| CloudKit 共有参加者・ユーザーの identity（CKUserIdentity）を扱いたい | cloudkit | [references/cloudkit/README.md](references/cloudkit/README.md) |
 | ホーム画面ウィジェットを作成・更新したい | widgetkit | [references/widgetkit/README.md](references/widgetkit/README.md) |
 | Live Activity / Dynamic Island を実装したい | widgetkit | [references/widgetkit/README.md](references/widgetkit/README.md) |
 | コントロールセンター用 ControlWidget を作りたい | widgetkit | [references/widgetkit/README.md](references/widgetkit/README.md) |
@@ -174,10 +183,12 @@ skills/apple-app-services/
 | リモート通知のコンテンツを配信前に加工したい（Notification Service Extension） | notifications | [references/notifications/README.md](references/notifications/README.md) |
 | 現在地の取得・位置情報の許可を管理したい | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
 | SwiftUI の Map ビューにマーカー・アノテーションを表示したい | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
-| 座標からジオコーディング・逆ジオコーディングしたい | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
+| 位置情報の許可を宣言的に要求・診断したい（CLServiceSession / 精度 authorization） | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
+| 座標からジオコーディング・逆ジオコーディングしたい（MKGeocodingRequest / MKReverseGeocodingRequest。CLGeocoder は deprecated） | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
 | Look Around や地図スタイルを設定したい | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
 | ジオフェンス・ビーコン領域や継続的なバックグラウンド位置取得を実装したい | location-maps | [references/location-maps/README.md](references/location-maps/README.md) |
 | HealthKit でヘルスデータの読み書き権限を要求したい | health-auth | [references/health-auth/README.md](references/health-auth/README.md) |
 | 歩数・心拍数・State of Mind などのサンプルを照会・統計集計したい | health-auth | [references/health-auth/README.md](references/health-auth/README.md) |
 | Sign in with Apple を実装したい | health-auth | [references/health-auth/README.md](references/health-auth/README.md) |
+| SwiftUI から Sign in with Apple / passkey を async で実行したい（AuthorizationController） | health-auth | [references/health-auth/README.md](references/health-auth/README.md) |
 | OAuth / OpenID Connect の Web 認証フローを実装したい | health-auth | [references/health-auth/README.md](references/health-auth/README.md) |

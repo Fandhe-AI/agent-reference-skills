@@ -26,28 +26,14 @@ manager.startUpdatingLocation()
 | `pausesLocationUpdatesAutomatically` | `Bool` | Let system pause updates to save power |
 | `showsBackgroundLocationIndicator` | `Bool` | Status bar indicator during background use |
 | `location` | `CLLocation?` | Most recently retrieved location |
-
-## Key Methods
-
-```swift
-// Authorization
-func requestWhenInUseAuthorization()
-func requestAlwaysAuthorization()
-func requestTemporaryFullAccuracyAuthorization(withPurposeKey:completion:)
-
-// Standard updates
-func startUpdatingLocation()
-func stopUpdatingLocation()
-func requestLocation()   // one-time delivery
-
-// Significant-change service
-func startMonitoringSignificantLocationChanges()
-func stopMonitoringSignificantLocationChanges()
-
-// Availability checks (class methods)
-class func locationServicesEnabled() -> Bool
-class func significantLocationChangeMonitoringAvailable() -> Bool
-```
+| `requestWhenInUseAuthorization()` | method | Authorization request (when in use) |
+| `requestAlwaysAuthorization()` | method | Authorization request (always) |
+| `requestTemporaryFullAccuracyAuthorization(withPurposeKey:completion:)` | method | Temporary full-accuracy request |
+| `startUpdatingLocation()` / `stopUpdatingLocation()` | method | Standard location updates |
+| `requestLocation()` | method | One-time location delivery |
+| `startMonitoringSignificantLocationChanges()` / `stopMonitoringSignificantLocationChanges()` | method | Significant-change service |
+| `class func locationServicesEnabled() -> Bool` | class method | Availability check |
+| `class func significantLocationChangeMonitoringAvailable() -> Bool` | class method | Availability check |
 
 ## Notes
 
@@ -55,9 +41,12 @@ class func significantLocationChangeMonitoringAvailable() -> Bool
 - Assign `delegate` immediately after creation; the system calls `locationManagerDidChangeAuthorization(_:)` right after initialization.
 - `CLLocationManager` must be created on a thread with an active `RunLoop` (typically the main thread).
 - Prefer the async `CLLocationUpdate.liveUpdates(_:)` API (iOS 17+) over the delegate pattern for new code.
+- `accuracyAuthorization` is iOS 14.0+ / macOS 11.0+ / watchOS 7.0+ / tvOS 14.0+; `requestTemporaryFullAccuracyAuthorization(withPurposeKey:)` also has an async form: `func requestTemporaryFullAccuracyAuthorization(withPurposeKey purposeKey: String) async throws`.
 
 ## Related
 
+- [CLServiceSession](./CLServiceSession.md)
+- [CLAccuracyAuthorization](./CLAccuracyAuthorization.md)
 - [CLLocationManagerDelegate](./CLLocationManagerDelegate.md)
 - [CLLocationUpdate](./CLLocationUpdate.md)
 - [CLAuthorizationStatus](./CLAuthorizationStatus.md)
