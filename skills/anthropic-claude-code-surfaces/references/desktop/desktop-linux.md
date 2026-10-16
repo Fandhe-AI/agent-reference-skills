@@ -40,10 +40,10 @@ Cowork runs tasks in a virtual machine the desktop app hosts with QEMU and KVM.
 |------|-------------|
 | Hardware virtualization | Turned on in firmware settings. Otherwise the Cowork tab reports "Cowork requires hardware virtualization (KVM)" |
 | QEMU and UEFI firmware | x86_64: `qemu-system-x86`, `ovmf`, `virtiofsd`. arm64: `qemu-system-arm`, `qemu-efi-aarch64`, `virtiofsd`. Installed by default as recommended packages by `apt install claude-desktop`; `--no-install-recommends` (or a minimal image) drops them and the tab reports "Cowork requires QEMU". Ubuntu 22.04 has no `virtiofsd` package; the app uses a bundled copy there |
-| `/dev/kvm` and `/dev/vhost-vsock` | Add your user to the `kvm` group (`sudo usermod -aG kvm $USER`), then log out and back in. Cowork needs `/dev/vhost-vsock`, which only `kvm` group members can open, even if `/dev/kvm` already works |
+| `/dev/kvm` and `/dev/vhost-vsock` | Add your user to the `kvm` group (`sudo usermod -aG kvm "${USER}"`), then log out and back in. Cowork needs `/dev/vhost-vsock`, which only `kvm` group members can open, even if `/dev/kvm` already works |
 
 ```bash
-sudo usermod -aG kvm $USER
+sudo usermod -aG kvm "${USER}"
 sudo modprobe vhost_vsock                                                  # current boot only
 echo vhost_vsock | sudo tee /etc/modules-load.d/vhost_vsock.conf           # every boot
 ```
