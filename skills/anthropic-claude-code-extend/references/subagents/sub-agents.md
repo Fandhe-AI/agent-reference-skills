@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/sub-agents / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/sub-agents / last verified: 2026-10-17 -->
 
 # Subagents
 
@@ -33,28 +33,35 @@ Invoke explicitly with natural language ("Use the code-reviewer subagent to...")
 
 A user/project subagent named `Explore` overrides the built-in one and keeps its own `model` field.
 
+Explore model under a Fable main session: with a Claude subscription, an Anthropic Console account, or an LLM gateway reached through `ANTHROPIC_BASE_URL`, Explore runs on the Opus model that the `opus` alias resolves to; on Amazon Bedrock, Google Cloud's Agent Platform, Microsoft Foundry, Claude Platform on AWS, or a Claude apps gateway, Explore stays on the main conversation's model.
+
+Removing built-ins: `CLAUDE_CODE_DISABLE_EXPLORE_PLAN_AGENTS=1` removes only Explore and Plan (v2.1.198+); in `-p` and the Agent SDK, `CLAUDE_AGENT_SDK_DISABLE_BUILTIN_AGENTS=1` removes all built-in types.
+
 ## Options / Props
 
 Supported YAML frontmatter fields (only `name` and `description` required):
 
 | Name | Type | Description |
 |---|---|---|
-| `name` | string | Unique identifier, lowercase + hyphens. No `:` (reserved for plugin-scoped IDs) |
+| `name` | string | Unique identifier, at most 256 characters, lowercase + hyphens. No `:` (reserved for plugin-scoped IDs) |
 | `description` | string | When Claude should delegate to this subagent |
 | `tools` | string list | Allowlist of tools. Omit to inherit every tool available to subagents. `mcp__<server>` / `mcp__<server>__*` patterns supported |
 | `disallowedTools` | string list | Denylist, removed from inherited/specified tools; applied before `tools` |
 | `model` | string | `sonnet` \| `opus` \| `haiku` \| `fable` \| full model ID \| `inherit` (default) |
-| `permissionMode` | string | `default` \| `acceptEdits` \| `auto` \| `dontAsk` \| `bypassPermissions` \| `plan` \| `manual` (alias of `default`) |
+| `permissionMode` | string | `default` \| `acceptEdits` \| `auto` \| `dontAsk` \| `bypassPermissions` \| `plan` \| `manual` (alias of `default`). Ignored for plugin subagents |
 | `maxTurns` | number | Max agentic turns before the subagent stops |
+| `autoCompactWindow` | number | Lower the auto-compact window for this subagent, `100000` to `1000000` (plain integer, not `200k`). Requires v2.1.296+; ignored when `CLAUDE_CODE_AUTO_COMPACT_WINDOW` is a positive integer |
 | `skills` | string list | Skills preloaded (full content) into context at startup |
 | `mcpServers` | list | MCP servers scoped to this subagent (name reference or inline config) |
-| `hooks` | object | Lifecycle hooks scoped to this subagent (`PreToolUse`, `PostToolUse`, `Stop`→`SubagentStop`) |
+| `hooks` | object | Lifecycle hooks scoped to this subagent (`PreToolUse`, `PostToolUse`, `Stop`→`SubagentStop`). Ignored for plugin subagents |
 | `memory` | string | `user` \| `project` \| `local` — persistent memory directory across sessions |
-| `background` | boolean | Force background execution. Default: Claude decides (background by default as of v2.1.198) |
+| `omitClaudeMd` | boolean | `true` starts the subagent without the user, project and local CLAUDE.md files (managed policy files still load, except for managed subagents). Ignored when run as main session agent via `--agent`. Requires v2.1.271+ |
+| `background` | boolean | Keep this subagent in the background even when Claude asks for the foreground. Where fork mode is on, Claude Code already runs spawned subagents in the background |
 | `effort` | string | `low` \| `medium` \| `high` \| `xhigh` \| `max`, overrides session effort |
 | `isolation` | string | `worktree` — run in an isolated git worktree |
-| `color` | string | Display color in task list/transcript |
-| `initialPrompt` | string | Auto-submitted first user turn when run as main session agent via `--agent` |
+| `color` | string | Display color in task list/transcript: `red`, `blue`, `green`, `yellow`, `purple`, `orange`, `pink`, `cyan` |
+| `initialPrompt` | string | Auto-submitted first user turn when run as main session agent via `--agent`. Ignored for plugin subagents |
+| `experimental` | map | `cacheTtl: 5m \| 1h` chooses the prompt cache lifetime for this subagent's requests (write it inside `experimental`, not at top level; `1h` ignored while the subscription uses usage credits). Requires v2.1.248+ |
 
 ## Scope / precedence
 
@@ -69,10 +76,11 @@ Supported YAML frontmatter fields (only `name` and `description` required):
 ## Notes
 
 - For the Agent SDK's own subagent definitions, see anthropic-agent-sdk.
-- Subagents run in foreground (blocks conversation) or background (concurrent, permission prompts surface in main session); background is the default as of v2.1.198, with a reduced built-in tool set.
-- Nesting: a subagent can spawn its own subagents up to 3 layers deep by default (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). Session cap: 200 subagents (`CLAUDE_CODE_MAX_SUBAGENTS_PER_SESSION`). Concurrent cap: 20 (`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`).
+- Subagents run in foreground (blocks conversation) or background (concurrent, permission prompts surface in main session). Fork mode is on by default in interactive sessions from v2.1.232 (earlier: `CLAUDE_CODE_FORK_SUBAGENT=1`) and off in `-p` and the Agent SDK; `CLAUDE_CODE_FORK_SUBAGENT=1` turns it on everywhere, `0` off everywhere. While fork mode is on, Claude Code runs spawned subagents (forks and non-fork alike) in the background and Claude can't request the foreground. With fork mode off, Claude runs them in the background by default and in the foreground when it needs the result; the `background` frontmatter field keeps one in the background. `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1` forces the foreground.
+- Nesting: a subagent can spawn its own subagents up to 3 layers deep by default (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`; 1 turns nesting off). Concurrent cap: 20 (`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`, v2.1.217+). There is no limit on the total number of subagents over a session. Version history: v2.1.172–216 nested up to 5 layers by default (not changeable); v2.1.217–218 defaulted to 1; v2.1.219 raised the default to 3.
+- Discovery: `.claude/agents/` and `~/.claude/agents/` are scanned recursively (subfolders don't affect identity; identity is the `name` field). Plugin `agents/` is also scanned recursively, and a subfolder becomes part of the scoped ID (`agents/review/security.md` in plugin `my-plugin` is `my-plugin:review:security`). `--add-dir` / `/add-dir` also loads that directory's `.claude/agents/` (not watched; restart after editing).
 - A non-fork subagent starts with fresh context: its own system prompt, the delegation task message, CLAUDE.md hierarchy, a git status snapshot, and any preloaded skills. Explore/Plan skip CLAUDE.md and git status.
-- A **fork** (`/subtask`, or `/fork` on older versions) inherits the entire conversation instead of starting fresh — same system prompt, tools, model, and message history as the main session; only its final result returns.
+- A **fork** (`/subtask`, v2.1.212+; `/fork` on v2.1.161–v2.1.211, and again when agent view is turned off) inherits the entire conversation instead of starting fresh — same system prompt, tools, model, and message history as the main session; only its final result returns. While agent view is on, `/fork` instead copies the whole session into a new background session.
 - Resume a finished subagent via `SendMessage` addressed to its agent ID/name to continue with full history instead of starting over.
 - `Agent(agent-name)` syntax in `tools` restricts which subagent types a `--agent`-run main thread can spawn; `permissions.deny: ["Agent(name)"]` blocks a specific subagent globally.
 - Subagent output is scanned for instruction-shaped patterns (e.g. fake `<system-reminder>` tags) before Claude reads it; matches get a `[harness: ...]` marker line, content is never altered/removed.

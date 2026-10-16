@@ -28,6 +28,7 @@ Categories (SDLC phase → tags), representative prompts per phase:
 
 ## Notes
 
+- Curly-brace tokens such as `{path}`, `{feature}`, `{behavior}`, `{target}`, `{goal}`, `{steps}`, `{branch}`, `{test}` and `{name}` are intentional fill-in slots in the prompt text, not unreplaced template placeholders; substitute your own value before sending.
 - Six recurring patterns make these prompts work: describe the outcome not the steps; give Claude a way to check its own work (run/test/compare/verify); point at a reference file or pattern to match; state a measurable target; paste the artifact (error/log/screenshot) directly or `@`-mention a file; say how you want the answer formatted (pair with an output style for a lasting default).
 - This page renders as an interactive filterable widget on the live site; the content above is the underlying prompt set, not a literal page transcript.
 - This is a Claude Code CLI feature. For the Agent SDK equivalent, see anthropic-agent-sdk. For the Claude API (Messages API) Agent Skills / tool use, see anthropic-api-tools-mcp.

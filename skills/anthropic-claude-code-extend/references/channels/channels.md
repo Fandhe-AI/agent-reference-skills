@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/channels.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/channels.md / last verified: 2026-10-17 -->
 
 # Push events into a running session with channels
 
@@ -34,6 +34,10 @@ claude --channels plugin:fakechat@claude-plugins-official
 
 ## Notes
 
+- `--channels` and `--dangerously-load-development-channels` are hidden from `claude --help` during the preview; the flags work even though they aren't listed.
+- `channelsEnabled` defaults differ by plan: claude.ai Team / Enterprise block channels by default until an Owner enables them (Organization settings > Claude Code > Channels, which requires the Owner role, or `channelsEnabled: true` in managed settings); on Console, channels are allowed unless the organization deploys managed settings, in which case they're blocked until the key is set. When off, it blocks all channels including the development flag.
+- `allowedChannelPlugins: []` blocks all allowlisted channel plugins but `--dangerously-load-development-channels` can still bypass it for local testing; to block channels entirely (including the development flag), leave `channelsEnabled` unset in the deployed managed settings or turn it off; on Console without managed settings, channels are allowed by default (see the `channelsEnabled` note above). A plugin passed to `--channels` that isn't on the list doesn't register (Claude Code starts normally and the startup notice explains).
+- Install troubleshooting: if the marketplace isn't found (`Marketplace "claude-plugins-official" not found`), run `/plugin marketplace add anthropics/claude-plugins-official` and retry the install.
 - A channel is an MCP server that pushes events into the running session (inverts the normal "Claude queries the server" MCP model). Two-way channels (chat bridges) let Claude reply back through the same tool call.
 - Events only arrive while the session is open; run Claude in a background process or persistent terminal for always-on delivery.
 - Every approved channel plugin maintains a sender allowlist — only paired/allowlisted senders can push messages, others are silently dropped. Telegram/Discord bootstrap via a pairing code; iMessage self-chat bypasses the gate automatically.

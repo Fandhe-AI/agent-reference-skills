@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/routines / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/routines / last verified: 2026-10-17 -->
 
 # Routines
 
@@ -48,7 +48,23 @@ curl -X POST https://api.anthropic.com/v1/claude_code/routines/$ROUTINE_ID/fire 
 - The routine's saved prompt is delivered as an authorized assigned task, not untrusted input; `text` sent via API `/fire` or **Run now** arrives wrapped in a `<routine-fire-payload>` block labeled untrusted, and the prompt must explicitly reference it to act on it.
 - Belong to the individual claude.ai account (not shared with teammates); actions via GitHub/connectors appear as that user.
 - Compare with `/loop` (session-scoped, local) and Desktop scheduled tasks (local, file access) — see scheduled-tasks.md.
-- Daily cap on routine runs per account (separate from subscription usage limits); one-off runs are exempt from the daily cap.
+- Hourly limits (separate from subscription usage; none has overage):
+
+  | Action | Limit | Counted for | Over the limit |
+  | --- | --- | --- | --- |
+  | Scheduled runs, including one-off runs | 100 per hour | Your account | The run waits until the limit resets |
+  | Run now, API fires, and setting a one-off routine to run again | 30 per hour | Each routine, one count shared by all three | The action fails until the limit resets |
+  | Run now and setting a one-off routine to run again | 100 per hour | Your account | Same |
+  | API fires | 100 per hour | Your account, counted separately from Run now | Same |
+  | GitHub events | Per-routine and per-account hourly caps | | Events beyond the limit are dropped until the window resets |
+
+  When a routine hits the subscription usage limit, organizations with usage credits turned on can keep running on metered overage. While the subscription is paused, routines are held and don't run (turn them back on after it is active again).
+- Execution: on Anthropic-managed cloud infrastructure, or on your organization's self-hosted environment when routed there.
+- GitHub triggers can be attached from the CLI (v2.1.225+, after installing the Claude GitHub App from the GitHub App page), e.g. `/schedule add a GitHub trigger to my nightly review for pull requests opened in acme/webapp`. A PR-event trigger starts from the pull request's head commit when the PR's repository is the routine's first repository. API triggers are added on the web only.
+- `/schedule` can answer run-history questions (e.g. `/schedule why did my nightly review do nothing this morning?`; v2.1.227+).
+- If the GitHub connection is missing or expired, the routine skips runs for up to 72 hours and resumes once reconnected; after 72 hours it turns off and must be turned back on.
+- Artifacts: a schedule or Run now run can publish a new artifact without asking (visible only to you until shared); it asks first if the publish declares runtime capabilities (connector calls, file downloads). Republishing an existing artifact without asking requires the conditions listed on the source page.
+- The `anthropic-beta: experimental-cc-routine-2026-04-01` header is no longer required by the `/fire` endpoint (see routines-fire.md).
 - Team/Enterprise Owners can disable routines org-wide from admin settings.
 
 ## Related

@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/channels-reference.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/channels-reference.md / last verified: 2026-10-17 -->
 
 # Channels reference
 
@@ -38,7 +38,7 @@ claude --dangerously-load-development-channels plugin:yourplugin@yourmarketplace
 | Field | Type | Description |
 | --- | --- | --- |
 | `capabilities.experimental['claude/channel']` | `object` | Required, always `{}`. Presence registers the notification listener. |
-| `capabilities.experimental['claude/channel/permission']` | `object` | Optional, always `{}`. Opts in to receiving permission-relay requests. |
+| `capabilities.experimental['claude/channel/permission']` | `object` or `false` | Optional. Set to `{}` to opt in to receiving permission-relay requests; omit the key or set `false` to opt out. Before v2.1.234, Claude Code treated `false` as declared. |
 | `capabilities.tools` | `object` | Two-way only, always `{}`. Standard MCP tool capability for a reply tool. |
 | `instructions` | `string` | Recommended. Added to Claude's system prompt: what events to expect, `<channel>` tag attributes, whether/how to reply. |
 | `notifications/claude/channel` params.`content` | `string` | Event body, delivered as the body of the `<channel>` tag. |
@@ -52,7 +52,7 @@ claude --dangerously-load-development-channels plugin:yourplugin@yourmarketplace
 - `mcp.notification()` resolves when the message is written to the transport, not when Claude has processed it — Claude Code does not acknowledge notifications, and drops events silently if the server isn't loaded as a channel or org policy blocks it. For delivery confirmation, expose a reply tool the server can use to report status.
 - Events queue into the session and are delivered together on Claude's next turn if several arrive while busy; run separate sessions to process independent event streams concurrently.
 - Gate inbound messages on sender identity (e.g. `message.from.id`), not room/chat identity — gating on the room lets anyone in an allowlisted group inject messages.
-- Permission relay: `request_id` is five lowercase letters excluding `l` (never misread as `1`/`I`). Only declare the permission capability if the channel authenticates the sender, since anyone who can reply can approve/deny tool use. Relay covers tool-use approvals (`Bash`, `Write`, `Edit`, etc.); project-trust and MCP-server-consent dialogs never relay. The local terminal dialog stays open in parallel — whichever answer (local or remote) arrives first is applied.
+- Permission relay: `request_id` is five lowercase letters excluding `l` (never misread as `1`/`I`). Only declare the permission capability if the channel authenticates the sender, since anyone who can reply can approve/deny tool use. Relay covers tool-use approvals (`Bash`, `Write`, `Edit`, etc.); project-trust and MCP-server-consent dialogs never relay. The local terminal dialog stays open in parallel — whichever answer (local or remote) arrives first is applied. From v2.1.234, requests go only to servers registered as channels for the session (so relay sits behind the same session opt-in and organization controls as message delivery) and credentials in `description` / `input_preview` are masked as `[REDACTED]`. From v2.1.211, `description` and `input_preview` are sanitized before relaying: direction-override, invisible, and quote / angle-bracket lookalike characters are neutralized, and text is relayed whole up to 3,500 code points (applied to each top-level field of `input_preview` separately); a longer value arrives as its start and end around a counted `⋯ N code points elided ⋯` marker. Clients before v2.1.211 relay `description` raw and cut `input_preview` to 200 UTF-16 units with a trailing ellipsis. From v2.1.234, `(value unserializable)` replaces an `input_preview` field value that can't be serialized safely (key kept).
 - During the research preview, custom channels must use `--dangerously-load-development-channels` (bypasses only the allowlist, not the `channelsEnabled` org policy) since they aren't on the Anthropic-curated default allowlist.
 - Package as a plugin (`/plugin install`) and publish to a marketplace to make a custom channel installable and shareable; still needs the development flag unless added to an org's `allowedChannelPlugins` or an official-marketplace listing.
 - This is a Claude Code CLI research-preview extension of the standard MCP server contract described in `mcp.md`; the `claude/channel*` capabilities and `notifications/claude/channel*` methods are Claude Code-specific, not part of core MCP.
@@ -62,4 +62,4 @@ claude --dangerously-load-development-channels plugin:yourplugin@yourmarketplace
 
 - [Push events into a running session with channels](./channels.md)
 - [Connect Claude Code to tools via MCP](../mcp/mcp.md)
-- [Package a plugin](../plugins/plugins.md)
+- [Create a Claude Code plugin](../plugins/plugins.md)

@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/desktop-scheduled-tasks / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/desktop-scheduled-tasks / last verified: 2026-10-17 -->
 
 # Desktop scheduled tasks
 
@@ -32,11 +32,12 @@ remind me at 3pm tomorrow to check the deploy   # one-time, self-disables after 
 | Runs on | Cloud, Anthropic-managed by default | Your machine | Your machine |
 | Requires machine on | No | Yes | Yes |
 | Requires open session | No | No | Yes |
-| Persistent across restarts | Yes | Yes | Restored on `--resume` if unexpired |
+| Persistent across restarts | Yes | Yes | Restored on `--resume`, with exceptions |
 | Access to local files | No (fresh clone) | Yes | Yes |
 | MCP servers | Connectors per task | Config files and connectors | Inherits from session |
 | Permission prompts | No (runs autonomously) | Configurable per task | Inherits from session |
 | Minimum interval | 1 hour | 1 minute | 1 minute |
+| Customizable schedule | Via `/schedule` in the CLI | Yes | Yes |
 
 ## Notes
 
@@ -45,6 +46,8 @@ remind me at 3pm tomorrow to check the deploy   # one-time, self-disables after 
 - Missed runs: on app start or wake, Desktop starts exactly one catch-up run for the most recently missed time in the last 7 days and discards older misses; add prompt guardrails (e.g. time-of-day checks) if exact timing matters.
 - Each task has its own permission mode; in Manual mode an unapproved tool call stalls the run until you approve it, and future runs of that task auto-approve the same tools.
 - A running task can reschedule itself or edit its own prompt via the `update_scheduled_task` MCP tool.
+- MCP tools marked `requiresUserInteraction` prompt on every call and don't offer an always-allow option, so a run that calls them stalls each time.
+- The on-disk path moves under `CLAUDE_CONFIG_DIR` when it is set (`$CLAUDE_CONFIG_DIR/scheduled-tasks/<task-name>/SKILL.md`). Schedule, folder, model, and enabled state are not in that file; change them through the Edit form or ask Claude.
 - Deleting a task with **Also delete files on disk** removes its `SKILL.md` and data from `~/.claude/scheduled-tasks/`.
 - Distinct from Anthropic's Agent Skills (`SKILL.md` in this repository's sense): the on-disk task prompt happens to reuse the `SKILL.md` filename/frontmatter format but is a Desktop scheduling artifact, not a discoverable skill.
 
