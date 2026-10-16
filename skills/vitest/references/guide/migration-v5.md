@@ -660,6 +660,7 @@ Several entry points were marked as deprecated in Vitest 4.1. This release remov
 
 - Pinned to the `v5.0.5` release tag of `vitest-dev/vitest` (`docs/guide/migration/index.md`); source URL: https://vitest.dev/guide/migration
 - Body is the original text in original section order; site-internal links were reduced to plain text and the `[!code ++]` / `[!code --]` diff markers were replaced with `v4` / `v5` comments.
+- Source: https://vitest.dev/guide/migration/ (Vitest v5.0.5)
 
 ## Related
 

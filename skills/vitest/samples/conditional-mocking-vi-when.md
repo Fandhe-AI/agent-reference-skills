@@ -3,7 +3,7 @@
 Return different mock results depending on call arguments with `vi.when` (v5.0.0+).
 
 ```ts
-import { test, vi } from 'vitest'
+import { expect, test, vi } from 'vitest'
 import { getUserById } from './user.ts'
 
 test('returns user data', async () => {

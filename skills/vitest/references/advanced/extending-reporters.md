@@ -8,7 +8,7 @@ Extend built-in reporters or implement the `Reporter` interface from `vitest/nod
 import type { Reporter } from 'vitest/node'
 
 export default class CustomReporter implements Reporter {
-  onTestModuleCollected(testModule) {
+  onTestModuleEnd(testModule) {
     console.log(testModule.moduleId, 'is finished')
 
     for (const test of testModule.children.allTests()) {
@@ -64,6 +64,7 @@ Exported reporters from `vitest/node`:
 - Artifacts: store them inside the `.vitest` directory in the project `root`, a convention for co-locating reporter results so users only need one `.gitignore` entry. `vitest.createReport` provides utilities for writing artifacts.
   - A reporter can create `.vitest` if it does not exist, and should never remove it.
   - A reporter should create its own directory inside it (e.g. `.vitest/yaml-reporter/`) and may remove only that directory.
+- `onTestModuleCollected` runs after collection but before any test has a result (`test.result()` is still pending); the official guide example uses it, but per the Reporter API docs `onTestModuleEnd` is the hook where every test result is final, so this page uses `onTestModuleEnd`.
 - Source: Vitest v5.0.5 docs, https://vitest.dev/guide/advanced/reporters
 
 ## Related

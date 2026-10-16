@@ -72,6 +72,7 @@ describe('User API', () => {
 - Config file, global setup, and global teardown have no access to test context; setup files, file-level code, and hooks run in the worker and do.
 - Watch mode: on change only affected files rerun and setup files rerun; global setup does not rerun (use `project.onTestsRerun`); teardown runs on exit.
 - Performance: use global setup for expensive one-time work, `beforeAll` over `beforeEach` where isolation is not needed, and avoid heavy setup files with many test files.
+- Source: https://vitest.dev/guide/lifecycle (Vitest v5.0.5)
 
 ## Related
 

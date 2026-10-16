@@ -68,6 +68,7 @@ export const test = baseTest
 - Injected fixture: `.extend('url', { injected: true }, '/default')`; override per project with `test.provide` in the project config.
 - `test.override(name, value | fn)` (4.1.0) overrides fixture values for a suite and its children; chainable, accepts an object, supports `onCleanup`, inherits options, cannot change `scope` / `auto`, cannot add new fixtures, cannot override non-test-scope fixtures inside `describe`. `test.scoped` is deprecated in favor of `test.override`.
 - Extended `test` provides type-aware `test.beforeEach` / `test.afterEach`, and (4.1.0) `test.beforeAll` / `test.afterAll` / `test.aroundAll` that can access only file- and worker-scoped fixtures (including `auto`). Global `beforeAll` etc. do not see custom fixtures.
+- Source: https://vitest.dev/guide/test-context (Vitest v5.0.5)
 
 ## Related
 

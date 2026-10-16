@@ -5,7 +5,7 @@
 ## Signature / Usage
 
 ```ts
-import { test, vi } from 'vitest'
+import { expect, test, vi } from 'vitest'
 import { getUserById } from './user.ts'
 
 test('returns user data', async () => {
@@ -40,11 +40,11 @@ Actions:
 Actions on one behavior are consumed last-in-first-out; `times` limits how many calls an action handles before falling through. Register indefinite actions first:
 
 ```ts
-import { test, vi } from 'vitest'
+import { expect, test, vi } from 'vitest'
 import { readConfig } from './config.ts'
 
 test('retries after an initial failure', async () => {
-  const fetchInstance = vi.fn<() => Promise<unknown>>()
+  const fetchInstance = vi.fn<(url: string) => Promise<Response>>()
 
   vi.when(fetchInstance)
     .calledWith('/data/config.json')
@@ -165,6 +165,7 @@ test('without mocked behavior', () => {
 - A `vi.when` chain with no behaviors, or a bare `.calledWith()` with no `then*` action, is never considered exhausted; `toHaveBeenExhausted` always fails for it.
 - Indefinite actions (no `times`) satisfy the exhaustion check after being used at least once.
 - `vi.isWhenChain` is referenced in the official See also list.
+- The official stacking example types the spy as `() => Promise<unknown>` while calling `calledWith('/data/config.json')`; this page uses `(url: string) => Promise<Response>` to match the argument.
 - Source: https://vitest.dev/guide/recipes/conditional-mocking (Vitest v5.0.5)
 
 ## Related
