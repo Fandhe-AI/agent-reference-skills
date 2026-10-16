@@ -32,7 +32,7 @@ npx playwright install --with-deps chromium
 
 - Node.js: latest 22.x, 24.x, or 26.x.
 - Windows: Windows 11+, Windows Server 2019+, or WSL.
-- macOS: macOS 14 (Sonoma) or later (v1.59 release notes: macOS 14 is no longer supported for WebKit).
+- macOS: macOS 14 (Sonoma) or later per the v1.64 installation docs (intro-js.md). Note that the source docs are not consistent here: the v1.59 release notes (Breaking Changes) state "Removed macOS 14 support for WebKit", so WebKit may require a newer macOS; the source does not name the minimum version.
 - Linux: Debian 12 / 13, Ubuntu 22.04 / 24.04 / 26.04 (x86-64 or arm64).
 
 Removed support: Debian 11 (v1.62), Ubuntu 20.04 (v1.63). Ubuntu 26.04 added in v1.61. On Linux arm64, Chromium is the Chrome for Testing build (v1.63). Browser versions: v1.64 Chromium 156.0.8078.4 / Firefox 157.0 / WebKit 27.2; v1.60 Chromium 148.0.7778.96 / Firefox 150.0.2 / WebKit 26.4. `BrowserType.launch` has an `artifactsDir` option (v1.59).

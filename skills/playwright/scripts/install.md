@@ -7,6 +7,7 @@ Playwright およびブラウザバイナリのインストール・更新・管
 - Node.js: latest 22.x, 24.x or 26.x
 - Windows 11+, Windows Server 2019+ or Windows Subsystem for Linux (WSL)
 - macOS 14 (Sonoma) or later
+- WebKit は v1.59 で macOS 14 サポートを削除（release-notes-js.md）
 - Debian 12 / 13, Ubuntu 22.04 / 24.04 / 26.04 (x86-64 or arm64)
 
 出典: intro-js.md（v1.64.1）。
