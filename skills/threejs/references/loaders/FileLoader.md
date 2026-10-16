@@ -31,6 +31,7 @@ const data = await loader.loadAsync( 'config.json' );
 
 - Enable `THREE.Cache.enabled = true` to cache responses and avoid duplicate requests.
 - Supports data URIs.
+- Since r184, `load()` has no return value; always retrieve the result through the `onLoad` callback (or use `loadAsync()`) (#33380).
 
 ## Related
 

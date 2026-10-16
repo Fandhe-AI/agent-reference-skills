@@ -23,6 +23,8 @@ const line = new THREE.Line(geometry, material);
 
 ## Notes
 
+- Map color space (r186 docs): `map` uses `SRGBColorSpace`.
+
 - `linewidth` > 1 is **not** supported in WebGL or WebGPU renderers due to hardware limitations; lines always render as 1 pixel wide
 - For wider lines, use the `Line2` addon (`examples/jsm/lines/Line2.js`) with `Line2NodeMaterial`
 - Inherits all properties from [Material](./material.md)

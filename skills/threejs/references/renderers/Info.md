@@ -18,7 +18,7 @@ renderer.info.reset();           // reset manually
 | `calls` | number (readonly) | Total render calls since app start (default `0`). |
 | `frame` | number (readonly) | Current frame ID managed by `NodeFrame` (default `0`). |
 | `compute` | Object (readonly) | Compute metrics: `calls`, `frameCalls`, `timestamp`. |
-| `memory` | Object (readonly) | Memory metrics: `attributes`, `attributesSize`, `geometries`, `indexAttributes`, `textures`, `texturesSize`, `programs`, `renderTargets`, `uniformBuffers`, `storageAttributes`, `indirectStorageAttributes`, `readbackBuffers`, `total`. |
+| `memory` | Object (readonly) | Memory metrics (r186): counts `attributes`, `geometries`, `indexAttributes`, `indirectStorageAttributes`, `programs`, `readbackBuffers`, `renderTargets`, `storageAttributes`, `textures`, `uniformBuffers`; sizes in bytes `attributesSize`, `indexAttributesSize`, `indirectStorageAttributesSize`, `programsSize`, `readbackBuffersSize`, `storageAttributesSize`, `texturesSize`, `uniformBuffersSize`; and `total` (total memory size in bytes). |
 | `render` | Object (readonly) | Render metrics: `calls`, `frameCalls`, `drawCalls`, `triangles`, `points`, `lines`, `timestamp`. |
 
 ## Methods
@@ -26,6 +26,8 @@ renderer.info.reset();           // reset manually
 | Method | Description |
 |--------|-------------|
 | `createAttribute(attribute)` | Track regular attribute memory. |
+| `createIndexAttribute(attribute)` | Track index attribute memory. |
+| `createIndirectStorageAttribute(attribute)` | Track indirect storage attribute memory. |
 | `createTexture(texture)` | Track texture memory. |
 | `createProgram(program)` | Track program memory. |
 | `createUniformBuffer(uniformBuffer)` | Track uniform buffer memory. |

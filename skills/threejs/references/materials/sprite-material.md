@@ -27,6 +27,8 @@ scene.add(sprite);
 
 ## Notes
 
+- Map color spaces (r186 docs): `map` uses `SRGBColorSpace`; `alphaMap` uses `NoColorSpace` (default).
+
 - `transparent` defaults to `true` (overrides base `Material` default)
 - Only for use with the `Sprite` object; not for meshes
 - Inherits all properties from [Material](./material.md)

@@ -24,6 +24,7 @@ scene.add(sprite);
 
 ## Methods
 
+- `intersectsFrustum(frustum: Frustum | FrustumArray)` — whether this sprite intersects the given frustum (used for frustum culling). Overrides `Object3D#intersectsFrustum`
 - `raycast(raycaster, intersects): void` — intersection test against the sprite's billboard plane
 - `copy(source): this` — copies properties from another Sprite
 

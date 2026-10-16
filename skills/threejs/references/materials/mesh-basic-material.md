@@ -39,6 +39,8 @@ const mesh = new THREE.Mesh(geometry, material);
 
 ## Notes
 
+- Map color spaces (r186 docs): `map` and `specularMap` use `SRGBColorSpace`; `envMap` and `lightMap` use `LinearSRGBColorSpace`; `alphaMap` and `aoMap` use `NoColorSpace` (default).
+
 - Does **not** respond to lights — use for unlit objects, overlays, or wireframes
 - Inherits all properties from [Material](./material.md)
 

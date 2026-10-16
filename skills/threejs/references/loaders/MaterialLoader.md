@@ -24,6 +24,7 @@ const material = await loader.loadAsync( 'material.json' );
 | `parse(json)` | Material | Parse a serialised material JSON object |
 | `setTextures(value)` | MaterialLoader | Inject a texture dictionary before parsing |
 | `createMaterialFromType(type)` | Material | Create a blank material for the given type string |
+| `MaterialLoader.registerMaterial(type, materialClass)` | — | Static. Registers the given material class (a `Material` constructor) under `type` in the loader's internal material library |
 
 ## Notes
 

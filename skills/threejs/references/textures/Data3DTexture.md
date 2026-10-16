@@ -31,6 +31,12 @@ texture.needsUpdate = true;
 | `unpackAlignment` | number | `1` | Pixel row memory alignment |
 | `wrapR` | number | `ClampToEdgeWrapping` | Wrapping along depth axis (W in UVW) |
 
+## Methods
+
+| Signature | Description |
+|-----------|-------------|
+| `.copy(source)` | Copies the values of the given `Data3DTexture` into this one. Returns `Data3DTexture`. Overrides `Texture#copy` |
+
 ## Notes
 
 - Use `wrapR` for wrapping along the depth axis, in addition to `wrapS` / `wrapT`.

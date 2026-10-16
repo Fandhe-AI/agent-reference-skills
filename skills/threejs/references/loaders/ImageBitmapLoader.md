@@ -30,6 +30,7 @@ texture.needsUpdate = true;
 
 ## Notes
 
+- Since r184, `load()` has no return value; always retrieve the image bitmap through the `onLoad` callback (or use `loadAsync()`) (#33380).
 - `Texture#flipY` and `Texture#premultiplyAlpha` are **ignored** with ImageBitmap. Configure these via `setOptions()` before loading instead.
 - When Cache is disabled, different options for the same URL may return a stale cached result — the cache key is URL only.
 - To match default `TextureLoader` behaviour, use `{ imageOrientation: 'flipY', premultiplyAlpha: 'none' }`.

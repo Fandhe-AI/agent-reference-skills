@@ -31,6 +31,9 @@ m.decompose(pos, quat, scale);
 | `multiply(m)` / `premultiply(m)` | Matrix4 | Post- or pre-multiply |
 | `invert()` | Matrix4 | Inverts in place (zero matrix if determinant = 0) |
 | `transpose()` | Matrix4 | Transposes in place |
+| `determinantAffine()` | number | Determinant assuming the matrix is affine (bottom row `[0, 0, 0, 1]`); equals `determinant()` for affine matrices (e.g. an object's world matrix) but is cheaper |
+| `scale(v)` | Matrix4 | Scales each of the first three columns of this matrix by the corresponding component of the Vector3 `v` |
+| `extractBasis(xAxis, yAxis, zAxis)` | Matrix4 | Extracts the basis vectors of this matrix into the three given Vector3 |
 | `makeTranslation(x, y, z)` | Matrix4 | Creates a translation matrix |
 | `makeRotationFromEuler(euler)` | Matrix4 | Creates rotation from Euler angles |
 | `makeRotationFromQuaternion(q)` | Matrix4 | Creates rotation from quaternion |

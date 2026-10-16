@@ -53,6 +53,9 @@ const material = new THREE.MeshStandardMaterial({
 
 ## Notes
 
+- Map color spaces (r186 docs): `map` and `emissiveMap` are color data, most set `SRGBColorSpace`; `envMap` and `lightMap` are luminance / pre-baked illuminance data, most set `LinearSRGBColorSpace` with float formats such as `.exr` / `.hdr`; `alphaMap`, `aoMap`, `bumpMap`, `displacementMap`, `metalnessMap`, `normalMap` and `roughnessMap` are non-color data and use `NoColorSpace` (default).
+- `displacementMap` repositions vertices: pair it with a matching normal map, since the renderer cannot recompute surface normals from the displaced vertices.
+
 - More expensive per-pixel than `MeshLambertMaterial` or `MeshPhongMaterial`
 - Always specify an `envMap` for physically correct results
 - Base class for [MeshPhysicalMaterial](./mesh-physical-material.md)

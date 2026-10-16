@@ -21,6 +21,12 @@ light.shadow.aspect = 1;
 | `.focus` | `number` | `1` | Focuses the shadow camera; the shadow camera's field of view is set as a percentage of the spotlight's field of view, in range `[0, 1]` |
 | `.isSpotLightShadow` | `boolean` (readonly) | `true` | Always `true`; use for type testing |
 
+## Methods
+
+| Name | Description |
+|------|-------------|
+| `.toJSON()` : `Object` | Serializes the light shadow into JSON. Overrides `LightShadow#toJSON`. See `ObjectLoader#parse` |
+
 ## Notes
 
 - Takes no constructor parameters; created automatically as `SpotLight.shadow`.
@@ -28,5 +34,6 @@ light.shadow.aspect = 1;
 
 ## Related
 
+- [LightShadow](./LightShadow.md)
 - [SpotLight](./SpotLight.md)
 - [DirectionalLightShadow](./DirectionalLightShadow.md)

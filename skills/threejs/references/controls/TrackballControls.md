@@ -42,6 +42,8 @@ new TrackballControls(object: Object3D, domElement: HTMLElement)
 | `noRotate` | boolean | `false` | Disable rotation |
 | `noZoom` | boolean | `false` | Disable zooming |
 | `noPan` | boolean | `false` | Disable panning |
+| `multiTouchRoll` | boolean | `false` | Whether a two-finger twist gesture rolls the camera around its view axis |
+| `rollSpeed` | number | `1` | Roll speed used for multi-touch roll |
 | `staticMoving` | boolean | `false` | Disable damping; instant stop when input ends |
 | `dynamicDampingFactor` | number | `0.2` | Damping intensity when `staticMoving` is `false` |
 | `minDistance` | number | `0` | Minimum dolly distance (PerspectiveCamera) |

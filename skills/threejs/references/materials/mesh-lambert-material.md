@@ -51,6 +51,9 @@ const material = new THREE.MeshLambertMaterial({
 
 ## Notes
 
+- Map color spaces (r186 docs): `map`, `emissiveMap` and `specularMap` use `SRGBColorSpace`; `envMap` and `lightMap` use `LinearSRGBColorSpace`; `alphaMap`, `aoMap`, `bumpMap`, `displacementMap` and `normalMap` use `NoColorSpace` (default).
+- `displacementMap` repositions vertices: pair it with a matching normal map, since the renderer cannot recompute surface normals from the displaced vertices.
+
 - Non-physically based; better performance than `MeshPhongMaterial` or `MeshStandardMaterial`
 - Does not produce specular highlights
 - Inherits all properties from [Material](./material.md)

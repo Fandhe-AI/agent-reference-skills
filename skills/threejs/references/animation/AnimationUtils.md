@@ -19,6 +19,7 @@ const additiveClip = THREE.AnimationUtils.makeClipAdditive(clip);
 | convertArray(array, type) | TypedArray | Converts an array to the specified typed array type |
 | flattenJSON(jsonKeys, times, values, valuePropertyName) | void | Parses AOS keyframe format; populates `times` and `values` arrays |
 | getKeyframeOrder(times) | Array\<number\> | Returns sort-order indices for the given times array |
+| hasTangents(settings) | boolean | Returns true if the given keyframe track settings hold Bezier tangent data (both tangent arrays are defined) |
 | isTypedArray(object) | boolean | Returns true if the object is a typed array |
 | makeClipAdditive(targetClip, referenceFrame?, referenceClip?, fps?) | AnimationClip | Converts clip keyframes to additive format |
 | sortedArray(values, stride, order) | Array\<number\> | Sorts values using a pre-computed order from `getKeyframeOrder()` |

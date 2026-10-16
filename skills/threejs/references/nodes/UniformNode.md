@@ -25,6 +25,7 @@ class UniformNode extends InputNode {
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `getGroup()` | `UniformGroupNode` | Returns the uniform's group |
+| `getSharedNode(builder)` | `UniformNode` | Uniform nodes with the same hash share a single uniform; returns the node the shared uniform refers to (the first node registered for the hash) |
 | `getUniformHash(builder)` | `string` | Returns the uniform's hash |
 | `setGroup(group)` | `UniformNode` | Sets `groupNode` |
 | `setName(name)` | `UniformNode` | Sets `name` |

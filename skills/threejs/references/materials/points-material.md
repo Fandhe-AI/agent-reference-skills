@@ -34,6 +34,8 @@ scene.add(points);
 
 ## Notes
 
+- Map color spaces (r186 docs): `map` uses `SRGBColorSpace`; `alphaMap` uses `NoColorSpace` (default).
+
 - Point size may be clamped by the GPU's `gl.ALIASED_POINT_SIZE_RANGE`
 - Inherits all properties from [Material](./material.md)
 

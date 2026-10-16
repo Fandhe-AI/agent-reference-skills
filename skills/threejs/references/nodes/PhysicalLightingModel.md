@@ -12,7 +12,8 @@ class PhysicalLightingModel extends LightingModel {
 		iridescence = false,
 		anisotropy = false,
 		transmission = false,
-		dispersion = false
+		dispersion = false,
+		retroreflection = false
 	) {}
 }
 ```
@@ -27,8 +28,11 @@ class PhysicalLightingModel extends LightingModel {
 | `anisotropy` | `boolean` | `false` | Whether anisotropy is supported |
 | `transmission` | `boolean` | `false` | Whether transmission is supported |
 | `dispersion` | `boolean` | `false` | Whether dispersion is supported |
+| `retroreflection` | `boolean` | `false` | Whether retroreflection is supported (7th constructor argument, r186) |
+| `dfg` | `Node` | `null` | The sampled DFG LUT value, shared by the direct and indirect lighting paths |
+| `multiScatteringCompensation` | `Node` | `null` | Multi-scattering energy compensation for direct lighting |
 | `clearcoatRadiance` / `clearcoatSpecularDirect` / `clearcoatSpecularIndirect` | `Node` | — | Clearcoat lighting terms |
-| `iridescenceF0` / `iridescenceF0Dielectric` / `iridescenceF0Metallic` / `iridescenceFresnel` | `Node` | — | Iridescence terms |
+| `iridescenceF0Dielectric` / `iridescenceF0Metallic` / `iridescenceFresnel` | `Node` | — | Iridescence terms |
 | `sheenSpecularDirect` / `sheenSpecularIndirect` | `Node` | — | Sheen lighting terms |
 
 ## Methods
@@ -40,6 +44,10 @@ class PhysicalLightingModel extends LightingModel {
 | `indirect(builder)` / `indirectDiffuse(builder)` / `indirectSpecular(builder)` | Indirect lighting terms |
 | `ambientOcclusion(builder)` | Ambient occlusion term |
 | `finish(builder)` | Final lighting accumulation |
+
+## Notes
+
+- `iridescenceF0` is removed in r186: it is absent from the r186 docs, which list only `iridescenceF0Dielectric`, `iridescenceF0Metallic` and `iridescenceFresnel` (r184 listed `iridescenceF0`).
 
 ## Related
 

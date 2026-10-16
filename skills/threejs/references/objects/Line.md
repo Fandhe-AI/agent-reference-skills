@@ -29,6 +29,7 @@ scene.add(line);
 ## Methods
 
 - `computeLineDistances(): this` — computes per-vertex distances required by `LineDashedMaterial`
+- `intersectsFrustum(frustum: Frustum | FrustumArray)` — whether this line intersects the given frustum (used for frustum culling). Overrides `Object3D#intersectsFrustum`
 - `raycast(raycaster, intersects): void`
 
 ## Notes

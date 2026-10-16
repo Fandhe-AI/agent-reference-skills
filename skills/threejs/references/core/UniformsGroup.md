@@ -50,6 +50,7 @@ setUsage(value)           // Set usage hint
 dispose()                 // Free GPU resources
 clone()                   // Clone this group
 copy(source)              // Copy from another group
+release()                 // Releases the buffer. Overrides UniformBuffer#release
 ```
 
 ## Notes

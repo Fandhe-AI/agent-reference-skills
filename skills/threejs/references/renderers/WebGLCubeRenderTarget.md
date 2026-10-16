@@ -68,10 +68,12 @@ Clears the cube render target's buffers.
 
 ## Notes
 
+- Migration (r182 → r183): `WebGLCubeRenderTarget` cannot be used with `WebGPURenderer` anymore; use `CubeRenderTarget` instead (#32871).
 - Typically used with `CubeCamera` for real-time environment reflections.
 - Use `fromEquirectangularTexture` as an efficient way to bake HDR environment maps into a cube map at runtime.
 
 ## Related
 
+- [CubeRenderTarget](./CubeRenderTarget.md)
 - [WebGLRenderTarget](./WebGLRenderTarget.md)
 - [WebGLRenderer](./WebGLRenderer.md)

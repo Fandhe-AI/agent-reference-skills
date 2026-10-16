@@ -59,7 +59,7 @@ new AnimationClip(name, duration, tracks, blendMode)
 
 ## Notes
 
-- `parseAnimation` (parses `animation.hierarchy` format) is deprecated since r175.
+- `parseAnimation` (parsed `animation.hierarchy` format) was deprecated since r175 and removed in r185 (present in r184 `src/animation/AnimationClip.js`, absent from r185 and r186; not listed in the r186 docs).
 - When loading from GLTF/FBX, prefer `AnimationClip.findByName()` over array indexing to select clips by name.
 
 ## Related

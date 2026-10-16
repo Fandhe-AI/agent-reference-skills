@@ -26,6 +26,8 @@ mesh.customDistanceMaterial = distanceMaterial;
 
 ## Notes
 
+- Map color spaces (r186 docs): `map` uses `SRGBColorSpace`; `alphaMap` and `displacementMap` use `NoColorSpace` (default).
+
 - Inherits all properties from [Material](./material.md)
 - Intended for point-light shadow maps only; directional/spot lights use [MeshDepthMaterial](./mesh-depth-material.md)
 

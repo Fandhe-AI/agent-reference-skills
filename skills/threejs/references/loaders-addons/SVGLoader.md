@@ -12,7 +12,7 @@ const data = await loader.loadAsync( 'data/sample.svg' );
 const group = new THREE.Group();
 
 for ( const path of data.paths ) {
-    const shapes = SVGLoader.createShapes( path );
+    const shapes = path.toShapes();
     const material = new THREE.MeshBasicMaterial( { color: path.color, side: THREE.DoubleSide } );
     for ( const shape of shapes ) {
         const mesh = new THREE.Mesh( new THREE.ShapeGeometry( shape ), material );
@@ -36,10 +36,16 @@ scene.add( group );
 | `load(url, onLoad, onProgress, onError)` | — | Load SVG from URL |
 | `loadAsync(url, onProgress)` | Promise\<SVGResult\> | Promise-based load |
 | `parse(text)` | Object | Parse raw SVG text; returns `{ paths, xml }` |
-| `SVGLoader.createShapes(shapePath)` | Shape[] | Convert a shape path to Three.js Shape array |
+| `SVGLoader.createShapes(shapePath)` | Shape[] | **Deprecated since r185** (use `shapePath.toShapes()`). Convert a shape path to Three.js Shape array |
+| `SVGLoader.createFillMaterial(shapePath)` | MeshBasicMaterial | Creates a material for rendering the fill of the given path; `null` if the path has no fill |
+| `SVGLoader.createStrokeMaterial(shapePath)` | MeshBasicMaterial | Creates a material for rendering the stroke of the given path; `null` if the path has no stroke |
 | `SVGLoader.getStrokeStyle(...)` | Object | Create a stroke style descriptor from SVG properties |
 | `SVGLoader.pointsToStroke(...)` | BufferGeometry | Build stroke geometry from Vector2 points |
 | `SVGLoader.pointsToStrokeWithBuffers(...)` | number | Write stroke geometry into existing buffer arrays |
+
+## Notes
+
+- `SVGLoader.createShapes()` is deprecated in r185; use `shapePath.toShapes()` instead (#33503).
 
 ## Related
 

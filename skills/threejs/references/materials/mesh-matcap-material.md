@@ -34,6 +34,9 @@ const mesh = new THREE.Mesh(geometry, material);
 
 ## Notes
 
+- Map color spaces (r186 docs): `map` uses `SRGBColorSpace`; `matcap` uses `LinearSRGBColorSpace` for an HDR matcap and `SRGBColorSpace` for an LDR matcap; `alphaMap`, `bumpMap`, `displacementMap` and `normalMap` use `NoColorSpace` (default).
+- `displacementMap` repositions vertices: pair it with a matching normal map, since the renderer cannot recompute surface normals from the displaced vertices.
+
 - Does not self-shadow or receive shadows (though it can cast them onto other shadow-receiving surfaces)
 - No dynamic lights needed — all shading is baked into the matcap texture
 - Inherits all properties from [Material](./material.md)

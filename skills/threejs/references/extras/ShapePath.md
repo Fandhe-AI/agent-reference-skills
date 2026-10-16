@@ -31,7 +31,7 @@ const shapes = shapePath.toShapes();
 
 - All path-construction methods return a reference to the `ShapePath` instance, enabling method chaining.
 - `moveTo()` starts a new sub-path stored in `subPaths` and sets it as `currentPath`.
-- `toShapes()` converts the accumulated sub-paths into `Shape` instances.
+- `toShapes()` converts the accumulated sub-paths into `Shape` instances. In r184 the signature was `toShapes( isCCW : boolean )`; in r186 it is `toShapes()` with no `isCCW` parameter.
 
 ## Related
 

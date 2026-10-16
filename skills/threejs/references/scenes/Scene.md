@@ -29,6 +29,7 @@ renderer.render(scene, camera);
 ## Notes
 
 - Scene inherits all `Object3D` methods such as `add()`, `remove()`, and `getObjectByName()`.
+- Since r184, the rotation of background and environment maps (`backgroundRotation` / `environmentRotation`) is aligned with how 3D objects are rotated (#33077, #33232).
 - Setting `environment` does not override a material's own `envMap` property.
 
 ## Related

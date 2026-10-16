@@ -29,11 +29,12 @@ scene.add(light);
 
 | Name | Description |
 |------|-------------|
-| `.dispose()` | Frees GPU-related resources. Call when the light is no longer needed |
+| `.dispose()` | Inherited from `Object3D` (r186). Frees GPU-related resources. Call when the light is no longer needed |
 
 ## Notes
 
 - `Light` is abstract and cannot be instantiated directly.
+- As of r186, `Light` no longer documents its own `.dispose()`; it is inherited from `Object3D#dispose()` (see [Object3D](../core/Object3D.md)).
 - Always call `.dispose()` when removing a light from the scene to prevent memory leaks.
 - Inherits from `Object3D` — supports `.position`, `.rotation`, `.add()`, etc.
 

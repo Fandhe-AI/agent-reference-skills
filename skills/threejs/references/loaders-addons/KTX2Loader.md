@@ -21,7 +21,7 @@ const texture = await loader.loadAsync( 'diffuse.ktx2' );
 | `loadAsync(url, onProgress)` | Promise\<CompressedTexture\> | Promise-based load |
 | `parse(buffer, onLoad, onError)` | — | Parse raw KTX2 `ArrayBuffer` |
 | `detectSupport(renderer)` | KTX2Loader | Detect GPU compressed texture support — **must call before loading** |
-| `setTranscoderPath(path)` | KTX2Loader | Path to WASM transcoder and JS wrapper files |
+| `setTranscoderPath(path)` | KTX2Loader | Optionally sets the path from which the WASM transcoder and JS wrapper files are loaded (e.g. a CDN). By default they are loaded from the `examples/jsm/libs/basis` directory |
 | `setWorkerLimit(n)` | KTX2Loader | Maximum number of Web Workers to allocate |
 | `dispose()` | — | Free internal resources |
 

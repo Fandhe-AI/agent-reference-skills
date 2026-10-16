@@ -45,6 +45,7 @@ new FirstPersonControls(object: Object3D, domElement: HTMLElement)
 | `heightCoef` | number | `1` | Speed multiplier when height is near `heightMax` |
 | `heightMin` | number | `0` | Lower height boundary for speed adjustment |
 | `heightMax` | number | `1` | Upper height boundary for speed adjustment |
+| `dampingFactor` | number | `0.1` | How quickly movement and look velocity catches up to the input. Lower values feel heavier (more inertia); `1` disables damping |
 | `mouseDragOn` | boolean | `false` | (readonly) Whether mouse button is held |
 
 ## Methods
@@ -57,6 +58,7 @@ new FirstPersonControls(object: Object3D, domElement: HTMLElement)
 
 ## Notes
 
+- Since r184, `FirstPersonControls` has a new interaction model and improved mobile support (#33124)
 - `update(delta)` is mandatory every frame; pass `clock.getDelta()` for frame-rate independence
 - Call `handleResize()` when the canvas or window is resized
 - For game-style first-person movement with pointer lock, consider PointerLockControls instead

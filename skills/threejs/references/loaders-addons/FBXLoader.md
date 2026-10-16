@@ -12,6 +12,12 @@ const object = await loader.loadAsync( 'models/fbx/stanford-bunny.fbx' );
 scene.add( object );
 ```
 
+## Properties
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `trimAnimationClips` | boolean | `false` | Whether to trim animation clips to the time range of their animation stacks and shift them to start at time zero. Useful for assets that define multiple clips on a single timeline |
+
 ## Methods
 
 | Method | Returns | Description |
@@ -23,6 +29,7 @@ scene.add( object );
 ## Notes
 
 - Supports ASCII FBX version 7.0+ and binary FBX version 6400+. Lower versions may partially load with errors.
+- Since r184, `FBXLoader` automatically converts +Z-up models into +Y-up; manual rotations at application level can be removed.
 - Morph normals / blend shape normals are not yet supported.
 
 ## Related

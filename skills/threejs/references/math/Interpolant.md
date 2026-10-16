@@ -47,4 +47,9 @@ const result = interpolant.evaluate(t); // returns resultBuffer
 
 ## Related
 
+- [BezierInterpolant.md](./BezierInterpolant.md)
+- [CubicInterpolant.md](./CubicInterpolant.md)
+- [DiscreteInterpolant.md](./DiscreteInterpolant.md)
+- [LinearInterpolant.md](./LinearInterpolant.md)
+- [QuaternionLinearInterpolant.md](./QuaternionLinearInterpolant.md)
 - [MathUtils.md](./MathUtils.md)

@@ -17,6 +17,7 @@ const texture = await loader.loadAsync( 'textures/memorial.exr' );
 |--------|---------|-------------|
 | `load(url, onLoad, onProgress, onError)` | DataTexture | Load a data texture from URL |
 | `loadAsync(url, onProgress)` | Promise\<DataTexture\> | Promise-based load |
+| `createDataTexture(buffer)` | DataTexture | Parses the given `ArrayBuffer` and returns a configured data texture. Use for texture data already in memory (e.g. drag and drop or data loaded from a server) without going through `load()` |
 | `parse(buffer)` | TexData | Abstract. Decode raw binary data into a texture descriptor |
 
 ## TexData structure (returned by `parse()`)

@@ -60,6 +60,9 @@ new TransformControls(camera: Camera, domElement: HTMLElement)
 | `showXY` | boolean | `true` | Show XY-plane gizmo |
 | `showXZ` | boolean | `true` | Show XZ-plane gizmo |
 | `showYZ` | boolean | `true` | Show YZ-plane gizmo |
+| `showE` | boolean | `true` | Show the e rotation helper |
+| `showXYZE` | boolean | `true` | Show the xyze rotation helper |
+| `viewport` | Vector4 \| null | `null` | Viewport rectangle in logical (CSS) pixels with the origin at the lower-left of the canvas. Set when the renderer uses a sub-canvas viewport so pointer coordinates map to the correct region; `null` uses the full canvas |
 
 ## Methods
 

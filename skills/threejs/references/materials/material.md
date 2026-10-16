@@ -137,6 +137,9 @@ material.dispose(): void
 // Serialize to JSON
 material.toJSON(meta?: Object | string): Object
 
+// Deserialize from JSON; `textures` is a dictionary of textures referenced by the material
+material.fromJSON(json: Object, textures: Object<string, Texture>): Material
+
 // Set multiple properties at once
 material.setValues(values: Object): void
 
