@@ -69,6 +69,7 @@ public ObservableCollection<Product> GetProducts(string connectionString)
 - The sample connection string trusts the local SQL Server Express certificate for development. In production, install a verifiable server certificate and set `TrustServerCertificate=False`.
 - The sample uses the Northwind sample database (scripts for Northwind and pubs are in the SQL Server Samples GitHub repository); the default instance name `SQLEXPRESS` is assumed.
 - Trouble connecting: enable TCP/IP for SQL Server (Computer Management console) and make sure the SQL Server Browser service is running.
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/data-access/sql-server-database
 
 ## Related
 

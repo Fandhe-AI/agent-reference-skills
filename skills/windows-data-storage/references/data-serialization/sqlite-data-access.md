@@ -55,7 +55,7 @@ public static class DataAccess
 
 ## Notes
 
-- Call `DataAccess.InitializeDatabase()` once at app startup (e.g. in the `App` constructor) so the schema exists before any query runs.
+- Call `DataAccess.InitializeDatabase()` once at app startup (the tutorial does so in the `App` constructor). Because it is `async void`, the caller cannot await it, so a query can run before the table exists; return `Task` and await completion before querying (see `samples/sqlite-local-database.md`).
 - Always use parameterized queries (`Parameters.AddWithValue`) instead of string concatenation to prevent SQL injection. The tutorial states: "Never concatenate user input into a SQL query string. Always use parameters."
 - Prerequisite in the tutorial: Visual Studio 2026 or later with the WinUI application development workload.
 - "In a production application, connection information such as the database filename should be stored in app configuration rather than hard-coded."

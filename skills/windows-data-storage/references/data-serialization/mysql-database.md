@@ -36,6 +36,7 @@ using (var mySqlCn = new MySqlConnection(M_str_sqlcon))
 - MySQL Connector/NET version 6.4.4 or later is required to use the `MySql.Data` package with Windows authentication.
 - Connection strings and other secrets should not be hard-coded in production; store them in app configuration (e.g. Azure App Configuration).
 - The page also shows a GitHub Copilot Chat prompt for generating a MySQL connection string: "Show me how to create a MySQL connection string to a server named myServerAddress and a database called myDatabase. Use Windows authentication."
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/data-access/mysql-database
 
 ## Related
 

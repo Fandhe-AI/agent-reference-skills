@@ -35,6 +35,7 @@ Console.WriteLine(document1.ToString());
 ## Notes
 
 - In production, store connection information such as server address and database name in app configuration (e.g. Azure App Configuration) rather than hard-coding it.
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/data-access/mongodb-database
 
 ## Related
 

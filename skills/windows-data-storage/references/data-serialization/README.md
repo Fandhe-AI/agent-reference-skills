@@ -21,4 +21,3 @@
 | StorageFileQueryResult | Provides access to the results of a query of the files in the location represented by a `StorageFolder` object. | [storage-file-query-result.md](./storage-file-query-result.md) |
 | StorageFolderQueryResult / StorageItemQueryResult | Sibling result types to `StorageFileQueryResult`, returned by `StorageFolder.CreateFolderQueryWithOptions()` (folders/file groups only) and `StorageFolder.CreateItemQueryWithOptions()` (mixed files and folders). | [storage-folder-item-query-result.md](./storage-folder-item-query-result.md) |
 | XmlDocument | Represents the top level of an XML source, implementing `IXmlNode`, `IXmlNodeSelector`, and `IXmlNodeSerializer`. | [xml-document.md](./xml-document.md) |
-</content>

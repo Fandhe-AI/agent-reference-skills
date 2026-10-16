@@ -20,4 +20,3 @@
 | StorageProviderSyncRootManager | Registers or unregisters a Cloud Storage Provider "sync root" — a folder tree that File Explorer renders with placeholder files and sync-status badges (as used by OneDrive, Dropbox, etc.) — with the operating system. | [storage-provider-sync-root-manager.md](./storage-provider-sync-root-manager.md) |
 | StorageStreamTransaction | Represents a write transaction for a random-access stream, obtained via `StorageFile.OpenTransactedWriteAsync()`. | [storage-stream-transaction.md](./storage-stream-transaction.md) |
 | System.IO vs Windows.Storage | Guidance on choosing between the WinRT `Windows.Storage` / `Windows.Storage.Streams` APIs and the .NET `System.IO` APIs when building packaged Windows apps (UWP or WinUI 3 / Windows App SDK desktop apps). | [system-io-vs-windows-storage.md](./system-io-vs-windows-storage.md) |
-</content>

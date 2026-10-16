@@ -56,6 +56,7 @@ public async Task CosmosSample(string endpoint, string authKey)
 
 - Build the project after installing the package and confirm no errors.
 - For a complete example including required Cosmos DB setup, see the official "Develop a .NET console application with Azure Cosmos DB for NoSQL" tutorial.
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/data-access/cosmos-db-data-access
 
 ## Related
 

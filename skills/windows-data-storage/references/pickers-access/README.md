@@ -10,4 +10,3 @@
 | KnownFolders | Static class providing access to common user-content locations (Documents, Pictures, Music, Videos, removable devices, media server devices) as `StorageFolder` objects. | [known-folders.md](./known-folders.md) |
 | Microsoft.Windows.Storage.Pickers (Windows App SDK) | The `Microsoft.Windows.Storage.Pickers` namespace (Windows App SDK 1.8+) lets desktop apps (WinUI 3, WPF, WinForms) present a streamlined file/folder picker UI without any window-handle interop code, and works in elevated (administrator) processes where `Windows.Storage.Pickers` does not. | [windows-app-sdk-pickers.md](./windows-app-sdk-pickers.md) |
 | StorageApplicationPermissions | Future access list / most recently used list for retaining picked files. | [storage-application-permissions.md](./storage-application-permissions.md) |
-</content>

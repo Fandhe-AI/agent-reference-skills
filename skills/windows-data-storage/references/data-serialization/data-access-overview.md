@@ -26,6 +26,7 @@ Install-Package MongoDB.Driver                            # MongoDB
 
 - For enterprise line-of-business apps that access shared data, prefer an authenticated service layer that owns database access. A service boundary centralizes authorization, validation, auditing, versioning, and credential protection.
 - Don't embed shared database credentials or privileged connection strings in a desktop client.
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/data-access/
 
 ## Related
 

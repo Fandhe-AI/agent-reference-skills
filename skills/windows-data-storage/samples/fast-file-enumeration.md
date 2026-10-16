@@ -51,7 +51,7 @@ if (!folderToEnumerate.AreQueryOptionsSupported(picturesQuery))
 } 
 StorageFileQueryResult queryResult = folderToEnumerate.CreateFileQueryWithOptions(picturesQuery); 
 IReadOnlyList<StorageFile> images = await queryResult.GetFilesAsync(index, stepSize); 
-while (images.Count != 0 || index < 10000) 
+while (images.Count != 0 && index < 10000) 
 { 
     foreach (StorageFile file in images) 
     { 
@@ -72,6 +72,7 @@ while (images.Count != 0 || index < 10000)
 
 ## Notes
 
+- Difference from the official sample: its loop condition is `images.Count != 0 || index < 10000`, which neither stops on an empty page nor enforces the 10000 limit; this sample uses `&&`.
 - The example requires the `picturesLibrary` capability; other locations may need a different capability or none.
 - Always prefetch the properties the app will read with `QueryOptions.SetPropertyPrefetch`; accessing a non-prefetched property incurs a significant performance penalty. With `IndexerOption.OnlyUseIndexerAndOptimizeForIndexedProperties`, results are returned about 10 times faster than with the other `IndexerOption` values but include only the prefetched properties.
 - Page with `GetFilesAsync(startIndex, maxNumberOfItems)` instead of fetching everything. The source recommends not fetching more than 500 files at a time.

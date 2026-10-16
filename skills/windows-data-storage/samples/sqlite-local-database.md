@@ -10,11 +10,13 @@ Store and read text entries in a local SQLite file under `ApplicationData.Curren
 ```csharp
 using Microsoft.Data.Sqlite;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using Windows.Storage;
 
 public static class DataAccess
 {
-    public async static void InitializeDatabase()
+    public static async Task InitializeDatabaseAsync()
     {
         await ApplicationData.Current.LocalFolder
                 .CreateFileAsync("sqliteSample.db", CreationCollisionOption.OpenIfExists);
@@ -77,14 +79,17 @@ public static class DataAccess
 }
 ```
 
-Call `InitializeDatabase` from the `App` constructor so the database is created or opened at every start.
+Await `InitializeDatabaseAsync` in `OnLaunched` before creating the window, so the table exists before `GetData` runs.
 
 ```csharp
-public App()
-{
-    this.InitializeComponent();
+private Window? m_window; // field from the WinUI project template's App class
 
-    DataAccess.InitializeDatabase();
+protected override async void OnLaunched(LaunchActivatedEventArgs args)
+{
+    await DataAccess.InitializeDatabaseAsync();
+
+    m_window = new MainWindow();
+    m_window.Activate();
 }
 ```
 
@@ -126,6 +131,7 @@ public MainWindow()
 
 ## Notes
 
+- Difference from the official tutorial: it calls `async void InitializeDatabase()` from the `App` constructor without awaiting, so `GetData` can run before the table is created. This sample returns `Task` and awaits it in `OnLaunched` instead.
 - The `ApplicationData` members used here only work for packaged apps running in an app container. All other Windows apps should access `ApplicationData` members via the `ApplicationDataManager` class.
 - Always use parameterized queries. The tutorial: "Never concatenate user input into a SQL query string. Always use parameters."
 - In a production app, keep connection information such as the database filename in app configuration instead of hard-coding it.
