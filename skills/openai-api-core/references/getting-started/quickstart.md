@@ -24,7 +24,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input="Write a one-sentence bedtime story about a unicorn.",
 )
 
@@ -35,7 +35,7 @@ print(response.output_text)
 
 - Create an API key via the dashboard and export it as `OPENAI_API_KEY` before making any call.
 - On Windows, `setx` only takes effect in terminals opened after running it; use `$env:OPENAI_API_KEY = "..."` in PowerShell to set it for the current session immediately.
-- The quickstart example consistently uses `model="gpt-5.6"` as a bare alias; the model catalog otherwise lists variant suffixes (`gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`) — see [Models](./models.md).
+- The quickstart example uses `model="gpt-6-astra"`; the recommended models are `gpt-6-astra`, `gpt-6.1-sol`, and `gpt-6-luna` — see [Models](./models.md).
 - Official SDKs also exist for .NET, Java, Go, and Ruby (via NuGet, Maven, Go modules, Bundler).
 - Beyond basic text generation, the API supports image/file input analysis, web search, file search over vector stores, code interpreter, function calling, MCP server integration, streaming via server-sent events, and multi-agent systems through the Agents SDK.
 

@@ -6,7 +6,7 @@ Guidance on choosing between reasoning (o-series) models and GPT models, and how
 
 ```python
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     store=True,
     input=[{"role": "developer", "content": "Formatting re-enabled\nBe concise."}],
 )

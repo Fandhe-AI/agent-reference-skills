@@ -8,7 +8,7 @@ Copy-pasteable `curl` calls for the main OpenAI API endpoints. All examples assu
 curl "https://api.openai.com/v1/responses" \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
-    -d '{"model": "gpt-5.6","input": "Write a one-sentence bedtime story about a unicorn."}'
+    -d '{"model": "gpt-6-astra","input": "Write a one-sentence bedtime story about a unicorn."}'
 ```
 
 ## Chat Completions の作成（レガシー互換 API）
@@ -18,7 +18,7 @@ curl https://api.openai.com/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-5.6",
+    "model": "gpt-6-astra",
     "messages": [
       {
         "role": "developer",
@@ -80,7 +80,7 @@ curl https://api.openai.com/v1/files \
     -F purpose=assistants
 ```
 
-`purpose` は用途に応じて `assistants` / `user_data` 等を指定する。
+`purpose` は用途に応じて指定する。要確認: Assistants API は 2026-08-26 に停止済みで、`assistants` が Files API の purpose 値として現在も有効かは未確認。公式 quickstart の PDF 入力例では `-F purpose="user_data"` が使われている。
 
 ## ファイル一覧の取得
 
@@ -96,12 +96,14 @@ curl https://api.openai.com/v1/images/generations \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-image-1.5",
+    "model": "gpt-image-2.5-sunburst",
     "prompt": "A cute baby sea otter",
     "n": 1,
     "size": "1024x1024"
   }'
 ```
+
+旧例の `gpt-image-1.5` は 2026-12-01 に停止予定。代替は `gpt-image-2.5-sunburst` / `gpt-image-2.5-flare`（どちらも Image API と Responses の image generation tool で利用可、2026-09-08 の changelog で確認）。
 
 ## 画像生成（ストリーミング）
 
@@ -110,7 +112,7 @@ curl https://api.openai.com/v1/images/generations \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-image-1.5",
+    "model": "gpt-image-2.5-sunburst",
     "prompt": "A cute baby sea otter",
     "n": 1,
     "size": "1024x1024",
@@ -118,3 +120,5 @@ curl https://api.openai.com/v1/images/generations \
   }' \
   --no-buffer
 ```
+
+`gpt-image-1.5` は 2026-12-01 停止予定のため `gpt-image-2.5-sunburst` に置き換えている。

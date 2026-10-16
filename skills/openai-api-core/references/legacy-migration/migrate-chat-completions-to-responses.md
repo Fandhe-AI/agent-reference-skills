@@ -11,8 +11,8 @@ context = [
     {"role": "user", "content": "Hello!"},
 ]
 
-completion = client.chat.completions.create(model="gpt-5.6", messages=context)
-response = client.responses.create(model="gpt-5.6", input=context)
+completion = client.chat.completions.create(model="gpt-6-astra", messages=context)
+response = client.responses.create(model="gpt-6-astra", input=context)
 ```
 
 ## Options / Props
@@ -57,7 +57,8 @@ response = client.responses.create(model="gpt-5.6", input=context)
 ## Notes
 
 - Responses is agentic by default: it can call multiple built-in tools (web search, file search, computer use, code interpreter, remote MCP) plus custom functions within a single request, and supports native multimodal input (text + images; audio "coming soon").
-- Chat Completions remains supported, so migration can proceed one flow at a time.
+- Chat Completions remains supported, so migration can proceed one flow at a time. GPT-6 Astra and GPT-6.1 Sol accept Chat Completions but tool calling requires Responses; GPT-6 Sol and GPT-6 Luna support function calling in Chat Completions only with `reasoning_effort: "none"` (use Responses for reasoning with tools).
+- The Assistants API was officially sunset on August 26, 2026 and is no longer available; migrate those integrations to the Responses API (see [Assistants to Responses migration](./assistants-to-responses-migration.md)).
 - Incremental rollout checklist: start with a simple text flow -> update endpoint/body/output handling -> pick a state strategy -> add `store: false` + encrypted reasoning for stateless/ZDR flows -> migrate function defs and `call_id` handling -> move Structured Outputs to `text.format` -> update streaming handlers -> swap in OpenAI-hosted tools -> compare behavior/latency/cost/errors before shifting more traffic.
 - OpenAI recommends migrating all flows to Responses over time to get the latest features and improvements.
 

@@ -16,7 +16,7 @@ class CalendarEvent(BaseModel):
 
 
 response = client.responses.parse(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {"role": "system", "content": "Extract the event information."},
         {

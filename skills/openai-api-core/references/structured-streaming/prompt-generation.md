@@ -13,7 +13,7 @@ META_PROMPT = "...".strip()  # meta-prompt with prompt-writing guidelines
 
 def generate_prompt(task_or_prompt: str):
     completion = client.chat.completions.create(
-        model="gpt-5.6",
+        model="gpt-6-astra",
         messages=[
             {"role": "system", "content": META_PROMPT},
             {"role": "user", "content": "Task, Goal, or Current Prompt:\n" + task_or_prompt},

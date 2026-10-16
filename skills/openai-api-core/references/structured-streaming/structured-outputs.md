@@ -6,7 +6,7 @@ Ensures model responses adhere to a supplied JSON Schema. Guarantees reliable ty
 
 ```javascript
 const response = await openai.responses.parse({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   input: [
     { role: "system", content: "Extract event information." },
     { role: "user", content: "Alice and Bob attend a science fair Friday." }
@@ -21,7 +21,7 @@ Raw form (without an SDK helper), as a complete Responses API request body:
 
 ```json
 {
-  "model": "gpt-5.6",
+  "model": "gpt-6-astra",
   "input": [
     { "role": "system", "content": "You are a helpful math tutor. Guide the user through the solution step by step." },
     { "role": "user", "content": "how can I solve 8x + 7 = -23" }
@@ -68,8 +68,10 @@ Raw form (without an SDK helper), as a complete Responses API request body:
 ## Notes
 
 - Requirements when `strict: true`: every field in `properties` must be listed in `required`, and `additionalProperties` must be `false` for every object in the schema; the root schema must be an object type (not `anyOf`).
-- Supported schema features: strings (`pattern`, `format`), numbers (`multipleOf`, min/max), arrays (`minItems`, `maxItems`), `enum`, `anyOf`, nested objects, recursion.
-- Unsupported schema features: `allOf`, `not`, `dependentRequired`, `if`/`then`/`else` compositions.
+- Supported schema features: strings (`pattern`, `format`), numbers (`multipleOf`, `maximum`, `exclusiveMaximum`, `minimum`, `exclusiveMinimum`), arrays (`minItems`, `maxItems`), `enum`, `anyOf`, nested objects, recursion.
+- Supported string `format` values: `date-time`, `time`, `date`, `duration`, `email`, `hostname`, `ipv4`, `ipv6`, `uuid`.
+- Unsupported schema features: `allOf`, `not`, `dependentRequired`, `dependentSchemas`, `if`/`then`/`else` compositions. Supplying `strict: true` with an unsupported JSON Schema returns an error.
+- Fine-tuned models additionally do not support: string `minLength` / `maxLength` / `pattern` / `format`; number `minimum` / `maximum` / `multipleOf`; object `patternProperties`; array `minItems` / `maxItems`.
 - Available starting with GPT-4o; for new projects start with the current default model. Differs from legacy JSON mode, which guarantees valid JSON but not schema adherence.
 - Safety-based refusals appear as `type: "refusal"` content, making them programmatically detectable instead of silently malformed JSON.
 - Works with streaming — partial JSON arrives via `response.output_text.delta` events before the response completes.

@@ -2,12 +2,13 @@
 name: openai-api-core
 description: >
   OpenAI API (developers.openai.com) の Responses API リファレンス。
-  text generation, embeddings, structured outputs, streaming, function calling,
-  programmatic tool calling, conversation state, prompt caching,
-  reasoning models, background mode, compaction, multi-agent。
-  webhooks, error codes, rate limits, Realtime API server controls。
-  公式 SDK (Python / JavaScript(JS) / .NET / Java / Go / Ruby), openai CLI。
-  Chat Completions / Assistants からの移行, deprecations。
+  text generation, embeddings, gpt-6-astra / gpt-6.1-sol / gpt-6-luna,
+  structured outputs, streaming, function calling, programmatic / async tool calling,
+  conversation state, prompt caching, prompt cache diagnostics, reasoning (configuration_update),
+  background mode, compaction, multi-agent, WebSocket mode (mid-turn steering, stream_id),
+  webhooks, error codes, rate limits, Realtime server controls,
+  公式 SDK (Python / JS / .NET / Java / Go / Ruby), openai CLI,
+  Chat Completions / Assistants 移行, deprecations。
 user-invocable: false
 ---
 
@@ -35,6 +36,7 @@ skills/openai-api-core/
       text.md
       conversation-state.md
       prompt-caching.md
+      prompt-caching-diagnostics.md
       reasoning.md
       reasoning-best-practices.md
       background.md
@@ -47,7 +49,9 @@ skills/openai-api-core/
       streaming-responses.md
       function-calling.md
       programmatic-tool-calling.md
+      async-tool-calling.md
       websocket-mode.md
+      steering.md
       prompt-generation.md
     webhooks-errors/
       README.md
@@ -98,7 +102,12 @@ skills/openai-api-core/
 
 Agents SDK・組み込みツール（web search / file search / code interpreter / computer use）・MCP 連携は `openai-agents` スキル、
 Codex（コーディングエージェント CLI）は `openai-codex` スキルを参照。
+Agents API（managed agent harness、sessions / environments）と Agents API multi-agent は `openai-agents` スキル、
+GPT-Live（`/v1/live/sessions`）は `openai-realtime-audio` スキル、
+Fast / Ultrafast mode と misalignment monitoring は `openai-platform-ops` スキルの担当。
 本スキルは Responses API 本体の呼び出し方・構造化出力・ストリーミング・webhooks・公式 SDK・レガシー移行を担当する。
+
+出典: developers.openai.com/api/docs（Markdown twin、取得日 2026-10-17）。サイトに版タグなし。
 
 ## タスク → カテゴリ マッピング
 
@@ -108,12 +117,13 @@ Codex（コーディングエージェント CLI）は `openai-codex` スキル�
 | モデル一覧・選定基準・コンテキストウィンドウ/最大出力の比較を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | Responses API でテキストを生成する・プロンプト設計の基本を知りたい | responses | [references/responses/README.md](references/responses/README.md) |
 | 会話状態の管理（`previous_response_id` / Conversations API）・プロンプトキャッシュを扱いたい | responses | [references/responses/README.md](references/responses/README.md) |
-| reasoning モデルの `effort`/`summary` 設定・background mode・マルチエージェント・compaction を知りたい | responses | [references/responses/README.md](references/responses/README.md) |
+| キャッシュミスの原因を診断したい（prompt cache diagnostics） | responses | [references/responses/README.md](references/responses/README.md) |
+| reasoning モデルの `effort`/`summary` 設定（`configuration_update` による会話途中の effort 変更を含む）・background mode・マルチエージェント・compaction を知りたい | responses | [references/responses/README.md](references/responses/README.md) |
 | 本番投入前の設計チェックリスト（deployment checklist）を確認したい | responses | [references/responses/README.md](references/responses/README.md) |
 | 構造化出力（JSON Schema, strict mode）を得たい | structured-streaming | [references/structured-streaming/README.md](references/structured-streaming/README.md) |
 | SSE ストリーミングでレスポンスを逐次受信したい | structured-streaming | [references/structured-streaming/README.md](references/structured-streaming/README.md) |
-| function calling / programmatic tool calling でツールを呼び出したい | structured-streaming | [references/structured-streaming/README.md](references/structured-streaming/README.md) |
-| WebSocket 経由で常時接続の agentic ワークフローを組みたい | structured-streaming | [references/structured-streaming/README.md](references/structured-streaming/README.md) |
+| function calling / programmatic tool calling / async tool calling でツールを呼び出したい | structured-streaming | [references/structured-streaming/README.md](references/structured-streaming/README.md) |
+| WebSocket 経由で常時接続の agentic ワークフローを組みたい（mid-turn steering・`stream_id` による並行会話を含む） | structured-streaming | [references/structured-streaming/README.md](references/structured-streaming/README.md) |
 | Playground の Generate 機能でプロンプト/関数定義/スキーマを自動生成したい | structured-streaming | [references/structured-streaming/README.md](references/structured-streaming/README.md) |
 | webhook の受信・検証・Realtime API のサーバー側制御を知りたい | webhooks-errors | [references/webhooks-errors/README.md](references/webhooks-errors/README.md) |
 | エラーコード・例外クラス・レート制限とバックオフ戦略を知りたい | webhooks-errors | [references/webhooks-errors/README.md](references/webhooks-errors/README.md) |

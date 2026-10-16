@@ -38,7 +38,7 @@ tools = [
 input_list = [{"role": "user", "content": "What is my horoscope? I am an Aquarius."}]
 
 response = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     tools=tools,
     input=input_list,
 )
@@ -58,7 +58,7 @@ for tool_call in response.output:
         "output": json.dumps(result),
     })
 
-response = client.responses.create(model="gpt-5.6", input=input_list, tools=tools)
+response = client.responses.create(model="gpt-6-astra", input=input_list, tools=tools)
 ```
 
 ## Options / Props
@@ -72,6 +72,8 @@ response = client.responses.create(model="gpt-5.6", input=input_list, tools=tool
 | `strict` | boolean | Enforces strict schema adherence for the call arguments |
 | `tool_choice` | string \| object | `"auto"` (default, zero/one/many calls), `"required"` (at least one call), or `{"type": "function", "name": "..."}` to force one specific function |
 | `parallel_tool_calls` | boolean | Set `false` to prevent the model from requesting multiple function calls in one turn |
+| `async` | boolean | GPT-6 models: `true` lets the model keep working while your app runs the tool; see [Async tool calling](./async-tool-calling.md) |
+| `type: "namespace"` | object | Groups related tools by domain: `{type: "namespace", name, description, tools: [...]}` (e.g. `crm`, `billing`); each function inside can set `defer_loading: true` |
 
 ## Notes
 
@@ -81,6 +83,10 @@ response = client.responses.create(model="gpt-5.6", input=input_list, tools=tool
 - Keep the initial number of available functions under ~20 for best selection accuracy; for larger tool ecosystems use tool search / deferred loading (`defer_loading: true`) instead of listing every function up front.
 - Custom tools accept a freeform string instead of a JSON-schema-validated payload, useful to avoid JSON wrapping; their input can be constrained with a context-free grammar in `lark` or `regex` syntax (lookarounds and lazy modifiers `*?`/`+?`/`??` are unsupported in both).
 - Function-call arguments can be streamed incrementally via SSE delta events when `stream: true` is set on the request — see Streaming API Responses.
+- GPT-6 Astra and GPT-6.1 Sol require the Responses API for tool calling; the source's Chat Completions examples use GPT-5.6 Terra with reasoning disabled.
+- Only `gpt-5.4` and later models support `tool_search` (a hosted tool that lets the model search deferred tools and load them; details belong to the openai-agents skill).
+- Namespaces help when the model must choose between tools serving different systems (e.g. a CRM search vs. a support-ticket search). For deferred tools, put detailed guidance in the function description and keep the namespace description concise.
+- This is the Responses API's own function calling, distinct from Functions in the Agents API (openai-agents skill).
 - This page covers the Responses API's basic function-calling loop only. Deferred tool loading/tool search, built-in tools (web search, file search, code interpreter, MCP), and multi-agent orchestration are covered by the openai-agents skill, not here.
 - This is an OpenAI API (developers.openai.com) guide; it is unrelated to job-queue "function"/"task" concepts in bullmq or inngest, or to Supabase Edge Functions.
 

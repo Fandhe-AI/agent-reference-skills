@@ -13,9 +13,15 @@ Complete OpenAI API model catalog (browse the full list at `/api/docs/models/all
 | codex-mini-latest | Fast reasoning model optimized for the Codex CLI |
 | computer-use-preview | Specialized model for computer use tool |
 | davinci-002 | Replacement for the GPT-3 curie and davinci base models |
+| Daybreak Blue | An alias for flagship general-purpose models with safeguards for defensive cybersecurity work |
+| Daybreak Red | An alias for advanced cybersecurity models for authorized vulnerability research and security testing |
 | GPT Image 1 | Our previous image generation model |
 | GPT Image 1.5 | Our previous image generation model |
 | GPT Image 2 | State-of-the-art image generation model |
+| GPT-Image-2.5 Flare | Fast, high-quality everyday image generation |
+| GPT-Image-2.5 Sunburst | Our most capable model for image generation and editing |
+| GPT-Live 1 | Our premier model for natural, expressive voice conversations with smooth interruption handling |
+| GPT-Rosalind | Life sciences reasoning for approved organizations. Model ID: `gpt-rosalind-research` |
 | GPT Live Transcribe | Low-latency speech-to-text model for realtime transcription |
 | GPT Transcribe | High-accuracy speech-to-text model for file and Realtime input transcription |
 | GPT-3.5 Turbo | Legacy GPT model for cheaper chat and non-chat tasks |
@@ -61,9 +67,14 @@ Complete OpenAI API model catalog (browse the full list at `/api/docs/models/all
 | GPT-5.4 Pro | Version of GPT-5.4 that produces smarter and more precise responses |
 | GPT-5.5 | A new class of intelligence for coding and professional work |
 | GPT-5.5 Pro | Version of GPT-5.5 that produces smarter and more precise responses |
+| GPT-5.6 Cyber | Our most advanced cybersecurity model for authorized vulnerability research and security testing |
 | GPT-5.6 Luna | GPT-5.6 model optimized for cost-sensitive workloads |
 | GPT-5.6 Sol | Frontier model for complex professional work |
 | GPT-5.6 Terra | GPT-5.6 model that balances intelligence and cost |
+| GPT-6 Astra | Our most capable model for the most demanding work |
+| GPT-6 Luna | Our most efficient model for focused, high-volume tasks |
+| GPT-6 Sol | Built to power complex coding and agentic workflows |
+| GPT-6.1 Sol | Near-Astra performance for complex work at a lower cost |
 | gpt-audio | For audio inputs and outputs with Chat Completions API |
 | gpt-audio-1.5 | The best voice model for audio in, audio out with Chat Completions |
 | gpt-audio-mini | A cost-efficient version of GPT Audio |
@@ -89,8 +100,8 @@ Complete OpenAI API model catalog (browse the full list at `/api/docs/models/all
 | o4-mini | Fast, cost-efficient reasoning model, succeeded by GPT-5 mini |
 | o4-mini-deep-research | Faster, more affordable deep research model |
 | omni-moderation | Identify potentially harmful content in text and images |
-| Sora 2 | Flagship video generation with synced audio |
-| Sora 2 Pro | Most advanced synced-audio video generation |
+| Sora 2 | Flagship video generation with synced audio (shut down 2026-09-24 with the Videos API; no longer in the catalog) |
+| Sora 2 Pro | Most advanced synced-audio video generation (shut down 2026-09-24 with the Videos API; no longer in the catalog) |
 | text-embedding-3-large | Most capable embedding model |
 | text-embedding-3-small | Small embedding model |
 | text-embedding-ada-002 | Older embedding model |
@@ -102,6 +113,7 @@ Complete OpenAI API model catalog (browse the full list at `/api/docs/models/all
 
 ## Notes
 
+- The live `/models/all` page is now organized by category (Flagship / Image / Realtime & audio / OpenAI Daybreak / Life sciences / Open-weight / Embedding / More models / ChatGPT models); this table is kept as one flat, alphabetical list matching the `/models` catalog.
 - Each model name links to its own detail page at `/api/docs/models/<id>.md` (not individually reproduced here — this scope covers the catalog overview, not per-model detail pages).
 - Deprecated models remain listed in the catalog; see [Deprecations](../legacy-migration/deprecations.md) for retirement timelines and replacements.
 

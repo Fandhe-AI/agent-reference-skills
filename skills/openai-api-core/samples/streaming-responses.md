@@ -8,7 +8,7 @@ from openai import OpenAI
 client = OpenAI()
 
 stream = client.responses.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     input=[
         {
             "role": "user",

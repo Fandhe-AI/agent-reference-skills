@@ -7,7 +7,7 @@ Capability and design comparison between the two text-generation primitives, to 
 ```javascript
 // Chat Completions
 const completion = await client.chat.completions.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   messages: [
     { role: "system", content: "You are a helpful assistant." },
     { role: "user", content: "Hello!" },
@@ -17,7 +17,7 @@ console.log(completion.choices[0].message.content);
 
 // Responses
 const response = await client.responses.create({
-  model: "gpt-5.6",
+  model: "gpt-6-astra",
   instructions: "You are a helpful assistant.",
   input: "Hello!",
 });
