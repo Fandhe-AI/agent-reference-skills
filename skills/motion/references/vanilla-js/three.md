@@ -152,6 +152,7 @@ Transform shorthands for any `Object3D` (meshes, groups, lights, cameras):
 - Per-value transition overrides and returned controls work like regular `animate`.
 - TSL nodes that are not uniforms (e.g. `mix()` or `sin()` expressions) are compiled into the shader and cannot be animated at runtime.
 - Repeated `animate()` calls on the same property reuse its motion value, so a spring picks up the velocity of the animation it interrupts.
+- Source: https://motion.dev/docs/three (fetched 2026-10).
 
 ## Related
 

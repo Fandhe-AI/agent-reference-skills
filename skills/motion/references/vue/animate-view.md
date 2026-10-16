@@ -81,6 +81,7 @@ Runs a state update inside a native view transition. Wraps `document.startViewTr
 - Built on Motion's mini `animate()`, so values like `clipPath` and CSS custom properties (e.g. `--wipe`) are animatable.
 - View transitions snapshot old/new views as images and are not interruptible; best for page-level transitions. Layout animations are fully interruptible and better for micro-interactions and gesture-driven UI.
 - Same declarative pairing as `layoutId` in layout animations, but the mechanism differs: `layoutId` uses FLIP; `AnimateView` morphs browser-rendered snapshots.
+- Source: https://motion.dev/docs/vue-animate-view (fetched 2026-10).
 
 ## Related
 

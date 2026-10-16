@@ -37,6 +37,7 @@ const opacity = mix(0, 1, progress(0, 500, scrollY))
 - The opposite of `mix`: `mix` turns progress into a value, `progress` turns a value into progress.
 - If the start and end are the same, `progress` returns `1`.
 - For mapping with several stops, easing or colours, use `transform`.
+- Source: https://motion.dev/docs/progress (fetched 2026-10).
 
 ## Related
 

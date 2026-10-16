@@ -37,6 +37,7 @@ delay(() => {
 
 - Helps synchronise callbacks with other animations and avoids the overhead of many `setTimeout`s.
 - The callback fires on the first (`read`) step of the animation loop.
+- Source: https://motion.dev/docs/delay (fetched 2026-10).
 
 ## Related
 

@@ -56,6 +56,7 @@ Arrangement options (defaults in parentheses):
 - `barrel`, `sphere` and a full `ring` always loop. The engine owns each item's position, size, transform and opacity; other styles (`border-radius`, `background`, `filter`) are yours.
 - Every numeric arrangement option except `grid`'s `columns` also accepts a motion value: `barrel({ rotateX })` with `useMotionValue(-8)`.
 - Custom arrangements via `defineGalleryArrangement`; `tilt` and `ripple` velocity modifiers exist. Detail views, selection and hooks are in the members-only part of the page and are not documented here.
+- Source: https://motion.dev/docs/react-gallery (fetched 2026-10).
 
 ## Related
 

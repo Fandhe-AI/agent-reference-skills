@@ -90,6 +90,7 @@ transition: filter ${spring(0.3)};
 - The generated duration can be longer than the one provided because `spring()` accepts `visualDuration`.
 - Server-side generation (RSC) has no runtime overhead.
 - The Motion AI Kit lets AI code editors generate CSS springs without importing any library.
+- Source: https://motion.dev/docs/css (fetched 2026-10).
 
 ## Related
 

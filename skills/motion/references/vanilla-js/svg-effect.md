@@ -67,6 +67,7 @@ Draw values, each a `0`-`1` progress value:
 - Unset `pathSpacing` is calculated dynamically to allow infinite looping.
 - When a `transform` is detected, `transform-box: fill-box` is applied so the transform origin is relative to the element, as in CSS. Override with `svgEffect("path", { transformBox: motionValue("view-box") })`.
 - Re-renders once per frame during the render step of the frameloop; returns a cleanup function.
+- Source: https://motion.dev/docs/svg-effect (fetched 2026-10).
 
 ## Related
 

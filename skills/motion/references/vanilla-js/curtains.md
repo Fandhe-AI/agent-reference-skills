@@ -110,6 +110,7 @@ Built-in effects (each imported separately from `motion-plus/curtains`, tree-sha
 - Styling: covering elements carry the `motion-curtain` class (dark default fill, overridable in CSS); the overlay container carries `motion-curtains`.
 - Custom effect: `setup(container, box)` receives the measured `{ width, height }`; size from `box`, not `window`, so it works when `scope`d. `cover(transition)` / `reveal(transition)` must return an object with a `finished` promise and a `stop()` method; `animate()` satisfies this.
 - Versus `animateView`: `animateView` animates the content between old and new snapshots; `curtains` never animates your content, it hides the page with an opaque overlay while your update runs.
+- Source: https://motion.dev/docs/curtains (fetched 2026-10).
 
 ## Related
 

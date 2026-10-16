@@ -49,6 +49,7 @@ const rotation = transformer(200) // 720
 - Both ranges must always be the same length.
 - The input range must be a linear series of numbers, counting up or down; the output range can be non-linear numbers, colors, or complex strings.
 - React users can use the `useTransform` hook with motion values.
+- Source: https://motion.dev/docs/transform (fetched 2026-10).
 
 ## Related
 

@@ -60,6 +60,7 @@ function Component() {
 - `onHoverStart` / `onHoverEnd` only fire on devices where hover is truly possible; they explicitly do not fire as the result of a touch event.
 - `onHoverStart` / `onHoverEnd` require the full `motion` component; use `hover()` for a lighter alternative.
 - Hover is the most common form of gesture animation.
+- Source: https://motion.dev/docs/react-hover-animation (fetched 2026-10).
 
 ## Related
 

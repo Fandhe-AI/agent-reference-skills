@@ -23,7 +23,7 @@ It accepts a number (with or without a unit) or another motion value:
 const pointerX = motionValue(0)
 const x = springValue(pointerX)
 
-document.addEventListener("pointerMove", (e) => {
+document.addEventListener("pointermove", (e) => {
   // x will animate these changes with a spring animation
   pointerX.set(e.clientX)
 })
@@ -50,6 +50,8 @@ springValue(0, { stiffness: 1000 })
 ## Notes
 
 - Although `duration` and `visualDuration` are accepted, prefer the physics-based options `stiffness`, `damping` and `mass`, because they incorporate the velocity of the value for the smoothest motion.
+- Upstream example uses "pointerMove"; corrected to "pointermove" because DOM event names are case-sensitive.
+- Source: https://motion.dev/docs/spring-value (fetched 2026-10).
 
 ## Related
 

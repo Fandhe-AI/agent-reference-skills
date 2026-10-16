@@ -65,6 +65,7 @@ document.fonts.ready.then(() => {
 - Applies ARIA tags to keep text readable for all users.
 - If custom fonts download after `splitText` runs, text can be split incorrectly because dimensions changed; wait for `document.fonts.ready`.
 - Set the container to `visibility: hidden` until ready to animate enter effects.
+- Source: https://motion.dev/docs/split-text (fetched 2026-10).
 
 ## Related
 

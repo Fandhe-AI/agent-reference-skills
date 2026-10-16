@@ -37,6 +37,7 @@ return <Carousel items={items} />
 - Adds about 5.5kb on top of the `motion` component. Automatic ARIA labels, respects reduced motion, supports RTL.
 - Uses the same rendering as Ticker to scroll infinitely while minimising item cloning.
 - Provides functions and state for custom controls and pagination; those parts of the page are for Motion+ members and not documented here.
+- Source: https://motion.dev/docs/react-carousel (fetched 2026-10).
 
 ## Related
 

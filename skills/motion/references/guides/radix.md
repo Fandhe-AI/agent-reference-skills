@@ -27,6 +27,13 @@ return (
           <Tooltip.Portal forceMount>
             <Tooltip.Content asChild>
               <motion.div exit={{ opacity: 0 }} />
+            </Tooltip.Content>
+          </Tooltip.Portal>
+        )}
+      </AnimatePresence>
+    </Tooltip.Root>
+  </Tooltip.Provider>
+)
 ```
 
 Layout animation:
@@ -37,6 +44,10 @@ const [tab, setTab] = useState("account")
 return (
   <Tabs.Root value={tab} onValueChange={setTab} asChild>
     <motion.div layout layoutDependency={tab}>
+      {/* Tabs.List / Tabs.Content */}
+    </motion.div>
+  </Tabs.Root>
+)
 ```
 
 ## Notes
@@ -45,6 +56,7 @@ return (
 - Exit animations need the open state hoisted (e.g. Tooltip `open` / `onOpenChange`) so `AnimatePresence` can mount/unmount children. Set `forceMount` on the Portal because Radix expects children to always render.
 - Layout animations need the same hoisted state so `motion` components know when to animate; pass it to `layoutDependency` for better performance.
 - Motion+ includes Motion x Radix examples.
+- Upstream snippets are excerpts; closing tags were added so the example is syntactically complete.
 - Source: https://motion.dev/docs/radix (fetched 2026-10).
 
 ## Related

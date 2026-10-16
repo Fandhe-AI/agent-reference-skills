@@ -81,6 +81,7 @@ const powerInOut = mirrorEasing(powerIn)
 - All easing functions import from `"motion"`; importing them separately is useful with the tiny `animate` from `"motion/dom"` or for novel use-cases.
 - New easing curve definitions can be generated with the Motion AI Kit.
 - The source page's `mirrorEasing` example passes `powerInOut` (a typo for `powerIn`); the correct input is an ease-in function.
+- Source: https://motion.dev/docs/easing-functions (fetched 2026-10).
 
 ## Related
 

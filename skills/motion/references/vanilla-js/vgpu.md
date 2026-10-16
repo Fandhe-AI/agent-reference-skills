@@ -161,6 +161,7 @@ Scene node transform shorthands (`mesh()`, `group()`, cameras, lights):
 - Anything with a readable property and a `set()` works with no keyframes needed.
 - When DOM and vgpu animate in the same frames, a layout-backed `surface()` measures its canvas every frame, forcing layout after Motion's style writes. Create the surface with `autoResize: false` and resize from a `ResizeObserver`.
 - Once a value is bound, `[from, to]` keyframes are not needed; repeated `animate()` calls reuse the motion value.
+- Source: https://motion.dev/docs/vgpu (fetched 2026-10).
 
 ## Related
 

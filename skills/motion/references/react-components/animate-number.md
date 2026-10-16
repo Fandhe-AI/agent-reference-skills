@@ -40,6 +40,7 @@ function Counter() {
 - Import from `"motion-plus/react"`.
 - Uses the built-in `Intl.NumberFormat` for locale-aware formatting (e.g. currency, compact notation), and exposes distinct CSS classes for prefix, integer, fraction and suffix parts.
 - The source material only covers the public part of the page; the remainder (formatting props, class names) is for Motion+ members and is not documented here.
+- Source: https://motion.dev/docs/react-animate-number (fetched 2026-10).
 
 ## Related
 

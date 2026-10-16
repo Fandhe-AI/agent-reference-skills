@@ -83,6 +83,7 @@ scroll(controls)
 - Crossfade: leave the initial element in the DOM and add a new element with a matching `data-layout-id`.
 - `animateLayout` is async and returns `AnimationPlaybackControls` like `animate`.
 - In React, one can crossfade back by removing the new element with `<AnimatePresence>`; there is not yet an equivalent for vanilla JS, so this is not yet possible.
+- Source: https://motion.dev/docs/layout-animations (fetched 2026-10).
 
 ## Related
 

@@ -48,6 +48,7 @@ Accepted targets:
 - Always returns an array; `null` and `undefined` return an empty array, and `null` entries in a list are removed.
 - By default selectors search the whole document; pass a scope as the second argument to search inside one element.
 - Used internally by `animate`, `inView`, `hover` and other functions, which is why they accept the same targets.
+- Source: https://motion.dev/docs/resolve-elements (fetched 2026-10).
 
 ## Related
 

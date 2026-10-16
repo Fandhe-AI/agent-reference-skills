@@ -33,6 +33,7 @@ toPercent(1500) // 100
 ## Notes
 
 - Accepts any number of functions and returns a new function. Functions run left to right: `pipe(a, b)` runs `a` first, then `b`.
+- Source: https://motion.dev/docs/pipe (fetched 2026-10).
 
 ## Related
 

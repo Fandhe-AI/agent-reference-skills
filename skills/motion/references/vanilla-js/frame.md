@@ -48,6 +48,7 @@ Frame steps, run in order:
 - Prevents layout thrashing and avoids the overhead of multiple `requestAnimationFrame` calls.
 - The source page's `cancelFrame` example imports from `"framer-motion"`; the other examples import from `"motion"`.
 - `styleEffect`, `attrEffect`, `svgEffect` and `propEffect` render during the render step; `delay` fires on the `read` step; Three.js / vgpu writes happen in `preRender` (see their pages).
+- Source: https://motion.dev/docs/frame (fetched 2026-10).
 
 ## Related
 

@@ -101,7 +101,7 @@ npm install react@^19.3.0 react-dom@^19.3.0
 import { AnimateView } from "motion/react-animate-view"
 ```
 
-`AnimateView` は React / React DOM 19.3 以上が必須（両パッケージを同時に更新する）。`"motion/react"` からは export されず、別エントリポイント `"motion/react-animate-view"` から import する。他の Motion for React API は引き続き React 18 に対応。Motion+ early access 版の `"motion-plus/animate-view"` からの移行は import を置き換えるだけで、Motion+ 会員資格・アクセストークンは不要。出典: docs/react-animate-view.md。
+`AnimateView` は React / React DOM 19.3 以上が必須（両パッケージを同時に更新する）。`"motion/react"` からは export されず、別エントリポイント `"motion/react-animate-view"` から import する。他の Motion for React API は引き続き React 18 に対応。Motion+ early access 版の `"motion-plus/animate-view"` からの移行は import を置き換えるだけで、Motion+ 会員資格・アクセストークンは不要。出典: https://motion.dev/docs/react-animate-view 。
 
 ## Vue 向けインストール（motion-v）
 
@@ -126,7 +126,7 @@ import Components from 'unplugin-vue-components/vite'
 import MotionResolver from 'motion-v/resolver'
 ```
 
-`Components({ dts: true, resolvers: [MotionResolver()] })` を Vite の `plugins` に渡して使う（`resolvers` 周辺の完全な設定は公式 docs/vue.md 参照）。auto-import は `<motion />` コンポーネントに未対応のため手動 import が必要。出典: docs/vue.md。
+`Components({ dts: true, resolvers: [MotionResolver()] })` を Vite の `plugins` に渡して使う（`resolvers` 周辺の完全な設定は公式 https://motion.dev/docs/vue 参照）。auto-import は `<motion />` コンポーネントに未対応のため手動 import が必要。出典: https://motion.dev/docs/vue 。
 
 ## Motion UI（Motion+）のインストール
 
@@ -159,7 +159,7 @@ npm install   # or pnpm install / bun install
 - `@motionplus/core` が `motion-plus` の名前でインストールされ、import は `motion-plus/react` 等のまま使える（`@motionplus/core` を直接依存にして `@motionplus/core/react` から import も可）
 - Bun は `.env` を自動で読む。npm / pnpm は `.env` を読まないため、シェルで export するか direnv / dotenv-cli（`npx dotenv-cli -- npm install`）を使う
 - `MOTION_TOKEN` が未設定だと、npm はネットワークに触れないコマンドを含む全コマンドで `Failed to replace env in config` により失敗する。チーム全員と CI で設定が必要
-- Yarn 1 は `.yarnrc`、Yarn 2+ は `.yarnrc.yml` に別途設定が必要（公式 docs/react-motion-ui-installation.md の Yarn 節参照）
+- Yarn 1 は `.yarnrc`、Yarn 2+ は `.yarnrc.yml` に別途設定が必要（公式 https://motion.dev/docs/react-motion-ui-installation の Yarn 節参照）
 - CI では `MOTION_TOKEN` をシークレットとして環境変数に公開する
 
-出典: docs/react-motion-ui-installation.md、docs/motion-ui-installation.md。
+出典: https://motion.dev/docs/react-motion-ui-installation 、https://motion.dev/docs/motion-ui-installation 。

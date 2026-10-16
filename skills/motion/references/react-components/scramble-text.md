@@ -31,6 +31,7 @@ import { stagger } from "motion"
 
 - Motion+ (paid) component; not included in the free `motion` package. Requires Motion UI install and a Motion+ access token.
 - Uses the default alphanumeric character set, or custom characters (including emoji); the prop for this is in the members-only part of the page and is not documented here.
+- Source: https://motion.dev/docs/react-scramble-text (fetched 2026-10).
 
 ## Related
 

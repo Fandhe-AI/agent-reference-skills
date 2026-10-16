@@ -46,6 +46,7 @@ double.get() // 6
 - Both ranges must always be the same length.
 - The input range must be a linear series of numbers, counting up or down; the output range can be non-linear numbers, colors, or complex strings.
 - Complex string keyframes must have the same number of numbers and colors in the same order.
+- Source: https://motion.dev/docs/map-value (fetched 2026-10).
 
 ## Related
 

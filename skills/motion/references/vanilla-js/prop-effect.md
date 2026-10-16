@@ -44,6 +44,7 @@ propEffect(data, { opacity })
 - Updates are applied once per frame during the render step of the frameloop.
 - Any motion value can be provided, including `mapValue` and `transformValue`.
 - Returns a cleanup function that stops applying the motion values.
+- Source: https://motion.dev/docs/prop-effect (fetched 2026-10).
 
 ## Related
 

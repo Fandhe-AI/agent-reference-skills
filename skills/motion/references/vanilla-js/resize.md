@@ -32,6 +32,7 @@ stop()
 - All handlers are triggered via a single shared `ResizeObserver`; an element is removed from it when it has no more listeners, and the observer stops when there are no listeners at all.
 - Returned `width` and `height` are the element's border box.
 - Perform subsequent DOM writes with the Motion frameloop to batch reads and writes.
+- Source: https://motion.dev/docs/resize (fetched 2026-10).
 
 ## Related
 

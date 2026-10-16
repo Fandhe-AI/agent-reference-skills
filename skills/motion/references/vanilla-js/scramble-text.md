@@ -66,6 +66,7 @@ scrambleText(element, {
 
 - Motion+ members only; the source page notes the rest of its content is for members. Playback controls (pause, play, stop, finish) and custom character sets (including emoji) are listed as features, but their option names are not shown in the public part of the page.
 - The source page shows the import as `motion-plus` in the header and `motion-plus-dom` in the usage examples; both are as written there.
+- Source: https://motion.dev/docs/scramble-text (fetched 2026-10).
 
 ## Related
 

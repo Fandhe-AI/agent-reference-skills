@@ -47,7 +47,7 @@ function pow2(p) {
 }
 
 function reverse(ease) {
-  return (p) => 1 - ease(p)
+  return (p) => 1 - ease(1 - p)
 }
 
 // The eased progress mixes the two keyframes
@@ -61,6 +61,8 @@ const value = from + (to - from) * p
 - Keyframes are spread evenly by default; `times` positions each as a fraction of the total. `ease` also accepts an array, one curve per pair of keyframes.
 - A physics-based spring has no declared duration; duration is a side effect of the simulation, and it carries the current velocity into the new animation.
 - Performance depends on the browser render pipeline (layout, paint, composite), not on duration or easing; audit which properties are animated.
+- Upstream example writes 1 - ease(p), which inverts the output range; corrected to 1 - ease(1 - p) to produce an ease-out.
+- Source: https://motion.dev/docs/tween (fetched 2026-10).
 
 ## Related
 

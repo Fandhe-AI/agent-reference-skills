@@ -113,6 +113,7 @@ const opacity = useTransform(progress, range, [0.15, 1])
 - Animate numbers as numbers and format on output; splitting a number into character spans discards useful information.
 - Performance: `transform` and `opacity` are cheapest; per-character blur is a trap (many small overlapping layers are costly). Animate fewer, smaller elements and profile (Chrome Performance panel, MotionScore).
 - CSS cannot target individual letters beyond `::first-letter`; text must be split into elements first.
+- Source: https://motion.dev/docs/text-animation (fetched 2026-10).
 
 ## Related
 

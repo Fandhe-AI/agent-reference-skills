@@ -78,6 +78,7 @@ Manual line drawing with `pathLength="1"`:
 - `d: path(...)` can be transitioned in CSS but Safari does not support `d` as a style. Motion interpolates `d` in all browsers; the two paths must have the same points in the same order. For different shapes, pair with a path mixer like Flubber.
 - Motion draw values: `pathLength`, `pathSpacing`, `pathOffset`, on `circle`, `ellipse`, `line`, `path`, `polygon`, `polyline`, `rect`. `<motion.svg>` can animate `viewBox`.
 - Cost: animating SVG is generally paint (grade C by MotionScore); `transform` and `opacity` via CSS, WAAPI or Motion are GPU-accelerated. Prefer animating `transform` over `x`, `cx`, `r`; `viewBox` is a paint.
+- Source: https://motion.dev/docs/svg-animation (fetched 2026-10).
 
 ## Related
 

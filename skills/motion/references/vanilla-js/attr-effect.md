@@ -41,6 +41,7 @@ attrEffect(counter, {
 - Attributes are set via their JavaScript setter where available, for type-safety and performance.
 - Any motion value can be provided, including `mapValue` and `transformValue`; each can drive many attributes on many elements.
 - Returns a cleanup function that stops applying the motion values.
+- Source: https://motion.dev/docs/attr-effect (fetched 2026-10).
 
 ## Related
 

@@ -30,6 +30,7 @@ import { Typewriter } from "motion-plus/react"
 - When `children` changes it backspaces to the point of difference, then types the new content.
 - Also available for vanilla JavaScript as the `typewriter` function.
 - Playback control, cursor style and blink speed are in the members-only part of the page and are not documented here.
+- Source: https://motion.dev/docs/react-typewriter (fetched 2026-10).
 
 ## Related
 

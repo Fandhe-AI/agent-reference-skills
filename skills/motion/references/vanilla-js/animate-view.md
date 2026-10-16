@@ -101,6 +101,7 @@ Other:
 - `animateView(() => window.scrollTo(0, 100))` animates elements with a `view-transition-name` by 100px; the page states a future version will allow cancelling this out.
 - Where the View Transition API is unavailable the DOM update still runs without animation.
 - Versus layout animations: view animations snapshot old and new states (one animation at a time, can morph across completely different DOM); layout animations use `transform` and are fully interruptible. Motion for React has an `AnimateView` component.
+- Source: https://motion.dev/docs/animate-view (fetched 2026-10).
 
 ## Related
 

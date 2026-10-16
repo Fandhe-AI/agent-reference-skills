@@ -35,6 +35,7 @@ window.addEventListener("pointermove", (event) => {
 ## Notes
 
 - Useful for gesture thresholds, e.g. only start a drag after the pointer moves a few pixels, or strengthen an effect the closer the pointer is to an element.
+- Source: https://motion.dev/docs/distance (fetched 2026-10).
 
 ## Related
 

@@ -25,6 +25,7 @@ const amount = clamp(0, 1, progress(100, 400, scrollY))
 
 - Values inside the range are returned unchanged; values outside are limited to the nearest edge.
 - Where `wrap` loops a value back around, `clamp` stops it at the edge.
+- Source: https://motion.dev/docs/clamp (fetched 2026-10).
 
 ## Related
 

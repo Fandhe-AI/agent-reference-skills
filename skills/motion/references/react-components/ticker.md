@@ -34,6 +34,7 @@ return <Ticker items={items} />
 - Motion+ (paid) component; not included in the free `motion` package. Requires Motion UI install and a Motion+ access token.
 - Adds about 2.1kb on top of Motion for React. Supports reduced motion, keyboard focus-trapping and RTL.
 - Can be controlled manually with a motion value for scroll-driven or draggable effects, and supports full-width overflow; the details are in the members-only part of the page and are not documented here.
+- Source: https://motion.dev/docs/react-ticker (fetched 2026-10).
 
 ## Related
 

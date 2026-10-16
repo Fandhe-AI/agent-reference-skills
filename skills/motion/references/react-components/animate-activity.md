@@ -40,6 +40,7 @@ Sequencing exit animations through a tree uses variants, as with `AnimatePresenc
 - Motion+ early access (paid); not included in the free `motion` package. Early access APIs may change with feedback.
 - Import from `"motion-plus/animate-activity"`. Requires `motion@12.23.24` and `react@19.2.0` or above. Once out of alpha it will be imported from the main `"motion"` package.
 - Differs from AnimatePresence: AnimatePresence animates elements being added to and removed from the tree; AnimateActivity shows/hides via `Activity`, preserving state.
+- Source: https://motion.dev/docs/react-animate-activity (fetched 2026-10).
 
 ## Related
 

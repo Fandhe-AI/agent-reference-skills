@@ -1,12 +1,12 @@
 ---
 name: motion
 description: >
-  Motion (旧 Framer Motion) リファレンス。motion/react, vanilla JS, Vue 版 motion-v。
+  Motion (旧 Framer Motion) アニメーションライブラリ リファレンス。motion/react, vanilla JS, Vue 版 motion-v (v-motion ディレクティブ)。
   AnimatePresence, AnimateView, LayoutGroup, LazyMotion, MotionConfig, Reorder,
-  useAnimate, useScroll, useSpring, useTransform, useMotionValue, useInView。
-  animate, animateView, scroll, inView, hover, press, stagger, spring, timeline,
+  useAnimate, useScroll, useSpring, useTransform, useMotionValue, useInView, motionValue。
+  animate, animateView, scroll, inView, hover, press, stagger, spring, timeline, transitions,
   styleEffect, threeEffect。Motion+ Carousel, Cursor, Ticker, Typewriter, AnimateNumber。
-  layout, drag, gestures, SVG, Tailwind, Lenis 連携。
+  layout, drag, gestures, SVG, Tailwind, Lenis 連携。accessibility, performance, bundle 最適化, troubleshooting。
 user-invocable: false
 ---
 

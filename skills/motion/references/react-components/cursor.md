@@ -34,6 +34,7 @@ Rendering it hides the browser's default cursor; removing it restores the cursor
 - Customisable with CSS, Motion variants and custom React components; can be disabled for reduced motion.
 - Mode, magnetic and variant props are in the members-only part of the page and are not documented here.
 - A vanilla JS version is documented at the same page URL.
+- Source: https://motion.dev/docs/cursor (fetched 2026-10).
 
 ## Related
 

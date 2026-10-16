@@ -89,7 +89,7 @@ const container = {
 
 - Spring is the default for `x`, `y`, `scale`, `rotate`, and layout animations; tween is the default for most other values.
 - Higher-specificity transitions replace inherited defaults; add `inherit: true` to merge with a parent `MotionConfig` transition.
-- Negative `bounce` (overdamped springs) was added in 13.5.0 (CHANGELOG).
+- Negative `bounce` (overdamped springs) was added in 13.5.0 (CHANGELOG: https://github.com/motiondivision/motion/blob/v14.3.0/CHANGELOG.md).
 - `path: arc()` curves motion-value movement along an arc instead of a straight line.
 
 ## Related

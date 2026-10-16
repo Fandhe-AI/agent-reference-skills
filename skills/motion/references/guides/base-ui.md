@@ -45,6 +45,13 @@ function App() {
               >
                 {/* Children */}
               </ContextMenu.Popup>
+            </ContextMenu.Positioner>
+          </ContextMenu.Portal>
+        )}
+      </AnimatePresence>
+    </ContextMenu.Root>
+  )
+}
 ```
 
 ## Notes
@@ -52,6 +59,7 @@ function App() {
 - Most Base UI components accept `render`; for ordinary conditional rendering `AnimatePresence` + `exit` works as usual.
 - `Portal` stays mounted while Base UI detects animations via `element.getAnimations()`. Motion runs `opacity`, `transform`, `filter` and `clipPath` hardware accelerated, so use at least one of these in the exit animation.
 - Motion+ includes Motion x Base UI examples and an LLM ruleset.
+- Upstream snippets are excerpts; closing tags were added so the example is syntactically complete.
 - Source: https://motion.dev/docs/base-ui (fetched 2026-10).
 
 ## Related

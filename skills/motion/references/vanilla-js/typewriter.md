@@ -56,6 +56,7 @@ typewriter("#title", "Hello world!", { variance: 0.5 })
 - Renders the text and a cursor inside the element.
 - Natural variance slows typing for long words, at the start and end of words, for punctuation and for uncommon character combinations.
 - Play and pause controls are available (suited to scroll-triggered animations). Also available as `<Typewriter />` components for React and Vue.
+- Source: https://motion.dev/docs/typewriter (fetched 2026-10).
 
 ## Related
 

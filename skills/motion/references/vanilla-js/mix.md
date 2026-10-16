@@ -49,6 +49,7 @@ mix(0, 50, easeIn(Math.random()))
 - Mixes numbers, colors (RGBA, HSLA), complex strings, and arrays and objects of those. Both values must be the same type.
 - RGB colors are mixed in the linear RGB color space, avoiding the typical CSS brightness dips/greyness.
 - `mix(a, b, progress)` with a third argument returns the mixed value directly, as in the random example.
+- Source: https://motion.dev/docs/mix (fetched 2026-10).
 
 ## Related
 

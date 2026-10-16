@@ -46,6 +46,7 @@ React forms:
 - The path interpolates between the first and last `x`/`y` value, including across keyframe arrays.
 - With a spring, progress overshoots `t = 1` and oscillates back, so the element settles with a bouncy arc; `transition.path` only describes the curve.
 - Memoisation: with automatic `direction`, create a single `arc()` instance for all animations on the same component (`useMemo` in React, a module-level constant in vanilla JS) for improved interruption.
+- Source: https://motion.dev/docs/arc (fetched 2026-10).
 
 ## Related
 

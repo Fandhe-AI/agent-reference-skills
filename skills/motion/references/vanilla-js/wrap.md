@@ -24,6 +24,7 @@ wrap(0, 10, -1) // 9
 
 - Values within the range are unaffected; values outside wrap back around.
 - Useful for next/prev pagination.
+- Source: https://motion.dev/docs/wrap (fetched 2026-10).
 
 ## Related
 

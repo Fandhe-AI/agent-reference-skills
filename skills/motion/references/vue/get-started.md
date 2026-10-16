@@ -84,6 +84,7 @@ const { scrollYProgress } = useScroll()
 - Scroll-linked animations use `MotionValue`s via `useScroll`; scroll-triggered use `whileInView`.
 - Hover events are not triggered by touch screen taps.
 - A standard CSS transition remains a lightweight choice for simple self-contained effects.
+- Source: https://motion.dev/docs/vue (fetched 2026-10).
 
 ## Related
 

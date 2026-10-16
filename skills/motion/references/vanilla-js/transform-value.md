@@ -30,13 +30,15 @@ Compose:
 const x = motionValue(0)
 const y = motionValue(0)
 const rotate = transformValue(() => x.get() + y.get())
-const transform = transformValue(() => `translate3d(${x.get()}px ${y.get()}px 0) rotate(${rotate.get()}deg)`)
+const transform = transformValue(() => `translate3d(${x.get()}px, ${y.get()}px, 0) rotate(${rotate.get()}deg)`)
 ```
 
 ## Notes
 
 - Useful for combining multiple motion values into one, or performing calculations on a motion value's output (e.g. an inverse scale for a child element).
 - Values returned from `transformValue` can be used inside other `transformValue` callbacks.
+- Upstream example omits commas in translate3d(); corrected here.
+- Source: https://motion.dev/docs/transform-value (fetched 2026-10).
 
 ## Related
 

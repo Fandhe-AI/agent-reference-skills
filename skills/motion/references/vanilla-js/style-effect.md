@@ -43,6 +43,7 @@ styleEffect("#progress", {
 - Re-renders once per frame during the render step of the frameloop.
 - Supports independent transforms (`x`, `scaleY` etc), default unit types (`100` instead of `"100px"`), and CSS properties.
 - Returns a cleanup function that stops applying the motion values.
+- Source: https://motion.dev/docs/style-effect (fetched 2026-10).
 
 ## Related
 
