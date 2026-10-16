@@ -5,7 +5,7 @@ description: >
   prompt engineering, XML タグ, few-shot, system prompts,
   モデル別プロンプティング（Fable 5.1 / Fable 5 / Opus 5.5 / Opus 5 / Sonnet 5.5 / Sonnet 5 / Haiku 5.5）。
   evals, grading（LLM-graded 等）, jailbreak・prompt leak 対策, hallucination 低減,
-  ticket routing, commerce agent 等ユースケース実装。
+  classification, ticket routing, commerce agent 等ユースケース実装。
 user-invocable: false
 ---
 
