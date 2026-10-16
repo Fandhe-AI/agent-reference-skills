@@ -43,7 +43,6 @@ skills/openai-agents/
       observability.md
       tracing.md
       errors.md
-      bedrock-managed-agents.md
       openai-hosted-sandboxes.md
       self-hosted-sandboxes.md
       prewarmed-sandboxes.md
@@ -62,7 +61,6 @@ skills/openai-agents/
       provider-vercel.md
     agents-sdk/
       README.md
-      choose-runtime.md
       overview.md
       quickstart.md
       define-agents.md

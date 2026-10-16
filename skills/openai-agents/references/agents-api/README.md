@@ -3,7 +3,6 @@
 | Name | Description | Path |
 |------|-------------|------|
 | Architecture | OpenAI runs the agent harness; the application sends it work and… | [architecture.md](./architecture.md) |
-| Bedrock Managed Agents | Amazon Bedrock Managed Agents, powered by OpenAI, adapts the Agent… | [bedrock-managed-agents.md](./bedrock-managed-agents.md) |
 | Computer Use (Agents API) | Computer use lets an agent navigate websites and interact with br… | [computer-use.md](./computer-use.md) |
 | Configuring Agents | An agent configuration defines how the agent behaves. Supply it wh… | [configuration.md](./configuration.md) |
 | Errors and Recovery | Where to look for Agents API failures (HTTP request, turn, session… | [errors.md](./errors.md) |

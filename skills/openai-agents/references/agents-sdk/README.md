@@ -2,7 +2,6 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Agents: Choose an Agent Runtime | Agents can plan and complete tasks using tools, work… | [choose-runtime.md](./choose-runtime.md) |
 | Agent Definitions | An `Agent` is the core unit of an SDK-based workflow. It packages a model… | [define-agents.md](./define-agents.md) |
 | Models and Providers | Every SDK run resolves a model and a transport. Choose models explicitly… | [models-and-providers.md](./models-and-providers.md) |
 | Agents SDK Overview | Agents are applications that plan, call tools, collaborate across specialists… | [overview.md](./overview.md) |

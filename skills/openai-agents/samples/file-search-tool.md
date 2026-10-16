@@ -18,5 +18,6 @@ print(response)
 ## Notes
 
 - A vector store must exist and contain uploaded files before calling this tool; `vector_store_ids` references that store.
+- Replace `<vector_store_id>` with the ID of your own vector store; the angle-bracket placeholder is not a valid value as-is.
 - `file_search` performs semantic and keyword search over the store's files and injects matching chunks into the model context.
 - Multiple `vector_store_ids` can be passed to search across several stores in one call.

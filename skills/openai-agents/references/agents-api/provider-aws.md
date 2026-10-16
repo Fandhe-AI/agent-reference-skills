@@ -51,4 +51,4 @@ AWS fallback limits: `maximumDurationInSeconds` (ceiling for the workload, can i
 - [Self-hosted Sandboxes](./self-hosted-sandboxes.md)
 - [Sandbox Lifecycle](./sandbox-lifecycle.md)
 - [Session Webhooks](./session-webhooks.md)
-- [Bedrock Managed Agents](./bedrock-managed-agents.md)
+- [Agents API](./overview.md)
