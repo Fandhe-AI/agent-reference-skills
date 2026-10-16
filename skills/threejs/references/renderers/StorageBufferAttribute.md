@@ -6,13 +6,16 @@ A special buffer attribute intended for compute shaders. Instead of updating att
 
 ```js
 new StorageBufferAttribute( count: number | TypedArray, itemSize: number, typeClass: TypedArray.constructor )
+
+// With a typed array (itemSize still required)
+new StorageBufferAttribute( new Float32Array( count * 4 ), 4 )
 ```
 
 ## Options / Props
 
 | Name | Type | Description |
 |------|------|-------------|
-| count | number \| TypedArray | Constructor parameter. The item count. A typed array is also valid; the subsequent parameters are then obsolete. |
+| count | number \| TypedArray | Constructor parameter. The item count. A typed array is also valid; `typeClass` is then ignored, but `itemSize` is still required. |
 | itemSize | number | Constructor parameter. The item size. |
 | typeClass | TypedArray.constructor | Constructor parameter. A typed array constructor. Default `Float32Array`. |
 | isStorageBufferAttribute | boolean (readonly) | Type-test flag. Default `true`. |
