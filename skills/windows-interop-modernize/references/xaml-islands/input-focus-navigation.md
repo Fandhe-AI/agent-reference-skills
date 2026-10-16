@@ -41,7 +41,7 @@ xamlSource.NavigateFocus(request);
 - Test tab order in both directions, accelerator keys, mnemonics, pointer input, text input, and input method editors (IME). Verify accessibility names, relationships, and focus order across the host and island with an accessibility inspection tool.
 - WPF/WinForms host controls that wrap this pattern typically override the framework's own focus/tab-navigation hooks (e.g. WPF's `HwndHost.TabInto`) to call `NavigateFocus`.
 - Source: https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/host-controls-existing-desktop-apps (en-us, fetched 2026-10-16)
-- Sample ContentPreTranslateMessage P/Invoke and IMessageFilter: https://github.com/microsoft/WindowsAppSDK-Samples/blob/main/Samples/Islands/cs-winforms-unpackaged/WindowsAppSdkHelper.cs
+- Sample ContentPreTranslateMessage P/Invoke and IMessageFilter: https://github.com/microsoft/WindowsAppSDK-Samples/blob/f1be017f26a0feae4c8dc805748eab0a1f7b4fc6/Samples/Islands/cs-winforms-unpackaged/WindowsAppSdkHelper.cs
 
 ## Related
 

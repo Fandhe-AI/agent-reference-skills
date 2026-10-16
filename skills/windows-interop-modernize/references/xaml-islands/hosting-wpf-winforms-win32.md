@@ -85,9 +85,9 @@ internal sealed class WinUIIslandHost : Control
 - **Deployment**: XAML Islands don't require package identity by themselves. In a framework-dependent unpackaged app, initialize the runtime before XAML. A typical .NET host sets `<WindowsPackageType>None</WindowsPackageType>` for automatic runtime initialization; use the bootstrapper API for explicit control, or ship the runtime via self-contained deployment.
 - This is distinct from the legacy UWP XAML Islands hosting path, which for WPF/WinForms recommends the Windows Community Toolkit's `WindowsXamlHost` control (`Microsoft.Toolkit.Wpf.UI.XamlHost` / `Microsoft.Toolkit.Forms.UI.XamlHost` NuGet packages). The framework requirements in the legacy system XAML Islands documentation don't describe WinUI XAML Islands.
 - Source: https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/host-controls-existing-desktop-apps (en-us, fetched 2026-10-16)
-- Official sample: https://github.com/microsoft/WindowsAppSDK-Samples/tree/main/Samples/Islands
-- Sample metadata provider and resources: https://github.com/microsoft/WindowsAppSDK-Samples/blob/main/Samples/Islands/cs-winforms-unpackaged/XamlApp.cs
-- Sample provider registration: https://github.com/microsoft/WindowsAppSDK-Samples/blob/main/Samples/Islands/cs-winforms-unpackaged/Program.cs
+- Official sample: https://github.com/microsoft/WindowsAppSDK-Samples/tree/f1be017f26a0feae4c8dc805748eab0a1f7b4fc6/Samples/Islands
+- Sample metadata provider and resources: https://github.com/microsoft/WindowsAppSDK-Samples/blob/f1be017f26a0feae4c8dc805748eab0a1f7b4fc6/Samples/Islands/cs-winforms-unpackaged/XamlApp.cs
+- Sample provider registration: https://github.com/microsoft/WindowsAppSDK-Samples/blob/f1be017f26a0feae4c8dc805748eab0a1f7b4fc6/Samples/Islands/cs-winforms-unpackaged/Program.cs
 
 ## Related
 
