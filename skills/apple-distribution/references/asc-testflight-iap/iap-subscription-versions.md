@@ -78,7 +78,8 @@ Review image upload (reserve, upload, commit), same shape for `subscriptionImage
 ## Notes
 
 - Introduced in App Store Connect API 4.4.1. The pre-4.4.1 workflow that posts localizations and images directly to the parent resource (`POST /v1/inAppPurchaseLocalizations`, `POST /v1/inAppPurchaseImages`, `POST /v1/subscriptionLocalizations`, `POST /v1/subscriptionImages`, `POST /v1/subscriptionGroupLocalizations`) is deprecated but remains available for existing integrations.
-- Versions are read-only after creation; to change contents, create a new version.
+- The version resource itself has no update endpoint (no PATCH in the Endpoints table) and is read-only after creation. To change a version's contents across review cycles, create a new version ("Versions are read-only after creation. To change a version's contents, create a new version.").
+- While a version is `PREPARE_FOR_SUBMISSION`, you can add, change, or remove its child localizations (`PATCH` / `DELETE /v2/*Localizations/{id}`) and images (`/v2/*Images[/{id}]`). Fixing a draft translation or image does not require creating a new version.
 - The parent resource holds stable properties (product ID, type or duration, group, pricing); each version captures the reviewable metadata for one review cycle.
 - Group-level localizations submit to App Review with the subscriptions they belong to. Submit a subscription group version independently only when changing group-level localization without changing any subscription in the group.
 - Polling: before 4.4.1, status was read from the parent product; now poll the version `state` (`GET /v1/inAppPurchaseVersions/{id}` or the subscription / group equivalent).
