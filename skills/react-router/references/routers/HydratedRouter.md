@@ -26,7 +26,7 @@ hydrateRoot(
 
 ## Notes
 
-- Available in Framework Mode only (not Data Mode, not Declarative Mode). As of v8.3.0, `getContext` is the current (non-prefixed) prop name — no `unstable_` prefix.
+- Available in Framework Mode only (not Data Mode, not Declarative Mode). As of v8.4.0, `getContext` is the current (non-prefixed) prop name — no `unstable_` prefix.
 - Must be called with `hydrateRoot` (not `createRoot`) — it hydrates existing server-rendered HTML.
 - `onError` runs once per error and is not subject to re-rendering, making it more reliable than `ErrorBoundary` for external reporting.
 

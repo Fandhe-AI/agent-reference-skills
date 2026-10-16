@@ -26,6 +26,7 @@ function AutoSaveForm() {
 - Use when you need to trigger a submission based on conditions, timers, or events rather than a submit button click
 - The submitted form data causes a navigation (unlike `useFetcher().submit`)
 - Not available in Declarative mode
+- `defaultShouldRevalidate: false` is accepted as an option to skip loader revalidation for one submission. See [Revalidation Optimization](../how-to/optimize-revalidation.md)
 
 ## Related
 

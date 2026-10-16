@@ -113,11 +113,32 @@ export default async function Home() {
 
 Server Functions use the `"use server"` directive and are called like normal async functions; React Router automatically revalidates the route after a Server Function call:
 
+Treat every Server Function as a public endpoint. The client controls both the Server Function identifier and request URL, so do not rely on route middleware for authentication or authorization. Server Functions must perform their own access control and input validation; use a route `action` when access control should be middleware-driven.
+
 ```tsx
 "use server";
+
+import { unstable_getRequest as getRequest } from "react-router";
+import { requireUser } from "./auth.ts";
+
 export async function updateFavorite(formData: FormData) {
-  const movieId = formData.get("id");
-  // ...
+  let user = await requireUser(getRequest());
+  let movieId = Number(formData.get("id"));
+  let intent = formData.get("intent");
+
+  if (
+    !Number.isSafeInteger(movieId) ||
+    movieId <= 0 ||
+    (intent !== "add" && intent !== "remove")
+  ) {
+    throw new Error("Invalid form submission");
+  }
+
+  if (intent === "add") {
+    await addFavorite(user.id, movieId);
+  } else {
+    await removeFavorite(user.id, movieId);
+  }
 }
 ```
 
@@ -171,6 +192,7 @@ export async function generateHTML(request: Request, serverResponse: Response) {
 - Loaders and actions can return React elements directly in RSC Framework Mode
 - `AsyncLocalStorage` works with server middleware in RSC mode via the same middleware integration described in the middleware guide
 - MDX routes are supported in RSC Framework Mode with `@mdx-js/rollup` v3.1.1+, but exported components must remain valid in RSC environments (no Hooks)
+- Server Function access-control guidance (docs-warning: treat as public endpoints, do not rely on route middleware, validate input) was documented in 8.4.0 ([`react-router` CHANGELOG](https://github.com/remix-run/react-router/blob/react-router@8.4.0/packages/react-router/CHANGELOG.md), [PR #15490](https://github.com/remix-run/react-router/pull/15490))
 - The default RSC Framework entry does not generate a CSP nonce; only add one if your app also sends a matching CSP header — prefer CSP hashes or external scripts for statically prerendered pages
 
 ## Related

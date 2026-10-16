@@ -10,11 +10,11 @@ function PrefetchPageLinks({ page, ...linkProps }: PageLinkDescriptor)
 import { PrefetchPageLinks } from "react-router";
 
 // Prefetch a page as the user types in a search field
-function SearchBar({ query }) {
+function SearchBar({ query, setQuery }) {
   const topResult = useTopSearchResult(query);
   return (
     <>
-      <input value={query} onChange={...} />
+      <input value={query} onChange={(e) => setQuery(e.target.value)} />
       {topResult && <PrefetchPageLinks page={topResult.href} />}
     </>
   );

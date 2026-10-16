@@ -19,7 +19,7 @@ startTransition(() => {
 });
 ```
 
-## Key APIs
+## Options / Props
 
 | API | Source | Description |
 |-----|--------|-------------|
@@ -29,7 +29,7 @@ startTransition(() => {
 
 ## Notes
 
-- v8: content confirmed current against `reactrouter.com/api/framework-conventions/entry.client.tsx` (v8.3.0+). No renames/removals.
+- v8: content confirmed current against `reactrouter.com/api/framework-conventions/entry.client.tsx` (v8.4.0). No renames/removals.
 - This file is **optional**. If absent, React Router uses its built-in default.
 - Create this file only when you need to initialize client-side libraries (analytics, error reporters, providers) before or around hydration.
 - Use `npx react-router reveal` to scaffold the default implementation as a starting point.

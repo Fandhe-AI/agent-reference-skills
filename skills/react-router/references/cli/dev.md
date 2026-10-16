@@ -18,7 +18,7 @@ react-router routes [--json]
 react-router typegen [--watch]
 ```
 
-## 詳細説明
+## Options / Props
 
 ### `react-router build`
 
@@ -67,6 +67,14 @@ react-router dev
 | `--port` | `number` | Specify port |
 | `--profile` | — | Start built-in Node.js inspector |
 | `--strictPort` | `boolean` | Exit if specified port is already in use |
+
+#### Reverse proxies
+
+The built-in `react-router dev` and `vite preview` servers provided by the `reactRouter()` Vite plugin automatically use `X-Forwarded-Proto` when constructing `request.url`. This preserves the browser-facing protocol when a reverse proxy terminates HTTPS and forwards requests over HTTP, allowing same-origin action submissions to pass origin validation. No React Router configuration is required.
+
+The first header value is used if it is `http` or `https` (case-insensitive, with surrounding whitespace and an optional trailing `:` ignored). Missing or invalid values fall back to the connection's protocol. The URL host and port still come from `Host`, not `X-Forwarded-Host` or the standard `Forwarded` header. Preserve the browser-facing host and port in `Host` and configure Vite's `server.allowedHosts` or `preview.allowedHosts` as needed.
+
+Warning: dev and preview servers are not production servers and should not be publicly accessible. Configure your reverse proxy to overwrite client-supplied `X-Forwarded-Proto` headers.
 
 ---
 
@@ -130,6 +138,8 @@ react-router typegen --watch
 - `react-router dev` requires a Vite-based setup (Framework Mode); it is not available in Data or Declarative modes
 - Run `react-router typegen` in CI before `tsc` to ensure generated types are present
 - `react-router reveal` only needs to be run once; the generated entry files are then committed to your repo
+- `react-router reveal --no-typescript` is deprecated as of `@react-router/dev` 8.3.1 and planned for removal in React Router v9 (per the `@react-router/dev` [CHANGELOG](https://github.com/remix-run/react-router/blob/react-router@8.4.0/packages/react-router-dev/CHANGELOG.md), [PR #15373](https://github.com/remix-run/react-router/pull/15373)); the docs page still lists the flag
+- 8.4.0 ([`@react-router/dev` CHANGELOG](https://github.com/remix-run/react-router/blob/react-router@8.4.0/packages/react-router-dev/CHANGELOG.md), [PR #15466](https://github.com/remix-run/react-router/pull/15466)): `react-router dev` and `vite preview` use `X-Forwarded-Proto` when building `request.url` (see Reverse proxies above)
 - v8: command set and flags unchanged from v7 — no commands added or removed
 
 ## Related

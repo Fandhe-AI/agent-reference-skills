@@ -74,6 +74,8 @@ function Task({ task }) {
 
 - `method="post"` is required
 - All loaders on the page automatically revalidate after an action completes
+- Loader data is revalidated after an action completes; [Revalidation Optimization](../how-to/optimize-revalidation.md) shows how to skip some or all of those reloads (8.4.0)
+- `fetcher.submit` takes `FetcherSubmitOptions`, including `defaultShouldRevalidate`
 - The action's return value must be serializable
 - `<Form>`/`useSubmit` add a browser history entry; `useFetcher` does not
 - See the [Using Fetchers guide](../how-to/fetchers.md) for further fetcher patterns
@@ -84,4 +86,5 @@ function Task({ task }) {
 - [modes](./modes.md)
 - [data-loading](./data-loading.md)
 - [pending-ui](./pending-ui.md)
+- [optimize-revalidation](../how-to/optimize-revalidation.md)
 - [navigating](./navigating.md)

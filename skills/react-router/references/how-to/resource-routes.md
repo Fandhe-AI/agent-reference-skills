@@ -35,10 +35,12 @@ export async function loader({ params }: Route.LoaderArgs) {
 
 - Throwing `new Error(...)` triggers `handleError` and returns a 500; throwing/returning `new Response(...)` with 4xx/5xx is considered successful execution and does NOT trigger `handleError`
 - `ErrorBoundary` only applies when the resource route is accessed via `useFetcher` or `<Form>` from UI
+- Calling a resource route `action` through `<Form>` or `useFetcher` still revalidates matched UI loaders. A plain `fetch()` to the resource URL does not go through the router, so it does not (8.4.0)
 - Use `Response` (not `data()`) for external API consumers who expect explicit encoding control
 
 ## Related
 
+- [./optimize-revalidation.md](./optimize-revalidation.md)
 - [./file-uploads.md](./file-uploads.md)
 - [./headers.md](./headers.md)
 - [./error-boundary.md](./error-boundary.md)

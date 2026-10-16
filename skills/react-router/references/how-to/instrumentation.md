@@ -36,7 +36,7 @@ export const instrumentations = [
           await callLoader();
           console.log(`Loader end: ${url} - ${route.id}`);
         },
-        // Also available: async action() {...}, async middleware() {...}, async lazy() {...}
+        // Also available: async action(), async middleware(), async lazy()
       });
     },
   },

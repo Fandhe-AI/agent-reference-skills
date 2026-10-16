@@ -43,6 +43,7 @@ function NewEvent() {
 - Best for submissions that should change the URL or add browser history entries. Use `<fetcher.Form>` for submissions that should not affect History.
 - Native HTML forms only support `"get"` and `"post"`; avoid other verbs if progressive enhancement is required.
 - After the action completes, all page data revalidates automatically to keep the UI in sync.
+- `defaultShouldRevalidate={false}` skips loader revalidation for this submission. Routes without a `shouldRevalidate` export use the value directly; routes that export one receive it as `defaultShouldRevalidate` and still decide. See [Revalidation Optimization](../how-to/optimize-revalidation.md).
 
 ## Related
 

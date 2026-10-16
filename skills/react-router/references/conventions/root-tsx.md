@@ -37,7 +37,9 @@ export function ErrorBoundary() {
 }
 ```
 
-## Required Rendered Components
+## Options / Props
+
+### Required rendered components
 
 | Component | Purpose |
 |-----------|---------|
@@ -47,7 +49,7 @@ export function ErrorBoundary() {
 | `<Meta />` | Renders `meta` exports from all routes (pre-React 19) |
 | `<Links />` | Renders `link` exports from all routes (pre-React 19) |
 
-## Supported Route Module Exports
+### Supported route module exports
 
 `root.tsx` supports all standard route module exports:
 
@@ -65,7 +67,7 @@ export function ErrorBoundary() {
 
 ## Notes
 
-- v8: content confirmed current against `reactrouter.com/api/framework-conventions/root.tsx` (v8.3.0+). No renames/removals; still the only required route file.
+- v8: content confirmed current against `reactrouter.com/api/framework-conventions/root.tsx` (v8.4.0). No renames/removals; still the only required route file.
 - The `Layout` export prevents FOUC (Flash of Unstyled Content) by keeping the document shell mounted across `App`, `HydrateFallback`, and `ErrorBoundary`.
 - Do **not** use `useLoaderData()` inside `Layout` or `ErrorBoundary` — if the loader threw an error it won't be available. Use `useRouteLoaderData("root")` instead (returns `undefined` on error), combined with `useRouteError()` to read the thrown error.
 - Keep `Layout` very defensive: if it throws while rendering `ErrorBoundary`, the built-in fallback UI is used instead.

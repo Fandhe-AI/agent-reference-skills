@@ -95,7 +95,7 @@ export default {
 
 ## Notes
 
-- v8: content confirmed current against `reactrouter.com/api/framework-conventions/react-router.config.ts` (v8.3.0+). No renames/removals; `prerender` gained an object form (`{ paths, concurrency }`) for concurrency control.
+- v8: content confirmed current against `reactrouter.com/api/framework-conventions/react-router.config.ts` (v8.4.0). No renames/removals; `prerender` gained an object form (`{ paths, concurrency }`) for concurrency control.
 - Setting `ssr: false` puts the app in SPA mode — no server is required, but loaders/actions still run at build time for prerendered pages.
 - `prerender` requires `ssr: true` or acts as the only output in SPA mode.
 - `serverBundles` enables splitting the server into multiple deployable units (useful for edge deployments).

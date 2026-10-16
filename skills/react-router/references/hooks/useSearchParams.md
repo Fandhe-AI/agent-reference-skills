@@ -42,6 +42,7 @@ setSearchParams(prev => { prev.set("tab", "2"); return prev; }); // callback
 - The callback form of `setSearchParams` does not support React's queuing like `setState` does; multiple calls in the same tick do not accumulate
 - `defaultInit` provides a fallback value but does not update the URL on first render
 - Available in all modes: Framework, Data, and Declarative
+- The setter accepts `defaultShouldRevalidate` to skip revalidation for one search-param update. A search-param-only change can also be ignored in route `shouldRevalidate` by comparing `currentUrl.pathname === nextUrl.pathname`. See [Revalidation Optimization](../how-to/optimize-revalidation.md)
 
 ## Related
 

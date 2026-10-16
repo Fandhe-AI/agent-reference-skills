@@ -42,7 +42,7 @@ export default function handleRequest(
 }
 ```
 
-## Exports
+## Options / Props
 
 ### Default export: `handleRequest`
 
@@ -63,7 +63,7 @@ export default function handleRequest(
 
 ## Notes
 
-- v8: content confirmed current against `reactrouter.com/api/framework-conventions/entry.server.tsx` (v8.3.0+). No renames/removals.
+- v8: content confirmed current against `reactrouter.com/api/framework-conventions/entry.server.tsx` (v8.4.0). No renames/removals.
 - This file is **optional on Node** — React Router provides a default Node implementation.
 - For non-Node runtimes (Cloudflare Workers, Deno Deploy) this file is **required**.
 - Set `streamTimeout` to control when React aborts deferred promises; set the React renderer's own abort timeout higher than `streamTimeout` so rejected boundaries have time to flush before the stream closes (see the `setTimeout(abort, streamTimeout + 1000)` pattern in the example).

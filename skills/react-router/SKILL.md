@@ -1,10 +1,10 @@
 ---
 name: react-router
 description: >
-  React Router v8 (Framework Mode、旧 Remix) の RR8 リファレンス。
-  loader, action, middleware, routes.ts、hooks (useLoaderData, useActionData, useFetcher, useNavigate, useNavigation, useParams, useSearchParams)、
-  コンポーネント (Form, Link, NavLink, Outlet, Route, Routes, Await)、SSR / SPA / Static、
-  ErrorBoundary, redirect, defer, session, matchPath, matchRoutes, type-safe routing。
+  React Router v8 (RR8、旧 Remix) の Framework / Data / Declarative Mode リファレンス。
+  loader, action, middleware, routes.ts, shouldRevalidate、createBrowserRouter, RouterProvider, BrowserRouter、
+  hooks (useLoaderData, useActionData, useFetcher, useNavigate, useNavigation, useParams, useSearchParams)、
+  Form, Link, NavLink, Outlet, Route, Routes, Await、SSR / SPA / Static / RSC、ErrorBoundary, redirect, defer (v7 で削除), session, matchPath, matchRoutes, type-safe routing。
   TanStack Router (@tanstack/react-router) とは別ライブラリ。
 user-invocable: false
 model: sonnet
@@ -13,6 +13,7 @@ model: sonnet
 # React Router v8 リファレンス
 
 React Router v8 の全 API ドキュメントを網羅したスキル。Declarative / Data / Framework の3モードを扱うが、`start/` 配下の導入手順は Framework Mode を中心に記述している。
+対象: react-router 8.4.0（GitHub タグ `react-router@8.4.0` の docs/ 原本）、`@react-router/dev` 8.4.0。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
 ## ディレクトリ構成
@@ -47,6 +48,32 @@ skills/react-router/
       README.md
       HydratedRouter.md
       ServerRouter.md
+    data-routers/
+      README.md
+      createBrowserRouter.md
+      createHashRouter.md
+      createMemoryRouter.md
+      createStaticHandler.md
+      createStaticRouter.md
+      preloadRoutePattern.md
+      RouterProvider.md
+      StaticRouterProvider.md
+    declarative-routers/
+      README.md
+      BrowserRouter.md
+      HashRouter.md
+      HistoryRouter.md
+      MemoryRouter.md
+      Router.md
+      StaticRouter.md
+    rsc/
+      README.md
+      createCallServer.md
+      getRSCStream.md
+      matchRSCServerRequest.md
+      routeRSCServerRequest.md
+      RSCHydratedRouter.md
+      RSCStaticRouter.md
     hooks/
       README.md
       useActionData.md
@@ -138,6 +165,7 @@ skills/react-router/
       instrumentation.md
       middleware.md
       navigation-blocking.md
+      optimize-revalidation.md
       pre-rendering.md
       presets.md
       react-server-components.md
@@ -211,7 +239,11 @@ skills/react-router/
 | ルートモジュール・レンダリング戦略・テスト | start | [references/start/README.md](references/start/README.md) |
 | root.tsx / routes.ts / react-router.config.ts の設定 | conventions | [references/conventions/README.md](references/conventions/README.md) |
 | entry.client.tsx / entry.server.tsx / client・server モジュール分離 | conventions | [references/conventions/README.md](references/conventions/README.md) |
-| HydratedRouter / ServerRouter の使い方 | routers | [references/routers/README.md](references/routers/README.md) |
+| Framework Mode のルーター（HydratedRouter / ServerRouter）の使い方 | routers | [references/routers/README.md](references/routers/README.md) |
+| Data Mode のルーター（createBrowserRouter / createHashRouter / createMemoryRouter / RouterProvider） | data-routers | [references/data-routers/README.md](references/data-routers/README.md) |
+| Data Mode の SSR（createStaticHandler / createStaticRouter / StaticRouterProvider）・unstable_preloadRoutePattern | data-routers | [references/data-routers/README.md](references/data-routers/README.md) |
+| Declarative Mode のルーター（BrowserRouter / HashRouter / MemoryRouter / StaticRouter / Router / unstable_HistoryRouter） | declarative-routers | [references/declarative-routers/README.md](references/declarative-routers/README.md) |
+| RSC 低レベル API（unstable_matchRSCServerRequest / routeRSCServerRequest / RSCHydratedRouter / RSCStaticRouter / createCallServer / getRSCStream）。RSC の概要は how-to | rsc | [references/rsc/README.md](references/rsc/README.md) |
 | useLoaderData / useActionData / useFetcher 等のフック | hooks | [references/hooks/README.md](references/hooks/README.md) |
 | useNavigate / useNavigation / useParams / useSearchParams 等 | hooks | [references/hooks/README.md](references/hooks/README.md) |
 | useBlocker / useRevalidator / useRouteError 等 | hooks | [references/hooks/README.md](references/hooks/README.md) |
@@ -227,6 +259,7 @@ skills/react-router/
 | フォームバリデーション・エラーバウンダリ・セキュリティ | how-to | [references/how-to/README.md](references/how-to/README.md) |
 | RSC・サーバーバンドル・リソースルート・型安全性 | how-to | [references/how-to/README.md](references/how-to/README.md) |
 | data strategy（loader/action 実行制御のカスタマイズ） | how-to | [references/how-to/README.md](references/how-to/README.md) |
+| 再検証の制御（shouldRevalidate / defaultShouldRevalidate） | how-to | [references/how-to/README.md](references/how-to/README.md) |
 | コード分割・状態管理・BFF・プログレッシブエンハンスメント等の概念 | explanation | [references/explanation/README.md](references/explanation/README.md) |
 | HMR・レースコンディション・並行処理・型安全性の仕組み | explanation | [references/explanation/README.md](references/explanation/README.md) |
 | セッション・クッキーの概念的な仕組み（API は utils 参照） | explanation | [references/explanation/README.md](references/explanation/README.md) |

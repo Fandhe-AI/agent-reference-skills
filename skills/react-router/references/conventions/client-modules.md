@@ -24,7 +24,9 @@ export default function Dashboard() {
 }
 ```
 
-## Naming Conventions
+## Options / Props
+
+Naming conventions:
 
 | Pattern | Example | Effect |
 |---------|---------|--------|
@@ -42,7 +44,7 @@ app/
 
 ## Notes
 
-- v8: content confirmed current against `reactrouter.com/api/framework-conventions/client-modules` (v8.3.0+). No renames/removals. Available in Framework Mode only (not Data Mode or Declarative Mode).
+- v8: content confirmed current against `reactrouter.com/api/framework-conventions/client-modules` (v8.4.0). No renames/removals. Available in Framework Mode only (not Data Mode or Declarative Mode).
 - All exports from `.client` modules resolve to `undefined` during SSR — never read them at module scope in shared code.
 - Safe usage locations: `useEffect`, event handlers (click, submit, etc.).
 - Do **not** mark route modules as `.client` — route files must be accessible to both server and client module graphs.

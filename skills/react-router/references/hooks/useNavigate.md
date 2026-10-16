@@ -40,6 +40,7 @@ function SomeComponent() {
 - `navigate(-1)` navigates back — only use when you are certain a history entry exists
 - In Declarative mode the function returns `void`; in Framework/Data modes it returns `Promise<void>`
 - Available in all modes: Framework, Data, and Declarative
+- `defaultShouldRevalidate` is accepted as a navigate option to skip loader revalidation for one navigation. See [Revalidation Optimization](../how-to/optimize-revalidation.md)
 
 ## Related
 
