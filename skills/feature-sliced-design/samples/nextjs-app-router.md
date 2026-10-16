@@ -70,3 +70,4 @@ export { getExampleData as GET } from '@/_app/api-routes';
 - 推奨: `shared` レイヤーの `db` セグメントにデータベースクエリを記述し、上位レイヤーで利用する。クエリのキャッシュ・再検証ロジックはクエリと同じ場所に置く
 - `widgets` レイヤーは公式ガイドで非推奨（ツリーの `widgets/` は旧来の構成）
 - 公式は `index.server.ts` のコード例を載せていないため、本サンプルも散文のみ。ツリーの `api-routes/index.ts` は原本のツリーに無く、`route.ts` の import（`@/_app/api-routes`）から補った
+- Source: https://fsd.how/docs/guides/tech/with-nextjs (documentation repository commit 3a5a3a3). 旧方式の比較元: https://github.com/feature-sliced/documentation/blob/4f5ae68/src/content/docs/docs/guides/tech/with-nextjs.mdx (commit 4f5ae68)

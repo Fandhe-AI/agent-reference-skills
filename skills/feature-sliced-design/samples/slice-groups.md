@@ -48,3 +48,4 @@ pages/
 - 導入の目安: 同じビジネスコンテキストのスライスが散在している、名前から同じトピックと分かる、レイヤー内のスライス数が一覧しにくい。名前だけで探せる、自然なグループ基準がない、グループ内のスライスが少なすぎる場合は不要
 - `pages` の例は一例であり、pages レイヤーの標準構成ではない。`user/` のように単体で意味が明確なスライスはグループ化しなくてよい
 - `features` でも可能だが、feature は単一ドメインに縛られず複数 entity をまたぐことが多く、自然な基準を見つけにくい。`features/cart/` のようなグループに DTO や mapper が溜まると、ユースケース単位で分ける原則が弱まる。スライスが 2〜3 個なら平坦で十分で、entities に属すべきコードが混入していないかも確認する
+- Source: https://fsd.how/docs/reference/slice-groups (documentation repository commit 3a5a3a3)

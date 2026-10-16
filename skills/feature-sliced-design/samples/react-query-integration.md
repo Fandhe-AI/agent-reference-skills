@@ -75,3 +75,4 @@ export const QueryProvider = ({ children }: { children: ReactNode }) => (
 - ミューテーションはクエリと混ぜない。使用箇所に近い `api` セグメントにカスタムフック（例 `pages/example/api/use-update-example.ts`、`features/update-post/api/`）として置くか、`shared` / `entities` の関数を `mutationFn` に渡す
 - `QueryClient` と `QueryClientProvider` は `app` レイヤー（`app/providers`）に置く。`shared/api` には置かない
 - `all()` をルートキーとするファクトリで、キーの重複とリフェッチ時のキー変更を避ける。`queryOptions` は react-query v5 の組み込みユーティリティ
+- Source: https://fsd.how/docs/guides/tech/with-react-query (documentation repository commit 3a5a3a3)

@@ -40,6 +40,7 @@ import { User } from "entities/user";            // shared → entities (NG: 上
 
 - 公式は Widgets レイヤーの使用を非推奨としている（2026-07）。Processes は deprecated（steiger `fsd/no-processes` が使用を警告）。上の `widgets/header` の例は import 方向の説明用
 - steiger の対応ルール: `fsd/forbidden-imports`（上位レイヤーからの import と同一レイヤーの cross-import を禁止、既定で有効）
+- Source: https://fsd.how/docs/reference/layers (documentation repository commit 3a5a3a3); Steiger rules: https://github.com/feature-sliced/steiger/blob/steiger%400.7.0/README.md (tag steiger@0.7.0, commit b0fe6c5)
 
 ## Why
 

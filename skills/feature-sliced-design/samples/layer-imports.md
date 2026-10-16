@@ -42,3 +42,4 @@ import { Product } from "features/product"; // features → features (NG)
 - 同一スライス内では相対インポート、スライス境界を越える場合は絶対インポートを使う
 - `widgets` レイヤーは公式ガイドで非推奨（上の `widgets/header` は旧来の例）。画面固有の合成は `pages`、複数ページで再利用されるユーザー操作は `features`、共有 UI は `shared`、アプリ全体のレイアウトは `app` で扱う。`processes` も非推奨
 - 双方向依存や同一レイヤー間依存が必要になった場合は設計を見直すサイン
+- Source: https://fsd.how/docs/reference/layers (documentation repository commit 3a5a3a3)

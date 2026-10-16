@@ -52,3 +52,4 @@ export const CommentList = ({ renderActions }: CommentListProps) => {
 - 公式: entity の UI は props や slots で業務ロジックを後から差し込める設計にし、スライス間のやり取りに関するビジネスロジックは features や pages などの上位レイヤーに置くのが望ましい
 - widgets レイヤーは公式ガイドで非推奨。画面固有の合成は `pages` に残し、複数ページで再利用されるユーザー操作は操作と UI 合成の両方を `features` に切り出す。ビジネス文脈のない共有 UI は `shared`、アプリ全体のレイアウトは `app` で扱う
 - どうしても同一レイヤー間の依存が必要な場合は、共有ロジックを下位レイヤーに移動するか、スライスの統合を検討する
+- Source: https://fsd.how/docs/guides/examples/page-layout and https://fsd.how/docs/reference/layers (documentation repository commit 3a5a3a3)
