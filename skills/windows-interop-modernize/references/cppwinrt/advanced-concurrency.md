@@ -9,7 +9,7 @@ IAsyncOperation<uint32_t> DoWorkOnThreadPoolAsync()
 {
     co_await winrt::resume_background(); // Return control; resume on thread pool.
 
-    uint32_t result;
+    uint32_t result{};
     for (uint32_t y = 0; y < height; ++y)
     for (uint32_t x = 0; x < width; ++x)
     {
@@ -123,6 +123,7 @@ else
 - `IAsyncOperation<Int32[]>` is invalid MIDL 3.0 (error MIDL2025); return the array boxed in a `PropertyValue` (`CreateInt32Array`) as `IAsyncOperation<IInspectable>` and unbox with `IPropertyValue::GetInt32Array`.
 - The `no_switch` await-adapter in the source (resume on the completing thread, no context switch) is educational only; the docs recommend developing and testing your own adapter structs.
 - The official page writes `std::literals::2s`, which is not valid C++; this page uses `using namespace std::chrono_literals;` and `2s` instead.
+- The official page declares `uint32_t result;` without initializing or assigning it before `co_return result`, which reads an uninitialized value (undefined behavior); this page value-initializes it (`uint32_t result{};`) — assign the computed value inside the loop in real code.
 - Source: https://learn.microsoft.com/en-us/windows/apps/develop/cpp-winrt/concurrency-2 (en-us, fetched 2026-10-16)
 
 ## Related
