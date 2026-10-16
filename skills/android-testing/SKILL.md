@@ -1,10 +1,11 @@
 ---
 name: android-testing
 description: >
-  Android アプリ開発 (Kotlin) のテストリファレンス。JUnit4, Espresso, テストピラミッド。
+  Android アプリ開発 (Kotlin) のテストリファレンス。JUnit4, Espresso (チートシート), テストピラミッド。
   テストダブル, Mockito, MockK, Truth, Robolectric, coroutines/Flow/ViewModel テスト。
   AndroidJUnit4, ActivityScenario, FragmentScenario, UiAutomator, AndroidTestOrchestrator。
-  createComposeRule, Compose UI テスト同期。
+  createComposeRule, runComposeUiTest, ComposeUiTestConfig, Compose UI テスト同期。
+  CI (継続的インテグレーション), 画面サイズ別テスト, Window Testing。
 user-invocable: false
 ---
 
@@ -22,6 +23,7 @@ skills/android-testing/
     fundamentals-local/
       README.md
       test-pyramid.md
+      what-to-test.md
       test-dependencies.md
       junit4-basics.md
       test-doubles.md
@@ -36,6 +38,7 @@ skills/android-testing/
       testable-design.md
     instrumented/
       README.md
+      ui-tests.md
       androidjunit4-test-runner.md
       set-up-project.md
       instrumentationregistry.md
@@ -54,6 +57,10 @@ skills/android-testing/
       content-provider-testing.md
     espresso/
       README.md
+      overview.md
+      basics.md
+      setup.md
+      cheat-sheet.md
       onview.md
       viewinteraction.md
       viewmatchers.md
@@ -74,6 +81,7 @@ skills/android-testing/
       multiprocess.md
     compose-testing/
       README.md
+      testing-cheatsheet.md
       compose-test-rule.md
       finders.md
       semantics-matcher.md
@@ -98,6 +106,16 @@ skills/android-testing/
       macrobenchmark-metrics.md
       macrobenchmark-rule.md
       microbenchmark-rule.md
+    continuous-integration/
+      README.md
+      ci-basics.md
+      ci-automation.md
+      ci-features.md
+    different-screens/
+      README.md
+      overview.md
+      libraries-and-tools.md
+      window-testing.md
 ```
 
 ## 探索手順
@@ -130,6 +148,12 @@ skills/android-testing/
 | `MacrobenchmarkRule` で起動・スクロール・アニメーションの性能を計測したい | performance-testing | [references/performance-testing/README.md](references/performance-testing/README.md) |
 | `BenchmarkRule` でホットパスをマイクロベンチマークしたい | performance-testing | [references/performance-testing/README.md](references/performance-testing/README.md) |
 | `CompilationMode` / `Metric` で計測条件と取得指標を制御したい | performance-testing | [references/performance-testing/README.md](references/performance-testing/README.md) |
+| 何をテストすべきか（必須ユニットテスト・境界値・避けるべきテスト）を知りたい | fundamentals-local | [references/fundamentals-local/README.md](references/fundamentals-local/README.md) |
+| UI テストの自動化方針（behavior / screenshot の区別、Jetpack の UI テストフレームワークの選び方）を知りたい | instrumented | [references/instrumented/README.md](references/instrumented/README.md) |
+| Espresso の導入（依存関係・instrumentation runner 設定）、基本 API の構成、チートシートを知りたい | espresso | [references/espresso/README.md](references/espresso/README.md) |
+| Compose テスト API のチートシート（finder / matcher / assertion / action 一覧）を引きたい | compose-testing | [references/compose-testing/README.md](references/compose-testing/README.md) |
+| CI パイプラインを設計したい（基本ジョブ・計装テスト・性能回帰・カバレッジ回帰、環境・キャッシュ・シャーディング・リトライ） | continuous-integration | [references/continuous-integration/README.md](references/continuous-integration/README.md) |
+| 画面サイズ・ウィンドウサイズ別にテストしたい（`DeviceConfigurationOverride`、Robolectric qualifiers、Gradle managed devices、Espresso Device、`WindowLayoutInfoPublisherRule` / `TestWindowLayoutInfo`） | different-screens | [references/different-screens/README.md](references/different-screens/README.md) |
 | Hilt のテストをしたい | - | android-architecture スキルの担当 |
 | Room のテストをしたい | - | android-data スキルの担当 |
 | WorkManager のテストをしたい | - | android-background-work スキルの担当 |

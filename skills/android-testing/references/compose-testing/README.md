@@ -2,21 +2,22 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Accessibility testing (Compose) | Automated accessibility checks for Compose UI, built on the Accessibility Test Framework… | [accessibility-testing.md](./accessibility-testing.md) |
-| Actions | Extension functions on SemanticsNodeInteraction that inject simulated user events… | [actions.md](./actions.md) |
-| Assertions | Extension functions on SemanticsNodeInteraction and SemanticsNodeInteractionCollection that… | [assertions.md](./assertions.md) |
-| Common Patterns | Well-established approaches for testing Compose apps: isolating composables, reaching… | [common-patterns.md](./common-patterns.md) |
-| ComposeTestRule | JUnit4 TestRule that hosts Compose content under test and drives the semantics tree… | [compose-test-rule.md](./compose-test-rule.md) |
-| Compose Testing v2 APIs | The current, recommended replacement for the v1 JUnit4 rule/runComposeUiTest APIs… | [compose-testing-v2.md](./compose-testing-v2.md) |
-| Debug Tests | Debugging Compose tests primarily means inspecting the semantics tree, which carries… | [debug.md](./debug.md) |
-| DeviceConfigurationOverride | Wraps test content and locally overrides a device-wide property — screen/window size… | [device-configuration-override.md](./device-configuration-override.md) |
-| Espresso / UiAutomator interoperability | Hybrid apps mixing Compose and Views need no special setup: match Views with Espresso's… | [espresso-interop.md](./espresso-interop.md) |
-| Finders | Functions on SemanticsNodeInteractionsProvider that select one or more nodes from the… | [finders.md](./finders.md) |
-| Compose Preview Screenshot Testing | Host-side screenshot testing built on @Preview composables. Annotating a preview with… | [preview-screenshot-testing.md](./preview-screenshot-testing.md) |
-| printToLog | Debug helper that dumps a node's semantics subtree to logcat, useful for inspecting… | [print-to-log.md](./print-to-log.md) |
-| captureToImage (instrumented screenshot testing) | Captures the rendered pixels of a matched node as a Bitmap, for use inside an… | [screenshot-testing.md](./screenshot-testing.md) |
-| SemanticsMatcher | Predicate over a SemanticsNode, used with onNode / onAllNodes and assert(). The… | [semantics-matcher.md](./semantics-matcher.md) |
-| SemanticsNodeInteraction / SemanticsNodeInteractionCollection | SemanticsNodeInteraction represents a single matched node… | [semantics-node-interaction.md](./semantics-node-interaction.md) |
-| StateRestorationTester | Tests that a composable's rememberSaveable state survives a save/restore cycle… | [state-restoration-tester.md](./state-restoration-tester.md) |
-| Synchronization | Compose tests are synchronized with the UI by default: every `assert*` / `perform*` call waits until the UI is idle before proceeding. | [synchronization.md](./synchronization.md) |
-| Modifier.testTag in tests | Modifier.testTag attaches a stable identifier to a composable so tests can find it… | [test-tag-usage.md](./test-tag-usage.md) |
+| Accessibility testing (Compose) | Automated accessibility checks for Compose UI, built on the Accessibility Test Framework (the same engine behind Accessibility Scanner and Espresso's accessibility checks). | [accessibility-testing.md](./accessibility-testing.md) |
+| Actions | Extension functions on `SemanticsNodeInteraction` that inject simulated user events (clicks, text input, scrolling, gestures) into the node under test. | [actions.md](./actions.md) |
+| Assertions | Extension functions on `SemanticsNodeInteraction` and `SemanticsNodeInteractionCollection` that verify a node's (or collection's) state and fail the test with a descriptive message otherwise. | [assertions.md](./assertions.md) |
+| Common Patterns | Well-established approaches for testing Compose apps: isolating composables, reaching activity resources from `setContent`, exposing custom semantics, verifying state restoration, and testing device configurations. | [common-patterns.md](./common-patterns.md) |
+| ComposeTestRule | JUnit4 `TestRule` that hosts Compose content under test and drives the semantics tree during a test. | [compose-test-rule.md](./compose-test-rule.md) |
+| Compose Testing v2 APIs | The current, recommended replacement for the v1 JUnit4 rule/`runComposeUiTest` APIs documented elsewhere in this category — the v1 factories are now `@Deprecated` and official guidance is to migrate. | [compose-testing-v2.md](./compose-testing-v2.md) |
+| Debug Tests | Debugging Compose tests primarily means inspecting the semantics tree, which carries node hierarchy, positioning, and UI properties useful for tracking down failures. | [debug.md](./debug.md) |
+| DeviceConfigurationOverride | Wraps test content and locally overrides a device-wide property — screen/window size, font scale, or layout direction — for just that subtree, so a composable can be tested at arbitrary configurations on a single device without a real large-screen device or emulator. | [device-configuration-override.md](./device-configuration-override.md) |
+| Espresso / UiAutomator interoperability | Hybrid apps mixing Compose and Views need no special setup: match Views with Espresso's `onView()` and Compose elements with `ComposeTestRule` in the same test. | [espresso-interop.md](./espresso-interop.md) |
+| Finders | Functions on `SemanticsNodeInteractionsProvider` (implemented by `ComposeTestRule`) that select one or more nodes from the semantics tree by matcher, text, tag, content description, or the tree root. | [finders.md](./finders.md) |
+| Compose Preview Screenshot Testing | Host-side (no device/emulator) screenshot testing built on `@Preview` composables. Annotating a preview with `@PreviewTest` turns it into a screenshot test that renders the preview, compares it against a stored reference image, and produces an HTML diff report on failure. | [preview-screenshot-testing.md](./preview-screenshot-testing.md) |
+| printToLog | Debug helper that dumps a node's (or a collection's) semantics subtree to logcat, useful for inspecting what finders can see, especially when a test unexpectedly fails to match a node. | [print-to-log.md](./print-to-log.md) |
+| captureToImage (instrumented screenshot testing) | Captures the rendered pixels of a matched node as a `Bitmap`, for use inside an instrumented `ComposeTestRule` test (as opposed to host-side `@Preview` screenshot testing). | [screenshot-testing.md](./screenshot-testing.md) |
+| SemanticsMatcher | Predicate over a `SemanticsNode`, used with `onNode` / `onAllNodes` and `assert()`. The package provides prebuilt matcher factory functions and combinators (`and`, `or`) as well as hierarchical matchers that look at parent/sibling/ancestor/descendant nodes. | [semantics-matcher.md](./semantics-matcher.md) |
+| SemanticsNodeInteraction / SemanticsNodeInteractionCollection | `SemanticsNodeInteraction` represents a single matched node; `SemanticsNodeInteractionCollection` represents zero or more matched nodes. | [semantics-node-interaction.md](./semantics-node-interaction.md) |
+| StateRestorationTester | Tests that a composable's `rememberSaveable` state survives a save/restore cycle (e.g. process death or configuration change) without relaunching the Activity, by disposing and recomposing the content in place. | [state-restoration-tester.md](./state-restoration-tester.md) |
+| Synchronization | Compose tests are synchronized with the UI by default: every `assert*` / `perform*` call on `ComposeTestRule` waits until the composition, its animations, and pending draw/layout passes are idle before proceeding. | [synchronization.md](./synchronization.md) |
+| Modifier.testTag in tests | `Modifier.testTag` attaches a stable identifier to a composable so tests can find it independent of visible text or content description. | [test-tag-usage.md](./test-tag-usage.md) |
+| Compose testing cheatsheet | One-page summary of the Compose testing API (cheat sheet v1.1.0): finders, assertions, matchers, selectors, actions, test rules, and debug helpers. | [testing-cheatsheet.md](./testing-cheatsheet.md) |
