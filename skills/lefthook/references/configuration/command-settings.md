@@ -2,7 +2,18 @@
 
 Source: https://lefthook.dev/configuration
 
-フックで実行されるコマンドの設定。各コマンドには名前と関連する run オプションがある。
+フックで実行されるコマンドの設定。各コマンドには名前と関連する run オプションがある（集約ページ。各オプションは H2 で個別に記述）。
+
+## Signature / Usage
+
+```yaml
+# lefthook.yml
+
+pre-commit:
+  commands:
+    lint:
+      run: yarn lint
+```
 
 ## Commands
 
@@ -184,7 +195,24 @@ Source: https://lefthook.dev/configuration/group
 
 ### 継承プロパティ
 
-`env`、`root`、`glob`、`exclude` がグループに定義されると、ジョブレベルで上書きされない限り、すべての配下ジョブに伝播する。
+`env`、`root`、`glob`、`exclude`、`files` がグループに定義されると、ジョブレベルで上書きされない限り、すべての配下ジョブに伝播する。
+
+group に設定した `files` コマンドは、`{files}` テンプレートを使う配下ジョブごとに実行される。配下ジョブは独自の `files` で上書きできる。
+
+```yaml
+# lefthook.yml
+
+pre-commit:
+  jobs:
+    - glob:
+        - "*.py"
+      files: git diff --name-only master
+      group:
+        jobs:
+          - run: ruff check {files}
+          - run: ruff format --check {files}
+            files: git ls-files
+```
 
 ### 並列実行グループ
 
@@ -512,6 +540,7 @@ Source: https://lefthook.dev/configuration/stage_fixed
 - `files` オプションが指定されたコマンドの場合、そのコマンドがステージング対象ファイルを取得
 - `files` オプションなしのスクリプトとコマンドでは、`{staged_files}` テンプレートが対象ファイルを決定
 - `glob` と `exclude` のフィルタが適用される
+- `git add` の呼び出しが失敗するとフックも失敗する（修正前の内容のままコミットが通るのを防ぐ。v2.1.12 で変更）
 
 ```yaml
 # lefthook.yml
@@ -619,3 +648,9 @@ post-checkout:
       runner: ruby
       priority: 2
 ```
+
+## Related
+
+- [Script Settings](./script-settings.md)
+- [Hook Settings](./hook-settings.md)
+- [Global Settings](./global-settings.md)

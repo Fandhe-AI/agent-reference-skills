@@ -2,7 +2,17 @@
 
 Source: https://lefthook.dev/configuration
 
-Lefthook のグローバル設定オプション。プロジェクト全体の動作を制御する設定項目をまとめている。
+Lefthook のグローバル設定オプション。プロジェクト全体の動作を制御する設定項目をまとめている（集約ページ。各オプションは H2 で個別に記述）。
+
+## Signature / Usage
+
+```yaml
+# lefthook.yml
+min_version: 1.0.0
+output:
+  - success
+  - failure
+```
 
 ## Config File Names
 
@@ -35,6 +45,40 @@ Lefthook は `lefthook-local`（任意のサポート形式）という追加設
 3. `remotes` - remotes オプションの設定
 4. `lefthook-local.yml` - ローカル設定ファイル
 
+### Editor Support
+
+JSON schema が `https://lefthook.dev/schema.json` で公開されている（v2.2.0 で公開）。エディタの補完・hover ドキュメント・validation に使える。
+
+YAML（yaml-language-server、例: VS Code YAML 拡張）:
+
+```yml
+# yaml-language-server: $schema=https://lefthook.dev/schema.json
+
+pre-commit:
+  jobs:
+    - run: yarn lint
+```
+
+JSON:
+
+```json
+{
+  "$schema": "https://lefthook.dev/schema.json",
+  "pre-commit": {
+    "jobs": [{ "run": "yarn lint" }]
+  }
+}
+```
+
+TOML（Taplo）:
+
+```toml
+#:schema https://lefthook.dev/schema.json
+
+[[pre-commit.jobs]]
+run = "yarn lint"
+```
+
 ---
 
 ## assert_lefthook_installed
@@ -62,6 +106,10 @@ Source: https://lefthook.dev/configuration/colors
 - **デフォルト:** `auto`
 
 Lefthook のカラー出力を有効/無効にする。`--colors` オプションで上書き可能。カスタムカラーコードも指定できる。
+
+既定の `auto` は、色対応の端末を検出したときのみ有効になる。`on`（または `--colors`）は端末でなくても（CI 等）色を強制的に有効にする。
+
+色を明示的に有効化すると、lefthook は実行するコマンドに `CLICOLOR_FORCE=1` を設定し、ESLint / Prettier / Cargo 等がパイプ時も色を保つ。既存の `CLICOLOR_FORCE` は上書きしない。
 
 ### 無効化
 
@@ -209,6 +257,8 @@ output:
 LEFTHOOK_OUTPUT="meta,success,summary" lefthook run pre-commit
 ```
 
+環境変数は config の `output` リストを拡張ではなく上書きする（v2.1.12 で precedence 修正）。
+
 エラー以外のすべての出力を無効にするには `output: false` を設定する。
 
 ---
@@ -328,7 +378,7 @@ templates:
 
 pre-commit:
   jobs:
-    - run: {dip} bundle exec rubocop -- {staged_files}
+    - run: "{dip} bundle exec rubocop -- {staged_files}"
 ```
 
 ```yaml
@@ -345,9 +395,9 @@ templates:
 
 pre-commit:
   jobs:
-    - run: {wrapper} yarn format
-    - run: {wrapper} yarn lint
-    - run: {wrapper} yarn test
+    - run: "{wrapper} yarn format"
+    - run: "{wrapper} yarn lint"
+    - run: "{wrapper} yarn test"
 ```
 
 > `lefthook.yml` で定義したテンプレートは `lefthook-local.yml` で上書き可能。
@@ -377,7 +427,7 @@ Source: https://lefthook.dev/configuration/lefthook
 
 - **型:** String
 
-lefthook 実行ファイルへのフルパス、またはブーンシェル（`sh`）構文でのコマンドを指定する。特定バージョンの lefthook を依存関係から強制使用する場合や、PnP ローダーなどの特殊なプロジェクト構成に有用。
+lefthook 実行ファイルへのフルパス、またはボーンシェル（`sh`）構文でのコマンドを指定する。特定バージョンの lefthook を依存関係から強制使用する場合や、PnP ローダーなどの特殊なプロジェクト構成に有用。
 
 > **注意:** このオプションはセキュリティ上の理由から `remotes` や `extends` からはマージされない。`lefthook-local.yml` からのマージは行われる。
 
@@ -430,39 +480,12 @@ Source: https://lefthook.dev/configuration/ai
 - **型:** Object (プロバイダー名 → イベント名と hook 名のマッピング)
 - **ステータス:** beta
 
-`lefthook.yml` 内で LLM agent hooks を宣言できる。`lefthook install` 実行時に、各プロバイダー固有の設定ファイルを生成し、イベント発火時にエージェントが `lefthook run <hook>` を呼び出すようにする。
+LLM agent hooks の宣言（`claude` / `codex` / `cursor` / `copilot`）。詳細・設定例は [AI (Beta)](./ai.md) を参照。
 
-### 対応プロバイダー
+## Related
 
-| プロバイダー | 生成ファイル |
-| --- | --- |
-| `claude` | `.claude/settings.json` |
-| `codex` | `.codex/hooks.json` |
-| `cursor` | `.cursor/hooks.json` |
-| `copilot` | `.github/hooks/lefthook.json` |
-
-```yaml
-# lefthook.yml
-
-ai:
-  claude:
-    Stop: validate
-    PreToolUse: security-check
-  codex:
-    Stop: validate
-  cursor:
-    stop: validate
-    preToolUse: security-check
-  copilot:
-    postToolUse: validate
-
-validate:
-  jobs:
-    - run: go test ./...
-
-security-check:
-  jobs:
-    - run: ./scripts/security.sh
-```
-
-> イベント名の大小文字は各プロバイダーの hook 仕様に従う（`claude`/`codex` は PascalCase、`cursor`/`copilot` は camelCase）。`claude`/`codex`/`cursor` はユーザーが手動で追記した既存エントリを保持するが、`copilot` は生成のたびに完全上書きする。
+- [AI (Beta)](./ai.md)
+- [Hook Settings](./hook-settings.md)
+- [Command Settings](./command-settings.md)
+- [Script Settings](./script-settings.md)
+- [Remotes](./remotes.md)

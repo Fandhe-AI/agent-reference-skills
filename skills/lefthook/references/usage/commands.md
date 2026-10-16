@@ -2,7 +2,13 @@
 
 Source: https://lefthook.dev/usage/commands/
 
-Lefthook の CLI コマンド一覧。
+Lefthook の CLI コマンド一覧（集約ページ。コマンドごとに H2）。
+
+## Signature / Usage
+
+```
+lefthook install [<hook-1> <hook-2> ...]
+```
 
 ## lefthook install
 
@@ -27,7 +33,7 @@ lefthook install <hook-1> <hook-2> ...
 ### 注意事項
 
 - **設定の永続性**: `lefthook.yml` を変更した後にフックを再インストールする必要はない。設定ファイルは Git hook が実行されるたびに自動的に読み込まれる。
-- **自動インストール**: NPM パッケージ `lefthook` を使用するプロジェクトでは、postinstall スクリプトによりフックが自動的にインストールされる。その他のプロジェクトでは、リポジトリをクローンした後にこのコマンドを実行する。
+- **自動インストール**: NPM パッケージ `lefthook` を使用するプロジェクトでは、postinstall スクリプトによりフックが自動的にインストールされる。その他のプロジェクトでは、リポジトリをクローンした後にこのコマンドを実行する。postinstall は素の `lefthook install` を実行するため、`core.hooksPath` が設定されていると手動実行時と同じメッセージを出して停止する。解消するには一度だけ意図的に `lefthook install --force` または `lefthook install --reset-hooks-path` を実行する（v2.1.13 / v2.1.14 で postinstall の強制インストールを廃止）。
 
 ## lefthook uninstall
 
@@ -250,3 +256,8 @@ lefthook self-update
 - GitHub Releases からバイナリを直接ダウンロード
 
 パッケージマネージャー（npm, Ruby gem, Homebrew など）でインストールした場合は、そのパッケージマネージャーの更新メカニズムを使用すること。
+
+## Related
+
+- [Environment Variables](./environment-variables.md)
+- [Global Settings](../configuration/global-settings.md)

@@ -19,7 +19,7 @@ module.exports = {
 {
   "config": {
     "commitizen": {
-      "path": "cz-conventional-changelog"
+      "path": "./node_modules/cz-conventional-changelog"
     }
   }
 }
@@ -34,7 +34,7 @@ prepare-commit-msg:
       interactive: true
       run: yarn run cz --hook
       env:
-        LEFTHOOK: 0
+        LEFTHOOK: "0"
 
 commit-msg:
   commands:
@@ -46,5 +46,5 @@ commit-msg:
 
 - `{1}` in `commit-msg` expands to the path of the temporary commit message file passed by Git
 - `interactive: true` on `commitizen` allows the CLI prompt to receive keyboard input
-- `LEFTHOOK: 0` in the `prepare-commit-msg` env prevents lefthook from re-triggering recursively when Commitizen calls `git commit`
+- `LEFTHOOK: "0"` in the `prepare-commit-msg` env prevents lefthook from re-triggering recursively when Commitizen calls `git commit`
 - To bypass Commitizen and write a message directly: `git commit -m "fix: typo"`

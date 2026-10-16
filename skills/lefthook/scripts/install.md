@@ -70,6 +70,26 @@ uv add --dev lefthook
 pipx install lefthook
 ```
 
+## PHP (Composer)
+
+```sh
+composer require --dev evilmartians/lefthook
+```
+
+動作確認:
+
+```sh
+vendor/bin/lefthook version
+```
+
+Git hooks のインストール:
+
+```sh
+vendor/bin/lefthook install
+```
+
+インストール後、Git hooks 実行時は `composer exec` 経由で lefthook のパスが自動解決される（出典: v2.2.2 docs/installation/php.md）。
+
 ## Winget (Windows)
 
 ```sh
