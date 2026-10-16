@@ -85,8 +85,15 @@ Fencing modes:
 
 | Sub-option | Values | Description |
 |------------|--------|-------------|
-| `ha` | `0\|1` | Enable CRS-based HA placement |
-| `rebalance-on-start` | `0\|1` | Rebalance VMs/CTs across nodes on service start |
+| `ha` | `basic\|static\|dynamic` (default `basic`) | How the HA Manager selects nodes to start or recover services: `basic` uses only the number of services, `static` considers static CPU and memory configuration, `dynamic` considers static and dynamic CPU and memory usage |
+| `ha-auto-rebalance` | boolean (default `0`) | Use CRS to balance HA resources automatically depending on the current node imbalance |
+| `ha-auto-rebalance-hold-duration` | number 0-N (default `3`) | Number of HA rounds the node imbalance threshold must be exceeded before triggering an automatic balancing migration. Requires `ha-auto-rebalance` |
+| `ha-auto-rebalance-margin` | number 0-100 (default `10`) | Minimum relative improvement in node imbalance, in percent, to commit to a balancing migration. Requires `ha-auto-rebalance` |
+| `ha-auto-rebalance-method` | `bruteforce\|topsis` (default `bruteforce`) | Method used to score balancing migrations. Requires `ha-auto-rebalance` |
+| `ha-auto-rebalance-threshold` | number 0-100 (default `30`) | Node imbalance, in percent, which triggers automatic balancing if exceeded. Requires `ha-auto-rebalance` |
+| `ha-rebalance-on-start` | boolean (default `0`) | Use CRS to select a suited node when an HA service's request-state changes from stop to start |
+
+Format (man page): `crs: [ha=<basic|static|dynamic>] [,ha-auto-rebalance=<1|0>] [,ha-auto-rebalance-hold-duration=<number>] [,ha-auto-rebalance-margin=<number>] [,ha-auto-rebalance-method=<bruteforce|topsis>] [,ha-auto-rebalance-threshold=<number>] [,ha-rebalance-on-start=<1|0>]`
 
 ### Bandwidth Limits
 

@@ -1,12 +1,14 @@
 ---
 name: proxmox-ve
 description: >
-  Proxmox VE (PVE) ハイパーバイザーリファレンス。KVM/QEMU 仮想マシン、LXC コンテナ、
-  クラスター構築・HA・SDN・Ceph・ZFS・ストレージ管理。
-  qm, pct, pvecm, pvesm, pveceph, pvesh, pveum, vzdump, pveam, pvesr, ha-manager CLI。
-  REST API、設定ファイル (qm.conf, pct.conf, datacenter.cfg)、バックグラウンドサービス一覧。
+  Proxmox VE (PVE) 9.2。KVM/QEMU VM (virtiofs)、LXC (OCI イメージ)、クラスター、HA (CRS 負荷分散)、
+  SDN、Ceph、ZFS、pmxcfs、ACME 証明書、proxmox-boot-tool、Secure Boot 証明書更新 (enroll-efi-keys)、NIC 名固定。
+  qm, pct, pvecm, pvesm, pveceph, pvesh, pveum, vzdump, pveam, pvesr, ha-manager CLI、REST API、
+  qm.conf, pct.conf, datacenter.cfg。
 user-invocable: false
 ---
+
+対象: Proxmox VE 9.2（pve-docs version 9.2.13、2026-10-16 取得）。出典: https://pve.proxmox.com/pve-docs/
 
 ## ディレクトリ構成
 
@@ -17,8 +19,12 @@ skills/proxmox-ve/
     core/
       README.md
       installation.md
+      package-repositories.md
+      firmware-updates.md
       cluster.md
       storage.md
+      zfs.md
+      lvm-btrfs.md
       vm-qemu.md
       container-lxc.md
       networking-sdn.md
@@ -28,6 +34,12 @@ skills/proxmox-ve/
       firewall.md
       user-access.md
       notifications.md
+      node-management.md
+      certificates.md
+      host-bootloader.md
+      storage-replication.md
+      pmxcfs.md
+      web-gui.md
     cli/
       README.md
       qm.md
@@ -94,7 +106,17 @@ skills/proxmox-ve/
 | LXC コンテナの作成・設定・スナップショットを知りたい | core | [references/core/README.md](references/core/README.md) |
 | ネットワーク構成・SDN ゾーン・VNet を設定したい | core | [references/core/README.md](references/core/README.md) |
 | Ceph クラスター (OSD/MON/MGR/プール) を構築したい | core | [references/core/README.md](references/core/README.md) |
-| HA リソース・フェンシング・ウォッチドッグを設定したい | core | [references/core/README.md](references/core/README.md) |
+| HA リソース・フェンシング・ウォッチドッグ・CRS 負荷分散・disarm を設定したい | core | [references/core/README.md](references/core/README.md) |
+| パッケージリポジトリ (enterprise / no-subscription / test / Ceph)・アップデートを設定したい | core | [references/core/README.md](references/core/README.md) |
+| ファームウェア・CPU マイクロコードを更新したい | core | [references/core/README.md](references/core/README.md) |
+| ZFS プール管理 (RAIDZ / dRAID / ARC 制限 / 暗号化 / special device) を知りたい | core | [references/core/README.md](references/core/README.md) |
+| ホストの LVM・BTRFS を管理したい | core | [references/core/README.md](references/core/README.md) |
+| 時刻同期・外部メトリクスサーバー (Graphite / InfluxDB)・ディスクヘルス・一括操作・KSM を設定したい | core | [references/core/README.md](references/core/README.md) |
+| 証明書・ACME (Let's Encrypt) を設定したい | core | [references/core/README.md](references/core/README.md) |
+| ブートローダー・カーネル pin・Secure Boot を設定したい | core | [references/core/README.md](references/core/README.md) |
+| ストレージレプリケーションの概念・ジョブ構成を知りたい | core | [references/core/README.md](references/core/README.md) |
+| pmxcfs (/etc/pve レイアウト・復旧) を知りたい | core | [references/core/README.md](references/core/README.md) |
+| Web GUI (タグ・同意バナー・My Settings) を使いたい | core | [references/core/README.md](references/core/README.md) |
 | バックアップ・リストア・PBS 連携・保持設定を知りたい | core | [references/core/README.md](references/core/README.md) |
 | ファイアウォールルール・セキュリティグループを設定したい | core | [references/core/README.md](references/core/README.md) |
 | ユーザー・グループ・ロール・API トークン・2FA を管理したい | core | [references/core/README.md](references/core/README.md) |

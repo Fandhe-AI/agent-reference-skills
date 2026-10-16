@@ -47,6 +47,12 @@ net0: name=eth0,bridge=vmbr0,ip=dhcp,firewall=1
 | `cpulimit` | float (0–8192) | 0 | Hard CPU usage cap in CPU units; 0 = unlimited |
 | `cpuunits` | integer (0–500000) | 1024 (cgv1) / 100 (cgv2) | Relative CPU scheduling weight |
 
+### Environment
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `env` | NUL-separated `KEY=value` list | — | Container runtime environment as a NUL-separated list; replaces any `lxc.environment.runtime` entries in the config |
+
 ### Memory
 
 | Name | Type | Default | Description |

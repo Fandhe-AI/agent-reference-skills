@@ -185,4 +185,24 @@ Requires the `ifupdown2` package (`apt install ifupdown2`).
 pve-network-interface-pinning generate
 ```
 
-Optional flags: `--prefix <prefix>`, `--interface <name>`, `--target-name <name>`.
+Generates a `.link` file for all physical network interfaces that do not yet have one and updates selected Proxmox VE configuration files. The default prefix is `nic` (resulting names `nic1`, `nic2`, ...). The node must be rebooted to apply the changes. To revert before rebooting, delete all `.new` files and the respective link files from `/usr/local/lib/systemd/network`.
+
+## Pin network interface names with a custom prefix
+
+```sh
+pve-network-interface-pinning generate --prefix myprefix
+```
+
+## Pin a specific network interface
+
+```sh
+pve-network-interface-pinning generate --interface enp1s0
+```
+
+## Pin a specific interface to an exact name
+
+```sh
+pve-network-interface-pinning generate --interface enp1s0 --target-name if42
+```
+
+`--target-name` is specified when pinning a specific interface (`--interface`).

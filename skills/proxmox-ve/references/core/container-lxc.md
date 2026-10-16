@@ -57,6 +57,11 @@ pct restore <ctid> /path/to/backup.tar.zst
 - Templates are tar archives managed by `pveam`; available from official Proxmox template repositories
 - Resource limits use Linux cgroupv2 in modern Proxmox versions
 
+### OCI Images
+
+- Proxmox VE can create containers from OCI (Open Container Initiative) images, both system containers and application containers; running application containers is currently a technology preview. A container created from an OCI image still uses the existing LXC framework.
+- Obtaining: in the web interface, upload an OCI image manually or pull it from a registry with the **Pull from OCI registry** button on the container template view of a storage. Once the template is on a storage, create the container with `pct create` or the web interface wizard.
+
 ## Related
 
 - [storage.md](./storage.md)

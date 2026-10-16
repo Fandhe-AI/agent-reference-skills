@@ -9,7 +9,7 @@ pct <COMMAND> [OPTIONS]
 pct help [<COMMAND>]
 ```
 
-## Subcommands
+### Subcommands
 
 | Subcommand | Description |
 |------------|-------------|
@@ -46,6 +46,10 @@ pct help [<COMMAND>]
 | `fstrim <vmid>` | Run fstrim inside container |
 | `template <vmid>` | Convert container to a template |
 | `cpusets` | Show CPU assignments |
+| `restore <vmid> <ostemplate>` | Create or restore a container |
+| `remote-migrate <vmid> [<target-vmid>] <target-endpoint> --target-bridge <string> --target-storage <string>` | Migrate container to a remote cluster. Creates a new migration task. EXPERIMENTAL feature! |
+| `rescan` | Rescan all storages and update disk sizes and unused disk images |
+| `unlock <vmid>` | Unlock the VM |
 
 ## Options / Props
 

@@ -60,7 +60,7 @@ qm migrate <vmid> <target-node> --online
 | Option | Description |
 |--------|-------------|
 | `--bios` | `seabios` (default) or `ovmf` (UEFI; required for Windows 11) |
-| `--efidisk0` | EFI disk (use `efitype=4m` for Secure Boot support) |
+| `--efidisk0` | EFI disk (use `efitype=4m` for Secure Boot support; `ms-cert=2023k` marks enrolled Microsoft 2023 certificates) |
 
 ### Cloud-Init
 
@@ -78,6 +78,15 @@ qm migrate <vmid> <target-node> --online
 - Dynamic memory (balloon) adds memory when host usage is below 80%; leave enabled unless debugging
 - `qm migrate --online` requires shared storage or storage migration support
 - Memory encryption (SEV) on AMD EPYC prevents snapshots and live migration
+- Secure Boot Certificate Expiration: the Microsoft 2011 certificates used by Windows and common Linux distributions for Secure Boot expire in June 2026; replacement certificates were created in 2023.
+  - The firmware only accepts bootloaders signed with certificates present on the EFI disk, so an EFI disk with only the 2011 certificates rejects bootloaders signed with the 2023 certificates only.
+  - With `pve-edk2-firmware` >= `4.2025.05-1`, newly created EFI disks contain both and carry `ms-cert=2023k`.
+  - For older EFI disks, enroll via the GUI: Hardware -> select EFI disk -> Disk Action > Enroll Updated Certificates.
+  - Or via the `/nodes/{node}/qemu/{vmid}/config` API (takes effect at next VM start).
+  - Or via `qm enroll-efi-keys <vmid>` (VM must be shut down).
+  - Windows with BitLocker: first run `manage-bde -protectors -disable <drive>` in PowerShell for each BitLocker drive, otherwise the recovery key is requested on next boot.
+  - `ms-cert=2023` / `2023w` markers may indicate partial enrollment.
+- Virtio-fs shares a host directory with a VM without the network stack: create a directory mapping, then add `virtiofs0` (e.g. `qm set <vmid> -virtiofs0 dirid=<dirid>,cache=always,direct-io=1`); `virtiofsd` runs automatically on VM start (install with `apt install virtiofsd`). Linux guests mount with `mount -t virtiofs <dirid> <mount point>`. Known limitations: a crashing virtiofsd leaves the mount hanging until the VM is fully stopped; memory hotplug does not work with virtiofs; do not expose ACLs for Windows VMs (the device would not be visible)
 
 ## Related
 

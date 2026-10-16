@@ -166,13 +166,22 @@ ha-manager crm-command node-maintenance disable <node>
 ha-manager crm-command disarm-ha <resource-mode>
 ```
 
-`<resource-mode>`: `freeze` or `ignore`.
+`<resource-mode>`: `freeze` or `ignore`. Examples:
+
+```sh
+ha-manager crm-command disarm-ha freeze
+ha-manager crm-command disarm-ha ignore
+```
+
+With `ignore`, resources are suspended from HA tracking and can be started, stopped, or migrated manually while HA is disarmed. Monitor the state with `ha-manager status`.
 
 ## Re-enable (arm) the HA stack
 
 ```sh
 ha-manager crm-command arm-ha
 ```
+
+Run after maintenance is complete. The CRM rechecks service locations against the configuration to pick up manual migrations.
 
 ## Add an HA rule (node-affinity or resource-affinity)
 

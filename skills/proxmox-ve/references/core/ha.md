@@ -28,6 +28,8 @@ ha-manager remove vm:<vmid>
 | `--max_restart` | 1 | Restart attempts on the same node before relocating |
 | `--max_relocate` | 1 | Relocation attempts to other nodes before giving up |
 | `--group` | — | HA group name for node affinity (deprecated since v9.0) |
+| `--failback` | 1 | Automatically migrate the resource to the highest-priority node (per node affinity rules) when a higher-priority node comes online |
+| `--auto-rebalance` | 1 | Resource may be migrated during automatic rebalancing by the CRS load balancer |
 
 ### Node Affinity Rules (v9.0+, replaces HA Groups)
 
@@ -57,7 +59,17 @@ ha-manager remove vm:<vmid>
 |-------|-------------|
 | Armed | Active HA, watchdog open, auto-failover enabled |
 | Standby | Ready but no active CRM master |
-| Disarmed | No auto-failover (e.g., during maintenance) |
+| Disarmed | No auto-failover (e.g., during maintenance); entered via `ha-manager crm-command disarm-ha <freeze\|ignore>` (resource mode chosen at disarm time) |
+
+### CRS scheduling modes
+
+Set in Datacenter -> Options -> Cluster Resource Scheduling (`crs: ha=...` in `datacenter.cfg`); default `basic`; takes effect from the next HA Manager round (about 10 seconds).
+
+| Mode | Usage information used to pick a node |
+|------|----------------------------------------|
+| `basic` | Number of active guests on each node |
+| `static` (static-load) | Configured CPU and memory quotas of active guests |
+| `dynamic` (dynamic-load) | Average CPU and memory usage plus configured CPU and memory quotas of active guests |
 
 ## Notes
 
@@ -66,6 +78,9 @@ ha-manager remove vm:<vmid>
 - Fencing is mandatory — without reliable fencing, HA cannot safely restart services from a failed node
 - HA Groups are deprecated since PVE 9.0; use Node Affinity Rules instead
 - `pmxcfs` locking ensures only one LRM and one CRM master run at any time
+- Disarming HA for cluster maintenance (network or corosync reconfiguration that can cause quorum loss): `ha-manager crm-command disarm-ha freeze|ignore` releases all CRM and LRM watchdogs cluster-wide; `ha-manager crm-command arm-ha` reverses it. While disarmed HA does not protect services, so keep the window short. `freeze` applies no new commands or state changes; `ignore` suspends resources from HA tracking so they can be started/stopped/migrated manually (on re-arm the CRM rechecks service locations). If services are being fenced, recovered or migrated, the disarm is deferred until those operations complete.
+- CRS Load Balancer: automatically issues rebalancing migrations only for HA resources, executed sequentially and always obeying HA affinity rules. Requires `static` or `dynamic` CRS mode. Every HA Manager round (about 10 s) it checks whether cluster imbalance exceeds the imbalance threshold (default 30%); if it stays above for at least the hold duration (consecutive rounds), it selects the migration (method: `bruteforce` or `topsis`) that lowers imbalance most, and issues it only if the improvement is at least the imbalance improvement margin (default 10%). Configure under Datacenter -> Options -> Cluster Resource Scheduling (`crs` options `ha-auto-rebalance*` in `datacenter.cfg`).
+- Setting `auto-rebalance` to 0 on an HA resource excludes it from rebalancing migrations; any HA resource with a positive affinity to such a resource is excluded as well
 
 ## Related
 

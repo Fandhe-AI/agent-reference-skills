@@ -258,6 +258,16 @@ qm monitor <vmid>
 qm sendkey <vmid> <key>
 ```
 
+## Enroll updated Secure Boot certificates (2023) into the EFI disk
+
+> **警告**: For Windows guests with BitLocker, run `manage-bde -protectors -disable <drive>` inside PowerShell for each BitLocker drive first (e.g. `C:`). Otherwise the BitLocker recovery key is requested on the next boot.
+
+```sh
+qm enroll-efi-keys <vmid>
+```
+
+The VM must be shut down. The enrollment takes effect when the VM is next started. Applies to EFI disks created before `pve-edk2-firmware` 4.2025.05-1; newer EFI disks already contain the 2011 and 2023 certificates (`ms-cert=2023k` marker).
+
 ## Restore a VM from vzdump backup
 
 ```sh
