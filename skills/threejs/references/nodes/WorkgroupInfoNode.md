@@ -39,7 +39,7 @@ class WorkgroupInfoNode extends Node {
 
 - WebGPU backend only.
 - `label()` is marked deprecated in the r186 docs; use `setName()`.
-- Source: `src/nodes/gpgpu/WorkgroupInfoNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/WorkgroupInfoNode.html (three.js r186, `src/nodes/gpgpu/WorkgroupInfoNode.js`)
 
 ## Related
 

@@ -31,7 +31,7 @@ new DirectRenderPipeline( renderer: Renderer, outputNode: Node<vec4> )
 
 - This module can only be used with `WebGPURenderer`.
 - Inherits from `RenderPipeline`.
-- Source: `src/renderers/common/DirectRenderPipeline.js` (three.js r186).
+- Source: https://threejs.org/docs/pages/DirectRenderPipeline.html (three.js r186, `src/renderers/common/DirectRenderPipeline.js`)
 
 ## Related
 

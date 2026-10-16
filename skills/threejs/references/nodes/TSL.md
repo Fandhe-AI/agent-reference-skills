@@ -31,7 +31,7 @@ material.colorNode = mul( texture( myTexture, uv() ), vec3( 1.2, 0.9, 0.8 ) );
 
 - TSL functions build a graph of `Node` subclasses (see [Node](./Node.md)); the graph is compiled by a `NodeBuilder` (see [NodeBuilder](./NodeBuilder.md)) into WGSL or GLSL depending on the active renderer backend.
 - Assign TSL node graphs to `*NodeMaterial` properties (`colorNode`, `positionNode`, `normalNode`, etc.) instead of setting plain uniforms.
-- Renamed in r185: `directionToColor()` is now `packNormalToRGB()` and `colorToDirection()` is now `unpackRGBToNormal()` (#33715).
+- Renamed in r185: `directionToColor()` is now `packNormalToRGB()` and `colorToDirection()` is now `unpackRGBToNormal()` (https://github.com/mrdoob/three.js/pull/33715).
 - In `material.positionNode`, `positionLocal` does not reflect internal vertex transformations such as `SkinnedMesh`; use `positionGeometry` to get the vertices from the pre-transformed geometry (r185 migration note).
 - Import from `three/tsl` (or `three/webgpu` for renderer + TSL together), not from `three` directly.
 

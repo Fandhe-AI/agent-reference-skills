@@ -44,7 +44,7 @@ class UniformArrayNode extends BufferNode {
 
 ## Notes
 
-- Source: `src/nodes/accessors/UniformArrayNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/UniformArrayNode.html (three.js r186, `src/nodes/accessors/UniformArrayNode.js`)
 - Inheritance: ... > UniformNode > BufferNode > UniformArrayNode.
 
 ## Related

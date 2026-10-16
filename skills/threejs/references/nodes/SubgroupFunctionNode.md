@@ -21,7 +21,7 @@ class SubgroupFunctionNode extends TempNode {
 ## Notes
 
 - The r186 docs page documents only the constructor and these properties.
-- Source: `src/nodes/gpgpu/SubgroupFunctionNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/SubgroupFunctionNode.html (three.js r186, `src/nodes/gpgpu/SubgroupFunctionNode.js`)
 
 ## Related
 

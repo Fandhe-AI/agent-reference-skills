@@ -29,7 +29,7 @@ class AtomicFunctionNode extends Node {
 ## Notes
 
 - WebGPU backend only.
-- Source: `src/nodes/gpgpu/AtomicFunctionNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/AtomicFunctionNode.html (three.js r186, `src/nodes/gpgpu/AtomicFunctionNode.js`)
 
 ## Related
 

@@ -26,7 +26,7 @@ Scopes:
 
 ## Notes
 
-- Source: `src/nodes/display/ViewportDepthNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/ViewportDepthNode.html (three.js r186, `src/nodes/display/ViewportDepthNode.js`)
 
 ## Related
 

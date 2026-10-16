@@ -30,7 +30,7 @@ class ViewportTextureNode extends TextureNode {
 
 ## Notes
 
-- Source: `src/nodes/display/ViewportTextureNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/ViewportTextureNode.html (three.js r186, `src/nodes/display/ViewportTextureNode.js`)
 - Inheritance: EventDispatcher > Node > InputNode > UniformNode > TextureNode > ViewportTextureNode.
 
 ## Related

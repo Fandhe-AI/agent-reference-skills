@@ -32,7 +32,7 @@ class Texture3DNode extends TextureNode {
 
 ## Notes
 
-- Source: `src/nodes/accessors/Texture3DNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/Texture3DNode.html (three.js r186, `src/nodes/accessors/Texture3DNode.js`)
 
 ## Related
 

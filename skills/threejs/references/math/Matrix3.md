@@ -42,7 +42,7 @@ normalMatrix.getNormalMatrix(modelViewMatrix);
 ## Notes
 
 - Internally column-major: `elements[3]` is row 0, column 1.
-- Deprecated in r185: `translate()`, `scale()` and `rotate()` (#33757; the r186 page marks all three "Deprecated"). Use `makeTranslation()` / `makeScale()` / `makeRotation()` or compose matrices with `multiply()`.
+- Deprecated in r185: `translate()`, `scale()` and `rotate()` (https://github.com/mrdoob/three.js/pull/33757; the r186 page marks all three "Deprecated"). Use `makeTranslation()` / `makeScale()` / `makeRotation()` or compose matrices with `multiply()`.
 - `getNormalMatrix` is essential for correct lighting when non-uniform scale is applied.
 - See official docs for full method list: https://threejs.org/docs/#api/en/math/Matrix3
 

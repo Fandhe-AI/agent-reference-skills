@@ -20,7 +20,7 @@ LoaderUtils.resolveURL( url, path ) // string
 
 - Both methods are static; the constructor `new LoaderUtils()` takes no arguments.
 - `resolveURL()`: absolute paths, data URLs, and blob URLs are returned as is. Invalid URLs return an empty string.
-- Source: `src/loaders/LoaderUtils.js`.
+- Source: https://threejs.org/docs/pages/LoaderUtils.html (three.js r186, `src/loaders/LoaderUtils.js`)
 
 ## Related
 

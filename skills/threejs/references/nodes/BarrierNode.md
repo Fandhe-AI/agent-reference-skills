@@ -20,7 +20,7 @@ class BarrierNode extends Node {
 
 - WebGPU backend only.
 - The r186 docs page documents only the constructor.
-- Source: `src/nodes/gpgpu/BarrierNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/BarrierNode.html (three.js r186, `src/nodes/gpgpu/BarrierNode.js`)
 
 ## Related
 

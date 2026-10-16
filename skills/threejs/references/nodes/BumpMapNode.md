@@ -23,7 +23,7 @@ class BumpMapNode extends TempNode {
 
 ## Notes
 
-- Source: `src/nodes/display/BumpMapNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/BumpMapNode.html (three.js r186, `src/nodes/display/BumpMapNode.js`)
 
 ## Related
 

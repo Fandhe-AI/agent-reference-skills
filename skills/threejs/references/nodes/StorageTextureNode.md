@@ -56,7 +56,7 @@ class StorageTextureNode extends TextureNode {
 ## Notes
 
 - WebGPU backend only.
-- Source: `src/nodes/accessors/StorageTextureNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/StorageTextureNode.html (three.js r186, `src/nodes/accessors/StorageTextureNode.js`)
 
 ## Related
 

@@ -29,7 +29,7 @@ class PointShadowNode extends ShadowNode {
 
 ## Notes
 
-- Source: `src/nodes/lighting/PointShadowNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/PointShadowNode.html (three.js r186, `src/nodes/lighting/PointShadowNode.js`)
 - Inheritance: EventDispatcher > Node > ShadowBaseNode > ShadowNode > PointShadowNode.
 
 ## Related

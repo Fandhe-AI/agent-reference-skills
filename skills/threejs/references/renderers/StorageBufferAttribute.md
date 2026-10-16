@@ -21,7 +21,7 @@ new StorageBufferAttribute( count: number | TypedArray, itemSize: number, typeCl
 
 - Can only be used with `WebGPURenderer`.
 - Inherits from `BufferAttribute`.
-- Source: `src/renderers/common/StorageBufferAttribute.js` (three.js r186).
+- Source: https://threejs.org/docs/pages/StorageBufferAttribute.html (three.js r186, `src/renderers/common/StorageBufferAttribute.js`)
 
 ## Related
 

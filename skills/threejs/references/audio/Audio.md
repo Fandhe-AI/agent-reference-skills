@@ -77,7 +77,7 @@ Constructor: `new Audio( listener : AudioListener )` — the global audio listen
 ## Notes
 
 - `play`, `pause`, `stop`, `setLoop`, `setPlaybackRate` and `getLoop` only work with sources that allow playback control (`hasPlaybackControl`); media element, media stream and audio node sources set it to `false`.
-- Source: `src/audio/Audio.js`.
+- Source: https://threejs.org/docs/pages/Audio.html (three.js r186, `src/audio/Audio.js`)
 
 ## Related
 

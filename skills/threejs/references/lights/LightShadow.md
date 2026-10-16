@@ -53,7 +53,7 @@ Constructor: `new LightShadow( camera : Camera )` (abstract). `camera` is the li
 ## Notes
 
 - Abstract; instances are created automatically as `.shadow` of lights such as `DirectionalLight`, `SpotLight`, `PointLight`.
-- Source: `src/lights/LightShadow.js`.
+- Source: https://threejs.org/docs/pages/LightShadow.html (three.js r186, `src/lights/LightShadow.js`)
 
 ## Related
 

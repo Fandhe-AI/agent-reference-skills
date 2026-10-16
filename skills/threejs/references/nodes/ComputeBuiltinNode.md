@@ -30,7 +30,7 @@ class ComputeBuiltinNode extends Node {
 ## Notes
 
 - WebGPU backend only.
-- Source: `src/nodes/gpgpu/ComputeBuiltinNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/ComputeBuiltinNode.html (three.js r186, `src/nodes/gpgpu/ComputeBuiltinNode.js`)
 
 ## Related
 

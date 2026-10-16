@@ -31,7 +31,7 @@ class MaterialReferenceNode extends ReferenceNode {
 
 ## Notes
 
-- Source: `src/nodes/accessors/MaterialReferenceNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/MaterialReferenceNode.html (three.js r186, `src/nodes/accessors/MaterialReferenceNode.js`)
 
 ## Related
 

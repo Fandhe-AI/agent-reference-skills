@@ -28,7 +28,7 @@ const loader = new NodeMaterialLoader( manager );
 ## Notes
 
 - The generated docs list the return type of `createMaterialFromType()` as `Node` and of `setNodeMaterials()` / `setNodes()` as `NodeLoader`; the description says each returns "A reference to this loader".
-- Source: `src/loaders/nodes/NodeMaterialLoader.js`.
+- Source: https://threejs.org/docs/pages/NodeMaterialLoader.html (three.js r186, `src/loaders/nodes/NodeMaterialLoader.js`)
 
 ## Related
 

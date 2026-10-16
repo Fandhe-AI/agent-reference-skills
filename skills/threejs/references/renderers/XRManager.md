@@ -51,7 +51,7 @@ new XRManager( renderer: Renderer, multiview: boolean )
 ## Notes
 
 - Inherits from `EventDispatcher`.
-- Source: `src/renderers/common/XRManager.js` (three.js r186).
+- Source: https://threejs.org/docs/pages/XRManager.html (three.js r186, `src/renderers/common/XRManager.js`)
 
 ## Related
 

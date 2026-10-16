@@ -191,9 +191,9 @@ onAfterShadow(renderer, scene, camera, shadowCamera, geometry, depthMaterial, gr
 ## Notes
 
 - `dispose()` (r186) frees the GPU-related resources allocated by the instance. Geometries, materials and textures are potentially shared with other 3D objects and must be disposed of separately.
-- Since r186, custom subclasses that define their own `dispose()` must call `super.dispose()` (#34141).
+- Since r186, custom subclasses that define their own `dispose()` must call `super.dispose()` (https://github.com/mrdoob/three.js/pull/34141).
 - `intersectsFrustum()` is abstract; renderable objects such as `Mesh`, `Line` and `Points` implement it to use frustum culling.
-- Since r185, `updateWorldMatrix()` honors `matrixWorldNeedsUpdate`. When `matrixAutoUpdate = false` and `matrix` is updated directly, set `matrixWorldNeedsUpdate = true` (#33746).
+- Since r185, `updateWorldMatrix()` honors `matrixWorldNeedsUpdate`. When `matrixAutoUpdate = false` and `matrix` is updated directly, set `matrixWorldNeedsUpdate = true` (https://github.com/mrdoob/three.js/pull/33746).
 - `rotation` and `quaternion` are kept in sync automatically.
 - Use `Object3D.rotation`/`position`/`scale` for real-time transforms instead of `BufferGeometry.rotateX` etc., which bake transforms into vertex data.
 - Setting `matrixAutoUpdate = false` and calling `updateMatrix()` manually improves performance for static objects.

@@ -44,7 +44,7 @@ size.y = height * pixelRatio;
 ## Notes
 
 - Inherits from `EventDispatcher`.
-- Source: `src/renderers/common/CanvasTarget.js` (three.js r186).
+- Source: https://threejs.org/docs/pages/CanvasTarget.html (three.js r186, `src/renderers/common/CanvasTarget.js`)
 
 ## Related
 

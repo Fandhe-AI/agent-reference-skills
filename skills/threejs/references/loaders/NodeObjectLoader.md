@@ -30,7 +30,7 @@ const object = loader.parse( json, onLoad );
 
 ## Notes
 
-- Source: `src/loaders/nodes/NodeObjectLoader.js`.
+- Source: https://threejs.org/docs/pages/NodeObjectLoader.html (three.js r186, `src/loaders/nodes/NodeObjectLoader.js`)
 
 ## Related
 

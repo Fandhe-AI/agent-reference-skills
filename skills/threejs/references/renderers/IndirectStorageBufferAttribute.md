@@ -20,7 +20,7 @@ new IndirectStorageBufferAttribute( count: number | Uint32Array, itemSize: numbe
 
 - Can only be used with `WebGPURenderer` and a WebGPU backend.
 - Inherits from `BufferAttribute` -> `StorageBufferAttribute`.
-- Source: `src/renderers/common/IndirectStorageBufferAttribute.js` (three.js r186).
+- Source: https://threejs.org/docs/pages/IndirectStorageBufferAttribute.html (three.js r186, `src/renderers/common/IndirectStorageBufferAttribute.js`)
 
 ## Related
 

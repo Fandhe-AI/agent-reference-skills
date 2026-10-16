@@ -32,7 +32,7 @@ class PMREMNode extends TempNode {
 
 ## Notes
 
-- Source: `src/nodes/pmrem/PMREMNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/PMREMNode.html (three.js r186, `src/nodes/pmrem/PMREMNode.js`)
 
 ## Related
 

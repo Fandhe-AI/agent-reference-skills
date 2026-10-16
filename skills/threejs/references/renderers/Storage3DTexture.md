@@ -33,7 +33,7 @@ new Storage3DTexture( width: number, height: number, depth: number )
 
 - Can only be used with `WebGPURenderer` and a WebGPU backend.
 - Inherits from `EventDispatcher` -> `Texture`.
-- Source: `src/renderers/common/Storage3DTexture.js` (three.js r186).
+- Source: https://threejs.org/docs/pages/Storage3DTexture.html (three.js r186, `src/renderers/common/Storage3DTexture.js`)
 
 ## Related
 

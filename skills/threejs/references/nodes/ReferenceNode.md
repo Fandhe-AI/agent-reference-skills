@@ -44,7 +44,7 @@ class ReferenceNode extends Node {
 ## Notes
 
 - `label()` is marked deprecated in the r186 docs; use `setName()`.
-- Source: `src/nodes/accessors/ReferenceNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/ReferenceNode.html (three.js r186, `src/nodes/accessors/ReferenceNode.js`)
 
 ## Related
 

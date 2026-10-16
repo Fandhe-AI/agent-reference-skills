@@ -20,7 +20,7 @@ class ViewportDepthTextureNode extends ViewportTextureNode {
 
 ## Notes
 
-- Source: `src/nodes/display/ViewportDepthTextureNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/ViewportDepthTextureNode.html (three.js r186, `src/nodes/display/ViewportDepthTextureNode.js`)
 - Inheritance: EventDispatcher > Node > InputNode > UniformNode > TextureNode > ViewportTextureNode > ViewportDepthTextureNode.
 
 ## Related

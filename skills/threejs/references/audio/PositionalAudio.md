@@ -53,7 +53,7 @@ Constructor: `new PositionalAudio( listener : AudioListener )` — the global au
 - `setMaxDistance` is used only by the `linear` distance model.
 - Inherits all `Audio` properties and methods.
 - Distance model details: https://www.w3.org/TR/webaudio-1.1/#enumdef-distancemodeltype
-- Source: `src/audio/PositionalAudio.js`.
+- Source: https://threejs.org/docs/pages/PositionalAudio.html (three.js r186, `src/audio/PositionalAudio.js`)
 
 ## Related
 

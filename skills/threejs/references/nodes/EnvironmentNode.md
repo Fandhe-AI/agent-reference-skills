@@ -18,7 +18,7 @@ class EnvironmentNode extends LightingNode {
 
 ## Notes
 
-- Source: `src/nodes/lighting/EnvironmentNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/EnvironmentNode.html (three.js r186, `src/nodes/lighting/EnvironmentNode.js`)
 - Inheritance: EventDispatcher > Node > LightingNode > EnvironmentNode.
 
 ## Related

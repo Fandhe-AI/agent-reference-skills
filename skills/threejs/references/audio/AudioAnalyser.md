@@ -50,7 +50,7 @@ const data = analyser.getAverageFrequency();
 
 ## Notes
 
-- Source: `src/audio/AudioAnalyser.js`.
+- Source: https://threejs.org/docs/pages/AudioAnalyser.html (three.js r186, `src/audio/AudioAnalyser.js`)
 
 ## Related
 

@@ -21,7 +21,7 @@ new RenderPipeline( renderer: Renderer, outputNode: Node<vec4> )
 | renderer | Renderer | A reference to the renderer (constructor parameter; also a property). |
 | outputNode | Node<vec4> | Optional output node (constructor parameter). As a property: defines the final output of the pipeline, usually the last node in a chain of effect nodes. |
 | isRenderPipeline | boolean (readonly) | Type-test flag. Default `true`. |
-| needsUpdate | Node<vec4> | Must be set to `true` when the output node changes. |
+| needsUpdate | boolean | Must be set to `true` when the output node changes. |
 | outputColorTransform | boolean | Whether the default output tone mapping and color space transformation is enabled. Enabled by default. |
 
 ## Methods
@@ -43,7 +43,8 @@ const outputPass = renderOutput( scenePass );
 
 - `renderAsync()` is marked deprecated in r186.
 - `PostProcessing` (see PostProcessing.md) is deprecated since r183 in favor of this class.
-- Source: `src/renderers/common/RenderPipeline.js` (three.js r186).
+- The r186 docs list the type of `needsUpdate` as `Node<vec4>`, which contradicts its description (set to `true`); documented here as `boolean`.
+- Source: https://threejs.org/docs/pages/RenderPipeline.html (three.js r186, `src/renderers/common/RenderPipeline.js`)
 
 ## Related
 

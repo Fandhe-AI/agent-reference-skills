@@ -38,7 +38,7 @@ Constructor parameters:
 ## Notes
 
 - Documented in the three.js r186 docs as `TextureSource` with the type flag `isTextureSource`. The existing `Source.md` page in this category documents the same class under the name `Source` / `isSource`.
-- Source file: `src/textures/TextureSource.js`.
+- Source: https://threejs.org/docs/pages/TextureSource.html (three.js r186, `src/textures/TextureSource.js`)
 
 ## Related
 

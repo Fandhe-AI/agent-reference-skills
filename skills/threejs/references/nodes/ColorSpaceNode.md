@@ -26,7 +26,7 @@ class ColorSpaceNode extends TempNode {
 
 ## Notes
 
-- Source: `src/nodes/display/ColorSpaceNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/ColorSpaceNode.html (three.js r186, `src/nodes/display/ColorSpaceNode.js`)
 
 ## Related
 

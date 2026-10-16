@@ -31,7 +31,7 @@ loader.dispose();
 - Draco files contain **geometry only** — no materials, textures, animation, or node hierarchy. For a complete solution, embed Draco compression inside glTF.
 - Create **one** `DRACOLoader` instance and reuse it to avoid loading the decoder multiple times.
 - The decoder automatically uses WASM or JS based on browser support.
-- `setDecoderConfig()` is deprecated since r185; in the future `DRACOLoader` will always use WASM (#33602).
+- `setDecoderConfig()` is deprecated since r185; in the future `DRACOLoader` will always use WASM (https://github.com/mrdoob/three.js/pull/33602).
 - When used with `GLTFLoader`, call `gltfLoader.setDRACOLoader( dracoLoader )`.
 
 ## Related

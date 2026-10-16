@@ -30,7 +30,7 @@ class StorageTexture3DNode extends StorageTextureNode {
 
 ## Notes
 
-- Source: `src/nodes/accessors/StorageTexture3DNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/StorageTexture3DNode.html (three.js r186, `src/nodes/accessors/StorageTexture3DNode.js`)
 - Inheritance: ... > TextureNode > StorageTextureNode > StorageTexture3DNode.
 
 ## Related

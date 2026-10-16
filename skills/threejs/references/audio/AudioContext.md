@@ -19,7 +19,7 @@ AudioContext.setContext( value : Window.AudioContext )
 ## Notes
 
 - Static methods only.
-- Source: `src/audio/AudioContext.js`.
+- Source: https://threejs.org/docs/pages/AudioContext.html (three.js r186, `src/audio/AudioContext.js`)
 
 ## Related
 

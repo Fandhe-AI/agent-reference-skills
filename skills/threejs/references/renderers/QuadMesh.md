@@ -28,7 +28,7 @@ new QuadMesh( material: NodeMaterial )
 - Can only be used with `WebGPURenderer`.
 - `renderAsync()` is marked deprecated in r186.
 - Inherits from `EventDispatcher` -> `Object3D` -> `Mesh`.
-- Source: `src/renderers/common/QuadMesh.js` (three.js r186).
+- Source: https://threejs.org/docs/pages/QuadMesh.html (three.js r186, `src/renderers/common/QuadMesh.js`)
 
 ## Related
 

@@ -40,7 +40,7 @@ class MRTNode extends OutputStructNode {
 
 ## Notes
 
-- Source: `src/nodes/core/MRTNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/MRTNode.html (three.js r186, `src/nodes/core/MRTNode.js`)
 - Inheritance: EventDispatcher > Node > OutputStructNode > MRTNode.
 
 ## Related

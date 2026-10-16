@@ -48,7 +48,7 @@ Properties:
 
 ## Notes
 
-- Source: `src/nodes/utils/ReflectorNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/ReflectorNode.html (three.js r186, `src/nodes/utils/ReflectorNode.js`)
 
 ## Related
 

@@ -35,7 +35,7 @@ Constructor: `new AudioListener()`
 
 - A three.js application usually creates a single listener. It is a mandatory constructor parameter for `Audio` and `PositionalAudio`.
 - In most cases the listener is a child of the camera, so the camera's 3D transformation represents the listener's.
-- Source: `src/audio/AudioListener.js`.
+- Source: https://threejs.org/docs/pages/AudioListener.html (three.js r186, `src/audio/AudioListener.js`)
 
 ## Related
 

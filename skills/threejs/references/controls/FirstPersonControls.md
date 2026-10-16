@@ -58,7 +58,7 @@ new FirstPersonControls(object: Object3D, domElement: HTMLElement)
 
 ## Notes
 
-- Since r184, `FirstPersonControls` has a new interaction model and improved mobile support (#33124)
+- Since r184, `FirstPersonControls` has a new interaction model and improved mobile support (https://github.com/mrdoob/three.js/pull/33124)
 - `update(delta)` is mandatory every frame; pass `clock.getDelta()` for frame-rate independence
 - Call `handleResize()` when the canvas or window is resized
 - For game-style first-person movement with pointer lock, consider PointerLockControls instead

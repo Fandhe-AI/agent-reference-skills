@@ -8,7 +8,7 @@ Defines attribute data on the node level instead of only on geometry level. Espe
 const geometry = new THREE.PlaneGeometry();
 const positionAttribute = geometry.getAttribute( 'position' );
 const colors = [];
-for ( let i = 0; i < position.count; i ++ ) {
+for ( let i = 0; i < positionAttribute.count; i ++ ) {
 	colors.push( 1, 0, 0 );
 }
 material.colorNode = bufferAttribute( new THREE.Float32BufferAttribute( colors, 3 ) );
@@ -54,7 +54,8 @@ class BufferAttributeNode extends InputNode {
 
 ## Notes
 
-- Source: `src/nodes/accessors/BufferAttributeNode.js` (three.js r186 docs).
+- The r186 docs example uses the undefined variable `position.count`; corrected here to `positionAttribute.count`.
+- Source: https://threejs.org/docs/pages/BufferAttributeNode.html (three.js r186, `src/nodes/accessors/BufferAttributeNode.js`)
 
 ## Related
 

@@ -2,15 +2,15 @@
 name: threejs
 description: >
   Three.js (three, WebGL / WebGPU 3D グラフィクス) r186 リファレンス。
-  Scene, PerspectiveCamera, WebGLRenderer, WebGPURenderer, RenderPipeline、
-  BufferGeometry, Mesh, InstancedMesh, SkinnedMesh, StorageBufferAttribute、
-  MeshStandardMaterial, ShaderMaterial, node-materials (TSL)、
-  DirectionalLight, SpotLight, PMREMGenerator、
-  GLTFLoader, DRACOLoader, TextureLoader、
-  AnimationMixer, AnimationClip, Timer、
+  Scene, Group, PerspectiveCamera, OrthographicCamera, WebGLRenderer, WebGPURenderer, RenderPipeline、
+  BufferGeometry, BufferAttribute, StorageBufferAttribute, Mesh, InstancedMesh, SkinnedMesh、
+  MeshStandardMaterial, MeshPhysicalMaterial, ShaderMaterial, node-materials (TSL)、
+  DirectionalLight, SpotLight, PointLight, AmbientLight, PMREMGenerator、
+  GLTFLoader, FBXLoader, DRACOLoader, TextureLoader、
+  AnimationMixer, AnimationClip, AnimationAction, KeyframeTrack, Timer、
   AudioListener, PositionalAudio、
-  Vector3, Matrix4, Quaternion, Raycaster、
-  OrbitControls, WebXRManager。
+  Vector3, Matrix4, Quaternion, Euler, Color, Box3, Raycaster、
+  OrbitControls, TransformControls, WebXRManager。
 user-invocable: false
 ---
 

@@ -18,7 +18,7 @@ class AONode extends LightingNode {
 
 ## Notes
 
-- Source: `src/nodes/lighting/AONode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/AONode.html (three.js r186, `src/nodes/lighting/AONode.js`)
 - Inheritance: EventDispatcher > Node > LightingNode > AONode.
 
 ## Related

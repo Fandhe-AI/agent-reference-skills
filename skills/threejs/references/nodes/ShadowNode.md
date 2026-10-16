@@ -41,7 +41,7 @@ class ShadowNode extends ShadowBaseNode {
 
 ## Notes
 
-- Source: `src/nodes/lighting/ShadowNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/ShadowNode.html (three.js r186, `src/nodes/lighting/ShadowNode.js`)
 - Inheritance: EventDispatcher > Node > ShadowBaseNode > ShadowNode.
 
 ## Related

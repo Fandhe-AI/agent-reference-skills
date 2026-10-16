@@ -1,6 +1,6 @@
 # AmbientLightProbe
 
-**Removed in r157** (PR #26715, "Remove AmbientLightProbe, HemisphereLightProbe"). Kept here as a legacy page for code written against r156 or earlier; it does not exist in r186. Use [LightProbe](./LightProbe.md) with `LightProbeGenerator` instead.
+**Removed in r157** (PR https://github.com/mrdoob/three.js/pull/26715, "Remove AmbientLightProbe, HemisphereLightProbe"). Kept here as a legacy page for code written against r156 or earlier; it does not exist in r186. Use [LightProbe](./LightProbe.md) with `LightProbeGenerator` instead.
 
 A light probe variant that approximated uniform ambient indirect lighting using spherical harmonics, instead of emitting light directly. Extended [LightProbe](./LightProbe.md).
 
@@ -27,7 +27,7 @@ scene.add(lightProbe);
 
 ## Notes
 
-- Removed in r157 (#26715): the file exists at r156 and is gone at r157; it is also absent from the r186 docs index. Use `LightProbe` (set `.sh` directly or via `LightProbeGenerator`).
+- Removed in r157 (https://github.com/mrdoob/three.js/pull/26715): the file exists at r156 and is gone at r157; it is also absent from the r186 docs index. Use `LightProbe` (set `.sh` directly or via `LightProbeGenerator`).
 - Does not emit light directly; provides indirect-lighting approximation via spherical harmonics.
 - Typically used alongside [LightProbeGenerator](https://threejs.org/docs/pages/LightProbeGenerator.html) to bake environment map lighting.
 - Unlike `AmbientLight`, position does not matter.

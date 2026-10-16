@@ -37,7 +37,7 @@ class RenderOutputNode extends TempNode {
 ## Notes
 
 - When applying tone mapping and color space conversion manually with this node, set `RenderPipeline#outputColorTransform` to `false`.
-- Source: `src/nodes/display/RenderOutputNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/RenderOutputNode.html (three.js r186, `src/nodes/display/RenderOutputNode.js`)
 
 ## Related
 

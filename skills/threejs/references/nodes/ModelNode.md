@@ -24,7 +24,7 @@ class ModelNode extends Object3DNode {
 
 ## Notes
 
-- Source: `src/nodes/accessors/ModelNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/ModelNode.html (three.js r186, `src/nodes/accessors/ModelNode.js`)
 
 ## Related
 

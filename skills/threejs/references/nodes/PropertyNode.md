@@ -27,7 +27,7 @@ class PropertyNode extends Node {
 
 ## Notes
 
-- Source: `src/nodes/core/PropertyNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/PropertyNode.html (three.js r186, `src/nodes/core/PropertyNode.js`)
 
 ## Related
 

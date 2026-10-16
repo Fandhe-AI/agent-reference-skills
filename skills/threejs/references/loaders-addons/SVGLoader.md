@@ -45,7 +45,7 @@ scene.add( group );
 
 ## Notes
 
-- `SVGLoader.createShapes()` is deprecated in r185; use `shapePath.toShapes()` instead (#33503).
+- `SVGLoader.createShapes()` is deprecated in r185; use `shapePath.toShapes()` instead (https://github.com/mrdoob/three.js/pull/33503).
 
 ## Related
 

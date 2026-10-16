@@ -28,7 +28,7 @@ new CubeRenderTarget( size: number, options: RenderTarget~Options )
 
 - Inherits from `EventDispatcher` -> `RenderTarget`.
 - Use `WebGLCubeRenderTarget` with `WebGLRenderer`; this class is the `WebGPURenderer`-compatible counterpart.
-- Source: `src/renderers/common/CubeRenderTarget.js` (three.js r186).
+- Source: https://threejs.org/docs/pages/CubeRenderTarget.html (three.js r186, `src/renderers/common/CubeRenderTarget.js`)
 
 ## Related
 

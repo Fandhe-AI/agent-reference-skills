@@ -28,7 +28,7 @@ new ReadbackBuffer( maxByteLength: number )
 
 - After calling `release()`, any `ArrayBuffer` data associated with this readback buffer is removed and no longer accessible.
 - Inherits from `EventDispatcher`.
-- Source: `src/renderers/common/ReadbackBuffer.js` (three.js r186).
+- Source: https://threejs.org/docs/pages/ReadbackBuffer.html (three.js r186, `src/renderers/common/ReadbackBuffer.js`)
 
 ## Related
 

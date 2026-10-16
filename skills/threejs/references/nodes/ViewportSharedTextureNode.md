@@ -25,7 +25,7 @@ class ViewportSharedTextureNode extends ViewportTextureNode {
 
 ## Notes
 
-- Source: `src/nodes/display/ViewportSharedTextureNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/ViewportSharedTextureNode.html (three.js r186, `src/nodes/display/ViewportSharedTextureNode.js`)
 
 ## Related
 

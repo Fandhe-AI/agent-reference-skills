@@ -65,7 +65,7 @@ class PassNode extends TempNode {
 
 ## Notes
 
-- Source: `src/nodes/display/PassNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/PassNode.html (three.js r186, `src/nodes/display/PassNode.js`)
 - Inheritance: EventDispatcher > Node > TempNode > PassNode.
 - `getResolution()` / `setResolution()` are deprecated since r181.
 

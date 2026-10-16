@@ -38,7 +38,7 @@ class LightsNode extends Node {
 
 ## Notes
 
-- Source: `src/nodes/lighting/LightsNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/LightsNode.html (three.js r186, `src/nodes/lighting/LightsNode.js`)
 
 ## Related
 

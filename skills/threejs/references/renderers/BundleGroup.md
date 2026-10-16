@@ -23,7 +23,7 @@ new BundleGroup()
 - Only renderable 3D objects are allowed in a bundle group. Lights and other types are not supported and must be added to the scene outside the group.
 - Fully supported only by `WebGPURenderer` with a WebGPU backend. With a WebGL backend the group can technically be rendered but without performance improvements.
 - Inherits from `EventDispatcher` -> `Object3D` -> `Group`.
-- Source: `src/renderers/common/BundleGroup.js` (three.js r186).
+- Source: https://threejs.org/docs/pages/BundleGroup.html (three.js r186, `src/renderers/common/BundleGroup.js`)
 
 ## Related
 

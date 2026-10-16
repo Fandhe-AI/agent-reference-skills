@@ -30,7 +30,7 @@ loader.load( url, onLoad, onProgress, onError );
 
 ## Notes
 
-- Source: `src/loaders/nodes/NodeLoader.js`.
+- Source: https://threejs.org/docs/pages/NodeLoader.html (three.js r186, `src/loaders/nodes/NodeLoader.js`)
 
 ## Related
 

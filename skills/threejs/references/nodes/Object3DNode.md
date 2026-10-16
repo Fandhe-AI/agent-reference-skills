@@ -37,7 +37,7 @@ Scopes:
 
 ## Notes
 
-- Source: `src/nodes/accessors/Object3DNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/Object3DNode.html (three.js r186, `src/nodes/accessors/Object3DNode.js`)
 
 ## Related
 

@@ -21,7 +21,7 @@ new StorageInstancedBufferAttribute( count: number | TypedArray, itemSize: numbe
 
 - Can only be used with `WebGPURenderer`.
 - Inherits from `BufferAttribute` -> `InstancedBufferAttribute`.
-- Source: `src/renderers/common/StorageInstancedBufferAttribute.js` (three.js r186).
+- Source: https://threejs.org/docs/pages/StorageInstancedBufferAttribute.html (three.js r186, `src/renderers/common/StorageInstancedBufferAttribute.js`)
 
 ## Related
 

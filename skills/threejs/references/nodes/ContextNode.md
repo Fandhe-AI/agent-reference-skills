@@ -39,7 +39,7 @@ class ContextNode extends Node {
 
 ## Notes
 
-- Source: `src/nodes/core/ContextNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/ContextNode.html (three.js r186, `src/nodes/core/ContextNode.js`)
 
 ## Related
 

@@ -36,7 +36,7 @@ class VarNode extends Node {
 
 ## Notes
 
-- Source: `src/nodes/core/VarNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/VarNode.html (three.js r186, `src/nodes/core/VarNode.js`)
 
 ## Related
 

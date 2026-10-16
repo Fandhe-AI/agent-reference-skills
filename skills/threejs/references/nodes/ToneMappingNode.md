@@ -28,7 +28,7 @@ class ToneMappingNode extends TempNode {
 
 ## Notes
 
-- Source: `src/nodes/display/ToneMappingNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/ToneMappingNode.html (three.js r186, `src/nodes/display/ToneMappingNode.js`)
 
 ## Related
 

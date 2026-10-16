@@ -40,7 +40,7 @@ class RTTNode extends TextureNode {
 
 ## Notes
 
-- Source: `src/nodes/utils/RTTNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/RTTNode.html (three.js r186, `src/nodes/utils/RTTNode.js`)
 - The docs list `width` / `height` as properties with default `null`.
 
 ## Related

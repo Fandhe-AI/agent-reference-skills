@@ -25,7 +25,7 @@ class NormalMapNode extends TempNode {
 
 ## Notes
 
-- Source: `src/nodes/display/NormalMapNode.js` (three.js r186 docs).
+- Source: https://threejs.org/docs/pages/NormalMapNode.html (three.js r186, `src/nodes/display/NormalMapNode.js`)
 
 ## Related
 
