@@ -4,7 +4,7 @@ description: >
   Apple データ永続化・データフロー・ネットワーク・ユーティリティリファレンス。SwiftData / Core Data / Foundation / Combine。
   @Model, ModelContainer, ModelContext, @Query, Predicate, FetchDescriptor,
   SectionedResults, ResultsObserver, NSManagedObject, NSFetchRequest, NSFetchedResultsController,
-  NSPersistentCloudKitContainer, NSStagedMigrationManager,
+  NSPersistentContainer, NSPersistentCloudKitContainer, NSStagedMigrationManager,
   URLSession, JSONDecoder, JSONEncoder, Publisher, sink, Future, AsyncPublisher, @Published, AnyCancellable
 user-invocable: false
 ---

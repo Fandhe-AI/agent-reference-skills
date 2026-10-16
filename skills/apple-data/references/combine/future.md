@@ -24,13 +24,13 @@ cancellable = generateAsyncRandomNumberFromFuture()
 
 ### init(_:)
 
-Creates a publisher that invokes a promise closure when the publisher emits an element.
+Creates a publisher that invokes the given closure once when the Future is initialized; the closure performs the work and calls the supplied Promise to deliver a single result.
 
 ```swift
 init(_ attemptToFulfill: @escaping (@escaping Future<Output, Failure>.Promise) -> Void)
 ```
 
-- `attemptToFulfill`: a `Promise` that the publisher invokes when the publisher emits an element or terminates with an error.
+- `attemptToFulfill`: a closure that Future calls at initialization. It receives a `Promise`; call `promise(.success(value))` or `promise(.failure(error))` to complete the future.
 
 ### Promise
 
@@ -81,6 +81,7 @@ let asyncRandom = await generateAsyncRandomNumberFromContinuation()
 - `Future`, `init(_:)`, `Promise`: iOS 13.0+, iPadOS 13.0+, Mac Catalyst 13.0+, macOS 10.15+, tvOS 13.0+, visionOS 1.0+, watchOS 6.0+
 - `value` (both variants): iOS 15.0+, iPadOS 15.0+, Mac Catalyst 15.0+, macOS 12.0+, tvOS 15.0+, visionOS 1.0+, watchOS 8.0+
 - Unlike other `Publisher` types that may publish many elements, a `Future` only publishes one element (or fails), which is why it exposes `value` for `async`-`await`.
+- Apple's abstract describes the parameter as a Promise invoked on emission; per the declaration it is a closure that receives the Promise and runs at init (use Deferred to delay execution until subscription).
 - Conforms to `Publisher`.
 - Source: https://developer.apple.com/documentation/combine/future (fetched 2026-10-16, iOS 27 SDK docs)
 

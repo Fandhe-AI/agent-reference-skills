@@ -24,6 +24,15 @@ NotificationCenter.default.removeObserver(token)
 for await notification in NotificationCenter.default.notifications(named: .myEvent) {
     // handle
 }
+
+// Concurrency-safe message API (iOS 26.0+)
+// Store `token` in a property for as long as you intend to observe.
+token = NotificationCenter.default.addObserver(of: TimeZone.self,
+                                               for: .systemTimeZoneDidChange)
+{ message in
+    let identifier = message.previousTimeZone?.identifier ?? "(unknown)"
+    print("Time zone changed from \(identifier).")
+}
 ```
 
 ## Options / Props
@@ -55,16 +64,6 @@ for await notification in NotificationCenter.default.notifications(named: .myEve
 | `removeObserver(_: NotificationCenter.ObservationToken)` | Stops the observation represented by the token |
 | `messages(of:for:bufferSize:)` | Returns `some Sendable & AsyncSequence<Message, Never>` of messages |
 | `post(_:subject:)` / `post(_:)` | Posts a main actor or asynchronous message, optionally with a subject |
-
-```swift
-// Store `token` in a property for as long as you intend to observe.
-token = NotificationCenter.default.addObserver(of: TimeZone.self,
-                                               for: .systemTimeZoneDidChange)
-{ message in
-    let identifier = message.previousTimeZone?.identifier ?? "(unknown)"
-    print("Time zone changed from \(identifier).")
-}
-```
 
 ## Notes
 

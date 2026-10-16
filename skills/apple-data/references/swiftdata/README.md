@@ -4,7 +4,7 @@
 |------|-------------|------|
 | @Attribute | Customizes how SwiftData persists a stored property on a `@Model` class. Common uses include enforcing uniqueness and renaming attributes across schema versions. | [attribute-macro.md](./attribute-macro.md) |
 | DataStore / DataStoreBatching | Protocols that let SwiftData read and write model data without knowledge of the underlying storage mechanism, enabling custom persistence backends beyond the built-in Core Data-based `DefaultStore`. | [data-store-protocol.md](./data-store-protocol.md) |
-| DefaultStore | A data store that uses Core Data as its undelying storage mechanism. | [default-store.md](./default-store.md) |
+| DefaultStore | A data store that uses Core Data as its underlying storage mechanism. | [default-store.md](./default-store.md) |
 | SwiftDataError / DataStoreError | `SwiftDataError` is a type that describes a SwiftData error. `DataStoreError` is a type that describes a data store error. | [errors.md](./errors.md) |
 | FetchDescriptor | Describes the criteria, sort order, and additional configuration for fetching persistent models. | [fetch-descriptor.md](./fetch-descriptor.md) |
 | History tracking (HistoryDescriptor / HistoryToken / HistoryTransaction / HistoryChange / HistoryObserver) | Types for fetching and observing time-based changes to persisted model data, used to sync a local store with remote changes or replay recent edits. | [history-tracking.md](./history-tracking.md) |

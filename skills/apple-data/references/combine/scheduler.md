@@ -11,7 +11,7 @@ struct ImmediateScheduler   // conforms to Scheduler
 static let shared: ImmediateScheduler
 ```
 
-You can use a scheduler to execute code as soon as possible, or after a future date. Individual scheduler implementations use whatever time-keeping system makes sense for them, expressed as their `SchedulerTimeType`. Since this type conforms to `SchedulerTimeIntervalConvertible`, you can always express these times with convenience functions like `.milliseconds(500)`. Schedulers can accept options to control how they execute the actions passed to them (for example, which threads or dispatch queues execute the actions).
+You can use a scheduler to execute code as soon as possible, or after a future date. Individual scheduler implementations use whatever time-keeping system makes sense for them, expressed as their `SchedulerTimeType` (an instant in time, `Strideable`). Time intervals are expressed as `SchedulerTimeType.Stride`, which conforms to `SchedulerTimeIntervalConvertible`, so you can write intervals with convenience functions like `.milliseconds(500)` (e.g. for `debounce(for:)` or `schedule(after:interval:)`). Schedulers can accept options to control how they execute the actions passed to them (for example, which threads or dispatch queues execute the actions).
 
 Schedulers are passed to timing and delivery operators, for example:
 
@@ -25,7 +25,7 @@ let cancellable = subject
 
 | Name | Description |
 |------|-------------|
-| `SchedulerTimeType` | Associated type (`Strideable`) describing an instant in time for this scheduler. |
+| `SchedulerTimeType` | Associated type (`Strideable`) describing an instant in time for this scheduler; its `Stride` (conforming to `SchedulerTimeIntervalConvertible`) represents intervals. |
 | `SchedulerOptions` | Associated type that defines options accepted by the scheduler. |
 | `now` | This scheduler's definition of the current moment in time. |
 | `minimumTolerance` | The minimum tolerance allowed by the scheduler (`SchedulerTimeType.Stride`). |

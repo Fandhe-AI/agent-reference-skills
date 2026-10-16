@@ -15,6 +15,23 @@ let nextMonth = calendar.date(byAdding: .month, value: 1, to: Date())
 
 // Check if same day
 let isSameDay = calendar.isDate(date1, inSameDayAs: date2)
+
+// Sequence of dates (iOS 18.0+)
+func dates(
+    byMatching components: DateComponents,
+    startingAt start: Date,
+    in range: Range<Date>? = nil,
+    matchingPolicy: Calendar.MatchingPolicy = .nextTime,
+    repeatedTimePolicy: Calendar.RepeatedTimePolicy = .first,
+    direction: Calendar.SearchDirection = .forward
+) -> some Sendable & Sequence<Date>
+
+func dates(
+    byAdding components: DateComponents,
+    startingAt start: Date,
+    in range: Range<Date>? = nil,
+    wrappingComponents: Bool = false
+) -> some Sendable & Sequence<Date>
 ```
 
 ## Options / Props
@@ -47,24 +64,6 @@ let isSameDay = calendar.isDate(date1, inSameDayAs: date2)
 | `dates(byMatching:startingAt:in:matchingPolicy:repeatedTimePolicy:direction:)` | Sequence of dates matching (or most closely matching) the components. iOS 18.0+, iPadOS 18.0+, Mac Catalyst 18.0+, macOS 15.0+, tvOS 18.0+, visionOS 1.0+, watchOS 11.0+ |
 | `dates(byAdding:startingAt:in:wrappingComponents:)` (`DateComponents`) | Sequence of dates made by repeatedly adding the components to a start date. Same availability |
 | `dates(byAdding:value:startingAt:in:wrappingComponents:)` (`Calendar.Component`, `value: Int`) | Same, adding a single component value. Same availability |
-
-```swift
-func dates(
-    byMatching components: DateComponents,
-    startingAt start: Date,
-    in range: Range<Date>? = nil,
-    matchingPolicy: Calendar.MatchingPolicy = .nextTime,
-    repeatedTimePolicy: Calendar.RepeatedTimePolicy = .first,
-    direction: Calendar.SearchDirection = .forward
-) -> some Sendable & Sequence<Date>
-
-func dates(
-    byAdding components: DateComponents,
-    startingAt start: Date,
-    in range: Range<Date>? = nil,
-    wrappingComponents: Bool = false
-) -> some Sendable & Sequence<Date>
-```
 
 ## Notes
 

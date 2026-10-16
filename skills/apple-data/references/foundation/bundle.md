@@ -18,6 +18,11 @@ let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") 
 
 // Localized string
 let greeting = bundle.localizedString(forKey: "greeting", value: "Hello", table: nil)
+
+// #bundle macro (iOS 15.0+)
+label.text = String(localized: "Game Over.",
+                    bundle: #bundle,
+                    comment: "Text for game over banner.")
 ```
 
 ## Options / Props
@@ -43,12 +48,6 @@ let greeting = bundle.localizedString(forKey: "greeting", value: "Hello", table:
 | `localizations` | `[String]` — all included localizations |
 | `preferredLocalizations` | `[String]` — ordered preferred localizations |
 | `#bundle` (macro) | `@freestanding(expression) macro bundle() -> Bundle` — expands to a bundle instance that's most likely to contain resources for the calling code. iOS 15.0+, iPadOS 15.0+, Mac Catalyst 15.0+, macOS 12.0+, tvOS 15.0+, visionOS 1.0+, watchOS 8.0+ |
-
-```swift
-label.text = String(localized: "Game Over.",
-                    bundle: #bundle,
-                    comment: "Text for game over banner.")
-```
 
 ## Notes
 
