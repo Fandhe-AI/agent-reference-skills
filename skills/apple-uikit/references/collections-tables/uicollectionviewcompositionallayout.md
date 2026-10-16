@@ -2,12 +2,12 @@
 
 A layout object that composes items, groups, and sections into flexible, adaptive visual arrangements. The recommended modern layout for complex collection views.
 
+## Signature / Usage
+
 ```swift
 @MainActor
 class UICollectionViewCompositionalLayout: UICollectionViewLayout
 ```
-
-## Signature / Usage
 
 ```swift
 func createLayout() -> UICollectionViewLayout {
@@ -59,6 +59,7 @@ func createLayout() -> UICollectionViewLayout {
 - `NSCollectionLayoutSection` supports orthogonal (cross-axis) scrolling via `orthogonalScrollingBehavior`
 - Use `UICollectionLayoutListConfiguration` with `list(using:)` for sidebar, inset-grouped, and plain list appearances without manual item/group/section setup
 - Prefer compositional layout over `UICollectionViewFlowLayout` for new designs
+- `UICollectionViewCompositionalLayoutSectionProvider` closures (`(Int, any NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection?`) take part in automatic observation tracking, so the layout is invalidated and updated automatically when observable objects read inside the closure change.
 
 ## Related
 

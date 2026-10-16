@@ -46,6 +46,8 @@ textView.delegate = self
 - Call `resignFirstResponder()` to dismiss the keyboard.
 - Register for `keyboardWillShowNotification` / `keyboardWillHideNotification` to adjust scroll insets.
 - Set `restorationIdentifier` to preserve selection and editing state across launches.
+- A `UITextView` subclass can override viewport layout methods directly by conforming to `NSTextViewportLayoutControllerDelegate` (the protocol itself is available from iOS 15.0).
+- Register a `UITextAttachmentViewProviderReusePolicy` (an option set) on `UITextView` to retain attachment views during scrolling and editing, preventing flicker and preserving view state.
 
 ## Related
 

@@ -66,8 +66,11 @@ init(navigationBarClass: AnyClass?, toolbarClass: AnyClass?)
 - Do not directly modify the navigation bar's `frame`, `bounds`, or `alpha`.
 - Content view controllers automatically receive a `navigationItem` property for configuring bar buttons and title.
 - Set `restorationIdentifier` to preserve the navigation stack across launches.
+- `UINavigationItem.navigationBarMinimization: UIBarMinimization` is available in iOS 27.0+.
+- `UINavigationItem.verticalBarCompressionBehavior: UIVerticalBarCompressionBehavior` (iOS 27.1+, default `.automatic`) controls which items compress first when the tab bar and navigation/toolbar items are rendered together in the vertical bar.
 
 ## Related
 
 - [UIViewController](./uiviewcontroller.md)
 - [View Controller Presentation](./viewcontroller-presentation.md)
+- [Vertical Bar (controls on the vertical axis)](../adaptive-layout/vertical-bar.md)

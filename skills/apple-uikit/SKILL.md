@@ -1,12 +1,13 @@
 ---
 name: apple-uikit
 description: >
-  UIKit iOS/iPadOS UI フレームワークリファレンス。
+  UIKit iOS/iPadOS UI フレームワーク。
   UIViewController, UINavigationController, UITabBarController, UISplitViewController,
-  UIView, UILabel, UIButton, UITextField, UIScrollView, UIStackView,
-  UITableView, UICollectionView, diffable data source, NSDiffableDataSourceSnapshot,
-  UICollectionViewCompositionalLayout, Auto Layout, NSLayoutConstraint, NSLayoutAnchor,
-  UILayoutGuide, intrinsicContentSize。
+  UIView, UIButton, UIScrollView, UIStackView, UITableView, UICollectionView,
+  diffable data source, CompositionalLayout, Auto Layout, NSLayoutConstraint。
+  UIArrangementViewController, UISplitArrangement, UIOverlayArrangement, UIView.ReservedRegion,
+  UIHingeInteraction, 縦軸バー, iPhone Duo adaptive layout (iOS 27.1+),
+  scene-based life cycle 移行, UISceneAccessory。SwiftUI ArrangementView とは別 API。
 user-invocable: false
 ---
 
@@ -32,6 +33,8 @@ skills/apple-uikit/
       uiresponder.md
       uiwindow.md
       uiwindowscene.md
+      scene-based-life-cycle.md
+      uisceneaccessory.md
     views-controls/
       README.md
       uiview.md
@@ -81,6 +84,14 @@ skills/apple-uikit/
       uilayoutpriority.md
       uiview-layout.md
       uistackview-autolayout.md
+    adaptive-layout/
+      README.md
+      uiarrangementviewcontroller.md
+      uisplitarrangement.md
+      uioverlayarrangement.md
+      uiview-reservedregion.md
+      uihingeinteraction.md
+      vertical-bar.md
 ```
 
 ## 探索手順
@@ -110,3 +121,8 @@ skills/apple-uikit/
 | NSLayoutConstraint・NSLayoutAnchor で制約を組みたい | autolayout | [references/autolayout/README.md](references/autolayout/README.md) |
 | safeAreaLayoutGuide・intrinsicContentSize を使いたい | autolayout | [references/autolayout/README.md](references/autolayout/README.md) |
 | UILayoutGuide・UILayoutPriority で制約を調整したい | autolayout | [references/autolayout/README.md](references/autolayout/README.md) |
+| AppDelegate からシーンベースライフサイクルへ移行したい (iOS 27 SDK 必須) | view-controllers | [references/view-controllers/README.md](references/view-controllers/README.md) |
+| 外部ディスプレイ・カメラキャプチャ中の外側ディスプレイにシーンを表示したい (UISceneAccessory) | view-controllers | [references/view-controllers/README.md](references/view-controllers/README.md) |
+| 折りたたみ (iPhone Duo) 向けに primary / secondary を split / overlay 配置したい (iOS 27.1+) | adaptive-layout | [references/adaptive-layout/README.md](references/adaptive-layout/README.md) |
+| カメラ・ヒンジ等のハードウェア予約領域を避けたい、ヒンジ角度・開閉状態を監視したい | adaptive-layout | [references/adaptive-layout/README.md](references/adaptive-layout/README.md) |
+| 縦軸バー (vertical bar) の挙動・バーボタンの軸を制御したい | adaptive-layout | [references/adaptive-layout/README.md](references/adaptive-layout/README.md) |

@@ -37,6 +37,7 @@ stepper.addTarget(self, action: #selector(stepperChanged(_:)), for: .valueChange
 - Available iOS 5.0+, iPadOS 5.0+, Mac Catalyst 13.1+, visionOS 1.0+.
 - `maximumValue` must be ≥ `minimumValue`; violating this sets both to the new value.
 - Fires `UIControl.Event.valueChanged` on each increment or decrement.
+- `UIStepper` (along with `UIRefreshControl`) is fully supported in the Mac idiom for apps built with Mac Catalyst.
 
 ## Related
 
