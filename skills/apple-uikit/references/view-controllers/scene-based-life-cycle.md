@@ -88,6 +88,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 - iOS 18.4 / iPadOS 18.4 / Mac Catalyst 18.4 / tvOS 18.4 / visionOS 2.4 log for unmigrated apps: `This process does not adopt UIScene lifecycle.` / `This will become an assert in a future version.`
 - iOS 26 / iPadOS 26 / Mac Catalyst 26 / tvOS 26 / visionOS 26 log: `UIScene lifecycle will soon be required.` / `Failure to adopt will result in an assert in the future.`
 - Migrate if the `UIApplicationSceneManifest` key is missing from the information property list or has no specified configurations, or if the app delegate does not implement `application(_:configurationForConnecting:options:)`.
+- These are alternatives: a static scene configuration in `UIApplicationSceneManifest` (`UISceneConfigurations`) is sufficient. Implement `application(_:configurationForConnecting:options:)` only if the information property list has no scene-configuration data or the app requires dynamic scene configuration.
 - Specify `UIWindowScene` objects rather than `UIScene` objects in the configuration. For CarPlay scenes use `CPTemplateApplicationScene` instead.
 - Storyboard root view controller: include the storyboard name in `UISceneConfigurations`; the system configures the window scene and root view controller automatically. Programmatic root: implement `scene(_:willConnectTo:options:)`.
 - Multiple scenes are optional and may require a scene-specific data model. To enable, set `UIApplicationSupportsMultipleScenes` to `true` and give each `UISceneConfiguration` a unique configuration name.

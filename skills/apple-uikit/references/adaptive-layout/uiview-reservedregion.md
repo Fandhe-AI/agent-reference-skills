@@ -13,7 +13,7 @@ func reservedRegions(
 ) -> [UIView.ReservedRegion]
 ```
 
-`reservedRegions(kind:options:)` returns all reserved regions of the given kind that currently intersect the view, regardless of whether they are currently active.
+`reservedRegions(kind:options:)` returns the reserved regions of the given kind that intersect the view, filtered by `options` (see `QueryOptions.includeInactive`).
 
 ## Options / Props
 
@@ -32,6 +32,7 @@ func reservedRegions(
 - iOS 27.1+, iPadOS 27.1+, Mac Catalyst 27.1+, tvOS 27.1+, visionOS 27.1+.
 - Each region describes a frame, margins, active state, and an identifier.
 - The default values of the `reservedRegions(kind:options:)` parameters are not stated in the source page and are not recorded here.
+- The UIView.ReservedRegion overview states the method returns regions "regardless of whether they are currently active", while `QueryOptions.includeInactive` is documented as controlling whether inactive regions are included; the source does not reconcile these, so check `isActive` on returned regions.
 - The Objective-C counterpart is `UIViewReservedRegion`.
 - Source: https://developer.apple.com/documentation/uikit/uiview/reservedregion
 
