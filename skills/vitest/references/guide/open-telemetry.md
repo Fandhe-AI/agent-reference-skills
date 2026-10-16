@@ -68,6 +68,7 @@ test('db connects properly', async () => {
 - Vitest calls `sdk.shutdown()` after everything finishes (watch or run mode). View traces in any OpenTelemetry backend; Jaeger is suggested as easy to set up.
 - `@opentelemetry/api` is an optional peer dependency, only used when tracing is enabled; `@opentelemetry/sdk-node` brings it transitively, otherwise install it explicitly.
 - Parent-process context is picked up from the `TRACEPARENT` and `TRACESTATE` environment variables.
+- Source: https://vitest.dev/guide/open-telemetry (Vitest v5.0.5)
 
 ## Related
 

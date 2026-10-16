@@ -55,6 +55,6 @@ export default defineConfig({
 
 ## Related
 
-- [Reporters](./reporters.md)
+- [Extending Reporters](../advanced/extending-reporters.md)
 - [Coverage](./coverage.md)
 - [Profiling Test Performance](./profiling-test-performance.md)

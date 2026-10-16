@@ -61,10 +61,11 @@ vitest run --merge-reports
 
 - Set `VITEST_BLOB_LABEL` to label environments in merged reports; upload and restore `attachmentsDir` in the merge job if tests create file attachments.
 - On high CPU-count machines the main thread's single Vite server can bottleneck; run several shards with `VITEST_MAX_WORKERS` (e.g. 4 shards x `VITEST_MAX_WORKERS=7` on 32 CPUs), then `vitest run --merge-reports`.
+- Source: https://vitest.dev/guide/improving-performance (Vitest v5.0.5)
 
 ## Related
 
 - [Parallelism](./parallelism.md)
 - [Profiling Test Performance](./profiling-test-performance.md)
-- [Reporters](./reporters.md)
+- [Extending Reporters](../advanced/extending-reporters.md)
 - [Test Environment](./environment.md)

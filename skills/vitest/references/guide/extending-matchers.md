@@ -78,6 +78,7 @@ const customMatcher: Matcher<MatcherState, [arg1: unknown, arg2: unknown]> = fun
 
 - `equals` alone does not compare `Map` / `Set` contents; pass `[...this.customTesters, this.utils.iterableEquality]` for `toEqual` semantics.
 - For custom snapshot matchers use `Snapshots` exported from `vitest`.
+- Source: https://vitest.dev/guide/extending-matchers (Vitest v5.0.5)
 
 ## Related
 

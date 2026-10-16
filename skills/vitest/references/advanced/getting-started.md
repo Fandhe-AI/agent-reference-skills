@@ -54,7 +54,8 @@ await vitest.close()
 
 ## Notes
 
-- `startVitest`: the second argument is a list of filters (tests whose file path contains at least one string run); the third is CLI-style options overriding test config; the fourth is a full Vite config that takes precedence over other user-defined options.
+- `startVitest`: the first argument is a list of filters (tests whose file path contains at least one string run); the second is CLI-style options overriding test config; the third is a full Vite config that takes precedence over other user-defined options.
+- The official prose still says second/third/fourth argument, which predates the current signature.
 - Results are read via `vitest.state.getTestModules()`.
 - `resolveConfig` is the same method Vitest uses internally; options passed to `startVitest` / `createVitest` are resolved again. Pass a shared `PluginHarness` as the third argument to reuse a logger and package installer.
 - Project config resolution (with test projects): root config is resolved from, in ascending priority, the root config file, `viteOverrides`, then CLI options.

@@ -35,6 +35,7 @@ test.concurrent('fetches user posts', async () => {
 - Apply to a suite with `describe.concurrent`; opt out of inherited concurrency with `{ concurrent: false }` on a test or describe.
 - With concurrent tests `beforeAll` / `afterAll` run once for the group, while `beforeEach` / `afterEach` run per test, possibly at the same time.
 - Disable file parallelism when tests share an external resource such as a database that cannot handle concurrent access.
+- Source: https://vitest.dev/guide/parallelism (Vitest v5.0.5)
 
 ## Related
 

@@ -69,8 +69,10 @@ Each accepts `{ timeout, interval }`, defaulting to a 1000 ms timeout and 50 ms 
 
 - `expect.poll` makes every assertion asynchronous, so it must be awaited. It does not pair with snapshot matchers, `.resolves` / `.rejects`, or `toThrow`; use `vi.waitFor` for those.
 - `waitUntil` narrows the resolved type (e.g. `JobResult | undefined` becomes `JobResult`).
-- In browser mode, prefer `page.locator` and `expect.element` over `waitUntil` for DOM queries; locators retry on their own.
+- In browser mode, prefer locators (`page.getByRole` and the other `getBy*` methods; Vitest has no `page.locator()`) and `expect.element` over `waitUntil` for DOM queries; locators retry on their own.
+- The official recipe writes `page.locator`, which does not exist in the browser-mode `page` API.
 - If `vi.useFakeTimers` is active, `vi.waitFor` automatically calls `vi.advanceTimersByTime(interval)` between attempts.
+- Source: https://vitest.dev/guide/recipes/wait-for (Vitest v5.0.5)
 
 ## Related
 

@@ -14,13 +14,13 @@ export default defineConfig({
       {
         test: {
           name: 'Parallel',
-          exclude: ['**.sequential.test.ts'],
+          exclude: ['**/*.sequential.test.ts'],
         },
       },
       {
         test: {
           name: 'Sequential',
-          include: ['**.sequential.test.ts'],
+          include: ['**/*.sequential.test.ts'],
           fileParallelism: false,
         },
       },
@@ -41,14 +41,14 @@ export default defineConfig({
       {
         test: {
           name: 'Parallel',
-          exclude: ['**.sequential.test.ts'],
+          exclude: ['**/*.sequential.test.ts'],
           sequence: { groupOrder: 0 },
         },
       },
       {
         test: {
           name: 'Sequential',
-          include: ['**.sequential.test.ts'],
+          include: ['**/*.sequential.test.ts'],
           fileParallelism: false,
           sequence: { groupOrder: 1 },
         },
@@ -67,9 +67,11 @@ export default defineConfig({
 
 ## Notes
 
+- The official recipe writes `**.sequential.test.ts`; with Vitest's globber (tinyglobby) a `**` not used as a whole path segment only matches root-level files, so `**/*.sequential.test.ts` is used here.
 - `fileParallelism: false` at project level is a shorthand for `maxWorkers: 1`; the two are equivalent.
 - By default projects run in parallel with each other, so the sequential project's first file may overlap with parallel files holding the same resource; `sequence.groupOrder` makes the parallel batch finish first.
 - `fileParallelism: false` does not make tests inside a file concurrent (sequential by default), and `concurrent` does not affect file scheduling.
+- Source: https://vitest.dev/guide/recipes/parallel-sequential (Vitest v5.0.5)
 
 ## Related
 

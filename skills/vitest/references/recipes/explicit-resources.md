@@ -78,6 +78,7 @@ it('calls console.log', () => {
   expect(spy).toHaveBeenCalled()
 })
 ```
+- Source: https://vitest.dev/guide/recipes/explicit-resources (Vitest v5.0.5)
 
 ## Related
 

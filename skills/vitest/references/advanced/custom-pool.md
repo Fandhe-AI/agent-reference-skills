@@ -7,7 +7,7 @@ Provide your own pool runner by passing a `PoolRunnerInitializer` to the `pool` 
 ```ts
 // vitest.config.ts
 import { defineConfig } from 'vitest/config'
-import customPool from './my-custom-pool.ts'
+import { customPool } from './my-custom-pool.ts'
 
 export default defineConfig({
   test: {
@@ -114,6 +114,7 @@ Built-in pool runners:
 
 ## Notes
 
+- The official page imports `customPool` as a default export while the example defines a named export; a named import is used here.
 - The `name` property of the initializer should be identical to your worker's `name` property.
 - To use different pools for different tests, use `test.projects` with a `pool` per project (e.g. a built-in pool name such as `'threads'` in one project and a custom pool initializer imported from your pool package in another).
 - Your pool runner controls the worker lifecycle and communication channel, e.g. launching a `node:worker_threads` `Worker` and communicating via `Worker.postMessage` and `parentPort`.

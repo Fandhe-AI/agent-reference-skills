@@ -16,14 +16,14 @@ export default defineConfig({
           // Non-isolated unit tests
           name: 'Unit tests',
           isolate: false,
-          exclude: ['**.integration.test.ts'],
+          exclude: ['**/*.integration.test.ts'],
         },
       },
       {
         test: {
           // Isolated integration tests
           name: 'Integration tests',
-          include: ['**.integration.test.ts'],
+          include: ['**/*.integration.test.ts'],
         },
       },
     ],
@@ -42,10 +42,12 @@ vitest --shuffle --run --project='Unit tests'
 
 ## Notes
 
+- The official recipe writes `**.integration.test.ts`; with Vitest's globber (tinyglobby) a `**` not used as a whole path segment only matches root-level files, so `**/*.integration.test.ts` is used here.
 - By default every test file runs in its own isolated module graph; isolation costs setup time on every file.
 - A file is safe to deisolate when it does not: mutate module-level state (counters, caches, top-level `let`); call `vi.stubGlobal` or `vi.stubEnv`; monkey-patch prototypes (`Date.prototype`, `Array.prototype`, ...); register listeners on `process` or other long-lived emitters; depend on a fresh module instance for `vi.mock` factories.
 - If the second shuffled run gives different results, there are order-dependent tests; fix them or keep isolation for that file.
 - `isolate` only governs the `threads` and `forks` pools. `vmThreads` and `vmForks` always run isolated.
+- Source: https://vitest.dev/guide/recipes/disable-isolation (Vitest v5.0.5)
 
 ## Related
 

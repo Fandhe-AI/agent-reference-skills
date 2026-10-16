@@ -53,6 +53,7 @@ export default defineConfig({
 - `testsToRun` returns one or more test file paths (string or string array), or `undefined` if no tests should rerun. Paths are resolved against the workspace root and are not interpreted as globs. `match` is the result of `RegExp.exec` against the changed file.
 - `forceRerunTriggers` covers the same gap but reruns every test on every match; `watchTriggerPatterns` reruns only the mapped tests.
 - Default watch mode only reruns tests whose import graph reaches the changed file.
+- Source: https://vitest.dev/guide/recipes/watch-templates (Vitest v5.0.5)
 
 ## Related
 

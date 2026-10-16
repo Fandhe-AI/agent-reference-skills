@@ -41,6 +41,7 @@ export default defineConfig({
   },
 })
 ```
+- Source: https://vitest.dev/guide/common-errors (Vitest v5.0.5)
 
 ## Related
 

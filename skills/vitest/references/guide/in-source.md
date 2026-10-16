@@ -51,6 +51,7 @@ export default defineConfig({
 - TypeScript: add `"types": ["vitest/importMeta"]` to `compilerOptions` in `tsconfig.json`.
 - Assertion functions such as `assert` have a limitation in in-source tests (see the `assert` API docs for workarounds).
 - Useful for small utilities, prototyping, and inline assertions; use separate test files for components or E2E tests.
+- Source: https://vitest.dev/guide/in-source (Vitest v5.0.5)
 
 ## Related
 

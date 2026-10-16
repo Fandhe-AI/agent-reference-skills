@@ -41,6 +41,7 @@ vitest --experimental.preParse -t "handles empty input"
 ```
 
 - By default Vitest fails the run if `.only` is found when `process.env.CI` is set (option `allowOnly`). The `no-focused-tests` ESLint rule (also in oxlint) catches it earlier.
+- Source: https://vitest.dev/guide/filtering (Vitest v5.0.5)
 
 ## Related
 

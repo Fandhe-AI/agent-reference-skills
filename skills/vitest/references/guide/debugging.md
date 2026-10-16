@@ -56,6 +56,7 @@ export default defineConfig({
   },
 })
 ```
+- Source: https://vitest.dev/guide/debugging (Vitest v5.0.5)
 
 ## Related
 

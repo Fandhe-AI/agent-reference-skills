@@ -89,6 +89,7 @@ declare module 'vitest/browser' {
 - `locators.extend` types `this` as `BrowserPage | Locator`. `page` has no `click` / `fill`, so interaction helpers need the `this === page` guard.
 - `locators.extend` is runtime registration only; TypeScript does not know the new methods until `LocatorSelectors` is augmented. `LocatorSelectors` is extended by both `Locator` and `BrowserPage`.
 - Interaction methods do not compose into selectors; use them for action helpers, not query helpers.
+- Source: https://vitest.dev/guide/recipes/browser-locators (Vitest v5.0.5)
 
 ## Related
 

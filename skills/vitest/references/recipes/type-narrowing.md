@@ -38,6 +38,7 @@ expect.assert.instanceOf(error, MyError) // narrows to MyError
 ## Notes
 
 - `expect(x).toBeTruthy()` and `expect(x).toBeDefined()` throw at runtime but do not narrow, because their TypeScript signature returns `void` rather than the `asserts` form. `expect.assert` is typed as an assertion function.
+- Source: https://vitest.dev/guide/recipes/type-narrowing (Vitest v5.0.5)
 
 ## Related
 

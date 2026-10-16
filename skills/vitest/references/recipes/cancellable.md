@@ -37,6 +37,7 @@ test('worker becomes ready', async ({ signal }) => {
 
 - Vitest cancels a test when it exceeds its `timeout`, when another test fails under `--bail`, or on Ctrl+C in the terminal; `signal` fires in all of those cases.
 - Other APIs that accept an `AbortSignal`: `fetch`; `addEventListener` (with `{ signal }` removes the listener on abort); `ReadableStream.pipeTo`; Node.js `fs.readFile`, `child_process.spawn`, `setTimeout` / `setInterval`; any custom code that calls `signal.throwIfAborted()` or listens for `'abort'`.
+- Source: https://vitest.dev/guide/recipes/cancellable (Vitest v5.0.5)
 
 ## Related
 

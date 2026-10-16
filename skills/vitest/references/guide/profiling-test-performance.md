@@ -67,6 +67,7 @@ export default defineConfig({
 
 - Coverage: `DEBUG=vitest:coverage vitest --run --coverage` logs timings and flags files taking longer than 3s; adjust `coverage.include` / `coverage.exclude` if large built files are picked up.
 - Inspect `*.cpuprofile` / `*.heapprofile` with Speedscope, VS Code's profile viewer, or Chrome DevTools Performance and Memory panels.
+- Source: https://vitest.dev/guide/profiling-test-performance (Vitest v5.0.5)
 
 ## Related
 

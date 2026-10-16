@@ -97,7 +97,7 @@ vi.when(db.findById, { onUnmatched: 'throw' })
   .thenResolve({ id: 1, name: 'Ella' })
 
 await expect(db.findById(1)).resolves.toMatchObject({ name: 'Ella' })
-await expect(db.findById(3)).rejects.toThrow(
+expect(() => db.findById(3)).toThrow(
   'vi.when: no behavior defined when called with [3]',
 )
 ```
@@ -161,9 +161,11 @@ test('without mocked behavior', () => {
 ## Notes
 
 - The `onUnmatched: 'throw'` error type and message are fixed and cannot be customized. If an `onUnmatched` function throws or returns a rejected promise, the error propagates to the caller.
+- Unmatched calls throw synchronously (even when registered behaviors use `thenResolve`); the official recipe's `.rejects` form does not match the implementation.
 - A `vi.when` chain with no behaviors, or a bare `.calledWith()` with no `then*` action, is never considered exhausted; `toHaveBeenExhausted` always fails for it.
 - Indefinite actions (no `times`) satisfy the exhaustion check after being used at least once.
 - `vi.isWhenChain` is referenced in the official See also list.
+- Source: https://vitest.dev/guide/recipes/conditional-mocking (Vitest v5.0.5)
 
 ## Related
 

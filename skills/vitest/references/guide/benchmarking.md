@@ -53,6 +53,7 @@ test('compare against the stored baseline', async ({ bench }) => {
 - Stability: benchmarks run in their own project, tests within a file and files themselves run sequentially. Avoid dead code elimination by consuming results; keep object shapes consistent (V8 deoptimization); pre-allocate data in `beforeEach` to reduce GC noise.
 - Module runner overhead: exports become getters in Node mode, so store imported functions in a local (`const _parse = parse`), benchmark the built package (`import { parse } from 'my-library'`), or set `experimental.viteModuleRunner: false` for the benchmark project. Warning can be silenced with `benchmark.suppressExportGetterWarnings`. Browser mode has no such overhead.
 - Engines: V8 tiering/deoptimization/GC, JavaScriptCore (Bun, Safari) has different thresholds and event loop, browsers may reduce `performance.now()` precision (raise `iterations`) and differ across engines.
+- Source: https://vitest.dev/guide/benchmarking (Vitest v5.0.5)
 
 ## Related
 

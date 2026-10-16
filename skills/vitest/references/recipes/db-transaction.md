@@ -58,12 +58,14 @@ test.aroundEach(async (runTest, { db }) => {
 
 ## Notes
 
-- The `db` fixture is created once per file (`scope: 'file'`); `onCleanup` closes the connection when the file is done. `aroundEach` wraps every test in `db.transaction(runTest)`; writes are rolled back when `runTest` resolves.
+- `createTestDatabase()` / `db.transaction()` are placeholders in the official recipe: the helper's `transaction(fn)` must roll back after `fn` resolves instead of committing. Typical driver `transaction(callback)` APIs commit on success, so wrap them to roll back explicitly (for example, issue ROLLBACK in `finally` after `await runTest()`).
+- The `db` fixture is created once per file (`scope: 'file'`); `onCleanup` closes the connection when the file is done. `aroundEach` wraps every test in `db.transaction(runTest)`; given such a helper, writes are rolled back when `runTest` resolves.
 - Requires a database driver that supports nested transactions or savepoints.
 - The same `aroundEach` hook can also wrap an `AsyncLocalStorage` context to propagate tenant or trace IDs alongside the transaction.
 - By default every test file runs in its own worker, so `scope: 'file'` and `scope: 'worker'` behave identically. With `isolate: false`, workers are reused across files (capped by `maxWorkers`), so a worker-scoped fixture is created once per worker (e.g. 8 connections instead of 200 for 200 files on 8 workers).
 - With isolation off, files share module instances inside the worker; top-level mutable state can leak to the next file. Per-test rollback protects database data only, not module state.
 - `vmThreads` and `vmForks` always run isolated regardless of `isolate`, so worker-scoped fixtures fall back to per-file behavior in those pools.
+- Source: https://vitest.dev/guide/recipes/db-transaction (Vitest v5.0.5)
 
 ## Related
 

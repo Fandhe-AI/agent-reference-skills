@@ -36,6 +36,7 @@ Chai-style spy assertions: `called`, `calledOnce`, `calledTwice`, `calledThrice`
 - Chai assertions (`expect(value).to.equal(42)`) work unchanged.
 - Vitest and Sinon both use `@sinonjs/fake-timers` internally.
 - Key differences: Mocha provides globals by default (import from `vitest` or enable `globals`); both Chai-style and Jest-style (`toHaveBeenCalled()`) spy assertions work; Vitest runs files in parallel by default, Mocha sequentially.
+- Source: https://vitest.dev/guide/migration/mocha (Vitest v5.0.5)
 
 ## Related
 

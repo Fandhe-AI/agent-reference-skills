@@ -9,7 +9,7 @@ import { page } from 'vitest/browser'
 import { render } from 'vitest-browser-react'
 
 test('shows error message when email format is invalid', async () => {
-  render(<ContactForm />)
+  await render(<ContactForm />)
   await page.getByRole('button', { name: /submit/i }).click()
   await page.getByLabelText(/email/i).fill('user@example.com')
   await expect.element(page.getByText('Email is required')).toBeInTheDocument()

@@ -49,6 +49,7 @@ expect.extend({
   },
 })
 ```
+- Source: https://vitest.dev/guide/migration/jest (Vitest v5.0.5)
 
 ## Related
 

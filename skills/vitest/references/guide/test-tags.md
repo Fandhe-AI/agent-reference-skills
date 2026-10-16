@@ -12,6 +12,7 @@ export default defineConfig({
   test: {
     tags: [
       { name: 'frontend', description: 'Tests written for frontend.' },
+      { name: 'backend', description: 'Tests written for backend.' },
       { name: 'db', description: 'Tests for database queries.', timeout: 60_000 },
       {
         name: 'flaky',
@@ -31,6 +32,7 @@ import { describe, test } from 'vitest'
 test('renders homepage', { tags: ['frontend'] }, () => {})
 
 describe('API endpoints', { tags: ['backend'] }, () => {
+  // 'validation' must also be defined in test.tags
   test('validates input', { tags: ['validation'] }, () => {
     // has both "backend" (inherited) and "validation"
   })
@@ -58,6 +60,7 @@ Precedence: `not` > `and` > `or`.
 ## Notes
 
 - Tags must be defined in config; using an undefined tag throws unless `strictTags` is disabled. No built-in tags exist.
+- The official example uses `validation` without defining it in the config.
 - Reserved names: `and`, `or`, `not` (case-insensitive). Names cannot contain `(`, `)`, `&`, `|`, `!`, `*`, or spaces.
 - Type-safe names: augment `TestTags` via `declare module 'vitest' { interface TestTags { tags: 'frontend' | 'db' } }`.
 - List tags with `vitest --list-tags` (or `--list-tags=json`).
@@ -77,6 +80,7 @@ beforeAll(async () => {
 ```
 
 - Use projects instead of tags when categories need different runner settings (isolation, pool, environment).
+- Source: https://vitest.dev/guide/test-tags (Vitest v5.0.5)
 
 ## Related
 
