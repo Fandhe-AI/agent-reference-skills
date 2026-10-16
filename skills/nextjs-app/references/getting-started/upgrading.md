@@ -10,6 +10,11 @@ npx next upgrade
 ```
 
 ```bash
+# Have a coding agent perform and verify the upgrade
+npx next@canary upgrade --agent=latest
+```
+
+```bash
 # Manual upgrade
 npm i next@latest react@latest react-dom@latest eslint-config-next@latest
 ```
@@ -29,6 +34,7 @@ npm i next@canary
 
 ## Notes
 
+- Agent-driven upgrades: `npx next@canary upgrade --agent=latest` has a coding agent perform and verify the upgrade (other policies and upgrade reminders: Upgrade with a coding agent guide, `guides/agent-upgrade.md`)
 - Canary includes experimental features ahead of stable, e.g. `forbidden`/`unauthorized` functions and file conventions, `authInterrupts` config
 - Version-specific upgrade guides exist for Version 16, 15, and 14 with detailed migration steps and codemods
 

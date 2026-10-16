@@ -20,13 +20,22 @@ export const maxDuration = 5
 | [preferredRegion](./route-segment-config/preferredRegion.md) (deprecated) | `'auto' \| 'global' \| 'home' \| string \| string[]` | `'auto'` |
 | [maxDuration](./route-segment-config/maxDuration.md) | `number` | Set by deployment platform |
 
+With [Cache Components](../config/caching.md) enabled, pages and layouts also support these options:
+
+| Option | Type | Default |
+|------|------|-------------|
+| [instant](./route-segment-config/instant.md) | `true \| false \| { level: 'warning' }` | — |
+| [prefetch](./route-segment-config/prefetch.md) | `'auto' \| 'partial' \| 'force-disabled'` | `'auto'` |
+| ensureStatic | `'auto' \| 'shell' \| 'prefetch' \| 'navigation' \| false` | `'auto'` |
+
 ## Notes
 
 - As of `v16.0.0`, `dynamic`, `dynamicParams`, `revalidate`, and `fetchCache` are removed when [Cache Components](../config/caching.md) is enabled — see the "Caching and Revalidating (Previous Model)" guide for the pre-Cache-Components behavior.
 - `export const experimental_ppr = true` was removed in `v16.0.0` (a codemod is available).
 - `runtime = 'experimental-edge'` was deprecated in `v15.0.0-RC` in favor of `'edge'` (a codemod is available); the Edge Runtime itself (`runtime = 'edge'`) is now deprecated — remove the `runtime` export from route files.
 - `preferredRegion` is deprecated — remove the `preferredRegion` export from route files.
-- Two additional segment config options exist in the current official docs but are not yet covered here: `instant` and `prefetch` (see the official Route Segment Config index for details).
+- Under Cache Components, remove the `runtime` export, including `runtime = 'nodejs'`: Cache Components uses the default Node.js runtime and does not support the `runtime` segment config.
+- `ensureStatic` (Cache Components only) requires selected server-rendered output to be static rather than rendered per request; it is listed in the official index (`ensureStatic = 'navigation'` is also referenced from `generateStaticParams`).
 
 ## Related
 

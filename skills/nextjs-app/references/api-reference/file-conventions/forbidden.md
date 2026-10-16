@@ -1,6 +1,6 @@
 # forbidden.js
 
-Renders UI when the `forbidden()` function is invoked during authentication, and returns a `403` status code.
+Renders UI when the `forbidden()` function is invoked. Before streaming starts, Next.js returns a `403` status code; after streaming starts, the status stays `200` and the forbidden UI renders in the response. Next.js injects `<meta name="robots" content="noindex" />` in both cases.
 
 ## Signature / Usage
 

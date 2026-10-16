@@ -25,6 +25,7 @@ bun create next-app [project-name] [options]
 | `--js`, `--javascript` | Initialize as a JavaScript project. |
 | `--tailwind` | Initialize with Tailwind CSS config (default). |
 | `--react-compiler` | Initialize with React Compiler enabled. |
+| `--cache-components` | Initialize with Cache Components enabled (default for App Router). |
 | `--eslint` | Initialize with ESLint config. |
 | `--biome` | Initialize with Biome config. |
 | `--no-linter` | Skip linter configuration. |
@@ -41,12 +42,15 @@ bun create next-app [project-name] [options]
 | `--reset-preferences` | Reset stored CLI preferences. |
 | `--skip-install` | Skip installing packages. |
 | `--disable-git` | Disable git initialization. |
-| `--agents-md` | Include `AGENTS.md` and `CLAUDE.md` to guide coding agents (default). |
+| `--agents-md` | Include `AGENTS.md` to guide coding agents (default). `CLAUDE.md` is no longer generated. |
+| `--agent-feedback` | Prepare anonymized Next.js feedback for your review. |
+| `--no-agent-feedback` | Do not prepare anonymized Next.js feedback for your review. |
 | `--yes` | Use previous preferences or defaults for all options. |
 
 ## Notes
 
-- Interactive prompts (when not fully specified via flags) cover: TypeScript, linter (ESLint / Biome / None), React Compiler, Tailwind CSS, `src/` directory, App Router, import alias, and `AGENTS.md` inclusion.
+- The first prompt offers "recommended Next.js defaults": TypeScript, ESLint, No React Compiler, Tailwind CSS, No `src/` directory, App Router, Cache Components, `AGENTS.md`, Agent feedback (alternatives: reuse previous settings, or customize).
+- Customize prompts (when not fully specified via flags) cover: TypeScript, linter (ESLint / Biome / None), React Compiler, Tailwind CSS, `src/` directory, App Router, Cache Components, import alias, `AGENTS.md` inclusion, and whether agents may prepare anonymized feedback (disable anytime with `experimental.agentFeedback: false`).
 - **ESLint**: traditional linter with Next.js-specific rules (`@next/eslint-plugin-next`). **Biome**: fast combined linter+formatter with built-in Next.js/React support. **None**: skip entirely (addable later).
 - Example bootstrap: `npx create-next-app@latest --example [example-name] [project-name]` (official examples) or `--example "https://github.com/.../"` (any public repo).
 

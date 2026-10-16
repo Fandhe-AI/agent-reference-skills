@@ -51,6 +51,7 @@ export async function generateMetadata(
 | `twitter` | Twitter/X card metadata. |
 | `alternates` | `canonical`, `languages`, `media`, `types` links. |
 | `verification` | Site verification meta tags (`google`, `yandex`, `yahoo`, `other`). |
+| `pagination` | `{ previous?, next? }` URLs of the previous/next pages in a paginated sequence; renders `<link rel="prev">` / `<link rel="next">`. |
 | `appleWebApp`, `appLinks`, `archives`, `assets`, `bookmarks`, `category`, `facebook`, `pinterest`, `other` | Additional less-common fields; see full reference for details. |
 
 ## Notes
@@ -62,8 +63,8 @@ export async function generateMetadata(
 - Metadata from multiple segments is shallowly merged (root to leaf); duplicate keys are replaced, nested objects like `openGraph` are overwritten wholesale by the last segment defining them.
 - Since `v15.2.0`, unresolved metadata streams after initial HTML for JS-executing bots; HTML-limited bots (configurable via `htmlLimitedBots`) still block on metadata.
 - With Cache Components enabled, metadata using runtime data (`cookies()`, `headers()`, `params`, `searchParams`) or uncached fetches defers to request time; wrap in `use cache` if the data isn't request-specific, or add a dynamic marker component if it genuinely needs runtime data.
-- `themeColor`, `colorScheme`, and `viewport` fields in `metadata` are deprecated as of v14 — use `generateViewport` instead.
-- Introduced in `v13.2.0`.
+- When `generateMetadata` uses `'use cache'`, its return value must be serializable: `URL` instances are not supported by Cache Functions, so return values such as `metadataBase` as strings (for example `url.toString()`).
+- Version history: `v14.0.0` deprecated the `viewport`, `themeColor`, and `colorScheme` fields in `metadata` in favor of `generateViewport`; `v13.2.0` introduced `metadata` and `generateMetadata`.
 
 ## Related
 

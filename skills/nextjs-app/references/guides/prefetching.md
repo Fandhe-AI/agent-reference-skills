@@ -26,7 +26,7 @@ export function PricingCard() {
 
 | Name | Type | Description |
 |------|------|-------------|
-| `prefetch` (`Link` prop) | `boolean \| null` | `false` disables prefetch; `null` restores default (static) prefetching |
+| `prefetch` (`Link` prop) | `boolean \| 'auto' \| null` | `false` disables prefetch; `null` / `'auto'` restores default (static) prefetching; `true` prefetches the full route (with Partial Prefetching: App Shell plus cached URL-specific content) |
 | `router.prefetch(href)` | function | Manual prefetch via `useRouter` from `next/navigation` |
 | `router.prefetch(href, { onInvalidate })` | function | Re-prefetch callback invoked when cached data is suspected stale |
 
@@ -37,7 +37,9 @@ export function PricingCard() {
 - Prefetch scheduling order: viewport links, then hover/touch-intent links; newer links replace older; off-screen links are discarded.
 - With PPR enabled, the static shell is prefetched and streams immediately; the dynamic section streams separately.
 - Side effects (e.g. analytics) in a layout/page body run during prefetch too — move them to `useEffect` or a triggered Server Action.
-- Disable prefetch for large link lists (e.g. infinite scroll) with `prefetch={false}`, or defer to hover with `prefetch={active ? null : false}`.
+- Disable prefetch for large link lists (e.g. infinite scroll) with `prefetch={false}`, or defer to hover with `prefetch={active ? null : false}` (`prefetch={null}` only restores default prefetching once the user shows intent).
+- With Partial Prefetching, use `prefetch={active ? true : 'auto'}` for conditional prefetch: `'auto'` keeps the shared App Shell prefetched before the user shows intent, while `true` resolves cached URL-specific content before navigation after they do. `false` before intent disables the App Shell prefetch.
+- Partial Prefetching: one App Shell per route is prefetched and shared across links; uncached data streams in after navigation behind `<Suspense>`; a link can resolve its URL data with `prefetch={true}` (see the Optimizing prefetching guide, `optimizing-prefetching.md`); data invalidations (`revalidateTag`, `revalidatePath`) silently refresh associated prefetches.
 
 ## Related
 

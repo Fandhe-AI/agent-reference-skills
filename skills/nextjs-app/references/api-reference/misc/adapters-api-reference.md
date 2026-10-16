@@ -30,7 +30,7 @@ async onBuildComplete(context: {
 | context.phase | string | Current build phase (`modifyConfig`). |
 | context.nextVersion | string | Version of Next.js being used. |
 | context.projectDir | string | Absolute path to the Next.js project directory (`modifyConfig`). |
-| context.routing | object | Routing phases/metadata: `beforeMiddleware`, `beforeFiles`, `afterFiles`, `dynamicRoutes`, `onMatch`, `fallback`, `shouldNormalizeNextData`, `rsc`. |
+| context.routing | object | Routing phases/metadata: `beforeMiddleware`, `middlewareMatchers` (middleware matcher definitions for this build, used to decide whether middleware is invoked for a request), `beforeFiles`, `afterFiles`, `dynamicRoutes`, `onMatch`, `fallback`, `shouldNormalizeNextData`, `rsc`. |
 | context.outputs | AdapterOutputs | Build outputs organized by type. |
 | context.projectDir | string | Absolute path to the Next.js project directory. |
 | context.repoRoot | string | Absolute path to the detected repository root. |

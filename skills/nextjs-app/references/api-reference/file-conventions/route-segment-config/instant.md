@@ -28,12 +28,13 @@ export default function Page() {
 - Global default behavior is tuned via `experimental.instantInsights.validationLevel` (`'warning'` validates every Page/Default segment; `'manual-warning'` validates only segments with an explicit `instant`).
 - Framework-synthesized routes (`/_global-error`, `/_not-found`) are excluded from implicit validation unless opted in explicitly.
 - Next.js does not prefetch in development, so navigations feel less instant there than in `next start`, which is what validation reflects.
-- `@next/playwright` exports an `instant()` test helper for e2e regression tests.
-- Introduced in `v16.x.x` (Cache Components only).
+- `@next/playwright` exports an `instant()` test helper for e2e regression tests. The testing API is available automatically in development; for a production test build, enable `experimental.exposeTestingApiInProductionBuild`.
+- Differs from `ensureStatic`: `instant` validates whether a navigation shows UI immediately, while `ensureStatic` requires selected server-rendered output to be static. A route can be fully static and still block a navigation (for example a Client Component that loads data in the browser).
+- Version history: `v16.3.0` stabilized `instant`, replacing `unstable_instant` (Cache Components only).
 
 ## Related
 
 - [prefetch](./prefetch.md)
 - [Route Segment Config overview](../route-segment-config.md)
-- [Instant navigation guide](https://nextjs.org/docs/app/guides/instant-navigation)
+- [Instant navigation guide](../../../guides/instant-navigation.md)
 - [use cache](../../directives/use-cache.md)

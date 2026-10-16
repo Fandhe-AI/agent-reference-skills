@@ -25,13 +25,13 @@ import { ViewTransition } from 'react'
 
 ## Notes
 
-- Works in the App Router with no setup; React canary releases bundled with Next.js already include `ViewTransition`.
+- Works in the App Router with no configuration (`experimental.viewTransition` was removed in `v16.3.0`). React 19.3 includes the `<ViewTransition>` component and the `addTransitionType` API used in this guide.
 - Activated by Transitions, `<Suspense>`, and `useDeferredValue` — plain `setState` does not trigger animations.
 - Requires Chromium 125+ / recent Safari / Firefox for transition types and `view-transition-class`; without support, transitions simply don't animate.
 - The morph only plays when destination content renders in the same commit as navigation (prefetched/cached pages); suspended content falls back to its enter animation.
 - `::view-transition { pointer-events: none; }` restores click interactivity on unnamed content during a transition.
 - Respect `prefers-reduced-motion` by zeroing animation durations on view-transition pseudo-elements.
-- The [`vercel-react-view-transitions`](https://github.com/vercel-labs/agent-skills/tree/main/skills/react-view-transitions) skill packages these patterns for coding agents.
+- The [`vercel-react-view-transitions`](https://skills.sh/vercel-labs/agent-skills/vercel-react-view-transitions) skill teaches a coding agent the patterns in this guide, plus CSS recipes and troubleshooting for applying them to an existing app. Install: `npx skills add vercel-labs/agent-skills --skill vercel-react-view-transitions`.
 
 ## Related
 

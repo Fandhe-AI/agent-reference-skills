@@ -25,6 +25,7 @@ outputs.middleware  // Middleware function, if present
 | sourcePage | string | Original relative source file path. |
 | runtime | `'nodejs' \| 'edge'` | Runtime the route is built for. |
 | assets | `Record<string, string>` | Traced dependencies (key: repo-root-relative path, value: absolute path). |
+| assetsHashes | `Record<string, string>` | Content hashes of each `assets` entry (key: same as `assets`, value: content hash). Present on each output type that has `assets`. |
 | wasmAssets | `Record<string, string>` | Bundled wasm files (key: name, value: absolute path). |
 | edgeRuntime | object | `modulePath`, `entryKey`, `handlerExport` — present for `runtime: 'edge'` outputs. |
 | config.maxDuration | number | Maximum route duration in seconds. |

@@ -25,6 +25,14 @@ test('should navigate to the about page', async ({ page }) => {
 
 Run `npm run build && npm run start` (test against a production-like build), then `npx playwright test` in another terminal. Alternatively use Playwright's `webServer` option to have it start the dev server automatically.
 
+## Testing instant navigations
+
+If you use Cache Components, the `instant()` helper from `@next/playwright` lets you assert what is visible immediately after a navigation, before any dynamic content streams in (see the Instant Navigations guide and the `instant` route segment config reference):
+
+```ts
+import { instant } from '@next/playwright'
+```
+
 ## Notes
 
 - Playwright runs headless by default in CI; run `npx playwright install-deps` to install required system dependencies.

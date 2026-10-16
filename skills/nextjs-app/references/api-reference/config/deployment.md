@@ -16,6 +16,7 @@ module.exports = nextConfig
 ```
 
 - `NEXT_ADAPTER_PATH` env var can be used for zero-config usage in deployment platforms.
+- Version history: `v16.2.0` stabilized `adapterPath` and moved it from `experimental.adapterPath` to the top-level option.
 - See the dedicated Adapters section (`/docs/app/api-reference/adapters/*`) for building a full adapter (Configuration, Creating an Adapter, API Reference, Testing Adapters, Routing, Runtime Integration, Output Types).
 
 ## deploymentId
@@ -36,7 +37,22 @@ When configured, Next.js:
 - Adds `x-nextjs-deployment-id` header to navigation responses
 - Injects `data-dpl-id` attribute on `<html>`
 
-On a deployment ID mismatch between client and server, a hard navigation (full reload) is triggered instead of client-side navigation. Stabilized in `v14.1.4` (was `experimental.deploymentId` since `v13.4.10`).
+- The `deploymentId` is also included in the `'use cache'` cache key, invalidating cache entries when it changes.
+- Next.js does not read the `?dpl=` query parameter on incoming requests (it is for cache busting, not routing). A per-deployment value only avoids version skew if your host or CDN also routes requests by deployment; without that, clients reaching an instance from another deployment during a rollout reload rather than navigate.
+
+On a deployment ID mismatch between client and server, a hard navigation (full reload) is triggered instead of client-side navigation. Stabilized in `v14.1.4` (was `experimental.deploymentId` since `v13.4.10`). `v16.2.0`: the Pages Router detects version skew from the response header rather than the build ID, and the build ID is constant when `deploymentId` is set.
+
+## supportsImmutableAssets
+
+Added `v16.3.0`. Primarily intended for adapter authors; app developers should set it only when troubleshooting adapter-specific issues (enabling it when your provider or adapter does not support it can break deployments). With skew protection on, static asset requests carry `?dpl=<id>`, so browsers re-download assets after every deployment. Immutable static assets are content-addressed, served under `/_next/static/immutable/*` without `?dpl`, so browsers can cache them indefinitely and unchanged assets can be skipped on upload (combine with `outputHashSalt` to control hashes).
+
+```js filename="next.config.js"
+module.exports = {
+  supportsImmutableAssets: false, // opt out when your adapter has enabled support
+}
+```
+
+- If the adapter has not enabled the feature, the option has no effect.
 
 ## proxyClientMaxBodySize
 

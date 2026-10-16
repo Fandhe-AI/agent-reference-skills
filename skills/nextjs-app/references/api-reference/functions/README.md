@@ -1,42 +1,48 @@
 # functions
 
 | Name | Description | Path |
-| --- | --- | --- |
-| after | Schedule work to run after a response (or prerender) finishes. | [after.md](./after.md) |
-| cacheLife | Set the cache lifetime of a `use cache` function or component. | [cacheLife.md](./cacheLife.md) |
-| cacheTag | Tag cached data for on-demand invalidation. | [cacheTag.md](./cacheTag.md) |
-| catchError | Programmatic error boundary wrapper (stable since v16.3.0; formerly `unstable_catchError`). | [catchError.md](./catchError.md) |
-| connection | Wait for an incoming request before continuing rendering. | [connection.md](./connection.md) |
-| cookies | Read/write HTTP request cookies. | [cookies.md](./cookies.md) |
-| draftMode | Enable/disable/check Draft Mode. | [draftMode.md](./draftMode.md) |
-| fetch (extended) | Web `fetch()` extended with Next.js caching/revalidation options. | [fetch.md](./fetch.md) |
-| forbidden | Render a 403 error page (experimental). | [forbidden.md](./forbidden.md) |
-| generateImageMetadata | Generate multiple image variants for a Metadata API file. | [generateImageMetadata.md](./generateImageMetadata.md) |
-| generateMetadata | Define static/dynamic `<head>` metadata for SEO. | [generateMetadata.md](./generateMetadata.md) |
-| generateSitemaps | Generate multiple sitemaps for an application. | [generateSitemaps.md](./generateSitemaps.md) |
-| generateStaticParams | Statically generate dynamic route segments at build time. | [generateStaticParams.md](./generateStaticParams.md) |
-| generateViewport | Define the initial viewport of a page. | [generateViewport.md](./generateViewport.md) |
-| headers | Read HTTP request headers. | [headers.md](./headers.md) |
-| ImageResponse | Generate dynamic images from JSX/CSS. | [ImageResponse.md](./ImageResponse.md) |
-| NextRequest | Extended Web Request API for Proxy/Route Handlers. | [NextRequest.md](./NextRequest.md) |
-| NextResponse | Extended Web Response API for Proxy/Route Handlers. | [NextResponse.md](./NextResponse.md) |
-| notFound | Render the `not-found` UI and a 404 status. | [not-found.md](./not-found.md) |
-| permanentRedirect | Redirect with a permanent (308) HTTP status. | [permanentRedirect.md](./permanentRedirect.md) |
-| redirect | Redirect with a temporary (307) HTTP status. | [redirect.md](./redirect.md) |
-| refresh | Refresh the client router from a Server Action. | [refresh.md](./refresh.md) |
-| revalidatePath | Invalidate cached data for a specific path. | [revalidatePath.md](./revalidatePath.md) |
-| revalidateTag | Invalidate cached data for a specific cache tag. | [revalidateTag.md](./revalidateTag.md) |
-| unauthorized | Render a 401 error page (experimental). | [unauthorized.md](./unauthorized.md) |
-| unstable_cache | Cache expensive operation results (superseded by `use cache`). | [unstable_cache.md](./unstable_cache.md) |
-| unstable_noStore | Opt a component out of caching (legacy, use `connection` instead). | [unstable_noStore.md](./unstable_noStore.md) |
-| unstable_rethrow | Rethrow internal Next.js control-flow errors from a catch block. | [unstable_rethrow.md](./unstable_rethrow.md) |
-| updateTag | Immediately update cached data for a tag from a Server Action. | [updateTag.md](./updateTag.md) |
-| useLinkStatus | Track the pending navigation state of a `<Link>`. | [useLinkStatus.md](./useLinkStatus.md) |
-| useParams | Read a route's dynamic params. | [use-params.md](./use-params.md) |
-| usePathname | Read the current URL's pathname. | [usePathname.md](./usePathname.md) |
-| useReportWebVitals | Report Core Web Vitals metrics. | [useReportWebVitals.md](./useReportWebVitals.md) |
-| useRouter | Programmatically navigate routes. | [useRouter.md](./useRouter.md) |
-| useSearchParams | Read the current URL's query string. | [use-search-params.md](./use-search-params.md) |
-| useSelectedLayoutSegment | Read the active route segment one level below a layout. | [use-selected-layout-segment.md](./use-selected-layout-segment.md) |
-| useSelectedLayoutSegments | Read all active route segments below a layout. | [use-selected-layout-segments.md](./use-selected-layout-segments.md) |
-| userAgent | Parse user agent info from a request. | [userAgent.md](./userAgent.md) |
+|------|-------------|------|
+| after | `after` schedules work to be executed after a response… | [after.md](./after.md) |
+| ImageResponse | `ImageResponse` generates dynamic images using JSX… | [ImageResponse.md](./ImageResponse.md) |
+| NextRequest | `NextRequest` extends the Web Request API with additional… | [NextRequest.md](./NextRequest.md) |
+| NextResponse | `NextResponse` extends the Web Response API with additional… | [NextResponse.md](./NextResponse.md) |
+| cacheLife | `cacheLife` sets the cache lifetime (stale, revalidate, expire)… | [cacheLife.md](./cacheLife.md) |
+| cacheTag | `cacheTag` tags cached data (inside a `use cache` scope)… | [cacheTag.md](./cacheTag.md) |
+| catchError | `catchError` creates a component that wraps its children… | [catchError.md](./catchError.md) |
+| connection | `connection()` indicates that rendering should wait for an… | [connection.md](./connection.md) |
+| cookies | `cookies` is an async function to read incoming request cookies… | [cookies.md](./cookies.md) |
+| draftMode | `draftMode` is an async function to enable/disable Draft Mode… | [draftMode.md](./draftMode.md) |
+| fetch (extended) | Next.js extends the Web `fetch()` API so each server-side… | [fetch.md](./fetch.md) |
+| forbidden | `forbidden` throws an error that renders a Next.js 403 error… | [forbidden.md](./forbidden.md) |
+| generateImageMetadata | `generateImageMetadata` generates multiple versions of one image… | [generateImageMetadata.md](./generateImageMetadata.md) |
+| generateMetadata | Defines page/layout `<head>` metadata for SEO and… | [generateMetadata.md](./generateMetadata.md) |
+| generateSitemaps | `generateSitemaps` generates multiple sitemaps for an application… | [generateSitemaps.md](./generateSitemaps.md) |
+| generateStaticParams | `generateStaticParams` is used with dynamic route segments to… | [generateStaticParams.md](./generateStaticParams.md) |
+| generateViewport | Customizes the initial viewport of a page via the static… | [generateViewport.md](./generateViewport.md) |
+| headers | `headers` is an async function to read HTTP incoming request headers… | [headers.md](./headers.md) |
+| io | `io` marks a synchronous read (e.g. `new Date()`, `Math.random()`… | [io.md](./io.md) |
+| navigation | `await navigation()` keeps runtime work below it out of the… | [navigation.md](./navigation.md) |
+| notFound | `notFound` renders the `not-found` file within a route segment… | [not-found.md](./not-found.md) |
+| permanentRedirect | `permanentRedirect` redirects the user to another URL with a… | [permanentRedirect.md](./permanentRedirect.md) |
+| prefetch | `await prefetch()` keeps runtime work below it out of the… | [prefetch.md](./prefetch.md) |
+| redirect | `redirect` redirects the user to another URL with a temporary… | [redirect.md](./redirect.md) |
+| refresh | `refresh` refreshes the client router from within a Server Action. | [refresh.md](./refresh.md) |
+| revalidatePath | `revalidatePath` invalidates cached data on-demand for a specific… | [revalidatePath.md](./revalidatePath.md) |
+| revalidateTag | `revalidateTag` invalidates cached data on-demand for a specific… | [revalidateTag.md](./revalidateTag.md) |
+| next/root-params | The `next/root-params` module provides async getter functions… | [root-params.md](./root-params.md) |
+| unauthorized | `unauthorized` throws an error that renders a Next.js 401 error… | [unauthorized.md](./unauthorized.md) |
+| unstable_cache | `unstable_cache` caches the results of expensive operations… | [unstable_cache.md](./unstable_cache.md) |
+| unstable_catchError (deprecated alias) | **Deprecated**: `unstable_catchError` was renamed to `catchError`… | [unstable_catchError.md](./unstable_catchError.md) |
+| unstable_noStore | `unstable_noStore` declaratively opts a component out of… | [unstable_noStore.md](./unstable_noStore.md) |
+| unstable_rethrow | `unstable_rethrow` re-throws internal Next.js control-flow errors… | [unstable_rethrow.md](./unstable_rethrow.md) |
+| updateTag | `updateTag` updates cached data on-demand for a specific cache… | [updateTag.md](./updateTag.md) |
+| useOffline | `useOffline` is a Client Component hook that returns a boolean… | [use-offline.md](./use-offline.md) |
+| useParams | `useParams` is a Client Component hook that reads a route's… | [use-params.md](./use-params.md) |
+| useSearchParams | `useSearchParams` is a Client Component hook that reads the… | [use-search-params.md](./use-search-params.md) |
+| useSelectedLayoutSegment | `useSelectedLayoutSegment` is a Client Component hook that reads… | [use-selected-layout-segment.md](./use-selected-layout-segment.md) |
+| useSelectedLayoutSegments | `useSelectedLayoutSegments` is a Client Component hook that… | [use-selected-layout-segments.md](./use-selected-layout-segments.md) |
+| useLinkStatus | `useLinkStatus` tracks the pending navigation state of a `<Link>`… | [useLinkStatus.md](./useLinkStatus.md) |
+| usePathname | `usePathname` is a Client Component hook that reads the… | [usePathname.md](./usePathname.md) |
+| useReportWebVitals | `useReportWebVitals` reports Core Web Vitals, for use with an… | [useReportWebVitals.md](./useReportWebVitals.md) |
+| useRouter | `useRouter` allows programmatic route changes inside Client… | [useRouter.md](./useRouter.md) |
+| userAgent | `userAgent` extends the Web Request API with additional… | [userAgent.md](./userAgent.md) |

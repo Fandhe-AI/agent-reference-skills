@@ -25,6 +25,9 @@ npx @next/codemod@canary upgrade latest
 
 - If you see peer dependency warnings, update `react`/`react-dom` to the suggested versions or use `--force`/`--legacy-peer-deps`.
 - If using TypeScript, also upgrade `@types/react` and `@types/react-dom`.
+- Troubleshooting, installation fails after upgrading to React 19: if another package's peer dependencies reject React 19, revert `react`, `react-dom`, their types and `react-is` (if present) to the previous versions (provided the target Next.js version and router support them); restore or remove React type overrides/resolutions added by the upgrade in `package.json` or `pnpm-workspace.yaml`; if installation interrupted the upgrade command, retry the same exact target with `--skip-react-upgrade`, then run any skipped codemods individually and the app's checks.
+- Troubleshooting, installation fails after upgrading ESLint 9: if another package's peer dependencies reject ESLint 9, restore the previous compatible `eslint`, `eslint-config-next`, `@next/eslint-plugin-next` versions and lint configuration; if installation interrupted the upgrade, retry the same target with `--skip-eslint-upgrade`, complete any required lint migration manually, then run lint checks.
+- Migration checklist: React dependencies and types meet React 19 requirements for the app's router; fonts use `next/font` (not `@next/font`); `bundlePagesExternals` / `serverComponentsExternalPackages` use their stable names; `NextRequest` `geo` / `ip` consumers use an appropriate source for the hosting provider; apps relying on automatic Speed Insights instrumentation have an explicit integration; supported checks and runtime behavior pass. App Router: Async Request API access (including helpers and callers) migrated (resolve codemod error comments and `UnsafeUnwrapped` casts); route segment runtime settings no longer use `experimental-edge`.
 
 ## Related
 

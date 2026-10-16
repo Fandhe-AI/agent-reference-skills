@@ -57,6 +57,7 @@ const myFont = localFont({
 ## Notes
 
 - Google font names with multiple words use an underscore on import, e.g. `Roboto Mono` → `Roboto_Mono`.
+- Setting `font-family` via `declarations` replaces the name Next.js generates; keep the value equal to the exported constant name (e.g. `export const myFont = localFont({ src: './my-font.woff2', declarations: [{ prop: 'font-family', value: 'myFont' }] })`) so `className` and the CSS variable reference the same family.
 - Use variable fonts where possible; non-variable fonts require an explicit `weight`.
 - Preloading scope depends on where the font function is called: unique page, layout (all routes under it), or root layout (all routes).
 - Use a font definitions file (e.g. `styles/fonts.ts`) to share a single font instance across multiple usages instead of calling the loader repeatedly.

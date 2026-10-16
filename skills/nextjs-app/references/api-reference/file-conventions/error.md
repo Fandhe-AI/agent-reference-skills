@@ -13,7 +13,7 @@ export default function Error({
   error,
   retry,
 }: {
-  error: Error & { digest?: string }
+  error: unknown
   retry: () => void
 }) {
   useEffect(() => {
@@ -33,8 +33,8 @@ export default function Error({
 
 | Name | Type | Description |
 |------|------|-------------|
-| `error` | `Error & { digest?: string }` | The thrown Error instance forwarded to the Client Component. In production the message is sanitized for Server Component errors (matched via `digest`). |
-| `error.digest` | `string` | Automatically generated hash to match the error against server-side logs. |
+| `error` | `unknown` | The value that was thrown, forwarded to the Client Component. Errors from Server Components arrive as an `Error` instance (message sanitized in production, matched via `digest`); a value thrown in a Client Component is passed as-is and may not be an `Error`. Narrow it (for example with `instanceof Error`) before reading `message` or `digest`. |
+| `error.digest` | `string` | Automatically generated hash to match the error against server-side logs (present on Server Component errors). |
 | `retry` | `() => void` | Re-fetches and re-renders the error boundary's children to attempt recovery (stable since `v16.3.0`; was `unstable_retry` in `v16.2.0`). |
 | `reset` | `() => void` | Clears error state and re-renders children without re-fetching; prefer `retry()` in most cases. |
 

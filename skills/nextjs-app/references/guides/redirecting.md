@@ -32,7 +32,7 @@ export async function createPost(id: string) {
 - `redirect()` throws internally — call it **outside** any `try/catch` block, or the throw will be swallowed.
 - `redirect()` can be called in Client Components during render but not inside event handlers — use `useRouter().push()` there instead.
 - Both `redirect()` and `permanentRedirect()` accept absolute URLs (including external links).
-- `next.config.js` `redirects` may hit platform limits (e.g. 1,024 on Vercel) — for 1000+ redirects, build a custom Proxy-based solution using a redirect map (Edge Config/Redis) plus a Bloom filter to avoid loading the full dataset on every request.
+- `next.config.js` `redirects` may hit platform limits (e.g. 1,024 on Vercel) — for 1000+ redirects, build a custom Proxy-based solution using a redirect map (Vercel Global Config, formerly Edge Config, via `@vercel/global-config` (formerly `@vercel/edge-config`) / Redis) plus a Bloom filter to avoid loading the full dataset on every request.
 - Order of execution: `next.config.js` `redirects` run first, then Proxy.
 
 ## Related

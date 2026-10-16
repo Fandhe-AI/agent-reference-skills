@@ -26,15 +26,16 @@ Return type (`MetadataRoute.Sitemap`) — array of:
 | `changeFrequency` (optional) | `'always' \| 'hourly' \| 'daily' \| 'weekly' \| 'monthly' \| 'yearly' \| 'never'` | Expected update frequency. |
 | `priority` (optional) | `number` | Relative priority. |
 | `alternates.languages` (optional) | `Languages<string>` | Localized URL variants. |
-| `images` / `videos` (optional) | `string[]` / video object array | Image/video sitemap entries. |
+| `images` (optional) | `string[]` | Image sitemap entries. |
+| `videos` (optional) | `Videos[]` | Video sitemap entries. |
 
 ## Notes
 
 - Can be a static `app/sitemap.xml`, or generated dynamically via `sitemap.js`/`.ts` default-exporting an array (or the `MetadataRoute.Sitemap` type in TS); `sitemap.js` is a specialized cached Route Handler.
-- For large apps, split sitemaps by nesting `sitemap.(xml|js|ts)` in multiple route segments, or use `generateSitemaps` to emit numbered sitemaps (available at `/.../sitemap/[id].xml`); Google's limit is 50,000 URLs per sitemap.
+- For large apps, split sitemaps by nesting `sitemap.(xml|js|ts)` in multiple route segments, or use `generateSitemaps` to emit numbered sitemaps (generated sitemaps are available at `/.../sitemap/[id].xml`, for example `/product/sitemap/1.xml`); Google's limit is 50,000 URLs per sitemap.
 - Version history: `v16.0.0` made the `id` prop passed to `sitemap()` a promise; `v14.2.0` added localization support; `v13.4.14` added `changeFrequency`/`priority`; `v13.3.0` introduced `sitemap`.
 
 ## Related
 
-- [generateSitemaps](../../functions/generate-sitemaps.md)
+- [generateSitemaps](../../functions/generateSitemaps.md)
 - [robots.txt](./robots.md)

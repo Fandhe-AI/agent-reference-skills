@@ -45,6 +45,7 @@ export default async function Page() {
 - Choose caching when data is shared across all users (e.g. a product catalog); choose streaming when data is per-request (e.g. a promotion banner keyed on location/A/B test).
 - The fallback UI itself is prerendered and cached alongside the static shell; only the inner component streams in later.
 - For locale-aware date/time formatting without a flash, see Preventing Flash Before Hydration.
+- Next steps: keep selected route output static as the application changes (Keeping pages static guide, `keeping-pages-static.md`); revalidate prerendered pages or cached data (ISR with Cache Components); create variants with route parameters (`generateStaticParams`); add authentication to a Cache Components application (`authentication-with-cache-components.md`).
 
 ## Related
 

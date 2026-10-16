@@ -12,7 +12,7 @@ export default function ErrorPage({
   error,
   retry,
 }: {
-  error: Error & { digest?: string }
+  error: unknown // narrow with `error instanceof Error` before reading `message`
   retry: () => void
 }) {
   return (

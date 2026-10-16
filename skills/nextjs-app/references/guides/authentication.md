@@ -25,6 +25,7 @@ export default function SignupForm() {
 import 'server-only'
 import { cache } from 'react'
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import { decrypt } from '@/app/lib/session'
 
 export const verifySession = cache(async () => {
@@ -40,6 +41,10 @@ export const verifySession = cache(async () => {
 - Recommended: use an auth library (Auth0, Better Auth, Clerk, NextAuth.js, etc.) rather than a fully custom solution; the page walks through custom username/password auth for education only.
 - Session types: stateless (encrypted session data/token in a cookie, e.g. via `jose`) vs database (session stored server-side, browser holds only an encrypted session ID).
 - Centralize authorization in a Data Access Layer (DAL) with a `verifySession()` function memoized via React `cache()`, and return only necessary fields via Data Transfer Objects (DTOs) — never whole DB records.
+- With Cache Components enabled, reading the session and caching per-user data follow specific rules: see the Authentication with Cache Components guide (`authentication-with-cache-components.md`).
+- React's `cache` deduplicates only within a React render pass; Server Actions and Route Handlers are not part of a render pass, so the wrapper does nothing there and every call runs the function.
+- Client Components cannot import the DAL: run `verifySession()` / `getUser()` in a parent Server Component, then pass data to client children as props or through a context provider (see Single-Page Applications, use within a Context Provider), and use React's `taintUniqueValue` API to keep sensitive session fields from reaching the client. The session returned by the DAL is a flat object (e.g. `session?.role`).
+- Server Action validation can use Zod, Valibot or Yup.
 - Do not rely on `return null` in a layout for auth gating — layouts don't re-render on every navigation (Partial Rendering), so checks belong close to the data source or in Proxy for optimistic checks.
 - Proxy-based checks must stay optimistic (cookie-only, no DB calls) since Proxy runs on every route including prefetches; treat Server Actions and Route Handlers with the same security rigor as public API endpoints — always re-verify session/role inside them.
 - React `context` is not available in Server Components; a Client Component context provider does not give session data to nested Server Components.

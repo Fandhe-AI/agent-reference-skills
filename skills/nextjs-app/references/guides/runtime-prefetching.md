@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
 
 ## Notes
 
+- **Removed from the official docs in `v16.4.2`**: the `02-guides/runtime-prefetching.mdx` page no longer exists. The term changed from "runtime prefetching" to per-link prefetching, and the content was folded into the Optimizing prefetching guide (see `optimizing-prefetching.md`). This page is kept as a legacy reference; prefer the new guide and terminology.
 - The App Shell (one per route) carries static output plus session-gated UI (from `cookies()`/`headers()`); it cannot carry per-link URL data (`searchParams`, `params`).
 - Costs a server invocation per prefetchable link — opt in per link, not globally, especially for grids of many visible links (prefer hover-triggered prefetch there).
 - Pages with fully static content are served from the static cache instead of a runtime prefetch.
@@ -40,5 +41,6 @@ const nextConfig: NextConfig = {
 
 ## Related
 
+- [Optimizing prefetching](./optimizing-prefetching.md) (per-link prefetching)
 - [Prefetching](./prefetching.md)
 - [Interactive Apps](./interactive-apps.md)

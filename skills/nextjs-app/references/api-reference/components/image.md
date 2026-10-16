@@ -28,8 +28,8 @@ export default function Page() {
 | `width` / `height` | Integer (px) | Yes unless `fill` or static import | Intrinsic size used to infer aspect ratio; does not control rendered size (use CSS) |
 | `fill` | Boolean | - | Expands image to fill the parent (which must be `position: relative/fixed/absolute`) |
 | `loader` | Function | - | Custom function `({src, width, quality}) => url` to generate the image URL |
-| `sizes` | String | - | Breakpoint sizes used to pick the best `srcset` entry; recommended when using `fill` or responsive CSS |
-| `quality` | Integer (1-100) | - | Optimized image quality. Default `75`; must match an allowed `qualities` entry if configured |
+| `sizes` | String | - | Breakpoint sizes used to pick the best `srcset` entry; recommended when using `fill` or responsive CSS. A `fill` image without `sizes` gets a `srcset` built from `deviceSizes` only, as if it spans the full viewport |
+| `quality` | Integer (1-100) | - | Optimized image quality. Default `75`. If `qualities` is configured, a value outside the list is not rejected: it is coerced to the closest allowed entry (e.g. with `[50, 75, 100]`, `80` is served as `75`) and dev logs a warning |
 | `preload` | Boolean | - | Preloads the image via `<link>` in `<head>`. Default `false`. Replaces deprecated `priority` (since v16) |
 | `placeholder` | String | - | `'empty'` (default), `'blur'` (needs `blurDataURL`), or a `data:image/...` URL |
 | `style` | Object | - | Inline CSS styles for the underlying image element |
@@ -54,7 +54,7 @@ Other props are passed through to the underlying `<img>` element except `srcSet`
 | `path` | Prefix path for the Image Optimization API. Default `/_next/image` |
 | `deviceSizes` | Device width breakpoints used with `sizes`. Default `[640,750,828,1080,1200,1920,2048,3840]` |
 | `imageSizes` | Additional image widths for `srcset` generation. Default `[32,48,64,96,128,256,384]` |
-| `qualities` | Allowlist of quality values. Default `[75]`; required explicitly since v16 |
+| `qualities` | Allowlist of quality values. Default `[75]`; required explicitly since v16. A `quality` prop outside the list is coerced to the closest allowed value; a direct `/_next/image` request with a non-matching quality returns 400 |
 | `formats` | Output formats in priority order, e.g. `['image/avif','image/webp']`. Default `['image/webp']` |
 | `minimumCacheTTL` | Cache TTL (seconds) for optimized images. Default `14400` (4 hours) |
 | `disableStaticImages` | Disables static image imports (`import img from './x.png'`) |

@@ -2,7 +2,10 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| dynamicParams | Controls generation of dynamic segments not covered by `generateStaticParams` | [dynamicParams.md](./dynamicParams.md) |
-| maxDuration | Maximum execution time (seconds) for server-side logic in a route segment | [maxDuration.md](./maxDuration.md) |
-| preferredRegion (deprecated) | Preferred deployment region(s) for a route segment | [preferredRegion.md](./preferredRegion.md) |
-| runtime | JavaScript runtime (`nodejs` or `edge`, `edge` deprecated) used for rendering a route | [runtime.md](./runtime.md) |
+| dynamicParams | Controls what happens when a dynamic segment is visited… | [dynamicParams.md](./dynamicParams.md) |
+| ensureStatic | The `ensureStatic` route segment config requires… | [ensureStatic.md](./ensureStatic.md) |
+| instant | The `instant` route segment config tells Next.js to… | [instant.md](./instant.md) |
+| maxDuration | Sets the maximum execution time (in seconds) for… | [maxDuration.md](./maxDuration.md) |
+| preferredRegion (deprecated) | Specifies the preferred deployment region for a route… | [preferredRegion.md](./preferredRegion.md) |
+| prefetch | The `prefetch` route segment config overrides, per… | [prefetch.md](./prefetch.md) |
+| runtime | Selects the JavaScript runtime used for rendering… | [runtime.md](./runtime.md) |

@@ -45,6 +45,8 @@ export default async function BlogPage() {
 ## Notes
 
 - Requires the `cacheComponents` flag enabled in `next.config.ts`.
+- Version history: `v16.0.0` stabilized `cacheLife` and deprecated `unstable_cacheLife` (update imports from `unstable_cacheLife` to `cacheLife`).
+- A `stale` of at least 30 seconds but under 5 minutes is included in prerenders but excluded from the route's App Shell; a `stale` under 30 seconds is excluded from prerenders.
 - Must be called within a `use cache` directive scope; calling at module scope throws an error.
 - Optional — if omitted, the `default` profile applies.
 - Only one call should execute per function invocation (conditional branches are fine).

@@ -47,6 +47,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 - React context is not supported in Server Components — wrap providers in a Client Component and render them as deep as possible in the tree
 - Third-party client-only components must be wrapped in your own `"use client"` file before use inside a Server Component
 - Only environment variables prefixed with `NEXT_PUBLIC_` are exposed to the client bundle
+- Add `"use client"` at the top of the file, above your imports, to create a Client Component; to reduce client JavaScript, add it only to the files that define interactive components rather than marking large parts of the UI as Client Components
+- For where each component type runs and how the boundary works, see the Server and Client Boundary guide (`guides/server-and-client-boundary.md`)
 
 ## Related
 

@@ -16,7 +16,7 @@ async function getProductPrice(productId: string, currency: string) {
 }
 ```
 
-Requires `cacheComponents: true` in `next.config.ts`. The remote store is configured via [`cacheHandlers`](../config/next-config-js/cacheHandlers.md) (hosting providers typically supply this automatically).
+Requires `cacheComponents: true` in `next.config.ts`. The remote store is configured via [`cacheHandlers`](../config/caching.md#cachehandlers) (hosting providers typically supply this automatically).
 
 ## Comparison
 

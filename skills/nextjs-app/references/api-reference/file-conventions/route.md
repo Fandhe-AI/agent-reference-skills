@@ -42,4 +42,4 @@ Use the globally available `RouteContext<'/route'>` helper (generated during `ne
 - [Dynamic Segments](./dynamic-routes.md)
 - [Route Segment Config](./route-segment-config.md)
 - [proxy.js](./proxy.md)
-- [NextRequest](../functions/next-request.md)
+- [NextRequest](../functions/NextRequest.md)
