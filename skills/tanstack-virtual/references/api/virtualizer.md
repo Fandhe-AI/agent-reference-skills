@@ -54,7 +54,7 @@ export class Virtualizer<TScrollElement = unknown, TItemElement = unknown> {
 | `isRtl` | `boolean` | `false` | Whether to invert horizontal scrolling to support right-to-left language locales. |
 | `scrollEndThreshold` | `number` | `1` | The pixel threshold used by `isAtEnd()` and `followOnAppend` to decide whether the viewport is close enough to the end to count as pinned. |
 
-### Instance Methods & Properties
+## Instance Methods & Properties
 
 | Name | Type | Description |
 | --- | --- | --- |

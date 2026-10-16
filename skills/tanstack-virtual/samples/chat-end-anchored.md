@@ -114,9 +114,30 @@ function MessageList({
 }
 ```
 
+The rules from `src/index.css` that the scroll container depends on (`.Pane` is the positioned parent; `.Messages` must have a bounded height and scroll):
+
+```css
+.Pane {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+.Messages {
+  height: 100%;
+  overflow: auto;
+  overflow-anchor: none;
+}
+
+.MessageRow {
+  padding: 0 16px;
+}
+```
+
 ## Notes
 
 - `anchorTo: 'end'` plus `followOnAppend: true` keeps the view pinned to the newest message only while the reader is within `scrollEndThreshold` (80px) of the end; `directDomUpdates: true` is paired with `ref={virtualizer.containerRef}` on the inner container.
 - `isAtEnd()` is read in `onChange` (after the virtualizer processes the scroll event) rather than in React's `onScroll`, which runs earlier and would see the previous position.
 - `MessageView`, `Icon`, and `icons` are other components defined elsewhere in the official `main.tsx` and are not reproduced here. The example does not call `cancelScroll`.
 - The data layer (`queries.ts` / `api.ts`) uses `@tanstack/react-query` `useInfiniteQuery` (`fetchPreviousPage` drives `onLoadOlder`); that belongs to the tanstack-query skill and is not transcribed. Pinned to the `@tanstack/react-virtual@3.14.21` tag.
+- Full stylesheet: `examples/react/chat/src/index.css` (the `.Pane` is nested in the example's `.Main` flex column; sidebar, composer, and message-bubble styling omitted here).

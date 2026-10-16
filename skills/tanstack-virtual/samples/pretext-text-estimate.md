@@ -193,10 +193,84 @@ function App() {
 }
 ```
 
+The rules from `src/index.css` that the layout and the estimate constants depend on (the example's `* { box-sizing: border-box; }` is also required):
+
+```css
+* {
+  box-sizing: border-box;
+}
+
+.list {
+  background: #fff;
+  border: 1px solid #d9e0ea;
+  border-radius: 8px;
+  height: 720px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.spacer {
+  position: relative;
+  width: 100%;
+}
+
+.message-row {
+  left: 0;
+  padding: 8px 16px;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.message-bubble {
+  background: #f8fafc;
+  border: 1px solid #d9e0ea;
+  border-radius: 8px;
+  max-width: 680px;
+  padding: 12px 14px;
+  width: 100%;
+}
+
+.message-row.user .message-bubble {
+  background: #eef6ff;
+  border-color: #bed8f4;
+  margin-left: auto;
+}
+
+.message-meta {
+  align-items: center;
+  color: #596579;
+  display: flex;
+  font-size: 12px;
+  font-weight: 700;
+  gap: 8px;
+  height: 18px;
+  line-height: 18px;
+  margin-bottom: 6px;
+}
+
+.message-time {
+  color: #8792a2;
+  font-weight: 400;
+}
+
+.message-body {
+  font:
+    14px/20px Arial,
+    Helvetica,
+    sans-serif;
+  letter-spacing: 0;
+  margin: 0;
+  white-space: pre-wrap;
+}
+```
+
 ## Notes
 
 - Pretext only owns text measurement; TanStack Virtual still handles range extraction, positioning, overscan, and `scrollToIndex`. See `references/getting-started/pretext.md` for the guide.
 - Keep the `prepare` options (here `whiteSpace: 'pre-wrap'`) in sync with the CSS `white-space`, otherwise estimates drift from the rendered height.
+- The CSS must match the constants: `padding: 12px 14px` + 1px border = `BUBBLE_X_PADDING` 28 / `BUBBLE_Y_PADDING` 24 / `BUBBLE_BORDER_WIDTH` 2, `max-width: 680px`, `.message-meta` `height: 18px` + `margin-bottom: 6px`, `.message-body` `14px/20px Arial`, and `.message-row` `padding: 8px 16px` (`ROW_Y_PADDING` 16 / `ROW_X_PADDING` 32).
 - `layout()` reruns on width change; `prepare()` reruns only when text or font inputs change. After `document.fonts.ready`, both caches are cleared and `measure()` recalculates sizes.
 - For rows with media or other non-text content, the official example suggests `measureElement` or `resizeItem` instead.
 - `messages` is declared with `declare const` as the data source: supply your own `Message[]` with unique `id` values. Omitted from the pinned `@tanstack/react-virtual@3.14.21` example: message generation (demo text corpus), the toolbar, and the mount code. The layout constants above are kept as in the example.
+- Full stylesheet: `examples/react/pretext/src/index.css` (page, toolbar, button, and media-query rules omitted here).

@@ -97,8 +97,57 @@ function App() {
 }
 ```
 
+The `src/index.css` rules that make the header sticky and the rows positionable:
+
+```css
+.List table {
+  background-color: #fff;
+  border: 1px solid #e6e4dc;
+  max-width: 100%;
+  border-collapse: collapse;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  position: relative;
+}
+
+.List thead {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.List thead tr {
+  height: 70px;
+}
+
+.List tr {
+  display: flex;
+  flex-direction: row;
+}
+
+.List td,
+.List th {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+}
+
+.ListItemEven {
+  background-color: #e6e4dc;
+}
+```
+
 ## Notes
 
 - `paddingStart` reserves space at the top of the scroll content for the header; `scrollPaddingStart` keeps `scrollToIndex` targets offset by the same amount so the row is not hidden behind it.
 - `useMeasure` comes from `@react-hookz/web` (not part of TanStack Virtual); it returns `undefined` until the first measurement, hence the `?? 0` fallback.
 - Pinned to the `@tanstack/react-virtual@3.14.21` tag; the `createRoot` / `NODE_ENV` boilerplate of the example is omitted.
+- Full stylesheet: `examples/react/scroll-padding/src/index.css` (the `html` font rule is omitted here; the example's `Tailwind`-style utility classes such as `flex gap-2` and `border` are not defined in it).
