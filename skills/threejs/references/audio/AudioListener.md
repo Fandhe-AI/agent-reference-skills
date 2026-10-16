@@ -11,7 +11,7 @@ camera.add( listener );
 
 Constructor: `new AudioListener()`
 
-## Properties
+## Options / Props
 
 | Name | Type | Description |
 |------|------|-------------|

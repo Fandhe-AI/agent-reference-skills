@@ -16,7 +16,7 @@ const visible = frustumArray.intersectsObject( object );
 |------|------|-------------|
 | coordinateSystem | WebGLCoordinateSystem \| WebGPUCoordinateSystem | The coordinate system to use. Default is `WebGLCoordinateSystem`. |
 
-## Key Methods
+## Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|

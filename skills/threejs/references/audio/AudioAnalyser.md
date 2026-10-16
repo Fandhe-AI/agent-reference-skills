@@ -34,7 +34,9 @@ const data = analyser.getAverageFrequency();
 | `audio` | Audio | The audio to analyze |
 | `fftSize` | number | Window size in samples used when performing a Fast Fourier Transform (FFT) to get frequency domain data. Default `2048` |
 
-## Properties
+Constructor parameters above; instance properties below.
+
+Properties:
 
 | Name | Type | Description |
 |------|------|-------------|

@@ -16,7 +16,7 @@ Constructor parameters:
 |------|------|---------|-------------|
 | `data` | any | `null` | The data definition of a texture. |
 
-## Properties
+Properties:
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|

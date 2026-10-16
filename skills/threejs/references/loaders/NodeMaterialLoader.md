@@ -8,7 +8,7 @@ A special type of material loader for loading node materials. Extends `MaterialL
 const loader = new NodeMaterialLoader( manager );
 ```
 
-## Properties
+## Options / Props
 
 | Name | Type | Description |
 |------|------|-------------|

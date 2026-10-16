@@ -9,7 +9,7 @@ const loader = new NodeObjectLoader( manager );
 const object = loader.parse( json, onLoad );
 ```
 
-## Properties
+## Options / Props
 
 | Name | Type | Description |
 |------|------|-------------|

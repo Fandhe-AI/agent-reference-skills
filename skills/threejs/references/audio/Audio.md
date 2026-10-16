@@ -22,7 +22,7 @@ audioLoader.load( 'sounds/ambient.ogg', function( buffer ) {
 
 Constructor: `new Audio( listener : AudioListener )` — the global audio listener.
 
-## Properties
+## Options / Props
 
 | Name | Type | Description |
 |------|------|-------------|

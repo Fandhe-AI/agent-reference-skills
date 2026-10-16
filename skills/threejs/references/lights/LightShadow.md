@@ -16,7 +16,7 @@ light.shadow.bias = -0.0001;
 
 Constructor: `new LightShadow( camera : Camera )` (abstract). `camera` is the light's view of the world.
 
-## Properties
+## Options / Props
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|

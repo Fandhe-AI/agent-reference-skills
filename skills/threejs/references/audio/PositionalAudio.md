@@ -28,7 +28,7 @@ mesh.add( sound );
 
 Constructor: `new PositionalAudio( listener : AudioListener )` — the global audio listener.
 
-## Properties
+## Options / Props
 
 | Name | Type | Description |
 |------|------|-------------|

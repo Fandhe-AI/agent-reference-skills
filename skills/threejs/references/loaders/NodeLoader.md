@@ -9,7 +9,7 @@ const loader = new NodeLoader( manager );
 loader.load( url, onLoad, onProgress, onError );
 ```
 
-## Properties
+## Options / Props
 
 | Name | Type | Description |
 |------|------|-------------|
