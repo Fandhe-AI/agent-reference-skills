@@ -245,7 +245,7 @@ The figures below are a rough illustration measured on an Apple Silicon laptop (
 
 ## Notes
 
-- Figures in "Indicative numbers" come from the official BullMQ v6.3.15 docs (docs/gitbook/guide/postgresql.md).
+- Figures in "Indicative numbers" come from the official BullMQ v6.3.15 docs ([docs/gitbook/guide/postgresql.md @ v6.3.15](https://github.com/taskforcesh/bullmq/blob/v6.3.15/docs/gitbook/guide/postgresql.md)).
 - Migration (v6.0 → v6.1): automatic migrations on first connect were removed; call `runMigrations` explicitly from a deployment step (see Migrations)
 - The backend implements the full datastore-agnostic API (queues, workers, flows, job schedulers, rate limiting, prioritization, delayed jobs, deduplication, metrics and events), so application code is identical across backends. Redis-specific concerns (Redis Cluster, `maxmemory-policy`, etc.) don't apply; the relevant knob on PostgreSQL is `max_connections`.
 - `getBackend()` always returns the currently configured backend. Redis-only escape hatches (raw Redis `client`, `redisVersion`, and similar) exist only when the backend is Redis.

@@ -63,3 +63,7 @@ await queue.obliterate({ force: true });
 
 - [Queues](./queues.md)
 - [Removing jobs (single job)](../jobs/removing-jobs.md)
+- [Removing jobs (official, v6.3.15)](https://docs.bullmq.io/guide/queues/removing-jobs)
+- [Drain API Reference](https://docs.bullmq.io/api/classes/v6.Queue.html#drain)
+- [Clean API Reference](https://docs.bullmq.io/api/classes/v6.Queue.html#clean)
+- [Obliterate API Reference](https://docs.bullmq.io/api/classes/v6.Queue.html#obliterate)
