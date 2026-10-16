@@ -42,6 +42,8 @@ print(task.isCancelled)
 
 iOS 10.0+, iPadOS 10.0+, macOS 10.15+, Mac Catalyst 10.0+, visionOS 1.0+. Call `finish()` for a graceful stop (remaining audio is processed); call `cancel()` to abort immediately. For live audio tasks, also call `SFSpeechAudioBufferRecognitionRequest.endAudio()` before or alongside `finish()`.
 
+As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Speech Recognition in Objective-C). It carries no deprecation marker; it is not deprecated. The modern counterpart path is `SpeechAnalyzer` with `SpeechTranscriber` / `DictationTranscriber` (iOS 26.0+).
+
 ## Related
 
 - [SFSpeechRecognizer](./sfspeechrecognizer.md)

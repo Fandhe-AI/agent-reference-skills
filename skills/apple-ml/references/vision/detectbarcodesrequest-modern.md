@@ -27,8 +27,9 @@ for barcode in observations {
 
 ## Notes
 
-- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+ (beta)
+- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - `struct` (value type), unlike class-based `VNDetectBarcodesRequest`.
+- For Foundation Models integration, `BarcodeReaderTool` ("a tool that scans machine-readable codes in an image", iOS 27.0+) is a separate type; see [BarcodeReaderTool](./barcodereadertool.md).
 - File name carries the `-modern` suffix to avoid collision with `vndetectbarcodesrequest.md` (legacy VN-prefixed API).
 
 ## Related

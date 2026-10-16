@@ -16,9 +16,11 @@ Abstract base class for all Vision analysis results. Every concrete observation 
 - Cannot be instantiated directly; use a concrete subclass.
 - Key subclasses: `VNDetectedObjectObservation` (adds `boundingBox`), `VNFaceObservation`, `VNRecognizedTextObservation`, `VNBarcodeObservation`, `VNHumanBodyPoseObservation`, `VNClassificationObservation`.
 - Conforms to `NSCoding`, `NSCopying`, `NSSecureCoding`.
+- As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Original Objective-C and Swift API) in the Vision framework. It carries no deprecation marker; it is not deprecated.
 
 ## Related
 
 - [VNRecognizedTextObservation](./vnrecognizedtextobservation.md)
 - [VNDetectFaceRectanglesRequest](./vndetectfacerectanglesrequest.md)
 - [VNRequest](./vnrequest.md)
+- [VisionObservation](./visionobservation.md)

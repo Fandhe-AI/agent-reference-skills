@@ -44,6 +44,8 @@ Inherits all properties from `SFSpeechRecognitionRequest` (`shouldReportPartialR
 
 iOS 10.0+, iPadOS 10.0+, macOS 10.15+, Mac Catalyst 10.0+, visionOS 1.0+. The request starts with no audio; call `append(_:)` continuously as audio is captured. You must explicitly call `endAudio()` to stop the recognition process. For file-based audio use `SFSpeechURLRecognitionRequest` instead.
 
+As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Speech Recognition in Objective-C). It carries no deprecation marker; it is not deprecated. The modern path is `SpeechAnalyzer` with `SpeechTranscriber` / `DictationTranscriber` (iOS 26.0+); on that side, audio is supplied as `AnalyzerInput` (time-coded audio data, iOS 26.0+) and `CaptureInputSequenceProvider` (iOS 27.0+).
+
 ## Related
 
 - [SFSpeechRecognitionRequest](./sfspeechrecognitionrequest.md)

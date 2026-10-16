@@ -30,6 +30,8 @@ Inherits all properties from `SFSpeechRecognitionRequest` (`shouldReportPartialR
 
 iOS 10.0+, iPadOS 10.0+, macOS 10.15+, Mac Catalyst 10.0+, visionOS 1.0+. Audio file duration limit is one minute. For live microphone audio use `SFSpeechAudioBufferRecognitionRequest` instead.
 
+As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Speech Recognition in Objective-C). It carries no deprecation marker; it is not deprecated. The modern path is `SpeechAnalyzer` with `SpeechTranscriber` / `DictationTranscriber` (iOS 26.0+); on that side, file/asset input is supplied through `AssetInputSequenceProvider` (iOS 27.0+).
+
 ## Related
 
 - [SFSpeechRecognitionRequest](./sfspeechrecognitionrequest.md)

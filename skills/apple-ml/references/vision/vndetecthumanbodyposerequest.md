@@ -24,9 +24,11 @@ if let poses = request.results {
 - Each observation exposes `recognizedPoint(_:)` for individual joints and `recognizedPoints(_:)` for joint groups.
 - Joint names: `.nose`, `.leftEye`, `.rightEye`, `.leftEar`, `.rightEar`, `.leftShoulder`, `.rightShoulder`, `.leftElbow`, `.rightElbow`, `.leftWrist`, `.rightWrist`, `.leftHip`, `.rightHip`, `.leftKnee`, `.rightKnee`, `.leftAnkle`, `.rightAnkle`, `.root`, `.neck`.
 - Call `VNDetectHumanBodyPoseRequest.supportedJointNames(forRevision:)` to enumerate available joint names at runtime.
+- As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Original Objective-C and Swift API) in the Vision framework. It carries no deprecation marker; it is not deprecated.
 
 ## Related
 
 - [VNObservation](./vnobservation.md)
 - [VNImageRequestHandler](./vnimagerequesthandler.md)
 - [VNRequest](./vnrequest.md)
+- [DetectHumanBodyPoseRequest (modern)](./detecthumanbodyposerequest-modern.md)

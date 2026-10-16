@@ -24,8 +24,8 @@ let observation = try await handler.perform(request)
 
 ## Notes
 
-- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+ (beta)
-- `final class` (reference type).
+- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
+- `final class` (reference type); conforms to `StatefulRequest` (see [StatefulRequest](./statefulrequest.md)).
 - `init(_:frameAnalysisSpacing:)` accepts an optional `CMTime` for sequence-based analysis.
 - Produces a single overall matte; use `GeneratePersonInstanceMaskRequest` to separate individual people.
 

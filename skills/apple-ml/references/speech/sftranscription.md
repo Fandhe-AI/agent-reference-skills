@@ -41,6 +41,8 @@ recognizer.recognitionTask(with: request) { result, error in
 
 iOS 10.0+, iPadOS 10.0+, macOS 10.15+, Mac Catalyst 10.0+, visionOS 1.0+. An `SFTranscription` represents one potential version of the speech; use `SFSpeechRecognitionResult.transcriptions` for alternative interpretations. `speakingRate` and `averagePauseDuration` are deprecated — use `SFSpeechRecognitionMetadata` instead.
 
+As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Speech Recognition in Objective-C). It carries no deprecation marker (only the two properties noted above are deprecated); the class itself is not deprecated. The modern counterpart is `SpeechTranscriber.Result`, delivered through `SpeechAnalyzer` (iOS 26.0+).
+
 ## Related
 
 - [SFSpeechRecognitionResult](./sfspeechrecognitionresult.md)

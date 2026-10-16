@@ -34,9 +34,11 @@ try handler.perform([request])
 - iOS 11.0+ / macOS 10.13+ / tvOS 11.0+ / visionOS 1.0+
 - Vision does **not** normalize confidence values from Core ML models; they are forwarded as-is.
 - `VNImageCropAndScaleOption` values: `.centerCrop`, `.scaleFit`, `.scaleFill`.
+- As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Original Objective-C and Swift API) in the Vision framework. It carries no deprecation marker; it is not deprecated.
 
 ## Related
 
 - [VNCoreMLModel](./vncoremlmodel.md)
 - [VNClassifyImageRequest](./vnclassifyimagerequest.md)
 - [VNImageRequestHandler](./vnimagerequesthandler.md)
+- [CoreMLRequest](./coremlrequest.md)

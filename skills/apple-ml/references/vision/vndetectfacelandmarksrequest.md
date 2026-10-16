@@ -30,8 +30,10 @@ if let faces = request.results {
 - Results type: `[VNFaceObservation]?` — `face.landmarks` is a `VNFaceLandmarks2D` with regions like `leftEye`, `rightEye`, `nose`, `outerLips`, `faceContour`, etc.
 - If `inputFaceObservations` is `nil`, the request first runs face detection internally.
 - Current revision: `VNDetectFaceLandmarksRequestRevision3`.
+- As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Original Objective-C and Swift API) in the Vision framework. It carries no deprecation marker; it is not deprecated.
 
 ## Related
 
 - [VNDetectFaceRectanglesRequest](./vndetectfacerectanglesrequest.md)
 - [VNObservation](./vnobservation.md)
+- [DetectFaceLandmarksRequest (modern)](./detectfacelandmarksrequest-modern.md)

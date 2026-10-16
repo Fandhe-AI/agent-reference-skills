@@ -28,6 +28,8 @@ request.addsPunctuation = true
 
 iOS 10.0+, iPadOS 10.0+, macOS 10.15+, Mac Catalyst 10.0+, visionOS 1.0+. `interactionIdentifier` is deprecated. Configure all properties before passing the request to `SFSpeechRecognizer`.
 
+As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Speech Recognition in Objective-C). It carries no deprecation marker; it is not deprecated. The modern counterpart path is `SpeechAnalyzer` with `SpeechTranscriber` / `DictationTranscriber` (iOS 26.0+).
+
 ## Related
 
 - [SFSpeechURLRecognitionRequest](./sfspeechurlrecognitionrequest.md)

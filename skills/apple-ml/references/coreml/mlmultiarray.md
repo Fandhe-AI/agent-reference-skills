@@ -36,6 +36,8 @@ print(arr.shape)     // [3, 224, 224]
 
 iOS 11.0+, macOS 10.13+, tvOS 11.0+, watchOS 4.0+, visionOS 1.0+. Use `withUnsafeBufferPointer(ofType:_:)` / `withUnsafeMutableBufferPointer(ofType:_:)` for safe typed access; `dataPointer` is deprecated. Concatenate arrays with `init(byConcatenatingMultiArrays:alongAxis:dataType:)`.
 
+Core AI's `NDArray` (iOS 27.0+; see [NDArray](../coreai/ndarray.md)) is a different type from `MLMultiArray`. It is also unrelated to `MPSNDArray` (Metal Performance Shaders, covered by the apple-silicon skill).
+
 ## Related
 
 - [MLFeatureValue](./mlfeaturevalue.md)

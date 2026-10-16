@@ -29,8 +29,12 @@ let result = try await c.shapedArray(of: Float.self)
 - iOS 18.0+, iPadOS 18.0+, Mac Catalyst 18.0+, macOS 15.0+, tvOS 18.0+, visionOS 2.0+, watchOS 11.0+
 - Provides arithmetic (`+`, `-`, `*`, `/`, `%`), trigonometric, exponential/power, reduction (`sum()`, `mean()`, `min()`, `max()`), matrix (`matmul()`, `transposed()`), indexing/slicing (`gathering(atIndices:)`, `argmax()`, `argsort()`), shape manipulation (`reshaped(to:)`, `flattened()`, `squeezingShape()`), padding/resizing, and comparison/logical operators
 - Operations execute on an ML compute device chosen via `withMLTensorComputePolicy(_:_:)`; results are read back asynchronously (e.g. `shapedArray(of:)`)
+- Core AI's `NDArray` (iOS 27.0+; see [NDArray](../coreai/ndarray.md)) is a different type from `MLTensor`. It is also unrelated to `MPSNDArray` (Metal Performance Shaders, covered by the apple-silicon skill).
 
 ## Related
 
 - [MLComputePolicy](./mlcomputepolicy.md)
 - [MLMultiArray](./mlmultiarray.md)
+- [MLShapedArray](./mlshapedarray.md)
+- [MLTensorScalar](./mltensorscalar.md)
+- [MLTensorRangeExpression](./mltensorrangeexpression.md)

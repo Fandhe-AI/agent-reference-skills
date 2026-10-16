@@ -37,6 +37,7 @@ if let observations = request.results {
 - Results type: `[VNRecognizedTextObservation]?`.
 - Call `supportedRecognitionLanguages()` to get valid language codes for the chosen `recognitionLevel`.
 - **New Swift API (iOS 18+):** `RecognizeTextRequest` uses `async/await` and `[Locale.Language]` for `recognitionLanguages`. Property `minimumTextHeight` renamed to `minimumTextHeightFraction`.
+- As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Original Objective-C and Swift API) in the Vision framework. It carries no deprecation marker; it is not deprecated.
 
 ## Related
 

@@ -21,9 +21,11 @@ if let classifications = request.results {
 - Results type: `[VNClassificationObservation]?`.
 - Call `try request.supportedIdentifiers()` to get all classification labels available in the current configuration.
 - Does not require a user-supplied model; uses Apple's on-device classifier.
+- As of 2026-10-16 the official documentation classifies this API under "Legacy API" (Original Objective-C and Swift API) in the Vision framework. It carries no deprecation marker; it is not deprecated.
 
 ## Related
 
 - [VNCoreMLRequest](./vncoremlrequest.md)
 - [VNObservation](./vnobservation.md)
 - [VNImageRequestHandler](./vnimagerequesthandler.md)
+- [ClassifyImageRequest](./classifyimagerequest.md)

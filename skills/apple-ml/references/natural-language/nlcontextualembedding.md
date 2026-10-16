@@ -59,3 +59,5 @@ embedding.requestAssets { result, error in
 
 - [NLEmbedding](./nlembedding.md)
 - [NLLanguage](./nllanguage.md)
+- [NLScript](./nlscript.md)
+- [NLContextualEmbeddingKey](./nlcontextualembeddingkey.md)

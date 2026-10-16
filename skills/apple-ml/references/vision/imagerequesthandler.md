@@ -27,7 +27,7 @@ let results = handler.performAll([request1, request2]) // AsyncSequence<VisionRe
 
 ## Notes
 
-- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 11.0+
+- iOS 18.0+ / macOS 15.0+ / tvOS 18.0+ / visionOS 2.0+ / watchOS 27.0+
 - `perform<T>(_ request: T)` returns `T.Result` directly — no casting needed.
 - Variadic `perform<each T>(repeat each T)` returns a tuple matching the request types.
 - Prefer this over `VNImageRequestHandler` for new code targeting iOS 18+.
@@ -36,3 +36,5 @@ let results = handler.performAll([request1, request2]) // AsyncSequence<VisionRe
 
 - [VNImageRequestHandler](./vnimagerequesthandler.md)
 - [RecognizeTextRequest (Swift API)](./recognizetextrequest.md)
+- [TargetedImageRequestHandler](./targetedimagerequesthandler.md)
+- [VideoProcessor](./videoprocessor.md)
