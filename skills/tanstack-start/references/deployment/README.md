@@ -1,15 +1,15 @@
 # Deployment
 
-Vercel プラットフォーム自体の API / CLI は `vercel` スキルを参照。
-
 | Name | Description | Path |
 |------|-------------|------|
-| Cloudflare Workers | Deploy via `@cloudflare/vite-plugin` and `wrangler` | [cloudflare-workers.md](./cloudflare-workers.md) |
-| Netlify | Deploy via `@netlify/vite-plugin-tanstack-start` or `netlify.toml` | [netlify.md](./netlify.md) |
-| Railway | Zero-config deploy following the Nitro instructions | [railway.md](./railway.md) |
-| Nitro | Agnostic build/deploy layer underlying Vercel/Railway/Node.js/Bun | [nitro.md](./nitro.md) |
-| Vercel | One-click deploy following the Nitro instructions | [vercel.md](./vercel.md) |
-| Node.js / Docker | Run the built app on plain Node.js (Vite or Rsbuild output) | [node-docker.md](./node-docker.md) |
-| Bun | Deploy via the Nitro `bun` preset or a custom Bun server | [bun.md](./bun.md) |
-| Appwrite Sites | GitHub-connected deploy with automatic build config | [appwrite-sites.md](./appwrite-sites.md) |
-| Observability | Logging/middleware patterns, Sentry, New Relic, OpenTelemetry | [observability.md](./observability.md) |
+| Appwrite Sites | GitHub-connected deployment of a TanStack Start app… | [appwrite-sites.md](./appwrite-sites.md) |
+| Bun | Deploying a TanStack Start app to Bun, either via… | [bun.md](./bun.md) |
+| Cloudflare Workers | Official Hosting Partner. Deploys a TanStack Start… | [cloudflare-workers.md](./cloudflare-workers.md) |
+| Hosting | Overview of deploying a TanStack Start application. | [hosting.md](./hosting.md) |
+| Netlify | Official Hosting Partner. Uses @netlify/vite-plugin-… | [netlify.md](./netlify.md) |
+| Nitro | Nitro is an agnostic build/deploy layer that lets a… | [nitro.md](./nitro.md) |
+| Node.js / Docker | Running a built TanStack Start app on a plain… | [node-docker.md](./node-docker.md) |
+| Observability | Monitoring, tracing, and debugging patterns for a… | [observability.md](./observability.md) |
+| Production Checklist | Checks to run against the production build and… | [production-checklist.md](./production-checklist.md) |
+| Railway | Official Hosting Partner. Provides instant, zero-… | [railway.md](./railway.md) |
+| Vercel | Deploy a TanStack Start app to Vercel by following… | [vercel.md](./vercel.md) |

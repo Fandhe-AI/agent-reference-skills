@@ -189,6 +189,8 @@ const customFetchMiddleware = createMiddleware({ type: 'function' }).client(
 - CSRF protection is automatic via `createCsrfMiddleware()` unless `src/start.ts` is customized, in which case it must be added explicitly to `requestMiddleware`; it can also be disabled with `disableCsrfMiddlewareWarning: true` in the `tanstackStart()` plugin's `serverFns` options.
 - Middleware factories (e.g. `authorizationMiddleware(permissions)`) can be functions returning a `createMiddleware()` chain, enabling per-call parameterization.
 
+- Behavior changes in 1.169 (from Migrate from the Release Candidate): when no function middleware sends context, `sendContext` is `undefined` instead of `{}`; errors thrown by request middleware during a server-function call reach the client with their message and their status is no longer always `500`; `getRequestHeader(name)` returns `''` for a present-but-empty header (`undefined` only when missing); a path with invalid percent-encoding gets `400 Bad Request` before the server entry or middleware runs. `.inputValidator()` on middleware was removed; use `.validator()`.
+
 ## Related
 
 - [Server Functions](./server-functions.md)

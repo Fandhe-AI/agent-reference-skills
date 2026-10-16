@@ -31,4 +31,6 @@ npm i -D vite @vitejs/plugin-react
 npm i -D @rsbuild/core @rsbuild/plugin-react
 ```
 
+Notes: Start requires Vite 8 when you build with Vite (since `@tanstack/react-start` 1.169; upgrade with Vite's migration guide at https://vite.dev/guide/migration). The official 1.169.2 example `package.json` uses `vite` `^8.0.14` and `@vitejs/plugin-react` `^6.0.1`.
+
 After installing, wire up `tsconfig.json`, `vite.config.ts` (with the `tanstackStart()` plugin), `src/router.tsx`, and `src/routes/__root.tsx` as shown in the official Build from Scratch guide.

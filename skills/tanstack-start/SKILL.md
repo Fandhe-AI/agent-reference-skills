@@ -5,9 +5,10 @@ description: >
   @tanstack/react-start) の API リファレンス。Next.js とは別フレームワーク。
   createServerFn (validator / handler), createMiddleware, server routes,
   createServerOnlyFn / createIsomorphicFn、SSR / selective SSR / SPA mode /
-  static prerendering / ISR、streaming、hydration、
-  server entry / client entry、hosting (Cloudflare Workers / Netlify /
-  Vercel / Node / Bun / Docker)、authentication / session、Tailwind、SEO、
+  static prerendering / ISR、streaming、hydration、server entry / client entry、
+  TanStack Query 連携 (setupRouterSsrQueryIntegration)、RC → stable 移行、
+  hosting (Cloudflare Workers / Netlify / Vercel / Node / Bun / Docker)、
+  production checklist、authentication / session、Tailwind、SEO、
   environment variables。ルーティングは tanstack-router スキルを参照。
 user-invocable: false
 ---
@@ -16,6 +17,9 @@ user-invocable: false
 
 TanStack Start (`@tanstack/react-start`) の API ドキュメントを蒸留したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+対象 `@tanstack/react-start` 1.169.2 (初の stable、2026-10-14)。docs は TanStack/router のタグ `@tanstack/react-start@1.169.2` に pin。
+ルーティングは tanstack-router スキル、`useQuery` / `QueryClient` 自体は tanstack-query スキルを参照（本スキルは Start 側の SSR 連携のみ）。
 
 ## ディレクトリ構成
 
@@ -31,6 +35,7 @@ skills/tanstack-start/
       comparison.md
       start-vs-nextjs.md
       migrate-from-next-js.md
+      migrate-from-release-candidate.md
       tutorial-reading-writing-file.md
       tutorial-fetching-external-api.md
     server/
@@ -72,6 +77,8 @@ skills/tanstack-start/
       bun.md
       appwrite-sites.md
       observability.md
+      hosting.md
+      production-checklist.md
     auth-data-styling/
       README.md
       authentication-overview.md
@@ -83,6 +90,7 @@ skills/tanstack-start/
       rendering-markdown.md
       seo.md
       geo.md
+      tanstack-query.md
   samples/
     README.md
     basic-app.md
@@ -98,6 +106,7 @@ skills/tanstack-start/
     deploy-vercel-nitro.md
     tailwind-setup.md
     environment-functions.md
+    tanstack-query-ssr.md
   scripts/
     README.md
     create-project.md
@@ -121,6 +130,7 @@ skills/tanstack-start/
 | プロジェクトの概要・セットアップ手段の比較・Next.js との違いを知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | 手動セットアップの手順・Next.js からの移行手順を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | ファイルベースストレージ・外部 API 呼び出しのチュートリアルを追いたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| RC からの移行（removed APIs: `useSession` / `.inputValidator` / `nitro-v2-vite-plugin`、error / response の挙動変更） | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | `createServerFn` / `.validator` / `.handler`・static server functions・サーバーファンクションからのストリーミング | server | [references/server/README.md](references/server/README.md) |
 | `createMiddleware`・`server.handlers`（raw HTTP エンドポイント）・エラーバウンダリ | server | [references/server/README.md](references/server/README.md) |
 | 実行モデル（isomorphic 既定の境界）・`createServerOnlyFn` / `createIsomorphicFn` / `createClientOnlyFn`・import protection | server | [references/server/README.md](references/server/README.md) |
@@ -130,7 +140,9 @@ skills/tanstack-start/
 | server entry / client entry・early hints・CDN asset URL の設定 | rendering | [references/rendering/README.md](references/rendering/README.md) |
 | Cloudflare Workers / Netlify / Vercel / Node / Bun / Docker へのデプロイ | deployment | [references/deployment/README.md](references/deployment/README.md) |
 | Railway / Appwrite Sites へのデプロイ、Nitro のビルド/デプロイ層、Observability の統合 | deployment | [references/deployment/README.md](references/deployment/README.md) |
-| 認証の設計（session, OAuth, CSRF, レート制限）・ログイン/ログアウト実装 | auth-data-styling | [references/auth-data-styling/README.md](references/auth-data-styling/README.md) |
+| ホスティング先の選定・本番リリース前チェックリスト | deployment | [references/deployment/README.md](references/deployment/README.md) |
+| 認証の設計（OAuth, CSRF, レート制限）・ログイン/ログアウト実装。session は iron-session + `getCookie` / `setCookie`（組み込み `useSession` は無し） | auth-data-styling | [references/auth-data-styling/README.md](references/auth-data-styling/README.md) |
+| TanStack Query 連携（SSR dehydrate / hydrate、リクエスト単位の `QueryClient`、`setupRouterSsrQueryIntegration`） | auth-data-styling | [references/auth-data-styling/README.md](references/auth-data-styling/README.md) |
 | データベース連携・Tailwind CSS 導入・CSS スタイリング方針 | auth-data-styling | [references/auth-data-styling/README.md](references/auth-data-styling/README.md) |
 | Markdown レンダリング・SEO（meta/JSON-LD/sitemap）・GEO 対応 | auth-data-styling | [references/auth-data-styling/README.md](references/auth-data-styling/README.md) |
 | 典型的な使い方・実装パターンを確認したい | samples | [samples/README.md](samples/README.md) |

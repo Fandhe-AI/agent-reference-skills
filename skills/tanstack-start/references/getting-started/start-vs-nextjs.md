@@ -4,20 +4,11 @@ source: https://tanstack.com/start/latest/docs/framework/react/start-vs-nextjs
 
 # Start vs Next.js
 
-Deep philosophical and architectural comparison between TanStack Start and Next.js: default rendering model, explicitness, build pipeline, type system, routing, caching, and server functions.
-
-## Key Differences
-
-- **Defaults for interactivity**: Next.js defaults to Server Components (opt into `"use client"` for interactivity). TanStack Start defaults to interactive components (opt into server-only rendering where useful).
-- **Implicit vs explicit**: Next.js layers implicit multi-layer caching tied to file structure. TanStack Start is explicit — loaders, cache config, and middleware chains are visible in code.
-- **Build pipeline**: Next.js uses a custom build system (historically Webpack, now Turbopack). TanStack Start uses Vite or Rsbuild (faster dev startup/HMR, standard tooling).
-- **Type system**: Next.js Server Actions have a client/server type gap requiring runtime validation. TanStack Start server functions have end-to-end compile-time type safety (input validation, return types, middleware context, route params).
-- **Routing**: TanStack Router (Start's router) provides typesafe search params, typesafe path params, typesafe route context, route lifecycle events, code-based routes, built-in devtools, element scroll restoration, and navigation blocking — none of which Next.js has natively.
-- **Caching**: Next.js layers request memoization, data cache, full route cache, router cache with complex invalidation. TanStack Start treats RSC output as plain data, cached via TanStack Router's SWR (`staleTime`/`gcTime`), TanStack Query, or CDN/HTTP headers.
+Comparison of TanStack Start and Next.js for routing, rendering, server functions, caching, deployment, and the work each framework handles for you. Checked September 11, 2026 by the official page against the linked documentation, including Next.js 16.3. Start fits when you want TanStack Router's typed navigation, search parameters, and loaders in a full-stack app; Next.js fits when you want the App Router's Server Component model and integrated image, font, and metadata tools.
 
 ## Signature / Usage
 
-Route-level SWR caching in TanStack Start:
+Route-level loader caching in TanStack Start (options such as `staleTime` / `gcTime`):
 
 ```tsx
 export const Route = createFileRoute('/posts/$postId')({
@@ -48,24 +39,46 @@ export async function createPost(formData: FormData) {
 }
 ```
 
-## Summary Table
+## Rendering and interactivity
 
-| Aspect | TanStack Start | Next.js |
-|---|---|---|
-| Philosophy | Developer control, explicit patterns | Platform integration, conventions |
-| Components | Interactive by default, opt into RSC | Server Components by default |
-| Type safety | End-to-end, compile-time | TypeScript with boundary gaps |
-| Server functions | Typed, validated, middleware support | Untyped boundary, no middleware |
-| Caching | Explicit SWR primitives | Multi-layer implicit caching |
-| Build tool | Vite or Rsbuild | Turbopack/Webpack |
-| Deployment | Equal support everywhere | Optimized for Vercel |
-| RSC | Supported | Supported |
-| Maturity | 2+ years, approaching 1.0 | 8+ years |
+- Start: React components are server-rendered and hydrated by default; rendering is changeable per route with selective SSR (data-only, client-only). React Server Components are not needed for server functions or SSR.
+- Next.js: App Router layouts and pages are Server Components by default; a `use client` boundary applies to the imported module tree, and Client Components can still contribute server-rendered HTML on the initial request.
+- Start's Server Components support is **experimental and opt-in** (client-led composition of server-produced UI), a different model from Next.js; experimental support should not be presented as production feature parity.
+
+## Routing
+
+Start inherits TanStack Router's routing model: route definitions connect the types for links, path parameters, validated search parameters, loaders, and route context. Next.js also provides compile-time link checking via the stable, opt-in `typedRoutes` option (describing it as only IDE hints is inaccurate). In either framework a valid route type does not prove a record exists or that a user may access it; handle missing data and authorization at runtime.
+
+## Server Functions vs Server Actions
+
+- Start server functions: callable server endpoints with inferred inputs and outputs, GET or POST, an input validator, and function middleware. Use runtime validation and server-side authorization.
+- Next.js Server Actions: integrate with forms and React's pending and error-state APIs; they can validate input with a schema too. A TypeScript annotation does not perform validation in either framework.
+- A typed RPC call and a form action solve overlapping problems but are not interchangeable in every workflow.
+
+## Caching
+
+- Start: TanStack Router's loader cache for navigation data (`staleTime`, `gcTime`), optionally the official Query integration. Browser data, server data, and CDN response caching serve different purposes. The ISR guide describes HTTP caching and provider-specific options; a `Cache-Control` header alone does not guarantee identical regeneration or invalidation on every host.
+- Next.js: explicit caching via Cache Components (`cacheComponents: true`) with `use cache`, `cacheLife`, and tag-based revalidation; applications without that option use a different documented model.
+
+## Build tools
+
+Start supports Vite and Rsbuild; Next.js integrates Turbopack. The page establishes no startup, HMR, build-time, memory, or runtime-size winner; measure the same application before drawing performance conclusions.
+
+## Deployment
+
+Start has deployment guides for several providers and runtimes. Next.js supports self-hosting: the image optimizer works with `next start`, and its docs cover ISR, shared caches, streaming, and multi-instance deployments (not inherently Vercel-only, but self-operation requires infrastructure configuration).
+
+## Where Next.js Has the Advantage
+
+Established Server Component integration, and built-in `next/image`, `next/font`, and metadata conventions (replacing them is migration work). An existing working Next.js application and team experience belong in the decision; a different routing model alone is not a reason to rewrite a healthy application.
+
+## When to Choose TanStack Start
+
+When typed URL state, route context, explicit loaders, and callable server functions fit how you build applications (Router integration, selective SSR, middleware). Build one representative route first: load real data, validate search parameters, submit a mutation, handle unauthorized access, and deploy it.
 
 ## Notes
 
-- Start's server-to-client-only Flight data flow means RSC serialization vulnerabilities reported for React don't apply to Start's model (per official docs).
-- Next.js advantages acknowledged by TanStack docs are ecosystem/business, not technical: more tutorials/content, mindshare, tighter Vercel integration, built-in image/font optimization (Start uses pluggable solutions like Unpic).
+- Page rewritten for 1.169: the earlier "Key Differences" bullets, Summary Table (including the "Maturity" and "RSC: Supported" rows), and the RSC-serialization-vulnerability note are not in the current official page.
 - This page is about TanStack Start, not the `nextjs-app` skill's App Router internals — consult that skill for Next.js-specific API details.
 
 ## Related

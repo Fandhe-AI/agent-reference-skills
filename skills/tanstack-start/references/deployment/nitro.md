@@ -26,6 +26,7 @@ export default defineConfig({
 
 ## Notes
 
+- `@tanstack/nitro-v2-vite-plugin` was removed in 1.169; use `nitro()` from `nitro/vite` (as above).
 - The `nitro/vite` plugin is under active development; report issues with a reproduction.
 - Set `nitro({ preset: 'bun' })` when targeting Bun (see [Bun](./bun.md)).
 - Performance tip for Node.js/Nitro deployments (uses `srvx` under the hood): install `srvx` and set `globalThis.Response = FastResponse` in the server entry (`src/server.ts`) for a ~5% throughput improvement via an optimized `_toNodeResponse()` path.

@@ -20,7 +20,7 @@ Build settings confirmed during setup in the Appwrite dashboard:
 |------|-------|
 | Install command | `npm install` |
 | Build command | `npm run build` |
-| Output directory | `./dist` (`./.output` if using Nitro v2/v3) |
+| Output directory | `./dist` (if you're using Nitro, this should be `./.output`) |
 
 ## Notes
 
