@@ -33,6 +33,7 @@ az aks show --query oidcIssuerProfile.issuerUrl
 
 ## Notes
 
+- For Codex, set the provider's `max_assertion_lifetime_seconds` to an approved limit that covers the issuer's expected token-lifetime range; do not use the token's remaining validity or assume every Entra token lasts one hour. Codex setup itself belongs to openai-codex.
 - For managed identity, create a Microsoft Entra application registration with an Application ID URI, attach the managed identity to the resource, then request a token from IMDS with the `resource` parameter.
 - Set **OIDC Issuer URL** to the exact value of the token's `iss` claim rather than assuming a suffix — this is the OpenAI guide's own instruction and its worked example decodes to a `/v2.0` issuer.
 - (Microsoft Entra platform behavior, not covered by the OpenAI guide beyond "do not assume the suffix": the issuer version is controlled by the resource app's `requestedAccessTokenVersion` manifest setting — under the `api` node in the Microsoft Graph manifest format. With the documented IMDS `resource=` flow and a default Entra app registration this is unset (null, which behaves as `1`), so Azure issues a v1 access token whose issuer is `https://sts.windows.net/<tenant-id>/`, not `/v2.0`. If the identity provider's OIDC Issuer URL is configured as the `/v2.0` form, set `requestedAccessTokenVersion` to `2` on the app registration first — otherwise the issuer mismatch makes token exchange fail.)

@@ -23,10 +23,34 @@ Selected permission areas (see the guide for the full table with preset-role col
 | Roles | View/manage roles | No |
 | Organization Admin | Manage org users, projects, invites, admin API keys, rate limits | No |
 | Usage | View usage dashboard and export | Yes |
+| External Keys | View and manage keys for Enterprise Key Management (EKM) | No |
+| IP allowlist | View and manage IP allowlist | No |
+| mTLS | View and manage mutual TLS settings | No |
+| OIDC | View and manage OIDC configuration | No |
 | Model capabilities | Request chat completions, audio, embeddings, images | Yes |
+| Assistants | Create and retrieve Assistants | Yes |
+| Threads | Create and retrieve Threads/Messages/Runs | Yes |
+| Evals | Create, retrieve, and delete Evals | Yes |
+| Fine-tuning | Create and retrieve fine tuning jobs | Yes |
+| Files | Create and retrieve files | Yes |
+| Vector Stores | Create and retrieve vector stores | Yes |
+| Responses API | Create responses | Yes |
+| Prompts | Create and retrieve prompts to use as context for Responses API and Realtime API | Yes |
+| Webhooks | Create and view webhooks in your project | Yes |
+| Datasets | Create and retrieve Datasets | Yes |
+| Apps | Create, manage, and submit apps for review in the Dashboard | Yes |
+| Tunnels | Inspect, use, and manage organization-scoped tunnels (`Read`, `Use`, `Manage`) | Yes |
 | Project API Keys | Manage a user's own API keys | Yes |
 | Project Administration | Manage project users, service accounts, API keys, rate limits via management API | No |
+| Batch | Create and manage batch jobs | No |
 | Service Accounts | View/manage project service accounts | No |
+| Voices | Create and retrieve voices | No |
+| Agent Builder | Create and manage agents and workflows in Agent Builder | Yes |
+
+### Batch permission implications
+
+- Batch Read (`api.batch.read`) additionally grants Files Read (`api.files.read`) for `/v1/files`.
+- Batch Write (`api.batch.write`) additionally grants: Batch Read; List models (`api.model.read` and `model.read`) for `/v1/models`; Files Read and Write (`api.files.read` and `api.files.write`) for `/v1/files`; Model capabilities Request (`api.model.request` and `model.request`) for `/v1/audio`, `/v1/chat/completions`, `/v1/embeddings`, `/v1/images`, `/v1/moderations`, `/v1/realtime`, and `/v1/responses`.
 
 ## Notes
 

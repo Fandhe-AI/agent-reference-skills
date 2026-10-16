@@ -17,9 +17,35 @@ Guide for transitioning OpenAI API projects from prototype to production, coveri
 - Avoid exposing API keys in code or public repositories; store them in a secure location.
 - Manage keys via environment variables or secret management services, not hardcoding.
 
+## Staging projects
+
+- Create separate projects for staging and production to isolate development and testing from the live application.
+- Limit user access to the production project, and set custom rate and spend limits per project.
+
 ## Scaling architecture
 
 - Horizontal scaling (more servers), vertical scaling (upgrade resources), caching frequently accessed data, and load balancing to distribute requests.
+
+### Compress request bodies
+
+Compress JSON request bodies with `zstd` when calling `POST /v1/responses`: set `Content-Encoding: zstd` and keep `Content-Type: application/json`.
+
+```bash
+zstd -3 -c request.json > request.json.zst
+
+curl https://api.openai.com/v1/responses \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Content-Encoding: zstd" \
+  --data-binary @request.json.zst
+```
+
+- The API decompresses the body before processing; compression reduces network bytes but does not change token usage or model context limits.
+- Compressed and decompressed bodies must each be at most 128 MiB; the decompressed body must also be at most 100 times the compressed size. Exceeding these returns HTTP `413`; invalid or incomplete `zstd` data returns HTTP `400`. Other request limits still apply.
+
+### Compress WebSocket messages
+
+Responses API WebSocket mode supports `permessage-deflate` on `wss://api.openai.com/v1/responses` (a DEFLATE-based WebSocket extension that reduces message size). Enable it in the WebSocket client's compression settings before connecting.
 
 ## Latency optimization (summary)
 

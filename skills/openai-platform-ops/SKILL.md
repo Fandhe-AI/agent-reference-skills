@@ -2,14 +2,14 @@
 name: openai-platform-ops
 description: >
   OpenAI API (developers.openai.com) の運用・管理リファレンス。
-  Administration API, admin API keys, RBAC, roles, groups, invites,
-  projects, spend limits, audit logs, usage / costs API,
-  Terraform provider (openai/openai), workload identity federation
-  (WIF, OIDC/SPIFFE), safety best practices, moderation API,
-  production best practices, deployment checklist, cost / latency
-  optimization, fast mode, Realtime API costs。rate limits・error
-  handling・prompt caching は openai-api-core、Codex のワークスペース
-  管理は openai-codex が担当。
+  Administration API, admin API keys, RBAC, roles, groups, invites, projects,
+  spend limits, audit logs, usage / costs API, Terraform provider (openai/openai),
+  workload identity federation (WIF, OIDC / SPIFFE / X.509 / Idira),
+  moderation API, misalignment monitoring, safety alerts / cases,
+  safety best practices, under-18 guidance, ZDR Private Safety Processing (PSP),
+  production best practices, deployment checklist, cost / latency optimization,
+  fast / ultrafast mode, Realtime API costs。
+  rate limits・error handling・prompt caching・webhooks は openai-api-core、Codex WIF・管理は openai-codex。
 user-invocable: false
 ---
 
@@ -42,6 +42,9 @@ skills/openai-platform-ops/
       wif-github-actions.md
       wif-oracle-cloud.md
       wif-spiffe.md
+      wif-x509-certificates.md
+      wif-idira.md
+      private-safety-processing.md
     production/
       README.md
       safety-best-practices.md
@@ -49,6 +52,9 @@ skills/openai-platform-ops/
       safety-checks.md
       agent-builder-safety.md
       cybersecurity-checks.md
+      misalignment-monitoring.md
+      safety-enforcement.md
+      under-18-guidance.md
       production-best-practices.md
       deployment-checklist.md
       gpt-actions-production.md
@@ -57,11 +63,13 @@ skills/openai-platform-ops/
       latency-optimization.md
       realtime-costs.md
       fast-mode.md
+      ultrafast-mode.md
   scripts/
     README.md
     admin-api.md
     terraform.md
     moderation.md
+    safety.md
 ```
 
 ## 探索手順
@@ -85,10 +93,17 @@ skills/openai-platform-ops/
 | moderation API・safety best practices・agent の安全設計を知りたい | production | [references/production/README.md](references/production/README.md) |
 | プロダクション投入前のチェックリスト・デプロイ準備を知りたい | production | [references/production/README.md](references/production/README.md) |
 | コスト最適化・レイテンシ最適化・fast mode・Realtime API コストを知りたい | production | [references/production/README.md](references/production/README.md) |
+| Ultrafast mode / fast mode で service tier を選びたい | production | [references/production/README.md](references/production/README.md) |
+| misalignment monitoring・safety enforcement webhook・under-18 対応を知りたい | production | [references/production/README.md](references/production/README.md) |
+| ZDR with Private Safety Processing の外部ストレージを登録したい | administration | [references/administration/README.md](references/administration/README.md) |
+| WIF を X.509 証明書または Idira で構成したい | administration | [references/administration/README.md](references/administration/README.md) |
 | Admin API / Terraform / moderation の curl コマンドをコピペしたい | scripts | [scripts/README.md](scripts/README.md) |
+| safety alerts / cases の curl コマンドをコピペしたい | scripts | [scripts/README.md](scripts/README.md) |
 
 ## 他スキルとの棲み分け
 
 - rate limits・error handling・prompt caching・Batch API の実行方法は `openai-api-core` が担当（このスキルではプロダクション運用の文脈でのみ触れる）
 - Codex のワークスペース・組織管理は `openai-codex` の `administration` カテゴリが担当。本スキルの `administration` は OpenAI API プラットフォーム（developers.openai.com）の組織管理を扱う
+- Codex 向けの WIF 経路・Codex federation ルールのリファレンスは `openai-codex` が担当
+- 一般的な webhooks（署名検証など）は `openai-api-core`、GPT-Live の音声セッションコストは `openai-realtime-audio` が担当
 - クロススキルの相対リンクは張らず、スキル名のみで言及する
