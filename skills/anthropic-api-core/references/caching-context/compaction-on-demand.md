@@ -15,8 +15,9 @@ response = client.beta.messages.create(
     messages=history,
     compaction={"type": "summarize"},
 )
-# response.stop_reason == "compaction"; content holds a single compaction block
-history = [{"role": "assistant", "content": response.content}]
+if response.stop_reason == "compaction":
+    history = [{"role": "assistant", "content": response.content}]
+# otherwise keep history (see Failure stop_reason values)
 ```
 
 ## Options / Props
