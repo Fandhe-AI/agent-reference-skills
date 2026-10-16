@@ -23,6 +23,7 @@ class EmailValidatorTest {
 - Prefer the lowest pyramid layer that gives adequate feedback; most apps should have many small tests and few large/end-to-end tests.
 - The earlier a bug is caught in the pyramid, the cheaper it is to fix (unit test: minutes; end-to-end test: days; production: weeks).
 - Write down a testing strategy defining the layers, requirements, and responsibilities for each test category, and back it with CI enforcement.
+- The official Testing Setup Android skill (`testing/testing-setup` in github.com/android/skills) analyzes and creates a testing strategy for native Android apps. It is distributed through the Android CLI, separately from this reference skill; install it with `android skills add testing-setup`.
 
 ## Related
 
