@@ -32,6 +32,7 @@ Recommended rule categories:
 
 ## Notes
 
+- The MCP server includes a `create_design_system_rules` prompt that drafts a rules file based on your codebase
 - Rules act as documented best practices that persist across sessions
 - To generate tailored rules automatically: prompt the agent to analyze your codebase and produce documentation covering design systems, component libraries, frameworks, and styling approaches
 - Avoid creating new icon packages from scratch — assets should always originate from the Figma payload

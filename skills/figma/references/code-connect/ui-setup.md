@@ -2,7 +2,9 @@
 
 Browser-based interface within Figma Dev Mode for connecting design components to code without local CLI installation.
 
-## Signature / Usage
+## Usage
+
+UI procedure page (no code API); steps below replace a code example.
 
 1. Open a Figma library file containing design components
 2. Switch to **Dev Mode**
@@ -26,10 +28,11 @@ Browser-based interface within Figma Dev Mode for connecting design components t
 
 ## Notes
 
-- Requires Dev or Full seat on Organization/Enterprise plan
+- Available on a Dev or Full seat on the Professional, Organization, and Enterprise plans; requires a Figma library file with published design components
+- Professional plans can have one active library and one active framework (set by the team's first publish; a team admin can change it in Admin → Settings → Resources → Code Connect). Connections for the previous framework are kept but show a Deactivated badge in Dev Mode and Code Connect UI and are not returned by the Figma MCP server. Organization and Enterprise can have multiple active frameworks
 - UI mappings do **not** display code snippets in the Inspect panel (unlike CLI)
 - GitHub Enterprise Server (GHES) is not supported
-- Only one GitHub repository can be linked per Figma library file
+- GitHub connection is optional; without it, enter the component path (for example `src/components/Button.tsx`) and optional component name manually
 - CLI-created connections appear in the UI but are editable only via CLI
 
 ## Related

@@ -18,6 +18,7 @@ Large frame selections slow down tools, cause errors, or produce incomplete resp
 
 - Break down selections to individual components or smaller sections (e.g., `Card`, `Header`, `Sidebar`)
 - If a request feels slow or stuck, reduce your selection size and retry
+- For a large design, the agent can call `get_metadata` for a lightweight outline first, then get design context for only the parts it needs
 - Keeping context manageable leads to more predictable outcomes for both user and model
 - When troubleshooting quality issues, revisit three fundamentals: (1) how the Figma file is organized, (2) how prompts are written, (3) what context is passed to the model
 

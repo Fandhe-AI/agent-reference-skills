@@ -28,12 +28,15 @@ scope=file_content:read file_comments:read
 | `library_assets:read` | Read individual published components/styles | Any |
 | `library_analytics:read` | Design system analytics | Enterprise |
 | `team_library_content:read` | Team-level library access | Any |
-| `projects:read` | List projects and files | Any |
-| `project_metadata:read` | Read project metadata | Any |
+| `folders:read` | List folders and files in folders (folders endpoints); not usable with public OAuth apps | Any |
+| `folder_metadata:read` | Read folder metadata (GET folder metadata); available to all OAuth apps | Any |
+| `projects:read` | Deprecated in favor of `folders:read`. List projects (now "folders") and files; existing tokens continue to work | Any |
+| `project_metadata:read` | Deprecated in favor of `folder_metadata:read`. Read project metadata; existing tokens continue to work | Any |
 | `webhooks:read` | Read webhook metadata | Any |
 | `webhooks:write` | Create and manage webhooks | Any |
 | `selections:read` | Read most recent selection in files | Any |
 | `org:activity_log_read` | Organization activity logs | Enterprise (admin) |
+| `org:ai_metering_usage_read` | Read organization AI usage | Enterprise (admin) |
 | `org:developer_log_read` | Developer logs | Enterprise + Governance+ (admin) |
 | `org:discovery_read` | Text event data | Enterprise + Governance+ (admin) |
 | `files:read` | Deprecated broad access scope | Any |

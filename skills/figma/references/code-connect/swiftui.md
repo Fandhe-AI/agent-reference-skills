@@ -71,6 +71,7 @@ var body: some View {
 
 ## Notes
 
+- Legacy parser: framework-specific parsers no longer receive updates or support from 2026-08-17. Since Code Connect v2.0.0 (2026-08-18), parser-based files can only be used by `figma connect migrate` and `figma connect unpublish`; other commands exit with guidance to migrate. To keep using the parser, install `npm install --save-dev @figma/code-connect@1`. Migrate to template files: see [Templates Migration Guide](./templates-migration-guide.md) and [Template Files](./template-files.md)
 - `@FigmaChildren` accepts the name of the instance layer, not a property name
 - `figmaApply` accepts an optional `elseApply` trailing closure for the false branch
 - Connection structs work directly as Xcode previews via `#Preview { MyComponent_connection() }`

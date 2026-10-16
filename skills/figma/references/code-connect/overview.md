@@ -6,28 +6,57 @@ Bridges your codebase to Figma's Dev Mode by connecting design components to pro
 
 Two implementation approaches:
 
-- **Code Connect CLI** — command-line tool using template files; supports any codebase regardless of framework or language
+- **Code Connect CLI** — command-line tool; the recommended way is template files (framework-agnostic, works with any codebase and language)
 - **Code Connect UI** — browser-based interface within Figma with GitHub integration; supports one-to-many connections across frameworks
+
+Template file (recommended):
+
+```ts
+// Button.figma.ts
+// url=https://www.figma.com/file/your-file-id/Button?node-id=123
+import figma from 'figma'
+
+const instance = figma.selectedInstance
+
+export default {
+  example: figma.code`
+<Button
+  size={${instance.getEnum('Size', { Large: 'large', Medium: 'medium', Small: 'small' })}}
+  disabled={${instance.getBoolean('Disabled')}}
+>
+  ${instance.getString('Text Content')}
+</Button>
+`,
+  imports: ['import { Button } from "components/Button"'],
+  id: 'button',
+}
+```
+
+Legacy framework-specific APIs (React and React Native, HTML for Web Components / Angular / Vue, SwiftUI, Jetpack Compose) are still documented but no longer maintained since Code Connect v2.0.0.
 
 ## Options / Props
 
 | Aspect | CLI | UI |
 |--------|-----|-----|
 | Setup | Runs locally in repository | Integrated in Figma Dev Mode |
-| Language support | React, Web Components, SwiftUI, Jetpack Compose + any via templates | Language-agnostic, multiple frameworks |
+| Language support | Template files for any language; legacy parsers for React, Web Components, SwiftUI, Jetpack Compose | Language-agnostic, multiple frameworks |
 | Connections | Single mapping per component | One-to-many across frameworks |
 | Code display | Dev Mode Inspect panel snippets | File/component name + AI-generated previews |
 | MCP context | Path, name, property mapping, dynamic examples | Path, name, user prompts, codebase context |
 
 ## Notes
 
-- Requires a Dev or Full seat in Figma on an Organization or Enterprise plan
+- Available on a Dev or Full seat on the Professional, Organization, and Enterprise plans
+- Professional plans can have one active library and one active framework. The framework is set by your team's first Code Connect publish, and a team admin can change it in Admin → Settings → Resources → Code Connect. Connections for the previous framework are kept but show a Deactivated badge in Dev Mode and Code Connect UI and are not returned by the Figma MCP server. Organization and Enterprise plans can have multiple active frameworks
 - CLI-created connections appear in the UI but remain editable only via CLI
 - Both tools complement each other and enhance the Figma MCP server for AI-guided workflows
+- Template files are the only actively maintained way to use Code Connect (v2.0.0); framework-specific parsers are legacy
+- The `figma-code-connect` skill (Figma's agent skill) helps an AI coding agent write Code Connect templates from a Figma component URL
 - Personal access token must have **Code Connect** scope set to `Write` and **File content** scope set to `Read`
 
 ## Related
 
 - [CLI Quickstart](./quickstart.md)
+- [Template Files](./template-files.md)
 - [UI Setup](./ui-setup.md)
 - [Comparing CLI and UI](./comparing-cc.md)

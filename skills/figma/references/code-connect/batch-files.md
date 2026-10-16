@@ -72,7 +72,10 @@ export default {
 - Batch template files do **not** include metadata comments (`// url=`, `// source=`, `// component=`) at the top — this data comes from the JSON file instead
 - `.figma.batch.json` files are discovered automatically via existing `include`/`exclude` globs (default globs already cover `**/*.figma.batch.json`)
 - Each component entry in the JSON publishes as an independent Code Connect document
-- Publish with the standard `npx figma connect publish` command
+- If your `figma.config.json` defines a custom `include`, add the batch glob explicitly (for example `["**/*.figma.ts", "**/*.figma.batch.json"]`); the `.figma.batch.ts` files referenced by `templateFile` don't need to appear in `include`
+- Publish with the standard `npx figma connect publish` command; unpublishing removes each component individually by its Figma node URL
+- `figma connect preview` accepts the template file of a component declared in a `.figma.batch.json` (v2.0.1)
+- `figma connect migrate` can produce batch files automatically for source files with 10 or more connections (`--batch auto|all|none`)
 
 ## Related
 

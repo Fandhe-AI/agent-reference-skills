@@ -60,7 +60,8 @@ const imported = await figma.variables.importVariableByKeyAsync(key);
 
 - Synchronous variants (`getVariableById`, `getLocalVariables`, etc.) are **deprecated**; they throw when `documentAccess: "dynamic-page"` is set.
 - Passing `null` as the `variable` argument to binding helpers **unbinds** the field.
-- `VariableResolvedDataType` values: `'BOOLEAN'`, `'COLOR'`, `'FLOAT'`, `'STRING'`.
+- `VariableResolvedDataType` values: `'BOOLEAN'`, `'COLOR'`, `'EASING'`, `'FLOAT'`, `'STRING'`, `'TIMING'`. Easing variables use `MotionEasing` values; timing variables use numbers of seconds (Update 133).
+- Composed color variables (Update 139): `VariableComposedColor` (a `color` plus a separately authored `opacity`, where the color, the opacity, or both are `VariableAlias`) can be read and set as a variable value. The `COLOR_OPACITY` `VariableScope` limits float variables to color opacity pickers (`OPACITY` is layer opacity).
 
 ## Related
 

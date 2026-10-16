@@ -1,16 +1,15 @@
 ---
 name: figma
 description: >
-  Figma REST API / Plugin API / Widget API / Code Connect / MCP Server リファレンス。
-  OAuth / Personal Access Token / Plan Access Token 認証、files, variables, webhooks,
-  Dev Mode, Dev Resources, SCIM, activity-logs, library-analytics エンドポイント。
-  figma グローバルオブジェクト、node types (FrameNode, TextNode, ComponentNode 等)、
-  data types、figma.variables、figma.codegen、figma.ui。
-  useSyncedState, useSyncedMap, usePropertyMenu, AutoLayout, register。
-  Code Connect CLI / UI / React / SwiftUI / Compose / HTML / Storybook / custom parsers。
-  Figma MCP Server ツール・プロンプト・Code to Canvas・Write to Canvas。
+  Figma REST API / Plugin API / Widget API / Code Connect / MCP Server リファレンス
+  OAuth / PAT / Plan Access Token, files, folders, variables, VariableComposedColor, webhooks, SCIM
+  FrameNode, figma.variables, figma.codegen, textWrapStyle, variable fonts, useSyncedState, AutoLayout
+  Code Connect template files (.figma.ts) / legacy parser (React / SwiftUI / Compose / HTML)
+  MCP html_to_figma, generate_image, get_motion_context, generative plugins / shaders, Figma Weave
 user-invocable: false
 ---
+
+対象: developers.figma.com（2026-10-17 取得）/ Code Connect CLI `@figma/code-connect` v2.0.2 / Plugin API typings `@figma/plugin-typings` v1.142.0（docs の Update 141）/ REST API OpenAPI `figma/rest-api-spec` v0.44.0
 
 ## ディレクトリ構成
 
@@ -32,6 +31,7 @@ skills/figma/
       comments.md
       users.md
       projects.md
+      folders.md
       components.md
       variables.md
       dev-resources.md
@@ -84,7 +84,11 @@ skills/figma/
       overview.md
       remote-server-installation.md
       desktop-server-installation.md
+      rate-limits-access.md
       tools-and-prompts.md
+      generative-plugins-and-shaders.md
+      weave-tools.md
+      create-skills.md
       make-context-resources.md
       write-to-canvas.md
       code-to-canvas.md
@@ -112,6 +116,8 @@ skills/figma/
       compose.md
       storybook.md
       custom-parsers.md
+      templates-migration-guide.md
+      common-issues.md
       ci-cd.md
     widget-api/
       README.md
@@ -176,6 +182,7 @@ skills/figma/
 | OAuth 認証・Personal / Plan Access Token を設定したい | rest-api | [references/rest-api/README.md](references/rest-api/README.md) |
 | Variables・Dev Resources・Webhooks を REST API で操作したい | rest-api | [references/rest-api/README.md](references/rest-api/README.md) |
 | SCIM・activity-logs・library-analytics (Enterprise) を使いたい | rest-api | [references/rest-api/README.md](references/rest-api/README.md) |
+| folders（旧 projects）を REST API で一覧したい | rest-api | [references/rest-api/README.md](references/rest-api/README.md) |
 | AI credit usage を日次・ユーザー単位で取得したい | rest-api | [references/rest-api/README.md](references/rest-api/README.md) |
 | Plugin を開発したい（manifest・figma グローバル・node 操作） | plugin-api | [references/plugin-api/README.md](references/plugin-api/README.md) |
 | figma.variables / figma.codegen / figma.ui を使いたい | plugin-api | [references/plugin-api/README.md](references/plugin-api/README.md) |
@@ -184,8 +191,12 @@ skills/figma/
 | Figma MCP Server をセットアップしたい | figma-mcp-server | [references/figma-mcp-server/README.md](references/figma-mcp-server/README.md) |
 | MCP ツール一覧・プロンプトパターンを調べたい | figma-mcp-server | [references/figma-mcp-server/README.md](references/figma-mcp-server/README.md) |
 | Code to Canvas・Write to Canvas を使いたい | figma-mcp-server | [references/figma-mcp-server/README.md](references/figma-mcp-server/README.md) |
+| MCP のレート制限・プラン・AI credits を確認したい | figma-mcp-server | [references/figma-mcp-server/README.md](references/figma-mcp-server/README.md) |
+| MCP で generative plugin / shader のソースを読み書きしたい | figma-mcp-server | [references/figma-mcp-server/README.md](references/figma-mcp-server/README.md) |
+| MCP から Figma Weave の tool / model を実行したい | figma-mcp-server | [references/figma-mcp-server/README.md](references/figma-mcp-server/README.md) |
 | MCP での効果的なプロンプトの書き方・カスタムルールを知りたい | figma-mcp-server | [references/figma-mcp-server/README.md](references/figma-mcp-server/README.md) |
-| Code Connect を React / SwiftUI / Compose / HTML に導入したい | code-connect | [references/code-connect/README.md](references/code-connect/README.md) |
+| Code Connect を template files（推奨）または legacy parser（React / SwiftUI / Compose / HTML）で導入したい | code-connect | [references/code-connect/README.md](references/code-connect/README.md) |
+| parser ベースの Code Connect を template file へ移行したい・publish エラー（413 等）を解決したい | code-connect | [references/code-connect/README.md](references/code-connect/README.md) |
 | Code Connect の CLI コマンド・config ファイルを調べたい | code-connect | [references/code-connect/README.md](references/code-connect/README.md) |
 | Code Connect を Storybook・CI/CD と連携したい | code-connect | [references/code-connect/README.md](references/code-connect/README.md) |
 | Template API・カスタムパーサーを実装したい | code-connect | [references/code-connect/README.md](references/code-connect/README.md) |

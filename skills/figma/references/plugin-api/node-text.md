@@ -40,7 +40,7 @@ text.setRangeFillStyleIdAsync(6, 11, styleId);
 | Name | Type | Description |
 |------|------|-------------|
 | `fontSize` | `number \| typeof figma.mixed` | Font size in px |
-| `fontName` | `FontName \| typeof figma.mixed` | `{ family, style }` |
+| `fontName` | `FontName \| typeof figma.mixed` | Read: `{ family, style, variationSettings? }` (`variationSettings` lists every axis for a variable font). Write: `FontName` or `FontNameInput` (`style` optional; `variationSettings` overrides axes; Update 138) |
 | `fontWeight` | `number` (readonly) | Computed font weight |
 | `textCase` | `TextCase \| typeof figma.mixed` | `'ORIGINAL' \| 'UPPER' \| 'LOWER' \| 'TITLE' \| 'SMALL_CAPS'` |
 | `textDecoration` | `TextDecoration \| typeof figma.mixed` | `'NONE' \| 'UNDERLINE' \| 'STRIKETHROUGH'` |
@@ -55,6 +55,7 @@ text.setRangeFillStyleIdAsync(6, 11, styleId);
 | `textAlignHorizontal` | `'LEFT' \| 'CENTER' \| 'RIGHT' \| 'JUSTIFIED'` | Horizontal alignment |
 | `textAlignVertical` | `'TOP' \| 'CENTER' \| 'BOTTOM'` | Vertical alignment |
 | `textAutoResize` | `'NONE' \| 'WIDTH_AND_HEIGHT' \| 'HEIGHT' \| 'TRUNCATE'` | Auto-resize behavior |
+| `textWrapStyle` | `TextWrapStyle \| typeof figma.mixed` | Paragraph-level wrap: `'AUTO'` (default), `'BALANCE'` (equalized line lengths), `'PRETTY'` (fewer orphaned words). Requires the font to be loaded when set (Update 134) |
 | `textTruncation` | `'DISABLED' \| 'ENDING'` | Truncation mode |
 | `maxLines` | `number \| null` | Max visible lines (with truncation) |
 
@@ -67,7 +68,9 @@ text.setRangeFillStyleIdAsync(6, 11, styleId);
 | `getRangeFontSize(start, end)` | Get font size for range |
 | `setRangeFontSize(start, end, value)` | Set font size for range |
 | `getRangeFontName(start, end)` | Get font name for range |
-| `setRangeFontName(start, end, value)` | Set font name for range |
+| `setRangeFontName(start, end, value: FontNameInput)` | Set font name for range; `style` may be omitted and `variationSettings` may override variable-font axes |
+| `getRangeTextWrapStyle(start, end)` | `TextWrapStyle \| typeof figma.mixed` for the paragraph containing the range |
+| `setRangeTextWrapStyle(start, end, value: TextWrapStyle)` | Set the wrap style for the paragraph containing the range; requires the font to be loaded |
 | `getRangeFills(start, end)` | Get fills for range |
 | `setRangeFills(start, end, value)` | Set fills for range |
 | `getStyledTextSegments(fields)` | Get styled segments for given fields |
@@ -75,6 +78,8 @@ text.setRangeFillStyleIdAsync(6, 11, styleId);
 ## Notes
 
 - Always call `await figma.loadFontAsync(fontName)` before modifying `characters` or font properties, otherwise Figma throws.
+- `TextStyle.textWrapStyle` reads or writes the wrap style on a saved text style
+- Variable fonts: use `figma.getFontFamilyVariationAxes(family)` to discover valid axis tags; setting an axis the family does not define throws. `loadFontAsync({ family })` (no `style`) loads every style of the family
 - `figma.mixed` is returned for range properties when the range contains multiple distinct values.
 - Range indices are character positions (0-based), `end` is exclusive.
 

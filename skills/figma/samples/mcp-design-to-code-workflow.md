@@ -24,6 +24,10 @@ claude mcp add --transport http figma https://mcp.figma.com/mcp
 "Get the variable names and values used in this frame"
 
 "Search for a Button component in my design system"
+
+"Export these icons from my Figma file as SVGs."   # download_assets
+
+# If the design is animated, call get_motion_context after get_design_context with the same node ID
 ```
 
 ```json
@@ -41,5 +45,6 @@ claude mcp add --transport http figma https://mcp.figma.com/mcp
 
 - The remote server (`https://mcp.figma.com/mcp`) supports all tools including `use_figma`, `generate_diagram`, and `create_new_file`; the desktop server (`http://127.0.0.1:3845/mcp`) omits remote-only tools.
 - `get_design_context` outputs React + Tailwind by default; specify a framework in the prompt to override.
-- Write-to-canvas operations (e.g., `use_figma`, `generate_figma_design`) require a full Figma seat — Dev seats are read-only.
+- Write-to-canvas operations (e.g., `use_figma`, `generate_figma_design`) require the remote server, and a Full seat to write outside your drafts.
+- `download_assets` exports up to 20 nodes per call (PNG / JPG / SVG / PDF plus original source images); `get_motion_context` returns keyframe tracks with CSS `@keyframes` and Motion snippets (`recursive: true` covers all animated layers).
 - Adding Code Connect mappings before prompting significantly improves generated code accuracy.
