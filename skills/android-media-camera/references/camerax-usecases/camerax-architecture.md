@@ -1,6 +1,6 @@
 # CameraX architecture
 
-Overview of CameraX structure (use cases), the API model (CameraController vs CameraProvider), lifecycle binding, concurrent use cases, requirements, dependency declaration, and Camera2 interop.
+Overview of CameraX structure (use cases), the API model (CameraController vs CameraProvider), lifecycle binding, concurrent use cases, requirements, dependency declaration, and Camera2 interop. Source: https://developer.android.com/media/camera/camerax/architecture
 
 ## Signature / Usage
 

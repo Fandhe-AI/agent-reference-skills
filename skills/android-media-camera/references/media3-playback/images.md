@@ -17,6 +17,7 @@ val mediaItem =
   MediaItem.Builder()
     .setUri(imageUri)
     .setMimeType(MimeTypes.APPLICATION_EXTERNALLY_LOADED_IMAGE)
+    .setImageDurationMs(2000) // imageDurationMs is required for image playback
     .build()
 
 // Decoder (Glide example) via DefaultRenderersFactory.getImageDecoderFactory
@@ -43,6 +44,13 @@ val glidePreloader = ExternalLoader { request: LoadRequest ->
 }
 val player: Player =
   ExoPlayer.Builder(context)
+    .setRenderersFactory(
+      object : DefaultRenderersFactory(context) {
+        override fun getImageDecoderFactory(context: Context): ImageDecoder.Factory {
+          return glideImageDecoderFactory
+        }
+      }
+    )
     .setMediaSourceFactory(DefaultMediaSourceFactory(context).setExternalImageLoader(glidePreloader))
     .build()
 ```

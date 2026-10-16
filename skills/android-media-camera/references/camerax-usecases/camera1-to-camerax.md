@@ -1,6 +1,6 @@
 # Migrate Camera1 to CameraX
 
-Guide for migrating from the deprecated `android.hardware.Camera` ("Camera1") API to CameraX, with side-by-side scenarios (camera selection, preview, tap-to-focus, pinch-to-zoom, photo, video) using either `CameraController` or `CameraProvider`.
+Guide for migrating from the deprecated `android.hardware.Camera` ("Camera1") API to CameraX, with side-by-side scenarios (camera selection, preview, tap-to-focus, pinch-to-zoom, photo, video) using either `CameraController` or `CameraProvider`. Source: https://developer.android.com/media/camera/camerax/camera1-to-camerax
 
 ## Signature / Usage
 
@@ -27,14 +27,15 @@ class MainActivity : AppCompatActivity() {
 ```kotlin
 // CameraX: pinch-to-zoom with CameraProvider
 val scaleGestureDetector = ScaleGestureDetector(context,
-    object : SimpleOnGestureListener() {
+    object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(detector: ScaleGestureDetector): Boolean {
-            val camera = camera ?: return
+            val camera = camera ?: return false
             val zoomState = camera.cameraInfo.zoomState
             val currentZoomRatio: Float = zoomState.value?.zoomRatio ?: 1f
             camera.cameraControl.setZoomRatio(
                 detector.scaleFactor * currentZoomRatio
             )
+            return true
         }
     }
 )
@@ -73,6 +74,7 @@ var camera = cameraProvider.bindToLifecycle(
 - Coroutines: methods returning `ListenableFuture` can be awaited via `androidx.concurrent:concurrent-futures-ktx:1.1.0` (`await()`).
 - CameraX 1.3.0-alpha02 or later: `startRecording()` on `CameraController` takes an additional `AudioConfig` parameter (microphone permission needed for audio), `stopRecording()` is removed, and `startRecording()` returns a `Recording` for pause / resume / stop.
 - The source snippets are illustrative and contain inconsistencies (e.g. undefined `useCases`, `meteringPoint` vs `focusPoint`); treat them as sketches, not compilable code.
+- The official CameraProvider pinch-to-zoom snippet uses SimpleOnGestureListener with a bare return; the example here uses ScaleGestureDetector.SimpleOnScaleGestureListener and returns Boolean on every path.
 
 ## Related
 

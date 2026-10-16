@@ -3,8 +3,8 @@ name: android-media-camera
 description: >
   Android アプリ開発 (Kotlin) の Media3 / CameraX リファレンス。androidx.media3, androidx.camera。
   ExoPlayer, HLS / DASH / RTSP / SmoothStreaming, HlsInterstitialsAdsLoader, CMCD,
-  MediaSession, MediaLibraryService, DRM, PlayerSurface,
-  ProcessCameraProvider, ImageCapture, ImageAnalysis, VideoCapture,
+  MediaSession, MediaSessionService, MediaLibraryService, DRM, Compose UI (PlayerSurface),
+  ProcessCameraProvider, CameraSelector, ImageCapture, ImageAnalysis, VideoCapture, CameraInfo,
   CameraX Extensions, Camera2 Interop, Camera1 移行。
 user-invocable: false
 ---
