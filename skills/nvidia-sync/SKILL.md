@@ -1,16 +1,19 @@
 ---
 name: nvidia-sync
 description: >
-  NVIDIA Sync デスクトップアプリのリファレンス。DGX Spark, DGX Station,
-  汎用 SSH Linux ホストへのリモート接続管理。mDNS 自動検出, 手動 IP 登録,
-  SSH config インポート, Tailscale 連携, 自動ネットワーク切替。
-  Cluster Assistant, ConnectX-7 クラスタトポロジ, netplan 設定検証。
-  VS Code, Cursor, VS Code Insiders, NVIDIA AI Workbench 起動,
-  カスタムアプリ登録, ポートフォワード, SSH トンネル。
+  NVIDIA Sync デスクトップアプリ。DGX Spark, DGX Station,
+  SSH Linux ホストのリモート接続管理。mDNS 自動検出, 手動 IP,
+  SSH config インポート, Tailscale, 自動ネットワーク切替。
+  Cluster Assistant, ConnectX-7 クラスタトポロジ, netplan 検証。
+  Resource Monitor (CPU / GPU / memory), release notes。
+  VS Code, VS Code Insiders, Cursor, NVIDIA AI Workbench 起動,
+  カスタムアプリ, ポートフォワード, SSH トンネル。
 user-invocable: false
 ---
 
 # nvidia-sync
+
+Target: NVIDIA Sync 0.117.3-9 (docs.nvidia.com/sync/latest, last updated 2026-09-02, fetched 2026-10-17)
 
 ## ディレクトリ構成
 
@@ -23,6 +26,7 @@ skills/nvidia-sync/
       overview.md
       terminology.md
       limitations.md
+      release-notes.md
     connections/
       README.md
       direct-connections.md
@@ -35,6 +39,9 @@ skills/nvidia-sync/
       README.md
       applications.md
       custom-applications.md
+    monitoring/
+      README.md
+      resource-monitor.md
   scripts/
     README.md
     cluster-network.md
@@ -57,8 +64,10 @@ skills/nvidia-sync/
 | bastion/jump server 等の未対応構成を確認したい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | mDNS 自動検出・手動 IP・SSH config インポートでデバイスを追加したい | connections | [references/connections/README.md](references/connections/README.md) |
 | Tailscale 連携・認証キー発行・自動ネットワーク切替を設定したい | connections | [references/connections/README.md](references/connections/README.md) |
-| ConnectX-7 クラスタの構成ウィザード・トポロジ・ケーブル要件を知りたい | cluster | [references/cluster/README.md](references/cluster/README.md) |
+| リリースノート (バージョン別の新機能・修正) や現行バージョンを確認したい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| ConnectX-7 クラスタの構成ウィザード・トポロジ上限 (direct 2-3 台、switch 2-4 台)・184 Gbit/s リンク速度テスト・デバイス間 SSH エイリアス・クラスタ削除を知りたい | cluster | [references/cluster/README.md](references/cluster/README.md) |
 | netplan 設定 (`99-nvidia-sync-cluster.yaml`) の確認・検証・削除をしたい | cluster | [references/cluster/README.md](references/cluster/README.md) |
 | VS Code / Cursor / AI Workbench / SSH ターミナルを起動したい | applications | [references/applications/README.md](references/applications/README.md) |
 | カスタムアプリ登録・ポートフォワード・SSH トンネルを設定したい | applications | [references/applications/README.md](references/applications/README.md) |
+| Resource Monitor で単一デバイス・クラスタの CPU / メモリ / GPU 使用率を確認したい | monitoring | [references/monitoring/README.md](references/monitoring/README.md) |
 | クラスタネットワークの検証コマンド・運用コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

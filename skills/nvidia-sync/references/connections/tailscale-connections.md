@@ -17,6 +17,8 @@ Settings > Tailscale > Enable Tailscale
 
 If the browser does not open, use the option in NVIDIA Sync to resend the request.
 
+If the enable flow fails, check the error message in NVIDIA Sync.
+
 ### Adding Devices to Tailscale
 
 1. Access **Settings** → **Tailscale** tab
@@ -26,6 +28,10 @@ If the browser does not open, use the option in NVIDIA Sync to resend the reques
 5. Generate an authentication key using default settings
 6. Copy/paste the key into the modal; select **Add Device**
 7. A terminal opens; follow the installation prompts for the Tailscale client
+
+### Connecting to a Tailscale Device
+
+NVIDIA Sync selects the connection type automatically; the connection indicator shows which type is active. If the connection drops, Sync enters a reconnecting state (typically about 30 seconds); click Cancel to stop. If the system tray is hidden and a connection error occurs, the tray may open automatically to show the error.
 
 ### Disabling Tailscale
 
@@ -39,14 +45,17 @@ If the browser does not open, use the option in NVIDIA Sync to resend the reques
 | --- | --- | --- |
 | Tailscale tab | UI section | Located under Settings; manages enable/disable, device add/remove |
 | Add a Device | action | Starts enrollment of a new device into Tailscale |
+| Tailscale Devices screen | UI section | Lists all devices added to Tailscale, in the Tailscale settings screen |
 | Reauthentication | action | Refreshes an expired device authorization |
 | Remove device | action | Removes a device via the action menu; requires a direct connection |
 
 ## Notes
 
 - Removing a device from Tailscale requires a direct connection.
-- NVIDIA Sync switches from direct to Tailscale connection automatically when moving between networks, showing a brief reconnection state.
-- Remove devices from the Tailscale administration console before disabling the integration.
+- NVIDIA Sync switches from direct to Tailscale connection automatically when moving between networks, showing a brief reconnection state. This applies to Sync-managed tunnels and to SSH-enabled apps that use SSH aliases (such as VS Code or Cursor).
+- Removing or deauthenticating a device expires its keys (shown as expired in the Tailscale administration console), but the device is not removed from the console.
+- Warning: remove devices from the Tailscale administration console before disabling the integration. Disabling clears Sync's Tailscale credentials but does not remove the devices.
+- Release 0.100.18: Tailscale unexpected-error messages include more detail.
 - Session timeouts require restarting the enable flow; expired devices need reauthentication or a new auth key.
 - Unenroll operations require a direct local network connection.
 - For "Unable to Connect" errors: verify network connectivity, confirm the device is enrolled in the Tailscale administration console, and expand the source error for additional details.
