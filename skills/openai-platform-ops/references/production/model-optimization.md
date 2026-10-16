@@ -16,7 +16,7 @@ Evals and fine-tuning workflows covered here are moving into legacy documentatio
 ## Prompt engineering practices
 
 - **Include relevant context** — data the model needs beyond its training data (private DB content, up-to-the-minute info).
-- **Provide clear instructions** — start with `gpt-5.6` for new work; tune reasoning effort/verbosity per the reasoning-model guidance.
+- **Provide clear instructions** — start with `gpt-6-astra` for new work; tune reasoning effort/verbosity per the reasoning-model guidance.
 - **Provide example outputs** — few-shot examples let the model extrapolate correct behavior.
 
 ## Fine-tuning methods

@@ -1,6 +1,6 @@
 # WIF: X.509 Certificates
 
-Exchange a workload's TLS client certificate identity for a short-lived OpenAI access token (beta), replacing the API key but not the client certificate itself.
+Exchange a workload's TLS client certificate identity for a short-lived OpenAI access token, replacing the API key but not the client certificate itself.
 
 ## Signature / Usage
 
@@ -32,7 +32,7 @@ curl --request POST \
   --key "$OPENAI_MTLS_KEY" \
   --header "Authorization: Bearer $OPENAI_WIF_ACCESS_TOKEN" \
   --header "Content-Type: application/json" \
-  --data "{\"model\":\"gpt-5.6\",\"input\":\"Say hello in one sentence.\"}" \
+  --data "{\"model\":\"gpt-6-astra\",\"input\":\"Say hello in one sentence.\"}" \
   "https://mtls.api.openai.com/v1/responses"
 ```
 
@@ -49,7 +49,8 @@ curl --request POST \
 ## Notes
 
 - Five parts: an org-level Mutual TLS trusted root, an X.509 Workload Identity Provider (derives `openai.*` attributes from the verified client certificate), a service account mapping keyed on `openai.subject`, a certificate-based token exchange on `mtls.auth.openai.com` (no `subject_token` in the body — the cert comes from the TLS connection), and an API call on `mtls.api.openai.com` presenting both the bearer token and an accepted certificate.
-- Beta feature; requires an administrator to enable it for the organization and reuses the organization's existing Mutual TLS certificate configuration (no separate certificate trust store).
+- Available for the OpenAI API (the official page no longer carries beta wording as of 2026-10-17). It reuses the organization's existing Mutual TLS certificate configuration (no separate certificate trust store).
+- Codex does not support X.509 workload identity federation; for Codex use an OIDC token or SPIFFE JWT-SVID.
 - Certificate facts are available under `assertion.subject` and `assertion.subject_alt_names`; transformation results must be scalar. X.509 mappings match derived `openai.*` attributes only, not raw JWT claims like `sub`/`iss`/`aud`.
 - The bearer token is not cryptographically bound to the certificate (no DPoP/`cnf`); the API request still requires a separately accepted client certificate.
 - Token lifetime is at most one hour and never outlives the verified client certificate; no refresh token is issued — repeat the exchange.

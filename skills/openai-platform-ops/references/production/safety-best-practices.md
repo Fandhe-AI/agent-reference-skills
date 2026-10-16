@@ -23,7 +23,7 @@ from openai import OpenAI
 client = OpenAI()
 
 response = client.chat.completions.create(
-    model="gpt-5.6",
+    model="gpt-6-astra",
     messages=[{"role": "user", "content": "This is a test"}],
     max_completion_tokens=5,
     safety_identifier="user_123456",
@@ -41,7 +41,10 @@ response = client.chat.completions.create(
 
 - Hash usernames/emails before sending as `safety_identifier`; use a session ID for non-logged-in previews.
 - `safety_identifier` is recommended, not required, for products with individual end users.
-- Safety identifiers do not carry over between APIs/sessions — pass the same stable value separately for each Realtime session.
+- Safety identifiers do not carry over between APIs/sessions — pass the same stable value separately in each Images API request and when you create or connect each Realtime session.
+- Images API: include `safety_identifier` on each image generation (`POST /v1/images/generations`) and image edit (`POST /v1/images/edits`) request (JSON property, or form field for multipart edits); keep it to 128 characters or fewer. The Images API `user` parameter is deprecated; a nonempty `safety_identifier` takes precedence if both are sent.
+- CSAM guidance: OpenAI worked with child safety experts, including NCMEC and Thorn, to offer developers practical guidance for protecting children (official page `/api/docs/guides/csam-guidance`).
+- If the application serves minors, also follow [Under-18 guidance](./under-18-guidance.md).
 - Report security/safety issues via the [Coordinated Vulnerability Disclosure Program](https://openai.com/security/disclosure/).
 
 ## Related
@@ -49,3 +52,5 @@ response = client.chat.completions.create(
 - [Moderation](./moderation.md)
 - [Safety checks](./safety-checks.md)
 - [Deployment checklist](./deployment-checklist.md)
+- [Under-18 guidance](./under-18-guidance.md)
+- [Safety enforcement notifications](./safety-enforcement.md)

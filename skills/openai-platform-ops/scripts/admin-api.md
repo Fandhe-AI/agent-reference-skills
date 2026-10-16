@@ -1,6 +1,6 @@
 # admin-api
 
-`curl` calls and SDK snippets for the Administration API (organization/project management, spend limits, service accounts, usage, and costs). All calls require an Admin API key. See `openai-api-core`'s `scripts/auth.md` for how to export `OPENAI_API_KEY`; `OPENAI_ADMIN_KEY` is set separately below.
+`curl` calls and SDK snippets for the Administration API (organization/project management, spend limits, service accounts, usage, costs, and Private Safety Processing external storage). All calls require an Admin API key. See `openai-api-core`'s `scripts/auth.md` for how to export `OPENAI_API_KEY`; `OPENAI_ADMIN_KEY` is set separately below.
 
 ## Set the Admin API key
 
@@ -79,6 +79,62 @@ curl -G "https://api.openai.com/v1/organization/costs" \
   --data-urlencode "start_time=1730419200"
 ```
 
+## Regional base URLs for Private Safety Processing
+
+Private Safety Processing (PSP) commands use `OPENAI_API_BASE`, set to the endpoint confirmed for your project: `https://api.openai.com` for global, `https://us.api.openai.com` for US, or `https://eu.api.openai.com` for Europe. Load the organization Admin API key securely into `OPENAI_ADMIN_KEY` and run the remaining PSP commands in the same shell session.
+
+```bash
+OPENAI_API_BASE='<OPENAI_API_BASE>'
+OPENAI_ORG_ID='<OPENAI_ORG_ID>'
+OPENAI_STORAGE_URL="$OPENAI_API_BASE/v1/organization/external_storage"
+```
+
+## Register external storage (PSP, AWS S3)
+
+Registers a customer-managed bucket for a project. Replace every `CUSTOMER_...` placeholder with your IDs and the resources you created. The response contains an `id` beginning with `extstorage_` and `status: "pending"`; keep the ID for validation. Registration alone does not change the project's retention policy.
+
+```bash
+curl --fail-with-body -sS -X POST "$OPENAI_STORAGE_URL" \
+  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+  -H "OpenAI-Organization: $OPENAI_ORG_ID" \
+  -H 'Content-Type: application/json' \
+  --data-binary '{
+    "project_id": "CUSTOMER_PROJECT_ID",
+    "provider": {
+      "type": "aws",
+      "bucket": "CUSTOMER_BUCKET_ARN",
+      "role_arn": "CUSTOMER_ROLE_ARN"
+    }
+  }'
+```
+
+The Azure (`"type": "azure"`) and GCP (`"type": "gcp"`) payloads use different `provider` fields. See the Private Safety Processing guide for those request bodies.
+
+## Validate external storage (PSP)
+
+Replace `EXTERNAL_STORAGE_ID` with the ID returned by registration. A successful response has `status: "validated"`.
+
+```bash
+EXTERNAL_STORAGE_ID='<EXTERNAL_STORAGE_ID>'
+curl --fail-with-body -sS -X POST \
+  "$OPENAI_STORAGE_URL/$EXTERNAL_STORAGE_ID/validate" \
+  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+  -H "OpenAI-Organization: $OPENAI_ORG_ID"
+```
+
+> **Warning**: Validation activates customer-managed retention (Zero Data Retention with Private Safety Processing) for that project. Disconnecting the last storage connection later resets the policy to the organization default, and models that require ZDR with PSP may become unavailable.
+
+## Retrieve a saved external storage registration (PSP)
+
+```bash
+curl --fail-with-body -sS \
+  "$OPENAI_STORAGE_URL/$EXTERNAL_STORAGE_ID" \
+  -H "Authorization: Bearer $OPENAI_ADMIN_KEY" \
+  -H "OpenAI-Organization: $OPENAI_ORG_ID"
+```
+
+"Validated" records a successful check, not continuous storage health.
+
 ## Endpoints with SDK-only examples in official docs
 
 The following Administration API operations have no published `curl` example on developers.openai.com — only Python/JS/Go/Java/Ruby SDK snippets. Use the SDK, or construct the call from the [Administration API reference](https://developers.openai.com/api/reference/administration/overview) once official request bodies are published.
@@ -118,5 +174,6 @@ print(model_permissions.mode)
 ## Notes
 
 - Regular API key setup (`OPENAI_API_KEY`) and SDK installation are covered by the `openai-api-core` skill's `scripts/` — not duplicated here.
-- The Administration API's per-endpoint reference pages under `developers.openai.com/api/reference/resources/**` are auto-generated and currently carry no rendered `curl` examples; the commands above come from the Admin APIs guide, the Terraform service-accounts guide, and the OpenAI Cookbook usage-API notebook.
+- The Administration API's per-endpoint reference pages under `developers.openai.com/api/reference/resources/**` are auto-generated and currently carry no rendered `curl` examples; the commands above come from the Admin APIs guide, the Terraform service-accounts guide, the Private Safety Processing guide, and the OpenAI Cookbook usage-API notebook.
+- Safety alert and safety case lookups use a restricted API key, not an Admin key — see `safety.md`.
 - Not covered in this file because no official `curl` or complete SDK request example could be located: list/create/delete users, list/create/archive projects, list/delete project API keys, list/create/delete service accounts (service-account creation is documented only via the Terraform provider — see `terraform.md`). Consult the [Administration API reference](https://developers.openai.com/api/reference/administration/overview) directly for these.

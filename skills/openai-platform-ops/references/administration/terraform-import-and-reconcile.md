@@ -22,6 +22,24 @@ terraform apply tfplan
 terraform plan   # should report no changes
 ```
 
+### Read resources without adopting them
+
+Use data sources when Terraform needs current information but another system owns the resource. The provider includes data sources for projects, groups, roles, users, role assignments, rate limits, model permissions, hosted-tool permissions, spend alerts, data retention, and certificates.
+
+```terraform
+data "openai_project" "existing" {
+  project_id = var.project_id
+}
+
+data "openai_project_groups" "existing" {
+  project_id = data.openai_project.existing.project_id
+}
+
+output "project_groups" {
+  value = data.openai_project_groups.existing.groups
+}
+```
+
 ## Options / Props
 
 Common import ID formats:
