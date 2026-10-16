@@ -143,7 +143,7 @@ Body: `events: array of` one of:
 | `user.custom_tool_result` | `custom_tool_use_id`, `content?`, `is_error?`, `session_thread_id?` | Result of a client-executed `custom` tool |
 | `user.tool_result` | `tool_use_id`, `content?`, `is_error?`, `session_thread_id?` | Result of a sandbox-routed built-in tool; **self_hosted environments only** |
 | `user.define_outcome` | `description`, `rubric:{type:"file",file_id}\|{type:"text",content}` (max 262144 chars), `max_iterations?` (default 3, max 20) | Defines a goal the agent iterates toward with grading; agent begins work immediately |
-| `system.message` | `content: SystemContentBlock[]` (text-only) | Privileged context appended as a `role:"system"` turn; must be the final event in the request, immediately following the `user.message`/`user.tool_result`/`user.custom_tool_result` it accompanies; model-dependent support |
+| `system.message` | `content: SystemContentBlock[]` (text-only) | Privileged context appended as a `role:"system"` turn; at most one per request; must be the final event in the request, immediately following the `user.message`/`user.tool_result`/`user.custom_tool_result` it accompanies; model-dependent support |
 
 `tool_use_id`/`custom_tool_use_id` values come from the most recent `session.status_idle` event's `stop_reason.event_ids` (when `stop_reason.type == "requires_action"`).
 

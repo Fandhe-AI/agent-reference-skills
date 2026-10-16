@@ -63,9 +63,8 @@ updated_agent = client.beta.agents.update(
 
 - `version` is optional, must be ≥1 when supplied. Supplying it returns 409 on mismatch (optimistic concurrency); omitting it applies unconditionally (last write wins).
 - Omitted fields are preserved; only include fields you want to change.
-- Scalar fields (`model`, `system`, `name`, `description`) are replaced. Supplying `model` without `inference_geo` clears the agent's inference geo pin (other `model` fields are replaced along with the object). `system`/`description` can be cleared with `null`; `model`/`name` cannot.
-- Within `model`, omitting `effort` when the `id` is unchanged leaves the stored effort unchanged; changing `id` resets an omitted `effort` to the new model's default.
-- Array fields (`tools`, `mcp_servers`, `skills`) are fully replaced; pass `null` or `[]` to clear.
+- Scalar fields (`model`, `system`, `name`, `description`) are replaced. `system`/`description` can be cleared with `null`; `model`/`name` cannot.
+- Within a `model` object you supply, `effort` is the sole exception: if `id` is unchanged, omitting `effort` leaves the stored effort unchanged; changing `id` resets an omitted `effort` to the new model's default. Other `model` fields are replaced along with the object: supplying `model` without `inference_geo` clears the agent's inference geo pin.- Array fields (`tools`, `mcp_servers`, `skills`) are fully replaced; pass `null` or `[]` to clear.
 - `multiagent` is merged into the stored block level by level when the update keeps the `multiagent_20261001` type (an omitted setting keeps its stored value; a sent `predefined_agents` list replaces the stored list; inside the block `null` resets a setting to its default, so `workflows: null` turns dynamic workflows on). Any other update that sends `multiagent` (for example one using the `coordinator` type) replaces the stored block as a whole, and omitted settings take their defaults. Pass `"multiagent": null` to clear the whole block.
 - `metadata` is merged at the key level; set a key to `null` to delete it.
 - No-op updates create no new version.

@@ -204,7 +204,7 @@ The `coordinator` type lets an agent delegate to subagents you list and consult 
 ```python
 coordinator = client.beta.agents.create(
     name="Engineering Lead",
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     system="You coordinate engineering work. Delegate code review to the reviewer agent and test writing to the test agent.",
     tools=[{"type": "agent_toolset_20260401"}],
     multiagent={

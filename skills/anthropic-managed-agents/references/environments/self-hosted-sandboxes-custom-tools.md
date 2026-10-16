@@ -62,6 +62,7 @@ Declaration limits for wrapped MCP tools (Managed Agents API):
 - MCP tool errors, and MCP content with no tool result equivalent (audio blocks, resource links), surface as error tool results. Set a timeout on the MCP client (the Python example uses `read_timeout_seconds`).
 - Wrap only servers you operate or trust: names, descriptions, and results enter the model's context and can influence other tools, including `bash` on the worker host.
 - Permission policies do not apply to wrapped tools; the worker executes every call, so put any approval step in your own tool code.
+- The 256 limit is counted differently across sources: the API reference says "256 tools across all toolsets", while this guide says 256 entries in the `tools` array with the built-in toolset counting as one entry. Not settled by the sources; near the limit, stay within 256 under the stricter reading (total tools after expansion). See `../endpoints/agents.md`.
 - Status: beta (`managed-agents-2026-04-01`).
 
 ## Related

@@ -121,6 +121,8 @@ client.beta.sessions.events.send(
 )
 ```
 
+Note: the example above sends `system.message` on its own, as in the guide. The API reference (`POST /v1/sessions/{id}/events`) states "At most one per request: it must be the final event and immediately follow the `user.message`, `user.tool_result`, or `user.custom_tool_result` it accompanies". If unsure, send it in the same request right after the `user.message`; see `../endpoints/sessions.md`.
+
 ### Supported models
 
 `system.message` is supported by Claude Fable 5.1, Claude Mythos 5.1, Claude Fable 5, Claude Mythos 5, Claude Opus 5.5, Claude Opus 5, Claude Opus 4.8, Claude Sonnet 5.5, and Claude Haiku 5.5. If the agent's primary model does not support mid-conversation system injection, the event is rejected with a `model_does_not_support_mid_conversation_system` validation error. Subagent models are not checked, because `system.message` lands on the primary thread only.

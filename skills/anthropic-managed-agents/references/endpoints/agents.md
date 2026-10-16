@@ -69,7 +69,7 @@ curl https://api.anthropic.com/v1/agents \
 | `id` | `BetaManagedAgentsModel` | The model that powers the agent. |
 | `effort` | `optional "low" \| "medium" \| "high" \| "xhigh" \| "max" \| null` | Reasoning effort. `xhigh`: not all models accept this level. |
 | `speed` | `optional "standard" \| "fast" \| null` | Inference speed mode; defaults to `standard`. `fast` is faster output at premium pricing; not all models support it (invalid combinations are rejected at create time). |
-| `inference_geo` | `optional string \| null` | Geographic region for model inference; when unset, falls through to the workspace's `default_inference_geo`. On update, `model` is whole-object replacement, so omitting `inference_geo` clears it. |
+| `inference_geo` | `optional string \| null` | Geographic region for model inference; when unset, falls through to the workspace's `default_inference_geo`. On update, `model` is whole-object replacement, so omitting `inference_geo` clears it (`effort` is the sole exception on agent update; see Update semantics in `../getting-started/agent-setup.md`). |
 
 ### `multiagent` variants (`BetaManagedAgentsMultiagentParams`)
 
@@ -115,6 +115,7 @@ List endpoints wrap this in `{data: array<Agent>, next_page: optional string}`.
 - `multiagent` depth is limited to 1: an agent cannot reference another agent that itself has `multiagent` set.
 - Custom tool names cannot use the reserved `mcp__` or `ant__` prefixes (or match a built-in tool such as `bash`); an update to an agent that already has such a tool fails with 400 until `tools` is sent without that name.
 - Update endpoint uses POST (not PATCH); omitted fields are preserved, `null`/empty values clear clearable fields, `name` and `model` cannot be cleared.
+- The 256 limit is counted differently across sources: this API reference says "256 tools across all toolsets", while the self-hosted custom tools guide says 256 entries in the `tools` array with the built-in toolset counting as one entry. Not settled by the sources; near the limit, stay within 256 under the stricter reading (total tools after expansion). See `../environments/self-hosted-sandboxes-custom-tools.md`.
 - `version` on Update enables optimistic concurrency control (obtain from a prior create/retrieve response).
 
 ## Related
