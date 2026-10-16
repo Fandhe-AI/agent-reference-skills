@@ -33,3 +33,4 @@ vi.when(db.findById, { onUnmatched: 'throw' })
 - Behaviors match first-in-first-out (register specific matchers before broad ones); actions on one behavior are consumed last-in-first-out
 - Unmatched calls fall back to the spy's original implementation (or `undefined`) unless `onUnmatched` is set
 - `expect(w).toHaveBeenExhausted()` asserts every behavior was used; `using w = vi.when(...)` restores the spy at block exit
+- Source: https://vitest.dev/guide/recipes/conditional-mocking (Vitest v5.0.5)

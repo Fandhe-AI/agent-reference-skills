@@ -22,3 +22,4 @@ test('counter button increments the count', async () => {
 - `expect.element` retries until the assertion passes, even if the element re-rendered in between
 - `vitest-browser-react` is a community package for Browser Mode; official-style packages also exist for Vue and Svelte (`vitest-browser-vue`, `vitest-browser-svelte`)
 - Distinct from `@playwright/test` (see the playwright skill): this runs component tests under Vitest's Browser Mode, not Playwright Test's runner
+- Source: https://vitest.dev/guide/browser/component-testing (Vitest v5.0.5)

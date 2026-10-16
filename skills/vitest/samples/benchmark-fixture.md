@@ -30,3 +30,4 @@ vitest bench
 - `bench(...)` only registers; call `.run()` for a single benchmark or pass several to `bench.compare()`
 - The fixture is only available in files matching `benchmark.include` (default `**/*.{bench,benchmark}.?(c|m)[jt]s?(x)`); plain `vitest` ignores them unless `benchmark.enabled: true`
 - Options go last in `bench.compare(..., { iterations, time })`, or per benchmark as the second argument of `bench(name, options, fn)`
+- Source: https://vitest.dev/guide/benchmarking (Vitest v5.0.5)
