@@ -11,6 +11,9 @@ for input in inputs {
     inputBuilder.yield(input)
 }
 let remaining = try converter.flush()
+for input in remaining {
+    inputBuilder.yield(input)
+}
 ```
 
 ## Options / Props
