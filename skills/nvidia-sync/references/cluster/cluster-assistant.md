@@ -21,47 +21,6 @@ Step-by-step flow:
 9. Inter-device SSH. Sync creates a key pair and populates your default SSH configuration with aliases for each node so that you can `ssh <name>` between devices. There is a five-minute limit for any individual machine, after which it times out; retry if so. Select Next when complete.
 10. Success. Copy the network information for future use (Copy in Step One), then select See Example Workloads for NVIDIA playbooks.
 
-### Architecture Overview
-
-ConnectX-7 on DGX Spark and GB10 systems uses two PCIe 5.0 x4 links instead of a single PCIe 5.0 x8 link to deliver 200 Gbps per QSFP port. Each QSFP port appears as a pair of Linux network interfaces, requiring configuration across two subnets.
-
-### Supported Device Configurations
-
-Cluster Assistant supports two to a maximum of four DGX Spark devices. Devices must be updated to the current software version (check via the DGX Dashboard).
-
-| Topology | Description |
-| --- | --- |
-| Two-node direct connection | One QSFP cable, no switch required |
-| Three-node ring | Three QSFP cables forming a closed loop; each node connects to two neighbors |
-| Switch-based (2-4 nodes) | Each device connects to a managed QSFP switch via a single cable. Four devices require a switch |
-
-- Direct cabling supports 2 or 3 devices only, never 4. A switch supports 2, 3, or 4 devices.
-- Do not mix connection types: connect all devices directly or all through a switch.
-- Use one cable per link (direct or switch). Two cables between the same pair add no performance.
-- Cabling: Two Sparks = 1 cable direct, or 2 cables through a switch. Three Sparks = 3-cable ring, or 3 cables through a switch. Four Sparks = 4 cables through a switch.
-
-### Cable Requirements
-
-Supported cables are QSFP112 DAC, 400 GbE, Ethernet-mode-only cables:
-
-- Amphenol NJAAKK-N911
-- Luxshare LMTQF022-SD-R
-
-### Limitations
-
-- Supports only DGX Spark and GB10 devices; other devices are blocked from clustering.
-- Supports up to four devices. Configure more than four devices, or any topology outside the supported set (for example an eight-device switch topology), manually.
-- Sets up only inter-device SSH for process communication. Set up Slurm or Kubernetes yourself.
-- Does not set up workloads such as inference or fine-tuning; use NVIDIA playbooks (NCCL, vLLM, fine-tuning with PyTorch).
-
-### Delete the cluster
-
-```text
-Settings > Clusters tab > select the cluster > overflow menu (⋯) > Delete
-```
-
-Deleting removes the node-to-node SSH configuration and the cluster relationship in NVIDIA Sync. To change the topology (for example to add another node), delete the cluster and create it again.
-
 ## Options / Props
 
 | Name | Type | Description |
@@ -75,6 +34,17 @@ Deleting removes the node-to-node SSH configuration and the cluster relationship
 
 ## Notes
 
+- Supported configurations: two to a maximum of four DGX Spark devices, updated to the current software version (check via the DGX Dashboard).
+  - Two-node direct connection: one QSFP cable, no switch required.
+  - Three-node ring: three QSFP cables forming a closed loop; each node connects to two neighbors.
+  - Switch-based (2-4 nodes): each device connects to a managed QSFP switch via a single cable. Four devices require a switch.
+  - Direct cabling supports 2 or 3 devices only, never 4. A switch supports 2, 3, or 4 devices.
+  - Do not mix connection types: connect all devices directly or all through a switch.
+  - Use one cable per link (direct or switch). Two cables between the same pair add no performance.
+  - Cabling: Two Sparks = 1 cable direct, or 2 cables through a switch. Three Sparks = 3-cable ring, or 3 cables through a switch. Four Sparks = 4 cables through a switch.
+- Supported cables: QSFP112 DAC, 400 GbE, Ethernet-mode-only (Amphenol NJAAKK-N911, Luxshare LMTQF022-SD-R).
+- Limitations: supports only DGX Spark and GB10 devices (others are blocked from clustering); supports up to four devices, so configure more than four or any unsupported topology (for example an eight-device switch topology) manually; sets up only inter-device SSH, so set up Slurm or Kubernetes yourself; does not set up workloads such as inference or fine-tuning (use NVIDIA playbooks: NCCL, vLLM, fine-tuning with PyTorch).
+- Delete the cluster: Settings > Clusters tab > select the cluster > overflow menu (⋯) > Delete. This removes the node-to-node SSH configuration and the cluster relationship in NVIDIA Sync. To change the topology (for example to add another node), delete the cluster and create it again.
 - Cluster Assistant requires devices to run **April 2026 OTA (system software) or later**. If the check fails, update the device (easiest via the DGX Dashboard; manual updates follow the DGX Spark User Guide).
 - Prerequisites: complete initial setup on each DGX Spark, have SSH access and `sudo` privileges with a username and password, add all devices to NVIDIA Sync, connect QSFP cabling for the intended topology, and ensure the Sync computer shares the same LAN.
 - Troubleshooting, SSH check: verify all devices are powered on, connected to your network, the Sync host is on the same network, and the Sync host can SSH directly to each device.
@@ -87,7 +57,7 @@ Deleting removes the node-to-node SSH configuration and the cluster relationship
 - Release 0.100.18: fixed a false version-check error on devices running the July 2026 update or later.
 - Release 0.117.3-9: SSH aliases are also created for the ConnectX-7 sub-interface IP addresses; a UUID is added to the generated netplan so tombstone records no longer block repeated applies.
 - Release 0.100.19-18: the rename step includes a Disconnect action; the Speed field is labeled Link Speed.
-- The ConnectX-7 architecture detail (Architecture Overview above) no longer appears on the current Sync page, which links to the DGX Spark User Guide "ConnectX-7 Networking" (see the dgx-spark skill).
+- The ConnectX-7 architecture detail (former "Architecture Overview" section: PCIe topology, per-QSFP-port network interfaces and subnets) was removed from this page because it no longer appears on the current Sync page, which links to the DGX Spark User Guide "ConnectX-7 Networking" (see the dgx-spark skill).
 
 ## Related
 

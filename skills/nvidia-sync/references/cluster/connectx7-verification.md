@@ -49,6 +49,7 @@ ip -br addr
 - Not all nodes necessarily connect directly to every other node, depending on topology; use `ping -c 3 <peer-cluster-ip>` to test connectivity to expected peers only.
 - Removing the Netplan file removes the network configuration but does not necessarily remove SSH aliases, SSH keys, or other node-to-node SSH settings; use the Delete Cluster action for those.
 - Be careful when removing remotely: management access can continue over Wi-Fi, Ethernet, or Tailscale rather than the ConnectX-7 network.
+- To restore the configuration, move `99-nvidia-sync-cluster.yaml` back from `/root/netplan-disabled/` to `/etc/netplan/` and re-run `sudo netplan generate` and `sudo netplan try` (not described on the official page; inverse of the removal steps).
 - Release 0.117.3-9: the generated netplan now includes a UUID.
 
 ## Related

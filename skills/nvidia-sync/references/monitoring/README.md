@@ -2,4 +2,4 @@
 
 | Name | Description | Path |
 | --- | --- | --- |
-| Resource Monitor | Live CPU, sRAM, vRAM, and GPU utilization for a device or cluster. | [resource-monitor.md](./resource-monitor.md) |
+| Resource Monitor | NVIDIA Sync window that shows live utilization for CPU, sRAM, vRAM, and GPU on a single device or a cluster. | [resource-monitor.md](./resource-monitor.md) |

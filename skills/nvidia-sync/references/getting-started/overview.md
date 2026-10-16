@@ -30,6 +30,7 @@ sudo apt install nvidia-sync
 - First launch (onboarding) covers five stages: EULA acceptance, selecting the local IDEs you want NVIDIA Sync to launch and manage, adding a remote Linux device, establishing connection, and launching an application.
 - Tailscale integration creates a secure tunnel to a device on your private network, letting you access DGX devices for compute and inference without being on that network.
 - Cluster support (Cluster Assistant) configures multiple DGX Spark devices with ConnectX-7 interconnects for multi-node libraries like NCCL and MPI.
+- Release 0.100.18: the update may prompt you to allow access to "NVIDIA Sync Safe Storage"; this is expected, select Always Allow. NVIDIA Sync starts under Xwayland on Ubuntu 26.04 (corrects system tray positioning).
 
 ## Related
 
