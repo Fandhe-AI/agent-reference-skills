@@ -36,4 +36,4 @@ export default function Page() {
 
 - [instant](./instant.md)
 - [Route Segment Config overview](../route-segment-config.md)
-- [Instant navigation guide](https://nextjs.org/docs/app/guides/instant-navigation)
+- [Instant navigation guide](../../../guides/instant-navigation.md)

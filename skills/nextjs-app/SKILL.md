@@ -2,8 +2,8 @@
 name: nextjs-app
 description: >
   Next.js App Router 専用 API リファレンス（Pages Router / getStaticProps 等は非対応）。
-  Server Components, Server Actions, layout/page/loading/error 規約,
-  dynamic / parallel / intercepting routes, generateMetadata,
+  Server Components, Server Actions, layout/page/loading/error ファイル規約,
+  dynamic / parallel / intercepting routes, Metadata API (generateMetadata),
   Cache Components, use cache, Partial Prefetching, revalidatePath/revalidateTag/updateTag,
   catchError, next/root-params, ensureStatic, next/image・next/font・next/link,
   cookies/headers, useRouter, next.config.js, proxy（旧 middleware）。

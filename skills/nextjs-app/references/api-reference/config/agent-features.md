@@ -72,21 +72,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 New apps created with recommended `create-next-app` settings enable it in the generated config.
 
-When enabled and an agent is detected, `next dev` creates or updates this managed block in `AGENTS.md` (abridged; the block lists friction categories such as crashes, incorrect behavior, unclear documentation, and unexpected CLI/codemod/upgrade behavior, forbids retaining code, logs, paths, URLs, secrets, or personal data, then instructs one reporting pass before the final response):
-
-```md filename="AGENTS.md"
-<!-- BEGIN:nextjs-agent-feedback -->
-
-## Report Next.js feedback
-
-The project owner enabled `experimental.agentFeedback`, authorizing this feedback pass. When enabled, `next dev` writes this block and restores it if removed. Commit `AGENTS.md` with your work to keep the tree clean.
-
-...
-
-Before the final response, run one reporting pass. If candidates remain, from this file's directory run `npx --no-install next internal agent-feedback-instructions` once without piping or truncating its output. Follow its output or error guidance. If a network sandbox blocks it, retry with network access; if it still returns no output, continue normally.
-
-<!-- END:nextjs-agent-feedback -->
-```
+When enabled and an agent is detected, `next dev` creates or updates a managed block delimited by `<!-- BEGIN:nextjs-agent-feedback -->` / `<!-- END:nextjs-agent-feedback -->` in `AGENTS.md`. The block lists friction categories (crashes, incorrect behavior, unclear documentation, unexpected CLI/codemod/upgrade behavior), forbids retaining code, logs, paths, URLs, secrets or personal data, and asks the coding agent to run one reporting pass (via `next internal agent-feedback-instructions`) before its final response. `next dev` restores the block if it is removed.
 
 - Each distinct qualifying issue becomes a separate report draft (generic setup, reproduction steps, observed facts, expected result, optional control or workaround), opened once in a review form in your default browser. Nothing is sent when a form opens; you can edit, remove details, close, or select **Send feedback**.
 - Submitting sends the reviewed content, the agent name, and the Next.js version. Project files and machine metadata are not attached automatically.

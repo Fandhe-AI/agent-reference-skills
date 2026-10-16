@@ -55,5 +55,5 @@ export const ensureStatic = 'navigation' // allowed under a parent 'prefetch'
 
 - [instant](./instant.md)
 - [prefetch](./prefetch.md)
-- [Keeping pages static](https://nextjs.org/docs/app/guides/keeping-pages-static)
-- [Optimizing prefetching](https://nextjs.org/docs/app/guides/optimizing-prefetching)
+- [Keeping pages static](../../../guides/keeping-pages-static.md)
+- [Optimizing prefetching](../../../guides/optimizing-prefetching.md)
