@@ -56,6 +56,7 @@ When working on UI components, always use the `your-project-sb-mcp` MCP tools to
 - The testing toolset needs Storybook Test (`@storybook/addon-vitest`) set up.
 - If a composed Storybook has manifests, the MCP server includes their content automatically.
 - Any MCP-capable agent works (Claude Code, OpenAI Codex, Cursor, Google Gemini CLI, VS Code Copilot, etc.).
+- Source: https://storybook.js.org/docs/ai/mcp/overview (Storybook v10.6.2).
 
 ## Related
 

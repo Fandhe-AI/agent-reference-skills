@@ -33,6 +33,7 @@ export function babelDefault(config: TransformOptions) {
 - Recommended for addon authors (see addons "Writing presets" guide) so the end user's `babel` setup can override it
 - To adjust Storybook's Babel setup directly rather than via an addon, use `babel` instead
 - The options provided by Babel are only applicable if the `@storybook/addon-webpack5-compiler-babel` addon is enabled
+- Source: https://storybook.js.org/docs/api/main-config/main-config-babel-default (Storybook v10.6.2).
 
 ## Related
 

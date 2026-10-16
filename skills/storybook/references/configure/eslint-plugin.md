@@ -102,6 +102,7 @@ Rules (all prefixed `storybook/`):
 - The plugin does not support MDX files.
 - oxlint usage is not described in the v10.6.2 docs source for this page; nothing is stated here about it.
 - Plugin rule docs live in the Storybook repo under `code/lib/eslint-plugin/docs/rules/`.
+- Source: https://storybook.js.org/docs/configure/integration/eslint-plugin (Storybook v10.6.2).
 
 ## Related
 

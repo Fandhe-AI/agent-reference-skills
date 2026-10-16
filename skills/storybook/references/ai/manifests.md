@@ -56,6 +56,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 - The debugger shows both manifests plus errors/warnings (filterable). It reads prop tables from React docgen data only, so Angular and Vue components are listed without prop types.
 - By default all stories and independent docs pages carry the `manifest` tag; curate by removing it.
 - Docs manifest entries include `id`, `name`, `path`, `title`, and `content` (raw MDX source).
+- Source: https://storybook.js.org/docs/ai/manifests (Storybook v10.6.2).
 
 ## Related
 

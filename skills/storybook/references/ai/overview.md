@@ -32,6 +32,7 @@ features: {
 - After adding the MCP server, update `AGENTS.md` (or `CLAUDE.md`) so the agent uses the `docs-list`, `docs-show`, `get-storybook-story-instructions`, and `test-run` tools instead of guessing component props.
 - Verify with a prompt like "List all documented components"; the agent should call `docs-list`.
 - The MCP server addon (`@storybook/addon-mcp`) is Storybook's own; it is distinct from any other tool's MCP configuration.
+- Source: https://storybook.js.org/docs/ai (Storybook v10.6.2).
 
 ## Related
 

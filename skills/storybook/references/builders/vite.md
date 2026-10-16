@@ -73,7 +73,7 @@ core: {
 
 ### Set configLoader for vite config
 
-Pass the `configLoader` argument to `vite` via builder options. This is equivalent to the `--configLoader` command line argument (added in 10.5.0: "Builder Vite: Support configLoader via builder options - #34080"). See Vite's documentation for valid `configLoader` options.
+Pass the `configLoader` argument to `vite` via builder options. This is equivalent to the `--configLoader` command line argument (added in 10.5.0: "Builder Vite: Support configLoader via builder options - [#34080](https://github.com/storybookjs/storybook/pull/34080)"). See Vite's documentation for valid `configLoader` options.
 
 ```typescript
 core: {

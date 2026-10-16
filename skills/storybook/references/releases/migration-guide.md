@@ -5,7 +5,7 @@ Guide for upgrading from Storybook 9.x to 10, followed by the 10.x minor-version
 ## Signature / Usage
 
 ```bash
-storybook@latest upgrade
+npx storybook@latest upgrade
 ```
 
 Run it at the repository root. It finds all Storybook projects, checks that no breaking change applies (otherwise prints instructions), upgrades dependencies, and runs automigrations (check, explain, ask approval, apply). To add Storybook 10 to a new project, use `npm create storybook@latest`.
@@ -265,6 +265,7 @@ export const Default: StoryObj<typeof meta> = {};
 - Migrating from a version prior to 9: first follow the 8.x to 9.1 guide, then return here.
 - Minor-migration sections above come from `MIGRATION.md` at tag v10.6.2, lines 532-986; the "From version 9.x to 10.0.0" detail (from line 987) is not reproduced here.
 - Several items refer to changes planned for Storybook 11 (for example `ariaLabel` becoming mandatory, server-side docgen becoming the default, removal of deprecated components); these are announcements, not current behavior.
+- Source: https://storybook.js.org/docs/releases/migration-guide and https://github.com/storybookjs/storybook/blob/v10.6.2/MIGRATION.md (Storybook v10.6.2).
 
 ## Related
 

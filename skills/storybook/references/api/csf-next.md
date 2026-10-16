@@ -197,7 +197,7 @@ await Primary.run();
 
 ## Notes
 
-- Preview feature; the API may change in future releases. Feedback: RFC discussion storybookjs/storybook#30112.
+- Preview feature; the API may change in future releases. Feedback: RFC discussion [storybookjs/storybook#30112](https://github.com/storybookjs/storybook/discussions/30112).
 - Source: Storybook v10.6.2 docs (`docs/api/csf/csf-next.mdx`); https://storybook.js.org/docs/api/csf/csf-next
 - CSF Next can be adopted incrementally, but story formats cannot be mixed within the same file. CSF 1, 2, and 3 are not deprecated.
 - Automatic upgrade requires CSF 3; upgrade CSF 2 stories to CSF 3 first.

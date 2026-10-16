@@ -29,6 +29,7 @@ The agent first runs `storybook init`; when it completes, the agent offers to co
 - Experimental/preview: currently only available for projects using the React renderer with the Vite builder. Support for additional renderers and builders will follow.
 - The API may change in future releases.
 - After setup: run the new Storybook, review generated `main` and `preview` config, review stories tagged `ai-generated` (remove the tag once validated), connect the MCP server, and follow the best practices.
+- Source: https://storybook.js.org/docs/ai/setup (Storybook v10.6.2).
 
 ## Related
 

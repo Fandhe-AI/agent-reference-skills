@@ -70,7 +70,7 @@ module.exports = {
 
 ## Notes
 
-- Superseded by the Vitest addon (Vitest browser mode) for React, Preact, Vue, Svelte, and Web Components projects; the docs recommend the Vitest addon for any Vite-powered Storybook framework. Keep the test runner for Webpack / RsPack builders or renderers such as Angular.
+- Superseded by the Vitest addon (Vitest browser mode) for React, Preact, Vue, Svelte, and Web Components projects; the docs recommend the Vitest addon for any Vite-powered Storybook framework. Keep the test runner for Webpack / RsPack builders or renderers such as Angular (the Webpack-based `@storybook/angular`). `@storybook/angular-vite` (10.6 preview) supports the Vitest addon; standalone runs use `storybookAngularVitest` from `@storybook/angular-vite/vitest`.
 - `test-storybook --eject` generates `test-runner-jest.config.js`; `testEnvironmentOptions` can be extended because it uses jest-playwright.
 - Deployed Storybook: use `--url` or the `TARGET_URL` environment variable (default target is local port `6006`).
 - CLI tag flags take precedence over config-file tags. If the same tag appears in `include` and `exclude`, `exclude` wins and `include` is ignored. Tags must be set at component (`meta`) or story level; importing tags across stories is unsupported.
@@ -80,6 +80,7 @@ module.exports = {
 - Coverage: pair with `@storybook/addon-coverage` (Istanbul; `istanbul-lib-instrument` for Webpack, `vite-plugin-istanbul` for Vite). Not supported with `--test` optimized builds unless `disabledAddons` is configured.
 - Troubleshooting: timeouts (`Async callback was not invoked within the 15000 ms timeout`) -> reduce `--maxWorkers` (e.g. 2); Yarn PnP unsupported out of the box (switch `nodeLinker` to `node-modules` or install Playwright directly).
 - CI recipes exist for `deployment_status` events (GitHub Actions) and for building then serving `storybook-static` with concurrently / http-server / wait-on.
+- Source: https://storybook.js.org/docs/writing-tests/integrations/test-runner (Storybook v10.6.2).
 
 ## Related
 

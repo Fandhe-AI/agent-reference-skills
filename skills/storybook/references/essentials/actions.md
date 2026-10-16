@@ -73,8 +73,12 @@ import { action, configureActions } from 'storybook/actions';
 
 | Export | Type | Description |
 |--------|------|-------------|
-| `action` | `(name?: string) => void` | Creates an action that appears in the actions panel when clicked; optional `name` identifies it in the UI |
+| `action` | `(name: string, options?: ActionOptions) => HandlerFunction` | Returns a handler function that logs its call arguments to the Actions panel under `name` |
 | `configureActions` | `(options?: ActionOptions) => void` | Configures global behavior of the actions addon; call in `.storybook/preview.*` or before actions are used |
+
+```js
+args: { onClick: action('on-click') }
+```
 
 `configureActions` options:
 
@@ -99,6 +103,7 @@ configureActions({
 - Use `fn()` (not `argTypesRegex`) when stories have play functions — auto-matched args are not available as spies inside `play`.
 - Actions display both event names and argument values in the panel.
 - Actions log automatically on user interaction or when triggered from a play function.
+- The docs list the type as `(name?: string) => void`, but the v10.6.2 source (code/core/src/actions/runtime/action.ts) returns a `HandlerFunction` (`(...args: any[]) => any`).
 
 ## Related
 

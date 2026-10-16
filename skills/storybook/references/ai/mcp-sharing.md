@@ -27,6 +27,7 @@ export async function handleRequest(request: Request): Promise<Response> {
 - Self-hosting: `@storybook/mcp` is a library that creates a `tmcp`-based MCP server exposing component/docs knowledge from manifests. You manage infrastructure, security, and updates.
 - Prerequisites: Node.js 20+; a manifest source containing `components.json` (required) and `docs.json` (optional).
 - Full API is in the `@storybook/mcp` package README (`code/lib/mcp` in the storybookjs/storybook repo); `serve.ts` there is a Node self-hosting example.
+- Source: https://storybook.js.org/docs/ai/mcp/sharing (Storybook v10.6.2).
 
 ## Related
 

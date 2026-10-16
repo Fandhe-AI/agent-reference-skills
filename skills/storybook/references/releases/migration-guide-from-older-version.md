@@ -71,6 +71,7 @@ Moved to internal paths (work in 9.x, likely removed in 10.0; addon authors may 
 - Storybook 7.x -> 8.x and 6.x -> 8.x have separate older guides on the 8.6 docs (`release-8-6`).
 - If a new requirement blocks you, stay on Storybook 8.x.
 - For Storybook 9.x to 10, see the Storybook 10 guide.
+- Source: https://storybook.js.org/docs/releases/migration-guide-from-older-version (Storybook v10.6.2).
 
 ## Related
 

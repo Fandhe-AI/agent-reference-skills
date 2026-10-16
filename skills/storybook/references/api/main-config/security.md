@@ -47,6 +47,7 @@ const config: StorybookConfig = {
   },
 };
 ```
+- Source: https://storybook.js.org/docs/api/main-config/main-config-security (Storybook v10.6.2).
 
 ## Related
 

@@ -37,6 +37,7 @@ export default config;
 ## Notes
 
 - Preview feature; API may change.
+- Source: https://storybook.js.org/docs/ai/mcp/api (Storybook v10.6.2).
 
 ## Related
 

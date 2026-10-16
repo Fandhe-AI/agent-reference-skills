@@ -58,6 +58,7 @@ When multiple statuses apply to one story, the highest priority wins: new > modi
 
 - Barrel files: named imports are resolved through barrels to the real source file. Supported: `export { Button } from './Button'` and `export * from './Button'`. Not fully supported (falls back to tracking the barrel): `import { Button } from './Button'; export { Button }` and `export * as components from './components'`. Importing from the direct source path (e.g. `@myorg/ui/Button`) gives the most precise tracking.
 - How it works: Storybook parses story files and their imports with oxc, resolves specifiers through the builder's resolve config, and a git diff provider finds changed files. Shortest import distance = modified, greater distance = related, untracked new files = new.
+- Source: https://storybook.js.org/docs/configure/user-interface/change-detection (Storybook v10.6.2).
 
 ## Related
 

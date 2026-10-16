@@ -39,11 +39,12 @@ CI diff (GitHub Actions), replacing the build-and-serve flow:
 
 ## Notes
 
-- Eligibility: supported for React, Preact, Vue, Svelte, and Web Components with the Vite builder (or Next.js via `@storybook/nextjs-vite`). Angular or Webpack / RsPack builders should keep using the test runner.
+- Eligibility: supported for React, Preact, Vue, Svelte, and Web Components with the Vite builder (or Next.js via `@storybook/nextjs-vite`). Renderers such as Angular (the Webpack-based `@storybook/angular`) or Webpack / RsPack builders should keep using the test runner. `@storybook/angular-vite` (10.6 preview, Angular >= 21 / Vite >= 8) supports the Vitest addon, and standalone runs use `storybookAngularVitest` from `@storybook/angular-vite/vitest` (source: get-started/frameworks/angular-vite).
 - Benefits: Vitest instead of Jest, no need to build and run Storybook to test, Vitest browser mode (Playwright), built-in accessibility and coverage (no `@storybook/addon-coverage` instrumentation).
 - Webpack projects without complex configuration can often migrate to Vite first.
 - Jest for unit tests does not block migration; keeping the test runner is acceptable if Vitest brings no benefit.
 - Image snapshot testing options that integrate with the testing widget: the Visual tests addon (cloud) or `storybook-addon-vis` (local).
+- Source: https://storybook.js.org/docs/writing-tests/integrations/vitest-addon/migration-guide (Storybook v10.6.2).
 
 ## Related
 

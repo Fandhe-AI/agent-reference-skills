@@ -40,6 +40,7 @@ export const Basic: Story = {
 - Benefits: more durable UIs (isolate components/pages, mock context, API requests, device features); testing with less effort (built-in Interaction, Accessibility and Visual testing, or import stories into other JS testing tools); documentation (auto-generated from stories); sharing (publish or embed in wikis, Markdown, Figma); CI automation.
 - Write once, reuse everywhere: stories use Component Story Format (CSF), an open standard based on ES6 modules; each story is exported as a JavaScript function so it can be reused with Jest or Vitest and Testing Library, Chromatic, Axe, Playwright and Cypress. No vendor lock-in.
 - The official page shows the same snippet for Angular, HTML, Vue, Svelte, Web Components and other renderers, and a "CSF Next" (experimental) variant using `preview.meta()` / `meta.story()`; only the React CSF 3 variant is shown above.
+- Source: https://storybook.js.org/docs/get-started/why-storybook (Storybook v10.6.2).
 
 ## Related
 

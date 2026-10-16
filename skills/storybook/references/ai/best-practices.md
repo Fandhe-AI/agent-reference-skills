@@ -50,6 +50,7 @@ import { Meta } from '@storybook/addon-docs/blocks';
 - Vue `<script setup>`: attach the docblock to a `defineOptions()` call.
 - Docs content: the docs manifest comes from static analysis of MDX, so values not explicitly in the source (e.g. colors mapped from an imported module) are not included. Put relevant details directly in the MDX.
 - Curation: too little or too much context hurts agent performance. Remove the `manifest` tag (`tags: ['!manifest']`) from stories, component meta, or MDX `Meta` to exclude them.
+- Source: https://storybook.js.org/docs/ai/best-practices (Storybook v10.6.2).
 
 ## Related
 

@@ -1,10 +1,10 @@
 ---
 name: storybook
 description: >
-  Storybook (UI カタログ) リファレンス。CSF Next (CSF Factories), args, argTypes,
-  decorators, play function, autodocs, main.ts / preview.ts,
-  Storybook MCP server, components manifest, Vitest addon, test-runner,
-  アドオン作成, upgrade / migration。
+  Storybook (UI カタログ) リファレンス。story, CSF (Component Story Format), CSF Next (CSF Factories),
+  args, argTypes, decorators, play function, interaction tests, autodocs, main.ts / preview.ts,
+  アドオン (a11y, controls, viewport, themes), Vitest addon, test-runner,
+  Storybook MCP server, components manifest, アドオン作成, upgrade / migration。
 user-invocable: false
 model: sonnet
 ---

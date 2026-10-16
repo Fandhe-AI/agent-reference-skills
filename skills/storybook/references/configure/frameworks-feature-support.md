@@ -42,6 +42,7 @@ Feature groups in the matrix:
 
 - Deprecated / removed: Knobs (deprecated in 6.3, use controls), Storyshots (deprecated in 7.6, removed in 8), `storiesOf` (removed in 8, use CSF), Storysource (removed in 9, use the `codePanel` parameter).
 - Matrix reflects the Storybook v10.6.2 docs source.
+- Source: https://storybook.js.org/docs/configure/integration/frameworks-feature-support (Storybook v10.6.2).
 
 ## Related
 

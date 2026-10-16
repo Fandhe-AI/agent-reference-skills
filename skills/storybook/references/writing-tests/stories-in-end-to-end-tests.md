@@ -29,10 +29,8 @@ import { test, expect } from '@playwright/test';
 
 test('Login Form inputs', async ({ page }) => {
   await page.goto('http://localhost:6006/iframe.html?id=components-login-form--example');
-  const email = await page.inputValue('#email');
-  const password = await page.inputValue('#password');
-  await expect(email).toBe('email@provider.com');
-  await expect(password).toBe('a-random-password');
+  await expect(page.locator('#email')).toHaveValue('email@provider.com');
+  await expect(page.locator('#password')).toHaveValue('a-random-password');
 });
 ```
 
@@ -41,6 +39,8 @@ test('Login Form inputs', async ({ page }) => {
 - Both examples assume a story (`components-login-form--example`) whose play function fills the email and password inputs; the test then asserts the input values.
 - The story is addressed via `/iframe.html?id=<story-id>`. Playwright example targets `http://localhost:6006`.
 - The play function runs after the story renders and sequences interactions.
+- The official snippet reads values with `page.inputValue()` + `toBe`, which does not wait for the play function; web-first `toHaveValue` retries until it completes.
+- Source: https://storybook.js.org/docs/writing-tests/integrations/stories-in-end-to-end-tests (Storybook v10.6.2).
 
 ## Related
 
