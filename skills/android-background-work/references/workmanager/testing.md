@@ -53,7 +53,10 @@ fun testSimpleEchoWorker() {
 | `TestListenableWorkerBuilder<W>(context)` | builder | — | Builds a `ListenableWorker`/`CoroutineWorker`/`RxWorker`/`Worker` instance for unit testing; relies on the worker's own threading logic rather than a supplied executor. Recommended for `CoroutineWorker` since it uses `Dispatchers.Default` rather than the worker's own dispatcher. |
 | `WorkManagerTestInitHelper.initializeTestWorkManager(context, config)` | function | — | Initializes a test-mode `WorkManager` for instrumentation tests. |
 | `SynchronousExecutor` | class | — | Executes work synchronously, avoiding manual thread/lock/latch coordination in tests. |
-| `WorkManagerTestInitHelper.getTestDriver()` | `() -> TestDriver` | — | Returns a `TestDriver` for simulating constraint/delay/period completion. |
+| `WorkManagerTestInitHelper.getTestDriver(context)` | `(Context) -> TestDriver?` | — | Returns a `TestDriver` for simulating constraint/delay/period completion. The no-arg `getTestDriver()` is `@Deprecated`. |
+| `WorkManagerTestInitHelper.ExecutorsMode` | enum | — | `LEGACY_OVERRIDE_WITH_SYNCHRONOUS_EXECUTORS`, `PRESERVE_EXECUTORS`, `USE_TIME_BASED_SCHEDULING`; accepted by the `initializeTestWorkManager` overloads. |
+| `TestListenableWorkerBuilder.build(Class<out ListenableWorker>)` | `(Class) -> W` | — | Since 2.11.0-alpha01. Builds the worker with a worker class different from the one being built, e.g. for a custom `WorkerFactory`. |
+| `TestDriver.stopRunningWorkWithReason(id, reason)` | `(UUID, @StopReason Int) -> Unit` | — | Default method added in 2.11.0-beta01. Stops running work with the given stop reason. |
 | `TestDriver.setInitialDelayMet(workId)` | `(UUID) -> Unit` | — | Marks a request's initial delay as satisfied. |
 | `TestDriver.setAllConstraintsMet(workId)` | `(UUID) -> Unit` | — | Marks a request's constraints as satisfied. |
 | `TestDriver.setPeriodDelayMet(workId)` | `(UUID) -> Unit` | — | Marks a periodic request's interval as elapsed. |

@@ -17,6 +17,7 @@ public class WorkInfo {
     public val periodicityInfo: PeriodicityInfo?
     public val nextScheduleTimeMillis: Long
     public val stopReason: Int // API 31+
+    public val workerClassName: String? // default null; since 2.12.0
 
     public enum class State { ENQUEUED, RUNNING, SUCCEEDED, FAILED, BLOCKED, CANCELLED }
 }
@@ -38,6 +39,7 @@ val outputData = workInfo.outputData
 | `progress` | `Data` | — | Progress data set via `setProgress` / `setProgressAsync`. |
 | `runAttemptCount` | `Int` | — | Number of times the work has been attempted. |
 | `periodicityInfo` | `PeriodicityInfo?` | `null` | Repeat interval and flex duration, for periodic work only. |
+| `workerClassName` | `String?` | `null` | The worker class specified when the work request was enqueued. Added in 2.12.0. |
 | `State.ENQUEUED` | enum value | — | Eligible to run once constraints and any initial delay are met. |
 | `State.RUNNING` | enum value | — | Actively executing. |
 | `State.SUCCEEDED` | enum value | terminal | Completed successfully (one-time work only). |
@@ -50,6 +52,7 @@ val outputData = workInfo.outputData
 
 - For periodic work, only `CANCELLED` is a terminal state — the request cycles between `ENQUEUED` and `RUNNING` indefinitely, rescheduling after every run regardless of result.
 - Observe with `WorkManager.getWorkInfoByIdFlow(id)` / `getWorkInfoByIdLiveData(id)` or `getWorkInfosByTagFlow(tag)` (see [WorkManager](./workmanager.md)).
+- Since 2.12.0, a nonexistent stop reason code of 0 is mapped to `WorkInfo.STOP_REASON_UNKNOWN`.
 - Package: `androidx.work`.
 
 ## Related

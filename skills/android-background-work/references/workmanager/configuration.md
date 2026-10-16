@@ -20,6 +20,13 @@ public class Configuration internal constructor(builder: Builder) {
         public fun setContentUriTriggerWorkersLimit(limit: Int): Builder
         public fun setMinimumLoggingLevel(loggingLevel: Int): Builder
         public fun setDefaultProcessName(processName: String): Builder
+        public fun setRemoteSessionTimeoutMillis(@IntRange(from = 0, to = 1200000) timeoutMillis: Long): Builder
+        @ExperimentalEventsApi
+        public fun setExecutionEventListener(listener: ExecutionEventListener): Builder
+        @ExperimentalEventsApi
+        public fun setScheduleEventListener(listener: ScheduleEventListener): Builder
+        @ExperimentalConfigurationApi
+        public fun setGreedySchedulerEnabled(enabled: Boolean): Builder
         public fun build(): Configuration
     }
 }
@@ -47,6 +54,10 @@ class MyApplication : Application(), Configuration.Provider {
 | `setContentUriTriggerWorkersLimit(limit)` | `(Int) -> Builder` | — | Max number of workers with content URI triggers scheduled at once. |
 | `setMinimumLoggingLevel(loggingLevel)` | `(Int) -> Builder` | `Log.INFO` | Minimum log level, using `android.util.Log` constants. |
 | `setDefaultProcessName(processName)` | `(String) -> Builder` | main process | Designates which process WorkManager should schedule work in, for multi-process apps. |
+| `setRemoteSessionTimeoutMillis(timeoutMillis)` | `(Long) -> Builder` | `RemoteWorkManager.DEFAULT_SESSION_TIMEOUT_MILLIS` | How long a `RemoteWorkManager` binding to the designated process stays active before unbinding; range 0 to 1200000 ms; 0 unbinds immediately after each call. Since 2.11.0. |
+| `setExecutionEventListener(listener)` | `(ExecutionEventListener) -> Builder` | none | `@ExperimentalEventsApi`, since 2.12.0. Listens to work execution events for all workers; callbacks are invoked on a thread bound to `Configuration.taskExecutor`. |
+| `setScheduleEventListener(listener)` | `(ScheduleEventListener) -> Builder` | none | `@ExperimentalEventsApi`, since 2.12.0. Listens to work scheduling events for all workers; callbacks are invoked on a thread bound to `Configuration.taskExecutor`. |
+| `setGreedySchedulerEnabled(enabled)` | `(Boolean) -> Builder` | `true` | `@ExperimentalConfigurationApi`, since 2.12.0. Enabled by default and should only be disabled for experimental purposes. |
 
 ## Notes
 
@@ -54,10 +65,14 @@ class MyApplication : Application(), Configuration.Provider {
 - Before WorkManager 2.1.0, manual initialization used `WorkManager.initialize(context, configuration)` in `Application.onCreate()`.
 - Always retrieve the instance via `WorkManager.getInstance(context)`.
 - `@HiltWorker` / Hilt-based DI on top of `WorkerFactory` is documented in the `android-architecture` skill's `di-hilt` category.
+- Since 2.12.0 the default configuration uses `Dispatchers.Default` instead of a custom thread pool (default executor: `Dispatchers.Default.limitedParallelism(...).asExecutor()`; default `taskExecutor`: `Dispatchers.Default.asExecutor()`).
+- minSdk is API 24 since 2.12.0.
 - Package: `androidx.work`.
 
 ## Related
 
+- [Event listeners](./event-listeners.md)
+- [Work analytics](./work-analytics.md)
 - [WorkerFactory / DelegatingWorkerFactory](./worker-factory.md)
 - [Data / workDataOf / InputMerger](./data.md)
 - [Testing workers](./testing.md)

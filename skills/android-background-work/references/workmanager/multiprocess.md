@@ -69,6 +69,7 @@ RemoteWorkManager.getInstance(context).enqueue(request)
 - Motivation: with a single default-process `WorkManager` instance, apps that run components across multiple processes suffer SQLite lock contention and duplicate job reconciliation. `work-multiprocess` designates one process to own the WorkManager database and routes all other processes' calls to it over AIDL.
 - Each remote worker needs its own `RemoteWorkerService` (or a subclass) declared in the manifest with `android:process` set to the target process, matching `ARGUMENT_CLASS_NAME`/`ARGUMENT_PACKAGE_NAME`.
 - `Configuration.Builder.setDefaultProcessName()` (see [Configuration](./configuration.md)) designates the single process that owns the default `WorkManager` database; `work-multiprocess` builds on top of that to reach it from other processes.
+- Since 2.11.0 the `RemoteWorkManager` session lifetime is configurable via `Configuration.Builder.setRemoteSessionTimeoutMillis` (range 0 to 1200000 ms; default `RemoteWorkManager.DEFAULT_SESSION_TIMEOUT_MILLIS`; 0 unbinds immediately after each call).
 - Gradle: `androidx.work:work-multiprocess:<version>`, in addition to `work-runtime`/`work-runtime-ktx`.
 - Package: `androidx.work.multiprocess`.
 
