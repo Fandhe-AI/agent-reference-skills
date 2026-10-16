@@ -106,6 +106,6 @@ export default defineConfig({
 
 ## Related
 
-- [cli.md](./cli.md)
+- [cli](./cli.md)
 - [@kubb/plugin-mcp](../plugins/plugin-mcp.md)
 - [ai/mcp](../ai/mcp.md)
