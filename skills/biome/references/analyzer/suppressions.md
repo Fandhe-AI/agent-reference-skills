@@ -52,6 +52,20 @@ f == g;  // 抑制されない
 
 複数ネスト可能。各 `start` には対応する `end` が必須。
 
+### プラグイン抑制（Plugin suppressions）
+
+リンタープラグイン（GritQL）の診断を抑制する。全プラグインは `lint/plugin`、特定の 1 つは `lint/plugin/<plugin-name>`（`<plugin-name>` は `.grit` 拡張子を除いたファイル名）。
+
+```javascript
+// biome-ignore lint/plugin/preferObjectSpread: reason
+Object.assign({}, foo);
+
+// biome-ignore lint/plugin: reason
+Object.assign({}, foo);
+```
+
+トップレベル（`biome-ignore-all`）と範囲（`biome-ignore-start` / `biome-ignore-end`）の抑制としても書ける。
+
 ## 詳細度の制御
 
 一般的（`lint:`）から具体的（`lint/group/rule`）まで指定可能。

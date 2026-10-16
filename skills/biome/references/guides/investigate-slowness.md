@@ -46,3 +46,15 @@ cat tracing.json | jq 'select(.span.name == "pull_diagnostics")'
 
 - `format_file` -- 個々のファイルのフォーマット処理時間
 - `open_file_internal` -- ファイルを開く処理の時間
+
+## ルール単位の計測
+
+`biome check` / `biome lint` の `--profile-rules` フラグで、ルールごとの実行時間を報告できる（セマンティックモデル構築などの準備時間は含まない）。
+
+```bash
+biome lint --profile-rules
+```
+
+## Notes
+
+- URL は `/guides/investigate-slowness` のままだが、公式サイドバーでは Recipes 配下に配置されている

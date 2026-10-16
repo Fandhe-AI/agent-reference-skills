@@ -49,3 +49,8 @@ package.json は常に複数行でフォーマットされるようになった�
 ### 10. インポート整理のソート順変更
 
 インポートのソートアルゴリズムが変更された。
+
+## Notes
+
+- 公式の `/guides/upgrade-to-biome-v2` は `/installation/upgrade-to-biome-v2` へ移動した（内容は変更なし）
+- `--config-path` の廃止は公式原文では `biome lsp-proxy` と `biome start` コマンドが対象。2.5.15 の CLI リファレンスには、グローバルフラグとして `--config-path=<PATH>`（`BIOME_CONFIG_PATH`）が残っている

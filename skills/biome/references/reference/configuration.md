@@ -1,73 +1,100 @@
 # Configuration
 
-biome.json / biome.jsonc の全オプション。
+All options of `biome.json` / `biome.jsonc` (following the Biome 2.5.15 schema).
 
-## トップレベルプロパティ
+## Top-level properties
 
-| プロパティ | 説明 |
+| Property | Description |
 |-----------|------|
-| `$schema` | JSON スキーマパス。ローカル: `./node_modules/@biomejs/biome/configuration_schema.json`、オンライン: `https://biomejs.dev/schemas/2.3.11/schema.json` |
-| `extends` | 他の設定ファイルのパス配列。モノレポ: `"//"` でルート設定を参照 |
-| `root` | ルート設定として扱うか（デフォルト: true）。ネスト設定では false |
-| `files` | ファイル処理の対象範囲 |
-| `vcs` | VCS 統合設定 |
-| `formatter` | フォーマッター設定 |
-| `linter` | リンター設定 |
-| `assist` | アシスト設定 |
-| `javascript` | JavaScript/TypeScript 設定 |
-| `css` | CSS 設定 |
-| `json` | JSON 設定 |
-| `graphql` | GraphQL 設定 |
-| `html` | HTML 設定 |
-| `overrides` | ファイルパターン別の上書き設定 |
-| `grit` | GritQL (.grit) ファイルの formatter / linter / assist 設定 |
-| `plugins` | GritQL プラグインパス配列 |
+| `$schema` | JSON schema path. Local: `./node_modules/@biomejs/biome/configuration_schema.json` (always matches the installed version). Online: `https://biomejs.dev/schemas/2.5.15/schema.json` (match the version in use; Biome warns on a mismatch) |
+| `extends` | Array of paths to other configuration files. Monorepo: `"//"` refers to the root configuration |
+| `root` | Whether this is the root configuration (default: true). Set false in nested configurations |
+| `files` | Scope of files to process |
+| `vcs` | VCS integration settings |
+| `formatter` | Formatter settings |
+| `linter` | Linter settings |
+| `assist` | Assist settings |
+| `javascript` | JavaScript/TypeScript settings |
+| `css` | CSS settings |
+| `json` | JSON settings |
+| `graphql` | GraphQL settings |
+| `html` | HTML settings |
+| `overrides` | Per-file-pattern overrides |
+| `grit` | Formatter / linter / assist settings for GritQL (.grit) files |
+| `plugins` | Array of GritQL plugins. Each item is a string path or `{ "path": string, "includes"?: string[] }` |
 
-## files セクション
+### plugins items
 
-| オプション | 説明 |
+| Option | Description |
 |-----------|------|
-| `files.includes` | グロブパターンでファイル指定。`!` で除外、`!!` で完全除外 |
-| `files.ignoreUnknown` | 不明ファイルを無視（デフォルト: false） |
-| `files.maxSize` | 最大ファイルサイズ（デフォルト: 1048576 = 1MB） |
+| `plugins.<ITEM>.path` | The plugin `.grit` file, or a directory containing `biome-manifest.jsonc` |
+| `plugins.<ITEM>.includes` | Globs of files the plugin runs on (`!` negates). If omitted, all linted files; `[]` means no files |
 
-## vcs セクション
+## files section
 
-| オプション | デフォルト | 説明 |
+| Option | Description |
+|-----------|------|
+| `files.includes` | Files to process, as glob patterns. `!` excludes, `!!` force-ignores |
+| `files.ignoreUnknown` | Ignore unknown files (default: false) |
+| `files.maxSize` | Maximum file size (default: 1048576 = 1 MiB) |
+| `files.experimentalScannerIgnores` | Deprecated (since 2.3.0). Array of path components the scanner ignores unconditionally. Use force-ignore (`!!`) in `files.includes` or migrate with `biome migrate` |
+
+## vcs section
+
+| Option | Default | Description |
 |-----------|-----------|------|
-| `vcs.enabled` | false | VCS 統合有効化 |
-| `vcs.clientKind` | — | `"git"` を指定 |
-| `vcs.useIgnoreFile` | false | .gitignore/.ignore を尊重 |
-| `vcs.root` | — | VCS ファイル検索フォルダ |
-| `vcs.defaultBranch` | — | メインブランチ名 |
+| `vcs.enabled` | false | Enable VCS integration |
+| `vcs.clientKind` | - | Set to `"git"` |
+| `vcs.useIgnoreFile` | false | Respect .gitignore/.ignore |
+| `vcs.root` | - | Folder to search for VCS files |
+| `vcs.defaultBranch` | - | Name of the main branch |
 
-## formatter セクション
+## linter / assist sections (preset)
 
-| オプション | デフォルト | 説明 |
+| Option | Description |
+|-----------|------|
+| `linter.enabled` / `linter.includes` | Enable the linter / target files (only narrows `files.includes`) |
+| `linter.domains` | `Record<domain name, "recommended" \| "all" \| "none">`. 15 domains: astro / drizzle / next / playwright / project / qwik / react / reactNative / solid / svelte / tailwind / test / turborepo / types / vue (see `domains.md`) |
+| `linter.rules.recommended` | Deprecated. To be removed in the next major. Use `linter.rules.preset` or `biome migrate` |
+| `linter.rules.preset` | `"recommended"` (default) \| `"all"` (all non-nursery rules) \| `"none"` |
+| `linter.rules.[group]` | `"off" \| "on" \| "info" \| "warn" \| "error" \| { preset?, recommended?, [rule]? }` |
+| `linter.rules.[group].preset` | Group-level preset (overrides `linter.rules.preset`; individual rule settings take highest priority) |
+| `linter.rules.[group].[rule]` | `"off" \| "on" \| "info" \| "warn" \| "error"` or an object `{ level, options?, fix? }` |
+| `assist.enabled` / `assist.includes` | Enable assist / target files |
+| `assist.actions.preset` | `"recommended"` (default) \| `"all"` \| `"none"` |
+| `assist.actions.[group].preset` | Group-level preset. `preset` takes precedence over `assist.actions.[group].recommended` |
+| `assist.actions.[group].[action]` | `"on" \| "off"` or an object `{ level, options }` |
+
+## formatter section
+
+| Option | Default | Description |
 |-----------|-----------|------|
-| `enabled` | true | フォーマッター有効化 |
-| `includes` | — | 対象ファイル（グロブ） |
-| `indentStyle` | tab | インデント方式 |
-| `indentWidth` | 2 | インデント幅 |
-| `lineEnding` | lf | 改行コード |
-| `lineWidth` | 80 | 最大行幅 |
-| `formatWithErrors` | false | 構文エラー時も実行 |
-| `attributePosition` | auto | HTML 属性位置 |
-| `bracketSpacing` | true | 括弧内空白 |
-| `expand` | auto | 配列・オブジェクト展開 |
-| `trailingNewline` | true | ファイル末尾改行 |
-| `useEditorconfig` | false | .editorconfig 参照 |
+| `enabled` | true | Enable the formatter |
+| `includes` | - | Target files (globs) |
+| `indentStyle` | tab | Indentation style |
+| `indentWidth` | 2 | Indentation width |
+| `lineEnding` | lf | Line ending |
+| `lineWidth` | 80 | Maximum line width |
+| `formatWithErrors` | false | Format even with syntax errors |
+| `attributePosition` | auto | HTML attribute position |
+| `bracketSameLine` | false | Put the closing bracket of a multi-line HTML / JSX opening tag at the end of the last attribute line |
+| `bracketSpacing` | true | Spacing inside brackets |
+| `delimiterSpacing` | false | Spacing inside matching delimiters that fit on one line (2.5.0; affected delimiters depend on the language; per-language keys also exist) |
+| `expand` | auto | Array / object expansion |
+| `trailingNewline` | true | Trailing newline at end of file |
+| `useEditorconfig` | false | Read .editorconfig |
 
-## javascript セクション
+## javascript section
 
-### パーサ
-| オプション | デフォルト | 説明 |
+### Parser
+| Option | Default | Description |
 |-----------|-----------|------|
-| `unsafeParameterDecoratorsEnabled` | false | パラメータデコレータ |
-| `jsxEverywhere` | true | .js でも JSX 許可 |
+| `unsafeParameterDecoratorsEnabled` | false | Parameter decorators |
+| `gritMetavariables` | false | Parse Grit metavariables inside JS/TS syntax |
+| `jsxEverywhere` | true | Allow JSX in .js files |
 
-### フォーマッタ
-| オプション | デフォルト |
+### Formatter
+| Option | Default |
 |-----------|-----------|
 | `quoteStyle` | double |
 | `jsxQuoteStyle` | double |
@@ -76,43 +103,55 @@ biome.json / biome.jsonc の全オプション。
 | `semicolons` | always |
 | `arrowParentheses` | always |
 | `bracketSameLine` | false |
+| `delimiterSpacing` | false |
 | `operatorLinebreak` | after |
 
-### その他
+### Other
 - `linter.enabled` / `assist.enabled`
-- `globals`: グローバル変数配列
-- `jsxRuntime`: `"transparent"` / `"reactClassic"`
+- `globals`: array of global variables
+- `jsxRuntime`: `"transparent"` (default) / `"reactClassic"`
+- `resolver.experimentalPnpmCatalogs` (default false; opt-in added in 2.5.0): resolves `catalog:` versions using `catalog` / `catalogs` in `pnpm-workspace.yaml`
+- `experimentalEmbeddedSnippetsEnabled` (default false): parse, format, and lint CSS (`css` / `styled`) and GraphQL (`gql` / `graphql`) embedded in JS/TS template literals (templates with interpolation are not supported)
 
-## css セクション
+## json section
 
-- `css.parser.cssModules`: CSS Modules サポート
-- `css.parser.tailwindDirectives`: Tailwind CSS 構文
-- `css.formatter.*`: CSS 固有フォーマッタ設定
+- `json.parser.allowComments` / `json.parser.allowTrailingCommas`: allow comments / trailing commas in `.json` (if unset, follows the file-type default; `biome.jsonc` always allows comments)
+- `json.formatter.*` (including `delimiterSpacing`) / `json.linter.enabled` / `json.assist.enabled`
 
-## html セクション
+## css section
 
-- `html.experimentalFullSupportEnabled`: Vue/Svelte/Astro 対応
-- `html.parser.interpolation`: `{{ }}` 式サポート
-- `html.formatter.whitespaceSensitivity`: 空白処理方式
+- `css.parser.cssModules`: CSS Modules support (enabled automatically for `.module.css` when unset)
+- `css.parser.tailwindDirectives`: Tailwind CSS syntax
+- `css.parser.allowWrongLineComments` (default false): allow `//` line comments in plain CSS
+- `css.formatter.*` (including `delimiterSpacing`): CSS-specific formatter settings
+- `css.globals`: reserved for a future CSS analyzer; currently has no effect
 
-## grit セクション
+## html section
 
-GritQL (.grit) ファイルに対する設定:
+- `html.experimentalFullSupportEnabled`: Vue/Svelte/Astro support (the formatter must be enabled separately with `html.formatter.enabled`)
+- `html.parser.interpolation`: `{{ }}` expression support
+- `html.parser.vue` (default false, 2.5.0): enables Vue syntax (`v-if` / `v-bind`, etc.) in `.html`; also enables `html.parser.interpolation`
+- `html.formatter.whitespaceSensitivity`: whitespace handling mode
+- `html.formatter.indentScriptAndStyle` (default false): indent `<script>` / `<style>` content by one level
+- `html.formatter.selfCloseVoidElements` (`"never"` (default) / `"always"`): whether void elements get a `/`
 
-| オプション | デフォルト | 説明 |
+## grit section
+
+Settings for GritQL (.grit) files:
+
+| Option | Default | Description |
 |-----------|-----------|------|
-| `grit.formatter.enabled` | false | GritQL ファイルのフォーマット有効化 |
-| `grit.formatter.indentStyle` | tab | インデント方式 |
-| `grit.formatter.indentWidth` | 2 | インデント幅 |
-| `grit.formatter.lineWidth` | 80 | 最大行幅 |
-| `grit.formatter.quoteStyle` | double | クォートスタイル（single / double） |
-| `grit.formatter.trailingNewline` | true | ファイル末尾改行 |
-| `grit.linter.enabled` | true | GritQL ファイルのリント有効化 |
-| `grit.assist.enabled` | true | GritQL ファイルのアシスト有効化 |
+| `grit.formatter.enabled` | false | Enable formatting of GritQL files |
+| `grit.formatter.indentStyle` | tab | Indentation style |
+| `grit.formatter.indentWidth` | 2 | Indentation width |
+| `grit.formatter.lineWidth` | 80 | Maximum line width |
+| `grit.formatter.trailingNewline` | true | Trailing newline at end of file |
+| `grit.linter.enabled` | true | Enable linting of GritQL files |
+| `grit.assist.enabled` | true | Enable assist for GritQL files |
 
-## overrides セクション
+## overrides section
 
-特定ファイルに対する設定上書き:
+Overrides settings for specific files:
 
 ```json
 {
@@ -129,14 +168,20 @@ GritQL (.grit) ファイルに対する設定:
 }
 ```
 
-パターンの順序が重要。最初にマッチしたものが適用。
+Pattern order matters. The first matching pattern is applied.
 
-## グロブパターン
+## Glob patterns
 
-| パターン | 説明 |
+| Pattern | Description |
 |---------|------|
-| `*` | 1 フォルダ内の全ファイル |
-| `**` | 再帰的に全ファイル |
-| `[...]` | 文字クラス |
-| `!パターン` | 除外 |
-| `!!パターン` | 完全除外（スキャナが無視） |
+| `*` | All files in one folder |
+| `**` | All files recursively |
+| `[...]` | Character class |
+| `!pattern` | Exclude |
+| `!!pattern` | Force-ignore (ignored by the scanner) |
+
+## Notes
+
+- The official page was restructured into a hand-written reference in 2026-10 (website #4508). `<ITEM>` is an array element; `[group]` / `[rule]` / `[action]` are name placeholders
+- `grit.formatter.quoteStyle` was removed here because it does not exist in the 2.5.15 schema
+- Settings that differ at documentation HEAD are recorded according to the 2.5.15 schema and the released-version page

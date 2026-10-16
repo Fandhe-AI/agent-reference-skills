@@ -55,3 +55,7 @@ NPM パッケージ側の `package.json` で exports を設定する:
   }
 }
 ```
+
+## Notes
+
+- 公式の `/guides/big-projects` は `/configuration/big-projects` へ移動した（内容は変更なし）

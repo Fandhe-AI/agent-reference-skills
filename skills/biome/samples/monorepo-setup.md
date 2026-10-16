@@ -6,7 +6,7 @@ Root `biome.json` (project root):
 
 ```json
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.11/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.15/schema.json",
   "formatter": { "enabled": true, "indentStyle": "space" },
   "linter": { "enabled": true, "rules": { "recommended": true } }
 }

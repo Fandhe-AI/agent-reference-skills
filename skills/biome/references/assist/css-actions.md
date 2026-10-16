@@ -13,4 +13,4 @@
 ## ソース
 
 ### Biome 独自
-- useSortedProperties は Biome 独自に開発されたアクション
+- useSortedProperties は Biome 独自に開発されたアクション（2.5.15 の assist/css/sources で他ソースからのアクションは無し）

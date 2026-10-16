@@ -17,7 +17,7 @@ VCS 統合はオプション機能であり、明示的に有効化する必要�
 
 ## .gitignore の尊重
 
-`vcs.useIgnoreFile` を有効にすると、`.gitignore` と `.ignore` に記載されたファイルを処理対象から除外する。
+`vcs.useIgnoreFile` を有効にすると、`.gitignore` と `.ignore` に記載されたファイルを処理対象から除外する。Git リポジトリでは Git のローカル除外ファイル `.git/info/exclude` も同様に適用する（2.5.0。linked worktree では共通の Git ディレクトリの `.git/info/exclude` を読む）。
 
 ```json
 {
@@ -66,3 +66,7 @@ biome check --staged
 ```
 
 注意: `--staged` は CI 環境では使用できない。
+
+## Notes
+
+- 公式の `/guides/integrate-in-vcs` は `/configuration/integrate-with-vcs` へ移動した

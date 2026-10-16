@@ -1,89 +1,121 @@
-# JavaScript/TypeScript ルール
+# JavaScript/TypeScript rules
 
-Biome は JS/TS 向けに 300 以上のルールを 8 カテゴリで提供。
+Biome provides 469 rules for JS/TS in 8 groups (as of Biome 2.5.15).
 
-## カテゴリ概要
+## Usage
 
-| カテゴリ | ルール数 | 説明 |
+This page is a rule listing, so there is no function signature. Rules are enabled and configured in `biome.json` as `linter.rules.<group>.<rule>`:
+
+```json
+{
+  "linter": {
+    "rules": {
+      "suspicious": { "noConsole": "warn" },
+      "nursery": { "noFloatingPromises": "error" }
+    }
+  }
+}
+```
+
+## Category overview
+
+| Category | Rules | Description |
 |---------|---------|------|
-| a11y (accessibility) | ~37 | アクセシビリティ問題防止 |
-| complexity | ~45 | 複雑なコード検出・単純化 |
-| correctness | ~79 | 不正確・無用なコード検出 |
-| nursery | ~101 | 開発中の実験的ルール |
-| performance | ~13 | パフォーマンス最適化 |
-| security | ~5 | セキュリティリスク検出 |
-| style | ~82 | コード一貫性の維持 |
-| suspicious | ~107 | 疑わしいパターン検出 |
+| a11y (accessibility) | 37 | Prevents accessibility problems |
+| complexity | 49 | Detects and simplifies complex code |
+| correctness | 67 | Detects incorrect or useless code |
+| nursery | 107 | Experimental rules under development |
+| performance | 14 | Performance optimizations |
+| security | 6 | Detects security risks |
+| style | 87 | Keeps code consistent |
+| suspicious | 102 | Detects suspicious patterns |
 
-## a11y（アクセシビリティ）— 代表的ルール
+## a11y (accessibility) - representative rules
 
-- `noAccessKey` — accesskey 属性の使用禁止
-- `noAriaHiddenOnFocusable` — フォーカス可能要素の aria-hidden 禁止
-- `noAutofocus` — autofocus 属性の使用禁止
-- `useAltText` — img 等に代替テキスト必須
-- `useButtonType` — button に type 属性必須
-- `useHtmlLang` — html 要素に lang 属性必須
-- `useValidAriaRole` — 有効な ARIA ロールを強制
+- `noAccessKey` - disallows the accesskey attribute
+- `noAriaHiddenOnFocusable` - disallows aria-hidden on focusable elements
+- `noAutofocus` - disallows the autofocus attribute
+- `useAltText` - requires alternative text on img etc.
+- `useAnchorContent` - requires content in anchor elements
+- `useButtonType` - requires a type attribute on button
+- `useHtmlLang` - requires a lang attribute on the html element
+- `useValidAriaRole` - enforces valid ARIA roles
 
-## complexity — 代表的ルール
+## complexity - representative rules
 
-- `noBannedTypes` — 禁止された型の使用検出
-- `noExcessiveCognitiveComplexity` — 認知複雑性の制限
-- `noForEach` — forEach の代わりに for...of を推奨
-- `noStaticOnlyClass` — 静的メンバーのみのクラスを検出
-- `noUselessTypeConstraint` — 無用な型制約を検出
-- `useFlatMap` — map + flat の代わりに flatMap を推奨
-- `useSimplifiedLogicExpression` — 論理式の単純化
+- `noBannedTypes` - detects use of banned types
+- `noCommaOperator` - disallows the comma operator
+- `noExcessiveCognitiveComplexity` - limits cognitive complexity
+- `noForEach` - prefers for...of over forEach
+- `noStaticOnlyClass` - detects classes with only static members
+- `noUselessTypeConstraint` - detects useless type constraints
+- `useFlatMap` - prefers flatMap over map + flat
+- `useSimplifiedLogicExpression` - simplifies logical expressions
 
-## correctness — 代表的ルール
+## correctness - representative rules
 
-- `noConstAssign` — const への再代入を禁止
-- `noConstructorReturn` — コンストラクタの return を禁止
-- `noGlobalObjectCalls` — グローバルオブジェクトの呼び出し禁止
-- `noInvalidNewBuiltin` — 無効な new 演算子の使用禁止
-- `noUndeclaredVariables` — 未宣言変数の使用検出
-- `noUnusedImports` — 未使用インポートの検出
-- `noUnusedVariables` — 未使用変数の検出
-- `useExhaustiveDependencies` — useEffect 依存配列の網羅性
-- `useIsNan` — NaN 比較に isNaN() を強制
+- `noConstAssign` - disallows reassigning const
+- `noConstructorReturn` - disallows return in constructors
+- `noGlobalObjectCalls` - disallows calling global objects
+- `noInvalidBuiltinInstantiation` - disallows invalid new / calls of builtins
+- `noUndeclaredVariables` - detects use of undeclared variables
+- `noUnusedImports` - detects unused imports
+- `noUnusedVariables` - detects unused variables
+- `useExhaustiveDependencies` - exhaustive useEffect dependency arrays
+- `useIsNan` - enforces isNaN() for NaN comparisons
 
-## performance — 代表的ルール
+## performance - representative rules
 
-- `noBarrelFile` — バレルファイルの使用禁止
-- `noReExportAll` — `export * from` の禁止
-- `noDelete` — delete 演算子の使用禁止
-- `useTopLevelRegex` — 正規表現のトップレベル定義を推奨
+- `noBarrelFile` - disallows barrel files
+- `noReExportAll` - disallows `export * from`
+- `noDelete` - disallows the delete operator
+- `useTopLevelRegex` - prefers top-level regular expression definitions
 
-## security — 代表的ルール
+## security - representative rules
 
-- `noDangerouslySetInnerHtml` — dangerouslySetInnerHTML の使用禁止
-- `noGlobalEval` — eval() の使用禁止
-- `useAnchorContent` — アンカー要素にコンテンツを必須
+- `noBlankTarget` - detects `target="_blank"` without rel
+- `noDangerouslySetInnerHtml` - disallows dangerouslySetInnerHTML
+- `noGlobalEval` - disallows eval()
+- `noScriptUrl` - disallows `javascript:` URLs
+- `noSecrets` - detects strings that look like secrets
 
-## style — 代表的ルール
+## style - representative rules
 
-- `noCommaOperator` — カンマ演算子の使用禁止
-- `noDefaultExport` — デフォルトエクスポートの禁止
-- `noEnum` — enum の使用禁止
-- `noNonNullAssertion` — 非 null アサーション (!) の禁止
-- `useConst` — 再代入のない変数に const を強制
-- `useExportType` — 型のみのエクスポートに export type を強制
-- `useImportType` — 型のみのインポートに import type を強制
-- `useNamingConvention` — 命名規則の強制
-- `useTemplate` — 文字列連結の代わりにテンプレートリテラルを推奨
+- `noDefaultExport` - disallows default exports
+- `noEnum` - disallows enum
+- `noNonNullAssertion` - disallows non-null assertions (!)
+- `useConst` - enforces const for never-reassigned variables
+- `useExportType` - enforces export type for type-only exports
+- `useImportType` - enforces import type for type-only imports
+- `useNamingConvention` - enforces naming conventions
+- `useTemplate` - prefers template literals over string concatenation
 
-## suspicious — 代表的ルール
+## suspicious - representative rules
 
-- `noArrayIndexKey` — 配列インデックスを key に使用禁止
-- `noConsole` — console の使用禁止
-- `noDebugger` — debugger の使用禁止
-- `noDoubleEquals` — == の代わりに === を強制
-- `noExplicitAny` — any 型の使用禁止
-- `noMisleadingInstantiator` — 誤解を招くコンストラクタを検出
-- `noShadowRestrictedNames` — 組み込み名のシャドウイングを禁止
-- `useAwait` — async 関数内で await を使用
+- `noArrayIndexKey` - disallows array indexes as keys
+- `noConsole` - disallows console
+- `noDebugger` - disallows debugger
+- `noDoubleEquals` - enforces === over ==
+- `noExplicitAny` - disallows the any type
+- `noMisleadingInstantiator` - detects misleading constructors
+- `noShadowRestrictedNames` - disallows shadowing builtin names
+- `useAwait` - requires await inside async functions
 
-## nursery — 注意事項
+## nursery - representative rules
 
-- 開発中ルール。安定版では明示的オプトインが必要
-- Playwright、Drizzle ORM 対応ルール等を含む
+- Rules under development. In stable releases they require explicit opt-in (not included in `recommended`)
+- Representative examples as of 2.5.x:
+  - Type-aware: `noFloatingPromises` / `noMisusedPromises` / `useExhaustiveSwitchCases` / `useStrictBooleanExpressions` / `useAwaitThenable` / `useNullishCoalescing` / `noUnsafeTypeAssertion`
+  - General: `noReturnInFinally` / `noXorAsExponentiation` / `noImpliedEval` / `useExplicitReturnType`
+  - React: `useReactCompiler` / `useReactFunctionComponentDefinition` / `useReactAsyncServerFunction`
+  - Playwright: `noPlaywrightWaitForTimeout` / `noPlaywrightMissingAwait`, etc.
+  - Drizzle: `noDrizzleDeleteWithoutWhere` / `noDrizzleUpdateWithoutWhere`
+  - Tailwind: `noTailwindArbitraryValue` / `noTailwindRawColors` / `useSortedClasses` / `useTailwindShorthandClasses`
+  - Svelte / Astro / Vue: `noSvelteExportLet` / `noAstroSetHtmlDirective` / `noVueRefAsOperand` / `useVueBaseImport`, etc.
+
+## Notes
+
+- In 2.5.0, 73 nursery rules were promoted to stable groups (correctness / suspicious / style / complexity / performance / security / a11y). The counts above are post-promotion values
+- Placement correction: `useAnchorContent` is in a11y and `noCommaOperator` is in complexity (not security / style)
+- `noInvalidNewBuiltin` was removed in 2.0.0 (bulk removal of deprecated rules). `noInvalidBuiltinInstantiation` is in correctness
+- At documentation HEAD, further moves between groups are planned for the next release (not reflected in the 2.5.15 list)
