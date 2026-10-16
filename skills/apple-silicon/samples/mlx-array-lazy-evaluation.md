@@ -6,7 +6,7 @@ Create `mx.array` values and control when the compute graph they build actually 
 import mlx.core as mx
 
 a = mx.array([1, 2, 3, 4])
-a.shape  # [4]
+a.shape  # (4,)
 a.dtype  # int32
 
 b = mx.array([1.0, 2.0, 3.0, 4.0])
@@ -47,4 +47,4 @@ for batch in dataset:
 - MLX is Apple's open-source array framework (ml-explore), not Core ML; Core ML / Create ML / Vision are covered by the separate apple-ml skill.
 - Evaluating too often (e.g. every element of a Python loop) adds fixed per-call overhead; evaluating too rarely lets the recorded graph grow very large. A per-iteration `mx.eval` at the outer training loop is the documented sweet spot.
 - Using a scalar `mx.array` in an `if`/`while` condition forces an evaluation at that point, since Python control flow needs a concrete boolean.
-- Derived from the official MLX documentation source `docs/src/usage/quick_start.rst` and `docs/src/usage/lazy_evaluation.rst` at tag v0.32.0 (MIT License).
+- Derived from the official MLX documentation source `docs/src/usage/quick_start.rst` and `docs/src/usage/lazy_evaluation.rst` at tag v0.32.4 (MIT License).

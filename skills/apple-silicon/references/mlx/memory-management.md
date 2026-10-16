@@ -22,6 +22,7 @@ mx.clear_cache()                     # release cached (but unused) allocations i
 | Function | Description |
 | --- | --- |
 | `get_active_memory()` | Currently-used memory, in bytes |
+| `get_array_buffer_size(*args) -> int` | Size of the buffers backing arrays, in bytes. Each unique buffer is counted once, using the full allocator size of each buffer (can exceed the arrays' logical size). Arrays must be evaluated first. Excludes graph objects, cached buffers and other non-buffer memory. Each argument is an array or a tree of arrays; non-array leaves are ignored |
 | `get_peak_memory()` | Peak used memory since the last reset, in bytes |
 | `get_cache_memory()` | Size of MLX's reusable allocation cache, in bytes |
 | `reset_peak_memory()` | Resets the peak-memory counter to zero |

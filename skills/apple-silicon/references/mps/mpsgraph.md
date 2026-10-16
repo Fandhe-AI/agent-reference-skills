@@ -30,6 +30,7 @@ let results = graph.run(with: commandQueue, feeds: feeds, targetTensors: [z], ta
 - `MPSGraphDevice` wraps an `MTLDevice` for graph placement; `MPSGraphExecutionDescriptor` configures completion handlers, waiting semantics, and compilation-descriptor overrides for a single run.
 - Available since macOS 11.0, iOS/iPadOS/tvOS 14.0, visionOS 1.0 — noticeably newer than `MPSNNGraph` (11.0/10.13).
 - Framework path is `MetalPerformanceShadersGraph`, distinct from the `MetalPerformanceShaders` framework the rest of this category covers — `import MetalPerformanceShadersGraph` is required separately.
+- Unrelated to the Compute Graph framework ("Build and run custom particle effects and compute simulations for RealityKit using a programmable node graph", iOS/macOS 27.0+; covered by the apple-spatial skill). A pre-trained model can also run on the GPU timeline through a Metal 4 machine-learning pass (see `metal-compute/machine-learning-passes.md`).
 - Distinct from Core ML's graph/model API (apple-ml skill): `MPSGraph` builds and executes an ad-hoc tensor graph directly against `MTLCommandQueue`/`MTLDevice`, with no `.mlmodel` involved.
 
 ## Related

@@ -33,6 +33,8 @@ void foo(device int *g_data,
 
 - MSL address-space attributes are a `.metal`-source language concept — distinct from the host-side `MTLResourceOptions` / storage-mode APIs (`MTLStorageModeShared` etc.) in the `apple-graphics` skill's `MTLDevice`/`MTLBuffer` pages.
 - Any pointer/reference argument or variable missing an address-space attribute is a compile-time error; program-scope variables must be `constant`.
+- Compiler option `-Wmetal-addr-spaces` warns about missing address-space qualifiers on member functions (spec 1.6.11). `-Xclang -fixit -Xclang -fix-what-you-can -Wmetal-addr-spaces` lets the compiler fix missing `thread` address space qualifiers.
+- Per the MLX docs (`dev/extensions.rst`, v0.32.4; the spec text does not contain `__metal_generic`): as of Metal 4.1 the implicit address space of `this` in a member function is `__metal_generic` rather than `thread`, so member functions should carry an explicit address space qualifier after the parameter list (e.g. a trailing `thread`).
 - SIMD-groups and quad-groups (thread subdivisions within a `threadgroup`) are introduced here (spec 4.4.1) but their functions live in `simdgroup-functions.md`.
 
 ## Related

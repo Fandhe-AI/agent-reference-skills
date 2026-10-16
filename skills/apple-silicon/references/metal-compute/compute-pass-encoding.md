@@ -51,6 +51,7 @@ computeEncoder.endEncoding()
 - Everything used to set up a compute pass is CPU thread-safe except the encoder itself (`MTLComputeCommandEncoder` / `MTL4ComputeCommandEncoder`); synchronize CPU/GPU-shared resources with an `MTLFence`, `MTLEvent`, or completion callback.
 - A compute pass can combine with blit operations in a single pass on Metal 3+ (Apple's "Combining blit and compute operations in a single pass" sample), and Metal 4 makes this unification the default via `MTL4ComputeCommandEncoder`.
 - Resources accessed through an argument buffer must be resident in GPU memory for the pass duration — call `useResource(_:usage:)` / `useHeap(_:)` (or attach an `MTLResidencySet`, see `unified-memory.md`) before dispatching.
+- Metal 4 machine-learning passes are encoded into the same `MTL4CommandBuffer` with `MTL4MachineLearningCommandEncoder` (see `machine-learning-passes.md`), so render, compute and ML work can share one command buffer.
 - This page covers the GPU-compute workflow on Apple silicon; the Metal rendering class references (MTLDevice, MTLComputeCommandEncoder, etc.) live in the apple-graphics skill.
 
 ## Related
@@ -59,3 +60,5 @@ computeEncoder.endEncoding()
 - [Compute Pipeline Configuration](./compute-pipeline-configuration.md)
 - [Indirect Command Buffers](./indirect-command-buffers.md)
 - [GPU Counters](./gpu-counters.md)
+- [Machine Learning Passes](./machine-learning-passes.md)
+- [Tensors](./tensors.md)

@@ -46,7 +46,7 @@ python setup.py build_ext --inplace
 テストを実行する。
 
 ```sh
-python -m unittest discover python/tests
+python python/tests/run.py
 ```
 
 ## ソースからビルドする（C++ API）

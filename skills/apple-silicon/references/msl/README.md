@@ -2,11 +2,13 @@
 
 | Name | Description | Path |
 | --- | --- | --- |
-| Data Types | Scalar / vector / matrix / SIMD-group matrix / packed / atomic data types that MSL adds on top of C++17, plus their size, alignment, and conversion rules. | [data-types.md](./data-types.md) |
-| Address Spaces | The disjoint memory regions (`device`, `constant`, `thread`, `threadgroup`, `threadgroup_imageblock`, `ray_data`, `object_data`) an MSL pointer or reference must be declared in, plus the memory-coherence scopes that govern visibility of writes across threads. | [address-spaces.md](./address-spaces.md) |
-| Function Qualifiers | The function-role attributes (`kernel`/`vertex`/`fragment`/`visible`/`stitchable`/`intersection`/`object`/`mesh`) that make an MSL function callable from the Metal API, plus naming/templating/restriction rules that apply to all of them. | [function-qualifiers.md](./function-qualifiers.md) |
-| Argument Attributes | Attributes that bind function arguments to a resource slot (`[[buffer(n)]]`/`[[texture(n)]]`/`[[sampler(n)]]`/`[[threadgroup(n)]]`), the built-in kernel-input variables (`thread_position_in_grid` and friends), and the storage-class specifiers MSL permits at program scope. | [argument-attributes.md](./argument-attributes.md) |
-| Atomic Functions | The `<metal_atomic>` operations (store/load/exchange/compare-exchange/fetch-modify/fence) that operate on `atomic<T>` data, plus the `memory_order` and `thread_scope` enumerations that control their synchronization semantics. | [atomic-functions.md](./atomic-functions.md) |
-| SIMD-Group Functions | Thread-synchronization barriers plus the SIMD-group and quad-group data-sharing functions (`simd_shuffle*`, `simd_ballot`, `simd_sum`, `quad_*`) that let threads in the same execution group exchange data without threadgroup memory, and the `simdgroup_matrix` load/store/multiply operations. | [simdgroup-functions.md](./simdgroup-functions.md) |
-| Math Functions | The Metal Standard Library's common, integer, relational, math, and geometric function families (`<metal_common>`, `<metal_integer>`, `<metal_relational>`, `<metal_math>`, `<metal_geometric>`), plus the `metal::fast` / `metal::precise` namespaces that pick between the two accuracy variants. | [math-functions.md](./math-functions.md) |
-| Numerical Compliance | How Metal represents `half`/`bfloat`/`float` values with respect to IEEE 754 (INF/NaN/denormals, rounding modes, per-function ULP accuracy contracts under precise vs. `-ffast-math`, and integer/float conversion rules). | [numerical-compliance.md](./numerical-compliance.md) |
+| Address Spaces | `device`, `constant`, `thread`, `threadgroup`, `ray_data`, `object_data` memory regions and coherence scopes | [address-spaces.md](./address-spaces.md) |
+| Argument Attributes | `[[buffer(n)]]`, `[[texture(n)]]`, `[[sampler(n)]]`, `[[threadgroup(n)]]` bindings and `thread_position_in_grid` built-in inputs | [argument-attributes.md](./argument-attributes.md) |
+| Atomic Functions | `<metal_atomic>` store, load, exchange, compare-exchange, fetch-modify, fence on `atomic<T>`; `memory_order`, `thread_scope` | [atomic-functions.md](./atomic-functions.md) |
+| Data Types | Scalar, vector, matrix, SIMD-group matrix, packed, and atomic data types | [data-types.md](./data-types.md) |
+| Function Qualifiers | `kernel`, `vertex`, `fragment`, `visible`, `stitchable`, `intersection`, `object`, `mesh` function roles | [function-qualifiers.md](./function-qualifiers.md) |
+| Math Functions | `<metal_common>`, `<metal_integer>`, `<metal_relational>`, `<metal_math>`, `<metal_geometric>`; `metal::fast` and `metal::precise` | [math-functions.md](./math-functions.md) |
+| Numerical Compliance | `half` / `bfloat` / `float` IEEE 754 behavior, rounding, ULP accuracy under precise vs `-ffast-math` | [numerical-compliance.md](./numerical-compliance.md) |
+| SIMD-Group Functions | `simd_shuffle*`, `simd_ballot`, `simd_sum`, `quad_*`, `simdgroup_matrix` operations, and barriers | [simdgroup-functions.md](./simdgroup-functions.md) |
+| Tensor Operations (Metal Performance Primitives) | MPP `mpp::tensor_ops` `matmul2d` and `convolution2d` over tensors and cooperative tensors | [tensor-operations.md](./tensor-operations.md) |
+| Tensor Types | `extents` / `dextents` index types, format types, multiplane `PlaneTag` members (Metal 4.1) | [tensor-types.md](./tensor-types.md) |

@@ -35,7 +35,7 @@ kernel void reduce(const device int *input [[buffer(0)]],
 ## Notes
 
 - `threads_per_simdgroup` is an alias of the deprecated `thread_execution_width`; SIMD-group and quad-group *type declarations* (`simdgroup_float8x8` etc.) live in `data-types.md`, this page covers only the *functions* over them (spec split: 2.4 vs. 6.8/6.10).
-- Apple recommends Tensors (`tensor<...>`, see `data-types.md`) and Metal Performance Primitives over `simdgroup_matrix` multiply for new general matrix/tensor code; `simdgroup_matrix` remains the lower-level 8x8 cooperative primitive.
+- Apple recommends Tensors (`tensor<...>`, see `data-types.md` and `tensor-types.md`) and Metal Performance Primitives (see `tensor-operations.md`) over `simdgroup_matrix` multiply for new general matrix/tensor code; `simdgroup_matrix` remains the lower-level 8x8 cooperative primitive.
 - MSL SIMD-groups/quad-groups are the `.metal`-source analogue of CUDA warp-level primitives (`__shfl_sync`, cooperative groups) and HIP wavefront intrinsics — those are covered by the separate `nvidia-cuda` / `amd-rocm` skills, not here.
 - `T` for SIMD-group functions excludes `bool`/`bfloat`/`long`/`ulong`/`void`/`size_t`/`ptrdiff_t`; `T` for quad-group functions excludes `bool`/`void`/`size_t`/`ptrdiff_t`. Bitwise-operation variants require an integer `T`/`Ti`.
 
@@ -44,3 +44,5 @@ kernel void reduce(const device int *input [[buffer(0)]],
 - [data-types.md](./data-types.md)
 - [atomic-functions.md](./atomic-functions.md)
 - [address-spaces.md](./address-spaces.md)
+- [tensor-types.md](./tensor-types.md)
+- [tensor-operations.md](./tensor-operations.md)

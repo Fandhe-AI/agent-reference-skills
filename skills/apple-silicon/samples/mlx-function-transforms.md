@@ -62,4 +62,4 @@ result = vmap_add(xs, ys)
 - MLX is Apple's open-source array framework (ml-explore), not Core ML; Core ML / Create ML / Vision are covered by the separate apple-ml skill.
 - Coming from PyTorch: MLX differentiates functions rather than tracing an implicit autograd graph, so there is no `backward()`, `zero_grad()`, `detach()`, or `requires_grad` — `mx.grad` returns a plain function instead.
 - On an M1 Max, the `vmap` version of the naive per-row loop measured about 200x faster (0.024 s vs 5.639 s for 100 iterations), per the source doc.
-- Derived from the official MLX documentation source `docs/src/usage/function_transforms.rst` at tag v0.32.0 (MIT License).
+- Derived from the official MLX documentation source `docs/src/usage/function_transforms.rst` at tag v0.32.4 (MIT License).

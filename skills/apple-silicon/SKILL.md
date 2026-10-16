@@ -1,10 +1,11 @@
 ---
 name: apple-silicon
 description: >
-  Apple Silicon GPU コンピュート／数値計算リファレンス。MSL の kernel 関数属性・address space・
-  atomic/SIMD-group 関数、threadgroup sizing・argument buffer・indirect command buffer・
-  unified memory・GPU counters、MPS/MPSGraph（MPSMatrix, MPSNDArray, MPSNNGraph）、
-  MLX（mx.array, lazy evaluation, grad/vmap, mx.compile, mlx.nn, mlx.optimizers, distributed）。
+  Apple Silicon GPU コンピュート／数値計算リファレンス。MSL (address space, atomic, SIMD-group,
+  TensorOps, cooperative_tensor, matmul2d), threadgroup sizing, argument buffer, indirect command buffer,
+  unified memory, GPU counters, MTLTensor, MTL4MachineLearningCommandEncoder,
+  MPS / MPSGraph / MPSMatrix / MPSNDArray / MPSNNGraph,
+  MLX (mx.array, lazy evaluation, grad / vmap, mx.compile, mx.fft, export_function, mlx.nn, distributed)。
 user-invocable: false
 ---
 
@@ -31,6 +32,8 @@ skills/apple-silicon/
       counter-sample-buffers.md
       argument-buffers.md
       unified-memory.md
+      tensors.md
+      machine-learning-passes.md
     msl/
       README.md
       data-types.md
@@ -41,6 +44,8 @@ skills/apple-silicon/
       simdgroup-functions.md
       math-functions.md
       numerical-compliance.md
+      tensor-types.md
+      tensor-operations.md
     mps/
       README.md
       mpskernel.md
@@ -77,6 +82,14 @@ skills/apple-silicon/
       fast-custom-kernels.md
       distributed.md
       tree-utils.md
+      data-types.md
+      operations.md
+      fft.md
+      export.md
+      kv-cache.md
+      precision.md
+      environment-variables.md
+      metal-backend.md
   samples/
     README.md
     compute-kernel-dispatch.md
@@ -116,7 +129,8 @@ skills/apple-silicon/
 Metal の**レンダリング**パイプライン（`MTLRenderCommandEncoder` / `MTLRenderPipelineState`）・Core Animation・
 Core Graphics・Core Image・SpriteKit・SceneKit は `apple-graphics` を参照。本スキルは Metal の**コンピュート**
 （`MTLComputeCommandEncoder` 以下）・MSL 言語仕様・MPS/MPSGraph・MLX を担当する。
-Core ML / Create ML による `.mlmodel` のオンデバイス推論・Vision・Natural Language・Speech は `apple-ml` を参照。
+Core ML / Create ML による `.mlmodel` のオンデバイス推論・Vision・Natural Language・Speech、および Core AI (iOS 27, `NDArray` / `ComputeUnitKind`) は `apple-ml` を参照。
+Compute Graph (RealityKit) は `apple-spatial`、MetalFX denoising は `apple-graphics` を参照。
 MLX のみ出典が developer.apple.com ではなく、Apple 研究チームが公開する OSS ドキュメント
 （ml-explore.github.io）である点に注意する。
 
@@ -130,7 +144,11 @@ MLX のみ出典が developer.apple.com ではなく、Apple 研究チームが�
 | MSL の atomic 関数・SIMD-group/quad-group 関数・数学関数・数値精度 (IEEE 754) 準拠を調べたい | msl | [references/msl/README.md](references/msl/README.md) |
 | MPSKernel/MPSImage/MPSMatrix/MPSNDArray による画像フィルタ・行列演算・分解を調べたい | mps | [references/mps/README.md](references/mps/README.md) |
 | MPSGraph/MPSNNGraph によるグラフ構築・実行・CNN 推論・ray tracing を調べたい | mps | [references/mps/README.md](references/mps/README.md) |
+| Metal 4 の MTLTensor 作成・ML pass (MTL4MachineLearningCommandEncoder) のエンコードを調べたい | metal-compute | [references/metal-compute/README.md](references/metal-compute/README.md) |
+| MSL の tensor / cooperative_tensor / TensorOps (matmul2d, convolution, execution scope) を調べたい | msl | [references/msl/README.md](references/msl/README.md) |
 | MLX の array/dtype・lazy evaluation・indexing・保存/読み込みを調べたい | mlx | [references/mlx/README.md](references/mlx/README.md) |
+| MLX の dtype 一覧・演算一覧・FFT (stft)・関数 export (.mlxfn) を調べたい | mlx | [references/mlx/README.md](references/mlx/README.md) |
+| MLX の環境変数・数値精度 (TF32, Winograd)・KV cache・Metal capture を調べたい | mlx | [references/mlx/README.md](references/mlx/README.md) |
 | MLX の grad/vmap 等の関数変換・mx.compile・unified memory model・distributed を調べたい | mlx | [references/mlx/README.md](references/mlx/README.md) |
 | mlx.nn のレイヤー/損失関数・mlx.optimizers・tree utils を調べたい | mlx | [references/mlx/README.md](references/mlx/README.md) |
 | 典型的な使い方を知りたい（compute kernel dispatch, argument buffer, MPSGraph 学習ループ, MLX 学習ループ等） | samples | [samples/README.md](samples/README.md) |
