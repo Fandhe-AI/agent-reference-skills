@@ -33,10 +33,10 @@ frame.appendChild(rect);
 | Name | Type | Description |
 |------|------|-------------|
 | `layoutMode` | `'NONE' \| 'HORIZONTAL' \| 'VERTICAL' \| 'GRID'` | Auto-layout or grid direction |
-| `layoutWrap` | `'NO_WRAP' \| 'WRAP'` | Whether auto-layout children wrap |
+| `layoutWrap` | `'NO_WRAP' \| 'WRAP'` | Whether auto-layout children wrap. Only settable when `layoutMode` is `'HORIZONTAL'` or `'VERTICAL'`; `'WRAP'` works on vertical auto-layout since Update 140 |
 | `primaryAxisSizingMode` | `'FIXED' \| 'AUTO'` | Sizing along main axis |
 | `counterAxisSizingMode` | `'FIXED' \| 'AUTO'` | Sizing along cross axis |
-| `primaryAxisAlignItems` | `'MIN' \| 'CENTER' \| 'MAX' \| 'SPACE_BETWEEN'` | Main axis alignment |
+| `primaryAxisAlignItems` | `'MIN' \| 'MAX' \| 'CENTER' \| 'SPACE_BETWEEN' \| 'SPACE_EVENLY' \| 'SPACE_AROUND'` | Main axis alignment. `'SPACE_EVENLY'`: equal gaps before the first child, between children, and after the last. `'SPACE_AROUND'`: equal gaps between children, and half that gap before the first and after the last (both added in Update 137) |
 | `counterAxisAlignItems` | `'MIN' \| 'CENTER' \| 'MAX' \| 'BASELINE'` | Cross axis alignment |
 | `counterAxisAlignContent` | `'AUTO' \| 'SPACE_BETWEEN'` | Multi-line cross axis alignment |
 | `itemSpacing` | `number` | Gap between items |

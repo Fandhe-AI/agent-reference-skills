@@ -27,6 +27,9 @@ Use the **UI** (Dev Mode) when no local setup is desired or when mapping spans m
 
 ## Notes
 
+- The built-in framework parsers are legacy since Code Connect v2.0.0 (2026-08-18); template files are the actively maintained CLI approach
+- The UI is currently limited to one code library; it does not yet support property mapping or dynamic examples
+- Professional plans have one active library and one active framework (see [Overview](./overview.md))
 - CLI-created connections appear in the UI but remain editable only via CLI
 - UI scales better across organizations where non-developers participate in component mapping
 - Both tools complement each other and both enhance Figma MCP server context

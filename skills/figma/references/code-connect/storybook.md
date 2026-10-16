@@ -60,6 +60,7 @@ parameters: {
 
 ## Notes
 
+- Legacy parser (including the Storybook integration): framework-specific parsers no longer receive updates or support from 2026-08-17. Since Code Connect v2.0.0 (2026-08-18), parser-based files can only be used by `figma connect migrate` and `figma connect unpublish`; other commands exit with guidance to migrate. To keep using the parser, install `npm install --save-dev @figma/code-connect@1`. Migrate to template files: see [Templates Migration Guide](./templates-migration-guide.md) and [Template Files](./template-files.md)
 - Storybook integration is **React only**
 - This extends Figma's existing Storybook plugin, automatically embedding component previews in your documentation
 - Individual story props can be overridden per example entry in the `examples` array

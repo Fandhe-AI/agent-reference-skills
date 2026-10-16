@@ -55,6 +55,9 @@ X-Figma-Token: <token>
 
 ## Notes
 
+- Deprecated (2026-08-10): `GET /v1/teams/:team_id/projects`, `GET /v1/projects/:project_id/files`, and `GET /v1/projects/:project_id/meta` are deprecated in favor of the folders endpoints (`GET /v2/teams/:team_id/folders`, `GET /v2/folders/:folder_id/folders`, `GET /v2/folders/:folder_id/files`, `GET /v2/folders/:folder_id/meta`; see [Folders](./folders.md))
+- On plans with nested folders enabled, `GET /v1/teams/:team_id/projects` returns only top-level folders, so its output is unchanged
+- The documentation now calls projects "folders". The `project` naming is unchanged in the `projects:read` and `project_metadata:read` scopes, the v1 project endpoints, the webhook `project` context, and the activity log action and entity types, so existing integrations are unaffected
 - A `Project` object has: `id` (Number), `name` (String)
 - Project IDs can be found in Figma project URLs
 

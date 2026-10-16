@@ -74,6 +74,23 @@ X-Figma-Token: <token>
 
 **Scope:** `file_variables:write` | **Rate Limit:** Tier 3 | **Plan:** Enterprise full members with edit access
 
+### Value types
+
+`valuesByMode`, `variableOverrides` (extended collections), and the POST variables `value` accept:
+
+```
+Boolean | Number | String | Color | VariableAlias | VariableComposedColor
+```
+
+`VariableComposedColor` (added 2026-09-17) is a color value whose color and opacity channels are authored independently. All fields are required, and at least one channel must be a `VariableAlias`.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `color` | `Color \| VariableAlias` | An RGB or RGBA color, or an alias to a `COLOR` variable |
+| `opacity` | `Number \| VariableAlias` | An opacity percentage from 0 to 100, or an alias to a `FLOAT` variable. If `color` is not a variable alias, `opacity` must be a variable alias |
+
+`VariableScope` for `FLOAT` variables now includes `COLOR_OPACITY` (the opacity channel of a color); `OPACITY` is the layer opacity.
+
 ## Notes
 
 - Variables store reusable values applied to design properties

@@ -106,8 +106,18 @@ figma.closePlugin();
 |--------|-----------|
 | `createImage()` | `(data: Uint8Array) => Image` |
 | `getImageByHash()` | `(hash: string) => Image \| null` |
-| `loadFontAsync()` | `(fontName: FontName) => Promise<void>` |
+| `loadFontAsync()` | `(fontName: FontNameInput) => Promise<void>`; omit `style` to load every style of the family (`variationSettings` is ignored for loading) |
+| `getFontFamilyVariationAxes()` | `(family: string) => string[] \| null`; axis tags a variable font family exposes, `null` for a static family (Update 138) |
 | `listAvailableFontsAsync()` | `() => Promise<Font[]>` |
+
+### Custom Animation Styles (Update 140)
+
+| Method | Signature |
+|--------|-----------|
+| `createCustomAnimationStyle()` | `() => CustomAnimationStyle` |
+| `getLocalCustomAnimationStylesAsync()` | `() => Promise<CustomAnimationStyle[]>` (the synchronous `getLocalCustomAnimationStyles()` is deprecated; it throws with `"documentAccess": "dynamic-page"`) |
+| `moveLocalCustomAnimationStyleAfter()` | `(targetNode: CustomAnimationStyle, reference: CustomAnimationStyle \| null) => void` |
+| `moveLocalCustomAnimationFolderAfter()` | `(targetFolder: string, reference: string \| null) => void` |
 
 ### Event Handling
 
@@ -136,6 +146,7 @@ Supported events: `'run'`, `'close'`, `'selectionchange'`, `'currentpagechange'`
 | `figma.timer` | FigJam timer (FigJam only) |
 | `figma.teamLibrary` | Team library access |
 | `figma.annotations` | Annotation categories |
+| `figma.motion` | Motion APIs; `figma.motion.playheadPosition: number \| undefined` is the playhead of the active Motion timeline in seconds, `undefined` without an active timeline (Update 132) |
 
 ## Notes
 

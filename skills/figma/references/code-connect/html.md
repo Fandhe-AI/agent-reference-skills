@@ -50,6 +50,7 @@ figma.connect('https://...', {
 
 ## Notes
 
+- Legacy parser: framework-specific parsers no longer receive updates or support from 2026-08-17. Since Code Connect v2.0.0 (2026-08-18), parser-based files can only be used by `figma connect migrate` and `figma connect unpublish`; other commands exit with guidance to migrate. To keep using the parser, install `npm install --save-dev @figma/code-connect@1`. Migrate to template files: see [Templates Migration Guide](./templates-migration-guide.md) and [Template Files](./template-files.md)
 - Code Connect files are not executed — the CLI treats code snippets as strings
 - Any JavaScript/TypeScript logic accompanying HTML must be enclosed in a `<script>` tag within the template
 - The same prop helpers are available for Angular, Vue, and other HTML-based frameworks; adjust the `html` template syntax accordingly

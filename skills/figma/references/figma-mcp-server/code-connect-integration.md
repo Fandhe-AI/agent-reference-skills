@@ -4,6 +4,13 @@ Enhances Figma MCP server output with real implementation details from your code
 
 ## Signature / Usage
 
+Remote server: parameters the agent is asked to set to pick the Code Connect connection:
+
+```text
+clientFrameworks: "React"
+clientLanguages: (optional)
+```
+
 Two implementation approaches:
 
 ### Code Connect CLI
@@ -33,8 +40,19 @@ Context injected into `<CodeConnectSnippet>` by the MCP server:
 | Usage examples | Actual component implementation patterns from your codebase |
 | Custom guidance | Team-specific conventions and best practices |
 
+### Choosing the framework
+
+If a component is connected to more than one framework (for example React and SwiftUI), control which connection the agent receives:
+
+| Server | How |
+| --- | --- |
+| Desktop | Uses the Code Connect connection selected in Dev Mode |
+| Remote | Ask the agent to set `clientFrameworks` (and optionally `clientLanguages`) to your Code Connect label, such as `React` or `SwiftUI` |
+
 ## Notes
 
+- Available on Professional, Organization, Government, and Enterprise plans with a Full or Dev seat, for components connected with Code Connect
+- On Professional plans only one framework is active, so the MCP server returns connections for the active library and framework only; connections for a non-active framework are not returned (shown as Deactivated in Code Connect UI)
 - Prioritize connecting frequently-used design system components first
 - Document component-specific patterns using custom instructions in Code Connect UI
 - Keep mappings synchronized with codebase changes to prevent stale suggestions

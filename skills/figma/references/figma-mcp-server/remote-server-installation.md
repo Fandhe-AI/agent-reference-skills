@@ -20,6 +20,8 @@ claude mcp add --transport http --scope user figma https://mcp.figma.com/mcp
 
 Then authenticate via the `/mcp` command in Claude.
 
+Caution: if `claude plugin install` fails, your organization may have blocked plugin installation (for all plugins or for the Figma plugin). Contact your Claude administrator, or add the server manually with `claude mcp add` (this does not install Figma's skills).
+
 ### Cursor
 
 ```
@@ -50,7 +52,20 @@ Open Command Palette (`⌘ Shift P`) → select MCP configuration (user or works
 codex mcp add figma --url https://mcp.figma.com/mcp
 ```
 
-Or via app: Plugins → + → Install Figma, then authenticate.
+Or via app: Plugins → + → Install Figma, then authenticate. Two routes: the Figma plugin in the Codex app (includes skills), or the Codex CLI (`codex mcp add`, no skills).
+
+### Xcode
+
+Requires Xcode 27 beta. Xcode supports the remote server only.
+
+1. One-click setup adds the Figma plugin to Xcode
+2. Next to the Figma plugin, click Sign in… and allow access
+
+Manual setup: Xcode Settings → Intelligence → install an agent if needed → Plug-ins → Add plug-in → Add from URL → `https://github.com/figma/mcp-server-guide` → choose the Figma Plug-in → Sign in….
+
+### Other clients
+
+Add a new MCP server using the HTTP transport and the URL `https://mcp.figma.com/mcp`, then sign in to Figma when prompted.
 
 ## Notes
 

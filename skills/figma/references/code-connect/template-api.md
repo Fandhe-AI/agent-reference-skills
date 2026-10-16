@@ -28,6 +28,28 @@ export default {
 | `figma.batch` | `object` | Available in batch files; provides `url`, `source`, `component`, and custom JSON fields |
 | `figma.helpers` | `object` | Utility helpers for framework-specific rendering |
 
+### `InstanceHandle` — properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `properties` | `Record<string, string \| boolean \| InstanceHandle>` | All properties of the instance |
+| `id` | `string` | Figma node ID, equivalent to `SceneNode.id` in the Plugin API (v1.5.3). Primary instances have IDs such as `1:234`; nested instance sublayers use a stable path beginning with `I` |
+
+### `SlotResult`
+
+Value returned by `getSlot()`; can be interpolated into `figma.code` to render a clickable reference to the slot.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `connectedInstances` | `InstanceHandle[]` | Code-connected instances placed directly in the slot. The lookup is shallow: omits text, layers, unconnected instances, and instances nested inside another instance |
+
+```javascript
+const slot = figma.selectedInstance.getSlot('Items')
+const items = (slot?.connectedInstances ?? []).map((item) => item.executeTemplate().example)
+
+const example = figma.code`<Menu>${items}</Menu>`
+```
+
 ### `InstanceHandle` — property access
 
 | Method | Signature | Description |
@@ -37,7 +59,7 @@ export default {
 | `getEnum` | `(propName: string, options: Record<string, any>): any` | Map a variant property to a code value |
 | `getPropertyValue` | `(propName: string): string \| boolean` | Retrieve raw property value |
 | `getInstanceSwap` | `(propName: string): InstanceHandle` | Retrieve an instance-swap property |
-| `getSlot` | `(propName: string): ResultSection[] \| undefined` | Reference a flexible content slot |
+| `getSlot` | `(propName: string): SlotResult \| undefined` | Reference a slot; `undefined` if the slot property is not found or has no valid reference. Can be interpolated into `figma.code` |
 | `hasCodeConnect` | `(): boolean` | Whether the instance has a Code Connect document |
 | `codeConnectId` | `(): string \| null` | Code Connect ID of the instance |
 
@@ -100,8 +122,31 @@ Both provide `renderChildren(children: any, prefix: string): ResultSection[]` fo
 | `SlotSection` | `type: 'SLOT'`, `guid: string` | A slot reference |
 | `ErrorSection` | `type: 'ERROR'`, `message: string`, `errorObject?: ResultError` | An error placeholder |
 
+### Legacy API
+
+The original Template API is still documented; the API above has nicer ergonomics and is recommended for new templates.
+
+| Legacy | Description |
+|--------|-------------|
+| `figma.currentLayer` | `InstanceHandle` of the selected layer |
+| `figma.properties` | Shorthand for `figma.currentLayer.__properties__` |
+| `children` | Direct children (instances or text) |
+| `__find__(name)` | `InstanceHandle \| ErrorHandle \| null`; finds a child or nested child instance by name |
+| `__findChildWithCriteria__({ type, name })` | Finds a child by `type` (`'INSTANCE'` or `'TEXT'`) and name |
+| `__getPropertyValue__(name)` | `string \| boolean \| ErrorHandle` |
+| `__render__()` | `ResultSection[]` render information |
+| `__getProps__()` | Properties specified in the metadata field |
+| `__renderWithFn__(renderFn)` | Renders with a provided function |
+| `properties.boolean(name, options?)` / `.enum(name, options)` / `.string(name)` | Property values; `boolean` and `enum` take a value mapping |
+| `properties.instance(name)` / `.__instance__(name)` | Rendered instance / the instance handle without calling `render()` |
+| `properties.children(layerNames)` | Renders children with the given names |
+
 ## Notes
 
+- The official example reads slot.connectedInstances directly; an undefined guard is added here because getSlot() returns undefined when the slot property is missing or has no valid reference
+
+- The official `/template-v2-api/` page was reported identical to this page's source (`/template-api/`) in the update check (same content under a different URL); it was not re-compared in this pass
+- Slots need the latest Code Connect CLI
 - Always use `figma.code` tagged template literal instead of plain string concatenation to preserve pill rendering in Dev Mode
 - `figma.batch` is only available inside `.figma.batch.ts` template files
 

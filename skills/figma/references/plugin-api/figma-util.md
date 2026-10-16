@@ -25,14 +25,15 @@ component.descriptionMarkdown = md;
 
 | Name | Signature | Description |
 |------|-----------|-------------|
-| `rgb()` | `(color: string \| RGB \| RGBA) => RGB` | Parse color to `RGB`; alpha is discarded; throws on invalid input |
-| `rgba()` | `(color: string \| RGB \| RGBA) => RGBA` | Parse color to `RGBA`; alpha defaults to `1` if omitted |
-| `solidPaint()` | `(color: string \| RGB \| RGBA, overrides?: Partial<SolidPaint>) => SolidPaint` | Create a `SolidPaint`; optional overrides preserve other paint fields |
+| `rgb()` | `(color: string \| RGBWithColorSpace \| RGBAWithColorSpace \| ColorWithColorSpace) => RGBWithColorSpace` | Parse color to `RGB` (with optional `sourceColor`); alpha is discarded; throws on invalid input |
+| `rgba()` | `(color: string \| RGBWithColorSpace \| RGBAWithColorSpace \| ColorWithColorSpace, alphaOverride?: number) => RGBAWithColorSpace` | Parse color to `RGBA` (with optional `sourceColor`); alpha defaults to `1` if omitted |
+| `solidPaint()` | `(color: string \| RGBWithColorSpace \| RGBAWithColorSpace \| ColorWithColorSpace, overrides?: Partial<SolidPaint>) => SolidPaint` | Create a `SolidPaint`; optional overrides preserve other paint fields |
 | `normalizeMarkdown()` | `(markdown: string) => string` | Normalize markdown to match what Figma's rich-text editors will render |
 
 ## Notes
 
 - `rgb()` and `rgba()` accept CSS strings: hex (`#RGB`, `#RRGGBB`, `#RRGGBBAA`), `rgb()`, `hsl()`, `lab()`, named colors.
+- Since Update 141 (typings v1.142.0), colors can be given in `SRGB`, `DISPLAY_P3`, `HSL`, `HSB`, `OKLAB`, or `OKLCH` via `ColorWithColorSpace`, and results carry the original color in `sourceColor?` (see data-types)
 - `solidPaint()` is especially useful for updating a fill's color while preserving `blendMode`, `opacity`, etc.
 - `normalizeMarkdown()` should be used before assigning to `descriptionMarkdown` to avoid unexpected rendering.
 

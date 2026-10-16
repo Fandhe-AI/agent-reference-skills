@@ -10,11 +10,11 @@ interface RGB  { readonly r: number; readonly g: number; readonly b: number }
 interface RGBA { readonly r: number; readonly g: number; readonly b: number; readonly a: number }
 
 // Paint union
-type Paint = SolidPaint | GradientPaint | ImagePaint | VideoPaint | PatternPaint
+type Paint = SolidPaint | GradientPaint | ImagePaint | VideoPaint | PatternPaint | ShaderPaint
 
 // Effect union
 type Effect = DropShadowEffect | InnerShadowEffect | BlurEffect |
-              NoiseEffect | TextureEffect | GlassEffect
+              NoiseEffect | TextureEffect | GlassEffect | ShaderEffect
 
 // Transform (2×3 affine matrix)
 type Transform = [[number, number, number], [number, number, number]]
@@ -47,6 +47,22 @@ interface RGBA {
 
 Black: `{ r: 0, g: 0, b: 0, a: 1 }` — White: `{ r: 1, g: 1, b: 1, a: 1 }`
 
+#### Color spaces (Update 141)
+
+Paints, gradient stops, and effects preserve the original color space and components via `sourceColor`; the RGB fields remain the projection for the current document color profile.
+
+```ts
+type ColorWithColorSpace =
+  | { readonly space: 'SRGB' | 'DISPLAY_P3'; readonly r: number; readonly g: number; readonly b: number }
+  | { readonly space: 'HSL'; readonly h: number; readonly s: number; readonly l: number }
+  | { readonly space: 'HSB'; readonly h: number; readonly s: number; readonly b: number }
+  | { readonly space: 'OKLAB'; readonly l: number; readonly a: number; readonly b: number }
+  | { readonly space: 'OKLCH'; readonly l: number; readonly c: number; readonly h: number }
+
+interface RGBWithColorSpace extends RGB { readonly sourceColor?: ColorWithColorSpace }
+interface RGBAWithColorSpace extends RGBA { readonly sourceColor?: ColorWithColorSpace }
+```
+
 #### BlendMode
 
 ```ts
@@ -62,8 +78,10 @@ type BlendMode =
 ### Paint
 
 ```ts
-type Paint = SolidPaint | GradientPaint | ImagePaint | VideoPaint | PatternPaint
+type Paint = SolidPaint | GradientPaint | ImagePaint | VideoPaint | PatternPaint | ShaderPaint
 ```
+
+`ShaderPaint` (and `ShaderEffect` in the Effect union) apply a shader by `id` with a `properties` map; see the shader types in the typings.
 
 Common fields on all paints: `visible?: boolean`, `opacity?: number`, `blendMode?: BlendMode`
 
@@ -72,7 +90,7 @@ Common fields on all paints: `visible?: boolean`, `opacity?: number`, `blendMode
 | Field | Type | Description |
 |-------|------|-------------|
 | `type` | `'SOLID'` | — |
-| `color` | `RGB` | Fill color |
+| `color` | `RGBWithColorSpace` | Fill color (`RGB` plus optional `sourceColor`) |
 | `boundVariables?` | `Record<string, VariableAlias>` | Variable bindings |
 
 #### GradientPaint
@@ -105,7 +123,7 @@ VideoPaint mirrors ImagePaint with `type: 'VIDEO'` and `videoHash`. PatternPaint
 
 ```ts
 type Effect = DropShadowEffect | InnerShadowEffect | BlurEffect |
-              NoiseEffect | TextureEffect | GlassEffect
+              NoiseEffect | TextureEffect | GlassEffect | ShaderEffect
 ```
 
 #### DropShadowEffect / InnerShadowEffect
@@ -113,7 +131,7 @@ type Effect = DropShadowEffect | InnerShadowEffect | BlurEffect |
 | Field | Type | Description |
 |-------|------|-------------|
 | `type` | `'DROP_SHADOW' \| 'INNER_SHADOW'` | — |
-| `color` | `RGBA` | Shadow color |
+| `color` | `RGBAWithColorSpace` | Shadow color (`RGBA` plus optional `sourceColor`) |
 | `offset` | `Vector` | X/Y displacement |
 | `radius` | `number` | Blur radius (≥ 0) |
 | `spread?` | `number` | Expansion/contraction |
@@ -200,8 +218,10 @@ type ConstraintType = 'MIN' | 'CENTER' | 'MAX' | 'STRETCH' | 'SCALE'
 ### ExportSettings
 
 ```ts
-type ExportSettings = ExportSettingsImage | ExportSettingsSVG | ExportSettingsPDF | ExportSettingsREST
+type ExportSettings = ExportSettingsImage | ExportSettingsSVG | ExportSettingsPDF
 ```
+
+`ExportSettingsREST` is a separate interface accepted by `exportAsync(settings: ExportSettingsREST): Promise<Object>`; it is not part of the `ExportSettings` union in typings v1.142.0.
 
 Common fields: `contentsOnly?`, `useAbsoluteBounds?`, `suffix?`, `colorProfile?`
 
@@ -223,13 +243,25 @@ Common fields: `contentsOnly?`, `useAbsoluteBounds?`, `suffix?`, `colorProfile?`
 | `id` | `string` (readonly) | Unique ID |
 | `name` | `string` | Display name |
 | `variableCollectionId` | `string` (readonly) | Parent collection |
-| `resolvedType` | `VariableResolvedDataType` (readonly) | `'BOOLEAN' \| 'COLOR' \| 'FLOAT' \| 'STRING'` |
+| `resolvedType` | `VariableResolvedDataType` (readonly) | `'BOOLEAN' \| 'COLOR' \| 'EASING' \| 'FLOAT' \| 'STRING' \| 'TIMING'` (`EASING` / `TIMING` added in Update 133) |
 | `valuesByMode` | `Record<string, VariableValue>` (readonly) | Values per mode |
 | `remote` | `boolean` (readonly) | From team library |
 | `key` | `string` (readonly) | Import key |
 | `codeSyntax` | `Record<string, string>` (readonly) | Platform code definitions |
 
 Methods: `setValueForMode(modeId, value)`, `resolveForConsumer(consumer)`, `remove()`, `getPublishStatusAsync()`, `setVariableCodeSyntax(platform, value)`, `removeVariableCodeSyntax(platform)`
+
+```ts
+type VariableValue =
+  boolean | string | number | RGB | RGBA | MotionEasing | VariableAlias | VariableComposedColor
+
+// Either the color or the opacity must be a variable alias, or both (Update 139)
+type VariableComposedColor =
+  | { color: RGB | RGBA; opacity: VariableAlias }
+  | { color: VariableAlias; opacity: number | VariableAlias }
+```
+
+`VariableScope` now includes `'COLOR_OPACITY'` (the opacity channel of a color; `'OPACITY'` is layer opacity). Easing variables hold `MotionEasing` values and timing variables hold numbers (seconds).
 
 ---
 
@@ -253,8 +285,21 @@ Created via `figma.createImage(data: Uint8Array)` or `figma.getImageByHash(hash)
 interface FontName {
   readonly family: string  // e.g. 'Inter'
   readonly style: string   // e.g. 'Regular', 'Bold Italic'
+  readonly variationSettings?: FontVariationSettings  // present when reading a variable font
+}
+
+// Axis values keyed by 4-character OpenType tag, e.g. { wght: 550, slnt: -10 }
+interface FontVariationSettings { readonly [axis: string]: number }
+
+// A font to apply: style may be omitted (Figma picks the closest named instance)
+interface FontNameInput {
+  readonly family: string
+  readonly style?: string
+  readonly variationSettings?: FontVariationSettings
 }
 ```
+
+Accepted by `figma.loadFontAsync`, `setRangeFontName`, and `fontName` assignment (Update 138). Reads always return a fully populated `FontName`.
 
 ---
 
@@ -290,7 +335,8 @@ Document change events deliver typed change descriptors:
 ## Notes
 
 - `figma.mixed` (unique symbol) is returned for node-level properties that differ across a mixed selection.
-- All numeric color channels are 0–1, not 0–255.
+- All numeric color channels are 0–1, not 0–255 (for RGB / RGBA; `sourceColor` components use the ranges of their color space).
+- Checked against `@figma/plugin-typings` v1.142.0 (Plugin API Update 141, 2026-10-15). `TextCase` in the typings also includes `'SMALL_CAPS_FORCED'`.
 - Use `figma.util.rgb()` / `figma.util.rgba()` / `figma.util.solidPaint()` for converting CSS color strings.
 
 ## Related

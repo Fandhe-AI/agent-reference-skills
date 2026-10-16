@@ -19,18 +19,24 @@ Enables AI agents to create and modify native Figma content (frames, components,
 
 | Requirement | Detail |
 |-------------|--------|
-| Figma seat | Full seat required (Dev seats are read-only) |
-| File permission | Edit permission on the target file |
-| Server | Remote Figma MCP server must be configured |
-| Supported clients | Claude Code, Claude Desktop, Cursor, VS Code, Copilot CLI, and others |
+| Plan | Professional, Education, Organization, and Enterprise |
+| File type | Figma Design, FigJam, and Figma Slides |
+| File permission | Edit access to the file |
+| Server | Remote Figma MCP server (supported MCP client required) |
+| Figma seat | Full seat required to write outside your drafts (stated on the Figma MCP server overview page) |
+| Skills | `figma-use` helps the agent use `use_figma` reliably; `figma-spec` reads and writes Figma Specs (open beta) |
 
 ## Notes
 
-- Feature is **beta-level quality** and currently free; will become usage-based and paid after beta
-- Response output limit: 20 KB per tool call
-- No asset or image support in write operations
-- Custom fonts not supported
-- Components must be manually published before Code Connect integration works
+- Feature is **beta** and currently free; will eventually become a usage-based paid feature. Because of beta, test on a duplicate of your library or a draft file before changing production files, and keep a backup copy
+- Different from sending UI to Figma: sending UI captures a running app as flat layers without a connection to your libraries; write to canvas builds with your existing components and variables
+- Current limitations:
+  - Each tool call returns up to 20 KB of output
+  - `use_figma` can't add new images on its own: add them with `upload_assets`, create them with `generate_image`. Importing components that contain images or videos, and creating GIFs, aren't supported yet
+  - Fonts uploaded to your Figma account are usable; fonts only installed on your computer are not
+  - Components must be published manually before Code Connect mappings can be completed
+  - Output is beta quality and may need manual review and cleanup
+- Tips: include a file or selection link; continue in the same conversation; make large changes in steps; name the libraries, components, variables, or modes to use
 - Workflow: system → canvas → code (not a screenshot, generates real Figma layer structure)
 
 ## Related

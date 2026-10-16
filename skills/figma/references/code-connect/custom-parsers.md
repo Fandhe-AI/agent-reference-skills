@@ -66,7 +66,8 @@ Enable Code Connect support for languages not natively supported by implementing
 ## Notes
 
 - The API is still evolving — provide feedback via GitHub issues
-- The parser command is invoked with file paths from the `include` globs; it must write its `ParseResponsePayload` to stdout
+- `publish` / `parse` run `parserCommand` on the files matched by `include` / `exclude`, passing a `ParseRequestPayload` (`mode: 'PARSE'`, absolute `paths`) via stdin; the parser must write its `ParseResponsePayload` to stdout. `create` passes a `CreateRequestPayload` via stdin and expects a `CreateResponsePayload` on stdout
+- The v2.0.0 changelog restricts framework-specific parsers to `migrate` / `unpublish`; the changelog does not say whether `custom` parsers are affected, so check the CLI behavior before relying on this page
 - Uses the Template API for generating Code Connect documents
 
 ## Related
