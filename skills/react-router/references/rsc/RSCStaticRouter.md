@@ -49,6 +49,7 @@ function RSCStaticRouter({ getPayload, nonce }: RSCStaticRouterProps)
 ## Notes
 
 - Data Mode only. Experimental (`unstable_`): subject to breaking changes in minor/patch releases.
+- `renderHTMLToReadableStream` is not defined in the official snippet; the official RSC how-to guide imports it as `import { renderToReadableStream as renderHTMLToReadableStream } from "react-dom/server.edge";` (the `ReactDomServer` namespace import above is otherwise unused). See https://reactrouter.com/how-to/react-server-components (tag react-router@8.4.0).
 - Source: https://reactrouter.com/api/rsc/RSCStaticRouter (docs/api/rsc/RSCStaticRouter.md at tag react-router@8.4.0: https://github.com/remix-run/react-router/blob/react-router@8.4.0/docs/api/rsc/RSCStaticRouter.md)
 
 ## Related

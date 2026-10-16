@@ -77,6 +77,7 @@ Returns a `Response` that either contains the RSC payload for data requests, or 
 
 - Data Mode only. Experimental (`unstable_`): subject to breaking changes in minor/patch releases; watch release notes closely.
 - Runs in the SSR environment; `serverResponse` is typically produced by `unstable_matchRSCServerRequest` in the RSC environment.
+- `renderHTMLToReadableStream` is not defined in the official snippet; the official RSC how-to guide imports it as `import { renderToReadableStream as renderHTMLToReadableStream } from "react-dom/server.edge";` (the `ReactDomServer` namespace import above is otherwise unused). See https://reactrouter.com/how-to/react-server-components (tag react-router@8.4.0).
 - Source: https://reactrouter.com/api/rsc/routeRSCServerRequest (docs/api/rsc/routeRSCServerRequest.md at tag react-router@8.4.0: https://github.com/remix-run/react-router/blob/react-router@8.4.0/docs/api/rsc/routeRSCServerRequest.md)
 
 ## Related

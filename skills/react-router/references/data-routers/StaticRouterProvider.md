@@ -25,9 +25,18 @@ export async function handleRequest(request: Request) {
   let router = createStaticRouter(dataRoutes, context);
   return new Response(
     ReactDOMServer.renderToString(<StaticRouterProvider ... />),
-    { status: context.statusCode, headers: { "Content-Type": "text/html" } }
+    { headers: { "Content-Type": "text/html" } }
   );
 }
+```
+
+Adapted (not in the official docs): propagate the status code of errors caught by ErrorBoundaries
+
+```tsx
+return new Response(
+  ReactDOMServer.renderToString(<StaticRouterProvider ... />),
+  { status: context.statusCode, headers: { "Content-Type": "text/html" } }
+);
 ```
 
 ## Options / Props
@@ -41,7 +50,7 @@ export async function handleRequest(request: Request) {
 
 ## Notes
 
-- The example sets `status: context.statusCode` (omitted in the official snippet) so errors caught by route ErrorBoundaries are returned with their 4xx/5xx status instead of 200.
+- The official snippet omits `status`; without it errors caught by route ErrorBoundaries are returned with 200. The second fence (`status: context.statusCode`) is the adapted version, not from the official docs.
 - Source: https://reactrouter.com/api/data-routers/StaticRouterProvider (docs/api/data-routers/StaticRouterProvider.md at tag react-router@8.4.0: https://github.com/remix-run/react-router/blob/react-router@8.4.0/docs/api/data-routers/StaticRouterProvider.md)
 
 ## Related
