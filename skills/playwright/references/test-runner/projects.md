@@ -80,6 +80,17 @@ npx playwright test --project=firefox
 npx playwright test --project=chromium --project=firefox
 ```
 
+`TestProject.default` (v1.64, optional boolean): "Whether the project runs when no `--project` command line option is passed. Defaults to `true`." To run a project with `default: false`, select it with the `--project` command line option. A project with `default: false` still runs when another running project lists it in `dependencies` or `teardown`.
+
+```typescript
+projects: [
+  { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+  { name: 'smoke-prod', default: false },
+],
+```
+
+`FullConfig.filteredProjects` (v1.64, `FullProject[]`): "List of projects that were selected to run, after applying the `--project` command line filter. When no filter is specified, this is the same as `FullConfig.projects`." `TestProject.snapshotPathTemplate` supports a `{testFileBaseName}` token (v1.60).
+
 ## Environment-Based Projects
 
 Use projects to test against different environments with distinct settings.

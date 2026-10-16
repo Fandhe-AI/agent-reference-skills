@@ -18,8 +18,8 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: lts/*
       - name: Install dependencies
@@ -28,7 +28,7 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         run: npx playwright test
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
@@ -49,16 +49,22 @@ Playwright publishes official Docker images to the Microsoft Artifact Registry. 
 
 | Image | Base |
 |---|---|
-| `mcr.microsoft.com/playwright:v1.58.2-noble` | Ubuntu 24.04 LTS (Noble) |
-| `mcr.microsoft.com/playwright:v1.58.2-jammy` | Ubuntu 22.04 LTS (Jammy) |
-| `mcr.microsoft.com/playwright:v1.58.2` | Default (latest Ubuntu) |
+| `mcr.microsoft.com/playwright:v1.64.1-noble` | Ubuntu 24.04 LTS (Noble) |
+| `mcr.microsoft.com/playwright:v1.64.1-jammy` | Ubuntu 22.04 LTS (Jammy) |
+| `mcr.microsoft.com/playwright:v1.64.1-resolute` | Ubuntu 26.04 LTS (Resolute Raccoon) |
+| `mcr.microsoft.com/playwright:v1.64.1` | Ubuntu 24.04 LTS (Noble) |
 
-Always pin to a specific version tag.
+Always pin to a specific version tag. The image tag version must match the `@playwright/test` version in the project.
+
+Notes:
+
+- Ubuntu 20.04 (focal) is no longer supported (1.63) and Debian 11 is no longer supported (1.62); no `-focal` tags exist.
+- The `-resolute` (Ubuntu 26.04) tag is listed in the v1.64.1 Docker docs.
 
 ### Running Tests in Docker
 
 ```bash
-docker run -it --rm --ipc=host mcr.microsoft.com/playwright:v1.58.2-noble /bin/bash
+docker run -it --rm --ipc=host mcr.microsoft.com/playwright:v1.64.1-noble /bin/bash
 ```
 
 Important flags:
@@ -72,12 +78,14 @@ Important flags:
 ### Dockerfile
 
 ```dockerfile
-FROM node:20-bookworm
+FROM node:24-bookworm
 
-RUN npx -y playwright@1.58.2 install --with-deps
+RUN npx -y playwright@1.64.1 install --with-deps
 ```
 
 This installs Node.js, Playwright browsers, and all required system dependencies.
+
+The official docker.md (v1.64.1) example still shows `node:20-bookworm`, which is outside the supported Node.js range (latest 22.x, 24.x or 26.x); the base image here is adjusted accordingly.
 
 ### Untrusted Content
 
@@ -87,7 +95,7 @@ For web scraping or testing untrusted sites, add security restrictions:
 docker run -it --rm --ipc=host \
   --user pwuser \
   --security-opt seccomp=seccomp_profile.json \
-  mcr.microsoft.com/playwright:v1.58.2-noble /bin/bash
+  mcr.microsoft.com/playwright:v1.64.1-noble /bin/bash
 ```
 
 ### Remote Playwright Server
@@ -98,8 +106,8 @@ Start a Playwright server in Docker and connect from the host:
 # Start server
 docker run -p 3000:3000 --rm --init -it \
   --workdir /home/pwuser --user pwuser \
-  mcr.microsoft.com/playwright:v1.58.2-noble \
-  /bin/sh -c "npx -y playwright@1.58.2 run-server --port 3000 --host 0.0.0.0"
+  mcr.microsoft.com/playwright:v1.64.1-noble \
+  /bin/sh -c "npx -y playwright@1.64.1 run-server --port 3000 --host 0.0.0.0"
 ```
 
 ```bash
@@ -177,8 +185,8 @@ jobs:
         shardIndex: [1, 2, 3, 4]
         shardTotal: [4]
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: lts/*
       - name: Install dependencies
@@ -200,8 +208,8 @@ jobs:
     needs: [playwright-tests]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: lts/*
       - name: Install dependencies

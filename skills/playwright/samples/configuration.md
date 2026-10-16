@@ -25,6 +25,7 @@ export default defineConfig({
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
+      default: false, // v1.64: skipped by a plain `npx playwright test`
     },
     {
       name: 'Mobile Safari',
@@ -44,4 +45,6 @@ export default defineConfig({
 - `baseURL` allows tests to use relative paths in `page.goto('/path')` instead of full URLs
 - `trace: 'on-first-retry'` records a trace only when a test is retried, keeping CI storage costs low
 - `forbidOnly` prevents accidentally committed `test.only()` from silently skipping tests in CI
+- `default: false` (`TestProject.default`, v1.64) keeps a project in the config without running it by default. `npx playwright test --project=firefox` runs it, `--project="*"` runs all projects
+- Since v1.64 the `screen` of a `...devices['Desktop Chrome']` spread is forwarded, so `window.screen` and media queries see the emulated size. Opt out with `screen: undefined` in `use`
 - `webServer` starts a dev server before the test suite and waits until `url` is reachable

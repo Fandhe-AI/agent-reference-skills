@@ -60,6 +60,36 @@ const y = 20;
 await page.evaluate(({ x, y }) => x + y, { x, y });
 ```
 
+### Functions as Arguments (v1.62)
+
+Since v1.62, `evaluate` / `evaluateHandle` (Page, Frame, Locator) and `addInitScript` (Page, BrowserContext) accept an `exposeFunctions` option (`boolean`, default `false`) so functions can be passed as arguments. See the API reference page (`api/page.md`) for the signature.
+
+`evaluate` / `evaluateHandle`: "When set to `true`, functions passed inside `arg` are exposed in the page and can be called from the page function. Calling one returns a Promise of its result. Under the hood, each function is exposed via `page.exposeFunction()`, so it is technically accessible from all frames of the page. Exposed functions are cleared upon the top-level navigation. Defaults to `false`, in which case functions are not serializable and passing one throws an error."
+
+`addInitScript`: "When set to `true`, functions passed inside `arg` are exposed in the page and can be called from the init script. Calling one returns a Promise of its result. Under the hood, each function is exposed via `page.exposeFunction()`, so it is technically accessible from all frames of the page. Unlike functions passed to `page.evaluate()`, functions passed to an init script are exposed in every new document, so they survive navigations. Defaults to `false`, in which case functions are not serializable and are silently dropped."
+
+```ts
+const result = await page.evaluate(
+  async ({ compute }) => compute(2, 3),
+  { compute: (a: number, b: number) => a + b },
+  { exposeFunctions: true },
+);
+```
+
+## Disposable (v1.59)
+
+`Disposable` "is returned from various methods to allow undoing the corresponding action". For example `page.addInitScript()` returns a `Disposable` that can be used to remove the init script; `disposable.dispose()` "removes the associated resource". Disposables work with `await using` for automatic cleanup, for example `await using script = await page.addInitScript('console.log("init script here")');`.
+
+## Locator.waitForFunction (v1.62)
+
+`locator.waitForFunction(expression, arg?, options?)` returns when `expression` returns a truthy value, called with the matching element as a first argument and `arg` as a second argument. "The locator is re-resolved on each retry, so it tolerates the element being re-rendered while waiting." If `expression` returns a Promise it is awaited; if it throws or rejects, the method throws.
+
+```ts
+const toggle = page.getByRole('button', { name: 'Menu' });
+await toggle.click();
+await toggle.waitForFunction(element => element.hasAttribute('aria-expanded'));
+```
+
 ## evaluateHandle
 
 Returns a JSHandle instead of a serialized value. Use this when you need a reference to an in-browser object rather than its serialized form:

@@ -43,6 +43,31 @@ When the page design changes, regenerate reference screenshots:
 npx playwright test --update-snapshots
 ```
 
+Modes: `all`, `changed`, `missing`, `none`, `default` (flag without a value means `changed`). Breaking change in v1.64: `--update-snapshots=missing` now passes the run after writing missing snapshots; the old behavior (write missing, then fail) is the `default` mode, used when the flag is absent.
+
+Snapshots are stored as PNG by default. Since v1.62, give the snapshot a name with the `.webp` extension to store it in the WebP format instead, it is also lossless:
+
+```typescript
+await expect(page).toHaveScreenshot("landing.webp");
+```
+
+To store all unnamed snapshots as WebP, set the `type` option in the `expect` configuration (v1.64):
+
+```typescript
+// playwright.config.ts
+import { defineConfig } from "@playwright/test";
+
+export default defineConfig({
+  expect: {
+    toHaveScreenshot: {
+      type: "webp",
+    },
+  },
+});
+```
+
+`page.screenshot` / `locator.screenshot` accept `type: 'webp'` with `quality` (for `webp`, a quality of `100`, the default, produces a lossless image, while lower values use lossy compression). See `screenshots.md` for programmatic screenshots.
+
 ## Comparison Options
 
 ### maxDiffPixels
@@ -269,3 +294,7 @@ Browser rendering varies across operating systems, GPU hardware, and headless vs
 - Run screenshot tests in the same environment where baselines were created
 - Use CI with a fixed OS and browser version for generating and comparing
 - Use `stylePath` or `mask` to exclude inherently dynamic content
+
+## Related
+
+- [Screenshots](./screenshots.md)

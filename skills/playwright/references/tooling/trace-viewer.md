@@ -37,6 +37,7 @@ npx playwright test --trace on
 | `on-all-retries` | Record a trace on every retry attempt |
 | `retain-on-failure` | Record traces for all tests but only keep them for failures |
 | `retain-on-first-failure` | Record traces but only keep for the first failure |
+| `retain-on-failure-and-retries` | Record traces but keep them for failures and retries (v1.59) |
 
 For local development, `on` is convenient for immediate debugging. For CI, `on-first-retry` is the recommended default to balance coverage and performance.
 
@@ -104,6 +105,26 @@ Full DOM snapshots captured at three moments for each action:
 - **Before** -- the page state when the action started.
 - **Action** -- the page state during input (click targets are highlighted).
 - **After** -- the page state after the action completed.
+
+Release-note additions: the viewer has a pretty-print toggle for JSON request/response bodies (v1.60); recordings include WebSocket requests (v1.61).
+
+### CLI trace analysis for agents (v1.59)
+
+Coding agents can run `npx playwright trace` to explore a trace and understand failing or flaky tests from the command line (documented in the v1.59 release notes only; the CLI reference page documents just `show-trace`):
+
+```bash
+npx playwright trace open test-results/example-has-title-chromium/trace.zip
+npx playwright trace actions --grep="expect"
+npx playwright trace action 9
+npx playwright trace snapshot 9 --name after
+npx playwright trace close
+```
+
+`trace open` loads a trace, `trace actions` lists actions (optionally filtered with `--grep`), `trace action <n>` shows one action with its error and the available snapshots (`before`, `after`), `trace snapshot <n> --name <before|after>` prints the page snapshot, and `trace close` closes the trace.
+
+### Tracing API
+
+`Tracing.start` (via `context.tracing.start()`) options: `screenshots` (capture screenshots during tracing, used to build a timeline preview), `snapshots` and `sources`; `live` (v1.59): when enabled, "the trace is written to an unarchived file that is updated in real time as actions occur, instead of caching changes and archiving them into a zip file at the end", useful for live trace viewing during test execution. In JS, `snapshots` is `boolean | { dom?, aria?, screen? }` (`true` is a shortcut for `{ dom: true }`); in Java, Python and C# the v1.63 options `ariaSnapshots` (capture an aria snapshot of the page on every action) and `screenSnapshots` (capture a screenshot of the page on every action) are separate booleans. `Tracing.startHar` / `stopHar` (v1.60) record a HAR alongside tracing, see `../api/tracing.md`.
 
 Snapshots are interactive: you can click elements, inspect them, and open them in a separate window to use browser DevTools (inspect HTML, CSS, Console).
 
@@ -216,5 +237,5 @@ export default defineConfig({
 | --- | --- | --- |
 | `mode` | `"off"` | When to record traces |
 | `screenshots` | `true` | Capture screenshots during tracing |
-| `snapshots` | `true` | Capture DOM snapshots |
+| `snapshots` | `true` | Capture DOM snapshots. Since v1.63 also accepts an object `{ dom, aria, screen }` to select DOM, aria, and screen captures; the trace viewer adds a **Display Aria** mode |
 | `sources` | `true` | Include test source code in the trace |

@@ -130,6 +130,88 @@ test.describe('sequential within this block', () => {
 });
 ```
 
+## Test Locks
+
+A few tests in your suite may access a shared resource that does not support concurrent access, for example an external service or a global account setting. You can declare named locks on such tests, so that tests sharing a lock name never run at the same time, while all other tests continue to run in parallel. Locks work across files, worker processes and projects.
+
+```typescript
+// settings.spec.ts
+import { test, expect } from '@playwright/test';
+
+test('update user settings', { lock: 'user-settings' }, async ({ page }) => {
+  // ...
+});
+```
+
+```typescript
+// profile.spec.ts
+import { test, expect } from '@playwright/test';
+
+// Never runs concurrently with 'update user settings' above,
+// even in a different project.
+test('rename user', { lock: 'user-settings' }, async ({ page }) => {
+  // ...
+});
+```
+
+A test can declare multiple locks and will only run when all of them are available. You can also declare locks on a group with `test.describe`, applying them to every test inside.
+
+```typescript
+test('reset the database', { lock: ['database', 'external-api'] }, async () => {
+  // ...
+});
+```
+
+You can also add locks to the enclosing file or describe group with `test.describe.configure` (v1.64). Repeated calls add locks without removing existing ones.
+
+```typescript
+test.describe.configure({ lock: 'user-settings' });
+```
+
+Playwright acquires all the locks of a test before the test starts and releases them when it finishes.
+
+> In the default and serial modes, all tests in a file run together in order, so a lock declared on any test is held for the duration of the whole file.
+
+## Avoiding Shared State in Parallel Tests
+
+Playwright runs tests in separate worker processes, each with its own isolated `BrowserContext`, so cookies, storage and in-memory globals are already isolated. Flakiness comes from state that lives *outside* a single test. Here are recipes for the common cases.
+
+### Give each test its own backend data
+
+Two tests that create or edit the same record race with each other. Derive a unique identifier from `testInfo.testId` so parallel tests never collide:
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('creates an order', async ({ page }, testInfo) => {
+  const orderId = `order-${testInfo.testId}`;
+  await page.goto(`/orders/new?id=${orderId}`);
+  await expect(page.getByText(orderId)).toBeVisible();
+});
+```
+
+> `testInfo.testId` is computed from the test file name, test title and project name and is unique within one Playwright session (see `TestCase.id`), but it is the same across separate runs. If several CI runs or machines share the same backend, add a run-specific prefix (for example a CI run ID) to the identifier.
+
+If many tests can share one dataset, create it once per worker instead (see Worker Index & Parallel Index below).
+
+### Write to a unique file path
+
+Multiple tests writing the same path clobber each other. `testInfo.outputPath()` returns a path scoped to the current test:
+
+```typescript
+import { test } from '@playwright/test';
+import fs from 'fs';
+
+test('exports a CSV', async ({ page }, testInfo) => {
+  const file = testInfo.outputPath('export.csv');
+  await fs.promises.writeFile(file, 'a,b,c', 'utf8');
+});
+```
+
+### Keep tests independent
+
+Above all, keep your tests isolated from one another. A test that leaks state through a module-level variable or depends on another test's side effects works when tests run in order, but breaks the moment they run in parallel or in a different order. Set up everything a test needs in that test or in a fixture, and never rely on another test having run first.
+
 ## Worker Index & Parallel Index
 
 Use indices to isolate per-worker data (e.g., unique database users, ports).
@@ -185,6 +267,10 @@ With `workers: 1`, name files with numeric prefixes:
 002-user-login.spec.ts
 003-dashboard.spec.ts
 ```
+
+### Shuffle
+
+`npx playwright test --shuffle [seed]` (v1.64): "Schedule tests in a random order: test files are shuffled, and so are individual tests in parallel mode. Tests that must run together, for example in a serial suite, keep their order. The seed is printed at the start of the run, pass it to reproduce the same order."
 
 ### Test List File
 

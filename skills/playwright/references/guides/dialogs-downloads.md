@@ -27,6 +27,8 @@ test("handle confirm dialog", async ({ page }) => {
 });
 ```
 
+Since v1.63, `page.on('dialogClosed')` and `context.on('dialogClosed')` fire when a dialog closes (accept, dismiss, or manually in a headed browser).
+
 ### Accept and Dismiss
 
 ```typescript
@@ -178,12 +180,21 @@ export default defineConfig({
 });
 ```
 
-| Mode | Behavior |
-|------|----------|
-| `"off"` | No videos recorded (default) |
-| `"on"` | Record video for every test |
-| `"retain-on-failure"` | Record all but delete videos for passing tests |
-| `"on-first-retry"` | Record only when a test is retried |
+The `video` option supports the same set of modes as `trace`, and they record and keep recordings using the same rules. Defaults to `'off'`. The initial run of a test is the "first run"; subsequent runs caused by retries are "retries".
+
+| Mode | Records a video on | Keeps the video when |
+|------|--------------------|----------------------|
+| `"off"` | never (default) | - |
+| `"on"` | every run | always |
+| `"retain-on-failure"` | every run | that run failed |
+| `"retain-on-first-failure"` | first run only | the first run failed |
+| `"retain-on-failure-and-retries"` | every run | that run failed, or it is a retry |
+| `"on-first-retry"` | first retry only | always |
+| `"on-all-retries"` | every retry | always |
+
+`on-all-retries`, `retain-on-first-failure` and `retain-on-failure-and-retries` were added in v1.61. Scenarios with `retries: 2`: passes on first run: `on` keeps the first run, the retry modes keep nothing; fails then passes on retry: `on` keeps first run + retry, `retain-on-failure` keeps first run, `retain-on-first-failure` keeps first run, `retain-on-failure-and-retries` keeps first run + retry, `on-first-retry` / `on-all-retries` keep the first retry; fails on every run: `on`, `retain-on-failure` and `retain-on-failure-and-retries` keep all three runs, `retain-on-first-failure` keeps the first run, `on-first-retry` keeps the first retry, `on-all-retries` keeps both retries.
+
+Since v1.64 the `video` option, `recordVideo`, and `Screencast.start` accept `fps` (frame rate in frames per second; `video` / `recordVideo` default `25`; Firefox and WebKit currently capture up to 25 frames per second), and "videos are encoded with VP9 instead of VP8, which takes less CPU and produces smaller files" (release notes). `Screencast.showActions.style` takes CSS declarations and replaces the deprecated `fontSize`. `recordVideo.dir` is optional (defaults to `artifactsDir`). See `videos.md` and `../api/screencast.md`. The `videosPath` / `videoSize` context options were removed in v1.60; use `recordVideo`. `page.screencast` (v1.59) provides `start` / `stop`, `showActions`, `showChapter`, `showOverlay`, and `onFrame` frame capture.
 
 ### Custom Video Size
 
@@ -233,3 +244,8 @@ const path = await page.video()?.path();
 ```
 
 Videos are only fully written after the browser context is closed.
+
+## Related
+
+- [Videos](./videos.md)
+- [Screencast](../api/screencast.md)

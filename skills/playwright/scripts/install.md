@@ -2,6 +2,16 @@
 
 Playwright およびブラウザバイナリのインストール・更新・管理。
 
+## システム要件
+
+- Node.js: latest 22.x, 24.x or 26.x
+- Windows 11+, Windows Server 2019+ or Windows Subsystem for Linux (WSL)
+- macOS 14 (Sonoma) or later
+- WebKit は v1.59 で macOS 14 サポートを削除（release-notes-js.md）
+- Debian 12 / 13, Ubuntu 22.04 / 24.04 / 26.04 (x86-64 or arm64)
+
+出典: intro-js.md（v1.64.1）。
+
 ## 新規プロジェクトのセットアップ（npm）
 
 ```sh
@@ -43,6 +53,14 @@ npx playwright install chromium --with-deps
 ```
 
 Linux 環境で Chromium/Firefox/WebKit を動かすために必要なシステムパッケージも一緒にインストールする。
+
+## 未使用ブラウザを削除せずにインストール
+
+```sh
+npx playwright install --no-remove
+```
+
+未使用のブラウザを削除しない（`install` オプション。出典: test-cli-js.md）。
 
 ## OS 依存パッケージのみインストール（ブラウザバイナリなし）
 

@@ -101,15 +101,15 @@ await expect(page.getByRole("listitem")).toHaveCount(3);
 
 | Method | Signature |
 |--------|-----------|
-| `toHaveAttribute` | `(name: string, value?: string \| RegExp, options?: { ignoreCase?: boolean; timeout?: number }) => Promise<void>` |
+| `toHaveAttribute` | `(name: string, value?: string \| RegExp, options?: { ignoreCase?: boolean; timeout?: number }) => Promise<void>` (v1.62: `value` is optional; "If not specified, the assertion verifies that the attribute is present." The v1.64.1 API source lists this param change under `langs: python`; in JS the value-less form is the separate `toHaveAttribute(name, options?)` overload) |
 | `toHaveClass` | `(expected: string \| RegExp \| (string \| RegExp)[], options?: { timeout?: number }) => Promise<void>` |
 | `toContainClass` | `(expected: string \| string[], options?: { timeout?: number }) => Promise<void>` |
-| `toHaveCSS` | `(name: string, value: string \| RegExp, options?: { timeout?: number }) => Promise<void>` |
+| `toHaveCSS` | `(name: string, value: string \| RegExp, options?: { pseudo?: "before" \| "after"; timeout?: number }) => Promise<void>` (`pseudo`: pseudo-element to read computed styles from, since v1.60) |
 | `toHaveId` | `(id: string \| RegExp, options?: { timeout?: number }) => Promise<void>` |
 | `toHaveJSProperty` | `(name: string, value: Object, options?: { timeout?: number }) => Promise<void>` |
 
 ```ts
-// Attribute exists
+// Attribute exists (overload without value)
 await expect(page.getByRole("link")).toHaveAttribute("href");
 
 // Attribute has specific value
@@ -200,7 +200,11 @@ Auto-retrying assertions for `Page` objects. Created via `expect(page)`.
 | `toHaveTitle` | `(titleOrRegExp: string \| RegExp, options?: { timeout?: number }) => Promise<void>` |
 | `toHaveURL` | `(url: string \| RegExp \| ((url: URL) => boolean), options?: { ignoreCase?: boolean; timeout?: number }) => Promise<void>` |
 | `toHaveScreenshot` | `(name?: string \| string[], options?: ScreenshotOptions) => Promise<void>` |
+| `toMatchAriaSnapshot` | `(expected: string, options?: { timeout?: number }) => Promise<void>` (since v1.60; asserts that the page body matches the given accessibility snapshot) |
+| `toMatchAriaSnapshot` (#2) | `(options?: { name?: string; timeout?: number }) => Promise<void>` (since v1.60; snapshot stored in a separate `.aria.yml` file at `expect.toMatchAriaSnapshot.pathTemplate` and/or `snapshotPathTemplate`; `name` generates sequential names if not specified) |
 | `not` | `PageAssertions` |
+
+Notes (v1.62 / v1.64): `toHaveScreenshot` stores snapshots as WebP when the name ends in `.webp` (v1.62); `expect.toHaveScreenshot.type: 'webp'` (config, v1.64) stores unnamed screenshots as WebP. Most operations and web-first assertions accept a `signal` option (`AbortSignal`, v1.62); the default timeout still applies unless `timeout: 0`. `expect.soft.poll(...)` is supported (v1.61). `--update-snapshots=missing` now passes the run (v1.64); the default mode is named `'default'`.
 
 ```ts
 // Title

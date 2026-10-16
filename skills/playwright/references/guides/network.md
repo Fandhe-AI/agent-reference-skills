@@ -134,6 +134,17 @@ export default defineConfig({
 });
 ```
 
+Since v1.63, `httpCredentials` is an object or an array: "Pass an array to use different credentials for different origins. The first entry that matches the request origin is used, and entries with no origin match any request." If no origin is specified, the username and password are sent to any servers upon unauthorized responses. `origin` (`scheme://host:port`) restrains sending http credentials on a specific origin. `send` (`"unauthorized"` default | `"always"`) only applies to the requests sent from the corresponding `APIRequestContext` and does not affect requests sent from the browser: `'always'` sends the `Authorization` header with basic authentication credentials with each API request, `'unauthorized'` sends the credentials only when a 401 (Unauthorized) response with `WWW-Authenticate` header is received. `npx playwright codegen --http-credentials` is also available (v1.63).
+
+```typescript
+use: {
+  httpCredentials: [
+    { username: "a", password: "x", origin: "https://a.example.com" },
+    { username: "b", password: "y" },
+  ],
+},
+```
+
 ## HTTP Proxy
 
 Route traffic through a proxy server:
@@ -301,3 +312,8 @@ export default defineConfig({
   },
 });
 ```
+
+## Related
+
+- [Mock APIs](./mock-apis.md)
+- [Navigations](./navigations.md)

@@ -27,8 +27,13 @@ npx playwright test tests/auth/
 # Run in headed mode (default is headless)
 npx playwright test --headed
 
-# Run in debug mode (opens Playwright Inspector, sets PWDEBUG=1)
+# Run with Playwright Inspector. Shortcut for PWDEBUG=1 and
+# --timeout=0 --max-failures=1 --headed --workers=1
 npx playwright test --debug
+
+# --debug [mode]: the optional mode is "inspector" (default) or "cli";
+# "cli" allows attaching and debugging over the CLI (v1.59)
+npx playwright test --debug=cli
 
 # Run in interactive UI mode
 npx playwright test --ui
@@ -50,6 +55,13 @@ npx playwright test -g "login"
 
 # Invert grep (run tests NOT matching pattern)
 npx playwright test --grep-invert "slow"
+npx playwright test -G "slow"   # -G shorthand (v1.61)
+
+# --shuffle [seed] (v1.64): schedule tests in a random order. Test files are shuffled, and so are
+# individual tests in parallel mode; tests that must run together (for example in a serial suite)
+# keep their order. The seed is printed at the start of the run, pass it to reproduce the same order.
+npx playwright test --shuffle
+npx playwright test --shuffle 12345
 
 # Run only specific projects
 npx playwright test --project chromium --project firefox
@@ -103,12 +115,20 @@ npx playwright test --reporter json
 npx playwright test --reporter junit
 npx playwright test --reporter html
 npx playwright test --reporter blob
+
+# --add-reporter <reporter> (v1.63): reporter to add on top of the reporters configured in the
+# config file, comma-separated; a built-in reporter name or a path to a custom reporter file.
+# Unlike --reporter, this keeps the configured reporters instead of replacing them.
+npx playwright test --add-reporter json
 ```
 
 ### Snapshots
 
 ```bash
-# Update snapshots (modes: all, changed, missing, none)
+# Update snapshots (modes: all, changed, missing, none, default)
+# Breaking (v1.64): -u missing now passes the run after writing missing snapshots;
+# the mode that writes missing snapshots and then fails the test is renamed 'default'
+# (the behaviour without the flag). The flag with no value means 'changed'.
 npx playwright test --update-snapshots all
 npx playwright test -u all
 npx playwright test -u changed
@@ -133,6 +153,7 @@ npx playwright test --trace on-first-retry
 npx playwright test --trace on-all-retries
 npx playwright test --trace retain-on-failure
 npx playwright test --trace retain-on-first-failure
+npx playwright test --trace retain-on-failure-and-retries
 ```
 
 ### Sharding
@@ -236,6 +257,9 @@ npx playwright install --no-shell
 npx playwright install-deps
 npx playwright install-deps chromium
 
+# --no-remove: don't remove unused browsers (v1.63)
+npx playwright install --no-remove
+
 # Remove installed browsers
 npx playwright uninstall
 ```
@@ -261,6 +285,9 @@ npx playwright codegen --target javascript https://example.com
 
 # Set custom test ID attribute
 npx playwright codegen --test-id-attribute data-testid https://example.com
+
+# HTTP Basic Authentication while recording (v1.63); credentials are sent to any origin that asks and appear in the generated code
+npx playwright codegen --http-credentials="username:password" example.com
 ```
 
 ## Show Trace
@@ -320,6 +347,20 @@ Removes cached browser binaries and other Playwright artifacts.
 ```bash
 npx playwright clear-cache
 ```
+
+## MCP Server and playwright-cli
+
+Since v1.62 Playwright bundles the Playwright MCP server and `playwright-cli` (a command-line interface for browser automation designed for coding agents), runnable via `npx playwright mcp` and `npx playwright cli`.
+
+```bash
+npx playwright cli --help
+```
+
+See `mcp.md` and `playwright-cli.md` in this category for details.
+
+## Trace Analysis
+
+`npx playwright trace` (open / actions / action / snapshot / close) lets agents explore a trace from the command line (v1.59). It is documented only in the release notes; see `trace-viewer.md`.
 
 ## Version and Help
 

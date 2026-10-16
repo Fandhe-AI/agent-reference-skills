@@ -187,8 +187,15 @@ test("filter by not having child", async ({ page }) => {
 ```typescript
 test("filter by visibility", async ({ page }) => {
   await page.locator("button").filter({ visible: true }).click();
+
+  // Since v1.63: Locator.visible() (recommended over the :visible CSS pseudo-class)
+  await page.locator("button").visible().click();
 });
 ```
+
+`locator.visible()` returns a locator that matches only visible elements, ignoring the invisible ones. Visibility is checked every time the locator is used, and not at the moment of the `visible()` call. To match invisible elements instead, use `locator.filter({ visible: false })`.
+
+Elements inside hidden iframes are considered hidden by actions, `Locator.isVisible()` and `toBeVisible()` (v1.64).
 
 ## Locator Operators
 
@@ -226,6 +233,20 @@ test("or operator", async ({ page }) => {
   await newEmail.click();
 });
 ```
+
+### within() -- scope one locator inside another (v1.64)
+
+`locator.within(locator)` "returns a locator that matches this locator's elements inside each element matched by `locator`", for example to find a "Save" button inside a particular dialog. Relative locators, such as `nth()` or `first()`, are resolved separately inside each matched parent: `page.getByRole('cell').nth(2).within(page.getByRole('row'))` picks the third cell of every row, not the third cell in the whole table.
+
+```typescript
+test("within operator", async ({ page }) => {
+  await page.getByRole("button", { name: "Save" }).within(page.getByRole("dialog")).click();
+});
+```
+
+### getByRef (v1.64)
+
+`page.getByRef(ref)` locates an element by its aria ref. Refs like `[ref=e2]` are reported by `page.ariaSnapshot()` when called with the `"ai"` mode, and resolve against the latest snapshot taken in the element's frame. For example, for the snapshot line `- button "Submit" [ref=e2]`, `await page.getByRef('e2').click()` clicks the button. It replaces `Locator.ariaRef()`, which was removed in v1.60. `locator.normalize()` (v1.59) turns a ref locator into resilient locator code, e.g. `(await page.getByRef('e2').normalize()).toString()` gives `getByRole('button', { name: 'Submit' })`.
 
 ### first(), last(), nth()
 
@@ -293,6 +314,7 @@ Playwright extends CSS selectors with custom pseudo-classes.
 ```typescript
 test("CSS pseudo-classes", async ({ page }) => {
   // :visible -- only visible elements
+  // (since v1.63 prefer the Locator.visible() method: page.getByRole("button").visible())
   await page.locator("button:visible").click();
 
   // :has-text() -- elements containing text (anywhere inside)
