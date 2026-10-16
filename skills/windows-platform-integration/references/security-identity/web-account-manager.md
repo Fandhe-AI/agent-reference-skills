@@ -81,3 +81,4 @@ WebTokenRequestResult result = await WebAuthenticationCoreManager.GetTokenSilent
 - [WebAuthenticationCoreManager](./web-authentication-core-manager.md)
 - [WebAccountProvider](./web-account-provider.md)
 - [OAuth2Manager](./oauth2-manager.md)
+- [Official docs: Web Account Manager](https://learn.microsoft.com/en-us/windows/apps/develop/security/web-account-manager)

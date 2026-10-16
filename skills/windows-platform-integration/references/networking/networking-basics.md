@@ -80,3 +80,4 @@ await socket.ConnectAsync(destination, SocketProtectionLevel.Tls12);
 - [StreamSocket](./stream-socket.md)
 - [StreamWebSocket](./stream-web-socket.md)
 - [MessageWebSocket](./message-web-socket.md)
+- [Official docs: Networking basics](https://learn.microsoft.com/en-us/windows/apps/develop/networking/networking-basics)

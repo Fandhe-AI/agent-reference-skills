@@ -50,3 +50,4 @@ FileType declarations by app category:
 - [Receive content in your app (Share Target)](./share-sheet-receive.md)
 - [DataPackage](./data-package.md)
 - [DataPackageView](./data-package-view.md)
+- [Official docs: DataFormat reference](https://learn.microsoft.com/en-us/windows/apps/develop/windows-integration/dataformat-reference)

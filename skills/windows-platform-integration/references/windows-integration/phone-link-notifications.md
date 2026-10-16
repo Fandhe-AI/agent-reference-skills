@@ -37,3 +37,4 @@ Information to email to crossdeviceexperiences@microsoft.com when requesting acc
 - [Windows Resume (cross-device task continuity)](./cross-device-resume-overview.md)
 - [Windows Resume with promoted install (Android only)](./cross-device-resume-promoted-install.md)
 - [Connected experiences overview](./connected-experiences-overview.md)
+- [Official docs: Phone Link notification integration](https://learn.microsoft.com/en-us/windows/apps/develop/windows-integration/phone-link-notification-integration)

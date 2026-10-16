@@ -69,3 +69,5 @@ reg unload hklm\sac2
 
 - [Certificate](../security-identity/certificate.md)
 - [AppContainer](../security-identity/appcontainer.md)
+- [Official docs: Smart App Control overview](https://learn.microsoft.com/en-us/windows/apps/develop/smart-app-control/overview)
+- [Official docs: Test your app with Smart App Control](https://learn.microsoft.com/en-us/windows/apps/develop/smart-app-control/test-your-app-with-smart-app-control)

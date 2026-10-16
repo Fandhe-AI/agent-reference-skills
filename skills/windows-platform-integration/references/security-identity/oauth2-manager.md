@@ -82,3 +82,5 @@ protected override void OnActivated(IActivatedEventArgs args)
 
 - [Web Account Manager in WinUI 3](./web-account-manager.md)
 - [WebAuthenticationBroker](./web-authentication-broker.md)
+- [Official docs: OAuth 2.0 in Windows App SDK](https://learn.microsoft.com/en-us/windows/apps/develop/security/oauth2)
+- [Official docs: OAuth2Manager API](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.security.authentication.oauth.oauth2manager)

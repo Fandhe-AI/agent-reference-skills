@@ -57,3 +57,4 @@ IReadOnlyList<PointerDevice> pointerDevices = Windows.Devices.Input.PointerDevic
 - [Pointer input](./pointer-input.md)
 - [Keyboard input](./keyboard-input.md)
 - [Pen and Windows Ink](./pen-and-ink.md)
+- [Official docs: Identify input devices](https://learn.microsoft.com/en-us/windows/apps/develop/input/identify-input-devices)

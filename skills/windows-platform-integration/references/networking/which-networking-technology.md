@@ -52,3 +52,4 @@ var socket = new Windows.Networking.Sockets.StreamSocket();
 - [DNS-SD](./dnssd.md)
 - [Proximity](./proximity.md)
 - [Syndication](./syndication.md)
+- [Official docs: Which networking technology](https://learn.microsoft.com/en-us/windows/apps/develop/networking/which-networking-technology)

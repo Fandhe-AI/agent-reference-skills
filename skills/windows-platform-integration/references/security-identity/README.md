@@ -10,7 +10,7 @@
 | Certificate | Represents a cryptography (X.509) certificate. | [certificate.md](./certificate.md) |
 | CryptographicBuffer | Static class with data-management helpers for cryptographic operations: random data generation, encoding conversions, and buffer comparison. | [cryptographic-buffer.md](./cryptographic-buffer.md) |
 | DataProtectionProvider | Cryptographic provider that asynchronously encrypts and decrypts static data or data streams, scoped by a protection descriptor. | [data-protection-provider.md](./data-protection-provider.md) |
-| Fingerprint biometrics (UserConsentVerifier how-to) | How to check for a fingerprint reader and request fingerprint consent before a sensitive action with UserConsentVerifier. | [fingerprint-biometrics.md](./fingerprint-biometrics.md) |
+| Fingerprint biometrics (UserConsentVerifier how-to) | Official fingerprint how-to using UserConsentVerifier; verification uses any Windows Hello method, not fingerprint only. | [fingerprint-biometrics.md](./fingerprint-biometrics.md) |
 | HashAlgorithmProvider | Represents a cryptographic hash provider. | [hash-algorithm-provider.md](./hash-algorithm-provider.md) |
 | KeyCredentialManager | Static class for basic management of key credentials (RSA 2048-bit asymmetric keys) used for Windows Hello and passwordless authentication. | [key-credential-manager.md](./key-credential-manager.md) |
 | KeyCredential | Represents a key credential, an RSA 2048-bit asymmetric key that represents a user's identity for an application. | [key-credential.md](./key-credential.md) |

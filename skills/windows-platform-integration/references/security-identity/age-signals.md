@@ -59,3 +59,4 @@ Platform requirements:
 ## Related
 
 - [App capabilities](./app-capabilities.md)
+- [Official docs: Age signals](https://learn.microsoft.com/en-us/windows/apps/develop/security/age-signals/)

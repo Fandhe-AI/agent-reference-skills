@@ -23,7 +23,9 @@ val appContext = AppContext().apply {
     this.createTime = System.currentTimeMillis()
     this.lastUpdatedTime = System.currentTimeMillis()
     this.type = ProtocolConstants.TYPE_RESUME_ACTIVITY
+    // Also set title and intentUri (or weblink) — required per the field table; the official sample omits them.
 }
+// Send only after onContextRequestReceived has been called
 AppContextManager.sendAppContext(this.applicationContext, appContext, appContextResponse)
 
 AppContextManager.deleteAppContext(this.applicationContext, appContext.contextId, appContextResponse)
@@ -72,6 +74,7 @@ Callbacks:
 </uap:Extension>
 ```
 
+- The official sample omits `title` and `intentUri` (or `weblink`), but the field definitions list `title` as required and one of `intentUri` / `weblink` as required.
 - Each app must deserialize and decrypt the arguments it receives and restore the context itself.
 - Validation: confirm `onContextRequestReceived`, then `onContextResponseSuccess` after sending; verify the "PC is not connected" error when the PC is locked or disconnected.
 - This page is the Android Continuity SDK path; the overview page [cross-device-resume-overview.md](./cross-device-resume-overview.md) describes the WNS raw notification path.
@@ -81,3 +84,4 @@ Callbacks:
 - [Windows Resume (cross-device task continuity)](./cross-device-resume-overview.md)
 - [Protocol activation](./protocol-activation.md)
 - [Install from Phone Link notifications](./phone-link-notifications.md)
+- [Official docs: Windows Resume](https://learn.microsoft.com/en-us/windows/apps/develop/windows-integration/cross-device-resume)

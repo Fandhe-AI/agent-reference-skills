@@ -91,3 +91,4 @@ deferral.Complete();
 - [DatagramSocket](./datagram-socket.md)
 - [StreamWebSocket](./stream-web-socket.md)
 - [MessageWebSocket](./message-web-socket.md)
+- [Official docs: Network communications in the background](https://learn.microsoft.com/en-us/windows/apps/develop/networking/network-communications-in-the-background)

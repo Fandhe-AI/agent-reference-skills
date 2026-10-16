@@ -29,3 +29,4 @@ When Windows searches an eligible sync root, it calls `IStorageProviderSearchHan
 ## Related
 
 - [Search providers](./search-providers.md)
+- [Official docs: Cloud search integration](https://learn.microsoft.com/en-us/windows/apps/develop/search/cloud-search-integration)
