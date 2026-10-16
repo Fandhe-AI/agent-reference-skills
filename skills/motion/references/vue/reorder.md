@@ -32,10 +32,11 @@ const items = ref([0, 1, 2, 3])
 
 ## Notes
 
-- Exceptionally lightweight, but lacks features like multirow, dragging between columns, or dragging within scrollable containers.
+- Supports lists and grids; multidimensional reorder and automatic axis detection were added upstream (see CHANGELOG `Reorder`: Multidimensional reorder).
 - Layout animations occur automatically when items are added/removed.
 - `z-index` requires `position !== "static"` to function properly.
-- Scrollable containers require the `layoutScroll` prop for accurate measurements.
+- If `Reorder.Item` components are within a scrollable container, that container automatically scrolls when an item is dragged towards its top or bottom edge.
+- Source: https://motion.dev/docs/vue-reorder
 
 ## Related
 

@@ -41,7 +41,19 @@ const xWithSpring = springValue(x)
 
 ## Options / Props
 
-All normal spring options are supported via a second argument:
+All normal spring options are supported via a second argument (see [spring](./spring.md)).
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `stiffness` | number | `1` | Spring stiffness; higher = more sudden |
+| `damping` | number | `10` | Opposing force; 0 = infinite oscillation |
+| `mass` | number | `1` | Mass; higher = more sluggish |
+| `bounce` | number | `0.25` | Bounciness from -1 to 1. `0` is no bounce (critically damped) |
+| `visualDuration` | number | — | Time in seconds the animation takes to visually appear to reach its target; overrides `duration` when set |
+| `duration` | number | `800` | Duration in milliseconds |
+| `velocity` | number | — | Initial velocity |
+| `restSpeed` | number | `0.1` | End threshold when speed drops below |
+| `restDelta` | number | `0.01` | End threshold when distance drops below |
 
 ```
 springValue(0, { stiffness: 1000 })

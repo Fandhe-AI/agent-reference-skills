@@ -15,7 +15,7 @@ useEffect(() => {
 
   animate(
     chars,
-    { opacity: 1, y: 0 },
+    { opacity: [0, 1], y: [10, 0] },
     { delay: stagger(0.03) }
   )
 }, [])
@@ -52,7 +52,7 @@ animate(words, { y: ["120%", "0%"] }, { delay: stagger(0.04) })
 ```tsx
 animate(
   chars,
-  { opacity: 1 },
+  { opacity: [0, 1] },
   { delay: stagger(0.05, { from: "center" }) }
 )
 ```
@@ -113,6 +113,7 @@ const opacity = useTransform(progress, range, [0.15, 1])
 - Animate numbers as numbers and format on output; splitting a number into character spans discards useful information.
 - Performance: `transform` and `opacity` are cheapest; per-character blur is a trap (many small overlapping layers are costly). Animate fewer, smaller elements and profile (Chrome Performance panel, MotionScore).
 - CSS cannot target individual letters beyond `::first-letter`; text must be split into elements first.
+- Upstream examples animate to `{ opacity: 1, y: 0 }` and assume initial styles (e.g. `opacity: 0`) are set beforehand in CSS; examples here use keyframes `[from, to]` so they work standalone.
 - Source: https://motion.dev/docs/text-animation (fetched 2026-10).
 
 ## Related
