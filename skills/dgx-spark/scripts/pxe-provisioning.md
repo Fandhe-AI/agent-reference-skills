@@ -1,6 +1,6 @@
 # pxe-provisioning
 
-PXE boot server setup (TFTP / HTTP / DHCP), GRUB netboot configuration, and cloud-init based custom install (mirror repos, ISO repack, OEMDATA USB provisioning) for DGX Spark. Source: pxe.html, enterprise-custom-install.html
+PXE boot server setup (TFTP / HTTP / DHCP), GRUB netboot configuration, and cloud-init based custom install (mirror repos, ISO repack, FastOS repack, OEMDATA USB provisioning) for DGX Spark. Source: pxe.html, enterprise-custom-install.html
 
 ## Mount and extract the BaseOS ISO
 
@@ -231,13 +231,29 @@ python3 -m http.server 8080 --bind 0.0.0.0
 
 ```sh
 cd $work_dir
-./repack_baseos.sh -iso <ISO_FILE|URL> -iso-root <ISO_ROOT_DIR>
+./repack_baseos.sh -iso <ISO_FILE> -iso-root <ISO_ROOT_DIR>
 ```
+
+`-iso` takes a local ISO file path only (no download option is provided).
 
 ```sh
 ./repack_baseos.sh -iso ~/Downloads/tmp/BaseOS/7.4.0/DGXOS-7.4.0-*.iso \
   -iso-root ~/Downloads/tmp/BaseOS/Repack
 ```
+
+## Repack a FastOS recovery image with cloud-init
+
+> **警告**: FastOS recovery image での再フラッシュは破壊的操作。対象システムのローカルストレージ（ユーザーデータ・ソフトウェア・設定・ログ）が消去される。事前にバックアップし、イメージと対象システムを確認すること。
+
+```sh
+repack_fastos.sh -f <fastos_tarball> -c <cloud_init_directory>
+```
+
+```sh
+sudo ./repack_fastos.sh -f ~/Downloads/tmp/usb.customer-1.135.33.tar.gz -c ./oemdata/cloud-init
+```
+
+The recovery tarball is downloaded beforehand from System Recovery. The repacked FastOS contains the script to create a bootable USB drive used to flash the DGX Spark.
 
 ## Open firewall ports for local mirror/repo HTTP servers
 
