@@ -3,8 +3,8 @@ name: tanstack-query
 description: >
   TanStack Query (React Query) v5 (@tanstack/react-query) の API リファレンス。
   useQuery, useQueries, useInfiniteQuery, useMutation, useSuspenseQuery,
-  QueryClient, QueryClientProvider, queryOptions, HydrationBoundary,
-  invalidateQueries, prefetchQuery, staleTime, gcTime, placeholderData,
+  QueryClient, QueryClientProvider, queryOptions, HydrationBoundary, invalidateQueries, prefetchQuery,
+  skipToken, keepPreviousData, placeholderData, staleTime, gcTime,
   optimistic updates, SSR / hydration, persistQueryClient, eslint-plugin-query。
   kubb（フック生成側）とは別。
 user-invocable: false
@@ -14,6 +14,8 @@ user-invocable: false
 
 TanStack Query (`@tanstack/react-query`) v5 の公式ドキュメントを蒸留したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+対象 @tanstack/react-query 5.104.3（TanStack/query release-2026-10-15-0754 で docs を pin、取得日 2026-10-17）。
 
 ## ディレクトリ構成
 
@@ -105,6 +107,20 @@ skills/tanstack-query/
       query-error-reset-boundary.md
       use-query-error-reset-boundary.md
       hydration.md
+      use-is-restoring.md
+      keep-previous-data.md
+      skip-token.md
+      hash-key.md
+      match-query.md
+      match-mutation.md
+      partial-match-key.md
+      replace-equal-deep.md
+      noop.md
+      should-throw-error.md
+      query.md
+      mutation.md
+      mutation-observer.md
+      cancelled-error.md
     plugins/
       README.md
       eslint-plugin-query.md
@@ -144,6 +160,8 @@ skills/tanstack-query/
 2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
+公式 API Reference は TypeDoc 生成（functions / classes / interfaces / type-aliases / variables）に移行済み。本スキルは API 単位のページを維持し、interface / type-alias のページは個別には収録しない。
+
 ## タスク → カテゴリ マッピング
 
 | タスク | カテゴリ | 参照 README |
@@ -156,8 +174,9 @@ skills/tanstack-query/
 | `useQuery` / `useMutation` / `useInfiniteQuery` 等フックのシグネチャ・オプションを知りたい | api | [references/api/README.md](references/api/README.md) |
 | `QueryClient` / `QueryCache` / `QueryObserver` 等コアクラスの API を知りたい | api | [references/api/README.md](references/api/README.md) |
 | `queryOptions` / `infiniteQueryOptions` / `mutationOptions` / `hydration` の型・関数を知りたい | api | [references/api/README.md](references/api/README.md) |
+| `skipToken` / `keepPreviousData` / `hashKey` / `matchQuery` / `replaceEqualDeep` 等のユーティリティや `Query` / `Mutation` / `MutationObserver` / `CancelledError` クラスを知りたい | api | [references/api/README.md](references/api/README.md) |
 | `eslint-plugin-query` の各ルールを知りたい | plugins | [references/plugins/README.md](references/plugins/README.md) |
-| `persistQueryClient` / Persister / `broadcastQueryClient` によるキャッシュ永続化を知りたい | plugins | [references/plugins/README.md](references/plugins/README.md) |
+| `persistQueryClient` / Persister / `broadcastQueryClient` / `useIsRestoring` によるキャッシュ永続化を知りたい | plugins | [references/plugins/README.md](references/plugins/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
 | 楽観的更新のロールバック・SSR での hydration 実装例を知りたい | samples | [samples/README.md](samples/README.md) |
 | オフラインキャッシュ永続化・フックのテスト実装例を知りたい | samples | [samples/README.md](samples/README.md) |

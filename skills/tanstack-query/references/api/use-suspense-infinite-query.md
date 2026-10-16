@@ -19,7 +19,12 @@ const result = useSuspenseInfiniteQuery({
 
 ## Options / Props
 
-Accepts the same configuration as `useInfiniteQuery`, except `throwOnError`, `enabled`, and `placeholderData` are not supported.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| (all `useInfiniteQuery` options) | same as `useInfiniteQuery` | — | Same configuration as `useInfiniteQuery`, except the options below |
+| `throwOnError` | — | — | Not supported |
+| `enabled` | — | — | Not supported |
+| `placeholderData` | — | — | Not supported |
 
 ## Returns
 

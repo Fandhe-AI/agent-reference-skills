@@ -33,12 +33,14 @@ useQuery({
 | --- | --- | --- | --- |
 | `storage` | storage backend | — | Persistence target |
 | `maxAge` | number | 24 hours | Max age of a persisted entry |
-| `prefix` | string | — | Key prefix for stored entries |
-| `serialize` / `deserialize` | function | — | Custom (de)serialization |
+| `prefix` | string | `'tanstack-query'` | Key prefix for stored entries; storage key is `prefix-queryHash` |
+| `serialize` | `(persistedQuery: PersistedQuery) => string` | `JSON.stringify` | Custom serialization |
+| `deserialize` | `(cachedString: string) => PersistedQuery` | `JSON.parse` | Custom deserialization |
 | `buster` | string | — | Cache-busting string |
-| `refetchOnRestore` | boolean | — | Whether to refetch immediately after restoring |
+| `refetchOnRestore` | `boolean \| 'always'` | `true` | `true`: refetch on restoration if data is stale; `false`: never; `'always'`: always refetch |
+| `filters` | `QueryFilters` | — | Narrows down which queries are persisted |
 
-## Returned Utilities
+### Returned Utilities
 
 | Name | Description |
 | --- | --- |

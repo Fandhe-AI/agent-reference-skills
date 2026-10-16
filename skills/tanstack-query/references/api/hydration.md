@@ -21,7 +21,9 @@ const serialized = JSON.stringify(dehydratedState)
 </HydrationBoundary>
 ```
 
-## dehydrate(client, options)
+## Options / Props
+
+### dehydrate(client, options)
 
 Creates a frozen representation of a `QueryClient` cache for later restoration.
 
@@ -35,7 +37,7 @@ Creates a frozen representation of a `QueryClient` cache for later restoration.
 
 Returns `DehydratedState` (internal format, not guaranteed stable).
 
-## hydrate(client, dehydratedState, options)
+### hydrate(client, dehydratedState, options)
 
 Restores previously dehydrated state into a `QueryClient`.
 
@@ -47,7 +49,15 @@ Restores previously dehydrated state into a `QueryClient`.
 | `deserializeData` | `(data: any) => any` | Transforms data before caching |
 | `queryClient` | `QueryClient` | Custom client (otherwise uses context) |
 
-## HydrationBoundary (component)
+### Helper functions
+
+| Signature | Description |
+|------|-------------|
+| `dehydrateQuery(query: Query, serializeData?: TransformerFn, shouldRedactErrors?: (error: unknown) => boolean): DehydratedQuery` | Dehydrates a single `Query` into a serializable snapshot. Most query config (e.g. `queryFn`, `staleTime`) is not dehydrated; a still-`pending` query's in-flight promise is dehydrated too so it can be resumed instead of re-fetched |
+| `defaultShouldDehydrateQuery(query: Query): boolean` | Default `shouldDehydrateQuery` predicate used by `dehydrate`; only dehydrates queries whose status is `'success'` |
+| `defaultShouldDehydrateMutation(mutation: Mutation): boolean` | Default `shouldDehydrateMutation` predicate used by `dehydrate`; only dehydrates mutations that are currently paused |
+
+### HydrationBoundary (component)
 
 Wraps an application subtree to merge dehydrated state with the current `QueryClient`.
 
@@ -60,6 +70,7 @@ Wraps an application subtree to merge dehydrated state with the current `QueryCl
 ## Notes
 
 - Some storage systems (such as the browser Web Storage API) require values to be JSON serializable; non-JSON types like `Error` objects need custom serialization via `serializeData`/`deserializeData`
+- `hydrate` takes `Partial<DehydratedState>`: `queries` and `mutations` are each optional. Queries not yet in the cache are built from the snapshot; existing ones are only updated when the dehydrated data is newer. A dehydrated in-flight promise is resumed via `query.fetch()` instead of re-invoking `queryFn`
 - Existing queries only get overwritten if incoming data has a newer timestamp; otherwise the cached version persists
 - Only queries can be dehydrated with a `HydrationBoundary`; mutations are excluded. New queries are intelligently merged based on update timestamp
 

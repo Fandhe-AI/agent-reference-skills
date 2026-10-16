@@ -56,6 +56,10 @@ const queryClient = new QueryClient({
 | `getMutationCache()` | Returns the connected mutation cache instance |
 | `clear()` | Clears all connected caches and subscribers |
 | `resumePausedMutations()` | Resumes mutations paused due to network disconnection |
+| `mount()` | Called by a framework adapter's `QueryClientProvider`-equivalent when it mounts; starts listening for focus/online events and resumes paused mutations. Ref-counted via an internal mount count, so nested or multiple providers sharing the same `QueryClient` do not tear down the shared listeners until the last one unmounts |
+| `unmount()` | Inverse of `mount()`; only tears down the focus/online listeners once the mount count returns to `0` |
+| `defaultQueryOptions(options)` | Called by framework adapters (e.g. inside `useQuery`) to resolve caller options into their defaulted form: client `defaultOptions.queries`, then `setQueryDefaults` for the `queryKey`, then the caller's options on top. A no-op if the options are already defaulted (`_defaulted: true`) |
+| `defaultMutationOptions(options?)` | Mutation counterpart: client `defaultOptions.mutations`, then `setMutationDefaults` for the `mutationKey`, then the caller's options on top. A no-op if `_defaulted: true` |
 
 ## Notes
 
@@ -65,6 +69,13 @@ const queryClient = new QueryClient({
 - Query defaults registration order matters: define generic keys first, then specific ones, so specific defaults override generic ones
 - Unlike `invalidateQueries`, `refetchQueries` refetches all matching queries regardless of activity status
 - Unlike `removeQueries`, `invalidateQueries` preserves queries in cache while marking them invalid
+- Deprecated (each "will be removed in the next major version"):
+  - `fetchQuery` - use `queryClient.query(options)` instead
+  - `prefetchQuery` - use `queryClient.query(options)` instead; swallow errors with `.catch(noop)`
+  - `ensureQueryData` - use `queryClient.query({ ...options, staleTime: 'static' })` instead
+  - `fetchInfiniteQuery` - use `queryClient.infiniteQuery(options)` instead
+  - `prefetchInfiniteQuery` - use `queryClient.infiniteQuery(options)` instead; swallow errors with `.catch(noop)`
+  - `ensureInfiniteQueryData` - use `queryClient.infiniteQuery({ ...options, staleTime: 'static' })` instead
 
 ## Related
 

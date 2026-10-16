@@ -19,7 +19,12 @@ const result = useSuspenseQueries({
 
 ## Options / Props
 
-Accepts the same configuration as `useQueries`, except individual queries cannot include `throwOnError`, `enabled`, or `placeholderData`.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `queries` | same as `useQueries` | — | Same configuration as `useQueries` for each query, except the options below |
+| `queries[].throwOnError` | — | — | Not available |
+| `queries[].enabled` | — | — | Not available |
+| `queries[].placeholderData` | — | — | Not available |
 
 ## Returns
 

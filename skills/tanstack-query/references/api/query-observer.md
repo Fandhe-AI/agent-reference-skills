@@ -17,10 +17,6 @@ const unsubscribe = observer.subscribe((result) => {
 })
 ```
 
-## Options / Props
-
-The options for the `QueryObserver` are exactly the same as those of `useQuery`.
-
 ## Methods
 
 | Name | Description |
@@ -29,6 +25,7 @@ The options for the `QueryObserver` are exactly the same as those of `useQuery`.
 
 ## Notes
 
+- The options for the `QueryObserver` are exactly the same as those of `useQuery`
 - Provides a lower-level alternative to framework-specific hooks, allowing more manual control over query observation and lifecycle management
 
 ## Related

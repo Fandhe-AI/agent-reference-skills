@@ -17,7 +17,12 @@ const result = useSuspenseQuery({
 
 ## Options / Props
 
-Accepts the same options as `useQuery`, except `throwOnError`, `enabled`, and `placeholderData` are not available.
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| (all `useQuery` options) | same as `useQuery` | — | Same options as `useQuery`, except the options below |
+| `throwOnError` | — | — | Not available |
+| `enabled` | — | — | Not available |
+| `placeholderData` | — | — | Not available |
 
 ## Returns
 

@@ -47,7 +47,7 @@ const { data } = useQuery({
 
 - When `enabled` is `false`: cached data (if any) makes the query `success`; otherwise it starts in `pending`/`fetchStatus: 'idle'`. It ignores `invalidateQueries`/`refetchQueries` and does not auto-refetch.
 - `refetch()` still works with `enabled: false`, but **not** with `skipToken` — calling `refetch()` on a `skipToken` query throws `Missing queryFn`.
-- Use `isLoading` (`isPending && isFetching`) instead of `isPending` to detect a genuine first-time fetch on lazy/disabled queries — this replaces the removed `isInitialLoading` flag.
+- Use `isLoading` (`isPending && isFetching`) instead of `isPending` to detect a genuine first-time fetch on lazy/disabled queries — `isInitialLoading` is deprecated in favor of `isLoading` and will be removed in the next major version.
 
 ## Related
 

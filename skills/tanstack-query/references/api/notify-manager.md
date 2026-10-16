@@ -37,6 +37,8 @@ notifyManager.setScheduler(requestAnimationFrame)
 notifyManager.setScheduler((cb) => setTimeout(cb, 10))
 ```
 
+- The exported `defaultScheduler` (`ScheduleFunction = systemSetTimeoutZero`) is the notify manager's default scheduler; it schedules the callback with `setTimeout(callback, 0)`. Pass it to `setScheduler` to restore the default
+
 ## Related
 
 - [focusManager](./focus-manager.md)
