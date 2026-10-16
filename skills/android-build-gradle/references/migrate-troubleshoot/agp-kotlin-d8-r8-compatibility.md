@@ -8,7 +8,7 @@ Each Kotlin compiler version requires a minimum Android Gradle plugin (AGP) vers
 // libs.versions.toml — pick a Kotlin version compatible with the AGP version in use
 [versions]
 kotlin = "2.4.0"
-agp = "9.3.0"
+agp = "9.4.0"
 ```
 
 ## Options / Props

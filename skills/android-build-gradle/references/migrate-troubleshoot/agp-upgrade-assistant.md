@@ -30,6 +30,7 @@ android {
 - If sync fails after upgrading, try an incremental path (e.g. 7.0 to 8.0 to 8.5 to 9.0) instead of jumping directly to the latest version, or run/disable individual steps to isolate the failure.
 - Can migrate the manifest `package` attribute to the `namespace` build property automatically.
 - For AGP 9.x, Google also provides AI-assisted agent skills for non-KMP and KMP apps (`github.com/android/skills`, `github.com/Kotlin/kotlin-agent-skills`).
+- about-agp points to the "AGP 9 Upgrade" Android skill for non-KMP projects, installed from the Android CLI with `android skills add agp-9-upgrade`; KMP projects use the skill from JetBrains.
 - Source: `developer.android.com/build/agp-upgrade-assistant`.
 
 ## Related

@@ -40,6 +40,7 @@ android {
 - `kotlin.sourceSets{}` is not supported with built-in Kotlin; use `android.sourceSets{}` (`kotlin.directories += "path"`) for static source dirs, or the Variant API (`androidComponents.onVariants { variant.sources.kotlin!!.addStaticSourceDirectory(...) }`) for variant-specific/generated sources.
 - For large multi-module projects, migrate incrementally: set `android.builtInKotlin=false` in `gradle.properties`, apply the `com.android.built-in-kotlin` plugin to individual modules, migrate each, then remove the opt-out once all modules are done.
 - Applying `org.jetbrains.kotlin.android` after built-in Kotlin is active fails with `Cannot add extension with name 'kotlin', as there is an extension already registered with that name.` — remove the plugin rather than trying to coexist.
+- AGP 9.4 lets you temporarily opt specific modules out of the mandatory new Variant API with `android.newDsl.optOut=:example-lib1` in `gradle.properties`; the new Variant API is mandatory for all projects from AGP 10.
 - Source: `developer.android.com/build/migrate-to-built-in-kotlin`.
 
 ## Related

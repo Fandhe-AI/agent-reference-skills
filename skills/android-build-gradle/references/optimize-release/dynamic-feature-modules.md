@@ -58,6 +58,7 @@ android {
 - Additional ProGuard/R8 rules for the feature can still be added via `proguardFiles` in the feature module's `buildTypes.release` block.
 - Conditional delivery narrows an `install-time` module to devices meeting requirements (e.g. minimum API level, device feature) declared inside `<dist:install-time><dist:conditions>...</dist:conditions></dist:install-time>`.
 - Building and installing dynamic feature APKs directly requires the app to be distributed as an Android App Bundle; this page covers only the Gradle/manifest DSL, not the runtime Play Core `SplitInstallManager` API for requesting on-demand modules.
+- Starting in AGP 9.4, the build checks strict 1:1 flavor dimension parity between the app module and dynamic feature modules, reporting missing, extra, or mismatched dimensions as build warnings. Set `android.enforceDynamicFeatureVariantMatching=true` to make it an error; from AGP 10.0 mismatches become fatal by default.
 
 ## Related
 
