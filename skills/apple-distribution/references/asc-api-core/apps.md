@@ -49,6 +49,8 @@ PATCH https://api.appstoreconnect.apple.com/v1/apps/{id}
 - `GET /v1/apps` returns up to 200 apps per page; use `meta.paging` for navigation
 - App resource ID (numeric string) is used in all relationship endpoints
 - Related sub-resources are accessible via `GET /v1/apps/{id}/{relationship}` paths
+- `GET /v1/apps/{id}/inAppPurchases` (v1) is deprecated (marked deprecated in the official `apps` collection); use `GET /v1/apps/{id}/inAppPurchasesV2`
+- Deprecated in 4.5: the `territories` relationship on app tags, `GET /v1/appTags/{id}/territories`, and `GET /v1/appTags/{id}/relationships/territories`. On `GET /v1/apps/{id}/appTags`, the `include`, `fields[appTags]`, `fields[territories]`, and `limit[territories]` parameters no longer accept `territories` values (the official page notes that after the relationship is removed, requests that use them return an error)
 
 ### Key Relationship Endpoints
 
@@ -60,6 +62,11 @@ PATCH https://api.appstoreconnect.apple.com/v1/apps/{id}
 | Beta Groups | `GET /v1/apps/{id}/betaGroups` |
 | Pre-release Versions | `GET /v1/apps/{id}/preReleaseVersions` |
 | Customer Reviews | `GET /v1/apps/{id}/customerReviews` |
+| Customer Review Summarizations | `GET /v1/apps/{id}/customerReviewSummarizations` |
+| Performance Overviews (4.5) | `GET /v1/apps/{id}/performanceOverviews` (query: `filter[deviceType]`; returns `xcodeOverview`) |
+| Asset Library (4.5; announced in the 4.5.1 release notes) | `GET /v1/apps/{id}/assetLibrary` |
+| App Store Version Experiments (v2) | `GET /v1/apps/{id}/appStoreVersionExperimentsV2` |
+| App Tags | `GET /v1/apps/{id}/appTags` (query: `filter[visibleInAppStore]`, `include`, `fields[appTags]`, `limit`, `sort`) |
 
 ## Related
 

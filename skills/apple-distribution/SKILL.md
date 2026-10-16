@@ -1,11 +1,12 @@
 ---
 name: apple-distribution
 description: >
-  App Store Connect API (REST) リファレンス。JWT 認証、API キー作成・失効、
-  Apps, Builds, Bundle IDs, Certificates, Devices, Provisioning Profiles, Users。
-  TestFlight Beta Groups / Testers / App Review。In-App Purchases, Subscriptions,
-  Subscription Groups, Promotional Offers, App Price Points, Sales Reports。アプリ配布。
-  Sandbox Testers, User Invitations, Merchant IDs, Pass Type IDs, Bundle ID Capabilities。
+  App Store Connect API 4.5.1 (REST) アプリ配布リファレンス。JWT 認証、API キー作成・失効、
+  Apps, Builds, Bundle IDs, Bundle ID Capabilities, Certificates, Devices, Provisioning Profiles,
+  Users, User Invitations, Merchant IDs, Pass Type IDs、TestFlight (Beta Groups / Testers)、
+  Sandbox Testers、App Review, Review Submissions, Customer Reviews, Custom Product Pages,
+  Phased Release、In-App Purchases, Subscriptions, Subscription Groups, App Price Points,
+  Promotional Offers, Win-back Offers, Sales Reports、App Asset Library (screenshots / app previews)、
   Webhooks / Webhook Events / Deliveries、Xcode Cloud (Workflows, Build Runs, Artifacts)、
   Alternative Distribution (EU マーケットプレイス / Web Distribution)、
   Game Center (Achievements, Leaderboards, Challenges)、Analytics / 診断レポート。
@@ -13,6 +14,8 @@ user-invocable: false
 ---
 
 本スキルは **App Store Connect API (REST)** を中心としたアプリ配布・収益化のリファレンスです。JWT 認証から TestFlight ベータ配布、In-App Purchases・Subscriptions の管理、売上レポートの取得まで網羅しています。
+
+対象バージョン: App Store Connect API 4.5.1（2026-10-16 取得、Apple DocC JSON 出典: https://developer.apple.com/documentation/appstoreconnectapi ）。
 
 ## ディレクトリ構成
 
@@ -52,6 +55,30 @@ skills/apple-distribution/
       promotional-offers.md
       app-price-points.md
       sales-finance-reports.md
+      win-back-offers.md
+      promoted-purchases.md
+      iap-subscription-versions.md
+    asc-app-store/
+      README.md
+      customer-reviews.md
+      customer-review-responses.md
+      custom-product-pages.md
+      app-events.md
+      review-submissions.md
+      app-store-review-details.md
+      phased-releases.md
+      release-requests.md
+      app-availability-pre-orders.md
+      app-store-version-experiments.md
+      territories.md
+    asc-app-asset-library/
+      README.md
+      understanding-the-app-asset-library.md
+      image-assets.md
+      video-assets.md
+      placements.md
+      reference-data.md
+      migrating-to-the-app-asset-library.md
     asc-users-access-extra/
       README.md
       sandbox-testers.md
@@ -100,6 +127,7 @@ skills/apple-distribution/
       game-center-leaderboards.md
       game-center-matchmaking-rules.md
     asc-reporting-extra/
+      README.md
       analytics-report-requests.md
       analytics-reports-instances-segments.md
       diagnostic-signatures-logs.md
@@ -126,10 +154,16 @@ skills/apple-distribution/
 | Beta App Review の提出、Beta Build Localizations の管理 | asc-testflight-iap | [references/asc-testflight-iap/README.md](references/asc-testflight-iap/README.md) |
 | In-App Purchases・Subscriptions・Subscription Groups の設定 | asc-testflight-iap | [references/asc-testflight-iap/README.md](references/asc-testflight-iap/README.md) |
 | Promotional Offers・App Price Points の設定、Sales/Finance Reports の取得 | asc-testflight-iap | [references/asc-testflight-iap/README.md](references/asc-testflight-iap/README.md) |
+| Win-back Offers・Promoted Purchases の設定、IAP / Subscription のバージョン管理 | asc-testflight-iap | [references/asc-testflight-iap/README.md](references/asc-testflight-iap/README.md) |
+| カスタマーレビューの取得・レビューへの返信、Custom Product Pages・In-App Events の管理 | asc-app-store | [references/asc-app-store/README.md](references/asc-app-store/README.md) |
+| Review Submissions の提出、App Store Review Details、段階的リリース (Phased Release)・手動リリース | asc-app-store | [references/asc-app-store/README.md](references/asc-app-store/README.md) |
+| 提供地域・予約注文 (Pre-Orders) の設定、製品ページ最適化 (Experiments)、Territories の取得 | asc-app-store | [references/asc-app-store/README.md](references/asc-app-store/README.md) |
+| スクリーンショット・App Preview・In-App Event メディアのアップロードと配置 | asc-app-asset-library | [references/asc-app-asset-library/README.md](references/asc-app-asset-library/README.md) |
+| 配置 (Placements) の順序変更、仕様の確認 (reference data)、スクリーンショットセットからの移行 | asc-app-asset-library | [references/asc-app-asset-library/README.md](references/asc-app-asset-library/README.md) |
 | Sandbox Testers での IAP テスト、チームへの User Invitations 送付 | asc-users-access-extra | [references/asc-users-access-extra/README.md](references/asc-users-access-extra/README.md) |
 | Bundle ID Capabilities の有効化、Merchant ID (Apple Pay)、Pass Type IDs (Wallet) の管理 | asc-provisioning-extra | [references/asc-provisioning-extra/README.md](references/asc-provisioning-extra/README.md) |
 | Webhook の設定・購読イベント確認、配信履歴の確認、テスト ping の送信 | asc-webhooks | [references/asc-webhooks/README.md](references/asc-webhooks/README.md) |
 | Xcode Cloud の Workflows / Build Runs / Build Actions の管理、Artifacts / Test Results / Issues の取得 | asc-xcode-cloud | [references/asc-xcode-cloud/README.md](references/asc-xcode-cloud/README.md) |
 | EU の Alternative Marketplace / Web Distribution の設定、配布パッケージ・検索設定の管理 | asc-alternative-distribution | [references/asc-alternative-distribution/README.md](references/asc-alternative-distribution/README.md) |
 | Game Center の Achievements / Leaderboards / Challenges / Matchmaking Rules の設定 | asc-game-center | [references/asc-game-center/README.md](references/asc-game-center/README.md) |
-| Analytics レポートリクエスト、診断ログ・電力/パフォーマンス指標の取得 | asc-reporting-extra | references/asc-reporting-extra/（README.md 未整備、readme-indexer による生成が必要） |
+| Analytics レポートリクエスト、診断ログ・電力/パフォーマンス指標の取得 | asc-reporting-extra | [references/asc-reporting-extra/README.md](references/asc-reporting-extra/README.md) |

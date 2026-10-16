@@ -4,6 +4,8 @@ Upload screenshots, app previews, App Review attachments, and routing app covera
 
 ## Signature / Usage
 
+Deprecated example: the request below reserves an upload through the `appScreenshots` resource, which is deprecated (see Notes); for new integrations use the App Asset Library `appAssetLibraryImages` / `appAssetLibraryVideos` reservations instead. The reservation / upload / commit workflow itself is the same for every asset type.
+
 ```
 POST /v1/appScreenshots
 {
@@ -51,9 +53,9 @@ POST /v1/appScreenshots
 
 | Asset Type | API Resource |
 |------|-------------|
-| App Store screenshots | `app-screenshot-sets`, `app-screenshots` |
-| App event screenshots | `app-event-screenshots` |
-| App previews | `app-preview-sets`, `app-previews` |
+| App Store screenshots (deprecated) | `app-screenshot-sets`, `app-screenshots` |
+| App event screenshots (deprecated) | `app-event-screenshots` |
+| App previews (deprecated) | `app-preview-sets`, `app-previews` |
 | App Clip card images | `app-clip-header-images`, `advanced-app-clip-experience-images` |
 | Attachments for App Review | `app-store-review-attachments` |
 | Game Center activity images | `game-center-activity-images` |
@@ -82,6 +84,7 @@ POST /v1/appScreenshots
 
 ## Notes
 
+- Note (official): The app screenshot, app screenshot set, app preview, app preview set, and in-app event screenshot resources are deprecated. Manage screenshots, previews, and in-app event media with the App Asset Library and placements instead. (Deprecated in App Store Connect API 4.5.1; the 4.5.1 release notes also list `app-event-video-clips` as deprecated.)
 - Four steps: make an asset reservation, upload the asset (potentially in multiple parts), commit the upload, verify processing succeeded
 - For large files, split the binary into parts sized per each `uploadOperations[].length`; upload parts concurrently and in any order
 - Upload URLs are unauthenticated and time-limited (about one week from reservation, per the `Expires` param) — do not send a JWT and do not share the URL

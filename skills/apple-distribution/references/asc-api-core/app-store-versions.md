@@ -41,7 +41,7 @@ PATCH https://api.appstoreconnect.apple.com/v1/appStoreVersions/{id}/relationshi
 
 | Relationship | Endpoint |
 |-------------|----------|
-| Attach/read build | `PATCH /GET /v1/appStoreVersions/{id}/relationships/build` |
+| Attach/read build | `GET` / `PATCH /v1/appStoreVersions/{id}/relationships/build` |
 | Version localizations | `GET /v1/appStoreVersions/{id}/appStoreVersionLocalizations` |
 | Review details | `GET /v1/appStoreVersions/{id}/appStoreReviewDetail` |
 | Phased release | `GET /v1/appStoreVersions/{id}/appStoreVersionPhasedRelease` |
@@ -53,9 +53,13 @@ PATCH https://api.appstoreconnect.apple.com/v1/appStoreVersions/{id}/relationshi
 - `AppStoreVersionState` enum is deprecated; use `AppVersionState` instead
 - A version must have a build attached (`relationships/build`) before it can be submitted for review
 - `DELETE` is only allowed for versions not yet submitted
+- Media for `appStoreVersionLocalizations` moved from screenshot / preview sets to App Asset Library placements: `GET /v1/appStoreVersionLocalizations/{id}/placements` (4.5; announced in the 4.5.1 release notes). The screenshot / preview set resources are deprecated (see the App Asset Library pages)
+- The v1 experiments resource (`appStoreVersionExperiments`: `POST /v1/appStoreVersionExperiments`, `GET` / `PATCH` / `DELETE /v1/appStoreVersionExperiments/{id}`, `GET /v1/appStoreVersions/{id}/appStoreVersionExperiments`) is deprecated; use `appStoreVersionExperimentsV2`
+- The `appStoreVersionSubmissions` resource (`AppStoreVersionSubmission`, `DELETE /v1/appStoreVersionSubmissions/{id}`) is deprecated; submit versions through `reviewSubmissions` and `reviewSubmissionItems` instead
 
 ## Related
 
+- [Understanding the App Asset Library](../asc-app-asset-library/understanding-the-app-asset-library.md)
 - [Apps](./apps.md)
 - [App Infos](./app-infos.md)
 - [Builds](./builds.md)
