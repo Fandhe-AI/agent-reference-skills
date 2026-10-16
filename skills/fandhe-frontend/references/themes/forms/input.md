@@ -19,7 +19,11 @@ let field = FieldProps {
 let node = input::input(&InputProps::default(), &field, vec![]);
 ```
 
-`css() -> String` が静的 CSS 全量を返す。`error_text`/`FieldIds`/`FieldProps` は headless-ui `field` からの再エクスポート。
+`css() -> String` が静的 CSS 全量を返す。`error_text`/`FieldIds`/`FieldProps` は headless-ui `field` からの再エクスポート。`pub use fandhe_frontend_headless_ui::autocomplete::{AutocompleteField, AutocompleteToken}` も `input` mod から再エクスポートされる。
+
+```rust
+pub fn input_with_autocomplete<'a>(props: &InputProps, field: &FieldProps<'_>, autocomplete: AutocompleteToken, extra_attrs: Vec<(&'a str, &'a str)>) -> Node
+```
 
 ## Options / Props
 
@@ -29,6 +33,7 @@ let node = input::input(&InputProps::default(), &field, vec![]);
 | `InputProps.size` | `Size`（既定 `Md`） | サイズ |
 | `InputProps.shape` | `Option<Shape>`（`Pill` \| `Circle`、既定 `None`） | `None` は既定の角丸。`Pill` は両端を最大まで丸める。`Circle` は選択中 `Size` の `height` と同値へ `width` を固定して真円にする。`Flushed` と併用した場合は shape が後勝ち |
 | `field.disabled` / `invalid` / `required` / `readonly` | `bool`（`FieldProps` 経由） | `data-disabled`/`data-invalid` 等を反映 |
+| `input::input_with_autocomplete(props, field, autocomplete, extra_attrs)` | fn（`&InputProps, &FieldProps<'_>, AutocompleteToken, Vec<(&str, &str)>`） | `input` と同じ variant クラスの合成で、`autocomplete` を固定語彙の `AutocompleteToken`（`username webauthn` 等のほか、単独の `AutocompleteToken::off()`（`off`）と `AutocompleteField::OneTimeCode`（`one-time-code`））で指定する。`off` と `one-time-code` は `webauthn` と併用できない。出力は静的リテラルのみで任意文字列は受け付けない。`extra_attrs` の `autocomplete` / `class` は除去される |
 
 ## Notes
 

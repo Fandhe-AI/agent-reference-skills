@@ -2,11 +2,11 @@
 name: fandhe-frontend
 description: >
   Rust 製フロントエンドフレームワーク fandhe-frontend のリファレンス。
-  SSR / SPA / SSG / View Transitions、hydration、単一実行ファイル配布、Vercel デプロイ、既定エスケープ。
-  クレート core / app / interactive / server(generate_pages) / headless-ui(Primitives) /
-  pre-styled-ui(Themes, motion feature) / wireframe-ui(Wireframes) /
-  animation(fandhe-animation, data-* 属性) / wasm-full(feature 選択)。
-  Blocks(Hero / Pricing / Cart 等セクション例 329 件)。CLI fw。
+  SSR / SPA / SSG / View Transitions、hydration、Document builder(SSR 組み込み)、CSP meta、単一実行ファイル配布、Vercel、既定エスケープ。
+  クレート core / app / interactive / server(generate_pages) /
+  headless-ui(Primitives, AutocompleteToken, passkey) / pre-styled-ui(Themes, motion) /
+  wireframe-ui(Wireframes) / animation(data-* 属性) / wasm-full。
+  Blocks(Hero / Pricing / Cart 等セクション例 335 件)。CLI fw。
 user-invocable: false
 ---
 
@@ -25,17 +25,17 @@ Wireframes（`fandhe-frontend-wireframe-ui`）は低忠実度ワイヤーフレ�
 | クレート | バージョン |
 | --- | --- |
 | core | 0.4.3 |
-| app | 0.2.6 |
+| app | 0.2.8 |
 | interactive | 0.2.7 |
-| server | 0.2.6 |
-| headless-ui | 0.69.2 |
-| pre-styled-ui | 0.241.0 |
+| server | 0.2.8 |
+| headless-ui | 0.73.0 |
+| pre-styled-ui | 0.245.0 |
 | wireframe-ui | 0.52.0 |
 | cli (`fw`) | 0.5.2 |
-| wasm-full | 0.46.0 |
+| wasm-full | 0.48.1 |
 | animation | 0.17.1 |
 
-公式 docs サイトは commit 4c8c7d1 時点（2026-10-08）。`api/keyed-list-api.md` と `api/binding-api.md` は公式 docs 索引外で、crate ソース由来。
+公式 docs サイトは commit 7256504 時点（2026-10-16）。`api/keyed-list-api.md` と `api/binding-api.md` は公式 docs 索引外で、crate ソース由来。
 
 ## ディレクトリ構成
 
@@ -51,6 +51,7 @@ skills/fandhe-frontend/
       README.md
       component-authoring.md
       embedding-guide.md
+      ssr-embedding.md
       view-transitions.md
       npm-asset-build.md
       no-js-ssg.md
@@ -226,7 +227,7 @@ skills/fandhe-frontend/
         overview.md
         image.md
         ...
-    blocks/                        # Themes / Primitives / core の合成例。4 区分・計 65 カテゴリ・329 block
+    blocks/                        # Themes / Primitives / core の合成例。4 区分・計 65 カテゴリ・335 block
       marketing/                   # 23 カテゴリ
         README.md
         overview.md                # 区分集約ページ
@@ -283,17 +284,17 @@ skills/fandhe-frontend/
 | タスク | カテゴリ | 参照 README |
 | --- | --- | --- |
 | fandhe-frontend とは何か、特徴・設計思想を知りたい / `fw new` での最短経路 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
-| マクロ非依存のコンポーネント記述 / 既存 HTML への埋め込み / View Transitions 有効化 / NPM 静的アセット取り込み | guides | [references/guides/README.md](references/guides/README.md) |
-| `el`/`text`/`render`/`raw_html` などコア API、App/Loader/Router API、Hydration API・状態フォーマット、headless-ui/pre-styled-ui の公開 API・slot recipe、keyed list diff（`keyed`/`keyed_diff`）、属性・テキスト・class バインディング（`bind`/`binding`） | api | [references/api/README.md](references/api/README.md) |
+| マクロ非依存のコンポーネント記述 / 既存 HTML への埋め込み / 既存サーバー（fandhe-backend 等）のハンドラからの SSR 組み込み（`Document` ビルダー・CSP メタタグ・`ViewTransitions`） / View Transitions 有効化 / NPM 静的アセット取り込み | guides | [references/guides/README.md](references/guides/README.md) |
+| `el`/`text`/`render`/`raw_html` などコア API、App/Loader/Router API、`Document` ビルダー、Hydration API・状態フォーマット、headless-ui/pre-styled-ui の公開 API・slot recipe、keyed list diff（`keyed`/`keyed_diff`）、属性・テキスト・class バインディング（`bind`/`binding`） | api | [references/api/README.md](references/api/README.md) |
 | クライアント JS ゼロの SSG 構成での制約・代替パターン、`fandhe-frontend-server` の SSG API（`generate`/`generate_with`/`generate_pages`/`generate_assets`） | guides / api | [references/guides/README.md](references/guides/README.md) / [references/api/README.md](references/api/README.md) |
-| Checkbox, Slider, Color Picker などフォーム系 Primitives（unstyled）API を知りたい | primitives/form | [references/primitives/form/README.md](references/primitives/form/README.md) |
+| Checkbox, Slider, Color Picker などフォーム系 Primitives（unstyled）API、型付き autocomplete（`AutocompleteToken`・passkey の `webauthn`）を知りたい | primitives/form | [references/primitives/form/README.md](references/primitives/form/README.md) |
 | Combobox, Select, Tree View などコレクション系 Primitives（unstyled）API を知りたい | primitives/collections | [references/primitives/collections/README.md](references/primitives/collections/README.md) |
 | Dialog, Popover, Toast などオーバーレイ系 Primitives（unstyled）API を知りたい | primitives/overlays | [references/primitives/overlays/README.md](references/primitives/overlays/README.md) |
 | Accordion, Tabs, Splitter などディスクロージャー系 Primitives（unstyled）API を知りたい | primitives/disclosure | [references/primitives/disclosure/README.md](references/primitives/disclosure/README.md) |
 | Calendar, Date Picker, Timer など日時系 Primitives（unstyled）API を知りたい | primitives/date-time | [references/primitives/date-time/README.md](references/primitives/date-time/README.md) |
 | Breadcrumb, NavigationMenu, SkipNav などナビゲーション系 Primitives（unstyled）API を知りたい | primitives/navigation | [references/primitives/navigation/README.md](references/primitives/navigation/README.md) |
 | Avatar, Progress, QrCode などディスプレイ系 Primitives（unstyled）API を知りたい | primitives/display | [references/primitives/display/README.md](references/primitives/display/README.md) |
-| Button, Checkbox, Input などフォーム系 Themes（styled）部品を知りたい | themes/forms | [references/themes/forms/README.md](references/themes/forms/README.md) |
+| Button, Checkbox, Input などフォーム系 Themes（styled）部品、型付き autocomplete（`AutocompleteToken`・passkey の `webauthn`）を知りたい | themes/forms | [references/themes/forms/README.md](references/themes/forms/README.md) |
 | Card, Table, Badge, Avatar などデータ表示系 Themes（styled）部品を知りたい | themes/data-display | [references/themes/data-display/README.md](references/themes/data-display/README.md) |
 | Heading, Text, Link, List などタイポグラフィ系 Themes（styled）部品を知りたい | themes/typography | [references/themes/typography/README.md](references/themes/typography/README.md) |
 | BarChart, LineChart, PieChart などチャート系 Themes（styled）部品を知りたい | themes/charts | [references/themes/charts/README.md](references/themes/charts/README.md) |

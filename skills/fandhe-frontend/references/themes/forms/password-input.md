@@ -19,7 +19,7 @@ let props = PasswordInputProps {
 let node = password_input::root(Size::Md, ColorPalette::Accent, false, &props, vec![], vec![]);
 ```
 
-`stylesheet() -> String` が静的 CSS 全量を返す。`control`/`indicator`/`input`/`label`/`visibility_trigger`/`PasswordAutocomplete`/`PasswordInputProps` は headless-ui からの再エクスポート。
+`stylesheet() -> String` が静的 CSS 全量を返す。`control`/`indicator`/`input`/`label`/`visibility_trigger`/`PasswordAutocomplete`/`PasswordInputProps` は headless-ui からの再エクスポート。型付き autocomplete 用の `input_with_autocomplete` / `AutocompleteToken` / `AutocompleteField` も headless-ui からの透過再エクスポート（#3817）。
 
 ## Anatomy
 
@@ -38,6 +38,7 @@ let node = password_input::root(Size::Md, ColorPalette::Accent, false, &props, v
 
 - `visibility-trigger` は `aria-pressed`/`aria-controls` で意味論を伝える。
 - パスワード値自体は本コンポーネントが保持しない。
+- `password_input` mod からも `input_with_autocomplete` と `AutocompleteToken` / `AutocompleteField` を使えるため、pre-styled-ui のパスだけで `PasswordAutocomplete::CurrentPassword.with_webauthn()` を渡して `current-password webauthn` を指定できる。出力は固定語彙の静的リテラルに限られ、任意の文字列は受け付けない。passkey での使いどころとユーザー名欄との組み合わせは Password Input（primitives）を参照。
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）。
 
 ## Related

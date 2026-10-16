@@ -25,7 +25,16 @@ field::root(&props, vec![], vec![
 ]);
 ```
 
-フリー関数: `field::root(props: &FieldProps, attrs, children)`, `label(props, attrs, children)`, `input(props, extra_attrs)`, `textarea(props, autoresize, extra_attrs, children)`, `select(props, extra_attrs, children)`, `helper_text(props, attrs, children)`, `error_text(props, attrs, children)`, `required_indicator(props, attrs, children)`, `group(attrs, children)`, `content(props, attrs, children)`, `title(props, attrs, children)`, `separator(attrs, content)`。
+型付き autocomplete（passkey ログインのユーザー名欄 `username webauthn`）:
+
+```rust
+use fandhe_frontend_headless_ui::{AutocompleteField, AutocompleteToken};
+
+let token = AutocompleteToken::new(AutocompleteField::Username).with_webauthn();
+field::input_with_autocomplete(&props, token, vec![("type", "text"), ("name", "username")]);
+```
+
+フリー関数: `field::root(props: &FieldProps, attrs, children)`, `label(props, attrs, children)`, `input(props, extra_attrs)`, `input_with_autocomplete(props, autocomplete, extra_attrs)`, `textarea(props, autoresize, extra_attrs, children)`, `select(props, extra_attrs, children)`, `helper_text(props, attrs, children)`, `error_text(props, attrs, children)`, `required_indicator(props, attrs, children)`, `group(attrs, children)`, `content(props, attrs, children)`, `title(props, attrs, children)`, `separator(attrs, content)`。
 
 ## Anatomy
 
@@ -48,9 +57,12 @@ field::root(&props, vec![], vec![
 | `FieldProps.ids` | `FieldIds` | パート単位の id 上書き（`root` / `control` / `label` / `helper_text` / `error_text`、すべて `None` なら既定の導出を使用。`for` / `aria-describedby` にも一貫伝播） |
 | `disabled` / `invalid` / `required` / `readonly` | `bool` | コントロールに `data-*` + ネイティブ属性として反映される |
 | `has_helper_text` | `bool` | helper id を `aria-describedby` の構成に含める |
+| `field::input_with_autocomplete<'a>(props: &FieldProps<'_>, autocomplete: AutocompleteToken, extra_attrs: Vec<(&'a str, &'a str)>) -> Node` | fn | `autocomplete` を固定語彙の `AutocompleteToken` で指定する `input`。`extra_attrs` の `autocomplete` は大文字小文字を区別せず除去され、型付きの値が 1 個だけ出力される |
 
 ## Notes
 
+- 型付き autocomplete: `input_with_autocomplete` に `AutocompleteToken::new(AutocompleteField::Username).with_webauthn()` を渡すと passkey ログインのユーザー名欄として `username webauthn` を出力する。`email` も指定できる（`email webauthn` は文法上は有効だが通常は使わない）。語彙には単独の `off`（`AutocompleteToken::off()`）と `one-time-code` も含まれ、どちらも `webauthn` とは併用できない
+- `AutocompleteToken` は固定語彙で任意の文字列を受け付けない（属性値に意図しない文字列が混ざる経路を型で閉じるため）。既存の `input` と `extra_attrs` の生文字列経路は互換のために残っているが、新規コードでは型付きの経路を使う。パスワード欄側の指定は [Password Input](./password-input.md) を参照
 - `aria-describedby` の構成規則: `invalid` → エラー id を先頭に、`has_helper_text` → helper id をスペース区切りで追加。どちらも該当しなければ丸ごと省略
 - `disabled` / `invalid` / `required` / `readonly` は `root` / `label` / コントロール / `helper-text` / `error-text` / `required-indicator` / `content` / `title` に `data-disabled` / `data-invalid` / `data-required` / `data-readonly` として伝播する（`group` / `separator` は伝播しない）
 - `error_text` の `role="alert"` は明示 `aria-live="polite"` と併用する（読み上げの割り込み度合いは polite のまま）

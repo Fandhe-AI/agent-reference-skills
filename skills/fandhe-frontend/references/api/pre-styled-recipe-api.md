@@ -28,7 +28,7 @@ impl SlotRecipe {
     pub fn variant<V: VariantValue>(self, v: V, slot: &'static str, declarations: Vec<Declaration>) -> Self;
     pub fn default_variant<V: VariantValue>(self, v: V) -> Self;
     pub fn compound_variant(self, conditions: Vec<VariantCondition>, slot: &'static str, declarations: Vec<Declaration>) -> Self;
-    // 0.241.0 のソースで確認（以下はいずれも builder、self を消費して Self を返す）
+    // 0.245.0 のソースで確認（以下はいずれも builder、self を消費して Self を返す）
     pub fn size_variants(self, slot: &'static str, sizes: &[(Size, Vec<Declaration>)]) -> Self;
     pub fn state(self, slot: &'static str, condition: StateCondition, declarations: Vec<Declaration>) -> Self;
     pub fn pseudo_element(self, slot: &'static str, pseudo: PseudoElement, declarations: Vec<Declaration>) -> Self;
@@ -84,7 +84,7 @@ recipe.compound_variant(
 
 ## Notes
 
-- 本ページのシグネチャは `fandhe-frontend-pre-styled-ui` 0.241.0 の `recipe.rs` / `css.rs` ソースで突合済み。公式設計書の凍結 API（`new` / `base` / `variant` / `default_variant` / `compound_variant` / `css` / `variant_class(es)`）はそのまま維持され、上記の builder 群（`state` / `pseudo_element` / `breakpoint` / `container*` 等）が追加されている。さらにモーション・スクロール連動系の builder（`stagger_delay` / `content_height_transition` / `presence_transition` / `scroll_reveal` / `parallax` / `sticky_progress` など）と、`MotionDuration` / `FocusRingColor` / `FocusRingOffset` / `ParallaxSpeed` などの補助 enum、`focus_ring_declarations` / `disabled_declarations` / `hover_surface_declarations` / `transition_declarations` の宣言ヘルパも recipe.rs に存在するが、本ページでは個別に展開しない
+- 本ページのシグネチャは `fandhe-frontend-pre-styled-ui` 0.245.0 の `recipe.rs` / `css.rs` ソースで突合済み。公式設計書の凍結 API（`new` / `base` / `variant` / `default_variant` / `compound_variant` / `css` / `variant_class(es)`）はそのまま維持され、上記の builder 群（`state` / `pseudo_element` / `breakpoint` / `container*` 等）が追加されている。さらにモーション・スクロール連動系の builder（`stagger_delay` / `content_height_transition` / `presence_transition` / `scroll_reveal` / `parallax` / `sticky_progress` など）と、`MotionDuration` / `FocusRingColor` / `FocusRingOffset` / `ParallaxSpeed` などの補助 enum、`focus_ring_declarations` / `disabled_declarations` / `hover_surface_declarations` / `transition_declarations` の宣言ヘルパも recipe.rs に存在するが、本ページでは個別に展開しない
 - マクロ DSL は採用しない（REQ-5）
 - 同一 slot・同一 axis/value への複数登録は「後に登録された規則が後に出力」される
 - `compound_variant` の `conditions` が空、同一 axis 重複、または未登録の axis/value を含む場合は除外される

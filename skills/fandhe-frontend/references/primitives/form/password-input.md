@@ -26,7 +26,14 @@ pw.root(&props, vec![], vec![
 ]);
 ```
 
-フリー関数: `password_input::root(visible, props: &PasswordInputProps, attrs, children)`, `label(props, attrs, children)`, `control(visible, props, attrs, children)`, `input(visible, props, attrs)`, `visibility_trigger(visible, props, attrs, children)`, `indicator(visible, props, attrs, children)`。`PasswordInput` のメソッドは `visible` を自動注入する（`label` の利便メソッドは無い）。
+型付き autocomplete と passkey（`current-password webauthn`）:
+
+```rust
+let token = PasswordAutocomplete::CurrentPassword.with_webauthn();
+password_input::input_with_autocomplete(false, &props, token, vec![]);
+```
+
+フリー関数: `password_input::root(visible, props: &PasswordInputProps, attrs, children)`, `label(props, attrs, children)`, `control(visible, props, attrs, children)`, `input(visible, props, attrs)`, `input_with_autocomplete(visible, props, autocomplete, attrs)`, `visibility_trigger(visible, props, attrs, children)`, `indicator(visible, props, attrs, children)`。`PasswordInput` のメソッドは `visible` を自動注入する（`label` の利便メソッドは無い）。
 
 ## Anatomy
 
@@ -44,7 +51,9 @@ pw.root(&props, vec![], vec![
 | `readonly` | `bool` | `input` にネイティブ `readonly`、全 6 パーツに `data-readonly`。`visibility_trigger` にネイティブ `disabled` は付与しない（表示確認を封じない） |
 | `invalid` | `bool` | `data-invalid`、`input` に `aria-invalid="true"` |
 | `required` | `bool` | `input` にネイティブ `required` と `data-required` |
-| `autocomplete` | `PasswordAutocomplete`（`CurrentPassword` \| `NewPassword`） | 固定語彙の `autocomplete` 値（自由文字列は注入不可） |
+| `autocomplete` | `PasswordAutocomplete`（`CurrentPassword` \| `NewPassword`） | 固定語彙の `autocomplete` 値（自由文字列は注入不可）。`webauthn` 付きの variant は保持できない（`PasswordAutocomplete::with_webauthn` で `AutocompleteToken` を作り `input_with_autocomplete` へ渡す） |
+| `password_input::input_with_autocomplete(visible: bool, props: &PasswordInputProps<'_>, autocomplete: AutocompleteToken, attrs: Vec<(&str, &str)>) -> Node` | fn | `input` の `autocomplete` を固定語彙の `AutocompleteToken` で指定する。引数のトークンが `props.autocomplete` より優先される |
+| `PasswordAutocomplete::with_webauthn(self) -> AutocompleteToken` | `const fn` | `CurrentPassword` / `NewPassword` から `webauthn` 付きトークン（`current-password webauthn` 等）を作る |
 
 ## Data Attributes
 
@@ -57,6 +66,9 @@ pw.root(&props, vec![], vec![
 
 ## Notes
 
+- 型付き autocomplete と passkey: passkey のフォーム自動入力（WebAuthn の conditional mediation）を使うログインフォームでは、パスワード欄の `autocomplete` を `current-password webauthn` にする。`PasswordAutocomplete::CurrentPassword.with_webauthn()` で作る `AutocompleteToken` を `input_with_autocomplete` へ渡す。ユーザー名欄は [Field](./field.md) の `input_with_autocomplete` で `username webauthn` にする。`new-password webauthn` は文法上は有効だが通常は使わない
+- `input_with_autocomplete` の中では `props.autocomplete` は無視され、引数のトークンが優先される。password 系以外の field（`Username` / `Email`）と `off` / `one-time-code` を渡した場合は `props.autocomplete` に戻る（fail-safe。password 欄の保護設定を型付き API で外させない）。`attrs` に `autocomplete` を渡しても除去される
+- `AutocompleteToken` は固定語彙で、出力は組み合わせごとの静的リテラルだけ。任意の文字列を受け付ける公開コンストラクタはなく、`webauthn` だけを置く・`on` / `off` と併用する・先頭に置くといった無効な並びも表現できない。`navigator.credentials.get` の呼び出しなど WebAuthn 本体の処理はアプリ側の責務で、本部品は属性を出力するだけ
 - 表示切替トリガーは ark-ui の `aria-expanded` + `tabIndex: -1` ではなく、トグルボタンパターンの `aria-pressed` を採用し、tab 順序に残す
 - click → dispatch 配線、フォーム送信後の hidden リセット等の DOM 配線はクライアント層の責務
 - 呼び出し側 `attrs` による固定属性の上書きは除去される

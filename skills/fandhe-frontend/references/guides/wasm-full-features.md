@@ -6,7 +6,7 @@
 
 ```toml
 [dependencies.fandhe-frontend-wasm-full]
-version = "0.46.0"
+version = "0.48.1"
 default-features = false
 features = [
   "wasm-bindgen-exports",
@@ -54,6 +54,7 @@ cargo check -p fandhe-frontend-wasm-full \
 | `focus_visible::wire_focus_visible` | `focus-visible` |
 | `Runtime::wire_avatar` / `wire_clipboard` / `wire_timer` | `avatar` / `clipboard` / `timer` |
 | `Runtime::wire_angle_slider` / `wire_splitter` / `wire_signature_pad` / `wire_number_input` | `angle-slider` / `splitter` / `signature-pad` / `number-input` |
+| `Runtime::wire_pin_input` | `pin-input` |
 | `Runtime::wire_command` / `wire_sidebar` | `command` / `sidebar` |
 | `Runtime::wire_chart` / `wire_chart_range` | `chart` / `chart-range` |
 | `Runtime::wire_questionnaire` / `wire_message_scroller` / `wire_data_table` | `questionnaire` / `message-scroller` / `data-table` |
@@ -107,6 +108,48 @@ scope feature（`headless::MAPPING_TABLE` の該当行と `keynav::wire_keynav` 
 
 dist-server 最小構成（`WASM_DIST_FEATURES`、7 feature）: `wasm-bindgen-exports, collapsible, dialog, popover, tooltip, position, action-keydown`。
 
+## PinInput の入力配線（`pin-input` feature、イシュー #3834）
+
+`pin-input` feature は PinInput の桁 input への入力・貼り付け・Backspace/Delete/矢印キー・IME 確定入力と、状態機械が決めた桁へのフォーカス移動を配線する（#3834・#3835）。
+
+設計の原則: 入力の受理・拒否と `focused` の位置は状態機械（`PinInput`）だけが決める。DOM 層は kind の判定・文字種の事前判定・大文字そろえ・ライブ `value` からの受理の推定を一切行わず、状態機械へ dispatch した後の状態（各桁の値と `focused`）を読み戻して DOM へ反映するだけ。
+
+ホストが実装する読み戻し（`BindingSource` の予約 field）: 状態の読み戻しは `Runtime` が `C` へ既に要求している `BindingSource` の予約 field で行う。`bound_value` から `fandhe_frontend_wasm_full::pin_input::parse_field` で field 名を解釈し、`bound_value_for` へ委譲する。
+
+```rust
+impl BindingSource for MyHost {
+    fn bound_value(&self, field: &str) -> Option<BoundValue> {
+        let (ordinal, field) = pin_input::parse_field(field)?;
+        // ordinal は配線 root 配下の PinInput Root の文書順（0 起点）。
+        (ordinal == 0).then(|| pin_input::bound_value_for(&self.pin, field))
+    }
+}
+```
+
+実装しない（`None` を返す）場合は fail-closed になり、状態機械への dispatch は行われるが、DOM の値の反映とフォーカス移動は行われない（見た目はアプリの再描画に委ねる）。**予約 field の実装は事実上必須。** 未実装だと拒否された文字が DOM の桁に残り、表示と状態がずれる。あわせて次を守る。
+
+- 桁 input の `value` を JS から直接読まない（拒否された文字を含みうる）。
+- フォーム送信値は `hidden_input`（状態機械の値）を使う。
+- `pin-input.` は予約接頭辞。アプリ独自の field 名に使わず、`pin-input.<n>.digit.<i>` を表示用の束縛（`data-bind-*`）に使わない（OTP が DOM へ露出する）。
+
+`data-action-input` を持つ桁（アプリ所有の経路）: 桁（または配線 root 内の祖先）に `data-action-input` を付けた場合、`input` の dispatch はアプリの action が担い、配線は何も dispatch しない（汎用の `"focus"` も送らない）。アプリの契約は次のとおり。
+
+- action 名で桁を識別する（桁ごとに別名を付け、`update` で `Focus(i)` → `Input(c)` を順に適用する等）。
+- 桁の選択（クリック・Tab）の同期もアプリの責務。
+- 予約 field を実装していれば、アプリの dispatch 後に値とフォーカスが読み戻しで反映される。
+- 汎用経路（`data-action-input` なし）は 1 つの配線 root につき PinInput 1 つが前提（汎用の `"focus"` / `"input"` はインスタンス ID を持たないため）。同一 root に複数の PinInput を置く場合は、各桁へインスタンスと桁を識別する `data-action-input` を付け、`bound_value` を `parse_field` が返す ordinal（PinInput Root の文書順）ごとに答える。
+
+詳細な契約と設計判断は `crates/wasm-full/src/pin_input.rs` のモジュール doc を正とする。
+
+本配線が触れない入力と挙動の注意:
+
+- keydown の Backspace/Delete/ArrowLeft/ArrowRight は `preventDefault` したうえで `backspace` / `delete` / `prev` / `next` を dispatch する（修飾キー付き・変換中は何もしない）。`paste` は `clipboardData` のテキストを無加工で `paste` へ渡し、2 文字以上の `input`（autofill）も同じ。区切り除去・大文字そろえは状態機械の入力補助で、DOM 層は加工しない。256 文字（`MAX_PASTE_CHARS`）を超えるテキストは dispatch しない。
+- 0 文字の `input`（モバイルの削除等）は `inputType` が後方削除系なら `backspace`、それ以外は `delete`。IME 確定入力は `compositionend` で受ける。
+- `data-action-input` を持つ桁では keydown・paste・`compositionend` も dispatch しない。キー操作をアプリで扱うときは `data-action-keydown` を使う。
+- DOM の値の書き込みは、1 文字入力・削除では操作のあった桁 1 つ、貼り付け・autofill では全桁。
+- 配線は 1 root につき 1 回。入れ子の配線 root では内側だけが反映する。
+- 1 イベントで `"focus"` と本体アクションの 2 回 dispatch するため、`on_update` も 2 回走る。
+
 ## Notes
 
 - 出典: https://fandhe-ai.github.io/fandhe-frontend/guides/wasm-full-features/
@@ -114,8 +157,9 @@ dist-server 最小構成（`WASM_DIST_FEATURES`、7 feature）: `wasm-bindgen-ex
 - 常時有効な配線: `events::wire_events`（`data-action` 委譲）、`keynav::wire_readonly_click_guard`（readonly RadioGroup の click capture 保護。`radio-group` を off にしても失われない）、`Runtime::wire_headless`（`MAPPING_TABLE` 全行のクリック dispatch）
 - `overlay` / `tooltip` / `position` / `focus_trap` / `headless_file_upload` / `headless_select` モジュール（`Runtime` を経由せずアプリが直接呼ぶ公開 API）はいずれの feature でもゲートされない。`tooltip` / `select` / `menu` 等の feature 名は同名モジュールと同じ文字列だが、ゲートするのは `MAPPING_TABLE` 行と keynav の match arm のみ
 - Cargo.toml の `[features]` には `default` に含まれない `perf-assert`（空 feature）も存在する。原文ガイドには記載がない
-- `sidebar`（MAPPING_TABLE 2 行）・`signature-pad`（同 1 行）は配線群別 feature であり、同名 feature で MAPPING_TABLE 行も追加ゲートする
-- 0.19.0 以降へ上げて `default-features = false` を使っている場合、配線・MAPPING_TABLE 行・keynav 分岐が既定では失われる。従来挙動の維持には `default` 配列と同じ 57 件（`entry` 機能を使わないアプリは `wasm-bindgen-exports` を省略可）を `features` に明示する。57 件は `wasm-bindgen-exports` + 配線群別・別枠の `keynav` から `presence` まで（`action-keydown` を含む。原文の内訳は配線群別 32・scope 16・別枠 9）+ scope feature 16 件
+- `sidebar`（MAPPING_TABLE 2 行）・`signature-pad`（同 1 行）・`pin-input`（同 1 行、境界行）は配線群別 feature であり、同名 feature で MAPPING_TABLE 行も追加ゲートする
+- 版: 本ページは `fandhe-frontend-wasm-full` 0.48.1 で確認（公式ガイドの例は `version = "0.47.0"`）。0.47.0 は `pin-input` feature・`pin_input` モジュール・`Runtime::wire_pin_input`（#3834）、0.48.0 は pin-input 配線への keydown / paste / autofill / モバイル削除 / IME 確定入力の追加と公開 API `KeyIntent` / `key_intent` / `ValueScope` 等（#3835）、0.48.1 は依存先 headless-ui 0.73.0 への追随のみ（実装変更なし）
+- 0.19.0 以降へ上げて `default-features = false` を使っている場合、配線・MAPPING_TABLE 行・keynav 分岐が既定では失われる。従来挙動の維持には `default` 配列と同じ 58 件（`entry` 機能を使わないアプリは `wasm-bindgen-exports` を省略可）を `features` に明示する。58 件は `wasm-bindgen-exports` + 配線群別・別枠の `keynav` から `presence` まで（`action-keydown` / `pin-input` を含む。原文の内訳は配線群別 33・scope 16・別枠 9）+ scope feature 16 件。0.46.0 時点は 57 件（配線群別 32）
 - `wire_signature_pad_component` を `Runtime::wire_headless` 経由せず直接呼ぶ構成は `signature-pad` feature の有効化だけでは救済されない。`headless::wire_headless_component` を同じ `root` / `component` へ明示的に呼ぶ
 - `ViewTransitionPreset` は 0.34.0 で `Iris` / `Doors` / `Shutter` / `Blinds` / `Strips` / `Pixels` / `MaskWipe` / `MaskRadial` の 8 バリアントを追加（minor バンプ）。exhaustive な `match` を書いている利用者は feature の on/off に関わらずコンパイルが壊れる（`_ =>` か新バリアント対応が必要）
 - `layout-animation`: 入れ子の FLIP リストでは最外側のリストがサブツリー全体を所有し、内側リストは自分では capture / play しない
@@ -125,10 +169,10 @@ dist-server 最小構成（`WASM_DIST_FEATURES`、7 feature）: `wasm-bindgen-ex
 - dist-server 最小構成の判断: REQ-11 ワークロード（カウンター・フォーム入力・動的リスト更新）は常時配線のみで成立。クリックで完結する collapsible / dialog / popover / tooltip（keynav に cfg 分岐なし）に、popover / tooltip の位置決め用 `position` を加える。`keynav` / `focus-visible` は REQ-11 実測でサイズへの影響が大きく除外。keynav の match arm を持つ他の scope feature は「キーボード操作を欠いた部品」を出荷しないため除外。`action-keydown` は追加依存がなく gzip 増分が小さく予算に余裕があるため最小構成に含める（#3765）。実測（ローカル、wasm-opt 適用）`bundle-size: total_gzip_bytes=124556/200000 files=2 result=PASS`（余裕 75,444 バイト。CI は wasm-opt なしで数値が異なり、より小さくなる想定）
 - 最小構成外の部品（accordion / menu / select 等）を使う選択肢は 2 つ: (1) `fandhe-frontend-wasm-full` を直接依存に追加し必要な feature を選ぶ（`examples/interactive-view-transitions` 参照）、(2) `fandhe-frontend-dist-server` を fork / vendor し `crates/dist-server/src/wasm_dist_features.rs` の `WASM_DIST_FEATURES` を変更する（`crates/wasm-full/tests/bundle_size.rs` の実測を併せて確認）
 - 新規 feature 追加時の定型チェックリスト（Cargo.toml `[features]` と `default` 配列、lib.rs クレート doc、CLAUDE.md の件数、CI の `wasm-full-feature-matrix-wiring` / `-scope` ジョブへの 1 行追加〔新規ジョブは作らない〕、本ガイドの表、`cargo test -p fandhe-frontend-wasm-full --test bundle_size`、`WASM_DIST_FEATURES` へ追加しない）は開発者向けの内容で、原文 §11 に記載。`fandhe-frontend-animation` 由来 feature は `dep:fandhe-frontend-animation` で有効化し、`wasm-full` にアニメーション演算ロジックを書かない
-- 原文の版数表（§7）は feature 追加履歴で、0.19.0（配線群別 14 件）、0.20.0（scope 16 件）、0.20.1（`position`）、0.20.5（`message-scroller`）、0.20.8（`data-table`）、0.21.0（`stagger` / `in-view`）、…、0.40.4（`count-up` 統合時点）まで並行ブランチの版数衝突バンプを含めて記録されている。続く 0.41.0（`Runtime::dispatch_action` 追加、feature gating なし）、0.42.0（汎用 keydown 配線の属性解釈・キー絞り込みの純粋ロジック。未配線）、0.43.0（`action-keydown` feature 追加、`mount` / `hydrate` へ組み込み）、0.44.0（`data-keydown-ignore-repeat`）、0.45.0（keydown action の payload で `data-payload` を優先）、0.46.0（overlay / sidebar / command が消費するキーでは汎用 keydown が見送る排他仕様）が現行。個別 feature の導入版は上記のほか本文の各説明を参照
+- 原文の版数表（§7）は feature 追加履歴で、0.19.0（配線群別 14 件）、0.20.0（scope 16 件）、0.20.1（`position`）、0.20.5（`message-scroller`）、0.20.8（`data-table`）、0.21.0（`stagger` / `in-view`）、…、0.40.4（`count-up` 統合時点）まで並行ブランチの版数衝突バンプを含めて記録されている。続く 0.41.0（`Runtime::dispatch_action` 追加、feature gating なし）、0.42.0（汎用 keydown 配線の属性解釈・キー絞り込みの純粋ロジック。未配線）、0.43.0（`action-keydown` feature 追加、`mount` / `hydrate` へ組み込み）、0.44.0（`data-keydown-ignore-repeat`）、0.45.0（keydown action の payload で `data-payload` を優先）、0.46.0（overlay / sidebar / command が消費するキーでは汎用 keydown が見送る排他仕様）、0.47.0（`pin-input` feature、`pin_input` モジュールと `Runtime::wire_pin_input`、#3834）、0.48.0（pin-input 配線に keydown / paste / autofill / モバイル削除 / IME 確定入力を追加、公開 `KeyIntent` / `key_intent` / `ValueScope` 等、#3835）が続き、0.48.1（headless-ui 0.73.0 依存追随のみ）が現行。個別 feature の導入版は上記のほか本文の各説明を参照
 - `Runtime::dispatch_action`（0.41.0）: 外部から action を起動する公開 API。`name` は action 名、`payload` は `data-payload` と同様に信頼できない入力として `Component::decode_action` に渡される。受理されると `Component::update` が呼ばれ `data-action` 経路と同じ差分更新が行われる。戻り値 `DispatchOutcome`（`fandhe_frontend_wasm_full::DispatchOutcome`）は `Dispatched` / `UnknownAction`（未知 action または不正 payload、no-op）/ `Reentrant`（借用が取れず no-op）の 3 variant。`Runtime::component()` の借用中・`update` 実行中・配線コールバック内部・`rerender` 中に呼ぶと `Reentrant` を返し、action は保留もキューイングもされず捨てられる（反映したい場合は `setTimeout` 等でコールバックの外へ逃がす）。Cargo feature によるゲートはなく、wasm32 専用。`postMessage` 等の外部由来入力は送信元 origin の検証が呼び出し側の責務
 - keyed list 更新の注意（原文 §12）: keyed list の field が dirty になる更新では親要素の属性が `view()` の属性列へ同期され、`view()` にない属性（JS で後付けした `aria-live`・class・`data-*`・`data-fandhe-flip-auto` 等）は削除される。必要な属性は `view()` 側で渡す。項目数 4,096 件・キー文字列合計 262,144 バイトが上限で、超過すると `keyed_list()` が `TooManyItems` / `KeyBytesExceeded` の `Err` を返す（`Component::view` は `Result` を返せないため扱いはアプリの責務。`expect` / `unwrap` は wasm の panic とインスタンス停止につながる）。上限前のページング・長いログの末尾 N 件化・リストの field 分割を推奨し、上限定数は HashDoS 対策のため引き上げ・迂回しない
-- 出典: 公式 docs `guides/wasm-full-features`。機械可読な一次情報は `crates/wasm-full/src/lib.rs` クレート doc と `crates/wasm-full/Cargo.toml` の `[features]`（pin SHA `4c8c7d1` の `Fandhe-AI/fandhe-frontend` リポジトリ内パス。公開 crate には含まれない）。設計記録 `docs/design/wasm-full-feature-gating-evaluation.md`・`docs/design/wasm-full-architecture.md` も同 SHA の GitHub パス（非公開参照のため本スキルには未収録）
+- 出典: 公式 docs `guides/wasm-full-features`。機械可読な一次情報は `crates/wasm-full/src/lib.rs` クレート doc と `crates/wasm-full/Cargo.toml` の `[features]`（pin SHA `7256504`（`7256504c881df5d924e3a4bdcdfe3942d4d7eda0`）の `Fandhe-AI/fandhe-frontend` リポジトリ内パス。公開 crate には含まれない）。設計記録 `docs/design/wasm-full-feature-gating-evaluation.md`・`docs/design/wasm-full-architecture.md` も同 SHA の GitHub パス（非公開参照のため本スキルには未収録）
 
 ## Related
 

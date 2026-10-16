@@ -14,13 +14,24 @@ state::Disclosure       // 開閉状態機械（dispatch: "open" / "close" / "to
 state::SingleSelect      // 単一選択状態機械
 state::TextInput         // 自由入力文字列状態機械
 
-// 位置決め（positioning モジュール、クレートルートから再エクスポート。fandhe-frontend-headless-ui 0.69.2 のソースで確認）
+// 位置決め（positioning モジュール、クレートルートから再エクスポート。fandhe-frontend-headless-ui 0.73.0 のソースで確認）
 fn positioning::compute_position(anchor: Rect, floating: Size, viewport: Size, config: &PositioningConfig, has_arrow: bool) -> ResolvedPosition
 // 同モジュールの再エクスポート: css_vars_style / data_align / data_side / placement_attrs /
 // Align / ArrowPosition / Placement / PositioningConfig / Rect / ResolvedPosition / Side / Size
 // Rect { x, y, width, height: f64 } / Size { width, height: f64 }
 // PositioningConfig { placement: Placement, offset: f64, flip: bool, shift: bool, same_width: bool }
 // ResolvedPosition { x: f64, y: f64, placement: Placement, arrow: Option<ArrowPosition> }
+
+// 型付き autocomplete（autocomplete モジュール、クレートルートから再エクスポート: pub use autocomplete::{AutocompleteField, AutocompleteToken}）
+#[non_exhaustive]
+enum AutocompleteField { Username, Email, CurrentPassword, NewPassword, OneTimeCode }
+const fn AutocompleteToken::new(field: AutocompleteField) -> AutocompleteToken // webauthn なし
+const fn AutocompleteToken::off() -> AutocompleteToken                         // 単独の "off"
+const fn AutocompleteToken::is_off(self) -> bool
+const fn AutocompleteToken::with_webauthn(self) -> AutocompleteToken           // off / OneTimeCode では no-op
+const fn AutocompleteToken::field(self) -> AutocompleteField                   // off のときは意味を持たない値（Username）
+const fn AutocompleteToken::webauthn(self) -> bool                             // off では常に false
+const fn AutocompleteToken::as_str(self) -> &'static str                       // 全組み合わせの静的リテラル
 ```
 
 ## コンポーネント一覧（主要抜粋）
@@ -55,6 +66,12 @@ fn positioning::compute_position(anchor: Rect, floating: Size, viewport: Size, c
 
 ## Notes
 
+- `AutocompleteToken` は field 名 + 任意の末尾 `webauthn`、または単独の `off` を表す固定語彙型。任意の `&str` を受ける公開コンストラクタ・`FromStr`・`From<&str>` を持たず、`as_str()` はリテラルの `match` のみで値を返す。`off webauthn` / `one-time-code webauthn` / `webauthn` 単独・先頭配置は型として表現できない。`off` では `field()` が意味を持たない値を返すため、先に `is_off()` で判定する。`AutocompleteField::Email` の `email webauthn` は文法上有効だが通常は使わない
+- 公式 `docs/api/headless-ui-api.md` の追記（verbatim）: イシュー #3815 で `autocomplete` モジュールの固定語彙型 `AutocompleteToken`（field 名 + 任意の `webauthn`）と `input_with_autocomplete` を追加した（`current-password webauthn` 等。任意の `&str` を受ける経路は持たない）
+- イシュー #3816 で `field::input_with_autocomplete(props, token, extra_attrs)` と `AutocompleteField::Email`（`#[non_exhaustive]` 化）を追加した。`extra_attrs` の `autocomplete` は大文字小文字を区別せず除去し型付きの値を優先する。既存の `field::input` は不変で生文字列経路も維持する。`password_input` では password 系以外の field 指定を `props.autocomplete` へフォールバックする
+- イシュー #3859 で `AutocompleteField::OneTimeCode`（`one-time-code`）と単独値の `AutocompleteToken::off()` / `is_off()` を追加した。`off` と `OneTimeCode` への `with_webauthn()` は no-op で `off webauthn` 等の不正値は表現できない。`off` 時の `field()` は意味を持たない値のため先に `is_off()` で判定する。`password_input` は `off`・`one-time-code` も `props.autocomplete` へフォールバックし（password 欄の保護設定を型付き API で外させない）、`pin_input` の `otp` は `AutocompleteToken` 由来の同一出力になった
+- イシュー #3833: `PinInputKind` に opt-in の `AlphanumericUppercase` / `AlphabeticUppercase`（hydration 語彙 `alphanumeric-uppercase` / `alphabetic-uppercase`）を追加した。`Input` / `Paste` で ASCII 英小文字を `to_ascii_uppercase` で大文字へそろえる（状態側の正規化が正。CSS `text-transform` は送信値と食い違うため不採用）。この kind のときだけ `autocapitalize="characters"`（固定語彙）を出し、呼び出し側 `attrs` の `autocapitalize` は除外する。hydration で小文字の桁は `InvalidValue`。既存 kind の挙動は不変。値の検証はアプリの責務のまま（§3.25）
+- 0.x の破壊的変更: `AutocompleteField` / `PinInputKind` へのバリアント追加は、網羅的に `match` しているコードにとってはコンパイルエラーになる（`PinInputKind` は 0.72.0、`AutocompleteField::OneTimeCode` は 0.73.0 でそれぞれ minor バンプ）
 - 属性名（`data-*` / `aria-*`）は `&'static str` リテラルのみで固定
 - 動的値は `fandhe_frontend_core::render` の既定エスケープを必ず経由する
 - `data-state` 語彙は各モジュールで一元管理される

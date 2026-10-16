@@ -1,6 +1,6 @@
 # fandhe-frontend-pre-styled-ui API
 
-`fandhe-frontend-headless-ui` の上に、テーマトークン・variant API・静的CSS生成を重ねた2層構造の上層。crate 0.241.0（crates.io 公開ソース、`lib.rs` の `pub mod` 行を実測）は 134 個の公開モジュールを持ち、うち 12 個（`border_beam` / `button_motion` / `carousel_motion` / `cursor` / `forms_motion` / `list_motion` / `marquee_motion` / `motion` / `stat_motion` / `text_reveal` / `toast_motion` / `view_transition`）は `motion` feature 限定、残り 122 個は常時有効。以前の記述（v0.40.0 で 106 個）から大幅に増加している。実際に使えるモジュール・API は `https://docs.rs/fandhe-frontend-pre-styled-ui/<version>` で確認すること。
+`fandhe-frontend-headless-ui` の上に、テーマトークン・variant API・静的CSS生成を重ねた2層構造の上層。crate 0.245.0（crates.io 公開ソース、`lib.rs` の `pub mod` 行を実測。0.241.0 から `lib.rs` は不変で、公開モジュール数・`motion` 限定モジュール・ルート再エクスポートは同じ）は 134 個の公開モジュールを持ち、うち 12 個（`border_beam` / `button_motion` / `carousel_motion` / `cursor` / `forms_motion` / `list_motion` / `marquee_motion` / `motion` / `stat_motion` / `text_reveal` / `toast_motion` / `view_transition`）は `motion` feature 限定、残り 122 個は常時有効。以前の記述（v0.40.0 で 106 個）から大幅に増加している。実際に使えるモジュール・API は `https://docs.rs/fandhe-frontend-pre-styled-ui/<version>` で確認すること。
 
 ## Signature / Usage
 
@@ -10,7 +10,7 @@ pub fn new() -> StyleSheet
 pub fn push_css(&mut self, css: &str) -> Result<(), StylesheetError>
 pub fn push_recipe(&mut self, recipe: &SlotRecipe)
 pub fn push_theme(&mut self, theme: &Theme)
-pub fn as_css(&self) -> &str // 0.241.0 のソースで確認（new / push_css / push_recipe / push_theme / as_css / write_css_file / style_element）
+pub fn as_css(&self) -> &str // 0.245.0 のソースで確認（new / push_css / push_recipe / push_theme / as_css / write_css_file / style_element）
 pub fn write_css_file(&self, path: &Path) -> std::io::Result<()>
 pub fn style_element(&self) -> Node
 ```
@@ -22,7 +22,7 @@ pub fn upsert_space(&mut self, name: &str, value: &str) -> Result<(), ThemeError
 pub fn upsert_typography(&mut self, name: &str, value: &str) -> Result<(), ThemeError>
 pub fn upsert_radius(&mut self, name: &str, value: &str) -> Result<(), ThemeError>
 pub fn upsert_shadow(&mut self, name: &str, light: &str, dark: &str) -> Result<(), ThemeError>
-// 0.241.0 で追加確認（いずれも name: &str, value: &str -> Result<(), ThemeError>）
+// 0.245.0 のソースで確認（いずれも name: &str, value: &str -> Result<(), ThemeError>）
 pub fn upsert_z_index(&mut self, name: &str, value: &str) -> Result<(), ThemeError>
 pub fn upsert_focus_ring(&mut self, name: &str, value: &str) -> Result<(), ThemeError>
 pub fn upsert_size(&mut self, name: &str, value: &str) -> Result<(), ThemeError>
@@ -46,15 +46,15 @@ sheet.write_css_file(std::path::Path::new("static/ui.css")).unwrap();
 | headlessラッパー（64） | dialog / tabs / accordion / menu / select / popover / tooltip / switch / radio_group / avatar / checkbox / color_picker / input / textarea / native_select / number_input / pin_input / password_input / slider / rating_group / segment_group / tags_input / editable / listbox / toggle / toggle_group / combobox / tree_view / json_tree_view / pagination / steps / breadcrumb / carousel / drawer / link / link_overlay / nav_list / action_bar / toolbar / menubar / navigation_menu / tab_nav / checkbox_group / toast / hover_card / toggle_tip / progress / clipboard / checkbox_card / radio_card / floating_panel / scroll_area / splitter / marquee / date_input / qr_code / download_trigger / file_upload / calendar / date_picker / timer / angle_slider / signature_pad / image_cropper |
 | タイポグラフィ（8） | heading / text / em / mark / blockquote / list / quote / strong |
 | データ表示・その他（8） | color_swatch / data_list / empty_state / stat / status / table / timeline / tour |
-| charts（7） | 基盤 `charts`（data/scale/svg）+ line_chart / area_chart / sparkline / pie_chart / donut_chart / radial_chart（0.241.0 の `pub mod` 実測） |
-| 0.241.0 で追加された常時有効モジュール | collapsible / field / fieldset / input_group / item / button_group / command / sidebar / message / bubble / attachment / marker / message_scroller / questionnaire / data_table / radial_chart |
+| charts（7） | 基盤 `charts`（data/scale/svg）+ line_chart / area_chart / sparkline / pie_chart / donut_chart / radial_chart（0.245.0 の `pub mod` 実測） |
+| 0.245.0 で確認した常時有効モジュール（0.241.0 時点で追加済み） | collapsible / field / fieldset / input_group / item / button_group / command / sidebar / message / bubble / attachment / marker / message_scroller / questionnaire / data_table / radial_chart |
 | `motion` feature 限定（12） | border_beam / button_motion / carousel_motion / cursor / forms_motion / list_motion / marquee_motion / motion / stat_motion / text_reveal / toast_motion / view_transition |
 
 ## 代表的な部品 API
 
 ```rust
 // avatar
-// （0.241.0 のソースで確認。属性列 attrs は Vec<(&'a str, &'a str)>）
+// （0.245.0 のソースで確認。属性列 attrs は Vec<(&'a str, &'a str)>）
 pub fn root<'a>(props: &AvatarProps, attrs: Vec<(&'a str, &'a str)>, children: Vec<Node>) -> Node
 pub fn stylesheet() -> String
 // AvatarProps は size / shape / variant / palette / stacked / with_badge 等を持つ（旧 root(size, shape, ...) 形から変更）
@@ -71,6 +71,8 @@ pub fn stylesheet() -> String
 
 // input（静的フォーム部品共通パターン）
 pub fn input<'a>(props: &InputProps, field: &FieldProps<'_>, extra_attrs: Vec<(&'a str, &'a str)>) -> Node
+// 型付き autocomplete 版（#3817）。AutocompleteToken / AutocompleteField は input mod から再エクスポート
+pub fn input_with_autocomplete<'a>(props: &InputProps, field: &FieldProps<'_>, autocomplete: AutocompleteToken, extra_attrs: Vec<(&'a str, &'a str)>) -> Node
 // variant: Outline（既定）/ Subtle / Flushed（native_selectのみ Plain 追加）。color-palette 非提供
 
 // line_chart / area_chart / sparkline
@@ -103,7 +105,7 @@ pub use fandhe_frontend_headless_ui::{OpenState, Orientation};
 pub use fandhe_frontend_headless_ui::fandhe_frontend_interactive;
 ```
 
-crate 0.241.0 の `lib.rs` では、上記4行（`fandhe_frontend_headless_ui` 本体・`fandhe_frontend_core`・`fandhe_frontend_interactive`・`OpenState`/`Orientation`）に加え、v0.40.0 時点では無かった styled 側の選択的再エクスポートがルートに存在する。例: `button::{button, close_button, icon_button, ButtonProps, ButtonVariant}` / `badge::{badge, BadgeProps, BadgeVariant}` / `input::{input, InputProps, InputVariant}` / `heading::{heading, HeadingLevel, HeadingProps, HeadingSize, HeadingWeight}` / `recipe::{when, ColorPalette, Shape, Size, SlotRecipe, VariantCondition, VariantValue}` / `stylesheet::{StyleSheet, StylesheetError}` / `css::{decl, Declaration}` ほか（alert / callout / card / code / color_swatch / em / empty_state / field / fieldset / highlight / icon / image / kbd / link / list / mark / marquee / native_select / quote / separator / skeleton / spinner / status / strong / table / tag / text / textarea の主要型）。`tabs::Orientation` 等の個別型が必要な場合はモジュールパスを明示する（例: `fandhe_frontend_pre_styled_ui::tabs::Orientation`）。
+crate 0.245.0 の `lib.rs` では、上記4行（`fandhe_frontend_headless_ui` 本体・`fandhe_frontend_core`・`fandhe_frontend_interactive`・`OpenState`/`Orientation`）に加え、v0.40.0 時点では無かった styled 側の選択的再エクスポートがルートに存在する。例: `button::{button, close_button, icon_button, ButtonProps, ButtonVariant}` / `badge::{badge, BadgeProps, BadgeVariant}` / `input::{input, InputProps, InputVariant}` / `heading::{heading, HeadingLevel, HeadingProps, HeadingSize, HeadingWeight}` / `recipe::{when, ColorPalette, Shape, Size, SlotRecipe, VariantCondition, VariantValue}` / `stylesheet::{StyleSheet, StylesheetError}` / `css::{decl, Declaration}` ほか（alert / callout / card / code / color_swatch / em / empty_state / field / fieldset / highlight / icon / image / kbd / link / list / mark / marquee / native_select / quote / separator / skeleton / spinner / status / strong / table / tag / text / textarea の主要型）。`tabs::Orientation` 等の個別型が必要な場合はモジュールパスを明示する（例: `fandhe_frontend_pre_styled_ui::tabs::Orientation`）。
 
 ## Notes
 
@@ -114,7 +116,8 @@ crate 0.241.0 の `lib.rs` では、上記4行（`fandhe_frontend_headless_ui` �
 - `data-focus-visible` 存在属性 + wasm配線による付け外しで、キーボード操作時のみフォーカスリングを表示する（switch / radio_group / checkbox）
 - charts の `size` variant は `--fandhe-<scope>-height` custom property経由でplot高さを切り替え、`color-palette` は非提供（系列色は固定指定）
 - `raw_html()` の使用は `stylesheet::StyleSheet::style_element` 内1箇所に限定し、全パスに `#[expect(clippy::disallowed_methods)]` を付与
-- Theme トークン API は `push_*` 系（fail-closed、同名トークンは拒否・既定値の上書き不可）に加え、`upsert_color` / `upsert_space` / `upsert_typography` / `upsert_radius` / `upsert_shadow`（既存トークンを挿入順を保ったまま上書き、または無ければ追加。イシュー #1138、`crates/pre-styled-ui/src/theme.rs`、main では commit `2a81311` で着地済み）が利用できる。crate 0.241.0 のソースで `Theme::upsert_*` の存在を確認済み（上記シグネチャ参照）
+- Theme トークン API は `push_*` 系（fail-closed、同名トークンは拒否・既定値の上書き不可）に加え、`upsert_color` / `upsert_space` / `upsert_typography` / `upsert_radius` / `upsert_shadow`（既存トークンを挿入順を保ったまま上書き、または無ければ追加。イシュー #1138、`crates/pre-styled-ui/src/theme.rs`、main では commit `2a81311` で着地済み）が利用できる。crate 0.245.0 のソースで `Theme::upsert_*` の存在を確認済み（上記シグネチャ参照）
+- 静的フォーム部品 `input` は型付き autocomplete 版 `input::input_with_autocomplete` と `AutocompleteToken` / `AutocompleteField` の再エクスポートを持つ（#3817）。`password_input`（headless ラッパー）も `input_with_autocomplete` / `AutocompleteToken` / `AutocompleteField` を headless-ui から透過再エクスポートする（公式 `docs/api/pre-styled-ui-api.md` の追記、pin SHA 7256504）
 
 ## Related
 

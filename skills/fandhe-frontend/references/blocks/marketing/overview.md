@@ -114,7 +114,7 @@ Marketing 区分の全 23 カテゴリ。
 | Gallery | 4 | [gallery.md](./gallery.md) |
 | Section Heading | 3 | [section-heading.md](./section-heading.md) |
 
-合計 23 カテゴリ・138 block（Blocks 全体は Marketing 138 / Application 124 / Ecommerce 52 / Docs 15 の計 329 件、65 カテゴリ）。
+合計 23 カテゴリ・138 block（Blocks 全体は Marketing 138 / Application 130 / Ecommerce 52 / Docs 15 の計 335 件、65 カテゴリ）。
 
 ## Notes
 

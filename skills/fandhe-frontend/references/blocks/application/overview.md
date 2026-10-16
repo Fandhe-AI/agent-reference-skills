@@ -1,6 +1,6 @@
 # Application Blocks（概要）
 
-Blocks の Application 区分（26 カテゴリ・124 block）の集約ページ。Blocks は新規 API ではなく既存の Themes / Primitives / core 部品の合成例で、各 block の公開物は未公開 crate `docs-site` 内部の `pub fn demo() -> Node` と `pub const BLOCK: Block` の 2 つだけである（引数付き関数・Props 構造体・Options は無い）。
+Blocks の Application 区分（26 カテゴリ・130 block）の集約ページ。Blocks は新規 API ではなく既存の Themes / Primitives / core 部品の合成例で、各 block の公開物は未公開 crate `docs-site` 内部の `pub fn demo() -> Node` と `pub const BLOCK: Block` の 2 つだけである（引数付き関数・Props 構造体・Options は無い）。
 
 ## Signature / Usage
 
@@ -97,7 +97,7 @@ pub enum LayoutCss {
 
 ## Categories
 
-Application 区分は 26 カテゴリ・計 124 block。各カテゴリページに block 一覧（slug / 説明 / 使用部品 / 公式 URL）と、カテゴリ内で最も短い block のコード全文を収録する。
+Application 区分は 26 カテゴリ・計 130 block。各カテゴリページに block 一覧（slug / 説明 / 使用部品 / 公式 URL）と、カテゴリ内で最も短い block のコード全文を収録する。
 
 | Category | Blocks | Page |
 |----------|--------|------|
@@ -112,7 +112,7 @@ Application 区分は 26 カテゴリ・計 124 block。各カテゴリページ
 | Description List | 3 | [description-list.md](./description-list.md) |
 | Feed | 2 | [feed.md](./feed.md) |
 | Form Layout | 4 | [form-layout.md](./form-layout.md) |
-| Auth | 10 | [auth.md](./auth.md) |
+| Auth | 16 | [auth.md](./auth.md) |
 | Settings | 30 | [settings.md](./settings.md) |
 | Action Panel | 5 | [action-panel.md](./action-panel.md) |
 | Empty State | 5 | [empty-state.md](./empty-state.md) |

@@ -28,6 +28,8 @@ let node = pin_input::root(Size::Md, false, false, vec![], vec![]);
 ## Notes
 
 - 固定桁数の PIN コード入力向け。
+- 再エクスポートされる `PinInputKind` は `Numeric` / `Alphanumeric` / `Alphabetic` / `AlphanumericUppercase` / `AlphabeticUppercase`（pre-styled-ui 0.245.0 の `pin_input.rs` モジュール doc）。Uppercase 系は ASCII 英小文字を大文字へそろえる（詳細は Pin Input（primitives））。
+- headless-ui 側の挙動変更を継承する: paste は区切り文字（ASCII ハイフンと空白類）を先に取り除いてから、全文字が kind に適合し桁数以内の場合のみ受理する。
 - `@chakra-ui/react` の JS/TS API とは別物（Rust 製）。
 
 ## Related
