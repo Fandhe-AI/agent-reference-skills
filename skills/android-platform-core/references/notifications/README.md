@@ -2,6 +2,8 @@
 
 | Name | Description | Path |
 |------|-------------|------|
+| Notification bubbles (BubbleMetadata) | Attach `BubbleMetadata` to a notification so it floats as a bubble that expands into a resizeable, embedded activity. | [bubbles.md](./bubbles.md) |
+| Call style notifications (NotificationCompat.CallStyle) | Android 12 (API level 31) and later `CallStyle` template for incoming, ongoing, and screening calls with caller information and required actions. | [call-style.md](./call-style.md) |
 | Custom notification layouts (RemoteViews) | Fully or partially custom notification content built from a `RemoteViews` layout. | [custom-notification.md](./custom-notification.md) |
 | Expandable notification styles | Five `NotificationCompat` style classes that expand collapsed notifications. | [expanded-notifications.md](./expanded-notifications.md) |
 | Heads-up and full-screen intent notifications | Time-sensitive notifications that interrupt the user immediately. | [full-screen-intent.md](./full-screen-intent.md) |

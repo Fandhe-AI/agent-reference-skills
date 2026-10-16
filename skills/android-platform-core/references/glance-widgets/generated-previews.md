@@ -26,12 +26,12 @@ coroutineScope.launch {
 
 ## Options / Props
 
-| Name | Type | Description |
-|------|------|-------------|
-| `GlanceAppWidget.providePreview(context, widgetCategory)` | overridable `suspend fun` | Emits the composable content shown as the generated preview; a single one-shot composition, no recomposition or effects. |
-| `GlanceAppWidgetManager(context).setWidgetPreviews<T : GlanceAppWidgetReceiver>(widgetCategories: IntSet = intSetOf(WIDGET_CATEGORY_HOME_SCREEN or WIDGET_CATEGORY_KEYGUARD or WIDGET_CATEGORY_SEARCHBOX))` | reified `@CheckResult suspend fun`, requires API 35 (`VANILLA_ICE_CREAM`) | Renders the preview from `providePreview` and pushes it to the system so the widget picker can show it; returns a `@SetWidgetPreviewsResult Int` — `SET_WIDGET_PREVIEWS_RESULT_SUCCESS` or `SET_WIDGET_PREVIEWS_RESULT_RATE_LIMITED` — not a count of categories set. Rate-limited to roughly two calls per hour per widget. |
-| `previewSizeMode` | `PreviewSizeMode` (a `SizeMode` sub-interface implemented by `SizeMode.Single`/`SizeMode.Responsive`) | Override to `SizeMode.Responsive` (with breakpoints from the widget's minimum size) if elements are missing from the generated preview — the default `SizeMode.Single` only renders what's visible at `android:minWidth`/`android:minHeight`. |
-| `previewImage` | `AppWidgetProviderInfo` XML attribute | Static fallback preview drawable, still required for devices below Android 15 and as a fallback if a generated preview hasn't been set yet. |
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `GlanceAppWidget.providePreview(context, widgetCategory)` | overridable `suspend fun` | — | Emits the composable content shown as the generated preview; a single one-shot composition, no recomposition or effects. |
+| `GlanceAppWidgetManager(context).setWidgetPreviews<T : GlanceAppWidgetReceiver>(widgetCategories: IntSet = intSetOf(WIDGET_CATEGORY_HOME_SCREEN or WIDGET_CATEGORY_KEYGUARD or WIDGET_CATEGORY_SEARCHBOX))` | reified `@CheckResult suspend fun`, requires API 35 (`VANILLA_ICE_CREAM`) | `widgetCategories = intSetOf(WIDGET_CATEGORY_HOME_SCREEN or WIDGET_CATEGORY_KEYGUARD or WIDGET_CATEGORY_SEARCHBOX)` | Renders the preview from `providePreview` and pushes it to the system so the widget picker can show it; returns a `@SetWidgetPreviewsResult Int` — `SET_WIDGET_PREVIEWS_RESULT_SUCCESS` or `SET_WIDGET_PREVIEWS_RESULT_RATE_LIMITED` — not a count of categories set. Rate-limited to roughly two calls per hour per widget. |
+| `previewSizeMode` | `PreviewSizeMode` (a `SizeMode` sub-interface implemented by `SizeMode.Single`/`SizeMode.Responsive`) | `SizeMode.Single` | Override to `SizeMode.Responsive` (with breakpoints from the widget's minimum size) if elements are missing from the generated preview — the default `SizeMode.Single` only renders what's visible at `android:minWidth`/`android:minHeight`. |
+| `previewImage` | `AppWidgetProviderInfo` XML attribute | — | Static fallback preview drawable, still required for devices below Android 15 and as a fallback if a generated preview hasn't been set yet. |
 
 ## Notes
 
@@ -39,6 +39,7 @@ coroutineScope.launch {
 - Check the returned result code rather than assuming success: `SET_WIDGET_PREVIEWS_RESULT_RATE_LIMITED` means the call was rejected by the roughly-two-calls-per-hour rate limit, not that zero categories matched.
 - Call `setWidgetPreviews` at a point where you have real or representative data — first app launch for static/quick-action widgets, after sign-in for account-scoped widgets, or on a periodic schedule for widgets whose content changes over time. Update it again whenever the widget's visual appearance changes.
 - `providePreview` is a single, side-effect-free composition — it does not recompose and is distinct from the widget's normal `provideGlance`/`provideContent` lifecycle.
+- The Glance APIs for generated previews (`GlanceAppWidget.providePreview` and the `GlanceAppWidgetManager` preview setter) were added in `glance-appwidget` 1.2.0-alpha01 and are stable since 1.2.0 (2026-08-26) (https://developer.android.com/jetpack/androidx/releases/glance).
 - Artifact: `androidx.glance:glance-appwidget`.
 
 ## Related

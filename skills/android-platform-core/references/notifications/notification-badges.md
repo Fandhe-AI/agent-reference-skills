@@ -71,3 +71,4 @@ NotificationCompat.Builder(context, CHANNEL_ID)
 
 - [notification-channels](./notification-channels.md)
 - [expanded-notifications](./expanded-notifications.md)
+- [bubbles](./bubbles.md)
