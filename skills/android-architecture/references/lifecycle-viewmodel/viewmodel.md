@@ -42,7 +42,12 @@ class DiceRollViewModel : ViewModel() {
 
 - Only instantiate via `ViewModelProvider` / `viewModel()`; a bare constructor call bypasses scoping and lifecycle management.
 - If a `viewModelScope: CoroutineScope` is passed to the constructor, it replaces the default `viewModelScope` and is canceled before `onCleared()`.
+- Since Lifecycle 2.11.0 (first in 2.11.0-alpha01), `onCleared()` is annotated `@EmptySuper` (`@EmptySuper protected open fun onCleared()`), so overrides do not need to call `super.onCleared()`.
+- Clearing sequence (from the KDoc): (1) close resources added with a key via `addCloseable`, (2) close resources added via the constructor, (3) close resources added without a key via `addCloseable`, (4) invoke `onCleared()`.
+- Since 2.11.0-alpha01, `ViewModelStore.toString()` lists the stored keys for debugging, in the format `<ClassName>@<hash>(keys=...)`.
 - Package: `androidx.lifecycle` (module `lifecycle-viewmodel`).
+- Source (primary, signatures and KDoc): Google Maven sources jar https://dl.google.com/android/maven2/androidx/lifecycle/lifecycle-viewmodel/2.11.0/lifecycle-viewmodel-2.11.0-sources.jar (`commonMain/androidx/lifecycle/ViewModel.kt`, `ViewModelStore`).
+- Release notes: https://developer.android.com/jetpack/androidx/releases/lifecycle (2.11.0-alpha01). The API reference pages on developer.android.com are not fetchable, so the sources jar above is the basis for this page.
 
 ## Related
 

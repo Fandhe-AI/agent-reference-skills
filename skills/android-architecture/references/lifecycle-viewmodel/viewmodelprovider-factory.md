@@ -52,13 +52,20 @@ val keyedVm: MyViewModel = provider.get(key = "second")
 | `CreationExtras[SAVED_STATE_REGISTRY_OWNER_KEY]` | key | — | The `SavedStateRegistryOwner`. |
 | `CreationExtras[VIEW_MODEL_STORE_OWNER_KEY]` | key | — | The `ViewModelStoreOwner`. |
 | `CreationExtras.createSavedStateHandle()` | function | — | Creates a new `SavedStateHandle` from the extras. |
+| `ViewModelStoreOwner?.defaultViewModelProviderFactory` | `public val ViewModelStoreOwner?.defaultViewModelProviderFactory: ViewModelProvider.Factory` | — | Extension property (2.11.0). Returns the owner's `defaultViewModelProviderFactory` if it implements `HasDefaultViewModelProviderFactory`; otherwise, or if the owner is `null`, falls back to `DefaultViewModelProviderFactory`. |
+| `ViewModelStoreOwner?.defaultViewModelCreationExtras` | `public val ViewModelStoreOwner?.defaultViewModelCreationExtras: CreationExtras` | — | Extension property (2.11.0). Returns the owner's `defaultViewModelCreationExtras` if it implements `HasDefaultViewModelProviderFactory`; otherwise, or if the owner is `null`, falls back to `CreationExtras.Empty`. |
 
 ## Notes
 
 - Not needed when using Hilt: `@HiltViewModel`-annotated classes get a generated factory automatically.
 - `ViewModelProvider.create(owner, factory, extras)` and `ViewModelProvider.create(store, factory, extras)` build a `ViewModelProvider`; `provider[ModelClass::class]` retrieves/creates the cached instance.
 - For custom dependencies unavailable via `APPLICATION_KEY` (e.g. Kotlin Multiplatform), define a custom `CreationExtras.Key<T>()` and supply it via `MutableCreationExtras`.
+- The `defaultViewModel*` extensions (2.11.0-alpha02) remove the need for manual type checks against `HasDefaultViewModelProviderFactory`.
+- Since 2.11.0-alpha01, `HasDefaultViewModelProviderFactory.defaultViewModelProviderFactory` has a default implementation (`DefaultViewModelProviderFactory`) and `defaultViewModelCreationExtras` defaults to `CreationExtras.Empty`, so implementers no longer need to override them.
+- Since 2.11.0-alpha03, `CreationExtras.Key` has a `toString()` that shows the class name.
 - Package: `androidx.lifecycle` / `androidx.lifecycle.viewmodel` (module `lifecycle-viewmodel`).
+- Source (primary, signatures and KDoc): Google Maven sources jar https://dl.google.com/android/maven2/androidx/lifecycle/lifecycle-viewmodel/2.11.0/lifecycle-viewmodel-2.11.0-sources.jar (`ViewModelStoreOwnerDefaults.kt`, `HasDefaultViewModelProviderFactory.kt`, `ViewModelProvider.kt`).
+- Release notes: https://developer.android.com/jetpack/androidx/releases/lifecycle (2.11.0-alpha01 / alpha02 / alpha03). The API reference pages on developer.android.com are not fetchable, so the sources jar above is the basis for this page.
 
 ## Related
 
