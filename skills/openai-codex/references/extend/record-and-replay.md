@@ -21,9 +21,12 @@ To replay, start a new ChatGPT or Codex chat and ask it to use the generated ski
 ## Requirements
 
 - Available on macOS only.
-- Initial availability excludes the European Economic Area, the United Kingdom, and Switzerland.
 - Computer Use must be available and enabled.
 - If an organization manages Codex with `requirements.toml`, the `[features].computer_use` requirement controls Record & Replay too — disabling `computer_use` also disables Record & Replay.
+
+## Troubleshooting
+
+- "I don't see Record & Replay": if your organization manages Codex with `requirements.toml`, the `[features].computer_use` requirement controls Record & Replay too. Setting `computer_use = false` makes both features unavailable. (The previously listed regional exclusion — EEA, UK, Switzerland — is not stated on the current official page.)
 
 ## Tips for better recordings
 

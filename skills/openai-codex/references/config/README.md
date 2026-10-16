@@ -8,3 +8,4 @@
 | Sample Configuration | Full example `config.toml` covering most keys | [config-sample.md](./config-sample.md) |
 | Environment variables | `CODEX_HOME`, `CODEX_API_KEY`, `RUST_LOG`, and other env vars | [environment-variables.md](./environment-variables.md) |
 | Model Context Protocol (MCP config) | `[mcp_servers.<name>]` STDIO/HTTP server configuration, OAuth, approval modes | [mcp-config.md](./mcp-config.md) |
+| Use ChatGPT Work and Codex with Amazon Bedrock | `amazon-bedrock-runtime` / `amazon-bedrock` providers, AWS-native auth (Bedrock API key or IAM), `web_search` setting | [amazon-bedrock.md](./amazon-bedrock.md) |

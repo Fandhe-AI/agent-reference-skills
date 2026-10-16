@@ -12,19 +12,22 @@ UI workflow (Findings or Scans → open accepted finding → **Patch** tab):
 4. **Verify the fix** — **Verify fix** reruns the original reproducer or strongest exploit check; checks legitimate behavior and nearby bypasses
 5. **Close the finding deliberately** — verification doesn't auto-close; review evidence and close with an accurate reason or keep open
 
-CLI prompt:
+Conversation prompt (supply the finding ID and report path, plus a reproducer or validation command if you have one; this authorizes edits to the checkout):
 
 ```text
-Use $codex-security:fix-finding to fix finding <finding-id> from <report-path>. Validate the issue, make the smallest safe change, and add a focused regression test that fails before the fix and passes after it. If that test is unsafe or infeasible, record the proof gap and provide the strongest repeatable validation artifact instead. Verify that the issue no longer reproduces.
+Use $codex-security:fix-finding to fix finding <finding-id> from <report-path>. Verify the issue against this checkout, fix it, and test the original failure and legitimate behavior. Record any verification you couldn't complete.
 ```
 
 CI/CD:
 
 ```bash
-codex exec --sandbox workspace-write 'Use $codex-security:fix-finding to fix finding <finding-id> from <report-path>. Validate the issue, make the smallest safe change, and add a focused regression test that fails before the fix and passes after it. If that test is unsafe or infeasible, record the proof gap and provide the strongest repeatable validation artifact instead. Verify that the issue no longer reproduces.'
+codex exec --sandbox workspace-write 'Use $codex-security:fix-finding to fix finding <finding-id> from <report-path>. Verify the issue against this checkout, fix it, and test the original failure and legitimate behavior. Record any verification you could not complete.'
 ```
 
 ## Notes
+
+- Start with one finding whose evidence you accept. A generated or applied patch isn't yet a verified fix. In the desktop workbench, generation leaves the selected checkout unchanged (**Generate patch** on the **Patch** tab), applying the patch changes it, and verification checks the patch and records evidence without automatically closing the finding. **Verify fix** reruns the original reproducer or another exploit check; when it can run a regression test it checks the test fails before and passes after, otherwise it records the verification gap and the checks it completed, and it also checks legitimate behavior, nearby bypasses, and repository tests. Review commands, results, and the remaining proof gap, then close the finding with an accurate reason or keep it open.
+- Findings can come from a scan, ticket, advisory, or other review; Codex can inspect the repository for missing technical details but may need you to clarify an intended security policy before choosing a fix. For repeatable scans and patch generation use the standalone CLI validate and patch commands (cli-reference.md). After verification, merge through your normal code-review process; if verification is incomplete keep the finding open with the remaining work.
 
 - Install Codex Security in the `CODEX_HOME` that `codex exec` uses before running these commands — a fresh CI runner doesn't include marketplace plugins by default
 - In CI/CD, separate the change scan from remediation: preserve the completed scan directory as a job artifact, then start one Codex task/job per accepted finding

@@ -45,6 +45,14 @@ Verdicts:
 
 `confirmed` and `needs_review` findings are ranked separately by exploitability (positive integers starting at 1); `not_actionable` findings aren't ranked.
 
+## Next steps
+
+- Run from a Codex project scoped to the repository; Codex must be able to read the source code (connectors provide finding data, GitHub findings need authenticated REST access, neither replaces source access). Codex keeps one result per supplied finding in input order and doesn't merge or drop apparent duplicates. If no repository is named for GitHub findings, Codex uses the repository attached to the current Codex project when available; GitHub Issues aren't included by default (provide a specific issue or ask explicitly). Codex checks the current source and applicable `SECURITY.md` policy and records evidence for and against the claim plus unresolved questions. `confirmed` means supported by static repository evidence, not reproduced by executing the application.
+- `confirmed`: after a person accepts the finding for remediation use `$codex-security:fix-finding` (triage prepares a prompt-ready handoff but doesn't invoke it automatically).
+- `needs_review`: if running code can resolve the proof gap use `$codex-security:validation` (pass the finding claim, affected locations, preconditions, static evidence, and proof gaps): `Use $codex-security:validation to dynamically validate finding [triage item ID or source ID] from the backlog triage result. Reproduce or disprove the finding, record what you tested, and list any remaining uncertainty.` Validation may build or run code, create a test or proof of concept, or exercise a real interface (see agent-approvals-security.md for execution controls). If the finding depends on product policy or deployment context, answer the listed open questions before changing code.
+- `not_actionable`: keep the evidence with your triage record; Codex doesn't automatically close or update the source ticket. Jira, Linear, and other backlog records remain unchanged unless you ask Codex to update them after reviewing the results.
+- To look for vulnerabilities beyond the supplied backlog, run a security scan (scans.md).
+
 ## Notes
 
 - Differs from `$codex-security:validation`, which can build/run code or exercise a real interface to reproduce/disprove a finding — triage classifies/ranks an existing backlog, validation resolves proof gaps with runtime evidence

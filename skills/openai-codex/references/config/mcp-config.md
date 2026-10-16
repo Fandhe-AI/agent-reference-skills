@@ -61,8 +61,11 @@ env_vars = ["LOCAL_TOKEN", { name = "REMOTE_TOKEN", source = "remote" }]
 | `bearer_token_env_var` | string | Env var name for a bearer token sent in `Authorization`. |
 | `http_headers` | map<string,string> | Static header values. |
 | `env_http_headers` | map<string,string> | Header values pulled from environment variables. |
+| `http_headers_helper` | string (command) | Local command that prints a JSON object of header names and string values (e.g. `{"X-Auth": "temporary-token"}`). Only for HTTP MCP connections made from the local environment; not stdio or remote execution environments. |
+| `oauth.client_id` / `oauth.client_secret` | string | Pre-registered OAuth client (secret requires a nonempty client ID; saved in `config.toml`, keep it private). |
+| `oauth.callback_url` / `oauth.callback_port` | string / integer | Saved callback URL and server-specific listener port. |
 
-If no credential source resolves, Codex can connect without authentication. Run `codex mcp login <server-name>` to start MCP OAuth login separately.
+If no credential source resolves, Codex can connect without authentication. Run `codex mcp login <server-name>` to start MCP OAuth login separately. Codex caches helper headers for the connection; after a same-origin POST returns `401` or `403` it refreshes once and retries only if the helper returns changed values. Explicit bearer tokens and OAuth credentials take precedence over a helper-provided `Authorization` header; an OAuth `403` reporting insufficient scope doesn't trigger a helper refresh.
 
 ### Common to both transports
 
@@ -76,6 +79,26 @@ If no credential source resolves, Codex can connect without authentication. Run 
 | `disabled_tools` | array<string> | Tool deny list, applied after `enabled_tools`. |
 | `default_tools_approval_mode` | `auto` \| `prompt` \| `writes` \| `approve` | Default approval behavior for this server's tools. `writes` prompts only for tools not marked read-only. |
 | `tools.<tool>.approval_mode` | `auto` \| `prompt` \| `writes` \| `approve` | Per-tool approval override. |
+| `tools.<tool>.output_token_limit` | integer (positive) | Token budget for one tool's output, before the standard 20% serialization allowance; overrides the model's default truncation budget for that tool. |
+
+Top-level `mcp_optional_startup_grace_ms` (default `1000`) controls how long Codex waits for optional MCP servers when building the initial tool catalog; `0` waits for each server's `startup_timeout_sec`. Required servers still use their startup timeouts.
+
+OAuth client registration (CLI):
+
+```bash
+codex mcp add example --url https://mcp.example.com --oauth-client-id my-client
+codex mcp add example --url https://mcp.example.com --oauth-client-id my-client --oauth-client-secret "$MCP_CLIENT_SECRET"
+codex mcp login <server-name> --oauth-client-registration cimd   # or dcr; default auto
+```
+
+```toml
+[mcp_servers.example]
+url = "https://mcp.example.com"
+
+[mcp_servers.example.oauth]
+client_id = "my-client"
+callback_url = "http://127.0.0.1/callback"
+```
 
 Top-level OAuth callback overrides:
 
@@ -143,6 +166,13 @@ approval_mode = "approve"
 ## Notes
 
 - This page documents OpenAI Codex's MCP **client** configuration (Codex connecting out to MCP servers), distinct from OpenAI API / Agents SDK MCP usage (`openai-agents` skill), which covers building/consuming MCP from the Agents SDK side.
+- `codex mcp-server` and the standalone `codex-mcp-server` binary have been removed; hosting Codex as an MCP server is no longer supported. Integrations that need authentication, conversation history, approvals, and streamed events should use the Codex app server (see app-server.md in the security-automation category). `codex mcp` continues to manage external MCP servers.
+- Supported MCP features on a Codex host: STDIO servers (environment variables); Streamable HTTP servers (bearer token, OAuth including Client ID Metadata Documents (CIMD) and Dynamic Client Registration (DCR), ChatGPT session auth for trusted first-party servers); server instructions (the `instructions` field read at initialization).
+- OAuth registration: by default (`auto`) Codex chooses CIMD when the authorization server advertises `client_id_metadata_document_supported: true`, includes `none` in `token_endpoint_auth_methods_supported`, and the callback is a supported loopback URL; otherwise DCR when available. A configured OAuth client ID always takes precedence and skips registration. `--oauth-client-registration` applies only to the current login and isn't stored.
+- Callback URLs: newly added pre-registered clients use a stable callback only when the authorization server advertises `authorization_response_iss_parameter_supported: true` with a metadata `issuer`; otherwise Codex appends a server-specific callback ID (e.g. `http://127.0.0.1/callback/XuuuHAzzHOni`). Register the exact callback displayed by `codex mcp add`. A mismatched `iss` always rejects the response; a missing `iss` rejects it when issuer support is advertised. For `http://127.0.0.1` callbacks without an explicit port, the active listener port is inserted during authorization. An explicit port in the callback URL doesn't configure the listener; use `mcp_oauth_callback_port` or `oauth.callback_port`.
+- Plugin-provided HTTP MCP servers can declare OAuth in `.mcp.json` with camelCase `clientId`, `callbackUrl`, `callbackPort` under `oauth`; a plugin's `callbackPort` overrides the global `mcp_oauth_callback_port`, and the same callback-selection rules apply.
+- Server authors: use `instructions` for cross-tool workflows, constraints, and rate limits, and keep the first 512 characters self-contained.
+- ChatGPT web uses remote MCP tools through plugins and doesn't read local Codex configuration files. In Local computer access with Work Cloud, managed `mcp_servers` requirements apply to local executors only (ChatGPT Work specifics are out of this skill's scope).
 - For the full key list (types, defaults) alongside every other `config.toml` key, see [Configuration Reference](./config-reference.md).
 
 ## Related

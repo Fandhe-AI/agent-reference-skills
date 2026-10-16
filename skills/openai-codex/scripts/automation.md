@@ -28,6 +28,20 @@ codex exec --sandbox workspace-write "<task>"
 codex exec --sandbox danger-full-access "<task>"
 ```
 
+## Replace `--full-auto` and control config in automation
+
+`--full-auto` is no longer supported. Use `--sandbox workspace-write`, or `--approve-for-me` to route approval requests through automatic review with the workspace-write sandbox.
+
+```bash
+codex exec --approve-for-me "<task>"
+```
+
+Skip loading `$CODEX_HOME/config.toml` for a run (`--ignore-user-config`), and skip user and project execpolicy `.rules` files (`--ignore-rules`) in a controlled automation environment:
+
+```bash
+codex exec --ignore-user-config --ignore-rules "<task>"
+```
+
 ## Machine-readable output
 
 ```bash
