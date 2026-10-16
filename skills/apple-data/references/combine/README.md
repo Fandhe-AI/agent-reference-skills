@@ -2,21 +2,27 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Publisher | Protocol for types that transmit a sequence of values over time | [publisher.md](./publisher.md) |
-| Subscriber | Protocol for types that receive input from a publisher | [subscriber.md](./subscriber.md) |
-| Subscription | Protocol representing the connection between a subscriber and publisher | [subscription.md](./subscription.md) |
-| Subject | Publisher protocol with imperative `send(_:)` injection | [subject.md](./subject.md) |
-| PassthroughSubject | Subject that broadcasts elements without storing state | [passthroughsubject.md](./passthroughsubject.md) |
-| CurrentValueSubject | Subject that stores and replays the latest value to new subscribers | [currentvaluesubject.md](./currentvaluesubject.md) |
-| AnyPublisher | Type-erasing wrapper for publishers | [anypublisher.md](./anypublisher.md) |
-| AnyCancellable | Type-erasing cancellable; auto-cancels on deinit | [anycancellable.md](./anycancellable.md) |
-| Cancellable | Protocol for activities that support cancellation | [cancellable.md](./cancellable.md) |
-| @Published | Property wrapper that publishes changes to a class property | [published.md](./published.md) |
-| sink | Closure-based subscriber operator | [sink.md](./sink.md) |
-| assign(to:on:) | Assigns published values to an object property via key path | [assign.md](./assign.md) |
-| Transforming Operators | map, flatMap, compactMap, scan and variants | [operators-transforming.md](./operators-transforming.md) |
-| Filtering Operators | filter, removeDuplicates, drop, prefix, first, last | [operators-filtering.md](./operators-filtering.md) |
-| Combining Operators | combineLatest, merge, zip | [operators-combining.md](./operators-combining.md) |
-| Timing Operators | debounce, throttle, delay, timeout | [operators-timing.md](./operators-timing.md) |
-| receive(on:options:) | Delivers elements on the specified scheduler (e.g., main thread) | [receive-on.md](./receive-on.md) |
-| eraseToAnyPublisher() | Wraps a publisher as AnyPublisher for type erasure | [erasetoanypublisher.md](./erasetoanypublisher.md) |
+| AnyCancellable | A type-erasing cancellable object that automatically calls `cancel()` when deinitialized. Used to manage the lifetime of subscriptions. | [anycancellable.md](./anycancellable.md) |
+| AnyPublisher | A type-erasing publisher that wraps another publisher, hiding its concrete type. Use to expose publishers across API boundaries without revealing implementation details. | [anypublisher.md](./anypublisher.md) |
+| assign(to:on:) | Assigns each element from a publisher to a property on an object, identified by a key path. | [assign.md](./assign.md) |
+| AsyncPublisher / AsyncThrowingPublisher | Publishers that expose their elements as an asynchronous sequence, so callers can receive values with the `for`-`await`-`in` syntax rather than attaching a `Subscriber`. | [async-publisher.md](./async-publisher.md) |
+| Cancellable | A protocol indicating that an activity or action supports cancellation. Calling `cancel()` frees allocated resources and stops side effects such as timers, network access, or disk I/O. | [cancellable.md](./cancellable.md) |
+| ConnectablePublisher | A publisher that provides an explicit means of connecting and canceling publication. Includes the related `makeConnectable()`, `multicast`, and `share()` operators. | [connectable-publisher.md](./connectable-publisher.md) |
+| Convenience Publishers | Publishers for common one-off cases: `Just`, `Deferred`, `Empty`, `Fail`, `Record`. (`Future` has its own page.) | [convenience-publishers.md](./convenience-publishers.md) |
+| CurrentValueSubject | A `Subject` that wraps a single value and publishes a new element whenever the value changes. New subscribers immediately receive the current value upon subscription. | [currentvaluesubject.md](./currentvaluesubject.md) |
+| eraseToAnyPublisher() | Wraps a publisher in an `AnyPublisher`, hiding its concrete type. Used to expose clean API boundaries without revealing implementation details. | [erasetoanypublisher.md](./erasetoanypublisher.md) |
+| Future | A publisher that eventually produces a single value and then finishes or fails. | [future.md](./future.md) |
+| ObservableObject / ObservableObjectPublisher | A type of object with a publisher that emits before the object has changed, and the publisher class that publishes those changes. | [observable-object.md](./observable-object.md) |
+| Combining Operators | Operators that merge or coordinate multiple publishers: `combineLatest`, `merge`, `zip`. | [operators-combining.md](./operators-combining.md) |
+| Filtering Operators | Operators that selectively republish elements from an upstream publisher: `filter`, `removeDuplicates`, `compactMap` (see also Transforming Operators), `first`, `last`, `drop`, `prefix`, and related variants. | [operators-filtering.md](./operators-filtering.md) |
+| Timing Operators | Operators that control the timing and rate of element delivery: `debounce`, `throttle`, `delay`, `timeout`. | [operators-timing.md](./operators-timing.md) |
+| Transforming Operators | Operators that transform elements from an upstream publisher: `map`, `flatMap`, `compactMap`, `tryMap`, `scan`, and related variants. | [operators-transforming.md](./operators-transforming.md) |
+| PassthroughSubject | A `Subject` that broadcasts elements to downstream subscribers without storing any value. Values are dropped if there are no subscribers or current demand is zero. | [passthroughsubject.md](./passthroughsubject.md) |
+| @Published | A property wrapper that creates a `Publisher` for a class property, publishing a new element whenever the property's value changes. | [published.md](./published.md) |
+| Publisher | A protocol that declares a type that can transmit a sequence of values over time. Publishers deliver elements to one or more `Subscriber` instances through a defined `Output` type and `Failure` error type. | [publisher.md](./publisher.md) |
+| receive(on:options:) | Specifies the scheduler on which downstream subscribers receive elements from the publisher. Commonly used to switch delivery to the main thread for UI updates. | [receive-on.md](./receive-on.md) |
+| Scheduler / ImmediateScheduler | `Scheduler` is a protocol that defines when and how to execute a closure. `ImmediateScheduler` is a scheduler for performing synchronous actions. | [scheduler.md](./scheduler.md) |
+| sink | Attaches a subscriber with closure-based behavior. The most common way to consume values from a publisher. | [sink.md](./sink.md) |
+| Subject | A publisher that exposes a method for outside callers to publish elements imperatively via `send(_:)`. Bridges imperative code into the Combine reactive model. | [subject.md](./subject.md) |
+| Subscriber | A protocol that declares a type that can receive input from a publisher. Subscribers control the flow of elements via backpressure through `Subscribers.Demand`. | [subscriber.md](./subscriber.md) |
+| Subscription | A protocol representing the connection of a subscriber to a publisher. Inherits from `Cancellable`. | [subscription.md](./subscription.md) |

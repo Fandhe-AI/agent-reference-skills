@@ -1,13 +1,12 @@
 ---
 name: apple-data
 description: >
-  Apple データ永続化・データフロー・ネットワーク・ユーティリティリファレンス。
-  SwiftData / Core Data / Foundation / Combine。
-  @Model、ModelContainer、ModelContext、@Query、Predicate、FetchDescriptor、
-  NSManagedObject、NSFetchRequest、NSPersistentContainer、NSFetchedResultsController、
-  URLSession、JSONEncoder、JSONDecoder、Publisher、@Published、AnyCancellable、sink。
+  Apple データ永続化・データフロー・ネットワーク・ユーティリティリファレンス。SwiftData / Core Data / Foundation / Combine。
+  @Model, ModelContainer, ModelContext, @Query, Predicate, FetchDescriptor,
+  SectionedResults, ResultsObserver, NSManagedObject, NSFetchRequest, NSFetchedResultsController,
+  NSPersistentContainer, NSPersistentCloudKitContainer, NSStagedMigrationManager,
+  URLSession, JSONDecoder, JSONEncoder, Publisher, sink, Future, AsyncPublisher, @Published, AnyCancellable
 user-invocable: false
-model: sonnet
 ---
 
 # Apple Data リファレンス
@@ -45,6 +44,10 @@ skills/apple-data/
       history-tracking.md
       model-document.md
       results-observer.md
+      sectioned-results.md
+      errors.md
+      default-store.md
+      inheritance.md
     coredata/
       README.md
       nsmanagedobject.md
@@ -62,6 +65,10 @@ skills/apple-data/
       nsbatchdeleterequest.md
       fetchrequest-swiftui.md
       nsmanaged.md
+      nsasynchronousfetchrequest.md
+      nspersistentcloudkitcontainer.md
+      persistent-history.md
+      staged-migration.md
     foundation/
       README.md
       data.md
@@ -107,6 +114,12 @@ skills/apple-data/
       operators-timing.md
       receive-on.md
       erasetoanypublisher.md
+      future.md
+      convenience-publishers.md
+      connectable-publisher.md
+      async-publisher.md
+      observable-object.md
+      scheduler.md
 ```
 
 ## 探索手順
@@ -131,6 +144,14 @@ skills/apple-data/
 | DataStore プロトコルでカスタムストレージを実装したい | swiftdata | [references/swiftdata/README.md](references/swiftdata/README.md) |
 | History tracking / ResultsObserver で変更を観測したい | swiftdata | [references/swiftdata/README.md](references/swiftdata/README.md) |
 | ModelDocument でドキュメントベースアプリを作りたい | swiftdata | [references/swiftdata/README.md](references/swiftdata/README.md) |
+| @Query / ResultsObserver の結果をセクション分け (sectionBy / SectionedResults) したい | swiftdata | [references/swiftdata/README.md](references/swiftdata/README.md) |
+| SwiftData のエラー (SwiftDataError / DataStoreError) を扱いたい | swiftdata | [references/swiftdata/README.md](references/swiftdata/README.md) |
+| デフォルトストア (DefaultStore) の挙動を知りたい | swiftdata | [references/swiftdata/README.md](references/swiftdata/README.md) |
+| モデルクラスの継承 (inheritance) を使いたい | swiftdata | [references/swiftdata/README.md](references/swiftdata/README.md) |
+| NSAsynchronousFetchRequest で非同期フェッチしたい | coredata | [references/coredata/README.md](references/coredata/README.md) |
+| NSPersistentCloudKitContainer で CloudKit 同期したい | coredata | [references/coredata/README.md](references/coredata/README.md) |
+| Core Data の persistent history を追跡したい | coredata | [references/coredata/README.md](references/coredata/README.md) |
+| NSStagedMigrationManager で段階的マイグレーションしたい | coredata | [references/coredata/README.md](references/coredata/README.md) |
 | NSManagedObject でエンティティを操作したい | coredata | [references/coredata/README.md](references/coredata/README.md) |
 | NSManagedObjectContext で CRUD を実行したい | coredata | [references/coredata/README.md](references/coredata/README.md) |
 | NSPersistentContainer でスタックをセットアップしたい | coredata | [references/coredata/README.md](references/coredata/README.md) |
@@ -150,3 +171,7 @@ skills/apple-data/
 | map / filter / flatMap 等のオペレーターを使いたい | combine | [references/combine/README.md](references/combine/README.md) |
 | receive(on:) でスレッドを切り替えたい | combine | [references/combine/README.md](references/combine/README.md) |
 | AnyCancellable / eraseToAnyPublisher で型を消去したい | combine | [references/combine/README.md](references/combine/README.md) |
+| 完了ハンドラーを Future / Just / Deferred でラップしたい | combine | [references/combine/README.md](references/combine/README.md) |
+| ConnectablePublisher / share / multicast で Publisher を共有したい | combine | [references/combine/README.md](references/combine/README.md) |
+| async/await (values / AsyncPublisher) で Publisher を消費したい | combine | [references/combine/README.md](references/combine/README.md) |
+| ObservableObject / Scheduler を使いたい | combine | [references/combine/README.md](references/combine/README.md) |

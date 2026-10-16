@@ -2,7 +2,9 @@
 
 Operators that control the timing and rate of element delivery: `debounce`, `throttle`, `delay`, `timeout`.
 
-## debounce(for:scheduler:options:)
+## Signature / Usage
+
+### debounce(for:scheduler:options:)
 
 Publishes an element only after a specified time interval elapses with no new elements from the upstream publisher.
 
@@ -30,7 +32,7 @@ subject.send("Hello")
 - Discards earlier elements when new ones arrive before the interval expires.
 - Common use case: search-as-you-type field input.
 
-## throttle(for:scheduler:latest:)
+### throttle(for:scheduler:latest:)
 
 Publishes either the first or most-recent element within each time interval, regardless of how many elements arrive.
 
@@ -52,7 +54,7 @@ let cancellable = subject
 - `latest: false` emits the first element in each interval window.
 - Unlike `debounce`, emits on a fixed schedule regardless of pauses.
 
-## delay(for:scheduler:options:)
+### delay(for:scheduler:options:)
 
 Delays delivery of all elements by a fixed time interval.
 
@@ -65,7 +67,7 @@ func delay<S>(
 ) -> Publishers.Delay<Self, S> where S : Scheduler
 ```
 
-## timeout(_:scheduler:options:customError:)
+### timeout(_:scheduler:options:customError:)
 
 Terminates publishing if no element is received within the specified time interval.
 

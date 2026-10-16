@@ -15,6 +15,23 @@ let nextMonth = calendar.date(byAdding: .month, value: 1, to: Date())
 
 // Check if same day
 let isSameDay = calendar.isDate(date1, inSameDayAs: date2)
+
+// Sequence of dates (iOS 18.0+)
+func dates(
+    byMatching components: DateComponents,
+    startingAt start: Date,
+    in range: Range<Date>? = nil,
+    matchingPolicy: Calendar.MatchingPolicy = .nextTime,
+    repeatedTimePolicy: Calendar.RepeatedTimePolicy = .first,
+    direction: Calendar.SearchDirection = .forward
+) -> some Sendable & Sequence<Date>
+
+func dates(
+    byAdding components: DateComponents,
+    startingAt start: Date,
+    in range: Range<Date>? = nil,
+    wrappingComponents: Bool = false
+) -> some Sendable & Sequence<Date>
 ```
 
 ## Options / Props
@@ -44,12 +61,17 @@ let isSameDay = calendar.isDate(date1, inSameDayAs: date2)
 | `range(of:in:for:)` | Valid range of a smaller unit within a larger |
 | `weekdaySymbols` | Localized weekday names |
 | `monthSymbols` | Localized month names |
+| `dates(byMatching:startingAt:in:matchingPolicy:repeatedTimePolicy:direction:)` | Sequence of dates matching (or most closely matching) the components. iOS 18.0+, iPadOS 18.0+, Mac Catalyst 18.0+, macOS 15.0+, tvOS 18.0+, visionOS 1.0+, watchOS 11.0+ |
+| `dates(byAdding:startingAt:in:wrappingComponents:)` (`DateComponents`) | Sequence of dates made by repeatedly adding the components to a start date. Same availability |
+| `dates(byAdding:value:startingAt:in:wrappingComponents:)` (`Calendar.Component`, `value: Int`) | Same, adding a single component value. Same availability |
 
 ## Notes
 
 - Available iOS 8.0+, macOS 10.10+.
 - Conforms to `Codable`, `Hashable`, `Sendable`.
+- The `dates(...)` methods return a `Sequence`; with a `range`, the sequence terminates when the next result falls outside it (empty if the first result is outside). `direction: .backward` finds matches before the start date. With `wrappingComponents: true`, the component wraps around on overflow without incrementing higher components.
 - `Calendar.Identifier` values include `.gregorian`, `.iso8601`, `.islamic`, `.hebrew`, `.chinese`, etc.
+- Source: https://developer.apple.com/documentation/foundation/calendar , https://developer.apple.com/documentation/foundation/calendar/dates(byadding:startingat:in:wrappingcomponents:) , https://developer.apple.com/documentation/foundation/calendar/dates(bymatching:startingat:in:matchingpolicy:repeatedtimepolicy:direction:) (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

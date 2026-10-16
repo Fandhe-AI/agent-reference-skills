@@ -2,7 +2,9 @@
 
 Operators that merge or coordinate multiple publishers: `combineLatest`, `merge`, `zip`.
 
-## combineLatest(_:)
+## Signature / Usage
+
+### combineLatest(_:)
 
 Subscribes to another publisher and emits a tuple of the latest values from both publishers whenever either emits a new element.
 
@@ -28,7 +30,7 @@ pub2.send(22)  // Prints: (3, 22)
 - Does not emit until **both** publishers have emitted at least one value.
 - Overloads accept up to 4 publishers: `combineLatest(_:_:)`, `combineLatest(_:_:_:)`.
 
-## merge(with:)
+### merge(with:)
 
 Interleaves elements from multiple publishers of the same `Output` and `Failure` type into a single stream.
 
@@ -54,7 +56,7 @@ pub1.send(3)
 - Fails immediately if any upstream publisher fails.
 - Completes only when all upstream publishers complete.
 
-## zip(_:)
+### zip(_:)
 
 Pairs the oldest unconsumed element from each publisher into tuples, emitting only when all paired publishers have emitted.
 

@@ -44,3 +44,4 @@ let cancellable = URLSession.shared.dataTaskPublisher(for: url)
 
 - [Timing Operators](./operators-timing.md)
 - [Publisher](./publisher.md)
+- [Scheduler](./scheduler.md)

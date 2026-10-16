@@ -43,3 +43,4 @@ weather.temperature = 25
 - [Publisher](./publisher.md)
 - [CurrentValueSubject](./currentvaluesubject.md)
 - [sink](./sink.md)
+- [ObservableObject](./observable-object.md)

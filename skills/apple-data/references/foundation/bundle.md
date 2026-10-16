@@ -18,6 +18,11 @@ let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") 
 
 // Localized string
 let greeting = bundle.localizedString(forKey: "greeting", value: "Hello", table: nil)
+
+// #bundle macro (iOS 15.0+)
+label.text = String(localized: "Game Over.",
+                    bundle: #bundle,
+                    comment: "Text for game over banner.")
 ```
 
 ## Options / Props
@@ -42,13 +47,16 @@ let greeting = bundle.localizedString(forKey: "greeting", value: "Hello", table:
 | `executableURL` | `URL?` — bundle executable URL |
 | `localizations` | `[String]` — all included localizations |
 | `preferredLocalizations` | `[String]` — ordered preferred localizations |
+| `#bundle` (macro) | `@freestanding(expression) macro bundle() -> Bundle` — expands to a bundle instance that's most likely to contain resources for the calling code. iOS 15.0+, iPadOS 15.0+, Mac Catalyst 15.0+, macOS 12.0+, tvOS 15.0+, visionOS 1.0+, watchOS 8.0+ |
 
 ## Notes
 
 - Available iOS 2.0+, macOS 10.0+.
 - Inherits from `NSObject`.
 - `Bundle.main` refers to the `.app` bundle; use `Bundle(for: MyClass.self)` to locate framework or test bundle resources.
+- `#bundle` works whether code executes in an app, app extension, framework, or Swift package (in a package target it provides that target's resource bundle) and back-deploys to earlier OS versions. Foundation updates (June 2025): it is more performant and convenient than `.self` or a bundle identifier, particularly when loading localized strings.
 - Localization tables default to `Localizable.strings` when `table` is `nil`.
+- Source: https://developer.apple.com/documentation/foundation/bundle , https://developer.apple.com/documentation/foundation/bundle() , https://developer.apple.com/documentation/updates/foundation (fetched 2026-10-16, iOS 27 SDK docs)
 
 ## Related
 

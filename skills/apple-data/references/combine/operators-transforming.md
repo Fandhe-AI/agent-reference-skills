@@ -2,7 +2,9 @@
 
 Operators that transform elements from an upstream publisher: `map`, `flatMap`, `compactMap`, `tryMap`, `scan`, and related variants.
 
-## map(_:)
+## Signature / Usage
+
+### map(_:)
 
 Transforms each element using a closure.
 
@@ -19,7 +21,7 @@ let cancellable = [1, 2, 3].publisher
 
 - Use `tryMap(_:)` when the closure can throw.
 
-## flatMap(maxPublishers:_:)
+### flatMap(maxPublishers:_:)
 
 Transforms each element into a new publisher and flattens emissions from all inner publishers into a single stream.
 
@@ -41,7 +43,7 @@ let cancellable = subject
 - `maxPublishers` limits concurrent inner subscriptions (e.g., `.max(1)` for serial behavior).
 - Failure of any inner publisher fails the entire stream.
 
-## compactMap(_:)
+### compactMap(_:)
 
 Calls a closure with each element and publishes only non-`nil` results, filtering out `nil`.
 
@@ -59,7 +61,7 @@ let cancellable = ["1", "two", "3"].publisher
 - Equivalent to `map` + `filter { $0 != nil }` in one step.
 - Use `tryCompactMap(_:)` when the closure can throw.
 
-## scan(_:_:)
+### scan(_:_:)
 
 Accumulates elements by applying a closure to the current accumulator and each element.
 

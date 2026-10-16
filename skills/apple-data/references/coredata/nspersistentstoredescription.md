@@ -33,8 +33,11 @@ container.persistentStoreDescriptions = [description]
 - iOS 10.0+, macOS 10.12+, tvOS 10.0+, watchOS 3.0+, visionOS 1.0+
 - Set `persistentStoreDescriptions` **before** calling `loadPersistentStores`; changes afterwards have no effect.
 - Use `setOption(_:forKey:)` for less common options such as `NSMigratePersistentStoresAutomaticallyOption`.
+- History tracking and remote-change notifications are enabled with `setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)` and `setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)` (official "Consuming relevant store changes" example).
 
 ## Related
 
 - [NSPersistentContainer](./nspersistentcontainer.md)
 - [NSPersistentStoreCoordinator](./nspersistentstorecoordinator.md)
+- [NSPersistentCloudKitContainer / NSPersistentCloudKitContainerOptions](./nspersistentcloudkitcontainer.md)
+- [Persistent history](./persistent-history.md)
