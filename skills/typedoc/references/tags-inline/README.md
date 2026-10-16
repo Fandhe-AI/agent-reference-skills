@@ -1,4 +1,4 @@
-# tags-inline
+# Tags Inline
 
 | Name | Description | Path |
 |------|-------------|------|

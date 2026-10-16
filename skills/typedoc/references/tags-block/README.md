@@ -1,4 +1,4 @@
-# tags-block
+# Tags Block
 
 | Name | Description | Path |
 |------|-------------|------|
@@ -27,4 +27,4 @@
 | @template | Block tag for documenting the type parameters of a function, method, class, interface, or type alias. | [template.md](./template.md) |
 | @throws | Block tag for documenting exceptions that a function or method may throw. | [throws.md](./throws.md) |
 | @typeParam | Block tag for documenting the type parameters of a function, method, class, interface, or type alias. | [typeParam.md](./typeParam.md) |
-| TypeScript Tags | TypeScript-specific block tags that TypeDoc recognizes for compatibility. This page covers `@type`, `@yields`, `@jsx`, `@typedef`, `@extends`, `@augments`, `@satisfies`, and `@callback`. | [typescript-tags.md](./typescript-tags.md) |
+| @type / @yields / @jsx / @typedef / @extends / @augments / @satisfies / @callback | TypeScript-specific block tags that TypeDoc recognizes for compatibility. This page covers `@type`, `@yields`, `@jsx`, `@typedef`, `@extends`, `@augments`, `@satisfies`, and `@callback`. | [typescript-tags.md](./typescript-tags.md) |

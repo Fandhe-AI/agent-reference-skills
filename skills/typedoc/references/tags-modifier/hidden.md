@@ -15,7 +15,7 @@ Unlike `@internal`, `@hidden` always removes the item from the documentation reg
 ```typescript
 export class Visibility {
     /** @hidden */
-    newBehavior(): void;
+    newBehavior(): void {}
 }
 ```
 
@@ -41,6 +41,7 @@ export class UserService {
 - Functionally equivalent to `@ignore`
 - Unlike `@internal`, it is always removed from the documentation (no option required)
 - Performs complete removal from documentation rather than specifying an access level
+- Since v0.28.20 (#3111), a `@hidden` tag on a constructor parameter-property hides only the property, not both the property and the parameter.
 
 ## Related
 

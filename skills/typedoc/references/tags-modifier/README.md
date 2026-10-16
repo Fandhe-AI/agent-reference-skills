@@ -1,4 +1,4 @@
-# tags-modifier
+# Tags Modifier
 
 | Name | Description | Path |
 |------|-------------|------|

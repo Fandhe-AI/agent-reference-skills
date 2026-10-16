@@ -25,6 +25,8 @@ TypeDoc options controlling how TypeDoc is itself configured and extended.
 
 - `options` supported file formats: JSON files are parsed as JSONC (trailing commas and comments allowed); including `$schema: "https://typedoc.org/schema.json"` is recommended. JavaScript files export an object with option keys.
 
+- Since v0.28.16 (#3054) the package root ships `typedoc-config.schema.json` (listed in package.json `files`, exported as `typedoc/typedoc-config.schema.json`). The schema for the latest version is also published at https://typedoc.org/schema.json. VSCode should pick up the schema for `typedoc.json` automatically; if it does not, add the `$schema` key.
+
 ## Related
 
 - [Options: Input](./input.md)

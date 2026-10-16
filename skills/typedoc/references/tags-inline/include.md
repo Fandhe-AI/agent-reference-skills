@@ -121,7 +121,8 @@ export function validate(input: string): boolean { /* ... */ }
 - Paths must use POSIX-style forward slashes (`/`); Windows-style backslashes (`\`) are not supported, ensuring cross-platform compatibility.
 - Line-number based inclusion can break as the referenced file changes, so named regions are preferred where possible.
 - Multiple regions can be specified as a comma-separated list.
-- The `jsdocCompatibility` option affects related comment-processing behavior.
+- Since v0.28.16 (#3048), region references also work for `.tsx`, `.cjs` and `.mjs` files, using the TypeScript / JavaScript region syntax.
+- An `{@includeCode ...}` placed inside an `@example` block only works when `jsDocCompatibility.exampleTag` is `false` (the official page spells the option `jsdocCompatibility`; the declared option name is `jsDocCompatibility`).
 
 ## Related
 

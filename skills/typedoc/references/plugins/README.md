@@ -1,4 +1,4 @@
-# plugins
+# Plugins
 
 | Name | Description | Path |
 | --- | --- | --- |

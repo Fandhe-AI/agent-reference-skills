@@ -1,4 +1,4 @@
-# api
+# API
 
 | Name | Description | Path |
 |------|-------------|------|
