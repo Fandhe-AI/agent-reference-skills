@@ -13,6 +13,7 @@
 | Linker-Plugin Based LTO | The -C linker-plugin-lto flag defers Link-Time Optimization… | [linker-plugin-lto.md](./linker-plugin-lto.md) |
 | Lints | A "lint" is a diagnostic that helps improve source code… | [lints.md](./lints.md) |
 | Platform Support | Rust organizes platform support into three tiers, each with… | [platform-support.md](./platform-support.md) |
+| Print Options | rustc --print prints various information about the compiler… | [print-options.md](./print-options.md) |
 | Profile-Guided Optimization | Profile-Guided Optimization (PGO) uses runtime profiling data… | [profile-guided-optimization.md](./profile-guided-optimization.md) |
 | Remap Source Paths | --remap-path-prefix rewrites source file paths embedded in… | [remap-path-prefix.md](./remap-path-prefix.md) |
 | Sanitizers | Sanitizers instrument code with runtime checks to detect bugs… | [sanitizers.md](./sanitizers.md) |

@@ -1,6 +1,6 @@
 # Remap Source Paths
 
-`--remap-path-prefix` rewrites source file paths embedded in compiler output (error messages, debug info, coverage maps, and macro expansions) to enable reproducible builds and protect local filesystem paths.
+`rustc` remaps source path prefixes **as a best effort** in all compiler-generated output (diagnostics, debugging information, macro expansions, etc.). Useful for normalizing build products, e.g. removing the current directory from paths emitted into object files. Remapping is done via `--remap-path-prefix` and customized via `--remap-path-scope`.
 
 ## Signature / Usage
 
@@ -8,38 +8,60 @@
 rustc --remap-path-prefix FROM=TO [--remap-path-prefix FROM2=TO2 ...] INPUT
 ```
 
-The flag is repeatable. Remapping is applied to all paths that begin with `FROM`; the prefix is replaced with `TO`.
+`FROM` is a path prefix rewritten to `TO`. `FROM` may itself contain an `=` symbol, but `TO` may not. The replacement is purely textual, with no consideration of the current system's path separator.
 
 ```bash
-# Strip absolute source paths for reproducible builds
-rustc --remap-path-prefix /home/user/project=/project src/main.rs
+rustc --remap-path-prefix "/home/user/project=/redacted" src/main.rs
+```
 
-# Replace home directory with a canonical placeholder
-rustc --remap-path-prefix "$HOME"=/home/user src/main.rs
+Relative paths: some build systems, such as Cargo, compile crates using relative paths (e.g. `src/main.rs`). `rustc` preserves these where possible, but certain inputs (like `#[path = "..."]`) and outputs (such as debug information) may still contain absolute paths. Remap both relative and absolute paths:
+
+```bash
+rustc --remap-path-prefix "src/=/redacted/src" --remap-path-prefix "/home/user/project=/redacted" src/main.rs
 ```
 
 ## Options / Props
 
 | Flag | Description |
 |------|-------------|
-| `--remap-path-prefix FROM=TO` | Replace path prefix `FROM` with `TO` in all compiler output |
+| `--remap-path-prefix FROM=TO` | Rewrite path prefix `FROM` to `TO`. Repeatable; when several remappings match, the **last** matching one is applied |
+| `--remap-path-scope SCOPES` | Comma-separated list of scopes remapped by `--remap-path-prefix`; may be given multiple times (scopes are aggregated) |
 
-## Scope of Remapping
+### `--remap-path-scope` values
 
-Remapping applies to paths embedded in:
+| Scope | Applies remapping to |
+|-------|----------------------|
+| `macro` | Expansion of the `std::file!()` macro (source of paths in embedded panic messages) |
+| `diagnostics` | Printed compiler diagnostics |
+| `debuginfo` | Debug information |
+| `coverage` | Coverage information |
+| `object` | All paths in compiled executables and libraries, but not elsewhere. Currently an alias for `macro,coverage,debuginfo`; does not apply to `rustc` generated metadata |
+| `all` (default) | Alias for all of the above (and unstable scopes); equivalent to supplying only `--remap-path-prefix` without `--remap-path-scope` |
 
-- Error messages and diagnostics
-- Debug information (DWARF)
-- Coverage maps
-- `file!()` macro expansions
-- Metadata and build artifacts
+The accepted scopes are not exhaustive: new scopes may be added in future releases, so `all` can correspond to different scopes between releases.
+
+```sh
+# With `object` scope only the build outputs will be remapped, the diagnostics won't be remapped.
+rustc --remap-path-prefix="${PWD}=/remapped" --remap-path-scope=object main.rs
+```
 
 ## Notes
 
-- The order of `--remap-path-prefix` flags matters; the first matching prefix wins.
-- Cargo exposes this as `CARGO_ENCODED_RUSTFLAGS` or via `[profile.*.build-override]`; Cargo itself does not automatically add remapping.
-- Combining with `--remap-path-scope` (unstable) allows limiting remapping to specific output types.
-- Path remapping does not affect the paths used to *locate* source files; it only affects paths *recorded* in output.
+The rustc Book example writes `$(PWD)` (Make syntax); in a POSIX shell use the quoted variable `"${PWD}"`. The rustc Book examples omit the input file; `src/main.rs` is added here so the commands run as-is.
+
+### Scope of Remapping
+
+Remapping covers (per scope above): diagnostics, debug information, coverage information, `file!()` macro expansions, and (only with `all`, best effort) `rustc` metadata.
+
+#### Metadata impact
+
+Scopes do not apply to `rustc` generated metadata, because local paths are required there for correctness. Artifacts that contain `rustc` metadata (`.rmeta`, `.rlib`, dylib, proc-macro) retain the local paths. Only the `all` scope applies path remapping to `rustc` metadata (best effort). For reproducible builds including metadata, use `all` or omit `--remap-path-scope` entirely.
+
+### Caveats and Limitations
+
+- Linker-generated paths: on platforms such as `x86_64-pc-windows-msvc` the linker may embed absolute host paths and compiler arguments into debug info files (`.pdb`) independently of `rustc`. On Apple platforms, linkers generate OSO entries that are not remapped by the compiler and must be remapped manually with `-oso_prefix`. `--remap-path-prefix` does not affect these.
+- Textual replacement only: separator conventions are not accounted for; take care on Windows, where both `/` and `\` may appear.
+- External tools: paths introduced by external tools or environment variables are not covered unless explicitly accounted for (e.g. code generated by a Cargo build script may still contain un-remapped paths).
 
 ## Related
 
