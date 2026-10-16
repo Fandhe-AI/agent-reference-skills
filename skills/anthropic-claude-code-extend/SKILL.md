@@ -6,7 +6,7 @@ description: >
   agent teams, agent view, workflows, routines, scheduled tasks, hooks (PreToolUse / PostToolUse),
   mods (Claude Code mods), plugins, plugin eval, plugin marketplace (marketplace.json),
   MCP 設定 (.mcp.json / claude mcp add), managed MCP,
-  channels (--channels / claude/channel push events), tools-reference, advisor, ultrareview。
+  channels (--channels / claude/channel push events, webhook / telegram / discord / imessage), tools-reference, advisor, ultrareview。
 user-invocable: false
 ---
 

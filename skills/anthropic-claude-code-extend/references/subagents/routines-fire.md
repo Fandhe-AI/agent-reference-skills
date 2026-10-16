@@ -81,6 +81,8 @@ Success response:
 
 This is the API endpoint for triggering a Claude Code routine from outside the product (a separate surface from the general Claude Platform API). Authentication uses a per-routine bearer token (`sk-ant-oat01-...`) rather than a workspace-level `x-api-key`; the token can only fire that one routine and grants no read access. There is no idempotency key — retrying a request creates additional sessions. The `anthropic-beta: experimental-cc-routine-2026-04-01` header is no longer required: older integrations that send it are unaffected, and the endpoint accepts requests with and without it. Rate limits: each routine accepts up to 30 fires per hour (shared across API fires, the Run now button, and one-shot re-arms), and each account up to 100 API fires per hour across all routines. Generating a new token revokes the previous one (there is no public API for token management). Unknown body fields are ignored. Not available in the Anthropic SDKs. Requires a claude.ai account (Pro/Max/Team/Enterprise) with Claude Code on the web enabled.
 
+The official GitHub Actions example interpolates `$GITHUB_WORKFLOW` / `$GITHUB_REF` directly into the JSON body; if a workflow name may contain `"` or newlines, build the body with `jq -n --arg text "CI failed: $GITHUB_WORKFLOW run $GITHUB_RUN_ID on $GITHUB_REF" '{text: $text}'` and pass it via `-d @-` (or `--data-binary`).
+
 ## Related
 
 - [routines.md](./routines.md)
