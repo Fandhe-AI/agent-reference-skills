@@ -26,7 +26,8 @@ mv /etc/pve/nodes/node1/qemu-server/100.conf /etc/pve/nodes/node2/qemu-server/
 | `storage.cfg` | Storage configuration |
 | `status.cfg` | External metrics server configuration |
 | `vzdump.cron` | Cluster-wide vzdump backup-job schedule |
-| `firewall/cluster.fw`, `firewall/<NAME>.fw`, `firewall/<VMID>.fw` | Firewall configuration for all nodes / a node / a VM or container |
+| `firewall/cluster.fw`, `firewall/<VMID>.fw` | Firewall configuration for all nodes / a VM or container |
+| `nodes/<NAME>/host.fw` | Firewall configuration for an individual node |
 | `ha/crm_commands`, `ha/manager_status`, `ha/resources.cfg`, `ha/rules.cfg` | HA: current CRM operations, JSON HA service status, managed resources and state, scheduling constraint rules |
 | `nodes/<NAME>/config` | Node-specific configuration |
 | `nodes/<NAME>/qemu-server/<VMID>.conf` | KVM VM configuration |
@@ -65,6 +66,7 @@ mv /etc/pve/nodes/node1/qemu-server/100.conf /etc/pve/nodes/node2/qemu-server/
 
 ## Notes
 
+- The pmxcfs chapter's file list gives the per-node firewall configuration as `firewall/<NAME>.fw`, but other parts of the official docs (Host System Administration network interface pinning, Firewall chapter) use `nodes/<NAME>/host.fw`; this page follows the latter (see firewall.md).
 - Advantages: seamless real-time replication of all configuration, strong consistency checks to avoid duplicate VM IDs, read-only when a node loses quorum, automatic corosync configuration updates, distributed locking.
 - POSIX-like (FUSE) but: no symbolic links can be created, non-empty directories cannot be renamed (keeps VMIDs unique), file permissions cannot be changed (permissions are path based), `O_EXCL` creates are not atomic (like old NFS), `O_TRUNC` creates are not atomic (FUSE restriction).
 - Access rights: all files are owned by `root` with group `www-data`; only root can write, `www-data` can read most files. `/etc/pve/priv/` and `/etc/pve/nodes/${NAME}/priv/` are accessible by root only.
@@ -78,4 +80,5 @@ mv /etc/pve/nodes/node1/qemu-server/100.conf /etc/pve/nodes/node2/qemu-server/
 - [cluster.md](./cluster.md)
 - [ha.md](./ha.md)
 - [certificates.md](./certificates.md)
+- [firewall.md](./firewall.md)
 - Official docs: https://pve.proxmox.com/pve-docs/chapter-pmxcfs.html

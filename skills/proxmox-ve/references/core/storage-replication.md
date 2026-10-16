@@ -10,7 +10,8 @@ pvesr create-local-job 100-0 pve1 --schedule "*/5" --rate 10
 
 pvesr disable 100-0
 pvesr enable 100-0
-pvesr update 100-0 --schedule '*/00'
+# Change the schedule to once per hour (minute 00)
+pvesr update 100-0 --schedule '00'
 ```
 
 ## Options / Props
@@ -46,6 +47,7 @@ pct start 200
 - If a guest is stuck on a failed node, move it manually (see above), but only after making absolutely sure the failed source node is really powered off / fenced. Avoid cluster-affecting changes (adding/removing nodes, storages, guests) while `expected votes` is forced; use it only to get vital guests running or to resolve the quorum issue.
 - High availability is allowed together with replication, but data written between the last sync and the node failure can be lost.
 - Replication traffic uses the migration network by default, which in turn defaults to the management network.
+- The official pvesr chapter's CLI example uses `'*/00'` for the hourly schedule, but the proxmox-time calendar-event parser only accepts `*/N` with N > 0 (a zero repeat leaves `/00` unconsumed and causes a parse error), so this page uses `00` (minute 00, once per hour).
 - The replication panel exists at datacenter, node and guest level in the web GUI (different job scope); jobs can be created, modified and removed there or with `pvesr`.
 
 ## Related
