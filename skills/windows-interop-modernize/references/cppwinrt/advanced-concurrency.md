@@ -34,6 +34,24 @@ IAsyncAction DoWorkAsync(TextBlock textblock)
 }
 ```
 
+Detecting queue shutdown, and handling it gracefully:
+
+```cppwinrt
+winrt::fire_and_forget RunAsync(DispatcherQueue queue)
+{
+    ...
+
+    if (co_await queue)
+    {
+        ... // Resume on dispatcher thread.
+    }
+    else
+    {
+        ... // Still on calling thread.
+    }
+}
+```
+
 Cancellation callback (propagates cancellation to a nested coroutine, Windows SDK 10.0.17763.0+):
 
 ```cppwinrt
@@ -95,6 +113,7 @@ else
 - Minimize context switches: call Windows Runtime APIs after `co_await winrt::resume_background()` rather than before it, otherwise C++/WinRT restores the UI thread context after each awaited call.
 - As of C++/WinRT 2.0, `winrt::resume_foreground` always suspends and queues, even from the dispatcher thread (analogous to `PostMessage` rather than `SendMessage`); the 1.0 implementation returned `m_dispatcher.HasThreadAccess()` from `await_ready` and could deadlock.
 - In WinUI 3 / Windows App SDK apps use `DispatcherQueue` instead of `CoreDispatcher`. Include the projection header for the namespace of the type you `co_await` (for example `Windows::System::DispatcherQueue` or `Microsoft::UI::Dispatching::DispatcherQueue`). For a Win32 app, create a queue with the Win32 `CreateDispatcherQueueController` and take ownership with `take_ownership_from_abi`.
+- The "Guaranteed to work" example assumes the dispatcher queue is still running; if the queue's controller may be shutting down (for example during window close), check the `co_await` result and touch UI objects only on the `true` branch — on `false`, execution stays on the calling (background) thread.
 - Cancellation is checked implicitly only when a coroutine resumes or reaches another `co_await`; poll the token explicitly for finer-grained latency. Windows Runtime cancellation does not flow to nested async objects automatically; register a callback to propagate it.
 - Reporting provisional results with `progress.set_result()` requires C++/WinRT version 2.0.210309.3 or later.
 - An async action/operation supports only a single waiter: use either one `Completed` delegate or a `co_await` (not both), and do not combine `get()` and `wait_for()`; `wait_for` cannot be called in a loop. `wait_for` accepts `std::chrono::duration` but is limited to roughly 49.7 days.
