@@ -59,3 +59,5 @@ const rive = new Rive({
 - [canvas-vs-webgl.md](./canvas-vs-webgl.md)
 - [rive-constructor.md](./rive-constructor.md)
 - [rive-file.md](./rive-file.md)
+
+Source: https://rive.app/docs/runtimes/web/gpu-canvas (fetched 2026-10)

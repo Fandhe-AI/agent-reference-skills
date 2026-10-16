@@ -38,3 +38,5 @@ Common strategies:
 - [Converters](./converters.md)
 - [Data Binding](./data-binding.md)
 - [State Machine](./state-machine.md)
+
+Source: https://rive.app/docs/editor/accessibility/reduced-motion (fetched 2026-10)

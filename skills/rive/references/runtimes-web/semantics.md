@@ -88,3 +88,5 @@ Editor role to DOM output:
 
 - [rive-constructor.md](./rive-constructor.md)
 - [canvas-vs-webgl.md](./canvas-vs-webgl.md)
+
+Source: https://rive.app/docs/runtimes/web/semantics (fetched 2026-10)

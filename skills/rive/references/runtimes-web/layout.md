@@ -18,6 +18,29 @@ const r = new Rive({
 });
 ```
 
+### Responsive layouts (`Fit.Layout`)
+
+Set `fit: Fit.Layout` and the artboard resizes to the canvas when `resizeDrawingSurfaceToCanvas()` is called. Optionally set `layoutScaleFactor`. Call `resizeDrawingSurfaceToCanvas()` again on `window.onresize` and on device pixel ratio changes (e.g. dragging between monitors).
+
+```ts
+const r = new Rive({
+  src: "your-rive-file.riv",
+  autoplay: true,
+  canvas: riveCanvas,
+  layout: new Layout({ fit: Fit.Layout /*, layoutScaleFactor: 2 */ }),
+  stateMachine: "State Machine 1",
+  onLoad: () => computeSize(),
+});
+
+function computeSize() {
+  r.resizeDrawingSurfaceToCanvas();
+}
+window.onresize = computeSize;
+window
+  .matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`)
+  .addEventListener("change", computeSize);
+```
+
 ## Options / Props
 
 ### Layout constructor
@@ -63,37 +86,6 @@ new Layout(params?: LayoutParameters)
 | `Alignment.BottomCenter` | Bottom-center |
 | `Alignment.BottomRight` | Bottom-right corner |
 
-## Notes
-
-- `Alignment` has no effect when `fit` is `Fit.Layout`.
-- When providing explicit `minX/minY/maxX/maxY` bounds, they override alignment positioning.
-- Call `r.resizeToCanvas()` after canvas resize to update the layout bounds.
-- Bounds (`minX`, `minY`, `maxX`, `maxY`) are relative to the container and all four must be provided.
-- Update the layout later with `r.layout = new Layout({ fit: Fit.Fill })`; treat `Layout` as immutable (`copyWith(partial)` returns a new one).
-
-## Responsive layouts (`Fit.Layout`)
-
-Set `fit: Fit.Layout` and the artboard resizes to the canvas when `resizeDrawingSurfaceToCanvas()` is called. Optionally set `layoutScaleFactor`. Call `resizeDrawingSurfaceToCanvas()` again on `window.onresize` and on device pixel ratio changes (e.g. dragging between monitors).
-
-```ts
-const r = new Rive({
-  src: "your-rive-file.riv",
-  autoplay: true,
-  canvas: riveCanvas,
-  layout: new Layout({ fit: Fit.Layout /*, layoutScaleFactor: 2 */ }),
-  stateMachine: "State Machine 1",
-  onLoad: () => computeSize(),
-});
-
-function computeSize() {
-  r.resizeDrawingSurfaceToCanvas();
-}
-window.onresize = computeSize;
-window
-  .matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`)
-  .addEventListener("change", computeSize);
-```
-
 ### TypeScript API surface
 
 Exported from `@rive-app/canvas` (or the bundled `rive` global):
@@ -110,6 +102,15 @@ export class Layout {
   copyWith(partial: LayoutParameters): Layout;
 }
 ```
+
+## Notes
+
+- `Alignment` has no effect when `fit` is `Fit.Layout`.
+- When providing explicit `minX/minY/maxX/maxY` bounds, they override alignment positioning.
+- Call `r.resizeToCanvas()` after canvas resize to update the layout bounds.
+- Bounds (`minX`, `minY`, `maxX`, `maxY`) are relative to the container and all four must be provided.
+- Update the layout later with `r.layout = new Layout({ fit: Fit.Fill })`; treat `Layout` as immutable (`copyWith(partial)` returns a new one).
+- The media query in the official responsive snippet is bound to the initial `devicePixelRatio`, so it fires only once on a change away from that value; to keep tracking successive DPR changes, remove the listener in the handler and re-register `matchMedia` with the current `window.devicePixelRatio`.
 
 ## Related
 

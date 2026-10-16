@@ -51,3 +51,5 @@ Layout **Size** (width and height each):
 - [Layout](./layout.md)
 - [Layout Parameters](./layout-parameters.md)
 - [Layout Styles](./layout-styles.md)
+
+Source: https://rive.app/docs/editor/layouts/component-sizing (fetched 2026-10)

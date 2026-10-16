@@ -45,6 +45,7 @@ export default function MyRiveComponent() {
 - Fallback fonts are used when the primary font cannot render a glyph (limited language/Unicode coverage, subsetted embedded font, unexpected dynamic text).
 - Browsers do not allow direct access to system fonts, so fallback fonts must be provided explicitly for this runtime.
 - Fallback font API available as of `v4.28.0`. `RiveFont.setFallbackFontCallback()` must be registered before Rive begins rendering.
+- The official snippet registers the fallback callback inside an async `useEffect` without delaying `useRive`, so a cached `.riv` can start rendering before the callback is set. To strictly guarantee registration before rendering, track readiness in state (e.g. `const [fontsReady, setFontsReady] = useState(false);` and call `setFontsReady(true)` after `setFallbackFontCallback`) and render the component that calls `useRive` only when `fontsReady` is true.
 - The callback receives the failed glyph as a Unicode code point and the font weight, and returns a list of decoded fonts (or `null`). It may be called multiple times if successive fallback fonts also lack the glyph.
 
 ## Related

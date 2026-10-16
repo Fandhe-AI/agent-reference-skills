@@ -51,3 +51,5 @@ Actions:
 - [Accessibility: Reduced Motion](./accessibility-reduced-motion.md)
 - [Listeners](./listeners.md)
 - [Data Binding](./data-binding.md)
+
+Source: https://rive.app/docs/editor/accessibility/semantics (fetched 2026-10)

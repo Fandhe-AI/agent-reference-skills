@@ -56,3 +56,5 @@ Focus action modes:
 - [Listeners](./listeners.md)
 - [Transitions](./transitions.md)
 - [State Machine](./state-machine.md)
+
+Source: https://rive.app/docs/editor/accessibility/focus (fetched 2026-10)

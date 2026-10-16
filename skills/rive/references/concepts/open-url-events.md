@@ -34,3 +34,5 @@ automaticallyHandleEvents: true
 - [Audio Events](./audio-events.md)
 - [Listeners](./listeners.md)
 - [Data Binding](./data-binding.md)
+
+Source: https://rive.app/docs/editor/events/open-url-events (fetched 2026-10)
