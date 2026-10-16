@@ -43,6 +43,8 @@ Two main requirements for a framework-dependent packaged app:
 - Only packaged apps that are full trust, or that declare the `packageManagement` restricted capability, may use the Deployment API to install Main/Singleton package dependencies.
 - Stable-channel Framework package deployment differs from preview: preview versions are deployed at build time as a NuGet dependency.
 - Event logs: **Applications and Services Logs > Microsoft > Windows > AppxDeployment-Server**.
+- Source: https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/deploy-packaged-apps
+- Source (SemVer, C++ upgrade): https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-notes/windows-app-sdk-2-0
 
 ## Related
 

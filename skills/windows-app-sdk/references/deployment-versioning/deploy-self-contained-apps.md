@@ -29,6 +29,7 @@ Set this in the app project's main `PropertyGroup` (and in the packaging project
 - Some APIs (push/app notifications) still depend on the Singleton package even in self-contained apps. Options: check `IsSupported` at runtime and degrade gracefully, deploy the required MSIX packages as part of app install, or avoid the API.
 - Library projects should never set `WindowsAppSDKSelfContained` — only app (and packaging) projects. Windows App SDK 2.0 stable also improved error handling for scenarios where `WindowsAppSDKSelfContained` is enabled for class libraries.
 - Windows App SDK 2.5.1 adds support for the `windows.diagnosticServiceModule` package-manifest extension. Self-contained .NET MSIX apps can use it to declare diagnostic modules, allowing Windows Error Reporting to load them and collect actionable crash dumps.
+- Source (2.0 class-library error handling, 2.5.1 diagnosticServiceModule): https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-notes/windows-app-sdk-2-0
 
 ## Related
 

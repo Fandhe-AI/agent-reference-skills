@@ -32,6 +32,7 @@ string value = resourceMap.GetValue("Farewell", resourceContext).ValueAsString;
 - Windows App SDK 2.2.0 fixed sparse-packaged apps being unable to discover module-specific PRI files (RuntimeCompatibilityChange: `MRTCore_SparsePackagedPriFallback`).
 - Windows App SDK 2.4.0 fixed `MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY` being inherited by child processes, which disrupted MRT Core and catalog lookups (RuntimeCompatibilityChange: `WindowsAppRuntime_BaseDirectoryIsolation`).
 - Windows App SDK 2.4.0 also fixed a regression where `MrmGetFilePathFromName` returned `ERROR_FILE_NOT_FOUND` when the PRI file didn't exist, instead of the documented fallback path (RuntimeCompatibilityChange: `ResourceManager_RestoreDefaultFallbackPath`).
+- Source (2.2.0 / 2.4.0 fixes): https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-notes/windows-app-sdk-2-0
 
 ## Related
 

@@ -34,6 +34,7 @@ Stable 2.x versions listed: 2.5.1, 2.4.0 (08/13/2026), 2.3.1 (07/16/2026), 2.2.0
 - Stable 1.x releases (e.g. 1.8) are no longer on the main downloads table; older releases are on the Archive of Windows App SDK downloads page.
 - Three parallel channel download tables exist on the page (Stable / Preview / Experimental), each version linking to its release notes and GitHub source tag.
 - Older releases are listed on a separate Archive of Windows App SDK downloads page.
+- Source: https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/downloads
 
 ## Related
 

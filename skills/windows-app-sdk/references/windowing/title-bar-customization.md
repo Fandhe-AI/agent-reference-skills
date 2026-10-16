@@ -64,6 +64,8 @@ public sealed partial class MainWindow : Window
 - Since Windows App SDK 1.7, a higher-level `TitleBar` control simplifies this process (separate from `AppWindowTitleBar`).
 - Windows App SDK 2.1.3 (compatibility ID `TitleBar_ContentDragRegions`): `TitleBar` now walks the visual tree of `TitleBar.Content` and excludes only interactive controls from the drag region; empty gaps and non-interactive visuals are draggable by default. New APIs (2.0 moniker only): attached `TitleBar.IsDragRegion` (nullable bool: `True` = draggable, `False` = clickable, unset = framework decides), `TitleBar.AutoRefreshDragRegions` (`bool`, default `false`; `true` refreshes regions on layout updates), and `TitleBar.RecomputeDragRegions()` (manual recompute after dynamic content changes). This applies to the `TitleBar` control, not to the manual `InputNonClientPointerSource` approach above.
 - Package: `Microsoft.UI.Windowing` / `Microsoft.UI.Input` (Windows App SDK / WinUI 3).
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/title-bar
+- Source (2.1.3 TitleBar drag regions): https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-notes/windows-app-sdk-2-0
 
 ## Related
 

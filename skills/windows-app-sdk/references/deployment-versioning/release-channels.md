@@ -37,6 +37,8 @@ The three Windows App SDK release channels — Stable, Preview, and Experimental
 - Windows App SDK is governed by the Microsoft Modern Lifecycle; supported only on Windows releases still in support, even though it's backward compatible to Windows 10 version 1809.
 - Support requires the latest Windows App SDK patch and a supported OS.
 - File bugs/feature requests via the `microsoft/WindowsAppSDK` GitHub Issues; use GitHub Discussions for questions.
+- Source: https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-channels
+- Source (App Content Search): https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/release-notes/windows-app-sdk-2-0
 
 ## Related
 
