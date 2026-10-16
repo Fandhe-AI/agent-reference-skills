@@ -113,3 +113,4 @@ export default defineConfig([
 - 0.6.0: 依存抽出が tree-sitter に移行し、astro / svelte ファイルに対応（plugin 0.6.0）
 - 0.7.0: `segments-by-purpose` が拡張され、本質ベースやフレームワーク固有のセグメント名をより多く禁止（plugin 0.7.0）
 - 0.7.0: 最小 Node.js バージョンを更新（具体値は CHANGELOG に記載なし。`package.json` の engines を確認）
+- 出典: steiger リポジトリのタグ steiger@0.7.0（コミット b0fe6c59aa3dc8024a4deec11e61ceea468101d8）の https://github.com/feature-sliced/steiger/blob/steiger%400.7.0/README.md 、https://github.com/feature-sliced/steiger/blob/steiger%400.7.0/packages/steiger/README.md 、https://github.com/feature-sliced/steiger/blob/steiger%400.7.0/packages/steiger/CHANGELOG.md 、https://github.com/feature-sliced/steiger/blob/steiger%400.7.0/packages/steiger-plugin-fsd/CHANGELOG.md 、https://github.com/feature-sliced/steiger/blob/steiger%400.7.0/packages/steiger-plugin-fsd/src/no-wildcard-exports/README.md 、https://github.com/feature-sliced/steiger/blob/steiger%400.7.0/CONFIG_EXAMPLES.md

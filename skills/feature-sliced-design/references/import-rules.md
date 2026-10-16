@@ -63,6 +63,7 @@ import { UserAvatar } from "entities/user/@x/post";
   - `fsd/import-locality` — requires relative imports within a slice and absolute imports between slices (disabled by default).
   - `fsd/no-public-api-sidestep` — forbids going around a slice's public API to import an internal module directly.
 - Warning signs: depending directly on another slice's store; importing another slice's internal files (bypassing its public API); bidirectional dependencies; frequent breakage from cross-slice changes; generic files such as `types.ts` / `utils.ts` handling multiple domains in one folder (a sign of de-segmentation).
+- Source: https://fsd.how/docs/reference/layers and https://fsd.how/docs/guides/issues/cross-imports (documentation repository commit 3a5a3a3); Steiger rules: https://github.com/feature-sliced/steiger/blob/steiger%400.7.0/README.md and https://github.com/feature-sliced/steiger/blob/steiger%400.7.0/packages/steiger-plugin-fsd/CHANGELOG.md (tag steiger@0.7.0, commit b0fe6c5).
 
 ## Related
 
