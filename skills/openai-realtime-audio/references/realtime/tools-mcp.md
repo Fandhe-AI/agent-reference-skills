@@ -41,7 +41,7 @@ ws.send(JSON.stringify(event));
 |------|-------------|------|
 | `function` | Your app owns business logic / private system access | Your client/server (returns `function_call_output`) |
 | `mcp` with `server_url` | Model should call tools on a remote MCP server | The Realtime API itself |
-| `mcp` with `connector_id` | Built-in connector (e.g. `connector_googlecalendar`) | The Realtime API itself, using `authorization` you provide |
+| `mcp` with `connector_id` | You use a legacy built-in connector with an existing model (e.g. `connector_googlecalendar`) | The Realtime API itself, using `authorization` you provide |
 
 | MCP field | Description |
 |------|-------------|
@@ -50,6 +50,7 @@ ws.send(JSON.stringify(event));
 | `authorization` / `headers` | Auth for the remote server (don't set both `authorization` and `headers.Authorization` for connectors) |
 | `allowed_tools` | Narrow the imported tool surface |
 | `require_approval` | `"never"` or require an `mcp_approval_request`/`mcp_approval_response` round trip |
+| `server_description` | Optional description of the MCP server |
 
 | Server event | Meaning |
 |------|-------------|
@@ -62,6 +63,8 @@ ws.send(JSON.stringify(event));
 
 - Add tools at the session level (`session.tools` in `session.update`) for the whole session, or at the response level (`response.tools` in `response.create`) for a single turn.
 - Function tools require your app to send back a `function_call_output` conversation item + `response.create`; MCP tools are executed by the Realtime API and never round-trip through your client.
+- Legacy connectors: `connector_id` is deprecated for models released after September 1, 2026. Use `server_url` for a remote MCP server, or `tunnel_id` to reach a local MCP server through Secure MCP Tunnel. Existing models retain connector support; the official connector example uses `gpt-realtime-1.5`, which predates the cutoff.
+- Common failures (guide): `mcp_list_tools.failed` means tool import failed (check `server_url` or `connector_id`, authentication, connectivity, `allowed_tools`); `tool_choice: "required"` with no tools currently available leaves the model nothing to call (wait for `mcp_list_tools.completed`); definition validation fails on a duplicate `server_label`, both `server_url` and `connector_id`, neither on initial creation, an invalid `connector_id`, or both `authorization` and `headers.Authorization`.
 - Remote MCP servers don't automatically see the full conversation, but can see any data sent in the tool call — keep `allowed_tools` narrow and require approval for sensitive actions.
 
 ## Related

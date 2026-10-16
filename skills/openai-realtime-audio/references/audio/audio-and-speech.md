@@ -74,7 +74,10 @@ const response = await openai.chat.completions.create({
 ## Notes
 
 - The Responses API currently describes text and image inputs with text outputs only; for the audio-chat pattern above, use Chat Completions with an audio-capable model instead.
-- For live browser speech-to-speech, use a Realtime session via the TypeScript Agents SDK (`RealtimeAgent` / `RealtimeSession`) — this is Realtime API scope, not covered here.
+- The official hub is now titled "Audio and voice" (`guides/audio`). For a new conversational voice application it says to start with GPT-Live (connect with the GPT-Live WebRTC quickstart, then write a short Live prompt) and to use the Realtime API "when you need its session and tool model". For live browser speech-to-speech with the Realtime API, use a Realtime session via the TypeScript Agents SDK (`RealtimeAgent` / `RealtimeSession`) — Realtime API scope, not covered here.
+- Workflow chooser in the hub: Realtime API (speech-to-speech agent using the Realtime session and tool model); Voice agents chained path (voice interface for an existing text agent: speech-to-text, text-agent workflow, text-to-speech); File transcription (file uploads, bounded requests); Live transcription (streaming audio and incremental transcript events, no assistant speech); Live translation (a dedicated translation session, not a voice-agent turn loop); Text to speech (text, voice, output format); Audio in Chat Completions (bounded multimodal chat requests).
+- The Chat Completions audio examples now live in a dedicated guide, "Audio in Chat Completions" (`guides/audio-chat-completions`, `gpt-audio-1.5`); the examples above match it (audio output with `modalities: ["text", "audio"]`, audio input with `input_audio`).
+- Deprecations (2026-07-20 notice): `gpt-audio`, `gpt-4o-audio`, `gpt-audio-mini`, and `gpt-4o-mini-audio` are removed Jan 20, 2027; replacement `gpt-audio-1.5`.
 - Streaming requires a realtime connection and a session model that can emit partial events; request-based APIs are simpler for files/non-interactive work but don't support the same live interaction patterns.
 
 ## Related

@@ -50,6 +50,9 @@ ws.on("message", (data) => {
 - Connect via WebSocket for server-side pipelines or WebRTC for browser audio; stream chunks with `input_audio_buffer.append` and, with automatic turn detection off, explicitly `input_audio_buffer.commit`.
 - Ordering between completion events across speech turns isn't guaranteed — correlate with `item_id`.
 - `gpt-live-transcribe` never returns word-level timestamps, speaker labels, or confidence scores; use file transcription (scope=audio) or an application-level fallback if needed.
+- `gpt-live-transcribe` does not support `server_vad` or `semantic_vad`: omit `audio.input.turn_detection` or set it to `null`.
+- When `gpt-transcribe` can't make a reliable language prediction, `languages` is an empty array; `gpt-live-transcribe` doesn't return detected-language predictions.
+- Legacy `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`, and `whisper-1` are removed Feb 26, 2027 (deprecations "2026-08-26"; replacements `gpt-live-transcribe` or `gpt-transcribe`).
 - Keywords must not contain `<`, `>`, CR, or LF, or the session update is rejected.
 
 ## Related

@@ -37,6 +37,8 @@ ws.on("message", (message) => console.log(JSON.parse(message.toString())));
 
 - Recommended only for server-to-server; use WebRTC for browser/mobile clients.
 - Lowest-level interface: you must send/receive Base64-encoded audio chunks yourself over `input_audio_buffer.append` / `response.output_audio.delta`.
+- The official guide is now `guides/voice-websockets` (the old `realtime-websocket` page is folded into it). The first half is GPT-Live ("Connect a server to GPT-Live"); the second half ("Connect via WebSocket") is Realtime. This page covers the Realtime side; for GPT-Live see [GPT-Live WebSocket](../live/websocket.md). GPT-Live and Realtime handshakes and event formats are not interchangeable.
+- The Signature code was checked against the official Realtime examples (`wss://api.openai.com/v1/realtime?model=gpt-realtime-2.1`, `ws` module, `session.update` in the "Sending and receiving events" example); it is a condensed combination of the connect and send examples.
 - Client-sent events and server-sent events are the same event set used across WebRTC and WebSocket — see [Conversations](./conversations.md).
 
 ## Related

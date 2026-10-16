@@ -39,7 +39,8 @@ Automatic detection of when the user starts/stops speaking, controlling how audi
 ## Notes
 
 - Enabled by default (`server_vad`) in speech-to-speech sessions; can be turned off.
-- In transcription sessions, VAD support depends on the model — `gpt-realtime-whisper` requires `turn_detection` omitted or `null`; other transcription models default to `server_vad`.
+- In transcription sessions, turn detection support depends on the transcription model. Models that support VAD default to `server_vad`, while `gpt-live-transcribe` and `gpt-realtime-whisper` require turn detection to be omitted or set to `null`; send `input_audio_buffer.commit` to finish each audio turn with these models.
+- `create_response` and `interrupt_response` are conversation-only; in transcription sessions VAD only controls audio chunking.
 - Server emits `input_audio_buffer.speech_started` / `input_audio_buffer.speech_stopped` when VAD detects turn boundaries.
 
 ## Related
