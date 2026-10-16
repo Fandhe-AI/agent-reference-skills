@@ -72,3 +72,5 @@ struct MyType : implements<MyType, IStringable>
 - [Events and Delegates](./events-delegates.md)
 - [Weak References](./weak-references.md)
 - [XAML x:Bind](./xaml-binding.md)
+- [base_type and the derived-type pattern](./base-type.md)
+- [Extension points and the winrt::implements family](./extension-points.md)

@@ -36,9 +36,13 @@ The Windows App SDK ships as a NuGet package (`Microsoft.WindowsAppSDK`) you add
 - An unpackaged WPF/WinForms app **must initialize the Windows App SDK runtime** before calling any Windows App SDK feature; setting `WindowsPackageType=None` triggers MSBuild's auto-initialization, which is sufficient for most apps.
 - The target machine also needs the Windows App SDK **Runtime** installed unless `WindowsAppSDKSelfContained` is `true`; deploying it is the app's responsibility for unpackaged/external-location apps.
 - If a *Class not registered* error occurs when using a Windows App SDK component, add a dynamic dependency on the Windows App SDK Framework package.
+- Prerequisite: the project must be configured to call WinRT APIs (see `winrt-apis-in-wpf-winforms.md`).
+- For a C++ Win32 project, add `<WindowsPackageType>None</WindowsPackageType>` inside the `<PropertyGroup Label="Globals">` element of the `.vcxproj` (C# projects use the csproj `PropertyGroup`).
+- `Microsoft.WindowsAppSDK` contains sub-packages (`Microsoft.WindowsAppSDK.Foundation`, `Microsoft.WindowsAppSDK.WinUI`, and others). Installing the main package (all components) is generally recommended; a sub-package can be installed individually to reference only certain components (for example, Windows ML).
 - Adding the Windows App SDK does not require adopting WinUI 3 or MSIX packaging — it is one of three independent modernization approaches (WinRT APIs, Windows App SDK, MSIX packaging) that can be combined incrementally.
 
 ## Related
 
 - [winrt-apis-in-wpf-winforms.md](./winrt-apis-in-wpf-winforms.md)
 - [dotnet-upgrade-assistant.md](./dotnet-upgrade-assistant.md)
+- [modernize-overview.md](../migration-planning/modernize-overview.md)

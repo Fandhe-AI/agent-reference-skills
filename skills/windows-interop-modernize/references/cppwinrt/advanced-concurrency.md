@@ -1,0 +1,110 @@
+# Advanced Concurrency and Asynchrony with C++/WinRT
+
+Advanced coroutine scenarios in C++/WinRT: offloading to the Windows thread pool, thread affinity (`apartment_context`, `resume_foreground`), cancellation and cancellation callbacks, progress, fire-and-forget, awaiting kernel handles, timeouts (`wait_for`), and returning arrays asynchronously. Builds on async-coroutines.md.
+
+## Signature / Usage
+
+```cppwinrt
+IAsyncOperation<uint32_t> DoWorkOnThreadPoolAsync()
+{
+    co_await winrt::resume_background(); // Return control; resume on thread pool.
+
+    uint32_t result;
+    for (uint32_t y = 0; y < height; ++y)
+    for (uint32_t x = 0; x < width; ++x)
+    {
+        // Do compute-bound work here.
+    }
+    co_return result;
+}
+```
+
+Switching to the UI thread of a specific element:
+
+```cppwinrt
+IAsyncAction DoWorkAsync(TextBlock textblock)
+{
+    co_await winrt::resume_background();
+    // Do compute-bound work here.
+
+    // Switch to the foreground thread associated with textblock.
+    co_await winrt::resume_foreground(textblock.DispatcherQueue());
+
+    textblock.Text(L"Done!"); // Guaranteed to work.
+}
+```
+
+Cancellation callback (propagates cancellation to a nested coroutine, Windows SDK 10.0.17763.0+):
+
+```cppwinrt
+IAsyncAction CancelationPropagatorAsync()
+{
+    auto cancelation_token{ co_await winrt::get_cancellation_token() };
+    auto nested_coroutine{ NestedCoroutineAsync() };
+
+    cancelation_token.callback([=]
+    {
+        nested_coroutine.Cancel();
+    });
+
+    co_await nested_coroutine;
+}
+```
+
+Awaiting a kernel handle with a timeout, and `wait_for` on an async object:
+
+```cppwinrt
+if (co_await winrt::resume_on_signal(event.get(), std::literals::2s))
+{
+    puts("signaled");
+}
+else
+{
+    puts("timed out");
+}
+
+if (async.wait_for(5s) == AsyncStatus::Started)
+{
+    puts("timed out");
+}
+else
+{
+    // will throw appropriate exception if in canceled or error state
+    auto results = async.GetResults();
+}
+```
+
+## Options / Props
+
+| Name | Type | Description |
+|------|------|-------------|
+| `winrt::resume_background()` | awaitable | Returns control to the caller, then resumes immediately on a low-level Windows thread pool thread. |
+| `winrt::apartment_context` | struct | Captures the calling context; `co_await` it to switch back. |
+| `winrt::resume_foreground(dispatcher, priority?)` | awaitable | Switches to the dispatcher's thread via `DispatcherQueue.TryEnqueue`; `co_await queue;` is the default-priority shorthand. Returns `true` if queued, `false` if the queue controller is shutting down (execution stays on the calling thread). |
+| `winrt::get_cancellation_token()` | awaitable | Yields a token: call `token()` to poll cancellation, `token.callback(lambda)` to register a pre-emptive callback. |
+| `winrt::get_progress_token()` | awaitable | For `IAsyncActionWithProgress` / `IAsyncOperationWithProgress` coroutines; invoke `progress(value)` to report, `progress.set_result(value)` for a provisional result. |
+| `winrt::fire_and_forget` | return type | For tasks you don't wait on and that return no value. |
+| `winrt::resume_on_signal(HANDLE, timeout?)` | awaitable | Suspends until a kernel event is signaled; with a timeout, the `co_await` result is `true` (signaled) or `false` (timed out). |
+| `IAsyncAction::get()` | function | Blocks until the async object completes. |
+| `IAsyncAction::wait_for(duration)` | function | Waits up to the duration; returns `AsyncStatus` (`Completed`, `Canceled`, `Error`, `Started`). |
+
+## Notes
+
+- Before doing compute-bound work in a coroutine, introduce a suspension point so the caller isn't blocked; `co_await winrt::resume_background()` does that if you are not already awaiting something else.
+- `co_await`-ing any of the four `IAsyncXxx` types captures the calling context and restores it on resumption (STA stays STA, MTA stays MTA) via wait adapters. Other awaitables (for example `co_await 5s;`) are thread pool wrappers and complete on the thread pool.
+- Minimize context switches: call Windows Runtime APIs after `co_await winrt::resume_background()` rather than before it, otherwise C++/WinRT restores the UI thread context after each awaited call.
+- As of C++/WinRT 2.0, `winrt::resume_foreground` always suspends and queues, even from the dispatcher thread (analogous to `PostMessage` rather than `SendMessage`); the 1.0 implementation returned `m_dispatcher.HasThreadAccess()` from `await_ready` and could deadlock.
+- In WinUI 3 / Windows App SDK apps use `DispatcherQueue` instead of `CoreDispatcher`. Include the projection header for the namespace of the type you `co_await` (for example `Windows::System::DispatcherQueue` or `Microsoft::UI::Dispatching::DispatcherQueue`). For a Win32 app, create a queue with the Win32 `CreateDispatcherQueueController` and take ownership with `take_ownership_from_abi`.
+- Cancellation is checked implicitly only when a coroutine resumes or reaches another `co_await`; poll the token explicitly for finer-grained latency. Windows Runtime cancellation does not flow to nested async objects automatically; register a callback to propagate it.
+- Reporting provisional results with `progress.set_result()` requires C++/WinRT version 2.0.210309.3 or later.
+- An async action/operation supports only a single waiter: use either one `Completed` delegate or a `co_await` (not both), and do not combine `get()` and `wait_for()`; `wait_for` cannot be called in a loop. `wait_for` accepts `std::chrono::duration` but is limited to roughly 49.7 days.
+- Pass a `winrt::handle` (not a raw `HANDLE`) by value into a coroutine that later calls `resume_on_signal`, so the handle stays valid across suspension points.
+- `IAsyncOperation<Int32[]>` is invalid MIDL 3.0 (error MIDL2025); return the array boxed in a `PropertyValue` (`CreateInt32Array`) as `IAsyncOperation<IInspectable>` and unbox with `IPropertyValue::GetInt32Array`.
+- The `no_switch` await-adapter in the source (resume on the completing thread, no context switch) is educational only; the docs recommend developing and testing your own adapter structs.
+
+## Related
+
+- [Concurrency: IAsyncAction / IAsyncOperation, co_await, resume_foreground, apartment_context, fire_and_forget](./async-coroutines.md)
+- [A completion source sample](./completion-source.md)
+- [Weak References](./weak-references.md)
+- [Events and Delegates](./events-delegates.md)

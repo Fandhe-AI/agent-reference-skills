@@ -47,3 +47,4 @@ Flag any APIs without a direct WinUI 3 equivalent rather than guessing.
 
 - [Mapping UWP APIs to the Windows App SDK](./namespace-mapping.md)
 - [Mapping UWP features to the Windows App SDK](./feature-mapping.md)
+- [Migrate a WPF app to WinUI 3 (AI-assisted)](../wpf-winforms-interop/ai-assisted-wpf-migration.md)

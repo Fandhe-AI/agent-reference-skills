@@ -70,4 +70,5 @@ void BookSku::Title(winrt::hstring const& value)
 ## Related
 
 - [Author APIs and IDL](./author-apis.md)
+- [XAML items controls: bind to a C++/WinRT collection](./binding-collection.md)
 - [Events and Delegates](./events-delegates.md)

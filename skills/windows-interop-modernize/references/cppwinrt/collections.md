@@ -61,6 +61,7 @@ auto map{ winrt::single_threaded_map<winrt::hstring, int>(
 ## Related
 
 - [XAML x:Bind](./xaml-binding.md)
+- [XAML items controls: bind to a C++/WinRT collection](./binding-collection.md)
 - [Agile Objects](./agile-objects.md)
 - [Boxing and Unboxing](./boxing.md)
 - [Standard C++ Data Types](./std-cpp-data-types.md)

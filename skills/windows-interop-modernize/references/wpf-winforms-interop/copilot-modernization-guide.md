@@ -21,16 +21,16 @@ StorageFilePicker for a better modern Windows experience."
 
 | Your situation | Recommended path |
 | --- | --- |
-| Keep WPF or WinForms as the UI framework, move to .NET 9+ | **Upgrade in place** — use the GitHub Copilot modernization for .NET agent to automate project file and code changes |
-| Add modern Windows features (notifications, AI, shell integration) without changing the UI framework | **Add Windows App SDK features** — integrate specific features via Copilot + Learn MCP Server |
-| Need modern Fluent UI, touch support, WinRT depth, or a fresh codebase | **Rebuild with WinUI 3** — see `wpf-vs-winui3.md` for API mapping |
-| LOB app with WCF, COM, or heavy third-party UI controls | **Upgrade in place first**, then modernize incrementally — the GitHub Copilot modernization for .NET agent can assist with WCF -> CoreWCF, EF, and ASP.NET Core upgrades |
+| Keep WPF or WinForms as the UI framework, move to .NET 9+ | **Upgrade in place** — use GitHub Copilot upgrade to assess the solution, plan the upgrade, and assist with code changes |
+| Add modern Windows features (notifications, AI, shell integration) without changing the UI framework | **Add Windows App SDK features** — integrate specific features via Copilot + Learn MCP Server; use winapp CLI to add package identity if needed |
+| Need modern Fluent UI, touch support, WinRT depth, or a fresh codebase | **Rebuild with WinUI 3** — see `wpf-vs-winui3.md` for API mapping; the Copilot-assisted approach is similar to the UWP-to-WinUI-3 workflow (UWP-specific) |
+| LOB app with WCF, COM, or heavy third-party UI controls | **Upgrade in place first**, then modernize incrementally — use GitHub Copilot upgrade to assess the .NET upgrade, and plan COM and third-party control validation separately |
 
 ## Notes
 
 - "Upgrade" (moving to a newer .NET version on the same UI framework) and "rebuild" (moving to WinUI 3) are separate decisions — an app can upgrade now and rebuild later, or do both together for a greenfield replacement.
-- The GitHub Copilot modernization for .NET agent (`/dotnet/core/porting/github-copilot-app-modernization/overview`) covers the upgrade-in-place path; adding Windows App SDK features to the existing app is a separate, independent effort covered by scenario prompts (push notifications, dark mode/navigation sidebar, file picker, background-task notifications).
-- Basic app notifications work in both packaged and unpackaged WPF/WinForms apps with no package identity required; push notifications received while the app isn't running (the common production scenario) require COM activation and background delivery, which need package identity.
+- GitHub Copilot upgrade (`/dotnet/core/porting/github-copilot-upgrade/overview`; formerly "GitHub Copilot modernization for .NET agent" at `/dotnet/core/porting/github-copilot-app-modernization/overview`, which resolves to the same page) covers the upgrade-in-place path; adding Windows App SDK features to the existing app is a separate, independent effort covered by scenario prompts (push notifications, dark mode/navigation sidebar, file picker, background-task notifications).
+- Basic app notifications work in both packaged and unpackaged WPF/WinForms apps with no package identity required; push notifications received while the app isn't running (the common production scenario) require COM activation and background delivery, which need package identity. Copilot can walk you through adding packaging with the winapp CLI if needed.
 - Prerequisite setup (GitHub Copilot, the WinUI 3 development plugin, and the Microsoft Learn MCP Server) is shared with the UWP-to-WinUI-3 migration workflow; it is not specific to WPF/WinForms.
 - This page covers only the WPF/WinForms-specific guidance from the source article; its Electron/Flutter/React Native and winapp CLI cross-platform packaging material is out of scope for this skill.
 
@@ -39,3 +39,5 @@ StorageFilePicker for a better modern Windows experience."
 - [wpf-vs-winui3.md](./wpf-vs-winui3.md)
 - [windows-app-sdk-existing-project.md](./windows-app-sdk-existing-project.md)
 - [dotnet-upgrade-assistant.md](./dotnet-upgrade-assistant.md)
+- [migration-decision-guide.md](../migration-planning/migration-decision-guide.md)
+- [ai-assisted-wpf-migration.md](./ai-assisted-wpf-migration.md)
