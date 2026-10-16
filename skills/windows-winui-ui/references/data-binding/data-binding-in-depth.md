@@ -4,7 +4,7 @@ Detailed description of WinUI 3 data binding: binding source, target and binding
 
 ## Signature / Usage
 
-Every binding has a source (any class instance), a target (a `DependencyProperty` of a `FrameworkElement`), and a binding object created at XAML load time from `{x:Bind}` or `{Binding}`.
+Every binding has a source (any class instance), a target, and a binding object. For `{Binding}`, the target is a `DependencyProperty` of a `FrameworkElement` and the binding object is created at XAML load time. `{x:Bind}` instead generates the binding code at compile time (`<view name>.g.cs` in `obj`), and its target can also be an event (event binding, see below).
 
 ```csharp
 // Observable source: implement INotifyPropertyChanged
@@ -116,6 +116,7 @@ Grouped data through `CollectionViewSource` ("has-a-group" pattern):
 
 - Source: https://learn.microsoft.com/en-us/windows/apps/develop/data-binding/data-binding-in-depth (page updated 2026-09-29)
 - The official page's sample sets `Window.DataContext`, but the WinUI 3 `Window` does not derive from `FrameworkElement` and has no `DataContext`; set it on the root `Grid` / `Page` instead (see datacontext.md).
+- The official page's opening description states the target is a `DependencyProperty` and the binding object is created at XAML load time for both `{x:Bind}` and `{Binding}`; this is read as `{Binding}`-specific to stay consistent with the same page's `{x:Bind}` description (compile-time code generation, event binding).
 - String indexers require `IDictionary<string,T>` / `IMap<string,T>` (see x-bind-markup-extension.md).
 - Package: `Microsoft.UI.Xaml.Data` (WinUI 3, Windows App SDK). Distinct from WPF `System.Windows.Data.Binding`.
 - Modes: one-time (value that doesn't change at run-time), one-way (observe source, read-only data), two-way (user changes in the UI are pushed back to the source). `{x:Bind}` and `{Binding}` can be mixed in one app, even on the same element.
