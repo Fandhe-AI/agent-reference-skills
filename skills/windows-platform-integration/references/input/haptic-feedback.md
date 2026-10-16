@@ -47,13 +47,14 @@ if (supported)
 | `CurrentHapticsController` | `SimpleHapticsController` | The controller for the device that most recently delivered input (or the active override). |
 | `CurrentHapticsControllerDeviceType` | `HapticDeviceType` | Device type of `CurrentHapticsController`. |
 | `ThreadId` | `UInt32` | ID of the thread that owns this manager instance. |
-| `KnownSimpleHapticsControllerWaveforms.Align` / `.Collide` / `.Step` / `.Grow` | `UInt16` constants | Interaction-feedback waveforms: snap-to-guide, boundary reached, discrete step, and motion/transition, respectively. Introduced in Windows 11, version 24H2 (build 10.0.26100.0). |
+| `KnownSimpleHapticsControllerWaveforms.Align` / `.Collide` / `.Step` / `.Grow` | `UInt16` constants | Interaction-feedback waveforms: snap-to-guide, boundary reached, discrete step, and motion/transition, respectively. The input/haptics guide lists SDK 10.0.28000.1839 (April 2026) for these waveforms; the API reference page for `Align` says Windows 11, version 24H2 (introduced in 10.0.26100.0). See Notes. |
 | `KnownSimpleHapticsControllerWaveforms.Click` / `.Hover` / `.Press` / `.Release` | `UInt16` constants | Pointer/press interaction waveforms available since the class's original introduction (SDK 15063). |
 | `KnownSimpleHapticsControllerWaveforms.Success` / `.Error` | `UInt16` constants | Process-confirmation waveforms for a completed or failed action. |
 
 ## Notes
 
-- Namespace: `Windows.Devices.Haptics`. Minimum OS: Windows 11, version 24H2, build `10.0.26100.0` (UniversalApiContract v19.0) for both `InputHapticsManager` itself and the `Align`/`Collide`/`Step`/`Grow` waveforms. Guard all calls with `ApiInformation.IsTypePresent` to target earlier OS versions.
+- Namespace: `Windows.Devices.Haptics`. UniversalApiContract version 19.0. Guard all calls with `ApiInformation.IsTypePresent` to target earlier OS versions.
+- Version requirements differ between the two official sources. The `input/haptics` guide (ms.date 2026-08-11) lists "Minimum OS: Windows 11, SDK 10.0.28000.1721 (March 2026)" and "Align / Collide / Step / Grow waveforms: SDK 10.0.28000.1839 (April 2026)". The API reference pages (`InputHapticsManager`, `KnownSimpleHapticsControllerWaveforms.Align`) instead say "Windows 11, version 24H2 (introduced in 10.0.26100.0)". Confirm against the SDK you target; do not rely on either value alone.
 - Haptics availability depends on the physical input device (mouse/touchpad/pen model and manufacturer) in addition to the OS/SDK version — always check `InputHapticsManager.IsSupported()` (and, where relevant, `IsHapticDevicePresent()`) before calling waveform methods.
 - This page covers the implementation-side API only. For when/why to use each waveform, recommended intensity/decay/sharpness characteristics, and the full waveform catalog including pen-specific continuous waveforms, see the design guidance for haptics (`develop/input/haptics` guide and the design/signature-experiences haptics documentation) — the same `InputHapticsManager` API also drives pen-specific `SimpleHapticsController` scenarios (see Pen and Windows Ink in this category) which are out of scope here.
 

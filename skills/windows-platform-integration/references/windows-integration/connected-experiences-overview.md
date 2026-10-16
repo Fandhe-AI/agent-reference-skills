@@ -21,11 +21,15 @@ The three pillars of Connected Experiences:
 
 ## Notes
 
-- Requested as `integrate-sharesheet-overview`, which 404s; the actual overview page for this feature family is `windows-integration/connected-experiences-overview`, and it covers all three Connected Experiences pillars (Share, People, Resume), not Share alone.
+- This overview covers all three Connected Experiences pillars (Share, People, Resume), not Share alone.
 - This page is intentionally thin — it is the TOC parent/hub for [share-sheet-send](./share-sheet-send.md), [share-sheet-receive](./share-sheet-receive.md), [cross-device-people-api](./cross-device-people-api.md), and [cross-device-resume-overview](./cross-device-resume-overview.md), which carry the actual implementation detail.
+
+- The current Windows apps develop toc also lists Phone Link notifications as a Connected Experiences entry next to Windows Share, People and Resume; see [phone-link-notifications](./phone-link-notifications.md). The Android-only "Resume with promoted install" guide is covered in [cross-device-resume-promoted-install](./cross-device-resume-promoted-install.md).
 
 ## Related
 
+- [Phone Link notifications](./phone-link-notifications.md)
+- [Resume with promoted install](./cross-device-resume-promoted-install.md)
 - [Share content from your app (Send)](./share-sheet-send.md)
 - [Receive content in your app (Share Target)](./share-sheet-receive.md)
 - [People on Windows (cross-device People API)](./cross-device-people-api.md)

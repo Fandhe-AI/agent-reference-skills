@@ -7,6 +7,8 @@ Lets a mobile/companion app publish activity context so the user can continue th
 ```javascript
 // App server sends a WNS raw notification carrying Resume metadata to the
 // channel URI previously registered by the Windows app.
+// Illustrative pseudo-code: obtain the WNS access token, the stored channelUri,
+// and the raw payload from your own app server before this call.
 const axios = require('axios');
 
 const headers = {
@@ -43,7 +45,10 @@ axios.post(channelUri, payload, { headers })
 - This overview page is thin by design; the implementation steps, headers, and code samples above come from the companion how-to guide "Resume for installed apps" (`integrate-app-continuity`), which the official docs present as the detailed counterpart to this overview within the same Windows-integration section.
 - Distinct from [JumpList / JumpListItem](./jump-list.md) and [TaskbarManager](./taskbar-manager.md): those surface app-defined tasks/pins on the taskbar, whereas Resume surfaces a cross-device continuity badge driven by server-sent WNS notifications, not local WinRT calls.
 
+- For the Android-only promoted-install flow, see [cross-device-resume-promoted-install](./cross-device-resume-promoted-install.md).
+
 ## Related
 
+- [Resume with promoted install](./cross-device-resume-promoted-install.md)
 - [TaskbarManager](./taskbar-manager.md)
 - [People on Windows (cross-device People API)](./cross-device-people-api.md)

@@ -33,6 +33,8 @@ await download.StartAsync();
 ## Notes
 
 - Namespace: `Windows.Networking.BackgroundTransfer` (WinRT). Requires `internetClient`, `internetClientServer`, and `privateNetworkClientServer` app capabilities.
+- Works in WinUI 3 (Windows App SDK) desktop apps and UWP apps, but requires package identity; unpackaged apps cannot use this API.
+- An app should not have more than 200 transfers (DownloadOperations + UploadOperations) at any given time; exceeding that limit may leave the transfer queue in an unrecoverable state.
 - Intended for long-term transfers of large resources (video, music, large images). For short transfers of a few KB, use `Windows.Web.Http.HttpClient` instead.
 - Background transfer does not support concurrent downloads of the same URI; starting two downloads of the same URI at once may result in truncated files.
 - FTP downloads are supported, with credentials embedded in the URI (`ftp://user:password@server/file.txt`).

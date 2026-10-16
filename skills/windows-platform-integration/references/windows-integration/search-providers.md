@@ -5,7 +5,6 @@ App extension that registers a third-party app as a web (or cloud-file) search p
 ## Signature / Usage
 
 ```xml
-<!-- Package.appxmanifest -->
 <uap3:Extension Category="windows.appExtension">
   <uap3:AppExtension Name="com.microsoft.windows.websearchprovider"
                       DisplayName="CustomSearch" Id="CustomSearchApp" PublicFolder="Public">
@@ -58,4 +57,5 @@ App extension that registers a third-party app as a web (or cloud-file) search p
 
 ## Related
 
+- [Cloud search integration](./cloud-search-integration.md)
 - [App Actions and Windows search integration](./app-actions-search.md)
