@@ -86,6 +86,7 @@ export async function generateMetadata({
 ## Notes
 
 - Canonical URLs tell SEO crawlers which URL to index; omit the query string for local-only state, include it when it determines page content.
+- Source: https://nuqs.dev/docs/seo (nuqs v2.10.2).
 
 ## Related
 

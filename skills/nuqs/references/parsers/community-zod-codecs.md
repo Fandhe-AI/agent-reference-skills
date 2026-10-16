@@ -28,6 +28,7 @@ See the complete list of string refinements: https://zod.dev/api?id=string-forma
 
 - Requires `zod@^4.1`.
 - As stated in the Zod docs, you cannot use transforms in codecs (https://zod.dev/codecs#transforms).
+- Source: https://nuqs.dev/docs/parsers/community/zod-codecs (nuqs v2.10.2).
 
 ## Related
 

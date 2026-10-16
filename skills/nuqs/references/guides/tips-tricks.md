@@ -58,6 +58,7 @@ function MapControls() {
 ## Notes
 
 - All query states bound to the same key are synchronized across components.
+- Source: https://nuqs.dev/docs/tips-tricks (nuqs v2.10.2).
 
 ## Related
 

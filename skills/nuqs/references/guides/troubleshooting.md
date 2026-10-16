@@ -30,6 +30,7 @@ function useIntFloat() {
 - Known issues and solutions are tracked at https://github.com/47ng/nuqs/issues/423.
 - Pages router: because the Next.js pages router is not available in an SSR context, the hook always returns `null` (or the default value if supplied) on SSR/SSG. This limitation does not apply to the app router.
 - Hooks are synced on a per-key basis, so different parsers on the same key lead to unexpected states (see above).
+- The useIntFloat snippet is verbatim from the official docs. Without a default, parseAsFloat returns null when foo is absent or invalid, so real code should handle it (e.g. const int = float === null ? null : Math.floor(float)) or use parseAsFloat.withDefault(...).
 - Next.js error "Missing Suspense boundary with useSearchParams": components using hooks like `useQueryState` should be wrapped in `<Suspense>` when rendered within a page component. Adding the `'use client'` directive to `page.tsx` is the immediate fix:
 
 ```tsx
@@ -50,6 +51,7 @@ function Client() {
 ```
 
 - Recommended approach for better UX (pre-rendering the outer shell): keep `page.tsx` as a server component (no `'use client'` directive), move client-side features into a separate client file, and wrap the client component in a `<Suspense>` boundary.
+- Source: https://nuqs.dev/docs/troubleshooting (nuqs v2.10.2).
 
 ## Related
 

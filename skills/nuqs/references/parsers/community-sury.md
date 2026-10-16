@@ -48,6 +48,7 @@ const [user, setUser] = useQueryState(
 ## Notes
 
 - Setting the state back to `{ name: 'John Vim', age: 25 }` clears the query param, even though it's a different object than the default: the schema knows how to compare two users.
+- Source: https://nuqs.dev/docs/parsers/community/sury (nuqs v2.10.2).
 
 ## Related
 

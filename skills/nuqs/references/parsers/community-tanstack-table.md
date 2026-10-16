@@ -40,6 +40,7 @@ export function usePaginationSearchParams() {
 - The Filtering and Sorting sections of the official page are empty for now (contributions welcome).
 - The code above is taken from the string template in the page's interactive demo source (`tanstack-table.generator.tsx`); the page itself renders it as an interactive widget.
 - The `'perPage'` / `'page'` values are the demo's defaults; the demo lets you edit them.
+- Source: https://nuqs.dev/docs/parsers/community/tanstack-table (nuqs v2.10.2).
 
 ## Related
 

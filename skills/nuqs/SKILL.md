@@ -1,10 +1,11 @@
 ---
 name: nuqs
 description: >
-  nuqs (React URL search params 状態管理) リファレンス。
+  nuqs (Type-safe URL search params 状態管理, React / Next.js) リファレンス。
   useQueryState, useQueryStates, parseAsString / parseAsInteger / parseAsArrayOf 等 parsers、
   NuqsAdapter (Next.js / React Router / TanStack Router / Remix)、createSerializer、
-  shallow routing、history 制御、SSR、Zod 連携。
+  createStandardSchemaV1, inferParserType、shallow routing、history 制御、SSR、
+  URL 長さ制限 (limits)、Zod / Effect / Sury 連携。
 user-invocable: false
 model: sonnet
 ---

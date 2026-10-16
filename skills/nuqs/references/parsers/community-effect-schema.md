@@ -53,6 +53,7 @@ const [user, setUser] = useQueryState('user', parser)
 
 - A decode failure becomes `null` via `Either.getOrNull`. An encode failure throws.
 - Passing `Equal.equals` as `eq` lets the `clearOnDefault` equality check work for non-primitive values.
+- Source: https://nuqs.dev/docs/parsers/community/effect-schema (nuqs v2.10.2).
 
 ## Related
 
