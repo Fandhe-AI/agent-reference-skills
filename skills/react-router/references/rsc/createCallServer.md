@@ -50,6 +50,7 @@ Returns a function that can be used to call server actions.
 ## Notes
 
 - Data Mode only. Experimental (`unstable_`): subject to breaking changes in minor/patch releases.
+- Source: https://reactrouter.com/api/rsc/createCallServer (docs/api/rsc/createCallServer.md at tag react-router@8.4.0: https://github.com/remix-run/react-router/blob/react-router@8.4.0/docs/api/rsc/createCallServer.md)
 
 ## Related
 

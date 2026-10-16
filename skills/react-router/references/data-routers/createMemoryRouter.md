@@ -43,6 +43,7 @@ Returns an initialized `DataRouter` to pass to `<RouterProvider>`.
 - Do not hold the router in React state; create it once outside the React tree.
 - The `RouterProvider` import in the snippet is from `react-router` (non-DOM environment); the `react-router/dom` variant wires up `react-dom` `flushSync`.
 - Data Mode only.
+- Source: https://reactrouter.com/api/data-routers/createMemoryRouter (docs/api/data-routers/createMemoryRouter.md at tag react-router@8.4.0: https://github.com/remix-run/react-router/blob/react-router@8.4.0/docs/api/data-routers/createMemoryRouter.md)
 
 ## Related
 

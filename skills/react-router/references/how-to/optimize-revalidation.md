@@ -50,11 +50,19 @@ Ignore search-param-only updates while still revalidating when the pathname chan
 
 ```tsx
 export function shouldRevalidate({
+  formMethod,
   currentUrl,
   nextUrl,
   defaultShouldRevalidate,
 }: ShouldRevalidateFunctionArgs) {
-  if (currentUrl.pathname === nextUrl.pathname) {
+  if (formMethod && formMethod !== "GET") {
+    return defaultShouldRevalidate;
+  }
+
+  if (
+    currentUrl.pathname === nextUrl.pathname &&
+    currentUrl.search !== nextUrl.search
+  ) {
     return false;
   }
 
@@ -107,6 +115,8 @@ Fields of `ShouldRevalidateFunctionArgs` called out in the guide (besides `defau
 - A plain `fetch()` to a resource route does not go through the router, so it does not revalidate loaders.
 - Always returning `false` opts that route out of the default behavior completely, including param changes and explicit `useRevalidator` calls.
 - If a matched route does not export `shouldRevalidate`, the call-site `defaultShouldRevalidate` value is used directly for that loader. If it does, the value is passed in as `defaultShouldRevalidate` and the route still has the final say. Hence a child `shouldRevalidate` that always returns `false` cannot hide a root reload after `fetcher.submit`: also opt `root` out, or pass `defaultShouldRevalidate: false` at the call site when `root` has no `shouldRevalidate`.
+- The search-param-only example is adapted from the official guide: it additionally skips the shortcut for mutations (non-GET `formMethod`) and only returns `false` when the search actually changed, so same-URL submissions and explicit revalidations still use `defaultShouldRevalidate`.
+- Source: https://reactrouter.com/how-to/optimize-revalidation (docs/how-to/optimize-revalidation.md at tag react-router@8.4.0: https://github.com/remix-run/react-router/blob/react-router@8.4.0/docs/how-to/optimize-revalidation.md)
 
 ## Related
 

@@ -52,6 +52,7 @@ createRoot(document.getElementById("root")).render(
 - Exported from both `react-router` and `react-router/dom`; the latter wires up `react-dom`'s `flushSync`. Use the `react-router/dom` version unless running in a non-DOM environment.
 - Avoid creating new routers during React renders/re-renders.
 - `onError` is not subject to re-rendering and runs once per error, so it suits logging/reporting better than `ErrorBoundary`.
+- Source: https://reactrouter.com/api/data-routers/RouterProvider (docs/api/data-routers/RouterProvider.md at tag react-router@8.4.0: https://github.com/remix-run/react-router/blob/react-router@8.4.0/docs/api/data-routers/RouterProvider.md)
 
 ## Related
 

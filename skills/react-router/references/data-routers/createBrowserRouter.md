@@ -56,6 +56,7 @@ const router = createBrowserRouter(routes, {
 - If an in-progress `patchRoutesOnNavigation` is interrupted by a later navigation, remaining `patch` calls do not update the route tree.
 - `hydrationData` partial data: a route `loader` runs during hydration if no hydration data is provided for it (its `HydrateFallback` renders) or if `loader.hydrate` is `true`.
 - Data Mode only (not Framework / Declarative Mode).
+- Source: https://reactrouter.com/api/data-routers/createBrowserRouter (docs/api/data-routers/createBrowserRouter.md at tag react-router@8.4.0: https://github.com/remix-run/react-router/blob/react-router@8.4.0/docs/api/data-routers/createBrowserRouter.md)
 
 ## Related
 

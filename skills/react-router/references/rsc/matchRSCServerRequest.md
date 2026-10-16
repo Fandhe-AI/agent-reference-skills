@@ -103,6 +103,7 @@ Returns a `Response` that contains the RSC data for hydration.
 - Data Mode only. Experimental (`unstable_`): subject to breaking changes in minor/patch releases; watch release notes closely.
 - Treat every React Server Function as a public endpoint. Server Functions are not inherently associated with a route. Any route middleware that runs is selected from the URL used to call a Server Function, but the client controls both the Server Function identifier and the URL. Perform all access control checks within each Server Function, or use a route action for middleware-driven access control.
 - Docs example for `decodeFormState` omits its import; it comes from your `react-server-dom-xyz/server`.
+- Source: https://reactrouter.com/api/rsc/matchRSCServerRequest (docs/api/rsc/matchRSCServerRequest.md at tag react-router@8.4.0: https://github.com/remix-run/react-router/blob/react-router@8.4.0/docs/api/rsc/matchRSCServerRequest.md)
 
 ## Related
 

@@ -49,6 +49,7 @@ function RSCStaticRouter({ getPayload, nonce }: RSCStaticRouterProps)
 ## Notes
 
 - Data Mode only. Experimental (`unstable_`): subject to breaking changes in minor/patch releases.
+- Source: https://reactrouter.com/api/rsc/RSCStaticRouter (docs/api/rsc/RSCStaticRouter.md at tag react-router@8.4.0: https://github.com/remix-run/react-router/blob/react-router@8.4.0/docs/api/rsc/RSCStaticRouter.md)
 
 ## Related
 

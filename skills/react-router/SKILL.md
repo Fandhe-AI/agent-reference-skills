@@ -4,7 +4,7 @@ description: >
   React Router v8 (RR8、旧 Remix) の Framework / Data / Declarative Mode リファレンス。
   loader, action, middleware, routes.ts, shouldRevalidate、createBrowserRouter, RouterProvider, BrowserRouter、
   hooks (useLoaderData, useActionData, useFetcher, useNavigate, useNavigation, useParams, useSearchParams)、
-  Form, Link, NavLink, Outlet, Routes, Await、SSR / SPA / Static / RSC、ErrorBoundary, redirect, session, matchPath, type-safe routing。
+  Form, Link, NavLink, Outlet, Route, Routes, Await、SSR / SPA / Static / RSC、ErrorBoundary, redirect, defer (v7 で削除), session, matchPath, matchRoutes, type-safe routing。
   TanStack Router (@tanstack/react-router) とは別ライブラリ。
 user-invocable: false
 model: sonnet

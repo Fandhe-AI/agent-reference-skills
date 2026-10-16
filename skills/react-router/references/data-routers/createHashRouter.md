@@ -43,6 +43,7 @@ Returns an initialized data router to pass to `<RouterProvider>`.
 - Same options and semantics as `createBrowserRouter`; only the URL strategy differs (hash instead of `history.pushState`). See that page for `patchRoutesOnNavigation`, `hydrationData` and `instrumentations` details.
 - Do not hold the router in React state; create it once outside the React tree.
 - Data Mode only.
+- Source: https://reactrouter.com/api/data-routers/createHashRouter (docs/api/data-routers/createHashRouter.md at tag react-router@8.4.0: https://github.com/remix-run/react-router/blob/react-router@8.4.0/docs/api/data-routers/createHashRouter.md)
 
 ## Related
 

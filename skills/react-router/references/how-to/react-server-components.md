@@ -192,7 +192,7 @@ export async function generateHTML(request: Request, serverResponse: Response) {
 - Loaders and actions can return React elements directly in RSC Framework Mode
 - `AsyncLocalStorage` works with server middleware in RSC mode via the same middleware integration described in the middleware guide
 - MDX routes are supported in RSC Framework Mode with `@mdx-js/rollup` v3.1.1+, but exported components must remain valid in RSC environments (no Hooks)
-- Server Function access-control guidance (docs-warning: treat as public endpoints, do not rely on route middleware, validate input) was documented in 8.4.0 (CHANGELOG #15490)
+- Server Function access-control guidance (docs-warning: treat as public endpoints, do not rely on route middleware, validate input) was documented in 8.4.0 ([`react-router` CHANGELOG](https://github.com/remix-run/react-router/blob/react-router@8.4.0/packages/react-router/CHANGELOG.md), [PR #15490](https://github.com/remix-run/react-router/pull/15490))
 - The default RSC Framework entry does not generate a CSP nonce; only add one if your app also sends a matching CSP header — prefer CSP hashes or external scripts for statically prerendered pages
 
 ## Related

@@ -29,7 +29,7 @@ export default function handleRequest(
 ## Notes
 
 - Available in Framework Mode only (not Data Mode, not Declarative Mode). Confirmed current as of v8.4.0 — no API changes from v7.
-- `EntryContext.branches` is deprecated (8.4.0, CHANGELOG #15297): it remains available for compatibility but is always an empty array.
+- `EntryContext.branches` is deprecated (8.4.0, [`react-router` CHANGELOG](https://github.com/remix-run/react-router/blob/react-router@8.4.0/packages/react-router/CHANGELOG.md), [PR #15297](https://github.com/remix-run/react-router/pull/15297)): it remains available for compatibility but is always an empty array.
 - Server-only: renders exclusively on the server to produce the initial HTML.
 - The `context` prop is provided by the framework runtime; do not construct it manually.
 - Use the `nonce` prop when your app sets `Content-Security-Policy: script-src 'nonce-...'` headers.

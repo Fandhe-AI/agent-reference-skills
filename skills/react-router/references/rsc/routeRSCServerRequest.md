@@ -77,6 +77,7 @@ Returns a `Response` that either contains the RSC payload for data requests, or 
 
 - Data Mode only. Experimental (`unstable_`): subject to breaking changes in minor/patch releases; watch release notes closely.
 - Runs in the SSR environment; `serverResponse` is typically produced by `unstable_matchRSCServerRequest` in the RSC environment.
+- Source: https://reactrouter.com/api/rsc/routeRSCServerRequest (docs/api/rsc/routeRSCServerRequest.md at tag react-router@8.4.0: https://github.com/remix-run/react-router/blob/react-router@8.4.0/docs/api/rsc/routeRSCServerRequest.md)
 
 ## Related
 

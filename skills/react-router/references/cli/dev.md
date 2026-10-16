@@ -138,8 +138,8 @@ react-router typegen --watch
 - `react-router dev` requires a Vite-based setup (Framework Mode); it is not available in Data or Declarative modes
 - Run `react-router typegen` in CI before `tsc` to ensure generated types are present
 - `react-router reveal` only needs to be run once; the generated entry files are then committed to your repo
-- `react-router reveal --no-typescript` is deprecated as of `@react-router/dev` 8.3.1 and planned for removal in React Router v9 (per the `@react-router/dev` CHANGELOG, #15373); the docs page still lists the flag
-- 8.4.0 (CHANGELOG #15466): `react-router dev` and `vite preview` use `X-Forwarded-Proto` when building `request.url` (see Reverse proxies above)
+- `react-router reveal --no-typescript` is deprecated as of `@react-router/dev` 8.3.1 and planned for removal in React Router v9 (per the `@react-router/dev` [CHANGELOG](https://github.com/remix-run/react-router/blob/react-router@8.4.0/packages/react-router-dev/CHANGELOG.md), [PR #15373](https://github.com/remix-run/react-router/pull/15373)); the docs page still lists the flag
+- 8.4.0 ([`@react-router/dev` CHANGELOG](https://github.com/remix-run/react-router/blob/react-router@8.4.0/packages/react-router-dev/CHANGELOG.md), [PR #15466](https://github.com/remix-run/react-router/pull/15466)): `react-router dev` and `vite preview` use `X-Forwarded-Proto` when building `request.url` (see Reverse proxies above)
 - v8: command set and flags unchanged from v7 — no commands added or removed
 
 ## Related
