@@ -1,8 +1,8 @@
-<!-- source: https://platform.claude.com/docs/en/api/beta/skills/versions/retrieve / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/skills/versions/retrieve / last verified: 2026-10-17 -->
 
 # Get Skill Version
 
-Fetches a single Skill version by skill ID and version identifier.
+Fetches a single Skill version by skill ID and version identifier. GA endpoint (no beta header).
 
 ## Signature / Usage
 
@@ -10,10 +10,9 @@ Fetches a single Skill version by skill ID and version identifier.
 GET /v1/skills/{skill_id}/versions/{version}
 ```
 
-```http
+```bash
 curl https://api.anthropic.com/v1/skills/$SKILL_ID/versions/$VERSION \
     -H 'anthropic-version: 2023-06-01' \
-    -H 'anthropic-beta: skills-2025-10-02' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -21,26 +20,19 @@ curl https://api.anthropic.com/v1/skills/$SKILL_ID/versions/$VERSION \
 
 | Name | Type | Description |
 |------|------|-------------|
-| `skill_id` (path) | string | Unique identifier for the skill. |
-| `version` (path) | string | Version identifier, a Unix epoch timestamp (e.g. `"1759178010641129"`). |
-| `anthropic-beta` (header) | optional array of AnthropicBeta | Requires `skills-2025-10-02` for this endpoint. |
+| `skill_id` (path) | string | Unique identifier for the skill |
+| `version` (path) | string | A version ID (`skver_...`), or the literal `latest` for the Skill's most recent version |
+| `anthropic-version` (header) | optional string | API version |
+| `anthropic-workspace-id` (header) | optional string | Selects the Workspace; only needed for credentials that can act on more than one Workspace |
 
 ### Returns
 
-| Name | Type | Description |
-|------|------|-------------|
-| `id` | string | Unique identifier for the skill version. |
-| `created_at` | string | ISO 8601 timestamp of creation. |
-| `description` | string | Description extracted from the SKILL.md file. |
-| `directory` | string | Top-level directory name extracted from the uploaded files. |
-| `name` | string | Human-readable name extracted from the SKILL.md file. |
-| `skill_id` | string | Identifier of the parent skill. |
-| `type` | string | Object type, always `"skill_version"`. |
-| `version` | string | Version identifier. |
+SkillVersion object: `type` (`"skill_version"`), `id` (addresses the version in paths and pins it in references), `created_at`, `description` (extracted from SKILL.md), `name` (the Skill's immutable kebab-case slug), `skill_id`. There is no `directory` field.
 
 ## Notes
 
-- Beta endpoint: requires the `anthropic-beta: skills-2025-10-02` header.
+- `GET /v1/skills/{skill_id}/versions/latest` resolves the newest version in one call.
+- IDs captured under the beta with the `skill_version_` prefix are accepted as input. Requests carrying the `skills-2025-10-02` beta header address versions by their Unix epoch timestamp instead (e.g. `"1759178010641129"`).
 - This is the Claude API Skills API (management of SKILL.md packages), distinct from this repository's own skills concept and from Claude Code Skills.
 
 ## Related

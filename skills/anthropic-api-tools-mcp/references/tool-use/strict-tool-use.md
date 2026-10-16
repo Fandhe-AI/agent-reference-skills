@@ -33,7 +33,8 @@ Set `strict: true` on a tool definition to guarantee Claude's tool inputs match 
 
 - Guarantees: `input` strictly follows `input_schema` (correct types, all required fields present), and `name` is always a valid tool name.
 - Without strict mode, Claude might return incompatible types (`"2"` instead of `2`) or omit required fields; with `strict: true` this cannot happen — no need to validate and retry.
-- Combine with `tool_choice: {"type": "any"}` to also guarantee a tool call happens.
+- On models that support forced tool use, combine with `tool_choice: {"type": "any"}` to also guarantee a tool call happens. Claude Opus 5.5, Sonnet 5.5, Fable 5.1, and Mythos 5.1 reject `tool_choice` `any` / `tool` (400); use `auto` with strict tool use there (see define-tools.md).
+- The `computer_toolset_20260801` and `browser_toolset_20260801` entries do not accept `strict: true`; a request that sets it on either entry is rejected.
 - Uses the same grammar compilation pipeline as structured outputs; supports the same JSON Schema subset (see Structured Outputs docs for limitations).
 - Tool schemas compiled for strict mode are cached up to 24 hours since last use; prompts/responses are not retained beyond the API response. Strict tool use is HIPAA eligible, but PHI must not be included in `input_schema` property names, `enum`/`const` values, or `pattern` regexes — only in message content.
 - Not supported together with programmatic tool calling (see programmatic-tool-calling.md).

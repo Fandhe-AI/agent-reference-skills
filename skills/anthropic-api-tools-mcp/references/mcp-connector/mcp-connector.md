@@ -41,11 +41,15 @@ Connect to remote Model Context Protocol (MCP) servers directly from the Message
 | `default_config` | object | No | Default `{enabled, defer_loading}` for all tools in the set |
 | `configs` | object | No | Per-tool overrides, keyed by tool name |
 | `cache_control` | object | No | Prompt caching breakpoint for this toolset |
+| `tools` | array | No | Pinned copy of the server's tool list; each entry has `name` (as the server lists it, without the server name), `description`, `input_schema`. Requires beta header `mcp-client-2026-09-15` |
 
 ## Notes
 
 - Only `tools` calls from the MCP spec are supported (no prompts/resources); server must be publicly exposed via Streamable HTTP or SSE (no local STDIO).
 - Config precedence: tool-specific `configs` > set-level `default_config` > system defaults. Every server in `mcp_servers` must be referenced by exactly one MCPToolset.
+- Claude does not call an MCP tool for general knowledge questions about a connected service (for example "how do Notion databases work?" is answered directly; "what's in my Projects database?" triggers the tool). Steer this through the system prompt.
+- Pin an MCP server's tool list (beta, Claude API only): the `mcp-client-2026-09-15` header includes everything `mcp-client-2025-11-20` does, so send it in place of that header. When the API asks a server for its tools, the response starts with an `mcp_tool_listing` block (`mcp_server_name`, `tools`) for each server asked. Skip these blocks if your code reads `content[0]`. Send the assistant message back unchanged, `mcp_tool_listing` blocks included, and keep sending the header on every request that carries one; later requests then reuse the recorded list instead of asking the server again. To pin a list yourself, copy a block's `tools` into the MCPToolset `tools` field: the API then does not ask the server, and the toolset's tools are exactly those entries, with `default_config` and `configs` applied.
+- With the `inline-tools-2026-09-15` beta header as well, an MCP server can be added partway through a conversation; see the mid-conversation system messages page of anthropic-api-core (by name).
 - Not covered by Zero Data Retention (ZDR).
 - Client-side MCP helpers (`mcpTools`, `mcpMessages`, `mcpResourceToContent`, `mcpResourceToFile`) exist for local/stdio servers, prompts, and resources when the `mcp_servers` API parameter is insufficient.
 - The deprecated `mcp-client-2025-04-04` header used `tool_configuration` on the server definition instead of a separate MCPToolset; migrate per the in-page migration guide.

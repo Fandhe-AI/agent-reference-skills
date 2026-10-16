@@ -31,6 +31,10 @@ Server tool: retrieves full content (text/HTML/PDF) from specific URLs already p
 ## Notes
 
 - Security: Claude cannot dynamically construct URLs — it can only fetch URLs that already appeared in the conversation (user messages, client tool results, or prior web search/fetch results), not URLs it generates itself or that come from container-based server tools (code execution, bash). Still carries residual data-exfiltration risk in untrusted-input environments; mitigate with `max_uses`, `allowed_domains`, or disabling the tool entirely.
+- URL validation: a URL that appears only in the system prompt is not fetchable; also include it in a user message. Results of other server-side tools (code execution, MCP connector, tool search) are not an allowed source. Client-side tool results are allowed even when they echo text Claude produced (for example, a command that prints its input).
+- A URL that appears to contain a credential (such as an API key or password) is refused with `url_not_allowed` unless that credential appears in the system prompt or in the text of a user message; a credential only in a tool result does not count. To fetch such a URL, include it in a user message.
+- `invalid_tool_input` covers, for example, a malformed URL or a non-HTTP(S) scheme.
+- Platform availability: Claude API, Claude Platform on AWS, and Microsoft Foundry (deployments hosted on Azure support only `web_fetch_20250910`; deployments hosted on Anthropic support all versions). Not available on Amazon Bedrock or Google Cloud. Claude Mythos Preview: Claude API and Microsoft Foundry only.
 - Does not support JavaScript-rendered (SPA) websites.
 - Dynamic filtering (`_20260209`+): runs via auto-provisioned code execution, no need to add that tool yourself; useful for extracting sections from long docs/PDFs and cutting token cost.
 - Response `content` is a `document` block: `text/plain` source for HTML/text, `base64`/`application/pdf` for PDFs; includes `retrieved_at` timestamp. Results are cached (may not reflect the latest page version) — use `use_cache: false` for fresh content.

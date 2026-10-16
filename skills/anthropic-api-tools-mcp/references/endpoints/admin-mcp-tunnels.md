@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/admin/mcp_tunnels, https://platform.claude.com/docs/en/api/admin/mcp_tunnels/list, https://platform.claude.com/docs/en/api/admin/mcp_tunnels/retrieve, https://platform.claude.com/docs/en/api/admin/mcp_tunnels/archive, https://platform.claude.com/docs/en/api/admin/mcp_tunnels/reveal_token, https://platform.claude.com/docs/en/api/admin/mcp_tunnels/rotate_token, https://platform.claude.com/docs/en/api/admin/mcp_tunnels/tunnel_certificates/create, https://platform.claude.com/docs/en/api/admin/mcp_tunnels/tunnel_certificates/list, https://platform.claude.com/docs/en/api/admin/mcp_tunnels/tunnel_certificates/retrieve, https://platform.claude.com/docs/en/api/admin/mcp_tunnels/tunnel_certificates/archive / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/list, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/retrieve, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/archive, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/reveal_token, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/rotate_token, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates/create, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates/list, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates/retrieve, https://platform.claude.com/docs/en/api/beta/organization/mcp_tunnels/tunnel_certificates/archive / last verified: 2026-10-17 -->
 
 # MCP Tunnels Admin API (deprecated predecessor)
 
@@ -18,7 +18,7 @@ Org-scoped `/v1/organizations/tunnels` endpoints that predate the Claude API's `
 | GET | `/v1/organizations/tunnels/{tunnel_id}/certificates/{certificate_id}` | Get Tunnel Certificate |
 | POST | `/v1/organizations/tunnels/{tunnel_id}/certificates/{certificate_id}/archive` | Archive Tunnel Certificate |
 
-```http
+```bash
 curl https://api.anthropic.com/v1/organizations/tunnels \
     -H 'anthropic-version: 2023-06-01' \
     -H 'anthropic-beta: mcp-tunnels-2026-05-19' \
@@ -62,17 +62,37 @@ curl https://api.anthropic.com/v1/organizations/tunnels \
 | type | `"tunnel"` | Object type |
 | workspace_id | string | Owning Workspace, or null for the default Workspace. Immutable after creation |
 
-### Reveal/Rotate Token
+### Rotate Token body
 
-Body (Rotate only): `reason` (optional string, free-text audit note).
+| Name | Type | Description |
+|------|------|-------------|
+| reason | optional string | Free-text audit note (Rotate only) |
 
-Returns: `{ id, tunnel_token, type: "tunnel_token" }`. `id` is a stable identifier for the current token value and changes on rotation; established connections are not severed by rotation.
+### Reveal/Rotate Token response
 
-### Tunnel Certificates
+| Name | Type | Description |
+|------|------|-------------|
+| id | string | Stable identifier for the current token value; changes on rotation. Established connections are not severed by rotation |
+| tunnel_token | string | The tunnel token |
+| type | `"tunnel_token"` | Object type |
 
-Body (Create): `ca_certificate_pem` (string, PEM-encoded, exactly one X.509 certificate, no private-key material). A tunnel holds at most two non-archived certificates.
+### Create Tunnel Certificate body
 
-TunnelCertificate object: `{ id, archived_at, created_at, expires_at, fingerprint (SHA-256 hex), tunnel_id, type: "tunnel_certificate" }`.
+| Name | Type | Description |
+|------|------|-------------|
+| ca_certificate_pem | string | PEM-encoded, exactly one X.509 certificate, no private-key material. A tunnel holds at most two non-archived certificates |
+
+### TunnelCertificate object
+
+| Name | Type | Description |
+|------|------|-------------|
+| id | string | Certificate ID |
+| archived_at | string | Archive timestamp, or null |
+| created_at | string | Creation timestamp |
+| expires_at | string | Expiry timestamp |
+| fingerprint | string | SHA-256 hex |
+| tunnel_id | string | Owning tunnel ID |
+| type | `"tunnel_certificate"` | Object type |
 
 ## Notes
 
