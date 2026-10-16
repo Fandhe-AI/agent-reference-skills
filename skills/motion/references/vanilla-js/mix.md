@@ -18,7 +18,7 @@ const mixObject = mix(
 )
 
 const mixComplex = mix("0px 0px #fff", "100px 100px #000")
-mixComplex(0.5) // 50px 50px rgba(128, 128, 128, 1)
+mixComplex(0.5) // 50px 50px rgba(180, 180, 180, 1)
 ```
 
 Values outside `0`-`1` are accepted:
@@ -49,6 +49,7 @@ mix(0, 50, easeIn(Math.random()))
 - Mixes numbers, colors (RGBA, HSLA), complex strings, and arrays and objects of those. Both values must be the same type.
 - RGB colors are mixed in the linear RGB color space, avoiding the typical CSS brightness dips/greyness.
 - `mix(a, b, progress)` with a third argument returns the mixed value directly, as in the random example.
+- Upstream example shows `rgba(128, 128, 128, 1)`; corrected to `rgba(180, 180, 180, 1)` because RGB colors are mixed in linear RGB space (sqrt(0.5 * 255²) ≈ 180).
 - Source: https://motion.dev/docs/mix (fetched 2026-10).
 
 ## Related

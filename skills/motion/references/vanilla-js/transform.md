@@ -12,7 +12,7 @@ const numberToColor = transform(
   ["#000", "#fff"] // Output
 )
 
-numberToColor(50) // rgba(128, 128, 128, 1)
+numberToColor(50) // rgba(180, 180, 180, 1)
 
 const transformer = transform([0, 100], [0, 360])
 transformer(50) // 180
@@ -49,6 +49,7 @@ const rotation = transformer(200) // 720
 - Both ranges must always be the same length.
 - The input range must be a linear series of numbers, counting up or down; the output range can be non-linear numbers, colors, or complex strings.
 - React users can use the `useTransform` hook with motion values.
+- Upstream example shows `rgba(128, 128, 128, 1)`; corrected to `rgba(180, 180, 180, 1)` because RGB colors are mixed in linear RGB space (sqrt(0.5 * 255²) ≈ 180).
 - Source: https://motion.dev/docs/transform (fetched 2026-10).
 
 ## Related

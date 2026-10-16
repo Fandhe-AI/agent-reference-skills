@@ -32,7 +32,7 @@ const items = ref([0, 1, 2, 3])
 
 ## Notes
 
-- Supports lists and grids; multidimensional reorder and automatic axis detection were added upstream (see CHANGELOG `Reorder`: Multidimensional reorder).
+- Supports lists and grids; multidimensional reorder and automatic axis detection were added in 13.1.0 (CHANGELOG: https://github.com/motiondivision/motion/blob/v14.3.0/CHANGELOG.md).
 - Layout animations occur automatically when items are added/removed.
 - `z-index` requires `position !== "static"` to function properly.
 - If `Reorder.Item` components are within a scrollable container, that container automatically scrolls when an item is dragged towards its top or bottom edge.

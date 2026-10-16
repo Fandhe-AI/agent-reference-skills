@@ -41,7 +41,7 @@ const xWithSpring = springValue(x)
 
 ## Options / Props
 
-All normal spring options are supported via a second argument (see [spring](./spring.md)).
+All normal Motion spring options are supported via a second argument (the animate spring options, https://motion.dev/docs/animate#spring).
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -50,7 +50,7 @@ All normal spring options are supported via a second argument (see [spring](./sp
 | `mass` | number | `1` | Mass; higher = more sluggish |
 | `bounce` | number | `0.25` | Bounciness from -1 to 1. `0` is no bounce (critically damped) |
 | `visualDuration` | number | — | Time in seconds the animation takes to visually appear to reach its target; overrides `duration` when set |
-| `duration` | number | `800` | Duration in milliseconds |
+| `duration` | number | `0.8` | Duration in seconds (overridden by `visualDuration`; ignored when `stiffness`/`damping`/`mass` are set) |
 | `velocity` | number | — | Initial velocity |
 | `restSpeed` | number | `0.1` | End threshold when speed drops below |
 | `restDelta` | number | `0.01` | End threshold when distance drops below |
@@ -62,6 +62,7 @@ springValue(0, { stiffness: 1000 })
 ## Notes
 
 - Although `duration` and `visualDuration` are accepted, prefer the physics-based options `stiffness`, `damping` and `mass`, because they incorporate the velocity of the value for the smoothest motion.
+- Unlike the low-level `spring()` generator (milliseconds), `duration` here is in seconds like other Motion transition options.
 - Upstream example uses "pointerMove"; corrected to "pointermove" because DOM event names are case-sensitive.
 - Source: https://motion.dev/docs/spring-value (fetched 2026-10).
 
