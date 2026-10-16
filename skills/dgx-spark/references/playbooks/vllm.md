@@ -4,11 +4,18 @@ Playbook "Serve LLMs with vLLM on One Device": a locally accessible model API (v
 
 ## Signature / Usage
 
-Intermediate path, 128GB DGX Spark recipe (Qwen3.6-35B-A3B NVFP4), then health check:
+Intermediate path, 128GB DGX Spark recipe (Qwen3.6-35B-A3B NVFP4): pull and download, then launch via the NVIDIA Sync Custom App, then health check:
 
 ```bash
+# Step 3: on the DGX Spark
 docker pull vllm/vllm-openai:v0.28.0
 hf download nvidia/Qwen3.6-35B-A3B-NVFP4
+# Step 4: NVIDIA Sync > Custom > + Add New: Name=vLLM-Qwen3.6-35B-A3B, Port=8000,
+#   paste the 128GB Spark launch script into Launch Script, then Add
+#   (https://raw.githubusercontent.com/NVIDIA/dgx-spark-playbooks/refs/heads/main/nvidia/playbook-vllm/assets/sync-vllm-single-spark-128gb.sh)
+# Step 5: click the app name in NVIDIA Sync to start the container and vLLM server;
+#   watch startup with: docker logs --tail 50 --follow vllm-qwen36-35b-a3b
+# Step 6: from a local terminal
 curl --fail-with-body -i http://localhost:8000/health
 ```
 
@@ -22,11 +29,22 @@ Recommended recipes (Intermediate path):
 | DGX Spark | 128GB unified memory | Qwen3.6-35B-A3B (NVFP4) | `docker pull vllm/vllm-openai:v0.28.0` | `hf download nvidia/Qwen3.6-35B-A3B-NVFP4` |
 | DGX Station | 748GB coherent memory | Nemotron 3 Ultra (NVFP4) | `docker pull vllm/vllm-openai:v0.22.0` | `hf download nvidia/NVIDIA-Nemotron-3-Ultra-550B-A55B-NVFP4` |
 
+Sync Custom App (Step 4):
+
+| Device | Memory | App name | Launch script |
+| --- | --- | --- | --- |
+| DGX Spark | 64GB | `vLLM-Qwen3.8-27B` | `sync-vllm-single-spark-64gb.sh` |
+| DGX Spark | 128GB | `vLLM-Qwen3.6-35B-A3B` | `sync-vllm-single-spark-128gb.sh` |
+| DGX Station | 748GB | `vLLM-Nemotron-3-Ultra` | `sync-vllm-single-station.sh` |
+
+Scripts are under `https://raw.githubusercontent.com/NVIDIA/dgx-spark-playbooks/refs/heads/main/nvidia/playbook-vllm/assets/`.
+
 ## Notes
 
 - Supported hardware (one device): DGX Spark (DGX OS, 64 GB or 128 GB Unified Memory) and DGX Station (Ubuntu, large HBM + Grace DRAM).
 - Recipes come from recipes.vllm.ai, a configuration site that generates the model checkpoint and vLLM server / Docker command for the device.
 - The multi-node workflow moved to the separate vllm-cluster playbook ([vllm-cluster.md](./vllm-cluster.md)); the single-device playbook no longer documents Ray-based multi-node serving.
+- For either DGX Spark script, if port 8000 is already in use, choose another Sync app port and change the `PORT` variable in the script to match; the script maps that host port to container port 8000.
 - The earlier `nvcr.io/nvidia/vllm:26.05.post1-py3` tag no longer appears in the playbook.
 - Unified Memory Architecture note: `sudo sh -c 'sync; echo 3 > /proc/sys/vm/drop_caches'` can free memory
 - Duration: Beginner and Intermediate 10 to 25 minutes depending on network speed, Advanced about 30 minutes more; Risk: Low

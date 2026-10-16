@@ -104,7 +104,8 @@ Example Constants for the Repository Server (Port 8080 or 80). Replace these val
 - Warning (official): do not use the default username and password in production deployments. Remove the default credentials or replace them with credentials approved by your organization.
 - Re-flashing with a FastOS recovery image is destructive: it erases local storage on the target system (user data, installed software, configuration files, logs). Back up first and confirm the image and target.
 - Known issue: when cloud-init runs on a customer-specific FastOS image, it can take approximately 400 seconds while waiting for dashboard-admin to release the APT lock at `/var/lib/apt/lists/lock`.
-- Release notes (July 2026): cloud-init now supports DHCP, HTTP, and TFTP in addition to direct USB connections, and FastOS recovery image customization was added for the DGX Spark Founders Edition.
+- Release notes (July 2026): cloud-init now supports DHCP, HTTP, and TFTP in addition to direct USB connections, and FastOS recovery image customization was added for the DGX Spark Founders Edition (per https://docs.nvidia.com/dgx/dgx-spark/release-notes.html).
+- Source: https://docs.nvidia.com/dgx/dgx-spark/enterprise-custom-install.html
 - USB drive physical access allows content replacement; treat as a supply-chain risk.
 - Local APT repository uses `[trusted=yes]` (no signature verification); firmware installation with `OnlyTrusted=false` accepts unverified binaries.
 - URLs stored on USB drives identify network servers and are a MITM attack vector; harden mirror-host network exposure.

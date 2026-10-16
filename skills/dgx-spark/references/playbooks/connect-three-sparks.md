@@ -16,7 +16,8 @@ Configure three DGX Spark systems in a 200GbE QSFP ring topology for high-speed 
 - Includes NCCL bandwidth test validation and rollback instructions
 - Duration: ~1 hour; Risk: Medium
 - Recommended for DGX Spark: NVIDIA Sync Cluster Assistant configures and validates the three-node ring. If it reports success, skip the manual network and SSH steps in this playbook and continue to your workload playbook.
-- Release notes (June 2026): NCCL 2.30u1 has updated support for connecting three DGX Spark systems in a ring topology.
+- Release notes (June 2026): NCCL 2.30u1 has updated support for connecting three DGX Spark systems in a ring topology (per https://docs.nvidia.com/dgx/dgx-spark/release-notes.html).
+- Source: https://build.nvidia.com/spark/connect-three-sparks (playbook source: NVIDIA/dgx-spark-playbooks@c035e0a nvidia/playbook-connect-three-sparks/README.md).
 
 ### Field notes: identity-IP overlay for a switchless 3-node mesh
 

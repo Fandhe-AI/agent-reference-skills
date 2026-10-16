@@ -89,7 +89,8 @@ Both sides of a row share the PCIe address in the middle (for example `p1s0f0` i
 - The PCIe domain of rows 3 and 4 is 2; it is included to avoid conflation with the convention for 0.
 - Moving left to right across the PCIe Address Fields table gives the address corresponding to `lspci` output.
 - Renamed: this page was previously titled "Spark Stacking"; the current official title is "ConnectX-7 Networking" (spark-clustering.html). The file name is kept for stability.
-- The previous version of this page stated "NCCL v2.28.3"; the current official page does not state an NCCL version. The release notes say NCCL 2.30u1 supports the 3-node ring.
+- The previous version of this page stated "NCCL v2.28.3"; the current official page does not state an NCCL version. The release notes say NCCL 2.30u1 supports the 3-node ring (per https://docs.nvidia.com/dgx/dgx-spark/release-notes.html, June 2026 Release).
+- Source: https://docs.nvidia.com/dgx/dgx-spark/spark-clustering.html (no version in URL; retrieved 2026-10).
 
 ## Related
 
