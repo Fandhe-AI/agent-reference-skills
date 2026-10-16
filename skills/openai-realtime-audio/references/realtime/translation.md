@@ -50,6 +50,7 @@ ws.on("message", (data) => {
 - Use WebRTC when the browser captures/plays audio (media tracks, no manual PCM handling); use WebSocket when the server already owns raw audio (e.g. Twilio Media Streams, SIP media).
 - Create one translation session per target language; for conversational (two-way) translation, run one session per direction and keep participant audio tracks separate.
 - Always send `session.close` and wait for `session.closed` before closing the WebSocket, so trailing translated output isn't dropped.
+- Deprecations (2026-08-26 notice) list `v1/realtime/translations` as the replacement for `/v1/audio/translations`, which is removed Feb 26, 2027.
 - If the app needs an assistant that answers questions/calls tools rather than pure interpretation, use `gpt-realtime-2.1` with a standard voice-agent session instead.
 
 ## Related

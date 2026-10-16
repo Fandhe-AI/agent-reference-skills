@@ -44,6 +44,7 @@ Response (JSON, includes detected languages):
 
 ## Notes
 
+- Deprecated ([deprecations](https://developers.openai.com/api/docs/deprecations) "2026-08-26: Transcription models"): `whisper-1`, `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-transcribe-diarize`, and the `/v1/audio/translations` endpoint are removed from the API on Feb 26, 2027. Replacements: `gpt-live-transcribe` or `gpt-transcribe` (for translations, `v1/realtime/translations`). The guide body still documents diarization, timestamps, and translations with these models, so those rows are kept above but are deprecated.
 - Speaker diarization (`gpt-4o-transcribe-diarize`) is only available via `/v1/audio/transcriptions`, not in Realtime transcription sessions.
 - Translation into English uses a separate endpoint, `/v1/audio/translations`, with `whisper-1` only (English output only).
 - Keywords are hints — the transcript should include a keyword only when the audio actually contains it; requests are rejected if `prompt` exceeds the model's length limit or a keyword contains `<`, `>`, CR, or LF.

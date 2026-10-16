@@ -1,4 +1,4 @@
-# Webhooks and server-side controls
+# Server-side controls
 
 Keep tool use, business logic, and instructions on your application server while the end user connects directly via WebRTC or SIP, using a "sideband" WebSocket control channel to the same Realtime session.
 
@@ -30,6 +30,7 @@ const ws = new WebSocket(`wss://api.openai.com/v1/realtime?call_id=${callId}`, {
 
 - A sideband connection means two active connections to one Realtime session: the end-user client and your server; the server connection can monitor, update instructions, and respond to tool calls.
 - The `realtime.call.incoming` webhook and general webhook signature verification (`webhook-id` / `webhook-timestamp` / `webhook-signature` headers) follow the same mechanics as other OpenAI webhooks — see the openai-api-core skill's webhooks-errors reference for the general webhook/signature handling; this page covers only the Realtime-specific `call_id` sideband flow.
+- The official guide was renamed "Server-side controls" (`guides/voice-server-controls`, previously "Webhooks and server-side controls") and now covers both APIs. The first half (GPT-Live) covers the sideband WebSocket at `/v1/live/sessions/{session_id}/attach`, "Apply conversation guardrails", and "Finish cleanly"; the second half ("With WebRTC" / "With SIP") is the Realtime side covered by this page. For GPT-Live see [GPT-Live server controls](../live/server-controls.md).
 - Once connected via `?call_id=`, send/receive the same client and server events as any other Realtime WebSocket connection (see [Conversations](./conversations.md)).
 
 ## Related

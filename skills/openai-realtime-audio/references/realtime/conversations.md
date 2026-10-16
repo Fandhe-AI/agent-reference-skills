@@ -51,6 +51,8 @@ dataChannel.send(JSON.stringify({ type: "response.create" }));
 - Max session duration is 60 minutes.
 - WebRTC handles audio media automatically via peer-connection tracks; WebSocket requires manually appending Base64 PCM16 chunks with `input_audio_buffer.append` (max 15 MB/chunk) and committing with `input_audio_buffer.commit`.
 - `gpt-realtime-2` / `gpt-realtime` support image input via `input_image` content parts (base64 data URL).
+- The "Image inputs" section of the current guide reads: "`gpt-realtime-2` and `gpt-realtime` also support image input." `gpt-realtime` is deprecated and removed Jan 20, 2027 (replacement `gpt-realtime-2.1`; [deprecations](https://developers.openai.com/api/docs/deprecations) "2026-07-20").
+- The voice list above is the Realtime list. GPT-Live has additional voices (for example `quartz`, `ripple`, `vesper`) that are not in this list; see [GPT-Live sessions](../live/sessions.md).
 - Out-of-band responses (`response.conversation: "none"`) don't join the default conversation — use `metadata` to correlate their `response.done` event.
 - VAD is on by default; disabling it (`turn_detection: null`) requires manually sending `input_audio_buffer.commit` and `response.create`, and is the basis for push-to-talk interfaces.
 - Function calling: configure `tools` in `session.update`/`response.create`, detect `function_call` items in `response.done` or `response.function_call_arguments.delta`, then reply with a `function_call_output` conversation item + `response.create`.

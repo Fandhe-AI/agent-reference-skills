@@ -4,17 +4,18 @@ OpenAI Realtime API (developers.openai.com) — low-latency speech-to-speech, tr
 
 | Name | Description | Path |
 |------|-------------|------|
-| Overview | Choosing a session type (voice-agent/translation/transcription) and a transport | [overview.md](./overview.md) |
-| WebRTC connection | Browser/mobile connection via ephemeral key or unified `/v1/realtime/calls` interface | [webrtc.md](./webrtc.md) |
-| WebSocket connection | Server-to-server connection with manual audio buffer management | [websocket.md](./websocket.md) |
-| SIP connection | Telephony voice agents via SIP trunking | [sip.md](./sip.md) |
-| Conversations | Session/conversation/response lifecycle, client and server events, text/audio/image/function-calling | [conversations.md](./conversations.md) |
-| Voice activity detection (VAD) | `server_vad` / `semantic_vad` turn detection configuration | [vad.md](./vad.md) |
-| Transcription | Streaming transcript deltas from live audio without a spoken response | [transcription.md](./transcription.md) |
-| Translation | Continuous live speech translation session | [translation.md](./translation.md) |
-| Tools and MCP | Function tools, remote MCP servers, and built-in connectors in a Realtime session | [tools-mcp.md](./tools-mcp.md) |
-| Server-side controls | Sideband WebSocket to keep tool logic and instructions server-side (WebRTC + SIP) | [server-controls.md](./server-controls.md) |
-| Managing costs | Token/duration billing model and cost-optimization strategies | [costs.md](./costs.md) |
-| Voice agents | Building speech-to-speech agents with the OpenAI Agents SDK | [voice-agents.md](./voice-agents.md) |
-| Using realtime models | Prompting guidance for realtime models (reasoning effort, preambles, tool policy) | [models-prompting.md](./models-prompting.md) |
-| Client secrets (ephemeral keys) | `POST /v1/realtime/client_secrets` for short-lived client credentials | [client-secrets.md](./client-secrets.md) |
+| Client secrets (ephemeral keys) | `POST /v1/realtime/client_secrets` mints a short-lived… | [client-secrets.md](./client-secrets.md) |
+| Realtime conversations | Manage the Realtime speech-to-speech session lifecycle… | [conversations.md](./conversations.md) |
+| Managing Realtime API costs | How Realtime API billing works (per-Response tokens… | [costs.md](./costs.md) |
+| Using realtime models | Prompting guidance for realtime speech-to-speech models… | [models-prompting.md](./models-prompting.md) |
+| Realtime and audio | Overview of the OpenAI Realtime API: choosing a session… | [overview.md](./overview.md) |
+| Server-side controls | Keep tool use, business logic, and instructions on… | [server-controls.md](./server-controls.md) |
+| Realtime API with SIP | Connect phone calls to the Realtime API via SIP… | [sip.md](./sip.md) |
+| Realtime with tools | Attach function tools, remote MCP servers, or built-in… | [tools-mcp.md](./tools-mcp.md) |
+| Realtime transcription | Stream live transcript deltas from a microphone, call… | [transcription.md](./transcription.md) |
+| Realtime translation | Stream source audio into a dedicated translation… | [translation.md](./translation.md) |
+| Voice activity detection (VAD) | Automatic detection of when the user starts/stops… | [vad.md](./vad.md) |
+| Voice agents | Build speech-to-speech agents with the OpenAI Agents… | [voice-agents.md](./voice-agents.md) |
+| WebRTC with WARP | Use WebRTC Abridged Roundtrip Protocol (WARP) to reduce… | [webrtc-warp.md](./webrtc-warp.md) |
+| Realtime API with WebRTC | Connect browser/mobile clients to the Realtime API over… | [webrtc.md](./webrtc.md) |
+| Realtime API with WebSocket | Connect to the Realtime API over a raw WebSocket, for… | [websocket.md](./websocket.md) |

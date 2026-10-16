@@ -40,6 +40,7 @@ const data = await response.json(); // { value, expires_at, session }
 - Mint on your trusted backend using a standard API key; never embed a standard API key in a browser or mobile client.
 - A single secret can be used to create multiple sessions before it expires.
 - Set `OpenAI-Safety-Identifier` on this server-side request so the identifier is bound to the resulting ephemeral token — the browser does not need to resend it when connecting.
+- GPT-Live: in the documented GPT-Live WebRTC flow, a trusted server calls `POST /v1/live/sessions` with the project API key; the guide describes no client-secret flow for GPT-Live. See [GPT-Live WebRTC](../live/webrtc.md).
 - Used by both the ephemeral-token WebRTC flow (`/v1/realtime/calls`) and browser WebSocket connections; translation sessions have an analogous `POST /v1/realtime/translations/client_secrets` endpoint (see [Translation](./translation.md)).
 
 ## Related

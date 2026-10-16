@@ -53,6 +53,7 @@ curl https://api.openai.com/v1/audio/speech \
 ## Notes
 
 - OpenAI Realtime API の例ではなく、通常の HTTP `audio.speech` エンドポイント。会話しながら都度音声出力する用途は `voice-agent-basic.md` の `output.voice` 設定を使う
+- Deprecation (2026-10-01 告知): `tts-1` / `tts-1-hd` / `gpt-4o-mini-tts-2025-03-20` / `gpt-4o-mini-tts-2025-12-15` は 2027-01-06 に API から削除予定。推奨置換先は `gpt-realtime-2.1-mini`（Realtime API guide で移行を計画する）。この例の `gpt-4o-mini-tts`（日付なしの名前）は deprecations ページの表に列挙されていないため、移行要否は公式で確認する
 - 組み込み音声は 13 種（alloy, ash, ballad, coral, echo, fable, nova, onyx, sage, shimmer, verse, marin, cedar）
 - 出力フォーマットは MP3 (既定) / Opus / AAC / FLAC / WAV / PCM
 - `instructions` で話し方（トーン・速度など）を自然言語で指示できる

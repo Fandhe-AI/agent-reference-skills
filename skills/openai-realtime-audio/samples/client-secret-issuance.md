@@ -13,7 +13,7 @@ curl https://api.openai.com/v1/realtime/client_secrets \
     },
     "session": {
       "type": "realtime",
-      "model": "gpt-realtime",
+      "model": "gpt-realtime-2.1",
       "instructions": "You are a friendly assistant."
     }
   }'
@@ -38,7 +38,7 @@ Example response:
     "type": "realtime",
     "object": "realtime.session",
     "id": "sess_C9CiUVUzUzYIssh3ELY1d",
-    "model": "gpt-realtime",
+    "model": "gpt-realtime-2.1",
     "output_modalities": ["audio"],
     "instructions": "You are a friendly assistant."
   }
@@ -50,4 +50,5 @@ Example response:
 - OpenAI Realtime API の例。この `value`（`ek_` プレフィックス）が `webrtc-browser-session.md` の `EPHEMERAL_KEY` になる
 - `expires_after` は `anchor`（現状 `"created_at"` のみサポート）と `seconds`（10〜7200、デフォルト 600）の組み合わせで指定する。`unit`/`value` 形式は存在しない
 - `session` に付けた設定（model, instructions など）はそのトークンで開始するセッションの初期値になるが、クライアント接続時に上書き可能
+- Legacy の `gpt-realtime` は 2027-01-20 に shutdown 予定（deprecations ページの推奨置換先は `gpt-realtime-2.1`）。この例は `gpt-realtime-2.1` を使う
 - この発行 API 自体は標準の API key で叩く（バックエンドのみで実行し、フロントエンドに API key を渡さない）

@@ -28,6 +28,7 @@ Streaming output and live audio are separate decisions — a completed file's tr
 ## Notes
 
 - Legacy models `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`, `gpt-realtime-whisper` remain supported for existing integrations but are not the recommended starting models for new work.
+- Deprecation ([deprecations](https://developers.openai.com/api/docs/deprecations) "2026-08-26"): `whisper-1`, `gpt-4o-transcribe-diarize`, `gpt-4o-transcribe`, and `gpt-4o-mini-transcribe` are removed Feb 26, 2027 (replacements `gpt-live-transcribe` or `gpt-transcribe`). The guide's specialized-capability table has not changed, so it is kept as in the source.
 - When `gpt-transcribe` runs in a Realtime API session or dedicated transcription session, it automatically uses earlier transcribed turns as context.
 - Test transcription with representative audio: target languages/accents/code-switching, background noise, telephony quality, names/numbers/domain terminology, short vs. long utterances. Track application-specific errors rather than relying only on word error rate.
 
