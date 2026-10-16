@@ -42,6 +42,20 @@ backStack.removeLastOrNull()          // navigate back
 
 - Prefer `rememberNavBackStack` over constructing `NavBackStack` directly — it wires up automatic save/restore via `NavBackStackSerializer`.
 - All destination keys must be `@Serializable` and implement `NavKey` for `rememberNavBackStack` to save/restore them.
+- `rememberNavBackStack` returns `NavBackStack<NavKey>`. To keep an app-specific sealed `NavKey` subtype, write a custom remember function (see [Save the navigation state](./save-state.md)):
+
+```kotlin
+@Serializable
+sealed interface MyAppNavKey : NavKey
+
+@Composable
+fun rememberMyAppNavBackStack(vararg elements: MyAppNavKey): NavBackStack<MyAppNavKey> {
+    return rememberSerializable(serializer = serializer()) {
+        NavBackStack(*elements)
+    }
+}
+```
+
 - Package: `androidx.navigation3.runtime` (module `androidx.navigation3:navigation3-runtime`).
 - This is the Android Navigation 3 (Kotlin, `androidx.navigation3`) API — distinct from the same-named SwiftUI / React Router / Next.js navigation API.
 
@@ -49,4 +63,5 @@ backStack.removeLastOrNull()          // navigate back
 
 - [NavKey](./navkey.md)
 - [NavDisplay](./navdisplay.md)
+- [Save the navigation state](./save-state.md)
 - [Deep Links in Navigation 3](../deep-links/navigation3-deep-links.md)

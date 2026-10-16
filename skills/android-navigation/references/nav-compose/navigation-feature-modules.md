@@ -7,7 +7,7 @@ The Dynamic Navigator library (`androidx.navigation:navigation-dynamic-features-
 ```kotlin
 // app/build.gradle.kts (base module)
 dependencies {
-    val navVersion = "2.9.8"
+    val navVersion = "2.10.2"
     api("androidx.navigation:navigation-fragment-ktx:$navVersion")
     api("androidx.navigation:navigation-ui-ktx:$navVersion")
     api("androidx.navigation:navigation-dynamic-features-fragment:$navVersion")
