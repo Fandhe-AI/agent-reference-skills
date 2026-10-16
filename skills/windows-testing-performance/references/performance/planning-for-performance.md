@@ -10,7 +10,7 @@ Treat performance as a feature: specify measurable goals (time, fluidity, effici
 
 LoggingChannel myLoggingChannel = new LoggingChannel("MyLoggingChannel");
 
-myLoggingChannel.LogMessage(LoggingLevel.Information, "Here's my logged message.");
+myLoggingChannel.LogMessage("Here's my logged message.", LoggingLevel.Information);
 
 // ...
 ```
@@ -58,9 +58,10 @@ Goal categories:
 - Launch and resume: defer and do not extend the splash screen unless necessary; disable animations right after the splash screen is dismissed. For adaptive UI use `VisualStateManager`; the app has about 200 to 800 ms to complete work before the UI is seen cropped.
 - Testing: use release builds (native code), turn off background apps, trigger automatic maintenance manually, run multiple times, test varied hardware and screen sizes. As a heuristic, expect a low-power device to run at about a quarter the speed of a desktop PC.
 - Visual Studio gives app-focused analysis; Windows Performance Analyzer gives system-focused analysis (disk I/O, GPU cost, touch events).
-- In the source page, the `using (...)` line of the `LoggingActivity` sample has unbalanced parentheses, and the `LoggingChannel` sample's message string is spelled `"Here' s my logged message."`. Both were corrected on this page.
+- In the source page, the `using (...)` line of the `LoggingActivity` sample has unbalanced parentheses, and the `LoggingChannel` sample's message string is spelled `"Here' s my logged message."`. Both were corrected on this page. The source `LoggingChannel` example also passes the arguments as `(LoggingLevel, string)`, but the API reference signature is `LogMessage(string eventString, LoggingLevel level)`, so the order was changed to match it (https://learn.microsoft.com/en-us/uwp/api/windows.foundation.diagnostics.loggingchannel.logmessage).
 - The interaction classes above come from this planning guide; the [Responsive interactions](./responsive.md) page is based on a different official page and uses a different classification (Interactive / Pause / Wait, etc.).
 - Optimize only performance-critical code paths identified by profiling.
+- Source: https://learn.microsoft.com/en-us/windows/uwp/debug-test-perf/planning-and-measuring-performance (windows-dev-docs commit a3812316d9d6678be4e526ffb4b1c4f3958d956d).
 - This is a UWP-era planning guide (page ms.date 07/14/2025); the same goal-setting approach applies to WinUI 3 apps.
 
 ## Related

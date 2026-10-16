@@ -66,7 +66,7 @@ SDK build numbers:
 - Conditional XAML (using `IsApiContractPresent` in markup) requires a Minimum Version of build 15063 (Creators Update) or later.
 - For an undocumented Preview SDK, contract support is listed in `Platform.xml` under `%ProgramFiles(x86)%\Windows Kits\10\Platforms\<platform>\<SDK version>\Platform.xml` (the source page writes the prefix as `\(Program Files (x86))\`).
 - Not every conditional code path can be exercised on one device; deploy to a remote device or VM running the minimum supported OS.
-- Source page dated 07/14/2025 (windows-dev-docs commit a3812316d9d6678be4e526ffb4b1c4f3958d956d).
+- Source: https://learn.microsoft.com/en-us/windows/uwp/debug-test-perf/version-adaptive-apps (page ms.date 07/14/2025; windows-dev-docs commit a3812316d9d6678be4e526ffb4b1c4f3958d956d).
 - Details of `ApiInformation` (`IsApiContractPresent` / `IsTypePresent` etc.) in C#/WinRT are covered by the windows-interop-modernize skill (csharp-winrt/api-availability-checks.md).
 
 ## Related
