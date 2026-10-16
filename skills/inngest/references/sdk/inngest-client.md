@@ -27,6 +27,9 @@ const inngest = new Inngest({
 | `fetch` | `typeof fetch` | Override the default fetch implementation (useful for edge runtimes). |
 | `signingKey` | `string` | Signing key for request verification. Prefer `INNGEST_SIGNING_KEY` env var. |
 | `signingKeyFallback` | `string` | Fallback signing key used during key rotation (v3.18.0+). |
+| `aiMetadata` | `boolean` | Automatically extract AI metadata from OpenTelemetry spans with OpenTelemetry GenAI attributes. Metadata is attached to its step. Defaults to `true`. Set to `false` to opt out of the SDK's built-in AI metadata extraction. Does not affect Extended Traces. |
+| `sessionPropagation` | `boolean` | Whether events created during a run (via `inngest.send()`, `step.sendEvent()`, `step.invoke()`, and `defer()`) inherit the run's sessions, so the resulting child runs stay grouped with their parent. Defaults to `true`. Set to `false` to opt out. Sessions set explicitly in `meta.sessions` are still sent. |
+| `endpointAdapter` | `InngestEndpointAdapter.Like` | An endpoint adapter that enables Durable Endpoints. When provided, `inngest.endpoint()` and `inngest.endpointProxy()` become available. |
 
 ## Notes
 

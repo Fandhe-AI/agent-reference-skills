@@ -2,15 +2,28 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Agent Evals | Production evaluation workflow for AI agents built from Inngest functions… | [agent-evals.md](./agent-evals.md) |
-| Agent Plugins and Skills | Official Inngest plugins and portable agent skills for AI coding agents… | [agent-skills.md](./agent-skills.md) |
-| Agent Tool Loop | A ReAct-style agent loop where every LLM call and tool execution is wrapped… | [agent-tool-loop.md](./agent-tool-loop.md) |
-| AI Development Tools | Hub page linking the resources for using Inngest with AI coding agents… | [ai-dev-tools.md](./ai-dev-tools.md) |
-| Deferred Scoring | Evaluates function outcomes that aren't known until after execution completes… | [deferred-scoring.md](./deferred-scoring.md) |
-| Dev Server MCP | Model Context Protocol server built into the Inngest dev server… | [mcp-dev-server.md](./mcp-dev-server.md) |
-| Human-in-the-Loop (HITL) | Pattern for inserting human approval gates into AI agent workflows using… | [human-in-the-loop.md](./human-in-the-loop.md) |
-| Scoring | Attach named scores (numbers or booleans) to function runs and steps… | [scoring.md](./scoring.md) |
-| Step Experiments (`group.experiment()`) | Compares multiple versions of a step's logic on live production traffic… | [group-experiment.md](./group-experiment.md) |
-| Sub-Agent Delegation | Pattern for delegating tasks from a parent agent to child sub-agent functions… | [sub-agent-delegation.md](./sub-agent-delegation.md) |
-| step.ai.infer() | Offloads an LLM inference request to Inngest's infrastructure… | [step-ai-infer.md](./step-ai-infer.md) |
-| step.ai.wrap() | Wraps an existing AI SDK call as a durable Inngest step… | [step-ai-wrap.md](./step-ai-wrap.md) |
+| Agent Evals Best Practices | Make experiment results useful by keeping score definitions, assignment, and run attribution consistent. | [agent-evals-best-practices.md](./agent-evals-best-practices.md) |
+| Agent Evals Experiments | Compare prompts, models, or whole workflow paths on production traffic and credit each outcome to the variant that served it with `group.experiment()`. | [agent-evals-experiments.md](./agent-evals-experiments.md) |
+| Agent Evals Limits | Plan Agent Evals usage around score volume, scoring executions, and trace retention. | [agent-evals-limits.md](./agent-evals-limits.md) |
+| Agent Evals Quick Start | Build an online eval that links immediate checks and later feedback to the response variant that served a user. Uses fixed responses, so no AI provider is required. | [agent-evals-quick-start.md](./agent-evals-quick-start.md) |
+| Agent Evals Reference | Connect runs to sessions, score outcomes, and compare variants with TypeScript SDK v4 APIs. Scoring and deferred scorers are beta APIs. | [agent-evals-reference.md](./agent-evals-reference.md) |
+| Agent Evals Troubleshooting | Find missing scores and feedback by tracing them back to the original run and experiment variant. Examples use TypeScript SDK v4 beta scoring APIs. | [agent-evals-troubleshooting.md](./agent-evals-troubleshooting.md) |
+| Agent Evals | Production evaluation workflow for AI agents built from Inngest functions, scoring, deferred scoring, sessions, traces, step experiments, and Insights — not a separate SDK package. | [agent-evals.md](./agent-evals.md) |
+| Agent Plugins and Skills | Official Inngest plugins and portable agent skills for AI coding agents (Claude Code, Codex, Cursor, Windsurf) that give the agent current guidance for setup, durable functions, steps, flow control, realtime, and migrations. | [agent-skills.md](./agent-skills.md) |
+| Agent Tool Loop | A ReAct-style (Reason → Act → Observe) agent loop where every LLM call and tool execution is wrapped in `step.run()`, making each iteration independently durable and retriable. | [agent-tool-loop.md](./agent-tool-loop.md) |
+| AI Development Tools | Hub page linking the resources for using Inngest with AI coding agents: Dev Server MCP, agent plugins/skills, CLI workflows, and LLM-ready documentation (llms.txt / llms-full.txt). | [ai-dev-tools.md](./ai-dev-tools.md) |
+| CLI for Coding Agents | Let coding agents such as Claude Code, Cursor, and Codex use the Inngest CLI to read real execution traces when debugging or iterating on functions. | [cli-for-coding-agents.md](./cli-for-coding-agents.md) |
+| Deferred Scoring | Evaluates function outcomes that aren't known until after execution completes — user feedback, ticket resolution, delayed conversions — using a separate scorer function triggered via `defer()`. Beta feature, TypeScript SDK v4+. | [deferred-scoring.md](./deferred-scoring.md) |
+| Compare Models and Prompts | Split production traffic between two answer strategies and compare them by the feedback each one earns. | [evals-compare-models-and-prompts.md](./evals-compare-models-and-prompts.md) |
+| Manage Eval Costs | Control eval spend by tracking scores, scoring executions, and external service costs separately. | [evals-cost-management.md](./evals-cost-management.md) |
+| Read Results and Roll Out | Read variant assignments and outcome scores together to see whether a change helped users before sending more traffic to it. | [evals-interpreting-results.md](./evals-interpreting-results.md) |
+| Score with an LLM Judge | Grade agent answers against a rubric with a model and record the 0 to 1 verdict as a score on the run, plus a deterministic tool-use check. | [evals-llm-judge.md](./evals-llm-judge.md) |
+| Score User Feedback | Grade an agent on what actually happened (a thumbs-up, a resolved ticket, ground truth) by attaching the outcome to the original run whenever it arrives. | [evals-user-feedback.md](./evals-user-feedback.md) |
+| Roll Out a Workflow Rewrite | Canary a rewritten multi-step workflow on a small share of runs, score both paths the same way, and ramp up safely. | [evals-workflow-rewrite.md](./evals-workflow-rewrite.md) |
+| Step Experiments (`group.experiment()`) | Compares multiple versions of a step's logic on live production traffic — different models, prompts, or workflow rewrites — judged on execution data (latency, retries, cost) that feature flags and eval tools can't reach. TypeScript SDK v4+, no separate package required. | [group-experiment.md](./group-experiment.md) |
+| Human-in-the-Loop (HITL) | Pattern for inserting human approval gates into AI agent workflows using `step.waitForEvent()`. The function is suspended while waiting — no compute cost during review. | [human-in-the-loop.md](./human-in-the-loop.md) |
+| Dev Server MCP | Inngest runs two Model Context Protocol (MCP) servers: the Dev Server MCP (local, built into `inngest dev`) and the Inngest Cloud MCP (deployed environments). Connect Claude Code, Codex, Cursor, or another MCP client to list functions, send events, and inspect runs from your coding agent. This page keeps its original path and covers both. | [mcp-dev-server.md](./mcp-dev-server.md) |
+| Scoring | Attach named scores (numbers or booleans) to function runs and steps to track how well AI workflows perform over time. Beta feature, TypeScript SDK v4+. | [scoring.md](./scoring.md) |
+| step.ai.infer() | Offloads an LLM inference request to Inngest's infrastructure, pausing function execution until the response is ready. Particularly cost-effective on serverless: the function is not billed while waiting for the provider. | [step-ai-infer.md](./step-ai-infer.md) |
+| step.ai.wrap() | Wraps an existing AI SDK call as a durable Inngest step, adding observability (prompts, token counts, latency) without changing the underlying SDK call. TypeScript only. | [step-ai-wrap.md](./step-ai-wrap.md) |
+| Sub-Agent Delegation | Pattern for delegating tasks from a parent agent to child sub-agent functions. Sub-agents run their own independent agent loop with a separate context window, tool set, and token budget. | [sub-agent-delegation.md](./sub-agent-delegation.md) |

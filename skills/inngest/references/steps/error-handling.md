@@ -7,8 +7,7 @@ Inngest distinguishes errors (which trigger retries) from failures (which occur 
 ```ts
 // Configure retries at the function level
 inngest.createFunction(
-  { id: "process-order", retries: 5 },
-  { event: "app/order.created" },
+  { id: "process-order", retries: 5, triggers: { event: "app/order.created" } },
   async ({ event, step, attempt }) => {
     const order = await step.run("fetch-order", async () => {
       return db.orders.findOne({ id: event.data.orderId });
@@ -29,7 +28,7 @@ try {
 }
 ```
 
-## Error Types
+### Error types
 
 | Type | Import | Description |
 |------|--------|-------------|
@@ -37,7 +36,7 @@ try {
 | `RetryAfterError` | `inngest` | Specifies a custom delay before the next retry; use for rate limits |
 | `StepError` | `inngest` | Thrown when a step exhausts all retries; can be caught with `try/catch` (TypeScript SDK v3.12+) |
 
-### NonRetriableError
+#### NonRetriableError
 
 ```ts
 import { NonRetriableError } from "inngest";
@@ -45,7 +44,7 @@ import { NonRetriableError } from "inngest";
 throw new NonRetriableError("User not found", { cause: originalError });
 ```
 
-### RetryAfterError
+#### RetryAfterError
 
 ```ts
 import { RetryAfterError } from "inngest";
@@ -61,6 +60,7 @@ throw new RetryAfterError("Rate limited", retryAfterHeader);
 - `attempt` parameter (zero-indexed) is available in the handler and resets when a step completes
 - Retries use exponential backoff with jitter
 - After a step exhausts all retries and throws `StepError`, subsequent steps in the function are cancelled unless caught
+- `NonRetriableError` skips the remaining retries for the step or function where it is thrown; use a standard `Error` for timeouts or other temporary failures so Inngest can retry. When a `step.run()` fails it throws a `StepError` into the function even if its handler threw `NonRetriableError` — the caught value is not the original `NonRetriableError` instance. Throwing `NonRetriableError` outside a step stops retries for the function itself (useful for validation before any step runs).
 - `onFailure` handler: triggered once after the entire function (including all step retries) fails; useful for notifications, rollbacks, and metrics
 
 ### onFailure handler
@@ -74,8 +74,8 @@ inngest.createFunction(
         slack.postMessage({ text: `Function failed: ${error.message}` })
       );
     },
+    triggers: { event: "app/order.created" },
   },
-  { event: "app/order.created" },
   async ({ event, step }) => { /* ... */ }
 );
 ```
@@ -84,3 +84,5 @@ inngest.createFunction(
 
 - [step.run](./step-run.md)
 - [step.invoke](./step-invoke.md)
+- [Non-retriable errors](../functions/non-retriable-errors.md)
+- [Inngest errors](../functions/inngest-errors.md)

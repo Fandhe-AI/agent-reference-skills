@@ -8,8 +8,7 @@ Pattern for inserting human approval gates into AI agent workflows using `step.w
 import { inngest } from "./client";
 
 export const emailApprovalWorkflow = inngest.createFunction(
-  { id: "email-approval-workflow" },
-  { event: "agent/email.draft-requested" },
+  { id: "email-approval-workflow", triggers: { event: "agent/email.draft-requested" } },
   async ({ event, step }) => {
     // event.data.approvalId is a unique ID supplied by the caller
     // (e.g. `${taskId}-${iteration}-send_email`) used to correlate the response
@@ -79,11 +78,9 @@ await inngest.send({
 
 ## Options / Props
 
-**`step.waitForEvent(id, options)`**
-
 | Name | Type | Description |
 |------|------|-------------|
-| `id` | `string` | Step identifier |
+| `id` | `string` | Step identifier for `step.waitForEvent(id, options)` |
 | `options.event` | `string` | Event name to wait for |
 | `options.timeout` | `string \| number \| Date` | Max wait duration (e.g. `"24h"`, `"7d"`); returns `null` on timeout |
 | `options.match` | `string` | Dot-notation field to correlate events (e.g. `"data.approvalId"`). Cannot be combined with `if` |

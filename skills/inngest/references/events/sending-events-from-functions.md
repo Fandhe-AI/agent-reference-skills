@@ -6,8 +6,7 @@ Broadcast events from within a running Inngest function to trigger downstream fu
 
 ```ts
 export const weeklyEmailJob = inngest.createFunction(
-  { id: "weekly-email-job" },
-  { cron: "0 9 * * MON" },
+  { id: "weekly-email-job", triggers: { cron: "0 9 * * MON" } },
   async ({ step }) => {
     const users = await step.run("fetch-users", () => db.users.findAll());
 
@@ -23,8 +22,7 @@ export const weeklyEmailJob = inngest.createFunction(
 
 // Receiving function — runs once per user, in parallel
 export const sendWeeklyEmail = inngest.createFunction(
-  { id: "send-weekly-email" },
-  { event: "app/weekly-email-activity.send" },
+  { id: "send-weekly-email", triggers: { event: "app/weekly-email-activity.send" } },
   async ({ event }) => { /* send email to event.data.email */ },
 );
 ```

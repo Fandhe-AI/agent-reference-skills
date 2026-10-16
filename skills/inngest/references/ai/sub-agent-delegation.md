@@ -10,8 +10,7 @@ Pattern for delegating tasks from a parent agent to child sub-agent functions. S
 import { inngest } from "./client";
 
 export const subAgent = inngest.createFunction(
-  { id: "sub-agent", retries: 1 },
-  { event: "agent/sub-agent.spawn" },
+  { id: "sub-agent", retries: 1, triggers: { event: "agent/sub-agent.spawn" } },
   async ({ event, step }) => {
     const { task, sessionId } = event.data;
 
@@ -62,11 +61,9 @@ await step.sendEvent("spawn-background-task", {
 
 ## Options / Props
 
-**`step.invoke(id, options)`** (synchronous delegation)
-
 | Name | Type | Description |
 |------|------|-------------|
-| `id` | `string` | Step identifier |
+| `id` | `string` | Step identifier for `step.invoke(id, options)` (synchronous delegation) |
 | `options.function` | `InngestFunction` | Reference to the sub-agent function |
 | `options.data` | `object` | Event data passed to the sub-agent's trigger event |
 
