@@ -3,7 +3,7 @@ name: tanstack-query
 description: >
   TanStack Query (React Query) v5 (@tanstack/react-query) の API リファレンス。
   useQuery, useQueries, useInfiniteQuery, useMutation, useSuspenseQuery,
-  QueryClient, queryOptions, HydrationBoundary, invalidateQueries, prefetchQuery,
+  QueryClient, QueryClientProvider, queryOptions, HydrationBoundary, invalidateQueries, prefetchQuery,
   skipToken, keepPreviousData, placeholderData, staleTime, gcTime,
   optimistic updates, SSR / hydration, persistQueryClient, eslint-plugin-query。
   kubb（フック生成側）とは別。
