@@ -37,13 +37,17 @@ await page.reload();
 | Method | Signature |
 |--------|-----------|
 | `locator` | `(selector: string, options?: { has?: Locator; hasNot?: Locator; hasNotText?: string \| RegExp; hasText?: string \| RegExp }) => Locator` |
-| `getByRole` | `(role: AriaRole, options?: { checked?: boolean; disabled?: boolean; exact?: boolean; expanded?: boolean; includeHidden?: boolean; level?: number; name?: string \| RegExp; pressed?: boolean; selected?: boolean }) => Locator` |
+| `getByRole` | `(role: AriaRole, options?: { checked?: boolean; description?: string \| RegExp; disabled?: boolean; exact?: boolean; expanded?: boolean; includeHidden?: boolean; level?: number; name?: string \| RegExp; pressed?: boolean; selected?: boolean }) => Locator` (`description` added v1.60: matches the accessible description; by default case-insensitive substring, use `exact` to control this) |
 | `getByText` | `(text: string \| RegExp, options?: { exact?: boolean }) => Locator` |
 | `getByLabel` | `(text: string \| RegExp, options?: { exact?: boolean }) => Locator` |
 | `getByPlaceholder` | `(text: string \| RegExp, options?: { exact?: boolean }) => Locator` |
 | `getByAltText` | `(text: string \| RegExp, options?: { exact?: boolean }) => Locator` |
 | `getByTitle` | `(text: string \| RegExp, options?: { exact?: boolean }) => Locator` |
 | `getByTestId` | `(testId: string \| RegExp) => Locator` |
+| `getByRef` | `(ref: string) => Locator` (added v1.64: locate element by its aria ref) |
+| `pickLocator` | `() => Promise<Locator>` (v1.59; enters pick locator mode where hovering highlights elements and shows the locator; once the user clicks an element the mode is deactivated and its `Locator` is returned) |
+| `cancelPickLocator` | `() => Promise<void>` (v1.59; cancels an ongoing `pickLocator()` call) |
+| `hideHighlight` | `() => Promise<void>` (v1.60; hides all locator highlight overlays previously added by `Locator.highlight()` on this page) |
 | `frameLocator` | `(selector: string) => FrameLocator` |
 | `frame` | `(frameSelector: string \| { name?: string; url?: string \| RegExp \| ((url: URL) => boolean) }) => Frame \| null` |
 | `frames` | `() => Array<Frame>` |
@@ -79,19 +83,33 @@ page.locator("article", { has: page.getByRole("button") });
 // Frame locators
 const frame = page.frameLocator("#my-iframe");
 await frame.getByRole("button").click();
+
+// Locate by aria ref (e.g. from an ariaSnapshot in "ai" mode, v1.64)
+await page.getByRef("e2").click();
 ```
+
+Notes:
+
+- `getByRef(ref)` locates an element by its aria ref. "Refs like `[ref=e2]` are reported by `page.ariaSnapshot()` when called with the `"ai"` mode, and resolve against the latest snapshot taken in the element's frame" (v1.64). It replaces `Locator.ariaRef()`, which was removed in v1.60.
+- Since v1.63, `page.frameLocator()` / `frame.frameLocator()` called without a selector searches every frame in the subtree; matching elements in more than one frame throws an error.
 
 ## Evaluation
 
 | Method | Signature |
 |--------|-----------|
-| `evaluate` | `(pageFunction: Function \| string, arg?: Serializable) => Promise<Serializable>` |
-| `evaluateHandle` | `(pageFunction: Function \| string, arg?: Serializable) => Promise<JSHandle>` |
-| `addInitScript` | `(script: Function \| string \| { path?: string; content?: string }, arg?: Serializable) => Promise<void>` |
+| `evaluate` | `(pageFunction: Function \| string, arg?: Serializable, options?: { exposeFunctions?: boolean }) => Promise<Serializable>` |
+| `evaluateHandle` | `(pageFunction: Function \| string, arg?: Serializable, options?: { exposeFunctions?: boolean }) => Promise<JSHandle>` |
+| `addInitScript` | `(script: Function \| string \| { path?: string; content?: string }, arg?: Serializable, options?: { exposeFunctions?: boolean }) => Promise<Disposable>` (`exposeFunctions` option since v1.62, see note below) |
 | `addScriptTag` | `(options?: { content?: string; path?: string; type?: string; url?: string }) => Promise<ElementHandle>` |
 | `addStyleTag` | `(options?: { content?: string; path?: string; url?: string }) => Promise<ElementHandle>` |
 | `exposeFunction` | `(name: string, callback: Function) => Promise<void>` |
-| `exposeBinding` | `(name: string, callback: Function, options?: { handle?: boolean }) => Promise<void>` |
+| `exposeBinding` | `(name: string, callback: Function) => Promise<Disposable>` |
+
+Notes:
+
+- The `handle` option of `exposeBinding` (Page and BrowserContext) was removed in v1.60.
+- Since v1.62, `evaluate` / `evaluateHandle` / `addInitScript` accept functions as arguments, via the `exposeFunctions` option (default `false`). For `evaluate` / `evaluateHandle`, without it passing a function throws an error and exposed functions are cleared upon top-level navigation; for `addInitScript`, without it functions are silently dropped and, when enabled, they are exposed in every new document so they survive navigations. See `../advanced/evaluate.md`.
+- `addInitScript` returns a `Disposable` (usable with `await using`, v1.59).
 
 ```ts
 // Evaluate expression in browser context
@@ -194,7 +212,13 @@ await page.routeFromHAR("./fixtures/api.har", { url: "**/api/**" });
 
 | Method | Signature |
 |--------|-----------|
-| `content` | `() => Promise<string>` |
+| `content` | `(options?: { includeShadow?: boolean }) => Promise<string>` (`includeShadow` added v1.64: serializes open shadow roots as declarative shadow DOM) |
+| `ariaSnapshot` | `(options?: { mode?: "ai" \| "default"; depth?: number; boxes?: boolean; timeout?: number }) => Promise<string>` (v1.59; `mode: "ai"` returns a snapshot optimized for AI consumption, including element references like `[ref=e2]` and snapshots of `<iframe>`s; `depth` limits the depth; `boxes` (v1.60) appends `[box=x,y,width,height]` to each element, viewport-relative CSS pixels, default `false`) |
+| `ariaSnapshotJSON` | `(options?: { mode?: "ai" \| "default"; depth?: number; boxes?: boolean; timeout?: number }) => Promise<Serializable>` (JS only, v1.63; same tree as `ariaSnapshot` serialized as a JSON value instead of YAML; with `boxes: true` each element gets a `box` property with `x`, `y`, `width`, `height`) |
+| `consoleMessages` | `(options?: { filter?: "all" \| "since-navigation" }) => Promise<Array<ConsoleMessage>>` (up to 200 last messages; `filter` added v1.59, default `'since-navigation'` returns only messages logged after the last committed main-frame navigation) |
+| `pageErrors` | `(options?: { filter?: "all" \| "since-navigation" }) => Promise<Array<Error>>` (up to 200 last errors; `filter` added v1.59, default `'since-navigation'`) |
+| `clearConsoleMessages` | `() => Promise<void>` (v1.59; subsequent `consoleMessages()` calls only return messages logged after the clear) |
+| `clearPageErrors` | `() => Promise<void>` (v1.59; subsequent `pageErrors()` calls only return errors thrown after the clear) |
 | `setContent` | `(html: string, options?: { timeout?: number; waitUntil?: "load" \| "domcontentloaded" \| "networkidle" \| "commit" }) => Promise<void>` |
 | `dragAndDrop` | `(source: string, target: string, options?: { force?: boolean; noWaitAfter?: boolean; sourcePosition?: { x: number; y: number }; strict?: boolean; targetPosition?: { x: number; y: number }; timeout?: number; trial?: boolean }) => Promise<void>` |
 | `title` | `() => Promise<string>` |
@@ -215,7 +239,7 @@ await page.dragAndDrop("#source", "#target");
 
 | Method | Signature |
 |--------|-----------|
-| `screenshot` | `(options?: { animations?: "disabled" \| "allow"; caret?: "hide" \| "initial"; clip?: { x: number; y: number; width: number; height: number }; fullPage?: boolean; mask?: Locator[]; maskColor?: string; omitBackground?: boolean; path?: string; quality?: number; scale?: "css" \| "device"; style?: string; timeout?: number; type?: "png" \| "jpeg" }) => Promise<Buffer>` |
+| `screenshot` | `(options?: { animations?: "disabled" \| "allow"; caret?: "hide" \| "initial"; clip?: { x: number; y: number; width: number; height: number }; fullPage?: boolean; mask?: Locator[]; maskColor?: string; omitBackground?: boolean; path?: string; quality?: number; scale?: "css" \| "device"; style?: string; timeout?: number; type?: "png" \| "jpeg" \| "webp" }) => Promise<Buffer>` |
 | `pdf` | `(options?: { displayHeaderFooter?: boolean; footerTemplate?: string; format?: string; headerTemplate?: string; height?: string \| number; landscape?: boolean; margin?: { top?: string \| number; right?: string \| number; bottom?: string \| number; left?: string \| number }; outline?: boolean; pageRanges?: string; path?: string; preferCSSPageSize?: boolean; printBackground?: boolean; scale?: number; tagged?: boolean; width?: string \| number }) => Promise<Buffer>` |
 
 ```ts
@@ -321,6 +345,22 @@ const context = page.context();
 | `touchscreen` | `Touchscreen` | Touchscreen input control |
 | `clock` | `Clock` | Clock control for time-related testing |
 | `video` | `Video \| null` | Video recording if enabled |
+| `localStorage` | `WebStorage` | `localStorage` of the current origin (v1.61) |
+| `sessionStorage` | `WebStorage` | `sessionStorage` of the current origin (v1.61) |
+| `webmcp` | `WebMCP` | Tools the main frame registers via the experimental WebMCP browser API (v1.64). Same as `frame.webmcp` |
+| `screencast` | `Screencast` | Screencast recording, action annotations, frame capture (v1.59) |
+
+`WebStorage` methods (all async): `items()`, `getItem(name)`, `setItem(name, value)`, `removeItem(name)`, `clear()`; see `web-storage.md`.
+`WebMCP` methods: `tools(options?: { timeout?: number })` returns `Array<{ name; description; inputSchema?; annotations? }>`; `callTool(name: string, input?: Serializable, options?: { timeout?: number })`. WebMCP is experimental: enable it in Chromium with `--enable-features=WebMCP`; WebKit does not implement it. Treat tool names and results as untrusted input. See `webmcp.md`.
+`Screencast`: see `screencast.md`.
+
+```ts
+await page.localStorage.setItem("token", "abc");
+const token = await page.localStorage.getItem("token");
+
+const tools = await page.webmcp.tools();
+const result = await page.webmcp.callTool("add", { a: 2, b: 40 });
+```
 
 ```ts
 // Keyboard
@@ -358,6 +398,7 @@ await page.clock.setSystemTime(new Date("2024-01-01T00:00:00"));
 | `close` | `Page` | Page is closed |
 | `console` | `ConsoleMessage` | Console message emitted in browser |
 | `dialog` | `Dialog` | Dialog appeared (alert, confirm, prompt, beforeunload) |
+| `dialogClosed` | `Dialog` | Dialog closed via accept, dismiss, or manually in a headed browser (v1.63) |
 | `download` | `Download` | Download started |
 | `filechooser` | `FileChooser` | File chooser dialog opened |
 | `frameattached` | `Frame` | Frame attached to the page |

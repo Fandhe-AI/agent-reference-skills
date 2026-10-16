@@ -42,6 +42,7 @@ npx playwright test -g "add a todo item"
 
 # 正規表現に一致しないテストのみ実行
 npx playwright test --grep-invert "slow"
+npx playwright test -G "slow"
 
 # 特定プロジェクト（ブラウザ）のみ実行
 npx playwright test --project chromium
@@ -88,6 +89,18 @@ npx playwright test --fully-parallel
 npx playwright test --workers 1
 ```
 
+## ランダム順序での実行
+
+```sh
+# テストファイルと（並列モードの）個別テストをランダム順に実行
+npx playwright test --shuffle
+
+# シードを指定して同じ順序を再現（シードは実行開始時に出力される）
+npx playwright test --shuffle 12345
+```
+
+serial スイートなど同時に実行すべきテストは順序が保たれる。
+
 ## リトライと失敗制御
 
 ```sh
@@ -130,7 +143,12 @@ npx playwright test --reporter json
 npx playwright test --reporter junit
 npx playwright test --reporter html
 npx playwright test --reporter blob
+
+# 設定ファイルのレポーターを置き換えず、追加でレポーターを指定（カンマ区切り）
+npx playwright test --add-reporter json
 ```
+
+`--reporter` は設定ファイルのレポーターを置き換えるが、`--add-reporter` は設定済みのレポーターを保持したまま追加する。
 
 ## スナップショット更新
 
@@ -145,9 +163,14 @@ npx playwright test -u changed
 # 欠損しているスナップショットのみ追加
 npx playwright test -u missing
 
+# 既定モード（フラグ無しの実行と同じ）
+npx playwright test -u default
+
 # スナップショット検証をスキップ
 npx playwright test --ignore-snapshots
 ```
+
+> **警告**: v1.64 で `-u missing`（`--update-snapshots=missing`）の意味が変わった。欠損スナップショットを作成するだけのテストは成功扱いになる（CI で新規スナップショット生成と既存の検証を 1 回で行うため）。フラグ無しの実行は `default` モードと呼ばれ、従来どおり欠損スナップショットを書き込んだうえでテストが失敗する。値なしの `-u` は `changed` になる。出典: release-notes-js.md（v1.64）、test-cli-js.md。
 
 ## トレース設定
 
@@ -158,6 +181,7 @@ npx playwright test --trace on-first-retry
 npx playwright test --trace on-all-retries
 npx playwright test --trace retain-on-failure
 npx playwright test --trace retain-on-first-failure
+npx playwright test --trace retain-on-failure-and-retries
 ```
 
 ## シャーディング

@@ -302,3 +302,17 @@ test("scrolling", async ({ page }) => {
     .evaluate((e) => (e.scrollTop += 100));
 });
 ```
+
+Since v1.62, `check`, `click`, `dblclick`, `dragTo`, `hover`, `setChecked`, `tap`, and `uncheck` accept `scroll: "auto" | "none"`. It "controls whether Playwright scrolls the element into view before performing the action. Defaults to `"auto"`, which scrolls the element into view when necessary, including scrolling nested scrollable containers. When set to `"none"`, Playwright does not scroll the element and the action fails if the element is not already in the viewport. This is useful to assert that an element is reachable by the user without additional scrolling."
+
+```typescript
+await page.getByRole("button", { name: "Save" }).click({ scroll: "none" });
+```
+
+`locator.drop(payload, options?)` (v1.60) simulates an external drag-and-drop of files or clipboard-like data onto the locator. It dispatches the native `dragenter`, `dragover`, and `drop` events at the center of the target element with a synthetic `DataTransfer` carrying the provided files and/or data entries. If the target element's `dragover` listener does not call `preventDefault()`, the target is considered to have rejected the drop: Playwright dispatches `dragleave` and the method throws. `payload` takes `files` (file paths or in-memory `{ name, mimeType, buffer }`), `data` (a mime-type to string map such as `text/plain`, `text/html`, `text/uri-list`), or both.
+
+```typescript
+await page.locator("#dropzone").drop({
+  files: { name: "note.txt", mimeType: "text/plain", buffer: Buffer.from("hello") },
+});
+```

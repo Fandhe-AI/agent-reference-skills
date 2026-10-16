@@ -21,13 +21,16 @@ npx playwright init-agents --loop=vscode
 # For Claude Code
 npx playwright init-agents --loop=claude
 
+# For Codex
+npx playwright init-agents --loop=codex
+
 # For OpenCode
 npx playwright init-agents --loop=opencode
 ```
 
 Requirements:
 
-- VS Code v1.105+ (October 2025) for VS Code loop.
+- VS Code v1.105 (released October 9, 2025) is needed for the agentic experience to function properly in VS Code.
 - Agent definitions are regenerated whenever Playwright updates to access new tools and instructions.
 
 ## Project Structure
@@ -226,3 +229,8 @@ Agent definitions are collections of instructions and MCP tools provided by Play
 
 - Do not manually edit agent definitions -- they are managed by `init-agents`.
 - Re-run `npx playwright init-agents --loop=<tool>` after updating Playwright to get the latest agent capabilities.
+
+## Notes
+
+- The test-agents page (v1.64.1) documents `--loop` values `vscode`, `claude`, `codex` and `opencode`. The Claude Code example in the official page shows `npx playwright init-agents --loop=vscode` under "Example for Claude Code subagents"; use `--loop=claude` for Claude Code.
+- `playwright-cli` details (including `playwright-cli` commands for agents, `webmcp-list` / `webmcp-call`) are in `playwright-cli.md`; MCP server and WebMCP details are in `mcp.md`. Related CLI additions: `npx playwright test --debug=cli` and `npx playwright trace` (v1.59, see `cli.md` and `trace-viewer.md`); `Browser.bind` / `unbind` (v1.59, see `../api/browser-context.md`).

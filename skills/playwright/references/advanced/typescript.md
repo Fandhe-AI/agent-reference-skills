@@ -31,8 +31,12 @@ Playwright reads `tsconfig.json` by traversing the directory structure upward fr
 | `baseUrl`    | Base directory for resolving module names  |
 | `paths`      | Map import paths to physical locations     |
 | `references` | Project references for composite projects  |
+| `extends`    | Inherit from another tsconfig               |
+| `jsx`, `jsxFactory`, `jsxFragmentFactory`, `jsxImportSource` | JSX compilation of `.tsx` / `.jsx` files (v1.64) |
 
 Other compiler options are ignored by Playwright's internal transformer.
+
+Breaking change in v1.64: Playwright compiles JSX in `.tsx` and `.jsx` files according to the `jsx*` options in `tsconfig.json`. When `jsx` is not specified, or is `preserve` or `react-native`, the automatic runtime from `react/jsx-runtime` is used.
 
 ## Specifying tsconfig with --tsconfig
 

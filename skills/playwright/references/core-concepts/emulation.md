@@ -32,6 +32,8 @@ export default defineConfig({
 });
 ```
 
+Breaking change in v1.64: "`screen` property is now forwarded from the device descriptors. If you use `...devices['Desktop Chrome']` and alike, `window.screen` and media queries now see the emulated screen size. You can opt-out by explicitly setting `screen` to `undefined`", for example `use: { ...devices['Desktop Chrome'], screen: undefined }`. `TestOptions.screen` (`{ width, height }`) "emulates consistent window screen size available inside web page via `window.screen`. Is only used when the `viewport` is set."
+
 Device descriptors include: `Desktop Chrome`, `Desktop Firefox`, `Desktop Safari`, `Pixel 5`, `iPhone 13`, `iPhone 13 Pro Max`, `iPad (gen 7)`, and many others.
 
 ## Viewport
@@ -295,6 +297,18 @@ import { defineConfig } from "@playwright/test";
 export default defineConfig({
   use: {
     forcedColors: "active", // 'active' | 'none'
+  },
+});
+```
+
+### Contrast
+
+Emulate `prefers-contrast` media feature. `contrast`, `reducedMotion` and `forcedColors` are standalone `TestOptions` since v1.63. Supported values are `'no-preference'` and `'more'`; passing `null` resets emulation to system defaults (JS); defaults to `'no-preference'`.
+
+```typescript
+export default defineConfig({
+  use: {
+    contrast: "more", // 'more' | 'no-preference' (default)
   },
 });
 ```

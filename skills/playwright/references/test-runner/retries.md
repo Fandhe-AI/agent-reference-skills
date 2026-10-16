@@ -97,6 +97,17 @@ When a test fails, Playwright:
 
 This ensures a completely clean environment for each retry attempt.
 
+### Retry Strategy
+
+`retryStrategy` (config, v1.62) controls when failed tests are retried. Defaults to `'immediate'`.
+
+- `'immediate'`: A failed test is retried as soon as a worker is available, interleaved with the rest of the run. This is the default.
+- `'isolated'`: Retries are run at the end, after all other tests have finished, one by one in a single worker. This minimizes the interference between retried tests and the rest of the suite, at the expense of the total run time.
+
+```typescript
+export default defineConfig({ retries: 2, retryStrategy: 'isolated' });
+```
+
 ## Serial Mode Retries
 
 In `test.describe.configure({ mode: 'serial' })` groups:

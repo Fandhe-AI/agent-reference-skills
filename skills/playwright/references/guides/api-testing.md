@@ -218,6 +218,8 @@ await requestContext.storageState({ path: "state.json" });
 const context = await browser.newContext({ storageState: "state.json" });
 ```
 
+Since v1.64, `APIRequestContext` has its own cookie methods: `addCookies(cookies)` (cookies are sent with matching subsequent requests), `cookies(urls?)` (all cookies if no URLs are specified, otherwise only cookies that affect those URLs) and `clearCookies({ name, domain, path })`. For `BrowserContext.request` and `Page.request` they are equivalent to the corresponding `BrowserContext` methods. Since v1.63, `APIRequestContext.get` and other request methods accept a type argument that types the response `json()`. `APIResponse` gains `timing()` (v1.62), `securityDetails()` and `serverAddr()` (v1.61); for redirected requests these return the information for the last request in the redirect chain.
+
 ## Context Request vs Global Request
 
 ### Context-Associated Request (`page.request`, `context.request`)

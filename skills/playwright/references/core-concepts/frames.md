@@ -53,6 +53,18 @@ test("frameLocator selector variants", async ({ page }) => {
 });
 ```
 
+### frameLocator in Any Frame (v1.63)
+
+`page.frameLocator()` / `frame.frameLocator()` called without a selector start the search in any frame of the subtree (for `page.frameLocator()`: the main frame or any of the iframes), so the iframe does not need to be located first. The rest of the locator is resolved inside a single frame, just like any other locator; if it matches elements inside multiple frames, an error is thrown. Such a frame locator does not point to a particular `iframe`, so `FrameLocator.owner`, `first`, `last` and `nth` are not supported on it.
+
+```typescript
+await page.frameLocator().getByRole("button", { name: "Pay" }).click();
+```
+
+### Hidden iframes (v1.64)
+
+Elements inside hidden iframes are considered hidden. Elements inside an iframe that is not visible, for example with `visibility: hidden`, are now considered hidden by actions, `Locator.isVisible()` and `toBeVisible()` (v1.64 breaking change, release notes).
+
 ## Nested Iframes
 
 Chain `frameLocator()` calls to access iframes within iframes.

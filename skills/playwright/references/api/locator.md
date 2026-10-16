@@ -102,7 +102,9 @@ await page.getByTestId("canvas").dispatchEvent("click");
 | `allTextContents` | `() => Promise<string[]>` |
 | `allInnerTexts` | `() => Promise<string[]>` |
 | `boundingBox` | `(options?: { timeout?: number }) => Promise<{ x: number; y: number; width: number; height: number } \| null>` |
-| `ariaSnapshot` | `(options?: { timeout?: number }) => Promise<string>` |
+| `ariaSnapshot` | `(options?: { mode?: "ai" \| "default"; depth?: number; boxes?: boolean; timeout?: number }) => Promise<string>` (method v1.49; `mode` / `depth` v1.59, `boxes` v1.60; captures the aria snapshot of the given element) |
+| `ariaSnapshotJSON` | `(options?: { mode?: "ai" \| "default"; depth?: number; boxes?: boolean; timeout?: number }) => Promise<Serializable>` (JS only, v1.63; same tree as `ariaSnapshot` as a free form JSON object; `boxes` adds a `box` property with `x`, `y`, `width`, `height`) |
+| `drop` | `(payload: { files?: string \| string[] \| { name: string; mimeType: string; buffer: Buffer } \| { name: string; mimeType: string; buffer: Buffer }[]; data?: Record<string, string> }, options?: { position?: { x: number; y: number }; timeout?: number }) => Promise<void>` (v1.60; simulates an external drag-and-drop of files or clipboard-like data (`text/plain`, `text/html`, `text/uri-list`) onto this locator) |
 
 ```ts
 // Get text content
@@ -182,6 +184,9 @@ for (const item of items) {
 | `filter` | `(options?: { has?: Locator; hasNot?: Locator; hasNotText?: string \| RegExp; hasText?: string \| RegExp }) => Locator` |
 | `and` | `(locator: Locator) => Locator` |
 | `or` | `(locator: Locator) => Locator` |
+| `visible` | `() => Locator` (v1.63; matches only visible elements, ignoring the invisible ones; recommended over the `:visible` CSS pseudo-class; visibility is checked every time the locator is used, not at the moment of the `visible()` call) |
+| `within` | `(locator: Locator) => Locator` (v1.64; matches this locator's elements inside each element matched by `locator`; relative locators such as `nth()` / `first()` are resolved separately inside each matched parent) |
+| `normalize` | `() => Promise<Locator>` (v1.59; returns a new locator that uses best practices for referencing the matched element, prioritizing test ids, aria roles and other user-facing attributes over CSS selectors) |
 | `getByRole` | `(role: AriaRole, options?: { ... }) => Locator` |
 | `getByText` | `(text: string \| RegExp, options?: { exact?: boolean }) => Locator` |
 | `getByLabel` | `(text: string \| RegExp, options?: { exact?: boolean }) => Locator` |
@@ -212,6 +217,12 @@ const saveButton = page.getByRole("button").and(page.getByText("Save"));
 const actionButton = page
   .getByRole("button", { name: "Save" })
   .or(page.getByRole("button", { name: "Submit" }));
+
+// Visible-only locator (v1.63) instead of "button:visible"
+await page.getByRole("button").visible().first().click();
+
+// Scope one locator inside another (v1.64): "this button, within that dialog"
+await page.getByRole("button", { name: "Save" }).within(page.getByRole("dialog")).click();
 
 // Chained sub-locators (scoped search within parent)
 const product = page.getByRole("listitem").filter({ hasText: "Widget" });
@@ -248,6 +259,15 @@ await frame2.getByText("Hello").click();
 | `evaluate` | `(pageFunction: Function \| string, arg?: Serializable, options?: { timeout?: number }) => Promise<Serializable>` |
 | `evaluateAll` | `(pageFunction: Function \| string, arg?: Serializable) => Promise<Serializable>` |
 | `evaluateHandle` | `(pageFunction: Function \| string, arg?: Serializable, options?: { timeout?: number }) => Promise<JSHandle>` |
+| `waitForFunction` | `(expression: Function \| string, arg?: Serializable, options?: { timeout?: number; signal?: AbortSignal }) => Promise` (v1.62; the expression receives the matching element and the call resolves once it returns truthy; return type not documented) |
+
+Notes:
+
+- Since v1.62, `evaluate` / `evaluateHandle` accept an `exposeFunctions` option (`boolean`, default `false`) so functions can be passed as arguments; without it passing a function throws an error. See `../advanced/evaluate.md`.
+- `Locator.ariaRef()` was removed in v1.60; use `page.getByRef(ref)` (v1.64) with refs from `ariaSnapshot({ mode: "ai" })`.
+- Since v1.62, `check`, `click`, `dblclick`, `dragTo`, `hover`, `setChecked`, `tap`, and `uncheck` accept a `scroll` option (`"auto"` | `"none"`).
+- `highlight` returns a `Disposable` and takes a `style` option (v1.60, inline CSS string or object applied to the highlight overlay); `locator.hideHighlight()` (v1.60) hides the highlight previously added by `highlight()`, `page.hideHighlight()` hides all of them.
+- `drop` dispatches native `dragenter`, `dragover` and `drop` events at the center of the target with a synthetic `DataTransfer`; if the target's `dragover` listener does not call `preventDefault()`, the drop is considered rejected: `dragleave` is dispatched and the method throws.
 
 ```ts
 // Evaluate on a single element
@@ -266,8 +286,9 @@ const texts = await page.getByRole("listitem").evaluateAll(
 | Method | Signature |
 |--------|-----------|
 | `waitFor` | `(options?: { state?: "attached" \| "detached" \| "visible" \| "hidden"; timeout?: number }) => Promise<void>` |
-| `screenshot` | `(options?: { animations?: "disabled" \| "allow"; caret?: "hide" \| "initial"; mask?: Locator[]; maskColor?: string; omitBackground?: boolean; path?: string; quality?: number; scale?: "css" \| "device"; style?: string; timeout?: number; type?: "png" \| "jpeg" }) => Promise<Buffer>` |
-| `highlight` | `() => Promise<void>` |
+| `screenshot` | `(options?: { animations?: "disabled" \| "allow"; caret?: "hide" \| "initial"; mask?: Locator[]; maskColor?: string; omitBackground?: boolean; path?: string; quality?: number; scale?: "css" \| "device"; style?: string; timeout?: number; type?: "png" \| "jpeg" \| "webp" }) => Promise<Buffer>` |
+| `highlight` | `(options?: { style?: string \| Record<string, string \| number> }) => Promise<Disposable>` (`style` v1.60) |
+| `hideHighlight` | `() => Promise<void>` (v1.60) |
 | `describe` | `(description: string) => Locator` |
 | `description` | `() => string \| null` |
 | `toString` | `() => string` |

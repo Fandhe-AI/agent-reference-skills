@@ -53,4 +53,5 @@ test('dynamic viewport resize', async ({ page }) => {
 - `devices` preset includes viewport, userAgent, deviceScaleFactor, isMobile, and hasTouch
 - `test.use()` at the describe or file level applies to all tests in that scope without affecting others
 - Update geolocation at runtime with `context.setGeolocation()` for location-change scenarios
+- Since v1.64 the `screen` property of a device descriptor is forwarded: with `...devices['Desktop Chrome']` and alike, `window.screen` and media queries see the emulated screen size. Opt out by setting `screen: undefined` after the spread
 - `colorScheme`, `offline`, and `javaScriptEnabled` are additional emulation options available in `use`

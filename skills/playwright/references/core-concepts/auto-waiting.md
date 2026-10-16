@@ -8,6 +8,8 @@ Playwright automatically waits for elements to pass actionability checks before 
 
 An element is visible when it has a non-empty bounding box and does not have `visibility: hidden` computed style. Elements with `display: none`, zero size, or otherwise not rendered are not visible. Elements with `opacity: 0` **are** considered visible.
 
+Since v1.64, elements inside hidden iframes are considered hidden: elements inside an iframe that is not visible, for example with `visibility: hidden`, are considered hidden by actions, `Locator.isVisible()` and `toBeVisible()`.
+
 ### Stable
 
 An element is stable when it has maintained the same bounding box for at least two consecutive animation frames. This ensures animations and transitions have completed.

@@ -114,6 +114,47 @@ test.describe('chromium only', () => {
 });
 ```
 
+## Test Locks
+
+You can declare named locks to prevent specific tests from running at the same time, while all other tests continue to run in parallel. Tests that share a lock name never run concurrently, even when they are declared in different files or belong to different projects. This is useful when a few tests access a shared resource that does not support concurrent access.
+
+The `details` parameter of `test()` and `test.describe()` has existed since v1.42 (`tag`, `annotation`); `lock?: string | string[]` was added to it in v1.63. `test.describe.configure({ lock })` was added in v1.64 and sets additional named locks for all tests in the enclosing scope, including nested groups; locks are added to those declared in `test.describe` details and previous `test.describe.configure` calls.
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('update user settings', {
+  lock: 'user-settings',
+}, async ({ page }) => {
+  // This test never runs concurrently with other tests
+  // that declare the 'user-settings' lock.
+});
+
+test.describe('two tests with a lock', {
+  lock: 'user-settings',
+}, () => {
+  test('one', async ({ page }) => {
+    // ...
+  });
+
+  test('two', async ({ page }) => {
+    // ...
+  });
+});
+
+test.describe('settings', () => {
+  test.describe.configure({ lock: 'user-settings' });
+  test('reset user settings', async ({ page }) => {});
+});
+```
+
+See also the Test locks section in `parallelism.md`.
+
+Related:
+
+- `test.abort(message?)` (v1.60): "Aborts the currently running test by throwing an error. The test is immediately marked as failed and execution stops." Useful from inside a fixture or a route handler. `message` is optional and is included in the failure error.
+- `test.step(title, body, { box, location, params, subtitle, timeout })` and `test.step.skip`: `params` (v1.63) are "arbitrary serializable parameters describing the step", reported to the reporters as `testStep.params` and shown in the trace viewer; `subtitle` (v1.63) "complements the title, for example the target of the step", reported as `testStep.subtitle` and shown next to the title in test reports and the trace viewer.
+
 ## Tagging with @
 
 Tags enable selective test execution via CLI filtering.

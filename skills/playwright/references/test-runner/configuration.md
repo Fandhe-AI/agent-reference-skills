@@ -43,6 +43,17 @@ export default defineConfig({
 });
 ```
 
+Notes:
+
+- `retryStrategy: 'immediate' | 'isolated'` (v1.62, default `'immediate'`) controls when failed tests are retried. `'immediate'`: a failed test is retried as soon as a worker is available, interleaved with the rest of the run. `'isolated'`: retries are run at the end, after all other tests have finished, one by one in a single worker; this minimizes the interference between retried tests and the rest of the suite, at the expense of the total run time. Example: `retries: 2, retryStrategy: 'isolated'`.
+- `reporter` built-in names: `'list' | 'dot' | 'line' | 'github' | 'json' | 'junit' | 'null' | 'html' | 'blob' | 'perfetto'` (`'perfetto'` added in v1.63, see `reporters.md`). When unspecified, `'dot'` is used if the `CI` environment variable is set, otherwise `'list'`.
+- `failOnFlakyTests` mirrors the `--fail-on-flaky-tests` flag. `workers` values of 0 or below are rejected (v1.60).
+- `FullConfig` additions: `argv` (v1.61, snapshot of `process.argv`), `failOnFlakyTests` (v1.61), `filteredProjects` (v1.64, projects selected after `--project` filtering; equals `projects` without a filter).
+- `FullProject.ignoreSnapshots` (v1.59, boolean): see `TestProject.ignoreSnapshots`.
+- `TestInfoError.errorContext` (v1.60, optional string): "Additional context for the error, such as the aria snapshot of the receiver at the time of an `expect(...)` matcher failure."
+- `expect.toHaveScreenshot.type: 'webp'` (v1.64) stores unnamed screenshots as WebP.
+- The HTML reporter accepts `mergeFiles` (v1.62).
+
 ## Use Options
 
 The `use` object configures browser context, emulation, network, and recording for all tests. These can be overridden per-project or per-test.
@@ -190,10 +201,60 @@ export default defineConfig({
     trace: 'on-first-retry',
 
     // Video: 'off' | 'on' | 'retain-on-failure' | 'on-first-retry'
+    // (v1.61 adds 'on-all-retries' | 'retain-on-first-failure' | 'retain-on-failure-and-retries')
     video: 'on-first-retry',
   },
 });
 ```
+
+Notes:
+
+- `video` accepts either a mode string or an object (`TestOptions.video`):
+
+  | Field | Type | Description |
+  | --- | --- | --- |
+  | `mode` | `'off' \| 'on' \| 'retain-on-failure' \| 'on-first-retry' \| 'on-all-retries' \| 'retain-on-first-failure' \| 'retain-on-failure-and-retries'` | Video recording mode. |
+  | `size` | `{ width: number; height: number }` | Size of the recorded video. If not specified, equal to `viewport` scaled down to fit into 800x800; if `viewport` is not configured explicitly, 800x450. |
+  | `fps` | `number` | Frame rate in frames per second. Defaults to `25`. Firefox and WebKit currently capture up to 25 frames per second. |
+  | `show.actions` | `{ duration?, position?, fontSize?, cursor?, style? }` | Visual annotations on interacted elements. `duration` defaults to `500` ms; `position` one of `top-left`/`top`/`top-right`/`bottom-left`/`bottom`/`bottom-right` (default `top-right`); `fontSize` defaults to `24` (deprecated, use `style.title`); `cursor` `'none' \| 'pointer'` (default `'pointer'`); `style` `{ point?, highlight?, title? }` as CSS declaration strings. |
+  | `show.test` | `{ level?, position?, fontSize? }` | Test information status overlay. `level` `'file' \| 'title' \| 'step'`; `position` defaults to `top-left`; `fontSize` defaults to `14`. |
+
+  Example: `{ mode: 'on', size: { width: 1920, height: 1080 }, fps: 60 }`. Higher frame rates and sizes use more CPU for encoding. Video modes (same rules as `trace`):
+
+  | Mode | Records a video on | Keeps the video when |
+  | --- | --- | --- |
+  | `'off'` | never | - |
+  | `'on'` | every run | always |
+  | `'retain-on-failure'` | every run | that run failed |
+  | `'retain-on-first-failure'` | first run only | the first run failed |
+  | `'retain-on-failure-and-retries'` | every run | that run failed, or it is a retry |
+  | `'on-first-retry'` | first retry only | always |
+  | `'on-all-retries'` | every retry | always |
+
+- Since v1.64 the `video` option accepts `fps`; videos are encoded with VP9 instead of VP8. `Screencast.showActions` `style` (CSS declarations) replaces the deprecated `fontSize` option.
+- `screen: { width, height }` (v1.64, `TestOptions.screen`): "Emulates consistent window screen size available inside web page via `window.screen`. Is only used when the `viewport` is set." Example: `viewport: { width: 390, height: 664 }, screen: { width: 390, height: 844 }`.
+- `reuseContext: boolean` (v1.62, `TestOptions.reuseContext`, default `false`) is **experimental** and discouraged: "This option trades test isolation for speed and is intended for component tests that drive a story gallery. Leave it unset for end-to-end tests - a fresh browser context per test is one of the core guarantees of Playwright Test." When `true`, all tests in a worker process run in a single browser context that is reused between tests. Between tests, Playwright resets the state that component tests typically touch: it clears cookies, cache, local storage and IndexedDB of visited origins, unregisters service workers, closes extra pages, removes routes, bindings and init scripts, and re-applies the configured storage state, viewport and emulation options. This reset is best-effort, not a guarantee of isolation. State that is **not** reset includes:
+  - Permissions granted with `BrowserContext.grantPermissions()` during a test.
+  - Runtime changes made through `BrowserContext.setGeolocation()`, `setOffline()` and `setExtraHTTPHeaders()`.
+  - Browsing history, `window.name` and any browser-process-wide state.
+
+  Additional restrictions:
+  - The option is ignored when `video` recording is enabled.
+  - Only a few context options may differ between consecutive tests: `colorScheme`, `forcedColors`, `reducedMotion`, `contrast`, `screen`, `userAgent`, `viewport` and `testIdAttribute`. Changing any other option in `test.use()`, for example `locale` or `storageState`, silently forces a fresh context and negates the speedup.
+  - Do not combine with `connectOptions` pointing multiple workers at a shared browser; workers would compete for the single reusable context.
+  - `recordHar` in `contextOptions` is not supported and produces no HAR file.
+
+  ```typescript
+  export default defineConfig({
+    projects: [
+      { name: 'components', testDir: './tests/components', use: { reuseContext: true } },
+    ],
+  });
+  ```
+- Since v1.63 the `trace` option accepts a `snapshots` object (`dom`, `aria`, `screen` flags), and `reducedMotion`, `forcedColors`, and `contrast` are standalone `use` options.
+- `trace` mode `retain-on-failure-and-retries` was added in v1.59.
+- `videosPath` / `videoSize` context options were removed in v1.60; use `recordVideo`.
+- `httpCredentials` accepts an array of credentials since v1.63.
 
 ### Context Options
 

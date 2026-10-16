@@ -1,10 +1,11 @@
 ---
 name: playwright
 description: >
-  Playwright (E2E / コンポーネントテストフレームワーク) リファレンス。
-  test, expect, page, locator, getByRole / getByText / getByLabel / getByTestId、
-  toBeVisible, click, fill, route, mock, fixtures、
-  playwright.config.ts、auth 永続化、trace viewer、codegen、UI モード。
+  Playwright v1.64 (E2E / コンポーネントテストフレームワーク) リファレンス。
+  test, expect, page, locator, getByRole / getByText / getByLabel / getByTestId / getByRef、
+  toBeVisible, click, fill, route, mock, fixtures、playwright.config.ts、
+  auth 永続化、Credentials (passkeys / WebAuthn)、WebStorage、WebMCP、
+  Playwright MCP / playwright-cli、trace viewer、screencast、test locks、codegen、UI モード。
 user-invocable: false
 model: sonnet
 ---
@@ -13,6 +14,8 @@ model: sonnet
 
 Playwright の全 API ドキュメントを網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+対象: Playwright v1.64.1（出典 microsoft/playwright v1.64.1 タグの docs/src、取得 2026-10-16）。
 
 ## ディレクトリ構成
 
@@ -58,15 +61,22 @@ skills/playwright/
       clock.md
       dialogs-downloads.md
       events.md
+      mock-apis.md
       mock-browser-apis.md
+      navigations.md
       network.md
       parameterize.md
       pom.md
+      screenshots.md
+      videos.md
       visual-testing.md
+      webview2.md
     tooling/
       README.md
       cli.md
       codegen.md
+      mcp.md
+      playwright-cli.md
       test-agents.md
       trace-viewer.md
       ui-mode.md
@@ -82,9 +92,14 @@ skills/playwright/
       README.md
       assertions.md
       browser-context.md
+      credentials.md
       locator.md
       page.md
       request.md
+      screencast.md
+      tracing.md
+      web-storage.md
+      webmcp.md
   samples/
     README.md
     accessibility-testing.md
@@ -108,6 +123,7 @@ skills/playwright/
     generate.md
     debug.md
     ci.md
+    mcp-cli.md
 ```
 
 ## 探索手順
@@ -123,11 +139,11 @@ skills/playwright/
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | テスト作成の基本、最初のテスト、CI セットアップ、デバッグ実行 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
-| playwright.config.ts、fixtures、annotations、parallelism、sharding、retries、timeouts | test-runner | [references/test-runner/README.md](references/test-runner/README.md) |
+| playwright.config.ts、fixtures、annotations、parallelism (shuffle)、sharding、retries (retryStrategy)、timeouts、test locks | test-runner | [references/test-runner/README.md](references/test-runner/README.md) |
 | locators、assertions、actions、auto-waiting、emulation、frames、isolation | core-concepts | [references/core-concepts/README.md](references/core-concepts/README.md) |
-| 認証、ネットワークモック、API テスト、ビジュアルテスト、POM、アクセシビリティ、ベストプラクティス、クロック制御 | guides | [references/guides/README.md](references/guides/README.md) |
-| CLI コマンド、codegen、trace viewer、UI mode、test agents | tooling | [references/tooling/README.md](references/tooling/README.md) |
+| 認証、ネットワークモック、API テスト、ビジュアルテスト、POM、アクセシビリティ、ベストプラクティス、クロック制御、ナビゲーション、スクリーンショット、動画録画、API モック、WebView2 | guides | [references/guides/README.md](references/guides/README.md) |
+| CLI コマンド、codegen、trace viewer、UI mode、test agents、Playwright MCP、playwright-cli (エージェント向け CLI) | tooling | [references/tooling/README.md](references/tooling/README.md) |
 | TypeScript、ブラウザ管理、Chrome 拡張、コンポーネントテスト、evaluate、service workers | advanced | [references/advanced/README.md](references/advanced/README.md) |
-| Page、Locator、BrowserContext、APIRequestContext、Assertions クラス API | api | [references/api/README.md](references/api/README.md) |
+| Page、Locator、BrowserContext、APIRequestContext、Assertions クラス API、Credentials (passkeys)、WebStorage、WebMCP、Screencast、Tracing (HAR) | api | [references/api/README.md](references/api/README.md) |
 | 典型的な使い方を知りたい、実装サンプルを参照したい | samples | [samples/README.md](samples/README.md) |
-| インストール・CLI コマンド・CI 実行・デバッグコマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |
+| インストール・CLI コマンド・CI 実行・デバッグコマンド・MCP / playwright-cli コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

@@ -150,7 +150,20 @@ await expect(page.locator("main")).toMatchAriaSnapshot(`
 ```typescript
 const snapshot = await page.locator("body").ariaSnapshot();
 console.log(snapshot);
+
+// Page-level (v1.59) and options
+const pageSnapshot = await page.ariaSnapshot();
+const detailed = await page.locator("main").ariaSnapshot({ mode: "ai", depth: 3, boxes: true });
+
+// JSON form (JS only, v1.63)
+const tree = await page.locator("main").ariaSnapshotJSON();
 ```
+
+Options: `mode: "ai" | "default"` (v1.59; `"ai"` adds refs such as `[ref=e2]` usable with `page.getByRef()`, does not wait, throws if nothing matches, and includes iframes), `depth` (v1.59), `boxes` (v1.60, appends `[box=x,y,width,height]` in viewport CSS pixels). `expect(page).toMatchAriaSnapshot()` works on a Page since v1.60 (asserts that the page body matches the given accessibility snapshot).
+
+An AI-optimized snapshot (`mode: "ai"`) differs from a default snapshot: (1) it includes element references `[ref=e2]`; (2) it does not wait for an element matching the locator, and throws when no elements match; (3) it includes snapshots of `<iframe>`s inside the target.
+
+`ariaSnapshotJSON` returns the same tree as `ariaSnapshot`, serialized as a JSON value instead of YAML markup: a list of nodes, each an object with `role` (aria role, or `"text"` for a static text fragment), `name` (accessible name, if any), `text` (text content when it is the only child, or the content of a static text fragment), `children`, boolean and value properties for state flags (`checked`, `disabled`, `expanded`, `active`, `invalid`, `level`, `pressed`, `selected`), additional element properties (for example `url` for links, `placeholder` for text boxes), `ref` (element reference for AI-optimized snapshots), `cursor` (`"pointer"` for clickable elements in AI-optimized snapshots) and `box` (bounding box when `boxes` is set).
 
 ### From Empty Template
 
@@ -207,6 +220,8 @@ npx playwright test --update-snapshots
 ```
 
 Playwright waits for the maximum expect timeout to ensure the page is settled before taking the snapshot.
+
+Since v1.64, `--update-snapshots=missing` passes the run after writing missing snapshots; the mode that writes missing snapshots and then fails the test is named `default` (the behavior without the flag). The flag with no value means `changed`.
 
 ### Update Source Methods
 

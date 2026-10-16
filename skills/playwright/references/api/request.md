@@ -28,7 +28,14 @@ test("API test", async ({ request }) => {
 | `head` | `(url: string, options?: RequestOptions) => Promise<APIResponse>` |
 | `fetch` | `(urlOrRequest: string \| Request, options?: RequestOptions & { method?: string }) => Promise<APIResponse>` |
 | `dispose` | `(options?: { reason?: string }) => Promise<void>` |
-| `storageState` | `(options?: { path?: string }) => Promise<StorageState>` |
+| `storageState` | `(options?: { path?: string; indexedDB?: boolean; opfs?: boolean }) => Promise<StorageState>` (`indexedDB` v1.51, `opfs` v1.63; "contains current cookies and local storage snapshot if it was passed to the constructor") |
+| `addCookies` | `(cookies: Array<Cookie>) => Promise<void>` (v1.64; cookies are sent with matching subsequent requests; for `BrowserContext.request` and `Page.request` equivalent to `BrowserContext.addCookies`) |
+| `cookies` | `(urls?: string \| string[]) => Promise<Array<Cookie>>` (v1.64; all cookies if `urls` omitted, otherwise only cookies that affect those URLs; `Cookie` may include `partitionKey?: string`) |
+| `clearCookies` | `(options?: { name?: string \| RegExp; domain?: string \| RegExp; path?: string \| RegExp }) => Promise<void>` (v1.64; removes cookies, optionally filtered) |
+
+Property: `tracing` (`Tracing`, v1.60) is the tracing recorder for requests made through this API request context.
+
+Since v1.63, request methods accept a type argument that types the response `json()`. Most operations and web-first assertions accept a `signal` option (`AbortSignal`, v1.62).
 
 ### RequestOptions
 
@@ -122,6 +129,14 @@ setup("authenticate", async ({ request }) => {
 });
 ```
 
+### APIResponse additions
+
+| Method | Description |
+|--------|-------------|
+| `timing()` | Resource timing information for the response (v1.62). For redirected requests, returns the information for the last request in the redirect chain. When the response is served from the HAR file, timing information is not available and all the values are -1 |
+| `securityDetails()` | Async; SSL and other security information (`issuer`, `protocol`, `subjectName`, `validFrom`, `validTo`, all optional), resolves to `null` for non-HTTPS responses; for redirected requests, returns the information for the last request in the redirect chain (v1.61) |
+| `serverAddr()` | Async; IP address and port of the server (`{ ipAddress, port }`), resolves to `null` if the server address is not available; for redirected requests, returns the information for the last request in the redirect chain (v1.61) |
+
 ---
 
 ## Request
@@ -133,6 +148,7 @@ The `Request` class represents a network request made by a page. Obtained from `
 | Method | Signature |
 |--------|-----------|
 | `allHeaders` | `() => Promise<Record<string, string>>` |
+| `existingResponse` | `() => Response \| null` (v1.59; returns the `Response` if it has already been received, `null` otherwise; unlike `response()`, it does not wait for the response to arrive) |
 | `failure` | `() => { errorText: string } \| null` |
 | `frame` | `() => Frame` |
 | `headerValue` | `(name: string) => Promise<string \| null>` |
@@ -211,10 +227,11 @@ The `Response` class represents a network response received by a page. Obtained 
 | `headerValues` | `(name: string) => Promise<string[]>` |
 | `headers` | `() => Record<string, string>` |
 | `headersArray` | `() => Promise<Array<{ name: string; value: string }>>` |
+| `httpVersion` | `() => Promise<string>` (v1.59; returns the http version used by the response) |
 | `json` | `() => Promise<Serializable>` |
 | `ok` | `() => boolean` |
 | `request` | `() => Request` |
-| `securityDetails` | `() => Promise<{ issuer: string; protocol: string; subjectName: string; validFrom: number; validTo: number } \| null>` |
+| `securityDetails` | `() => Promise<{ issuer?: string; protocol?: string; subjectName?: string; validFrom?: number; validTo?: number } \| null>` |
 | `serverAddr` | `() => Promise<{ ipAddress: string; port: number } \| null>` |
 | `status` | `() => number` |
 | `statusText` | `() => string` |
@@ -279,6 +296,19 @@ The `Route` class represents an intercepted network request. Used within `page.r
 | `fetch` | `(options?: { headers?: Record<string, string>; maxRedirects?: number; maxRetries?: number; method?: string; postData?: string \| Buffer \| Serializable; timeout?: number; url?: string }) => Promise<APIResponse>` |
 | `fulfill` | `(options?: { body?: string \| Buffer; contentType?: string; headers?: Record<string, string>; json?: Serializable; path?: string; response?: APIResponse; status?: number }) => Promise<void>` |
 | `request` | `() => Request` |
+
+### WebSocketRoute.protocols (v1.60)
+
+`webSocketRoute.protocols()` returns `string[]`: the list of WebSocket subprotocols requested by the page, as passed via the second argument to the `WebSocket` constructor (corresponds to the `Sec-WebSocket-Protocol` request header). Returns an empty array if no protocols were specified.
+
+```ts
+await page.routeWebSocket("wss://example.com/ws", (ws) => {
+  if (ws.protocols().includes("chat.v2"))
+    ws.onMessage((message) => ws.send(JSON.stringify({ version: 2, echo: message })));
+  else
+    ws.close({ code: 1002, reason: "Unsupported protocol" });
+});
+```
 
 ### Error Codes for abort()
 

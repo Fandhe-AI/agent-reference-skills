@@ -20,6 +20,21 @@ npx playwright test example.spec.ts:10 --project=webkit --debug
 
 `--debug` フラグはブラウザをヘッドモードで起動し、タイムアウトを 0（無制限）に設定する。
 
+## CLI デバッガーでのデバッグ（コーディングエージェント向け）
+
+```sh
+# attach 用のセッション名が出力される
+npx playwright test --debug=cli
+
+# 出力されたセッションにアタッチ（例: tw-87b59e）
+playwright-cli attach tw-87b59e
+
+# セッションを指定してステップ実行
+playwright-cli --session tw-87b59e step-over
+```
+
+`--debug [mode]` の mode は "inspector"（既定）または "cli"。"cli" は CLI 経由でのアタッチとデバッグを可能にする（test-cli-js.md）。`playwright-cli attach` の流れはリリースノート v1.59（release-notes-js.md「CLI debugger for agents」）にのみ記載。`playwright-cli` のインストールは `mcp-cli.md` を参照。
+
 ## UI モードでのデバッグ
 
 ```sh
@@ -64,6 +79,9 @@ npx playwright test --trace on-all-retries
 
 # 失敗したテストのトレースのみ保持
 npx playwright test --trace retain-on-failure
+
+# 失敗とリトライのトレースを保持
+npx playwright test --trace retain-on-failure-and-retries
 ```
 
 ## トレースファイルの表示
@@ -79,6 +97,27 @@ npx playwright show-trace https://example.com/trace.zip
 npx playwright show-trace --browser chromium trace.zip
 npx playwright show-trace --host 0.0.0.0 --port 8080 trace.zip
 ```
+
+## CLI でのトレース分析（コーディングエージェント向け）
+
+```sh
+# トレースを開く
+npx playwright trace open test-results/example-has-title-chromium/trace.zip
+
+# アクション一覧（フィルター例）
+npx playwright trace actions --grep="expect"
+
+# アクションの詳細（番号指定）
+npx playwright trace action 9
+
+# アクションのスナップショット（before / after）
+npx playwright trace snapshot 9 --name after
+
+# トレースを閉じる
+npx playwright trace close
+```
+
+`npx playwright trace` はリリースノート v1.59（release-notes-js.md「CLI trace analysis for agents」）にのみ記載されており、専用のコマンドリファレンスページは原本に無い。
 
 ## HTML レポートの表示
 

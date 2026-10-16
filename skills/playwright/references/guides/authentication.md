@@ -267,9 +267,22 @@ test("admin and user greetings", async ({ adminPage, userPage }) => {
 });
 ```
 
+## Passkeys (Virtual WebAuthn Credentials)
+
+Web apps use cookie-based or token-based authentication, where authenticated state is stored as cookies, in local storage, in IndexedDB, or as passkeys (WebAuthn credentials). Cookies, local storage, IndexedDB and virtual WebAuthn credentials (passkeys) can be used across different browsers; they depend on your application's authentication model, which may require some combination of them.
+
+`context.credentials` (v1.61) is a virtual WebAuthn authenticator scoped to the context: it lets tests register passkeys and answer `navigator.credentials.create()` / `get()` ceremonies without a real authenticator or hardware security key. Three common ways to use it: seed a known credential with `credentials.create()`; capture a credential the app registered with `credentials.get()` and seed it into later tests; or save credentials in the storage state with `context.storageState({ credentials: true })` (v1.61) and restore them later (restoring a storage state that contains credentials automatically installs the virtual authenticator and prevents all real authenticators from working in this context). `storageState({ opfs: true })` (v1.63) also includes the origin private file system. `context.setStorageState(state)` (v1.59) clears the existing cookies, local storage, IndexedDB entries, origin private file system entries and virtual WebAuthn credentials, and sets the new storage state. See `../api/credentials.md`.
+
+```typescript
+await context.credentials.install();
+await context.credentials.create("example.com", { signCount: 0 });
+await page.goto("https://example.com/login");
+const state = await context.storageState({ credentials: true, path: "playwright/.auth/user.json" });
+```
+
 ## Session Storage
 
-`storageState` covers cookies and localStorage but not sessionStorage. Persist and restore it manually:
+`storageState` covers cookies and localStorage but not sessionStorage. Persist and restore it manually (since v1.61 `page.sessionStorage` / `page.localStorage` expose `items()`, `getItem`, `setItem`, `removeItem`, `clear` for the current origin):
 
 ```typescript
 // Save session storage after login
