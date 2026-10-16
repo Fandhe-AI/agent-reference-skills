@@ -50,6 +50,8 @@ A third approach: save credentials in the storage state by setting `BrowserConte
 | `delete(id)` | Removes a credential by base64url id; works for seeded and page-registered credentials. (v1.61) |
 | `get(options?)` | Returns every credential held by the authenticator, optionally filtered by `rpId` or `id`. Includes private/public keys and current `signCount`. (v1.61) |
 
+## Options / Props
+
 ### create options
 
 | Name | Type | Description |
@@ -63,6 +65,13 @@ A third approach: save credentials in the storage state by setting `BrowserConte
 
 To import a known credential, supply all four of `id`, `userHandle`, `privateKey` and `publicKey` together.
 
+### get options
+
+| Name | Type | Description |
+|------|------|-------------|
+| `rpId` | string | Only return credentials for this relying party id |
+| `id` | string | Only return the credential with this base64url id |
+
 ### VirtualCredential
 
 | Field | Type | Description |
@@ -73,13 +82,6 @@ To import a known credential, supply all four of `id`, `userHandle`, `privateKey
 | `privateKey` | string | Base64url PKCS#8 (DER) private key |
 | `publicKey` | string | Base64url SPKI (DER) public key |
 | `signCount` | int | Signature counter reported in the most recent assertion |
-
-### get options
-
-| Name | Type | Description |
-|------|------|-------------|
-| `rpId` | string | Only return credentials for this relying party id |
-| `id` | string | Only return the credential with this base64url id |
 
 ## Notes
 

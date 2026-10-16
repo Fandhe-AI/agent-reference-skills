@@ -23,6 +23,8 @@ console.log(result.content[0].text); // "42"
 | `tools(options?)` | `Promise<Array<WebMCPTool>>` | Tools currently registered by the frame. Throws if the browser was launched without WebMCP support |
 | `callTool(name, input?, options?)` | `Promise<Serializable>` | Calls a registered tool and returns the result its `execute` function resolved to (typically an object with a `content` array). A result with `isError: true` is returned as is |
 
+## Options / Props
+
 ### callTool params
 
 | Name | Type | Description |
