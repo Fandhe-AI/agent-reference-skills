@@ -60,7 +60,7 @@
 | VisionObservation | A protocol for objects produced by image-analysis requests. | [visionobservation.md](./visionobservation.md) |
 | VisionRequest | A protocol for image-analysis requests… | [visionrequest.md](./visionrequest.md) |
 | VNClassifyImageRequest | Classifies the content of an image using Vision's built-in model… | [vnclassifyimagerequest.md](./vnclassifyimagerequest.md) |
-| VNCoreMLModel | A container that wraps a Core ML `MLModel` for use with `VNCoreMLRequest`… | [vncoremlmodel.md](./vncoremlmodel.md) |
+| VNCoreMLModel | A container that wraps a Core ML `MLModel` for use with `VNCoreMLRequest`. | [vncoremlmodel.md](./vncoremlmodel.md) |
 | VNCoreMLRequest | Applies a Core ML model to an image… | [vncoremlrequest.md](./vncoremlrequest.md) |
 | VNDetectBarcodesRequest | Detects barcodes and QR codes in an image… | [vndetectbarcodesrequest.md](./vndetectbarcodesrequest.md) |
 | VNDetectFaceLandmarksRequest | Detects facial features (eyes, nose, mouth, contours)… | [vndetectfacelandmarksrequest.md](./vndetectfacelandmarksrequest.md) |
