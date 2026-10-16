@@ -101,4 +101,4 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 - This is an OpenAI LLM-evaluation example; "evals" and "graders" here belong to OpenAI's Evals/fine-tuning API, not a JS/TS test runner (Vitest etc.).
 - `{{ item.* }}` refers to a test data / dataset row, `{{ sample.* }}` refers to the model output (`output_text`, `output_json`, `output_tools`, `choices`, `output_audio`).
 - `multi` graders cannot be nested (no `multi` inside a `multi`) and are currently used only for Reinforcement fine-tuning.
-- OpenAI is winding down graders as part of the evals and fine-tuning workflows they support; check the deprecations page for the transition timeline.
+- OpenAI is winding down graders as part of the evals and fine-tuning workflows they support; check the deprecations page (https://developers.openai.com/api/docs/deprecations) for the transition timeline.

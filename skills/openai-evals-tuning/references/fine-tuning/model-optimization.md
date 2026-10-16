@@ -21,7 +21,7 @@ Top-level workflow for improving LLM output quality in the OpenAI platform: eval
 
 ## Notes
 
-- OpenAI is winding down the self-serve fine-tuning platform: no new organizations can start fine-tuning as of May 7, 2026, restrictions tighten further on July 2, 2026, and existing organizations lose the ability to create new fine-tuning jobs on January 6, 2027. Already fine-tuned models remain available for inference until their base model is deprecated. The official guide states that it "covers evals and fine-tuning workflows that are being moved into legacy documentation" (see the deprecations page for timelines).
+- OpenAI is winding down the self-serve fine-tuning platform: no new organizations can start fine-tuning as of May 7, 2026, restrictions tighten further on July 2, 2026, and existing organizations lose the ability to create new fine-tuning jobs on January 6, 2027. Already fine-tuned models remain available for inference until their base model is deprecated. The official guide states that it "covers evals and fine-tuning workflows that are being moved into legacy documentation" (see the deprecations page (https://developers.openai.com/api/docs/deprecations) for timelines).
 - Base model shutdowns (deprecations page): `gpt-4.1-nano-2025-04-14` and `o4-mini-2025-04-16` on 2026-10-23; `gpt-4o-2024-08-06`, `gpt-4.1-2025-04-14`, `gpt-4.1-mini-2025-04-14` on 2027-01-14. Fine-tuned versions follow the same schedule as their base models.
 - Evals (not covered in this category — see the `evals` scope) should be set up before investing in fine-tuning.
 

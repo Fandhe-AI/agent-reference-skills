@@ -59,3 +59,5 @@ promptfoo validate config -c promptfooconfig.yaml
 ```
 
 設定変更後やエラー発生時に再実行前の確認として使う。
+
+出典: https://developers.openai.com/api/docs/guides/promptfoo-codex / https://developers.openai.com/cookbook/examples/evaluation/moving-from-openai-evals-to-promptfoo

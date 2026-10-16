@@ -29,4 +29,4 @@ job = client.fine_tuning.jobs.create(
 - Each JSONL row is one `input.messages` + `preferred_output` + `non_preferred_output` triple.
 - `beta` (0-2) controls how closely the model stays to prior behavior: higher preserves existing behavior, lower prioritizes the new preference. Use `"auto"` to let the platform pick a default.
 - Supported models are `gpt-4.1-2025-04-14`, `gpt-4.1-mini-2025-04-14`, and `gpt-4.1-nano-2025-04-14`. Good fit for tasks like selective-focus summarization or tone/style adjustment.
-- Base-model shutdown (deprecations page): `gpt-4.1-2025-04-14` and `gpt-4.1-mini-2025-04-14` are scheduled to shut down on January 14, 2027; `gpt-4.1-nano-2025-04-14` on October 23, 2026.
+- Base-model shutdown (deprecations page (https://developers.openai.com/api/docs/deprecations)): `gpt-4.1-2025-04-14` and `gpt-4.1-mini-2025-04-14` are scheduled to shut down on January 14, 2027; `gpt-4.1-nano-2025-04-14` on October 23, 2026.

@@ -44,6 +44,7 @@ Read the repository instructions and reuse any existing eval setup. Choose a use
 - Keep assertions fixed when comparing a baseline against a changed prompt or configuration so the comparison stays meaningful.
 - Next steps in Promptfoo's documentation: configuration guide (https://www.promptfoo.dev/docs/configuration/guide/), assertions and metrics (https://www.promptfoo.dev/docs/configuration/expected-outputs/), red-teaming guide (https://www.promptfoo.dev/docs/red-team/).
 - This is the open-source local workflow; the OpenAI platform's hosted Evals product is covered in `working-with-evals.md`.
+- Source: https://developers.openai.com/api/docs/guides/promptfoo-codex
 
 ## Related
 

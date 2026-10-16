@@ -35,7 +35,7 @@ curl https://api.openai.com/v1/evals \
     }'
 ```
 
-A `label_model` grader variant is also supported for `testing_criteria`. Note: `o3-mini` (`o3-mini-2025-01-31`) is scheduled to shut down on October 23, 2026 (substitute listed on the official deprecations page: `gpt-5.6-sol`); replace the grader `model` accordingly.
+A `label_model` grader variant is also supported for `testing_criteria`. Note: `o3-mini` (`o3-mini-2025-01-31`) is scheduled to shut down on October 23, 2026 (substitute listed on the official deprecations page (https://developers.openai.com/api/docs/deprecations): `gpt-5.6-sol`); replace the grader `model` accordingly.
 
 ```bash
 curl https://api.openai.com/v1/evals \

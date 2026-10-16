@@ -2,8 +2,9 @@
 name: openai-evals-tuning
 description: >
   OpenAI API (developers.openai.com) の Evals / Fine-tuning リファレンス。
-  Evals API, Datasets, graders, agent evals, trace grading, Promptfoo（移行先）, red teaming,
-  SFT, DPO, RFT, vision fine-tuning, distillation, prompt optimizer。
+  Evals API, Datasets, graders（string check / text similarity / model / python / multi）,
+  agent evals, trace grading, external models, Promptfoo（移行先）, red teaming,
+  SFT, DPO, RFT, vision fine-tuning, distillation, prompt optimizer, fine-tuning best practices。
   Evals は 2026-11-30 停止予定、セルフサービス fine-tuning は段階的廃止中。
 user-invocable: false
 ---

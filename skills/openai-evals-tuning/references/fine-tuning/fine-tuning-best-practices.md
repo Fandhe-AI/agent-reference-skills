@@ -30,7 +30,7 @@ Start with platform defaults, then adjust based on observed behavior against a h
 
 - Submit both a training file and a test/validation file to get comparative statistics during training.
 - Current models support 65,536 tokens of context per training example; longer examples are truncated from the end — use a tokenizer tool to check.
-- Base models named in the guide's token-limit table are scheduled to shut down: `gpt-4.1-nano-2025-04-14` on 2026-10-23; `gpt-4.1`, `gpt-4.1-mini`, `gpt-4o-2024-08-06`, `gpt-4o-mini-2024-07-18` on 2027-01-14 (deprecations page).
+- Base models named in the guide's token-limit table are scheduled to shut down: `gpt-4.1-nano-2025-04-14` on 2026-10-23; `gpt-4.1`, `gpt-4.1-mini`, `gpt-4o-2024-08-06`, `gpt-4o-mini-2024-07-18` on 2027-01-14 (deprecations page (https://developers.openai.com/api/docs/deprecations)).
 - Subject to the same platform wind-down as other fine-tuning methods (see [model-optimization.md](./model-optimization.md) Notes).
 
 ## Related

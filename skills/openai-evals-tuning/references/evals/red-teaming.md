@@ -16,6 +16,7 @@ npx promptfoo@latest init --example getting-started
 - OpenAI Red Teaming is available for enterprise customers as a managed offering for red teaming AI applications and agents; enterprise workflows can support broader coordination, review, and reporting needs than a standalone local workflow.
 - Use evals to measure whether an AI system behaves as intended; use red teaming to probe behavior under adversarial, abusive, or unexpected inputs. Mature evaluation programs often use both.
 - Distinct from LLM guardrails of other skills (openai-agents); this page covers adversarial testing only.
+- Source: https://developers.openai.com/api/docs/guides/red-teaming
 
 ## Related
 

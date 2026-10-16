@@ -42,7 +42,7 @@ const job = await openai.fineTuning.jobs.create({
 
 - Recommended workflow: run Supervised Fine-Tuning first on the preferred responses to establish correct patterns, then use that SFT model as the starting checkpoint for DPO.
 - Fine-tuned models undergo the same 13-category safety evaluation before deployment.
-- Base model shutdowns (deprecations page): `gpt-4.1-nano-2025-04-14` on 2026-10-23; `gpt-4.1-2025-04-14` and `gpt-4.1-mini-2025-04-14` on 2027-01-14. Fine-tuned versions follow the same schedule as their base models.
+- Base model shutdowns (deprecations page (https://developers.openai.com/api/docs/deprecations)): `gpt-4.1-nano-2025-04-14` on 2026-10-23; `gpt-4.1-2025-04-14` and `gpt-4.1-mini-2025-04-14` on 2027-01-14. Fine-tuned versions follow the same schedule as their base models.
 - Subject to the same platform wind-down as other fine-tuning methods (see [model-optimization.md](./model-optimization.md) Notes).
 
 ## Related
