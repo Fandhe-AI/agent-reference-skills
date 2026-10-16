@@ -46,3 +46,8 @@ export default defineConfig({
 - `generators: undefined` — デフォルトのジェネレーターを使用
 - `transformers.name` — 生成されるファイル名・関数名をカスタマイズ
 - カスタムジェネレーターの詳細は `@kubb/plugin-oas` の generators オプションを参照
+
+## Notes
+
+- Removed in v5: there is no v5 example for this page. The plugin-level `generators` option was removed (migration guide, "Shared plugin options": `generators` → a custom plugin), `@kubb/plugin-oas` no longer exists (replaced by `adapterOas`), and `transformers.name` is now `resolver.name`. The config above documents v3/v4 only
+- To customize generated output in v5, write a custom plugin with generators: see [../guides/creating-plugins.md](../guides/creating-plugins.md) and [../kit/generators.md](../kit/generators.md)

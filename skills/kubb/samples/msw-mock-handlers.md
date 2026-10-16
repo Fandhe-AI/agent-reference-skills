@@ -11,7 +11,7 @@ import { pluginFaker } from '@kubb/plugin-faker'
 import { pluginMsw } from '@kubb/plugin-msw'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   adapter: adapterOas({ dateType: 'date' }),
   plugins: [
@@ -33,7 +33,7 @@ export default defineConfig({
 
 ```bash
 # インストール
-npm install --save-dev kubb@beta @kubb/plugin-ts@beta @kubb/plugin-faker@beta @kubb/plugin-msw@beta
+npm install --save-dev kubb @kubb/plugin-ts @kubb/plugin-faker @kubb/plugin-msw
 npm install msw @faker-js/faker
 ```
 
@@ -53,4 +53,4 @@ export const worker = setupWorker(...handlers)
 - `dateType` は v5 でプラグイン個別オプションから `adapter: adapterOas({ dateType })` に集約された（`pluginFaker` / `pluginTs` / `pluginZod` 個別のオプションではなくなった）
 - `handlers: true` で全エンドポイントを統合した `handlers.ts` を生成する
 - `seed` を固定するとテスト実行ごとに同じモックデータが生成される
-- `parser: 'data'`（デフォルト）は空レスポンスを返す最小ハンドラーを生成する
+- `parser: 'data'`（デフォルト）はハンドラーに渡したデータをそのまま返す（型は `@kubb/plugin-ts` の型）。`parser: 'faker'` は `data` が `undefined` / `null` のとき `@kubb/plugin-faker` の値にフォールバックする

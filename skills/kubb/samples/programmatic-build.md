@@ -5,36 +5,37 @@
 ```typescript
 import { createKubb } from 'kubb'
 import { Diagnostics } from 'kubb/kit'
-import { adapterOas } from '@kubb/adapter-oas'
-import { parserTs, parserTsx } from '@kubb/parser-ts'
 import { pluginTs } from '@kubb/plugin-ts'
+import { pluginAxios } from '@kubb/plugin-axios'
 
 const kubb = createKubb({
-  adapter: adapterOas(),
-  parsers: [parserTs(), parserTsx()],
   input: './petStore.yaml',
-  output: { path: './gen', clean: true },
-  plugins: [pluginTs()],
+  output: { path: './gen' },
+  plugins: [pluginTs(), pluginAxios()],
 })
 
-kubb.hooks.hook('kubb:plugin:end', ({ plugin, duration }) => {
-  console.log(`${plugin.name} completed in ${duration}ms`)
-})
-
-const { files, diagnostics } = await kubb.safeBuild()
+const { files, storage, diagnostics } = await kubb.safeBuild()
 
 if (Diagnostics.hasError(diagnostics)) {
-  console.error('Generation failed')
+  for (const diagnostic of diagnostics.filter(Diagnostics.isProblem)) {
+    if (diagnostic.severity === 'error') {
+      console.error(`${diagnostic.plugin ?? 'kubb'}: ${diagnostic.message}`)
+    }
+  }
   process.exit(1)
 }
 
+for (const { plugin, duration } of diagnostics.filter(Diagnostics.isPerformance)) {
+  console.log(`${plugin}: ${duration}ms`)
+}
 console.log(`Generated ${files.length} files`)
+const paths = await storage.readKeys()
+paths.forEach((path) => console.log(`  ${path}`))
 ```
 
 ## Notes
 
-- `createKubb()` は `kubb.config.ts` の `defineConfig` と同じ形の `UserConfig` を受け取り、`Kubb` インスタンスを返す
-- `.safeBuild()` は例外を投げず `{ files, diagnostics }` を返す。例外を投げさせたい場合は `.build()` を使う
-- `Diagnostics.hasError()`（`kubb/kit` からインポート）で診断結果にエラーが含まれるか判定できる
-- `kubb.hooks.hook('kubb:plugin:end', ...)` で各プラグインの完了イベントを購読できる
-- v5 で旧 `@kubb/core` の `build()` 関数は `kubb` パッケージの `createKubb().safeBuild()` / `.build()` に置き換わった。CI やビルドパイプラインへの組み込みに適している
+- `createKubb()` は `UserConfig` を受け取り `Kubb` インスタンスを返す。`defineConfig` と同じデフォルトが適用されるため、CLI とスクリプトで同じファイルが生成される。デフォルトなしの素のエンジンが必要な場合は `@kubb/core` から import する
+- `.safeBuild()` は例外を投げず、問題を `BuildOutput.diagnostics` に集めて返す（`BuildOutput` は `files` / `storage` / `driver` / `diagnostics`）。`.build()` は error 診断があると `AggregateError` を投げる
+- プラグインは `safeBuild()` が例外を投げなくても失敗しうるため、ファイル処理の前に `Diagnostics.hasError(diagnostics)`（`kubb/kit`）で確認する
+- `using kubb = createKubb(config)` で `Symbol.dispose` による解放ができる。`kubb.hooks.hook(name, handler)` はビルド前に登録する

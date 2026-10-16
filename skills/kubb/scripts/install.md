@@ -1,6 +1,6 @@
 # install
 
-Kubb および関連パッケージのインストール。
+Kubb および関連パッケージのインストール（kubb 5.11.0 基準）。
 
 ## インタラクティブセットアップ（推奨）
 
@@ -8,31 +8,41 @@ Kubb および関連パッケージのインストール。
 npx kubb init
 ```
 
-ウィザードが以下を自動実行する: `package.json` の検出または作成、OpenAPI 仕様ファイルのパス確認、出力ディレクトリの指定、プラグイン選択、依存パッケージのインストール、`kubb.config.ts` の生成。
+ウィザードが `package.json` の検出または作成、OpenAPI 仕様のパス・出力ディレクトリの確認、プラグイン選択（Kubb registry の一覧）、依存パッケージのインストール、`kubb.config.ts` の生成を行う。`kubb` は実行中の CLI と同一バージョンでインストールされる。
 
-## コアパッケージのインストール（npm）
-
-```sh
-npm install --save-dev @kubb/cli @kubb/core
-```
-
-## コアパッケージのインストール（pnpm）
+## kubb パッケージのインストール（npm）
 
 ```sh
-pnpm add -D @kubb/cli @kubb/core
+npm install -D kubb @kubb/plugin-ts typescript
 ```
 
-## コアパッケージのインストール（yarn）
+`kubb` は CLI・core ランタイム・OpenAPI adapter・TypeScript / TSX / Markdown parser を同梱する。出力ごとに別プラグインパッケージが必要。前提は Node.js 22.12 以上。
+
+## kubb パッケージのインストール（pnpm）
 
 ```sh
-yarn add -D @kubb/cli @kubb/core
+pnpm add -D kubb @kubb/plugin-ts typescript
 ```
 
-## コアパッケージのインストール（bun）
+## kubb パッケージのインストール（yarn）
 
 ```sh
-bun add -d @kubb/cli @kubb/core
+yarn add -D kubb @kubb/plugin-ts typescript
 ```
+
+## kubb パッケージのインストール（bun）
+
+```sh
+bun add -d kubb @kubb/plugin-ts typescript
+```
+
+## レジストリからのプラグイン追加
+
+```sh
+npx kubb add plugin-zod
+```
+
+Kubb registry が pin したバージョンでインストールし、プラグインは `kubb.config.ts` にも追記する。詳細は `cli.md` の `kubb add` を参照。
 
 ## プラグインのインストール: TypeScript 型生成
 
@@ -43,18 +53,21 @@ npm install --save-dev @kubb/plugin-ts
 ## プラグインのインストール: HTTP クライアント生成
 
 ```sh
-npm install --save-dev @kubb/plugin-client
+npm install --save-dev @kubb/plugin-axios
+npm install --save-dev @kubb/plugin-fetch
 ```
+
+> v5 では `@kubb/plugin-client` は Axios / Fetch に置き換えられ、`@kubb/plugin-oas` は adapter に置き換えられた（公式 migration ガイド）。
 
 ## プラグインのインストール: データフェッチ系
 
 ```sh
 npm install --save-dev @kubb/plugin-react-query
-npm install --save-dev @kubb/plugin-swr
 npm install --save-dev @kubb/plugin-vue-query
-npm install --save-dev @kubb/plugin-solid-query
-npm install --save-dev @kubb/plugin-svelte-query
+npm install --save-dev @kubb/plugin-swr
 ```
+
+> `@kubb/plugin-solid-query` と `@kubb/plugin-svelte-query` は v5 で削除済みで、後継は無い（公式 migration ガイド。最終版は 4.39.3）。`@kubb/plugin-swr` は v5 でも提供される（plugin-swr 5.4.3）。
 
 ## プラグインのインストール: バリデーション・テスト系
 
@@ -71,10 +84,18 @@ npm install --save-dev @kubb/plugin-cypress # E2E テストユーティリティ
 npx kubb --version
 ```
 
-## unplugin-kubb のインストール（ビルドツール統合用）
+## ビルドツール統合（unplugin-kubb）
 
-```sh
-npm install --save-dev unplugin-kubb @kubb/core
+`unplugin-kubb` は `kubb` に同梱され、`kubb/vite` 等のサブパスから import する。
+
+```ts
+// vite.config.ts
+import kubb from 'kubb/vite'
 ```
 
-Vite、webpack、Rollup、esbuild、Nuxt、Astro、Rspack に対応。
+```ts
+// webpack.config.ts
+import kubb from 'kubb/webpack'
+```
+
+> 単体パッケージ `unplugin-kubb`（README のインストール例は `unplugin-kubb @kubb/core`、import は `unplugin-kubb/vite` 形式）も引き続き存在する。docs 5.x の integrations は `kubb/vite` / `kubb/webpack` / `kubb/rollup` / `kubb/rolldown` / `kubb/rspack` / `kubb/esbuild` / `kubb/farm` / `kubb/nuxt` / `kubb/astro` を使う。

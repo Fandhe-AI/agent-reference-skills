@@ -1,37 +1,33 @@
 # @kubb/mcp
 
-Kubb のコード生成機能を AI アシスタント（Claude、Cursor 等）に公開する MCP（Model Context Protocol）サーバー。
+Kubb のコード生成機能を AI アシスタント（Claude、Cursor 等）に公開する MCP（Model Context Protocol）サーバー（Kubb 5.11.0 の `packages/mcp/README.md` と docs 5.x reference/commands/mcp に準拠）。
+
+サーバーは 3 つのツールを持つ。`generate` は `kubb.config.ts` から完全なビルドを実行し、成功時にビルドイベントを、失敗時に診断を返す。`validate` は OpenAPI 仕様を検証し、`init` は `kubb.config.ts` を作成する。
+
+> This feature is under active development. Use it with caution and expect breaking changes.
 
 ## インストール
 
 ```bash
-npm install --save-dev @kubb/mcp @kubb/cli
+npm install --save-dev kubb @kubb/mcp
 ```
 
-両パッケージが必要。インストールせずに直接実行も可能:
-
-```bash
-npx @kubb/mcp
-```
-
-## クイックスタート
-
-### 1. サーバーの起動
+`kubb mcp` コマンドは `kubb` パッケージ（`@kubb/cli` を含む）から提供される。`kubb` が必要。`@kubb/mcp` 単体でも実行可能（どちらも stdio で同じサーバーを起動する）:
 
 ```bash
 npx kubb mcp
+npx @kubb/mcp
 ```
 
-stdio 経由で通信する MCP サーバーが起動し、クライアントリクエストを待機する。
+## クライアント設定
 
-### 2. Claude Desktop の設定
+Claude Code ではプロジェクトルートから登録する:
 
-設定ファイルに MCP サーバーを追加:
+```bash
+claude mcp add kubb -- npx kubb mcp
+```
 
-**ファイルの場所**:
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
-- Linux: `~/.config/Claude/claude_desktop_config.json`
+その他のクライアント（例: Claude Desktop の `claude_desktop_config.json`）:
 
 ```json
 {
@@ -44,51 +40,72 @@ stdio 経由で通信する MCP サーバーが起動し、クライアントリ
 }
 ```
 
-### 3. 設定ファイルの作成
+単体パッケージを使う場合は `"args": ["@kubb/mcp"]`。
 
-プロジェクトに `kubb.config.ts` が存在し、プラグインと入出力パスが定義されていることを確認する。
+サーバーはクライアントが起動したディレクトリで `kubb.config.*` を探し、その外を指す `config` パスを拒否する。Claude Code は `claude` を実行したフォルダーで起動する。Claude Code などは設定の `cwd` キーを無視するため、別ディレクトリで起動するクライアントでは先にプロジェクトへ移動する（macOS / Linux）:
 
-### 4. AI との対話
-
-AI アシスタントに自然言語でコード生成をリクエストする。
+```json
+{
+  "mcpServers": {
+    "kubb-petstore": {
+      "command": "sh",
+      "args": ["-c", "cd '/path/to/your/project' && npx kubb mcp"]
+    }
+  }
+}
+```
 
 ## 利用可能なツール
 
-### `generate` ツール
+### `generate`
 
-OpenAPI/Swagger 仕様からコードを生成する。
-
-**パラメータ**:
+Kubb のビルドを config から実行する。成功時はビルドイベント（docs 5.x ではファイル数と警告・診断）、失敗時は診断（code / fix / docs リンク付き）を返す。配列を export する config は最初のエントリを実行する。
 
 | パラメータ | 型 | デフォルト | 説明 |
 |-----------|-----|----------|------|
-| `config` | `string` | `kubb.config.ts` | 設定ファイルのパス |
-| `input` | `string` | — | OpenAPI 仕様ファイルのパス（設定を上書き） |
-| `output` | `string` | — | 出力ディレクトリ（設定を上書き） |
-| `logLevel` | `enum` | `info` | `silent` \| `error` \| `warn` \| `info` \| `verbose` \| `debug` |
+| `config` | `string` | 作業ディレクトリの `kubb.config.*` | 作業ディレクトリ内の設定ファイルのパス（README: `kubb.config.ts` または `.mts` / `.cts` / `.js` / `.mjs` / `.cjs`）。省略時は `kubb generate` と同様に探索（docs: `.kubbrc` → `kubb.config.*`、作業ディレクトリ・`.config/`・`configs/`・親フォルダーの順） |
+| `input` | `string` | — | OpenAPI 仕様ファイルのパス（config を上書き） |
+| `output` | `string` | — | 出力ディレクトリ（config を上書き） |
+| `logLevel` | `'silent' \| 'info' \| 'verbose'` | `info` | 関数を export する config に渡される |
 
-## startServer API
+### `validate`
 
-`@kubb/plugin-mcp` から `startServer` 関数がエクスポートされており、カスタムサーバーロジックの実装や追加トランスポート対応が可能:
+| パラメータ | 型 | 必須 | 説明 |
+|-----------|-----|------|------|
+| `input` | `string` | 必須 | OpenAPI/Swagger 仕様のパスまたは URL（同梱の OpenAPI adapter で検証） |
+
+### `init`
+
+作業ディレクトリに `kubb.config.ts` をプロンプトなしで書き出す。パッケージのインストールもプラグイン追加もせず、`kubb.config.ts` が既にあれば失敗する。docs 5.x では `plugins` 配列が空の config を書き、返信が各プラグインに `kubb add <id> --yes` を実行するよう案内する。
+
+| パラメータ | 型 | デフォルト | 説明 |
+|-----------|-----|----------|------|
+| `input` | `string` | `./openapi.yaml` | OpenAPI 仕様のパス |
+| `output` | `string` | `./src/gen` | 出力ディレクトリ |
+| `plugins` | `string` | — | プラグインのカンマ区切りリスト（例: `plugin-ts,plugin-zod`）。`packages/mcp/README.md` にのみ記載され、docs 5.x の `init` ツール表には無い |
+
+## 設定例
 
 ```typescript
-import { startServer } from '@kubb/plugin-mcp'
+import { defineConfig } from 'kubb/config'
+import { pluginTs } from '@kubb/plugin-ts'
+import { pluginAxios } from '@kubb/plugin-axios'
 
-startServer({ /* options */ })
+export default defineConfig({
+  input: './petstore.yaml',
+  output: { path: './src/generated' },
+  plugins: [pluginTs(), pluginAxios()],
+})
 ```
 
-## ユースケース
+## Notes
 
-- **初回コード生成**: 新規プロジェクトで OpenAPI 仕様から TypeScript 型を生成
-- **仕様更新時の再生成**: API 仕様変更後にクライアントコードを再生成
-- **トラブルシューティング**: verbose ログで生成問題を診断
-- **カスタムトランスポート**: `startServer` で独自 MCP サーバー実装
+- パッケージは `kubb`（旧 `@kubb/cli` ではない）。README の例は `import { defineConfig } from 'kubb'` と `adapter: adapterOas()` を使うが、docs 5.x では `kubb/config` から import し adapter は既定で供給される
+- 旧版ページにあった `@kubb/plugin-mcp` の `startServer` API の記述は、5.11.0 の `@kubb/mcp` README に記載がない（`@kubb/plugin-mcp` が生成する `server.ts` が `startServer()` を export する。plugin-mcp.md 参照）
+- 旧版の `logLevel` 値 `error` / `warn` / `debug` は 5.11.0 の README・docs に記載がない
 
-## トラブルシューティング
+## Related
 
-| 問題 | 解決策 |
-|------|--------|
-| コマンドが見つからない | `@kubb/cli` をインストール: `npm install --save-dev @kubb/cli` |
-| AI が接続できない | 設定ファイルの場所を確認、Claude Desktop を再起動、サーバーがエラーなく起動することを確認 |
-| 生成が失敗する | `kubb.config.ts` の妥当性を確認、OpenAPI 仕様のパスを確認、`logLevel: debug` を使用 |
-| 進捗が表示されない | MCP クライアントのバッファリングに依存、生成はバックグラウンドで継続 |
+- [cli.md](./cli.md)
+- [@kubb/plugin-mcp](../plugins/plugin-mcp.md)
+- [ai/mcp](../ai/mcp.md)

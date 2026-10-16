@@ -24,11 +24,14 @@ Generator は最大 3 つのメソッドを実装する。それぞれ仕様の�
 
 ## Notes
 
+- The concept page was removed in the 5.x docs and moved to the Kit reference (`reference/kit/generators`; see [generators.md](../kit/generators.md))
+- v5: the plugin-level `generators` option is removed. Write a custom plugin instead (migration guide, "Shared plugin options")
 - Generator の実装手順は [creating-plugins.md](./creating-plugins.md) の「Generators」セクションを参照
 - Generator が出力する `FileNode` の命名・パスは [resolvers.md](./resolvers.md) が決定する
 
 ## Related
 
+- [kit/generators](../kit/generators.md)
 - [architecture](./architecture.md)
 - [concepts-plugins](./concepts-plugins.md)
 - [ast](./ast.md)

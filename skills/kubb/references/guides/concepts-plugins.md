@@ -57,12 +57,16 @@ Plugin 同士は単独で動くことは稀。クライアントプラグイン�
 
 ## Notes
 
+- The standalone concept page was removed in the 5.x docs. Plugin content now lives in the Kit reference (`reference/kit/plugins`; see [plugins.md](../kit/plugins.md)) and the extension model overview (`explanation/extensions`; see [overview.md](../plugins/overview.md))
+- v5: Plugins are authored with `defineExtension({ kind: 'plugin' })`; `definePlugin` still works but is deprecated. Dependencies are declared as a record keyed by plugin name (a missing required entry fails with `KUBB_MISSING_DEPENDENCY`)
 - 各 Plugin の設定オプションは `references/plugins/` 配下の個別ページを参照（例: [plugin-ts.md](../plugins/plugin-ts.md)）
 - `definePlugin` 等の正確なシグネチャは Kit API リファレンス（[kit-api.md](../reference/kit-api.md)）を参照
 - Plugin の命名・ファイル配置を変更するだけなら独自 Plugin を書かず [resolver-customization.md](./resolver-customization.md) を参照
 
 ## Related
 
+- [kit/plugins](../kit/plugins.md)
+- [plugins overview](../plugins/overview.md)
 - [architecture](./architecture.md)
 - [generators](./generators.md)
 - [resolvers](./resolvers.md)

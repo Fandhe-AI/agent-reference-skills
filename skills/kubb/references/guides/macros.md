@@ -1,6 +1,6 @@
 # Macro の作成
 
-Macro は Kubb の [AST](./ast.md) に対する、名前付きで合成可能な変換。Adapter が生成する schema・operation ノードを Generator がコードを印字する前に書き換える。これにより Adapter や Generator をフォークせずに、シンボルのリネーム・フィールドの型変更・メタデータの削除・形状の正規化ができる。Macro は共有された AST 上で動作するため、同じ Macro が全ての入力 Adapter（OpenAPI、AsyncAPI、JSON Schema）と全ての出力対象（TypeScript、Zod、任意の [Printer](./printers.md)）で動作する。
+Macro は Kubb の [AST](./ast.md) に対する、名前付きで合成可能な変換。Adapter が生成する schema・operation ノードを Generator がコードを印字する前に書き換える。これにより Adapter や Generator をフォークせずに、シンボルのリネーム・フィールドの型変更・メタデータの削除・形状の正規化ができる。Macro は共有された AST 上で動作するため、同じ Macro が全ての入力 Adapter と全ての出力対象（TypeScript、Zod、任意の [Printer](./printers.md)）で動作する。
 
 エンジン（`defineMacro`、`composeMacros`、`applyMacros`、`Macro` 型）は `kubb/kit` の `ast` namespace に、変換対象のノードツリーと並んで含まれる。標準搭載の Macro プリセットは `kubb/kit` 自体の named export。
 
@@ -23,7 +23,7 @@ type Macro = {
 
 ## Macro を書く
 
-`defineMacro` は Macro に型を付け、`definePlugin` が Plugin に対して行うのと同様に定義を 1 箇所にまとめる。
+`defineMacro` は Macro に型を付け、定義を 1 箇所にまとめる。
 
 ```typescript
 import { ast } from 'kubb/kit'
@@ -78,10 +78,10 @@ const next = ast.applyMacros(root, [macroDto, macroFetchPrefix])
 
 ## Plugin での Macro 利用
 
-Plugin の `macros` オプション経由で渡すか、`kubb:plugin:setup` から `addMacro`・`setMacros` で登録する。Macro は Plugin ごとに実行されるため、ある Plugin の Macro が他の Plugin が見るノードを変えることはない。
+Plugin の `macros` オプション経由で渡すか、`setup` から `addMacro`・`setMacros` で登録する。Macro は Plugin ごとに実行されるため、ある Plugin の Macro が他の Plugin が見るノードを変えることはない。
 
 ```typescript
-import { ast, definePlugin } from 'kubb/kit'
+import { ast, defineExtension } from 'kubb/kit'
 
 const macroDropDescriptions = ast.defineMacro({
   name: 'drop-descriptions',
@@ -90,14 +90,14 @@ const macroDropDescriptions = ast.defineMacro({
   },
 })
 
-export const pluginRename = definePlugin(() => ({
-  name: 'plugin-rename',
-  hooks: {
-    'kubb:plugin:setup'(ctx) {
-      ctx.addMacro(macroDropDescriptions)
-    },
+export const pluginRename = defineExtension({
+  kind: 'plugin',
+  meta: { name: 'plugin-rename' },
+  setup(options, kubb) {
+    kubb.addMacro(macroDropDescriptions)
+    return options
   },
-}))
+})
 ```
 
 Macro は Resolver のオプションが計算される前に実行される。したがってリネームされた `operationId` や `SchemaNode.name` は `resolveOptions`・`resolvePath`・`resolveFile` に反映される。
@@ -134,6 +134,7 @@ Macro はただの値なので、export して必要な場所で import でき�
 
 ## Notes
 
+- Synced with docs 5.x how-to/macros ("Transform schemas with macros", Kubb 5.11.0). The 5.x page's plugin example uses `defineExtension({ kind: 'plugin' })` with `kubb.addMacro(...)` in `setup`; `definePlugin` is deprecated. The `match` / `enforce` shape of a macro is documented in [ast.md](../kit/ast.md) (Macro options and callbacks)
 - Macro と [Printer](./printers.md) の使い分けは printers.md の「Printer override or macro」セクションを参照
 - Macro は AST の 2 回目のパスとして [architecture.md](./architecture.md) のパイプラインに位置づけられる
 

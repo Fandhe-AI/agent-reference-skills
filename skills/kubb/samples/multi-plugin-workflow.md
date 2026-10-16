@@ -14,11 +14,12 @@ import { pluginFaker } from '@kubb/plugin-faker'
 import { pluginMsw } from '@kubb/plugin-msw'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: {
     path: './src/gen',
     clean: true,
-    barrelType: 'named',
+    barrel: { type: 'named' },
+    postGenerate: ['npm run typecheck'],
   },
   adapter: adapterOas({
     validate: true,
@@ -39,6 +40,7 @@ export default defineConfig({
       output: { path: './hooks' },
       group: { type: 'tag' },
       client: 'fetch',
+      hooks: true,
       suspense: {},
     }),
     pluginZod({
@@ -58,9 +60,6 @@ export default defineConfig({
       parser: 'faker',
     }),
   ],
-  hooks: {
-    done: ['npm run typecheck'],
-  },
 })
 ```
 
@@ -80,9 +79,11 @@ src/gen/
 
 ## Notes
 
+- v5 では `output.barrel`（ルート `index.ts`）・`output.format`・`output.lint` の既定がすべて `false`。ルートバレルが必要なため上記で `barrel: { type: 'named' }` を明示している（旧 `barrelType: 'named'` の後継）。整形・lint が必要なら `format: 'auto'` / `lint: 'auto'` 等を指定する
 - プラグインの順序は `pluginTs` → クライアント系（`pluginFetch` / `pluginAxios`）→ その他の順を守る。v5 で `pluginOas` は廃止され、パース・バリデーションはトップレベルの `adapter: adapterOas()` が担う
 - `dateType` / `unknownType` / `enumSuffix` は v5 でプラグイン個別オプションから `adapterOas()` に集約された。旧 `pluginOas` にあった `collisionDetection` は `adapterOas` の options 一覧に存在しない。命名衝突が疑われる場合は各プラグインの `resolver` で個別に名前解決する
-- `hooks.done` で生成後に任意のシェルコマンドを実行できる
+- v5 では `hooks.done` は `output.postGenerate`（文字列または `{ name, command }` の配列）に置き換わった。フォーマット・lint の後に実行され、失敗は `KUBB_POST_GENERATE_FAILED`
+- `pluginReactQuery` は v5 で `hooks` の既定が `false` のため、`use*` hooks と `suspense` を使うには `hooks: true` が必要
 - `pluginFetch` の `validator: 'zod'`（旧 `parser: 'zod'`）は `pluginZod` と組み合わせてレスポンスを自動バリデーションする
 - `pluginZod` の旧 `typed` は `inferred` に改称され、Zod バージョン切替用の `version` オプションは廃止された（常に最新の Zod API 向けに生成）
 - `pluginReactQuery` の `client` は `'fetch'` / `'axios'` の文字列で対応クライアントプラグインを指定する

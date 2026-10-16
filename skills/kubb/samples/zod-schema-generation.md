@@ -10,7 +10,7 @@ import { pluginTs } from '@kubb/plugin-ts'
 import { pluginZod } from '@kubb/plugin-zod'
 
 export default defineConfig({
-  input: { path: './petStore.yaml' },
+  input: './petStore.yaml',
   output: { path: './src/gen', clean: true },
   adapter: adapterOas({ dateType: 'stringOffset', unknownType: 'unknown' }),
   plugins: [
@@ -26,7 +26,7 @@ export default defineConfig({
 
 ```bash
 # インストール
-npm install --save-dev kubb@beta @kubb/plugin-ts@beta @kubb/plugin-zod@beta
+npm install --save-dev kubb @kubb/plugin-ts @kubb/plugin-zod
 npm install zod
 ```
 

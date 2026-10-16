@@ -1,39 +1,91 @@
 # MSW Example
 
-OpenAPI 仕様から MSW（Mock Service Worker）ハンドラーを生成する設定例。
+OpenAPI 仕様から MSW（Mock Service Worker）ハンドラーと Faker モックを生成する設定例。
 
-## kubb.config.ts
+## kubb.config.js
 
 ```typescript
-import { defineConfig } from '@kubb/core'
-import { pluginOas } from '@kubb/plugin-oas'
-import { pluginTs } from '@kubb/plugin-ts'
+import { adapterOas } from '@kubb/adapter-oas'
 import { pluginFaker } from '@kubb/plugin-faker'
 import { pluginMsw } from '@kubb/plugin-msw'
+import { pluginTs } from '@kubb/plugin-ts'
+import { defineConfig } from 'kubb/config'
 
-export default defineConfig({
-  input: { path: './petStore.yaml' },
-  output: { path: './src/gen', clean: true },
-  plugins: [
-    pluginOas({ generators: [] }),
-    pluginTs({ output: { path: 'models' } }),
-    pluginFaker({ output: { path: './mocks' } }),
-    pluginMsw({
-      output: { path: './msw' },
-      group: {
-        type: 'tag',
-        name: ({ group }) => `${group}Handlers`,
-      },
-      handlers: true,
-      parser: 'faker',
-    }),
-  ],
+export default defineConfig(() => {
+  return {
+    root: '.',
+    input: './petStore.yaml',
+    output: {
+      path: './src/gen',
+      clean: true,
+      lint: false,
+      format: false,
+      postGenerate: ['npm run typecheck'],
+    },
+    adapter: adapterOas({ unknownType: 'unknown', enums: 'root' }),
+    plugins: [
+      pluginTs({
+        output: {
+          path: 'models',
+          mode: 'directory',
+        },
+      }),
+      pluginFaker({
+        output: {
+          path: './mocks',
+          mode: 'directory',
+        },
+        group: {
+          type: 'tag',
+          name({ group }) {
+            return `${group}Mocks`
+          },
+        },
+        seed: [220],
+      }),
+      pluginMsw({
+        output: {
+          path: './msw',
+          mode: 'directory',
+        },
+        handlers: true,
+        group: {
+          type: 'tag',
+          name({ group }) {
+            return `${group}/Handlers`
+          },
+        },
+        baseURL: 'http://localhost:3000',
+      }),
+    ],
+  }
 })
 ```
 
 ## 依存関係
 
-```bash
-npm install --save-dev @kubb/cli @kubb/core @kubb/plugin-oas @kubb/plugin-ts @kubb/plugin-faker @kubb/plugin-msw
-npm install msw @faker-js/faker
+```json
+{
+  "dependencies": {
+    "@faker-js/faker": "^10.6.0",
+    "@kubb/adapter-oas": "catalog:",
+    "@kubb/plugin-faker": "workspace:*",
+    "@kubb/plugin-msw": "workspace:*",
+    "@kubb/plugin-ts": "workspace:*",
+    "@mswjs/http-middleware": "^0.10.3",
+    "kubb": "catalog:",
+    "msw": "^2.15.0"
+  }
+}
 ```
+
+## Notes
+
+- Source: `examples/msw` of kubb-labs/plugins at tag `@kubb/plugin-client@5.5.15` (`kubb.config.js`, `package.json`). `catalog:` / `workspace:*` are monorepo specifiers; replace with real versions outside the repo
+- This config does not set `parser: 'faker'`, so handlers use the default `data` parser (see [../plugins/plugin-msw.md](../plugins/plugin-msw.md)). The package script `start:server` runs `bun ./src/server.ts` and declares `node >=22.12`
+- Replaces the v3/v4 shape (`@kubb/core`, `pluginOas`, `input: { path }`)
+
+## Related
+
+- [../plugins/plugin-msw.md](../plugins/plugin-msw.md)
+- [faker.md](./faker.md)

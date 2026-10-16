@@ -1,34 +1,40 @@
 # mcp
 
-AI アシスタント連携用の MCP（Model Context Protocol）サーバー操作コマンド。
+AI アシスタント連携用の MCP（Model Context Protocol）サーバー操作コマンド（kubb 5.11.0 基準）。
 
-## MCP パッケージのインストール
+> 公式ドキュメントは MCP 機能を「開発中のため破壊的変更あり」と注記している。
 
-```sh
-npm install --save-dev @kubb/mcp @kubb/cli
-```
-
-## MCP サーバーの起動（インストール不要）
+## MCP サーバーの起動
 
 ```sh
 npx kubb mcp
 ```
 
-stdio 経由で通信する MCP サーバーが起動し、AI クライアントのリクエストを待機する。
+stdio 経由で通信する MCP サーバーが起動する。`kubb mcp` は `@kubb/cli` 由来で、`kubb` パッケージに含まれる。サーバーはクライアントが起動したディレクトリで `kubb.config.*` を探す。
 
-## MCP サーバーの直接実行
+## スタンドアロンでの実行
 
 ```sh
 npx @kubb/mcp
 ```
 
-## Claude Desktop への MCP サーバー登録
+`kubb mcp` と同じサーバーが stdio で起動する。`@kubb/mcp` は別パッケージとして単体インストールも可能で、`kubb mcp` の利用自体には `kubb` のインストールで足りる。
 
-以下の設定を `claude_desktop_config.json` に追加する:
+```sh
+npm install -D @kubb/mcp
+```
 
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
-- Linux: `~/.config/Claude/claude_desktop_config.json`
+## Claude Code への登録
+
+```sh
+claude mcp add kubb -- npx kubb mcp
+```
+
+Claude Code は `claude` を実行したフォルダーでサーバーを起動するため、プロジェクトルートで実行する。
+
+## Claude Desktop 等への MCP サーバー登録
+
+MCP クライアントの設定（例: `claude_desktop_config.json`）に追加する:
 
 ```json
 {
@@ -41,36 +47,46 @@ npx @kubb/mcp
 }
 ```
 
-設定追加後、Claude Desktop を再起動する。
+スタンドアロン版を使う場合:
 
-## Agent サーバーの起動（Kubb Studio 連携）
-
-```sh
-kubb agent start
+```json
+{
+  "mcpServers": {
+    "kubb": {
+      "command": "npx",
+      "args": ["@kubb/mcp"]
+    }
+  }
+}
 ```
 
-Kubb Studio との WebSocket 連携用サーバーを起動する。
+設定ファイルの配置パスは原本の対象 README に記載が無いため要確認。
 
-```sh
-kubb agent start --host 0.0.0.0 --port 8080
+## 作業ディレクトリが異なるクライアント向け
+
+`cwd` キーを無視するクライアントでは、プロジェクトへ移動してから起動する（macOS / Linux）:
+
+```json
+{
+  "mcpServers": {
+    "kubb-petstore": {
+      "command": "sh",
+      "args": ["-c", "cd '/path/to/your/project' && npx kubb mcp"]
+    }
+  }
+}
 ```
 
-ホストとポートを指定して起動する。
+## 提供ツール
 
-## Agent サーバーの環境変数
+| ツール | パラメーター | 説明 |
+| --- | --- | --- |
+| `generate` | `config?` / `input?` / `output?` / `logLevel?`（`silent` / `info` / `verbose`） | config から Kubb パイプラインを実行。失敗時は診断を返す |
+| `validate` | `input`（必須、パスまたは URL） | OpenAPI / Swagger を検証 |
+| `init` | `input?`（既定 `./openapi.yaml`）/ `output?`（既定 `./src/gen`） | 作業ディレクトリに `kubb.config.ts` を書き出す。パッケージはインストールせず、既存時は失敗 |
 
-| 変数 | 説明 |
-|------|------|
-| `PORT` | サーバーポート |
-| `KUBB_ROOT` | プロジェクトルート |
-| `KUBB_CONFIG` | 設定ファイルのパス |
-| `KUBB_AGENT_TOKEN` | 認証トークン（Kubb Studio で作成） |
-| `KUBB_STUDIO_URL` | Studio エンドポイント |
-| `KUBB_ALLOW_WRITE` | 書き込み許可 |
-| `KUBB_ALLOW_ALL` | 全権限 |
+`init` の後は各プラグインに対して `kubb add <id> --yes` を実行する。
 
-## Agent サーバーのヘルスチェック
+> `@kubb/mcp` の README は `init` に `plugins` パラメーターを挙げているが、公式 `kubb mcp` リファレンスの `init` 表には無い。差異があるため要確認。
 
-```sh
-curl http://localhost:3000/api/health
-```
+> `kubb agent start` は 5.11.0 のコマンド一覧に存在しないため収録しない。Studio 連携は `cli.md` の `kubb studio` を参照。

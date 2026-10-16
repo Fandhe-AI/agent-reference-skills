@@ -69,6 +69,8 @@ pluginZod({
 })
 ```
 
+Zod のハンドラーは `this.options.direction` も読める。レスポンス schema の印字中は `'decode'`、リクエストボディとパラメーターの印字中は `'encode'`。方向ごとに異なる式を返すと、Plugin はそのノードを双方向変換として扱い、リクエストボディが解決する `${name}InputSchema` バリアントも出力する。
+
 ## Faker モック
 
 `@kubb/plugin-faker` も文字列を印字し、schema ノードごとに 1 つの Faker 式を出力する。この例は仕様が integer を宣言する箇所で float を生成する。
@@ -97,6 +99,8 @@ Macro はノードそのものを、印字される前に書き換える。Macro
 
 ## Notes
 
+- Synced with docs 5.x how-to/printers ("Customize generated code with printers", Kubb 5.11.0). Printer handler context and signatures are in the AST reference ([ast.md](../kit/ast.md), "Printer handlers and context")
+- Pass overrides through `createPrinter`'s `overrides` field rather than spreading them into `nodes`, otherwise `this.base` cannot find the original handler (AST reference)
 - Macro との使い分けは上記「Printer の上書きか Macro か」を参照。命名・パスの変更は [resolver-customization.md](./resolver-customization.md) を使う
 
 ## Related

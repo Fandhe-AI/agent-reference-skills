@@ -1,68 +1,33 @@
 # @kubb/core
 
-全 Kubb プラグインの基盤となるコアモジュール。`build()` API を提供する。
+Kubb のコアエンジン（プラグインドライバー・ファイルマネージャー・ビルド制御層）。Kubb 5.11.0 の `packages/core/README.md` と docs 5.x reference/kit/engine に準拠。
 
-## インストール
+## Usage
+
+`@kubb/core` provides the plugin driver, file manager, `defineConfig`, `defineExtension`, `defineMiddleware`, and the build orchestration layer used by every Kubb plugin. It is an internal library: install the `kubb` meta-package instead and author plugins, generators, resolvers, parsers, and adapters through its `kubb/kit` subpath, which re-exports the authoring surface of this package.
 
 ```bash
-bun add -d @kubb/core
-pnpm add -D @kubb/core
-npm install --save-dev @kubb/core
-yarn add -D @kubb/core
+npm install @kubb/core
 ```
 
-## build() 関数
-
-コード生成プロセスを開始する主要関数。設定に定義されたプラグインとライフサイクルメソッドをトリガーする。
+`createKubb` can be imported from `@kubb/core` for a bare engine without package defaults. `createKubb` from `kubb` and `defineConfig` from `kubb/config` apply the package defaults (OpenAPI adapter, parsers, barrel plugin).
 
 ```typescript
-import { build } from '@kubb/core'
-
-const { error, files, driver } = await build({
-  config: {
-    root: '.',
-    input: {
-      data: '',
-    },
-    output: {
-      path: './gen',
-    },
-  },
-})
-
-console.log(files)
+import { createKubb } from '@kubb/core'
 ```
 
-## 戻り値
+## Cancellation
 
-| プロパティ | 型 | 説明 |
-|-----------|-----|------|
-| `error` | `Error \| undefined` | 生成中に発生したエラー |
-| `files` | `KubbFile[]` | 生成されたファイル出力 |
-| `driver` | `PluginDriver` | プラグイン実行を管理するドライバーインスタンス |
+`createKubb` accepts an `AbortSignal`. The engine checks it before setup, while it parses input and normalizes plugins, and before each generated-file write. Plugin authors receive the same signal in their generator context when they need to stop their own asynchronous work.
 
-## ストレージ API（v4.36.0+）
+## Notes
 
-カスタムストレージバックエンドを定義するファクトリ関数:
+- `defineConfig` is imported from `kubb/config` in v5, not from `@kubb/core`
+- The v4 `build({ config })` function and its `{ error, files, driver }` result are not documented in the 5.11.0 README. Use `createKubb(...).safeBuild()` which returns `{ files, storage, driver, diagnostics }` (see samples/programmatic-build.md and kit-api.md)
+- The previous page listed the storage helpers (`defineStorage`, `fsStorage`, `memoryStorage`) and `URLPath` as `@kubb/core` exports (v4.36.0+ / v4.36.1+). The 5.11.0 core README does not list them; in v5 storage helpers are imported from `kubb/kit` (migration guide: "Move to top-level `storage` and import helpers from `kubb/kit`")
 
-```typescript
-import { defineStorage, fsStorage, memoryStorage } from '@kubb/core'
-```
+## Related
 
-| エクスポート | 説明 |
-|------------|------|
-| `defineStorage()` | カスタムストレージドライバーの定義 |
-| `fsStorage()` | ファイルシステムストレージ（デフォルト） |
-| `memoryStorage()` | インメモリストレージ（テスト用） |
-
-## URLPath ヘルパー（v4.36.1+）
-
-カスタムプラグインでパスの標準化・組み立てに使用するユーティリティクラス:
-
-```typescript
-import { URLPath } from '@kubb/core'
-```
-
-## 設定の型
-
-`build()` は `UserConfig` 型のオブジェクトを受け取る。詳細は [quick-start](../getting-started/quick-start.md) を参照。
+- [overview.md](./overview.md)
+- [../reference/kit-api.md](../reference/kit-api.md)
+- [../getting-started/quick-start.md](../getting-started/quick-start.md)
