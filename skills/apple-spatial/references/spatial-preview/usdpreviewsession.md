@@ -45,6 +45,7 @@ try await session.start(endpoint: endpoint)
 - `USDPreviewSession.Event` cases: `error(_:)` (session error, such as editing a read-only stage), `playbackStateChanged(isPlaying:)` (USD animation playback state changed), `timeChanged(_:)` (USD animation timecode changed). Both enums are Sendable; `Error` also conforms to `Error`, `Equatable`, `Hashable`.
 - For an app with its own OpenUSD runtime, see the bridging article summarized in overview.md.
 - Conforms to `SpatialPreviewSession`, `Observable`, `Sendable`, `SendableMetatype`.
+- Source: https://developer.apple.com/documentation/spatialpreview/usdpreviewsession (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

@@ -57,6 +57,7 @@ func syncEdits(editLayerPath: String) {
 - Apps that cannot produce a minimal edit layer can export the complete scene and call `USDStage.reload()` or `USDLayer.reload()`. USDKit diffs the old and new stage and only deltas are synced, but the full scene is exported on every change, which can be slow for large scenes.
 - Read `state` before any sync call: `waiting` (no device yet, sync calls have no effect), `connected` (push edits), `interrupted` (queue pending edits and replay when `connected` again), `invalidated` (release the session and create a new one to reconnect).
 - Distinct from Core ML / Create ML (apple-ml skill) and RealityKit rendering; this framework is a macOS-to-visionOS content bridge.
+- Source: https://developer.apple.com/documentation/spatialpreview and https://developer.apple.com/documentation/spatialpreview/bridging-an-external-usd-runtime-to-spatial-preview (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

@@ -37,6 +37,7 @@ static func render(_: USDStage, to: Entity, at: USDStage.TimeCode) async -> USDS
 - Available: iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+. Module: USDKit (related module: RealityKit). Conforms to `Component`, `Copyable`, `Decodable`, `Encodable`, `Equatable`, `Escapable`.
 - Attach the component to an entity to render USD content as child entities. Manual mode gives control of when rendering occurs; automatic mode updates when the stage or time code changes.
 - This is a USDKit-module RealityKit component, distinct from loading USDZ through `Entity(named:)` in RealityKit.
+- Source: https://developer.apple.com/documentation/usdkit/usdstagecomponent (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

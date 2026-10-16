@@ -27,6 +27,7 @@ let uniforms = ComputeGraphSharedUniforms()
 - Available: iOS 27.0+, iPadOS 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+
 - Only one instance of this component should exist in a scene at a time.
 - Conforms to `Component` and `TransientComponent` (not saved to file or cloned).
+- Source: https://developer.apple.com/documentation/realitykit/computegraphshareduniforms (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

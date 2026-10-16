@@ -52,7 +52,7 @@ The primitive topology used to assemble output geometry for an output stage. Set
 - `CoordinateSpace` and `Sorting` conform to `CaseIterable`, `Copyable`, `Decodable`, `Encodable`, `Equatable`, `Escapable`, `Hashable`, `RawRepresentable`, `Sendable`, `SendableMetatype`. `Topology` conforms to `CaseIterable`, `Copyable`, `Equatable`, `Escapable`, `Hashable`, `RawRepresentable`, `Sendable`, `SendableMetatype` (no Codable).
 - `CoordinateSpace` here is the Compute Graph type, not RealityKit's coordinate-space APIs.
 - Part of Compute Graph (RealityKit particle / compute-simulation node graph), distinct from `MPSGraph` in the apple-silicon skill.
-- Sources: https://developer.apple.com/documentation/computegraph/coordinatespace, .../sorting, .../computenodegraph/topology (fetched 2026-10).
+- Sources: https://developer.apple.com/documentation/computegraph/coordinatespace, https://developer.apple.com/documentation/computegraph/sorting, https://developer.apple.com/documentation/computegraph/computenodegraph/topology (fetched 2026-10).
 
 ## Related
 

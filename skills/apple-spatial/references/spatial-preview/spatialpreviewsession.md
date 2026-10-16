@@ -27,6 +27,7 @@ func close() async throws
 - Available: macOS 27.0+.
 - All three members are protocol requirements.
 - Conforming types: `DocumentPreviewSession`, `USDPreviewSession`. Inherits from `Observable`.
+- Source: https://developer.apple.com/documentation/spatialpreview/spatialpreviewsession (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

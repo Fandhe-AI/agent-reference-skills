@@ -31,6 +31,7 @@ func cameraFrameUpdates(for: CameraVideoFormat) -> CameraFrameProvider.CameraFra
 - The page body states no entitlement or enterprise requirement. The requirement is gated by `requiredAuthorizations` only (`static var requiredAuthorizations: [ARKitSession.AuthorizationType]`).
 - `CameraFrame` (struct): the representation of a camera frame.
 - `CameraVideoFormat` (struct): a structure that represents a camera video format.
+- Source: https://developer.apple.com/documentation/arkit/cameraframeprovider (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

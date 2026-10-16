@@ -42,6 +42,7 @@ try await session.updateContents(url: spatialContentURL)
 - Use `updateContents(data:)` when content is already in memory; use `updateContents(url:)` to stream from a file URL and avoid loading the entire file into memory. Call either each time the document changes.
 - Track connection changes with `SpatialPreviewSessionState`; call `close()` to end the session cleanly.
 - Conforms to `SpatialPreviewSession`, `Observable`, `Sendable`, `SendableMetatype`.
+- Source: https://developer.apple.com/documentation/spatialpreview/documentpreviewsession (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

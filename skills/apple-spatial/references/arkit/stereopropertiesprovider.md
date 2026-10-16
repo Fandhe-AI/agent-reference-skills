@@ -25,6 +25,7 @@ var latestViewpointProperties: ViewpointProperties?
 
 - visionOS 2.4+. Conforms to `DataProvider`.
 - `ViewpointProperties` (struct): a record of render camera transforms at some particular time.
+- Source: https://developer.apple.com/documentation/arkit/stereopropertiesprovider (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

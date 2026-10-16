@@ -29,6 +29,7 @@ func importCustomIBLTexture(data: Data) throws -> USDPlayer.TextureData
 - Available: iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+. Module: USDKit (related module: RealityKit).
 - `update(timeCode:)` updates the stage to the time code and returns a `FrameUpdate` describing all scene changes, or `nil`.
 - `importCustomIBLTexture(data:)` imports a custom IBL (image-based lighting) texture.
+- Source: https://developer.apple.com/documentation/usdkit/usdplayer (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

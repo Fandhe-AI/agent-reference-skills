@@ -25,6 +25,7 @@ var viewDirection: SIMD3<Float>?
 - Attach to an entity to supply the simulation with an observer's position and direction, used for view-dependent effects such as billboard orientation or camera-facing particles.
 - Both properties are optional; when `nil`, the simulation falls back to its default viewpoint behavior.
 - Conforms to `Component` and `TransientComponent`.
+- Source: https://developer.apple.com/documentation/realitykit/computegraphviewpointcomponent (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

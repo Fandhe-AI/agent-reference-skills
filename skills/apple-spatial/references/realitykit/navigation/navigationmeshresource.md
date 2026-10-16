@@ -59,6 +59,7 @@ Supporting types: `Configuration` (defines how the mesh is created), `Area`, `Fl
 - Conforms to `Resource`, `Sendable`, `SendableMetatype`.
 - Processing input geometry may not match the final geometry: the system simplifies regions and applies the configuration to decide which areas are walkable.
 - This is RealityKit's ECS pathfinding type, distinct from view/screen navigation types of the same or similar name in other frameworks.
+- Source: https://developer.apple.com/documentation/realitykit/navigationmeshresource (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

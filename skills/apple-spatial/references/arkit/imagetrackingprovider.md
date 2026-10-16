@@ -29,6 +29,7 @@ var allAnchors: [ImageAnchor]
 - `ImageAnchor` (struct): a 2D image's position in a person's surroundings.
 - `ReferenceImage` (struct): a 2D image the system uses as a reference to find the same image in a person's surroundings.
 - Official articles: "Tracking preregistered images in 3D space", "Detecting Images in an AR Experience", "Tracking and altering images".
+- Source: https://developer.apple.com/documentation/arkit/imagetrackingprovider (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

@@ -31,6 +31,7 @@ func timeSamples(in: ClosedRange<USDStage.TimeCode>) -> [USDStage.TimeCode]
 - Available: iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+. Module: USDKit. Conforms to `Equatable`, `Hashable`.
 - `transform(at:)` computes the transformation matrix at the specified time.
 - Add operations to a prim with `USDPrim.addTransformOperation(type:)` (takes a `USDTransformOperation.Kind`); remove all with `USDPrim.clearTransformOperations()`.
+- Source: https://developer.apple.com/documentation/usdkit/usdtransformoperation (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

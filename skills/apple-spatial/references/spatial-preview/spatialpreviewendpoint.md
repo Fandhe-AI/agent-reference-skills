@@ -19,6 +19,7 @@ try await session.start(endpoint: endpoint)
 - Available: macOS 27.0+.
 - Obtain an endpoint from `ConnectedSpatialEndpointObserver.endpoint` when a device is connected via Mac Virtual Display, or let the user select one with `SpatialPreviewDevicePicker`. Pass it to `DocumentPreviewSession.start(endpoint:)` or `USDPreviewSession.start(endpoint:parameters:viewerOptions:)` to begin a session.
 - Conforms to `CustomReflectable`, `CustomStringConvertible`, `Decodable`, `Encodable`, `Equatable`, `Hashable`, `Sendable`, `SendableMetatype`.
+- Source: https://developer.apple.com/documentation/spatialpreview/spatialpreviewendpoint (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

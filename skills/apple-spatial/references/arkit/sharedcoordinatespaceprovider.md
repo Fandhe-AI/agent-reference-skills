@@ -33,6 +33,7 @@ var eventUpdates: some AsyncSequence<SharedCoordinateSpaceProvider.Event, Never>
 
 - visionOS 26.0+. Conforms to `DataProvider`.
 - Use outside a FaceTime call requires the "Shared Coordinate Space access" entitlement (`com.apple.developer.arkit.shared-coordinate-space.allow`): "You may access the shared coordinate space outside the context of a FaceTime call with the Shared Coordinate Space access entitlement."
+- Source: https://developer.apple.com/documentation/arkit/sharedcoordinatespaceprovider (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

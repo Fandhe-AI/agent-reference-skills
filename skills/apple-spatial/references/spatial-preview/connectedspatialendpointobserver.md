@@ -30,6 +30,7 @@ let endpoint = try await observer.endpoint
 - `ConnectedSpatialEndpointObserver.UnavailableError` is thrown when accessing `endpoint` while no Mac Virtual Display device is available.
 - To discover another device instead, use `SpatialPreviewDevicePicker`.
 - Conforms to `Observable`, `Sendable`, `SendableMetatype`.
+- Source: https://developer.apple.com/documentation/spatialpreview/connectedspatialendpointobserver (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

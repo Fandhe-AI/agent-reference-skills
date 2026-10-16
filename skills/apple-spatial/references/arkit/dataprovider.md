@@ -21,6 +21,7 @@ protocol DataProvider : AnyObject, CustomStringConvertible, Sendable
 - macOS 26.0+, visionOS 1.0+.
 - Most providers supply an asynchronous sequence of updated anchors for the provider's data type. For example, a `HandTrackingProvider` instance's `anchorUpdates` property gives updates over time for hand anchors.
 - Conforming types: `AccessoryTrackingProvider`, `BarcodeDetectionProvider`, `CameraFrameProvider`, `CameraRegionProvider`, `EnvironmentLightEstimationProvider`, `HandTrackingProvider`, `ImageTrackingProvider`, `ObjectTrackingProvider`, `PlaneDetectionProvider`, `RoomTrackingProvider`, `SceneReconstructionProvider`, `SharedCoordinateSpaceProvider`, `StereoPropertiesProvider`, `VisualFidelityProvider`, `WorldTrackingProvider`.
+- Source: https://developer.apple.com/documentation/arkit/dataprovider (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

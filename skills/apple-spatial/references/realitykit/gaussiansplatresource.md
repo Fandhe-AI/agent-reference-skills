@@ -32,6 +32,7 @@ entity.components.set(GaussianSplatComponent(resource))
 - Available: iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, visionOS 27.0+ (no tvOS)
 - The framework references the resource's buffers rather than copying them, so you can update the contents of the underlying `LowLevelBuffer` instances to animate the splats over time.
 - Attach to an entity through `GaussianSplatComponent`.
+- Source: https://developer.apple.com/documentation/realitykit/gaussiansplatresource (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

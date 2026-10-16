@@ -33,6 +33,7 @@ func anchorUpdates(forID: UUID) -> AnchorUpdateSequence<CameraRegionAnchor>
 - visionOS 26.0+. Conforms to `DataProvider`. Enterprise-only.
 - An enterprise license is required to use the CameraRegionProvider. The provider will not deliver any data without it. The app must include the Camera Region access entitlement. (Entitlement key: `com.apple.developer.arkit.camera-region.allow`.)
 - `CameraRegionAnchor` (struct): represents a region in space for capturing a camera stream.
+- Source: https://developer.apple.com/documentation/arkit/cameraregionprovider (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

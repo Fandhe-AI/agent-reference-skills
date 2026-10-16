@@ -15,6 +15,7 @@ var errorDescription: String? { get }   // localized message describing what err
 - Available: iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+. Module: USDKit (related module: RealityKit).
 - Occurs while rendering or converting a USD stage for RealityKit.
 - Conforms to `Error`, `LocalizedError`, `Sendable`, `SendableMetatype`.
+- Source: https://developer.apple.com/documentation/usdkit/usdrendererror (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

@@ -25,6 +25,7 @@ init(isPresented: Binding<Bool>, onSelect: (SpatialPreviewEndpoint) -> Void)
 - A SwiftUI `View` that presents nearby companion devices and calls its closure with the chosen `SpatialPreviewEndpoint`; use it when you want to let someone select a device interactively.
 - Conforms to `View`, `Sendable`, `SendableMetatype`.
 - `ConnectedSpatialEndpointObserver` is the alternative for a device already connected via Mac Virtual Display.
+- Source: https://developer.apple.com/documentation/spatialpreview/spatialpreviewdevicepicker (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

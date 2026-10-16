@@ -30,6 +30,7 @@ var fidelityDataUpdates: some AsyncSequence<VisualFidelityData, Never>
 - `VisualFidelityData` (struct): visual fidelity data containing device fit and field of view verification.
 - `FieldOfViewAnchor` (struct): an anchor representing a set of field of view (FoV) boundary polygon points in immersive space.
 - `DeviceFitStatus` (enum): device fit validation status indicating the user's eye position relative to the optimal device fit range.
+- Source: https://developer.apple.com/documentation/arkit/visualfidelityprovider (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

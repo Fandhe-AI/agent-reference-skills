@@ -28,6 +28,7 @@ func strippingNamespacePrefix(_: USDToken) -> USDToken?
 - Available: iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+. Module: USDKit.
 - Conforms to `Comparable`, `Copyable`, `CustomDebugStringConvertible`, `CustomStringConvertible`, `Decodable`, `Encodable`, `Equatable`, `Escapable`, `ExpressibleByStringLiteral` (and its grapheme-cluster / unicode-scalar literal parents), `Hashable`, `Sendable`, `SendableMetatype`, `USDValueProtocol`, `USDPrim.Attribute.Value`, and `USDStage.Object.MetadataValue`.
 - `isValidIdentifier(_:namespaced:)` returns whether the given string is a valid USD identifier.
+- Source: https://developer.apple.com/documentation/usdkit/usdtoken (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

@@ -56,6 +56,7 @@ func clearTransformOperations()
 - Conforms to `Copyable`, `CustomStringConvertible`, `Equatable`, `Escapable`, `Hashable`, `USDStage.Object.MetadataCollection`.
 - `addTransformOperation(type:)` adds a transform operation of the given kind to the prim's transform stack.
 - A prim is a handle owned by its `USDStage` and becomes invalid if the stage is closed.
+- Source: https://developer.apple.com/documentation/usdkit/usdprim (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

@@ -25,6 +25,7 @@ var anchorUpdates: AnchorUpdateSequence<EnvironmentProbeAnchor>
 
 - visionOS 2.0+. Conforms to `DataProvider`.
 - `EnvironmentProbeAnchor` (struct): an environment probe in the world.
+- Source: https://developer.apple.com/documentation/arkit/environmentlightestimationprovider (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

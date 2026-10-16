@@ -59,6 +59,7 @@ func definePrim(at: USDLayer.Path, type: USDToken) -> USDPrim
 - `USDPrim`, `USDPrim.Attribute`, and `USDPrim.Relationship` values are owned by the stage and act as handles; they become invalid if the stage is closed.
 - Modifying any value in a stage authors a modification to a `USDLayer` that represents a file or file-like storage.
 - A stage may also have a session layer that holds temporary modifications that are not written to any file.
+- Source: https://developer.apple.com/documentation/usdkit/usdstage (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

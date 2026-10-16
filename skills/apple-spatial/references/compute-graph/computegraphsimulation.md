@@ -63,7 +63,7 @@ Properties and methods:
 - Call `advance(_:)` each frame to drive GPU execution. To inject elements programmatically, call `spawn(elements:in:using:)` with `ElementSpawnParameters` values.
 - Compute Graph drives RealityKit particle and compute simulations through a node graph. It is distinct from `MPSGraph` (Metal Performance Shaders Graph) in the apple-silicon skill, and `ComputeGraphSimulation` is unrelated to MPS graph execution.
 - `ComputeGraphComponent.simulationRate` in the RealityKit pages is typed `ComputeGraphSimulation.SimulationRate`.
-- Source: https://developer.apple.com/documentation/computegraph/computegraphsimulation and .../simulationrate-swift.struct (fetched 2026-10).
+- Source: https://developer.apple.com/documentation/computegraph/computegraphsimulation and https://developer.apple.com/documentation/computegraph/computegraphsimulation/simulationrate-swift.struct (fetched 2026-10).
 
 ## Related
 

@@ -28,6 +28,7 @@ entity.components.set(component)
 - Conforms to `Sendable` and `SendableMetatype`.
 - Assign the resource to `ComputeGraphComponent.resource` to drive a simulation.
 - Compute Graph here is RealityKit's particle/GPU simulation graph; it is distinct from MPSGraph (apple-silicon skill).
+- Source: https://developer.apple.com/documentation/realitykit/computegraphresource (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

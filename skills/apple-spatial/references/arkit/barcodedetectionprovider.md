@@ -26,6 +26,7 @@ var anchorUpdates: AnchorUpdateSequence<BarcodeAnchor>
 - visionOS 2.0+. Conforms to `DataProvider`.
 - Your app needs to include the Spatial barcode and QR code scanning entitlement to use this capability; otherwise, it has no effect. (Entitlement key: `com.apple.developer.arkit.barcode-detection.allow`.)
 - `BarcodeAnchor` (struct): a barcode's position in a person's surroundings.
+- Source: https://developer.apple.com/documentation/arkit/barcodedetectionprovider (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

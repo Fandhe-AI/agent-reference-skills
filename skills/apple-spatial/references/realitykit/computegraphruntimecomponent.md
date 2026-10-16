@@ -25,6 +25,7 @@ func readOutputs(_: ComputeNodeGraph.NodeID) -> [any MTLBuffer]?
 - Available: iOS 27.0+, iPadOS 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+
 - RealityKit creates this component automatically on the first frame that a `ComputeGraphComponent` becomes active. You do not need to add it manually.
 - Conforms to `Component` and `TransientComponent`.
+- Source: https://developer.apple.com/documentation/realitykit/computegraphruntimecomponent (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

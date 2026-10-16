@@ -55,6 +55,7 @@ A type that can be wrapped in a `USDValue`. Conforming types listed in the docs:
 - Do not declare new conformances to `USDValueProtocol`. Only the types already supported by USDKit are valid conforming types.
 - `USDArray` initializers for `Int` and `UInt` elements (`init()`, `init(_:)`, `init(arrayLiteral:)`) are marked deprecated in the docs.
 - visionOS 27 release note (as relayed for this update): some USD attribute types that were not readable or modifiable were fixed (170653056), and array, vector, matrix, and quaternion types that could not be authored were fixed (178071414).
+- Source: https://developer.apple.com/documentation/usdkit/usdvalue (fetched 2026-10 from the DocC JSON); release note from https://developer.apple.com/documentation/visionos-release-notes/visionos-27-release-notes.
 
 ## Related
 

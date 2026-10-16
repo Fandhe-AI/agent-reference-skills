@@ -21,6 +21,7 @@ var outputID: ComputeNodeGraph.NodeID
 - Available: iOS 27.0+, iPadOS 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+
 - The system attaches this component to child entities that represent individual graph outputs. Use `outputID` to correlate the entity with a specific output inside the owning entity's running simulation.
 - Conforms to `Component` and `TransientComponent`.
+- Source: https://developer.apple.com/documentation/realitykit/computegraphoutputcomponent (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

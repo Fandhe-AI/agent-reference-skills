@@ -30,6 +30,7 @@ if state == .connected {
 - Available: macOS 27.0+. Conforms to `Equatable`, `Hashable`, `Sendable`, `SendableMetatype`.
 - Read `state` before calling any sync operation to confirm the session is ready.
 - `SpatialPreviewSessionError` cases: `invalidSpatialPreviewEndpoint` (use of an invalid spatial preview device), `invalidated` (no description in the source page), `tooManySessions` (reached a maximum number of sessions for the receiving device). It conforms to `Error`, `Equatable`, `Hashable`, `Sendable`.
+- Source: https://developer.apple.com/documentation/spatialpreview/spatialpreviewsessionstate (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

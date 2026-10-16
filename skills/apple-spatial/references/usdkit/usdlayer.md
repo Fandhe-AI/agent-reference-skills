@@ -49,6 +49,7 @@ func export(to: URL) throws
 - Conforms to `Copyable`, `CustomStringConvertible`, `Equatable`, `Escapable`, `Hashable`.
 - `open(_:options:)` returns an already-loaded layer at the identifier, or opens it from the resolved asset path.
 - Modifying values on a `USDStage` authors changes into the stage's edit-target layer.
+- Source: https://developer.apple.com/documentation/usdkit/usdlayer (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

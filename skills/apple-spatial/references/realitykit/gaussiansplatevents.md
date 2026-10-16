@@ -23,6 +23,7 @@ enum GaussianSplatEvents {
 - Throttling: Gaussian splat assets vary in rendering cost by orders of magnitude, so the renderer applies internal mitigations and emits this event. Apps should listen and reduce asset complexity as needed.
 - Thermal state: the system does not automatically limit splat rendering in response to thermal state. Observe `thermalStateDidChangeNotification` and, when `ProcessInfo.thermalState` reaches serious or critical, reduce entity complexity until it returns to fair or better.
 - Complexity reduction approaches named in the guidelines: truncating, decimating, downsampling (one splat per voxel), and culling low-opacity or very small splats; lower level-of-detail assets can be swapped in.
+- Source: https://developer.apple.com/documentation/realitykit/gaussiansplatevents (fetched 2026-10 from the DocC JSON).
 
 ## Related
 

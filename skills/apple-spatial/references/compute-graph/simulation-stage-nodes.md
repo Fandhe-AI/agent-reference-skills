@@ -98,7 +98,7 @@ A set of nodes for the output stage that adjust an element's appearance without 
 - The namespace pages list platforms as macOS and Reality Composer Pro without an `introducedAt` version; the parent Compute Graph framework is introduced at 27.0 on iOS, iPadOS, Mac Catalyst, macOS, tvOS, and visionOS.
 - Related utility namespaces and functions listed on the framework page but not covered here: `graph`, `group`, `texture`, `random`, `matrix4x4f`, `matrix4x4h`, `viewpoint`, `element_integrate`, `texture_sample`, `texture_sample1d`, `orient_to_velocity`, `gridDebugCells`, `gridFromPoints`, `spawn_demo`, `filteredLinesFromNeighbors`, `linesFromNeighbors`.
 - Part of Compute Graph (RealityKit particle / compute-simulation node graph), distinct from `MPSGraph` in the apple-silicon skill.
-- Sources: https://developer.apple.com/documentation/computegraph/emitter, .../initialize, .../element, .../module, .../force, .../output (fetched 2026-10).
+- Sources: https://developer.apple.com/documentation/computegraph/emitter, https://developer.apple.com/documentation/computegraph/initialize, https://developer.apple.com/documentation/computegraph/element, https://developer.apple.com/documentation/computegraph/module, https://developer.apple.com/documentation/computegraph/force, https://developer.apple.com/documentation/computegraph/output (fetched 2026-10).
 
 ## Related
 

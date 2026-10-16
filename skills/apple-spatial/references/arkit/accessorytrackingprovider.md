@@ -32,6 +32,7 @@ func updateAccessories([Accessory]) async throws
 - `Accessory` (struct): represents an accessory to be tracked.
 - `AccessoryAnchor` (struct): represents a tracked accessory.
 - Official articles: "Preparing spatial accessories for tracking in your visionOS app", "Working with generic spatial accessories", "Tracking accessories in volumetric windows", "Tracking a handheld accessory as a virtual sculpting tool".
+- Source: https://developer.apple.com/documentation/arkit/accessorytrackingprovider (fetched 2026-10 from the DocC JSON).
 
 ## Related
 
