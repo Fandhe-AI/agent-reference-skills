@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices / last verified: 2026-10-17 -->
 
 # Prompt template structure
 
@@ -39,12 +39,13 @@ def build_prompt(instructions, context, user_input):
 {user_input}
 </input>
 
-Write your reasoning inside <reasoning> tags, then the final answer inside <output> tags.
+Write the final answer inside <output> tags.
 """
 
 message = client.messages.create(
-    model="claude-opus-5",
-    max_tokens=1024,
+    model="claude-opus-5-5",
+    max_tokens=4096,  # thinking counts toward max_tokens
+    thinking={"type": "adaptive", "display": "summarized"},
     system=SYSTEM,
     messages=[{
         "role": "user",
@@ -55,6 +56,9 @@ message = client.messages.create(
         ),
     }],
 )
+
+text = next(b.text for b in message.content if b.type == "text")
+reasoning = [b.thinking for b in message.content if b.type == "thinking"]
 ```
 
 ## Notes
@@ -62,4 +66,4 @@ message = client.messages.create(
 - Wrap distinct content types (`<context>`, `<examples>`, `<input>`) in their own XML tags so Claude parses a multi-part prompt unambiguously.
 - Put the role in `system`; put the bulk of task content (context, examples, instructions) in the first `User` turn.
 - 3-5 diverse, edge-case-covering examples in `<example>` tags are one of the most reliable ways to steer format and tone.
-- Splitting the response into `<reasoning>` and `<output>` tags lets downstream code parse each independently with regex.
+- Wrap the final answer in `<output>` tags so downstream code can parse it with regex. On Claude Opus 5.5, do not ask for reasoning in the response text: a prompt that pushes the model to reproduce its reasoning may be declined with the `reasoning_extraction` refusal category. Read the reasoning from summarized thinking blocks (`display: "summarized"`) instead, selecting content blocks by type.

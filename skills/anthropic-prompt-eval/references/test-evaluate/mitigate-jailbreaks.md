@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/mitigate-jailbreaks / last verified: 2026-10-17 -->
 
 # Mitigate jailbreaks and prompt injections
 
@@ -11,7 +11,7 @@ Jailbreaking and prompt injection attempt to make Claude ignore its guidelines o
 
 ## Jailbreaks and direct prompt injection
 
-- **Harmlessness screens** — pre-screen user input with a lightweight model (Claude Haiku 4.5) constrained via [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) to a simple `{"is_harmful": boolean}` classification.
+- **Harmlessness screens** — pre-screen user input with a lightweight model (Claude Haiku 5.5) constrained via [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) to a simple `{"is_harmful": boolean}` classification. Claude Haiku 5.5 runs safety classifiers that can decline the screening request itself, so treat a response with `stop_reason: "refusal"` as a harmful verdict.
 - **Input validation** — filter for known injection patterns before input reaches Claude; an LLM can build a generalized validation screen from example jailbreak language.
 - **Prompt engineering** — craft system prompts emphasizing ethical/legal boundaries and explicit refusal wording, framed predominantly as a [role prompt](../prompt-engineering/claude-prompting-best-practices.md).
 - **Respond to repeat offenders** — throttle or ban users who repeatedly trigger the same refusal category.
@@ -26,7 +26,7 @@ Structure the application so Claude can reliably distinguish untrusted content f
 - **JSON-encode untrusted content** — wrapping third-party strings in a JSON object provides unambiguous delimiters, preventing an attacker from "breaking out" via quote/tag closure.
 - **Don't put your own instructions in tool results** — Claude treats tool-result content as data; send instructions in a following `user` turn, or use a mid-conversation system message on supported models.
 - **Limit Claude's access to sensitive data and actions** — least privilege, sandboxed tool execution, narrowly scoped permissions.
-- **Screen tool outputs before Claude acts on them** — run raw tool output through a lightweight-model classifier (structured outputs, `{"injection_suspected": boolean}`) before returning it as a `tool_result`; on a positive, return an error or stripped summary instead of the raw content.
+- **Screen tool outputs before Claude acts on them** — run raw tool output through a lightweight-model classifier (Claude Haiku 5.5; structured outputs, `{"injection_suspected": boolean}`) before returning it as a `tool_result`; on a positive, return an error or stripped summary instead of the raw content. Treat a `stop_reason: "refusal"` response from Claude Haiku 5.5 the same way: its safety classifiers can decline the screening request itself, which leaves no verdict to read.
 - **Red-team your own agent** — test with documents/emails/tool outputs deliberately containing injection attempts before deploying.
 
 ```json

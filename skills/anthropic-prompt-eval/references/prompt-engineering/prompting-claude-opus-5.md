@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5 / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5 / last verified: 2026-10-17 -->
 
 # Prompting Claude Opus 5
 
@@ -6,9 +6,9 @@ Behavioral differences and prompting patterns for Claude Opus 5, covering respon
 
 Claude Opus 5 is built for complex agentic coding and enterprise work with strengths in long-horizon agentic tasks, and performs well out of the box on existing Claude Opus 4.8 prompts.
 
-## Capability improvements over Claude Opus 4.8
+## Capability improvements
 
-Agentic coding (multi-file features, larger refactors, completes full tasks rather than leaving stubs), code review/bug-finding (high precision and recall, holds at lower effort), efficiency at lower effort (`low`/`medium` produce strong quality at a fraction of the cost — re-run effort sweeps rather than carrying over old defaults), vision (chart/document/diagram understanding, UI replication — tool-assisted crop/verify is more cost-effective than thinking alone), long-context work (1M token context window as default and maximum), office/document tasks (multi-sheet spreadsheets, slide decks), and multi-agent coordination (effective writer-verifier patterns).
+Compared with Claude Opus 4.8, the improvements most relevant to prompting are: agentic coding (multi-file features, larger refactors, completes full tasks rather than leaving stubs), code review/bug-finding (high precision and recall, holds at lower effort; if your review prompt says "only report high-severity issues" or "be conservative," the model may follow that literally and report less, so ask it to report everything and filter in a separate pass), efficiency at lower effort (`low`/`medium` produce strong quality at a fraction of the cost — re-run effort sweeps rather than carrying over old defaults), vision (chart/document/diagram understanding, UI replication — tool-assisted crop/verify is more cost-effective than thinking alone), long-context work (1M token context window as default and maximum), office/document tasks (multi-sheet spreadsheets, slide decks), and multi-agent coordination (effective writer-verifier patterns).
 
 ## Response length and verbosity
 
@@ -44,13 +44,15 @@ or double-check your own work. If one subagent can complete the task, use one
 rather than several, and keep spawn counts low.
 ```
 
+If your harness is Claude Code or the Claude Agent SDK, the deterministic caps are the `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH` and `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS` environment variables and the SDK's `max_budget_usd` (TypeScript: `maxBudgetUsd`) option. They require Claude Code 2.1.217 or later, so update a pinned SDK before pointing it at Claude Opus 5. Claude Code adds a delegation instruction of its own on Claude Opus 5 only when you use its `claude_code` system prompt preset; with a custom or omitted system prompt, add a delegation instruction such as the example above yourself (see anthropic-agent-sdk for subagent caps).
+
 ## Self-correction
 
 Catches and fixes its own mistakes well without prompting — avoid "double-check your answer" style instructions, which compound with existing self-correction behavior and add cost. It narrates corrections more than prior models; limit narration to corrections that change the user's code/conclusions/decisions.
 
 ## Running with thinking disabled
 
-Thinking is on by default and can only be disabled at `effort` `high` or below. With thinking disabled, two artifacts can leak into visible output: (1) tool calls written as text instead of a structured `tool_use` block (the call never runs, and the leaked text persists in later-turn history), and (2) internal `<thinking>` or other XML tags appearing in the response. Primary mitigation is to keep thinking enabled at a lower effort instead of disabling it — thinking-enabled at `low` effort typically outperforms thinking-disabled at similar cost. If thinking must stay disabled:
+Thinking is on by default and can only be disabled at `effort` `high` or below. A request that combines `thinking: {"type": "disabled"}` with effort `xhigh` or `max` returns a 400 error. With thinking disabled, two artifacts can leak into visible output: (1) tool calls written as text instead of a structured `tool_use` block (the call never runs, and the leaked text persists in later-turn history), and (2) internal `<thinking>` or other XML tags appearing in the response. Primary mitigation is to keep thinking enabled at a lower effort instead of disabling it — thinking-enabled at `low` effort typically outperforms thinking-disabled at similar cost. If thinking must stay disabled:
 
 ```text
 When you use a tool, you may say a brief sentence first. If no tool can express
@@ -59,6 +61,10 @@ system XML tags in your response.
 ```
 
 Naming thinking tags specifically in instructions is less effective than this general form.
+
+## Reasoning in the response
+
+Prompts, skills, and tool descriptions that ask Claude Opus 5 to write out its thinking or reasoning, verbatim or in a fixed format, may be declined with the `reasoning_extraction` refusal category. Ask for a short explanation of the answer or a summary of the actions taken instead, and, if you need the reasoning, keep thinking on and read the summarized thinking blocks (`display: "summarized"`).
 
 ## Notes
 

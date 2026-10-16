@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/test-and-evaluate/develop-tests / last verified: 2026-10-17 -->
 
 # Define success criteria and build evaluations
 
@@ -29,7 +29,7 @@ Task fidelity, consistency (semantic similarity across repeated/paraphrased inpu
 2. **Automate when possible** — structure questions for automated grading (multiple-choice, string match, code-graded, LLM-graded).
 3. **Prioritize volume over quality** — more questions with slightly lower-signal automated grading beats fewer high-quality hand-graded evals.
 
-### Example eval types
+### Example evals
 
 | Dimension | Method | Example |
 | --- | --- | --- |
@@ -40,8 +40,53 @@ Task fidelity, consistency (semantic similarity across repeated/paraphrased inpu
 | Privacy preservation (medical chatbot) | LLM-based binary classification | 500 simulated patient queries, some containing PHI |
 | Context utilization (conversation assistant) | LLM-based ordinal scale (1-5) | 100 multi-turn conversations with context-dependent questions |
 
+## Grade your evaluations
+
+When deciding which method to use to grade evals, choose the fastest, most reliable, most scalable method:
+
+1. **Code-based grading:** Fastest and most reliable, extremely scalable, but lacks nuance for complex judgments that require less rule-based rigidity (exact match: `output == golden_answer`; string match: `key_phrase in output`).
+2. **Human grading:** Most flexible and high quality, but slow and expensive. Avoid if possible.
+3. **LLM-based grading:** Fast and flexible, scalable and suitable for complex judgment. Test to ensure reliability first, then scale.
+
+### Tips for LLM-based grading
+
+- **Have detailed, clear rubrics:** for example, "The answer should always mention 'Acme Inc.' in the first sentence. If it does not, the answer is automatically graded as 'incorrect.'" A use case, or even a single success criterion, might require several rubrics for holistic evaluation.
+- **Empirical or specific:** instruct the LLM to output only 'correct' or 'incorrect', or to judge on a scale of 1-5. Purely qualitative evaluations are hard to assess quickly and at scale.
+- **Encourage reasoning:** use a grader model with thinking on, so that it reasons before it produces an evaluation score. This increases evaluation performance, particularly for tasks requiring complex judgment.
+
+```python
+client = anthropic.Anthropic()
+
+
+def build_grader_prompt(answer, rubric):
+    return f"""Grade this answer based on the rubric:
+    <rubric>{rubric}</rubric>
+    <answer>{answer}</answer>
+    Output 'correct' or 'incorrect' in <result> tags."""
+
+
+def grade_completion(output, golden_answer):
+    grader_message = client.messages.create(
+        model="claude-opus-5-5",
+        max_tokens=2048,
+        messages=[
+            {"role": "user", "content": build_grader_prompt(output, golden_answer)}
+        ],
+    )
+    grader_response = next(
+        block.text for block in grader_message.content if block.type == "text"
+    )
+
+    return (
+        "correct"
+        if "<result>correct</result>" in grader_response.lower()
+        else "incorrect"
+    )
+```
+
 ## Notes
 
+- Tips from the official page: writing hundreds of test cases by hand is hard, so get Claude to help generate more from a baseline set of example test cases; if you don't know which eval methods suit your success criteria, brainstorm with Claude.
 - This page is the prerequisite step referenced by [Prompt engineering overview](../prompt-engineering/overview.md) — establish success criteria and evals before iterating on prompts.
 
 ## Related
