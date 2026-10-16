@@ -16,14 +16,16 @@ Bubble activity declaration (must be resizeable and embedded):
 />
 ```
 
-Sending a bubble:
+Sending a bubble (adapted from the official snippet; differences listed in Notes):
 
 ```kotlin
-// Create a bubble intent.
+// Create a bubble intent (explicit Intent; mutable on API 31+).
 val target = Intent(context, BubbleActivity::class.java)
-val bubbleIntent =
-    PendingIntent.getActivity(context, 0, target, PendingIntent.FLAG_IMMUTABLE /* flags */)
+val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
+val bubbleIntent = PendingIntent.getActivity(context, 0, target, flags)
 val category = "com.example.category.IMG_SHARE_TARGET"
+
+val user = Person.Builder().setName("You").build()
 
 val chatPartner = Person.Builder()
     .setName("Chat partner")
@@ -56,7 +58,7 @@ val builder = NotificationCompat.Builder(context, CHANNEL_ID)
     .setShortcutId(shortcutId)
     .addPerson(chatPartner)
     .setStyle(
-        NotificationCompat.MessagingStyle(chatPartner)
+        NotificationCompat.MessagingStyle(user)
             .addMessage("Hello", System.currentTimeMillis(), chatPartner)
     )
 ```
@@ -88,8 +90,8 @@ val bubbleMetadata = NotificationCompat.BubbleMetadata.Builder(bubbleIntent,
 - The bubble activity must be resizeable and embedded; otherwise the system displays the notification as a normal notification.
 - For multiple bubbles of the same type (e.g. several chats), the activity must be able to launch multiple instances. On Android 10 and lower, set `documentLaunchMode` to `"always"`; from Android 11 the system sets it automatically for all conversations.
 - If targeting Android 11 (API level 30) or higher, the bubble metadata or notification must reference a sharing shortcut, and the notification must meet the conversation requirements to appear as a bubble.
-- Difference from the official snippet: it has no `MessagingStyle`, but `setStyle(MessagingStyle)` is added here to meet the Android 11+ conversation requirements (source: https://developer.android.com/guide/topics/ui/conversations). The user passed to `MessagingStyle` is the chat partner `Person` for brevity; use the sending user's `Person` in real code.
-- The official snippet uses `PendingIntent.FLAG_IMMUTABLE` for the bubble intent. The PendingIntent mutability guide lists "Placing conversations in bubbles using instances of `PendingIntent`" as a use case that requires `FLAG_MUTABLE` ("A mutable `PendingIntent` object allows the system to apply the correct flags, such as `FLAG_ACTIVITY_MULTIPLE_TASK` and `FLAG_ACTIVITY_NEW_DOCUMENT`"), and recommends an explicit intent with the `ComponentName` filled in for mutable intents. Source: https://developer.android.com/guide/components/intents-filters (PendingIntent mutability section). The bubbles page does not state this, so verify against your target API level.
+- Difference from the official snippet: it has no `MessagingStyle`, but `setStyle(MessagingStyle)` is added here to meet the Android 11+ conversation requirements (source: https://developer.android.com/guide/topics/ui/conversations).
+- Difference from the official snippet: the official snippet uses `FLAG_IMMUTABLE`; this example uses `FLAG_MUTABLE` on API 31+ because the PendingIntent mutability guide lists bubbles as requiring `FLAG_MUTABLE` (source: https://developer.android.com/guide/components/intents-filters). The guide recommends an explicit intent with the `ComponentName` filled in for mutable intents.
 - Difference from the official snippet: the official auto-expand snippet uses a no-argument `Builder()` plus `setIntent()`, but `build()` fails without an icon, so it is replaced here with `Builder(PendingIntent, IconCompat)` (per the AndroidX `BubbleMetadata.Builder` contract).
 - If targeting Android 10 (API level 29) or lower, a notification appears as a bubble only if one of: it uses `MessagingStyle` with a `Person`; it comes from `Service.startForeground` with `CATEGORY_CALL` and a `Person`; or the app is in the foreground when it is sent.
 - The first notification that shows a bubble must be in a channel with `IMPORTANCE_MIN` or higher. If the app is in the foreground, importance is ignored and the bubble is always shown unless the user blocks bubbles or notifications.
