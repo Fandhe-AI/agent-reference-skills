@@ -38,7 +38,7 @@ import signal
 
 async def process(job, job_token):
     # job.data will include the data added to the queue
-    return doSomethingAsync(job)
+    return await doSomethingAsync(job)
 
 async def main():
     # Create an event that will be triggered for shutdown
@@ -70,6 +70,7 @@ if __name__ == "__main__":
 ## Notes
 
 - The API is asyncio-based, so `async` / `await` (running inside an event loop such as `asyncio.run`) is required; `await` cannot be used at module top level in a plain script.
+- The official v6.3.15 Python introduction writes `return doSomethingAsync(job)` without `await`; when the helper is a coroutine function it must be awaited, otherwise the processor returns an un-awaited coroutine instead of the result.
 - If Redis responses are in binary format, pass the `decode_responses` option as `True`.
 - In the official Python section, the Flow Producer, Job Scheduler, Lock Manager, Global Concurrency and Rate Limit, Job Cancellation and Queue Events pages are stubs that point to the language tabs of the shared guides (`guide/flows`, `guide/job-schedulers`, `guide/workers/cancelling-jobs` and `stalled-jobs`, `guide/queues/global-concurrency` and `global-rate-limit`, `guide/events`). For Python-specific implementation see the official repository's `python/bullmq/*.py` (`flow_producer.py`, `job_scheduler.py`, `lock_manager.py`, `queue.py`, `abort_controller.py`, `worker.py`, `queue_events.py`, `queue_events_producer.py`).
 

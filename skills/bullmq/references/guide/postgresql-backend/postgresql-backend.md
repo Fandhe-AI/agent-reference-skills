@@ -1,17 +1,17 @@
 # PostgreSQL Backend
 
-BullMQ v6 で追加された、Redis の代わりに PostgreSQL 上で `Queue` / `Worker` / `QueueEvents` / `FlowProducer` の全 API を動かせる pluggable backend。別途 Redis インスタンスを維持したくない場合や、ジョブデータをリレーショナルデータと同居させたい場合に選択できる。
+BullMQ ships with an optional PostgreSQL backend that runs the exact same `Queue` / `Worker` / `QueueEvents` / `FlowProducer` API on PostgreSQL instead of Redis. You select it by passing the `createPostgresBackend` factory. The Redis backend remains the default and the most battle-tested option. Choose PostgreSQL when you would rather not operate a separate Redis instance, or when you want your jobs to live alongside (and in the same database as) your relational data.
 
 ## Signature / Usage
 
 ### Requirements
 
-- **PostgreSQL 13+**（14 以降推奨）。接続時にサーバーバージョンを検証し、古い場合は `UnsupportedPostgresVersionError` を投げる（`skipVersionCheck: true` で回避可能）
-- **`pg`（node-postgres）パッケージ**が optional peer dependency として必要。`npm install pg` を明示的に実行する
+- **PostgreSQL 13 or newer** (14+ recommended). The backend checks the server version on first connect and throws `UnsupportedPostgresVersionError` when the server is older than the minimum. You can bypass the check with `skipVersionCheck: true` (at your own risk).
+- The **`pg`** (node-postgres) package installed in your project. It is an optional peer dependency, so Redis-only users never need it. It is loaded lazily, only when you actually use the PostgreSQL backend: run `npm install pg` explicitly.
 
 ### Usage
 
-`createPostgresBackend` を各クラスのコンストラクタ最終引数として渡す。
+Pass `createPostgresBackend` as the last constructor argument.
 
 ```typescript
 import { Queue, createPostgresBackend } from 'bullmq';
@@ -26,7 +26,7 @@ const queue = new Queue('my-queue', opts, createPostgresBackend);
 | `QueueEvents` | `new QueueEvents(name, opts, createPostgresBackend)` |
 | `FlowProducer` | `new FlowProducer(opts, createPostgresBackend)` |
 
-TypeScript はバックエンド型と接続型をファクトリーから推論する（型引数を書かない場合）。
+TypeScript infers the backend and connection types from the factory (when you don't pass any type arguments).
 
 ```typescript
 import { Queue, Worker, createPostgresBackend } from 'bullmq';
@@ -40,7 +40,7 @@ const queue = new Queue('my-queue', opts, createPostgresBackend);
 const worker = new Worker(
   'my-queue',
   async job => {
-    // Redis バックエンドと同じようにジョブを処理する
+    // ... process the job exactly as you would with the Redis backend
   },
   opts,
   createPostgresBackend,
@@ -49,14 +49,14 @@ const worker = new Worker(
 
 ### Typed jobs and event results (v6.3.9+)
 
-バックエンド型・接続型の型パラメーターはジョブ型パラメーターの後ろにある。ファクトリーからの推論は型引数を一切書かない場合のみ有効。`Queue<MyData, MyResult>` のように書くと残りの型パラメーターは Redis 既定に戻り、PostgreSQL のファクトリーと接続が拒否される。
+The backend and connection type parameters come after the job type parameters. TypeScript infers them from the factory only when you don't pass any type arguments. Once you write `Queue<MyData, MyResult>`, the remaining parameters use their Redis defaults, so the PostgreSQL factory and connection are rejected:
 
 ```typescript
-// Error: backend が RedisQueueBackend の既定になる
+// Error: the backend defaults to RedisQueueBackend
 new Queue<MyData, MyResult>('my-queue', opts, createPostgresBackend);
 ```
 
-ジョブ型を維持するには全型引数を列挙する。クラスごとにバックエンドの位置が異なる。
+To keep job types, list every type argument explicitly. Each class puts the backend at a different position:
 
 ```typescript
 import {
@@ -96,7 +96,7 @@ const events = new QueueEvents<
 >('my-queue', opts, createPostgresBackend);
 ```
 
-`withBackend` はより簡潔な方法。`Queue` / `Worker` / `QueueEvents` / `QueueEventsProducer` / `FlowProducer` のコンストラクターを、バックエンド型と接続型を設定済みの状態で返し、ファクトリーを自動的に使う。ジョブの型引数だけを書けばよい。
+`withBackend` does the same thing more concisely. It returns `Queue`, `Worker`, `QueueEvents`, `QueueEventsProducer`, and `FlowProducer` constructors with the backend and connection types already set, which use the factory automatically. You only write the job type arguments:
 
 ```typescript
 import { createPostgresBackend, withBackend } from 'bullmq';
@@ -112,40 +112,40 @@ const worker = new Worker<MyData, MyResult>(
 const events = new QueueEvents<MyResult>('my-queue', opts);
 ```
 
-返されるクラスは通常のクラスを継承するため `instanceof Queue` は維持される。接続オプションは必須。`withBackend` はプロセス全体の既定バックエンドを変更しない。
+The returned classes extend the regular ones, so `instanceof Queue` still holds. Connection options are required. `withBackend` does not change the process-wide default backend.
 
 ### Using it everywhere by default
 
-アプリケーション全体で PostgreSQL を使う場合、プロセス全体の既定バックエンドとして 1 回登録すればインスタンスごとの引数を省略できる。
+If your whole application uses PostgreSQL, register it once as the process-wide default backend and drop the per-instance argument.
 
 ```javascript
 import { setDefaultBackendFactory, createPostgresBackend, Queue } from 'bullmq';
 
 setDefaultBackendFactory(createPostgresBackend);
 
-// 以降に生成する全クラスが PostgreSQL バックエンドを既定にする
+// Every class now defaults to the PostgreSQL backend:
 const queue = new Queue('my-queue', {
   connection: 'postgres://user:password@localhost:5432/mydb',
 });
 ```
 
-この JavaScript 例は実行時挙動のみを変える。TypeScript はプロセス全体の設定から型を推論できないため、PostgreSQL の接続型を推論させるには `withBackend(createPostgresBackend)` を使うか各コンストラクターに `createPostgresBackend` を渡す。
+This JavaScript example changes runtime behavior only. TypeScript cannot infer types from a process-wide setting: use `withBackend(createPostgresBackend)` or pass `createPostgresBackend` to each constructor to infer PostgreSQL connection types.
 
 ## Connection Options
 
-`connection` は3種類の形式を受け付ける。
+The `connection` option is forwarded to node-postgres and may be any of:
 
 | Form | Type | Description |
 |------|------|-------------|
-| Connection string | `string` | `postgres://user:pass@host:5432/db` 形式 |
-| Pool config object | object | `host` / `port` / `user` / `password` / `database` / `max`（プールサイズ）/ `schema`（任意のカスタムスキーマ） |
-| Existing pool | `pg.Pool` | 既存の `pg.Pool` インスタンス |
+| Connection string | `string` | `postgres://user:pass@host:5432/db` |
+| Pool config object | object | Any `pg.PoolConfig` field (`host` / `port` / `user` / `password` / `database` / `max` for pool size), optionally carrying the BullMQ-specific `schema` / `skipVersionCheck` |
+| Existing pool | `pg.Pool` | An already-constructed `pg.Pool` |
 
 ```typescript
-// 1. 接続文字列
+// 1. A connection string
 { connection: 'postgres://user:pass@localhost:5432/mydb' }
 
-// 2. プールの設定オブジェクト
+// 2. A node-postgres pool config
 {
   connection: {
     host: 'localhost',
@@ -153,22 +153,22 @@ const queue = new Queue('my-queue', {
     user: 'postgres',
     password: 'postgres',
     database: 'mydb',
-    max: 10,           // プールサイズ
-    schema: 'bullmq',  // 任意のカスタムスキーマ
+    max: 10,           // pool size
+    schema: 'bullmq',  // custom schema
   }
 }
 
-// 3. 既存の pg.Pool インスタンス
+// 3. An already-constructed pg.Pool
 import { Pool } from 'pg';
 const pool = new Pool({ connectionString: 'postgres://…' });
 ({ connection: pool });
 ```
 
-BullMQ がプールを生成した場合はそのライフサイクルを管理するが、既存プールを渡した場合は呼び出し側が close する責任を持つ。
+When BullMQ builds the pool for you (from a string or config), it owns and closes that pool on `close()`. When you pass your own `pg.Pool`, BullMQ uses it as-is and does not close it; its lifecycle is yours.
 
 ## Schema
 
-BullMQ のオブジェクトは単一の PostgreSQL スキーマ（既定値: `bullmq`）にまとめて配置され、アプリケーションデータと分離される。
+All BullMQ objects live in a single PostgreSQL schema (namespace), which defaults to `bullmq`. This keeps BullMQ's tables cleanly separated from the rest of your database.
 
 ```typescript
 {
@@ -181,7 +181,7 @@ BullMQ のオブジェクトは単一の PostgreSQL スキーマ（既定値: `b
 
 ## Migrations
 
-接続時にマイグレーションは自動適用されない。デプロイ手順の 1 ステップでスキーマの初期化・更新を明示的に実行する。
+Connections do not apply migrations automatically. Initialize or upgrade the schema explicitly from one deployment step:
 
 ```typescript
 import { Pool } from 'pg';
@@ -199,29 +199,29 @@ try {
 }
 ```
 
-- **冪等**: 再実行しても何も起きない
-- **並行実行に安全**: トランザクションスコープの advisory lock（スキーマ単位の名前空間）が同時起動を直列化し、多数のワーカー/インスタンスが同時に起動しても 1 回だけマイグレーションされる
+- **Idempotent**: running it again is a no-op.
+- **Concurrency-safe**: a transaction-scoped advisory lock (namespaced per schema) serializes concurrent starters, so many workers or instances booting at once still migrate exactly once.
 
-スキーマの互換性は BullMQ のメジャーバージョン単位。migration ledger がスキーマの要求する最小クライアントメジャーを記録し、それより古いクライアントは `SchemaVersionMismatchError` で失敗する。最初のマイグレーション分割は同一メジャー内の例外で、今後のスキーマ移行は破壊的変更として新しい BullMQ メジャーを要する。スキーマのダウングレードは非サポート。
+Schema compatibility is scoped to BullMQ major versions. The migration ledger records the minimum client major required by the schema. The initial migration split is a same-major exception; future schema migrations are breaking changes and require a new BullMQ major version. A client older than the recorded major fails with `SchemaVersionMismatchError`. Schema downgrades are not supported.
 
 ## How it works
 
-PostgreSQL バックエンドは BullMQ のプリミティブを PostgreSQL の機能に対応づける。
+The PostgreSQL backend maps BullMQ's primitives onto PostgreSQL features:
 
-- ジョブとその状態はスキーマ内の通常のテーブルに置かれる。状態遷移はトランザクション内の SQL 関数として実行され、Redis の Lua スクリプトと同じ原子性を保証する
-- ブロッキングの wait-for-job（Redis の `BZPOPMIN`）は `LISTEN` / `NOTIFY` で実装される。プロデューサーがチャンネルへ `NOTIFY` し、各ワーカーは専用の `LISTEN` 接続で起こされる（またはタイムアウト）まで待機する
-- 各バックエンドは短命な通常クエリ用の `pg.Pool` と、長寿命の専用 `LISTEN` 接続 1 本を使う
-- `pg.Pool` のサイズ（`max`）は 1 バックエンドが同時実行できるクエリ数を制限する。専用 `LISTEN` 接続は別枠でプール枠を消費しない。サーバーの `max_connections` は同時に動かすワーカー・キュー・QueueEvents の数に合わせてサイジングする
+- Jobs and their state live in regular tables inside the schema. State transitions run as SQL functions within transactions, giving the same atomicity guarantees the Lua scripts provide on Redis.
+- The blocking wait-for-job primitive (the Redis `BZPOPMIN`) is implemented with `LISTEN` / `NOTIFY`: producers `NOTIFY` a channel and each worker blocks on a dedicated `LISTEN` connection until it is woken (or a timeout elapses).
+- Each backend uses a `pg.Pool` for regular, short-lived queries plus one dedicated, long-lived `LISTEN` connection.
+- The `pg.Pool` size (`max`) bounds how many concurrent queries a single backend can run; the dedicated `LISTEN` connection is separate and does not consume a pool slot. Size your server's `max_connections` for the number of concurrent workers, queues and queue-events you run.
 
 ## Performance Characteristics
 
-- 低レイテンシーネットワークでは単一操作のレイテンシーは Redis と同等
-- PostgreSQL の耐久性のあるトランザクション書き込み（WAL・MVCC・デフォルト fsync）により、処理スループットは Redis の約 1.5〜2 倍遅い
-- `addBulk` やフローなどのバルク操作はバッチ単位でコストが償却されるため Redis 性能に近づく
+- Per-operation latency is comparable to Redis when the database is on a low-latency network (same host / same datacenter).
+- Job-processing throughput is usually lower than Redis (often around ~1.5–2× fewer jobs/s on similar setups), but this is workload-dependent. PostgreSQL performs durable transactional writes by default (WAL + MVCC + `fsync`).
+- Bulk enqueues (`addBulk`, flows) come much closer to Redis, because many jobs are inserted per transaction.
 
 ### Indicative numbers
 
-Apple Silicon ラップトップ（M シリーズ、約 12 コア）上でローカルの PostgreSQL、何もしない軽量ジョブ、既定（durable）設定で計測した目安値。桁感を示すだけで、実際のペイロードやプロセッサーでは変わる。Redis 列は同一マシンでの参考値であり正式なベンチマークではない。
+The figures below are a rough illustration measured on an Apple Silicon laptop (M-series, ~12 cores) with PostgreSQL running locally, trivial no-op jobs and default (durable) settings. They exist only to give an order of magnitude; real workloads with meaningful payloads and processors will differ, and the Redis column is the same machine for context, not a formal benchmark.
 
 | Operation | PostgreSQL | Redis (same machine) |
 | --- | --- | --- |
@@ -231,23 +231,24 @@ Apple Silicon ラップトップ（M シリーズ、約 12 コア）上でロー
 | Processing, 1 worker (concurrency 1) | ~2,300 jobs/s | ~6,000 jobs/s |
 | Processing, concurrency 8–32 | ~11,000 jobs/s | ~18,000 jobs/s |
 
-- 逐次 `add()` とバッチ `addBulk()` は Redis に近い（durable 書き込みがラウンドトリップまたはバッチ単位で償却される）
-- 並列 add や高 concurrency の処理では Redis のインメモリモデルが優位になり、処理では PostgreSQL は約 1.5〜2 倍の差になる
+- Sequential `add()` and batched `addBulk()` are close to Redis; the durable write is amortized (per round-trip, or across the batch).
+- Concurrent throughput (many parallel adds, or high-concurrency processing) is where Redis's in-memory model pulls ahead, leaving PostgreSQL in the ~1.5–2× range for processing.
 
 ## Optimization Tips
 
-- PostgreSQL と worker を同一ホスト/同一アベイラビリティゾーンに配置しネットワークレイテンシーを最小化する
-- `max`（プールサイズ）と PostgreSQL の `max_connections` を concurrency に合わせてサイジングする
-- 耐久性要件が許容できるなら `synchronous_commit = off` または `local` を検討し、永続性とスループットをトレードオフする
-- `removeOnComplete` / `removeOnFail` を活用しテーブルの肥大化を防ぐ
+- Keep the database close: co-locate PostgreSQL and workers (same host / AZ) to minimize round-trip latency.
+- Size the pool (`max`) and the server's `max_connections` for your concurrency, covering all workers, queues and queue-events plus their dedicated `LISTEN` connections.
+- Consider `synchronous_commit = off` (or `local`) if your durability requirements allow it; it removes the per-commit `fsync` wait and can improve processing throughput, at the cost of possibly losing the most recent commits on a crash.
+- Use `removeOnComplete` / `removeOnFail` so finished jobs don't accumulate; large tables mean more index maintenance and vacuum work.
 
 ## Notes
 
 - Migration (v6.0 → v6.1): automatic migrations on first connect were removed; call `runMigrations` explicitly from a deployment step (see Migrations)
-- 完全な API パリティを持つ（queues・workers・flows・job schedulers・rate limiting・prioritization・delayed jobs・deduplication・metrics・events）。Redis 固有機能（raw client アクセス・Redis Cluster 設定）は対象外で、代わりに PostgreSQL 側の `max_connections` をチューニングする
-- `getBackend()` は現在設定されているバックエンドを返す。Redis 専用の escape hatch（raw Redis `client`、`redisVersion` など）は Redis バックエンドのときだけ存在する
-- 既存プールを渡した場合、`schema` オプションは効かない。`search_path` を接続側で自前設定する必要がある
-- 自前で `IQueueBackend` を実装する場合の破壊的変更については [Migrate from v5 to v6](../migrations/migrate-from-v5-to-v6.md) を参照
+- The backend implements the full datastore-agnostic API (queues, workers, flows, job schedulers, rate limiting, prioritization, delayed jobs, deduplication, metrics and events), so application code is identical across backends. Redis-specific concerns (Redis Cluster, `maxmemory-policy`, etc.) don't apply; the relevant knob on PostgreSQL is `max_connections`.
+- `getBackend()` always returns the currently configured backend. Redis-only escape hatches (raw Redis `client`, `redisVersion`, and similar) exist only when the backend is Redis.
+- The `schema` option is only honored when BullMQ builds the pool for you. When you pass an already-constructed `pg.Pool`, configure your pool's `search_path` yourself so it includes BullMQ's schema (`bullmq` by default, or your custom schema); otherwise unqualified BullMQ queries will not resolve to BullMQ's tables.
+- Prefer the default schema and use a dedicated database for BullMQ when possible; custom schemas are supported but add operational complexity.
+- For breaking changes when implementing your own `IQueueBackend`, see [Migrate from v5 to v6](../migrations/migrate-from-v5-to-v6.md)
 
 ## Related
 
