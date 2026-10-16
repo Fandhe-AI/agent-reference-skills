@@ -23,6 +23,7 @@ await Windows.System.Launcher.LaunchUriAsync(uri);
 
 - Starting with Windows 11, Build 22000, `ms-settings:camera` navigates to the camera settings page. In previous versions of Windows, the same URI launched the default camera application.
 - Launch is performed with `Launcher.LaunchUriAsync`.
+- Source: https://learn.microsoft.com/en-us/windows/apps/develop/camera/launch-camera-settings
 
 ## Related
 

@@ -54,6 +54,7 @@ D2D HLSL helpers: `D2DGetInput`, `D2DSampleInput`, `D2DSampleInputAtOffset`, `D2
 - Simple sampling (output pixel depends on one corresponding input pixel, e.g. grayscale) can be linked to its predecessor; complex sampling (e.g. Gaussian blur) needs an input texture to sample and is not linked to its predecessor. With the helpers you must declare simple vs complex inputs in HLSL.
 - Only one `SCENE_POSITION` input may be defined, and only one function per linked shader can use it.
 - When compiling in Visual Studio, run both FXC commands from a batch file as a custom build step before compile.
+- Source: https://learn.microsoft.com/en-us/windows/win32/direct2d/effect-shader-linking (commit `ca8274d`).
 
 ## Related
 

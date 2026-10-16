@@ -41,7 +41,7 @@ Feature level support (from the source table; see the official page for all rows
 - Applications must keep data resident while the GPU reads it (memory is made resident at object creation) and use fences so the GPU does not access evicted objects.
 - Porting is an involved process; the source points to Porting from Direct3D 11 to Direct3D 12 and Working with Direct3D 11, Direct3D 10 and Direct2D (interop options such as D3D11On12).
 - Namespace: Win32 COM (`d3d12.h`, `d3dcommon.h`). Distinct from other APIs' feature-level or capability systems (Vulkan, Metal).
-- Source pin: learn.microsoft.com win32 docs at commit `ca8274d`.
+- Source: https://learn.microsoft.com/en-us/windows/win32/direct3d12/important-changes-from-directx-11-to-directx-12 and https://learn.microsoft.com/en-us/windows/win32/direct3d12/hardware-feature-levels (learn.microsoft.com win32 docs at commit `ca8274d`).
 
 ## Related
 

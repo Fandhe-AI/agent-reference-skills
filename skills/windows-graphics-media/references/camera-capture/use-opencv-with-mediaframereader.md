@@ -13,9 +13,12 @@ Read color frames with `MediaFrameReader`, blur each with OpenCV through a nativ
 MediaFrameReader reader = await mediaCapture.CreateFrameReaderAsync(frameSource /*, format, bitmapSize */);
 reader.FrameArrived += (sender, args) =>
 {
-    var frame = sender.TryAcquireLatestFrame();
-    // SoftwareBitmap from frame.VideoMediaFrame; convert to Bgra8 + Premultiplied if needed
-    // Create a target SoftwareBitmap with matching properties, call OpenCVHelper.Blur(src, dst)
+    using (var frame = sender.TryAcquireLatestFrame())
+    {
+        if (frame == null) return;
+        // SoftwareBitmap from frame.VideoMediaFrame; convert to Bgra8 + Premultiplied if needed
+        // Create a target SoftwareBitmap with matching properties, call OpenCVHelper.Blur(src, dst)
+    }
 };
 await reader.StartAsync();
 ```

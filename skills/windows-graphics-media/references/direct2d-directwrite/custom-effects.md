@@ -105,6 +105,7 @@ XML property type to data type mapping:
 - Vertex shader: `ID2D1EffectContext::LoadVertexShader`, `CreateVertexBuffer`, `ID2D1DrawInfo::SetVertexProcessing`. If none is specified, Direct2D substitutes a default vertex shader / vertex buffer. A vertex shader must return `sceneSpaceOutput` and `clipSpaceOutput` unchanged.
 - Compute shader: check support with `ID2D1EffectContext::CheckFeatureSupport` and return `D2DERR_INSUFFICIENT_DEVICE_CAPABILITIES` if unsupported. Supports Shader Model 4 (DirectX 10) and 5 (DirectX 11); SM4 `numthreads`: z == 1 and x*y*z <= 768; SM5: z <= 64 and x*y*z <= 1024. Round the threadgroup count up in `CalculateThreadgroups`. SM4 output must be a 1D `RWStructuredBuffer<float4>`; SM5 can use 2D output textures.
 - Full pixel, vertex and compute shader effect examples are in the D2DCustomEffects SDK sample (Windows-universal-samples).
+- Source: https://learn.microsoft.com/en-us/windows/win32/direct2d/custom-effects (commit `ca8274d`).
 
 ## Related
 

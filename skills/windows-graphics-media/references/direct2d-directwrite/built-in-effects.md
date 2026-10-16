@@ -36,6 +36,7 @@ Requirements:
 - This page lists the CLSIDs only; per-effect property enumerations (e.g. `D2D1_GAUSSIANBLUR_PROP_STANDARD_DEVIATION`) are documented on each effect's own page and are not reproduced here.
 - Built-in effects support effect shader linking, and some may emit colors outside [0, 1]; see the precision page for `ClampOutput` handling.
 - The effects overview page also names the categories "Filtering", "Composition and Blending", "Transparency", "Color", "Lighting and Stylizing", "Transforming and Scaling" and "Sources"; the headings above follow this catalog page.
+- Source: https://learn.microsoft.com/en-us/windows/win32/direct2d/built-in-effects (commit `ca8274d`).
 
 ## Related
 

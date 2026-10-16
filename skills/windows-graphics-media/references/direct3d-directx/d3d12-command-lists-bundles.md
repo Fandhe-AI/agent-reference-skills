@@ -44,7 +44,7 @@ m_fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 - Most `ID3D12GraphicsCommandList` methods return no errors; errors are deferred until `Close`. `DXGI_ERROR_DEVICE_REMOVED` is deferred further and can appear in resource creation methods, `ID3D12Resource::Map`, `IDXGISwapChain1::Present1`, and `GetDeviceRemovedReason`.
 - The source page includes a full table of which command list APIs are valid on Graphics / Compute / Copy / Bundle command lists and inside a render pass; see the official page for it.
 - Namespace: Win32 COM (`d3d12.h`). Distinct from other frameworks' command-buffer abstractions (e.g. WebGPU/wgpu, Vulkan).
-- Source pin: learn.microsoft.com win32 docs at commit `ca8274d`.
+- Source: https://learn.microsoft.com/en-us/windows/win32/direct3d12/recording-command-lists-and-bundles and https://learn.microsoft.com/en-us/windows/win32/direct3d12/executing-and-synchronizing-command-lists (learn.microsoft.com win32 docs at commit `ca8274d`).
 
 ## Related
 

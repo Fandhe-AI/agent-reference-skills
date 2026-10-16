@@ -49,7 +49,7 @@ m_commandList->RSSetShadingRateImage(screenSpaceImage);
 - VRS APIs can be called on bundles and within render passes.
 - The source page uses images for the MSAA/coarse-pixel support table and coverage-bit tables; see the official page for them.
 - Namespace: Win32 COM (`d3d12.h`). Distinct from per-vendor or other-API VRS features.
-- Source pin: learn.microsoft.com win32 docs at commit `ca8274d`.
+- Source: https://learn.microsoft.com/en-us/windows/win32/direct3d12/vrs (learn.microsoft.com win32 docs at commit `ca8274d`).
 
 ## Related
 

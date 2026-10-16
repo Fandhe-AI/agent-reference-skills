@@ -32,6 +32,7 @@ HRESULT hr = pContext->QueryInterface(__uuidof(ID2D1DeviceContext5),
 - ID2D1DeviceContext3 sprite batches: after `CreateSpriteBatch`, use `ID2D1SpriteBatch::AddSprites` to add sprites, then `DrawSpriteBatch` to draw.
 - ID2D1DeviceContext4 `DrawTextLayout`: if the layout is not subsequently changed, this can be more efficient than `DrawText` when drawing the same layout repeatedly.
 - Contexts are created by the versioned devices; see [ID2D1Device1 – ID2D1Device7](./id2d1device-versions.md).
+- Source: https://learn.microsoft.com/en-us/windows/win32/api/d2d1_2/nn-d2d1_2-id2d1devicecontext1 and https://learn.microsoft.com/en-us/windows/win32/api/d2d1_3/nn-d2d1_3-id2d1devicecontext2 (through ID2D1DeviceContext7 in d2d1_3).
 
 ## Related
 

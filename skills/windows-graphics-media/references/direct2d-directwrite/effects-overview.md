@@ -8,7 +8,7 @@ Direct2D effects apply high quality, GPU-accelerated image processing (built on 
 // Apply an effect to an image (ID2D1DeviceContext + WIC bitmap source assumed to exist)
 ComPtr<ID2D1Effect> bitmapSourceEffect;
 DX::ThrowIfFailed(m_d2dContext->CreateEffect(CLSID_D2D1BitmapSource, &bitmapSourceEffect));
-DX::ThrowIfFailed(m_bitmapSourceEffect->SetValue(D2D1_BITMAPSOURCE_PROP_WIC_BITMAP_SOURCE, m_wicBitmapSource.Get()));
+DX::ThrowIfFailed(bitmapSourceEffect->SetValue(D2D1_BITMAPSOURCE_PROP_WIC_BITMAP_SOURCE, m_wicBitmapSource.Get()));
 
 ComPtr<ID2D1Effect> gaussianBlurEffect;
 DX::ThrowIfFailed(m_d2dContext->CreateEffect(CLSID_D2D1GaussianBlur, &gaussianBlurEffect));
@@ -67,6 +67,9 @@ compositeEffect->SetInputEffect(1, specularLightingEffect.Get());
 m_arithmeticCompositeEffect->SetInput(0, m_inputImage.Get());
 m_arithmeticCompositeEffect->SetInputEffect(1, compositeEffect.Get());
 ```
+
+- The official step 2 snippet refers to m_bitmapSourceEffect; unified to the local bitmapSourceEffect here.
+- Source: https://learn.microsoft.com/en-us/windows/win32/direct2d/effects-overview and https://learn.microsoft.com/en-us/windows/win32/direct2d/how-to-apply-effects-to-primitives (learn.microsoft.com win32 docs at commit `ca8274d`).
 
 ## Related
 

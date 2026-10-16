@@ -58,6 +58,7 @@ Other built-in effects that may output colors beyond [0, 1] in unpremultiplied s
 - Check support with `ID2D1DeviceContext::IsBufferPrecisionSupported` before using high precision. Using a WARP Direct3D device guarantees all buffer precisions regardless of the GPU; recommended e.g. when applying effects to a photo while saving, and on feature level 9.X GPUs.
 - Requested precision is a minimum; Direct2D may use higher, and when sharing intermediates it uses the maximum precision requested.
 - The source prose says the effect-implementation call is `ID2D1RenderInfo::SetOutputPrecision`, while its code sample calls `RenderInfo->SetOutputBuffer(precision, channelDepth)`; the sample code is reproduced above.
+- Source: https://learn.microsoft.com/en-us/windows/win32/direct2d/precision-and-clipping-in-effect-graphs (commit `ca8274d`).
 
 ## Related
 

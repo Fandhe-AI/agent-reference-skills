@@ -32,6 +32,7 @@ HRESULT hr = pDevice->QueryInterface(__uuidof(ID2D1Device2),
 - ID2D1Device7 is marked `prerelease: true` in the sdk-api source (ms.date 09/15/2023): treat it as preview.
 - Device2 – Device6 descriptions state that each performs all the same functions as the previous interface and additionally enables creation of the matching `ID2D1DeviceContextN` objects.
 - Devices are created by the versioned factories; see [ID2D1Factory2 – ID2D1Factory8](./id2d1factory-versions.md).
+- Source: https://learn.microsoft.com/en-us/windows/win32/api/d2d1_2/nn-d2d1_2-id2d1device1 and https://learn.microsoft.com/en-us/windows/win32/api/d2d1_3/nn-d2d1_3-id2d1device2 (through ID2D1Device7 in d2d1_3).
 
 ## Related
 

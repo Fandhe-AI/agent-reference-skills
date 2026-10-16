@@ -34,6 +34,7 @@ HRESULT hr = pFactory1->QueryInterface(__uuidof(ID2D1Factory3),
 - Factory3 – Factory7 `ms.date` is 12/05/2018 in the sdk-api source.
 - Factory2 introduces `ID2D1Device1`, which adds device rendering priority control. See [ID2D1Device1 – ID2D1Device7](./id2d1device-versions.md).
 - Factory2 links to "Multithreaded Direct2D Apps" in its see-also list.
+- Source: https://learn.microsoft.com/en-us/windows/win32/api/d2d1_2/nn-d2d1_2-id2d1factory2 and https://learn.microsoft.com/en-us/windows/win32/api/d2d1_3/nn-d2d1_3-id2d1factory3 (through ID2D1Factory8 in d2d1_3).
 
 ## Related
 

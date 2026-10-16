@@ -50,7 +50,7 @@ void render_passes(::ID3D12GraphicsCommandList4 * pIGCL4,
 - The app is responsible for identifying dependencies, minimizing `*_PRESERVE` use, correct barriers, and avoiding unneeded copies/clears; neither runtime nor driver deduces these.
 - Render passes always function (the runtime maps them onto the existing API when unsupported) but may give no benefit; check `RenderPassesTier`, especially when using D3D11On12.
 - Namespace: Win32 COM (`d3d12.h`).
-- Source pin: learn.microsoft.com win32 docs at commit `ca8274d`.
+- Source: https://learn.microsoft.com/en-us/windows/win32/direct3d12/direct3d-12-render-passes (learn.microsoft.com win32 docs at commit `ca8274d`).
 
 ## Related
 

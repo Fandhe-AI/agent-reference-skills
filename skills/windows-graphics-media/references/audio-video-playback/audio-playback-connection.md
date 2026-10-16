@@ -14,11 +14,10 @@ watcher.Start();
 
 // Enable: tells the system the app wants audio from the device played on the PC.
 var connection = AudioPlaybackConnection.TryCreateFromId(deviceId);
-if (connection != null)
-{
-    connection.StateChanged += (c, args) => { /* update UI via DispatcherQueue.TryEnqueue */ };
-    await connection.StartAsync();
-}
+if (connection == null) return; // device not supported
+
+connection.StateChanged += (c, args) => { /* update UI via DispatcherQueue.TryEnqueue */ };
+await connection.StartAsync();
 
 // Open: audio starts playing only after the connection is opened.
 var result = await connection.OpenAsync();

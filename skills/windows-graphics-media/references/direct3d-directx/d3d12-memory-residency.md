@@ -39,7 +39,7 @@ Classification strategy (from the source): Critical (command allocators, queues,
 - "Suballocation within heaps" is a section index page in the source linking to Memory Aliasing and Data Inheritance and Shared Heaps (multi-process / multi-adapter); it has no further content here.
 - The source pages do not describe `MakeResident` in detail; see the official API reference for it.
 - Namespace: Win32 COM (`d3d12.h`, `dxgi1_4.h`).
-- Source pin: learn.microsoft.com win32 docs at commit `ca8274d`.
+- Source: https://learn.microsoft.com/en-us/windows/win32/direct3d12/memory-management-strategies, https://learn.microsoft.com/en-us/windows/win32/direct3d12/residency, https://learn.microsoft.com/en-us/windows/win32/direct3d12/suballocation-within-heaps (learn.microsoft.com win32 docs at commit `ca8274d`).
 
 ## Related
 

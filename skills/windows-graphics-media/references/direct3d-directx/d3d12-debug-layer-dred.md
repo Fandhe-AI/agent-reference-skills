@@ -12,6 +12,7 @@ void EnableShaderBasedValidation()
     CComPtr<ID3D12Debug1> spDebugController1;
     VERIFY(D3D12GetDebugInterface(IID_PPV_ARGS(&spDebugController0)));
     VERIFY(spDebugController0->QueryInterface(IID_PPV_ARGS(&spDebugController1)));
+    spDebugController0->EnableDebugLayer(); // GBV requires the debug layer
     spDebugController1->SetEnableGPUBasedValidation(true);
 }
 ```
@@ -56,7 +57,8 @@ void MyDeviceRemovedHandler(ID3D12Device * pDevice)
 - DRED page fault reporting (DRED 1.1) reports names/types of existing or recently freed API objects matching the faulting GPU VA. Off by default (runtime must track objects by VA). Not all GPUs support page faults; GPUs without page faulting still benefit from auto-breadcrumbs.
 - DRED settings are process-global and affect only devices created afterwards (`D3D12CreateDevice` uses the latest settings). Debuggers read data via `d3d12!D3D12DeviceRemovedExtendedData`; a WinDbg extension is in the DirectX-Debugging-Tools repository. DRED 1.0 was in Windows 10 version 1809 (no API); since version 1903 user-mode device-removed events are reported to WER.
 - Namespace: Win32 COM (`d3d12.h`, `d3d12sdklayers.h`).
-- Source pin: learn.microsoft.com win32 docs at commit `ca8274d`.
+- The official GBV snippet omits EnableDebugLayer; GBV only takes effect with the debug layer enabled.
+- Source: https://learn.microsoft.com/en-us/windows/win32/direct3d12/understanding-the-d3d12-debug-layer, https://learn.microsoft.com/en-us/windows/win32/direct3d12/using-d3d12-debug-layer-gpu-based-validation, https://learn.microsoft.com/en-us/windows/win32/direct3d12/use-dred (learn.microsoft.com win32 docs at commit `ca8274d`).
 
 ## Related
 
