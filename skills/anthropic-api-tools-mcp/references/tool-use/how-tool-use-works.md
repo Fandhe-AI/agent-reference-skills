@@ -17,7 +17,7 @@ while stop_reason == "tool_use":
 | Name | Type | Description |
 | --- | --- | --- |
 | User-defined tools | client-executed | You write the schema, execute the code, return `tool_result` |
-| Anthropic-schema tools | client-executed | Trained-in schemas (`memory`, `bash`, `text_editor`, `computer`); you still execute |
+| Anthropic-schema tools | client-executed | Trained-in schemas (`memory`, `bash`, `text_editor`, `computer`, `browser`: standard dev operations including file editing and desktop / browser control); you still execute |
 | Server-executed tools | server-executed | `web_search`, `web_fetch`, `code_execution`, `tool_search`; Anthropic runs the code |
 
 ## Notes

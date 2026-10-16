@@ -28,7 +28,8 @@ Client tool named `str_replace_based_edit_tool`: Claude views and edits text fil
 
 - Tool `type` is `text_editor_20250728` (current, Claude 4+, adds `max_characters`) or `text_editor_20250124` (earlier models); older `text_editor_20250429`/`text_editor_20241022` are legacy. The `undo_edit` command was removed in `text_editor_20250429` and does not exist in current versions.
 - Schema-less like other Anthropic-schema client tools: no `input_schema` to define, name is fixed per version.
-- Pricing: `text_editor_20250429`-class tool (Claude 4.x) adds 700 input tokens beyond base token pricing.
+- Pricing: additional input tokens beyond base token pricing for `text_editor_20250728`: 974 tokens on Claude 4.7 and later models and Claude Mythos Preview; 745 tokens on Claude 4.6 and earlier models.
+- Change log: `text_editor_20250728` (2025-07-28) adds optional `max_characters`, otherwise identical to `_20250429`; `text_editor_20250429` (2025-04-29) is the Claude 4 version and removes `undo_edit`; `text_editor_20250124` (2025-03-13) is optimized for Claude Sonnet 3.7; `text_editor_20241022` (2024-10-22) is the initial release with Claude Sonnet 3.5 (retired) and includes `undo_edit`.
 - When combining with other tools (bash, computer use), match the tool version to the model and account for each tool's separate token overhead.
 
 ## Related

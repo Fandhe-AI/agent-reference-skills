@@ -24,11 +24,11 @@ Connect Claude to external tools and APIs. Claude decides when to call a tool ba
 
 ## Notes
 
-- Client tools (user-defined tools and Anthropic-schema tools such as `bash`, `text_editor`) run in your application: Claude returns `stop_reason: "tool_use"` with `tool_use` blocks, and you send back `tool_result`.
+- Client tools (user-defined tools and Anthropic-schema tools such as `memory`, `bash`, `text_editor`, and the client toolsets computer use and browser use) run in your application: Claude returns `stop_reason: "tool_use"` with `tool_use` blocks, and you send back `tool_result`.
 - Server tools (`web_search`, `web_fetch`, `code_execution`, `tool_search`) run on Anthropic's infrastructure; you see results directly unless the server tool is called in the same parallel group as a client tool.
 - With `tool_choice: {"type": "auto"}` (default), Claude decides per turn whether to call a tool; steer this via system prompt or force it via `tool_choice`.
 - Add `strict: true` to custom tool definitions to guarantee schema-conforming tool calls (see Strict tool use).
-- Tool use adds input tokens for the `tools` parameter, `tool_use`/`tool_result` blocks, and a per-model tool-use system prompt (see pricing table on the source page); server tools can add usage-based charges (e.g. per web search).
+- Tool use adds input tokens for the `tools` parameter, `tool_use`/`tool_result` blocks, and a per-model tool-use system prompt (see pricing table on the source page; the per-model table now includes the 5.5 family: Claude Opus 5.5 and Sonnet 5.5 are 286 tokens for `auto, none` with the `any, tool` cell blank because they do not support forced tool use, and Claude Haiku 5.5 is 286 / 406 tokens); server tools can add usage-based charges (e.g. per web search).
 - MCP connector and Claude Managed Agents' built-in toolset are related but out of scope for this page; see MCP connector docs and Managed Agents Tools page.
 
 ## Related

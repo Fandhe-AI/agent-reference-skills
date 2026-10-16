@@ -1,21 +1,23 @@
 ---
 name: anthropic-api-tools-mcp
 description: >
-  Claude API (platform.claude.com) の tool use / Agent Skills / MCP リファレンス。
+  Claude API (platform.claude.com) の tool use / Agent Skills / MCP。
   tool definition (JSON Schema), tool_use / tool_result, server tools（code execution,
-  computer use, web search / web fetch, memory tool, tool search）,
-  Agent Skills (SKILL.md), Skills API, MCP connector, mcp_servers, MCP tunnels, Tunnels API。
+  web search, web fetch, memory tool, tool search）, client toolset（computer use, browser use）,
+  Agent Skills (SKILL.md), Skills API GA (/v1/skills), MCP connector,
+  mcp_servers, mcp_tool_listing, MCP tunnels, Tunnels API。
 user-invocable: false
 ---
 
 # anthropic-api-tools-mcp
 
 Claude API (platform.claude.com) — Messages API における tool use（tool definition・client/server tool・
-built-in server tools）、Agent Skills（SKILL.md パッケージと Skills API）、MCP connector / MCP tunnels を
-カバーする公式リファレンス。
+built-in server tools・client toolset の computer use / browser use）、Agent Skills（SKILL.md パッケージと
+Skills API）、MCP connector / MCP tunnels をカバーする公式リファレンス。
 
-Messages API 本体（streaming / caching / thinking）は `anthropic-api-core`、Claude Code CLI の Skills / MCP 設定は
-`anthropic-claude-code-extend`、Agent SDK の Skills / MCP は `anthropic-agent-sdk` を参照（本スキルは Claude API 側の
+Messages API 本体（streaming / caching / thinking）は `anthropic-api-core`（thinking と tool の併用ワークフローも同スキル）、
+Claude Code CLI の Skills / MCP 設定は `anthropic-claude-code-extend`、Agent SDK の Skills / MCP は
+`anthropic-agent-sdk`、skill の usage analytics は `anthropic-admin-platform` を参照（本スキルは Claude API 側の
 tool use / Agent Skills / MCP 定義を担当）。
 
 ## ディレクトリ構成
@@ -28,6 +30,8 @@ skills/anthropic-api-tools-mcp/
       README.md
       advisor-tool.md
       bash-tool.md
+      browser-use-sdk.md
+      browser-use-tool.md
       build-a-tool-using-agent.md
       code-execution-tool.md
       computer-use-tool.md
@@ -58,6 +62,7 @@ skills/anthropic-api-tools-mcp/
       enterprise.md
       overview.md
       quickstart.md
+      skills-in-the-api.md
     mcp-connector/
       README.md
       mcp-connector.md
@@ -120,10 +125,11 @@ skills/anthropic-api-tools-mcp/
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | tool definition（JSON Schema）を書く・tool_use / tool_result を扱う・client/server tool の区別を知りたい | tool-use | [references/tool-use/README.md](references/tool-use/README.md) |
-| server tools（code execution, computer use, web search / web fetch, memory tool, bash, text editor, tool search）を使いたい | tool-use | [references/tool-use/README.md](references/tool-use/README.md) |
+| server tools（code execution, web search / web fetch, memory tool, bash, text editor, tool search）を使いたい | tool-use | [references/tool-use/README.md](references/tool-use/README.md) |
+| client toolset（computer use `computer_toolset_20260801` / browser use `browser_toolset_20260801`）でウェブページ・画面を操作する・SDK の browser / computer toolset と driver を使う | tool-use | [references/tool-use/README.md](references/tool-use/README.md) |
 | strict tool use・parallel tool use・fine-grained streaming・prompt caching との併用・tool エラーの troubleshooting を知りたい | tool-use | [references/tool-use/README.md](references/tool-use/README.md) |
-| Agent Skills（SKILL.md パッケージ）を作る・authoring best practice・enterprise governance を知りたい | agent-skills | [references/agent-skills/README.md](references/agent-skills/README.md) |
+| Agent Skills（SKILL.md パッケージ）を作る・authoring best practice・enterprise governance を知りたい・Skills API の Messages での使い方（container.skills）と `skills-2025-10-02` からの GA 移行を知りたい | agent-skills | [references/agent-skills/README.md](references/agent-skills/README.md) |
 | Messages API から remote MCP サーバーに接続する（mcp_servers, mcp_toolset）・third-party MCP directory を知りたい | mcp-connector | [references/mcp-connector/README.md](references/mcp-connector/README.md) |
 | private network の MCP サーバーへ MCP tunnels で安全に接続する・Docker Compose / Helm デプロイ・証明書管理を知りたい | mcp-tunnels | [references/mcp-tunnels/README.md](references/mcp-tunnels/README.md) |
-| Skills API（`/v1/skills`）・Tunnels API（`/v1/tunnels`）の個別エンドポイントのリクエスト・レスポンス仕様を確認したい | endpoints | [references/endpoints/README.md](references/endpoints/README.md) |
+| Skills API（`/v1/skills`、GA。download のみ beta）・Tunnels API（`/v1/tunnels`）の個別エンドポイントのリクエスト・レスポンス仕様を確認したい | endpoints | [references/endpoints/README.md](references/endpoints/README.md) |
 | 典型的な使い方を知りたい（tool 定義, tool runner, code execution, web search/fetch, structured tool use, skill package, mcp connector, memory tool） | samples | [samples/README.md](samples/README.md) |

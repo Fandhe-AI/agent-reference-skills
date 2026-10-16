@@ -32,7 +32,9 @@ Server tool: Claude discovers and loads tools on demand from a large catalog ins
 - A `defer_loading: true` tool cannot also carry `cache_control` (400 error) — put the cache breakpoint on a non-deferred tool instead; prompt-cache prefix is preserved regardless since deferred tools are excluded from it (see tool-use-with-prompt-caching.md).
 - Use when 10+ tools, tool defs exceed ~10k tokens, selection accuracy is degrading, aggregating 200+ MCP tools, or the toolset grows over time. Not worth it below 10 tools / <100 tokens of definitions / every tool used every request. Keep the 3-5 most-used tools non-deferred.
 - Not separately metered — loaded tool definitions count as normal input tokens; `usage.server_tool_use` has no tool-search-specific field.
-- Model support: Claude Fable 5, Mythos 5, Opus 5, Opus 4.8/4.7/4.6, Sonnet 4.6, Opus 4.5, Sonnet 4.5, Haiku 4.5 (not Opus 4.1 or earlier). Bedrock supports it only via InvokeModel, not Converse.
+- Model support (both regex and bm25): Claude Fable 5.1, Mythos 5.1, Fable 5, Mythos 5, Opus 5.5, Opus 5, Sonnet 5.5, Sonnet 5, Haiku 5.5, Opus 4.8, Opus 4.7, Opus 4.6, Sonnet 4.6, Opus 4.5, Sonnet 4.5 (deprecated), Haiku 4.5. Claude Opus 4.1 and earlier are not supported. Bedrock supports it only via InvokeModel, not Converse; Claude Platform on AWS works identically to the Claude API (no InvokeModel / Converse distinction).
+- Limits: at most 10,000 deferred tools per request; each search returns up to 5 matching tools by default, and Claude can set `limit` in its search input to an integer from 1 to 10,000; regex pattern max 200 characters, BM25 query max 500 characters.
+- Client toolsets (computer use / browser use): set `defer_loading` per member inside `configs`, with the same value on every enabled member, and declare a non-deferred tool search tool in the same request (see tool-reference.md, Client toolsets).
 
 ## Related
 

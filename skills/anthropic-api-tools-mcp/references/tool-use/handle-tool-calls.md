@@ -26,6 +26,7 @@ Parse `tool_use` blocks, format `tool_result` responses, and signal errors with 
 ## Notes
 
 - `tool_use` blocks in Claude's response carry `id`, `name`, and `input` (conforming to `input_schema`).
+- A `tool_use` block for a member of the computer use or browser use toolset also carries `toolset_name` (`"computer"` or `"browser"`); its `name` is the member tool (such as `screenshot` or `navigate`), so dispatch on both fields. A `tool_result` that answers a member block must echo the same `toolset_name`, or it is rejected. Its `content` may contain only `text` and `image` blocks; a browser use result may add one `browser_state` block (the tab-management members return only that block).
 - `tool_result` blocks must immediately follow their corresponding `tool_use` blocks with no messages in between; within the user message, `tool_result` blocks must come first in the content array, with any text after them.
 - If the assistant turn also called a server tool with no result yet, the following user message must contain only `tool_result` blocks — text before/among them triggers a 400 error (or ends the turn early for indirect server-tool calls).
 - Treat tool_result content from external sources (web pages, email, uploads) as untrusted — keep it in `tool_result` blocks, not `system` or plain `text`, to reduce indirect prompt-injection risk.

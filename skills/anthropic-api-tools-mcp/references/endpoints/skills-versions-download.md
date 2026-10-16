@@ -27,7 +27,9 @@ curl https://api.anthropic.com/v1/skills/$SKILL_ID/versions/$VERSION/content \
 
 ## Notes
 
-- Beta endpoint: requires the `anthropic-beta: skills-2025-10-02` header.
+- Beta-only endpoint: the other Skills endpoints are GA, but this download endpoint is documented only under the beta API reference (`/api/beta/skills/versions/download`) and does not appear in the GA `/api/skills/versions` reference. It requires the `anthropic-beta: skills-2025-10-02` header.
+- The `version` path parameter is the version ID; only requests carrying `skills-2025-10-02` address versions by their Unix epoch timestamp string.
+- Not supported on Microsoft Foundry (per the Agent Skills overview).
 - Response body is a zip archive rather than a JSON object; no `## Options / Props` returns table applies.
 - This is the Claude API Skills API (management of SKILL.md packages), distinct from this repository's own skills concept and from Claude Code Skills.
 

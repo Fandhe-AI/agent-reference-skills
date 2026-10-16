@@ -42,8 +42,10 @@ Specify tool schemas, write effective descriptions, and control when Claude call
 - Best practices: write extremely detailed descriptions (3-4+ sentences), consolidate related operations into fewer tools with an `action` parameter instead of many narrow tools, use service-prefixed names (`github_list_prs`) for namespacing, and return only high-signal, stable identifiers in tool responses.
 - With `tool_choice: any` or `tool`, the API prefills the assistant turn, so Claude emits no natural-language text before the `tool_use` block, even if asked to explain.
 - Changing `tool_choice` invalidates cached message blocks (prompt caching); tool definitions and system prompt remain cached.
-- Manual extended thinking (`thinking: {type: "enabled"}`) is incompatible with `tool_choice: any` or `tool` (auto/none only); adaptive thinking supports forced tool use. Claude Mythos Preview does not support forced tool use at all.
-- Combine `tool_choice: any` with `strict: true` (Strict tool use) to guarantee both a tool call and schema-conforming input.
+- Forced tool use is not supported everywhere; where it is not, `any` and `tool` fail while `auto` and `none` still work. Manual extended thinking (`thinking: {type: "enabled"}`) is incompatible with `any` / `tool` (use `auto` or `none`). Adaptive thinking itself does not block forced tool use (models with thinking on by default, such as Claude Opus 5 and Claude Haiku 5.5, accept it).
+- Claude Opus 5.5, Claude Sonnet 5.5, Claude Fable 5.1, and Claude Mythos 5.1 reject `tool_choice` `any` and `tool` with a 400 error regardless of thinking settings. Use `auto` with strict tool use to guarantee schema-valid tool inputs, or structured outputs when you need a response in a fixed JSON shape; prompting still influences which tool `auto` picks. `none` is also supported.
+- A forced call skips thinking on every model that accepts forced tool use: the response starts with the `tool_use` block and has no `thinking` block. To let the model think first, use `auto` with a prompt instruction.
+- On models that support forced tool use, combine `tool_choice: any` with `strict: true` (Strict tool use) to guarantee both a tool call and schema-conforming input.
 - For the full set of optional tool-definition properties (`cache_control`, `strict`, `defer_loading`, `allowed_callers`), see Tool reference.
 
 ## Related

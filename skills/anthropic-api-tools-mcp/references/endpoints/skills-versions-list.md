@@ -1,8 +1,8 @@
-<!-- source: https://platform.claude.com/docs/en/api/beta/skills/versions/list / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/skills/versions/list / last verified: 2026-10-17 -->
 
 # List Skill Versions
 
-Lists the versions of a Skill, with pagination.
+Lists the versions of a Skill, with pagination. GA endpoint (no beta header).
 
 ## Signature / Usage
 
@@ -10,10 +10,9 @@ Lists the versions of a Skill, with pagination.
 GET /v1/skills/{skill_id}/versions
 ```
 
-```http
+```bash
 curl https://api.anthropic.com/v1/skills/$SKILL_ID/versions \
     -H 'anthropic-version: 2023-06-01' \
-    -H 'anthropic-beta: skills-2025-10-02' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -21,22 +20,22 @@ curl https://api.anthropic.com/v1/skills/$SKILL_ID/versions \
 
 | Name | Type | Description |
 |------|------|-------------|
-| `skill_id` (path) | string | Unique identifier for the skill. |
-| `limit` (query) | optional number | Items per page. Default 20, range 1-1000. |
-| `page` (query) | optional string | `next_page` token from a previous response. |
-| `anthropic-beta` (header) | optional array of AnthropicBeta | Requires `skills-2025-10-02` for this endpoint. |
+| `skill_id` (path) | string | Unique identifier for the skill |
+| `limit` (query) | optional number | Items per page. Range 1 to 1000, default 20 |
+| `page` (query) | optional string | `next_page` token from the previous response |
+| `anthropic-version` (header) | optional string | API version |
+| `anthropic-workspace-id` (header) | optional string | Selects the Workspace; only needed for credentials that can act on more than one Workspace |
 
 ### Returns
 
 | Name | Type | Description |
 |------|------|-------------|
-| `data` | array of SkillVersion | List of skill versions (`id`, `created_at`, `description`, `directory`, `name`, `skill_id`, `type`, `version`). |
-| `has_more` | boolean | Whether more results are available in the requested page direction. |
-| `next_page` | string | Token to pass as `page` in the next request. |
+| `data` | array of SkillVersion | Each has `type` (`"skill_version"`), `id`, `created_at`, `description`, `name`, `skill_id` |
+| `next_page` | string or null | Token to pass as `page` in the next request; `null` when there are no more results |
 
 ## Notes
 
-- Beta endpoint: requires the `anthropic-beta: skills-2025-10-02` header.
+- Versions are listed newest first (default `limit` 20). Under the beta header `skills-2025-10-02` the list is oldest first, the response is `{ data, has_more, next_page }`, and versions have `directory` and an epoch `version`. Page cursors from one shape are not valid on the other.
 - This is the Claude API Skills API (management of SKILL.md packages), distinct from this repository's own skills concept and from Claude Code Skills.
 
 ## Related
