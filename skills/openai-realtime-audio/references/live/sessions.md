@@ -87,7 +87,7 @@ Configuration fields:
 | Instructions | `instructions`, up to 16,384 tokens | `session.instructions.append` |
 | History | `input`, relevant prior text messages; default `[]` | Append events |
 | Voice | `audio.output.voice`; default `marin`; supported voice or authorized custom voice | Start a new session |
-| Delegation | `delegation.type` `client` or `responses`; omitted or `null` selects client | `session.update` within the existing mode |
+| Delegation | `delegation.type` `client`, `responses`, or `decisions` (Decisions-voice integration); omitted or `null` selects client | The delegation type is fixed for the session; `session.update` changes settings within the existing mode (see decisions-voice.md for Decisions) |
 | Storage | `store`; default `false`; `true` makes the session forkable | Choose at startup |
 
 Additional voices (API name, language, regional influence, presentation, source): `quartz` (English, Australian, Feminine, Generated), `ripple` (English, Australian, Masculine, Natural), `vesper` (English, British, Masculine, Natural), `willow` (English, Irish, Feminine, Natural), `stone` (English, Irish, Masculine, Natural), `gleam` (English, North American, Feminine, Natural), `meridian` (English, North American, Masculine, Natural), `bossa` (Portuguese, Brazilian, Feminine, Natural), `tempo` (Portuguese, Brazilian, Masculine, Natural), `beacon` (English, Filipino, Masculine, Generated), `delta` (English, Southern U.S., Feminine, Generated), `cinder` (English, Southern U.S., Masculine, Generated).
@@ -118,7 +118,7 @@ Fork startup overrides: WebSocket: `store`, Responses delegation settings, `audi
 
 ## Notes
 
-- `session.update` only changes `session.delegation.responses` in a session already using Responses delegation; other fields are rejected (`immutable_field_update`). A successful update emits `session.updated`. `delegation: null` at startup selects client delegation.
+- `session.update` updates the delegation settings or transcript triggers of an active Live session. For Responses delegation the supported update is `session.delegation.responses`; startup-only fields (`model`, `instructions`, `input`, `audio`, `store`) are rejected (`immutable_field_update`). For native Decisions delegation (questions can be changed mid-session; wait for `session.updated` before adding a decision item) and transcript triggers (`session.triggers`), see decisions-voice.md. A successful update emits `session.updated`. `delegation: null` at startup selects client delegation.
 - Startup `input` accepts up to 128 messages and 8,192 combined tokens; roles `developer`, `user`, `assistant`; developer and user use `input_text`, assistant uses `text` or `output_text`. Put trusted instructions in `instructions` or a developer message.
 - WebSocket: choose `audio.format` at startup; WebRTC negotiates format, so omit `audio.format`.
 - Context append acknowledgments arrive when the session timeline reaches the estimated end of the context; `start_ms` / `end_ms` describe context delivery, not speech. Pending appends return errors when the session closes.

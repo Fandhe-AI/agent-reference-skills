@@ -31,6 +31,18 @@ response.status(201).json(result);
 Browser (connection core):
 
 ```javascript
+const stop = document.createElement("button");
+stop.textContent = "End conversation";
+stop.disabled = true;
+const audio = new Audio();
+audio.autoplay = true;
+audio.controls = true;
+
+let events;
+
+let microphone;
+
+let closeTimeout;
 let ready = false;
 const connection = new RTCPeerConnection();
 connection.addEventListener("track", (event) => {
@@ -61,11 +73,16 @@ const result = await response.json();
 await connection.setRemoteDescription({ type: "answer", sdp: result.transport.sdp });
 // The HTTP request started this session. Do not send session.start here.
 
-// To end (e.g. from a stop button click handler): keep media and events
-// alive until session.closed
 stop.addEventListener("click", () => {
   if (!ready || !events || events.readyState !== "open") return;
+  stop.disabled = true;
+  // The session.closed handler is already registered. Keep media and events
+  // alive while pending work drains; only clean up after the final event.
   events.send(JSON.stringify({ type: "session.close" }));
+  closeTimeout = setTimeout(() => {
+    status.textContent = "Incomplete finalization: no session.closed event.";
+    cleanup();
+  }, 15_000);
 });
 ```
 
@@ -89,6 +106,7 @@ Response (HTTP 201):
 ## Notes
 
 - Connection sequence: request microphone from a user action and add tracks; create the data channel and register listeners before the SDP offer; set local description and wait for ICE gathering; server posts `session` + `transport` to OpenAI; apply the SDP answer and wait for `session.started` before sending commands.
+- Browser snippet is an abridged excerpt of the official browser example (voice-webrtc guide); the original also handles cleanup, the 10 s ICE-gathering timeout, status text, and a 15 s fallback when session.closed does not arrive.
 - Do not send `session.start` on the data channel; the HTTP request starts the session.
 - Creating a WebRTC session bills 15 seconds of voice duration during initialization, credited against duration charges once the session runs (not an extra 15 seconds).
 - WebRTC negotiates the audio format via SDP, so omit `audio.format` from session configuration. Do not send `session.input_audio.append` or expect `session.output_audio.delta` on the data channel.
