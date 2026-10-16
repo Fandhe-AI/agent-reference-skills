@@ -55,7 +55,7 @@ gradlew --profile --offline --rerun-tasks assembleFlavorDebug
 | `apply-abi-change-to` | file list | Add a new method to the listed sources |
 | `apply-android-layout-change-to` | file | Change a layout resource |
 | `apply-android-resource-value-change-to` | file | Change a string resource value |
-| `version` | list | Gradle version(s), e.g. `["6.7"]` |
+| `versions` | list | Gradle version(s), e.g. `["6.7"]` |
 | `system-properties` | block | System properties passed to the build (e.g. `agpVersion`, `kotlinVersion`) |
 
 `--profile` flags:
@@ -72,6 +72,7 @@ gradlew --profile --offline --rerun-tasks assembleFlavorDebug
 - Benchmarking mode (`--benchmark`) collects clean and incremental build times; profiling mode collects granular data including CPU snapshots. Scenarios run multiple times to reduce variance.
 - Setup configurations worth benchmarking: plugin versions, Gradle versions, JVM settings (heap size, garbage collection), `org.gradle.workers.max`, per-plugin options.
 - To compare AGP/Kotlin versions, make them injectable from the scenario via system properties in the root `build.gradle` (the source example uses `providers.systemProperty("agpVersion")` and `kotlinVersion`), then set them under `system-properties` in each scenario (the source writes `System-properties` (capitalized), but gradle-profiler scenario keys are case-sensitive and the correct key is `system-properties`). The source example uses old versions (AGP 4.1.0 / Kotlin 1.4.0) and `forUseAtConfigurationTime()`; the scenario snippets in the source are not syntactically clean (the `apply-non-abi-change-to` example above is corrected: the source omits a closing quote after `.java`), so verify against the gradle-profiler docs before use.
+- The source writes the Gradle version key as `version = ["6.7"]`, but the correct gradle-profiler scenario key is `versions` (as in the table above).
 - Run `clean` between profiled builds; otherwise Gradle skips up-to-date tasks and later builds look faster.
 - Optional step: rerun without `--rerun-tasks` to spot tasks that run when they should be `UP-TO-DATE` (e.g. `:app:processDevUniversalDebugManifest` not up-to-date suggests a dynamically updated manifest; `:app:checkDevDebugManifest` legitimately runs each build).
 - Large `mergeDevDebugResources` time may suggest converting images to WebP or disabling PNG crunching; long configuration time suggests moving custom build logic out of the configuration phase.
