@@ -2,6 +2,12 @@
 
 Union, exclusive union (XOR), discriminated union, and intersection schemas in Zod.
 
+## Signature / Usage
+
+```typescript
+z.union([schemaA, schemaB])
+```
+
 ## `z.union()`
 
 Union types (`A | B`) represent a logical "OR". Zod checks the input against each option in order and returns the first value that validates:
@@ -111,6 +117,21 @@ const MyResult = z.discriminatedUnion("status", [
 ]);
 ```
 
+### `z.getDiscriminatedOption()`
+
+Retrieve a single option by its discriminator value. The value must be one the union declares; anything else is a TypeScript error.
+
+```typescript
+const Success = z.object({ status: z.literal("success"), data: z.string() });
+const Failed = z.object({ status: z.literal("failed"), error: z.string() });
+const MyResult = z.discriminatedUnion("status", [Success, Failed]);
+
+z.getDiscriminatedOption(MyResult, "success"); // typeof Success
+z.getDiscriminatedOption(MyResult, "pending"); // TypeScript error: not a declared discriminator
+```
+
+The option is returned as-is, so `.shape` and the other object methods keep working. If multiple options accept an absent discriminator, looking up `undefined` throws an ambiguity error. Their unique explicit tags remain retrievable.
+
 ## `z.intersection()`
 
 Intersection types (`A & B`) represent a logical "AND":
@@ -147,6 +168,16 @@ type EmployedPerson = z.infer<typeof EmployedPerson>;
 - `z.intersection()` returns a `ZodIntersection` which lacks object methods like `.pick()`, `.omit()`, etc.
 - Prefer `.extend()` or spread syntax for merging objects instead of `z.intersection()`
 - Discriminated unions can be nested for advanced use cases
+- `z.getDiscriminatedOption()` was added in 4.5
+- Since 4.5, a record's key schema governs only the keys that match it (like a TypeScript index signature), so intersecting an object with a pattern-keyed record no longer rejects the object's own keys (4.4 threw `invalid_key`):
+
+```typescript
+z.object({ name: z.string() })
+  .and(z.record(z.string().regex(/^S_/), z.string()))
+  .parse({ name: "a", S_a: "s" });
+// 4.4: throws invalid_key on "name"
+// 4.5: { name: "a", S_a: "s" }
+```
 
 ## Related
 - [Objects](../api/objects.md)

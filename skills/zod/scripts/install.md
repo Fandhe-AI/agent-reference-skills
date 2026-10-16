@@ -8,6 +8,16 @@ zod のインストールと TypeScript 設定。
 npm install zod
 ```
 
+`npm install zod` は現時点で 4.6.7 に解決される（v4.6.7 タグの docs 時点）。
+
+## Zod Mini の単体パッケージのインストール
+
+```sh
+npm install zod @zod/mini
+```
+
+`@zod/mini` は `zod` を peer dependency として `zod/mini` を再エクスポートする。バージョンは `zod` に追従する。
+
 ## JSR 経由でのインストール（Deno / モダン環境）
 
 ```sh

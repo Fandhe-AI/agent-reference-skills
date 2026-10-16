@@ -182,6 +182,12 @@ z.ipv6();    // IPv6 only
 // No combined .ip() — use z.union([z.ipv4(), z.ipv6()]) if needed
 ```
 
+### Updates `z.string().ipv6()`
+
+Validation now happens using the `new URL()` constructor, which is far more robust than the old regular expression approach. Some invalid values that passed validation previously may now fail.
+
+> Note: Zod 4.5 switched `z.ipv6()` to checking the address alphabet directly instead of handing the string to `new URL()` (which let `::@1\` and `::1\n` through).
+
 ### `.cidr()` Split into `.cidrv4()` / `.cidrv6()`
 
 ```typescript
@@ -290,6 +296,31 @@ z.object({ name: z.string() });        // strips unknown keys (default)
 z.object({ a: z.object({ b: z.string() }) }).deepPartial();
 
 // Zod 4 — removed. Use a recursive utility or define partial schemas manually.
+```
+
+> Note: A functional `z.deepPartial(schema)` returned in Zod 4.5 (the method form `.deepPartial()` remains removed).
+
+### Changes `z.unknown()` Optionality
+
+The `z.unknown()` and `z.any()` types are no longer marked as "key optional" in the inferred types:
+
+```typescript
+const mySchema = z.object({
+  a: z.any(),
+  b: z.unknown()
+});
+// Zod 3: { a?: any; b?: unknown };
+// Zod 4: { a: any; b: unknown };
+```
+
+As of `v4.4.0`, the key is required at parse time too. Zod 4.0-4.3 accepted a missing key despite the inferred type above; requiring it is a soundness fix.
+
+```typescript
+mySchema.parse({}); // fails (passes in v4.3 and earlier)
+mySchema.parse({ a: undefined, b: undefined }); // passes
+
+// use .optional() for a key that may be absent
+z.object({ a: z.any().optional() }).parse({}); // passes
 ```
 
 ### `.merge()` Deprecated
@@ -522,6 +553,44 @@ try {
 ```
 
 ## Internal / Structural Changes
+
+### Updates Generics
+
+The generic structure of several classes has changed. Perhaps most significant is the change to the `ZodType` base class:
+
+```typescript
+// Zod 3
+class ZodType<Output, Def extends z.ZodTypeDef, Input = Output> {
+  // ...
+}
+
+// Zod 4
+class ZodType<Output = unknown, Input = unknown> {
+  // ...
+}
+```
+
+The second generic `Def` has been entirely removed. Instead the base class now only tracks `Output` and `Input`. While previously the `Input` value defaulted to `Output`, it now defaults to `unknown`. This allows generic functions involving `z.ZodType` to behave more intuitively in many cases. The need for `z.ZodTypeAny` has been eliminated; just use `z.ZodType` instead.
+
+```typescript
+function inferSchema<T extends z.ZodType>(schema: T): T {
+  return schema;
+};
+
+inferSchema(z.string()); // z.ZodString
+```
+
+### Adds `z.core`
+
+Many utility functions and types have been moved to the new `zod/v4/core` sub-package, to facilitate code sharing between Zod and Zod Mini. For convenience, the contents of `zod/v4/core` are also re-exported from `zod` and `zod/mini` under the `z.core` namespace:
+
+```typescript
+import * as z from "zod";
+
+function handleError(iss: z.core.$ZodError) {
+  // do stuff
+}
+```
 
 ### `_def` Replaced by `_zod`
 

@@ -50,6 +50,22 @@ await codec.safeDecodeAsync(input);
 await codec.encodeAsync(output);
 ```
 
+## Inverting codecs
+
+Use `z.invertCodec()` to derive the reverse codec from an existing one. The returned codec swaps the input and output schemas, then swaps the `decode` and `encode` transforms.
+
+```typescript
+const dateToString = z.invertCodec(stringToDate);
+
+dateToString.decode(new Date("2024-01-15T10:30:00.000Z"));
+// => string
+
+dateToString.encode("2024-01-15T10:30:00.000Z");
+// => Date
+```
+
+`z.invertCodec()` only inverts the codec you pass to it. It does not recursively invert codecs nested inside another schema; invert those codecs where you define the reversed schema.
+
 ## Encoding Mechanics
 
 ### Pipes

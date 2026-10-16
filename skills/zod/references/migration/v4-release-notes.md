@@ -12,7 +12,7 @@ Zod 4 is published under the `zod` package name. There are three entry points:
 
 ```typescript
 import { z } from "zod";           // Full Zod package
-import { z } from "zod/v4/mini";   // Zod Mini (smaller bundle)
+import * as z from "zod/mini";      // Zod Mini (smaller bundle)
 import * as core from "zod/v4/core"; // Core internals for library authors
 ```
 
@@ -43,41 +43,33 @@ The improvement comes from simplified internal generic types and reduced relianc
 | Package   | Minified Size | Reduction vs Zod 3 |
 |-----------|---------------|---------------------|
 | `zod`     | ~13 kB        | ~2x smaller         |
-| `zod/v4/mini` | ~4 kB    | ~6.6x smaller       |
+| `zod/mini` | ~4 kB    | ~6.6x smaller       |
 
 ## Zod Mini
 
-Zod Mini (`zod/v4/mini`) is a tree-shakable, smaller build of Zod that uses a functional API for refinements and transforms instead of method chaining.
+Zod Mini (`zod/mini`) is a variant with a functional, tree-shakable API that corresponds one-to-one with `zod`. Where Zod uses methods, Zod Mini generally uses wrapper functions:
 
-```typescript
-import { z } from "zod/v4/mini";
+```ts
+import * as z from "zod/mini";
 
-// Same schema creation API
-const schema = z.object({
-  name: z.string(),
-  age: z.number(),
-});
+z.optional(z.string());
 
-// Functional API for checks and transforms
-import { z } from "zod/v4/mini";
+z.union([z.string(), z.number()]);
 
-const positiveNumber = z.pipe(
-  z.number(),
-  z.check((val) => val > 0, "Must be positive")
-);
-
-const doubled = z.pipe(
-  z.number(),
-  z.transform((val) => val * 2)
-);
+z.extend(z.object({ /* ... */ }), { age: z.number() });
 ```
 
-Key differences from the full `zod` package:
+The parsing methods are identical in Zod and Zod Mini. There is also a general-purpose `.check()` method used to add refinements:
 
-- No `.refine()`, `.transform()`, `.superRefine()` methods on schemas
-- Uses `z.check()` (instead of `.refine()`) and `z.transform()` (instead of `.transform()`) as standalone pipe stages
-- Better tree-shaking since unused features are not bundled
-- Same runtime behavior and type inference
+```ts
+import * as z from "zod/mini";
+
+z.array(z.number()).check(
+  z.minLength(5), 
+  z.maxLength(10),
+  z.refine(arr => arr.includes(5))
+);
+```
 
 ## Metadata System
 
@@ -180,7 +172,7 @@ Configure the output with options:
 
 ```typescript
 z.toJSONSchema(schema, {
-  target: "draft-2020-12", // or "draft-7", "draft-2019-09"
+  target: "draft-2020-12", // or "draft-07", "draft-04", "openapi-3.0"
   unrepresentable: "throw", // or "any" — how to handle schemas that can't be represented
 });
 ```
@@ -194,58 +186,42 @@ import { z } from "zod";
 
 const Category = z.object({
   name: z.string(),
-  subcategories: z.lazy(() => z.array(Category)),
+  get subcategories(){
+    return z.array(Category)
+  }
 });
 
-// TypeScript correctly infers the recursive type
 type Category = z.infer<typeof Category>;
 // { name: string; subcategories: Category[] }
 ```
 
-In Zod 3, recursive schemas required explicit type annotations. Zod 4 handles this automatically through improved `z.lazy()` inference.
+Unlike the Zod 3 pattern for recursive types, there's no type casting required. The resulting schemas are plain `ZodObject` instances and have the full set of methods available.
 
 ## File Schema Validation
 
-Zod 4 adds a `z.file()` schema for validating `File` and `Blob` objects:
+To validate `File` instances:
 
-```typescript
-import { z } from "zod";
-
+```ts
 const fileSchema = z.file();
-fileSchema.parse(new File(["content"], "file.txt")); // OK
 
-// With constraints
-const imageSchema = z
-  .file()
-  .type("image/png")     // MIME type check
-  .max(5 * 1024 * 1024); // 5MB max
-
-const multiType = z
-  .file()
-  .type("image/*");       // Wildcard MIME matching
+fileSchema.min(10_000); // minimum .size (bytes)
+fileSchema.max(1_000_000); // maximum .size (bytes)
+fileSchema.mime(["image/png"]); // MIME type
 ```
 
 ## Internationalization (i18n)
 
-Zod 4 supports localized error messages via `z.locales`:
+Zod 4 introduces a new `locales` API for globally translating error messages into different languages.
 
 ```typescript
-import { z } from "zod";
+import * as z from "zod";
+import { en } from "zod/locales";
 
-// Set a locale globally
-z.locales.set("en", {
-  invalid_type: ({ expected, received }) =>
-    `Expected ${expected}, received ${received}`,
-  too_small: ({ minimum }) =>
-    `Value must be at least ${minimum}`,
-});
-
-// Activate a locale
-z.locales.activate("en");
-
-// Or set per-parse
-z.string().min(5).safeParse("hi", { locale: "ja" });
+// configure English locale (default)
+z.config(en());
 ```
+
+See the full list of supported locales in [Error Customization](../errors/error-customization.md); the official release notes keep that list up to date as new languages become available.
 
 ## `z.prettifyError()`
 
@@ -374,46 +350,68 @@ These are useful for interoperability with APIs, databases, or binary protocols 
 
 ## `z.stringbool()`
 
-Parse string representations of booleans:
+The existing `z.coerce.boolean()` API is very simple: falsy values (`false`, `undefined`, `null`, `0`, `""`, `NaN` etc) become `false`, truthy values become `true`.
 
-```typescript
-import { z } from "zod";
+This is still a good API, and its behavior aligns with the other `z.coerce` APIs. But some users requested a more sophisticated "env-style" boolean coercion. To support this, Zod 4 introduces `z.stringbool()`:
 
-const schema = z.stringbool();
+```ts
+const strbool = z.stringbool();
 
-schema.parse("true");  // => true
-schema.parse("false"); // => false
-schema.parse("1");     // => true
-schema.parse("0");     // => false
-schema.parse("yes");   // Error
-schema.parse(true);    // Error (input must be a string)
+strbool.parse("true")         // => true
+strbool.parse("1")            // => true
+strbool.parse("yes")          // => true
+strbool.parse("on")           // => true
+strbool.parse("y")            // => true
+strbool.parse("enabled")      // => true
 
-// Customize accepted values
-const custom = z.stringbool({
-  truthy: ["yes", "on", "1", "true"],
-  falsy: ["no", "off", "0", "false"],
-});
+strbool.parse("false");       // => false
+strbool.parse("0");           // => false
+strbool.parse("no");          // => false
+strbool.parse("off");         // => false
+strbool.parse("n");           // => false
+strbool.parse("disabled");    // => false
+
+strbool.parse(/* anything else */); // ZodError<[{ code: "invalid_value" }]>
 ```
 
-## Discriminated Union Improvements
+To customize the truthy and falsy values:
 
-Zod 4 automatically detects discriminator keys in unions — no need for `z.discriminatedUnion()`:
+```ts
+z.stringbool({
+  truthy: ["yes", "true"],
+  falsy: ["no", "false"]
+})
+```
 
-```typescript
-import { z } from "zod";
+## Upgraded `z.discriminatedUnion()`
 
-// z.union() now automatically optimizes discriminated unions
-const Shape = z.union([
-  z.object({ type: z.literal("circle"), radius: z.number() }),
-  z.object({ type: z.literal("square"), side: z.number() }),
-  z.object({ type: z.literal("triangle"), base: z.number(), height: z.number() }),
+Discriminated unions now support a number of schema types not previously supported, including unions and pipes:
+
+```ts
+const MyResult = z.discriminatedUnion("status", [
+  // simple literal
+  z.object({ status: z.literal("aaa"), data: z.string() }),
+  // union discriminator
+  z.object({ status: z.union([z.literal("bbb"), z.literal("ccc")]) }),
+  // pipe discriminator
+  z.object({ status: z.literal("fail").transform(val => val.toUpperCase()) }),
 ]);
-
-// z.discriminatedUnion() still works but is no longer necessary
-// z.union() with literal discriminators is just as fast
 ```
 
-Zod 4 can detect discriminators across nested properties and even multiple discriminator keys.
+Perhaps most importantly, discriminated unions now *compose*—you can use one discriminated union as a member of another.
+
+```ts
+const BaseError = z.object({ status: z.literal("failed"), message: z.string() });
+
+const MyResult = z.discriminatedUnion("status", [
+  z.object({ status: z.literal("success"), data: z.string() }),
+  z.discriminatedUnion("code", [
+    BaseError.extend({ code: z.literal(400) }),
+    BaseError.extend({ code: z.literal(401) }),
+    BaseError.extend({ code: z.literal(500) })
+  ])
+]);
+```
 
 ## `.overwrite()`
 
@@ -441,7 +439,7 @@ zod/v4/core   ← Internal core (for library authors)
     ↑
    zod         ← Full Zod package (method-chaining API)
     ↑
-zod/v4/mini   ← Zod Mini (functional API, smaller bundle)
+zod/mini      ← Zod Mini (functional API, smaller bundle)
 ```
 
 ### `zod/v4/core`
@@ -466,7 +464,7 @@ schema._zod.meta;     // attached metadata
 schema._zod.parse(value, ctx); // internal parse method
 ```
 
-Both `zod` and `zod/v4/mini` are built on top of `zod/v4/core`, sharing the same internal types and parsing engine. Library authors should depend on `zod/v4/core` to avoid coupling to either API style.
+Both `zod` and `zod/mini` are built on top of `zod/v4/core`, sharing the same internal types and parsing engine. Library authors should depend on `zod/v4/core` to avoid coupling to either API style.
 
 ## Related
 

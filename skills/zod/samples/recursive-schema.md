@@ -24,6 +24,19 @@ Category.parse({
   ],
 });
 
+// Cyclical input works out of the box with Zod
+const input: any = { name: "root", subcategories: [] };
+input.subcategories.push(input);
+
+const result = Category.parse(input);
+result.subcategories[0] === result; // true
+
+// the output graph mirrors the input graph
+result.subcategories[0].subcategories[0] === result; // true
+
+// Zod Mini requires a memoizer, registered before schemas are defined
+z.config({ memoizer: z.memoizer() });
+
 // Mutually recursive schemas
 const User = z.object({
   email: z.email(),
@@ -51,6 +64,6 @@ const Activity = z.object({
 ## Notes
 
 - Use a JavaScript getter on the schema key to defer resolution until runtime, enabling self-reference
-- Passing cyclical data (an object that contains itself) into `.parse()` causes an infinite loop — guard against this at the call site
+- Cyclical inputs (an object that contains itself) parse out of the box in Zod; Zod Mini requires `z.config({ memoizer: z.memoizer() })` registered before schemas are defined (the memoizer line is Zod Mini only)
 - For TypeScript circularity errors, add an explicit return type annotation to the getter
 - All object utility methods (`.pick()`, `.omit()`, `.partial()`, etc.) work with recursive schemas

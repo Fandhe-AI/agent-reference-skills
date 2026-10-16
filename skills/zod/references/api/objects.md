@@ -2,6 +2,12 @@
 
 Object schemas, property manipulation, and recursive types in Zod.
 
+## Signature / Usage
+
+```typescript
+z.object({ key: schema, ... })
+```
+
 ## `z.object()`
 
 Define an object schema. All properties are required by default:
@@ -212,6 +218,30 @@ const RecipeOptionalIngredients = Recipe.partial({
 // { title: string; description?: string; ingredients?: string[] }
 ```
 
+## `.exactPartial()`
+
+Identical to `.partial()`, but wraps each field in `exactOptional()` instead of `optional()` (keys may be omitted, an explicit `undefined` is rejected). In Zod Mini: `z.exactPartial(Recipe)`.
+
+```typescript
+const PartialRecipe = Recipe.exactPartial();
+// { title?: string; description?: string | undefined; ingredients?: string[] }
+```
+
+## `z.deepPartial()`
+
+Where `.partial()` only touches the top-level shape, `z.deepPartial()` recurses to every object in the tree: through arrays, tuples, unions, records, and wrappers.
+
+```typescript
+const Post = z.object({
+  title: z.string(),
+  author: z.object({ name: z.string(), email: z.string() }),
+});
+
+z.deepPartial(Post).parse({ author: {} }); // passes
+```
+
+The source schema is never modified, and the result is still a `ZodObject`, so `.shape` and `.extend()` keep working. A discriminated union degrades to a plain `z.union()`, since an optional discriminator defeats the discriminated lookup. Like `.partial()`, it throws on an object carrying its own refinement.
+
 ## `.required()`
 
 Make some or all properties required (inspired by TypeScript's `Required`):
@@ -227,6 +257,21 @@ const RequiredRecipe = Recipe.required();
 const RecipeRequiredDescription = Recipe.required({ description: true });
 // { title: string; description: string; ingredients: string[] }
 ```
+
+## Symbol keys
+
+A shape can declare a symbol key. A `const` symbol infers as `unique symbol`, so the key is tracked in the inferred type and its value is validated like any other:
+
+```typescript
+const TAG = Symbol("tag");
+const Post = z.object({ title: z.string(), [TAG]: z.number() });
+// { title: string; [TAG]: number }
+
+Post.parse({ title: "hello", [TAG]: 42 }); // passes
+Post.parse({ title: "hello" });            // fails (the symbol key is required)
+```
+
+Declared symbol keys work with `.partial()`, `.pick()`, `.omit()`, `.extend()`, and the rest. Symbol keys the shape doesn't declare are ignored: `z.looseObject()` won't pass them through, and `z.strictObject()` won't flag them.
 
 ## Recursive Objects
 
@@ -246,7 +291,19 @@ type Category = z.infer<typeof Category>;
 // { name: string; subcategories: Category[] }
 ```
 
-> Warning: Passing cyclical data into Zod will cause an infinite loop.
+Cyclical inputs work out of the box with Zod (since 4.5). For bundle size reasons, Zod Mini requires you to register a memoizer explicitly, before schemas are defined:
+
+```typescript
+// Zod
+const input: any = { name: "root", subcategories: [] };
+input.subcategories.push(input);
+
+const result = Category.parse(input);
+result.subcategories[0] === result; // true
+
+// Zod Mini: register a memoizer before defining any schemas
+z.config({ memoizer: z.memoizer() });
+```
 
 ## Mutually Recursive Types
 
@@ -293,6 +350,10 @@ const Activity = z.object({
 - `.safeExtend()` is required for extending schemas that have refinements
 - Prefer spread syntax (`...Schema.shape`) over `.extend()` for better TypeScript performance
 - Recursive schemas use JavaScript getters for self-reference at runtime
+- Cyclical input data no longer loops forever since 4.5 (the previous "infinite loop" warning applies to 4.4 and earlier); Zod Mini needs `z.config({ memoizer: z.memoizer() })`
+- `.deepPartial()` as a method was removed in v4.0; it returned in 4.5 as the functional `z.deepPartial()`
+- Since 4.5, `__proto__` is always stripped by object and record parsers, and `.strict()` reports an own `__proto__` input key as `unrecognized_keys`. An `unrecognized_keys` issue no longer aborts its schema, so a strict object with an extra key and a bad value reports both issues
+- Since 4.6, recursive schemas no longer retain the last parsed input (fixes a 4.5 out-of-memory regression)
 
 ## Related
 - [Collections](../api/collections.md)

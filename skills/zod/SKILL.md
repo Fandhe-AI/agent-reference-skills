@@ -1,10 +1,11 @@
 ---
 name: zod
 description: >
-  Zod (TypeScript-first スキーマバリデーションライブラリ) リファレンス。
+  Zod (TypeScript-first スキーマバリデーションライブラリ) v4 リファレンス。
   z.object / z.string / z.number / z.array / z.union / z.enum 等のスキーマ定義、
   parse, safeParse, z.infer (型推論)、refine, transform, pipe、
-  default, optional, nullable、エラー処理、Zod 4 移行。
+  default, optional, nullable、z.compile (AOT)・validate、z.toZod、
+  エラー処理、Zod 4 移行・Zod Mini (@zod/mini)。
   createInsertSchema / createSelectSchema (drizzle-zod、Drizzle テーブルからのスキーマ生成) は別スキル drizzle。
 user-invocable: false
 model: sonnet
@@ -14,6 +15,8 @@ model: sonnet
 
 Zod 公式ドキュメントの全 API を網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+対象: Zod v4.6.7（GitHub tag v4.6.7 / zod.dev, 2026-10-16 取得）
 
 ## ディレクトリ構成
 
@@ -45,6 +48,7 @@ skills/zod/
       metadata.md
       json-schema.md
       codecs.md
+      compile.md
     ecosystem/
       README.md
       ecosystem.md
@@ -53,6 +57,7 @@ skills/zod/
       README.md
       v4-release-notes.md
       v4-migration-guide.md
+      v4-versioning.md
     packages/
       README.md
       zod.md
@@ -70,6 +75,7 @@ skills/zod/
     error-formatting.md
     error-customization.md
     recursive-schema.md
+    aot-compile.md
   scripts/
     README.md
     install.md
@@ -77,6 +83,7 @@ skills/zod/
     parse.md
     json-schema.md
     migrate-v3-to-v4.md
+    compile.md
 ```
 
 ## 探索手順
@@ -101,10 +108,13 @@ skills/zod/
 | i18n・グローバルエラー設定を変更したい | errors | [references/errors/README.md](references/errors/README.md) |
 | JSON Schema への変換・OpenAPI 連携をしたい | advanced | [references/advanced/README.md](references/advanced/README.md) |
 | レジストリ・メタデータ・コーデックを使いたい | advanced | [references/advanced/README.md](references/advanced/README.md) |
+| AOT コンパイル（z.compile / zod/compile）・高速 boolean 検証（validate）をしたい | advanced | [references/advanced/README.md](references/advanced/README.md) |
+| 既存 TypeScript 型にスキーマを一致させたい（z.toZod） | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | サードパーティ連携・エコシステムを知りたい | ecosystem | [references/ecosystem/README.md](references/ecosystem/README.md) |
 | Zod を使うライブラリを開発したい | ecosystem | [references/ecosystem/README.md](references/ecosystem/README.md) |
 | Zod 3 から Zod 4 に移行したい | migration | [references/migration/README.md](references/migration/README.md) |
 | Zod 4 の新機能・破壊的変更を確認したい | migration | [references/migration/README.md](references/migration/README.md) |
+| zod/v4 などサブパスの版管理・import 書き換えを知りたい | migration | [references/migration/README.md](references/migration/README.md) |
 | Zod / Zod Mini / Zod Core の違いを知りたい | packages | [references/packages/README.md](references/packages/README.md) |
 | バンドルサイズを削減したい（tree-shaking） | packages | [references/packages/README.md](references/packages/README.md) |
 | 典型的な使い方のサンプルを見たい | samples | [samples/README.md](samples/README.md) |

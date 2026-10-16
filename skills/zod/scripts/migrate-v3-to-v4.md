@@ -37,7 +37,7 @@ npx zod-v3-to-v4
 | `z.string().datetime()` | `z.iso.datetime()` |
 | `z.object({}).strict()` | `z.strictObject({})` |
 | `z.object({}).passthrough()` | `z.looseObject({})` |
-| `z.object({}).deepPartial()` | 削除（手動で定義）|
+| `z.object({}).deepPartial()` | メソッド形は削除。4.5 以降は関数形 `z.deepPartial(schema)` |
 | `schema1.merge(schema2)` | `schema1.extend(schema2.shape)` |
 | `z.nativeEnum(E)` | `z.enum(E)` |
 | `z.record(valueSchema)` | `z.record(z.string(), valueSchema)` |

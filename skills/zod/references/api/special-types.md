@@ -2,6 +2,12 @@
 
 Optional, nullable, nullish, unknown, never, any, promise, instanceof, JSON, function, and custom schemas in Zod.
 
+## Signature / Usage
+
+```typescript
+z.optional(schema) // or schema.optional()
+```
+
 ## `z.optional()` / `.optional()`
 
 Make a schema optional (allows `undefined` inputs):
@@ -17,6 +23,19 @@ Returns a `ZodOptional` instance. To extract the inner schema:
 ```typescript
 const optionalYoda = z.optional(z.literal("yoda"));
 optionalYoda.unwrap(); // ZodLiteral<"yoda">
+```
+
+**Exact optionals.** To allow an absent key without allowing an explicit `undefined`, use `.exactOptional()` (Zod Mini: `z.exactOptional()`), per TypeScript's `exactOptionalPropertyTypes`:
+
+```typescript
+const User = z.object({
+  name: z.string().optional(),
+  nick: z.string().exactOptional(),
+});
+// { name?: string | undefined; nick?: string }
+
+User.parse({ name: undefined }); // passes
+User.parse({ nick: undefined }); // fails
 ```
 
 ## `z.nullable()` / `.nullable()`
@@ -126,6 +145,14 @@ TestSchema.parse(new Test()); // passes
 TestSchema.parse("whatever"); // fails
 ```
 
+Parsing returns the exact object that was passed in. Unlike `z.object()`, nothing is cloned, so the prototype, the unlisted properties, and the object identity all survive.
+
+```typescript
+const url = new URL("https://example.com");
+
+z.instanceof(URL).parse(url) === url; // true
+```
+
 ### `.check()` with `z.property()`
 
 Validate a particular property of a class instance against a Zod schema:
@@ -152,6 +179,36 @@ const longString = z.string().check(
 
 longString.parse("hello there!"); // passes
 longString.parse("hello.");       // fails
+```
+
+### `z.properties()`
+
+To check several properties at once:
+
+```typescript
+const okResponse = z.instanceof(Response).check(
+  ...z.properties({
+    status: z.number().min(200).max(299),
+    redirected: z.literal(false),
+  })
+);
+
+okResponse.parse(new Response("ok"));                // passes
+okResponse.parse(new Response("", { status: 404 })); // fails (status)
+```
+
+Each property is asserted in place. The schemas in the shape are validated but their results are discarded, so a transform or a default never changes the parsed value.
+
+In Zod, `z.instanceof()` also has a `.properties()` method. It spreads the same check and narrows the inferred type:
+
+```typescript
+const okResponse = z.instanceof(Response).properties({
+  status: z.number().min(200).max(299),
+  redirected: z.literal(false),
+});
+
+type OkResponse = z.infer<typeof okResponse>;
+// => Response & { status: number; redirected: false }
 ```
 
 ## `z.json()`
@@ -280,6 +337,8 @@ z.custom<string>((val) => typeof val === "string", "custom error message");
 - `z.promise()` is deprecated in Zod 4 -- `await` values before parsing instead
 - `z.instanceof()` uses JavaScript's `instanceof` operator under the hood
 - `z.property()` is primarily intended for use with `z.instanceof()` but works on any data type
+- `z.properties()` was added in 4.6.0. In 4.6.3 it became a check again: the standalone `z.properties()` schema form from 4.6.0 was removed, while `z.instanceof().properties()` and `.check(...z.properties())` are unchanged. In 4.6.5 the `.properties()` shape is keyed off the instance type
+- `z.unknown()` / `z.any()` object keys are no longer optional in the inferred type, and since v4.4.0 they are required at parse time too; use `.optional()` to allow omission
 - `z.json()` is a recursive union schema covering all JSON-encodable types
 - `z.function()` validates both inputs and outputs; omit `output` to only validate inputs
 - `z.custom()` without a validation function is dangerous -- it performs no runtime validation

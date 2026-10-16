@@ -1,4 +1,4 @@
-# packages
+# Packages
 
 | Name | Description | Path |
 |------|-------------|------|

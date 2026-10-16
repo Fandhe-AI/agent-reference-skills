@@ -100,9 +100,24 @@ z.string({
     iss.code;  // the issue code
     iss.input; // the input data
     iss.inst;  // the schema/check that originated this issue
+    iss.schema; // the schema that owns this issue
     iss.path;  // the path of the error
   },
 });
+```
+
+Unlike `iss.inst`, `iss.schema` is always the schema, even when a check originated the issue. Use it to read the owning schema's metadata:
+
+```typescript
+z.config({
+  customError: (iss) => {
+    const meta = iss.schema && z.globalRegistry.get(iss.schema);
+    return `${meta?.title ?? "Field"} is invalid.`;
+  },
+});
+
+z.string().min(5).meta({ title: "Password" }).safeParse("abc");
+// => "Password is invalid."
 ```
 
 ### Schema-Specific Properties
@@ -281,12 +296,21 @@ await loadLocale("fr");
 
 ### Using `z.locales`
 
-All locales are exported as `z.locales` from `"zod"` (may not be tree-shakable in some bundlers):
+All locales are also exported as `z.locales`. Rollup and Webpack tree-shake that down to the ones you use; esbuild (evanw/esbuild#1420) and Turbopack don't.
 
 ```typescript
 import * as z from "zod";
 
 z.config(z.locales.en());
+```
+
+### Parse Time vs Render Time
+
+With your own translation function, the `error` param is called during `.parse()`, not when the schema is constructed, so a schema defined once picks up the current language on every parse. To translate at render time, translate the issue itself: `code` is the key, and the issue's other properties are the interpolation values.
+
+```typescript
+z.string().min(5, { error: (iss) => t("too_short", iss) }); // at parse time
+result.error?.issues.map((iss) => t(iss.code, iss));        // at render time
 ```
 
 ### Available Locales
@@ -297,10 +321,13 @@ z.config(z.locales.en());
 | `az`   | Azerbaijani          |
 | `be`   | Belarusian           |
 | `bg`   | Bulgarian            |
+| `bn`   | Bengali              |
 | `ca`   | Catalan              |
+| `ckb`  | Kurdish (Central)    |
 | `cs`   | Czech                |
 | `da`   | Danish               |
 | `de`   | German               |
+| `el`   | Greek                |
 | `en`   | English              |
 | `eo`   | Esperanto            |
 | `es`   | Spanish              |
@@ -308,7 +335,10 @@ z.config(z.locales.en());
 | `fi`   | Finnish              |
 | `fr`   | French               |
 | `frCA` | Canadian French      |
+| `gu`   | Gujarati             |
 | `he`   | Hebrew               |
+| `hi`   | Hindi                |
+| `hr`   | Croatian             |
 | `hu`   | Hungarian            |
 | `hy`   | Armenian             |
 | `id`   | Indonesian           |
@@ -317,29 +347,42 @@ z.config(z.locales.en());
 | `ja`   | Japanese             |
 | `ka`   | Georgian             |
 | `km`   | Khmer                |
+| `kn`   | Kannada              |
 | `ko`   | Korean               |
 | `lt`   | Lithuanian           |
 | `mk`   | Macedonian           |
 | `ms`   | Malay                |
+| `ne`   | Nepali               |
 | `nl`   | Dutch                |
+| `nn`   | Norwegian Nynorsk    |
 | `no`   | Norwegian            |
-| `ota`  | Ottoman Turkish      |
+| `ota`  | Türkî                |
 | `ps`   | Pashto               |
 | `pl`   | Polish               |
 | `pt`   | Portuguese           |
+| `ptBR` | Brazilian Portuguese |
+| `ro`   | Romanian             |
 | `ru`   | Russian              |
+| `sk`   | Slovak               |
 | `sl`   | Slovenian            |
 | `sv`   | Swedish              |
 | `ta`   | Tamil                |
+| `tg`   | Tajik (4.6.1)        |
 | `th`   | Thai                 |
-| `tr`   | Turkish              |
+| `tk`   | Türkmen              |
+| `tr`   | Türkçe               |
 | `uk`   | Ukrainian            |
 | `ur`   | Urdu                 |
 | `uz`   | Uzbek                |
-| `vi`   | Vietnamese           |
-| `yo`   | Yoruba               |
+| `vi`   | Tiếng Việt           |
+| `yo`   | Yorùbá               |
 | `zhCN` | Simplified Chinese   |
 | `zhTW` | Traditional Chinese  |
+
+## Notes
+
+- Since 4.6, `.safeParse()` builds its error lazily, so error maps (global, locale, and per-schema `error`) run on the first read of `result.error` rather than at parse time. `z.config()` changes made between the parse and the read take effect. An error map with a side effect never runs if nothing reads the error. `.parse()` is unaffected (it builds and throws immediately)
+- `iss.schema` was added in 4.5 (expose the owning schema on check-originated issues)
 
 ## Related
 

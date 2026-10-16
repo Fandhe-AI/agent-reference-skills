@@ -2,6 +2,12 @@
 
 Array, tuple, record, map, set, and file schemas in Zod.
 
+## Signature / Usage
+
+```typescript
+z.array(schema) // or schema.array()
+```
+
 ## `z.array()`
 
 Define an array schema:
@@ -120,6 +126,15 @@ intKeys.parse({
 });
 ```
 
+A value schema that can stand in for an absent key (`.default()`, `.prefault()`, `.optional()`) makes that key optional on the input side, the same as it does inside `z.object()`:
+
+```typescript
+const Person = z.record(z.enum(["id", "name"]), z.string().default(""));
+
+type Input = z.input<typeof Person>;   // { id?: string; name?: string }
+type Output = z.output<typeof Person>; // { id: string; name: string }
+```
+
 ## `z.partialRecord()`
 
 Use for partial record types. Skips the exhaustiveness checks that `z.record()` runs with `z.enum()` and `z.literal()` key schemas:
@@ -219,6 +234,8 @@ fileSchema.mime(["image/png", "image/jpeg"]);    // multiple MIME types
 - `z.looseRecord()` is useful for modeling multiple pattern properties when combined with intersections
 - `z.set()` and `z.file()` validation methods use `.min()`, `.max()`, and `.size()` / `.mime()` respectively
 - As of v4.2, `z.record()` properly handles numeric keys with additional validation support
+- Since 4.5, record key semantics match TypeScript index signatures: a key schema governs only the keys that match it
+- Since 4.6.6, array / set / map size bounds are checked before the elements are parsed
 
 ## Related
 - [Objects](../api/objects.md)

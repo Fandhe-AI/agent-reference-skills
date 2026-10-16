@@ -2,6 +2,7 @@
 
 | Name | Description | Path |
 |------|-------------|------|
+| Compile | AOT コンパイル（`zod/compile`）をグローバルに有効化するコマンドと設定。 | [compile.md](./compile.md) |
 | Imports | 各パッケージエントリポイントの import パターン。 | [imports.md](./imports.md) |
 | Install | zod のインストールと TypeScript 設定。 | [install.md](./install.md) |
 | JSON Schema | Zod スキーマと JSON Schema の相互変換。 | [json-schema.md](./json-schema.md) |

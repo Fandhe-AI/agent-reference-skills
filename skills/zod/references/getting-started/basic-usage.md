@@ -107,6 +107,19 @@ if (!result.success) {
 }
 ```
 
+### `.validate(data)`
+
+When you only need to know whether an input is acceptable, use `.validate()`, or the top-level `z.validate(schema, data)`, which is the form `zod/mini` uses. It returns a boolean, never builds an error, and acts as a type guard on the schema's input type. On invalid input it is up to 16x faster than `.safeParse().success`.
+
+```ts
+PlayerSchema.validate({ username: "billie", xp: 100 }); // true
+PlayerSchema.validate({ username: 42, xp: "100" });     // false
+
+z.validate(z.string(), "hi"); // true
+```
+
+Use `.validateAsync()` for schemas with async refinements or transforms. On a compiled schema (`z.compile()`), `.validate()` answers directly from the compiled fast path.
+
 ## Inferring Types
 
 Zod infers a static type from your schema definitions. You can extract this type with the `z.infer<>` utility and use it however you like.
@@ -145,6 +158,46 @@ type Output = z.output<typeof schema>;
 ```
 
 > **Note:** `z.infer<>` is an alias for `z.output<>`. They return the same type.
+
+### Matching an existing type
+
+Sometimes the type comes first: a database model, a type from a generated client, an interface you don't own. Pass it to `z.toZod<T>()` and TypeScript checks that the schema's output type is exactly `T`.
+
+```ts
+type Player = {
+  username: string;
+  xp: number;
+};
+
+const Player = z.toZod<Player>()(
+  z.object({
+    username: z.string(),
+    xp: z.number(),
+  })
+);
+
+Player.shape.username; // ZodString — the schema is returned unchanged
+```
+
+The check is exact type equality, so any drift from the type is a compile error (for example an extra `admin: z.boolean()` key). The usual alternative, `satisfies z.ZodType<Player>`, only checks assignability: it catches a missing required key, but extra keys, omitted optional keys, and a bare `z.any()` all slip through.
+
+An enum target matches `z.enum(...)`, and stays nominal; a plain literal union doesn't satisfy it:
+
+```ts
+enum Level {
+  Noob = "noob",
+  Pro = "pro",
+}
+
+z.toZod<{ level: Level }>()(z.object({ level: z.enum(Level) }));           // ok
+z.toZod<{ level: Level }>()(z.object({ level: z.enum(["noob", "pro"]) })); // type error
+```
+
+## Notes
+
+- Since 4.6, `.safeParse()` builds its error lazily: error maps (global, locale, and per-schema `error`) run on the first read of `result.error`, not at parse time, so a `z.config()` swap between the parse and the read takes effect. An error map with a side effect never runs if nothing reads the error. `.parse()` is unaffected: it builds and throws its error immediately
+- Since 4.5, `.safeParse()` no longer captures a stack trace on failure (failure-path parses about 7.5x faster)
+- `.validate()` / `.validateAsync()` arrived in 4.6; `z.toZod<T>()` in 4.5
 
 ## Related
 

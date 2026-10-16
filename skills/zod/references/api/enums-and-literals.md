@@ -2,6 +2,12 @@
 
 Enum schemas, boolean validation, and string-to-boolean coercion in Zod.
 
+## Signature / Usage
+
+```typescript
+z.enum(["Salmon", "Tuna", "Trout"])
+```
+
 ## `z.enum()`
 
 Use `z.enum()` to validate inputs against a fixed set of allowable string values:
@@ -190,6 +196,13 @@ z.boolean().parse(false); // => false
 - `z.stringbool()` is case-insensitive by default
 - `z.stringbool()` is new in Zod 4 and is a common solution for parsing environment variables
 - For JavaScript truthy/falsy coercion, use `z.coerce.boolean()` instead
+- Since 4.6, `.options` on a numeric TypeScript enum no longer includes the runtime reverse mappings (the parser already ignored them):
+
+```typescript
+enum Country { UK, Germany, France }
+
+z.enum(Country).options; // 4.5: ["UK", "Germany", "France", 0, 1, 2] — 4.6: [0, 1, 2]
+```
 
 ## Related
 - [Primitives](../api/primitives.md)

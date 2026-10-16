@@ -23,6 +23,30 @@ const jsonSchema = {
 const zodSchema = z.fromJSONSchema(jsonSchema);
 ```
 
+Since 4.6 it also enforces six validation keywords it used to ignore: `minProperties` / `maxProperties`, `uniqueItems`, `contains`, and `minContains` / `maxContains`.
+
+```typescript
+const schema = z.fromJSONSchema({
+  type: "object",
+  minProperties: 2,      // also maxProperties
+});
+
+schema.parse({ a: 1 });        // fails (too few properties)
+schema.parse({ a: 1, b: 2 });  // passes
+```
+
+Both property bounds count the input's own keys. Array uniqueness is structural, so `[{ a: 1 }, { a: 1 }]` is a duplicate.
+
+```typescript
+z.fromJSONSchema({ type: "array", uniqueItems: true }).parse([{ a: 1 }, { a: 1 }]); // fails
+
+z.fromJSONSchema({
+  type: "array",
+  contains: { type: "number" },   // also minContains and maxContains
+  minContains: 2,
+}).parse(["a", 2]);               // fails (only one number)
+```
+
 ## `z.toJSONSchema()`
 
 Convert a Zod schema to JSON Schema:
@@ -142,6 +166,18 @@ z.toJSONSchema(schema);
 // => { type: "string", whatever: 1234 }
 ```
 
+Metadata takes precedence over the keywords Zod generates:
+
+```typescript
+z.toJSONSchema(z.string().meta({ type: "number" }));
+// => { type: "number" }
+
+z.toJSONSchema(z.date().meta({ type: "string", format: "date-time" }), { unrepresentable: "any" });
+// => { type: "string", format: "date-time" }
+```
+
+To drop metadata entirely, pass an empty registry: `z.toJSONSchema(schema, { metadata: z.registry() })`. To modify a generated schema, use `override`.
+
 ### `unrepresentable`
 
 The following types have no JSON Schema equivalent and will throw by default:
@@ -158,6 +194,7 @@ z.set();       // not representable
 z.transform(); // not representable
 z.nan();       // not representable
 z.custom();    // not representable
+z.number().multipleOf(0); // not representable (the divisor must be finite and non-zero)
 ```
 
 ```typescript
@@ -167,6 +204,51 @@ z.toJSONSchema(z.bigint());
 z.toJSONSchema(z.bigint(), { unrepresentable: "any" });
 // => {}  (equivalent of unknown in JSON Schema)
 ```
+
+`"any"` converts any unrepresentable type to `{}` and drops an unrepresentable check from the schema that carries it:
+
+```typescript
+z.toJSONSchema(z.number().multipleOf(0), { unrepresentable: "any" });
+// => { type: "number" }
+```
+
+To decide case by case, pass a function instead: `unrepresentable: ({ zodSchema, path, message }) => JSONSchema | "any" | "throw"`. It's called for each unrepresentable schema encountered. Return a JSON Schema to use in its place, `"any"`, or `"throw"` (the default when you return nothing).
+
+```typescript
+z.toJSONSchema(z.object({ createdAt: z.date(), id: z.bigint() }), {
+  unrepresentable: ({ zodSchema }) =>
+    zodSchema._zod.def.type === "date" ? { type: "string", format: "date-time" } : "throw",
+});
+// => throws Error (BigInt cannot be represented in JSON Schema)
+```
+
+The handler also receives the `path` of the schema and the `message` Zod would have thrown, and any error it throws propagates, so you can report unrepresentable types in your own words.
+
+```typescript
+z.toJSONSchema(schema, {
+  unrepresentable: ({ path, message }) => {
+    throw new Error(`${message} (at /${path.join("/")})`);
+  },
+});
+```
+
+Two schemas can share a `zodSchema` but not a `message` (an `undefined` member and a `bigint` member of the same literal both arrive as the literal), so branch on `message` to tell those apart.
+
+A default value that can't be serialized to JSON goes through the same handler, as the `.default()` schema. Under `"any"` the default is dropped and the rest of the schema is emitted as usual; return a JSON Schema to supply your own.
+
+```typescript
+z.toJSONSchema(z.bigint().default(0n), {
+  unrepresentable: ({ zodSchema }) => {
+    const def = zodSchema._zod.def;
+    if (def.type === "bigint") return { type: "integer", format: "int64" };
+    if (def.type === "default") return { default: String(def.defaultValue) };
+    return "throw";
+  },
+});
+// => { type: "integer", format: "int64", default: "0" }
+```
+
+Returning a JSON Schema for a literal replaces the whole literal, dropping its representable members: `z.literal(["a", 1n])` becomes just what you returned, and `"a"` is gone. Return `"any"` instead to keep the existing per-value behavior.
 
 ### `cycles`
 
@@ -271,7 +353,6 @@ const result = z.toJSONSchema(z.date(), {
 z.email();          // => { type: "string", format: "email" }
 z.iso.datetime();   // => { type: "string", format: "date-time" }
 z.iso.date();       // => { type: "string", format: "date" }
-z.iso.time();       // => { type: "string", format: "time" }
 z.iso.duration();   // => { type: "string", format: "duration" }
 z.ipv4();           // => { type: "string", format: "ipv4" }
 z.ipv6();           // => { type: "string", format: "ipv6" }
@@ -283,6 +364,7 @@ z.url();            // => { type: "string", format: "uri" }
 z.base64();         // => { type: "string", contentEncoding: "base64" }
 
 // Supported via `pattern`
+z.iso.time();
 z.base64url();
 z.cuid();
 z.emoji();
@@ -292,7 +374,10 @@ z.ulid();
 z.cidrv4();
 z.cidrv6();
 z.mac();
+z.currencyCode();
 ```
+
+The `local: true` and `precision: -1` variants of `z.iso.datetime()` fall back to `pattern`, since RFC 3339 `date-time` requires both an offset and seconds.
 
 ### Numeric Types
 
@@ -313,11 +398,11 @@ By default, `z.object()` schemas include `additionalProperties: false` (matching
 
 ```typescript
 z.toJSONSchema(z.object({ name: z.string() }));
-// => { type: 'object', properties: {...}, required: [...], additionalProperties: false }
+// => { type: 'object', properties: { name: { type: 'string' } }, required: ['name'], additionalProperties: false }
 
 // In "input" mode, additionalProperties is not set
 z.toJSONSchema(z.object({ name: z.string() }), { io: "input" });
-// => { type: 'object', properties: {...}, required: [...] }
+// => { type: 'object', properties: { name: { type: 'string' } }, required: ['name'] }
 ```
 
 - `z.looseObject()` -- never sets `additionalProperties: false`
@@ -414,6 +499,12 @@ z.toJSONSchema(z.globalRegistry, {
 });
 // $ref values become e.g. 'https://example.com/Post.json'
 ```
+
+## Notes
+
+- Since 4.6, chained checks fold as a conjunction in the output, so the order they are chained in no longer changes it. `z.number().min(0).max(23).int()` emits `{ minimum: 0, maximum: 23 }` (4.5 emitted `{ minimum: -9007199254740991, maximum: 9007199254740991 }`); a repeated `multipleOf` is kept (`z.number().multipleOf(2).multipleOf(3)` no longer emits a schema that accepts 4); `z.string().min(8).length(5)` no longer emits `minLength: 5`. Runtime parsing enforced the bounds in every version
+- Since 4.6, the `z.email()` `pattern` emitted here no longer carries a lookahead, so validators outside ECMAScript can compile it
+- `z.base64()` / `z.base64url()` JSON Schema output is unchanged in 4.6 (the runtime patterns changed, the emitted block forms did not)
 
 ## Related
 
