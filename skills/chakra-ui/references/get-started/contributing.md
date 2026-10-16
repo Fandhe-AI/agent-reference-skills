@@ -30,7 +30,7 @@ Full security policy: `SECURITY.md` in the main repository.
 
 ## Notes
 
-- Current version: 3.34.0
+- Current version: 3.37.0
 - Repository: [github.com/chakra-ui/chakra-ui](https://github.com/chakra-ui/chakra-ui)
 
 ## Related

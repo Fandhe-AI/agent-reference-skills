@@ -51,6 +51,13 @@ const frameworks = createListCollection({
 | `value` | `string[]` | — | Controlled selected values |
 | `onValueChange` | `(details: ValueChangeDetails) => void` | — | Callback when selection changes |
 
+### Listbox.Input
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `autoHighlight` | `boolean` | `false` | Whether to automatically highlight the item when typing |
+| `keyboardPriority` | `"caret" \| "navigate"` | `"caret"` | How keyboard conflicts in the input are resolved: `"caret"` keeps native text-editing behavior, `"navigate"` forwards supported keys to listbox navigation |
+
 ## Sub-parts
 
 `Root`, `Label`, `Content`, `Input`, `Item`, `ItemText`, `ItemIndicator`, `ItemGroup`, `ItemGroupLabel`, `Empty`, `ValueText`
@@ -63,6 +70,7 @@ const frameworks = createListCollection({
 
 - Unlike `Select`, `Listbox` renders items inline (no dropdown), making it suitable for visible selection panels.
 - `selectionMode: "extended"` allows range selection with Shift+click.
+- 3.35.0 (Ark UI 5.36.0): `keyboardPriority` for Home/End and arrow keys in the input, and the api methods `highlightFirst`, `highlightLast`, `highlightNext` and `highlightPrevious`.
 
 ## Related
 

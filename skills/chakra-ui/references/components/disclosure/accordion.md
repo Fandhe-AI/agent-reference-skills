@@ -40,6 +40,7 @@ import { Accordion } from "@chakra-ui/react"
 | `orientation` | `'horizontal' \| 'vertical'` | `"vertical"` | Orientation of the accordion |
 | `lazyMount` | `boolean` | `false` | Whether to enable lazy mounting |
 | `unmountOnExit` | `boolean` | `false` | Whether to unmount content on exit |
+| `hideMode` | `"display-none" \| "activity"` | `"display-none"` | How kept-mounted content is hidden when closed. `"activity"` uses React 19 `Activity` and pauses effects (requires React 19+); has no effect with `unmountOnExit` |
 | `onValueChange` | `(details: ValueChangeDetails) => void` | — | Callback when expanded items change |
 | `variant` | `"outline" \| "subtle" \| "enclosed" \| "plain"` | `"outline"` | Visual variant |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Size of the component |

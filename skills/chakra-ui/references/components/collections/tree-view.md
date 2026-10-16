@@ -72,6 +72,7 @@ const collection = createTreeCollection({
 | `onSelectionChange` | `(details: SelectionChangeDetails<T>) => void` | — | Callback when selection changes |
 | `onExpandedChange` | `(details: ExpandedChangeDetails<T>) => void` | — | Callback when expanded state changes |
 | `onLoadChildrenComplete` | `(details: LoadChildrenCompleteDetails<T>) => void` | — | Callback when async children load |
+| `hideMode` | `"display-none" \| "activity"` | `"display-none"` | How kept-mounted content is hidden when closed. `"activity"` uses React 19 `Activity` and pauses effects (requires React 19+) |
 
 ## Sub-parts
 
@@ -87,6 +88,7 @@ const collection = createTreeCollection({
 - Use `createTreeCollection` (not `createListCollection`) to build the required `collection` prop.
 - The `TreeView.Node` component uses a `render` prop that receives `{ node, nodeState }` — use `nodeState.isBranch` to differentiate branch vs. leaf rendering.
 - `loadChildren` enables async lazy-loading of branch children.
+- 3.37.0: `--tree-indentation` is now the full per-level indent (`indent-size + half icon-size`), custom non-zero values no longer get an extra half-icon offset, and `--tree-indentation: 0px` fully removes nested indentation. The internal `--tree-icon-offset` variable was removed from the recipe.
 
 ## Related
 

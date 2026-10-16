@@ -2,15 +2,11 @@
 
 Non-modal floating window that supports drag, resize, and stage (minimize/maximize) interactions.
 
-## Import
-
-```tsx
-import { FloatingPanel } from "@chakra-ui/react"
-```
-
 ## Usage
 
 ```tsx
+import { FloatingPanel } from "@chakra-ui/react"
+
 <FloatingPanel.Root>
   <FloatingPanel.Trigger />
   <FloatingPanel.Positioner>
@@ -31,7 +27,7 @@ import { FloatingPanel } from "@chakra-ui/react"
 </FloatingPanel.Root>
 ```
 
-## Props
+## Options / Props
 
 ### FloatingPanel.Root
 
@@ -60,16 +56,16 @@ import { FloatingPanel } from "@chakra-ui/react"
 | `onPositionChange` / `onPositionChangeEnd` | `function` | — | Fires during/after drag |
 | `onSizeChange` / `onSizeChangeEnd` | `function` | — | Fires during/after resize |
 | `onStageChange` | `function` | — | Fires on minimize/maximize/restore |
-
-## Sub-parts
-
-`Root`, `Trigger`, `Positioner`, `Content`, `Header`, `DragTrigger`, `Title`, `Control`, `StageTrigger`, `CloseTrigger`, `Body`, `ResizeTriggers`
+| `hideMode` | `"display-none" \| "activity"` | `"display-none"` | How kept-mounted content is hidden when closed. `"activity"` uses React 19 `Activity` and pauses effects (requires React 19+) |
 
 ## Notes
 
+- Sub-parts: `Root`, `Trigger`, `Positioner`, `Content`, `Header`, `DragTrigger`, `Title`, `Control`, `StageTrigger`, `CloseTrigger`, `Body`, `ResizeTriggers`.
 - Stages: `default`, `minimized`, `maximized` — toggled via `StageTrigger`.
 - `ResizeTriggers` auto-renders all 8 directional resize handles; use individual `ResizeTrigger` with an `axis` prop for a single handle.
 - Pair with `FloatingPanel.RootProvider` and `useFloatingPanel` for external/imperative control.
+- 3.36.1: `FloatingPanel.Root` defaults `minSize` to `{ width: 240, height: 100 }` so the panel cannot be resized to zero. Pass your own `minSize` to override it.
+- 3.37.0: fixed a closed panel staying on the stack (the next panel now becomes topmost) and stack order not being applied to the positioner (focusing a panel raises it above its siblings).
 - Ark UI equivalent: `@ark-ui/react` `FloatingPanel` — this page documents the Chakra UI v3 styled import (`@chakra-ui/react`), not `@ark-ui/react`.
 
 ## Related

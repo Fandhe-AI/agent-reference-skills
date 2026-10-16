@@ -32,6 +32,7 @@ import { Presence } from "@chakra-ui/react"
 | `immediate` | `boolean` | — | Apply the presence change immediately without deferring to the next frame |
 | `skipAnimationOnMount` | `boolean` | `false` | Skip the entry animation on initial mount |
 | `onExitComplete` | `() => void` | — | Callback fired when the exit animation completes |
+| `hideMode` | `"display-none" \| "activity"` | `"display-none"` | How content that is mounted but not present is hidden. `"activity"` uses React 19 `Activity` and pauses effects (requires React 19+) |
 | `as` | `React.ElementType` | — | The underlying element to render |
 | `asChild` | `boolean` | — | Merge props onto the child element |
 
@@ -69,6 +70,7 @@ import { Presence } from "@chakra-ui/react"
 
 - Use `lazyMount` to avoid rendering content until it is first shown
 - Use `unmountOnExit` to fully remove the element from the DOM after the exit animation completes
+- The 3.37.0 changelog (Ark UI 5.39.0) mentions a new `onEnterComplete` callback that mirrors `onExitComplete` for components built on Presence; it is not listed in the Presence prop types at 3.37.0
 - Pairs with Chakra UI's token-based animation names (`fade-in`, `slide-from-bottom-full`, etc.)
 
 ## Related

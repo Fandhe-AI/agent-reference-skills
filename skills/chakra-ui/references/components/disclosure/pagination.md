@@ -58,7 +58,15 @@ import { Pagination } from "@chakra-ui/react"
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `format` | `"short" \| "compact" \| "long"` | — | Display format for page text |
+| `format` | `PaginationPageTextFormat` | — | Display format for page text: the string variants (`"short"`, `"compact"`, `"long"`) or a function (3.35.0) |
+
+For i18n, pass a function:
+
+```tsx
+<Pagination.PageText
+  format={({ page, totalPages }) => `Page ${page} de ${totalPages}`}
+/>
+```
 
 ## Notes
 

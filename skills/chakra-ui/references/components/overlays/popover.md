@@ -2,15 +2,11 @@
 
 Floating interactive panel anchored to a trigger element.
 
-## Import
-
-```tsx
-import { Popover } from "@chakra-ui/react"
-```
-
 ## Usage
 
 ```tsx
+import { Popover } from "@chakra-ui/react"
+
 <Popover.Root>
   <Popover.Trigger asChild>
     <Button>Open Popover</Button>
@@ -32,7 +28,33 @@ import { Popover } from "@chakra-ui/react"
 </Popover.Root>
 ```
 
-## Props
+### Multiple Triggers
+
+Don't mount a popover per button. Put `value` on each `Trigger` under one `Root`. Click another trigger and the same popover moves to it. Track the active trigger with `triggerValue` and `onTriggerValueChange` on `Root`. If the target is not a button, use `positioning.getAnchorRect`.
+
+```tsx
+<Popover.Root>
+  <Popover.Trigger asChild value="profile">
+    <Button size="sm" variant="outline">Profile</Button>
+  </Popover.Trigger>
+  <Popover.Trigger asChild value="settings">
+    <Button size="sm" variant="outline">Settings</Button>
+  </Popover.Trigger>
+  <Portal>
+    <Popover.Positioner>
+      <Popover.Content>
+        <Popover.Body>
+          <Popover.Context>
+            {(api) => <>Opened from the {api.triggerValue} trigger.</>}
+          </Popover.Context>
+        </Popover.Body>
+      </Popover.Content>
+    </Popover.Positioner>
+  </Portal>
+</Popover.Root>
+```
+
+## Options / Props
 
 ### Popover.Root
 
@@ -50,17 +72,24 @@ import { Popover } from "@chakra-ui/react"
 | `lazyMount` | `boolean` | `false` | Mount content only when opened |
 | `unmountOnExit` | `boolean` | `false` | Unmount content when closed |
 | `onOpenChange` | `(details: OpenChangeDetails) => void` | — | Callback when open state changes |
+| `hideMode` | `"display-none" \| "activity"` | `"display-none"` | How kept-mounted content is hidden when closed. `"activity"` uses React 19 `Activity` and pauses effects (requires React 19+) |
+| `translations` | `IntlTranslations` | — | Localized strings for the accessibility elements and their states |
+| `finalFocusEl` | `() => MaybeElement` | — | Element to receive focus when the popover is closed |
+| `restoreFocus` | `boolean` | `true` | Whether to restore focus to the element that had focus before the popover was opened |
+| `persistentElements` | `(() => Element \| null)[]` | — | Elements that should not have pointer-events disabled and should not trigger the dismiss event |
+| `triggerValue` | `string` | — | Controlled trigger value (multiple triggers) |
+| `onTriggerValueChange` | `(details: TriggerValueChangeDetails) => void` | — | Called when the trigger value changes |
 
-## Sub-parts
+### Popover.Trigger
 
-`Root`, `Trigger`, `Anchor`, `Content`, `Positioner`, `Arrow`, `ArrowTip`, `Body`, `Header`, `Footer`, `Title`, `Description`, `CloseTrigger`, `Indicator`
-
-## Variants / Sizes
-
-- **sizes**: `xs`, `sm`, `md`, `lg`
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | — | The value that identifies this specific trigger |
 
 ## Notes
 
+- Sub-parts: `Root`, `Trigger`, `Anchor`, `Content`, `Positioner`, `Arrow`, `ArrowTip`, `Body`, `Header`, `Footer`, `Title`, `Description`, `CloseTrigger`, `Indicator`.
+- Sizes: `xs`, `sm`, `md`, `lg`.
 - Unlike `Tooltip`, `Popover` supports interactive content (buttons, forms, links) inside.
 - Use `Popover.Anchor` to anchor the popover to a different element than the trigger.
 - Wrap `Popover.Positioner` in `Portal` to prevent overflow clipping.

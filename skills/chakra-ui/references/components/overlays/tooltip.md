@@ -2,15 +2,11 @@
 
 Small informational label that appears on hover or focus of a trigger element.
 
-## Import
-
-```tsx
-import { Tooltip } from "@chakra-ui/react"
-```
-
 ## Usage
 
 ```tsx
+import { Tooltip } from "@chakra-ui/react"
+
 <Tooltip.Root>
   <Tooltip.Trigger asChild>
     <Button>Hover me</Button>
@@ -28,7 +24,7 @@ import { Tooltip } from "@chakra-ui/react"
 </Tooltip.Root>
 ```
 
-## Props
+## Options / Props
 
 ### Tooltip.Root
 
@@ -47,12 +43,9 @@ import { Tooltip } from "@chakra-ui/react"
 | `positioning` | `PositioningOptions` | — | Floating UI positioning options |
 | `onOpenChange` | `(details: OpenChangeDetails) => void` | — | Callback when open state changes |
 
-## Sub-parts
-
-`Root`, `Trigger`, `Content`, `Positioner`, `Arrow`, `ArrowTip`
-
 ## Notes
 
+- Sub-parts: `Root`, `Trigger`, `Content`, `Positioner`, `Arrow`, `ArrowTip`.
 - Tooltip content should be purely informational — do not place interactive elements inside unless `interactive={true}`.
 - Wrap `Tooltip.Positioner` in `Portal` to prevent clipping by overflow containers.
 - For a click-triggered tooltip-style element, use `ToggleTip` instead.

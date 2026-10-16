@@ -24,6 +24,9 @@ Commands:
   snippet                      Add snippets to your project for better DX
   blocks                       Add Chakra UI Pro blocks to your project
   eject [options]              Take control over the default theme tokens and recipes
+  component                    List components, show props, or show examples
+  theme                        Print theme categories or full theme JSON
+  docs <query>                 Search the documentation
   help [command]               display help for command
 ```
 
@@ -40,7 +43,12 @@ chakra typegen src/theme.ts --watch
 
 # Generate strict types for props variant and size
 chakra typegen src/theme.ts --strict
+
+# Use an explicit tsconfig to resolve path aliases
+chakra typegen src/theme.ts --tsconfig tsconfig.app.json
 ```
+
+`--tsconfig <path>` (added in 3.34.0) sets the tsconfig used to resolve path aliases. Without it, the tsconfig is resolved automatically, which works with solution-style setups such as Vite's default `tsconfig.json` with `references`.
 
 ### When to use typegen
 
@@ -179,8 +187,63 @@ Generates the default theme tokens and recipes files for full customization cont
 chakra eject --outdir src/theme
 ```
 
+## chakra component
+
+Lists components, shows props, or shows usage examples (added in 3.35.0). Reads the public docs API.
+
+```bash
+chakra component list
+chakra component list --charts
+chakra component props button
+chakra component example dialog
+```
+
+| Subcommand | Description |
+|------------|-------------|
+| `component list` | List all available components; `--charts` lists chart components |
+| `component props <component>` | Show props for a component |
+| `component example <component>` | Show usage examples for a component |
+
+## chakra theme
+
+Prints a summary table of theme categories (item counts) (added in 3.35.0). Reads the public docs API.
+
+```bash
+chakra theme
+chakra theme --json
+chakra theme --filter tokens
+```
+
+| Option | Description |
+|--------|-------------|
+| `--json` | Print the full payload |
+| `--filter <category>` | Print one category |
+
+## chakra docs
+
+Searches the Chakra UI documentation (added in 3.35.0). Reads the public docs API.
+
+```bash
+chakra docs button
+chakra docs theming
+```
+
+### Environment
+
+The CLI loads `.env` from the current working directory when present.
+
+| Variable | Purpose |
+|----------|---------|
+| `REGISTRY_URL` | Base URL for snippet/composition JSON |
+| `CHAKRA_DOCS_URL` | Base URL for `/api/types`, `/api/theme`, `/api/search` and examples (default `https://chakra-ui.com`) |
+| `HTTPS_PROXY` | Proxy for outbound HTTP(S) requests |
+| `CHAKRA_UI_PRO_API_KEY` | Required for `blocks add` |
+
 ## Notes
 
+- `component`, `theme` and `docs` are documented in the CLI package README (`@chakra-ui/cli` 3.37.0), not in the `cli.mdx` docs page
+- 3.36.1: `tsconfck` was replaced by `get-tsconfig` (works next to TypeScript 6+), `node-fetch` was replaced by the native `fetch` with undici `ProxyAgent` for `HTTPS_PROXY` support, and resolved tsconfig paths are normalized to native separators on Windows
+- 3.36.0: `typegen` gives a clearer error when the input file does not export a Chakra system, listing the discovered exports and a `createSystem(...)` example
 - After running `typegen`, restart the TypeScript server in your editor for autocomplete to appear
 - `strictTokens` in your theme config requires `typegen` to be run in local and CI workflows
 

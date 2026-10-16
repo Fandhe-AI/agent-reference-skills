@@ -40,6 +40,14 @@ import { NumberInput } from "@chakra-ui/react"
 | `readOnly` | `boolean` | — | Whether the input is read-only |
 | `invalid` | `boolean` | — | Whether the input is invalid |
 | `onValueChange` | `(details: ValueChangeDetails) => void` | — | Callback when value changes |
+| `largeStep` | `number` | `10 * step` | Amount to increment or decrement by when `Shift` is held |
+| `smallStep` | `number` | `step / 10` | Amount to increment or decrement by when `Alt` is held |
+
+```tsx
+<NumberInput.Root step={1} largeStep={20} smallStep={0.5} />
+```
+
+The defaults match what the arrow keys already did, so existing inputs behave the same until you set them (3.37.0).
 
 ## Sub-parts
 

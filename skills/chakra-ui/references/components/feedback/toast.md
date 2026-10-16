@@ -81,6 +81,17 @@ toaster.promise(myPromise, {
 
 - `createToaster()` accepts `placement` (`"top"`, `"bottom-end"`, etc.) and `pauseOnPageIdle`
 - Imperative API: `toaster.create()`, `toaster.success()`, `toaster.error()`, `toaster.loading()`, `toaster.promise()`, `toaster.update()`, `toaster.dismiss()`, `toaster.pause()`, `toaster.resume()`
+- 3.37.0: `createToaster` takes a content type parameter, so `title` and `description` can be something other than `ReactNode` (it still defaults to `ReactNode`):
+
+  ```tsx
+  interface Content {
+    id: string
+    text: string
+  }
+
+  const toaster = createToaster<Content>({ placement: "top-end" })
+  toaster.create({ title: { id: "save", text: "Saved" } })
+  ```
 - `toaster.isVisible(id)` checks if a specific toast is currently shown
 - Render `<Toaster>` once at the app root inside a `<Portal>`
 

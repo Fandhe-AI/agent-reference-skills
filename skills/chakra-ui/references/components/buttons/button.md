@@ -40,6 +40,44 @@ import { Button, IconButton, ButtonGroup } from "@chakra-ui/react"
 <Button variant="plain">Plain</Button>
 ```
 
+## Changing the default size
+
+Use the `defaultVariants` property to change the default button size.
+
+```tsx
+import { createSystem, defaultConfig, defineRecipe } from "@chakra-ui/react"
+
+const buttonRecipe = defineRecipe({
+  defaultVariants: {
+    size: "lg",
+  },
+})
+
+const system = createSystem(defaultConfig, {
+  theme: {
+    recipes: { button: buttonRecipe },
+  },
+})
+```
+
+## Changing the default variant
+
+Use the `defaultVariants` property to change the default button variant.
+
+```tsx
+const buttonRecipe = defineRecipe({
+  defaultVariants: {
+    variant: "outline",
+  },
+})
+
+const system = createSystem(defaultConfig, {
+  theme: {
+    recipes: { button: buttonRecipe },
+  },
+})
+```
+
 ## Notes
 
 - Use `asChild` to render as an anchor: `<Button asChild><a href="/">Home</a></Button>`

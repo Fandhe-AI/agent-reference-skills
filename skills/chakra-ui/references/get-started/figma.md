@@ -15,6 +15,17 @@ The Chakra UI v3 Figma Kit is freely available on Figma Community — no special
 - Supports consistent collaboration between designers and developers
 - Reduces friction in the design-to-development handoff
 
+## Light and Dark Mode
+
+The Figma kit includes both light and dark mode token sets out of the box. To switch to dark mode tokens:
+
+1. Open the Chakra UI Figma Kit file
+2. Click on "Apply Variable Mode" from the Appearance panel (right sidebar)
+3. Navigate to "Color/Semantic Tokens"
+4. Select "Chakra/dark" to switch to the dark token set
+
+> **Tip:** You can swap between `Chakra/Light` and `Chakra/Dark` at any time without rebuilding your designs — the semantic token layer handles the switch automatically.
+
 ## Notes
 
 - The kit reflects how Chakra UI actually functions in production, not a visual approximation

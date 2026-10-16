@@ -50,6 +50,7 @@ import { Splitter } from "@chakra-ui/react"
 | `maxSize` | `number` | Maximum size (percentage) |
 | `collapsible` | `boolean` | Whether the panel can be collapsed |
 | `collapsedSize` | `number` | Size when collapsed |
+| `resizeBehavior` | `"preserve-pixel-size"` | Keep the panel's pixel size constant when the parent group resizes (see Resize Behavior). Not listed in the Splitter prop types at 3.37.0 |
 
 ### ResizeTrigger
 
@@ -58,8 +59,39 @@ import { Splitter } from "@chakra-ui/react"
 | `id` | `"panelA:panelB"` | **required** IDs of the two adjacent panels |
 | `disabled` | `boolean` | Disables resizing |
 
+## CSS Unit Sizes
+
+In addition to percentages, `defaultSize`, `minSize`, and `maxSize` accept CSS units like `px`, `em`, `rem`, `vh`, and `vw`. This is useful for panels that should keep a fixed width, such as a navigation sidebar.
+
+> CSS-unit sizes are measured on the client, so panels using them can shift after hydration. Use percentage sizes for a stable server-rendered layout.
+
+```tsx
+<Splitter.Root
+  panels={[
+    { id: "nav", minSize: "240px", maxSize: "480px" },
+    { id: "main", minSize: 30 },
+  ]}
+  defaultSize={["240px", "60vw"]}
+/>
+```
+
+## Resize Behavior
+
+Set `resizeBehavior` on a panel to control how it reacts when the parent group resizes. Use `"preserve-pixel-size"` to keep a panel's pixel size constant (so the other panels absorb the change) instead of scaling proportionally.
+
+```tsx
+<Splitter.Root
+  panels={[
+    { id: "sidebar", minSize: 15, resizeBehavior: "preserve-pixel-size" },
+    { id: "main" },
+  ]}
+  defaultSize={[25, 75]}
+/>
+```
+
 ## Notes
 
+- CSS units and `resizeBehavior` came with Ark UI 5.37.2 (Chakra UI 3.36.0)
 - `ResizeTrigger` `id` must follow the pattern `"panelA:panelB"` — adjacent panel IDs joined with `:`
 - Use `useSplitter()` hook with `RootProvider` for programmatic control
 - Supports nested splitters for complex layouts

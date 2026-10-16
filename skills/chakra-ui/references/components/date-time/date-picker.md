@@ -70,9 +70,33 @@ import { DatePicker } from "@chakra-ui/react"
 | `onViewChange` | `(details) => void` | — | Called when view changes |
 | `format` | `(date, details) => string` | — | Custom date format function |
 | `parse` | `(value, details) => DateValue` | — | Custom date parse function |
+| `hideMode` | `"display-none" \| "activity"` | `"display-none"` | How kept-mounted content is hidden when closed. `"activity"` uses React 19 `Activity` and pauses effects (requires React 19+) |
+
+## Persian (Jalali) Calendar
+
+Use the `createCalendar` prop with `locale="fa-IR"` to render the Persian (Jalali) calendar.
+
+```tsx
+import { PersianCalendar } from "@internationalized/date"
+
+const createCalendar = (identifier: string) => {
+  switch (identifier) {
+    case "persian":
+      return new PersianCalendar()
+    default:
+      throw new Error(`Unsupported calendar: ${identifier}`)
+  }
+}
+
+<DatePicker.Root locale="fa-IR" createCalendar={createCalendar} startOfWeek={6} maxWidth="20rem">
+  {/* Label, Control, Positioner, Content ... */}
+</DatePicker.Root>
+```
 
 ## Notes
 
+- 3.37.0: `translations` is now `Partial` (override one message, the rest fall back to defaults); `minView` / `maxView` / `defaultView` are respected when resolving the initial view; `maxSelectedDates` is enforced on month and year cells in `multiple` mode; the locale's native numerals (e.g. Arabic-Indic, Devanagari) are accepted when typing; `defaultOpen` no longer overrides a controlled `open`; disabled and read-only pickers no longer react to cell clicks, the clear trigger and presets.
+- 3.36.0: the input placeholder uses the same global `*::placeholder` styling as `Input` (the DatePicker `_placeholder` override was removed).
 - Uses `@internationalized/date` `DateValue` type for date values
 - `selectionMode="range"` enables date range selection
 - Use `DatePicker.PresetTrigger` for quick date presets (today, last week, etc.)
