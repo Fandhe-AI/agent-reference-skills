@@ -1,19 +1,19 @@
 ---
 name: windows-app-sdk
 description: >
-  Windows アプリ開発 (WinUI 3 / Windows App SDK) のライフサイクル・ウィンドウ・
-  通知・リソース・ウィジェット・配置リファレンス。AppInstance, 単一インスタンス化,
-  RichActivation, PowerManager、AppWindow, AppWindowPresenter, OverlappedPresenter,
-  タイトルバーカスタマイズ, DisplayArea, Win32 相互運用、AppNotification, Toast,
-  PushNotificationManager, バッジ通知、ResourceManager, MRT, PRI リソース,
-  多言語ローカライズ、WidgetProvider, WidgetManager, アダプティブカード、
-  MSIX パッケージ配置, 自己完結型デプロイ, DeploymentManager, リリースチャネル。
+  Windows アプリ開発 (WinUI 3 / Windows App SDK 2.x) のライフサイクル・ウィンドウ・
+  通知・リソース・ウィジェット・配置。AppInstance, RichActivation, PowerManager、
+  AppWindow, OverlappedPresenter, タイトルバー, DisplayArea、AppNotification,
+  Toast, PushNotificationManager、ResourceManager, MRT, PRI, ローカライズ、
+  WidgetProvider, WidgetManager、MSIX, 自己完結型, DeploymentManager, PackageVolume,
+  IPackageValidator (パッケージ検証), RuntimeCompatibilityOptions, SemVer, サポート期間。
 user-invocable: false
 ---
 
 # Windows App SDK リファレンス
 
 WinUI 3 / Windows App SDK のアプリライフサイクル・ウィンドウ管理・通知・リソース管理・ウィジェット・配置に関する公式ドキュメントの主要 API を網羅したスキル。
+対象は Windows App SDK 2.x (最新安定版 2.5.1、2026-09-16 リリース。ドキュメント取得日 2026-10-16)。2.0 は最初の SemVer 2.0.0 リリースで、SDK バージョンと NuGet バージョンが一致し、パッケージファミリー名はメジャーバージョンに追随する。1.8 は Maintenance。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
 ## ディレクトリ構成
@@ -114,6 +114,16 @@ skills/windows-app-sdk/
       packagedeploymentmanager.md
       runtimecompatibilityoptions.md
       runtimeinfo.md
+      ipackagevalidator.md
+      packagecertificateekuvalidator.md
+      packagefamilynamevalidator.md
+      packageminimumversionvalidator.md
+      packagevalidationeventsource.md
+      packagevalidationeventargs.md
+      packagevalidationhandler.md
+      packagevolume.md
+      packagevolumefeature.md
+      support.md
 ```
 
 ## 探索手順
@@ -146,5 +156,9 @@ skills/windows-app-sdk/
 | MSIX パッケージ配置 / 自己完結型デプロイでアプリを配布したい | deployment-versioning | [references/deployment-versioning/README.md](references/deployment-versioning/README.md) |
 | DeploymentManager / DeploymentResult でランタイム初期化・更新を扱いたい | deployment-versioning | [references/deployment-versioning/README.md](references/deployment-versioning/README.md) |
 | リリースチャネル・システム要件・プロジェクトプロパティを確認したい | deployment-versioning | [references/deployment-versioning/README.md](references/deployment-versioning/README.md) |
+| RuntimeInfo / RuntimeCompatibilityOptions でサービス更新の挙動変更を無効化したい | deployment-versioning | [references/deployment-versioning/README.md](references/deployment-versioning/README.md) |
+| PackageVolume でパッケージ格納ボリュームを管理したい | deployment-versioning | [references/deployment-versioning/README.md](references/deployment-versioning/README.md) |
+| IPackageValidator / PackageValidators でパッケージ追加・ステージ時に検証したい | deployment-versioning | [references/deployment-versioning/README.md](references/deployment-versioning/README.md) |
+| Windows App SDK の各版がサポートする Windows / Windows Server とサービス終了日を確認したい | deployment-versioning | [references/deployment-versioning/README.md](references/deployment-versioning/README.md) |
 
 WinUI 3 のコントロール (Button / Grid / NavigationView / TextBox 等の XAML UI コンポーネント) は本スキルの対象外で、別スキルの担当。本スキルはアプリライフサイクル・ウィンドウ管理・通知・リソース・ウィジェット・配置といった Windows App SDK 固有のランタイム API に限定する。同名 API を持つ apple-swiftui / ark-ui / chakra-ui / fandhe-frontend / android-compose-* とは対象プラットフォームが異なり混同しないこと。

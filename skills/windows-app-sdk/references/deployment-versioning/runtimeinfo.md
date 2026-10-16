@@ -43,7 +43,7 @@ public struct WindowsAppRuntimeVersion
 
 ## Notes
 
-- Namespace: `Microsoft.Windows.ApplicationModel.WindowsAppRuntime`. Available starting Windows App SDK 1.7 through 2.0 (moniker range `windows-app-sdk-1.7` .. `windows-app-sdk-2.0`).
+- Namespace: `Microsoft.Windows.ApplicationModel.WindowsAppRuntime`. Available starting Windows App SDK 1.7 and continuing in the 2.x line (docs moniker range `windows-app-sdk-1.7` .. `windows-app-sdk-2.0`; the `2.0` moniker covers the 2.x releases, latest stable 2.5.1).
 - `RuntimeInfo` and `ReleaseInfo` differ in representation, not in what they identify: `RuntimeInfo` exposes the version as a single `PackageVersion` (via `Version`) plus a formatted `AsString`, while `ReleaseInfo` exposes the same release discretely as `Major`/`Minor`/`Patch`/`VersionTag` plus its own `AsString`.
 - `WindowsAppRuntimeVersion` is a plain major/minor/patch struct (not tied to a loaded runtime); it's the type used to set `RuntimeCompatibilityOptions.PatchLevel1`/`PatchLevel2`.
 

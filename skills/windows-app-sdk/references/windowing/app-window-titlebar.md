@@ -41,6 +41,7 @@ if (AppWindowTitleBar.IsCustomizationSupported())
 - Setting a color property to `null` resets it to the default system color; transparent colors (alpha channel) are ignored except for `ButtonBackgroundColor`, `ButtonHoverBackgroundColor`, `ButtonPressedBackgroundColor`, `ButtonInactiveBackgroundColor` when `ExtendsContentIntoTitleBar` is `true`.
 - `PreferredHeightOption` can only be set after `ExtendsContentIntoTitleBar` is `true`; otherwise it throws.
 - Since Windows App SDK 1.4, the XAML `Window` and `AppWindow` share the same `AppWindowTitleBar` instance.
+- `SetDragRectangles` is the `AppWindowTitleBar` (low-level) way to define drag regions. The XAML `TitleBar` control (1.7+) has its own drag-region model: since 2.1.3, empty areas of `TitleBar.Content` are draggable by default, controlled via `TitleBar.IsDragRegion` / `AutoRefreshDragRegions` / `RecomputeDragRegions()` (see Title bar customization).
 - Package: `Microsoft.UI.Windowing` (Windows App SDK / WinUI 3).
 
 ## Related

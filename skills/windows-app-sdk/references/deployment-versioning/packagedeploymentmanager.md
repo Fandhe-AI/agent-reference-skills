@@ -54,20 +54,24 @@ public sealed class PackageDeploymentManager
 | `RemovePackage*Async` | Removes a package by family name, full name, or URI, via `RemovePackageOptions`. |
 | `RepairPackageAsync` / `ResetPackageAsync` | Programmatic equivalents of the **Repair** / **Reset** buttons in Windows Settings > Apps > *app* > Advanced options. `Reset` deletes the app's data; `Repair` doesn't. |
 | `IsPackageReady*` / `IsPackageProvisioned*` / `IsPackageRegistrationPending*` | Cheap status checks (by family name, by URI, or for a `PackageSet`) to decide whether an install/registration/provisioning call is actually needed. |
-| `EnsurePackageReady*Async` / `EnsurePackageSetReadyAsync` | Combined "make sure it's ready, doing whatever's needed" call (download, register, remediate), via `EnsureReadyOptions`. |
 | `AddPackageOptions` | Deployment options for adding a package: notable members include `AllowUnsigned`, `DeferRegistrationWhenPackagesAreInUse`, `ForceAppShutdown` / `ForceTargetAppShutdown`, `ForceUpdateFromAnyVersion`, `ExternalLocationUri`, `DependencyPackageUris`, `TargetVolume`, `RetainFilesOnFailure`, `StageInPlace`. Available on Windows 10 version 2004 (build 19041) and later. |
 | `PackageSet` | Group of packages operated on as one request (no ordering guarantee among `Items`); has an optional `Id` (for logging) and a default `PackageUri`. |
 
 ## Notes
 
-- Namespace: `Microsoft.Windows.Management.Deployment`. Available starting Windows App SDK 1.5 through 2.0 (moniker range `windows-app-sdk-1.5` .. `windows-app-sdk-2.0`); `PackageDependency_ResolveDynamically`-adjacent features added later are gated behind `IsPackageDeploymentFeatureSupported`.
+- Namespace: `Microsoft.Windows.Management.Deployment`. Available starting Windows App SDK 1.5 through 2.0 (moniker range `windows-app-sdk-1.5` .. `windows-app-sdk-2.0`). Use `IsPackageDeploymentFeatureSupported` to check whether a given feature is supported before calling it.
 - Distinct from two similarly-named/adjacent APIs — don't merge:
   - `Microsoft.Windows.ApplicationModel.WindowsAppRuntime.DeploymentManager` (this skill, `deploymentmanager.md`) only initializes/repairs the Windows App SDK runtime itself for the current package; it has no concept of installing arbitrary MSIX packages.
   - `Windows.Management.Deployment.PackageManager` (the UWP-era predecessor this API supersedes) is documented in the windows-packaging-publish skill.
 - Every mutating verb has 2-3 call shapes: a plain `string package` (path/URI to a package file, or a family/full name depending on the verb), an explicit `Uri`/`...ByFamilyName`/`...ByFullName` variant, and — for the `*Async` methods that support it — for a whole `PackageSet` in one call.
 - Async methods return `IAsyncOperationWithProgress<PackageDeploymentResult, PackageDeploymentProgress>` — `PackageDeploymentResult` (`Status`/`Error`/`ExtendedError`/`ErrorText`/`ActivityId`) carries the operation's outcome. This is a distinct type from `DeploymentManager`'s `DeploymentResult` — don't conflate the two.
+- Windows App SDK 2.0 added three members to both `AddPackageOptions` and `StagePackageOptions`: `PackageValidators` (read-only map of `Uri` to `PackageValidationEventSource`), `IsPackageValidationSupported` (bool) and `GetValidationEventSourceForUri(Uri)`. See IPackageValidator and the validation event pages below.
 
 ## Related
 
+- [IPackageValidator](./ipackagevalidator.md)
+- [PackageValidationEventSource](./packagevalidationeventsource.md)
+- [PackageValidationEventArgs](./packagevalidationeventargs.md)
+- [PackageValidationHandler](./packagevalidationhandler.md)
 - [DeploymentManager](./deploymentmanager.md)
 - [DeploymentResult](./deploymentresult.md) — the distinct result type used by `DeploymentManager`, not by this class
