@@ -45,6 +45,7 @@ drizzle-kit studio --verbose
 
 - Safari and Brave block localhost access by default; install `mkcert`, run `mkcert -install`, then restart `drizzle-kit studio` to use a self-signed certificate.
 - Meant for local development only — not for deployment on a remote host (VPS etc). Deploying Drizzle Studio remotely is the purpose of the separately-productized Drizzle Gateway (self-hosted), plus a Chrome extension and an embeddable component; these are not part of the open-source `drizzle-kit`/`drizzle-orm` docs covered here.
+- Drizzle Studio forms (https://orm.drizzle.team/drizzle-studio/overview, a landing page outside `/docs/`): Local Studio (`drizzle-kit studio`, free, local development only), Drizzle Gateway (free self-hosted Studio, Docker image or standalone binary, no Drizzle project needed), Chrome extension (free), and Studio Component (paid B2B embeddable component).
 - Drizzle Studio itself is closed-source (unlike Drizzle ORM and Drizzle Kit, which are fully open source).
 - Studio has no authentication of its own; see the warning above before setting `host` to `0.0.0.0`.
 

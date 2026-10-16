@@ -48,6 +48,6 @@ const posts = await db.query.posts.findMany({
 ## Notes
 
 - `db.query.<table>.findMany({ with: { ... } })` batches related rows in a fixed number of queries instead of one query per parent row, avoiding N+1.
-- Relations are declared via `defineRelations(schema, (r) => ({ ... }))` — this is the v2 relations API (drizzle-orm/drizzle-kit 1.0.0-rc.5). The older `relations(table, ({ one, many }) => ({ ... }))` helper is the v1 API.
+- Relations are declared via `defineRelations(schema, (r) => ({ ... }))` — this is the v2 relations API (drizzle-orm/drizzle-kit 1.0.0-rc.4). The older `relations(table, ({ one, many }) => ({ ... }))` helper is the v1 API.
 - References to a table's own columns inside `where` / `orderBy` / `extras` callbacks must go through the callback parameter, not the imported table object.
 - `findFirst()` behaves like `findMany()` with an implicit `limit 1`.

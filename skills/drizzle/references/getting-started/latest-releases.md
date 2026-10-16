@@ -1,41 +1,38 @@
 ---
-source: https://orm.drizzle.team/docs/latest-releases
+source:
+  - https://orm.drizzle.team/docs/latest-releases
+  - https://github.com/drizzle-team/drizzle-orm/releases/tag/v1.0.0-rc.4
 ---
 
 # Latest Releases
 
-The docs site's `/docs/latest-releases` page renders a dynamic `<LatestReleases/>` component listing all release notes under `latest-releases/*.mdx`; the most recent entry as of this writing is `drizzle-orm-v1beta2.mdx` (2025-02-12, `v1.0.0-beta.2`).
+The docs site's `/docs/latest-releases` page renders a dynamic `<LatestReleases/>` component (the page source contains only that component, no release text). Release notes for the pinned version are taken from GitHub Releases: `v1.0.0-rc.4` (published 2026-06-27, prerelease).
 
 ## Signature / Usage
 
 ```ts
-// MSSQL dialect (new in v1.0.0-beta.2)
-import { drizzle } from 'drizzle-orm/node-mssql';
-
-const db = drizzle(process.env.DATABASE_URL);
-const result = await db.execute('select 1');
+// v1.0.0-rc.4: typed `sql` operator keeps nullability; `.nullable()` adds `| null` to the output type
+sql<Type | null>`...`.mapWith((v: Type) => String(v)) // Output type: string | null
+sql`...`.mapWith((v: unknown) => new Type(v)).nullable() // Output type: Type | null
 ```
 
 ## Options / Props
 
-| Highlight (v1.0.0-beta.2) | Description |
+| Highlight (v1.0.0-rc.4) | Description |
 | --- | --- |
-| MSSQL dialect | New in `drizzle-orm`, `drizzle-kit`, `drizzle-seed`; most columns/query-builder/migrations supported, RQBv2 not yet supported |
-| CockroachDB dialect | New in `drizzle-orm`, `drizzle-kit`, `drizzle-seed` (import from `drizzle-orm/cockroach`); RQBv2 not yet supported |
-| `defineRelationsPart` | Split relations config into multiple parts, merged into `drizzle({ relations: { ...relations, ...part } })` |
-| Migration folders v3 | Removed `journal.json`, groups SQL + snapshots per migration folder, removed `drizzle-kit drop`; migrate old folders with `drizzle-kit up` |
-| `drizzle-kit` rewrite | Snapshots moved to DDL-based diffing; introspection time cut from ~10s to <1s |
-| `drizzle-kit pull --init` | Creates the Drizzle migrations table and marks the first pulled migration as applied |
-| `schemaFilter` | Now manages all schemas referenced in code by default; supports glob patterns to filter |
-| `.enableRLS()` | Deprecated in favor of `pgTable.withRLS('name', {...})` |
-| Column alias | `.as('alias')` can now be called directly on a column, e.g. `users.age.as('ageOfUser')` |
+| SQLite RQBv1 removed | RQBv2 only; RQBv1 `TSchema` / `TFullSchema` generics removed from `sqlite` entities |
+| SQLite split | `async` and `effect` versions (`sync` remains a subtype of `async`); `SQLiteSyncDialect` / `SQLiteAsyncDialect` removed, generic migrators moved to `sqlite-core/async/session` as `migrateSync` / `migrateAsync` |
+| MySQL split | `async` and `effect` versions; codec system added to `mysql` |
+| Set operators (PG, MySQL) | Codec handling improved; queries emitted as `SELECT ... FROM ([QUERY 1] UNION [QUERY 2]) "drizzle_union"` |
+| `db.insert(table).select(...)` | Column order match no longer required; selection may skip columns with defaults or nullability |
+| Drivers | Added `@tursodatabase/serverless` and `@tursodatabase/sync` driver support; `@tursodatabase/database` / `database-wasm` updated to v0.6.0 |
 
 ## Notes
 
-- Migration (v0 → v1): this release is the last beta before 1.0.0-rc — it already carries the DDL-snapshot migration rewrite, `drizzle-kit drop` removal, and MSSQL/CockroachDB dialect additions that this skill's target version (1.0.0-rc.5) builds on; see `upgrade-v1` and `v0-v1-changes` for the consolidated migration guide, and `relations-v1-v2` for the RQBv1 → RQBv2 migration.
-- The release notes warn that "something will definitely break"; rollback path given in the source is downgrading to `1.0.0-beta.1` or `0.44.7`.
-- This is a summary of the release; the source file also lists ~150 individual GitHub issue links under "Bugs fixed" that are not reproduced here.
-- The low-level `node-mssql` driver client itself is covered by the separate `mssql` skill.
+- Migration (v0 → v1): this page is a release-note summary, not a migration guide; see `upgrade-v1` and `v0-v1-changes` for the consolidated migration steps, and `relations-v1-v2` for RQBv1 → RQBv2.
+- The release notes for `rc.4` are on GitHub Releases only; the docs-site page does not list them as static text.
+- This is a summary; the source also lists many individual bug fixes and issue links that are not reproduced here.
+- Dates and versions of earlier betas/RCs are not reproduced because they could not be verified against the pinned sources.
 
 ## Related
 
