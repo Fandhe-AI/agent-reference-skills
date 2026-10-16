@@ -1,14 +1,13 @@
 ---
 name: windows-testing-performance
 description: >
-  Windows アプリ開発 (WinUI 3 / Windows App SDK) のテスト・パフォーマンス・
-  アクセシビリティ・スレッドリファレンス。MSTest, xUnit, NUnit, WinAppDriver,
-  Appium, Playwright, WebView2 テスト, WACK 認定, MSIX サイドローディング, CI。
-  プロファイリング, WPT, WPA, GC, 起動性能, XAML レイアウト/読み込み最適化,
-  ListView/GridView 仮想化, DispatcherQueue。UI Automation, AutomationProperties,
-  automation peers, キーボード操作性, ハイコントラストテーマ, Narrator。
-  DispatcherQueue, DispatcherQueueTimer, WinRT 非同期パターン, async/await,
-  ConfigureAwait, スレッドプール, STA/MTA, デッドロック回避, バックグラウンドタスク。
+  Windows アプリ開発 (WinUI 3 / Windows App SDK) のテスト・性能・アクセシビリティ・スレッド。
+  MSTest, xUnit, NUnit, WinAppDriver, Appium, Playwright, WebView2 テスト, CI, WACK,
+  MSIX サイドローディング, version adaptive。LoggingChannel / ETW, WPT, WPA, プロファイリング,
+  GC, 起動性能, XAML 最適化, ListView/GridView 仮想化。UI Automation, AutomationProperties,
+  automation peers, キーボード操作性, ハイコントラスト, Narrator。DispatcherQueue,
+  DispatcherQueueTimer, WinRT 非同期パターン, async/await, ConfigureAwait, スレッドプール, STA/MTA,
+  デッドロック回避, バックグラウンドタスク。
 user-invocable: false
 ---
 
@@ -44,8 +43,10 @@ skills/windows-testing-performance/
       winapp-cli-ui-automation.md
       static-analysis-dotnet-cpp.md
       telemetry-crash-reporting.md
+      version-adaptive-apps.md
     performance/
       README.md
+      planning-for-performance.md
       choose-between-tools.md
       disk-memory.md
       improve-garbage-collection-performance.md
@@ -125,6 +126,8 @@ skills/windows-testing-performance/
 | 起動時間・メモリ・GC・XAML レイアウトを最適化したい | performance | [references/performance/README.md](references/performance/README.md) |
 | WPT/WPA/Visual Studio Profiler でプロファイリングしたい | performance | [references/performance/README.md](references/performance/README.md) |
 | ListView / GridView の仮想化・データ読み込みを最適化したい | performance | [references/performance/README.md](references/performance/README.md) |
+| パフォーマンス目標（時間・fluidity・効率）を決め、LoggingChannel で計測したい | performance | [references/performance/README.md](references/performance/README.md) |
+| Target / Minimum OS バージョンをまたいで動作確認したい（version adaptive） | testing | [references/testing/README.md](references/testing/README.md) |
 | UI Automation 対応・AutomationProperties を設定したい | accessibility | [references/accessibility/README.md](references/accessibility/README.md) |
 | キーボード操作性・フォーカス・ハイコントラストに対応したい | accessibility | [references/accessibility/README.md](references/accessibility/README.md) |
 | Narrator でのアクセシビリティテスト・ストア申請要件を確認したい | accessibility | [references/accessibility/README.md](references/accessibility/README.md) |

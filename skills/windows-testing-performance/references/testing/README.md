@@ -15,6 +15,7 @@
 | UI Testing with WinAppDriver / Appium | Selenium-like UI automation service for Windows desktop apps via WebDriver protocol | [ui-testing-winappdriver.md](./ui-testing-winappdriver.md) |
 | Unit Testing Non-WinUI Code (MSTest / xUnit / NUnit) | Standard .NET testing frameworks for non-XAML application code | [unit-testing-non-winui.md](./unit-testing-non-winui.md) |
 | Unit Testing WinUI 3 Apps | WinUI Unit Test App template creates XAML UI thread for testing WinUI types | [unit-testing-winui3.md](./unit-testing-winui3.md) |
+| Version Adaptive Apps | Target / Minimum version settings, ApiInformation runtime checks, and testing across OS versions | [version-adaptive-apps.md](./version-adaptive-apps.md) |
 | Windows App Certification Kit (WACK) | Validate apps for Windows Certification or Microsoft Store publication readiness | [wack-certification.md](./wack-certification.md) |
 | WACK Test Categories | Test categories, pass/fail criteria, and corrective actions for WACK failures | [wack-test-categories.md](./wack-test-categories.md) |
 | Testing Windows Widgets | Deploy widget provider apps and test by pinning widgets in the Widgets Board | [widgets-testing.md](./widgets-testing.md) |
