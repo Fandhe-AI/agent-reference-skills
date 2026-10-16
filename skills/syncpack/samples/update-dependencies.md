@@ -18,6 +18,9 @@ syncpack update --interactive
 # Check for updates in a specific scope
 syncpack update --check --dependencies '@aws-sdk/**'
 
+# Update only the pnpm default catalog in pnpm-workspace.yaml
+syncpack update --dependency-types pnpmCatalog
+
 # After updating, refresh lockfiles
 pnpm install
 ```
@@ -28,3 +31,4 @@ pnpm install
 - `--target patch` updates only within the current minor (1.2.x); `--target minor` updates within the major (1.x.x); `--target latest` accepts any update
 - `--interactive` allows keyboard selection of which updates to apply
 - Use `updateGroups` in `.syncpackrc` for per-dependency update policies
+- `pnpmCatalog` targets the default catalog; a named catalog is `'pnpmCatalog:<name>'` (e.g. `'pnpmCatalog:react18'`)

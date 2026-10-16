@@ -4,6 +4,10 @@ Source: https://syncpack.dev/guide/whats-new/
 
 Summary of notable features added in recent Syncpack releases.
 
+## v15.3.1 – v15.3.3
+
+15.3.2 fixes `pnpmOverrides` not being written to `pnpm-workspace.yaml` (closes #336). 15.3.1 (TypeScript types update) and 15.3.3 (Cargo dependencies, Rust 1.97) are type and dependency updates only.
+
 ## v15.3.0
 
 **Range Only Version Group** (`semverRangeOnly`): Enforces consistent semver range prefixes (`^`, `~`, or exact) across instances without syncing actual version numbers. See [range-only](../version-groups/range-only.md).
@@ -30,9 +34,13 @@ Summary of notable features added in recent Syncpack releases.
 
 **Catalog Protocol**: Full support for pnpm and Bun catalogs with the `catalog:` protocol. See [catalog version group](../version-groups/catalog.md).
 
-**Minimum Release Age**: `minimumReleaseAge` (default: 1440 minutes) excludes recently-published versions for supply-chain security. See [minimumReleaseAge](../config/minimum-release-age.md).
+- Define a dependency's version once and have every package consume it via `catalog:` or `catalog:{name}`.
+- Syncpack writes catalog entries to `pnpm-workspace.yaml` (pnpm) or the root `package.json` (Bun), creating the implicit `default` catalog at fix time when one does not yet exist.
+- Filter updates by catalog: `syncpack update --dependency-types pnpmCatalog`, or by named catalog: `pnpmCatalog:react18`.
 
-**Breaking Change**: `pnpmOverrides` now reads from `pnpm-workspace.yaml` instead of `package.json`. See [migrate-v15](./migrate-v15.md).
+**Minimum Release Age**: `minimumReleaseAge` (default: 1440 minutes) excludes recently-published versions for supply-chain security. Inherits from `pnpm-workspace.yaml` when unset; set `0` to disable. See [minimumReleaseAge](../config/minimum-release-age.md).
+
+**Breaking Change**: `pnpmOverrides` now reads from `pnpm-workspace.yaml` instead of `package.json`. The legacy behaviour can be restored with a `pnpmOverridesLegacy` custom type. See [migrate-v15](./migrate-v15.md).
 
 ## Related
 

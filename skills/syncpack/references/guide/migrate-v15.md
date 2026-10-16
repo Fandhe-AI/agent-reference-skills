@@ -38,6 +38,10 @@ The standard `pnpmOverrides` type will continue to manage `pnpm-workspace.yaml` 
 | v15.2.0 | `severity` override map, `sourceMode: "extend"` |
 | v15.3.0 | `semverRangeOnly` version group policy |
 
+## Notes
+
+- Since 15.3.2, fixes to `pnpmOverrides` are written to `pnpm-workspace.yaml` (CHANGELOG 15.3.2, closes #336).
+
 ## Related
 
 - [migrate-v14](./migrate-v14.md)

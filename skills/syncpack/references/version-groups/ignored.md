@@ -4,11 +4,22 @@ Source: https://syncpack.dev/version-groups/ignored/
 
 Completely excludes specified dependencies from all validation and synchronization checks. Useful for incrementally adopting syncpack — handle known-fixable dependencies first, then ignore the rest.
 
-## Activation
+## Usage
 
 Set `isIgnored: true` in a version group entry.
 
-## Configuration Properties
+```json
+{
+  "versionGroups": [
+    {
+      "dependencies": ["keep-walking"],
+      "isIgnored": true
+    }
+  ]
+}
+```
+
+## Options
 
 | Property | Required | Description |
 |----------|----------|-------------|
@@ -21,7 +32,7 @@ Set `isIgnored: true` in a version group entry.
 
 ### `dependencyTypes` values
 
-`dependencies`, `devDependencies`, `overrides`, `peerDependencies`, `pnpm.overrides`, `resolutions`
+`prod`, `dev`, `peer`, `overrides`, `pnpmOverrides`, `resolutions`, `local`, plus catalog names and custom types (see the dependency-types reference page). `pnpmOverrides` reads `overrides` from `pnpm-workspace.yaml`.
 
 Negation example: `["!dev", "!prod"]`
 
@@ -31,18 +42,9 @@ Negation example: `["!dev", "!prod"]`
 ["!latest", "!file"]
 ```
 
-## Configuration Example
+### `severity`
 
-```json
-{
-  "versionGroups": [
-    {
-      "dependencies": ["keep-walking"],
-      "isIgnored": true
-    }
-  ]
-}
-```
+An Ignored group emits no statuses to tune. A `severity` map written here is accepted and silently discarded. To control how issues are reported, set `isIgnored` to `false` and pick a different group type. The TS type deliberately omits `severity` from Ignored.
 
 ## Status Codes
 

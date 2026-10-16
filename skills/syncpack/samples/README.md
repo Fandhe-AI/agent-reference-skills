@@ -5,7 +5,7 @@
 | Ban Dependency | Flag disallowed packages so they are reported as issues and must be removed. | [ban-dependency.md](./ban-dependency.md) |
 | Basic Lint and Fix | Check for version mismatches across the monorepo and auto-fix them. | [basic-lint-and-fix.md](./basic-lint-and-fix.md) |
 | CI Workflow | Run syncpack checks in CI to enforce version consistency and formatting before merging. | [ci-workflow.md](./ci-workflow.md) |
-| Custom Types | Extend syncpack to manage non-standard `package.json` fields such as `engines` or `packageManager`. | [custom-types.md](./custom-types.md) |
+| Custom Types | Extend syncpack to manage non-standard `package.json` fields such as `engines`, `packageManager` or `devEngines`. | [custom-types.md](./custom-types.md) |
 | Format package.json | Sort and standardize `package.json` fields consistently across all monorepo packages. | [format-package-json.md](./format-package-json.md) |
 | Minimal Config | Start with a narrow scope targeting production dependencies, then expand gradually. | [minimal-config.md](./minimal-config.md) |
 | Pin Version | Lock a specific dependency to an exact version across the entire monorepo. | [pin-version.md](./pin-version.md) |

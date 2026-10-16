@@ -4,11 +4,22 @@ Source: https://syncpack.dev/version-groups/same-range/
 
 Ensures all instances of a dependency across the monorepo use semver ranges that **intersect** (overlap) with each other. Ranges don't need to be identical — they just need to share at least one version in common. This is the most permissive version group policy in syncpack.
 
-## Activation
+## Usage
 
 Set `policy: "sameRange"` in a version group entry.
 
-## Configuration Properties
+```json
+{
+  "versionGroups": [
+    {
+      "dependencies": ["eslint"],
+      "policy": "sameRange"
+    }
+  ]
+}
+```
+
+## Options
 
 | Property | Required | Description |
 |----------|----------|-------------|
@@ -18,6 +29,25 @@ Set `policy: "sameRange"` in a version group entry.
 | `specifierTypes` | No | Filters by version specifier format. Supports negation. Omitting matches all. |
 | `label` | No | Display name in syncpack output. Defaults to `"Version Group N"`. |
 | `packages` | No | Array matching `package.json` `name` properties (exact or glob). Supports negation but not mixing specific and negated patterns. |
+| `severity` | No | Overrides the default severity of status codes this group can produce. Permitted key: `SemverRangeMismatch`. |
+
+```json
+{
+  "versionGroups": [
+    {
+      "dependencies": ["eslint"],
+      "policy": "sameRange",
+      "severity": {
+        "SemverRangeMismatch": "warn"
+      }
+    }
+  ]
+}
+```
+
+`SameRangeMismatch` is unfixable on this page. It is always reported as an error and cannot be tuned via `severity`.
+
+> **Caution:** `sameRange` only works with semver ranges like `^1.2.3`, `>=1.0.0` or `~2.0.0`. Exact pinned versions such as `1.0.0` and `1.0.1` are non-overlapping ranges and are flagged as mismatches. To enforce that exact versions share the same minor number, use `sameMinor` instead.
 
 ## Intersection Examples
 
@@ -35,19 +65,6 @@ Set `policy: "sameRange"` in a version group entry.
 |---------|---------|--------|
 | `>=1.0.0` | `<1.0.0` | No version satisfies both |
 | `~1.0.0` | `1.4.2` | Exact version 1.4.2 is outside ~1.0.0 |
-
-## Configuration Example
-
-```json
-{
-  "versionGroups": [
-    {
-      "dependencies": ["eslint"],
-      "policy": "sameRange"
-    }
-  ]
-}
-```
 
 ## Status Codes
 

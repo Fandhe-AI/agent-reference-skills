@@ -4,11 +4,22 @@ Source: https://syncpack.dev/version-groups/snapped-to/
 
 Synchronizes dependency versions across packages by following a designated source package. Dependencies in this group adopt versions from the specified "snap" packages, ensuring consistency across a monorepo by treating one or more packages as the authoritative version source.
 
-## Activation
+## Usage
 
 Set `snapTo` to an array of package names that serve as version sources.
 
-## Configuration Properties
+```json
+{
+  "versionGroups": [
+    {
+      "dependencies": ["react", "react-native"],
+      "snapTo": ["mobile-app"]
+    }
+  ]
+}
+```
+
+## Options
 
 | Property | Required | Description |
 |----------|----------|-------------|
@@ -18,6 +29,24 @@ Set `snapTo` to an array of package names that serve as version sources.
 | `specifierTypes` | No | Filters by version specifier format. Supports negation. Omitting matches all. |
 | `label` | No | Display name in syncpack output. Defaults to `"Version Group N"`. |
 | `packages` | No | Array matching `package.json` `name` properties (exact or glob). Supports negation but not mixing specific and negated patterns. |
+| `severity` | No | Overrides the default severity of status codes this group can produce. Permitted keys: `DiffersToSnapTarget`, `SemverRangeMismatch`, `RefuseToSnapLocal`. |
+
+### `severity` example
+
+```json
+{
+  "versionGroups": [
+    {
+      "dependencies": ["react", "react-native"],
+      "snapTo": ["mobile-app"],
+      "severity": {
+        "DiffersToSnapTarget": "error",
+        "RefuseToSnapLocal": "fix"
+      }
+    }
+  ]
+}
+```
 
 ### `snapTo` fallback behavior
 
@@ -41,19 +70,6 @@ If a dependency is not present in `primary-app`, its version is taken from `seco
 
 ```json
 ["!my-client", "!my-server"]
-```
-
-## Configuration Example
-
-```json
-{
-  "versionGroups": [
-    {
-      "dependencies": ["react", "react-native"],
-      "snapTo": ["mobile-app"]
-    }
-  ]
-}
 ```
 
 ## Status Codes
