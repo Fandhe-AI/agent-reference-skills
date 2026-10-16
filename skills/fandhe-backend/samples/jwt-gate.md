@@ -56,3 +56,5 @@ fn main() -> Result<(), PolicyError> {
 - `JwtAuthenticator` の `Clone` は `Arc` 共有で、署名検証結果のキャッシュも共有される
 - `JwtGate` は `Authorization: Bearer` のみを検査し Cookie は見ない。Cookie だけで認証する画面に `JwtGate` を登録すると正当な要求も 401 になるため、Cookie 認証の画面では `CsrfGate` の後に Cookie セッションを検証する独自ゲートを登録する（[csrf-gate.md](./csrf-gate.md) 参照）
 - `JwtGate` と `CsrfGate` を併用するのは、要求が Bearer 資格情報も送る場合に限る。その場合も CSRF ゲートを先に登録する。ゲートにはパス単位の使い分けが無い
+- 出典: https://docs.rs/crate/fandhe-backend-plugin-jwt/0.5.0/source/src/gate.rs
+- 出典: https://docs.rs/crate/fandhe-backend-plugin-jwt/0.5.0/source/src/auth.rs

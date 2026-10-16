@@ -41,3 +41,5 @@ fn main() {
 - TLS はリバースプロキシで終端する前提（`Secure` は外せない）。`SameSite` を変えたい場合は `SetCookie::session_with` に `SessionSameSite` を渡す（`SameSite=None` は型で排除される）
 - `Response::see_other` は構築時検証済みの `SameOriginLocation` のみを受け取るため、オープンリダイレクトとヘッダ注入が型で防がれ、失敗しない。`//evil.com` のような値は `SameOriginLocation::new` が `Err` を返す
 - 実際のレスポンスへ Cookie を付与するには `Response::with_set_cookie(cookie)` を使う
+- 出典: https://docs.rs/crate/fandhe-backend-http/0.5.0/source/src/cookie.rs
+- 出典: https://docs.rs/crate/fandhe-backend-http/0.5.0/source/src/response.rs

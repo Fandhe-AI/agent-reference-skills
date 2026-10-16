@@ -49,3 +49,5 @@ fn main() {
 - 除外パス（`exempt_path`）は完全一致のみ。`/token?x=1` は除外されるが、`/token/`・`/tok%65n` は除外されず検査を受ける
 - `allow_origin` はブラウザがシリアライズする形（小文字 scheme・小文字ホスト・既定ポート省略・パスなし）でなければ `build()` が `Err` を返す
 - 登録順は許可/拒否の結論には影響しない（複数ゲートは AND 結合）。CSRF を先にすると、送信元検査に落ちた要求が資格情報を評価するゲートの副作用（キャッシュ書き込み・監査等）へ届かない
+- 出典: https://docs.rs/crate/fandhe-backend-plugin-csrf/0.5.0/source/src/lib.rs
+- 出典: https://docs.rs/crate/fandhe-backend-plugin-csrf/0.5.0/source/src/gate.rs
