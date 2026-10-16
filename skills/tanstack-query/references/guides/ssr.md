@@ -20,7 +20,7 @@ Full Next.js pages router example:
 
 ```tsx
 // pages/posts.tsx
-import { dehydrate, HydrationBoundary, QueryClient, useQuery } from '@tanstack/react-query'
+import { dehydrate, HydrationBoundary, noop, QueryClient, useQuery } from '@tanstack/react-query'
 
 export async function getStaticProps() {
   const queryClient = new QueryClient()
@@ -61,6 +61,7 @@ function Posts(props) {
 - `dehydrate(...)` only includes **successful** queries by default; use `shouldDehydrateQuery` to include failed ones.
 - Custom SSR setups must escape serialized state to avoid XSS (`JSON.stringify` alone is unsafe) — use `serialize-javascript` or `devalue`.
 - Server `gcTime` defaults to `Infinity` (disables manual GC; memory clears when the request ends). Avoid `gcTime: 0` — it can cause hydration errors; use `2 * 1000` minimum if you need a short value.
+- For TanStack Start, upstream points to the Start + TanStack Query guide (https://tanstack.com/start/latest/docs/framework/react/guide/tanstack-query) for SSR integration, request-scoped QueryClient setup, and a mutation invalidation example. See the tanstack-start skill.
 - For advanced patterns (streaming, Server Components, Next.js app router), see [advanced-ssr.md](./advanced-ssr.md).
 
 ## Related

@@ -25,6 +25,7 @@ const server = environmentManager.isServer()
 
 - Particularly useful for runtimes that are not traditional browser/server environments (e.g. extension workers)
 - Default behavior can be restored by resetting to query-core's native `isServer` function: `environmentManager.setIsServer(() => isServer)`
+- Deprecated: the standalone `isServer` constant export; upstream says "use `environmentManager.isServer()` instead."
 - Global scope means the override applies across the entire application
 
 ## Related

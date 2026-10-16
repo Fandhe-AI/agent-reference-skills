@@ -29,6 +29,7 @@ function App() {
 - Must wrap the application, or the relevant portion, where query management functionality is needed
 - Establishes the context necessary for all React Query hooks to operate within the component tree
 - Only one `QueryClientProvider` is typically needed per application
+- `QueryClientContext` (`Context<QueryClient | undefined>`) is exported. It is the context `useQueryClient` reads from; `QueryClientProvider` is the normal way to set it
 
 ## Related
 

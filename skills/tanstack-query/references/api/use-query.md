@@ -45,6 +45,7 @@ const result = useQuery({
 | `meta` | `Record<string, unknown>` | Additional metadata stored on the cache entry |
 | `queryKeyHashFn` | `(queryKey: QueryKey) => string` | Custom key hashing function |
 | `notifyOnChangeProps` | `string[]` | Specifies which returned properties trigger a re-render |
+| `persister` | `(queryFn, context, query) => TQueryFnData \| Promise<TQueryFnData>` | Experimental. Persists the result of a query to an external storage, bypassing the need to actually call the `queryFn`. Useful for persisting a query's data across e.g. server/client boundaries |
 
 ## Returns
 
@@ -61,6 +62,7 @@ const result = useQuery({
 | `fetchStatus` | `'fetching' \| 'paused' \| 'idle'` | Current fetch activity |
 | `isFetching` / `isPaused` | `boolean` | Derived from `fetchStatus` |
 | `isLoading` | `boolean` | `true` whenever the first fetch for a query is in-flight |
+| `isInitialLoading` | `boolean` | Deprecated. `isInitialLoading` is being deprecated in favor of `isLoading` and will be removed in the next major version |
 | `isRefetching` | `boolean` | `true` whenever a background refetch is in-flight |
 | `isFetched` / `isFetchedAfterMount` | `boolean` | Fetch completion indicators |
 | `isStale` | `boolean` | `true` if invalidated or older than `staleTime` |

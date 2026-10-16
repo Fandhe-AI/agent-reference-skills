@@ -55,6 +55,7 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 - Set `QueryClient`'s `gcTime` to the same value or higher than `maxAge`
 - Related standalone functions: `persistQueryClientSave` (manual save), `persistQueryClientSubscribe` (auto-persist on cache change, returns unsubscribe), `persistQueryClientRestore` (rehydrate saved cache)
 - `PersistQueryClientProvider` replaces `QueryClientProvider` and manages subscription lifecycle, prevents race conditions during restoration, and delays query fetching until restoration completes
+- With `PersistQueryClientProvider`, the `useIsRestoring` hook can be used alongside it to check if a restore is currently in progress; `useQuery` and friends also check this internally to avoid race conditions between the restore and mounting queries
 - Custom persisters implement the `Persister` interface (`persistClient`, `restoreClient`, `removeClient`) — e.g. an IndexedDB-backed persister for native type support beyond Web Storage's string-only model
 
 ## Related
@@ -62,3 +63,4 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 - [createSyncStoragePersister](./create-sync-storage-persister.md)
 - [createAsyncStoragePersister](./create-async-storage-persister.md)
 - [createPersister](./create-persister.md)
+- [useIsRestoring](../api/use-is-restoring.md)

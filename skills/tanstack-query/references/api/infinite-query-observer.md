@@ -21,10 +21,6 @@ const unsubscribe = observer.subscribe((result) => {
 })
 ```
 
-## Options / Props
-
-Options match those provided by the `useInfiniteQuery` hook, including `queryKey`, `queryFn`, `getNextPageParam`, and `getPreviousPageParam`.
-
 ## Methods
 
 | Name | Description |
@@ -33,6 +29,7 @@ Options match those provided by the `useInfiniteQuery` hook, including `queryKey
 
 ## Notes
 
+- Options match those provided by the `useInfiniteQuery` hook, including `queryKey`, `queryFn`, `getNextPageParam`, and `getPreviousPageParam`
 - Complete option documentation references the `useInfiniteQuery` API; the observer has feature parity with the hook implementation
 
 ## Related

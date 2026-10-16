@@ -45,6 +45,7 @@ function onAppStateChange(status) {
 
 - `focusManager.setEventListener` replaces the previously set handler entirely.
 - Manage focus state manually with `focusManager.setFocused(true | false | undefined)` (`undefined` restores default detection).
+- Troubleshooting: if stale queries do not refetch when you return to a tab, check whether **Emulate a focused page** is enabled in Chrome DevTools (Rendering panel). It keeps `document.visibilityState` set to `visible` and prevents `visibilitychange` events, which TanStack Query uses for its default focus handling. Disable it, then switch to another tab and return to test.
 
 ## Related
 

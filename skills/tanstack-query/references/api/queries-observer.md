@@ -19,15 +19,15 @@ const unsubscribe = observer.subscribe((result) => {
 })
 ```
 
-## Options / Props
-
-The options for the `QueriesObserver` are exactly the same as those of `useQueries`.
-
 ## Methods
 
 | Name | Description |
 |------|-------------|
 | `subscribe(callback)` | Registers a callback function that executes when query results change. Returns an unsubscribe function to terminate the subscription |
+
+## Notes
+
+- The options for the `QueriesObserver` are exactly the same as those of `useQueries`
 
 ## Related
 

@@ -1,4 +1,4 @@
-# Guides
+# guides
 
 | Name | Description | Path |
 |------|-------------|------|

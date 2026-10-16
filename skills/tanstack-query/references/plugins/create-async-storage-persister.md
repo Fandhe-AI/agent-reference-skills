@@ -28,13 +28,14 @@ persistQueryClient({ queryClient, persister })
 | `storage` | `AsyncStorage` | — | Required storage implementation with get/set/remove operations |
 | `key` | string | `REACT_QUERY_OFFLINE_CACHE` | Cache storage identifier |
 | `throttleTime` | number | 1000 | Disk write delay in ms |
-| `serialize` | function | `JSON.stringify` | Data encoding function |
-| `deserialize` | function | `JSON.parse` | Data decoding function |
+| `serialize` | `(client: PersistedClient) => MaybePromise<string>` | `JSON.stringify` | Data encoding function |
+| `deserialize` | `(cachedString: string) => MaybePromise<PersistedClient>` | `JSON.parse` | Data decoding function |
 | `retry` | function | — | Async error-recovery strategy |
 
 ## Notes
 
 - Storages that read/write synchronously, like `window.localStorage`, also adhere to the `AsyncStorage` interface and work with this persister
+- The serialize and deserialize callbacks can return their results synchronously or asynchronously as promises.
 - Supports the same predefined retry handlers as the sync storage persister
 
 ## Related

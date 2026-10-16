@@ -1,7 +1,5 @@
 # plugins
 
-`kubb` は TanStack Query 用のフックコード生成ツールであり、本カテゴリ（ESLint ルール・永続化プラグイン）の対象外。
-
 | Name | Description | Path |
 | --- | --- | --- |
 | eslint-plugin-query | ESLint plugin overview and setup for TanStack Query | [eslint-plugin-query.md](./eslint-plugin-query.md) |
