@@ -48,7 +48,7 @@ test('retries after an initial failure', async () => {
 
   vi.when(fetchInstance)
     .calledWith('/data/config.json')
-    .thenResolve(new Response('{ debug: true }'))
+    .thenResolve(new Response(JSON.stringify({ debug: true })))
     // ↳ indefinite fallback
     .thenReject(new Error('network error'), { times: 1 })
     // ↳ applied first and consumed after one call
@@ -166,6 +166,7 @@ test('without mocked behavior', () => {
 - Indefinite actions (no `times`) satisfy the exhaustion check after being used at least once.
 - `vi.isWhenChain` is referenced in the official See also list.
 - The official stacking example types the spy as `() => Promise<unknown>` while calling `calledWith('/data/config.json')`; this page uses `(url: string) => Promise<Response>` to match the argument.
+- The upstream example passes `'{ debug: true }'` (not valid JSON) to `new Response()`; this page uses `JSON.stringify({ debug: true })` so `Response.json()` parses it.
 - Source: https://vitest.dev/guide/recipes/conditional-mocking (Vitest v5.0.5)
 
 ## Related

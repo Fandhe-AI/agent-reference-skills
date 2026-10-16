@@ -83,7 +83,7 @@ declare module 'vitest/browser' {
 
 | Name | Type | Description |
 |------|------|-------------|
-| name | string \| RegExp | Accessible name; case-insensitive substring by default |
+| name | string \| RegExp | Accessible name; matched exactly (case-sensitive, whole-string) by default because `browser.locators.exact` defaults to `true`; use `exact: false` or a RegExp for case-insensitive substring matching |
 | exact | boolean | Case-sensitive whole-string match; defaults to `browser.locators.exact`; ignored for RegExp |
 | checked | boolean | `aria-checked` / checkbox state filter |
 | disabled | boolean | Disabled state (inherited) |
@@ -106,6 +106,7 @@ declare module 'vitest/browser' {
 
 ## Notes
 
+- The upstream `name` option text still says matching is case-insensitive substring by default, but in v5 `browser.locators.exact` defaults to `true` (see migration-v5), so exact matching applies unless `exact: false` or a RegExp is used.
 - `getBy*` return locators, not DOM elements; chain (`.getBy*`, `.filter`, `.nth`) instead of testing-library's `within(...)`. All action methods are async and must be awaited (tests fail if not, since Vitest 3).
 - `getByRole` matches roles by string equality without ARIA role hierarchy (`checkbox` does not match `switch`). Prefer `getByRole` over `getByText` for interactive elements; use `getByTestId` last (attribute configurable via `browser.locators.testIdAttribute`).
 - `getByTitle` cannot find `title` elements inside SVG. `getByText` normalizes whitespace even with `exact`.
