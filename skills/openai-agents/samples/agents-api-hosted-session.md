@@ -123,3 +123,4 @@ if __name__ == "__main__":
 - The API key needs `api.agents.read` and `api.agents.write` for session operations, plus `api.responses.write` for model inference. Keep the key outside the agent's sandbox.
 - `agent.session.turn.completed` does not guarantee every tool succeeded, and `agent.session.idle` alone does not mean success. Subscribe to the event stream before sending follow-up input to avoid missing early events.
 - Save any files you need before deleting the session. `environment.type: "none"` skips the sandbox. Step 2 (stream helper) is from the sessions events guide and step 3 (follow-up message) from the sessions guide; the quickstart itself links to them.
+- Source: https://developers.openai.com/api/docs/guides/agents-api/quickstart, https://developers.openai.com/api/docs/guides/agents-api/sessions/events, https://developers.openai.com/api/docs/guides/agents-api/sessions (fetched 2026-10).

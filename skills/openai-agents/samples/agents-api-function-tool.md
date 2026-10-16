@@ -76,3 +76,4 @@ await client.beta.agents.sessions.events.create(sessionId, {
 - The API key needs `api.agents.read`, `api.agents.write`, and `api.responses.write`.
 - Copy `turn_id` and `call_id` from the pending action. For an error, send `success: false` with an `error` message instead of `output`. Serialize JSON objects to strings.
 - Your handler runs in your own code; attaching an environment to a session does not run function tools there. `get_customer` is your own function (not defined here). Keep results under 4 MiB (4,194,304 bytes).
+- Source: https://developers.openai.com/api/docs/guides/agents-api/tools/functions (fetched 2026-10).
