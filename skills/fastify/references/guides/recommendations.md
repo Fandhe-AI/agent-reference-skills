@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Recommendations/
 
 # Recommendations
 
-Target: Fastify v5.12.1. Production recommendations: reverse proxy usage, performance pitfalls, Kubernetes probes, capacity planning, and running multiple instances.
+Target: Fastify v5.12.7. Production recommendations: reverse proxy usage, performance pitfalls, Kubernetes probes, capacity planning, and running multiple instances.
 
 ## Signature / Usage
 

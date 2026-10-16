@@ -1,6 +1,6 @@
 # request-reply
 
-対象 Fastify v5.12.1
+対象 Fastify v5.12.7
 
 Node.js ネイティブの HTTP サーバーである Fastify の `Request` / `Reply` オブジェクトのリファレンス。`hono` / `go-echo` / `fandhe-backend` の同名概念とは別の Fastify 固有 API。
 

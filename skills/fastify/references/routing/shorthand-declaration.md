@@ -16,6 +16,7 @@ fastify.put(path, [options], handler)
 fastify.delete(path, [options], handler)
 fastify.options(path, [options], handler)
 fastify.patch(path, [options], handler)
+fastify.query(path, [options], handler)
 ```
 
 ```js
@@ -61,6 +62,8 @@ fastify.get('/', opts)
 
 ## Notes
 
+- The `QUERY` method (RFC 10008) requires a `Content-Type` header.
+- The `fastify.query` shorthand was already implemented in `fastify.js` at v5.12.1 and was only documented from v5.12.6 (PR #7094).
 - Specifying the handler in both `options` and as the third parameter to the shortcut method throws a duplicate `handler` error.
 
 ## Related

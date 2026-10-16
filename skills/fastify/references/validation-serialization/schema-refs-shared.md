@@ -36,7 +36,7 @@ fastify.post('/', {
 | `{ $ref: 'http://url.com/sh.json#/definitions/foo' }` | `definitions.foo` inside that shared schema |
 | `{ $ref: 'http://url.com/sh.json#foo' }` | `$id: '#foo'` inside that shared schema |
 
-## Retrieving shared schemas
+### Retrieving shared schemas
 
 ```js
 fastify.addSchema({ $id: 'schemaId', type: 'object', properties: { hello: { type: 'string' } } })
@@ -60,7 +60,7 @@ fastify.register((instance, opts, done) => {
 })
 ```
 
-## JSON Schema support matrix
+### JSON Schema support matrix
 
 | Use Case | Validator | Serializer |
 | --- | --- | --- |

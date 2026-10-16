@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Reference/Lifecycle/
 
 # Lifecycle
 
-Target: Fastify v5.12.1. Internal request-processing flow of Fastify — how a request moves through routing, hooks, parsing, validation, and handler execution before the response is sent.
+Target: Fastify v5.12.7. Internal request-processing flow of Fastify — how a request moves through routing, hooks, parsing, validation, and handler execution before the response is sent.
 
 ## Signature / Usage
 
@@ -90,7 +90,7 @@ When `fastify.close()` is called, the server goes through a graceful shutdown se
 
 ## Notes
 
-- This diagram is not JS-executable code; it documents the v5.12.1 internal request flow as published in the official docs.
+- This diagram is not JS-executable code; it documents the v5.12.7 internal request flow as published in the official docs.
 
 ## Related
 

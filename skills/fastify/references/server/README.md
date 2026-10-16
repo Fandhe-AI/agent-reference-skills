@@ -1,6 +1,6 @@
 # server
 
-対象 Fastify v5.12.1
+対象 Fastify v5.12.7。
 
 | Name | Description | Path |
 |------|-------------|------|

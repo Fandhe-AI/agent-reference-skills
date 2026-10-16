@@ -23,7 +23,7 @@ To get patches for a specific minor release while avoiding automatic updates to 
 | Version | Released | LTS ends |
 |---------|----------|----------|
 | 4.0.0 | June 2022 | June 2025 |
-| 5.0.0 | September 2024 | TBD |
+| 5.0.0 | September 2024 | Not yet announced (upstream LTS table lists the end date as undetermined) |
 
 ## Notes
 

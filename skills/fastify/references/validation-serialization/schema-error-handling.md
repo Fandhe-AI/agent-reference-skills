@@ -35,7 +35,7 @@ Default failure payload:
 | `attachValidation` | `boolean` | Route option; when `true`, validation errors are attached to `request.validationError` instead of being sent automatically |
 | `schemaErrorFormatter` | `(errors, dataVar) => Error` | Fastify factory option / `setSchemaErrorFormatter` — builds the human-readable error message |
 
-## `attachValidation`
+### `attachValidation`
 
 ```js
 fastify.post('/', { schema, attachValidation: true }, function (req, reply) {
@@ -55,7 +55,7 @@ fastify.post('/', { schema, attachValidation: true }, function (req, reply) {
 - `code` — `FST_ERR_VALIDATION`
 - `statusCode` — `400`
 
-## `schemaErrorFormatter`
+### `schemaErrorFormatter`
 
 ```js
 const fastify = Fastify({

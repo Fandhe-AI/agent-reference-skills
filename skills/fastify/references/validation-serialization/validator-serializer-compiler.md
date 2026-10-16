@@ -25,7 +25,7 @@ fastify.setSerializerCompiler(({ schema, method, url, httpStatus, contentType })
 | `validatorCompiler({ schema, method, url, httpPart })` | function | Returns a validation function for the given schema/route part |
 | `serializerCompiler({ schema, method, url, httpStatus, contentType })` | function | Returns a `data => string` serializer for the given schema/status/content type |
 
-## Using other validation libraries (joi)
+### Using other validation libraries (joi)
 
 ```js
 const Joi = require('joi')
@@ -53,7 +53,7 @@ fastify.post('/the/url', {
 }, handler)
 ```
 
-## Using other validation libraries (yup)
+### Using other validation libraries (yup)
 
 ```js
 const yup = require('yup')
@@ -86,6 +86,7 @@ fastify.post('/the/url', {
 ## Notes
 
 - Custom validators **must return** `{ value }` on success or `{ error }` on failure — never throw — so they work correctly with both sync and async `preValidation` hooks and avoid unhandled promise rejections.
+- The `{ value, error }` result convention applies to **synchronous** validator compilers only. An **asynchronous** validator (a compiler that returns a promise, including an Ajv `$async` schema) is treated as pass/fail only: its resolved value is not unwrapped as `{ value, error }`. An async validator must signal failure by rejecting (throwing) and cannot coerce the request part through a resolved `value`. This prevents a payload carrying `value` or `error` keys from replacing the request part or injecting a validation error (per the `[!IMPORTANT]` block in `Validation-and-Serialization.md` v5.12.7).
 - All validation errors have a `.statusCode` property set to `400`, which the default error handler uses to set the response status.
 - Fastify's error messages (via `schemaErrorFormatter`) are tuned for `ajv`; using a different validation library may produce odd or incomplete messages unless the compiler's errors mimic `ajv`'s shape, or a custom `errorHandler` is used (see Schema Error Handling).
 - For per-`httpPart` Ajv customization (`schemaController` / bucket), see [Ajv Configuration](./ajv-configuration.md) and the Server reference's schema controller section (same skill, `server` category).

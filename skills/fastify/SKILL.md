@@ -10,7 +10,7 @@ user-invocable: false
 
 # Fastify API リファレンス
 
-Fastify — Node.js ネイティブの高速 HTTP サーバーフレームワーク（対象バージョン v5.12.1）。
+Fastify — Node.js ネイティブの高速 HTTP サーバーフレームワーク（対象バージョン v5.12.7）。
 encapsulation されたプラグインツリー・decorators・ライフサイクルフック・JSON Schema ベースの
 validation/serialization を中核とする API 設計・実装時に参照する。
 
@@ -167,9 +167,9 @@ skills/fastify/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
-| プロジェクト初期セットアップ、最小サーバー起動、CLI 利用、警告コード | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| プロジェクト初期セットアップ、最小サーバー起動、CLI 利用、警告コード (FSTWRN / FSTDEP / FSTSEC) | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | ファクトリオプション、find-my-way ルーターオプション、インスタンスライフサイクル、`fastify.inject` | server | [references/server/README.md](references/server/README.md) |
-| ルート宣言、URL パラメータ、async/await ハンドラー、バージョニング制約、HTTP/2 | routing | [references/routing/README.md](references/routing/README.md) |
+| ルート宣言 (QUERY メソッド `fastify.query` 含む)、URL パラメータ、async/await ハンドラー、バージョニング制約、HTTP/2 | routing | [references/routing/README.md](references/routing/README.md) |
 | `Request` プロパティ、`Reply` メソッド、`reply.send`、リダイレクト、hijack/trailers | request-reply | [references/request-reply/README.md](references/request-reply/README.md) |
 | `onRequest` 等のリクエストフック、アプリケーションフック、フックスコープ、diagnostics_channel | hooks-lifecycle | [references/hooks-lifecycle/README.md](references/hooks-lifecycle/README.md) |
 | `fastify.register`、encapsulation、`fastify-plugin`、decorators、Express 互換 middleware | plugins | [references/plugins/README.md](references/plugins/README.md) |

@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Reference/Middleware/
 
 # Middleware
 
-As of Fastify v3.0.0, Express-style middleware is not supported out of the box and requires an external plugin such as `@fastify/express` or `@fastify/middie`. Target version: v5.12.1.
+As of Fastify v3.0.0, Express-style middleware is not supported out of the box and requires an external plugin such as `@fastify/express` or `@fastify/middie`. Target version: v5.12.7.
 
 ## Signature / Usage
 

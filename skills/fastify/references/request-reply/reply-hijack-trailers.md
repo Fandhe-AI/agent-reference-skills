@@ -57,7 +57,7 @@ reply.hasTrailer('server-timing') // false
 
 ## Notes
 
-- `Transfer-Encoding: chunked` is automatically added once `.trailer()` is used — a hard requirement for trailers in Node.js.
+- For HTTP/1 responses, `Transfer-Encoding: chunked` is added once a trailer is used. HTTP/2 does not use chunked transfer encoding and sends trailers through its native trailing headers support.
 - Any error passed to a trailer's `done` callback is ignored; enable `debug` level logging to inspect it.
 - If `reply.raw` is used to send the response, `onResponse` hooks still execute.
 - **v4 → v5** (see Migration Guide V5): `reply.getResponseTime()` was already deprecated in v4 (`FSTDEP20`) — use the `reply.elapsedTime` property instead:

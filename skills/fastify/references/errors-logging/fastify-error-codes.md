@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Reference/Errors/
 
 # Fastify Error Codes
 
-All `FST_ERR_*` error codes thrown by Fastify's core (as of v5.12.1), exposed via the `errorCodes` export for `instanceof` matching in a custom error handler.
+All `FST_ERR_*` error codes thrown by Fastify's core (as of v5.12.7), exposed via the `errorCodes` export for `instanceof` matching in a custom error handler.
 
 ## Signature / Usage
 
@@ -16,7 +16,7 @@ import { errorCodes } from 'fastify'
 const errorCodes = require('fastify').errorCodes
 ```
 
-## Error Codes
+### Error Codes
 
 | Code | Description | How to solve | Discussion |
 | --- | --- | --- | --- |
@@ -98,7 +98,7 @@ const errorCodes = require('fastify').errorCodes
 | `FST_ERR_ROUTE_HANDLER_TIMEOUT_OPTION_NOT_INT` | `handlerTimeout` option must be a positive integer. | Use a positive integer for the `handlerTimeout` option. | - |
 | `FST_ERR_ROUTE_REWRITE_NOT_STR` | `rewriteUrl` needs to be of type `string`. | Use a string for the `rewriteUrl`. | [#4554](https://github.com/fastify/fastify/pull/4554) |
 | `FST_ERR_ROUTE_MISSING_CONTENT_TYPE` | `Content-Type` header is required for the request. | Send the request with a `Content-Type` header. | [#6832](https://github.com/fastify/fastify/pull/6832) |
-| `FST_ERR_ROUTE_MISSING_CONTENT` | Body is required for the request. | Send the request with a payload. | [#6832](https://github.com/fastify/fastify/pull/6832) |
+| `FST_ERR_ROUTE_MISSING_CONTENT` | Body is required for the request. No longer thrown, will be removed in v6. | - | [#6832](https://github.com/fastify/fastify/pull/6832) |
 | `FST_ERR_REOPENED_CLOSE_SERVER` | Fastify has already been closed and cannot be reopened. | - | [#2415](https://github.com/fastify/fastify/pull/2415) |
 | `FST_ERR_REOPENED_SERVER` | Fastify is already listening. | - | [#2415](https://github.com/fastify/fastify/pull/2415) |
 | `FST_ERR_PLUGIN_VERSION_MISMATCH` | Installed Fastify plugin mismatched expected version. | Use a compatible version of the plugin. | [#2549](https://github.com/fastify/fastify/pull/2549) |
@@ -117,11 +117,11 @@ const errorCodes = require('fastify').errorCodes
 
 ## Notes
 
-- List reflects the `FST_ERR_*` codes documented on `docs/Reference/Errors.md` at tag `v5.12.1`. Codes are added/removed between minor versions; re-run `/update-skill fastify check` if a code used in application code is missing here.
+- List reflects the `FST_ERR_*` codes documented on `docs/Reference/Errors.md` at tag `v5.12.7`. Codes are added/removed between minor versions; re-run `/update-skill fastify check` if a code used in application code is missing here.
 - Every code is a subclass of `Error` reachable via `Fastify.errorCodes.<CODE_NAME>` for `instanceof` matching (see [error-handling](./error-handling.md)).
 - Several codes are logger-configuration guards introduced for the v5 `logger` / `loggerInstance` split (`FST_ERR_LOG_INVALID_LOGGER_INSTANCE`, `FST_ERR_LOG_INVALID_LOGGER_CONFIG`, `FST_ERR_LOG_LOGGER_AND_LOGGER_INSTANCE_PROVIDED`) — see [logging](./logging.md) `## Notes` for the v4 → v5 change.
 - `FST_ERR_ERROR_HANDLER_ALREADY_SET`'s upstream "How to solve" text on `docs/Reference/Errors.md` ("By default, `setErrorHandler` can only be called once per encapsulation context") does not match `docs/Reference/Server.md`'s `allowErrorHandlerOverride` section, which states the factory default is `true` (multiple calls allowed) and the restrictive behavior only applies when it is explicitly set to `false`. The table cell above has been corrected to match the verified `Server.md` default rather than the outdated `Errors.md` wording.
-- The upstream `Errors.md` table (v5.12.1) lists the descriptions of `FST_ERR_CTP_EMPTY_JSON_BODY` and `FST_ERR_CTP_INVALID_JSON_BODY` swapped; this page follows the messages defined in `lib/errors.js`.
+- The upstream `Errors.md` table (v5.12.1 – v5.12.7) lists the descriptions of `FST_ERR_CTP_EMPTY_JSON_BODY` and `FST_ERR_CTP_INVALID_JSON_BODY` swapped; this page follows the messages defined in `lib/errors.js`.
 
 ## Related
 

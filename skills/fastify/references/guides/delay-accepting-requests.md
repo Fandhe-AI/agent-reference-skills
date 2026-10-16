@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Delay-Accepting-Requests/
 
 # Delay Accepting Requests
 
-Target: Fastify v5.12.1. A pattern for rejecting requests immediately, with meaningful context, while the server is not yet ready to serve them (e.g. waiting for an OAuth handshake with an external provider to complete).
+Target: Fastify v5.12.7. A pattern for rejecting requests immediately, with meaningful context, while the server is not yet ready to serve them (e.g. waiting for an OAuth handshake with an external provider to complete).
 
 ## Signature / Usage
 

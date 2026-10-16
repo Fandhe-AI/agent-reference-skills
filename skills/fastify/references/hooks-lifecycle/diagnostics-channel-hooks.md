@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Reference/Hooks/
 
 # Diagnostics Channel Hooks
 
-Target: Fastify v5.12.1. Fastify publishes events on Node's `node:diagnostics_channel` for instrumentation/tracing packages, independent of `addHook`.
+Target: Fastify v5.12.7. Fastify publishes events on Node's `node:diagnostics_channel` for instrumentation/tracing packages, independent of `addHook`.
 
 ## Signature / Usage
 

@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Benchmarking/
 
 # Benchmarking
 
-Target: Fastify v5.12.1. Measures how a change affects application performance, including comparisons across branches and Node.js versions.
+Target: Fastify v5.12.7. Measures how a change affects application performance, including comparisons across branches and Node.js versions.
 
 ## Signature / Usage
 

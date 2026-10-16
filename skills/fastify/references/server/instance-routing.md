@@ -34,6 +34,7 @@ fastify.ready(() => {
 ## Notes
 
 - v4 → v5: non-standard HTTP methods (`PROPFIND`, `PROPPATCH`, `MKCOL`, `COPY`, `MOVE`, `LOCK`, `UNLOCK`, `TRACE`, `SEARCH`) were removed from the default method set; restore them per-instance with `addHttpMethod()`. Calling `addHttpMethod` for an existing method without `overrideExisting: true` emits deprecation warning `FSTDEP025` in v5 and will throw in v6.
+- Types only (v5.12.6, PR #7048 "types: restrict route lookup methods"): in `types/instance.d.ts` the `method` of the `hasRoute` / `findRoute` options is a single `HTTPMethods`, no longer `RouteOptions['method']` (`HTTPMethods | HTTPMethods[]`). Runtime documentation in `Server.md` is unchanged.
 - v4 → v5: `hasRoute()` now matches `find-my-way`'s own matching behavior — the route definition passed must match how the route was originally registered (e.g. a regex parameter pattern), not an arbitrary concrete path.
 - v4 → v5: `getDefaultRoute` and `setDefaultRoute` instance methods were removed (deprecated as `FSTDEP014` in v4). Use the `routerOptions.defaultRoute` factory/router option instead.
 - `printRoutes({ method })` reflects the true internal router structure and is safe for debugging; the default merged-tree output across all methods is not.

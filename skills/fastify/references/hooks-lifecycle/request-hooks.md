@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Reference/Hooks/
 
 # Request/Reply Hooks
 
-Target: Fastify v5.12.1. Ten hooks registered via `fastify.addHook` that run at fixed points of the request/response lifecycle, in order of execution: `onRequest`, `preParsing`, `preValidation`, `preHandler`, `preSerialization`, `onError`, `onSend`, `onResponse`, `onTimeout`, `onRequestAbort`.
+Target: Fastify v5.12.7. Ten hooks registered via `fastify.addHook` that run at fixed points of the request/response lifecycle, in order of execution: `onRequest`, `preParsing`, `preValidation`, `preHandler`, `preSerialization`, `onError`, `onSend`, `onResponse`, `onTimeout`, `onRequestAbort`.
 
 Hooks are affected by Fastify's encapsulation and can be scoped to selected routes — see `hook-scope.md`. The `done` callback is not available when using `async`/`await` or returning a `Promise`; invoking `done` in that situation may cause duplicate handler invocation.
 

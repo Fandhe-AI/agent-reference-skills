@@ -1,10 +1,10 @@
 ---
-source: https://raw.githubusercontent.com/fastify/fastify/v5.12.1/docs/Guides/Benchmarking.md
+source: https://raw.githubusercontent.com/fastify/fastify/v5.12.7/docs/Guides/Benchmarking.md
 ---
 
 # benchmark
 
-Fastify 本体のベンチマーク実行コマンド集（v5.12.1 時点の Guides/Benchmarking.md 由来）。Autocannon（HTTP ベンチマーク）・Branch-comparer（複数ブランチ比較）・Concurrently・Npx を使用する。
+Fastify 本体のベンチマーク実行コマンド集（v5.12.7 時点の Guides/Benchmarking.md 由来）。Autocannon（HTTP ベンチマーク）・Branch-comparer（複数ブランチ比較）・Concurrently・Npx を使用する。
 
 ## 現在のブランチでベンチマークを実行
 

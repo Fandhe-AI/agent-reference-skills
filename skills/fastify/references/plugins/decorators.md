@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Reference/Decorators/
 
 # Decorators
 
-The decorators API customizes core Fastify objects, such as the server instance and any request and reply objects used during the HTTP request lifecycle, by attaching properties (functions, plain objects, native types) to them. Target version: v5.12.1.
+The decorators API customizes core Fastify objects, such as the server instance and any request and reply objects used during the HTTP request lifecycle, by attaching properties (functions, plain objects, native types) to them. Target version: v5.12.7.
 
 This API is *synchronous*. To register an asynchronous decoration, use the `register` API with `fastify-plugin`.
 

@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Migration-Guide-V4/
 
 # Migration Guide V4
 
-Target: Fastify v5.12.1 (historical guide for the v3 -> v4 migration). Fix all v3 deprecation warnings before upgrading — every deprecated v3 API was removed in v4. Official codemods are available for the largest changes.
+Target: Fastify v5.12.7 (historical guide for the v3 -> v4 migration). Fix all v3 deprecation warnings before upgrading — every deprecated v3 API was removed in v4. Official codemods are available for the largest changes.
 
 ## Signature / Usage
 
@@ -13,7 +13,7 @@ npx codemod@latest fastify/4/migration-recipe
 # applies: remove-app-use, reply-raw-access, wrap-routes-plugin, await-register-calls
 ```
 
-## Breaking Changes
+### Breaking Changes
 
 | Change | v3 | v4 |
 | --- | --- | --- |
@@ -25,7 +25,7 @@ npx codemod@latest fastify/4/migration-recipe
 | Route registration | asynchronous | synchronous; `onRoute` hooks in a plugin must be wrapped in a nested plugin or the outer `register()` must be awaited |
 | Optional URL parameters | implicit optional params matched | must be declared explicitly (`'/posts/:id?'`) |
 
-## Non-Breaking Changes
+### Non-Breaking Changes
 
 - `.listen()` variadic signature (`fastify.listen(8000, '127.0.0.1', 511)` etc.) deprecated in favor of `fastify.listen({ port })` — this deprecation was fully removed later in [migration-v5.md](./migration-v5.md)
 - Ajv upgraded to v8: `type` keywords with multiple non-null types are now strict-mode errors; replace `{ type: ['object', 'array'] }` with `anyOf: [{ type: 'array' }, { type: 'object' }]`

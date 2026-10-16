@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Plugins-Guide/
 
 # The hitchhiker's guide to plugins
 
-Fastify was built to be an extremely modular system: everything in Fastify is a plugin, registered through a single `register` API that creates an encapsulation model. Target version: v5.12.1.
+Fastify was built to be an extremely modular system: everything in Fastify is a plugin, registered through a single `register` API that creates an encapsulation model. Target version: v5.12.7.
 
 ## Signature / Usage
 

@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Reference/Encapsulation/
 
 # Encapsulation
 
-A fundamental feature of Fastify is the "encapsulation context." It governs which decorators, registered hooks, and plugins are available to routes. Target version: v5.12.1.
+A fundamental feature of Fastify is the "encapsulation context." It governs which decorators, registered hooks, and plugins are available to routes. Target version: v5.12.7.
 
 ## Signature / Usage
 
@@ -76,7 +76,7 @@ fastify.register(async function publicContext (childServer) {
 fastify.listen({ port: 8000 })
 ```
 
-## Sharing Between Contexts
+### Sharing Between Contexts
 
 Each context inherits _only_ from its parent contexts. Parent contexts cannot access entities within their descendant contexts. Encapsulation can be broken using [fastify-plugin](./fastify-plugin.md), making anything registered in a descendant context available to the parent context:
 

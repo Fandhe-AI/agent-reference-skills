@@ -1,10 +1,10 @@
 ---
-source: https://raw.githubusercontent.com/fastify/fastify/v5.12.1/docs/Guides/Testing.md
+source: https://raw.githubusercontent.com/fastify/fastify/v5.12.7/docs/Guides/Testing.md
 ---
 
 # test
 
-Fastify アプリケーションのテスト実行コマンド集（v5.12.1 時点の Guides/Testing.md 由来）。
+Fastify アプリケーションのテスト実行コマンド集（v5.12.7 時点の Guides/Testing.md 由来）。
 
 ## プロジェクトの初期セットアップ
 

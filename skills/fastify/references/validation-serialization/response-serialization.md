@@ -33,7 +33,7 @@ fastify.post('/the/url', { schema }, handler)
 | `response.default` | object (JSON Schema) | Fallback schema for status codes without a specific entry |
 | `response[statusCode].content` | object | Per-content-type response schema, keyed by MIME type (`*/*` matches any) |
 
-## Per-content-type response schema
+### Per-content-type response schema
 
 ```js
 const schema = {

@@ -1,12 +1,12 @@
 # scripts
 
-fastify-cli 8.0.0 時点（main ブランチ package.json、2026-08-29 取得）のコマンドを収録。Fastify 本体由来のコマンド（test / benchmark）は v5.12.1 タグ pin。
+fastify-cli 8.0.0 時点の README（タグ v8.0.0）のコマンドを収録。Fastify 本体由来のコマンド（test / benchmark）は v5.12.7 タグ pin。
 
 | Name | Description | Path |
 | --- | --- | --- |
-| install | Fastify 本体・fastify-cli のインストールコマンド | [install.md](./install.md) |
-| generate | fastify-cli によるアプリ・プラグインのスキャフォールディング生成 | [generate.md](./generate.md) |
-| dev | fastify-cli `start` によるサーバー起動・開発オプション | [dev.md](./dev.md) |
-| debug | fastify-cli によるルーティング・プラグイン構造の可視化 | [debug.md](./debug.md) |
-| test | Fastify アプリケーションのテスト実行コマンド | [test.md](./test.md) |
-| benchmark | Fastify 本体のベンチマーク実行コマンド | [benchmark.md](./benchmark.md) |
+| benchmark | Fastify v5.12.7 本体のベンチマーク実行コマンド集（Guides/Benchmarking.md 由来） | [benchmark.md](./benchmark.md) |
+| debug | fastify-cli 8.0.0 によるルーティング・プラグイン構造の可視化コマンド集 | [debug.md](./debug.md) |
+| dev | fastify-cli 8.0.0 の `start` コマンドで開発・運用時にサーバーを起動するコマンド集 | [dev.md](./dev.md) |
+| generate | fastify-cli 8.0.0 によるプロジェクト・プラグインのスキャフォールディングコマンド集 | [generate.md](./generate.md) |
+| install | Fastify v5.12.7 本体と fastify-cli 8.0.0 のインストールコマンド集 | [install.md](./install.md) |
+| test | Fastify v5.12.7 アプリケーションのテスト実行コマンド集（Guides/Testing.md 由来） | [test.md](./test.md) |

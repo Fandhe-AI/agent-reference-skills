@@ -1,6 +1,6 @@
 # errors-logging
 
-対象 Fastify v5.12.1。
+対象 Fastify v5.12.7。
 
 Fastify のロガーは Pino そのもの。`logger` / `loggerInstance` / `setChildLoggerFactory` 等の Fastify 側接続 API をここで扱い、Pino 本体の API（transport / serializers / redaction 等）は `pino` スキルを参照。
 

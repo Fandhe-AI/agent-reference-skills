@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Write-Plugin/
 
 # How to write a good plugin
 
-Guide describing what characterizes a quality Fastify plugin, aimed at people writing plugins for the Fastify ecosystem. Target version: v5.12.1.
+Guide describing what characterizes a quality Fastify plugin, aimed at people writing plugins for the Fastify ecosystem. Target version: v5.12.7.
 
 ## Signature / Usage
 

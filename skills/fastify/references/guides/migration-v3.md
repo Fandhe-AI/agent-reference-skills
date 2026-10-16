@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Migration-Guide-V3/
 
 # Migration Guide V3
 
-Target: Fastify v5.12.1 (historical guide for the v2 -> v3 migration). Fix all v2 deprecation warnings before upgrading — every deprecated v2 API was removed in v3.
+Target: Fastify v5.12.7 (historical guide for the v2 -> v3 migration). Fix all v2 deprecation warnings before upgrading — every deprecated v2 API was removed in v3.
 
 ## Signature / Usage
 
@@ -17,7 +17,7 @@ await fastify.register(require('@fastify/express'))
 fastify.use(require('cors')())
 ```
 
-## Breaking Changes
+### Breaking Changes
 
 | Change | v2 | v3 |
 | --- | --- | --- |
@@ -31,7 +31,7 @@ fastify.use(require('cors')())
 | TypeScript generics | 4 positional generics (`Querystring, Params, Headers, Body`) | single object generic (`{ Querystring, Params, Headers, Body }`) |
 | Uncaught sync errors in handlers | crashed the server, bypassing `setErrorHandler` | routed through `setErrorHandler` like async errors |
 
-## Further Additions
+### Further Additions
 
 - Hooks now have consistent `this` context regardless of registration style
 - `request.req` / `reply.res` deprecated in favor of `request.raw` / `reply.raw`

@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Reference/Plugins/
 
 # fastify-plugin
 
-`fastify-plugin` (`fp`) is a separate, official npm package used to tell Fastify not to create a new encapsulation scope when registering a plugin, and to declare metadata about the plugin (name, supported Fastify version range, expected decorators, and dependencies). Target Fastify version: v5.12.1.
+`fastify-plugin` (`fp`) is a separate, official npm package used to tell Fastify not to create a new encapsulation scope when registering a plugin, and to declare metadata about the plugin (name, supported Fastify version range, expected decorators, and dependencies). Target Fastify version: v5.12.7.
 
 ## Signature / Usage
 

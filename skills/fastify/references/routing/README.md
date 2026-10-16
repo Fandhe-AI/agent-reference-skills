@@ -1,6 +1,6 @@
 # routing
 
-対象 Fastify v5.12.1。`Router` / `route` は `hono`（Web Standards JS）・`go-echo`（Go）・`fandhe-backend`（Rust）・`react-router` / `tanstack-router`（クライアント側）とは別物。ここは Fastify の find-my-way ベースのサーバールーティング。
+対象 Fastify v5.12.7。`Router` / `route` は `hono`（Web Standards JS）・`go-echo`（Go）・`fandhe-backend`（Rust）・`react-router` / `tanstack-router`（クライアント側）とは別物。ここは Fastify の find-my-way ベースのサーバールーティング。
 
 | Name | Description | Path |
 |------|-------------|------|
