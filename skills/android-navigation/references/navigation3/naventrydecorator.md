@@ -41,6 +41,20 @@ NavDisplay(
 
 - Use a decorator to create a dependency shared by every `NavEntry`, or to scope an object (e.g. a `ViewModel`) to individual entries. Don't use it to pass a dependency to a single `NavEntry` — pass that directly when constructing the `NavEntry` instead.
 - Order matters: unless a decorator itself provides a `SaveableStateProvider`, put `rememberSaveableStateHolderNavEntryDecorator()` first in the list.
+- Built-in `ResultEventBusNavEntryDecorator` (1.2.0+, `androidx.navigation3.runtime.result`) provides a `ResultEventBus` to every entry through the `LocalResultEventBus` composition local. `rememberResultEventBusNavEntryDecorator(resultEventBus = rememberResultEventBus())` creates and remembers its own bus by default; hoist the bus with `rememberResultEventBus()` to use it outside the decorator hierarchy:
+
+```kotlin
+val resultEventBus = rememberResultEventBus()
+
+NavDisplay(
+    /* ... */
+    entryDecorators = listOf(
+        rememberSaveableStateHolderNavEntryDecorator(),
+        rememberResultEventBusNavEntryDecorator(resultEventBus = resultEventBus)
+    )
+)
+```
+
 - `NavDisplay` calls `rememberDecoratedNavEntries` internally to apply `entryDecorators`; call it directly only when managing multiple back stacks that need independent decorator sets.
 - Package: `androidx.navigation3.runtime` (module `androidx.navigation3:navigation3-runtime`).
 - This is the Android Navigation 3 (Kotlin, `androidx.navigation3`) API — distinct from the same-named SwiftUI / React Router / Next.js navigation API.
@@ -51,3 +65,4 @@ NavDisplay(
 - [rememberViewModelStoreNavEntryDecorator](./rememberviewmodelstorenaventrydecorator.md)
 - [NavDisplay](./navdisplay.md)
 - [NavEntry](./naventry.md)
+- [Return results (ResultEventBus)](./result-event-bus.md)

@@ -49,6 +49,7 @@ val pendingIntent = TaskStackBuilder.create(context).run {
 ## Notes
 
 - With the default `standard` launch mode, incoming implicit deep links are handled automatically; only alternate launch modes (e.g. `singleTop`) require manually calling `handleDeepLink()` from `onNewIntent`.
+- Navigation 2.10.0 changed `handleDeepLink` so that only recognized deep links are handled and all others are ignored. If this breaks an app, consider navigating via deep links defined in the navigation graph. Robolectric tests may need `setPackage` set to a trusted package.
 - `NavController.createDeepLink()` can be used instead of `NavDeepLinkBuilder` when an existing `NavController` instance is available.
 - Explicit deep links (via `PendingIntent`) clear and replace the task back stack with the deep-link destination; implicit deep links opened with `FLAG_ACTIVITY_NEW_TASK` behave the same, while implicit deep links without that flag keep the user on the originating app's task stack (Back returns to the previous app).
 - This is Android deep linking / App Links (Kotlin, `androidx.navigation` and `AndroidManifest.xml`) — distinct from the same-named concept in other skills.

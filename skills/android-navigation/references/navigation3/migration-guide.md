@@ -14,7 +14,7 @@ A single, atomic migration path from `NavController`/`NavHost` (Navigation Compo
 val entryProvider = entryProvider<NavKey> {
     entry<RouteA> { key -> ScreenA(title = "Screen has ID: ${key.id}") }
     entry<RouteB> { ScreenB() }
-    // dialog<RouteD> {...} becomes entry<RouteD> with DialogSceneStrategy metadata:
+    // A dialog<RouteD> destination becomes entry<RouteD> with DialogSceneStrategy metadata:
     entry<RouteD>(metadata = DialogSceneStrategy.dialog()) { ScreenD() }
 }
 

@@ -69,6 +69,19 @@ NavDisplay(
 
 - Per-entry animation overrides are set via `metadata`, using the keys `NavDisplay.TransitionKey`, `NavDisplay.PopTransitionKey`, and `NavDisplay.PredictivePopTransitionKey` — see [navdisplay-animation](./navdisplay-animation.md).
 - If no `SceneStrategy` returns a non-null `Scene`, `NavDisplay` falls back to `SinglePaneSceneStrategy`.
+- Destination lifecycle: `NavDisplay` uses custom `LifecycleOwner`s to cap each `NavEntry`'s lifecycle from Scene-level and Entry-level constraints.
+  - Scene-level, non-overlay scenes: `RESUMED` only when the scene transition has settled and no overlay scene is displayed on top; otherwise capped at `STARTED` (during navigation forward/back, or when covered by an overlay).
+  - Scene-level, overlay scenes (dialogs, bottom sheets): `RESUMED` only for the topmost active overlay; underlying overlays covered by a newer overlay are capped at `STARTED`.
+  - Entry-level: an entry present in the current back stack may reach `RESUMED` (subject to the scene cap); an entry no longer in the back stack (popped but still animating out) is capped at `CREATED`, so exiting entries stop work bound to `RESUMED`/`STARTED`.
+
+| Scenario | Scene-Level Cap | Entry-Level Cap | Effective Cap |
+| --- | --- | --- | --- |
+| Active entry, settled screen (no transitions or overlays) | `RESUMED` | `RESUMED` | `RESUMED` |
+| Active entry, during transition (navigating to or from) | `STARTED` | `RESUMED` | `STARTED` |
+| Active entry, covered by an overlay (for example, a Dialog is open) | `STARTED` | `RESUMED` | `STARTED` |
+| Popped entry, animating out | `STARTED` or `RESUMED` | `CREATED` | `CREATED` |
+
+- 1.2.0 improved predictive back transitions, including predictive back gestures triggered mid-flight during forward animations.
 - Package: `androidx.navigation3.ui` (module `androidx.navigation3:navigation3-ui`).
 - This is the Android Navigation 3 (Kotlin, `androidx.navigation3`) API — distinct from the same-named SwiftUI / React Router / Next.js navigation API.
 

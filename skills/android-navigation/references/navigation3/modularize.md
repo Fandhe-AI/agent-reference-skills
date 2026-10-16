@@ -71,6 +71,49 @@ class MainActivity : ComponentActivity() {
 
 - The `api`/`impl` split lets a feature's `impl` module depend on other features' `api` modules (to navigate to them) without depending on those features' full implementations, avoiding module-graph cycles.
 - The Dagger wiring shown uses `@IntoSet` to contribute each feature's `EntryProviderScope<NavKey>.() -> Unit` builder into a single injected `Set`, so the app module doesn't need to reference every feature builder function by name; this scales to many features without a growing manual list in the app module.
+- Modularize deep link matchers: if the app supports deep links, each feature module defines the `DeepLinkMatcher` instances for the destinations it owns and contributes them to a Dagger `@IntoSet` multibinding; the app module (e.g. `MainActivity`) injects `Set<@JvmSuppressWildcards DeepLinkMatcher<*, *>>` and picks the best match with `mapNotNull { it.match(request) }.maxOrNull()`:
+
+```kotlin
+// Feature module
+@Module
+@InstallIn(ActivityRetainedComponent::class)
+object FeatureADeepLinkModule {
+    @IntoSet
+    @Provides
+    fun provideUserMatcher(): DeepLinkMatcher<*, *> {
+        return UriDeepLinkMatcher(
+            DeepLinkUri("www.example.com/users/{id}"),
+            serializer<UserProfileKey>()
+        )
+    }
+}
+
+// App module
+@AndroidEntryPoint
+class MainActivityWithDI : ComponentActivity() {
+    @Inject
+    lateinit var deepLinkMatchers: Set<@JvmSuppressWildcards DeepLinkMatcher<*, *>>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val request = DeepLinkRequest(intent = intent)
+        val matchResult = deepLinkMatchers
+            .mapNotNull { it.match(request) }
+            .maxOrNull()
+
+        val backStack = when (matchResult) {
+            null -> listOf(HomeKey)
+            is BackStackMatchResult<*, *> -> {
+                @Suppress("UNCHECKED_CAST")
+                matchResult.backStack as List<NavKey>
+            }
+            else -> listOf(matchResult.key)
+        }
+    }
+}
+```
+
 - This pattern is orthogonal to which `SceneStrategy`s or `NavEntryDecorator`s are configured on `NavDisplay` — it only concerns how `entryProvider { }`'s builder lambda is assembled from multiple modules.
 - Runnable samples for this and other Navigation 3 architecture patterns live under the "Architecture" section of the [android/nav3-recipes](https://github.com/android/nav3-recipes/?tab=readme-ov-file#architecture) repository; a full-app example is [Now in Android's modularization](https://github.com/android/nowinandroid/blob/main/docs/ModularizationLearningJourney.md) and [Androidify](https://github.com/android/androidify).
 - This is the Android Navigation 3 (Kotlin, `androidx.navigation3`) modularization pattern — distinct from the same-named concept in other skills.
@@ -81,3 +124,4 @@ class MainActivity : ComponentActivity() {
 - [NavKey](./navkey.md)
 - [NavDisplay](./navdisplay.md)
 - [Migrate from Navigation 2 to Navigation 3](./migration-guide.md)
+- [Deep Links in Navigation 3](../deep-links/navigation3-deep-links.md)

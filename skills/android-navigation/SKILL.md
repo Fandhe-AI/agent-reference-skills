@@ -2,10 +2,9 @@
 name: android-navigation
 description: >
   Android アプリ開発 (Kotlin) の画面遷移・Navigation リファレンス。
-  Jetpack Compose, androidx。Navigation 3 (stable), NavDisplay、
-  Navigation Compose, NavHost, composable, 型安全ルート、
-  Fragment ナビゲーション, NavHostFragment, Safe Args、
-  ディープリンク, App Links, assetlinks.json、
+  Jetpack Compose, androidx。Navigation 3 (NavDisplay, NavKey, ResultEventBus, DeepLinkMatcher)、
+  Navigation Compose (NavHost, composable, 型安全ルート)、
+  Fragment (NavHostFragment, Safe Args)、ディープリンク, App Links, assetlinks.json、
   予測型戻る (OnBackPressedDispatcher)。
 user-invocable: false
 ---
@@ -14,6 +13,8 @@ user-invocable: false
 
 Android (Kotlin / Jetpack Compose) の画面遷移に関する公式ドキュメントの主要 API を網羅したスキル。
 Navigation 3 は新規 Compose 実装の現行 stable な選択肢、Navigation Compose は既存の 2.x グラフおよび Fragment ベースのナビゲーションを担う。
+対象バージョン: Navigation 3 1.2.0 stable / Navigation 2.10.2 (developer.android.com、2026-10-17 取得)。
+Navigation 2 (androidx.navigation) は公式にメンテナンスモード (重大な修正のみ、新機能なし) のため、新規 Compose 実装は Navigation 3 を第一候補とする。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
 ## ディレクトリ構成
@@ -43,6 +44,10 @@ skills/android-navigation/
       scenedecoratorstrategy.md
       migration-guide.md
       modularize.md
+      get-started.md
+      save-state.md
+      metadata.md
+      result-event-bus.md
     nav-compose/
       README.md
       navhost.md
@@ -78,6 +83,8 @@ skills/android-navigation/
       deep-link-xml-tag.md
       handle-deep-link.md
       navigation3-deep-links.md
+      navigation3-uri-deep-link-matcher.md
+      navigation3-custom-deep-link-matcher.md
       intent-action-view-launch-mode.md
       test-deep-links.md
     back-navigation/
@@ -114,11 +121,15 @@ skills/android-navigation/
 | NavDisplay / NavBackStack / NavKey で Navigation 3 の画面遷移を実装したい | navigation3 | [references/navigation3/README.md](references/navigation3/README.md) |
 | entryProvider / NavEntry でキーとコンテンツを紐付けたい | navigation3 | [references/navigation3/README.md](references/navigation3/README.md) |
 | Scene / SceneStrategy でリスト詳細・サポーティングペインなどアダプティブなシーンを構成したい | navigation3 | [references/navigation3/README.md](references/navigation3/README.md) |
+| 画面間で結果を返したい (ResultEventBus / ResultEffect / conflateAsState) | navigation3 | [references/navigation3/README.md](references/navigation3/README.md) |
+| エントリや Scene にメタデータを付与したい (metadata DSL / NavMetadataKey) | navigation3 | [references/navigation3/README.md](references/navigation3/README.md) |
+| Navigation 3 の依存追加・back stack の保存復元・エントリ単位の ViewModel スコープを設定したい | navigation3 | [references/navigation3/README.md](references/navigation3/README.md) |
 | NavHost / NavController / composable で Navigation Compose の画面遷移を実装したい | nav-compose | [references/nav-compose/README.md](references/nav-compose/README.md) |
 | 型安全ルート (Type-Safe Routes) や NavOptions / NavType で引数・遷移オプションを扱いたい | nav-compose | [references/nav-compose/README.md](references/nav-compose/README.md) |
 | NavHostFragment / Safe Args / Navigation Graph XML で Fragment ベースのナビゲーションを実装したい | nav-compose | [references/nav-compose/README.md](references/nav-compose/README.md) |
 | ディープリンク・App Links を宣言・検証したい (intent-filter, assetlinks.json, autoVerify) | deep-links | [references/deep-links/README.md](references/deep-links/README.md) |
 | navDeepLink / handleDeepLink / NavDeepLinkBuilder で Navigation 経由の遷移を実装したい | deep-links | [references/deep-links/README.md](references/deep-links/README.md) |
+| Navigation 3 でディープリンクを NavKey へ対応付けたい (DeepLinkRequest / UriDeepLinkMatcher / withBackStack / カスタム matcher) | deep-links | [references/deep-links/README.md](references/deep-links/README.md) |
 | adb でディープリンク・App Links の動作をテストしたい | deep-links | [references/deep-links/README.md](references/deep-links/README.md) |
 | BackHandler / PredictiveBackHandler で戻るボタン・予測型戻るジェスチャーを処理したい | back-navigation | [references/back-navigation/README.md](references/back-navigation/README.md) |
 | OnBackPressedDispatcher / OnBackInvokedDispatcher でカスタム戻る処理を実装したい | back-navigation | [references/back-navigation/README.md](references/back-navigation/README.md) |

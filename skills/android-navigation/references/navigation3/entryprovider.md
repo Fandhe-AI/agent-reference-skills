@@ -25,6 +25,10 @@ val provider = entryProvider {
     entry<Product>(
         metadata = mapOf("extraDataKey" to "extraDataValue")
     ) { product -> Text("Product ${product.id}") }
+    // metadata overload that receives the entry's key
+    entry<Conversation>(metadata = { key: Conversation ->
+        mapOf("key" to "value: ${key.id}")
+    }) { /* ... */ }
 }
 ```
 
@@ -52,7 +56,8 @@ entryProvider = { key ->
 
 ## Notes
 
-- `EntryProviderScope` also exposes an `entry(key: K, ...)` overload for registering one exact key instance rather than a whole type.
+- `EntryProviderScope` also exposes an `entry(key: K, ...)` overload for registering one exact key instance rather than a whole type. Since 1.1.5 / 1.2.0, an entry registered with a key instance (`entry(key = userKey) { ... }`) takes priority over an entry registered by type (`entry<UserKey> { ... }`).
+- `metadata` has two overloads on `entry`: a `Map<String, Any>` directly, or a lambda that receives the entry's key. See [Metadata](./metadata.md) for the type-safe `metadata { }` DSL.
 - `entryProvider` and `entry` live in `androidx.navigation3.runtime` — this is a different DSL from Navigation Compose's `NavGraphBuilder.composable()`.
 - Package: `androidx.navigation3.runtime` (module `androidx.navigation3:navigation3-runtime`).
 - This is the Android Navigation 3 (Kotlin, `androidx.navigation3`) API — distinct from the same-named SwiftUI / React Router / Next.js navigation API.
@@ -62,3 +67,4 @@ entryProvider = { key ->
 - [NavEntry](./naventry.md)
 - [NavDisplay](./navdisplay.md)
 - [Modularize Navigation 3 Code](./modularize.md)
+- [Metadata](./metadata.md)
