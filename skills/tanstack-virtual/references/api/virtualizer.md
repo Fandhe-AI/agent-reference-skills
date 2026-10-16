@@ -25,7 +25,7 @@ export class Virtualizer<TScrollElement = unknown, TItemElement = unknown> {
 | `debug` | `boolean` | `false` | Set to `true` to enable debug logs. |
 | `initialRect` | `Rect` | `{ width: 0, height: 0 }` | The initial `Rect` of the scrollElement. Useful for SSR; otherwise calculated on mount by the `observeElementRect` implementation. |
 | `onChange` | `(instance: Virtualizer<TScrollElement, TItemElement>, sync: boolean) => void` | `() => {}` | Callback fired when the virtualizer's internal state changes. Passed the instance and the `sync` parameter. |
-| `overscan` | `number` | `1` | The number of items to render above and below the visible area. |
+| `overscan` | `number` | `1` | The number of items to render above and below the visible area. When `lanes` is greater than `1`, overscan counts whole rows of `lanes` items, so every lane renders the same number of extra items. |
 | `horizontal` | `boolean` | `false` | Set to `true` if the virtualizer is oriented horizontally. |
 | `paddingStart` | `number` | `0` | Padding to apply to the start of the virtualizer in pixels. |
 | `paddingEnd` | `number` | `0` | Padding to apply to the end of the virtualizer in pixels. |
@@ -33,7 +33,7 @@ export class Virtualizer<TScrollElement = unknown, TItemElement = unknown> {
 | `scrollPaddingEnd` | `number` | `0` | Padding to apply to the end of the virtualizer in pixels when scrolling to an element. |
 | `initialOffset` | `number \| (() => number)` | `0` | The position where the list is scrolled to on render. Useful for SSR or conditionally rendering the virtualizer. |
 | `getItemKey` | `(index: number) => Key` | `defaultKeyExtractor` (returns `index`) | Passed the index of each item, should return a unique key for that item. |
-| `rangeExtractor` | `(range: Range) => number[]` | `defaultRangeExtractor` | Receives visible range indexes and should return the array of indexes to render (e.g. to implement sticky headers/footers). |
+| `rangeExtractor` | `(range: Range) => number[]` | `defaultRangeExtractor` | Receives visible range indexes and should return the array of indexes to render (e.g. to implement sticky headers/footers). When `lanes` > 1, `range.lanes` holds the lane count and `defaultRangeExtractor` applies `overscan` as whole rows; a custom extractor that computes its own indexes should do the same to keep lanes aligned. |
 | `scrollToFn` | `(offset: number, options: { adjustments?: number; behavior?: 'auto' \| 'smooth' }, instance: Virtualizer<TScrollElement, TItemElement>) => void` | — | Implements the scrolling behavior for the scrollElement. |
 | `observeElementRect` | `(instance: Virtualizer<TScrollElement, TItemElement>, cb: (rect: Rect) => void) => void \| (() => void)` | — | Called when the scrollElement changes; should implement initial measurement and continuous monitoring of the scrollElement's `Rect`. |
 | `observeElementOffset` | `(instance: Virtualizer<TScrollElement, TItemElement>, cb: (offset: number) => void) => void \| (() => void)` | — | Called when the scrollElement changes; should implement initial measurement and continuous monitoring of the scrollElement's scroll offset. |
@@ -47,12 +47,12 @@ export class Virtualizer<TScrollElement = unknown, TItemElement = unknown> {
 | `indexAttribute` | `string` | `'data-index'` | The DOM attribute name used to identify an item's index when measuring elements. |
 | `initialMeasurementsCache` | `Array<VirtualItem>` | `[]` | A previously-captured snapshot of measured item sizes (from `takeSnapshot()`) to seed the virtualizer with on mount. |
 | `shouldAdjustScrollPositionOnItemSizeChange` | `undefined \| ((item: VirtualItem, delta: number, instance: Virtualizer<TScrollElement, TItemElement>) => boolean)` | `undefined` | Fine-grained control over the scroll-position adjustment fired when an above-viewport item's measured size differs from its estimated size. Assigned directly on the instance rather than as an initialization option. |
-| `anchorTo` | `anchorTo?: 'start' \| 'end'` | `'start'` | Controls which side of the scrollable content is treated as the stable anchor when list data changes. |
-| `followOnAppend` | `followOnAppend?: boolean \| 'auto' \| 'smooth' \| 'instant'` | `false` | When used with `anchorTo: 'end'`, controls whether the virtualizer scrolls to the end after new items are appended. |
-| `laneAssignmentMode` | `laneAssignmentMode?: 'estimate' \| 'measured'` | `'estimate'` | Controls when lane assignments are cached in a masonry layout. |
-| `useCachedMeasurements` | `useCachedMeasurements?: boolean` | `false` | When enabled, the default `measureElement` implementation skips DOM measurement and returns the previously cached size for each item. |
-| `isRtl` | `isRtl: boolean` | `false` | Whether to invert horizontal scrolling to support right-to-left language locales. |
-| `scrollEndThreshold` | `scrollEndThreshold?: number` | `1` | The pixel threshold used by `isAtEnd()` and `followOnAppend` to decide whether the viewport is close enough to the end to count as pinned. |
+| `anchorTo` | `'start' \| 'end'` | `'start'` | Controls which side of the scrollable content is treated as the stable anchor when list data changes. |
+| `followOnAppend` | `boolean \| 'auto' \| 'smooth' \| 'instant'` | `false` | When used with `anchorTo: 'end'`, controls whether the virtualizer scrolls to the end after new items are appended. |
+| `laneAssignmentMode` | `'estimate' \| 'measured'` | `'estimate'` | Controls when lane assignments are cached in a masonry layout. |
+| `useCachedMeasurements` | `boolean` | `false` | When enabled, the default `measureElement` implementation skips DOM measurement and returns the previously cached size for each item. |
+| `isRtl` | `boolean` | `false` | Whether to invert horizontal scrolling to support right-to-left language locales. |
+| `scrollEndThreshold` | `number` | `1` | The pixel threshold used by `isAtEnd()` and `followOnAppend` to decide whether the viewport is close enough to the end to count as pinned. |
 
 ## Instance Methods & Properties
 
@@ -66,6 +66,7 @@ export class Virtualizer<TScrollElement = unknown, TItemElement = unknown> {
 | `scrollToIndex` | `(index: number, options?: { align?: 'start' \| 'center' \| 'end' \| 'auto', behavior?: 'auto' \| 'smooth' }) => void` | Scrolls the virtualizer to the item at the given index, optionally anchored to a part of the scrollElement. |
 | `scrollBy` | `(delta: number, options?: { behavior?: 'auto' \| 'smooth' }) => void` | Scrolls the virtualizer by the specified number of pixels relative to the current scroll position. |
 | `scrollToEnd` | `(options?: { behavior?: 'auto' \| 'smooth' \| 'instant' }) => void` | Scrolls the virtualizer to the end of the content (bottom for vertical lists, right edge for horizontal lists). |
+| `cancelScroll` | `() => void` | Cancels an in-flight `scrollToIndex`, `scrollToOffset`, `scrollBy` or `scrollToEnd`. After those calls the virtualizer keeps correcting toward the target for a short time while items are measured; call it when the user starts their own scroll (e.g. from `wheel` / `touchstart` / `keydown` handlers). It does not change the current scroll position and does nothing when no scroll is in flight. |
 | `getDistanceFromEnd` | `() => number` | Returns the current pixel distance from the end of the virtualized content. |
 | `isAtEnd` | `(threshold?: number) => boolean` | Returns whether the viewport is within `threshold` pixels of the end. Uses `scrollEndThreshold` if no threshold is provided. |
 | `getTotalSize` | `() => number` | Returns the total size in pixels for the virtualized items. Changes incrementally as items are dynamically measured. |
@@ -86,6 +87,10 @@ export class Virtualizer<TScrollElement = unknown, TItemElement = unknown> {
 - Masonry layouts use `lanes` together with `laneAssignmentMode: 'estimate' | 'measured'` to control when lane assignments are cached.
 - End-anchored scrolling (chat/log interfaces) uses `anchorTo: 'end'` with `followOnAppend` to auto-scroll to newly appended content.
 - `initialMeasurementsCache` (paired with `takeSnapshot()`) restores measurements after navigation without a re-measurement pass.
+- `cancelScroll` was added in virtual-core 3.18.0.
+- Behavior change in 3.19.0 (minor): `overscan` with `lanes > 1` now renders more items than before (`lanes: 4, overscan: 2` adds 8 items per side instead of 2), and `Range` gains an optional `lanes` field. A custom `rangeExtractor` gets row overscan only if it delegates to `defaultRangeExtractor`.
+- From 3.18.0, `scrollToIndex(last, { align: 'end' })` respects `scrollPaddingEnd` instead of overshooting by `paddingEnd`; use `scrollToEnd()` to reach the very bottom including `paddingEnd`.
+- Deprecated in 3.19.5: the instance getter `scrollAdjustments` always returns 0 because corrections are folded into `scrollOffset`; read `scrollOffset` alone.
 - Use "block translation" for smooth scrolling rather than independently positioning every item, to keep layout correct during partial measurement skipping.
 
 ## Related
