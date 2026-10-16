@@ -26,6 +26,7 @@ turbo run build test lint check-types
 
 ```sh
 turbo run build --affected
+turbo run build --affected --filter=web      # affected かつ web
 turbo run build --filter=[HEAD^1]
 turbo run build --filter=[origin/main]
 ```
@@ -43,6 +44,7 @@ turbo prune <package>
 | `--docker` | `false` | Docker レイヤーキャッシュ最適化向け出力構造を生成 |
 | `--out-dir <path>` | `./out` | 出力ディレクトリのパス |
 | `--use-gitignore` | `true` | `.gitignore` を考慮 |
+| `--production` | `false` | `devDependencies` のみに列挙されたワークスペースパッケージを除外 |
 
 Docker 向けに出力する例:
 
@@ -64,6 +66,15 @@ out/
 ```sh
 turbo prune web --docker --out-dir=./docker-out
 ```
+
+本番向けに開発専用のワークスペースパッケージを除外:
+
+```sh
+turbo prune web --production
+turbo prune web --docker --production
+```
+
+`dependencies`（および optional でない peer のワークスペース依存）経由で到達できるワークスペースパッケージのみが出力に含まれる。
 
 ## タスクグラフの可視化
 
@@ -87,6 +98,7 @@ turbo run build --summarize
 ```sh
 turbo run build --concurrency=10
 turbo run build --concurrency=50%    # CPU 数の 50% を使用
+turbo run build --concurrency=100%   # CPU 数の 100% を使用
 ```
 
 ## エラー時の続行設定

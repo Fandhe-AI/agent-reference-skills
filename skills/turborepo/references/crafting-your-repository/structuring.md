@@ -28,10 +28,32 @@ packages:
   - "packages/*"
 ```
 
-**npm / yarn / bun** (root `package.json`):
+**npm / yarn / bun / nub** (root `package.json`):
 ```json
 {
   "workspaces": ["apps/*", "packages/*"]
+}
+```
+
+**aube** (`aube-workspace.yaml`):
+```yaml
+packages:
+  - "apps/*"
+  - "packages/*"
+```
+
+Lockfiles in the official layouts: `pnpm-lock.yaml` (pnpm), `yarn.lock`, `package-lock.json`, `bun.lock`, `nub.lock` (nub), `aube-lock.yaml` (aube).
+
+### Root package.json and package manager declaration
+
+Declare the package manager with `devEngines.packageManager` (names in the official examples: `pnpm`, `yarn`, `npm`, `bun`, `nub`, `aube`):
+
+```json
+{
+  "private": true,
+  "scripts": { "build": "turbo run build", "dev": "turbo run dev", "lint": "turbo run lint" },
+  "devDependencies": { "turbo": "latest" },
+  "devEngines": { "packageManager": { "name": "pnpm", "version": "9.0.0" } }
 }
 ```
 
@@ -52,6 +74,8 @@ Avoids barrel files and allows conditional exports. IDE autocomplete works corre
 ## Notes
 
 - Nested packages are not supported (`apps/**` is invalid).
-- A lockfile is required.
+- Group packages by directory with globs like `packages/*` and `packages/group/*` and do not create `packages/group/package.json`.
+- A lockfile is required; without one `turbo` may behave unpredictably (it uses the lockfile to understand dependencies between Internal Packages).
+- `create-turbo` starts from a valid structure (`pnpm dlx` / `yarn dlx` / `npx` / `bunx` / `nubx` / `aubx create-turbo@latest`).
 - A namespace prefix is recommended for package names (e.g. `@acme/name`).
 - Do not access other packages via relative paths (`../`).

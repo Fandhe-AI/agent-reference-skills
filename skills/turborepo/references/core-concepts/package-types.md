@@ -2,48 +2,36 @@
 
 ## Usage
 
-**Application Packages** — packages designed to be deployed directly from the workspace.
+Turborepo distinguishes two types of packages.
 
-- Usually placed in the `./apps` directory
-- Next.js, Svelte, Vite, CLI apps, etc.
-- Act as "leaf nodes" in the package graph
-- Not normally installed as a dependency of other packages
+**Application Packages** — packages deployed from the workspace (Next.js, Svelte, Vite, or CLI applications, commonly in the `./apps` directory).
 
-**Library Packages** — packages that contain code shared across the workspace.
+- Best practice: they are the "end" of the Package Graph and are not installed into other packages. CI/CD pipelines most often finalize at these nodes of the Package and Task Graphs.
+- Installing an Application Package into another package should be the exception (rethink the structure if it happens often). Example exception: a package handling end-to-end testing can depend on the Application Package so it is aware of re-deploys.
 
-- Cannot be deployed on their own
-- Also called "Internal Packages"
-- Documented as a standalone page in the official docs: `internal-packages` (`/docs/core-concepts/internal-packages`)
+**Library Packages** — packages containing code shared around the workspace.
 
-### Internal Packages: three compilation strategies
+- Not independently deployable; they support Application Packages to create the final deployables.
+- Also referred to as Internal Packages, which have their own sub-types.
 
-1. **Just-in-Time (JIT) packages** — the application's bundler compiles the TypeScript source files directly.
-   - Minimal configuration
-   - No build step required
-   - Limitations: only works for transpilable consumers, cannot use TypeScript `paths`, no Turborepo build caching
-
-2. **Compiled Packages** — compiled with `tsc` or similar. Turborepo can cache the build output.
+An Application Package installs a Library Package as a workspace dependency (pnpm / bun syntax):
 
 ```json
 {
-  "exports": {
-    "./add": {
-      "types": "./dist/add.d.ts",
-      "default": "./dist/add.js"
-    }
+  "dependencies": {
+    "@repo/ui": "workspace:*"
   }
 }
 ```
 
-3. **Publishable Packages** — packages prepared for distribution to the npm registry. Using `changesets` is recommended.
+## Notes
 
-## Options / Props
-
-| Package manager | Install syntax |
-| --- | --- |
-| pnpm / bun | `"@repo/ui": "workspace:*"` |
-| yarn / npm | `"@repo/ui": "*"` |
+- Source: https://turborepo.dev/docs/core-concepts/package-types (vercel/turborepo tag v2.11.8, `apps/docs/content/docs/core-concepts/package-types.mdx`).
+- This page's source has no code example; the snippet is from https://turborepo.dev/docs/core-concepts/internal-packages (v2.11.8).
+- The internal-package compilation strategies (Just-in-Time, Compiled, Publishable) are documented on the separate Internal Packages page (https://turborepo.dev/docs/core-concepts/internal-packages), not here.
 
 ## Related
 
+- [Internal packages](./internal-packages.md)
 - [Package and Task Graph](./package-and-task-graph.md)
+- [Structuring a repository](../crafting-your-repository/structuring.md)

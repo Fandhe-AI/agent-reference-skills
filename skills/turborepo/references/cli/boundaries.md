@@ -48,4 +48,6 @@ Experimental feature that checks for dependency violations across workspaces.
       }
     }
     ```
-  - Rules apply transitively through the dependency chain. Package names can be used instead of tags as well.
+  - Rules apply transitively through the dependency chain (including dependencies of dependencies). Package names can be used instead of tags as well.
+- Tags vs run filters: per the turbo.json reference, package `tags` are arbitrary string labels and do not need to be registered in `boundaries.tags`; existing boundary rules are unchanged. The same labels (and task tags) can also be selected with `turbo run --filter=tag:<label>`, which is a task-selection feature separate from Boundaries rule checking.
+- Feedback is collected on the Boundaries RFC (vercel/turborepo discussion 9435).
