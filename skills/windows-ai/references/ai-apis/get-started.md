@@ -4,7 +4,7 @@ Hardware requirements, dependency setup, project configuration (WinUI / WPF / Wi
 
 ## Signature / Usage
 
-Packaged apps declare the `systemAIModels` capability and a `MaxVersionTested` of at least 10.0.26226.0 in `Package.appxmanifest`:
+Packaged apps declare the `systemAIModels` capability and a `MaxVersionTested` of at least 10.0.26226.0 in `Package.appxmanifest`, with a `MinVersion` of 10.0.26100.0 or later (see Notes):
 
 ```xml
 <Capabilities>
@@ -18,7 +18,7 @@ IgnorableNamespaces="uap rescap systemai"
 ```
 
 ```xml
-<TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26226.0" />
+<TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.26100.0" MaxVersionTested="10.0.26226.0" />
 ```
 
 Prevent Visual Studio from overriding the tested version (add to the .waproj / .csproj / .vcxproj):
@@ -72,6 +72,8 @@ var result = await languageModel.GenerateResponseAsync("Provide the molecular fo
 - Otherwise select the latest stable Windows App SDK, such as 2.5.1 or later.
 - WinUI: use the "Blank App, Packaged (WinUI 3 in Desktop)" template, target .NET 8.0 and OS 10.0.22621 or later, and set the build configuration to the device architecture (ARM64 or x64).
 - WPF / WinForms: set `<TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>`, `<WindowsPackageType>None</WindowsPackageType>` and `<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>` in the project file.
+- WPF / WinForms: `WindowsPackageType=None` builds an unpackaged app, but apps that use Windows AI APIs must be granted package identity at runtime (troubleshooting page); otherwise the `systemAIModels` capability in `Package.appxmanifest` does not apply and calls fail with `UnauthorizedAccessException` / a COM error. Give the app identity by packaging it and launch the packaged profile. Sources: https://learn.microsoft.com/en-us/windows/ai/apis/troubleshooting, https://learn.microsoft.com/en-us/windows/ai/apis/phi-silica-winui-tutorial
+- Deviation: the get-started page shows `MinVersion="10.0.17763.0"`, but the Phi Silica WinUI tutorial states that a `MinVersion` lower than 10.0.26100.0 makes Windows silently ignore `systemai:Capability` and `GetReadyState()` throws "Not declared by app"; this page uses 10.0.26100.0. Source: https://learn.microsoft.com/en-us/windows/ai/apis/phi-silica-winui-tutorial
 - .NET MAUI: condition the `Microsoft.WindowsAppSDK` package reference (for example `Version="2.5.1"`) on `GetTargetPlatformIdentifier('$(TargetFramework)') == 'windows'`, and put the Windows code in `Platforms/Windows` via partial classes/methods.
 - Limited Access Feature: `LanguageModel` (Phi Silica) is a Limited Access Feature, and the first API call above omits the unlock. Before `GetReadyState`, call `LimitedAccessFeatures.TryUnlockFeature("com.microsoft.windows.ai.languagemodel", token, attestation)` and proceed only when the status is `Available` or `AvailableWithoutToken` (see `phi-silica-tutorial-winui.md`). Aion Instruct needs no LAF token. Source: https://learn.microsoft.com/en-us/windows/ai/apis/phi-silica
 - `GetReadyState` must be called before any call to the model. `EnsureReadyAsync` installs the model in the background; progress is visible under Windows Settings > Windows Update.

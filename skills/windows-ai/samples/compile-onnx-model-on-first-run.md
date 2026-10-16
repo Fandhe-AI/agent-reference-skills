@@ -39,8 +39,10 @@ try
 }
 catch (Exception ex)
 {
-    // Compatibility evaluation failed: use the original model for this run, do not compile or adopt the cached artifact
+    // Compatibility evaluation failed: use the original model for this run, do not compile or adopt the cached artifact.
+    // Delete the unevaluable cached artifact so the next launch recompiles instead of failing the same way every time
     Console.WriteLine($"Compatibility check failed ({ex.Message}). Will use original model.");
+    TryDelete(compiledModelPath);
     evaluationFailed = true;
     isCompiled = false;
 }
@@ -119,9 +121,9 @@ static bool IsCompiledModelOptimal(
 - Deviation from the walkthrough: the output path is a per-user local cache, because the install directory is read-only for MSIX and typically for Program Files installs (as the model compilation page recommends). For a packaged app, `ApplicationData.Current.LocalCacheFolder` can be used instead of `LocalApplicationData`.
 - Deviation from the walkthrough: the walkthrough only checks `File.Exists`; this sample combines it with `IsCompiledModelOptimal`, validates a freshly compiled artifact the same way, and deletes a non-optimal cached file before recompiling. It is still not a complete cache-management example.
 - Deviation: delete and marker-write failures (file in use, access denied) are swallowed by `TryDelete` / `TryWriteMarker`, so the final `modelPathToUse` line is always reached and the original model is used as the fallback.
-- Under an optimal-only cache policy, missing compatibility metadata is a cache miss. If compatibility evaluation returns an error, use the original model for that run and don't promote a newly compiled artifact because your app can't validate it (model compilation page). This sample therefore skips compiling in that run (`evaluationFailed`) and does not adopt a compiled artifact whose validation throws.
+- Under an optimal-only cache policy, missing compatibility metadata is a cache miss. If compatibility evaluation returns an error, use the original model for that run and don't promote a newly compiled artifact because your app can't validate it (model compilation page). This sample therefore skips compiling in that run (`evaluationFailed`) and does not adopt a compiled artifact whose validation throws. A cached artifact that cannot be evaluated is deleted so the next launch recompiles; this run still uses the original model.
 - `EP_NOT_APPLICABLE` is also the default when the EP doesn't implement compatibility validation; it is not evidence the cache is compatible, so use the original model. With such an EP the optimal-only policy misses the cache every launch, so the `.not-optimal` marker file skips recompiling; alternatively omit compilation entirely. Delete the marker when the EP, driver, hardware, or source model changes.
-- The `.not-optimal` marker, `evaluationFailed`, and the `TryDelete` / `TryWriteMarker` helpers are this sample's own safeguards, not from the docs. The marker is written for a non-optimal result and for an exception thrown by post-compile validation; a failure of `CompileModel()` itself writes no marker, so it is retried on the next launch.
+- The `.not-optimal` marker, `evaluationFailed` (set when evaluating an existing cached artifact throws; the artifact is deleted and compilation is deferred to the next launch), and the `TryDelete` / `TryWriteMarker` helpers are this sample's own safeguards, not from the docs. The marker is written for a non-optimal result and for an exception thrown by post-compile validation; a failure of `CompileModel()` itself writes no marker, so it is retried on the next launch.
 - The compatibility APIs require Windows ML 2.3 or later (upstream ONNX Runtime: `GetModelCompatibilityForEpDevices()` 1.23, `GetCompatibilityInfoFromModel()` 1.24). The device collection must be non-empty and from the same EP.
 - The Windows ML samples accept the compiled model only for `EP_SUPPORTED_OPTIMAL`. Treat `EP_UNSUPPORTED` and `EP_NOT_APPLICABLE` as "use or recompile the original model".
 - Include a source-model version or hash in the cache key; a new EP, driver update, hardware change, or changed compilation settings may require a new cache entry. Compilation can take minutes, so run it in the background.
