@@ -1,22 +1,30 @@
 # administration
 
 | Name | Description | Path |
-|------|-------------|------|
-| Administration | Overview and index of the six administration control boundaries | [administration.md](./administration.md) |
-| Admin rollout guide | Plan, configure, and verify a ChatGPT Enterprise rollout in eight steps | [admin-rollout-guide.md](./admin-rollout-guide.md) |
-| ChatGPT Work admin FAQ | Access, data, governance, observability, usage, and incident controls for ChatGPT Work | [work-admin-faq.md](./work-admin-faq.md) |
-| ChatGPT usage limits and spend controls | Workspace credit controls affecting plan-dependent Codex usage | [usage-limits.md](./usage-limits.md) |
-| Groups and provisioning | Group membership sources (manual vs. SCIM) and their access boundary | [groups-and-provisioning.md](./groups-and-provisioning.md) |
-| Roles and workspace permissions | Canonical map of the six administration control boundaries | [roles-and-workspace-permissions.md](./roles-and-workspace-permissions.md) |
-| Access tokens | Create, rotate, and revoke Codex access tokens for automation | [access-tokens.md](./access-tokens.md) |
-| Analytics API | Programmatic, aggregated Codex usage/activity metrics | [analytics-api.md](./analytics-api.md) |
-| Compliance API and audit events | Auditable records for security, legal, governance, investigation | [compliance-api.md](./compliance-api.md) |
-| Governance | Choosing the right analytics/usage/audit surface per question | [governance.md](./governance.md) |
-| Workspace analytics | Comparing workspace analytics, Codex analytics, Analytics API, Compliance API | [workspace-analytics.md](./workspace-analytics.md) |
-| Workspace model availability | Model access boundaries across ChatGPT, Codex clients, Codex cloud, API Platform | [workspace-model-availability.md](./workspace-model-availability.md) |
-| Plugin controls | Plugin availability, connector-backed capabilities, and action controls | [plugin-controls.md](./plugin-controls.md) |
-| Skill controls | Comparing ChatGPT workspace, local filesystem, and plugin skill controls | [skill-controls.md](./skill-controls.md) |
-| Managed configuration | Admin-enforced requirements and managed defaults for local Codex clients | [managed-configuration.md](./managed-configuration.md) |
-| Manage app updates | Turning off/on the ChatGPT desktop app's built-in updater | [manage-app-updates.md](./manage-app-updates.md) |
-| Deploy the Windows app | Enterprise installation and update paths for the Windows desktop app | [windows-deployment.md](./windows-deployment.md) |
-| Authentication | ChatGPT sign-in vs. API key sign-in, credential storage, headless login | [authentication.md](./authentication.md) |
+| --- | --- | --- |
+| Access tokens | Create and manage Codex access tokens — ChatGPT workspace credentials scoped to Codex permissions — for programmatic, non-interactive Codex workflows. | [access-tokens.md](./access-tokens.md) |
+| Admin rollout guide | Plan, configure, and verify a ChatGPT Enterprise rollout across workspace and developer surfaces, in eight sequential steps. | [admin-rollout-guide.md](./admin-rollout-guide.md) |
+| Administration | Set access and policy boundaries for ChatGPT, Codex developer tools, APIs, plugins, and connected systems. This is a hub page: start with workspace identity and access, then configure local runtime policy for supported capabilities in the ChatGPT desktop app, Codex CLI, and IDE extension; Codex cloud eligibility; Platform API access; plugins and connectors; and permissions in connected systems. | [administration.md](./administration.md) |
+| Agent Security | Admin Console area for managing Codex/Work policies and configuration. Replaces Policies & Configuration. Each policy has a Global baseline plus optional Local and Codex Cloud environment overrides. | [agent-security.md](./agent-security.md) |
+| Analytics API | The Analytics APIs provide aggregated usage and activity metrics for a ChatGPT workspace. The unified Daily Usage Analytics API reports daily ChatGPT, Codex, and Work usage; confirm that the endpoint is enabled for your workspace before using it. | [analytics-api.md](./analytics-api.md) |
+| Authentication | Sign-in methods for ChatGPT web and Codex clients (desktop app, CLI, IDE extension) and how sign-in method determines applicable admin controls and data-handling policy. | [authentication.md](./authentication.md) |
+| Bedrock through LiteLLM | Route Codex to Amazon Bedrock through a LiteLLM gateway: connect to an existing gateway, or deploy one (Bedrock Runtime route, client catalog, test credential, verification). | [bedrock-through-litellm.md](./bedrock-through-litellm.md) |
+| Compliance API and audit events | Understand the purpose and administration boundary of the Compliance API — auditable records for security, legal, governance, and investigation workflows. | [compliance-api.md](./compliance-api.md) |
+| Use API/provider credentials through a gateway | Configure Codex on a developer machine to reach an LLM gateway using the gateway URL, model alias, and credential or token resolver your organization provides. | [connect-to-a-gateway.md](./connect-to-a-gateway.md) |
+| Gateway compatibility requirements | Responses API behavior an LLM gateway must preserve for the API/provider credential path: endpoints, streaming, continuation, tool calls, authentication, routing, and useful errors. | [gateway-compatibility.md](./gateway-compatibility.md) |
+| Governance | Choose the appropriate analytics, usage, and audit surface for each administration question. | [governance.md](./governance.md) |
+| Groups and provisioning | Understand group membership sources and their workspace access boundary. | [groups-and-provisioning.md](./groups-and-provisioning.md) |
+| Manage app updates | Control how your organization updates the ChatGPT desktop app on macOS and Windows. | [manage-app-updates.md](./manage-app-updates.md) |
+| Managed configuration | Enforce runtime requirements across supported local clients (ChatGPT desktop app, Codex CLI, IDE extension) and distribute managed defaults. | [managed-configuration.md](./managed-configuration.md) |
+| Plugin controls | Understand plugin availability, connector-backed capabilities, actions, and connected-system access. | [plugin-controls.md](./plugin-controls.md) |
+| Plugin management | Workspace admins import a plugin marketplace from GitHub and keep its plugins in sync with the repository. A marketplace is a JSON catalog listing the plugins to import. | [plugin-management.md](./plugin-management.md) |
+| Roles and workspace permissions | Separate ChatGPT workspace access from local runtime, API, plugin, and source-system controls. The canonical map of administration boundaries. | [roles-and-workspace-permissions.md](./roles-and-workspace-permissions.md) |
+| Roll out a gateway | Administrator guide for rolling out the API/provider credential path through an LLM gateway: configure model routes, issue developer credentials, and distribute a verified Codex configuration. | [roll-out-a-gateway.md](./roll-out-a-gateway.md) |
+| Service accounts | Non-human ChatGPT workspace identities for running headless Codex workflows (CI runners, scheduled jobs, shared integrations) with the same groups, roles, access controls, and auditability as people. | [service-accounts.md](./service-accounts.md) |
+| Sign in with ChatGPT through a gateway | Keep an existing model gateway while moving Codex to Sign in with ChatGPT, so eligible ChatGPT workspace features and controls (for example voice mode) work alongside the gateway. | [sign-in-with-chatgpt-through-a-gateway.md](./sign-in-with-chatgpt-through-a-gateway.md) |
+| Skill controls | Compare ChatGPT workspace, local filesystem, and plugin skill controls. | [skill-controls.md](./skill-controls.md) |
+| ChatGPT usage limits and spend controls | Understand when ChatGPT workspace credit controls can affect plan-dependent Codex usage. | [usage-limits.md](./usage-limits.md) |
+| Deploy the Windows app | Choose an enterprise installation and update path for the ChatGPT desktop app on Windows. | [windows-deployment.md](./windows-deployment.md) |
+| ChatGPT Work admin FAQ | Manage access, data, governance, observability, usage, and incident controls for ChatGPT Work (the Codex-powered, longer multi-step task mode inside ChatGPT). | [work-admin-faq.md](./work-admin-faq.md) |
+| Workspace analytics | Compare ChatGPT workspace analytics, Codex analytics, reporting APIs, and audit records. | [workspace-analytics.md](./workspace-analytics.md) |
+| Workspace model availability | Separate model access across ChatGPT, Codex in the ChatGPT desktop app, Codex CLI, the IDE extension, Codex cloud, and the OpenAI API Platform. | [workspace-model-availability.md](./workspace-model-availability.md) |
