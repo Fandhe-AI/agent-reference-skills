@@ -36,6 +36,7 @@ app/src/
   - User flow (navigation) tests cover the most common paths by simulating a user moving through a navigation flow. They are simple tests, useful for catching run-time crashes in initialization.
 - Test coverage is a metric some tools can calculate, indicating how much of your code is visited by tests. It can detect untested portions of the codebase but should not be the only metric for claiming a good testing strategy.
 - Other tests: screenshot tests, performance tests, and monkey tests. Tests can also be categorized by purpose, such as regressions, accessibility, and compatibility.
+- Source: https://developer.android.com/training/testing/fundamentals/what-to-test
 
 ## Related
 

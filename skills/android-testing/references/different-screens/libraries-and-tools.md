@@ -71,9 +71,9 @@ val (width, height, dpi) = ...
 RuntimeEnvironment.setQualifiers("w${width}dp-h${height}dp-${dpi}dpi")
 ```
 
-Gradle-managed devices with different screen sizes:
+Gradle-managed devices with different screen sizes (Groovy DSL, `build.gradle`):
 
-```kotlin
+```groovy
 android {
     testOptions {
         managedDevices {
@@ -160,6 +160,7 @@ fun myScreen_expandedWidthCompactHeight() {
 - Espresso Device annotations: if the requirements are not met the test is skipped. `RequiresDeviceMode` can be repeated and runs only if all listed `DeviceMode` values are supported. `RequiresDisplay` specifies width and height via size classes following the official window size classes.
 - `setDisplaySize()` resizes the screen at runtime; use with `DisplaySizeRule` to undo changes before the next test. It does not change density, so a dimension that does not fit the target device fails with `UnsupportedDeviceOperationException`; filter such tests with `RequiresDisplay(widthSizeClass = WidthSizeClassEnum.EXPANDED, heightSizeClass = HeightSizeClassEnum.EXPANDED)`.
 - `StateRestorationTester` tests state restoration of composables without recreating activities, which is faster and more reliable.
+- The official GMD example is Groovy DSL (`build.gradle`); in Kotlin DSL use `create<ManagedVirtualDevice>("name") { ... }` inside `devices`.
 - Source: https://developer.android.com/training/testing/different-screens/tools
 
 ## Related

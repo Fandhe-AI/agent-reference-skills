@@ -23,7 +23,7 @@ intending(IntentMatcher)
 
 | Group | Matchers |
 |-------|----------|
-| User properties | `withId(...)`, `withText(...)`, `withTagKey(...)`, `withTagValue(...)`, `hasContentDescription(...)`, `withContentDescription(...)`, `withHint(...)`, `withSpinnerText(...)`, `hasLinks()`, `hasEllipsizedText()`, `hasMultilineTest()` |
+| User properties | `withId(...)`, `withText(...)`, `withTagKey(...)`, `withTagValue(...)`, `hasContentDescription(...)`, `withContentDescription(...)`, `withHint(...)`, `withSpinnerText(...)`, `hasLinks()`, `hasEllipsizedText()`, `hasMultilineText()` |
 | UI properties | `isDisplayed()`, `isCompletelyDisplayed()`, `isEnabled()`, `hasFocus()`, `isClickable()`, `isChecked()`, `isNotChecked()`, `withEffectiveVisibility(...)`, `isSelected()` |
 | Object matcher | `allOf(Matchers)`, `anyOf(Matchers)`, `is(...)`, `not(...)`, `endsWith(String)`, `startsWith(String)`, `instanceOf(Class)` |
 | Hierarchy | `withParent(Matcher)`, `withChild(Matcher)`, `hasDescendant(Matcher)`, `isDescendantOfA(Matcher)`, `hasSibling(Matcher)`, `isRoot()` |
@@ -49,7 +49,7 @@ intending(IntentMatcher)
 | Group | Assertions |
 |-------|------------|
 | General | `matches(Matcher)`, `doesNotExist()`, `selectedDescendantsMatch(...)` |
-| Layout | `noEllipseizedText(Matcher)`, `noMultilineButtons()`, `noOverlaps([Matcher])` |
+| Layout | `noEllipsizedText(Matcher)`, `noMultilineButtons()`, `noOverlaps([Matcher])` |
 | Position | `isLeftOf(Matcher)`, `isRightOf(Matcher)`, `isLeftAlignedWith(Matcher)`, `isRightAlignedWith(Matcher)`, `isAbove(Matcher)`, `isBelow(Matcher)`, `isBottomAlignedWith(Matcher)`, `isTopAlignedWith(Matcher)` |
 
 ### Intent Matchers
@@ -63,7 +63,8 @@ intending(IntentMatcher)
 
 ## Notes
 
-- The PDF is dated v2.1.0 (4/21/2015), so it may not list newer APIs. Spellings such as `hasMultilineTest()` and `noEllipseizedText(Matcher)` are reproduced as printed in the PDF and may differ from the current API; verify against the reference pages.
+- The PDF is dated v2.1.0 (4/21/2015), so it may not list newer APIs. The PDF misprints `hasMultilineText()` and `noEllipsizedText(Matcher)` as `hasMultilineTest()` and `noEllipseizedText(Matcher)`; the tables above use the actual API names.
+- Source: https://developer.android.com/training/testing/espresso/cheat-sheet and https://android.github.io/android-test/downloads/espresso-cheat-sheet-2.1.0.pdf
 
 ## Related
 

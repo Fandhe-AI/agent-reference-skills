@@ -28,6 +28,7 @@ Retry actions by failure level:
 - Ways to improve run times and reliability: build and test only the modules affected by a change; skip caches when the build includes scripts a developer modified (safer to build from scratch); shard tests (especially instrumented tests) across devices, supported by the Android runner, Gradle Managed Devices and Firebase Test Lab; shard builds across multiple server instances; use Gradle's remote cache.
 - Flakiness: always try to find and fix the causes of flaky builds and tests. A common strategy is to retry failed runs up to a maximum number of retries. There is no single way to configure retries; they can occur at multiple levels. Log and track which parts are flaky and invest in keeping CI reliable and fast.
 - The official page's sentence ends mid-phrase at "only relying on retries".
+- Source: https://developer.android.com/training/testing/continuous-integration/features
 
 ## Related
 

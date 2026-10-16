@@ -85,6 +85,8 @@ onView(withId(R.id.spinnertext_simple))
 - When `onView()` fails with `NoMatchingViewException` and `AdapterView` widgets are present, the message includes a warning listing the adapter views; the common fix is `onData()`.
 - Use Hierarchy Viewer in Android Studio for complicated hierarchies.
 
+- Source: https://developer.android.com/training/testing/espresso/basics
+
 ## Related
 
 - [Espresso overview](./overview.md)

@@ -25,6 +25,7 @@ Workflow steps:
 
 - Guidelines are generic and apply to the majority of CI solutions.
 - Benefits listed in the source: improved software quality (problems found early), reduced risk of broken builds, increased confidence in releases, improved communication and collaboration, increased productivity through automation.
+- Source: https://developer.android.com/training/testing/continuous-integration
 
 ## Related
 

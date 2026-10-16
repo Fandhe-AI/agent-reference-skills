@@ -32,6 +32,7 @@ fun greeterSaysHello() {
   - No `AsyncTask` instance is currently executing a task.
   - All developer-defined idling resources are idle.
 - These checks substantially increase the likelihood that only one UI action or assertion occurs at a time.
+- Source: https://developer.android.com/training/testing/espresso
 
 ## Related
 

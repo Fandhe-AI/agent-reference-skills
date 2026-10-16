@@ -18,6 +18,7 @@ Typical forms of automation for an Android CI system: basic jobs, instrumented t
 - Step fitting: a rolling window of previous build results compared against the current build, combining several benchmark results into one regression-specific metric. It reduces false positives when a single build is slow and then normalizes.
 - Test coverage is a useful metric but should not be the only indicator. A common regression check fails or warns when coverage goes down relative to the base branch.
 - Coverage from an instrumentation test differs from that of a unit test (bigger tests typically make fewer assertions per line and have different goals); consider keeping two separate coverage metrics.
+- Source: https://developer.android.com/training/testing/continuous-integration/automation
 
 ## Related
 
