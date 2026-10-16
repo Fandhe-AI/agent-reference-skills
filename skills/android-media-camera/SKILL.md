@@ -2,10 +2,10 @@
 name: android-media-camera
 description: >
   Android アプリ開発 (Kotlin) の Media3 / CameraX リファレンス。androidx.media3, androidx.camera。
-  ExoPlayer, MediaSession, MediaSessionService, MediaLibraryService, DRM,
-  Compose UI (PlayerSurface), ProcessCameraProvider, CameraSelector,
-  ImageCapture, ImageAnalysis, VideoCapture, CameraInfo, CameraX Extensions,
-  Camera2 Interop。
+  ExoPlayer, HLS / DASH / RTSP / SmoothStreaming, HlsInterstitialsAdsLoader, CMCD,
+  MediaSession, MediaLibraryService, DRM, PlayerSurface,
+  ProcessCameraProvider, ImageCapture, ImageAnalysis, VideoCapture,
+  CameraX Extensions, Camera2 Interop, Camera1 移行。
 user-invocable: false
 ---
 
@@ -24,27 +24,38 @@ skills/android-media-camera/
       README.md
       ad-insertion.md
       analytics.md
+      android-tv.md
       audio-attributes.md
       cast-player.md
+      cmcd.md
       compose-ui.md
       customization.md
+      dash.md
       data-source-cache.md
       downloading-media.md
       drm.md
       exoplayer.md
+      hls.md
+      images.md
       live-streaming.md
       media-item.md
       media-metadata.md
       media-source.md
+      network-stacks.md
       playback-exception.md
       playback-parameters.md
       player.md
       player-listener.md
       player-view.md
       preload-manager.md
+      progressive.md
       retrieving-metadata.md
+      rtsp.md
+      smoothstreaming.md
+      surface-types.md
       timeline-tracks.md
       track-selection.md
+      troubleshooting.md
     media-session-editing/
       README.md
       command-button.md
@@ -78,11 +89,13 @@ skills/android-media-camera/
       remote-playback-client.md
     camerax-usecases/
       README.md
+      camera1-to-camerax.md
       camera-permissions.md
       camera-controller.md
       camera-effect.md
       camera-compose-viewfinder.md
       camera-selector.md
+      camerax-architecture.md
       image-analysis.md
       image-capture.md
       mlkit-analyzer.md
@@ -130,6 +143,9 @@ skills/android-media-camera/
 | PlayerView / Compose UI で再生画面を組み立てたい | media3-playback | [references/media3-playback/README.md](references/media3-playback/README.md) |
 | DRM 保護コンテンツを再生したい | media3-playback | [references/media3-playback/README.md](references/media3-playback/README.md) |
 | DownloadManager / DownloadService でオフライン再生用にメディアをダウンロードしたい | media3-playback | [references/media3-playback/README.md](references/media3-playback/README.md) |
+| ストリーム形式別 (Progressive / DASH / HLS / SmoothStreaming / RTSP / 画像) に再生したい | media3-playback | [references/media3-playback/README.md](references/media3-playback/README.md) |
+| ExoPlayer の再生トラブル (cleartext / SSL / シーク / MPEG-TS / unstable API lint) を解決したい | media3-playback | [references/media3-playback/README.md](references/media3-playback/README.md) |
+| 動画出力 Surface (SurfaceView / TextureView) の選択や Android TV の D-pad 対応をしたい | media3-playback | [references/media3-playback/README.md](references/media3-playback/README.md) |
 | MediaSession / MediaSessionService でバックグラウンド再生・外部連携をしたい | media-session-editing | [references/media-session-editing/README.md](references/media-session-editing/README.md) |
 | MediaController / MediaBrowser でセッションに接続・操作したい | media-session-editing | [references/media-session-editing/README.md](references/media-session-editing/README.md) |
 | メディア通知 (MediaNotification.Provider) をカスタマイズしたい | media-session-editing | [references/media-session-editing/README.md](references/media-session-editing/README.md) |
@@ -142,6 +158,8 @@ skills/android-media-camera/
 | ProcessCameraProvider / Preview / ImageCapture でカメラプレビュー・撮影を実装したい | camerax-usecases | [references/camerax-usecases/README.md](references/camerax-usecases/README.md) |
 | ImageAnalysis / VideoCapture でフレーム解析・動画録画をしたい | camerax-usecases | [references/camerax-usecases/README.md](references/camerax-usecases/README.md) |
 | CameraController で高レベル API を使いたい | camerax-usecases | [references/camerax-usecases/README.md](references/camerax-usecases/README.md) |
+| CameraX のアーキテクチャ・ライフサイクル・依存関係を理解したい | camerax-usecases | [references/camerax-usecases/README.md](references/camerax-usecases/README.md) |
+| Camera1 (android.hardware.Camera) から CameraX へ移行したい | camerax-usecases | [references/camerax-usecases/README.md](references/camerax-usecases/README.md) |
 | CameraControl / CameraInfo でズーム・フォーカス・露出を制御したい | camerax-config | [references/camerax-config/README.md](references/camerax-config/README.md) |
 | CameraX Extensions / Camera2 Interop / ConcurrentCamera を使いたい | camerax-config | [references/camerax-config/README.md](references/camerax-config/README.md) |
 

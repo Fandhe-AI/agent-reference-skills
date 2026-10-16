@@ -32,6 +32,7 @@ val mediaSource =
 | `DashMediaSource` | `MediaSource` | — | Used for DASH streams. |
 | `HlsMediaSource` | `MediaSource` | — | Used for HLS streams (module `media3-exoplayer-hls`). |
 | `ProgressiveMediaSource` | `MediaSource` | — | Used for regular/progressive files (mp4, mp3, etc.). |
+| `RtspMediaSource` | `MediaSource` | — | Used for RTSP streams (module `media3-exoplayer-rtsp`). |
 | `SsMediaSource` | `MediaSource` | — | Used for SmoothStreaming (module `media3-exoplayer-smoothstreaming`). |
 | `dataSourceFactory` | `DataSource.Factory` | `DefaultDataSource.Factory` | Supplies the underlying `DataSource` used to load media/manifest bytes; set via `setDataSourceFactory`. |
 | `loadErrorHandlingPolicy` | `LoadErrorHandlingPolicy` | `DefaultLoadErrorHandlingPolicy` | Controls retry/back-off behavior on load errors. |
@@ -49,3 +50,8 @@ val mediaSource =
 - [MediaItem](./media-item.md)
 - [Data sources and caching](./data-source-cache.md)
 - [ExoPlayer](./exoplayer.md)
+- [Progressive streams](./progressive.md)
+- [DASH](./dash.md)
+- [HLS](./hls.md)
+- [SmoothStreaming](./smoothstreaming.md)
+- [RTSP](./rtsp.md)
