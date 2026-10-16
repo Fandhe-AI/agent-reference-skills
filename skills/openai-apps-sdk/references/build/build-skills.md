@@ -60,7 +60,7 @@ dependencies:
 - A dependency declaration in `agents/openai.yaml` makes a tool available but does not replace clear workflow instructions (order, fallback handling).
 - Skills can be imported from the MCP server itself (via `io.modelcontextprotocol/skills` capability and **Scan Tools** during submission) instead of uploaded as packaged files — see [MCP server § Import skills from the MCP server](./mcp-server.md).
 - Test with direct requests, indirect requests (same goal, different phrasing), incomplete inputs (should trigger follow-up), requests that should NOT activate the skill, and edge cases where the skill must avoid inventing info.
-- Package by pointing the plugin manifest's `skills` field at the skills directory: `"skills": "./skills/"`.
+- Packaging: portable packages (root `plugin.json`) discover skills from the root `skills/` directory automatically, so no `skills` field is needed. Only the Codex compatibility manifest (`.codex-plugin/plugin.json`) points at the skills directory with `"skills": "./skills/"` — see [Package your plugin](./package-plugin.md).
 
 ## Related
 
