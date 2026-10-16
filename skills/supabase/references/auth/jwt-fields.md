@@ -12,6 +12,8 @@ Supabase JWTs follow the standard JWT structure with three parts: Header (algori
 
 These claims are always present in Supabase JWTs and cannot be removed:
 
+In practice this set applies to user session tokens issued by Supabase Auth; legacy anon / service_role API key tokens carry only `iss`, `ref`, `role`, `iat`, `exp` (see below).
+
 | Field | Type | Description | Example |
 | --- | --- | --- | --- |
 | `iss` | `string` | Issuer - The entity that issued the JWT | `"https://project-ref.supabase.co/auth/v1"` |
@@ -47,8 +49,8 @@ These claims may be present depending on the authentication context:
 ### Field value constraints
 
 - `aal`: `"aal1"` = single-factor authentication (password, OAuth, etc.); `"aal2"` = multi-factor authentication (password + TOTP, etc.)
-- `role`: `"anon"` = anonymous user (public access with RLS policies); `"authenticated"` = authenticated user (standard user access); `"service_role"` = service role (admin privileges, server-side only)
-- `aud`: `"authenticated"` (for authenticated user tokens); `"anon"` (for anonymous user tokens)
+- `role`: `"anon"` = anonymous user (public access with RLS policies; this is the legacy anon API key / unauthenticated public access, not `signInAnonymously()` users); `"authenticated"` = authenticated user (standard user access); `"service_role"` = service role (admin privileges, server-side only)
+- `aud`: `"authenticated"` (for authenticated user tokens); `"anon"` (for anonymous user tokens, i.e. the legacy anon key token)
 - `amr.method`: `oauth`, `password`, `otp`, `totp`, `recovery`, `invite`, `sso/saml`, `magiclink`, `email/signup`, `email_change`, `token_refresh`, `anonymous`
 
 ### JWT examples
@@ -84,7 +86,7 @@ Authenticated user token:
 }
 ```
 
-Anonymous and service role tokens contain only `iss: "supabase"`, `ref`, `role` (`"anon"` / `"service_role"`), `iat`, and `exp`.
+Legacy anon key and service_role key tokens contain only `iss: "supabase"`, `ref`, `role` (`"anon"` / `"service_role"`), `iat`, and `exp`.
 
 ### Language-specific considerations
 
@@ -108,6 +110,7 @@ struct JwtClaims {
 TypeScript/JavaScript:
 
 ```typescript
+// User session token (issued by Supabase Auth)
 interface JwtClaims {
   iss: string
   aud: string | string[]
@@ -135,12 +138,15 @@ interface JwtClaims {
 ## Notes
 
 - The official page also gives Python (dataclass) and Go (struct) definitions. In Go, `aud` is `interface{}` (string or []string) and optional claims are pointers with `omitempty`.
-- Validation guidelines: check that required fields are present, verify field types, check that `exp` is in the future, ensure `iss` matches your Supabase project, validate `aud` matches the expected audience, and use field renaming for languages like Rust.
+- Users signed in with signInAnonymously() receive role/aud "authenticated" with is_anonymous: true, not role "anon"; the official page labels the anon key token as 'Anonymous user token'. Distinguish them via is_anonymous (see anonymous-auth.md).
+- Validate legacy API keys against a separate contract (`iss`, `ref`, `role`, `iat`, `exp` only), not the required-claims set above.
+- Validation guidelines: check that required fields are present (for user session tokens), verify field types, check that `exp` is in the future, ensure `iss` matches your Supabase project, validate `aud` matches the expected audience, and use field renaming for languages like Rust.
 - Security considerations: always validate the JWT signature before trusting any claims; never expose service role tokens to client-side code; validate all claims; check token expiration on every request; use HTTPS for all JWT transmission; rotate JWT secrets regularly; implement proper error handling for invalid tokens.
 - Source: https://supabase.com/docs/guides/auth/jwt-fields (fetched 2026-10)
 
 ## Related
 
 - [JWT structure](./jwts.md)
+- [Anonymous sign-ins](./anonymous-auth.md)
 - [Auth hooks](./auth-hooks.md)
 - [Server-side rendering](./server-side.md)

@@ -139,9 +139,28 @@ The fastest path is the MCP Server block in the Supabase Library. It installs an
 npx shadcn@latest add https://supabase.com/library/r/mcp.json
 ```
 
-To write the function yourself, start with a table for the tools to work on (RLS so each user only sees their own rows; the `user_id` default means inserts don't need to pass it). The `verify_jwt = false` setting from the public part is needed here too: the function verifies tokens itself, and the gateway would otherwise reject the unauthenticated discovery request before `withOAuthProtectedResource` can answer it.
+To write the function yourself, start with a table for the tools to work on. Create it with RLS so each user only sees their own rows; the `user_id` default means inserts don't need to pass it. Save this as a migration with `supabase migration new create_todos` and paste it into the generated file:
 
-The function imports a `Database` type so the Supabase client inside the tools knows the table's columns:
+```sql
+create table public.todos (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  title text not null,
+  done boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+alter table public.todos enable row level security;
+
+create policy "Users manage their own todos"
+  on public.todos for all to authenticated
+  using ((select auth.uid()) = user_id)
+  with check ((select auth.uid()) = user_id);
+```
+
+If you skipped the public part, create the function now with `supabase functions new mcp`. The `verify_jwt = false` setting from that part is needed here too: the function verifies tokens itself, and the gateway would otherwise reject the unauthenticated discovery request before `withOAuthProtectedResource` can answer it.
+
+The function imports a `Database` type so the Supabase client inside the tools knows the table's columns. Start the local stack, which applies the migration, then generate the type from it. If the stack is already running, apply the migration with `supabase migration up` first:
 
 ```bash
 supabase start
