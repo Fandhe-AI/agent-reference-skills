@@ -21,6 +21,8 @@ let cancellable = subject
     .sink { print("Debounced: \($0)") }
 ```
 
+## Options / Props
+
 ### Scheduler members
 
 | Name | Description |

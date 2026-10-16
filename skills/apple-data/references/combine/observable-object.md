@@ -38,6 +38,8 @@ print(john.haveBirthday())
 // Prints "25"
 ```
 
+## Options / Props
+
 ### ObservableObject members
 
 | Name | Description |

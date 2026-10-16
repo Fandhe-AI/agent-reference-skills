@@ -20,6 +20,8 @@ var values: AsyncPublisher<Self> { get }
 var values: AsyncThrowingPublisher<Self> { get }
 ```
 
+## Options / Props
+
 ### Members (both types)
 
 | Name | Description |
