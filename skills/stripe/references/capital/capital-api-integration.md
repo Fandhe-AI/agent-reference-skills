@@ -7,15 +7,15 @@ Build a custom Capital program with the Capital API: retrieve prequalified finan
 ```bash
 # List financing offers for all connected accounts
 curl https://api.stripe.com/v1/capital/financing_offers \
-  -u <<YOUR_SECRET_KEY>>:
+  -u "<<YOUR_SECRET_KEY>>:"
 
 # Mark an offer as delivered after sending the offer email
 curl https://api.stripe.com/v1/capital/financing_offers/financingoffer_abc123/mark_delivered \
-  -u <<YOUR_SECRET_KEY>>:
+  -u "<<YOUR_SECRET_KEY>>:"
 
 # Create an application link (use capital_financing_reporting for reporting)
 curl https://api.stripe.com/v1/account_links \
-  -u <<YOUR_SECRET_KEY>>: \
+  -u "<<YOUR_SECRET_KEY>>:" \
   -d account=acct_123 \
   -d refresh_url="https://example.com/reauth" \
   -d return_url="https://example.com/thanks" \
@@ -23,7 +23,7 @@ curl https://api.stripe.com/v1/account_links \
 
 # Financing summary for a connected account
 curl https://api.stripe.com/v1/capital/financing_summary \
-  -u <<YOUR_SECRET_KEY>>: \
+  -u "<<YOUR_SECRET_KEY>>:" \
   -H "Stripe-Account: acct_123"
 ```
 

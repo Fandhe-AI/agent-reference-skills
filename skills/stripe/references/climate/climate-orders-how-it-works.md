@@ -41,6 +41,7 @@ Frontier purchasing criteria:
 - On delivery, units are retired on an independent third-party registry and all deliveries are third-party verified. Frontier shares a delivery certificate and supplier details. Units are retired on your behalf (or your beneficiary's) when possible; otherwise in Frontier's name.
 - You can use carbon removal units for net zero or carbon neutrality claims only after delivery, not before.
 - Net zero (per SBTi as described in the docs) requires reducing current emissions by at least 90%, purchasing permanent carbon removal for the remaining 10%, and supporting beyond value chain mitigation. Carbon neutrality is described as poorly defined, generally claimed when purchased credits or removal units equal remaining emissions.
+- Source: https://docs.stripe.com/climate/orders/how-it-works (retrieved 2026-10).
 
 ## Related
 

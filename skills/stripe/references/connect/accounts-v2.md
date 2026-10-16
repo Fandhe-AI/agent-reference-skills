@@ -77,6 +77,7 @@ Common configurations:
 - Existing platforms can use the v2 API to manage Accounts created with v1 (including assigning the `customer` configuration). Stripe discourages maintaining both versions indefinitely.
 - Use Accounts v1 for: OAuth authentication of connected accounts; signing accounts to a recipient service agreement; requesting or managing `treasury`, `card_issuing_*`, deprecated capabilities (e.g. `legacy_payments`), deprecated payment methods, and certain payment methods in public or private preview.
 - Use Global payouts for cross-border payouts.
+- Source: https://docs.stripe.com/connect/accounts-v2 (retrieved 2026-10).
 
 ## Related
 

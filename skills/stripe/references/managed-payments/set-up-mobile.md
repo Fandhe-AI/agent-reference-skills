@@ -37,14 +37,14 @@ UIApplication.shared.open(url, options: [:], completionHandler: nil)
 
 ## Notes
 
-- Flow: user taps Buy, client requests a Checkout URL from your server, server creates the Checkout Session, client opens the URL in the browser, customer pays, Stripe sends the `checkout.session.completed` webhook, server fulfills the order, Stripe redirects to `success_url`.
+- Flow: user taps Buy, client requests a Checkout URL from your server, server creates the Checkout Session, client opens the URL in the browser, customer pays, Stripe sends the `checkout.session.completed` webhook, server fulfills the order once the payment is paid, Stripe redirects to `success_url`.
 - Available only in some countries where iOS App Store guidelines permit linking to an external website for payments.
 - Not covered: user authentication (for example Sign in with Apple or Firebase Authentication) and native StoreKit in-app purchases. Products that do not meet the Managed Payments eligibility criteria need the separate digital goods guide; physical products use Stripe in-app payments.
 - Prerequisites: eligible products (all products in the purchase must be eligible), Managed Payments activated in the Dashboard with terms accepted, and API version `2025-03-31.basil` or later.
 - Choose a tax code eligible for Managed Payments when creating the product (example used: `txcd_10201000`). Create with the CLI: `stripe products create --name="100 coins" --description="Bundle of 100 in-app coins" --tax-code="txcd_10201000"`, then `stripe prices create -d product=<id> -d unit_amount=1000 -d currency=usd`.
 - Universal links: serve `.well-known/apple-app-site-association` as `application/json` (check with `curl -I`), add an `applinks:example.com` Associated Domains entitlement, and provide a fallback page at `success_url` (for example a custom URL scheme).
 - Checkout Sessions expire 24 hours after creation. If the webhook is not acknowledged, Checkout redirects to `success_url` 10 seconds after a successful payment.
-- Verify webhook signatures with `stripe.webhooks.constructEvent` using the raw body; fulfill on `checkout.session.completed`.
+- Verify webhook signatures with `stripe.webhooks.constructEvent` using the raw body. The official example fulfills on `checkout.session.completed`; check the session `payment_status` (`paid`) before fulfilling, and for delayed payment methods wait for `checkout.session.async_payment_succeeded` (handle `checkout.session.async_payment_failed`), as in set-up-checkout.md.
 - Test cards: `4242 4242 4242 4242` (succeeds), `4000 0000 0000 3220` (3D Secure 2), `4000 0000 0000 9995` (`insufficient_funds` decline). Debug universal links with `applinks:example.com?mode=developer` and a sysdiagnose.
 - A subscription purchase only authorizes Managed Payments to charge the payment method; obtain consent for charges outside Managed Payments.
 - Optional: configure yearly-price display in monthly terms and tax display in Checkout and Payment Links settings.

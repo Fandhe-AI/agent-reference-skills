@@ -53,6 +53,7 @@ button.mount('#add-to-wallet-button');
 - If the page stays open 15 minutes, create a new nonce and ephemeral key and call `button.update({nonce, ephemeralKeySecret})`.
 - Common reasons a card is not added: outdated OS, JavaScript or pop-ups disabled, device unreachable, card already on the device, flow took too long, tokenization failure (inactive card, ineligible device, wallet terms not accepted).
 - Network tokens are managed separately from cards (see Token Management in the Stripe docs).
+- Source: https://docs.stripe.com/issuing/cards/digital-wallets?platform=web (retrieved 2026-10).
 
 ## Related
 

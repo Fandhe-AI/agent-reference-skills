@@ -49,6 +49,7 @@ const paymentElement = elements.create('payment', {
 - Prefilled values are not stored in cookies, local storage, or elsewhere; they are held temporarily in local memory. They are stored only if the customer consents to create a Link account.
 - Accelerated sign-up (opting customers into saving payment details to Link by default) is enabled by default and configurable under Settings > Payment Methods > Link, or in Connected Accounts settings. Availability depends on the customer's country; Link disables or limits it where local regulations prohibit it.
 - Sandbox Link accounts: use any valid email; one-time passcodes `000001` (code invalid), `000002` (code expired), `000003` (max attempts exceeded) produce errors; any other 6 digits succeed. Do not store real user data in sandbox Link accounts.
+- Source: https://docs.stripe.com/payments/link/payment-element-link (retrieved 2026-10).
 
 ## Related
 

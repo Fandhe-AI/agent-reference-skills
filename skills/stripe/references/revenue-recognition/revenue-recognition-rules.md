@@ -36,6 +36,7 @@ Each transaction can have only one rule applied. When a transaction matches mult
 - Rules are typically applied to reports within 24 hours. A rule successfully applied in the latest report has `active` status; otherwise it remains `processing`.
 - If a new rule's effective period overlaps a closed accounting period, applying it retroactively generates corrections. To prevent this, open the accounting period before adding the rule.
 - Periodically review rules for hierarchy and effective period as billing models and customer types change.
+- Source: https://docs.stripe.com/revenue-recognition/rules (retrieved 2026-10).
 
 ## Related
 

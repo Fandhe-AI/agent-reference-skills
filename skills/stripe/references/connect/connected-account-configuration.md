@@ -49,6 +49,7 @@ Accounts v1 controller property map:
 - KYC: Stripe collects requirements in most configurations. The platform is responsible only when `losses_collector` is `application` and `dashboard` is `none`. Take this on only if prepared to handle the operational complexity of verification and requirement updates.
 - Application fee behavior for direct charges: if the fee collector is `stripe` (v2) or fee payer is `account` (v1), Stripe deducts its processing fee and the application fee, then pays the platform; set the application fee to include only the platform fee. If the fee collector is `application`, set the application fee to include both the platform fee and the Stripe processing fee (e.g. processing 1.00 + platform 1.50: application fee 1.50 when Stripe collects, 2.50 when the platform collects).
 - Changing the pricing model or fee collector configuration can cause connected accounts to be charged too much or too little; review application fees and pricing model before changing responsibilities.
+- Source: https://docs.stripe.com/connect/accounts-v2/connected-account-configuration (retrieved 2026-10).
 
 ## Related
 

@@ -8,7 +8,7 @@ Show an offer or reporting page to a connected account without a Stripe-hosted D
 
 ```bash
 curl https://api.stripe.com/v1/account_links \
-  -u <<YOUR_SECRET_KEY>>: \
+  -u "<<YOUR_SECRET_KEY>>:" \
   -d account=acct_123 \
   -d refresh_url="https://example.com/reauth" \
   -d return_url="https://example.com/thanks" \

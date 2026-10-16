@@ -36,6 +36,7 @@ stripe climate commitment disable
 - Add an embeddable badge to your website.
 - Use reference language from the Stripe Climate page.
 - Custom climate page, embeddable badges, and the badge asset kit are available from the Dashboard (`https://dashboard.stripe.com/climate/commitment`).
+- Source: https://docs.stripe.com/climate/commitments (retrieved 2026-10).
 
 ## Related
 

@@ -1,11 +1,12 @@
 ---
 name: stripe
 description: >
-  Stripe 決済プラットフォーム全商品のリファレンス (API 2026-09-30.endive)。
-  PaymentIntents, Checkout, Payment Links, Elements, Managed Payments,
+  Stripe 決済プラットフォームリファレンス (API 2026-09-30.endive)。
+  PaymentIntents, Checkout, Payment Links, Elements, Link, Managed Payments,
   Subscriptions, Invoices, Connect (Accounts v2), Radar, Terminal, Tax,
-  Issuing, Treasury, Capital, Crypto Onramp, stablecoin, Identity,
-  Webhooks, Stripe CLI, idempotency。
+  Issuing, Treasury, Capital, Financial Connections, Climate,
+  Revenue Recognition, Crypto Onramp, stablecoin, Identity, Webhooks,
+  Stripe CLI, idempotency, API versioning, pagination, error handling。
 user-invocable: false
 ---
 

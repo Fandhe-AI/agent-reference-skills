@@ -22,7 +22,7 @@ Checkout: enable crypto in the Dashboard and make sure all `line_items` use `usd
 
 ```bash
 curl https://api.stripe.com/v1/checkout/sessions \
-  -u <<YOUR_SECRET_KEY>>: \
+  -u "<<YOUR_SECRET_KEY>>:" \
   -d mode=payment \
   -d "line_items[0][price_data][currency]"=usd \
   -d "line_items[0][price_data][product_data][name]"=T-shirt \

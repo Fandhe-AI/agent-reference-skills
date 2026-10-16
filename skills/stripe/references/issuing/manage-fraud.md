@@ -8,7 +8,7 @@ Deactivate a card on suspected unauthorized activity (Issuing API `status` field
 
 ```bash
 curl https://api.stripe.com/v1/issuing/cards/ic_xxx \
-  -u "sk_test_YOUR_SECRET_KEY" \
+  -u "sk_test_YOUR_SECRET_KEY:" \
   -d status=inactive
 ```
 
@@ -43,6 +43,7 @@ curl https://api.stripe.com/v1/issuing/cards/ic_xxx \
 - Most users file fraud disputes on 0.1% or less of transaction volume.
 - You can request adjusted defaults (relaxed 3DS, higher amount caps) case by case; you bear the increased risk.
 - Educate cardholders: check for skimmers, transact at trusted businesses, cancel lost or stolen cards immediately.
+- Source: https://docs.stripe.com/issuing/manage-fraud (retrieved 2026-10).
 
 ## Related
 

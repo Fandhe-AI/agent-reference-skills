@@ -29,6 +29,7 @@ climate.order.canceled
 - On `climate.order.delayed` you can accept the delay or cancel the order within 30 days for a full refund; with no action, Frontier attempts delivery by the updated `expected_delivery_year`.
 - On `climate.order.product_substituted`, if you do not want the substitute you can cancel the order within 30 days for a full refund.
 - You receive an event any time an order's status changes.
+- Source: https://docs.stripe.com/climate/orders/webhooks (retrieved 2026-10).
 
 ## Related
 

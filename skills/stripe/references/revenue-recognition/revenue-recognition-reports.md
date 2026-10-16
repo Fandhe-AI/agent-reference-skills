@@ -63,6 +63,7 @@ Other views: recognized revenue breakdown (by source, with adjustments for refun
 - Monthly charts use color to differentiate open and closed accounting periods; figures in open periods continue to change until the period closes.
 - Activity breakdown: select **Net change** amounts in the trial balance to see the underlying transactions.
 - Revenue recognition requirements vary by business location and goods or services sold; configure your account accordingly.
+- Source: https://docs.stripe.com/revenue-recognition/reports (retrieved 2026-10).
 
 ## Related
 

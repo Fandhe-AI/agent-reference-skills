@@ -21,6 +21,7 @@ expressCheckoutElement.mount('#express-checkout-element')
 
 - Supported payment methods in the Express Checkout Element include Link, Apple Pay, Google Pay, PayPal, Klarna, and Amazon Pay.
 - Benefits: payment buttons are dynamically sorted by customer location; buttons can be added without frontend changes; an existing Elements instance can be reused.
+- Source: https://docs.stripe.com/payments/link/express-checkout-element-link (retrieved 2026-10).
 
 ## Related
 

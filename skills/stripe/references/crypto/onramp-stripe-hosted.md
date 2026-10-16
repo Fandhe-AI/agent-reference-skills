@@ -28,7 +28,7 @@ Mint a session with a `redirect_url` (backend):
 
 ```bash
 curl -X POST https://api.stripe.com/v1/crypto/onramp_sessions \
-  -u <<YOUR_SECRET_KEY>>:
+  -u "<<YOUR_SECRET_KEY>>:"
 ```
 
 ## Options / Props

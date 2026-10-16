@@ -25,7 +25,7 @@ Download the CSV with `result.id` (starts with `file_`):
 
 ```bash
 curl https://files.stripe.com/v1/files/file_xxx/contents \
-  -u <<YOUR_SECRET_KEY>>:
+  -u "<<YOUR_SECRET_KEY>>:"
 ```
 
 ## Report types
@@ -73,6 +73,7 @@ Additional columns per report type:
 - `transaction_model_id` is the Stripe model associated with the change (invoice line item, invoice, invoice item, charge, and so on).
 - `invoice_id` and `price_id` are `null` for standalone charges or invoice items not associated with an invoice or price.
 - Report Run objects: see the Stripe Reporting API (`/v1/reporting/report_runs`).
+- Source: https://docs.stripe.com/revenue-recognition/api (retrieved 2026-10).
 
 ## Related
 

@@ -93,6 +93,7 @@ Events: `'click'`, `'success'` (via `button.on(eventName, handler)`). Methods: `
 - The returned card object has PCI fields removed from `result.issuingCard`.
 - No native support for iOS, Android, or React Native; use a web view pointing to your web integration.
 - Add to Wallet: review the Add to Apple Wallet badge guidelines and Google Wallet brand guidelines before embedding.
+- Source: https://docs.stripe.com/issuing/elements (retrieved 2026-10).
 
 ## Related
 

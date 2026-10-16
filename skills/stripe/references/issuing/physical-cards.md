@@ -44,6 +44,7 @@ https://dashboard.stripe.com/issuing/personalization-designs
 - Digital wallets (Apple Pay, Google Pay, Samsung Pay) support Stripe-issued physical cards. Wallet lead times vary by region and might require partnering with Stripe.
 - Support: end users contact the business or platform that issued the card (Stripe cannot assist end users directly); platform users contact Stripe Support and direct cardholders to the platform.
 - Shipping costs are documented on a separate page (`/issuing/cards/physical/ship-cards`), not covered here.
+- Source: https://docs.stripe.com/issuing/cards/physical (retrieved 2026-10).
 
 ## Related
 

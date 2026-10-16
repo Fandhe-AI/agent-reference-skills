@@ -60,6 +60,7 @@ Fixed values for non-card Link payments (e.g. Instant Bank Payments) in a card i
 - Passing `link` in `allowed_payment_method_types` always treats Link as a payment method, even if `card` is also passed. To handle Link payments as card payments, do not pass `link`.
 - A card integration does not offer a backup payment source during checkout.
 - If your UI renders card details, Stripe recommends identifying non-card payments as Link payments instead of rendering the fixed values.
+- Source: https://docs.stripe.com/payments/link/link-payment-integrations (retrieved 2026-10).
 
 ## Related
 

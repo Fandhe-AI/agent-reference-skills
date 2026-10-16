@@ -7,8 +7,8 @@ Accept low cost US bank payments with instant confirmation, using Link.
 Instant Bank Payments are enabled automatically when Link is turned on (subject to eligibility). To explicitly offer ACH Direct Debit instead, include `us_bank_account` in the payment method types:
 
 ```text
-payment_method_types (Checkout Session)
-allowed_payment_method_types (PaymentIntent / SetupIntent)
+allowed_payment_method_types (Checkout Session, 2026-09-30.endive)
+payment_method_types (Checkout Session, versions before endive; PaymentIntent / SetupIntent in versions before endive)
 ```
 
 Including `us_bank_account` there means Link never presents Instant Bank Payments.
@@ -39,6 +39,8 @@ Test institutions: Success, Disputed, Blocked, Bank (Non-OAuth), Bank (OAuth); f
 - After the first authenticated transaction through Link, the saved bank account can be charged off-session without re-authentication.
 - Stripe-funded incentives (cash back, promotional credits) are available in the US only; Stripe charges the full amount and deposits the promotion to the customer's bank within seven business days at no cost to you. Configure cash back display in Link settings.
 - Not the same as ACH Direct Debit (`us_bank_account`): Instant Bank Payments confirm instantly and are protected from common ACH failures.
+- Migration (dahlia → endive): the official page still lists `payment_method_types` for Checkout Session; it was removed from Checkout Session create in 2026-09-30.endive (use `allowed_payment_method_types`), and PaymentIntent / SetupIntent `payment_method_types` is no longer writable on endive.
+- Source: https://docs.stripe.com/payments/link/instant-bank-payments (retrieved 2026-10).
 
 ## Related
 
