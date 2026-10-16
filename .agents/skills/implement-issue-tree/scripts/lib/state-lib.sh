@@ -10,6 +10,7 @@
 #   st_valid_entries  init の入力（[{"number":正の整数,"type":"implement"|"verify-close"}...]）の形
 #   st_rewrite        状態ファイルを jq で書き換える（スナップショットから計算 → 書き込み直前に変更なしを確認 → mv。
 #                     変更を検知したら最初からやり直し、3 回で諦める）
+#   st_create         状態ファイルが無ければ空の状態（{"parent":N,"items":{}}）を作る。既にあれば何もしない
 #   ST_MERGE_JQ / ST_INIT_JQ / ST_HW_MAX_JQ / ST_HW_SET_JQ  書き換えの jq プログラム（固定。外部入力は --slurpfile / --argjson で渡す）
 # 契約: 外部入力（patch の自由文を含む）は jq のプログラム文字列に埋め込まない。書き換えはファイルの同じディレクトリに
 #       作った一時ファイルへ出力してから mv する（部分書き込みを残さない）。.items がオブジェクトでないファイルは書き換えない
@@ -72,6 +73,22 @@ st_drop() {
   [ -z "${ST_TMP}" ] || rm -f -- "${ST_TMP}"
   ST_SNAP=""
   ST_TMP=""
+}
+
+# $1 = 状態ファイル（st_valid_file 済み）。無ければ同じディレクトリの一時ファイルへ書いてから ln で置く（ln は既存の
+# ファイルを上書きしないため、確認と作成の間に別ランが作ったファイルを空の状態で潰さない）。戻り値: 0 ファイルがある / 1 作れない。
+# 読込側（ホストの state:load）が作り損ねても、ラン開始直後の init で作られるようにするための保険。
+st_create() {
+  local f=$1 n
+  [ -f "${f}" ] && return 0
+  n=${f#_/issue-trees/}
+  n=${n%.json}
+  mkdir -p -- "${f%/*}" || return 1
+  ST_TMP=$(mktemp "${f}.XXXXXX") || { ST_TMP=""; return 1; }
+  printf '{"parent":%s,"items":{}}\n' "${n}" >"${ST_TMP}" || { st_drop; return 1; }
+  ln -- "${ST_TMP}" "${f}" 2>/dev/null
+  st_drop
+  [ -f "${f}" ]
 }
 
 # $1 = 状態ファイル、$2 = jq プログラム、以降 = jq の追加オプション（--slurpfile / --argjson / --arg ts）

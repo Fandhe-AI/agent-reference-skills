@@ -10,6 +10,8 @@
 # 役割: 状態ファイルを jq で書き換える手順（mktemp → jq → mv）を、エージェントが文章から組み立てる代わりに、固定のコマンド列として
 #       持つ（Issue #603 第 5 弾）。patch の自由文はプログラム文字列に入れず --slurpfile で渡す。入力の形を検証し、書き換え前に
 #       ファイルが変わっていないか確かめる（lib/state-lib.sh の st_rewrite）。worktree・branch の削除と読み込みはしない。
+#       init だけは、ファイルが無ければ空の状態を作ってから書く（st_create。読込側が作り損ねたとき、ラン中の書き込みが
+#       すべて no-file になるのを防ぐ）。merge / hw-max / hw-set はファイルを作らない。
 # 出力: 標準出力の最後の 1 行が `STATE_RESULT {"ok":true}` または `STATE_RESULT {"ok":false,"reason":"…"}`。reason は固定語彙
 #       （invalid-input / no-file / rewrite-failed / changed-concurrently / no-temp）。patch の内容は出さない。
 #       結果を出せたときは、書き込みの失敗を含めて exit 0。
@@ -88,6 +90,7 @@ case "${mode}" in
       var=groups
     else
       st_valid_entries "${body}" || result invalid-input
+      st_create "${file}" || result no-file
       prog=${ST_INIT_JQ}
       var=entries
     fi

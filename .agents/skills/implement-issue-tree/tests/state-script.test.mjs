@@ -159,6 +159,21 @@ for (const bash of BASHES) {
     assert.deepEqual(lastResult(sb.run(bash, ['init'], G([{ number: 1, type: 'bogus' }]))), { ok: false, reason: 'invalid-input' })
   })
 
+  test(`[${bash}] init: ファイルが無ければ空の状態を作ってから追加する（読込側が作り損ねた場合の保険）。不正な入力では作らない`, { skip: !jq }, () => {
+    const bad = sandbox(null)
+    assert.deepEqual(lastResult(bad.run(bash, ['init'], G([{ number: 1, type: 'bogus' }]))), { ok: false, reason: 'invalid-input' })
+    assert.deepEqual(bad.leftovers(), [])
+    assert.throws(() => bad.read(), '不正な入力ではファイルを作らない')
+    const sb = sandbox(null)
+    assert.deepEqual(lastResult(sb.run(bash, ['init'], G([{ number: 10, type: 'implement' }]))), { ok: true })
+    const after = sb.read()
+    assert.equal(after.parent, 1)
+    assert.deepEqual(after.items, { 10: { type: 'implement', status: 'pending', pr: 0, branch: '', worktree: '', fixCount: 0, note: '' } })
+    assert.deepEqual(sb.leftovers(), [])
+    assert.deepEqual(lastResult(sb.run(bash, ['merge'], G([{ numbers: [10], patch: { status: 'monitoring' } }]))), { ok: true }, '以後の書き込みが通る')
+    assert.equal(sb.read().items['10'].status, 'monitoring')
+  })
+
   test(`[${bash}] hw-max / hw-set: 版が違えば無条件で置換、同じ版なら大きい方だけ（縮めない）、hw-set は 0 も書ける。.items は不変`, { skip: !jq }, () => {
     const sb = sandbox()
     const items = sb.read().items
