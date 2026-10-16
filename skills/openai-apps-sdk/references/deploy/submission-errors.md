@@ -61,20 +61,22 @@ MCP-backed plugins additionally require: valid listing URLs; a demo-recording UR
 
 ## Archive errors
 
-### Skills-only ZIP upload errors and warnings
+Errors for ZIP upload and ZIP structure and limits.
 
-A changed package name blocks an update; other findings require confirmation.
+### ZIP upload errors and warnings
+
+The portal's **Skills only** path accepts skill ZIP packages and approved local MCP plugins (desktop-only submission; approved local MCP plugins don't need to include skills). Errors block the upload; warnings require confirmation.
 
 | Name | Requirement |
 |---|---|
 | `plugin_name_mismatch` | Package name in an update must match the existing plugin name |
 | `plugin_version_unchanged` | A new release needs a different manifest `version`; reusing the published version requires confirmation |
-| `mcp_configuration_excluded` | Skills-only ZIPs must not include `mcpServers` or `.mcp.json`; use **With MCP** for MCP-backed plugins |
-| `app_configuration_excluded` | Skills-only ZIPs must not include `apps` or `.app.json`; use **With MCP** for app content |
+| `mcp_configuration_excluded` | MCP configuration is excluded unless the organization is approved for local MCP submissions (for a local MCP plugin, ask your OpenAI representative to confirm the organization is allowlisted); submit remote MCP servers through **With MCP** |
+| `app_configuration_excluded` | ZIP uploads must not include `apps` or `.app.json`; submit remote MCP servers through **With MCP**; for local MCP servers follow the desktop-only submission instructions |
 | `screenshot_configuration_excluded` | Skills-only ZIPs must not include `interface.screenshots`; requires **With MCP** and custom UI |
 | `claude_format_normalized` | `.claude-plugin/plugin.json` is converted to `.codex-plugin/plugin.json` with missing interface defaults and normalized text fields |
 | `manifest_normalized` | Portal saves the normalized manifest as `.codex-plugin/plugin.json`; changed fields require confirmation |
-| `developer_name_defaulted` | `author.name` and `interface.developerName` must match, or the verified identity is used for both after confirmation |
+| `developer_name_defaulted` | The listing's developer name is set automatically from the selected verified developer identity, regardless of the name in the ZIP |
 
 ### ZIP structure and limit errors
 
@@ -105,7 +107,7 @@ A changed package name blocks an update; other findings require confirmation.
 | Name | Requirement |
 |---|---|
 | `plugin_root_missing` | Selected path must exist and be a directory containing a plugin |
-| `archive_plugin_files_missing` | A skills-only ZIP must contain a supported manifest and at least one valid skill at `skills/<skill>/SKILL.md` |
+| `archive_plugin_files_missing` | A ZIP must contain a supported plugin manifest and at least one valid skill (or an approved local MCP server) |
 | `plugin_root_ambiguous` | ZIP must contain exactly one plugin root (archive root or one top-level directory) |
 | `plugin_root_has_siblings` | A ZIP with a top-level plugin directory must not contain sibling files |
 
@@ -113,7 +115,7 @@ A changed package name blocks an update; other findings require confirmation.
 
 | Name | Requirement |
 |---|---|
-| `plugin_manifest_missing` | ZIP must contain `.codex-plugin/plugin.json`, `.agent-plugin/plugin.json`, or `.claude-plugin/plugin.json` at root or in the single top-level directory |
+| `plugin_manifest_missing` | ZIP must contain root `plugin.json` with a supported Agent Plugins schema, `.codex-plugin/plugin.json`, `.agent-plugin/plugin.json`, or `.claude-plugin/plugin.json` at the root or in its single top-level directory |
 | `plugin_manifest_not_file` | Manifest must be a regular JSON file |
 | `plugin_manifest_unreadable` | Manifest must be readable UTF-8 text |
 | `plugin_manifest_json_malformed` | Manifest must contain valid JSON (line number reported) |
@@ -156,7 +158,7 @@ A changed package name blocks an update; other findings require confirmation.
 
 ## Listing and interface errors
 
-The plugin manifest's `interface` object defines the public listing (fields such as `displayName`, `shortDescription`), stored in `.codex-plugin/plugin.json`:
+The plugin manifest's `interface` object defines the public listing (fields such as `displayName`, `shortDescription`). It lives in `.codex-plugin/plugin.json` (Codex format) or under `extensions.com.openai.interface` in root `plugin.json` (Agent Plugins format); error codes name the field as `interface.<field>`. The field names are camelCase (`interface.brandColor`, `interface.brandColorDark`, `interface.supportURL`, `interface.websiteURL`, `interface.privacyPolicyURL`, `interface.termsOfServiceURL`, `interface.defaultPrompt`):
 
 ```json
 {
@@ -242,7 +244,7 @@ The four listing URLs (website, privacy policy, terms, support) are optional for
 
 | Name | Requirement |
 |---|---|
-| `plugin_skills_path_wrong_type` | `skills` must be a string path to the root `skills/` directory |
+| `plugin_skills_path_wrong_type` | `skills` must be a string path for the root `skills/` directory |
 | `plugin_skills_path_empty` | Non-empty path when provided |
 | `plugin_skills_path_unsupported` | Must resolve to the root `skills/` directory |
 | `plugin_skills_directory_missing` | A declared root `skills/` directory must exist |
@@ -252,7 +254,26 @@ The four listing URLs (website, privacy policy, terms, support) are optional for
 | `plugin_apps_path_unsupported` | Must resolve to the root `.app.json` |
 | `plugin_apps_file_missing` | A declared root `.app.json` file must exist |
 | `plugin_apps_path_not_file` | Root `.app.json` must be a regular file when declared |
-| `plugin_runtime_surface_missing` | A skills-only ZIP must contain at least one valid skill at `skills/<skill>/SKILL.md`; app/MCP references don't satisfy this |
+| `plugin_mcp_path_wrong_type` | `mcpServers` must be a string path for the root `.mcp.json` |
+| `plugin_mcp_path_empty` | `mcpServers` must be a nonempty path; set it to `./.mcp.json` or remove the field |
+| `plugin_mcp_path_unsupported` | `mcpServers` must resolve to the root `.mcp.json` |
+| `plugin_mcp_file_missing` | `mcpServers` declares the root `.mcp.json`, but that file doesn't exist |
+| `plugin_mcp_path_not_file` | Root `.mcp.json` must be a regular file |
+| `plugin_runtime_surface_missing` | A public submission ZIP must contain at least one valid skill (or an approved local MCP server); local and workspace packages can also reference an eligible MCP server |
+
+## MCP manifest errors
+
+These errors apply to the compatibility `.mcp.json` file. For portable packages, ingestion derives this file and `.codex-plugin/plugin.json` from root `plugin.json` and `mcp.json`, and the component-path errors above can also refer to these generated files. Fix the source portable configuration; don't rename `mcp.json` to `.mcp.json` just because a compatibility diagnostic names it.
+
+| Name | Requirement |
+|---|---|
+| `mcp_manifest_unreadable` | `.mcp.json` must be readable UTF-8 text |
+| `mcp_manifest_json_malformed` | `.mcp.json` must contain valid JSON; malformed syntax is reported with a line number |
+| `mcp_manifest_wrong_type` | `.mcp.json` must contain a JSON object at the top level |
+| `mcp_servers_missing` | `.mcp.json` must contain the top-level `mcpServers` field |
+| `mcp_servers_wrong_type` | `mcpServers` must be an object |
+| `mcp_server_name_empty` | Every MCP server name must contain at least one non-whitespace character |
+| `mcp_server_wrong_type` | Each `mcpServers.<server-name>` value must be an object containing that server's declaration |
 
 ## Skill errors
 
@@ -361,9 +382,9 @@ Directory branding images must use a supported file type and meet size/dimension
 | `svg_dimensions_not_square` | Dimensions must be square |
 | `svg_dimensions_too_small` | ≥48×48 pixels |
 
-## App reference errors
+## MCP server reference errors
 
-Shared package checks validate `.app.json` when a plugin references apps. The submission portal doesn't publish references to existing ChatGPT apps: a **Skills only** upload removes `.app.json`, and an MCP-backed submission must use **With MCP** and submit the MCP server directly. For local/workspace packages, the top-level `apps` object maps each app alias to an app entry.
+(Previously titled "App reference errors".) Shared package checks validate `.app.json` when a plugin references registered MCP servers. The submission portal doesn't publish references to existing integrations: a **Skills only** upload removes `.app.json`; use **With MCP** to submit the MCP server directly. For local/workspace packages, the top-level `apps` object maps each MCP server alias to a registered server entry. These configuration names and error codes retain their literal `app` spelling.
 
 | Name | Requirement |
 |---|---|
@@ -378,7 +399,7 @@ Shared package checks validate `.app.json` when a plugin references apps. The su
 | `app_id_format` | `id` must begin with `asdk_app_`, `connector_`, or `templated_apps_`, followed by a letter/digit then only letters, digits, `_`, `-` |
 | `app_entry_optional_wrong_type` | `optional` must be `true`/`false` when provided |
 | `app_entry_required_wrong_type` | `required` must be `true`/`false` when provided |
-| `app_not_eligible` | For local/workspace packages, referenced apps must be a released public Codex app, available connector, or released app template; directory submissions must use **With MCP** and submit the MCP server directly |
+| `app_not_eligible` | A local or workspace package must reference an eligible, available MCP server; directory submissions must use **With MCP** and submit the MCP server directly |
 
 ## Package warnings
 

@@ -16,26 +16,30 @@ Source: https://developers.openai.com/plugins/build/plugins
 
 ## Create a plugin manually
 
+Create a plugin folder with a portable manifest at `plugin.json`:
+
 ```bash
-mkdir -p my-first-plugin/.codex-plugin
+mkdir -p my-first-plugin
 ```
 
-Create the manifest at `my-first-plugin/.codex-plugin/plugin.json`:
+Create the manifest at `my-first-plugin/plugin.json`:
 
 ```json
 {
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "my-first-plugin",
   "version": "1.0.0",
-  "description": "Reusable greeting workflow",
-  "skills": "./skills/"
+  "description": "Reusable greeting workflow"
 }
 ```
 
-Add a skill under `skills/<skill-name>/SKILL.md`:
+Use a stable kebab-case `name`. Portable packages discover skills from the root `skills/` directory, so the manifest has no `skills` field. Add a skill under `skills/<skill-name>/SKILL.md`:
 
 ```bash
 mkdir -p my-first-plugin/skills/hello
 ```
+
+Compatibility layout: `@plugin-creator` still scaffolds the Codex compatibility manifest at `.codex-plugin/plugin.json` (not the portable format), and `.codex-plugin/plugin.json` files remain supported as a compatibility fallback. In that layout the manifest sits under `my-first-plugin/.codex-plugin/` and points to skills with a `"skills": "./skills/"` field.
 
 Source: https://developers.openai.com/plugins/build/plugins
 

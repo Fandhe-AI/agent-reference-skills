@@ -56,13 +56,14 @@ registerAppTool(
 | Run locally | `node server.js`; no build step needed for vanilla HTML |
 | Test with MCP Inspector | `npx @modelcontextprotocol/inspector@latest`, connect via Streamable HTTP |
 | Expose publicly | `ngrok http <port>` for a public HTTPS URL during development |
-| Connect in ChatGPT | Enable Developer mode, create a connection at chatgpt.com/plugins with the `/mcp` URL |
+| Connect in ChatGPT | At chatgpt.com/plugins select the plus button, then **Add custom MCP server**; paste the HTTPS + `/mcp` URL, name the connection, configure authentication; review the risk warning, select **I understand and want to continue**, then **Create as a plugin**; install the plugin, open a new chat, type `@` and select the plugin |
 
 ## Notes
 
 - Uses the Node MCP SDK (`@modelcontextprotocol/sdk`) plus `@modelcontextprotocol/ext-apps` for `registerAppTool` / `registerAppResource` helpers; a Python SDK example is available in the `openai-apps-sdk-examples` GitHub repo.
 - For new UI, prefer the shared MCP Apps bridge; layer `window.openai` extensions only for ChatGPT-specific capabilities.
-- Refresh the developer-mode plugin connection after every server change (tools, metadata).
+- Refresh the plugin connection after each change to the MCP server (tools, metadata, related configuration) from the detail page at chatgpt.com/plugins.
+- The "Enable Developer mode" connect step was removed from the official docs (fetched 2026-10-17).
 
 ## Related
 

@@ -4,6 +4,8 @@ Developer guidelines covering the MCP server and optional UI in a plugin, and th
 
 ## Plugin fundamentals
 
+Purpose, quality, naming, tools, and authentication guidelines.
+
 ### Purpose and originality
 
 Plugins should serve a clear purpose, reliably do what they promise, and provide functionality/workflows not natively supported by the products' built-in capabilities, meaningfully helping satisfy common user intents. Only use owned or permitted intellectual property. No misleading/copycat designs, impersonation, spam, or static frames with no meaningful interaction. Plugins must not imply they are made or endorsed by OpenAI.
@@ -100,6 +102,8 @@ Plugins must not serve advertisements and must not exist primarily as an adverti
 
 ## Safety
 
+Usage policies, appropriateness, user intent, fair play, third-party content, and iframe guidelines.
+
 ### Usage policies
 
 Do not engage in or facilitate activities prohibited under OpenAI usage policies; avoid high-risk behaviors exposing users to harm, fraud, or misuse. Stay current with evolving policy requirements — previously approved plugins later found in violation may be removed.
@@ -124,9 +128,17 @@ No descriptions, titles, tool annotations, or other model-readable fields (tool 
 
 ### Iframes and embedded pages
 
-Plugins with UI can opt in to iframe usage via `frameDomains` in the resource CSP (`_meta.ui.csp.frameDomains`), but this is discouraged. If used: intended only when embedding a third-party experience is essential (notebook, IDE, similar environment); such plugins receive extra manual review and are often not approved for broad distribution; any developer can test `frameDomains` in developer mode, but public-listing approval is limited to trusted scenarios.
+Plugins with UI can embed pages from their MCP server's own registrable domain, including full existing editors and admin interfaces (for example, a server at `https://api.example.com/mcp` can embed `https://app.example.com`; both use the registrable domain `example.com`). Separate tenants on a shared hosting service count as different domains; using the same hosting provider does not establish ownership.
+
+Declare each required iframe origin in the resource CSP using `_meta.ui.csp.frameDomains` (or the legacy `_meta["openai/widgetCSP"].frame_domains`). For third-party domains, iframe embeds should be limited to cases where the embedded experience is essential.
+
+A justification is still required at submission: explain what each embedded page does, why the plugin embeds it, and who controls its domain. Iframe use can require additional review or escalation and may lead to slower approval or rejection if the content cannot be assessed; sharing the MCP server's domain does not guarantee approval. All other plugin requirements (checkout, privacy) still apply to embedded pages.
+
+(The earlier wording "discouraged ... any developer can test `frameDomains` in developer mode, but public-listing approval is limited to trusted scenarios" is no longer in the official page, fetched 2026-10-17.)
 
 ## Privacy
+
+Privacy policy, data collection, and transparency guidelines.
 
 ### Privacy policy
 
@@ -147,6 +159,8 @@ Submissions must include a clear, published privacy policy covering at minimum: 
 - **Preventing data exfiltration**: any action sending data outside the current boundary (posting messages, sending emails, uploading files) must be surfaced as a write action so the client can require confirmation or run in preview mode.
 
 ## Developer verification
+
+Verification and support contact requirements.
 
 ### Verification
 

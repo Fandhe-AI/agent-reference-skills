@@ -59,13 +59,17 @@ pip install mcp
 - Never rely on the model to decide access; enforce authorization in the server for every request. See [Authentication](./auth.md).
 - Elicitation (MCP elicitation) is for structured info missing from the original call — not for secrets or bypassing auth.
 - Company knowledge eligibility requires implementing the standard `search` and `fetch` tool input schemas and `readOnlyHint: true` on other read-only tools; return absolute, user-openable URLs for citation sources.
-- Test locally with `npx @modelcontextprotocol/inspector` against `http://localhost:3000/mcp` (Streamable HTTP) before connecting in ChatGPT/Codex developer mode.
-- Production endpoint must be a stable public HTTPS URL supporting streamable HTTP, typically ending in `/mcp`. Secure MCP Tunnel is for developer-mode testing only, not public submission. Use OpenAI-managed mTLS to authenticate ChatGPT as the client, and OAuth 2.1 for user auth.
-- Keep published tool names/schemas backward compatible; version UI resource identifiers when HTML/JS/CSS changes.
+- Test locally with `npx @modelcontextprotocol/inspector` against `http://localhost:3000/mcp` (Streamable HTTP) before connecting the custom MCP server to ChatGPT.
+- Production endpoint must be a stable public HTTPS URL supporting streamable HTTP, typically ending in `/mcp`. Secure MCP Tunnel can connect a private MCP server in ChatGPT but does not satisfy public submission requirements. Use OpenAI-managed mTLS to authenticate ChatGPT as the client, and OAuth 2.1 for user auth.
+- Keep published tool names/schemas backward compatible; version UI resource identifiers when HTML/JS/CSS changes. If metadata changes, refresh the custom MCP server connection and rerun the evaluation set before submission.
+- Multiple accounts: to improve multi-account use, expose an authenticated, read-only profile tool marked `_meta["openai/profile"]: true`. Resolve the profile from the request's validated credentials and keep every tool call scoped to those credentials. Users can connect multiple accounts without a profile tool. See [Authentication](./auth.md) ("Profile tool for multi-account" paragraph) for the schema and example.
+- MCP extensions: OpenAI MCP Extensions connect the plugin to ChatGPT's sidebar, composer, and file viewers; see the Plugin Extensions page ([extensions.md](./extensions.md)) for examples and setup.
 
 ### Import skills from the MCP server
 
 Configure the server to supply skills so their instructions/files version and deploy with the server. **Scan Tools** (during plugin submission) imports a static snapshot into the draft — not a live runtime resource.
+
+OpenAI currently supports a bounded, static subset of the draft SEP-2640 Skills extension. This proposal is not yet part of the stable MCP specification.
 
 Declare the extension under `capabilities.extensions` (not `experimental`):
 
@@ -73,7 +77,38 @@ Declare the extension under `capabilities.extensions` (not `experimental`):
 { "capabilities": { "extensions": { "io.modelcontextprotocol/skills": {} } } }
 ```
 
-Support paginated `skills/list` (each entry needs `uri` to `SKILL.md`, `frontmatter` with `name`/`description`, a complete `resources` list, and a SHA-256 digest per resource in `sha256:<64 hex chars>` form) and `skills/get`. Support `resources/read` for every manifest URI.
+The declaration must be under `capabilities.extensions`; the earlier `experimental` declaration is not recognized.
+
+Support paginated `skills/list` (each entry needs `uri` to `SKILL.md`, `frontmatter` containing every entry from the parsed `SKILL.md` front matter including `name` and `description`, a complete `resources` list with `SKILL.md` and every supporting file, and a SHA-256 digest per resource in `sha256:<64 lowercase hex chars>` form) and `skills/get` (returns a `skill` object with the same entry shape). Use the `skill://` URI convention; the directory containing `SKILL.md` must match the skill name:
+
+```json
+{
+  "skills": [
+    {
+      "uri": "skill://dice-roller/tabletop-dice/SKILL.md",
+      "frontmatter": {
+        "name": "tabletop-dice",
+        "description": "Roll one or more dice and report each result and the total."
+      },
+      "resources": [
+        {
+          "uri": "skill://dice-roller/tabletop-dice/SKILL.md",
+          "digest": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        },
+        {
+          "uri": "skill://dice-roller/tabletop-dice/references/notation.md",
+          "digest": "sha256:abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789"
+        }
+      ]
+    }
+  ],
+  "nextCursor": "optional-next-page-cursor"
+}
+```
+
+Digest input: for a text resource hash the UTF-8 bytes of `content.text`; for a blob resource base64-decode `content.blob` and hash the decoded bytes. Request parameters: first `skills/list` accepts `{}`, later requests accept `{ "cursor": "next-page-cursor" }`, `skills/get` accepts `{ "uri": "skill://dice-roller/tabletop-dice/SKILL.md" }`.
+
+Support `resources/read` for every manifest URI, returning exactly one content item whose URI matches the request (UTF-8 text or base64 blob). Import verifies that every listed resource is fetchable with a matching digest, the fetched `SKILL.md` front matter exactly matches the catalog entry, paths are safe, unique, and free of normalization conflicts, and the skill fits the limits. The combined archive limit includes ZIP packaging overhead.
 
 Import limits:
 
