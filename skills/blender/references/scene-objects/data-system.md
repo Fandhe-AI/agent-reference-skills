@@ -84,10 +84,10 @@ for obj in data_dst.objects:
 | `relative` | `bool` | Store filepath as relative (default `False`) |
 | `assets_only` | `bool` | Limit to asset-marked datablocks (default `False`) |
 
-Since 5.2, the input side of the context manager exposes `input.libraries` (library info, including blend-file paths of the libraries used by the loaded file). Release-notes example:
+Since 5.2, the input side of the context manager exposes `input.libraries` (library info, including blend-file paths of the libraries used by the loaded file). Release-notes example (originally a Python Console session where `D = bpy.data`; `D` is replaced with `bpy.data` here so the snippet runs as a script):
 
 ```python
-with D.libraries.load("/home/path/to/singularity/pro/shots/050_contact/050_0070/050_0070-anim.blend") as (input, output):
+with bpy.data.libraries.load("/home/path/to/singularity/pro/shots/050_contact/050_0070/050_0070-anim.blend") as (input, output):
     for l in input.libraries:
         print(l)
 # bpy_lib.libraries(filepath='//../../../assets/props/singularity/singularity.blend', is_archive=False)
