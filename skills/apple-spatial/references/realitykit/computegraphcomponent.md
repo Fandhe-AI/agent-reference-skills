@@ -25,7 +25,7 @@ entity.components.set(component)
 
 ## Notes
 
-- Available (beta): iOS 27.0+, iPadOS 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+
+- Available: iOS 27.0+, iPadOS 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+
 - Conforms to `Component`.
 - RealityKit automatically creates and manages a child entity for each graph output, each carrying its own `ModelComponent` and material.
 - Playback control: `play()`, `pause()`, `step()`, `fastForward()`, `fastForward(stepCount:stepDeltaTime:)`.
@@ -33,8 +33,13 @@ entity.components.set(component)
 - Metal binding: `setBuffer(_:bufferOffset:elementCount:at:)`, `setTexture(_:at:)`, `setTexture(_:port:)`.
 - Uniform access: `uniformHandle(named:)`, `setUniformValue(_:for:)`, `setUniformValue(_:named:)`, `setUniformData(_:for:)`, `replaceUniforms(_:)`.
 - Output control: `isOutputEnabled(_:)`, `setOutputEnabled(_:enabled:)`, `findBufferIndex(port:)`, `firstBufferIndex(type:)`.
+- visionOS 27 release notes: fixed `ComputeGraphComponent`s stored in a Reality file not rendering when loaded (177674901).
+- The graph definition types (`ComputeNodeGraph`, `ComputeGraphSimulation`, and node types such as emitters and forces) live in the separate Compute Graph module; see the compute-graph category.
 
 ## Related
 
+- [ComputeGraphResource](./computegraphresource.md)
+- [ComputeGraphRuntimeComponent](./computegraphruntimecomponent.md)
+- [ComputeGraphSharedUniforms](./computegraphshareduniforms.md)
 - [ModelComponent](./modelcomponent.md)
 - [Component](./component.md)

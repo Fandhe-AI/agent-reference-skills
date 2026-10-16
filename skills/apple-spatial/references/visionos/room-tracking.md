@@ -26,7 +26,7 @@ for await update in roomTracking.anchorUpdates {
 
 ## Options / Props
 
-| Member | Type | Description |
+| Name | Type | Description |
 |--------|------|-------------|
 | `currentRoomAnchor` | `RoomAnchor?` | The room a person is in currently, if any |
 | `allAnchors` | `[RoomAnchor]` | Array of room anchors the provider is tracking |
@@ -39,6 +39,7 @@ for await update in roomTracking.anchorUpdates {
 
 - visionOS 2.0+ only.
 - Conforms to `DataProvider`, `CustomStringConvertible`, `Sendable`, `SendableMetatype`.
+- visionOS 27 release notes: fixed `RoomAnchor.planeAnchorIDs` and `RoomAnchor.meshAnchorIDs` always being empty for anchors delivered by `RoomTrackingProvider`; the C API `ar_room_anchor_get_plane_anchor_identifiers` and `ar_room_anchor_get_mesh_anchor_identifiers` had the same issue (173005535).
 - `RoomAnchor` carries room geometry and `SurfaceClassification` data for walls, floors, and other surfaces.
 
 ## Related
