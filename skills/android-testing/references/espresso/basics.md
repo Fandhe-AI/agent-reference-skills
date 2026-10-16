@@ -83,7 +83,8 @@ onView(withId(R.id.spinnertext_simple))
 - `NoMatchingViewException` is thrown when no view matches; the view hierarchy is in the exception message.
 - `AmbiguousViewMatcherException` is thrown when multiple views match; matched views are marked `****MATCHES****`.
 - When `onView()` fails with `NoMatchingViewException` and `AdapterView` widgets are present, the message includes a warning listing the adapter views; the common fix is `onData()`.
-- Use Hierarchy Viewer in Android Studio for complicated hierarchies.
+- Use the Layout Inspector in Android Studio for complicated hierarchies.
+- The official page refers to Hierarchy Viewer, which is deprecated and removed from current Android Studio; Layout Inspector is its replacement.
 
 - Source: https://developer.android.com/training/testing/espresso/basics
 

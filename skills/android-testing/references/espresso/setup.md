@@ -1,6 +1,6 @@
 # Espresso setup instructions
 
-Install Espresso via the SDK Manager and build it with Gradle (Android Studio recommended): dependencies, instrumentation runner, first test, and how to run.
+Add Espresso as Gradle dependencies (androidx.test.espresso artifacts from Google Maven) and configure the instrumentation runner (Android Studio recommended): dependencies, instrumentation runner, first test, and how to run.
 
 ## Signature / Usage
 
@@ -69,6 +69,7 @@ class HelloWorldEspressoTest {
 - To avoid flakiness, turn off system animations on devices used for testing. In Settings > Developer options disable: Window animation scale, Transition animation scale, Animator duration scale.
 - Add the dependencies to the app module's `build.gradle(.kts)` (usually `app/build.gradle` or `app/build.gradle.kts`, not the top-level file).
 - `AndroidJUnit4` comes from `androidx.test.ext:junit`, which the Espresso setup page's dependency list omits; it is listed on https://developer.android.com/training/testing/instrumented-tests/androidx-test-libraries/test-setup
+- The official page intro says to install Espresso using the SDK Manager; Espresso is distributed as Maven artifacts and is added via Gradle dependencies as shown above.
 - The official Kotlin tab shows single-quoted strings, which are not valid Kotlin; use double quotes.
 - The test runner collects analytics (a hash of the package name of the app under test per invocation). Opt out by including the `disableAnalytics` argument in your instrumentation command (fragment as shown in the source; a full invocation also needs `-w <test-package>/androidx.test.runner.AndroidJUnitRunner`, or pass it from Gradle with `-Pandroid.testInstrumentationRunnerArguments.disableAnalytics=true`):
 

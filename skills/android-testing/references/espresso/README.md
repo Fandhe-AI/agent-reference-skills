@@ -18,7 +18,7 @@
 | Espresso (overview, synchronization, packages) | Espresso is the Android UI testing framework for writing concise and reliable tests; it waits for the UI to be at rest before acting | [overview.md](./overview.md) |
 | Espresso Recipes | Common Espresso testing patterns for scenarios not covered directly by the basic matcher, action, and assertion APIs | [recipes.md](./recipes.md) |
 | RecyclerViewActions | `ViewAction`s (from `espresso-contrib`) for scrolling and acting on items inside a `RecyclerView`, which `onData()` cannot drive | [recyclerviewactions.md](./recyclerviewactions.md) |
-| Espresso setup instructions | Install Espresso via the SDK Manager and build it with Gradle (Android Studio recommended), covering dependencies, instrumentation runner, and first test | [setup.md](./setup.md) |
+| Espresso setup instructions | Add Espresso via Gradle dependencies (Android Studio recommended), covering dependencies, instrumentation runner, and first test | [setup.md](./setup.md) |
 | ViewActions | Factory functions for `ViewAction`s passed to `ViewInteraction.perform()` to simulate user interaction with a located view | [viewactions.md](./viewactions.md) |
 | ViewAssertions | Factory functions for `ViewAssertion`s passed to `ViewInteraction.check()` to verify the state of a located view | [viewassertions.md](./viewassertions.md) |
 | ViewInteraction | The object returned by `onView()` / `onData()`, which exposes `perform()` for `ViewAction`s and `check()` for `ViewAssertion`s | [viewinteraction.md](./viewinteraction.md) |
