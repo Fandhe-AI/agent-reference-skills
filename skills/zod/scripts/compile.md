@@ -1,3 +1,7 @@
+---
+source: https://zod.dev/compile
+---
+
 # Compile
 
 AOT コンパイル（`zod/compile`）をグローバルに有効化するコマンドと設定。

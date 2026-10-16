@@ -1,3 +1,7 @@
+---
+source: https://zod.dev/compile
+---
+
 # AOT Compile
 
 Compile a schema ahead of time into a flat, loop-free validator for hot validation paths.

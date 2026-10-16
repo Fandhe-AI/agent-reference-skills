@@ -1,3 +1,7 @@
+---
+source: https://zod.dev/compile
+---
+
 # AOT Compilation
 
 Zod can compile a schema ahead of time into a flat, loop-free validator that runs several times faster than the standard parser. Results and errors are identical.
@@ -81,6 +85,7 @@ z.compile(Schema, { strict: true }); // throws ZodCompileAsyncError
 
 ## Notes
 
+- Fetched from tag v4.6.7: https://github.com/colinhacks/zod/blob/v4.6.7/packages/docs/content/compile.mdx
 - How it works: `z.compile()` walks the schema once and produces flat, loop-free JavaScript executed via `new Function()` as a fast-path validator. Schemas "fast check" validity and fall back to the regular runtime logic on failure to produce granular errors.
 - On invalid input the fallback runs the uncompiled schema, so the error is the uncompiled schema's error. Invalid inputs pay for both the fast path and the fallback, so compilation barely speeds up failures.
 - Refinements and transforms run once on valid input, and at most twice on invalid input.

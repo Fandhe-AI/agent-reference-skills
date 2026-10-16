@@ -1,3 +1,7 @@
+---
+source: https://zod.dev/v4/versioning
+---
+
 # Zod 4 Versioning
 
 Versioning strategy for Zod 4: subpath versioning (`"zod/v4"`) used during the transition, and the root `"zod"` export now pointing at Zod 4 since `zod@4.0.0`.
@@ -36,6 +40,7 @@ import * as z4 from "zod/v4"
 
 ## Notes
 
+- Fetched from tag v4.6.7: https://github.com/colinhacks/zod/blob/v4.6.7/packages/docs/content/v4/versioning.mdx
 - Update of July 8th, 2025: `zod@4.0.0` was published to npm; the package root (`"zod"`) now exports Zod 4. All other subpaths are unchanged and remain available forever.
 - Original plan: Zod 4 shipped at subpath `"zod/v4"` alongside `zod@3.25.0` and was considered stable and production-ready; Zod 3 stayed at the root and at `"zod/v3"`, receiving bug fixes and stability improvements. Later the root switched to Zod 4 and `zod@4.0.0` was published. The approach is analogous to how Go handles major version changes.
 - Rationale: many libraries accept user-defined Zod schemas, so a breaking Zod change breaks their users (a Zod 3 `ZodType` is not assignable to a Zod 4 `ZodType`). Publishing `zod@4.0.0` directly would have forced a "version bump avalanche" across the ecosystem.
