@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/session-storage.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/session-storage.md / last verified: 2026-10-16 -->
 
 # Persist sessions to external storage
 
@@ -70,6 +70,8 @@ for await (const message of query({
 - **Mirror writes are best-effort**: a failed `append()` retries up to two more times (three attempts total, no retry on timeout). If it still fails, a `{ type: "system", subtype: "mirror_error" }` message is emitted and the batch is dropped; the local transcript stays durable. Deduplicate by `entry.uuid` since retried batches can re-deliver.
 - `getSessionMessages({ sessionStore })` returns the post-compaction linked message chain, not the full raw history — call `store.load(key)` directly for that.
 - `forkSession({ sessionStore })` rewrites every `sessionId` field and remaps message UUIDs rather than doing a byte copy.
+- TypeScript: if you set `CLAUDE_CODE_PROJECT_DIR_NAME` beside `CLAUDE_CONFIG_DIR` in a query's `env` option, the SDK keys that query's entries, and its `resume` and `continue` lookups, by that name instead of the working directory encoding. Standalone helpers such as `listSessions` and `deleteSession` take no `env` and read the process environment, so set `CLAUDE_CONFIG_DIR` and the same name in the host process environment too. Requires Agent SDK v0.3.234 or later.
+- When resuming from a store, the SDK seeds a temporary config directory from your real one. TypeScript copies credentials, `.claude.json`, and your user `settings.json`, stripping from `settings.json` the keys `enabledPlugins`, `extraKnownMarketplaces`, its `additionalMarketplaces` alias, and any `CLAUDE_CONFIG_DIR` in the file's `env` block (the alias was not stripped before Agent SDK v0.3.232; before v0.3.222 only credentials and `.claude.json` were copied). Python copies credentials and `.claude.json` only, so an app that authenticates through `apiKeyHelper` in user `settings.json` fails with `Not logged in` when resuming from a store; an `apiKeyHelper` in managed or project settings still works.
 - The SDK never deletes from your store on its own; retention (TTLs, lifecycle policies, cleanup) is the adapter's responsibility.
 - Reference adapters for S3, Redis, and Postgres ship (unpublished) under `examples/session-stores/` in the TypeScript SDK repository. Both SDKs ship a conformance test suite (`run_session_store_conformance` in Python) to validate a custom adapter.
 - In Python, set `session_store` in `ClaudeAgentOptions` for `query()`; other operations use store-backed functions such as `list_sessions_from_store()`, `get_session_messages_from_store()`, `rename_session_via_store()`, `delete_session_via_store()`, `fork_session_via_store()`. `startup()` has no Python equivalent.

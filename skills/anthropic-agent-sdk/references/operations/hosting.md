@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/hosting / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/hosting / last verified: 2026-10-16 -->
 
 # Hosting the Agent SDK
 
@@ -230,6 +230,7 @@ async def main():
 
 ## Notes
 
+- Multi-tenant isolation: besides pointing `CLAUDE_CONFIG_DIR` at a per-tenant directory so tenants do not share the `~/.claude.json` global config, you can set `CLAUDE_CODE_PROJECT_DIR_NAME` in `env` to keep transcript paths short when each config directory serves one working directory and you don't pass a `SessionStore`. Requires TypeScript Agent SDK v0.3.234 or later, or Python Agent SDK v0.2.140 or later.
 - The `SessionStore` interface and reference adapters (S3/Redis/Postgres) are documented on a separate "Session storage" page, not fetched into this skill; this page's `SessionStore` references describe the interface's role only.
 
 ## Related

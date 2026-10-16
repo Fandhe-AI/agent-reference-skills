@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/migration-guide.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/migration-guide.md / last verified: 2026-10-16 -->
 
 # Migrate to Claude Agent SDK
 
@@ -29,6 +29,7 @@ options = ClaudeAgentOptions(model="claude-opus-4-7", permission_mode="acceptEdi
 - System prompt no longer default: v0.1.0+ uses a minimal system prompt by default instead of Claude Code's full prompt. To restore old behavior, set `systemPrompt: { type: "preset", preset: "claude_code" }` (TS) / `system_prompt={"type": "preset", "preset": "claude_code"}` (Python).
 - `settingSources` default: briefly changed in v0.1.0 then reverted; omitting it loads user, project, and local filesystem settings, matching the CLI. Pass `settingSources: []` to run isolated.
 - Python SDK 0.1.59 and earlier treated an empty `setting_sources` list the same as omitting the option; upgrade before relying on `setting_sources=[]`.
+- If `@anthropic-ai/claude-code` is still listed in `package.json`, replace it with `@anthropic-ai/claude-agent-sdk` and update the version range as well, for example from `"^0.0.42"` to `"^0.3.0"`.
 - TypeScript imports change from `@anthropic-ai/claude-code` to `@anthropic-ai/claude-agent-sdk`; Python imports change from `claude_code_sdk` to `claude_agent_sdk`.
 
 ## Related

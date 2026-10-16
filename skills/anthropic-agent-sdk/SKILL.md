@@ -2,9 +2,10 @@
 name: anthropic-agent-sdk
 description: >
   Claude Agent SDK (code.claude.com/docs/en/agent-sdk) の TypeScript / Python リファレンス。
-  query(), ClaudeAgentOptions / Options, custom tools (in-process MCP), createSdkMcpServer,
-  hooks, permissions (canUseTool), subagents, sessions (resume / fork), streaming,
-  structured outputs, slash commands, tool search, hosting / observability。
+  query(), ClaudeAgentOptions / Options, fallbackModel, maxTurns, maxBudgetUsd,
+  custom tools (in-process MCP), createSdkMcpServer, hooks, permissions (canUseTool), subagents,
+  sessions (resume / fork), streaming, structured outputs, Agent Skills (SKILL.md),
+  slash commands (/compact, /clear), tool search, hosting / observability。
 user-invocable: false
 ---
 
@@ -19,6 +20,8 @@ Claude Code CLI 本体は `anthropic-claude-code` / `anthropic-claude-code-exten
 `anthropic-api-core`、Claude API 側の tool use / Agent Skills / MCP は `anthropic-api-tools-mcp` を参照
 （本スキルは SDK 経由でエージェントをビルド・運用する側を担当）。
 
+Source: https://code.claude.com/docs/en/agent-sdk 、2026-10-16 取得（その時点の npm `@anthropic-ai/claude-agent-sdk` 0.3.301 / PyPI `claude-agent-sdk` 0.2.168）。
+
 ## ディレクトリ構成
 
 ```text
@@ -29,6 +32,8 @@ skills/anthropic-agent-sdk/
       README.md
       agent-loop.md
       claude-code-features.md
+      configuration.md
+      examples.md
       migration-guide.md
       overview.md
       quickstart.md
@@ -70,6 +75,7 @@ skills/anthropic-agent-sdk/
   samples/
     README.md
     minimal-agent.md
+    configure-agent.md
     custom-tools.md
     mcp-servers.md
     hooks.md
@@ -97,11 +103,11 @@ skills/anthropic-agent-sdk/
 
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
-| Agent SDK の概要・エージェントループの仕組みを知りたい・インストールして最初のエージェントを作りたい・Claude Code SDK からの移行・SDK 内で Claude Code の機能（CLAUDE.md, Agent Skills, hooks）を使いたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| Agent SDK の概要・エージェントループの仕組みを知りたい・インストールして最初のエージェントを作りたい・Claude Code SDK からの移行・SDK 内で Claude Code の機能（CLAUDE.md, Agent Skills, hooks）を使いたい・options オブジェクトを組み立てたい（model / fallbackModel, env / cwd / maxTurns / maxBudgetUsd）・セッション中に model や permission mode を変更したい（setModel / setPermissionMode / applyFlagSettings / updateSettings）・動かせるサンプルプロジェクトを探したい（claude-agent-sdk-demos / Claude Cookbook） | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | `query()` や `ClaudeAgentOptions` / `Options` など TypeScript / Python の完全な型・関数シグネチャを確認したい | api-reference | [references/api-reference/README.md](references/api-reference/README.md) |
-| custom tools（in-process MCP, `createSdkMcpServer`）を定義したい・外部 MCP サーバーに接続したい・hooks でツール呼び出しを制御したい・plugins / SKILL.md / slash commands / subagents / tool search を扱いたい | extending | [references/extending/README.md](references/extending/README.md) |
+| custom tools（in-process MCP, `createSdkMcpServer`）を定義したい・外部 MCP サーバーに接続したい・hooks でツール呼び出しを制御したい・plugins・Agent Skills (SKILL.md) の `skills` オプション・コマンド名による呼び出し（/compact, /clear, カスタムコマンド。slash-commands は skills に統合済み）・subagents・tool search を扱いたい | extending | [references/extending/README.md](references/extending/README.md) |
 | セッションの永続化・再開・分岐（resume / fork）・外部ストレージへの保存・file checkpointing・todo 管理・streaming 出力・structured outputs を扱いたい | sessions-io | [references/sessions-io/README.md](references/sessions-io/README.md) |
 | system prompt をカスタマイズしたい・permission mode や `canUseTool` で権限制御したい・ユーザー入力/承認フローを扱いたい | control | [references/control/README.md](references/control/README.md) |
 | 本番環境へのホスティング・セキュアなデプロイ・OpenTelemetry での observability・コスト/トークン追跡・エラーのトラブルシューティングを知りたい | operations | [references/operations/README.md](references/operations/README.md) |
-| 典型的な使い方を知りたい（最小エージェント, custom tools, MCP サーバー接続, hooks, permissions, subagents, セッション継続, streaming, structured outputs, system prompt カスタマイズ） | samples | [samples/README.md](samples/README.md) |
+| 典型的な使い方を知りたい（最小エージェント, options 構成（configure-agent）, custom tools, MCP サーバー接続, hooks, permissions, subagents, セッション継続, streaming, structured outputs, system prompt カスタマイズ） | samples | [samples/README.md](samples/README.md) |
 | SDK インストール・API キー設定・ホスティング用テレメトリー環境変数を知りたい | scripts | [scripts/README.md](scripts/README.md) |

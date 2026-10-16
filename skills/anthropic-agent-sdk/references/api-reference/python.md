@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/python / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/python / last verified: 2026-10-16 -->
 
 # Agent SDK reference - Python
 
@@ -231,6 +231,7 @@ class ClaudeSDKClient:
     async def set_permission_mode(self, mode: str) -> None
     async def set_model(self, model: str | None = None) -> None
     async def rewind_files(self, user_message_id: str) -> None
+    async def get_context_usage(self) -> ContextUsageResponse
     async def get_mcp_status(self) -> McpStatusResponse
     async def reconnect_mcp_server(self, server_name: str) -> None
     async def toggle_mcp_server(self, server_name: str, enabled: bool) -> None
@@ -249,6 +250,7 @@ class ClaudeSDKClient:
 | `set_permission_mode(mode)` | Change permission mode for the current session |
 | `set_model(model)` | Change the model; pass `None` to reset to default |
 | `rewind_files(user_message_id)` | Restore files to their state at the given user message. Requires `enable_file_checkpointing=True` |
+| `get_context_usage()` | Breakdown of context window usage by category, skill, and tool; the same data `/context` shows in an interactive session. Returns `ContextUsageResponse`. Claude Code makes several token-counting API requests that don't appear in the message stream |
 | `get_mcp_status()` | Status of all configured MCP servers (`McpStatusResponse`) |
 | `reconnect_mcp_server(server_name)` | Retry connecting to a failed/disconnected MCP server |
 | `toggle_mcp_server(server_name, enabled)` | Enable/disable an MCP server mid-session; disabling removes its tools |
@@ -377,6 +379,12 @@ class ClaudeAgentOptions:
     session_store_flush: SessionStoreFlushMode = "batched"
     load_timeout_ms: int = 60_000
     task_budget: TaskBudget | None = None
+    forward_subagent_text: bool = False
+    verbatim_prompts: bool = False
+    resume_session_at: str | None = None
+    resume_drops_turn: str | None = None
+    debug_stderr: Any = sys.stderr  # Deprecated
+    max_thinking_tokens: int | None = None  # Deprecated: use thinking instead
 ```
 
 | Property | Type | Default | Description |
@@ -397,7 +405,7 @@ class ClaudeAgentOptions:
 | `model` | `str \| None` | `None` | Claude model alias or full model name |
 | `fallback_model` | `str \| None` | `None` | Fallback model if the primary model fails |
 | `betas` | `list[SdkBeta]` | `[]` | Beta features to enable |
-| `output_format` | `dict[str, Any] \| None` | `None` | Structured response format, e.g. `{"type": "json_schema", "schema": {...}}` |
+| `output_format` | `dict[str, Any] \| None` | `None` | Structured response format, e.g. `{"type": "json_schema", "schema": my_json_schema}` where `my_json_schema` is a JSON Schema dict |
 | `permission_prompt_tool_name` | `str \| None` | `None` | MCP tool name for permission prompts |
 | `cwd` | `str \| Path \| None` | `None` | Current working directory |
 | `cli_path` | `str \| Path \| None` | `None` | Custom path to the Claude Code CLI executable |
@@ -424,6 +432,12 @@ class ClaudeAgentOptions:
 | `session_store_flush` | `Literal["batched", "eager"]` | `"batched"` | When to flush mirrored transcript entries. `"batched"` flushes once per turn or when the buffer fills; `"eager"` flushes in the background after every frame. Ignored when `session_store` is `None` |
 | `load_timeout_ms` | `int` | `60000` | Per-call timeout for `session_store.load()` / `list_subkeys()` during resume materialization |
 | `task_budget` | `TaskBudget \| None` | `None` | API-side token budget. Sent as `output_config.task_budget` with the `task-budgets-2026-03-13` beta header. Pass `{"total": <int>}` |
+| `forward_subagent_text` | `bool` | `False` | Forward subagent text and thinking blocks in the message stream. Without it, Claude Code omits the text and thinking blocks of a subagent that runs in the foreground. Requires Python Agent SDK 0.2.140 or later |
+| `verbatim_prompts` | `bool` | `False` | Deliver every prompt as written: the SDK sends each user message with `client_composed` set to `True`. While on, the SDK overwrites any `client_composed` value you set. Requires Python Agent SDK 0.2.158 or later and Claude Code v2.1.248 or later |
+| `resume_session_at` | `str \| None` | `None` | When resuming, load the conversation only up to and including the message with this UUID. Use with `resume`, and usually `fork_session`. Requires Python Agent SDK 0.2.137 or later |
+| `resume_drops_turn` | `str \| None` | `None` | UUID of the user prompt whose turn a `resume_session_at` truncation discards; the CLI refuses the resume if the discarded range holds entries not attributable to that turn. Requires Python Agent SDK 0.2.137 or later and Claude Code v2.1.223 or later |
+| `debug_stderr` | `Any` | `sys.stderr` | *Deprecated* - the SDK ignores this value. Use the `stderr` callback for CLI stderr output |
+| `max_thinking_tokens` | `int \| None` | `None` | *Deprecated* - maximum tokens for thinking blocks. Use `thinking` instead |
 
 `AgentDefinition` field names use camelCase (`disallowedTools`, `permissionMode`, `maxTurns`) to match the wire format shared with TypeScript, differing from `ClaudeAgentOptions`'s Python snake_case (`disallowed_tools`, `permission_mode`). Passing a snake_case keyword to `AgentDefinition` raises `TypeError` at construction.
 
@@ -891,6 +905,16 @@ class ProcessError(ClaudeSDKError):
     """Raised when the CLI process fails. Carries exit_code and stderr."""
     def __init__(self, message: str, exit_code: int | None = None, stderr: str | None = None): ...
 
+class ResultError(ProcessError):
+    """Raised when the process exits because the run ended with an error result message (0.2.140+)."""
+    subtype: str | None  # "error_max_turns", "error_during_execution", ...; "success" when the run ended on a failed request
+    errors: list[str]
+    result: str | None
+    api_error_status: int | None
+    terminal_reason: str | None  # "max_turns", "api_error", ...; check this before subtype
+    session_id: str | None
+    data: dict[str, Any]  # the raw result message payload
+
 class CLIJSONDecodeError(ClaudeSDKError):
     """Raised when unable to decode JSON from CLI output. Carries line and original_error."""
     def __init__(self, line: str, original_error: Exception): ...
@@ -900,12 +924,16 @@ class MessageParseError(ClaudeSDKError):
     def __init__(self, message: str, data: dict[str, Any] | None = None): ...
 ```
 
+`ResultError` is raised when the CLI reports an error result message (for example a turn-limit or API error), and subclasses `ProcessError`, so an existing `except ProcessError` handler also catches it; catch `ResultError` first to branch on `terminal_reason` / `subtype`. A bare `ProcessError` means the CLI exited without reporting an error result. Before claude-agent-sdk 0.2.140 an error result raised a plain Exception. When a final request fails (e.g. an API error), Claude Code reports `subtype` `"success"` with the cause in `terminal_reason`; when a limit you set ends the run, it reports an `error_*` subtype.
+
 See `../operations/troubleshooting.md` for the specific `CLINotFoundError` and `CLIConnectionError` messages and fixes documented on the official troubleshooting page.
 
 ## Notes
 
 - The rendered docs page (`/docs/en/agent-sdk/python`) exceeds what WebFetch's summarizer can hold in a single pass; content beyond `ThinkingConfig` (message classes, hook types, MCP server config, `SandboxSettings`, `McpStatusResponse`, `TaskBudget`, `DeferredToolUse`, and error classes) was cross-verified against the published SDK source instead of the rendered page (`anthropics/claude-agent-sdk-python`, `src/claude_agent_sdk/types.py` and `_errors.py`, matching the installable `claude-agent-sdk` package). Field names, defaults, and docstrings above are taken verbatim from that source.
 - Not retrieved (present in the SDK but out of scope for this pass — consult the source or rendered docs directly if needed): `ServerToolUseBlock`, `ServerToolResultBlock`, `AssistantMessageError`, `SessionStore` protocol details, `SdkPluginConfig`, `SessionStoreFlushMode`, `SandboxNetworkConfig`, `SandboxIgnoreViolations`, `McpServerStatus`, `HookCallback` signature, `HookSpecificOutput` variants, `TaskNotificationMessage`.
+- `ContextUsageResponse` (returned by `get_context_usage()`) is a `TypedDict` with `categories`, `totalTokens`, `maxTokens`, `rawMaxTokens`, `percentage`, `model`, `isAutoCompactEnabled`, `memoryFiles`, `mcpTools`, `agents`, `gridRows` plus optional `autoCompactThreshold`, `deferredBuiltinTools`, `systemTools`, `systemPromptSections`, `slashCommands`, `skills`, `messageBreakdown`, `apiUsage`. Each `ContextUsageCategory` carries `name`, `tokens`, `color`, and an optional `isDeferred`. `apiUsage` is the latest API response's usage, not a running total.
+- The WebFetch tool input has an `offset` field (characters to skip from the start of the page; requires Python Agent SDK 0.2.164 or later). Tool input/output types are not otherwise covered on this page.
 - Two-way field-name mismatch: `AgentDefinition` uses camelCase; `ClaudeAgentOptions` uses snake_case. This is intentional (wire-format vs. Python convention) — see the `AgentDefinition` section above.
 
 ## Related

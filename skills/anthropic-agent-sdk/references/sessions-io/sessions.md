@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/sessions.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/sessions.md / last verified: 2026-10-16 -->
 
 # Work with sessions
 
@@ -66,6 +66,8 @@ for await (const message of query({
 
 - Capture the session ID from the `session_id` field on the result message (`ResultMessage` in Python, `SDKResultMessage` in TypeScript), present on every result regardless of success or error. In TypeScript it's also on the init `SystemMessage`; in Python it's nested in `SystemMessage.data`.
 - Sessions are stored under `~/.claude/projects/<encoded-cwd>/*.jsonl`, or under `$CLAUDE_CONFIG_DIR/projects/<encoded-cwd>/*.jsonl` if `CLAUDE_CONFIG_DIR` is set. `<encoded-cwd>` replaces every non-alphanumeric character of the absolute working directory with `-`.
+- In Python, to suppress transcript writes to disk (the counterpart of TypeScript's `persistSession: false`), set `CLAUDE_CODE_SKIP_PROMPT_HISTORY` in the `env` option.
+- If you set `CLAUDE_CODE_PROJECT_DIR_NAME` beside `CLAUDE_CONFIG_DIR`, look under that name in `projects/` instead of the encoded working directory. Requires TypeScript Agent SDK v0.3.234 or later, or Python Agent SDK v0.2.140 or later.
 - You can resume from any working directory: Claude Code searches every project directory for the session ID if the derived directory doesn't hold it. If two or more project directories hold a copy with messages, the session is reported as not found rather than resuming an arbitrary copy.
 - Forking branches the conversation history, not the filesystem — file edits made by a forked agent are real and visible to any session working in the same directory.
 - The experimental V2 session API (`createSession()` with `send`/`stream`) was removed in TypeScript Agent SDK 0.3.142; use `query()` and the session options described here.

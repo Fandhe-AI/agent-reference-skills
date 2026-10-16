@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/troubleshooting / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/troubleshooting / last verified: 2026-10-16 -->
 
 # Troubleshooting
 
@@ -46,6 +46,45 @@ Fix — give the SDK a native executable instead of a batch script:
 - On x64 Windows, install the `claude-agent-sdk` wheel, which bundles `claude.exe`.
 
 Before `claude-agent-sdk` 0.2.124, the Python SDK spawned batch scripts through `cmd.exe` without this check.
+
+## CLI process exit
+
+The entries in this section mean the Claude Code process ended while your application was using it. Which error you see depends on the SDK language and on whether the CLI reported an error result before it exited.
+
+### ProcessError: Command failed with exit code
+
+The Python SDK raises a `ProcessError` when the Claude Code process exits with a nonzero code:
+
+```
+Command failed with exit code 1 (exit code: 1)
+Error output: Check stderr output for details
+```
+
+The message states the exit code twice, and the `Error output` line is fixed text rather than your process's error output. The same fixed text fills the exception's `stderr` attribute. The exception's `exit_code` attribute carries the code. To capture what the CLI actually wrote to stderr, pass a `stderr` callback in `ClaudeAgentOptions` and log what it receives.
+
+A bare `ProcessError` means the CLI exited without reporting an error result. When the CLI did report one, the SDK raises `ResultError` instead (see below). `ResultError` subclasses `ProcessError`, so `except ProcessError` catches both. To handle them differently, put the `except ResultError` clause first.
+
+Before `claude-agent-sdk` 0.2.140, the Python SDK raised error-result exits as a plain `Exception` rather than a `ResultError`.
+
+### Claude Code process exited with code N
+
+The TypeScript SDK surfaces a nonzero CLI exit as a plain `Error` that rejects the `for await` loop over `query()`'s messages. There's no SDK error class to catch, so wrap the loop in `try`/`catch` and match on the message:
+
+```
+Claude Code process exited with code 1. stderr: <tail of the CLI's stderr>
+```
+
+When the CLI wrote to stderr, the message ends with the tail of it. To capture the full stream, pass a `stderr` callback in the query options. A process killed by a signal reports `Claude Code process terminated by signal <name>` in the same form.
+
+### Claude Code returned an error result
+
+Both SDKs replace the process-exit error with this message when the CLI reported an error result before exiting:
+
+```
+Claude Code returned an error result: <the CLI's own error report>
+```
+
+Python raises this as a `ResultError`, whose `data` attribute carries the full error result. TypeScript rejects the message loop with a plain `Error` carrying the same message shape.
 
 ## Structured outputs
 

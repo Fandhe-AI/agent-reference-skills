@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/cost-tracking / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/cost-tracking / last verified: 2026-10-16 -->
 
 # Track cost and usage
 
@@ -182,6 +182,11 @@ asyncio.run(main())
 ## Notes
 
 - `total_cost_usd` / `costUSD` are estimates only — see the warning at the top of this page before using them for billing.
+- Data residency pricing: when a response's `usage` reports `inference_geo: "us"`, the SDK multiplies the list price of that response's tokens by 1.1; per-request fees such as web search aren't multiplied. Requires TypeScript Agent SDK v0.3.239+ or Python Agent SDK v0.2.144+.
+- Each model usage entry's `costBasis` says which price table priced that model's latest request: `list` (list price), `managed` (a `modelPricing` settings table), or `unknown` (neither matched the model ID). Requires Claude Code v2.1.246+.
+- Resumed or forked sessions: on Claude Code v2.1.277+, session totals are saved to the transcript on normal exit and restored when a later call resumes or forks the session, so each result already includes the session's earlier spend. Read the latest result for the session total; summing results double-counts. Before v2.1.277 totals started at zero on resume. Independent calls (no `resume` / `continue`) each cover only their own call and are summed by you.
+- Each `/clear` resets the conversation; the SDK emits `SDKConversationResetMessage` in TypeScript and `ConversationResetMessage` in Python. Before Python SDK v0.2.137 the Python iterator dropped that message, so count resets yourself from the `/clear` turns your app sends.
+- Prompt cache TTL per bucket (each takes `5m` or `1h` and takes precedence over `ENABLE_PROMPT_CACHING_1H`): main conversation via the `CLAUDE_CODE_PROMPT_CACHE_TTL` environment variable or the `promptCacheTtl` setting; everything else (subagents) via `CLAUDE_CODE_SUBAGENT_PROMPT_CACHE_TTL` or the `subagentPromptCacheTtl` setting.
 
 ## Related
 

@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/permissions.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/permissions.md / last verified: 2026-10-16 -->
 
 # Configure permissions
 
@@ -30,6 +30,7 @@ const options = {
 - `plan` mode: file edits and (v2.1.212+) file-modifying shell commands always route to `canUseTool`, never auto-approved even by allow rules.
 - Scoped path rules: `Edit(path)` governs all built-in file-writing tools including `Write`/`NotebookEdit`; `Write(path)` rules are never matched. `//path` anchors an absolute filesystem path; `/path` anchors at the rule's source (session cwd for `allowed_tools`/`disallowed_tools`).
 - Subagents inherit the parent's permission mode; an `AgentDefinition.permissionMode` can override it except when the parent uses `bypassPermissions`, `acceptEdits`, or `auto` (those apply unconditionally to every subagent).
+- TypeScript: when a `canUseTool` callback is shadowed by an earlier auto-approve step, the SDK emits a Node.js process warning with code `CLAUDE_SDK_CAN_USE_TOOL_SHADOWED` once, when the query is constructed. Triggers: `permissionMode: 'bypassPermissions'`, and each bare `allowedTools` entry such as `"Read"`. Entries with a specifier such as `Bash(ls *)` and `acceptEdits` mode don't trigger it, and allow rules from settings files aren't visible to the check. To gate every tool call regardless of mode and rules, use a `PreToolUse` hook.
 - Declarative rules can also be set in `.claude/settings.json`, read when the `project` setting source is enabled.
 
 ## Related

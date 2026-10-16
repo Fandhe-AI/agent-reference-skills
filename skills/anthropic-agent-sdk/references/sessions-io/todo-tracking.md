@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/todo-tracking.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/todo-tracking.md / last verified: 2026-10-16 -->
 
 # Todo Lists
 
@@ -33,6 +33,8 @@ for await (const message of query({
 
 ## Notes
 
+- Model availability (Claude Code v2.1.268+, bundled by TypeScript Agent SDK from v0.3.268): `TodoWrite`, `TaskCreate`, `TaskGet`, `TaskUpdate`, and `TaskList` are available by default only on Claude Opus 4.7, Claude Sonnet 4.6, Claude Haiku 4.5, and earlier models. On every other model, including model IDs Claude Code doesn't recognize, they aren't available unless you opt in. Wherever available, Claude Code provides the four Task tools, or `TodoWrite` instead when `CLAUDE_CODE_ENABLE_TASKS=0`.
+- Task system messages (`SDKTaskNotificationMessage` in TypeScript, `TaskNotificationMessage` in Python) report background tasks such as backgrounded commands and subagents; todo activity itself appears as `tool_use` blocks in assistant messages.
 - Todo lifecycle: created (`pending`) → activated (`in_progress`) → completed, or removed via `TaskUpdate` with `status: "deleted"`.
 - Claude creates todos for multi-step work (3+ actions), user-provided task lists, non-trivial operations, or explicit requests; it may skip todos for short/single-step requests.
 - Migrating from `TodoWrite` to Task tools: match `block.name === "TaskCreate"` or `"TaskUpdate"` instead of `"TodoWrite"`. The assigned task ID is not in the `TaskCreate` input — it comes back in the matching `tool_result` as `{ task: { id, subject } }`.

@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/agent-sdk/streaming-output.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/agent-sdk/streaming-output.md / last verified: 2026-10-16 -->
 
 # Stream responses in real-time
 
@@ -42,6 +42,8 @@ async for message in query(prompt="List the files in my project", options=option
 - `parent_tool_use_id` is always `null`/`None` on stream events — token-level deltas from subagents aren't forwarded. Use complete messages (which do carry `parent_tool_use_id`) to attribute output to a subagent.
 - Message flow with streaming enabled: `StreamEvent`s for `message_start` → `content_block_start`/`delta`/`stop` (per block) → `message_delta` → `message_stop`, then the complete `AssistantMessage`, then tool execution, then more events for the next turn, then `ResultMessage`.
 - Tool call streaming: `content_block_start` (tool begins, `content_block.type === "tool_use"`) → `content_block_delta` with `input_json_delta` (accumulate `partial_json`) → `content_block_stop` (tool call complete).
+- If a stream is cut off mid-message (interrupt or dropped connection), you still receive that message's `message_stop` before the turn ends. A cut text or thinking block also gets its `content_block_stop`; a cut tool call doesn't, so if `message_stop` arrives while a tool call's block is still open, treat that call's input as incomplete. Before Claude Code v2.1.290, a cut stream could end the turn without `message_stop`, so a rendered reply could stay shown as in progress. The TypeScript Agent SDK bundles v2.1.290 or later from v0.3.290, and the Python Agent SDK from v0.2.164.
+- TypeScript stream events carry `user_message_uuid`, set on the turn's first non-ping stream event and again when the message the turn is answering changes. The Python `StreamEvent` doesn't expose this field.
 - **Known limitation**: structured output JSON appears only in the final `ResultMessage.structured_output`, not as streaming deltas.
 
 ## Related
