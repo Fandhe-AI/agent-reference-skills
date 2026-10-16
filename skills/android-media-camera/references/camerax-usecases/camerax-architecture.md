@@ -45,9 +45,8 @@ class CustomLifecycle : LifecycleOwner {
         lifecycleRegistry.markState(State.RESUMED)
     }
     ...
-    override fun getLifecycle(): Lifecycle {
-        return lifecycleRegistry
-    }
+    override val lifecycle: Lifecycle
+        get() = lifecycleRegistry
 }
 ```
 
@@ -94,7 +93,8 @@ dependencies {
 ## Notes
 
 - Requirements: Android API level 21 and Android Architecture Components 1.1.1. For lifecycle-aware activities, use `FragmentActivity` or `AppCompatActivity`.
-- Permissions: `CAMERA`; saving images to files also requires `WRITE_EXTERNAL_STORAGE`, except on devices running Android 10 or later.
+- Permissions: `CAMERA`. The source page states that saving images to files also requires `WRITE_EXTERNAL_STORAGE` except on Android 10 or later; this applies only when writing to shared external storage on Android 9 (API 28) and lower. Saving to app-specific directories (`filesDir`, `getExternalFilesDir()` on API 19+) or via MediaStore on Android 10+ needs no storage permission (see the android-data skill's app-specific storage page).
+- Custom LifecycleOwner: the source page shows `override fun getLifecycle()` (pre-Lifecycle 2.6 form); since androidx.lifecycle 2.6.0 `LifecycleOwner` is a Kotlin interface exposing `val lifecycle`, so Kotlin implementations override the property instead. (Java implementations still implement `getLifecycle()`.)
 - Dependencies: add the `google()` repository in `settings.gradle`; the source page also adds Java 1.8 `compileOptions` (and `kotlinOptions { jvmTarget = "1.8" }` for Kotlin projects) to the `android` block. The artifact version shown on the source page is `1.7.0-alpha03` (alpha at time of retrieval, 2026-10); check the CameraX release notes for the current stable version.
 - Lifecycles: CameraX observes a lifecycle to decide when to open the camera, create a capture session, and stop/shut down. For use cases that cannot be combined, group compatible use cases into separate fragments and switch between them, or create a custom lifecycle component to control the camera manually.
 - If view and camera use case lifecycle owners are decoupled (custom lifecycle or retained fragment), unbind all use cases with `ProcessCameraProvider.unbindAll()` or individually.
