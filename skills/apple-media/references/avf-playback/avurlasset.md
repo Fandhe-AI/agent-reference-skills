@@ -37,10 +37,12 @@ let player = AVPlayer(playerItem: item)
 | `resourceLoader` | `AVAssetResourceLoader` | Override resource loading (DRM, custom protocols) |
 | `assetCache` | `AVAssetCache?` | Cache for offline playback |
 | `httpSessionIdentifier` | `UUID` | Identifier sent in HTTP request headers |
+| `mediaExtensionProperties` | `AVMediaExtensionProperties?` | Indicates whether the asset decodes through a Media Extension (macOS 15.0+ only) |
 
 | Class Method | Description |
 |--------------|-------------|
-| `audiovisualTypes()` | Returns UTI strings of supported file types |
+| `audiovisualTypes()` | Returns UTI strings of supported file types. Deprecated in 27.0: "Use audiovisualContentTypes instead" |
+| `audiovisualContentTypes` | `class var audiovisualContentTypes: [UTType]`; supported content types (26.0+) |
 | `audiovisualMIMETypes()` | Returns supported MIME types |
 | `isPlayableExtendedMIMEType(_:)` | Check codec/container playability |
 

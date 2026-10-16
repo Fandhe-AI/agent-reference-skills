@@ -49,7 +49,7 @@ iOS 8.0+, iPadOS 8.0+, macOS 10.13+, Mac Catalyst 13.1+, tvOS 10.0+, visionOS 1.
 
 - `fetchPersistentChanges(since:)` and its persistent-changes observer APIs (`register(_:)` / `unregisterPersistentChangesObserver(_:)`) are marked beta in the current documentation.
 - `cloudIdentifierMappings(forLocalIdentifiers:)` / `localIdentifierMappings(for:)` supersede the deprecated `cloudIdentifiers(forLocalIdentifiers:)` / `localIdentifiers(for:)`.
-- The no-parameter `authorizationStatus()` and `requestAuthorization(_:)` are deprecated; use `authorizationStatus(for:)` and `requestAuthorization(for:handler:)` instead.
+- The no-parameter `authorizationStatus()` and `requestAuthorization(_:)` are deprecated; use `authorizationStatus(for:)` and `requestAuthorization(for:handler:)` instead. Per the current docs metadata, `authorizationStatus()` has deprecatedAt iOS 14.0 (macOS 11.0) and `requestAuthorization(_:)` has deprecatedAt iOS 27.2 / macOS 27.2 (transcribed as written; the `authorizationStatus()` metadata also carries a 27.2 entry).
 
 ## Related
 

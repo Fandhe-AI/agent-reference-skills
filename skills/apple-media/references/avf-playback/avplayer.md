@@ -19,7 +19,9 @@ player.play()
 player.pause()
 
 // Seeking
-player.seek(to: time) { finished in ... }
+player.seek(to: time) { finished in
+    print("seek finished: \(finished)")
+}
 
 // Periodic observation
 let token = player.addPeriodicTimeObserver(
@@ -49,7 +51,7 @@ let token = player.addPeriodicTimeObserver(
 | `allowsExternalPlayback` | `Bool` | Enables AirPlay / HDMI output |
 | `sourceClock` | `CMClock?` | Reference clock for synchronised multi-player playback |
 | `eligibleForHDRPlayback` (class) | `Bool` | Whether the current device can present content to an HDR display |
-| `availableHDRModes` (class) | `AVPlayer.HDRMode` | HDR modes available to the player |
+| `availableHDRModes` (class) | `AVPlayer.HDRMode` | HDR modes available to the player. Deprecated in iOS 26.0: "Use eligibleForHDRPlayback instead" (`AVPlayer.HDRMode` likewise) |
 | `audiovisualBackgroundPlaybackPolicy` | `AVPlayerAudiovisualBackgroundPlaybackPolicy` | Policy controlling playback behaviour when the app moves to the background |
 | `networkResourcePriority` | `AVPlayer.NetworkResourcePriority` | Priority for network bandwidth distribution relative to other players |
 | `playbackCoordinator` | `AVPlayerPlaybackCoordinator` | Coordinator for synchronised playback across devices |
@@ -74,6 +76,7 @@ let token = player.addPeriodicTimeObserver(
 - Observe `status` via KVO or Swift Observation before calling `play()` to ensure the player is ready.
 - Time observer tokens must be kept alive and removed with `removeTimeObserver(_:)` to avoid retain cycles.
 - `AVQueuePlayer` is the recommended subclass for playlist-style playback.
+- `availableHDRModes` and `AVPlayer.HDRMode` are deprecated in iOS 26.0; use `eligibleForHDRPlayback`.
 - `isClosedCaptionDisplayEnabled`, `allowsAirPlayVideo`, `usesAirPlayVideoWhileAirPlayScreenIsActive`, and `masterClock` are deprecated in the current documentation; use `sourceClock` in place of `masterClock`, and system-level AirPlay routing (`AVRoutePickerView`) in place of the AirPlay video properties.
 
 ## Related

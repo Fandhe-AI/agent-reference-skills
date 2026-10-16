@@ -41,7 +41,7 @@ struct ContentView: View {
 | `selection` | `Binding<PhotosPickerItem?>` or `Binding<[PhotosPickerItem]>` | Single or multiple selection binding |
 | `maxSelectionCount` | `Int?` | Max number of items; `nil` means system default |
 | `selectionBehavior` | `PhotosPickerSelectionBehavior` | `.default`, `.ordered`, or `.continuous` |
-| `matching` | `PHPickerFilter?` | Filter for displayed content (`.images`, `.videos`, `.any(of:)`, `.not(_:)`) |
+| `matching` | `PHPickerFilter?` | Filter for displayed content (`.images`, `.videos`, `.spatialMedia` (iOS 18.0+, macOS 15.0+, visionOS 2.0+), `.any(of:)`, `.not(_:)`) |
 | `preferredItemEncoding` | `PhotosPickerItem.EncodingDisambiguationPolicy` | How to resolve ambiguous encoding formats |
 | `photoLibrary` | `PHPhotoLibrary` | Custom photo library source; defaults to `PHPhotoLibrary.shared()` |
 | `label` | `() -> Label` | View used as the picker's trigger button |

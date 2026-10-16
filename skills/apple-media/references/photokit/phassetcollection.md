@@ -41,6 +41,8 @@ let assets = PHAsset.fetchAssets(in: albums.firstObject!, options: nil)
 
 iOS 8.0+, iPadOS 8.0+, macOS 10.13+, Mac Catalyst 13.1+, tvOS 10.0+, visionOS 1.0+. Collections are immutable; use `PHAssetCollectionChangeRequest` inside a change block to create, rename, delete, or modify membership. `NSPhotoLibraryUsageDescription` must be present in `Info.plist`.
 
+- `PHAssetCollectionSubtype.smartAlbumSpatial` (iOS 18.0+, macOS 15.0+, tvOS 18.0+, visionOS 2.0+) fetches the spatial media smart album.
+
 ## Related
 
 - [PHAsset](./phasset.md)

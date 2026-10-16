@@ -37,6 +37,7 @@ engine.connect(reverb, to: engine.mainMixerNode, format: nil)
 - iOS 8.0+, macOS 10.10+, tvOS 9.0+, watchOS 2.0+, visionOS 1.0+
 - Use concrete subclasses (`AVAudioUnitReverb`, `AVAudioUnitEQ`, etc.) directly; instantiate `AVAudioUnitEffect` only with a custom `AudioComponentDescription`
 - Effects are inserted into the audio graph between source and output nodes
+- `AVAudioEngine.connect(_:to:format:)`, used in the snippet, is deprecated in 27.0; use `try engine.connectNode(_:to:format:)` on 27.0+
 - Setting `bypass = true` disables the effect without removing the node from the graph
 
 ## Related

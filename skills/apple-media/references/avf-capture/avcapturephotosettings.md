@@ -8,7 +8,7 @@ An object that specifies the features and settings for a single photo capture re
 // Basic JPEG capture
 let settings = AVCapturePhotoSettings()
 settings.flashMode = .auto
-settings.isHighResolutionPhotoEnabled = true
+settings.maxPhotoDimensions = photoOutput.maxPhotoDimensions
 photoOutput.capturePhoto(with: settings, delegate: self)
 
 // RAW + JPEG capture
@@ -23,27 +23,27 @@ photoOutput.capturePhoto(with: rawSettings, delegate: self)
 
 ## Options / Props
 
-| Name | Type | Description |
-|------|------|-------------|
-| `flashMode` | `AVCaptureDevice.FlashMode` | Flash behavior: `.auto`, `.on`, `.off` |
-| `photoQualityPrioritization` | `AVCapturePhotoOutput.QualityPrioritization` | Trade-off between quality and delivery speed |
-| `isHighResolutionPhotoEnabled` | `Bool` | Capture at the highest supported resolution |
-| `maxPhotoDimensions` | `CMVideoDimensions` | Maximum resolution cap for the capture |
-| `isDepthDataDeliveryEnabled` | `Bool` | Include a depth map with the photo |
-| `isPortraitEffectsMatteDeliveryEnabled` | `Bool` | Include portrait effects matte |
-| `isAutoRedEyeReductionEnabled` | `Bool` | Apply automatic red-eye reduction |
-| `isConstantColorEnabled` | `Bool` | Capture with constant color |
-| `isAutoContentAwareDistortionCorrectionEnabled` | `Bool` | Apply content-aware distortion correction |
-| `isAutoVirtualDeviceFusionEnabled` | `Bool` | Enable virtual device sensor fusion |
-| `isShutterSoundSuppressionEnabled` | `Bool` | Suppress the shutter sound |
-| `livePhotoMovieFileURL` | `URL?` | Output URL for the Live Photo movie component |
-| `livePhotoVideoCodecType` | `AVVideoCodecType` | Codec for the Live Photo movie |
-| `rawPhotoPixelFormatType` | `OSType` | Bayer RAW pixel format for RAW capture |
-| `rawFileType` | `AVFileType?` | Container format for RAW output |
-| `processedFileType` | `AVFileType?` | Container format for processed output |
-| `previewPhotoFormat` | `[String: Any]?` | Format dictionary for a preview-sized image |
-| `embeddedThumbnailPhotoFormat` | `[String: Any]?` | Format for an embedded thumbnail |
-| `uniqueID` | `Int64` | Unique identifier for this settings object |
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `flashMode` | `AVCaptureDevice.FlashMode` | — | Flash behavior: `.auto`, `.on`, `.off` |
+| `photoQualityPrioritization` | `AVCapturePhotoOutput.QualityPrioritization` | — | Trade-off between quality and delivery speed |
+| `isHighResolutionPhotoEnabled` | `Bool` | — | Capture at the highest supported resolution. Deprecated since iOS 16.0: "Use maxPhotoDimensions instead." |
+| `maxPhotoDimensions` | `CMVideoDimensions` | — | Maximum resolution cap for the capture (iOS 16.0+); `AVCapturePhotoOutput.maxPhotoDimensions` is also `CMVideoDimensions` |
+| `isDepthDataDeliveryEnabled` | `Bool` | — | Include a depth map with the photo |
+| `isPortraitEffectsMatteDeliveryEnabled` | `Bool` | — | Include portrait effects matte |
+| `isAutoRedEyeReductionEnabled` | `Bool` | — | Apply automatic red-eye reduction |
+| `isConstantColorEnabled` | `Bool` | — | Capture with constant color |
+| `isAutoContentAwareDistortionCorrectionEnabled` | `Bool` | — | Apply content-aware distortion correction |
+| `isAutoVirtualDeviceFusionEnabled` | `Bool` | — | Enable virtual device sensor fusion |
+| `isShutterSoundSuppressionEnabled` | `Bool` | — | Suppress the shutter sound |
+| `livePhotoMovieFileURL` | `URL?` | — | Output URL for the Live Photo movie component |
+| `livePhotoVideoCodecType` | `AVVideoCodecType` | — | Codec for the Live Photo movie |
+| `rawPhotoPixelFormatType` | `OSType` | — | Bayer RAW pixel format for RAW capture |
+| `rawFileType` | `AVFileType?` | — | Container format for RAW output |
+| `processedFileType` | `AVFileType?` | — | Container format for processed output |
+| `previewPhotoFormat` | `[String: Any]?` | — | Format dictionary for a preview-sized image |
+| `embeddedThumbnailPhotoFormat` | `[String: Any]?` | — | Format for an embedded thumbnail |
+| `uniqueID` | `Int64` | — | Unique identifier for this settings object |
 
 ## Notes
 

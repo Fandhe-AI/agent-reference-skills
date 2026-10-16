@@ -4,6 +4,7 @@ description: >
   AVFoundation / AVKit / PhotoKit リファレンス。
   AVPlayer, AVPlayerViewController, VideoPlayer, AVPlayerItem, AVMutableComposition,
   AVCaptureSession, AVCaptureDevice, AVCapturePhotoOutput,
+  AVCaptureDeviceDirectionCoordinator, CameraCaptureAccessory (iPhone Duo),
   AVAudioEngine, AVAudioSession, AVAudioPlayer, AVSpeechSynthesizer,
   PHAsset, PHImageManager, PhotosPicker, PHPhotoLibrary。
 user-invocable: false
@@ -41,6 +42,8 @@ skills/apple-media/
       avcapturevideodataoutput.md
       avcapturevideopreviewlayer.md
       avcapturemetadataoutput.md
+      avcapturedevicedirectioncoordinator.md
+      camera-capture-accessory.md
     avf-audio/
       README.md
       avaudioplayer.md
@@ -90,6 +93,8 @@ skills/apple-media/
 | AVCaptureSession のセットアップをしたい | avf-capture | [references/avf-capture/README.md](references/avf-capture/README.md) |
 | ライブプレビューを表示したい | avf-capture | [references/avf-capture/README.md](references/avf-capture/README.md) |
 | QR コード・顔検出をリアルタイムで行いたい | avf-capture | [references/avf-capture/README.md](references/avf-capture/README.md) |
+| iPhone Duo でカメラの向き（前面/背面）を追従してカメラを切り替えたい | avf-capture | [references/avf-capture/README.md](references/avf-capture/README.md) |
+| iPhone Duo の外側ディスプレイに撮影用コンテンツ（台本など）を表示したい | avf-capture | [references/avf-capture/README.md](references/avf-capture/README.md) |
 | 音声を再生・録音したい | avf-audio | [references/avf-audio/README.md](references/avf-audio/README.md) |
 | AVAudioEngine でノードグラフを構築したい | avf-audio | [references/avf-audio/README.md](references/avf-audio/README.md) |
 | AVAudioSession のカテゴリ・モードを設定したい | avf-audio | [references/avf-audio/README.md](references/avf-audio/README.md) |
