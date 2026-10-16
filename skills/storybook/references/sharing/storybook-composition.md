@@ -56,9 +56,12 @@ refs: (config, { configType }) => {
 
 - `refs` also accepts a function `(config, { configType }) => refs` for dynamic composition based on Storybook's build configuration.
 - Addons in composed Storybooks will not work as they normally do in a non-composed Storybook.
+- Troubleshooting, "A development Storybook composed from a remote IP address fails": in development mode, for security reasons, Storybook blocks iframe embedding from non-localhost origins and only exchanges messages with a composing Storybook opened on a local host, such as `localhost` or `127.0.0.1`. If you need to open the composing Storybook through a LAN IP address, build the composed Storybook first and compose its build output instead.
+- You can also enable the `security.insecureRemoteIframeEmbed` and `security.insecureIframeMessaging` flags in the composed Storybook's configuration (see [security.md](../api/main-config/security.md)). Be cautious: they allow any website you visit to embed your local Storybook and exchange messages with it.
 
 ## Related
 
+- [Main Configuration: security](../api/main-config/security.md)
 - [Publish Storybook](./publish-storybook.md)
 - [Package Composition](./package-composition.md)
 - [Main Configuration: refs](../api/main-config/refs.md)

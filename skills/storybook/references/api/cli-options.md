@@ -33,6 +33,11 @@ storybook dev [options]
 | `--no-open` | — | Prevent auto-opening browser |
 | `--quiet` | — | Suppress verbose output |
 | `--debug` | — | Output additional debug logs |
+| `--debug-webpack` | — | Display final webpack configurations for debugging |
+| `--exact-port` | — | Run on the exact port specified; exit with an error if it is in use |
+| `--stats-json [dir-name]` | string | Write stats JSON to disk (requires Webpack) |
+| `--no-version-updates` | — | Skip Storybook's update check |
+| `--preview-only` | — | Skip building the manager; open in "preview only" mode (for unsupported browsers) |
 | `--initial-path` | string | URL path to open in browser |
 | `--preview-url` | string | Override preview iframe URL |
 | `--force-build-preview` | — | Force rebuild of preview iframe |
@@ -57,6 +62,9 @@ storybook build [options]
 | `--loglevel` | string | `trace \| debug \| info \| warn \| error \| silent` |
 | `--quiet` | — | Suppress verbose output |
 | `--debug` | — | Additional debug information |
+| `--debug-webpack` | — | Display final webpack configurations for debugging |
+| `--stats-json [dir-name]` | string | Write stats JSON to disk (requires Webpack) |
+| `--preview-only` | — | Skip building the manager; produce a "preview only" app |
 | `--docs` | — | Build in documentation mode |
 | `--test` | — | Optimize build for testing (removes UI features) |
 | `--preview-url` | string | Override preview iframe URL |
@@ -82,6 +90,7 @@ storybook[@version] init [options]
 | `-y, --yes` | Skip prompts and auto-install |
 | `--features [...values]` | Install specific features (`docs`, `test`, `a11y`) |
 | `--package-manager` | Package manager (`npm`, `yarn`, `pnpm`) |
+| `--use-pnp` | Enable Yarn Plug'n'Play support (Yarn only) |
 | `--no-dev` | Complete init without running dev server |
 
 ---
@@ -125,7 +134,9 @@ storybook[@version] upgrade [options]
 | `-c, --config-dir` | Config directory (supports multiple) |
 | `-n, --dry-run` | Check upgrades without installing |
 | `-s, --skip-check` | Skip migration check |
-| `-y, --yes` | Skip prompts and auto-upgrade |
+| `--skip-automigrations` | Skip automigrations entirely; only update and install package versions |
+| `-y, --yes` | Skip prompts and auto-upgrade. Migrations requiring deliberate opt-in (framework migrations, experimental feature flags) are not run. `--features` can preselect only the experimental-feature-flag automigrations; run framework migrations interactively (without `--yes`) or via `storybook automigrate` |
+| `--features <list>` | Preselect the automigrations that enable the listed experimental feature flags (e.g. `--features experimentalReview,experimentalDocgenServer`); other detected automigrations are still offered. Cannot be combined with `--skip-automigrations` |
 | `-f, --force` | Force upgrade, skip autoblockers |
 | `--package-manager` | Package manager |
 
@@ -184,9 +195,15 @@ Helpers for AI agents. Exposes subcommands that generate AI-friendly instruction
 storybook ai <subcommand> [options]
 ```
 
+| Option | Description |
+|--------|-------------|
+| `-o, --output <path>` | Write the prompt output to a file instead of printing it to stdout |
+
 #### `storybook ai setup`
 
 Generates a detailed, project-aware Markdown prompt that instructs an AI agent to configure Storybook and write initial stories.
+
+> `storybook ai setup` is currently only available for projects using the React renderer with the Vite builder.
 
 | Option | Description |
 |--------|-------------|
@@ -242,6 +259,7 @@ storybook[@version] sandbox [framework-filter] [options]
 
 - Telemetry collects anonymous usage data; opt out with `--disable-telemetry` on any command
 - `storybook init` is also available as `create storybook[@version]`
+- The official `upgrade --yes` row says 'use `--features` to include them', but `--features` only covers experimental feature flag automigrations (see the `--features` row and releases/upgrading).
 
 ## Related
 

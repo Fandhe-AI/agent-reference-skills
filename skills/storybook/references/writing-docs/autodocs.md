@@ -114,6 +114,8 @@ const config: StorybookConfig = {
 - For TypeScript monorepos, set `reactDocgen: 'react-docgen'` in main config if docgen fails.
 - Inline rendering must be enabled for Controls to update stories live.
 - MDX unattached documentation pages cannot customize TOC due to parameter limitations.
+- Removed in 10.6.0: the standalone `@storybook/csf-plugin` package. CSF source enrichment now lives inside `@storybook/addon-docs` and is configured through that addon's `csfPluginOptions` option (can be disabled with `null`; `mdxPluginOptions` configures MDX). Direct imports of `@storybook/csf-plugin` in custom builders or standalone Vite/Webpack configs are no longer supported; there is no public replacement package (MIGRATION.md).
+- Deprecated in 10.5.0: the `ExternalDocs` and `ExternalDocsContainer` components from `@storybook/addon-docs` will be removed in Storybook 11 (MIGRATION.md; CHANGELOG 10.5.0 "Docs: Deprecate ExternalDocs - #35074").
 
 ## Related
 

@@ -6,7 +6,7 @@ Specify arg behavior, constrain acceptable values, and configure the Controls pa
 
 ArgTypes can be defined at three levels: **story**, **component** (meta), or **project** (preview.ts). Storybook automatically infers argTypes from the component using framework-specific tools (react-docgen, vue-docgen-api, compodoc, etc.). Manually specified values override inferred ones.
 
-## Usage
+## Signature / Usage
 
 ```typescript
 const meta = {
@@ -120,6 +120,8 @@ Semantic type using `SBType` structure.
 
 - `defaultValue` is deprecated — define defaults in `args` instead
 - Story-level argTypes override component-level which override project-level
+- Vue (docgen): `vue-docgen-api` (the current default for `@storybook/vue3-vite`, also selected by `docgen: true`) is deprecated since Storybook 10.6 and will be removed in the next major version. Set the framework option `docgen: 'vue-component-meta'`, or enable server-side docgen with `features: { experimentalDocgenServer: true }` (which becomes the default in Storybook 11 and also uses `vue-component-meta`). `docgen: false` disables docgen, in which case argTypes are not inferred automatically.
+- Angular (docgen): on `@storybook/angular-vite`, `features.experimentalDocgenServer` is on by default, so Compodoc never runs and is not a dependency; component members are read on the Storybook server from your TypeScript sources. The framework option `propsTable` (`'all' | 'api' | 'inputs'`, default `'api'`) controls which members the props table renders. The Webpack-based `@storybook/angular` always uses Compodoc.
 
 ## Related
 

@@ -14,7 +14,7 @@ The highlight addon lets decorators or play functions emit channel events that d
 |------|------|-------------|
 | `disable` | boolean | Disables the feature at project, component, or story level |
 
-## Usage
+## Signature / Usage
 
 ### Highlight elements via decorator
 
@@ -27,6 +27,7 @@ export const Highlighted: Story = {
     (storyFn) => {
       const emit = useChannel({});
       emit(HIGHLIGHT, {
+        id: 'my-highlight',
         selectors: ['h2', 'a', '.storybook-button'],
       });
       return storyFn();
@@ -39,21 +40,75 @@ export const Highlighted: Story = {
 
 | Event | Description |
 |-------|-------------|
-| `HIGHLIGHT` | Highlights DOM elements matching `selectors` |
-| `REMOVE_HIGHLIGHT` | Removes a specific highlight by ID |
-| `RESET_HIGHLIGHT` | Clears all active highlights |
-| `SCROLL_INTO_VIEW` | Scrolls to an element and briefly highlights it |
+| `HIGHLIGHT` | Highlights DOM elements matching `selectors`. Payload must contain `id` (payloads without an `id` are ignored) |
+| `HIGHLIGHT_MENU_CLICK` | Emitted when a `clickable` menu item is clicked; listeners receive `(highlightId, itemId, details: ClickEventDetails)` |
+| `REMOVE_HIGHLIGHT` | Removes a specific highlight by ID (`channel.emit(REMOVE_HIGHLIGHT, id)`) |
+| `RESET_HIGHLIGHT` | Clears all active highlights, including those created by other addons (`channel.emit(RESET_HIGHLIGHT)`) |
+| `SCROLL_INTO_VIEW` | Scrolls to an element and briefly highlights it (`channel.emit(SCROLL_INTO_VIEW, selector, options)`; `options` follows the MDN `scrollIntoViewOptions`) |
+
+Exports: `import { HIGHLIGHT, HIGHLIGHT_MENU_CLICK, REMOVE_HIGHLIGHT, RESET_HIGHLIGHT, SCROLL_INTO_VIEW } from 'storybook/highlight';`
 
 ### `HIGHLIGHT` event options
 
-| Property | Description |
-|----------|-------------|
-| `selectors` | CSS selector strings to target |
-| `styles` | Base CSS styles for the highlight overlay |
-| `hoverStyles` | Styles applied on hover |
-| `focusStyles` | Styles applied on focus |
-| `keyframes` | Custom CSS animation keyframes |
-| `menu` | Array of clickable menu items with optional `clickEvent` |
+```ts
+interface HighlightOptions {
+  /** Unique identifier for the highlight, used to remove it later and to attribute menu clicks */
+  id: string;
+  /** HTML selectors of the elements */
+  selectors: string[];
+  /** Priority of the highlight, higher takes precedence, defaults to 0 */
+  priority?: number;
+  /** CSS styles to apply to the highlight */
+  styles?: Record<string, string>;
+  /** CSS styles to apply to the highlight when it is hovered */
+  hoverStyles?: Record<string, string>;
+  /** CSS styles to apply to the highlight when it is focused or selected */
+  focusStyles?: Record<string, string>;
+  /** Keyframes required for animations */
+  keyframes?: string;
+  /** Groups of menu items to show when the highlight is selected */
+  menu?: HighlightMenuItem[][];
+}
+
+interface HighlightMenuItem {
+  id: string;
+  title: string;
+  description?: string;
+  iconLeft?: 'chevronLeft' | 'chevronRight' | 'info' | 'shareAlt';
+  iconRight?: 'chevronLeft' | 'chevronRight' | 'info' | 'shareAlt';
+  /** Render the item as a button which emits `HIGHLIGHT_MENU_CLICK` when clicked */
+  clickable?: boolean;
+  /** Subset of HighlightOptions['selectors'] for which this menu item shows */
+  selectors?: HighlightOptions['selectors'];
+}
+```
+
+### Highlight menu
+
+Add a `menu` property to the payload to let users select highlighted elements by clicking them. Each item must include an `id` and a `title`; `selectors` optionally limits the item to specific highlighted elements. Omit the items or set `menu` to an empty array to show the default menu. `hoverStyles` and `focusStyles` are recommended with `menu`.
+
+### `HIGHLIGHT_MENU_CLICK`
+
+```ts
+interface ClickEventDetails {
+  // Position and dimensions of the element on the page
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+  // Selector(s) which matched the element
+  selectors: string[];
+  // Element name, without its attributes or content
+  element: {
+    localName: string;
+    tagName: string;
+  };
+}
+
+channel.on(HIGHLIGHT_MENU_CLICK, (highlightId: string, itemId: string, details: ClickEventDetails) => {});
+```
+
+The highlight `id` and menu item `id` are not a security boundary: any addon, and any page that can post messages to the preview, can emit a `HIGHLIGHT` payload reusing your `id` with any menu item `id`.
 
 ## Notes
 
