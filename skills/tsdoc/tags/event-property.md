@@ -27,6 +27,7 @@ class MyClass {
 - ドキュメントツールは該当プロパティを "Properties" ではなく "Events" 見出しで表示できる
 - TypeDoc では `@group Events` 指定と等価で、reflection を "Events" グループへ入れる
 - 提案経緯: microsoft/tsdoc の RFC #30（`@eventClass` / `@eventProperty`）
+- 出典: https://tsdoc.org/pages/tags/eventproperty/ （rushstack-websites 5c0c8b9）、https://typedoc.org/documents/Tags._eventProperty.html （TypeDoc v0.28.20）
 
 ## 関連
 

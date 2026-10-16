@@ -17,7 +17,7 @@
  * @since 0.1.0
  * @category Layout
  */
-const Picture = ({ ... }: Props) => { ... };
+const Picture = (props: Props) => null;
 ```
 
 ```typescript

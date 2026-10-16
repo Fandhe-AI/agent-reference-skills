@@ -31,6 +31,7 @@ class Child extends Base {
 - 宣言ファイルからドキュメントを生成する場合を除き、TypeScript の `override` キーワードを `@override` タグより優先する
 - `@virtual` / `@override` / `@sealed` の一貫適用をドキュメントツールが強制してもよいが、TSDoc 標準では必須ではない
 - TypeDoc は互換性のため parse するだけで、意味は付与しない
+- 出典: https://tsdoc.org/pages/tags/override/ （rushstack-websites 5c0c8b9）、https://typedoc.org/documents/Tags._override.html （TypeDoc v0.28.20）
 
 ## 関連
 

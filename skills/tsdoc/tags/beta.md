@@ -37,6 +37,7 @@ export class Book {
 - ツールは公開リリースから宣言を除外（trim）してよいが、developer preview リリースには含めてよい
 - TypeDoc では `@beta` と `@experimental` は意味的に等価。どちらか一方のみ使う
 - TypeDoc の `--visibilityFilters` オプションで表示を制御できる
+- 出典: https://tsdoc.org/pages/tags/beta/ （rushstack-websites 5c0c8b9）、https://typedoc.org/documents/Tags._beta.html （TypeDoc v0.28.20）
 
 ## 関連
 

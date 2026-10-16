@@ -37,6 +37,7 @@
 - 標準化区分: Core、構文種別: Block tag
 - ツールは API リファレンスサイト・生成 `*.d.ts` などの出力から、このセクション全体を除外しなければならない
 - TypeDoc は既定で除外するが、`--excludeTags` を設定している場合はリストへ含める責任はユーザー側にある
+- 出典: https://tsdoc.org/pages/tags/privateremarks/ （rushstack-websites 5c0c8b9）、https://typedoc.org/documents/Tags._privateRemarks.html （TypeDoc v0.28.20）
 
 ## 関連
 

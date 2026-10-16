@@ -36,6 +36,7 @@ export class Book {
 - 標準化区分: Discretionary、構文種別: Modifier、同義: `@beta`
 - TypeDoc では `@beta` と `@experimental` は意味的に等価。どちらか一方のみ使う
 - TypeDoc の `--visibilityFilters` オプションで表示を制御できる
+- 出典: https://tsdoc.org/pages/tags/experimental/ （rushstack-websites 5c0c8b9）、https://typedoc.org/documents/Tags._experimental.html （TypeDoc v0.28.20）
 
 ## 関連
 

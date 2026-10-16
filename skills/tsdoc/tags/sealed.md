@@ -33,6 +33,7 @@ class Child extends Base {
 - クラスに付けるとサブクラス化禁止、メソッド・プロパティに付けるとオーバーライド禁止
 - `@virtual` / `@override` / `@sealed` の一貫適用をドキュメントツールが強制してもよいが、TSDoc 標準では必須ではない
 - TypeDoc は互換性のため parse するだけで、意味は付与しない
+- 出典: https://tsdoc.org/pages/tags/sealed/ （rushstack-websites 5c0c8b9）、https://typedoc.org/documents/Tags._sealed.html （TypeDoc v0.28.20）
 
 ## 関連
 

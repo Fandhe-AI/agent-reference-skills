@@ -13,8 +13,8 @@ TypeDoc のドキュメントでシンボルをグループ化するブロック
 | カテゴリ名 | 対象 |
 |-----------|------|
 | `UI` | UI コンポーネント（Button, Tag, Select 等） |
-| `Layout` | レイアウトコンポーネント（Container, Fieldset, Clickable 等） |
-| `Icon` | アイコン関連（Icon, IconProvider, シンボル） |
+| `Layout` | レイアウトコンポーネント（Container, Fieldset 等） |
+| `Icon` | アイコン関連コンポーネント |
 | `Model` | 型定義、interface |
 | `Data` | 定数、データオブジェクト |
 | `Hooks` | カスタムフック |
@@ -29,14 +29,16 @@ TypeDoc のドキュメントでシンボルをグループ化するブロック
  *
  * @category UI
  */
-const StarRating = ({ ... }: Props) => { ... };
+const StarRating = (props: Props) => null;
 
 /**
  * カテゴリカードに表示するアイテムの型。
  *
  * @category Model
  */
-export interface CategoryCardItem { ... }
+export interface CategoryCardItem {
+  label: string;
+}
 
 /**
  * 業種カテゴリの一覧データ。

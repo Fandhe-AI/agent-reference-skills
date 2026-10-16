@@ -37,6 +37,7 @@ export class Book {
 - TypeDoc では `@public` は member の可視性を public に上書きする（TSDoc 仕様では member の可視性とリリース可視性は別扱いのため非準拠）。通常は使用しない
 - TypeDoc は `@public` バッジを含まれる member へ継承表示せず、注釈した member にのみ表示する
 - `@alpha` / `@beta` / `@experimental` / `@internal` で明示しない export は public として扱い、`@public` を省略することが推奨される
+- 出典: https://tsdoc.org/pages/tags/public/ （rushstack-websites 5c0c8b9）、https://typedoc.org/documents/Tags._public.html （TypeDoc v0.28.20）
 
 ## 関連
 

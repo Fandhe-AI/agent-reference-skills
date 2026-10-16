@@ -42,6 +42,7 @@ export interface IWidget {
 - 個別 API 項目の説明に使わない
 - TypeDoc ではコメントが直後の宣言ではなくファイルを指すことを示す。TypeDoc 固有の `@module` で代替できる
 - TypeDoc ではこのタグを含むコメントはファイル内の最初のコメントである必要があり、import 文より前に置くことが推奨される
+- 出典: https://tsdoc.org/pages/tags/packagedocumentation/ （rushstack-websites 5c0c8b9）、https://typedoc.org/documents/Tags._packageDocumentation.html （TypeDoc v0.28.20）
 
 ## 関連
 

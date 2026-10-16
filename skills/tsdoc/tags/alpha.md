@@ -37,6 +37,7 @@ export class Book {
 - ツールは公開リリースから宣言を除外（trim）してよい
 - TypeDoc では、安定性（semantic versioning 準拠）が未達の member を示す用途で使う
 - TypeDoc の `--visibilityFilters` オプションで表示を制御できる
+- 出典: https://tsdoc.org/pages/tags/alpha/ （rushstack-websites 5c0c8b9）、https://typedoc.org/documents/Tags._alpha.html （TypeDoc v0.28.20）
 
 ## 関連
 

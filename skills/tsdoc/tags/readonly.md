@@ -32,6 +32,7 @@ export class Book {
 - 標準化区分: Extended、構文種別: Modifier
 - 典型例は、常に例外を投げる setter を持つプロパティ
 - TypeDoc では、readonly タグ付き getter に対応する setter はドキュメントから除外される
+- 出典: https://tsdoc.org/pages/tags/readonly/ （rushstack-websites 5c0c8b9）、https://typedoc.org/documents/Tags._readonly.html （TypeDoc v0.28.20）
 
 ## 関連
 

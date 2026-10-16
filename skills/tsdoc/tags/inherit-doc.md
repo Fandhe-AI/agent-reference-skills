@@ -47,6 +47,7 @@ export class Button implements IWidget {
 - コピーされるのは summary / `@remarks` / `@param` / `@typeParam` / `@returns` のみ。`@defaultValue` や `@example` などはコピーされず、`@inheritDoc` の後に明示する
 - `@inheritDoc` 指定時は、同コメントに summary・`@remarks` を書いてはならない
 - TypeDoc は JSDoc 互換のため `{@inheritDoc}` と波括弧なしの `@inheritDoc` の両方を parse する。波括弧なしでは可能なら親 reflection から継承する
+- 出典: https://tsdoc.org/pages/tags/inheritdoc/ （rushstack-websites 5c0c8b9）、https://typedoc.org/documents/Tags.__inheritDoc_.html （TypeDoc v0.28.20）
 
 ## 関連
 
