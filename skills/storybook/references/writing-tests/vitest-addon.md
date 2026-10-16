@@ -119,15 +119,27 @@ storybookTest({
 | `storybookUrl` | string | `http://localhost:6006` | Storybook hosting URL |
 | `tags` | object | `{include: ['test']}` | Story filtering by tags |
 | `disableAddonDocs` | boolean | `true` | Disable MDX parsing during tests |
+| `initialGlobals` | `Record<string, unknown>` | `{}` | Initial global values applied to every story this project runs (added in 10.5.0). Use one Vitest project per value, e.g. one per theme. Mirrors `initialGlobals` in `.storybook/preview.*` but per-project; the plugin's values take precedence |
+
+```typescript
+storybookTest({
+  configDir: path.join(dirname, '.storybook'),
+  // Pin the `theme` global for every story in this project
+  initialGlobals: { theme },
+})
+```
 
 ## Notes
 
+- Vitest 5 browser tests are supported (10.6.1, CHANGELOG: "Addon Vitest: Support Vitest 5 browser tests - #36270"). The requirements list above is not re-verified against 10.6.2 docs
 - Does **not** require a running Storybook instance to execute tests
 - For projects with existing Vitest tests, use separate test projects (Vitest >= 4.0) or workspaces (Vitest 3.x)
 - Playwright browser binaries must be installed: `playwright install`
 
 ## Related
 
+- [Vitest Addon Migration Guide](./vitest-addon-migration-guide.md)
+- [Test Runner (comparison)](./test-runner.md)
 - [Running in CI](./in-ci.md)
 - [Test Coverage](./test-coverage.md)
 - [Interaction Testing](./interaction-testing.md)

@@ -110,6 +110,9 @@ export const PrimarySpanish = composeStory(Primary, meta, { globals: { locale: '
 
 ## Notes
 
+- **Removed in 10.6.0:** the experimental `@storybook/*/experimental-playwright` API (`createPlaywrightTest`) was removed (CHANGELOG 10.6.0: "Core: Remove experimental Playwright CT integration - #35650"). The page content above documents the removed API and is kept for reference only.
+- MIGRATION.md: "This integration was built on Playwright's former `@playwright/experimental-ct-*` packages. Playwright has replaced that approach with component testing in `@playwright/test`". "The portable stories core (`composeStories`, `setProjectAnnotations`) remains available for the Vitest addon and other supported testing paths."
+- The old docs live at storybook.js.org/docs/9/api/portable-stories/portable-stories-playwright
 - API is experimental — subject to breaking changes
 - Requires React 18+; Next.js is not supported
 - If play function assertions fail, the test fails accordingly

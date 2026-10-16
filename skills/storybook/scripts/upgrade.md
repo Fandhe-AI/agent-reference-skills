@@ -20,7 +20,15 @@ storybook upgrade --dry-run
 storybook upgrade --yes
 ```
 
-> **警告**: `--yes` フラグはすべてのプロンプトをスキップして自動適用する。事前にドライランで内容を確認すること。
+> **警告**: `--yes` フラグはすべてのプロンプトをスキップして自動適用する。事前にドライランで内容を確認すること。フレームワーク移行や experimental feature flag など明示的な選択が必要な migration は実行されない（含めるには `--features` を使う）。
+
+## experimental feature flag を有効化するオートマイグレーションを事前選択
+
+```sh
+storybook upgrade --features experimentalReview,experimentalDocgenServer
+```
+
+10.5 以降の experimental flag（`experimentalReview` / `experimentalDocgenServer`）は opt-in で、自動では有効化されない。`--skip-automigrations` とは併用不可。`experimentalDocgenServer` はサーバー側 docgen を提供するフレームワークのみ対象。
 
 ## autoblocker チェックをスキップして強制アップグレード
 

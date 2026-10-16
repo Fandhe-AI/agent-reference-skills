@@ -2,7 +2,7 @@
 
 Customizes Storybook's Babel configuration for Webpack-based projects.
 
-## Type
+## Signature / Usage
 
 ```typescript
 type babel = (
@@ -10,8 +10,6 @@ type babel = (
   options: { configType: 'DEVELOPMENT' | 'PRODUCTION' }
 ) => Babel.Config | Promise<Babel.Config>
 ```
-
-## Usage
 
 ```typescript
 // .storybook/main.ts
@@ -43,11 +41,12 @@ export default config;
 
 ## Notes
 
-- Only applicable when `@storybook/addon-webpack5-compiler-babel` addon is enabled
+- The `Babel.Config` options apply only when the `@storybook/addon-webpack5-compiler-babel` addon is enabled
 - If a `.babelrc` file exists, it is auto-detected and used without additional configuration
-- Addon authors should use `babelDefault` instead (runs before user presets)
+- `babelDefault` is a separate main-config field (see [babel-default.md](./babel-default.md)). It is applied before any user presets, is recommended for addon authors, and the user's `babel` setup overrides it
 
 ## Related
 
+- [babel-default.md](./babel-default.md)
 - [swc.md](./swc.md)
 - [webpack-final.md](./webpack-final.md)

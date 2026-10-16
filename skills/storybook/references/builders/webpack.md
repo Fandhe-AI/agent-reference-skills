@@ -6,7 +6,7 @@ Storybook's default bundler using Webpack 5, with zero-config support and extens
 
 The Webpack builder leverages your existing Webpack configuration while providing zero-config support for common use cases. It is the default builder when no alternative is specified during `storybook init`.
 
-## Configuration
+## Signature / Usage
 
 ### Builder options in `.storybook/main.ts`
 
@@ -77,6 +77,31 @@ npx storybook@latest add @storybook/addon-webpack5-compiler-swc
 
 ```bash
 npx storybook@latest add @storybook/addon-webpack5-compiler-babel
+```
+
+## Troubleshooting
+
+### @babel/preset-env: The 'bugfixes' option has been removed
+
+If you use Babel 8, you may receive the following error when running Storybook:
+
+```
+@babel/preset-env: The
+│  'bugfixes' option has been removed, and now bugfix plugins are always
+│  enabled. Please remove it from your config.
+```
+
+Storybook attempts to detect when you use Babel 8 and to automatically remove the `bugfixes` option from your configuration. If version detection fails, you may set the `babelRemoveBugfixes` feature flag in your Storybook configuration file to forcefully disable the `bugfixes` option:
+
+```js
+// .storybook/main.js
+export default {
+  framework: '@storybook/your-framework',
+  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
+  features: {
+    babelRemoveBugfixes: true,
+  },
+};
 ```
 
 ## Notes

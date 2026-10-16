@@ -72,7 +72,15 @@ storybook doctor
 storybook ai setup
 ```
 
-React + Vite 構成のみ対応。AI エージェント向けのプロジェクト設定プロンプトを生成する。
+React renderer + Vite builder の構成のみ対応。AI エージェントに Storybook の設定と初期ストーリー作成を指示する Markdown プロンプトを生成し、`--output` 未指定時は stdout に出力する。
+
+## AI プロンプトをファイルに出力
+
+```sh
+storybook ai setup --output storybook-setup.md
+```
+
+`-o, --output <path>` でプロンプトを stdout ではなくファイルへ書き出す。React renderer + Vite builder の構成のみ対応。
 
 ## ストーリーインデックスのビルド
 

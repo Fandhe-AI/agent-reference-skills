@@ -94,7 +94,9 @@ export const Primary: Story = { … }; // included
 - CSF 3 stories are plain objects; Storybook provides default render functions per framework, so explicit `render` is usually unnecessary.
 - Upgrade from CSF 2: `npx storybook migrate csf-2-to-3 --glob="**/*.stories.tsx"`.
 - CSF is framework-agnostic — the same format works with React, Vue, Angular, Svelte, etc.
+- CSF Next is a separate, Preview-status API using factory functions (`defineMain`, `definePreview` → `preview.meta` → `meta.story`) for full type safety; supported in React, Vue, Angular, and Web Components projects. See [csf-next.md](./csf-next.md).
 
 ## Related
 
+- [csf-next.md](./csf-next.md)
 - [README](./README.md)

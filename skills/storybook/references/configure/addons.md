@@ -6,7 +6,7 @@ Extend and customize Storybook through the addon ecosystem.
 
 Addons are tools that customize Storybook to match team workflows. Many core features, including documentation, are implemented as addons. They integrate via the toolbar, the addons panel, decorators, or build configuration.
 
-## Configuration
+## Signature / Usage
 
 ### Install an Addon
 
@@ -60,6 +60,7 @@ Some addons function as "presets" that provide pure infrastructure enhancements 
 
 ## Related
 
+- [Addons](../addons/README.md)
 - [Features and Behavior](./features-and-behavior.md)
 - [Theming](./theming.md)
 - [Styling and CSS](./styling-and-css.md)

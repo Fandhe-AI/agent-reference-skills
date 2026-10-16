@@ -6,7 +6,7 @@ Bundles Storybook components and stories using Vite, offering faster startup and
 
 The Vite builder (`@storybook/builder-vite`) is a fast ESM-based bundler ideal for Vite-based applications. It automatically merges your existing `vite.config.js|ts` and supports most frameworks out-of-the-box. Startup and refresh times are significantly faster than Webpack, though the execution environment differs.
 
-## Configuration
+## Signature / Usage
 
 ### Installation
 
@@ -66,6 +66,21 @@ core: {
     name: '@storybook/builder-vite',
     options: {
       viteConfigPath: '../customVite.config.js',
+    },
+  },
+}
+```
+
+### Set configLoader for vite config
+
+Pass the `configLoader` argument to `vite` via builder options. This is equivalent to the `--configLoader` command line argument (added in 10.5.0: "Builder Vite: Support configLoader via builder options - #34080"). See Vite's documentation for valid `configLoader` options.
+
+```typescript
+core: {
+  builder: {
+    name: '@storybook/builder-vite',
+    options: {
+      configLoader: 'runner',
     },
   },
 }

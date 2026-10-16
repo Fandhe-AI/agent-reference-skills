@@ -82,6 +82,7 @@ import * as ItemStories from './ListItem.stories';
 - GitHub-flavored Markdown tables require installing and configuring the `remark-gfm` plugin.
 - Controls not updating in MDX is a known limitation when inline rendering is disabled.
 - Comments use JSX syntax: `{/* comment */}`.
+- The `?path=/docs/...` links in the navigation example are Storybook UI URLs (query-string-only relative references resolved at runtime), not links to repository files.
 
 ## Related
 

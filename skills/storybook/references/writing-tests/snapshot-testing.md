@@ -38,7 +38,7 @@ test('Button throws error', async () => {
 
 - Prefer visual tests or interaction tests over snapshot tests for UI components
 - The Storyshots addon is deprecated — use the Portable Stories API instead
-- Portable Stories API works with Jest, Vitest, and Playwright CT
+- Portable Stories API works with Jest and Vitest (Playwright CT integration removed in 10.6.0)
 - If Portable Stories cannot be used, the test-runner also supports snapshot testing
 
 ## Related

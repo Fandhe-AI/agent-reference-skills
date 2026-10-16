@@ -87,6 +87,45 @@ await userEvent.type(element, 'text');
 await userEvent.selectOptions(element, ['option1']);
 await userEvent.keyboard('{Shift}');
 await userEvent.hover(element);
+await userEvent.dblClick(element);
+await userEvent.unhover(element);
+await userEvent.deselectOptions(element, '1');
+```
+
+**Querying within shadow DOM (Web Components only):** if components use the shadow DOM, use [`shadow-dom-testing-library`](https://github.com/konnorrogers/shadow-dom-testing-library), which provides shadow-piercing versions of the queries above (`findByRole` → `findByShadowRole`, `getByText` → `getByShadowText`, and so on). Augment `canvas` in `.storybook/preview.*`:
+
+```typescript
+// .storybook/preview.ts
+import type { Preview } from '@storybook/web-components-vite';
+import { within as withinShadow } from 'shadow-dom-testing-library';
+
+const preview: Preview = {
+  // Augment the canvas with the shadow DOM queries
+  beforeEach({ canvasElement, canvas }) {
+    Object.assign(canvas, { ...withinShadow(canvasElement) });
+  },
+};
+
+// Extend TypeScript types for safety
+export type ShadowQueries = ReturnType<typeof withinShadow>;
+
+// Since Storybook@8.6
+declare module 'storybook/internal/csf' {
+  interface Canvas extends ShadowQueries {}
+}
+
+export default preview;
+```
+
+Then in a story:
+
+```typescript
+export const ShadowDOMExample: Story = {
+  async play({ canvas }) {
+    // Will find an element even if it's within a shadow root
+    const button = await canvas.findByShadowRole('button', { name: /Reset/i });
+  },
+};
 ```
 
 **Lifecycle hooks:** `beforeEach` (story-level), `beforeAll` (preview-level), `afterEach` (story-level)

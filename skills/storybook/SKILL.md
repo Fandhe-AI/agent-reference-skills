@@ -1,10 +1,10 @@
 ---
 name: storybook
 description: >
-  Storybook (UI コンポーネントカタログ・テストツール) リファレンス。
-  story, CSF (Component Story Format)、args, argTypes, decorators、
-  play function、interaction tests、autodocs、
-  main.ts / preview.ts 設定、アドオン (a11y, controls, viewport, themes)。
+  Storybook (UI カタログ) リファレンス。CSF Next (CSF Factories), args, argTypes,
+  decorators, play function, autodocs, main.ts / preview.ts,
+  Storybook MCP server, components manifest, Vitest addon, test-runner,
+  アドオン作成, upgrade / migration。
 user-invocable: false
 model: sonnet
 ---
@@ -13,6 +13,8 @@ model: sonnet
 
 Storybook 公式ドキュメントを網羅した API リファレンススキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+対象: Storybook 10.6.2 (出典: storybookjs/storybook タグ v10.6.2 の docs/、取得日 2026-10-16)。
 
 ## ディレクトリ構成
 
@@ -27,6 +29,22 @@ skills/storybook/
       install.md
       setup.md
       whats-a-story.md
+      why-storybook.md
+      frameworks/
+        README.md
+        angular.md
+        angular-vite.md
+        nextjs.md
+        nextjs-vite.md
+        preact-vite.md
+        react-native-web-vite.md
+        react-vite.md
+        react-webpack5.md
+        svelte-vite.md
+        sveltekit.md
+        tanstack-react.md
+        vue3-vite.md
+        web-components-vite.md
     writing-stories/
       README.md
       args.md
@@ -49,8 +67,11 @@ skills/storybook/
       interaction-testing.md
       portable-stories.md
       snapshot-testing.md
+      stories-in-end-to-end-tests.md
       test-coverage.md
+      test-runner.md
       vitest-addon.md
+      vitest-addon-migration-guide.md
       visual-testing.md
     writing-docs/
       README.md
@@ -71,10 +92,13 @@ skills/storybook/
     configure/
       README.md
       addons.md
+      change-detection.md
       compilers.md
       environment-variables.md
+      eslint-plugin.md
       features-and-behavior.md
       frameworks.md
+      frameworks-feature-support.md
       images-and-assets.md
       sidebar-and-urls.md
       story-layout.md
@@ -100,12 +124,14 @@ skills/storybook/
       arg-types.md
       cli-options.md
       csf.md
+      csf-next.md
       new-frameworks.md
       parameters.md
       main-config/
         README.md
         addons.md
         babel.md
+        babel-default.md
         build.md
         core.md
         docs.md
@@ -119,6 +145,7 @@ skills/storybook/
         preview-body.md
         preview-head.md
         refs.md
+        security.md
         static-dirs.md
         stories.md
         swc.md
@@ -149,8 +176,36 @@ skills/storybook/
       portable-stories/
         README.md
         jest.md
-        playwright.md
+        playwright.md   # 10.6.0 で削除済み (履歴ページ)
         vitest.md
+    ai/
+      README.md
+      agentic-review.md
+      agentic-setup.md
+      best-practices.md
+      manifests.md
+      mcp-server.md
+      mcp-server-api.md
+      mcp-sharing.md
+      overview.md
+    addons/
+      README.md
+      addon-knowledge-base.md
+      addon-migration-guide.md
+      addon-types.md
+      addons-api.md
+      configure-addons.md
+      install-addons.md
+      integration-catalog.md
+      introduction.md
+      writing-addons.md
+      writing-presets.md
+    releases/
+      README.md
+      feature-lifecycle.md
+      migration-guide.md
+      migration-guide-from-older-version.md
+      upgrading.md
   samples/
     README.md
     accessibility-testing.md
@@ -187,15 +242,19 @@ skills/storybook/
 |--------|---------|------------|
 | インストール、セットアップ、フレームワーク選択、ストーリーとは何か | get-started | [references/get-started/README.md](references/get-started/README.md) |
 | Args、Decorators、Play function、Loaders、Tags、Mocking、TypeScript | writing-stories | [references/writing-stories/README.md](references/writing-stories/README.md) |
-| Interaction テスト、A11y テスト、Visual テスト、Vitest addon、CI、テストカバレッジ | writing-tests | [references/writing-tests/README.md](references/writing-tests/README.md) |
+| Interaction テスト、A11y テスト、Visual テスト、Vitest addon (移行含む)、test-runner、E2E でのストーリー利用、CI、テストカバレッジ | writing-tests | [references/writing-tests/README.md](references/writing-tests/README.md) |
 | Autodocs、MDX、Doc Blocks、ドキュメントビルド、Code Panel | writing-docs | [references/writing-docs/README.md](references/writing-docs/README.md) |
 | Actions、Controls、Viewport、Backgrounds、Toolbars、Highlight | essentials | [references/essentials/README.md](references/essentials/README.md) |
-| CSS、TypeScript、Theming、Telemetry、環境変数、サイドバー、アドオン登録、コンパイラー | configure | [references/configure/README.md](references/configure/README.md) |
+| CSS、TypeScript、Theming、Telemetry、環境変数、サイドバー、アドオン登録、コンパイラー、変更検出 (change detection)、ESLint plugin、フレームワーク別機能対応表 | configure | [references/configure/README.md](references/configure/README.md) |
 | Vite、Webpack、Builder API | builders | [references/builders/README.md](references/builders/README.md) |
 | Storybook の公開・共有、デザインツール連携、Composition、埋め込み | sharing | [references/sharing/README.md](references/sharing/README.md) |
-| CSF、ArgTypes、Parameters、CLI オプション、新フレームワーク追加 | api | [references/api/README.md](references/api/README.md) |
-| main.js / main.ts の framework、stories、addons、features 等の設定 | api/main-config | [references/api/main-config/README.md](references/api/main-config/README.md) |
+| CSF、CSF Next (CSF Factories)、ArgTypes、Parameters、CLI オプション、新フレームワーク追加 | api | [references/api/README.md](references/api/README.md) |
+| main.js / main.ts の framework、stories、addons、features、babel、security 等の設定 | api/main-config | [references/api/main-config/README.md](references/api/main-config/README.md) |
 | Canvas、Source、Meta、Controls 等の Doc Block コンポーネント | api/doc-blocks | [references/api/doc-blocks/README.md](references/api/doc-blocks/README.md) |
-| Vitest・Jest・Playwright での Portable Stories | api/portable-stories | [references/api/portable-stories/README.md](references/api/portable-stories/README.md) |
+| Vitest・Jest での Portable Stories (Playwright 版は 10.6.0 で削除済み) | api/portable-stories | [references/api/portable-stories/README.md](references/api/portable-stories/README.md) |
+| Storybook MCP server (@storybook/addon-mcp)、components manifest、agentic setup / review | ai | [references/ai/README.md](references/ai/README.md) |
+| アドオンのインストール・設定・自作、presets、Addon API | addons | [references/addons/README.md](references/addons/README.md) |
+| アップグレード、移行ガイド (8→9、9→10、10.x)、feature lifecycle | releases | [references/releases/README.md](references/releases/README.md) |
+| フレームワーク別セットアップ (Next.js / TanStack React / Angular Vite / Vue / SvelteKit 等) | get-started/frameworks | [references/get-started/frameworks/README.md](references/get-started/frameworks/README.md) |
 | 典型的な使い方・実装例を知りたい | samples | [samples/README.md](samples/README.md) |
 | インストール・CLI コマンド・ビルド・テスト実行・アップグレードを知りたい | scripts | [scripts/README.md](scripts/README.md) |

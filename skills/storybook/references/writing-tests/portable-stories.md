@@ -1,6 +1,6 @@
 # Portable Stories (Stories in Unit Tests)
 
-Reuse component stories in Jest, Vitest, or Playwright unit tests using the `composeStories` / `composeStory` API.
+Reuse component stories in Jest or Vitest unit tests using the `composeStories` / `composeStory` API.
 
 ## Overview
 
@@ -83,7 +83,8 @@ const { ValidForm } = composeStories(stories, {
   import { storybookNextJsPlugin } from '@storybook/nextjs-vite/vite-plugin';
   export default defineConfig({ plugins: [storybookNextJsPlugin()] });
   ```
-- API reference: [`portable-stories-vitest`](https://storybook.js.org/docs/api/portable-stories/portable-stories-vitest), [`portable-stories-jest`](https://storybook.js.org/docs/api/portable-stories/portable-stories-jest), [`portable-stories-playwright`](https://storybook.js.org/docs/api/portable-stories/portable-stories-playwright)
+- API reference: [`portable-stories-vitest`](https://storybook.js.org/docs/api/portable-stories/portable-stories-vitest), [`portable-stories-jest`](https://storybook.js.org/docs/api/portable-stories/portable-stories-jest)
+- Playwright CT portable stories (`@storybook/*/experimental-playwright`, `createPlaywrightTest`) were removed in 10.6.0; the old docs live at storybook.js.org/docs/9/api/portable-stories/portable-stories-playwright. For Playwright end-to-end usage see [stories-in-end-to-end-tests.md](./stories-in-end-to-end-tests.md)
 
 ## Related
 
