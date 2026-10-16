@@ -1,6 +1,6 @@
 # Confirm on Exit
 
-Intercept tour exit to show a confirmation dialog before allowing the user to leave mid-tour.
+Intercept tour exit to show a confirmation dialog only when the user leaves before finishing the tour.
 
 ```javascript
 import { driver } from "driver.js";
@@ -13,8 +13,9 @@ const driverObj = driver({
     { element: '#step2', popover: { title: 'Step 2', description: 'Second step.' } },
     { element: '#step3', popover: { title: 'Step 3', description: 'Final step.' } },
   ],
-  onDestroyStarted: () => {
-    if (!driverObj.hasNextStep() || confirm('Are you sure you want to exit the tour?')) {
+  // onDestroyStarted is called when the user tries to exit the tour
+  onDestroyStarted: (element, step, { reason }) => {
+    if (reason === "done" || confirm("Are you sure?")) {
       driverObj.destroy();
     }
   },
@@ -26,6 +27,6 @@ driverObj.drive();
 ## Notes
 
 - Overriding `onDestroyStarted` prevents automatic exit — you must call `driverObj.destroy()` to actually close
-- `hasNextStep()` lets you skip the confirmation on the final step where exit is expected
+- `reason` (since 1.10.0) is one of `"done"` (moved past the last step), `"close"` / `"escape"` / `"overlay"` (left early), `"replaced"` (another tour or highlight started), `"api"` (your code called `destroy()`)
+- A `destroy()` called from a hook keeps the reason of the user action that started it (1.10.0), so `onDestroyed` receives `"close"` here, not `"api"`
 - Set `allowClose: false` instead to completely prevent closing until the tour is done
-- The hook fires when the user clicks the close button, the overlay, or presses Escape

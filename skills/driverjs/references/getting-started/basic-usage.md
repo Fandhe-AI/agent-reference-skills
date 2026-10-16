@@ -55,6 +55,26 @@ driverObj.highlight({
 });
 ```
 
+## Hints
+
+Beyond tours and highlights, Driver.js also ships hints: pulsing beacons that sit quietly on the page and open a popover when clicked, with no overlay and nothing blocked. They come from their own entry, so tour-only users never load them.
+
+```javascript
+import { hints } from "driver.js/hints";
+import "driver.js/dist/hints.css";
+
+const productHints = hints({
+  hints: [
+    { element: '#export-btn', popover: { title: 'Export your data', description: 'Download this report as CSV or PDF.' } },
+    { element: '#summary', popover: { title: 'Auto-generated summary', description: 'Written for you from the numbers.' } },
+  ],
+});
+
+productHints.show();
+```
+
+See the hints category for beacons, dismissals and the optional overlay: [Hints](../hints/README.md).
+
 ## Notes
 
 - `drive()` starts the tour at step 0 by default; pass an index to start at a different step: `drive(2)`

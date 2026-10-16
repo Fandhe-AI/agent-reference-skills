@@ -57,6 +57,31 @@ const driverObj = driver({
 | showProgress | boolean | false | Show progress text in popover |
 | progressText | string | '{{current}} of {{total}}' | Template with {{current}} and {{total}} placeholders |
 
+## Animation Duration
+
+Use the `duration` option to control how long the transition animation takes, in milliseconds. It controls both the speed at which the highlight moves between steps and the overlay/popover fade-in. It only applies when `animate` is `true` and defaults to `400`. Lower it for a snappier tour, or raise it for a more relaxed one.
+
+```javascript
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
+
+const driverObj = driver({
+  // Speed the whole transition up to 150ms (default is 400ms)
+  duration: 150,
+  showProgress: true,
+  steps: [
+    { element: '#some-element', popover: { title: 'Import the Library', description: 'Notice how quickly the highlight snaps over to this line.' }},
+    { element: '#another-element', popover: { title: 'Create Driver', description: 'The popover fades in almost instantly at this speed.' }},
+  ]
+});
+
+driverObj.drive();
+```
+
+## Notes
+
+- The official docs page for these examples is now `/docs/tour-basics`.
+
 ## Related
 
 - [Configuration](../api/configuration.md)

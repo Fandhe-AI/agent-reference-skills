@@ -10,6 +10,7 @@ const driverObj = driver({
   showProgress: true,
   onPopoverRender: (popover, { config, state }) => {
     const skipBtn = document.createElement('button');
+    skipBtn.className = 'driver-popover-footer-btn';
     skipBtn.innerText = 'Skip Tour';
     skipBtn.addEventListener('click', () => driverObj.destroy());
     popover.footerButtons.appendChild(skipBtn);
@@ -27,6 +28,7 @@ driverObj.drive();
 ## Notes
 
 - `popover.footerButtons` is the container wrapping the navigation buttons — append custom elements there
+- Breaking change in 1.6.0: footer buttons are styled through the `driver-popover-footer-btn` class, so buttons added in `onPopoverRender` no longer inherit the default style. Add the class to opt in, or leave it off to apply your own styles
+- Since 1.6.0, custom buttons receive their own click events; only the built-in next, previous and close buttons have their default action intercepted
 - Other `PopoverDOM` properties: `wrapper`, `arrow`, `title`, `description`, `footer`, `progress`, `previousButton`, `nextButton`, `closeButton`
-- Built-in button labels can be customized via `nextBtnText`, `prevBtnText`, `doneBtnText` config options
 - Use `showButtons` / `disableButtons` arrays to show or hide the built-in `'next'`, `'previous'`, `'close'` buttons
