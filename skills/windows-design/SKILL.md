@@ -1,12 +1,11 @@
 ---
 name: windows-design
 description: >
-  Windows アプリ開発 (Fluent Design / WinUI 3) の デザインガイドラインリファレンス。
-  layout, spacing, alignment, elevation, geometry, breakpoints, Color, Mica, Acrylic,
-  Smoke, Reveal Highlight, materials, typography, Segoe Fluent Icons, app icons,
-  motion, easing, connected animation, page transitions, parallax, reduce motion,
-  NavigationView, TabView, CommandBar, menus, keyboard accelerators, access keys,
-  accessibility, high contrast, RTL, globalization, widgets design。
+  Windows アプリ開発 (Fluent Design / WinUI 3) のデザインガイドライン。
+  layout, spacing, elevation, breakpoints, Color, Mica, Acrylic, Reveal Focus,
+  typography, Segoe Fluent Icons, motion, connected animation, parallax,
+  NavigationView, TitleBar, TabView, CommandBar, keyboard accelerators,
+  accessibility, high contrast, RTL, widgets design。
 user-invocable: false
 ---
 
@@ -14,8 +13,10 @@ user-invocable: false
 
 Windows アプリの Fluent Design ガイドライン公式ドキュメントを蒸留したリファレンス。
 レイアウト・色とマテリアル・タイポグラフィ／アイコン・モーション・ナビゲーション／コマンド・
-ユーザビリティ／アクセシビリティの6カテゴリで構成し、WinUI 3 アプリの UI/UX 設計判断を支える。
+ユーザビリティ／アクセシビリティ・シグネチャエクスペリエンス（haptics）の7カテゴリで構成し、WinUI 3 アプリの UI/UX 設計判断を支える。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+出典: learn.microsoft.com en-us、取得日 2026-10-16、MicrosoftDocs/windows-dev-docs の `docs` ブランチ (commit `a3812316d9d6678be4e526ffb4b1c4f3958d956d`)。コントロール・モーションのガイドは現在 `/windows/apps/develop/*`（例: `develop/ui/controls/navigationview`、`develop/motion/parallax`）配下に置かれている。レンダリング HTML の meta は非公開 -pr ミラーの git_commit_id `f202a4ffce14` を記録し、navigationview と parallax の ms.date は 2026-10-02。
 
 ## ディレクトリ構成
 
@@ -133,7 +134,7 @@ skills/windows-design/
 | デザイン原則・ガイドライン全体像を把握したい | foundations | [references/foundations/README.md](references/foundations/README.md) |
 | Mica / Acrylic / Smoke などのマテリアルを背景に適用したい | color-materials | [references/color-materials/README.md](references/color-materials/README.md) |
 | カラーパレット設計やコントラスト比のアクセシビリティ要件を満たしたい | color-materials | [references/color-materials/README.md](references/color-materials/README.md) |
-| Reveal Highlight など光効果を実装したい | color-materials | [references/color-materials/README.md](references/color-materials/README.md) |
+| Reveal Focus（10-foot フォーカス光効果）を実装したい／旧 Reveal highlight の扱いを確認したい | color-materials | [references/color-materials/README.md](references/color-materials/README.md) |
 | タイポグラフィのフォント階層・サイズを設計したい | typography-iconography | [references/typography-iconography/README.md](references/typography-iconography/README.md) |
 | Segoe Fluent Icons やアイコン要素を使いたい | typography-iconography | [references/typography-iconography/README.md](references/typography-iconography/README.md) |
 | アプリアイコンを構築・生成したい | typography-iconography | [references/typography-iconography/README.md](references/typography-iconography/README.md) |
