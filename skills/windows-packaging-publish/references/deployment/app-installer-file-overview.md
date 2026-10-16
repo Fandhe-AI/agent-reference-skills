@@ -24,6 +24,7 @@ The `.appinstaller` file is an XML file that specifies where an MSIX app is loca
 
 ## Notes
 
+- Two related but distinct technologies share the "App Installer" name: the App Installer app (the built-in Windows application, available from the Microsoft Store, that provides the installation UI when a user opens an `.msix`/`.appx`, `.msixbundle`/`.appxbundle`, or `.appinstaller` file) and the App Installer file (`.appinstaller`, an XML file that specifies the package location and defines how the package is installed, updated, and repaired).
 - Introduced in Windows 10 version 1709; the user shares/opens the `.appinstaller` file (not the app package itself), and App Installer UI guides install and later updates.
 - App Installer file downloads and updates support `https`, `http`, and `smb` protocols.
 - The `ms-appinstaller:` URI protocol (one-click browser install) is disabled by default since December 2023 — link directly to the `.appinstaller` file for download instead.
@@ -31,6 +32,7 @@ The `.appinstaller` file is an XML file that specifies where an MSIX app is loca
 
 ## Related
 
+- [App Installer app](./app-installer-app.md)
 - [App Installer update settings](./app-installer-update-settings.md)
 - [App Installer troubleshooting](./app-installer-troubleshooting.md)
 - [Choose a distribution path](./choose-distribution-path.md)

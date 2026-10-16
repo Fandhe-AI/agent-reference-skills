@@ -4,7 +4,7 @@ MSIX is the modern Windows app packaging format. It gives any Windows app a reli
 
 ## Signature / Usage
 
-Package identity (publisher + name + version) is assigned to an app once it is packaged as MSIX. That identity is required for:
+Package identity is assigned to an app once it is packaged as MSIX. Windows derives it from manifest information such as the package name, publisher, version, architecture, and resource identifier. That identity is required for:
 
 - Windows platform APIs such as push notifications, background tasks, and live tiles
 - AI features that use on-device models through the Windows AI APIs
@@ -23,6 +23,10 @@ Package identity (publisher + name + version) is assigned to an app once it is p
 
 ## Notes
 
+- Inside a package there are two groups of files (as of the 2026-09-30 revision of the source page):
+  - Payload files: files stored in and delivered by the package (executable code, libraries, assets, configuration files, resources).
+  - Footprint files: package metadata and infrastructure files that describe, validate, or support the payload. Core footprint files are `AppxManifest.xml` (identity, dependencies, capabilities, visual elements, extension points), `AppxBlockMap.xml` (files with cryptographic hashes per 64 KB block, used for differential updates and integrity verification), and `AppxSignature.p7x` (the package signature). Other footprint files exist only when the package uses the corresponding feature, for example `AppxContentGroupMap.xml` (content groups for a streaming install) and `AppxMetadata\CodeIntegrity.cat` (code-integrity metadata).
+- The Windows packaging APIs distinguish payload files from footprint files.
 - All MSIX packages must be signed before installation (`AppxSignature.p7x`).
 - Use the Windows Application Packaging Project in Visual Studio to package a new app from source, the MSIX Packaging Tool to convert an existing installer without source code, and `makeappx.exe`/WinApp CLI to package and sign from the command line.
 - This applies only to Windows client app packaging (MSIX). It is unrelated to Store submission/certification content, which lives outside this scope.
@@ -34,3 +38,6 @@ Package identity (publisher + name + version) is assigned to an app once it is p
 - [Package Manifest Schema](./package-manifest-schema.md)
 - [Visual Studio Packaging Project](./vs-packaging-project.md)
 - [MSIX Packaging Tool](./msix-packaging-tool.md)
+- [MSIX Package Types](./package-types.md)
+- [Package Storage Volumes](../deployment/package-volumes.md)
+- [Package Registration and Lifetime](../deployment/package-lifetime.md)

@@ -23,6 +23,7 @@ The MSIX SDK is an open source project (`microsoft/msix-packaging` on GitHub) th
 
 - Distinct from the MSIX Packaging Tool and MSIX Toolkit: the SDK is a cross-platform library/API surface, not a Windows UI/CLI conversion tool.
 - Packages built with `makelinux`/`makeaosp` on Linux are unsigned; sign them afterward via the Microsoft Store for business (no self-signing needed), an Azure DevOps MSIX Packaging Extension pipeline task, or by copying the package to Windows and using `signtool`.
+- Microsoft Store for Business and Microsoft Store for Education retired on March 31, 2023, so the Store for business signing route above is no longer available for new LOB apps; use the Azure DevOps extension or `signtool` instead. See the LOB distribution page for current options.
 - Source and per-platform build instructions are maintained in the [msix-packaging GitHub repo](https://github.com/Microsoft/msix-packaging).
 
 ## Related
@@ -30,3 +31,4 @@ The MSIX SDK is an open source project (`microsoft/msix-packaging` on GitHub) th
 - [MSIX Toolkit](./msix-toolkit.md)
 - [makeappx.exe CLI](./makeappx-cli.md)
 - [What is MSIX?](./msix-overview.md)
+- [Distribute LOB Apps](../store-publish/distribute-lob-apps.md)

@@ -17,7 +17,7 @@ Add-AppxProvisionedPackage -Online -PackagePath ".\MyApp.msix" -SkipLicense
 
 | Tool | Use |
 |------|-----|
-| `Add-AppxPackage` / `Remove-AppxPackage` (Appx PowerShell module) | Silent per-user install/uninstall/update of `.msix`/`.appx`/`.msixbundle` packages |
+| `Add-AppxPackage` / `Remove-AppxPackage` (Appx PowerShell module) | `Add-AppxPackage` adds a signed `.msix`/`.appx` package (also related, optional, and external packages); `Remove-AppxPackage` removes a package registration for a user |
 | Microsoft Configuration Manager | Create-application wizard auto-populates Publisher/Name/Version from the package and auto-configures install string + detection method for the **Windows app package** application type |
 | Microsoft Intune | Client-app model deployment of MSIX as a line-of-business app; see Enterprise Deployment with Microsoft Intune in this skill for the full signing + assignment flow |
 | DISM (`Add-AppxProvisionedPackage` / `DISM /Add-ProvisionedAppxPackage`) | Installs/removes MSIX packages on an offline or online Windows image before deployment |
@@ -29,6 +29,7 @@ Add-AppxProvisionedPackage -Online -PackagePath ".\MyApp.msix" -SkipLicense
 
 - **Downgrading**: MSIX apps don't require an uninstall before installing an older version — pass `ForceUpdateFromAnyVersion` (via `Add-AppxPackage`, the `PackageManager` API, the EnterpriseModernAppManagement CSP, or the App Installer file's update settings) to allow a lower-version package to install over a higher one.
 - **Critical updates**: mark an update critical with `UpdateBlocksActivation` in the App Installer file's update settings so users can't keep launching a stale version while ignoring the update prompt.
+- **Remove-AppxPackage**: removes the per-user registration. The staged package payload becomes eligible for removal after no strong references remain (see Package Registration and Lifetime).
 - **Uninstall**: MSIX is fully containerized, so uninstall removes all files under `%ProgramFiles%\WindowsApps` plus any AppData/registry state created by the app; it never removes user-created files.
 - Microsoft Store for Business/Education (the earlier enterprise distribution channel) has retired; Intune's client-app model plus the Microsoft Store app (new) integration is the current path.
 
@@ -37,3 +38,6 @@ Add-AppxProvisionedPackage -Online -PackagePath ".\MyApp.msix" -SkipLicense
 - [Enterprise Deployment with Microsoft Intune](./enterprise-deployment-intune.md)
 - [Choose a Distribution Path](./choose-distribution-path.md)
 - [Sideloading Prerequisites](./sideloading-prerequisites.md)
+- [Package Registration and Lifetime](./package-lifetime.md)
+- [Package Storage Volumes](./package-volumes.md)
+- [Managing MSIX with PowerShell](./powershell-msix-cmdlets.md)

@@ -43,8 +43,19 @@ await packageManager.RemovePackageAsync(packageFullName);
 | `GetDefaultPackageVolume()` / `SetDefaultPackageVolume(...)` / `AddPackageVolumeAsync(...)` / `FindPackageVolume(...)` / `FindPackageVolumes()` / `GetPackageVolumesAsync()` / `RemovePackageVolumeAsync(...)` | Manage package volumes (where packages are stored). |
 | `DebugSettings` | Gets debugging settings for package deployment. |
 
+`packageManagement` restricted capability requirement (applies only to processes running in an AppContainer):
+
+| Operation (AppContainer process) | `packageManagement` requirement |
+|------|-------------|
+| Add, update, stage, or remove packages with non-`Request*` APIs such as `AddPackageAsync` or `AddPackageByAppInstallerFileAsync` | Required |
+| `RequestAddPackageByAppInstallerFileAsync` | Required, even though the API displays a user-consent prompt |
+| Update the app's own packages with `RequestAddPackageAsync` | Not required; Windows performs a SmartScreen check and asks the user to verify the installation |
+| Manage a package that has a different publisher than the calling app | Required |
+
 ## Notes
 
+- `packageManagement` is a restricted capability (`<rescap:Capability Name="packageManagement" />`) that grants package deployment access to an AppContainer process. All UWP apps run in an AppContainer; a packaged desktop app can too when its manifest sets `uap10:TrustLevel="appContainer"`. Processes outside an AppContainer (medium integrity level or higher, such as most unpackaged apps and packaged desktop apps) do not need the capability; the calling user's permissions and each API's requirements still apply.
+- Querying packages the calling app did not author through `PackageManager` from an AppContainer requires the `packageQuery` restricted capability (querying your own app's packages does not).
 - All add/register/remove/stage methods return `AsyncOperationWithProgress` results; results typically expose `ExtendedErrorCode` / `ErrorText` that should be checked for failures.
 - Per-user registration uses `AddPackageByUriAsync` (with `ExternalLocationUri` for sparse packages) and `RemovePackageAsync`. Per-machine/provisioned installs use `StagePackageByUriAsync` + `ProvisionPackageForAllUsersAsync`, and `DeprovisionPackageForAllUsersAsync` + `RemovePackageAsync(..., RemovalOptions.RemoveForAllUsers)` to uninstall.
 - Many `PackageManager` operations require elevated (administrator) context for machine-wide operations; per-user operations generally do not.

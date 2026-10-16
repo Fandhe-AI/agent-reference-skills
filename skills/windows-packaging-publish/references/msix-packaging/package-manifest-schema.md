@@ -46,6 +46,14 @@ The package manifest is an XML document that contains the info the system needs 
 
 ## Options / Props
 
+| Element | Description |
+|---------|-------------|
+| `Package` | Root element; only attribute is `IgnorableNamespaces` |
+| `Identity` | Package identity (Name, Publisher, Version, ...) |
+| `Properties` | Display name, publisher display name, logo, package-kind flags |
+| `Dependencies` | Target device family and package dependencies |
+| `Applications` / `Application` | App entry points (1 to 100) |
+
 ### `Package` (root element)
 
 Child elements: `Identity`, `Properties`, `Resources?`, `Dependencies`, `Capabilities?`, `Applications?`, `Extensions?`. `IgnorableNamespaces` is the only attribute.

@@ -24,8 +24,25 @@ MSIX/AppX package updates only download the blocks of files that actually change
 | Architecture | Update package may use a different architecture than the installed one, as long as the new architecture is supported on the target OS |
 | Bundle direction | An update can go from a single MSIX package to an `.msixbundle`, but not from a bundle back to a single package |
 
+Behavior when the package is in use, for `Add-AppxPackage` installs and updates:
+
+| Parameter | Description |
+|-----------|-------------|
+| `-DeferRegistrationWhenPackagesAreInUse` | If the package is in use, defers registration until it is no longer in use; Windows completes the registration later |
+| `-ForceApplicationShutdown` | If the package is in use, forcibly shuts down the processes associated with the package so registration can continue |
+| `-ForceTargetApplicationShutdown` | If the target package is in use, forcibly shuts down the processes associated with the target package so registration can continue |
+
+```powershell
+Add-AppxPackage -Path .\updated-app.msix -DeferRegistrationWhenPackagesAreInUse
+```
+
 ## Notes
 
+- A deployment can fail, request application shutdown, or defer registration until the package is no longer in use. MSIX does not modify a package while a process is using it; an update, repair, removal, or reinstall that hits this fails with `ERROR_PACKAGES_IN_USE` (`0x80073D02`). Preferred fix: ask the user to close the app cleanly and check for background processes, services, or out-of-process components of the package.
+- `Windows.Management.Deployment` equivalents: `AddPackageOptions.ForceTargetAppShutdown` (for `-ForceTargetApplicationShutdown`) and `AddPackageOptions.DeferRegistrationWhenPackagesAreInUse`. Forced shutdown can terminate the app and lose unsaved work; avoid it where that matters.
+- On Windows 11, version 24H2 and later, a package can declare the `uap17:UpdateWhileInUse` manifest element with value `defer`; this package-level setting takes precedence over force-shutdown options.
+- Windows App SDK apps can call `PackageDeploymentManager.IsPackageRegistrationPending` to detect a previously deferred registration for the current user (`IsPackageRegistrationPendingForUser` for another user, as an administrator).
+- Removal normally requests application shutdown; to defer it, call `PackageManager.RemovePackageAsync` with `RemovalOptions.DeferRemovalWhenPackagesAreInUse`.
 - `AppxBlockMap.xml` stores a two-dimensional file list: file-level metadata (name, size) plus a SHA2-256 hash per 64 KB block; during an update Windows diffs old vs. new block hashes and downloads only changed blocks, reusing unchanged blocks (or whole unchanged files) from the existing install.
 - To get the most benefit from differential updates: keep individual files small, prefer additive changes over in-place edits, and try to keep changed bytes aligned to 64 KB block boundaries.
 - `ForceUpdateFromAnyVersion` on a Microsoft Store app is also honored automatically by Windows Update, which will update to the latest applicable version regardless.

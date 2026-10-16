@@ -73,6 +73,8 @@ signtool sign /a /v /fd sha256 /f ExportedSigningCertificate.pfx PSFSamplePackag
 
 - PSF ships an executable (`PSFLauncher32/64.exe`), a runtime manager DLL (`PSFRuntime32/64.dll`), `PSFRunDll32/64.exe`, and the individual fixup DLLs, obtained via the `Microsoft.PackageSupportFramework` NuGet package.
 - Use Process Monitor to identify the failing file/registry operations before choosing a fixup (common causes: wrong working directory, writes to the install folder, missing launch parameters).
+- If the app fails because it writes into its install directory (typically "Access Denied" errors in Process Monitor, from Sysinternals), the official docs have a focused end-to-end walkthrough, "How to fix Package Support Framework Filesystem Write Permission errors" (`psf-filesystem-writepermission`).
+- If the app cannot find DLLs on launch, set the working directory to match the original shortcut's "Start in" value before conversion; the official step-by-step fix is "Windows app working directory error" (`psf-current-working-directory`).
 - PSF does not support registry overrides — it addresses runtime (filesystem, launch, working-directory) issues only.
 - The `Microsoft.PackageSupportFramework` NuGet package includes telemetry when the signed binaries are used and the device has data collection enabled; binaries built locally from source do not collect telemetry.
 
@@ -82,3 +84,7 @@ signtool sign /a /v /fd sha256 /f ExportedSigningCertificate.pfx PSFSamplePackag
 - [makeappx.exe CLI](./makeappx-cli.md)
 - [MSIX Packaging Tool](./msix-packaging-tool.md)
 - [Visual Studio Packaging Project](./vs-packaging-project.md)
+- [PSF Fixes: Working Directory, Write Permission, Launch Parameters](./psf-common-fixes.md)
+- [Automated PSF Config Generation (MSIX Packaging Tool)](./psf-mpt-integration.md)
+- [Run Scripts with the Package Support Framework](./psf-run-scripts.md)
+- [Apply Package Support Framework in Visual Studio](./psf-visual-studio.md)
