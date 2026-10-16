@@ -30,7 +30,11 @@ await context.credentials.install();
 const page = await context.newPage();
 await page.goto('https://example.com/register');
 await page.getByRole('button', { name: 'Create a passkey' }).click();
+// click() does not wait for the async WebAuthn registration; wait for the app's success signal
+// (app-specific, or page.waitForResponse on the registration API)
+await expect(page.getByText('Passkey created')).toBeVisible();
 const [credential] = await context.credentials.get({ rpId: 'example.com' });
+if (!credential) throw new Error('passkey not registered');
 fs.writeFileSync('playwright/.auth/passkey.json', JSON.stringify(credential));
 
 // later test
@@ -91,6 +95,7 @@ To import a known credential, supply all four of `id`, `userHandle`, `privateKey
 - The signature counter starts at `0` and is incremented by one on every successful `navigator.credentials.get()` assertion.
 - Returned credentials include the private key; treat saved files such as `passkey.json` as secrets.
 - `click()` does not wait for the asynchronous WebAuthn registration (`navigator.credentials.create()`) or the app's server-side registration request to finish. Before calling `credentials.get()` or `storageState()`, wait for the app's success UI or a successful registration API response; otherwise the credential may be `undefined` or missing from the saved state.
+- The upstream example calls `credentials.get()` immediately after `click()`; the "Capture a passkey" example on this page adds a wait for the success UI (and a guard against `undefined`) to avoid that race.
 - Source: https://playwright.dev/docs/api/class-credentials (microsoft/playwright v1.64.1 `docs/src/api/class-credentials.md`)
 
 ## Related
