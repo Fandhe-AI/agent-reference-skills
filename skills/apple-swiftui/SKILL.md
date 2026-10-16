@@ -2,10 +2,10 @@
 name: apple-swiftui
 description: >
   Apple SwiftUI 宣言的 UI フレームワークリファレンス。
-  View, VStack, HStack, ZStack, List, NavigationStack, TabView,
-  State, Binding, Bindable, Environment, EnvironmentObject,
-  sheet, fullScreenCover, modifier, animation, withAnimation,
-  Animation, Transition, matchedGeometryEffect, PhaseAnimator, KeyframeAnimator。
+  View, VStack, List, NavigationStack, TabView, toolbar, State, Binding, Bindable,
+  Environment, sheet, modifier, withAnimation, matchedGeometryEffect, PhaseAnimator,
+  swipeActions, reorderable, AsyncImage, DocumentGroup, Document, Liquid Glass,
+  iPhone Duo 対応 (ArrangementView, ReservedRegion, DeviceHinge)。
 user-invocable: false
 model: sonnet
 ---
@@ -14,6 +14,9 @@ model: sonnet
 
 SwiftUI 公式ドキュメントの主要 API を網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
+
+対象: iOS 27 SDK / Xcode 27（iPhone Duo 系 API は iOS 27.1+、FileDocument は iOS 27.2 で deprecated）。出典 developer.apple.com DocC JSON、取得日 2026-10-16。
+UIKit 側の UIArrangementViewController / UIHingeInteraction は apple-uikit、Duo のカメラ記事は apple-media を参照。
 
 ## ディレクトリ構成
 
@@ -43,6 +46,11 @@ skills/apple-swiftui/
       section.md
       foreach.md
       form.md
+      glass-button-style.md
+      reorderable.md
+      swipeactions.md
+      contentbuilder.md
+      asyncimage.md
     layout/
       README.md
       vstack.md
@@ -97,6 +105,25 @@ skills/apple-swiftui/
       toolbar.md
       toolbaritem.md
       presentationdetents.md
+      toolbar-vertical.md
+      toolbar-overflow.md
+    adaptive-layout/
+      README.md
+      arrangementview.md
+      arrangementviewstyle.md
+      split-arrangement-layout.md
+      overlay-arrangement.md
+      reservedregion.md
+      devicehinge.md
+      cameracaptureaccessory.md
+    documents/
+      README.md
+      documentgroup.md
+      document.md
+      documentreader-writer.md
+      urldocumentconfiguration.md
+      fileexporter.md
+      updating-document-based-app.md
     modifiers/
       README.md
       frame.md
@@ -114,6 +141,8 @@ skills/apple-swiftui/
       scale-rotation.md
       border-tint.md
       interaction.md
+      glass-effect.md
+      glass-effect-container.md
     animation/
       README.md
       withanimation.md
@@ -138,7 +167,7 @@ skills/apple-swiftui/
 タスクからカテゴリを引き、カテゴリの README.md で目的のページを特定する:
 
 1. 下記マッピング表でタスクに対応するカテゴリを探す
-2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
+2. そのカテゴリの `references/<category>/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
 
 ## タスク → カテゴリ マッピング
@@ -157,6 +186,12 @@ skills/apple-swiftui/
 | NavigationStack / NavigationLink で画面遷移を実装したい | navigation | [references/navigation/README.md](references/navigation/README.md) |
 | sheet / fullScreenCover / popover / alert でモーダル表示したい | navigation | [references/navigation/README.md](references/navigation/README.md) |
 | TabView / Tab / toolbar / ToolbarItem でタブ・ツールバーを作りたい | navigation | [references/navigation/README.md](references/navigation/README.md) |
+| 縦軸ツールバー・overflow メニュー・表示優先度を制御したい | navigation | [references/navigation/README.md](references/navigation/README.md) |
+| iPhone Duo / 折りたたみ向けに primary・secondary を出し分けたい（ArrangementView, split / overlay） | adaptive-layout | [references/adaptive-layout/README.md](references/adaptive-layout/README.md) |
+| カメラ・ヒンジの予約領域を避けたい（ReservedRegion）／ヒンジ角度・開閉状態を取得したい（DeviceHinge, onHingeChange）／外側ディスプレイに表示したい（CameraCaptureAccessory） | adaptive-layout | [references/adaptive-layout/README.md](references/adaptive-layout/README.md) |
+| ドキュメントベースアプリを作りたい・FileDocument から移行したい（DocumentGroup, Document, ReadableDocument, WritableDocument, fileExporter） | documents | [references/documents/README.md](references/documents/README.md) |
+| List 以外で並べ替え・スワイプアクションを付けたい（reorderable, swipeActionsContainer）／ContentBuilder／AsyncImage を使いたい | views-controls | [references/views-controls/README.md](references/views-controls/README.md) |
+| Liquid Glass（glassEffect / GlassEffectContainer / glass ボタン）を適用したい | modifiers | [references/modifiers/README.md](references/modifiers/README.md) |
 | frame / padding / background / overlay でレイアウト調整したい | modifiers | [references/modifiers/README.md](references/modifiers/README.md) |
 | font / foregroundStyle / shadow / opacity で見た目を整えたい | modifiers | [references/modifiers/README.md](references/modifiers/README.md) |
 | clipShape / scaleEffect / rotationEffect / border などを適用したい | modifiers | [references/modifiers/README.md](references/modifiers/README.md) |

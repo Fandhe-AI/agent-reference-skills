@@ -65,6 +65,27 @@ No parameters. The view remains in the hierarchy and occupies layout space.
 | `count` | `Int` | `1` | Number of taps required to trigger the action. |
 | `action` | `() -> Void` | — | Closure executed when the gesture fires. |
 
+iOS 27.0+ overload with a location and input-kind filter:
+
+```swift
+nonisolated func onTapGesture(count: Int = 1, coordinateSpace: some CoordinateSpaceProtocol = .local, inputKinds: GestureInputKinds = .all, perform action: @escaping (CGPoint) -> Void) -> some View
+```
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `count` | `Int` | `1` | Number of taps or clicks required to trigger the action. |
+| `coordinateSpace` | `some CoordinateSpaceProtocol` | `.local` | Coordinate space in which the location is reported. |
+| `inputKinds` | `GestureInputKinds` | `.all` | Input kinds the gesture recognizes. |
+| `action` | `(CGPoint) -> Void` | — | Receives the location of the interaction. |
+
+### `onLongPressGesture(minimumDuration:maximumDistance:inputKinds:perform:onPressingChanged:)`
+
+iOS 27.0+ (not tvOS):
+
+```swift
+nonisolated func onLongPressGesture(minimumDuration: Double = 0.5, maximumDistance: CGFloat = 10, inputKinds: GestureInputKinds = .all, perform action: @escaping () -> Void, onPressingChanged: ((Bool) -> Void)? = nil) -> some View
+```
+
 ### `onAppear(perform:)`
 
 | Name | Type | Description |
@@ -82,6 +103,8 @@ No parameters. The view remains in the hierarchy and occupies layout space.
 ## Notes
 
 `disabled`, `hidden`, `onTapGesture`, `onAppear` are available on iOS 13.0+ / macOS 10.15+. The two-parameter `onChange(of:initial:_:)` overload requires iOS 17.0+ / macOS 14.0+; for iOS 14–16 use `onChange(of:perform:)` (deprecated in iOS 17). `onAppear` action runs on the main actor. `onChange` action also runs on the main actor; use `Task.detached` for background work.
+
+`GestureInputKinds` (iOS 27.0+) is an option set that specifies which input kinds a gesture recognizes: `.all`, `.directTouch`, `.indirectTouch`, `.pencil`, `.pointer`. If not specified, a gesture recognizes all applicable input kinds. The following gestures have initializers that accept input kinds: `DragGesture`, `LongPressGesture`, `MagnifyGesture`, `RotateGesture`, `RotateGesture3D`, `SpatialEventGesture`, `SpatialTapGesture`, `TapGesture`, `WindowDragGesture`.
 
 ## Related
 

@@ -67,6 +67,7 @@ Key style modifier: `.tabViewStyle(_:)` — values include `.automatic`, `.page`
 - `Tab` struct (iOS 18+) replaces the deprecated `.tabItem(_:)` modifier.
 - Use `TabSection` to add hierarchy within the sidebar adaptable style.
 - Enable user customization and persistence with `.tabViewCustomization($customization)`.
+- `TabRole.prominent` (iOS 27.0+) gives one tab prominent visual treatment in the tab bar; see [Tab](./tab.md). The `TabView` initializers still take `@TabContentBuilder<SelectionValue>`.
 
 ## Related
 

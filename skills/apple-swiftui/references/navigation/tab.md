@@ -46,6 +46,7 @@ Tab(value: "profile") {
 - Replaces the deprecated `.tabItem(_:)` modifier.
 - Conforms to `TabContent`, allowing it to be used inside `TabContentBuilder`.
 - Add `.customizationID(_:)` to participate in `TabViewCustomization`.
+- `TabRole.prominent` (iOS / iPadOS / Mac Catalyst / macOS / tvOS / visionOS / watchOS 27.0+): gives prominent visual treatment to one of the tabs in supported tab bars. Only one tab can receive it; when no tab has an explicit `.prominent` role, a `.search` role tab may receive the prominent treatment by default. Specify it with `Tab(role: .prominent) { ... }`.
 
 ## Related
 
