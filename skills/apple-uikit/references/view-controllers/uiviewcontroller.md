@@ -58,6 +58,20 @@ class MyViewController: UIViewController {
 | `traitOverrides` | `UITraitOverrides` | Overrides trait values (e.g. `traitOverrides.userInterfaceStyle`) for the view controller's trait environment (iOS 17+) |
 | `tab` | `UITab?` | The `UITab` instance used to create this view controller when added to a tab-based `UITabBarController`; `nil` by default (iOS 18+) |
 | `ornaments` | `[UIOrnament]` | SwiftUI ornaments to display adjacent to the view controller (visionOS only) |
+| `arrangementViewController` | `UIArrangementViewController?` | The nearest ancestor arrangement view controller (iOS 27.1+, get-only) |
+| `preferredVerticalBarBehavior` | `UIVerticalBarBehavior` | The vertical bar behavior this view controller prefers; override to return `.disabled` to opt out of the vertical bar, default is `.automatic` (iOS 27.1+, get-only) |
+| `childForPreferredVerticalBarBehavior` | `UIViewController?` | Which child view controller, if any, controls the vertical bar behavior; return `nil` to use this controller's own configuration (iOS 27.1+, get-only) |
+
+## Vertical Bar and Scene Accessory Methods
+
+```swift
+// iOS 27.1+: signal that the preferred vertical bar configuration changed
+func setNeedsUpdateOfVerticalBarConfiguration()
+
+// iOS 27.0+ (iOS / iPadOS / Mac Catalyst): scene accessories
+func registerSceneAccessory(_ accessory: UISceneAccessory) -> UISceneAccessoryRegistration
+func unregisterSceneAccessory(_ registration: UISceneAccessoryRegistration)
+```
 
 ## Content Unavailable State (iOS 17+)
 
@@ -110,6 +124,11 @@ childVC.removeFromParent()
 - `traitOverrides` (iOS 17+) is the modern replacement for overriding `traitCollection` directly; it conforms to `UIMutableTraits` and is also available on `UIWindowScene`, `UIWindow`, `UIView`, and `UIPresentationController`.
 - `tab` (iOS 18+) is populated automatically when the view controller is supplied via `UITab`/`UISearchTab` for the new tab-based `UITabBarController` navigation model.
 - `ornaments` is visionOS-only; it has no effect on iOS/iPadOS/tvOS/Mac Catalyst.
+- Starting in iOS 27, iPadOS 27, Mac Catalyst 27, tvOS 27 and visionOS 27, apps built with the latest SDK must adopt the scene-based life cycle or they fail to launch. See the scene-based life cycle page.
+- `preferredVerticalBarBehavior`: opt out only for UIs better served by horizontal bars (for example a fullscreen video player with toolbar controls, or a non-scrolling layout such as a calculator). Treat it as a stable choice and do not toggle it as a function of a single view's state. Call `setNeedsUpdateOfVerticalBarConfiguration()` after changing state that affects `preferredVerticalBarBehavior` or `childForPreferredVerticalBarBehavior`.
+- `childForPreferredVerticalBarBehavior`: `UINavigationController` forwards to its top view controller and `UITabBarController` to its selected view controller by default.
+- `registerSceneAccessory(_:)` returns a registration used to monitor the accessory or unregister it; the delegate type defined by the configuration receives all lifecycle events. `unregisterSceneAccessory(_:)` dismisses the accessory if it is currently presented.
+- Source: https://developer.apple.com/documentation/uikit/uiviewcontroller
 
 ## Related
 
@@ -119,3 +138,7 @@ childVC.removeFromParent()
 - [UIPresentationController](./uipresentationcontroller.md)
 - [View Controller Lifecycle](./viewcontroller-lifecycle.md)
 - [View Controller Presentation](./viewcontroller-presentation.md)
+- [UIArrangementViewController](../adaptive-layout/uiarrangementviewcontroller.md)
+- [Vertical Bar (controls on the vertical axis)](../adaptive-layout/vertical-bar.md)
+- [Transitioning to the UIKit Scene-Based Life Cycle](./scene-based-life-cycle.md)
+- [UISceneAccessory](./uisceneaccessory.md)

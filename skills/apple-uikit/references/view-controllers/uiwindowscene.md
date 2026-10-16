@@ -36,6 +36,7 @@ func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options: UIS
 | `sizeRestrictions` | `UISceneSizeRestrictions?` | Minimum and maximum window size |
 | `isFullScreen` | `Bool` | Whether the scene occupies the full screen |
 | `effectiveGeometry` | `UIWindowScene.Geometry` | Current geometry in system space |
+| `closureConfirmation` | `UISceneClosureConfirmation?` | Configuration describing a confirmation dialog shown when a user action would destroy the scene session and disconnect the scene (iOS 27.0+) |
 
 ## Key Methods
 
@@ -46,18 +47,27 @@ func requestGeometryUpdate(
     errorHandler: ((Error) -> Void)?
 )
 
-// Create a display link tied to this scene's display
-func displayLink(action: UIAction) -> CADisplayLink
+// Create a display link targeting the display associated with this scene (iOS 27.0+)
+@MainActor @preconcurrency
+func displayLink(action: @escaping @Sendable (CADisplayLink) -> Void) -> CADisplayLink?
+func displayLink(target: Any, selector sel: Selector) -> CADisplayLink?
 ```
 
 ## Notes
 
 - iOS 13.0+, iPadOS 13.0+, Mac Catalyst 13.1+, tvOS 13.0+, visionOS 1.0+
 - Conforms to `UITraitEnvironment`; observe trait changes using `registerForTraitChanges(_:handler:)`.
-- `interfaceOrientation` is deprecated in iOS 16+; use `UIWindowScene.Geometry` or trait collections instead.
+- `interfaceOrientation` is deprecated in iOS 26.0 ("Use effectiveGeometry.interfaceOrientation instead.").
+- `coordinateSpace` is deprecated in iOS 26.0 ("Use effectiveGeometry.coordinateSpace instead.").
+- `displayLink(action:)` and `displayLink(target:selector:)` are available in iOS 27.0+ (iOS, iPadOS, Mac Catalyst, tvOS, visionOS). `UIScreen.displayLink(withTarget:selector:)` is deprecated in iOS 27.0 ("Use the equivalent display link API on UIWindowScene").
+- Starting in iOS 27, iPadOS 27, Mac Catalyst 27, tvOS 27 and visionOS 27, apps built with the latest SDK must adopt the scene-based life cycle or they fail to launch.
+- iOS 27.1+: `UISceneSession.Role.windowCameraCaptureAccessory` identifies a scene created from a camera capture accessory registration (a session role for scenes that present content during camera capture).
 - Each window in the scene shares the scene's `traitCollection`.
+- Source: https://developer.apple.com/documentation/uikit/uiwindowscene
 
 ## Related
 
 - [UIWindow](./uiwindow.md)
 - [UIResponder](./uiresponder.md)
+- [Transitioning to the UIKit Scene-Based Life Cycle](./scene-based-life-cycle.md)
+- [UISceneAccessory](./uisceneaccessory.md)

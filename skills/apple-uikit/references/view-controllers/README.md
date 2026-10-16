@@ -2,11 +2,13 @@
 
 | Name | Description | Path |
 |------|-------------|------|
+| Transitioning to the UIKit Scene-Based Life Cycle | Adopt the scene-based life cycle to replace the app delegate life cycle in UIKit. Required for apps built with the iOS 27 SDK. | [scene-based-life-cycle.md](./scene-based-life-cycle.md) |
 | UIContentUnavailableConfiguration | A composable description of a view that indicates your app can't display content, with system default styling for common empty states. | [uicontentunavailableconfiguration.md](./uicontentunavailableconfiguration.md) |
 | UINavigationController | A container view controller that manages a stack-based scheme for navigating hierarchical content. | [uinavigationcontroller.md](./uinavigationcontroller.md) |
 | UIPageViewController | A container view controller that manages navigation between pages of content, where a subview controller manages each page. | [uipageviewcontroller.md](./uipageviewcontroller.md) |
 | UIPresentationController | An object that manages the transition animations and the presentation of view controllers onscreen. | [uipresentationcontroller.md](./uipresentationcontroller.md) |
 | UIResponder | An abstract interface for responding to and handling events. | [uiresponder.md](./uiresponder.md) |
+| UISceneAccessory | A type which can be used to register for a specific type of scene accessory presentation. | [uisceneaccessory.md](./uisceneaccessory.md) |
 | UISheetPresentationController | A presentation controller that manages the appearance and behavior of a sheet. | [uisheetpresentationcontroller.md](./uisheetpresentationcontroller.md) |
 | UISplitViewController | A container view controller that implements a hierarchical interface with multiple columns. | [uisplitviewcontroller.md](./uisplitviewcontroller.md) |
 | UITab | An object that manages a tab in a tab bar, used with `UITabBarController` for modern tab-bar navigation. | [uitab.md](./uitab.md) |

@@ -64,11 +64,14 @@ UIWindow.didBecomeHiddenNotification
 
 - iOS 2.0+, iPadOS 2.0+, Mac Catalyst 13.1+, tvOS, visionOS 1.0+
 - Only one window at a time is the key window; it receives events without a coordinate value (e.g., keyboard events).
-- In scene-based apps (iOS 13+), use `UIWindow(windowScene:)` instead of the frame-based initializer.
+- `init(frame:)` and `init()` are deprecated in iOS 26.0, iPadOS 26.0, Mac Catalyst 26.0, tvOS 26.0 and visionOS 26.0 ("Use init(windowScene:) instead."). In scene-based apps (iOS 13+), create windows with `UIWindow(windowScene:)`.
+- Starting in iOS 27, iPadOS 27, Mac Catalyst 27, tvOS 27 and visionOS 27, apps built with the latest SDK must adopt the scene-based life cycle or they fail to launch.
 - The `screen` property is deprecated in iOS 16+; use `windowScene` instead.
+- Source: https://developer.apple.com/documentation/uikit/uiwindow
 
 ## Related
 
 - [UIWindowScene](./uiwindowscene.md)
 - [UIViewController](./uiviewcontroller.md)
 - [UIResponder](./uiresponder.md)
+- [Transitioning to the UIKit Scene-Based Life Cycle](./scene-based-life-cycle.md)
