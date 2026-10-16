@@ -43,9 +43,9 @@ fastify.route({
 
 | Name | Type | Description |
 |------|------|-------------|
-| `method` | `string \| string[]` | Currently supports `GET`, `HEAD`, `TRACE`, `DELETE`, `OPTIONS`, `PATCH`, `PUT` and `POST`. To accept more methods, `addHttpMethod` (see Server) must be used. Could also be an array of methods. |
+| `method` | `string \| string[]` | Currently supports `GET`, `HEAD`, `TRACE`, `DELETE`, `OPTIONS`, `PATCH`, `PUT`, `POST` and `QUERY`. To accept more methods, `addHttpMethod` (see Server) must be used. Could also be an array of methods. |
 | `url` | `string` | The path of the URL to match this route (alias: `path`). |
-| `schema` | `object` | An object containing the schemas for the request and response, in JSON Schema format. Sub-keys: `body` (validates POST/PUT/PATCH/TRACE/SEARCH/PROPFIND/PROPPATCH/LOCK bodies), `querystring`/`query` (validates the querystring), `params` (validates the params), `response` (filter and generate a schema for the response; setting a schema allows 10-20% more throughput). |
+| `schema` | `object` | An object containing the schemas for the request and response, in JSON Schema format. Sub-keys: `body` (validates POST/PUT/PATCH/TRACE/SEARCH/PROPFIND/PROPPATCH/LOCK/QUERY bodies), `querystring`/`query` (validates the querystring), `params` (validates the params), `response` (filter and generate a schema for the response; setting a schema allows 10-20% more throughput). |
 | `exposeHeadRoute` | `boolean` | Creates a sibling `HEAD` route for any `GET` routes. Defaults to the value of `exposeHeadRoutes` instance option. If a custom `HEAD` handler is wanted without disabling this option, define it before the `GET` route. |
 | `attachValidation` | `boolean` | Attach `validationError` to request, if there is a schema validation error, instead of sending the error to the error handler. Default error format follows the Ajv error-objects format. |
 | `onRequest(request, reply, done)` | `function \| function[]` | Called as soon as a request is received. |
@@ -76,6 +76,7 @@ fastify.route({
 
 ## Notes
 
+- The `QUERY` method (RFC 10008) requires a `Content-Type` header; without one the response is 400 `FST_ERR_ROUTE_MISSING_CONTENT_TYPE`.
 - The documentation for `onRequest`, `preParsing`, `preValidation`, `preHandler`, `preSerialization`, `onSend`, and `onResponse` is detailed in Hooks. To send a response before the request is handled by the `handler`, see "Respond to a request from a hook" in Hooks.
 - Fastify's `route` / routing here is the server-side find-my-way router, distinct from `hono` (Web Standards JS), `go-echo` (Go), `fandhe-backend` (Rust), and the client-side routers `react-router` / `tanstack-router`.
 

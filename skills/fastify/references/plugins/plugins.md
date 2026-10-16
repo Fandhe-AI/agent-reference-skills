@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Reference/Plugins/
 
 # Plugins
 
-Fastify can be extended with plugins, which can be a set of routes, a server decorator, or other functionality, added via the `register` API. Target version: v5.12.1.
+Fastify can be extended with plugins, which can be a set of routes, a server decorator, or other functionality, added via the `register` API. Target version: v5.12.7.
 
 ## Signature / Usage
 

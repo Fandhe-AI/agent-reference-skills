@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Reference/Hooks/
 
 # Scope
 
-Target: Fastify v5.12.1. Except for `onClose`, all hooks are encapsulated: you can control where a hook runs by registering it inside a given plugin scope.
+Target: Fastify v5.12.7. Except for `onClose`, all hooks are encapsulated: you can control where a hook runs by registering it inside a given plugin scope.
 
 ## Signature / Usage
 

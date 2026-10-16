@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Database/
 
 # Database
 
-Target: Fastify v5.12.1. Fastify is database agnostic; the ecosystem provides official plugins for popular engines, and a database library or engine can be wrapped in a custom plugin using decorators.
+Target: Fastify v5.12.7. Fastify is database agnostic; the ecosystem provides official plugins for popular engines, and a database library or engine can be wrapped in a custom plugin using decorators.
 
 ## Signature / Usage
 

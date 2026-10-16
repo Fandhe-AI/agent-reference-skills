@@ -39,7 +39,7 @@ server.get('/route', {
 | TypeBox | `typebox` | `@fastify/type-provider-typebox` |
 | Zod | `zod` | `@fastify/type-provider-zod` |
 
-## TypeBox
+### TypeBox
 
 ```typescript
 import Fastify from 'fastify'
@@ -60,7 +60,7 @@ server.get('/route', {
 })
 ```
 
-## Zod
+### Zod
 
 ```typescript
 import fastify from 'fastify'
@@ -89,7 +89,7 @@ server.withTypeProvider<ZodTypeProvider>().get('/route', {
 - When using `JsonSchemaToTsProvider` with a schema pulled into a separate variable, add `as const` to it — otherwise TypeScript widens literal fields like `type: 'object'` to `type: string`, breaking inference (this has no effect on the runtime schema).
 - **v4 → v5**: Type Providers now differentiate validator and serializer schema types instead of a single `output` type — the generic interface changed from `output: this['input'] extends JSONSchema ? FromSchema<this['input'], Options> : unknown` to separate `validator` and `serializer` properties (each `this['schema'] extends JSONSchema ? FromSchema<this['schema'], Options> : unknown`). Type Provider packages such as `@fastify/type-provider-json-schema-to-ts` and `@fastify/type-provider-typebox` needed updates for this (per `Guides/Migration-Guide-V5.md`).
 - `zod` here is only a schema source plugged in via `@fastify/type-provider-zod`; the `zod` skill covers the zod API itself.
-- Fastify v5.12.1's own docs are inconsistent here: `Reference/Type-Providers.md` (this page's source) uses the fastify-org package `@fastify/type-provider-zod`, while `Reference/TypeScript.md` at the same tag links the third-party wrapper [`fastify-type-provider-zod`](https://github.com/turkerdev/fastify-type-provider-zod). This page follows `Reference/Type-Providers.md`.
+- Fastify v5.12.7's own docs are inconsistent here: `Reference/Type-Providers.md` (this page's source) uses the fastify-org package `@fastify/type-provider-zod`, while `Reference/TypeScript.md` at the same tag links the third-party wrapper [`fastify-type-provider-zod`](https://github.com/turkerdev/fastify-type-provider-zod). This page follows `Reference/Type-Providers.md`.
 - `@fastify/type-provider-zod` is a real, published package (v1.0.0, released 2026-04) with its official repository at [fastify/fastify-type-provider-zod](https://github.com/fastify/fastify-type-provider-zod) — verified via the `v1.0.0` tag's README, whose own import example (`import type { ZodTypeProvider } from '@fastify/type-provider-zod'`) matches the import shown above. It is not a typo or a fabricated package name.
 
 ## Related

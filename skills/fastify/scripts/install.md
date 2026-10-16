@@ -1,10 +1,10 @@
 ---
-source: https://raw.githubusercontent.com/fastify/fastify/v5.12.1/docs/Guides/Getting-Started.md, https://raw.githubusercontent.com/fastify/fastify/v5.12.1/docs/Reference/TypeScript.md, https://github.com/fastify/fastify-cli/blob/v8.0.0/README.md, https://raw.githubusercontent.com/fastify/fastify-type-provider-typebox/v6.1.0/README.md
+source: https://raw.githubusercontent.com/fastify/fastify/v5.12.7/docs/Guides/Getting-Started.md, https://raw.githubusercontent.com/fastify/fastify/v5.12.7/docs/Reference/TypeScript.md, https://github.com/fastify/fastify-cli/blob/v8.0.0/README.md, https://raw.githubusercontent.com/fastify/fastify-type-provider-typebox/v6.1.0/README.md
 ---
 
 # install
 
-Fastify 本体と `fastify-cli`（scaffolding / dev サーバー CLI、v5.12.1 時点の Guides/Getting-Started.md・Reference/TypeScript.md、および fastify-cli 8.0.0 時点の README.md 由来）のインストールコマンド集。
+Fastify 本体と `fastify-cli`（scaffolding / dev サーバー CLI、v5.12.7 時点の Guides/Getting-Started.md・Reference/TypeScript.md、および fastify-cli 8.0.0 時点の README.md 由来）のインストールコマンド集。
 
 ## Fastify 本体のインストール（npm）
 

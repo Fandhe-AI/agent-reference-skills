@@ -31,7 +31,7 @@ Fastify validates requests using [Ajv v8](https://www.npmjs.com/package/ajv) wit
 | `allErrors` | `boolean` | `false` | Collects all validation errors instead of stopping at the first; enabling it is a DoS vector |
 | `ajv.plugins` | `array` | — | Ajv plugins to register on the default instance (must match the bundled Ajv version) |
 
-## Custom Ajv instance
+### Custom Ajv instance
 
 ```js
 const fastify = require('fastify')()
@@ -46,7 +46,7 @@ fastify.setValidatorCompiler(({ schema, method, url, httpPart }) => {
 })
 ```
 
-## Per-httpPart Ajv instances
+### Per-httpPart Ajv instances
 
 ```js
 const schemaCompilers = {
@@ -68,7 +68,7 @@ server.setValidatorCompiler(req => {
 })
 ```
 
-## Ajv Plugins
+### Ajv Plugins
 
 ```js
 const fastify = require('fastify')({

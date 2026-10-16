@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Reference/Hooks/
 
 # Route Level Hooks
 
-Target: Fastify v5.12.1. One or more custom lifecycle hooks (`onRequest`, `onResponse`, `preParsing`, `preValidation`, `preHandler`, `preSerialization`, `onSend`, `onTimeout`, `onError`) that are unique to a single route, declared via `fastify.route()`. Route-level hooks always run as the **last** hook in their category, after the shared hooks added with `fastify.addHook`.
+Target: Fastify v5.12.7. One or more custom lifecycle hooks (`onRequest`, `onResponse`, `preParsing`, `preValidation`, `preHandler`, `preSerialization`, `onSend`, `onTimeout`, `onError`) that are unique to a single route, declared via `fastify.route()`. Route-level hooks always run as the **last** hook in their category, after the shared hooks added with `fastify.addHook`.
 
 ## Signature / Usage
 

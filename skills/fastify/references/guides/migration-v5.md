@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Migration-Guide-V5/
 
 # Migration Guide V5
 
-Target: Fastify v5.12.1. Fastify v5 requires Node.js v20+ (v4 supported until 2025-06-30). Fix all v4 deprecation warnings before upgrading — every deprecated v4 API listed below has been removed and no longer works.
+Target: Fastify v5.12.7. Fastify v5 requires Node.js v20+ (v4 supported until 2025-06-30). Fix all v4 deprecation warnings before upgrading — every deprecated v4 API listed below has been removed and no longer works.
 
 ## Signature / Usage
 
@@ -15,7 +15,7 @@ fastify.listen(8000)
 fastify.listen({ port: 8000 })
 ```
 
-## Breaking Changes
+### Breaking Changes
 
 | Change | v4 | v5 | Reference page |
 | --- | --- | --- | --- |
@@ -42,7 +42,7 @@ fastify.listen({ port: 8000 })
 | `getDefaultRoute`/`setDefaultRoute` | present | removed | [../server/instance-routing.md](../server/instance-routing.md) |
 | `time`/`date-time` format | timezone optional | `ajv-formats` now requires timezone; use `iso-time`/`iso-date-time` for the old optional-timezone behavior | [../validation-serialization/ajv-configuration.md](../validation-serialization/ajv-configuration.md) |
 
-## New Features
+### New Features
 
 - **Diagnostics Channel support**: Fastify v5 natively supports Node's [`diagnostics_channel`](https://nodejs.org/api/diagnostics_channel.html), exposing `tracing:fastify.request.handler:start` / `:end` / `:error` channels for tracing a request's lifecycle without instrumenting handlers directly
 

@@ -1,6 +1,6 @@
-# Getting Started
+# getting-started
 
-対象 Fastify v5.12.1
+対象 Fastify v5.12.7。
 
 | Name | Description | Path |
 |------|-------------|------|
@@ -13,4 +13,4 @@
 | Parsing Request Payloads | `request.body` へのペイロード解析 | [request-payload.md](./request-payload.md) |
 | CLI Usage | `fastify-cli` によるサーバー起動 | [cli-usage.md](./cli-usage.md) |
 | Long Term Support (LTS) | メジャーバージョンのサポート期間ポリシー | [lts.md](./lts.md) |
-| Warnings and Deprecations | `FSTWRN` / `FSTDEP` 警告コード一覧 | [warnings.md](./warnings.md) |
+| Warnings and Deprecations | `FSTWRN` / `FSTSEC` / `FSTDEP` 警告コード一覧 | [warnings.md](./warnings.md) |

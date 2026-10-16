@@ -28,7 +28,7 @@ fastify.post('/the/url', { schema }, handler)
 | `schema.params` | object (JSON Schema) | Validates the route parameters |
 | `schema.headers` | object (JSON Schema) | Validates the request headers |
 
-## Body Content-Type Validation
+### Body Content-Type Validation
 
 The `body` schema can differentiate validation per content type by nesting schemas under a `content` property, matched against the request's `Content-Type` header (exact essence MIME type match).
 
@@ -50,7 +50,16 @@ fastify.post('/the/url', {
 }, handler)
 ```
 
+### Header name case
+
+Node.js exposes request header names in lowercase. Fastify normalizes header names in a `headers` schema to lowercase before compilation, so assertions written in the canonical header-name case still match the request, for example `required: ['X-Api-Key']`, `dependencies`, and a `propertyNames` deny-list that uses `enum` or `const`.
+
+Regular-expression constraints on header names are the exception. A `patternProperties` key and a `propertyNames` `pattern` are regular expressions matched against the already-lowercased header names, and Fastify cannot safely rewrite a regular expression. Author them to match lowercase (for example `^x-debug-.*$`, not `^X-Debug-.*$`) or make them case-insensitive. A pattern written in canonical case will not match, and the assertion it guards will not apply.
+
 ## Notes
+
+- An external `$ref` (a schema registered with `addSchema`) in a headers schema, and a `$ref` inside `propertyNames`, are not reached by header case normalization and trigger the `FSTSEC002` / `FSTSEC003` security warnings (see `getting-started/warnings.md`). Inline the schema instead.
+- The lowercasing of `propertyNames` `enum` / `const` was fixed in v5.12.6 (PR #7104).
 
 - Validation is only attempted if the content type is `application/json`, unless the body schema uses `content` to specify validation per content type.
 - When using custom content type parsers, the parsed body is validated **only** when the request content type matches a key in the schema `content` map (exact essence MIME type match); a parser registered with a broader regular expression can accept content types the `content` map does not cover, and those requests are parsed but **not validated**.

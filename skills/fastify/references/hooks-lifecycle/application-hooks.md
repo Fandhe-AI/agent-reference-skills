@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Reference/Hooks/
 
 # Application Hooks
 
-Target: Fastify v5.12.1. Hooks into the application lifecycle rather than the per-request lifecycle: `onReady`, `onListen`, `onClose`, `preClose`, `onRoute`, `onRegister`.
+Target: Fastify v5.12.7. Hooks into the application lifecycle rather than the per-request lifecycle: `onReady`, `onListen`, `onClose`, `preClose`, `onRoute`, `onRegister`.
 
 ## Signature / Usage
 

@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Prototype-Poisoning/
 
 # Prototype Poisoning
 
-Target: Fastify v5.12.1. Background on the JavaScript prototype-poisoning vulnerability class (`__proto__` key injection via `JSON.parse()` followed by shallow-copy operations like `Object.assign()`), and why any framework that parses external JSON is potentially at risk.
+Target: Fastify v5.12.7. Background on the JavaScript prototype-poisoning vulnerability class (`__proto__` key injection via `JSON.parse()` followed by shallow-copy operations like `Object.assign()`), and why any framework that parses external JSON is potentially at risk.
 
 ## Signature / Usage
 

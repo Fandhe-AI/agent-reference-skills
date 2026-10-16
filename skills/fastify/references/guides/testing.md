@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Testing/
 
 # Testing
 
-Target: Fastify v5.12.1. Testing is compatible with most testing frameworks (examples below use Node's built-in Test Runner). Fastify ships with built-in fake HTTP injection via [`light-my-request`](https://github.com/fastify/light-my-request).
+Target: Fastify v5.12.7. Testing is compatible with most testing frameworks (examples below use Node's built-in Test Runner). Fastify ships with built-in fake HTTP injection via [`light-my-request`](https://github.com/fastify/light-my-request).
 
 ## Signature / Usage
 

@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Serverless/
 
 # Serverless
 
-Target: Fastify v5.12.1. Run serverless applications and REST APIs using an existing Fastify application. Platforms with long-running processes (Google Cloud Run, AWS Fargate, Azure Container Instances, Vercel) make full use of Fastify's features; short-lived FaaS platforms need an adapter.
+Target: Fastify v5.12.7. Run serverless applications and REST APIs using an existing Fastify application. Platforms with long-running processes (Google Cloud Run, AWS Fargate, Azure Container Instances, Vercel) make full use of Fastify's features; short-lived FaaS platforms need an adapter.
 
 ## Signature / Usage
 

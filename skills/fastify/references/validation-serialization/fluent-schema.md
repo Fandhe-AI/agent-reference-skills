@@ -23,7 +23,7 @@ const schema = {
 fastify.post('/the/url', { schema }, handler)
 ```
 
-## Reuse (`$ref-way`)
+### Reuse (`$ref-way`)
 
 ```js
 const addressSchema = S.object()
@@ -46,7 +46,7 @@ const bodyJsonSchema = S.object()
 fastify.post('/the/url', { schema: { body: bodyJsonSchema } }, handler)
 ```
 
-## Reuse (`replace-way`)
+### Reuse (`replace-way`)
 
 ```js
 const sharedAddressSchema = {

@@ -4,7 +4,7 @@ source: https://fastify.dev/docs/latest/Guides/Detecting-When-Clients-Abort/
 
 # Detecting When Clients Abort
 
-Target: Fastify v5.12.1. Fastify has no built-in mechanism for detecting when a client intentionally aborts a request (e.g. closes the browser or cancels a fetch). This differs from `clientErrorHandler`, which only handles malformed requests / oversized headers at the socket level, not intentional aborts.
+Target: Fastify v5.12.7. Fastify has no built-in mechanism for detecting when a client intentionally aborts a request (e.g. closes the browser or cancels a fetch). This differs from `clientErrorHandler`, which only handles malformed requests / oversized headers at the socket level, not intentional aborts.
 
 ## Signature / Usage
 
