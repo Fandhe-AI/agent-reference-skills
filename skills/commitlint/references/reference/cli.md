@@ -2,101 +2,102 @@
 
 > Source: https://commitlint.js.org/reference/cli
 
-commitlint の CLI オプション全一覧。
+All command-line options of commitlint.
 
-## 基本使用法
+## Basic Usage
 
 ```bash
-# stdin から読み取り
+# Read from stdin
 echo "feat: add feature" | commitlint
 
-# 最後のコミットを検証
+# Lint the last commit
 commitlint --last
 
-# コミット範囲を検証
+# Lint a commit range
 commitlint --from HEAD~3 --to HEAD
 
-# 設定を表示
+# Print the resolved config
 commitlint --print-config
 ```
 
 ## Input
 
-| オプション | 説明 |
-|-----------|------|
-| `[input]` | `--edit`, `--env`, `--from`, `--to` が省略された場合、stdin から読み取る |
+| Option | Description |
+|--------|-------------|
+| `[input]` | Reads from stdin if `--edit`, `--env`, `--from` and `--to` are omitted |
 
 ## Output / Display
 
-| オプション | 型 | デフォルト | 説明 |
-|-----------|-----|----------|------|
-| `-c, --color` | boolean | `true` | カラー出力の切り替え |
-| `-q, --quiet` | boolean | `false` | コンソール出力の切り替え |
-| `-V, --verbose` | boolean | - | 問題のないレポートでも詳細出力を有効にする |
-| `-o, --format` | string | - | 結果の出力フォーマット |
-| `--print-config` | choices | `""`, `"text"`, `"json"` | 解決済み設定を表示 |
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-c, --color` | boolean | `true` | Toggle colored output |
+| `-q, --quiet` | boolean | `false` | Toggle console output |
+| `-V, --verbose` | boolean | - | Enable verbose output for reports without problems |
+| `-o, --format` | string | - | Output format of the results |
+| `--print-config` | choices | `""`, `"text"`, `"json"` | Print resolved config |
+| `--legacy-output` | boolean | - | Use the legacy input output format (single-line 'input: ...') |
 
 ## Configuration
 
-| オプション | 型 | 説明 |
-|-----------|-----|------|
-| `-g, --config` | string | 設定ファイルへのパス。設定が見つからない場合はリザルトコード 9 |
-| `--default-config` | boolean | 組み込みのデフォルト設定を使用する（設定ファイルなしでワンオフチェックに便利） |
-| `-x, --extends` | array | 拡張する共有設定の配列 |
-| `-p, --parser-preset` | string | conventional-commits-parser 用の設定プリセット |
-| `--options` | string | CLI オプションを含む JSON ファイルまたは CommonJS モジュールへのパス |
+| Option | Type | Description |
+|--------|------|-------------|
+| `-g, --config` | string | Path to the config file; result code 9 if config is missing |
+| `--default-config` | boolean | Use the built-in default config (@commitlint/config-conventional) when no rules are found. A config file with rules always takes precedence; configs passed via `--extends` are kept and override the default config when the fallback applies. Useful for one-off checks or server-side hooks such as `pre-receive` ("Lint without a config file" section) |
+| `-x, --extends` | array | Array of shareable configurations to extend |
+| `-p, --parser-preset` | string | Configuration preset to use for conventional-commits-parser |
+| `--options` | string | Path to a JSON file or Common.js module containing CLI options |
 
 ## Commit Range / Analysis
 
-| オプション | 型 | 説明 |
-|-----------|-----|------|
-| `-e, --edit` | string | 指定ファイルから最後のコミットメッセージを読み取る。フォールバックは `./.git/COMMIT_EDITMSG` |
-| `-E, --env` | string | 環境変数の値で指定されたパスのファイル内のメッセージをチェック |
-| `-f, --from` | string | lint するコミット範囲の下限 |
-| `-t, --to` | string | lint するコミット範囲の上限 |
-| `-l, --last` | boolean | 最後のコミットのみを解析 |
-| `--from-last-tag` | boolean | 最後のタグを lint するコミット範囲の下限として使用 |
-| `--git-log-args` | string | スペース区切りの追加 git log 引数 |
+| Option | Type | Description |
+|--------|------|-------------|
+| `-e, --edit` | string | Read last commit message from the specified file; falls back to `./.git/COMMIT_EDITMSG` |
+| `-E, --env` | string | Check message in the file at the path given by the environment variable value |
+| `-f, --from` | string | Lower end of the commit range to lint; applies if edit=false |
+| `-t, --to` | string | Upper end of the commit range to lint; applies if edit=false |
+| `-l, --last` | boolean | Just analyze the last commit; applies if edit=false |
+| `--from-last-tag` | boolean | Use the last tag as the lower end of the commit range to lint; applies if edit=false and from is not set |
+| `--git-log-args` | string | Additional git log arguments as space separated string, example `'--first-parent --cherry-pick'` |
 
 ## Other Options
 
-| オプション | 型 | デフォルト | 説明 |
-|-----------|-----|----------|------|
-| `-d, --cwd` | string | 作業ディレクトリ | 実行ディレクトリ |
-| `-H, --help-url` | string | - | エラーメッセージ内のヘルプ URL |
-| `-s, --strict` | boolean | - | strict モードを有効にする。warning はリザルトコード 2、error はリザルトコード 3 |
-| `-v, --version` | boolean | - | バージョン情報を表示 |
-| `-h, --help` | boolean | - | ヘルプを表示 |
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `-d, --cwd` | string | (Working Directory) | Directory to execute in |
+| `-H, --help-url` | string | - | Help URL in error message |
+| `-s, --strict` | boolean | - | Enable strict mode; result code 2 for warnings, 3 for errors |
+| `-v, --version` | boolean | - | Display version information |
+| `-h, --help` | boolean | - | Show help |
 
-## 使用例
+## Examples
 
 ```bash
-# 設定ファイルなしでデフォルト設定を使用（ワンオフ検証）
+# Use the default config without a config file (one-off check)
 echo "feat: add new feature" | npx commitlint --default-config
 ```
 
 ```bash
-# 特定の設定ファイルを使用
+# Use a specific config file
 commitlint --config commitlint.config.js
 
-# 共有設定を拡張
+# Extend a shareable config
 commitlint --extends @commitlint/config-conventional
 
-# コミットメッセージ編集時にフックから使用
+# Use from a hook when editing a commit message
 commitlint --edit
 
-# 環境変数からファイルパスを取得
+# Get the file path from an environment variable
 commitlint --env COMMIT_MSG_FILE
 
-# 最後のタグからのコミットを検証
+# Lint commits since the last tag
 commitlint --from-last-tag --to HEAD
 
-# strict モードで実行
+# Run in strict mode
 commitlint --strict
 
-# JSON 形式で設定を表示
+# Print the config as JSON
 commitlint --print-config json
 
-# 追加の git log 引数を指定
+# Pass additional git log arguments
 commitlint --from HEAD~5 --to HEAD --git-log-args "--first-parent"
 ```

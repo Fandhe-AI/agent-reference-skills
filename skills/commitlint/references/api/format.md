@@ -1,16 +1,16 @@
 # @commitlint/format
 
-lint 結果の Report を人間が読める文字列にフォーマットする。
+Format a lint Report into human-readable strings.
 
 > https://commitlint.js.org/api/format
 
-## インストール
+## Install
 
 ```sh
 npm install --save @commitlint/format
 ```
 
-## 型定義
+## Types
 
 ```typescript
 type Problem = {
@@ -29,34 +29,36 @@ type ReportResult = {
 };
 
 type formatOptions = {
-  /** ANSI カラー出力を有効にする */
+  /** Enable ANSI color output */
   color?: boolean; // default: true
-  /** レベル 0, 1, 2 に対応する記号 */
+  /** Signs for levels 0, 1, 2 */
   signs?: readonly [string, string, string]; // default: [' ', '⚠', '✖']
-  /** レベル 0, 1, 2 に対応する色名 */
+  /** Color names for levels 0, 1, 2 */
   colors?: readonly [string, string, string]; // default: ['white', 'yellow', 'red']
-  /** 詳細出力を有効にする */
+  /** Enable verbose output */
   verbose?: boolean; // default: false
-  /** ヘルプ URL を付与する */
+  /** Append a help URL */
   helpUrl?: string;
+  /** Use the legacy input output (single-line `⧗   input: <msg>`) */
+  legacyOutput?: boolean;
 };
 ```
 
-## 関数シグネチャ
+## Function signature
 
 ```typescript
 format(report?: Report = {}, options?: formatOptions = {}) => string[];
 ```
 
-## インポート
+## Import
 
 ```javascript
 import format from "@commitlint/format";
 ```
 
-## 使用例
+## Examples
 
-### 空の呼び出し（問題なし）
+### Empty call (no problems)
 
 ```javascript
 format();
@@ -67,7 +69,7 @@ format();
 */
 ```
 
-### カラーなしで出力
+### Output without color
 
 ```javascript
 format(
@@ -109,3 +111,8 @@ format(
 ]
 */
 ```
+
+## Notes
+
+- Since v21.0.0, the input message is printed on the line after `⧗   --- input ---`. `legacyOutput: true` restores the single-line `⧗   input: <msg>` (matches the implementation and tests of commit 40d7e36)
+- `legacyOutput` is not documented in docs/api/format.md. Sources are `FormatOptions` in `@commitlint/types/src/format.ts` and commit 40d7e36

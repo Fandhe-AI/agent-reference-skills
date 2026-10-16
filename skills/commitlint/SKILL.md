@@ -13,6 +13,8 @@ model: sonnet
 commitlint 公式ドキュメントの全 API・ガイドを網羅したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
+対象 commitlint v21.2.3（Node.js >= 22.12.0 / git >= 2.13.2、v21.0.0 で最小 Node v22・入力表示形式変更）。
+
 ## ディレクトリ構成
 
 ```text

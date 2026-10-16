@@ -1,16 +1,16 @@
 # @commitlint/lint
 
-コミットメッセージをルールに基づいて検証する。
+Lint a commit message against rules.
 
 > https://commitlint.js.org/api/lint
 
-## インストール
+## Install
 
 ```sh
 npm install --save @commitlint/lint
 ```
 
-## 型定義
+## Types
 
 ```typescript
 type RuleLevel = 0 | 1 | 2;
@@ -42,26 +42,30 @@ type Report = {
   warnings: Problem[];
 };
 
+type Parser = (message: string, options: ParserOptions) => Omit<Commit, "raw">;
+
 type Options = {
   parserOpts?: any;
+  /** A custom parser function, used instead of the default conventional-commits-parser */
+  parser?: Parser;
 };
 ```
 
-## 関数シグネチャ
+## Function signature
 
 ```typescript
 lint(message: string, rules: {[ruleName: string]: Rule}, opts?: Options) => Promise<Report>;
 ```
 
-## インポート
+## Import
 
 ```javascript
 import lint from "@commitlint/lint";
 ```
 
-## 使用例
+## Examples
 
-### 基本呼び出し
+### Basic call
 
 ```javascript
 const report = await lint("foo: bar");
@@ -69,7 +73,7 @@ console.log(report);
 // => { valid: true, errors: [], warnings: [] }
 ```
 
-### ルール検証（valid）
+### Rule check (valid)
 
 ```javascript
 const report = await lint("foo: bar", { "type-enum": [1, "always", ["foo"]] });
@@ -77,7 +81,7 @@ console.log(report);
 // => { valid: true, errors: [], warnings: [] }
 ```
 
-### ルール検証（invalid）
+### Rule check (invalid)
 
 ```javascript
 const report = await lint("foo: bar", { "type-enum": [1, "always", ["bar"]] });
@@ -85,7 +89,7 @@ console.log(report);
 // => { valid: true, errors: [], warnings: [{ level: 1, valid: false, name: 'type-enum', message: '...' }] }
 ```
 
-### カスタムパーサーオプション
+### Custom parser options
 
 ```javascript
 const opts = {
@@ -102,7 +106,7 @@ const report = await lint(
 );
 ```
 
-### 設定読み込みとの併用
+### Using with config loading
 
 ```javascript
 import load from "@commitlint/load";
@@ -120,7 +124,7 @@ const report = await lint(
 );
 ```
 
-### Git 履歴の確認
+### Linting Git history
 
 ```javascript
 import lint from "@commitlint/lint";
@@ -134,7 +138,7 @@ const commits = await read({ to: "HEAD", from: "HEAD~2" });
 console.info(commits.map((commit) => lint(commit, RULES)));
 ```
 
-### 直近コミットのチェック
+### Checking the latest commit
 
 ```javascript
 import load from "@commitlint/load";
@@ -152,3 +156,8 @@ const report = await lint(
 
 console.log(JSON.stringify(report.valid));
 ```
+
+## Notes
+
+- The `parser` option was added in v21.1.0 (`feat(lint): allow for custom commit parser function`, #4829). It is not in docs/api/lint.md at v21.2.3; sources are `@commitlint/types/src/lint.ts` and `parse.ts` at the same tag
+- `Commit` / `ParserOptions` are types from `conventional-commits-parser`
