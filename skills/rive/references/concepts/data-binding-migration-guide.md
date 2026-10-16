@@ -26,6 +26,23 @@ Guidance for migrating from State Machine Inputs and runtime Event listeners to 
 - To migrate text runs updated directly by name/hierarchy at runtime: bind a `String` property to the text run and update the value through the View Model instead.
 - Constraints remain the best choice for purely visual/spatial object-to-object relationships defined only in the editor; use Data Binding when the value must come from runtime code, multiple elements depend on the same value, or transformation logic (Converters) is needed.
 
+### Updating Text Runs at runtime
+
+Previously, updating text required knowing the exact name, the hierarchy/path, and accessing the text run directly from code, which was brittle and easy to break when files changed. With data binding, bind a string property to a text run and update the value through the view model; runtime code stays stable even if the file structure changes.
+
+### Constraints vs Data Binding
+
+Constraints are still fully supported and remain the best option for many use cases.
+
+| Use constraints when | Use Data Binding when |
+| --- | --- |
+| You are linking one object directly to another | The value needs to come from runtime code |
+| The relationship is purely visual or spatial | Multiple elements depend on the same value |
+| You want a simple, editor-only solution | You want logic or transformation (via Converters) |
+| | The relationship is not strictly object-to-object |
+
+Example: use a constraint to link the rotation of multiple wheels together, or use a data-bound `rotation` property that is controlled at runtime, drives all wheels, and can be reused elsewhere (speed, effects, UI). Data binding is more flexible, while constraints are more direct.
+
 ## Related
 
 - [Data Binding](./data-binding.md)

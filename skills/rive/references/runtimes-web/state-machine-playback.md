@@ -11,7 +11,7 @@ const r = new Rive({
   src: "interactive.riv",
   canvas: document.getElementById("canvas") as HTMLCanvasElement,
   autoplay: true,
-  stateMachines: "MainMachine",
+  stateMachine: "MainMachine",
   onLoad: () => {
     r.resizeDrawingSurfaceToCanvas();
 
@@ -43,6 +43,12 @@ const r = new Rive({
 | `r.pause(name?)` | Halt advancement; preserve current frame |
 | `r.stop(name?)` | Stop and reset to the entry state |
 | `r.reset(params?)` | Dispose and recreate instances (optionally change artboard/state machine) |
+
+`reset(params?: RiveResetParameters)` takes `artboard?`, `stateMachine?`, `autoplay?`, `autoBind?` (plus deprecated `animations?` / `stateMachines?`). Playback after reset follows `autoplay` and `autoBind`; `stateMachine` takes priority over the deprecated plural parameters.
+
+```ts
+r.reset({ stateMachine: "bumpy", autoplay: true });
+```
 
 ### `stateMachineInputs(name: string): StateMachineInput[]`
 
@@ -79,7 +85,10 @@ onStateChange: (event: { data: string[] }) => void
 
 - The `stateMachineInputs()` approach is the legacy way of controlling state machines; for new projects, prefer [Data Binding](./data-binding.md).
 - State machines may "settle" (stop advancing) when no further state changes will occur — this is a performance optimization.
-- Multiple state machine names can be passed to the constructor: `stateMachines: ["Machine1", "Machine2"]`.
+- `stateMachine` (v2.41.0+) takes a single non-empty string and always takes priority over `stateMachines` and `animations`. The plural `stateMachines` (including `stateMachines: ["Machine1", "Machine2"]`) and `animations` are deprecated.
+- If none of `stateMachine` / `stateMachines` / `animations` is passed, the first linear animation on the artboard plays; v3 will play the default state machine.
+- `onStateChange` is deprecated as of v2.41.0; use data binding or state machine actions.
+- When paused or stopped the state machine does not advance and the last frame stays visible. Play from pause resumes; play from stop restarts from the entry state.
 
 ## Related
 

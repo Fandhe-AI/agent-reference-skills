@@ -12,7 +12,7 @@ const r = new Rive({
   canvas: document.getElementById("canvas") as HTMLCanvasElement,
   autoplay: true,
   autoBind: true,          // auto-bind default ViewModel with default instance
-  stateMachines: "Main",
+  stateMachine: "Main",
   onLoad: () => {
     const vmi = r.viewModelInstance;
 
@@ -40,6 +40,14 @@ const r = new Rive({
 | `viewModelByIndex` | `(index: number) => ViewModel` | Get View Model by index |
 | `defaultViewModel` | `() => ViewModel` | Get the file's default View Model |
 | `viewModelCount` | `number` | Total number of View Models |
+| `enums` | `() => DataEnum[]` | Enums defined in the file; each has a name and a list of strings |
+
+The same `viewModelByName` / `viewModelByIndex` / `defaultViewModel` lookups are also available on the underlying file instance (`file.getInstance()`); `RiveFile` itself exposes `viewModelByName`.
+
+```ts
+const enums = r.enums();
+const props = viewModel.properties; // each entry has `name` and `type`; "enum" entries also carry `enumName`, matchable against r.enums()
+```
 
 ### Creating View Model Instances
 
@@ -59,20 +67,62 @@ r.bindViewModelInstance(vmi);   // manual binding (autoBind: false)
 const vmi = r.viewModelInstance; // read bound instance (autoBind: true)
 ```
 
+`bindViewModelInstance(vmi)` is shorthand for `setViewModelInstance(vmi)` followed by `bind()`. To apply several instances, stage each with a `set` method and call `bind()` once (`bind()` is much more costly than `set`):
+
+```ts
+r.setViewModelInstance(vmi);
+r.setGlobalViewModelInstance("Theme", themeVmi);
+r.bind();
+```
+
+Initial values are not applied to bound elements until the state machine or artboard advances. Bind to a state machine when one is used; bind to an artboard only for static or linear-animation files.
+
+### Auto-Binding
+
+`autoBind: true` binds the artboard's default view model (the one selected in the editor dropdown) with its default instance ("Default" in the editor) to both the state machine and the artboard. Read it back with `r.viewModelInstance`. It also creates a default instance for every global view model in the file, so `globalViewModelInstance(name)` is populated by `onLoad`.
+
+### Global View Models
+
+A view model marked global in the editor is shared across the whole file; the file holds one slot per global view model, addressed by name.
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `globalViewModelNames` | `() => string[]` | Global view model names in file order (also on `RiveFile`) |
+| `setGlobalViewModelInstance` | `(name: string, instance: ViewModelInstance) => boolean` | Stage an instance in the slot; `false` if `name` is not a global view model. Apply with `bind()` |
+| `globalViewModelInstance` | `(name: string) => ViewModelInstance \| null` | Read the slot; `null` until set, or created by `bind()` / `autoBind: true` |
+
+```ts
+const themeVMI = r.viewModelByName("Theme").instanceByName("Dark");
+r.setGlobalViewModelInstance("Theme", themeVMI); // staged
+r.bind();                                        // also creates a default main instance
+const current = r.globalViewModelInstance("Theme");
+```
+
 ### Property accessors on ViewModelInstance
 
 | Accessor | Returns | Description |
 |----------|---------|-------------|
-| `vmi.boolean(name)` | `BooleanProperty` | Boolean property |
-| `vmi.string(name)` | `StringProperty` | String property |
-| `vmi.number(name)` | `NumberProperty` | Floating-point property |
-| `vmi.color(name)` | `ColorProperty` | Color property |
-| `vmi.trigger(name)` | `TriggerProperty` | Trigger property |
-| `vmi.enum(name)` | `EnumProperty` | Enumeration property |
+| `vmi.boolean(name)` | `ViewModelInstanceBoolean` | Boolean property |
+| `vmi.string(name)` | `ViewModelInstanceString` | String property |
+| `vmi.number(name)` | `ViewModelInstanceNumber` | Floating-point property |
+| `vmi.color(name)` | `ViewModelInstanceColor` | Color property |
+| `vmi.trigger(name)` | `ViewModelInstanceTrigger` | Trigger property |
+| `vmi.enum(name)` | `ViewModelInstanceEnum` | Enumeration property |
 | `vmi.viewModel(name)` | `ViewModelInstance` | Nested View Model |
-| `vmi.list(name)` | `ListProperty` | Dynamic list of VMIs |
-| `vmi.image(name)` | `ImageProperty` | Raster image property |
-| `vmi.artboard(name)` | `ArtboardProperty` | Artboard swap property |
+| `vmi.list(name)` | `ViewModelInstanceList` | Dynamic list of VMIs |
+| `vmi.image(name)` | `ViewModelInstanceAssetImage` | Raster image property |
+| `vmi.font(name)` | `ViewModelInstanceAssetFont` | Font property |
+| `vmi.artboard(name)` | `ViewModelInstanceArtboard` | Artboard swap property |
+| `vmi.viewModelName` | `string` | Name of the ViewModel the instance was created from |
+| `vmi.properties` | — | Properties available on the ViewModel |
+
+### Font property
+
+```ts
+const headingFont = vmi.font("headingFont");
+const res = await fetch("/Orbitron.ttf");
+headingFont.value = await decodeFont(new Uint8Array(await res.arrayBuffer()));
+```
 
 ### ColorProperty helpers
 
@@ -90,8 +140,9 @@ c.opacity(0.5);                  // alpha only
 ```ts
 // Chain
 const n = vmi.viewModel("Card").number("rating");
-// Path string (forward-slash delimited)
+// Path string (forward-slash delimited, ends with the property of interest)
 const n = vmi.number("Card/rating");
+const deep = vmi.number("My Nested View Model/My Second Nested VM/My Nested Number");
 ```
 
 ### Observability
@@ -139,6 +190,8 @@ assetsFile.init();
 - Data Binding is the modern replacement for the legacy `stateMachineInputs()` API.
 - Pass `autoBind: true` to automatically bind the default View Model with its default instance.
 - Nested View Models can be accessed via method chaining or forward-slash path strings.
+- The source no longer uses the `*Property` type names (`ArtboardProperty`, `BooleanProperty`, ...); use the `ViewModelInstance*` names above.
+- Setting a property value does not update bound elements until the state machine or artboard advances; observers fire when changes are applied by an advance.
 - Always call `unref()` on decoded image assets once assigned to free memory.
 
 ## Related

@@ -56,6 +56,11 @@ prop.on((event) => console.log("custom event data:", event.data));
 
 ## Notes
 
+- "Events at Runtime" (the source page title; using events to communicate with runtime code) is deprecated in favor of Data Binding. Rive Events are still fully supported within a Rive file; General Events were previously used to send signals and event properties to runtime code. Use Data Binding for new work.
+- Event types: Open URL Event (opens a URL at runtime; now has its own editor page), Audio Event (plays a sound), General Event (deprecated).
+- Creating an event: use the Events tool in the Toolbar and click the artboard, name it, choose the Type (Audio, URL or General), then set its type-specific properties. If events are not visible on the stage, enable **Events** in the View Options menu.
+- Signaling: from a timeline (select the timeline, use **Report Event** in the Inspector), from a Transition or State (select it and use `+` next to Events in the Inspector, then choose start or end), or from a listener (`+` below the State Machine Graph, then **Report Event**).
+- `onLoop`, `onStateChange` and `automaticallyHandleEvents` are deprecated in the web runtime as of v2.41.0.
 - `onStateChange` delivers the **string name(s)** of the newly active states; use these to react to state machine transitions in application logic.
 - Custom events (Report Event) fired from Rive are now consumed via ViewModel property observers (`.on()`) rather than a dedicated event API, because the general "Rive Events" system is deprecated in favor of Data Binding.
 - `onLoop` `LoopType` values: `OneShot`, `Loop`, `PingPong`.

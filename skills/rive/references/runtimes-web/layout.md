@@ -30,6 +30,7 @@ new Layout(params?: LayoutParameters)
 |------|------|---------|-------------|
 | `fit` | `Fit` | `Fit.Contain` | How the artboard scales inside the canvas |
 | `alignment` | `Alignment` | `Alignment.Center` | Where the artboard is positioned when it doesn't fill the canvas |
+| `layoutScaleFactor` | `number` | — | Multiplies the scale of the content; only applies when `fit` is `Fit.Layout` |
 | `minX` | `number` | — | Override left bound (relative to canvas) |
 | `minY` | `number` | — | Override top bound |
 | `maxX` | `number` | — | Override right bound |
@@ -67,6 +68,48 @@ new Layout(params?: LayoutParameters)
 - `Alignment` has no effect when `fit` is `Fit.Layout`.
 - When providing explicit `minX/minY/maxX/maxY` bounds, they override alignment positioning.
 - Call `r.resizeToCanvas()` after canvas resize to update the layout bounds.
+- Bounds (`minX`, `minY`, `maxX`, `maxY`) are relative to the container and all four must be provided.
+- Update the layout later with `r.layout = new Layout({ fit: Fit.Fill })`; treat `Layout` as immutable (`copyWith(partial)` returns a new one).
+
+## Responsive layouts (`Fit.Layout`)
+
+Set `fit: Fit.Layout` and the artboard resizes to the canvas when `resizeDrawingSurfaceToCanvas()` is called. Optionally set `layoutScaleFactor`. Call `resizeDrawingSurfaceToCanvas()` again on `window.onresize` and on device pixel ratio changes (e.g. dragging between monitors).
+
+```ts
+const r = new Rive({
+  src: "your-rive-file.riv",
+  autoplay: true,
+  canvas: riveCanvas,
+  layout: new Layout({ fit: Fit.Layout /*, layoutScaleFactor: 2 */ }),
+  stateMachine: "State Machine 1",
+  onLoad: () => computeSize(),
+});
+
+function computeSize() {
+  r.resizeDrawingSurfaceToCanvas();
+}
+window.onresize = computeSize;
+window
+  .matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`)
+  .addEventListener("change", computeSize);
+```
+
+### TypeScript API surface
+
+Exported from `@rive-app/canvas` (or the bundled `rive` global):
+
+```ts
+export interface LayoutParameters {
+  fit?: Fit; alignment?: Alignment; layoutScaleFactor?: number;
+  minX?: number; minY?: number; maxX?: number; maxY?: number;
+}
+export class Layout {
+  constructor(params?: LayoutParameters);
+  readonly fit: Fit; readonly alignment: Alignment; readonly layoutScaleFactor: number;
+  readonly minX: number; readonly minY: number; readonly maxX: number; readonly maxY: number;
+  copyWith(partial: LayoutParameters): Layout;
+}
+```
 
 ## Related
 

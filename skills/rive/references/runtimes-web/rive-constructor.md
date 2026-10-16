@@ -15,7 +15,7 @@ const r = new Rive({
   src: "https://cdn.rive.app/animations/vehicles.riv",
   canvas: document.getElementById("canvas") as HTMLCanvasElement,
   autoplay: true,
-  stateMachines: "bumpy",
+  stateMachine: "bumpy",
   onLoad: () => {
     r.resizeDrawingSurfaceToCanvas();
   },
@@ -45,7 +45,7 @@ const r = new Rive({
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `artboard` | `string` | default artboard | Artboard name to render |
-| `stateMachines` | `string \| string[]` | — | State machine name(s) to load |
+| `stateMachine` | `string` | — | State machine name to play (v2.41.0+, strongly recommended). Takes priority over the deprecated `stateMachines` / `animations` |
 | `autoplay` | `boolean` | `false` | Start playback immediately after load |
 | `autoBind` | `boolean` | `false` | Auto-bind the default ViewModelInstance |
 
@@ -61,7 +61,6 @@ const r = new Rive({
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `enableMultiTouch` | `boolean` | `false` | Support multiple simultaneous touch points |
-| `automaticallyHandleEvents` | `boolean` | `false` | Handle Rive events (e.g., OpenUrl) automatically |
 | `dispatchPointerExit` | `boolean` | `true` | Fire pointer-exit event when pointer leaves canvas |
 | `tabIndex` | `number` | — | Canvas tab index for keyboard focus |
 | `shouldDisableRiveListeners` | `boolean` | `false` | Disable Rive's implicit state machine listener/detector setup on the canvas |
@@ -74,6 +73,16 @@ const r = new Rive({
 |------|------|---------|-------------|
 | `drawingOptions` | `DrawOptimizationOptions` | `DrawOnChanged` | Rendering optimization mode (e.g., only redraw when the artboard state changes) |
 | `enablePerfMarks` | `boolean` | `false` | Emit `performance.mark` / `performance.measure` entries for profiling |
+| `enableGPUCanvas` | `boolean` | `false` | Experimental (2.42.0+, `@rive-app/webgl2` only). Render GPU Canvas content (3D and shaders). Cannot be combined with `useOffscreenRenderer: true`; ignored when a `riveFile` is passed (the file carries its own mode) |
+| `customDevicePixelRatio` | `number` | — | Optional argument of `resizeDrawingSurfaceToCanvas(customDevicePixelRatio?)`, overriding the device pixel ratio used to size the canvas |
+
+### Accessibility (experimental)
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `semanticsMode` | `SemanticMode` | `SemanticMode.Disabled` | `SemanticMode.Disabled` or `SemanticMode.Enabled`; build an accessible DOM overlay for the graphic's semantics |
+| `semanticsOptions` | `RiveSemanticsOptions` | — | Options for the accessibility overlay |
+| `semanticsOptions.riveCanvasLabel` | `string` | `"Rive animation"` | `aria-label` applied to the overlay's container element |
 
 ### Lifecycle callbacks
 
@@ -84,22 +93,29 @@ const r = new Rive({
 | `onPlay` | `(event: Event) => void` | Playback started |
 | `onPause` | `(event: Event) => void` | Playback paused |
 | `onStop` | `(event: Event) => void` | Playback stopped |
-| `onLoop` | `(event: Event) => void` | Timeline animation looped |
-| `onStateChange` | `(event: Event) => void` | State machine transitioned to a new state |
 | `onAdvance` | `(event: Event) => void` | Artboard advanced each frame |
 
-### Deprecated
+### Deprecated parameters (v2.41.0)
 
 | Name | Type | Description |
 |------|------|-------------|
-| `animations` | `string \| string[]` | **Deprecated.** Timeline animation name(s) to load; use `stateMachines` instead |
+| `stateMachines` | `string \| string[]` | Use `stateMachine` with a single name. Playing multiple state machines at once is going away |
+| `animations` | `string \| string[]` | Timeline animation name(s); use `stateMachine` instead |
+| `automaticallyHandleEvents` | `boolean` | Handle Rive Events (e.g., `OpenUrlEvent`) in the runtime. Deprecated along with Rive Events; use data binding. Default `false` |
+| `onLoop` | `(event: Event) => void` | Loop callback, only reported for linear animation playback. Use a state machine and data binding |
+| `onStateChange` | `(event: Event) => void` | State change callback. Use data binding (view model property observers) or state machine actions |
 
 ## Notes
+
+- As of v2.41.0 the deprecated parameters above still work and nothing has been removed, but using one logs a one-time `[Rive]`-prefixed console warning; each will be removed in a future major version.
+- If no `stateMachine` (or deprecated `stateMachines` / `animations`) is passed, the runtime plays the first linear animation it finds on the artboard. In the next major version (v3) it will play the artboard's default state machine when one exists.
+- `semanticsMode` / `semanticsOptions` / `enableGPUCanvas` are experimental and may change in a breaking way without a major version bump.
+- Rive Listeners are not set up on the canvas when there is no playing state machine, or when the state machine has no listeners.
 
 - Call `r.resizeDrawingSurfaceToCanvas()` inside `onLoad` to match the canvas's device pixel ratio.
 - Call `r.cleanup()` when the instance is no longer needed to free WASM memory.
 - Only one artboard can be rendered per `Rive` instance.
-- `load(params: RiveLoadParameters)` replaces the current file/artboard/state machines on an existing `Rive` instance; it accepts a subset of constructor options (`src`/`buffer`/`riveFile`, `autoplay`, `autoBind`, `artboard`, `stateMachines`, `useOffscreenRenderer`, `shouldDisableRiveListeners`, `tabIndex`) and the deprecated `animations`.
+- `load(params: RiveLoadParameters)` replaces the current file/artboard/state machines on an existing `Rive` instance; it accepts a subset of constructor options (`src`/`buffer`/`riveFile`, `autoplay`, `autoBind`, `artboard`, `stateMachine`, `useOffscreenRenderer`, `shouldDisableRiveListeners`, `tabIndex`, `semanticsMode`, `semanticsOptions`, `enableGPUCanvas`) and the deprecated `animations` / `stateMachines`.
 
 ## Related
 
