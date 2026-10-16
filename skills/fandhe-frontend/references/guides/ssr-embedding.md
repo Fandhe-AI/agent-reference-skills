@@ -72,6 +72,7 @@ Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'
 
 ## Notes
 
+- 出典: https://fandhe-ai.github.io/fandhe-frontend/guides/ssr-embedding/（原本は pin SHA `7256504` の `docs/guides/ssr-embedding.md`）
 - 公式ガイドは `Document` を 0.2.7、CSP / `ViewTransitions` を 0.2.8 の導入と記すが、crates.io に `fandhe-frontend-app` 0.2.7 は存在しない（0.2.6 → 0.2.8）。実際に利用できるのは 0.2.8 以降
 - `page_shell` はこの用途の入口ではない。`/static/hydrate.js` とインラインの `<style>` が固定されているため、代わりに `Document` を使う
 - `Document` は HTTP ヘッダを持たない純関数層。既定エスケープ（REQ-1）が一次防御で、CSP は二次防御
