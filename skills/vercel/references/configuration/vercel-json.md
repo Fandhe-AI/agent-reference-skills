@@ -1,6 +1,6 @@
 # vercel.json
 
-Static JSON configuration file for overriding Vercel project defaults. Place in the project root. Supports all properties listed below. Use only one config file: `vercel.json` **or** `vercel.ts`.
+Static JSON configuration file for overriding Vercel project defaults. Place in the project root. Supports all properties listed below. Use only one config file: `vercel.json`, `vercel.ts` **or** `vercel.toml`.
 
 ## Signature / Usage
 
@@ -20,7 +20,7 @@ Static JSON configuration file for overriding Vercel project defaults. Place in 
 |------|------|---------|-------------|
 | `$schema` | `string` | — | URL to enable IDE autocomplete and schema validation |
 | `buildCommand` | `string \| null` | — | Override the Build Command (also overrides `build` in `package.json`) |
-| `bunVersion` | `string` | — | Use Bun runtime instead of Node.js. Only valid value: `"1.x"` |
+| `bunVersion` | `"1.4.x" \| "1.x"` | — | Use Bun runtime (Beta, all plans) instead of Node.js for Vercel Functions and Routing Middleware not using the Edge runtime. Vercel manages Bun minor versions; `1.4.x` and `1.x` are the only valid values |
 | `cleanUrls` | `boolean` | `false` | Remove `.html` extensions and redirect extension-based paths with 308 |
 | `crons` | `Cron[]` | — | Schedule cron jobs for the production deployment |
 | `devCommand` | `string \| null` | — | Override the Development Command |
@@ -39,6 +39,7 @@ Static JSON configuration file for overriding Vercel project defaults. Place in 
 | `functionFailoverRegions` | `string[]` | — | Failover regions for functions (Enterprise) |
 | `rewrites` | `RewriteRule[]` | — | Rewrite (proxy) requests to different paths or external URLs |
 | `routes` | `RouteRule[]` | — | Low-level PCRE-based routing rules |
+| `skipMiddlewareRequestBody` | `boolean` | `false` | Skip forwarding the client request body to Routing Middleware, reducing Fast Origin Transfer and potentially TTFB. Vercel Functions and rewrite targets still receive the body |
 | `trailingSlash` | `boolean \| undefined` | `undefined` | `true` = add slash, `false` = remove slash, `undefined` = no redirect |
 
 ### `crons` item
@@ -126,7 +127,9 @@ Static JSON configuration file for overriding Vercel project defaults. Place in 
 ## Notes
 
 - Cannot use `functions` and `builds` together; `builds` is legacy
-- `bunVersion: "1.x"` requires `bun run --bun` in `package.json` scripts when using ISR
+- `bunVersion` (`"1.4.x"` or `"1.x"`) with Next.js ISR requires `bun run --bun` in the `build` and `dev` scripts in `package.json` (e.g. `bun run --bun next build`)
+- `skipMiddlewareRequestBody` (changelog 2026-10-08): enable only if your Routing Middleware does not read or access the request body; redeploy for the change to take effect. Also available in `vercel.ts`
+- `vercel.toml` is a third format with the same properties as `vercel.json` (supports comments, flatter structure); use only one of `vercel.json`, `vercel.ts` or `vercel.toml`
 - `cleanUrls` does not work with Next.js under `vercel dev` (works in deployed env)
 - `has` in `redirects` / `rewrites` does not work locally with `vercel dev`
 - Bulk redirects do not support wildcard or header matching

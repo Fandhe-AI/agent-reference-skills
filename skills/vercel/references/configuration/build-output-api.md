@@ -33,6 +33,30 @@ Minimal `config.json`:
 | `cache` | `string[]` | No | Glob patterns of paths to cache between builds |
 | `framework` | `{version: string}` | No | Framework version string (display only) |
 | `crons` | `Cron[]` | No | Cron job definitions for production deployment |
+| `services` | `Service[]` | No | Service build targets of the deployment; Vercel reads each service's output from `.vercel/output/services/<name>` |
+| `daemons` | `Record<string, {}>` | No | Names of the deployment's daemons (each value an empty object); descriptors live under `.vercel/output/daemons/<name>/.vc-config.json` |
+
+### `Service` item
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `name` | `string` | Yes | Service name; output is read from `.vercel/output/services/<name>` |
+| `root` | `string` | Yes | Path to the service root, relative to the project root |
+| `framework` | `string` | No | Framework detected or configured for the service |
+| `runtime` | `string` | No | Runtime detected or configured for the service |
+| `entrypoint` | `string` | No | Service entrypoint, relative to the service root (e.g. `main:app`) |
+| `bindings` | `ServiceBinding[]` | No | Caller-side bindings so this service can call another service (`{ type: 'service', service, format: 'url', env }`) |
+
+### `DaemonDescriptor` (`.vercel/output/daemons/<name>/.vc-config.json`)
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `runtime` | `"container"` | Yes | Must be `"container"` |
+| `image` | `string` | Yes | Image reference in Vercel Container Registry, e.g. `vcr.vercel.com/my-team/my-project/daemon.worker@sha256:<digest>` |
+| `command` | `string[]` | No | Command and arguments; defaults to the image's `ENTRYPOINT` and `CMD` |
+| `instances` | `Record<string, number>` | Yes | Instances per region ID, integer 0 to 100 |
+| `resources` | `{ requests: { memory: '1Gi' \| '2Gi' \| '4Gi' \| '8Gi' } }` | No | Memory per instance |
+| `terminationGracePeriodSeconds` | `number` | No | Seconds to wait after `SIGTERM` before terminating; integer 0 to 3600, default 10 |
 
 ### `Route` (Source route)
 
@@ -114,6 +138,9 @@ Image Optimization API endpoint: `/_vercel/image?url=<url>&w=<width>&q=<quality>
 - `config.json` with at least `"version": 3` is required
 - The `cache` property only applies when Vercel builds from source (not prebuilt artifacts)
 - `framework.version` is for display purposes only
+- Services: each service is emitted as a complete standard Build Output tree at `.vercel/output/services/<name>` with its own `config.json`, `functions` and `static`. Services do not nest (a service's own `config.json` has no `services` field). A service is internal by default; public traffic reaches it only when the top-level route table delegates to it. Constraints: no middleware and no Edge runtime inside a service; up to 100 services per deployment; names use lowercase letters, hyphens and underscores, start and end with a letter, max 64 characters
+- Daemons: long-running containers that receive no traffic. The `daemons` object is the complete set for the deployment: when the deployment becomes production, Vercel stops every daemon from an earlier deployment that it does not list (an empty or missing `daemons` declares none). Every listed daemon needs a descriptor; Vercel does not build images from the Build Output API (the image must already be in Vercel Container Registry), though `vercel build` builds each daemon's `Dockerfile`, pushes the image and writes the files. Routes cannot target a daemon. Names: lowercase letters separated by `_`, `__` or `-`, max 64 characters
+- Vercel Daemons has been in public beta since 2026-10-15 (changelog)
 - Native dependencies built locally may not match Vercel's Linux x64 build image
 
 ## Related

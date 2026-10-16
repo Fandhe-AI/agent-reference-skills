@@ -12,7 +12,7 @@ vercel rr start --dpl=dpl_123abc456def
 vercel rr approve --dpl=dpl_abc --currentStageIndex=0
 vercel rr abort --dpl=dpl_abc
 vercel rr complete --dpl=dpl_abc
-vercel rr fetch
+vercel rr inspect
 ```
 
 ## Options / Props
@@ -37,7 +37,8 @@ vercel rr fetch
 
 ## Notes
 
-- Subcommands: `configure`, `start`, `approve`, `abort`, `complete`, `fetch`
+- Subcommands: `configure`, `start`, `approve`, `abort`, `complete`, `inspect`, `fetch`
+- `inspect` shows details about the current rolling release; `fetch` remains a supported alias but prints a deprecation warning (use `inspect` for new commands)
 - `automatic` advancement uses time-based stages; `manual-approval` requires explicit approval between stages
 - Final 100% stage is added automatically
 

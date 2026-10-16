@@ -1,6 +1,6 @@
 # vercel.ts
 
-Programmatic TypeScript configuration for Vercel that executes at build time. Supports the same properties as `vercel.json` plus dynamic generation via code. Use only one config file: `vercel.ts` **or** `vercel.json`.
+Programmatic TypeScript configuration for Vercel that executes at build time. Supports the same properties as `vercel.json` plus dynamic generation via code. Use only one config file: `vercel.ts`, `vercel.json` **or** `vercel.toml`.
 
 ## Signature / Usage
 
@@ -31,7 +31,7 @@ export const config: VercelConfig = {
 
 ## Options / Props
 
-All `vercel.json` properties are available. See [vercel-json.md](./vercel-json.md) for the full property table.
+All `vercel.json` properties are available, including `skipMiddlewareRequestBody` (`boolean`, default `false`; skip forwarding the request body to Routing Middleware) and `bunVersion` (`'1.4.x'` or `'1.x'`). See [vercel-json.md](./vercel-json.md) for the full property table.
 
 Additional TypeScript-specific capabilities:
 
@@ -57,6 +57,7 @@ npm i @vercel/config
 
 ## Notes
 
+- Alternative file extensions: `vercel.js`, `vercel.mjs`, `vercel.cjs`, `vercel.mts`. Use only one of `vercel.ts`, `vercel.json` or `vercel.toml` per project
 - The `config` export must be a named export: `export const config: VercelConfig = { ... }`
 - `vercel.ts` executes at build time — not at request time (except `deploymentEnv` references which expand at request time)
 - Migrate from `vercel.json` by copying its contents into the `config` export, then progressively add dynamic features

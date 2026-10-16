@@ -73,6 +73,26 @@ on:
 - GitHub Enterprise Server requires GitHub Actions integration (`vercel build` + `vercel deploy --prebuilt`).
 - Fork PRs require authorization from a team member before deploying (disable with **Git Fork Protection** toggle).
 
+## Select Turbo for One Deployment
+
+Include the exact, case-sensitive marker `#VERCEL_BUILD_MACHINE=TURBO` in the Git commit message to select a Turbo build machine for that deployment only:
+
+```bash
+git commit -m "Test this change with Turbo" \
+  -m "#VERCEL_BUILD_MACHINE=TURBO"
+```
+
+- Supported only for deployments triggered by Vercel's GitHub integration; the GitLab and Bitbucket integrations don't support it
+- Applies only to the deployment triggered by that commit; project build machine settings are unchanged. You need permission to update the project's build machine. If Turbo isn't available or you lack permission, Vercel uses the project's normal build machine selection instead of failing; normal Turbo plan eligibility and billing apply
+
+## repository_dispatch Events
+
+Vercel sends `repository_dispatch` events to GitHub when deployment status changes (e.g. `vercel.deployment.success`); the JSON `client_payload` carries deployment details such as `url` and `environment` (read via `github.event.client_payload.url`). When migrating from `deployment_status`, trigger the workflow on `repository_dispatch` with the `vercel.deployment.success` type and take the URL from `client_payload`.
+
+## `github.silent`
+
+The `github.silent` project property is deprecated; if you used it, Vercel adjusts the Git setting for you automatically (silence bot comments in Project Settings → Git).
+
 ## Using GitHub Actions (GHES or Custom CI)
 
 ```bash

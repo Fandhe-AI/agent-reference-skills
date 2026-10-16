@@ -24,6 +24,7 @@ vercel oauth-apps remove inst_abc123 --yes
 
 ## Notes
 
+- Docs status (checked 2026-10-16): the official page `/docs/cli/oauth-apps` returns 404 and `oauth-apps` is no longer in the command list of the CLI overview. This page is kept from earlier docs; confirm the command's current status with `vercel oauth-apps --help` before relying on it. This does not mean the command was removed
 - These subcommands act on team-scoped resources; confirm the current scope or pass `--scope <team>`
 - `install --permission` is required and repeatable (e.g. `--permission read:project`)
 

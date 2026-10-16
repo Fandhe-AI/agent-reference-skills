@@ -9,7 +9,10 @@ vercel api /v2/user
 vercel api /v9/projects -X POST -F name=my-project
 vercel api /v6/deployments --paginate
 vercel api   # interactive endpoint discovery
-vercel api ls  # list all available endpoints
+vercel api ls  # list all available endpoints (alias of `list`)
+vercel api ls --format json
+vercel api /v2/user --generate=curl
+vercel api /v13/deployments/dpl_abc123 -X DELETE --dangerously-skip-permissions
 ```
 
 ## Options / Props
@@ -33,7 +36,9 @@ vercel api ls  # list all available endpoints
 ## Notes
 
 - Running without an endpoint enters interactive mode with OpenAPI-based discovery
-- `vercel api ls` lists all available API endpoints
+- `vercel api ls` (alias of the `list` subcommand) lists all available API endpoints; add `--format json` for scripting
+- `--generate=curl` prints a curl command with an authentication placeholder instead of executing; `--dangerously-skip-permissions` skips confirmation prompts for DELETE operations (use with caution)
+- The current docs page no longer carries a beta banner (checked against the 2026-10 docs source)
 - Authentication uses the current CLI session automatically
 
 ## Related

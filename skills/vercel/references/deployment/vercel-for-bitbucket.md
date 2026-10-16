@@ -58,9 +58,18 @@ Same set as GitHub integration. Key variable difference:
 
 | Variable | Value |
 |----------|-------|
-| `VERCEL_GIT_PROVIDER` | `bitbucket` |
+| `VERCEL_GIT_PROVIDER` | `bitbucket` (always) |
+| `VERCEL_GIT_REPO_SLUG` | Slug of the Bitbucket repository (e.g. `my-site`) |
+| `VERCEL_GIT_REPO_OWNER` | Bitbucket user or team the project belongs to |
+| `VERCEL_GIT_REPO_ID` | ID of the Bitbucket repository (UUID form, e.g. `9e072df2-521e-4409-a01c-c984569fea20`) |
+| `VERCEL_GIT_COMMIT_REF` | Bitbucket branch that triggered the deployment |
+| `VERCEL_GIT_COMMIT_SHA` | Bitbucket sha of the triggering commit |
+| `VERCEL_GIT_COMMIT_MESSAGE` | Commit message (truncated at 2048 bytes) |
+| `VERCEL_GIT_COMMIT_AUTHOR_LOGIN` | Name of the commit author on Bitbucket |
+| `VERCEL_GIT_COMMIT_AUTHOR_NAME` | Bitbucket profile URL of the commit author (per the docs) |
+| `VERCEL_GIT_PULL_REQUEST_ID` | Bitbucket pull request id (empty string if a deployment is created on a branch before a pull request is made) |
 
-See [vercel-for-github.md](./vercel-for-github.md) for the full variable list.
+See [vercel-for-github.md](./vercel-for-github.md) for the other system variables.
 
 ## Related
 
