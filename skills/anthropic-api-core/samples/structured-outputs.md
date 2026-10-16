@@ -8,7 +8,7 @@ Force Claude's response to conform to a JSON Schema using `output_config.format`
 client = anthropic.Anthropic()
 
 response = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1024,
     messages=[
         {
@@ -40,7 +40,7 @@ print(next(block.text for block in response.content if block.type == "text"))
 const client = new Anthropic();
 
 const response = await client.messages.create({
-  model: "claude-opus-5",
+  model: "claude-opus-5-5",
   max_tokens: 1024,
   messages: [
     {

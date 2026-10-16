@@ -1,12 +1,13 @@
 # samples
 
 | Name | Description | Path |
-| --- | --- | --- |
-| basic-message | curl / Python / TypeScript による最小 Messages API 呼び出し | [basic-message.md](./basic-message.md) |
-| streaming | SSE によるストリーミングとイベント処理 | [streaming.md](./streaming.md) |
-| extended-thinking | adaptive thinking の有効化と thinking ブロック処理 | [extended-thinking.md](./extended-thinking.md) |
-| batch-processing | Message Batches の作成から結果取得まで | [batch-processing.md](./batch-processing.md) |
-| prompt-caching | cache_control によるプロンプトキャッシュと usage 確認 | [prompt-caching.md](./prompt-caching.md) |
-| structured-outputs | output_config.format による JSON 出力の強制 | [structured-outputs.md](./structured-outputs.md) |
-| vision-pdf | 画像・PDF の image / document ブロック入力 | [vision-pdf.md](./vision-pdf.md) |
-| token-counting | count_tokens によるトークン数の事前見積もり | [token-counting.md](./token-counting.md) |
+|------|-------------|------|
+| Basic Message | Send a minimal Messages API request via curl, Python… | [basic-message.md](./basic-message.md) |
+| Batch Processing | Create a Message Batch with multiple requests, poll… | [batch-processing.md](./batch-processing.md) |
+| Compaction on Demand | Ask Claude to summarize a conversation when your a… | [compaction-on-demand.md](./compaction-on-demand.md) |
+| Adaptive Thinking | Enable adaptive thinking so Claude decides when and… | [extended-thinking.md](./extended-thinking.md) |
+| Prompt Caching | Mark a large, reused system prompt with `cache_con… | [prompt-caching.md](./prompt-caching.md) |
+| Streaming Messages | Set `stream: true` (or use the SDK's `.stream()` he… | [streaming.md](./streaming.md) |
+| JSON Outputs with output_config.format | Force Claude's response to conform to a JSON Schema… | [structured-outputs.md](./structured-outputs.md) |
+| Token Counting | Estimate the input token cost of a request with `messages.count… | [token-counting.md](./token-counting.md) |
+| Vision and PDF Input | Send a base64-encoded image and a URL-referenced PDF… | [vision-pdf.md](./vision-pdf.md) |

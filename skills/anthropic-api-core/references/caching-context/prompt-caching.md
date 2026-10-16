@@ -8,7 +8,7 @@ Cache prompt prefixes with `cache_control` to cut cost and latency, via automati
 
 ```python
 response = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1024,
     system=[{
         "type": "text",
@@ -41,6 +41,7 @@ Pricing multipliers: 5-min cache write 1.25x base input; 1-hour cache write 2x b
 - Cacheable: tool definitions, system content blocks, message text/image/document blocks, tool_use/tool_result blocks. Not cacheable: thinking blocks explicitly (though cached alongside other assistant-turn content), citation sub-blocks, empty text blocks.
 - `usage.cache_creation_input_tokens` + `cache_read_input_tokens` + `input_tokens` = total input tokens.
 - Invalidation: tool definition changes invalidate tools/system/messages caches; web search/citations/speed toggle invalidate only the tools cache; tool_choice invalidates tools+system; images invalidate tools+system; thinking parameter changes are model-specific and always invalidate the messages cache.
+- Defining a tool in a `tool_addition` block under the `inline-tools-2026-09-15` beta header (mid-conversation system message) keeps the cache prefix: `tools` stays exactly as first sent, so only the appended message is processed as new input. The exception is a `tools` array with no non-deferred tool, where the first tool defined this way costs one full cache miss on that request.
 - Pre-warm a cache with `max_tokens: 0` before real traffic arrives (response has empty `content` and `stop_reason: "max_tokens"`).
 - Use [cache diagnostics](./cache-diagnostics.md) to identify exactly where a prompt prefix diverged instead of guessing.
 

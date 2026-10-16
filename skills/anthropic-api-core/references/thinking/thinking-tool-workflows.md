@@ -18,14 +18,14 @@ weather_tool = {
 }
 
 response = client.messages.create(
-    model="claude-opus-4-8", max_tokens=16000,
+    model="claude-opus-5-5", max_tokens=16000,
     thinking={"type": "adaptive"}, tools=[weather_tool],
     messages=[{"role": "user", "content": "What's the weather in Paris?"}],
 )
 tool_use_block = next(b for b in response.content if b.type == "tool_use")
 
 continuation = client.messages.create(
-    model="claude-opus-4-8", max_tokens=16000,
+    model="claude-opus-5-5", max_tokens=16000,
     thinking={"type": "adaptive"}, tools=[weather_tool],
     messages=[
         {"role": "user", "content": "What's the weather in Paris?"},

@@ -8,7 +8,7 @@ Estimate the input token cost of a request with `messages.count_tokens` before s
 client = anthropic.Anthropic()
 
 response = client.messages.count_tokens(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     system="You are a scientist",
     messages=[{"role": "user", "content": "Hello, Claude"}],
 )
@@ -20,7 +20,7 @@ print(response.json())
 const client = new Anthropic();
 
 const response = await client.messages.countTokens({
-  model: "claude-opus-5",
+  model: "claude-opus-5-5",
   system: "You are a scientist",
   messages: [
     {
@@ -44,4 +44,5 @@ console.log(response);
 - Claude 4.7 and later models (and Claude Mythos Preview) use a newer tokenizer that produces roughly 30% more tokens for the same text — always recount against the specific `model` you plan to use rather than reusing counts from an older model.
 - Token counting does not apply prompt caching logic even if `cache_control` blocks are present in the request; caching discounts only take effect on actual `messages.create` calls.
 - Token counting is free but rate-limited separately from message creation (2,000-8,000 requests per minute depending on usage tier).
+- The token counting endpoint ignores the `compaction` parameter of on-demand compaction.
 - Example from the Claude API (platform.claude.com) `build-with-claude/token-counting` page.

@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/beta/files/retrieve_metadata.md / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/files/retrieve_metadata / last verified: 2026-10-17 -->
 
 # Get File Metadata
 
@@ -13,7 +13,6 @@ GET /v1/files/{file_id}
 ```bash
 curl https://api.anthropic.com/v1/files/$FILE_ID \
     -H 'anthropic-version: 2023-06-01' \
-    -H 'anthropic-beta: files-api-2025-04-14' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -29,15 +28,17 @@ curl https://api.anthropic.com/v1/files/$FILE_ID \
 
 | Name | Type | Description |
 |------|------|-------------|
-| `anthropic-beta` | optional array of `AnthropicBeta` | Must include `files-api-2025-04-14`; same beta flag list as [models-list.md](./models-list.md) |
+| `anthropic-version` | optional string | The version of the Claude API you want to use |
+| `anthropic-workspace-id` | optional string | Selects the Workspace for this request; only needed for credentials that can act on more than one Workspace |
 
 ### Returns
 
-Returns a `FileMetadata` object — same shape as [files-upload.md](./files-upload.md) Returns.
+Returns a `FileMetadata` object — same shape as [files-upload.md](./files-upload.md) Returns, including `expires_at` (RFC 3339, or null if the file does not expire).
 
 ## Notes
 
-- Files API is in **beta**; requests require the `files-api-2025-04-14` beta header.
+- The Files API is GA: no `anthropic-beta` header is needed. The previous path `api/beta/files/*` with the `files-api-2025-04-14` header is deprecated but still works and keeps the beta shapes (no `expires_at`).
+- Metadata of an expired file stays readable for up to 30 days, with `expires_at` in the past.
 
 ## Related
 

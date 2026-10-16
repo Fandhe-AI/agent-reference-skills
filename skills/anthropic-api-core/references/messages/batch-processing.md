@@ -12,7 +12,7 @@ message_batch = client.messages.batches.create(
     requests=[
         {
             "custom_id": "my-first-request",
-            "params": {"model": "claude-opus-5", "max_tokens": 1024,
+            "params": {"model": "claude-opus-5-5", "max_tokens": 1024,
                        "messages": [{"role": "user", "content": "Hello"}]},
         },
     ]

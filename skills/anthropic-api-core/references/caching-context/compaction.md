@@ -1,46 +1,58 @@
-<!-- source: https://platform.claude.com/docs/en/build-with-claude/compaction / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/build-with-claude/compaction / last verified: 2026-10-17 -->
 
 # Compaction
 
-Server-side context compaction: automatically summarizes older conversation content when input tokens reach a trigger threshold, replacing it with a `compaction` block so long-running conversations/agentic tasks can continue past context-window limits. Beta; Anthropic's recommended strategy for long-context management.
+Overview of server-side compaction: older conversation turns are replaced by a summary Claude writes on the server, which keeps a long conversation or agent task inside the context window and keeps the active context small (response quality degrades as a conversation grows). This page helps choose between on-demand compaction, token-threshold compaction, and your own summarizer. Use on-demand compaction wherever it is available.
 
 ## Signature / Usage
 
-```python
-messages = [{"role": "user", "content": "Help me build a website"}]
+On-demand compaction (beta header `compact-2026-09-04`, top-level `compaction` parameter):
 
-response = client.beta.messages.create(
-    betas=["compact-2026-01-12"],
-    model="claude-opus-5",
-    max_tokens=4096,
-    messages=messages,
-    context_management={"edits": [{"type": "compact_20260112"}]},
-)
+```json
+{
+  "model": "claude-opus-5-5",
+  "compaction": {"type": "summarize"}
+}
+```
 
-messages.append({"role": "assistant", "content": response.content})
+Token-threshold compaction (beta header `compact-2026-01-12`, unchanged):
+
+```json
+{
+  "model": "claude-opus-5-5",
+  "context_management": {"edits": [{"type": "compact_20260112"}]}
+}
 ```
 
 ## Options / Props
 
-| Parameter | Type | Default | Description |
+| | Compaction on demand | Compaction at a token threshold | Your own summarizer |
 |---|---|---|---|
-| `type` | string | required | `"compact_20260112"` |
-| `trigger` | object | `{"type": "input_tokens", "value": 150000}` | When compaction triggers; `value` >= 50,000. |
-| `pause_after_compaction` | boolean | `false` | Pause with `stop_reason: "compaction"` right after the summary so you can insert/preserve messages before continuing. |
-| `instructions` | string | `null` | Custom summarization prompt; completely replaces (not supplements) the default. |
-
-Supported models: `claude-fable-5`, `claude-mythos-5`, `claude-mythos-preview`, `claude-opus-5`, `claude-opus-4-8`, `claude-opus-4-7`, `claude-opus-4-6`, `claude-sonnet-5`, `claude-sonnet-4-6`. Beta header: `compact-2026-01-12`.
+| Who decides when | You, by sending a request | The API, when input tokens reach the trigger you set | You |
+| Code you write | A compaction loop that requests the summary and swaps it in | One parameter on your ordinary requests | The summarization call, its prompt, and the history rewrite |
+| What you send back afterward | The returned block first in `messages`, in place of the messages it summarizes | The response, appended as usual. The API drops what came before the block | Your summary, as a message of your own |
+| Recent turns stay word for word | Yes (compaction-keep-recent-turns) | Yes, by pausing after compaction and re-inserting them | Yes |
+| Runs in the background | Yes (compaction-background) | No: it runs inside the request that reaches the threshold | Yes, in your own code |
+| Kept turns keep their thinking (models with preserved thinking) | Yes, under the conditions in compaction-thinking-blocks | No: on Claude Fable 5.1, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5, remove or drop the thinking in turns you re-insert | No: that thinking fails the check |
+| Beta header, parameter | `compact-2026-09-04` and the top-level `compaction` parameter | `compact-2026-01-12` and `context_management.edits[{type: compact_20260112}]` | None. It runs in your code |
+| Choose it when | Your application needs to control when compaction happens, can't pause while a summary is written, or must keep recent turns and their thinking | You want the API to manage context inside ordinary requests | You already run your own summarizer and it replaces the whole history with the summary |
 
 ## Notes
 
-- On subsequent requests, append the response (including the `compaction` block) to `messages`; the API automatically drops all content blocks before the last `compaction` block.
-- Streaming: the `compaction` block sends `content_block_start`, one `content_block_delta` with the complete summary (no incremental streaming), then `content_block_stop`.
-- Add a `cache_control` breakpoint at the end of the system prompt to keep it cached separately, so only the compaction summary needs re-caching after each compaction event.
-- Usage reporting changes: `usage.iterations` lists per-sampling-step usage (a `compaction` entry plus the main `message` entry); top-level `usage.input_tokens`/`output_tokens` exclude compaction-iteration usage — sum `usage.iterations` for true total cost.
-- `pause_after_compaction` + a compaction counter lets you estimate cumulative token spend and gracefully wrap up a task once a budget is reached.
-- Token counting endpoint applies existing compaction blocks but does not trigger new ones; use it to check the effective post-compaction token count.
+- On-demand compaction options: keep recent turns word for word (compaction-keep-recent-turns), run in the background (compaction-background), preserved thinking in kept turns (compaction-thinking-blocks), write your own summarization prompt (your prompt replaces the default), and compact again (a conversation that already starts with a compaction block).
+- Threshold compaction details (trigger, `pause_after_compaction`, `instructions`, streaming, usage, caching, supported models, compatibility) live in compaction-threshold.md.
+- You can't send `compaction` and `context_management` on the same request.
+- Each kind has its own beta header and its own compatibility list, on the on-demand and threshold pages respectively.
+- To clear old tool results or old thinking blocks by rule instead of summarizing them, use context editing.
+- Changed from the previous version of this page: it used to document threshold compaction only; that content moved to compaction-threshold.md. Model examples now use `claude-opus-5-5`.
 
 ## Related
 
+- [compaction-on-demand.md](./compaction-on-demand.md)
+- [compaction-threshold.md](./compaction-threshold.md)
+- [compaction-keep-recent-turns.md](./compaction-keep-recent-turns.md)
+- [compaction-background.md](./compaction-background.md)
+- [compaction-thinking-blocks.md](./compaction-thinking-blocks.md)
 - [context-editing.md](./context-editing.md)
 - [context-windows.md](./context-windows.md)
+- [preserved-thinking.md](../thinking/preserved-thinking.md)

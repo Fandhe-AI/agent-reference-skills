@@ -8,11 +8,11 @@
 <!-- source: https://platform.claude.com/docs/en/api/messages/batches/delete.md / last verified: 2026-08-07 -->
 <!-- source: https://platform.claude.com/docs/en/api/models/list.md / last verified: 2026-08-07 -->
 <!-- source: https://platform.claude.com/docs/en/api/models/retrieve.md / last verified: 2026-08-07 -->
-<!-- source: https://platform.claude.com/docs/en/api/beta/files/upload.md / last verified: 2026-08-07 -->
-<!-- source: https://platform.claude.com/docs/en/api/beta/files/list.md / last verified: 2026-08-07 -->
-<!-- source: https://platform.claude.com/docs/en/api/beta/files/retrieve_metadata.md / last verified: 2026-08-07 -->
-<!-- source: https://platform.claude.com/docs/en/api/beta/files/download.md / last verified: 2026-08-07 -->
-<!-- source: https://platform.claude.com/docs/en/api/beta/files/delete.md / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/files/upload.md / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/api/files/list.md / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/api/files/retrieve_metadata.md / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/api/files/download.md / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/api/files/delete.md / last verified: 2026-10-17 -->
 
 # curl-endpoints
 
@@ -31,7 +31,7 @@ curl https://api.anthropic.com/v1/messages \
           "messages": [
             {"content": "Hello, world", "role": "user"}
           ],
-          "model": "claude-opus-4-6",
+          "model": "claude-opus-5-5",
           "stream": false
         }'
 ```
@@ -44,7 +44,7 @@ curl https://api.anthropic.com/v1/messages/count_tokens \
     -H 'anthropic-version: 2023-06-01' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY" \
     -d '{
-          "model": "claude-opus-4-6",
+          "model": "claude-opus-5-5",
           "messages": [{"role": "user", "content": "Hello, world"}]
         }'
 ```
@@ -63,7 +63,7 @@ curl https://api.anthropic.com/v1/messages/batches \
               "params": {
                 "max_tokens": 1024,
                 "messages": [{"content": "Hello, world", "role": "user"}],
-                "model": "claude-opus-4-6"
+                "model": "claude-opus-5-5"
               }
             }
           ]
@@ -132,45 +132,43 @@ curl https://api.anthropic.com/v1/models/$MODEL_ID \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
-## ファイルのアップロード（Files API, beta）
+## ファイルのアップロード（Files API）
 
 ```bash
 curl https://api.anthropic.com/v1/files \
     -H 'Content-Type: multipart/form-data' \
     -H 'anthropic-version: 2023-06-01' \
-    -H 'anthropic-beta: files-api-2025-04-14' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY" \
     -F 'file=@/path/to/file'
 ```
 
-## ファイル一覧の取得（Files API, beta）
+`expires_in_seconds` フォームパラメーター（3600〜7776000 秒）で有効期限を指定できる。
+
+## ファイル一覧の取得（Files API）
 
 ```bash
 curl https://api.anthropic.com/v1/files \
     -H 'anthropic-version: 2023-06-01' \
-    -H 'anthropic-beta: files-api-2025-04-14' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
-## ファイルメタデータの取得（Files API, beta）
+## ファイルメタデータの取得（Files API）
 
 ```bash
 curl https://api.anthropic.com/v1/files/$FILE_ID \
     -H 'anthropic-version: 2023-06-01' \
-    -H 'anthropic-beta: files-api-2025-04-14' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
-## ファイルのダウンロード（Files API, beta）
+## ファイルのダウンロード（Files API）
 
 ```bash
 curl https://api.anthropic.com/v1/files/$FILE_ID/content \
     -H 'anthropic-version: 2023-06-01' \
-    -H 'anthropic-beta: files-api-2025-04-14' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
-## ファイルの削除（Files API, beta）
+## ファイルの削除（Files API）
 
 > **警告**: 削除は不可逆。以降そのファイルを Messages API のドキュメント/画像/コード実行入力として参照できなくなる。
 
@@ -178,6 +176,5 @@ curl https://api.anthropic.com/v1/files/$FILE_ID/content \
 curl https://api.anthropic.com/v1/files/$FILE_ID \
     -X DELETE \
     -H 'anthropic-version: 2023-06-01' \
-    -H 'anthropic-beta: files-api-2025-04-14' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```

@@ -17,7 +17,7 @@ message_batch = client.messages.batches.create(
         Request(
             custom_id="my-first-request",
             params=MessageCreateParamsNonStreaming(
-                model="claude-opus-5",
+                model="claude-opus-5-5",
                 max_tokens=1024,
                 messages=[{"role": "user", "content": "Hello, world"}],
             ),
@@ -25,7 +25,7 @@ message_batch = client.messages.batches.create(
         Request(
             custom_id="my-second-request",
             params=MessageCreateParamsNonStreaming(
-                model="claude-opus-5",
+                model="claude-opus-5-5",
                 max_tokens=1024,
                 messages=[{"role": "user", "content": "Hi again, friend"}],
             ),

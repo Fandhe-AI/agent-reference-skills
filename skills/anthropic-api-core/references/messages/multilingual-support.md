@@ -8,7 +8,7 @@ Claude maintains strong cross-lingual performance relative to English across mos
 
 ```python
 message = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1024,
     system="Always respond in French, regardless of the language the user writes in.",
     messages=[{"role": "user", "content": "How do I reset my password?"}],

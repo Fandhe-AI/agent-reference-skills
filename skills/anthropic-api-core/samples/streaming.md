@@ -8,7 +8,7 @@ Set `stream: true` (or use the SDK's `.stream()` helper) to receive a Message in
 client = anthropic.Anthropic()
 
 with client.messages.stream(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     messages=[{"role": "user", "content": "Hello"}],
     max_tokens=256,
 ) as stream:
@@ -20,7 +20,7 @@ with client.messages.stream(
 const client = new Anthropic();
 
 const stream = client.messages.stream({
-  model: "claude-opus-5",
+  model: "claude-opus-5-5",
   messages: [{ role: "user", content: "Hello" }],
   max_tokens: 256
 });
@@ -36,7 +36,7 @@ Raw SSE event flow for the same request:
 
 ```text
 event: message_start
-data: {"type": "message_start", "message": {"id": "msg_1nZdL29xx5MUA1yADyHTEsnR8uuvGzszyY", "type": "message", "role": "assistant", "content": [], "model": "claude-opus-5", "stop_reason": null, "stop_sequence": null, "usage": {"input_tokens": 25, "output_tokens": 1}}}
+data: {"type": "message_start", "message": {"id": "msg_1nZdL29xx5MUA1yADyHTEsnR8uuvGzszyY", "type": "message", "role": "assistant", "content": [], "model": "claude-opus-5-5", "stop_reason": null, "stop_sequence": null, "usage": {"input_tokens": 25, "output_tokens": 1}}}
 
 event: content_block_start
 data: {"type": "content_block_start", "index": 0, "content_block": {"type": "text", "text": ""}}

@@ -2,7 +2,7 @@
 
 # Claude on Amazon Bedrock (Opus 4.6 and earlier)
 
-The legacy Amazon Bedrock integration using `InvokeModel`/`Converse` APIs with ARN-versioned model IDs and AWS event-stream encoding. Claude Opus 5, Sonnet 5, Fable 5, Opus 4.8, and Opus 4.7 are instead reachable through `InvokeModel` on the same infrastructure as claude-in-amazon-bedrock.md (use that page's Messages API shape/feature parity for those models).
+The legacy Amazon Bedrock integration using `InvokeModel`/`Converse` APIs with ARN-versioned model IDs and AWS event-stream encoding. Claude Fable 5.1, Fable 5, Opus 5.5, Opus 5, Sonnet 5.5, Sonnet 5, Haiku 5.5, Opus 4.8, and Opus 4.7 are instead reachable through `InvokeModel` on the same infrastructure as claude-in-amazon-bedrock.md (use that page's Messages API shape/feature parity for those models).
 
 ## Signature / Usage
 

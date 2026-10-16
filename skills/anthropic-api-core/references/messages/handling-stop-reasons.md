@@ -8,7 +8,7 @@ Every Messages API response includes a `stop_reason` field explaining why Claude
 
 ```python
 response = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1024,
     messages=[{"role": "user", "content": "Hello!"}],
 )

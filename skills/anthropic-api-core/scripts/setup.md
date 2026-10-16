@@ -1,7 +1,7 @@
 <!-- source: https://platform.claude.com/docs/en/get-started / last verified: 2026-08-07 -->
 <!-- source: https://platform.claude.com/docs/en/get-api-key / last verified: 2026-08-07 -->
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart.md / last verified: 2026-08-07 -->
-<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/java.md / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/cli/quickstart.md / last verified: 2026-10-17 -->
+<!-- source: https://platform.claude.com/docs/en/cli-sdks-libraries/sdks/java.md / last verified: 2026-10-17 -->
 
 # setup
 
@@ -50,7 +50,7 @@ go get github.com/anthropics/anthropic-sdk-go
 JDK 8 以上が必要（コード例は JDK 25 の compact source files 形式で記載）。
 
 ```kotlin
-implementation("com.anthropic:anthropic-java:2.52.0")
+implementation("com.anthropic:anthropic-java:2.73.0")
 ```
 
 ## Java SDK の依存追加（Maven）
@@ -59,7 +59,7 @@ implementation("com.anthropic:anthropic-java:2.52.0")
 <dependency>
     <groupId>com.anthropic</groupId>
     <artifactId>anthropic-java</artifactId>
-    <version>2.52.0</version>
+    <version>2.73.0</version>
 </dependency>
 ```
 
@@ -84,7 +84,7 @@ brew install anthropics/tap/ant
 ## ant CLI のインストール（curl / Linux・WSL）
 
 ```bash
-VERSION=1.21.0
+VERSION=1.42.0
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 case $(uname -m) in
   x86_64) ARCH=amd64 ;;
@@ -121,7 +121,7 @@ ant auth login
 
 ```bash
 ant messages create \
-  --model claude-opus-5 \
+  --model claude-opus-5-5 \
   --max-tokens 1024 \
   --message '{role: user, content: "Hello, Claude"}'
 ```
@@ -134,7 +134,7 @@ curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -d '{
-    "model": "claude-opus-5",
+    "model": "claude-opus-5-5",
     "max_tokens": 1000,
     "messages": [
       {"role": "user", "content": "What should I search for to find the latest developments in renewable energy?"}
@@ -150,7 +150,7 @@ import anthropic
 client = anthropic.Anthropic()
 
 message = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1000,
     messages=[{"role": "user", "content": "What should I search for to find the latest developments in renewable energy?"}],
 )

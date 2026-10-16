@@ -8,7 +8,7 @@ Steer how often and how deeply Claude thinks with effort levels, system-prompt g
 
 ```json
 {
-  "model": "claude-opus-4-8",
+  "model": "claude-opus-5-5",
   "max_tokens": 4096,
   "output_config": { "effort": "medium" },
   "messages": [{ "role": "user", "content": "..." }]
@@ -29,14 +29,15 @@ respond directly.
 |---|---|
 | `max` | Always thinks, no depth constraints. |
 | `xhigh` | Always thinks deeply, extended exploration. |
-| `high` (default) | Almost always thinks; deep reasoning on complex tasks. |
-| `medium` | Moderate thinking; may skip for simple queries. |
+| `high` (default on every model except Opus 5.5 and Haiku 5.5) | Almost always thinks; deep reasoning on complex tasks. |
+| `medium` (default on Opus 5.5 and Haiku 5.5) | Moderate thinking; may skip for simple queries. |
 | `low` | Minimizes thinking; skips for simple tasks. |
 
 ## Notes
 
 - Effort (`output_config.effort`) is the primary lever for how often Claude thinks; lower effort before reaching for prompt-based steering.
 - Two steering levers beyond effort: system-prompt guidance (shifts the threshold for the whole conversation) and per-message steering (appended to a single user turn, e.g. "Please think hard before responding." / "Answer directly without deliberating.").
+- On Haiku 5.5, a discouraging system-prompt phrase doesn't reliably reduce thinking. On the Claude API and Google Cloud, run routine turns on that model with less thinking via a per-message effort change (beta), which also keeps the prompt cache.
 - Assistant turns don't need to start with a thinking block in adaptive mode; history assembled from mixed sources (with/without thinking) is valid without reinserting blocks.
 - Consecutive requests that keep the same thinking config and effort level preserve prompt caching; changing either invalidates cache breakpoints. Setting effort explicitly to the model default is equivalent to omitting it (no cache break).
 - Cost control: `max_tokens` is a hard cap on total output (thinking + text); `effort` is soft guidance on how much of that goes to thinking. If you see `stop_reason: "max_tokens"`, either raise `max_tokens` or lower `effort`.

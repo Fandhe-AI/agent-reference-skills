@@ -21,7 +21,7 @@ curl https://api.anthropic.com/v1/messages \
           "messages": [
             {"content": "Hello, world", "role": "user"}
           ],
-          "model": "claude-opus-4-6",
+          "model": "claude-opus-5-5",
           "stream": false
         }'
 ```
@@ -40,13 +40,15 @@ curl https://api.anthropic.com/v1/messages \
 |------|------|-------------|
 | `max_tokens` | number | Max tokens to generate. Set to `0` to pre-warm the prompt cache without generating a response. Max value varies per model |
 | `messages` | array of `MessageParam` | Input conversation turns. Each item: `role` (`"user"` \| `"assistant"` \| `"system"`), `content` (string or array of content blocks: `text`, `image`, `document`, `search_result`, `thinking`, `redacted_thinking`, `tool_use`, `tool_result`, `server_tool_use`, `web_search_tool_result`, `web_fetch_tool_result`, `code_execution_tool_result`, `bash_code_execution_tool_result`, `text_editor_code_execution_tool_result`, `tool_search_tool_result`, `container_upload`, `mid_conv_system`). Limit: 100,000 messages per request |
-| `model` | `Model` (string) | Model ID, e.g. `"claude-sonnet-5"`, `"claude-fable-5"`, `"claude-mythos-5"`, `"claude-opus-5"`, `"claude-opus-4-8"`, `"claude-opus-4-7"`, `"claude-mythos-preview"`, `"claude-opus-4-6"`, `"claude-sonnet-4-6"`, `"claude-haiku-4-5"` (+ dated aliases), or any string |
+| `model` | `Model` (string) | Model ID, e.g. `"claude-haiku-5-5"`, `"claude-sonnet-5-5"`, `"claude-fable-5-1"`, `"claude-opus-5-5"`, `"claude-mythos-5-1"`, `"claude-sonnet-5"`, `"claude-fable-5"`, `"claude-mythos-5"`, `"claude-opus-5"`, `"claude-opus-4-8"`, `"claude-opus-4-7"`, `"claude-mythos-preview"`, `"claude-opus-4-6"`, `"claude-sonnet-4-6"`, `"claude-haiku-4-5"` (+ dated aliases), or any string |
 | `cache_control` | optional `CacheControlEphemeral` | Applies a cache_control marker to the last cacheable block in the request. `{ type: "ephemeral", ttl: "5m" \| "1h" }` (default `5m`) |
 | `container` | optional string | Container identifier for reuse across requests (code execution tool) |
 | `inference_geo` | optional string | Geographic region for inference; defaults to workspace's `default_inference_geo` |
 | `metadata` | optional object | `{ user_id: optional string }` — external user identifier for abuse detection (no PII) |
 | `output_config` | optional object | `{ effort: "low" \| "medium" \| "high" \| "xhigh" \| "max", format: { type: "json_schema", schema: object } }` — see [structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) |
 | `service_tier` | optional `"auto"` \| `"standard_only"` | Priority vs standard capacity |
+| `diagnostics` | optional `DiagnosticsParam` or null | Request-level diagnostics. `{ previous_message_id: string \| null }` (maxLength 256): the `id` (`msg_...`) of this client's previous `/v1/messages` response; the response then includes `diagnostics.cache_miss_reason` when the prompt-cache prefix could not be reused. Pass `null` on the first turn to opt in without a prior message |
+| `speed` | optional `"standard"` \| `"fast"` \| null | Inference speed mode. `"fast"` enables high output-tokens-per-second inference. Some models require the `fast-mode-2026-02-01` beta header for any `speed` value (see fast mode) |
 | `stop_sequences` | optional array of string | Custom sequences that stop generation (`stop_reason: "stop_sequence"`) |
 | `stream` | optional boolean | Server-sent events streaming; see [streaming](https://platform.claude.com/docs/en/build-with-claude/streaming) |
 | `system` | optional string or array of `TextBlockParam` | System prompt |

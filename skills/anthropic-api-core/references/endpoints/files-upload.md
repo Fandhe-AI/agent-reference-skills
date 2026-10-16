@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/beta/files/upload.md / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/files/upload / last verified: 2026-10-17 -->
 
 # Upload File
 
@@ -14,7 +14,6 @@ POST /v1/files
 curl https://api.anthropic.com/v1/files \
     -H 'Content-Type: multipart/form-data' \
     -H 'anthropic-version: 2023-06-01' \
-    -H 'anthropic-beta: files-api-2025-04-14' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY" \
     -F 'file=@/path/to/file'
 ```
@@ -25,13 +24,15 @@ curl https://api.anthropic.com/v1/files \
 
 | Name | Type | Description |
 |------|------|-------------|
-| `anthropic-beta` | optional array of `AnthropicBeta` | Must include `files-api-2025-04-14` to use the Files API; same beta flag list as [models-list.md](./models-list.md) |
+| `anthropic-version` | optional string | The version of the Claude API you want to use |
+| `anthropic-workspace-id` | optional string | Selects the Workspace for this request (a Workspace ID, e.g. `wrkspc_011CZkZaBF1tNoB5wlCeusgy`). Only needed for credentials that can act on more than one Workspace; a credential that belongs to a specific Workspace may omit it, and if sent it must match that Workspace |
 
-### Body parameters
+### Body parameters (form-data)
 
 | Name | Type | Description |
 |------|------|-------------|
-| `file` | multipart form field | The file to upload (`-F 'file=@/path/to/file'`) |
+| `file` | binary | The file to upload (`-F 'file=@/path/to/file'`). Only the final path component of the part's `filename` is kept; an absent or empty `filename` is replaced with `unnamed` plus the extension for the file's stored `mime_type`, when known |
+| `expires_in_seconds` | optional number | Seconds from upload until the file expires and its bytes become permanently unavailable. Between 3600 (one hour) and 7776000 (ninety days) |
 
 ### Returns — `FileMetadata` object
 
@@ -39,16 +40,17 @@ curl https://api.anthropic.com/v1/files \
 |------|------|-------------|
 | `id` | string | Unique object identifier |
 | `created_at` | string | RFC 3339 creation timestamp |
-| `filename` | string | Original filename |
+| `filename` | string | Original filename (1-500 chars) |
 | `mime_type` | string | MIME type |
 | `size_bytes` | number | File size in bytes |
 | `type` | `"file"` | Always `"file"` |
-| `downloadable` | optional boolean | Whether the file can be downloaded |
-| `scope` | optional `BetaFileScope` | `{ id, type: "session" }` — context (e.g. session) the file was created in |
+| `downloadable` | optional boolean | Whether the file can be downloaded (default `false`) |
+| `expires_at` | optional string or null | RFC 3339 time the file expires and becomes unavailable for download; `null` if it does not expire. For files uploaded with `expires_in_seconds`, upload time plus that value |
 
 ## Notes
 
-- Files API is in **beta**; requests require the `files-api-2025-04-14` beta header (`anthropic-beta`).
+- The Files API is GA: no `anthropic-beta` header is needed. The previous path `api/beta/files/*` with the `files-api-2025-04-14` header is deprecated but still works and keeps returning the beta response shapes (no `expires_at`).
+- The `scope` field (`{ id, type: "session" }`) belongs to the beta / Managed Agents shape and is not part of the GA response documented here.
 
 ## Related
 

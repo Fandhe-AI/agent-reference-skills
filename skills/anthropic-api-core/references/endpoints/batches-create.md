@@ -22,7 +22,7 @@ curl https://api.anthropic.com/v1/messages/batches \
               "params": {
                 "max_tokens": 1024,
                 "messages": [{"content": "Hello, world", "role": "user"}],
-                "model": "claude-opus-4-6"
+                "model": "claude-opus-5-5"
               }
             }
           ]
@@ -43,7 +43,7 @@ curl https://api.anthropic.com/v1/messages/batches \
 |------|------|-------------|
 | `requests` | array of `{ custom_id, params }` | List of per-request Message creation calls |
 | `requests[].custom_id` | string | Developer-provided ID, unique within the batch, used to match results (results may return out of order) |
-| `requests[].params` | object | Same body shape as `POST /v1/messages` — see [messages-create.md](./messages-create.md) Options / Props for the full parameter list (`max_tokens`, `messages`, `model`, `system`, `tools`, `thinking`, etc.) |
+| `requests[].params` | object | Same body shape as `POST /v1/messages` — see [messages-create.md](./messages-create.md) Options / Props for the full parameter list (`max_tokens`, `messages`, `model`, `system`, `tools`, `thinking`, etc.). The `model` enum includes `claude-haiku-5-5`, `claude-sonnet-5-5`, `claude-fable-5-1`, `claude-opus-5-5`, `claude-mythos-5-1` alongside `claude-sonnet-5`, `claude-fable-5`, `claude-mythos-5`, `claude-opus-5` |
 
 ### Returns
 
