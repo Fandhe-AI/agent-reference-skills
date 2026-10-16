@@ -38,7 +38,7 @@ fn main() {
 ## Notes
 
 - `SetCookie::session` は `Max-Age` を付けない（ブラウザのセッション寿命）。永続化するなら `SetCookie::max_age`。発行後に `path` を変えた場合は、削除用の `SetCookie::session_removal` にも同じ `path` を付ける
-- TLS はリバースプロキシで終端する前提（`Secure` は外せない）。`SameSite` を変えたい場合は `SetCookie::session_with` に `SessionSameSite` を渡す（`SameSite=None` は型で排除される）
+- TLS はリバースプロキシで終端する前提（`Secure` は外せない）。`SameSite` を変えたい場合は `SetCookie::session_with` に `SessionSameSite` を渡す（`SessionSameSite` は `Lax` / `Strict` のみで、`SameSite=None` を型で排除するのは `session_with` の引数（入口）に限る。返された `SetCookie` に汎用の `same_site(SameSite::None)` を呼べば後から明示的に opt-out できる）
 - `Response::see_other` は構築時検証済みの `SameOriginLocation` のみを受け取るため、オープンリダイレクトとヘッダ注入が型で防がれ、失敗しない。`//evil.com` のような値は `SameOriginLocation::new` が `Err` を返す
 - 実際のレスポンスへ Cookie を付与するには `Response::with_set_cookie(cookie)` を使う
 - 出典: https://docs.rs/crate/fandhe-backend-http/0.5.0/source/src/cookie.rs
