@@ -48,6 +48,7 @@ Single-file EXE (unpackaged and self-contained, Windows App SDK 1.5 and later):
 - `WindowsPackageType=None` makes the auto-initializer find and load the most appropriate Windows App SDK; for custom error handling or a specific version call the bootstrapper API explicitly.
 - `PublishSingleFile` isn't supported for packaged or framework-dependent apps. Dependencies are extracted to a temp directory at first launch (not a zero-extraction binary). If you opt out of the `WindowsAppSdkUndockedRegFreeWinRTInitialize` auto-initializer, set the `MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY` environment variable to `AppContext.BaseDirectory` before program entry. The build emits errors if `EnableMsixTooling`, `WindowsPackageType=None`, or `IncludeAllContentForSelfExtract` are missing, and warnings if `WindowsAppSDKSelfContained` or `SelfContained` are absent.
 - Alternatives to single-file extraction: MSIX packaging, a traditional installer (WiX, Inno Setup), or a different framework (WPF and WinForms support `PublishSingleFile` more broadly). Packaging with external location adds package identity without full MSIX conversion.
+- Source: https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/unpackage-winui-app, last updated 2026-10-02 (ms.date).
 
 ## Related
 

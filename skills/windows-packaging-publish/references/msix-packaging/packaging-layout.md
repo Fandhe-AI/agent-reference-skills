@@ -60,7 +60,7 @@ MakeAppx switches for `build`:
 
 - Incremental build example: `MakeAppx.exe build /f PackagingLayout.xml /id "x64" /ip PreviousVersion\ /op OutputPackages\ /iv`.
 - Building only an optional bundle in a related set: `MakeAppx.exe build /f PackagingLayout.xml /id "Themes" /op OutputPackages\ /bc /nbp`. For a related-set optional package, the primary bundle must usually also be built for the optional package to be installable.
-- Source page last updated 07/02/2026 (ms.date).
+- Source: https://learn.microsoft.com/en-us/windows/msix/package/packaging-layout, last updated 07/02/2026 (ms.date).
 
 ## Related
 

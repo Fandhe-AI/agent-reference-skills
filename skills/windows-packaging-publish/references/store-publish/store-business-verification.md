@@ -36,6 +36,7 @@ Status: same page, "EU Digital Service Act compliance status" field.
 - A phone number, physical address and email are required for customer contact; P.O. boxes, voicemail numbers, auto-reply email aliases and registered agent addresses are accepted. With different regional contacts, choose the one best able to handle international requests.
 - Account recovery or other issues: contact developer support.
 - Verifiable Credentials (VC) Vetting Service has its own FAQ and support links in the source page.
+- Source: https://learn.microsoft.com/en-us/windows/apps/publish/store-business-verification-reqs, last updated 2025-02-27 (ms.date).
 
 ## Related
 

@@ -76,7 +76,7 @@ Reference properties for the runtime-fix reference in the launcher project:
 
 - `applications`, `processes`, and `fixups` are arrays; one `config.json` can describe several of each.
 - Debug: F5 starts the PSF Launcher, which starts the target app. Attach to the app process via Debug > Attach to Process; select managed and native code types (mixed mode) to debug a .NET app with a native fix DLL. Without app source, breakpoints only work in the runtime-fix project.
-- Source page last updated 05/14/2020 (ms.date).
+- Source: https://learn.microsoft.com/en-us/windows/msix/psf/package-support-framework-vs, last updated 05/14/2020 (ms.date).
 
 ## Related
 

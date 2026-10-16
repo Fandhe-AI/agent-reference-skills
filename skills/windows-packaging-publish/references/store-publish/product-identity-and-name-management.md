@@ -36,13 +36,14 @@ https://apps.microsoft.com/detail/<your app's Store ID>
 
 ## Notes
 
-- Name, Publisher and PublisherDisplayName together declare the package family; individual packages add architecture and version.
+- Name, Publisher and PublisherDisplayName are the identity values the manifest must match in Partner Center. The source describes these three together as establishing the "package family", but the package family name (PFN) itself is derived from Name and the PublisherId hash of Publisher; PublisherDisplayName is display-only. Individual packages add architecture and version.
 - Manage packages shows nothing until the app has been published.
 - Reserving names: Manage app names -> text box in "Reserve more names" -> **Check availability** -> **Reserve product name**. Multiple names can be reserved (e.g. per-language names). The page described is the MSIX variant.
 - Deleting a reserved name releases it immediately for anyone else to reserve; an app must keep at least one reserved name.
 - Rename a published app: reserve the new name, create a new submission, select the name from the **Product name** dropdown on each language's Store listing page; update description mentions; update packages / listings for every language. Delete older names after publishing.
 - Each app shows in Partner Center under the first name reserved; delete the original name to display the new one.
 - On Windows devices the Store listing link also launches the Store app; the Store protocol link (`ms-windows-store://pdp/?ProductId=...`) opens the Store directly from within an app.
+- Sources: https://learn.microsoft.com/en-us/windows/apps/publish/view-app-identity-details, last updated 2022-10-30 (ms.date); https://learn.microsoft.com/en-us/windows/apps/publish/partner-center/msix/manage-app-name-reservations, last updated 2022-10-30 (ms.date).
 
 ## Related
 

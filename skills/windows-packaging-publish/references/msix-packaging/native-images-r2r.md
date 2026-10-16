@@ -28,7 +28,7 @@ Native image obj\x86\Release\\R2R\DesktopApp1.exe generated successfully.
 - Applies to .NET Framework applications targeting 4.6.2 or later; the native payload is used on .NET Framework 4.7.2 and above, earlier versions load the MSIL code.
 - For apps packaged by the Windows Application Packaging project, set the Target Platform Minimum version to the Windows Anniversary Update.
 - Binaries grow because they contain both managed and native code. The page states the package includes a Go Live license.
-- Source page last updated 07/29/2019 (ms.date).
+- Source: https://learn.microsoft.com/en-us/windows/msix/desktop/desktop-to-uwp-r2r, last updated 07/29/2019 (ms.date).
 
 ## Related
 

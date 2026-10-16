@@ -58,6 +58,7 @@ Visual Studio wizard steps: right-click the project, **Store** > **Create App Pa
 - App Installer files are supported from Windows 10 version 1709; `HoursBetweenUpdateChecks` from version 1803. Visual Studio: sideloaded auto-update requires Windows 10 version 1803 and Visual Studio 2017 update 15.7; the file is only generated when `TargetPlatformMinVersion` is Windows 10 version 1803 or greater.
 - The `.appinstaller` file can be hosted on an HTTP endpoint or UNC share. For HTTP hosting, configure MIME types, e.g. in IIS `web.config`: `.appx` and `.appxbundle` as `application/vns.ms-appx`, `.appinstaller` as `application/xml` (spelling as in source).
 - Using the `ms-appinstaller` protocol can be controlled by an administrator via the `EnableMSAppInstallerProtocol` policy (Policy CSP - DesktopAppInstaller).
+- Sources: https://learn.microsoft.com/en-us/windows/msix/app-installer/how-to-create-appinstaller-file, last updated 07/04/2026 (ms.date); https://learn.microsoft.com/en-us/windows/msix/app-installer/create-appinstallerfile-vs, last updated 5/2/2018 (ms.date).
 
 ## Related
 

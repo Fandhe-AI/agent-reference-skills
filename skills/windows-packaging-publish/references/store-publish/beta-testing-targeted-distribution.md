@@ -41,6 +41,7 @@ After publish: distribute the URL from the Product identity page. App price must
 - Promotional codes: up to 1600 redemptions for a single app in a six month period.
 - If confidentiality is critical, use Private audience instead of hiding plus promotional codes.
 - Package flights can pull packages into the non-flighted submission once ready for everyone.
+- Source: https://learn.microsoft.com/en-us/windows/apps/publish/beta-testing-and-targeted-distribution, last updated 2022-10-30 (ms.date).
 
 ## Related
 

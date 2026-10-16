@@ -81,7 +81,7 @@ Copy-Item "contoso.ico" $env:APPDATA\contoso.ico
 ```
 
 - Only create desktop shortcuts when absolutely necessary. Place the `.lnk`, icon, `StartingScriptWrapper.ps1`, and `createshortcut.ps1` in the working-directory folder.
-- Source pages last updated 05/25/2021 and 04/14/2021 (ms.date).
+- Sources: https://learn.microsoft.com/en-us/windows/msix/psf/run-scripts-with-package-support-framework, last updated 05/25/2021 (ms.date); https://learn.microsoft.com/en-us/windows/msix/psf/create-shortcut-with-script-package-support-framework, last updated 04/14/2021 (ms.date).
 
 ## Related
 

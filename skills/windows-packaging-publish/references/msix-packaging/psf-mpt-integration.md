@@ -27,7 +27,7 @@ Supported PSF features in the tool:
 ## Notes
 
 - Requires the MSIX Packaging Tool from the Microsoft Store.
-- Source page last updated 10/06/2023 (ms.date).
+- Source: https://learn.microsoft.com/en-us/windows/msix/psf/psf-integration-with-mpt, last updated 10/06/2023 (ms.date).
 
 ## Related
 

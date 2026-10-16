@@ -31,7 +31,7 @@ Service details editable via double-click in the Services report:
 - Support began with the January 2020 release of the MSIX Packaging Tool (1.2019.1220.0).
 - Supported services with all needed information appear in the **Included** table; services needing information, a fix, or unsupported appear in **Excluded**. A fixed service can be moved to Included or left excluded.
 - Limitations: the image path is not editable (fix the path before conversion, or edit the manifest afterward in Package Editor); the Services report is not available in Package Editor, so edit the manifest manually; services with dependencies outside the package are not supported.
-- Source page last updated 12/19/2019 (ms.date).
+- Source: https://learn.microsoft.com/en-us/windows/msix/packaging-tool/convert-an-installer-with-services, last updated 12/19/2019 (ms.date).
 
 ## Related
 

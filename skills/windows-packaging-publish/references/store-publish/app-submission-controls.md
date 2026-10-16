@@ -40,7 +40,7 @@ Cancel:  New app:        App setup card  -> 3 dots -> Cancel review -> confirm.
 
 - Only an app that is not submitted and not live on the Store can be deleted.
 - MSI/EXE: after confirming cancel review, it may take up to a minute for the app to go back to draft state.
-- Source pages: `/windows/apps/publish/publish-your-app/{msix,msi,pwa}/app-submission-control`.
+- Sources: https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/app-submission-control, last updated 2026-03-26 (ms.date); https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msi/app-submission-control, last updated 2022-10-30 (ms.date); https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/pwa/app-submission-control, last updated 2026-03-26 (ms.date).
 
 ## Related
 

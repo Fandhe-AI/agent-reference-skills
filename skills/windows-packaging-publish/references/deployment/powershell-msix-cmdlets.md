@@ -29,6 +29,10 @@ Remove-AppxPackage -Package <PackageFullName>
 | `Set-AppxDefaultVolume` | Sets another mounted AppxVolume as the default deployment target. |
 | `Invoke-CommandInDesktopPackage` | Executes commands inside the app package container. |
 
+## Notes
+
+- Source: https://learn.microsoft.com/en-us/windows/msix/desktop/powershell-msix-cmdlets, last updated 09/30/2026 (ms.date).
+
 ## Related
 
 - [Package storage volumes](./package-volumes.md)

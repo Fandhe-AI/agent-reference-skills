@@ -103,6 +103,7 @@ Migrate file extension / protocol associations (manifest):
 - In-app purchases: since June 2021 the Store allows publishers to use their own or third-party commerce platforms in addition to Microsoft's; keep verifying entitlements as in the unpackaged version.
 - Paid users of the unpackaged app shouldn't pay again: offer a free/demo version unlockable by license sign-in or key, or set the app paid and distribute promotional (coupon) codes through your own channels.
 - After install, pins in the taskbar / Start menu (and Windows 10 tiles) launch the Store app; the system migrates listed ProgIds to the packaged app after installation.
+- Source: https://learn.microsoft.com/en-us/windows/apps/distribute-through-store/how-to-transition-users-from-your-web-unpackaged-app-to-store-packaged-app, last updated 2024-02-15 (ms.date).
 
 ## Related
 

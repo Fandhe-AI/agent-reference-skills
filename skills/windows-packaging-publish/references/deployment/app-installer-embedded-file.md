@@ -28,6 +28,7 @@ Embed an `.appinstaller` file in the package and point the manifest at it so the
 - Visual Studio flow: **Add** > **Existing Item** for the App Installer file, edit `Package.appxmanifest` via **View Code**, then **Publish** > **Create App Packages...** with **Sideloading**.
 - The file name `Update.appinstaller` is an assumption of the guide; use your own file name in `File`.
 - An external App Installer file overrides settings of an embedded one.
+- Source: https://learn.microsoft.com/en-us/windows/msix/app-installer/how-to-embed-an-appinstaller-file, last updated 05/26/2021 (ms.date).
 
 ## Related
 

@@ -34,6 +34,7 @@ Default install dialog elements:
 - Two distinct technologies share the "App Installer" name: App Installer (the app, this page) and the App Installer file (`.appinstaller`, an XML file defining package location and how the package is installed, updated, and repaired).
 - App Installer can also install from the web, optional packages, and related sets.
 - If updates are enabled on a PC, App Installer is updated automatically from the Microsoft Store. If the PC has no Store access, a standalone installer is available via `https://aka.ms/getwinget`.
+- Sources: https://learn.microsoft.com/en-us/windows/msix/app-installer/install-update-app-installer, last updated 12/20/2023 (ms.date); https://learn.microsoft.com/en-us/windows/msix/app-installer/app-installer-ui-dialog, last updated 7/1/2024 (ms.date).
 
 ## Related
 

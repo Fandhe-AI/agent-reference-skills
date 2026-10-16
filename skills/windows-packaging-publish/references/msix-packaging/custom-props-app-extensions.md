@@ -49,7 +49,7 @@ For a property such as:
 - A root version property is recommended in case the format changes; `Version` was intentionally not made an attribute of app extensions.
 - The Visual Studio manifest designer cannot define properties; edit `Package.appxmanifest` directly.
 - Because values live in the manifest, they can be indexed and exposed via API in the future.
-- Source page last updated 02/06/2020 (ms.date).
+- Source: https://learn.microsoft.com/en-us/windows/msix/desktop/custom-props-app-extensions, last updated 02/06/2020 (ms.date).
 
 ## Related
 

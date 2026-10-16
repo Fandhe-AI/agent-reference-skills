@@ -20,6 +20,7 @@ ms-appinstaller:?source=https://website.com/app.msix&msixauth=aad
 
 - Field values must be URL-encoded (non-printing characters and spaces). Use `?` to separate the main source from field values and `&` to separate subsequent fields in the `ms-appinstaller:` URI.
 - An IT professional can control the `ms-appinstaller` URI scheme. To enable it on a network, set the policy `EnableMSAppInstallerProtocol` (Policy CSP - DesktopAppInstaller) to enabled.
+- Source: https://learn.microsoft.com/en-us/windows/msix/app-installer/app-installer-authentication-manager--overview, last updated 12/12/2023 (ms.date).
 
 ## Related
 

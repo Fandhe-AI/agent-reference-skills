@@ -106,7 +106,7 @@ PSF files copied from `Microsoft.PackageSupportFramework.<Version>\bin` to the p
 - Windows apps redirect application-related directories to `C:\Program Files\WindowsApps`; a subfolder created by the original installer (e.g. `C:\Program Files\Vendor\subfolder`) will not be found at runtime.
 - Set `config.json` values from `AppxManifest.xml`: `id` from `Application Id`, `executable` from the package-relative `Executable` path, `workingDirectory` from its parent folder, `processes.executable` from the file name without path and extension.
 - For the write-permission fix the `dll` is `FileRedirectionFixup64.dll` for x64; the source says to use `FileRedirectionFixup86.dll` for x86 or unknown architecture, while its file table lists `FileRedirectionFixup64.dll` for both.
-- Source pages last updated 12/16/2020 (working directory, launch parameters) and 07/02/2026 (write permission) (ms.date).
+- Sources: https://learn.microsoft.com/en-us/windows/msix/psf/psf-current-working-directory, last updated 12/16/2020 (ms.date); https://learn.microsoft.com/en-us/windows/msix/psf/psf-launch-apps-with-parameters, last updated 12/16/2020 (ms.date); https://learn.microsoft.com/en-us/windows/msix/psf/psf-filesystem-writepermission, last updated 07/02/2026 (ms.date).
 
 ## Related
 

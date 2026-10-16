@@ -34,6 +34,7 @@ HKLM:\Software\Policies\Microsoft\Windows\AppInstaller\MsixAllowedZones  Untrust
 - SmartScreen: before downloading a package from an Internet source, App Installer consults Microsoft SmartScreen's URL Reputation service. On a failure the user can **Cancel** or **Continue** (not recommended); Continue lets App Installer open the package.
 - Blocked URLs show the dialog "Your internet security settings prevented this file from being opened".
 - App Installer access to URL Security Zones is controlled by the DesktopAppInstaller CSP. IT pros can add sites to the Restricted or Trusted Sites zone via the `policy-csp-internetexplorer` policy; a URL in a blocked zone blocks installation.
+- Source: https://learn.microsoft.com/en-us/windows/msix/app-installer/app-installer-security-features, last updated 7/1/2024 (ms.date).
 
 ## Related
 

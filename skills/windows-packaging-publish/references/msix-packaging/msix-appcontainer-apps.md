@@ -51,7 +51,7 @@ On Windows 10 version 2004 (build 19041) and later, use `uap10` attributes inste
 - C++ Win32 build may fail with `APPX1673: App manifest is missing required element 'PhoneIdentity'`; add `mp:PhoneIdentity` with `PhoneProductId` and `PhonePublisherId` GUIDs to the manifest.
 - Unpackaged apps can also run in an AppContainer; this page covers packaged apps only.
 - WPF / WinForms guidance applies to .NET projects, not the .NET Framework templates.
-- Source page last updated 09/22/2025 (ms.date).
+- Source: https://learn.microsoft.com/en-us/windows/msix/msix-container, last updated 09/22/2025 (ms.date).
 
 ## Related
 

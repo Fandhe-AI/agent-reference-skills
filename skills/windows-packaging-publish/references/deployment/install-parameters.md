@@ -58,6 +58,7 @@ The install URI must contain:
 - Useful for tracking or handling installs by source or download type, e.g. from an email campaign.
 - With a Windows Packaging Project the protocol can be declared in the manifest editor's Declarations tab (Protocol).
 - Using `ms-appinstaller` can be controlled by an administrator via the `EnableMSAppInstallerProtocol` policy.
+- Source: https://learn.microsoft.com/en-us/windows/msix/app-installer/install-parameters, last updated 12/17/2020 (ms.date).
 
 ## Related
 

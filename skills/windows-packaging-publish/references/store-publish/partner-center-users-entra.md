@@ -36,6 +36,7 @@ Each addition ends with "Roles applicable to developer programs": choose role(s)
 - Entra application accounts can call the Microsoft Store services REST APIs; the Tenant ID and Client ID shown for the application are needed to obtain an Entra access token.
 - Only Company accounts (linked to Entra ID) support additional users; Individual accounts do not support multiple users. Follow least privilege.
 - The same tenant-association approach applies to the Windows Hardware Developer Program and Windows Desktop Application Program accounts.
+- Sources: https://learn.microsoft.com/en-us/windows/apps/publish/partner-center/overview-users-groups-azure-ad-applications, last updated 2022-10-30 (ms.date); https://learn.microsoft.com/en-us/windows/apps/publish/partner-center/manage-account-users, last updated 2022-10-30 (ms.date); https://learn.microsoft.com/en-us/windows/apps/publish/partner-center/manage-users-in-partner-center, last updated 2022-11-07 (ms.date); https://learn.microsoft.com/en-us/windows/apps/publish/partner-center/manage-groups-in-partner-center, last updated 2022-11-07 (ms.date); https://learn.microsoft.com/en-us/windows/apps/publish/partner-center/manage-azure-ad-applications-in-partner-center, last updated 2022-11-07 (ms.date).
 
 ## Related
 

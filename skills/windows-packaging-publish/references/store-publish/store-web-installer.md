@@ -36,6 +36,7 @@ apps.microsoft.com/badge -> enter your app data -> set Launch mode = Direct -> c
 - On apps.microsoft.com the Web Installer is the default; no change is needed for eligible apps.
 - Enterprise: `ApplicationManagement/RequirePrivateStoreOnly` MDM policy, the "Only display the private store within the Microsoft Store app" group policy, and the `RemoveWindowsStore` registry DWORD = 1 disable the Store application but don't block installs/updates of Store apps. Use AppLocker to control app installs (including via the Web Installer), alone or combined with those policies. Blocking `get.microsoft.com` doesn't affect the Store app or already installed apps.
 - The URI scheme is useful when users are already on Windows or when linking from within a WinUI app.
+- Source: https://learn.microsoft.com/en-us/windows/apps/distribute-through-store/how-to-use-store-web-installer-for-distribution, last updated 2026-09-14 (ms.date).
 
 ## Related
 

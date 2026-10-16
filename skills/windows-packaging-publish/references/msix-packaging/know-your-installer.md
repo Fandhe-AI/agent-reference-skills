@@ -27,7 +27,7 @@ Installer exit code indicating restart -> add to MSIX Packaging Tool "restart ex
 
 - Repackage on the proper architecture: an installer for x86 machines should be repackaged on an x86 machine, and likewise for x64.
 - For install-directory writes or CWD needs, consider a runtime fixup with the Package Support Framework.
-- Source page last updated 01/29/2020 (ms.date).
+- Source: https://learn.microsoft.com/en-us/windows/msix/packaging-tool/know-your-installer, last updated 01/29/2020 (ms.date).
 
 ## Related
 

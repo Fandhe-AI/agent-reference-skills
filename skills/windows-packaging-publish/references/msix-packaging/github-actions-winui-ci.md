@@ -11,7 +11,7 @@ $pfx_cert = Get-Content 'App1_TemporaryKey.pfx' -AsByteStream
 [System.Convert]::ToBase64String($pfx_cert) | Out-File 'App1_TemporaryKey_Base64.txt'
 ```
 
-Workflow core steps (the source page shows the full workflow with `strategy.matrix` of `Release` and `x64`/`x86`, `runs-on: windows-latest`, `actions/checkout@v4`, `actions/setup-dotnet@v4` with `8.0.x`, `microsoft/setup-msbuild@v2`):
+Workflow core steps (the source page shows the full workflow with `strategy.matrix` of `Release` and `x64`/`x86`, `runs-on: windows-latest`, `actions/checkout@v4`, `actions/setup-dotnet@v4` with `8.0.x`, `microsoft/setup-msbuild@v2`; when copying, pin each to a commit SHA, see Notes):
 
 ```yaml
 - name: Restore the application
@@ -20,13 +20,15 @@ Workflow core steps (the source page shows the full workflow with `strategy.matr
     Configuration: ${{ matrix.configuration }}
 
 - name: Decode the pfx
+  env:
+    BASE64_ENCODED_PFX: ${{ secrets.BASE64_ENCODED_PFX }}
   run: |
-    $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-    $certificatePath = "GitHubActionsWorkflow.pfx"
+    $pfx_cert_byte = [System.Convert]::FromBase64String("$env:BASE64_ENCODED_PFX")
+    $certificatePath = Join-Path $env:RUNNER_TEMP 'GitHubActionsWorkflow.pfx'
     [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
 
 - name: Create the app package
-  run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
+  run: msbuild $env:Solution_Name /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile="$env:RUNNER_TEMP\GitHubActionsWorkflow.pfx" /p:AppxPackageDir="$env:Appx_Package_Dir" /p:GenerateAppxPackageOnBuild=true
   env:
     Appx_Bundle: Never
     Appx_Package_Build_Mode: SideloadOnly
@@ -35,7 +37,8 @@ Workflow core steps (the source page shows the full workflow with `strategy.matr
     Platform: ${{ matrix.platform }}
 
 - name: Remove the pfx
-  run: Remove-Item -path GitHubActionsWorkflow.pfx
+  if: always()
+  run: Remove-Item -Path (Join-Path $env:RUNNER_TEMP 'GitHubActionsWorkflow.pfx') -Force -ErrorAction SilentlyContinue
 ```
 
 Microsoft Store x86 + x64 bundle from the command line:
@@ -75,6 +78,9 @@ msbuild YourSolution.sln `
 - Unpackaged builds: use `msbuild $env:Solution_Name /t:Publish` (workflow "WinUI unpackaged app") or `dotnet publish` instead of the `/p:Appx*` arguments.
 - Azure Pipelines equivalent: `UseDotNet@2`, `NuGetToolInstaller@1`, `NuGetCommand@2` restore, `VSBuild@1` with `/p:AppxBundlePlatforms="$(buildPlatform)" /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\AppxPackages\\" /p:AppxBundle=Never /p:UapAppxPackageBuildMode=SideloadOnly /p:GenerateAppInstallerFile=false`, then `PublishBuildArtifacts@1`. Sign using Azure Pipelines Secure Files with `DownloadSecureFile`; never store certificates or passwords in source control.
 - The page's workflow YAML indentation is flattened in the source text; reconstruct nesting when copying.
+- The source decodes the PFX into the workspace root and runs "Remove the pfx" without a condition, so a failed build leaves the decoded private key behind. Here the PFX is decoded under `$env:RUNNER_TEMP` and the removal step uses `if: always()`. The source also expands `secrets.BASE64_ENCODED_PFX` directly into the `run` script; here it is passed via `env:` so the secret value is not expanded into shell source.
+- The source references the mutable tags `actions/checkout@v4`, `actions/setup-dotnet@v4` and `microsoft/setup-msbuild@v2`. When copying into a real workflow, pin them to commit SHAs with the tag as a trailing comment: `actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4`, `actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4`, `microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2`.
+- Source: https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/ci-for-winui3, last updated 2026-08-30 (ms.date).
 
 ## Related
 

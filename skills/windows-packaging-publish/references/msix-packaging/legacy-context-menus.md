@@ -55,7 +55,7 @@ Raise `MaxVersionTested` above 10.0.21300.0:
 
 - For new shell extensions (not packaging an existing `IContextMenu` implementation), implement `IExplorerCommand` and use `desktop4:FileExplorerContextMenus` instead.
 - Not available on Windows 10 (see MSIX on Windows 10 and Windows 11 for alternatives).
-- Source page last updated 04/15/2026 (ms.date).
+- Source: https://learn.microsoft.com/en-us/windows/msix/packaging-tool/support-legacy-context-menus, last updated 04/15/2026 (ms.date).
 
 ## Related
 

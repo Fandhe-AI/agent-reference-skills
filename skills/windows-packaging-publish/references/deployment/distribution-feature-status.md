@@ -29,6 +29,7 @@ Switch a Visual Studio-generated `.appinstaller` file to the 2021 schema so `Sho
 - Workarounds for the disabled protocol: link directly to the `.appinstaller` file (users download and double-click; recommended for non-enterprise), or publish to the Microsoft Store. For enterprise re-enablement set the Group Policy `EnableMSAppInstallerProtocol` to Enabled via the DesktopAppInstaller CSP; the policy value `Disabled` means "the setting is not configured" (double-negative).
 - SmartScreen: all non-Store, non-Microsoft-signed binaries can show a prompt on first download until reputation is established; signing releases with the same identity lets certificate reputation carry forward; unsigned files rebuild reputation for every new hash.
 - Cross-page note: the Auto-update and repair apps page states the 2017/2 schema supports `HoursBetweenUpdateChecks` but not `ShowPrompt` / `UpdateBlocksActivation`; this status page lists `HoursBetweenUpdateChecks` as unsupported in 2017/2. Treat the dedicated Auto-update page as primary for that attribute.
+- Source: https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/distribution-feature-status, last updated 2026-08-24 (ms.date).
 
 ## Related
 

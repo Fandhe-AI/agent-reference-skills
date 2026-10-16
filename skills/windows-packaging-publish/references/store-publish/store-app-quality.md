@@ -24,6 +24,7 @@ Store listing metadata checklist: icon -> title -> description (features section
 
 - The source page shows "Last updated: July 25, 2017"; treat the guidance as general, not tied to current UI.
 - See also (as listed in the source): Microsoft Store Policies and Code of Conduct, App Developer Agreement, "Choosing your app's name", "Write a great app name", "Write a great app description", "Design and UI", "Engage with your customers".
+- Source: https://learn.microsoft.com/en-us/windows/apps/publish/store-app-quality, last updated 2022-10-30 (ms.date).
 
 ## Related
 

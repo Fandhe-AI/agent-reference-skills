@@ -21,6 +21,7 @@ Invoke-CommandInDesktopPackage -AppId "AppPackage1" -PackageFamilyName "Contoso.
 - Requires the device to be in Developer mode for Windows 10 builds prior to 18922.
 - Use `-PreventBreakaway` to launch subsequent processes in the same container; otherwise any subsequent launch breaks out of the container.
 - Not all applications can be launched within the container; for example `explorer.exe` breaks out.
+- Source: https://learn.microsoft.com/en-us/windows/msix/manage/troubleshoot-msix-container, last updated 07/11/2019 (ms.date).
 
 ## Related
 

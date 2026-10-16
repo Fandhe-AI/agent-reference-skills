@@ -65,6 +65,7 @@ Feature on Demand (FOD) `.cab` for the packaging tool driver (downloaded manuall
 - The tool driver is delivered as an FOD from Windows Update and fails to install if Windows Update is disabled or Insider flight ring settings do not match the OS build. WSUS / Configuration Manager environments may need configuration changes, or the FOD can be installed manually.
 - FOD media is also available via VLSC (Volume Licensing), OEM Portal, or MSDN; admins can build a side-by-side feature store shared folder.
 - Ensure the `.cab` path includes the correct file name with the extension when using DISM.
+- Sources: https://learn.microsoft.com/en-us/windows/msix/packaging-tool/prepare-your-environment, last updated 01/27/2020 (ms.date); https://learn.microsoft.com/en-us/windows/msix/packaging-tool/quick-create-vm, last updated 04/04/2019 (ms.date); https://learn.microsoft.com/en-us/windows/msix/packaging-tool/remote-conversion-setup, last updated 02/26/2019 (ms.date); https://learn.microsoft.com/en-us/windows/msix/packaging-tool/disconnected-environment, last updated 10/03/2023 (ms.date).
 
 ## Related
 

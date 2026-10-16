@@ -57,13 +57,13 @@ Common registry operations:
 
 ## Notes
 
-- The purpose of packaging is to grant package identity at runtime; the virtualization behaviors below apply only to virtualized (appContainer-style) apps.
+- The purpose of packaging is to grant package identity at runtime; the virtualization behaviors below apply only to virtualized apps (the source's wording). `TrustLevel` (`mediumIL` full trust or `appContainer`) is a separate setting: AppContainer is security isolation, distinct from the file system / registry virtualization described here, and the source does not limit virtualization to `appContainer` apps.
 - Install is per-user. Default location is `C:\Program Files\WindowsApps\<package_full_name>`; package files are read-only and locked down, and Windows prevents launching tampered apps. Default package volume can be changed; not all packages are staged in a volume (Visual Studio can register a development layout directly).
 - Single storage with hard links: identical files across MSIX packages are stored once; downloads are in 64Kb blocks so only differing increments are fetched.
 - Only keys under HKLM\Software are part of the package; HKCU keys are not. All registry writes are kept during upgrade and deleted only on full removal.
 - There is no VFS folder for the user's AppData.
 - Uninstall removes everything under the install folder plus redirected AppData and registry writes captured during packaging.
-- Source page last updated 09/30/2026 (ms.date).
+- Source: https://learn.microsoft.com/en-us/windows/msix/desktop/desktop-to-uwp-behind-the-scenes, last updated 09/30/2026 (ms.date).
 
 ## Related
 

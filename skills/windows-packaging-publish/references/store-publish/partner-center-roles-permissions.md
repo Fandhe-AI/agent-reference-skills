@@ -58,6 +58,7 @@ Product-level custom permissions by category:
 - Store submission and New submission creation grant no access when set to read-only.
 - Ad mediation, Ad performance, Affiliates performance and App install ads reports were deprecated from account-level custom permissions.
 - Not applicable to the Microsoft Edge program, which doesn't support assigning roles. Hardware Developer Program and Windows Desktop Application Program use their own role docs.
+- Sources: https://learn.microsoft.com/en-us/windows/apps/publish/partner-center/overview-of-roles-and-permissions-for-account-users, last updated 2022-10-30 (ms.date); https://learn.microsoft.com/en-us/windows/apps/publish/partner-center/assign-roles-to-account-users, last updated 2026-10-14 (ms.date); https://learn.microsoft.com/en-us/windows/apps/publish/partner-center/assign-account-level-custom-permissions-to-account-users, last updated 2022-11-09 (ms.date); https://learn.microsoft.com/en-us/windows/apps/publish/partner-center/assign-product-level-custom-permissions-to-account-users, last updated 2025-07-27 (ms.date).
 
 ## Related
 

@@ -4,7 +4,7 @@ The Windows App SDK can be deployed framework-dependent (default; depends on the
 
 ## Signature / Usage
 
-Self-contained publish per architecture:
+Self-contained publish per architecture (commands as in the source). Making the Windows App SDK itself self-contained additionally requires `<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>` in the project; `--self-contained true` covers the .NET runtime only:
 
 ```powershell
 dotnet publish -c Release -r win-x64 --self-contained true
@@ -35,11 +35,13 @@ Arm64 approaches:
 
 ## Notes
 
+- The source shows only `dotnet publish ... --self-contained true` and delegates Windows App SDK self-containment to a separate guide; the `WindowsAppSDKSelfContained` requirement above comes from that guide (see windows-app-sdk-self-contained-deploy.md), not from this page.
 - `PublishSingleFile` (single-file EXE) is supported only for unpackaged, self-contained WinUI 3 apps (Windows App SDK 1.5 and later); packaged and framework-dependent apps don't support it.
 - You must include binaries for each processor architecture your users need, in both deployment modes. For MSIX, create an `.msixbundle` with both `x64` and `ARM64` (Visual Studio generates it when building multiple platforms; the Store and App Installer select the architecture). For C++/WinRT build separate `x64` and `ARM64` configurations. Framework-dependent apps using the runtime installer need the architecture-specific installer (x64 and ARM64 are separate).
 - Arm64EC lets x64 and ARM64 code mix in one process.
 - Prism emulation on Windows 11 ARM64: x64 emulation is available on Windows 11 ARM64 only (not Windows 10 on ARM); x86 emulation on both Windows 10 and 11 ARM64. Native ARM64 builds are strongly recommended for production apps.
 - For Store submissions upload architecture-specific packages or a bundle; the Store delivers only the matching architecture.
+- Source: https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/deploy-overview, last updated 2026-10-02 (ms.date).
 
 ## Related
 

@@ -28,7 +28,7 @@ Supported fixes (Preview):
 
 - The page states these fixes are supported in Preview and are being extended.
 - The package must be signed with a certificate before the Package Analyzer tab can be used.
-- Source page last updated 10/06/2023 (ms.date).
+- Source: https://learn.microsoft.com/en-us/windows/msix/packaging-tool/package-analyzer, last updated 10/06/2023 (ms.date).
 
 ## Related
 

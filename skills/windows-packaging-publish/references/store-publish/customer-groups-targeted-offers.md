@@ -39,7 +39,7 @@ Engage -> Targeted offers -> Create new offer (on an available offer)
 - The same offer type can be created more than once for an app if different add-ons are selected; one add-on can be associated with more than one offer type. Conversions per offer are viewable on the Targeted offers page. **Delete** removes an offer.
 - Offer content must comply with the Store Content Policies. If a signed-in customer hands the device to someone else, that person may see offers targeted at the original customer.
 - Responses to reviews can be submitted in the dashboard or via REST API.
-- Source pages: `/windows/apps/publish/engage-with-your-customers`, `/create-customer-groups`, `/use-targeted-offers-to-maximize-engagement-and-conversions`.
+- Sources: https://learn.microsoft.com/en-us/windows/apps/publish/engage-with-your-customers, last updated 2022-10-30 (ms.date); https://learn.microsoft.com/en-us/windows/apps/publish/create-customer-groups, last updated 2022-10-30 (ms.date); https://learn.microsoft.com/en-us/windows/apps/publish/use-targeted-offers-to-maximize-engagement-and-conversions, last updated 2022-10-30 (ms.date).
 
 ## Related
 

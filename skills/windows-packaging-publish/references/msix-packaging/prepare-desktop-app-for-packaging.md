@@ -62,7 +62,7 @@ Known issues:
 
 - All apps submitted to the Microsoft Store must be compatible with Windows 10 S; test the package on Windows 10 S.
 - Packaged apps run on a per-user install; see the internals page for file system and registry behavior.
-- Source pages last updated 10/04/2023 and 07/02/2026 (ms.date).
+- Sources: https://learn.microsoft.com/en-us/windows/msix/desktop/desktop-to-uwp-prepare, last updated 10/04/2023 (ms.date); https://learn.microsoft.com/en-us/windows/msix/desktop/desktop-to-uwp-known-issues, last updated 07/02/2026 (ms.date).
 
 ## Related
 

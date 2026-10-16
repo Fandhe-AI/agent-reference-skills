@@ -26,6 +26,7 @@ Direct link to a hosted .appinstaller file (HTTPS web server) -> user opens it -
 - Private audience contains individually named personal Microsoft accounts (not Entra work/school accounts), so it is not a replacement for enterprise deployment.
 - Partner Center still shows Organizational licensing on Pricing and availability; these apply to publicly published apps and don't create a private catalog. Per-app, change via a new submission (effective after certification). Submissions made through the Store submission API aren't available for volume acquisition.
 - "Make my app available to organizations with Store-managed (online) licensing and distribution" is a legacy setting; unchecking keeps already-acquired licenses valid. "Allow organization-managed (offline) licensing" is unchecked by default and is not supported for .xap packages.
+- Source: https://learn.microsoft.com/en-us/windows/apps/publish/distribute-lob-apps-to-enterprises, last updated 2026-10-14 (ms.date).
 
 ## Related
 

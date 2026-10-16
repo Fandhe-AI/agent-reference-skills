@@ -50,6 +50,7 @@ Automatic repair CSP path: `.../AppUpdateSettings/AutoUpdateSettings/AutoRepair/
 - Repair uses the App Installer URI path; if inaccessible or not configured, it falls back to the `RepairURIs`.
 - On-launch update checks depend on how the app is activated: they run through supported entry points (Start menu including pinned tile, app execution alias, protocol handler). A desktop shortcut or taskbar item that launches the executable directly bypasses the check. To check regardless of activation, update the package from your code.
 - An embedded App Installer file configures settings for a specific app; an external App Installer file overrides all settings configured by an embedded one.
+- Source: https://learn.microsoft.com/en-us/windows/msix/app-installer/auto-update-and-repair--overview, last updated 07/02/2026 (ms.date).
 
 ## Related
 

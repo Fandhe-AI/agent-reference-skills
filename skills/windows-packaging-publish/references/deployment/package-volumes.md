@@ -32,6 +32,7 @@ Use the `Windows.Management.Deployment.PackageManager` APIs or Appx PowerShell c
 - Windows owns and protects package-volume contents. Staged package files are immutable and shouldn't be modified directly.
 - Windows encrypts package files in non-system package volumes to preserve MSIX integrity guarantees if the storage is moved to another computer. This doesn't replace full-volume encryption such as BitLocker.
 - Features that depend on hard links, including some disk-space optimizations, aren't available on file systems that don't support hard links.
+- Source: https://learn.microsoft.com/en-us/windows/msix/package/package-volumes, last updated 09/30/2026 (ms.date).
 
 ## Related
 

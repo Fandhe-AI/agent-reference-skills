@@ -51,6 +51,7 @@ Scenario guidance:
 - Complex installers with kernel drivers, services running as SYSTEM, or machine-wide COM registrations unsupported by MSIX: consider external location.
 - Run the MSIX Packaging Tool on a clean VM; plan explicit settings/data migration when running MSIX alongside a legacy install, because identity and storage locations differ.
 - Framework-dependent vs self-contained Windows App SDK deployment is independent of the packaging model.
+- Source: https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/packaging/, last updated 2026-08-29 (ms.date).
 
 ## Related
 

@@ -25,7 +25,7 @@ Open from the welcome page: select the **Package editor** icon, browse to the pa
 - Sign the package and update the version before saving changes.
 - Icons and assets: changes made to files during the monitored installation phase of conversion are captured in the final package. After creation, use Package files to add or delete assets (right-click the assets folder > Add file / Add folder; right-click a file > Delete).
 - Manifest references must be specific, but asset files can be named whatever you like.
-- Source pages last updated 09/07/2018 and 06/27/2019 (ms.date).
+- Sources: https://learn.microsoft.com/en-us/windows/msix/packaging-tool/package-editor, last updated 09/07/2018 (ms.date); https://learn.microsoft.com/en-us/windows/msix/packaging-tool/edit-icons-and-assets, last updated 06/27/2019 (ms.date).
 
 ## Related
 

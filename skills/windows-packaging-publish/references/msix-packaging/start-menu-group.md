@@ -37,7 +37,7 @@ Group multiple packaged applications (in one MSIX or across packages of one suit
 
 - The page states the feature is available on Windows 11; the MSIX supported-platforms table lists Start menu groups from Windows 10 21H1 (see supported-platforms.md).
 - In the MSIX Packaging Tool, use the Open manifest button in Package Editor to edit the manifest.
-- Source page last updated 04/15/2026 (ms.date).
+- Source: https://learn.microsoft.com/en-us/windows/msix/packaging-tool/create-start-group, last updated 04/15/2026 (ms.date).
 
 ## Related
 

@@ -38,6 +38,7 @@ Project file properties (`.csproj` / `.vcxproj`) that customize how a Windows Ap
 - Deployment Manager auto-initializer: required for framework-dependent packaged apps using Main/Singleton functionality (for example push notifications); not needed for self-contained apps. With Windows App SDK 1.8 or later it runs by default. If the app doesn't need Main/Singleton packages, opt out with `WindowsAppSdkDeploymentManagerInitialize=false`; if it does, keep the default or opt out and call `DeploymentManager.Initialize` explicitly. A process in an AppContainer that causes `DeploymentManager.Initialize` to be called must declare the `packageManagement` restricted capability.
 - Registration-free activation auto-initializer: required for a self-contained app using manifest-based UndockedRegFreeWinRT on an OS earlier than Windows 10 version 1903; others can opt out with `<WindowsAppSdkUndockedRegFreeWinRTInitialize>false</WindowsAppSdkUndockedRegFreeWinRTInitialize>`.
 - Compatibility auto-initializer: only needed for A/B containment (not the default); see RuntimeCompatibilityOptions.
+- Source: https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/project-properties, last updated 2026-10-02 (ms.date).
 
 ## Related
 

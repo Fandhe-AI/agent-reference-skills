@@ -34,11 +34,12 @@ Windows 10 alternatives:
 
 - Windows 10 mainstream support ended October 14, 2025 (all non-LTSC). Windows 10 LTSC 2021 is supported until January 12, 2027.
 - Windows 10 2004+: signed non-Store MSIX can generally be double-click installed; pre-2004 needs Developer Mode or `AllowAllTrustedApps`. Unsigned packages need extra trust configuration; policy can restrict installs.
-- LTSC 2021 (build 19044, equivalent to 20H2) lacks flexible virtualization and Start menu groups.
+- The source page states that LTSC 2021 (build 19044) is equivalent to 20H2 and lacks flexible virtualization and Start menu groups. Build 19044 is the 21H2 servicing baseline, which conflicts with the page's own "Windows 10 21H1+" row in the table above; verify on the target LTSC image before relying on either statement.
 - Known Windows 10 issue categories: registry virtualization edge cases, App Installer reliability with certain network configurations, Packaging Tool compatibility with some installer types; check open issues in microsoft/msix-packaging.
 - Without Persistent Identity, `LocalState` data is deleted on uninstall.
 - The page lists MSIX Packaging Tool, Advanced Installer, and Conveyor as packaging tools for Windows 10 targets.
 - Recommendation: avoid Windows 11-only features if `MinVersion` targets Windows 10, test on Windows 10 specifically, and plan a Win10 EOL strategy.
+- Source: https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/msix-windows10-windows11, last updated 2026-05-29 (ms.date).
 
 ## Related
 

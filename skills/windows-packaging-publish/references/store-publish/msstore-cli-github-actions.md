@@ -20,19 +20,24 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
       - name: Configure Microsoft Store CLI
-        uses: microsoft/microsoft-store-apppublisher@v1.1
+        uses: microsoft/microsoft-store-apppublisher@15abd1c50fcc164b19cb240fb04ef3c49bf715a2 # v1.1
 
       - name: Reconfigure store credentials
         shell: pwsh
+        env:
+          AZURE_AD_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+          SELLER_ID: ${{ secrets.SELLER_ID }}
+          AZURE_AD_APPLICATION_CLIENT_ID: ${{ secrets.AZURE_AD_APPLICATION_CLIENT_ID }}
+          AZURE_AD_APPLICATION_SECRET: ${{ secrets.AZURE_AD_APPLICATION_SECRET }}
         run: |
           msstore reconfigure `
-            --tenantId ${{ secrets.AZURE_AD_TENANT_ID }} `
-            --sellerId ${{ secrets.SELLER_ID }} `
-            --clientId ${{ secrets.AZURE_AD_APPLICATION_CLIENT_ID }} `
-            --clientSecret ${{ secrets.AZURE_AD_APPLICATION_SECRET }}
+            --tenantId "$env:AZURE_AD_TENANT_ID" `
+            --sellerId "$env:SELLER_ID" `
+            --clientId "$env:AZURE_AD_APPLICATION_CLIENT_ID" `
+            --clientSecret "$env:AZURE_AD_APPLICATION_SECRET"
 
       - name: Publish App package
         run: msstore publish '${{ github.workspace }}/release/package.msix' -id <Store product Id>
@@ -64,6 +69,9 @@ msstore submission publish <Store product Id>
 - Where to find the values: Tenant ID in Entra admin center Identity > Overview; Client ID under App registrations ("Application (client) ID"); Client Secret under Certificates & secrets (copy immediately, shown once); Seller ID from Partner Center Account settings (Publisher ID / Seller ID). Store these only as GitHub repository secrets, never in the workflow file.
 - Workflows authenticate with the four secrets, then use `msstore` to obtain base metadata / package info and publish. Changes appear after Partner Center certification completes.
 - The `<Store product Id>` / `<Partner center Id>` placeholders are as written in the source for MSIX and MSI/EXE respectively.
+- The source expands `${{ secrets.* }}` directly inside `run:`. The secrets are passed via `env:` instead so secret values are not expanded into shell source.
+- Third-party actions are pinned to commit SHAs (`actions/checkout` v4, `microsoft/microsoft-store-apppublisher` v1.1) with the original tag in a trailing comment; the source uses the mutable tags `@v4` / `@v1.1`.
+- Source: https://learn.microsoft.com/en-us/windows/apps/publish/msstore-dev-cli/github-actions, last updated 2026-08-30 (ms.date).
 
 ## Related
 

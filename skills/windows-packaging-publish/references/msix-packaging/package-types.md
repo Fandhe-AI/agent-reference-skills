@@ -38,7 +38,7 @@ Get-AppxPackage -PackageTypeFilter Main,Framework,Resource,Optional,Bundle |
 - Optional: associated with one Main package family via `uap3:MainPackageDependency`, unlike a Framework package.
 - Bundle (`.msixbundle`): all packages belong to the same package family; Windows installs only the applicable architecture and resource packages.
 - `Get-AppxPackage` returns only Main and Framework by default; use `-PackageTypeFilter`. The output has no `IsOptional` property, so inspect the manifest or package relationship to identify Optional packages.
-- Source page last updated 09/30/2026 (ms.date).
+- Source: https://learn.microsoft.com/en-us/windows/msix/package/package-types, last updated 09/30/2026 (ms.date).
 
 ## Related
 

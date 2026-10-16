@@ -42,7 +42,7 @@ Target Device Family values:
 - Choose `Platform.All` for all platforms or `Web.All` for web apps only. Declare specific families to extract content only on those platforms and devices.
 - `MinVersion` and `MaxVersionTested` are required, in quad notation (`#.#.#.#`); they apply only on Windows 10 (deploys only on OS versions greater than `MinVersion`). For non-Windows 10-only use, `0.0.0.0` is fine.
 - To use one package on Windows 10 and elsewhere, build it as an App Extension on Windows 10; the `Properties` element inside `AppExtension` is not validated, so it carries free-form metadata between extension and host.
-- Source pages last updated 08/16/2022 and 12/13/2018 (ms.date).
+- Sources: https://learn.microsoft.com/en-us/windows/msix/msix-sdk/msix-linux, last updated 08/16/2022 (ms.date); https://learn.microsoft.com/en-us/windows/msix/msix-sdk/sdk-guidance, last updated 12/13/2018 (ms.date).
 
 ## Related
 

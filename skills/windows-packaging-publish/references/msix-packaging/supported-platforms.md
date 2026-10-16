@@ -32,7 +32,7 @@ Package formats `.msix`, `.msixbundle`, `.appx`, `.appxbundle` are supported on 
 - Prior to Windows 10 2004, sideloading must be enabled to install non-Store apps on Enterprise, Education, and LTSC SKUs. Home and Professional had sideloading enabled by default.
 - On Windows 10 1709, 1803, and 1809 the mainstream enterprise deployment scenarios are supported: Microsoft Endpoint Configuration Manager, Microsoft Intune, PowerShell, or double-click installation. MSIX installation through the Microsoft Store and Microsoft Store for Business requires Windows 10 1809 or later.
 - The MSIX SDK (open source) lets cross-platform client apps use the MSIX format on macOS, iOS, Android, and Linux.
-- Source page last updated 04/11/2023 (ms.date).
+- Source: https://learn.microsoft.com/en-us/windows/msix/supported-platforms, last updated 04/11/2023 (ms.date).
 
 ## Related
 

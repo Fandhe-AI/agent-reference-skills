@@ -33,7 +33,7 @@ To offer it again: "Make product available" banner on the App overview page, or 
 - Removing all packages for a device family: existing customers on that device type can still use the app and get later updates; you can publish another update to restore the family.
 - PWA unpublish: within a few hours the app is no longer visible and new customers can't get it (except with a promotional code on Windows 10/11). This overrides submission visibility settings and equals "Make this product available but not discoverable in the Store" with **Stop acquisition**, without creating a submission. Existing customers can still use and re-download it.
 - To stop offering on one OS version only, create a new submission and remove all packages for that OS version.
-- Source pages: `/windows/apps/publish/publish-your-app/{msix,msi,pwa}/app-package-management`.
+- Sources: https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/app-package-management, last updated 2022-10-30 (ms.date); https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msi/app-package-management, last updated 2022-10-30 (ms.date); https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/pwa/app-package-management, last updated 2022-10-30 (ms.date).
 
 ## Related
 

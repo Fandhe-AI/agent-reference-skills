@@ -137,7 +137,7 @@ Extension tasks:
 - Current status: the `MsixPackaging@1` task uses MSBuild 4.8.4161.0 (not 16+) and was built against Node 16 (end-of-life September 2023), which can break modern pipelines; use MSBuild directly or GitHub Actions with `microsoft/setup-msbuild`.
 - Current status: since 2024 EV code-signing certificates no longer grant instant SmartScreen reputation; reputation accumulates from file hash and publisher certificate.
 - The page's file-share publishing example embeds a storage account key in a `net use` command; do not copy secrets into pipeline files, use secret variables.
-- Source pages last updated 11/5/2020, 07/02/2026, 01/11/2021 (ms.date) and the distribution status page (reviewed August 2026).
+- Sources: https://learn.microsoft.com/en-us/windows/msix/desktop/msix-packaging-extension, last updated 11/5/2020 (ms.date); https://learn.microsoft.com/en-us/windows/msix/desktop/azure-dev-ops, last updated 07/02/2026 (ms.date); https://learn.microsoft.com/en-us/windows/msix/desktop/cicd-overview, last updated 01/11/2021 (ms.date); https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/distribution-feature-status, last updated 2026-08-24 (ms.date; reviewed August 2026).
 
 ## Related
 

@@ -54,6 +54,7 @@ Requirements for the protocol activation scheme:
 - IIS: install IIS and ASP.NET 4.5 or greater, create a web app with a `packages` folder, add the HTML page, configure `Web.config` MIME types (ASP.NET Core ignores `web.config` MIME mappings; configure static file middleware instead). Local IIS needs a loopback exemption because App Installer is network-isolated: `CheckNetIsolation.exe LoopbackExempt -a -n=microsoft.desktopappinstaller_8wekyb3d8bbwe` (verify with `-s`, remove with `-d`). Run Visual Studio as administrator; HTTP 403.14 means no start page is defined.
 - AWS: create an S3 bucket with public read access, upload the package and web page, and link to the package URL. S3 content must grant read and public read access.
 - Install fails if the signing certificate isn't installed on the device. If nothing happens on click, verify App Installer is installed in **Settings** > **Apps & Features**.
+- Sources: https://learn.microsoft.com/en-us/windows/msix/app-installer/installing-windows10-apps-web, last updated 04/17/2026 (ms.date); https://learn.microsoft.com/en-us/windows/msix/app-installer/web-install-azure, last updated 09/30/2018 (ms.date); https://learn.microsoft.com/en-us/windows/msix/app-installer/web-install-iis, last updated 04/23/2021 (ms.date); https://learn.microsoft.com/en-us/windows/msix/app-installer/web-install-aws, last updated 05/30/2018 (ms.date).
 
 ## Related
 

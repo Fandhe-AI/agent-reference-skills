@@ -59,7 +59,7 @@ Known error codes and symptoms:
 - Expired certificates: sign with a timestamp or resign with a valid certificate (MSIX Toolkit scripts include a batch resign).
 - Feedback: use Feedback Hub (Category Apps > MSIX Packaging Tool) and attach logs; allow about 24 hours.
 - The source snippet for `TargetDeviceFamily` prints a stray `>` after the element name; the corrected form is shown above.
-- Source pages last updated 07/02/2026 and 09/07/2018 (ms.date).
+- Sources: https://learn.microsoft.com/en-us/windows/msix/packaging-tool/tool-known-issues, last updated 07/02/2026 (ms.date); https://learn.microsoft.com/en-us/windows/msix/packaging-tool/tool-best-practices, last updated 09/07/2018 (ms.date).
 
 ## Related
 

@@ -42,6 +42,7 @@ Strong references (prevent destaging):
 - Framework packages commonly remain staged because other packages depend on them; multiple Framework-package versions can remain side by side.
 - If a process is using the package, removal normally requests application shutdown.
 - Removing a provisioned package affects future registrations but doesn't remove registrations that already exist for users.
+- Source: https://learn.microsoft.com/en-us/windows/msix/package/package-lifetime, last updated 09/30/2026 (ms.date).
 
 ## Related
 

@@ -43,6 +43,7 @@ Windows versions supported by MSIX Core:
 - ClickOnce flow: host the package on a web server (Azure Web App, IIS, or AWS S3 with MIME types `.appx` = `application/appx`, `.msix` = `application/msix`), build the MSIX Core ClickOnce solution (`microsoft/msix-packaging` `MsixCore`), run the `-url` command to generate a new `setup.exe`, and re-sign it with SignTool.
 - MSIX Core targets Windows 10 version 1703 and earlier; App Installer is the ideal path for 1709 and later. MSIX Core detects a 1709+ consumer and redirects to App Installer. On Microsoft Edge, `getHostEnvironmentValue()` returns an `os-build` field to choose between MSIX Core and App Installer.
 - User experience: the user runs `setup.exe`; if the MSIX Core installer isn't installed, the ClickOnce prompt installs it, then the install screen for the package in the query string appears.
+- Sources: https://learn.microsoft.com/en-us/windows/msix/msix-core/msixcore, last updated 12/19/2019 (ms.date); https://learn.microsoft.com/en-us/windows/msix/msix-core/msixcore-clickonce-solution, last updated 12/19/2019 (ms.date).
 
 ## Related
 

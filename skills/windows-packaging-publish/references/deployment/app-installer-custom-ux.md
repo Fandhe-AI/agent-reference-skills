@@ -49,6 +49,7 @@ Customize the App Installer install experience for your MSIX package with a `MSI
 
 - Add the file with the MSIX Packaging Tool Package Editor: create a folder `Msix.AppInstaller.Data` under the package root, add `MSIXAppInstallerData.xml` to it, then save the package (increment the version and sign it).
 - Troubleshooting: the file must be named `MSIXAppInstallerData.xml`; it must be in a folder named `MSIX.AppInstaller.Data` directly under the package root; check the OS version and App Installer version; verify the XML is valid.
+- Source: https://learn.microsoft.com/en-us/windows/msix/app-installer/how-to-create-custom-app-installer-ux, last updated 9/30/2021 (ms.date).
 
 ## Related
 

@@ -61,7 +61,7 @@ Default MSIX behavior (pre-Windows 11):
 - `unvirtualizedResources` restricted capability support was introduced in Windows 10 version 1903 (build 18362).
 - The `desktop6` mechanism turns off HKCU and/or AppData virtualization altogether; it is not fine-grained.
 - Typical use: games saving data to AppData that must persist after uninstall.
-- Source page last updated 10/20/2021 (ms.date).
+- Source: https://learn.microsoft.com/en-us/windows/msix/desktop/flexible-virtualization, last updated 10/20/2021 (ms.date).
 
 ## Related
 
