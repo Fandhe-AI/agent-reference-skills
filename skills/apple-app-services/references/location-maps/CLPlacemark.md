@@ -1,6 +1,6 @@
 # CLPlacemark
 
-A user-friendly description of a geographic coordinate: name, street address, city, country, time zone, and points of interest. Typically returned by `CLGeocoder`. Deprecated in iOS 27+; prefer `GeoToolbox.PlaceDescriptor` or MapKit for new code.
+A user-friendly description of a geographic coordinate: name, street address, city, country, time zone, and points of interest. Typically returned by `CLGeocoder`. Deprecated in 27.2 (iOS / iPadOS / macOS / visionOS / watchOS) and 27.0 (Mac Catalyst / tvOS); prefer `GeoToolbox.PlaceDescriptor` or MapKit for new code.
 
 ## Signature / Usage
 
@@ -37,10 +37,19 @@ geocoder.reverseGeocodeLocation(location) { placemarks, error in
 | `timeZone` | `TimeZone?` | Time zone of the location |
 | `inlandWater` | `String?` | Nearby lake or river name |
 | `ocean` | `String?` | Nearby ocean name |
+| `region` | `CLRegion?` | Region associated with the placemark |
+| `addressDictionary` | `[AnyHashable: Any]?` | Address dictionary (listed under "Getting the associated contact details") |
+
+Initializers:
+
+| Initializer | Availability |
+|-------------|--------------|
+| `init(placemark:)` | — |
+| `convenience init(location: CLLocation, name: String?, postalAddress: CNPostalAddress?)` | iOS 10.0+, iPadOS 10.0+, Mac Catalyst 13.1+, macOS 11.0+, watchOS 3.2+, visionOS 1.0+ (not tvOS) |
 
 ## Notes
 
-- iOS 5.0+, iPadOS 5.0+, macOS 10.8+, tvOS 9.0+, watchOS 2.0+, visionOS 1.0+ — **deprecated iOS 27+ / macOS 27+**
+- iOS 5.0+, iPadOS 5.0+, Mac Catalyst 13.1+, macOS 10.8+, tvOS 9.0+, watchOS 2.0+, visionOS 1.0+ — **deprecated**: 27.2 on iOS / iPadOS / macOS / visionOS / watchOS, 27.0 on Mac Catalyst / tvOS (deprecation summary: "Use either GeoToolbox.PlaceDescriptor or MapKit")
 - Conforms to `NSCoding`, `NSCopying`, `NSSecureCoding`, `Hashable`, `Sendable`.
 - Properties may be `nil` if the geocoder could not resolve that field.
 

@@ -21,7 +21,7 @@ default:
 
 ## Options / Props
 
-| Case | Description |
+| Name | Description |
 |------|-------------|
 | `notDetermined` | User has not yet made a choice |
 | `restricted` | App is not authorized (e.g., parental controls); cannot prompt user |
@@ -41,3 +41,5 @@ default:
 - [CLLocationManager](./CLLocationManager.md)
 - [CLLocationManagerDelegate](./CLLocationManagerDelegate.md)
 - [CLLocationUpdate](./CLLocationUpdate.md)
+- [CLServiceSession](./CLServiceSession.md)
+- [CLAccuracyAuthorization](./CLAccuracyAuthorization.md)
