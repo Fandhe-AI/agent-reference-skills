@@ -192,7 +192,8 @@ Subscription result fields:
 - Refresh: ChatGPT calls `events/subscribe` before `refreshBefore` with the same identity and last saved cursor. `ttlMs` omitted means server default; `ttlMs: null` requests no expiration. On secret rotation, sign with both old and new keys (space-separated Standard Webhooks signatures) for a short window.
 - Distinct from the webhooks in the OpenAI API (openai-api-core) and from MCP tools; this is the plugin-side MCP Events extension.
 - Rescan your MCP server whenever tools or events change; events appear on the plugin page alongside tools.
-- Protocol reference: MCP Events design sketch (modelcontextprotocol/experimental-ext-triggers-events, `docs/design-sketch-proposal.md`).
+- Protocol reference: https://github.com/modelcontextprotocol/experimental-ext-triggers-events/blob/main/docs/design-sketch-proposal.md
+- Source: https://developers.openai.com/plugins/build/mcp-events (local .md twin copy, fetched 2026-10-17).
 
 ## Related
 

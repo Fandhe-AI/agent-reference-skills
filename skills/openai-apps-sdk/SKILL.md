@@ -5,7 +5,7 @@ description: >
   ChatGPT 内アプリを MCP サーバーとして公開する側の API。
   window.openai, useOpenAiGlobal, registerAppTool, ui://widget,
   _meta, openai/outputTemplate, OAuth, plugin.json / mcp.json (Agent Plugins),
-  MCP Events, Plugin Extensions, Checkout API, 審査・申請。
+  MCP Events, Plugin Extensions, Checkout API, 接続テスト・審査・申請。
 user-invocable: false
 ---
 
