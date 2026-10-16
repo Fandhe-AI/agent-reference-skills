@@ -47,7 +47,7 @@ public sealed class PackageDependency
 
 ## Notes
 
-- Namespace: `Microsoft.Windows.ApplicationModel.DynamicDependency`. Available starting Windows App SDK 1.0 through 2.0 (moniker range `windows-app-sdk-1.0` .. `windows-app-sdk-2.0`).
+- Namespace: `Microsoft.Windows.ApplicationModel.DynamicDependency`. Available starting Windows App SDK 1.0 and continuing in the 2.x line (docs moniker range `windows-app-sdk-1.0` .. `windows-app-sdk-2.0`; the `2.0` moniker covers the 2.x releases, latest stable 2.5.1).
 - This is the API behind the "Dynamic Dependencies" bullet in the Deployment Guide for Unpackaged Apps: unpackaged (or packaged-with-external-location) apps use it to reference framework packages — the Windows App SDK's own Framework package, or other MSIX framework packages such as DirectX — that aren't already part of the app's package graph.
 - Typical flow: call `Create` (once, e.g. at install time) to register the dependency and obtain a `PackageDependency` (whose `Id` is persisted, e.g. to reconstruct it later via `GetFromId`); call `Add` at each process start to bring the framework package into the running process's package graph, keeping the returned `PackageDependencyContext` for the process's lifetime; call `PackageDependencyContext.Remove` when the process no longer needs the framework package, and `Delete` at uninstall time to remove the install-time reference.
 

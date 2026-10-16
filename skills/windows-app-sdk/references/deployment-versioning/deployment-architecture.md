@@ -16,7 +16,7 @@ Framework-dependent apps depend on the Windows App SDK runtime being present on 
 | Term | Definition |
 |---|---|
 | Windows App SDK runtime | The MSIX packages required to use the Windows App SDK: Framework, Main, Singleton, and DDLM. |
-| Framework package | Contains binaries used at run time by most Windows App SDK features. Includes a bootstrapper component. Follows Semantic Versioning 2.0.0 after 1.0. |
+| Framework package | Contains binaries used at run time by most Windows App SDK features. Includes a bootstrapper component. Follows Semantic Versioning 2.0.0 after 1.0 (the whole SDK version aligns with SemVer starting with 2.0; package family name tracks the major version). |
 | Main package | Contains background tasks that track dynamic dependencies and enable automatic Framework package updates from the Microsoft Store. |
 | Singleton package | Contains background tasks/services/app extensions not in the Framework package (e.g. Push Notifications). One long-running process brokered between apps. |
 | Dynamic Dependency Lifetime Manager (DDLM) | Prevents OS servicing updates to MSIX packages while a packaged-with-external-location or unpackaged app is in use. One DDLM per version+architecture of the Framework package. |

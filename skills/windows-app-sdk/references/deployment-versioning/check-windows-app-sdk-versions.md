@@ -31,6 +31,7 @@ Get-AppxPackage *reunion*
 
 ## Notes
 
+- The official page (last updated 2025-07) still shows only 1.0-era names such as `Microsoft.WindowsAppRuntime.1.0`. Since 2.0 the package family name follows the major version (not the minor version), so expect 2.x names to differ from the 1.x examples; the exact 2.x package names are not shown on this page, so confirm with `Get-AppxPackage` output.
 - The Framework, Main, Singleton, and DDLM packages each appear as separate entries; a machine with multiple installed Windows App SDK versions/architectures shows multiple sets.
 - Use the `PackageFullName` values from this command's output as input to `Remove-AppxPackage` when cleaning up outdated versions.
 

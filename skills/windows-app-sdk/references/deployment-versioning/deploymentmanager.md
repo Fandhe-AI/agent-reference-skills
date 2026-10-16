@@ -29,7 +29,7 @@ public static class DeploymentManager
 
 - Namespace: `Microsoft.Windows.ApplicationModel.WindowsAppRuntime`. Package: Windows App SDK runtime API. Distinct from any unrelated `DeploymentManager` types in other frameworks.
 - Your app should call `DeploymentManager.Initialize` during startup — see the Deployment Overview's "Initialize the Windows App SDK" guidance to determine if this explicit call is necessary (it may already be handled by the `WindowsAppSdkDeploymentManagerInitialize` auto-initializer).
-- Available starting Windows App SDK 1.0 through 2.0 (moniker range `windows-app-sdk-1.0` .. `windows-app-sdk-2.0`).
+- Available starting Windows App SDK 1.0 and continuing in the 2.x line (docs moniker range `windows-app-sdk-1.0` .. `windows-app-sdk-2.0`; the `2.0` moniker covers the 2.x releases, latest stable 2.5.1).
 
 ## Related
 
