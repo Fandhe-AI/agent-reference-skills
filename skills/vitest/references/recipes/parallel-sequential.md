@@ -6,7 +6,7 @@ Split the suite into two `projects` so only files sharing an exclusive resource 
 
 ```ts
 // vitest.config.ts
-import { defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
@@ -14,7 +14,7 @@ export default defineConfig({
       {
         test: {
           name: 'Parallel',
-          exclude: ['**/*.sequential.test.ts'],
+          exclude: [...configDefaults.exclude, '**/*.sequential.test.ts'],
         },
       },
       {
@@ -33,7 +33,7 @@ Run sequential after parallel with `sequence.groupOrder` (since 3.2.0):
 
 ```ts
 // vitest.config.ts
-import { defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
@@ -41,7 +41,7 @@ export default defineConfig({
       {
         test: {
           name: 'Parallel',
-          exclude: ['**/*.sequential.test.ts'],
+          exclude: [...configDefaults.exclude, '**/*.sequential.test.ts'],
           sequence: { groupOrder: 0 },
         },
       },
@@ -68,6 +68,7 @@ export default defineConfig({
 ## Notes
 
 - The official recipe writes `**.sequential.test.ts`; with Vitest's globber (tinyglobby) a `**` not used as a whole path segment only matches root-level files, so `**/*.sequential.test.ts` is used here.
+- Setting `exclude` in config replaces the default (`['**/node_modules/**', '**/.git/**']`); spread `configDefaults.exclude` to keep it (see https://vitest.dev/config/exclude). The official recipe snippet omits this.
 - `fileParallelism: false` at project level is a shorthand for `maxWorkers: 1`; the two are equivalent.
 - By default projects run in parallel with each other, so the sequential project's first file may overlap with parallel files holding the same resource; `sequence.groupOrder` makes the parallel batch finish first.
 - `fileParallelism: false` does not make tests inside a file concurrent (sequential by default), and `concurrent` does not affect file scheduling.

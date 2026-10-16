@@ -6,7 +6,7 @@ Use `projects` to apply `isolate: false` to a unit suite while keeping the integ
 
 ```ts
 // vitest.config.ts
-import { defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
@@ -16,7 +16,7 @@ export default defineConfig({
           // Non-isolated unit tests
           name: 'Unit tests',
           isolate: false,
-          exclude: ['**/*.integration.test.ts'],
+          exclude: [...configDefaults.exclude, '**/*.integration.test.ts'],
         },
       },
       {
@@ -43,6 +43,7 @@ vitest --shuffle --run --project='Unit tests'
 ## Notes
 
 - The official recipe writes `**.integration.test.ts`; with Vitest's globber (tinyglobby) a `**` not used as a whole path segment only matches root-level files, so `**/*.integration.test.ts` is used here.
+- Setting `exclude` in config replaces the default (`['**/node_modules/**', '**/.git/**']`); spread `configDefaults.exclude` to keep it (see https://vitest.dev/config/exclude). The official recipe snippet omits this.
 - By default every test file runs in its own isolated module graph; isolation costs setup time on every file.
 - A file is safe to deisolate when it does not: mutate module-level state (counters, caches, top-level `let`); call `vi.stubGlobal` or `vi.stubEnv`; monkey-patch prototypes (`Date.prototype`, `Array.prototype`, ...); register listeners on `process` or other long-lived emitters; depend on a fresh module instance for `vi.mock` factories.
 - If the second shuffled run gives different results, there are order-dependent tests; fix them or keep isolation for that file.

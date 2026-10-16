@@ -50,6 +50,7 @@ export default defineConfig({
 - Initialization increases startup time of every test unless isolation is disabled; visible as the `vitest.runtime.traces` span inside `vitest.worker.start`.
 - With fake timers, reset them before the test ends or traces may not be tracked properly.
 - Vitest does not process the `sdkPath` module; prefer a `.js` file (other extensions slow tests and may need extra Node arguments; TypeScript follows Node type stripping rules).
+- `startActiveSpan` does not end the span automatically; call `span.end()` (the official snippet omits it).
 - Custom spans inherit the Vitest context:
 
 ```ts
@@ -60,7 +61,13 @@ const tracer = trace.getTracer('vitest')
 
 test('db connects properly', async () => {
   // shown inside `vitest.test.runner.test.callback` span
-  await tracer.startActiveSpan('db.connect', () => db.connect())
+  await tracer.startActiveSpan('db.connect', async (span) => {
+    try {
+      await db.connect()
+    } finally {
+      span.end()
+    }
+  })
 })
 ```
 
