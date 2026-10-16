@@ -27,7 +27,7 @@ if (apiResult.Availability == PackageUpdateAvailability.Error)
 ## Notes
 
 - An app that runs in an AppContainer must declare the `packageManagement` restricted capability to call `AddPackageByAppInstallerFileAsync` or `RequestAddPackageByAppInstallerFileAsync`. For callers outside an AppContainer, authorization depends on process integrity level and Windows version; before Windows 11 version 24H2, the caller's package identity and publisher can also affect authorization.
-- Known issue: `AddPackageByAppInstallerFileAsync`, `RequestAddPackageByAppInstallerFileAsync`, and `CheckUpdateAvailabilityAsync` are not supported in JavaScript. Workaround: create a Windows Runtime component that calls these methods and call it from the JavaScript UWP app (the C# `UpdateAvailabilityChecker.CheckForUpdatesAsync` component above is called from JavaScript as `CSRuntimeComponent.UpdateAvailabilityChecker.checkForUpdatesAsync()`).
+- Known issue: `AddPackageByAppInstallerFileAsync`, `RequestAddPackageByAppInstallerFileAsync`, and `CheckUpdateAvailabilityAsync` are not supported in JavaScript. Workaround: create a Windows Runtime component that calls these methods and call it from the JavaScript UWP app (the source page's full sample wraps the check shown above in a C# Windows Runtime component `CSRuntimeComponent.UpdateAvailabilityChecker.CheckForUpdatesAsync`, which JavaScript calls as `CSRuntimeComponent.UpdateAvailabilityChecker.checkForUpdatesAsync()`; see the source for the complete component).
 - Source: https://learn.microsoft.com/en-us/windows/msix/app-installer/app-installer-api-issues, last updated 2/20/2019 (ms.date).
 
 ## Related

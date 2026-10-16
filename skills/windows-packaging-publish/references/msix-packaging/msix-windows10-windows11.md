@@ -15,7 +15,7 @@ TargetDeviceFamily MinVersion=<oldest supported Windows 10 build>
 | Feature | Windows 10 (22H2) | Windows 11 |
 |---------|-------------------|------------|
 | Core install / uninstall, `.appinstaller` support, Modification packages, PSF | Yes | Yes |
-| Sideloading | Requires `AllowAllTrustedApps` policy or Developer Mode | Enabled by default |
+| Sideloading | Enabled by default for signed packages (Windows 10 2004+); policy can restrict | Enabled by default |
 | Windows services, external location, Hosted Apps, Package Integrity Enforcement (non-Store) | Yes (Windows 10 2004+) | Yes |
 | Flexible virtualization, Start menu groups | Yes (Windows 10 21H1+) | Yes |
 | Shared package containers, Legacy context menu (Shell extensions), Mutable package directories, MSIX Persistent Identity | Windows 11 only | Yes |
@@ -38,6 +38,7 @@ Windows 10 alternatives:
 - Known Windows 10 issue categories: registry virtualization edge cases, App Installer reliability with certain network configurations, Packaging Tool compatibility with some installer types; check open issues in microsoft/msix-packaging.
 - `LocalState` data is deleted on uninstall.
 - Source conflict: this page describes Persistent Identity as surviving uninstall and reinstall, whereas persistent-identity.md defines it as publisher bridging that lets updates continue when the signing certificate changes. Treat the persistent-identity.md definition as authoritative for the feature itself.
+- Source conflict: the source comparison table says Windows 10 sideloading "Requires `AllowAllTrustedApps` policy or Developer Mode", but the same source's Sideloading policy section says that requirement applies only before 2004 and that 2004+ is enabled by default; the section is adopted in the table.
 - The page lists MSIX Packaging Tool, Advanced Installer, and Conveyor as packaging tools for Windows 10 targets.
 - Recommendation: avoid Windows 11-only features if `MinVersion` targets Windows 10, test on Windows 10 specifically, and plan a Win10 EOL strategy.
 - Source: https://learn.microsoft.com/en-us/windows/apps/package-and-deploy/msix-windows10-windows11, last updated 2026-05-29 (ms.date).

@@ -79,7 +79,7 @@ Launch with parameters `config.json`:
 Manifest update (all three): point the application at the PSF launcher.
 
 ```xml
-<Application Id="PSFSample" Executable="PSFLauncher32.exe" EntryPoint="Windows.FullTrustApplication">
+<Application Id="PSFSample" Executable="PSFLauncher64.exe" EntryPoint="Windows.FullTrustApplication">
 </Application>
 ```
 
@@ -106,6 +106,7 @@ PSF files copied from `Microsoft.PackageSupportFramework.<Version>\bin` to the p
 - Windows apps redirect application-related directories to `C:\Program Files\WindowsApps`; a subfolder created by the original installer (e.g. `C:\Program Files\Vendor\subfolder`) will not be found at runtime.
 - Set `config.json` values from `AppxManifest.xml`: `id` from `Application Id`, `executable` from the package-relative `Executable` path, `workingDirectory` from its parent folder, `processes.executable` from the file name without path and extension.
 - For the write-permission fix the `dll` is `FileRedirectionFixup64.dll` for x64; the source says to use `FileRedirectionFixup86.dll` for x86 or unknown architecture, while its file table lists `FileRedirectionFixup64.dll` for both. Both are wrong: use `FileRedirectionFixup32.dll` for x86 (confirmed in the `bin` folder of the `Microsoft.PackageSupportFramework` NuGet package 1.0.240212.1, which ships `FileRedirectionFixup32.dll` and `FileRedirectionFixup64.dll`).
+- The manifest `Executable` must match the architecture of the copied launcher: x64 uses `PSFLauncher64.exe` / `PSFRuntime64.dll` / `*64.dll`, x86 uses `PSFLauncher32.exe` / `PSFRuntime32.dll` / `*32.dll`. The source example hard-codes `PSFLauncher32.exe` although its text says to target the PSFLauncher matching the architecture; the example above is x64, so `PSFLauncher64.exe` is used. The package-support-framework page's statement that `PSFLauncher32.exe` works whichever the architecture applies only when `PSFLauncher32.exe` itself is the file copied.
 - Sources: https://learn.microsoft.com/en-us/windows/msix/psf/psf-current-working-directory, last updated 12/16/2020 (ms.date); https://learn.microsoft.com/en-us/windows/msix/psf/psf-launch-apps-with-parameters, last updated 12/16/2020 (ms.date); https://learn.microsoft.com/en-us/windows/msix/psf/psf-filesystem-writepermission, last updated 07/02/2026 (ms.date); https://www.nuget.org/packages/Microsoft.PackageSupportFramework/1.0.240212.1 (package contents, x86 fixup DLL name).
 
 ## Related
