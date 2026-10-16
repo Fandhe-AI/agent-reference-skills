@@ -49,6 +49,7 @@ Common migration blockers:
 ## Notes
 
 - Paths are not mutually exclusive.
+- The "WCF or ASMX services" row in the decision table applies to server-side implementations: a WCF client keeps working on modern .NET via the System.ServiceModel packages (no CoreWCF needed); a WCF server moves to CoreWCF or gRPC; an ASMX server is replaced with ASP.NET Core Web API or minimal API endpoints rather than CoreWCF (see Common migration blockers).
 - WPF and WinForms are fully supported on modern .NET and continue to receive feature updates.
 - A C# WinUI 3 app requires modern .NET and can't target .NET Framework: upgrade first (Path 1), then migrate the UI. A C++/WinRT WinUI 3 app doesn't require .NET.
 - Win32 or C++ desktop UI: the docs support modernization in place and selected Windows App SDK adoption, but provide no end-to-end Win32 UI migration guide.

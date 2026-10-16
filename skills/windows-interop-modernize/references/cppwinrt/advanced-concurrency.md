@@ -19,25 +19,28 @@ IAsyncOperation<uint32_t> DoWorkOnThreadPoolAsync()
 }
 ```
 
-Switching to the UI thread of a specific element:
+Switching to the UI thread of a specific element (WinUI 3 `TextBlock`, whose `DispatcherQueue()` is `Microsoft::UI::Dispatching::DispatcherQueue`):
 
 ```cppwinrt
+#include <winrt/Microsoft.UI.Dispatching.h>
+#include <wil/cppwinrt_helpers.h>
+
 IAsyncAction DoWorkAsync(TextBlock textblock)
 {
     co_await winrt::resume_background();
     // Do compute-bound work here.
 
     // Switch to the foreground thread associated with textblock.
-    co_await winrt::resume_foreground(textblock.DispatcherQueue());
+    co_await wil::resume_foreground(textblock.DispatcherQueue());
 
     textblock.Text(L"Done!"); // Guaranteed to work.
 }
 ```
 
-Detecting queue shutdown, and handling it gracefully:
+Detecting queue shutdown, and handling it gracefully (`co_await queue` is for `Windows::System::DispatcherQueue` only):
 
 ```cppwinrt
-winrt::fire_and_forget RunAsync(DispatcherQueue queue)
+winrt::fire_and_forget RunAsync(winrt::Windows::System::DispatcherQueue queue)
 {
     ...
 
@@ -126,6 +129,7 @@ else
 - The `no_switch` await-adapter in the source (resume on the completing thread, no context switch) is educational only; the docs recommend developing and testing your own adapter structs.
 - The official page writes `std::literals::2s`, which is not valid C++; this page uses `using namespace std::chrono_literals;` and `2s` instead.
 - The official page declares `uint32_t result;` without initializing or assigning it before `co_return result`, which reads an uninitialized value (undefined behavior); this page value-initializes it (`uint32_t result{};`) — assign the computed value inside the loop in real code.
+- The official page writes `winrt::resume_foreground(textblock.DispatcherQueue())` in the UI-thread example; for WinUI 3 this page replaces it with `wil::resume_foreground(...)` (see the correction above). The example omits try/catch; see the shutdown behavior note above.
 - Source: https://learn.microsoft.com/en-us/windows/apps/develop/cpp-winrt/concurrency-2 (en-us, fetched 2026-10-16)
 - Source (Notes correction): https://github.com/microsoft/wil/blob/v1.0.260126.7/include/wil/cppwinrt_helpers.h and https://github.com/microsoft/cppwinrt/blob/3.0.260818.1/strings/base_coroutine_system.h
 
