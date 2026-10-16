@@ -40,7 +40,7 @@ const run = await openai.evals.runs.create(evalObj.id, {
   name: "Categorization test run",
   data_source: {
     type: "responses",
-    model: "gpt-5.6",
+    model: "gpt-6-astra",
     input_messages: {
       type: "template",
       template: [
@@ -79,7 +79,8 @@ Template syntax `{{ }}` supports two namespaces: `item` (fields from the data so
 - A run starts `queued`, moves to `in_progress`, then settles into a terminal status (`completed`, `failed`, `canceled`) — a single `retrieve()` call right after `runs.create()` will usually still show `queued`/`in_progress`, so poll in a loop until the status is terminal.
 - Eval run status/results can be polled via API (`status`, `result_counts`, `per_testing_criteria_results`) or viewed in the dashboard via the run's `report_url`.
 - Subscribe to `eval.run.succeeded` / `eval.run.failed` / `eval.run.canceled` webhook events for async completion notifications.
-- If you don't need advanced features (external models, larger-scale batch runs, API-driven runs), the lighter-weight Datasets dashboard flow may be sufficient — see `getting-started-datasets.md`.
+- If you don't need advanced features (external models, larger-scale batch runs, API-driven runs), the lighter-weight Datasets dashboard flow may be sufficient — see `getting-started-datasets.md`. Datasets fall under the same deprecation window (read-only 2026-10-31, shutdown 2026-11-30).
+- Migration target: OpenAI recommends Promptfoo (open-source CLI / library) for continuing evaluation workflows. The cookbook "Moving from OpenAI Evals to Promptfoo" describes manually recreating an eval in a `promptfooconfig.yaml` (prompts, provider, test cases, assertions); it does not require an OpenAI Evals export feature. Graders become Promptfoo assertions / metrics, and the new run is separate from previously completed OpenAI Evals runs.
 
 ## Related
 

@@ -37,6 +37,7 @@ Images can be HTTP URLs or base64 data URLs. Use `"detail": "low"` on an `image_
 - Assistant-role messages cannot contain images as output (images are input-only).
 - Images containing people, faces, children, or CAPTCHAs are automatically excluded from training.
 - Fine-tuned models undergo the same 13-category safety evaluation as other fine-tuning methods before deployment.
+- The only supported base model, `gpt-4o-2024-08-06`, is scheduled to be removed from the API on 2027-01-14 (recommended replacement `gpt-6-luna`); fine-tuned versions follow the same schedule.
 - Subject to the same platform wind-down as other fine-tuning methods (see [model-optimization.md](./model-optimization.md) Notes).
 
 ## Related

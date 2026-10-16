@@ -44,7 +44,7 @@ run = client.evals.runs.create(
     name="Categorization test run",
     data_source={
         "type": "responses",
-        "model": "gpt-5.6",
+        "model": "gpt-6-astra",
         "input_messages": {
             "type": "template",
             "template": [
@@ -82,5 +82,6 @@ print(status.status)
 - `data_source_config.item_schema` defines the JSON Schema for each test data row; `testing_criteria` holds the grader definitions.
 - Custom data sources require each JSONL line to be `{"item": {...}}` conforming to `item_schema` — a bare `{"ticket_text": ..., "correct_label": ...}` row will not resolve `{{ item.ticket_text }}`.
 - A run starts `queued`, moves to `in_progress`, then settles into a terminal status (`completed`, `failed`, `canceled`) — a single `retrieve()` call right after `runs.create()` will usually still show `queued`/`in_progress`, so poll in a loop until the status is terminal.
-- OpenAI is winding down the Evals platform (read-only 2026-10-31, shut down 2026-11-30). Consider Datasets for new projects.
+- The Evals platform is deprecated (announced June 3, 2026): existing evals become read-only on Oct 31, 2026, and the Evals dashboard and API are scheduled to shut down on Nov 30, 2026.
+- The deprecations page (https://developers.openai.com/api/docs/deprecations) points to the cookbook "Moving from OpenAI Evals to Promptfoo" as the migration path; do not start new projects on the Evals API.
 - `{{ item.* }}` refers to the uploaded test data row, `{{ sample.output_text }}` refers to the model output — both use the shared templating syntax.

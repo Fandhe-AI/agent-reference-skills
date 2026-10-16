@@ -4,7 +4,7 @@ Assigning structured scores/labels to an agent's trace (the end-to-end log of mo
 
 ## Signature / Usage
 
-1. Dashboard: Logs > **Traces**, select a workflow — traces come from SDK-based apps or Agent Builder workflows.
+1. Dashboard: Logs > **Traces**, select a workflow — traces come from SDK-based apps and from existing Agent Builder workflows during the transition window.
 2. Select a trace to inspect the run.
 3. Create a grader and run it against the trace to score the agent's performance.
 4. Click **Grade all** to move to the evaluation dashboard: add/edit test criteria, then add a run (configure model, date range, tool calls) to evaluate outputs at scale.
@@ -13,6 +13,9 @@ Assigning structured scores/labels to an agent's trace (the end-to-end log of mo
 
 - Unlike black-box evaluations, trace evals expose more data to understand *why* an agent succeeds or fails.
 - Use together with `agent-evals.md`'s decision guide (traces while debugging, datasets/evals once repeatable).
+
+- Agent Builder was deprecated on 2026-06-03 and is scheduled to shut down on 2026-11-30 (ChatKit remains available). To continue, migrate to the Agents SDK or ChatGPT Workspace Agents (Migrate from Agent Builder).
+- The trace evaluation path (Grade all, then the evaluation dashboard) falls under the Evals platform deprecation: existing evals read-only on 2026-10-31, dashboard and API shutdown scheduled for 2026-11-30.
 
 ## Related
 

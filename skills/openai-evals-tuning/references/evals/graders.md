@@ -86,6 +86,8 @@ Templating namespaces: `item` (fields from the eval data source / fine-tuning da
 - To grade tool calls, use `sample.output_tools[...]` (same shape as Chat Completions `tool_calls`); a common pattern is two `string_check` graders (tool name + arguments) combined via `multi`.
 - For subtly-incorrect arguments (e.g. `1` vs `1.0`), prefer `text_similarity` or `score_model` over exact `string_check`.
 - Design tips: produce a smooth 0-1 score rather than pass/fail, guard against "grader hacking" (reward hacking), avoid skewed datasets, and use LLM-as-judge with few-shot examples when code-based grading falls short.
+- Graders documented for eval workflows are part of the Evals platform deprecation (existing evals read-only 2026-10-31, shutdown 2026-11-30); fine-tuning-related timelines follow the self-serve fine-tuning section of the deprecations page (https://developers.openai.com/api/docs/deprecations). In Promptfoo, graders are recreated as assertions / metrics; LLM-as-a-judge graders in particular should be re-validated before relying on them (cookbook "Moving from OpenAI Evals to Promptfoo").
+- `score_model` supported-model shutdowns (deprecations page): `o1-2024-12-17`, `o3-mini-2025-01-31`, `o4-mini-2025-04-16`, `gpt-4.1-nano-2025-04-14` on 2026-10-23; `o3-2025-04-16` on 2026-12-11; `gpt-4o-2024-08-06`, `gpt-4o-mini-2024-07-18`, `gpt-4.1-2025-04-14`, `gpt-4.1-mini-2025-04-14` on 2027-01-14.
 - Graders can be validated/run standalone via `POST /v1/fine_tuning/alpha/graders/validate` and `/run`.
 
 ## Related
