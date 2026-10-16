@@ -72,7 +72,9 @@ IAsyncAction CancelationPropagatorAsync()
 Awaiting a kernel handle with a timeout, and `wait_for` on an async object:
 
 ```cppwinrt
-if (co_await winrt::resume_on_signal(event.get(), std::literals::2s))
+using namespace std::chrono_literals;
+
+if (co_await winrt::resume_on_signal(event.get(), 2s))
 {
     puts("signaled");
 }
@@ -120,6 +122,7 @@ else
 - Pass a `winrt::handle` (not a raw `HANDLE`) by value into a coroutine that later calls `resume_on_signal`, so the handle stays valid across suspension points.
 - `IAsyncOperation<Int32[]>` is invalid MIDL 3.0 (error MIDL2025); return the array boxed in a `PropertyValue` (`CreateInt32Array`) as `IAsyncOperation<IInspectable>` and unbox with `IPropertyValue::GetInt32Array`.
 - The `no_switch` await-adapter in the source (resume on the completing thread, no context switch) is educational only; the docs recommend developing and testing your own adapter structs.
+- The official page writes `std::literals::2s`, which is not valid C++; this page uses `using namespace std::chrono_literals;` and `2s` instead.
 - Source: https://learn.microsoft.com/en-us/windows/apps/develop/cpp-winrt/concurrency-2 (en-us, fetched 2026-10-16)
 
 ## Related
