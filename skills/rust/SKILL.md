@@ -16,6 +16,7 @@ model: sonnet
 Rust — システムプログラミング言語。所有権・借用・ライフタイム・型システムによりメモリ安全性とスレッド安全性を保証する。
 公式ドキュメント (doc.rust-lang.org) から主要 14 リソースを構造化。
 言語仕様・コード記述・ビルド（Cargo）・Unsafe Rust・組込み・CLI 開発時に参照する。
+対象: Rust 1.99.1 (2026-10-13)。The Reference / Edition Guide / rustc Book / rustdoc Book は rust-lang/rust タグ 1.99.1 の同梱版（reference@82da570、edition-guide@5a14f72）。
 
 ## ディレクトリ構成
 
@@ -41,6 +42,7 @@ skills/rust/
       14-cargo-crates-io.md
       15-smart-pointers.md
       16-fearless-concurrency.md
+      17-async-await.md
       18-oop.md
       19-patterns-and-matching.md
       20-advanced-features.md
@@ -79,19 +81,23 @@ skills/rust/
       conditional-compilation.md
       const-evaluation.md
       crates-and-source-files.md
+      glossary.md
       influences.md
       inline-assembly.md
       items.md
       lexical-structure.md
       linkage.md
+      macro-ambiguity.md
       macros.md
       memory-model.md
       names.md
       notation.md
+      panic.md
       patterns.md
       runtime.md
       special-types-and-traits.md
       statements-and-expressions.md
+      syntax-index.md
       type-system.md
       unsafety.md
     cargo/
@@ -132,6 +138,7 @@ skills/rust/
       linker-plugin-lto.md
       lints.md
       platform-support.md
+      print-options.md
       profile-guided-optimization.md
       remap-path-prefix.md
       sanitizers.md
@@ -171,6 +178,7 @@ skills/rust/
       unwinding.md
     edition-guide/
       README.md
+      advanced-migrations.md
       creating-new-project.md
       rust-2015.md
       rust-2018.md
@@ -183,6 +191,7 @@ skills/rust/
       config-files.md
       error-handling.md
       human-communication.md
+      in-depth-docs.md
       in-depth-exit-code.md
       in-depth-human-communication.md
       in-depth-signal-handling.md
@@ -257,12 +266,12 @@ skills/rust/
 |--------|---------|------------|
 | 言語入門・所有権・借用・ライフタイム・構造体・Enum・トレイト・ジェネリクス・並行性・async を学ぶ | book | [references/book/README.md](references/book/README.md) |
 | 言語機能をコード例で素早く確認する、構文のクイックリファレンス | by-example | [references/by-example/README.md](references/by-example/README.md) |
-| 厳密な言語仕様・構文・型システム・メモリモデル・ABI・UB 定義を調べる | reference | [references/reference/README.md](references/reference/README.md) |
+| 厳密な言語仕様・構文・型システム・メモリモデル・ABI・UB 定義・panic / unwinding・用語集・構文記号索引を調べる | reference | [references/reference/README.md](references/reference/README.md) |
 | Cargo.toml, Workspaces, Features, Profiles, 依存関係指定, crates.io 公開を調べる | cargo | [references/cargo/README.md](references/cargo/README.md) |
-| rustc コンパイラオプション, lint, target, sanitizer, PGO, LTO を調べる | rustc | [references/rustc/README.md](references/rustc/README.md) |
+| rustc コンパイラオプション, --print, パス remap, lint, target, sanitizer, PGO, LTO を調べる | rustc | [references/rustc/README.md](references/rustc/README.md) |
 | ドキュメント生成, doctest, doc コメント記法, intra-doc links を調べる | rustdoc | [references/rustdoc/README.md](references/rustdoc/README.md) |
 | Unsafe Rust, FFI, unsound パターン, Vec/Arc 実装, アトミックを調べる | nomicon | [references/nomicon/README.md](references/nomicon/README.md) |
-| Rust 2015/2018/2021/2024 エディション差分・移行方法を調べる | edition-guide | [references/edition-guide/README.md](references/edition-guide/README.md) |
+| Rust 2015/2018/2021/2024 エディション差分・移行方法（大規模ワークスペース・マクロ・非 Cargo プロジェクトの移行を含む）を調べる | edition-guide | [references/edition-guide/README.md](references/edition-guide/README.md) |
 | CLI アプリ開発, clap, 終了コード, シグナル処理を調べる | cli | [references/cli/README.md](references/cli/README.md) |
 | 組込み開発, no_std, HAL, peripheral, memory-mapped registers を調べる | embedded | [references/embedded/README.md](references/embedded/README.md) |
 | 標準ライブラリのモジュール構成, Collections, I/O, Concurrency 概要を調べる | stdlib | [references/stdlib/README.md](references/stdlib/README.md) |

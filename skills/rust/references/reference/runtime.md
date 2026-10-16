@@ -115,9 +115,11 @@ panic = "abort"
 
 - The runtime is intentionally minimal; Rust programs can run without an OS.
 - `#[global_allocator]` and `#[panic_handler]` may only appear once across the entire dependency graph.
+- In the current Reference, `#[panic_handler]` and the panic strategy / unwinding rules live in the Panic chapter (`panic.md`), not in the runtime chapter, which now covers only `global_allocator` and `windows_subsystem`.
 
 ## Related
 
+- [panic.md](./panic.md)
 - [crates-and-source-files.md](./crates-and-source-files.md)
 - [linkage.md](./linkage.md)
 - [attributes.md](./attributes.md)

@@ -77,11 +77,45 @@ The `unexpected_cfgs` lint defaults to **Warn**. It can be configured like any l
 #![deny(unexpected_cfgs)]
 ```
 
+## Cargo Specifics
+
+### Cargo feature
+
+Cargo *automatically* declares corresponding cfgs as expected for every feature in the `[features]` table.
+
+```toml
+[features]
+serde = ["dep:serde"]
+my_feature = []
+```
+
+### `check-cfg` in `[lints.rust]` table
+
+For a statically known custom config (not dependent on a build script), use `check-cfg` under `[lints.rust.unexpected_cfgs]` to set custom static `--check-cfg` args:
+
+```toml
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(has_foo)'] }
+```
+
+### `cargo::rustc-check-cfg` for build scripts
+
+When setting a custom config with `cargo::rustc-cfg`, use the corollary `cargo::rustc-check-cfg` (new with Cargo 1.80) to expect it:
+
+```rust
+fn main() {
+    println!("cargo::rustc-check-cfg=cfg(has_foo)");
+    if has_foo() {
+        println!("cargo::rustc-cfg=has_foo");
+    }
+}
+```
+
 ## Notes
 
 - The flag must be repeated for each name/value set; multiple invocations merge value sets.
 - Without any `--check-cfg` argument, `rustc` does not check cfg at all.
-- Cargo automatically generates `--check-cfg` arguments for `[features]` declared in `Cargo.toml`. See Cargo documentation for Cargo-specific usage.
+- Cargo-specific usage is described in the Cargo Specifics section above (rustc Book: "Cargo Specifics - Checking Conditional Configurations").
 - Only **reachable** `#[cfg]` attributes are currently checked; unreachable ones may be checked in the future.
 
 ## Related

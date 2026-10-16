@@ -102,3 +102,4 @@ An artifact is **potentially unwinding** if it uses the `unwind` panic strategy 
 - [abi.md](./abi.md)
 - [crates-and-source-files.md](./crates-and-source-files.md)
 - [items.md](./items.md)
+- [panic.md](./panic.md)

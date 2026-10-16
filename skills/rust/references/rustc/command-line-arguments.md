@@ -95,7 +95,7 @@ rustc [OPTIONS] INPUT
 | Flag | Description |
 |------|-------------|
 | `--remap-path-prefix FROM=TO` | Remap source paths in output (repeatable) |
-| `--remap-path-scope <SCOPE>` | Define scope of path remapping |
+| `--remap-path-scope <SCOPE>` | Comma-separated scopes remapped by `--remap-path-prefix`: `macro`, `diagnostics`, `debuginfo`, `coverage`, `object`, `all` (default) |
 
 ### Advanced / Unstable
 
@@ -111,9 +111,12 @@ rustc [OPTIONS] INPUT
 - `--cap-lints allow` does **not** suppress `--force-warn` lints.
 - `--emit` accepts `KEY=PATH` pairs to redirect individual outputs: `--emit=llvm-ir=-,mir=./out.mir`.
 - Response files (`@path`) use UTF-8 encoding; flags may be separated by Unix or Windows line endings.
+- For the details of each `--print` value, see `print-options.md`; for `--remap-path-prefix` / `--remap-path-scope`, see `remap-path-prefix.md`.
 
 ## Related
 
+- [print-options.md](./print-options.md)
+- [remap-path-prefix.md](./remap-path-prefix.md)
 - [codegen-options.md](./codegen-options.md)
 - [lints.md](./lints.md)
 - [json.md](./json.md)

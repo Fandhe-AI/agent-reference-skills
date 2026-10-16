@@ -13,54 +13,15 @@ cargo build && cargo test   # 4. Verify
 cargo fmt                   # 5. Reformat with new style rules
 ```
 
-## Step-by-Step
-
-### 1. Update dependencies
-
-```bash
-cargo update
-```
-
-Some dependencies (especially proc-macros) may have edition-related issues in old versions. Update and run tests before proceeding.
-
-### 2. Auto-fix source code
-
-```bash
-cargo fix --edition
-```
-
-`cargo fix` rewrites source files to be compatible with the target edition. If a change cannot be automated, it prints a warning requiring manual intervention.
-
-### 3. Enable the new edition in Cargo.toml
-
-```toml
-[package]
-name = "foo"
-version = "0.1.0"
-edition = "2021"
-```
-
-### 4. Build and test
-
-```bash
-cargo build
-cargo test
-```
-
-Run `cargo fix` again (without `--edition`) if new warnings appear after enabling the edition.
-
-### 5. Reformat
-
-```bash
-cargo fmt
-```
-
-The new edition may have updated rustfmt style rules. Commit formatting changes separately from logic changes.
-
 ## Notes
 
+- Step 1: some dependencies (especially proc-macros) may have edition-related issues in old versions. Update and run tests before proceeding.
+- Step 2: `cargo fix` rewrites source files to be compatible with the target edition. If a change cannot be automated, it prints a warning requiring manual intervention.
+- Step 3: set `edition` in the `[package]` table of `Cargo.toml` (e.g. `edition = "2021"`).
+- Step 4: run `cargo fix` again (without `--edition`) if new warnings appear after enabling the edition.
+- Step 5: the new edition may have updated rustfmt style rules. Commit formatting changes separately from logic changes.
 - `cargo fix` does **not** automatically update doctests or code generated at build time — these require manual review.
-- For large workspaces or unusual configurations, see "Advanced migration strategies" in the Edition Guide.
+- For macros, multiple configurations, workspaces, and non-Cargo projects, see "Advanced migration strategies" in the Edition Guide (`advanced-migrations.md`).
 - To test an unstable (nightly) edition:
   ```bash
   rustup update nightly
@@ -78,3 +39,4 @@ The new edition may have updated rustfmt style rules. Commit formatting changes 
 - [Rust 2018](./rust-2018.md)
 - [Rust 2021](./rust-2021.md)
 - [Rust 2024](./rust-2024.md)
+- [Advanced migration strategies](./advanced-migrations.md)

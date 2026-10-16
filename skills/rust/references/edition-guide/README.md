@@ -2,6 +2,7 @@
 
 | Name | Description | Path |
 |------|-------------|------|
+| Advanced Migration Strategies | How `cargo fix --edition` works and how to handle multiple configurations, large workspaces, broken fixes… | [advanced-migrations.md](./advanced-migrations.md) |
 | Creating a New Project | `cargo new` defaults to the latest stable edition. Use `--edition` to target a specific edition. | [creating-new-project.md](./creating-new-project.md) |
 | Rust 2015 | **Theme: Stability** — The original edition, released with Rust 1.0 (May 2015). It is the implicit default for any crate that does not specify `edition` in `Cargo.toml`. | [rust-2015.md](./rust-2015.md) |
 | Rust 2018 | **Theme: Productivity** — Released with Rust 1.31.0 (December 6, 2018). RFC [#2052](https://rust-lang.github.io/rfcs/2052-epochs.html). | [rust-2018.md](./rust-2018.md) |

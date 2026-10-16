@@ -194,3 +194,5 @@ Procedural macros are **unhygienic**: output tokens are treated as if written in
 
 - [items.md](./items.md)
 - [attributes.md](./attributes.md)
+- [macro-ambiguity.md](./macro-ambiguity.md)
+- [syntax-index.md](./syntax-index.md)
