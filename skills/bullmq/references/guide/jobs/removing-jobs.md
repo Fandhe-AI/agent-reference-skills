@@ -1,8 +1,8 @@
-# BullMQ — Removing Jobs
+# Removing jobs
 
-不正なデータを持つジョブの削除など、キューからジョブを手動で削除する必要がある場合に使用します。
+Sometimes it is necessary to remove a job. For example, there could be a job that has bad data.
 
-## 基本的な使い方
+## Signature / Usage
 
 ```typescript
 import { Queue } from 'bullmq';
@@ -14,30 +14,26 @@ const job = await queue.add('wall', { color: 1 });
 await job.remove();
 ```
 
-## 親ジョブがある場合
+### Having a parent job
 
-子ジョブを削除する際、親ジョブへの影響は2つのケースがあります。
+There are 2 possible cases when removing a child job:
 
-| ケース | 親の状態 | 動作 |
-|--------|----------|------|
-| 保留中の依存関係なし | waiting に移動 | 親ジョブの処理が試行される |
-| 保留中の依存関係あり | waiting-children のまま | 親ジョブは他の子の完了を待つ |
+| Case | Parent state | Behavior |
+|------|--------------|----------|
+| No pending dependencies | Moved to wait | The parent may be processed |
+| Pending dependencies | Kept in waiting-children | The parent waits for the other children |
 
-> **Note:** 削除時に子ジョブが **completed** 状態だった場合、処理済みの値は親の processed hset に保持されます。
+### Having pending dependencies
 
-## 保留中の依存関係がある場合
+BullMQ tries to remove all pending descendants first.
 
-保留中のすべての子孫ジョブを先に削除しようと試みます。
+## Notes
 
-> **Warning:** 子ジョブのいずれかがロックされている場合、削除プロセスは停止します。
+- Locked jobs (in active state) cannot be removed. In TypeScript and Python an error is thrown; in Rust `Queue::remove` returns `Ok(false)` (`true` = removed, `false` = the job or one of its dependencies is locked and could not be removed).
+- Processed values are kept in the parent's processed `hset` if the child is in completed state at the time it is removed.
+- If any of the children are locked, the deletion process is stopped.
 
-## 注意点
-
-- ロックされたジョブ（active 状態）は削除できない。削除を試みるとエラーがスローされる
-- 親ジョブとの依存関係がある場合、子ジョブの削除は親の状態に影響する
-- 子孫ジョブにロックされているものがある場合、削除処理全体が中断される
-
-## 関連
+## Related
 
 - [Jobs](./jobs.md)
 - [Stalled](./stalled.md)

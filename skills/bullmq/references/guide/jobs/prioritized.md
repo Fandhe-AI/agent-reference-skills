@@ -1,8 +1,8 @@
-# BullMQ — Prioritized Jobs
+# Prioritized
 
-ジョブに `priority` オプションを指定すると、FIFO や LIFO のパターンではなく優先度に基づいて処理順序が決定されます。優先度値が小さいほど高い優先度を示します（1 が最高優先度）。
+Jobs can include a `priority` option. With priorities, job processing order is determined by the specified `priority` instead of following a FIFO or LIFO pattern.
 
-## 基本的な使い方
+## Signature / Usage
 
 ```typescript
 import { Queue } from 'bullmq';
@@ -13,67 +13,69 @@ await myQueue.add('wall', { color: 'pink' }, { priority: 10 });
 await myQueue.add('wall', { color: 'brown' }, { priority: 5 });
 await myQueue.add('wall', { color: 'blue' }, { priority: 7 });
 
-// 処理順: brown (5) → blue (7) → pink (10)
+// The wall will be painted first brown, then blue and
+// finally pink.
 ```
 
-## オプション
+If several jobs are added with the same priority value, jobs within that priority are processed in FIFO (first in, first out) fashion.
 
-| Name | Type | Description |
-|------|------|-------------|
-| `priority` | `number` | 優先度レベル（1 ~ 2,097,152）。小さいほど高優先度 |
+### Change priority
 
-## 優先度の変更（changePriority）
-
-ジョブ追加後に優先度を変更できます。
+Use `changePriority` to change the `priority` after inserting a job:
 
 ```typescript
 const job = await Job.create(queue, 'test2', { foo: 'bar' }, { priority: 16 });
 
-// 優先度を 1 に変更
 await job.changePriority({
   priority: 1,
 });
 ```
 
-LIFO オプションと組み合わせることも可能です。
+Or combine with the LIFO option:
 
 ```typescript
-const job = await Job.create(queue, 'test2', { foo: 'bar' }, { priority: 16 });
-
 await job.changePriority({
   lifo: true,
 });
 ```
 
-## Prioritized ジョブの取得
+### Get prioritized jobs
+
+As prioritized is a separate state, use `getJobs` or `getPrioritized`:
 
 ```typescript
 const jobs = await queue.getJobs(['prioritized']);
 
-// または専用メソッド
 const jobs2 = await queue.getPrioritized();
 ```
 
-## 優先度別カウントの取得
+### Get counts per priority
+
+To get the count of jobs in `prioritized` status (priorities higher than 0) or in `waiting` status (priority 0), use `getCountsPerPriority`:
 
 ```typescript
 const counts = await queue.getCountsPerPriority([1, 0]);
 /*
 {
-  '1': 11,  // priority 1 のジョブ数
-  '0': 10   // priority 0（waiting）のジョブ数
+  '1': 11,
+  '0': 10
 }
 */
 ```
 
-## 注意点
+## Options / Props
 
-- 優先度付きジョブの追加は他のジョブタイプより遅い操作で、計算量は `O(log(n))`（n は prioritized set のジョブ数）
-- 優先度の範囲は `1` ~ `2,097,152`。値が小さいほど高い優先度
-- **priority が未指定のジョブは最高優先度として扱われ**、priority が指定されたジョブより先に処理される
-- 同じ優先度のジョブは FIFO 順で処理される
+| Name | Type | Description |
+|------|------|-------------|
+| `priority` | `number` | Priority level (`1` to `2 097 151`). A lower number is a higher priority. `0` means no priority and is processed before prioritized jobs |
 
-## 関連
+## Notes
+
+- Adding prioritized jobs is slower than other job types, with complexity `O(log(n))` relative to the number of jobs in the prioritized set.
+- Jobs without a `priority` assigned get the highest priority, being processed before jobs with priorities assigned.
+- In `getCountsPerPriority`, `0` counts waiting jobs and priorities greater than `0` count prioritized jobs.
+
+## Related
 
 - [FIFO](./fifo.md)
 - [LIFO](./lifo.md)

@@ -1,10 +1,10 @@
 # Metrics
 
-BullMQ はシンプルなメトリクス収集機能を提供しており、Worker が1分間隔で処理したジョブ数（completed / failed）を Redis のリストに保存します。2週間分のデータでもキューあたり約120KB の RAM しか消費しません。
+BullMQ provides simple metrics gathering to track the performance of your queues. Workers count the number of jobs they have processed per minute (completed or failed) and store this data in a list inside Redis so it can be queried later.
 
-## メトリクスの有効化
+## Signature / Usage
 
-Worker の設定で `metrics` オプションを指定します:
+Enable metrics on the worker settings by specifying how many data points to keep (counters of jobs processed in 1 minute intervals):
 
 ```typescript
 import { Worker, MetricsTime } from 'bullmq';
@@ -17,13 +17,7 @@ const myWorker = new Worker('Paint', {
 });
 ```
 
-| Name | Type | Description |
-|------|------|-------------|
-| maxDataPoints | number | 保持するデータポイントの最大数。`MetricsTime` 定数を使用 |
-
-## メトリクスの取得
-
-`Queue` クラスの `getMetrics` メソッドで completed または failed のメトリクスを取得します:
+Query the metrics with `getMetrics` on the `Queue` class, for completed or failed jobs:
 
 ```typescript
 import { Queue } from 'bullmq';
@@ -32,38 +26,43 @@ const myQueue = new Queue('Paint', {
 });
 
 const metrics = await queue.getMetrics('completed', 0, MetricsTime.ONE_WEEK * 2);
-```
 
-## レスポンス構造
-
-```typescript
+/* Returns a Metrics object:
 {
-  data: number[];      // 各位置が1分間の完了（または失敗）ジョブ数
-  count: number;
-  meta: {
-    count: number;     // キュー開始以降の合計数
-    prevTS: number;    // 内部使用
-    prevCount: number; // 内部使用
-  };
-}
+    data: number[];
+    count: number;
+    meta: {
+      count: number;
+      prevTS: number;
+      prevCount: number;
+    };
+  }
+*/
 ```
+
+`getMetrics` also accepts `start` and `end` arguments (`0` and `-1` by default) that can be used to implement pagination.
+
+## Options / Props
+
+| Name | Type | Description |
+|------|------|-------------|
+| `maxDataPoints` | `number` | Maximum number of 1-minute data points to keep. Use `MetricsTime` constants |
+
+Response fields:
 
 | Field | Description |
 |-------|-------------|
-| data | 1分間隔のジョブ数の配列 |
-| meta.count | キュー開始以降の合計 completed/failed ジョブ数 |
-| meta.prevTS | 内部使用（メトリクスシステム） |
-| meta.prevCount | 内部使用（メトリクスシステム） |
+| `data` | Array where every position is 1 minute and holds the number of jobs completed (or failed) in that minute |
+| `meta.count` | Total number of completed or failed jobs since the queue started processing jobs |
+| `meta.prevTS` | Used internally by the metrics system; do not use |
+| `meta.prevCount` | Used internally by the metrics system; do not use |
 
-`getMetrics` は `start` と `end` 引数（デフォルト: `0` と `-1`）も受け取り、ページネーションを実装できます。
+## Notes
 
-## 注意点
+- Use the same `metrics` setting on all your workers to get consistent metrics.
+- Metrics are aggregated in 1 minute intervals; the recommended 2 weeks of data takes around 120KB of RAM per queue. Older data points are disposed automatically, so RAM consumption never grows past the maximum number of data points.
 
-- すべての Worker で同じ `metrics` 設定を使用して一貫性のあるメトリクスを取得してください
-- メトリクスは1分間隔で集約されます
-- 最大データポイント数に達すると古いデータは自動的に破棄されます
-- `MetricsTime.ONE_WEEK * 2`（2週間）を推奨します（約120KB/キュー）
+## Related
 
-## 関連
-
-- [./prometheus.md](./prometheus.md) — Prometheus によるメトリクス連携
+- [Prometheus](./prometheus.md)
+- [How to monitor and manage BullMQ queues](https://bullmq.io/articles/guides/monitoring-bullmq-queues/) (external guide)
