@@ -44,6 +44,7 @@ Embedding a UI element inline:
 - Has no `Text` property; content is defined through `Paragraph` elements in `Blocks`.
 - `InlineUIContainer` lets any `UIElement` (image, button, checkbox, etc.) be embedded inline with text.
 - `RichTextBlockOverflow` elements, linked via `OverflowContentTarget`, allow multi-column or advanced page layouts driven from a single `RichTextBlock`.
+- Windows App SDK 2.3.1: with the opt-in `DeferContextFlyoutInit` XamlChangeId (via the `XamlOptionalChanges` API), the default `ContextFlyout` of `TextBlock` / `RichTextBlock` is no longer initialized when the element enters or leaves the tree (runtime compatibility change `Xaml_DeferContextFlyoutInit`).
 
 ## Related
 

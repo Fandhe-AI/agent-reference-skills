@@ -43,6 +43,7 @@ Content can also be set via the `Inlines` property (the default content property
 - Setting `Text` in XAML or code (rather than using `Inlines`) keeps text rendering on the more efficient "fast path"; using `Inlines`, non-default `CharacterSpacing`, or `TextTrimming="Clip"` disables it.
 - Elements derived from `Inline` (`Bold`, `Italic`, `Run`, `Span`, `LineBreak`, `Hyperlink`) enable formatting different parts of the text within a single TextBlock.
 - `Typography` attached properties (e.g. `Typography.Capitals`) can be set on the TextBlock or on individual inline elements for OpenType typography features.
+- Windows App SDK 2.3.1: with the opt-in `DeferContextFlyoutInit` XamlChangeId (via the `XamlOptionalChanges` API), the default `ContextFlyout` of `TextBlock` / `RichTextBlock` is no longer initialized when the element enters or leaves the tree (runtime compatibility change `Xaml_DeferContextFlyoutInit`).
 
 ## Related
 
