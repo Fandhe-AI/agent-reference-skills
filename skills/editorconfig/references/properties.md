@@ -1,165 +1,64 @@
-# EditorConfig プロパティ
+# EditorConfig Properties
 
-EditorConfig で使用可能な全プロパティの詳細。
+Keys (properties) defined by the EditorConfig specification v0.17.2 (Supported Pairs), plus `max_line_length` from the wiki's limited-support list.
 
-## universally supported プロパティ
-
-全エディタプラグインでサポートされるプロパティ。
-
-### root
-
-| 項目 | 値 |
-|------|-----|
-| 値 | `true` |
-| 配置 | プリアンブルのみ（セクション外） |
-| 説明 | `true` に設定すると、それ以上親ディレクトリの `.editorconfig` を検索しない |
+## Signature / Usage
 
 ```ini
-# これ以上上位を検索しない
 root = true
-```
 
-### indent_style
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
 
-| 項目 | 値 |
-|------|-----|
-| 値 | `tab`, `space` |
-| 説明 | インデントスタイル。`tab` はハードタブ、`space` はソフトタブ |
-
-`tab` の場合、可能な限りハードタブで埋め、残りをスペースで埋める。
-
-### indent_size
-
-| 項目 | 値 |
-|------|-----|
-| 値 | 正の整数、または `tab` |
-| 説明 | インデント1レベルあたりの列数、およびソフトタブの幅 |
-
-- `tab` に設定した場合、`tab_width` の値が使用される（`tab_width` 未指定ならエディタのデフォルト）
-
-### tab_width
-
-| 項目 | 値 |
-|------|-----|
-| 値 | 正の整数 |
-| デフォルト | `indent_size` の値 |
-| 説明 | タブ文字の表示幅（列数） |
-
-通常は `indent_size` から自動設定されるため、明示的な指定は不要な場合が多い。
-
-### end_of_line
-
-| 項目 | 値 |
-|------|-----|
-| 値 | `lf`, `cr`, `crlf` |
-| 説明 | 改行コード |
-
-| 値 | 改行コード | 主な使用 OS |
-|----|-----------|------------|
-| `lf` | `\n` | Linux, macOS |
-| `cr` | `\r` | 旧 Mac OS |
-| `crlf` | `\r\n` | Windows |
-
-### charset
-
-| 項目 | 値 |
-|------|-----|
-| 値 | `latin1`, `utf-8`, `utf-8-bom`, `utf-16be`, `utf-16le` |
-| 説明 | ファイルの文字エンコーディング |
-
-`utf-8-bom` の使用は非推奨。
-
-### trim_trailing_whitespace
-
-| 項目 | 値 |
-|------|-----|
-| 値 | `true`, `false` |
-| 説明 | `true` で改行前の末尾空白を除去 |
-
-#### 適用タイミング
-
-- ファイルオープン時: 適用しない
-- ファイル保存時: エディタ組み込み設定を適用
-
-### insert_final_newline
-
-| 項目 | 値 |
-|------|-----|
-| 値 | `true`, `false` |
-| 説明 | `true` でファイル末尾に改行を保証、`false` で改行がないことを保証 |
-
-#### 適用タイミング
-
-- ファイルオープン時: 適用しない
-- ファイル保存時: エディタ組み込み設定を適用
-
-#### 注意点
-
-- 空ファイルの保存時、`insert_final_newline = true` でも改行を挿入してはならない
-
-## limited support プロパティ
-
-一部エディタのみでサポートされるプロパティ。
-
-### max_line_length
-
-| 項目 | 値 |
-|------|-----|
-| 値 | 正の整数、または `unset` |
-| 説明 | 指定文字数での強制改行 |
-| サポート | Emacs, Vim, Neovim, Atom, ReSharper, Rider, IntelliJ IDEA, PhpStorm, PyCharm, RubyMine, WebStorm, Kakoune, Prettier |
-
-このプロパティは正式仕様（spec.editorconfig.org）には含まれず、wiki で定義された limited support プロパティ。
-
-### spelling_language
-
-| 項目 | 値 |
-|------|-----|
-| 値 | `ss` または `ss-TT` 形式 |
-| 長さ | 2文字または5文字のみ有効 |
-| 説明 | スペルチェック言語 |
-
-- `ss`: ISO 639 の2文字言語コード（例: `en`）
-- `TT`: ISO 3166 の2文字地域コード（例: `US`）
-- 例: `en`, `en-US`, `ja`
-- 1つの言語のみ指定可能。デフォルト値なし
-- charset とは独立したプロパティ（文字エンコーディングは `charset` で設定する）
-
-## 共通ルール
-
-### 大文字小文字
-
-- プロパティ名と値はすべて **大文字小文字を区別しない**
-- パース後に小文字化される
-
-### unset
-
-任意のプロパティで値に `unset` を設定すると、そのプロパティの効果を無効化し、エディタのデフォルト設定が使用される。
-
-```ini
 [*.md]
 indent_size = unset
 ```
 
-### 未知のプロパティ
+## Options / Props
 
-- EditorConfig コアは仕様に定義されていないキーバリューペアも受理・報告する
-- エディタプラグインは未知のキーや無効な値を **無視** する
+Specification keys (Supported Pairs):
 
-## プロパティ適用タイミング一覧
+| Name | Supported values | Description |
+|------|------------------|-------------|
+| `indent_style` | `tab`, `space` | Use hard tabs or soft tabs respectively. Case insensitive. |
+| `indent_size` | whole number, or `tab` | Number of columns per indentation level and width of soft tabs (when supported). If `tab`, the size is set to the tab size, which should be `tab_width` (if specified); else the tab size set by the editor. Case insensitive. |
+| `tab_width` | whole number | Number of columns used to represent a tab character. Defaults to the value of `indent_size` and should not usually need to be specified. |
+| `end_of_line` | `lf`, `cr`, `crlf` | How line breaks are represented. Case insensitive. |
+| `charset` | `latin1`, `utf-8`, `utf-8-bom`, `utf-16be`, `utf-16le` | Character set. Use of `utf-8-bom` is discouraged. |
+| `spelling_language` | `ss` or `ss-TT` | Natural language for spell checking. Only one language can be specified; no default value. `ss` is an ISO 639 two-letter language code, `TT` an ISO 3166 two-letter territory identifier (so the value is two or five characters long). |
+| `trim_trailing_whitespace` | `true`, `false` | `true` removes all whitespace characters preceding newline characters in the file; `false` ensures it doesn't. |
+| `insert_final_newline` | `true`, `false` | `true` ensures the file ends with a newline when saving; `false` ensures it doesn't. |
+| `root` | `true` | Must be specified in the preamble. `true` stops the `.editorconfig` file search on the current file. Case insensitive. |
 
-| プロパティ | オープン時 | 保存時 |
-|-----------|----------|--------|
-| indent_style | 適用 | - |
-| indent_size | 適用 | - |
-| tab_width | 適用 | - |
-| end_of_line | 適用 | 適用 |
-| charset | 適用 | 適用 |
-| trim_trailing_whitespace | - | 適用 |
-| insert_final_newline | - | 適用 |
+Limited support (wiki, not in the specification):
 
-## 関連
+| Name | Possible values | Description |
+|------|-----------------|-------------|
+| `max_line_length` | positive integer, `unset` | Forces hard line wrapping after the given number of characters. `unset` turns the feature off (use the editor settings). Supported by Emacs, Vim, Neovim, Atom, ReSharper and Rider, AppCode, IntelliJ IDEA, PhpStorm, PyCharm, RubyMine, WebStorm, Kakoune, Prettier. |
 
-- [specification](./specification.md) — 正式仕様
-- [glob-patterns](./glob-patterns.md) — グロブパターン
-- [best-practices](./best-practices.md) — 設定例・FAQ
+## Notes
+
+- `spelling_language` does not specify the charset; the charset is set by the separate `charset` property.
+- `spelling_language` appears in the Supported Pairs of v0.16.0 and later (the v0.15.1 `index.rst` does not list it).
+- With the exception of `root`, all pairs MUST be located under a section to take effect.
+- For any pair, a value of `unset` removes the effect of that pair, even if it has been set before (e.g. `indent_size = unset` undefines `indent_size` and uses editor defaults).
+- Pair keys are case insensitive; all keys are lowercased after parsing.
+- Cores must accept keys and values with lengths up to and including 1024 and 4096 characters respectively.
+- Cores shall accept and report all syntactically valid key-value pairs, even if the key is not defined in the specification. Plugins shall ignore unrecognized keys and invalid/unsupported values.
+- Wiki note on `end_of_line`: to use native line endings between different operating systems, it is better not to set this option and leave that task to the VCS.
+- The wiki's "Ideas for Domain-Specific Properties" (e.g. `quote_type`, `indent_brace_style`) are not intended to be implemented by EditorConfig.
+- The wiki page itself notes that properties are now known as "declarations" and that the latest specification should be read instead.
+- Sources: specification v0.17.2 https://spec.editorconfig.org/ (tag source https://github.com/editorconfig/specification/blob/v0.17.2/index.rst).
+- Sources: limited-support properties and wiki notes https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties (fetched 2026-10-17).
+- Sources: version comparison for `spelling_language` https://github.com/editorconfig/specification/blob/v0.16.0/index.rst and https://github.com/editorconfig/specification/blob/v0.15.1/index.rst.
+
+## Related
+
+- [specification](./specification.md) — File format specification
+- [glob-patterns](./glob-patterns.md) — Glob pattern syntax for section names
+- [best-practices](./best-practices.md) — Recommended usage practices
