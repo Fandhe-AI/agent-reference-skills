@@ -39,11 +39,13 @@ export default function Component() {
 ## Notes
 
 - Fetchers do not change the URL or navigate between routes
-- Submitting to an action automatically revalidates loader data
+- Submitting to an action automatically revalidates loader data: after the action submit, the fetcher revalidates route data automatically. See [Revalidation Optimization](./optimize-revalidation.md) to skip that reload for a route or a single submission (8.4.0)
+- `fetcher.submit` accepts the same `defaultShouldRevalidate` option as `<Form>`. Pass `false` to skip loader revalidation for that submission; it interacts with route-level `shouldRevalidate` (routes that export it still decide)
 - Use `import type { loader }` with `useFetcher<typeof loader>()` for type-safe loader responses
 - Call `fetcher.submit(form)` to submit programmatically (e.g., on input change for search)
 
 ## Related
 
+- [./optimize-revalidation.md](./optimize-revalidation.md)
 - [./form-validation.md](./form-validation.md)
 - [./navigation-blocking.md](./navigation-blocking.md)

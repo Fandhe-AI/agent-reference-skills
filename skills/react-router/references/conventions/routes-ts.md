@@ -29,7 +29,9 @@ export default [
 ] satisfies RouteConfig;
 ```
 
-## Route Helper Functions
+## Options / Props
+
+### Route helper functions
 
 | Helper | Signature | Description |
 |--------|-----------|-------------|
@@ -38,8 +40,6 @@ export default [
 | `layout` | `(moduleFile, children)` | Layout route (adds nesting without a URL segment) |
 | `prefix` | `(pathPrefix, routes)` | Adds a path prefix without introducing a parent route. Use with spread (`...prefix(...)`) |
 | `relative` | `(directory)` | Returns helpers that resolve module paths relative to `directory` |
-
-## Options / Props
 
 ### `route(pattern, moduleFile, children?)`
 
@@ -58,7 +58,7 @@ export default [
 | Optional segment | `":lang?/categories"` | `/en/categories` or `/categories` |
 | Splat (catch-all) | `"files/*"` | `/files/a/b/c` |
 
-## File-System Routing Alternative
+### File-system routing alternative
 
 ```typescript
 import { type RouteConfig } from "@react-router/dev/routes";
@@ -69,7 +69,7 @@ export default flatRoutes() satisfies RouteConfig;
 
 ## Notes
 
-- v8: content confirmed current against `reactrouter.com/api/framework-conventions/routes.ts` (v8.3.0+). No renames/removals.
+- v8: content confirmed current against `reactrouter.com/api/framework-conventions/routes.ts` (v8.4.0). No renames/removals.
 - `index` routes cannot have children.
 - `prefix` does not create a layout boundary — children are siblings that share a path prefix only.
 - Children render through `<Outlet />` in the parent route module.

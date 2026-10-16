@@ -8,7 +8,7 @@ Defer non-critical data by returning unawaited promises from loaders, unblocking
 
 1. Return an unawaited `Promise` as a value inside the loader's return object (do NOT return a bare promise)
 2. Await critical data inline; leave non-critical data as a promise
-3. Wrap the consuming component in `<React.Suspense fallback={...}>` with `<Await resolve={promise}>`
+3. Wrap the consuming component in `<React.Suspense fallback={<p>Loading...</p>}>` with `<Await resolve={promise}>`
 4. With React 19, use `React.use(promise)` inside a separate child component instead of `<Await>`
 
 ```tsx

@@ -44,6 +44,7 @@ import { Link } from "react-router";
 - `preventScrollReset` only suppresses scroll reset for new navigations; back/forward navigation still restores scroll normally.
 - `state` is client-side only (stored in `history.state`) and is not accessible on the server.
 - `mask` only works in SPA mode and SSR renders; sharing a masked URL loads only the masked location without context.
+- `defaultShouldRevalidate={false}` skips loader revalidation for this navigation. Routes without a `shouldRevalidate` export use the value directly; routes that export one receive it as `defaultShouldRevalidate` and still decide. See [Revalidation Optimization](../how-to/optimize-revalidation.md).
 
 ## Related
 

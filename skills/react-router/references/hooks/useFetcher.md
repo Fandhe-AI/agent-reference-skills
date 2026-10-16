@@ -48,6 +48,7 @@ function AddToCart({ productId }) {
 - Fetchers do not cause navigation — ideal for likes, inline edits, background refreshes
 - Use `key` to share fetcher state across components: `useFetcher({ key: "my-key" })`
 - Not available in Declarative mode
+- `fetcher.submit` accepts `defaultShouldRevalidate`; `false` skips loader revalidation for that submission. Routes that export `shouldRevalidate` receive the value and decide, so a child that always returns false cannot hide a `root` reload after `fetcher.submit`. See [Revalidation Optimization](../how-to/optimize-revalidation.md)
 
 ## Related
 

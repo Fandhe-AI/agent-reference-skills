@@ -14,7 +14,7 @@ function SearchBar({ query }) {
   const topResult = useTopSearchResult(query);
   return (
     <>
-      <input value={query} onChange={...} />
+      <input value={query} onChange={(e) => setQuery(e.target.value)} />
       {topResult && <PrefetchPageLinks page={topResult.href} />}
     </>
   );

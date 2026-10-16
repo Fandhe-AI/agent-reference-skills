@@ -109,6 +109,41 @@ export function meta() {
 }
 ```
 
+### `shouldRevalidate`
+
+In Framework mode with SSR, route loaders are automatically revalidated after all navigations and form submissions. Defining this function opts out of revalidation for **this route's** loader. It does not skip parent or sibling loaders. After `fetcher.submit()`, `root` still revalidates unless it also opts out.
+
+Returning `false` for every call turns revalidation off for this loader:
+
+```tsx
+export function shouldRevalidate() {
+  return false;
+}
+```
+
+Always returning `false` can leave this route's UI out of sync with the server. Prefer inspecting the arguments and falling back to `defaultShouldRevalidate`:
+
+```tsx
+import type { ShouldRevalidateFunctionArgs } from "react-router";
+
+export function shouldRevalidate({
+  formMethod,
+  formAction,
+  defaultShouldRevalidate,
+}: ShouldRevalidateFunctionArgs) {
+  if (
+    formMethod === "POST" &&
+    formAction?.endsWith("/analytics")
+  ) {
+    return false;
+  }
+
+  return defaultShouldRevalidate;
+}
+```
+
+To skip revalidation for a single `<Form>`, `<Link>`, `useSubmit`, or `fetcher.submit` without changing every route file, pass `defaultShouldRevalidate={false}` at the call site. Routes without a `shouldRevalidate` export use that value directly; routes that export one receive it as `defaultShouldRevalidate` and still decide. See [Revalidation Optimization](../how-to/optimize-revalidation.md).
+
 ## Options / Props
 
 Type-safe access to route module APIs is provided via generated types:
@@ -132,3 +167,4 @@ import type { Route } from "./+types/route-name";
 - [data-loading](./data-loading.md)
 - [actions](./actions.md)
 - [pending-ui](./pending-ui.md)
+- [optimize-revalidation](../how-to/optimize-revalidation.md)

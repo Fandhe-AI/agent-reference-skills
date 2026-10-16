@@ -84,6 +84,8 @@ npx react-router reveal
 npx react-router reveal --no-typescript
 ```
 
+> **警告**: `--no-typescript` は `@react-router/dev` 8.3.1 で非推奨になり、v9 で削除予定。
+
 実行は初回のみでよく、生成したファイルはリポジトリにコミットする。
 
 ## ルートツリーの表示（react-router routes）

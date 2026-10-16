@@ -190,7 +190,7 @@ const middleware = async ({ context }, next) => {
 
 ### Context and `AsyncLocalStorage`
 
-Node's `AsyncLocalStorage` works alongside (or instead of) the `context` API and is especially useful with React Server Components, since it lets `middleware` provide data to Server Components/Server Actions running in the same server execution context.
+Node's `AsyncLocalStorage` works alongside (or instead of) the `context` API and is especially useful with React Server Components, since it lets `middleware` provide data to Server Components and route actions running in the same server execution context.
 
 ```tsx
 // app/user-context.ts
@@ -223,6 +223,7 @@ export function getUser() {
 - `next()` can only be called once per middleware function
 - Middleware errors are caught by the nearest `ErrorBoundary`; `next()` never throws. Errors thrown *after* `next()` bubble up as if from the throwing route (`loaderData` available); errors thrown *before* `next()` bubble up to the highest route with a `loader` (no `loaderData` available)
 - Sharing context between `action` and `loader` only works reliably for document POST requests (SPA submissions use separate POST/GET requests); it always works in `clientMiddleware`/`clientLoader`/`clientAction`
+- Do not rely on route middleware to provide access control for React Server Functions (8.4.0 docs-warning). Server Functions are not inherently associated with a route, and a client can call the same Server Function through a URL with different middleware, so each Server Function must perform all of its own access control checks. Use a route `action` when you want middleware-driven access control
 - `AsyncLocalStorage` is not 100% cross-platform (Node API, though Cloudflare/Bun/Deno support it); React Router's `context` API is the runtime-agnostic alternative
 
 ## Related

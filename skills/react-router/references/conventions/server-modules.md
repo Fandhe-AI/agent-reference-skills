@@ -22,7 +22,9 @@ export async function loader() {
 }
 ```
 
-## Naming Conventions
+## Options / Props
+
+Naming conventions:
 
 | Pattern | Example | Effect |
 |---------|---------|--------|
@@ -41,7 +43,7 @@ app/
 
 ## Notes
 
-- v8: content confirmed current against `reactrouter.com/api/framework-conventions/server-modules` (v8.3.0+). No renames/removals. Available in Framework Mode only (not Data Mode or Declarative Mode).
+- v8: content confirmed current against `reactrouter.com/api/framework-conventions/server-modules` (v8.4.0). No renames/removals. Available in Framework Mode only (not Data Mode or Declarative Mode).
 - The build **fails** if a `.server` module is transitively imported by any client code path — this acts as a safety net for secrets.
 - Suitable for: database clients, secret environment variables, server SDKs, email/SMS utilities.
 - Do **not** mark route modules as `.server` — route files must participate in both server and client module graphs.

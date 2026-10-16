@@ -1,4 +1,4 @@
-# Server Adapters (@react-router/{adapter})
+# Server Adapters
 
 Idiomatic React Router apps can be deployed anywhere because React Router adapts the server's request/response to the Web Fetch API, through adapters. Official adapters: `@react-router/architect`, `@react-router/cloudflare`, `@react-router/express`. `@react-router/node` provides shared Node utilities used by Node-based adapters.
 
