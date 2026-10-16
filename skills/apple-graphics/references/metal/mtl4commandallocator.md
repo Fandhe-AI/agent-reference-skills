@@ -6,26 +6,53 @@ Metal 4 API. Manages the memory backing the encoding of GPU commands into comman
 
 ```swift
 protocol MTL4CommandAllocator : NSObjectProtocol
+```
 
-let kMaxFramesInFlight = 3
+Per-frame allocator rotation from the Hello Triangle sample (Objective-C, Drawing a triangle with Metal 4). The CPU waits on the shared event for the frame `kMaxFramesInFlight` earlier before calling `reset`:
 
-class Metal4Renderer {
-    let commandQueue: MTL4CommandQueue
-    var commandAllocators: [MTL4CommandAllocator] = []
-    let commandBuffer: MTL4CommandBuffer
+```objc
+// Increment the frame number for this frame.
+frameNumber += 1;
+
+const uint32_t frameIndex = frameNumber % kMaxFramesInFlight;
+NSString *label = [NSString stringWithFormat:@"Frame: %llu", frameNumber];
+
+
+if (frameNumber >= kMaxFramesInFlight) {
+    [self waitOnSharedEvent:sharedEvent
+             forEarlierFrame:frameNumber - kMaxFramesInFlight];
 }
 
-func renderFrameToView(_ view: MTKView) {
-    // Get the next allocator in the rotation.
-    let frameIndex: Int = Int(frameNumber) % kMaxFramesInFlight
-    let frameAllocator = commandAllocators[frameIndex]
+// Prepare to use or reuse the allocator by resetting it.
+id<MTL4CommandAllocator> frameAllocator = commandAllocators[frameIndex];
+[frameAllocator reset];
 
-    // Prepare to use or reuse the allocator by resetting it.
-    frameAllocator.reset()
+// Prepare to use or reuse the command buffer for the frame's commands.
+[commandBuffer beginCommandBufferWithAllocator:frameAllocator];
+commandBuffer.label = label;
+```
 
-    // Prepare to use or reuse the command buffer for the frame's commands.
-    commandBuffer.beginCommandBuffer(allocator: frameAllocator)
+```objc
+- (void) waitOnSharedEvent:(id<MTLSharedEvent>) sharedEvent
+            forEarlierFrame:(uint64_t) earlierFrameNumber
+{
+    const uint64_t tenMilliseconds = 10;
+
+    // Wait for the GPU to finish rendering the frame that's
+    // `kMaxFramesInFlight` before this one, and then proceed to the next step.
+    BOOL beforeTimeout = [sharedEvent waitUntilSignaledValue:earlierFrameNumber
+                                                   timeoutMS:tenMilliseconds];
+
+    if (false == beforeTimeout) {
+        NSLog(@"No signal from frame %llu to shared event after %llums",
+              earlierFrameNumber, tenMilliseconds);
+    }
 }
+```
+
+```objc
+// Signal when the GPU finishes rendering this frame with a shared event.
+[commandQueue signalEvent:sharedEvent value:frameNumber];
 ```
 
 ## Options / Props
@@ -43,6 +70,7 @@ func renderFrameToView(_ view: MTKView) {
 - Create an allocator with a `MTLDevice` factory method such as `makeCommandAllocator()`; creation parameters are grouped in `MTL4CommandAllocatorDescriptor`.
 - An allocator is associated with one command buffer at a time through `MTL4CommandBuffer.beginCommandBuffer(allocator:)`. After `endCommandBuffer()` on the current command buffer, the allocator can be applied to another command buffer.
 - A common pattern is one allocator per frame in flight; when the GPU finishes that frame's work, call `reset()` to release the memory for reuse. The Hello Triangle sample (Drawing a triangle with Metal 4) works with three frames at the same time.
+- Do not call `reset()` until the GPU has finished the work encoded with that allocator: before `reset()`, wait with `MTLSharedEvent` `waitUntilSignaledValue:timeoutMS:` for the frame `kMaxFramesInFlight` earlier (signaled by `[commandQueue signalEvent:sharedEvent value:frameNumber]`). Source of the example: Drawing a triangle with Metal 4 (https://developer.apple.com/documentation/metal/drawing-a-triangle-with-metal-4).
 - Source: https://developer.apple.com/documentation/metal/mtl4commandallocator
 
 ## Related
