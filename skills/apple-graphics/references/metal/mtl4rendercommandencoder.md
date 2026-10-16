@@ -50,6 +50,7 @@ endEncoding()
 - Create the encoder with `MTL4CommandBuffer.makeRenderCommandEncoder(descriptor:options:)`. Finish with `MTL4CommandEncoder.endEncoding()`. The encoder keeps its current state and applies it to all subsequent draw commands.
 - Create pipeline states at a noncritical time such as launch to avoid visual stutter.
 - Command stages: draw primitives and indexed draws apply to the vertex and fragment stages; mesh draws apply to object, mesh, and fragment; `dispatchThreadsPerTile(_:)` applies to tile; `executeCommands` and `writeTimestamp` apply to no stage, so a barrier cannot wait for all commands in an indirect command buffer (each command inside it applies to the same stages as the equivalent direct command). Draw commands do not apply to fragment when the pipeline state disables rasterization, and mesh draws do not apply to object when the pipeline state has no object shader.
+- Source: https://developer.apple.com/documentation/metal/mtl4rendercommandencoder
 
 ## Related
 

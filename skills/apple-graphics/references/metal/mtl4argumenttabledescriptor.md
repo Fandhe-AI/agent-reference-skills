@@ -27,6 +27,7 @@ makeArgumentTable(descriptor:)
 - iOS 26.0+, iPadOS 26.0+, Mac Catalyst 26.0+, macOS 26.0+, tvOS 26.0+, visionOS 26.0+. Inherits from `NSObject`; conforms to `NSCopying`.
 - Workflow from the Metal 4 core API article: create or reuse a descriptor, set how many bindings of each type the table stores (for example `maxBufferBindCount` and `maxTextureBindCount`), create the table with `MTLDevice.makeArgumentTable(descriptor:)`, then add or update bindings with `MTL4ArgumentTable` methods such as `setResource(_:bufferIndex:)` and `setSamplerState(_:index:)`.
 - Each table consumes only the memory it needs for its bindings, and one table can be assigned to the stages of multiple encoders.
+- Source: https://developer.apple.com/documentation/metal/mtl4argumenttabledescriptor
 
 ## Related
 

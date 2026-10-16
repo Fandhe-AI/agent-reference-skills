@@ -2,9 +2,11 @@
 name: apple-graphics
 description: >
   Apple グラフィックス。Metal, Core Animation, Core Graphics, Core Image, SpriteKit, SceneKit。
-  MTLDevice, MTKView, MTLResidencySet, MTLTensor,
-  Metal 4 (MTL4CommandQueue, MTL4CommandAllocator, MTL4RenderCommandEncoder, MTL4Compiler),
-  CALayer, CADisplayLink, CGContext, CGPath, CIFilter, CIContext, CIRAWFilter, SKScene, SKAction, SCNNode。
+  MTLDevice, MTKView, MTLBuffer, MTLTexture, MTLResidencySet, MTLTensor,
+  Metal 4 (MTL4CommandQueue, MTL4CommandBuffer, MTL4CommandAllocator, MTL4ArgumentTable, MTL4RenderCommandEncoder, MTL4Compiler),
+  CALayer, CABasicAnimation, CADisplayLink, CAMetalDisplayLink, CAMetalDrawable,
+  CGContext, CGPath, CGImage, CIFilter, CIContext, CIImage, CIRAWFilter, CIWarpKernel, CIBlendKernel,
+  SKScene, SKSpriteNode, SKAction, SCNNode, SCNGeometry, SCNMaterial。
 user-invocable: false
 ---
 

@@ -60,6 +60,7 @@ commandQueue.addResidencySet(residencySet)
 - Attached sets replace per-encoder `useResource` / `useResources` / `useHeap` / `useHeaps` calls on `MTLRenderCommandEncoder` and `MTLComputeCommandEncoder`, which cost CPU overhead per call and apply to a single encoder.
 - `requestResidency()` lets you do the CPU work before the first `commit()` that uses the set (for example at launch); it may postpone some steps when other apps have competing memory needs.
 - Distinct from unified-memory guidance in the apple-silicon skill: its metal-compute/unified-memory pages also cover `MTLResidencySet` from the compute and memory-optimization angle.
+- Source: https://developer.apple.com/documentation/metal/mtlresidencyset
 
 ## Related
 

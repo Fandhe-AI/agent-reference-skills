@@ -42,6 +42,7 @@ Multi-plane configuration types (iOS 27.0+):
   - Rank zero is not supported.
   - The default value of `auxiliaryPlanes` is `nil`.
 - Pass the descriptor to `MTLDevice.makeTensor(descriptor:attachments:)` (iOS 27.0+, buffer-backed per-plane storage) to create the tensor.
+- Source: https://developer.apple.com/documentation/metal/mtltensordescriptor
 
 ## Related
 

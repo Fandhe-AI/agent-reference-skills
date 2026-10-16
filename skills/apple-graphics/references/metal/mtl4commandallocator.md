@@ -43,6 +43,7 @@ func renderFrameToView(_ view: MTKView) {
 - Create an allocator with a `MTLDevice` factory method such as `makeCommandAllocator()`; creation parameters are grouped in `MTL4CommandAllocatorDescriptor`.
 - An allocator is associated with one command buffer at a time through `MTL4CommandBuffer.beginCommandBuffer(allocator:)`. After `endCommandBuffer()` on the current command buffer, the allocator can be applied to another command buffer.
 - A common pattern is one allocator per frame in flight; when the GPU finishes that frame's work, call `reset()` to release the memory for reuse. The Hello Triangle sample (Drawing a triangle with Metal 4) works with three frames at the same time.
+- Source: https://developer.apple.com/documentation/metal/mtl4commandallocator
 
 ## Related
 

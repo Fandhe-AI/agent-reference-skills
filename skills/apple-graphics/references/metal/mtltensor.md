@@ -44,6 +44,7 @@ Multi-plane types (all iOS 27.0+, iPadOS / Mac Catalyst / macOS / tvOS / visionO
 - Create tensors with a `MTLTensorDescriptor`. Related types listed by the official page: `MTLTensorExtents`, `MTLTensorReferenceType`, `MTLTensorUsage`, `MTLTensorBinding`, `MTLTensorDataType`, `MTLTensorError`, `MTL_TENSOR_MAX_RANK`.
 - Multi-plane tensors are created by setting `MTLTensorDescriptor.auxiliaryPlanes`; see the constraints on that page.
 - Distinct from the apple-silicon skill's `MPSNDArray` / `MPSGraphTensor` (MPS / MPSGraph) and the apple-ml skill's `MLMultiArray` (Core ML); `MTLTensor` is a Metal resource (`MTLResource`) bound to shaders and machine learning encoders.
+- Source: https://developer.apple.com/documentation/metal/mtltensor
 
 ## Related
 

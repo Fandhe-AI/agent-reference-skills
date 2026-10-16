@@ -39,6 +39,7 @@ func makeComputePipelineState(descriptor: MTL4ComputePipelineDescriptor, dynamic
 - Create an unspecialized pipeline state once (for example at launch, using `MTLPixelFormat.unspecialized` for properties that vary) and derive task-specific pipeline states from it with `makeRenderPipelineStateBySpecialization(descriptor:pipeline:)`, avoiding recompilation of common code.
 - Color-attachment mapping lets one render pipeline state inherit the logical-to-physical output mapping from each encoder it is used with.
 - Objective-C also lists completion-handler variants (for example `newRenderPipelineStateWithDescriptor:...completionHandler:`) for the asynchronous forms.
+- Source: https://developer.apple.com/documentation/metal/mtl4compiler
 
 ## Related
 
