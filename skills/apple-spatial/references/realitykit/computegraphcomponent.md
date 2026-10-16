@@ -33,7 +33,7 @@ entity.components.set(component)
 - Metal binding: `setBuffer(_:bufferOffset:elementCount:at:)`, `setTexture(_:at:)`, `setTexture(_:port:)`.
 - Uniform access: `uniformHandle(named:)`, `setUniformValue(_:for:)`, `setUniformValue(_:named:)`, `setUniformData(_:for:)`, `replaceUniforms(_:)`.
 - Output control: `isOutputEnabled(_:)`, `setOutputEnabled(_:enabled:)`, `findBufferIndex(port:)`, `firstBufferIndex(type:)`.
-- visionOS 27 release notes: fixed `ComputeGraphComponent`s stored in a Reality file not rendering when loaded (177674901).
+- visionOS 27 release notes: fixed `ComputeGraphComponent`s stored in a Reality file not rendering when loaded (177674901). (Source: https://developer.apple.com/documentation/visionos-release-notes/visionos-27-release-notes)
 - The graph definition types (`ComputeNodeGraph`, `ComputeGraphSimulation`, and node types such as emitters and forces) live in the separate Compute Graph module; see the compute-graph category.
 
 ## Related
