@@ -38,6 +38,8 @@ export async function ProductList() {
 
 ## Notes
 
+- Source: https://nextjs.org/docs/app/guides/optimizing-the-static-shell (v16.4.2)
+
 - Prerequisite: enable `cacheComponents` and resolve the route's blocking validation errors first (see Migrating to Cache Components). Consider Partial Prefetching for client navigations.
 - Push data access down: move `params`, `searchParams`, `cookies()`, `headers()` reads into the Server Component for the region that needs them, behind `<Suspense>`. Resolve small promises inline with `.then()`, or start a request without awaiting it and pass the promise to a Client Component that unwraps it with `use()`. Client Components can often use `useParams()` / `useSearchParams()` instead, which resolve synchronously during a client navigation.
 - Loading states: use sibling boundaries for independent regions, nested boundaries to reveal related regions in stages. Keep the layout-owning container outside the boundary, and reserve space in fallbacks. An empty fallback is only appropriate when the resolved component also has no visual footprint (e.g. an auth gate returning `null`). `loading.tsx` can remain as an outer fallback.

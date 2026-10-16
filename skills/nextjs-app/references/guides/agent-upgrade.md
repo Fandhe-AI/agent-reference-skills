@@ -34,6 +34,8 @@ export default nextConfig
 
 ## Notes
 
+- Source: https://nextjs.org/docs/app/guides/upgrading/agent-upgrade (v16.4.2)
+
 - Page front matter marks this guide `version: experimental`.
 - Omit the policy to use the string value of `experimental.agentUpgrade`; otherwise the command uses `security`. `--agent` cannot be combined with `--revision`. Without `--agent`, `next upgrade` runs the interactive codemod workflow.
 - `security` supports stable installations; canary installations can use `latest` or `experimental-future`; RC, beta, and preview installations can use `latest`. Other prerelease channels are unsupported.

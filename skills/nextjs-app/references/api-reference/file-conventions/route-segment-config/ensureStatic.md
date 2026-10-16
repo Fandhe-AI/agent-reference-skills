@@ -32,6 +32,8 @@ Default is `'auto'` (equivalent to omitting the export). Each stricter level als
 
 ## Notes
 
+- Source: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config/ensureStatic (v16.4.2)
+
 - Only works when `cacheComponents` is enabled; the build fails otherwise. Exporting it from a Client Component throws an error.
 - `'shell'`: requires the App Shell loaded by a default `<Link>` to be static. Without Partial Prefetching there is no App Shell, so the value has no effect and Next.js logs a warning. It does not require per-link prefetches to be static (reading `cookies()`, `headers()`, or URL data before `await navigation()` can still trigger a server render on `<Link prefetch={true}>`).
 - `'prefetch'`: requires the App Shell and per-link prefetches to be static. Without Partial Prefetching it adds no requirement and links keep their normal full-prefetch behavior (not guaranteed static).

@@ -44,6 +44,8 @@ Invalidation after a mutation:
 
 ## Notes
 
+- Source: https://nextjs.org/docs/app/guides/client-side-data-fetching (v16.4.2)
+
 - If a Client Component only needs to read server data once, pass it a Promise and unwrap it with `use()`; no library is needed. Use a library when Client Components need a shared browser cache (focus revalidation, polling, request deduplication, optimistic updates).
 - Providing initial data and caching it on the server are independent choices. The cache layers have independent freshness policies and need not match durations, but cache identities and mutation invalidation must stay coordinated.
 - Server Components provide initial data scoped to the owning segment; the library stores the browser value under a shared cache identity; mutations update the browser cache and invalidate cached server data. An optimistic update should restore the previous value if the write fails. An uncached server read has no tag to invalidate.

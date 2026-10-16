@@ -38,6 +38,8 @@ export async function generateStaticParams() {
 
 ## Notes
 
+- Source: https://nextjs.org/docs/app/guides/keeping-pages-static (v16.4.2)
+
 - Before Cache Components, `dynamic = 'force-static'` / `'force-dynamic'` / `'error'` chose one rendering mode for a whole route. With Cache Components one route can mix prerendered, cached, and request-time content.
 - Partial Prefetching navigation stages: (1) default `<Link>` loads the App Shell, (2) `<Link prefetch={true}>` can also load content for the link's URL, (3) the navigation renders the rest. Each `ensureStatic` level extends the static requirement through one of these stages.
 - An `ensureStatic` value covers the whole route, including layouts above the segment that exports it.

@@ -53,6 +53,8 @@ const adapter = {
 
 ## Notes
 
+- Source: https://nextjs.org/docs/app/api-reference/adapters/immutable-static-assets (v16.4.2)
+
 - Immutable assets are requested without the `?dpl` query parameter and live in a shared namespace across deployments.
 - They must not change (even after a new deployment) or be deleted for as long as active deployments use them.
 - Next.js may use a truncated shorter content hash as the filename; `immutableHash` holds the full hash so you can validate that no hash collision occurred.

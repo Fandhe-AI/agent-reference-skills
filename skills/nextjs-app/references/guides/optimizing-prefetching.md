@@ -70,6 +70,8 @@ Navigation stages:
 
 ## Notes
 
+- Source: https://nextjs.org/docs/app/guides/optimizing-prefetching (v16.4.2)
+
 - Each per-link prefetch costs a server invocation per prefetchable link, so it is opt-in. Fully static pages serve the prefetch from the static cache. A cold cache can still show a loading spinner on the first navigation.
 - `params` needs a `<Suspense>` boundary just like `searchParams`, even with `generateStaticParams`.
 - Session data: a route that reads `cookies()` / `headers()` (including through `"use cache: private"`) gets an App Shell with its session data, cached per session on the client, without a per-link prefetch. `"use cache"` cannot call `cookies()` inside the cached function; either extract the cookie outside and pass it as an argument (shared across sessions), or use `"use cache: private"` (tied to one session).

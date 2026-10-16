@@ -57,6 +57,8 @@ export default nextConfig
 
 ## Notes
 
+- Source: https://nextjs.org/docs/app/api-reference/functions/navigation (v16.4.2)
+
 - Parameters: none. Returns a `Promise<void>` that is not meant to be consumed.
 - Requires Cache Components (`cacheComponents: true`); throws without it. Meant for routes using Partial Prefetching (`partialPrefetching`), enabled globally or per route.
 - Navigation stages: a default `<Link>` loads the App Shell; `<Link prefetch={true}>` can also load content that depends on the link's URL; following the link renders the rest.

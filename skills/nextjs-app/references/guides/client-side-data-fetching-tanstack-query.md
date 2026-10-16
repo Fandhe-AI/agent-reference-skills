@@ -79,6 +79,8 @@ function ProductData({ id }: { id: string }) {
 
 ## Notes
 
+- Source: https://nextjs.org/docs/app/guides/client-side-data-fetching/tanstack-query (v16.4.2)
+
 - This page covers only how to integrate TanStack Query with Next.js App Router. The TanStack Query APIs themselves (`useQuery`, `QueryClient`, `HydrationBoundary`, etc.) belong to the tanstack-query skill.
 - Create a new `QueryClient` for each server render and reuse one in the browser.
 - Dehydrating pending queries requires TanStack Query 5.40.0 or later. Override `queryFn` on the server because the Route Handler's relative URL only resolves in the browser. The server and Client Component must use the same query key; keep key and `queryOptions` in one cache contract module.

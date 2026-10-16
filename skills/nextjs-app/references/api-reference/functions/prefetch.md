@@ -61,6 +61,8 @@ export default nextConfig
 
 ## Notes
 
+- Source: https://nextjs.org/docs/app/api-reference/functions/prefetch (v16.4.2)
+
 - Parameters: none. Returns a `Promise<void>` that is not meant to be consumed.
 - Requires Cache Components (`cacheComponents: true`) and throws if not enabled. Without Partial Prefetching a route has no App Shell, so the function has no effect.
 - Everything above `prefetch()` renders in the App Shell; everything below renders on a per-link prefetch or on the navigation. Deferral is scoped to the component that awaits it and the tree below; sibling branches render in the shell as usual. Wrap the component in `<Suspense>`.

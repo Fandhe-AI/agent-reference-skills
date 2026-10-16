@@ -92,6 +92,8 @@ return mutate(
 
 ## Notes
 
+- Source: https://nextjs.org/docs/app/guides/client-side-data-fetching/swr (v16.4.2)
+
 - A conditional key (`null`) delays the request until an input exists. With an unconditional key and `suspense: true`, `data` is defined after Suspense resolves. Request errors go to the nearest error boundary.
 - With `suspense: true`, later revalidation for the same key keeps current data rendered (no fallback again); use `isValidating` for background refresh feedback. Independent Suspense reads in sibling components start in parallel; multiple reads in one component run sequentially.
 - Server-provided data requires SWR 2.3.0 and React 19. Scope `<SWRConfig>` to the route segment that owns the data. The `fallback` key and the `useSWR` key must match exactly or SWR ignores the fallback and fetches on the client. Define the key once (e.g. `productCache.key(id)`).
