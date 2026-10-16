@@ -46,7 +46,7 @@ fun AddWidgetButton() {
 - Requires Android 8.0 (API 26) or higher; on lower versions the call returns `false` without prompting anything.
 - Returns `true` once the pin request has been successfully handed to the system — this does **not** mean the user accepted it. Use `successCallback` to know whether the widget was actually added.
 - If the user declines, or the device's launcher doesn't support pinning, the call resolves without error and nothing is added.
-- Since `androidx.glance:glance-appwidget` 1.2.0-alpha01, a `@KotlinOnly` overload adds a separate `previewSize: DpSize?` parameter (inserted before `previewState`) for controlling the preview's rendered size — confirming `previewState` itself is never a size.
+- Since `androidx.glance:glance-appwidget` 1.2.0-alpha01 (stable since 1.2.0, 2026-08-26), a `@KotlinOnly` overload adds a separate `previewSize: DpSize?` parameter (inserted before `previewState`) for controlling the preview's rendered size — confirming `previewState` itself is never a size.
 - Artifact: `androidx.glance:glance-appwidget`.
 
 ## Related

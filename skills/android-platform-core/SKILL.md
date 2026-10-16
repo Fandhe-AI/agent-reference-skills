@@ -3,8 +3,8 @@ name: android-platform-core
 description: >
   Android アプリ開発 (Kotlin) のプラットフォーム基盤リファレンス。
   Activity, Intent, Application, ContentProvider, AndroidManifest, androidx,
-  ランタイム権限, NotificationCompat, WindowInsets, スプラッシュスクリーン,
-  Glance ウィジェット。
+  ランタイム権限, NotificationCompat, CallStyle, Bubbles (BubbleMetadata),
+  WindowInsets, スプラッシュスクリーン, Glance ウィジェット。
 user-invocable: false
 ---
 
@@ -97,6 +97,8 @@ skills/android-platform-core/
       advertising-and-app-set-id.md
     notifications/
       README.md
+      bubbles.md
+      call-style.md
       custom-notification.md
       expanded-notifications.md
       full-screen-intent.md
@@ -184,6 +186,7 @@ skills/android-platform-core/
 | パッケージ可視性・プライバシーポリシー対応をしたい | permissions-privacy | [references/permissions-privacy/README.md](references/permissions-privacy/README.md) |
 | NotificationCompat / 通知チャンネルで通知を組み立てたい | notifications | [references/notifications/README.md](references/notifications/README.md) |
 | 通知アクション・展開スタイル・グループ化・フルスクリーンインテントを使いたい | notifications | [references/notifications/README.md](references/notifications/README.md) |
+| バブル (BubbleMetadata) や CallStyle 通話通知を実装したい | notifications | [references/notifications/README.md](references/notifications/README.md) |
 | WindowInsets・エッジツーエッジ・ディスプレイカットアウトに対応したい | system-ui | [references/system-ui/README.md](references/system-ui/README.md) |
 | Picture-in-Picture・ショートカット・スプラッシュスクリーン・ダークテーマを扱いたい | system-ui | [references/system-ui/README.md](references/system-ui/README.md) |
 | Glance でアプリウィジェットを作りたい | glance-widgets | [references/glance-widgets/README.md](references/glance-widgets/README.md) |

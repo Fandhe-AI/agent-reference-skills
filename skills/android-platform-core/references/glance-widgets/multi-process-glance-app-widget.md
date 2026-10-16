@@ -56,7 +56,7 @@ class MyAppWidget : MultiProcessGlanceAppWidget() {
 - `errorUiLayout` (constructor) and the widget's `provideGlance`/`provideContent` lifecycle are otherwise identical to `GlanceAppWidget`; `MultiProcessGlanceAppWidget` only adds the multi-process wiring in `getMultiProcessConfig`.
 - The worker itself must still run in the same process as the `GlanceAppWidgetReceiver` — only the receiver's *process* can differ from the app's default process, not the worker's process relative to the receiver's.
 - If the widget runs in a non-default process, also declare a subclass of `androidx.glance.appwidget.MyPackageReplacedReceiver` in `AndroidManifest.xml` for that process, to handle `ACTION_MY_PACKAGE_REPLACED` broadcasts.
-- Added in `androidx.glance:glance-appwidget-multiprocess` 1.2.0-alpha01; distinct Gradle artifact from `androidx.glance:glance-appwidget`, depends on `androidx.work:work-multiprocess`.
+- Added in `androidx.glance:glance-appwidget-multiprocess` 1.2.0-alpha01, stable since 1.2.0 (2026-08-26); distinct Gradle artifact from `androidx.glance:glance-appwidget`, depends on `androidx.work:work-multiprocess`.
 
 ## Related
 
