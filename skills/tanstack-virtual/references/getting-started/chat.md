@@ -29,7 +29,7 @@ virtualizer.scrollToEnd()
 | Name | Type | Description |
 |------|------|-------------|
 | `anchorTo` | `'end'` | Anchors the viewport to the end so prepending older items keeps currently visible messages visually stable |
-| `followOnAppend` | `boolean` | Keeps new messages in view only when the user is already at the bottom |
+| `followOnAppend` | `boolean \| 'auto' \| 'smooth' \| 'instant'` | Keeps new messages in view only when the user is already at the bottom |
 | `scrollEndThreshold` | `number` | Pixel distance from the end that still counts as "at the end" for `followOnAppend` / `isAtEnd()` |
 | `getItemKey` | `(index: number) => Key` | Must return a stable message id, never the array index — prepending shifts all indices |
 
@@ -40,6 +40,9 @@ virtualizer.scrollToEnd()
 - Growing message content (streaming) pins to the bottom automatically through normal dynamic measurement — no special handling needed.
 - Use `isAtEnd()` to conditionally show a "jump to latest" button when the user has scrolled up into history.
 - Use a normal, non-reversed scroll container; no manual scroll compensation is needed beyond the above options.
+- Use a scroll behavior when the follow should animate: `followOnAppend: 'smooth'`.
+- The guide's API reference list includes `cancelScroll`. Call it from user-gesture handlers (`wheel` / `touchstart` / `keydown`) to stop an in-flight `scrollToEnd()` / `scrollToIndex` from pulling the viewport back.
+- Production checklist: give the scroll element a fixed height and `overflow: auto`; keep network loading state outside the virtualizer (prepend or append data normally).
 
 ## Related
 

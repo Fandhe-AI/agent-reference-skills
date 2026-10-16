@@ -12,7 +12,7 @@ user-invocable: false
 
 # TanStack Virtual リファレンス
 
-TanStack Virtual (`@tanstack/react-virtual`) v3 の API ドキュメントを蒸留したスキル。
+TanStack Virtual (`@tanstack/react-virtual` 3.14.21 / `@tanstack/virtual-core` 3.19.6、2026-10-16 タグ) の API ドキュメントを蒸留したスキル。
 ユーザーのタスクに応じて適切な README.md を読み、そこから個別ファイルへ辿ること。
 
 ## ディレクトリ構成
@@ -46,6 +46,9 @@ skills/tanstack-virtual/
     window-scroller.md
     smooth-scroll.md
     padding-gap.md
+    scroll-padding.md
+    pretext-text-estimate.md
+    chat-end-anchored.md
 ```
 
 ## 探索手順
@@ -61,12 +64,13 @@ skills/tanstack-virtual/
 | タスク | カテゴリ | 参照 README |
 |--------|---------|------------|
 | 導入・基本概念・インストール手順を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
-| `useVirtualizer` / `useWindowVirtualizer` フックの使い方 | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
+| `useVirtualizer` / `useWindowVirtualizer` フックの使い方（React 専用オプション `useFlushSync` / `directDomUpdates` / `containerRef` を含む） | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | テキスト行の高さ推定（pretext）・チャット/ログ末尾追従（anchorTo 等） | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | `Virtualizer` クラスの初期化オプション一覧 | api | [references/api/README.md](references/api/README.md) |
-| `getVirtualItems` / `getTotalSize` / `scrollToIndex` / `measure` 等のインスタンスメソッド | api | [references/api/README.md](references/api/README.md) |
+| `getVirtualItems` / `getTotalSize` / `scrollToIndex` / `cancelScroll` / `measure` 等のインスタンスメソッド | api | [references/api/README.md](references/api/README.md) |
 | `VirtualItem` の構造・座標情報を知りたい | api | [references/api/README.md](references/api/README.md) |
 | `rangeExtractor` / `scrollToFn` / `measureElement` 等のデフォルト実装（Utilities）をカスタムアダプター向けに知りたい | api | [references/api/README.md](references/api/README.md) |
 | 固定/可変サイズ行・列の仮想化、動的計測（measureElement）の実装例 | samples | [samples/README.md](samples/README.md) |
 | grid 仮想化・sticky header・infinite scroll・table 仮想化・window scroller の実装例 | samples | [samples/README.md](samples/README.md) |
 | スムーズスクロール・padding/gap の設定例 | samples | [samples/README.md](samples/README.md) |
+| テーブルヘッダー分の scroll padding・Pretext によるテキスト行高推定・チャット（末尾アンカー / directDomUpdates / Jump to latest）の実装例 | samples | [samples/README.md](samples/README.md) |

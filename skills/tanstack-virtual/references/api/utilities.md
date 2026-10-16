@@ -25,7 +25,7 @@ import {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `defaultRangeExtractor` | `(range: Range) => number[]` | Default `rangeExtractor` implementation. Returns the visible range indexes expanded by `overscan` on both ends. |
+| `defaultRangeExtractor` | `(range: Range) => number[]` | Default `rangeExtractor` implementation. Returns the visible range indexes expanded by `overscan` on both ends. With `lanes > 1` (read from `range.lanes`) it expands by `overscan * lanes` items, i.e. whole rows (virtual-core 3.19.0). |
 | `elementScroll` | `<T extends Element>(offset: number, options: { adjustments?: number; behavior?: ScrollBehavior }, instance: Virtualizer<T, any>) => void` | Default `scrollToFn` implementation for element-based scroll containers. |
 | `windowScroll` | `<T extends Window>(offset: number, options: { adjustments?: number; behavior?: ScrollBehavior }, instance: Virtualizer<T, any>) => void` | Default `scrollToFn` implementation for window-based scrolling. |
 | `observeElementRect` | `<T extends Element>(instance: Virtualizer<T, any>, cb: (rect: Rect) => void) => void \| (() => void)` | Default `observeElementRect` implementation for element-based scroll containers. |
@@ -38,6 +38,9 @@ import {
 
 - These are the concrete implementations behind the corresponding `Virtualizer` options (`rangeExtractor`, `scrollToFn`, `observeElementRect`, `observeElementOffset`, `measureElement`); see [Virtualizer](./virtualizer.md) for the option descriptions.
 - Not documented on a dedicated docs page — signatures were read from the `@tanstack/virtual-core` package source (`packages/virtual-core/src/index.ts`) since the official docs only reference these exports by name.
+- The `Range` interface is `{ startIndex: number; endIndex: number; overscan: number; count: number; lanes?: number }`; the optional `lanes` field was added in 3.19.0.
+- `ObserveOffsetCallBack` is `(offset: number, isScrolling: boolean) => void` (not exported by name in the docs; defined in `virtual-core` source).
+- The standalone `measureElement` types its `instance` as `Virtualizer<any, TItemElement>` (as in the source); the `Virtualizer` option of the same name receives `Virtualizer<TScrollElement, TItemElement>` — see [Virtualizer](./virtualizer.md).
 - `elementScroll` and `windowScroll` both delegate to the same internal `scrollWithAdjustments` implementation.
 
 ## Related
