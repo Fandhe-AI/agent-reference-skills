@@ -164,12 +164,27 @@ beforeEach(() => {
 
 | Config Option | Effect |
 |---------------|--------|
-| `clearMocks: true` | calls `vi.clearAllMocks()` before each test |
+| `clearMocks: true` | calls `vi.clearAllMocks()` before each test (default in v5; `false` in v4) |
 | `resetMocks: true` | calls `vi.resetAllMocks()` before each test |
 | `restoreMocks: true` | calls `vi.restoreAllMocks()` before each test |
+
+## Notes
+
+Vitest 5 changes (source: Migrating to Vitest 5.0, vitest.dev/guide/migration; docs at tag `v5.0.5`):
+
+- `clearMocks` defaults to `true`, so mock call history is cleared before each test. Code that records calls outside the test body (e.g. in module scope or `beforeAll`) is affected; set `clearMocks: false` to restore the v4 behavior. With concurrent tests, one finishing test can clear history that another in-progress test uses.
+- `vi.mock`, `vi.unmock`, and `vi.hoisted` must be at the top level of the file; nested calls throw. Use `vi.doMock` / `vi.doUnmock` for non-hoisted, conditional mocking.
+- Class mocks (`vi.fn(Class)`, `vi.spyOn`, `mockImplementation(class ...)`) keep the implementation class's prototype methods and pass `instanceof` checks.
+- Fake timers and `vi.setSystemTime()` also mock `Temporal`; opt out with `vi.useFakeTimers({ toNotFake: ['Temporal'] })`.
 
 ## Related
 
 - [Vi utilities](../api/vi.md)
 - [Expect matchers](../api/expect.md)
 - [Async testing patterns](./async.md)
+- [Mocking dates](./mocking-dates.md)
+- [Mocking globals](./mocking-globals.md)
+- [Mocking the file system](./mocking-file-system.md)
+- [Mocking requests](./mocking-requests.md)
+- [Mocking classes](./mocking-classes.md)
+- [Conditional mocking (vi.when)](../recipes/conditional-mocking.md)

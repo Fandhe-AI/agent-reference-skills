@@ -59,4 +59,5 @@ test('sends an email', () => {
 - `vi.mock` is automatically hoisted to the top of the file — factory functions cannot close over variables defined after the call
 - Use `vi.hoisted()` to define variables that need to be available inside the factory
 - Default exports must be keyed as `default` in the factory object
-- Call `vi.clearAllMocks()` in `beforeEach`, or set `clearMocks: true` in config, to reset call history between tests
+- `clearMocks` defaults to `true` in v5 (it had to be enabled explicitly in v4): `vi.clearAllMocks()` runs before every test and clears call history, so history recorded in setup files or `beforeAll` is gone by the time a test asserts on it. Set `clearMocks: false` to restore the v4 behavior
+- `vi.mock`, `vi.unmock`, and `vi.hoisted` must be at the module top level — calling them nested (inside `describe`, `test`, or a function) throws in v5. `vi.doMock` / `vi.doUnmock` are not hoisted and may be called anywhere

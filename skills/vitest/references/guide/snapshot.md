@@ -27,6 +27,8 @@ expect({ a: 1, b: 2 }).toMatchInlineSnapshot(`
 await expect(htmlOutput).toMatchFileSnapshot('./snapshots/output.html')
 ```
 
+  Vitest 5: an unawaited `toMatchFileSnapshot` now fails the test instead of logging a warning (source: Migrating to Vitest 5.0, docs at tag `v5.0.5`).
+
 - Updating snapshots:
 
 ```bash

@@ -3,6 +3,9 @@
 | Name | Description | Path |
 |------|-------------|------|
 | Basic Test | Write and run a minimal Vitest test from scratch. | [basic-test.md](./basic-test.md) |
+| Benchmark Fixture | Define and compare benchmarks with the `bench` test-context fixture (v5). | [benchmark-fixture.md](./benchmark-fixture.md) |
+| Browser Component Test | Render a React component in Browser Mode with `vitest-browser-react` and assert with auto-retrying `expect.element`. | [browser-component-test.md](./browser-component-test.md) |
+| Conditional Mocking with vi.when | Return different mock results depending on call arguments with `vi.when` (v5.0.0+). | [conditional-mocking-vi-when.md](./conditional-mocking-vi-when.md) |
 | Coverage Setup | Measure code coverage with `@vitest/coverage-v8` or `@vitest/coverage-istanbul`. | [coverage-setup.md](./coverage-setup.md) |
 | Describe and Hooks | Group related tests with `describe` and manage setup/teardown with lifecycle hooks. | [describe-and-hooks.md](./describe-and-hooks.md) |
 | Mocking Modules | Replace module exports with controlled fakes using `vi.mock`. | [mocking-modules.md](./mocking-modules.md) |
@@ -11,4 +14,4 @@
 | Spy on Methods | Track calls to existing methods with `vi.spyOn` without replacing the implementation. | [spy-on-methods.md](./spy-on-methods.md) |
 | Test Environment | Configure the runtime environment for tests (Node, jsdom, happy-dom, edge-runtime). | [test-environment.md](./test-environment.md) |
 | Type Testing | Assert TypeScript types at compile time using `expectTypeOf` and `assertType`. | [type-testing.md](./type-testing.md) |
-| Workspace Setup (Projects) | Run tests across multiple packages in a monorepo using the `test.projects` config (replaces the deprecated `workspace`). | [workspace-setup.md](./workspace-setup.md) |
+| Workspace Setup (Projects) | Run tests across multiple packages in a monorepo with a single Vitest process. | [workspace-setup.md](./workspace-setup.md) |

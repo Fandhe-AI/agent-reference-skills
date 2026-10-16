@@ -192,6 +192,83 @@ expect({ id: 1, name: 'Alice', createdAt: new Date() }).toEqual({
 expect([1, 2, 3, 4]).toEqual(expect.arrayContaining([1, 3]))
 ```
 
+## Additional Matchers (docs at tag v5.0.5)
+
+Value matchers:
+
+| Matcher | Type | Description |
+|---------|------|-------------|
+| `toBeNullable()` | `() => Awaitable<void>` | Asserts if something is nullable (`null` or `undefined`) |
+| `toBeOneOf(sample)` | `(sample: Array<any> \| Set<any>) => any` | Asserts the value matches any of the values in the array or set (compared with `toEqual` deep equality). Providing a `Set` is experimental. Also usable as asymmetric matcher: `expect.toBeOneOf([expect.any(String), undefined])` |
+| `toSatisfy(predicate)` | `(predicate: (value: any) => boolean) => Awaitable<void>` | Asserts a value satisfies a certain predicate |
+
+Spy ordering and promise matchers (a spy function must be passed to `expect`; an unresolved promise counts as not resolved):
+
+| Matcher | Type | Description |
+|---------|------|-------------|
+| `toHaveBeenCalledBefore(mock, failIfNoFirstInvocation?)` | `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => Awaitable<void>` | A `Mock` was called before another `Mock` |
+| `toHaveBeenCalledAfter(mock, failIfNoFirstInvocation?)` | same | A `Mock` was called after another `Mock` |
+| `toHaveResolved()` | `() => Awaitable<void>` | Function successfully resolved a value at least once (did not reject) |
+| `toHaveResolvedTimes(n)` | `(amount: number) => Awaitable<void>` | Resolved an exact amount of times |
+| `toHaveResolvedWith(value)` | `(returnValue: any) => Awaitable<void>` | Resolved a certain value at least once (`toEqual` equality) |
+| `toHaveLastResolvedWith(value)` | `(returnValue: any) => Awaitable<void>` | Resolved a certain value on the last invocation |
+| `toHaveNthResolvedWith(n, value)` | `(time: number, returnValue: any) => Awaitable<void>` | Resolved a certain value on a specific invocation (count starts at 1) |
+| `toHaveBeenExhausted()` (5.0.0) | `() => void` | Every behavior registered on a `vi.when` chain has been consumed. Requires a `When` chain returned by `vi.when`; a chain with no registered behaviors is never exhausted |
+
+Chai-style spy assertions (4.1.0; sinon-chai conventions, `expect(spy).to.have.been.called`). Property assertions are accessed without parentheses:
+
+| Assertion | Type | Equivalent to |
+|-----------|------|---------------|
+| `called` | property | `toHaveBeenCalled()` |
+| `callCount(n)` | `(count: number) => void` | `toHaveBeenCalledTimes(n)` |
+| `calledWith(...args)` | `(...args: any[]) => void` | `toHaveBeenCalledWith(...args)` |
+| `calledOnce` | property | `toHaveBeenCalledOnce()` |
+| `calledOnceWith(...args)` | `(...args: any[]) => void` | `toHaveBeenCalledExactlyOnceWith(...args)` |
+| `calledTwice` / `calledThrice` | property | `toHaveBeenCalledTimes(2)` / `(3)` |
+| `lastCalledWith(...args)` | `(...args: any[]) => void` | `toHaveBeenLastCalledWith(...args)` |
+| `nthCalledWith(n, ...args)` | `(n: number, ...args: any[]) => void` | `toHaveBeenNthCalledWith(n, ...args)` |
+| `returned(value)` / `returnedWith(value)` | `(value: any) => void` | `toHaveReturnedWith(value)` |
+| `returnedTimes(n)` | `(count: number) => void` | `toHaveReturnedTimes(n)` |
+| `lastReturnedWith(value)` | `(value: any) => void` | `toHaveLastReturnedWith(value)` |
+| `nthReturnedWith(n, value)` | `(n: number, value: any) => void` | `toHaveNthReturnedWith(n, value)` |
+| `calledBefore(mock, failIfNoFirstInvocation?)` / `calledAfter(...)` | `(mock: MockInstance, failIfNoFirstInvocation?: boolean) => void` | `toHaveBeenCalledBefore` / `toHaveBeenCalledAfter` |
+
+Static `expect` helpers:
+
+| Method | Type | Description |
+|--------|------|-------------|
+| `expect.fail(message?)` | `(message?: string) => never` | Explicitly forces a test failure with an optional custom message |
+| `expect.schemaMatching(schema)` | `(expected: StandardSchemaV1) => any` | Asymmetric matcher: true if the value matches the schema (Standard Schema v1, e.g. Zod / Valibot / ArkType). `expect.not` negates it |
+| `expect.extend(matchers)` | `(matchers: MatchersObject) => void` | Adds custom matchers (also usable as asymmetric matchers); Jest-compatible. Call in `setupFiles` to apply to every test. TypeScript: augment `Matchers<R, T>` |
+| `expect.addEqualityTesters(testers)` | `(tester: Array<Tester>) => void` | Defines custom testers used by matchers to test if two objects are equal; Jest-compatible |
+
+```ts
+expect.extend({
+  toBeFoo(received) {
+    const { isNot } = this
+    return {
+      message: () => `expected ${received} is${isNot ? ' not' : ''} foo`,
+      pass: received === 'foo',
+    }
+  },
+})
+
+expect('foo').toBeFoo()
+expect({ foo: 'foo' }).toEqual({ foo: expect.toBeFoo() })
+```
+
+`toMatchAriaSnapshot()` / `toMatchAriaInlineSnapshot(snapshot?)` (experimental, 4.1.4) capture the accessibility tree of a DOM element; they belong to browser mode — see the browser-mode category of this skill.
+
+## Notes
+
+Vitest 5 changes (source: Migrating to Vitest 5.0, vitest.dev/guide/migration; docs at tag `v5.0.5`):
+
+- `expect.poll`: if the callback or assertion does not settle within `timeout`, the poll now fails (rejects). The callback receives an `AbortSignal` that is aborted when the timeout elapses, and `timeout` applies to the whole polling operation including a pending callback and async matcher. Raise `timeout` for polls that need more time. `.resolves` / `.rejects` and `toThrow` are not supported with `expect.poll`.
+- Unawaited `resolves`, `rejects`, and `toMatchFileSnapshot` assertions now fail the test instead of logging a warning.
+- `toThrow("")`: the empty string is now a plain substring and matches any error message. To assert an empty message use `/^$/`.
+- `toHaveTextContent` (browser mode) now requires an exact match and no longer accepts a RegExp; partial / regex matching moved to the new `toMatchTextContent`.
+- Assertion types take two parameters: `Assertion<R, T>` (return type, received type), e.g. `Assertion<string>` becomes `Assertion<void, string>`, and async assertions use `Promise<void>`. Custom matcher declarations should augment `Matchers<R, T>`; Vitest no longer reads the global `jest.Matchers` interface.
+
 ## Related
 
 - [Test API](./test-api.md)

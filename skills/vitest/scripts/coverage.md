@@ -38,6 +38,8 @@ vitest run --coverage --coverage.reportsDirectory ./coverage
 vitest run --coverage --coverage.include "src/**"
 ```
 
+v5 では `include` / `exclude` のパターンはプロジェクトルートからの相対パスに対して照合され、glob ワイルドカードを含まないパターンはそのディレクトリ配下すべてにマッチするディレクトリとして扱われる。
+
 ## カバレッジ対象外ファイルの指定
 
 ```sh
