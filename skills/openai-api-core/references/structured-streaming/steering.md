@@ -30,6 +30,7 @@ The API acknowledges queued input with `response.steer.accepted`:
 Python (event loop excerpt):
 
 ```python
+initial_response_id = None
 async with client.responses.connect() as connection:
     await connection.response.create(
         model="gpt-6-astra",

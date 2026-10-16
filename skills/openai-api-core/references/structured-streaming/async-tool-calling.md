@@ -35,9 +35,18 @@ let response = await client.responses.create({
 });
 
 const call = response.output.find((item) => item.type === "function_call");
-// call.async === true for async tool calls
+if (!call || call.name !== "get_weather") {
+  throw new Error("The response did not include a weather call.");
+}
+const { city } = JSON.parse(call.arguments);
 let latestResponseId = response.id;
-const job = getWeather(JSON.parse(call.arguments).city); // application starts the job
+
+// Calling an async function starts the application's job immediately.
+const job = getWeather(city).catch((error) => ({ error: error.message }));
+if (!call.async) {
+  // Ordinary synchronous calls must finish before the model resumes.
+  await job;
+}
 // Independent work or conversation turns can happen here.
 const result = await job;
 
