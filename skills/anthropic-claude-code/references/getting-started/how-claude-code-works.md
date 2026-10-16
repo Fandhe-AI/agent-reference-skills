@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/how-claude-code-works.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/how-claude-code-works.md / last verified: 2026-10-16 -->
 
 # How Claude Code works
 
@@ -22,10 +22,10 @@ gather context -> take action -> verify results -> repeat until task complete
 
 | Permission mode | Behavior |
 |------------------|----------|
-| Manual (default) | Claude asks before file edits and shell commands |
-| Accept edits | Edits files and runs common filesystem commands without asking |
+| Auto | A classifier reviews most actions in the background and blocks the risky ones instead of asking you. With Claude Code v2.1.283 or later, it's the built-in starting permission mode for interactive terminal and VS Code sessions; on earlier versions only on Pro, Max, and Team plans |
+| Manual | Claude asks before file edits and shell commands |
+| Accept edits | Edits files and runs common filesystem commands like `mkdir` and `mv` without asking, still asks for other commands |
 | Plan | Explores and proposes a plan without editing source files |
-| Auto | Evaluates all actions with background safety checks |
 
 ## Notes
 

@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/context-window.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/context-window.md / last verified: 2026-10-16 -->
 
 # Explore the context window
 
@@ -30,7 +30,8 @@ An interactive simulation of how Claude Code's context window fills during a ses
 - Path-scoped rules load automatically alongside matching files as Claude works; a `PostToolUse` hook can fire after edits and feed output back via `additionalContext`.
 - A subagent handling a follow-up keeps its large file reads in its own context window; only the summary and a small metadata trailer return to the main conversation.
 - `/compact` replaces conversation history with a structured summary; most startup content reloads automatically (see the compaction table above).
-- Auto-compact window: 100K-1M tokens, settable via `/autocompact`, the `--autocompact` flag, or `CLAUDE_CODE_AUTO_COMPACT_WINDOW` (highest precedence). Fable 5, Sonnet 5, Opus 4.6+, and Sonnet 4.6 support a 1M token context window.
+- Auto-compact window: 100K-1M tokens, settable via `/autocompact`, the `--autocompact` flag, or `CLAUDE_CODE_AUTO_COMPACT_WINDOW` (highest precedence). Fable 5.1, Fable 5, Sonnet 5 and later, Haiku 5.5, Opus 4.6+, and Sonnet 4.6 support a 1M token context window (see model-config.md).
+- As of v2.1.198, the compaction summarization request inherits your session's extended thinking configuration: it reasons with thinking enabled when your session has it enabled and stays off otherwise. Thinking affects only how the summary is produced; your session settings are unchanged afterward.
 
 ## Related
 

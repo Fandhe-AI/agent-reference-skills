@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/best-practices.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/best-practices.md / last verified: 2026-10-16 -->
 
 # Best practices
 
@@ -32,6 +32,7 @@ done
 
 ## Notes
 
+- Auto mode is the built-in starting permission mode with Claude Code v2.1.283 or later, for interactive terminal and VS Code sessions: a separate classifier model reviews most actions instead of you and blocks only what looks risky, such as scope escalation, unknown infrastructure, or hostile-content-driven actions. On earlier versions it is the built-in starting mode only on Pro, Max, and Team plans. In Manual mode, Claude Code asks before actions that might modify your system (file writes, Bash commands, MCP tools). When the classifier repeatedly blocks actions in a non-interactive `-p` run, Claude Code doesn't stop the run (see "when auto mode falls back" in the permission modes docs).
 - Context window fills fast and LLM performance degrades as it fills; this is the constraint underlying most advice on this page.
 - CLAUDE.md guidance: keep under 200 lines, include only what Claude can't infer, use imports (`@path/to/import`), check into git.
 - After two failed corrections on the same issue in one session, `/clear` and rewrite the prompt rather than continuing to correct.

@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/deep-links / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/deep-links / last verified: 2026-10-16 -->
 # Deep links
 
 A `claude-cli://` URL that opens Claude Code in a new terminal window, optionally carrying a working directory and a pre-filled (not auto-sent) prompt. Useful for one-click entry points in runbooks, monitoring alerts, dashboards, and READMEs.

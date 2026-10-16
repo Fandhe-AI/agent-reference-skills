@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/cli-reference.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/cli-reference.md / last verified: 2026-10-17 -->
 <!-- source: https://code.claude.com/docs/en/quickstart.md / last verified: 2026-08-07 -->
 
 # cli-commands
@@ -66,7 +66,7 @@ claude auth login --sso
 claude auth login --console
 ```
 
-`--email` is also listed as a sign-in option (argument syntax not documented in the official reference).
+`--email` pre-fills the email address on sign-in.
 
 ## ログアウト
 
@@ -106,21 +106,49 @@ claude plugins
 
 ```bash
 claude agents                # open agent view for background sessions
-claude attach <id>           # attach to a background session in this terminal
+claude attach 7c5dcf5d       # attach to a background session in this terminal (<id|name>; name needs v2.1.290+)
 claude logs <id>             # print recent output from a background session
 claude respawn <id>          # restart a background session, keeping conversation intact
-claude rm <id>                # remove a background session from the list (transcript stays on disk)
+claude rm 7c5dcf5d           # remove a background session from the list (transcript stays on disk)
 claude stop <id>             # stop a background session
 claude kill <id>             # alias for claude stop
 ```
 
+> **警告**: `claude rm` can be refused over the session's worktree; the refusal prints the exact flag to pass. `--discard-unpushed <commit>@<worktree-id>` (v2.1.260+) discards a worktree together with its unpushed commits, and `--force-remove-worktree <worktree-id>` (v2.1.268+) deletes a worktree directory that git or the `WorktreeRemove` hook couldn't remove. Not reversible.
+
 ## デーモン（バックグラウンドセッションのスーパーバイザー）
 
 ```bash
+claude daemon logs                          # follow ~/.claude/daemon.log
+claude daemon run                           # run the supervisor in the foreground
 claude daemon status
 claude daemon stop --any
-claude daemon stop --any --keep-workers
+claude daemon stop --any --keep-workers     # leave background sessions running
 ```
+
+## 他のコーディングエージェントからの設定インポート
+
+```bash
+claude import codex --dry-run
+```
+
+Requires Claude Code v2.1.213 or later. Accepts `--dry-run` and `--yes`. Not available on Amazon Bedrock, Google Cloud's Agent Platform, Microsoft Foundry, or Claude Platform on AWS.
+
+## Claude Desktop で開く
+
+```bash
+claude --desktop
+```
+
+Opens the Claude Desktop app on the current directory and exits. Requires v2.1.285 or later; available on macOS and x64 Windows with a Claude subscription. Takes no prompt and no other flags except `--verbose` and the `--debug` flags.
+
+## restricted モード
+
+```bash
+claude --restricted -p "query"
+```
+
+Removes command/code-running built-in tools and WebFetch, confines file tools to the working directories, loads only managed settings and `--settings`, and refuses `bypassPermissions`. Intended for evaluation harnesses on shared machines. Requires v2.1.248 or later.
 
 ## Remote Control サーバー
 

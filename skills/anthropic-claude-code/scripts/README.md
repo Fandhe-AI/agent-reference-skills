@@ -1,7 +1,7 @@
 # scripts
 
 | Name | Description | Path |
-| --- | --- | --- |
-| install | インストール・バージョン確認・アップデート・アンインストール | [install.md](./install.md) |
-| cli-commands | claude CLI の主要コマンド・フラグ例 | [cli-commands.md](./cli-commands.md) |
-| env-setup | 認証・モデル指定・プロキシ等の環境変数設定例 | [env-setup.md](./env-setup.md) |
+|------|-------------|------|
+| cli-commands | Session start, session continuation, auth, and diagnostic commands for the `claude` CLI | [cli-commands.md](./cli-commands.md) |
+| env-setup | Representative environment-variable setups for authentication, model routing, and proxy configuration | [env-setup.md](./env-setup.md) |
+| install | Install, verify, update, and uninstall Claude Code on macOS, Linux, WSL, and Windows | [install.md](./install.md) |

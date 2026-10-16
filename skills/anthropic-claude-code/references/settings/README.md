@@ -2,15 +2,17 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Configure auto mode | auto mode で自動パーミッションチェッカーを通してツール呼び出しをルーティング。破壊的・環境外アクションをブロック | [auto-mode-config.md](./auto-mode-config.md) |
-| CLI reference | Claude Code コマンドラインインターフェースの完全リファレンス: コマンドとフラグ | [cli-reference.md](./cli-reference.md) |
-| Explore the .claude directory | Claude Code が読込む CLAUDE.md、settings.json、hooks、skills、commands、subagents、workflows、rules、auto memory の場所解説 | [claude-directory.md](./claude-directory.md) |
-| Debug your configuration | CLAUDE.md、settings、hooks、MCP サーバー、skills が効いていない原因の診断 | [debug-your-config.md](./debug-your-config.md) |
-| Environment variables | Claude Code の動作を制御する環境変数リファレンス: モデル選択、認証、リクエストルーティング、機能トグル | [env-vars.md](./env-vars.md) |
-| Error reference | Claude Code が表示するランタイムエラーメッセージ。各エラーの意味と回復方法を解説 | [errors.md](./errors.md) |
-| Speed up responses with fast mode | Claude Opus 向けの高速設定（最大 2.5 倍高速）。反面トークンあたりの費用が上昇 | [fast-mode.md](./fast-mode.md) |
-| Customize keyboard shortcuts | Claude Code でカスタマイズ可能なキーボードショートカット設定 | [keybindings.md](./keybindings.md) |
-| Model configuration | Claude Code が使用するモデル、model aliases（opusplan など）、effort levels、extended thinking を設定 | [model-config.md](./model-config.md) |
-| Claude Code settings | Claude Code をグローバル・プロジェクトレベル設定、環境変数、managed policy で設定 | [settings.md](./settings.md) |
-| Customize your status line | Claude Code 下部のカスタマイズ可能なステータスバー。シェルスクリプトで コンテキスト使用率、コスト、git 状態等を表示 | [statusline.md](./statusline.md) |
-| Configure your terminal for Claude Code | Shift+Enter 改行、ターミナルベル・通知、tmux、色テーマ、Vim モードなどターミナル固有の設定 | [terminal-config.md](./terminal-config.md) |
+| Configure auto mode | Tell the auto mode classifier which repos, buckets, and domains to trust | [auto-mode-config.md](./auto-mode-config.md) |
+| Explore the .claude directory | Where Claude Code reads CLAUDE.md, settings.json, hooks, skills, and auto memory | [claude-directory.md](./claude-directory.md) |
+| CLI reference | Complete reference for Claude Code commands and flags | [cli-reference.md](./cli-reference.md) |
+| Debug your configuration | Diagnose why CLAUDE.md, settings, hooks, MCP servers, or skills aren't loading | [debug-your-config.md](./debug-your-config.md) |
+| Environment variables | Reference for environment variables that control Claude Code behavior | [env-vars.md](./env-vars.md) |
+| Error reference | Runtime error messages Claude Code displays, with their meaning and fixes | [errors.md](./errors.md) |
+| Speed up responses with fast mode | Faster Opus responses in Claude Code by toggling fast mode | [fast-mode.md](./fast-mode.md) |
+| Customize keyboard shortcuts | Customize shortcuts with a keybindings configuration file | [keybindings.md](./keybindings.md) |
+| Model configuration | Which model Claude Code uses, effort levels, extended context, auto-compact window | [model-config.md](./model-config.md) |
+| Example settings files | Realistic settings.json files for a developer, a team, and an organization | [settings-example.md](./settings-example.md) |
+| All settings | Complete reference for every settings.json key, with type, default, and example | [settings-reference.md](./settings-reference.md) |
+| Settings files and precedence | Change settings, pick the scope for a key, and resolve precedence across files | [settings.md](./settings.md) |
+| Customize your status line | Custom status bar for context usage, costs, and git status | [statusline.md](./statusline.md) |
+| Configure your terminal for Claude Code | Shift+Enter newlines, terminal bell, tmux, color theme, and Vim mode | [terminal-config.md](./terminal-config.md) |

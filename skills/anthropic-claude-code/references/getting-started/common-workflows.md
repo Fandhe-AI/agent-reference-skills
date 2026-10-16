@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/common-workflows.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/common-workflows.md / last verified: 2026-10-16 -->
 
 # Common workflows
 
@@ -24,7 +24,7 @@ git log --oneline -20 | claude -p "summarize these recent commits"
 
 ## Notes
 
-- `@file` and `@directory` reference files/directories without waiting for a full read; `@server:resource` fetches MCP resources.
+- `@file` and `@directory` reference files/directories without waiting for a full read; `@server:resource` fetches MCP resources. To stop `@` references from including file contents and directory listings in your message, set `CLAUDE_CODE_DISABLE_FILE_MENTIONS=1` in your shell or user settings; Claude then receives the paths you referenced with a note to read them using its file tools. The variable requires v2.1.299 or later and is ignored in project and local settings.
 - `claude --from-pr 1234` opens the session picker filtered to sessions linked to that PR after `gh pr create`.
 - Delegate research with "use a subagent to investigate X" to keep large file reads out of the main context.
 

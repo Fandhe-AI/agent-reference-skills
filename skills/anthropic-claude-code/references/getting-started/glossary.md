@@ -1,20 +1,30 @@
-<!-- source: https://code.claude.com/docs/en/glossary.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/glossary.md / last verified: 2026-10-16 -->
 
 # Glossary
 
 Definitions for Claude Code terminology: agentic loop, compaction, CLAUDE.md, hooks, subagents, MCP, and other core concepts.
 
+## Signature / Usage
+
+Two glossary terms expressed as CLI flags (Bare mode, Non-interactive mode):
+
+```bash
+claude --bare
+claude -p "<prompt>"
+```
+
 ## Options / Props
 
 | Term | Definition |
 |------|------------|
+| AGENTS.md | A markdown file of project instructions you write for AI coding agents. If your repository has one and no CLAUDE.md, Claude reads it as your project instructions without a second file; the **Project instructions** setting in `/config` can make Claude read both files or only CLAUDE.md. Reading `AGENTS.md` directly requires v2.1.277 or later; in sessions that can't read it, import it from a `CLAUDE.md` |
 | Agent teams | Multiple independent Claude Code sessions coordinated by a team lead, shared task list, peer-to-peer messaging; experimental (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`) |
 | Agentic coding | Workflow where the AI reads files, runs commands, and makes changes autonomously, vs. chat-based assistants that only respond with text |
 | Agentic harness | The tools, context management, and execution environment that turn a language model into a capable coding agent (Claude Code is the harness) |
 | Agentic loop | The cycle: gather context, take action, verify results, repeat until done; interruptible at any point |
 | Artifact | A live, interactive web page published from a session to a private claude.ai URL |
 | Auto memory | Notes Claude writes for itself under `~/.claude/projects/`; first 200 lines/25KB of `MEMORY.md` loads every session |
-| Auto mode | A permission mode where a separate classifier model reviews actions in the background so most run without approval prompts |
+| Auto mode | A permission mode where a separate classifier model reviews actions instead of you, so Claude Code runs most of them without asking. Claude Code still asks before actions your explicit ask rules match. With v2.1.283 or later it is the built-in starting permission mode for interactive terminal and VS Code sessions (earlier versions: only on Pro, Max, and Team plans). The classifier blocks scope escalation, untrusted infrastructure, and prompt injection; tool results are stripped from what it sees |
 | Bare mode | `--bare` starts without hooks, skills, plugins, MCP, auto memory, or CLAUDE.md |
 | Bundled skills | Prompt-based playbooks included with Claude Code, such as `/batch`, `/code-review`, `/debug`, `/loop` |
 | Channel | An MCP server that pushes events into a running session (e.g. Telegram, Discord, iMessage) |

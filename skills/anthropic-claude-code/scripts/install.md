@@ -1,7 +1,5 @@
 <!-- source: https://code.claude.com/docs/en/setup.md / last verified: 2026-08-07 -->
-<!-- source: https://code.claude.com/docs/en/quickstart.md / last verified: 2026-08-07 -->
 <!-- source: https://code.claude.com/docs/en/troubleshoot-install.md / last verified: 2026-08-07 -->
-<!-- source: https://code.claude.com/docs/en/claude-directory.md / last verified: 2026-08-07 -->
 
 # install
 
@@ -100,18 +98,23 @@ claude install 2.1.118
 
 ## プロジェクトのローカルデータ削除
 
-> **警告**: `--all` deletes `history.jsonl` across every project. Not reversible.
+<!-- source: https://code.claude.com/docs/en/cli-reference.md / last verified: 2026-10-17 -->
+
+> **警告**: `claude purge` deletes transcripts, task lists, debug logs, file-edit history, prompt history lines, and the project's entry in `~/.claude.json`. `--all` deletes `history.jsonl` across every project outright. Not reversible; preview with `--dry-run` first.
 
 ```bash
-claude project purge <path>     # delete transcript/memory/tasks/debug/file-history for one project
-claude project purge --dry-run  # preview the deletion plan without deleting
-claude project purge -y         # skip the confirmation prompt
-claude project purge --all      # purge every project, including history.jsonl
+claude purge [path]                 # delete local state for one project; omit [path] to pick from an interactive list
+claude purge ~/work/repo --dry-run  # preview the deletion plan without deleting
+claude purge ~/work/repo -y         # skip the confirmation prompt (--yes)
+claude purge ~/work/repo -i         # confirm each item one at a time (--interactive)
+claude purge --all                  # purge every project, including history.jsonl
 ```
 
-`shell-snapshots/` and `backups/` are never touched (not project-scoped).
+Before v2.1.288 the command was `claude project purge`. The command prints the full deletion plan and asks for confirmation before removing anything. If no state matches the path, it prints an error and exits with status 1. `shell-snapshots/` and `backups/` are never touched (not project-scoped), and `claude purge` does not touch the scratchpad temp directory.
 
 ## アンインストール
+
+<!-- source: https://code.claude.com/docs/en/claude-directory.md / last verified: 2026-10-17 -->
 
 > **警告**: Removing `~/.claude`, `~/.claude.json`, the project's `.claude/`, and `.mcp.json` deletes all settings, allowed tools, MCP configuration, and session history. Not reversible. These four paths are only safe to delete as part of an explicit uninstall (per setup.md's Notes) — during normal operation, manually deleting `~/.claude.json`, `~/.claude/settings.json`, or `~/.claude/plugins/` is explicitly discouraged (claude-directory.md).
 

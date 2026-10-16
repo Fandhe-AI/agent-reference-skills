@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/auto-mode-config.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/auto-mode-config.md / last verified: 2026-10-16 -->
 
 # Configure auto mode
 
@@ -38,7 +38,7 @@ The classifier reads the same CLAUDE.md content Claude reads, so project-wide in
 
 `autoMode.environment` is usually the only field needed. Three entry kinds (v2.1.198+; before v2.1.195 only the first five):
 
-- **Context slots** (no rules of their own; describe posture): Organization, Primary use of Claude Code, Cloud provider(s), Repository visibility, Internal sharing/snippet hosting, Org-specific CLIs, Secrets management, CI/CD deploy targets, Network posture, Protected deployment namespaces/environments, Data retention/declassification.
+- **Context slots** (no rules of their own; describe posture): Organization, Primary use of Claude Code, Cloud provider(s), Repository visibility, Internal sharing/snippet hosting, Org-specific CLIs, Secrets management, CI/CD deploy targets, Network posture, Host containment, Protected deployment namespaces/environments, Data retention/declassification. Host containment defaults to an ordinary developer machine or CI runner with open internet; if Claude Code runs in a container, VM, or pod with an egress allow-list or neighbors it must not touch, name the allowed hosts, whether the cloud metadata endpoint should be reachable, and which cloud project, cluster, or registry the task uses and under what identity. Until this entry names that identity, the classifier blocks requests for the host's own credentials (requires v2.1.257 or later).
 - **Trust slots** (name what's inside the boundary; default `None configured` except repo/source-control which default to the working repo+remotes): Trusted repo, Source control, Trusted internal domains, Trusted cloud buckets, Key internal services, Internal package registry.
 - **Sensitivity slots** (name what protective rules treat as high-risk; default to broad heuristics like `prod`/`production` in the name): Sensitive data locations & audiences, Sensitive remote targets, Protected IaC scopes.
 
@@ -57,6 +57,16 @@ The classifier reads the same CLAUDE.md content Claude reads, so project-wide in
 ```
 
 Include the literal string `"$defaults"` to splice in the built-in entries alongside your own (position matters). Entries are prose, not regex/tool patterns — write them like describing your infrastructure to a new engineer: organization/primary use, source control orgs, cloud providers and trusted buckets, trusted internal domains, key internal services, internal package registry, sensitive data locations & audiences, sensitive remote targets, protected IaC scopes, additional context. (The registry/sensitivity entries require v2.1.195+.)
+
+## Generate environment entries with `/auto-mode-setup`
+
+`/auto-mode-setup` has Claude Code draft `autoMode.environment` entries (and sometimes rule entries) from your project and your recent sessions in it; if you accept the draft, it's written to `~/.claude/settings.json`. It requires a Pro, Max, or Team plan and Claude Code v2.1.228 or later (native Windows: v2.1.233 or later), can't be run in a cloud session, and needs feature-flag fetching (not available in a session where you've turned flag fetching off).
+
+It always reads this project's `CLAUDE.md`, `README.md`, config files, and git remotes; your `autoMode` and `permissions.allow` settings; and the hosts, buckets, and command names from commands Claude ran in your recent sessions in this project (never your messages). Two optional scans add the first word of each command in your shell history, and the remote hosts and names of repositories under your home directory. You accept or discard the draft as a whole. On accept, Claude Code writes the `environment` list without `"$defaults"` (the draft spells out the unchanged built-ins) and includes `"$defaults"` in each of `allow`, `soft_deny`, and `hard_deny` lists it adds entries to (unless you already wrote an `allow` list without it), then offers to remove `permissions.allow` rules that auto mode ignores (such as `Bash(*)`) or that auto-approve destructive commands. Run `claude auto-mode config` to see the effective result. To stop the "Teach auto mode about your environment?" dialog, select **Don't show again**; to turn the command off set `skillOverrides` `"auto-mode-setup": "off"` (it's a built-in command, so `disableBundledSkills` doesn't turn it off).
+
+### Edit rules from `/permissions`
+
+Run `/permissions` and select the **Auto mode** tab to view and edit classifier rules and `environment` entries without opening a settings file. Requires Claude Code v2.1.246 or later; appears only when auto mode is available to your session.
 
 ## Override the block and allow rules
 
@@ -106,7 +116,7 @@ Denials appear under `/permissions` → **Recently denied**; press `r` to mark f
 
 ## Notes
 
-This page was retrieved in full (no truncation observed).
+- `/auto-mode-setup` and the `/permissions` **Auto mode** tab were added after the previous revision of this page (see their version requirements above).
 
 ## Related
 

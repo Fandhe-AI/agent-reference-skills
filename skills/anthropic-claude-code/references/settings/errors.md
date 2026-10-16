@@ -1,8 +1,18 @@
-<!-- source: https://code.claude.com/docs/en/errors.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/errors.md / last verified: 2026-10-16 -->
 
 # Error reference
 
 Runtime error messages Claude Code displays, with what each means and how to recover, plus checks for when responses seem off without an error. For installation errors (`command not found`, TLS failures during setup), see the troubleshoot-install docs instead. Except for Wrapper and IDE errors (printed by the launching program), these apply across the CLI, Desktop app, and Claude Code on the web, since all three wrap the same CLI.
+
+## Signature / Usage
+
+Diagnostic commands referenced throughout this page:
+
+```text
+/doctor        # in-session checks (oversized CLAUDE.md, unused extensions)
+claude doctor  # read-only diagnostics from the shell
+/feedback      # report an error (sends the transcript)
+```
 
 ## Find your error (message → category)
 
@@ -10,20 +20,34 @@ Runtime error messages Claude Code displays, with what each means and how to rec
 | --- | --- |
 | `API Error: 500 Internal server error` | Server errors |
 | `API Error: Repeated 529 Overloaded errors` | Server errors |
+| `Opus is experiencing high load` / `Fable is experiencing high load` | Server errors |
 | `Request timed out` | Server errors (or Network, if it mentions your connection) |
+| `API Error: No response from API` | Server errors |
 | `Server error mid-response` / `Connection closed mid-response` / `Response stalled mid-stream` | Server errors — response above may be incomplete |
 | `Connection closed while thinking` / `Response stalled while thinking` | Automatic retries |
 | `<model> is temporarily unavailable, so auto mode cannot determine the safety of...` | Server errors — auto mode classifier |
 | `Auto mode could not evaluate this action and is blocking it for safety` | Server errors — auto mode classifier |
 | `Auto mode classifier transcript exceeded context window` | Server errors — auto mode classifier |
+| `Not run · auto mode's check had no usable answer` | Server errors — auto mode classifier |
+| `Agent aborted: auto mode classifier request refused by the safety safeguard` | Server errors — auto mode classifier |
+| `The server-side auto mode classifier gave no verdict` / `Auto mode is unavailable — the server returned no safety verdict for the last 10 responses` | Server errors — no safety verdict |
 | `Agent terminated early due to an API error` | Server errors |
-| `You've hit your session limit` / `You've hit your weekly limit` / `You've hit your Opus limit` | Usage limits |
+| `You've hit your session limit` / `You've hit your weekly limit` / `You've hit your Opus limit` / `You've hit your Sonnet limit` | Usage limits |
 | `Usage credits required for 1M context` | Usage limits |
+| `the prompt to confirm went unanswered — nothing was sent` | Usage limits |
+| `You've hit your monthly spend limit` / `You've hit your individual spend limit` / `You've hit your org's monthly spend limit` / `You've hit your channel's monthly spend limit` / `You've hit your team's shared budget` / `You've hit your individual usage limit` | Usage limits — spend limits |
+| `spend limit reached` / `spend limit unavailable` | Usage limits — spend limits |
 | `Server is temporarily limiting requests` | Usage limits (not your plan quota) |
 | `Request rejected (429)` | Usage limits |
 | `Credit balance is too low` | Usage limits |
 | `Could not update your spend limit` | Usage limits |
 | `Not logged in · Please run /login` | Authentication |
+| `Couldn't save your login` | Authentication |
+| `Failed to start OAuth callback server` / `Claude login not accepted · Run /login, then try again` | Authentication |
+| `Your account is on hold and can't use Claude Code. View details or appeal: https://claude.ai/restricted` | Authentication |
+| `Anthropic profile login expired · Re-authenticate your Anthropic profile` | Authentication |
+| `Cloud gateway session expired — run /login to reconnect.` / `Gateway refused the request` | Authentication |
+| `Google Cloud credentials expired or invalid` / `Microsoft Foundry authentication failed` | Authentication |
 | `Could not resolve authentication method` | Authentication |
 | `Invalid API key` | Authentication |
 | `Your apiKeyHelper script is failing` | Authentication |
@@ -48,6 +72,10 @@ Runtime error messages Claude Code displays, with what each means and how to rec
 | `SSL certificate verification failed` / `SSL certificate error (...)` | Network |
 | `403` with `x-deny-reason: host_not_allowed` (cloud/routine session) | Network |
 | `Couldn't reconnect to your Remote Control session` | Network |
+| `API returned an empty or malformed response` / `Streaming response ended before any complete data was received` | Network |
+| `proxy refused the connection` | Network |
+| `Failed to fetch session from Sessions API: Failed to fetch session logs` | Network |
+| `Couldn't share the transcript.` / `Couldn't send feedback` | Network |
 | `Prompt is too long` | Request errors |
 | `Context exceeds the ...-token limit by ... tokens` (in `/context`) | Request errors |
 | `Error during compaction: Conversation too long` | Request errors |
@@ -59,15 +87,27 @@ Runtime error messages Claude Code displays, with what each means and how to rec
 | `Model ... is not a recognized model id` | Request errors |
 | `Claude Opus is not available with the Claude Pro plan` | Request errors |
 | `Model ... is restricted by your organization's settings` | Request errors |
+| `Claude Code ... does not support this model; version ... or newer is required` | Request errors |
+| `Model ... not found` / `Couldn't confirm model ... with the API` | Request errors |
+| `Model switch ... blocked by a PreModelSwitch hook` | Request errors |
+| `Effort '<level>' isn't available with thinking turned off on this model` | Request errors |
+| `Tool input schema is invalid` (`tools.N.custom.input_schema: JSON schema is invalid`) / MCP tool name over 128 characters | Request errors |
+| `<model>'s safeguards flagged this session` | Request errors — cybersecurity safety flag |
+| `API Error: Output blocked by content filtering policy` | Request errors |
 | `thinking.type.enabled is not supported for this model` | Request errors |
 | `max_tokens must be greater than thinking.budget_tokens` | Request errors — thinking budget exceeds output limit |
 | `API Error: 400 due to tool use concurrency issues` | Request errors — tool use/thinking block mismatch |
 | `<model> can't help with this. Start a new session to continue` | Request errors — usage policy refusal |
 | `Claude Code is unable to respond to this request, which appears to violate our Usage Policy` | Request errors — usage policy refusal |
 | `<model>'s safeguards flagged this message` / `has safety measures that flagged this message for a cybersecurity topic` | Request errors — cybersecurity safety flag |
-| `Installation was killed before it could finish (exit code 137)` | Installation errors |
-| `The connection dropped while downloading the update` / `Download timed out: exceeded the total deadline` | Installation errors |
+| `Installation was killed before it could finish (exit code 137)` | Troubleshoot installation and login (troubleshoot-install.md) |
+| `The connection dropped while downloading the update` / `Download timed out: exceeded the total deadline` | Troubleshoot installation and login (troubleshoot-install.md) |
 | `--bg and --print conflict` | Command-line errors |
+| `Cloud sessions cannot be created from a --restricted session` / `Cloud sessions are disabled by your organization's policy` | Command-line errors |
+| `Error: Invalid --agents configuration:` | Command-line errors |
+| `--sandbox is not supported by claude remote-control` / `--no-sandbox is not supported by claude remote-control` | Command-line errors |
+| `Unknown command: /<name>` | Command-line errors |
+| `No conversation found with session ID: <session-id>` | Command-line errors |
 | `Error: --json-schema is not a valid JSON Schema` | Command-line errors |
 | `Error: Settings file exceeds the 2MiB limit` | Command-line errors |
 | `Error: Workspace not trusted` (starting Remote Control) | Command-line errors |
@@ -91,8 +131,15 @@ Runtime error messages Claude Code displays, with what each means and how to rec
 | `CLAUDE_CODE_PROCESS_WRAPPER: launcher ...` | Background session errors |
 | `EUNKNOWN: unknown error, uv_spawn` | Background session errors |
 | `Claude Code process exited with code N` | Wrapper and IDE errors |
-| `Restored the code, but skipped N files` | Rewind warnings |
+| `Restored the code, but skipped N files` | Rewind warnings and errors |
+| `No files were restored: N files failed (backup missing, or the file could not be updated)` | Rewind warnings and errors |
+| `Transcript writes are failing (...)` | Session saving warnings |
+| `Transcript saving is off — CLAUDE_CODE_SKIP_PROMPT_HISTORY is set` / `Transcript saving is off — inherited CLAUDE_CODE_CHILD_SESSION marker` | Session saving warnings |
 | `Ignoring N permissions.allow entries from ... this workspace has not been trusted` | Configuration warnings |
+| `Claude Code can't start: your organization's managed settings block the default model` | Configuration warnings |
+| `Managed settings document could not be parsed as a JSON object; none of its settings are in effect. Fix or remove it.` | Configuration warnings |
+| `CLAUDE_CODE_DISABLE_1M_CONTEXT is set, but the 200K limit isn't enforced` | Configuration warnings |
+| `Model "<model>" isn't recognized · context assumed to be 200k tokens` | Configuration warnings (see model-config.md) |
 | `... is not matched by file permission checks` | Configuration warnings |
 | Responses seem lower quality than usual | Response quality (not a specific error message) |
 
@@ -148,10 +195,6 @@ Local network/proxy/firewall or cloud-network-policy failures. `Unable to connec
 
 Content-of-request problems, mostly rejected by the API. `Prompt is too long` / `Context exceeds the token limit`: run `/compact` or `/clear`, check `/context` for what's consuming the window, disable unused MCP servers. `Error during compaction: Conversation too long`: Esc twice to step back several turns, then retry `/compact`, or `/clear`. `Request too large` (32MB HTTP body cap): `/compact`, or reference large files by path instead of pasting. `Image was too large` / `Unable to resize image`: resize below 8000px (or 2000px with many images), convert to PNG/JPEG/GIF/WebP. PDF errors (too large/password-protected/invalid): extract with `pdftotext` or read a page range instead. `Extra inputs are not permitted`: a gateway stripped the `anthropic-beta` header — configure pass-through or set `CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS=1`. `There's an issue with the selected model` / `Model ... is not a recognized model id`: run `/model` to pick a valid one; check `--model`/`ANTHROPIC_MODEL`/settings for a stale ID. `Claude Opus is not available with the Claude Pro plan`: `/model` to a plan-included model, or `/logout`+`/login` after upgrading. `Model ... is restricted by your organization's settings`: `/model` shows only allowed models; ask an admin for access. `thinking.type.enabled is not supported for this model`: `claude update` (version floors vary by model). Thinking-budget-exceeds-output-limit (`max_tokens must be greater than thinking.budget_tokens`): lower `MAX_THINKING_TOKENS` or raise `CLAUDE_CODE_MAX_OUTPUT_TOKENS`. Tool use/thinking block mismatch (`API Error: 400 due to tool use concurrency issues`): `/rewind` to a checkpoint before the corrupted turn; update if on Opus 4.7/4.8 pre-v2.1.156. Usage Policy refusal and cybersecurity safety flags: `/rewind` past the triggering turn, `/clear` for a fresh conversation, or `/feedback` to report a false positive; apply to the Cyber Verification Program for legitimate cybersecurity work.
 
-## Installation errors
-
-From the install script, `claude install`, or `claude update`. `Installation was killed before it could finish` (exit code 137 = OOM on Linux): free memory or add swap, then rerun. `The connection dropped while downloading the update` / `Download timed out`: rerun `claude update`, set `HTTPS_PROXY` if needed, ask network team to allow `downloads.claude.ai`.
-
 ## Command-line errors
 
 From the `claude` CLI and its subcommands. `--bg and --print conflict`: drop `-p`/`--print`, `--bg` takes the prompt directly. `--json-schema is not a valid JSON Schema`: fix the keyword the diagnostic names. `Settings file exceeds the 2MiB limit`: point `--settings` at a real settings file under 2 MiB. `Workspace not trusted when starting Remote Control`: run `claude` in the directory first to accept the trust dialog (home directory trust is never saved — use a project directory). `Could not import a server from Claude Desktop`: rename the server to letters/numbers/hyphens/underscores only. `MCP permission prompt tool not found`: confirm the server is connected (`claude mcp list`) and the tool name matches `mcp__<server>__<tool>`; raise `MCP_TIMEOUT` if it's slow to start. `/security-review` fails without `origin/HEAD`: run `git remote set-head origin <default-branch>` (fetch the branch first if needed). `Input must be provided...when using --print`: run `claude` in a real terminal, or pass/pipe a prompt with `-p`. `Diff is too large for ultrareview`: pass a closer base branch or split the change. `Could not find merge-base with the base branch`: pass the base branch explicitly or `git fetch --unshallow origin`. `Your checkout has no branches`: `git checkout -b <name>` at the current commit. `Failed to resume the conversation`: retry `claude --resume <session-id>`, or start a new session.
@@ -172,9 +215,19 @@ From the `claude` CLI and its subcommands. `--bg and --print conflict`: drop `-p
 
 `Claude Code process exited with code N` (from an IDE extension/Agent SDK wrapper, not Claude Code itself): follow the wrapper's **View output logs** link, reproduce by running `claude` directly in a terminal, or run `claude doctor`.
 
-## Rewind warnings
+## Rewind warnings and errors
 
-`Restored the code, but skipped N files` (`/rewind` skipped symlinks/hard links, paths whose directory changed, or unreadable backups): run with `--debug` to see the skipped paths in the debug log; links you created on purpose were left untouched, others should be inspected before trusting.
+`Restored the code, but skipped N files` (a warning: `/rewind` skipped symlinks/hard links/non-regular files, paths whose directory changed, or unreadable backups; before v2.1.216 `/rewind` wrote and deleted through links and didn't report a partial restore): the message gives only a count, so turn on debug logging with `/debug` before your next restore; the debug log at `~/.claude/debug/<session-id>.txt` names each skipped path. Links you created on purpose were left untouched; inspect any you didn't create before trusting their contents.
+
+`No files were restored: N files failed (backup missing, or the file could not be updated)` (an error: nothing was restored): the backup is missing (backups are removed in the retention sweep, by default about 30 days after the session last saved one; or a fork couldn't copy a backup, e.g. disk full) or Claude Code couldn't write to or delete the file. Undo the changes another way (ask Claude to reverse its edits, or restore from version control), fix what blocks the write and run `/rewind` again, or raise `cleanupPeriodDays` to keep backups longer. Before v2.1.260, Claude Code silently skipped files whose backups were missing and the rewind appeared to succeed.
+
+## Session saving warnings
+
+Persistent line below the input box when Claude Code isn't saving your session transcript; the session keeps working but may be missing from `--resume` later.
+
+- `Transcript writes are failing (disk full — ENOSPC) · recent messages may not be saved for resume`: writes to the transcript file are failing. Shown on the first failure for conditions that don't clear on their own (full disk, exceeded quota, read-only filesystem, path over the length limit, permission error on macOS/Linux), and after repeated failures spanning at least a minute for everything else (including permission errors on Windows, where antivirus can fail a single write). Fix the condition the error code names (free disk space for `ENOSPC`; raise or clear the quota for `EDQUOT`; restore write access for `EACCES`, `EPERM`, `EROFS`); the warning clears at the next successful write. Before v2.1.217 failing writes were dropped without a warning.
+- `Transcript saving is off — CLAUDE_CODE_SKIP_PROMPT_HISTORY is set · --resume will not find this session; if unintended, unset it and restart`: an intentional opt-out for ephemeral scripted sessions; remove the variable if unintended.
+- `Transcript saving is off — inherited CLAUDE_CODE_CHILD_SESSION marker · restart with CLAUDE_CODE_FORCE_SESSION_PERSISTENCE=1 to keep future transcripts`: an interactive session that inherits the nested-session marker saves no transcript. Expected when you ran `claude` inside another Claude Code session; for a top-level session, restart with `CLAUDE_CODE_FORCE_SESSION_PERSISTENCE=1` or remove the marker from the launching environment.
 
 ## Configuration warnings
 
@@ -191,10 +244,15 @@ For components this page doesn't cover: MCP connection/auth issues → MCP docs;
 ## Notes
 
 - For the raw HTTP status code definitions behind these messages, see the Claude Platform API error reference (platform.claude.com).
+- The official page grew to roughly 5900 lines (as of 2026-10); this page stays a summary. The "Find your error" table lists representative messages per category, and only the representative recovery steps are summarized here. Use the official page for the long tail (for example the Command-line, Tool errors, Background session errors, and Configuration warnings sections).
+- The former "Installation errors" section was removed from the official page: install messages (`Installation was killed before it could finish (exit code 137)`, `The connection dropped while downloading the update`, `Download timed out: exceeded the total deadline`) now link to Troubleshoot installation and login (troubleshoot-install.md).
+- "Rewind warnings" was renamed "Rewind warnings and errors" and a new "Session saving warnings" section was added.
+- `--sandbox` / `--no-sandbox` are rejected by `claude remote-control` (see remote-control.md; removed in v2.1.300).
 
 ## Related
 
 - [env-vars.md](./env-vars.md): `CLAUDE_CODE_MAX_RETRIES`, `CLAUDE_CODE_RETRY_WATCHDOG`, `API_TIMEOUT_MS`
+- [Troubleshoot installation and login](../troubleshooting/troubleshoot-install.md): installation and login errors moved off this page
 - [auto-mode-config.md](./auto-mode-config.md): the auto mode classifier errors in context
 - [model-config.md](./model-config.md): model-selection errors (`There's an issue with the selected model`, `Model ... is not a recognized model id`, `availableModels` restriction errors)
 - [debug-your-config.md](./debug-your-config.md): `/status`, `/doctor`, and `claude --safe-mode` used throughout this page's fixes

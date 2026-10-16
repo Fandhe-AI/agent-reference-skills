@@ -1,4 +1,4 @@
-<!-- source: https://code.claude.com/docs/en/statusline.md / last verified: 2026-08-07 -->
+<!-- source: https://code.claude.com/docs/en/statusline.md / last verified: 2026-10-16 -->
 
 # Customize your status line
 
@@ -54,7 +54,7 @@ Claude Code pipes JSON to the script's stdin; the script prints to stdout. Runs 
 | `workspace.project_dir` | Directory Claude Code was launched from |
 | `workspace.added_dirs` | Dirs added via `/add-dir` |
 | `workspace.git_worktree` | Worktree name (absent in main tree) |
-| `workspace.repo.host/owner/name` | Parsed from `origin` remote |
+| `workspace.repo.host`, `.owner`, `.name` | Repository identity parsed from the `origin` remote (e.g. `"github.com"`, `"anthropics"`, `"claude-code"`). Absent outside a git repository or when no `origin` remote is configured. For a gitlab.com project nested in subgroups, `owner` is the full namespace path with slashes (`"group/subgroup"`); before v2.1.260, `workspace.repo` was absent for these projects |
 | `cost.total_cost_usd` | Estimated session cost (resets on `/clear`) |
 | `cost.total_duration_ms`, `cost.total_api_duration_ms` | Wall-clock / API-wait time |
 | `cost.total_lines_added`, `cost.total_lines_removed` | Lines changed |
@@ -67,13 +67,17 @@ Claude Code pipes JSON to the script's stdin; the script prints to stdout. Runs 
 | `effort.level` | `low`/`medium`/`high`/`xhigh`/`max` (ultracode reports as `xhigh`); absent if unsupported |
 | `thinking.enabled` | Extended thinking on/off |
 | `rate_limits.five_hour`/`.seven_day` `.used_percentage`/`.resets_at` | Pro/Max subscription rate limits, present only after first API response |
+| `rate_limits.spend_limit.used_percentage`, `.resets_at` | Only behind a Claude apps gateway: how much of your spend limit you have used (0 to 100, above 100 once exceeded) and when its period resets (Unix epoch seconds). Present with every response once `spend_limit` is. Requires v2.1.251+ |
+| `rate_limits.spend_limit.used_usd`, `.limit_usd`, `.period` | Estimated spend and limit in US dollars and the limit's period (`daily`, `weekly`, or `monthly`). Read from the gateway about every five minutes, so they can lag `used_percentage`; optional (absent if `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` is set). Requires v2.1.284+ on both Claude Code and the gateway |
+| `prompt_cache` | Prompt cache statistics for the main conversation (subagent requests not counted): `warm`, `caching_observed`, `ttl` (`"5m"` / `"1h"`), `expires_at`, `requests`, `misses`, `expected_rebuilds`, `hit_ratio` (0 to 1), `cache_write_tokens`, `miss_recache_tokens`, `last_miss_at`, `recache_tokens_if_cold`, plus `last_miss_cause` (`causes` array such as `tools_changed`, `system_prompt_changed`, `ttl_expired_5m`, `likely_server_side`; `null` until the first miss) and `miss_causes` (counts per cause), both v2.1.260+. Absent until the first API response. Requires v2.1.251+. Same statistics as the `/usage` command's `Prompt cache (main)` line |
 | `session_id`, `session_name` | Session identity; `session_name` absent unless custom-named or AI-titled |
 | `prompt_id` | UUID of current prompt (absent until first input; v2.1.196+) |
 | `transcript_path`, `version` | Transcript file path, Claude Code version |
 | `output_style.name` | Current output style |
 | `vim.mode` | `NORMAL`/`INSERT`/`VISUAL`/`VISUAL LINE` when vim mode enabled |
 | `agent.name` | Set with `--agent` or agent settings |
-| `pr.number`, `.url`, `.review_state` | Open PR for current branch (absent once merged/closed) |
+| `pr.number`, `.url`, `.review_state` | Open PR for current branch (absent once merged/closed). With a GitLab remote, Claude Code fills these from the branch's open merge request, so `pr.number` is the merge request number (v2.1.234+) |
+| `pr.kind` | `mr` when `pr` describes a GitLab merge request; absent for GitHub pull requests. For a merge request `review_state` is `approved` when GitLab reports it mergeable, `pending` for any other open state, `draft` for a draft. Requires v2.1.234+ |
 | `worktree.name`, `.path`, `.branch`, `.original_cwd`, `.original_branch` | Present only during `--worktree` sessions |
 
 `context_window.used_percentage` is calculated from `input_tokens + cache_creation_input_tokens + cache_read_input_tokens` only (not output tokens).
@@ -88,7 +92,7 @@ Common patterns (Bash/Python/Node.js snippets in the source): context-window pro
 { "subagentStatusLine": { "type": "command", "command": "~/.claude/subagent-statusline.sh" } }
 ```
 
-Renders a custom row per subagent shown in the agent panel. Receives base hook fields + `columns` + a `tasks` array (`id`, `name`, `type`, `status`, `description`, `label`, `startTime`, `model`, `effort`, `contextWindowSize`, `tokenCount`, `tokenSamples`, `cwd`). Write one JSON line per row to override: `{"id": "<task id>", "content": "<row body>"}`; omit `id` to keep default rendering, emit empty `content` to hide the row.
+Renders a custom row per subagent shown in the agent panel. Receives base hook fields + `columns` + a `tasks` array (`id`, `name`, `type`, `status`, `description`, `label`, `startTime`, `model`, `effort`, `contextWindowSize`, `tokenCount`, `tokenSamples`, `cwd`, `agentType` (subagent type the task runs as, such as `Explore` or a custom `code-reviewer`, same value hooks receive as `agent_type`; requires v2.1.293+)). Write one JSON line per row to override: `{"id": "<task id>", "content": "<row body>"}`; omit `id` to keep default rendering, emit empty `content` to hide the row.
 
 ### Windows configuration
 
