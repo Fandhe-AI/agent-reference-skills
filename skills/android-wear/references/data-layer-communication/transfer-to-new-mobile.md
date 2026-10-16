@@ -77,7 +77,9 @@ class MyWearableListenerService : WearableListenerService() {
 - Archived items are discarded, not delivered, unless the app is installed on both mobile devices and the package signatures match.
 - Do not run power-demanding or time-consuming work in `onNodeMigrated()` (battery, ANRs); the callback stops automatically after 20 seconds, so delegate longer work to a coroutine or thread.
 - This differs from cloud backup and restore, where the user restores data to a new Wear OS device.
-- Source page last updated 2026-10-14 UTC.
+- The official sample's `data.toString()` returns the array identity (`[B@...`), not its contents, so the `startsWith` check never matches; decode the payload first (e.g. `data.decodeToString()` for a string protocol) or parse it according to your binary format.
+- `putDataItem()` returns a `Task`; the official sample does not wait for it, so the write may not complete or report failure before `onNodeMigrated()` returns. Make `handleDataItem` a `suspend` function and call `.await()` (kotlinx-coroutines-play-services) or otherwise handle the Task's completion and failure.
+- Source: https://developer.android.com/training/wearables/data/transfer-to-new-mobile (page last updated 2026-10-14 UTC).
 
 ## Related
 

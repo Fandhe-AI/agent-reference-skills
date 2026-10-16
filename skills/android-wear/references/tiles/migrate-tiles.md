@@ -81,7 +81,7 @@ Namespace and method renames (Tiles 1.2 / ProtoLayout 1.0):
 - Tiles 1.2 / ProtoLayout 1.0: most Tiles layout APIs live in `androidx.wear.protolayout`. Remove `androidx.wear.tiles:tiles-material`; add `protolayout`, `protolayout-material`, `protolayout-expression` (the guide shows `1.4.2`) and update `androidx.wear.tiles:tiles` (the guide shows `1.6.2`).
 - Replace `androidx.wear.tiles.material.*` (and `.material.layouts`) imports with `androidx.wear.protolayout.material.*`; replace most other `androidx.wear.tiles.*` imports with `androidx.wear.protolayout.*`. Imports for `EventBuilders`, `RequestBuilders`, `TileBuilders` and `TileService` stay the same.
 - From library 1.2, `TileBuilders` has its own `getState()` / `setState()` (the correct ones to use), different from `RequestBuilders.getState()` / `setState()`.
-- Source page last updated 2026-09-22 UTC.
+- Source: https://developer.android.com/training/wearables/tiles/versioning (page last updated 2026-09-22 UTC).
 
 ## Related
 

@@ -153,7 +153,7 @@ Built-in multipreview annotations (package `androidx.wear.compose.ui.tooling.pre
 
 ## Notes
 
-- `@WearPreviewDevices` and `@WearPreviewFontScales` can be stacked on one function for a device x font-scale matrix.
+- `@WearPreviewDevices` and `@WearPreviewFontScales` can be stacked on one function (the guide calls this a comprehensive test matrix); the preview sets are added together (2 device previews + 6 font-scale previews on `SMALL_ROUND`), not combined as a device x font-scale cross product. For specific combinations (e.g. `LARGE_ROUND` at 1.24f), define a custom multipreview annotation with explicit `@Preview(device = ..., fontScale = ...)` entries.
 - For full screens always use a Wear device annotation with `AppScaffold` + `ScreenScaffold` so `TimeText` (top curved edge), `ScrollIndicator` (right bezel), `EdgeButton` (clipped at bottom curve), and circular clipping render accurately.
 - For isolated components omit `device` and use `@Preview` with a dark background so Wear Material 3 colors and contrast appear accurately.
 - For extra-large round displays (44mm-45mm watches, Ultra models at 240x240dp) pass a custom `spec:` string to `device`.

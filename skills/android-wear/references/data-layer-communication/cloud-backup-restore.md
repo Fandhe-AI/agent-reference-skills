@@ -30,7 +30,7 @@ To test with simulated cloud storage: enable backup in your app and follow "Cont
 - Partial backups are not supported: if total files and directories exceed 25 MB, no data from the Wear OS app is backed up.
 - If you implement a custom `BackupAgent`, avoid calling the Data Layer inside the agent's methods; it may not work correctly there.
 - Cloud backup/restore (restoring onto a new Wear OS device) differs from transferring Wear OS data to a new mobile device.
-- Source page last updated 2026-10-14 UTC.
+- Source: https://developer.android.com/training/wearables/data/cloud-backup-restore (page last updated 2026-10-14 UTC).
 
 ## Related
 

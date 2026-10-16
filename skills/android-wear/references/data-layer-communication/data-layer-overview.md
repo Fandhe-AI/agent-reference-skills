@@ -48,7 +48,7 @@ Use the Data Layer API when the interaction is strictly between watch and phone 
 - Wearable API clients are inexpensive to create: recreate them as needed instead of holding onto them. Client state (e.g. registered listeners) is shared across all clients and survives a Google Play services update while the app runs.
 - Horologist provides a data layer helper library to ease initial pairing: install or launch the app on the other device, launch a specific activity on it, launch the companion app.
 - Distinct from Wear Compose / Jetpack Compose APIs: this is a Google Play services (`com.google.android.gms.wearable`) API, not an `androidx.*` library.
-- Source page last updated 2026-10-14 UTC; sample at `android/wear-os-samples` (`DataLayer`).
+- Source: https://developer.android.com/training/wearables/data/overview (page last updated 2026-10-14 UTC); sample at `android/wear-os-samples` (`DataLayer`).
 
 ## Related
 

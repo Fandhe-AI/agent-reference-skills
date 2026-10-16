@@ -66,7 +66,7 @@ context.startActivity(intent)
 - Defer nonessential networking (analytics, log collection) until Bluetooth or Wi-Fi is re-established rather than LTE/metered.
 - No Wear OS-specific APIs for network access or FCM. FCM works well with Doze and is the recommended way to notify a watch: collect the device registration token at runtime and include it when your server calls the FCM REST endpoint.
 - Notifications are bridged from phone to watch by default; a standalone Wear OS app plus a phone app can show duplicates for one FCM notification. Prevent with the bridging APIs.
-- Source page last updated 2026-09-22 UTC.
+- Source: https://developer.android.com/training/wearables/data/network-communication (page last updated 2026-09-22 UTC).
 
 ## Related
 

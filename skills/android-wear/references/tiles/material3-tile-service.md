@@ -36,6 +36,7 @@ class MyTileService : Material3TileService() {
 - `Material3TileService` builds on the base `TileService`; the manifest registration is the same as for `TileService`. Low-level concepts in the guide (`onTileRequest()`, `onTileResourcesRequest()`) apply to the base class.
 - `TileService` is a bound service: if you override bound-service lifecycle methods, avoid unintended interactions with the `TileService`-specific lifecycle methods, which are called in a separate asynchronous thread.
 - Tiles use ProtoLayout, not Jetpack Compose, to describe UI. Do not use `androidx.wear.compose.*` composables in a tile.
+- Source: https://developer.android.com/training/wearables/tiles/get_started; https://developer.android.com/jetpack/androidx/releases/wear-tiles (1.6.0)
 
 ## Related
 

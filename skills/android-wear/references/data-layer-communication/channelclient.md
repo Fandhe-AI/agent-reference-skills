@@ -38,7 +38,7 @@ Nested types: `ChannelClient.Channel` (created via `openChannel`), `ChannelClien
 - Use `getInputStream` or `receiveFile` only once per channel, and not both; likewise `getOutputStream` or `sendFile`. Close streams before calling `close`, otherwise the next read/write throws `ChannelIOException`.
 - After `receiveFile`, do not close the channel immediately; install a `ChannelCallback` and wait for `onInputClosed(Channel, int, int)` to learn the file is ready.
 - `openChannel` must keep the client connected during the round trip or the request is cancelled.
-- Source: developers.google.com/android/reference/com/google/android/gms/wearable/ChannelClient (local copy fetched 2026-10).
+- Source: https://developers.google.com/android/reference/com/google/android/gms/wearable/ChannelClient; https://developers.google.com/android/reference/com/google/android/gms/wearable/ChannelClient.ChannelCallback (fetched 2026-10).
 
 ## Related
 
