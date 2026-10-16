@@ -2,6 +2,8 @@
 
 リポジトリの dependency graph を SPDX JSON 形式の software bill of materials (SBOM) としてエクスポートするエンドポイント。
 
+公式ドキュメント: https://docs.github.com/en/rest/dependency-graph/sboms
+
 ## Signature / Usage
 
 | メソッド | パス | 説明 |

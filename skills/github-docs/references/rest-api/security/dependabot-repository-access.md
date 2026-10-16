@@ -2,6 +2,8 @@
 
 Organization（および Enterprise）で Dependabot がアクセスできるリポジトリの一覧取得・更新と、既定のアクセスレベル設定を行うエンドポイント。
 
+公式ドキュメント: https://docs.github.com/en/rest/dependabot/repository-access
+
 ## エンドポイント
 
 ### Organization

@@ -2,6 +2,8 @@
 
 2 つのコミット間の依存関係の差分（既知の脆弱性情報付き）を取得するエンドポイント。
 
+公式ドキュメント: https://docs.github.com/en/rest/dependency-graph/dependency-review
+
 ## Signature / Usage
 
 | メソッド | パス | 説明 |
@@ -40,7 +42,14 @@ curl -L \
 | `vulnerabilities` | array | 各要素: `severity` / `advisory_ghsa_id` / `advisory_summary` / `advisory_url`（すべて string） |
 | `scope` | string | `unknown` / `runtime` / `development` |
 
-ステータスコード: 200 OK / 400 Bad Request / 403 / 404 / 500 / 503
+| Status | Meaning |
+|---|---|
+| 200 | OK |
+| 400 | Bad Request |
+| 403 | Response for a private repository when GitHub Advanced Security is not enabled, or if used against a fork |
+| 404 | Resource not found |
+| 500 | Internal Error |
+| 503 | Service unavailable |
 
 ## Notes
 

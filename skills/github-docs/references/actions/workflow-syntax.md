@@ -4,6 +4,21 @@
 
 公式ドキュメント: https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions
 
+## Signature / Usage
+
+```yaml
+name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm test
+```
+
+キーごとの詳細は以下のトップレベルキー・ジョブレベルキー・ステップレベルキー節を参照。
+
 ---
 
 ## トップレベルキー
@@ -61,13 +76,13 @@ permissions: write-all
 permissions: {}  # 全権限を無効化
 ```
 
-利用可能なスコープ: `actions`, `artifact-metadata`, `attestations`, `checks`, `code-quality`, `contents`, `copilot-requests`, `deployments`, `discussions`, `id-token`, `issues`, `models`, `packages`, `pages`, `pull-requests`, `repository-projects`, `security-events`, `statuses`, `vulnerability-alerts`
+利用可能なスコープ: `actions`, `artifact-metadata`, `attestations`, `checks`, `code-quality`, `contents`, `copilot-requests`, `deployments`, `discussions`, `id-token`, `issues`, `packages`, `pages`, `pull-requests`, `security-events`, `statuses`, `vulnerability-alerts`
 
 各スコープの値: `read`, `write`, `none`（`copilot-requests` と `id-token` は `write` / `none` のみ、`vulnerability-alerts` は `read` / `none` のみ）
 
 Notes:
 - `copilot-requests` は組織所有リポジトリのワークフローが `GITHUB_TOKEN` で Copilot CLI を使うためのスコープ。組織の billing policy が許可している場合に限る。
-- `models` と `repository-projects` は、2026-10-17 時点の公式 permissions 表（上記の YAML 一覧を含む）に記載がない。既存ワークフローで使われている場合は公式ドキュメントで要確認。
+- `models` と `repository-projects` は、2026-10-17 時点の公式 permissions 表に記載がないため上記一覧から外している（旧版由来）。既存ワークフローで使われている場合は公式ドキュメントで要確認。
 
 ### `env`
 
@@ -508,10 +523,16 @@ if: always()
 
 ---
 
-## 制約事項
+## Notes
 
 - ワークフローファイルは `.github/workflows/` ディレクトリに `.yml` または `.yaml` 拡張子で配置する
 - `workflow_dispatch` の入力は最大 25 個のトップレベルプロパティ
 - パスフィルタリングの Git diff は 300 ファイルまで（超過時はワークフローが自動トリガーされない）
 - concurrency グループ名は大文字小文字を区別しない
 - スケジュールの最短間隔は 5 分
+
+## Related
+
+- [events-triggers.md](./events-triggers.md)
+- [permissions.md](./permissions.md)
+- [expressions.md](./expressions.md)

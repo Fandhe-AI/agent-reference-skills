@@ -2,6 +2,8 @@
 
 GitHub Actions のキャッシュの参照・削除、および保持期間（retention）とストレージ上限（storage limit）の取得・設定を行うエンドポイント。
 
+公式ドキュメント: https://docs.github.com/en/rest/actions/cache
+
 ## エンドポイント
 
 ### キャッシュ使用量・一覧・削除
@@ -70,7 +72,7 @@ curl -L \
 }'
 ```
 
-## 注意事項
+## Notes
 
 - 使用量系エンドポイントのデータは約 5 分ごとに更新されるため、反映に 5 分以上かかることがある
 - 必要なスコープ: キャッシュ一覧・削除・リポジトリ使用量は `repo`、リポジトリの上限設定は `admin:repository`、Organization の上限設定は `admin:organization`、Organization 使用量は `read:org`
@@ -80,6 +82,6 @@ curl -L \
 - Organization の storage-limit PUT の説明文は原文で "All organizations and repositories under this organization" と記載されている
 - 全エンドポイントは `X-GitHub-Api-Version: 2026-03-10` を使用（原文記載）
 
-## 出典
+## Related
 
-- https://docs.github.com/en/rest/actions/cache
+- [README.md](./README.md)

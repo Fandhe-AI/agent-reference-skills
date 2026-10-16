@@ -26,12 +26,7 @@ immutable releases と Git タグを組み合わせて、アクションのリ�
 
 ## タグの移動
 
-既存の Git タグを最新コミットへ移動するには、タグを force push する。
-
-```bash
-git tag -f TAG-NAME
-git push -f --tags
-```
+GitHub の release に紐付かない可動タグ（`v1` / `v1.1` 等）は、公式手順では最新コミットへ付け替える。公式例の全タグ force push（`--tags` 付き）はローカルの全タグを強制送信し、無関係なリリースタグまで上書きし得るため転記しない。immutable release に紐付くタグは公開後に変更できない。
 
 ---
 

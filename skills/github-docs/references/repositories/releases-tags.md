@@ -2,6 +2,12 @@
 
 GitHub リリースは、特定のバージョンのソフトウェアをパッケージ化して配布するための機能です。Git タグに基づいて作成され、リリースノートやバイナリファイルを添付できます。
 
+## Signature / Usage
+
+```bash
+gh release create v1.0.0 --title "Release v1.0.0" --generate-notes
+```
+
 ## リリースの作成
 
 ### Web UI から
@@ -225,7 +231,11 @@ MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]
 
 リリースの説明で `@mention` を使用すると、コントリビューターのアバターリストが自動的に追加されます。
 
-## 参考リンク
+## Notes
+
+- 手順ガイド形式のページ。Immutable releases・リリースアセット上限（2 GB）等の制約は各節を参照
+
+## Related
 
 - [Managing releases in a repository - GitHub Docs](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository)
 - [Semantic Versioning 2.0.0](https://semver.org/)

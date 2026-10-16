@@ -2,6 +2,8 @@
 
 GitHub Actions の concurrency group（同一グループで同時に実行されるのは 1 つのジョブ / ワークフローのみ）の状態を読み取るエンドポイント。
 
+公式ドキュメント: https://docs.github.com/en/rest/actions/concurrency-groups
+
 ## エンドポイント
 
 | メソッド | パス | 説明 |
@@ -36,7 +38,7 @@ curl -L \
   https://api.github.com/repos/OWNER/REPO/actions/concurrency_groups
 ```
 
-## 注意事項
+## Notes
 
 - private リポジトリでは OAuth app トークン / PAT (classic) に `repo` スコープが必要
 - `ahead_of_run` は workflow レベルの concurrency と reusable workflow のリースに一致する。run 内のジョブレベルのリースは run 全体をブロックするとはみなさない。ジョブ単位は `ahead_of_job` を使う
@@ -46,6 +48,6 @@ curl -L \
 - run 別エンドポイントは group 名順で、`after` は前方のみのページングで `rel="prev"` を返さない。後方へは前方ページの next カーソルから `before` を使う
 - 全エンドポイントは `X-GitHub-Api-Version: 2026-03-10` を使用（原文記載）
 
-## 出典
+## Related
 
-- https://docs.github.com/en/rest/actions/concurrency-groups
+- [README.md](./README.md)

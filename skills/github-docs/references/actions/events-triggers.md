@@ -41,10 +41,22 @@ on:
       - main
       - 'release/**'
       - '!release/**-alpha'   # 除外パターン
-    branches-ignore:
-      - 'feature/**'
     tags:
       - 'v*'
+      - '!v*-rc*'
+```
+
+```yaml
+# branches-ignore / tags-ignore は各々単独で使用（branches / tags とは併用不可）
+on:
+  push:
+    branches-ignore:
+      - 'feature/**'
+```
+
+```yaml
+on:
+  push:
     tags-ignore:
       - 'v*-rc*'
 ```

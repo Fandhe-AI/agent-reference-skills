@@ -20,7 +20,7 @@ on:
   pull_request:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 ```
 
@@ -28,5 +28,5 @@ concurrency:
 
 - 既定（`queue: single`）では pending は 1 件のみで、新しい実行が古い pending を置き換える。`queue: max` は最大 100 件まで pending で待機し、満杯後の追加分はキャンセルされる
 - `queue: max` と `cancel-in-progress: true` の併用は workflow validation error になる
-- 待機中の実行は FIFO（グループ待機を開始した時刻順）で処理されるが、順序は保証されない
-- `github.head_ref` は `pull_request` イベントでのみ定義されるため、`|| github.run_id` をフォールバックにする。group 名は大文字小文字を区別しない
+- 待機中の実行は、各実行がグループで待機を開始した時刻順（dispatch 時刻ではない）で処理される。実際の開始時刻は変動しうるため、厳密な順序は保証されない（原文: ordering is not guaranteed）
+- `github.ref` は `pull_request` で `refs/pull/<番号>/merge` となり PR ごとに分離される。公式例の `github.head_ref` はブランチ名のため、fork の同名ブランチ間で group が衝突し得る。group 名は大文字小文字を区別しない

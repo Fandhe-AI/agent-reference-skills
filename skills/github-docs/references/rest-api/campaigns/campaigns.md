@@ -2,6 +2,8 @@
 
 Organization のセキュリティキャンペーン（code scanning アラートの修正期限付き取り組み）を作成・管理する REST エンドポイント。
 
+公式ドキュメント: https://docs.github.com/en/rest/campaigns/campaigns
+
 ## エンドポイント
 
 | メソッド | パス | 説明 |
@@ -88,3 +90,7 @@ Campaign オブジェクトの主なフィールド: `number`, `created_at`, `up
 - 認証ユーザーは Organization の owner または security manager が必要
 - OAuth app トークンと classic PAT は `security_events` スコープが必要
 - Create は fine-grained トークンの場合、キャンペーン対象の全リポジトリで "Code scanning alerts" リポジトリ権限（read）が必要
+
+## Related
+
+- [README.md](./README.md)

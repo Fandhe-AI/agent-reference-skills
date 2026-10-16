@@ -64,9 +64,39 @@ List 系（GET）のクエリ:
 | `since` | string | この時刻以降に更新されたタスクのみ（ISO 8601） |
 | `creator_id` | array | 作成者 user ID で絞り込み（リポジトリ版 List のみ） |
 
-Task オブジェクト: `id` (required), `url`, `html_url`, `name`, `creator`, `creator_type` (`user` / `organization`), `user_collaborators`, `owner`, `repository`, `state` (required、上記 state 値), `session_count`, `artifacts` (`provider: github`、`type: pull` / `branch`、`data` は `id` / `global_id` または `head_ref` / `base_ref`), `archived_at`, `updated_at`, `created_at` (required), `custom_agent.id`。List のレスポンスは `tasks` に加え `total_active_count` / `total_archived_count`。
+Task オブジェクト:
 
-Get 系のレスポンスは Task に加え `sessions[]`（`id`, `name`, `user`, `owner`, `repository`, `task_id`, `state`, `created_at`, `updated_at`, `completed_at`, `prompt`, `head_ref`, `base_ref`, `model`, `usage` (`type`: `ai_credits` / `premium_requests`, `amount`: number), `error.message`）を含む。
+| Field | Type | Description |
+|---|---|---|
+| `id` | string | required |
+| `url` / `html_url` / `name` | string | — |
+| `creator` | object | `id`（integer） |
+| `creator_type` | string | `user` / `organization` |
+| `user_collaborators` | array of objects | 各要素 `id`（integer） |
+| `owner` / `repository` | object | `id`（integer） |
+| `state` | string | required。上記 state 値 |
+| `session_count` | integer | — |
+| `artifacts` | array of objects | `provider`: `github`、`type`: `pull` / `branch`、`data` は `id` / `global_id` または `head_ref` / `base_ref` |
+| `archived_at` | string or null | date-time |
+| `updated_at` | string | date-time |
+| `created_at` | string | required。date-time |
+| `custom_agent` | object | `id`（string） |
+
+List のレスポンスは `tasks` に加え `total_active_count` / `total_archived_count`。
+
+Get 系のレスポンスは Task に加え `sessions[]` を含む:
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string | required |
+| `name` / `task_id` | string | — |
+| `user` / `owner` / `repository` | object | `id`（integer） |
+| `state` | string | required。セッションの状態 |
+| `created_at` | string | required。date-time |
+| `updated_at` / `completed_at` | string | date-time |
+| `prompt` / `head_ref` / `base_ref` / `model` | string | — |
+| `usage` | object | `type`: `ai_credits` / `premium_requests`、`amount`: number |
+| `error` | object | `message`（string） |
 
 ## Notes
 

@@ -2,6 +2,8 @@
 
 GitHub Actions の OpenID Connect (OIDC) トークンについて、subject claim のカスタマイズテンプレートと、トークンに含めるリポジトリ custom property を管理するエンドポイント。
 
+公式ドキュメント: https://docs.github.com/en/rest/actions/oidc
+
 ## エンドポイント
 
 ### subject claim テンプレート
@@ -69,7 +71,7 @@ curl -L \
 }'
 ```
 
-## 注意事項
+## Notes
 
 - 必要なスコープ: Organization の GET は `read:org`、subject claim PUT は `write:org`、custom property の POST / DELETE は `admin:org`、リポジトリは `repo`、Enterprise は `admin:enterprise`
 - Enterprise のエンドポイントは OAuth app トークンまたは PAT (classic) 専用。"Enterprise administration" の fine-grained permission は利用不可
@@ -77,6 +79,6 @@ curl -L \
 - リポジトリテンプレート PUT は `use_default` が必須
 - 全エンドポイントは `X-GitHub-Api-Version: 2026-03-10` を使用（原文記載）
 
-## 出典
+## Related
 
-- https://docs.github.com/en/rest/actions/oidc
+- [README.md](./README.md)

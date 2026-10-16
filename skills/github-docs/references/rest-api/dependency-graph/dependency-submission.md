@@ -2,6 +2,8 @@
 
 ビルド時に解決された依存関係をスナップショットとして送信し、dependency graph に追加するエンドポイント。
 
+公式ドキュメント: https://docs.github.com/en/rest/dependency-graph/dependency-submission
+
 ## Signature / Usage
 
 | メソッド | パス | 説明 |
@@ -73,9 +75,18 @@ curl -L \
 | `manifests.*.resolved.*.dependencies` | array of strings | no | 直接の子依存関係の PURL 配列 |
 | `scanned` | string | yes | スナップショットをスキャンした時刻 |
 
-レスポンス（201）: `id`（integer）/ `created_at` / `result` / `message`（string）
+レスポンス（201）:
+
+| フィールド | 型 |
+|---|---|
+| `id` | integer |
+| `created_at` | string |
+| `result` | string |
+| `message` | string |
 
 ## Notes
+
+- 公式スキーマは `dependencies` を PURL 配列と説明するが、公式の送信例は `resolved` 内のキー名（`@actions/http-client` / `tunnel`）を列挙している。送信時は公式例の形式に合わせる
 
 - 認証ユーザーはリポジトリへのアクセスが必要。OAuth app token と classic PAT は `repo` スコープが必要
 - 標準ヘッダー: `Accept: application/vnd.github+json`、`X-GitHub-Api-Version: 2026-03-10`
