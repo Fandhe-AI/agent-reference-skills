@@ -29,7 +29,8 @@ Auth.js (NextAuth.js) から Better Auth へ移行するためのガイド。
 
 ## Notes
 
-- パスワード認証を使用する場合、パスワードは `account` テーブルに `providerId: "credential"` で保存する必要がある
+- パスワード認証を使用する場合（Phone Number プラグインを含む）、パスワードは `account` テーブルに `providerId: "credential"` かつ `accountId` に Better Auth のユーザー `id` を設定して保存する必要がある（1.7 ドキュメントで `accountId` の指定が追加）。このレコードが無いとパスワードサインインは失敗する
+- Better Auth の `account` は、ローカルのアカウントレコードに `id`、外部 identity に `providerId` + `accountId` のペアを使う（`accountId` は「プロバイダーが割り当てる安定したアカウント識別子」、`providerId` は「アカウントの認証に使ったプロバイダー設定」）
 
 ## Related
 

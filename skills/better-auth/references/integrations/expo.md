@@ -51,12 +51,25 @@ export const auth = betterAuth({
 })
 ```
 
+Authenticated requests read the stored cookies asynchronously:
+
+```typescript
+const cookies = await authClient.getCookie();
+const headers = { "Cookie": cookies };
+```
+
+(In tRPC `httpBatchLink`, make `headers()` `async` and `await authClient.getCookie()`.)
+
 ## Notes
 
 - Define `scheme` in `app.json` for deep linking, matching `trustedOrigins`
 - Metro bundler (SDK 53+) supports package exports by default — no extra config needed
 - Session data caches in `SecureStore` automatically; disable via `disableCache: true`
 - Social sign-in on native requires manual navigation handling after resolution
+- `storage`: the SecureStore-compatible storage used to cache session data and cookies (`import * as SecureStore from "expo-secure-store"`); reuse the same storage instance across clients that access the same stored data.
+- `exp://` trusts any host of the exp:// scheme (host-less entries trust every host of the scheme); `exp://**` and `exp://192.168.*.*:*/**` are wildcard patterns.
+- When upgrading your auth backend to purpose-prefixed verification identifiers or purpose-specific state-cookie keys, restart pending redirect-based social sign-ins (see reference/options.md); this needs no new Expo client configuration and does not affect native ID-token sign-in.
+- Changed in 1.7: secure storage access is asynchronous. The Expo client uses the asynchronous SecureStore APIs for cookie and session-cache access; `authClient.getCookie()` returns a promise, so await it (`const cookie = await authClient.getCookie();`) and make callbacks that read cookies asynchronous. Passing `expo-secure-store` directly continues to work without a wrapper. A custom storage implementation must provide `getItem`, `getItemAsync`, `setItem`, and `setItemAsync`. The exported `storageAdapter.setItem()` is synchronous; use `setItemAsync()` when the caller must wait for persistence.
 - `cookiePrefix` prevents infinite refetching caused by third-party cookies
 - Authenticated requests: retrieve cookies from `SecureStore` and pass in headers with `"credentials": "omit"` to avoid interference
 

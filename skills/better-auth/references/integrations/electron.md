@@ -74,6 +74,7 @@ setupRenderer();
 - Never expose `authClient` directly to the renderer process — create IPC bridges instead
 - `nodeIntegration: false` and `contextIsolation: true` required on `BrowserWindow`
 - Register the custom protocol scheme in build config (e.g. electron-forge) and add it to `trustedOrigins` (e.g. `"com.example.app:/"`)
+- Removed in 1.7: the `disableOriginOverride` option. Changed in 1.7: the Electron login flow requires S256 PKCE ("Electron requires modern PKCE"), no longer trusts a custom origin header, and matches custom URL schemes more safely. Upgrade the `@better-auth/electron` client and server together, make sure your app URL scheme is in `trustedOrigins`, and review trusted entries with a host such as `myapp://callback`, which no longer match lookalike hosts.
 - Fallback for failed deep links (some Linux/sandboxed browsers): manual 32-character authorization code exchange via `window.authenticate({ token: code })`
 - Renderer flow: `window.requestAuth()` → system browser sign-in → deep link redirect → session established in main process; listen via `window.onAuthenticated`, `window.onAuthError`, `window.onUserUpdated`; sign out via `window.signOut()`
 

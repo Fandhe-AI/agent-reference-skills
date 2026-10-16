@@ -139,6 +139,35 @@ if (error?.code && error.code in errorMessages) {
 }
 ```
 
+### SSR Hydration
+
+With SSR frameworks like Next.js, Nuxt, or SvelteKit, `useSession` fetches the session on the client, causing a loading flash. Pass the server-fetched session to `hydrateSession` and use it as a fallback so the first render has data on both the server and the client:
+
+```tsx
+// page.tsx (server component)
+const session = await auth.api.getSession({ headers: await headers() })
+return <SessionCard initialSession={session} />
+```
+
+```tsx
+// session-card.tsx (client component)
+"use client"
+import { authClient } from "@/lib/auth-client"
+
+type Props = { initialSession: typeof authClient.$Infer.Session | null }
+
+export function SessionCard({ initialSession }: Props) {
+    authClient.hydrateSession(initialSession)
+    const { data, isPending, isRefetching } = authClient.useSession()
+    const session = isPending && !isRefetching ? initialSession : data
+
+    if (!session) return <p>Not signed in</p>
+    return <pre>{JSON.stringify(session, null, 2)}</pre>
+}
+```
+
+Only the first non-null call to `hydrateSession` takes effect; passing `null` is ignored and `useSession` fetches as usual. In React, auth query hooks such as `useSession` and `useListOrganizations` return their initial pending state during server rendering and hydration, then update to the current client state, keeping streamed components consistent with their server HTML. Keep using the server-fetched session as a fallback to display it during hydration. Custom plugin stores that do not use `useAuthQuery` retain their existing snapshot behavior.
+
 ### Plugins
 
 ```typescript

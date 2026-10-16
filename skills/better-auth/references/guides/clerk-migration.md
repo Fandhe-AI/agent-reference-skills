@@ -17,6 +17,7 @@ Clerk から Better Auth へ移行するためのガイド。ユーザーデー�
 
 - 移行により有効なセッションがすべて無効化される
 - 組織の移行は現在ガイドに記載されていない
+- 1.7 ドキュメントでの変更: 移行スクリプトは `createdUser` が無い場合に `Unable to create or find user ${id}` を throw する。OAuth 外部アカウントの `providerId` は `provider.replace("oauth_", "")`、`accountId` は `externalAccount.provider_user_id`。credential アカウント（Clerk のパスワードユーザー）の `accountId` は `createdUser.id`（旧: `provider_user_id`）。サインインコンポーネントは `import { authClient } from "@/lib/auth-client"`（旧: `better-auth/client`）。
 
 ## Related
 

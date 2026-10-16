@@ -4,7 +4,7 @@ Better Auth includes a built-in rate limiter for traffic management and abuse pr
 
 ## Signature / Usage
 
-**Production defaults:** a 60-second window with a maximum of 100 requests per window. Disabled by default in development mode. Requests made server-side via `auth.api` completely bypass rate limiting.
+**Production defaults:** a 10-second window with a maximum of 100 requests per window (changed in 1.7 docs: the default window was 60 seconds). Disabled by default in development mode. Requests made server-side via `auth.api` completely bypass rate limiting.
 
 ### Setup
 
@@ -74,7 +74,7 @@ export const auth = betterAuth({
 });
 ```
 
-Preset custom rules: `/sign-in/email` (3 requests/10s), `/two-factor/verify` (3 requests/10s).
+Preset custom rules: `/sign-in/email` (3 requests/10s); the `twoFactor` plugin adds `/two-factor/*` (3 requests/10s).
 
 ### Storage options
 
@@ -93,11 +93,16 @@ rateLimit: {
 // Custom implementation
 rateLimit: {
   customStorage: {
-    get: async (key) => { /* fetch data */ },
-    set: async (key, value) => { /* store data */ },
+    consume: async (key, rule) => {
+      // atomically record one request for `key`
+      // rule.window is in seconds, rule.max is the request limit
+      return { allowed: true, retryAfter: null };
+    },
   },
 }
 ```
+
+`customStorage.consume` must check and increment in one operation. Better Auth no longer accepts separate `get` and `set` methods (removed in 1.7) because that shape can let concurrent requests pass the same stale counter.
 
 Run migration: `npx auth@latest migrate`
 

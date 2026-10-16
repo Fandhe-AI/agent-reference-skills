@@ -40,6 +40,22 @@ export const myPlugin = () => {
 };
 ```
 
+### Register a plugin type
+
+Reusable plugins can augment `BetterAuthPluginRegistry` (from `@better-auth/core`) so `getPlugin()` returns their exact type. The registry key must match the plugin's `id`:
+
+```typescript
+declare module "@better-auth/core" {
+  interface BetterAuthPluginRegistry<AuthOptions, Options> {
+    "my-plugin": {
+      creator: typeof myPlugin;
+    };
+  }
+}
+```
+
+This only affects TypeScript; users must still add the plugin to their `plugins` array at runtime. If you publish the plugin as a separate package, declare `@better-auth/core` as a peer dependency with the same supported version range as `better-auth`.
+
 ### Endpoints
 
 Use `createAuthEndpoint` from `better-auth/api` to create an endpoint:

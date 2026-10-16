@@ -55,8 +55,18 @@ database: new Pool({ /* connection options */ })
 import { createPool } from "mysql2/promise";
 database: createPool({ /* connection options */ })
 
-// Drizzle / Prisma adapters are also available
+// Prisma
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import { prisma } from "@/lib/prisma"; // your prisma client instance
+database: prismaAdapter(prisma, { provider: "postgresql" }) // or "mysql", "sqlite", ...
+
+// MongoDB
+database: mongodbAdapter(client.db(), { client }) // pass `client` to enable transactions
+
+// Drizzle adapter is also available
 ```
+
+See the Prisma adapter page for the Prisma 7 driver adapter and generated client setup, and the MongoDB adapter page for standalone server setup.
 
 ### 5. Run database migrations
 
@@ -75,7 +85,7 @@ export const { GET, POST } = toNextJsHandler(auth);
 
 // Express
 app.all("/api/auth/*", toNodeHandler(auth));
-app.use(express.json()); // mount after the auth handler
+app.use(express.json()); // mount body-parsing middleware after the auth handler
 ```
 
 ### 7. Create the client instance
@@ -100,6 +110,15 @@ app.use(express.json());
 ```typescript
 const { signIn, signUp, useSession } = createAuthClient();
 const { data: session } = useSession();
+```
+
+### SvelteKit
+
+```typescript
+// hooks.server.ts
+import { auth } from "#lib/auth.js"; // SvelteKit 2: "$lib/auth"
+import { svelteKitHandler } from "better-auth/svelte-kit";
+import { building } from "$app/env"; // SvelteKit 2: "$app/environment"
 ```
 
 ### TanStack Start
@@ -149,6 +168,7 @@ type User = { id: string; name: string; email: string; image?: string };
 - Use `BETTER_AUTH_SECRETS` (plural, array) for key rotation without invalidating existing sessions
 - The secret key should be "generated with high entropy" and at least 32 characters long
 - Setting up client and server separately requires separate package installs
+- Upgrading from 1.6 to 1.7: run `npx auth upgrade` (updates `better-auth` and the `@better-auth/*` release-train packages to the CLI's version; the `auth` CLI requires Node.js 22.12 or newer). Upgrade `better-auth` and every `@better-auth/*` package together; see guides/1-7-upgrade-guide.md for the schema and data-preparation steps (OAuth clients, SCIM, device authorization) and concepts/cli.md for `upgrade`.
 
 ## Related
 

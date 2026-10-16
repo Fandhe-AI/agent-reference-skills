@@ -65,7 +65,16 @@ export const auth = betterAuth({
 });
 ```
 
-Sign in using the appropriate `providerId` like `"line-jp"`, `"line-th"`, or `"line-tw"`.
+Sign in using the appropriate `providerId` like `"line-jp"`, `"line-th"`, or `"line-tw"` through the standard social API. The client needs only `createAuthClient()`; `genericOAuthClient()` is no longer required (changed in 1.7):
+
+```typescript
+import { createAuthClient } from "better-auth/client";
+
+const authClient = createAuthClient();
+
+await authClient.signIn.social({ provider: "line-jp" });
+await authClient.signIn.social({ provider: "line-th" });
+```
 
 ## Options / Props
 
