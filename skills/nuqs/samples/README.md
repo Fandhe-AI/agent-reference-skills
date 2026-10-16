@@ -9,7 +9,9 @@
 | Multiple Params Batch Update | Manage multiple query parameters atomically with `useQueryStates`; updates within the same event loop tick are batched into a single URL change. | [multiple-params-batch-update.md](./multiple-params-batch-update.md) |
 | Search Filter with Debounce | Debounce URL updates for search input so the URL only changes after the user stops typing. | [search-filter-debounce.md](./search-filter-debounce.md) |
 | Search Params Cache | Avoid prop drilling in deeply nested Next.js App Router server components using `createSearchParamsCache`. | [search-params-cache.md](./search-params-cache.md) |
+| SEO Canonical URL | Tell crawlers which URL to index when the page uses query strings: omit them for local-only state, include them when they define the content. | [seo-canonical-url.md](./seo-canonical-url.md) |
 | Server-Side Parsing | Parse URL search params on the server using `createLoader` (shared parsers between client and server). | [server-side-parsing.md](./server-side-parsing.md) |
+| Suspense Boundary | Fix the Next.js "Missing Suspense boundary with useSearchParams" error when a page renders components that use `useQueryState`. | [suspense-boundary.md](./suspense-boundary.md) |
 | Testing | Unit-test components that use `useQueryState` with `withNuqsTestingAdapter`. | [testing.md](./testing.md) |
 | Typed State with Parsers | Use built-in parsers to get typed values (number, boolean, etc.) from URL query parameters. | [typed-state-with-parsers.md](./typed-state-with-parsers.md) |
 | URL Key Remapping | Use descriptive variable names in code while keeping URL keys short with the `urlKeys` option. | [url-key-remapping.md](./url-key-remapping.md) |

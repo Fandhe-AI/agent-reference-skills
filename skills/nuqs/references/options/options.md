@@ -1,104 +1,96 @@
 # Options
 
-nuqs の URL 更新動作を制御するオプション。フックレベル、パーサーレベル、呼び出しレベルで設定可能。
+Options that control how nuqs updates the URL. They can be set at the adapter level, the hook / parser level, or the call level.
 
 ## Signature / Usage
 
-デフォルト動作:
+Default behaviour:
 
-- クライアントのみ更新（サーバーリクエストなし）— `shallow: true`
-- 履歴エントリを置換 — `history: 'replace'`
-- スクロールなし — `scroll: false`
-- ブラウザ適応スロットル（50ms; Safari 120ms）
+- Client-only updates (no server requests): `shallow: true`
+- Replaces the current history entry: `history: 'replace'`
+- No scrolling: `scroll: false`
+- Throttle rate adapted to the browser (50ms; Safari 120ms)
 
 ```tsx
-// パーサーのビルダーパターン
+// Hook level, via the parser builder pattern
 const [state, setState] = useQueryState(
   'foo',
   parseAsString.withOptions({ history: 'push' })
 )
 
-// call-level（フック/パーサーのオプションを上書き）
+// Call level (overrides hook / parser options)
 setState('bar', { scroll: true })
 ```
 
-オプションの優先順位（高い順）:
+Precedence (highest first):
 
-1. **Call-level**: `setState('value', { history: 'push' })` — 最高優先
-2. **Hook/Parser-level**: `parseAsString.withOptions({ ... })`
-3. **Adapter defaults**: `<NuqsAdapter defaultOptions={{...}}>` — 最低優先
-
-## Options / Props
-
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `history` | `'replace' \| 'push'` | `'replace'` | `'replace'` は更新を単一の履歴エントリに圧縮、`'push'` は更新ごとに新しい履歴エントリを作成 |
-| `shallow` | `boolean` | `true` | `true` はクライアントのみ更新、`false` はサーバーに通知（loader/RSC を再実行） |
-| `scroll` | `boolean` | `false` | `true` で更新時にページ上部へスクロール |
-| `limitUrlUpdates` | `throttle(ms) \| debounce(ms) \| defaultRateLimit` | ブラウザ適応スロットル（50ms; Safari 120ms; 旧 Safari 320ms） | URL 更新とサーバーリクエストのレート制限。hooks が返す state 自体は常に即座に更新される |
-| `clearOnDefault` | `boolean` | `true`（v2.0.0 で `false` → `true` に変更） | `true` は state がデフォルト値と等しい場合にキーを URL から削除、`false` はデフォルト値でもキーを保持 |
-| `startTransition` | `React.startTransition` 関数 | — | `shallow: false` 必須。サーバー再レンダリング（RSC）をトランジションでラップしローディング状態を取得 |
+1. **Call-level**: `setState('value', { history: 'push' })`
+2. **Hook / parser-level**: `parseAsString.withOptions({ ... })`
+3. **Adapter defaults**: `<NuqsAdapter defaultOptions={{...}}>`
 
 ### `history`
 
-`'replace'`: 更新を単一の履歴エントリに圧縮（git squash のように）。
-`'push'`: 更新ごとに新しい履歴エントリを作成。ブラウザの戻るボタンで状態変更を戻れる。
+`'replace'`: squashes updates into a single history entry (like `git squash`).
+`'push'`: adds a new history entry per update, so the Back button navigates state changes.
 
-> **注意**: 戻るボタンの動作を壊すと UX が悪化する。`'push'` はタブ切替やモーダルなどナビゲーション的な体験にのみ使用する。
+```tsx
+useQueryState('foo', { history: 'push' })
+```
 
 ### `shallow`
 
-`true`: クライアントのみの更新。ネットワークリクエストなし。
-`false`: サーバーに通知。SSR フレームワークの loader/RSC を再実行する。
-
-React Router / Remix では `shallow: false` で loader が再実行される。
-
-> **注意**: Remix v2 は EOL となり、`nuqs/adapters/remix` は nuqs@3.0.0 で削除予定。React Router v6 も EOL となり `nuqs/adapters/react-router/v6`（および無指定の `nuqs/adapters/react-router`）は nuqs@3.0.0 で削除予定。React Router v7 / v8 への移行を推奨。
-
-#### React Router での補足: `useOptimisticSearchParams`
-
-React Router の `useSearchParams` は shallow 更新を反映しない。代わりに nuqs が提供する `useOptimisticSearchParams` を使用する:
+`true`: client-only update, no network request (equivalent to the Next.js router `shallow: true`). This is the default.
+`false`: notifies the server (re-runs loaders / RSC).
 
 ```tsx
-// React Router v8 の場合
+useQueryState('foo', { shallow: false })
+```
+
+Pair `shallow: false` with: `searchParams` page prop (Next.js app router), `getServerSideProps` (Next.js pages router), a `loader` function (Remix & React Router). It has no effect in a React SPA.
+
+In React Router based frameworks, the stock `useSearchParams` does not reflect shallow-updated search params. Use `useOptimisticSearchParams`:
+
+```tsx
+// React Router v8
 import { useOptimisticSearchParams } from 'nuqs/adapters/react-router/v8'
-// React Router v7 の場合
+// React Router v7
 import { useOptimisticSearchParams } from 'nuqs/adapters/react-router/v7'
-// React Router v6 の場合（EOL、nuqs@3.0.0 で削除予定）
+// React Router v6 (EOL, removed in nuqs@3.0.0)
 import { useOptimisticSearchParams } from 'nuqs/adapters/react-router/v6'
 
 const searchParams = useOptimisticSearchParams()
-// loader 実行を待たずに最新のパラメータを読める（read-only）
+// read-only, reactive to all URL changes
 ```
 
 ### `scroll`
 
-`true`: 更新時にページ上部へスクロール。
-`false`: スクロール位置を維持。
+`true`: scroll to the top of the page on update.
+`false`: keep the scroll position.
 
-### `limitUrlUpdates`（URL 更新のレート制限）
+```tsx
+useQueryState('foo', { scroll: true })
+```
 
-hooks が返す state は常に即座に更新される。レート制限されるのは URL の書き換えとサーバーリクエストのみ。
+### `limitUrlUpdates`
 
-#### Throttle
+Rate-limits URL updates and server requests. The state returned by the hooks is always updated instantly.
 
-最初の更新を即座に発行し、以降は一定間隔でバッチ処理:
+Throttle (first update emitted immediately, then batched regularly):
 
 ```tsx
 import { throttle } from 'nuqs'
 
 useQueryState('foo', {
   shallow: false,
-  limitUrlUpdates: throttle(1000),
+  limitUrlUpdates: throttle(1000)
+  // or: { method: 'throttle', timeMs: 1000 }
 })
 ```
 
-#### Debounce
-
-値の変更が止まるまで URL 更新を遅延。検索入力やスライダーに最適:
+Debounce (URL update delayed until changes stop; suited to search inputs and sliders):
 
 ```tsx
-import { debounce, defaultRateLimit } from 'nuqs'
+import { useQueryState, parseAsString, debounce } from 'nuqs'
 
 const [search, setSearch] = useQueryState(
   'q',
@@ -109,48 +101,49 @@ const [search, setSearch] = useQueryState(
   value={search}
   onChange={(e) =>
     setSearch(e.target.value, {
-      limitUrlUpdates: e.target.value === '' ? undefined : debounce(500),
+      // Immediate update if resetting, otherwise debounce at 500ms
+      limitUrlUpdates: e.target.value === '' ? undefined : debounce(500)
     })
   }
   onKeyPress={(e) => {
     if (e.key === 'Enter') {
-      setSearch(e.target.value) // Enter で即座に反映
+      setSearch(e.target.value) // immediate update
     }
   }}
 />
 ```
 
-#### デフォルトレート制限にリセット
+Reset to the default rate limit:
 
 ```tsx
-import { defaultRateLimit } from 'nuqs'
+import { debounce, defaultRateLimit } from 'nuqs'
 
+const [, setState] = useQueryState('foo', {
+  limitUrlUpdates: debounce(1000)
+})
+
+// This state update isn't debounced
 setState('bar', { limitUrlUpdates: defaultRateLimit })
 ```
 
-- 50ms 未満の値は無視される
-- `+Infinity` で URL 更新を無効化（hooks の state 同期は維持）
-
 ### `clearOnDefault`
 
-`true`: state がデフォルト値と等しい場合、キーを URL から削除。
-`false`: デフォルト値でもキーを URL に保持。
+`true`: removes the key from the URL when the state equals the default value.
+`false`: keeps the key in the URL even at the default value.
 
-`===` 参照等価で比較。カスタムパーサーでは `eq` 関数を提供する:
+Comparison uses `===` reference equality. Custom parsers for non-primitive types should provide an `eq` function:
 
 ```tsx
 const dateParser = createParser({
   parse: (value: string) => new Date(value.slice(0, 10)),
   serialize: (date: Date) => date.toISOString().slice(0, 10),
-  eq: (a: Date, b: Date) => a.getTime() === b.getTime(),
+  eq: (a: Date, b: Date) => a.getTime() === b.getTime()
 })
 ```
 
 ### `startTransition`
 
-`shallow: false` が必須条件。
-
-サーバー再レンダリング（RSC）をトランジションでラップし、ローディング状態を取得:
+Requires `shallow: false`. Wraps the server re-render (RSC) in a transition to get a loading state:
 
 ```tsx
 const [isLoading, startTransition] = React.useTransition()
@@ -160,31 +153,30 @@ const [query, setQuery] = useQueryState(
 )
 ```
 
-> **注意**: nuqs v1 では `startTransition` を渡すと自動で `shallow: false` になった。v2+ では明示的に設定が必要。
-
-### グローバルデフォルト（`<NuqsAdapter>` v2.5.0+）
+### Adapter props: global defaults (`<NuqsAdapter>`, v2.5.0+)
 
 ```tsx
 <NuqsAdapter
   defaultOptions={{
+    history: 'push',
     shallow: false,
     scroll: true,
     clearOnDefault: false,
-    limitUrlUpdates: throttle(250),
+    limitUrlUpdates: throttle(250)
   }}
 >
   {children}
 </NuqsAdapter>
 ```
 
-### `processUrlSearchParams`（v2.6.0+）
+### Adapter props: `processUrlSearchParams` (v2.6.0+)
 
-パラメータマージ後、URL 更新前に実行されるミドルウェア:
+Middleware called after `URLSearchParams` are merged and before they are sent to the adapter for the URL update:
 
 ```tsx
 <NuqsAdapter
   processUrlSearchParams={(search) => {
-    search.sort() // キーをアルファベット順にソート
+    search.sort() // modify in place, or return a copy
     return search
   }}
 >
@@ -192,9 +184,28 @@ const [query, setQuery] = useQueryState(
 </NuqsAdapter>
 ```
 
+## Options / Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `history` | `'replace' \| 'push'` | `'replace'` | `'replace'` squashes updates into one history entry, `'push'` adds a new entry per update |
+| `shallow` | `boolean` | `true` | `true` updates the client only, `false` notifies the server (re-runs loaders / RSC) |
+| `scroll` | `boolean` | `false` | `true` scrolls to the top of the page on update |
+| `limitUrlUpdates` | `throttle(ms) \| debounce(ms) \| defaultRateLimit` | Browser-adapted throttle (50ms; Safari 120ms; older Safari 320ms) | Rate-limits URL updates and server requests. Hook state is always updated instantly |
+| `clearOnDefault` | `boolean` | `true` (changed from `false` in v2.0.0) | `true` removes the key from the URL when the state equals the default |
+| `startTransition` | `React.startTransition` function | — | Requires `shallow: false`. Wraps the server re-render in a transition |
+| `defaultOptions` (adapter prop) | `object` | — | Global defaults for the options above (v2.5.0+) |
+| `processUrlSearchParams` (adapter prop) | `(search: URLSearchParams) => URLSearchParams` | — | Middleware for merged search params before the URL update (v2.6.0+) |
+
 ## Notes
 
-- `throttleMs` は v2.5.0 で非推奨。`{ throttleMs: 100 }` → `{ limitUrlUpdates: throttle(100) }` に置換
+- Don't break the Back button: use `history: 'push'` only for navigation-like experiences (tabs, modals). Setting it globally via `defaultOptions` adds a history entry for every search param update across the app.
+- `limitUrlUpdates`: values below 50ms are ignored. If multiple hooks set different throttle values in the same event loop tick, the highest value is used. `+Infinity` disables URL / server updates while hooks stay in sync with each other.
+- Debounce only makes sense for server-side data fetching (RSC and loaders combined with `shallow: false`). For client-side fetching (e.g. TanStack Query), debounce the state returned by the hooks instead.
+- `throttleMs` is deprecated since v2.5.0: replace `{ throttleMs: 100 }` with `{ limitUrlUpdates: throttle(100) }`.
+- In nuqs v1, passing `startTransition` automatically set `shallow: false`. In v2+ it must be set explicitly.
+- In React Router v7+ data routers, `navigate()` returns a Promise, so `isLoading` stays true until route loaders settle (requires React 19). In declarative routers, React Router v6 and Remix, `isLoading` only covers the URL update.
+- Remix v2 is EOL: `nuqs/adapters/remix` will be removed in nuqs@3.0.0. React Router v6 is EOL: `nuqs/adapters/react-router/v6` (and the unpinned `nuqs/adapters/react-router`) will be removed in nuqs@3.0.0. Migrate to React Router v7 / v8.
 
 ## Related
 

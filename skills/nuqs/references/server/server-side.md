@@ -1,149 +1,167 @@
 # Server-side Usage
 
-サーバーサイドで URL クエリパラメータを型安全に解析する API。
+Type-safe parsing of URL search params on the server: `createLoader` (v2.3.0+) and `createSearchParamsCache` (Next.js app router).
 
-## createLoader（v2.3.0+）
-
-型安全なサーバーサイドパラメータ解析。パーサー定義を共有して、クライアントとサーバーで一貫した型を使用する。
-
-### シグネチャ
+## Signature / Usage
 
 ```tsx
-import { createLoader } from 'nuqs/server'
+import { parseAsFloat, createLoader } from 'nuqs/server'
 
-const loadSearchParams = createLoader(keyMap, options?)
-```
-
-| 引数 | 型 | 説明 |
-|------|------|------|
-| `keyMap` | `Record<string, Parser>` | キーとパーサーのマッピング |
-| `options` | `object` | 省略可 |
-| `options.strict` | `boolean` | 無効な値に対してエラーを throw する（デフォルト: `false`、v2.5.0+） |
-
-### 基本例
-
-```tsx
-import { parseAsFloat, parseAsString, createLoader } from 'nuqs/server'
-
-// パーサー定義（クライアントと共有）
+// Describe your search params, and reuse this in useQueryStates / createSerializer:
 export const coordinatesSearchParams = {
   latitude: parseAsFloat.withDefault(0),
-  longitude: parseAsFloat.withDefault(0),
+  longitude: parseAsFloat.withDefault(0)
 }
 
 export const loadSearchParams = createLoader(coordinatesSearchParams)
 ```
 
-### フレームワーク別の使い方
-
-**React Router / Remix:**
-
 ```tsx
-// loader 内
-export async function loader({ request }: LoaderFunctionArgs) {
-  const { latitude, longitude } = loadSearchParams(request)
-  // または
-  const { latitude, longitude } = loadSearchParams(request.url)
-  return { latitude, longitude }
+// Next.js (app router)
+import type { SearchParams } from 'nuqs/server'
+
+type PageProps = {
+  searchParams: Promise<SearchParams>
 }
-```
 
-**Next.js App Router:**
-
-```tsx
-export default async function Page({ searchParams }) {
+export default async function Page({ searchParams }: PageProps) {
   const { latitude, longitude } = await loadSearchParams(searchParams)
   return <Map lat={latitude} lng={longitude} />
 }
 ```
 
-### 受け付ける入力型
-
-- 完全修飾 URL 文字列
-- クエリ文字列（`?lat=45&lng=5`）
-- `URL` オブジェクト
-- `URLSearchParams` オブジェクト
-- `Request` オブジェクト
-- `Record<string, string | string[] | undefined>`
-- 上記いずれかの `Promise`
-
-### Strict Mode（v2.5.0+）
-
-デフォルトでは無効な値はデフォルト値または `null` を返す。strict mode ではエラーを throw:
+```tsx
+// Next.js (pages router)
+export async function getServerSideProps({ query }: GetServerSidePropsContext) {
+  const { latitude, longitude } = loadSearchParams(query)
+  return { props: { ... } }
+}
+```
 
 ```tsx
+// Remix / React Router
+export function loader({ request }: LoaderFunctionArgs) {
+  const { latitude, longitude } = loadSearchParams(request) // request.url works too
+  return ...
+}
+```
+
+```tsx
+// API routes: App router, eg: app/api/location/route.ts
+export async function GET(request: Request) {
+  const { latitude, longitude } = loadSearchParams(request)
+  // ...
+}
+
+// Pages router, eg: pages/api/location.ts
+export default function handler(
+  request: NextApiRequest,
+  response: NextApiResponse
+) {
+  const { latitude, longitude } = loadSearchParams(request.query)
+}
+```
+
+```tsx
+// Client-side one-off parsing of non-reactive search params
+loadSearchParams('https://example.com?latitude=42&longitude=12')
+loadSearchParams(location.search)
+loadSearchParams(new URL(...))
+loadSearchParams(new URLSearchParams(...))
+```
+
+Strict mode (v2.5.0+):
+
+```tsx
+const loadSearchParams = createLoader({
+  count: parseAsInteger.withDefault(0)
+})
+
+// Default: returns { count: 0 }
+loadSearchParams('?count=banana')
+
+// Strict mode: throws
 loadSearchParams('?count=banana', { strict: true })
-// Throws: [nuqs] Error while parsing query `banana` for key `count`
+// [nuqs] Error while parsing query `banana` for key `count`
 ```
 
-## createSearchParamsCache
+### createSearchParamsCache
 
-深くネストされたサーバーコンポーネントで props drilling なしにパラメータにアクセスする。
+Access search params in deeply nested Server Components without props drilling (Next.js app router, since v1.13.0).
 
-> **注意**: この API は React の `cache` 関数に基づいており、**主に Next.js App Router のサーバーコンポーネント向け**。React Router / Remix では `createLoader` を使用する。
-
-### シグネチャ
-
-```tsx
-import { createSearchParamsCache } from 'nuqs/server'
-
-const searchParamsCache = createSearchParamsCache(keyMap, options?)
-```
-
-| 引数 | 型 | 説明 |
-|------|------|------|
-| `keyMap` | `Record<string, Parser>` | キーとパーサーのマッピング |
-| `options` | `object` | 省略可。`strict` / `urlKeys` を含む |
-| `options.strict` | `boolean` | 無効な値に対してエラーを throw する（デフォルト: `false`） |
-| `options.urlKeys` | `Record<string, string>` | 変数名と URL キー名のマッピング |
-
-### 基本例
-
-```tsx
-import { parseAsString, parseAsInteger, createSearchParamsCache } from 'nuqs/server'
+```ts
+import {
+  createSearchParamsCache,
+  parseAsInteger,
+  parseAsString
+} from 'nuqs/server'
+// Import from 'nuqs/server' to avoid the "use client" directive
 
 export const searchParamsCache = createSearchParamsCache({
   q: parseAsString.withDefault(''),
-  maxResults: parseAsInteger.withDefault(10),
+  maxResults: parseAsInteger.withDefault(10)
 })
 ```
 
-### 使い方（Next.js App Router）
-
 ```tsx
-// ページコンポーネントで .parse() を呼ぶ
-export default async function Page({ searchParams }) {
-  searchParamsCache.parse(searchParams)
-
-  return <Results />
+export default async function Page({ searchParams }: PageProps) {
+  // Don't forget to call `parse` here.
+  const { q: query } = await searchParamsCache.parse(searchParams)
+  return (
+    <div>
+      <h1>Search Results for {query}</h1>
+      <Results />
+    </div>
+  )
 }
 
-// 子コンポーネントで .get() または .all() でアクセス
 function Results() {
-  const q = searchParamsCache.get('q')
   const maxResults = searchParamsCache.get('maxResults')
-  // または
-  const { q, maxResults } = searchParamsCache.all()
-  return <div>...</div>
+  // or: const { q, maxResults } = searchParamsCache.all()
+  return <span>Showing up to {maxResults} results</span>
 }
 ```
 
-### メソッド
+Shorter URL keys via `urlKeys`:
 
-| メソッド | 説明 |
-|---------|------|
-| `.parse(searchParams, options?)` | パラメータを解析してキャッシュに格納。入力が Promise の場合は Promise を返す |
-| `.get(key)` | 単一キーの値を取得 |
-| `.all()` | 全キーの値をオブジェクトで取得 |
+```ts
+export const coordinatesCache = createSearchParamsCache(coordinatesParsers, {
+  urlKeys: {
+    latitude: 'lat',
+    longitude: 'lng'
+  }
+})
+```
 
-## 注意事項
+## Options / Props
 
-- `createSearchParamsCache` は React の `cache` 関数に基づく。**現在のページレンダリング内でのみ有効**。Next.js App Router のサーバーコンポーネント専用
-- React Router / Remix では `createSearchParamsCache` ではなく `createLoader` を loader 関数内で使い、`request` または `request.url` を渡す
-- Loader はデータの**バリデーション**を行わない。JSON オブジェクトや特定の制約には Zod 等のスキーマバリデーションを併用する
-- Remix v2 は EOL となり `nuqs/adapters/remix` は nuqs@3.0.0 で削除予定。React Router v6 も EOL となり `nuqs/adapters/react-router/v6`（および無指定の `nuqs/adapters/react-router`）は nuqs@3.0.0 で削除予定。React Router v7 / v8 への移行を推奨
+`createLoader(keyMap, options?)` / `createSearchParamsCache(keyMap, options?)`:
 
-## 関連
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `keyMap` | `Record<string, Parser>` | — | Mapping of keys to parsers |
+| `options` | `object` | — | Optional |
+| `options.strict` | `boolean` | `false` | Throw on invalid values instead of returning the default or `null` (v2.5.0+) |
+| `options.urlKeys` | `Record<string, string>` | — | Maps variable names to shorter URL keys (`createSearchParamsCache`) |
 
-- [ビルトインパーサー](../parsers/built-in.md)
-- [オプション](../options/README.md)
+Loader input types: fully qualified URL string, query string (`?lat=45&lng=5`), `URL`, `URLSearchParams`, `Request`, `Record<string, string | string[] | undefined>`, or a `Promise` of any of these (in which case a Promise is returned).
+
+`createSearchParamsCache` methods:
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `.parse(searchParams, options?)` | method | Parses and stores params in the cache. Returns a Promise if the input is a Promise |
+| `.get(key)` | method | Gets a single key's value |
+| `.all()` | method | Gets all values as an object |
+
+## Notes
+
+- Loaders do not validate data. For positive integers or JSON objects of a given shape, feed the loader result to a schema validation library (e.g. Zod), or build validation into custom parsers.
+- `createSearchParamsCache` is based on React's `cache` function: it is valid only for the current page render and only in Server Components (Next.js app router). In React Router / Remix, use `createLoader` in the loader with `request` or `request.url`.
+- You may share parser declarations between the cache and `useQueryStates` for type safety in client components.
+- Remix v2 is EOL: `nuqs/adapters/remix` will be removed in nuqs@3.0.0. React Router v6 is EOL: `nuqs/adapters/react-router/v6` (and the unpinned `nuqs/adapters/react-router`) will be removed in nuqs@3.0.0. Migrate to React Router v7 / v8.
+
+## Related
+
+- [Built-in parsers](../parsers/built-in.md)
+- [Options](../options/README.md)

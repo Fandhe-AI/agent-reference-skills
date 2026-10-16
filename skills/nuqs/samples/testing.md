@@ -45,6 +45,7 @@ it('initializes from searchParams', () => {
 ## Notes
 
 - `withNuqsTestingAdapter` accepts `searchParams` as a query string, `URLSearchParams`, or a plain record object
-- `onUrlUpdate` receives `{ searchParams: URLSearchParams, queryString: string }` on every URL change
+- `onUrlUpdate` receives `{ searchParams: URLSearchParams, queryString: string, options }` on every URL change (`options` are the options used for the update, e.g. `event.options.history`)
+- Internal/advanced adapter options: `rateLimitFactor` (rate limiting is disabled when testing by default; `1` enables it with the production factor) and `resetUrlUpdateQueueOnMount` (default `true`, clears the shared URL update queue once when the adapter mounts to isolate tests; set `false` only when a test intentionally preserves updates queued before mounting; per-mount reset fixed in v2.10.1, #1518)
 - By default, the adapter is stateless (each update does not persist) — set `hasMemory: true` to simulate real navigation state
 - nuqs v2 is ESM-only; Jest requires `extensionsToTreatAsEsm` and `--experimental-vm-modules` flags
