@@ -18,7 +18,7 @@ fruits.sort()
 print(fruits.first ?? "empty")
 ```
 
-## Key APIs
+## Options / Props
 
 | Name | Description |
 |------|-------------|
@@ -55,6 +55,10 @@ print(fruits.first ?? "empty")
 | `partition(by:)` | Reorder so elements not satisfying the predicate come first |
 | `enumerated()` | Pair each element with its index |
 | `zip(_:_:)` | Create pairs from two sequences |
+| `var span: Span<Element> { get }` | A span over the elements of this array (iOS 26.0+) |
+| `var mutableSpan: MutableSpan<Element> { mutating get }` | A mutable span over the elements of this array; O(1) when storage is uniquely referenced, O(n) otherwise (iOS 26.0+) |
+| `init<E>(capacity: Int, initializingWith initializer: (inout OutputSpan<Element>) throws(E) -> Void) throws(E)` | Creates an array with the given capacity, then calls the closure with an output span covering the uninitialized memory (iOS 12.2+ per the member's own page) |
+| `mutating func append<E>(addingCapacity: Int, initializingWith initializer: (inout OutputSpan<Element>) throws(E) -> Void) throws(E)` | Grows the array for the given number of elements, then calls the closure with an output span; items appended before a thrown error remain (iOS 12.2+ per the member's own page) |
 
 ## Notes
 
@@ -66,6 +70,10 @@ print(fruits.first ?? "empty")
 ## Related
 
 - [ContiguousArray](./contiguous-array.md)
+- [Span](./span.md)
+- [MutableSpan](./mutablespan.md)
+- [OutputSpan](./outputspan.md)
+- [InlineArray](./inlinearray.md)
 - [Dictionary](./dictionary.md)
 - [Set](./set.md)
 - [Range](./range.md)

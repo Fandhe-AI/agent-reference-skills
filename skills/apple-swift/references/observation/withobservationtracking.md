@@ -11,13 +11,6 @@ func withObservationTracking<T>(
 ) -> T
 ```
 
-## Parameters
-
-| Name | Type | Description |
-|------|------|-------------|
-| `apply` | `() -> T` | A closure containing property accesses to track. |
-| `onChange` | `@autoclosure () -> @Sendable () -> Void` | Closure invoked once when any tracked property changes value. |
-
 ## Usage
 
 ```swift
@@ -32,6 +25,13 @@ func render() {
 }
 ```
 
+## Options / Props
+
+| Name | Type | Description |
+|------|------|-------------|
+| `apply` | `() -> T` | A closure containing property accesses to track. |
+| `onChange` | `@autoclosure () -> @Sendable () -> Void` | Closure invoked once when any tracked property changes value. |
+
 ## Notes
 
 - The `onChange` closure fires **once** after any tracked property changes; call `withObservationTracking` again inside `onChange` to re-register tracking for subsequent updates.
@@ -39,9 +39,15 @@ func render() {
 - `onChange` is marked `@Sendable`, so captured values must be sendable or the closure must avoid data races.
 - Returns the value returned by `apply`, allowing the tracked work to produce a result.
 - Available: iOS 17.0+, iPadOS 17.0+, Mac Catalyst 17.0+, macOS 14.0+, tvOS 17.0+, visionOS 1.0+, watchOS 10.0+
+- iOS 27.0+ adds an `options:` overload, `withObservationTracking(options:_:onChange:)`, whose `onChange` receives a `borrowing ObservationTracking.Event`; it supports typed throws (`throws(Failure)`) and `~Copyable` results.
+- For continuous observation, use the `Observations` async sequence (iOS 26.0+) or `withContinuousObservation(options:apply:)` (iOS 27.0+).
 
 ## Related
 
+- [withObservationTracking(options:_:onChange:)](./withobservationtracking-options.md)
+- [withContinuousObservation(options:apply:)](./withcontinuousobservation.md)
+- [Observations](./observations.md)
+- [ObservationTracking](./observationtracking.md)
 - [@Observable macro](./observable-macro.md)
 - [ObservationRegistrar](./observationregistrar.md)
 - [Observable protocol](./observable-protocol.md)

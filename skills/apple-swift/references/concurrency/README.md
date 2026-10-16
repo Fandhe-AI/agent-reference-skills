@@ -8,22 +8,37 @@
 | AsyncThrowingStream | An asynchronous sequence generated from an error-throwing closure that calls a continuation to produce new elements. | [asyncthrowingstream.md](./asyncthrowingstream.md) |
 | CheckedContinuation | A mechanism to interface between synchronous and asynchronous code, logging correctness violations. | [checkedcontinuation.md](./checkedcontinuation.md) |
 | Clock | A mechanism to measure time and delay work until a given point in time. | [clock.md](./clock.md) |
+| Continuation | A mechanism to interface between synchronous and asynchronous code, which enforces that the continuation is resumed exactly once. | [continuation.md](./continuation.md) |
 | ContinuousClock | A clock that measures time that always increments and does not stop incrementing while the system is asleep. | [continuousclock.md](./continuousclock.md) |
 | DiscardingTaskGroup | A discarding group that contains dynamically created child tasks. | [discardingtaskgroup.md](./discardingtaskgroup.md) |
 | Duration | A representation of high precision time, expressed as an elapsed time value in integral form. | [duration.md](./duration.md) |
+| Executor | A service that can execute jobs. | [executor.md](./executor.md) |
+| ExecutorJob | A unit of schedulable work. | [executorjob.md](./executorjob.md) |
 | GlobalActor | A type that represents a globally-unique actor used to isolate declarations anywhere in the program. | [globalactor.md](./globalactor.md) |
-| InstantProtocol | A protocol that represents an instant in time, used for measuring durations relative to a Clock. | [instantprotocol.md](./instantprotocol.md) |
+| globalConcurrentExecutor | The global concurrent executor that is used by default for Swift Concurrency tasks. | [globalconcurrentexecutor.md](./globalconcurrentexecutor.md) |
+| InstantProtocol | A protocol that represents an instant in time, used for measuring durations relative to a `Clock`. | [instantprotocol.md](./instantprotocol.md) |
+| JobPriority | The priority of this job. | [jobpriority.md](./jobpriority.md) |
 | MainActor | A singleton actor whose executor is equivalent to the main dispatch queue. | [mainactor.md](./mainactor.md) |
 | Sendable | A thread-safe type whose values can be shared across arbitrary concurrent contexts without introducing a risk of data races. | [sendable.md](./sendable.md) |
+| SerialExecutor | A service that executes jobs. | [serialexecutor.md](./serialexecutor.md) |
 | SuspendingClock | A clock that measures time that always increments but stops incrementing while the system is asleep. | [suspendingclock.md](./suspendingclock.md) |
 | Task | A unit of asynchronous work. | [task.md](./task.md) |
 | TaskExecutor | An executor that may be used as the preferred executor by a task. | [taskexecutor.md](./taskexecutor.md) |
 | TaskGroup | A group that contains dynamically created child tasks. | [taskgroup.md](./taskgroup.md) |
 | TaskLocal | Wrapper type that defines a task-local value key. | [tasklocal.md](./tasklocal.md) |
 | TaskPriority | The priority of a task. | [taskpriority.md](./taskpriority.md) |
+| ThrowingDiscardingTaskGroup | A throwing discarding group that contains dynamically created child tasks. | [throwingdiscardingtaskgroup.md](./throwingdiscardingtaskgroup.md) |
 | ThrowingTaskGroup | A group that contains throwing, dynamically created child tasks. | [throwingtaskgroup.md](./throwingtaskgroup.md) |
+| UnownedJob | A unit of schedulable work. | [unownedjob.md](./unownedjob.md) |
+| UnownedSerialExecutor | An unowned reference to a serial executor (a `SerialExecutor` value). | [unownedserialexecutor.md](./unownedserialexecutor.md) |
+| UnownedTaskExecutor | An unowned reference to a task executor (a `TaskExecutor` value). | [unownedtaskexecutor.md](./unownedtaskexecutor.md) |
+| UnsafeContinuation | A mechanism to interface between synchronous and asynchronous code, without correctness checking. | [unsafecontinuation.md](./unsafecontinuation.md) |
+| UnsafeCurrentTask / withUnsafeCurrentTask(body:) | An unsafe reference to the current task. | [unsafecurrenttask.md](./unsafecurrenttask.md) |
 | withCheckedContinuation / withCheckedThrowingContinuation | Functions that suspend the current task and bridge to synchronous callback-based code with runtime correctness checks. | [withcheckedcontinuation.md](./withcheckedcontinuation.md) |
+| withContinuation(of:_:) / withContinuation(of:throwing:_:) | Invokes the passed in closure with a non-copyable continuation for the current task. | [withcontinuation.md](./withcontinuation.md) |
 | withDiscardingTaskGroup(returning:isolation:body:) | Starts a new scope that can contain a dynamic number of child tasks whose results are discarded as they complete. | [withdiscardingtaskgroup.md](./withdiscardingtaskgroup.md) |
+| withTaskExecutorPreference(_:isolation:operation:) | Configure the current task hierarchy's task executor preference to the passed `TaskExecutor`, and execute the passed in closure by immediately hopping to that executor. | [withtaskexecutorpreference.md](./withtaskexecutorpreference.md) |
+| withTaskGroup(of:returning:isolation:body:) | Starts a new scope that can contain a dynamic number of child tasks. | [withtaskgroup.md](./withtaskgroup.md) |
 | withThrowingDiscardingTaskGroup(returning:isolation:body:) | Starts a new scope that can contain a dynamic number of throwing child tasks whose results are discarded as they complete. | [withthrowingdiscardingtaskgroup.md](./withthrowingdiscardingtaskgroup.md) |
 | withThrowingTaskGroup(of:returning:isolation:body:) | Starts a new scope that can contain a dynamic number of throwing child tasks. | [withthrowingtaskgroup.md](./withthrowingtaskgroup.md) |
-| withTaskGroup(of:returning:isolation:body:) | Starts a new scope that can contain a dynamic number of child tasks. | [withtaskgroup.md](./withtaskgroup.md) |
+| withUnsafeContinuation / withUnsafeThrowingContinuation | Invokes the passed in closure with an unsafe continuation for the current task. | [withunsafecontinuation.md](./withunsafecontinuation.md) |
