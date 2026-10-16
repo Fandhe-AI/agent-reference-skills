@@ -144,7 +144,7 @@ assy = (
     .constrain("base@faces@>Z", "lid@faces@<Z", "Plane")
     .solve()
 )
-assy.save("assembly.step")
+assy.export("assembly.step")
 ```
 
 | Method | Description |
@@ -153,7 +153,7 @@ assy.save("assembly.step")
 | `.add(obj, loc, name, color)` | Add a component |
 | `.constrain(q1, q2, kind)` | Apply a constraint |
 | `.solve()` | Resolve constraints |
-| `.save(path)` | Export (STEP, XML, GLTF, VTKJS, VRML) |
+| `.export(path)` | Export (STEP, XML, GLTF, VTKJS, VRML); `.save(path)` is deprecated |
 
 ## BREP Topology
 

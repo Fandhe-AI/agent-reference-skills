@@ -17,7 +17,9 @@ podman run -it -v /tmp:/tmp -e DISPLAY=$DISPLAY -v $(pwd):/data \
 
 Or follow the standard [Installation](./installation.md) guide for a local setup.
 
-## Final Result
+## Signature / Usage
+
+Final result:
 
 ```python
 import cadquery as cq
@@ -97,6 +99,43 @@ show(result)
 ```python
 result.export("result.stl")
 result.export("result.step")
+```
+
+## Free function equivalent
+
+If the fluent style of modeling does not appeal to you, exactly the same object can be constructed using the free function API.
+
+```python
+from cadquery.func import *
+
+height = 60.0
+width = 80.0
+thickness = 10.0
+diameter = 22.0
+padding = 12.0
+r_hole = 1.2
+r_cbore = 2.2
+d_cbore = thickness / 3
+
+# construct hole locations
+hole_locs = rect(height - padding, width - padding).vertices()
+
+# make the base
+basef = face(
+   rect(height, width),
+   circle(diameter / 2),
+)
+
+# extrude
+base = extrude(basef, (0, 0, thickness))
+
+# fillet
+base = fillet(base, base.edges("|Z"), height / 10)
+
+# add a cbore
+top = base.face(">Z")
+base = prism(base, None, circle(r_cbore).moved(hole_locs).moved(top), -d_cbore, additive=False)
+base = prism(base, None, circle(r_hole).moved(hole_locs).moved(top), None, additive=False)
 ```
 
 ## Notes

@@ -59,11 +59,14 @@ show(t, a)
 
 ## Notes
 
-- The `show` function is currently **blocking** — execution halts until the viewer window is closed.
+- The `cadquery.vis.show` function is blocking — execution halts until the viewer window is closed. For non-blocking visualization use `cadquery.fig.show` (see [Non-blocking visualization](./non-blocking.md)).
 - Requires the VTK library to be installed.
+- v2.8.0: the `fxaa` parameter now defaults to `False` (it was `True` in v2.7.0; PR 2022). New `orthographic: bool = False` parameter sets a parallel (orthographic) projection instead of perspective (PR 1991).
+- In v2.8.0 source, `show()` / `ctrlPts()` also accept the experimental `cadquery.occ_impl.nurbs` `Curve` / `Surface` objects (not described in the official docs).
 
 ## Related
 
+- [Non-blocking visualization](./non-blocking.md)
 - [Screenshots](./screenshots.md)
 - [Styling](./styling.md)
 - [Control Points](./control-points.md)

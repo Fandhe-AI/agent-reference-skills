@@ -3,9 +3,9 @@ name: cadquery
 description: >
   CadQuery (Python 製 3D CAD スクリプティングライブラリ) リファレンス。
   Workplane API (lineTo / extrude / revolve / sweep / loft / fillet / chamfer / shell)、
-  Sketch API、Assemblies (Constraint solver, 9 種制約)、Free Function API、
-  Selectors、Class hierarchy (Shape / Vertex / Edge / Wire / Face / Shell / Solid)、
-  Import / Export (STEP / DXF / STL / glTF / SVG)、Visualization (VTK, Jupyter)、CQGI。
+  Sketch API、Assemblies (Constraint solver)、Free Function API (hollow / prism / draft / offset2D, History)、
+  Selectors、Shape / Vertex / Edge / Wire / Face / Shell / Solid、
+  Import / Export (STEP / DXF / STL / glTF / SVG)、Visualization (VTK, cadquery.fig 非ブロッキング, Jupyter)、CQGI。
 user-invocable: false
 model: sonnet
 ---
@@ -15,6 +15,8 @@ model: sonnet
 CadQuery — OpenCascade ベースの Python 製パラメトリック 3D CAD モデリングライブラリ。
 スクリプトとして CAD モデルを記述でき、Workplane / Sketch / Assembly といった抽象レイヤー上で
 制約ベースの設計を可能にする。STEP / DXF / STL / glTF など多様な業界標準フォーマットの入出力に対応。
+
+対象: CadQuery v2.8.0 (2026-06-20 リリース、OCP 7.9。docs は tag v2.8.0 の doc/*.rst)。
 
 ## ディレクトリ構成
 
@@ -54,17 +56,20 @@ skills/cadquery/
       README.md
       adding-features.md
       boolean-operations.md
+      history.md
       operations.md
       parametric-mapping.md
       placement.md
       primitives.md
       shape-construction.md
+      shape-selection.md
       text.md
       tutorial.md
     visualization/
       README.md
       control-points.md
       jupyter.md
+      non-blocking.md
       pure-python.md
       screenshots.md
       styling.md
@@ -189,13 +194,13 @@ skills/cadquery/
 | 2D ワイヤ作成 (lineTo, polyline, threePointArc)、3D 押し出し (extrude, revolve, sweep, loft)、ブール演算 (cut, union)、フィレット・シェル、チェイン・スタック | workplane | [references/workplane/README.md](references/workplane/README.md) |
 | 制約付きスケッチ (segment, arc, spline, constrain, solve)、フェース構築 (rect, circle, polygon, slot)、Workplane との統合 | sketch | [references/sketch/README.md](references/sketch/README.md) |
 | 部品組立、Assembly tutorial、オブジェクト配置 (Location)、9 種制約 (Point/Axis/Plane/Fixed 等)、アセンブリカラー | assemblies | [references/assemblies/README.md](references/assemblies/README.md) |
-| Workplane を使わない関数型 API (box/sphere/cylinder、fuse/cut、fillet/chamfer、extrude/revolve/sweep/loft、text) | free-function | [references/free-function/README.md](references/free-function/README.md) |
-| 可視化 (show 関数、VTK 統合、スクリーンショット、Control Points、スタイリング、Jupyter インライン表示) | visualization | [references/visualization/README.md](references/visualization/README.md) |
+| Workplane を使わない関数型 API (v2.8.0 で experimental 解除済み。box/sphere/cylinder、fuse/cut、fillet/chamfer、extrude/revolve/sweep/loft、hollow / prism / draft / offset2D、text)、History (generated / modified / deleted)、shape selection (face / edge 単数選択、& \| % 集合演算) | free-function | [references/free-function/README.md](references/free-function/README.md) |
+| 可視化 (show 関数と orthographic、VTK 統合、非ブロッキング表示 (cadquery.fig show / clear / Figure、Trame)、スクリーンショット、Control Points、スタイリング、Jupyter インライン表示) | visualization | [references/visualization/README.md](references/visualization/README.md) |
 | ファイル入出力 (STEP/DXF/STL/glTF/SVG/AMF/3MF/TJS/VRML)、Assembly export/import、show_object 規約 | file-io | [references/file-io/README.md](references/file-io/README.md) |
 | モデリング例 (Plate, Mirroring, Workplanes, Lofts, Holes, Bottle, Lego, Bearing, Enclosure, Braille, Cycloidal Gear 等) | examples | [references/examples/README.md](references/examples/README.md) |
 | API 一覧 (Sketch / Workplane 2D/3D / File / Iteration / Stack / Selectors / Assemblies のメソッドシグネチャ)、Cheatsheet | api | [references/api/README.md](references/api/README.md) |
 | Selector 文字列構文 (">Z", "<<Y", "+Z", "\|X" 等)、組合せ演算子、Topological (ancestors/siblings) | selectors | [references/selectors/README.md](references/selectors/README.md) |
-| クラス階層 (Shape / Vertex / Edge / Wire / Face / Shell / Solid / Compound、Vector / Matrix / Plane / Location / BoundBox、Selector 階層) | classes | [references/classes/README.md](references/classes/README.md) |
+| クラス階層 (Shape / Vertex / Edge / Wire / Face / Shell / Solid / Compound、Vector / Matrix / Plane / Location / BoundBox、History / Op、Selector 階層) | classes | [references/classes/README.md](references/classes/README.md) |
 | スクリプト実行環境、パラメータ駆動モデリング、show_object/debug、BuildResult、CQModel | cqgi | [references/cqgi/README.md](references/cqgi/README.md) |
 | Plugin 開発、CadQuery 拡張、OpenCascade 直接呼び出し、Stack 操作、newObject/findSolid、map/apply/invoke | extending | [references/extending/README.md](references/extending/README.md) |
 | 引用情報 (学術用途、Zenodo DOI) | misc | [references/misc/README.md](references/misc/README.md) |

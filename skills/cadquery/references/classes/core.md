@@ -256,7 +256,7 @@ assy = (
     .add(cq.Workplane("XY").box(1, 1, 1), name="box")
     .add(cq.Workplane("XY").sphere(0.5), name="ball", loc=cq.Location((0, 0, 1.5)))
 )
-assy.save("assembly.step")
+assy.export("assembly.step")
 ```
 
 ### Constructor
@@ -292,8 +292,8 @@ cadquery.Assembly(
 | `remove` | `remove(name)` | Remove a child by name |
 | `toCompound` | `toCompound()` | Return unified `Compound` with transformations applied |
 | `traverse` | `traverse()` | Generator yielding `(name, assembly)` pairs |
-| `save` | `save(path, exportType=None, ...)` | Save to STEP, GLTF, VRML, STL, etc. |
-| `export` | `export(path, *args, **kwargs)` | Alias for `save` |
+| `export` | `export(path, exportType=None, mode="default", tolerance=0.1, angularTolerance=0.1, unit="MM", outputUnit=None, **kwargs)` | Save to STEP, XML, XBF, GLTF, GLB, VTKJS, VRML, STL; format inferred from the extension when `exportType` is `None` |
+| `save` | `save(path, exportType=None, mode="default", tolerance=0.1, angularTolerance=0.1, **kwargs)` | Deprecated (decorated `@deprecate()` in v2.8.0 source); calls `export` |
 | `importStep` | `importStep(path)` *(classmethod)* | Load assembly from STEP file |
 | `load` | `load(path)` *(classmethod)* | Load from STEP, XML, or XBF |
 
@@ -306,7 +306,7 @@ cadquery.Assembly(
 ### Notes
 
 - Constraint kinds include `"Plane"`, `"Point"`, `"Axis"`, `"Fixed"` among others.
-- `solve()` must be called before `toCompound()` or `save()` when constraints are used.
+- `solve()` must be called before `toCompound()` or `export()` when constraints are used.
 - Assembly `name` values must be unique within the hierarchy.
 - Sub-assemblies can be nested arbitrarily deep via repeated `add()` calls.
 

@@ -69,8 +69,8 @@ assy.export("out.step")
 | `mode` | `str \| ExportModes` | `"default"` | Export mode: `"default"`, `"fused"` |
 | `glue` | `bool` | `False` | Fuse with glue (faster, non-manifold); only with `mode="fused"` |
 | `write_pcurves` | `bool` | `True` | Write parametric curves on surfaces |
-| `unit` | `str` | `"MM"` | Internal geometry unit written into the file |
-| `outputUnit` | `str` | same as `unit` | Unit written into the STEP header (display unit) |
+| `unit` | `UnitLiterals` (`"MM"`, `"CM"`, `"M"`, `"KM"`, `"INCH"`, `"FT"`, `"MI"`, `"UM"`, `"NM"`) | `"MM"` | Internal geometry unit written into the file |
+| `outputUnit` | `UnitLiterals` (same values) | same as `unit` | Unit written into the STEP header (display unit) |
 
 ## Export Modes
 

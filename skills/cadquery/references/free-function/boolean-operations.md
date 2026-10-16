@@ -36,11 +36,11 @@ r8 = split(f2, e1).faces('<X')
 
 | Function | Signature | Description |
 |----------|-----------|-------------|
-| `fuse` | `fuse(s1, s2, *shapes, tol=0.0, glue=None)` | Union of two or more shapes. |
-| `cut` | `cut(s1, s2, tol=0.0, glue=None)` | Subtract `s2` from `s1`. |
-| `intersect` | `intersect(s1, s2, tol=0.0, glue=None)` | Intersection of two shapes. |
-| `split` | `split(s1, s2, tol=0.0)` | Split `s1` using `s2` as a tool. |
-| `imprint` | `imprint(*shapes, tol=0.0, glue="full", history=None)` | Imprint (non-destructive merge) of arbitrary number of shapes. |
+| `fuse` | `fuse(s1, s2, *shapes, tol=0.0, glue=None, history=None, name=None)` | Union of two or more shapes. |
+| `cut` | `cut(s1, s2, tol=0.0, glue=None, history=None, name=None)` | Subtract `s2` from `s1`. |
+| `intersect` | `intersect(s1, s2, tol=0.0, glue=None, history=None, name=None)` | Intersection of two shapes. |
+| `split` | `split(s1, s2, tol=0.0, history=None, name=None)` | Split `s1` using `s2` as a tool. |
+| `imprint` | `imprint(*shapes, tol=0.0, glue="full", history=None, name=None)` | Imprint (non-destructive merge) of arbitrary number of shapes. |
 | `+` | `s1 + s2` | Operator alias for `fuse`. |
 | `-` | `s1 - s2` | Operator alias for `cut`. |
 | `*` | `s1 * s2` | Operator alias for `intersect`. |
@@ -61,10 +61,13 @@ r8 = split(f2, e1).faces('<X')
 - To union many solids efficiently, first combine them into a `compound`, then perform a single `fuse`.
 - Boolean operations work on both 2D (faces) and 3D (solids) shapes.
 - `tol` enables "fuzzy mode" to handle near-coincident geometry.
-- `imprint` uses `glue="full"` by default and supports an optional `history` dict for tracking modified shapes.
+- `imprint` uses `glue="full"` by default.
+- `history` is an optional `History` instance (`history: History | None`) and `name` an optional `str`. Boolean operations optionally support history to refer to generated, modified or deleted shapes. Individual entries (instances of `Op`) can be accessed using indexing or name-based queries; to support names, specify the `name` parameter when invoking an operation.
+- The history tracking feature of the free function API is experimental and may change.
 
 ## Related
 
+- [History](./history.md)
 - [Primitives](./primitives.md)
 - [Shape Construction](./shape-construction.md)
 - [Operations](./operations.md)

@@ -57,6 +57,8 @@ show(t, position=(R, -R, R/h), roll=-45, zoom=0.9)
 | `elevation` | `float` | Camera elevation angle (degrees) |
 | `interact` | `bool` | If `False`, close window after saving; default `True` |
 | `position` | `tuple` | Camera position as `(x, y, z)` coordinates |
+| `orthographic` | `bool` | Parallel (orthographic) projection if `True`; default `False` (new in v2.8.0) |
+| `fxaa` | `bool` | Anti-aliasing; default `False` since v2.8.0 (`True` in v2.7.0) |
 
 ## Notes
 
