@@ -1,3 +1,7 @@
+---
+source: https://echo.labstack.com/cookbook/cors/
+---
+
 # CORS
 
 Enable Cross-Origin Resource Sharing with an allow list of origins or a custom origin function.
@@ -73,8 +77,8 @@ func getUsers(c *echo.Context) error {
 // - an optional error. this will stop handler chain execution and return an error response.
 //
 // return origin, true, err  // blocks request with error
-// return origin, true, nil  // allows CSRF request through
-// return origin, false, nil // falls back to legacy token logic
+// return origin, true, nil  // allows the origin (sets Access-Control-Allow-Origin)
+// return "", false, nil     // origin not allowed
 func allowOrigin(c *echo.Context, origin string) (string, bool, error) {
 	// In this example we use a naive suffix check but we can imagine various
 	// kind of custom logic. For example, an external datasource could be used
@@ -111,3 +115,4 @@ func main() {
 - `middleware.CORS(origins...)` takes the allowed origins directly; `middleware.CORS("*")` allows any origin.
 - `UnsafeAllowOriginFunc(c, origin) (string, bool, error)` returns the origin to echo back, whether the request is allowed, and an optional error that stops the handler chain with an error response.
 - Both programs are separate recipes (`cookbook/cors/origin-list` and `cookbook/cors/origin-func`); use one or the other, not both.
+- The official cookbook (echox 94b5f80, cookbook/cors/origin-func/server.go) comments these two returns as "allows CSRF request through" / "falls back to legacy token logic", which is carried over from the CSRF recipe. Per middleware_cors.go (v5.4.0), `true` means the origin is allowed and `false` means it is not; there is no CSRF or token fallback.

@@ -1,3 +1,7 @@
+---
+source: https://github.com/labstack/echo/blob/v5.4.0/rfc9457.go
+---
+
 # Problem Details (RFC 9457)
 
 `ProblemError` models an RFC 9457 "problem detail" (Problem Details for HTTP APIs), and `ProblemDetailsHTTPErrorHandler` is an `HTTPErrorHandler` that converts every error into an `application/problem+json` response.
