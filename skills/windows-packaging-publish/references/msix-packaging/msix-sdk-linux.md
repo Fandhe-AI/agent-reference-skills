@@ -4,7 +4,7 @@ The MSIX SDK provides cross-platform APIs for packing and unpacking `.msix` / `.
 
 ## Signature / Usage
 
-Build an MSIX package on a Linux machine:
+Build the MSIX SDK (libmsix .so and the makemsix CLI) on a Linux machine; the official MS Learn page titles this step "Build the MSIX package":
 
 ```bash
 ./makelinux [options]
@@ -36,13 +36,14 @@ Target Device Family values:
 
 ## Notes
 
-- Using the package after building on Linux: distribute through Microsoft Store for Business (no self-signing needed), sign on a Windows agent with the Azure DevOps MSIX Packaging Extension, or copy the package to Windows and sign with SignTool.
+- `makelinux` / `makeaosp` are the msix-packaging repo build scripts for the SDK itself, not commands that turn app files into an `.msix`. Pack support is off by default; pass `--pack` to the build script (or `-DMSIX_PACK=on` with `-DUSE_VALIDATION_PARSE=on` to CMake), then create packages with the built `makemsix` tool, which supports `pack` and `unpack` (run `makemsix -?` for options).
+- After creating a package with makemsix on Linux: distribute through Microsoft Store for Business (no self-signing needed), sign on a Windows agent with the Azure DevOps MSIX Packaging Extension, or copy the package to Windows and sign with SignTool.
 - Microsoft Store for Business/Education retired on March 31, 2023, so that option is no longer available (see distribute-lob-apps.md); use the MSIX Packaging Extension or SignTool.
 - The shared library exports a subset of what `appxpackaging.dll` provides on Windows.
 - Choose `Platform.All` for all platforms or `Web.All` for web apps only. Declare specific families to extract content only on those platforms and devices.
 - `MinVersion` and `MaxVersionTested` are required, in quad notation (`#.#.#.#`); they apply only on Windows 10 (deploys only on OS versions greater than `MinVersion`). For non-Windows 10-only use, `0.0.0.0` is fine.
 - To use one package on Windows 10 and elsewhere, build it as an App Extension on Windows 10; the `Properties` element inside `AppExtension` is not validated, so it carries free-form metadata between extension and host.
-- Sources: https://learn.microsoft.com/en-us/windows/msix/msix-sdk/msix-linux, last updated 08/16/2022 (ms.date); https://learn.microsoft.com/en-us/windows/msix/msix-sdk/sdk-guidance, last updated 12/13/2018 (ms.date).
+- Sources: https://learn.microsoft.com/en-us/windows/msix/msix-sdk/msix-linux, last updated 08/16/2022 (ms.date); https://learn.microsoft.com/en-us/windows/msix/msix-sdk/sdk-guidance, last updated 12/13/2018 (ms.date); https://github.com/microsoft/msix-packaging/blob/25a65f5c1690930813bcc10cdf1d59fa865f2bb1/README.md.
 
 ## Related
 
