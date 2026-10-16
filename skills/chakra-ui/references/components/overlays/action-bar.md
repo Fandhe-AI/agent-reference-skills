@@ -2,15 +2,11 @@
 
 Floating action bar that appears when items are selected, typically docked at the bottom of the viewport.
 
-## Import
-
-```tsx
-import { ActionBar } from "@chakra-ui/react"
-```
-
 ## Usage
 
 ```tsx
+import { ActionBar } from "@chakra-ui/react"
+
 <ActionBar.Root open={selectedCount > 0}>
   <ActionBar.Positioner>
     <ActionBar.Content>
@@ -26,7 +22,7 @@ import { ActionBar } from "@chakra-ui/react"
 </ActionBar.Root>
 ```
 
-## Props
+## Options / Props
 
 ### ActionBar.Root
 
@@ -36,12 +32,9 @@ import { ActionBar } from "@chakra-ui/react"
 | `placement` | `"bottom" \| "bottom-start" \| "bottom-end"` | `"bottom"` | Position of the bar |
 | `closeOnInteractOutside` | `boolean` | — | Close when clicking outside |
 
-## Sub-parts
-
-`Root`, `Positioner`, `Content`, `SelectionTrigger`, `Separator`, `CloseTrigger`
-
 ## Notes
 
+- Sub-parts: `Root`, `Positioner`, `Content`, `SelectionTrigger`, `Separator`, `CloseTrigger`.
 - Typically controlled by a boolean derived from a selection count (e.g., `open={selection.size > 0}`).
 - Renders via a `Portal` by default — content is placed outside the normal DOM flow.
 

@@ -58,6 +58,7 @@ import { FileUpload } from "@chakra-ui/react"
 
 - Use `FileUpload.Dropzone` as an alternative to `FileUpload.Trigger` for drag-and-drop UI.
 - File validation errors are available in the `onFileReject` callback.
+- 3.35.0 (Ark UI 5.36.0): duplicate files are rejected with the `FILE_EXISTS` error code.
 
 ## Related
 

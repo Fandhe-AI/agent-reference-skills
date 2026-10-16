@@ -44,6 +44,18 @@ const customConfig = defineConfig({
 })
 ```
 
+## TypeScript
+
+Chakra can generate TypeScript types from your theme file. That output reflects your **entire** system (tokens, conditions, recipes, and utilities), not only the recipes you customize on this page.
+
+> Whenever you edit the config passed to `createSystem`, run `typegen` again so your editor stays accurate. If the generated files fall behind, TypeScript may flag working code until you regenerate.
+
+```bash
+npx @chakra-ui/cli typegen ./theme.ts
+```
+
+Use the path to the file where you call `createSystem` (often `./theme.ts`).
+
 ## Notes
 
 - Recipes are merged with existing component recipes when using `defaultConfig`

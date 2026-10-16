@@ -25,6 +25,19 @@ import { Spinner } from "@chakra-ui/react"
 
 - **size**: `"inherit"`, `"xs"`, `"sm"`, `"md"` (default), `"lg"`, `"xl"`
 
+## Custom Indicator
+
+Use the `asChild` prop to render a custom icon as the spinner.
+
+```tsx
+import { Spinner } from "@chakra-ui/react"
+import { LuLoader } from "react-icons/lu"
+
+<Spinner asChild borderWidth="0">
+  <LuLoader />
+</Spinner>
+```
+
 ## Notes
 
 - Use `size="inherit"` to make the spinner match the font size of its container

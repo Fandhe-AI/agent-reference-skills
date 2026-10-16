@@ -34,6 +34,7 @@ import { Collapsible } from "@chakra-ui/react"
 | `collapsedWidth` | `string \| number` | — | Width when collapsed |
 | `lazyMount` | `boolean` | `false` | Whether to enable lazy mounting |
 | `unmountOnExit` | `boolean` | `false` | Whether to unmount content on exit |
+| `hideMode` | `"display-none" \| "activity"` | `"display-none"` | How kept-mounted content is hidden when closed. `"activity"` uses React 19 `Activity` and pauses effects (requires React 19+) |
 | `onOpenChange` | `(details: OpenChangeDetails) => void` | — | Callback when open state changes |
 | `onExitComplete` | `VoidFunction` | — | Callback when exit animation completes |
 

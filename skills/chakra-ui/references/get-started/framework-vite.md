@@ -67,7 +67,21 @@ The `Provider` composes:
 
 ### 5. Setup Vite config paths
 
-Install the `vite-tsconfig-paths` plugin to sync `tsconfig` path aliases with Vite:
+Set up a Vite config path to automatically sync `tsconfig` with Vite. Update `vite.config.ts`:
+
+```ts
+import react from "@vitejs/plugin-react"
+import { defineConfig } from "vite"
+
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    tsconfigPaths: true,
+  },
+})
+```
+
+If you're using Vite 7 or lower, install the `vite-tsconfig-paths` plugin instead of using `resolve.tsconfigPaths`.
 
 ```bash
 npm i -D vite-tsconfig-paths

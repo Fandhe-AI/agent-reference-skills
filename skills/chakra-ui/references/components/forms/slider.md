@@ -46,6 +46,7 @@ import { Slider } from "@chakra-ui/react"
 | `readOnly` | `boolean` | — | Whether the slider is read-only |
 | `onValueChange` | `(details: ValueChangeDetails) => void` | — | Callback during drag |
 | `onValueChangeEnd` | `(details: ValueChangeDetails) => void` | — | Callback when drag ends |
+| `largeStep` | `number` | `10 * step` | Step applied when `Shift` is held or `PageUp` / `PageDown` is used (3.37.0) |
 
 ## Sub-parts
 

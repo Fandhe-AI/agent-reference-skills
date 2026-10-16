@@ -41,6 +41,31 @@ import { PinInput } from "@chakra-ui/react"
 | `invalid` | `boolean` | — | Whether the input is invalid |
 | `onValueChange` | `(details: ValueChangeDetails) => void` | — | Callback when value changes |
 | `onValueComplete` | `(details: ValueChangeDetails) => void` | — | Callback when all fields are filled |
+| `autoSubmit` | `boolean` | — | Whether to auto-submit the owning form when all inputs are filled |
+| `sanitizeValue` | `(value: string) => string` | — | Sanitize pasted values before validation (e.g. strip dashes or spaces) |
+
+## With separator
+
+Wrap each segment in `Group` with `attached`, add a separator between segments in `PinInput.Control`, and set `count` on `PinInput.Root` to the input count.
+
+```tsx
+<PinInput.Root count={6}>
+  <PinInput.HiddenInput />
+  <PinInput.Control alignItems="center" gap="3">
+    <Group attached>
+      <PinInput.Input index={0} />
+      <PinInput.Input index={1} />
+      <PinInput.Input index={2} />
+    </Group>
+    <Span color="fg.subtle">–</Span>
+    <Group attached>
+      <PinInput.Input index={3} />
+      <PinInput.Input index={4} />
+      <PinInput.Input index={5} />
+    </Group>
+  </PinInput.Control>
+</PinInput.Root>
+```
 
 ## Sub-parts
 
@@ -50,6 +75,10 @@ import { PinInput } from "@chakra-ui/react"
 
 - **sizes**: `2xs`, `xs`, `sm`, `md`, `lg`, `xl`, `2xl`
 - **variants**: `outline`, `subtle`, `flushed`
+
+## Notes
+
+- 3.35.0 (Ark UI 5.36.0): `PinInput` also gained `enterKeyHint`, Home/End key handling and improved deletion/focus behavior. `enterKeyHint` is not listed in the Pin Input prop types at 3.37.0.
 
 ## Related
 

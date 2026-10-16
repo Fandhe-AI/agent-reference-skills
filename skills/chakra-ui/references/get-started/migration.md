@@ -47,6 +47,26 @@ Remove these dependencies from your project:
 | Button icons | `leftIcon` / `rightIcon` props | Direct children elements |
 | Alert | Single component | `<Alert.Root>` + `<Alert.Content>` |
 | Tooltip | `label` prop | `content` prop, import from `components/ui` |
+| Custom SVG icons | `<Icon viewBox>` with `<path>` children | `<Icon asChild><svg viewBox="...">...</svg></Icon>` or `createIcon({ displayName, viewBox, path })` |
+| StackDivider | `divider={<StackDivider />}` on stacks | standalone `Separator` between items (not `Stack.Separator`) |
+| IconButton | `isRound` | `borderRadius="full"` |
+| Table cell | `Td` (`isNumeric`) | `Table.Cell` (`textAlign="end"`) |
+| Table header | `Th` | `Table.ColumnHeader` |
+
+Custom SVG icon with `createIcon`:
+
+```tsx
+import { createIcon } from "@chakra-ui/react"
+
+const TriangleIcon = createIcon({
+  displayName: "TriangleIcon",
+  viewBox: "0 0 24 24",
+  path: <path d="M12 2L2 22h20L12 2z" fill="currentColor" />,
+})
+
+// Usage
+<TriangleIcon size="lg" color="red.500" />
+```
 
 ## Additional Resources
 
@@ -56,6 +76,8 @@ Remove these dependencies from your project:
 ## Notes
 
 - Security updates are only released for the latest major version
+- The codemod requires Node.js >=22 (Node 18 and 20 are end-of-life; 3.36.1 changelog)
+- 3.36.1 docs fix: the `StackDivider` and `Stack Props` migration examples use the standalone `Separator`, not `Stack.Separator`
 - Run the codemod before making manual adjustments to minimize effort
 
 ## Related
