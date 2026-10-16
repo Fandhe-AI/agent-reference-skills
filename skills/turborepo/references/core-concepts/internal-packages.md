@@ -105,7 +105,7 @@ Publishing to the npm registry has the strictest requirements, because consumers
 
 ## Notes
 
-- Official docs page: `/docs/core-concepts/internal-packages` (Turborepo v2.11.8 docs source).
+- Source: https://turborepo.dev/docs/core-concepts/internal-packages (vercel/turborepo tag v2.11.8, `apps/docs/content/docs/core-concepts/internal-packages.mdx`).
 - Building a Compiled Package from scratch is covered by the "Creating an Internal Package" guide; publishing is covered by the "Publishing packages" guide.
 
 ## Related

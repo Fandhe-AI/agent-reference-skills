@@ -28,7 +28,15 @@ Automatically updates `turbo.json` for many of the 1.x to 2.0 breaking changes a
 
 #### Add `devEngines.packageManager` to root `package.json`
 
-Turborepo 2.0 requires a package manager declaration in the root `package.json` (for stability and predictable behavior). Use `devEngines.packageManager`; the legacy top-level `packageManager` field is also supported for backwards compatibility:
+Turborepo 2.0 requires a package manager declaration in the root `package.json` (for stability and predictable behavior). On Turborepo 2.11 and later, `devEngines.packageManager` is recommended; the legacy top-level `packageManager` field is also still supported. On 2.0 through 2.10, declare the package manager with the top-level `packageManager` field:
+
+```json
+{
+  "packageManager": "pnpm@9.2.0"
+}
+```
+
+On 2.11+ (`devEngines.packageManager`):
 
 ```json
 {
@@ -70,6 +78,7 @@ The root `package.json`'s `engines` field is now included in the cache hash.
 
 ## Notes
 
+- `devEngines.packageManager` support starts with Turborepo 2.11. The 2.11 release notes ("`devEngines.packageManager` support") say: "Starting with this release, Turborepo respects the `devEngines.packageManager` field in your root `package.json`." The upgrading guide body itself does not distinguish versions.
 - If you use `eslint-config-turbo` (it helps identify environment variables that need to be added to the `env` key), update it to match your major version.
 - `--scope` was deprecated since 1.2 and is removed in 2.0.
 

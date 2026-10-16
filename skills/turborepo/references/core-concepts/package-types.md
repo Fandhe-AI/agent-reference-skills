@@ -14,8 +14,19 @@ Turborepo distinguishes two types of packages.
 - Not independently deployable; they support Application Packages to create the final deployables.
 - Also referred to as Internal Packages, which have their own sub-types.
 
+An Application Package installs a Library Package as a workspace dependency (pnpm / bun syntax):
+
+```json
+{
+  "dependencies": {
+    "@repo/ui": "workspace:*"
+  }
+}
+```
+
 ## Notes
 
+- This page's source (package-types.mdx) has no code example; the snippet is from internal-packages.mdx (v2.11.8).
 - The internal-package compilation strategies (Just-in-Time, Compiled, Publishable) are documented on the separate Internal Packages page (`/docs/core-concepts/internal-packages`), not here.
 
 ## Related
