@@ -27,6 +27,8 @@ export GOOGLE_WORKSPACE_CLI_TOKEN="<access-token>"
 ## Notes
 
 - Auth precedence when multiple methods are configured: (1) `GOOGLE_WORKSPACE_CLI_TOKEN`, (2) `GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE`, (3) encrypted credentials stored by `gws auth login`, (4) plaintext credentials at `~/.config/gws/credentials.json`.
+- Source: https://github.com/googleworkspace/cli/blob/v0.22.5/crates/google-workspace-cli/src/credential_store.rs
+- Source: https://github.com/googleworkspace/cli/blob/v0.22.5/CHANGELOG.md#0223
 
 ## Related
 

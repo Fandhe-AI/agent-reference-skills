@@ -27,6 +27,8 @@ export GOOGLE_WORKSPACE_CLI_CREDENTIALS_FILE="/path/to/credentials.json"
 - Interactive login credentials (priority 3) are encrypted at rest using AES-256-GCM. The encryption key is stored in the OS keyring by default, or in `~/.config/gws/.encryption_key` when `GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND=file`. In the default `keyring` mode there is no `.encryption_key` fallback on macOS/Windows (since v0.22.3) and a file backup is kept on Linux; `file` mode means file only.
 - Environment variables can be loaded from a `.env` file.
 - Related environment variables: `GOOGLE_WORKSPACE_CLI_CLIENT_ID` / `GOOGLE_WORKSPACE_CLI_CLIENT_SECRET` (OAuth client), `GOOGLE_WORKSPACE_CLI_CONFIG_DIR` (override default config dir `~/.config/gws`), `GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND` (`keyring` default or `file`; `file` uses `~/.config/gws/.encryption_key` only; macOS/Windows `keyring` mode has no file fallback since v0.22.3).
+- Source: https://github.com/googleworkspace/cli/blob/v0.22.5/crates/google-workspace-cli/src/credential_store.rs
+- Source: https://github.com/googleworkspace/cli/blob/v0.22.5/CHANGELOG.md#0223
 
 ## Related
 

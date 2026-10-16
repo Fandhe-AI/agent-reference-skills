@@ -25,6 +25,8 @@ GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND=file
 - `file` backend is useful in headless environments or containers (source doc comment: "for Docker/CI/headless").
 - The `~/.config/gws/` path can be changed via `GOOGLE_WORKSPACE_CLI_CONFIG_DIR`.
 - Changed in v0.22.3: macOS/Windows no longer write the `.encryption_key` fallback file (CHANGELOG 80bd150, closes #623).
+- Source: https://github.com/googleworkspace/cli/blob/v0.22.5/crates/google-workspace-cli/src/credential_store.rs
+- Source: https://github.com/googleworkspace/cli/blob/v0.22.5/CHANGELOG.md#0223
 
 ## Related
 

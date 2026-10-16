@@ -80,6 +80,7 @@ export GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND=file
 - v0.22.3 以降、既定（`keyring`）の macOS / Windows はネイティブキーチェーンのみを使い `.encryption_key` を作成しない。旧ファイルは自動削除される
 - キーチェーン失敗時のエラーメッセージ自体が `GOOGLE_WORKSPACE_CLI_KEYRING_BACKEND=file` を案内する
 - Linux は既定モードでもファイルバックアップを維持する
+- 出典: https://github.com/googleworkspace/cli/blob/v0.22.5/crates/google-workspace-cli/src/credential_store.rs, https://github.com/googleworkspace/cli/blob/v0.22.5/CHANGELOG.md#0223
 
 ## ログレベルの設定
 

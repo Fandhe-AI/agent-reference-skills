@@ -12,7 +12,7 @@ gws (Google Workspace CLI) のインストールコマンド集。
 npm install -g @googleworkspace/cli
 ```
 
-GitHub Releases から適切なバイナリを自動ダウンロードする簡便手段。Node.js 18+ 必須。v0.22.5 から postinstall で SHA256 チェックサム検証、バイナリ欠落時は実行時に自動インストール。
+GitHub Releases から適切なバイナリを自動ダウンロードする簡便手段。Node.js 18+ 必須。v0.22.5 から postinstall で SHA256 チェックサム検証、バイナリ欠落時は実行時に自動インストール（出典: https://github.com/googleworkspace/cli/blob/v0.22.5/CHANGELOG.md の 0.22.5 節）。
 
 ## Homebrew でのインストール（macOS / Linux）
 

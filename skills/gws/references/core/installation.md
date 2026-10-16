@@ -43,6 +43,8 @@ gws auth login
 - All installation methods produce the same `gws` binary; the npm package downloads the pre-built binary.
 - Since v0.22.4 the npm package is a zero-dependency installer using native `fetch()` (cargo-dist removed).
 - Since v0.22.5 the npm postinstall verifies the SHA256 checksum of the downloaded binary, and `run.js` auto-installs the binary when it is missing (fixes `gws binary not found` when pnpm skips postinstall).
+- Source: https://github.com/googleworkspace/cli/blob/v0.22.5/CHANGELOG.md#0224
+- Source: https://github.com/googleworkspace/cli/blob/v0.22.5/CHANGELOG.md#0225
 - A Google Cloud project with OAuth credentials is required for interactive use. Service accounts do not require `gws auth login`.
 - This project is not an officially supported Google product. Breaking changes are expected before v1.0.
 
