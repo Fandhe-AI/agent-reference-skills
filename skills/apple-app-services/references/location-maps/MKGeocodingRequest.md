@@ -37,6 +37,7 @@ if let request = MKGeocodingRequest(addressString: "Archibald Fountain, 110 Eliz
 - Replacement for the deprecated `CLGeocoder` forward geocoding (`CLGeocoder` is deprecated in 26.0 with "Use MapKit").
 - The official example contains a typo (`addressMppItems`); the snippet above is condensed from it.
 - Inherits from `NSObject`.
+- Source: https://developer.apple.com/documentation/mapkit/mkgeocodingrequest
 
 ## Related
 

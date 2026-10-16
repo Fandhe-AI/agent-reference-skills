@@ -52,6 +52,7 @@ The criteria to use when searching for discoverable iCloud users, or when creati
 - Deprecated: `contactIdentifiers` (iOS 18.0 / macOS 15.0 / tvOS 18.0 / Mac Catalyst 18.0 / watchOS 11.0 / visionOS 2.0).
 - Deprecated: `CKDiscoverAllUserIdentitiesOperation` (uses the device's contacts to find discoverable iCloud users) and `CKDiscoverUserIdentitiesOperation` (uses provided criteria) are deprecated from iOS 17.0 / macOS 14.0. The overview still describes them as ways to discover identities.
 - Deprecated: `CKContainer.requestApplicationPermission(_:completionHandler:)` is deprecated from iOS 17.0; the docs state "No longer supported. Please see Sharing CloudKit Data with Other iCloud Users."
+- Source: https://developer.apple.com/documentation/cloudkit/ckuseridentity
 
 ## Related
 

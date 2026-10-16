@@ -75,6 +75,8 @@ TextField("Username", text: $username)
 }
 ```
 
+- Source: https://developer.apple.com/documentation/authenticationservices/authorizationcontroller
+
 ## Related
 
 - [ASAuthorizationController](./asauthorizationcontroller.md)

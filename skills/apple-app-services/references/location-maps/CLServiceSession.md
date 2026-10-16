@@ -43,6 +43,7 @@ Each element yielded by `CLServiceSession.Diagnostics` (an `AsyncSequence` class
 - `CLServiceSession.Diagnostics` is a `final class` conforming to `AsyncSequence` whose elements are `CLServiceSession.Diagnostic` structs; observe it to see how authorization state differs from the stated goal.
 - Call `invalidate()` when the app or app extension no longer needs to monitor authorization access to location services.
 - Conforms to `Sendable` and `SendableMetatype`. `AuthorizationRequirement` conforms to `Equatable` and `Hashable`.
+- Source: https://developer.apple.com/documentation/corelocation/clservicesession-pt7n
 
 ## Related
 

@@ -29,6 +29,7 @@ func requestTemporaryFullAccuracyAuthorization(withPurposeKey purposeKey: String
 - `requestTemporaryFullAccuracyAuthorization(withPurposeKey:)` behaves like the `completion:` variant with a `nil` closure; changes are reported through `locationManagerDidChangeAuthorization(_:)`. The `purposeKey` must be a key in the `NSLocationTemporaryUsageDescriptionDictionary` of `Info.plist`.
 - Related Info.plist key: `NSLocationDefaultAccuracyReduced` (Boolean; whether the app requests reduced accuracy by default).
 - Conforms to `BitwiseCopyable`, `Equatable`, `Hashable`, `RawRepresentable`, `Sendable`, `SendableMetatype`.
+- Source: https://developer.apple.com/documentation/corelocation/claccuracyauthorization
 
 ## Related
 

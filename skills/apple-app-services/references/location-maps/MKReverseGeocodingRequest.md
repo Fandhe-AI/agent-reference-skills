@@ -32,6 +32,7 @@ if let request = MKReverseGeocodingRequest(location: location) {
 - iOS 26.0+, iPadOS 26.0+, Mac Catalyst 26.0+, macOS 26.0+, tvOS 26.0+, visionOS 26.0+, watchOS 26.0+.
 - Replacement for the deprecated `CLGeocoder.reverseGeocodeLocation` (`CLGeocoder` is deprecated in 26.0 with "Use MapKit").
 - Inherits from `NSObject`.
+- Source: https://developer.apple.com/documentation/mapkit/mkreversegeocodingrequest
 
 ## Related
 
