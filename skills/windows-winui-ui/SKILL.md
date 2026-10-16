@@ -2,12 +2,13 @@
 name: windows-winui-ui
 description: >
   Windows アプリ開発 (WinUI 3 / XAML) の UI 基盤リファレンス。
-  Grid, StackPanel, Canvas, RelativePanel, SplitView、x:Bind, x:Name, StaticResource,
-  ThemeResource、添付プロパティ、Style, ControlTemplate, DataTemplate,
-  VisualStateManager, ResourceDictionary、Acrylic, Mica, SystemBackdrop,
-  SystemBackdropElement、compact sizing、Binding, INotifyPropertyChanged,
-  ObservableCollection, IValueConverter, MVVM、Storyboard, ConnectedAnimation,
-  ThemeTransition、XamlOptionalChanges。
+  Grid, StackPanel, Canvas, RelativePanel, SplitView, ScrollViewer、x:Bind, x:Name,
+  x:Class, StaticResource, ThemeResource、添付プロパティ, 依存関係プロパティ、Style,
+  ControlTemplate, DataTemplate, VisualStateManager, ResourceDictionary、Acrylic, Mica,
+  SystemBackdrop, SystemBackdropElement、compact sizing、Binding,
+  INotifyPropertyChanged, ObservableCollection, IValueConverter, DataContext, MVVM、
+  Storyboard, DoubleAnimation, EasingFunction, ThemeTransition, ConnectedAnimation,
+  ImplicitAnimation、XamlOptionalChanges。
 user-invocable: false
 ---
 

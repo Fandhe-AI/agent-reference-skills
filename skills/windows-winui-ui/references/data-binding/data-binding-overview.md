@@ -40,7 +40,7 @@ HorizontalAlignment="Center" VerticalAlignment="Center">
 </ListView>
 ```
 
-Details view via `SelectedItem` (requires `{Binding}`):
+Details view via `SelectedItem` (this tutorial uses `{Binding}` with `ElementName` + `DataContext`):
 
 ```xaml
 <StackPanel DataContext="{Binding SelectedItem, ElementName=recordingsListView}"
@@ -51,7 +51,7 @@ Margin="0,24,0,0">
 </StackPanel>
 ```
 
-Details view via `CollectionViewSource` (also `{Binding}`):
+Details view via `CollectionViewSource` (the tutorial also uses `{Binding}`):
 
 ```xaml
 <Grid.Resources>
@@ -98,12 +98,12 @@ public class StringFormatter : Microsoft.UI.Xaml.Data.IValueConverter
 - Source: https://learn.microsoft.com/en-us/windows/apps/develop/data-binding/data-binding-overview (page updated 2026-09-10)
 - Package: `Microsoft.UI.Xaml.Data` (WinUI 3, Windows App SDK). Distinct from WPF `System.Windows.Data.Binding`.
 - Tutorial project: WinUI Blank App (Packaged) C#, named "Quickstart".
-- Collections: `ObservableCollection<T>` implements `INotifyCollectionChanged` and notifies bindings on add/remove. Due to a known WinUI Release-mode bug with .NET 8 and later, `List<T>` may be needed in some scenarios, especially for static collections; with `List<T>` you may not get collection change notifications. Use `ObservableCollection<T>` when the UI must update at runtime. Items must implement `INotifyPropertyChanged` for property-change updates.
+- Collections: `ObservableCollection<T>` implements `INotifyCollectionChanged` and notifies bindings on add/remove. Due to a known WinUI Release-mode bug with .NET 8 and later, `List<T>` may be needed in some scenarios, especially for static collections; with `List<T>` you may not get collection change notifications. Use `ObservableCollection<T>` when the UI must update at runtime. Items (plain CLR classes) should implement `INotifyPropertyChanged` for property-change updates.
 - Without an item template, the framework calls `ToString` on each item (default returns the type name). Fix by overriding `ToString` or providing a data template (`ContentTemplate` of a content control, `ItemTemplate` of an items control).
-- Both details-view techniques (`SelectedItem` and `CollectionViewSource`) require `{Binding}`, not `{x:Bind}`. Binding the details view directly to a `CollectionViewSource` binds to the current item; specifying `CurrentItem` is optional unless ambiguous.
+- The overview states both details-view techniques (`SelectedItem` and `CollectionViewSource`) require `{Binding}`; this applies to the DataContext/ElementName-based markup shown (`x:Bind` has no `ElementName` parameter and doesn't use `DataContext`). Binding the details view directly to a `CollectionViewSource` binds to the current item; specifying `CurrentItem` is optional unless ambiguous.
 - The WinUI `Window` class has no `Resources` property; put the `CollectionViewSource` on the top-level `Grid` (or another parent element), or on `Page.Resources` within a `Page`.
 - `x:Bind` offers compile-time checking, better performance, and strong typing. `Binding` offers runtime evaluation and is more flexible for dynamic scenarios.
-- Scenarios not supported by `x:Bind`: dynamic data structures unknown at compile time; element-to-element binding; automatically inheriting a parent `DataContext`; `x:Bind` requires an explicit `INotifyPropertyChanged` implementation for UI updates in both one-way and two-way bindings (two-way also flows UI changes back to the source).
+- Scenarios not supported by `x:Bind`: dynamic data structures unknown at compile time; `ElementName`-style element-to-element binding (`x:Bind` can still reference a named element by field path, e.g. `{x:Bind recordingsListView.SelectedItem}` with a cast; see the next note); automatically inheriting a parent `DataContext`. The overview states `x:Bind` needs `INotifyPropertyChanged` for UI updates in one-way and two-way bindings; this applies to plain CLR properties. A `DependencyProperty` on a `DependencyObject` source is also observable (see Data binding in depth). Two-way also flows UI changes back to the source.
 - The Data binding in depth page shows `{x:Bind}` binding to a named element via a field path (`{x:Bind slider1.Value}`, `{x:Bind myTextBox.Text, Mode=OneWay}`); the overview's "element-to-element binding" statement refers to the `ElementName`-style binding of `{Binding}`. See [Windows data binding in depth](./data-binding-in-depth.md).
 
 ## Related
