@@ -138,6 +138,7 @@ An async function such as `request_user_input_async` (application-defined, not a
 - Do not complete the call with an acknowledgment that the question was displayed; its result is the user's answer.
 - Async execution does not keep a response open until the user replies. If a question is dismissed or times out, return an explicit no-answer result.
 - If the model called `wait_for_tasks` for that handle, return the answer before the wait status.
+- Source: https://developers.openai.com/api/docs/guides/async-tool-calling (retrieved 2026-10-17, no version pin on the site).
 
 ## Related
 

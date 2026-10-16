@@ -76,6 +76,7 @@ Common `response.steer.failed` error codes:
 - Tool results or approval: if the response needs a client tool result or approval, the API keeps the steering queued and sends `response.steer.pending` after the original response completes. Return the required input with `response.create` on the same connection, with `previous_response_id` set to the original response. Do not repeat the accepted steering; the server implicitly prepends it to `input`. An explicit `response.create` uses its own tools, instructions, and other settings. You do not need to wait for `response.steer.pending` before returning tool results.
 - Queued steering input exists only on the current connection; it is not stored with the original response. Track accepted submissions by `steer.id` (a later failure uses the same ID), record the steering inputs you send, and compare them with response events and history before replaying after a disconnect.
 - The .NET SDK does not provide a Responses WebSocket client, so there is no C# variant of the official example.
+- Source: https://developers.openai.com/api/docs/guides/steering (retrieved 2026-10-17, no version pin on the site).
 
 ## Related
 

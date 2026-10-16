@@ -2,11 +2,12 @@
 name: openai-api-core
 description: >
   OpenAI API (developers.openai.com) の Responses API リファレンス。
+  text generation, embeddings,
   gpt-6-astra / gpt-6.1-sol / gpt-6-luna, structured outputs, streaming,
   function calling, programmatic / async tool calling, conversation state,
   prompt caching, prompt cache diagnostics, reasoning (configuration_update),
   background mode, compaction, multi-agent, WebSocket mode (mid-turn steering, stream_id)。
-  webhooks, error codes, rate limits。
+  webhooks, error codes, rate limits, Realtime API server controls。
   公式 SDK (Python / JavaScript(JS) / .NET / Java / Go / Ruby), openai CLI。
   Chat Completions / Assistants からの移行, deprecations。
 user-invocable: false
