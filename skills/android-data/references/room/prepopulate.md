@@ -72,7 +72,8 @@ fun createMultiStepDb(appContext: Context) {
 - Fallback example (installed v2, app v3, prepackaged v3, no 2 to 3 path, destructive enabled): Room drops the installed database, recreates it and populates it from the prepackaged file. A prepackaged file on version 2 does not match the target version and is not used.
 - Implemented-migration example (same versions, but `MIGRATION_2_3` is added): Room runs `migrate` and preserves existing data. The prepackaged file is not used.
 - Multi-step example (installed v2, app v4, prepackaged v3, only 3 to 4 migration, destructive enabled): Room performs a destructive fallback, populates from the v3 prepackaged file, then runs `MIGRATION_3_4` to reach v4, preserving the copied data.
-- Snippets use the `androidx.room3` API (`Room.databaseBuilder<T>(context, name)`, `suspend fun migrate(connection: SQLiteConnection)`). `setDriver(BundledSQLiteDriver())` is added here because Room 3.0 requires a driver (see room-database-builder); the official prepopulate snippets omit it.
+- Snippets use the `androidx.room3` API (`Room.databaseBuilder<T>(context, name)`, `suspend fun migrate(connection: SQLiteConnection)`). `setDriver(BundledSQLiteDriver())` is added here because Room 3.0 requires a driver (see room-database-builder); the official prepopulate snippets omit it. See [Room 2.x → 3.0 migration guide](https://developer.android.com/training/data-storage/room/migration-2-to-3).
+- Source: [Prepopulate your Room database](https://developer.android.com/training/data-storage/room/prepopulate).
 
 ## Related
 
