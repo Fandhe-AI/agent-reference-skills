@@ -19,7 +19,7 @@ let analyzer = try FaceGroupAnalyzer(workingDirectory: workingDirectory)
 // 1. Add images and detect faces.
 let assets = imageURLs.map { url in
     MediaIntelligenceImageAsset(
-        id: MediaIntelligenceImageAsset.ID(url.lastPathComponent),
+        id: MediaIntelligenceImageAsset.ID(url.standardizedFileURL.path(percentEncoded: false)),
         kind: .url(url)
     )
 }
@@ -52,6 +52,7 @@ for try await (entityID, faces) in analyzer.allFacesByEntityID {
 - `fetchFaces(for:)` and `fetchAssetIDs(for:)` return synchronously from the local store (no `await`).
 - Deleting assets: `deleteAssets(_:)`, `deleteAllAssets()`; afterwards state becomes `stale` if faces remain (existing group assignments remain valid until regrouped). `FaceGroupAnalyzer.purge(workingDirectory:)` permanently deletes all face data, group assignments and metadata.
 - Use the same asset identifier consistently per image; the framework uses it to match new submissions against existing data.
+- The official sample derives the ID from `url.lastPathComponent`; that collides for same-named files in different directories, so use an identifier that is unique per image and stable across runs (e.g. the full standardized path or your own persistent asset ID).
 - Source: https://developer.apple.com/documentation/mediaintelligence/detecting-and-grouping-faces-in-images
 
 ## Related

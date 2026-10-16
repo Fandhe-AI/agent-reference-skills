@@ -16,12 +16,12 @@ do {
 
 ## Options / Props
 
-| Case | Description |
-|------|-------------|
-| `faceGroupProcessing` | The framework can't complete a face grouping operation |
-| `mediaProcessing` | The framework can't process a media asset |
-| `resultFetching` | The framework can't retrieve analysis results |
-| `workingDirectory` | The framework can't access the working directory |
+| Name | Type | Description |
+|------|------|-------------|
+| `faceGroupProcessing` | case | The framework can't complete a face grouping operation |
+| `mediaProcessing` | case | The framework can't process a media asset |
+| `resultFetching` | case | The framework can't retrieve analysis results |
+| `workingDirectory` | case | The framework can't access the working directory |
 
 ## Notes
 

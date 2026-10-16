@@ -9,14 +9,14 @@ class MLModel
 
 // Load synchronously
 let model = try MLModel(contentsOf: modelURL)
-let model = try MLModel(contentsOf: modelURL, configuration: config)
+// let model = try MLModel(contentsOf: modelURL, configuration: config)
 
 // Load asynchronously
-let model = try await MLModel.load(contentsOf: modelURL, configuration: config)
+// let model = try await MLModel.load(contentsOf: modelURL, configuration: config)
 
 // Predict
 let output = try model.prediction(from: inputFeatureProvider)
-let output = try model.prediction(from: inputFeatureProvider, options: options)
+// let output = try model.prediction(from: inputFeatureProvider, options: options)
 
 // Batch predict
 let outputs = try model.predictions(fromBatch: batchProvider)

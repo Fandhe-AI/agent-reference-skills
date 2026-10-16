@@ -31,4 +31,3 @@
 | MLTensor | A multi-dimensional array of numerical or Boolean scalars… | [mltensor.md](./mltensor.md) |
 | MLTensorRangeExpression | A type that can be used to slice a dimension of a tensor… | [mltensorrangeexpression.md](./mltensorrangeexpression.md) |
 | MLTensorScalar | A type that represents the tensor scalar types… | [mltensorscalar.md](./mltensorscalar.md) |
-</content>

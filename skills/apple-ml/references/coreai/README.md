@@ -20,4 +20,3 @@
 | NDArray | A multidimensional array of scalar values used for model… | [ndarray.md](./ndarray.md) |
 | NDArrayDescriptor | A description of an array's shape, scalar type… | [ndarraydescriptor.md](./ndarraydescriptor.md) |
 | SpecializationOptions | Options that control how a model is specialized… | [specializationoptions.md](./specializationoptions.md) |
-</content>

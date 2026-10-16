@@ -1,4 +1,4 @@
-# Natural Language
+# natural-language
 
 | Name | Description | Path |
 |------|-------------|------|

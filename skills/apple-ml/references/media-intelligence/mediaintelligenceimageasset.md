@@ -8,7 +8,7 @@ An image asset to analyze. Each asset has a unique identifier you assign and a `
 struct MediaIntelligenceImageAsset
 
 let asset = MediaIntelligenceImageAsset(
-    id: MediaIntelligenceImageAsset.ID(url.lastPathComponent),
+    id: MediaIntelligenceImageAsset.ID(url.standardizedFileURL.path(percentEncoded: false)),
     kind: .url(url)
 )
 ```
@@ -28,6 +28,7 @@ let asset = MediaIntelligenceImageAsset(
 - iOS 27.0+, iPadOS 27.0+, Mac Catalyst 27.0+, macOS 27.0+, tvOS 27.0+, visionOS 27.0+
 - Conforms to `Sendable` and `SendableMetatype`.
 - Use the same `ID` consistently for a given image. The framework matches new submissions against existing data by this identifier; changing it makes the framework treat the image as a new asset.
+- The official sample derives the ID from `url.lastPathComponent`; that collides for same-named files in different directories, so use an identifier that is unique per image and stable across runs (e.g. the full standardized path or your own persistent asset ID).
 - Only the `.url(_:)` case of `Kind` is shown in the source pages fetched; other cases not confirmed.
 - Source: https://developer.apple.com/documentation/mediaintelligence/mediaintelligenceimageasset
 
