@@ -42,6 +42,7 @@ Indexed assignment also works: `cache[:, offset : offset + 1, :] = x`.
 - MLX pools freed device buffers but reuses a buffer only for a similarly sized request; it does not split a larger buffer or combine smaller ones. A growing cache has a new size every step, so each allocation typically comes from the driver.
 - The allocation work occurs on the CPU and shows up in profiles as GPU idle time between kernels rather than a slow kernel.
 - Use a chunk size that is a multiple of 256. This amortizes growth and enables the fused cuDNN attention kernel on CUDA: for single-token attention, key and value must be slices of a contiguous cache with capacity a multiple of 256 and at least 256 positions in use. Other chunk sizes silently use a slower path.
+- `slice_update` accepts a 0-D or 1-D integer array for `start_indices`, so the 0-D `mx.array(offset)` above is valid with `axes=(1,)` (`normalize_dynamic_slice_inputs` in `mlx/ops.cpp`, v0.32.4, rejects only `ndim > 1`).
 - Source: https://ml-explore.github.io/mlx/build/html/usage/kv_cache.html (pinned source: https://github.com/ml-explore/mlx/blob/v0.32.4/docs/src/usage/kv_cache.rst)
 
 ## Related

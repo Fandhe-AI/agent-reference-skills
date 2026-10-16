@@ -20,6 +20,8 @@ mlx.launch --hosts ip1,ip2 my_script.py
 mlx.launch --backend nccl --hosts linux-1,linux-2 -n 8 -- ./my-job.sh
 ```
 
+v0.32.4 の launcher はスクリプト検証を行わず（v0.32.0 の検証スキップ用オプションは廃止）、`--` 以降の実行可能ファイル（例: `./my-job.sh`）をそのまま起動する（MLX v0.32.4 の usage/launching_distributed.rst）。
+
 ## MPI バックエンドに追加引数を渡す
 
 ```sh
