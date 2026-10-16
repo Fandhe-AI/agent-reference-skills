@@ -24,6 +24,7 @@ Sends a standard HID keycode on press and releases it on key release. This is th
 
 ## Notes
 
+- Full keycode list: https://zmk.dev/docs/keymaps/list-of-keycodes (categories: Keyboard, Modifiers, Keypad, Editing, Media, Applications, Input Assist, Power & Lock).
 - Keycodes span multiple HID usage pages: keyboard keys, modifiers, keypad, media/consumer controls, power, and application shortcuts.
 - Include `<dt-bindings/zmk/keys.h>` for human-readable constants.
 - Raw HID usage IDs can be used directly if the constant is not defined in the header.

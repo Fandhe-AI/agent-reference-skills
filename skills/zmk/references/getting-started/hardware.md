@@ -23,7 +23,9 @@ Separate controller boards paired with keyboard PCBs (shields), organized by int
 ## Notes
 
 - ZMK does **not** support AVR 8-bit processors (e.g., original Arduino Uno, SparkFun Pro Micro) because Zephyr only supports 32-bit and 64-bit platforms.
-- All in-tree boards use a `zmk` board variant for consistency.
+- Tested boards are pre-configured by contributors and marked with a `zmk` board variant (e.g. `nice_nano//zmk`, `planck//zmk`); Zephyr boards alone ship minimal configuration.
+- The official page is organized as Composite Keyboards (per interconnect: Boards + Shields lists), Onboard Controller Keyboards (flat list of board identifiers), and Other Hardware (encoders, RGB underglow, backlight, displays; AVR 8-bit such as ATmega32U4 unsupported).
+- Source: zmkfirmware/zmk `main` (commit 4dd95d7840eb3d5a3f59bb29fbf1ab054715ef85, committed 2026-10-09, fetched 2026-10-16), development docs; latest release is v0.3.0.
 - Any Zephyr-supported platform can theoretically run ZMK, but only a subset has been tested by contributors.
 - New keyboard shield support requires following the contributor documentation and clean room design requirements.
 

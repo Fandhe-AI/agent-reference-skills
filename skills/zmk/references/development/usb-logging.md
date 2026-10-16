@@ -9,7 +9,7 @@ USB logging redirects ZMK's `printk`, console output, and Zephyr log messages to
 ```yaml
 ---
 include:
-  - board: nice_nano
+  - board: nice_nano//zmk
     shield: corne_left
     snippet: zmk-usb-logging
 ```
@@ -17,7 +17,7 @@ include:
 **Local build with `west`:**
 
 ```bash
-west build -b nice_nano -S zmk-usb-logging -- -DSHIELD="corne_left"
+west build -b nice_nano//zmk -S zmk-usb-logging -- -DSHIELD="corne_left"
 ```
 
 **Connect on Linux:**

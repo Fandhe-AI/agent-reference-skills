@@ -6,7 +6,7 @@ Enables runtime keymap updates without reflashing firmware. Users can modify key
 
 ```yaml
 # build.yaml (GitHub Actions)
-- board: <your_board>
+- board: nice_nano//zmk   # <board>//zmk board variant
   shield: <your_shield>
   snippet: studio-rpc-usb-uart
   cmake-args: -DCONFIG_ZMK_STUDIO=y
@@ -14,7 +14,7 @@ Enables runtime keymap updates without reflashing firmware. Users can modify key
 
 ```bash
 # Local build
-west build -S studio-rpc-usb-uart -- -DCONFIG_ZMK_STUDIO=y
+west build -d build/cl_studio -b nice_nano//zmk -S studio-rpc-usb-uart -- -DSHIELD=corne_left -DCONFIG_ZMK_STUDIO=y
 ```
 
 ```dts

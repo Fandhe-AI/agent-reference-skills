@@ -18,6 +18,9 @@ ZMK Firmware — Zephyr RTOS 上に構築されたオープンソース (MIT) �
 公式ドキュメント (zmk.dev/docs) の全 11 カテゴリを構造化。
 keymap 設計・behaviors 選択・config 設定・新規 board/shield 作成・ローカルビルド・トラブルシューティング時に参照する。
 
+出典は zmk.dev/docs (zmkfirmware/zmk main、commit `4dd95d7`、2026-10-09 時点、取得日 2026-10-16)。最新リリース v0.3.0 は Zephyr 4.1 移行前でドキュメント構成が異なる。
+board ID は Zephyr 4.1 の board variant 形式 `<board>//zmk`（例: `nice_nano//zmk`）を使用する。
+
 ## ディレクトリ構成
 
 ```text
