@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/models/retrieve.md / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/models/retrieve.md / last verified: 2026-10-17 -->
 
 # Get a Model
 
@@ -32,7 +32,12 @@ curl https://api.anthropic.com/v1/models/$MODEL_ID \
 
 ### Returns
 
-Returns a single `ModelInfo` object — same shape as [models-list.md](./models-list.md) `data[]` (`id`, `display_name`, `created_at`, `max_input_tokens`, `max_tokens`, `type: "model"`, `capabilities`).
+Returns a single `ModelInfo` object — same shape as [models-list.md](./models-list.md) `data[]` (`id`, `display_name`, `created_at`, `max_input_tokens`, `max_tokens`, `type: "model"`, `capabilities`, plus `lifecycle`, `deprecated_at`, `retires_at`, `line`).
+
+## Notes
+
+- The `anthropic-beta` flag list is the same 51-value list as in models-list.md, including `compact-2026-09-04`, `inline-tools-2026-09-15`, `mcp-client-2026-09-15`, `thinking-binding-controls-2026-08-01`, `thinking-display-updates-2026-08-18`, `mid-conversation-system-clear-at-2026-08-21`, `cache-diagnosis-2026-04-07`, and `spend-limit-reads-2026-09-26`.
+- Example model in the source response: `claude-opus-5-5`.
 
 ## Related
 

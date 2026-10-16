@@ -8,7 +8,7 @@ Mark a large, reused system prompt with `cache_control: {"type": "ephemeral"}` s
 client = anthropic.Anthropic()
 
 response = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1024,
     cache_control={"type": "ephemeral"},
     system="You are an AI assistant tasked with analyzing literary works. Your goal is to provide insightful commentary on themes, characters, and writing style.",
@@ -26,7 +26,7 @@ print(response.usage.model_dump_json())
 const client = new Anthropic();
 
 const response = await client.messages.create({
-  model: "claude-opus-5",
+  model: "claude-opus-5-5",
   max_tokens: 1024,
   cache_control: { type: "ephemeral" },
   system:

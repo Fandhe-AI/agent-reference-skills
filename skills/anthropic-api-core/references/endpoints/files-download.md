@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/beta/files/download.md / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/files/download / last verified: 2026-10-17 -->
 
 # Download File
 
@@ -13,7 +13,6 @@ GET /v1/files/{file_id}/content
 ```bash
 curl https://api.anthropic.com/v1/files/$FILE_ID/content \
     -H 'anthropic-version: 2023-06-01' \
-    -H 'anthropic-beta: files-api-2025-04-14' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY"
 ```
 
@@ -29,12 +28,13 @@ curl https://api.anthropic.com/v1/files/$FILE_ID/content \
 
 | Name | Type | Description |
 |------|------|-------------|
-| `anthropic-beta` | optional array of `AnthropicBeta` | Must include `files-api-2025-04-14`; same beta flag list as [models-list.md](./models-list.md) |
+| `anthropic-version` | optional string | The version of the Claude API you want to use |
+| `anthropic-workspace-id` | optional string | Selects the Workspace for this request; only needed for credentials that can act on more than one Workspace |
 
 ## Notes
 
 - Response body is the raw file bytes (not JSON) with the original `mime_type` as `Content-Type`; not every file is `downloadable` (see [files-retrieve_metadata.md](./files-retrieve_metadata.md)).
-- Files API is in **beta**; requests require the `files-api-2025-04-14` beta header.
+- The Files API is GA: no `anthropic-beta` header is needed. The previous path `api/beta/files/*` with the `files-api-2025-04-14` header is deprecated but still works.
 
 ## Related
 

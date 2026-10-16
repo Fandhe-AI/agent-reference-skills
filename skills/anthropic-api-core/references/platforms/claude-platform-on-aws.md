@@ -37,7 +37,7 @@ curl "https://aws-external-anthropic.us-west-2.api.aws/v1/messages" \
 | Feature availability | Typically same-day as Claude API | Per Bedrock release schedule |
 | Billing | AWS Marketplace | AWS native service |
 
-Model IDs are identical to the first-party Claude API (`claude-sonnet-5`, `claude-opus-4-8`, etc.) — no ARNs, no `anthropic.` prefix. Install: `pip install -U "anthropic[aws]"` / `npm install @anthropic-ai/aws-sdk`.
+Model IDs are identical to the first-party Claude API (`claude-sonnet-5`, `claude-opus-4-8`, etc.) — no ARNs, no `anthropic.` prefix. Available models: Fable 5.1 (`claude-fable-5-1`), Fable 5 (`claude-fable-5`), Opus 5.5 (`claude-opus-5-5`), Opus 5 (`claude-opus-5`), Opus 4.8 / 4.7 / 4.6 / 4.5 (`claude-opus-4-8` / `-4-7` / `-4-6` / `-4-5`), Sonnet 5.5 (`claude-sonnet-5-5`), Sonnet 5 (`claude-sonnet-5`), Sonnet 4.6 (`claude-sonnet-4-6`), Sonnet 4.5 (`claude-sonnet-4-5`, deprecated), Haiku 5.5 (`claude-haiku-5-5`), Haiku 4.5 (`claude-haiku-4-5`). Install: `pip install -U "anthropic[aws]"` / `npm install @anthropic-ai/aws-sdk`.
 
 ## Notes
 

@@ -12,7 +12,7 @@ client = anthropic.Anthropic()
 with client.messages.stream(
     max_tokens=1024,
     messages=[{"role": "user", "content": "Hello"}],
-    model="claude-opus-5",
+    model="claude-opus-5-5",
 ) as stream:
     for text in stream.text_stream:
         print(text, end="", flush=True)
@@ -24,7 +24,7 @@ with client.messages.stream(
 ```typescript
 const stream = client.messages.stream({
   messages: [{ role: "user", content: "Hello" }],
-  model: "claude-opus-5",
+  model: "claude-opus-5-5",
   max_tokens: 1024
 });
 for await (const event of stream) {
@@ -39,7 +39,7 @@ Set `"stream": true` on a Messages API request to receive SSE. SDKs (Python, Typ
 
 ## Event flow
 
-1. `message_start` — `Message` object with empty `content`.
+1. `message_start` — `Message` object with empty `content`. Under the `thinking-binding-controls-2026-08-01` beta header, this `Message` object also carries the `input_transformations` array. After a mid-stream server-side fallback, the final `message_delta` event carries the array again with the serving model's entries.
 2. Per content block: `content_block_start` → one or more `content_block_delta` → `content_block_stop`. Block `index` corresponds to the final `content` array index. During server-side fallback, a `fallback` block arrives as start/stop with no deltas.
 3. One or more `message_delta` events (top-level changes; `usage` token counts are cumulative).
 4. Final `message_stop` event.

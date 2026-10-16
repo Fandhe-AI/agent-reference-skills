@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages / last verified: 2026-10-17 -->
 
 # Mid-conversation system messages and tool changes
 
@@ -19,8 +19,11 @@ Append a `{"role": "system"}` message to `messages` at the point the new instruc
 
 | Feature | Availability | Beta header |
 |---|---|---|
-| Mid-conversation system messages | Claude API, Bedrock, Google Cloud; Claude Fable 5, Claude Mythos 5, Claude Opus 4.8, Claude Opus 5 (not Claude Sonnet 5 — use top-level `system`) | none (GA) |
-| Mid-conversation tool changes | Claude API, Bedrock, Google Cloud; same model set | `mid-conversation-tool-changes-2026-07-01` |
+| Mid-conversation system messages | Claude API, Bedrock, Google Cloud; Claude Fable 5.1, Mythos 5.1, Fable 5, Mythos 5, Opus 5.5, Opus 4.8, Opus 5, Sonnet 5.5, Haiku 5.5 (not Claude Sonnet 5 — use top-level `system`) | none (GA) |
+| Mid-conversation tool changes (by reference or by value) | Claude API; same model set | `inline-tools-2026-09-15` |
+| Mid-conversation tool changes (by reference only) | Claude API, Bedrock, Google Cloud; same model set | `mid-conversation-tool-changes-2026-07-01` (still works; cannot carry a full tool definition) |
+| Add an MCP server mid-conversation | Claude API only | `inline-tools-2026-09-15` + `mcp-client-2026-09-15` |
+| Turn-scoped system messages (`clear_at`) | Same models and platforms as mid-conversation system messages | `mid-conversation-system-clear-at-2026-08-21` |
 
 **Tool changes** (beta): declare the full tool set in `tools` up front (unchanged for the whole conversation), then use `tool_addition` / `tool_removal` content blocks inside a `role: "system"` message to offer/withdraw a tool from that point onward:
 
@@ -30,8 +33,20 @@ Append a `{"role": "system"}` message to `messages` at the point the new instruc
 ]}
 ```
 
-- `tool` can reference: `{"type": "tool_reference", "name": "..."}` (a tool in `tools`), `mcp_tool_reference` (`server_name` + `name`), or `mcp_toolset_reference` (`server_name`, whole MCP toolset). Referencing an undeclared name returns a 400 error.
+- `tool` can reference: `{"type": "tool_reference", "name": "..."}` (a tool in `tools`), `mcp_tool_reference` (`server_name` + `name`), or `mcp_toolset_reference` (`server_name`, whole MCP toolset). Referencing an undeclared name returns a 400 error (on the Claude API, with `error.details.error_code` set to `tool_reference_unresolved`).
 - Declare a tool with `defer_loading: true` to keep it withheld until a `tool_addition` surfaces it; `tool_addition` also re-offers a tool an earlier `tool_removal` withdrew.
+
+**Define tools in a message** (beta, `inline-tools-2026-09-15`): a `tool_addition` block can carry the tool's full definition (by value) instead of naming it by reference, to introduce a tool unknown at the start of the conversation or whose schema changes later. The `tools` array and earlier messages stay as sent, so the prompt cache still hits. The header also covers add/remove by reference, so `mid-conversation-tool-changes-2026-07-01` need not be sent as well; that older header does not support full definitions.
+
+**Add an MCP server mid-conversation** (beta, Claude API only): send `mcp-client-2026-09-15` together with `inline-tools-2026-09-15`. The `definition` in a `tool_addition` block can then be an `mcp_toolset`, with the server's connection details listed in `mcp_servers` as usual. `mcp-client-2026-09-15` includes everything `mcp-client-2025-11-20` does. A response for which the API fetched a server's tool list starts with an `mcp_tool_listing` block; send the assistant message back unchanged and keep sending the header.
+
+**Turn-scoped system messages** (beta): set `clear_at` on a `role: "system"` message. `"never"` (default) renders on every request; `"next_user_message"` renders only while no `role: "user"` message follows it (a user message carrying only `tool_result` blocks counts), then is cleared (stays in the array, renders nothing, costs no input tokens). Requires header `mid-conversation-system-clear-at-2026-08-21`; without it `clear_at` is rejected as an unknown field.
+
+```json
+{"role": "system", "clear_at": "next_user_message", "content": "The reader is on call: keep this reply under 50 words."}
+```
+
+- Turn-scoped messages: re-send cleared messages verbatim (editing one misses the cache and, on Fable 5.1 / Opus 5.5 / Sonnet 5.5 / Haiku 5.5, fails the thinking-block conversation check); text only (`tool_addition` / `tool_removal` / `output_config` return 400); no `cache_control` on their blocks.
 
 ## Notes
 

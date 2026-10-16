@@ -8,7 +8,7 @@ Get validated JSON results from agent workflows. Two complementary features: JSO
 
 ```python
 response = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1024,
     messages=[{"role": "user", "content": "Extract the key info..."}],
     output_config={
@@ -43,7 +43,7 @@ Combine with strict tool use by adding `"strict": true` and `additionalPropertie
 ## Notes
 
 - Migrating from beta: `output_format` parameter moved to `output_config.format`; beta headers no longer required (old beta header `structured-outputs-2025-11-13` and `output_format` still work during a transition period).
-- Supported models: claude-fable-5, claude-mythos-5, claude-mythos-preview, claude-opus-5, claude-opus-4-8/4-7/4-6, claude-sonnet-5/4-6/4-5, claude-opus-4-5, claude-haiku-4-5. Platforms: Claude API, Claude Platform on AWS, Amazon Bedrock (partial), Google Cloud, Microsoft Foundry (Hosted on Anthropic only).
+- Supported models: claude-fable-5-1, claude-mythos-5-1, claude-fable-5, claude-mythos-5, claude-mythos-preview, claude-opus-5-5, claude-opus-5, claude-opus-4-8/4-7/4-6, claude-sonnet-5-5, claude-sonnet-5, claude-sonnet-4-6, claude-sonnet-4-5, claude-opus-4-5, claude-haiku-5-5, claude-haiku-4-5. Platforms: Claude API, Claude Platform on AWS, Amazon Bedrock (only the legacy Opus 4.6-and-earlier integration, not Claude in Amazon Bedrock), Google Cloud, Microsoft Foundry (Hosted on Anthropic only).
 - ZDR eligible, excluding Covered Models; only JSON schemas are cached (up to 24h), prompts/outputs are not stored.
 - **Supported JSON Schema subset:** all basic types; `enum` (primitives only, case-sensitive); `const`; `anyOf`/`allOf` (no `allOf` with `$ref`); `$ref`/`$def`/`definitions` (no external `$ref`); `default`; `required`; `additionalProperties: false` (objects, mandatory); string formats `date-time`, `time`, `date`, `duration`, `email`, `hostname`, `uri`, `ipv4`, `ipv6`, `uuid`; array `minItems` (0 or 1 only); regex `pattern` (no lookaround, named groups, backreferences, recursion).
 - **Not supported:** recursive schemas, complex enum types, external `$ref`, numeric/string length constraints (`minimum`, `maximum`, `minLength`, `maxLength`), `additionalProperties` other than `false`. Unsupported features return a 400 error.

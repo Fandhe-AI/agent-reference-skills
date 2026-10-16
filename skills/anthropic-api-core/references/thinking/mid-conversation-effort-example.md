@@ -7,7 +7,7 @@ Worked example: a session-level "orchestration mode" switch that grants standing
 ## Signature / Usage
 
 ```python
-MODEL = "claude-opus-5"
+MODEL = "claude-opus-5-5"
 EFFORT = "xhigh"
 
 MODE_ENTER = (

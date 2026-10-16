@@ -8,7 +8,7 @@ Enable adaptive thinking so Claude decides when and how deeply to reason before 
 client = anthropic.Anthropic()
 
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5-5",
     max_tokens=16000,
     thinking={"type": "adaptive", "display": "summarized"},
     messages=[
@@ -30,7 +30,7 @@ for block in response.content:
 const client = new Anthropic();
 
 const response = await client.messages.create({
-  model: "claude-opus-4-8",
+  model: "claude-opus-5-5",
   max_tokens: 16000,
   thinking: {
     type: "adaptive",
@@ -55,7 +55,7 @@ for (const block of response.content) {
 
 ## Notes
 
-- On Claude Opus 5, Claude Sonnet 5, Claude Fable 5, and Claude Mythos 5, thinking is already on by default with `display` defaulting to `"omitted"`; pass `thinking: {"type": "adaptive", "display": "summarized"}` to see the reasoning text. On Claude Opus 4.8 / 4.7 / 4.6 and Claude Sonnet 4.6, thinking is off until you set `thinking: {type: "adaptive"}` as shown above.
+- On Claude Opus 5, Claude Sonnet 5, Claude Fable 5, and Claude Mythos 5, thinking is already on by default with `display` defaulting to `"omitted"`; pass `thinking: {"type": "adaptive", "display": "summarized"}` to see the reasoning text. On Claude Opus 4.8 / 4.7 / 4.6 and Claude Sonnet 4.6, thinking is off until you set `thinking: {type: "adaptive"}`.
 - Control reasoning depth with `output_config: {"effort": ...}` rather than a token budget; do not pass `"adaptive"` as an `effort` value — `effort` and `thinking` are separate parameters.
 - Manual extended thinking (`thinking: {"type": "enabled", "budget_tokens": N}`) is deprecated on Claude 4.6 models and rejected with a 400 error on Claude 4.7 and later — use adaptive thinking (this sample) on any current model instead.
 - Streaming adaptive thinking emits `thinking_delta` events followed by a `signature_delta` just before `content_block_stop`; see the streaming sample in this skill for the event shapes.

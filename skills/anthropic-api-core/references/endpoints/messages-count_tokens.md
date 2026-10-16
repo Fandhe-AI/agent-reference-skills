@@ -16,7 +16,7 @@ curl https://api.anthropic.com/v1/messages/count_tokens \
     -H 'anthropic-version: 2023-06-01' \
     -H "X-Api-Key: $ANTHROPIC_API_KEY" \
     -d '{
-          "model": "claude-opus-4-6",
+          "model": "claude-opus-5-5",
           "messages": [{"role": "user", "content": "Hello, world"}]
         }'
 ```
@@ -27,7 +27,8 @@ curl https://api.anthropic.com/v1/messages/count_tokens \
 |------|------|-------------|
 | `anthropic-user-profile-id` (header) | optional string | Same semantics as in Create a Message |
 | `messages` | array of `MessageParam` | Same shape as [messages-create.md](./messages-create.md) `messages` |
-| `model` | `Model` | Same model IDs as [messages-create.md](./messages-create.md) |
+| `model` | `Model` | Same model IDs as [messages-create.md](./messages-create.md), including `claude-haiku-5-5`, `claude-sonnet-5-5`, `claude-fable-5-1`, `claude-opus-5-5`, `claude-mythos-5-1` |
+| `speed` | optional `"standard"` \| `"fast"` \| null | Inference speed mode for this request. Some models require the `fast-mode-2026-02-01` beta header for any `speed` value (see fast mode) |
 | `system`, `tools`, `tool_choice`, `thinking` | optional | Same shape as `messages-create.md`; included only to influence the token count |
 
 ### Returns

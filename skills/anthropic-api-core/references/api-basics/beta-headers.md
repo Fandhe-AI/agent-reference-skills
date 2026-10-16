@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/api/beta-headers / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/api/beta-headers / last verified: 2026-10-17 -->
 
 # Beta headers
 
@@ -10,22 +10,24 @@ Access experimental features and new model capabilities before general availabil
 curl https://api.anthropic.com/v1/messages \
   -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
-  -H "anthropic-beta: files-api-2025-04-14" \
+  -H "anthropic-beta: context-management-2025-06-27" \
   -H "content-type: application/json" \
-  -d '{"model": "claude-opus-5", "max_tokens": 1024, "messages": [{"role":"user","content":"Hello, Claude"}]}'
+  -d '{"model": "claude-opus-5-5", "max_tokens": 1024, "messages": [{"role":"user","content":"Hello, Claude"}]}'
 ```
 
 ```python
 client = Anthropic()
 response = client.beta.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1024,
     messages=[{"role": "user", "content": "Hello, Claude"}],
-    betas=["files-api-2025-04-14"],
+    betas=["context-management-2025-06-27"],
 )
 ```
 
-Multiple beta features: comma-separate in the header (`anthropic-beta: feature1,feature2,feature3`), or pass a list to `betas=[...]` in the SDKs.
+CLI: `ant beta:messages create --beta context-management-2025-06-27 --model claude-opus-5-5 --max-tokens 1024 --message '{role: user, content: "Hello, Claude"}'`.
+
+Multiple beta features: comma-separate in the header (`anthropic-beta: feature1,feature2,feature3`), send the `anthropic-beta` header more than once (the Claude API reads every one, equivalent to the comma-separated form), or pass a list to `betas=[...]` in the SDKs. With the CLI, pass one `--beta feature1,feature2` or repeat `--beta feature1 --beta feature2`.
 
 ## Options / Props
 
@@ -41,6 +43,7 @@ Multiple beta features: comma-separate in the header (`anthropic-beta: feature1,
 
 ## Notes
 
+- **Beta features on other platforms:** beta names are the same on every platform that accepts them, but not every platform accepts every beta. Claude Platform on AWS, Microsoft Foundry, and Google Cloud take beta names in the `anthropic-beta` header; to send several, put them in one comma-separated header — Google Cloud reads only one `anthropic-beta` header and ignores the rest. Claude in Amazon Bedrock (`bedrock-mantle` endpoints) takes them in the `anthropic-beta` header; the InvokeModel API reads them from the request body's `anthropic_beta` array (e.g. `"anthropic_beta": ["feature1", "feature2"]`).
 - SDKs expose a `beta` namespace that sends the header for you automatically; add endpoint-specific headers yourself only for raw HTTP requests.
 - Beta feature names follow `feature-name-YYYY-MM-DD`; use the exact documented name.
 - Invalid/inaccessible beta name → 400 `invalid_request_error`.

@@ -13,7 +13,7 @@ beta 版 messages / models エンドポイント（`/v1/messages?beta=true` 等�
 | Create a Text Completion | [レガシー] Text Completion。Messages API が後継 | [completions-create.md](./completions-create.md) |
 | Delete File | ファイル削除 | [files-delete.md](./files-delete.md) |
 | Download File | ファイル内容ダウンロード。raw バイナリ・元の MIME type | [files-download.md](./files-download.md) |
-| List Files | Files API アップロード済みファイル一覧。scope_id フィルタサポート | [files-list.md](./files-list.md) |
+| List Files | Files API (GA) アップロード済みファイル一覧。page / next_page カーソル・ids[] 指定 | [files-list.md](./files-list.md) |
 | Get File Metadata | ファイルメタデータ取得 | [files-retrieve_metadata.md](./files-retrieve_metadata.md) |
 | Upload File | ファイルアップロード。Messages API リクエストでの参照・実行用入力 | [files-upload.md](./files-upload.md) |
 | Count Tokens in a Message | トークンカウント。レート制限・コスト管理・プロンプト長フィッティング用 | [messages-count_tokens.md](./messages-count_tokens.md) |

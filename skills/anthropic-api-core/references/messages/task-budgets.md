@@ -8,7 +8,7 @@ Give Claude an advisory token budget for a full agentic loop (thinking, tool cal
 
 ```python
 with client.beta.messages.stream(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=128000,
     output_config={
         "effort": "high",
@@ -30,7 +30,7 @@ Set `output_config.task_budget` with beta header `anthropic-beta: task-budgets-2
 | `total` | Tokens Claude can spend across the whole agentic loop (thinking + tool calls + tool results + output). Minimum 20,000 tokens (400 error below) |
 | `remaining` (optional) | Budget remainder carried over from a prior request/compaction; defaults to `total` if omitted |
 
-Supported models (beta, `task-budgets-2026-03-13` header): Claude Opus 5, Claude Fable 5, Claude Mythos 5, Claude Opus 4.8, Claude Opus 4.7. Not supported: Claude Sonnet 5, Claude Opus 4.6, Claude Sonnet 4.6, Claude Haiku 4.5, Claude Code, Cowork.
+Supported models (beta, `task-budgets-2026-03-13` header): Claude Fable 5.1, Claude Mythos 5.1, Claude Opus 5.5, Claude Opus 5, Claude Fable 5, Claude Mythos 5, Claude Sonnet 5.5, Claude Haiku 5.5, Claude Opus 4.8, Claude Opus 4.7. Not supported: Claude Sonnet 5, Claude Opus 4.6, Claude Sonnet 4.6, Claude Haiku 4.5, Claude Code, Cowork.
 
 ## Notes
 

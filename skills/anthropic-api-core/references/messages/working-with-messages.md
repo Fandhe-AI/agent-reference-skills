@@ -8,7 +8,7 @@ Practical patterns for the Messages API: basic requests, multi-turn conversation
 
 ```python
 message = anthropic.Anthropic().messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1024,
     messages=[{"role": "user", "content": "Hello, Claude"}],
 )
@@ -18,7 +18,7 @@ print(message)
 ```typescript
 const anthropic = new Anthropic();
 const message = await anthropic.messages.create({
-  model: "claude-opus-5",
+  model: "claude-opus-5-5",
   max_tokens: 1024,
   messages: [{ role: "user", content: "Hello, Claude" }]
 });
@@ -30,7 +30,7 @@ const message = await anthropic.messages.create({
   "type": "message",
   "role": "assistant",
   "content": [{ "type": "text", "text": "Hello!" }],
-  "model": "claude-opus-5",
+  "model": "claude-opus-5-5",
   "stop_reason": "end_turn",
   "stop_sequence": null,
   "usage": { "input_tokens": 12, "output_tokens": 6 }

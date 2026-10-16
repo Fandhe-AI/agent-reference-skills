@@ -8,15 +8,14 @@ Diagnose unexpected prompt-cache misses by comparing consecutive requests and id
 
 ```python
 r1 = client.beta.messages.create(
-    model="claude-opus-5", max_tokens=1024,
+    model="claude-opus-5-5", max_tokens=1024,
     cache_control={"type": "ephemeral"}, system=SYSTEM,
     messages=[{"role": "user", "content": "Summarize section 1."}],
     diagnostics={"previous_message_id": None},
-    betas=["cache-diagnosis-2026-04-07"],
 )
 
 r2 = client.beta.messages.create(
-    model="claude-opus-5", max_tokens=1024,
+    model="claude-opus-5-5", max_tokens=1024,
     cache_control={"type": "ephemeral"}, system=SYSTEM,
     messages=[
         {"role": "user", "content": "Summarize section 1."},
@@ -24,7 +23,6 @@ r2 = client.beta.messages.create(
         {"role": "user", "content": "Now summarize section 2."},
     ],
     diagnostics={"previous_message_id": r1.id},
-    betas=["cache-diagnosis-2026-04-07"],
 )
 ```
 
@@ -39,7 +37,7 @@ r2 = client.beta.messages.create(
 
 ## Notes
 
-- Beta header required: `cache-diagnosis-2026-04-07`. Streaming: `diagnostics` appears on the `message_start` event.
+- The `cache-diagnosis-2026-04-07` beta header is no longer required; requests that still send it work as before. Streaming: `diagnostics` appears on the `message_start` event.
 - Fingerprints contain only hashes and token-count estimates (never raw prompt content); ZDR eligible; scoped to org/workspace; expire after a short period.
 - Reading alongside `usage.cache_read_input_tokens`: `diagnostics: null` + high cache-read = working as expected; `diagnostics: null` + low/zero cache-read = cache entry expired, not a request bug; a `*_changed` reason + low cache-read = your bug, fix the cause; a `*_changed` reason + high cache-read = rare, low-impact late divergence.
 - Not available on Amazon Bedrock or Google Cloud.

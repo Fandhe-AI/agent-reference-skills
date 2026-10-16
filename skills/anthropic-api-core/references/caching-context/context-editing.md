@@ -8,7 +8,7 @@ Server-side strategies to selectively clear specific content from conversation h
 
 ```python
 response = client.beta.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=4096,
     messages=[{"role": "user", "content": "Create a calculator app using Python"}],
     tools=[
@@ -57,9 +57,10 @@ Combine both: list `clear_thinking_20251015` first in `edits`.
 - Token counting endpoint (`/v1/messages/count_tokens`) supports `context_management` to preview savings without sending the real request.
 - Tool result clearing invalidates cached prompt prefixes when content is cleared; thinking block clearing preserves cache when blocks are kept.
 - Combine with the memory tool to have Claude persist essential info to memory files before tool results are cleared.
-- Client-side compaction (`tool_runner` in Python/TypeScript/Ruby SDKs, `compaction_control: {enabled, context_token_threshold, model, summary_prompt}`) is available but Anthropic recommends server-side compaction instead — see compaction.md.
+- Client-side compaction (`tool_runner` in Python/TypeScript/Ruby SDKs, `compaction_control: {enabled, context_token_threshold, model, summary_prompt}`) is available but Anthropic recommends server-side compaction instead — see compaction.md (overview of on-demand vs threshold compaction). `compaction_control` is deprecated in the TypeScript and Ruby SDKs (removed in Python SDK v1.0); with a tool runner, pass the `compact_20260112` edit in `context_management` instead.
 
 ## Related
 
 - [compaction.md](./compaction.md)
+- [preserved-thinking.md](../thinking/preserved-thinking.md)
 - [context-windows.md](./context-windows.md)

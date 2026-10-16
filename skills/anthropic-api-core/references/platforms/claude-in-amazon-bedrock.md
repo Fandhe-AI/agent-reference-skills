@@ -12,7 +12,7 @@ from anthropic import AnthropicBedrockMantle
 client = AnthropicBedrockMantle(aws_region="us-east-1")
 
 message = client.messages.create(
-    model="anthropic.claude-opus-5",
+    model="anthropic.claude-opus-5-5",
     max_tokens=1024,
     messages=[{"role": "user", "content": "Hello, Claude"}],
 )
@@ -24,24 +24,31 @@ curl https://bedrock-mantle.us-east-1.api.aws/anthropic/v1/messages \
   --user "$AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY" \
   -H "x-amz-security-token: $AWS_SESSION_TOKEN" \
   -H "anthropic-version: 2023-06-01" \
-  -d '{"model": "anthropic.claude-opus-5", "max_tokens": 1024, "messages": [{"role":"user","content":"Hello, Claude"}]}'
+  -d '{"model": "anthropic.claude-opus-5-5", "max_tokens": 1024, "messages": [{"role":"user","content":"Hello, Claude"}]}'
 ```
 
 ## Options / Props
 
 | Model | Model ID | Access |
 |---|---|---|
+| Claude Fable 5.1 | `anthropic.claude-fable-5-1` | Open |
+| Claude Mythos 5.1 (limited availability) | `anthropic.claude-mythos-5-1` | Active (verification required) |
 | Claude Fable 5 | `anthropic.claude-fable-5` | Open |
+| Claude Mythos 5 (limited availability) | `anthropic.claude-mythos-5` | Active (verification required) |
+| Claude Mythos Preview | `anthropic.claude-mythos-preview` | Invitation only |
+| Claude Opus 5.5 | `anthropic.claude-opus-5-5` | Per model access console |
 | Claude Opus 5 | `anthropic.claude-opus-5` | Per model access console |
 | Claude Opus 4.8 / 4.7 | `anthropic.claude-opus-4-8` / `-4-7` | Open |
+| Claude Sonnet 5.5 | `anthropic.claude-sonnet-5-5` | Per model access console |
 | Claude Sonnet 5 | `anthropic.claude-sonnet-5` | Open |
+| Claude Haiku 5.5 | `anthropic.claude-haiku-5-5` | Per model access console |
 | Claude Haiku 4.5 | `anthropic.claude-haiku-4-5` | Open |
-| Claude Mythos Preview | `anthropic.claude-mythos-preview` | Invitation only |
 
 Install: `pip install -U "anthropic[bedrock]"` / `npm install @anthropic-ai/bedrock-sdk`.
 
 ## Notes
 
+- Access is set per model by Amazon Bedrock: Fable 5.1, Fable 5, Opus 4.8, Sonnet 5, Opus 4.7, and Haiku 4.5 are open to all customers; for any other model check the Bedrock model access console. Mythos Preview requires an invitation through Project Glasswing.
 - Three auth paths: Bedrock service role (recommended), IAM assumed roles (12h max session), bearer tokens (12h max, least preferred).
 - Supported: Messages API, prompt caching, thinking, tool use (bash/computer use/memory/text editor), citations, structured outputs.
 - Not supported: URL image/document sources, Files API, server-side tools (code execution, web search/fetch, advisor), Agent Skills, MCP connector, programmatic tool calling, Message Batches/Models/Admin/Compliance/Usage APIs, Claude Managed Agents, server-side fallback.

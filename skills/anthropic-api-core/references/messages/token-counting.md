@@ -8,7 +8,7 @@ Count the tokens in a message before sending it to Claude, via the `count_tokens
 
 ```python
 response = client.messages.count_tokens(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     system="You are a scientist",
     messages=[{"role": "user", "content": "Hello, Claude"}],
 )
@@ -19,7 +19,7 @@ print(response.json())  # {"input_tokens": 14}
 curl https://api.anthropic.com/v1/messages/count_tokens \
   -H "x-api-key: $ANTHROPIC_API_KEY" -H "anthropic-version: 2023-06-01" \
   -H "content-type: application/json" \
-  -d '{"model": "claude-opus-5", "messages": [{"role": "user", "content": "Hello, Claude"}]}'
+  -d '{"model": "claude-opus-5-5", "messages": [{"role": "user", "content": "Hello, Claude"}]}'
 ```
 
 Accepts the same input shape as `messages.create` (system prompt, `tools`, images, PDFs, `thinking`) and returns `{"input_tokens": N}`.

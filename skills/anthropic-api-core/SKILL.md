@@ -2,10 +2,10 @@
 name: anthropic-api-core
 description: >
   Claude API (platform.claude.com) の Messages API リファレンス。
-  streaming (SSE), thinking (adaptive) / effort, prompt caching, context editing, compaction,
-  structured outputs, Message Batches, token counting, vision / PDF, Files API, citations,
-  embeddings (Voyage AI)。
-  errors, rate limits, beta headers, Amazon Bedrock / Vertex AI / Foundry 経由アクセスを含む。
+  streaming (SSE), thinking (adaptive) / preserved thinking / effort, prompt caching, context editing,
+  compaction (on-demand / threshold), structured outputs, Message Batches, token counting,
+  vision / PDF, Files API, citations, embeddings (Voyage AI), errors, rate limits, beta headers,
+  Bedrock / Vertex AI / Foundry 経由アクセス。
 user-invocable: false
 ---
 
@@ -18,6 +18,8 @@ prompt caching・structured outputs・Message Batches・vision/PDF・Files API �
 
 Tool use・Agent Skills (SKILL.md)・MCP connector は `anthropic-api-tools-mcp`、Claude Code 本体は `anthropic-claude-code`、
 Agent SDK は `anthropic-agent-sdk` を参照（本スキルは Claude API 本体の呼び出し方を担当）。
+
+対象: platform.claude.com Markdown twins の取得日 2026-10-16（URL にバージョンが無いため取得日を pin とする）。`scripts/` の `setup.md` / `headers.md` と `curl-endpoints.md` の files エンドポイントは 2026-10-17 に再確認。
 
 ## ディレクトリ構成
 
@@ -69,6 +71,7 @@ skills/anthropic-api-core/
       effort.md
       extended-thinking.md
       mid-conversation-effort-example.md
+      preserved-thinking.md
       thinking-steering-and-cost.md
       thinking-tool-workflows.md
       thinking-troubleshooting.md
@@ -77,6 +80,11 @@ skills/anthropic-api-core/
       README.md
       cache-diagnostics.md
       compaction.md
+      compaction-background.md
+      compaction-keep-recent-turns.md
+      compaction-on-demand.md
+      compaction-threshold.md
+      compaction-thinking-blocks.md
       context-editing.md
       context-windows.md
       prompt-caching.md
@@ -115,6 +123,7 @@ skills/anthropic-api-core/
     structured-outputs.md
     vision-pdf.md
     token-counting.md
+    compaction-on-demand.md
   scripts/
     README.md
     setup.md
@@ -137,10 +146,10 @@ skills/anthropic-api-core/
 | API キー取得・最初の API 呼び出し・Messages API と Managed Agents の使い分けを知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | エラーコード・レート制限・beta ヘッダー（`anthropic-beta`）・API バージョン（`anthropic-version`）・service tiers・対応リージョンを知りたい | api-basics | [references/api-basics/README.md](references/api-basics/README.md) |
 | Messages API でテキストを生成する・ストリーミング（SSE）・vision/PDF・citations・search results・embeddings・stop reasons を扱いたい | messages | [references/messages/README.md](references/messages/README.md) |
-| 構造化出力（`output_config.format`）・Message Batches・Files API・fast mode・task budgets・多言語対応を知りたい | messages | [references/messages/README.md](references/messages/README.md) |
-| 思考（adaptive thinking / `effort`）・レガシー extended thinking（固定 `budget_tokens`）・思考のツール連携やトラブルシューティングを知りたい | thinking | [references/thinking/README.md](references/thinking/README.md) |
-| prompt caching（`cache_control`）・context editing・compaction・context windows・cache diagnostics を扱いたい | caching-context | [references/caching-context/README.md](references/caching-context/README.md) |
+| 構造化出力（`output_config.format`）・Message Batches・Files API (GA)・fast mode・task budgets・多言語対応を知りたい | messages | [references/messages/README.md](references/messages/README.md) |
+| 思考（adaptive thinking / `effort`）・レガシー extended thinking（固定 `budget_tokens`）・preserved thinking（`block_binding.prefix_mismatch_behavior`, `input_transformations`）・`display: "updates"`・思考のツール連携やトラブルシューティングを知りたい | thinking | [references/thinking/README.md](references/thinking/README.md) |
+| prompt caching（`cache_control`）・context editing・compaction on demand（`compaction` param, compact-2026-09-04）/ 閾値 compaction（compact_20260112）・直近ターン保持・バックグラウンド compaction・context windows・cache diagnostics を扱いたい | caching-context | [references/caching-context/README.md](references/caching-context/README.md) |
 | Messages / Batches / Files / Models の各エンドポイントのリクエスト・レスポンス仕様（curl 相当）を確認したい | endpoints | [references/endpoints/README.md](references/endpoints/README.md) |
 | Amazon Bedrock / Google Cloud Vertex AI / Microsoft Foundry / Claude Platform on AWS 経由で Claude API を呼びたい | platforms | [references/platforms/README.md](references/platforms/README.md) |
-| 典型的な使い方を知りたい（基本呼び出し, streaming, thinking, batches, prompt caching, structured outputs, vision/PDF, token counting） | samples | [samples/README.md](samples/README.md) |
+| 典型的な使い方を知りたい（基本呼び出し, streaming, thinking, batches, prompt caching, structured outputs, vision/PDF, token counting, compaction on demand） | samples | [samples/README.md](samples/README.md) |
 | API キー設定・SDK/CLI インストール・curl でのエンドポイント呼び出し・ヘッダー指定例を知りたい | scripts | [scripts/README.md](scripts/README.md) |

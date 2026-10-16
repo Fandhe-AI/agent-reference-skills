@@ -1,4 +1,4 @@
-<!-- source: https://platform.claude.com/docs/en/build-with-claude/vision , https://platform.claude.com/docs/en/build-with-claude/pdf-support / last verified: 2026-08-07 -->
+<!-- source: https://platform.claude.com/docs/en/build-with-claude/vision , https://platform.claude.com/docs/en/build-with-claude/pdf-support , https://platform.claude.com/docs/en/build-with-claude/files / last verified: 2026-08-07 -->
 
 # Vision and PDF Input
 
@@ -10,7 +10,7 @@ image1_media_type = "image/png"
 
 client = anthropic.Anthropic()
 message = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1024,
     messages=[
         {
@@ -35,7 +35,7 @@ print(message)
 ```python
 client = anthropic.Anthropic()
 message = client.messages.create(
-    model="claude-opus-5",
+    model="claude-opus-5-5",
     max_tokens=1024,
     messages=[
         {
@@ -60,6 +60,7 @@ print(message.content)
 ## Notes
 
 - Image `source.type` accepts `base64`, `url`, or `file` (a `file_id` from the Files API); the same three source types apply to `document` (PDF) blocks. Amazon Bedrock and Google Cloud only support `base64` sources.
+- The Files API is GA: upload with `client.files.upload(file=("document.pdf", f, "application/pdf"))` (not `client.beta.files`), then reference `{"type": "file", "file_id": file_upload.id}` in the block's `source` with a normal `client.messages.create` call and no beta header.
 - PDFs are processed as a combination of extracted text and a per-page rendered image, so PDF requests are subject to the same per-image token costs and limitations as vision (`⌈width / 28⌉ × ⌈height / 28⌉` visual tokens per page).
 - Request limits: up to 100 images per request on 200k-context models (600 on others, max 8000x8000 px each); PDFs are capped at 600 pages per request (100 pages when the context window is under 1M tokens) and a 32 MB total request size.
 - For images or PDFs reused across multiple requests, upload once via the Files API and reference the returned `file_id` instead of resending base64 data on every turn — this keeps multi-turn request payloads small.
