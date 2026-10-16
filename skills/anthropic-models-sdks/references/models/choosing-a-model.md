@@ -52,7 +52,7 @@ Model selection matrix (most workloads start with Claude Opus 5.5):
 
 ## Notes
 
-- Fast mode is available on supported models: Claude Opus 5.5, Claude Opus 5, and Claude Opus 4.8 (see `../pricing-lifecycle/pricing.md`).
+- Fast mode delivers up to 2.5x higher output speed at premium pricing on supported models (official fast-mode guide). It is available on: Claude Opus 5.5, Claude Opus 5, and Claude Opus 4.8 (see `../pricing-lifecycle/pricing.md`).
 - To decide whether to upgrade or change models: create benchmark tests specific to the use case (a good evaluation set is the most important step), test with actual prompts and data, compare accuracy, response quality, and edge-case handling, then weigh performance and cost tradeoffs.
 - Combine models: multi-model strategies pair a lower-cost model with a frontier model so that most tokens are billed at the lower rate. The two common patterns are an executor that escalates hard decisions to an advisor, and an orchestrator that delegates bulk work to lower-cost workers. See `optimizing-for-cost-and-intelligence.md` for both strategies, measured examples, and implementation options.
 - Earlier guidance that started from Claude Fable 5 / Claude Opus 5 / Claude Haiku 4.5 is superseded; those models are legacy.

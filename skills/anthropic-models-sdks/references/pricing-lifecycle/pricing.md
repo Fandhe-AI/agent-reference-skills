@@ -93,7 +93,7 @@ Stacks with prompt caching and data residency multipliers.
 
 | Model | `auto`/`none` | `any`/`tool` |
 | --- | --- | --- |
-| Claude Opus 5.5 | 286 tokens | (blank in source) |
+| Claude Opus 5.5 | 286 tokens | Not published |
 | Claude Opus 5 | 286 tokens | 406 tokens |
 | Claude Opus 4.8 | 290 tokens | 410 tokens |
 | Claude Opus 4.7 | 675 tokens | 804 tokens |
@@ -101,7 +101,7 @@ Stacks with prompt caching and data residency multipliers.
 | Claude Opus 4.5 | 496 tokens | 588 tokens |
 | Claude Opus 4.1 (retired, except on Bedrock and Google Cloud) | 313 tokens | 315 tokens |
 | Claude Opus 4 (retired, except on Google Cloud) | 313 tokens | 315 tokens |
-| Claude Sonnet 5.5 | 286 tokens | (blank in source) |
+| Claude Sonnet 5.5 | 286 tokens | Not published |
 | Claude Sonnet 5 | 354 tokens | 474 tokens |
 | Claude Sonnet 4.6 | 497 tokens | 589 tokens |
 | Claude Sonnet 4.5 | 496 tokens | 588 tokens |
@@ -110,7 +110,7 @@ Stacks with prompt caching and data residency multipliers.
 | Claude Haiku 4.5 | 496 tokens | 588 tokens |
 | Claude Haiku 3.5 (retired, except on Google Cloud) | 264 tokens | 355 tokens |
 
-If no `tools` are provided, a tool choice of `none` uses 0 additional system prompt tokens.
+"Not published" means the `any`/`tool` cell is empty in the official pricing table (fetched 2026-10-17). If no `tools` are provided, a tool choice of `none` uses 0 additional system prompt tokens.
 
 ### Specific tool pricing
 

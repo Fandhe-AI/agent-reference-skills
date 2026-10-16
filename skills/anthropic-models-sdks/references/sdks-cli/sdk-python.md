@@ -68,9 +68,9 @@ async with client.messages.stream(
 | `http_client` | `DefaultHttpxClient` / `DefaultAsyncHttpxClient` / `DefaultAioHttpClient` | Custom HTTP transport, proxies, TLS (must be an `httpx2` client) |
 | `default_headers` | dict | Override default headers, e.g. `anthropic-version` |
 
-Error codes: 400 `BadRequestError`, 401 `AuthenticationError`, 403 `PermissionDeniedError`, 404 `NotFoundError`, 409 `ConflictError`, 422 `UnprocessableEntityError`, 429 `RateLimitError`, >=500 `InternalServerError`, N/A `APIConnectionError`.
-
 ## Notes
+
+- Error codes: 400 `BadRequestError`, 401 `AuthenticationError`, 403 `PermissionDeniedError`, 404 `NotFoundError`, 409 `ConflictError`, 422 `UnprocessableEntityError`, 429 `RateLimitError`, >=500 `InternalServerError`, N/A `APIConnectionError`.
 
 - Python 3.10 or later is required. If upgrading from a 0.x release, see the v1 migration guide (`MIGRATION.md` in `anthropics/anthropic-sdk-python`) for the list of breaking changes.
 - HTTP backend: the SDK sends requests with `httpx2` (an API-compatible fork of `httpx`), not `httpx`. `timeout` accepts a float or an `httpx2.Timeout`. For a custom client, use `DefaultHttpxClient` / `DefaultAsyncHttpxClient` instead of raw `httpx2.Client` / `httpx2.AsyncClient` to preserve default timeouts and connection limits. Passing a client from the separate `httpx` package raises a `TypeError`.

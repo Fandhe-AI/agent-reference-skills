@@ -31,6 +31,8 @@ Shell completion: `ant @completion <shell>` (bash, zsh, fish, PowerShell).
 
 ## 認証
 
+> **警告**: `ant auth print-credentials --profile admin --access-token` は admin プロファイルの access token を標準出力にそのまま出す。ターミナルのスクロールバック・ログ・CI 出力・チャット・Issue への貼り付けや記録を避け、共有しない。
+
 ```bash
 # Interactive OAuth login
 ant auth login

@@ -2,9 +2,11 @@
 name: anthropic-models-sdks
 description: >
   Claude API (platform.claude.com) のモデル・SDK。
-  model ID・選択基準、Fable・Mythos 5.1 / Opus・Sonnet・Haiku 5.5 移行、
-  コスト最適化 (effort / caching / batch / advisor)、pricing、deprecation。
-  SDK 7 言語、CLI `ant` (Claude Code CLI とは別)、middleware、OpenAI SDK 互換、Apple Foundation Models。
+  model ID・選択基準、Fable・Mythos 5.1 / Opus・Sonnet・Haiku 5.5 移行・破壊的変更、
+  コスト最適化 (effort / caching / batch / advisor)、pricing、deprecation、用語集。
+  公式 SDK 7 言語 (Python / TypeScript / Java / Go / Ruby / C# / PHP)、
+  Claude API 用 CLI `ant` (Claude Code CLI とは別。quickstart / authentication / scripting、`ant apply` resources as code、Managed Agents session 接続)、
+  middleware、OpenAI SDK 互換、Apple Foundation Models。
 user-invocable: false
 ---
 
@@ -21,10 +23,10 @@ Agent SDK は `anthropic-agent-sdk` を参照（本スキルはモデル選定�
 
 ## 対象バージョン
 
-- 取得日 2026-10-16（出典 platform.claude.com の Markdown twin、URL に版なし。last verified 2026-10-16）
+- 取得日 2026-10-17（出典 platform.claude.com の Markdown twin、URL に版なし。last verified 2026-10-17）
 - 現行モデル: `claude-fable-5-1` / `claude-mythos-5-1`（検証済み組織のみ）/ `claude-opus-5-5` / `claude-sonnet-5-5` / `claude-haiku-5-5`
 - `ant` CLI 1.42.0（`ant apply` は 1.30.0+、`sessions connect` は 1.32.0+ が必要）、Java SDK `com.anthropic:anthropic-java:2.73.0`
-- モデルページの出典 URL は `/docs/en/models/<model>/` 配下へ移動（旧 `about-claude/models/*` は `/models/{overview,fable-5/overview,opus-5/overview,sonnet-5/overview}` へリダイレクト）
+- モデルページの出典 URL は `/docs/en/models/<model>/` 配下へ移動（旧 `about-claude/models/*` は `/models/overview`・`/models/fable-5/overview`・`/models/opus-5/overview`・`/models/sonnet-5/overview` へリダイレクト）
 
 ## ディレクトリ構成
 
