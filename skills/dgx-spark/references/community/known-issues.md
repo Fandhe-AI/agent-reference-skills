@@ -2,7 +2,7 @@
 
 Recurring hardware/software issues reported by DGX Spark / GB10 owners on the NVIDIA Developer Forums (accelerated-computing/dgx-spark-gb10 category). These are community-sourced, not confirmed defects unless explicitly attributed to NVIDIA staff below.
 
-## Issues
+## Signature / Usage
 
 Commands used in the unified-memory workaround below (see "`nvidia-smi` reports `memory.total` as `[N/A]`"):
 
@@ -10,6 +10,8 @@ Commands used in the unified-memory workaround below (see "`nvidia-smi` reports 
 nvidia-smi --query-gpu=utilization.gpu,power.draw --format=csv
 nvidia-smi --query-compute-apps=pid,used_memory --format=csv
 ```
+
+## Issues
 
 ### GPU Clock Drop / Slowdown
 
