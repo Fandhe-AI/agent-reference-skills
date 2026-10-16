@@ -50,7 +50,7 @@ Presets API:
 `viteFinal`:
 
 ```js
-export function ViteFinal(config, options = {}) {
+export function viteFinal(config, options = {}) {
   config.plugins.push(
     new MyCustomPlugin({
       someOption: true,
@@ -88,6 +88,7 @@ export const managerEntries = (entry = []) => {
 - Babel config applies only to frameworks that use Babel internally; ignored for SWC / esbuild-based frameworks.
 - Storybook builds the manager UI with esbuild, not Webpack: presets relying on `managerWebpack` to configure the manager or load files other than CSS or images no longer work. Remove it and convert extra files to JavaScript.
 - Private presets (e.g. `.storybook/main.js|ts`) hold development-only configuration and are not published.
+- The official snippet (storybook-addons-preset-viteFinal, v10.6.2) exports `ViteFinal`; Storybook only calls the lowercase `viteFinal` hook, so the example here uses `viteFinal`.
 - Source: https://storybook.js.org/docs/addons/writing-presets (Storybook v10.6.2).
 
 ## Related

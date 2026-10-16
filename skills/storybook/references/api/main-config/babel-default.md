@@ -21,7 +21,7 @@ export function babelDefault(config: TransformOptions) {
 }
 ```
 
-## Options
+## Options / Props
 
 | Name | Type | Description |
 |------|------|-------------|

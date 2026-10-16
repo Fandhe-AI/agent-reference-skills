@@ -25,7 +25,7 @@ const config: StorybookConfig = {
 export default config;
 ```
 
-## Options
+## Options / Props
 
 | Name | Type | Default | Description |
 |------|------|---------|-------------|

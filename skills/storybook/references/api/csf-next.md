@@ -54,7 +54,7 @@ export const Primary = meta.story({
 });
 ```
 
-## API
+## Options / Props
 
 | Function | Description |
 |----------|-------------|

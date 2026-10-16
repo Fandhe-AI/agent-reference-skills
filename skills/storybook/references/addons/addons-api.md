@@ -114,7 +114,7 @@ import { STORY_CHANGED } from 'storybook/internal/core-events';
 export const Panel = () => {
   // Creates a Storybook API channel and subscribes to the STORY_CHANGED event
   const emit = useChannel({
-    STORY_CHANGED: (...args) => console.log(...args),
+    [STORY_CHANGED]: (...args) => console.log(...args),
   });
 
   return (
@@ -131,6 +131,7 @@ export const Panel = () => {
 
 - The docs' snippets import `addons` from `storybook/preview-api` in some register/getChannel examples while `types` and hooks come from `storybook/manager-api`; the panel/toolbar examples import `addons` from `storybook/manager-api`.
 - Optimize addons using `useStorybookState` / `useGlobals` with `React.memo`, `useMemo`, or `useCallback` to avoid excessive re-renders.
+- The official useChannel snippet uses a non-computed `STORY_CHANGED:` key; a computed key `[STORY_CHANGED]` is required to subscribe to the imported event constant.
 - Source: https://storybook.js.org/docs/addons/addons-api (Storybook v10.6.2).
 
 ## Related
