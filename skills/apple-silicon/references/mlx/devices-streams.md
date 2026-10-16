@@ -25,14 +25,18 @@ mx.synchronize()                    # block until all scheduled work completes
 | `mx.default_device()` / `mx.default_stream(device)` | Query the current default device / a device's default stream |
 | `mx.set_default_stream(stream)` | Change the default stream operations run on when `stream=` is omitted |
 | `mx.new_stream(device)` | Create a new stream on a device, for running work concurrently with the default stream |
-| `mx.new_thread_local_stream()` | Create a stream scoped to the current thread |
+| `mx.new_thread_unsafe_stream(device) -> Stream` | Make a new stream that can be used in any thread. Unlike `new_stream`, which only works on the thread of creation, it can be passed to and evaluated anywhere, but all nodes in a graph must be evaluated in sequence and the user is responsible for ensuring there is no race condition |
+| `mx.new_thread_local_stream(device) -> ThreadLocalStream` | Make a new stream that will be unique per thread |
+| `ThreadLocalStream` | A stream that will be unique per thread and can be used to run operations on a given device; exposes `.device` |
 | `stream=` argument | Accepts either a `Stream` or a `Device` (uses that device's default stream) |
-| `mx.synchronize()` | Blocks until all scheduled operations complete |
-| `mx.clear_streams()` | Clears stream-related cached state |
+| `mx.synchronize(stream=None)` | Synchronize with the given stream; if a device is given its default stream is used, if `None` the default stream of the default device is used |
+| `mx.clear_streams()` | Destroy all streams created in current thread |
 
 ## Notes
 
 - Passing a `Device` (e.g. `stream=mx.gpu`) to any op is shorthand for "that device's default stream" — use `mx.new_stream` explicitly when you need multiple independent, concurrent streams on the same device.
+- `mx.new_stream(device)` creates a stream that can only be used on the thread where it was created; using it in any other thread results in errors. `new_thread_unsafe_stream` is documented since 0.32.4 (the binding already exists in 0.32.0).
+- The `mx.stream(...)` `StreamContext` can be entered more than once; the contexts are stacked (0.32.4 `stream.cpp`).
 - This is the mechanism the unified memory model page uses to route different parts of one computation to CPU vs. GPU without any explicit data copy.
 
 ## Related

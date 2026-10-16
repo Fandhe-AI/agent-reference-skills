@@ -36,6 +36,7 @@ mx.enable_compile()    # re-enable
 ## Notes
 
 - Compiled functions must be pure: any input not in the traced parameter list is treated as a constant baked into the graph, so mutating external/global state inside a compiled function will not be reflected on later calls unless it is threaded through `inputs`/`outputs`.
+- The `MLX_DISABLE_COMPILE` environment variable is an alternative to `mx.disable_compile()` (`compile.rst`). It is enabled by its presence, so setting it to `0` also disables compilation (`environment_variables.rst`, v0.32.4).
 - You cannot evaluate (e.g. print) arrays inside a compiled function during normal operation — use `mx.disable_compile()` while debugging.
 - `shapeless=True` is a correctness trade-off, not just a performance flag — any shape-conditional logic embedded in the function body silently produces wrong results for shapes other than the one it first traced against.
 - Because MLX's evaluation is already lazy (see lazy-evaluation.md), `compile` builds on the same graph representation to fuse and specialize it, rather than requiring a separate tracing step like eager frameworks need.
@@ -44,3 +45,5 @@ mx.enable_compile()    # re-enable
 
 - [Lazy Evaluation](./lazy-evaluation.md)
 - [Function Transforms](./function-transforms.md)
+- [Environment Variables](./environment-variables.md)
+- [Function Export](./export.md)

@@ -45,4 +45,4 @@ mx.eval(x, mm_b)
 - MLX is Apple's open-source array framework (ml-explore), not Core ML; Core ML / Create ML / Vision are covered by the separate apple-ml skill.
 - Unlike CUDA's managed/unified memory, which still migrates pages between physically separate host and device memories, Apple silicon's unified memory means `a` and `b` above are one physical allocation from the start — MLX's `stream=` argument only chooses which compute unit runs an operation, not where the data lives.
 - Splitting `fun` across `d1=mx.gpu` (dense matmul) and `d2=mx.cpu` (500 small ops) measured at roughly 1.4 ms versus 2.8 ms fully on the GPU on an M1 Max, per the source doc.
-- Derived from the official MLX documentation source `docs/src/usage/unified_memory.rst` at tag v0.32.0 (MIT License).
+- Derived from the official MLX documentation source `docs/src/usage/unified_memory.rst` at tag v0.32.4 (MIT License).

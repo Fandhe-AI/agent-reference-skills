@@ -26,6 +26,7 @@ kernel void add_vectors(const device float4 *inA [[buffer(0)]],
 | Atomic | `atomic<T>` for `T` in `int`/`uint`/`bool`/`ulong` (2.4+) or `float` (Metal 3+); aliases `atomic_int`, `atomic_uint`, `atomic_bool`, `atomic_ulong`, `atomic_float` | Data-race-free; only usable with the atomic functions in `atomic-functions.md` |
 | Pixel | `r8unorm<T>`, `rg8unorm<T>`, `rgba8unorm<T>`, `rgb10a2<T>`, `rg11b10f<T>`, `rgb9e5<T>`, ... | Templated on the ALU type (`half`/`float`); only assignment and equality/inequality vs. the ALU type are allowed |
 | Packed numeric (4.0 SDK26.4+/4.1) | `packed_numeric_type<Format,N>` over `int4b_format`/`uint4b_format`/`int2b_format`/`uint2b_format`/`metal_fp4_e2m1_format`/`metal_fp8_e4m3_format`/`metal_fp8_e5m2_format`/`metal_fp8_ue8m0_format` | Sub-byte / narrow float storage for ML; `pack<Format,Rm,Sm>()` / `unpack<T,Format,N>()` free functions convert to/from `float`/`half`/`bfloat` |
+| Tensor (Metal 4+, spec 2.22) | `tensor<ElementType, Extents, DescriptorType, Tags...>` (`<metal_tensor>`); `DescriptorType` is `tensor_handle` (default) or `tensor_inline`; tag `tensor_offset` (only with `tensor_handle`); `extents<IndexType, Extents...>` / `dextents<IndexType, Rank>`; `cooperative_tensor<ElementType, Extents, Layout>` (`<metal_cooperative_tensor>`); Metal 4.1: multiplane tensors, `tensor_blockwise<PlaneTag, ElementType, BlockSizes...>` with block-scaling format types | Non-owning view into tensor data; element type carries the address space (`constant` / `device` / `threadgroup` / `thread`). `cooperative_tensor` has thread storage partitioned across a set of participating threads. See [tensor-types.md](./tensor-types.md) |
 | Conversion | `static_cast<T>`, `as_type<T>(x)` | `static_cast` rounds (ties-to-even for float, toward-zero for int); `as_type` reinterprets same-size bit patterns only |
 
 ## Notes
@@ -41,3 +42,4 @@ kernel void add_vectors(const device float4 *inA [[buffer(0)]],
 - [simdgroup-functions.md](./simdgroup-functions.md)
 - [atomic-functions.md](./atomic-functions.md)
 - [numerical-compliance.md](./numerical-compliance.md)
+- [tensor-types.md](./tensor-types.md)

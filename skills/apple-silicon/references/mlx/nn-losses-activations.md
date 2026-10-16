@@ -38,6 +38,7 @@ def loss_fn(model, x, y):
 
 - Every loss function accepts a `reduction` argument (typically `"none"`, `"mean"`, or `"sum"`) to control batch aggregation.
 - Functional activations (`nn.relu`, `nn.gelu`, `nn.silu`, etc.) mirror the activation layer classes on the nn-layers page — use the functional form inside a custom `__call__` and the layer class when composing with `nn.Sequential`.
+- `nn.softsign(x)` (functional form of the `Softsign` layer; applies `x / (1 + |x|)` element wise) is listed in `nn/functions.rst` at 0.32.4; the function already exists in the 0.32.0 code.
 - Loss functions are plain differentiable functions over MLX arrays, so they compose directly with `mx.grad` / `mlx.nn.value_and_grad` (see function-transforms.md) with no separate "loss module" abstraction required.
 
 ## Related

@@ -43,10 +43,12 @@ d.tolist()    # forces evaluation, returns a nested Python list
 - Binary ops between mixed dtypes follow standard promotion rules (e.g. `int32 + float32 → float32`).
 - Because operations are lazy, `shape`/`dtype` are known without triggering computation, but `item()`, `tolist()`, printing, and NumPy conversion all force evaluation of the array's compute graph (see lazy evaluation page).
 - `mlx.core.array` is MLX's own array type, entirely distinct from Core ML's `MLMultiArray` (compiled-model tensor container), which is covered by the apple-ml skill. The two are not interchangeable and belong to different frameworks.
-- MLX's official documentation lives at `https://ml-explore.github.io/mlx/` (an open-source project site), not on `developer.apple.com` like the rest of this skill's Metal/MPS references. Content on this page reflects MLX 0.32.0.
+- MLX's official documentation lives at `https://ml-explore.github.io/mlx/` (an open-source project site), not on `developer.apple.com` like the rest of this skill's Metal/MPS references. Content on this page reflects MLX 0.32.4.
+- `float64` arrays only work with CPU operations; using `float64` arrays on the GPU raises an exception (data_types.rst, v0.32.4). See [Data Types](./data-types.md).
 
 ## Related
 
+- [Data Types](./data-types.md)
 - [Indexing](./indexing.md)
 - [Lazy Evaluation](./lazy-evaluation.md)
 - [Unified Memory Model](./unified-memory-model.md)

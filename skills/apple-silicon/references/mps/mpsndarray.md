@@ -22,6 +22,7 @@ let array = MPSNDArray(device: device, descriptor: descriptor)
 
 - Kernel subclasses (`MPSNDArrayMatrixMultiplication`, `MPSNDArrayGather`, `MPSNDArrayStridedSlice`, `MPSNDArrayUnaryKernel`/`BinaryKernel`/`MultiaryKernel` and their `*GradientKernel` counterparts) operate directly on `MPSNDArray`, forming the lower-level tensor-op layer MPSGraph is built on.
 - Available since iOS/tvOS 13.0, macOS 10.15, visionOS 1.0.
+- `MPSNDArray` is separate from Core AI's `NDArray` ("A multidimensional array of scalar values used for model inference", iOS/iPadOS/tvOS/visionOS/watchOS 27.0+; covered by the apple-ml skill), from Metal 4's `MTLTensor` (see `metal-compute/tensors.md`), and from MLX's `mx.array`.
 - Distinct from Metal's own buffer/texture types (apple-graphics skill); `MPSNDArray` is MPS's tensor-shaped storage abstraction layered on top of `MTLBuffer`.
 
 ## Related

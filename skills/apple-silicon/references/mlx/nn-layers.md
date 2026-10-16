@@ -24,7 +24,7 @@ attn = nn.MultiHeadAttention(dims=512, num_heads=8)
 | --- | --- |
 | Linear | `Linear`, `Bilinear` |
 | Quantized | `QuantizedLinear`, `QuantizedEmbedding`, `QQLinear` |
-| Distributed / sharded | `AllToShardedLinear`, `ShardedToAllLinear`, `QuantizedAllToShardedLinear`, `QuantizedShardedToAllLinear` |
+| Distributed / sharded | `AllToShardedLinear`, `ShardedToAllLinear`, `QuantizedAllToShardedLinear`, `QuantizedShardedToAllLinear`, `FullyShardedModule` (wrapper; create with `nn.fully_shard`) |
 | Convolution | `Conv1d`, `Conv2d`, `Conv3d`, `ConvTranspose1d/2d/3d` |
 | Normalization | `BatchNorm`, `LayerNorm`, `GroupNorm`, `InstanceNorm`, `RMSNorm` |
 | Activations | `ReLU`, `ReLU2`, `ReLU6`, `GELU`, `ELU`, `SELU`, `Sigmoid`, `LogSigmoid`, `Tanh`, `HardTanh`, `SiLU`, `LeakyReLU`, `PReLU`, `CELU`, `Mish`, `Hardswish`, `GLU`, `HardShrink`, `Softshrink`, `Softmax`, `LogSoftmax`, `Softmin`, `Softplus`, `Softsign`, `Step`, `Identity` |
@@ -43,6 +43,8 @@ attn = nn.MultiHeadAttention(dims=512, num_heads=8)
 - MLX layers are ordinary Python classes composed and trained via gradient descent in-process — this is a different representation from Core ML's compiled layer/operator spec (`.mlmodel`/`.mlpackage`), which is covered by the apple-ml skill.
 - `QuantizedLinear` / `QuantizedEmbedding` / `QQLinear` are quantized-weight drop-in replacements for `Linear` / `Embedding`, typically produced via `nn.quantize(model, ...)` rather than instantiated directly.
 - `AllToShardedLinear` / `ShardedToAllLinear` (and their quantized variants) partition `Linear` weights across a `mlx.core.distributed` group for tensor-parallel inference/training.
+- `nn.fully_shard(module, *, group=None, compute_dtype=None) -> Module` wraps `module` in a `FullyShardedModule(module, group=None, compute_dtype=None)` so each group member holds only a shard of its parameters: full parameters are gathered for the forward pass and gradients are reduce-scattered in the backward pass. Every parameter is sharded along axis 0, so its size along that axis must be divisible by the group size (otherwise `ValueError`). It returns `module` unchanged when the group size is 1, when `module` is already a `FullyShardedModule`, or when no parameters are sharded. New in the 0.32.x line (absent from the 0.32.0 sources, listed in `nn/distributed.rst` at 0.32.4).
+- `nn.utils.fsdp_apply_gradients` (present in 0.32.0 `nn/utils.py` and `nn.rst`) is gone from both the code and `nn.rst` at 0.32.4 (removed). No replacement is named in the sources.
 
 ## Related
 

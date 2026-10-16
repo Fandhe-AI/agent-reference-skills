@@ -34,7 +34,8 @@ intersector.encodeIntersection(commandBuffer: commandBuffer,
 
 ## Notes
 
-- `MPSRayIntersector`'s own platform metadata carries `deprecatedAt` values (iOS/iPadOS/tvOS/Mac Catalyst 17.0, macOS 14.0, visionOS 1.0) even where the `deprecated` flag itself was not consistently set — treat the class as soft-deprecated from those releases onward.
+- The platform metadata of `MPSRayIntersector`, `MPSAccelerationStructure`, `MPSTriangleAccelerationStructure`, `MPSInstanceAccelerationStructure`, `MPSPolygonAccelerationStructure`, `MPSQuadrilateralAccelerationStructure` and `MPSAccelerationStructureGroup` all carry `deprecatedAt` values (iOS/iPadOS/tvOS/Mac Catalyst 17.0, macOS 14.0, visionOS 1.0) even where the `deprecated` flag itself was not consistently set — treat these classes as soft-deprecated from those releases onward.
+- Introduced: `MPSPolygonAccelerationStructure` / `MPSQuadrilateralAccelerationStructure` in iOS/iPadOS/tvOS/Mac Catalyst 13.0, macOS 10.15; `MPSRayIntersector`, `MPSAccelerationStructure`, `MPSTriangleAccelerationStructure`, `MPSInstanceAccelerationStructure` and `MPSAccelerationStructureGroup` in iOS/iPadOS/tvOS 12.0, macOS 10.14 (Mac Catalyst 13.0), visionOS 1.0.
 - Apple's replacement is Metal's own ray-tracing API (`MTLAccelerationStructure`, intersection functions in a compute shader), documented under "Accelerating ray tracing and motion blur using Metal" and covered by the apple-graphics skill, not this one — `MPSRayIntersector`/`MPSAccelerationStructure*` are a distinct, older surface and should not be mixed with `MTLAccelerationStructure` APIs.
 - `MPSSVGF`/`MPSSVGFDenoiser`/`MPSTemporalAA` (spatiotemporal denoising/anti-aliasing for ray-traced output) live in the MPS `Classes` topic section alongside these but are denoising post-processes, not intersection kernels.
 

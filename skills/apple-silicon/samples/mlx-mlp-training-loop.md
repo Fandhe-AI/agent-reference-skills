@@ -77,4 +77,4 @@ for e in range(num_epochs):
 - MLX is Apple's open-source array framework (ml-explore), not Core ML; Core ML / Create ML / Vision are covered by the separate apple-ml skill.
 - `mx.eval(model.parameters(), optimizer.state)` is what actually runs the batch; everything before it (the forward pass, the loss, the gradients, the optimizer update) only extends the recorded compute graph.
 - The model reaches roughly 95% test accuracy after a few epochs over MNIST, per the source doc.
-- Derived from the official MLX documentation source `docs/src/examples/mlp.rst` at tag v0.32.0 (MIT License), and the official ml-explore/mlx-examples sample "mnist" (MIT License), commit 796f5b53cab69a3d48a44233ce21aae889e94a08 (the repository has no tags).
+- Derived from the official MLX documentation source `docs/src/examples/mlp.rst` at tag v0.32.4 (MIT License), and the official ml-explore/mlx-examples sample "mnist" (MIT License), commit 796f5b53cab69a3d48a44233ce21aae889e94a08 (the repository has no tags).
