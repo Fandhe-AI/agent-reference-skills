@@ -26,6 +26,21 @@ const tools = [
   },
 ];
 
+async function getWeather(city) {
+  const snapshots = {
+    Paris: {
+      city: "Paris",
+      temperature_c: 22,
+      condition: "Clear",
+      source: "demo weather snapshot",
+    },
+  };
+  if (typeof city !== "string" || !Object.hasOwn(snapshots, city)) {
+    throw new Error(`No demo weather snapshot for ${city}.`);
+  }
+  return snapshots[city];
+}
+
 let response = await client.responses.create({
   model,
   tools,
