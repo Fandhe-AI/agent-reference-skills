@@ -23,6 +23,8 @@ summary = client.beta.messages.create(
     messages=history[:2],
     compaction={"type": "summarize"},
 )
+if summary.stop_reason != "compaction":
+    raise SystemExit(f"No summary: {summary.stop_reason}")
 history = [
     {"role": "assistant", "content": summary.content},
     *history[2:],
