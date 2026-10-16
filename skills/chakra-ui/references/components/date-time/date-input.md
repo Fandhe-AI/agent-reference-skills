@@ -52,7 +52,7 @@ const formatter = new DateFormatter("en-US", {
 </DateInput.Root>
 ```
 
-## Props
+## Options / Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
