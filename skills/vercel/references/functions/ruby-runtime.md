@@ -46,6 +46,7 @@ ruby "~> 3.3.x"
 - New deployments use Ruby 3.3.x by default
 - If the patch part of the version is defined (e.g. `3.3.1`), it is ignored and the latest `3.3.x` is assumed
 - Dependencies are installed from the `Gemfile`; alternatively vendor them with `bundler install --deployment` (useful for gems with native extensions), in which case dependencies are not built on deployment
+- Source: https://vercel.com/docs/functions/runtimes/ruby
 
 ## Related
 

@@ -160,6 +160,7 @@ async with session(service_options=[options]):
 - The SDK does not retry failed requests.
 - Not supported in the Python SDK: conditional uploads/reads, renaming blobs, cache bypass on reads, client uploads, Signed URLs, optimized image uploads, upload progress callbacks. Use the JS SDK or Vercel CLI.
 - Don't call the sync API from an active async event loop; don't mix sync Blob calls in an async session or the reverse.
+- Source: https://vercel.com/docs/vercel-blob/python-sdk-reference
 
 ## Related
 

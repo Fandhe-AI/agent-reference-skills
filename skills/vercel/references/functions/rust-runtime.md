@@ -69,6 +69,7 @@ target/**
 - Place `Cargo.toml` in the project root; each handler must be declared as a uniquely named `[[bin]]`
 - Deploy by pushing to a connected GitHub repository or with the Vercel CLI
 - Templates: Rust Hello World, Rust Axum, and `vercel/examples` (`main/rust`)
+- Source: https://vercel.com/docs/functions/runtimes/rust
 
 ## Related
 

@@ -63,6 +63,7 @@ export default {
 - Scale in: no traffic for 5 minutes (production) or 30 seconds (preview) scales down. The container gets `SIGTERM` with a 30 second grace period
 - Same limits and Active CPU pricing as Vercel Functions
 - Secure Compute and Static IPs are not yet supported with custom container images
+- Source: https://vercel.com/docs/functions/runtimes/container
 
 ## Related
 

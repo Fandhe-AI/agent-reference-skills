@@ -102,6 +102,7 @@ const s3Client = new s3.S3Client({
 - `upgradeWebSocket()`: with Next.js Cache Components, call `connection()` from `next/server` before it. Local dev for Next.js needs `vc dev` (Vercel CLI 54.14.2+) instead of `next dev`; no other framework supports local dev. Prefer native Node.js WebSocket handling when possible
 - `attachDatabasePool` supports pg, MySQL2, MariaDB, MongoDB, ioredis, cassandra-driver, and other compatible pools
 - Python equivalent is vercel.functions (see vercel-sdk-python.md)
+- Source: https://vercel.com/docs/functions/functions-api-reference/vercel-functions-package, https://vercel.com/docs/functions/functions-api-reference
 
 ## Related
 

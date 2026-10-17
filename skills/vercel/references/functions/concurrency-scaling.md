@@ -25,6 +25,7 @@ Over the limit: 503 FUNCTION_THROTTLED
 - Scaling during substantial surges can take several minutes
 - Monitor burst concurrency events with Log Drains or Runtime Logs
 - Exceeding the limit triggers a `503 FUNCTION_THROTTLED` error
+- Source: https://vercel.com/docs/functions/concurrency-scaling
 
 ## Related
 

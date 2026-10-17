@@ -95,6 +95,7 @@ async def websocket_endpoint(websocket: fastapi.WebSocket):
 - Python frameworks need no Vercel-specific upgrade API
 - Pricing and limits follow Vercel Functions, plus Fast Data Transfer and Fast Origin Transfer for data sent over the connection
 - Requires Fluid compute (default for new projects created on or after April 23, 2025)
+- Source: https://vercel.com/docs/functions/websockets
 
 ## Related
 

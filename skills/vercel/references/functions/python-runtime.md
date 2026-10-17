@@ -78,6 +78,7 @@ Define dependencies in `pyproject.toml` (with or without `uv.lock`), `requiremen
 - Relative paths in `open()` resolve against the project base directory, not the file's directory
 - Existing projects can still define file-based functions in an `/api` directory (documented on a separate page `/docs/functions/runtimes/python/api-directory`)
 - Python and a frontend can be combined in one project with Services
+- Source: https://vercel.com/docs/functions/runtimes/python
 
 ## Related
 

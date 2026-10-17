@@ -69,6 +69,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 - Files in `/api` that export an `http.HandlerFunc` each become a separate Vercel Function; any exported identifier works as the function name
 - To deploy a Go server alongside a frontend in the same project, use Services
 - Private packages support GitHub, GitLab, Bitbucket, and self-hosted Git servers
+- Source: https://vercel.com/docs/functions/runtimes/go
 
 ## Related
 

@@ -3,8 +3,9 @@ name: vercel
 description: >
   Vercel リファレンス。Vercel CLI、vercel.json / vercel.ts / vercel.toml、
   Vercel Functions（Node.js / Python / Bun / Edge / Fluid Compute / ISR / Middleware）、
-  @vercel/functions、Vercel Blob、Global Config（旧 Edge Config）、Marketplace Storage、OIDC、
-  デプロイメント（rollback / rolling release）、環境変数、ドメイン、DNS、ログ、CDN。
+  @vercel/functions、Vercel Blob、Global Config（旧 Edge Config）、
+  Marketplace Storage（Neon / Upstash / Supabase）、OIDC、
+  デプロイメント（Git 連携 / rollback / rolling release）、環境変数、ドメイン、DNS、ログ、キャッシュ、CDN。
 user-invocable: false
 ---
 

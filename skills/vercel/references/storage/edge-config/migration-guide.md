@@ -47,7 +47,7 @@ npm i @vercel/global-config
 - REST API: new integrations should use `api.vercel.com/v1/global-config`; `api.vercel.com/v1/edge-config` continues to work.
 - Connection strings: stores connected from now on receive `global-config.vercel.com` connection strings; existing `edge-config.vercel.com` ones remain valid.
 - The hourly write limit allows up to 2,400 writes per day. The per-project connection limit is unchanged: 1 on Hobby, 3 on Pro and Enterprise. Pricing is unchanged.
-- Source: vercel.com docs page last_updated 2026-07-29.
+- Source: https://vercel.com/docs/global-config/migration-guide (fetched 2026-10-16)
 
 ## Related
 

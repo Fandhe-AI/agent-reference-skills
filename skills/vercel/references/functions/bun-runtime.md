@@ -65,6 +65,7 @@ Bun.serve({
 - Differences from Node.js: no automatic source maps, no bytecode caching, no request metrics on `node:http` / `node:https` (`fetch` metrics work with both)
 - Both runtimes run on Fluid compute
 - WebSocket handling with `Bun.serve()` is covered in websockets.md
+- Source: https://vercel.com/docs/functions/runtimes/bun
 
 ## Related
 

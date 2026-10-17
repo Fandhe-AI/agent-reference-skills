@@ -40,6 +40,7 @@ Vercel Blob is protected by the platform-wide firewall (DDoS mitigation, blockin
 
 - The **Challenge** action serves a JavaScript challenge only a browser can solve, so requests from the Blob SDKs (JS and Python) and other server-side code fail with a 429 response. Only use Challenge in rules that never match your application's SDK traffic.
 - The OWASP core ruleset is not supported for Blob stores.
+- Source: https://vercel.com/docs/vercel-blob/security
 
 ## Related
 

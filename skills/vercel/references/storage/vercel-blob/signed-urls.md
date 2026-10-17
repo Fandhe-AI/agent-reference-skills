@@ -147,15 +147,24 @@ import {
 await handleUploadPresigned({
   body,
   request,
-  getSignedToken: async (pathname) => ({
-    token: await issueSignedToken({ pathname, operations: ['put'] }),
-    urlOptions: {
-      allowedContentTypes: ['image/png', 'image/jpeg'],
-      addRandomSuffix: true,
-      allowOverwrite: false,
-      cacheControlMaxAge: 30 * 24 * 60 * 60,
-    },
-  }),
+  getSignedToken: async (pathname) => {
+    // Allow the upload only after authentication and authorization.
+    const user = await authenticate(request);
+    if (!user) throw new Error('Not authorized');
+    if (!pathname.startsWith(`uploads/${user.id}/`) || pathname.includes('..')) {
+      throw new Error('Forbidden upload path');
+    }
+
+    return {
+      token: await issueSignedToken({ pathname, operations: ['put'] }),
+      urlOptions: {
+        allowedContentTypes: ['image/png', 'image/jpeg'],
+        addRandomSuffix: true,
+        allowOverwrite: false,
+        cacheControlMaxAge: 30 * 24 * 60 * 60,
+      },
+    };
+  },
   onUploadCompleted: async ({ blob, tokenPayload }) => {
     // Same shape as `handleUpload` — your database writes carry over.
   },
@@ -179,6 +188,7 @@ const result = await uploadPresigned(file.name, file, {
 - Upgrading from `handleUpload`: swap to `handleUploadPresigned`, mint the token inside `getSignedToken`, move constraints from `onBeforeGenerateToken` into `urlOptions`; replace client `upload` with `uploadPresigned` and point `handleUploadUrl` at the new route; the result type is `PutBlobResult` (not `BlobResult`).
 - Set `BLOB_WEBHOOK_PUBLIC_KEY` in the project environment so `handleUploadPresigned` can verify the upload-completed callback. Existing connections can opt in from the store's connection menu.
 - Python SDK does not support Signed URLs.
+- Source: https://vercel.com/docs/vercel-blob/vercel-signed-urls
 
 ## Related
 

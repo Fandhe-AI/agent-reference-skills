@@ -53,6 +53,7 @@ def expire_blog(request: Request):
 - No first-class ISR integration: tags do not apply to ISR pages and TTLs do not affect ISR revalidation time
 - Limits: max item size 2 MB, 128 tags per item, 256-byte tags. Usage is charged
 - Node.js equivalent is `@vercel/functions` (see functions-api-reference.md)
+- Source: https://vercel.com/docs/functions/functions-api-reference/vercel-sdk-python
 
 ## Related
 
