@@ -54,7 +54,16 @@ export UV_KEYRING_PROVIDER=subprocess
 export UV_INDEX_PRIVATE_REGISTRY_USERNAME=VssSessionToken
 ```
 
-Publishing:
+Publishing. First, add a `publish-url` to the index you want to publish packages to. For example:
+
+```toml
+[[tool.uv.index]]
+name = "private-registry"
+url = "https://pkgs.dev.azure.com/<ORGANIZATION>/<PROJECT>/_packaging/<FEED>/pypi/simple/"
+publish-url = "https://pkgs.dev.azure.com/<ORGANIZATION>/<PROJECT>/_packaging/<FEED>/pypi/upload/"
+```
+
+Then, configure credentials (if not using keyring):
 
 ```console
 $ export UV_PUBLISH_USERNAME=dummy
@@ -87,7 +96,16 @@ export UV_KEYRING_PROVIDER=subprocess
 export UV_INDEX_PRIVATE_REGISTRY_USERNAME=oauth2accesstoken
 ```
 
-Publishing:
+Publishing. First, add a `publish-url` to the index you want to publish packages to. For example:
+
+```toml
+[[tool.uv.index]]
+name = "private-registry"
+url = "https://<REGION>-python.pkg.dev/<PROJECT>/<REPOSITORY>/simple/"
+publish-url = "https://<REGION>-python.pkg.dev/<PROJECT>/<REPOSITORY>/"
+```
+
+Then, configure credentials (if not using keyring):
 
 ```console
 $ export UV_PUBLISH_USERNAME=oauth2accesstoken
@@ -124,7 +142,16 @@ export UV_KEYRING_PROVIDER=subprocess
 export UV_INDEX_PRIVATE_REGISTRY_USERNAME=aws
 ```
 
-Publishing:
+Publishing. First, add a `publish-url` to the index you want to publish packages to. For example:
+
+```toml
+[[tool.uv.index]]
+name = "private-registry"
+url = "https://<DOMAIN>-<ACCOUNT_ID>.d.codeartifact.<REGION>.amazonaws.com/pypi/<REPOSITORY>/simple/"
+publish-url = "https://<DOMAIN>-<ACCOUNT_ID>.d.codeartifact.<REGION>.amazonaws.com/pypi/<REPOSITORY>/"
+```
+
+Then, configure credentials (if not using keyring):
 
 ```console
 $ export UV_PUBLISH_USERNAME=aws
@@ -146,7 +173,16 @@ $ export UV_INDEX_PRIVATE_REGISTRY_USERNAME=""
 $ export UV_INDEX_PRIVATE_REGISTRY_PASSWORD="$JFROG_JWT_TOKEN"
 ```
 
-Publishing (pass the token as the password and an empty username):
+Publishing. Add a `publish-url` to your index definition:
+
+```toml
+[[tool.uv.index]]
+name = "private-registry"
+url = "https://<organization>.jfrog.io/artifactory/api/pypi/<repository>/simple"
+publish-url = "https://<organization>.jfrog.io/artifactory/api/pypi/<repository>"
+```
+
+Pass the token as the password and an empty username:
 
 ```console
 $ uv publish --index <index_name> -u "" -p "$JFROG_TOKEN"
@@ -160,7 +196,7 @@ $ uv publish --index private-registry
 
 ## Notes
 
-- Source pages: `https://docs.astral.sh/uv/guides/integration/azure/`, `.../google/`, `.../aws/`, `.../jfrog/`.
+- Source pages: `https://docs.astral.sh/uv/guides/integration/azure/`, `https://docs.astral.sh/uv/guides/integration/google/`, `https://docs.astral.sh/uv/guides/integration/aws/`, `https://docs.astral.sh/uv/guides/integration/jfrog/`.
 - `tool.uv.keyring-provider` can enable keyring in `uv.toml` or `pyproject.toml`; the username can also be added directly to the index URL.
 - Publishing without `publish-url` in the project: set `UV_PUBLISH_URL` (e.g. `export UV_PUBLISH_URL=https://pkgs.dev.azure.com/<ORGANIZATION>/<PROJECT>/_packaging/<FEED>/pypi/upload/` then `uv publish`). This is not preferable because uv cannot check whether the package is already published before uploading.
 - JFrog: `--token "$JFROG_TOKEN"` or `UV_PUBLISH_TOKEN` yields 401 Unauthorized, because JFrog requires an empty username but uv passes `__token__` when `--token` is used. The publish environment variables (`UV_PUBLISH_USERNAME`, `UV_PUBLISH_PASSWORD`) do not include the index name.

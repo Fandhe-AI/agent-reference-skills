@@ -211,15 +211,33 @@ RUN --mount=from=ghcr.io/astral-sh/uv,source=/uv,target=/bin/uv \
 
 ## Using the pip interface
 
-The system Python environment is safe in a container; use `--system` or `UV_SYSTEM_PYTHON`, or create and activate a virtual environment (omit `--system` then):
+The system Python environment is safe in a container; use `--system` or `UV_SYSTEM_PYTHON`, or create and activate a virtual environment (omit `--system` then). The following snippets are alternatives, not one sequence.
+
+The `--system` flag can be used to install in the system environment:
 
 ```dockerfile
 RUN uv pip install --system ruff
-ENV UV_SYSTEM_PYTHON=1
+```
 
+To use the system Python environment by default, set the `UV_SYSTEM_PYTHON` variable:
+
+```dockerfile
+ENV UV_SYSTEM_PYTHON=1
+```
+
+Alternatively, a virtual environment can be created and activated:
+
+```dockerfile
 RUN uv venv /opt/venv
+# Use the virtual environment automatically
 ENV VIRTUAL_ENV=/opt/venv
+# Place entry points in the environment at the front of the path
 ENV PATH="/opt/venv/bin:$PATH"
+```
+
+When using a virtual environment, the `--system` flag should be omitted from uv invocations:
+
+```dockerfile
 RUN uv pip install ruff
 ```
 
