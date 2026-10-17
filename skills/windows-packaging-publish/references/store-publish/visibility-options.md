@@ -18,6 +18,7 @@ Controls whether and how an app can be discovered and acquired in the Microsoft 
 
 ## Notes
 
+- Private audience requires a personal Microsoft account (the one matching the email address added to the known user group) to view or acquire the app. Work or school accounts (Microsoft Entra ID) cannot see or acquire it, even when the Partner Center account itself is a company account that uses Entra ID. Each tester signs in to the Microsoft Store with that personal account.
 - Private audience is the correct mechanism for controlled beta testing/internal validation — making an app "not discoverable" does **not** prevent someone with the direct URL from installing it.
 - Package flights can be used to distribute different package updates to subsets of a private audience.
 - **Make app unavailable** on the app overview page overrides visibility settings entirely and removes the app from the Store within a few hours.

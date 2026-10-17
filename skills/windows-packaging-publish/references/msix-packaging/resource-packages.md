@@ -30,10 +30,13 @@ if (result.ExtendedError != null)
 
 - Requires Windows SDK 10.0.17095.0+ for `AddResourcePackageAsync`.
 - For local validation, build an `.msixbundle`/`.appxbundle` and install it from a local drive, network share, or web server — `AddResourcePackageAsync` acquires the resource package from wherever the app was originally installed.
+- Resource packages do not permit execution by default. A package can explicitly enable execution with the `uap6:AllowExecution` manifest element. A package declares the Resource type by setting `ResourcePackage` to `true`.
+- Resource qualifiers are not limited to display size and language; resource packages can separate any resource-qualifier-specific resources from a Main or Optional package, and Windows installs only the ones that apply to the device or user.
 - Distinct from asset packages: resource packages are language/scale-specific and only the relevant ones are downloaded per device; asset packages are architecture/language/scale-agnostic and are always downloaded.
 
 ## Related
 
+- [MSIX Package Types](./package-types.md)
 - [Asset Packages and Flat Bundles](./asset-packages.md)
 - [MSIX Package Structure](./package-structure.md)
 - [Package Bundles and Architecture](./package-bundles-architecture.md)

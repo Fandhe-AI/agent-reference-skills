@@ -20,12 +20,13 @@ Reviewed automatically as part of the certification content-compliance phase, an
 | 10.8 Financial Transactions | In-app purchase API requirements, third-party payment rules, company-account requirement for financial data, pricing transparency |
 | 10.9 Notifications | Must respect system notification settings, no disguised/confidential notification content |
 | 10.10 Advertising Conduct and Content | Ad content standards, opt-out disclosure, children's advertising rules |
-| 10.13 Gaming and Xbox | Xbox network integration, ID@Xbox/Creators program requirements, no game system emulation |
+| 10.13 Gaming and XBOX | XBOX network integration, ID@Xbox/Creators program requirements, no game system emulation; v7.20 adds 10.13.12 Support across XBOX devices (primary input, game saves, online multiplayer, game modes for games sharing a product code across XBOX devices), 10.13.13 Cross Platform Digital Game Entitlements and Commerce (game progress, cross-platform/cross-network play, companion apps), 10.13.14 Required Metadata and In-Game Localization (English, French, Spanish, German, Portuguese, Japanese, Simplified Chinese in regions where supported) |
 | 10.14 Account Type | When a Company account is mandatory (financial data, business identity) |
 | 11.1–11.16 Content Policies | General content rating ceiling, IP/rights, risk of harm, defamation, offensive content, alcohol/tobacco/weapons/drugs, adult content, illegal activity, profanity, region-specific rules, age ratings, user-generated content, third-party storefronts, gambling, child safety, live generative AI disclosure |
 
 ## Notes
 
+- Document version 7.20, published September 15, 2026, effective October 22, 2026. Changes in 7.20: "Xbox" renamed to "XBOX" throughout; new 10.13.12, 10.13.13, 10.13.14 (see the 10.13 row); 11.11 Age Ratings now requires an accurate, updated age rating throughout the product lifecycle or whenever a new rating is received from any rating authority; 11.12 User Generated Content adds reporting and content moderation expectations when a product integrates with a third-party game mod or UGC platform.
 - Age rating (IARC questionnaire) is mandatory for every submission (11.11) and must be accurate.
 - Products using in-app purchase for digital goods/services on games or Xbox must use the Microsoft Store in-product purchase API (10.8.1) — third-party payment is restricted to specific non-game/PC scenarios.
 - A Company account is required whenever a product needs financial account information for primary functionality or when the publisher name implies a business entity (10.14).

@@ -1,29 +1,74 @@
 # Detecting Package Identity
 
-At runtime, an app can determine whether its process has package identity (i.e. whether it is running as MSIX or was granted identity via a sparse/external-location package) by calling the Win32 `GetCurrentPackageFullName` function (`appmodel.h`, `kernel32.dll`) with a null buffer.
+A process is packaged when it has package identity and unpackaged when it does not. The distinction applies to processes (background tasks, out-of-process servers and other processes can also have identity), not only to applications. Detect it with Task Manager, the Win32 `GetCurrentPackageFullName` function (`appmodel.h`), or managed code via P/Invoke.
 
 ## Signature / Usage
+
+Call `GetCurrentPackageFullName` without a buffer:
+
+- `ERROR_INSUFFICIENT_BUFFER` means the process has package identity.
+- `APPMODEL_ERROR_NO_PACKAGE` means the process does not have package identity.
+- Any other value is an error that the app should handle.
 
 ```cpp
 #include <Windows.h>
 #include <appmodel.h>
 
-UINT32 length = 0;
-LONG rc = GetCurrentPackageFullName(&length, NULL);
-if (rc != ERROR_INSUFFICIENT_BUFFER)
+LONG IsPackagedProcess(bool* isPackaged)
 {
-    if (rc == APPMODEL_ERROR_NO_PACKAGE)
-        wprintf(L"Process has no package identity\n");
-    else
-        wprintf(L"Error %d in GetCurrentPackageFullName\n", rc);
+    if (isPackaged == nullptr)
+    {
+        return ERROR_INVALID_PARAMETER;
+    }
+
+    *isPackaged = false;
+    UINT32 length = 0;
+    const LONG result = GetCurrentPackageFullName(&length, nullptr);
+
+    if (result == ERROR_INSUFFICIENT_BUFFER)
+    {
+        *isPackaged = true;
+        return ERROR_SUCCESS;
+    }
+
+    if (result == APPMODEL_ERROR_NO_PACKAGE)
+    {
+        return ERROR_SUCCESS;
+    }
+
+    return result;
 }
-else
+```
+
+Managed code (platform invocation):
+
+```csharp
+using System;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+
+internal static class PackageIdentity
 {
-    PWSTR fullName = (PWSTR)malloc(length * sizeof(*fullName));
-    rc = GetCurrentPackageFullName(&length, fullName);
-    if (rc == ERROR_SUCCESS)
-        wprintf(L"%s\n", fullName); // PackageFullName
-    free(fullName);
+    private const int ErrorInsufficientBuffer = 122;
+    private const int AppModelErrorNoPackage = 15700;
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+    private static extern int GetCurrentPackageFullName(
+        ref int packageFullNameLength,
+        IntPtr packageFullName);
+
+    public static bool IsPackagedProcess()
+    {
+        var length = 0;
+        var result = GetCurrentPackageFullName(ref length, IntPtr.Zero);
+
+        return result switch
+        {
+            ErrorInsufficientBuffer => true,
+            AppModelErrorNoPackage => false,
+            _ => throw new Win32Exception(result),
+        };
+    }
 }
 ```
 
@@ -31,15 +76,17 @@ else
 
 | Return code | Meaning |
 |------|-------------|
-| `ERROR_INSUFFICIENT_BUFFER` (first call, buffer NULL) | Process **has** package identity; `length` receives the required buffer size for a second call to retrieve the `PackageFullName`. |
-| `APPMODEL_ERROR_NO_PACKAGE` | Process **has no** package identity (unpackaged). |
-| `ERROR_SUCCESS` (second call with allocated buffer) | `PackageFullName` string written to the buffer. |
+| `ERROR_INSUFFICIENT_BUFFER` (122; first call, no buffer) | Process has package identity; `length` receives the required buffer size if the package full name is also needed |
+| `APPMODEL_ERROR_NO_PACKAGE` (15700) | Process has no package identity (unpackaged) |
+| Any other value | Error; do not treat it as "unpackaged" |
 
 ## Notes
 
-- If the function ultimately succeeds, the app is packaged in MSIX (or granted identity via external-location/sparse packaging) and running on Windows 10 version 1709 (build 16299) or later with full MSIX support.
-- In managed (.NET Framework) code, call `GetCurrentPackageFullName` via P/Invoke; community helper libraries (e.g. DesktopBridgeHelpers) wrap this for convenience.
-- This is the canonical way to branch app behavior (e.g. update-check logic, feature availability) based on whether the current process has package identity.
+- Check in Task Manager without changing the app: open Task Manager, select Details, right-click a column heading, select Select columns, then select Package name. The field is blank for an unpackaged process; for a packaged process it normally contains the package's localized display name. Display names are not guaranteed to be unique, and Task Manager may show an `ms-resource:` reference if it cannot resolve the localized resource.
+- Package identity can come from a package that contains the application files or from a package with external location. Detecting identity therefore does not tell you where the application files are stored or which packaging model the app uses.
+- The check does not need the package full name. If you also need the identity value, allocate a buffer of the returned length and call `GetCurrentPackageFullName` again.
+- Use the check before using a feature that requires package identity, selecting an update mechanism, or choosing a storage location.
+- Removed (2026-09-30 source revision): the earlier statement that success implies Windows 10 version 1709 (build 16299) or later "with full MSIX support", and the reference to community helper libraries such as DesktopBridgeHelpers for .NET, are no longer in the official page; the .NET sample is now the P/Invoke code above.
 
 ## Related
 

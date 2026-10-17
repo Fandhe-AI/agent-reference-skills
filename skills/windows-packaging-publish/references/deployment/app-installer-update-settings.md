@@ -20,7 +20,7 @@ Configures how and when App Installer checks for and applies updates to a sidelo
 | Element / Attribute | Min Windows 10 version | Description |
 | --- | --- | --- |
 | `OnLaunch` | 1709 | Checks for updates when the app launches. Can show UI. |
-| `OnLaunch.HoursBetweenUpdateChecks` | 1803 | Integer 0–255; how often (in hours) to check for updates on launch. Default 24 if unspecified. |
+| `OnLaunch.HoursBetweenUpdateChecks` | 1803 | Integer 0–255; the minimum number of hours between update checks. Default 24 if unspecified. On launch, the system checks only if at least this many hours have passed since the last check (e.g. 3 means no check if one ran within the past 3 hours). |
 | `OnLaunch.ShowPrompt` | 1903 | Boolean; whether to show update UI to the user. |
 | `OnLaunch.UpdateBlocksActivation` | 1903 | Boolean; if `true`, the user must take the update before launching the app. Requires `ShowPrompt="true"`. |
 | `AutomaticBackgroundTask` (`s4:` namespace) | 1803 | Checks for updates in the background every 8 hours, independent of app launch. Cannot show UI. |
@@ -28,6 +28,7 @@ Configures how and when App Installer checks for and applies updates to a sidelo
 
 ## Notes
 
+- `OnLaunch` update checks depend on how the MSIX app is activated, not where the user starts it. Checks run through supported activation entry points: the Start menu (including a pinned tile), an app execution alias, or a protocol handler. A desktop shortcut or taskbar item that launches the executable directly bypasses the check and starts the installed version without checking for an update; one that invokes a supported activation entry point triggers the check. To check regardless of activation path, check for and apply package updates from your code.
 - `ShowPrompt` must be `true` for `UpdateBlocksActivation` to be set to `true`.
 - Two independent choices drive update behavior: *when* to check (on launch vs. background) and *how* to apply (prompt vs. silent, blocking vs. non-blocking).
 - The `s4:` namespace (`http://schemas.microsoft.com/appx/appinstaller/2021`) is required for elements introduced in Windows version 21H2 (build 22000).

@@ -1,6 +1,6 @@
 # Enterprise Deployment with Microsoft Intune
 
-Deploys MSIX-packaged (and, via the newer Microsoft Store integration, Win32) apps silently to managed Windows devices through Microsoft Intune — the recommended successor now that Microsoft Store for Business/Education is retiring.
+Deploys MSIX-packaged apps to managed Windows devices through Microsoft Intune as a Windows line-of-business (LOB) app. Microsoft Store for Business/Education retired on March 31, 2023, so it is no longer a distribution path for new LOB apps.
 
 ## Signature / Usage
 
@@ -25,14 +25,19 @@ Common error codes:
 
 | Error code | Meaning |
 | --- | --- |
-| `0x80073CF3` | `ERROR_INSTALL_PACKAGE_DOWNGRADE` — a newer version is already installed on the device |
+| `0x80073CF3` | `ERROR_INSTALL_RESOLVE_DEPENDENCY_FAILED` — package failed updates, dependency or conflict validation |
+| `0x80073D06` | `ERROR_INSTALL_PACKAGE_DOWNGRADE` — a newer version is already installed on the device |
 | `0x80073CF0` | `ERROR_INSTALL_OPEN_PACKAGE_FAILED` — package corrupted or upload interrupted |
 | `0x80070005` | `E_ACCESSDENIED` — permissions or install-context mismatch (User vs. Device) |
 
 ## Notes
 
+- Source: https://learn.microsoft.com/en-us/windows/msix/desktop/managing-your-msix-deployment-intune
+- The source page maps 0x80073CF3 to `ERROR_INSTALL_PACKAGE_DOWNGRADE`; per winerror.h 0x80073CF3 is `ERROR_INSTALL_RESOLVE_DEPENDENCY_FAILED` and downgrade is 0x80073D06.
 - Intune detects updates by the version number in the MSIX manifest (`.appxmanifest`) — increment it before each release and re-upload to the same app entry.
-- **Microsoft Store for Business and Education is retiring** (originally announced for March 31, 2023, postponed pending a new date); its successor is the **Microsoft Store app (new)** integration inside Intune (**Apps > All Apps > Create > Microsoft Store app (new)**), combined with the Company Portal and `winget`. Native Store client no longer brokers Entra ID authentication for enterprise app acquisition.
+- **Microsoft Store for Business and Microsoft Store for Education retired on March 31, 2023** (the earlier "retiring, postponed" wording here was outdated; per the LOB distribution guide updated 2026-10-14). The enterprise association, private store, and offline Store licensing workflow they provided is no longer a distribution path for new LOB apps.
+- Company Portal is the private app repository for organizations that use Intune. Add an internal app directly to Intune as a LOB app, or add an eligible public Microsoft Store app from the Store catalog in Intune.
+- Partner Center "Organizational licensing" settings (including the Store-managed online licensing option) are legacy and apply only to publicly published Store apps; they do not create a private catalog. For internal private apps use Intune, Configuration Manager, App Installer, or direct sideloading. A Partner Center Private audience contains individually named personal Microsoft accounts (not Entra work or school accounts), so it is not a replacement for enterprise deployment.
 - Diagnostics: `%ProgramData%\Microsoft\IntuneManagementExtension\Logs\IntuneManagementExtension.log` (LOB app deployment) and **Event Viewer > Applications and Services Logs > Microsoft > Windows > AppxDeployment-Server** (MSIX install itself).
 
 ## Related

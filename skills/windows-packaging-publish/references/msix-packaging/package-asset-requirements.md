@@ -23,6 +23,11 @@ AppList.targetsize-16_altform-lightunplated.png  (light theme)
 
 ## Options / Props
 
+| Section | Description |
+|---------|-------------|
+| Manifest logo entries | Pixel sizes per scale factor (100% / 200% / 400%) |
+| App icon (AppList) | Required target sizes, three theme variants each |
+
 ### Manifest logo entries → pixel sizes by scale factor
 
 | Manifest entry | Base size | 100% | 200% | 400% |

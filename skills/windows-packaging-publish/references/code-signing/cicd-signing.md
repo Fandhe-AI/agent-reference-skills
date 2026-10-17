@@ -34,8 +34,31 @@ Azure DevOps, using the **Artifact Signing** marketplace task (`AzureArtifactSig
 | `certificate-profile-name` | secret/string | Certificate profile name within the account. |
 | `files-folder` / `files-folder-filter` | string | Folder to scan for files to sign, and extension filter (e.g. `msix`). |
 
+### MSBuild build-time signing
+
+Windows Application Packaging Projects (`.wapproj`) and single-project MSIX apps expose MSBuild properties that sign the package during the build (set them in the project file or pass them to `msbuild`).
+
+| MSBuild property | Description |
+| --- | --- |
+| `AppxPackageSigningEnabled` | `true` to sign the package during the build |
+| `PackageCertificateThumbprint` | Thumbprint of a certificate in the current user's Personal store (`Cert:\CurrentUser\My`) |
+| `PackageCertificateKeyFile` | Path to a `.pfx` file, when the certificate is not in the store |
+| `PackageCertificatePassword` | Password for the `.pfx` file, if protected |
+| `AppxPackageSigningTimestampServerUrl` | Timestamp server URL; timestamping is strongly recommended so the signature stays valid after the certificate expires |
+| `AppxPackageSigningTimestampDigestAlgorithm` | Timestamp digest algorithm; use `SHA256` |
+
+```cmd
+msbuild MyApp.wapproj /p:Configuration=Release /p:Platform=x64 ^
+  /p:AppxPackageSigningEnabled=true ^
+  /p:PackageCertificateThumbprint=<thumbprint> ^
+  /p:AppxPackageSigningTimestampServerUrl=http://timestamp.digicert.com ^
+  /p:AppxPackageSigningTimestampDigestAlgorithm=SHA256
+```
+
 ## Notes
 
+- Specify either `PackageCertificateThumbprint` or `PackageCertificateKeyFile`, not both. On a CI agent, prefer installing the certificate to the store and referencing it by thumbprint so no password is passed on the command line.
+- With Azure Artifact Signing or a certificate in Azure Key Vault the private key never leaves the service, so sign as a post-build step: build unsigned with `/p:AppxPackageSigningEnabled=false`, then sign the produced `.msix` (SignTool with the Artifact Signing dlib, or the Azure Key Vault flow).
 - Authentication uses `DefaultAzureCredential`, which tries multiple credential sources in order (environment variables, managed identity, Azure CLI, etc.); disable unused ones via `ExcludeCredentials` in `metadata.json` when signing manually with SignTool instead of the pipeline task.
 - Store `AZURE_TENANT_ID`, `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`, and the Artifact Signing account details as pipeline secrets (GitHub Actions repository/organization secrets, or Azure DevOps secret variables/variable groups) — never commit them to source.
 - The Azure DevOps **Artifact Signing** extension must be installed from the Visual Studio Marketplace into the organization; it is not a Visual Studio IDE `.vsix` and must not be run through `VSIXInstaller.exe` on a workstation — doing so fails with a misleading `InvalidSignature` / `NullReferenceException`.
@@ -45,6 +68,7 @@ Azure DevOps, using the **Artifact Signing** marketplace task (`AzureArtifactSig
 
 ## Related
 
+- [Sign Your MSIX Package: End-to-End Guide](./msix-signing-guide.md)
 - [Azure Trusted Signing](./azure-trusted-signing.md)
 - [SignTool Sign Command](./signtool-sign.md)
 - [SignTool Timestamp Options](./signtool-timestamp.md)

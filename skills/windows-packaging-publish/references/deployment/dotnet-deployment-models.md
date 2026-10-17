@@ -29,10 +29,11 @@ dotnet publish -c Release -r <RID> --self-contained true -p:PublishTrimmed=true 
 ## Notes
 
 - For the Windows App SDK, self-contained C# apps additionally need `<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>` in the project file — .NET self-contained publish alone is not sufficient.
-- `dotnet publish` cannot produce a true single-file EXE for WinUI 3 apps even with `PublishSingleFile` — native Windows App SDK runtime dependencies must remain separate files.
+- By default, `PublishSingleFile` leaves the native Windows App SDK runtime files as separate files for WinUI 3 apps. For unpackaged, self-contained apps (Windows App SDK 1.5+) with the required properties (`EnableMsixTooling`, `WindowsPackageType=None`, `IncludeAllContentForSelfExtract`, etc.), a single-file EXE is supported; dependencies are extracted to a temp directory at first launch. See [Unpackage a WinUI App](./unpackage-winui-app.md).
 - Trimming and Native AOT can break reflection-heavy code; test thoroughly after enabling.
 
 ## Related
 
 - [Windows App SDK deployment guide for self-contained apps](./windows-app-sdk-self-contained-deploy.md)
 - [Windows App SDK deployment architecture](./windows-app-sdk-deployment-architecture.md)
+- [Unpackage a WinUI App](./unpackage-winui-app.md)
