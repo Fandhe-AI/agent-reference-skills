@@ -274,6 +274,6 @@ const gatewayModel = gateway.experimental_realtime('openai/gpt-realtime-2');
 ## Related
 
 - [experimental_getRealtimeToolDefinitions](./get-realtime-tool-definitions.md)
-- useRealtime
-- AI Gateway
+- [useRealtime](../ui/use-realtime.md)
+- [AI Gateway](../providers/ai-gateway.md)
 - [Transcription](./transcription.md)

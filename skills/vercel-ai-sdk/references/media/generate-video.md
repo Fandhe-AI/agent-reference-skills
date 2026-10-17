@@ -76,4 +76,4 @@ import { experimental_generateVideo } from 'ai';
 
 - [Video Generation](./video-generation.md)
 - [Image Generation](./image-generation.md)
-- generateVideo (workflow)
+- [generateVideo (workflow)](../workflow-harnesses/workflow-generate-video.md)

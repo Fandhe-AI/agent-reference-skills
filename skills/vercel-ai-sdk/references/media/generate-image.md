@@ -67,4 +67,4 @@ import { generateImage } from 'ai';
 ## Related
 
 - [Image Generation](./image-generation.md)
-- wrapImageModel
+- [wrapImageModel](../providers/wrap-image-model.md)

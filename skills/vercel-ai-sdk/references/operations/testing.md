@@ -220,5 +220,5 @@ export async function POST(req: Request) {
 ## Related
 
 - [simulateReadableStream](../core/simulate-readable-stream.md)
-- Stream Protocol
+- [Stream Protocol](../ui/stream-protocol.md)
 - [ToolLoopAgent](../agents/tool-loop-agent.md)

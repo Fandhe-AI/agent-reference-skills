@@ -161,5 +161,5 @@ export default function Chat() {
 - [useChat](./use-chat.md)
 - [DirectChatTransport](./direct-chat-transport.md)
 - [WebSocketChatTransport](./websocket-chat-transport.md)
-- WorkflowChatTransport
+- [WorkflowChatTransport](../workflow-harnesses/workflow-chat-transport.md)
 - [Stream Protocols](./stream-protocol.md)

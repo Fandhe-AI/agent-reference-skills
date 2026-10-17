@@ -145,4 +145,4 @@ for await (const part of result.stream) {
 - [Error Handling](./error-handling.md)
 - [Vercel Deployment Guide](./vercel-deployment-guide.md)
 - [Troubleshooting](./troubleshooting.md)
-- useChat
+- [useChat](../ui/use-chat.md)

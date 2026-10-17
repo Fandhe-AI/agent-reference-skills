@@ -363,4 +363,4 @@ A small subset of the video models supported by the AI SDK providers (see the re
 
 - [experimental_generateVideo](./generate-video.md)
 - [Image Generation](./image-generation.md)
-- generateVideo (workflow)
+- [generateVideo (workflow)](../workflow-harnesses/workflow-generate-video.md)
