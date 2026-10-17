@@ -32,6 +32,7 @@ MyKernel<<<1000, 128>>>(p0);
 - `cudaDeviceEnablePeerAccess` is required only for direct pointer dereference across devices in a kernel; `cudaMemcpyPeer`/`cudaMemcpyPeerAsync` work without it.
 - Multi-device managed memory and peer-to-peer memory consistency follow `cuda::thread_scope_system` semantics for atomics across devices.
 - Host IOMMU hardware and PCI Access Control Services can restrict P2P transfers, particularly inside VMs; behavior differs between Linux bare-metal and Windows/virtualized environments.
+- Compute Fabric Transport (CPG 13.4): peer-to-peer access reaches a peer allocation through a virtual address that the issuing process has reserved and mapped. For large NVLink fabrics, compute fabric transport is an alternative that names the peer by a logical endpoint id and the resource accessed by an offset rather than a mapped address, using explicit asynchronous fabric operations. It is intended for communication libraries and advanced applications; see the Compute Fabric Transport page.
 - For hardware topology specific to NVLink-connected multi-GPU systems (e.g. NVLink-C2C), see the dgx-spark skill's hardware category.
 
 ## Related
@@ -39,3 +40,4 @@ MyKernel<<<1000, 128>>>(p0);
 - [The CUDA Driver API](./driver-api.md)
 - [Virtual Memory Management](../features/virtual-memory-management.md)
 - [Interprocess Communication](../features/inter-process-communication.md)
+- [Compute Fabric Transport](../features/compute-fabric-transport.md)

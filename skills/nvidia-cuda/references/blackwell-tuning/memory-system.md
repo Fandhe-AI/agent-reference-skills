@@ -29,7 +29,7 @@ cudaFuncSetAttribute(
 
 - The carveout values above are the SM-wide maximums for compute capability 10.0 (228 KB); compute capability 12.0 caps shared memory per SM at 128 KB / 99 KB per block as noted on the Streaming Multiprocessor page, so the same carveout knob applies at a lower ceiling on that compute capability.
 - L2 persistence control is not a new API for Blackwell — it reuses the CUDA access-policy-window mechanism introduced with Ampere.
-- Document version: NVIDIA Blackwell Tuning Guide, revision 1.0 (`https://docs.nvidia.com/cuda/blackwell-tuning-guide/index.html`, CUDA docs build v13.3).
+- Document version: NVIDIA Blackwell Tuning Guide, revision 1.0 (`https://docs.nvidia.com/cuda/blackwell-tuning-guide/index.html`, CUDA docs build v13.4; archived copy `https://docs.nvidia.com/cuda/archive/13.4.2/blackwell-tuning-guide/index.html`).
 
 ## Related
 

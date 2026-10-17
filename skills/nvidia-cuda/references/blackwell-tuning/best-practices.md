@@ -25,7 +25,7 @@ nvcc -gencode=arch=compute_100,code=sm_100 -o app app.cu
 
 - These are the High-Priority recommendations from the guide's CUDA Best Practices section (1.2); they are general CUDA optimization priorities restated in the context of Blackwell, not Blackwell-specific APIs.
 - Application Compatibility (1.3): before performance tuning, consult the **Blackwell Compatibility Guide for CUDA Applications** (`https://docs.nvidia.com/cuda/blackwell-compatibility-guide/`) to ensure the application compiles and runs correctly on Blackwell hardware. That guide's own content (build flags such as `-gencode=arch=compute_100,code=sm_100`, CUDA Toolkit version compatibility, Independent Thread Scheduling compatibility) is out of scope for this page — see it directly for compatibility details.
-- Document version: NVIDIA Blackwell Tuning Guide, revision 1.0 (`https://docs.nvidia.com/cuda/blackwell-tuning-guide/index.html`, CUDA docs build v13.3).
+- Document version: NVIDIA Blackwell Tuning Guide, revision 1.0 (`https://docs.nvidia.com/cuda/blackwell-tuning-guide/index.html`, CUDA docs build v13.4; archived copy `https://docs.nvidia.com/cuda/archive/13.4.2/blackwell-tuning-guide/index.html`).
 
 ## Related
 
