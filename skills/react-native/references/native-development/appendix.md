@@ -23,8 +23,27 @@ Codegen typings:
 | Callbacks `() =>` | Callbacks `() =>` | Yes | | `com.facebook.react.bridge.Callback` | `RCTResponseSenderBlock` |
 | `number` | `number` | No | | `double` | `NSNumber` |
 
+Example spec using these types (from the Turbo Native Modules guide):
+
+```typescript
+import type {TurboModule} from 'react-native';
+import {TurboModuleRegistry} from 'react-native';
+
+export interface Spec extends TurboModule {
+  setItem(value: string, key: string): void;
+  getItem(key: string): string | null;
+  removeItem(key: string): void;
+  clear(): void;
+}
+
+export default TurboModuleRegistry.getEnforcing<Spec>(
+  'NativeLocalStorage',
+);
+```
+
 ## Notes
 
+- The official Appendix page has no code example; the snippet is quoted verbatim from the Turbo Native Modules guide (https://reactnative.dev/docs/0.87/turbo-native-modules).
 - Deviation from the official page: the official table lists "{ foo: string, ...} as const" for TypeScript, which is not a valid type; valid TypeScript type forms are shown instead.
 - Terminology:
   - Spec: TypeScript or Flow code that describes the API for a Turbo Native Module or Fabric Native component. Used by Codegen to generate boilerplate code.
