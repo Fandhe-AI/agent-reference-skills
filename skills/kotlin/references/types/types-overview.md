@@ -13,7 +13,7 @@ val name: String = "Kotlin"   // non-nullable by default
 val maybe: String? = null     // append ? to allow null
 ```
 
-## Basic types
+### Basic types
 
 | Category | Basic types | Definition |
 | --- | --- | --- |
@@ -25,7 +25,7 @@ val maybe: String? = null     // append ? to allow null
 | Strings ([strings.md](./strings.md)) | `String` | A sequence of characters |
 | Arrays ([arrays.md](./arrays.md)) | `Array<T>`, primitive-type arrays | A fixed-size sequence of values |
 
-## Non-denotable types
+### Non-denotable types
 
 Kotlin also has non-denotable types. They are the types that you can't write directly in the Kotlin code. Instead, the compiler uses them internally, for example, for interoperability with other languages. Kotlin creates non-denotable types to represent type information that is more precise than what Kotlin source syntax allows.
 

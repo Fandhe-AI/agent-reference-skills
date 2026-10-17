@@ -17,7 +17,7 @@ val a2 = 0xFFFF_FFFF_FFFFu // ULong: no expected type provided, constant doesn't
 val a = 1UL // ULong, even though no expected type provided and the constant fits into UInt
 ```
 
-## Types
+### Types
 
 | Type | Size (bits) | Min value | Max value |
 | --- | --- | --- | --- |
@@ -26,7 +26,7 @@ val a = 1UL // ULong, even though no expected type provided and the constant fit
 | `UInt` | 32 | 0 | 4,294,967,295 (2^32 - 1) |
 | `ULong` | 64 | 0 | 18,446,744,073,709,551,615 (2^64 - 1) |
 
-## Unsigned arrays and ranges
+### Unsigned arrays and ranges
 
 Each unsigned type has a corresponding array type: `UByteArray`, `UShortArray`, `UIntArray`, `ULongArray`. They provide a similar API to the `Array` class without boxing overhead.
 
@@ -34,12 +34,12 @@ Using unsigned arrays produces a warning that the feature is not stable yet. To 
 
 Ranges and progressions are supported for `UInt` and `ULong` by classes `UIntRange`, `UIntProgression`, `ULongRange`, and `ULongProgression`. Together with the unsigned integer types, these classes are stable.
 
-## Literals
+### Literals
 
 - `u` and `U` signify unsigned literals without specifying the exact type. If no expected type is provided, the compiler uses `UInt` or `ULong` depending on the size of the literal.
 - `uL` and `UL` explicitly specify that the literal should be an unsigned long.
 
-## Use cases
+### Use cases
 
 Utilize the full bit range of an integer to represent positive values, for example a 32-bit `AARRGGBB` color constant, or initialize byte arrays without explicit `toByte()` casts:
 

@@ -25,7 +25,7 @@ val invalid = 'AB' // Error
 val invalidEmpty = '' // Error
 ```
 
-## Unicode support
+### Unicode support
 
 A single `Char` stores one UTF-16 code unit, not necessarily one complete Unicode character.
 
@@ -42,7 +42,7 @@ println(emoji[1])     // Second surrogate
 
 To handle 32-bit symbols individually, use Unicode code points stored as `Int` values.
 
-## Escape sequences
+### Escape sequences
 
 | Supported sequence | Description |
 | --- | --- |
@@ -55,7 +55,7 @@ To handle 32-bit symbols individually, use Unicode code points stored as `Int` v
 | `\\` | Backslash |
 | `\$` | Dollar sign |
 
-## Operations
+### Operations
 
 Comparison uses the standard comparison operators (`==`, `!=`, `<`, `>`, `<=`, `>=`) on numeric Unicode values:
 

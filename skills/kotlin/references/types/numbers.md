@@ -21,7 +21,7 @@ val pi = 3.14 // Double
 val eFloat = 2.7182817f // Float
 ```
 
-## Choose a number type
+### Choose a number type
 
 - Use `Int` for whole numbers.
 - Use `Long` for whole numbers outside the `Int` range.
@@ -29,7 +29,7 @@ val eFloat = 2.7182817f // Float
 - Use `Float` when lower precision is acceptable or required.
 - Use `Byte` and `Short` when an API or data format requires them.
 
-## Integer types
+### Integer types
 
 | Type | Size (bits) | Min value | Max value |
 | --- | --- | --- | --- |
@@ -57,7 +57,7 @@ val million = 1_000_000 // Int
 val threeBillion = 3_000_000_000 // Long
 ```
 
-## Floating-point types
+### Floating-point types
 
 Floating-point types follow the IEEE 754 standard. `Float` reflects the single precision. `Double` reflects the double precision.
 
@@ -68,7 +68,7 @@ Floating-point types follow the IEEE 754 standard. `Float` reflects the single p
 
 To declare a floating-point literal, include a decimal point (`.`) or use exponent notation (`6.02214076e23`). By default, Kotlin infers floating-point literals as `Double`. To declare a `Float`, add the `f` or `F` suffix. Kotlin rounds a `Float` literal that contains more precision than `Float` can store.
 
-## Arithmetic operations
+### Arithmetic operations
 
 Standard operations: `+`, `-`, `*`, `/`, and `%`. The result type depends on the types of the operands.
 
@@ -89,7 +89,7 @@ val a = 5 / 2.0         // 2.5
 val b = 5 / 2.toDouble() // 2.5
 ```
 
-## Type conversion
+### Type conversion
 
 Numeric types are not subtypes of one another. Kotlin requires explicit conversions to avoid silent data loss and unexpected behavior.
 
@@ -111,7 +111,7 @@ val d: Double = 1.5
 val l: Long = d.toLong() // 1
 ```
 
-### Mixed numeric expressions
+#### Mixed numeric expressions
 
 Kotlin does not support implicit conversion for assignments or function arguments. However, you can combine different numeric types in arithmetic expressions; Kotlin determines a result type based on the operand types:
 
@@ -124,7 +124,7 @@ val result2: Int = intNumber + longNumber
 // Error: Initializer type mismatch
 ```
 
-### Integer literal types
+#### Integer literal types
 
 During type inference, Kotlin treats unsuffixed integer literals as a special Integer Literal Type (ILT) until the surrounding context determines a specific type:
 
@@ -152,7 +152,7 @@ val intValues: List<Int> = listOf(1, 2L)
 // Error: initializer type mismatch
 ```
 
-## Data overflow
+### Data overflow
 
 If the result of an operation falls outside the range of a type, overflow occurs. The compiler does not automatically produce an error when integer overflow occurs.
 
@@ -173,7 +173,7 @@ Since floating-point types follow IEEE 754, very large results can become `Infin
 println(Double.MAX_VALUE * 2) // Infinity
 ```
 
-## Bitwise operations
+### Bitwise operations
 
 Bitwise operations for `Int` and `Long` are a set of infix functions and `inv()`:
 
@@ -191,7 +191,7 @@ println(x and 0x000FF000) // 0
 - `xor()` bitwise XOR
 - `inv()` bitwise inversion
 
-## Floating-point number comparison
+### Floating-point number comparison
 
 When the operands are statically known to be `Float` or `Double`, operations on the numbers and the range that they form follow IEEE 754. In generic use cases (such as `Any`, `Comparable<...>`, or `Collection<T>`), Kotlin uses the `equals()` and `compareTo()` implementations for `Float` and `Double`. As a result:
 
@@ -213,7 +213,7 @@ fun main() {
 }
 ```
 
-## Boxing and caching numbers on the JVM
+### Boxing and caching numbers on the JVM
 
 On the JVM, non-nullable numeric values are usually stored using primitive types (`int`, `long`, `double`). When you use generic types or nullable numeric types like `Int?`, the value is boxed and represented as an object. The JVM caches boxed `Integer` values in the range `-128` to `127`, so boxed numbers with the same value can be referentially equal. For values outside the cached range they are separate objects. Use `==` to compare numeric values:
 

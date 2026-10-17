@@ -17,11 +17,11 @@ val box: Box<Int> = Box<Int>(1)
 val box2 = Box(1) // 1 has type Int, so the compiler figures out that it is Box<Int>
 ```
 
-## Variance
+### Variance
 
 Generic types are invariant in Java (`List<String>` is not a subtype of `List<Object>`), and Java uses wildcards (`? extends E`, `? super E`) to compensate. The mnemonic PECS (Producer-Extends, Consumer-Super) describes this. Wildcards only guarantee type safety, not immutability.
 
-### Declaration-site variance
+#### Declaration-site variance
 
 Annotate a type parameter with `out` when it is only returned (produced) from members, never consumed; then `C<Derived>` can be assigned to `C<Base>` (covariant). `in` makes a type parameter contravariant: it can only be consumed, never produced.
 
@@ -46,9 +46,9 @@ fun demo(x: Comparable<Number>) {
 
 A type parameter declared `out` may occur only in out-positions in the members of the class. Rule of thumb from the source: "Consumer in, Producer out".
 
-## Type projections
+### Type projections
 
-### Use-site variance
+#### Use-site variance
 
 Some classes (such as `Array`) can't be restricted to only return `T`. Use a type projection at the use site:
 
@@ -62,7 +62,7 @@ fun copy(from: Array<out Any>, to: Array<Any>) { ... }
 fun fill(dest: Array<in String>, value: String) { ... }
 ```
 
-### Star-projections
+#### Star-projections
 
 Use `*` when you know nothing about the type argument but still want to use it safely:
 
@@ -72,7 +72,7 @@ Use `*` when you know nothing about the type argument but still want to use it s
 
 For `interface Function<in T, out U>`: `Function<*, String>` means `Function<in Nothing, String>`; `Function<Int, *>` means `Function<Int, out Any?>`; `Function<*, *>` means `Function<in Nothing, out Any?>`. Star-projections are like Java's raw types, but safe.
 
-### Captured types
+#### Captured types
 
 With a type projection such as `out T` or `in T`, the compiler represents the unknown concrete type as a captured type (non-denotable; it appears in diagnostics such as `CapturedType(out X)`). Its upper bound is used for reads and its lower bound for writes:
 
@@ -88,7 +88,7 @@ val item = array.get(0)
 array.set(0, "New value")
 ```
 
-## Generic functions
+### Generic functions
 
 Type parameters are placed before the function name. Type arguments can be omitted if they can be inferred:
 
@@ -105,9 +105,9 @@ val l = singletonList<Int>(1)
 val l2 = singletonList(1)
 ```
 
-## Generic constraints
+### Generic constraints
 
-### Upper bounds
+#### Upper bounds
 
 The most common constraint is an upper bound (Java's `extends`). The default upper bound is `Any?`. Only one upper bound can be specified inside the angle brackets; for more than one, use a `where` clause, and the passed type must satisfy all conditions simultaneously:
 
@@ -121,7 +121,7 @@ fun <T> copyWhenGreater(list: List<T>, threshold: T): List<String>
 }
 ```
 
-## Definitely non-nullable types
+### Definitely non-nullable types
 
 Declare a generic type `T` as definitely non-nullable with `T & Any`. It must have a nullable upper bound. The most common use case is overriding a Java method with `@NotNull`:
 
@@ -135,11 +135,11 @@ interface ArcadeGame<T1> : Game<T1> {
 
 When working only with Kotlin, you rarely need this explicitly because type inference handles it.
 
-## Type erasure
+### Type erasure
 
 Type safety checks for generics are done at compile time. At runtime, instances of generic types don't hold actual type arguments (`Foo<Bar>` and `Foo<Baz?>` are erased to `Foo<*>`).
 
-### Generics type checks and casts
+#### Generics type checks and casts
 
 `ints is List<Int>` and `list is T` are prohibited. You can check against a star-projected type, or against the non-generic part when type arguments are known statically:
 
@@ -171,7 +171,7 @@ val stringToList = somePair.asPairOf<String, List<*>>()
 val stringToStringList = somePair.asPairOf<String, List<String>>() // Compiles but breaks type safety!
 ```
 
-### Unchecked casts
+#### Unchecked casts
 
 Casts to generic types with concrete type arguments such as `foo as List<String>` can't be checked at runtime. Redesign the program structure or use generic variance and reified type parameters to avoid them. Suppress the warning by annotating the statement or declaration with `@Suppress("UNCHECKED_CAST")`:
 
@@ -185,7 +185,7 @@ inline fun <reified T> List<*>.asListOfType(): List<T>? =
 
 On the JVM, array types retain information about the erased type of their elements, and casts to an array type are partially checked: nullability and actual type arguments of the element type are still erased.
 
-## Underscore operator for type arguments
+### Underscore operator for type arguments
 
 Use `_` for a type argument to infer it when other types are explicitly specified:
 

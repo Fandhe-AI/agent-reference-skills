@@ -17,7 +17,7 @@ val isEnabled: Boolean? = null // nullable
 
 You cannot assign an integer value to a `Boolean` variable. In Kotlin, `0` and `1` are not `Boolean` values.
 
-## Produce Boolean values
+### Produce Boolean values
 
 ```kotlin
 val number = 10
@@ -29,7 +29,7 @@ val isEmpty = language.isEmpty()
 println(isEmpty) // false
 ```
 
-## Boolean operations
+### Boolean operations
 
 | Operation | Syntax | Notes |
 | --- | --- | --- |
@@ -47,7 +47,7 @@ val b = false || true // true
 val c = true xor false // true
 ```
 
-## Operator precedence
+### Operator precedence
 
 Precedence order for the `Boolean` operations (highest first): `!`, `xor` (and other infix functions), `&&`, `||`.
 
@@ -59,7 +59,7 @@ val result2 = (true || false) && false
 println(result2) // false
 ```
 
-## Boolean in conditions
+### Boolean in conditions
 
 `if`, `when`, and `while` evaluate `Boolean` expressions to direct program flow. A condition already has the `Boolean` type; you do not need to compare it to `true` or `false`.
 

@@ -16,7 +16,7 @@ val nullArray: Array<Int?> = arrayOfNulls(3)
 val squares = Array(5) { i -> i * i } // 0, 1, 4, 9, 16
 ```
 
-## When to use arrays
+### When to use arrays
 
 Use arrays for interoperability with Java APIs or low-level requirements (performance beyond regular applications, custom data structures). For most use cases, prefer collections.
 
@@ -30,7 +30,7 @@ Use arrays for interoperability with Java APIs or low-level requirements (perfor
 | Java interoperability | Maps to `T[]` | Maps to `java.util.List` and `java.util.Set` |
 | Functional-style filtering and transformations | Limited | Extensive |
 
-## Create arrays
+### Create arrays
 
 Use `arrayOf()`, `arrayOfNulls()`, `emptyArray()`, or the `Array` constructor (size plus an initializer function). Declaring an array with `val` only prevents reassigning the variable; elements are mutable in both `val` and `var` arrays.
 
@@ -42,7 +42,7 @@ println(twoDArray.contentDeepToString())
 // [[0, 0], [0, 0]]
 ```
 
-### Primitive-type arrays
+#### Primitive-type arrays
 
 Using `Array` with primitive values boxes them. To avoid boxing overhead, use dedicated primitive-type arrays. They are not subclasses of `Array<T>`, but provide a similar set of functions and properties.
 
@@ -70,7 +70,7 @@ val doubles = doubleArrayOf(0.22, 4.16, 0.5)
 
 Kotlin doesn't have a dedicated `StringArray` type; use `arrayOf()` or `arrayOf<String>()`. To convert primitive-type arrays to object-type arrays use `.toTypedArray()`; to convert back use `.toBooleanArray()`, `.toByteArray()`, `.toCharArray()`, and so on.
 
-## Work with arrays
+### Work with arrays
 
 | Member | Returns |
 | --- | --- |
@@ -81,7 +81,7 @@ Kotlin doesn't have a dedicated `StringArray` type; use `arrayOf()` or `arrayOf<
 | `isEmpty()` and `isNotEmpty()` | `true` if array is empty or not empty |
 | `contains()` | `true` if array has the element |
 
-### Access and modify elements
+#### Access and modify elements
 
 Use the indexed access operator (`[]`). Out-of-bounds access throws `ArrayIndexOutOfBoundsException` at runtime. `fill(element, fromIndex, toIndex)` replaces elements in a range in place (`fromIndex` inclusive, `toIndex` exclusive).
 
@@ -105,7 +105,7 @@ printArr(arrayOf("k", "t", "n"))
 // k, t, n,
 ```
 
-### Add and remove elements
+#### Add and remove elements
 
 Arrays have a fixed size, so `.add()` and `.remove()` are not available. Create a new array with `.copyOf` or the `+` / `+=` operators. If you frequently add or remove elements, use mutable collections.
 
@@ -121,7 +121,7 @@ arr2 = arr2 + intArrayOf(4, 5)
 // 0, 1, 2, 3, 4, 5
 ```
 
-### Compare arrays
+#### Compare arrays
 
 Use `.contentEquals()` and `.contentDeepEquals()` to compare contents in order:
 
@@ -137,7 +137,7 @@ println(simpleArray contentEquals anotherArray)
 // false
 ```
 
-### Transform arrays
+#### Transform arrays
 
 `.sum()` works only with arrays of numeric data types. `.sort()` sorts in natural order in place, `.shuffle()` randomizes in place, and `.sortedArray()` returns a new sorted array without modifying the original.
 
@@ -152,7 +152,7 @@ simpleArray.sort()
 // 1, 2, 3
 ```
 
-### Pass variable number of arguments
+#### Pass variable number of arguments
 
 Use the spread operator (`*`) to pass an array to a `vararg` parameter; each element is passed as an individual argument:
 
@@ -170,7 +170,7 @@ fun printAllStrings(vararg strings: String) {
 }
 ```
 
-## Convert to collections
+### Convert to collections
 
 `.toList()`, `.toSet()`, and `.toMap()` copy the content into an independent copy and don't reflect subsequent changes to the array. `.toMap()` works only on an array of `Pair<K,V>`; if the same key appears more than once, the last value is used.
 

@@ -42,13 +42,13 @@ fun main() {
 }
 ```
 
-## Declare type aliases
+### Declare type aliases
 
 You can declare a type alias at the top level of a file, or inside a class, interface, or object (nested type alias). You can't declare a type alias in a local scope, such as inside a function or lambda expression.
 
 The declaration location determines the scope; its visibility determines which code can access it. By default, a type alias is `public`. A nested type alias is accessible only where its containing declaration is accessible. A type alias can't expose an underlying type with more restrictive visibility than its own (a `public` alias can't refer to a `private` class).
 
-### Top-level type aliases
+#### Top-level type aliases
 
 Within the same package, refer to an alias by its unqualified name. From another package, import the alias or use its qualified name:
 
@@ -73,7 +73,7 @@ fun deleteUser(id: org.example.users.UserId) {
 }
 ```
 
-### Nested type aliases
+#### Nested type aliases
 
 Nested type aliases follow the same scope and name-resolution rules as nested classes. Inside the containing declaration use the unqualified name; outside, qualify the alias with the name of its containing declaration:
 

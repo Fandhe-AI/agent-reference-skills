@@ -25,7 +25,7 @@ fun main() {
 
 Checking against a supertype of the declared type is not worthwhile because the answer is always true.
 
-## Smart casts
+### Smart casts
 
 The compiler tracks type checks and explicit casts for immutable values and inserts implicit (safe) casts automatically. It also knows a cast is safe if a negative check leads to a return:
 
@@ -38,7 +38,7 @@ fun logMessage(data: Any) {
 }
 ```
 
-### Control flow
+#### Control flow
 
 Smart casts work for `if`, `when`, and `while`:
 
@@ -67,7 +67,7 @@ fun petAnimal(animal: Any) {
 }
 ```
 
-### Logical operators
+#### Logical operators
 
 The compiler can smart cast the right-hand side of `&&` or `||` when there is a type check on the left-hand side:
 
@@ -102,7 +102,7 @@ fun signalCheck(signalStatus: Any) {
 
 The common supertype is an approximation of a union type. Union types are not currently supported in Kotlin.
 
-### Intersection types
+#### Intersection types
 
 When the compiler smart-casts an object through multiple `&&` checks, it infers an intersection type, an internal type that simultaneously satisfies all the checked constraints:
 
@@ -123,7 +123,7 @@ Intersection types are non-denotable; you may see them in compiler messages and 
 fun  <T> T.assertNotNull(): T & Any = this ?: throw IllegalStateException("null value")
 ```
 
-### Inline functions
+#### Inline functions
 
 Inline functions are treated as having an implicit `callsInPlace` contract, so the compiler can smart-cast variables captured within lambdas passed to inline functions:
 
@@ -143,11 +143,11 @@ fun runProcessor(): Processor? {
 }
 ```
 
-### Exception handling
+#### Exception handling
 
 Smart cast information is passed on to `catch` and `finally` blocks. After `stringInput = null` inside `try`, the compiler discards the previous smart cast, so `stringInput` stays nullable in `catch` (`println(stringInput?.length)`).
 
-### Smart cast prerequisites
+#### Smart cast prerequisites
 
 Smart casts work only when the compiler can guarantee that the variable won't change between the check and its usage:
 
@@ -158,7 +158,7 @@ Smart casts work only when the compiler can guarantee that the variable won't ch
 | `var` local variables | If the variable is not modified between the check and its usage, is not captured in a lambda that modifies it, and is not a local delegated property |
 | `var` properties | Never, because the variable can be modified at any time by other code |
 
-## `as` and `as?` cast operators
+### `as` and `as?` cast operators
 
 If a cast fails with `as`, a `ClassCastException` is thrown at runtime (the unsafe operator). With `as?`, the operator returns `null` when the cast fails (the safe operator).
 
@@ -185,7 +185,7 @@ val safeAttempts: String? = config["loginAttempts"] as? String
 // null
 ```
 
-### Up and downcasting
+#### Up and downcasting
 
 Upcasting (to a superclass) needs no special syntax or cast operators. Downcasting (to a subclass) can be unsafe, so use explicit cast operators; prefer `as?` to return `null` on failure:
 

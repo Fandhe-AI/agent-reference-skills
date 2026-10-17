@@ -7,20 +7,42 @@ source: https://kotlinlang.org/docs/kotlin-tour-intermediate-objects.html
 Declare singletons with `object`, print-friendly singletons with `data object`, and class-level members with `companion object`.
 
 ```kotlin
-interface Auth {
-    fun takeParams(username: String, password: String)
+// Declares a Singleton object to manage data providers
+object DataProviderManager {
+    private val providers = mutableListOf<DataProvider>()
+
+    // Registers a new data provider
+    fun registerDataProvider(provider: DataProvider) {
+        providers.add(provider)
+    }
+
+    // Retrieves all registered data providers
+    val allDataProviders: Collection<DataProvider> 
+        get() = providers
 }
 
-object DoAuth : Auth {
-    override fun takeParams(username: String, password: String) {
-        println("input Auth parameters = $username:$password")
+// Example data provider interface
+interface DataProvider {
+    fun provideData(): String
+}
+
+// Example data provider implementation
+class ExampleDataProvider : DataProvider {
+    override fun provideData(): String {
+        return "Example data"
     }
 }
 
-fun main(){
-    // The object is created when the takeParams() function is called
-    DoAuth.takeParams("coding_ninja", "N1njaC0ding!")
-    // input Auth parameters = coding_ninja:N1njaC0ding!
+fun main() {
+    // Creates an instance of ExampleDataProvider
+    val exampleProvider = ExampleDataProvider()
+
+    // To refer to the object, use its name directly
+    DataProviderManager.registerDataProvider(exampleProvider)
+
+    // Retrieves and prints all data providers
+    println(DataProviderManager.allDataProviders.map { it.provideData() })
+    // [Example data]
 }
 ```
 
@@ -58,6 +80,7 @@ fun main() {
 
 ## Notes
 
+- The official tour example logs a password; replaced with the credential-free singleton example from https://kotlinlang.org/docs/object-declarations.html.
 - Objects are lazy and thread-safe, and cannot have constructors.
 - A `data object` gets `toString()` and `equals()` but not `copy()`.
 - A class can have only one companion object; if unnamed, it is called `Companion`.

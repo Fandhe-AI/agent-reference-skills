@@ -16,7 +16,7 @@ val message = "Hello, world!" // Kotlin infers String
 val quote = "Kotlin says, \"Hi\"."
 ```
 
-## Multiline strings
+### Multiline strings
 
 Use triple quotes (`""" """`) for text that spans multiple lines or contains quotes you don't want to escape. Multiline strings don't support escape sequences, and they preserve line breaks and indentation as written.
 
@@ -40,7 +40,7 @@ val text = """
 
 Strings processed with `trimIndent()` or `trimMargin()` use only newline (`\n`) separators, regardless of the platform.
 
-## String templates
+### String templates
 
 Use `$` to insert a variable and `${}` to insert an expression or to place a variable directly next to other text. Templates work in regular and multiline strings.
 
@@ -68,7 +68,7 @@ println("Hello, ${text ?: "Kotlin"}")
 // Hello, Kotlin
 ```
 
-### Multi-dollar string interpolation
+#### Multi-dollar string interpolation
 
 To include literal dollar signs, put multiple `$` before the string literal; interpolation then begins only with that many consecutive dollar signs. If you use single-dollar interpolation, this feature doesn't affect your code.
 
@@ -85,7 +85,7 @@ val KClass<*>.jsonSchema : String
     """
 ```
 
-## Basic string operations
+### Basic string operations
 
 | Task | API | Example |
 | --- | --- | --- |
@@ -111,7 +111,7 @@ println(numbers.lines())
 // [one, two, three]
 ```
 
-## Build and format strings
+### Build and format strings
 
 For most formatting tasks, use string templates. Concatenating with `+` creates a new `String` object for each operation, which may not be beneficial in loops. Use `buildString()` (creates a `StringBuilder` internally, runs your block, returns the resulting string) or `StringBuilder` (when you need the buffer as an explicit value):
 
@@ -143,7 +143,7 @@ On the JVM, you can also use `String.format()`:
 val text = String.format("Hello, %s", "Kotlin")
 ```
 
-## String conversion
+### String conversion
 
 `toString()` returns a string representation of a value. In string templates and concatenation, values are converted automatically. Parsing functions:
 
