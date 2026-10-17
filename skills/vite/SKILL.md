@@ -2,16 +2,15 @@
 name: vite
 description: >
   Vite (フロントエンドビルドツール・開発サーバー, v8 / Rolldown) のリファレンス。
-  vite.config, defineConfig, server, build, optimizeDeps, HMR (import.meta.hot),
-  import.meta.env, import.meta.glob, configureServer, transformIndexHtml,
-  Environment API (DevEnvironment / ModuleRunner), SSR, library mode, JavaScript API, v7 から v8 移行。
-  テストは vitest スキル。
+  vite.config, defineConfig, server, build, optimizeDeps, HMR (import.meta.hot), import.meta.env,
+  configureServer, transformIndexHtml, Environment API (DevEnvironment / ModuleRunner), SSR,
+  library mode。
 user-invocable: false
 ---
 
 # Vite
 
-> 分割 PR の途中段階。現在収録済み: references/{assets-env, build-deploy, config-build, config-dev, config-shared}。description に挙げた残りのカテゴリは後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{assets-env, build-deploy, config-build, config-dev, config-shared}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 対象バージョン Vite v8.3.4 (GitHub tag `vitejs/vite` `v8.3.4` = npm latest, published 2026-10-08; fetched 2026-10-16)。
 本文の出典は `raw.githubusercontent.com/vitejs/vite/v8.3.4/docs/**`。`main` は 33 commits 先行し docs 8 ファイルが変更されているため使用しない。vite.dev のページと `.md` twin は `main` からデプロイされるため、source URL とアンカー実測にのみ使用している。
