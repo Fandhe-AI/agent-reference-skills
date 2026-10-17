@@ -279,6 +279,7 @@ C:\> flutter build windows --debug
 
 ## Notes
 
+- The sample is verbatim from the official page; `LaunchMode.inAppWebView` is supported only on Android/iOS — on desktop check `supportsLaunchMode(LaunchMode.inAppWebView)` and fall back to `LaunchMode.externalApplication` (the official page notes desktop apps launch a browser).
 - Clarified: the official page says this lets you use hot reload when editing native code; hot reload applies only to Dart, and native edits need a rebuild.
 - The guide presumes you understand general debugging, have installed Flutter and git, and have familiarity with the Dart language as well as one of Java, Kotlin, Swift, or Objective-C.
 - Corrected an error in the official docs: they point to build/windows/my_app.sln, but since Flutter 3.15 the Windows build directory includes the target architecture, so the solution is at build/windows/x64/my_app.sln (or build/windows/arm64/ on Arm64).

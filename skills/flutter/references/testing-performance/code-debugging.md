@@ -442,7 +442,7 @@ You can achieve similar results to some of these debug flags using DevTools. Som
 
 - `debugDumpRenderTree()`: to dump the rendering tree to the console, call this function when not in a layout or repaint phase. To set these flags either edit the framework code, or import the module, set the value in your `main()` function, then hot restart.
 - `debugPaintLayerBordersEnabled`: to display the boundaries of each layer, set this property to `true`. When set, each layer paints a box around its boundary.
-- `debugRepaintRainbowEnabled`: to display a colored border around each widget, set this property to `true`. These borders change color as the app user scrolls in the app. To set this flag, add `debugRepaintRainbowEnabled = true;` as a top-level property in your app. If any static widgets rotate through colors after setting this flag, consider adding repaint boundaries to those areas.
+- `debugRepaintRainbowEnabled`: to display a colored border around each widget, set this property to `true`. These borders change color as the app user scrolls in the app. To set this flag, import `package:flutter/rendering.dart` and assign `debugRepaintRainbowEnabled = true;` inside `main()` before `runApp()`. If any static widgets rotate through colors after setting this flag, consider adding repaint boundaries to those areas.
 - `debugPrintMarkNeedsLayoutStacks`: to determine if your app creates more layouts than expected, set this property to `true`. When set, the framework outputs stack traces to the console to explain why your app marks each render object to be laid out.
 - `debugPrintMarkNeedsPaintStacks`: to determine if your app paints more layouts than expected, set this property to `true`.
 
@@ -496,6 +496,7 @@ To add an overlay to a Material Design baseline grid on your app to help verify 
 
 ## Notes
 
+- Corrected an error in the official docs: they say to add `debugRepaintRainbowEnabled = true;` as a top-level property, but Dart does not allow top-level assignment statements; assign it in main() before runApp().
 - Corrected from the official page: it says every `debug...` function only works in debug mode, and lists print() as part of dart:io; debugPrint still prints in release mode, and print() is in dart:core.
 - Use the dump functions only in debug mode; the `debugPaint*`/`debugRepaint*` flags and dump functions don't work in other modes (`debugPrint` is the exception). `debugDumpApp()` cannot be called inside `build()` while the app is building, and `debugDumpRenderTree()` cannot be called during a layout or paint phase.
 - The full widget, render, focus, and layer tree dumps are long; only excerpts of the widget, render, and focus trees are reproduced here. See the official page for the full output.
