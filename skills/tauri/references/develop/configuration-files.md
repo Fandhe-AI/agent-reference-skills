@@ -231,6 +231,7 @@ Hook the scripts into the CLI through the Tauri configuration's `beforeDevComman
 - The `"tauri"` script in `package.json` is only needed when using `npm`.
 - Lockfiles (`yarn.lock`, `pnpm-lock.yaml`, `package-lock.json`) pin the frontend dependency versions, like `Cargo.lock` does for Rust.
 - All configuration options are listed in the configuration reference (see the config category).
+- The `rust-version = "1.57"` in the barebones example is copied verbatim from the official docs and is outdated; do not use it as the minimum supported Rust version. At the pinned versions, tauri-cli 2.12.3 and the plugins-workspace crates declare `rust-version = "1.90"`, and the `tauri` crate inherits the workspace `rust-version`, which is `"1.90"` in the root `Cargo.toml` of the `tauri-v2.12.4` tag (`[workspace.package]`).
 
 ## Related
 
