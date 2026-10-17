@@ -69,7 +69,7 @@ pub fn save_safetensors_f32_to_bytes(
 
 ## Notes
 
-- 公開面の不一致: guides/interop.md（README 由来の記述）は safetensors 読み書きを `fandhe-ai` から未公開としているが、0.11.0 のソースでは `fandhe_ai::interop::safetensors` として再エクスポート済み。実体は内部クレート `fandhe-ai-onnx-interop` の `st_load.rs` / `st_save.rs` / `require_keys.rs`
+- 0.3.0 時点の旧ドキュメント（README 由来の旧 guides/interop.md）は safetensors 読み書きを `fandhe-ai` から未公開としていたが、0.11.0 では `fandhe_ai::interop::safetensors` として再エクスポート済み。実体は内部クレート `fandhe-ai-onnx-interop` の `st_load.rs` / `st_save.rs` / `require_keys.rs`
 - クレートルート直下にも別実装の `LoadError` / `require_keys`（`onnx::interp` 用）があるが、ここで再エクスポートされるのは `st_load` / `st_save` 配下のもののみ。両者を混同しない
 - 暗黙アダプタなし: PyTorch `nn.Linear.weight`（`[out_features, in_features]`）等の転置・キーリネームは行わない。必要なら呼び出し側が `Tensor::transpose_2d` を明示的に呼ぶ
 - 検証順序: ヘッダ・レイアウト整合 → dtype 検査（F32 以外は拒否） → データ長整合 → `Tensor::new` の shape 検査。入力総バイト数の明示上限は無い

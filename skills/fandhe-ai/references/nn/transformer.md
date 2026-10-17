@@ -88,7 +88,7 @@ pub fn forward(
 
 ## Notes
 
-- facade 単体の構築は不可: `Transformer::new` / `TransformerDecoderLayer::new` は `FeedForwardActivation`（facade 未公開）等を要し、`Tape` への委譲メソッドも追加されていない。構築・学習は `compat::Sequential::add_transformer` / `add_transformer_decoder_layer` 経由で行う
+- `TransformerDecoderLayer::new` は `FeedForwardActivation`（facade 未公開）を引数に取るため facade からは構築できない。`Transformer::new(&TransformerConfig, seed)` は facade 公開の `TransformerConfig`（既定 `Relu`）で呼べるが、`bind` は内部クレートの `fandhe_ai_autodiff::Tape` を要求し、facade の `Tape` は `pub(crate)` の newtype で委譲メソッドも無いため、facade 単体では forward・学習を実行できない。構築と学習は `compat::Sequential::add_transformer` / `add_transformer_decoder_layer` 経由で行う
 - `add_transformer` は活性化が relu 以外だと `InvalidArgument`（保存 manifest に活性化を持たせないため）。`add_transformer_decoder_layer` は `FeedForwardActivation::Relu` と `LAYER_NORM_DEFAULT_EPS` で構築する
 - `Transformer` の構成は PyTorch `nn.Transformer` と同じ: encoder 層群 → `encoder_norm` → `memory` → decoder 層群（`tgt_mask` / `memory_mask` / `tgt_is_causal`、`memory_is_causal = false` 固定）→ `decoder_norm`
 - `Module::forward`（autodiff 側）は `src = tgt = input`・mask なし・非 causal を表す。`forward_host` は非対応（`supports_forward_host` は `false`）
