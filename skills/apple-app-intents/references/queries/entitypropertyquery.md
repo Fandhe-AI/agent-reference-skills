@@ -24,8 +24,8 @@ class MyPhoto: AppEntity {
 struct MyPhotoQuery: EntityPropertyQuery {
    static var properties = QueryProperties {
        Property(\.$takenAt) {
-           LessThanComparator { URLQueryItem(name: "takenBefore", value: $0) }
-           GreaterThanComparator { URLQueryItem(name: "takenAfter", value: $0) }
+           LessThanComparator { URLQueryItem(name: "takenBefore", value: $0.ISO8601Format()) }
+           GreaterThanComparator { URLQueryItem(name: "takenAfter", value: $0.ISO8601Format()) }
        }
        Property(\.$tags) {
            ContainsComparator { URLQueryItem(name: "tagsContains", value: $0) }
@@ -38,10 +38,15 @@ struct MyPhotoQuery: EntityPropertyQuery {
        sortedBy: [Sort<MyPhoto>],
        limit: Int?
    ) async throws -> [MyPhoto] {
-       var components = URLComponents()
-       components.queryItems = comparators
-       let url = components.url(relativeTo: "https://myphotosbackend.com/photos")
+       guard var components = URLComponents(string: "https://myphotosbackend.com/photos") else { return [] }
 
+       var items = comparators
+       items.append(URLQueryItem(name: "mode", value: mode == .and ? "and" : "or"))
+       if let limit { items.append(URLQueryItem(name: "limit", value: String(limit))) }
+       // Map each sortedBy entry's keypath/order to your backend's sort parameters
+       components.queryItems = items
+
+       guard let url = components.url else { return [] }
        return try await PhotosBackend.fetch(url: url)
    }
 }
@@ -70,7 +75,8 @@ struct MyPhotoQuery: EntityPropertyQuery {
 - Provides an `EntityQuery` with the ability to query instances according to their traits as modeled through query properties and corresponding comparators.
 - At runtime, `entities(matching:mode:sortedBy:limit:)` receives an array of `ComparatorMappingType` instances (a type of your choice representing the comparator mappings given by the user) and fetches entities matching them. The `properties` static property contains the set of `EntityQueryProperty` objects the query accepts; for each property's supported `EntityQueryComparator`s you supply a closure that transforms a runtime user-supplied value into a `ComparatorMappingType`.
 - The App Intents runtime invokes the mapping closures for each comparator in the user request, gathers their `ComparatorMappingType` outputs, then invokes `entities`. Use whichever backend suits your app (in-memory lookup, Core Data, remote network call, and so on).
-- The code listing is corrected from the official page, which writes `LessThanMapping` / `GreaterThanMapping` (the API names are `LessThanComparator` / `GreaterThanComparator`), `URLQueryItem(name: "takenAfter": value: $0)` (colon instead of comma), and `let components` (mutated afterwards).
+- The code listing is corrected from the official page, which writes `LessThanMapping` / `GreaterThanMapping` (the API names are `LessThanComparator` / `GreaterThanComparator`), `URLQueryItem(name: "takenAfter": value: $0)` (colon instead of comma), and `let components` (mutated afterwards). It also converts the `Date` values to ISO 8601 strings with `ISO8601Format()` before passing them to `URLQueryItem`, and replaces `url(relativeTo:)` called with a string by `URLComponents(string:)` and `components.url`.
+- The official listing omits `mode`, `sortedBy`, and `limit`. In a real implementation, include them in the backend request or apply them after fetching.
 - Per the `EnumerableEntityQuery` page, use `EntityPropertyQuery` when there may be many thousands of entities or individual entities may become large in memory, so only entities matching the criteria are fetched.
 
 ## Related
