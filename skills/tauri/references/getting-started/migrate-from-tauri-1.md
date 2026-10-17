@@ -627,7 +627,7 @@ fn main() {
         .setup(|app| {
             let output = tauri::async_runtime::block_on(async move { app.shell().command("echo").args(["TAURI"]).output().await.unwrap() });
             assert!(output.status.success());
-            assert_eq!(String::from_utf8(output.stdout).unwrap(), "TAURI");
+            assert_eq!(String::from_utf8(output.stdout).unwrap().trim_end(), "TAURI");
             Ok(())
         })
         .run(tauri::generate_context!())
@@ -838,6 +838,7 @@ To enable permissions for your app, create capability files inside the `src-taur
 
 ## Notes
 
+- The shell `echo` example compares `stdout.trim_end()` because `echo` appends a trailing newline; the source compares the raw output and would panic.
 - Tauri capabilities / permissions (ACL) here are Tauri's own access-control system, unrelated to Claude Code permissions (anthropic-claude-code-admin) or MCP capabilities (mcp-spec).
 - Tauri (Rust core + system WebView). Not Electron's API; see the electron skill for Electron.
 - Snippets adjusted from the source to compile on v2: dialog `blocking_show()`, `set_menu(menu)?`, cloned `AppHandle` in updater, `Manager` import in tray.

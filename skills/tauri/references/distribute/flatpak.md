@@ -12,7 +12,7 @@ Build and test locally (closed source flow):
 
 ```sh
 flatpak install flathub org.gnome.Platform//47 org.gnome.Sdk//47
-flatpak-builder --force-clean --user --disable-cache --repo flatpak-repo flatpak flatpak-builder.yaml
+flatpak-builder --force-clean --user --install --disable-cache --repo flatpak-repo flatpak flatpak-builder.yaml
 flatpak run <your flatpak id>
 flatpak -y --user update <your flatpak id>
 ```
@@ -109,8 +109,7 @@ Submitting to Flathub: fork `https://github.com/flathub/flathub/fork`, clone wit
 
 ```sh
 git submodule add https://github.com/flatpak/flatpak-builder-tools.git
-cd flatpak-builder-tools/node/flatpak_node_generator
-pipx install . # Change this to your prefered installation method
+(cd flatpak-builder-tools/node/flatpak_node_generator && pipx install .) # Change this to your prefered installation method
 ```
 
 2. Generate sources (Yarn shown; NPM uses `npm /path/to/your/lock/file/package-lock.json`):
@@ -141,6 +140,8 @@ python3 flatpak-builder-tools/cargo/flatpak-cargo-generator.py -o cargo-sources.
 - The source installs runtime 46 but its manifest uses runtime-version `'47'`; the install command is aligned to 47 here. The Gnome runtime includes all dependencies of the standard Tauri app with their correct versions.
 - If your binary needs more libraries than the default tauri app, add them to the manifest. Including a locally built `.so` is only suitable for fast local development; build the library from source inside the flatpak for the final build.
 - The Open Source tab YAML manifest in the original page is garbled (lost indentation, unterminated code fence); only its described structure is summarized above.
+- Added `--install` to the flatpak-builder command: the source only exports to `flatpak-repo` (despite its `# Install the flatpak` comment), so the following `flatpak run` would fail on first use.
+- Step 1 runs the generator install in a subshell so step 2's paths (`flatpak-builder-tools/...`, `src-tauri/Cargo.lock`) resolve from the project root; the source leaves the shell inside `flatpak_node_generator`.
 - The Flatpak card is commented out of the official distribute overview page, but this page exists.
 
 ## Related
