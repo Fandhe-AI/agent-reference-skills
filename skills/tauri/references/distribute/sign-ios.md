@@ -23,7 +23,7 @@ Enroll in the Apple Developer program (99$ per year at the time of writing) and 
 
 Letting Xcode manage signing and provisioning is the most convenient way. It registers your bundle identifier, manages capability changes and configures a certificate based on the export method. It is enabled by default and uses the account configured in Xcode (`Xcode > Settings > Accounts`, `+` icon).
 
-For CI/CD, create an App Store Connect API key (Users and Access, Integrations tab, Add, name and Admin access) and set `APPLE_API_ISSUER`, `APPLE_API_KEY` and `APPLE_API_KEY_PATH`. The private key can be downloaded only once (visible after a page reload).
+For CI/CD, create an App Store Connect API key (Users and Access, Integrations > Team Keys tab, Add, name and Admin access) and set `APPLE_API_ISSUER`, `APPLE_API_KEY` and `APPLE_API_KEY_PATH`. The private key can be downloaded only once (visible after a page reload).
 
 ### Manual Signing
 

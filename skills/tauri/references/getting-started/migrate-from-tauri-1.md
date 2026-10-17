@@ -111,8 +111,8 @@ cargo tauri migrate
 - `Manager::fs_scope` removed. The file system scope can be accessed via `tauri_plugin_fs::FsExt`.
 - `Plugin::PluginApi` now receives a plugin configuration as a second argument.
 - `Plugin::setup_with_config` removed. Use the updated `tauri::Plugin::PluginApi` instead.
-- `scope::ipc::RemoteDomainAccessScope::enable_tauri_api` and `scope::ipc::RemoteDomainAccessScope::enables_tauri_api` removed. Enable each core plugin individually via `scope::ipc::RemoteDomainAccessScope::add_plugin` instead.
-- `scope::IpcScope` removed, use `scope::ipc::Scope` instead.
+- `scope::ipc::RemoteDomainAccessScope::enable_tauri_api` / `enables_tauri_api` removed. Remote access is now granted through capabilities (`remote.urls`) plus permissions for each core plugin; see Migrate Permissions.
+- `scope::IpcScope` removed; IPC access control is now handled by capabilities/permissions (ACL).
 - `scope::FsScope`, `scope::GlobPattern` and `scope::FsScopeEvent` removed, use `scope::fs::Scope`, `scope::fs::Pattern` and `scope::fs::Event` respectively.
 - `updater` module removed. Use `tauri-plugin-updater` instead.
 - `Env.args` field has been removed, use `Env.args_os` field instead.
@@ -860,6 +860,7 @@ To enable permissions for your app, create capability files inside the `src-taur
 
 - Upstream says `Builder::on_menu_event` was removed, but it exists in tauri 2.12.4 (`Builder::on_menu_event`, desktop only); the text was corrected.
 - The shell `echo` example compares `stdout.trim_end()` because `echo` appends a trailing newline; the source compares the raw output and would panic.
+- The source says to use `scope::ipc::RemoteDomainAccessScope::add_plugin` / `scope::ipc::Scope`, but these were removed in the v2 ACL rework; rewritten to point at capabilities (`remote.urls`) and permissions.
 - Tauri capabilities / permissions (ACL) here are Tauri's own access-control system, unrelated to Claude Code permissions (anthropic-claude-code-admin) or MCP capabilities (mcp-spec).
 - Tauri (Rust core + system WebView). Not Electron's API; see the electron skill for Electron.
 - Snippets adjusted from the source to compile on v2: dialog `blocking_show()`, `set_menu(menu)?`, cloned `AppHandle` in updater, `Manager` import in tray.

@@ -107,7 +107,7 @@ jobs:
 
 Provide credentials for Tauri to authenticate with Apple, either with the App Store Connect API or an Apple ID:
 
-- App Store Connect: in Users and Access, Integrations tab, Add (name, Developer access); set `APPLE_API_ISSUER`, `APPLE_API_KEY`; download the private key (only once, visible after a page reload) and set `APPLE_API_KEY_PATH`.
+- App Store Connect: in Users and Access, Integrations > Team Keys tab, Add (name, Developer access); set `APPLE_API_ISSUER`, `APPLE_API_KEY`; download the private key (only once, visible after a page reload) and set `APPLE_API_KEY_PATH`.
 - Apple ID: set `APPLE_ID`, `APPLE_PASSWORD` (app-specific password), `APPLE_TEAM_ID`.
 
 Then rerun the build, e.g. `pnpm tauri build --bundles dmg`. To skip stapling for an initial notarization pass append `--skip-stapling`:

@@ -101,7 +101,7 @@ build() {
 }
 
 package() {
-	cp -a <project>/src-tauri/target/release/bundle/deb/<project>_${pkgver}_*/data/* "${pkgdir}"
+	cp -a <project>/src-tauri/target/release/bundle/deb/<project>_*_*/data/* "${pkgdir}"
 }
 ```
 
@@ -121,6 +121,7 @@ package() {
 ## Notes
 
 - Upstream clones via `https://aur.archlinux.org/your-repo-name`; AUR HTTPS access is read-only, so the SSH URL `ssh://aur@aur.archlinux.org/<pkgname>.git` is used to allow `git push`.
+- The source copies from `<project>_${pkgver}_*`, but the bundler names the deb directory after the app version in tauri.conf.json/Cargo.toml, not the git-derived pkgver; replaced with a glob.
 - Only the changed fields of the two examples are shown; the remaining `PKGBUILD` fields are the same as in the first snippet.
 - The source page ends with stray link definitions for `async_runtime::spawn`, `serde` and `thiserror` unrelated to AUR; they are not carried over.
 
