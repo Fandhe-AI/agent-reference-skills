@@ -39,7 +39,7 @@ export default class Form extends Component {
 - `createRef` always returns a different object. It's equivalent to writing `{ current: null }` yourself.
 - In a function component, you probably want `useRef`, which always returns the same object. `const ref = useRef(null)` is equivalent to `const [ref, _] = useState(() => createRef())`. (The official page writes `useRef()` / `createRef(null)`; adjusted because `createRef` takes no arguments and React 19 types require an argument for `useRef`.)
 - Migrating from a class with `createRef` to a function with `useRef`: replace calls to `createRef` with `useRef(null)`, and read `inputRef.current` directly.
-- Migration (18 → 19): string refs (`ref='input'` / `this.refs.input`) were removed in React 19; migrate to ref callbacks (`ref={input => this.input = input}`), or use `createRef`. Codemod: `npx codemod@latest react/19/replace-string-ref`.
+- Migration (18 → 19): string refs (`ref='input'` / `this.refs.input`) were removed in React 19; migrate to ref callbacks (`ref={input => { this.input = input; }}`), or use `createRef`. Codemod: `npx codemod@latest react/19/replace-string-ref`. (The upgrade guide writes `ref={input => this.input = input}`; braces added because React 19 types reject implicit returns from ref callbacks.)
 
 ## Related
 

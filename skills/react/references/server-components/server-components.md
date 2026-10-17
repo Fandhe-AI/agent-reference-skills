@@ -18,7 +18,7 @@ async function Page({page}) {
   // NOTE: loads *during* render, when the app is built.
   const content = await file.readFile(`${page}.md`);
 
-  return <div>{sanitizeHtml(marked(content))}</div>;
+  return <div dangerouslySetInnerHTML={{__html: sanitizeHtml(marked(content))}} />;
 }
 ```
 
@@ -157,6 +157,7 @@ function Comments({commentsPromise}) {
 
 ## Notes
 
+- The official example renders `{sanitizeHtml(marked(content))}` as a child, which React escapes as text; adjusted to `dangerouslySetInnerHTML` so the sanitized HTML is actually rendered.
 - The `import {useState} from 'react';` line in the `Expandable` Client Component snippet is added; the original omits it.
 
 - Snippets corrected from the original: note is a record object (note.authorId), so the examples render note.content instead of the object itself; the Expandable example passes it as children.
