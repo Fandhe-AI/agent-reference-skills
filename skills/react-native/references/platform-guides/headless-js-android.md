@@ -178,6 +178,9 @@ If you wish all errors to cause a retry attempt, you will need to catch them and
 Service can be started from Java API. First you need to decide when the service should be started and implement your solution accordingly. The example reacts to network connection change. Register the broadcast receiver in the Android manifest:
 
 ```xml
+<!-- outside <application>, required by ConnectivityManager -->
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 <!-- Not delivered to manifest-declared receivers when targetSdk >= 24 -->
 <receiver android:name=".NetworkChangeReceiver" android:exported="false" >
   <intent-filter>
@@ -378,6 +381,7 @@ class NetworkChangeReceiver : BroadcastReceiver() {
 ## Notes
 
 - Deviation from official docs: Manifest service name aligned with the example package (com.your_application_name) instead of com.example. `com.your_application_name` stands for the app's own package.
+- Deviation from official docs: added the ACCESS_NETWORK_STATE uses-permission required by ConnectivityManager.getActiveNetwork / getNetworkCapabilities / getActiveNetworkInfo (omitted in the official example; without it a SecurityException is thrown).
 - Corrected: the official snippets used require('SomeTaskName') (package resolution), intent.extras on a nullable Intent, and a single-quoted Java string; missing java.util.List import.
 - By default, your app will crash if you try to run a task while the app is in the foreground. This is to prevent developers from shooting themselves in the foot by doing a lot of work in a task and slowing the UI. You can pass a fourth `boolean` argument to control this behaviour.
 - If you start your service from a `BroadcastReceiver`, make sure to call `HeadlessJsTaskService.acquireWakeLockNow()` before returning from `onReceive()`.

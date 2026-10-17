@@ -57,7 +57,7 @@ type WebViewScriptLoadedEvent = $ReadOnly<{|
 type NativeProps = $ReadOnly<{|
   ...ViewProps,
   sourceURL?: string;
-  onScriptLoaded?: CodegenTypes.BubblingEventHandler<WebViewScriptLoadedEvent>?;
+  onScriptLoaded?: ?CodegenTypes.BubblingEventHandler<WebViewScriptLoadedEvent>;
 |}>;
 
 +interface NativeCommands {
@@ -283,6 +283,7 @@ Run your app with the usual commands. Tap the refresh button to see the page get
 - In TypeScript, `React.ElementRef` is deprecated; the correct type is `React.ComponentRef`. However, due to a bug in Codegen, using `ComponentRef` will crash the app (per the official page; the fix needs a new React Native release).
 - Corrected: the official App diff imports `../specs/WebViewNativeComponent`, but the introduction guide places `App.tsx` and `specs/` side by side in `Demo/`; the import path is `./specs/WebViewNativeComponent` here.
 - All Native Commands must have a first parameter of type `React.ElementRef`.
+- Deviation from official docs: Flow nullable type written as ?T (the official sample's postfix T? is not valid Flow syntax).
 - Cross-skill: Android `WebView` / WebKit `WKWebView` APIs belong to android-architecture / apple-uikit; this page covers only the React Native native-command boundary.
 
 ## Related

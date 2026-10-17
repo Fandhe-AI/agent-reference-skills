@@ -363,6 +363,7 @@ export default App;
 - Registering the module in `OnLoad.cpp` means that when JS requires the C++ Turbo Native Module the app knows where to find it. The downloaded `OnLoad.cpp` is the original from React Native, safely overridden to load the C++ module.
 - iOS: the `ModuleProvider` is an Objective-C++ class that glues the pure C++ module with the rest of the iOS app. It implements `RCTModuleProvider` by creating the pure C++ `NativeSampleModule` when `getTurboModule:` is called. The `mm` extension denotes an Objective-C++ file.
 - Best practice (the example imports the spec directly for brevity): create a separate file to wrap the specs and use that file in the application, so you can prepare the input for the specs and keep more control over them in JS.
+- The reverseString sample reverses bytes, not characters: it is correct only for ASCII input; non-ASCII UTF-8 input (e.g. Japanese, emoji) produces an invalid byte sequence, so use a code-point-aware reversal (or restrict input to ASCII) in real code.
 - Cross-skill: Xcode / CocoaPods iOS integration and Android Gradle belong to apple-uikit / android-build-gradle; this page covers only the React Native C++ module boundary.
 
 ## Related

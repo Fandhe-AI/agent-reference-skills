@@ -335,6 +335,7 @@ return (
 - Naming convention: the first part of the generated name is the type of the module (`NativeSampleModule`); the second part is the name of the JS type defined in the specs (`Address`).
 - In `validateAddress` the `Address` is a `jsi::Object`. JSI accessors: `getProperty()` retrieves a property by name; `asString()` converts to `jsi::String`; `utf8()` converts a `jsi::String` to `std::string`; `asNumber()` converts to a `double`. Functions can also return custom types.
 - Deviation from official docs: added finite/integer/int32 range check before casting asNumber() (double) to int32_t to avoid undefined behavior.
+- The reverseString sample reverses bytes, not characters: it is correct only for ASCII input; non-ASCII UTF-8 input (e.g. Japanese, emoji) produces an invalid byte sequence, so use a code-point-aware reversal (or restrict input to ASCII) in real code.
 
 ## Related
 

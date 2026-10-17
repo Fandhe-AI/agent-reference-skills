@@ -66,7 +66,7 @@ type WebViewScriptLoadedEvent = $ReadOnly<{|
 type NativeProps = $ReadOnly<{|
   ...ViewProps,
   sourceURL?: string;
-  onScriptLoaded?: CodegenTypes.BubblingEventHandler<WebViewScriptLoadedEvent>?;
+  onScriptLoaded?: ?CodegenTypes.BubblingEventHandler<WebViewScriptLoadedEvent>;
 |}>;
 
 export default (codegenNativeComponent<NativeProps>(
@@ -154,6 +154,7 @@ yarn run ios
 - Step 2 (building your native code) is split by platform; the official page embeds the Android and iOS guides. See the Android and iOS pages linked below.
 - This guide creates a Native Component that only works with the New Architecture. Supporting both the New Architecture and the Legacy Architecture requires the backwards compatibility guide in the React Native New Architecture working group repository.
 - Docusaurus highlight markers from the official page are removed; snippets show the final code.
+- Deviation from official docs: Flow nullable type written as ?T (the official sample's postfix T? is not valid Flow syntax).
 - Cross-skill: this page covers the React Native native-component boundary; the Android `WebView` and iOS `WKWebView` APIs themselves belong to android-architecture / apple-uikit.
 
 ## Related
