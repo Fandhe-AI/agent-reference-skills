@@ -9,7 +9,7 @@ user-invocable: false
 
 # Kotlin
 
-> 分割 PR の途中段階。現在収録済み: references/{basics, build-tools, classes-objects, collections, compiler, coroutines, functions, java-interop}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{basics, build-tools, classes-objects, collections, compiler, coroutines, functions, java-interop, releases, serialization, stdlib}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -25,6 +25,8 @@ user-invocable: false
 - 照合用の原本
   - Kotlin 本体ドキュメント: `JetBrains/kotlin-web-site` commit [`0b10373a150997e9fbcd730a7e00ae8444cc8606`](https://github.com/JetBrains/kotlin-web-site/tree/0b10373a150997e9fbcd730a7e00ae8444cc8606)（リリースタグが無いため SHA で pin）
   - kotlinx.coroutines: `Kotlin/kotlinx.coroutines` commit [`7e0d1b3e9ca83652427ae00dda7d1673f058a743`](https://github.com/Kotlin/kotlinx.coroutines/tree/7e0d1b3e9ca83652427ae00dda7d1673f058a743)（サイトは master から生成され、タグ 1.11.0 の docs は古い構成のため。保存した 14 件に 1.12 / EAP の記述は 0 件）
+  - kotlinx.serialization: Writerside ソースが公開されていないため twin のみ。補助として GitHub ガイドをタグ [`v1.11.0`](https://github.com/Kotlin/kotlinx.serialization/tree/v1.11.0/docs) で保存
+- 除外した版: Kotlin 2.5.0-Beta1、kotlinx.serialization 1.12.0-RC
 
 ## ディレクトリ構成
 
@@ -47,18 +49,28 @@ skills/kotlin/
     collections/            # コレクション・シーケンス・Range（18 ページ）
       README.md
       collections-overview.md  collection-operations.md  sequences.md  ranges.md ...
+    stdlib/                 # 標準ライブラリ補足（7 ページ）
+      README.md
+      scope-functions.md  opt-in-requirements.md  reflection.md  time-measurement.md  uuids.md ...
     java-interop/           # Java 相互運用（7 ページ）
       README.md
       java-interop.md  java-to-kotlin-interop.md  jvm-records.md ...
     coroutines/             # kotlinx.coroutines（14 ページ）
       README.md
       coroutines-basics.md  coroutines-flow.md  channels.md  exception-handling.md ...
+    serialization/          # kotlinx.serialization（14 ページ）
+      README.md
+      serialization-get-started.md  serialization-configure-json-serialization.md
+      serialization-polymorphism.md  serialization-protobuf.md ...
     build-tools/            # Gradle・Maven・Kotlin daemon（14 ページ）
       README.md
       gradle-configure-project.md  gradle-compiler-options.md  maven-configure-project.md ...
     compiler/               # コンパイラ・K2・コンパイラプラグイン・KSP・kapt（23 ページ）
       README.md
       compiler-reference.md  k2-compiler-migration-guide.md  ksp-overview.md  ksp-quickstart.md  kapt.md ...
+    releases/               # リリース・互換性・What's new（10 ページ）
+      README.md
+      whatsnew24.md  whatsnew2420.md  compatibility-guide-24.md  components-stability.md ...
 ```
 
 ## 探索手順
@@ -77,7 +89,10 @@ skills/kotlin/
 | class・data class・sealed class・interface・拡張・委譲・object を知りたい | classes-objects | [references/classes-objects/README.md](references/classes-objects/README.md) |
 | 関数・ラムダ・inline・context parameters・DSL ビルダー・演算子オーバーロード | functions | [references/functions/README.md](references/functions/README.md) |
 | List / Set / Map の操作・変換・フィルタ・Sequence・Range | collections | [references/collections/README.md](references/collections/README.md) |
+| スコープ関数・opt-in・リフレクション・Duration・Uuid・標準入力 | stdlib | [references/stdlib/README.md](references/stdlib/README.md) |
 | Java との相互運用・Java record・Java コレクションとの違い | java-interop | [references/java-interop/README.md](references/java-interop/README.md) |
 | suspend 関数・launch / async・Flow・Channel・キャンセル・例外 | coroutines | [references/coroutines/README.md](references/coroutines/README.md) |
+| JSON / ProtoBuf / CBOR シリアライズ・カスタムシリアライザ・ポリモーフィズム | serialization | [references/serialization/README.md](references/serialization/README.md) |
 | Gradle / Maven 設定・コンパイラオプション・Kotlin daemon | build-tools | [references/build-tools/README.md](references/build-tools/README.md) |
 | コンパイラオプション・K2 移行・KSP・kapt・all-open / no-arg 等のプラグイン | compiler | [references/compiler/README.md](references/compiler/README.md) |
+| 新バージョンの変更点・互換性ガイド・コンポーネント安定性 | releases | [references/releases/README.md](references/releases/README.md) |
