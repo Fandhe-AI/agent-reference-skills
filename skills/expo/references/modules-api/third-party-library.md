@@ -206,8 +206,9 @@ const styles = StyleSheet.create({
 - `.aar` dependency, SDK 51 and earlier: place the **.aar** inside **android/libs**, add the directory as a repository, and in `dependencies` use the package path ending in `@aar` instead of the filename.
 - `.xcframework` / `.framework` dependency on iOS: use the `vendored_frameworks` podspec option. The path pattern is relative to the podspec and cannot traverse the parent directory (`..`), so the framework must live inside **ios** (or a subdirectory). Make sure the `source_files` pattern matches no files inside the framework; one way is to move the Swift sources into an **ios/src** directory and set `source_files` to match only that directory.
 - Since the example does not implement web, replace **src/ExpoRadialChartView.web.tsx** with a placeholder component (`<div>Not implemented</div>`).
-- If a new standalone module was created, run `npm run build` in the module directory (TypeScript watch/rebuild) and run the example app from **example-expo-app**; import from `expo-radial-chart` instead of `@/modules/expo-radial-chart`.
+- If a new standalone module was created, run `npm run build` in the module directory (TypeScript watch/rebuild) and run the example app from the generated **example** directory (`cd example`); import from `expo-radial-chart` instead of `@/modules/expo-radial-chart`.
 - `Prop` is documented in the Module API reference.
+- The source page runs the standalone example from `example-expo-app`, but `create-expo-module` generates the example app in **example** (see create-expo-module / Get started), so this page uses `example`.
 - Distinct from the apple-swift and android-architecture skills (MPAndroidChart and DGCharts are third-party native libraries, not covered here).
 - Source modificationDate: July 27, 2026 (unversioned guide page, fetched 2026-10-17).
 

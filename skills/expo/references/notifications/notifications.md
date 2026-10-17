@@ -262,6 +262,9 @@ const expoPushToken = await Notifications.getExpoPushTokenAsync({
 | `useLastNotificationResponse()` | `MaybeNotificationResponse` | React hook. Returns `undefined` until known, `null` if no response yet, or a `NotificationResponse`. Clear with `clearLastNotificationResponseAsync()`. |
 
 ```jsx
+import * as React from 'react';
+import * as Notifications from 'expo-notifications';
+
 React.useEffect(() => {
   const subscription = Notifications.addNotificationReceivedListener(notification => {
     console.log(notification);
@@ -552,6 +555,7 @@ Notifications.scheduleNotificationAsync({
 - The upstream example returns `BackgroundNotificationResult.NoData`, which is not exported; the actual enum is `BackgroundNotificationTaskResult` (NewData = 0, NoData = 1, Failed = 2).
 - The upstream manual step names `ios/project-name/Supporting/Expo.plist`, but the same page (and TaskManager docs) state `UIBackgroundModes` must be in the app's Info.plist, which is where iOS reads it.
 - The registration example follows the error handling of the Push notifications setup guide (`handleRegistrationError` throws); the SDK reference page snippet instead returns the stringified error as the token.
+- The listener snippet adds the `react` and `expo-notifications` imports, which the original snippet omits.
 - The official type table renders `sound` as `... | string & undefined`; any custom sound filename string (for example `mySoundFile.wav`) is accepted.
 - The official scheduleNotificationAsync note ("For the notification to be presented you have to set a notification handler") predates the SDK 58 default; in SDK 58 a foreground notification is presented by default when no handler is set (see receiving-notifications.md).
 - This page covers the Expo `expo-notifications` JS API and the Expo Push Service token flow. APNs and FCM native APIs are covered by apple-app-services and android-platform-core; this page is only the Expo wrapper over them.
