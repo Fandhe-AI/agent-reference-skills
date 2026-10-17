@@ -69,9 +69,10 @@ export APP_STORE_CONNECT_ISSUER_ID=aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
 export APP_STORE_CONNECT_KEY_IDENTIFIER=ABC1234567
 export APP_STORE_CONNECT_PRIVATE_KEY=`cat /path/to/api/key/AuthKey_XXXYYYZZZ.p8`
 
-# export existing certificate private key, or create a new one
+# Option A: export the private key of an existing certificate
 openssl pkcs12 -in <certificate_name>.p12 -nodes -nocerts | openssl rsa -out cert_key
-ssh-keygen -t rsa -b 2048 -m PEM -f cert_key -q -N ""
+# Option B: or create a new private key instead (do not run both; it would overwrite cert_key)
+# ssh-keygen -t rsa -b 2048 -m PEM -f cert_key -q -N ""
 
 keychain initialize
 
@@ -90,7 +91,7 @@ flutter build ipa --release \
     --export-options-plist="$HOME/export_options.plist"
 
 app-store-connect publish \
-    --path "$(find "$(pwd)" -name "*.ipa")"
+    --path "$(find "$(pwd)/build/ios/ipa" -maxdepth 1 -name "*.ipa")"
 
 keychain use-login
 ```
@@ -106,6 +107,8 @@ An App Store Connect API Key with App Manager access is required. `export_option
 
 - The deployment/ios page still says iOS 13; the supported-platforms reference lists iOS 15–27 as supported and 14 and earlier as unsupported.
 - Shell expansions are quoted here (the official snippet leaves them unquoted).
+- The search is narrowed to build/ios/ipa (the official snippet searches the whole tree).
+- The official snippet lists the openssl export and the ssh-keygen creation as alternatives; run only one so cert_key is not overwritten.
 - After running `keychain initialize` you **must** run `keychain use-login` to set your login keychain as the default and avoid authentication issues with other apps.
 - On versions of Flutter where `flutter build ipa --export-method` is unavailable, open `build/ios/archive/MyApp.xcarchive` and validate/distribute from Xcode.
 - The Codemagic CLI procedure creates a temporary keychain isolated from your login keychain; handle API keys and certificate private keys as secrets and run it only on a disposable or trusted build machine.

@@ -34,10 +34,15 @@ Valid package formats: **.msix**, **.msixbundle**, **.msixupload**, **.appx**, *
 - GitHub Actions can use the Microsoft Dev Store CLI (`msstore`), installed by the `setup-msstore-cli` action. The project's `pubspec.yaml` must contain an appropriate `msix_config` node. Environment secrets `AZURE_AD_TENANT_ID`, `AZURE_AD_ClIENT_ID`, `AZURE_AD_CLIENT_SECRET` and `SELLER_ID` (Dev Center **Account Settings** > **Organization Profile** > **Legal Info**) are required. The application must already exist in the Dev Center with at least one complete submission, and `msstore init` must be run once within the repository.
 
 ```yaml
-- uses: microsoft/setup-msstore-cli@v1
+- uses: microsoft/setup-msstore-cli@3b2ec9136230357ce9abc02b9d056626fb248d3f # v1
 
 - name: Configure the Microsoft Store CLI
-  run: msstore reconfigure --tenantId ${{ secrets.AZURE_AD_TENANT_ID }} --clientId ${{ secrets.AZURE_AD_ClIENT_ID }} --clientSecret ${{ secrets.AZURE_AD_CLIENT_SECRET }} --sellerId ${{ secrets.SELLER_ID }}
+  env:
+    AZURE_AD_TENANT_ID: ${{ secrets.AZURE_AD_TENANT_ID }}
+    AZURE_AD_CLIENT_ID: ${{ secrets.AZURE_AD_ClIENT_ID }}
+    AZURE_AD_CLIENT_SECRET: ${{ secrets.AZURE_AD_CLIENT_SECRET }}
+    SELLER_ID: ${{ secrets.SELLER_ID }}
+  run: msstore reconfigure --tenantId "$env:AZURE_AD_TENANT_ID" --clientId "$env:AZURE_AD_CLIENT_ID" --clientSecret "$env:AZURE_AD_CLIENT_SECRET" --sellerId "$env:SELLER_ID"
 
 - name: Install Dart dependencies
   run: flutter pub get
@@ -66,7 +71,9 @@ Validate locally before publication with the Windows App Certification Kit (incl
 
 ## Notes
 
-- Store a secret value only in CI secret storage; the YAML above references secrets and never inlines them.
+- Store a secret value only in CI secret storage; the YAML above never inlines them.
+- Secrets are passed via step env and referenced as quoted environment variables (the official snippet interpolates ${{ secrets.* }} directly into run).
+- The official snippet references the mutable tag @v1; here it is pinned to the commit v1 resolved to on 2026-10-17 — re-verify the SHA before use.
 - Flutter build/release procedure only; MSIX/Microsoft Store packaging in general is covered by windows-packaging-publish, and Win32/WinUI APIs by the windows-app-sdk family.
 
 ## Related

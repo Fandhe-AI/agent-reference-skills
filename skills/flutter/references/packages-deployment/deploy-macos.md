@@ -57,8 +57,10 @@ export APP_STORE_CONNECT_ISSUER_ID=aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
 export APP_STORE_CONNECT_KEY_IDENTIFIER=ABC1234567
 export APP_STORE_CONNECT_PRIVATE_KEY=`cat /path/to/api/key/AuthKey_XXXYYYZZZ.p8`
 
+# Option A: export the private key of an existing certificate
 openssl pkcs12 -in <certificate_name>.p12 -nodes -nocerts | openssl rsa -out cert_key
-ssh-keygen -t rsa -b 2048 -m PEM -f cert_key -q -N ""
+# Option B: or create a new private key instead (do not run both; it would overwrite cert_key)
+# ssh-keygen -t rsa -b 2048 -m PEM -f cert_key -q -N ""
 
 app-store-connect fetch-signing-files YOUR.APP.BUNDLE_ID \
     --platform MAC_OS \
@@ -84,7 +86,8 @@ flutter packages pub get
 find . -name "Podfile" -execdir pod install \;
 flutter build macos --release
 
-APP_NAME="$(find "$(pwd)" -name "*.app")"
+APP_NAME="$(find "$(pwd)/build/macos/Build/Products/Release" -maxdepth 1 -name "*.app")"
+[ "$(printf '%s\n' "$APP_NAME" | grep -c .)" -eq 1 ] || { echo "expected exactly one .app" >&2; exit 1; }
 PACKAGE_NAME="$(basename "$APP_NAME" .app).pkg"
 xcrun productbuild --component "$APP_NAME" /Applications/ unsigned.pkg
 
@@ -114,6 +117,8 @@ Requires an App Store Connect API Key with App Manager access, and Mac App Distr
 ## Notes
 
 - Shell expansions are quoted here (the official snippet leaves them unquoted).
+- The search is narrowed to the Release output directory (the official snippet searches the whole tree and can match Debug builds).
+- The official snippet lists the openssl export and the ssh-keygen creation as alternatives; run only one so cert_key is not overwritten.
 - After `keychain initialize` you **must** run `keychain use-login` to avoid authentication issues with apps on your machine.
 - Consider obfuscating your Dart code (build flags) before shipping a release archive.
 - The Codemagic CLI procedure handles API keys and certificate private keys as secrets; run it only on a disposable or trusted build machine.
