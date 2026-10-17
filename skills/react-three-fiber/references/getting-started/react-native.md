@@ -84,6 +84,7 @@ export function Canvas(props: CanvasProps)
 
 ## Notes
 
+- `npx react-native init` (verbatim above) is removed as of React Native 0.75; use `npx @react-native-community/cli@latest init my-app` instead. Likewise, `expo install expo-gl` assumes the deprecated global expo-cli; use `npx expo install expo-gl`. Both replacements are adaptations, not part of the official docs (v9.8.2).
 - The official docs place `cd my-app` last in the bare-app snippet, but `install-expo-modules` must run inside the generated project directory, so the order is swapped here.
 - R3F's API is completely x-platform, so events and hooks are used just as on the web.
 - Make sure to import from `@react-three/fiber/native` or `@react-three/drei/native` for correct IntelliSense and platform-specific abstractions.
