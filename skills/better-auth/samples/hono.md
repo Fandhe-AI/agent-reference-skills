@@ -1,33 +1,82 @@
 # Hono Integration
 
-Mount the handler on a Hono catch-all route and stash `user`/`session` in context via middleware.
+Mount the handler on a Hono catch-all route, add CORS, and expose the session through middleware.
 
 ```ts
+// src/index.ts
 import { Hono } from "hono";
-import { serve } from "@hono/node-server";
+import { cors } from "hono/cors";
 import { auth } from "./auth";
 
-const app = new Hono<{
-  Variables: {
-    user: typeof auth.$Infer.Session.user | null;
-    session: typeof auth.$Infer.Session.session | null;
-  };
-}>();
+const app = new Hono();
 
-app.use("*", async (c, next) => {
-  const session = await auth.api.getSession({ headers: c.req.raw.headers });
-  c.set("user", session?.user ?? null);
-  c.set("session", session?.session ?? null);
+app.use(
+  "/api/auth/*",
+  cors({
+    origin: "http://localhost:3001",
+    credentials: true,
+  }),
+);
+
+app.all("/api/auth/*", (c) => auth.handler(c.req.raw));
+
+export default app;
+```
+
+```ts
+// auth.ts — add the same origin to trustedOrigins
+import { betterAuth } from "better-auth";
+
+export const auth = betterAuth({
+  trustedOrigins: ["http://localhost:3001"],
+});
+```
+
+```ts
+// src/session-middleware.ts
+import { createMiddleware } from "hono/factory";
+import { auth } from "./auth";
+
+type Env = {
+  Variables: {
+    session: typeof auth.$Infer.Session | null;
+  };
+};
+
+export const sessionMiddleware = createMiddleware<Env>(async (c, next) => {
+  const session = await auth.api.getSession({
+    headers: c.req.raw.headers,
+  });
+
+  c.set("session", session);
+
   await next();
 });
+```
 
-app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
+```ts
+// Hono RPC client calling authenticated routes from another origin
+import { hc } from "hono/client";
+import type { AppType } from "./server";
 
-serve(app);
+const client = hc<AppType>("http://localhost:8787", {
+  init: {
+    credentials: "include",
+  },
+});
+```
+
+```jsonc
+// wrangler.jsonc — Cloudflare Workers only
+{
+  // Use "nodejs_als" instead if you only need AsyncLocalStorage.
+  "compatibility_flags": ["nodejs_compat"],
+}
 ```
 
 ## Notes
 
-- Register the `hono/cors` middleware before the auth route, with `credentials: true`, when the frontend is on a different origin
-- Cookies default to `SameSite=Lax`; for cross-domain use `advanced.crossSubDomainCookies` (preferred) or `advanced.defaultCookieAttributes: { sameSite: "none", secure: true }`
-- When calling from a `hono/client` typed client, pass `init: { credentials: "include" }` so cookies are sent cross-origin
+- The Hono route must match Better Auth's `basePath` (default `/api/auth`); with `new Hono().basePath("/api")` mount at `/auth/*`
+- Register the auth route before any catch-all route; with `credentials: true`, use an explicit CORS origin (not `*`) and add it to `trustedOrigins`
+- Cloudflare Workers: Better Auth uses `AsyncLocalStorage`, so enable the `nodejs_compat` (or `nodejs_als`) compatibility flag
+- The Better Auth client uses `credentials: "include"` by default; Hono RPC clients need `init: { credentials: "include" }` only for cross-origin requests
