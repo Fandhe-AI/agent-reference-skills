@@ -83,7 +83,7 @@ let tref = TapeRef::from(&tape);
 
 ## Notes
 
-- The shape check in the `set_parameter` example follows the contract (shape-preserving replacement only, per the `Module::set_parameter` doc comment) and the `EmbeddingBag::set_parameter` implementation (`AutodiffError::Shape(ShapeError::ShapeMismatch { lhs, rhs })`)
+- `set_parameter` は shape 保存置換のみを受け付ける（`Module::set_parameter` の doc comment の契約。`EmbeddingBag` の実装も同じ）。shape の異なるテンソルを渡すと `AutodiffError::Shape(ShapeError::ShapeMismatch { lhs, rhs })` で拒否される。Signature 例の shape 検査はこの契約に合わせたもの
 - open trait（sealed ではない）で `dyn Module` が成り立つ。後方互換規則: defaulted メソッドの追加は非破壊、required メソッドの追加は破壊的変更
 - 生の `Tape`・`BackendOps`・内部層型（`as_*`・`forward_host`・`is_pooling` 等）は載せない。`TapeRef` の公開メソッドは `var` / `var_from` / `var_no_grad` の 3 件のみで `backward` 等は委譲しない
 - 凍結を実装する層は `requires_grad: bool` を自層に保持し、`forward` 内で `if self.requires_grad { tape.var(&p) } else { tape.var_no_grad(&p) }` のように切り替える。反映は次の `forward` から。`set_training` とは独立の軸（BatchNorm 系の統計は凍結後も training のまま更新される）
