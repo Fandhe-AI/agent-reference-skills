@@ -74,4 +74,4 @@ Transcribed from `tailwindlabs/tailwindcss.com@7f92c22` `src/docs/opacity.mdx` (
 
 - [box-shadow](./box-shadow.md)
 - [mix-blend-mode](./mix-blend-mode.md)
-- [backdrop-filter-opacity](../filters/backdrop-filter-opacity.md)
+- backdrop-filter-opacity

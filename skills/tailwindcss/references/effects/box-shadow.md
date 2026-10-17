@@ -153,5 +153,5 @@ Transcribed from `tailwindlabs/tailwindcss.com@7f92c22` `src/docs/box-shadow.mdx
 
 - [text-shadow](./text-shadow.md)
 - [opacity](./opacity.md)
-- [filter-drop-shadow](../filters/filter-drop-shadow.md)
+- filter-drop-shadow
 - [outline-width](../backgrounds-borders/outline-width.md)

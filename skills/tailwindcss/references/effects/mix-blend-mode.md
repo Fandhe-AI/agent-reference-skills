@@ -65,5 +65,5 @@ Transcribed from `tailwindlabs/tailwindcss.com@7f92c22` `src/docs/mix-blend-mode
 ## Related
 
 - [background-blend-mode](./background-blend-mode.md)
-- [isolation](../layout/isolation.md)
+- isolation
 - [opacity](./opacity.md)

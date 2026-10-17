@@ -141,6 +141,7 @@ Utilities for controlling an element's mask image.
 ## Notes
 
 - The published table contains typos that this page corrects: extra `)` in the `mask-linear-<number>` / `-mask-linear-<number>` rows; missing `var()` in `mask-linear-from-(<custom-property>)`; missing closing `)` in `mask-conic-to-<color>` / `mask-conic-to-(<custom-property>)`; wrong direction `to bottom` in `mask-l-to-<percentage>` / `mask-l-to-<color>` and in the first (top) gradient of `mask-y-to-<percentage>` / `mask-y-to-<color>` (corrected to `to left` / `to top`); wrong direction `to left` in the first (right) gradient of `mask-x-to-<percentage>` / `mask-x-to-<color>` (corrected to `to right`).
+- Conic masks: `conic-gradient()` color stops accept only angles or percentages, so the `mask-conic-from-<number>` / `mask-conic-to-<number>` forms (which expand to `calc(var(--spacing) * <number>)`, a length) produce an invalid `mask-image`. Use the percentage form (`mask-conic-from-75%`) or an arbitrary angle (`mask-conic-from-[90deg]`) instead.
 - Using an image mask: use the `mask-[<value>]` syntax to set the mask image of an element.
 - Masking edges: use `mask-b-from-<value>` and `mask-t-to-<value>` (also `mask-r-*`, `mask-l-*`) to add a linear gradient mask to a single side. Use `mask-x-from-70%` and `mask-y-to-90%` to apply a mask to two sides at the same time.
 
