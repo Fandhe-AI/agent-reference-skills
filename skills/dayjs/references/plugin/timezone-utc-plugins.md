@@ -37,12 +37,17 @@ dayjs().utcOffset()
 | `dayjs.utc` | `(dateType?, format?)` | Dayjs | Create a Dayjs in UTC mode |
 | `.utc()` | `()` | Dayjs | Clone with UTC flag |
 | `.local()` | `()` | Dayjs | Clone in local time |
-| `.utcOffset()` | `()` | Dayjs | Clone with new UTC offset |
+| `.utcOffset()` | `()` | number | Get UTC offset in minutes |
+| `.utcOffset(offset, keepLocalTime?)` | `(number \| string, boolean?)` | Dayjs | Clone with new UTC offset (values within ±16 are hours) |
 | `.isUTC()` | `()` | boolean | Whether instance is in UTC mode |
 
 ### Notes
 
 In UTC mode, display methods output UTC time. Getters/setters use `Date#getUTC*` / `Date#setUTC*` internally.
+
+`.utcOffset()` with no argument returns the offset in minutes; with an argument it returns a new instance with that offset (source: https://github.com/iamkun/dayjs/blob/v1.11.23/src/plugin/utc/index.js).
+
+Since v1.11.14, `.utcOffset(offset, keepLocalTime)` always works on a clone, including `keepLocalTime = true`; in v1.11.13 and earlier the `keepLocalTime = true` branch mutated and returned the original instance (#2505, source: https://github.com/iamkun/dayjs/releases/tag/v1.11.14). An unparseable string offset still returns the original instance unchanged.
 
 ---
 
@@ -101,3 +106,8 @@ dayjs.tz.setDefault()                    // reset to system timezone
 ### Notes
 
 Unlike Moment.js, `dayjs()` always defaults to local timezone even after `setDefault()`. Only `dayjs.tz()` uses the configured default timezone.
+
+- v1.11.12: fixed a zero offset issue when using `tz` with a locale (#2532).
+- v1.11.12: the timezone plugin now parses the UTC timezone correctly (#2693).
+- v1.11.22: the timezone plugin computes the `.tz()` instance offset without the host's DST (#3169, #3174).
+- v1.11.23: the timezone plugin no longer throws `RangeError` for invalid Day.js values (#3180, #3181).

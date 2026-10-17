@@ -72,4 +72,10 @@ dayjs.tz("2014-06-01 12:00", "Asia/Tokyo") // 2014-06-01T12:00:00+09:00 (overrid
 dayjs.tz.setDefault() // Reset to local timezone
 ```
 
-**Note:** `dayjs.tz.setDefault` does not affect existing Day.js objects created before the call. Only newly created instances use the updated default.
+## Notes
+
+- `dayjs.tz.setDefault` does not affect existing Day.js objects created before the call. Only newly created instances use the updated default.
+- v1.11.12: fixed a zero offset issue when using `tz` with a locale (#2532).
+- v1.11.12: the timezone plugin now parses the UTC timezone correctly (#2693).
+- v1.11.22: the timezone plugin computes the `.tz()` instance offset without the host's DST (#3169, #3174).
+- v1.11.23: the timezone plugin no longer throws `RangeError` for invalid Day.js values (#3180, #3181).

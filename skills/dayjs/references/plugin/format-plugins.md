@@ -86,4 +86,5 @@ dayjs('1970-00-00', 'YYYY-MM-DD', true)
 
 ### Notes
 
-- Supports `Q` (quarter, converted to the quarter's first month) and `w`/`ww` (week of year, applied via `.week()`) as parse tokens in addition to the tokens shown above.
+- v1.11.13: supports `Q` (quarter, converted to the quarter's first month) and `w`/`ww` (week of year) as parse tokens in addition to the tokens shown above.
+- `w`/`ww` are applied via `.week()` and require the WeekOfYear plugin (without it the result is Invalid Date); they are ignored when the input contains a `Z`/`ZZ` offset or when parsing in UTC mode. Source: https://github.com/iamkun/dayjs/blob/v1.11.23/src/plugin/customParseFormat/index.js

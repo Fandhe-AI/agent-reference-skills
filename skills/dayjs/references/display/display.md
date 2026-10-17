@@ -72,6 +72,10 @@ dayjs().format('L LT')
 
 > Additional formats (`Q`, `Do`, `k`, `kk`, `X`, `x`) are available through the `AdvancedFormat` plugin.
 
+### Notes
+
+- v1.11.21: only `YY` and `YYYY` are year tokens in `format`; `Y` is now output literally and `YYY` formats as `YY` followed by a literal `Y` (#3015, #3016). Duration `format` still supports `Y`.
+
 ---
 
 ## fromNow
