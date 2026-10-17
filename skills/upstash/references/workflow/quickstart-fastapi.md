@@ -41,7 +41,7 @@ curl -X POST http://localhost:8000/api/workflow
 # result: {"workflowRunId":"wfr_xxxxxx"}
 ```
 
-## Variants
+### Variants
 
 Sleep (`context.sleep_until("sleep1", time.time() + 3)` and `context.sleep("sleep2", 2)`):
 
@@ -83,7 +83,7 @@ async def auth(context: AsyncWorkflowContext[str]) -> None:
     # ... steps
 ```
 
-## Environment Variables
+### Environment Variables
 
 Create `.env` (uses `export` lines) with one of:
 

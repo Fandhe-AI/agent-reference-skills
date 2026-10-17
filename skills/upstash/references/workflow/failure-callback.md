@@ -50,7 +50,7 @@ export const { POST } = serve<string>(
 | `headers` | string | Original request headers |
 | `env` | string | Environment variables |
 
-## failureUrl (advanced)
+### failureUrl (advanced)
 
 `failureUrl` sends the failure callback to a different endpoint instead of the workflow endpoint, for handling failures on separate infrastructure.
 
@@ -72,7 +72,7 @@ async def example(context: AsyncWorkflowContext[str]) -> None:
     pass
 ```
 
-## Reliability
+### Reliability
 
 If the failure function itself throws, it is retried according to the workflow run's retry configuration. If all retries fail, the failure function execution is marked as failed. Such runs can be filtered by failure function state in the DLQ dashboard and retried there, or programmatically:
 

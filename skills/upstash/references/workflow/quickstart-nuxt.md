@@ -36,7 +36,7 @@ curl -X POST https://localhost:3000/api/workflow
 # Returns: {"workflowRunId":"wfr_xxxxxx"}
 ```
 
-## Environment Variables (`.env.local`)
+### Environment Variables (`.env.local`)
 
 | Variable | Description |
 |----------|-------------|

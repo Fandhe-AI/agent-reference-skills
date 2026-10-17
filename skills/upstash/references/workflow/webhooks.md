@@ -35,7 +35,7 @@ export const { POST } = serve(async (context) => {
 });
 ```
 
-## How it works
+### How it works
 
 1. `context.createWebhook()` creates a unique webhook URL
 2. Provide the URL to external services (typically through `context.call()`)
@@ -44,7 +44,7 @@ export const { POST } = serve(async (context) => {
 
 No serverless function stays running while waiting.
 
-## Waiting for multiple calls
+### Waiting for multiple calls
 
 Wait for the same webhook repeatedly until a final signal arrives:
 
@@ -71,7 +71,7 @@ while (true) {
 }
 ```
 
-## Webhooks vs Wait for Event
+### Webhooks vs Wait for Event
 
 | Feature | Webhooks | Wait for Event |
 |---------|----------|----------------|
@@ -81,7 +81,7 @@ while (true) {
 | Lookback | Yes, safe against race conditions | Only when notifying a specific run with `workflowRunId`; otherwise a notify before the wait is lost |
 | Best for | Third-party API callbacks | Internal event notifications |
 
-## Receiving webhooks in a workflow endpoint
+### Receiving webhooks in a workflow endpoint
 
 A workflow endpoint can itself be the webhook receiver. Always validate the incoming request so only the original source can trigger the workflow (example: Clerk webhooks verified with Svix):
 
@@ -98,6 +98,9 @@ export const { POST } = serve<string>(async (context) => {
   }
 
   // Next steps based on the event
+}, {
+  // Keep the raw body string so the Svix signature can be verified
+  initialPayloadParser: (payload) => payload,
 })
 ```
 
@@ -124,6 +127,7 @@ Process events in discrete steps with `context.run` (e.g. `handle-webhook-event`
 
 - Built-in lookback: if the external service calls the webhook URL before `waitForWebhook` executes, the call is stored and returned when `waitForWebhook` is reached
 - Use webhooks for third-party callback-based APIs or when race-condition protection is needed without knowing the workflow run ID; use Wait for Event when you control notification and can use the Workflow Client. Passing `workflowRunId` to `notify` enables lookback for Wait for Event
+- Keep the raw body string with `initialPayloadParser` so the Svix signature can be verified (by default the initial payload is JSON-parsed)
 - Source: fetched 2026-10 from https://upstash.com/docs/workflow/features/webhooks
 
 ## Related

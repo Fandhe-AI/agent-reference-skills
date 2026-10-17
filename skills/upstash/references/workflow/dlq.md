@@ -25,7 +25,7 @@ await client.dlq.delete({ filter: { label: "my-label" } });
 await client.dlq.delete({ all: true });
 ```
 
-## Recovery actions
+### Recovery actions
 
 | Action | Description |
 |--------|-------------|
@@ -36,7 +36,7 @@ await client.dlq.delete({ all: true });
 
 Actions can be applied in bulk to multiple DLQ entries.
 
-## Retention
+### Retention
 
 | Plan | Retention |
 |------|-----------|

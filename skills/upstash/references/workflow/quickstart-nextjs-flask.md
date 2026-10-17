@@ -27,7 +27,7 @@ vercel
 vercel --prod
 ```
 
-## Environment Variables
+### Environment Variables
 
 Create `.env` (uses `export` lines) with one of:
 
@@ -42,6 +42,7 @@ Create `.env` (uses `export` lines) with one of:
 - QStash needs a publicly accessible URL to run workflows: use the QStash development server or a local tunnel for local development
 - Deploy to production with `vercel --prod`; the project does not work in preview deployments because preview requires authentication
 - After deployment, call the endpoints using the form on the deployed page; observe logs in the Upstash Console Workflow tab or on vercel.com
+- Source: fetched 2026-10 from https://upstash.com/docs/workflow/quickstarts/nextjs-flask (example: https://github.com/upstash/workflow-py/tree/master/examples/nextjs-flask)
 
 ## Related
 

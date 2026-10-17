@@ -60,7 +60,7 @@ const { status, body } = await context.api.openai.call<ResponseBodyType, Request
 const { status, body } = await context.api.resend.call<IsBatch, ResponseBodyType, RequestBodyType>("Call Resend", { ... });
 ```
 
-## OpenAI-compatible provider
+### OpenAI-compatible provider
 
 ```typescript
 const { status, body } = await context.api.openai.call("Call Deepseek", {

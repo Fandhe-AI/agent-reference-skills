@@ -35,7 +35,7 @@ curl -X POST http://localhost:5000/api/workflow \
 # result: {"workflowRunId":"wfr_xxxxxx"}
 ```
 
-## Environment Variables
+### Environment Variables
 
 Create a `.env.local` file in the project root. Two options for local development:
 

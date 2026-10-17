@@ -25,7 +25,7 @@ await client.notify({
 })
 ```
 
-## Timeout Limits by Plan
+### Timeout Limits by Plan
 
 | Plan | Maximum timeout |
 |------|----------------|
@@ -33,7 +33,7 @@ await client.notify({
 | Pay-as-you-go | 1 year |
 | Fixed pricing | Custom |
 
-## Race Condition Mitigations
+### Race Condition Mitigations
 
 | Strategy | Description |
 |----------|-------------|

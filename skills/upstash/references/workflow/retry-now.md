@@ -11,7 +11,7 @@ curl -X POST https://qstash.upstash.io/v2/messages/<STEP_MESSAGE_ID>/retry \
   -H "Authorization: Bearer <QSTASH_TOKEN>"
 ```
 
-## From the console
+### From the console
 
 In the `Logs` tab of the Upstash Console, each waiting step shows a button: **Run now** on a sleeping step and **Retry now** on a step in retry backoff. In a parallel block each branch has its own button.
 

@@ -152,17 +152,24 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { eventId, eventData } = body;
+  const { eventId, eventData, workflowRunId } = body;
 
-  if (!eventId) {
+  if (!eventId || !workflowRunId) {
     return NextResponse.json(
-      { success: false, error: "eventId is required" },
+      { success: false, error: "eventId and workflowRunId are required" },
       { status: 400 }
     );
   }
 
-  // Placeholder: replace with your own check that this user may approve the run behind eventId
-  if (!(await canApprove(session, eventId))) {
+  if (eventId !== `approval-${workflowRunId}`) {
+    return NextResponse.json(
+      { success: false, error: "eventId does not match workflowRunId" },
+      { status: 400 }
+    );
+  }
+
+  // Placeholder: replace with your own check that this user may approve this run
+  if (!(await canApprove(session, workflowRunId))) {
     return NextResponse.json(
       { success: false, error: "forbidden" },
       { status: 403 }
@@ -180,6 +187,7 @@ export async function POST(request: NextRequest) {
   await workflowClient.notify({
     eventId,
     eventData,
+    workflowRunId, // enables lookback
   });
 
   return NextResponse.json({ success: true });

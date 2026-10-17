@@ -38,7 +38,7 @@ curl -X POST http://localhost:8787/workflow \
 # Returns: {"workflowRunId":"wfr_xxxxxx"}
 ```
 
-## Environment Variables
+### Environment Variables
 
 | Variable | Description |
 |----------|-------------|

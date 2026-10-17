@@ -14,7 +14,7 @@ await client.trigger({
 });
 ```
 
-## January 2026 - Major Release 1.0.0
+### January 2026 - Major Release 1.0.0
 
 | Change | Migration |
 |--------|-----------|
@@ -53,7 +53,7 @@ const stepFinishMiddleware = new WorkflowMiddleware({
 });
 ```
 
-## October 2024 - Migrate from @upstash/qstash
+### October 2024 - Migrate from @upstash/qstash
 
 Workflow moved to the dedicated `@upstash/workflow` SDK; Workflow-related imports will be removed from `@upstash/qstash` in future releases.
 

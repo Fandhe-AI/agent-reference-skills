@@ -33,6 +33,9 @@ export const { POST } = serve<string>(async (context) => {
 
     // Next steps based on the event
 
+}, {
+  // Keep the raw body string so the Svix signature can be verified
+  initialPayloadParser: (payload) => payload,
 })
 ```
 
@@ -96,13 +99,16 @@ export const { POST } = serve(async (context) => {
   }
 
   const customer = await context.run("create-stripe-customer", async () => {
-    return await stripe.customers.create({
-      email: user.email,
-      name: [user.firstName, user.lastName].filter(Boolean).join(" "),
-      metadata: {
-        userId: user.userId,
+    return await stripe.customers.create(
+      {
+        email: user.email,
+        name: [user.firstName, user.lastName].filter(Boolean).join(" "),
+        metadata: {
+          userId: user.userId,
+        },
       },
-    });
+      { idempotencyKey: `clerk-user-created-${user.userId}` }
+    );
   });
 
   /// ... Additional steps
@@ -114,5 +120,6 @@ export const { POST } = serve(async (context) => {
 - Always validate incoming webhook requests so that only the original webhook source can trigger the workflow; the official example uses Clerk webhooks with Svix
 - The snippets are fragments of one route (`// ...` marks code from the previous snippet); `UserPayload` and the `stripe` client are not defined in the official guide (your `UserPayload` needs a `lastName` field)
 - Differences from the original guide: it uses `=` (assignment) in the `find` callback, corrected to `===`; it omits `last_name` from the extraction but uses `user.lastName`, so `lastName` is added to the extraction and the Stripe name is built from the non-empty parts
+- Pass a stable `idempotencyKey` to `stripe.customers.create` because `context.run` may retry (at-least-once delivery); the `idempotencyKey` option is an addition to the official snippet
 - `webhookSecret` is a placeholder in the official example; supply the real secret from your webhook provider
 - Official example project: `upstash/workflow-js` `examples/nextjs-webhook-stripe`

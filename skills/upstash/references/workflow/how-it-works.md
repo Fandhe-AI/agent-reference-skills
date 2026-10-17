@@ -16,7 +16,7 @@ export const { POST } = serve<string>(async (context) => {
 })
 ```
 
-## Execution model
+### Execution model
 
 - Your logic is split into multiple steps inside a workflow endpoint, each managed and retried by the orchestration engine
 - Each step is executed in its own HTTP call to your application
@@ -24,7 +24,7 @@ export const { POST } = serve<string>(async (context) => {
 - On the next execution, Workflow skips completed steps and resumes where it left off by restoring previous step results
 - If a step fails, it is retried automatically based on the retry configuration
 
-## Problems it addresses
+### Problems it addresses
 
 | Problem | Description |
 |---------|-------------|
@@ -34,7 +34,7 @@ export const { POST } = serve<string>(async (context) => {
 | Rate limits | Bulk external calls need concurrency control, hard to implement manually |
 | Complexity | Custom queues, schedulers, or state trackers add infrastructure overhead |
 
-## Extended features
+### Extended features
 
 | Feature | Description |
 |---------|-------------|

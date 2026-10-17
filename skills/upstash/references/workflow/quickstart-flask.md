@@ -41,7 +41,7 @@ curl -X POST http://localhost:8000/api/workflow
 # result: {"workflowRunId":"wfr_xxxxxx"}
 ```
 
-## Variants
+### Variants
 
 Sleep and call use synchronous context methods:
 
@@ -81,7 +81,7 @@ def auth(context: WorkflowContext[str]) -> None:
     # ... steps
 ```
 
-## Environment Variables
+### Environment Variables
 
 Create `.env` (uses `export` lines) with one of:
 

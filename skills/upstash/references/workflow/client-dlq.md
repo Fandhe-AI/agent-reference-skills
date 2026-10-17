@@ -86,7 +86,7 @@ Response: `deleted: number` and `cursor`.
 
 Takes `{ dlqId: string }`. Retries the `failureFunction` or `failureUrl` request that failed for that DLQ message.
 
-## Paginated bulk example
+### Paginated bulk example
 
 ```typescript
 let cursor: string | undefined;

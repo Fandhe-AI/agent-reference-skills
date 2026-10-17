@@ -10,12 +10,12 @@ If a change removes or reorders existing steps, in-progress runs may continue fr
 HTTP status 400. Incompatible step name. Expected <STEP_NAME>, got <STEP_NAME>
 ```
 
-## Safe changes
+### Safe changes
 
 - No active workflow runs exist
 - Only new steps are added to the end of the workflow
 
-## Guidelines
+### Guidelines
 
 | Approach | Description |
 |----------|-------------|

@@ -35,7 +35,7 @@ const { workflowRunId } = await client.trigger({
 })
 ```
 
-## Environment Variables
+### Environment Variables
 
 | Variable | Description |
 |----------|-------------|

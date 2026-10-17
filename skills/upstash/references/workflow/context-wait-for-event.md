@@ -31,7 +31,7 @@ if (timeout) {
 | `eventData` | `any` | Data delivered by the notifying caller |
 | `timeout` | `boolean` | `true` if the event was not received before the timeout |
 
-## Timeout Limits by Plan
+### Timeout Limits by Plan
 
 | Plan | Maximum timeout |
 |------|----------------|

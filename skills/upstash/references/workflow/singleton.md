@@ -49,7 +49,7 @@ const { workflowRunId } = await client.trigger({
 console.log(`started ${workflowRunId}`); // started wfr_rebuild-cache
 ```
 
-## Patterns
+### Patterns
 
 | Pattern | When a run is already in progress |
 |---------|-----------------------------------|

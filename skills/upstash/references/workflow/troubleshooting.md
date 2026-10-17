@@ -20,13 +20,13 @@ try {
 }
 ```
 
-## General issues
+### General issues
 
 | Symptom | Cause / Fix |
 |---------|-------------|
 | `WorkflowAbort: This is an Upstash Workflow error thrown after a step executes...` | The SDK throws `WorkflowAbort` after a step executes successfully. Do not wrap `context.run/sleep/sleepUntil/call` in try/catch (put the try/catch inside `context.run`), or re-throw `WorkflowAbort` |
 | `context.requestPayload` is undefined | Pass `Content-type: text/plain` or `application/json` when starting (`publishJSON` can only publish `application/json`). While `context.call` executes the endpoint is called at least twice; reading `requestPayload` before any step can give undefined. Fix: `const payload = await context.run("get payload", () => context.requestPayload)` |
-| `Failed to verify that the Workflow request comes from QStash: ...` | Start the workflow with `client.trigger` or by publishing to QStash; check `QSTASH_CURRENT_SIGNING_KEY` / `QSTASH_NEXT_SIGNING_KEY`; pass appropriate `Content-type`. To disable verification, clear both signing-key env variables |
+| `Failed to verify that the Workflow request comes from QStash: ...` | Start the workflow with `client.trigger` or by publishing to QStash; check `QSTASH_CURRENT_SIGNING_KEY` / `QSTASH_NEXT_SIGNING_KEY`; pass appropriate `Content-type`. If the signature is missing, do not call the endpoint directly; start the run through QStash |
 | HTTP 400 `Failed to authenticate Workflow request.` | Returning before running any step is read as an authentication failure. Turn non-deterministic conditions into a step: `const shouldReturn = await context.run("check condition", () => someCondition())` |
 | Wrong retry count | Defaults: `client.trigger` retries 3; `context.call` retries 0 |
 | `Workflow URL contains localhost...` | Publish requests fail. Verify `baseUrl`, check `UPSTASH_WORKFLOW_URL`, or pass the full `url` explicitly to `serve` |
@@ -37,7 +37,7 @@ try {
 | Workflow stuck in first step | Check step logs in the dashboard; confirm the endpoint is reachable (curl) and the `client.trigger` URL matches; use the latest SDK on both sides; if the first step completed, try the `baseUrl` option of `serve` to override URL inference |
 | `detected a non-workflow destination for trigger/invoke...` | The target is not a workflow endpoint, or a newer-SDK caller targets an endpoint on an SDK older than 0.2.17 (TypeScript) / 0.1.4 (Python). Use a valid workflow endpoint and latest SDKs on both sides |
 
-## Vercel: preview deployment protection
+### Vercel: preview deployment protection
 
 When Deployment Protection is enabled, a workflow cannot be triggered and completed on a preview deployment. Create a protection bypass secret in Vercel project settings (Deployment Protection, Protection Bypass for Automation, Add Secret) and store it as an environment variable (e.g. `VERCEL_AUTOMATION_BYPASS_SECRET`). The header must then be passed in two places.
 
@@ -79,6 +79,7 @@ await client.trigger({
 
 - Both Vercel steps are required: the header must be passed when triggering AND configured in the QStash client for subsequent steps
 - Verbose mode diagnostics (the localhost, deduplication, and network-warning logs above) are not yet available in workflow-py
+- Clearing both signing-key env variables disables verification; never do this on a publicly reachable endpoint (local development only)
 - Retry settings live in two places: `client.trigger` (the run) and `context.call` (third-party requests)
 - Source: fetched 2026-10 from https://upstash.com/docs/workflow/troubleshooting/general (and `troubleshooting/vercel`)
 

@@ -31,21 +31,21 @@ EU_CENTRAL_1_QSTASH_CURRENT_SIGNING_KEY="your_eu_current_key"
 EU_CENTRAL_1_QSTASH_NEXT_SIGNING_KEY="your_eu_next_key"
 ```
 
-## Regional URLs
+### Regional URLs
 
 | Region | URL |
 |--------|-----|
 | EU | `https://qstash-eu-central-1.upstash.io`, or `https://qstash.upstash.io` |
 | US | `https://qstash-us-east-1.upstash.io` |
 
-## Operating modes
+### Operating modes
 
 | Mode | Behavior |
 |------|----------|
 | Single-region (default) | Uses `QSTASH_TOKEN` and `QSTASH_URL` (defaults to EU); triggers go through the configured region; incoming requests verified with default signing keys |
 | Migration | Uses region-specific credentials for the primary region (`QSTASH_REGION`); detects the region of incoming workflow requests; can receive calls from multiple regions simultaneously |
 
-## Migration between regions
+### Migration between regions
 
 - With no active resources (workflow runs, schedules, URL groups), update environment variables to the new region
 - With active resources, use the Upstash Console: Workflow tab, **Migrate** button, guided process. It helps set up migration-mode environment variables and copies/updates QStash resources (schedules, URL groups, queues)

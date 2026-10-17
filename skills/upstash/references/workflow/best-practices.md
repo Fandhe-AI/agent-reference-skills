@@ -22,7 +22,7 @@ export const { POST } = serve<string>(async (context) => {
 })
 ```
 
-## Rules
+### Rules
 
 | Rule | Detail |
 |------|--------|
@@ -35,7 +35,7 @@ export const { POST } = serve<string>(async (context) => {
 | Include at least one step | A workflow without any `context.run` fails with `Failed to authenticate Workflow request.`; even placeholders need a dummy step |
 | Avoid `Promise.any` | `Promise.all` works for parallel steps; `Promise.any` is not supported for workflow steps |
 
-## Split large workflows with context.invoke
+### Split large workflows with context.invoke
 
 Separate logic into multiple workflows and connect them with `context.invoke`. Only the invoked workflow's final output is added to the parent context as one step result; its intermediate step results are not.
 
