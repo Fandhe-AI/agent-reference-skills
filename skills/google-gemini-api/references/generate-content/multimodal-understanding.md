@@ -249,6 +249,7 @@ Notes:
 - Sources: <https://ai.google.dev/gemini-api/docs/generate-content/image-understanding> (Image understanding), <https://ai.google.dev/gemini-api/docs/generate-content/audio> (Audio understanding), <https://ai.google.dev/gemini-api/docs/generate-content/video-understanding> (Video understanding), <https://ai.google.dev/gemini-api/docs/generate-content/document-processing> (Document processing), <https://ai.google.dev/gemini-api/docs/generate-content/transcribe> (Transcription), <https://ai.google.dev/gemini-api/docs/generate-content/media-resolution> (Media resolution).
 - API surface: generateContent tree. The Interactions API tree (multimodal-input category) has its own versions of these guides.
 - Supported file input mechanisms are described in the files page of this category.
+- File API limits: the video-understanding table above quotes "20GB (paid) / 2GB (free)" verbatim, while the Files API and file-input-methods pages state "2 GB per file, up to 20GB per project"; treat 2 GB as the per-file maximum and 20 GB as the per-project storage cap (see the files page of this category).
 
 ## Related
 
