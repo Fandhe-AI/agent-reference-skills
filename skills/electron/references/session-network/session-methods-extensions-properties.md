@@ -157,8 +157,14 @@ app.whenReady().then(() => {
   const protocol = session.fromPartition('some-partition').protocol
   if (
     !protocol.registerFileProtocol('atom', (request, callback) => {
-      const url = request.url.substr(7)
-      callback({ path: path.normalize(path.join(__dirname, url)) })
+      const root = __dirname
+      const filePath = request.url.slice('atom://'.length)
+      const target = path.resolve(root, '.' + path.sep + decodeURIComponent(filePath))
+      const relative = path.relative(root, target)
+      if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
+        return callback({ error: -6 })
+      }
+      callback({ path: target })
     })
   ) {
     console.error('Failed to register protocol')
@@ -184,6 +190,7 @@ app.whenReady().then(async () => {
 
 ## Notes
 
+* Adapted (not in the official docs): the official example joins the URL path onto __dirname without confining it, so atom://../secret.txt escapes the root; this page rejects resolved paths outside the root via path.relative / path.isAbsolute.
 * `ses.loadExtension`, `ses.removeExtension`, `ses.getExtension`, `ses.getAllExtensions` are _Deprecated_; use `ses.extensions.*` ([extensions-api.md](./extensions-api.md)).
 * The `ses.protocol` example uses `registerFileProtocol`, which is itself _Deprecated_ in favor of `protocol.handle` (see [protocol-legacy-register-intercept.md](./protocol-legacy-register-intercept.md)).
 

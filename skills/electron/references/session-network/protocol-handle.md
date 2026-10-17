@@ -20,8 +20,14 @@ const url = require('node:url')
 
 app.whenReady().then(() => {
   protocol.handle('atom', (request) => {
+    const root = __dirname
     const filePath = request.url.slice('atom://'.length)
-    return net.fetch(url.pathToFileURL(path.join(__dirname, filePath)).toString())
+    const target = path.resolve(root, '.' + path.sep + decodeURIComponent(filePath))
+    const relative = path.relative(root, target)
+    if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
+      return new Response('bad', { status: 400 })
+    }
+    return net.fetch(url.pathToFileURL(target).toString())
   })
 })
 ```
@@ -45,8 +51,14 @@ app.whenReady().then(() => {
   const ses = session.fromPartition(partition)
 
   ses.protocol.handle('atom', (request) => {
+    const root = __dirname
     const filePath = request.url.slice('atom://'.length)
-    return net.fetch(url.pathToFileURL(path.resolve(__dirname, filePath)).toString())
+    const target = path.resolve(root, '.' + path.sep + decodeURIComponent(filePath))
+    const relative = path.relative(root, target)
+    if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
+      return new Response('bad', { status: 400 })
+    }
+    return net.fetch(url.pathToFileURL(target).toString())
   })
 
   const mainWindow = new BrowserWindow({ webPreferences: { partition } })
@@ -139,7 +151,7 @@ app.whenReady().then(() => {
       }
       // NB, this checks for paths that escape the bundle, e.g.
       // app://bundle/../../secret_file.txt
-      const pathToServe = path.resolve(__dirname, pathname)
+      const pathToServe = path.resolve(__dirname, '.' + decodeURIComponent(pathname))
       const relativePath = path.relative(__dirname, pathToServe)
       const isSafe = relativePath && !relativePath.startsWith('..') && !path.isAbsolute(relativePath)
       if (!isSafe) {
@@ -222,6 +234,8 @@ Returns `boolean` - Whether `scheme` already has a handler or a source.
 
 ## Notes
 
+* Adapted (not in the official docs): the official example joins the URL path onto __dirname without confining it, so atom://../secret.txt escapes the root; this page rejects resolved paths outside the root via path.relative / path.isAbsolute.
+* Adapted (not in the official docs): the official example resolves the leading-slash pathname as an absolute path, so every non-root bundle file is rejected; this page resolves it relative to the bundle root and keeps the escape check.
 * `protocol.registerSource` and `protocol.getSource` are _Experimental_ in the source.
 * The legacy `protocol.register*Protocol` / `protocol.intercept*Protocol` methods are _Deprecated_ in favor of `protocol.handle`; see [protocol-legacy-register-intercept.md](./protocol-legacy-register-intercept.md).
 * The `protocol.handle` request handler is invoked by Electron for in-app custom-scheme URLs (and can proxy via `net.fetch`); it is not an HTTP server routing API (for server-side HTTP see fastify / hono).

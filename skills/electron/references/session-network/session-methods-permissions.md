@@ -13,12 +13,15 @@ Process: Main
 ```js
 const { session } = require('electron')
 
-session.fromPartition('some-partition').setPermissionRequestHandler((webContents, permission, callback) => {
-  if (webContents.getURL() === 'some-host' && permission === 'notifications') {
-    return callback(false) // denied.
+const allowedPermissions = ['notifications']
+
+session.fromPartition('some-partition').setPermissionRequestHandler((webContents, permission, callback, details) => {
+  const origin = new URL(details.requestingUrl).origin
+  if (origin === 'https://example.com' && allowedPermissions.includes(permission)) {
+    return callback(true) // granted.
   }
 
-  callback(true)
+  callback(false) // denied.
 })
 ```
 
@@ -392,6 +395,7 @@ app.whenReady().then(() => {
 
 ## Notes
 
+* Adapted (not in the official docs): the official example grants every permission except notifications from one host and checks webContents.getURL(), which does not identify subframe requesters; this page checks details.requestingUrl and grants only allowlisted origin/permission pairs, denying everything else.
 * Implement both `setPermissionRequestHandler` and `setPermissionCheckHandler` for complete permission handling; most web APIs do a check and then a request if the check is denied.
 * Migration: `setDevicePermissionHandler` — the handler is no longer passed a `WebFrameMain` frame but the `origin` checking for device permission ([breaking-changes-v22-v15](../breaking-changes/breaking-changes-v22-v15.md)). `setPermissionCheckHandler` — the first parameter `webContents` can now sometimes be `null`; use `requestingOrigin`, `embeddingOrigin` and `securityOrigin` instead ([breaking-changes-v14-v2](../breaking-changes/breaking-changes-v14-v2.md)). Cross-origin iframes must specify features via the `allow` attribute (Permission Policy, Electron 30.0; [breaking-changes-v30-v29](../breaking-changes/breaking-changes-v30-v29.md)).
 * `fetchGrantedDevices()` in the device example is a developer-implemented placeholder, not an Electron API.

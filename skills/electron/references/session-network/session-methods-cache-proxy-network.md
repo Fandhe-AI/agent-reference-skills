@@ -196,7 +196,7 @@ const win = new BrowserWindow()
 win.webContents.session.setCertificateVerifyProc((request, callback) => {
   const { hostname } = request
   if (hostname === 'github.com') {
-    callback(0)
+    callback(-3)
   } else {
     callback(-2)
   }
@@ -208,6 +208,7 @@ win.webContents.session.setCertificateVerifyProc((request, callback) => {
 ## Notes
 
 * `ses.fetch` / `net.fetch` use Chromium's network stack and honour `protocol.handle` handlers and `webRequest`; they are client-side requests from the Electron app, not an HTTP server API (for server-side HTTP see fastify / hono).
+* Adapted (not in the official docs): the official example calls callback(0) for github.com, which accepts the certificate without verification and disables Certificate Transparency checks; this page uses callback(-3) (Chromium's verification result) instead. Never call callback(0) without your own certificate validation.
 * `ses.setCertificateVerifyProc(null)` reverts to the default verify proc; the result is cached by the network service.
 
 ## Related
