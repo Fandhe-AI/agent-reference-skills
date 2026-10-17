@@ -33,6 +33,7 @@ var tintColor: NSColor? { get set }
 - The property declarations above are taken from the symbol's property fragments; the cases of `NSGlassEffectView.Style` are not listed on the source page and are not recorded here.
 - Distinct from SwiftUI's glass effect APIs (see apple-swiftui); this is the AppKit view class.
 - Objective-C name: `NSGlassEffectView`; the style enum is `NSGlassEffectViewStyle`.
+- Source: https://developer.apple.com/documentation/appkit/nsglasseffectview
 
 ## Related
 

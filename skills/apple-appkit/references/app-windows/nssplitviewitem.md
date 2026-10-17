@@ -43,6 +43,7 @@ convenience init(inspectorWithViewController: NSViewController)
 - macOS 10.10+.
 - Use the accessory view controller APIs to add views such as a search field above a list; see `NSSplitViewItemAccessoryViewController`.
 - The remove accessory methods may be replaced by `removeFromParentViewController`, whichever is easier.
+- Source: https://developer.apple.com/documentation/appkit/nssplitviewitem
 
 ## Related
 

@@ -27,6 +27,7 @@ class func openPanel() -> NSOpenPanel
 
 - Inherits from `NSSavePanel`; presenting and modal APIs (`begin`, `beginSheetModal(for:completionHandler:)`, `runModal()`, `allowedContentTypes`, `directoryURL`, `delegate`) are on `NSSavePanel`.
 - In macOS 10.15 and later, the system always draws Open panels in a separate process regardless of sandboxing. When the user chooses a file, macOS adds it to the app's sandbox.
+- Source: https://developer.apple.com/documentation/appkit/nsopenpanel
 
 ## Related
 

@@ -36,6 +36,7 @@ func removeTabViewItem(_ tabViewItem: NSTabViewItem)
 - Views are loaded lazily, only after the corresponding tab is selected.
 - `tabStyle` can show a segmented control or tabs in the window's toolbar; you can also provide your own control.
 - Implements `NSTabViewDelegate` methods (`tabView(_:shouldSelect:)`, `tabView(_:willSelect:)`, `tabView(_:didSelect:)`) and `NSToolbarDelegate` methods (`toolbar(_:itemForItemIdentifier:willBeInsertedIntoToolbar:)`, `toolbarAllowedItemIdentifiers(_:)`, `toolbarDefaultItemIdentifiers(_:)`, `toolbarSelectableItemIdentifiers(_:)`).
+- Source: https://developer.apple.com/documentation/appkit/nstabviewcontroller
 
 ## Related
 

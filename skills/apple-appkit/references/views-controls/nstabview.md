@@ -50,6 +50,7 @@ var selectedTabViewItem: NSTabViewItem? { get }
 - The enum cases of `NSTabView.TabType`, `TabPosition` and `TabViewBorderType` are not listed on the source page and are not recorded here.
 - See also `NSTabViewController` and `NSTabViewItem`.
 - Distinct from SwiftUI `TabView` (see apple-swiftui) and UIKit `UITabBarController` (see apple-uikit).
+- Source: https://developer.apple.com/documentation/appkit/nstabview
 
 ## Related
 

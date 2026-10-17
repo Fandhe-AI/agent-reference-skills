@@ -26,6 +26,7 @@ func endSearchInteraction()
 
 - macOS 11.0+. Inherits from `NSToolbarItem`.
 - The item automatically resizes to accommodate typing when focus switches to it. When the toolbar is low on space, the system may collapse it into a button that expands to a full search field on click.
+- Source: https://developer.apple.com/documentation/appkit/nssearchtoolbaritem
 
 ## Related
 

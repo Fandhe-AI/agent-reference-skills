@@ -45,6 +45,7 @@ var sendsWholeSearchString: Bool { get set }
 - `NSSearchFieldDelegate` is the protocol a delegate uses to determine when a search started or ended.
 - Deprecated: `centersPlaceholder` (`Bool`), `rectForCancelButton(whenCentered:)`, `rectForSearchButton(whenCentered:)`, `rectForSearchText(whenCentered:)`. Use `cancelButtonBounds` / `searchButtonBounds` / `searchTextBounds` instead.
 - Distinct from SwiftUI `searchable` (see apple-swiftui).
+- Source: https://developer.apple.com/documentation/appkit/nssearchfield
 
 ## Related
 

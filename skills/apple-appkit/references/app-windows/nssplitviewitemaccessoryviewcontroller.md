@@ -27,6 +27,7 @@ splitViewItem.addBottomAlignedAccessoryViewController(accessory)
 - macOS 26.0+.
 - Inherits from `NSViewController`.
 - Attach through the accessory APIs on `NSSplitViewItem` (`topAlignedAccessoryViewControllers`, `bottomAlignedAccessoryViewControllers`, and add/insert/remove methods).
+- Source: https://developer.apple.com/documentation/appkit/nssplitviewitemaccessoryviewcontroller
 
 ## Related
 

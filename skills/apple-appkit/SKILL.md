@@ -5,7 +5,7 @@ description: >
   NSApplication, NSWindow, NSViewController, NSView, NSMenu, NSToolbar,
   NSTableView, NSOutlineView, NSCollectionView, NSSplitViewController, NSTabView,
   NSPopover, NSOpenPanel / NSSavePanel, NSSearchField, NSControl, NSStackView,
-  Diffable Data Source, target-action, responder chain。
+  NSScrollView, Diffable Data Source, target-action, responder chain。
 user-invocable: false
 ---
 

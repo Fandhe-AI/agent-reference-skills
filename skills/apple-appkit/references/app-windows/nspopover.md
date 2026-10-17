@@ -39,6 +39,7 @@ func close()
 - A popover can be detached into a separate window by dragging when the appropriate delegate method is implemented.
 - `NSPopover.Appearance` enum is marked deprecated; use `appearance` with `NSAppearance`.
 - Related types: `NSPopover.CloseReason`, `NSPopover.DidShowMessage`, `DidCloseMessage`, `WillShowMessage`, `WillCloseMessage`, `closeReasonUserInfoKey`.
+- Source: https://developer.apple.com/documentation/appkit/nspopover
 
 ## Related
 

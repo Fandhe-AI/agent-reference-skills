@@ -41,6 +41,7 @@ var view: NSView? { get set }
 - `NSTabViewItem.State` constants describe the current display state of a tab (Objective-C name `NSTabState`); the cases are not listed on the source page and are not recorded here.
 - Inherits from `NSObject` (not `NSView`).
 - See also `NSTabViewController`.
+- Source: https://developer.apple.com/documentation/appkit/nstabviewitem
 
 ## Related
 

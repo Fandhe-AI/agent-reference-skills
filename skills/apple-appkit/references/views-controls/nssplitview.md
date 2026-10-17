@@ -45,6 +45,7 @@ func setHoldingPriority(_ priority: NSLayoutConstraint.Priority, forSubviewAt su
 - Deprecated: `isPaneSplitter` and `setIsPaneSplitter:`.
 - Also on the page: `NSSplitView.DidResizeSubviewsMessage` and `NSSplitView.WillResizeSubviewsMessage` structs (no abstract on the source page).
 - See also `NSSplitViewController` and `NSSplitViewItem` ("Split View Interface").
+- Source: https://developer.apple.com/documentation/appkit/nssplitview
 
 ## Related
 

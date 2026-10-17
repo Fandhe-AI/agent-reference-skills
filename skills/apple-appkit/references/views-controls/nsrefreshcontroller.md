@@ -34,6 +34,7 @@ func endRefreshing()
 - Inherits from `NSObject` (not `NSView`).
 - The source page does not show how the controller is attached to an `NSScrollView` (the attaching property is not listed there), so it is not recorded here.
 - Distinct from UIKit `UIRefreshControl` (see apple-uikit) and SwiftUI `refreshable` (see apple-swiftui).
+- Source: https://developer.apple.com/documentation/appkit/nsrefreshcontroller
 
 ## Related
 

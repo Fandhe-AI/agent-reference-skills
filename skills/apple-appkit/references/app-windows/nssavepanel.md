@@ -47,6 +47,7 @@ func runModal() -> NSApplication.ModalResponse
 - In macOS 10.15 and later, the system always displays the Save dialog in a separate process regardless of sandboxing. On save, macOS adds the file to the app's sandbox if necessary.
 - The panel reports interactions to its delegate, which must adopt `NSOpenSavePanelDelegate`.
 - `NSApplication.ModalResponse` values (`.OK`, `.cancel`) are defined on `NSApplication`.
+- Source: https://developer.apple.com/documentation/appkit/nssavepanel
 
 ## Related
 

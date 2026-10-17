@@ -25,6 +25,7 @@ var spacing: CGFloat { get set }
 - Platform: macOS 26.0+.
 - Tip (from the docs): using a glass effect container view can improve performance by reducing the number of passes required to render similar glass effect views.
 - Eligible descendants are `NSGlassEffectView` instances.
+- Source: https://developer.apple.com/documentation/appkit/nsglasseffectcontainerview
 
 ## Related
 

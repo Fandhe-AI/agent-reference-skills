@@ -42,6 +42,7 @@ func toggleInspector(_ sender: Any?)
 - Auto Layout is required for the child views and for the collapse/reveal animations.
 - Views are loaded lazily: adding a collapsed split view item as a new child does not load its view until it shows.
 - Protocol implementations are documented under "Supporting Protocol Requirements" (`nssplitviewcontroller-protocol-implementations`).
+- Source: https://developer.apple.com/documentation/appkit/nssplitviewcontroller
 
 ## Related
 
