@@ -126,6 +126,8 @@ All constants: Android, iOS, tvOS.
 
 Hook that obtains information on available updates and on the currently running update. Returns `UseUpdatesReturnType`.
 
+Adapted (not in the official docs): shortened from the official `UpdatesDemo.tsx` example; `styles`, the header `Text`, and `StatusBar` are omitted.
+
 ```tsx
 import * as Updates from 'expo-updates';
 import { useEffect } from 'react';
@@ -164,8 +166,6 @@ export default function UpdatesDemo() {
   );
 }
 ```
-
-Adapted from the official `UpdatesDemo.tsx` example: `styles`, the header `Text`, and `StatusBar` are omitted.
 
 `UseUpdatesReturnType` properties: `availableUpdate?` (`UpdateInfo`), `checkError?` (`Error`), `currentlyRunning` (`CurrentlyRunningInfo`), `downloadedUpdate?` (`UpdateInfo`), `downloadError?` (`Error`), `downloadProgress?` (`number`, 0 to 1 while `isDownloading`), `isChecking` (`boolean`), `isDownloading` (`boolean`), `isRestarting` (`boolean`), `isStartupProcedureRunning` (`boolean`), `isUpdateAvailable` (`boolean`), `isUpdatePending` (`boolean`), `lastCheckForUpdateTimeSinceRestart?` (`Date`), `restartCount` (`number`).
 
