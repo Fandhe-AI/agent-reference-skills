@@ -107,7 +107,7 @@ Methods
         {
           "name": "run-git-commit",
           "cmd": "git",
-          "args": ["commit", "-m", { "validator": "\\S+" }]
+          "args": ["commit", "-m", { "validator": ".+" }]
         }
       ]
     }
@@ -120,7 +120,7 @@ import { Command } from '@tauri-apps/plugin-shell'
 Command.create('run-git-commit', ['commit', '-m', 'the commit message'])
 ```
 
-- As written in the upstream TSDoc, `\\S+` (anchored) rejects 'the commit message' because it contains spaces; use a validator such as `.+` for free-text messages.
+- Differs from upstream: the TSDoc example uses the validator `\\S+`, which (anchored as `^\S+$`) rejects 'the commit message' because it contains spaces; this page uses `.+` so the scope and the call match.
 - The TSDoc says `env: null` clears the process environment, but the declared type is `Record<string, string>`, so passing `null` needs a type cast in TypeScript.
 - The shell plugin guide points `shell.open` users to the Opener plugin (`openUrl` / `openPath`); prefer it for opening files and URLs.
 - Executing any API with a program not configured on the scope results in a promise rejection due to denied access.
