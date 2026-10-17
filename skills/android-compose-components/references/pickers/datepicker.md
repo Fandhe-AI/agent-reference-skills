@@ -62,7 +62,7 @@ DatePickerDialog(
 
 ## Notes
 
-- Experimental API (`@ExperimentalMaterial3Api`).
+- Stable in Material3 1.4.0 (no `@ExperimentalMaterial3Api` opt-in required; the guide snippets' `@OptIn` is not needed for these APIs).
 - Set `initialDisplayMode = DisplayMode.Input` (via `rememberDatePickerState`) to start in keyboard-entry mode.
 - Can also be shown "docked" inline (e.g. inside a `Popup`) instead of a modal dialog.
 - Package: `androidx.compose.material3`.
