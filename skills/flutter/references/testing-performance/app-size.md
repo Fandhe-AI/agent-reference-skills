@@ -9,13 +9,13 @@ How to measure app size for iOS and Android, break down a release build with `--
 ## Signature / Usage
 
 ```console
-flutter build apk --analyze-size
+flutter build apk --analyze-size --target-platform=android-arm64
 ```
 
 The size analysis tool is invoked by passing the `--analyze-size` flag when building:
 
-- `flutter build apk --analyze-size`
-- `flutter build appbundle --analyze-size`
+- `flutter build apk --analyze-size --target-platform=android-arm64`
+- `flutter build appbundle --analyze-size --target-platform=android-arm64`
 - `flutter build ios --analyze-size`
 - `flutter build linux --analyze-size`
 - `flutter build macos --analyze-size`
@@ -86,6 +86,7 @@ Another way to reduce app size is by using platform-specific code. The Dart comp
 - Starting in Flutter version 1.22 and DevTools version 0.9.1, a size analysis tool is included to help developers understand the breakdown of the release build of their application.
 - An upload package is not representative of your end users' download size. Redundant native library architectures and asset densities seen in the breakdown tool can be filtered by the Play Store and App Store.
 - On iOS, `--analyze-size` creates a .app rather than an IPA. Use it to evaluate the relative size of the .app's content; for a closer download-size estimate use the Xcode App Size Report above.
+- Clarified: the perf/app-size page lists the Android commands without --target-platform, but the tool rejects --analyze-size for multi-ABI builds; specify a single ABI (android-arm, android-arm64, or android-x64), as the DevTools App Size page shows (--target-platform=android-arm64).
 - Distance line: this page covers Flutter's `flutter build` size measurement only. Play Console / Gradle details belong to android-build-gradle, and Xcode distribution / App Store Connect belongs to apple-distribution.
 
 ## Related

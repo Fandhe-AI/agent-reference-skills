@@ -198,7 +198,7 @@ The `gen_snapshot` validator won't run until the prebuild validator passes.
 loading-units:
   - id: 2
     libraries:
-      - package:MyAppName/box.Dart
+      - package:MyAppName/box.dart
 ```
 
 The loading unit id is used internally by Dart and can be ignored. The base loading unit (id '1') is not listed and contains everything not explicitly contained in another loading unit. Then add to `pubspec.yaml`:
@@ -208,7 +208,7 @@ flutter:
   deferred-components:
     - name: boxComponent
       libraries:
-        - package:MyAppName/box.Dart
+        - package:MyAppName/box.dart
 ```
 
 Guidelines for assigning loading units:
@@ -225,7 +225,7 @@ Guidelines for assigning loading units:
   deferred-components:
     - name: boxComponent
       libraries:
-        - package:MyAppName/box.Dart
+        - package:MyAppName/box.dart
       assets:
         - assets/image.jpg
         - assets/picture.png
@@ -282,6 +282,7 @@ The built AAB file can be uploaded directly to the Play store as normal. When `l
 - Corrected: the official page lists the loadingUnitMapping file as `android/app/src/main/res/values/AndroidManifest.xml`; the meta-data belongs in the app manifest `android/app/src/main/AndroidManifest.xml`.
 - The sample snippets import `package:material_ui/material_ui.dart` as written in the official page. Per the Flutter 3.47 notes, `material_ui` / `cupertino_ui` are standalone packages you can opt in to; the in-framework `package:flutter/material.dart` is not yet deprecated in 3.47.7.
 - The official page title covers Android and web, but its step-by-step setup is Android-only; the web is covered by one sentence (deferred components become separate `*.js` files).
+- Corrected an error in the official docs: the pubspec examples there write the library URI as package:MyAppName/box.Dart; the file created above is box.dart, and package URIs are case-sensitive, so it is written as box.dart here.
 - Distance line: this page covers Flutter's deferred-component build flow. Gradle, Play Core, and Play Console details belong to android-build-gradle and android-platform-core.
 
 ## Related

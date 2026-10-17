@@ -254,13 +254,13 @@ C:\> flutter build windows --debug
 
 **Start from VS Code:** start the debugger in VS Code, then in Visual Studio:
 
-1. Open the project solution file (**File** > **Open** > **Project/Solution...**, or Ctrl + Shift + O) and choose `build/windows/my_app.sln` in your Flutter app directory.
+1. Open the project solution file (**File** > **Open** > **Project/Solution...**, or Ctrl + Shift + O) and choose `build/windows/x64/my_app.sln` in your Flutter app directory (on Arm64 machines use `build/windows/arm64/my_app.sln`).
 2. Go to **Debug** > **Attach to Process** (Ctrl + Alt + P).
 3. From the **Attach to Process** dialog box, choose `my_app.exe`. Visual Studio starts monitoring the Flutter app.
 
 **Start from Visual Studio:**
 
-1. Open `build/windows/my_app.sln`.
+1. Open `build/windows/x64/my_app.sln`.
 2. Set `my_app` as the startup project (in **Solution Explorer**, right-click `my_app` and select **Set as Startup Project**).
 3. Click **Local Windows Debugger** (F5). When the Flutter app has started, a console window displays the Dart VM service URI:
 
@@ -281,6 +281,7 @@ C:\> flutter build windows --debug
 
 - Clarified: the official page says this lets you use hot reload when editing native code; hot reload applies only to Dart, and native edits need a rebuild.
 - The guide presumes you understand general debugging, have installed Flutter and git, and have familiarity with the Dart language as well as one of Java, Kotlin, Swift, or Objective-C.
+- Corrected an error in the official docs: they point to build/windows/my_app.sln, but since Flutter 3.15 the Windows build directory includes the target architecture, so the solution is at build/windows/x64/my_app.sln (or build/windows/arm64/ on Arm64).
 - Distance line: this page covers attaching Xcode / Android Studio / Visual Studio to a Flutter app. The native IDEs and platform APIs themselves belong to the `android-*` and `apple-*` skills and the Windows skills; here only the Flutter attach procedure is described.
 
 ## Related
