@@ -42,7 +42,7 @@ Utilities for suppressing native form control styling.
 ```html
 <label>
   <div>
-    <input type="checkbox" class="appearance-none forced-colors:appearance-auto ..." />
+    <input type="checkbox" class="peer appearance-none forced-colors:appearance-auto ..." />
     <svg class="invisible peer-checked:visible forced-colors:hidden ...">
       <!-- ... -->
     </svg>
@@ -52,7 +52,7 @@ Utilities for suppressing native form control styling.
 
 <label>
   <div>
-    <input type="checkbox" class="appearance-none ..." />
+    <input type="checkbox" class="peer appearance-none ..." />
     <svg class="invisible peer-checked:visible ...">
       <!-- ... -->
     </svg>
@@ -69,6 +69,7 @@ Utilities for suppressing native form control styling.
 </select>
 ```
 
+- The upstream static snippet elides `peer` behind `...`; the live demo in `src/docs/appearance.mdx` applies `peer` to the input, which `peer-checked:visible` on the sibling SVG requires.
 - Transcribed from `tailwindlabs/tailwindcss.com@7f92c22` `src/docs/appearance.mdx` (fetched 2026-10-16).
 
 ## Related
