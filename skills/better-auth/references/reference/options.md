@@ -29,13 +29,13 @@ Complete reference for all configuration options available in `betterAuth({...})
 
 ```typescript
 baseURL: {
-  allowedHosts: ["myapp.com", "*.vercel.app"],
+  allowedHosts: ["myapp.com", "preview-*.myapp.com"],
   protocol: "https",
   fallback: "https://myapp.com",
 }
 ```
 
-Better Auth derives the host from the `Host` header and then the request URL, validates it against `allowedHosts`, and builds the request-specific base URL. Forwarded host and protocol headers are ignored unless you set `advanced.trustedProxyHeaders: true` (changed in 1.7). `allowedHosts` supports exact matches, wildcards (`*.vercel.app`, `preview-*.myapp.com`) and port wildcards (`localhost:*`), and is added to `trustedOrigins` (localhost entries get both `http` and `https`). `protocol`: `"http"`, `"https"`, or `"auto"` (default); `"auto"` uses `x-forwarded-proto` only when `advanced.trustedProxyHeaders` is `true`, then the request URL, then HTTP for local loopback hosts, otherwise HTTPS; it also affects the cookie `Secure` flag (override with `advanced.useSecureCookies`). `fallback`: used when no request host is available or the host does not match; without it, unresolved or unknown hosts throw (fail closed). Its origin is added to `trustedOrigins`. Use `fallback` carefully; it can hide misconfiguration.
+Better Auth derives the host from the `Host` header and then the request URL, validates it against `allowedHosts`, and builds the request-specific base URL. Forwarded host and protocol headers are ignored unless you set `advanced.trustedProxyHeaders: true` (changed in 1.7). `allowedHosts` supports exact matches, wildcards (`*.vercel.app`, `preview-*.myapp.com`) and port wildcards (`localhost:*`), and is added to `trustedOrigins` (localhost entries get both `http` and `https`). Because `allowedHosts` entries become trusted origins, avoid wildcards over shared hosting suffixes such as `*.vercel.app` (they match deployments you do not control); restrict patterns to domains you own. `protocol`: `"http"`, `"https"`, or `"auto"` (default); `"auto"` uses `x-forwarded-proto` only when `advanced.trustedProxyHeaders` is `true`, then the request URL, then HTTP for local loopback hosts, otherwise HTTPS; it also affects the cookie `Secure` flag (override with `advanced.useSecureCookies`). `fallback`: used when no request host is available or the host does not match; without it, unresolved or unknown hosts throw (fail closed). Its origin is added to `trustedOrigins`. Use `fallback` carefully; it can hide misconfiguration.
 
 ### `emailVerification`
 
@@ -275,6 +275,7 @@ plugins: [myPlugin(), anotherPlugin()]
 - Most string options support environment variable fallbacks
 - Options marked with warnings disable security checks — use with caution
 - For `baseURL`, always set explicitly rather than relying on request inference
+- The official example uses `*.vercel.app`; this page substitutes a self-owned domain pattern because shared-suffix wildcards also trust third-party deployments.
 - Background tasks enable optimistic responses in serverless environments
 
 ## Related
