@@ -74,14 +74,14 @@ Connect the Android or iOS device first. If offered a choice of platform, choose
 
 Source: https://docs.flutter.dev/testing/integration-tests
 
-Linux CI needs an X server. The docs' GitHub Actions step wraps the command with `xvfb-run` through an action:
+Linux CI needs an X server. The docs' GitHub Actions step wraps the command with `xvfb-run`:
 
 ```yaml
       - name: Run Integration Tests
-        uses: username/xvfb-action@v1.1.2
-        with:
-          run: flutter test integration_test -d linux -r github
+        run: xvfb-run flutter test integration_test -d linux -r github
 ```
+
+Changed from the official page, which uses a placeholder action username/xvfb-action@v1.1.2; replaced with a direct xvfb-run call.
 
 ## Test in a web browser (ChromeDriver)
 

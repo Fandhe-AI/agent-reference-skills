@@ -4,7 +4,7 @@ source: https://docs.flutter.dev/install/manual
 
 # Install, Upgrade, and Doctor
 
-Commands for installing the Flutter SDK, adding it to PATH, upgrading or switching channels, and validating the toolchain. Commands that modify PATH, delete directories, or change system settings are meant for a throwaway environment (VM, container, or a machine you can rebuild).
+Commands for installing the Flutter SDK, adding it to PATH, upgrading or switching channels, and validating the toolchain. Commands that modify PATH or change system settings are meant for a throwaway environment (VM, container, or a machine you can rebuild).
 
 ## Install prerequisites (macOS)
 
@@ -20,12 +20,22 @@ Downloads the Xcode command-line tools that Flutter relies on, including Git.
 
 Source: https://docs.flutter.dev/install/manual
 
+Packages needed (install with administrator rights through the distro package manager, per https://docs.flutter.dev/install/manual):
+
+- `curl`
+- `git`
+- `unzip`
+- `xz-utils`
+- `zip`
+- `libglu1-mesa`
+
+Verify on Debian-based distros such as Ubuntu (no elevated rights needed):
+
 ```sh
-sudo apt-get update -y && sudo apt-get upgrade -y
-sudo apt-get install -y curl git unzip xz-utils zip libglu1-mesa
+dpkg -s curl git unzip xz-utils zip libglu1-mesa
 ```
 
-Debian-based distros with `apt-get`, such as Ubuntu.
+Changed from the official page: sudo commands replaced with package lists and a pointer to the official setup page.
 
 ## Extract the SDK bundle (macOS)
 
@@ -164,10 +174,10 @@ echo 'export PATH="$HOME/develop/flutter/bin:$PATH"' >> ~/.bashrc
 Source: https://docs.flutter.dev/install/add-to-path
 
 ```sh
-echo 'export PATH="<path-to-sdk>:$PATH"' >> ~/.bash_profile
+echo 'export PATH="<path-to-sdk>/bin:$PATH"' >> ~/.bash_profile
 ```
 
-The placeholder above is verbatim from the docs and omits `/bin`; the docs' own example below includes it.
+Changed from the official page, whose placeholder omits /bin; the docs' own example below includes it.
 
 ```sh
 echo 'export PATH="$HOME/develop/flutter/bin:$PATH"' >> ~/.bash_profile
@@ -232,19 +242,15 @@ flutter doctor --android-licenses
 
 ## Set up Xcode for iOS and macOS
 
-> **Warning**: Uses `sudo` and changes the active Xcode. Use a machine you can rebuild.
-
 Source: https://docs.flutter.dev/platform-integration/ios/setup
 
-```sh
-sudo sh -c 'xcode-select -s /Applications/Xcode.app/Contents/Developer && xcodebuild -runFirstLaunch'
-```
-
-Replace `/Applications/Xcode.app` if Xcode lives elsewhere. Review and sign the Xcode licenses:
+Set Xcode as the active developer directory, complete its first launch, and accept the Xcode licenses with administrator rights, as described on the official page. Check the current setting (read-only):
 
 ```sh
-sudo xcodebuild -license
+xcode-select -p
 ```
+
+Changed from the official page: sudo commands replaced with package lists and a pointer to the official setup page.
 
 Download iOS platform support and the latest iOS Simulator runtimes:
 
@@ -272,10 +278,22 @@ open -a Simulator
 
 Source: https://docs.flutter.dev/platform-integration/linux/setup
 
+Packages needed (install with administrator rights through the distro package manager, per https://docs.flutter.dev/platform-integration/linux/setup):
+
+- `clang`
+- `cmake`
+- `ninja-build`
+- `pkg-config`
+- `libgtk-3-dev`
+- `libstdc++-12-dev`
+
+Verify (no elevated rights needed):
+
 ```sh
-sudo apt-get update -y && sudo apt-get upgrade -y
-sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev libstdc++-12-dev
+dpkg -s clang cmake ninja-build pkg-config libgtk-3-dev libstdc++-12-dev
 ```
+
+Changed from the official page: sudo commands replaced with package lists and a pointer to the official setup page.
 
 ## Upgrade the Flutter SDK
 
@@ -345,44 +363,30 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 ## Uninstall the Flutter SDK
 
-> **Warning**: Recursively deletes the SDK and optional configuration and cache directories. Use a throwaway environment.
+> **Warning**: Uninstalling deletes the SDK and optional configuration and cache directories. Delete them manually after checking the paths.
 
 Source: https://docs.flutter.dev/install/uninstall
 
-macOS, Linux, ChromeOS:
+Paths the official page removes (macOS, Linux, ChromeOS):
+
+- The SDK directory, for example `~/develop/flutter`
+- `~/.flutter`, `~/.flutter-devtools`, `~/.flutter_settings` (optional)
+- `~/.dart`, `~/.dart-tool`, `~/.dartServer` (optional)
+- `~/.pub-cache` (optional)
+
+Paths the official page removes (Windows):
+
+- The SDK directory, for example `%USERPROFILE%\develop\flutter`
+- `%APPDATA%\.flutter-devtools` (optional)
+- `%APPDATA%\.dart`, `%APPDATA%\.dart-tool`, `%LOCALAPPDATA%\.dartServer` (optional)
+- `%LOCALAPPDATA%\Pub\Cache` (optional)
+
+`~/.pub-cache` and `%LOCALAPPDATA%\Pub\Cache` are shared by all Dart and Flutter projects; confirm no other project uses them before removing. Check which paths exist (read-only):
 
 ```sh
-rm -rf ~/develop/flutter
+ls -d ~/develop/flutter ~/.flutter ~/.flutter-devtools ~/.flutter_settings ~/.dart ~/.dart-tool ~/.dartServer ~/.pub-cache
 ```
 
-```sh
-rm -rf  ~/.flutter ~/.flutter-devtools ~/.flutter_settings
-```
+Follow the official page for the removal steps.
 
-```sh
-rm -rf  ~/.dart ~/.dart-tool ~/.dartServer
-```
-
-```sh
-rm -rf ~/.pub-cache
-```
-
-Windows (PowerShell):
-
-```powershell
-Remove-Item -Recurse -Force -Path (Join-Path $env:USERPROFILE "develop\flutter")
-```
-
-```powershell
-Remove-Item -Recurse -Force -Path (Join-Path $env:APPDATA ".flutter-devtools")
-```
-
-```powershell
-Remove-Item -Recurse -Force -Path (Join-Path $env:APPDATA ".dart"), (Join-Path $env:APPDATA ".dart-tool"), (Join-Path $env:LOCALAPPDATA ".dartServer")
-```
-
-```powershell
-Remove-Item -Recurse -Force -Path (Join-Path $env:LOCALAPPDATA "Pub\Cache")
-```
-
-The configuration and pub cache removals are optional.
+Changed from the official page: recursive delete commands are listed as paths instead of runnable commands.

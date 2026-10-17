@@ -135,11 +135,19 @@ flutter build linux --release
 ldd build/linux/x64/release/bundle/linux_desktop_test
 ```
 
-To run the bundle on a target system, the docs say this might only require:
+To run the bundle on a target system, the docs say this might only require these packages (install with administrator rights through the distro package manager, see https://docs.flutter.dev/deployment/linux):
+
+- `libgtk-3-0`
+- `libblkid1`
+- `liblzma5`
+
+Verify (no elevated rights needed):
 
 ```sh
-sudo apt-get install libgtk-3-0 libblkid1 liblzma5
+dpkg -s libgtk-3-0 libblkid1 liblzma5
 ```
+
+Changed from the official page: sudo commands replaced with package lists and a pointer to the official setup page.
 
 ## Build for the web
 
@@ -223,8 +231,8 @@ flutter build <build-target> \
 Source: https://docs.flutter.dev/perf/app-size
 
 ```sh
-flutter build apk --analyze-size
-flutter build appbundle --analyze-size
+flutter build apk --analyze-size --target-platform=android-arm64
+flutter build appbundle --analyze-size --target-platform=android-arm64
 flutter build ios --analyze-size
 flutter build linux --analyze-size
 flutter build macos --analyze-size
@@ -232,6 +240,8 @@ flutter build windows --analyze-size
 ```
 
 Prints a size summary and leaves a `*-code-size-analysis_*.json` file for DevTools. On iOS this creates a `.app` rather than an IPA.
+
+Changed from the official page: Android commands add --target-platform=android-arm64 because --analyze-size requires a single ABI.
 
 ## Measure install size for the stores
 
