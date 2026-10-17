@@ -84,9 +84,9 @@ let response = try await session.respond(
 
 ## Related
 
-- Generable
-- Generable macro
-- Guide macro
-- GenerationSchema
-- DynamicGenerationSchema
+- [Generable](../structured-output/generable.md)
+- [Generable macro](../structured-output/generable-macro.md)
+- [Guide macro](../structured-output/guide-macro.md)
+- [GenerationSchema](../structured-output/generation-schema.md)
+- [DynamicGenerationSchema](../structured-output/dynamic-generation-schema.md)
 - [Generating content and performing tasks with Foundation Models](./generating-content.md)

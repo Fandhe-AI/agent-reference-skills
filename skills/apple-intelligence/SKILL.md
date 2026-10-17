@@ -10,8 +10,6 @@ user-invocable: false
 
 # Apple Intelligence
 
-> 分割 PR の途中段階。現在収録済み: references/{attachments, dynamic-profiles, evaluations, evaluators, guides, image-playground, models, python-sdk, sessions, structured-output, tools, transcripts}、samples。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
-
 Apple Intelligence の開発者向け API を扱うリファレンススキル。Foundation Models フレームワーク（オンデバイス / Private Cloud Compute の言語モデル）、Evaluations フレームワーク、Image Playground、Foundation Models SDK for Python を収録する。
 
 ## 対象バージョン
@@ -84,6 +82,11 @@ skills/apple-intelligence/
     python-guided-generation.md
     python-tools.md
     python-evaluation-transcripts.md
+  scripts/
+    README.md
+    python-sdk-install.md
+    python-sdk-docs.md
+    core-ai-model-export.md
 ```
 
 ## 探索手順
@@ -93,6 +96,7 @@ skills/apple-intelligence/
 1. 下記マッピング表でタスクに対応するカテゴリを探す
 2. そのカテゴリの `references/{category}/README.md` を参照して目的のページを特定する
 3. 該当ページの `.md` を Read して詳細を確認する
+4. 実装例が必要なら `samples/README.md`、コマンドが必要なら `scripts/README.md` を引く
 
 ## タスク → カテゴリ マッピング
 
@@ -111,3 +115,4 @@ skills/apple-intelligence/
 | Python から Foundation Models を使う（セッション・Tool・generable） | python-sdk | [references/python-sdk/README.md](references/python-sdk/README.md) |
 | プロンプト設計・コンテキストウィンドウ管理・安全性・性能・評価設計の公式ガイド | guides | [references/guides/README.md](references/guides/README.md) |
 | 典型的な使い方を知りたい | samples | [samples/README.md](samples/README.md) |
+| インストール・CLI コマンドを知りたい | scripts | [scripts/README.md](scripts/README.md) |

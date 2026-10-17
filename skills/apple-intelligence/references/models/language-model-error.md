@@ -54,4 +54,4 @@ Each case has an associated information type of the same name (capitalized).
 - [SystemLanguageModel.Error](./system-language-model-error.md)
 - [Guardrails](./guardrails.md)
 - [LanguageModelCapabilities](./language-model-capabilities.md)
-- Session errors
+- [Session errors](../sessions/session-errors.md)

@@ -114,6 +114,6 @@ func call(arguments: Arguments) async throws -> String {
 
 - [Attachment](../attachments/attachment.md)
 - [ImageReference](../attachments/image-reference.md)
-- OCRTool
-- BarcodeReaderTool
+- [OCRTool](../tools/ocr-tool.md)
+- [BarcodeReaderTool](../tools/barcode-reader-tool.md)
 - [Expanding generation with tool calling](./tool-calling.md)
