@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/sql/using_operation_id.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/sql/using_operation_id.rs
 ---
 
 # sql::using_operation_id
@@ -30,8 +30,9 @@ pub fn as_str(&self) -> &str
 ## Notes
 
 - 台帳への永続化（TASK-93）・重複拒否（23505、TASK-94）・内容不一致（22023、TASK-101）は本モジュールの管轄外（storage/recovery scope）で、いずれも本モジュールが提供する検証済み `OperationId` を土台にする。
-- ADR `docs/design/operation-id-ledger.md`（pin SHA `7022d112e79760dca916480599553fcac256b5fb`）: operation_id 台帳は「テナント内・テーブル単位の永続台帳として、当該書き込みと同一トランザクション内で原子的に記録する基盤」で、書き込み操作ごとの重複排除と追跡可能性を実現する。既存エントリの非置換（keep-first）ポリシー。SQL 表層（`USING OPERATION_ID` 句）との直接接続の詳細は private spec（`docs/spec/04-behavior/sql-surface.md` SQL-10）が管理し、公開 ADR には明記がない。
+- ADR `docs/design/operation-id-ledger.md`（pin SHA `dc888f6ea146d3078153d64a6848f5c8cf044431`）: operation_id 台帳は「テナント内・テーブル単位の永続台帳として、当該書き込みと同一トランザクション内で原子的に記録する基盤」で、書き込み操作ごとの重複排除と追跡可能性を実現する。既存エントリの非置換（keep-first）ポリシー。SQL 表層（`USING OPERATION_ID` 句）との直接接続の詳細は private spec（`docs/spec/04-behavior/sql-surface.md` SQL-10）が管理し、公開 ADR には明記がない。
 - ADR `docs/design/operation-id-required-guard.md`（同 pin SHA）: 書き込み系操作（INSERT・UPDATE・DELETE）に対する operation_id 必須化ガード。適用範囲は SQL 表層・`EngineCore` の行書き込み API（`insert_row`・`update_row`・`delete_row`）を含むと示唆されるが、`LedgerMode` によりいつ必須／任意かの詳細判断根拠は private spec（`docs/spec/04-behavior/recovery.md` RECOVER-1）側が管理しており、本 ADR には記載がない。spec 非公開のため `LedgerMode` の variant ごとの必須/任意条件は未記載。
+- ADR `docs/design/multi-row-dml-operation-id.md`（同 pin SHA。Issue #868。ステータス Accepted、2026-09-23 オーナー承認）: 複数行変更（複数行 `VALUES`・述語形 `UPDATE` / `DELETE`）の `operation_id` と内容照合ハッシュの対応づけを定める。台帳キーは `(tenant, table, operation_id)` のまま 1 エントリで、ハッシュ入力レイアウト・計算位置・SQL⇄NoSQL 表層横断のキー空間共有を含む。`sql/using_operation_id.rs` 自体のソースは 0.1.0 から無変更。
 - Distinct from `mssql` (node-mssql, T-SQL client) / `drizzle` (TypeScript ORM) / `supabase` (Postgres): `USING OPERATION_ID` is an idempotency-key clause specific to this engine's write path, unrelated to those clients' transaction APIs.
 
 ## Related

@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/parallel_search.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/parallel_search.rs
 ---
 
 # parallel-search
@@ -52,6 +52,7 @@ pub fn expected_thread_count(row_count: usize) -> usize;
 
 - `ParallelSearchProvider` は `kernel.rs::CpuScalarProvider` と bit 単位で同じ結果を返す（テスト `crates/engine/tests/parallel_search.rs` で検証）。並列化は行範囲分割のみで SIMD ベクトル化は行わず、内積カーネル自体は `isa.rs` の実行時検出結果（`kernel.rs::dot`）に委譲する。
 - `WorkerBudgetGuard` は RAII で解放を保証し、プロセス全体でワーカースレッド予算をカウンタ管理する（同時実行クエリ間の調停）。
+- 0.2.0 のモジュール doc: `thread_count_for`・`WorkerBudgetGuard`・`MAX_THREADS_PER_QUERY`（`pub(crate)`）は `hnsw::parallel_build`（HNSW 構築の並列化。Issue #406）からも共有される——検索・構築の双方で「並列度の決め方」「プロセス全体のワーカー予算調停」（`MAX_TOTAL_EXTRA_WORKER_THREADS = 64`、`GLOBAL_WORKER_BUDGET`）を単一の実装に統一するため（構築側は `MAX_BUILD_THREADS` という別名の定数で同値を持つ）。本モジュール自身の並列検索の挙動・エラー契約は変わらない。
 - `KernelError::WorkerPanicked`（`kernel.md` 参照）は本モジュールのワーカースレッド panic 時に返され、部分結果を欠いたまま `Ok` を返す fail-open を避けるための設計（Issue #34 レビュー指摘対応）。
 
 ## Related

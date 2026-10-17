@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/policy.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/policy.rs
 ---
 
 # policy
@@ -58,6 +58,14 @@ impl PolicyContext {
     /// 読めても書けない。
     #[inline]
     pub fn is_owner(&self, row_tenant: &str) -> bool
+
+    /// このコンテキストが他テナントの `Public` 行を可視とするか（Issue #915・SQL-25）。
+    /// `true`（既定の `Self::new` を含む多くのセッション）だと `id` 順の並べ替えでも自テナントの
+    /// パーティション走査だけでは可視行を網羅できない（`sql::scan` の経路 (A)／(B) の分岐に使う）。
+    /// 判定ロジック自体は増やさず、`Self::is_visible` が既に参照する `allowed.public` を読み取り専用で
+    /// 公開するのみ（security.md P0: 判定パスを増やさない）。0.2.0 で追加。`pub(crate)`。
+    #[inline]
+    pub(crate) fn allows_public(&self) -> bool
 }
 ```
 
@@ -66,6 +74,7 @@ impl PolicyContext {
 - rustdoc は抄録（一部段落を省略）。全文は `source:` の docs.rs source view を参照。
 - `PartialEq`/`Eq` は `rls.rs::PrefilterIndex::search` が構築時 ctx と検索時 ctx の完全一致（テナント ID・許可可視性集合の両方）を fail-closed に照合するために持つ（TASK-133・別テナント／可視性が狭化・拡大された ctx でのインデックス転用を検出するため）。
 - `is_visible` の判定順序（許可可視性集合 → `Public` 短絡 → テナント比較）・チェック回数・fail-closed 方針は実装内で固定されており、呼び出し側はこのメソッド以外でテナント比較を行わない。
+- 0.2.0 の追加は `pub(crate) fn allows_public`（`sql::scan` のスカラー列 `ORDER BY` 経路選択用。クレート外非公開）のみで、`PolicyError` / `PolicyContext` の公開シグネチャは 0.1.0 から変更なし。
 - `is_visible` の詳細な判定条件（TABLE-9 対応）は private spec 側の記述を転記しないため、公開ソース（本モジュール docstring・実装）で追跡できる範囲のみ記載した。
 
 ## Related

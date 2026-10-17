@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/sql/parser.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/sql/parser.rs
 ---
 
 # sql::parser
@@ -324,24 +324,76 @@ pub struct BoundFileInsert {
     pub operation_id: Option<OperationId>,
 }
 
-/// `bind_insert_form` の束縛結果。行形（既存の 1 行 1 ID `INSERT`）とファイル形
-/// （TASK-120。サーバー側チャンク化・ベクトル化を経由する `INSERT`）を区別する。
+/// [`OnConflictAction::DoUpdate`] の SET 右辺を束縛した形（SQL-20・TASK-193、Issue #872）。
+#[derive(Debug, Clone, PartialEq)]
+pub enum BoundUpsertValue {
+    /// `BoundInsert::values` の列インデックス（同じ行の束縛済み値を指す）。
+    Excluded(usize),
+    Literal(crate::row_codec::Value),
+}
+
+/// 束縛済みの `ON CONFLICT ... DO NOTHING | DO UPDATE SET ...`（SQL-20・TASK-193、Issue #872）。
+#[derive(Debug, Clone, PartialEq)]
+pub enum BoundConflictAction {
+    DoNothing,
+    /// (`schema.columns` の対象列インデックス, 右辺) 対応。宣言順を保持する。
+    DoUpdate(Vec<(usize, BoundUpsertValue)>),
+}
+
+/// 束縛済みの `ON CONFLICT` 対象（TABLE-16、Issue #1074）。
+#[derive(Debug, Clone, PartialEq)]
+pub enum BoundConflictTarget {
+    /// `ON CONFLICT (id)`。
+    RowId,
+    /// `ON CONFLICT (<col>[, <col>]*)` が、宣言済み UNIQUE 制約のいずれかの構成列
+    /// **集合**と一致した場合の解決結果。`Vec<usize>` は `schema.columns` に対する
+    /// 論理インデックスで、解決した制約の宣言順（対象リストに書いた順ではない）。
+    Unique(Vec<usize>),
+}
+
+/// 束縛済みの UPSERT 文（SQL-20・TASK-193、Issue #872）。`rows` は 1 件以上で、
+/// `action` は全行が共有する衝突分岐。
+#[derive(Debug, Clone, PartialEq)]
+pub struct BoundUpsert {
+    pub table: String,
+    pub rows: Vec<BoundInsert>,
+    pub target: BoundConflictTarget,
+    pub action: BoundConflictAction,
+    pub operation_id: Option<OperationId>,
+}
+
+/// [`bind_insert_form`] の束縛結果。行形（既存の 1 行 1 ID `INSERT`）・複数行形
+/// （SQL-16、TASK-190。複数行 `VALUES` を持つ行形）・ファイル形（TASK-120。
+/// サーバー側チャンク化・ベクトル化を経由する `INSERT`）・UPSERT（SQL-20・
+/// TASK-193、Issue #872）を区別する。
 #[derive(Debug, Clone)]
 pub enum BoundInsertForm {
     Row(BoundInsert),
+    /// 複数行 `VALUES (...), (...), ...`（SQL-16、TASK-190）を束縛した行の並び
+    /// （投入順を保持）。全行が同一テーブル・同一 `operation_id`。実行は
+    /// `sql::exec::execute_insert_batch_with_schema` が NoSQL 表層の `rows[]` と共有する。
+    RowBatch(Vec<BoundInsert>),
     File(BoundFileInsert),
+    /// `ON CONFLICT ... DO NOTHING | DO UPDATE SET ...`（SQL-20・TASK-193）。
+    /// 単一行・複数行 `VALUES` のいずれも本 variant を経由する。
+    Upsert(BoundUpsert),
 }
 
 /// `ValidatedInsert` の列リストから行形・ファイル形いずれの `INSERT` かを束縛段階で
-/// 判別し、対応する束縛結果を返す（TASK-120・対象ビヘイビア: INDEX-1, INDEX-2）。
+/// 判別し、対応する束縛結果を返す（TASK-120・対象ビヘイビア: INDEX-1, INDEX-2。
+/// 複数行 `VALUES` の受理は SQL-16・TASK-190）。
 ///
-/// 判別規則（すべて満たす場合のみファイル形）:
+/// 判別規則（すべて満たす場合のみファイル形。行数には依存しない）:
 /// - 列リストに疑似列 `id` を含まない
 /// - 列リストに、スキーマ上 `VECTOR` 型である列を含まない
 /// - 列リストに Text 列 `path` と `body` を両方含む
 ///
-/// いずれか 1 つでも欠ける場合（`id` または VECTOR 列を同時指定した場合を含む）は
-/// 行形として扱い、`bind_insert` の既存の検証（`22000`）にそのまま委ねる。
+/// いずれか 1 つでも欠ける場合は行形として扱う。ファイル形と判定されたにもかかわらず
+/// 複数行 `VALUES` を持つ文は `42601` で拒否する。行形は `stmt.rows.len() == 1` なら
+/// 既存の [`bind_insert`] へそのまま委譲し外部観測可能な挙動をビット同一に保ち、
+/// `> 1` なら各行を束縛して [`BoundInsertForm::RowBatch`] を返す（束縛失敗はどの行で
+/// 失敗したかに関わらず全体を `Err` として拒否し、部分成功はしない）。
+/// `ON CONFLICT` は判別規則より前に分岐し、ファイル形との併用は `42601` で拒否する。
 pub fn bind_insert_form(
     stmt: &ValidatedInsert,
     schema: &TableSchema,
@@ -495,8 +547,96 @@ pub(crate) fn bind_scan(
 ) -> Result<BoundScan, SqlSurfaceError>
 ~~~
 
+0.2.0 の `parser.rs` で追加・公開化された項目（シグネチャのみ。0.1.0 の上記ブロックには無い。`BoundAggregate` / `BoundScan` などは 0.2.0 では `pub`（`new` / `with_*` / アクセサ付き）で、`BoundStatement` は `with_where_filters` / `or_filters()` を、`BoundScan` / `BoundAggregate` は `with_or_filters` / `or_filters()` を持ち、`WHERE ... OR` 群をサポートする）:
+
+~~~rust,ignore
+/// 束縛済みの単一行・`id` 指定形 `DELETE` 文（SQL-18・TASK-191）。
+#[derive(Debug, Clone, PartialEq)]
+pub struct BoundDelete {
+    pub table: String,
+    pub id: u64,
+    pub operation_id: Option<OperationId>,
+}
+pub fn bind_delete(stmt: &ValidatedDelete) -> Result<BoundDelete, SqlSurfaceError>
+
+pub struct BoundPredicateDelete { /* private */ }   // table() / metadata_filters() / expr_filters() / or_filters() / has_where_filters() / operation_id()
+pub fn bind_predicate_delete(
+    stmt: &ValidatedPredicateDelete,
+    schema: &TableSchema,
+    udfs: &crate::sql::udf_call::UdfRegistry,
+) -> Result<BoundPredicateDelete, SqlSurfaceError>
+
+pub struct BoundUpdate { /* 単一行・id 指定形 UPDATE の束縛結果 */ }
+pub fn bind_update(
+    stmt: &crate::sql::allowlist::ValidatedUpdate,
+    schema: &TableSchema,
+) -> Result<BoundUpdate, SqlSurfaceError>
+
+pub struct BoundPredicateUpdate { /* private */ }   // table() / assignments() / metadata_filters() / expr_filters() / or_filters() / operation_id()
+pub enum BoundUpdateForm { /* 単一行形 / 述語形 */ }
+pub fn bind_update_form(
+    stmt: &crate::sql::allowlist::ValidatedUpdateForm,
+    schema: &TableSchema,
+    udfs: &crate::sql::udf_call::UdfRegistry,
+) -> Result<BoundUpdateForm, SqlSurfaceError>
+
+pub fn bind_returning(
+    returning: Option<&Projection>,
+    schema: &TableSchema,
+) -> Result<Option<Vec<ProjectedColumn>>, SqlSurfaceError>
+pub fn bind_column_projection(
+    columns: Option<&[String]>,
+    schema: &TableSchema,
+) -> Result<Vec<ProjectedColumn>, SqlSurfaceError>
+pub fn bind_vector_values(values: &[f32], schema: &TableSchema) -> Result<Vec<f32>, SqlSurfaceError>
+pub fn bind_body_text_column(schema: &TableSchema) -> Result<usize, SqlSurfaceError>
+pub fn parse_array_literal(
+    literal: &str,
+    array_ty: impl std::borrow::Borrow<crate::catalog::ArrayType>,
+) -> Result<crate::row_codec::ArrayValue, SqlSurfaceError>
+pub fn validate_search_limit(raw: u32) -> Result<usize, SqlSurfaceError>    // 0.2.0 では pub
+pub fn validate_search_offset(raw: u32) -> Result<usize, SqlSurfaceError>
+
+/// DML の資源上限（Issue #997）。既定は両フィールドとも `None`（上限なし）。
+#[derive(Debug, Clone, Copy, Default)]
+pub struct DmlLimits {
+    pub max_affected_rows: Option<std::num::NonZeroUsize>,
+    pub max_insert_rows_per_statement: Option<std::num::NonZeroUsize>,
+}
+pub const MIN_DML_ROW_LIMIT: usize = 1;
+pub const MAX_DML_ROW_LIMIT: usize = crate::tenant::MAX_SCANNED_ROWS;   // 1_000_000
+pub fn check_dml_affected_rows_with_limit(
+    count: usize,
+    limit: Option<std::num::NonZeroUsize>,
+) -> Result<(), SqlSurfaceError>
+pub fn validate_dml_row_limit(value: usize) -> Result<std::num::NonZeroUsize, DmlRowLimitOutOfRange>
+
+/// 分割実行 DML（Issue #1128・#1129。ADR partitioned-dml §15.2）のプロセス全体の設定値。
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct PartitionedDmlLimits {
+    pub chunk_rows: std::num::NonZeroUsize,              // 既定 1,000（1..=1,000,000）
+    pub scan_budget_rows: std::num::NonZeroUsize,        // 既定 100,000（1..=MAX_SCANNED_ROWS）
+    pub max_writer_hold: std::time::Duration,            // 既定 1 秒（100..=5,000 ms）
+    pub interrupted_record_limit: std::num::NonZeroU64,  // 既定 1,000（1..=1,000,000）
+    pub max_jobs_per_tenant: std::num::NonZeroUsize,     // 既定 1（1..=64。全体の上限以下）
+    pub max_jobs_total: std::num::NonZeroUsize,          // 既定 4（1..=64）
+}
+impl PartitionedDmlLimits { pub fn validate(&self) -> Result<(), PartitionedDmlLimitsError> }
+pub const DEFAULT_PARTITIONED_CHUNK_ROWS: usize = 1_000;
+pub const DEFAULT_PARTITIONED_SCAN_BUDGET_ROWS: usize = 100_000;
+pub const DEFAULT_PARTITIONED_MAX_HOLD_MS: u64 = 1_000;
+pub const DEFAULT_PARTITIONED_INTERRUPTED_RECORD_LIMIT: u64 = 1_000;
+pub const DEFAULT_PARTITIONED_MAX_JOBS_PER_TENANT: usize = 1;
+pub const DEFAULT_PARTITIONED_MAX_JOBS_TOTAL: usize = 4;
+pub const MAX_PARTITIONED_JOBS: usize = 64;
+// 範囲検証: validate_partitioned_chunk_rows / validate_partitioned_scan_budget /
+// validate_partitioned_max_jobs / validate_partitioned_interrupted_record_limit / validate_partitioned_max_hold_ms
+~~~
+
 ## Notes
 
+- Migration (0.1.0 → 0.2.0): `BoundInsertForm` に新 variant `RowBatch(Vec<BoundInsert>)`（複数行 `VALUES`。SQL-16・TASK-190）と `Upsert(BoundUpsert)`（`ON CONFLICT`。SQL-20・TASK-193）が追加された。この enum を網羅的に `match` していた利用側コードは、新 variant への対応を追加しないとコンパイルできない（CHANGELOG 0.2.0: `RowBatch` の追加が破壊的変更として記載されている）。単一行 `INSERT` の外部観測可能な挙動（wire プロトコル応答・`wire_code`）は不変（`bind_insert_form` は `stmt.rows.len() == 1` のとき既存の `bind_insert` へ委譲する）。`ValidatedInsert.values` → `rows` の変更は allowlist ページを参照。
+- 0.2.0 では 0.1.0 で `pub(crate)` だった `BoundAggregate` / `BoundScan`（および `validate_search_limit`）が `pub` になり、`BoundScan::with_order_by` / `with_offset`（スカラー ORDER BY・OFFSET）、`BoundAggregate::new_grouped_by_columns`（複数列 `GROUP BY`）/ `with_group_order_by` / `with_group_offset`、`HavingOp` / `HavingSpec` などが追加された。上のフェンス内の `BoundAggregate` / `BoundScan` / `AggregateInput` は 0.1.0 時点の `pub(crate)` 定義の転記で、0.2.0 の定義とは異なる（詳細は `parser.rs` 参照）。
 - `MetadataFilter` / `DeclarativeFilter` は `crate::declarative_filter` からの import（`use crate::declarative_filter::{self, DeclarativeFilter, MetadataFilter};`）。定義自体は本 scope 外（extensions scope）の管轄。
 - `ProjectedColumn::Computed` / `BoundExpr` / `ExprProgram` / `UdfRegistry` / `BinOp` の実体は sql-execution scope（`udf_call.rs` / `expr_program.rs`）の管轄。
 - `bind_aggregate` / `bind_scan`（`pub(crate)`）と集計・広域取得向けの `BoundAggregate` / `BoundScan` 型定義は `parser.rs` 内に定義されているため本ページに含めた。これらの実行消費（`AggregateInput` の評価等、`sql::aggregate::execute_aggregate_with_cache` / `sql::group_by`）は sql-execution scope の管轄。

@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/scoring_boost.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/scoring_boost.rs
 ---
 
 # scoring_boost

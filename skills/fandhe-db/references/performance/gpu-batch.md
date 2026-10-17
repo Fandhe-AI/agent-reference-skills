@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/7022d112e79760dca916480599553fcac256b5fb/crates/engine/src/gpu_batch.rs
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-db/dc888f6ea146d3078153d64a6848f5c8cf044431/crates/engine/src/gpu_batch.rs
 ---
 
 # gpu-batch

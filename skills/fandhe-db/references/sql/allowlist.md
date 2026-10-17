@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/sql/allowlist.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/sql/allowlist.rs
 ---
 
 # sql::allowlist
@@ -110,6 +110,48 @@ pub enum SqlSurfaceError {
     /// （`docs/spec/04-behavior/error-format.md`）の表に未掲載のコードであり、
     /// SQL-13 が ERR-2 の拡張規則に基づいて独自定義する。
     NumericOutOfRange { detail: String },
+    // 0.2.0 で追加された variant（原文の長い doc comment は省略。variant 名・フィールドのみ転記）:
+    CardinalityViolation,
+    DivisionByZero { detail: String },
+    DatetimeFieldOverflow { detail: String },
+    InvalidDatetimeFormat { detail: String },
+    InvalidTextRepresentation { detail: String },
+    InvalidTransactionState,
+    ActiveSqlTransaction,
+    NoActiveSqlTransaction,
+    InFailedSqlTransaction,
+    LockNotAvailable,
+    TransactionFeatureNotSupported { detail: String },
+    FeatureNotSupported { detail: String },
+    DuplicateTable { name: String },
+    DuplicateObject { name: String },
+    DuplicateType { name: String },
+    InvalidTableDefinition { table: String },
+    PartialCompletion {
+        committed: u64,
+        cause: ErrorClass,
+        operation_id: String,
+    },
+    PartitionedDmlCancelled { committed: u64 },
+    PartitionedDmlInTransaction,
+    PartitionedJobBusy { detail: String },
+    DuplicateColumn { name: String },
+    InsufficientPrivilege,
+    ConflictTargetNotVisible,
+    InvalidCursorName,
+    DependentObjectsStillExist { name: String },
+    WrongObjectType { name: String },
+    NotNullViolation { column: String },
+    UniqueViolation,
+    UndefinedObject { name: String },
+    UndefinedColumn { name: String },
+    CheckViolation { constraint: String },
+    ForeignKeyViolation,
+    InvalidForeignKey { detail: String },
+    DatatypeMismatch { detail: String },
+    UndefinedFunction { detail: String },
+    DuplicateFunction { detail: String },
+    AmbiguousColumn { name: String },
 }
 
 impl SqlSurfaceError {
@@ -402,21 +444,55 @@ pub enum Statement {
     /// 集計関数のみを結果列とする `GROUP BY` なし・単一行結果の `SELECT`
     /// （TASK-166・SQL-13。C6a）。`FROM` 単一テーブルのカタログ存在確認を通過済み。
     Aggregate(ValidatedAggregate),
-    /// `EXPLAIN SELECT ... USING PLAN('<query>') ...`（TASK-78・SQL-6）。`USING PLAN`
-    /// を伴う検索 SELECT の前置のみを受理し（`using_plan()` が必ず `Some`）、
-    /// `FROM` 単一テーブルのカタログ存在確認を通過済み。`USING PLAN` を伴わない
-    /// 通常 SELECT・集計・`SET`・`CREATE FUNCTION` への `EXPLAIN` 前置は許可リスト外
-    /// として `42601` で拒否する。
-    Explain(ValidatedStatement),
+    /// `EXPLAIN <target>`（TASK-78・SQL-6、Issue #922・SQL-27）。対象文
+    /// （[`ExplainTarget`]）は検索 SELECT（`USING PLAN` の有無いずれも）・集計
+    /// （`GROUP BY`・`DISTINCT` の脱糖形いずれも）・広域取得のいずれかで、
+    /// `FROM` 単一テーブルのカタログ存在確認を通過済み。`EXPLAIN` は検索本体・
+    /// 集計走査・広域取得走査のいずれも実行しない。`SET`・`CREATE FUNCTION` への
+    /// `EXPLAIN` 前置は許可リスト外として `42601` で拒否する。
+    Explain(ExplainTarget),
     /// `SELECT <投影> FROM <table> [WHERE ...] LIMIT n`（`ORDER BY`・`USING PLAN`
     /// のいずれも伴わない、ソートなしのフィルタ取得。Issue #454）。`FROM` 単一
     /// テーブルのカタログ存在確認を通過済み。契約の詳細は
     /// `docs/design/wide-retrieval-scan.md`（spec ビヘイビア ID は SQL-15・
-    /// TASK-170 として付与済み〔vector-db-spec#12〕。確定化は TASK-170 が担う）参照。
+    /// TASK-170 として付与済み〔fandhe-db-spec#12〕。確定化は TASK-170 が担う）参照。
     ///
     /// **本 variant の追加は破壊的変更（BREAKING CHANGE）**: 既存の網羅的
     /// `match` はワイルドカードアームの追加が必要。
     Scan(ValidatedScan),
+    /// `UNION`／`UNION ALL`／`INTERSECT`／`EXCEPT`（SQL-29 (c)・RLS-10 (b)・
+    /// TASK-213）。各枝は `Scan`（[`ValidatedScan`]）に限定する。束縛・実行本体は
+    /// `sql::set_op` が担う。**本 variant の追加は破壊的変更（BREAKING CHANGE）**。
+    SetOperation(ValidatedSetOperation),
+    /// `[INNER|LEFT|RIGHT|FULL [OUTER]] JOIN`（等価結合の left-deep 連鎖。Issue #925・
+    /// #926・#1190・SQL-28・RLS-10、TASK-212）。束縛・実行本体は `sql::join` が担う。
+    /// **本 variant の追加は破壊的変更（BREAKING CHANGE）**。
+    Join(ValidatedJoin),
+    /// 評価後射影形ビュー（本文に `LIMIT`・`ORDER BY`・集計・JOIN を含む
+    /// `CREATE VIEW`。TABLE-18・Issue #1192）への参照
+    /// `SELECT <*|列名リスト> FROM <view> LIMIT n [OFFSET m]`（`sql::view_buffered`）。
+    /// **本 variant の追加は破壊的変更（BREAKING CHANGE）**。
+    BufferedView(ValidatedBufferedView),
+}
+
+/// [`Statement::Explain`] の対象文（Issue #922・SQL-27）。
+/// **本 enum の追加および `Statement::Explain` のペイロード変更（`ValidatedStatement`
+/// → `ExplainTarget`）は破壊的変更（BREAKING CHANGE）**: `Statement::Explain(v)` を
+/// 分解して `ValidatedStatement` のメソッドを直接呼んでいた既存コードは
+/// `ExplainTarget::Search(v)` へのパターンマッチを経由するよう修正が必要。
+#[derive(Debug, Clone, PartialEq)]
+#[non_exhaustive]
+pub enum ExplainTarget {
+    /// 検索 SELECT（`USING PLAN` の有無いずれも受理）。
+    Search(ValidatedStatement),
+    /// 集計 SELECT（`GROUP BY` の有無・`SELECT DISTINCT` の脱糖形のいずれも）。
+    Aggregate(ValidatedAggregate),
+    /// 広域取得（ソートなしのフィルタ取得。ビュー展開後の形・`OFFSET` を含む）。
+    Scan(ValidatedScan),
+}
+
+impl ExplainTarget {
+    pub fn table_name(&self) -> &str
 }
 
 /// 集計関数の種別（TASK-166・SQL-13）。関数名は [`is_aggregate_function_name`] で
@@ -556,32 +632,77 @@ impl ValidatedScan {
     pub fn limit(&self) -> u32 { self.limit }
 }
 
-/// INSERT の VALUES リストの 1 リテラル（SQL-10、TASK-80）。トークン種別
-/// （文字列リテラル／数値）のみを構造として保持し、列型との照合・意味論的解釈は
-/// `sql::parser::bind_insert` の責務とする。
+/// INSERT の VALUES リストの 1 リテラル（SQL-10、TASK-80）。トークン種別のみを
+/// 構造として保持し、列型との照合・意味論的解釈は `sql::parser::bind_insert` の
+/// 責務とする。UPDATE の SET 句のリテラル値表現としても共有する（SQL-17、TASK-191）。
 #[derive(Debug, Clone, PartialEq)]
 pub enum InsertLiteral {
     String(String),
     Number(String),
+    /// BOOLEAN 列向けの `true`/`false` リテラル（TABLE-13・TASK-196、Issue #883）。
+    Bool(bool),
+    /// SQL `NULL`（明示的な NULL 指定）。SQL テキストの `INSERT ... VALUES` /
+    /// `UPDATE ... SET` 構文からは構築されず、NoSQL 表層 `update`／`insert` op が
+    /// JSON `null` から構築する。明示的な `NULL` には `DEFAULT` を適用しない（TABLE-16）。
+    Null,
+    /// `VECTOR` 列向けの、既に要素ごとに検証済みの `f32` 列（NoSQL 表層が JSON 配列から
+    /// 直接構築する）。SQL テキスト・COPY・ファイル形 `INSERT` は `String` で構築する。
+    Vector(Vec<f32>),
 }
 
-/// 許可形状の構造判定を通過した INSERT 文（SQL-10、TASK-80）。受理する形は
-/// `INSERT INTO <table> (<col>[, <col>]*) VALUES (<lit>[, <lit>]*)
-/// USING OPERATION_ID '<id>' [;]` の単一行形のみ（複数行 VALUES・RETURNING・
-/// 可視性ラベル指定は許可リスト外）。
+/// `ON CONFLICT (...) DO UPDATE SET <col> = <value>` の SET 右辺（SQL-20・TASK-193、Issue #872）。
+#[derive(Debug, Clone, PartialEq)]
+pub enum UpsertValue {
+    /// `EXCLUDED.<col>`（新規挿入しようとした行の束縛済み値）。
+    Excluded(String),
+    Literal(InsertLiteral),
+}
+
+/// `ON CONFLICT` の衝突分岐（SQL-20・TASK-193、Issue #872）。
+#[derive(Debug, Clone, PartialEq)]
+pub enum OnConflictAction {
+    /// 衝突した行はそのまま変更しない（新規挿入もしない）。
+    DoNothing,
+    /// 衝突した行の指定列だけを上書きする（宣言順を保持。read-merge-write）。
+    DoUpdate(Vec<(String, UpsertValue)>),
+}
+
+/// `ON CONFLICT (<col>[, <col>]*) DO NOTHING | DO UPDATE SET ...`（SQL-20・TABLE-16、Issue #1074）。
+/// 対象列はここでは宣言順の並びとしてのみ受理し、スキーマ照合は
+/// `sql::parser::bind_upsert_form` の責務。
+#[derive(Debug, Clone, PartialEq)]
+pub struct OnConflictClause {
+    pub target: Vec<String>,
+    pub action: OnConflictAction,
+}
+
+/// 許可形状の構造判定を通過した INSERT 文（SQL-10・SQL-16、TASK-80・TASK-190）。
+/// 受理する形は `INSERT INTO <table> (<col>[, <col>]*)
+/// VALUES (<lit>[, <lit>]*)[, (<lit>[, <lit>]*)]*
+/// USING OPERATION_ID '<id>' [;]`（複数行 `VALUES` を許容する）。各行のリテラル数は
+/// 列数と一致することを行ごとに検証済み（`rows.len() >= 1`）。`USING OPERATION_ID`
+/// 句の直前に任意で `RETURNING <投影>` を置ける（Issue #873・SQL-21）。
 #[derive(Debug, Clone, PartialEq)]
 pub struct ValidatedInsert {
     /// INTO に指定され、カタログ存在確認を通過したテーブル名。
     pub table_name: String,
-    /// 列リストの宣言順（`columns[i]` は `values[i]` に対応する）。
+    /// 列リストの宣言順（`columns[i]` は `rows[r][i]` に対応する）。
     pub columns: Vec<String>,
-    pub values: Vec<InsertLiteral>,
+    /// `VALUES` 句の行の宣言順（`rows.len() >= 1`。単一行形も `rows.len() == 1`
+    /// として同じ形で保持する。SQL-16、TASK-190）。
+    pub rows: Vec<Vec<InsertLiteral>>,
     /// 文末専用句で搬送された、検証済みの `operation_id`（SQL-10）。句の欠落・明示
     /// `NULL` はいずれも `None`（TASK-92・RECOVER-1）。`validate_insert` は
     /// `LedgerMode::Ledgered`（既定）では `None` を書き込みトランザクション開始前に
     /// `23502` で拒否するため、この構成では常に `Some` になる。
     /// `LedgerMode::CompareOnlyWithoutLedger` では `None` を許す。
     pub operation_id: Option<OperationId>,
+    /// `RETURNING` 句（Issue #873・SQL-21）。省略時は `None`。
+    pub returning: Option<Projection>,
+    /// `ON CONFLICT (<col>[, <col>]*) DO NOTHING | DO UPDATE SET ...`（SQL-20・TASK-193、
+    /// Issue #872・#1074）。句の省略は `None`。複数行 `VALUES` と併用可能。ファイル形
+    /// INSERT との併用は `sql::parser::bind_insert_form` が `42601` で拒否する。
+    pub on_conflict: Option<OnConflictClause>,
 }
 
 /// SQL 文をトークン化し、許可リスト形式で構造検証する（TASK-161 の公開 API。
@@ -612,6 +733,23 @@ pub fn validate_insert(
     lookup: &impl TableLookup,
     mode: LedgerMode,
 ) -> Result<ValidatedInsert, SqlSurfaceError>
+
+/// `validate_insert` の行数上限差し替え版（Issue #997）。`validate_insert` は本関数へ
+/// `None`（上限なし・既定）を渡す薄い委譲。BREAKING CHANGE（挙動）: 従来
+/// `MAX_INSERT_ROWS_PER_STATEMENT`（1,000）件超で `54000` を返していた複数行 `VALUES` が、
+/// `--max-insert-rows` 未指定の構成では成功する。
+pub fn validate_insert_with_limit(
+    sql: &str,
+    lookup: &impl TableLookup,
+    mode: LedgerMode,
+    max_insert_rows: Option<std::num::NonZeroUsize>,
+) -> Result<ValidatedInsert, SqlSurfaceError>
+
+/// 0.2.0 で追加された他の公開 validate 関数（シグネチャ省略。詳細は `allowlist.rs`）:
+/// `validate_delete` / `validate_delete_statement`（単一行形と述語形を束ねる `DeleteStatement`）、
+/// `validate_update` / `validate_update_form`（`ValidatedUpdateForm`）、`validate_truncate`、
+/// `validate_create_table_tokens`、`validate_alter_table` / `validate_alter_table_tokens`、
+/// `validate_drop_table` / `validate_drop_table_tokens`、`validate_copy`（`CopyStatement`）。
 
 /// `SELECT` 文のみを受理する後方互換 API（TASK-74・TASK-75 が既に依存している
 /// シグネチャを維持する）。[`validate_sql`]（TASK-161）へ委譲し、`SELECT` 以外
@@ -650,6 +788,15 @@ pub fn validate_statement(
         Statement::Scan(_) => Err(SqlSurfaceError::unsupported(
             "wide-retrieval scan is not a search query statement (use a session-aware entry point)",
         )),
+        Statement::SetOperation(_) => Err(SqlSurfaceError::unsupported(
+            "set operation is not a search query statement (use a session-aware entry point)",
+        )),
+        Statement::Join(_) => Err(SqlSurfaceError::unsupported(
+            "JOIN is not a search query statement (use a session-aware entry point)",
+        )),
+        Statement::BufferedView(_) => Err(SqlSurfaceError::unsupported(
+            "view read is not a search query statement (use a session-aware entry point)",
+        )),
     }
 }
 ~~~
@@ -678,11 +825,32 @@ pub fn validate_statement(
 | `UnsupportedSyntax` | `42601`（`sql::plan::PlanError` 経由の `HINT ORDER` 違反コメント、`sql::using_operation_id` 等複数箇所のコメントで一貫して言及） |
 | `UndefinedTable` | `42P01`（`Statement::Explain` の doc comment で言及） |
 | `Internal` | `XX000`（`sql::using_plan` の doc comment で言及。プランナー未注入・埋め込み未注入・LLM 応答異常の分類として使う） |
+| `CardinalityViolation` | `21000`（スカラーサブクエリが 2 行以上を返した。Issue #1404） |
+| `DivisionByZero` | `22012`（式評価の 0 除算。Issue #1163） |
+| `DatetimeFieldOverflow` / `InvalidDatetimeFormat` | `22008`（範囲外・暦上不正） / `22007`（書式違反。Issue #1187） |
+| `InvalidTextRepresentation` | `22P02`（ENUM 語彙外・UUID 文法違反ほか、文字列リテラルが列型の入力文法に合わない形式不正全般） |
+| `InvalidTransactionState` / `ActiveSqlTransaction` / `NoActiveSqlTransaction` / `InFailedSqlTransaction` | `25000` / `25001` / `25P01` / `25P02`（明示トランザクション。SQL-31・TASK-221） |
+| `LockNotAvailable` | `55P03`（書き込みトランザクション取得がロック待ち上限を超過） |
+| `TransactionFeatureNotSupported` / `FeatureNotSupported` | `0A000`（トランザクション文脈未対応の文 / 表層で未実装の機能。`UnsupportedSyntax`（`42601`）とは区別） |
+| `DuplicateTable` / `DuplicateColumn` / `DuplicateObject` / `DuplicateType` | `42P07` / `42701` / `42710` / `42710`（`DuplicateType` は `DuplicateObject` と同じ分類を共有） |
+| `InvalidTableDefinition` | `42P16`（主キーの重複宣言。Issue #1364・#1412） |
+| `PartialCompletion` / `PartitionedDmlCancelled` | `VD001` / `VD002`（分割実行 DML。ベンダー拡張コード。HTTP では 409） |
+| `PartitionedDmlInTransaction` | `25001`（分割実行 DML を明示・暗黙トランザクション内で実行しようとした。再 `BEGIN` の `ActiveSqlTransaction` とは固定文言で区別） |
+| `PartitionedJobBusy` | `55P03`（同じ `operation_id` のジョブ実行中、または同時実行数の上限に到達） |
+| `InsufficientPrivilege` | `42501`（DDL 実行権限不足。`ErrorClass::ForbiddenTenantMismatch` を再利用） |
+| `InvalidCursorName` | `34000` |
+| `DependentObjectsStillExist` / `WrongObjectType` | `2BP01` / `42809` |
+| `NotNullViolation` / `UniqueViolation` / `CheckViolation` / `ForeignKeyViolation` / `InvalidForeignKey` | `23502` / `23505` / `23514` / `23503` / `42830` |
+| `UndefinedObject` / `UndefinedColumn` / `UndefinedFunction` | `42704` / `42703` / `42883` |
+| `DatatypeMismatch` / `DuplicateFunction` / `AmbiguousColumn` | `42804` / `42723` / `42702` |
 
 ## Notes
 
+- Migration (0.1.0 → 0.2.0): `ValidatedInsert` の公開フィールド `pub values: Vec<InsertLiteral>` は `pub rows: Vec<Vec<InsertLiteral>>` へ変更された（SQL-16・TASK-190、複数行 `VALUES` 対応）。単一行 INSERT は `rows.len() == 1` として同じ内容を保持するため、`stmt.values` は `stmt.rows[0]`（単一行前提のコードの場合）へ読み替えるか、複数行を扱う場合は `rows` を反復する形へ書き換える（CHANGELOG 0.2.0 verbatim の趣旨。単一行 INSERT の外部観測可能な挙動〔wire プロトコル応答・`wire_code`〕は不変）。`ValidatedInsert` には `returning` / `on_conflict` も追加され、`InsertLiteral` は `Bool` / `Null` / `Vector` が加わった。
+- Migration (0.1.0 → 0.2.0): `Statement::Explain` のペイロードは `ValidatedStatement` から `ExplainTarget`（`Search` / `Aggregate` / `Scan`）へ変わった。`Statement` には `SetOperation` / `Join` / `BufferedView` が追加され、`SqlSurfaceError` は 10 variant から 47 variant へ増えた（いずれも `#[non_exhaustive]` ではないため網羅的 `match` は更新が必要）。`validate_insert` の挙動は `--max-insert-rows` 未指定時に複数行 `VALUES` の行数上限なしへ変わった（Issue #997）。
+- 0.2.0 の新規公開型（名前のみ。詳細は `allowlist.rs`）: `ExplainTarget` / `ValidatedSetOperation` / `ValidatedJoin` / `JoinProjection` / `ValidatedBufferedView` / `ScalarOrderKey`（上限 `MAX_SCALAR_ORDER_KEYS` = 8）/ `ScalarSubqueryOp` / `CompareOp` / `UpsertValue` / `OnConflictAction` / `OnConflictClause` / `ValidatedDelete` / `ValidatedPredicateDelete` / `DeleteStatement` / `ValidatedPredicateUpdate` / `ValidatedUpdate` / `ValidatedUpdateForm` / `ValidatedTruncate` / `ValidatedCreateTable` / `ParsedCheck` / `ValidatedAlterTable`（`AddColumn` / `AddUnique` / `AddPrimaryKey` / `DropConstraint` / `AddCheck` / `AddForeignKey` / `DropColumn` / `AlterColumnType` の 8 形状）/ `ValidatedDropTable` / `ValidatedCreateView` / `ValidatedDropView` / `ValidatedCreateIndex` / `ValidatedDropIndex` / `ValidatedCreateType` / `ValidatedDropType` / `CopyFormat` / `ValidatedCopyFrom` / `ValidatedCopyTo` / `CopyStatement`。`WherePredicate` は `BoolEquality` / `BoolColumn` / `Compare` / `InList` / `Between` / `IsNull` / `Not` / `Or` / `InSubquery` / `Exists` / `ScalarSubqueryCompare` / `IdCompare` などの variant が加わった。上限定数: `MAX_AGGREGATE_ITEMS` = 32 / `MAX_GROUP_BY_COLUMNS` = 8 / `MAX_SCALAR_ORDER_KEYS` = 8（関連の `check_aggregate_item_count` / `check_having_predicate_count` / `check_group_by_column_count` / `validate_using_plan_question` / `is_allowed_where_predicate_name` も公開関数）。
 - `LedgerMode` は `crate::recovery::required_op_id::LedgerMode` からの import で、本モジュールでは定義されない（storage/recovery scope の管轄）。`validate_sql` は `LedgerMode` を引数に取らない（`Statement` 全種別で共通）。`validate_insert` のみ `mode: LedgerMode` を取る（書き込み系のみ `operation_id` 必須化判断が必要なため）。
-- `Parser<'a>`（再帰下降パーサー本体）は本ファイル内で完全に非公開（`struct Parser` もそのフィールド・メソッドもすべて非 `pub`）。クレート外に公開される解析エントリポイントは `validate_sql` / `validate_insert` / `validate_statement` の 3 つ（前回訂正の「`validate_sql` / `validate_insert` のみ」は誤りで、`validate_statement` を見落としていた）。
+- `Parser<'a>`（再帰下降パーサー本体）は本ファイル内で完全に非公開（`struct Parser` もそのフィールド・メソッドもすべて非 `pub`）。0.2.0 でクレート外に公開される解析エントリポイントは `validate_sql` / `validate_statement` / `validate_insert` / `validate_insert_with_limit` / `validate_delete` / `validate_delete_statement` / `validate_update` / `validate_update_form` / `validate_truncate` / `validate_copy` / `validate_alter_table`（`_tokens`）/ `validate_drop_table`（`_tokens`）/ `validate_create_table_tokens` / `validate_using_plan_question`（`allowlist.rs` の `pub fn validate_*` 全件）。0.1.0 時点は `validate_sql` / `validate_insert` / `validate_statement` の 3 つのみだった。
 - `validate_statement` は `validate_sql`（TASK-161 追加、`Statement` を返し `SELECT`／`SET search_mode`／`CREATE FUNCTION`／`Aggregate`／`Explain`／`Scan` の全 statement 種別を受理する）とは戻り値が異なる: `validate_statement` は TASK-74・TASK-75 が依存していた**旧シグネチャを維持する後方互換 API**で、`ValidatedStatement`（検索 `SELECT` 専用の構造）のみを返す。内部では `validate_sql` へ委譲し、`Statement::Select` 以外（`SetSearchMode` / `CreateFunction` / `Aggregate` / `Explain` / `Scan`）はすべて `SqlSurfaceError::unsupported`（`42601`、「このエントリポイントでは受理しない statement 形」固定文言）で一律拒否する——値そのものが妥当でも、セッションを持たないこのエントリポイントでは意味を持たないための設計（黙った no-op にはしない）。
 - `BinOp` / `Expr` / `MAX_CALL_ARGS` / `MAX_EXPR_DEPTH` / `MAX_EXPR_NODES` / `MAX_UDF_PARAMS` は `crate::sql::udf_call` からの import（sql-execution scope の管轄）。`OperationId` は `crate::sql::using_operation_id`（本 scope、[using-operation-id.md](./using-operation-id.md) 参照）。`EvaluationOrder` / `Stage` は `crate::sql::plan`（本 scope、[plan.md](./plan.md) 参照）。
 - 許可リストは「拒否リスト」ではなく「既知形状のみ許可」の構造。未知の関数名・述語名は fail-closed に拒否される。

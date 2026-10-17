@@ -1,5 +1,5 @@
 ---
-source: https://docs.rs/crate/fandhe-vector-db-engine/0.1.0/source/src/batch_fallback.rs
+source: https://docs.rs/crate/fandhe-db-engine/0.2.0/source/src/batch_fallback.rs
 ---
 
 # batch-fallback
@@ -71,8 +71,14 @@ pub struct FallbackEvent {
 impl fmt::Display for FallbackEvent { /* ... */ }
 
 /// 縮退発生の可視化フック（CORE-8 ポインタ:「黙って性能劣化しない」契約）。
-/// engine には log/tracing 系依存が存在しないため、依存追加なしの注入型
-/// オブザーバとして設計する。
+/// engine には log/tracing 系依存が存在しないため（dependency-policy.md:
+/// 依存追加はユーザー承認制）、依存追加なしの注入型オブザーバとして設計する。
+/// 既定実装 [`StderrFallbackObserver`] は英語 1 行を stderr へ出力する
+/// （wire-server 側の将来のログ機構へ差し替え可能）。テストは記録型オブザーバで
+/// 発生回数・要因・切り替え先をアサートする。
+/// 0.2.0 の `StderrFallbackObserver::on_fallback` 本体は `crate::log_stderr!("{event}")` を呼び、診断ログの書き込み失敗
+/// （読み手が閉じた後の `EPIPE` 等）ではプロセスを落とさない（RECOVER-8 の例外、Issue #1081。
+/// `docs/design/stderr-log-write-failure.md`、`storage/recovery` の `stderr_log` 参照）。
 pub trait FallbackObserver: Send + Sync {
     fn on_fallback(&self, event: FallbackEvent);
 }
