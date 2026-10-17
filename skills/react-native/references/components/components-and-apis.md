@@ -27,7 +27,7 @@ List Views
 - SectionList: Like FlatList, but for sectioned lists.
 ```
 
-## Categories
+### Categories
 
 | Category | Items |
 | --- | --- |

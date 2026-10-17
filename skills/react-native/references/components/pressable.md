@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
 export default App;
 ```
 
-## How it works
+### How it works
 
 On an element wrapped by `Pressable`:
 

@@ -17,7 +17,7 @@ import {View, VirtualizedList, StyleSheet, Text, StatusBar} from 'react-native';
 import {SafeAreaView, SafeAreaProvider} from 'react-native-safe-area-context';
 
 const getItem = (_data, index) => ({
-  id: Math.random().toString(12).substring(0),
+  id: `item-${index}`,
   title: `Item ${index + 1}`,
 });
 
@@ -73,7 +73,7 @@ type ItemData = {
 };
 
 const getItem = (_data: unknown, index: number): ItemData => ({
-  id: Math.random().toString(12).substring(0),
+  id: `item-${index}`,
   title: `Item ${index + 1}`,
 });
 
@@ -198,6 +198,7 @@ scrollToOffset(params: {
 - `removeClippedSubviews`: using this property may lead to bugs (missing content) in some circumstances - use at your own risk.
 - `disableVirtualization` is marked Deprecated in the original docs.
 - 0.88: TypeScript declarations are added for `FlatList`'s `strictMode` prop and `VirtualizedList`'s `ListItemComponent` (the 0.88 release blog states only that declarations were added).
+- The official example derives `id` from `Math.random()` inside `getItem`, which changes keys on every access; the snippet here uses an index-derived id so `keyExtractor` returns stable keys.
 - This is a React Native core component (imported from `react-native`, rendered as native views). It is distinct from web virtual-scroll libraries (tanstack-virtual) and Compose Lazy layouts (android-compose-ui LazyColumn), and from same-named UI parts in apple-swiftui / apple-uikit, android-compose-components, windows-winui-controls, and ark-ui / chakra-ui / fandhe-frontend.
 
 ## Related

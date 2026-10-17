@@ -39,7 +39,7 @@ const App = () => {
 
 const randomHexColor = () => {
   return '#000000'.replace(/0/g, function () {
-    return Math.round(Math.random() * 16).toString(16);
+    return Math.floor(Math.random() * 16).toString(16);
   });
 };
 
@@ -119,6 +119,7 @@ static canUseNativeForeground(): boolean;
 
 - Android only. For a more extensive and future-proof way to handle touch-based input, use the Pressable API (see its `android_ripple` prop).
 - At the moment it only supports having a single View instance as a child node, as it's implemented by replacing that View with another instance of RCTView node with some additional properties set.
+- The snippet uses `Math.floor` instead of the official example's `Math.round` so each hex digit stays in 0–15 (Math.round can return 16, producing an invalid 7-digit color).
 - This is a React Native core component (imported from `react-native`, rendered as a native view). It is distinct from same-named UI parts in apple-swiftui / apple-uikit, android-compose-components / android-compose-ui, windows-winui-controls, and the web UI libraries ark-ui / chakra-ui / fandhe-frontend.
 
 ## Related
