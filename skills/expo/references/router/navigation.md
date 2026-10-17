@@ -133,7 +133,7 @@ Deep links: define a `scheme` in app config; with scheme `myapp`, `about.tsx` is
 - `Link` renders its children inside `<Text>` by default; non-text children such as `View` may lay out unexpectedly.
 - A preloaded (prefetched) screen in a stack navigator cannot use the imperative `router` API, cannot update options with `useNavigation().setOptions()`, and cannot listen to navigator events (focus, tabPress, ...). The navigation object updates once navigated to; check `navigation.isFocused()` before dispatching or setting options.
 - `anchor` is only considered for deep links, not in-app navigation, unless `withAnchor` is set. A missing back button when testing deep links is often fixed by setting an `anchor`.
-- Some parameters are reserved for internal use by Expo Router and React Navigation (see URL parameters guide).
+- Some parameters are reserved for internal use by Expo Router and React Navigation (see URL parameters guide). In SDK 58, `screen`, `params`, and `initial` are ordinary user parameters (SDK 57 to 58 migration guide).
 - Parameters not matching a dynamic segment name are equivalent to query parameters.
 - Expo Router is file-based and built on React Navigation; its `Link` and `useRouter` differ from the same-named APIs in react-router and tanstack-router.
 
