@@ -39,52 +39,53 @@ Project-level variables are defined in **File** → **Schematic Setup** → **Te
 **Project variables** (defined in Schematic Setup):
 - Custom key-value pairs available anywhere in the project
 
-**Symbol variables** (auto-available for symbol fields and labels):
+**Symbol fields and attributes** (resolve only inside the symbol's own text and fields, or as `${<refdes>:<FIELD>}` elsewhere):
 
 | Variable | Value |
 |----------|-------|
 | `${SYMBOL_NAME}` | Symbol name from library |
 | `${SYMBOL_LIBRARY}` | Library the symbol originates from |
 | `${DNP}` | "DNP" if Do Not Populate is set, otherwise empty |
-| `${EXCLUDE_FROM_BOARD}` | "Exclude from board" attribute state |
-| `${EXCLUDE_FROM_SIM}` | "Exclude from simulation" attribute state |
-| `${EXCLUDE_FROM_BOM}` | "Exclude from BOM" attribute state |
+| `${EXCLUDE_FROM_BOARD}` | "Excluded from board" if the attribute is set, otherwise empty |
+| `${EXCLUDE_FROM_SIM}` | Friendly attribute name if set, otherwise empty |
+| `${EXCLUDE_FROM_BOM}` | Friendly attribute name if set, otherwise empty |
 
 **Sheet variables** (title block):
-- `${TITLE}`, `${DATE}`, `${REV}`, `${COMPANY}`, `${COMMENT1}` ... `${COMMENT9}`
-- `${SHEETNAME}`, `${SHEETPATH}`, `${SHEETNUMBER}`, `${SHEETCOUNT}`
-- `${PROJECTNAME}`, `${FILENAME}`
+- `${TITLE}`, `${ISSUE_DATE}`, `${REVISION}`, `${COMPANY}`, `${COMMENT1}` ... `${COMMENT9}`
+- `${SHEETNAME}`, `${SHEETPATH}`, `${SHEETFILE}`, `${#}` (sheet number), `${##}` (total sheet count)
+- `${PROJECTNAME}`, `${FILENAME}`, `${FILEPATH}`
+- `${CURRENT_DATE}`, `${CURRENT_TIME_HH_MM_SS}`, `${CURRENT_TIME_LOCALE}`, `${VCSHASH}`, `${VCSSHORTHASH}`
 
-**Variant variable:**
-- `${VARIANT}` — current active variant name
+**Variant variables:**
+- `${VARIANT}` — current active variant name (empty string when the default variant is active)
+- `${VARIANT_DESC}` — description of the active variant (empty when default or no description)
 
 ### Usage Example
 
-In a label or title block:
+In a symbol field, or as a virtual field name in the Symbol Fields Table:
 ```
 ${SYMBOL_LIBRARY}:${SYMBOL_NAME}
 ```
-Renders as `Device:R` for a resistor from the Device library.
+Renders as `Device:R` for a resistor from the Device library. From a label or the title block, address the symbol explicitly (e.g. `${R1:SYMBOL_LIBRARY}:${R1:SYMBOL_NAME}`).
 
 ## Text Expressions
 
-Numeric fields support basic mathematical expressions for inline calculation.
+Text expressions are evaluated inside text objects (graphic text, symbol and footprint text and fields, drawing sheet fields) using the `@{expression}` syntax. The whole `@{...}` is replaced by the result; if it cannot be evaluated, the original text is kept.
 
 ### Syntax
 
-Enter expressions in property dialogs. The expression evaluates when the dialog is closed.
-
 ```
-2 * 2mm     → 4mm
-1in + 1mm   → 26.4mm
-(10 + 5)k   → 15k
+@{1 + 1}           → 2
+@{1mm + 1in}       → 26.4
+@{upper("string")} → STRING
+@{max(abs(${var}), 5)}
 ```
 
 Supported:
-- Basic arithmetic: `+`, `-`, `*`, `/`
-- Parentheses for grouping
-- Unit suffixes: `mm`, `in`, `mil`, `k`, `M`, `u`, `n`, etc.
-- Automatic unit conversion
+- Arithmetic operators: `+`, `-`, `*`, `/`, `%` (modulo), `^` (exponentiation, right-associative); `+` also concatenates strings
+- Parentheses for grouping; nested evaluations; scientific notation (`2e3`)
+- Unit suffixes; results are printed in SI units without the unit
+- Functions such as `abs`, `sqrt`, `pow`, `max`, `upper`, `concat`; text variables can be combined (`${var}`)
 
 ## Database Libraries
 
@@ -92,19 +93,21 @@ Database libraries allow symbols to be sourced from an external database via ODB
 
 ### Configuration
 
-Database libraries are configured via a `.kicad_dbl` JSON file:
+Database libraries are configured via a `.kicad_dbl` JSON file (Adapted (not in the official docs): simplified from the manual's template; see Notes):
 
 ```json
 {
   "meta": { "version": 0 },
   "name": "My Database Library",
   "description": "Parts from internal database",
+  "globally_unique_keys": false,
   "source": {
     "type": "odbc",
     "dsn": "MyComponentDB",
     "username": "",
     "password": "",
-    "timeout_seconds": 2
+    "timeout_seconds": 2,
+    "connection_string": ""
   },
   "libraries": [
     {
@@ -134,13 +137,12 @@ Database libraries are configured via a `.kicad_dbl` JSON file:
 | Table | Database table or view mapped to a symbol category |
 | Key | Primary key column identifying each component |
 | Field mapping | Maps database columns to KiCad symbol fields |
-| Caching | Local cache improves performance for large databases |
+| `connection_string` | Alternative to DSN; passed directly to the ODBC driver and must start with a `Driver` key (`dsn`, `username`, `password` are then ignored) |
+| `globally_unique_keys` | Optional, default `false`. `true`: library link is `LIB_NAME:KEY`; `false`: `LIB_NAME:SUB_LIB_NAME/KEY`. Changing it on an existing library breaks placed links |
+| Field options | `visible_on_add`, `visible_in_chooser`, `show_name`, `inherit_properties` (all default `false`) |
+| `properties` | Maps `description`, `keywords`, `exclude_from_bom`, `exclude_from_board`, `exclude_from_sim` (numeric 0/1 columns) to columns; `footprint_filters` is reserved |
 
-Add the `.kicad_dbl` file to the Symbol Library Table as a library.
-
-### Filtering
-
-Database query results can be filtered using SQL WHERE clause syntax within the library configuration to restrict which components appear.
+Add the `.kicad_dbl` file to the global symbol library table using the Configure Symbol Libraries dialog (opened with **Preferences** → **Manage Symbol Libraries…**; the database-library section of the manual calls it the Configure Symbol Libraries dialog). Only ODBC connections are supported. Parts placed from the database use the Symbol Chooser and can be refreshed with Update Symbols from Library.
 
 ## HTTP Libraries
 
@@ -152,62 +154,63 @@ HTTP libraries are configured via a `.kicad_httplib` JSON file:
 
 ```json
 {
-  "meta": { "version": 1 },
-  "name": "Cloud Component Library",
-  "description": "REST API component source",
+  "meta": { "version": 1.0 },
+  "name": "KiCad HTTP Library",
+  "description": "A KiCad library sourced from a REST API",
   "source": {
-    "type": "rest",
-    "root_url": "https://components.example.com/api/v1",
-    "token": "your_api_token_here",
-    "timeout_seconds": 10,
-    "cache_max_age": 3600
+    "type": "REST_API",
+    "api_version": "v1",
+    "root_url": "http://localhost:8000/kicad-api",
+    "token": "usertokendatastring",
+    "timeout_parts_seconds": 60,
+    "timeout_categories_seconds": 600
   }
 }
 ```
 
-The REST API must implement the KiCad HTTP library protocol (endpoints for listing libraries, listing symbols, and fetching individual symbol data).
+Replace the `root_url` and `token` values with your own. Save the file with the `.kicad_httplib` extension and add it to the global symbol library table via **Preferences** → **Manage Symbol Libraries…**. `timeout_parts_seconds` (default 60) and `timeout_categories_seconds` (default 600) set how long part and category data stay valid. HTTP libraries are read only. Categories are cached once when the Symbol Chooser opens; server-side category changes need a KiCad restart. For the server protocol, the manual refers to the APIs and Bindings section at dev-docs.kicad.org.
 
 ### Authentication
 
-API tokens are passed via HTTP Authorization headers. The token is stored in the library configuration file.
+Authentication is by access token only (the `token` value in the configuration file); ask the library administrator to issue a valid token.
 
 ## Custom Netlist and BOM Formats
 
-### Python Scripts
+### Generator Scripts
 
-Custom netlist and BOM generators can be written in Python and installed as KiCad plugins.
+KiCad writes an intermediate XML netlist file, then runs a generator command that transforms it into the target netlist or BOM format. Python and XSLT are commonly used; any tool works if a command line can be specified.
 
-**BOM script API:** Scripts receive a component list and output to the desired format (CSV, JSON, XML, etc.). Place scripts in the KiCad scripting directory.
+Command-line placeholders: `%I` (intermediate netlist, `<project path>/<project name>.xml`), `%O` (output path without extension), `%B` (output base name without path or extension), `%P` (project directory). Quote arguments.
 
-**Netlist script API:** Scripts receive the complete netlist data structure and output to any text-based format.
-
-### XSLT Transforms
-
-KiCad can apply XSLT transformations to the intermediate XML netlist format to produce custom output:
-
-1. Export netlist as XML (intermediate format).
-2. Apply an XSLT stylesheet via the netlist export dialog.
-3. Output is the XSLT-transformed result.
+```
+/usr/bin/python3 /usr/share/kicad/plugins/bom_csv_grouped_by_value.py "%I" "%O.csv"
+```
 
 ### Managing Scripts
 
-Netlist and BOM scripts are managed in the respective export dialogs:
-- **Generate BOM** dialog — select or add a Python BOM script
-- **Netlist** export dialog — select or add a netlist script
+- **Netlist export** dialog — **Add Generator…** adds a generator (name + command); the name becomes the tab label.
+- **Legacy BOM tool** (**Tools** → **Generate Legacy Bill of Materials…**) — add scripts to the BOM generator scripts list with the add button; the remove button deletes, and the edit button opens the script in a text editor. A script header comment containing `@package` supplies the description shown in the dialog.
+- **Tools** → **Generate Bill of Materials…** opens the Export tab of the Symbol Fields Table (the current, non-script BOM tool).
 
-### Default Script Locations
+### Installed Generator Script Locations
 
 | OS | Path |
 |----|------|
-| Windows | `%APPDATA%\kicad\10.0\scripting\plugins\` |
-| Linux | `~/.config/kicad/10.0/scripting/plugins/` |
-| macOS | `~/Library/Preferences/kicad/10.0/scripting/plugins/` |
+| Windows | `C:\Program Files\KiCad\10.0\bin\scripting\plugins\` |
+| Linux | `/usr/share/kicad/plugins/` |
+| macOS | `/Applications/KiCad/KiCad.app/Contents/SharedSupport/plugins/` |
 
 ## Notes
 
-- Database and HTTP libraries require read access to the external data source at library load time. Offline operation depends on the cache configuration.
-- Text variable names are case-sensitive.
-- XSLT-based netlist transforms require an external XSLT processor unless KiCad's built-in support is used.
+- Database and HTTP libraries require read access to the external data source at library load time. HTTP libraries keep part / category data for `timeout_parts_seconds` / `timeout_categories_seconds`; offline behavior is not described in the 10.0 manual.
+- Not found in the 10.0 manual: the Preference Categories table (the manual's "Configuration and Customization" section is marked not yet written), the case-sensitivity of text variable names, database-library "Filtering" with SQL WHERE and a local cache, and a user scripting directory (`.../10.0/scripting/plugins/`).
+- Removed as not found in the 10.0 manual: "XSLT transforms require an external processor unless built-in support is used" and the earlier "BOM / netlist script API" descriptions; the manual only describes the intermediate XML file and generator command lines.
+- Generator command example for XSLT: `xsltproc -o "%O.net" "/usr/share/kicad/plugins/netlist_form_pads-pcb.asc.xsl" "%I"`.
+- Deviation from source: the manual's xsltproc example leaves `%O` / `%I` unquoted; they are quoted here per the manual's own recommendation, because they expand to absolute paths that may contain spaces.
+- XSLT is not recommended for new exporters; xsltproc is no longer installed with KiCad since KiCad 7 (install it separately).
+- Adapted from the manual's `.kicad_dbl` template: `dsn`, column names (`Symbol` / `Footprint`), field entries and the `properties` map were changed for illustration; see the manual for the full template (including `visible_in_chooser`, `show_name`, `inherit_properties`, `footprint_filters`, `exclude_from_bom`, `exclude_from_board`).
+- Adapted from the manual's Virtual fields example; symbol fields are accessible only within their parent object (use `${<refdes>:<FIELD>}` from labels or the title block).
+- Not found in the 10.0 manual: use an `https://` `root_url` for non-local servers, since the token is sent with each request; keep real tokens out of version-controlled `.kicad_httplib` files.
 
 ## Related
 

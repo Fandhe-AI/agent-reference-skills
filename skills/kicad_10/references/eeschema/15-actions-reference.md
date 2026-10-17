@@ -19,7 +19,7 @@ Actions available in the Schematic Editor (schematic view, symbol editor, and si
 | Annotate Schematic... | | Fill in schematic symbol reference designators |
 | Annotate Automatically | | Toggle automatic annotation of new symbols |
 | Assign Footprints... | | Run footprint assignment tool |
-| Clear Net Highlighting | `-` | Clear any existing net highlighting |
+| Clear Net Highlighting | `~` | Clear any existing net highlighting |
 | Export Drawing to Clipboard | | Export drawing of current sheet to clipboard |
 | Edit Library Symbol... | `Ctrl+Shift+E` | Open the library symbol in the Symbol Editor |
 | Edit Sheet Page Number... | | Edit the page number of the current or selected sheet |
@@ -40,11 +40,13 @@ Actions available in the Schematic Editor (schematic view, symbol editor, and si
 | Line Mode for Wires and Buses | | Draw and drag at any angle |
 | Line Mode for Wires and Buses | `Shift+Space` | Switch to next angle snapping mode |
 | Line Mode for Wires and Buses | | Constrain drawing and dragging to horizontal or vertical motions |
+| Mark items excluded from simulation | | Draw 'X's over items which have been excluded from simulation |
+| Next Net Item | `Tab` | Select next item on the current net |
 | Next Symbol Unit | | Open the next unit of the symbol |
 | Previous Net Item | `Shift+Tab` | Select previous item on the current net |
 | Previous Symbol Unit | | Open the previous unit of the symbol |
 | Remap Legacy Library Symbols... | | Remap library symbol references in legacy schematics to the symbol library table |
-| Remove Design Variant | | Remove an existing design variant from the schematic |
+| Remove Design Variant... | | Remove an existing design variant from the schematic |
 | Rescue Symbols... | | Find old symbols in project and rename/rescue them |
 | Save Current Sheet Copy As... | | Save a copy of the current sheet to another location or name |
 | Schematic Setup... | | Edit schematic setup including annotation styles and electrical rules |
@@ -61,6 +63,10 @@ Actions available in the Schematic Editor (schematic view, symbol editor, and si
 | Show Hidden Pins | | |
 | Net Navigator | | Show/hide the net navigator |
 | Show OP Currents | | Show operating point current data from simulation |
+| Show OP Voltages | | Show operating point voltage data from simulation |
+| Switch to PCB Editor | | Open PCB in board editor |
+| Simulator | | Show simulation window for running SPICE or IBIS simulations |
+| Show Pin Alternate Icons | | Show indicator icons for pins with alternate modes |
 | Hierarchy Navigator | `Ctrl+H` | Show/hide the schematic sheet hierarchy navigator |
 | Symbol Checker | | Show the symbol checker window |
 | Compare Symbol with Library | | Show differences between schematic symbol and its library equivalent |
@@ -81,6 +87,12 @@ Actions available in the Schematic Editor (schematic view, symbol editor, and si
 | Draw Rule Areas | | |
 | Draw Hierarchical Sheets | `S` | |
 | Draw Sheet from Design Block | | Copy design block into project as a sheet on current sheet |
+| Draw Sheet from File | | Copy sheet into project and draw on current sheet |
+| Draw Tables | | |
+| Draw Text Boxes | | |
+| Import Sheet... | | Import sheet into project |
+| Place Wire to Bus Entries | `Z` | |
+| Place Directive Labels | | |
 | Place Design Block | `Shift+B` | Add selected design block to current sheet |
 | Place Global Labels | `Ctrl+L` | |
 | Place Hierarchical Labels | `H` | |
@@ -101,6 +113,9 @@ Actions available in the Schematic Editor (schematic view, symbol editor, and si
 | Draw Lines | `I` | |
 | Draw Wires | `W` | |
 | Switch Segment Posture | `/` | Switches posture of the current segment |
+| Undo Last Segment | `Back` | Walks the current line back one segment |
+| Unfold from Bus | `C` | Break a wire out of a bus |
+| Assign Netclass... | | Assign a netclass to nets matching a pattern |
 | Autoplace Fields | `O` | Runs the automatic placement algorithm on the symbol's (or sheet's) fields |
 | Break | | Divide into connected segments |
 | Change Symbol... | | Assign a different symbol from the library |
@@ -123,6 +138,9 @@ Actions available in the Schematic Editor (schematic view, symbol editor, and si
 | Slice | | Divide into unconnected segments |
 | Swap | `Alt+S` | Swap positions of selected items |
 | Swap Pin Labels | | Swap the labels attached to selected pins |
+| Swap Pins | | Swap the selected symbol pins' positions |
+| Swap Unit Labels | | Swap labels between selected units |
+| Symbol Properties... | | |
 | Change to Directive Label | | Change existing item to a directive label |
 | Change to Global Label | | Change existing item to a global label |
 | Change to Hierarchical Label | | Change existing item to a hierarchical label |
@@ -166,6 +184,11 @@ Actions available in the Schematic Editor (schematic view, symbol editor, and si
 | Save Workbook As... | `Ctrl+Shift+S` | Save the current set of analysis tabs and settings to another location |
 | Show SPICE Netlist | | |
 | Edit Analysis Tab... | | Edit the current analysis tab's SPICE command and plot setup |
+| Stop Simulation | | |
+| Add Tuned Value... | `Shift+T` | Select a value to be tuned |
+| Export Current Plot as CSV... | | |
+| Export Current Plot as PNG... | | |
+| Export Current Plot to Schematic | | |
 | Export Current Plot to Clipboard | | |
 | Dark Mode Plots | | Draw plots with a black background |
 | Dotted Current/Phase | | Draw secondary signal trace (current or phase) with a dotted line |
@@ -188,6 +211,10 @@ Actions available in the Schematic Editor (schematic view, symbol editor, and si
 | Export... | | Export a symbol to a new library file |
 | Export Symbol as SVG... | | Create SVG file from the current symbol |
 | Export View as PNG... | | Create PNG file from the current view |
+| Flatten Symbol | | Remove inheritance from symbol |
+| Import Symbol... | | Import a symbol to the current library |
+| New Symbol... | `Ctrl+N` | Create a new symbol in an existing library |
+| Display next symbol | | |
 | Paste Symbol | | |
 | Display previous symbol | | |
 | Rename Symbol... | | |
@@ -254,6 +281,12 @@ Actions available across KiCad, including in the Schematic Editor.
 | Millimeters | | |
 | Mils | | |
 | New... | `Ctrl+N` | Create a new document in the editor |
+| New Library... | | Create a new library folder |
+| Open... | `Ctrl+O` | Open existing document |
+| Open in file explorer... | | Open a library file with system file explorer |
+| Edit in a Text Editor... | | Open a library file with a text editor |
+| Page Settings... | | Settings for paper size and title block info |
+| Pan Down | `Shift+Down` | |
 | Pan Left | `Shift+Left` | |
 | Pan Right | `Shift+Right` | |
 | Pan Up | `Shift+Up` | |
@@ -278,6 +311,9 @@ Actions available across KiCad, including in the Schematic Editor.
 | Footprint Editor | | Create, delete and edit board footprints |
 | Library Tree | | |
 | Switch to Project Manager | | Show project window |
+| Properties | | Show/hide the properties manager |
+| Symbol Library Browser | | |
+| Symbol Editor | | Create, delete and edit schematic symbols |
 | Draw Bounding Boxes | | |
 | Always Show Crosshairs | | Display crosshairs even when not drawing objects |
 | Show Grid | | Display background grid in the edit window |
@@ -299,6 +335,11 @@ Actions available across KiCad, including in the Schematic Editor.
 | Zoom Out at Cursor | `F2` | |
 | Zoom Out | | |
 | Zoom Out Horizontally | | Zoom out horizontally the plot area |
+| Zoom Out Vertically | | Zoom out vertically the plot area |
+| Refresh | `F5` | |
+| Zoom to Selection Area | `Ctrl+F5` | Zoom to an area selection created by a mouse drag |
+| Embedded Files | | Manage embedded files |
+| Extract File | | Extract an embedded file |
 | Remove File | | Remove an embedded file |
 | Add Items | | Add items to group |
 | Cancel | | Cancel current tool |
@@ -322,6 +363,9 @@ Actions available across KiCad, including in the Schematic Editor.
 | Paste | `Ctrl+V` | Paste item(s) from clipboard |
 | Paste Special... | `Ctrl+Shift+V` | Paste item(s) from clipboard with options |
 | Redo | `Ctrl+Y` | |
+| Remove Items | | Remove items from group |
+| Replace All | | |
+| Replace and Find Next | | |
 | Search | `Ctrl+G` | Show/hide the search panel |
 | Select All | `Ctrl+A` | Select all items on screen |
 | Lasso | | Set selection mode to use polygon lasso |
@@ -346,6 +390,7 @@ Actions available across KiCad, including in the Schematic Editor.
 | Manage Footprint Libraries... | | Edit the global and project footprint library lists |
 | Manage Symbol Libraries... | | Edit the global and project symbol library lists |
 | Add Column After | | Insert a new table column after the selected cell(s) |
+| Add Column Before | | Insert a new table column before the selected cell(s) |
 | Add Row Above | | Insert a new table row above the selected cell(s) |
 | Add Row Below | | Insert a new table row below the selected cell(s) |
 | Delete Column(s) | | Delete columns containing the currently selected cell(s) |
@@ -358,7 +403,9 @@ Actions available across KiCad, including in the Schematic Editor.
 - Hotkeys can be reassigned via **Preferences** → **Hotkeys**; the current active hotkey list can always be viewed via **Help** → **List Hotkeys...** (`Ctrl+F1`).
 - Actions with no default hotkey are still assignable via the hotkey editor.
 - The **Common** actions apply across all KiCad editors (Schematic Editor, Symbol Editor, PCB Editor, Simulator, etc.), not just the Schematic Editor.
-- Source: KiCad 10.0.5 Schematic Editor manual, documentation revision `a77c36a3`.
+- Hotkeys differ within the 10.0 manual: the simulator chapter gives `P` / `T` for Probe Schematic / Add Tuned Value, while the actions reference lists `Shift+P` / `Shift+T`.
+- The actions reference describes "Mark items excluded from simulation" as drawing X's, while the Symbol Properties section of the 10.0 manual describes a grey outline and a simulation waveform icon.
+- Source: Action tables re-checked row by row against the KiCad 10.0.7 Schematic Editor manual (Actions reference: Schematic Editor and Common tables).
 
 ## Related
 

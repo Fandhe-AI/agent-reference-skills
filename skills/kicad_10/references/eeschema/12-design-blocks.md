@@ -1,67 +1,78 @@
 # Design Blocks
 
-Design blocks are reusable schematic modules that can be saved and instantiated across multiple projects, providing template-based circuit reuse.
+Design blocks are reusable schematic (and optionally PCB layout) fragments saved in a design block library and instantiated within one project or across projects.
 
 ## Design Block Concepts
 
-A design block is a saved selection of schematic elements (symbols, wires, labels, etc.) stored in a design block library. Unlike hierarchical sheets, design blocks are portable templates — placing a block inserts a copy of the saved elements, independent of the original.
+A design block can contain a schematic fragment, a layout fragment, or both. Placing a schematic block inserts the fragment into the current sheet or into a new hierarchical subsheet.
 
-**Design blocks vs. hierarchical sheets:**
+**Placement modes:**
 
-| Aspect | Design Blocks | Hierarchical Sheets |
-|--------|--------------|---------------------|
-| Reuse | Across projects | Within same project |
-| Update behavior | Independent copy after placement | Shared file, changes affect all instances |
-| Format | Stored in block library | `.kicad_sch` file |
+| Mode | Behavior |
+|------|----------|
+| Inline (no sheet) | Contents inserted directly into the current sheet |
+| Place as sheet | Contents placed into a new hierarchical subsheet; the block's Default Fields become sheet fields |
+| Place as group (either mode) | Wraps content in a group with a library link `<library>:<block>`; required for Save to Linked Design Block, Place Linked Design Block, and Apply Design Block Layout (PCB editor) |
+
+Design blocks do not support nested hierarchical sheets; saving a sheet that contains subsheets is rejected.
+
+**Library structure:** a library is a directory ending `.kicad_blocks`; each block is a subdirectory ending `.kicad_block` containing `<name>.kicad_sch` (if it has a schematic fragment), `<name>.kicad_pcb` (if it has a layout fragment), and `<name>.json` (description, keywords, default fields; always present).
 
 ## The Design Blocks Panel
 
-Open via **View** → **Design Blocks** or the toolbar button.
-
-The panel provides:
-- Library tree of available block libraries
-- Preview of selected blocks
-- Search/filter functionality
-- Drag-and-drop or double-click to place
+Open via **View** → **Panels** → **Design Blocks** (docked on the right). It has:
+- A filter textbox (name, description, keywords; **Sort Alphabetically** in the settings menu, default best match)
+- A library tree with a **Recently Used** pseudo-library; right-click a library → **Pin Library**
+- A preview area with name, description, keywords, and graphic
 
 ## Creating and Managing Design Blocks
 
-### Creating a Design Block from an Existing Selection
-
-1. Select the schematic elements to capture.
-2. Right-click → **Save as Design Block** (or use the **Tools** menu).
-3. Choose a target library and provide a name and description.
-4. The selected elements are saved as a block in the library.
-
 ### Managing Block Libraries
 
-Access **Preferences** → **Manage Design Block Libraries** to:
-- Add/remove design block library paths
-- Set global vs. project scope for each library
-- Create new empty libraries
+**Preferences** → **Manage Design Block Libraries…** manages the global and project library tables (same behavior as symbol and footprint library tables). Right-click in the library tree → **New Library…** creates a `.kicad_blocks` folder and registers it in the global or project table.
+
+### Creating a Design Block
+
+Select the source objects (or open the sheet), right-click the target library in the panel, then choose:
+- **Save Current Sheet as Design Block…** — everything on the current sheet
+- **Save Selection as Design Block…** — selected objects only (a single hierarchical sheet symbol saves that subsheet's contents; a selection is automatically grouped with a library link)
+
+The **Design Block Properties** dialog sets Name (no `/ : ; \ | < > " * ?`), Keywords (space-separated), Description, and Default Fields (key/value pairs applied as sheet fields when placed as a sheet). Confirmation is requested before overwriting. Edit later via right-click → **Properties…**; delete with **Delete Design Block** (permanent; placed objects are unaffected).
+
+### Updating a Design Block
+
+All methods replace, not merge, the stored schematic:
+- Select objects, then right-click the block → **Update Design Block from Selection**
+- Open the sheet, then right-click the block → **Update Design Block from Current Sheet**
+- Edit a linked group, then right-click the group → **Save to Linked Design Block**
+
+Updating the library does not update previously placed instances.
 
 ## Using Design Blocks in a Schematic
 
-1. Open the Design Blocks panel.
-2. Browse or search for the desired block.
-3. Double-click or drag to place on the canvas.
-4. The block's elements are inserted as a copy — edit freely without affecting the original.
+Double-click a block in the panel, or right-click → **Place Design Block**. Placement options:
 
-After placement, placed elements are ordinary schematic objects. There is no live link back to the block definition.
+| Option | Effect |
+|--------|--------|
+| Place repeated copies | Placement restarts after each block; `Esc` or right-click → Cancel ends it |
+| Place as group | Adds a group with the library link |
+| Place as sheet | Click twice to define the sheet corners; contents go into a new hierarchical sheet |
+| Keep annotations | Keeps saved reference designators; disable when placing several instances so they are re-annotated |
+
+After placement the content consists of ordinary schematic objects. A manually created group can be linked retroactively: select the group, open Group Properties (right-click or `E`), enter `<library>:<block>` in **Library link**. To group the footprints in the PCB, use Update PCB from Schematic with **Group footprints based on symbol group**.
 
 ## Practical Workflows
 
-**Power supply templates:** Save a complete power supply sub-circuit (regulator, capacitors, feedback network) as a block. Reuse across projects by placing from the panel.
+**Power supply templates:** Draw and annotate the circuit, select it, right-click a library → **Save Selection as Design Block…**, then reuse in other projects with **Place as group** (and **Keep annotations** off to reassign references).
 
-**Interface connectors:** Save a connector with its associated ESD protection and decoupling as a block for consistent reuse.
-
-**Module standardization:** Teams can share a project-scoped block library to ensure consistent sub-circuit implementations across designs.
+**Per-channel sheets:** Save a dedicated sheet with **Save Current Sheet as Design Block…**, add Default Fields (e.g. `GAIN_R` = `10k`), place with **Place as sheet**, and adjust the sheet fields per instance. The manual's per-channel example states that all placed sheet instances share one subsheet file, and that after **Update Design Block from Current Sheet** they all reflect the change (see Notes).
 
 ## Notes
 
-- Placing a design block inserts an independent copy; modifying the source block library does not affect already-placed instances.
-- Design block libraries use the same scope concept as symbol libraries (global vs. project).
-- Labels and net names inside a placed block connect to the schematic if names match existing nets.
+- The 10.0 manual is internally inconsistent: the Updating section says updating a block in the library does not update previously placed instances (they are independent copies), while the hierarchical-parameters workflow says all sheet instances reflect Update Design Block from Current Sheet because they reference the same subsheet file. Both statements are kept here; verify the behavior in KiCad before relying on either. Editing a subsheet file that several sheet symbols explicitly reference (a repeated hierarchical sheet) changes all of them, independent of the library.
+- The manual's multichannel tool can replicate a completed layout between groups without a stored layout fragment.
+- Not found in the 10.0 manual (retained from the earlier page as unverified): a "Design Blocks vs. Hierarchical Sheets" comparison table, the "Interface connectors" and "Module standardization" workflow examples, and creating new empty libraries inside Manage Design Block Libraries (the manual uses **New Library…** in the panel's right-click menu).
+- Not found in the 10.0 manual: a **View** → **Design Blocks** menu entry (the path is **View** → **Panels** → **Design Blocks**), a "Save as Design Block" entry under the **Tools** menu, drag-and-drop placement, and name-matching of labels inside a placed block to existing nets.
 
 ## Related
 

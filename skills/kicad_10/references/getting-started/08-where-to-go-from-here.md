@@ -7,9 +7,9 @@ After completing the getting-started tutorial, the following resources support c
 | Resource | Description |
 |----------|-------------|
 | Official documentation | https://docs.kicad.org/ — comprehensive manuals for all KiCad tools |
-| Official forum | https://forum.kicad.info/ — community Q&A |
+| Official forum | https://forum.kicad.info/ — community Q&A (URL not given in the 10.0 manual text) |
 | Discord / IRC | Real-time community chat |
-| Demo projects | **File** → **Open Demo Project** — practical example designs bundled with KiCad |
+| Demo projects | **File** → **Open Demo Project…** — demo projects included with KiCad |
 | "Made With KiCad" gallery | Completed community designs at https://www.kicad.org/made-with-kicad/ |
 
 ## Help Improve KiCad

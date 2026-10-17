@@ -22,8 +22,8 @@ This feature provides limited capability to export Gerber files into a KiCad PCB
 
 | Command | Description |
 |---------|-------------|
-| List DCodes | Display D Code information for the active layer |
-| Show Source | Display the raw source of the active Gerber file |
+| List DCodes | Display D Code information for all layers |
+| Show Source | Display the Gerber file contents of the active layer in a text editor |
 | Measure Tool | Measure the distance between two points |
 | Clear Current Layer | Erase the contents of the active layer |
 

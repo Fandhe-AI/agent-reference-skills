@@ -43,8 +43,9 @@ KiCad ships with a large library of high-quality, user-contributed symbols and f
 
 ## Notes
 
-- Updating the PCB with schematic changes is a **manual** process: the designer decides when to synchronize.
-- Backup files are automatically created in a `-backups` folder on each save.
+- Schematic changes can be pulled into the board design, and board changes pushed back to the schematic. In the tutorial, updating the PCB from the schematic is a **manual** process: the designer decides when to synchronize.
+- A `-backups` folder may exist: KiCad can create backups on save and after a few seconds of inactivity with unsaved changes (configurable in Project Backup preferences).
+- Opening a board outside of its project may result in missing design information; keep all project files together.
 
 ## Related
 

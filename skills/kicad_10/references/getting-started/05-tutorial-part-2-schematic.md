@@ -11,7 +11,7 @@ This section covers creating a circuit schematic using the KiCad Schematic Edito
 | Pan | Middle mouse button drag or right mouse button drag |
 | Zoom in/out | Scroll wheel or F1 / F2 |
 
-The **Center and Warp Cursor on Zoom** feature keeps the zoomed region centered. Touchpad users can customize controls via **Preferences** → **Mouse and Touchpad**.
+The **Center and Warp Cursor on Zoom** feature (enabled by default) moves the cursor to the screen center when zooming, keeping the zoomed region centered; disable it in Mouse and Touchpad preferences. Touchpad users can customize controls via **Preferences** → **Preferences…** → **Mouse and Touchpad** (macOS: KiCad menu → Settings…).
 
 ### Toolbars
 
@@ -26,7 +26,7 @@ Most tools have default hotkeys or support custom hotkeys. View the full list at
 
 Configure the title block before adding components:
 
-**File** → **Page Settings** — set title, date, revision, and paper size.
+**File** → **Page Settings** — set title, date, and paper size (revision and other fields are not mentioned in the tutorial text).
 
 ## Adding Symbols
 
@@ -42,7 +42,7 @@ Useful symbols from the `Device` library:
 | `LED` | Light-emitting diode |
 | `Battery_Cell` | Single battery cell |
 
-Power and ground symbols are in the `Power` library. Press **P** or click **Add a Power Symbol** to filter to power symbols only.
+Power and ground symbols are in the `power` library (the tutorial text calls it the Power symbol library). Press **P** or click **Add a Power Symbol** to filter to power symbols only.
 
 ## Selecting and Moving Objects
 
@@ -50,8 +50,8 @@ Power and ground symbols are in the `Power` library. Press **P** or click **Add 
 |--------|--------|
 | Select single object | Click |
 | Add to selection | Shift+click |
-| Remove from selection | Ctrl+Shift+click |
-| Toggle selection | Ctrl+click |
+| Remove from selection | Ctrl+Shift+click (macOS: Cmd+Shift+click) |
+| Toggle selection | Ctrl+click (macOS: Cmd+click) |
 | Box select (enclosed) | Drag left-to-right |
 | Box select (touching) | Drag right-to-left |
 | Move (wires detach) | M |
@@ -69,7 +69,7 @@ Hovering over an unconnected pin changes the cursor to indicate that clicking wi
 
 ### Net Labels
 
-Press **L** or click **Place Net Labels** to label a wire. Labels and power symbols with the same name are connected together, even without visible wire connections.
+Press **L** or click **Place Net Labels** to label a wire. Labels and power symbols with the same name are connected together, even without visible wire connections (the tutorial's example is on the same schematic page; local labels connect only within a sheet).
 
 ## Annotation, Symbol Properties, and Footprints
 
@@ -83,25 +83,26 @@ Press **E** or right-click → **Properties** to edit the symbol's `Value`, refe
 
 ### Footprint Assignment
 
-Open the footprint assignment tool to link each symbol to a physical package. Three filter modes assist selection:
+Open the footprint assignment tool (top toolbar button) to link each symbol to a physical package. Left pane: footprint libraries; middle pane: schematic symbols; right pane: candidate footprints (double-click to assign). Filters:
 
 | Filter | Description |
 |--------|-------------|
-| Library-defined filters | Filters from symbol definition |
-| Pin-count filter | Shows only matching pad counts |
-| Text search | Search by footprint name |
+| Symbol-defined filters (leftmost button) | Filters defined in each symbol (e.g. SOIC / DIP for an opamp) |
+| Pin-count filter (middle button) | Shows only footprints with matching pad count |
+| Library filter (right button) | Shows only footprints in the library selected in the left pane |
+| Text box | Filters by text; disabled when empty |
 
-Right-click a footprint and select **View selected footprint** to preview it.
+Right-click a footprint name and select **View selected footprint** to preview it. Tutorial assignments: BT1 `Battery:BatteryHolder_Keystone_1058_1x2032`, D1 `LED_THT:LED_D5.0mm`, R1 `Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal`. Footprints can also be assigned in the symbol properties window.
 
 ## Electrical Rules Check (ERC)
 
 The ERC checks for common connection issues: unconnected pins, shorted power outputs, unpowered power inputs, etc. It cannot verify that the circuit functions correctly.
 
-1. Click the **ERC** button or open **Inspect** → **Electrical Rules Checker**.
+1. Click the **ERC** button in the top toolbar (the tutorial does not name a menu path; the Inspect menu entry is not found in the 10.0 getting-started text).
 2. Click **Run ERC**.
 3. Review violations; arrows point to problem locations.
 
-To resolve common power-related warnings, add a `PWR_FLAG` symbol (from the `Power` library) to `VCC` and `GND` nets.
+To resolve common power-related warnings, add a `PWR_FLAG` symbol (from the `power` library) to `VCC` and `GND` nets.
 
 Adjust severity levels at **File** → **Schematic Setup…** → **Electrical Rules** → **Violation Severity**.
 
@@ -116,7 +117,8 @@ The resulting file opens in any spreadsheet application.
 
 ## Notes
 
-- Symbols with the same net label name are electrically connected even if not drawn with a wire.
+- Net labels with the same name on the same sheet are electrically connected even if not drawn with a wire.
+- The getting-started text capitalizes "Power symbol library"; the Schematic Editor manual refers to the `power` library.
 - `PWR_FLAG` is required on nets where power is provided without a formal power-output pin.
 
 ## Related

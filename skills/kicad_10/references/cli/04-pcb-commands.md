@@ -26,7 +26,7 @@ The `pcb` subcommand performs design rule checks, exports boards to numerous for
 | `pcb export step` | Export STEP 3D CAD model | `--output`, `--force`, `--no-dnp`, `--board-only`, `--no-optimize-step`, 3D geometry options |
 | `pcb export stl` | Export STL 3D mesh | `--output`, `--force`, `--no-dnp`, `--board-only`, 3D geometry options |
 | `pcb export stpz` | Export GZIP-compressed STEP | `--output`, `--force`, `--no-dnp`, `--board-only`, `--no-optimize-step`, 3D geometry options |
-| `pcb export u3d` | Export Universal 3D (U3D) for PDF embedding | `--output`, `--force`, `--no-dnp`, `--board-only`, 3D geometry options |
+| `pcb export u3d` | Export Universal 3D (U3D); manual text matches 3dpdf (PDF with embedded 3D model) | `--output`, `--force`, `--no-dnp`, `--board-only`, 3D geometry options |
 | `pcb export svg` | Export SVG vector graphics | `--output`, `--layers`, `--mode-single/multi`, `--page-size-mode`, `--fit-page-to-board` |
 | `pcb export vrml` | Export VRML 3D model | `--output`, `--force`, `--units`, `--models-dir`, `--models-relative` |
 | `pcb export xao` | Export XAO (SALOME/Gmsh) 3D model | `--output`, `--force`, `--no-dnp`, `--board-only`, 3D geometry options |
@@ -51,19 +51,19 @@ kicad-cli pcb drc [options] INPUT_FILE
 | Option | Short | Description |
 |--------|-------|-------------|
 | `--help` | `-h` | Show help |
-| `--output <filename>` | `-o` | Output filename for DRC report |
+| `--output <filename>` | `-o` | Output filename for DRC report (default: input name with `.rpt` or `.json`, depending on format) |
 | `--define-var <key>=<value>` | `-D` | Define/override project variables (repeatable) |
 | `--format <format>` | | Report format: `report` (default) or `json` |
 | `--all-track-errors` | | Report all errors per track (not just first) |
 | `--schematic-parity` | | Test PCB vs. schematic parity |
-| `--units <unit>` | | Report units: `mm`, `in`, or `mils` |
-| `--severity-all` | | Report all DRC violations |
+| `--units <unit>` | | Report units: `mm` (default), `in`, or `mils` |
+| `--severity-all` | | Report all DRC violations (equivalent to using all other severity options) |
 | `--severity-error` | | Report error-level violations |
 | `--severity-warning` | | Report warning-level violations |
 | `--severity-exclusions` | | Report excluded violations |
 | `--exit-code-violations` | | Exit with code 5 if violations exist, 0 otherwise |
-| `--refill-zones` | | Refill zones before running DRC |
-| `--save-board` | | Save board after DRC |
+| `--refill-zones` | | Refill zones before running DRC (board is not saved unless `--save-board` is also given) |
+| `--save-board` | | Save board after DRC (only takes effect with `--refill-zones`) |
 
 ---
 
@@ -142,21 +142,21 @@ kicad-cli pcb export drill [options] INPUT_FILE
 | Option | Short | Description |
 |--------|-------|-------------|
 | `--help` | `-h` | Show help |
-| `--output <dir>` | `-o` | Output directory |
+| `--output <dir>` | `-o` | Output directory (default: current directory) |
 | `--format <format>` | | Format: `excellon` (default) or `gerber` |
-| `--drill-origin <origin>` | | Origin: `absolute` or `plot` |
-| `--excellon-zeros-format <fmt>` | | Zeros format (Excellon only) |
-| `--excellon-oval-format <fmt>` | | Oval holes mode: `route` or `alternate` |
-| `--excellon-units <units>` | `-u` | Units: `mm` or `in` (Excellon only) |
+| `--drill-origin <origin>` | | Origin: `absolute` (default) or `plot` |
+| `--excellon-zeros-format <fmt>` | | Zeros format: `decimal` (default), `suppressleading`, `suppresstrailing`, or `keep` (Excellon only) |
+| `--excellon-oval-format <fmt>` | | Oval holes mode: `route` or `alternate` (default) (Excellon only) |
+| `--excellon-units <units>` | `-u` | Units: `mm` (default) or `in` (Excellon only) |
 | `--excellon-mirror-y` | | Mirror Y axis (Excellon only) |
 | `--excellon-min-header` | | Minimal header (Excellon only) |
 | `--excellon-separate-th` | | Separate plated/non-plated files (Excellon only) |
 | `--generate-map` | | Generate drill map file |
 | `--generate-report` | | Generate report listing drill hits |
-| `--report-path <filename>` | | Output filename for drill report |
-| `--generate-tenting` | | Generate tented drill files (Gerber only) |
-| `--map-format <format>` | | Map format: `pdf`, `gerberx2`, `ps`, `dxf`, `svg` |
-| `--gerber-precision <precision>` | | Precision: `5` or `6` (Gerber only) |
+| `--report-path <filename>` | | Output filename for drill report (default: input name with `-drill.rpt`) |
+| `--generate-tenting` | | Generate separate files for tented holes (Gerber X2 only) |
+| `--map-format <format>` | | Map format: `pdf` (default), `gerberx2`, `ps`, `dxf`, `svg` |
+| `--gerber-precision <precision>` | | Precision: `5` or `6` (default) (Gerber only) |
 
 ---
 
@@ -176,7 +176,7 @@ kicad-cli pcb export dxf [options] INPUT_FILE
 |--------|-------|-------------|
 | `--help` | `-h` | Show help |
 | `--output` | `-o` | Output folder or filename |
-| `--layers` | `-l` | Comma-separated layer list |
+| `--layers` | `-l` | Comma-separated required layer list (at least one layer must be given) |
 | `--common-layers` | `--cl` | Layers to plot on all outputs |
 | `--drawing-sheet` | | Override board's drawing sheet path |
 | `--define-var` | `-D` | Define/override project variables (repeatable) |
@@ -400,7 +400,7 @@ kicad-cli pcb export pdf [options] INPUT_FILE
 | `--mode-separate` | | Multiple files per layer; OUTPUT is directory |
 | `--mode-multipage` | | Single multi-page PDF; OUTPUT is complete path |
 | `--scale` | | Scaling factor; `0`=autoscale |
-| `--bg-color` | | Background color (hex `#rrggbb[aa]` or CSS `rgb[a]()`) |
+| `--bg-color` | | Background color (hex `#rrggbb[aa]` or CSS `rgb[a]()`). Quote the value in shells: `--bg-color '#ffffff'` or `--bg-color 'rgba(255,255,255,0)'` (an unquoted `#` starts a comment and parentheses are shell syntax) |
 | `--check-zones` | | Verify/refill zones before export |
 | `--variant` | | Output variant |
 
@@ -437,17 +437,17 @@ kicad-cli pcb export pos [options] INPUT_FILE
 | Option | Short | Description |
 |--------|-------|-------------|
 | `--help` | `-h` | Show help |
-| `--output` | `-o` | Output filename |
-| `--side` | | Side: `front`, `back`, or `both` |
-| `--format` | | Format: `ascii`, `csv`, or `gerber` |
-| `--units` | | Units: `in` or `mm` |
-| `--bottom-negate-x` | | Negate X coordinates for bottom layer |
-| `--use-drill-file-origin` | | Use drill origin |
-| `--smd-only` | | Surface-mount components only |
-| `--exclude-fp-th` | | Exclude through-hole footprints |
+| `--output` | `-o` | Output filename (default: input name with `.pos`) |
+| `--side` | | Side: `front`, `back`, or `both` (default; Gerber does not support `both`) |
+| `--format` | | Format: `ascii` (default), `csv`, or `gerber` |
+| `--units` | | Units: `in` (default) or `mm` (no effect for Gerber) |
+| `--bottom-negate-x` | | Negate X coordinates for bottom layer (no effect for Gerber) |
+| `--use-drill-file-origin` | | Use drill origin (no effect for Gerber) |
+| `--smd-only` | | Surface-mount components only (no effect for Gerber) |
+| `--exclude-fp-th` | | Exclude footprints with through-hole pads (no effect for Gerber) |
 | `--exclude-dnp` | | Exclude "Do not populate" items |
 | `--gerber-board-edge` | | Include board edge (Gerber format only) |
-| `--variant` | | Output variant |
+| `--variant` | | Output variant (`${VARIANT}` can be used in the output path; single-quote it in shell commands, e.g. `-o 'pos_${VARIANT}.pos'`, so the shell does not expand it) |
 
 ---
 
@@ -511,8 +511,7 @@ kicad-cli pcb export stats [options] INPUT_FILE
 | Option | Description |
 |--------|-------------|
 | `-h, --help` | Show help |
-| `-o, --output` | Output filename (defaults to input with `_statistics` suffix) |
-| `-D, --define-var` | Define/override project variables (repeatable) |
+| `-o, --output` | Output filename (defaults to input with `_statistics` suffix and `.rpt` or `.json` extension) |
 | `--format` | Report format: `report` (default) or `json` |
 | `--units` | Report units: `mm` (default) or `in` |
 | `--exclude-footprints-without-pads` | Exclude padless footprints from counts |
@@ -600,7 +599,7 @@ Same options as `pcb export step`, with output defaulting to `.stpz` extension. 
 
 ## pcb export u3d
 
-Exports a board design to a U3D (Universal 3D) file for embedding in PDF.
+Exports a board design in U3D (Universal 3D) form; the 10.0 manual describes this command with the same text as `pcb export 3dpdf` (a PDF with an embedded 3D model, default `.pdf` extension).
 
 ### Signature / Usage
 
@@ -643,7 +642,7 @@ kicad-cli pcb export svg [options] INPUT_FILE
 | `--hide-DNP-footprints-on-fab-layers` | `--hdnp` | Hide DNP elements |
 | `--sketch-DNP-footprints-on-fab-layers` | `--sdnp` | Sketch DNP graphics |
 | `--crossout-DNP-footprints-on-fab-layers` | `--cdnp` | Mark DNP with "X" |
-| `--page-size-mode` | | Sizing: `0`=full sheet, `1`=page size, `2`=board size |
+| `--page-size-mode` | | Sizing: `0`=full sheet (default), `1`=page size, `2`=board size |
 | `--fit-page-to-board` | | SVG size matches board (equivalent to `--page-size-mode 2`) |
 | `--exclude-drawing-sheet` | | Plot without drawing sheet |
 | `--drill-shape-opt` | | Drill marks: `0`=none, `1`=small, `2`=actual (default) |
@@ -716,8 +715,8 @@ kicad-cli pcb import [options] INPUT_FILE
 | `-h, --help` | Show help |
 | `-o, --output` | Output filename (`.kicad_pcb`) |
 | `--format` | Input format: `auto` (default), `pads`, `altium`, `eagle`, `cadstar`, `fabmaster`, `pcad`, `solidworks` |
-| `--report-format` | Report format: `none`, `json`, or `text` |
-| `--report-file` | Import report output filename |
+| `--report-format` | Report format: `none` (default), `json`, or `text` |
+| `--report-file` | Import report output filename (printed to stdout if omitted) |
 
 ---
 
@@ -736,19 +735,19 @@ kicad-cli pcb render [options] INPUT_FILE
 | Option | Short | Description |
 |--------|-------|-------------|
 | `--help` | `-h` | Show help |
-| `--output` | `-o` | Output filename (`.png` or `.jpg`) |
+| `--output` | `-o` | Output filename (required; `.png`, `.jpg` or `.jpeg`) |
 | `--define-var` | `-D` | Define/override project variables (repeatable) |
 | `--variant` | | Output variant |
 | `--width` | `-w` | Image width in pixels (default: `1600`) |
-| `--height` | | Image height in pixels (default: `900`) |
-| `--side` | | View side: `top`, `bottom`, `left`, `right`, `front`, `back` |
-| `--background` | | Background: `default`, `transparent`, `opaque` |
-| `--quality` | | Render quality: `basic`, `high`, or `user` |
-| `--preset` | | Color preset (e.g., `follow_pcb_editor`) |
+| `--height` | `-h` (per the manual) | Image height in pixels (default: `900`) |
+| `--side` | | View side: `top` (default), `bottom`, `left`, `right`, `front`, `back` |
+| `--background` | | Background: `default` (default), `transparent`, `opaque` |
+| `--quality` | | Render quality: `basic` (default), `high`, or `user` |
+| `--preset` | | Color preset: `follow_pcb_editor`, `follow_plot_settings` (default), or `legacy_preset_flag` |
 | `--use-board-stackup-colors` | | Override with board stackup colors |
 | `--floor` | | Enable floor, shadows, and post-processing |
 | `--perspective` | | Use perspective projection |
-| `--zoom` | | Camera zoom factor (integer) |
+| `--zoom` | | Camera zoom factor (integer, default: `1`) |
 | `--pan` | | Pan location in mm (`'X,Y,Z'`) |
 | `--pivot` | | Pivot point in cm (`'X,Y,Z'`) |
 | `--rotate` | | Rotation in degrees (`'X,Y,Z'`) |
@@ -779,7 +778,12 @@ kicad-cli pcb upgrade [options] INPUT_FILE
 
 ## Notes
 
-- Layer names use canonical format: `F.Cu`, `B.Cu`, `In.1`, `F.Fab`, `B.Fab`, etc.
+- Layer names can be canonical names (`F.Cu`, `B.Cu`, `In1.Cu`, `F.Fab`, `B.Fab`, etc.) or user-defined (custom) layer names; user-defined names are matched first.
+- Corrected from the official docs: the 10.0 CLI manual prints `In.1` as a canonical layer name; the PCB Editor manual and KiCad use the `In1.Cu` form for inner copper layers.
+- `pcb export stats`: `--define-var` is not listed in the 10.0 manual's usage line or option list for this command (it is listed for `pcb drc` and the 3D exports); verify with `kicad-cli pcb export stats -h`.
+- The 10.0 manual's `pcb export u3d` section duplicates the `3dpdf` wording (PDF output, `.pdf` default, "3D PDF export" help text); verify actual output with `kicad-cli pcb export u3d -h`.
+- The 10.0 manual lists `-h` as the short form of both `--help` and `pcb render --height`; the conflict is in the source.
+- In shell commands, single-quote `${VARIANT}` in `--output` paths (e.g. `-o 'pos_${VARIANT}.pos'`); in POSIX shells and PowerShell double quotes expand it to an empty string before kicad-cli runs.
 - Wildcard patterns are supported in `--component-filter` and `--net-filter`.
 - The `--include-tracks`, `--include-pads`, `--include-zones`, and `--fuse-shapes` options for 3D exports can significantly increase processing time.
 - Exit code `5` is returned when violations are found with `--exit-code-violations` (DRC).
