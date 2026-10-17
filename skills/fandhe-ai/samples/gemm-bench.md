@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/facade/examples/gemm_bench.rs
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.11.0/crates/facade/examples/gemm_bench.rs
 ---
 
 # GEMM Bench
@@ -59,10 +59,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-実行: `cargo run --release -p fandhe-ai --example gemm_bench`（`--release` 必須。debug ビルドは最適化なしの実行速度を測るだけで GEMM 性能デモとしては無意味）
+実行: `cargo run --release -p fandhe-ai --example facade_gemm_bench`（`--release` 必須。debug ビルドは最適化なしの実行速度を測るだけで GEMM 性能デモとしては無意味）
 
 ## Notes
 
 - 計測規約はウォームアップ 1 回の後 5 回計測し中央値を採用する
 - 本例は `std::time::Instant` による簡易計測のデモであり、性能下限判定・回帰検出を目的とした本格計測は `criterion` を使う `bench-harness` クレートの領分
+- example のターゲット名は `facade_gemm_bench`（ソースファイルは `examples/gemm_bench.rs` のまま）。`backend-cpu` / `backend-metal` にも同名の `gemm_bench.rs` があり、`cargo build --workspace --examples` の出力先衝突（cargo#6313）を避けるため `crates/facade/Cargo.toml` の `[[example]]` で名前を分離している（イシュー #1919）。旧コマンド `--example gemm_bench` は facade では使えない
 - CUDA / Metal 上での GEMM カーネル自体の最適化手法・チューニングは `nvidia-cuda` / `apple-silicon` スキルの領分。本サンプルは `Device` 抽象を通じた利用側の計測コードのみを扱う

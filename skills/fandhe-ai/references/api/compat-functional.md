@@ -69,4 +69,4 @@ let outputs = model.predict(&[&xa, &xc])?; // Vec<Tensor<f32>>
 - [compat-sequential](./compat-sequential.md)
 - [compat-training](./compat-training.md)
 - [compat-model-io](./compat-model-io.md)
-- nn/kv-cache
+- [nn/kv-cache](../nn/kv-cache.md)

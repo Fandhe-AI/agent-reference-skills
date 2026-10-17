@@ -1,5 +1,5 @@
 ---
-source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/main/crates/facade/examples/training_loop.rs
+source: https://raw.githubusercontent.com/Fandhe-AI/fandhe-ai/v0.11.0/crates/facade/examples/training_loop.rs
 ---
 
 # Training Loop
@@ -117,9 +117,30 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 実行: `cargo run -p fandhe-ai --example training_loop`
 
+**Tape の再利用（reset）**: 上記の例はステップごとに `fandhe_ai::tape()` を新規生成・破棄する運用。ステップ内で `Tape` を再利用したい場合（reuse GEMM・tape 構築コストが問題になる学習ループ）は、`Tape::reset`（イシュー #1048）でノード列を葉プレフィックス（最初の演算より前に登録した葉）まで切り詰め、同一 `Tape` を使い回せる（`site/examples/training-loop.md` v0.11.0 の節、verbatim）。
+
+```rust
+let mut tape = fandhe_ai::tape();
+let x = tape.var(&x_data); // 演算前に登録した葉は reset を跨いで保持される
+let w = tape.var(&w_data);
+
+for _ in 0..STEPS {
+    // `tape.leaf(index)` で保持済みの葉 `Var` を再取得する（コピーなし）。
+    let x = tape.leaf(0).unwrap();
+    let w = tape.leaf(1).unwrap();
+    let y = x.matmul(&w)?.relu();
+    let loss = y.mse_loss(&target)?;
+    let grads = tape.backward(&loss)?;
+    // ... grads を使ってパラメータを更新 ...
+    tape.reset(); // 演算ノードを切り詰め、次ステップ用に再利用する
+}
+```
+
+`reset` は `&mut self` を要求するため、reset 前に取得した `Var` を reset 後のスコープへ持ち越すことはコンパイル時に弾かれる（借用検査による静的な安全性）。`reset` 前に得た `Gradients` を reset 後の `Var` に対して読もうとした場合は、`Gradients::get` が `Err(AutodiffError::TapeMismatch)` を返す（世代番号による実行時 fail-closed 検査）。
+
 ## Notes
 
 - **workspace 内部専用の例**: 乱数生成に内部クレート `bench_harness::rng::Xorshift64Star` を直接 import している（`crates/facade/examples/training_loop.rs` の verbatim。`bench-harness` は未公開 crate で facade の dev-dependency）。`fandhe-ai` だけを依存に追加した外部プロジェクトではこの行はコンパイルできないため、`rand` 等の任意の固定シード RNG に置き換える。学習ループ本体（モデル構築・forward・backward・パラメータ更新）は公開 API のみで構成されている
-- `fandhe_ai_autodiff::optim::{Sgd, AdamW}` は `facade` の公開面に含まれない内部 API のため、この例は `compat::Sequential` と `Tape` / `Var` / `Tensor` の公開 API で `param - lr * grad` を自前計算する手動 SGD
+- この例は `compat::Sequential` と `Tape` / `Var` / `Tensor` の公開 API で `param - lr * grad` を自前計算する手動 SGD。0.11.0 の facade は `fandhe_ai::optim::Sgd` / `AdamW` を公開面として再エクスポートしているため、実運用ではそちらを使う
 - `Sequential::bind` が返す `SequentialVars` は `&model` / `&tape` を借用するため、`apply_parameters`（`&mut model`）を呼ぶ前に必ずスコープを抜けて借用を解放する
 - 重み初期化・データ生成はいずれも固定シードで駆動し再現可能にする

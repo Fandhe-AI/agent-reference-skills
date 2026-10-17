@@ -77,5 +77,5 @@ let ce = logits.cross_entropy_loss(&class_ids, 1, Reduction::Mean)?; // class_id
 
 - [var](./var.md)
 - [var-reduction](./var-reduction.md)
-- nn/loss
+- [nn/loss](../nn/loss.md)
 - [compat-training](./compat-training.md)
