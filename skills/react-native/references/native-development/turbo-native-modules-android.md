@@ -194,10 +194,10 @@ class NativeLocalStoragePackage : BaseReactPackage() {
 
 Step 3: register the package by adding it to the `getPackages` method.
 
-**Java** (`android/app/src/main/java/com/turobmoduleexample/MainApplication.java`)
+**Java** (`android/app/src/main/java/com/turbomoduleexample/MainApplication.java`)
 
 ```java
-package com.inappmodule;
+package com.turbomoduleexample;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
@@ -265,10 +265,10 @@ public class MainApplication extends Application implements ReactApplication {
 }
 ```
 
-**Kotlin** (`android/app/src/main/java/com/turobmoduleexample/MainApplication.kt`)
+**Kotlin** (`android/app/src/main/java/com/turbomoduleexample/MainApplication.kt`)
 
 ```kotlin
-package com.inappmodule
+package com.turbomoduleexample
 
 import android.app.Application
 import com.facebook.react.PackageList
@@ -332,6 +332,7 @@ yarn run android
 
 ## Notes
 
+- Deviation from the official page: the official MainApplication snippets use package com.inappmodule and path com/turobmoduleexample; they are aligned here with the TurboModuleExample app created in the introduction (com.turbomoduleexample).
 - Corrected: the official snippet returned username.toString(), which yields the string "null" for missing keys.
 - The official page initializes SoLoader with (this, false); updated to OpenSourceMergedSoMapping as required since RN 0.76 merged native libraries.
 - Docusaurus highlight markers from the official page are removed; snippets show the final code.

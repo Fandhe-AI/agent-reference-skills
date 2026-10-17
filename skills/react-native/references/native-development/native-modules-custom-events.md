@@ -96,7 +96,8 @@ Framework build type is static library
 Step 3: update the app code (`App.tsx`).
 
 ```diff
-+import React from 'react';
+-import {useEffect, useState, type JSX} from 'react';
++import {useEffect, useRef, useState, type JSX} from 'react';
 import {
 + Alert,
 + EventSubscription,
@@ -111,12 +112,12 @@ import NativeLocalStorage from './specs/NativeLocalStorage';
 
 const EMPTY = '<empty>';
 
-function App(): React.JSX.Element {
-  const [value, setValue] = React.useState<string | null>(null);
-+ const [key, setKey] = React.useState<string | null>(null);
-+ const listenerSubscription = React.useRef<null | EventSubscription>(null);
+function App(): JSX.Element {
+  const [value, setValue] = useState<string | null>(null);
++ const [key, setKey] = useState<string | null>(null);
++ const listenerSubscription = useRef<null | EventSubscription>(null);
 
-+ React.useEffect(() => {
++ useEffect(() => {
 +   listenerSubscription.current = NativeLocalStorage?.onKeyAdded((pair) => Alert.alert(`New key added: ${pair.key} with value: ${pair.value}`));
 
 +   return  () => {
@@ -125,11 +126,11 @@ function App(): React.JSX.Element {
 +   }
 + }, [])
 
-  const [editingValue, setEditingValue] = React.useState<
-    string | null
-  >(null);
+  const [editingValue, setEditingValue] = useState<string | null>(
+    null,
+  );
 
-- React.useEffect(() => {
+- useEffect(() => {
 -   const storedValue = NativeLocalStorage?.getItem('myKey');
 -   setValue(storedValue ?? '');
 - }, []);
@@ -139,7 +140,8 @@ function App(): React.JSX.Element {
 +     Alert.alert('Please enter a key');
 +     return;
 +   }
-    NativeLocalStorage?.setItem(editingValue ?? EMPTY, key);
+-   NativeLocalStorage?.setItem(editingValue ?? EMPTY, 'myKey');
++   NativeLocalStorage?.setItem(editingValue ?? EMPTY, key);
     setValue(editingValue);
   }
 
@@ -153,7 +155,8 @@ function App(): React.JSX.Element {
 +     Alert.alert('Please enter a key');
 +     return;
 +   }
-    NativeLocalStorage?.removeItem(key);
+-   NativeLocalStorage?.removeItem('myKey');
++   NativeLocalStorage?.removeItem(key);
     setValue('');
   }
 
@@ -286,7 +289,7 @@ NS_ASSUME_NONNULL_END
 
 ## Notes
 
-- React import added; the official snippet uses React.* at runtime without importing it.
+- Deviation from the official page: the official diff does not match the App.tsx from the Native Modules introduction (named React hook imports, 'myKey' literals); the diff here is rebased onto that file.
 - Changing the value of an existing key does not emit the event, adding a new key does (as described on the page).
 - Corrected: the official Android snippet emitted when getItem(key) != null (existing key); the condition is inverted here to match the described new-key behavior and the iOS code.
 - Corrected: the official Android snippet returned username.toString(), which yields the string "null" for missing keys.

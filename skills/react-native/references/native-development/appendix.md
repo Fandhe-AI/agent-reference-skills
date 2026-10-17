@@ -14,7 +14,7 @@ Codegen typings:
 | --- | --- | --- | --- | --- | --- |
 | `string` | `string` | `?string` | `string \| null` | `string` | `NSString` |
 | `boolean` | `boolean` | `?boolean` | `boolean \| null` | `Boolean` | `NSNumber` |
-| Object Literal `{\| foo: string, ...\|}` | `{ foo: string, ...} as const` | `?{\| foo: string, ...\|}` | `?{ foo: string, ...} as const` | - | - |
+| Object Literal `{\| foo: string, ...\|}` | `{ foo: string }` | `?{\| foo: string, ...\|}` | `{ foo: string } \| null` | - | - |
 | Object [1] | Object [1] | `?Object` | `Object \| null` | `ReadableMap` | `@` (untyped dictionary) |
 | `Array<T>` | `Array<T>` | `?Array<T>` | `Array<T> \| null` | `ReadableArray` | `NSArray` (or `RCTConvertVecToArray` when used inside objects) |
 | `Function` | `Function` | `?Function` | `Function \| null` | - | - |
@@ -25,6 +25,7 @@ Codegen typings:
 
 ## Notes
 
+- Deviation from the official page: the official table lists "{ foo: string, ...} as const" for TypeScript, which is not a valid type; valid TypeScript type forms are shown instead.
 - Terminology:
   - Spec: TypeScript or Flow code that describes the API for a Turbo Native Module or Fabric Native component. Used by Codegen to generate boilerplate code.
   - Native Modules: native libraries that have no User Interface (UI) for the user. Examples would be persistent storage, notifications, network events. These are accessible to your JavaScript application code as functions and objects.
