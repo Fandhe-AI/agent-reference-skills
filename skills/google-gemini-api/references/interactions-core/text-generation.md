@@ -125,7 +125,7 @@ interaction2 = client.interactions.create(
 - Gemini models often have thinking enabled by default; control it with `generation_config.thinking_level`.
 - Gemini 4 and Gemini 3.6+ models ignore custom values for `temperature`, `top_p`, and `top_k` and return deprecation warning headers. Remove these sampling parameters from requests.
 - In stateless mode, if the model uses thinking or tools, you must preserve and resend all model-generated steps (such as `thought` and `function_call` steps) exactly as received, as they contain signatures required to continue the conversation.
-- Migration (May 2026 breaking changes): responses return a `steps` array instead of the legacy `outputs` array; stateless history is now the collected `steps` plus a new `user_input` step. SDK Python and JavaScript >= 2.0.0 use the new schema; REST opts in with the `Api-Revision: 2026-05-20` header (see migration category).
+- Migration (May 2026 breaking changes): responses return a `steps` array instead of the legacy `outputs` array; stateless history is now the collected `steps` plus a new `user_input` step. SDK Python and JavaScript >= 2.0.0 use the new schema. For REST, `Api-Revision: 2026-05-20` was the opt-in header until the new schema became the default on May 26, 2026; the legacy schema was removed on June 8, 2026 and the `Api-Revision` header is now ignored, so REST examples without the header already use the `steps` schema (see migration category).
 - Distinct from OpenAI Responses API (`openai-api-core`) and Anthropic Messages API (`anthropic-api-core`); this is the Gemini `interactions.create` call.
 
 ## Related

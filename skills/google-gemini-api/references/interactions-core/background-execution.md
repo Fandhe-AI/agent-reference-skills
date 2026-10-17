@@ -139,7 +139,7 @@ Parameters and endpoints:
 
 - Official pages conflict: this page describes `store=False` (24h TTL) with `background=True`, while long-decode and Deep Research state background execution requires `store=True` and returns 400 otherwise; use `store=True` for background runs.
 - Official pages conflict on store=true retention: this page says 7 days, the Interactions overview says 55 days (paid, configurable) / 1 day (free).
-- Availability: Interactions API (REST examples use `v1beta` with `Api-Revision: 2026-05-20`).
+- Availability: Interactions API (REST examples use `v1beta` with `Api-Revision: 2026-05-20`). The `Api-Revision` header shown in these examples is ignored since June 8, 2026 (legacy schema removed).
 - The polling loop also waits while `queued` (an Interaction status in the API reference); the original example checks only `in_progress`.
 - Use for agent executions, Deep Research (`deep-research-preview-04-2026`, `deep-research-max-preview-04-2026`), long reasoning, and long decode on Gemini 4.
 - With `background=False` (default), streaming and non-streaming responses are capped at `65,536` output tokens; Gemini 4 with `max_output_tokens > 65536` and `background=False` returns `400`.

@@ -79,7 +79,7 @@ config = {
 model = "gemini-3.8-live-extended-thinking"
 
 config = types.LiveConnectConfig(
-    response_modalities=["AUDIO"]
+    response_modalities=["AUDIO"],
     thinking_config=types.ThinkingConfig(
         thinking_level="low",
     )
@@ -150,6 +150,7 @@ async for response in session.receive():
 
         # If realtime playback is implemented in your application,
         # you should stop playing audio and clear queued playback here.
+        pass
 
 from google.genai import types
 
@@ -259,6 +260,7 @@ Limitations:
 
 ## Notes
 
+- Snippet fixes vs. source: added the missing comma after `response_modalities` in the Extended Thinking config and a `pass` placeholder in the interruption handler so the Python parses.
 - Added a `server_content` presence check; messages such as tool calls, GoAway, and session-resumption updates carry no `server_content`.
 - The page opens with a warning: "Preview: The Live API is in preview."
 - Audio formats: Live API audio is always raw, little-endian, 16-bit PCM. Output is always 24kHz. Input is natively 16kHz but the API resamples if needed; set the Blob MIME type like `audio/pcm;rate=16000`.

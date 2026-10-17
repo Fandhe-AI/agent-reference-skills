@@ -90,12 +90,12 @@ turn_on_the_lights = {"name": "turn_on_the_lights", "behavior": "NON_BLOCKING"} 
 turn_off_the_lights = {"name": "turn_off_the_lights"} # turn_off_the_lights will still pause all interactions with the model
 
 # for a non-blocking function definition, apply scheduling in the function response:
-  function_response = types.FunctionResponse(
-      id=fc.id,
-      name=fc.name,
-      response={"result": "ok"},
-      scheduling="INTERRUPT" # Can also be WHEN_IDLE or SILENT
-  )
+function_response = types.FunctionResponse(
+    id=fc.id,
+    name=fc.name,
+    response={"result": "ok"},
+    scheduling="INTERRUPT" # Can also be WHEN_IDLE or SILENT
+)
 ```
 
 ```javascript
@@ -158,6 +158,7 @@ Scheduling values for a `NON_BLOCKING` function response:
 
 ## Notes
 
+- Dedented the `FunctionResponse` snippet (the source indents it inside an omitted loop over `fc`).
 - Unlike the `generateContent` API, the Live API doesn't support automatic tool response handling; you must handle tool responses manually in client code (`session.send_tool_response` / `sendToolResponse`).
 - Function calling executes sequentially by default (pauses until each result is available). Asynchronous function calling is not yet supported in Gemini 3.1 Flash Live; the model won't start responding until you've sent the tool response.
 - The official guide nests `scheduling` inside `response`; per the FunctionResponse API reference it is a top-level field, so the examples place it next to `id` / `name` / `response`.
