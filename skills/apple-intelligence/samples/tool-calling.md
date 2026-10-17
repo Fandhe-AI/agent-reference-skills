@@ -75,6 +75,8 @@ struct RecipeDynamicProfile: LanguageModelSession.DynamicProfile {
 }
 ```
 
+Adapted (not in the official docs): combines the init(profile:) example from composing-dynamic-sessions-with-instructions-and-profiles with RecipeDynamicProfile so the dynamic profile serves as the .required exit condition.
+
 ```swift
 let session = LanguageModelSession(
     profile: RecipeDynamicProfile()
