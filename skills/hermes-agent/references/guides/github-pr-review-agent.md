@@ -35,7 +35,7 @@ hermes cron create "0 */2 * * *" \
 Repos to monitor:
 - myorg/backend-api
 Steps:
-1. Run: gh pr list --repo REPO --state open --limit 5 --json number,title,author,createdAt
+1. Run: gh pr list --repo REPO --state open --limit 5 --search "sort:updated-desc" --json number,title,author,createdAt,updatedAt
 2. For each PR created or updated in the last 4 hours:
    - Run: gh pr diff NUMBER --repo REPO
    - Review the diff using the code-review guidelines
@@ -68,6 +68,7 @@ To post directly to GitHub, add to the prompt: `gh pr review NUMBER --repo REPO 
 - GitHub allows 5,000 authenticated API requests/hour; each review uses ~3-5.
 - For real-time reviews use the webhook approach (requires a public endpoint).
 - The upstream table (v0.22.2) lists `30m` as "Every 30 minutes"; `30m` is actually a one-shot relative delay (see cron-troubleshooting), so the table above uses `every 30m`.
+- Adapted: the upstream prompt (v0.22.2) fetches only createdAt; updatedAt and sort:updated-desc were added so PRs updated in the window are not missed.
 - Source: https://hermes-agent.nousresearch.com/docs/guides/github-pr-review-agent (pinned to v0.22.2)
 
 ## Related

@@ -7,9 +7,7 @@ Azure portal walkthrough for the app registration that powers the Teams meeting 
 1. entra.microsoft.com -> Identity -> Applications -> App registrations -> New registration (single tenant, no redirect URI). Copy Application (client) ID and Directory (tenant) ID.
 2. Certificates & secrets -> New client secret; copy the Value column immediately (not the Secret ID).
 3. API permissions -> Add a permission -> Microsoft Graph -> Application permissions, then Grant admin consent.
-4. (Recommended) scope with an Application Access Policy:
-
-Note: Microsoft Graph requires an application access policy for app-only access to onlineMeetings APIs (see Notes).
+4. (Required for app-only onlineMeetings access; the Hermes docs label this step Recommended) scope with an Application Access Policy:
 
 ```powershell
 New-CsApplicationAccessPolicy `

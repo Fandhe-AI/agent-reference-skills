@@ -38,7 +38,13 @@ EOF
 ollama create gemma4-64k -f ~/.hermes/cache/scratch/Modelfile
 ```
 
-Then update your Hermes config to use `gemma4-64k` as the model name (`model.default: "gemma4-64k"`).
+Then update your Hermes config to use `gemma4-64k` as the model name and set a matching context length:
+
+```yaml
+model:
+  default: "gemma4-64k"
+  context_length: 64000
+```
 
 Keep the model loaded: `curl http://localhost:11434/api/generate -d '{"model": "gemma4:31b", "keep_alive": "24h"}'` or `Environment="OLLAMA_KEEP_ALIVE=24h"` in `/etc/systemd/system/ollama.service.d/override.conf`.
 
@@ -77,6 +83,7 @@ providers:
 - Desktop app: Settings -> Providers -> Local Models manages a local llama.cpp server instead.
 - The guide's cost comparison (~$0.80 Claude Sonnet vs $0 local per ~100K-in / 20K-out session) is illustrative.
 - Adapted: the official guide pipes the installer straight into sh; this page splits it into download, review and run steps.
+- Adapted: context_length added because Ollama's /api/show reports the model maximum, not the custom num_ctx (see troubleshooting-agent-quality).
 - Source: https://hermes-agent.nousresearch.com/docs/guides/local-ollama-setup (pinned to v0.22.2)
 
 ## Related
