@@ -58,7 +58,7 @@ Two credential formats are supported:
 
 | Format | Grant | Description |
 | --- | --- | --- |
-| JWT Bearer Assertion (recommended) | `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer`, `assertion=<signed JWT>` | RFC 7523. Client signs a token with its private key; the authorization server validates with the registered public key. |
+| JWT Bearer Assertion (recommended) | JWT signed with the client's private key (RFC 7523); the overview diagram shows `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer` + `assertion=<signed JWT>` | Client signs a token with its private key; the authorization server validates with the registered public key. Grant notation here follows the overview diagram (see Notes). |
 | Client secret | `grant_type=client_credentials`, `client_id` + `client_secret` | Standard client credentials flow at the token endpoint. |
 
 Typical JWT assertion claims: `iss` (client ID), `sub` (client ID), `aud` (authorization server token endpoint URL), `exp`, `iat`.
@@ -66,6 +66,7 @@ Typical JWT assertion claims: `iss` (client ID), `sub` (client ID), `aud` (autho
 ## Notes
 
 - Source: tag `2026-07-28` raw, retrieved 2026-10-16 (unversioned site path `/extensions/`). The normative specification is in the ext-auth repository (not reproduced here).
+- RFC 7523 defines both a JWT authorization grant (section 2.1, `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer`) and JWT client authentication (section 2.2, `client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer` + `client_assertion`, used with `grant_type=client_credentials` as in `private_key_jwt` / `PrivateKeyJwtProvider`). The overview page's diagram and its "client credentials grant" step differ, so follow the normative ext-auth specification and the authorization server's metadata (`token_endpoint_auth_methods_supported`) for exact token request parameters.
 - Use for background services, CI/CD pipelines, server-to-server integrations, and daemons. If a human user should explicitly authorize access, use the standard MCP authorization flow.
 - Client secrets are long-lived credentials: store them in a secrets manager (never in source code or checked-in env files), rotate regularly and after suspected compromise, scope to minimum permissions, and prefer JWT assertions (short-lived, no transmission of the signing key).
 - Client steps: declare support, obtain an access token via the client credentials grant before connecting, include the Bearer token, and implement refresh since these tokens typically have shorter lifetimes.
