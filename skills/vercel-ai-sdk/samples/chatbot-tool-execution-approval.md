@@ -6,17 +6,41 @@ source: https://ai-sdk.dev/docs/ai-sdk-ui/chatbot-tool-usage
 
 Require user approval before a server-side tool runs, with `toolApproval` on `streamText` and `addToolApprovalResponse` in `useChat`.
 
+```ts
+// ai/tools.ts
+import { tool, InferUITools, UIDataTypes, UIMessage } from 'ai';
+import { z } from 'zod';
+
+export const tools = {
+  getWeather: tool({
+    description: 'Get the weather in a location',
+    inputSchema: z.object({
+      city: z.string(),
+    }),
+    execute: async ({ city }) => {
+      const weather = await fetchWeather(city);
+      return weather;
+    },
+  }),
+};
+
+export type MyUIMessage = UIMessage<
+  never,
+  UIDataTypes,
+  InferUITools<typeof tools>
+>;
+```
+
 ```tsx
 // app/api/chat/route.ts
 import {
   convertToModelMessages,
   createUIMessageStreamResponse,
   streamText,
-  tool,
   toUIMessageStream,
 } from 'ai';
 __PROVIDER_IMPORT__;
-import { z } from 'zod';
+import { tools } from '@/ai/tools';
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
@@ -24,18 +48,7 @@ export async function POST(req: Request) {
   const result = streamText({
     model: __MODEL__,
     messages: await convertToModelMessages(messages),
-    tools: {
-      getWeather: tool({
-        description: 'Get the weather in a location',
-        inputSchema: z.object({
-          city: z.string(),
-        }),
-        execute: async ({ city }) => {
-          const weather = await fetchWeather(city);
-          return weather;
-        },
-      }),
-    },
+    tools,
     toolApproval: {
       getWeather: 'user-approval',
     },
@@ -52,9 +65,10 @@ export async function POST(req: Request) {
 'use client';
 
 import { useChat } from '@ai-sdk/react';
+import type { MyUIMessage } from '@/ai/tools';
 
 export default function Chat() {
-  const { messages, addToolApprovalResponse } = useChat();
+  const { messages, addToolApprovalResponse } = useChat<MyUIMessage>();
 
   return (
     <>
@@ -142,8 +156,9 @@ export default function Chat() {
 // auto-submit after approval
 import { useChat } from '@ai-sdk/react';
 import { lastAssistantMessageIsCompleteWithApprovalResponses } from 'ai';
+import type { MyUIMessage } from '@/ai/tools';
 
-const { messages, addToolApprovalResponse } = useChat({
+const { messages, addToolApprovalResponse } = useChat<MyUIMessage>({
   sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithApprovalResponses,
 });
 ```
@@ -152,6 +167,7 @@ const { messages, addToolApprovalResponse } = useChat({
 
 - `__PROVIDER_IMPORT__` and `__MODEL__` are placeholders on the official page; `fetchWeather` is an application placeholder. `toolApproval` on `streamText` enables approval; the older `needsApproval` property on tools is deprecated.
 - Modified from the official example: the page passes `messages` (UI messages from `useChat`) straight to `streamText`; this version converts them with `await convertToModelMessages(messages)`, as the other `chatbot-tool-usage` examples do.
+- Modified from the official example: useChat is typed with a shared UIMessage type built from InferUITools so tool part input/output are typed (see references/ui/infer-ui-tools.md). The tool is moved to `ai/tools.ts` so route and page share it.
 - Call `addToolApprovalResponse` only for manual approvals; automatic approvals/denials arrive with `part.approval.isAutomatic === true`. If nothing happens after approving, call `sendMessage` manually or set `sendAutomaticallyWhen` (last block).
 - For sensitive tools the official page adds `experimental_toolApprovalSecret: process.env.TOOL_APPROVAL_SECRET` to `streamText` so the server verifies it issued the approval (experimental).
 - Agent-level approval concepts: `references/agents/tool-approvals.md`; this is the `useChat` UI side only.

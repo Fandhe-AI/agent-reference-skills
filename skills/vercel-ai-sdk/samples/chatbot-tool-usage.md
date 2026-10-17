@@ -6,6 +6,45 @@ source: https://ai-sdk.dev/docs/ai-sdk-ui/chatbot-tool-usage
 
 Server-side tools, automatically executed client-side tools (`onToolCall`), and user-confirmation tools with `useChat` and typed tool parts.
 
+```ts
+// ai/tools.ts
+import { tool, InferUITools, UIDataTypes, UIMessage } from 'ai';
+import { z } from 'zod';
+
+export const tools = {
+  // server-side tool with execute function:
+  getWeatherInformation: tool({
+    description: 'show the weather in a given city to the user',
+    inputSchema: z.object({ city: z.string() }),
+    execute: async ({}: { city: string }) => {
+      const weatherOptions = ['sunny', 'cloudy', 'rainy', 'snowy', 'windy'];
+      return weatherOptions[Math.floor(Math.random() * weatherOptions.length)];
+    },
+  }),
+  // client-side tool that starts user interaction:
+  askForConfirmation: tool({
+    description: 'Ask the user for confirmation.',
+    inputSchema: z.object({
+      message: z.string().describe('The message to ask for confirmation.'),
+    }),
+    outputSchema: z.string(),
+  }),
+  // client-side tool that is automatically executed on the client:
+  getLocation: tool({
+    description:
+      'Get the user location. Always ask for confirmation before using this tool.',
+    inputSchema: z.object({}),
+    outputSchema: z.string(),
+  }),
+};
+
+export type MyUIMessage = UIMessage<
+  never,
+  UIDataTypes,
+  InferUITools<typeof tools>
+>;
+```
+
 ```tsx
 // app/api/chat/route.ts
 import {
@@ -16,7 +55,7 @@ import {
   UIMessage,
 } from 'ai';
 __PROVIDER_IMPORT__;
-import { z } from 'zod';
+import { tools } from '@/ai/tools';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -27,32 +66,7 @@ export async function POST(req: Request) {
   const result = streamText({
     model: __MODEL__,
     messages: await convertToModelMessages(messages),
-    tools: {
-      // server-side tool with execute function:
-      getWeatherInformation: {
-        description: 'show the weather in a given city to the user',
-        inputSchema: z.object({ city: z.string() }),
-        execute: async ({}: { city: string }) => {
-          const weatherOptions = ['sunny', 'cloudy', 'rainy', 'snowy', 'windy'];
-          return weatherOptions[
-            Math.floor(Math.random() * weatherOptions.length)
-          ];
-        },
-      },
-      // client-side tool that starts user interaction:
-      askForConfirmation: {
-        description: 'Ask the user for confirmation.',
-        inputSchema: z.object({
-          message: z.string().describe('The message to ask for confirmation.'),
-        }),
-      },
-      // client-side tool that is automatically executed on the client:
-      getLocation: {
-        description:
-          'Get the user location. Always ask for confirmation before using this tool.',
-        inputSchema: z.object({}),
-      },
-    },
+    tools,
   });
 
   return createUIMessageStreamResponse({
@@ -71,9 +85,10 @@ import {
   lastAssistantMessageIsCompleteWithToolCalls,
 } from 'ai';
 import { useState } from 'react';
+import type { MyUIMessage } from '@/ai/tools';
 
 export default function Chat() {
-  const { messages, sendMessage, addToolOutput } = useChat({
+  const { messages, sendMessage, addToolOutput } = useChat<MyUIMessage>({
     transport: new DefaultChatTransport({
       api: '/api/chat',
     }),
@@ -289,6 +304,7 @@ export default function Chat() {
 ## Notes
 
 - `__PROVIDER_IMPORT__` and `__MODEL__` are placeholders on the official page; replace them with your provider import and model.
+- Modified from the official example: useChat is typed with a shared UIMessage type built from InferUITools so tool part input/output are typed (see references/ui/infer-ui-tools.md). The tools move to `ai/tools.ts` (wrapped in `tool()`); the client-side tools `askForConfirmation` and `getLocation` have no `execute`, so they declare `outputSchema: z.string()` to give `part.output` and `addToolOutput` a type.
 - Always check `if (toolCall.dynamic)` first in `onToolCall`, and call `addToolOutput` without `await` to avoid deadlocks. The last block is an excerpt of the page's error-handling example (`getLocation` is an application function there).
 - Tool parts are named `tool-{toolName}`; dynamic tools use a generic `dynamic-tool` part. `sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls` re-submits once all results are present.
 - Server-side multi-step is `stopWhen: isStepCount(5)` when every tool has `execute`. Tool errors are masked by default ("An error occurred"); customize with `onError` on `toUIMessageStream`. Approval flows are in `chatbot-tool-execution-approval.md`.

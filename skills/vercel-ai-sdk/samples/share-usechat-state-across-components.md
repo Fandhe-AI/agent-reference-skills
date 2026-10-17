@@ -62,8 +62,18 @@ export function useSharedChatContext() {
 // app/layout.tsx
 import { ChatProvider } from './chat-context';
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  return <ChatProvider>{children}</ChatProvider>;
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <ChatProvider>{children}</ChatProvider>
+      </body>
+    </html>
+  );
 }
 ```
 
@@ -143,6 +153,7 @@ export default function ChatInput() {
 ## Notes
 
 - Pass the shared `Chat` instance to `useChat({ chat })` in every component; resetting is done by replacing the instance (`setChat(createChat())`). Replace `UIMessage` with your custom message type.
+- Modified from the official example: the root layout now renders <html> and <body>, as Next.js App Router requires; ChatProvider wraps children inside <body>.
 - The Stop button uses `type="button"` (the official cookbook uses `type="submit"`, which would also trigger the form `onSubmit` and send any draft text).
 - The server route is the standard `streamText` + `createUIMessageStreamResponse` handler shown in `quickstart-nextjs-app-router.md`.
 - Send-only-the-last-message customization (`prepareSendMessagesRequest` on `DefaultChatTransport`) is covered in `chatbot-message-persistence.md`; the standalone cookbook recipe is merged there.

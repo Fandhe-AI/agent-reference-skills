@@ -7,16 +7,39 @@ source: https://ai-sdk.dev/cookbook/next/human-in-the-loop
 Pause a tool until the user approves with the tool-level `needsApproval` property, including conditional approval and a denial instruction.
 
 ```ts
+// ai/tools.ts
+import { tool, InferUITools, UIDataTypes, UIMessage } from 'ai';
+import { z } from 'zod';
+
+export const tools = {
+  getWeatherInformation: tool({
+    description: 'show the weather in a given city to the user',
+    inputSchema: z.object({ city: z.string() }),
+    needsApproval: true,
+    execute: async ({ city }) => {
+      const weatherOptions = ['sunny', 'cloudy', 'rainy', 'snowy'];
+      return weatherOptions[Math.floor(Math.random() * weatherOptions.length)];
+    },
+  }),
+};
+
+export type MyUIMessage = UIMessage<
+  never,
+  UIDataTypes,
+  InferUITools<typeof tools>
+>;
+```
+
+```ts
 // app/api/chat/route.ts
 import {
   convertToModelMessages,
   streamText,
-  tool,
   createUIMessageStreamResponse,
   toUIMessageStream,
 } from 'ai';
 import { openai } from '@ai-sdk/openai';
-import { z } from 'zod';
+import { tools } from '@/ai/tools';
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
@@ -24,19 +47,7 @@ export async function POST(req: Request) {
   const result = streamText({
     model: openai('gpt-6-astra'),
     messages: await convertToModelMessages(messages),
-    tools: {
-      getWeatherInformation: tool({
-        description: 'show the weather in a given city to the user',
-        inputSchema: z.object({ city: z.string() }),
-        needsApproval: true,
-        execute: async ({ city }) => {
-          const weatherOptions = ['sunny', 'cloudy', 'rainy', 'snowy'];
-          return weatherOptions[
-            Math.floor(Math.random() * weatherOptions.length)
-          ];
-        },
-      }),
-    },
+    tools,
   });
 
   return createUIMessageStreamResponse({
@@ -55,14 +66,17 @@ import {
   lastAssistantMessageIsCompleteWithApprovalResponses,
 } from 'ai';
 import { useState } from 'react';
+import type { MyUIMessage } from '@/ai/tools';
 
 export default function Chat() {
-  const { messages, sendMessage, addToolApprovalResponse } = useChat({
-    transport: new DefaultChatTransport({
-      api: '/api/chat',
-    }),
-    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithApprovalResponses,
-  });
+  const { messages, sendMessage, addToolApprovalResponse } =
+    useChat<MyUIMessage>({
+      transport: new DefaultChatTransport({
+        api: '/api/chat',
+      }),
+      sendAutomaticallyWhen:
+        lastAssistantMessageIsCompleteWithApprovalResponses,
+    });
   const [input, setInput] = useState('');
 
   return (
@@ -203,5 +217,6 @@ const result = streamText({
 
 - This cookbook page uses the tool-level `needsApproval` property (`true` or an async predicate such as `amount > 1000`). The newer chatbot guide marks `needsApproval` as deprecated in favour of `toolApproval` on `streamText` (see `chatbot-tool-execution-approval.md`); check the installed version before copying.
 - Modified from the official example: the page passes `messages` (UI messages) directly to `streamText`; the two route examples here convert them with `await convertToModelMessages(messages)`.
+- Modified from the official example: useChat is typed with a shared UIMessage type built from InferUITools so tool part input/output are typed (see references/ui/infer-ui-tools.md). The tool is moved to `ai/tools.ts` so route and page share it.
 - Server flow: an approval-required call sends an `approval-requested` tool part with `approval.id`; after `addToolApprovalResponse` and the auto re-submit, an approved tool runs `execute`, a denied one gives the model the denial.
 - Durable human-in-the-loop with workflows is in `references/workflow-harnesses/workflow-agent-guide.md`.

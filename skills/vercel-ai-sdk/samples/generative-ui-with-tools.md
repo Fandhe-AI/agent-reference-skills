@@ -8,7 +8,12 @@ Map a tool result to a React component: define `displayWeather`, add it to `stre
 
 ```ts
 // ai/tools.ts
-import { tool as createTool } from 'ai';
+import {
+  tool as createTool,
+  InferUITools,
+  UIDataTypes,
+  UIMessage,
+} from 'ai';
 import { z } from 'zod';
 
 export const weatherTool = createTool({
@@ -25,6 +30,12 @@ export const weatherTool = createTool({
 export const tools = {
   displayWeather: weatherTool,
 };
+
+export type MyUIMessage = UIMessage<
+  never,
+  UIDataTypes,
+  InferUITools<typeof tools>
+>;
 ```
 
 ```ts
@@ -83,10 +94,11 @@ export const Weather = ({ temperature, weather, location }: WeatherProps) => {
 import { useChat } from '@ai-sdk/react';
 import { useState } from 'react';
 import { Weather } from '@/components/weather';
+import type { MyUIMessage } from '@/ai/tools';
 
 export default function Page() {
   const [input, setInput] = useState('');
-  const { messages, sendMessage } = useChat();
+  const { messages, sendMessage } = useChat<MyUIMessage>();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -144,6 +156,7 @@ export default function Page() {
 ## Notes
 
 - `__PROVIDER_IMPORT__` and `__MODEL__` are placeholders on the official page; replace them with your provider import and model.
+- Modified from the official example: useChat is typed with a shared UIMessage type built from InferUITools so tool part input/output are typed (see references/ui/infer-ui-tools.md).
 - Tool parts use typed names `tool-${toolName}`; the key in the `tools` object (`displayWeather`) is the part name. The weather tool simulates an API with a 2-second delay and returns fixed data.
 - To add more tools, extend the `tools` object (the official page adds `getStockPrice` and a `Stock` component the same way) and add another `part.type` branch.
 - This is the AI SDK UI (`useChat`) approach; the streamUI approach is in the experimental RSC sample `rsc-generative-ui-streamui.md`.
