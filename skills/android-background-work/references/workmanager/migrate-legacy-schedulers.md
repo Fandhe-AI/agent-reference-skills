@@ -1,6 +1,6 @@
 # Migrate from FirebaseJobDispatcher / GcmNetworkManager
 
-Official mapping guides for moving off the two deprecated pre-WorkManager job schedulers onto `Worker`/`WorkRequest`. Both source libraries are deprecated; WorkManager is the only currently maintained option and unifies `JobScheduler`/`AlarmManager`/Firebase JobDispatcher/GCMNetworkManager scheduling under one API, currently down to minSdk API 24 (raised from API 23 in WorkManager 2.12.0; 21 to 23 in 2.11.0).
+Official mapping guides for moving off the two deprecated pre-WorkManager job schedulers onto `Worker`/`WorkRequest`. Both source libraries are deprecated; WorkManager is the only currently maintained option and unifies `JobScheduler`/`AlarmManager`/Firebase JobDispatcher/GCMNetworkManager scheduling under one API, with minSdk API 24 (raised from API 23 in WorkManager 2.12.0; from 21 to 23 in 2.11.0).
 
 ## Signature / Usage
 
@@ -24,6 +24,8 @@ WorkManager.getInstance(context)
 
 ## Options / Props
 
+Mapping table (legacy API to WorkManager equivalent; there are no Type/Default columns):
+
 | FirebaseJobDispatcher / GcmNetworkManager | WorkManager equivalent |
 |------|-------------|
 | `JobService` (direct) | `ListenableWorker` |
@@ -41,6 +43,7 @@ WorkManager.getInstance(context)
 ## Notes
 
 - Gradle: add `androidx.work:work-runtime`/`work-runtime-ktx`; migrating specifically off `GcmNetworkManager` on API 22 and below additionally needs `androidx.work:work-gcm` so WorkManager can fall back to GCM Network Manager as its scheduling backend on very old devices.
+- Since WorkManager 2.11.0 raised minSdk to API 23 (API 24 in 2.12.0), the `work-gcm` fallback for API 22 and below applies only to apps pinned to WorkManager 2.10.x or earlier; the official migration guide predates this change.
 - Remove the old `GcmTaskService`/`JobService` `<service>` declaration from the manifest — WorkManager's own initialization (see [Configuration](./configuration.md)) handles registration.
 - Both FirebaseJobDispatcher and GCMNetworkManager are themselves deprecated/archived; there is no ongoing API surface to track beyond this one-time migration.
 

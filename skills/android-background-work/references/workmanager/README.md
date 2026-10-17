@@ -2,7 +2,7 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| BackoffPolicy and Retry | Retry backoff strategy applied when a worker returns `Result.retry()` or throws, configured via `WorkRequest.Builder.setBackoffCriteria`. | [backoffpolicy.md](./backoffpolicy.md) |
+| BackoffPolicy and Retry | Retry backoff strategy applied when a worker returns `Result.retry()`, configured via `WorkRequest.Builder.setBackoffCriteria`. | [backoffpolicy.md](./backoffpolicy.md) |
 | Configuration / Configuration.Provider | Customizes WorkManager's initialization: executors, custom worker/input-merger factories, logging, and scheduler limits. | [configuration.md](./configuration.md) |
 | Constraints / NetworkType | Optimal-condition requirements (network, charging, idle, storage, content URI triggers) that must be met before a `WorkRequest` runs. | [constraints.md](./constraints.md) |
 | CoroutineWorker | Recommended `ListenableWorker` implementation for Kotlin, exposing a suspending `doWork()` function. | [coroutineworker.md](./coroutineworker.md) |
@@ -14,7 +14,7 @@
 | ForegroundInfo and Long-Running Workers | Support for workers that run longer than 10 minutes under a foreground service managed by WorkManager, backed by a user-visible notification. | [foreground-work.md](./foreground-work.md) |
 | Threading in ListenableWorker | Deep dive on `ListenableWorker`, the base primitive that leaves threading entirely to the implementation, and the `ListenableFuture`-based `startWork()` contract used to wrap callback-based async APIs. | [listenableworker-threading.md](./listenableworker-threading.md) |
 | Support for Long-Running Workers | How-to guide for workers that run longer than 10 minutes, walking through `setForeground`/`setForegroundAsync`, manifest declarations, and per-API-level foreground service type requirements. | [long-running-support.md](./long-running-support.md) |
-| Migrate from FirebaseJobDispatcher / GcmNetworkManager | Official mapping guides for migrating from the deprecated FirebaseJobDispatcher and GcmNetworkManager schedulers to WorkManager `Worker`/`WorkRequest`. | [migrate-legacy-schedulers.md](./migrate-legacy-schedulers.md) |
+| Migrate from FirebaseJobDispatcher / GcmNetworkManager | Official mapping guides for moving off the two deprecated pre-WorkManager job schedulers onto `Worker`/`WorkRequest`. | [migrate-legacy-schedulers.md](./migrate-legacy-schedulers.md) |
 | Multiprocess WorkManager (RemoteWorkManager / RemoteListenableWorker / RemoteCoroutineWorker) | APIs from the `androidx.work:work-multiprocess` artifact for multi-process apps: binding individual workers to a specific process, and enqueueing/querying/cancelling work from any process via `RemoteWorkManager`. `RemoteWorkManager` is available since WorkManager 2.5.0; `RemoteListenableWorker`/`RemoteCoroutineWorker` since 2.6.0. | [multiprocess.md](./multiprocess.md) |
 | Observe Intermediate Worker Progress | How-to guide for setting intermediate progress from inside a worker via `setProgress`/`setProgressAsync`, and observing it (and the stop reason) from outside via `WorkInfo`. | [observe-progress.md](./observe-progress.md) |
 | Operation | Return type of `WorkManager.enqueue*`, `cancel*`, and `pruneWork()` calls; represents the asynchronous WorkManager database write itself (not the eventual work execution). | [operation.md](./operation.md) |
@@ -24,7 +24,7 @@
 | Testing WorkManager | Unit-testing individual workers with `TestWorkerBuilder` / `TestListenableWorkerBuilder`, and integration-testing full WorkManager behavior with `WorkManagerTestInitHelper`. | [testing.md](./testing.md) |
 | Threading in WorkManager | Overview of how the four worker primitives (`Worker`, `CoroutineWorker`, `RxWorker`, `ListenableWorker`) execute in the background. | [threading.md](./threading.md) |
 | WorkManager.updateWork() | Replaces the definition of an already-enqueued `WorkRequest` in place — preserving its enqueue time (and, for periodic work, its scheduling alignment) instead of cancelling and re-enqueueing a new request. Available since WorkManager 2.8.0. | [update-work.md](./update-work.md) |
-| Work Metrics (work-analytics) | Experimental `androidx.work.analytics` APIs that record and query per-work metrics (timings, run attempts, stop reasons) by listening to WorkManager scheduling and execution events. | [work-analytics.md](./work-analytics.md) |
+| Work Metrics (work-analytics): WorkMetricsInfoRepository / WorkMetricsInfo / WorkMetricsQuery | Experimental `androidx.work.analytics` APIs that record and query per-work metrics (timings, run attempts, stop reasons) by listening to WorkManager scheduling and execution events. | [work-analytics.md](./work-analytics.md) |
 | WorkContinuation | Represents a chain of dependent `OneTimeWorkRequest`s created via `WorkManager.beginWith()` / `beginUniqueWork()`. | [workcontinuation.md](./workcontinuation.md) |
 | WorkerFactory / DelegatingWorkerFactory | Pluggable factory for constructing `ListenableWorker` instances, used to support dependency injection into workers. | [worker-factory.md](./worker-factory.md) |
 | Worker / ListenableWorker / Result | Base classes for defining background work executed by WorkManager, and the result type returned from execution. | [worker.md](./worker.md) |
