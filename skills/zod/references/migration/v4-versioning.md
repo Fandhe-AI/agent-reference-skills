@@ -8,7 +8,7 @@ Versioning strategy for Zod 4: subpath versioning (`"zod/v4"`) used during the t
 
 ## Signature / Usage
 
-```
+```sh
 npm install zod@^4.0.0
 ```
 
@@ -22,7 +22,7 @@ Optional import rewrites after upgrading (existing `"zod/v4"` and `"zod/v4-mini"
 
 Library authors: bump the peer dependency range. No other code changes are necessary (no code changes were made between the latest `3.25.x` release and `4.0.0`).
 
-```json
+```jsonc
 // package.json
 {
   "peerDependencies": {
@@ -31,7 +31,7 @@ Library authors: bump the peer dependency range. No other code changes are neces
 }
 ```
 
-Libraries supporting both majors import from the subpaths, never the root:
+Historical rollout write-up: libraries supporting both majors imported from the subpaths, never the root:
 
 ```ts
 import * as z3 from "zod/v3"
@@ -40,6 +40,8 @@ import * as z4 from "zod/v4"
 
 ## Notes
 
+- Code fence language changed from json to jsonc because the official snippet contains a // comment.
+- The `zod/v3` / `zod/v4` import snippet is from the historical rollout write-up; current library-author guidance (zod.dev/library-authors) is to import only from "zod/v4/core" (plus "zod/v3"), since building against "zod/v4" excludes Zod Mini.
 - Fetched from tag v4.6.7: https://github.com/colinhacks/zod/blob/v4.6.7/packages/docs/content/v4/versioning.mdx
 - Update of July 8th, 2025: `zod@4.0.0` was published to npm; the package root (`"zod"`) now exports Zod 4. All other subpaths are unchanged and remain available forever.
 - Original plan: Zod 4 shipped at subpath `"zod/v4"` alongside `zod@3.25.0` and was considered stable and production-ready; Zod 3 stayed at the root and at `"zod/v3"`, receiving bug fixes and stability improvements. Later the root switched to Zod 4 and `zod@4.0.0` was published. The approach is analogous to how Go handles major version changes.

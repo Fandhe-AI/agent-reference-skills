@@ -1,3 +1,7 @@
+---
+source: https://zod.dev/packages/core
+---
+
 # Zod Core (zod/v4/core)
 
 The foundational sub-package that exports core classes and utilities consumed by Zod and Zod Mini -- not intended for direct use.
@@ -95,7 +99,7 @@ export type $ZodTypes =
 
 ### Inheritance Diagram
 
-```
+```text
 $ZodType
   +-- $ZodString
   |     +-- $ZodStringFormat

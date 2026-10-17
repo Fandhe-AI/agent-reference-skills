@@ -20,8 +20,10 @@ const Player = z.object({
 
 const CompiledPlayer = z.compile(Player);
 
-Player.parse({ ... });
-CompiledPlayer.parse({ ... }); // ~9x faster
+const input = { username: "billie", bio: "hi", xp: 100 /* ...20 more properties... */ };
+
+Player.parse(input);
+CompiledPlayer.parse(input); // ~9x faster
 ```
 
 A compiled schema is a Zod schema like any other: same methods (`.parse()`, `.safeParse()`, `.extend()`, `.optional()`, etc.), same inferred input and output types, same issues and error messages. Containers like objects and tuples benefit the most.
@@ -85,6 +87,7 @@ z.compile(Schema, { strict: true }); // throws ZodCompileAsyncError
 
 ## Notes
 
+- The official snippet uses `{ ... }` as a placeholder; replaced with a concrete object so the example runs.
 - Fetched from tag v4.6.7: https://github.com/colinhacks/zod/blob/v4.6.7/packages/docs/content/compile.mdx
 - How it works: `z.compile()` walks the schema once and produces flat, loop-free JavaScript executed via `new Function()` as a fast-path validator. Schemas "fast check" validity and fall back to the regular runtime logic on failure to produce granular errors.
 - On invalid input the fallback runs the uncompiled schema, so the error is the uncompiled schema's error. Invalid inputs pay for both the fast path and the fallback, so compilation barely speeds up failures.
