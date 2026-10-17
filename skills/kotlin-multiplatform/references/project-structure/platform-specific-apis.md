@@ -42,7 +42,7 @@ expect fun platform(): Platform
 // In the androidMain source set:
 class AndroidPlatform : Platform
 
-actual fun platform() = AndroidPlatform()
+actual fun platform(): Platform = AndroidPlatform()
 ```
 
 Dependency injection with Koin (expected module):
@@ -67,6 +67,7 @@ actual val platformModule = module {
 
 ## Notes
 
+- The official sample writes `actual fun platform() = AndroidPlatform()`; the inferred return type `AndroidPlatform` does not match `expect fun platform(): Platform`, so the return type is declared explicitly here.
 - Before writing platform-specific code, check klibs.io for a multiplatform library (networking, logging, analytics, device functionality).
 - Expected and actual declarations must be defined in the same package so they merge into one declaration. They work for functions, classes, interfaces, enumerations, properties, and annotations; this page focuses on functions and properties, which are most useful for simple cases.
 - Do not include implementation code in the `expect` declaration.
