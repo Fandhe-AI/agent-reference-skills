@@ -6,7 +6,7 @@ source: https://ai-sdk.dev/docs/migration-guides/migration-guide-7-0
 
 `@ai-sdk/codemod` commands for upgrading AI SDK codebases (4.x to 7.0).
 
-> **警告**: codemod はソースコードを直接書き換える。実行前に作業ツリーを commit して差分を確認できる状態にし、使い捨てブランチまたは使い捨て環境で実行する。公式も「全変更を網羅するとは限らない」と注記している。
+> **Warning**: Codemods rewrite source files in place. Commit your working tree first so the diff can be reviewed, and run them on a disposable branch or in a disposable environment. The official docs also note that codemods do not cover every change.
 
 ## v7 codemods (6.x to 7.0)
 

@@ -4,35 +4,35 @@ source: https://ai-sdk.dev/docs/ai-sdk-core/devtools
 
 # devtools
 
-AI SDK DevTools のインストールとビューア起動コマンド。
+Commands to install AI SDK DevTools and start the viewer.
 
-> **警告**: DevTools は experimental でローカル開発専用。本番環境では使わない（公式の警告）。キャプチャしたデータは `.devtools/generations.json` に保存される。
+> **Warning**: DevTools is experimental and intended for local development only. Do not use it in production (official warning). Captured data is stored in `.devtools/generations.json`.
 
-## DevTools パッケージのインストール
+## Install the DevTools package
 
 ```sh
 npm i @ai-sdk/devtools
 ```
 
-公式は `pnpm add @ai-sdk/devtools`。AI SDK v7 (`ai@latest`) が必要。
+The official page uses `pnpm add @ai-sdk/devtools`. AI SDK v7 (`ai@latest`) is required.
 
-## ビューアの起動
+## Start the viewer
 
 ```sh
 npx @ai-sdk/devtools@latest
 ```
 
-別ターミナルで起動し、`http://localhost:4983` を開く。
+Run it in a separate terminal and open `http://localhost:4983`.
 
-## monorepo での起動
+## Start in a monorepo
 
 ```sh
 cd apps/api
 npx @ai-sdk/devtools@latest
 ```
 
-AI SDK のコードが動くワークスペース（例: `apps/api`）から起動する。`@latest` を付けるのは、`npx` が bin のリンクされていない推移的依存ではなく実行可能なコピーをインストールするため（公式の説明）。
+Start it from the workspace where the AI SDK code runs (for example `apps/api`). `@latest` is used so that `npx` installs an executable copy instead of a transitive dependency whose bin is not linked (official explanation).
 
 ## Notes
 
-- 統合の登録コード（`registerTelemetry(DevToolsTelemetry())`）は `references/operations/devtools.md` を参照。
+- For the integration registration code (`registerTelemetry(DevToolsTelemetry())`), see `references/operations/devtools.md`.

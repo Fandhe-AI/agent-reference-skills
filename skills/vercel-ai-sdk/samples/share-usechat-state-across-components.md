@@ -131,7 +131,7 @@ export default function ChatInput() {
         onChange={e => setText(e.target.value)}
       />
       {stop && (status === 'streaming' || status === 'submitted') && (
-        <button type="submit" onClick={stop}>
+        <button type="button" onClick={stop}>
           Stop
         </button>
       )}
@@ -143,5 +143,6 @@ export default function ChatInput() {
 ## Notes
 
 - Pass the shared `Chat` instance to `useChat({ chat })` in every component; resetting is done by replacing the instance (`setChat(createChat())`). Replace `UIMessage` with your custom message type.
+- The Stop button uses `type="button"` (the official cookbook uses `type="submit"`, which would also trigger the form `onSubmit` and send any draft text).
 - The server route is the standard `streamText` + `createUIMessageStreamResponse` handler shown in `quickstart-nextjs-app-router.md`.
 - Send-only-the-last-message customization (`prepareSendMessagesRequest` on `DefaultChatTransport`) is covered in `chatbot-message-persistence.md`; the standalone cookbook recipe is merged there.
