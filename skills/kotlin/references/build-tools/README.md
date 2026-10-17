@@ -16,4 +16,3 @@
 | Configure Kotlin compiler for your Maven project | `kotlin-maven-plugin` lets you specify compiler options, choose an execution strategy, and enable incremental compilation. | [maven-kotlin-compiler.md](./maven-kotlin-compiler.md) |
 | Set repositories and dependencies in a Maven project | Configure extra repositories beyond Maven Central and declare Kotlin standard library, test, and kotlinx dependencies, optionally managed by the Kotlin BOM. | [maven-set-dependencies.md](./maven-set-dependencies.md) |
 | Maven | Maven manages Kotlin-only or mixed Kotlin-Java JVM projects: downloads dependencies, compiles, and packages your code. | [maven.md](./maven.md) |
-</content>

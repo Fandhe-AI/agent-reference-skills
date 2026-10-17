@@ -17,4 +17,3 @@
 | Properties | Properties store and manage data through accessors: an automatically generated getter (`get()`) and, for `var`, a setter (`set()`). | [properties.md](./properties.md) |
 | Sealed classes and interfaces | Sealed classes and interfaces give controlled inheritance: all direct subclasses are known at compile time, and none can appear outside the module and package where the sealed type is defined. | [sealed-classes.md](./sealed-classes.md) |
 | This expressions | `this` refers to the current receiver: the current object in a class member, or the receiver in an extension function or a function literal with receiver. | [this-expressions.md](./this-expressions.md) |
-</content>

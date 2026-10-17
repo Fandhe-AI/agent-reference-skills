@@ -44,7 +44,7 @@ when (userRole) {
 }
 ```
 
-As a statement, cases need not be exhaustive. As an expression, all cases must be covered; with a subject of `Boolean`, enum class, sealed class (or nullable counterparts) no `else` is needed. Without a subject, an `else` branch is required.
+As a statement, cases need not be exhaustive, except when the subject is of type `Boolean`, an enum class, a sealed class/interface, or one of their nullable counterparts — such `when` statements must also cover all cases (or have an `else`). As an expression, all cases must always be covered: either list every case (possible without `else` for the subject types above) or add an `else` branch. Without a subject, an `else` branch is required.
 
 ```kotlin
 enum class Bit {
@@ -208,6 +208,7 @@ do {
 
 ## Notes
 
+- The official Control flow page states that `when` statements need not be exhaustive; the compiler nevertheless requires exhaustiveness for Boolean/enum/sealed subjects.
 - Guard conditions cannot be combined with multiple comma-separated conditions in one branch (for example `0, 1 -> ...`). In a `when` expression with guard conditions and no `else`, the compiler requires every case to be handled.
 - JVM 21+: the compiler generates an `invokedynamic` instruction (`SwitchBootstraps.typeSwitch()`) for eligible `when` expressions when all of these hold: all conditions except `else` are `is` or `null` checks; no guard conditions; no types that cannot be type-checked directly (for example `MutableList` or function types); at least two conditions besides `else`; all branches check the same subject.
 - Context-sensitive resolution (omitting the type name for enum entries / sealed members in `when` when the expected type is known) is described in the source as "currently in preview" and is linked to the What's New 2.2 page; check its stability before use.

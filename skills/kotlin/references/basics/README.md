@@ -16,4 +16,3 @@
 | Packages and imports | Code is organized using packages and imports: a package is a container for one or more Kotlin files, linked by a `package` header; an import makes entities from other packages available in the current file. | [packages.md](./packages.md) |
 | Returns and jumps | Kotlin has three structural jump expressions: `return` (from the nearest enclosing function or anonymous function), `break` (terminates the nearest enclosing loop), and `continue` (proceeds to the next step of the nearest enclosing loop). | [returns.md](./returns.md) |
 | Visibility modifiers | Classes, objects, interfaces, constructors, functions, properties and their setters can have visibility modifiers. | [visibility-modifiers.md](./visibility-modifiers.md) |
-</content>
