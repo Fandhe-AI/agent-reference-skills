@@ -37,12 +37,12 @@ function AComponent({children}: {children?: ReactNode}) {
 
 | Name | Type | Description |
 | --- | --- | --- |
-| x | number | The `x` coordinate of the origin (top-left corner) of the measured view in the viewport. |
-| y | number | The `y` coordinate of the origin (top-left corner) of the measured view in the viewport. |
+| x | number | The `x` coordinate of the view's origin relative to its parent view. |
+| y | number | The `y` coordinate of the view's origin relative to its parent view. |
 | width | number | The `width` of the view. |
 | height | number | The `height` of the view. |
-| pageX | number | The `x` coordinate of the view in the viewport (typically the whole screen). |
-| pageY | number | The `y` coordinate of the view in the viewport (typically the whole screen). |
+| pageX | number | The `x` coordinate of the view relative to the root view (typically the whole screen). |
+| pageY | number | The `y` coordinate of the view relative to the root view (typically the whole screen). |
 
 `measureInWindow(callback)` callback arguments:
 
@@ -57,7 +57,8 @@ function AComponent({children}: {children?: ReactNode}) {
 
 - Deviation from the official page: the official snippet is untyped (useRef(null), untyped children); explicit types and imports are added so it compiles under strict TypeScript.
 - Corrected: the official snippet left View unclosed and took props as children.
-- `measure(callback)`: determines the location on screen (`x` and `y`), `width`, and `height` in the viewport of the given view. Returns the values via an async callback. The `width` and `height` returned are the width and height of the component in the viewport.
+- Deviation from the official page: the official text describes x/y as viewport coordinates; they are relative to the parent view, while pageX/pageY are relative to the root view.
+- `measure(callback)`: determines the location (`x` and `y` relative to the parent view; `pageX` and `pageY` relative to the root view), `width`, and `height` of the given view. Returns the values via an async callback.
 - `measureInWindow(callback)`: determines the location (`x` and `y`) of the given view in the window and returns the values via an async callback. If the React root view is embedded in another native view, this gives you the absolute coordinates.
 - The methods are available on most of the default components provided by React Native. They are not available on composite components that are not directly backed by a native view, which generally includes most components defined in your own app.
 

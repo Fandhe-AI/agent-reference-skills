@@ -249,6 +249,11 @@ public class MainApplication extends Application implements ReactApplication {
   };
 
   @Override
+  public ReactNativeHost getReactNativeHost() {
+    return reactNativeHost;
+  }
+
+  @Override
   public ReactHost getReactHost() {
     return DefaultReactHost.getDefaultReactHost(getApplicationContext(), reactNativeHost);
   }
@@ -336,6 +341,7 @@ yarn run android
 - Corrected: the official snippet returned username.toString(), which yields the string "null" for missing keys.
 - The official page initializes SoLoader with (this, false); updated to OpenSourceMergedSoMapping as required since RN 0.76 merged native libraries.
 - Corrected: the official Java snippet overrides isHermesEnabled() with a primitive boolean; DefaultReactNativeHost declares it as a nullable Boolean (java.lang.Boolean), so the return type is Boolean.
+- Deviation from the official page: the Java MainApplication adds the getReactNativeHost() override (as in the official integration-with-existing-apps Java example) to satisfy ReactApplication.
 - Docusaurus highlight markers from the official page are removed; snippets show the final code.
 - Registering the package means telling React Native in the main application how to find this `Package`; here it is added to the list returned by the `getPackages` method.
 - Later you learn how to distribute Native Modules as npm packages, which the build tooling autolinks (see "Create a Library for Your Module").

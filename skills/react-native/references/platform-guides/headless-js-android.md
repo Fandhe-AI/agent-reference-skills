@@ -179,7 +179,7 @@ Service can be started from Java API. First you need to decide when the service 
 
 ```xml
 <!-- Not delivered to manifest-declared receivers when targetSdk >= 24 -->
-<receiver android:name=".NetworkChangeReceiver" >
+<receiver android:name=".NetworkChangeReceiver" android:exported="false" >
   <intent-filter>
     <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
   </intent-filter>
@@ -221,9 +221,13 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             boolean hasInternet = isNetworkAvailable(context);
             Intent serviceIntent = new Intent(context, MyTaskService.class);
             serviceIntent.putExtra("hasInternet", hasInternet);
-            // MyTaskService must call startForeground() with a notification (and declare android:foregroundServiceType on API 34+), otherwise use startService when the app is allowed to start background services
-            context.startForegroundService(serviceIntent);
-            HeadlessJsTaskService.acquireWakeLockNow(context);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                // MyTaskService must call startForeground() with a notification (and declare android:foregroundServiceType on API 34+), otherwise use startService when the app is allowed to start background services
+                context.startForegroundService(serviceIntent);
+                HeadlessJsTaskService.acquireWakeLockNow(context);
+            } else {
+                // Android 12+: background foreground-service starts are disallowed; schedule work with WorkManager (NetworkType.CONNECTED constraint) instead
+            }
         }
     }
 
@@ -304,9 +308,13 @@ class NetworkChangeReceiver : BroadcastReceiver() {
             val hasInternet = isNetworkAvailable(context)
             val serviceIntent = Intent(context, MyTaskService::class.java)
             serviceIntent.putExtra("hasInternet", hasInternet)
-            // MyTaskService must call startForeground() with a notification (and declare android:foregroundServiceType on API 34+), otherwise use startService when the app is allowed to start background services
-            context.startForegroundService(serviceIntent)
-            HeadlessJsTaskService.acquireWakeLockNow(context)
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                // MyTaskService must call startForeground() with a notification (and declare android:foregroundServiceType on API 34+), otherwise use startService when the app is allowed to start background services
+                context.startForegroundService(serviceIntent)
+                HeadlessJsTaskService.acquireWakeLockNow(context)
+            } else {
+                // Android 12+: background foreground-service starts are disallowed; schedule work with WorkManager (NetworkType.CONNECTED constraint) instead
+            }
         }
     }
 
@@ -377,6 +385,8 @@ class NetworkChangeReceiver : BroadcastReceiver() {
 - The official page imports {HeadlessJsTaskError} from 'HeadlessJsTask' (a Haste module name that does not resolve); corrected to the default export at react-native/Libraries/ReactNative/HeadlessJsTaskError (deep import, v0.87.0).
 - HeadlessJsTaskService does not call startForeground(); when started via startForegroundService the subclass must post a notification with startForeground() within the system deadline and declare a foregroundServiceType (Android 14+), which the official page omits.
 - Since Android 7.0 (API 24) CONNECTIVITY_CHANGE is not delivered to manifest-declared receivers; register the receiver at runtime with Context.registerReceiver or use ConnectivityManager.NetworkCallback / WorkManager network constraints instead (the official example predates this).
+- Deviation from the official page: android:exported="false" is added to the receiver (required when targeting Android 12+).
+- Deviation from the official page: the service start is limited to API < 31 because Android 12+ forbids starting foreground services from the background (ForegroundServiceStartNotAllowedException); use WorkManager with a network constraint instead.
 - Android only. The native side (Service, BroadcastReceiver, manifest) is plain Android; see the android-architecture skill for Android components in general. This is the React Native `HeadlessJsTaskService` API, not a Kotlin or Compose API.
 
 ## Related
