@@ -41,14 +41,15 @@ Fix issue #$0 with priority $1.
 |------|------|-------------|
 | `/compact` | built-in | Summarizes older messages; needs prior conversation turns |
 | `/clear` | built-in | Resets conversation to empty context (no-op for one-shot `query()`) |
-| `allowed-tools` (frontmatter) | string | Restricts tools for a custom command file |
+| `allowed-tools` (frontmatter) | string | Pre-approves the listed tools while the command runs (does not restrict other tools); ignored when managed settings set `allowManagedPermissionRulesOnly` |
 | `argument-hint` (frontmatter) | string | Documents positional args (`$0`, `$1`, ... or `$ARGUMENTS`) |
 | `!`command`` | inline | Executes bash and includes its output in the command body |
 | `@file` | inline | Includes file contents by reference |
 
 ## Notes
 
-- The official slash-commands page was merged into the skills page ("Extend agents with skills", section "Commands in Agent SDK sessions", https://code.claude.com/docs/en/agent-sdk/skills#commands-in-agent-sdk-sessions). Confirmed 2026-10-16: it no longer appears in llms.txt and its URL returns the same content as the skills page. This page is kept for reference.
+- The official slash-commands page was merged into the skills page ("Extend agents with skills", section "Commands in Agent SDK sessions", https://code.claude.com/docs/en/agent-sdk/skills#commands-in-agent-sdk-sessions). Confirmed 2026-10-16: it no longer appears in llms.txt and its URL returns the same content as the skills page. This page is kept for reference: skills.md summarizes the merged official section; this page keeps the dispatch details (`slash_commands`, unknown-command behavior, `/compact`, `/clear`).
+- The former slash-commands page described `allowed-tools` as restricting tools; the merged skills page describes it as pre-approval, which the table above follows.
 - The command surface has four kinds of entries: built-in commands (e.g. `/compact`), bundled skills (`code-review`, `verify`), your skills, and custom command files in `.claude/commands/`. MCP prompts can also appear as commands.
 - A `/<name>` that matches neither a command in the session nor a built-in does not fail the query. Claude Code sends the prompt to Claude as an ordinary message with a note that the command didn't run, spending one model turn. Before v2.1.274 it returned `Unknown command: /<name>` as the result without a model turn.
 - A `/<name>` that matches a built-in not available in the session, such as `/theme`, returns `/theme isn't available in this environment.` as the result without a model turn.

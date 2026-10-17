@@ -27,6 +27,8 @@ async for message in query(prompt="List the files in my project", options=option
 | --- | --- | --- |
 | `include_partial_messages` / `includePartialMessages` | boolean | Enables `StreamEvent` (Python) / `SDKPartialAssistantMessage` (`type: "stream_event"`, TypeScript) messages wrapping raw Claude API stream events. |
 
+### Event types
+
 | Event Type | Description |
 | --- | --- |
 | `message_start` | Start of a new message |
@@ -40,11 +42,11 @@ async for message in query(prompt="List the files in my project", options=option
 
 - Both wrapper types carry raw, non-accumulated API events; text must be accumulated by your code. Python's `StreamEvent` has `uuid`, `session_id`, `event`, `parent_tool_use_id` (always `None`); TypeScript's `SDKPartialAssistantMessage` additionally exposes `ttft_ms` on `message_start` events.
 - `parent_tool_use_id` is always `null`/`None` on stream events — token-level deltas from subagents aren't forwarded. Use complete messages (which do carry `parent_tool_use_id`) to attribute output to a subagent.
-- Message flow with streaming enabled: `StreamEvent`s for `message_start` → `content_block_start`/`delta`/`stop` (per block) → `message_delta` → `message_stop`, then the complete `AssistantMessage`, then tool execution, then more events for the next turn, then `ResultMessage`.
+- Message flow with streaming enabled: `message_start` → per block `content_block_start` → `content_block_delta`s → the complete `AssistantMessage` for that block → `content_block_stop`; then `message_delta` → `message_stop`, tool execution, events for the next turn, and finally `ResultMessage`. A response with a text block and a tool call yields two `AssistantMessage` objects sharing one message ID.
 - Tool call streaming: `content_block_start` (tool begins, `content_block.type === "tool_use"`) → `content_block_delta` with `input_json_delta` (accumulate `partial_json`) → `content_block_stop` (tool call complete).
 - If a stream is cut off mid-message (interrupt or dropped connection), you still receive that message's `message_stop` before the turn ends. A cut text or thinking block also gets its `content_block_stop`; a cut tool call doesn't, so if `message_stop` arrives while a tool call's block is still open, treat that call's input as incomplete. Before Claude Code v2.1.290, a cut stream could end the turn without `message_stop`, so a rendered reply could stay shown as in progress. The TypeScript Agent SDK bundles v2.1.290 or later from v0.3.290, and the Python Agent SDK from v0.2.164.
 - TypeScript stream events carry `user_message_uuid`, set on the turn's first non-ping stream event and again when the message the turn is answering changes. The Python `StreamEvent` doesn't expose this field.
-- **Known limitation**: structured output JSON appears only in the final `ResultMessage.structured_output`, not as streaming deltas.
+- **Known limitation**: with partial messages enabled, structured output JSON streams as a tool call's unvalidated `input_json_delta` chunks; only the validated result reaches `ResultMessage.structured_output`.
 
 ## Related
 
