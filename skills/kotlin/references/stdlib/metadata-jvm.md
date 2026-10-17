@@ -127,7 +127,7 @@ val annotationData = KotlinClassMetadata.Class(
 - The library follows the same versioning as the Kotlin compiler and standard library; use the version matching your project's Kotlin version.
 - `kotlin-reflect` relies on metadata; inconsistencies between metadata and the actual `.class` file can cause incorrect reflection behavior.
 - `readStrict()` supports metadata formats up to one version beyond `JvmMetadataVersion.LATEST_STABLE_SUPPORTED` (e.g. with `kotlin-metadata-jvm:2.1.0` it can process metadata up to Kotlin `2.2.x`); otherwise it throws an error.
-- Annotations are stored in Kotlin metadata starting with Kotlin 2.4.0; class files compiled with earlier versions do not carry them in metadata. Keep metadata annotations consistent with those in bytecode.
+- Since Kotlin 2.4.0 the compiler writes annotations into Kotlin metadata by default; with Kotlin 2.2.x–2.3.x this happens only when opted in with the `-Xannotations-in-metadata` compiler option, so class files from earlier compilers may or may not carry them. Keep metadata annotations consistent with those in bytecode.
 - `ExperimentalAnnotationsInMetadata` is deprecated with no effect as of kotlin-metadata-jvm 2.4.x (annotations in metadata are enabled by default since 2.4.0); the official sample still imports it, but no opt-in is needed.
 - Binary Compatibility Validator (BCV) uses this library to print public API declarations.
 - Metadata can also be extracted from bytecode with ASM (`ClassReader` into `ClassNode`, then `KotlinClassMetadata.readLenient()`).

@@ -11,6 +11,7 @@ source: https://kotlinlang.org/docs/serialization-customization-options.html
 ```kotlin
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
+import kotlinx.serialization.EncodeDefault.Mode.NEVER
 
 @Serializable
 class Project(
