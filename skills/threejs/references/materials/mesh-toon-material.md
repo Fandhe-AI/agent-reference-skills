@@ -47,6 +47,9 @@ const material = new THREE.MeshToonMaterial({
 
 ## Notes
 
+- Map color spaces (r186 docs): `map` and `emissiveMap` use `SRGBColorSpace`; `lightMap` uses `LinearSRGBColorSpace`; `alphaMap`, `aoMap`, `bumpMap`, `displacementMap`, `gradientMap` and `normalMap` use `NoColorSpace` (default).
+- `displacementMap` repositions vertices: pair it with a matching normal map, since the renderer cannot recompute surface normals from the displaced vertices.
+
 - The `gradientMap` texture **must** use `NearestFilter` for both `minFilter` and `magFilter`; otherwise, shading steps will appear blended
 - Inherits all properties from [Material](./material.md)
 

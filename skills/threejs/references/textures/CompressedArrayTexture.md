@@ -36,6 +36,7 @@ const texture = loader.load('texture_array.ktx2');
 |-----------|-------------|
 | `.addLayerUpdate(layerIndex)` | Mark a single layer for GPU update (transmits only that layer's mipmaps) |
 | `.clearLayerUpdates()` | Reset the layer update registry |
+| `.copy(source)` | Copies the values of the given `CompressedArrayTexture` into this one. Returns `CompressedArrayTexture`. Overrides `CompressedTexture#copy` |
 
 ## Notes
 

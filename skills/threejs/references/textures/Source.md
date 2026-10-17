@@ -1,5 +1,7 @@
 # Source
 
+> **Deprecated since r186:** renamed to `TextureSource` (https://github.com/mrdoob/three.js/pull/34202). See [TextureSource](./TextureSource.md).
+
 Represents the data source of a texture, decoupling data definition from texture configuration. Allows multiple `Texture` instances to share the same underlying data.
 
 ## Signature / Usage
@@ -37,9 +39,11 @@ texture.source = source;
 
 ## Notes
 
+- Deprecated since r186: `Source` has been renamed to `TextureSource` (https://github.com/mrdoob/three.js/pull/34202). `isSource` is deprecated; use `TextureSource#isTextureSource` instead.
 - Sharing a single `Source` across multiple textures allows different sampling parameters on the same data.
 - `Texture#source` provides access to the underlying `Source` instance.
 
 ## Related
 
 - [Texture](./Texture.md)
+- [TextureSource](./TextureSource.md)

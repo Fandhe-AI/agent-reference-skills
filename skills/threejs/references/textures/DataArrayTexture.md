@@ -38,6 +38,7 @@ texture.needsUpdate = true;
 |-----------|-------------|
 | `.addLayerUpdate(layerIndex)` | Mark a single layer for GPU update instead of the full array |
 | `.clearLayerUpdates()` | Reset the layer update registry |
+| `.copy(source)` | Copies the values of the given `DataArrayTexture` into this one. Returns `DataArrayTexture`. Overrides `Texture#copy` |
 
 ## Notes
 

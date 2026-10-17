@@ -28,11 +28,13 @@ class Node extends EventDispatcher {
 
 | Method | Description |
 |--------|-------------|
-| `build(builder, output)` | Runs the full build: setup → analyze → generate |
+| `build(builder, output)` | Performs the build of a node; behavior and return value depend on the current build stage: setup (prepares the node and its children, may create new nodes; returns the node itself or a variant), analyze (analyzes the node hierarchy for optimizations in code generation; returns `null`), generate (generates the shader code; returns the shader string) |
+| `getShared(builder)` | Used during the build; ensures equal nodes are not built multiple times but just once. Also handles node overrides if an override context is set. Returns the shared node if possible, otherwise `this` |
 | `setup(builder)` | First build stage; prepares the node |
 | `analyze(builder, output)` | Second build stage; analyzes the node hierarchy |
 | `generate(builder, output)` | Third build stage; generates shader code |
 | `update(frame)` / `updateBefore(frame)` / `updateAfter(frame)` | Update node state around rendering |
+| `getUpdateType(frame: NodeFrame)` / `getUpdateBeforeType(frame: NodeFrame)` / `getUpdateAfterType(frame: NodeFrame)` | Return the `NodeUpdateType` of `update()` / `updateBefore()` / `updateAfter()` for the given `NodeFrame` |
 | `onUpdate(callback, updateType)` / `onFrameUpdate(callback)` / `onObjectUpdate(callback)` / `onRenderUpdate(callback)` | Register update callbacks |
 | `traverse(callback)` / `getChildren()` | Traverse the node hierarchy |
 | `getHash(builder)` / `getCacheKey(force, ignores)` | Identity/cache keys for the node |

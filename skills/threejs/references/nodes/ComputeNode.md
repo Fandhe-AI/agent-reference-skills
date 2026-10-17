@@ -29,7 +29,7 @@ class ComputeNode extends Node {
 | `workgroupSize` | `Array<number>` | `[64]` | X, Y, Z workgroup dimensions |
 | `isComputeNode` | `boolean` (readonly) | `true` | Type-testing flag |
 | `onInitFunction` | `function` | — | Callback run once compute node initialization finishes |
-| `updateBeforeType` | `string` | `'object'` | Executes once per object |
+| `updateBeforeType` | `string` | `'frame'` | `NodeUpdateType.FRAME`; the node computes once per frame (r184 docs listed `'object'`). Overrides `Node#updateBeforeType` |
 
 ## Methods
 
@@ -38,7 +38,11 @@ class ComputeNode extends Node {
 | `onInit(callback)` | `ComputeNode` | Sets the init callback |
 | `updateBefore(frame)` | `void` | Executes the compute for this node |
 | `setName(name)` | `ComputeNode` | Sets the name |
-| `dispose()` | `void` | Dispatches a dispose event |
+| `getUpdateBeforeType(frame)` | `NodeUpdateType` | Returns the update type of `Node#updateBefore`. Overrides `Node#getUpdateBeforeType` |
+
+## Notes
+
+- Removed in r186: `ComputeNode` no longer has its own `dispose()` override (r184 documented `dispose()` as "Dispatches a dispose event"; it is absent from the r186 page).
 
 ## Related
 

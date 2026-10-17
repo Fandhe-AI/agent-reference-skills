@@ -30,6 +30,7 @@ scene.add(mesh);
 ## Methods
 
 - `getVertexPosition(index, target): Vector3` — returns the position of vertex at `index` (including morph targets and skinning)
+- `intersectsFrustum(frustum: Frustum | FrustumArray): boolean` — whether this mesh intersects the given frustum (used for frustum culling). Overrides `Object3D#intersectsFrustum`
 - `raycast(raycaster, intersects): void` — intersect test against raycaster
 - `updateMorphTargets(): void` — updates `morphTargetDictionary` and `morphTargetInfluences` from geometry
 

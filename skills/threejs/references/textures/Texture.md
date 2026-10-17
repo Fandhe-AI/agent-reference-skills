@@ -41,7 +41,7 @@ const texture = new THREE.Texture(
 | `id` | number (readonly) | — | Unique texture ID |
 | `uuid` | string | — | UUID of the texture |
 | `name` | string | `''` | Optional name |
-| `source` | Source | — | Underlying data source; can be shared across textures |
+| `source` | TextureSource (named `Source` before r186) | — | Underlying data source; can be shared across textures |
 | `width` | number | — | Width in pixels |
 | `height` | number | — | Height in pixels |
 | `depth` | number | — | Depth in pixels |

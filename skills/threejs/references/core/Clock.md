@@ -2,7 +2,7 @@
 
 Tracks elapsed and per-frame delta time for use in animation loops.
 
-> **Deprecated note:** The `autoStart` constructor parameter is deprecated since r183. Consider using [Timer](./Timer.md) for new projects.
+> **Deprecated note:** `Clock` is deprecated since r183; use [Timer](./Timer.md).
 
 ## Signature / Usage
 
@@ -26,7 +26,7 @@ new Clock(autoStart?: boolean)
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `autoStart` | boolean | Start automatically on first `getDelta()` call. Default: `true`. Deprecated since r183. |
+| `autoStart` | boolean | Start automatically on first `getDelta()` call. Default: `true`. |
 
 ## Options / Props
 
@@ -49,6 +49,7 @@ new Clock(autoStart?: boolean)
 
 ## Notes
 
+- The Migration Guide (182 → 183) states: "`Clock` has been deprecated. Please use `Timer` instead."
 - Each call to `getDelta()` updates the internal reference time, so calling it multiple times per frame yields different values. Use [Timer](./Timer.md) to avoid this issue.
 
 ## Related

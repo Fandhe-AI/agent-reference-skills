@@ -42,10 +42,12 @@ if (frustum.intersectsObject(mesh)) {
 
 - `setFromProjectionMatrix` accepts either `camera.projectionMatrix` or the combined `P * V` matrix.
 - `intersectsObject` computes a bounding sphere if one is not already cached.
+- `intersectsBox` and `intersectsSphere` are fast, conservative tests that favor performance over precision: they can report false positives for large boxes / spheres outside the frustum that are not separated by a single frustum plane, but never false negatives, so they are safe for culling.
 - See official docs for full method list: https://threejs.org/docs/#api/en/math/Frustum
 
 ## Related
 
+- [FrustumArray.md](./FrustumArray.md)
 - [Plane.md](./Plane.md)
 - [Sphere.md](./Sphere.md)
 - [Box3.md](./Box3.md)

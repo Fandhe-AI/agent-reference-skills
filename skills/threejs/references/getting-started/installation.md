@@ -70,7 +70,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 - CDN usage requires no separate install step; push source files directly to hosting for production.
 - When using CDN, import all dependencies from the same three.js version and CDN to avoid duplicate code or breakage.
 - Files cannot be loaded directly from the hard drive due to WebGL security restrictions—always use a web server.
-- For TypeScript / editor auto-completion with CDN, add `jsconfig.json` or `tsconfig.json` with path mappings.
+- Using three.js with TypeScript: community-maintained type definitions are available at three-types/three-ts-types (https://github.com/three-types/three-ts-types). The r186 manual replaced its earlier "Improve your editor auto-completion with jsconfig or tsconfig" section with this one.
 
 ## Related
 

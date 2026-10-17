@@ -42,6 +42,8 @@ new Renderer(backend, parameters)
 | `info` | Info | GPU memory and rendering statistics (see `Info`). |
 | `shadowMap` | Object | Shadow map configuration. |
 | `xr` | Object | XR manager. |
+| `onError` | function | Called when an uncaptured backend error is reported (e.g. a WebGPU validation / out-of-memory / internal error raised outside an error scope). Override to surface errors in your own UI without escalating to a device loss. Default logs to the console. |
+| `currentSamples` | number | Current MSAA sample count. When rendering to a custom render target, that target's samples are used. It is 0 when the renderer needs an internal framebuffer target for tone mapping or color space conversion, or when rendering a fullscreen quad to screen. |
 
 ## Methods
 
@@ -51,17 +53,20 @@ new Renderer(backend, parameters)
 | `render(scene, camera)` | Render scene with camera. |
 | `renderAsync(scene, camera)` | Async render. |
 | `compute(computeNodes, dispatchSize)` | Execute compute nodes (requires a WebGPU backend). |
-| `compileAsync(scene, camera, targetScene?)` | Precompile materials. |
+| `compileAsync(scene, camera, targetScene?, onProgress?)` | Precompile materials. `onProgress` is executed while the compilation is in progress. Returns a Promise. |
+| `compile(scene, camera, targetScene?, onProgress?)` | Alias for `compileAsync()`. |
+| `compileComputeAsync(computeNodes, onProgress)` | Compile compute programs ahead of time. Returns a Promise. |
+| `resetState()` | Resets the backend's internal state cache; useful when the rendering context is shared with other libraries that change the state. No-op for the WebGPU backend. |
 | `clear(color?, depth?, stencil?)` / `clearColor()` / `clearDepth()` / `clearStencil()` | Clear buffers. |
 | `setSize(width, height, updateStyle?)` | Set renderer size. |
 | `setPixelRatio(value)` | Set device pixel ratio. |
 | `setAnimationLoop(callback)` | Define animation loop. |
 | `setRenderTarget(renderTarget)` / `getOutputRenderTarget()` | Set/get render target. |
 | `setViewport(x, y, width, height)` / `setScissor(x, y, width, height)` / `setScissorTest(boolean)` | Viewport and scissor control. |
-| `initTexture(texture)` / `copyTextureToTexture(srcTexture, dstTexture)` / `readRenderTargetPixelsAsync()` | Texture and buffer utilities. |
+| `initTexture(texture)` / `copyTextureToTexture(srcTexture, dstTexture)` / `readRenderTargetPixelsAsync()` | Texture and buffer utilities. `readRenderTargetPixelsAsync()` takes a `faceIndex` (cube face, depth slice or array layer index, default `0`). |
 | `hasFeature(name)` | Check backend feature support. |
 | `getClearColor()` / `getClearAlpha()` / `getClearDepth()` / `setClearColor(color, alpha)` | Clear value accessors. |
-| `dispose()` | Free all internal resources. |
+| `dispose()` | Free all internal resources (async). |
 
 ## Notes
 

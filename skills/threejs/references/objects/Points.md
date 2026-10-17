@@ -27,6 +27,7 @@ scene.add(points);
 
 ## Methods
 
+- `intersectsFrustum(frustum: Frustum | FrustumArray)` — whether these points intersect the given frustum (used for frustum culling). Overrides `Object3D#intersectsFrustum`
 - `raycast(raycaster, intersects): void` — intersection test per point
 
 ## Notes

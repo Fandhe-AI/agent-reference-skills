@@ -27,6 +27,8 @@ mesh.customDepthMaterial = depthMaterial;
 
 ## Notes
 
+- Map color spaces (r186 docs): `map` uses `SRGBColorSpace`; `alphaMap` and `displacementMap` use `NoColorSpace` (default).
+
 - Inherits all properties from [Material](./material.md)
 - Assign to `Object3D#customDepthMaterial` to customise shadow casting depth
 - `RGBADepthPacking` provides more precision than `BasicDepthPacking`

@@ -55,6 +55,7 @@ animate();
 
 ## Notes
 
+- これは WebGLRenderer 向けの経路。WebGPURenderer では `EffectComposer` の代わりに `RenderPipeline` を使う（`PostProcessing` は r183 で `RenderPipeline` に改名）。`post-processing-render-pipeline` を参照
 - `RenderPass` は常に最初のパスとして追加する。これが基本レンダリングを担う
 - `renderer.render()` は呼ばず、`composer.render()` のみを呼ぶ
 - リサイズ時は `composer.setSize()` も忘れずに呼ぶ

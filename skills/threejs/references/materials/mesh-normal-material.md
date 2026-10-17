@@ -30,6 +30,9 @@ const material = new THREE.MeshNormalMaterial({
 
 ## Notes
 
+- Map color spaces (r186 docs): `bumpMap` and `normalMap` use `NoColorSpace` (default).
+- `displacementMap` repositions vertices: pair it with a matching normal map, since the renderer cannot recompute surface normals from the displaced vertices.
+
 - Does not react to lights; normals are mapped directly to RGB (X→R, Y→G, Z→B)
 - Primarily used for debugging or stylized renders
 - Inherits all properties from [Material](./material.md)

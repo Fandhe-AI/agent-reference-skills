@@ -118,6 +118,7 @@ controls.unsetMouseAction(
 - Unlike OrbitControls, `update()` does not need to be called each frame; animations run internally
 - The `scene` parameter is required to render the arcball gizmo
 - State can be serialized to clipboard via `copyState()` / `pasteState()` (Ctrl+C/V by default)
+- `adjustNearFar` only works as expected if the camera's initial state (position, near and far values) is configured before creating the controls; otherwise the application must call `setCamera()`
 - Camera must not be a child of another object (unless that object is the scene itself)
 
 ## Related

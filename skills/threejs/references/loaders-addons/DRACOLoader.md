@@ -21,8 +21,8 @@ loader.dispose();
 | `load(url, onLoad, onProgress, onError)` | — | Load a `.drc` file from URL |
 | `loadAsync(url, onProgress)` | Promise\<BufferGeometry\> | Promise-based load |
 | `parse(buffer, onLoad, onError)` | — | Parse raw Draco `ArrayBuffer` directly |
-| `setDecoderPath(path)` | DRACOLoader | Path to the WASM/JS decoder files |
-| `setDecoderConfig(config)` | DRACOLoader | Configure decoder (must be set before decoding) |
+| `setDecoderPath(path: string \| Object)` | DRACOLoader | Path to the WASM/JS decoder files, or a config object with explicit URLs for each decoder file. Configuration cannot be changed after decoding begins |
+| `setDecoderConfig(config)` | DRACOLoader | **Deprecated since r185.** Configure decoder (must be set before decoding) |
 | `setWorkerLimit(n)` | DRACOLoader | Max number of Web Workers for decoding |
 | `dispose()` | — | Free decoder resources and workers |
 
@@ -31,6 +31,7 @@ loader.dispose();
 - Draco files contain **geometry only** — no materials, textures, animation, or node hierarchy. For a complete solution, embed Draco compression inside glTF.
 - Create **one** `DRACOLoader` instance and reuse it to avoid loading the decoder multiple times.
 - The decoder automatically uses WASM or JS based on browser support.
+- `setDecoderConfig()` is deprecated since r185; in the future `DRACOLoader` will always use WASM (https://github.com/mrdoob/three.js/pull/33602).
 - When used with `GLTFLoader`, call `gltfLoader.setDRACOLoader( dracoLoader )`.
 
 ## Related

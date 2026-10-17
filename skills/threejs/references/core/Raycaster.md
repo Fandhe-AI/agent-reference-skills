@@ -76,6 +76,7 @@ new Raycaster(origin?, direction?, near?, far?)
 
 - Results are sorted nearest-first; `intersects[0]` is the closest hit.
 - Mesh faces must point toward the ray origin. Use `Material.side = THREE.DoubleSide` to hit back faces.
+- A ray hitting a triangle mesh exactly along an edge shared by two faces may be reported by both faces, returning two coincident intersections (identical point and distance).
 - Set `raycaster.layers` to match object layers to ignore hidden objects.
 - `params.Line.threshold` and `params.Points.threshold` set hit proximity distance for non-mesh objects.
 

@@ -1,14 +1,15 @@
 ---
 name: threejs
 description: >
-  Three.js (WebGL / WebGPU ベース 3D グラフィクスライブラリ) リファレンス。
-  Scene, PerspectiveCamera, OrthographicCamera, WebGLRenderer, WebGPURenderer、
-  BufferGeometry, BufferAttribute, Mesh, Group, InstancedMesh, SkinnedMesh、
+  Three.js (three, WebGL / WebGPU 3D グラフィクス) r186 リファレンス。
+  Scene, Group, PerspectiveCamera, OrthographicCamera, WebGLRenderer, WebGPURenderer, RenderPipeline、
+  BufferGeometry, BufferAttribute, StorageBufferAttribute, Mesh, InstancedMesh, SkinnedMesh、
   MeshStandardMaterial, MeshPhysicalMaterial, ShaderMaterial, node-materials (TSL)、
-  DirectionalLight, PointLight, SpotLight, AmbientLight、
-  TextureLoader, GLTFLoader, DRACOLoader, FBXLoader、
-  AnimationMixer, AnimationClip, AnimationAction, KeyframeTrack、
-  Vector3, Matrix4, Quaternion, Euler, Color, Raycaster, Box3、
+  DirectionalLight, SpotLight, PointLight, AmbientLight, PMREMGenerator、
+  GLTFLoader, FBXLoader, DRACOLoader, TextureLoader、
+  AnimationMixer, AnimationClip, AnimationAction, KeyframeTrack, Timer、
+  AudioListener, PositionalAudio、
+  Vector3, Matrix4, Quaternion, Euler, Color, Box3, Raycaster、
   OrbitControls, TransformControls, WebXRManager。
 user-invocable: false
 ---
@@ -17,6 +18,12 @@ user-invocable: false
 
 Three.js — ブラウザ上で WebGL / WebGPU を活用する 3D グラフィクスライブラリ。
 3D シーン構築・モデル読み込み・アニメーション・シェーダー実装時に参照する。
+
+対象バージョン: r186 / three@0.186.1。
+
+- `PostProcessing` は r183 で deprecated の互換ラッパー。後継は `RenderPipeline`
+- `Source` は r186 で deprecated。後継は `TextureSource`（旧ページは残置）
+- `AmbientLightProbe` / `HemisphereLightProbe` は r157 で削除済み。旧コード参照用に removed ページとして残置
 
 ## ディレクトリ構成
 
@@ -127,6 +134,7 @@ skills/threejs/
       SpotLight.md
       DirectionalLightShadow.md
       PointLightShadow.md
+      LightShadow.md
       SpotLightShadow.md
       IESSpotLight.md
       ProjectorLight.md
@@ -178,6 +186,7 @@ skills/threejs/
       FramebufferTexture.md
       HTMLTexture.md
       Source.md
+      TextureSource.md
       StorageTexture.md
       VideoTexture.md
       VideoFrameTexture.md
@@ -198,6 +207,10 @@ skills/threejs/
       MaterialLoader.md
       ObjectLoader.md
       TextureLoader.md
+      LoaderUtils.md
+      NodeLoader.md
+      NodeMaterialLoader.md
+      NodeObjectLoader.md
     loaders-addons/
       README.md
       GLTFLoader.md
@@ -229,6 +242,13 @@ skills/threejs/
         QuaternionKeyframeTrack.md
         StringKeyframeTrack.md
         VectorKeyframeTrack.md
+    audio/
+      README.md
+      Audio.md
+      AudioAnalyser.md
+      AudioContext.md
+      AudioListener.md
+      PositionalAudio.md
     math/
       README.md
       Box2.md
@@ -237,7 +257,13 @@ skills/threejs/
       Cylindrical.md
       Euler.md
       Frustum.md
+      FrustumArray.md
       Interpolant.md
+      BezierInterpolant.md
+      CubicInterpolant.md
+      DiscreteInterpolant.md
+      LinearInterpolant.md
+      QuaternionLinearInterpolant.md
       Line3.md
       MathUtils.md
       Matrix2.md
@@ -266,6 +292,20 @@ skills/threejs/
       WebXRDepthSensing.md
       Info.md
       PostProcessing.md
+      RenderPipeline.md
+      DirectRenderPipeline.md
+      CubeRenderTarget.md
+      XRManager.md
+      StorageBufferAttribute.md
+      StorageInstancedBufferAttribute.md
+      IndirectStorageBufferAttribute.md
+      Storage3DTexture.md
+      StorageArrayTexture.md
+      BundleGroup.md
+      QuadMesh.md
+      ReadbackBuffer.md
+      CanvasTarget.md
+      UniformsUtils.md
     controls/
       README.md
       OrbitControls.md
@@ -294,6 +334,14 @@ skills/threejs/
       QuadraticBezierCurve.md
       QuadraticBezierCurve3.md
       SplineCurve.md
+      PMREMGenerator.md
+      Controls.md
+      DataUtils.md
+      ImageUtils.md
+      ShapeUtils.md
+      TextureUtils.md
+      Earcut.md
+      Interpolations.md
     nodes/
       README.md
       TSL.md
@@ -314,6 +362,44 @@ skills/threejs/
       MaterialNode.md
       LightingModel.md
       PhysicalLightingModel.md
+      PassNode.md
+      MRTNode.md
+      RenderOutputNode.md
+      ToneMappingNode.md
+      ColorSpaceNode.md
+      ShadowNode.md
+      PointShadowNode.md
+      LightsNode.md
+      EnvironmentNode.md
+      PMREMNode.md
+      AONode.md
+      ReflectorNode.md
+      ViewportTextureNode.md
+      ViewportDepthTextureNode.md
+      ViewportDepthNode.md
+      ViewportSharedTextureNode.md
+      ScreenNode.md
+      StorageTextureNode.md
+      StorageTexture3DNode.md
+      Texture3DNode.md
+      RTTNode.md
+      ReferenceNode.md
+      MaterialReferenceNode.md
+      BufferAttributeNode.md
+      UniformArrayNode.md
+      StructNode.md
+      AtomicFunctionNode.md
+      BarrierNode.md
+      SubgroupFunctionNode.md
+      WorkgroupInfoNode.md
+      ComputeBuiltinNode.md
+      NormalMapNode.md
+      BumpMapNode.md
+      ModelNode.md
+      Object3DNode.md
+      PropertyNode.md
+      VarNode.md
+      ContextNode.md
   samples/
     README.md
     basic-scene-setup.md
@@ -324,6 +410,7 @@ skills/threejs/
     raycasting-mouse-interaction.md
     instanced-mesh.md
     post-processing-effect-composer.md
+    post-processing-render-pipeline.md
   scripts/
     README.md
     install.md
@@ -349,7 +436,7 @@ skills/threejs/
 | プロジェクト初期設定、最初のシーン作成、インストール方法を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | WebGL 互換確認、モデル読み込みの基礎、テキスト表示方法を知りたい | getting-started | [references/getting-started/README.md](references/getting-started/README.md) |
 | BufferGeometry / BufferAttribute の構築方法を知りたい | core | [references/core/README.md](references/core/README.md) |
-| Object3D の階層操作、Raycaster でのマウスピッキング、Clock でのデルタ管理を知りたい | core | [references/core/README.md](references/core/README.md) |
+| Object3D の階層操作、Raycaster でのマウスピッキング、Timer でのデルタ管理（Clock は r183 で非推奨）を知りたい | core | [references/core/README.md](references/core/README.md) |
 | シェーダーの Uniform / UniformsGroup 設定を知りたい | core | [references/core/README.md](references/core/README.md) |
 | Scene にオブジェクト・ライト・霧を追加したい | scenes | [references/scenes/README.md](references/scenes/README.md) |
 | Fog / FogExp2 で遠景をぼかしたい | scenes | [references/scenes/README.md](references/scenes/README.md) |
@@ -386,14 +473,24 @@ skills/threejs/
 | WebXRManager で VR / AR セッションを管理したい | renderers | [references/renderers/README.md](references/renderers/README.md) |
 | Renderer 基底クラスの共通 API を確認したい | renderers | [references/renderers/README.md](references/renderers/README.md) |
 | Info でドローコール数・メモリ使用量を統計取得したい | renderers | [references/renderers/README.md](references/renderers/README.md) |
-| PostProcessing でエフェクトチェーンを構築したい | renderers | [references/renderers/README.md](references/renderers/README.md) |
+| RenderPipeline でエフェクトチェーンを構築したい (PostProcessing は r183 で deprecated の互換ラッパー) | renderers | [references/renderers/README.md](references/renderers/README.md) |
+| StorageBufferAttribute / StorageInstancedBufferAttribute / IndirectStorageBufferAttribute / Storage3DTexture で WebGPU コンピュート用バッファを用意したい | renderers | [references/renderers/README.md](references/renderers/README.md) |
+| WebGPURenderer 用の CubeRenderTarget / CanvasTarget / ReadbackBuffer を使いたい | renderers | [references/renderers/README.md](references/renderers/README.md) |
+| Audio / AudioListener / PositionalAudio で 3D サウンドを再生したい | audio | [references/audio/README.md](references/audio/README.md) |
+| PMREMGenerator で環境マップを生成したい、DataUtils / TextureUtils を使いたい | extras | [references/extras/README.md](references/extras/README.md) |
+| LightShadow でシャドウ共通設定を確認したい | lights | [references/lights/README.md](references/lights/README.md) |
+| NodeObjectLoader / NodeMaterialLoader などノード系 Loader を使いたい | loaders | [references/loaders/README.md](references/loaders/README.md) |
+| Interpolant 派生クラス / FrustumArray を使いたい | math | [references/math/README.md](references/math/README.md) |
+| TextureSource でテクスチャのデータ共有を扱いたい (Source は r186 で deprecated) | textures | [references/textures/README.md](references/textures/README.md) |
+| PassNode / MRTNode / ToneMappingNode / ShadowNode / Viewport*Node で TSL ポストプロセス・シャドウを組み立てたい | nodes | [references/nodes/README.md](references/nodes/README.md) |
 | OrbitControls / TrackballControls でカメラを操作したい | controls | [references/controls/README.md](references/controls/README.md) |
 | TransformControls / DragControls でオブジェクトをインタラクティブに操作したい | controls | [references/controls/README.md](references/controls/README.md) |
+| Controls (抽象基底) の継承関係・独自コントロールを実装したい | extras | [references/extras/README.md](references/extras/README.md) |
 | Curve / Shape / Path で 2D/3D 曲線・輪郭を扱いたい | extras | [references/extras/README.md](references/extras/README.md) |
 | CatmullRomCurve3 / CubicBezierCurve でスプライン・ベジェ曲線を作りたい | extras | [references/extras/README.md](references/extras/README.md) |
 | TSL (Three.js Shading Language) でノードベースシェーダーを構築したい | nodes | [references/nodes/README.md](references/nodes/README.md) |
 | UniformNode / TextureNode / MathNode で TSL ノードを組み立てたい | nodes | [references/nodes/README.md](references/nodes/README.md) |
 | ComputeNode / StorageBufferNode で WebGPU コンピュートシェーダーを書きたい | nodes | [references/nodes/README.md](references/nodes/README.md) |
 | PhysicalLightingModel / LightingModel でカスタムライティングモデルを実装したい | nodes | [references/nodes/README.md](references/nodes/README.md) |
-| 典型的な使い方・実装パターンを確認したい | samples | [samples/README.md](samples/README.md) |
+| 典型的な使い方・実装パターン (EffectComposer / RenderPipeline 含む) を確認したい | samples | [samples/README.md](samples/README.md) |
 | インストール・Vite セットアップ・import パターン・Draco 設定を知りたい | scripts | [scripts/README.md](scripts/README.md) |

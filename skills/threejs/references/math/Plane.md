@@ -38,6 +38,8 @@ const dist = plane.distanceToPoint(someVector3);
 | `intersectsBox(box)` | boolean | Tests intersection with a Box3 |
 | `applyMatrix4(matrix, normalMatrix?)` | Plane | Applies a 4×4 affine transformation |
 | `clone()` / `copy(plane)` | Plane | Clone or copy |
+| `toJSON()` | Object | Returns a serialized structure of the plane |
+| `fromJSON(json)` | Plane | Sets the plane properties from the given JSON |
 
 ## Notes
 

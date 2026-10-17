@@ -30,8 +30,6 @@ new UniformsGroup()
 
 | Name | Type | Description |
 |------|------|-------------|
-| `buffer` | Float32Array | Packed uniform values |
-| `byteLength` | number | Byte length with STD140 alignment |
 | `id` | number (readonly) | Unique ID |
 | `isUniformsGroup` | boolean (readonly) | Type flag |
 | `name` | string | Name of the UBO |
@@ -42,9 +40,7 @@ new UniformsGroup()
 
 ```js
 add(uniform)              // Add a Uniform
-addUniform(uniform)       // Alias for add()
 remove(uniform)           // Remove a Uniform
-removeUniform(uniform)    // Alias for remove()
 setName(name)             // Set UBO name
 setUsage(value)           // Set usage hint
 dispose()                 // Free GPU resources
@@ -54,6 +50,7 @@ copy(source)              // Copy from another group
 
 ## Notes
 
+- The official docs page merges this class with the WebGPU-side `renderers/common` UniformsGroup (extends `UniformBuffer`). `release()`, `addUniform()`, `removeUniform()`, `addUniformUpdateRange()`, `buffer`, `byteLength` and similar members marked `Overrides: UniformBuffer#...` belong to that WebGPU class, not to `THREE.UniformsGroup`.
 - The order of `uniforms` in the array must exactly match the UBO binding layout in the shader.
 - Call `dispose()` to free GPU resources when the group is no longer needed.
 

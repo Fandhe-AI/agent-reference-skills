@@ -30,6 +30,9 @@ Not instantiated directly — platform-specific subclasses (e.g. `WebGLNodeBuild
 | `varyings` | `Array<NodeVarying>` | Node varyings |
 | `stack` / `stacks` / `activeStacks` | `StackNode` / `Array<StackNode>` | Current code-block hierarchy |
 | `environmentNode` / `fogNode` / `lightsNode` | `Node` | Default `null` |
+| `compute` | `ComputeNode` | The compute node, if building for compute. Default `null` |
+| `hardwareClipping` | `boolean` | Whether the built material uses hardware clipping. Default `false` |
+| `renderPipeline` | `RenderPipeline` | A reference to the render pipeline |
 
 ## Methods
 
@@ -44,6 +47,12 @@ Not instantiated directly — platform-specific subclasses (e.g. `WebGLNodeBuild
 | `getType(type)` / `getTypeLength(type)` / `isVector(type)` / `isMatrix(type)` / `isInteger(type)` | Type system helpers |
 | `getAttributes/Uniforms/Varyings/Codes/Vars(shaderStage)` | Abstract; implemented by renderer-specific subclasses |
 | `format(snippet, fromType, toType)` | Type-cast a code snippet |
+| `generateTextureSize(texture, textureProperty, levelSnippet)` | Abstract. Generates a texture size shader string for the given texture data |
+| `getOutputType(index)` | Returns the type of the color output based on the renderer's render target |
+| `hasWriteUsage(node)` | Returns whether the given node has been written to in any shader stage |
+| `isContextAssign()` | Returns whether the builder is currently in an assignment context |
+| `isReservedKeyword(name)` | Returns whether the name is a reserved keyword of the backend's shading language; backends override it |
+| `getBufferAttributeFromNode(node, type, name)` | Returns the buffer attribute for the given `BufferAttributeNode` (r186 adds the `name` parameter) |
 
 ## Notes
 

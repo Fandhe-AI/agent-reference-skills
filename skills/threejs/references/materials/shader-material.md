@@ -58,6 +58,7 @@ material.uniforms.time.value = clock.getElapsedTime();
 - Three.js automatically prepends built-in uniforms/attributes (`projectionMatrix`, `modelViewMatrix`, `position`, `uv`, etc.) — see [RawShaderMaterial](./raw-shader-material.md) to skip this
 - To include fog, merge `UniformsLib['fog']` into `uniforms` and set `fog: true`
 - Loop unrolling is supported via `#pragma unroll_loop_start` / `#pragma unroll_loop_end`
+- `fromJSON(json: Object, textures: Object<string, Texture>): ShaderMaterial` deserializes the material from the given JSON (Overrides `Material#fromJSON`)
 - Inherits all properties from [Material](./material.md)
 
 ## Related

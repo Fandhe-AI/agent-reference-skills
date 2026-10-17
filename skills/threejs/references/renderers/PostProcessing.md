@@ -22,4 +22,5 @@ new PostProcessing(renderer, outputNode)
 
 ## Related
 
+- [RenderPipeline](./RenderPipeline.md)
 - [Renderer](./Renderer.md)

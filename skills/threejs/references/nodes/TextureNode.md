@@ -28,6 +28,7 @@ class TextureNode extends UniformNode {
 | `depthNode` | `Node<int>` | `null` | Layer selection for texture arrays |
 | `gradNode` | `Array<Node<vec2>>` | `null` | Explicit sampling gradients |
 | `offsetNode` | `Node<ivec2\|ivec3>` | `null` | Texel offset |
+| `gatherNode` | `Node<int>` | `null` | Optional index constant of the channel to gather; must be in range [0, 3] and a compile-time constant |
 | `sampler` | `boolean` | `true` | Sample (filtered) vs. fetch mode |
 | `updateMatrix` | `boolean` | `false` | Auto-update the UV transform matrix |
 | `isTextureNode` | `boolean` (readonly) | `true` | Type-testing flag |
@@ -40,6 +41,9 @@ class TextureNode extends UniformNode {
 | `level(levelNode)` / `bias(biasNode)` / `grad(x, y)` / `blur(amount)` | Sampling variants |
 | `load(uvNode)` | Fetch texels without interpolation |
 | `offset(offsetNode)` / `depth(depthNode)` / `compare(compareNode)` / `gather(gatherNode)` | Sampling modifiers |
+| `gather(gatherNode: Node<int>)` | Gathers four texels from the texture; returns `TextureNode` |
+| `isSampleCompare()` | Returns `true` if the texture is sampled with a depth comparison (the node must be bound with a comparison sampler) |
+| `generateSnippet(...)` | Code generation; in r186 its snippet parameters include `gatherSnippet` and `flipYSnippet` (alongside `uvSnippet`, `levelSnippet`, `biasSnippet`, `depthSnippet`, `compareSnippet`, `gradSnippet`, `offsetSnippet`) |
 | `clone()` / `size(levelNode)` / `getBase()` | Utility accessors |
 
 ## Related

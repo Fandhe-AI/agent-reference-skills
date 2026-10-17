@@ -53,6 +53,9 @@ const material = new THREE.MeshPhongMaterial({
 
 ## Notes
 
+- Map color spaces (r186 docs): `map`, `emissiveMap` and `specularMap` use `SRGBColorSpace`; `envMap` and `lightMap` use `LinearSRGBColorSpace`; `alphaMap`, `aoMap`, `bumpMap`, `displacementMap` and `normalMap` use `NoColorSpace` (default).
+- `displacementMap` repositions vertices: pair it with a matching normal map, since the renderer cannot recompute surface normals from the displaced vertices.
+
 - Non-physically based (Blinn-Phong); faster than `MeshStandardMaterial`/`MeshPhysicalMaterial`
 - Uses per-fragment shading
 - Inherits all properties from [Material](./material.md)

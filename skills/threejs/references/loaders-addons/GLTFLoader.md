@@ -50,6 +50,10 @@ gltf.animations.forEach( clip => mixer.clipAction( clip ).play() );
 - `KHR_mesh_quantization`, `KHR_texture_basisu`, `KHR_texture_transform`
 - `EXT_materials_bump`, `EXT_mesh_gpu_instancing`, `EXT_texture_avif`, `EXT_texture_webp`
 
+## Extensions via Separately Registered Plugins
+
+- `KHR_gaussian_splatting`, `KHR_materials_variants`, `MSFT_texture_dds`, `KHR_animation_pointer`, `NEEDLE_progressive` (the r186 docs list `KHR_gaussian_splatting` first; the others are third-party plugins)
+
 ## Notes
 
 - Image bitmaps created during loading are not automatically garbage collected — dispose them explicitly when no longer needed.

@@ -61,6 +61,10 @@ All other properties and methods are inherited from the base `Renderer` class (s
 - `forceWebGL: true` is useful for testing WebGL 2 compatibility or when WebGPU is unstable.
 - Node-based materials (MeshStandardNodeMaterial, etc.) and TSL shaders require WebGPURenderer.
 - The `compute()` method for compute shaders is only available with a real WebGPU backend.
+- Post-processing goes through `RenderPipeline` (`PostProcessing` is deprecated since r183).
+- Migration (r182 → r183): shadows in `WebGPURenderer` were improved; existing shadow bias values that mitigated shadow acne may need to be removed or decreased.
+- Migration (r184 → r185): premultiplied alpha handling changed (https://github.com/mrdoob/three.js/pull/33369). On blending problems, configure an opaque `Scene.background` or an opaque clear color via `renderer.setClearColor()`; use transparent backgrounds only when blending with the HTML background is required.
+- Migration (r185 → r186): `PCFSoftShadowMap` with `WebGPURenderer` was removed (https://github.com/mrdoob/three.js/pull/33987). Use `PCFShadowMap`, which is now soft as well.
 
 ## Related
 

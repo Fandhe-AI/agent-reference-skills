@@ -79,6 +79,12 @@ const material = new THREE.MeshPhysicalMaterial({
 | `sheenRoughness` | number | `1` | Sheen roughness `[0,1]` |
 | `sheenRoughnessMap` | Texture | `null` | Sheen roughness map (alpha channel) |
 
+### Retroreflection
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `retroreflectivity` | number | `0` | Strength of retroreflection `[0.0, 1.0]`. `1.0` evaluates the microfacet reflection with the view direction reflected about the surface normal, redirecting the specular lobe back toward the light source |
+
 ### Metadata
 
 | Name | Type | Default | Description |
@@ -92,6 +98,7 @@ const material = new THREE.MeshPhysicalMaterial({
 - When `transmission > 0`, set `opacity = 1`
 - `reflectivity` has no effect when `metalness = 1.0`
 - Always provide an `envMap` for best results
+- Map color spaces: color maps (`sheenColorMap`, `specularColorMap`) must be assigned a `colorSpace`, most set `SRGBColorSpace`. Non-color maps (`anisotropyMap`, `clearcoatMap`, `clearcoatNormalMap`, `clearcoatRoughnessMap`, `iridescenceMap`, `iridescenceThicknessMap`, `sheenRoughnessMap`, `specularIntensityMap`, `thicknessMap`, `transmissionMap`) use `NoColorSpace` (default)
 - Inherits from [MeshStandardMaterial](./mesh-standard-material.md) → [Material](./material.md)
 
 ## Related

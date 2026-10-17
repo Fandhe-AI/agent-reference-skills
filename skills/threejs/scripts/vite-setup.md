@@ -29,8 +29,10 @@ npm run build
 ## ローカルファイルのサーブ（ビルド結果の確認）
 
 ```sh
-npx serve .
+npx serve dist
 ```
+
+`npx vite preview` でもビルド結果（`dist`）を確認できる。
 
 ## package.json の scripts 設定例
 
@@ -57,3 +59,5 @@ npx serve .
 ```
 
 `paths` を設定するとエディタの自動補完が有効になる。jsconfig.json でも同じ設定が使用できる。
+
+r186 のマニュアル（installation）ではこの paths 設定の節が削除され、コミュニティ管理の TypeScript 型定義（three-types/three-ts-types）への案内に置き換わっている。
