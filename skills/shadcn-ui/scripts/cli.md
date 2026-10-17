@@ -4,60 +4,60 @@ source: https://ui.shadcn.com/docs/cli
 
 # CLI
 
-`shadcn` CLI（4.22.0）の主要サブコマンド集。出典は公式 cli ページ（取得日 2026-10-16）。変更を伴うコマンドは使い捨て環境か Git 管理下のクリーンなワークツリーで実行する。
+Main subcommands of the `shadcn` CLI (4.22.0). Source: the official cli page (retrieved 2026-10-16). Run commands that modify files in a disposable environment or a clean Git-tracked working tree.
 
-## プロジェクトの初期化（init）
+## Initialize a project (init)
 
 ```sh
 npx shadcn@latest init
 ```
 
-`create` は `init` のエイリアス。
+`create` is an alias of `init`.
 
 ```sh
 npx shadcn@latest create
 ```
 
-## init のオプション一覧
+## List init options
 
 ```sh
 npx shadcn@latest init --help
 ```
 
-主なオプション: `-t, --template <template>`（next / vite / start / react-router / laravel / astro）、`-b, --base <base>`（base / radix / aria）、`-p, --preset [name]`、`-d, --defaults`（`--template=next --preset=nova`）、`-n, --name <name>`、`--monorepo` / `--no-monorepo`、`--rtl` / `--no-rtl`、`--css-variables` / `--no-css-variables`、`--pointer` / `--no-pointer`、`--reinstall` / `--no-reinstall`、`-c, --cwd <cwd>`。
+Main options: `-t, --template <template>` (next / vite / start / react-router / laravel / astro), `-b, --base <base>` (base / radix / aria), `-p, --preset [name]`, `-d, --defaults` (`--template=next --preset=nova`), `-n, --name <name>`, `--monorepo` / `--no-monorepo`, `--rtl` / `--no-rtl`, `--css-variables` / `--no-css-variables`, `--pointer` / `--no-pointer`, `--reinstall` / `--no-reinstall`, `-c, --cwd <cwd>`.
 
-## base を指定した初期化
+## Initialize with a specific base
 
 ```sh
 npx shadcn@latest init --base radix
 npx shadcn@latest init --base aria
 ```
 
-## 既存設定を上書きする初期化
+## Initialize and overwrite existing configuration
 
-> **警告**: `-f, --force` は既存の設定を強制上書きする。使い捨て環境、または Git でコミット済みの状態で実行する。
+> **Warning**: `-f, --force` forcibly overwrites existing configuration. Run it in a disposable environment or with all changes committed to Git.
 
 ```sh
 npx shadcn@latest init --force
 ```
 
-## コンポーネントの追加（add）
+## Add components (add)
 
 ```sh
 npx shadcn@latest add [component]
 ```
 
-`components` には名前・URL・ローカルパスを指定できる。
+`components` accepts a name, a URL, or a local path.
 
-## add のオプション一覧
+## List add options
 
 ```sh
 npx shadcn@latest add --help
 ```
 
-主なオプション: `-y, --yes`、`-o, --overwrite`、`-c, --cwd <cwd>`、`-a, --all`、`-p, --path <path>`、`-s, --silent`、`--dry-run`、`--diff [path]`、`--view [path]`。
+Main options: `-y, --yes`, `-o, --overwrite`, `-c, --cwd <cwd>`, `-a, --all`, `-p, --path <path>`, `-s, --silent`, `--dry-run`, `--diff [path]`, `--view [path]`.
 
-## 書き込み前のプレビューと差分確認
+## Preview and diff before writing
 
 ```sh
 npx shadcn@latest add button --dry-run
@@ -65,74 +65,74 @@ npx shadcn@latest add button --diff
 npx shadcn@latest add button --view
 ```
 
-`--dry-run` はファイルを書かずに変更内容を表示。`--diff [path]` は差分、`--view [path]` はファイル内容を表示する（cli の Options 記載）。
+`--dry-run` shows the changes without writing files. `--diff [path]` shows a diff and `--view [path]` shows file contents (per the Options in the cli page).
 
-## 既存ファイルを上書きして追加
+## Add and overwrite existing files
 
-> **警告**: `-o, --overwrite` は `components/ui/` 内の既存ファイルを上書きし、ローカルの変更が失われる。使い捨て環境、または Git でコミット済みの状態で実行する。
+> **Warning**: `-o, --overwrite` overwrites existing files in `components/ui/` and discards local changes. Run it in a disposable environment or with all changes committed to Git.
 
 ```sh
 npx shadcn@latest add button --overwrite
 ```
 
-## 全コンポーネントの追加
+## Add all components
 
-> **警告**: `-a, --all` は利用可能な全コンポーネントを追加する。大量のファイルと依存が増えるため、使い捨て環境か Git クリーン状態で実行する。
+> **Warning**: `-a, --all` adds every available component. It adds many files and dependencies, so run it in a disposable environment or a clean Git working tree.
 
 ```sh
 npx shadcn@latest add --all
 ```
 
-## preset の適用（apply）
+## Apply a preset (apply)
 
 ```sh
 npx shadcn@latest apply a2r6bw
 ```
 
-既存プロジェクトに preset を適用する。`a2r6bw` は公式例の preset コード。
+Applies a preset to an existing project. `a2r6bw` is the preset code used in the official example.
 
-## テーマまたはフォントのみ適用
+## Apply only the theme or font
 
 ```sh
 npx shadcn@latest apply a2r6bw --only theme
 ```
 
-`--only` に指定できる値は `theme` と `font`。UI コンポーネントは再インストールされない。
+`--only` accepts `theme` or `font`. UI components are not reinstalled.
 
-## preset コードのデコード（preset decode）
+## Decode a preset code (preset decode)
 
 ```sh
 npx shadcn@latest preset decode a2r6bw
 ```
 
-`--json` で JSON 出力。
+Use `--json` for JSON output.
 
-## 現在のプロジェクトの preset 解決（preset resolve / info）
+## Resolve the preset of the current project (preset resolve / info)
 
 ```sh
 npx shadcn@latest preset resolve
 npx shadcn@latest preset info
 ```
 
-`preset info` は `preset resolve` のエイリアス。`--json` / `-c, --cwd <cwd>` に対応。
+`preset info` is an alias of `preset resolve`. Supports `--json` and `-c, --cwd <cwd>`.
 
-## preset の create URL 取得・ブラウザで開く（preset url / open）
+## Get the create URL or open it in the browser (preset url / open)
 
 ```sh
 npx shadcn@latest preset url a2r6bw
 npx shadcn@latest preset open a2r6bw
 ```
 
-## レジストリ項目の閲覧（view）
+## View registry items (view)
 
 ```sh
 npx shadcn@latest view button card dialog
 npx shadcn@latest view @acme/auth @v0/dashboard
 ```
 
-インストール前に項目の内容を確認する。名前空間付きレジストリも指定できる。
+Inspect an item's contents before installing. Namespaced registries are also accepted.
 
-## レジストリの検索（search / list）
+## Search registries (search / list)
 
 ```sh
 npx shadcn@latest search @shadcn -q "button"
@@ -140,42 +140,42 @@ npx shadcn@latest search @shadcn @v0 @acme
 npx shadcn@latest list @acme
 ```
 
-`list` は `search` のエイリアス。レジストリ名は `@` 始まりで指定する。`-l, --limit <number>`（既定 100）・`-o, --offset <number>`（既定 0）で件数を制御する。
+`list` is an alias of `search`. Registry names start with `@`. Control the result count with `-l, --limit <number>` (default 100) and `-o, --offset <number>` (default 0).
 
-## レジストリ JSON のビルド（build）
+## Build registry JSON (build)
 
 ```sh
 npx shadcn@latest build
 npx shadcn@latest build --output ./public/registry
 ```
 
-`registry.json` を読み、既定で `public/r` に JSON を生成する。`-o, --output <path>` で出力先を変更する。
+Reads `registry.json` and generates JSON into `public/r` by default. Change the destination with `-o, --output <path>`.
 
-## ドキュメントの取得（docs）
+## Fetch documentation (docs)
 
 ```sh
 npx shadcn@latest docs [component]
 ```
 
-`-b, --base <base>`（base / radix / aria。既定はプロジェクトの base）と `--json` に対応する。
+Supports `-b, --base <base>` (base / radix / aria; defaults to the project's base) and `--json`.
 
-## プロジェクト情報の取得（info）
+## Get project information (info)
 
 ```sh
 npx shadcn@latest info
 ```
 
-`--json` / `-c, --cwd <cwd>` に対応する。
+Supports `--json` and `-c, --cwd <cwd>`.
 
-## マイグレーション一覧（migrate）
+## List migrations (migrate)
 
 ```sh
 npx shadcn@latest migrate --list
 ```
 
-> **警告**: `migrate` 系は既存ソースを書き換える。使い捨て環境、または Git でコミット済みの状態で実行する。
+> **Warning**: `migrate` commands rewrite existing source files. Run them in a disposable environment or with all changes committed to Git.
 
-利用可能なマイグレーション: `cn` / `icons` / `base-color` / `radix` / `rtl`。共通オプション: `-c, --cwd <cwd>`、`-l, --list`、`-y, --yes`、`-f, --from <name>`、`-t, --to <name>`。
+Available migrations: `cn` / `icons` / `base-color` / `radix` / `rtl`. Common options: `-c, --cwd <cwd>`, `-l, --list`, `-y, --yes`, `-f, --from <name>`, `-t, --to <name>`.
 
 ## migrate cn
 
@@ -185,7 +185,7 @@ npx shadcn@latest migrate cn src/lib/utils.ts
 npx shadcn@latest migrate cn "src/**/*.{ts,tsx}"
 ```
 
-`clsx` / `tailwind-merge` / `cnfast` を `cn` に置き換える。`components.json` は不要で、Tailwind CSS v4 のプロジェクト向け。
+Replaces `clsx` / `tailwind-merge` / `cnfast` with `cn`. Does not require `components.json`; intended for Tailwind CSS v4 projects.
 
 ## migrate icons
 
@@ -196,7 +196,7 @@ npx shadcn@latest migrate icons src/components/ui/button.tsx --from lucide --to 
 npx shadcn@latest migrate icons "src/components/**" --from lucide --to tabler
 ```
 
-対応ライブラリ: `lucide` / `tabler` / `hugeicons` / `phosphor` / `remixicon` / `radix`（legacy）。パス指定の実行では `components.json` は更新されない。
+Supported libraries: `lucide` / `tabler` / `hugeicons` / `phosphor` / `remixicon` / `radix` (legacy). When paths are given, `components.json` is not updated.
 
 ## migrate base-color
 
@@ -205,7 +205,7 @@ npx shadcn@latest migrate base-color
 npx shadcn@latest migrate base-color --to zinc --yes
 ```
 
-対応 base color: `neutral` / `zinc` / `stone` / `mauve` / `olive` / `mist` / `taupe`。
+Supported base colors: `neutral` / `zinc` / `stone` / `mauve` / `olive` / `mist` / `taupe`.
 
 ## migrate rtl
 
@@ -215,7 +215,7 @@ npx shadcn@latest migrate rtl src/components/ui/button.tsx
 npx shadcn@latest migrate rtl "src/components/ui/**"
 ```
 
-`components.json` に `rtl: true` を設定し、物理 CSS プロパティを論理プロパティへ変換する。パス省略時は `ui` ディレクトリ全体が対象。
+Sets `rtl: true` in `components.json` and converts physical CSS properties to logical ones. When no path is given, the whole `ui` directory is targeted.
 
 ## migrate radix
 
@@ -225,20 +225,20 @@ npx shadcn@latest migrate radix src/components/ui/dialog.tsx
 npx shadcn@latest migrate radix "src/components/ui/**"
 ```
 
-`@radix-ui/react-*` の import を統合パッケージ `radix-ui` に変換する。
+Converts `@radix-ui/react-*` imports to the unified `radix-ui` package.
 
-## shadcn/tailwind.css のインライン化（eject）
+## Inline shadcn/tailwind.css (eject)
 
-> **警告**: 公式ドキュメントに「この操作は元に戻せない」と明記されている。eject 後は `shadcn/tailwind.css` への CLI アップデートが自動では反映されない。使い捨て環境、または Git でコミット済みの状態で実行する。
+> **Warning**: The official documentation states this operation cannot be undone. After ejecting, CLI updates to `shadcn/tailwind.css` are no longer applied automatically. Run it in a disposable environment or with all changes committed to Git.
 
 ```sh
 npx shadcn@latest eject
 ```
 
-モノレポでは `components.json` とグローバル CSS を持つワークスペースを指定する。
+In a monorepo, specify the workspace that holds `components.json` and the global CSS.
 
 ```sh
 npx shadcn@latest eject -c packages/ui
 ```
 
-`-y, --yes` / `-s, --silent` に対応する。
+Supports `-y, --yes` and `-s, --silent`.

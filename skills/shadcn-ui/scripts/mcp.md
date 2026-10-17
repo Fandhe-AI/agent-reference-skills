@@ -4,39 +4,39 @@ source: https://ui.shadcn.com/docs/mcp
 
 # MCP
 
-shadcn MCP サーバーを各 MCP クライアントへ設定するコマンド集。出典は公式 mcp ページ（取得日 2026-10-16）。
+Commands to configure the shadcn MCP server for each MCP client. Source: the official mcp page (retrieved 2026-10-16).
 
-## Claude Code への設定
+## Configure Claude Code
 
 ```sh
 npx shadcn@latest mcp init --client claude
 ```
 
-実行後に Claude Code を再起動する。Claude Code 内の `/mcp` コマンドでデバッグできる。
+Restart Claude Code afterwards. You can debug with the `/mcp` command inside Claude Code.
 
-## Cursor への設定
+## Configure Cursor
 
 ```sh
 npx shadcn@latest mcp init --client cursor
 ```
 
-実行後に Cursor Settings で shadcn の MCP サーバーを有効化する。
+Afterwards, enable the shadcn MCP server in Cursor Settings.
 
-## VS Code への設定
+## Configure VS Code
 
 ```sh
 npx shadcn@latest mcp init --client vscode
 ```
 
-実行後に `.vscode/mcp.json` を開き、shadcn サーバーの **Start** を押す。
+Afterwards, open `.vscode/mcp.json` and click **Start** on the shadcn server.
 
-## Codex への設定
+## Configure Codex
 
 ```sh
 npx shadcn@latest mcp init --client codex
 ```
 
-`shadcn` CLI は `~/.codex/config.toml` を自動更新できない。公式の手順に従い、次の設定を手動で追加して Codex を再起動する。
+The `shadcn` CLI cannot update `~/.codex/config.toml` automatically. Following the official instructions, add the configuration below manually and restart Codex.
 
 ```toml
 [mcp_servers.shadcn]
@@ -44,26 +44,26 @@ command = "npx"
 args = ["shadcn@latest", "mcp"]
 ```
 
-## OpenCode への設定
+## Configure OpenCode
 
 ```sh
 npx shadcn@latest mcp init --client opencode
 ```
 
-実行後に OpenCode を再起動する。
+Restart OpenCode afterwards.
 
-## MCP サーバー起動コマンド（手動設定用）
+## MCP server start command (for manual configuration)
 
 ```sh
 npx shadcn@latest mcp
 ```
 
-各クライアントの設定ファイルでは `command` を `npx`、`args` を `["shadcn@latest", "mcp"]` とする（`.mcp.json` / `.cursor/mcp.json` / `.vscode/mcp.json` の例は公式 mcp ページ記載）。
+In each client's configuration file, set `command` to `npx` and `args` to `["shadcn@latest", "mcp"]` (examples for `.mcp.json`, `.cursor/mcp.json` and `.vscode/mcp.json` are on the official mcp page).
 
-## 「No tools or prompts」の対処
+## Fix "No tools or prompts"
 
 ```sh
 npx clear-npx-cache
 ```
 
-その後、MCP クライアントで shadcn サーバーを再度有効化する。
+Then re-enable the shadcn server in the MCP client.

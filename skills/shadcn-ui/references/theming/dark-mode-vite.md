@@ -159,6 +159,7 @@ export function ModeToggle() {
 ## Notes
 
 - The `DropdownMenuTrigger asChild` usage in the toggle is the source's Radix-style example as written; with the default Base UI components use the `render` prop instead (e.g. `<DropdownMenuTrigger render={<Button variant="outline" size="icon" />}>`), or install the Radix variant.
+- The source example reads `matchMedia("(prefers-color-scheme: dark)").matches` once when `system` is selected; it does not subscribe to the `MediaQueryList` `change` event, so an OS color-scheme change is not reflected until the theme is set again. Adapted (not in the official docs): add `mql.addEventListener("change", handler)` inside the effect and remove it in the cleanup when `theme === "system"`.
 - Adapted (not in the official docs): the official App.tsx renders an undefined `{children}`; replaced with the app content (`<ModeToggle />`).
 - Framework APIs themselves are in skills nextjs-app / react-router / tanstack-start / tanstack-router.
 

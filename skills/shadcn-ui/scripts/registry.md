@@ -4,33 +4,33 @@ source: https://ui.shadcn.com/docs/registry/getting-started
 
 # Registry
 
-自前レジストリのビルド・配信・検証・利用のコマンド集。出典は公式 registry の getting-started / github / namespace / dynamic-search / health ページ（取得日 2026-10-16）。
+Commands to build, serve, validate and consume a custom registry. Source: the official registry getting-started / github / namespace / dynamic-search / health pages (retrieved 2026-10-16).
 
-## レジストリ JSON のビルド
+## Build registry JSON
 
 ```sh
 npx shadcn@latest build
 ```
 
-`registry.json` から静的 JSON を `public/r`（例: `public/r/button.json`）に出力する。出力先は `--output` で変更できる。
+Writes static JSON from `registry.json` to `public/r` (for example `public/r/button.json`). Change the destination with `--output`.
 
-## 配信用の開発サーバー起動（Next.js の例）
+## Start a development server for serving (Next.js example)
 
 ```sh
 npm run dev
 ```
 
-`http://localhost:3000/r/[NAME].json` で配信される。コマンドはフレームワークにより異なる。
+Served at `http://localhost:3000/r/[NAME].json`. The command varies by framework.
 
-## 動的ルートハンドラー用の依存追加
+## Add the dependency for dynamic route handlers
 
 ```sh
 npm install shadcn
 ```
 
-`shadcn/registry` の `loadRegistry` などを使う場合に `shadcn` をランタイム依存として入れる。
+Install `shadcn` as a runtime dependency when using `loadRegistry` and similar functions from `shadcn/registry`.
 
-## ローカル配信レジストリのテスト（URL 指定）
+## Test a locally served registry (by URL)
 
 ```sh
 npx shadcn@latest list http://localhost:3000/r/registry.json
@@ -39,18 +39,18 @@ npx shadcn@latest view http://localhost:3000/r/button.json
 npx shadcn@latest add http://localhost:3000/r/button.json
 ```
 
-`list` / `search` にはカタログ URL、`view` / `add` には項目 URL を渡す。`add` は導入先プロジェクトで実行する。
+Pass the catalog URL to `list` / `search` and an item URL to `view` / `add`. Run `add` in the consuming project.
 
-## 名前空間としてレジストリを追加
+## Add a registry as a namespace
 
 ```sh
 npx shadcn@latest registry add @acme=http://localhost:3000/r/{name}.json
 npx shadcn@latest registry add @acme=https://acme.com/r/{name}.json
 ```
 
-`components.json` を持つプロジェクトで実行する。`{name}` は項目 JSON に解決される必要がある。
+Run it in a project that has `components.json`. `{name}` must resolve to an item JSON.
 
-## 名前空間レジストリの利用
+## Use a namespaced registry
 
 ```sh
 npx shadcn@latest list @acme
@@ -59,7 +59,7 @@ npx shadcn@latest view @acme/button
 npx shadcn@latest add @acme/button
 ```
 
-複数指定も可能。
+Multiple items or registries can be given.
 
 ```sh
 npx shadcn@latest add @acme/header @lib/auth-utils @ai/chatbot-rules
@@ -67,14 +67,14 @@ npx shadcn@latest search @v0 @acme @lib
 npx shadcn@latest search @v0 --limit 10 --offset 20
 ```
 
-## URL・ローカルパスからの追加
+## Add from a URL or local path
 
 ```sh
 npx shadcn@latest add https://registry.example.com/button.json
 npx shadcn@latest add ./local-registry/button.json
 ```
 
-## GitHub リポジトリをレジストリとして使う
+## Use a GitHub repository as a registry
 
 ```sh
 npx shadcn@latest add <username>/<repo>/<item>
@@ -84,34 +84,34 @@ npx shadcn@latest search acme/toolkit --query conventions
 npx shadcn@latest view acme/toolkit/project-conventions
 ```
 
-リポジトリ直下に `registry.json` を置く。ブランチ・タグ・コミット SHA は `#` で指定する。
+Place `registry.json` at the repository root. Specify a branch, tag or commit SHA with `#`.
 
 ```sh
 npx shadcn@latest add acme/toolkit/project-conventions#v1.0.0
 npx shadcn@latest add acme/toolkit/project-conventions#main
 ```
 
-## GitHub レジストリの検証
+## Validate a GitHub registry
 
 ```sh
 npx shadcn@latest registry validate acme/toolkit
 npx shadcn@latest registry validate acme/toolkit#v1.0.0
 ```
 
-ルートの `registry.json` を読み、include の解決・項目の検証・参照ファイルの存在確認を行う。
+Reads the root `registry.json`, resolves includes, validates items and checks that referenced files exist.
 
-## レジストリ index への登録前検証
+## Validate before registering in the registry index
 
 ```sh
 pnpm validate:registries
 ```
 
-`shadcn-ui/ui` リポジトリの `apps/v4/registry/directory.json` に追加した後、そのリポジトリ内で実行する検証コマンド（registry-index ページ記載）。
+Validation command to run inside the `shadcn-ui/ui` repository after adding an entry to `apps/v4/registry/directory.json` (documented on the registry-index page).
 
-## Registry Health が使う CLI チェック
+## CLI check used by Registry Health
 
 ```sh
 npx shadcn@latest add --dry-run
 ```
 
-Registry Health の週次 CLI チェックは項目が `shadcn add --dry-run` で動作するかを確認する（health ページ記載）。ディレクトリ登録済みレジストリのみが対象で、手元の検証には上記の `list` / `view` / `add` を使う。公式に health 専用のコマンドは記載されていない。
+The weekly Registry Health CLI check verifies that an item works with `shadcn add --dry-run` (per the health page). Only registries listed in the directory are checked; for local verification use the `list` / `view` / `add` commands above. The official documentation lists no health-specific command.
