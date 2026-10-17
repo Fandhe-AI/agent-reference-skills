@@ -129,6 +129,7 @@ export const myField: number;
 - Exported types can be re-used by consumers via `import` or `import type` in TypeScript, or JSDoc imports.
 - The layout of declaration files should mirror the layout of the library (`myLib/index.js`, `foo.js`, `bar/index.js`, `bar/baz.js` map to `@types/myLib/index.d.ts`, `foo.d.ts`, `bar/index.d.ts`, `bar/baz.d.ts`).
 - Testing types for DefinitelyTyped: create `node_modules/@types/[libname]/index.d.ts`, copy the example in, fill it out where usage breaks, then follow DefinitelyTyped README. Otherwise create `[libname].d.ts` at the source root, add `declare module "[libname]" {  }`, and put the template inside the braces.
+- Source-text caveat: inside `declare namespace` the context is already ambient, so the inner `declare` (as in `declare const maxInterval: 12;`) is an error (TS1038: A 'declare' modifier cannot be used in an already ambient context). Write `const maxInterval: 12;` instead.
 - Source-text caveat: `export as namespace myLib;` plus the file being a module is the UMD global declaration.
 
 ## Related

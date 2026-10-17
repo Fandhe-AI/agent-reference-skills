@@ -66,7 +66,8 @@ export module "super-greeter" {
 
 - This uses declaration merging.
 - Impact of ES6 on module plugins: some plugins add or modify top-level exports on existing modules. This is legal in CommonJS and other loaders, but ES6 modules are considered immutable and the pattern will not be possible. There is no compile-time enforcement because TypeScript is loader-agnostic.
-- Deprecated (6.0) / Removed (7.0) applies to the legacy `module Foo {}` namespace syntax only; the 6.0 deprecations page states that ambient `declare module "x"` (string-named module) still works. The template as published writes `export module "super-greeter"`; the source does not show an alternative spelling.
+- Deprecated (6.0) / Removed (7.0) applies to the legacy `module Foo {}` namespace syntax only; the 6.0 deprecations page states that ambient `declare module "x"` (string-named module) still works.
+- Source-text caveat: the template as published writes `export module "super-greeter"`. `export` cannot be applied to module augmentations (TS2668: they are always visible). Write `declare module "super-greeter" { ... }` in a file that has a top-level import.
 
 ## Related
 

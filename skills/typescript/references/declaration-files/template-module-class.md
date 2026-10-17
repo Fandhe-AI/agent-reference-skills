@@ -83,6 +83,7 @@ declare namespace MyClass {
 
 - Verbatim from source: ES6 modules cannot directly export class objects; import with `import x = require(...)`, or as a default import when `--allowSyntheticDefaultImports` or `--esModuleInterop` is on.
 - Deprecated (6.0): `esModuleInterop: false` and `allowSyntheticDefaultImports: false` are deprecated in 6.0 and removed in 7.0 (see the tsconfig interop-constraints page); the template text above predates this.
+- Source-text caveat: the published template merges `class Greeter` with `namespace MyClass`. To expose the types via `export =`, the namespace must share the class name (`declare namespace Greeter { ... }`), and `myMethod` should reference `Greeter.MyClassMethodOptions`.
 - The template as published declares `greet: void;` (a property of type `void`, not a method); reproduced as in the source.
 
 ## Related

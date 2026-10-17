@@ -58,6 +58,7 @@ Declaration file extensions imply the JavaScript file:
 - Direct `.ts` imports (`allowImportingTsExtensions`) require `noEmit` or `emitDeclarationOnly`; for bundlers and Bun use `moduleResolution: bundler`.
 - Libraries: `"module": "node18"` (implying `"moduleResolution": "node16"`) maximizes compatibility; `bundler` "is infectious" (`export * from "./utils"` works in bundlers but fails in Node.js with `ERR_MODULE_NOT_FOUND`; `./utils.js` works in both).
 - Deprecated (6.0) / Removed (7.0): `moduleResolution: classic` and `node10` (theory text says `classic` "is scheduled for deprecation in TypeScript 6.0"); `module: amd` / `umd` / `system` (`systemjs`) are no longer supported in 7.0 (6.0 release notes, TypeScript 7.0 announcement).
+- "Identical" for `node16` / `nodenext` in the table above refers to the `moduleResolution` algorithm only. Whether CommonJS can `require()` an ES module is set by `--module`: `nodenext` (TS 5.8+, Node.js v22.12+) allows it, `node16` / `node18` do not (see module-option.md; source: Reference.md).
 - Original twoslash `// @Filename:` markers were converted to plain file-name comments.
 
 ## Related

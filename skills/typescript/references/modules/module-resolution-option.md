@@ -110,8 +110,11 @@ import x from "./mod.js";
 }
 ```
 
+- The snippet above is an excerpt from the official page. As a standalone tsconfig it is invalid: `moduleResolution` `node16` must be paired with `"module": "node16"` or `"node18"` (`nodenext` with `nodenext`), per the mode table above and module-option.md.
+
 ### `node16`, `nodenext`
 
+- "Identical" refers to the `moduleResolution` algorithm only. Whether CommonJS can `require()` an ES module is set by `--module`: `nodenext` (TS 5.8+, Node.js v22.12+) allows it, `node16` / `node18` do not (see [module-option.md](./module-option.md); source: Reference.md).
 - `node16` and `nodenext` are currently identical; `node16` will be frozen if Node.js changes significantly. The syntax and module format of the importing file determine whether a specifier uses the `import` or `require` algorithm. Dynamic `import()` always uses the `import` algorithm; `import()` types follow the importing file's format.
 
 ```ts
