@@ -104,7 +104,7 @@ Date: <IMF-fixdate>
 
 現状の到達性: `http::response::encode_error_may_be_committed` を呼び出す production 経路は原文時点で `http/` 配下にまだ存在せず、commit 成功境界を跨いだ panic は RECOVER-8 の panic hook が既にプロセス abort へ倒すため、NoSQL 表層の実要求からは `may_be_committed` の緊急応答は現時点で観測できない。エンコーダの契約としては予約済み。
 
-利用者向け指針（接続され次第有効になる契約。現時点では観測不能）: `data.state == "may_be_committed"` を受け取った場合、同一 `operation_id` で `insert` を再送し、台帳照合の結果（内容一致なら `23505`・不一致なら `22023`）で確定させる。これは `insert` の既存の再送契約をそのまま使うもので、`data` 付き応答専用の新たな再送契約を追加するものではない。
+利用者向け指針（接続され次第有効になる契約。現時点では観測不能）: `data.state == "may_be_committed"` を受け取った場合、同一 `operation_id` で `insert` を再送し、台帳照合の結果で確定させる。`code == "DUPLICATE_OPERATION_ID"`（wire_code `23505`）なら commit 済み、`code == "OPERATION_ID_CONTENT_MISMATCH"`（`22023`）なら同一 operation_id が別内容で使用済み。同じ `23505` でも `code == "UNIQUE_VIOLATION"` は行制約違反で、commit 済みの根拠にならない。これは `insert` の既存の再送契約をそのまま使うもので、`data` 付き応答専用の新たな再送契約を追加するものではない。
 
 ## Notes
 
