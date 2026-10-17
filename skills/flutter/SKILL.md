@@ -3,13 +3,14 @@ name: flutter
 description: >
   Flutter (Google 製 Dart クロスプラットフォーム UI フレームワーク, 3.47) のリファレンス。
   StatelessWidget / StatefulWidget / BuildContext, Sliver, Material / Cupertino, Impeller, DevTools,
-  MVVM, platform channels / dart:ffi, add-to-app, Flutter Web / Wasm, GenUI SDK / AI Toolkit。
+  Widget Previewer, MVVM, platform channels / dart:ffi, add-to-app, Flutter Web / Wasm,
+  GenUI SDK / AI Toolkit。
 user-invocable: false
 ---
 
 # Flutter
 
-> 分割 PR の途中段階。現在収録済み: references/{ai, architecture-data, design-animation, fundamentals, interaction-navigation, layout, packages-deployment, platform-integration, release, testing-performance}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{ai, architecture-data, design-animation, fundamentals, interaction-navigation, layout, packages-deployment, platform-integration, release, testing-performance, tools, web}。冒頭説明に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 ## 対象バージョン
 
@@ -40,6 +41,10 @@ skills/flutter/
     packages-deployment/     # パッケージ・flavors・各プラットフォーム配布・難読化・SwiftPM（17 ページ）
       README.md
     testing-performance/     # テスト・デバッグ・Impeller・パフォーマンス・isolates（19 ページ）
+      README.md
+    tools/                   # flutter CLI・pubspec・hot reload・DevTools・Widget Previewer（24 ページ）
+      README.md
+    web/                     # Flutter Web・Wasm・初期化・埋め込み・デプロイ（11 ページ）
       README.md
     ai/                      # GenUI SDK・AI Toolkit・AI 開発ツール（10 ページ）
       README.md
@@ -82,5 +87,8 @@ skills/flutter/
 | flavors・難読化・CD・SwiftPM を設定したい | packages-deployment | [references/packages-deployment/README.md](references/packages-deployment/README.md) |
 | ユニット/ウィジェット/integration テストを書きたい | testing-performance | [references/testing-performance/README.md](references/testing-performance/README.md) |
 | デバッグ・エラー処理・パフォーマンス計測・Impeller・isolates を調べたい | testing-performance | [references/testing-performance/README.md](references/testing-performance/README.md) |
+| flutter CLI・pubspec・hot reload・flutter fix を使いたい | tools | [references/tools/README.md](references/tools/README.md) |
+| DevTools（inspector・CPU・メモリ・ネットワーク）・Widget Previewer を使いたい | tools | [references/tools/README.md](references/tools/README.md) |
+| Flutter Web のビルド・Wasm・初期化・埋め込み・デプロイを行いたい | web | [references/web/README.md](references/web/README.md) |
 | GenUI SDK・AI Toolkit（LlmChatView）・AI 開発ツールを使いたい | ai | [references/ai/README.md](references/ai/README.md) |
 | 3.47 の新機能・breaking changes・移行ガイド（material_ui opt-in 含む）を確認したい | release | [references/release/README.md](references/release/README.md) |
