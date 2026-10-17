@@ -63,6 +63,8 @@ Undoing restores auto-assignment of production domains so new pushes go live aga
 - After rollback, the rolled-back deployment is shown as the current production deployment with canceled/rolled-back commits highlighted.
 - Configuration used by the rolled-back deployment may be stale relative to current project settings.
 - Deleting an eligible deployment removes it from the rollback candidates list.
+- Rollback, investigate, redeploy-fix flow (docs guide "Rolling back a production deployment", last_updated 2026-09-11): confirm the problem with `vercel logs`; roll back with `vercel rollback <previous-deployment-url-or-id>` and verify with `vercel rollback status`; identify the bad deployment with `vercel list --prod` and `vercel inspect <url>` (`--logs` for build logs); compare error logs between good and bad deployments; if the cause spans several deployments, binary-search with `vercel bisect --good <url> --bad <url>` (optionally `--run ./test.sh`; exit 0 = good, non-zero = bad, 125 = skip); fix and deploy a preview (`vercel deploy`, check with `vercel curl /route --deployment <preview-url>`); ship with `vercel deploy --prod`. Alternative to redeploying: `vercel promote <deployment-url>` and `vercel promote status`.
+- Note: the guide's example `vercel logs` flags (`--status-code`, `--level`, `--expand`) are the pre-v64 forms; in Vercel CLI v64+ use `--query` (see [../cli/logs.md](../cli/logs.md))
 
 ## Related
 

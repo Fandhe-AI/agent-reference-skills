@@ -2,16 +2,23 @@
 
 | Name | Description | Path |
 |------|-------------|------|
-| Overview | Deployment methods (Git, CLI, Deploy Hooks, REST API) and accessing deployments | [overview.md](./overview.md) |
-| Environments | Local, Preview, Production, and Custom Environments (Pro/Enterprise) | [environments.md](./environments.md) |
-| Git Integration | Supported providers, automatic deploy behavior, production branch configuration | [git-integration.md](./git-integration.md) |
-| Vercel for GitHub | GitHub-specific integration: permissions, system env vars, GitHub Actions, repository_dispatch | [vercel-for-github.md](./vercel-for-github.md) |
-| Vercel for GitLab | GitLab-specific integration: permissions, merge request deployments, GitLab Pipelines | [vercel-for-gitlab.md](./vercel-for-gitlab.md) |
-| Vercel for Bitbucket | Bitbucket-specific integration: permissions, PR deployments, Bitbucket Pipelines | [vercel-for-bitbucket.md](./vercel-for-bitbucket.md) |
-| Generated URLs | URL formats for commit-specific, branch-specific, and CLI deployments | [generated-urls.md](./generated-urls.md) |
-| Deploy Hooks | Create and trigger deployments via unique HTTP URLs without new commits | [deploy-hooks.md](./deploy-hooks.md) |
-| Managing Deployments | Filter, redeploy, delete, promote, and protect deployments via Dashboard, CLI, or API | [managing-deployments.md](./managing-deployments.md) |
-| Promoting Deployments | Instant Rollback, promote preview to production, staged production promotion | [promoting-deployments.md](./promoting-deployments.md) |
-| Instant Rollback | Instantly revert production domain to a previous deployment without rebuilding | [instant-rollback.md](./instant-rollback.md) |
-| Rolling Releases | Gradually shift traffic to a new deployment across configurable stages | [rolling-releases.md](./rolling-releases.md) |
-| Rolling Release Deployment | Step-by-step CLI guide for performing a rolling release | [rolling-release-deployment.md](./rolling-release-deployment.md) |
+| Claim Deployments | Claim Deployments lets a user take ownership of a deployment by transferring it to their Vercel account via a shareable claim URL. Particularly useful for AI-generated deployments and for moving projects between accounts with different owners. | [claim-deployments.md](./claim-deployments.md) |
+| Deploy Hooks | Deploy Hooks are unique URLs that accept HTTP requests to trigger deployments without needing a new commit. Each URL is linked to a specific project, repository, and branch. | [deploy-hooks.md](./deploy-hooks.md) |
+| Deployment Policies | Rules controlling which Git sources and deployment mechanisms can create deployments for a team and its projects, per environment. Available on Enterprise and Pro plans. | [deployment-policy.md](./deployment-policy.md) |
+| Deployment Retention | Configured policies that determine how long each type of deployment is kept before automatic deletion. Available on all plans. | [deployment-retention.md](./deployment-retention.md) |
+| Deployment Storage | Cloud storage for the build output and Vercel Function bundles retained with your deployments. A Deployment Retention Policy controls when each deployment becomes eligible for deletion. | [deployment-storage.md](./deployment-storage.md) |
+| Environments | Vercel provides three default environments (Local, Preview, Production) and supports Custom Environments on Pro/Enterprise plans for workflows like staging or QA. | [environments.md](./environments.md) |
+| Generated URLs | When a deployment is created (preview or production), Vercel automatically generates a unique URL for accessing that specific deployment. | [generated-urls.md](./generated-urls.md) |
+| Git Integration | Vercel automatically deploys on every branch push and merge to the production branch for GitHub, GitLab, Bitbucket, and Azure DevOps repositories. | [git-integration.md](./git-integration.md) |
+| Instant Rollback | Instant Rollback reverts your production domain(s) to a previous deployment without rebuilding. It is designed for swift recovery from production incidents like breaking changes or bugs. | [instant-rollback.md](./instant-rollback.md) |
+| Managing Deployments | All current and past deployments are accessible from the Vercel Dashboard regardless of environment, status, or branch. Vercel CLI and the REST API provide programmatic alternatives. | [managing-deployments.md](./managing-deployments.md) |
+| Deploying to Vercel | A deployment on Vercel is the result of a successful build of your project. Each deployment generates a unique URL for previewing changes in a live environment. | [overview.md](./overview.md) |
+| Preview Deployment Suffix | Replaces the default `vercel.app` suffix of preview deployment URLs with a custom domain of your choice. Available on Enterprise and Pro plans. | [preview-deployment-suffix.md](./preview-deployment-suffix.md) |
+| Promoting Deployments | Promoting a deployment means assigning your production domain(s) to a different deployment. Vercel supports three promotion approaches: Instant Rollback, promote preview to production, and staged production promotion. | [promoting-deployments.md](./promoting-deployments.md) |
+| Rolling Release Deployment | Step-by-step guide for performing a rolling release deployment using the Vercel CLI: configure stages, deploy, start the release, monitor, advance or abort, and complete. | [rolling-release-deployment.md](./rolling-release-deployment.md) |
+| Rolling Releases | Rolling Releases allow you to gradually shift traffic from your current production deployment to a new release candidate, monitoring metrics between stages before full promotion. | [rolling-releases.md](./rolling-releases.md) |
+| Sharing a Preview Deployment | How to share a preview deployment with team members and external collaborators, including with Deployment Protection enabled. | [sharing-deployments.md](./sharing-deployments.md) |
+| Vercel for Azure Pipelines | The Vercel Deployment Extension deploys from Azure DevOps (Azure Pipelines) to Vercel automatically. It works with any Git repository that can integrate with Azure Pipelines, commonly Azure Repos. | [vercel-for-azure-pipelines.md](./vercel-for-azure-pipelines.md) |
+| Vercel for Bitbucket | Vercel for Bitbucket automatically deploys Bitbucket projects, provides Preview Deployment URLs for every pull request, and keeps custom domains updated on production pushes. | [vercel-for-bitbucket.md](./vercel-for-bitbucket.md) |
+| Vercel for GitHub | Vercel for GitHub automatically deploys GitHub projects, provides Preview Deployment URLs for every PR, and keeps custom domains updated on production pushes. | [vercel-for-github.md](./vercel-for-github.md) |
+| Vercel for GitLab | Vercel for GitLab automatically deploys GitLab projects, provides Preview Deployment URLs for every merge request, and keeps custom domains updated on production pushes. | [vercel-for-gitlab.md](./vercel-for-gitlab.md) |

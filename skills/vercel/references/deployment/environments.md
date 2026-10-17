@@ -60,7 +60,9 @@ curl --request POST \
 
 - Preview deployments create two URL types: a commit-specific URL and a branch-specific URL (always pointing to the latest commit on the branch).
 - Pushing or merging to the production branch (default: `main`) triggers a production deployment and updates custom domains automatically.
-- Custom environments require Pro or Enterprise plan.
+- Custom environments require Pro or Enterprise plan; Pro: 1 and Enterprise: 12 per project (docs 2026-10 confirm; a changelog notes additional custom environments can be purchased). Team owners and project admins can create, update, or remove them.
+- Staging workflows (docs): (1) custom staging environment (Pro/Enterprise): create `staging` in Environments settings, set Branch Tracking to your staging branch, add its environment variables (review values if importing from another environment), assign a domain such as `staging.example.com`, push to the matching branch; `vercel deploy --target=staging` also works. (2) Preview branch for staging (all plans): create a `staging` Git branch, assign a domain to that branch under **Preview** with **Git Branch** `staging`, push to create a preview deployment; create a new deployment after changing variables. (3) Staged production deployment: disable **Auto-assign Custom Production Domains**; it uses production environment variables, so use a custom environment or preview branch with staging credentials when you need separate resources.
+- Marketplace integrations: native Marketplace resources can be scoped to an exact Custom Environment, e.g. `vercel integration add neon --environment staging` (see storage/marketplace/overview.md); Vercel Connect also supports Custom Environments.
 - Disabling **Auto-assign Custom Production Domains** in Production settings enables a staging workflow where new commits don't go live until manually promoted.
 
 ## Related

@@ -16,8 +16,8 @@ vercel deploy --prod
 # Start the rolling release
 vercel rolling-release start --dpl <deployment-url>
 
-# Check status
-vercel rolling-release fetch
+# Check status (`fetch` is a deprecated alias of `inspect`)
+vercel rolling-release inspect
 
 # Advance to next stage (manual approval mode)
 vercel rolling-release approve --dpl <deployment-url> --currentStageIndex 0
@@ -65,6 +65,8 @@ vercel rolling-release configure --cfg 'disable'
 | `vcrrForceStable=true` | Forces the client cookie to target the base (stable) deployment |
 
 Cookie name: `_vcrr_<hash>` where `<hash>` is derived from the project ID.
+
+Cookie value format: `<canaryDeploymentId>|<bucketPercent>[|forced]`. The first segment is always the canary (release candidate) deployment ID and identifies the rolling-release session; it does not mean every request is served from the canary. `<bucketPercent>` is a number between 0 and 1: if it is less than or equal to the current stage's canary traffic fraction the user is routed to the canary, otherwise to the base (current) production deployment. `|forced` is appended when routing was set via a query parameter: `?vcrrForceCanary=true` sets the bucket to `0` (cookie ends `|0|forced`, serves the canary, including a 0% stage) and `?vcrrForceStable=true` sets it to `1` (`|1|forced`, base release while the rollout is below 100%). A forced cookie is good only for a single rolling release; it is re-processed to a random value when a new one starts. Anyone can set `vcrrForceCanary=true` on a URL, so a 0% canary is not securely hidden.
 
 ## How Traffic Routing Works
 

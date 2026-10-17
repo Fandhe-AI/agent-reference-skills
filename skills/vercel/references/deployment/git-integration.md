@@ -58,6 +58,9 @@ For forks of public repositories, Vercel requires authorization from a team memb
 - Configure `github.autoJobCancellation = false` in `vercel.json` to disable automatic cancellation of queued builds.
 - Vercel sends `repository_dispatch` events to GitHub on deployment status changes (`vercel.deployment.ready`, `.success`, `.error`, `.canceled`, `.pending`, `.failed`, `.promoted`, `.skipped`, `.ignored`).
 - Commit authors on private repositories must have a Vercel account with linked Git credentials.
+- Azure DevOps (Azure Pipelines) repositories use the Vercel Deployment Extension; see [vercel-for-azure-pipelines.md](./vercel-for-azure-pipelines.md).
+- Before disabling GitHub `deployment_status` events (Project Settings → Git), check whether any GitHub Actions workflows depend on them, and migrate to `repository_dispatch` where appropriate (see vercel-for-github.md).
+- Staging phase example (docs): create a `staging` Git branch, add a domain such as `staging.example.com` and assign it to that branch, add Preview environment variables for the phase; pushing to `staging` updates the phase with the domain and variables. For Custom Environments see environments.md.
 
 ## Related
 

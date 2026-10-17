@@ -14,6 +14,11 @@ vercel routes edit "API Proxy" --dest "https://new-api.example.com/:path*"
 vercel routes delete "Old Redirect" --yes
 vercel routes publish --yes
 vercel routes list --diff
+vercel routes list-versions --count 50
+vercel routes inspect "API Proxy" --diff
+vercel routes enable "API Proxy"
+vercel routes disable "API Proxy"
+vercel routes restore <version-id> --yes
 ```
 
 ## Options / Props
@@ -45,11 +50,18 @@ vercel routes list --diff
 | `--append-response-header <KEY=VALUE>` | Append to response header (repeatable) |
 | `--delete-response-header <KEY>` | Delete response header (repeatable) |
 | `--set-request-header <KEY=VALUE>` | Set request header (repeatable) |
+| `--append-request-header <KEY=VALUE>` | Append to request header (repeatable) |
 | `--delete-request-header <KEY>` | Delete request header (repeatable) |
 | `--set-request-query <KEY=VALUE>` | Set query parameter (repeatable) |
+| `--append-request-query <KEY=VALUE>` | Append to query parameter (repeatable) |
 | `--delete-request-query <KEY>` | Delete query parameter (repeatable) |
 | `--description <TEXT>` | Route description (max 1024 chars) |
 | `--disabled` | Create in disabled state |
+| `--name <NAME>` | (edit) Change the route name |
+| `--no-dest` / `--no-status` | (edit) Remove the destination / status code |
+| `--clear-conditions` | (edit) Remove all conditions |
+| `--clear-headers` | (edit) Remove all response headers |
+| `--clear-transforms` | (edit) Remove all request header and query transforms |
 | `--position <POSITION>` | Position: `start`, `end`, `before:<id>`, `after:<id>` |
 | `-y, --yes` | Skip confirmation |
 
@@ -62,6 +74,14 @@ vercel routes list --diff
 | `--last` | Move to last position |
 | `-y, --yes` | Skip confirmation |
 
+### list-versions / inspect / restore
+
+| Name | Description |
+|------|-------------|
+| `list-versions --count <NUMBER>` | Number of versions to fetch (default: 20, max: 100) |
+| `inspect <name-or-id> --diff` | Compare this route's staged changes against production |
+| `restore <version-id> -y, --yes` | Restore a previous version to production; takes effect immediately |
+
 ### export
 
 | Name | Description |
@@ -72,6 +92,8 @@ vercel routes list --diff
 
 - Staging workflow: changes are staged → `vercel routes diff` → `vercel routes publish`
 - `vercel routes discard-staging` cancels staged changes
+- `enable <name-or-id>` re-enables a disabled route; `disable <name-or-id>` keeps the route in configuration but stops it affecting traffic
+- `--version-id` on `list` supports prefix matching; `--action` is required with `--dest` or `--status` (and when switching types on `edit`)
 - Condition types for `--has` / `--missing`: `header`, `cookie`, `query`, `host`
 - Can also define routes in source control via `vercel.json` or `vercel.ts`
 

@@ -47,8 +47,14 @@ Same set as GitHub integration. Key variables:
 | `VERCEL_GIT_COMMIT_SHA` | Build + Runtime | SHA of the triggering commit |
 | `VERCEL_GIT_COMMIT_REF` | Build + Runtime | Branch name |
 | `VERCEL_GIT_PULL_REQUEST_ID` | Build + Runtime | MR ID (empty string if no MR) |
+| `VERCEL_GIT_REPO_SLUG` | Build + Runtime | GitLab name of the deployed project (e.g. `my-site`) |
+| `VERCEL_GIT_REPO_OWNER` | Build + Runtime | GitLab user, group, or sub-group the project belongs to |
+| `VERCEL_GIT_REPO_ID` | Build + Runtime | GitLab ID of the deployed project (e.g. `13343236`) |
+| `VERCEL_GIT_COMMIT_MESSAGE` | Build + Runtime | Commit message (truncated at 2048 bytes) |
+| `VERCEL_GIT_COMMIT_AUTHOR_LOGIN` | Build + Runtime | Username of the commit author on GitLab |
+| `VERCEL_GIT_COMMIT_AUTHOR_NAME` | Build + Runtime | Name of the commit author on GitLab |
 
-See [vercel-for-github.md](./vercel-for-github.md) for the full variable list.
+`VERCEL_GIT_PROVIDER` is always `gitlab`. See [vercel-for-github.md](./vercel-for-github.md) for the other system variables.
 
 ## Notes
 

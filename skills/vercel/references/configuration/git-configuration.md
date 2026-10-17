@@ -35,9 +35,9 @@ Git-related configuration options available in `vercel.json` and `vercel.ts` to 
 
 ## Notes
 
-- Branch patterns use [minimatch syntax](https://github.com/isaacs/minimatch): e.g. `"internal-*": false`
-- If a branch matches multiple rules, any `true` match triggers a deployment
-- Setting `git.deploymentEnabled: false` (boolean) disables all automatic deployments
+- Matching multiple branches: use [minimatch syntax](https://github.com/isaacs/minimatch) to define behavior for several branches at once, e.g. `"internal-*": false` prevents automated deployments for any branch that starts with `internal-`
+- Branches matching multiple rules: if a branch matches multiple rules and at least one is `true`, a deployment occurs. Example `{ "experiment-*": false, "*-dev": true }`: a branch named `experiment-my-branch-dev` creates a deployment
+- Turning off all automatic deployments: set the value to `false` (boolean), e.g. `"git": { "deploymentEnabled": false }`. Unspecified branches default to `true`
 - `github.silent` and `github.enabled` are deprecated; use dashboard settings or `git.deploymentEnabled`
 
 ## Related

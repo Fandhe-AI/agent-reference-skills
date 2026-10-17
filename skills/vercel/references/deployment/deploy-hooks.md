@@ -47,6 +47,7 @@ curl -X POST https://api.vercel.com/v1/integrations/deploy/<project-id>/<hook-id
 
 ## Notes
 
+- Rechecked against the current Deploy Hooks docs: trigger with a GET or POST to the hook URL (no payload) and `?buildCache=false` to skip the build cache are unchanged. The CLI can also manage hooks: `vercel deploy-hooks ls`, `vercel deploy-hooks create <name> --ref <branch>`, `vercel deploy-hooks rm <id>` (CLI overview)
 - No authentication header is needed to trigger a hook; the unique URL acts as the secret — treat it like a token/password.
 - If the same version is deployed multiple times, Vercel cancels previous deployments for the same hook to reduce build times.
 - Deploy Hooks will not trigger if `github.enabled = false` is set in `vercel.json`.
