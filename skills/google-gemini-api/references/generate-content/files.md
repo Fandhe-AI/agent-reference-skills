@@ -71,7 +71,7 @@ client.files.delete(name=myfile.name)
 curl "https://generativelanguage.googleapis.com/v1beta/files" \
   -H "x-goog-api-key: $GEMINI_API_KEY"
 
-curl --request "DELETE" https://generativelanguage.googleapis.com/v1beta/files/$name \
+curl --request "DELETE" "https://generativelanguage.googleapis.com/v1beta/files/${name}" \
   -H "x-goog-api-key: $GEMINI_API_KEY"
 ```
 
@@ -166,6 +166,7 @@ External URL supported types: text (`text/html`, `text/css`, `text/plain`, `text
 
 ## Notes
 
+- Shell variables in REST examples are quoted per repository policy; the official snippet leaves them unquoted.
 - Sources: <https://ai.google.dev/gemini-api/docs/generate-content/files> (Files API), <https://ai.google.dev/gemini-api/docs/generate-content/file-input-methods> (File input methods).
 - Files API: API surface is the generateContent tree (Files API itself is shared; REST under `v1beta/files`).
 - Files API: always use the Files API when the total request size (files, text prompt, system instructions, etc.) is larger than 100 MB; for PDF files the limit is 50 MB.

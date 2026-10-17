@@ -4,13 +4,13 @@ description: >
   Google Gemini API (Gemini Developer API, ai.google.dev) の
   Interactions API (v1 / v1beta), generateContent, Google GenAI SDK (google-genai / @google/genai),
   Live API, Managed Agents, Deep Research, function calling, Google Search grounding, File Search,
-  Files API, thought signatures, Nano Banana, Veo, Lyria, Batch API。
+  Files API, thought signatures, Nano Banana, Veo, Lyria, Batch API, Flex / Priority inference。
 user-invocable: false
 ---
 
 # Google Gemini API
 
-> 分割 PR の途中段階。現在収録済み: references/{generate-content, getting-started}。冒頭説明・description に挙げた残りの範囲（Interactions API 本体・各種ツール・Live API・メディア生成・運用・移行等）は後続 PR で追加し、最終 PR でこの行を削除する。
+> 分割 PR の途中段階。現在収録済み: references/{generate-content, getting-started}。冒頭説明・description に挙げた残りの範囲は後続 PR で追加し、最終 PR でこの行を削除する。
 
 Google Gemini API (Gemini Developer API, `ai.google.dev`) のリファレンススキル。Interactions API を中心に、generateContent・Live API・Managed Agents・各種ツール・メディア生成・運用・移行を収録する。
 

@@ -66,7 +66,7 @@ curl -X POST "https://generativelanguage.googleapis.com/v1beta/cachedContents?ke
 -d @request.json \
 > cache.json
 
-CACHE_NAME=$(cat cache.json | grep '"name":' | cut -d '"' -f 4 | head -n 1)
+CACHE_NAME="$(grep '"name":' cache.json | cut -d '"' -f 4 | head -n 1)"
 
 curl -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=$GEMINI_API_KEY" \
 -H 'Content-Type: application/json' \
@@ -79,7 +79,7 @@ curl -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8
           "role": "user"
         }
       ],
-      "cachedContent": "'$CACHE_NAME'"
+      "cachedContent": "'"${CACHE_NAME}"'"
     }'
 ```
 
@@ -102,11 +102,11 @@ client.caches.delete(cache.name)
 ```
 
 ```bash
-curl -X PATCH "https://generativelanguage.googleapis.com/v1beta/$CACHE_NAME?key=$GEMINI_API_KEY" \
+curl -X PATCH "https://generativelanguage.googleapis.com/v1beta/${CACHE_NAME}?key=${GEMINI_API_KEY}" \
 -H 'Content-Type: application/json' \
 -d '{"ttl": "600s"}'
 
-curl -X DELETE "https://generativelanguage.googleapis.com/v1beta/$CACHE_NAME?key=$GEMINI_API_KEY"
+curl -X DELETE "https://generativelanguage.googleapis.com/v1beta/${CACHE_NAME}?key=${GEMINI_API_KEY}"
 ```
 
 ## Options / Props
@@ -131,6 +131,7 @@ Implicit caching minimum input token counts:
 
 ## Notes
 
+- Shell variables in REST examples are quoted per repository policy; the official snippet leaves them unquoted.
 - API surface: generateContent only. Source warning: "Explicit context caching is currently in Beta. Endpoints and SDK methods are available under `v1beta`." Context caching is a v1beta feature and generateContent-specific; the Interactions API caching page covers implicit caching only (see the interactions-core implicit-caching page).
 - Implicit caching is on by default for all Gemini 2.5 and newer models; to improve hits, put large common content at the beginning of the prompt and send similar-prefix requests close in time. Cache hit tokens appear in `usage_metadata`.
 - Cached content cannot be retrieved or viewed; only metadata (`name`, `model`, `display_name`, `usage_metadata`, `create_time`, `update_time`, `expire_time`).
